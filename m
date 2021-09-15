@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06F1740C235
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 10:58:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C44840C237
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 10:58:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237176AbhIOI7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 04:59:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39784 "EHLO
+        id S237188AbhIOJAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 05:00:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237125AbhIOI7d (ORCPT
+        with ESMTP id S237145AbhIOI7o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 04:59:33 -0400
+        Wed, 15 Sep 2021 04:59:44 -0400
 Received: from mx.msync.work (mx.msync.work [IPv6:2a01:4f9:2b:2dc2::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79DFBC061574;
-        Wed, 15 Sep 2021 01:58:14 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id B3E7BF62AA;
-        Wed, 15 Sep 2021 08:58:11 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BA60C061574;
+        Wed, 15 Sep 2021 01:58:23 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 6DFE8F62B8;
+        Wed, 15 Sep 2021 08:58:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lexina.in; s=dkim;
-        t=1631696292; h=from:subject:date:message-id:to:cc:mime-version:
+        t=1631696301; h=from:subject:date:message-id:to:cc:mime-version:
          content-transfer-encoding:in-reply-to:references;
-        bh=ptdKconmY8mvdVrtSLJk5+bGA9Dq5lp9zlHM3qI0kZI=;
-        b=LRzciQwgGWb+0Bvnu3eHzPzYpszTR8G64rPOiyiiOKUURCVOD9OZrWLH3hRlP6NQ/epTFv
-        PrPSWsUCgoaDHmymsKbERJjWBoD+BE6u39hK1VjDM5IjYQ1qGqMwyvxa6RUnJBKedscqzS
-        JY6T6LdQX4YmRjcMThlnMpGsj/o+mhDO0ak1PLBfLWyemK0YnMj+DBdwn8kO7S2bsK3zQs
-        nkazeN2smwQ1FwU8dZfqX5uFS9wJi+FojSXVDgdWO/zFBj3TToQWSRJU+pT/T6UWtHFxmk
-        q2yFEvQRfs/w2YD5fjET9hJq+KEoux9CFhMWQ/83Jc37yZAsu0bVLpLVDZF/cg==
+        bh=5n0R6drbZsDzE00WoiM8YAqFQ9VV6XgrJxBJAv4+pes=;
+        b=Sp7LSGoiMzJahmo9oUFn6UheOC+U+3hwSTPZKhTBichoQalX+j8iF+Xe37bSI9C96KWlGe
+        jDWAe6AQIp9N4J5Xgoh2h0+/YVku7P5aEjd+Hn+jrGk/cA/cYQ5KiXCfHoFQ1ZAQ+aWJg8
+        u3hjyKvrXAnKFBT1xDjGNtzweSIV+R73IEjzrNVKvxYob791nE8I5MD9eSSnjwuMbpzNkg
+        iSucoV3wFJvfvS5nsV1in9wOL1YmAyrLpxKVj5/zcpI5Kkal5ZjmjM9DwJ72Ju1oHuJmOc
+        p5HGGuSrNAPLgb0CfNU6nSMgjiapwkG59PL6+EOz5lwMXhMp9y7Dplw935eo+A==
 From:   Vyacheslav Bocharov <adeep@lexina.in>
 To:     Neil Armstrong <narmstrong@baylibre.com>,
         Kevin Hilman <khilman@baylibre.com>
 Cc:     linux-amlogic@lists.infradead.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org
-Subject: [PATCH v5 3/4] arm64: dts: meson-gxl: add support for JetHub H1
-Date:   Wed, 15 Sep 2021 11:57:17 +0300
-Message-Id: <20210915085715.1134940-4-adeep@lexina.in>
+Subject: [PATCH v5 4/4] arm64: dts: meson-axg: add support for JetHub D1
+Date:   Wed, 15 Sep 2021 11:57:19 +0300
+Message-Id: <20210915085715.1134940-5-adeep@lexina.in>
 In-Reply-To: <20210915085715.1134940-1-adeep@lexina.in>
 References: <20210915085715.1134940-1-adeep@lexina.in>
 MIME-Version: 1.0
@@ -44,50 +44,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-JetHome Jethub H1 (http://jethome.ru/jethub-h1) is a home automation
+JetHome Jethub D1 (http://jethome.ru/jethub-d1) is a home automation
 controller with the following features:
-
-- square plastic case
-- Amlogic S905W (ARM Cortex-A53) quad-core up to 1.5GHz
+- DIN Rail Mounting
+- Amlogic A113X (ARM Cortex-A53) quad-core up to 1.5GHz
 - no video out
-- 1GB LPDDR4
+- 512Mb/1GB LPDDR4
 - 8/16GB eMMC flash
-- 2 x USB 2.0
+- 1 x USB 2.0
 - 1 x 10/100Mbps ethernet
-- WiFi / Bluetooth RTL8822CS IEEE 802.11a/b/g/n/ac, Bluetooth 5.0.
+- WiFi / Bluetooth AMPAK AP6255 (Broadcom BCM43455) IEEE 802.11a/b/g/n/ac,
+  Bluetooth 4.2.
 - TI CC2538 + CC2592 Zigbee Wireless Module with up to 20dBm output power
   and Zigbee 3.0 support.
-- MicroSD 2.x/3.x/4.x DS/HS cards.
-- 1 x gpio LED
-- ADC user Button
-- DC source 5V microUSB
+- 2 x gpio LEDS
+- GPIO user Button
+- 1 x 1-Wire
+- 2 x RS-485
+- 4 x dry contact digital GPIO inputs
+- 3 x relay GPIO outputs
+- DC source with a voltage of 9 to 56 V / Passive POE
+
+Changes from v4:
+ - add node for 1wire-gpio for JetHub D1 v2 device
 
 Signed-off-by: Vyacheslav Bocharov <adeep@lexina.in>
-Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
+
+
 ---
  arch/arm64/boot/dts/amlogic/Makefile          |   1 +
- .../meson-gxl-s905w-jethome-jethub-j80.dts    | 241 ++++++++++++++++++
- 2 files changed, 242 insertions(+)
- create mode 100644 arch/arm64/boot/dts/amlogic/meson-gxl-s905w-jethome-jethub-j80.dts
+ .../amlogic/meson-axg-jethome-jethub-j100.dts | 361 ++++++++++++++++++
+ 2 files changed, 362 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/amlogic/meson-axg-jethome-jethub-j100.dts
 
 diff --git a/arch/arm64/boot/dts/amlogic/Makefile b/arch/arm64/boot/dts/amlogic/Makefile
-index faa0a79a34f5..2c3ce7c401a5 100644
+index 2c3ce7c401a5..3ba6f58b9833 100644
 --- a/arch/arm64/boot/dts/amlogic/Makefile
 +++ b/arch/arm64/boot/dts/amlogic/Makefile
-@@ -38,6 +38,7 @@ dtb-$(CONFIG_ARCH_MESON) += meson-gxl-s805x-p241.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-gxl-s905w-p281.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-gxl-s905w-tx3-mini.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-gxl-s905d-libretech-pc.dtb
-+dtb-$(CONFIG_ARCH_MESON) += meson-gxl-s905w-jethome-jethub-j80.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-gxm-khadas-vim2.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-gxm-mecool-kiii-pro.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-gxm-minix-neo-u9h.dtb
-diff --git a/arch/arm64/boot/dts/amlogic/meson-gxl-s905w-jethome-jethub-j80.dts b/arch/arm64/boot/dts/amlogic/meson-gxl-s905w-jethome-jethub-j80.dts
+@@ -1,5 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0
+ dtb-$(CONFIG_ARCH_MESON) += meson-axg-s400.dtb
++dtb-$(CONFIG_ARCH_MESON) += meson-axg-jethome-jethub-j100.dtb
+ dtb-$(CONFIG_ARCH_MESON) += meson-g12a-sei510.dtb
+ dtb-$(CONFIG_ARCH_MESON) += meson-g12a-u200.dtb
+ dtb-$(CONFIG_ARCH_MESON) += meson-g12a-x96-max.dtb
+diff --git a/arch/arm64/boot/dts/amlogic/meson-axg-jethome-jethub-j100.dts b/arch/arm64/boot/dts/amlogic/meson-axg-jethome-jethub-j100.dts
 new file mode 100644
-index 000000000000..6eafb908695f
+index 000000000000..c25b03a91e12
 --- /dev/null
-+++ b/arch/arm64/boot/dts/amlogic/meson-gxl-s905w-jethome-jethub-j80.dts
-@@ -0,0 +1,241 @@
++++ b/arch/arm64/boot/dts/amlogic/meson-axg-jethome-jethub-j100.dts
+@@ -0,0 +1,361 @@
 +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 +/*
 + * Copyright (c) 2021 Vyacheslav Bocharov <adeep@lexina.in>
@@ -99,27 +105,16 @@ index 000000000000..6eafb908695f
 +
 +/dts-v1/;
 +
-+#include "meson-gxl.dtsi"
++#include "meson-axg.dtsi"
++#include <dt-bindings/input/input.h>
++#include <dt-bindings/thermal/thermal.h>
 +
 +/ {
-+	compatible = "jethome,jethub-j80", "amlogic,s905w", "amlogic,meson-gxl";
-+	model = "JetHome JetHub J80";
-+	memory@0 {
-+		device_type = "memory";
-+		reg = <0x0 0x0 0x0 0x40000000>;
-+	};
-+
-+	reserved-memory {
-+		linux,cma {
-+			size = <0x0 0x1000000>;
-+		};
-+	};
-+
++	compatible = "jethome,jethub-j100", "amlogic,a113d", "amlogic,meson-axg";
++	model = "JetHome JetHub J100";
 +	aliases {
 +		serial0 = &uart_AO;   /* Console */
-+		serial1 = &uart_A;    /* Bluetooth */
-+		serial2 = &uart_AO_B; /* Wireless module 1 */
-+		serial3 = &uart_C;    /* Wireless module 2 */
++		serial1 = &uart_AO_B; /* External UART (Wireless Module) */
 +		ethernet0 = &ethmac;
 +	};
 +
@@ -127,32 +122,16 @@ index 000000000000..6eafb908695f
 +		stdout-path = "serial0:115200n8";
 +	};
 +
-+	vddio_ao18: regulator-vddio_ao18 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VDDIO_AO18";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
++	/* 1024MB RAM */
++	memory@0 {
++		device_type = "memory";
++		reg = <0x0 0x0 0x0 0x40000000>;
 +	};
 +
-+	vddio_boot: regulator-vddio_boot {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VDDIO_BOOT";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+	};
-+
-+	vddao_3v3: regulator-vddao_3v3 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VDDAO_3V3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+	};
-+
-+	vcc_3v3: regulator-vcc_3v3 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VCC_3V3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
++	reserved-memory {
++		linux,cma {
++			size = <0x0 0x400000>;
++		};
 +	};
 +
 +	emmc_pwrseq: emmc-pwrseq {
@@ -160,105 +139,227 @@ index 000000000000..6eafb908695f
 +		reset-gpios = <&gpio BOOT_9 GPIO_ACTIVE_LOW>;
 +	};
 +
-+	wifi32k: wifi32k {
-+		compatible = "pwm-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <32768>;
-+		pwms = <&pwm_ef 0 30518 0>; /* PWM_E at 32.768KHz */
++	vcc_3v3: regulator-vcc_3v3 {
++		compatible = "regulator-fixed";
++		regulator-name = "VCC_3V3";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		vin-supply = <&vddao_3v3>;
++		regulator-always-on;
++	};
++
++	vcc_5v: regulator-vcc_5v {
++		compatible = "regulator-fixed";
++		regulator-name = "VCC5V";
++		regulator-min-microvolt = <5000000>;
++		regulator-max-microvolt = <5000000>;
++		regulator-always-on;
++	};
++
++	vddao_3v3: regulator-vddao_3v3 {
++		compatible = "regulator-fixed";
++		regulator-name = "VDDAO_3V3";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		vin-supply = <&vcc_5v>;
++		regulator-always-on;
++	};
++
++	vddio_ao18: regulator-vddio_ao18 {
++		compatible = "regulator-fixed";
++		regulator-name = "VDDIO_AO18";
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <1800000>;
++		vin-supply = <&vddao_3v3>;
++		regulator-always-on;
++	};
++
++	vddio_boot: regulator-vddio_boot {
++		compatible = "regulator-fixed";
++		regulator-name = "VDDIO_BOOT";
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <1800000>;
++		vin-supply = <&vddao_3v3>;
++		regulator-always-on;
++	};
++
++	usb_pwr: regulator-usb_pwr {
++		compatible = "regulator-fixed";
++		regulator-name = "USB_PWR";
++		regulator-min-microvolt = <5000000>;
++		regulator-max-microvolt = <5000000>;
++		vin-supply = <&vcc_5v>;
++		regulator-always-on;
 +	};
 +
 +	sdio_pwrseq: sdio-pwrseq {
 +		compatible = "mmc-pwrseq-simple";
-+		reset-gpios = <&gpio GPIOX_6 GPIO_ACTIVE_LOW>;
++		reset-gpios = <&gpio GPIOX_7 GPIO_ACTIVE_LOW>;
 +		clocks = <&wifi32k>;
 +		clock-names = "ext_clock";
++	};
++
++	wifi32k: wifi32k {
++		compatible = "pwm-clock";
++		#clock-cells = <0>;
++		clock-frequency = <32768>;
++		pwms = <&pwm_ab 0 30518 0>; /* PWM_A at 32.768KHz */
++	};
++
++	thermal-zones {
++		cpu_thermal: cpu-thermal {
++			polling-delay-passive = <250>;
++			polling-delay = <1000>;
++			thermal-sensors = <&scpi_sensors 0>;
++			trips {
++				cpu_passive: cpu-passive {
++					temperature = <70000>; /* millicelsius */
++					hysteresis = <2000>; /* millicelsius */
++					type = "passive";
++				};
++
++				cpu_hot: cpu-hot {
++					temperature = <80000>; /* millicelsius */
++					hysteresis = <2000>; /* millicelsius */
++					type = "hot";
++				};
++
++				cpu_critical: cpu-critical {
++					temperature = <100000>; /* millicelsius */
++					hysteresis = <2000>; /* millicelsius */
++					type = "critical";
++				};
++			};
++		};
++
++		cpu_cooling_maps: cooling-maps {
++			map0 {
++				trip = <&cpu_passive>;
++				cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++						<&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++						<&cpu2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++						<&cpu3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
++			};
++
++			map1 {
++				trip = <&cpu_hot>;
++				cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++						<&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++						<&cpu2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++						<&cpu3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
++			};
++		};
++	};
++	onewire {
++		compatible = "w1-gpio";
++		gpios = <&gpio GPIOA_14 GPIO_ACTIVE_HIGH>;
++		#gpio-cells = <1>;
 +	};
 +};
 +
 +&efuse {
++	sn: sn@32 {
++		reg = <0x32 0x20>;
++	};
++
++	eth_mac: eth_mac@0 {
++		reg = <0x0 0x6>;
++	};
++
 +	bt_mac: bt_mac@6 {
 +		reg = <0x6 0x6>;
 +	};
 +
-+	wifi_mac: wifi_mac@C {
++	wifi_mac: wifi_mac@c {
 +		reg = <0xc 0x6>;
++	};
++
++	bid: bid@12 {
++		reg = <0x12 0x20>;
 +	};
 +};
 +
-+&sn {
-+	reg = <0x32 0x20>;
-+};
-+
-+&eth_mac {
-+	reg = <0x0 0x6>;
-+};
-+
-+&bid {
-+	reg = <0x12 0x20>;
-+};
-+
-+&usb {
++&ethmac {
 +	status = "okay";
-+	dr_mode = "host";
-+};
-+
-+&pwm_ef {
-+	status = "okay";
-+	pinctrl-0 = <&pwm_e_pins>;
++	pinctrl-0 = <&eth_rmii_x_pins>;
 +	pinctrl-names = "default";
-+	clocks = <&clkc CLKID_FCLK_DIV4>;
-+	clock-names = "clkin0";
++	phy-handle = <&eth_phy0>;
++	phy-mode = "rmii";
++
++	mdio {
++		compatible = "snps,dwmac-mdio";
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		/* ICPlus IP101A/G Ethernet PHY (vendor_id=0x0243, model_id=0x0c54) */
++		eth_phy0: ethernet-phy@0 {
++			/* compatible = "ethernet-phy-id0243.0c54";*/
++			max-speed = <100>;
++			reg = <0>;
++
++			reset-assert-us = <10000>;
++			reset-deassert-us = <10000>;
++			reset-gpios = <&gpio GPIOZ_5 GPIO_ACTIVE_LOW>;
++		};
++	};
 +};
 +
-+&saradc {
++/* Internal I2C bus (on CPU module) */
++&i2c1 {
 +	status = "okay";
-+	vref-supply = <&vddio_ao18>;
++	pinctrl-0 = <&i2c1_z_pins>;
++	pinctrl-names = "default";
++
++	/* RTC */
++	pcf8563: pcf8563@51 {
++		compatible = "nxp,pcf8563";
++		reg = <0x51>;
++		status = "okay";
++	};
 +};
 +
-+/* Wireless SDIO Module */
-+&sd_emmc_a {
++/* Peripheral I2C bus (on motherboard) */
++&i2c_AO {
 +	status = "okay";
-+	pinctrl-0 = <&sdio_pins>;
-+	pinctrl-1 = <&sdio_clk_gate_pins>;
-+	pinctrl-names = "default", "clk-gate";
++	pinctrl-0 = <&i2c_ao_sck_10_pins>, <&i2c_ao_sda_11_pins>;
++	pinctrl-names = "default";
++};
++
++&pwm_ab {
++	status = "okay";
++	pinctrl-0 = <&pwm_a_x20_pins>;
++	pinctrl-names = "default";
++};
++
++/* wifi module */
++&sd_emmc_b {
++	status = "okay";
 +	#address-cells = <1>;
 +	#size-cells = <0>;
 +
++	pinctrl-0 = <&sdio_pins>;
++	pinctrl-1 = <&sdio_clk_gate_pins>;
++	pinctrl-names = "default", "clk-gate";
++
 +	bus-width = <4>;
 +	cap-sd-highspeed;
-+	max-frequency = <50000000>;
-+
++	sd-uhs-sdr104;
++	max-frequency = <200000000>;
 +	non-removable;
 +	disable-wp;
-+
-+	/* WiFi firmware requires power to be kept while in suspend */
-+	keep-power-in-suspend;
 +
 +	mmc-pwrseq = <&sdio_pwrseq>;
 +
 +	vmmc-supply = <&vddao_3v3>;
 +	vqmmc-supply = <&vddio_boot>;
++
++	brcmf: wifi@1 {
++		reg = <1>;
++		compatible = "brcm,bcm4329-fmac";
++	};
 +};
 +
-+/* SD card */
-+&sd_emmc_b {
-+	status = "okay";
-+	pinctrl-0 = <&sdcard_pins>;
-+	pinctrl-1 = <&sdcard_clk_gate_pins>;
-+	pinctrl-names = "default", "clk-gate";
-+
-+	bus-width = <4>;
-+	cap-sd-highspeed;
-+	max-frequency = <50000000>;
-+	disable-wp;
-+
-+	cd-gpios = <&gpio CARD_6 GPIO_ACTIVE_LOW>;
-+
-+	vmmc-supply = <&vddao_3v3>;
-+	vqmmc-supply = <&vddio_boot>;
-+};
-+
-+/* eMMC */
++/* emmc storage */
 +&sd_emmc_c {
 +	status = "okay";
 +	pinctrl-0 = <&emmc_pins>, <&emmc_ds_pins>;
@@ -274,60 +375,85 @@ index 000000000000..6eafb908695f
 +	mmc-hs200-1_8v;
 +
 +	mmc-pwrseq = <&emmc_pwrseq>;
++
 +	vmmc-supply = <&vcc_3v3>;
 +	vqmmc-supply = <&vddio_boot>;
 +};
 +
-+/* Console UART */
++/* UART Bluetooth */
++&uart_B {
++	status = "okay";
++	pinctrl-0 = <&uart_b_z_pins>, <&uart_b_z_cts_rts_pins>;
++	pinctrl-names = "default";
++	uart-has-rtscts;
++
++	bluetooth {
++		compatible = "brcm,bcm43438-bt";
++		shutdown-gpios = <&gpio GPIOZ_7 GPIO_ACTIVE_HIGH>;
++	};
++};
++
++/* UART Console */
 +&uart_AO {
 +	status = "okay";
 +	pinctrl-0 = <&uart_ao_a_pins>;
 +	pinctrl-names = "default";
 +};
 +
-+/* S905W only has access to its internal PHY */
-+&ethmac {
-+	status = "okay";
-+	phy-mode = "rmii";
-+	phy-handle = <&internal_phy>;
-+};
-+
-+&internal_phy {
-+	status = "okay";
-+	pinctrl-0 = <&eth_link_led_pins>, <&eth_act_led_pins>;
-+	pinctrl-names = "default";
-+};
-+
-+&uart_A {
-+	status = "okay";
-+	pinctrl-0 = <&uart_a_pins>, <&uart_a_cts_rts_pins>;
-+	pinctrl-names = "default";
-+	uart-has-rtscts;
-+};
-+
-+&uart_C {
-+	status = "okay";
-+	pinctrl-0 = <&uart_c_pins>;
-+	pinctrl-names = "default";
-+};
-+
++/* UART Wireless module */
 +&uart_AO_B {
 +	status = "okay";
-+	pinctrl-0 = <&uart_ao_b_pins>, <&uart_ao_b_cts_rts_pins>;
++	pinctrl-0 = <&uart_ao_b_pins>;
 +	pinctrl-names = "default";
-+	uart-has-rtscts;
 +};
 +
-+&i2c_B {
++&usb {
 +	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&i2c_b_pins>;
++	phy-supply = <&usb_pwr>;
++};
 +
-+	pcf8563: pcf8563@51 {
-+		compatible = "nxp,pcf8563";
-+		reg = <0x51>;
-+		status = "okay";
-+	};
++&spicc1 {
++	status = "okay";
++	pinctrl-0 = <&spi1_x_pins>, <&spi1_ss0_x_pins>;
++	pinctrl-names = "default";
++};
++
++&gpio {
++	gpio-line-names =
++		"", "", "", "", "", // 0 - 4
++		"", "", "", "", "", // 5 - 9
++		"UserButton", "", "", "", "", // 10 - 14
++		"", "", "", "", "", // 15 - 19
++		"", "", "", "", "", // 20 - 24
++		"", "LedRed", "LedGreen", "Output3", "Output2", // 25 - 29
++		"Output1", "", "", "", "", // 30 - 34
++		"", "ZigBeeBOOT", "", "", "", // 35 - 39
++		"1Wire", "ZigBeeRESET", "", "Input4", "Input3", // 40 - 44
++		"Input2", "Input1", "", "", "", // 45 - 49
++		"", "", "", "", "", // 50 - 54
++		"", "", "", "", "", // 55 - 59
++		"", "", "", "", "", // 60 - 64
++		"", "", "", "", "", // 65 - 69
++		"", "", "", "", "", // 70 - 74
++		"", "", "", "", "", // 75 - 79
++		"", "", "", "", "", // 80 - 84
++		"", ""; // 85-86
++};
++
++&cpu0 {
++	#cooling-cells = <2>;
++};
++
++&cpu1 {
++	#cooling-cells = <2>;
++};
++
++&cpu2 {
++	#cooling-cells = <2>;
++};
++
++&cpu3 {
++	#cooling-cells = <2>;
 +};
 -- 
 2.30.2
