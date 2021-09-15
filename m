@@ -2,69 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5B3F40C4E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 14:04:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 751C540C4E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 14:04:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237929AbhIOMF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 08:05:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53752 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237894AbhIOMFL (ORCPT
+        id S237642AbhIOMFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 08:05:35 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:3088 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237876AbhIOMFY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 08:05:11 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D40F7C0617A8
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 05:03:42 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id h9so2599367ile.6
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 05:03:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=0DYzuAI6CXvEv/jdcOY5M2IDjyaraJThjqT9IsyfkYU=;
-        b=GOymzMPR7rK4rxKwdA1D3AvnIXSEZ6IJXxmLiM4QnwcK4Gb98DlPP9B1yWL2v+l2c0
-         /sKYorDz4ZDsty+V394UzIFIdE9mp8OfBRqMyzZQqNSlUfehT1kF4Hq6LcfYtPhVHB0C
-         9Pzd4goGB8sG/y1hBm7h9Bko0RyW4K5xR3XjJltuR7o7JC+N/1Twescps0V4yvlCojEd
-         j44U4eGUeMjHxT2Wm7efF7o2g1Jku3fBWhGpPRW1y0RYoW+F2dopm4nd2+HcOo27Zqme
-         yD7La6U6zZ9jRfY1nC6XmVoZ4FBUnm4ExCr/gLPFThf//8bTa4sT4pDq39edWHYhiJLM
-         RF+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=0DYzuAI6CXvEv/jdcOY5M2IDjyaraJThjqT9IsyfkYU=;
-        b=Kzxl8cJqtZjuUWIhD/Sew0Qnk+fY9N/KV36cjnDt4/KNDw/ut7LBrlHC2UuCnbU12I
-         xnbWyH/wIUXc4nrH+uEC1alFZntPErlHmn75vljiXryIeK1cI6GxJ1CNUd/N10LXrWlX
-         EZ2JS5zC9dlhXvsOl6foxXiLk9TroI86VDKGqsQExSL4Jy2hFMz5mlRRGafAZgR1FBAg
-         4SOOR3kOAQqMGWFwCoLAqvE0aayLFByHNjn3uhP4d4FhGYlUpNV7HmhW1dNPJJ0rlZRX
-         VeqXrqNcQ1Gumu/j9S+nhAS23rcMSiDn/ruqQln/FeiyP76fj/wqcw+Fm/oeLUbLiEKn
-         6llQ==
-X-Gm-Message-State: AOAM530DzTPRYPhdf8IA67uYoqohuhmk2ZWBMu3trqFrxYLaOsCxp/NU
-        ZZmQEkbkOjxMQEp3unpdPKietS73SznCz4cYMR4=
-X-Google-Smtp-Source: ABdhPJz6VLx0oR+3yp8kBszhdJBc1v0DQcm/vcib/djvD8yb51UTQBxc5q14MgWtjTnCM9eM+3RBRvZdmhnKFsznjXI=
-X-Received: by 2002:a92:d90a:: with SMTP id s10mr13955196iln.175.1631707422144;
- Wed, 15 Sep 2021 05:03:42 -0700 (PDT)
+        Wed, 15 Sep 2021 08:05:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1631707445; x=1663243445;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=jpypBgyzwfsk1DXAiLahV3NjKEwv2YK1tRg9a3OHO10=;
+  b=kvuNPWZGYmHPsKBtZ/hjrsKOgXkic2fHribcEi31yjeAXV4GwxuiJBAX
+   3H+SZyNXIr+sebjBAkQ4bjwh2qbNOIfj+X4pjPYlh+UGnylMMCI2CdayR
+   PuL3AmqI6Z/TukFGkZTN5gbIVZyEpwPCBX8LtysM+8fTS/xy15RPbDESK
+   SAw870fKS2bNt0NZxeQiB1sm6hKhq2pJNZ7ShnMb1QzJtoFWi+EAbQ7AI
+   f/Cth9nFb6q4H/2hVUtRN13i80RGrN15PNt28czumx0aZTor6jeL0l76z
+   VVxnABMTFZatWsKYSxMNM5zTxmNc1C2PRMJKrt63qb5ykyrEf9WOHdZiG
+   A==;
+IronPort-SDR: /JGRzrd4tnvUA6K4uy9WSP8eT6hj1ilG/68CvM9zw9V0lQiPmznUffEYmsLdOTHt4zbHxPHR00
+ 5y17UfxhIS4i+pWnmsNcZeeBUPZBKJKnCgvZokrt5KRflptwfETxC1zebrgG5lvMxn5rTm6h0B
+ Y+0h8FbdQ54k3DSHipRxWsskJnGW0MaAhRPdi7SyPCGk9hQElbGRTlQK7GXT4AOZoCRMjziqjY
+ Yjo/B76KzJ/CIaXU8gHNtFhiMYIskkE2A8KYDbi9EOdwhunKM8NrkuBbyQhDxIf68aqgk8BceR
+ 92MB387szdu63ltppQ/PrZ9W
+X-IronPort-AV: E=Sophos;i="5.85,295,1624345200"; 
+   d="scan'208";a="129389395"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Sep 2021 05:04:03 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Wed, 15 Sep 2021 05:04:03 -0700
+Received: from [10.171.246.91] (10.10.115.15) by chn-vm-ex02.mchp-main.com
+ (10.10.85.144) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
+ Transport; Wed, 15 Sep 2021 05:04:01 -0700
+Subject: Re: [PATCH] mmc: sdhci-of-at91: wait for calibration done before
+ proceed
+To:     Claudiu Beznea <claudiu.beznea@microchip.com>,
+        <adrian.hunter@intel.com>, <eugen.hristev@microchip.com>,
+        <ulf.hansson@linaro.org>, <alexandre.belloni@bootlin.com>,
+        <ludovic.desroches@microchip.com>
+CC:     <linux-mmc@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210915102838.8344-1-claudiu.beznea@microchip.com>
+From:   Nicolas Ferre <nicolas.ferre@microchip.com>
+Organization: microchip
+Message-ID: <1d204203-59d7-1384-4592-7eb0f0cf8326@microchip.com>
+Date:   Wed, 15 Sep 2021 14:04:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Received: by 2002:a92:6404:0:0:0:0:0 with HTTP; Wed, 15 Sep 2021 05:03:41
- -0700 (PDT)
-Reply-To: dwilliamssdavid16@gmail.com
-From:   "Mr.David Williams" <chukwuagoziek@gmail.com>
-Date:   Wed, 15 Sep 2021 05:03:41 -0700
-Message-ID: <CAM5FDUX_gmCktLeYooK-79QwZtRuU-=fGnzdXkSrOVwS+Lq0ww@mail.gmail.com>
-Subject: Get back to me for clarifications
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210915102838.8344-1-claudiu.beznea@microchip.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 15/09/2021 at 12:28, Claudiu Beznea wrote:
+> Datasheet specifies that at the end of calibration the SDMMC_CALCR_EN
+> bit will be cleared. No commands should be send before calibration is
+> done.
+> 
+> Fixes: dbdea70f71d67 ("mmc: sdhci-of-at91: fix CALCR register being rewritten")
+> Fixes: 727d836a375ad ("mmc: sdhci-of-at91: add DT property to enable calibration on full reset")
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+
+Indeed, needed. Thanks Claudiu,
+Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+
+Best regards,
+   Nicolas
+
+> ---
+>   drivers/mmc/host/sdhci-of-at91.c | 10 ++++++++++
+>   1 file changed, 10 insertions(+)
+> 
+> diff --git a/drivers/mmc/host/sdhci-of-at91.c b/drivers/mmc/host/sdhci-of-at91.c
+> index 5564d7b23e7c..2b28711e039d 100644
+> --- a/drivers/mmc/host/sdhci-of-at91.c
+> +++ b/drivers/mmc/host/sdhci-of-at91.c
+> @@ -114,6 +114,8 @@ static void sdhci_at91_reset(struct sdhci_host *host, u8 mask)
+>   {
+>   	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+>   	struct sdhci_at91_priv *priv = sdhci_pltfm_priv(pltfm_host);
+> +	unsigned long timeout = jiffies + msecs_to_jiffies(20);
+> +	unsigned int tmp;
+>   
+>   	sdhci_reset(host, mask);
+>   
+> @@ -126,6 +128,14 @@ static void sdhci_at91_reset(struct sdhci_host *host, u8 mask)
+>   
+>   		sdhci_writel(host, calcr | SDMMC_CALCR_ALWYSON | SDMMC_CALCR_EN,
+>   			     SDMMC_CALCR);
+> +
+> +		do {
+> +			tmp = sdhci_readl(host, SDMMC_CALCR);
+> +		} while (time_before(jiffies, timeout) &&
+> +			 (tmp & SDMMC_CALCR_EN));
+> +
+> +		if (tmp & SDMMC_CALCR_EN)
+> +			dev_err(mmc_dev(host->mmc), "Failed to calibrate\n");
+>   	}
+>   }
+>   
+> 
+
+
 -- 
-Hello Sir.
-
-Did you authorize Mr. Liu Kong Nam of Kemuning Ray Street
-NO.8,Tomang.Jakarta, Indonesia to pay the pending wire transfer
-activation charges and claim your WORLD BANK / IMF compensation funds
-of Four million two hundred thousand US dollars???
-
-Get back to me for clarifications
-
-Mr. David Williams
+Nicolas Ferre
