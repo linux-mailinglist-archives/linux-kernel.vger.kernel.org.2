@@ -2,290 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61D3940BEAD
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 05:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B20240BEAE
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 05:58:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236318AbhIOD6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 23:58:50 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:9872 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236277AbhIOD6t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 23:58:49 -0400
-Received: from dggeme759-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4H8RBl1Vcsz8yJZ;
-        Wed, 15 Sep 2021 11:53:03 +0800 (CST)
-Received: from huawei.com (10.67.189.83) by dggeme759-chm.china.huawei.com
- (10.3.19.105) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.8; Wed, 15
- Sep 2021 11:57:29 +0800
-From:   Zhenliang Wei <weizhenliang@huawei.com>
-To:     <akpm@linux-foundation.org>, <tangbin@cmss.chinamobile.com>,
-        <zhangshengju@cmss.chinamobile.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <weizhenliang@huawei.com>, <nixiaoming@huawei.com>,
-        <xiaoqian9@huawei.com>
-Subject: [PATCH v2] tools/vm/page_owner_sort.c: count and sort by mem
-Date:   Wed, 15 Sep 2021 11:57:22 +0800
-Message-ID: <1631678242-41033-1-git-send-email-weizhenliang@huawei.com>
-X-Mailer: git-send-email 1.8.5.6
+        id S236322AbhIOD7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 23:59:30 -0400
+Received: from mga12.intel.com ([192.55.52.136]:41034 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230107AbhIOD73 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 23:59:29 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10107"; a="201708582"
+X-IronPort-AV: E=Sophos;i="5.85,294,1624345200"; 
+   d="scan'208";a="201708582"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2021 20:58:09 -0700
+X-IronPort-AV: E=Sophos;i="5.85,294,1624345200"; 
+   d="scan'208";a="544412091"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.119])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2021 20:58:06 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Rik van Riel <riel@surriel.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Zi Yan <ziy@nvidia.com>, Wei Xu <weixugc@google.com>,
+        osalvador <osalvador@suse.de>,
+        Shakeel Butt <shakeelb@google.com>,
+        Linux MM <linux-mm@kvack.org>
+Subject: Re: [PATCH -V8 1/6] NUMA balancing: optimize page placement for
+ memory tiering system
+References: <20210914013701.344956-1-ying.huang@intel.com>
+        <20210914013701.344956-2-ying.huang@intel.com>
+        <CAHbLzkpRWwtkhnXUZEUk3LgpHtmgNJRPGUjKzd9bhQU33Y4u2g@mail.gmail.com>
+        <8735q63947.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <CAHbLzko-hR74s5HKMx5SG6bwaoJvcHSLeKwihkpvhYj7+hX+Sw@mail.gmail.com>
+Date:   Wed, 15 Sep 2021 11:58:04 +0800
+In-Reply-To: <CAHbLzko-hR74s5HKMx5SG6bwaoJvcHSLeKwihkpvhYj7+hX+Sw@mail.gmail.com>
+        (Yang Shi's message of "Tue, 14 Sep 2021 19:47:23 -0700")
+Message-ID: <874kamwkvn.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.189.83]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggeme759-chm.china.huawei.com (10.3.19.105)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When viewing page owner information, we may be more concerned about
-the total memory rather than the times of stack appears.
-Therefore, the following adjustments are made:
-1. Added the statistics on the total number of pages.
-2. Added the optional parameter "-m" to configure the program to sort by
-   memory (total pages).
+Yang Shi <shy828301@gmail.com> writes:
 
-The general output of page_owner is as follows:
+> On Tue, Sep 14, 2021 at 6:45 PM Huang, Ying <ying.huang@intel.com> wrote:
+>>
+>> Yang Shi <shy828301@gmail.com> writes:
+>>
+>> > On Mon, Sep 13, 2021 at 6:37 PM Huang Ying <ying.huang@intel.com> wrote:
+>> >>
+>> >> With the advent of various new memory types, some machines will have
+>> >> multiple types of memory, e.g. DRAM and PMEM (persistent memory).  The
+>> >> memory subsystem of these machines can be called memory tiering
+>> >> system, because the performance of the different types of memory are
+>> >> usually different.
+>> >>
+>> >> In such system, because of the memory accessing pattern changing etc,
+>> >> some pages in the slow memory may become hot globally.  So in this
+>> >> patch, the NUMA balancing mechanism is enhanced to optimize the page
+>> >> placement among the different memory types according to hot/cold
+>> >> dynamically.
+>> >>
+>> >> In a typical memory tiering system, there are CPUs, fast memory and
+>> >> slow memory in each physical NUMA node.  The CPUs and the fast memory
+>> >> will be put in one logical node (called fast memory node), while the
+>> >> slow memory will be put in another (faked) logical node (called slow
+>> >> memory node).  That is, the fast memory is regarded as local while the
+>> >> slow memory is regarded as remote.  So it's possible for the recently
+>> >> accessed pages in the slow memory node to be promoted to the fast
+>> >> memory node via the existing NUMA balancing mechanism.
+>> >>
+>> >> The original NUMA balancing mechanism will stop to migrate pages if the free
+>> >> memory of the target node will become below the high watermark.  This
+>> >> is a reasonable policy if there's only one memory type.  But this
+>> >> makes the original NUMA balancing mechanism almost not work to optimize page
+>> >> placement among different memory types.  Details are as follows.
+>> >>
+>> >> It's the common cases that the working-set size of the workload is
+>> >> larger than the size of the fast memory nodes.  Otherwise, it's
+>> >> unnecessary to use the slow memory at all.  So in the common cases,
+>> >> there are almost always no enough free pages in the fast memory nodes,
+>> >> so that the globally hot pages in the slow memory node cannot be
+>> >> promoted to the fast memory node.  To solve the issue, we have 2
+>> >> choices as follows,
+>> >>
+>> >> a. Ignore the free pages watermark checking when promoting hot pages
+>> >>    from the slow memory node to the fast memory node.  This will
+>> >>    create some memory pressure in the fast memory node, thus trigger
+>> >>    the memory reclaiming.  So that, the cold pages in the fast memory
+>> >>    node will be demoted to the slow memory node.
+>> >>
+>> >> b. Make kswapd of the fast memory node to reclaim pages until the free
+>> >>    pages are a little more (about 10MB) than the high watermark.  Then,
+>> >>    if the free pages of the fast memory node reaches high watermark, and
+>> >>    some hot pages need to be promoted, kswapd of the fast memory node
+>> >>    will be waken up to demote some cold pages in the fast memory node to
+>> >>    the slow memory node.  This will free some extra space in the fast
+>> >>    memory node, so the hot pages in the slow memory node can be
+>> >>    promoted to the fast memory node.
+>> >>
+>> >> The choice "a" will create the memory pressure in the fast memory
+>> >> node.  If the memory pressure of the workload is high, the memory
+>> >> pressure may become so high that the memory allocation latency of the
+>> >> workload is influenced, e.g. the direct reclaiming may be triggered.
+>> >>
+>> >> The choice "b" works much better at this aspect.  If the memory
+>> >> pressure of the workload is high, the hot pages promotion will stop
+>> >> earlier because its allocation watermark is higher than that of the
+>> >> normal memory allocation.  So in this patch, choice "b" is
+>> >> implemented.
+>> >>
+>> >> In addition to the original page placement optimization among sockets,
+>> >> the NUMA balancing mechanism is extended to be used to optimize page
+>> >> placement according to hot/cold among different memory types.  So the
+>> >> sysctl user space interface (numa_balancing) is extended in a backward
+>> >> compatible way as follow, so that the users can enable/disable these
+>> >> functionality individually.
+>> >>
+>> >> The sysctl is converted from a Boolean value to a bits field.  The
+>> >> definition of the flags is,
+>> >>
+>> >> - 0x0: NUMA_BALANCING_DISABLED
+>> >> - 0x1: NUMA_BALANCING_NORMAL
+>> >> - 0x2: NUMA_BALANCING_MEMORY_TIERING
+>> >
+>> > Thanks for coming up with the patches. TBH the first question off the
+>> > top of my head is all the complexity is really worthy for real life
+>> > workload at the moment? And the interfaces (sysctl knob files exported
+>> > to users) look complicated for the users. I don't know if the users
+>> > know how to set an optimal value for their workloads.
+>> >
+>> > I don't disagree the NUMA balancing needs optimization and improvement
+>> > for tiering memory, the question we need answer is how far we should
+>> > go for now and what the interfaces should look like. Does it make
+>> > sense to you?
+>> >
+>> > IMHO I'd prefer the most simple and straightforward approach at the
+>> > moment. For example, we could just skip high water mark check for PMEM
+>> > promotion.
+>>
+>> Hi, Yang,
+>>
+>> Thanks for comments.
+>>
+>> I understand your concerns about complexity.  I have tried to organize
+>> the patchset so that the initial patch is as simple as possible and the
+>> complexity is introduced step by step.  But it seems that your simplest
+>> version is even simpler than my one :-)
+>>
+>> In this patch ([1/6]), I introduced 2 stuff.
+>>
+>> Firstly, a sysctl knob is provided to disable the NUMA balancing based
+>> promotion.  Per my understanding, you suggest to remove this.  If so,
+>> optimizing cross-socket access and promoting hot PMEM pages to DRAM must
+>> be enabled/disabled together.  If a user wants to enable promoting the
+>> hot PMEM pages to DRAM but disable optimizing cross-socket access
+>> because they have already bound the CPU of the workload so that there's no
+>> much cross-socket access, how can they do?
+>
+> I should make myself clearer. Here I mean the whole series, not this
+> specific patch. I'm concerned that the interfaces (hint fault latency
+> and ratelimit) are hard to understand and configure for users and
+> whether we go too far at the moment or not. I'm dealing with the end
+> users, I'd admit I'm not even sure how to configure the knobs to
+> achieve optimal performance for different real life workloads.
 
-	Page allocated via order XXX, ...
-	PFN XXX ...
-	 // Detailed stack
+Sorry, I misunderstand your original idea.  I understand that the knob
+isn't user-friendly.  But sometimes, we cannot avoid it completely :-(
+In this patchset, I try to introduce the complexity and knobs one by
+one, and show the performance benefit of each step for people to judge
+whether the newly added complexity and knob can be complemented by the
+performance increment.  If the benefit of some patches cannot complement
+its complexity, I am OK to merge just part of the patchset firstly.
 
-	Page allocated via order XXX, ...
-	PFN XXX ...
-	 // Detailed stack
+So how about be more specific?  For example, if you are general OK about
+the complexity and knob introduced by [1-3/6], but have concerns about
+[4/6], then we can discuss about that specifically?
 
-The original page_owner_sort ignores PFN rows, puts the remaining rows
-in buf, counts the times of buf, and finally sorts them according to
-the times. General output:
+> For this specific patch I'm ok to a new promotion mode. There might be
+> usecase that users just want to do promotion between tiered memory but
+> not care about NUMA locality.
 
-	XXX times:
-	Page allocated via order XXX, ...
-	 // Detailed stack
+Yes.
 
-Now, we use regexp to extract the page order value from the buf,
-and count the total pages for the buf. General output:
+>> Secondly, we add a promote watermark to the DRAM node so that we can
+>> demote/promote pages between the high and promote watermark.  Per my
+>> understanding, you suggest just to ignore the high watermark checking
+>> for promoting.  The problem is that this may make the free pages of the
+>> DRAM node too few.  If many pages are promoted in short time, the free
+>> pages will be kept near the min watermark for a while, so that the page
+>> allocation from the application will trigger direct reclaiming.  We have
+>> observed page allocation failure in a test before with a similar policy.
+>
+> The question is, applicable to the hint fault latency and ratelimit
+> too, we already have some NUMA balancing knobs to control scan period
+> and scan size and watermark knobs to tune how aggressively kswapd
+> works, can they do the same jobs instead of introducing any new knobs?
 
-	XXX times, XXX pages:
-	Page allocated via order XXX, ...
-	 // Detailed stack
+In this specific patch, we don't introduce a new knob for the page
+demotion.  For other knobs, how about discuss them in the patch that
+introduce them and one by one?
 
-By default, it is still sorted by the times of buf;
-If you want to sort by the pages nums of buf, use the new -m parameter.
-
-Signed-off-by: Zhenliang Wei <weizhenliang@huawei.com>
----
- Documentation/vm/page_owner.rst | 23 +++++++++-
- tools/vm/page_owner_sort.c      | 94 +++++++++++++++++++++++++++++++++++++----
- 2 files changed, 107 insertions(+), 10 deletions(-)
-
-diff --git a/Documentation/vm/page_owner.rst b/Documentation/vm/page_owner.rst
-index 2175465c9bf2..9837fc8147dd 100644
---- a/Documentation/vm/page_owner.rst
-+++ b/Documentation/vm/page_owner.rst
-@@ -85,5 +85,26 @@ Usage
- 	cat /sys/kernel/debug/page_owner > page_owner_full.txt
- 	./page_owner_sort page_owner_full.txt sorted_page_owner.txt
- 
-+   The general output of ``page_owner_full.txt`` is as follows:
-+
-+	Page allocated via order XXX, ...
-+	PFN XXX ...
-+	 // Detailed stack
-+
-+	Page allocated via order XXX, ...
-+	PFN XXX ...
-+	 // Detailed stack
-+
-+   The ``page_owner_sort`` tool ignores ``PFN`` rows, puts the remaining rows
-+   in buf, uses regexp to extract the page order value, counts the times
-+   and pages of buf, and finally sorts them according to the times.
-+
-    See the result about who allocated each page
--   in the ``sorted_page_owner.txt``.
-+   in the ``sorted_page_owner.txt``. General output:
-+
-+	XXX times, XXX pages:
-+	Page allocated via order XXX, ...
-+	 // Detailed stack
-+
-+   By default, ``page_owner_sort`` is sorted according to the times of buf.
-+   If you want to sort by the pages nums of buf, use the ``-m`` parameter.
-diff --git a/tools/vm/page_owner_sort.c b/tools/vm/page_owner_sort.c
-index 0e75f22c9475..9ebb84a9c731 100644
---- a/tools/vm/page_owner_sort.c
-+++ b/tools/vm/page_owner_sort.c
-@@ -5,6 +5,8 @@
-  * Example use:
-  * cat /sys/kernel/debug/page_owner > page_owner_full.txt
-  * ./page_owner_sort page_owner_full.txt sorted_page_owner.txt
-+ * Or sort by total memory:
-+ * ./page_owner_sort -m page_owner_full.txt sorted_page_owner.txt
-  *
-  * See Documentation/vm/page_owner.rst
- */
-@@ -16,14 +18,18 @@
- #include <fcntl.h>
- #include <unistd.h>
- #include <string.h>
-+#include <regex.h>
-+#include <errno.h>
- 
- struct block_list {
- 	char *txt;
- 	int len;
- 	int num;
-+	int page_num;
- };
- 
--
-+static int sort_by_memory;
-+static regex_t order_pattern;
- static struct block_list *list;
- static int list_size;
- static int max_size;
-@@ -59,12 +65,50 @@ static int compare_num(const void *p1, const void *p2)
- 	return l2->num - l1->num;
- }
- 
-+static int compare_page_num(const void *p1, const void *p2)
-+{
-+	const struct block_list *l1 = p1, *l2 = p2;
-+
-+	return l2->page_num - l1->page_num;
-+}
-+
-+static int get_page_num(char *buf)
-+{
-+	int err, val_len, order_val;
-+	char order_str[4] = {0};
-+	char *endptr;
-+	regmatch_t pmatch[2];
-+
-+	err = regexec(&order_pattern, buf, 2, pmatch, REG_NOTBOL);
-+	if (err != 0 || pmatch[1].rm_so == -1) {
-+		printf("no order pattern in %s\n", buf);
-+		return 0;
-+	}
-+	val_len = pmatch[1].rm_eo - pmatch[1].rm_so;
-+	if (val_len > 2) /* max_order should not exceed 2 digits */
-+		goto wrong_order;
-+
-+	memcpy(order_str, buf + pmatch[1].rm_so, val_len);
-+
-+	errno = 0;
-+	order_val = strtol(order_str, &endptr, 10);
-+	if (errno != 0 || endptr == order_str || *endptr != '\0')
-+		goto wrong_order;
-+
-+	return 1 << order_val;
-+
-+wrong_order:
-+	printf("wrong order in follow buf:\n%s\n", buf);
-+	return 0;
-+}
-+
- static void add_list(char *buf, int len)
- {
- 	if (list_size != 0 &&
- 	    len == list[list_size-1].len &&
- 	    memcmp(buf, list[list_size-1].txt, len) == 0) {
- 		list[list_size-1].num++;
-+		list[list_size-1].page_num += get_page_num(buf);
- 		return;
- 	}
- 	if (list_size == max_size) {
-@@ -74,6 +118,7 @@ static void add_list(char *buf, int len)
- 	list[list_size].txt = malloc(len+1);
- 	list[list_size].len = len;
- 	list[list_size].num = 1;
-+	list[list_size].page_num = get_page_num(buf);
- 	memcpy(list[list_size].txt, buf, len);
- 	list[list_size].txt[len] = 0;
- 	list_size++;
-@@ -85,6 +130,13 @@ static void add_list(char *buf, int len)
- 
- #define BUF_SIZE	(128 * 1024)
- 
-+static void usage(void)
-+{
-+	printf("Usage: ./page_owner_sort [-m] <input> <output>\n"
-+		"-m	Sort by total memory. If this option is unset, sort by times\n"
-+	);
-+}
-+
- int main(int argc, char **argv)
- {
- 	FILE *fin, *fout;
-@@ -92,21 +144,39 @@ int main(int argc, char **argv)
- 	int ret, i, count;
- 	struct block_list *list2;
- 	struct stat st;
-+	int err;
-+	int opt;
- 
--	if (argc < 3) {
--		printf("Usage: ./program <input> <output>\n");
--		perror("open: ");
-+	while ((opt = getopt(argc, argv, "m")) != -1)
-+		switch (opt) {
-+		case 'm':
-+			sort_by_memory = 1;
-+			break;
-+		default:
-+			usage();
-+			exit(1);
-+		}
-+
-+	if (optind >= (argc - 1)) {
-+		usage();
- 		exit(1);
- 	}
- 
--	fin = fopen(argv[1], "r");
--	fout = fopen(argv[2], "w");
-+	fin = fopen(argv[optind], "r");
-+	fout = fopen(argv[optind + 1], "w");
- 	if (!fin || !fout) {
--		printf("Usage: ./program <input> <output>\n");
-+		usage();
- 		perror("open: ");
- 		exit(1);
- 	}
- 
-+	err = regcomp(&order_pattern, "order\\s*([0-9]*),", REG_EXTENDED|REG_NEWLINE);
-+	if (err != 0 || order_pattern.re_nsub != 1) {
-+		printf("%s: Invalid pattern 'order\\s*([0-9]*),' code %d\n",
-+			argv[0], err);
-+		exit(1);
-+	}
-+
- 	fstat(fileno(fin), &st);
- 	max_size = st.st_size / 100; /* hack ... */
- 
-@@ -145,13 +215,19 @@ int main(int argc, char **argv)
- 			list2[count++] = list[i];
- 		} else {
- 			list2[count-1].num += list[i].num;
-+			list2[count-1].page_num += list[i].page_num;
- 		}
- 	}
- 
--	qsort(list2, count, sizeof(list[0]), compare_num);
-+	if (sort_by_memory)
-+		qsort(list2, count, sizeof(list[0]), compare_page_num);
-+	else
-+		qsort(list2, count, sizeof(list[0]), compare_num);
- 
- 	for (i = 0; i < count; i++)
--		fprintf(fout, "%d times:\n%s\n", list2[i].num, list2[i].txt);
-+		fprintf(fout, "%d times, %d pages:\n%s\n",
-+				list2[i].num, list2[i].page_num, list2[i].txt);
- 
-+	regfree(&order_pattern);
- 	return 0;
- }
--- 
-2.12.3
-
+Best Regards,
+Huang, Ying
