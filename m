@@ -2,123 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AABA40C098
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 09:34:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5998340C09C
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 09:37:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231501AbhIOHfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 03:35:45 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:54171 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231228AbhIOHfn (ORCPT
+        id S232034AbhIOHiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 03:38:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49046 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231425AbhIOHiV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 03:35:43 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0UoSuf-e_1631691260;
-Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0UoSuf-e_1631691260)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 15 Sep 2021 15:34:21 +0800
-Subject: Re: [PATCH] perf: fix panic by disable ftrace on fault.c
-From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-To:     Dave Hansen <dave.hansen@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "open list:X86 MM" <linux-kernel@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <netdev@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <bpf@vger.kernel.org>
-References: <ff979a43-045a-dc56-64d1-2c31dd4db381@linux.alibaba.com>
- <d16e7188-1afa-7513-990c-804811747bcb@linux.alibaba.com>
- <d85f9710-67c9-2573-07c4-05d9c677d615@intel.com>
- <d8853e49-8b34-4632-3e29-012eb605bea9@linux.alibaba.com>
- <09777a57-a771-5e17-7e17-afc03ea9b83b@linux.alibaba.com>
- <4f63c8bc-1d09-1717-cf81-f9091a9f9fb0@linux.alibaba.com>
- <18252e42-9c30-73d4-e3bb-0e705a78af41@intel.com>
- <4cba7088-f7c8-edcf-02cd-396eb2a56b46@linux.alibaba.com>
- <bbe09ffb-08b7-824c-943f-dffef51e98c2@intel.com>
- <ac31b8c7-122e-3467-566b-54f053ca0ae2@linux.alibaba.com>
-Message-ID: <09d0190b-f2cc-9e64-4d3a-4eb0def22b7b@linux.alibaba.com>
-Date:   Wed, 15 Sep 2021 15:34:20 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
-MIME-Version: 1.0
-In-Reply-To: <ac31b8c7-122e-3467-566b-54f053ca0ae2@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Wed, 15 Sep 2021 03:38:21 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94103C061575
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 00:37:02 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id qq21so4070587ejb.10
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 00:37:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=415Blr3Q/Gqr6sE+2qW0icFFyR7iU8ysTZ1/UKJFKvk=;
+        b=gS7tx1MuDrOQeAB0qPWwo5Rou2795lkeTLNHk1iErOumxHljeKE+36FKX0LkSmKG6L
+         znZCynIIyUdX+ccYI01/s9IJafOENawwt4vokbUkPaxmdqxk1+TJdCcXGQJKAW+sH+Kc
+         1klnd8l9rEYajeqnwymD+UYS5ySmE4qKU23Od9XrurcFWyBQu9ZHmlf+FJD+A8ScfSKI
+         fxTolFKzO97rGtYq6KSzrR7J0B9kyNiVCIMGVcfT5qInc7vfJe6B0CEPLLlxV8zG/k42
+         j7PdLXLNKWf7iF+RmXVYcayEIH7aM9ncbo7OLho/Rz6NyrR1FUWrRIEgzreAE5Al45CV
+         Q3Pw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=415Blr3Q/Gqr6sE+2qW0icFFyR7iU8ysTZ1/UKJFKvk=;
+        b=Sis1Ne4oghxVpGGIJjPKkO+ysNKtBC/V90iXuO8iTi05M0QefNj4vLBBWd2JI7NDfw
+         YX9KUWW6Al9DqdGizrJPTX5vNqgM6NNo+v1W2z3isFpWnWCydNPqyqOuL6I7DTQ7NxkP
+         /2O8LemEqrbahKwtUmOVect+2o4d3vqzCZDv29MQQO3Q5SX7hbCCURI2H7MVjZRAX12E
+         Tt2b1BXarrO54MctGhcWzxfbI+oI+EihUzIm4+lTSrUDYbDGFWb8TbfbOhkmx2W0J8wC
+         oWyvmZ4vpq08cZEcqqexL09aa3knWW6AdLMfrIgqlCIPxP52CkJxP1X4AytL0L9yXjCa
+         I4WQ==
+X-Gm-Message-State: AOAM531AFC+j0izCmZBo3AcEwdonVfxAaIKB2EU04guBW9DQIzBqk3r5
+        gJl58zyjWtzxSGKMQQe3bDQOgw==
+X-Google-Smtp-Source: ABdhPJxEPsmiA59Fnh54y6VEPVQUfyGawMpxS8b0tugd2vhbZmZAyqpkOCTpQmHmEUVwk/N0fRRv0g==
+X-Received: by 2002:a17:906:2cd6:: with SMTP id r22mr22921688ejr.398.1631691421078;
+        Wed, 15 Sep 2021 00:37:01 -0700 (PDT)
+Received: from [192.168.0.13] ([83.216.184.132])
+        by smtp.gmail.com with ESMTPSA id t3sm6609895edt.61.2021.09.15.00.36.59
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 15 Sep 2021 00:37:00 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: Re: [PATCH v2 4/4] block, bfq: consider request size in
+ bfq_asymmetric_scenario()
+From:   Paolo Valente <paolo.valente@linaro.org>
+In-Reply-To: <143fa1a2-de5f-b18a-73d9-8e105844709c@huawei.com>
+Date:   Wed, 15 Sep 2021 09:36:58 +0200
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <68A2B4C8-48A5-45F3-8782-2440C0028161@linaro.org>
+References: <20210806020826.1407257-1-yukuai3@huawei.com>
+ <20210806020826.1407257-5-yukuai3@huawei.com>
+ <8601F280-2F16-446A-95BA-37A07D1A1055@linaro.org>
+ <143fa1a2-de5f-b18a-73d9-8e105844709c@huawei.com>
+To:     "yukuai (C)" <yukuai3@huawei.com>
+X-Mailer: Apple Mail (2.3445.104.11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 2021/9/15 下午3:22, 王贇 wrote:
-> 
-> 
-> On 2021/9/15 上午11:27, Dave Hansen wrote:
->> On 9/14/21 6:56 PM, 王贇 wrote:
->>>>> [   44.134987][    C0]  ? __sanitizer_cov_trace_pc+0x7/0x60
->>>>> [   44.135005][    C0]  ? kcov_common_handle+0x30/0x30
->>>> Just turning off tracing for the page fault handler is papering over the
->>>> problem.  It'll just come back later with a slightly different form.
->>>>
->>> Cool~ please let me know when you have the proper approach.
->>
->> It's an entertaining issue, but I wasn't planning on fixing it myself.
->>
-> 
-> Do you have any suggestion on how should we fix the problem?
-> 
-> I'd like to help fix it, but sounds like all the known working approach
-> are not acceptable...
+> Il giorno 7 set 2021, alle ore 13:29, yukuai (C) <yukuai3@huawei.com> =
+ha scritto:
+>=20
+> On 2021/08/27 1:00, Paolo Valente wrote:
+>>> Il giorno 6 ago 2021, alle ore 04:08, Yu Kuai <yukuai3@huawei.com> =
+ha scritto:
+>>>=20
+>>> There is a special case when bfq do not need to idle when more than
+>>> one groups is active:
+>>>=20
+>> Unfortunately, there is a misunderstanding here.  If more than one
+>> group is active, then idling is not needed only if a lot of symmetry
+>> conditions also hold:
+>> - all active groups have the same weight
+>> - all active groups contain the same number of active queues
+>=20
+> Hi, Paolo
+>=20
+> I didn't think of this contition.
+>=20
+> It's seems that if we want to idle when more than one group is active,
+> there are two additional conditions:
+>=20
+> - all dispatched requests have the same size
+> - all active groups contain the same number of active queues
+>=20
 
-Hi, Dave, Peter
+Also the weights and the I/O priorities of the queues inside the
+groups needs to be controlled, unfortunately.
 
-What if we just increase the stack size when ftrace enabled?
+> Thus we still need to track how many queues are active in each group.
+> The conditions seems to be too much, do you think is it worth it to
+> add support to idle when more than one group is active?
+>=20
 
-Maybe like:
+I think I see your point.  The problem is that these states are
+dynamic.  So, if we suspend tracking all the above information while
+more than one group is active, then we are with no state in case only
+one group remains active.
 
-diff --git a/arch/x86/include/asm/page_64_types.h b/arch/x86/include/asm/page_64_types.h
-index a8d4ad85..bc2e0c1 100644
---- a/arch/x86/include/asm/page_64_types.h
-+++ b/arch/x86/include/asm/page_64_types.h
-@@ -12,10 +12,16 @@
- #define KASAN_STACK_ORDER 0
- #endif
+Thanks,
+Paolo
 
-+#ifdef CONFIG_FUNCTION_TRACER
-+#define FTRACE_STACK_ORDER 1
-+#else
-+#define FTRACE_STACK_ORDER 0
-+#endif
-+
- #define THREAD_SIZE_ORDER      (2 + KASAN_STACK_ORDER)
- #define THREAD_SIZE  (PAGE_SIZE << THREAD_SIZE_ORDER)
+> Thanks
+> Kuai
+>=20
+>> - all active queues have the same weight
+>> - all active queues belong to the same I/O-priority class
+>> - all dispatched requests have the same size
+>> Similarly, if only one group is active, then idling is not needed =
+only
+>> if the above last three conditions hold.
+>> The current logic, including your changes up to your previous patch,
+>> is simply ignoring the last condition above.
+>> So, unfortunately, your extra information about varied request size
+>> should be used in the opposite way than how you propose to use it.
 
--#define EXCEPTION_STACK_ORDER (0 + KASAN_STACK_ORDER)
-+#define EXCEPTION_STACK_ORDER (0 + KASAN_STACK_ORDER + FTRACE_STACK_ORDER)
- #define EXCEPTION_STKSZ (PAGE_SIZE << EXCEPTION_STACK_ORDER)
-
- #define IRQ_STACK_ORDER (2 + KASAN_STACK_ORDER)
-
-Just like kasan we give more stack space for ftrace, is this looks
-acceptable to you?
-
-Regards,
-Michael Wang
-
-> 
-> Regards,
-> Michael Wang
-> 
