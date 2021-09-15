@@ -2,100 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 674B840C467
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 13:30:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9491240C469
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 13:34:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232771AbhIOLbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 07:31:52 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:41842 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232526AbhIOLbu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 07:31:50 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 005722207D;
-        Wed, 15 Sep 2021 11:30:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631705431; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UOkCjvFoaNxGNbGFWeeVQVHJtZCjHhgLPxx+uerfl10=;
-        b=HNke4/c6CnQ8nnlErjOvekgpXVSQXjWl4Ol2+/tLgrRlknDlrVnGAlJb48fXnI99PKyxch
-        OYd1ItE4KjwfkP1Zku3mE76kBPFNJ8txDsFMjiMkJFJOsTZYn4j5Fetseg8i3S8mO1/f1k
-        /jZcCmJ85qh1RlBqZrqrlIGfiLDUXFU=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 7DE1EA3BA3;
-        Wed, 15 Sep 2021 11:30:30 +0000 (UTC)
-Date:   Wed, 15 Sep 2021 13:30:27 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     David Rientjes <rientjes@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] mm/page_alloc: detect allocation forbidden by cpuset
- and bail out early
-Message-ID: <YUHZU4OHaJy3WtRk@dhcp22.suse.cz>
-References: <1631590828-25565-1-git-send-email-feng.tang@intel.com>
- <3bd87d8a-d09e-ac7-1d1d-25ad1b9d5ed9@google.com>
- <20210915053247.GG56674@shbuild999.sh.intel.com>
+        id S232769AbhIOLf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 07:35:57 -0400
+Received: from mga17.intel.com ([192.55.52.151]:17221 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232526AbhIOLfy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 07:35:54 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10107"; a="202459706"
+X-IronPort-AV: E=Sophos;i="5.85,295,1624345200"; 
+   d="scan'208";a="202459706"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2021 04:34:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,295,1624345200"; 
+   d="scan'208";a="544806413"
+Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
+  by FMSMGA003.fm.intel.com with ESMTP; 15 Sep 2021 04:34:36 -0700
+Date:   Wed, 15 Sep 2021 04:34:10 -0700
+From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Marcus =?iso-8859-1?Q?R=FCckert?= <mrueckert@suse.com>
+Subject: Re: [PATCH] x86/umip: Add a umip= cmdline switch
+Message-ID: <20210915113410.GA7130@ranerica-svr.sc.intel.com>
+References: <20210907200454.30458-1-bp@alien8.de>
+ <20210911011459.GA11980@ranerica-svr.sc.intel.com>
+ <YTx0+0pfyzHuX80L@zn.tnic>
+ <20210913213836.GA10627@ranerica-svr.sc.intel.com>
+ <YUDTCgEOZ3JOMSl7@zn.tnic>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210915053247.GG56674@shbuild999.sh.intel.com>
+In-Reply-To: <YUDTCgEOZ3JOMSl7@zn.tnic>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 15-09-21 13:32:47, Feng Tang wrote:
-> On Tue, Sep 14, 2021 at 05:30:03PM -0700, David Rientjes wrote:
-[...]
-> > I'm wondering about a single node nodemask, for example, where all 
-> > ZONE_NORMAL memory is hot-removed.
-
-While this is theoretically possible it is highly unlikely to happen.
-Non movable memory just takes one kernel allocation to prevent any
-hotremove operation to finish. I have to say I was not aware of the
-hotplug callback. It all seems rather suspicious. I will have a look.
-
-Anyway something worth having covered "just in case". Thanks for
-pointing it out.
- 
-> Thanks for the reminding! Yes, memory hot remove can change the
-> cpuset's effective nodemask, we may need to add similar check inside
-> cpuset_hotplug_update_tasks() which is called by cpuset_hotplug_workfn(), 
-> something like below?
+On Tue, Sep 14, 2021 at 06:51:22PM +0200, Borislav Petkov wrote:
+> On Mon, Sep 13, 2021 at 02:38:36PM -0700, Ricardo Neri wrote:
+> > That is right. Although, I am not sure programs you can have in
+> > the same machine that also want to use UMIP-protected instructions.
 > 
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index 7fa633e..d5f6776 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -3186,6 +3186,14 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
->  	cpus_updated = !cpumask_equal(&new_cpus, cs->effective_cpus);
->  	mems_updated = !nodes_equal(new_mems, cs->effective_mems);
->  
-> +	if (mems_updated && !cpusets_insane_config() &&
-> +		movable_only_nodes(new_mems)) {
-> +		static_branch_enable(&cpusets_insane_config_key);
-> +		pr_info("Unsupported (movable nodes only) cpuset configuration detected (nmask=%*pbl) after memory hotplug."
-> +			"Cpuset allocations might fail even with a lot of memory available.\n",
-> +			nodemask_pr_args(new_mems);
-> +	}
-
-Please create a helper rather than two copies of the same. Thanks!
-> +
->  	if (is_in_v2_mode())
->  		hotplug_update_tasks(cs, &new_cpus, &new_mems,
->  				     cpus_updated, mems_updated);
+> Sure, another game. :-P
 > 
-> Thanks,
-> Feng
+> But srsly, looking at those two:
+> 
+>         umip_pr_warn(regs, "%s instruction cannot be used by applications.\n",
+>                         umip_insns[umip_inst]);
+> 
+>         umip_pr_warn(regs, "For now, expensive software emulation returns the result.\n");
+> 
+> Why are they there at all?
+> 
+> I mean, I can hardly imagine userspace doing anything about them.
 
--- 
-Michal Hocko
-SUSE Labs
+The goal at the time was encourage users to report bugs on the
+applications and eventually have them fixed. It also meant to warn users
+about degraded performance due to emulation. To my knowledge, no one has
+reported the latter thus far.
+
+> 
+> They're all likely old, arcane applications or games run in wine which
+> people have no access to the source code anyway so come to think of it,
+> the once thing is starting to make more sense to me now.
+
+Indeed, no one has reported "modern" application using these
+instructions.
+
+> 
+> Sure, that:
+> 
+>         umip_pr_err(regs, "segfault in emulation. error%x\n",
+>                     X86_PF_USER | X86_PF_WRITE);
+> 
+> should be issued unconditionally but I'm wondering if those warning
+> messages are needed at all. And if not, I should probably simply rip
+> them all out.
+> 
+> Or at least silence them by default and flip the cmdline switch logic to
+> enable them for users who are interested in those things but they should
+> be silent by defauilt.
+
+Since after almost 4 years, performance degradation does not seem to be a
+concern, I think it is sensible to remove the warnings.
+
+> 
+> I.e., you'd need to supply
+> 
+> 	umip=warnings_on
+> 
+> on the cmdline to actually see them.
+
+They could also be salvaged by converting them to umiip_pr_debug(), just
+to err on the cautious side without having to add a new command line
+argument.
+
+Thanks and BR,
+Ricardo
