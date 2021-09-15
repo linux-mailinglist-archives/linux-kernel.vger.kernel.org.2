@@ -2,54 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39E3340CC6B
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 20:15:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26C4A40CC6C
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 20:15:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230230AbhIOSQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 14:16:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23140 "EHLO
+        id S231153AbhIOSQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 14:16:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57756 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229479AbhIOSQU (ORCPT
+        by vger.kernel.org with ESMTP id S230286AbhIOSQX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 14:16:20 -0400
+        Wed, 15 Sep 2021 14:16:23 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631729700;
+        s=mimecast20190719; t=1631729703;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=4ea19EVT7+ENaTSXfaPbkEFbFvLGTZXZZbGxxKzThbk=;
-        b=VBYj6F8x9qMkz1io7vUPF3Ryg+YZPNdz+4Wn+03lViQo0nW9PIQpmeSUsEW5JuVLIeTk3F
-        wGd2PiLFy4zlXeucvzXgXoEMOg/6GpF80CWswYJZ6TzsuIhLc5suCbrzwX1WlBGxwNrn3o
-        d563gnVmXVwRWi6DTJqTCbwYgPfi47A=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-126-xxJA00I7Pw-SN5wgpDq7FQ-1; Wed, 15 Sep 2021 14:14:59 -0400
-X-MC-Unique: xxJA00I7Pw-SN5wgpDq7FQ-1
-Received: by mail-qk1-f199.google.com with SMTP id 70-20020a370b49000000b003d2f5f0dcc6so6033734qkl.9
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 11:14:59 -0700 (PDT)
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/JtLLJZ1Bt4HNZ1/rns47BurBkMZGMTII6QW5YE/blU=;
+        b=KLf87m4zPxPn9vD09SqfneHF0Cay4IxsFrLixUJA2dXB0Yx9ovsUsFp4zeud9rPvSicWrR
+        VMO1Y0RAwDobGPlJ4UX4nO2rCla90JIesr/LS7sp12XMP0eBUM6Tg2/SUx1D1IKFnzmUoH
+        8v1oDJkL+CmEqIzShT6uADyE5+LlZuI=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-289-DSVhi2deP8aqHnPaWKEFwg-1; Wed, 15 Sep 2021 14:15:02 -0400
+X-MC-Unique: DSVhi2deP8aqHnPaWKEFwg-1
+Received: by mail-qt1-f197.google.com with SMTP id e6-20020ac84e46000000b0029baad9aaa0so5525425qtw.11
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 11:15:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4ea19EVT7+ENaTSXfaPbkEFbFvLGTZXZZbGxxKzThbk=;
-        b=RgN90B3qMrso1ha2FgIOLTNloipPxPw/9xtYi+7FdoyvzmEqrT9yGUN8SQErHRSMti
-         9n3hkuJ36xAR4ZOIxzom2fJIiRV6iAhCkkPvT48oO6n7q9/ID6Sr4Ebd+QAmUbA9/T47
-         2nooQn2/lq2rOyur3kzS3PMGRkHL1Uh0E9JBg3QA3Iw3fbQ4Sq1IrE2R0biQqYg3lv8L
-         0lhEjwGsmYPORXwM9UeFP5NmBC5wK2wD94en82PKf0us+6xb5bOPZ2asPK8+9vNgrdPu
-         vFkC+qCJ4D/AGgVH6beiFXgMRzM/lXTAdUTL7KMkvRcmYTpcL7w+Vk5jQsxegwwc+Gy+
-         VHbg==
-X-Gm-Message-State: AOAM530wJ+iksUuwvecTAN2LIUDhMzisRHlRI6xGNKJr9vCw5AL0XxGk
-        av0KwDcMk2o/fTzU2x7nuuR96zF5N4FSElp2toBs61G8LQHP40EpG6hVwNPLf7SmXgPSY+iq6j1
-        +lxRFEVXl/PuqoP9YqsKR5iOr
-X-Received: by 2002:a37:a302:: with SMTP id m2mr1249718qke.155.1631729698826;
-        Wed, 15 Sep 2021 11:14:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJygAcwZ/9mrp33dvqbsNgM5BPn8uy9tVqgDqOBo2NkpqqmgJlMiHUZcL8gmQBvWnC27q6/KRg==
-X-Received: by 2002:a37:a302:: with SMTP id m2mr1249691qke.155.1631729698554;
-        Wed, 15 Sep 2021 11:14:58 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=/JtLLJZ1Bt4HNZ1/rns47BurBkMZGMTII6QW5YE/blU=;
+        b=j887spL52ztcaUnlVtqReBONRMkkakrdX7BHz7Ic6uwUymUZ1y0a6bM+Agvpv4dw+S
+         xsINQylLqxrIWaoqCEhLqKMu/i7XlohPbfHfGdc/XVt9LLpMZzY+DJhG8Qx9wdoKhlLd
+         ch7iEkolyGXlyobGLNB1Qdt/0IjtIhfoj/BROSnnoXn+ihGApK4eXQbHN6Cyww1/LySL
+         HMkXggeVpRNOlzdvRdLufKTPqj3BRc+BwAhx7wTmWU87Tmitxy6gSDgR92ArjCNeOIsA
+         mXx7F7ft/mfVFsBC+1eUfT8h+CGKuGCQXx4M4+x5sr1EQIDQ6X9bAU9DVvnUqcNmCTtx
+         TpJA==
+X-Gm-Message-State: AOAM530NGIBnmXHde2N+P6pIw44QVNU1BVVRVcFQq0h16pxW5vPDJqCH
+        MQJrxFefjCcWZcBY/SoCmmAg5YO9i4YEQUuK75tP1P58e6tZ0WRf6XvdyuL2+2qUf5H5h98g1bn
+        r9E/mN34zYlCqNkwyns+SGkd1
+X-Received: by 2002:a37:9445:: with SMTP id w66mr1329159qkd.410.1631729700629;
+        Wed, 15 Sep 2021 11:15:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxUlP/bFYTOYGW/AZ/geeOWP7U0B/+waHTXzFWcNOT4AybXR2GPW/I4aEVdSb5hzua//G11kw==
+X-Received: by 2002:a37:9445:: with SMTP id w66mr1329128qkd.410.1631729700388;
+        Wed, 15 Sep 2021 11:15:00 -0700 (PDT)
 Received: from t490s.redhat.com ([2607:fea8:56a2:9100::d35a])
-        by smtp.gmail.com with ESMTPSA id n18sm578663qkn.63.2021.09.15.11.14.57
+        by smtp.gmail.com with ESMTPSA id n18sm578663qkn.63.2021.09.15.11.14.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Sep 2021 11:14:58 -0700 (PDT)
+        Wed, 15 Sep 2021 11:14:59 -0700 (PDT)
 From:   Peter Xu <peterx@redhat.com>
 To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
@@ -63,77 +64,85 @@ Cc:     peterx@redhat.com, Andrea Arcangeli <aarcange@redhat.com>,
         Jerome Glisse <jglisse@redhat.com>,
         Alistair Popple <apopple@nvidia.com>,
         Miaohe Lin <linmiaohe@huawei.com>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: [PATCH v4 0/4] mm: A few cleanup patches around zap, shmem and uffd
-Date:   Wed, 15 Sep 2021 14:14:52 -0400
-Message-Id: <20210915181456.10739-1-peterx@redhat.com>
+        Matthew Wilcox <willy@infradead.org>,
+        Axel Rasmussen <axelrasmussen@google.com>
+Subject: [PATCH v4 1/4] mm/shmem: Unconditionally set pte dirty in mfill_atomic_install_pte
+Date:   Wed, 15 Sep 2021 14:14:53 -0400
+Message-Id: <20210915181456.10739-2-peterx@redhat.com>
 X-Mailer: git-send-email 2.31.1
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210915181456.10739-1-peterx@redhat.com>
+References: <20210915181456.10739-1-peterx@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Based on v5.14-rc1]
+It was conditionally done previously, as there's one shmem special case that we
+use SetPageDirty() instead.  However that's not necessary and it should be
+easier and cleaner to do it unconditionally in mfill_atomic_install_pte().
 
-Hi, Andrew,
+The most recent discussion about this is here, where Hugh explained the history
+of SetPageDirty() and why it's possible that it's not required at all:
 
-I dropped patch 5 and will do it later when it justifies itself better.  Each
-patch of this series now contains at least 1 R-b, would you consider merge it?
+https://lore.kernel.org/lkml/alpine.LSU.2.11.2104121657050.1097@eggly.anvils/
 
-Thanks,
+Currently mfill_atomic_install_pte() has three callers:
 
-v4:
-- Patch "mm: Drop first_index/last_index in zap_details"
-  - Put first_index and last_index into two lines [Liam]
-- Pick up r-bs
-- Drop patch 5 for future
+        1. shmem_mfill_atomic_pte
+        2. mcopy_atomic_pte
+        3. mcontinue_atomic_pte
 
-v3:
-- Patch "mm: Add zap_skip_check_mapping() helper"
-  - In zap_skip_check_mapping() check zap_mapping first [Alistair]
-- Patch "mm: Add ZAP_FLAG_SKIP_SWAP and zap_flags":
-  - Fix English errors in commit message [David]
-  - Drop paragraph mentioning commit 22061a1ffabd in commit msg
-  - Set ZAP_FLAG_SKIP_SWAP for unmap_mapping_page() too
-- Pick up r-bs
+After the change: case (1) should have its SetPageDirty replaced by the dirty
+bit on pte (so we unify them together, finally), case (2) should have no
+functional change at all as it has page_in_cache==false, case (3) may add a
+dirty bit to the pte.  However since case (3) is UFFDIO_CONTINUE for shmem,
+it's merely 100% sure the page is dirty after all because UFFDIO_CONTINUE
+normally requires another process to modify the page cache and kick the faulted
+thread, so should not make a real difference either.
 
-v2:
-- Patch "mm: Clear vmf->pte after pte_unmap_same() returns"
-  - Remove one comment [David]
-- Collect r-b for patch 2/3
-- Rewrite the last two patches to drop ZAP_FLAG_CHECK_MAPPING, dropping
-  Alistair's r-b on patch 5 because it changed [David, Matthew]
+This should make it much easier to follow on which case will set dirty for
+uffd, as we'll simply set it all now for all uffd related ioctls.  Meanwhile,
+no special handling of SetPageDirty() if there's no need.
 
-===== v1 cover letter =====
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Axel Rasmussen <axelrasmussen@google.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Reviewed-by: Axel Rasmussen <axelrasmussen@google.com>
+Signed-off-by: Peter Xu <peterx@redhat.com>
+---
+ mm/shmem.c       | 1 -
+ mm/userfaultfd.c | 3 +--
+ 2 files changed, 1 insertion(+), 3 deletions(-)
 
-I picked up these patches from uffd-wp v5 series here:
-
-https://lore.kernel.org/lkml/20210715201422.211004-1-peterx@redhat.com/
-
-IMHO all of them are very nice cleanups to existing code already, they're all
-small and self-contained.  They'll be needed by uffd-wp coming series.  I would
-appreciate if they can be accepted earlier, so as to not carry them over always
-with the uffd-wp series.
-
-I removed some CC from the uffd-wp v5 series to reduce the noise, and added a
-few more into it.
-
-Reviews are greatly welcomed, thanks.
-
-Peter Xu (4):
-  mm/shmem: Unconditionally set pte dirty in mfill_atomic_install_pte
-  mm: Clear vmf->pte after pte_unmap_same() returns
-  mm: Drop first_index/last_index in zap_details
-  mm: Add zap_skip_check_mapping() helper
-
- include/linux/mm.h | 18 ++++++++++--
- mm/memory.c        | 72 +++++++++++++++++++---------------------------
- mm/shmem.c         |  1 -
- mm/userfaultfd.c   |  3 +-
- 4 files changed, 46 insertions(+), 48 deletions(-)
-
+diff --git a/mm/shmem.c b/mm/shmem.c
+index 88742953532c..96ccf6e941aa 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -2424,7 +2424,6 @@ int shmem_mfill_atomic_pte(struct mm_struct *dst_mm,
+ 	shmem_recalc_inode(inode);
+ 	spin_unlock_irq(&info->lock);
+ 
+-	SetPageDirty(page);
+ 	unlock_page(page);
+ 	return 0;
+ out_delete_from_cache:
+diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
+index 7a9008415534..caf6dfff2a60 100644
+--- a/mm/userfaultfd.c
++++ b/mm/userfaultfd.c
+@@ -69,10 +69,9 @@ int mfill_atomic_install_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
+ 	pgoff_t offset, max_off;
+ 
+ 	_dst_pte = mk_pte(page, dst_vma->vm_page_prot);
++	_dst_pte = pte_mkdirty(_dst_pte);
+ 	if (page_in_cache && !vm_shared)
+ 		writable = false;
+-	if (writable || !page_in_cache)
+-		_dst_pte = pte_mkdirty(_dst_pte);
+ 	if (writable) {
+ 		if (wp_copy)
+ 			_dst_pte = pte_mkuffd_wp(_dst_pte);
 -- 
 2.31.1
 
