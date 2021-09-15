@@ -2,162 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7172140CD3F
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 21:34:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29C4E40CD46
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 21:35:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231490AbhIOTgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 15:36:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46134 "EHLO
+        id S231652AbhIOTgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 15:36:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230230AbhIOTgG (ORCPT
+        with ESMTP id S230230AbhIOTgr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 15:36:06 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0A47C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 12:34:47 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id a15so4960770iot.2
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 12:34:47 -0700 (PDT)
+        Wed, 15 Sep 2021 15:36:47 -0400
+Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46CC0C061574;
+        Wed, 15 Sep 2021 12:35:28 -0700 (PDT)
+Received: by mail-oo1-xc35.google.com with SMTP id t2-20020a4ae9a2000000b0028c7144f106so1268564ood.6;
+        Wed, 15 Sep 2021 12:35:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
+        d=gmail.com; s=20210112;
+        h=sender:to:cc:references:from:subject:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=q6X4eOwLOW6F1Tc1fuiBbdIJjWx8PRKmkvWkGccAsxs=;
-        b=R9+85zNaqPRGqWEABtmUzWfBnBiG2rOs/xkjO9yYMz4ipfpfWI1ZhT/wwmtSWwld1/
-         i/Z103+FdFJnKYTDrUagsTEaJcDiOt/o8m+5OOTomM6/lhgV2zwMzW9LCdW01Nn4MDbV
-         GLTZ7tW0z+6FABFIXs7wvNqVA/C1o8drweNxM=
+        bh=P1ECcmsmuba1oAFsdBaIaunXX4jIoXBz4adWd+uAznQ=;
+        b=lNS86u2XWmjJVaOW2UI3pL79UP1Ks4vqPGTj8jc+1t6xRg7OAI5d95gkLp+ZhCV6jZ
+         AYLwqR8qUVdKzijyYwASyT47/6S4mNpAeONL5btF61E0ZLbBplc+vDJddX1qUeNWMGYr
+         BuKqTQxBhNt9BDRNshou7yG4f7t8arqoUSgT6X7KWHbfEfATnv2Cs2+vQ8WaGEqv+TJW
+         yEaiv/ZJ24fLjVW+6oIKph8lQTbM0YsFR9L++sq/5Dk6hsYBJ6nY5Q6xy28l5eFkhRcT
+         MZVKv1xAuh2RGw6JvSEL9jj04GlT8k2GEy8vkFkkgmuAHkiFq3IcMnC1fHWnzi2BJcWQ
+         gjYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=q6X4eOwLOW6F1Tc1fuiBbdIJjWx8PRKmkvWkGccAsxs=;
-        b=oOBl39YyJ571Hyreup905VqGowPquzOwDBp9SADeaz7HqUzn8hhq6HUX1P1L0r+ePk
-         wsFCOBV7T5dgjDesb/cPF5Bm/jJHRtlEGfvjdpZNR6edCOifC49dg8sGZPbFcCOqvgiy
-         N6coRUCYEYDs6tGF1V+k/dG7GUj2GqMF9bik5wKQtxU11fup16/Wd0TuzNyoJGHaWFSh
-         4cdqqkYHhBpz7RTCEj04IL1smZUvuY+leSj1UD7zq5LFNICSOCrPsQE7G6OhBmCD1p+k
-         3n10BiHwXVyRaCKqi/EFLjEWsCHcqnkVc6USkhfLg+S5tlBV30EM8EVI954FzOA1vfFR
-         0tAA==
-X-Gm-Message-State: AOAM533Vyudb8B3bag/Bh8efwgEBSnvtzhwjPDywu+6LYP9pylZEa34I
-        frp6H66EcLOZCmNHnOwm6omFpG70J+XfQQ==
-X-Google-Smtp-Source: ABdhPJy89P0qmJmBkpmUeMFZtVS/BSHZPUO5URZI0kUcnXa+RUBHTzBX0I86nPIOH7YW93A9RKfqXw==
-X-Received: by 2002:a05:6602:3284:: with SMTP id d4mr1397094ioz.100.1631734487057;
-        Wed, 15 Sep 2021 12:34:47 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id s13sm437895ilh.21.2021.09.15.12.34.46
+        bh=P1ECcmsmuba1oAFsdBaIaunXX4jIoXBz4adWd+uAznQ=;
+        b=NAeSPBteL0CnNnUjKt97LdO1m9iyXco1xFbSFajk/fv67tk3ugO6T4sx06XHYXJGZN
+         PcvTlzHt3aiOotAyNL/ILglFyiLLSFIvXsbfLNnJr1EXr3IVWqKdDtNNYzHaxbDFpbli
+         Yx2tKR4uIE4yNoSUhc5WFsec74bWimkMS57+byuz5ephXq0Paa4N91BKEepquQfumEds
+         3sByRVX0Gzh7DOwDPcHB/PQRsWDPIqBddhKye/Xp1frlONUVNEhFl2rgfsW0HyR2sLKu
+         ARuxdpBsDGALmoz1sPKUBBTksbauYEcB38Az4D7qoonWwGeaK2KOMtxGJO5KJJp+V+I+
+         2sig==
+X-Gm-Message-State: AOAM5333OmOOwEXNSsoDV6fVVrfLjYjQAe+RZmgDWS8B6UHNc9fDIAye
+        3STiySwWJtXZvwo2xbfsBwIk0GFgOpc=
+X-Google-Smtp-Source: ABdhPJwerRN9lMY4WH/E6kjE1a3oWD1opiz2Tpxg2yT0xmyCHXbAckelh2K7PFloaVahuOC4fRY1mg==
+X-Received: by 2002:a4a:a8c9:: with SMTP id r9mr1271861oom.49.1631734527451;
+        Wed, 15 Sep 2021 12:35:27 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id x13sm219710otk.42.2021.09.15.12.35.25
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Sep 2021 12:34:46 -0700 (PDT)
-Subject: Re: [Tech-board-discuss] Reminder: Voting procedures for the Linux
- Foundation Technical Advisory Board
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Laura Abbott <laura@labbott.name>
-Cc:     ksummit@lists.linux.dev,
-        "tech-board-discuss@lists.linuxfoundation.org" 
-        <tech-board-discuss@lists.linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <fccbdadc-a57a-f6fe-68d2-0fbac2fd6b81@labbott.name>
- <b90db9e7-9b6b-c415-d087-3505ba0be0d6@labbott.name>
- <YUH+DO5aHWGVdNb7@pendragon.ideasonboard.com>
- <dc45975a-86df-a70d-ff15-58a3bdcf09ee@labbott.name>
- <YUIHPv3uvAZjJxfB@pendragon.ideasonboard.com>
- <90e00588-3596-01f5-e5a0-73516224b883@labbott.name>
- <YUIbvmPUEUtf/BDU@pendragon.ideasonboard.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <9af9f018-5df5-f5d6-5472-2387c1bb594a@linuxfoundation.org>
-Date:   Wed, 15 Sep 2021 13:34:45 -0600
+        Wed, 15 Sep 2021 12:35:26 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-parisc@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
+        Sparse Mailing-list <linux-sparse@vger.kernel.org>
+References: <20210915035227.630204-1-linux@roeck-us.net>
+ <CAHk-=wjXr+NnNPTorhaW81eAbdF90foVo-5pQqRmXZi-ZGaX6Q@mail.gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH v2 0/4] Introduce and use absolute_pointer macro
+Message-ID: <47fcc9cc-7d2e-bc79-122b-8eccfe00d8f3@roeck-us.net>
+Date:   Wed, 15 Sep 2021 12:35:24 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <YUIbvmPUEUtf/BDU@pendragon.ideasonboard.com>
+In-Reply-To: <CAHk-=wjXr+NnNPTorhaW81eAbdF90foVo-5pQqRmXZi-ZGaX6Q@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/15/21 10:13 AM, Laurent Pinchart wrote:
-> Hi Laura,
-> 
-> On Wed, Sep 15, 2021 at 12:07:13PM -0400, Laura Abbott wrote:
->> On 9/15/21 10:46, Laurent Pinchart wrote:
->>> On Wed, Sep 15, 2021 at 10:36:45AM -0400, Laura Abbott wrote:
->>>> On 9/15/21 10:07, Laurent Pinchart wrote:
->>>>> On Wed, Sep 15, 2021 at 09:58:32AM -0400, Laura Abbott wrote:
->>>>>> On 9/9/21 12:49, Laura Abbott wrote:
->>>>>>> Hi,
->>>>>>>
->>>>>>> Reminder that the Linux Foundation Technical Advisory Board (TAB) annual
->>>>>>> election will be held virtually during the 2021 Kernel Summit and Linux
->>>>>>> Plumbers Conference. Voting will run from September 20th to September
->>>>>>> 23rd 16:00 GMT-4 (US/Eastern). The voting criteria for the 2021 election
->>>>>>> are:
->>>>>>>
->>>>>>> There exist three kernel commits in a mainline or stable released
->>>>>>> kernel that both
->>>>>>> - Have a commit date in the year 2020 or 2021
->>>>>>> - Contain an e-mail address in one of the following tags or merged
->>>>>>> tags (e.g. Reviewed-and-tested-by)
->>>>>>> -- Signed-off-by
->>>>>>> -- Tested-by
->>>>>>> -- Reported-by
->>>>>>> -- Reviewed-by
->>>>>>> -- Acked-by
->>>>>>>
->>>>>>> If you have more than 50 commits that meet this requirement you will
->>>>>>> receive a ballot automatically.
->>>>>>>
->>>>>>> If you have between 3 and 49 commits that meet this requirement please
->>>>>>> e-mail tab-elections@lists.linuxfoundation.org to request your ballot.
->>>>>>> We strongly encourage everyone who meets this criteria to request a
->>>>>>> ballot.
->>>>>>>
->>>>>>> We will be using Condorcet Internet Voting
->>>>>>> Service (CIVS) https://civs1.civs.us/ . This is a voting service
->>>>>>> focused on security and privacy. There are sample polls on the
->>>>>>> website if you would like to see what a ballot will look like.
->>>>>>>
->>>>>>> If you have any questions please e-mail
->>>>>>> tab-elections@lists.linuxfoundation.org.
->>>>>>>
->>>>>>> Thanks,
->>>>>>> Laura
->>>>>>>
->>>>>>> P.S. Please also consider this another reminder to consider running for
->>>>>>> the TAB as well
->>>>>>
->>>>>> Final reminder: please remember to request your ballot for the TAB
->>>>>> elections. If you know others who are eligible please encourage
->>>>>> them to request a ballot as well.
->>>>>
->>>>> When are the ballots supposed to be sent ? It would be nice to avoid
->>>>> requiring everybody to check whether they're below or above the 50
->>>>> commits threshold manually :-)
->>>>
->>>> The ballots will be sent sometime after Monday September 20th
->>>> 9:00am GMT-4 (US/Eastern).
->>>>
->>>> I did make an attempt to send e-mails to the > 50 commits individuals
->>>> but there is a chance my e-mail got eaten by spam filters or just
->>>> didn't get sent out. I discovered Google Apps' e-mail limits and
->>>> that you should not attempt to bcc too many people. This is something
->>>> I'd like to handle in a more automated fashion next year to make
->>>> it easier for both voters and those running the elections.
->>>
->>> Does it mean I should ask for a ballot after the 20th if I don't get
->>> one, or request one *before* ? I meet the above criteria but haven't
->>> received any ballot yet, so I was unsure whether I should ask or wait.
+On 9/15/21 12:18 PM, Linus Torvalds wrote:
+> On Tue, Sep 14, 2021 at 8:52 PM Guenter Roeck <linux@roeck-us.net> wrote:
 >>
->> The intention was that if you were in the range of between 3-49 commits
->> you would ask for a ballot now.
+>> This patch series introduces absolute_pointer() to fix the problem.
+>> absolute_pointer() disassociates a pointer from its originating symbol
+>> type and context, and thus prevents gcc from making assumptions about
+>> pointers passed to memory operations.
 > 
-> Would it be possible to share the script that you are using to check in
-> which category a developer is, to avoid the criteria being applied in
-> slightly different ways ?
+> Ok, I've applied this to my tree.
+> 
+> I note that the physical BOOT_PCB addresses in the alpha setup.h file
+> might be useful for things like MILO in user space, but since I
+> couldn't even find MILO sources any more, I couldn't really check.
+> 
+> I suspect alpha is basically on life support and presumably nobody
+> would ever compile a bootloader anyway, so it's unlikely to matter.
+> 
+> If somebody does find any issues, we'll know better and we can ask
+> where the user space sources are that might use that alpha setup.h
+> file.
 > 
 
-Same request. Is this the same script that gets used to determine candidate
-eligibility before they get added to the ballot?
+FWIW, I did find a set of MILO sources. Search for milo-2.2-18.tar.bz2;
+it points to a variety of gentoo mirrors.
+That version does not reference BOOT_PCB. I thought about removing this
+define as well as a couple of other unused defines, but wanted to keep
+the changes minimal.
 
-thanks,
--- Shuah
+On a side note, we may revive the parisc patch. Helge isn't entirely
+happy with the other solution for parisc; it is quite invasive and
+touches a total of 19 files if I counted correctly.
+
+Thanks,
+Guenter
