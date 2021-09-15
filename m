@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BACA40C629
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 15:19:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DB3740C62A
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 15:19:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233516AbhIONUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 09:20:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58732 "EHLO mail.kernel.org"
+        id S233924AbhIONU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 09:20:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59956 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229670AbhIONUt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 09:20:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B2126121F;
-        Wed, 15 Sep 2021 13:19:28 +0000 (UTC)
+        id S229670AbhIONU5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 09:20:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C7A2D61251;
+        Wed, 15 Sep 2021 13:19:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631711970;
-        bh=e/WesGgcVk0aOw16WbSTFrc8uzKCIhuU6oYF3jpAddo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=tZcqFjEHCm1QFWDhx10RIjZZ4zVVb4dQ3QcDPEGx0PKeRWXldFbFYZj6U1w+aWh/4
-         59I4hTuw3/ML03joE8WTnakK0qTLYXn1MLRMSgxfouFXmMdpxClrIgZyDFi5VcBa3R
-         fK3ZH198F6EDtkP/6NjlsuhXsFndZ0XsMZNPTWGTHyUhycQwsDuPwusNarv8eRHncA
-         ZIUhufVibfCRFXKv7JiXpX83VCIYOORsKZssF1CMTFKFomLxvdZykLxoW/sGeT7QDU
-         6tyd4dokSTs8GkOSXDwP5tZMWSy4BjauqRxJ2e4Xyts8+bAxbOfXhk82O3Ov4oz4u6
-         kVVY2wVPEs8Vw==
+        s=k20201202; t=1631711979;
+        bh=tjYE+w+hVKFuNE7M94ifyu2S6XUIpnaX8UMLFXe0coU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ZDqe1aTewpyN1tOX6hRfENmOnA173xBNFs6FcoacqVZAkQXpAcvWkHaKX8DHxv2Of
+         xjwNkN425Ir3TvSrHGGely0P6g/Jm651RKRuyx6KLk8dC0b9TbLVz72VkfMwwQxjKa
+         7gws47GEnK9Z4PG74cQi3cpMqgH1seBf8cTKUwoWOLI9/6EqgzmMEko1rK3sTwMZAi
+         kNHNZbBB86t523s64ZgrwPYutlSnJiOmvU13LfYOoTDX7KjkvOpKXDc5yWfWF7dKGh
+         gQCSD/7/s/IRICnj4RfeShEj4OzkrIOeRsgi4qYmAitcE34L/jhR/B4cxYh3t9+ama
+         nh9YDdRRZAsQw==
 From:   Masami Hiramatsu <mhiramat@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
@@ -32,10 +32,12 @@ Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         Ingo Molnar <mingo@kernel.org>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         Linux-MM <linux-mm@kvack.org>, Vlastimil Babka <vbabka@suse.cz>
-Subject: [PATCH v3 0/3] bootconfig: Fixes to bootconfig memory management
-Date:   Wed, 15 Sep 2021 22:19:27 +0900
-Message-Id: <163171196689.590070.15063104707696447188.stgit@devnote2>
+Subject: [PATCH v3 1/3] bootconfig: init: Fix memblock leak in xbc_make_cmdline()
+Date:   Wed, 15 Sep 2021 22:19:36 +0900
+Message-Id: <163171197599.590070.10960384725563297226.stgit@devnote2>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <163171196689.590070.15063104707696447188.stgit@devnote2>
+References: <163171196689.590070.15063104707696447188.stgit@devnote2>
 User-Agent: StGit/0.19
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -44,31 +46,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Free unused memblock in a error case to fix memblock leak
+in xbc_make_cmdline().
 
-Here are the series of patches to fix bootconfig memory management issues.
-In this version, I removed unneeded patches and add a patch to free xbc_data
-in xbc_destroy_all().
-
-But still I'm thinking how I can move lib/bootconfig.c and bootconfig.h
-to share with tools, because those functions/data are __init and __initdata.
-At least I have to add a dummy macro for those in userspace.
-Thus the tools/bootconfig build error is still there. I'll fix that in
-another series.
-
-Thank you,
-
+Fixes: 51887d03aca1 ("bootconfig: init: Allow admin to use bootconfig for kernel command line")
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
+ init/main.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-Masami Hiramatsu (3):
-      bootconfig: init: Fix memblock leak in xbc_make_cmdline()
-      bootconfig: init: Fix memblock leak in setup_boot_config()
-      bootconfig: Free xbc_data in xbc_destroy_all()
+diff --git a/init/main.c b/init/main.c
+index 3f7216934441..0b054fff8e92 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -382,6 +382,7 @@ static char * __init xbc_make_cmdline(const char *key)
+ 	ret = xbc_snprint_cmdline(new_cmdline, len + 1, root);
+ 	if (ret < 0 || ret > len) {
+ 		pr_err("Failed to print extra kernel cmdline.\n");
++		memblock_free_ptr(new_cmdline, len + 1);
+ 		return NULL;
+ 	}
+ 
 
-
- init/main.c      |    2 ++
- lib/bootconfig.c |    3 +++
- 2 files changed, 5 insertions(+)
-
--- 
-Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
