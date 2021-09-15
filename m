@@ -2,99 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E993E40CF60
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 00:35:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED69740CF71
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 00:36:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232626AbhIOWgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 18:36:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24126 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232465AbhIOWgQ (ORCPT
+        id S233131AbhIOWhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 18:37:23 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:38310 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232949AbhIOWhK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 18:36:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631745296;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Wed, 15 Sep 2021 18:37:10 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 53ED322323;
+        Wed, 15 Sep 2021 22:35:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1631745347; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=2aVR2KW9hCZ2kkHP6ld7LFEUvut6M4OyuO1clchMrMg=;
-        b=R4hInkYOkv27DXBqKb5zPSMmnfjTy1+rHOIiu90q2JiMKtqNHFezYwBHzXCOPyhp4wN3vC
-        wR6JWGbMzTzmPJ6OGYsVJrPqkM0/8w1pWwKBxWkffN8w5LFvQQR7EPgMb05WyJerQ2hP9T
-        tb6fHZDe7uAEjIpuykSEv/pxj2iQ+p8=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-516-iBIS3gvDMiCAhvqKe5RHqQ-1; Wed, 15 Sep 2021 18:34:55 -0400
-X-MC-Unique: iBIS3gvDMiCAhvqKe5RHqQ-1
-Received: by mail-ed1-f72.google.com with SMTP id j6-20020aa7de86000000b003d4ddaf2bf9so3151421edv.7
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 15:34:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2aVR2KW9hCZ2kkHP6ld7LFEUvut6M4OyuO1clchMrMg=;
-        b=wb+gdoY4b8pcPEZkHydgGVlGuP83slXY/13SOiXsQoRQyX4NT4ddl5oEZ/k0dnR/Zs
-         s+1lGpX9dbjYYeeSdlyTFFuvvjI6irau6XfXl56QAo2tzT7nxtUi7fQymQKHBmEUkIoj
-         YI+uofmmnzw2W3p1OFGJs4tycZ6SAmujFBNfdklDiTm0wmVH3aKTV9pCWz0fda7JiRzD
-         3+6pGrzNZW8s3BeFtUydXHppShtIpU3nEmlCAQ//ILeXtjwsCmXiEd7piAgdKn/CK4sH
-         mciT6wmTRqyP7yOjoQf4qYs2b02/zemYsN5Y9MD247iqFtR6nkvgmEmVquCuQfvVBjC9
-         /aQA==
-X-Gm-Message-State: AOAM531OJQhTUNhFfmDCOatzHeUoqdFeRBplB77gFsM7IZJEM185AIQk
-        kRKHlRRONgnHhLzHgP8WJxlwv9k+YuTKoyW2F+NHxBZG8oeIXbW8uwdc0ZI626yLbtFBvRQ/xU6
-        8HytPNjYrt4H8PminR6HOLLW19yEBkQ+nnBDk6wJj14vPaw7OCiyLovuZMlOUsTJhOjsgqMsR1E
-        Rt
-X-Received: by 2002:a17:906:4310:: with SMTP id j16mr2605723ejm.48.1631745294029;
-        Wed, 15 Sep 2021 15:34:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzZJrGZSlvJZDeNAgWKaufqGkjNdb1v/zNXE2aHdxS0gwiV/n++x4BlcgEyz1CR3FsYSoKbVw==
-X-Received: by 2002:a17:906:4310:: with SMTP id j16mr2605695ejm.48.1631745293810;
-        Wed, 15 Sep 2021 15:34:53 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id dn28sm573547edb.76.2021.09.15.15.34.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Sep 2021 15:34:53 -0700 (PDT)
-Subject: Re: [PATCH 0/4] selftests: kvm: fscanf warn fixes and cleanups
-To:     Shuah Khan <skhan@linuxfoundation.org>, shuah@kernel.org
-Cc:     kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1631737524.git.skhan@linuxfoundation.org>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <56178039-ab72-fca3-38fa-a1d422e4d3ef@redhat.com>
-Date:   Thu, 16 Sep 2021 00:34:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        bh=JgZsYMmsqoTtaIffqm+LgUI61DrT1bvGtpHuAgBAgHg=;
+        b=shB4rBHWjsQzJSjuYNvpz+qx09iQlmlzyUlYQG4mK0I8Oq0LoBQdBjz5SC8d9rCNaSEQC3
+        z4cnLF7vLZbCLfS68MgEbMX/JiWYAabou3SUCIzfEg4sL7Lz4hjdMOCz9731kDaPCwaLLA
+        FtnGEE57fq/siqOWE3m9PSg3ovkUvWE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1631745347;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JgZsYMmsqoTtaIffqm+LgUI61DrT1bvGtpHuAgBAgHg=;
+        b=s5BHawe8Yvvo9IzI+WIYfpeIDNcwBKcloNxJGfnJCVoVXQp+rZk0It2270SDw/l+t64odJ
+        tR44mjA4Vwlf7zAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 65EF613C77;
+        Wed, 15 Sep 2021 22:35:43 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 0QavCT91QmFWUgAAMHmgww
+        (envelope-from <neilb@suse.de>); Wed, 15 Sep 2021 22:35:43 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <cover.1631737524.git.skhan@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+From:   "NeilBrown" <neilb@suse.de>
+To:     "Michal Hocko" <mhocko@suse.com>
+Cc:     "Mel Gorman" <mgorman@suse.de>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        "Andreas Dilger" <adilger.kernel@dilger.ca>,
+        "Darrick J. Wong" <djwong@kernel.org>, "Jan Kara" <jack@suse.cz>,
+        "Matthew Wilcox" <willy@infradead.org>, linux-xfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/6] EXT4: Remove ENOMEM/congestion_wait() loops.
+In-reply-to: <YUHh2ddnJEDGI8YG@dhcp22.suse.cz>
+References: <163157808321.13293.486682642188075090.stgit@noble.brown>,
+ <163157838437.13293.14244628630141187199.stgit@noble.brown>,
+ <20210914163432.GR3828@suse.com>,
+ <163165609100.3992.1570739756456048657@noble.neil.brown.name>,
+ <YUHh2ddnJEDGI8YG@dhcp22.suse.cz>
+Date:   Thu, 16 Sep 2021 08:35:40 +1000
+Message-id: <163174534006.3992.15394603624652359629@noble.neil.brown.name>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/09/21 23:28, Shuah Khan wrote:
-> This patch series fixes fscanf() ignoring return value warnings.
-> Consolidates get_run_delay() duplicate defines moving it to
-> common library.
-> 
-> Shuah Khan (4):
->    selftests:kvm: fix get_warnings_count() ignoring fscanf() return warn
->    selftests:kvm: fix get_trans_hugepagesz() ignoring fscanf() return
->      warn
->    selftests: kvm: move get_run_delay() into lib/test_util
->    selftests: kvm: fix get_run_delay() ignoring fscanf() return warn
-> 
->   .../testing/selftests/kvm/include/test_util.h |  3 +++
->   tools/testing/selftests/kvm/lib/test_util.c   | 22 ++++++++++++++++++-
->   tools/testing/selftests/kvm/steal_time.c      | 16 --------------
->   .../selftests/kvm/x86_64/mmio_warning_test.c  |  3 ++-
->   .../selftests/kvm/x86_64/xen_shinfo_test.c    | 15 -------------
->   5 files changed, 26 insertions(+), 33 deletions(-)
-> 
+On Wed, 15 Sep 2021, Michal Hocko wrote:
+> On Wed 15-09-21 07:48:11, Neil Brown wrote:
+> >=20
+> > Why does __GFP_NOFAIL access the reserves? Why not require that the
+> > relevant "Try harder" flag (__GFP_ATOMIC or __GFP_MEMALLOC) be included
+> > with __GFP_NOFAIL if that is justified?
+>=20
+> Does 5020e285856c ("mm, oom: give __GFP_NOFAIL allocations access to
+> memory reserves") help?
 
-Acked-by: Paolo Bonzini <pbonzini@redhat.com>
+Yes, that helps.  A bit.
 
-Thanks Shuah!
+I'm not fond of the clause "the allocation request might have come with some
+locks held".  What if it doesn't?  Does it still have to pay the price.
 
-Paolo
+Should we not require that the caller indicate if any locks are held?
+That way callers which don't hold locks can use __GFP_NOFAIL without
+worrying about imposing on other code.
 
+Or is it so rare that __GFP_NOFAIL would be used without holding a lock
+that it doesn't matter?
+
+The other commit of interest is
+
+Commit: 6c18ba7a1899 ("mm: help __GFP_NOFAIL allocations which do not trigger=
+ OOM killer")
+
+I don't find the reasoning convincing.  It is a bit like "Robbing Peter
+to pay Paul".  It takes from the reserves to allow a __GFP_NOFAIL to
+proceed, with out any reason to think this particular allocation has any
+more 'right' to the reserves than anything else.
+
+While I don't like the reasoning in either of these, they do make it
+clear (to me) that the use of reserves is entirely an internal policy
+decision.  They should *not* be seen as part of the API and callers
+should not have to be concerned about it when deciding whether to use
+__GFP_NOFAIL or not.
+
+The use of these reserves is, at most, a hypothetical problem.  If it
+ever looks like becoming a real practical problem, it needs to be fixed
+internally to the page allocator.  Maybe an extra water-mark which isn't
+quite as permissive as ALLOC_HIGH...
+
+I'm inclined to drop all references to reserves from the documentation
+for __GFP_NOFAIL.  I think there are enough users already that adding a
+couple more isn't going to make problems substantially more likely.  And
+more will be added anyway that the mm/ team won't have the opportunity
+or bandwidth to review.
+
+Meanwhile I'll see if I can understand the intricacies of alloc_page so
+that I can contibute to making it more predictable.
+
+Question: In those cases where an open-coded loop is appropriate, such
+as when you want to handle signals or can drop locks, how bad would it
+be to have a tight loop without any sleep?
+should_reclaim_retry() will sleep 100ms (sometimes...).  Is that enough?
+__GFP_NOFAIL doesn't add any sleep when looping.
+
+Thanks,
+NeilBrown
