@@ -2,138 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4127840BF3A
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 07:13:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD8E340BF3B
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 07:14:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236190AbhIOFOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 01:14:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45134 "EHLO
+        id S235107AbhIOFPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 01:15:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230242AbhIOFO3 (ORCPT
+        with ESMTP id S232058AbhIOFPS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 01:14:29 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6ECDC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 22:13:10 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id s11so3170168yba.11
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 22:13:10 -0700 (PDT)
+        Wed, 15 Sep 2021 01:15:18 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2563FC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 22:14:00 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id a93so3301312ybi.1
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 22:14:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=1jsvXsMk7Y/T5FvXQsXTjQ6ewD2rxYnHAxNxFYKSnlI=;
-        b=Xx5faSp5+GpLy3BFfN1Wo6z+mEUt0AJe5rkOC08IWbhvIYuFo6XZ6J6yATOmHWdJDa
-         NsBIdZSnCm3PwWgki83q2KMBjXLfQ365kTVjFVEYeZyDzx+KKU/3AznqcYCxLt8WZ4zb
-         tZYbJ4ZVTEkiunxO8J9sBw+aK6vKfypFZCd0TIp4wjVT6h5AmKFdWxL9gKZOgk7XGqsB
-         iHvmX0ZCBUWoFOC1P0lxrw68TyabVNyyBiBtZ4lk+l5Qn1cI5sqrR6USGIVW8mfD06Qf
-         vtsdpgzMTGgJh+ONZw8p4PCxosGYNUIfiU08UTO41p4RAFUWKCNRUVOzdqEplTxpNtEz
-         ooWA==
+        bh=CF74Yy09ClhLuQTzbR9oIh0ANFqfI+RovIt9FVjZU8M=;
+        b=YydHsKtc2nRCMjBlofbd4kWZwkvTqfEzbOYvMyfUjlDziVSsp8MdHctboT5XDDu7Kc
+         moAFIz9Slmf2DaTUGKLGfbEcP6qJRnqxbj686Mh9vkXsPyIr2+plC44PIJRFGTwwvYEd
+         +rbvfpJpBBJ+zqs21RpOZNSIXxsGA5JAUxxgAiGLfE5iskd4k7tMMive1IRHYGJiY+0c
+         4VneWo38AdWkBRJj/8w0K58Z21b0MHt/vUKncgUF3onoos/b8LUZbFEFOlGMnVjp4bO0
+         +DefDCTDBD4oZAYYvFjVWDa1AfSG3SwPEQyTzhDhiXL6cNU5paUgKxIx9zm8Iyc19W79
+         AqAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to;
-        bh=1jsvXsMk7Y/T5FvXQsXTjQ6ewD2rxYnHAxNxFYKSnlI=;
-        b=iUQBiuiqEo5D03OU7cT1pEDjyj77rOX20QLvI6rTIdnuZgOZMWWUTzKAddQa2dbqw2
-         PpRiSGhXkz8e++uG+4oz0CrI+GIdRuUqzBGdKgvW/GESbZvn8GoySrhFPL/RBkTOipcb
-         4o3N4wGs8aVi8Lzf/JNEFxk02RE5v4NuBylyqr1/F/uuj2fuWVLNKFsDgSsVJLwjLVzk
-         dbpy/kmZBqTMESz/btWH6LyFPfvyF0poXs8SjLpbZpGm0Avv42OjcmU6o698sRBV0U4A
-         WM9gz6vDcjdepbo4HZZr9k/fTxaF3IwNkzFQ48oZ565hl1al5NyqH9zvNV22MG+M59n5
-         q26g==
-X-Gm-Message-State: AOAM5325L+JTDzcd5MvE4a8wEAcWWb3Gc+7k+E7lvoFbU56OgtpHK6tH
-        lv+wdHJmps4MXXJaiwbTBGunos1NIzpdJ9YLK+p8vA==
-X-Google-Smtp-Source: ABdhPJyxyJIEzlSi67Twr/HPaF8pMPXErk3w7Xo2FfgzKpOFBi6fXkuynogVPxQGngn/arDnW+yT4s4jWHIJjzIOI6Y=
-X-Received: by 2002:a25:cc55:: with SMTP id l82mr3590430ybf.148.1631682789331;
- Tue, 14 Sep 2021 22:13:09 -0700 (PDT)
+        bh=CF74Yy09ClhLuQTzbR9oIh0ANFqfI+RovIt9FVjZU8M=;
+        b=iSeExpQfH9sCSVRszJ4TR0lj2KGdj9NBq3P4ors1jbVbYSnEVWz+jgeJh+1ZgDxPWW
+         lfRK3adAPkbPlk0qLvDX1hjxxk7kRjaNz7Z0oDCxKRccUjbPbFWswBoybmnmh3sKdNhb
+         EQQ+WbUYJOezOLceZ5vlC+0FafZdtYy6JD6D7qN0f/3w/Gce666MlbNKzb7t9CFyWyLw
+         0P+22EU8J86tvMSxuPY7x84CmDBEN2e3te9RBPA4aNJMDkWYo01/hPM2az129Q4+rxq0
+         7G/BwrpBK8kyoExaanCpnoUWEKcp2mkJBWJRjFi4TQvVNLLAL62h0hiAR/M0t6QPlLDt
+         DCaA==
+X-Gm-Message-State: AOAM533oVsX4uIlpNiBe9vFOD7/SpvuV57lGpHc0MfnrlqqNmYmT2Tbd
+        HejBNycd6gA2jpOTz5ZP7bAWyNwMThl0ZG+5BMe+mA==
+X-Google-Smtp-Source: ABdhPJym1lIRRfCxjklwLPldc+0MWuyUI0SfMG5HFOjT9g/vsLQOrcYKgajOiXsBc7JPjrEP8VDS2fnUHMj3HM+G/6A=
+X-Received: by 2002:a25:b09d:: with SMTP id f29mr3600845ybj.257.1631682839197;
+ Tue, 14 Sep 2021 22:13:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <000000000000acb87205cb2e283c@google.com>
-In-Reply-To: <000000000000acb87205cb2e283c@google.com>
+References: <0000000000003166f105cb201ea6@google.com> <00000000000067c79605cb2720bb@google.com>
+In-Reply-To: <00000000000067c79605cb2720bb@google.com>
 From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Wed, 15 Sep 2021 07:12:58 +0200
-Message-ID: <CACT4Y+ZPUreCt6KQboXMonNmVDJ-6fhzgHR5fN_srrDm=fcpzA@mail.gmail.com>
-Subject: Re: [syzbot] WARNING: kmalloc bug in hash_ipportnet_create
-To:     syzbot <syzbot+0e73f839b35d0973fb97@syzkaller.appspotmail.com>,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Date:   Wed, 15 Sep 2021 07:13:48 +0200
+Message-ID: <CACT4Y+Zs0Q_dWTRgsu+z_g_41uEp+66r2peSy_P5WyHeagtymA@mail.gmail.com>
+Subject: Re: [syzbot] WARNING: kmalloc bug in hash_netport_create
+To:     syzbot <syzbot+3f5904753c2388727c6c@syzkaller.appspotmail.com>,
+        syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 4 Sept 2021 at 18:46, syzbot
-<syzbot+0e73f839b35d0973fb97@syzkaller.appspotmail.com> wrote:
+On Sat, 4 Sept 2021 at 10:23, syzbot
+<syzbot+3f5904753c2388727c6c@syzkaller.appspotmail.com> wrote:
 >
-> Hello,
+> syzbot has bisected this issue to:
 >
-> syzbot found the following issue on:
+> commit 7661809d493b426e979f39ab512e3adf41fbcc69
+> Author: Linus Torvalds <torvalds@linux-foundation.org>
+> Date:   Wed Jul 14 16:45:49 2021 +0000
 >
-> HEAD commit:    7cca308cfdc0 Merge tag 'powerpc-5.15-1' of git://git.kerne..
+>     mm: don't allow oversized kvmalloc() calls
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=113125f5300000
+> start commit:   a9c9a6f741cd Merge tag 'scsi-misc' of git://git.kernel.org..
 > git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1238fbbd300000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=8aa56a640db99eb1
-> dashboard link: https://syzkaller.appspot.com/bug?extid=0e73f839b35d0973fb97
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10ef4e0b300000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1302e115300000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=133125f5300000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=153125f5300000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=1ac29107aeb2a552
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3f5904753c2388727c6c
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14581b33300000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13579a69300000
 >
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+0e73f839b35d0973fb97@syzkaller.appspotmail.com
+> Reported-by: syzbot+3f5904753c2388727c6c@syzkaller.appspotmail.com
+> Fixes: 7661809d493b ("mm: don't allow oversized kvmalloc() calls")
+>
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
 #syz dup: WARNING: kmalloc bug in hash_net_create
-
-> ------------[ cut here ]------------
-> WARNING: CPU: 0 PID: 8442 at mm/util.c:597 kvmalloc_node+0x111/0x120 mm/util.c:597
-> Modules linked in:
-> CPU: 0 PID: 8442 Comm: syz-executor543 Not tainted 5.14.0-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> RIP: 0010:kvmalloc_node+0x111/0x120 mm/util.c:597
-> Code: 01 00 00 00 4c 89 e7 e8 4d 17 0d 00 49 89 c5 e9 69 ff ff ff e8 30 3e d1 ff 41 89 ed 41 81 cd 00 20 01 00 eb 95 e8 1f 3e d1 ff <0f> 0b e9 4c ff ff ff 0f 1f 84 00 00 00 00 00 55 48 89 fd 53 e8 06
-> RSP: 0018:ffffc900019f7288 EFLAGS: 00010293
-> RAX: 0000000000000000 RBX: ffffc900019f73a0 RCX: 0000000000000000
-> RDX: ffff888018236140 RSI: ffffffff81a41371 RDI: 0000000000000003
-> RBP: 0000000000400dc0 R08: 000000007fffffff R09: 000000000000001c
-> R10: ffffffff81a4132e R11: 000000000000001f R12: 0000000080000018
-> R13: 0000000000000000 R14: 00000000ffffffff R15: ffff8880171e1000
-> FS:  00000000020ae300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000020000246 CR3: 0000000013999000 CR4: 00000000001506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  hash_ipportnet_create+0x3dd/0x1220 net/netfilter/ipset/ip_set_hash_gen.h:1524
->  ip_set_create+0x782/0x15a0 net/netfilter/ipset/ip_set_core.c:1100
->  nfnetlink_rcv_msg+0xbc9/0x13f0 net/netfilter/nfnetlink.c:296
->  netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
->  nfnetlink_rcv+0x1ac/0x420 net/netfilter/nfnetlink.c:654
->  netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
->  netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
->  netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
->  sock_sendmsg_nosec net/socket.c:704 [inline]
->  sock_sendmsg+0xcf/0x120 net/socket.c:724
->  ____sys_sendmsg+0x6e8/0x810 net/socket.c:2409
->  ___sys_sendmsg+0xf3/0x170 net/socket.c:2463
->  __sys_sendmsg+0xe5/0x1b0 net/socket.c:2492
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> RIP: 0033:0x43f039
-> Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007ffe5f928db8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-> RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043f039
-> RDX: 0000000000000000 RSI: 00000000200000c0 RDI: 0000000000000003
-> RBP: 0000000000403020 R08: 0000000000000005 R09: 0000000000400488
-> R10: 0000000000000004 R11: 0000000000000246 R12: 00000000004030b0
-> R13: 0000000000000000 R14: 00000000004ac018 R15: 0000000000400488
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> syzbot can test patches for this issue, for details see:
-> https://goo.gl/tpsmEJ#testing-patches
->
-> --
-> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/000000000000acb87205cb2e283c%40google.com.
