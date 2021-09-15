@@ -2,84 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1198440C39E
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 12:30:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C347F40C3A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 12:30:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232592AbhIOKbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 06:31:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52700 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232304AbhIOKbc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 06:31:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 8407A61264;
-        Wed, 15 Sep 2021 10:30:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631701813;
-        bh=jdmVvPHukyHZKRwq9G234NU2Mc/pWdC6USWlLOKk20E=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=l8JddP0ugQQGqzeFk9LiE5jTKqyxQdHaQPFUf6BJAJevYqLVtqznqKAYMt/vKYDAW
-         svXoYXsGgz171uYcmd9eDlyGY4UZcm7ZansKDK+AQ+wLOz9Lo2uV4AjKWCn1yRlb95
-         cFSiSxb3h7MpOMGcRESXzCL62V5pb32u7+2Jmo/x9FZUxGN3+XYYfv+nst9HghQcZi
-         BKUl7XmwT/f2Fa5tqQEZYN9L41lYrXZL5X6l3M31ekA4abOGevSSX+iza22yPxBLfq
-         YLqIfzSk9gELc+d6GuwWmnez9RPTV898CyLYzIcMzT0SPRzH6I9fzxkw278LvDVdqx
-         zXdj8d+2K5rVA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7336060BC7;
-        Wed, 15 Sep 2021 10:30:13 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S237143AbhIOKcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 06:32:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37427 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232300AbhIOKcH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 06:32:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631701847;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+jevmYjl//WQ7aSqjNdV6Rv/1a+VPKT86ET3rw91ZgA=;
+        b=As3w94YkuyBxKhCcS9eClPfuwF2R+3Hx5fR28vCWAh8sicJnDqMBbMPjPukpjVGW7vmKp0
+        niEBxGh7JJOTQCce70HydiYpN9GpUK2FPpbRe0d6d0TQFbfMOgsUZNGDChD87ERNzM6O4I
+        +O7qK5zJpWS8+dysP5WA9EajjHO+OHQ=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-237-pPukYnnqPbqk2BOeuP_VBA-1; Wed, 15 Sep 2021 06:30:46 -0400
+X-MC-Unique: pPukYnnqPbqk2BOeuP_VBA-1
+Received: by mail-wm1-f71.google.com with SMTP id j193-20020a1c23ca000000b00306cd53b671so1251667wmj.1
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 03:30:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=+jevmYjl//WQ7aSqjNdV6Rv/1a+VPKT86ET3rw91ZgA=;
+        b=EU/ZMT50v0y2LzrAoT5i2l7yGvbh6N0qr9LxB+7NY5dwonBJHTH9DMw6za9Q3EVhl7
+         CtGF7JccPw+38KuvsK85VEZbI7gQrkwUYJyPQNCc255GCOb/lOeYsiowaVZhdVHYSKCF
+         idOnxRvriRvAX1oSqFJyuWwvZNknuaQ5f+m0b3/dpqk/ZsoMLwLRaNFBgKYOfCXm3M7D
+         dyG/fsVzxuW5DY/2R/V9uFi2tvrsLlSEdlskGAm7MyOpPfdNLwcZC//e+s7qH19QYN/E
+         pXIzmibt58tNS8dkxME2gEM9hLoyIkO41BAApLlIxjnRFOT9UgI7TXroLx1ArUNCrILe
+         w6yw==
+X-Gm-Message-State: AOAM530JgYfBiEXDOIdHuqGy4yAQI3e63+j7V0agNOwpNteZ7n7jzsFm
+        rUYu7wMh98SkaFpMRtSrxOmTlJ4DwCxNmTnCnOrFOVKdDjSK4JOqOB8MXtysFn9GJvOHrXRQlmB
+        0bmTBVgpYuB++8JpqrNn/UBO+
+X-Received: by 2002:adf:e10c:: with SMTP id t12mr4180516wrz.36.1631701845444;
+        Wed, 15 Sep 2021 03:30:45 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyQTWAF3DNcBCbP4LPGORNOeByHF5CiJHBVpD6p/X3MYkXqISCAwl3bsemOuxfLRP3sfGScSQ==
+X-Received: by 2002:adf:e10c:: with SMTP id t12mr4180492wrz.36.1631701845208;
+        Wed, 15 Sep 2021 03:30:45 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id y8sm6111329wrh.44.2021.09.15.03.30.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Sep 2021 03:30:44 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Reiji Watanabe <reijiw@google.com>
+Subject: Re: [PATCH 2/3] KVM: VMX: Move RESET emulation to vmx_vcpu_reset()
+In-Reply-To: <20210914230840.3030620-3-seanjc@google.com>
+References: <20210914230840.3030620-1-seanjc@google.com>
+ <20210914230840.3030620-3-seanjc@google.com>
+Date:   Wed, 15 Sep 2021 12:30:43 +0200
+Message-ID: <875yv2167g.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 1/8] MIPS: lantiq: dma: add small delay after reset
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163170181346.3937.14860350740093197209.git-patchwork-notify@kernel.org>
-Date:   Wed, 15 Sep 2021 10:30:13 +0000
-References: <20210914212105.76186-1-olek2@wp.pl>
-In-Reply-To: <20210914212105.76186-1-olek2@wp.pl>
-To:     Aleksander Jan Bajkowski <olek2@wp.pl>
-Cc:     john@phrozen.org, tsbogend@alpha.franken.de, maz@kernel.org,
-        ralf@linux-mips.org, ralph.hempel@lantiq.com, davem@davemloft.net,
-        kuba@kernel.org, robh+dt@kernel.org, hauke@hauke-m.de,
-        dev@kresin.me, arnd@arndb.de, jgg@ziepe.ca, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Sean Christopherson <seanjc@google.com> writes:
 
-This series was applied to netdev/net-next.git (refs/heads/master):
-
-On Tue, 14 Sep 2021 23:20:58 +0200 you wrote:
-> Reading the DMA registers immediately after the reset causes
-> Data Bus Error. Adding a small delay fixes this issue.
-> 
-> Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
+> Move vCPU RESET emulation, including initializating of select VMCS state,
+> to vmx_vcpu_reset().  Drop the open coded "vCPU load" sequence, as
+> ->vcpu_reset() is invoked while the vCPU is properly loaded (which is
+> kind of the point of ->vcpu_reset()...).  Hopefully KVM will someday
+> expose a dedicated RESET ioctl(), and in the meantime separating "create"
+> from "RESET" is a nice cleanup.
+>
+> Deferring VMCS initialization is effectively a nop as it's impossible to
+> safely access the VMCS between the current call site and its new home, as
+> both the vCPU and the pCPU are put immediately after init_vmcs(), i.e.
+> the VMCS isn't guaranteed to be loaded.
+>
+> Note, task preemption is not a problem as vmx_sched_in() _can't_ touch
+> the VMCS as ->sched_in() is invoked before the vCPU, and thus VMCS, is
+> reloaded.  I.e. the preemption path also can't consume VMCS state.
+>
+> Cc: Reiji Watanabe <reijiw@google.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 > ---
->  arch/mips/lantiq/xway/dma.c | 3 +++
->  1 file changed, 3 insertions(+)
+>  arch/x86/kvm/vmx/vmx.c | 61 +++++++++++++++++++++---------------------
+>  1 file changed, 31 insertions(+), 30 deletions(-)
+>
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index dc274b4c9912..629427cf8f4e 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -4327,10 +4327,6 @@ static u32 vmx_secondary_exec_control(struct vcpu_vmx *vmx)
+>  
+>  #define VMX_XSS_EXIT_BITMAP 0
+>  
+> -/*
+> - * Noting that the initialization of Guest-state Area of VMCS is in
+> - * vmx_vcpu_reset().
+> - */
+>  static void init_vmcs(struct vcpu_vmx *vmx)
+>  {
+>  	if (nested)
+> @@ -4435,10 +4431,39 @@ static void init_vmcs(struct vcpu_vmx *vmx)
+>  	vmx_setup_uret_msrs(vmx);
+>  }
+>  
+> +static void __vmx_vcpu_reset(struct kvm_vcpu *vcpu)
+> +{
+> +	struct vcpu_vmx *vmx = to_vmx(vcpu);
+> +
+> +	init_vmcs(vmx);
+> +
+> +	if (nested)
+> +		memcpy(&vmx->nested.msrs, &vmcs_config.nested, sizeof(vmx->nested.msrs));
+> +
+> +	vcpu_setup_sgx_lepubkeyhash(vcpu);
+> +
+> +	vmx->nested.posted_intr_nv = -1;
+> +	vmx->nested.current_vmptr = -1ull;
+> +	vmx->nested.hv_evmcs_vmptr = EVMPTR_INVALID;
 
-Here is the summary with links:
-  - [net-next,1/8] MIPS: lantiq: dma: add small delay after reset
-    https://git.kernel.org/netdev/net-next/c/c12aa581f6d5
-  - [net-next,2/8] MIPS: lantiq: dma: reset correct number of channel
-    https://git.kernel.org/netdev/net-next/c/5ca9ce2ba4d5
-  - [net-next,3/8] MIPS: lantiq: dma: fix burst length for DEU
-    https://git.kernel.org/netdev/net-next/c/5ad74d39c51d
-  - [net-next,4/8] MIPS: lantiq: dma: make the burst length configurable by the drivers
-    https://git.kernel.org/netdev/net-next/c/49293bbc50cb
-  - [net-next,5/8] net: lantiq: configure the burst length in ethernet drivers
-    https://git.kernel.org/netdev/net-next/c/14d4e308e0aa
-  - [net-next,6/8] dt-bindings: net: lantiq-xrx200-net: convert to the json-schema
-    https://git.kernel.org/netdev/net-next/c/5535bcfa725a
-  - [net-next,7/8] dt-bindings: net: lantiq,etop-xway: Document Lantiq Xway ETOP bindings
-    https://git.kernel.org/netdev/net-next/c/dac0bad93741
-  - [net-next,8/8] dt-bindings: net: lantiq: Add the burst length properties
-    https://git.kernel.org/netdev/net-next/c/c68872146489
+What would happen in (hypothetical) case when enlightened VMCS is
+currently in use? If we zap 'hv_evmcs_vmptr' here, the consequent
+nested_release_evmcs() (called from
+nested_vmx_handle_enlightened_vmptrld(), for example) will not do 
+kvm_vcpu_unmap() while it should.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+This, however, got me thinking: should we free all-things-nested with
+free_nested()/nested_vmx_free_vcpu() upon vcpu reset? I can't seem to
+find us doing that... (I do remember that INIT is blocked in VMX-root
+mode and nobody else besides kvm_arch_vcpu_create()/
+kvm_apic_accept_events() seems to call kvm_vcpu_reset()) but maybe we
+should at least add a WARN_ON() guardian here?
 
+Side topic: we don't seem to reset Hyper-V specific MSRs either,
+probably relying on userspace VMM doing the right thing but this is also
+not ideal I believe.
+
+> +
+> +	vcpu->arch.microcode_version = 0x100000000ULL;
+> +	vmx->msr_ia32_feature_control_valid_bits = FEAT_CTL_LOCKED;
+> +
+> +	/*
+> +	 * Enforce invariant: pi_desc.nv is always either POSTED_INTR_VECTOR
+> +	 * or POSTED_INTR_WAKEUP_VECTOR.
+> +	 */
+> +	vmx->pi_desc.nv = POSTED_INTR_VECTOR;
+> +	vmx->pi_desc.sn = 1;
+> +}
+> +
+>  static void vmx_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
+>  {
+>  	struct vcpu_vmx *vmx = to_vmx(vcpu);
+>  
+> +	if (!init_event)
+> +		__vmx_vcpu_reset(vcpu);
+> +
+>  	vmx->rmode.vm86_active = 0;
+>  	vmx->spec_ctrl = 0;
+>  
+> @@ -6797,7 +6822,7 @@ static int vmx_create_vcpu(struct kvm_vcpu *vcpu)
+>  {
+>  	struct vmx_uret_msr *tsx_ctrl;
+>  	struct vcpu_vmx *vmx;
+> -	int i, cpu, err;
+> +	int i, err;
+>  
+>  	BUILD_BUG_ON(offsetof(struct vcpu_vmx, vcpu) != 0);
+>  	vmx = to_vmx(vcpu);
+> @@ -6856,12 +6881,7 @@ static int vmx_create_vcpu(struct kvm_vcpu *vcpu)
+>  	}
+>  
+>  	vmx->loaded_vmcs = &vmx->vmcs01;
+> -	cpu = get_cpu();
+> -	vmx_vcpu_load(vcpu, cpu);
+> -	vcpu->cpu = cpu;
+> -	init_vmcs(vmx);
+> -	vmx_vcpu_put(vcpu);
+> -	put_cpu();
+> +
+>  	if (cpu_need_virtualize_apic_accesses(vcpu)) {
+>  		err = alloc_apic_access_page(vcpu->kvm);
+>  		if (err)
+> @@ -6874,25 +6894,6 @@ static int vmx_create_vcpu(struct kvm_vcpu *vcpu)
+>  			goto free_vmcs;
+>  	}
+>  
+> -	if (nested)
+> -		memcpy(&vmx->nested.msrs, &vmcs_config.nested, sizeof(vmx->nested.msrs));
+> -
+> -	vcpu_setup_sgx_lepubkeyhash(vcpu);
+> -
+> -	vmx->nested.posted_intr_nv = -1;
+> -	vmx->nested.current_vmptr = -1ull;
+> -	vmx->nested.hv_evmcs_vmptr = EVMPTR_INVALID;
+> -
+> -	vcpu->arch.microcode_version = 0x100000000ULL;
+> -	vmx->msr_ia32_feature_control_valid_bits = FEAT_CTL_LOCKED;
+> -
+> -	/*
+> -	 * Enforce invariant: pi_desc.nv is always either POSTED_INTR_VECTOR
+> -	 * or POSTED_INTR_WAKEUP_VECTOR.
+> -	 */
+> -	vmx->pi_desc.nv = POSTED_INTR_VECTOR;
+> -	vmx->pi_desc.sn = 1;
+> -
+>  	return 0;
+>  
+>  free_vmcs:
+
+-- 
+Vitaly
 
