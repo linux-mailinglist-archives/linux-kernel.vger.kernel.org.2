@@ -2,82 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8657440C11C
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 10:05:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6935A40C11E
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 10:05:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231649AbhIOIG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 04:06:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55112 "EHLO
+        id S236528AbhIOIGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 04:06:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236755AbhIOIFg (ORCPT
+        with ESMTP id S231489AbhIOIGk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 04:05:36 -0400
-Received: from relay03.th.seeweb.it (relay03.th.seeweb.it [IPv6:2001:4b7a:2000:18::164])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E601BC061764;
-        Wed, 15 Sep 2021 01:03:05 -0700 (PDT)
-Received: from Marijn-Arch-PC.localdomain (94-209-165-62.cable.dynamic.v4.ziggo.nl [94.209.165.62])
+        Wed, 15 Sep 2021 04:06:40 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4846C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 01:05:21 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1mQPun-0002mv-1O; Wed, 15 Sep 2021 10:05:09 +0200
+Received: from pengutronix.de (unknown [IPv6:2a0a:edc0:0:701:8a97:9358:ae:5dc8])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 20508200E8;
-        Wed, 15 Sep 2021 10:03:01 +0200 (CEST)
-From:   Marijn Suijten <marijn.suijten@somainline.org>
-To:     phone-devel@vger.kernel.org, Pavel Machek <pavel@ucw.cz>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Tian Tao <tiantao6@hisilicon.com>, linux-leds@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [RESEND PATCH] leds: ledtrig-pattern: Use last_repeat when applying hw pattern
-Date:   Wed, 15 Sep 2021 10:02:52 +0200
-Message-Id: <20210915080252.69147-1-marijn.suijten@somainline.org>
-X-Mailer: git-send-email 2.33.0
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 6389867E518;
+        Wed, 15 Sep 2021 08:05:06 +0000 (UTC)
+Date:   Wed, 15 Sep 2021 10:05:05 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Jiri Slaby <jslaby@suse.cz>
+Cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>
+Subject: Re: [PATCH 04/16] tty: make tty_ldisc_ops::hangup return void
+Message-ID: <20210915080505.rq2gj4e3ltfzinbm@pengutronix.de>
+References: <20210914091134.17426-1-jslaby@suse.cz>
+ <20210914091134.17426-4-jslaby@suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="iopoaeuqhybpk76v"
+Content-Disposition: inline
+In-Reply-To: <20210914091134.17426-4-jslaby@suse.cz>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`last_repeat` holds the actual value requested by the user whereas
-`repeat` is a software iteration variable that is unused in hardware
-patterns.
 
-Furthermore `last_repeat` is the field returned to the user when reading
-the `repeat` sysfs property.  This field is initialized to `-1` which
-is (together with `1`) the only valid value in the upcoming Qualcomm LPG
-driver.  It is thus unexpected when `repeat` with an initialization
-value of `0` is passed into the the driver, when the sysfs property
-clearly presents a value of `-1`.
+--iopoaeuqhybpk76v
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Tested-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
-Resending to pick up Bjorn's s-o-b/r-b and address Pavel in the To:
-field directly.
+On 14.09.2021 11:11:22, Jiri Slaby wrote:
+> The documentation says that the return value of tty_ldisc_ops::hangup
+> hook is ignored. And it really is, so there is no point for its return
+> type to be int. Switch it to void and all the hooks too.
+>=20
+> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> Cc: Wolfgang Grandegger <wg@grandegger.com>
+> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Paul Mackerras <paulus@samba.org>
+> Cc: Liam Girdwood <lgirdwood@gmail.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Jaroslav Kysela <perex@perex.cz>
+> Cc: Takashi Iwai <tiwai@suse.com>
+> Cc: Peter Ujfalusi <peter.ujfalusi@gmail.com>
+> ---
+>  Documentation/driver-api/serial/tty.rst | 2 +-
+>  drivers/input/serio/serport.c           | 3 +--
+>  drivers/net/can/slcan.c                 | 3 +--
 
- drivers/leds/trigger/ledtrig-pattern.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+For the slcan.c:
+Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
 
-diff --git a/drivers/leds/trigger/ledtrig-pattern.c b/drivers/leds/trigger/ledtrig-pattern.c
-index 43a265dc4696..a11d68143757 100644
---- a/drivers/leds/trigger/ledtrig-pattern.c
-+++ b/drivers/leds/trigger/ledtrig-pattern.c
-@@ -126,7 +126,8 @@ static int pattern_trig_start_pattern(struct led_classdev *led_cdev)
- 
- 	if (data->is_hw_pattern) {
- 		return led_cdev->pattern_set(led_cdev, data->patterns,
--					     data->npatterns, data->repeat);
-+					     data->npatterns,
-+					     data->last_repeat);
- 	}
- 
- 	/* At least 2 tuples for software pattern. */
--- 
-2.33.0
+Marc
 
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--iopoaeuqhybpk76v
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmFBqS4ACgkQqclaivrt
+76khdgf/X14fNFG2Wsnq+ToDU18WpqftWFAPePHwvLjLnzpK8zeLdyW8zCQWTWPH
+q+B9F6gKwLMUefIXBFwlqTANCa/YNUdfA0EgTBU4M2m5J4VTMNso+ysHCdj07b3T
+4v3dMBevFhWlyRgmUczwGMjCG1TGghaIvhOqv2VQiJBrD51sXIoGcAIToMiUCZaX
+xx1Uxh5UBQb59OtRTmJPiMieQToImQrUUYDRMUMJP4ObGWUOS1Bjo5xlMxLl8yot
+CC1nGYy5R2BwKSJ56LFHuYQn8HWRYBjV09oxqB5k9MF3B4g6xYSJjItQ5N76zeXy
+5s5+s9JQpy/y3/C+14KLSoEV2Mg6jA==
+=ADnc
+-----END PGP SIGNATURE-----
+
+--iopoaeuqhybpk76v--
