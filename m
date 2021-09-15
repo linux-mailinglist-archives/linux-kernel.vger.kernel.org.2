@@ -2,213 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A55B40C7DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 17:05:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CA0440C7E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 17:09:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234055AbhIOPG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 11:06:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39898 "EHLO
+        id S234113AbhIOPKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 11:10:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233977AbhIOPGz (ORCPT
+        with ESMTP id S233990AbhIOPKV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 11:06:55 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07115C061764
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 08:05:37 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d17so1779612plr.12
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 08:05:37 -0700 (PDT)
+        Wed, 15 Sep 2021 11:10:21 -0400
+Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5E40C061575
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 08:09:02 -0700 (PDT)
+Received: by mail-ua1-x929.google.com with SMTP id 88so896375uae.10
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 08:09:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=tuZ5AJo9HYV72r//BB/nhJCCtA8J0cLgDUQf1Wa73oU=;
-        b=AqTzpIsgPDCO3HJy4ctU22tG7V35oU3V+ofAVG3HhLBvwkxZqzp3LpsALS6nVYDedT
-         eMz3lyh37h7vFtPORm/SZiEEuVt3GC7omw3sbfd0F5rlvBuKXiANq8qYQ8dklwizxk/t
-         1ldrHdFd+PzmDFTI+BVF+yRpvzPnXS4k6ZKHAjcT9gHOcxopn7G/pEvYWyUo6jwOuwK7
-         EwVXYQKijQjvGtkBRVX2IyhopAvmMkmkHPz42x3ePAD+N6120sVpz9s1acBQ7fJcmYuU
-         WDVHoXJdQsCi4AQBpOzErgvdsLdvTeTzZ71N9gyWUPvp3au/xYfiJpx0b9jaczHLFDWG
-         4Xag==
+        d=smartx-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=RMJSUECpOrASX7O5LRnVxYeIxFzjfrmjLGpxkqAvY8k=;
+        b=fG1R+ZurZZNulSU4h2FyWa8BiLThdEPNYfMegeS+bqMakGkSdanMBkE+TPOqkBZ45K
+         zSj2rCbLodjCbuJ+ba+7+8wP36tkHVHGkv/X+ug2B/NBnsYDm0ES03GYQ7ltClBNLCBt
+         2v0FMjTe5USxxcwcE/1XPryTf/AfNCg08HZ0wNZdYE5ugt34VBoVUM1Pe7M11SGJrtFe
+         B5UZv3hgMb+9QMEWoT06Hz4zjii9wFSXH+BgCVb3SD6g8F6YRZKJuucVQ2/V7l4ck7j/
+         oD3jqxnjz/a/hCE6tY/zogQ5p3iR0rolSGAhaXU+4vNA+e2cdGhZDrzPBEeRygW1TkQL
+         so+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=tuZ5AJo9HYV72r//BB/nhJCCtA8J0cLgDUQf1Wa73oU=;
-        b=KX06xMfeuaMIBD1VBLWTYm6GCfJJiQ2kvSezqQVSptPCGZ+3Xch7deDX8qgYgNTzcu
-         6NE3aJTQuajJ/3IUkG61uKJEzl9RpSTv5OehXiO5OeUUFJkavkt7dG+NWB/rdSp0YGDX
-         pQL7rzQIhNHJ9AtSjlPzPiW5pLU2L9OAMwAVTuyxuy73xxHxxXqMZChGB0TWU2eokFm4
-         rBLDUCQxtsiv7ZNaDJzCEPL4TrvYj2aN2BcyrsLqP6pJs1dEtSwkscdqhysvvPZlJH4M
-         etGnla1U3ua1W31UoCmwlzHXnrQo2xxlsgbRX4TnVCefMBOMzTM1mznWBmIK6seKlKB/
-         kCCg==
-X-Gm-Message-State: AOAM530C8j26OA6CFdlh1BLmV2XnnFCM1kKFDd5+LJfSjWKtHQFDpFqg
-        PCztyb0cQ89svQB8M8oReIKFgQ==
-X-Google-Smtp-Source: ABdhPJy0Tg9oNP4ZFHBxknMHxgqD9Dk0JxCQuX5C2E5V0NQzkRuEYxefKNUn+Phg3g7CrFCnyeEKfw==
-X-Received: by 2002:a17:90b:957:: with SMTP id dw23mr253699pjb.125.1631718336048;
-        Wed, 15 Sep 2021 08:05:36 -0700 (PDT)
-Received: from dragon (80.251.214.228.16clouds.com. [80.251.214.228])
-        by smtp.gmail.com with ESMTPSA id s10sm3795857pjn.38.2021.09.15.08.05.33
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 15 Sep 2021 08:05:35 -0700 (PDT)
-Date:   Wed, 15 Sep 2021 23:05:27 +0800
-From:   Shawn Guo <shawn.guo@linaro.org>
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] clk: qcom: smd-rpm: Add rate hooks for
- clk_smd_rpm_branch_ops
-Message-ID: <20210915150526.GE25255@dragon>
-References: <20210914025554.5686-1-shawn.guo@linaro.org>
- <20210914025554.5686-2-shawn.guo@linaro.org>
- <163165658855.763609.14080313241484048687@swboyd.mtv.corp.google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=RMJSUECpOrASX7O5LRnVxYeIxFzjfrmjLGpxkqAvY8k=;
+        b=w1HGWWN2Kpso9lTAvIpt2Yt54yKnqvps+vqYJ+FH77qLonXZPgk0DTNlWwLlp+FnOG
+         5oZFtB8Qyc/3otvU29tz2gj64fqHwWBJ7l/BUxRTspyIA3T6AsWPCm2/bKScChJwVqPe
+         iBCIrkzqofjTDUHWF2Tfkbduc1Um7u0TD0jgS5cGPGmNJvx0ECRey7pEXa4j6E65T86/
+         EU9LStzcr9NRJ2hpPuHH99Eak+K4Ey6L91Jcj4NVNiXf+OZake+ywk1ZRPdCQ4et1G4C
+         0kx7pAbHK3lFqDqiBM69388lRrHqfQRDMO/+eUXuvqdhELT8mbCD6CYYveD+BxSkBPcd
+         CrHw==
+X-Gm-Message-State: AOAM532MPb+0hsPU+xsgD0usCGpTFCHiSjwANbbR5yYwRn+qtcHIw28f
+        vmptE5u5F5HTp1PNta7Gx91rrPppX0vxoGP2LQkEsA39c5WXb2pp
+X-Google-Smtp-Source: ABdhPJz+lGvkNRjznJyetIKGsh0f+EIE9yBanUGKONiFPZyfcHxk7aW8eKufEF0k707acuEIfxACcEktEQW9DrvGs18=
+X-Received: by 2002:ab0:2246:: with SMTP id z6mr290058uan.31.1631718541884;
+ Wed, 15 Sep 2021 08:09:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <163165658855.763609.14080313241484048687@swboyd.mtv.corp.google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210913032003.2836583-1-fengli@smartx.com>
+In-Reply-To: <20210913032003.2836583-1-fengli@smartx.com>
+From:   Li Feng <fengli@smartx.com>
+Date:   Wed, 15 Sep 2021 23:08:51 +0800
+Message-ID: <CAHckoCyDULok_QLLh5Nmbx4qLCxKL43TgtFgCSAwuaPpRy1BFw@mail.gmail.com>
+Subject: Re: [PATCH] md: allow to set the fail_fast on RAID1/RAID10
+To:     Song Liu <song@kernel.org>, linux-raid@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 02:56:28PM -0700, Stephen Boyd wrote:
-> Quoting Shawn Guo (2021-09-13 19:55:52)
-> > On QCM2290 platform, the clock xo_board runs at 38400000, while the
-> > child clock bi_tcxo needs to run at 19200000.  That said,
-> > clk_smd_rpm_branch_ops needs the capability of setting rate. Add rate
-> > hooks into clk_smd_rpm_branch_ops to make it possible.
-> 
-> This doesn't sound right. The branch is a simple on/off. If xo_board is
-> 38.4MHz, then there is an internal divider in the SoC that makes bi_tcxo
-> (i.e. the root of the entire clk tree) be 19.2MHz. We don't model the
-> divider, I guess because it isn't very important to. Instead, we tack on
-> a divider field and implement recalc_rate op. See clk-rpmh.c in the qcom
-> directory for this.
+ping ...
 
-Thanks for the comment, Stephen!  To be honest, I copied the
-implementation from vendor kernel, and wasn't really sure if it's
-correct or the best.
+Thanks,
+Feng Li
 
-So here is what I get based on your suggestion.  Let's me know if
-it's how you wanted it to be.  Thanks!
-
-Shawn
-
-----8<---------
-
-From 23dda79fee412738f046b89bdd20ef95a24c35cc Mon Sep 17 00:00:00 2001
-From: Shawn Guo <shawn.guo@linaro.org>
-Date: Wed, 15 Sep 2021 22:00:32 +0800
-Subject: [PATCH] clk: qcom: smd-rpm: Add a divider field for branch clock
-
-Similar to clk-rpmh, clk-smd-rpm has the same need to handle the case
-where an internal divider is there between xo_board and bi_tcxo.  The
-change is made in the a back compatible way below.
-
- - Add div field to struct clk_smd_rpm, and have
-   __DEFINE_CLK_SMD_RPM_BRANCH() assign it.
-
- - Update all existing __DEFINE_CLK_SMD_RPM_BRANCH() wrappers to pass a
-   zero div.
-
- - Add DEFINE_CLK_SMD_RPM_BRANCH_DIV() which doesn't take rate argument
-   but div.
-
- - Update clk_smd_rpm_recalc_rate() to handle div and add it as
-   .recalc_rate of clk_smd_rpm_branch_ops.
-
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
----
- drivers/clk/qcom/clk-smd-rpm.c | 23 ++++++++++++++++-------
- 1 file changed, 16 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/clk/qcom/clk-smd-rpm.c b/drivers/clk/qcom/clk-smd-rpm.c
-index 66d7807ee38e..66ef0d3795fd 100644
---- a/drivers/clk/qcom/clk-smd-rpm.c
-+++ b/drivers/clk/qcom/clk-smd-rpm.c
-@@ -66,13 +66,14 @@
- 	}
- 
- #define __DEFINE_CLK_SMD_RPM_BRANCH(_platform, _name, _active, type, r_id,    \
--				    stat_id, r, key)			      \
-+				    stat_id, r, key, _div)		      \
- 	static struct clk_smd_rpm _platform##_##_active;		      \
- 	static struct clk_smd_rpm _platform##_##_name = {		      \
- 		.rpm_res_type = (type),					      \
- 		.rpm_clk_id = (r_id),					      \
- 		.rpm_status_id = (stat_id),				      \
- 		.rpm_key = (key),					      \
-+		.div = (_div),						      \
- 		.branch = true,						      \
- 		.peer = &_platform##_##_active,				      \
- 		.rate = (r),						      \
-@@ -92,6 +93,7 @@
- 		.rpm_status_id = (stat_id),				      \
- 		.active_only = true,					      \
- 		.rpm_key = (key),					      \
-+		.div = (_div),						      \
- 		.branch = true,						      \
- 		.peer = &_platform##_##_name,				      \
- 		.rate = (r),						      \
-@@ -112,7 +114,12 @@
- 
- #define DEFINE_CLK_SMD_RPM_BRANCH(_platform, _name, _active, type, r_id, r)   \
- 		__DEFINE_CLK_SMD_RPM_BRANCH(_platform, _name, _active, type,  \
--		r_id, 0, r, QCOM_RPM_SMD_KEY_ENABLE)
-+		r_id, 0, r, QCOM_RPM_SMD_KEY_ENABLE, 0)
-+
-+#define DEFINE_CLK_SMD_RPM_BRANCH_DIV(_platform, _name, _active, type, r_id,  \
-+				      _div)				      \
-+		__DEFINE_CLK_SMD_RPM_BRANCH(_platform, _name, _active, type,  \
-+		r_id, 0, 0, QCOM_RPM_SMD_KEY_ENABLE, _div)
- 
- #define DEFINE_CLK_SMD_RPM_QDSS(_platform, _name, _active, type, r_id)	      \
- 		__DEFINE_CLK_SMD_RPM(_platform, _name, _active, type, r_id,   \
-@@ -121,12 +128,12 @@
- #define DEFINE_CLK_SMD_RPM_XO_BUFFER(_platform, _name, _active, r_id)	      \
- 		__DEFINE_CLK_SMD_RPM_BRANCH(_platform, _name, _active,	      \
- 		QCOM_SMD_RPM_CLK_BUF_A, r_id, 0, 1000,			      \
--		QCOM_RPM_KEY_SOFTWARE_ENABLE)
-+		QCOM_RPM_KEY_SOFTWARE_ENABLE, 0)
- 
- #define DEFINE_CLK_SMD_RPM_XO_BUFFER_PINCTRL(_platform, _name, _active, r_id) \
- 		__DEFINE_CLK_SMD_RPM_BRANCH(_platform, _name, _active,	      \
- 		QCOM_SMD_RPM_CLK_BUF_A, r_id, 0, 1000,			      \
--		QCOM_RPM_KEY_PIN_CTRL_CLK_BUFFER_ENABLE_KEY)
-+		QCOM_RPM_KEY_PIN_CTRL_CLK_BUFFER_ENABLE_KEY, 0)
- 
- #define to_clk_smd_rpm(_hw) container_of(_hw, struct clk_smd_rpm, hw)
- 
-@@ -140,6 +147,7 @@ struct clk_smd_rpm {
- 	bool branch;
- 	struct clk_smd_rpm *peer;
- 	struct clk_hw hw;
-+	u8 div;
- 	unsigned long rate;
- 	struct qcom_smd_rpm *rpm;
- };
-@@ -370,10 +378,10 @@ static unsigned long clk_smd_rpm_recalc_rate(struct clk_hw *hw,
- 
- 	/*
- 	 * RPM handles rate rounding and we don't have a way to
--	 * know what the rate will be, so just return whatever
--	 * rate was set.
-+	 * know what the rate will be, so just return divided parent
-+	 * rate or whatever rate was set.
- 	 */
--	return r->rate;
-+	return r->div ? parent_rate / r->div : r->rate;
- }
- 
- static int clk_smd_rpm_enable_scaling(struct qcom_smd_rpm *rpm)
-@@ -416,6 +424,7 @@ static const struct clk_ops clk_smd_rpm_ops = {
- static const struct clk_ops clk_smd_rpm_branch_ops = {
- 	.prepare	= clk_smd_rpm_prepare,
- 	.unprepare	= clk_smd_rpm_unprepare,
-+	.recalc_rate	= clk_smd_rpm_recalc_rate,
- };
- 
- DEFINE_CLK_SMD_RPM(msm8916, pcnoc_clk, pcnoc_a_clk, QCOM_SMD_RPM_BUS_CLK, 0);
--- 
-2.17.1
-
+Li Feng <fengli@smartx.com> =E4=BA=8E2021=E5=B9=B49=E6=9C=8813=E6=97=A5=E5=
+=91=A8=E4=B8=80 =E4=B8=8A=E5=8D=8811:22=E5=86=99=E9=81=93=EF=BC=9A
+>
+> When the running RAID1/RAID10 need to be set with the fail_fast flag,
+> we have to remove each device from RAID and re-add it again with the
+> --fail_fast flag.
+>
+> Export the fail_fast flag to the userspace to support the read and
+> write.
+>
+> Signed-off-by: Li Feng <fengli@smartx.com>
+> ---
+>  drivers/md/md.c | 30 ++++++++++++++++++++++++++++++
+>  1 file changed, 30 insertions(+)
+>
+> diff --git a/drivers/md/md.c b/drivers/md/md.c
+> index ae8fe54ea358..ce63972a4555 100644
+> --- a/drivers/md/md.c
+> +++ b/drivers/md/md.c
+> @@ -3583,6 +3583,35 @@ ppl_size_store(struct md_rdev *rdev, const char *b=
+uf, size_t len)
+>  static struct rdev_sysfs_entry rdev_ppl_size =3D
+>  __ATTR(ppl_size, S_IRUGO|S_IWUSR, ppl_size_show, ppl_size_store);
+>
+> +static ssize_t
+> +fail_fast_show(struct md_rdev *rdev, char *page)
+> +{
+> +       return sprintf(page, "%d\n", test_bit(FailFast, &rdev->flags));
+> +}
+> +
+> +static ssize_t
+> +fail_fast_store(struct md_rdev *rdev, const char *buf, size_t len)
+> +{
+> +       int ret;
+> +       bool bit;
+> +
+> +       ret =3D kstrtobool(buf, &bit);
+> +       if (ret)
+> +               return ret;
+> +
+> +       if (test_bit(FailFast, &rdev->flags) && !bit) {
+> +               clear_bit(FailFast, &rdev->flags);
+> +               md_update_sb(rdev->mddev, 1);
+> +       } else if (!test_bit(FailFast, &rdev->flags) && bit) {
+> +               set_bit(FailFast, &rdev->flags);
+> +               md_update_sb(rdev->mddev, 1);
+> +       }
+> +       return len;
+> +}
+> +
+> +static struct rdev_sysfs_entry rdev_fail_fast =3D
+> +__ATTR(fail_fast, 0644, fail_fast_show, fail_fast_store);
+> +
+>  static struct attribute *rdev_default_attrs[] =3D {
+>         &rdev_state.attr,
+>         &rdev_errors.attr,
+> @@ -3595,6 +3624,7 @@ static struct attribute *rdev_default_attrs[] =3D {
+>         &rdev_unack_bad_blocks.attr,
+>         &rdev_ppl_sector.attr,
+>         &rdev_ppl_size.attr,
+> +       &rdev_fail_fast.attr,
+>         NULL,
+>  };
+>  static ssize_t
+> --
+> 2.31.1
+>
