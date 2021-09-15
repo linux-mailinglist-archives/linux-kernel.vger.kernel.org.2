@@ -2,155 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5791340C9B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 18:05:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5C1A40C9B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 18:06:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234595AbhIOQHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 12:07:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54114 "EHLO
+        id S234616AbhIOQIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 12:08:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234563AbhIOQHJ (ORCPT
+        with ESMTP id S230022AbhIOQH7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 12:07:09 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E089AC061574;
-        Wed, 15 Sep 2021 09:05:49 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id l18-20020a05600c4f1200b002f8cf606262so5218464wmq.1;
-        Wed, 15 Sep 2021 09:05:49 -0700 (PDT)
+        Wed, 15 Sep 2021 12:07:59 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96E76C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 09:06:40 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id a20-20020a0568300b9400b0051b8ca82dfcso4232516otv.3
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 09:06:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=pUEDn+wGVFuZIGgP7SMh1pO9rPToQCJ2HXOPEQfBxeM=;
-        b=kxIkdNsxQCClLdZT44Z1sBKv9y8euz2zes/UaPqWvKSTKO/wlfspE+KVQskDKPWG+G
-         oIoOS8by6DF1EGy6jjy9Vso3/8r3S4ctU39w1RhXJZ6RnV6mx5ofoThii1RfeyGMu8Jw
-         8aLusHRCacWIq5HkP3k+UT2YPpRbjCqnzBDnnI4cD6QqcMI6pBt1CO6msIJVrkMGySz7
-         RjUnEExFYS61wwRp/K5btLBtwzK1m58mnN4CgvEF0omgJw+yESzDITUYzTvWnEP3VphW
-         zp6mUYlUkDh4wO/MZV9PdoW6+KGofORVATctnneoZP1t34ynP0mzN7uEyxMm/lsHORvP
-         YOtA==
+        h=sender:message-id:date:mime-version:user-agent:subject
+         :content-language:to:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=ISVv1atSRTyYqw35Va1vQyD5cjgJi0F9b5ypn+Ek17k=;
+        b=FNKt/2RVm35X+MKmP0UvQfr8+x6j8k5p/H6MwV0U8RF+9Q+2K9FwQiwt0DvA0cEyI/
+         gQBdFbqKvslpE3cHCOm9uaxWcmidZGipyFWy40r7rjovw3EYPMLdliNKJJChaunXSdAi
+         dbbnNoffAl8EoNYdO2Oa1FP0IEi2mAzQEjBpVmSuQ7YGnM3J1Vyf1G6xFEy04V75x5Qh
+         Vhyd/Ux7ACAWjzbtBBO88/zDobpOZ2qijNxx6IPsbkDMWvcUp4MT845LJsy9VWSCT6gg
+         l8NZA9cJPs2L8lqDW8yDePBA+KWGTB+AXH/TADMH9sAOh5mK4kEv86vIGES+4NEWQ9Au
+         5ywg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:sender:message-id:date:mime-version:user-agent
+         :subject:content-language:to:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=pUEDn+wGVFuZIGgP7SMh1pO9rPToQCJ2HXOPEQfBxeM=;
-        b=sKfeShpbpSC9xFgZmdtjaF37rdHYCXEc9z30/mEIY7h5Hqysx9B/+mXIO05GmX8YXN
-         87wB1mY4j7QprFOry8xhDlz1CqwA+J21exSNJTgb3rijJxgNCZo7M+fJcuhunTsBbxNF
-         AvQdVzC//BhvW4SDX27jHc9D+35FNkstYPQ8pp2+jD4ehJKCaLxjLVqm9PGxg+a42lIp
-         NDpxZqk8bMJVpfkKaFN2RwkwDjzYUXj0DXsExS7ZDfp75VIQ5jM8OTuQ1pVMpCY4Cjvv
-         wWHXNY4XMpq184MaL33yBvlRVhSnbIJD0GbW57EyTQtMeeEW9KtxSyayyjFPkA/qO2TZ
-         xuWA==
-X-Gm-Message-State: AOAM533N4weHyKNMreQtCa/F33PloIXeLxGKbxiKWcQ11YE4tw8SB5Am
-        vyvFEJ2pkG6gbbZZW8Z5nHaK2PDbCFg=
-X-Google-Smtp-Source: ABdhPJwq7e9x09s+3oaFDVBVCy7WaLr9skjRUIm4gGsRhnyhhmWNbe2zalWVuWq8F1iJTkXhZG9kzw==
-X-Received: by 2002:a7b:c142:: with SMTP id z2mr5494618wmi.10.1631721948396;
-        Wed, 15 Sep 2021 09:05:48 -0700 (PDT)
-Received: from ?IPv6:2003:ea:8f08:4500:619b:3ca6:ce93:7943? (p200300ea8f084500619b3ca6ce937943.dip0.t-ipconnect.de. [2003:ea:8f08:4500:619b:3ca6:ce93:7943])
-        by smtp.googlemail.com with ESMTPSA id j2sm387829wrq.35.2021.09.15.09.05.45
+        bh=ISVv1atSRTyYqw35Va1vQyD5cjgJi0F9b5ypn+Ek17k=;
+        b=zakMK7BtZtY0SKiGpkbb56LIuaxtoToX2jxNkuVpbgYB035xMUxSMhVFkpU1KpAeGR
+         mgP5Lfn4yR7nPqu0DTcgT96Yh2lHBkGCKdTyTrZfDihNzrgi7VYDUGlAn3DT0ry1NhJk
+         qTrCkBsjI1XoEvoeE3rrYwJv152/8OeXh/SmOgc4CMqKFuCUMeRJyoA7vHEn8Sn4Bq+p
+         iSVB2h7ns9NnzBnAGu7AU7yJSKWmixJje+b2guPRsmTTPRosRKK6l5GL4si9lYse460X
+         H2rieuJLl96rY4/9GxrwhYkKKOac0hSDgLwv1t/cbdAjzGaSVBR6kbfMvVGOqMwB+eMV
+         ii0Q==
+X-Gm-Message-State: AOAM5310FmTsQUFbJf7zH6PfP08ydgYYf5lgXUrHiFK5AMPWYx6BJpSR
+        29iEkm3IhdC5fONUOHcRquGNV3Y28So=
+X-Google-Smtp-Source: ABdhPJyVkbAyqqHjYzoVgnBBeNWM9UBbJpVryIa+1MgbDiKM9Ppa9i4KBFs5ocWqrIypvV9rVVIffg==
+X-Received: by 2002:a9d:7c88:: with SMTP id q8mr630037otn.367.1631721999749;
+        Wed, 15 Sep 2021 09:06:39 -0700 (PDT)
+Received: from ?IPV6:2603:8090:2005:39b3::1007? (2603-8090-2005-39b3-0000-0000-0000-1007.res6.spectrum.com. [2603:8090:2005:39b3::1007])
+        by smtp.gmail.com with ESMTPSA id h19sm73054otr.75.2021.09.15.09.06.38
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Sep 2021 09:05:48 -0700 (PDT)
-Subject: Re: [Intel-wired-lan] Linux 5.15-rc1 - 82599ES VPD access isue
-To:     Hisashi T Fujinaka <htodd@twofifty.com>
-Cc:     Dave Jones <davej@codemonkey.org.uk>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-References: <CAHk-=wgbygOb3hRV+7YOpVcMPTP2oQ=iw6tf09Ydspg7o7BsWQ@mail.gmail.com>
- <20210913141818.GA27911@codemonkey.org.uk>
- <ab571d7e-0cf5-ffb3-6bbe-478a4ed749dc@gmail.com>
- <20210913201519.GA15726@codemonkey.org.uk>
- <b84b799d-0aaa-c4e1-b61b-8e2316b62bd1@gmail.com>
- <20210913203234.GA6762@codemonkey.org.uk>
- <b24d81e2-5a1e-3616-5a01-abd58c0712f7@gmail.com>
- <b4b543d4-c0c5-3c56-46b7-e17ec579edcc@twofifty.com>
- <367cc748-d411-8cf8-ff95-07715c55e899@gmail.com>
- <20210914142419.GA32324@codemonkey.org.uk>
- <c02876d7-c3f3-1953-334d-1248af919796@twofifty.com>
- <80718d5e-a4d2-ff85-aa8f-cd790c951278@gmail.com>
- <14f6d9e9-aca8-133-67f5-92effa2ea280@twofifty.com>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <d49182d6-15fe-15a1-c063-4808942a84c1@gmail.com>
-Date:   Wed, 15 Sep 2021 18:05:34 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Wed, 15 Sep 2021 09:06:38 -0700 (PDT)
+Sender: Larry Finger <larry.finger@gmail.com>
+Message-ID: <6f89f419-edaf-296a-1021-cdc12f218e7a@lwfinger.net>
+Date:   Wed, 15 Sep 2021 11:06:36 -0500
 MIME-Version: 1.0
-In-Reply-To: <14f6d9e9-aca8-133-67f5-92effa2ea280@twofifty.com>
-Content-Type: text/plain; charset=utf-8
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH v5 10/19] staging: r8188eu: remove the helpers of
+ usb_write_port()
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        Philip Potter <phil@philpotter.co.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        David Laight <david.Laight@aculab.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+References: <20210915124149.27543-1-fmdefrancesco@gmail.com>
+ <20210915124149.27543-11-fmdefrancesco@gmail.com>
+From:   Larry Finger <Larry.Finger@lwfinger.net>
+In-Reply-To: <20210915124149.27543-11-fmdefrancesco@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15.09.2021 16:18, Hisashi T Fujinaka wrote:
-> On Tue, 14 Sep 2021, Heiner Kallweit wrote:
+On 9/15/21 07:41, Fabio M. De Francesco wrote:
+> From: Pavel Skripkin <paskripkin@gmail.com>
 > 
->> On 14.09.2021 22:00, Hisashi T Fujinaka wrote:
->>> On Tue, 14 Sep 2021, Dave Jones wrote:
->>>
->>>> On Tue, Sep 14, 2021 at 07:51:22AM +0200, Heiner Kallweit wrote:
->>>>
->>>>>> Sorry to reply from my personal account. If I did it from my work
->>>>>> account I'd be top-posting because of Outlook and that goes over like a
->>>>>> lead balloon.
->>>>>>
->>>>>> Anyway, can you send us a dump of your eeprom using ethtool -e? You can
->>>>>> either send it via a bug on e1000.sourceforge.net or try sending it to
->>>>>> todd.fujinaka@intel.com
->>>>>>
->>>>>> The other thing is I'm wondering is what the subvendor device ID you
->>>>>> have is referring to because it's not in the pci database. Some ODMs
->>>>>> like getting creative with what they put in the NVM.
->>>>>>
->>>>>> Todd Fujinaka (todd.fujinaka@intel.com)
->>>>>
->>>>> Thanks for the prompt reply. Dave, could you please provide the requested
->>>>> information?
->>>>
->>>> sent off-list.
->>>>
->>>>     Dave
->>>
->>> Whoops. I replied from outlook again.
->>>
->>> I have confirmation that this should be a valid image. The VPD is just a
->>> series of 3's. There are changes to preboot header, flash and BAR size,
->>> and as far as I can tell, a nonsense subdevice ID, but this should work.
->>>
->>> What was the original question?
->>>
->> "lspci -vv" complains about an invalid short tag 0x06 and the PCI VPD
->> code resulted in a stall. So it seems the data doesn't have valid VPD
->> format as defined in PCI specification.
->>
->> 01:00.0 Ethernet controller: Intel Corporation 82599ES 10-Gigabit SFI/SFP+ Network Connection (rev 01)
->>        Subsystem: Device 1dcf:030a
->>     ...
->>             Capabilities: [e0] Vital Product Data
->>                *Unknown small resource type 06, will not decode more.*
->>
->> Not sure which method is used by the driver to get the EEPROM content.
->> For the issue here is relevant what is exposed via PCI VPD.
->>
->> The related kernel error message has been reported few times, e.g. here:
->> https://access.redhat.com/solutions/3001451
->> Only due to a change in kernel code this became a more prominent
->> issue now.
->>
->> You say that VPD is just a series of 3's. This may explain why kernel and
->> tools complain about an invalid VPD format. VPD misses the tag structure.
+> Remove the unnecessary _rtw_write_port() and usb_write_port() and embed
+> their code into the caller (i.e., rtw_write_port()).
 > 
-> I think I conflated two issues and yours may not be the one with the
-> weird Amazon NIC. In any case, the VPD does not match the spec and two
-> people have confirmed it's just full of 3's. With the bogus subvendor
-> ID, I'm thinking this is not an Intel NIC.
+> _rtw_write_port() is a mere redefinition of rtw_write_port() and it is
+> unneeded. usb_write_port() was the only functions assigned to the
+> (*_usb_write_port) pointer, so we can simply remove it and make a direct
+> call.
 > 
-> Next step is to contact whoever made the NIC and ask them for guidance.
+> This patch is in preparation for the _io_ops structure removal.
 > 
-In an earlier mail in this thread was stated that subvendor id is unknown.
-Checking here https://pcisig.com/membership/member-companies?combine=1dcf
-it says: Beijing Sinead Technology Co., Ltd.
+> Co-developed-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+> ---
+>   drivers/staging/r8188eu/core/rtw_io.c         | 20 +------------------
+>   drivers/staging/r8188eu/hal/usb_ops_linux.c   |  1 -
+>   drivers/staging/r8188eu/include/rtw_io.h      |  4 +---
+>   .../staging/r8188eu/include/usb_ops_linux.h   |  1 -
+>   .../staging/r8188eu/os_dep/usb_ops_linux.c    |  3 +--
+>   5 files changed, 3 insertions(+), 26 deletions(-)
+> 
+> diff --git a/drivers/staging/r8188eu/core/rtw_io.c b/drivers/staging/r8188eu/core/rtw_io.c
+> index ac72f894da75..3a5e9dbfcb12 100644
+> --- a/drivers/staging/r8188eu/core/rtw_io.c
+> +++ b/drivers/staging/r8188eu/core/rtw_io.c
+> @@ -87,24 +87,6 @@ void _rtw_read_port_cancel(struct adapter *adapter)
+>   		_read_port_cancel(pintfhdl);
+>   }
+>   
+> -u32 _rtw_write_port(struct adapter *adapter, u32 addr, u32 cnt, u8 *pmem)
+> -{
+> -	u32 (*_write_port)(struct intf_hdl *pintfhdl, u32 addr, u32 cnt, u8 *pmem);
+> -	struct io_priv *pio_priv = &adapter->iopriv;
+> -	struct	intf_hdl		*pintfhdl = &pio_priv->intf;
+> -	u32 ret = _SUCCESS;
+> -
+> -
+> -
+> -	_write_port = pintfhdl->io_ops._write_port;
+> -
+> -	ret = _write_port(pintfhdl, addr, cnt, pmem);
+> -
+> -
+> -
+> -	return ret;
+> -}
+> -
+>   u32 _rtw_write_port_and_wait(struct adapter *adapter, u32 addr, u32 cnt, u8 *pmem, int timeout_ms)
+>   {
+>   	int ret = _SUCCESS;
+> @@ -114,7 +96,7 @@ u32 _rtw_write_port_and_wait(struct adapter *adapter, u32 addr, u32 cnt, u8 *pme
+>   	rtw_sctx_init(&sctx, timeout_ms);
+>   	pxmitbuf->sctx = &sctx;
+>   
+> -	ret = _rtw_write_port(adapter, addr, cnt, pmem);
+> +	ret = rtw_write_port(adapter, addr, cnt, pmem);
+>   
+>   	if (ret == _SUCCESS)
+>   		ret = rtw_sctx_wait(&sctx);
+> diff --git a/drivers/staging/r8188eu/hal/usb_ops_linux.c b/drivers/staging/r8188eu/hal/usb_ops_linux.c
+> index a104e3fac7d1..4fea21c0f7af 100644
+> --- a/drivers/staging/r8188eu/hal/usb_ops_linux.c
+> +++ b/drivers/staging/r8188eu/hal/usb_ops_linux.c
+> @@ -562,7 +562,6 @@ void rtl8188eu_set_intf_ops(struct _io_ops	*pops)
+>   {
+>   
+>   	memset((u8 *)pops, 0, sizeof(struct _io_ops));
+> -	pops->_write_port = &usb_write_port;
+>   	pops->_read_port_cancel = &usb_read_port_cancel;
+>   	pops->_write_port_cancel = &usb_write_port_cancel;
+>   
+> diff --git a/drivers/staging/r8188eu/include/rtw_io.h b/drivers/staging/r8188eu/include/rtw_io.h
+> index 600c6e7a375b..f2b1978b6e80 100644
+> --- a/drivers/staging/r8188eu/include/rtw_io.h
+> +++ b/drivers/staging/r8188eu/include/rtw_io.h
+> @@ -262,7 +262,7 @@ int _rtw_write16_async(struct adapter *adapter, u32 addr, u16 val);
+>   int _rtw_write32_async(struct adapter *adapter, u32 addr, u32 val);
+>   
+>   void _rtw_write_mem(struct adapter *adapter, u32 addr, u32 cnt, u8 *pmem);
+> -u32 _rtw_write_port(struct adapter *adapter, u32 addr, u32 cnt, u8 *pmem);
+> +u32 rtw_write_port(struct adapter *adapter, u32 addr, u32 cnt, u8 *pmem);
+>   u32 _rtw_write_port_and_wait(struct adapter *adapter, u32 addr, u32 cnt,
+>   			     u8 *pmem, int timeout_ms);
+>   void _rtw_write_port_cancel(struct adapter *adapter);
+> @@ -275,8 +275,6 @@ void _rtw_write_port_cancel(struct adapter *adapter);
+>   	_rtw_write16_async((adapter), (addr), (val))
+>   #define rtw_write32_async(adapter, addr, val)				\
+>   	_rtw_write32_async((adapter), (addr), (val))
+> -#define rtw_write_port(adapter, addr, cnt, mem)				\
+> -	_rtw_write_port((adapter), (addr), (cnt), (mem))
+>   #define rtw_write_port_and_wait(adapter, addr, cnt, mem, timeout_ms)	\
+>   	_rtw_write_port_and_wait((adapter), (addr), (cnt), (mem), (timeout_ms))
+>   #define rtw_write_port_cancel(adapter) _rtw_write_port_cancel((adapter))
+> diff --git a/drivers/staging/r8188eu/include/usb_ops_linux.h b/drivers/staging/r8188eu/include/usb_ops_linux.h
+> index 37e0614fd15c..bdc596fe5854 100644
+> --- a/drivers/staging/r8188eu/include/usb_ops_linux.h
+> +++ b/drivers/staging/r8188eu/include/usb_ops_linux.h
+> @@ -30,7 +30,6 @@ unsigned int ffaddr2pipehdl(struct dvobj_priv *pdvobj, u32 addr);
+>   
+>   void usb_read_port_cancel(struct intf_hdl *pintfhdl);
+>   
+> -u32 usb_write_port(struct intf_hdl *pintfhdl, u32 addr, u32 cnt, u8 *wmem);
+>   void usb_write_port_cancel(struct intf_hdl *pintfhdl);
+>   
+>   #endif
+> diff --git a/drivers/staging/r8188eu/os_dep/usb_ops_linux.c b/drivers/staging/r8188eu/os_dep/usb_ops_linux.c
+> index 9afb4df71969..36ef06f88fdd 100644
+> --- a/drivers/staging/r8188eu/os_dep/usb_ops_linux.c
+> +++ b/drivers/staging/r8188eu/os_dep/usb_ops_linux.c
+> @@ -124,14 +124,13 @@ static void usb_write_port_complete(struct urb *purb, struct pt_regs *regs)
+>   
+>   }
+>   
+> -u32 usb_write_port(struct intf_hdl *pintfhdl, u32 addr, u32 cnt, u8 *wmem)
+> +u32 rtw_write_port(struct adapter *padapter, u32 addr, u32 cnt, u8 *wmem)
+>   {
+>   	unsigned long irqL;
+>   	unsigned int pipe;
+>   	int status;
+>   	u32 ret = _FAIL;
+>   	struct urb *purb = NULL;
+> -	struct adapter *padapter = (struct adapter *)pintfhdl->padapter;
+>   	struct dvobj_priv	*pdvobj = adapter_to_dvobj(padapter);
+>   	struct xmit_priv	*pxmitpriv = &padapter->xmitpriv;
+>   	struct xmit_buf *pxmitbuf = (struct xmit_buf *)wmem;
+> 
 
-> Todd Fujinaka <todd.fujinaka@intel.com>
+Patch 1 failed to apply to Greg's staging-testing branch. Particularly with the 
+changes with large number of patches, you need to remove the commits in 
+question, got a 'git pull', and then test that your changes still apply.
+
+Larry
+
 
