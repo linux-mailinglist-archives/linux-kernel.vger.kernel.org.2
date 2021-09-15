@@ -2,138 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6379A40C4F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 14:09:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6EC640C4F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 14:09:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237577AbhIOMKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 08:10:32 -0400
-Received: from mail-eopbgr70132.outbound.protection.outlook.com ([40.107.7.132]:32674
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232882AbhIOMKa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 08:10:30 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LlO32feDsRc+h3WA8zX/iSSbL5OO8IpJb79wJHiUaK9MPHrYyZ4R0C9RMjHP72Jb/vWu76QxCmba7De5EsF41hyzQbVGNf5upY3+e+r06X+6bcfLaclInIjEjxqrq50v6FuZU04hbIKlr35zfPIixWX/4+nsCG64en0pIkTSmmnZUsgGoo+xuo5RM2+Wn0IFHd/vb4NNzEu04tpxzLd8HWK9cmYuUhJ5DWJlCEzlwXMLTtNrK3wiiHVbSaIpg/FyOAO+MOv374NxsM91Z25rNSCbprX57Hy4Pdp/V9UkN6Kv1SXjsvQ37Lar8tIHRrJDycnlqQfuG/KWnelIyWRF9g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=AYgRB8vjhJycmpVMVToxtm86ycCvco20BkJhKqPxM8k=;
- b=WAgFXOaFdRutLyITrjY/LKN0G99ojOUxVix9nDOMZqJMnzOTMX0ccGVxF/RRIiqeXwRX02pNgMIJB5b0vCc8sY49U1mhYdfUXvC1gL7DSwIYaTJFEyaShWLN1r8+igwK6g2N3mYL4TVXPebJCFA7SHBa3QxMO5dsRmMcEkzoYB4ESlfRgR/VZJMMYvF413/+fpSstGN8u3gAmkIVgOrco1YTI7Bz/BgerGY6DrjH38kMCNxMqF929Ac8Kdue+UJcA6cy3g4ArqhYCTiESbxUhymW7Umg5eXRRCLfUVwzs+nHdsPzKjjmTwL+aJlkuxnX/tMn8dfttoFcHDYyWo6Nig==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=kontron.de; dmarc=pass action=none header.from=kontron.de;
- dkim=pass header.d=kontron.de; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com;
- s=selector2-mysnt-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AYgRB8vjhJycmpVMVToxtm86ycCvco20BkJhKqPxM8k=;
- b=k+pXAdLpdyn4utrDLfQRm0olKj7P0qs6m+VsHSdK7suGNWqWbxJkosItNdP9nkOKglSwJLXdr++Z3ITyMQcdVwyWJ9ypkaRUkvDvQyROywlsU93Tz2OiaUIbmIElrp7pdfivPsLsYo8TdLKjOE7HyfgOhl0m+HPxMFy0eDoJEaM=
-Authentication-Results: walle.cc; dkim=none (message not signed)
- header.d=none;walle.cc; dmarc=none action=none header.from=kontron.de;
-Received: from AM6PR10MB2968.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:d6::31)
- by AS8PR10MB4882.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:34d::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.17; Wed, 15 Sep
- 2021 12:09:08 +0000
-Received: from AM6PR10MB2968.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::d124:4253:83f9:d8e1]) by AM6PR10MB2968.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::d124:4253:83f9:d8e1%5]) with mapi id 15.20.4478.019; Wed, 15 Sep 2021
- 12:09:08 +0000
-Message-ID: <898fd5e0-2073-3689-89b6-2c5071773786@kontron.de>
-Date:   Wed, 15 Sep 2021 14:09:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH] arm64: dts: imx8mm-kontron-n801x-som: do not allow to
- switch off buck2
-Content-Language: en-US
-To:     Michael Walle <michael@walle.cc>,
-        Heiko Thiery <heiko.thiery@gmail.com>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Shengjiu Wang <shengjiu.wang@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>
-References: <20210915120325.20248-1-heiko.thiery@gmail.com>
- <7e7ee4244ababc0a46e0875222c7e37d@walle.cc>
-From:   Frieder Schrempf <frieder.schrempf@kontron.de>
-In-Reply-To: <7e7ee4244ababc0a46e0875222c7e37d@walle.cc>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AM0PR02CA0003.eurprd02.prod.outlook.com
- (2603:10a6:208:3e::16) To AM6PR10MB2968.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:20b:d6::31)
+        id S236541AbhIOMLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 08:11:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231500AbhIOMLL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 08:11:11 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7A5CC061574;
+        Wed, 15 Sep 2021 05:09:52 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id c33so576249ljr.8;
+        Wed, 15 Sep 2021 05:09:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=nsbC/14C+kMeJoOAkh98qBGl2wGnLGSFlhXpNUqwCFE=;
+        b=LhPdYdNBwz8NgzDrN2yfcZ22U38rnPVJDJATIRjG63cwjSqJeLcOJ7rb7Mqkfcwr33
+         3/auLAlxO62WVV4QiDO2Df8ksHGq6u9HEH3oLpPwx4Cq9Qj5dUy22XthraTolzPolOaJ
+         E96kLqsddIYf83sJUP/zJ5eyEXN+fxcw2imlkHqzTrIeUZsdad/E3q0cC2y9z5UUqlI5
+         ifZGau8FbHZDNZXkRREq1RuEUHjYLqRrIEK/pF3SQczPs6bpDrNI64nHDcCj81CzN4Na
+         aEB1HaqB8+/GWyI0+TrO8Fh4E1l5bJCHLuFwLvlPKH5nysZxgvKVRb9jvMnVkARREFoB
+         MD8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=nsbC/14C+kMeJoOAkh98qBGl2wGnLGSFlhXpNUqwCFE=;
+        b=zfOnTH9OFXyayjiRl5LJEcwe17/vaMAyFiJwtGShVMTHRc5fSs/CwDZxbVmCKK14Jm
+         rE5N1E0o0HUZ58fWrcbbDwiEetVebsFSs2JOFl53IvfCqLGW1sUmEOT3zQwl2kHa1gHg
+         9wkASa+qn4M4SdhuK6gfcnlKmIFP9/YpvT5CZ+h81qhu0GZXKVyPrPtTBkqk0dsfx0Ko
+         zUsXIHJcOBQnq94vggih2OvZwLYCQ9aa+rmU5VWZIHiC/f11J2cbVnfMlZt8TwYQ3oGf
+         B67kkNXS110AucDkf2tEbTlltc9OnvmPqX0LuIYV9+OiOpLw4A3lPn3NYZ2WZZwmCdGz
+         tGQw==
+X-Gm-Message-State: AOAM532Y235VCzstQ77kVtq2ZsZNi+7m+EPiKd+DUS0GMUZxhlFoJYS5
+        PH4ym0E28aGePZGNbtjYSb+dYSRF6zc=
+X-Google-Smtp-Source: ABdhPJzOIae3cS6tf91ZADkHw1B21IDeEToB3I4V6VKYcoxN7S0aHhdx0UnbwyEdNqZF0e1u7b1E9g==
+X-Received: by 2002:a2e:8804:: with SMTP id x4mr18646458ljh.437.1631707789844;
+        Wed, 15 Sep 2021 05:09:49 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-62-67.dynamic.spd-mgts.ru. [94.29.62.67])
+        by smtp.googlemail.com with ESMTPSA id u16sm1798222ljl.9.2021.09.15.05.09.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Sep 2021 05:09:49 -0700 (PDT)
+Subject: Re: [PATCH v6 6/6] iommu/tegra-smmu: Add pagetable mappings to
+ debugfs
+To:     Nicolin Chen <nicoleotsuka@gmail.com>
+Cc:     thierry.reding@gmail.com, joro@8bytes.org, will@kernel.org,
+        vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20210914013858.31192-1-nicoleotsuka@gmail.com>
+ <20210914013858.31192-7-nicoleotsuka@gmail.com>
+ <31501a62-3312-9f04-3bb8-790d0481746c@gmail.com>
+ <20210914184933.GA32705@Asurada-Nvidia>
+ <25d68aff-323a-df54-45f9-55b22f3089e0@gmail.com>
+ <20210915043806.GA19185@Asurada-Nvidia>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <a5a77169-8711-2983-d2cb-4b94061741b9@gmail.com>
+Date:   Wed, 15 Sep 2021 15:09:48 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.31.128] (80.147.118.32) by AM0PR02CA0003.eurprd02.prod.outlook.com (2603:10a6:208:3e::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Wed, 15 Sep 2021 12:09:07 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7cb2188e-0a6e-415c-82f2-08d978419ee3
-X-MS-TrafficTypeDiagnostic: AS8PR10MB4882:
-X-Microsoft-Antispam-PRVS: <AS8PR10MB4882A5EE786534D036503A14E9DB9@AS8PR10MB4882.EURPRD10.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1775;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ljEKSce3Ek9VuPTYUpP3PPwoxt0KB2i2b/Ur9+yuOsL3WXiHKkKJ1EdrRJQTvj0lwCpdlCCZQUqS/RvYVL7OfBitEd8Miv2EUTCCy+2s523FjKJdkysTg+sKCSV/mO7EO6FAsw+5N8FxbFyaMP2fqaxvpgdp9eKumtGE3q/XMKXHGktBp3/Ih81F5TpyD+l+dJYix2g3+5R6S7QAiG/etQT0c0GygzIIlTVhK6GucGLVRtAcIZnXs3WZzkH71eiECUVi9DjtLU43BxuPHQi/gMXtOUH/7OjN68HkfnOSLnfmG5nqSNhU1ZNAylmmJOo9O1q09Qv88++YQC8NnnqVD79JM7PEli0fypJQBDsvlL2CMMZXvY6GobW9Qyh5SzmNAB2lewj0IgofriW4NAtMnJs+Tf/mBvwq1MtqDOjRRg2iffJRErdIf7JB2AlnJvTOY3lkK8gEcbM9eIzcBvm9in6Sg+WezrdZdjbRueWIiwj02rEXWfDvdpWs2QhVHlUzlPj3/xNQhscMXPRCkKHnHPnVaw9/AwRbPLK/eGTi58uqklgzqNtxJlb6q0vE69E/hEBeIgf9ucrAu3sYIM5ycF0biNDFbgbenfqFE2okLGk/NFmRbJD+Bh80pVKkqCL8kSShX+ayVctvR5IOCmLQa/yuk5ON0tw4po3ls9KiJfHXA59oZTy7ATgA8c7YDwSHj4JynouqGZlwXwBbLExH5K3eRKKeQeBOp5u85OXSrQzm1bo9q2Zp6UTpHh/TeX65EDlRUU+quZnICoPR16bjZw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR10MB2968.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(366004)(396003)(346002)(376002)(31686004)(186003)(6486002)(16576012)(2616005)(956004)(8936002)(110136005)(478600001)(26005)(86362001)(36756003)(316002)(66476007)(7416002)(66946007)(66556008)(2906002)(44832011)(8676002)(38100700002)(4326008)(54906003)(31696002)(5660300002)(4744005)(53546011)(32563001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VkNOZW1qNDd6dVk4aFNudHJvWjdFcTNTOGQ3RlZsaS9YNlNMZTNXdVRlc0Fl?=
- =?utf-8?B?N1Rad28xOU9uK05ETHB3bndlSU9pMjE1d3N1RXhwOVdzTlRYTitPZ2lmU2Nj?=
- =?utf-8?B?OFc4NHg4MnRpVmpmMThtVkxWVEQwcUp2UDUyeVV0WVJnbTJPMXFOeEUrQ09G?=
- =?utf-8?B?akk2MUZ4VW55UmpQaXdPL2d1cWU0Y3ZOOUZzaTRQNjdrVTdqMEdWRGlkL0Fj?=
- =?utf-8?B?NFFNdm04QXBIbkpPL2tpUWg5aEhnWjlEd2hyMVVEK2szc25PUGpJaW5wdTk2?=
- =?utf-8?B?M1FDeUU2dUlVRjZrYUZySWhadmN4cENKNEJMWk1NSmhjdTkxQmlDdlhIYU16?=
- =?utf-8?B?QkVsVmRWRFBsTURrai9kaTBpMk5wSHNZeXhlb3BvRkpzVUE3dEs2SkVzRmgx?=
- =?utf-8?B?QWxzRUJYYzN3UTE5WmtzdkVKeTFVQldNVlcrSnFPN09MZThoZG1lYjN5aWtG?=
- =?utf-8?B?Q2RMTlBtMkVZWjdaNllYRmtrSlp2RjBGTUxYU080SC9nSVRFa0g0enV4MC9p?=
- =?utf-8?B?ZkhCRVRiTi9KQkdmeUxlQmJiemxXYTJMSmQ5ZHY1YmZMVkNMSFBRZGpydy9R?=
- =?utf-8?B?WHQ4R2NCeGZmR3hqNGtNWm5KQnNnWVhaUEhQNUo5WStjazRBeS9Pc2xFNnNq?=
- =?utf-8?B?TUd5d2tqZGM1NTkrR21udXhpZEVJdG8zMkVZWlByWGJEUWY2NGdPYjNuN3Va?=
- =?utf-8?B?eVoxaHVETnd0REgyc1Y1d2x0OTZob25NakhQSlhvZG13a2I4VjlVSElOd2JT?=
- =?utf-8?B?djBLVG5FQ0FuVm1OTmgxSS9GL2JQbVRvRW5WMWFUdnFpWEVyV3hhWVpDdlRF?=
- =?utf-8?B?S2xGT1pqYlN6cmVLZnBlTXdoczBjbHpoWE5mTUNhRnVMc1ZjTk8xWVJqaVJX?=
- =?utf-8?B?VHMreGNqVTlvVnhwWDlYRExEZi9wMEtPM3lWVm1XRjFieG1DOExDb2VtaHFL?=
- =?utf-8?B?OHRqd0pZS0Y5QzBYRjJEaDlUaDI2WnBOVDE3NnVJLzBmYUVDVERTamJxYmdC?=
- =?utf-8?B?OENkWHBHMU5ER3JydzE0VUppVGpvZmMxMUdhNlJaWE95S3Z2K3hHWmVFU0kw?=
- =?utf-8?B?eWkvelNFbm5FOXliZjJEajRhYnpQcUhCVmtoUzBlejRFU2drVUpzYm1PZFZC?=
- =?utf-8?B?Z1VGRXp0aXY2RElmNW9BTmNKWlJzbVpaVnFTekNsUCtYbE9PaENrOS9mQmQ3?=
- =?utf-8?B?ZTJKWGZYSm5Mcm1hd2lMRUhZM1JtZUIreUxQSFlRb3RlMTZhU3IwMnRGVEsw?=
- =?utf-8?B?emJpa3NKYUhhb2NkYkI0dTRwUXkyMm9FbW9uRUhrK1JtdEJWTWtWZ3J3NEE2?=
- =?utf-8?B?OEFhWXNQODdTRWttYVhTSHFXTG8xeFNkUGl3QmFsVnF1ZHhaWkhSS3lLZW9V?=
- =?utf-8?B?TkJGZ0p2RnFPUWl1NmlyNDRnWWhzbFh6bFFrUEJwamMwdStUVEZyck5NKzR5?=
- =?utf-8?B?M1RjaXd1bWZvcFdwYjBaSGJLd2R3TG1kbU1IK1RTU2l6eHo3dVdGVkpBMW1v?=
- =?utf-8?B?Q3Q5ejFrWFhURHpXOGc0SkpoaXYvNEl4NlhGajJnVGhWQmZSWmN2c2N2Zzln?=
- =?utf-8?B?M1orRnZiUGJzbzUvNmhyMGdmRlBhZnJrcVFqaVZxZVkraXVEeHFXeFZCNUhQ?=
- =?utf-8?B?MHR4UFJvcWRHbUx6b1JIbGRiY25zL045NWZ2VE1NSVY3OHdaNlhiVUpLS21n?=
- =?utf-8?B?cHpJK28zS1ZKdld4N2d1Y2s5TmtGY21DRFd5Z3lJWjlEYVA0V1lCNVNXUWJo?=
- =?utf-8?Q?xiqdKxmtFZ83o0CS133oZMC5rjhq4WN5ua+s1Ky?=
-X-OriginatorOrg: kontron.de
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7cb2188e-0a6e-415c-82f2-08d978419ee3
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR10MB2968.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2021 12:09:08.5882
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: eEarKNI8PsNpgRQ9GcK0X35BbSoPVCvHiyURd9OtPuzceRdqbZVIS/fe/vGnHb70+rIyrpSw8W7aD4GAp5+mEvG/8GZHjzIwKhrLtGC7HVk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR10MB4882
+In-Reply-To: <20210915043806.GA19185@Asurada-Nvidia>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15.09.21 14:05, Michael Walle wrote:
-> Am 2021-09-15 14:03, schrieb Heiko Thiery:
->> The buck2 output of the PMIC is the VDD core voltage of the cpu.
->> Switching off this will poweroff the CPU. Add the 'regulator-always-on'
->> property to avoid this.
+15.09.2021 07:38, Nicolin Chen пишет:
+> On Tue, Sep 14, 2021 at 10:20:30PM +0300, Dmitry Osipenko wrote:
+>> 14.09.2021 21:49, Nicolin Chen пишет:
+>>> On Tue, Sep 14, 2021 at 04:29:15PM +0300, Dmitry Osipenko wrote:
+>>>> 14.09.2021 04:38, Nicolin Chen пишет:
+>>>>> +static unsigned long pd_pt_index_iova(unsigned int pd_index, unsigned int pt_index)
+>>>>> +{
+>>>>> +	return ((dma_addr_t)pd_index & (SMMU_NUM_PDE - 1)) << SMMU_PDE_SHIFT |
+>>>>> +	       ((dma_addr_t)pt_index & (SMMU_NUM_PTE - 1)) << SMMU_PTE_SHIFT;
+>>>>> +}
+>>>>
+>>>> We know that IOVA is fixed to u32 for this controller. Can we avoid all
+>>>> these dma_addr_t castings? It should make code cleaner a tad, IMO.
+>>>
+>>> Tegra210 actually supports 34-bit IOVA...
+>>>
+>>
+>> It doesn't. 34-bit is PA, 32-bit is VA.
+>>
+>> Quote from T210 TRM:
+>>
+>> "The SMMU is a centralized virtual-to-physical translation for MSS. It
+>> maps a 32-bit virtual address to a 34-bit physical address. If the
+>> client address is 40 bits then bits 39:32 are ignored."
 > 
-> Mh, have this ever worked? Is there a commit which introduced a regression?
+> If you scroll down by a couple of sections, you can see 34-bit
+> virtual addresses in section 18.6.1.2; and if checking one ASID
+> register, you can see it mention the extra two bits va[33:32].
 
-Yes, this did work before, even without 'regulator-always-on'. I
-currently don't understand why this is needed. The regulator is
-referenced in the CPU nodes as 'cpu-supply'. This should be enough to
-not disable it as long as the CPU is up.
+Thanks for the pointer. It says that only certain memory clients allow
+to combine 4 ASIDs to form 34bit VA space. In this case the PA space is
+split into 4GB areas and there are additional bitfields which configure
+the ASID mapping of each 4GB area. Still each ASID is 32bit.
+
+This is what TRM says:
+
+"For the GPU and other clients with 34-bit address interfaces, the ASID
+registers are extended to point to four ASIDs. The SMMU supports 4GB of
+virtual address space per ASID, so mapping addr[33:32] into ASID[1:0]
+extends the virtual address space of a client to 16GB."
+
+> However, the driver currently sets its geometry.aperture_end to
+> 32-bit, and we can only get 32-bit IOVAs using PDE and PTE only,
+> so I think it should be safe to remove the castings here. I'll
+> wait for a couple of days and see if there'd be other comments
+> for me to address in next version.
+
+You will need to read the special "ASID Assignment Register" which
+supports 4 sub-ASIDs to translate the PA address into the actual VA. By
+default all clients are limited to a single ASID and upstream kernel
+doesn't support programming of 34bit VAs. So doesn't worth the effort to
+fully translate the VA, IMO.
+
+>> Even if it supported more than 32bit, then the returned ulong is 32bit,
+>> which doesn't make sense.
+> 
+> On ARM64 (Tegra210), isn't ulong 64-bit?
+
+Yes, indeed.
