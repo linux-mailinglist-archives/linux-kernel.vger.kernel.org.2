@@ -2,131 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 900B840BE36
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 05:27:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BB5140BE3A
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 05:29:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234921AbhIOD2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 23:28:49 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:35934 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S236079AbhIOD2q (ORCPT
+        id S236093AbhIODad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 23:30:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50154 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230015AbhIODac (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 23:28:46 -0400
-X-UUID: d8bed79257a24e579c53626acf8e978f-20210915
-X-UUID: d8bed79257a24e579c53626acf8e978f-20210915
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
-        (envelope-from <seiya.wang@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 883001550; Wed, 15 Sep 2021 11:27:25 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 15 Sep 2021 11:27:23 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 15 Sep 2021 11:27:23 +0800
-From:   Seiya Wang <seiya.wang@mediatek.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <srv_heupstream@mediatek.com>,
-        Seiya Wang <seiya.wang@mediatek.com>
-Subject: [PATCH v2] arm64: dts: mt8183: support coresight-cpu-debug for mt8183
-Date:   Wed, 15 Sep 2021 11:27:19 +0800
-Message-ID: <20210915032719.7194-1-seiya.wang@mediatek.com>
-X-Mailer: git-send-email 2.14.1
+        Tue, 14 Sep 2021 23:30:32 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C87EBC061574;
+        Tue, 14 Sep 2021 20:29:13 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id p29so3012227lfa.11;
+        Tue, 14 Sep 2021 20:29:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xjPe0L3/nKX+cxkcdx6J3H8tI9DskxplI0rZEOeSfEI=;
+        b=cItu3tzlIDDd7Y1hg8IJ917JedA08BLloCM/HgDzINxwBv20gae3/2mnvIen/26P63
+         cGIFNnmZp7wbtI8qMriLggtFBUk2+Zvk77SM29S6z/AGp56JT2vMTaUDQ9uBaoUFHkfx
+         F4gUfx3urNci+GoBWnAh6/iVx13KAt7XYF26lRCkn3yZIWrQeHps+Sw0gHckX9Bi1fhs
+         Z7rFQXcr8CF6cMt815lk9ti8IZ5zQlWie6bvy8a2lcVrpQWvqkozqg6INqoNU5PgKYpY
+         dvewlFLqvkOBlKDccqTsQ/0+lES85p0o0G6gQZTUwV5NnxkOhGEBfNCbgiaAVk5Gic0f
+         UDFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xjPe0L3/nKX+cxkcdx6J3H8tI9DskxplI0rZEOeSfEI=;
+        b=uCuxaBhY5FCNXg1QRpl3WDoHNFdGMLNajXfvvUV63VJUvUbZZUoHwMRrYXxfGA1JHy
+         f/ICQTpKli8QotWi8u4Mjgb8fUSbhhbhh4MSqsWfTfywGKLq7GGOA5Az07p3atFgw5Bt
+         ImpAWjm/KRV6MbbEb/EafjRx10OhycdHJYJIOCog4hzlLsPHSF0HgyhWjrqX68hctAyO
+         F2wioUVcTeCBmVL4ID0ZV1+McWbawIjy7XKnUUqNMTvktd/L00K4HPS7SxGIppUXc6Bk
+         NTk626M5OyVEhO+56ujmxvWHoOner86dRymjvWdaeMIOw//2T56vr4IoTrpn2FtsbqPz
+         2fQg==
+X-Gm-Message-State: AOAM530qsqcuJFEzjR/4TYS4GYXN3ptWx1EysAALG5WmEXDu9qRkG1jy
+        Tz1r06otRhJjQDkeA+wVRBTss9OSawanyg7ufcS5pwpq
+X-Google-Smtp-Source: ABdhPJyXnY5xw1lixcYCeqp6mFmyw+KSA3GBfEYzlY7tBbUhvQE+FUVohBSaD8cqbi6xH8IjWGRq/6rRlVXN1Gc1sWs=
+X-Received: by 2002:a19:c512:: with SMTP id w18mr14982680lfe.182.1631676552185;
+ Tue, 14 Sep 2021 20:29:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+References: <20200624195811.435857-1-maz@kernel.org> <20200624195811.435857-8-maz@kernel.org>
+ <CAMuHMdV+Ev47K5NO8XHsanSq5YRMCHn2gWAQyV-q2LpJVy9HiQ@mail.gmail.com>
+ <875yv8d91b.wl-maz@kernel.org> <CAMuHMdV+ydPaXbGf1_O0S-juaPWk1gwBUOK+GeLZukZeoqtMGQ@mail.gmail.com>
+ <CANqRtoTqV8sOpL=hdxeZ03tqr+5oeMcfwz+9ERqXv+hze_6Fsw@mail.gmail.com>
+ <874kaqdi2z.wl-maz@kernel.org> <CANqRtoTa8g2sw_DoD8+34HR0mcHc_tOWt+4R9KzDT2Eu3d7TTg@mail.gmail.com>
+ <CAMuHMdX3Vf8Mxuz3=Aoi1hwMS7BtyYCH178QvVS-GAHDpeMvxg@mail.gmail.com>
+In-Reply-To: <CAMuHMdX3Vf8Mxuz3=Aoi1hwMS7BtyYCH178QvVS-GAHDpeMvxg@mail.gmail.com>
+From:   Magnus Damm <magnus.damm@gmail.com>
+Date:   Wed, 15 Sep 2021 12:28:59 +0900
+Message-ID: <CANqRtoQb1p1X+dOaQjh1atokDAR-oS4NB6m-UrHpO031SZ0hew@mail.gmail.com>
+Subject: Re: [PATCH v2 07/17] irqchip/gic: Atomically update affinity
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Russell King <linux@arm.linux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Valentin Schneider <Valentin.Schneider@arm.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Android Kernel Team <kernel-team@android.com>,
+        stable <stable@vger.kernel.org>,
+        Magnus Damm <damm+renesas@opensource.se>,
+        =?UTF-8?Q?Niklas_S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add coresight-cpu-debug nodes to mt8183 for dumping
-EDPRSR, EDPCSR, EDCIDSR, EDVIDSR
-while kernel panic happens
+Hi Geert, everyone,
 
-Signed-off-by: Seiya Wang <seiya.wang@mediatek.com>
----
- arch/arm64/boot/dts/mediatek/mt8183.dtsi | 64 ++++++++++++++++++++++++++++++++
- 1 file changed, 64 insertions(+)
+On Mon, Sep 13, 2021 at 5:05 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Magnus,
+>
+> On Sun, Sep 12, 2021 at 7:40 AM Magnus Damm <magnus.damm@gmail.com> wrote:
+> > On Sun, Sep 12, 2021 at 4:32 AM Marc Zyngier <maz@kernel.org> wrote:
+> > > On Sat, 11 Sep 2021 03:49:20 +0100,
+> > > Magnus Damm <magnus.damm@gmail.com> wrote:
+> > > > On Fri, Sep 10, 2021 at 10:19 PM Geert Uytterhoeven
+> > > > <geert@linux-m68k.org> wrote:
+> > > > > On Fri, Sep 10, 2021 at 12:23 PM Marc Zyngier <maz@kernel.org> wrote:
+> > > > > > On Thu, 09 Sep 2021 16:22:01 +0100,
+> > > > > > Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > > >     GIC: enabling workaround for broken byte access
+> > > >
+> > > > Indeed, byte access is unsupported according to the EMEV2 documentation.
+> > > >
+> > > > The EMEV2 documentation R19UH0036EJ0600 Chapter 7 Interrupt Control on
+> > > > page 97 says:
+> > > > "Interrupt registers can be accessed via the APB bus, in 32-bit units"
+> > > > "For details about register functions, see ARM Generic Interrupt
+> > > > Controller Architecture Specification Architecture version 1.0"
+> > > > The file  "R19UH0036EJ0600_1Chip.pdf" is the 6th edition version
+> > > > published in 2010 and is not marked as confidential.
+> > >
+> > > This is as bad as it gets. Do you know if any other Renesas platform
+> > > is affected by the same issue?
+> >
+> > Next time we have a beer together I would be happy to show you some
+> > legacy interrupt controller code. =)
+> >
+> > EMEV2 and the Emma Mobile product line came from the NEC Electronics
+> > side that got merged into Renesas Electronics in 2010. Historically
+> > NEC Electronics mainly used MIPS I've been told, and the Emma Mobile
+> > SoCs were one of the earlier Cortex-A9 adopters. That might have
+> > something to do with the rather loose interpretation of the spec.
+>
+> Indeed.  I used to work on products using EMMA1 and EMMA2, and they
+> were MIPS-based (vr4120A for EMMA2, IIRC).  Later variants (EMMA2H
+> and EMMA3?) did include a small ARM core for standby control.
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-index 409cf827970c..2d36575e7dbe 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-@@ -367,6 +367,70 @@
- 			reg = <0 0x0c530a80 0 0x50>;
- 		};
- 
-+		cpu_debug0: cpu-debug@d410000 {
-+			compatible = "arm,coresight-cpu-debug", "arm,primecell";
-+			reg = <0x0 0xd410000 0x0 0x1000>;
-+			clocks = <&infracfg CLK_INFRA_DEBUGSYS>;
-+			clock-names = "apb_pclk";
-+			cpu = <&cpu0>;
-+		};
-+
-+		cpu_debug1: cpu-debug@d510000 {
-+			compatible = "arm,coresight-cpu-debug", "arm,primecell";
-+			reg = <0x0 0xd510000 0x0 0x1000>;
-+			clocks = <&infracfg CLK_INFRA_DEBUGSYS>;
-+			clock-names = "apb_pclk";
-+			cpu = <&cpu1>;
-+		};
-+
-+		cpu_debug2: cpu-debug@d610000 {
-+			compatible = "arm,coresight-cpu-debug", "arm,primecell";
-+			reg = <0x0 0xd610000 0x0 0x1000>;
-+			clocks = <&infracfg CLK_INFRA_DEBUGSYS>;
-+			clock-names = "apb_pclk";
-+			cpu = <&cpu2>;
-+		};
-+
-+		cpu_debug3: cpu-debug@d710000 {
-+			compatible = "arm,coresight-cpu-debug", "arm,primecell";
-+			reg = <0x0 0xd710000 0x0 0x1000>;
-+			clocks = <&infracfg CLK_INFRA_DEBUGSYS>;
-+			clock-names = "apb_pclk";
-+			cpu = <&cpu3>;
-+		};
-+
-+		cpu_debug4: cpu-debug@d810000 {
-+			compatible = "arm,coresight-cpu-debug", "arm,primecell";
-+			reg = <0x0 0xd810000 0x0 0x1000>;
-+			clocks = <&infracfg CLK_INFRA_DEBUGSYS>;
-+			clock-names = "apb_pclk";
-+			cpu = <&cpu4>;
-+		};
-+
-+		cpu_debug5: cpu-debug@d910000 {
-+			compatible = "arm,coresight-cpu-debug", "arm,primecell";
-+			reg = <0x0 0xd910000 0x0 0x1000>;
-+			clocks = <&infracfg CLK_INFRA_DEBUGSYS>;
-+			clock-names = "apb_pclk";
-+			cpu = <&cpu5>;
-+		};
-+
-+		cpu_debug6: cpu-debug@da10000 {
-+			compatible = "arm,coresight-cpu-debug", "arm,primecell";
-+			reg = <0x0 0xda10000 0x0 0x1000>;
-+			clocks = <&infracfg CLK_INFRA_DEBUGSYS>;
-+			clock-names = "apb_pclk";
-+			cpu = <&cpu6>;
-+		};
-+
-+		cpu_debug7: cpu-debug@db10000 {
-+			compatible = "arm,coresight-cpu-debug", "arm,primecell";
-+			reg = <0x0 0xdb10000 0x0 0x1000>;
-+			clocks = <&infracfg CLK_INFRA_DEBUGSYS>;
-+			clock-names = "apb_pclk";
-+			cpu = <&cpu7>;
-+		};
-+
- 		topckgen: syscon@10000000 {
- 			compatible = "mediatek,mt8183-topckgen", "syscon";
- 			reg = <0 0x10000000 0 0x1000>;
--- 
-2.14.1
+Thanks for sharing some more background!
 
+> > Renesas SoCs from a similar era:
+> > AP4 (sh7372) AP4EVB (Cortex-A8 + INTCA/INTCS)
+>
+> This is no longer supported upstream (and not affected, as no GIC).
+
+Right. I might mix it up with the AP4.5 chip that I used for SMP
+prototyping back then. It had 4 x CA9 and obviously a GIC.
+
+> > R-Mobile A1 (r8a7740) Armadillo-800-EVA (Cortex-A9 + INTCA/INTCS)
+>
+> R-Mobile A1 has GIC (PL390), too, and is not affected.
+>
+> > R-Car M1A (r8a7778) Bock-W (Cortex-A9 + GIC)
+> > R-Car H1 (r8a7779) Marzen (4 x Cortex-A9 + GIC)
+> > Emma Mobile EMEV2 KZM9D (2 x Cortex-A9 + GIC)
+> > SH-Mobile AG5 (sh73a0) KZM9G (2 x Cortex-A9 + GIC)
+>
+> All of these (except for EMEV2) are fine, too.
+
+Thanks for checking!
+
+Cheers,
+
+/ magnus
