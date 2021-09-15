@@ -2,164 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33E2F40C7D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 17:00:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A55B40C7DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 17:05:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238026AbhIOPBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 11:01:42 -0400
-Received: from mail-eopbgr1410097.outbound.protection.outlook.com ([40.107.141.97]:35872
-        "EHLO JPN01-OS2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233977AbhIOPBi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 11:01:38 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kKolmBTtPaRuJIipLFhNJnmbsqR4YW/OFQMRK0pCGFP2xwRIlHuYTGGRM97XgnZATksD4hPq076ad0RrUtltiGOWHnOeFOzTKdHxXV+BNXoJ4YzaNjCkJfb0W11XGfgdAFdVq7H457Z1NI058sILgl1QF6T1A2XEZzhJb2jHNTx0oaTvXxPryPsNZFRp3rZNKRrUwZB2pjfgdtMilQayYxNdEadO/VVO9A1WPbFw2yV7XuNjkwpC2oJbnxqiQqNWtINBPA/DtDsyM/MUMyp/q6mN5aR77ahC8tG0Cl5c3XbWJC28A9Nege+7QEYCzLB4kddFx+wOtCcSt24nqBUoGQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=vFroakeF+u57f0KTnX0ymaKB2g5vUB3OHZ5M/nvTS4g=;
- b=CwozWF2Xj4iJ1Zmx9mDGhEB35A3kWwCkhqeEiP4HO2Iyqig50Dq0J+8arveu9RSSdiqh6rBFClQBQPc8TRHwi1zqM06HZsG8/3FrnHm9yKHg0fhjkJ/VO1Saj8EzdcMvnj/hWB+Hd4o8YUo43bHLh8/fR7jIBFyqzpXXBaSXHdYCJVzKp18ZfxUqt6BRMa8LWoDvtrs96P57gXMXCQGbB9otyNE34c2ouwE7IqWyrEIU6XAI2X238VcAyd9TYKnP8ky+28bIfKLLxq9NetAhseqX8kv05FUdsF7SHbF0yD/KPoYHMWCRmsVKleMoKomsr+Qi7ds+xZ9Mqs+0liByYw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
- dkim=pass header.d=renesas.com; arc=none
+        id S234055AbhIOPG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 11:06:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233977AbhIOPGz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 11:06:55 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07115C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 08:05:37 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d17so1779612plr.12
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 08:05:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vFroakeF+u57f0KTnX0ymaKB2g5vUB3OHZ5M/nvTS4g=;
- b=emAQsDWCK1FSU47FeSia7ef6V78YphMecuM2soFdMfHOUOkzISdXMjwigx1qTJgfgZ4rWyXEP/+FlvFMCrrBDZC4CJ4TD46Mbh7mEEBB4dYd8VAgcCyAFGT+Ge2+iAjwENeQe7vTyj5bO1JhNodW7jghMCoc3AnNst8p6NLfGN0=
-Received: from OS3PR01MB6593.jpnprd01.prod.outlook.com (2603:1096:604:101::7)
- by OSAPR01MB4467.jpnprd01.prod.outlook.com (2603:1096:604:6a::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.18; Wed, 15 Sep
- 2021 15:00:16 +0000
-Received: from OS3PR01MB6593.jpnprd01.prod.outlook.com
- ([fe80::84ad:ad49:6f8:1312]) by OS3PR01MB6593.jpnprd01.prod.outlook.com
- ([fe80::84ad:ad49:6f8:1312%5]) with mapi id 15.20.4523.014; Wed, 15 Sep 2021
- 15:00:16 +0000
-From:   Min Li <min.li.xe@renesas.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     "derek.kiernan@xilinx.com" <derek.kiernan@xilinx.com>,
-        "dragan.cvetic@xilinx.com" <dragan.cvetic@xilinx.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH misc] misc: Add Renesas Synchronization Management Unit
- (SMU) support
-Thread-Topic: [PATCH misc] misc: Add Renesas Synchronization Management Unit
- (SMU) support
-Thread-Index: AQHXoCrWcPCOZLcVpEOu9zHAf9JJVKujT1SAgAC5dCCAAJ7XAIAAlN8ggAAD/wCAAAC4AA==
-Date:   Wed, 15 Sep 2021 15:00:15 +0000
-Message-ID: <OS3PR01MB6593101378E924202DD7162ABADB9@OS3PR01MB6593.jpnprd01.prod.outlook.com>
-References: <1630608353-7606-1-git-send-email-min.li.xe@renesas.com>
- <YUBmIWU6HwIjjeXa@kroah.com>
- <OS3PR01MB6593057EA6257006C7228542BADA9@OS3PR01MB6593.jpnprd01.prod.outlook.com>
- <YUGG8iPWMLx5vJ1f@kroah.com>
- <OS3PR01MB65934A451D6B347C207E222BBADB9@OS3PR01MB6593.jpnprd01.prod.outlook.com>
- <YUIHLrgU3H2ECoCf@kroah.com>
-In-Reply-To: <YUIHLrgU3H2ECoCf@kroah.com>
-Accept-Language: en-CA, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linuxfoundation.org; dkim=none (message not signed)
- header.d=none;linuxfoundation.org; dmarc=none action=none
- header.from=renesas.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 84829d76-3523-4789-5558-08d9785986e4
-x-ms-traffictypediagnostic: OSAPR01MB4467:
-x-microsoft-antispam-prvs: <OSAPR01MB4467D79E85984D9CAD97325FBADB9@OSAPR01MB4467.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: cGgIQliiEARBzbyVuW1Z4LERmrg68E7SqXfPeEWL//PQm3NTlShv2vzJKH7vVXIrwOW66FWEFUYgvvbMABjY+FBhQnuIuOVpOriyaiEn5tRLITwifM0yVTTPUdwRG6R+pttkHp+4tdvIdW90lPl3G8CgYLTrK4UmD++DKgaEwdjrYv/X0fH8BNrbuys5eXsxGBmR2okylbEiTpPa285H4h7FGIT+J2HNwtR9I4UcP3RJLF6hKSlA8NfhWkUGtlXJ3IvcCzMRpAgs3PhLC81RFHbir/ubuu6j6IBsIpuZVZWXVin5pf3qADk8C30W4iKTbNOvTh2IPWkYDNp0pSqJWrnJyQ0JhI1ZtAx5/Q+WG+M1lJBJNRZeFnftaxsoyQ153IblHqb8wZgUXeR9YD7DAEhncKP8EY7T/0CHg1eEAMTuDZ+kZETRcGu+XS75C0Psxh5fs0xcsrLStc1hJYMwVEcFtbVGljFD6MUg+dKpH1t9h/xmHPWkkct2poy3FrKQIh7fsTDVUaHRdIOSanisiX1V1bCoPiv8QpPizN40P04Btemw9cKnIEHEF29rRT1Xh46cvbU7hiKlvDgDh08ncHuDsGVUfMEw9c9hJgaKwKONeKJw+k0fCM1z9q5rpixtQJUq6vhIclnTe++jwRNX0Seq2g9IEDn6sSgBD5RqGHa1h2SoAtAszJ5TSzxCOAyUhUgOYkEX7oybs6J7FXzQwnysQg0cIwixNcKHRNB6IxQDITaEb5+skuah5BmQL615gZl1wAFmJoIKqWvlQZf//SPrt44alOXvty05IlTIKg8=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS3PR01MB6593.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(366004)(136003)(376002)(346002)(6506007)(478600001)(71200400001)(5660300002)(186003)(26005)(966005)(122000001)(38100700002)(83380400001)(8676002)(4326008)(86362001)(7696005)(8936002)(33656002)(316002)(66446008)(76116006)(66946007)(66556008)(64756008)(66476007)(9686003)(55016002)(52536014)(2906002)(38070700005)(54906003)(6916009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?ni2BrYHJK0D8PoIoVzooUkN+ttqjedfag409aVnWzr22S4ebQi2DGifCLlDX?=
- =?us-ascii?Q?rgg4tFOUxIp3vM2coQLZwtHy5WnqsGIl4Effa6R4sEBuTDJ63cY5M4uorcGo?=
- =?us-ascii?Q?IYHQFfEnZ8TIko4LdsvRv+H8esUbEFCpoCt+ILiLHaQkGDX3XGz/z0JJ4T4z?=
- =?us-ascii?Q?Td6gw4GcD/3gB5cgxlcysv7Jgr74ueD3VgZY8C+PcL4ZEFR2WNhrp6XIONP+?=
- =?us-ascii?Q?Frnye4GDNIxPd66lY88MjRDCSDpRjPP98lbUvZ9vvb2TCThGAmWpcllHfV08?=
- =?us-ascii?Q?rhLl66LdbXonZROWDdV05UrfNdkJlAwpK2zSF1s8zfw+5wqlxaZATrZvwTQp?=
- =?us-ascii?Q?A0yivy4B7h1GASJhyD7vsW/tF35mh3uMXTn1IiKFKL2vzmsyayihvrIHOLY7?=
- =?us-ascii?Q?81D/Jpy6SnAFFUSMZCA4K1N27dsrHrJhrpr6k30HAsTuO3YQyhWo8bMieGwx?=
- =?us-ascii?Q?Dz/F3XODkrDe+uV9QC+3yUacdUxYCTQxYVRGuevoEF0kvAvZ7ub/150PnFWy?=
- =?us-ascii?Q?+0DfcNp1v9znABnqhR+PIBOd0OENuO5HryzXCr0e1m+/FxigTbGjcd/AHove?=
- =?us-ascii?Q?S/q7EyB9nPjQQy1f0yNx9MMv3tCRrKS7Fjg6RXqi8oLtYbw/vSCROd0bbL46?=
- =?us-ascii?Q?a9Xv0FEkMGwTm4AwLl/v9q0IANOIQqeiCGjqwt5rsFOZB4VPebsi9T1S1BL+?=
- =?us-ascii?Q?RRQLht9ZIcbY+K+Gvw9FXSUInNZG7q5pyg6pTelYzNVr7IkGq7IzQ5MEouJx?=
- =?us-ascii?Q?8Q1H27N3M3vtpLSVye0c97/3VoLUCNAIsCj9ZpdHnO4IcogX1780XGC5u7B6?=
- =?us-ascii?Q?e59lehxdSS4zeG4xqeMf+C8iMaVJVhIpMu+AkPZFalaI0//BSuK6jefWSyFw?=
- =?us-ascii?Q?zObnXwIzl+j/99ahBn8kyDhjPd7KwIwUR/IPdKN9w2NKwCNzCWiZCB+JnhFx?=
- =?us-ascii?Q?w/agLNVL9ttsJ6SViuB7zeEcbR5i9oTCMy/LesjLYsYIiPDl7kgzcldPU24V?=
- =?us-ascii?Q?dtdmxqPfd406UpHijDzf4x/XNWOqs9UfbONn6JerDTpdw3ED5/elfIduvRy9?=
- =?us-ascii?Q?lKdBxIwaR2srnAxkYVAFlVK1LGJm8IOoRE5wob3L3KUSccr/Yc4Kqw4IaBgM?=
- =?us-ascii?Q?gUjxFn6iyyx8T9UOznKLZ/CHRME/05o0GBQUcX3MqDkAZlVZH4Cs7jJigbfj?=
- =?us-ascii?Q?0loBmq7oZRjGhXPYBYEcDGGZm+Q34twkZ7jNkM6MITjmd+Eii9W1ac5eeACd?=
- =?us-ascii?Q?/c4F6OUeDNw42gJmlbzl0+ZAyjCW/PPPRleKROhOqCjDuwkjTIYqwOxRRmcZ?=
- =?us-ascii?Q?FUw9A+LNTIi2dNJ9uEHU1PTr?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=tuZ5AJo9HYV72r//BB/nhJCCtA8J0cLgDUQf1Wa73oU=;
+        b=AqTzpIsgPDCO3HJy4ctU22tG7V35oU3V+ofAVG3HhLBvwkxZqzp3LpsALS6nVYDedT
+         eMz3lyh37h7vFtPORm/SZiEEuVt3GC7omw3sbfd0F5rlvBuKXiANq8qYQ8dklwizxk/t
+         1ldrHdFd+PzmDFTI+BVF+yRpvzPnXS4k6ZKHAjcT9gHOcxopn7G/pEvYWyUo6jwOuwK7
+         EwVXYQKijQjvGtkBRVX2IyhopAvmMkmkHPz42x3ePAD+N6120sVpz9s1acBQ7fJcmYuU
+         WDVHoXJdQsCi4AQBpOzErgvdsLdvTeTzZ71N9gyWUPvp3au/xYfiJpx0b9jaczHLFDWG
+         4Xag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=tuZ5AJo9HYV72r//BB/nhJCCtA8J0cLgDUQf1Wa73oU=;
+        b=KX06xMfeuaMIBD1VBLWTYm6GCfJJiQ2kvSezqQVSptPCGZ+3Xch7deDX8qgYgNTzcu
+         6NE3aJTQuajJ/3IUkG61uKJEzl9RpSTv5OehXiO5OeUUFJkavkt7dG+NWB/rdSp0YGDX
+         pQL7rzQIhNHJ9AtSjlPzPiW5pLU2L9OAMwAVTuyxuy73xxHxxXqMZChGB0TWU2eokFm4
+         rBLDUCQxtsiv7ZNaDJzCEPL4TrvYj2aN2BcyrsLqP6pJs1dEtSwkscdqhysvvPZlJH4M
+         etGnla1U3ua1W31UoCmwlzHXnrQo2xxlsgbRX4TnVCefMBOMzTM1mznWBmIK6seKlKB/
+         kCCg==
+X-Gm-Message-State: AOAM530C8j26OA6CFdlh1BLmV2XnnFCM1kKFDd5+LJfSjWKtHQFDpFqg
+        PCztyb0cQ89svQB8M8oReIKFgQ==
+X-Google-Smtp-Source: ABdhPJy0Tg9oNP4ZFHBxknMHxgqD9Dk0JxCQuX5C2E5V0NQzkRuEYxefKNUn+Phg3g7CrFCnyeEKfw==
+X-Received: by 2002:a17:90b:957:: with SMTP id dw23mr253699pjb.125.1631718336048;
+        Wed, 15 Sep 2021 08:05:36 -0700 (PDT)
+Received: from dragon (80.251.214.228.16clouds.com. [80.251.214.228])
+        by smtp.gmail.com with ESMTPSA id s10sm3795857pjn.38.2021.09.15.08.05.33
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 15 Sep 2021 08:05:35 -0700 (PDT)
+Date:   Wed, 15 Sep 2021 23:05:27 +0800
+From:   Shawn Guo <shawn.guo@linaro.org>
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] clk: qcom: smd-rpm: Add rate hooks for
+ clk_smd_rpm_branch_ops
+Message-ID: <20210915150526.GE25255@dragon>
+References: <20210914025554.5686-1-shawn.guo@linaro.org>
+ <20210914025554.5686-2-shawn.guo@linaro.org>
+ <163165658855.763609.14080313241484048687@swboyd.mtv.corp.google.com>
 MIME-Version: 1.0
-X-OriginatorOrg: renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OS3PR01MB6593.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 84829d76-3523-4789-5558-08d9785986e4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Sep 2021 15:00:15.8904
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 9nebThljaO5Xdd58CUnsJ039fsMw1wimwgFZOm0lkOVJ7fG+zDu9MmVFD1Apmi/4Oi1Eg6RTymDuvHzt13W05Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSAPR01MB4467
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <163165658855.763609.14080313241484048687@swboyd.mtv.corp.google.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Wed, Sep 15, 2021 at 02:42:55PM +0000, Min Li wrote:
-> > > > > > +/*
-> > > > > > + * RSMU IOCTL List
-> > > > > > + */
-> > > > > > +#define RSMU_MAGIC '?'
-> > > > >
-> > > > > Where did you get this value from?
-> > > > >
-> > > > > Where did you reserve it?
-> > > >
-> > > > No I didn't reserve it. I checked other code and they all seem to
-> > > > use a random character
-> > >
-> > > That's not the best way to do this.
-> > >
-> > > Why do you need ioctls at all anyway?  What userspace tools will be
-> > > accessing this driver?  Do you have a link to where they are located =
-at?
-> >
-> > Hi Greg
-> >
-> > The userspace tool is called PCM4L (PTP Clock Manager for Linux) from
-> > Renesas
-> >
-> > https://www.renesas.com/us/en/software-tool/ptp-clock-manager-linux
-> >
-> > But the functions of this misc driver is not ptp related. It is meant
-> > for being called by pcm4l to support GNSS assisted partial timing
-> > support (APTS), which doesn't have abstracted/dedicated Linux Kernel
-> API's. That is why I went for IOCTL in the first place.
->=20
-> Why not work on a real set of apis for this type of thing so that all dev=
-ices of
-> this type will work properly?
->=20
-> thanks,
->=20
-> greg k-h
+On Tue, Sep 14, 2021 at 02:56:28PM -0700, Stephen Boyd wrote:
+> Quoting Shawn Guo (2021-09-13 19:55:52)
+> > On QCM2290 platform, the clock xo_board runs at 38400000, while the
+> > child clock bi_tcxo needs to run at 19200000.  That said,
+> > clk_smd_rpm_branch_ops needs the capability of setting rate. Add rate
+> > hooks into clk_smd_rpm_branch_ops to make it possible.
+> 
+> This doesn't sound right. The branch is a simple on/off. If xo_board is
+> 38.4MHz, then there is an internal divider in the SoC that makes bi_tcxo
+> (i.e. the root of the entire clk tree) be 19.2MHz. We don't model the
+> divider, I guess because it isn't very important to. Instead, we tack on
+> a divider field and implement recalc_rate op. See clk-rpmh.c in the qcom
+> directory for this.
 
-Hi Greg
+Thanks for the comment, Stephen!  To be honest, I copied the
+implementation from vendor kernel, and wasn't really sure if it's
+correct or the best.
 
-That plan is on our roadmap. On the other hand, this is a new area that dif=
-ferent company has its
-own hw/sw solution and it takes time to abstract functions to kernel. Also,=
- our APTS first release
-was already out. Right now we are actively developing another release that =
-we will try out best to
-come up with better solution. =20
+So here is what I get based on your suggestion.  Let's me know if
+it's how you wanted it to be.  Thanks!
+
+Shawn
+
+----8<---------
+
+From 23dda79fee412738f046b89bdd20ef95a24c35cc Mon Sep 17 00:00:00 2001
+From: Shawn Guo <shawn.guo@linaro.org>
+Date: Wed, 15 Sep 2021 22:00:32 +0800
+Subject: [PATCH] clk: qcom: smd-rpm: Add a divider field for branch clock
+
+Similar to clk-rpmh, clk-smd-rpm has the same need to handle the case
+where an internal divider is there between xo_board and bi_tcxo.  The
+change is made in the a back compatible way below.
+
+ - Add div field to struct clk_smd_rpm, and have
+   __DEFINE_CLK_SMD_RPM_BRANCH() assign it.
+
+ - Update all existing __DEFINE_CLK_SMD_RPM_BRANCH() wrappers to pass a
+   zero div.
+
+ - Add DEFINE_CLK_SMD_RPM_BRANCH_DIV() which doesn't take rate argument
+   but div.
+
+ - Update clk_smd_rpm_recalc_rate() to handle div and add it as
+   .recalc_rate of clk_smd_rpm_branch_ops.
+
+Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+---
+ drivers/clk/qcom/clk-smd-rpm.c | 23 ++++++++++++++++-------
+ 1 file changed, 16 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/clk/qcom/clk-smd-rpm.c b/drivers/clk/qcom/clk-smd-rpm.c
+index 66d7807ee38e..66ef0d3795fd 100644
+--- a/drivers/clk/qcom/clk-smd-rpm.c
++++ b/drivers/clk/qcom/clk-smd-rpm.c
+@@ -66,13 +66,14 @@
+ 	}
+ 
+ #define __DEFINE_CLK_SMD_RPM_BRANCH(_platform, _name, _active, type, r_id,    \
+-				    stat_id, r, key)			      \
++				    stat_id, r, key, _div)		      \
+ 	static struct clk_smd_rpm _platform##_##_active;		      \
+ 	static struct clk_smd_rpm _platform##_##_name = {		      \
+ 		.rpm_res_type = (type),					      \
+ 		.rpm_clk_id = (r_id),					      \
+ 		.rpm_status_id = (stat_id),				      \
+ 		.rpm_key = (key),					      \
++		.div = (_div),						      \
+ 		.branch = true,						      \
+ 		.peer = &_platform##_##_active,				      \
+ 		.rate = (r),						      \
+@@ -92,6 +93,7 @@
+ 		.rpm_status_id = (stat_id),				      \
+ 		.active_only = true,					      \
+ 		.rpm_key = (key),					      \
++		.div = (_div),						      \
+ 		.branch = true,						      \
+ 		.peer = &_platform##_##_name,				      \
+ 		.rate = (r),						      \
+@@ -112,7 +114,12 @@
+ 
+ #define DEFINE_CLK_SMD_RPM_BRANCH(_platform, _name, _active, type, r_id, r)   \
+ 		__DEFINE_CLK_SMD_RPM_BRANCH(_platform, _name, _active, type,  \
+-		r_id, 0, r, QCOM_RPM_SMD_KEY_ENABLE)
++		r_id, 0, r, QCOM_RPM_SMD_KEY_ENABLE, 0)
++
++#define DEFINE_CLK_SMD_RPM_BRANCH_DIV(_platform, _name, _active, type, r_id,  \
++				      _div)				      \
++		__DEFINE_CLK_SMD_RPM_BRANCH(_platform, _name, _active, type,  \
++		r_id, 0, 0, QCOM_RPM_SMD_KEY_ENABLE, _div)
+ 
+ #define DEFINE_CLK_SMD_RPM_QDSS(_platform, _name, _active, type, r_id)	      \
+ 		__DEFINE_CLK_SMD_RPM(_platform, _name, _active, type, r_id,   \
+@@ -121,12 +128,12 @@
+ #define DEFINE_CLK_SMD_RPM_XO_BUFFER(_platform, _name, _active, r_id)	      \
+ 		__DEFINE_CLK_SMD_RPM_BRANCH(_platform, _name, _active,	      \
+ 		QCOM_SMD_RPM_CLK_BUF_A, r_id, 0, 1000,			      \
+-		QCOM_RPM_KEY_SOFTWARE_ENABLE)
++		QCOM_RPM_KEY_SOFTWARE_ENABLE, 0)
+ 
+ #define DEFINE_CLK_SMD_RPM_XO_BUFFER_PINCTRL(_platform, _name, _active, r_id) \
+ 		__DEFINE_CLK_SMD_RPM_BRANCH(_platform, _name, _active,	      \
+ 		QCOM_SMD_RPM_CLK_BUF_A, r_id, 0, 1000,			      \
+-		QCOM_RPM_KEY_PIN_CTRL_CLK_BUFFER_ENABLE_KEY)
++		QCOM_RPM_KEY_PIN_CTRL_CLK_BUFFER_ENABLE_KEY, 0)
+ 
+ #define to_clk_smd_rpm(_hw) container_of(_hw, struct clk_smd_rpm, hw)
+ 
+@@ -140,6 +147,7 @@ struct clk_smd_rpm {
+ 	bool branch;
+ 	struct clk_smd_rpm *peer;
+ 	struct clk_hw hw;
++	u8 div;
+ 	unsigned long rate;
+ 	struct qcom_smd_rpm *rpm;
+ };
+@@ -370,10 +378,10 @@ static unsigned long clk_smd_rpm_recalc_rate(struct clk_hw *hw,
+ 
+ 	/*
+ 	 * RPM handles rate rounding and we don't have a way to
+-	 * know what the rate will be, so just return whatever
+-	 * rate was set.
++	 * know what the rate will be, so just return divided parent
++	 * rate or whatever rate was set.
+ 	 */
+-	return r->rate;
++	return r->div ? parent_rate / r->div : r->rate;
+ }
+ 
+ static int clk_smd_rpm_enable_scaling(struct qcom_smd_rpm *rpm)
+@@ -416,6 +424,7 @@ static const struct clk_ops clk_smd_rpm_ops = {
+ static const struct clk_ops clk_smd_rpm_branch_ops = {
+ 	.prepare	= clk_smd_rpm_prepare,
+ 	.unprepare	= clk_smd_rpm_unprepare,
++	.recalc_rate	= clk_smd_rpm_recalc_rate,
+ };
+ 
+ DEFINE_CLK_SMD_RPM(msm8916, pcnoc_clk, pcnoc_a_clk, QCOM_SMD_RPM_BUS_CLK, 0);
+-- 
+2.17.1
+
