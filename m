@@ -2,66 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B3FC40C4E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 14:04:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6185C40C4EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 14:06:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237666AbhIOMGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 08:06:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54022 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237489AbhIOMF7 (ORCPT
+        id S232927AbhIOMGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 08:06:53 -0400
+Received: from mail-oo1-f46.google.com ([209.85.161.46]:40809 "EHLO
+        mail-oo1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237708AbhIOMGv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 08:05:59 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC7F5C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 05:04:40 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id n128so3070178iod.5
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 05:04:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=mKgxcIfNUKoS/nZEP93D+qXqmfRyfb/xNHNRSa2GMKM=;
-        b=N4UXrTeG3ZpxEqccF/39Pv5nXu3GUrJpzXQpWdmimTdPEY9Kb6JU0Ltwl73/PDm9Un
-         mlBVXmatiy9uX8JgP4tv/caxKb5NyKy5WHPnfraN3OTe2+usNDmGxPypmIwd4eCx3uiG
-         hn5mfHHiBwlw48VLmpzJjIQTzJ7fzhdG8cEQje0OHdmHoW+9HBUXpb06MrAZek1SXtHh
-         ueW0c/rKRk5Af6KiPVo/aDxTYX5jt2YohA80F1YhN37eEJNNYycVa7aQlbHe13yID064
-         fD3RFVh2aeLx6mWHu1Fsh9Zy2gn+oc2OuR8lS8808b87KXje4+ifLcSBGZS+CyNoiHuJ
-         +RTw==
+        Wed, 15 Sep 2021 08:06:51 -0400
+Received: by mail-oo1-f46.google.com with SMTP id j11-20020a4a92cb000000b002902ae8cb10so804329ooh.7;
+        Wed, 15 Sep 2021 05:05:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=mKgxcIfNUKoS/nZEP93D+qXqmfRyfb/xNHNRSa2GMKM=;
-        b=zrIeTSXmM6zYufO5YVA+Y19j4yNFJDCLQnQUNxVNcZJFQFAEtyQZ2VxXPtMB4mz61e
-         fOISgrYGwF8XTXAWukmKqF9exQ4AzUS5NfYcmWwaKXUWgKmoKhtrcsfYls2Gyd3rqcsm
-         FSvIWCzHdc6eKHcDx8C33aJqz/dz89b1fdmuQI59P6fy86D2ndkzazIaPVgSxKF+aO0O
-         OB1EG4nINSJuu7TSQUEFI7tiSrgB0jxJoQCYtlj6dtS++PZ9G8JbJSLf5wu/Eo0MSZsa
-         AUeFjbenghwkIBQxvqW44xelCGS7ps7jB247Jb/y2/F6BwVRg4LJuJN1P6qgGLOwlQGa
-         2QyA==
-X-Gm-Message-State: AOAM532rVDXsmVrnCiY1uRoQldR75Wjo45q86wOgYi2fq90T/7DdjkwQ
-        M3dLe0OPfGwDHF6OHUdaVh2Q5oy5+WWPAaomxvk=
-X-Google-Smtp-Source: ABdhPJzYBg/JByJrYjJr/eIp58aoKaSU3wAMF3Q1nTEQdpqiCHS+W9vMnthIl7qjeHi5N9ta7VPT2BGWnn5Qm3dHlIs=
-X-Received: by 2002:a6b:5a04:: with SMTP id o4mr18270692iob.44.1631707480052;
- Wed, 15 Sep 2021 05:04:40 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dMf2u34NGnOhwbnxOobe2zbbeVBloCBqlHv3VYYj/vQ=;
+        b=HFJuR5xhvJwW83ZNqldbx5uQaqGY6WCZe99Dsoi/g7YxRQla2+kuJn/zxDNobHJJhE
+         D64lI2juNYnMtQiGFNTQG2BX2AhcRcl4l2InmuDKtcms9uSnfm0z/uGypY99YBIRbf04
+         hEchZFHJOX2lkga5PeCbEGUMooi5p9/4fDjnM53ZFUzHUHx/mFpj7maqaTyIH61qXb79
+         1kwC/ImksmRJCRf8SV1sdtef6OO+V2B7wZ6FVaRKrKxkksgekESXtfOPWs/zy4j40hMm
+         rHBTRVHGc6Hg3rpeQvZFlqnJIPtz5wzN9zSFacPxnxXA0Xs1y83QvTiksB46DbRQsjlI
+         C4NQ==
+X-Gm-Message-State: AOAM530SPH3u5CMUZZt/V+If5c93bK4ZB3c++A9yYrYseUU90iBhTS5m
+        UVikOq34vSQjvHrImErFhqzlX9W6Q/iRkVIWLvM=
+X-Google-Smtp-Source: ABdhPJwaeDCJw4wkhR5ZHBVb9QM2iz4q8UB8AAgsUqRj4I9J/aa9yR156ZHujEIzC1fasNUq+u9txobijOgV3qrwrwg=
+X-Received: by 2002:a4a:a78a:: with SMTP id l10mr17920412oom.30.1631707532223;
+ Wed, 15 Sep 2021 05:05:32 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a4f:2f49:0:0:0:0:0 with HTTP; Wed, 15 Sep 2021 05:04:39
- -0700 (PDT)
-Reply-To: lionellawson52@gmail.com
-From:   lionel lawson <richardclerk52@gmail.com>
-Date:   Wed, 15 Sep 2021 13:04:39 +0100
-Message-ID: <CAJ5V0vuN1=d4umVJWOSbY4efFaXDajHmba7dt46PcrnXCp4efg@mail.gmail.com>
-Subject: Goedendag
-To:     undisclosed-recipients:;
+References: <20210915022328.56702-1-f.fainelli@gmail.com>
+In-Reply-To: <20210915022328.56702-1-f.fainelli@gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 15 Sep 2021 14:05:20 +0200
+Message-ID: <CAJZ5v0hEjQn-yr29RdpfYcsfqMCv_BK8obZy7kFP1q0SeM0Zxg@mail.gmail.com>
+Subject: Re: [PATCH] PM / sleep: Do not assume that "mem" is always present
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        "open list:SUSPEND TO RAM" <linux-pm@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-Er is vorige week ergens een e-mail naar u verzonden met de
-verwachting een retourmail van u te ontvangen, maar tot mijn verbazing
-heeft u nooit de moeite genomen om te antwoorden. Gelieve te
-antwoorden voor verdere uitleg
+On Wed, Sep 15, 2021 at 4:23 AM Florian Fainelli <f.fainelli@gmail.com> wrote:
+>
+> An implementation of suspend_ops is allowed to reject the PM_SUSPEND_MEM
+> suspend type from its ->valid() callback, we should not assume that it
+> is always present as this is not a correct reflection of what a firmware
+> interface may support.
+>
+> Fixes: 406e79385f32 ("PM / sleep: System sleep state selection interface rework")
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> ---
+>  kernel/power/suspend.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/kernel/power/suspend.c b/kernel/power/suspend.c
+> index eb75f394a059..02e306ad8db8 100644
+> --- a/kernel/power/suspend.c
+> +++ b/kernel/power/suspend.c
+> @@ -171,8 +171,7 @@ static bool valid_state(suspend_state_t state)
+>
+>  void __init pm_states_init(void)
+>  {
+> -       /* "mem" and "freeze" are always present in /sys/power/state. */
+> -       pm_states[PM_SUSPEND_MEM] = pm_labels[PM_SUSPEND_MEM];
+> +       /* "freeze" is always present in /sys/power/state. */
+>         pm_states[PM_SUSPEND_TO_IDLE] = pm_labels[PM_SUSPEND_TO_IDLE];
+>         /*
+>          * Suspend-to-idle should be supported even without any suspend_ops,
+> @@ -214,6 +213,7 @@ void suspend_set_ops(const struct platform_suspend_ops *ops)
+>         }
+>         if (valid_state(PM_SUSPEND_MEM)) {
+>                 mem_sleep_states[PM_SUSPEND_MEM] = mem_sleep_labels[PM_SUSPEND_MEM];
+> +               pm_states[PM_SUSPEND_MEM] = pm_labels[PM_SUSPEND_MEM];
+>                 if (mem_sleep_default >= PM_SUSPEND_MEM)
+>                         mem_sleep_current = PM_SUSPEND_MEM;
+>         }
+> --
 
-Hoogachtend,
-Lionel Lawson.
+Applied as 5.16 material, thanks!
