@@ -2,155 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FBF240BDE5
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 04:52:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACED440BDE9
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 04:54:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231250AbhIOCyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 22:54:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55992 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229758AbhIOCyM (ORCPT
+        id S234683AbhIOCzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 22:55:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42346 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230331AbhIOCzt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 22:54:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631674373;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mNknc3PAGLPEbfdAPlC78Lmk68krcKaGTS1ga1ZhVzQ=;
-        b=CRAQuLwXkHE4vrRV7X778tcZGJiZ6THphx098dsNsfaN3gZffUm2b74XtLW/xuVDdAnlRO
-        NRgJRiQJk6yZmgeVV/3ZlltX7KOzt6Ux6K33/zeaHmkIFVyyCbWzyMBcWdA4ahG5E2f8gE
-        8Hw5fsiDmnK3XTwG9GQJ9EXEHGa/Grs=
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com
- [209.85.166.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-583-hPlLvY-mMwyqdBJPrs_wGQ-1; Tue, 14 Sep 2021 22:52:51 -0400
-X-MC-Unique: hPlLvY-mMwyqdBJPrs_wGQ-1
-Received: by mail-io1-f69.google.com with SMTP id y1-20020a6bc801000000b005d0abb2b449so793754iof.1
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 19:52:51 -0700 (PDT)
+        Tue, 14 Sep 2021 22:55:49 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46228C061766
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 19:54:31 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id j66so2183476oih.12
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 19:54:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BZeoBKUFa4ew4uv0EZ30vPzxQarHfe3j0m8mhnfs+zw=;
+        b=JcqNRZTiVw3QdMoQVVGBc+8k5VQThZIIlM6OMkWDZXKT/CwqCvnHfe3/HAV3ZctsOs
+         W8K7MhJVU/xzn6g8TJpc1/xHNhR5YEbhZVrmh60VRZkUwRXGZMOb3peAv3hyUVreL9qG
+         S4xHC8SbOocObLCSheCrObrrZz7VgGeomQn4aqYIRmzXVZDO12+thgbz19R9uU8YVvzo
+         HxuEPlelMKe1sw6m+KQP/ElHXWNhakdgniKAo7i27ZQhjY5RQ3DukB9GdtQnjA4o3xxU
+         KKxbgBeP/RXg22B7l9P7f1bwjW6cuidiiCu3hd3tkMnloWIQ4LsjI7gFgRPSvZFmGCkO
+         Kz4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=mNknc3PAGLPEbfdAPlC78Lmk68krcKaGTS1ga1ZhVzQ=;
-        b=BLuddLgHcdNihLBAySuJnv7nDXlwglYM8u0ky84jiKgb69Uh6xpd1pnTttaHozrO2H
-         3eoxRO4gVWjZpPUO6NeTblfCohHmJCerNkppnYfEXm40SdeMoLyUR2u6tyDs61Ob+J+O
-         1vLDjpi25B2u3K+ud6sPNb5Yzh11ZSt64ygSyh7qiyBlkZbVayvZiGjG/KlOW/inxcT+
-         lzJMMYM2BD8jM9CFPL4ifceVFgQygqDKIuB5kHELYROCIQaKkJaTp9J/7sAuEwGzFTpp
-         I0I/yKSgRqO9eI4UEC7zgYDi3z5YvI+RMkMO4Gg8XojX4N28q1JDC6fsYdlGjP5QE5oR
-         eoIg==
-X-Gm-Message-State: AOAM533DHyxF7OrOH6wKvUqHkXIJe6SOyN2HjQZrmBzOCYapbh3S/GJM
-        wSXZ3XyX//yKzSaWAMpEoyzlrB8bmjx7Jeuvc2/pUYXyjCvOS1wcHbEIhZ9TC5hAqpVZlN5l/OG
-        U4uD9QGNmgdticy7n0jqnm5KF
-X-Received: by 2002:a05:6e02:144c:: with SMTP id p12mr9551344ilo.292.1631674371219;
-        Tue, 14 Sep 2021 19:52:51 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzHNRphTXwxe/+Sfyf1gmfRf0CW0WLj7r6TJhh24pys6jEp3ccyd4fnS3xT0F3TuQSiiABz9A==
-X-Received: by 2002:a05:6e02:144c:: with SMTP id p12mr9551326ilo.292.1631674370967;
-        Tue, 14 Sep 2021 19:52:50 -0700 (PDT)
-Received: from xz-m1.local ([2607:fea8:56a2:9100:f950:40ca:dc9b:42e7])
-        by smtp.gmail.com with ESMTPSA id t15sm7375529ioi.7.2021.09.14.19.52.49
+        bh=BZeoBKUFa4ew4uv0EZ30vPzxQarHfe3j0m8mhnfs+zw=;
+        b=zQWkY1s9GtaxEmpSQkqIhtEZs5kxtc5o9BjnNiRcienA6YzjOEq3RCPCZUZQjpTN5d
+         zrc07fOSRXBdy55hg33yKshuy/kBGEH+O15JFXqbB/RX+TZMDZJEeaVAwwEq8/ianuBe
+         3phJrJYqxgCJkqq4bJqGD4l9vgEziwrTcws8TTaC7FKnp/z6x9wExhT8PSbge+ff6eeC
+         IFbVWx7WjW3yKPCSoacWeUVTdoOqWPfwVOWcBiHbWjfTzA7uxyF8Ui4w5Rbv9kiLOGn0
+         3b2igaVhIlpF1Or2RqorW0m0R67h2PM4UwuJvnche+adrYwK5avu8N1iU7Cl6D5hFlfh
+         X94g==
+X-Gm-Message-State: AOAM533CginnnyO1LjChKSvXYBEFJdEQLuZuxkot6T3LC5ViVFbKsZ3u
+        SQ86Hg2+xI6rpmPzlQe+VmZ6wQ==
+X-Google-Smtp-Source: ABdhPJzbdhz88XinGhshynrR89pS2iPgi7Zypps5yKSPbFugPDtM4QDa/rKa8jNWUlN/gUKSY5bC9g==
+X-Received: by 2002:aca:6041:: with SMTP id u62mr3737643oib.82.1631674470457;
+        Tue, 14 Sep 2021 19:54:30 -0700 (PDT)
+Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id k21sm3037906ots.53.2021.09.14.19.54.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 19:52:50 -0700 (PDT)
-Date:   Tue, 14 Sep 2021 22:52:48 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Alistair Popple <apopple@nvidia.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Liam Howlett <liam.howlett@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>
-Subject: Re: [PATCH v3 5/5] mm: Add ZAP_FLAG_SKIP_SWAP and zap_flags
-Message-ID: <YUFgAPJJxy8L4GMP@xz-m1.local>
-References: <20210908163516.214441-1-peterx@redhat.com>
- <20210908163628.215052-1-peterx@redhat.com>
- <2576475.WBpAVSM2eX@nvdebian>
+        Tue, 14 Sep 2021 19:54:30 -0700 (PDT)
+Date:   Tue, 14 Sep 2021 19:55:21 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Shawn Guo <shawn.guo@linaro.org>
+Cc:     Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] clk: qcom: smd-rpm: Add rate hooks for
+ clk_smd_rpm_branch_ops
+Message-ID: <YUFgmdhYK/p2v1LS@ripper>
+References: <20210914025554.5686-1-shawn.guo@linaro.org>
+ <20210914025554.5686-2-shawn.guo@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2576475.WBpAVSM2eX@nvdebian>
+In-Reply-To: <20210914025554.5686-2-shawn.guo@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Alistair,
+On Mon 13 Sep 19:55 PDT 2021, Shawn Guo wrote:
 
-On Wed, Sep 15, 2021 at 12:25:07PM +1000, Alistair Popple wrote:
-> On Thursday, 9 September 2021 2:36:28 AM AEST Peter Xu wrote:
-> > Firstly, the comment in zap_pte_range() is misleading because it checks against
-> > details rather than check_mappings, so it's against what the code did.
-> > 
-> > Meanwhile, there's no explicit reason why passing in the details pointer should
-> > mean to skip all swap entries.  New user of zap_details could very possibly
-> > miss this fact if they don't read deep until zap_pte_range() because there's no
-> > comment at zap_details talking about it at all, so swap entries could be
-> > erroneously skipped without being noticed.
-> > 
-> > This partly reverts 3e8715fdc03e ("mm: drop zap_details::check_swap_entries"),
-> > but introduce ZAP_FLAG_SKIP_SWAP flag, which means the opposite of previous
-> > "details" parameter: the caller should explicitly set this to skip swap
-> > entries, otherwise swap entries will always be considered (which should still
-> > be the major case here).
-> > 
-> > We may want to look into when exactly we need ZAP_FLAG_SKIP_SWAP and we should
-> > have it in a synchronous manner, e.g., currently even if ZAP_FLAG_SKIP_SWAP is
-> > set we'll still look into swap pmds no matter what.  But that should be a
-> > separate effort of this patch.
+> On QCM2290 platform, the clock xo_board runs at 38400000, while the
+> child clock bi_tcxo needs to run at 19200000.  That said,
+> clk_smd_rpm_branch_ops needs the capability of setting rate. Add rate
+> hooks into clk_smd_rpm_branch_ops to make it possible.
 > 
-> I didn't really follow what you mean by "synchronous" here, although the
-> explanation about pmds makes sense so it's probably just terminology.
 
-Yes, maybe I should use "aligned manner", or please suggest anything that
-sounds better; sorry for my awkward English.
+Most platforms has a crystal oscillator ticking at 38.4MHz feeding the
+PMIC (represented by the rpmcc and its "xo" parent) and out comes the
+bi_tcxo with a fixed 19.2MHz rate.
 
+Is there a problem with the way sdm660_bi_tcxo is defined in this
+regard?
+
+Regards,
+Bjorn
+
+> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+> ---
+>  drivers/clk/qcom/clk-smd-rpm.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/clk/qcom/clk-smd-rpm.c b/drivers/clk/qcom/clk-smd-rpm.c
+> index 66d7807ee38e..2380e45b6247 100644
+> --- a/drivers/clk/qcom/clk-smd-rpm.c
+> +++ b/drivers/clk/qcom/clk-smd-rpm.c
+> @@ -416,6 +416,9 @@ static const struct clk_ops clk_smd_rpm_ops = {
+>  static const struct clk_ops clk_smd_rpm_branch_ops = {
+>  	.prepare	= clk_smd_rpm_prepare,
+>  	.unprepare	= clk_smd_rpm_unprepare,
+> +	.set_rate	= clk_smd_rpm_set_rate,
+> +	.round_rate	= clk_smd_rpm_round_rate,
+> +	.recalc_rate	= clk_smd_rpm_recalc_rate,
+>  };
 >  
-> > The flag introduced in this patch will be a preparation for more bits defined
-> > in the future, e.g., for a new bit in flag to show whether to persist the
-> > upcoming uffd-wp bit in pgtable entries.
+>  DEFINE_CLK_SMD_RPM(msm8916, pcnoc_clk, pcnoc_a_clk, QCOM_SMD_RPM_BUS_CLK, 0);
+> -- 
+> 2.17.1
 > 
-> That's kind of the problem. The patch itself looks correct to me however as
-> mentioned it is mostly reverting a previous cleanup and it's hard to tell why
-> that's justified without the subsequent patches. Perhaps it makes the usage of
-> zap_details a bit clearer, but a comment also would with less code.
-> 
-> I know you want to try and shrink the uffd-wp series but I think this patch
-> might be easier to review if it was included as part of that series.
-
-I posted it because I think it's suitable to have it even without uffd-wp.
-
-I tried to explain it above on two things this patch wanted to fix:
-
-Firstly the comment is wrong; we've moved back and forth on changing the
-zap_details flags but the comment is not changing along the way and it's not
-matching the code right now.
-
-Secondly I do think we should have a flag showing explicit willingness to skip
-swap entries.  Yes, uffd-wp is the planned new one, but my point is anyone who
-will introduce a new user of zap_details pointer could overlook this fact.  The
-new flag helps us to make sure someone will at least read the flags and know
-what'll happen with it.
-
-For the 2nd reasoning, I also explicitly CCed Kirill too, so Kirill can provide
-any comment if he disagrees.  For now, I still think we should keep having such
-a flag otherwise it could be error-prone.
-
-Could you buy-in above reasoning?
-
-Basically above is what I wanted to express in my commit message.  I hope that
-can justify that this patch (even if extremly simple) can still be considered
-as acceptable upstream even without uffd-wp series.
-
-If you still insist on this patch not suitable for standalone merging and
-especially if some other reviewer would think the same, I can move it back to
-uffd-wp series for sure.  Then I'll repost this series with 4 patches only.
-
-In all cases, thanks for looking at the series.
-
--- 
-Peter Xu
-
