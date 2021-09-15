@@ -2,108 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CCA740CEBE
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 23:21:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC81540CEC1
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 23:25:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232327AbhIOVWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 17:22:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47848 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231917AbhIOVWl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 17:22:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 93C5C610D1;
-        Wed, 15 Sep 2021 21:21:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631740881;
-        bh=z9hL2MrAtZLKUp7KUmoFzMIAFd6OTjNjbHlZSDPzoKo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WdipA72uTNFoEF5gV8GlZyee2R74YI3OpXo6dqqaAoUEJSEvWYtxrB3qcXeUwsfEg
-         0T0YbsUXxE7qm38po/5OXePE45gDwr4ey90SS39fcVdZn5IxSVFj2Z81EH5nc87vOr
-         z7QWv1DgIMWdDQEf9bNxVrFRw54Hvv54Es2G/e0wFZOmjApDkUOZKlO7/LsmW47Alg
-         SBf0btCYmr9ivezbCdMTm0r/aqKSmvV6imB+izCA6+OjqBGo3MwoEFvI1/dLn8NshJ
-         8Jc57dLZI31XyjHYNGV1B8L5YSOUC8SzgcNfUMV7DsglyhnXVOl/N2kkmHECF5kjXu
-         JdOctJyqKSacg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 93BA44038F; Wed, 15 Sep 2021 18:21:18 -0300 (-03)
-Date:   Wed, 15 Sep 2021 18:21:18 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH] perf parse-events: Avoid enum forward declaration.
-Message-ID: <YUJjzr8lvelSKET1@kernel.org>
-References: <20210915211428.1773567-1-irogers@google.com>
+        id S232341AbhIOV1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 17:27:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43028 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232154AbhIOV06 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 17:26:58 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50C42C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 14:25:39 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id w19so3850116pfn.12
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 14:25:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zhYwN/lCq5ZkLvxf/PjVkxh1djpp97jzhvuz0d4WTJs=;
+        b=iQo7YEU2Ije7HfhxK5dK/P9pWxIHlUXld2/tqibk17hqHInnsYKx0o9GbqjoHag3eM
+         mYu+CZL9Ejs05piAGCj9zaBkvAopdKdmRPgcG3pvMVL7WU/6fZoG05rIhUvASPq0gVS1
+         OTlsgTdxfEWplKRUl532DZ5BauSSaDy/3RWP0adc2hxoaJI9day9SUYNDH/oFpqnYKXK
+         QJ7yT327EkKWDufETgZG1ZU894QgLybavE5DIe0tL8ZR/Nc2HvdcgCLvL5I/7FTSo9ko
+         q4CuuIhosQTaikm11sYRZ4667V/SeaVVcpvHf6uFZHOpo4cqDsltJkj4YG/K+INGX2xZ
+         3t2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zhYwN/lCq5ZkLvxf/PjVkxh1djpp97jzhvuz0d4WTJs=;
+        b=lG4NkqZ+AzR3MemBmm0uYAaT4PaTNJUWyeQLQdM9oBZZCihMxIvsihzNWWF/pHTR7H
+         G8cdqPQH3QO87Hn3/ZeDgKp85qXpuY/VBAx+J/bfhatBHfn1R9zpmBlDtKDpZ//HWwOk
+         R6R5OOcAkTKjDVv5c14tfTHmTZ6zgPe6+K2iAreTGsPCF3rB4BDVLgPGBx2DkgwyXaZX
+         xYUJEqd8cfRpTzbDUI/fnJ5wfANmRBDLcfUtJdPuJcFf/ZJhpCVzUzMbHA70+08IOl9u
+         AB2PqaPf3ZMWNJQ6AZVI/ruf86OIdy+RLH3hcCnE9nMyQIFtLINyBRpuz8YxJR95birl
+         BbvQ==
+X-Gm-Message-State: AOAM5323Npot8PScpJTrzyv+bTpUijBadBh/OPzK5rLthF7KsD8xEEu/
+        xbSGA/4v8ZCeWqkFzuFvv6s=
+X-Google-Smtp-Source: ABdhPJxSGIDvsYCuaBcntkAEAqdA+juDsJjjxrbZn3i/2+vvCCYgI9UCVTv0aMhAtT9ytvzOZ9YxZw==
+X-Received: by 2002:a63:5c2:: with SMTP id 185mr1662389pgf.220.1631741138622;
+        Wed, 15 Sep 2021 14:25:38 -0700 (PDT)
+Received: from edumazet1.svl.corp.google.com ([2620:15c:2c4:201:c105:114d:6caf:7ab5])
+        by smtp.gmail.com with ESMTPSA id b20sm720869pfl.9.2021.09.15.14.25.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Sep 2021 14:25:38 -0700 (PDT)
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>
+Subject: [PATCH] mm/large system hash: avoid possible NULL deref in alloc_large_system_hash
+Date:   Wed, 15 Sep 2021 14:25:30 -0700
+Message-Id: <20210915212530.2321545-1-eric.dumazet@gmail.com>
+X-Mailer: git-send-email 2.33.0.309.g3052b89438-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210915211428.1773567-1-irogers@google.com>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Sep 15, 2021 at 02:14:28PM -0700, Ian Rogers escreveu:
-> Enum forward declarations aren't allowed as the size can't be implied.
-> Switch to just using an int. This fixes a clang warning:
-> 
-> In file included from tools/perf/bench/evlist-open-close.c:13:
-> tools/perf/bench/../util/parse-events.h:185:6: error: redeclaration of already-defined enum 'perf_tool_event' is a GNU extension [-Werror,-Wgnu-redeclared-enum]
-> enum perf_tool_event;
->      ^
-> tools/perf/bench/../util/evsel.h:28:6: note: previous definition is here
-> enum perf_tool_event {
->      ^
+From: Eric Dumazet <edumazet@google.com>
 
-Thanks, applied.
+If __vmalloc() returned NULL, is_vm_area_hugepages(NULL) will fault
+if CONFIG_HAVE_ARCH_HUGE_VMALLOC=y
 
-- Arnaldo
+Fixes: 121e6f3258fe ("mm/vmalloc: hugepage vmalloc mappings")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Cc: Nicholas Piggin <npiggin@gmail.com>
+---
+ mm/page_alloc.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
- 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/util/parse-events.c | 2 +-
->  tools/perf/util/parse-events.h | 3 +--
->  2 files changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-> index 51a2219df601..5d1346aa0627 100644
-> --- a/tools/perf/util/parse-events.c
-> +++ b/tools/perf/util/parse-events.c
-> @@ -1471,7 +1471,7 @@ int parse_events_add_numeric(struct parse_events_state *parse_state,
->  
->  int parse_events_add_tool(struct parse_events_state *parse_state,
->  			  struct list_head *list,
-> -			  enum perf_tool_event tool_event)
-> +			  int tool_event)
->  {
->  	return add_event_tool(list, &parse_state->idx, tool_event);
->  }
-> diff --git a/tools/perf/util/parse-events.h b/tools/perf/util/parse-events.h
-> index bf6e41aa9b6a..b32ed3064c49 100644
-> --- a/tools/perf/util/parse-events.h
-> +++ b/tools/perf/util/parse-events.h
-> @@ -182,10 +182,9 @@ int parse_events_add_numeric(struct parse_events_state *parse_state,
->  			     struct list_head *list,
->  			     u32 type, u64 config,
->  			     struct list_head *head_config);
-> -enum perf_tool_event;
->  int parse_events_add_tool(struct parse_events_state *parse_state,
->  			  struct list_head *list,
-> -			  enum perf_tool_event tool_event);
-> +			  int tool_event);
->  int parse_events_add_cache(struct list_head *list, int *idx,
->  			   char *type, char *op_result1, char *op_result2,
->  			   struct parse_events_error *error,
-> -- 
-> 2.33.0.309.g3052b89438-goog
-
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index b37435c274cf1cb1fabd26465ca7899bb610d91f..e115e21524739341d409b28379942241ed403060 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -8756,7 +8756,8 @@ void *__init alloc_large_system_hash(const char *tablename,
+ 		} else if (get_order(size) >= MAX_ORDER || hashdist) {
+ 			table = __vmalloc(size, gfp_flags);
+ 			virt = true;
+-			huge = is_vm_area_hugepages(table);
++			if (table)
++				huge = is_vm_area_hugepages(table);
+ 		} else {
+ 			/*
+ 			 * If bucketsize is not a power-of-two, we may free
 -- 
+2.33.0.309.g3052b89438-goog
 
-- Arnaldo
