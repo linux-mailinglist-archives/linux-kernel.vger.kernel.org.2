@@ -2,64 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D052740C024
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 09:07:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D296740C028
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 09:08:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236597AbhIOHIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 03:08:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53864 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231305AbhIOHIw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 03:08:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B932461178;
-        Wed, 15 Sep 2021 07:07:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631689654;
-        bh=7z7Mazz8BLgGjouZIDVxIflsK7icf1h/qdtmII0eixg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LCojtIhXy/qUMIEOJqeqqFKLYrQ/LAg9g3nhSpz1Tb17caxZiQbGMm8Go9sVfrrIC
-         JMmd3mJ2uNiYW6d21z5Jv6GAIEO1AL3Di77DszWHd6j34A0DrMAmfeTM4popRLD5ts
-         PNpzBv0KHsD7ZiVbWSGaP8e4o350E6KO7P2Pt/xo=
-Date:   Wed, 15 Sep 2021 09:07:26 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
-        linux-block@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 13/13] xfs: convert xfs_sysfs attrs to use ->seq_show
-Message-ID: <YUGbruik5nGJIBKk@kroah.com>
-References: <20210913054121.616001-1-hch@lst.de>
- <20210913054121.616001-14-hch@lst.de>
- <YT7vZthsMCM1uKxm@kroah.com>
- <20210914073003.GA31077@lst.de>
- <YUC/iH9yLlxblM09@kroah.com>
- <20210914153011.GA815@lst.de>
- <YUDCsXXNFfUyiMCk@kroah.com>
- <20210915070445.GA17384@lst.de>
+        id S236517AbhIOHJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 03:09:19 -0400
+Received: from mail-vs1-f53.google.com ([209.85.217.53]:37849 "EHLO
+        mail-vs1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231305AbhIOHJS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 03:09:18 -0400
+Received: by mail-vs1-f53.google.com with SMTP id i23so1789473vsj.4;
+        Wed, 15 Sep 2021 00:07:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=a1ubzPqneCoCRWymQt/DPxsQuqKvhkE5Z8aHIVy6Log=;
+        b=mHCJCar4Xon2OJ1uoHuNQ+lpwpABdoMskKqM/zLCiaKEMJ4fnVzMbNPkLzunMtw4Lz
+         QDMQXHroqpqhYqC78up5JyhROyfZRNV6uJPxcN6hLm8+Cr0/Z57X26Hm1fBkJd3oPuZG
+         bQbG+ZS3zM4CCQQZixicK3rmQFp7x3tbWga54SRYkFvQUwt5jEr58m+P9fpbMFeLK+3t
+         H+wzmD92gHTE+cA8tt2ZMlDCUFtzukHB3rOkHwzS+PC3tSVixc3ir1eS6HdJDGMPCdJG
+         s0XnY65AmbV00QA7KBLyscTRBkxjn8ei813AZv3EW4gP2FKo0lLJL6Z4CNugfsNczmdP
+         uSKg==
+X-Gm-Message-State: AOAM530h6oAMhnA8zSz0bmU0UfDfeNqMCl0cp7C72X7O2yaWFSCB64xV
+        d5JyvYFOAeF+PbEPtKPKGclfHbgve67A/zXdUIWmXNWD
+X-Google-Smtp-Source: ABdhPJxHnxoszY0sDj+hYWU0BjE3kyyw/RQ3D4awXIHnhLApfgsvuSgs5P41V6o+hh5KfRrFWq/4//5doBTkeuIdizM=
+X-Received: by 2002:a05:6102:b10:: with SMTP id b16mr2224836vst.41.1631689678872;
+ Wed, 15 Sep 2021 00:07:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210915070445.GA17384@lst.de>
+References: <20210915035227.630204-1-linux@roeck-us.net> <20210915035227.630204-2-linux@roeck-us.net>
+In-Reply-To: <20210915035227.630204-2-linux@roeck-us.net>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 15 Sep 2021 09:07:47 +0200
+Message-ID: <CAMuHMdWiAc_8Z5wK07c5Fi3Zf72RpPzqv32QHC=iYtBQpi=3dg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/4] compiler.h: Introduce absolute_pointer macro
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, linux-sparse@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 09:04:45AM +0200, Christoph Hellwig wrote:
-> On Tue, Sep 14, 2021 at 05:41:37PM +0200, Greg Kroah-Hartman wrote:
-> > They huge majority of sysfs attributes are "trivial".  So for maybe at
-> > least 95% of the users, if not more, using sysfs_emit() is just fine as
-> > all you "should" be doing is emitting a single value.
-> 
-> It is just fine if no one does the obvious mistakes that an interface
-> with a char * pointer leads to.  And 5% of all attributes is still a huge
-> attack surface.
+On Wed, Sep 15, 2021 at 5:52 AM Guenter Roeck <linux@roeck-us.net> wrote:
+> absolute_pointer() disassociates a pointer from its originating symbol
+> type and context. Use it to prevent compiler warnings/errors such as
+>
+> drivers/net/ethernet/i825xx/82596.c: In function 'i82596_probe':
+> ./arch/m68k/include/asm/string.h:72:25: error:
+>         '__builtin_memcpy' reading 6 bytes from a region of size 0
+>                 [-Werror=stringop-overread]
+>
+> Such warnings may be reported by gcc 11.x for string and memory operations
+> on fixed addresses.
+>
+> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 
-It is probably less, I just pulled that number out of the air.  With the
-other work we are doing to make sure we have documentation for all sysfs
-attributes in the kernel, we will soon know the real number.
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-thanks,
+Gr{oetje,eeting}s,
 
-greg k-h
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
