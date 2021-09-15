@@ -2,101 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 556FB40CB79
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 19:10:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6329340CB58
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 19:02:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230443AbhIORLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 13:11:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229697AbhIORLy (ORCPT
+        id S229872AbhIOREM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 13:04:12 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:57617 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230038AbhIOREK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 13:11:54 -0400
-X-Greylist: delayed 588 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 15 Sep 2021 10:10:35 PDT
-Received: from sym2.noone.org (sym2.noone.org [IPv6:2a01:4f8:120:4161::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0114FC061574;
-        Wed, 15 Sep 2021 10:10:34 -0700 (PDT)
-Received: by sym2.noone.org (Postfix, from userid 1002)
-        id 4H8mgT4KhVzvjfm; Wed, 15 Sep 2021 19:00:37 +0200 (CEST)
-Date:   Wed, 15 Sep 2021 19:00:37 +0200
-From:   Tobias Klauser <tklauser@distanz.ch>
-To:     Jiri Slaby <jslaby@suse.cz>
-Cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Al Cooper <alcooperx@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Richard Genoud <richard.genoud@gmail.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Alexander Shiyan <shc_work@mail.ru>,
-        Baruch Siach <baruch@tkos.co.il>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Karol Gugala <kgugala@antmicro.com>,
-        Mateusz Holenko <mholenko@antmicro.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Liviu Dudau <liviu.dudau@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Kevin Cernekee <cernekee@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Peter Korsgaard <jacmet@sunsite.dk>,
-        Timur Tabi <timur@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>
-Subject: Re: [PATCH 08/16] tty: drivers/tty/serial/, stop using
- tty_flip_buffer_push
-Message-ID: <20210915170036.m3twgoq4zd4wbafe@distanz.ch>
-References: <20210914091134.17426-1-jslaby@suse.cz>
- <20210914091415.17918-1-jslaby@suse.cz>
+        Wed, 15 Sep 2021 13:04:10 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 18FH2TuF020081
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Sep 2021 13:02:29 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 3862A15C3424; Wed, 15 Sep 2021 13:02:29 -0400 (EDT)
+Date:   Wed, 15 Sep 2021 13:02:29 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.com>, linux-xfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/6] EXT4: Remove ENOMEM/congestion_wait() loops.
+Message-ID: <YUInJQ0wJ4Cd07dT@mit.edu>
+References: <163157808321.13293.486682642188075090.stgit@noble.brown>
+ <163157838437.13293.14244628630141187199.stgit@noble.brown>
+ <YUE+L19JyjqWh+Md@mit.edu>
+ <163168354018.3992.580533638417199797@noble.neil.brown.name>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210914091415.17918-1-jslaby@suse.cz>
-User-Agent: NeoMutt/20170113 (1.7.2)
+In-Reply-To: <163168354018.3992.580533638417199797@noble.neil.brown.name>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-14 at 11:14:07 +0200, Jiri Slaby <jslaby@suse.cz> wrote:
-[...]
->  drivers/tty/serial/altera_jtaguart.c        |  2 +-
->  drivers/tty/serial/altera_uart.c            |  2 +-
+On Wed, Sep 15, 2021 at 03:25:40PM +1000, NeilBrown wrote:
+> Adding gfp_mask to __ext4_journal_start_sb() make perfect sense.
+> There doesn't seem much point adding one to __ext4_journal_start(),
+> we can have ext4_journal_start_with_revoke() call
+> __ext4_journal_start_sb() directly.
+> But I cannot see what it doesn't already do that.
+> i.e. why have the inline __ext4_journal_start() at all?
+> Is it OK if I don't use that for ext4_journal_start_with_revoke()?
 
-for these:
+Sure.  I think the only reason why we have __ext4_journal_start() as
+an inline function at all was for historical reasons.  That is, we
+modified __ext4_journal_start() so that it took a struct super, and
+instead of changing all of the macros which called
+__ext4_journal_start(), we named it to be __ext4_journal_start_sb()
+and added the inline definition of __ext4_journal_start() to avoid
+changing all of the existing users of __ext4_journal_start().
 
-Acked-by: Tobias Klauser <tklauser@distanz.ch>
+So sure, it's fine not to use that for
+ext4_journal_start_with_revoke(), and we probably should clean up the
+use of __ext4_journal_start() at some point.  That's unrelated to your
+work, though.
 
-Thank you
+Cheers,
+
+					- Ted
