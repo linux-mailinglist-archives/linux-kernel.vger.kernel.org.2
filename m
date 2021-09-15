@@ -2,160 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6397040BE1B
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 05:18:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB9FD40BE1D
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 05:19:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236143AbhIODTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 23:19:11 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:6324 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229888AbhIODTA (ORCPT
+        id S233232AbhIODUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 23:20:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31229 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229957AbhIODTj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 23:19:00 -0400
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18F2lmQC032066;
-        Wed, 15 Sep 2021 03:17:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2021-07-09;
- bh=/3VKPwM1FU+BOjaGiZ0JcQF7cB0fG/fNYsQiYWYg4oY=;
- b=b0UtPnqducrGup6s87aioreWdPqrHH7tpRNMVVAXUWcfBKzG5Z8X+HUripqED/Fkx8Aa
- igtOxp1aVfy1mrtILnnugZdEt+YSW/M+am/8Oxzj3go3CKe19pL/pfDDj8WSUfG9p8r3
- M993tWMlMcg95rzc017nkN43NJK6UhnVsJ0d9IiDe3+qGIGgjgozxWW6LdHeS3CU0H10
- DDID3WL+LhMdzAAuCxA34ia9Co3dxPN/rUZT9GzPy5mTqOtQjjOCwDHZy6cVJ43/DBeM
- nmqIjKjyoY/Y009N7akvvi06O/jTacO+CIbHOeJr6AOxXl25o2t1rW72kZMQrTt9ASid QQ== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2020-01-29;
- bh=/3VKPwM1FU+BOjaGiZ0JcQF7cB0fG/fNYsQiYWYg4oY=;
- b=zNMKUqbooIyBiVI2XBMdnZhoz3mt6DkCh42yzx3gbKH2PppRjCCXaIC1YlVd89SlEtre
- ILp1Af/+dzAxUmV9qjmTA/1OaLfjuxDJ6+okWlNvMw5kUNUyhHaUOZgz+aXHceBeSUwT
- ZyBZvkqCy7yCyhbBWS0EJpVuAeVyV5fVWrcallX/kTcofeAgNMxDiwHtq7qTucO5Ifyp
- PkyAPDg1Y34Ex6ruOOaXNcW8P8INH2rXceSoMjHGwxP2F7s4uJGIr+xPjm8QZSLKf8sN
- 1YuTYh3Drg64TeEfdcvUfa2A/TqwaNjyfwquMZyzB+oyzUqixsojgV2giBx/S1ob6UFT xA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3b2p3mkh8s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 15 Sep 2021 03:17:38 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18F3FXal119748;
-        Wed, 15 Sep 2021 03:17:36 GMT
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2175.outbound.protection.outlook.com [104.47.56.175])
-        by userp3020.oracle.com with ESMTP id 3b167sysfm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 15 Sep 2021 03:17:36 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FRXPycLB0vc/XP7IZwu77vAQXSE/0VQ/xoPp/H3JmyedH5Yh/3+o/Au3WcZdPNH576NlMcgRUkD1Ud8BSpQxUp55hBEnKydFQFTZD+0b50FCL1ZT9xruAnrXBc+ghJbFMlsuaSFX2CGV9G2gXxCiO1yZLpt9JFzJl3njaqkc1vopiJaFIiFSNXXF+yKdwf8hHEfZcFCUwMK7x7z1hpoKaBoDPLyuhoJoKLWhC+ME9k00NT07rYQ2wIZq+OY7Hi884E7qJFBoyBNkVkmPvxdohfbmCISsi47qFfT8IluOos8mA7/kbacvqa+QJ+VT58h3b/vzrkcznVMAoD+fNlsavQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=/3VKPwM1FU+BOjaGiZ0JcQF7cB0fG/fNYsQiYWYg4oY=;
- b=oSsgyQHjKZ9Sjq3v8hq7htFhVY6Isf28WdgLUscCjQGBWVsmdEYXLvWVBmwfvlmykm0xjTqy8hF8zbu5kxR805R//ce91w746pwB4+z4Aab5a3nv10Z+NGiQw1UGeY1isMIhQq4bC7jG+t+BjQKdzh1qkyoQAg034V4xurr1Zf4dJopa0bIdvOVjywswj7g5KUgK6QXxFhHnd3T+HBmTZmJJXh0S+0WtUe8LolPJl7pDPvBV3wHC1VxVNpHci7oLzHIQj4Y2+shpwM+N3atLYRLWv8WDGf8K3pulkP/1JSvGenpMkn6xX3SCuRjefKLPT5/BDCqrq4KLj7MnqbK9tw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/3VKPwM1FU+BOjaGiZ0JcQF7cB0fG/fNYsQiYWYg4oY=;
- b=X53Ur5itkjWF78kbTsMC3DJvv69ui+lhNKhFt9H+PAo5wIiQMJV7DFRtfxueZnYwbtkRkQq15N1/lFwQhqe9ZD1sxapqL+HjWzdXJLEBvShP54ITr/bfeDlfUJOvaI+kN6+0mFfkzQYzT+BrrCYIDI3uKMkHEsr8F0B0lzcrdFY=
-Authentication-Results: canonical.com; dkim=none (message not signed)
- header.d=none;canonical.com; dmarc=none action=none header.from=oracle.com;
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by PH0PR10MB5417.namprd10.prod.outlook.com (2603:10b6:510:e4::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Wed, 15 Sep
- 2021 03:17:34 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::c0ed:36a0:7bc8:f2dc]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::c0ed:36a0:7bc8:f2dc%7]) with mapi id 15.20.4500.019; Wed, 15 Sep 2021
- 03:17:34 +0000
-To:     Colin King <colin.king@canonical.com>
-Cc:     Nilesh Javali <njavali@marvell.com>,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] scsi: qla2xxx: Remove redundant initialization of
- pointer req
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1czpawmrg.fsf@ca-mkp.ca.oracle.com>
-References: <20210910114610.44752-1-colin.king@canonical.com>
-Date:   Tue, 14 Sep 2021 23:17:32 -0400
-In-Reply-To: <20210910114610.44752-1-colin.king@canonical.com> (Colin King's
-        message of "Fri, 10 Sep 2021 12:46:10 +0100")
-Content-Type: text/plain
-X-ClientProxiedBy: SN4PR0701CA0030.namprd07.prod.outlook.com
- (2603:10b6:803:2d::23) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+        Tue, 14 Sep 2021 23:19:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631675900;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=G9OTi+I6mElAnVtqWJXABEPv/vr+kKCZOit8WTNNJF8=;
+        b=V79Q6x4WGO4LpM9kZliPm7V6JVYl8rancZm7CdAzqfWWhepRQqXlSGXh837dDhnpjtTwt3
+        SXhIiJhxg86cMoc3IiWHBH7TGldUrzTdbCMyHEimiEK5eByBw7Z57DDL/KKLQheVCHkUhr
+        0v5ItkWJ+TLTOB6f9gVaMtQSRGjqSbU=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-536-2mHuqm_VPs-g-nv49hynNw-1; Tue, 14 Sep 2021 23:18:19 -0400
+X-MC-Unique: 2mHuqm_VPs-g-nv49hynNw-1
+Received: by mail-lj1-f200.google.com with SMTP id h15-20020a2e530f000000b001efaf55b4ddso786907ljb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 20:18:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=G9OTi+I6mElAnVtqWJXABEPv/vr+kKCZOit8WTNNJF8=;
+        b=vWKf1NmSNBh/YzrZ+EUTl8+9a0nyeMb9eFszjfKSjCZTm9kBhORhNy/VH5MzyVlHld
+         x/wNpKWnOiASDsMa+OImjCrEIvGdUduZuKhqY8bfWAl7qFajAt05S+sMQZjeGsqLGwpE
+         5rzQyKV6UzNu7eozt0v4CzV0Zunzj3zuvYMPx0ZBkSV1ZbAuGpeJvq7vRqmhZ8ZkTHbW
+         EtLaGNm/A+SWXqNYJqAwhfQBM3Ker/3Zrk22humDGdfHdJDgDO9GxmDuwNGaTx/44hZ9
+         cUDterhxlad1GFbOBaKNSXjHlUYhNnO20t6FbVPmUniqBuIV9Td6Gpl5Pbn0GEq+BmFE
+         6+VA==
+X-Gm-Message-State: AOAM5334NCv15GO9WqfbN8UnbkV0oBruQNXJj+jvkGEgckAR4TSllJeZ
+        mZhL5qwhhUHohvZDdPn7vuFwvSVuQepxuyDtttpSGYNdnW9hYhPgRxvkNLeFH4ceWXR4ev0+bZY
+        M68q/P3c7PqD2E5k0rTuqJxzPVSgQa3tEtWxnc66O
+X-Received: by 2002:a05:6512:110b:: with SMTP id l11mr15482564lfg.199.1631675897629;
+        Tue, 14 Sep 2021 20:18:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxViT8vFiqnR4GYSzaBHxKHxPutxAUmMnRBJ8kFY85O+uo5Tk3lj53Fwai7Z6rjx0PWRSkkVW15fi6Tsfj9y44=
+X-Received: by 2002:a05:6512:110b:: with SMTP id l11mr15482553lfg.199.1631675897429;
+ Tue, 14 Sep 2021 20:18:17 -0700 (PDT)
 MIME-Version: 1.0
-Received: from ca-mkp.ca.oracle.com (138.3.201.50) by SN4PR0701CA0030.namprd07.prod.outlook.com (2603:10b6:803:2d::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Wed, 15 Sep 2021 03:17:34 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4c49c365-053e-4828-a8fb-08d977f75c9f
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5417:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PH0PR10MB54172744B5D048E1CB657A188EDB9@PH0PR10MB5417.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: P24Tmy4eTC+/Nr1d09AK84Hmx5tzAcIrlD5s3NmiJFgfWNc36QD8fSIwYm+tA2WRt9NqSu2A0zAJD/hTNRXmvKFSgoj6WgTOPtvF7fomMRGZAX9pPH1hC5rs6oKgi51YLdtu7H24dQFXcOqpNvnVdiMYn7B2LTPTn8RH87++M+wwcXixdjZuxllHExd0BfzrotKnQciSrxw4cx4U4R1dXY4yyBvAcohd3yWtSzLXjruZNdUL71vOIxbanppgm1n8gs+8pywvPR7/X6HttzfFZbD/nJfnP+R9i90NYN09kBlkGqM2acG+9Pa2vt5HQWNh+zkRj45GLrnYln4ZQrBqU6oYCG3n20HtxAQJpYfBFsHaiDlS0bNFhqCvwTR7V8ReLJFnsGUzZv/KYwoEjC2DMR1dJnqjJklad++EzM9ryZcl5HSl8R+dBY+WpfgIOAjf7rjAbIxQV/39/KXAY9YBhCXiS1J1iA9by/QrmQBH+rXLUqqqbnFa/dqQl6MR+EtbIS5iyB3/RIQkOW09jtw/FXttINJzHnhZXiG+CLnIlSdbhoA/FMyY8vQV1V8ODdh5TS3t3E7ifaRW7v43REPMMrAqR7gGEdwrvfqrpz1XeGJXbGU01I9l8DxUmlMx0V3382SIC5qlMbR01xtW+K1MNo0fOhoS5KCo3KFJ9P75gA+HvEExykDjssiwH4Kb39QkXj7CuFegQfy4niMrOnHXFQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(7696005)(558084003)(508600001)(8676002)(52116002)(83380400001)(5660300002)(4326008)(54906003)(186003)(66476007)(66946007)(956004)(8936002)(26005)(38100700002)(66556008)(38350700002)(86362001)(2906002)(6916009)(316002)(55016002)(36916002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ttaHHn8nE5svy4D/2CG7QRjg9M1fXoRdB5a8lKOlnjRNO2Di3cpDzFBkekKi?=
- =?us-ascii?Q?d3FqPVhq36ZxGKA+Mspe/LcO6IP6x1cEDhT7vCi/P0V+XFQgiKvblbNbbCy9?=
- =?us-ascii?Q?8wyRpKozD9EqX5y2jMmU01vLXU9l8nKseBzUkrqbcE+273awWeLJtIL/50+1?=
- =?us-ascii?Q?Frisa7OhpfooQlvPH5R9W4oZ2Eu70K84hTI8XvJypernbSPr2P1ahQ0lPR+V?=
- =?us-ascii?Q?yRtB+gK72DDacT541DEaIM+VMzm1P+FNP5XYIzJoLuLdeFkYyodmhLPm0/1w?=
- =?us-ascii?Q?L60no6uBMCZSU14ZwEbUaB+umWLBxC4TMMcFV089vcPwI7wlP3H8NjWjEAuD?=
- =?us-ascii?Q?SEZzwm2AZrJ14pSQ3MqlbCAUL0GJI7Kxme/anvFfVOCNkMoLH9zT8bTRVDdB?=
- =?us-ascii?Q?K7ZmJ7YQeUEFVXbEUq3zTRUAwS0XkdJhEZoFqBxXGNSJtkcJMecsLsTnKjzn?=
- =?us-ascii?Q?GZxd1KwRrtMWsfNNthdaHlsryNzLbzzBaPVzunmmt/+l6SbtLeEvlNe0/+YD?=
- =?us-ascii?Q?pLMq4XMwIqBONoe8mQUX7AXj8yUOmwU4aB3VAzV0IZNUGvZBkFiLtlwcV4P0?=
- =?us-ascii?Q?b4Pb63woic+HdeMXGlt4/wN4av2OXKfLog1+GBJIlhJRLTjSfGIVF0Tp64kP?=
- =?us-ascii?Q?QU94yB+0u4s0/IWsv4gb4h6u1MfjZeexAcMZBU4aE4T7Jucd4G/WbpfQ/NRu?=
- =?us-ascii?Q?VTOdiA+NUVRX7/J6XlSIM0sX7PDfB43+Ge3547c6i67lkOq40Tc6eg8lRBgY?=
- =?us-ascii?Q?D5VCfcjgFbnY4et+D+Udw1J/yJVLGJH0COfGjNc5+gNrBHdplmcJQ+KcVLkq?=
- =?us-ascii?Q?zrXGzCvQiqA7W0WSVTqf9ezKDym63fX3FVDCKJmIA06m+G+NuEuyVpFgnO9k?=
- =?us-ascii?Q?wBbR/b3BCS0YOGMaz2CtCTzMeehnDRhz+HWNKLxCyNkI2g4avbJQMUonYIxV?=
- =?us-ascii?Q?1TH+8eTTNo5ZQ6x9J9qudYWMAfpgYKhVqQ9JaXWvf1Gmzuwysfknv2JES3eH?=
- =?us-ascii?Q?xEp+Iw91VrDcgQWfBJ6GZ0yMY5+YouLjSlEoCV38MOdH5iUHfXvhoC5xKYOf?=
- =?us-ascii?Q?dxj/MLmXwWmhVnG3SnlOhFpc69Zq91n3iYvwC8b/FqFNodulqer1v+L8h2O6?=
- =?us-ascii?Q?2S2G7dTXmNBBj7gdBCc0OQBtOLXSZJ8Z91I6qO5q0VgR7TrFQt7cY92t5OjC?=
- =?us-ascii?Q?E4VykViB7YLbVOmqBw5RhvRS7kl6x2Y+p8qg0I7IyLB1RGSBjtXMOX0mb5mc?=
- =?us-ascii?Q?E4qYVTTI64Ts2N6Ahd5AR8VAHUiUVW5sXx8j7ZH6uoyJv4oo4+B6pCtgc33P?=
- =?us-ascii?Q?O6pdOb2CkgAfDntWiuZbEaYu?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4c49c365-053e-4828-a8fb-08d977f75c9f
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2021 03:17:34.5037
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 81fKAP3CoWR//PPgnfb0ec81kNCK4zHK+6ob9kKFaaXS/RPF7UEuPU35U84KHXNmBP41J3kaYMARYjBrCqh4EPGcJhOmBkihbJBuKIKtaMw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB5417
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10107 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 suspectscore=0
- phishscore=0 mlxlogscore=999 malwarescore=0 mlxscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109030001
- definitions=main-2109150019
-X-Proofpoint-GUID: cTN-5gWG79pT-Hzm4DddOiXX7Wh65EFF
-X-Proofpoint-ORIG-GUID: cTN-5gWG79pT-Hzm4DddOiXX7Wh65EFF
+References: <cover.1631101392.git.wuzongyong@linux.alibaba.com>
+ <cover.1631621507.git.wuzongyong@linux.alibaba.com> <834528d24c839080215b2e077f100e9ed5073edc.1631621507.git.wuzongyong@linux.alibaba.com>
+ <20210914085711-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20210914085711-mutt-send-email-mst@kernel.org>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Wed, 15 Sep 2021 11:18:06 +0800
+Message-ID: <CACGkMEu3RUGpe74Vh-FAZD3MwOC3gqU0OEf8A1ULvq7GSMm6Jg@mail.gmail.com>
+Subject: Re: [PATCH v2 4/5] vdpa: add new vdpa attribute VDPA_ATTR_DEV_F_VERSION_1
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Wu Zongyong <wuzongyong@linux.alibaba.com>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        wei.yang1@linux.alibaba.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 14, 2021 at 8:58 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+>
+> On Tue, Sep 14, 2021 at 08:24:51PM +0800, Wu Zongyong wrote:
+> > This new attribute advertises whether the vdpa device is legacy or not.
+> > Users can pick right virtqueue size if the vdpa device is legacy which
+> > doesn't support to change virtqueue size.
+> >
+> > Signed-off-by: Wu Zongyong <wuzongyong@linux.alibaba.com>
+>
+> So if we are bothering with legacy,
 
-Colin,
+I think we'd better not. I guess the following may work:
 
-> The pointer req is being initialized with a value that is never read,
-> it is being updated later on. The assignment is redundant and can be
-> removed.
+1) disable the driver on BE host
+2) present VERSION_1 with ACCESS_PLATFORM in get_features()
+3) extend the management to advertise max_queue_size and
+min_queue_size, for ENI they are the same so management layer knows it
+needs to set the queue_size correctly during launching qemu
 
-Applied to 5.16/scsi-staging, thanks!
+Thoughts?
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+Thanks
+
+> I think there are
+> several things to do when building the interface
+> - support transitional devices, that is allow userspace
+>   to tell device it's in legacy mode
+> - support reporting/setting supporting endian-ness
+>
+> > ---
+> >  drivers/vdpa/vdpa.c          | 6 ++++++
+> >  drivers/virtio/virtio_vdpa.c | 7 ++++++-
+> >  include/uapi/linux/vdpa.h    | 1 +
+> >  3 files changed, 13 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/vdpa/vdpa.c b/drivers/vdpa/vdpa.c
+> > index 1dc121a07a93..533d7f589eee 100644
+> > --- a/drivers/vdpa/vdpa.c
+> > +++ b/drivers/vdpa/vdpa.c
+> > @@ -12,6 +12,7 @@
+> >  #include <linux/slab.h>
+> >  #include <linux/vdpa.h>
+> >  #include <uapi/linux/vdpa.h>
+> > +#include <uapi/linux/virtio_config.h>
+> >  #include <net/genetlink.h>
+> >  #include <linux/mod_devicetable.h>
+> >
+> > @@ -494,6 +495,7 @@ vdpa_dev_fill(struct vdpa_device *vdev, struct sk_buff *msg, u32 portid, u32 seq
+> >       u16 max_vq_size;
+> >       u32 device_id;
+> >       u32 vendor_id;
+> > +     u64 features;
+> >       void *hdr;
+> >       int err;
+> >
+> > @@ -508,6 +510,7 @@ vdpa_dev_fill(struct vdpa_device *vdev, struct sk_buff *msg, u32 portid, u32 seq
+> >       device_id = vdev->config->get_device_id(vdev);
+> >       vendor_id = vdev->config->get_vendor_id(vdev);
+> >       max_vq_size = vdev->config->get_vq_num_max(vdev);
+> > +     features = vdev->config->get_features(vdev);
+> >
+> >       err = -EMSGSIZE;
+> >       if (nla_put_string(msg, VDPA_ATTR_DEV_NAME, dev_name(&vdev->dev)))
+> > @@ -520,6 +523,9 @@ vdpa_dev_fill(struct vdpa_device *vdev, struct sk_buff *msg, u32 portid, u32 seq
+> >               goto msg_err;
+> >       if (nla_put_u16(msg, VDPA_ATTR_DEV_MAX_VQ_SIZE, max_vq_size))
+> >               goto msg_err;
+> > +     if (features & BIT_ULL(VIRTIO_F_VERSION_1) &&
+> > +         nla_put_flag(msg, VDPA_ATTR_DEV_VERSION_1))
+> > +             goto msg_err;
+> >
+> >       genlmsg_end(msg, hdr);
+> >       return 0;
+> > diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
+> > index 72eaef2caeb1..1cba957c4cdc 100644
+> > --- a/drivers/virtio/virtio_vdpa.c
+> > +++ b/drivers/virtio/virtio_vdpa.c
+> > @@ -7,6 +7,7 @@
+> >   *
+> >   */
+> >
+> > +#include "linux/virtio_config.h"
+> >  #include <linux/init.h>
+> >  #include <linux/module.h>
+> >  #include <linux/device.h>
+> > @@ -145,6 +146,7 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
+> >       /* Assume split virtqueue, switch to packed if necessary */
+> >       struct vdpa_vq_state state = {0};
+> >       unsigned long flags;
+> > +     bool may_reduce_num = false;
+> >       u32 align, num;
+> >       int err;
+> >
+> > @@ -169,10 +171,13 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
+> >               goto error_new_virtqueue;
+> >       }
+> >
+> > +     if (ops->get_features(vdpa) & BIT_ULL(VIRTIO_F_VERSION_1))
+> > +             may_reduce_num = true;
+> > +
+> >       /* Create the vring */
+> >       align = ops->get_vq_align(vdpa);
+> >       vq = vring_create_virtqueue(index, num, align, vdev,
+> > -                                 true, true, ctx,
+> > +                                 true, may_reduce_num, ctx,
+> >                                   virtio_vdpa_notify, callback, name);
+> >       if (!vq) {
+> >               err = -ENOMEM;
+> > diff --git a/include/uapi/linux/vdpa.h b/include/uapi/linux/vdpa.h
+> > index 66a41e4ec163..ce0b74276a5b 100644
+> > --- a/include/uapi/linux/vdpa.h
+> > +++ b/include/uapi/linux/vdpa.h
+> > @@ -32,6 +32,7 @@ enum vdpa_attr {
+> >       VDPA_ATTR_DEV_VENDOR_ID,                /* u32 */
+> >       VDPA_ATTR_DEV_MAX_VQS,                  /* u32 */
+> >       VDPA_ATTR_DEV_MAX_VQ_SIZE,              /* u16 */
+> > +     VDPA_ATTR_DEV_VERSION_1,                /* flag */
+> >
+> >       /* new attributes must be added above here */
+> >       VDPA_ATTR_MAX,
+> > --
+> > 2.31.1
+>
+
