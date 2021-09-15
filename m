@@ -2,106 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4479040CD96
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 21:56:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7931D40CDAB
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 22:05:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231611AbhIOT53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 15:57:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51012 "EHLO
+        id S231703AbhIOUGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 16:06:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229732AbhIOT52 (ORCPT
+        with ESMTP id S231487AbhIOUGU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 15:57:28 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDE63C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 12:56:08 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id ci14-20020a056214054e00b0037a75ff56f9so7919470qvb.23
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 12:56:08 -0700 (PDT)
+        Wed, 15 Sep 2021 16:06:20 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C9C7C061575
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 13:04:51 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id h16so8963877lfk.10
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 13:04:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:cc;
-        bh=1D42zcUJP7Yd1OBpScfym6RyYgwjdXqxQ6ExRKg2hiA=;
-        b=Qh0v9EKYh48K68psvZw/Otnu1Zajri6jZtVWAmAzRMbjKkXMNn7aUytL84TkGc35Zi
-         jQkaUW8s37BO+r9+CjdYmuoh7FtOt1xKAj8a1JzrU3AwROGOoFkD8kB6uemU5my+CBSO
-         0OL2auP8TMx/9JFv4TCUyGCUqlM7LRyrHLCDbLHqtr+LLHQvR35GljwU1glAgjF0S83c
-         wEoOzRecOUU9v83n0SU2CvxBeDGyTpjnoGaT/ZxSz5gXOEMEpq87pPp5df5kR6VR8dnt
-         XyGdFE3sQ8LTIgxkHbltYDGsQ7scPikxhX1P8WIz5ihyIriym9+y4KmX/yrWgllYIoYC
-         vjrw==
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=PJmcziiXmV8RIDbZ5D5UGsw521UNmkikWzjsy2xatzI=;
+        b=qYfsUO72jzT4TWWeJIe6bnU4+xaGNqkuwhxq7qPUJWGcVmmE5nrH7w4PwgOVP/45i6
+         D6JCUo6tVAYsJy51Xvn+OiLGsnYNha2MvjzXv8QYcO3NdMMAV2fcBogsClVqHnnVc+HB
+         EUuJGikXwdM6Ga3rUvHG502bJiXyBCWfkOnQ1JuFr5XXVCh+Zxfk9Q1F10pmP0vagj41
+         bHQvOeDYwZh2UkF9bB58Wc/gHQwSTrRs4iZLWMinpicl1khA6fit3JvQSwMDRvmXheqF
+         wkLv1G99JxZdvfklwZSY6QAuLXEdLfO2HVMQvfBXlR4G/HjFD5sqRF1Ow6kcW2PlrVYg
+         +AZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:cc;
-        bh=1D42zcUJP7Yd1OBpScfym6RyYgwjdXqxQ6ExRKg2hiA=;
-        b=ytkfZ5Cb8Z5fc/xN1vmRFCSk9BO3TMLciuOwj9uXc+GjxvyRM+mqKKujXxeGhBDSan
-         2zSi7mzPM8pI9KA8CJSkNHHle1pK74pqRbezfvsN/6jbBoD9h2LuHH7PwIQjKAsatxm2
-         f38Md240+yRbrCr9agFhfVu5A+pNu1pM379FJ6OQk8kFWZBI7B9wim/GThzIOMd8O91Z
-         EFDS9Q+c11Nf5IwX1gwbLEuF+CZW7hAlfPKWUiPRoTgq/rOB0tQ72h8cbebRgyAM12dW
-         AC7AM6F8r5eQz8pTL/grLFvVk/docG6JMPrOhr0rV0NdBYEE28Wh1Zz5MyTHna4pk+Pz
-         7hLg==
-X-Gm-Message-State: AOAM533STyRKT6AErv31tOctieP9hkqy7dvxcHqL+DZYfgdEEv1DtWHY
-        VwZZwaoVgUiNumEu6OzaEURRlhIzy9Dq4gLbig==
-X-Google-Smtp-Source: ABdhPJwstirmxKy545qmG+7yGZJ8nD+HM/bCVTLS993GeQPljENqko1YZQK4YfHdcV2F9a4mLCkNhctIjasPMFiD3w==
-X-Received: from kaleshsingh.c.googlers.com ([fda3:e722:ac3:cc00:14:4d90:c0a8:2145])
- (user=kaleshsingh job=sendgmr) by 2002:a05:6214:1142:: with SMTP id
- b2mr1799508qvt.0.1631735768059; Wed, 15 Sep 2021 12:56:08 -0700 (PDT)
-Date:   Wed, 15 Sep 2021 19:52:49 +0000
-In-Reply-To: <20210915195306.612966-1-kaleshsingh@google.com>
-Message-Id: <20210915195306.612966-6-kaleshsingh@google.com>
-Mime-Version: 1.0
-References: <20210915195306.612966-1-kaleshsingh@google.com>
-X-Mailer: git-send-email 2.33.0.309.g3052b89438-goog
-Subject: [PATCH 5/5] tracing/histogram: Document expression arithmetic and constants
-From:   Kalesh Singh <kaleshsingh@google.com>
-Cc:     surenb@google.com, hridya@google.com, namhyung@kernel.org,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PJmcziiXmV8RIDbZ5D5UGsw521UNmkikWzjsy2xatzI=;
+        b=ewfHmmWzqT39ZtvIGnUpeT+aSSLPxzs6YKqo6E3h2fHsq35sDW29zkX4gPudhKItmp
+         wupSPZLJ1ybCWLcKPatfCbUjZ3c15+TDDYiRwrdLaD063pY6o4f9ILDIqwISP/evgeF7
+         RQg+bkXo3WcW/vfA+TWNJjivzyfbRbqMudEplD9XgTUaO5ybt+UUveMsxGQsauQQKHvc
+         7XaQk9YId8Mz6Tgdita4PovwpisUo6LewtvPdArVVoFMNPY1BRmSZOsQ7TCP5uZg0BjK
+         vWbBsHVcMpNbYxcEvQRSdR6byk1pz3VL2l7MKAVSVFKHGPVMz1oE/yE6bhDLdFSzHFnq
+         65wA==
+X-Gm-Message-State: AOAM533idrR1HcgZNqW0L9AHiVH0lAhhfBe1P5PEjjfSm49su+CWii9i
+        v3r2TkHKZn0Eom88Ti/sEuaoeQ==
+X-Google-Smtp-Source: ABdhPJxjPfwH2g9ak/eK9haf/qlkdtExND36Ul9ulD+4sIjr7HF+ctNlv6IsgFBwf9d9RA8jxd6Xjg==
+X-Received: by 2002:a05:6512:1329:: with SMTP id x41mr1241997lfu.9.1631736289779;
+        Wed, 15 Sep 2021 13:04:49 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id t15sm93908ljo.102.2021.09.15.13.04.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Sep 2021 13:04:48 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 26905102F9E; Wed, 15 Sep 2021 23:04:52 +0300 (+03)
+Date:   Wed, 15 Sep 2021 23:04:52 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Andi Kleen <ak@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Varad Gautam <varad.gautam@suse.com>,
+        Dario Faggioli <dfaggioli@suse.com>, x86@kernel.org,
+        linux-mm@kvack.org, linux-coco@lists.linux.dev,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>
+Subject: Re: [RFC] KVM: mm: fd-based approach for supporting KVM guest
+ private memory
+Message-ID: <20210915200452.wp6ippdvjz6zpv6a@box.shutemov.name>
+References: <20210824005248.200037-1-seanjc@google.com>
+ <20210902184711.7v65p5lwhpr2pvk7@box.shutemov.name>
+ <YTE1GzPimvUB1FOF@google.com>
+ <20210903191414.g7tfzsbzc7tpkx37@box.shutemov.name>
+ <02806f62-8820-d5f9-779c-15c0e9cd0e85@kernel.org>
+ <20210910171811.xl3lms6xoj3kx223@box.shutemov.name>
+ <20210915195857.GA52522@chaop.bj.intel.com>
+ <51a6f74f-6c05-74b9-3fd7-b7cd900fb8cc@redhat.com>
+ <20210915142921.bxxsap6xktkt4bek@black.fi.intel.com>
+ <ca80775c-6bcb-f7c2-634b-237bc0ded52a@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ca80775c-6bcb-f7c2-634b-237bc0ded52a@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Histogram expressions now support division, and multiplication in
-addition to the already supported subtraction and addition operators.
+On Wed, Sep 15, 2021 at 04:59:46PM +0200, David Hildenbrand wrote:
+> 
+> > > I don't think we are, it still feels like we are in the early prototype
+> > > phase (even way before a PoC). I'd be happy to see something "cleaner" so to
+> > > say -- it still feels kind of hacky to me, especially there seem to be many
+> > > pieces of the big puzzle missing so far. Unfortunately, this series hasn't
+> > > caught the attention of many -MM people so far, maybe because other people
+> > > miss the big picture as well and are waiting for a complete design proposal.
+> > > 
+> > > For example, what's unclear to me: we'll be allocating pages with
+> > > GFP_HIGHUSER_MOVABLE, making them land on MIGRATE_CMA or ZONE_MOVABLE; then
+> > > we silently turn them unmovable, which breaks these concepts. Who'd migrate
+> > > these pages away just like when doing long-term pinning, or how is that
+> > > supposed to work?
+> > 
+> > That's fair point. We can fix it by changing mapping->gfp_mask.
+> 
+> That's essentially what secretmem does when setting up a file.
+> 
+> > 
+> > > Also unclear to me is how refcount and mapcount will be handled to prevent
+> > > swapping,
+> > 
+> > refcount and mapcount are unchanged. Pages not pinned per se. Swapping
+> > prevented with the change in shmem_writepage().
+> 
+> So when mapping into the guest, we'd increment the refcount but not the
+> mapcount I assume?
 
-Numeric constants can also be used in a hist trigger expressions
-or assigned to a variable and used by refernce in an expression.
+No. The only refcount hold page cache. But we inform KVM via callback
+before removing the page from the page cache. It is similar to
+mmu_notifier scheme KVM uses at the moment.
 
-Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
----
- Documentation/trace/histogram.rst | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+> 
+> > 
+> > > who will actually do some kind of gfn-epfn etc. mapping, how we'll
+> > > forbid access to this memory e.g., via /proc/kcore or when dumping memory
+> > 
+> > It's not aimed to prevent root to shoot into his leg. Root do root.
+> 
+> IMHO being root is not an excuse to read some random file (actually used in
+> production environments) to result in the machine crashing. Not acceptable
+> for distributions.
 
-diff --git a/Documentation/trace/histogram.rst b/Documentation/trace/histogram.rst
-index 533415644c54..e12699abaee8 100644
---- a/Documentation/trace/histogram.rst
-+++ b/Documentation/trace/histogram.rst
-@@ -1763,6 +1763,20 @@ using the same key and variable from yet another event::
- 
-   # echo 'hist:key=pid:wakeupswitch_lat=$wakeup_lat+$switchtime_lat ...' >> event3/trigger
- 
-+Expressions support the use of addition, subtraction, multiplication and
-+division operators (+-*/).
-+
-+Note that division by zero always returns -1.
-+
-+Numeric constants can also be used directly in an expression::
-+
-+  # echo 'hist:keys=next_pid:timestamp_secs=common_timestamp/1000000 ...' >> event/trigger
-+
-+or assigned to a variable and referenced in a subsequent expression::
-+
-+  # echo 'hist:keys=next_pid:us_per_sec=1000000 ...' >> event/trigger
-+  # echo 'hist:keys=next_pid:timestamp_secs=common_timestamp/$us_per_sec ...' >> event/trigger
-+
- 2.2.2 Synthetic Events
- ----------------------
- 
+Reading does not cause problems. Writing does.
+
+> I'm still missing the whole gfn-epfn 1:1 mapping discussion we identified as
+> requirements. Is that supposed to be done by KVM? How?
+
+KVM memslots that represents a range of GFNs refers to memfd (and holds
+file pin) plus offset in the file. This info enough to calculate offset in
+the file and find PFN. memfd tied 1:1 to struct kvm and KVM would make
+sure that there's only one possible gfn for a file offset.
+
+> > > ... and how it would ever work with migration/swapping/rmap (it's clearly
+> > > future work, but it's been raised that this would be the way to make it
+> > > work, I don't quite see how it would all come together).
+> > 
+> > Given that hardware supports it migration and swapping can be implemented
+> > by providing new callbacks in guest_ops. Like ->migrate_page would
+> > transfer encrypted data between pages and ->swapout would provide
+> > encrypted blob that can be put on disk or handled back to ->swapin to
+> > bring back to memory.
+> 
+> Again, I'm missing the complete picture. To make swapping decisions vmscan
+> code needs track+handle dirty+reference information. How would we be able to
+> track references? Does the hardware allow for temporary unmapping of
+> encrypted memory and faulting on it? How would page_referenced() continue
+> working? "we can add callbacks" is not a satisfying answer, at least for me.
+> Especially, when it comes to eventual locking problems and races.
+
+HW doesn't support swapping yet, so details will be just speculation.
+IIUC, there's an accessed bit in EPT that can be used for tracking.
+
+> Maybe saying "migration+swap is not supported" is clearer than "we can add
+> callbacks" and missing some details on the bigger picture.
+> 
+> Again, a complete design proposal would be highly valuable, especially to
+> get some more review from other -MM folks. Otherwise there is a high chance
+> that this will be rejected late when trying to upstream and -MM people
+> stumbling over it (we've had some similar thing happening just recently
+> unfortunately ...).
+
+I only work on core-mm side of the story. We will definitely need to look
+at whole picture again once all pieces are somewhat ready.
+
 -- 
-2.33.0.309.g3052b89438-goog
-
+ Kirill A. Shutemov
