@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEE0D40CC6E
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 20:15:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0606640CC6F
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 20:15:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231232AbhIOSRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 14:17:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60978 "EHLO
+        id S231301AbhIOSRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 14:17:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55631 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230482AbhIOSQ7 (ORCPT
+        by vger.kernel.org with ESMTP id S231231AbhIOSRB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 14:16:59 -0400
+        Wed, 15 Sep 2021 14:17:01 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631729739;
+        s=mimecast20190719; t=1631729742;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=DZHPDTQPmmT4S/5dP0KaRo8sVu/1OOr/SVcw78xFuwQ=;
-        b=dCMxL97J4CXWEN4baYWnHzrFHRU9xJ/QvBfQa5KmGgPROI+lFXMIxHrSeDpytr2hS6xy5/
-        mvZ13sUdc5sZsx4i0sC2F/SlG/19jE2niFpVqN1Zsx6L1p7jBvRHUIs/IWOYNLaU6HmbH2
-        4a0CRyXtR/hr6BSPObPFd7pLcaYOf8k=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-542-YIiItNocMHKdaZ8aQIkRyg-1; Wed, 15 Sep 2021 14:15:38 -0400
-X-MC-Unique: YIiItNocMHKdaZ8aQIkRyg-1
-Received: by mail-qk1-f197.google.com with SMTP id 23-20020a05620a071700b00426392c0e6eso6102432qkc.4
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 11:15:38 -0700 (PDT)
+        bh=zoZpGeMMIEvvXfo6qC7dlVaUPLxDIKE3MfxvS4uRdds=;
+        b=FrQ+pv5j1Cd7qRSkLARGpBWb0SJC18QKyhq0bYL2GHZTCcLFcjdMvEa0ie/HSsNVZMelbK
+        mZCphxZ+dZ5BjWH5gqTa9EVs0oNHmTF7lQDTmxpTh9BVm1AfTVTkRcwMFxf1r6PtgDwTHp
+        nIOFLtkfKjkgtWugvPik+hPC34sCqjA=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-516-tNCUMMdcPLyN5nL1dgwY6w-1; Wed, 15 Sep 2021 14:15:41 -0400
+X-MC-Unique: tNCUMMdcPLyN5nL1dgwY6w-1
+Received: by mail-qk1-f200.google.com with SMTP id g73-20020a379d4c000000b003d3ed03ca28so6004290qke.23
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 11:15:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=DZHPDTQPmmT4S/5dP0KaRo8sVu/1OOr/SVcw78xFuwQ=;
-        b=tmfcJJJvLK2tDk613mvvsa6ufai8mbvilpmpc8cQW8cI6aG16qxcfZhEz3mXrLnKxf
-         40YAJSwTBDW8fL1f05MykbV+koQj6gdgPDlnkDZt+hBjAaEQwuIbash8wRtotRQTvclu
-         mK4W9+TtzYgl2Qk0aRu+8Y2VM7RWm71s6oE5D6k6K+EQqQCSFUCwYxXmD25tgZqiSGu6
-         uUapnxU/UCqW70lAuoqWyY7it9NKNm/Cj79Jpxzca2zfktkUrRzkj5YQo+zW33SKkPJ0
-         3ZhDAj2fcRV6g9AN8vu5Xgf2Qtx4omxASScjcyxDo9XUr5qY+onIpvI8BR6tBGRM5b/z
-         jLaw==
-X-Gm-Message-State: AOAM532EEVpWMPRQOgB0jZE40woW3mrre28Gb4FD4yNUYBbi4ci49LXX
-        EzUziH71UZYvvnWNLrVXvJcoMY8Y5kxKgrAVGLmw1/TJyNuaYITkVVg1QFjOvmAPZT/j1DL4zl3
-        iu4Zzj3hRgHzzVT1TI8nPqgnwSgrJsGudhqMr8crEwNijNun9QT0v77WGZMXt/q5bAV3rTt579Q
+        bh=zoZpGeMMIEvvXfo6qC7dlVaUPLxDIKE3MfxvS4uRdds=;
+        b=gToK3/LxCov4CCsARd7jQO6P+mn5Jnz5al0bwI2tkhqLWr6O3NmY6f6B1M3+VUVZXO
+         9FtDJGepkwubpwW3LN9NMQn6p/5Q+lLuPyUWE/oD06CSVCssTf+cz5IEQT13Kh4oI7et
+         Sg7koiLsB0ou5vEW1JuGvy39Ml5aNuPJTZqXfcc6HF9wWmzouZiDwtOxbE3LYE2Xe8HV
+         +ca0jHidqBharpvvDjZstiEtrwurf31K6vKJWplymQq40Cpu1h8n/DSLKeQjY0odmsRj
+         nVXxVWKSMOuzonuuZN5D2uDI5IMydHeW1Mq+/4WaKxoX52GCuPVBZEJq2YOh4Ryi8gzA
+         I/Gw==
+X-Gm-Message-State: AOAM531RlEPWlvKN36HK1OVT+w5gUTQ0lCw3TgLPs09ppYpDKsdBOTzk
+        PZcctOq8g8JlAJp4cGkOBMq4m1d9whwJRKH7b6F+mwS5dm1CU8ZJGhsVb4w7/PMW4qf4Klb7enG
+        hSH8k4BNXi5Pjiwnbl13m69EM+aGjHCkjWj40/THpIl5wLOnlWcFbhZVRIgjKve2n7qU4cJG2vw
         ==
-X-Received: by 2002:a05:620a:9c9:: with SMTP id y9mr1254089qky.207.1631729737946;
-        Wed, 15 Sep 2021 11:15:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyCDiDDdOWKMQa0nt8YhHUXf0hiyQUvKuJ0Xc/zbcBLQR8zWPpath9jFglOz4LhTP3RVO95bA==
-X-Received: by 2002:a05:620a:9c9:: with SMTP id y9mr1254052qky.207.1631729737639;
-        Wed, 15 Sep 2021 11:15:37 -0700 (PDT)
+X-Received: by 2002:a0c:dd87:: with SMTP id v7mr1295515qvk.45.1631729740399;
+        Wed, 15 Sep 2021 11:15:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz6Lyt46ecPogmobxQZSQVhoZPuKmRpDao/8QgvngGXdt4WSs2hAmQxzkWJfSwJwCmhKbjYdA==
+X-Received: by 2002:a0c:dd87:: with SMTP id v7mr1295473qvk.45.1631729740083;
+        Wed, 15 Sep 2021 11:15:40 -0700 (PDT)
 Received: from t490s.redhat.com ([2607:fea8:56a2:9100::d35a])
-        by smtp.gmail.com with ESMTPSA id c15sm531826qka.46.2021.09.15.11.15.36
+        by smtp.gmail.com with ESMTPSA id 13sm534908qka.56.2021.09.15.11.15.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Sep 2021 11:15:37 -0700 (PDT)
+        Wed, 15 Sep 2021 11:15:39 -0700 (PDT)
 From:   Peter Xu <peterx@redhat.com>
 To:     linux-kernel@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
@@ -66,9 +66,9 @@ Cc:     Hugh Dickins <hughd@google.com>,
         Jerome Glisse <jglisse@redhat.com>,
         Miaohe Lin <linmiaohe@huawei.com>,
         Andrea Arcangeli <aarcange@redhat.com>
-Subject: [PATCH v4 3/4] mm: Drop first_index/last_index in zap_details
-Date:   Wed, 15 Sep 2021 14:15:35 -0400
-Message-Id: <20210915181535.11238-1-peterx@redhat.com>
+Subject: [PATCH v4 4/4] mm: Add zap_skip_check_mapping() helper
+Date:   Wed, 15 Sep 2021 14:15:38 -0400
+Message-Id: <20210915181538.11288-1-peterx@redhat.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210915181456.10739-1-peterx@redhat.com>
 References: <20210915181456.10739-1-peterx@redhat.com>
@@ -78,112 +78,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The first_index/last_index parameters in zap_details are actually only used in
-unmap_mapping_range_tree().  At the meantime, this function is only called by
-unmap_mapping_pages() once.  Instead of passing these two variables through the
-whole stack of page zapping code, remove them from zap_details and let them
-simply be parameters of unmap_mapping_range_tree(), which is inlined.
+Use the helper for the checks.  Rename "check_mapping" into "zap_mapping"
+because "check_mapping" looks like a bool but in fact it stores the mapping
+itself.  When it's set, we check the mapping (it must be non-NULL).  When it's
+cleared we skip the check, which works like the old way.
+
+Move the duplicated comments to the helper too.
 
 Reviewed-by: Alistair Popple <apopple@nvidia.com>
-Reviewed-by: David Hildenbrand <david@redhat.com>
-Reviewed-by: Liam Howlett <liam.howlett@oracle.com>
 Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
- include/linux/mm.h |  2 --
- mm/memory.c        | 31 ++++++++++++++++++-------------
- 2 files changed, 18 insertions(+), 15 deletions(-)
+ include/linux/mm.h | 16 +++++++++++++++-
+ mm/memory.c        | 29 ++++++-----------------------
+ 2 files changed, 21 insertions(+), 24 deletions(-)
 
 diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 73a52aba448f..d1126f731221 100644
+index d1126f731221..ed44f31615d9 100644
 --- a/include/linux/mm.h
 +++ b/include/linux/mm.h
-@@ -1722,8 +1722,6 @@ extern void user_shm_unlock(size_t, struct ucounts *);
+@@ -1721,10 +1721,24 @@ extern void user_shm_unlock(size_t, struct ucounts *);
+  * Parameter block passed down to zap_pte_range in exceptional cases.
   */
  struct zap_details {
- 	struct address_space *check_mapping;	/* Check page->mapping if set */
--	pgoff_t	first_index;			/* Lowest page->index to unmap */
--	pgoff_t last_index;			/* Highest page->index to unmap */
+-	struct address_space *check_mapping;	/* Check page->mapping if set */
++	struct address_space *zap_mapping;	/* Check page->mapping if set */
  	struct page *single_page;		/* Locked page to be unmapped */
  };
  
++/*
++ * We set details->zap_mappings when we want to unmap shared but keep private
++ * pages. Return true if skip zapping this page, false otherwise.
++ */
++static inline bool
++zap_skip_check_mapping(struct zap_details *details, struct page *page)
++{
++	if (!details || !page)
++		return false;
++
++	return details->zap_mapping &&
++	    (details->zap_mapping != page_rmapping(page));
++}
++
+ struct page *vm_normal_page(struct vm_area_struct *vma, unsigned long addr,
+ 			     pte_t pte);
+ struct page *vm_normal_page_pmd(struct vm_area_struct *vma, unsigned long addr,
 diff --git a/mm/memory.c b/mm/memory.c
-index 7b095f07c4ef..a7e427177817 100644
+index a7e427177817..8db8ce0ca6ce 100644
 --- a/mm/memory.c
 +++ b/mm/memory.c
-@@ -3321,20 +3321,20 @@ static void unmap_mapping_range_vma(struct vm_area_struct *vma,
- }
+@@ -1333,16 +1333,8 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
+ 			struct page *page;
  
- static inline void unmap_mapping_range_tree(struct rb_root_cached *root,
-+					    pgoff_t first_index,
-+					    pgoff_t last_index,
- 					    struct zap_details *details)
- {
- 	struct vm_area_struct *vma;
- 	pgoff_t vba, vea, zba, zea;
+ 			page = vm_normal_page(vma, addr, ptent);
+-			if (unlikely(details) && page) {
+-				/*
+-				 * unmap_shared_mapping_pages() wants to
+-				 * invalidate cache without truncating:
+-				 * unmap shared but keep private pages.
+-				 */
+-				if (details->check_mapping &&
+-				    details->check_mapping != page_rmapping(page))
+-					continue;
+-			}
++			if (unlikely(zap_skip_check_mapping(details, page)))
++				continue;
+ 			ptent = ptep_get_and_clear_full(mm, addr, pte,
+ 							tlb->fullmm);
+ 			tlb_remove_tlb_entry(tlb, pte, addr);
+@@ -1375,17 +1367,8 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
+ 		    is_device_exclusive_entry(entry)) {
+ 			struct page *page = pfn_swap_entry_to_page(entry);
  
--	vma_interval_tree_foreach(vma, root,
--			details->first_index, details->last_index) {
+-			if (unlikely(details && details->check_mapping)) {
+-				/*
+-				 * unmap_shared_mapping_pages() wants to
+-				 * invalidate cache without truncating:
+-				 * unmap shared but keep private pages.
+-				 */
+-				if (details->check_mapping !=
+-				    page_rmapping(page))
+-					continue;
+-			}
 -
-+	vma_interval_tree_foreach(vma, root, first_index, last_index) {
- 		vba = vma->vm_pgoff;
- 		vea = vba + vma_pages(vma) - 1;
--		zba = details->first_index;
-+		zba = first_index;
- 		if (zba < vba)
- 			zba = vba;
--		zea = details->last_index;
-+		zea = last_index;
- 		if (zea > vea)
- 			zea = vea;
++			if (unlikely(zap_skip_check_mapping(details, page)))
++				continue;
+ 			pte_clear_not_present_full(mm, addr, pte, tlb->fullmm);
+ 			rss[mm_counter(page)]--;
  
-@@ -3360,18 +3360,22 @@ void unmap_mapping_page(struct page *page)
- {
- 	struct address_space *mapping = page->mapping;
- 	struct zap_details details = { };
-+	pgoff_t	first_index;
-+	pgoff_t	last_index;
+@@ -3369,7 +3352,7 @@ void unmap_mapping_page(struct page *page)
+ 	first_index = page->index;
+ 	last_index = page->index + thp_nr_pages(page) - 1;
  
- 	VM_BUG_ON(!PageLocked(page));
- 	VM_BUG_ON(PageTail(page));
- 
-+	first_index = page->index;
-+	last_index = page->index + thp_nr_pages(page) - 1;
-+
- 	details.check_mapping = mapping;
--	details.first_index = page->index;
--	details.last_index = page->index + thp_nr_pages(page) - 1;
+-	details.check_mapping = mapping;
++	details.zap_mapping = mapping;
  	details.single_page = page;
  
  	i_mmap_lock_write(mapping);
- 	if (unlikely(!RB_EMPTY_ROOT(&mapping->i_mmap.rb_root)))
--		unmap_mapping_range_tree(&mapping->i_mmap, &details);
-+		unmap_mapping_range_tree(&mapping->i_mmap, first_index,
-+					 last_index, &details);
- 	i_mmap_unlock_write(mapping);
- }
+@@ -3398,7 +3381,7 @@ void unmap_mapping_pages(struct address_space *mapping, pgoff_t start,
+ 	pgoff_t	first_index = start;
+ 	pgoff_t	last_index = start + nr - 1;
  
-@@ -3391,16 +3395,17 @@ void unmap_mapping_pages(struct address_space *mapping, pgoff_t start,
- 		pgoff_t nr, bool even_cows)
- {
- 	struct zap_details details = { };
-+	pgoff_t	first_index = start;
-+	pgoff_t	last_index = start + nr - 1;
- 
- 	details.check_mapping = even_cows ? NULL : mapping;
--	details.first_index = start;
--	details.last_index = start + nr - 1;
--	if (details.last_index < details.first_index)
--		details.last_index = ULONG_MAX;
-+	if (last_index < first_index)
-+		last_index = ULONG_MAX;
- 
- 	i_mmap_lock_write(mapping);
- 	if (unlikely(!RB_EMPTY_ROOT(&mapping->i_mmap.rb_root)))
--		unmap_mapping_range_tree(&mapping->i_mmap, &details);
-+		unmap_mapping_range_tree(&mapping->i_mmap, first_index,
-+					 last_index, &details);
- 	i_mmap_unlock_write(mapping);
- }
+-	details.check_mapping = even_cows ? NULL : mapping;
++	details.zap_mapping = even_cows ? NULL : mapping;
+ 	if (last_index < first_index)
+ 		last_index = ULONG_MAX;
  
 -- 
 2.31.1
