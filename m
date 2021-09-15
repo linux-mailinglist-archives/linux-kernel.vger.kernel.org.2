@@ -2,148 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 529FE40C40E
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 13:00:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAA0F40C414
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 13:04:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237249AbhIOLCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 07:02:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232313AbhIOLBu (ORCPT
+        id S237361AbhIOLFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 07:05:40 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:64028 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232468AbhIOLFk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 07:01:50 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C423C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 04:00:32 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0d07000c3d48728178681f.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:700:c3d:4872:8178:681f])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9F7E51EC0493;
-        Wed, 15 Sep 2021 13:00:26 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1631703626;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VhruTfx6a1vn9bJbkqwEzxTY41J4MJGsLlefXt9yGLg=;
-        b=AoZxQDh0ovGCZp36TVoMqssSPPir4S4CLUTje3ga2Sl4kb+jKndFyxzIQAdJXNZ2UdIJ6s
-        kfLUqWGA4EkHlLtO7vdZeGBKfn+T4gB2KoAzSvk/LcfcYioMbDg/OWsjZTxwkOGmMUGJ43
-        XiSdKkF3s8/MlzVxKAN0eN5YeTY07vg=
-Date:   Wed, 15 Sep 2021 13:00:20 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Juergen Gross <jgross@suse.com>
-Cc:     Jan Beulich <jbeulich@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Marek =?utf-8?Q?Marczykowski-G=C3=B3recki?= 
-        <marmarek@invisiblethingslab.com>, xen-devel@lists.xenproject.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        Mike Rapoport <rppt@kernel.org>
-Subject: Re: [PATCH] x86/setup: call early_reserve_memory() earlier
-Message-ID: <YUHSRKubsGT2Jvur@zn.tnic>
-References: <20210914094108.22482-1-jgross@suse.com>
- <b15fa98e-f9a8-abac-2d16-83c29dafc517@suse.com>
- <6cdc71dc-c26d-5c59-b7dd-0eb47ab9c861@suse.com>
+        Wed, 15 Sep 2021 07:05:40 -0400
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18F6h4oX016932;
+        Wed, 15 Sep 2021 07:04:21 -0400
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 3b301k390t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Sep 2021 07:04:20 -0400
+Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 18FB4JIb056036
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 15 Sep 2021 07:04:19 -0400
+Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by ASHBMBX8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5; Wed, 15 Sep 2021
+ 07:04:18 -0400
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server id 15.2.858.5 via Frontend Transport;
+ Wed, 15 Sep 2021 07:04:18 -0400
+Received: from ramonaalexandra-Precision-5520.ad.analog.com ([10.48.65.154])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 18FB4HnH006137;
+        Wed, 15 Sep 2021 07:04:17 -0400
+From:   Ramona Alexandra Nechita <ramona.nechita@analog.com>
+To:     <linux-pm@vger.kernel.org>
+CC:     <sre@kernel.org>, <linux-kernel@vger.kernel.org>,
+        Ramona Alexandra Nechita <ramona.nechita@analog.com>
+Subject: [PATCH] power: supply: Specify variations of MAX8903
+Date:   Wed, 15 Sep 2021 14:03:40 +0300
+Message-ID: <20210915110340.17411-1-ramona.nechita@analog.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6cdc71dc-c26d-5c59-b7dd-0eb47ab9c861@suse.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-ORIG-GUID: ReiOQsyhmahstBOD3o8em38sG9wanA9L
+X-Proofpoint-GUID: ReiOQsyhmahstBOD3o8em38sG9wanA9L
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-15_02,2021-09-15_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ mlxlogscore=998 mlxscore=0 phishscore=0 clxscore=1011 suspectscore=0
+ bulkscore=0 adultscore=0 spamscore=0 impostorscore=0 priorityscore=1501
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109150072
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-You forgot to Cc Mike, lemme add him.
+MAX8903 has multiple variations (A-E/G/H/J/N/Y).
+Specified them in the Kconfig and in the file comment.
 
-And drop stable@ too.
+Signed-off-by: Ramona Alexandra Nechita <ramona.nechita@analog.com>
+---
+ drivers/power/supply/Kconfig           | 2 +-
+ drivers/power/supply/max8903_charger.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-On Tue, Sep 14, 2021 at 01:06:22PM +0200, Juergen Gross wrote:
-> On 14.09.21 12:03, Jan Beulich wrote:
-> > On 14.09.2021 11:41, Juergen Gross wrote:
-> > > Commit a799c2bd29d19c565 ("x86/setup: Consolidate early memory
-> > > reservations") introduced early_reserve_memory() to do all needed
-> > > initial memblock_reserve() calls in one function. Unfortunately the
-> > > call of early_reserve_memory() is done too late for Xen dom0, as in
-> > > some cases a Xen hook called by e820__memory_setup() will need those
-> > > memory reservations to have happened already.
-> > > 
-> > > Move the call of early_reserve_memory() to the beginning of
-> > > setup_arch() in order to avoid such problems.
-> > > 
-> > > Cc: stable@vger.kernel.org
-> > > Fixes: a799c2bd29d19c565 ("x86/setup: Consolidate early memory reservations")
-> > > Reported-by: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
-> > > Signed-off-by: Juergen Gross <jgross@suse.com>
-> > > ---
-> > >   arch/x86/kernel/setup.c | 24 ++++++++++++------------
-> > >   1 file changed, 12 insertions(+), 12 deletions(-)
-> > > 
-> > > diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-> > > index 79f164141116..f369c51ec580 100644
-> > > --- a/arch/x86/kernel/setup.c
-> > > +++ b/arch/x86/kernel/setup.c
-> > > @@ -757,6 +757,18 @@ dump_kernel_offset(struct notifier_block *self, unsigned long v, void *p)
-> > >   void __init setup_arch(char **cmdline_p)
-> > >   {
-> > > +	/*
-> > > +	 * Do some memory reservations *before* memory is added to
-> > > +	 * memblock, so memblock allocations won't overwrite it.
-> > > +	 * Do it after early param, so we could get (unlikely) panic from
-> > > +	 * serial.
-> > 
-> > Hmm, this part of the comment is not only stale now, but gets actively
-> > undermined. No idea how likely such a panic() would be, and hence how
-> > relevant it is to retain this particular property.
-> 
-> Ah, right.
-> 
-> The alternative would be to split it up again. Let's let the x86
-> maintainers decide which way is the better one.
-> 
-> 
-> Juergen
-> 
-> > 
-> > Jan
-> > 
-> > > +	 * After this point everything still needed from the boot loader or
-> > > +	 * firmware or kernel text should be early reserved or marked not
-> > > +	 * RAM in e820. All other memory is free game.
-> > > +	 */
-> > > +	early_reserve_memory();
-> > > +
-> > >   #ifdef CONFIG_X86_32
-> > >   	memcpy(&boot_cpu_data, &new_cpu_data, sizeof(new_cpu_data));
-> > > @@ -876,18 +888,6 @@ void __init setup_arch(char **cmdline_p)
-> > >   	parse_early_param();
-> > > -	/*
-> > > -	 * Do some memory reservations *before* memory is added to
-> > > -	 * memblock, so memblock allocations won't overwrite it.
-> > > -	 * Do it after early param, so we could get (unlikely) panic from
-> > > -	 * serial.
-> > > -	 *
-> > > -	 * After this point everything still needed from the boot loader or
-> > > -	 * firmware or kernel text should be early reserved or marked not
-> > > -	 * RAM in e820. All other memory is free game.
-> > > -	 */
-> > > -	early_reserve_memory();
-> > > -
-> > >   #ifdef CONFIG_MEMORY_HOTPLUG
-> > >   	/*
-> > >   	 * Memory used by the kernel cannot be hot-removed because Linux
-> > > 
-> > 
-> 
-
-
-
-
-
-
+diff --git a/drivers/power/supply/Kconfig b/drivers/power/supply/Kconfig
+index c84a7b1caeb6..cca779480b1c 100644
+--- a/drivers/power/supply/Kconfig
++++ b/drivers/power/supply/Kconfig
+@@ -442,7 +442,7 @@ config CHARGER_ISP1704
+ 	  ISP1707/ISP1704 USB transceivers.
+ 
+ config CHARGER_MAX8903
+-	tristate "MAX8903 Battery DC-DC Charger for USB and Adapter Power"
++	tristate "MAX8903A/B/C/D/E/G/H/J/N/Y Battery DC-DC Charger for USB and Adapter Power"
+ 	help
+ 	  Say Y to enable support for the MAX8903 DC-DC charger and sysfs.
+ 	  The driver supports controlling charger-enable and current-limit
+diff --git a/drivers/power/supply/max8903_charger.c b/drivers/power/supply/max8903_charger.c
+index 0bd39b0cc257..4e5c669e6607 100644
+--- a/drivers/power/supply/max8903_charger.c
++++ b/drivers/power/supply/max8903_charger.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- * max8903_charger.c - Maxim 8903 USB/Adapter Charger Driver
++ * max8903_charger.c - Maxim 8903A/B/C/D/E/G/H/J/N/Y USB/Adapter Charger Driver
+  *
+  * Copyright (C) 2011 Samsung Electronics
+  * MyungJoo Ham <myungjoo.ham@samsung.com>
 -- 
-Regards/Gruss,
-    Boris.
+2.25.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
