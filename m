@@ -2,150 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F220E40BE2A
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 05:25:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CEB740BE31
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 05:25:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236079AbhIOD0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 23:26:18 -0400
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:38704 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229986AbhIOD0N (ORCPT
+        id S236190AbhIOD1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 23:27:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229986AbhIOD07 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 23:26:13 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R861e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=wuzongyong@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UoQrnCA_1631676293;
-Received: from localhost(mailfrom:wuzongyong@linux.alibaba.com fp:SMTPD_---0UoQrnCA_1631676293)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 15 Sep 2021 11:24:53 +0800
-Date:   Wed, 15 Sep 2021 11:24:53 +0800
-From:   Wu Zongyong <wuzongyong@linux.alibaba.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     jasowang@redhat.com, virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, wei.yang1@linux.alibaba.com
-Subject: Re: [PATCH v2 4/5] vdpa: add new vdpa attribute
- VDPA_ATTR_DEV_F_VERSION_1
-Message-ID: <20210915032453.GA18793@L-PF27918B-1352.localdomain>
-Reply-To: Wu Zongyong <wuzongyong@linux.alibaba.com>
-References: <cover.1631101392.git.wuzongyong@linux.alibaba.com>
- <cover.1631621507.git.wuzongyong@linux.alibaba.com>
- <834528d24c839080215b2e077f100e9ed5073edc.1631621507.git.wuzongyong@linux.alibaba.com>
- <20210914085711-mutt-send-email-mst@kernel.org>
+        Tue, 14 Sep 2021 23:26:59 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4731AC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 20:25:41 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id q21so2631070ljj.6
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 20:25:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Jpkoy1O4W37gxxZz4Q3BGON9SqZWsCkichzbFfj+wPo=;
+        b=j5pbDlKbHAd/SoLCe/0YXf/jcjOdh7iKg2fsZFsarJCya01vUWLgShKILNoLJ7fKDX
+         QYlstdoebXeBTxYpSIVHChb8b+8ERKwmiwpjChYkhJ1M0jnrKMS0za5Nc0xykKZh6ym7
+         EOn20yZdsi/QGUBN2LgWOZceToXqcG+/zRPKY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Jpkoy1O4W37gxxZz4Q3BGON9SqZWsCkichzbFfj+wPo=;
+        b=JyfoKWRMldnb0Wbih2mgE4kj7rlNZBUdv9CO+UENnnhzTdzIKFAMPH+PKMU+VQSzLk
+         ihDL9+kOGEY52GfANUzupTS+3ZvoSFhIxrkZOf+JjuH0b9JvCuYyGyla8aNO9aESTp5V
+         g+dLRga2KoMsop/nBR6FWpic+BKnqz2KZu6oVyCU20hppPhl0jyrtWAI1Vljt8+wxhNi
+         0C4LUxoIzcVNDrALHE2NT/G1n2bpTAdgwdSS3ZaLEXGwPWQ5nI2wm+3a0GPcAZg3J2+h
+         bGoXwVIjFrT7cuiVw3FBg6SlORGh2SO9kpb6rhfdsTszXiPYOl97aoTe081iQJViHOay
+         HkPA==
+X-Gm-Message-State: AOAM5330ggUMy3U1sEnXV0RYAQ7VUgBQKXhXCMBJdfARs+ObsU3S6HE2
+        Jvitzus5A9v1F/BWxikb82sjAi30s16V1O/muc0KSA==
+X-Google-Smtp-Source: ABdhPJzxW4QysuCYdlnzVAVxRBzARMIBn0RRJp/tSFmhr5M92N1O+bjF81zqZa2hjgCSzEpa1xAoPr+pFCI3qHYh47I=
+X-Received: by 2002:a2e:7d17:: with SMTP id y23mr18546099ljc.392.1631676339641;
+ Tue, 14 Sep 2021 20:25:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210914085711-mutt-send-email-mst@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210830003603.31864-1-zhiyong.tao@mediatek.com>
+ <20210830003603.31864-2-zhiyong.tao@mediatek.com> <CAGXv+5HeNj2Ly-T1bWMvnYXv6nP-Q1kv+D9QEd+5u4xfNVibOg@mail.gmail.com>
+ <1630551265.2247.11.camel@mhfsdcap03> <CAGXv+5E2pmS7Og5bRH8Q8yvXPHkJuL6EXKORkq1-Ye+2qNYQpg@mail.gmail.com>
+ <4787120f25e76ed3727e10011522fc075da52e32.camel@mediatek.com>
+ <CAGXv+5H6Hj9tGkpMHs_uBTcztDBZ_YJ2PUV7J8+abR+5BEsV2g@mail.gmail.com> <05f453a466995a6c272d585f18e81c5fcb837a0b.camel@mediatek.com>
+In-Reply-To: <05f453a466995a6c272d585f18e81c5fcb837a0b.camel@mediatek.com>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Wed, 15 Sep 2021 11:25:28 +0800
+Message-ID: <CAGXv+5FF25a=28YNmVx_FNJ1o+OrR_LWkd1VPe6ejoxX9-bkaA@mail.gmail.com>
+Subject: Re: [PATCH v11 1/4] dt-bindings: pinctrl: mt8195: add rsel define
+To:     "zhiyong.tao" <zhiyong.tao@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sean Wang <sean.wang@kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        hui.liu@mediatek.com, Eddie Huang <eddie.huang@mediatek.com>,
+        Light Hsieh <light.hsieh@mediatek.com>,
+        Biao Huang <biao.huang@mediatek.com>,
+        Hongzhou Yang <hongzhou.yang@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Seiya Wang <seiya.wang@mediatek.com>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 08:58:28AM -0400, Michael S. Tsirkin wrote:
-> On Tue, Sep 14, 2021 at 08:24:51PM +0800, Wu Zongyong wrote:
-> > This new attribute advertises whether the vdpa device is legacy or not.
-> > Users can pick right virtqueue size if the vdpa device is legacy which
-> > doesn't support to change virtqueue size.
-> > 
-> > Signed-off-by: Wu Zongyong <wuzongyong@linux.alibaba.com>
-> 
-> So if we are bothering with legacy, I think there are
-> several things to do when building the interface
-> - support transitional devices, that is allow userspace
->   to tell device it's in legacy mode
-> - support reporting/setting supporting endian-ness
+On Tue, Sep 14, 2021 at 8:27 PM zhiyong.tao <zhiyong.tao@mediatek.com> wrote:
+>
+> On Mon, 2021-09-06 at 16:20 +0800, Chen-Yu Tsai wrote:
+> > On Sat, Sep 4, 2021 at 4:40 PM zhiyong.tao <zhiyong.tao@mediatek.com>
+> > wrote:
+> > >
+> > > On Thu, 2021-09-02 at 11:35 +0800, Chen-Yu Tsai wrote:
+> > > > On Thu, Sep 2, 2021 at 10:54 AM zhiyong.tao <
+> > > > zhiyong.tao@mediatek.com
+> > > > > wrote:
+> > > > >
+> > > > > On Wed, 2021-09-01 at 12:35 +0800, Chen-Yu Tsai wrote:
+> > > > > > On Mon, Aug 30, 2021 at 8:36 AM Zhiyong Tao <
+> > > > > > zhiyong.tao@mediatek.com> wrote:
+> > > > > > >
+> > > > > > > This patch adds rsel define for mt8195.
+> > > > > > >
+> > > > > > > Signed-off-by: Zhiyong Tao <zhiyong.tao@mediatek.com>
+> > > > > > > ---
+> > > > > > >  include/dt-bindings/pinctrl/mt65xx.h | 9 +++++++++
+> > > > > > >  1 file changed, 9 insertions(+)
+> > > > > > >
+> > > > > > > diff --git a/include/dt-bindings/pinctrl/mt65xx.h
+> > > > > > > b/include/dt-
+> > > > > > > bindings/pinctrl/mt65xx.h
+> > > > > > > index 7e16e58fe1f7..f5934abcd1bd 100644
+> > > > > > > --- a/include/dt-bindings/pinctrl/mt65xx.h
+> > > > > > > +++ b/include/dt-bindings/pinctrl/mt65xx.h
+> > > > > > > @@ -16,6 +16,15 @@
+> > > > > > >  #define MTK_PUPD_SET_R1R0_10 102
+> > > > > > >  #define MTK_PUPD_SET_R1R0_11 103
+> > > > > > >
+> > > > > > > +#define MTK_PULL_SET_RSEL_000  200
+> > > > > > > +#define MTK_PULL_SET_RSEL_001  201
+> > > > > > > +#define MTK_PULL_SET_RSEL_010  202
+> > > > > > > +#define MTK_PULL_SET_RSEL_011  203
+> > > > > > > +#define MTK_PULL_SET_RSEL_100  204
+> > > > > > > +#define MTK_PULL_SET_RSEL_101  205
+> > > > > > > +#define MTK_PULL_SET_RSEL_110  206
+> > > > > > > +#define MTK_PULL_SET_RSEL_111  207
+> > > > > >
+> > > > > > Could you keep the spacing between constants tighter, or have
+> > > > > > no
+> > > > > > spacing
+> > > > > > at all? Like having MTK_PULL_SET_RSEL_000 defined as 104 and
+> > > > > > so
+> > > > > > on. This
+> > > > > > would reduce the chance of new macro values colliding with
+> > > > > > actual
+> > > > > > resistor
+> > > > > > values set in the datasheets, plus a contiguous space would
+> > > > > > be
+> > > > > > easy to
+> > > > > > rule as macros.
+> > > > > >
+> > > > > > ChenYu
+> > > > >
+> > > > > Hi chenyu,
+> > > > > By the current solution, it won't be mixed used by
+> > > > > MTK_PULL_SET_RSEL_XXX
+> > > > > and real  resistor value.
+> > > > > If user use MTK_PULL_SET_RSEL_XXX, They don't care the define
+> > > > > which
+> > > > > means how much resistor value.
+> > > >
+> > > > What I meant was that by keeping the value space tight, we avoid
+> > > > the
+> > > > situation where in some new chip, one of the RSEL resistors
+> > > > happens
+> > > > to
+> > > > be 200 or 300 ohms. 100 is already taken, so there's nothing we
+> > > > can
+> > > > do if new designs actually do have 100 ohm settings.
+> > > >
+> > > > > We think that we don't contiguous macro space for different
+> > > > > register.
+> > > > > It may increase code complexity to make having
+> > > > > MTK_PULL_SET_RSEL_000
+> > > > > defined as 104.
+> > > >
+> > > > Can you elaborate? It is a simple range check and offset
+> > > > handling.
+> > > > Are
+> > > > you concerned that a new design would have R2R1R0 and you would
+> > > > like
+> > > > the macros to be contiguous?
+> > > >
+> > > > BTW I don't quite get why decimal base values (100, 200, etc.)
+> > > > were
+> > > > chosen. One would think that binary bases are easier to handle in
+> > > > code.
+> > > >
+> > > >
+> > > > ChenYu
+> > > >
+> > >
+> > > Yes,we concerned that a new design would have R2R1R0 and we would
+> > > like
+> > > the macros to be contiguous in the feature. we reserve it.
+> >
+> > I see. That makes sense. Do you expect to see R3 or even R4 in the
+> > future?
+> > Or put another way, do you expect to see resistor values of 150 or
+> > 200
+> > supported?
+> >
+> > Maybe we could reserve 200 and start from 201 for the RSEL macros?
+> >
+> > Some planning needs to be done here to avoid value clashes.
+> >
+> > > We think that decimal and binary base values are the same for the
+> > > feature.
+> >
+> > With decimal numbers you end up wasting a bit more space, since the
+> > hardware is always using binary values. I just found it odd, that's
+> > all.
+> >
+> > ChenYu
+> >
+> > > > > Thanks.
+>
+> Hi ChenYu,
+>
+> In the next version, we provide a solution which we discussed internal
+> to avoid value clashes.
+>
+> The solution:
+> 1. We will keep the define "MTK_PULL_SET_RSEL_000 200". It won't
+> change.
+>
+> 2. We will add a property in pio dtsi node, for example,
+> the property name is "rsel_resistance_in_si_unit".
+> We will add a flag "rsel_si_unit" in pinctrl device.
+> in probe function, we will identify the property name
+> "rsel_resistance_in_si_unit" to set the flag "rsel_si_unit" value.
+> So it can void value clashes.
 
-It's true if we try to implement a general drvier for legacy.
-But this series is dedicated to implement a driver only for ENI. Is it
-necessary to implement what you said here in this series?
-> 
-> > ---
-> >  drivers/vdpa/vdpa.c          | 6 ++++++
-> >  drivers/virtio/virtio_vdpa.c | 7 ++++++-
-> >  include/uapi/linux/vdpa.h    | 1 +
-> >  3 files changed, 13 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/vdpa/vdpa.c b/drivers/vdpa/vdpa.c
-> > index 1dc121a07a93..533d7f589eee 100644
-> > --- a/drivers/vdpa/vdpa.c
-> > +++ b/drivers/vdpa/vdpa.c
-> > @@ -12,6 +12,7 @@
-> >  #include <linux/slab.h>
-> >  #include <linux/vdpa.h>
-> >  #include <uapi/linux/vdpa.h>
-> > +#include <uapi/linux/virtio_config.h>
-> >  #include <net/genetlink.h>
-> >  #include <linux/mod_devicetable.h>
-> >  
-> > @@ -494,6 +495,7 @@ vdpa_dev_fill(struct vdpa_device *vdev, struct sk_buff *msg, u32 portid, u32 seq
-> >  	u16 max_vq_size;
-> >  	u32 device_id;
-> >  	u32 vendor_id;
-> > +	u64 features;
-> >  	void *hdr;
-> >  	int err;
-> >  
-> > @@ -508,6 +510,7 @@ vdpa_dev_fill(struct vdpa_device *vdev, struct sk_buff *msg, u32 portid, u32 seq
-> >  	device_id = vdev->config->get_device_id(vdev);
-> >  	vendor_id = vdev->config->get_vendor_id(vdev);
-> >  	max_vq_size = vdev->config->get_vq_num_max(vdev);
-> > +	features = vdev->config->get_features(vdev);
-> >  
-> >  	err = -EMSGSIZE;
-> >  	if (nla_put_string(msg, VDPA_ATTR_DEV_NAME, dev_name(&vdev->dev)))
-> > @@ -520,6 +523,9 @@ vdpa_dev_fill(struct vdpa_device *vdev, struct sk_buff *msg, u32 portid, u32 seq
-> >  		goto msg_err;
-> >  	if (nla_put_u16(msg, VDPA_ATTR_DEV_MAX_VQ_SIZE, max_vq_size))
-> >  		goto msg_err;
-> > +	if (features & BIT_ULL(VIRTIO_F_VERSION_1) &&
-> > +	    nla_put_flag(msg, VDPA_ATTR_DEV_VERSION_1))
-> > +		goto msg_err;
-> >  
-> >  	genlmsg_end(msg, hdr);
-> >  	return 0;
-> > diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
-> > index 72eaef2caeb1..1cba957c4cdc 100644
-> > --- a/drivers/virtio/virtio_vdpa.c
-> > +++ b/drivers/virtio/virtio_vdpa.c
-> > @@ -7,6 +7,7 @@
-> >   *
-> >   */
-> >  
-> > +#include "linux/virtio_config.h"
-> >  #include <linux/init.h>
-> >  #include <linux/module.h>
-> >  #include <linux/device.h>
-> > @@ -145,6 +146,7 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
-> >  	/* Assume split virtqueue, switch to packed if necessary */
-> >  	struct vdpa_vq_state state = {0};
-> >  	unsigned long flags;
-> > +	bool may_reduce_num = false;
-> >  	u32 align, num;
-> >  	int err;
-> >  
-> > @@ -169,10 +171,13 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
-> >  		goto error_new_virtqueue;
-> >  	}
-> >  
-> > +	if (ops->get_features(vdpa) & BIT_ULL(VIRTIO_F_VERSION_1))
-> > +		may_reduce_num = true;
-> > +
-> >  	/* Create the vring */
-> >  	align = ops->get_vq_align(vdpa);
-> >  	vq = vring_create_virtqueue(index, num, align, vdev,
-> > -				    true, true, ctx,
-> > +				    true, may_reduce_num, ctx,
-> >  				    virtio_vdpa_notify, callback, name);
-> >  	if (!vq) {
-> >  		err = -ENOMEM;
-> > diff --git a/include/uapi/linux/vdpa.h b/include/uapi/linux/vdpa.h
-> > index 66a41e4ec163..ce0b74276a5b 100644
-> > --- a/include/uapi/linux/vdpa.h
-> > +++ b/include/uapi/linux/vdpa.h
-> > @@ -32,6 +32,7 @@ enum vdpa_attr {
-> >  	VDPA_ATTR_DEV_VENDOR_ID,		/* u32 */
-> >  	VDPA_ATTR_DEV_MAX_VQS,			/* u32 */
-> >  	VDPA_ATTR_DEV_MAX_VQ_SIZE,		/* u16 */
-> > +	VDPA_ATTR_DEV_VERSION_1,		/* flag */
-> >  
-> >  	/* new attributes must be added above here */
-> >  	VDPA_ATTR_MAX,
-> > -- 
-> > 2.31.1
+I suppose a "mediatek," prefix should be added. And to future proof
+things this should probably apply to all bias-up/down values, so
+"mediatek,bias-resistance-in-si-units"?
+
+And the description should include something like that:
+
+  Past usage of bias-up/down values included magic numbers to specify
+  different hardware configurations based on register values. This
+  property specifies that all values used for bias-up/down for this
+  controller shall be in SI units.
+
+And this proposal is still subject to maintainer (not me) review.
+
+
+> 3.We will provide the define "MTK_PULL_SET_RSEL_000 200" and si unit
+> two solution. users can support which solution by add property
+> "rsel_resistance_in_si_unit" in dts node or not.
+
+Thanks. I think this solution does provide a clear separation of the
+two value spaces.
+
+ChenYu
+
+> > > > >
+> > > > > >
+> > > > > > >  #define MTK_DRIVE_2mA  2
+> > > > > > >  #define MTK_DRIVE_4mA  4
+> > > > > > >  #define MTK_DRIVE_6mA  6
+> > > > > > > --
+> > > > > > > 2.18.0
+> > > > > > > _______________________________________________
+> > > > > > > Linux-mediatek mailing list
+> > > > > > > Linux-mediatek@lists.infradead.org
+> > > > > > > http://lists.infradead.org/mailman/listinfo/linux-mediatek
