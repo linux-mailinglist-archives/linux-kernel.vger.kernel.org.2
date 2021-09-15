@@ -2,60 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FE6040C82A
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 17:21:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1173440C82B
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 17:21:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234217AbhIOPW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 11:22:27 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:41974 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233977AbhIOPW0 (ORCPT
+        id S237875AbhIOPWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 11:22:55 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:9879 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233977AbhIOPWy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 11:22:26 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: tonyk)
-        with ESMTPSA id B672F1F41DC1
-Message-ID: <2f2cf258-24f4-8bbb-a33e-c92aafa22a9f@collabora.com>
-Date:   Wed, 15 Sep 2021 12:20:58 -0300
+        Wed, 15 Sep 2021 11:22:54 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4H8kN24vHGz8yTN;
+        Wed, 15 Sep 2021 23:17:06 +0800 (CST)
+Received: from dggpeml100016.china.huawei.com (7.185.36.216) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Wed, 15 Sep 2021 23:21:33 +0800
+Received: from DESKTOP-27KDQMV.china.huawei.com (10.174.148.223) by
+ dggpeml100016.china.huawei.com (7.185.36.216) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Wed, 15 Sep 2021 23:21:32 +0800
+From:   "Longpeng(Mike)" <longpeng2@huawei.com>
+To:     <dwmw2@infradead.org>, <baolu.lu@linux.intel.com>,
+        <joro@8bytes.org>, <will@kernel.org>
+CC:     <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
+        <arei.gonglei@huawei.com>, "Longpeng(Mike)" <longpeng2@huawei.com>
+Subject: [PATCH v1 0/2] iommu/vt-d: boost the mapping process
+Date:   Wed, 15 Sep 2021 23:21:27 +0800
+Message-ID: <20210915152129.1254-1-longpeng2@huawei.com>
+X-Mailer: git-send-email 2.25.0.windows.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH 16/20] futex: Implement sys_futex_waitv()
-Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, bigeasy@linutronix.de,
-        mingo@redhat.com, tglx@linutronix.de, kernel@collabora.com,
-        krisman@collabora.com, rostedt@goodmis.org,
-        linux-api@vger.kernel.org, dvhart@infradead.org,
-        libc-alpha@sourceware.org, mtk.manpages@gmail.com,
-        dave@stgolabs.net, arnd@arndb.de
-References: <20210915140710.596174479@infradead.org>
- <20210915141525.621568509@infradead.org>
-From:   =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>
-In-Reply-To: <20210915141525.621568509@infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.148.223]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml100016.china.huawei.com (7.185.36.216)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Às 11:07 de 15/09/21, Peter Zijlstra escreveu:
-> From: André Almeida <andrealmeid@collabora.com>
-> 
-> Add support to wait on multiple futexes. This is the interface
-> implemented by this syscall:
-> 
-> futex_waitv(struct futex_waitv *waiters, unsigned int nr_futexes,
-> 	    unsigned int flags, struct timespec *timo)
-> 
-> --- a/include/uapi/asm-generic/unistd.h
-> +++ b/include/uapi/asm-generic/unistd.h
-> @@ -880,8 +880,11 @@ __SYSCALL(__NR_memfd_secret, sys_memfd_s
->  #define __NR_process_mrelease 448
->  __SYSCALL(__NR_process_mrelease, sys_process_mrelease)
->  
-> +#define __NR_futex_waitv 449
-> +__SC_COMP(__NR_futex_waitv, sys_futex_waitv)
-> +
+Hi guys,
 
-Oops, this should be __SYSCALL(), and not __SC_COMP(), my bad.
+We found that the __domain_mapping() would take too long when
+the memory region is too large, we try to make it faster in this
+patchset. The performance number can be found in PATCH 2, please
+review when you free, thanks.
+
+Longpeng(Mike) (2):
+  iommu/vt-d: convert the return type of first_pte_in_page to bool
+  iommu/vt-d: avoid duplicated removing in __domain_mapping
+
+ drivers/iommu/intel/iommu.c | 12 +++++++-----
+ include/linux/intel-iommu.h |  8 +++++++-
+ 2 files changed, 14 insertions(+), 6 deletions(-)
+
+-- 
+1.8.3.1
+
