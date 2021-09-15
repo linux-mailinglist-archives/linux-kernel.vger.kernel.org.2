@@ -2,246 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3041940C328
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 11:58:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9671840C327
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 11:58:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237546AbhIOJ7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 05:59:35 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:52234 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237017AbhIOJ7Z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 05:59:25 -0400
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
-  by alexa-out.qualcomm.com with ESMTP; 15 Sep 2021 02:58:07 -0700
-X-QCInternal: smtphost
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 15 Sep 2021 02:58:06 -0700
-X-QCInternal: smtphost
-Received: from mdalam-linux.qualcomm.com ([10.201.2.71])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 15 Sep 2021 15:28:06 +0530
-Received: by mdalam-linux.qualcomm.com (Postfix, from userid 466583)
-        id F1BF922353; Wed, 15 Sep 2021 15:28:04 +0530 (IST)
-From:   Md Sadre Alam <mdalam@codeaurora.org>
-To:     miquel.raynal@bootlin.com, mani@kernel.org,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     mdalam@codeaurora.org, sricharan@codeaurora.org
-Subject: [PATCH 3/3] mtd: rawnand: qcom: Add support for page scope read
-Date:   Wed, 15 Sep 2021 15:27:31 +0530
-Message-Id: <1631699851-12172-4-git-send-email-mdalam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1631699851-12172-1-git-send-email-mdalam@codeaurora.org>
-References: <1631699851-12172-1-git-send-email-mdalam@codeaurora.org>
+        id S237486AbhIOJ7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 05:59:24 -0400
+Received: from mail-eopbgr80088.outbound.protection.outlook.com ([40.107.8.88]:16473
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S237415AbhIOJ7Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 05:59:16 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=g0WKdo1C3gAXO2LGsbcuIzNlAGHl7uEKSbLULl3sd+8cC6YI1uHwAprPK9K/aLABZvI31cW2HQZXd5uomxmM2el/bEH3HvAtYwEiSNdKjnd11iGt6IoOSao1RqayNTK/OYLeEtYHSKj+1diiKNngfRGPNrRW838fbByAWRLn6AFoP3of1Tb7NOAb+nJgFSLSwYxqTAyu+wbY7/hYccz8K+cSIkYYkfCSI6fP1s5MJo+iMWBxzYIZ1szNr/rw5jYrCHeJvNQrTDKmmq7iY3jy1AVt3MT2VkZQBIAZWbu6BJHSFGkKm1INsyqtjFsVm12vk4VT9BG7zRLvMxlsj9b0UA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=xtZrNZu3zAxMKVNDmObH3xnggvA4o6BMDKiTQucHfYY=;
+ b=dUVLeZgfrj884TKKS0wQ6DMHbtZZcVIcn+MTdvLGGUxPD8H8vHSYrWlGpYkklWyc7y3kKwbX4UdrDOlz23cEGdl1JqTvTzECpU/0f3Qhh1QdXjYXXPIAO30vIEhyi8WJeE15Qode3FhytwD3siJWDgERQC2swfiHT2g7v4OQDfEIi6J9OyTZ8HbW52GeTEMjPd/gYfEENdQkhth5YXrPa4g1IY9lvUKRF1dJRZpF4s5unaG1+TGCASTgNynSD/xHnJns8Hq4TPkJ7iqUXSBv3Ii0zWW5vGP4EX3tftKHHZNmUzVoAXXJzf/RisuqxPzA6ozDiKdQjPNu0Ss6ie05jg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xtZrNZu3zAxMKVNDmObH3xnggvA4o6BMDKiTQucHfYY=;
+ b=CFep28SDCzfOamNsuxdKkY4jHxYIgSytvIcoVgsQCAZtyGqnzZal0y1paobPW/Z/Gtufsq4apeQJGHzDgYQ+AUF0Lo4OaIdB2kz2T9FmlIaF4zxpsHkC6Y4lW9DAAUgfa6bmIXrPF2CK2eHnlHf+w6GY/hWpOgumqT4qixLmdhM=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR0401MB2559.eurprd04.prod.outlook.com (2603:10a6:800:57::8)
+ by VE1PR04MB6749.eurprd04.prod.outlook.com (2603:10a6:803:129::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.17; Wed, 15 Sep
+ 2021 09:57:55 +0000
+Received: from VI1PR0401MB2559.eurprd04.prod.outlook.com
+ ([fe80::485a:4462:94c2:5edb]) by VI1PR0401MB2559.eurprd04.prod.outlook.com
+ ([fe80::485a:4462:94c2:5edb%10]) with mapi id 15.20.4500.019; Wed, 15 Sep
+ 2021 09:57:55 +0000
+Date:   Wed, 15 Sep 2021 12:57:53 +0300
+From:   Abel Vesa <abel.vesa@nxp.com>
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     NXP Linux Team <linux-imx@nxp.com>, linux-clk@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 0/8] imx: clk: Rework all the wrappers
+Message-ID: <YUHDoeg2S/vnkl/b@ryzen>
+References: <1631521490-17171-1-git-send-email-abel.vesa@nxp.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1631521490-17171-1-git-send-email-abel.vesa@nxp.com>
+X-ClientProxiedBy: VI1PR0601CA0019.eurprd06.prod.outlook.com
+ (2603:10a6:800:1e::29) To VI1PR0401MB2559.eurprd04.prod.outlook.com
+ (2603:10a6:800:57::8)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ryzen (188.25.164.198) by VI1PR0601CA0019.eurprd06.prod.outlook.com (2603:10a6:800:1e::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Wed, 15 Sep 2021 09:57:55 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 18adec3a-ff56-461d-f739-08d9782f4a39
+X-MS-TrafficTypeDiagnostic: VE1PR04MB6749:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VE1PR04MB67495D082594DA5275354454F6DB9@VE1PR04MB6749.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: I4ULEoMyUCQ5HDH0NYz3sdEYxaRvN3/5dgQ3U3jIp0gEiHBfPuXfZ/P1IJlQsLODn23kbyqyYND32ioKLSGv1XiyS0lv5QNrf1ZqWiKQWRoAPWLueepsgfUGY+kIx+hj51lP1S+AFRgtze8Oa88Bkb+e9PVtWpO18rihPjiMbudmaIacAS9K/OGlMbmKadU7a8+vw0fr6bsrs8VhUN5XWxZdp3+CQ42ZcE8ghzKcS4w5hSFv3AUAmCym5F7tdEpfnEG/NRREaTVVH+YGwwxAfFa2Yo4Zhx5+iQ6mFdEAGlGuPF5iyTBGd68u6HuQPwtjua/0gG3bMA3HAPe6WrH5PspLNMCzY01kQ6K+HH/tpeNFvKnkJO5sqa0QAYlhfMYIK0x81z5Yri5sKtNqwovEsJGbsWdofSIlIAE2G8/rF7Zgu4yN0cx8yhG9taZnKVEweMgaSLV3lk+ZV5n4sjtTkmLVnAuWXvJUFAzZjDcRLNZkpHrRlATaS5awntydrm+xWk995DjVN5iMeAs9lJmzgaIQek9Hs1PWp43/vrnaeIUBOufW6l1vT6D835+5XEkX7uhG/XhLNrJgVrpvGtEwMJRQKVIIDs/uqS5eiszniKA2UInf0IHVJmEi/KPshCXjSDDPHp8AAXpsatwgX9GDBjxmer2FX72wUz7vRDcGn+0C03r0GTjKFqdBrYhe1fsuSy6s8zQ0QZ+Sz8AqfArDfw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0401MB2559.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(376002)(366004)(396003)(39860400002)(66476007)(33716001)(316002)(478600001)(83380400001)(66556008)(55016002)(186003)(5660300002)(6496006)(8936002)(26005)(6916009)(86362001)(9686003)(44832011)(8676002)(38350700002)(4744005)(52116002)(53546011)(38100700002)(66946007)(4326008)(956004)(54906003)(9576002)(2906002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?I63snICcra/q+TnqXr6BVP2IBGLv4il2MTjLNAYnvOc55j6XhmLCuFd42AQv?=
+ =?us-ascii?Q?CpJdLYdV8abPTNRUJfP7tvcDwaglyDC8sQu/6d5LDDSW4B3eyo7+np55d57K?=
+ =?us-ascii?Q?k3kYUCOSa9sWpa53fYso3gxtkaC9IrnbosVj8lnh8yio3kRcvIoLoGY06CIM?=
+ =?us-ascii?Q?0gzBJTxkibFNS2HTOWl3//R8iZwlH59VwgO2CKArGUpgdYkSbXoMZhJKLOa/?=
+ =?us-ascii?Q?TjYbO5I4W8grG9gZ+m36M50Zu5sHHFUBetFrTRG+ZilgZ5fhuM+473BShg/Q?=
+ =?us-ascii?Q?5gZnwNCBx7T6ZXbXPHkvkTs6AbFnj49e6clQs8WtEZBbQZ9t5QpSelg7ceeq?=
+ =?us-ascii?Q?6/ilkmPun7E5LnocXbOzSdkzY/EKoRTCUYhESRxhPxJMtYMYpwOmRLtBJkYn?=
+ =?us-ascii?Q?gUVXWXBFvL+EC9oILLeF6Sq2Tz2y/XRBLWxjuP0XchcdRWxVBnQBtkVrqSOM?=
+ =?us-ascii?Q?4OZPL2cq/OxXF+iCOeYdNasj5IJeQqHtzkrQDM+BFi/oO12TAyJ/Wdg/Hs3H?=
+ =?us-ascii?Q?fL+vMepoo7DneRkKL3saQoeqG1qcq/XQtx93RCvu1D2ko1eg/vNFnCViQi1u?=
+ =?us-ascii?Q?gVegCw5so7k8or5hFvzOqJTF7MOPiRlZwZ/Bn3I1Cgx3STr0vXj8IiGI7w74?=
+ =?us-ascii?Q?fLhkEAmLQMuyuDj7JqiczrDfO4f6Tk6ARdiOfG+w23x0TR6a5LkmpMEH1pIb?=
+ =?us-ascii?Q?mb45TgratQSpHZ5lQfnlJzGJdK6X2jU2kK6Gji4v+nR6kb9IqTtWdX3x7yKx?=
+ =?us-ascii?Q?UTHNYcON2Xydq+ZI2wh7vxj84y/77Jmukdc7Q87r/i+0Zd7Bg7Qq/i3Q1Ut7?=
+ =?us-ascii?Q?ON6LAMy4TPUVHlO/68VQOZ7s+1wZ93yvEuKQqP/orCAgB9dlwFPpbn1qyN6n?=
+ =?us-ascii?Q?QviHKQ7/uNI9aZSFJCdPVMWMnryFBgYvCnWtFqQTYufaAZjRnnZGQ/nALDxv?=
+ =?us-ascii?Q?EXy18VjleBuwFrQRHeP+Gyk4tgP+8Bz2NTceSu8EymP992Imz77PeHst3ltG?=
+ =?us-ascii?Q?ox138yZHO57g5KE1WJ+NuUpGnGcBK/0BRDUEguMT8oZJyqHJGhy6dnpBCL/e?=
+ =?us-ascii?Q?gIplddzmHWcPzWWujPEfSWFMn25XvjxWMa7bawKnVDMGcsEQNzqzRB3RVfLI?=
+ =?us-ascii?Q?f0kLkwZqAhU47W9qS/SdDp8/NosMrfSkBgOUd5It7IZhmFlT67k1VDzRdYrM?=
+ =?us-ascii?Q?UcfWYUHY0wVEp0HjuC7uMTZTobfT/LsGA6/FQhgaljlBRaoe7axJYm8LIAqp?=
+ =?us-ascii?Q?hk3wfuERT2/QzrhrX2uFEBcfnH4Loo3jM8TTshlQih0ixefV2JW38zKB0Zc0?=
+ =?us-ascii?Q?01x1eNrh4N/+0d+g1dDFYCzO?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 18adec3a-ff56-461d-f739-08d9782f4a39
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0401MB2559.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2021 09:57:55.6293
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9vKcJ7FCuzqzgnQXeDulp/M2jVeIcI26oieIMi0WWywkHeHuG6C22h9N4rHZkjeM10HRNyMUwRX5xotWOdEuLQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6749
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-QPIC V2.0 onwards QPIC controller support enhanced read mode
-like page scope read and multi page read.
+On 21-09-13 11:24:42, Abel Vesa wrote:
+> Remove the unused wrapper and rework the rest in order to prepare
+> for removing the non clk_hw based ones.
+> 
 
-In QPIC V1, SW is needed to write EXEC_CMD register for each
-Code word and collect any Status related to that CW before
-issueing EXEC_CMD for next CW.
+Applied the entire patchset with Stephen's R-b tags.
 
-Page scope command is truly a page mode command where SW is
-required to issue EXEC_CMD only once for a page. Controller
-HW takes care of Codeword specific details and automatically
-returns status associated with each CW to BAM pipe, dedicated
-for status deposition.
-
-With this command, SW now can issue one read command for a page
-and upon receiving completion interrupt, can process status,
-that have already been deposited in memory through status BAM pipe.
-
-Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
----
- drivers/mtd/nand/raw/qcom_nandc.c | 77 ++++++++++++++++++++++++++++++++++++---
- 1 file changed, 71 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index 07448c4..257dec7e 100644
---- a/drivers/mtd/nand/raw/qcom_nandc.c
-+++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -157,6 +157,10 @@
- #define	OP_FETCH_ID			0xb
- #define	OP_RESET_DEVICE			0xd
- 
-+/* Auto status val and mask */
-+#define	AUTO_STS_VAL			0x000B000B
-+#define PAGE_SCOPE_READ			BIT(23)
-+
- /* Default Value for NAND_DEV_CMD_VLD */
- #define NAND_DEV_CMD_VLD_VAL		(READ_START_VLD | WRITE_START_VLD | \
- 					 ERASE_START_VLD | SEQ_READ_START_VLD)
-@@ -336,6 +340,8 @@ struct nandc_regs {
- 
- 	__le32 erased_cw_detect_cfg_clr;
- 	__le32 erased_cw_detect_cfg_set;
-+
-+	__le32 auto_sts_en;
- };
- 
- /*
-@@ -421,6 +427,9 @@ struct qcom_nand_controller {
- 
- 	u32 cmd1, vld;
- 	const struct qcom_nandc_props *props;
-+
-+	__le32 *status_buf;
-+	int sts_buf_size;
- };
- 
- /*
-@@ -487,6 +496,7 @@ struct qcom_nandc_props {
- 	bool is_bam;
- 	bool is_qpic;
- 	bool qpic_v2;
-+	bool page_scope;
- 	u32 dev_cmd_reg_start;
- };
- 
-@@ -656,6 +666,8 @@ static __le32 *offset_to_nandc_reg(struct nandc_regs *regs, int offset)
- 		return &regs->cfg1;
- 	case NAND_DEV0_ECC_CFG:
- 		return &regs->ecc_bch_cfg;
-+	case NAND_AUTO_STATUS_EN:
-+		return &regs->auto_sts_en;
- 	case NAND_READ_STATUS:
- 		return &regs->clrreadstatus;
- 	case NAND_DEV_CMD1:
-@@ -756,10 +768,13 @@ static void update_rw_regs(struct qcom_nand_host *host, int num_cw, bool read, i
- 	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
- 
- 	if (read) {
--		if (host->use_ecc)
-+		if (host->use_ecc) {
- 			cmd = OP_PAGE_READ_WITH_ECC | PAGE_ACC | LAST_PAGE;
--		else
-+			if (nandc->props->qpic_v2 && nandc->props->page_scope)
-+				cmd |= PAGE_SCOPE_READ;
-+		} else {
- 			cmd = OP_PAGE_READ | PAGE_ACC | LAST_PAGE;
-+		}
- 	} else {
- 		cmd = OP_PROGRAM_PAGE | PAGE_ACC | LAST_PAGE;
- 	}
-@@ -788,6 +803,9 @@ static void update_rw_regs(struct qcom_nand_host *host, int num_cw, bool read, i
- 	nandc_set_reg(chip, NAND_READ_STATUS, host->clrreadstatus);
- 	nandc_set_reg(chip, NAND_EXEC_CMD, 1);
- 
-+	if (nandc->props->qpic_v2 && nandc->props->page_scope)
-+		nandc_set_reg(chip, NAND_AUTO_STATUS_EN, AUTO_STS_VAL);
-+
- 	if (read)
- 		nandc_set_read_loc(chip, cw, 0, 0, host->use_ecc ?
- 				   host->cw_data : host->cw_size, 1);
-@@ -1040,6 +1058,26 @@ static int prep_adm_dma_desc(struct qcom_nand_controller *nandc, bool read,
- }
- 
- /*
-+ * read_status_data_dma: prepares a DMA descriptor to transfer status from the
-+ *			 controller's status registers to buffer 'vaddr'
-+ * @reg_off:             offset within the controller's data buffer
-+ * @vaddr:               virtual address of the buffer we want to write to
-+ * @size:                DMA transaction size in bytes
-+ * @flags:               flags to control DMA descriptor preparation
-+ */
-+static int read_status_data_dma(struct qcom_nand_controller *nandc, int reg_off,
-+				const u8 *vaddr, int size, unsigned int flags)
-+{
-+	struct bam_transaction *bam_txn = nandc->bam_txn;
-+
-+	sg_set_buf(&bam_txn->sts_sgl[bam_txn->sts_sgl_pos],
-+		   vaddr, size);
-+	bam_txn->sts_sgl_pos++;
-+
-+	return 0;
-+}
-+
-+/*
-  * read_reg_dma:	prepares a descriptor to read a given number of
-  *			contiguous registers to the reg_read_buf pointer
-  *
-@@ -1186,13 +1224,20 @@ config_nand_cw_read(struct nand_chip *chip, bool use_ecc, int cw)
- 		write_reg_dma(nandc, reg, 4, NAND_BAM_NEXT_SGL);
- 
- 	write_reg_dma(nandc, NAND_FLASH_CMD, 1, NAND_BAM_NEXT_SGL);
--	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
- 
- 	if (use_ecc) {
--		read_reg_dma(nandc, NAND_FLASH_STATUS, 2, 0);
--		read_reg_dma(nandc, NAND_ERASED_CW_DETECT_STATUS, 1,
--			     NAND_BAM_NEXT_SGL);
-+		if (nandc->props->qpic_v2 && nandc->props->page_scope) {
-+			if (qcom_nandc_is_last_cw(ecc, cw))
-+				write_reg_dma(nandc, NAND_EXEC_CMD, 1,
-+					      NAND_BAM_NEXT_SGL);
-+		} else {
-+			write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
-+			read_reg_dma(nandc, NAND_FLASH_STATUS, 2, 0);
-+			read_reg_dma(nandc, NAND_ERASED_CW_DETECT_STATUS, 1,
-+				     NAND_BAM_NEXT_SGL);
-+		}
- 	} else {
-+		write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
- 		read_reg_dma(nandc, NAND_FLASH_STATUS, 1, NAND_BAM_NEXT_SGL);
- 	}
- }
-@@ -1959,6 +2004,8 @@ static int read_page_ecc(struct qcom_nand_host *host, u8 *data_buf,
- 	struct nand_ecc_ctrl *ecc = &chip->ecc;
- 	u8 *data_buf_start = data_buf, *oob_buf_start = oob_buf;
- 	int i, ret;
-+	__le32 *status_buf_start = nandc->status_buf;
-+	__le32 *status_buf_cw = nandc->status_buf;
- 
- 	config_nand_page_read(chip);
- 
-@@ -1994,6 +2041,12 @@ static int read_page_ecc(struct qcom_nand_host *host, u8 *data_buf,
- 			read_data_dma(nandc, FLASH_BUF_ACC, data_buf,
- 				      data_size, 0);
- 
-+		if (nandc->props->qpic_v2 && nandc->props->page_scope) {
-+			read_status_data_dma(nandc, FLASH_BUF_ACC, (void *)status_buf_cw,
-+					     (nandc->sts_buf_size >> 2), 0);
-+			status_buf_cw += (nandc->sts_buf_size >> 4);
-+		}
-+
- 		/*
- 		 * when ecc is enabled, the controller doesn't read the real
- 		 * or dummy bad block markers in each chunk. To maintain a
-@@ -2025,6 +2078,9 @@ static int read_page_ecc(struct qcom_nand_host *host, u8 *data_buf,
- 		return ret;
- 	}
- 
-+	if (nandc->props->qpic_v2 && nandc->props->page_scope)
-+		memmove(nandc->reg_read_buf, status_buf_start, nandc->sts_buf_size);
-+
- 	return parse_read_errors(host, data_buf_start, oob_buf_start, page);
- }
- 
-@@ -3005,6 +3061,14 @@ static int qcom_nand_host_init_and_register(struct qcom_nand_controller *nandc,
- 		}
- 	}
- 
-+	if (nandc->props->qpic_v2 && nandc->props->page_scope) {
-+		nandc->sts_buf_size = mtd->writesize == SZ_2K ? 48 : 96;
-+		nandc->status_buf = devm_kzalloc(nandc->dev, nandc->sts_buf_size,
-+						 GFP_KERNEL);
-+		if (!nandc->status_buf)
-+			return -ENOMEM;
-+	}
-+
- 	ret = mtd_device_parse_register(mtd, probes, NULL, NULL, 0);
- 	if (ret)
- 		nand_cleanup(chip);
-@@ -3197,6 +3261,7 @@ static const struct qcom_nandc_props sdx55_nandc_props = {
- 	.is_bam = true,
- 	.is_qpic = true,
- 	.qpic_v2 = true,
-+	.page_scope = true,
- 	.dev_cmd_reg_start = 0x7000,
- };
- 
--- 
-2.7.4
-
+> Abel Vesa (8):
+>   clk: imx: Remove unused helpers
+>   clk: imx: Make mux/mux2 clk based helpers use clk_hw based ones
+>   clk: imx: Rework all clk_hw_register_gate wrappers
+>   clk: imx: Rework all clk_hw_register_gate2 wrappers
+>   clk: imx: Rework all clk_hw_register_mux wrappers
+>   clk: imx: Rework all clk_hw_register_divider wrappers
+>   clk: imx: Rework all imx_clk_hw_composite wrappers
+>   clk: imx: Rework imx_clk_hw_pll14xx wrapper
+> 
+>  drivers/clk/imx/clk-composite-8m.c |   4 +-
+>  drivers/clk/imx/clk.h              | 431 ++++++++---------------------
+>  2 files changed, 122 insertions(+), 313 deletions(-)
+> 
+> -- 
+> 2.31.1
+> 
