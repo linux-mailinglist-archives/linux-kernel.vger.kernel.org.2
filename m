@@ -2,98 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AE7340C187
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 10:19:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 254ED40C19E
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 10:22:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231694AbhIOIU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 04:20:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58992 "EHLO
+        id S236872AbhIOIX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 04:23:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229847AbhIOIU5 (ORCPT
+        with ESMTP id S236869AbhIOIX0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 04:20:57 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A87FDC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 01:19:37 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id s204-20020a252cd5000000b005a16e62ee63so2603721ybs.12
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 01:19:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=xksPysZDVZhrOtkfjh5uX2r1uF1vasoJ9BL4wGJBhp4=;
-        b=PVLDc2/w6cE/8CsXU2F+JvjwMWiHmYQ6Q4yqg5hibiHawgrVswftPmjJmQedrlCeSD
-         FBPm6h8oGKKqVWTc9+KnUB7cgyioao1y50r45cYSJ23eYHUhXxkswfpHXtV4Eaqghh6F
-         ANNXUGReCdSgaF9wAK6N4BUV7JiEYQo3VHmCj/R0RnXWLGCLpPPKbWof6JIyv7t/wbOC
-         tzHYPUaOx+01bh9THvl+yDQqW0GUUS8yGcUPDzCo906DFDWQRMhj+DZUofWHNFevVMUH
-         MDd4I5ht6ZeD+TiVck3c1xlQccIHN/ThBiWpPueFR+Q4TlPS7QP9L3OmQvJdiXnYMqW2
-         7qWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=xksPysZDVZhrOtkfjh5uX2r1uF1vasoJ9BL4wGJBhp4=;
-        b=EdYwRSQ+66JaOfuvuiXAlJ9NdA3m6GakkPy6e2S++my6iZQv+oJiOgWWWddB8WEiYd
-         aIQ3hVHSxaKjtLXmegXNtDCN/GF5H10KfW865V90s7IGsQqgS/vAC25nmnEyihd4iYa4
-         tm3y2CykzEjDPmiP62vxi3zGBZwyHC6bUwfcd06Mv6QQvenrb4W0c4W2SSKfwMVUOUwy
-         nlpuQRvAZCIsyFpc5gvMg0KquHFYCrGAyml8ZtVCSMee4XkDomJqjK9IWebJU+9LsT3b
-         ZYp18KK7AJR/59bsdwq6U6UA+5GJhHZga/zuItF5T2hrQuD9ZWGgY/9dIYnIyx3iKYm9
-         aKWw==
-X-Gm-Message-State: AOAM533kioL62gYTjVs4xif61KjZSjhoEUKNleAhVCzyW3IBtMNWEHL6
-        NNk6iGLLjueSx46gKzZFxDHWLQbKTxVP4rk=
-X-Google-Smtp-Source: ABdhPJym4yqW4KVwALzCsXgboRciDkT6O5qKX9PFgO307Nl7m2pFGImULENAojAxKBDeIitTqWcKFHNl2RQl/OQ=
-X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:16d1:ab0e:fc4a:b9b1])
- (user=saravanak job=sendgmr) by 2002:a25:5e41:: with SMTP id
- s62mr4998900ybb.456.1631693976809; Wed, 15 Sep 2021 01:19:36 -0700 (PDT)
-Date:   Wed, 15 Sep 2021 01:19:32 -0700
-Message-Id: <20210915081933.485112-1-saravanak@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.309.g3052b89438-goog
-Subject: [PATCH] Revert "of: property: fw_devlink: Add support for
- "phy-handle" property"
-From:   Saravana Kannan <saravanak@google.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>
-Cc:     Saravana Kannan <saravanak@google.com>, kernel-team@android.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 15 Sep 2021 04:23:26 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA879C061575;
+        Wed, 15 Sep 2021 01:22:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Cnf2Z7l1EQTLpLkBteMlHZ53Wr/+qX1SRjJPZPtj5Kw=; b=ZGI1MAyFQHmfAGyw/4YdJvqSTe
+        3ZceMG97ii7G0GcvEfojovEA55KFVfJ0iKpuGkbqRRxBQiFNHegRUap/3P45l4AqH0/gpm8tgJY98
+        wSaL1jefV1O/+7DlhLT10nF6noACc0ZCmzbwObKhXj2WVWA2gTbFqMquqnFK4PDh/vFYQCMVDHdpd
+        gdyl5S8fkt3OeoJVLrZfzeL4xpHgoxtkICPMEQd964PbN1dTXumy7/UBirodiutOW2bvMGyG34PpH
+        /8jks350ROrpgjswN+7DZ+onBrnvaLhA1Q2v05dxhJwFXmbDguPItXkfOHKzWe2x1jAGeNYaCrMK1
+        HuafnVMQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mQQ9Q-00FV1x-Mp; Wed, 15 Sep 2021 08:20:30 +0000
+Date:   Wed, 15 Sep 2021 09:20:16 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Yu Kuai <yukuai3@huawei.com>
+Cc:     axboe@kernel.dk, josef@toxicpanda.com, ming.lei@redhat.com,
+        hch@infradead.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, nbd@other.debian.org,
+        yi.zhang@huawei.com
+Subject: Re: [PATCH v6 6/6] nbd: fix uaf in nbd_handle_reply()
+Message-ID: <YUGswNyMnFHxigsW@infradead.org>
+References: <20210915081537.1684327-1-yukuai3@huawei.com>
+ <20210915081537.1684327-7-yukuai3@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210915081537.1684327-7-yukuai3@huawei.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit cf4b94c8530d14017fbddae26aad064ddc42edd4.
+On Wed, Sep 15, 2021 at 04:15:37PM +0800, Yu Kuai wrote:
+> +++ b/block/blk-core.c
+> @@ -489,6 +489,7 @@ void blk_queue_exit(struct request_queue *q)
+>  {
+>  	percpu_ref_put(&q->q_usage_counter);
+>  }
+> +EXPORT_SYMBOL(blk_queue_exit);
 
-Some PHYs pointed to by "phy-handle" will never bind to a driver until a
-consumer attaches to it. And when the consumer attaches to it, they get
-forcefully bound to a generic PHY driver. In such cases, parsing the
-phy-handle property and creating a device link will prevent the consumer
-from ever probing. We don't want that. So revert support for
-"phy-handle" property until we come up with a better mechanism for
-binding PHYs to generic drivers before a consumer tries to attach to it.
+These needs to be an EXPORT_SYMBOL_GPL.  But more importantly it
+needs to be a separate properly documented patch, and this function
+needs to grow a kerneldoc comment as well.
 
-Signed-off-by: Saravana Kannan <saravanak@google.com>
----
- drivers/of/property.c | 2 --
- 1 file changed, 2 deletions(-)
+> +		/*
+> +		 * Get q_usage_counter can prevent accessing freed request
+> +		 * through blk_mq_tag_to_rq() in nbd_handle_reply(). If
+> +		 * q_usage_counter is zero, then no request is inflight, which
+> +		 * means something is wrong since we expect to find a request to
+> +		 * complete here.
+> +		 */
+> +		if (!percpu_ref_tryget(&q->q_usage_counter)) {
+> +			dev_err(disk_to_dev(nbd->disk), "%s: no io inflight\n",
+> +				__func__);
+> +			break;
+> +		}
 
-diff --git a/drivers/of/property.c b/drivers/of/property.c
-index 3fd74bb34819..a3483484a5a2 100644
---- a/drivers/of/property.c
-+++ b/drivers/of/property.c
-@@ -1291,7 +1291,6 @@ DEFINE_SIMPLE_PROP(pwms, "pwms", "#pwm-cells")
- DEFINE_SIMPLE_PROP(resets, "resets", "#reset-cells")
- DEFINE_SIMPLE_PROP(leds, "leds", NULL)
- DEFINE_SIMPLE_PROP(backlight, "backlight", NULL)
--DEFINE_SIMPLE_PROP(phy_handle, "phy-handle", NULL)
- DEFINE_SUFFIX_PROP(regulators, "-supply", NULL)
- DEFINE_SUFFIX_PROP(gpio, "-gpio", "#gpio-cells")
- 
-@@ -1380,7 +1379,6 @@ static const struct supplier_bindings of_supplier_bindings[] = {
- 	{ .parse_prop = parse_resets, },
- 	{ .parse_prop = parse_leds, },
- 	{ .parse_prop = parse_backlight, },
--	{ .parse_prop = parse_phy_handle, },
- 	{ .parse_prop = parse_gpio_compat, },
- 	{ .parse_prop = parse_interrupts, },
- 	{ .parse_prop = parse_regulators, },
--- 
-2.33.0.309.g3052b89438-goog
+And this needs a properly documented wrapper as well.
 
+> +
+>  		cmd = nbd_handle_reply(nbd, args->index, &reply);
+> -		if (IS_ERR(cmd))
+> +		if (IS_ERR(cmd)) {
+> +			blk_queue_exit(q);
+>  			break;
+> +		}
+>  
+>  		rq = blk_mq_rq_from_pdu(cmd);
+>  		if (likely(!blk_should_fake_timeout(rq->q)))
+>  			blk_mq_complete_request(rq);
+> +		blk_queue_exit(q);
+
+That being said I can't say I like how this exposed block layer
+internals.  We don't really need a reference to the queue here
+anywhere, you just use it as a dumb debug check.  If we really want to
+reuse (abuse?) q_usage_counter a helper to just grab a reference and
+immediately drop it might be a better fit.
