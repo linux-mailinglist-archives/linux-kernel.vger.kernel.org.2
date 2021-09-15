@@ -2,153 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 160F840C5B0
+	by mail.lfdr.de (Postfix) with ESMTP id EFD3B40C5B3
 	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 14:52:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233770AbhIOMxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 08:53:12 -0400
-Received: from mail-co1nam11on2043.outbound.protection.outlook.com ([40.107.220.43]:13181
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233139AbhIOMxI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 08:53:08 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bPHhwIXRxKI93tW/YgzBXWa08qdHt/VCyNn96E9BVKtsRFSh/eSEQWRFonQOEGK11blEGamqNaX0xtuu+L4/sQcFa2Nob8KxopeHCGv9mwv1Z1nQv9CETbraO/YZfWp9GbLdoT5+Qp0pIv1yT1t3Y8JQWXk65RY6MY8ykwTmfR+Sxc2as6T/Kq5dNH/n6tBLWZ5IeCqYTRcmtGBI8bRn6i778VpLMQMSijdYx7LOgbSriYqSLogt+VWX42CZua+P588RiXq4gtSBKkHARtSJ6o/QXmFQM8QFlZfXISdvjZvZ1B5p5TNFhcSDnm2hHgZKVfi059/ZJcbRbhjwqPf5OQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=WfZEAQPfAum67/FfNLP2VYOgfEgslR59rkcRAaYVVrE=;
- b=D3vHvjYIzEzMXVclX7aDg6FEWPPtSou4B9QvE3+pe+pDi86ooypPc7aidA4PLGqb6YXBl2olzWakgLYV/fGugd02ciSiMFBwHypxDuYHvj/NK5lwGaOZF2AZ+ARtUrD77Dej9d242dRf1MrIAo4V8IyZH3IAo+17xUo1tJbnf4Ax8tvEM3kNlM4lIkYtWGxxqIR2ejI+AoXvIpXrwmh6VGb3aq3TXbSnt7JUwwm06XGn4ua1uFBjMxaloaXNQp8OJ2uH2wepe9aDfS+/tQcK0IczENy0NUqTF3o+AIM8YBgG/ICoxouu8KJo1LZMfO8v+aNRYcW3F2F9DHm54sY/oQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WfZEAQPfAum67/FfNLP2VYOgfEgslR59rkcRAaYVVrE=;
- b=WFNnqI6/iVVvo7rR4PNGLMQksC/1iaskz603ztpYQGOlyh8JBIiIsoHfNAqlcr/tiWs7DhQzFcnp2Kt/xm+KjSuAncTndQ09YiTgfxPxIltLM6XGAO9ETaYB2pcDN0eNxmxL51TEMDGuXyy7ysVk/wDHhQVi0NGPtKEh4qfWl2+a8tjnsq42xgMVGtlnWVRX2KhfqA2SdeO+3R2w4POBmt1EsVuA6RGfSxDH3AiCJxwE8GeouEmBWMHN+6WZf75pZkMPDl59C8PtHiXz6ojMbH0HEsHrMNPacSkVYJ0JW42TvRdvEa+csIGI4bqtwJIRtySaQiNEDq8ZPaprlEGVUw==
-Authentication-Results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5304.namprd12.prod.outlook.com (2603:10b6:208:314::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.17; Wed, 15 Sep
- 2021 12:51:48 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4523.014; Wed, 15 Sep 2021
- 12:51:48 +0000
-Date:   Wed, 15 Sep 2021 09:51:46 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, alex.williamson@redhat.com,
-        mgurtovoy@nvidia.com, linuxarm@huawei.com, liulongfang@huawei.com,
-        prime.zeng@hisilicon.com, jonathan.cameron@huawei.com,
-        wangzhou1@hisilicon.com
-Subject: Re: [PATCH v3 4/6] hisi-acc-vfio-pci: add new vfio_pci driver for
- HiSilicon ACC devices
-Message-ID: <20210915125146.GI4065468@nvidia.com>
-References: <20210915095037.1149-1-shameerali.kolothum.thodi@huawei.com>
- <20210915095037.1149-5-shameerali.kolothum.thodi@huawei.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210915095037.1149-5-shameerali.kolothum.thodi@huawei.com>
-X-ClientProxiedBy: YTXPR0101CA0017.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b00::30) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S233139AbhIOMxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 08:53:18 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:23576 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233873AbhIOMxQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 08:53:16 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20210915125156euoutp02441e5909ff179b6bafd2e10b4c7835f5~k-_NKis8t2082020820euoutp02Y
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 12:51:56 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20210915125156euoutp02441e5909ff179b6bafd2e10b4c7835f5~k-_NKis8t2082020820euoutp02Y
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1631710316;
+        bh=03ujAQ/c7ECVsa5KofPPIAP+m4Mo6XF14OM04r2XKJw=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=mTmqiXMlKCFzFaFmdj7kpvbKxAJqJwQv/djdI5QoSFCt+fb3r5s1J7mY6s0Sa5mAz
+         nD9H6d8R/ovBiPwuPAJYQLsHstL4JK8m1vH2qOMjIXsDAb4J36nbafq8R1weowtvpI
+         YebgNbwNN+29Rn1TtWXa1gH5a/UE7aVP5Qn9L36Y=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20210915125156eucas1p12243ad632605b39bf97dfd841fb56e7c~k-_Mw66VD2997129971eucas1p1S;
+        Wed, 15 Sep 2021 12:51:56 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id EF.BF.56448.C6CE1416; Wed, 15
+        Sep 2021 13:51:56 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210915125155eucas1p204553084818cc0e14ea20acc295519cb~k-_MLv-By0821808218eucas1p2U;
+        Wed, 15 Sep 2021 12:51:55 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210915125155eusmtrp1213fd6a52fe4c505cb90093d4c500a95~k-_MKuv6W1149811498eusmtrp1K;
+        Wed, 15 Sep 2021 12:51:55 +0000 (GMT)
+X-AuditID: cbfec7f5-d53ff7000002dc80-7c-6141ec6cf2b2
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id AF.69.20981.B6CE1416; Wed, 15
+        Sep 2021 13:51:55 +0100 (BST)
+Received: from [106.210.134.141] (unknown [106.210.134.141]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210915125154eusmtip2f8cac74da6df926a2f4be386cad6fd07~k-_LLOEb62365823658eusmtip2O;
+        Wed, 15 Sep 2021 12:51:54 +0000 (GMT)
+Subject: Re: [PATCH 1/6] clk: samsung: Enable bus clock on init
+To:     Sam Protsenko <semen.protsenko@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        =?UTF-8?Q?Pawe=c5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>
+Cc:     Ryu Euiyoul <ryu.real@samsung.com>, Tom Gall <tom.gall@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+From:   Sylwester Nawrocki <s.nawrocki@samsung.com>
+Message-ID: <b44e1c4a-5abc-7a27-e9ae-d4645d04527a@samsung.com>
+Date:   Wed, 15 Sep 2021 14:51:54 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
+        Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Received: from mlx.ziepe.ca (206.223.160.26) by YTXPR0101CA0017.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b00::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Wed, 15 Sep 2021 12:51:47 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mQUOA-000s8X-2U; Wed, 15 Sep 2021 09:51:46 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f7f1d142-14f3-4464-13ad-08d97847947a
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5304:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB53046C5731801DE7419FDC04C2DB9@BL1PR12MB5304.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3826;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: JRUj68FUNOVNTlFLCwcXnmMpSNdRKy+bPA02K4rpjIWR23xLox0HC4JAMy3s+DEt0KEUZvieUa0mFM6mhMhaqjozEcBGLnEXNLVPIFcsgEEHg/ehjHfbnpr095dVIyVS4ok8Z8ESe1kMO5KnYdc2jxIXZRDP7AFKHxfNaHKavPy1ZqtHCkuiNGqsP/+JruHjDhG/Q5qGl2Itly7NNsyAv9dohrZPLykXfh2vc3JFFlxNg5DcWlS7N1OREJ6oYyATAZqyVSUygz2XVRT3pW4jDyueg8IHYFaJBkC/w3Gbr2TMDCpeROaJkkvdSOrdC1Xb8hXgtQxKWRRdaBqe/dg7X7iBgEapXJGqLq5QyFeEkvFjdUoeucjPR3209zkppuVpVFD+mwfoLqo3Uk1GMe3bD4RXk2GVAqxSFfTwe6dcGL0OoShYngwuOQEzfosgHIwz6eXVo7XI8lORrfcB1Oimz/wzPzBRTcefAiRs/nb6vcmRoMI3BXbXadsOIAqE798wSkG+dnaKEzc5vB8BwBAMXF9iFuWGJv9COuwxMQUnuPwAK1wCmDdI8feNdSXXfzGv1CvLeti2smzC/P9O7EXUsTkE3EPhhj77VsvSCzMF4nahSGeSzj/r6YUsatnlMbPnmzqCxibFuuHxIJyw6iHyKA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(6029001)(4636009)(366004)(396003)(39860400002)(136003)(376002)(346002)(5660300002)(8936002)(8676002)(478600001)(6916009)(66946007)(1076003)(66476007)(66556008)(7416002)(9746002)(36756003)(86362001)(33656002)(2906002)(38100700002)(426003)(2616005)(26005)(186003)(4326008)(83380400001)(316002)(9786002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?iYgouChASin7p3CKCfx0jsIN/1LT0fVX8mmEIvzVP0N5iZ69M7nbUjH5aInu?=
- =?us-ascii?Q?8g40zp0SoJJVQrHD4VYk+rEfQqaMdeGVXxFhDVc2V3IsQ+yOyC642jDM5Il3?=
- =?us-ascii?Q?l3ik7vYYYIEbAgsVAFMu+1qH/9Zu7jmY6u+240kGnkz1FTn3btU7Lg2gPzAy?=
- =?us-ascii?Q?4LnfkFZAZSXKA6WUjMa9E7j1bVmi6iaJO+sCN6nTJu1W9f3LlPi84PkwFu7/?=
- =?us-ascii?Q?+29TOZmuTukLP3dd6EBT22AEvoRb8VnM3EmPDqcA0/5xxxwLsQ6WUG9piy1V?=
- =?us-ascii?Q?NKyY9V6j7HubZhVQ4jjHOFb8P31FEUeKfI6sneUOSAhL8yueIFEZXGXX5JKM?=
- =?us-ascii?Q?7WUcYoQTgD8YSJwUjmTu9E+WOdQmDFU8gJAPRd9NHVvaYcGA+5rax8Vv1Wqi?=
- =?us-ascii?Q?b9+WqzUq682gSo9NhLrs4ON1hPZ83jPRX6CZp27S5NkMzlwADXBm7KLIhRit?=
- =?us-ascii?Q?tl6BaDoWV+uEyaswli/26lGp4qE5s9EKOw2usXFPnpCkPaKSJY1qt/r9fCht?=
- =?us-ascii?Q?iJiHIpBM3i1vXsFmWRXBmu92aj/tKZrSIbPgKLrFB7bgPPwiHTofpbm2vOPf?=
- =?us-ascii?Q?vjn6+Zba3gYBgeIzMx0jpHlDWrfO+/2DeC8sEDR5zmnLZqFfj+l9xRd7emjB?=
- =?us-ascii?Q?8WsqMYMwtlfY+ejJkuvYgW+fqSXw6nTTZbfOFQL8YqZAhfsbB5+4vWyVix8J?=
- =?us-ascii?Q?kZ34QA9jTO0JLGF725KejeEtWX5qp+mD3pWDbEiPhuN6paBPvegUcqaNe6tG?=
- =?us-ascii?Q?j+hW+2ezC9t/kkZSTwASiTF8CUNioHCGU09vydTYqAZEMPWGZogmsgR/NXqI?=
- =?us-ascii?Q?sX1CwZw+w41lQPIlllpVGkxnK+o7qhqxERlaOHjQXXCwc+WYKmNRCwjqDrig?=
- =?us-ascii?Q?64Jz9fb6Le1a10Ton0psqQHQeHGIoK+AqVf9NezTj8QbWcmeyYVMCEzW/lRo?=
- =?us-ascii?Q?cT3LQJEMQSzcgs3JldZBlN9nWUwnSUAnvRQS5gYJJ67ueYAdlubH/06Hvb3i?=
- =?us-ascii?Q?Wtq55XAbgp+nybf/Z6YbPvtNr9LjaQ0cyi0Rcb/nAM58E9IvoB87VEfklbeF?=
- =?us-ascii?Q?EvOP0pAahNctcet8lMJo2PgJNT3e6DPj2x7bU1VQ5MQj1s7ckBi4DGR1MhTa?=
- =?us-ascii?Q?6+BjJvmNTL8m5P3nVfbr/XiFm0e6LFtaWwKaqA/5wWHFdCjMvgxaFqCmQmN5?=
- =?us-ascii?Q?YIS6aUzOqlfWFxxaiaUqGehYu1TAH6o0xMGrckSkWv+bsj3LaBDmo/Kh7Zsv?=
- =?us-ascii?Q?1KLk0QltR4wdyYGfzlXDVEgyj0p/laA5kmrAdd3KWffaTRsctbA3bbCVzTtT?=
- =?us-ascii?Q?mUyvbpOC71l3AcHmpaU44hcV?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f7f1d142-14f3-4464-13ad-08d97847947a
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2021 12:51:48.0248
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: EelXkKUY+WeuaXSt+RoQnZiuAwu5klDs8mbKTTh8yYbilLFyEo3N0G9ORgQaXyeV
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5304
+In-Reply-To: <20210914155607.14122-2-semen.protsenko@linaro.org>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA01SfUwbZRjfe3e9XiutR5npE5iOtDOyJYPhTHZGh5CM5Ga2ZRsuMSSOXdiF
+        FVogLR9OpzJwCBUQcWOug0DJHF0lQ75HxUWgWNdWKg7pwvjaSsAwiTTMpPtode3FyH+/r+d5
+        3l/yUrjiviiW0uQX8fp8TqsipUT/T488O7V/pnG7bNMSZs3Shhjvw2UR02IfFzHuJzuZrtUA
+        xnT7pkSMv2ZOxNy2NZHM156bGDPhTGcCjjqcOfeDXcxcCEyTTGiqi2CW656Zztl1MTPprsIY
+        q+0pSlWwf905J2ZNZbUkO2iaFbPd1mqSnZkaItmeK5+wdb1WxK53v3SYypS+eZLXakp4fVLK
+        CempW5U2VNikfN85OycuQzMKI6IooF+DgUCmEUkpBW1BMDR4UyyQhwh+Di1hAllHYPNex41I
+        EpkwL9xFgtGOoNf8CyEQP4JrZi8RTsXQb0HLmC8yvpkOILDf9kdGcHoKh/m+7yIpkk6G2rE6
+        FMYyOgU+8w5EdIJ+GSw1RjKMX6CzoTFYjguZaLh1aTGSkdCp0NrhiOg4rYTpxRZMwFthYLUJ
+        Dx8DelQCoW/PYkLVfeCeUAodYmDF0SsW8BZwfVVDCPkKBDXf3xULpB7BvKMVCak3YGb8MRle
+        hNPbodOWJMhpsPDHMiHsl8Od1WjhDXJo6L+IC7IMqioVQnobPLFexAQcC58v/kPUI5VpQzPT
+        hjamDW1M/99tRYQVKfligy6HN+zO50sTDZzOUJyfk5hdoOtGz76hK+T4+wayrPgTRxBGoREE
+        FK7aLPv1TBqnkJ3kTn/A6wuy9MVa3jCC4ihCpZTZ+jqyFHQOV8Tn8Xwhr//PxShJbBnW6Hmv
+        PjR8PP6eaVAfpTbXLtqz11yUfqV2f/uLHQfOH1w7+2Hsx0dvbG1p7pzUxD9Q7DJ1ve3KW3oK
+        wWS59PqwXd1GVkxov8E/7dI9Kj4x+rgSOX/zWDjzmcaCOKCiK3wJQxpJaFMe7yz1+uOWOl3n
+        h3ri1PtOF84H28rcr2Tk7lgY2HNhr+aepzX1nZ7RPZn91V/MVJQHm5u9lxo0H+2+LPkSXk0f
+        G8/a1vhgqdqp28L6SuPp9Sp/bgmm356rVEcNcz8e26S9GnU54dqVopIjk+XpB+TO5L37+44e
+        Vng8vyfo3LlHnk+akL/e/pxvznfoUNCYkuDIyFDzDcffjbmvIgynuOQduN7A/QsgRzDs9QMA
+        AA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrKIsWRmVeSWpSXmKPExsVy+t/xe7rZbxwTDdrXKFh8WLGI0eL6l+es
+        FvOPnGO1OPNb12Lj2x9MFpseX2O1+Nhzj9Xi8q45bBYzzu9jsrh4ytXix/E+ZovWvUfYLab+
+        uMVm8e/aRhaL531AyVN3P7NbXDnTwWSxatcfRgchj/c3Wtk9ZjX0snnsnHWX3WPTqk42jzvX
+        9rB5bF5S79G3ZRWjx+dNcgEcUXo2RfmlJakKGfnFJbZK0YYWRnqGlhZ6RiaWeobG5rFWRqZK
+        +nY2Kak5mWWpRfp2CXoZJ9t2MRbMEa84dfceewPjHaEuRk4OCQETiYUPbjN2MXJxCAksZZTY
+        f6GHrYuRAyghJTG/RQmiRljiz7UuNoia94wS7/etYAFJCAvYS8w/+pgJJCEi8INR4uCV38wg
+        DrPANWaJLft+sEK0nGSUOPG3jxGkhU3AUKL3KITNK2An0X59O9goFgFViRU9IDs4OUQFkiXe
+        vv7OBFEjKHFy5hOwGk4BB4kFa44zg9jMAuoSf+ZdgrLFJW49mc8EYctLbH87h3kCo9AsJO2z
+        kLTMQtIyC0nLAkaWVYwiqaXFuem5xUZ6xYm5xaV56XrJ+bmbGIHxv+3Yzy07GFe++qh3iJGJ
+        g/EQowQHs5II74Uax0Qh3pTEyqrUovz4otKc1OJDjKZA/0xklhJNzgcmoLySeEMzA1NDEzNL
+        A1NLM2MlcV6TI2vihQTSE0tSs1NTC1KLYPqYODilGpgC3+g8nPaf61PWlrUzX8TMYtv7VnvV
+        5zjvLyum2J97kL2DgzvS/tDFXJ9zJeX7F7Mu+ZlpsWLecumNj1+/fXbzac350ocFpSLObxcy
+        3PPk8HJedGG6PvOsuvX+ifpmJ0xPin8umOvcd/CDSUe8dPHG1rbJeSpaasH18441eun/cf2/
+        MZBFu73yTMLG65kp/oc3r/L8czBVzuLwtWS+W2fU63b2KClff2r1ULlVMDTgobv19h9mlwU2
+        epk6uDjqSIlZJ21N/Fm+7f5cbu4CBUF1jievMxpcNKcFXUh53+ST9YrvieGBlUnLQu7cEXqa
+        WM1fY/ttNYfGx8gz68K+WrlozrfZpl4768rKLm1RTS8lluKMREMt5qLiRACKwJ3piAMAAA==
+X-CMS-MailID: 20210915125155eucas1p204553084818cc0e14ea20acc295519cb
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20210914155621eucas1p18e0f1f50fe42af4f8048ed88507219ed
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20210914155621eucas1p18e0f1f50fe42af4f8048ed88507219ed
+References: <20210914155607.14122-1-semen.protsenko@linaro.org>
+        <CGME20210914155621eucas1p18e0f1f50fe42af4f8048ed88507219ed@eucas1p1.samsung.com>
+        <20210914155607.14122-2-semen.protsenko@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 10:50:35AM +0100, Shameer Kolothum wrote:
-> +static const struct vfio_device_ops hisi_acc_vfio_pci_ops = {
-> +	.name		= "hisi-acc-vfio-pci",
-> +	.open_device	= hisi_acc_vfio_pci_open_device,
-> +	.close_device	= vfio_pci_core_close_device,
-> +	.ioctl		= vfio_pci_core_ioctl,
-> +	.read		= vfio_pci_core_read,
-> +	.write		= vfio_pci_core_write,
-> +	.mmap		= vfio_pci_core_mmap,
-> +	.request	= vfio_pci_core_request,
-> +	.match		= vfio_pci_core_match,
-> +};
+Hi,
 
-Avoid horizontal alignments please
-
-> +static void hisi_acc_vfio_pci_remove(struct pci_dev *pdev)
-> +{
-> +	struct vfio_pci_core_device *vdev = dev_get_drvdata(&pdev->dev);
+On 14.09.2021 17:56, Sam Protsenko wrote:
+> By default if bus clock has no users its "enable count" value is 0. It
+> might be actually running if it's already enabled in bootloader, but
+> then in some cases it can be disabled by mistake. For example, such case
+> was observed when dw_mci_probe() enabled bus clock, then failed to do
+> something and disabled that bus clock on error path. After that even
+> attempt to read the 'clk_summary' file in DebugFS freezed forever, as
+> CMU bus clock ended up being disabled and it wasn't possible to access
+> CMU registers anymore.
+> 
+> To avoid such cases, CMU driver must increment the ref count for that
+> bus clock by running clk_prepare_enable(). There is already existing
+> '.clk_name' field in struct samsung_cmu_info, exactly for that reason.
+> It was added in commit 523d3de41f02 ("clk: samsung: exynos5433: Add
+> support for runtime PM"). But the clock is actually enabled only in
+> Exynos5433 clock driver. Let's mimic what is done there in generic
+> samsung_cmu_register_one() function, so other drivers can benefit from
+> that `.clk_name' field. As was described above, it might be helpful not
+> only for PM reasons, but also to prevent possible erroneous clock gating
+> on error paths.
+> 
+> Another way to workaround that issue would be to use CLOCK_IS_CRITICAL
+> flag for corresponding gate clocks. But that might be not very good
+> design decision, as we might still want to disable that bus clock, e.g.
+> on PM suspend.
+> 
+> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> ---
+>  drivers/clk/samsung/clk.c | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+> 
+> diff --git a/drivers/clk/samsung/clk.c b/drivers/clk/samsung/clk.c
+> index 1949ae7851b2..da65149fa502 100644
+> --- a/drivers/clk/samsung/clk.c
+> +++ b/drivers/clk/samsung/clk.c
+> @@ -357,6 +357,19 @@ struct samsung_clk_provider * __init samsung_cmu_register_one(
+>  
+>  	ctx = samsung_clk_init(np, reg_base, cmu->nr_clk_ids);
+>  
+> +	/* Keep bus clock running, so it's possible to access CMU registers */
+> +	if (cmu->clk_name) {
+> +		struct clk *bus_clk;
 > +
-> +	vfio_pci_core_unregister_device(vdev);
-> +	vfio_pci_core_uninit_device(vdev);
-> +	kfree(vdev);
-> +}
+> +		bus_clk = __clk_lookup(cmu->clk_name);
+> +		if (bus_clk) {
+> +			clk_prepare_enable(bus_clk);
+> +		} else {
+> +			pr_err("%s: could not find bus clock %s\n", __func__,
+> +			       cmu->clk_name);
+> +		}
+> +	}
 > +
-> +static const struct pci_device_id hisi_acc_vfio_pci_table[] = {
-> +	{ PCI_DRIVER_OVERRIDE_DEVICE_VFIO(PCI_VENDOR_ID_HUAWEI, SEC_VF_PCI_DEVICE_ID) },
-> +	{ PCI_DRIVER_OVERRIDE_DEVICE_VFIO(PCI_VENDOR_ID_HUAWEI, HPRE_VF_PCI_DEVICE_ID) },
-> +	{ PCI_DRIVER_OVERRIDE_DEVICE_VFIO(PCI_VENDOR_ID_HUAWEI, ZIP_VF_PCI_DEVICE_ID) },
-> +	{ 0, }
+>  	if (cmu->pll_clks)
+>  		samsung_clk_register_pll(ctx, cmu->pll_clks, cmu->nr_pll_clks,
+>  			reg_base);
 
-Just {}
+I would suggest to implement runtime PM ops in your driver instead, even though
+those would initially only contain single clk enable/disable. Things like 
+the clk_summary will work then thanks to runtime PM support in the clk core 
+(see clk_pm_runtime_* calls).
+We could also make common runtime PM suspend/resume helpers but I wouldn't focus
+on that too much now, it could well be done later.
+And please avoid introducing new __clk_lookup() calls.
 
-> +};
-> +
-> +MODULE_DEVICE_TABLE(pci, hisi_acc_vfio_pci_table);
-> +
-> +static struct pci_driver hisi_acc_vfio_pci_driver = {
-> +	.name			= "hisi-acc-vfio-pci",
-
-This shoud be KBUILD_MODNAME, the string must always match the module
-name 
-
-Jason
+-- 
+Regards,
+Sylwester
