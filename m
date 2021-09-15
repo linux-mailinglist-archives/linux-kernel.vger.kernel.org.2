@@ -2,203 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C823640C0A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 09:38:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30BA240C0AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 09:40:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236649AbhIOHj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 03:39:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59321 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231425AbhIOHj4 (ORCPT
+        id S231433AbhIOHlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 03:41:44 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:63895 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231396AbhIOHll (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 03:39:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631691517;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xxuTIZ1YWa1NOpjkj6dZNsRUC+/dmST7iBylAM+AKQQ=;
-        b=Azik6LR4u3YohJanuZ/7bOJDFQPcZbJ7MtQOAMp19GpTQz66fmZESReeNrRSl/ttRyUtHJ
-        P2biTs3Il/NhVABH7LasgpwfXUrVPxGUZ+6/RCsd1nLStgm12utZMFaLonKXO4ILBEcx9t
-        rSPzdm0ZvJz+vUXfIKA4TjyBrtutep0=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-242-ddOWmILbMUOIO428C9rNyQ-1; Wed, 15 Sep 2021 03:38:36 -0400
-X-MC-Unique: ddOWmILbMUOIO428C9rNyQ-1
-Received: by mail-ed1-f69.google.com with SMTP id m20-20020aa7c2d4000000b003d1add00b8aso1116965edp.0
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 00:38:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xxuTIZ1YWa1NOpjkj6dZNsRUC+/dmST7iBylAM+AKQQ=;
-        b=YEBaLDSrVt0Zl9ysqv6U0prETqu0WpGOUwyhsZ7LcjbYy1WXZRxTuqKbGb/nE/GbRy
-         xEq6D+efHEZYoWQU8TsMBIoYBBTfUGLBOiiFOWbgi+O0agSh2Yw1aAmcUEqN5BRL7Uer
-         QBzbNbBEmemJW5YIq3TJcEzelzld9YqbvqgWaoyOBhcbEL3c7t8qlMQIG5JgZp9rvVNC
-         PH/oR2aM7FvvJ/QxnCuUr+tZUP2P7j3nNBWa6IzKuuMwmvy4CrdXcYNz9qBVrPzfeFWi
-         pU8Ssc+fIoO3DkUzfq/nrgHC8XNhpkVR0Ax3fGZ5VeNJKF841tLM74Khqr+I2dC9nAkv
-         5hOw==
-X-Gm-Message-State: AOAM533oMr3+6AtU6Y1IH8o0RDDS/N/+AdiZAJYACP4IXMiOOemXkvGT
-        fU3X5+gmFsnDEUYT6uY+lv8W/+662XHwM2afq5jc803jwcvJF4lrJe52PMBFF5Neo4ykLaBqqrL
-        sYXJrvfc7edyUW1dqXyB6htc9
-X-Received: by 2002:a17:906:7208:: with SMTP id m8mr23518954ejk.82.1631691515101;
-        Wed, 15 Sep 2021 00:38:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxjJG5HmRxot3O+sRXKAYzInQI3onfnVJshUEWm0IVFrmhJ/2Pm3nYzdj3Jd9vbXIIUP6W/VQ==
-X-Received: by 2002:a17:906:7208:: with SMTP id m8mr23518933ejk.82.1631691514844;
-        Wed, 15 Sep 2021 00:38:34 -0700 (PDT)
-Received: from redhat.com ([2.55.157.56])
-        by smtp.gmail.com with ESMTPSA id n3sm6657200eds.79.2021.09.15.00.38.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Sep 2021 00:38:34 -0700 (PDT)
-Date:   Wed, 15 Sep 2021 03:38:31 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     Wu Zongyong <wuzongyong@linux.alibaba.com>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        wei.yang1@linux.alibaba.com
-Subject: Re: [PATCH v2 4/5] vdpa: add new vdpa attribute
- VDPA_ATTR_DEV_F_VERSION_1
-Message-ID: <20210915033756-mutt-send-email-mst@kernel.org>
-References: <cover.1631101392.git.wuzongyong@linux.alibaba.com>
- <cover.1631621507.git.wuzongyong@linux.alibaba.com>
- <834528d24c839080215b2e077f100e9ed5073edc.1631621507.git.wuzongyong@linux.alibaba.com>
- <20210914085711-mutt-send-email-mst@kernel.org>
- <CACGkMEu3RUGpe74Vh-FAZD3MwOC3gqU0OEf8A1ULvq7GSMm6Jg@mail.gmail.com>
+        Wed, 15 Sep 2021 03:41:41 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1631691621; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=pV19XQS2nI5AyufucqjBxQA1xtZ1AsoReplDidbo/ks=;
+ b=ZP7Cnos0zKLmviJcts6tLQ/DnnwMT0tjgAAz9dNzDs/JMUh0VCAt9F/+a8rLJQQ1eDma9J+/
+ w5VXdKPbo3cFvC2o4KzbN2n/3ilwD7rrml9gpuKdgKsHlp/hQmuxvyRBWUWGqVcDpeIfrJEh
+ AODz3wfJyqUQi3tgOqqdNhEOSsw=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 6141a365bd6681d8ede49a52 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 15 Sep 2021 07:40:21
+ GMT
+Sender: pmaliset=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 61413C4360C; Wed, 15 Sep 2021 07:40:20 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmaliset)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 091FAC4338F;
+        Wed, 15 Sep 2021 07:40:18 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACGkMEu3RUGpe74Vh-FAZD3MwOC3gqU0OEf8A1ULvq7GSMm6Jg@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 15 Sep 2021 13:10:18 +0530
+From:   Prasad Malisetty <pmaliset@codeaurora.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     agross@kernel.org, bhelgaas@google.com, robh+dt@kernel.org,
+        swboyd@chromium.org, lorenzo.pieralisi@arm.com,
+        svarbanov@mm-sol.com, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dianders@chromium.org,
+        mka@chromium.org, vbadigan@codeaurora.org, sallenki@codeaurora.org,
+        manivannan.sadhasivam@linaro.org
+Subject: Re: [PATCH v7 4/4] PCI: qcom: Switch pcie_1_pipe_clk_src after PHY
+ init in SC7280
+In-Reply-To: <YUFd9aTlTJ45b9Gg@ripper>
+References: <1631643550-29960-1-git-send-email-pmaliset@codeaurora.org>
+ <1631643550-29960-5-git-send-email-pmaliset@codeaurora.org>
+ <YUFd9aTlTJ45b9Gg@ripper>
+Message-ID: <4b743c011a5b240fbcfe733bd43f18a3@codeaurora.org>
+X-Sender: pmaliset@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 11:18:06AM +0800, Jason Wang wrote:
-> On Tue, Sep 14, 2021 at 8:58 PM Michael S. Tsirkin <mst@redhat.com> wrote:
-> >
-> > On Tue, Sep 14, 2021 at 08:24:51PM +0800, Wu Zongyong wrote:
-> > > This new attribute advertises whether the vdpa device is legacy or not.
-> > > Users can pick right virtqueue size if the vdpa device is legacy which
-> > > doesn't support to change virtqueue size.
-> > >
-> > > Signed-off-by: Wu Zongyong <wuzongyong@linux.alibaba.com>
-> >
-> > So if we are bothering with legacy,
+On 2021-09-15 08:14, Bjorn Andersson wrote:
+> On Tue 14 Sep 11:19 PDT 2021, Prasad Malisetty wrote:
 > 
-> I think we'd better not. I guess the following may work:
+>> On the SC7280, the clock source for gcc_pcie_1_pipe_clk_src
+>> must be the TCXO while gdsc is enabled. After PHY init successful
+>> clock source should switch to pipe clock for gcc_pcie_1_pipe_clk_src.
+>> 
+>> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
+>> ---
+>>  drivers/pci/controller/dwc/pcie-qcom.c | 90 
+>> +++++++++++++++++++++++++++++-----
+>>  1 file changed, 79 insertions(+), 11 deletions(-)
+>> 
+>> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c 
+>> b/drivers/pci/controller/dwc/pcie-qcom.c
+>> index 8a7a300..380c962 100644
+>> --- a/drivers/pci/controller/dwc/pcie-qcom.c
+>> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+>> @@ -166,6 +166,9 @@ struct qcom_pcie_resources_2_7_0 {
+>>  	struct regulator_bulk_data supplies[2];
+>>  	struct reset_control *pci_reset;
+>>  	struct clk *pipe_clk;
+>> +	struct clk *gcc_pcie_1_pipe_clk_src;
 > 
-> 1) disable the driver on BE host
-> 2) present VERSION_1 with ACCESS_PLATFORM in get_features()
-> 3) extend the management to advertise max_queue_size and
-> min_queue_size, for ENI they are the same so management layer knows it
-> needs to set the queue_size correctly during launching qemu
+> Afaict you have both 2 PCIe controllers on sc7280, so I think it seems
+> more reasonable to shorted this to "pipe_clk_src".
 > 
-> Thoughts?
+Agree. I will make it generic and update in next patch version.
+
+>> +	struct clk *phy_pipe_clk;
+>> +	struct clk *ref_clk_src;
+>>  };
+>> 
+>>  union qcom_pcie_resources {
+>> @@ -189,6 +192,11 @@ struct qcom_pcie_ops {
+>>  	int (*config_sid)(struct qcom_pcie *pcie);
+>>  };
+>> 
+>> +struct qcom_pcie_cfg {
+>> +	const struct qcom_pcie_ops *ops;
+>> +	bool pcie_1_pipe_clk_src_switch;
 > 
-> Thanks
+> Perhaps something little bit more generic, like pipe_clk_need_muxing?
+> 
+Sure, I will change it and update in next patch version.
 
-There are other subtle differences such as header size without
-mergeable buffers for net.
+>> +};
+>> +
+>>  struct qcom_pcie {
+>>  	struct dw_pcie *pci;
+>>  	void __iomem *parf;			/* DT parf */
+>> @@ -197,6 +205,7 @@ struct qcom_pcie {
+>>  	struct phy *phy;
+>>  	struct gpio_desc *reset;
+>>  	const struct qcom_pcie_ops *ops;
+>> +	bool pcie_1_pipe_clk_src_switch;
+>>  };
+>> 
+>>  #define to_qcom_pcie(x)		dev_get_drvdata((x)->dev)
+>> @@ -1167,6 +1176,20 @@ static int qcom_pcie_get_resources_2_7_0(struct 
+>> qcom_pcie *pcie)
+>>  	if (ret < 0)
+>>  		return ret;
+>> 
+>> +	if (pcie->pcie_1_pipe_clk_src_switch) {
+> 
+> This looks much better, now it will easily scale to other platforms 
+> that
+> have inherited this need.
 
+Thanks Bjorn.
 
-> > I think there are
-> > several things to do when building the interface
-> > - support transitional devices, that is allow userspace
-> >   to tell device it's in legacy mode
-> > - support reporting/setting supporting endian-ness
-> >
-> > > ---
-> > >  drivers/vdpa/vdpa.c          | 6 ++++++
-> > >  drivers/virtio/virtio_vdpa.c | 7 ++++++-
-> > >  include/uapi/linux/vdpa.h    | 1 +
-> > >  3 files changed, 13 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/vdpa/vdpa.c b/drivers/vdpa/vdpa.c
-> > > index 1dc121a07a93..533d7f589eee 100644
-> > > --- a/drivers/vdpa/vdpa.c
-> > > +++ b/drivers/vdpa/vdpa.c
-> > > @@ -12,6 +12,7 @@
-> > >  #include <linux/slab.h>
-> > >  #include <linux/vdpa.h>
-> > >  #include <uapi/linux/vdpa.h>
-> > > +#include <uapi/linux/virtio_config.h>
-> > >  #include <net/genetlink.h>
-> > >  #include <linux/mod_devicetable.h>
-> > >
-> > > @@ -494,6 +495,7 @@ vdpa_dev_fill(struct vdpa_device *vdev, struct sk_buff *msg, u32 portid, u32 seq
-> > >       u16 max_vq_size;
-> > >       u32 device_id;
-> > >       u32 vendor_id;
-> > > +     u64 features;
-> > >       void *hdr;
-> > >       int err;
-> > >
-> > > @@ -508,6 +510,7 @@ vdpa_dev_fill(struct vdpa_device *vdev, struct sk_buff *msg, u32 portid, u32 seq
-> > >       device_id = vdev->config->get_device_id(vdev);
-> > >       vendor_id = vdev->config->get_vendor_id(vdev);
-> > >       max_vq_size = vdev->config->get_vq_num_max(vdev);
-> > > +     features = vdev->config->get_features(vdev);
-> > >
-> > >       err = -EMSGSIZE;
-> > >       if (nla_put_string(msg, VDPA_ATTR_DEV_NAME, dev_name(&vdev->dev)))
-> > > @@ -520,6 +523,9 @@ vdpa_dev_fill(struct vdpa_device *vdev, struct sk_buff *msg, u32 portid, u32 seq
-> > >               goto msg_err;
-> > >       if (nla_put_u16(msg, VDPA_ATTR_DEV_MAX_VQ_SIZE, max_vq_size))
-> > >               goto msg_err;
-> > > +     if (features & BIT_ULL(VIRTIO_F_VERSION_1) &&
-> > > +         nla_put_flag(msg, VDPA_ATTR_DEV_VERSION_1))
-> > > +             goto msg_err;
-> > >
-> > >       genlmsg_end(msg, hdr);
-> > >       return 0;
-> > > diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
-> > > index 72eaef2caeb1..1cba957c4cdc 100644
-> > > --- a/drivers/virtio/virtio_vdpa.c
-> > > +++ b/drivers/virtio/virtio_vdpa.c
-> > > @@ -7,6 +7,7 @@
-> > >   *
-> > >   */
-> > >
-> > > +#include "linux/virtio_config.h"
-> > >  #include <linux/init.h>
-> > >  #include <linux/module.h>
-> > >  #include <linux/device.h>
-> > > @@ -145,6 +146,7 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
-> > >       /* Assume split virtqueue, switch to packed if necessary */
-> > >       struct vdpa_vq_state state = {0};
-> > >       unsigned long flags;
-> > > +     bool may_reduce_num = false;
-> > >       u32 align, num;
-> > >       int err;
-> > >
-> > > @@ -169,10 +171,13 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
-> > >               goto error_new_virtqueue;
-> > >       }
-> > >
-> > > +     if (ops->get_features(vdpa) & BIT_ULL(VIRTIO_F_VERSION_1))
-> > > +             may_reduce_num = true;
-> > > +
-> > >       /* Create the vring */
-> > >       align = ops->get_vq_align(vdpa);
-> > >       vq = vring_create_virtqueue(index, num, align, vdev,
-> > > -                                 true, true, ctx,
-> > > +                                 true, may_reduce_num, ctx,
-> > >                                   virtio_vdpa_notify, callback, name);
-> > >       if (!vq) {
-> > >               err = -ENOMEM;
-> > > diff --git a/include/uapi/linux/vdpa.h b/include/uapi/linux/vdpa.h
-> > > index 66a41e4ec163..ce0b74276a5b 100644
-> > > --- a/include/uapi/linux/vdpa.h
-> > > +++ b/include/uapi/linux/vdpa.h
-> > > @@ -32,6 +32,7 @@ enum vdpa_attr {
-> > >       VDPA_ATTR_DEV_VENDOR_ID,                /* u32 */
-> > >       VDPA_ATTR_DEV_MAX_VQS,                  /* u32 */
-> > >       VDPA_ATTR_DEV_MAX_VQ_SIZE,              /* u16 */
-> > > +     VDPA_ATTR_DEV_VERSION_1,                /* flag */
-> > >
-> > >       /* new attributes must be added above here */
-> > >       VDPA_ATTR_MAX,
-> > > --
-> > > 2.31.1
-> >
+> 
+>> +		res->gcc_pcie_1_pipe_clk_src = devm_clk_get(dev, "pipe_mux");
+>> +		if (IS_ERR(res->gcc_pcie_1_pipe_clk_src))
+>> +			return PTR_ERR(res->gcc_pcie_1_pipe_clk_src);
+>> +
+>> +		res->phy_pipe_clk = devm_clk_get(dev, "phy_pipe");
+>> +		if (IS_ERR(res->phy_pipe_clk))
+>> +			return PTR_ERR(res->phy_pipe_clk);
+>> +
+>> +		res->ref_clk_src = devm_clk_get(dev, "ref");
+>> +		if (IS_ERR(res->ref_clk_src))
+>> +			return PTR_ERR(res->ref_clk_src);
+>> +	}
+>> +
+>>  	res->pipe_clk = devm_clk_get(dev, "pipe");
+>>  	return PTR_ERR_OR_ZERO(res->pipe_clk);
+>>  }
+>> @@ -1185,6 +1208,10 @@ static int qcom_pcie_init_2_7_0(struct 
+>> qcom_pcie *pcie)
+>>  		return ret;
+>>  	}
+>> 
+>> +	/* Set TCXO as clock source for gcc_pcie_1_pipe_clk_src */
+>> +	if (pcie->pcie_1_pipe_clk_src_switch)
+>> +		clk_set_parent(res->gcc_pcie_1_pipe_clk_src, res->ref_clk_src);
+>> +
+>>  	ret = clk_bulk_prepare_enable(res->num_clks, res->clks);
+>>  	if (ret < 0)
+>>  		goto err_disable_regulators;
+>> @@ -1256,6 +1283,10 @@ static int qcom_pcie_post_init_2_7_0(struct 
+>> qcom_pcie *pcie)
+>>  {
+>>  	struct qcom_pcie_resources_2_7_0 *res = &pcie->res.v2_7_0;
+>> 
+>> +	/* Set pipe clock as clock source for gcc_pcie_1_pipe_clk_src */
+>> +	if (pcie->pcie_1_pipe_clk_src_switch)
+>> +		clk_set_parent(res->gcc_pcie_1_pipe_clk_src, res->phy_pipe_clk);
+>> +
+>>  	return clk_prepare_enable(res->pipe_clk);
+>>  }
+>> 
+>> @@ -1456,6 +1487,39 @@ static const struct qcom_pcie_ops ops_1_9_0 = {
+>>  	.config_sid = qcom_pcie_config_sid_sm8250,
+>>  };
+>> 
+>> +static const struct qcom_pcie_cfg apq8084_cfg = {
+>> +	.ops = &ops_1_0_0,
+>> +};
+>> +
+>> +static const struct qcom_pcie_cfg ipq8064_cfg = {
+>> +	.ops = &ops_2_1_0,
+>> +};
+>> +
+>> +static const struct qcom_pcie_cfg msm8996_cfg = {
+>> +	.ops = &ops_2_3_2,
+>> +};
+>> +
+>> +static const struct qcom_pcie_cfg ipq8074_cfg = {
+>> +	.ops = &ops_2_3_3,
+>> +};
+>> +
+>> +static const struct qcom_pcie_cfg ipq4019_cfg = {
+>> +	.ops = &ops_2_4_0,
+>> +};
+>> +
+>> +static const struct qcom_pcie_cfg sdm845_cfg = {
+>> +	.ops = &ops_2_7_0,
+>> +};
+>> +
+>> +static const struct qcom_pcie_cfg sm8250_cfg = {
+>> +	.ops = &ops_1_9_0,
+>> +};
+>> +
+>> +static const struct qcom_pcie_cfg sc7280_cfg = {
+>> +	.ops = &ops_1_9_0,
+>> +	.pcie_1_pipe_clk_src_switch = true,
+>> +};
+>> +
+>>  static const struct dw_pcie_ops dw_pcie_ops = {
+>>  	.link_up = qcom_pcie_link_up,
+>>  	.start_link = qcom_pcie_start_link,
+>> @@ -1467,6 +1531,7 @@ static int qcom_pcie_probe(struct 
+>> platform_device *pdev)
+>>  	struct pcie_port *pp;
+>>  	struct dw_pcie *pci;
+>>  	struct qcom_pcie *pcie;
+>> +	const struct qcom_pcie_cfg *pcie_cfg = NULL;
+> 
+> First use of this variable is an assignment, so I don't see a need for
+> zero initialize it.
+> 
+> Regards,
+> Bjorn
+> 
+Sure, I will incorporate the changes in next patch version.
 
+>>  	int ret;
+>> 
+>>  	pcie = devm_kzalloc(dev, sizeof(*pcie), GFP_KERNEL);
+>> @@ -1488,7 +1553,9 @@ static int qcom_pcie_probe(struct 
+>> platform_device *pdev)
+>> 
+>>  	pcie->pci = pci;
+>> 
+>> -	pcie->ops = of_device_get_match_data(dev);
+>> +	pcie_cfg = of_device_get_match_data(dev);
+>> +	pcie->ops = pcie_cfg->ops;
+>> +	pcie->pcie_1_pipe_clk_src_switch = 
+>> pcie_cfg->pcie_1_pipe_clk_src_switch;
+>> 
+>>  	pcie->reset = devm_gpiod_get_optional(dev, "perst", GPIOD_OUT_HIGH);
+>>  	if (IS_ERR(pcie->reset)) {
+>> @@ -1545,16 +1612,17 @@ static int qcom_pcie_probe(struct 
+>> platform_device *pdev)
+>>  }
+>> 
+>>  static const struct of_device_id qcom_pcie_match[] = {
+>> -	{ .compatible = "qcom,pcie-apq8084", .data = &ops_1_0_0 },
+>> -	{ .compatible = "qcom,pcie-ipq8064", .data = &ops_2_1_0 },
+>> -	{ .compatible = "qcom,pcie-ipq8064-v2", .data = &ops_2_1_0 },
+>> -	{ .compatible = "qcom,pcie-apq8064", .data = &ops_2_1_0 },
+>> -	{ .compatible = "qcom,pcie-msm8996", .data = &ops_2_3_2 },
+>> -	{ .compatible = "qcom,pcie-ipq8074", .data = &ops_2_3_3 },
+>> -	{ .compatible = "qcom,pcie-ipq4019", .data = &ops_2_4_0 },
+>> -	{ .compatible = "qcom,pcie-qcs404", .data = &ops_2_4_0 },
+>> -	{ .compatible = "qcom,pcie-sdm845", .data = &ops_2_7_0 },
+>> -	{ .compatible = "qcom,pcie-sm8250", .data = &ops_1_9_0 },
+>> +	{ .compatible = "qcom,pcie-apq8084", .data = &apq8084_cfg },
+>> +	{ .compatible = "qcom,pcie-ipq8064", .data = &ipq8064_cfg },
+>> +	{ .compatible = "qcom,pcie-ipq8064-v2", .data = &ipq8064_cfg },
+>> +	{ .compatible = "qcom,pcie-apq8064", .data = &ipq8064_cfg },
+>> +	{ .compatible = "qcom,pcie-msm8996", .data = &msm8996_cfg },
+>> +	{ .compatible = "qcom,pcie-ipq8074", .data = &ipq8074_cfg },
+>> +	{ .compatible = "qcom,pcie-ipq4019", .data = &ipq4019_cfg },
+>> +	{ .compatible = "qcom,pcie-qcs404", .data = &ipq4019_cfg },
+>> +	{ .compatible = "qcom,pcie-sdm845", .data = &sdm845_cfg },
+>> +	{ .compatible = "qcom,pcie-sm8250", .data = &sm8250_cfg },
+>> +	{ .compatible = "qcom,pcie-sc7280", .data = &sc7280_cfg },
+>>  	{ }
+>>  };
+>> 
+>> --
+>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+>> Forum,
+>> a Linux Foundation Collaborative Project
+>> 
