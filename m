@@ -2,60 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B422C40C1AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 10:26:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4BE040C1B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 10:27:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231610AbhIOI1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 04:27:31 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:46724
+        id S236805AbhIOI2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 04:28:52 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:46808
         "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231672AbhIOI1a (ORCPT
+        by vger.kernel.org with ESMTP id S236764AbhIOI2a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 04:27:30 -0400
+        Wed, 15 Sep 2021 04:28:30 -0400
 Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id CCAF040257
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 08:26:10 +0000 (UTC)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 8B6764028C
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 08:27:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1631694370;
-        bh=ptvhp8j3x8Ftji47LhZR4Wys0W2gMYnRB4nsbyxXHrA=;
+        s=20210705; t=1631694430;
+        bh=c0ktSqPBV6zrAWdMe5+J2g1bcwqmTCFhZ2hdgWxJG/Q=;
         h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
          In-Reply-To:Content-Type;
-        b=FGjhIH9ECSBf4weqHJCueAM9m9b68EzO82vksw4V2IsfesDcNHl5PT3ab4YbgTm6Z
-         oVH7Np4n4SSR2gyCFvgqREbCQPkCt2bvAo2K6c2SjgRvip9Oz6EM/OkLWue9D6UNC2
-         GA27UTqWpKu6btiXavsyVHNFQHwNN0cNFtG37pPIK82qL0zGiiBtg7y3sA/0gXPC2u
-         c1e+h8VcRDHMTfnxB+nrJkVLYX1xo75P0lbiABpr8HJoO5ScaYcvJBrxWyN3u2surI
-         isaNZAI8c8dmY5YK1Pyv/QlrzhUYpAIhWQY5jnFIht3HdgS/hEMDpsGHIVZ8+cOL1S
-         Xq1UxAci+711g==
-Received: by mail-ed1-f71.google.com with SMTP id s15-20020a056402520f00b003cad788f1f6so1135877edd.22
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 01:26:10 -0700 (PDT)
+        b=r8z8RovoeCkO2JbRfHjXP0FCMtPrffDtyK/YKArA4RNKv9X+tUex4nMncfSYubhYx
+         4i+k3wYdI/c14QzbINMdMVb7lp4NU36PE5ZQ/irLVGi7Rq00CLDQy719FQX2S+LCiY
+         kksJG/J2QTGUjE+7JybzRzbl4N4aM4u1pXXpP64EpxV7jWEOfKnWE0S2SEKVkZpvO3
+         P6WXCEhrZbstUv0vAr2hQzZLFqDhlMcCJIX9JENw8Le6xuljL23aY6tjfeXWMih7QC
+         vi2fCVELZPau9AJxA7JNyqjGm/TTiU7KH/T5BFdKI29hj8amdWQzj+IWkpngR8FMAx
+         oHYaKNheB0NBQ==
+Received: by mail-ed1-f71.google.com with SMTP id r11-20020aa7cfcb000000b003d4fbd652b9so1153409edy.14
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 01:27:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=ptvhp8j3x8Ftji47LhZR4Wys0W2gMYnRB4nsbyxXHrA=;
-        b=yy2AT07T0YuGKx9xbNy6wJeZIRwUbxf5V4+sQz87ozHGBm9JoQk4uYoIi8EBXZGqYg
-         WBlHhOjRi7lfejDoOIhyhKv3wv8fuUXwSEOicT0dPGcrc8v2bF1NJy7p75Pqoktd4CQn
-         MWExnXGnGkKc/oCyb/QJrJVEW51wrsVg+8bsJODvnrk+kGwap6gnqmVcthh69hs542hw
-         hBvzQGgZmW9IkG4Il+sUVGqCQbkGigozPVWTXaozTCCUCAkmaLcPJdXyjY9ChTLYOAX4
-         J6zq4818U6v2V6TFBNnSBhhxaXMSeLsgl8fyzJ+7YCeMATvE0i3COKGc8xmgcxfnLrUm
-         hnUw==
-X-Gm-Message-State: AOAM531wPL0nR3H+VDJV3eXZnWMfFwKrvrSw02fJ3YWkU16btsNBtEa7
-        IF/a0rNLKOYs5+r8ntLRoxfpqeprwjH2fwroK2bY9I6PesCbpD21tmDay0La6gnio5/DpeyBqxS
-        2Uz2p0RN0oBoah3D5nLkZvSQaZr0fT38dEipzb6jl4Q==
-X-Received: by 2002:a17:906:72d0:: with SMTP id m16mr23559520ejl.282.1631694370556;
-        Wed, 15 Sep 2021 01:26:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy40iZHAYHG7of77gqMHSsEjCU0O3RP/sEGAl+pwIJiNsr9dTKA2Dzu3UElI7w7k0XRmYtnuw==
-X-Received: by 2002:a17:906:72d0:: with SMTP id m16mr23559504ejl.282.1631694370363;
-        Wed, 15 Sep 2021 01:26:10 -0700 (PDT)
+        bh=c0ktSqPBV6zrAWdMe5+J2g1bcwqmTCFhZ2hdgWxJG/Q=;
+        b=P/E7qc1hZeGhNtIN/wbBL9t7wFTyvag0cYnD4ygcpKATFZYv2AdtIIyEUQn/MAS9su
+         t+KTry0N6X9XzsAVSIePVy1rOKyY16leb9FGq5k1bCPOf2MDGSgtHJVVgxrLUAryIvQO
+         LUqIehrTPaU5yN9mDfWrE/IT+xLndkgYGULdBpmCReZALulAnKZ7o58K3bVy5+GJALkX
+         AqElvqQYF9QQJdCGTgKy2SLinexFHBuI+t6EmAXHZqBc9P3lB6BbWEwsINCyR2JOmT4e
+         FRuoDV5F2XKOZUqvgFCtTk+VLP8eCLn0Bj0YO3i+PkWey5CJY5u/gkEPI2T2ND4/6mzQ
+         /RqQ==
+X-Gm-Message-State: AOAM532kObwFpq3fEXPu1c904XHHKouQ/goyJWKt4WHZNK87c8YhPghR
+        FDJ2RdarTf4s/en/84hNOTD3qWZ/Zpx25F79Jfx+7pgGe3AYk97dA+SEZwhlD9YApfnRm4CinS9
+        mLudcmYYFTb2jwvb+QrMhznPilZbfbgb1P8FldqCPvQ==
+X-Received: by 2002:a05:6402:42d4:: with SMTP id i20mr18825598edc.348.1631694429908;
+        Wed, 15 Sep 2021 01:27:09 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzJujQjYVHel2sNKzotlRkaiyjwxk4PvbAgB7ek3KN7SaHfnHfWRFV7KrDrr/6Z5D4w/Nh3Zw==
+X-Received: by 2002:a05:6402:42d4:: with SMTP id i20mr18825590edc.348.1631694429780;
+        Wed, 15 Sep 2021 01:27:09 -0700 (PDT)
 Received: from [192.168.3.211] (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
-        by smtp.gmail.com with ESMTPSA id a12sm2689234eje.27.2021.09.15.01.26.08
+        by smtp.gmail.com with ESMTPSA id l22sm4804830eds.58.2021.09.15.01.27.07
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Sep 2021 01:26:09 -0700 (PDT)
-Subject: Re: [PATCH 3/6] clk: samsung: clk-pll: Implement pll0831x PLL type
+        Wed, 15 Sep 2021 01:27:09 -0700 (PDT)
+Subject: Re: [PATCH 4/6] dt-bindings: clock: Add bindings definitions for
+ Exynos850 CMU
 To:     Sam Protsenko <semen.protsenko@linaro.org>,
         Sylwester Nawrocki <s.nawrocki@samsung.com>,
         =?UTF-8?Q?Pawe=c5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
@@ -72,14 +73,14 @@ Cc:     Ryu Euiyoul <ryu.real@samsung.com>, Tom Gall <tom.gall@linaro.org>,
         linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-samsung-soc@vger.kernel.org
 References: <20210914155607.14122-1-semen.protsenko@linaro.org>
- <20210914155607.14122-4-semen.protsenko@linaro.org>
+ <20210914155607.14122-5-semen.protsenko@linaro.org>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <4a6e73bb-617d-d849-d64a-7f0de46ea03b@canonical.com>
-Date:   Wed, 15 Sep 2021 10:26:07 +0200
+Message-ID: <396f1761-567f-0407-7d95-acd7bbd38de9@canonical.com>
+Date:   Wed, 15 Sep 2021 10:27:06 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210914155607.14122-4-semen.protsenko@linaro.org>
+In-Reply-To: <20210914155607.14122-5-semen.protsenko@linaro.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -88,44 +89,15 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 14/09/2021 17:56, Sam Protsenko wrote:
-> pll0831x PLL is used in Exynos850 SoC for top-level fractional PLLs. The
-> code was derived from very similar pll36xx type, with next differences:
-> 
-> 1. Lock time for pll0831x is 500*P_DIV, when for pll36xx it's 3000*P_DIV
-> 2. It's not suggested in Exynos850 TRM that S_DIV change doesn't require
->    performing PLL lock procedure (which is done in pll36xx
->    implementation)
-> 3. The offset from PMS-values register to K-value register is 0x8 for
->    pll0831x, when for pll36xx it's 0x4
-> 
-> When defining pll0831x type, CON3 register offset should be provided as
-> a "con" parameter of PLL() macro, like this:
-> 
->     PLL(pll_0831x, 0, "fout_mmc_pll", "oscclk",
->         PLL_LOCKTIME_PLL_MMC, PLL_CON3_PLL_MMC, pll0831x_26mhz_tbl),
-> 
-> To define PLL rates table, one can use PLL_36XX_RATE() macro, e.g.:
-> 
->     PLL_36XX_RATE(26 * MHZ, 799999877, 31, 1, 0, -15124)
-> 
-> as it's completely appropriate for pl0831x type and there is no sense in
-> duplicating that.
-> 
-> If bit #1 (MANUAL_PLL_CTRL) is not set in CON1 register, it won't be
-> possible to set new rate, with next error showing in kernel log:
-> 
->     Could not lock PLL fout_mmc_pll
-> 
-> That can happen for example if bootloader clears that bit beforehand.
-> PLL driver doesn't account for that, so if MANUAL_PLL_CTRL bit was
-> cleared, it's assumed it was done for a reason and it shouldn't be
-> possible to change that PLL's rate at all.
+> Clock controller driver is designed to have separate instances for each
+> particular CMU. So clock IDs in this bindings header also start from 1
+> for each CMU.
 > 
 > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
 > ---
->  drivers/clk/samsung/clk-pll.c | 105 ++++++++++++++++++++++++++++++++++
->  drivers/clk/samsung/clk-pll.h |   1 +
->  2 files changed, 106 insertions(+)
+>  include/dt-bindings/clock/exynos850.h | 72 +++++++++++++++++++++++++++
+>  1 file changed, 72 insertions(+)
+>  create mode 100644 include/dt-bindings/clock/exynos850.h
 > 
 
 
