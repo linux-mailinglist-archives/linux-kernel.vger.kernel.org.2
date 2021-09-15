@@ -2,135 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23F8240C316
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 11:54:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EA3D40C319
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 11:55:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237186AbhIOJ4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 05:56:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231860AbhIOJz5 (ORCPT
+        id S237319AbhIOJ43 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 15 Sep 2021 05:56:29 -0400
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:40245 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231860AbhIOJ42 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 05:55:57 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3813DC061574;
-        Wed, 15 Sep 2021 02:54:38 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id bt14so4910907ejb.3;
-        Wed, 15 Sep 2021 02:54:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=C0cbjXlxhi/IJX0ZL0bzzsNP2N3UaUFrpqoamrREuVM=;
-        b=dmKwRqsVoY/mgSzV4I7aWm1Qo/Ao+VYMqo2VCxA3+yoqsvycJLGdSRQmIl8O9NLYao
-         AlCc/OJPOtw+ee6zHGFT2VYrZKyynvYrsHWWVAArRLRzVBEoj02fvCI1hpAt4IonXgGV
-         QlxNE1dGEeMzfgzVjNFFyiAu563OdL+YYIXzWrLRERTioqAC7/joBKB3BRZmlXBR2MMu
-         2CgwTPItgTuN5u2i6BPtYo64i8oiT0DGukLjzSrcfNUH6KAv38Zn/xzIyzZY3+njpy2/
-         lrCviuLYZ9L8jPf5THmfen4oLEY1ZuHBqJ6ld9EVpKW5D9Nk3mI5IjVcAXq3KY8AdrqD
-         tzNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=C0cbjXlxhi/IJX0ZL0bzzsNP2N3UaUFrpqoamrREuVM=;
-        b=PShx59ZtGgCEfn7VDbJ014En/b/V/1e6Yh60iPmG1iYV7/ehcP3n08Y0pZgj30b7+8
-         yHjxasJQkRP+7aVv9oQuOrt7w/WSLl7+dgGlKPU64z8LXJ3PwgA9LLYFD0r5JwjRgdLy
-         gWyz8HT0TGDmwhh9VJxvKLEp3Lz696NVO/BhDmc31fNu0E946BM8yjbWASM+23mjaJYL
-         MstI0u/ly+nV6YaYys7NUvU6mJ3ACbLOjRc/i302SR9g839BlRQFO3Z0MpFwxYJnWnjL
-         Ic/b8SeQVODriNN2EtSAT/AU6ssQmBRsZwjNNEpYXjr/Yte4XCCUvN+7Yp+vUtalPCH1
-         +gPA==
-X-Gm-Message-State: AOAM531lfzLXjQLF1a6QUG80XfRNs79Q6gr9jQ+gCsTp8hAmfjZc8ZkC
-        KNqAyYbxv2/kyUtDM6WsFpE=
-X-Google-Smtp-Source: ABdhPJxvlj7F7ixjasXkN5qo7dsDG1qROcpX+3+I5JQYqZF3AILJ6azwzHYrJTPhhUDCSkt+4SrbAQ==
-X-Received: by 2002:a17:906:dfe3:: with SMTP id lc3mr12487415ejc.478.1631699676829;
-        Wed, 15 Sep 2021 02:54:36 -0700 (PDT)
-Received: from ubuntu-laptop ([165.225.203.49])
-        by smtp.googlemail.com with ESMTPSA id v25sm5977872eja.83.2021.09.15.02.54.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Sep 2021 02:54:36 -0700 (PDT)
-Message-ID: <92123c0398e154334cc947ce8f16e89ce0c3c9af.camel@gmail.com>
-Subject: Re: [PATCH v1 2/2] mmc: core: No need to calculate the timeout
- value for CQE data transmission
-From:   Bean Huo <huobean@gmail.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Avri Altman <avri.altman@wdc.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Bean Huo (beanhuo)" <beanhuo@micron.com>
-Date:   Wed, 15 Sep 2021 11:54:35 +0200
-In-Reply-To: <CAPDyKFpC6iei96n-UcRTNrxTaHeejzfQX+rka7GSwSZjXN7-4g@mail.gmail.com>
-References: <20210907151204.118861-1-huobean@gmail.com>
-         <20210907151204.118861-3-huobean@gmail.com>
-         <CAPDyKFpC6iei96n-UcRTNrxTaHeejzfQX+rka7GSwSZjXN7-4g@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        Wed, 15 Sep 2021 05:56:28 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id C47BB20014;
+        Wed, 15 Sep 2021 09:55:06 +0000 (UTC)
+Date:   Wed, 15 Sep 2021 11:55:05 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     "Sa, Nuno" <Nuno.Sa@analog.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v2 14/16] iio: adc: max1027: Don't just sleep when the
+ EOC interrupt is available
+Message-ID: <20210915115505.1df4ef4d@xps13>
+In-Reply-To: <SA1PR03MB6355578764364F98D3FF163A99D29@SA1PR03MB6355.namprd03.prod.outlook.com>
+References: <20210902211437.503623-1-miquel.raynal@bootlin.com>
+        <20210902211437.503623-15-miquel.raynal@bootlin.com>
+        <SA1PR03MB6355578764364F98D3FF163A99D29@SA1PR03MB6355.namprd03.prod.outlook.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-09-14 at 10:13 +0200, Ulf Hansson wrote:
-> >          }
-> > +       /*
-> > +        * In case CQE is enabled, the timeout will be set a
-> > maximum timeout in
-> > +        * sdhci_cqe_enable(), so, no need to go through the below
-> > algorithm.
-> > +        */
-> > +       if (host->cqe_enabled)
+Hi Nuno,
+
+Nuno.Sa@analog.com wrote on Mon, 6 Sep 2021 09:38:02 +0000:
+
+> > -----Original Message-----
+> > From: Miquel Raynal <miquel.raynal@bootlin.com>
+> > Sent: Thursday, September 2, 2021 11:15 PM
+> > To: Jonathan Cameron <jic23@kernel.org>; Lars-Peter Clausen
+> > <lars@metafoo.de>; linux-iio@vger.kernel.org; linux-
+> > kernel@vger.kernel.org
+> > Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>; Sa, Nuno
+> > <Nuno.Sa@analog.com>; Miquel Raynal <miquel.raynal@bootlin.com>
+> > Subject: [PATCH v2 14/16] iio: adc: max1027: Don't just sleep when the
+> > EOC interrupt is available
+> > 
+> > [External]
+> > 
+> > The interrupt will fire upon end of conversion. This currently can
+> > happen in two situations: either the cnvst trigger was enabled and
+> > toggled, or a single read was requested and the data is ready. The first
+> > situation is already covered while the second is not. Instead, a waiting
+> > delay is applied. Let's handle these interrupts more properly by adding
+> > second path in our EOC helper.
+> > 
+> > Rename the interrupt handler to a more generic name as it won't only
+> > handle triggered situations.
+> > 
+> > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> > ---
+> >  drivers/iio/adc/max1027.c | 31 ++++++++++++++++++++++++++++---
+> >  1 file changed, 28 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/drivers/iio/adc/max1027.c b/drivers/iio/adc/max1027.c
+> > index b85fe0a48ff9..e734d32a5507 100644
+> > --- a/drivers/iio/adc/max1027.c
+> > +++ b/drivers/iio/adc/max1027.c
+> > @@ -256,15 +256,27 @@ struct max1027_state {
+> >  	struct iio_trigger		*trig;
+> >  	__be16				*buffer;
+> >  	struct mutex			lock;
+> > +	struct completion		complete;
+> > 
+> >  	u8				reg ____cacheline_aligned;
+> >  };
+> > 
+> >  static int max1027_wait_eoc(struct iio_dev *indio_dev)
+> >  {
+> > +	struct max1027_state *st = iio_priv(indio_dev);
+> >  	unsigned int conversion_time =
+> > MAX1027_CONVERSION_UDELAY;
+> > +	int ret;
+> > 
+> > -	usleep_range(conversion_time, conversion_time * 2);
+> > +	if (st->spi->irq) {
+> > +		ret = wait_for_completion_timeout(&st->complete,
+> > +
+> > msecs_to_jiffies(1000));
+> > +		if (!ret)
+> > +			return ret;
+> > +
+> > +		reinit_completion(&st->complete);  
 > 
-> 
->  I don't think this is a good idea. For example, host->cqe_enabled is
-> 
-> set for the hsq case well.
+> I would call this before the waiting...
 
-Uffe,
+Sure, this is probably better.
 
-My apologies for this, I forgot to check hsq, hsq will call
-sdhci_send_command() as well.
-
-
-How about changing it to this?
-
- 
-diff --git a/drivers/mmc/core/core.c b/drivers/mmc/core/core.c
-index 240c5af793dc..7235e398ef93 100644
---- a/drivers/mmc/core/core.c
-+++ b/drivers/mmc/core/core.c
-@@ -649,6 +649,7 @@ EXPORT_SYMBOL(mmc_wait_for_cmd);
- void mmc_set_data_timeout(struct mmc_data *data, const struct mmc_card
-*card)
- {
-        unsigned int mult;
-+       struct mmc_host *host = card->host;
- 
-        /*
-         * SDIO cards only define an upper 1 s limit on access.
-@@ -659,6 +660,13 @@ void mmc_set_data_timeout(struct mmc_data *data,
-const struct mmc_card *card)
-                return;
-        }
- 
-+       /*
-+        * For the CQE use case, the data transfer timeout will be set
-a maximum
-+        * timeout value in HW timer in function sdhci_cqe_enable(),
-so, no need
-+        * to go through the below algorithm.
-+        */
-+       if (host->cqe_enabled && !host->hsq_enabled)
-+               return;
-        /*
-         * SD cards use a 100 multiplier rather than 10
-         */
-
-I have another timeout change associated with data transfer as well, if
-this change is acceptible, I will submit it with that together.
-
-Kind regards,
-Bean
-
+Thanks,
+Miquèl
