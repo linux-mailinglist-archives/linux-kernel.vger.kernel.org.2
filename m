@@ -2,116 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A479A40CCC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 20:47:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDF5B40CCCA
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 20:48:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231529AbhIOStJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 14:49:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231384AbhIOStI (ORCPT
+        id S231583AbhIOSta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 14:49:30 -0400
+Received: from mout.kundenserver.de ([212.227.17.10]:35103 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232098AbhIOSt2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 14:49:08 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6F9DC061574;
-        Wed, 15 Sep 2021 11:47:48 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0d0700f7a2811245428a79.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:700:f7a2:8112:4542:8a79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2DD591EC0257;
-        Wed, 15 Sep 2021 20:47:43 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1631731663;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=lm6vQs2/Rhr3v+Gkqez9mosqAUPoKD4IW0wHjidPrGY=;
-        b=XN5RscNfsftBTFcuRzGdY1iuAMSDX6NKtwpYReOnfaZk/QSrf/8VqAHOkAjfLPxC1UO6qn
-        9BHTplTlRlxpF7vtQWQch60eAekg1676yowhlJTxL/nJGxhj8z9rv3ulfK5vkpFuCcwh8v
-        CPa1Q28irpOcNBFG98fwkSAbgq7mLSg=
-Date:   Wed, 15 Sep 2021 20:47:37 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        linux-efi@vger.kernel.org, Brijesh Singh <brijesh.singh@amd.com>,
-        kvm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        platform-driver-x86@vger.kernel.org,
-        Paul Mackerras <paulus@samba.org>, linux-s390@vger.kernel.org,
-        Andi Kleen <ak@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>, x86@kernel.org,
-        amd-gfx@lists.freedesktop.org,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-graphics-maintainer@vmware.com,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v3 4/8] powerpc/pseries/svm: Add a powerpc version of
- cc_platform_has()
-Message-ID: <YUI/yaut2f9ZoJBd@zn.tnic>
-References: <cover.1631141919.git.thomas.lendacky@amd.com>
- <9d4fc3f8ea7b325aaa1879beab1286876f45d450.1631141919.git.thomas.lendacky@amd.com>
- <YUCOTIPPsJJpLO/d@zn.tnic>
- <87lf3yk7g4.fsf@mpe.ellerman.id.au>
- <YUHGDbtiGrDz5+NS@zn.tnic>
- <f8388f18-5e90-5d0f-d681-0b17f8307dd4@csgroup.eu>
+        Wed, 15 Sep 2021 14:49:28 -0400
+Received: from mail-wr1-f48.google.com ([209.85.221.48]) by
+ mrelayeu.kundenserver.de (mreue108 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1Mwfeu-1moPAT3bkw-00y89t; Wed, 15 Sep 2021 20:48:07 +0200
+Received: by mail-wr1-f48.google.com with SMTP id g16so5443007wrb.3;
+        Wed, 15 Sep 2021 11:48:07 -0700 (PDT)
+X-Gm-Message-State: AOAM531f+v44h4fcdFn2JsdlESZ7wPV0D+sjQB2jGS/Db/5yxob+tHU0
+        DpeOsOWs67TQKIytAAqrsB9as/+CF6Jy81FqWcw=
+X-Google-Smtp-Source: ABdhPJxK7SeTGX8+XfGCJ4SbF2UTweNhxicgClsiVZ2HPcmo85hjrsvQk6FDN6pdsJWlaTcZb9qud2EO6qBml0363OE=
+X-Received: by 2002:adf:f884:: with SMTP id u4mr1571436wrp.411.1631731687472;
+ Wed, 15 Sep 2021 11:48:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <f8388f18-5e90-5d0f-d681-0b17f8307dd4@csgroup.eu>
+References: <20210915140710.596174479@infradead.org> <20210915141525.621568509@infradead.org>
+ <YUITUXbnzAK98DEl@hirez.programming.kicks-ass.net>
+In-Reply-To: <YUITUXbnzAK98DEl@hirez.programming.kicks-ass.net>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 15 Sep 2021 20:47:51 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1s=fJPyaCUj0otNA2bWjY09F_ir2zxigFgaZ69ejHkcw@mail.gmail.com>
+Message-ID: <CAK8P3a1s=fJPyaCUj0otNA2bWjY09F_ir2zxigFgaZ69ejHkcw@mail.gmail.com>
+Subject: Re: [PATCH 16/20] futex: Implement sys_futex_waitv()
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@collabora.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Collabora kernel ML <kernel@collabora.com>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        GNU C Library <libc-alpha@sourceware.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:9B4JQw9ex8Xn/WXdpP7jH8OJB0y+5WRYBwQgt/Yzthxvw/sjEd9
+ LY2u9g7LfxU2FyUSWQr4PJJIqXCP4AlXVNYaonPwHow74liegzd12IT3hNJ8ayJuZ8qndiH
+ CABnych4/cH3KD67c1BPJEtkqRzV+ZGPWraJtiYntRo3ONtSD/xcKMuNr/+GtoyyJg1wvm9
+ bL8Up9spm3OA+sq5Ortyw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:qRBr4pAJpNg=:3eI9IEcTuXlQ8DyQBVf49D
+ /wMI8584iVETQUlxgdEST50UnsSDGY862QhU47nc6/T96RIcBBTxGq38kdQtHOFCbmW+mOtO2
+ viYXqzIHGgCVWEqPA+eezDuD3yBYU+rHSCkKreCqbnff//w902GgRM+RGPoLlFYENrqzUA0A1
+ MJOZRbXqAlS1zIdPu/wN4D7+tpZLiSj5lbrXUhNItmT/5OEGHZ+NCq4YaM3cq+xHYhmmrnvdj
+ 1BWABAYm+8kRMhkAJPwFys9uByvZzQvmLRAKD1dbMtfqVzSzUuyeJr+/iT39ogNGlzPZJCiDB
+ RfSYb6IZ+pntqvnJsHyxCGlF8HJTdm97MGT7BsWFFClXWHG1t+TvTxA3tQoc0cBIh0BBV/cDD
+ eVAGNHlsGfF6QG3e3Ye7283ftH75+fuoZxAx280ER6phqz5Ri2D6483TOvov03930Vogc/K1+
+ xgGmOS5PFRBxdRvpKr7c01ZzxPKAh96LICFveMmW0jDaqkqeMXRjeJLIh5fftxzNzmtAJ1Yv6
+ ZEquO9l/tTabGzsF1XcV2VHuwiA4SrV8Ne6qjC1Q061+RSAdgvwAbZrGL1z+ub+n0KGXeXPJH
+ XRtN3lsHoJvwYrUEDut5JpnwB6wQMTSxU6WVbOOaLCXyw2IBXAg52fJsRsTzKNV+73V/Cyfxf
+ 5nAXGKC15d2yivysnDigGn9vf+0N5g1GZHK7tPynBVO4T2I7BlXG3d2HkoRXghy0C81YCsKN2
+ 1espmMcRfoiHA1Noou8Iod9p2qqOugNbfIkw+Q==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 07:18:34PM +0200, Christophe Leroy wrote:
-> Could you please provide more explicit explanation why inlining such an
-> helper is considered as bad practice and messy ?
+On Wed, Sep 15, 2021 at 5:39 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Wed, Sep 15, 2021 at 04:07:26PM +0200, Peter Zijlstra wrote:
+> > +SYSCALL_DEFINE4(futex_waitv, struct futex_waitv __user *, waiters,
+> > +             unsigned int, nr_futexes, unsigned int, flags,
+> > +             struct __kernel_timespec __user *, timo)
+>
+> So I utterly detest timespec.. it makes no sense what so ever.
+>
+> Can't we just, for new syscalls, simply use a s64 nsec argument and call
+> it a day?
+>
+> Thomas, Arnd ?
 
-Tom already told you to look at the previous threads. Let's read them
-together. This one, for example:
+Do you mean passing the nanoseconds by value instead of a pointer?
+I think that would be worse, since that means having incompatible calling
+conventions between 32-bit and 64-bit architectures, and even
+between 32-bit architectures that have different requirements for 64-bit
+function arguments.
 
-https://lore.kernel.org/lkml/YSScWvpXeVXw%2Fed5@infradead.org/
+If we pass it by reference, there is much less to gain from changing the
+timespec to plain nanoseconds. I wouldn't object to that, but I don't
+see it helping much either. It would work for relative timeouts, but the
+general trend seems to be to specify timeouts as absolute times,
+and that would force each caller to read the time using clock_gettime()
+and then convert it to nanoseconds before adding the timeout.
 
-| > To take it out of line, I'm leaning towards the latter, creating a new
-| > file that is built based on the ARCH_HAS_PROTECTED_GUEST setting.
-| 
-| Yes.  In general everytime architectures have to provide the prototype
-| and not just the implementation of something we end up with a giant mess
-| sooner or later.  In a few cases that is still warranted due to
-| performance concerns, but i don't think that is the case here.
+Specifying the timeout in terms of 32-bit relative milliseconds would the
+way that epoll() does would be really simple, but that still feels odd.
 
-So I think what Christoph means here is that you want to have the
-generic prototype defined in a header and arches get to implement it
-exactly to the letter so that there's no mess.
-
-As to what mess exactly, I'd let him explain that.
-
-> Because as demonstrated in my previous response some days ago, taking that
-> outline ends up with an unneccessary ugly generated code and we don't
-> benefit front GCC's capability to fold in and opt out unreachable code.
-
-And this is real fast path where a couple of instructions matter or what?
-
-set_memory_encrypted/_decrypted doesn't look like one to me.
-
-> I can't see your point here. Inlining the function wouldn't add any
-> ifdeffery as far as I can see.
-
-If the function is touching defines etc, they all need to be visible.
-If that function needs to call other functions - which is the case on
-x86, perhaps not so much on power - then you need to either ifdef around
-them or provide stubs with ifdeffery in the headers. And you need to
-make them global functions instead of keeping them static to the same
-compilation unit, etc, etc.
-
-With a separate compilation unit, you don't need any of that and it is
-all kept in that single file.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+        Arnd
