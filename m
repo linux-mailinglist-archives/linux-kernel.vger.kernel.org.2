@@ -2,97 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 039B740CDBC
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 22:09:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 744A240CDBF
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 22:09:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231714AbhIOUKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 16:10:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53976 "EHLO
+        id S231783AbhIOULE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 16:11:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231535AbhIOUKh (ORCPT
+        with ESMTP id S231535AbhIOULC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 16:10:37 -0400
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2E04C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 13:09:17 -0700 (PDT)
-Received: by mail-qv1-xf2b.google.com with SMTP id jo30so2716880qvb.3
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 13:09:17 -0700 (PDT)
+        Wed, 15 Sep 2021 16:11:02 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8363EC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 13:09:43 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id q22so3830357pfu.0
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 13:09:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QmINnGAQfwGBHFwHc6SAes9D9CAGNwUU4TpPcc6rrBg=;
-        b=VgISpyV1S8lJSw+1NUxW+lmrq3b5kyEVzpD1xU0whvBl6PsXopMfzfkiY64uAFIdmY
-         fiH/GfzDNB83Aiz6LMvrRZ6dRaoz2Uz1K/CeyM/eegCj6dI+GyyoPVpxGm6ugn7/8mPz
-         JRW/W0XBOTehT2YLKyvWqN6cHEJa9DKmbS1Jt3jj3DhSIpW/mIueTXiw4ED+AvCI6eT9
-         s9UlvaHCKnKIjm6NN92NWPd3bFSrXxnOivl0/CRHX64J3KhVgSXclVLh9E+kvkeVdkEK
-         8MJd37Hy+lbVshg19ErDN6g1M7Z2QuYJfWHzsH2YRGsLEBiP/5DKc3PWXweDmJBhLi9D
-         U6sg==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:cc;
+        bh=GOFLBCpd5YWd1LKYoUMXIDX6I2Oh8/PMBaNyH9Apy8s=;
+        b=tbeHY6HSKONX1dnJiDe351BSWmDCLLTCkD9kCFP14uCRb6r4Q+5A+ads+3HOy15ufC
+         zawzsbMA90aBBKAnWnB1gREvqvmgDkmSRQgbInRAuBRT+Fm3Dd2GCj9Tcc+4kTRiDl+K
+         GZSFedSCBTkgmkr/sWEEBXix+M7tqAITnrYH0GIwxXavUF8/WPXiu9wZFZIuOJZ5+XkC
+         UhGDyl9mnez3aIB7I6OO2iouSyEGL5tuq7AvXKX/uv6WzdQQd7OvDz22OkyK7Ubo1kGI
+         7djGTnpP2LsEUHjjFR8tjo3UWojxmON+gnq3WqIUInv/bcN6MslS5MCgmMTg0PreDuSL
+         qWpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QmINnGAQfwGBHFwHc6SAes9D9CAGNwUU4TpPcc6rrBg=;
-        b=XRnU7JN4HhTVANNkhVwzM79z6nnFpF4anObTbICIAg9NunlWudsttewCIkmK134KjP
-         MyhElmC6bas2Gp7sRunlWuBVm2DEPTHvo+TVNjDs7pMvDsXilxhzUvnQFwi367e+J+xN
-         Yh9SeOqHwhxqwcS03afu2NMDOZwIvMSmdMnYwNS1fB55sN0v4rV+lJ9IRogTECJW97LB
-         lByMKLCQDnErhTKOB7qhlvaBYPVxEsFzGO9R+OeFja6Q0qPgRtITQhIJ7S+Jdtwe9pub
-         kio4+UCvzpsA3j6pffnFa/NOipCpb/hn28cp9eYKzu1c7Br7T3JE3OkRG1svxE8iHk3Y
-         /bVw==
-X-Gm-Message-State: AOAM5330WolBpYqlYV4R3JOGVFQ37WWRJam38ZzFHkOxtmLwKIggHknQ
-        ZGKIOOSqNth9tF4spbPpFjw=
-X-Google-Smtp-Source: ABdhPJxX2AkAoxlpY53qmSW3QTgL/efQ2x57ZQOGGfj58e9aKmD8KyTSDaqJkLCMGiG0tbb1FwAYXA==
-X-Received: by 2002:a05:6214:726:: with SMTP id c6mr621533qvz.9.1631736557208;
-        Wed, 15 Sep 2021 13:09:17 -0700 (PDT)
-Received: from localhost.localdomain ([181.166.206.110])
-        by smtp.gmail.com with ESMTPSA id m68sm755665qkb.105.2021.09.15.13.09.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Sep 2021 13:09:16 -0700 (PDT)
-Date:   Wed, 15 Sep 2021 17:09:02 -0300
-From:   Gaston Gonzalez <gascoar@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     linux-staging@lists.linux.dev, gregkh@linuxfoundation.org,
-        nsaenz@kernel.org, stefan.wahren@i2se.com, arnd@arndb.de,
-        ojaswin98@gmail.com, amarjargal16@gmail.com,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/8] staging: vchiq_arm: replace sleep() with
- usleep_range()
-Message-ID: <YUJS3mFpFujQFRqV@localhost.localdomain>
-References: <20210914213532.396654-1-gascoar@gmail.com>
- <20210915072904.GF2116@kadam>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:cc;
+        bh=GOFLBCpd5YWd1LKYoUMXIDX6I2Oh8/PMBaNyH9Apy8s=;
+        b=gkltgau5fLK0/5Bza1lWotm1sFR4zmzx5Jv9gVaudYc6P8VvM1OzJC25M9TuvvTvyv
+         UciyIYxYUUW2tqfrohhQ62rf7X04F8iRMdquzInUnke+d0+0QYFtvd7wdZptumN0PPvn
+         inNivsdWfL3i6XaXFveZf7h445YJmVWOzIe6q7AR8Hq77tVx22S0NwUEPfE/9PYNsc0r
+         a9NXUtz3QG+xTQNyObfwkAXXTo1W+Hwks9/xmY9r4xrvVMhbS2h31TMBO1EOPJxBMfiu
+         PkKLncVnJWbD+GGM9QFYqQntHePTEXNces+ObB7nDVL5fns+j2LFc5DnDjfRoKInCUmb
+         YYfg==
+X-Gm-Message-State: AOAM53116I4eyhWzNLHotZfYAUK+aJeFwz+GGp6jO1U/3huB3whzx+iH
+        mGxCXFpVKgz0p+OtHDVOMXBRjiGjtIBh4XxwEXh3bw==
+X-Received: by 2002:a63:7a10:: with SMTP id v16mt1174070pgc.146.1631736582785;
+ Wed, 15 Sep 2021 13:09:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210915072904.GF2116@kadam>
+References: <20210915195306.612966-1-kaleshsingh@google.com>
+In-Reply-To: <20210915195306.612966-1-kaleshsingh@google.com>
+From:   Kalesh Singh <kaleshsingh@google.com>
+Date:   Wed, 15 Sep 2021 13:09:31 -0700
+Message-ID: <CAC_TJvdv7sT-FmD1S-ZHnpAGvFR=1WBc6jEKBm+q5Wpp6S34PQ@mail.gmail.com>
+Subject: Re: [PATCH 0/5] tracing: Extend histogram triggers expression parsing
+Cc:     Suren Baghdasaryan <surenb@google.com>,
+        Hridya Valsaraju <hridya@google.com>, namhyung@kernel.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 10:29:04AM +0300, Dan Carpenter wrote:
-> On Tue, Sep 14, 2021 at 06:35:26PM -0300, Gaston Gonzalez wrote:
-> > usleep_range() should be used instead of sleep() when sleepings range
-> > from 10 us to 20 ms, [1].
-> > 
-> > Reported by checkpatch.pl
-> > 
-> > [1] Documentation/timers/timers-howto.txt
-> 
-> For this particular warning, you should probably just ignore it, if you
-> can't test it...
-> 
-> You need a Signed-off-by.  Please run checkpatch.pl on your patches.
+On Wed, Sep 15, 2021 at 12:53 PM Kalesh Singh <kaleshsingh@google.com> wrote:
+>
+> The frequency of the rss_stat trace event is known to be of the same
+> magnitude as that of the sched_switch event on Android devices. This can
+> cause flooding of the trace buffer with rss_stat traces leading to a
+> decreased trace buffer capacity and loss of data.
+>
+> If it is not necessary to monitor very small changes in rss (as is the
+> case in Android) then the rss_stat tracepoint can be throttled to only
+> emit the event once there is a large enough change in the rss size.
+> The original patch that introduced the rss_stat tracepoint also proposed
+> a fixed throttling mechanism that only emits the rss_stat event
+> when the rss size crosses a 512KB boundary. It was concluded that more
+> generic support for this type of filtering/throttling was need, so that
+> it can be applied to any trace event. [1]
+>
+> From the discussion in [1], histogram triggers seemed the most likely
+> candidate to support this type of throttling. For instance to achieve the
+> same throttling as was proposed in [1]:
+>
+>   (1) Create a histogram variable to save the 512KB bucket of the rss size
+>   (2) Use the onchange handler to generate a synthetic event when the
+>       rss size bucket changes.
+>
+> The only missing pieces to support such a hist trigger are:
+>   (1) Support for setting a hist variable to a specific value -- to set
+>       the bucket size / granularity.
+>   (2) Support for division arithmetic operation -- to determine the
+>       corresponding bucket for an rss size.
+>
+> This series extends histogram trigger expressions to:
+>   (1) Allow assigning numeric literals to hist variable (eg. x=1234)
+>       and using literals directly in expressions (eg. x=size/1234)
+>   (2) Support division and multiplication in hist expressions.
+>       (eg. a=$x/$y*z); and
+>   (3) Fixes expression parsing for non-associative operators: subtraction
+>       and division. (eg. 8-4-2 should be 2 not 6)
+>
+> The rss_stat event can then be throttled using histogram triggers as
+> below:
+>
+>   # Create a synthetic event to monitor instead of the high frequency
+>   # rss_stat event
+>   echo 'rss_stat_throttled unsigned int mm_id; unsigned int curr;
+>          int member; long size' >> tracing/synthetic_events
+>
+>   # Create a hist trigger that emits the synthetic rss_stat_throttled
+>   # event only when the rss size crosses a 512KB boundary.
+>   echo 'hist:keys=common_pid:bucket=size/0x80000:onchange($bucket)
+>               .rss_stat_throttled(mm_id,curr,member,size)'
+>         >> events/kmem/rss_stat/trigger
 >
 
-Yes, my bad...
+Sorry, I have a clerical mistake here. The above key should be:
+s/keys=common_pid/keys=keys=mm_id,member
 
-Will drop this one and resend the rest of the series.
+The rss size is specific to the mm struct's member not the pid.
+The results below were captured with the correct key so no changes there.
 
-Thanks,
-
-Gaston
-
-> regards,
-> dan carpenter
-> 
+>  ------ Test Results ------
+> Histograms can also be used to evaluate the effectiveness of this
+> throttling by noting the Total Hits on each trigger:
+>
+>   echo 'hist:keys=common_pid' >> events/sched/sched_switch/trigger
+>   echo 'hist:keys=common_pid' >> events/kmem/rss_stat/trigger
+>   echo 'hist:keys=common_pid'
+>            >> events/synthetic/rss_stat_throttled/trigger
+>
+> Allowing the above example (512KB granularity) run for 5 minutes on
+> an arm64 device with 5.10 kernel:
+>
+>    sched_switch      : total hits = 147153
+>    rss_stat          : total hits =  38863
+>    rss_stat_throttled: total hits =   2409
+>
+> The synthetic rss_stat_throttled event is ~16x less frequent than the
+> rss_stat event when using a 512KB granularity.
+>
+>
+> The results are more pronounced when rss size is changing at a higher
+> rate in small increments. For instance the following results were obtained
+> by recording the hits on the above events for a run of Android's
+> lmkd_unit_test [2], which continually forks processes that map anonymous
+> memory until there is an oom kill:
+>
+>    sched_switch      : total hits =  148832
+>    rss_stat          : total hits = 4754802
+>    rss_stat_throttled: total hits =   96214
+>
+> In this stress this, the  synthetic rss_stat_throttled event is ~50x less
+> frequent than the rss_stat event when using a 512KB granularity.
+>
+>
+> [1] https://lore.kernel.org/lkml/20190903200905.198642-1-joel@joelfernandes.org/
+> [2] https://cs.android.com/android/platform/superproject/+/master:system/memory/lmkd/tests/lmkd_test.cpp
+>
+> Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
+>
+> Kalesh Singh (5):
+>   tracing: Add support for creating hist trigger variables from literal
+>   tracing: Add division and multiplication support for hist triggers
+>   tracing: Fix operator precedence for hist triggers expression
+>   tracing/selftests: Add tests for hist trigger expression parsing
+>   tracing/histogram: Document expression arithmetic and constants
+>
+>  Documentation/trace/histogram.rst             |  14 +
+>  kernel/trace/trace_events_hist.c              | 318 +++++++++++++++---
+>  .../testing/selftests/ftrace/test.d/functions |   4 +-
+>  .../trigger/trigger-hist-expressions.tc       |  73 ++++
+>  4 files changed, 357 insertions(+), 52 deletions(-)
+>  create mode 100644 tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-expressions.tc
+>
+>
+> base-commit: 3ca706c189db861b2ca2019a0901b94050ca49d8
+> --
+> 2.33.0.309.g3052b89438-goog
+>
