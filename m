@@ -2,146 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 068C340C565
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 14:38:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F06C740C56D
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 14:41:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236541AbhIOMkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 08:40:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54926 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232824AbhIOMkI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 08:40:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F92861101;
-        Wed, 15 Sep 2021 12:38:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631709529;
-        bh=a3TBBoTEtdTFPLkbZK3vIfcp3bfPWGDzgMweU/+/KEc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=JQeFAfFQTMpX9j9COx/xjYubAkwVdQ+9QK5vAcYeDUhkHWvnWh1UwFWrWVGPNjt31
-         44TYS9P5M96otG/StpXCmX6X9TmPfOfhUmfyQRK1qpTGpvFXUP++EsvaCOOSWb1LOb
-         qa2CPNrD1Luqcz/eOd3U+dbs3j2cujVveVqmeRpeLPI96xP8UPUVMplxGttLVLaf7z
-         yvMftAzGH9z61WdDuRX5vVXsdUfHd+o30TZjy3d9BHCATGexQtk5iLs+zKBitTPZLu
-         V0cDcbXl2zIla2Vaf8z90F7cs2mJJqa6HPVPefS41YsiLaOkxqjZqbj1iM6nnEwEJw
-         71Wc5641S41SQ==
-Date:   Wed, 15 Sep 2021 14:38:45 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Manivannan Sadhasivam <mani@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>, linuxarm@huawei.com,
-        mauro.chehab@huawei.com, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v3] clk: HiSilicon: clk-hi3670: mark critical clocks as
- such
-Message-ID: <20210915143819.029f920e@coco.lan>
-In-Reply-To: <20210820204023.39752576@coco.lan>
-References: <92f1641972bf899847e54ee041a95bb7c1bbff71.1629473738.git.mchehab+huawei@kernel.org>
-        <20210820175233.GA26106@thinkpad>
-        <20210820204023.39752576@coco.lan>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
+        id S233918AbhIOMmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 08:42:42 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:50008 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232921AbhIOMml (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 08:42:41 -0400
+Received: by mail-il1-f199.google.com with SMTP id p14-20020a92d48e000000b0022cf3231b41so1904398ilg.16
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 05:41:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=qAE2IWWczXJTjGpVWAU7E2xON9L9Fj3nVi9xTOys97w=;
+        b=Vg5zF54zDl318QWnNOrEzhvTKWv1h2mf96pS4OPXciSyJAMXMula1TMYSGWvAXdCCM
+         Pj1CDzrrpHtJrVMSMXWQCN2vioKps6n0zqj74tE2GoMCuAUN/m25a+yUkBE3a+X/vn+0
+         wApE2mSuKSJ3SkgVsxWfZdcCb5MTdqnir/UST5pLX70QskY0yMD/jArjgCVrI+aCamBF
+         TGN7wEMUHmW0/fFILRC2d0yFErGU3gHNLoUN8PNU9HvYnsW9f0PWU/Snlhm6FstIsv9F
+         EMQMUju0rqEj/hMT7RADxgGRnFFX2r9tD8/uQMN0fj3DJWbAmo99uUg2pmHaPEpUk1O9
+         ag0w==
+X-Gm-Message-State: AOAM533/+PKdb14XwUfgDnneHNEbeSbsW3/LyFXy2S5eHy5b/js1j/oe
+        dBX4hpCIm9bQmqSFNw82k3/idRq4RjPVpKmPTeKITHSaMQdZ
+X-Google-Smtp-Source: ABdhPJx/hw58PExDz7X+uS++p/cQNy4OfJ8vIwseUnRlnQsn3rrE2Rp69ej9RIUk/oFBYQ1CplEMJCo2BvLTYsXggWqIJZYkbJA1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a92:8702:: with SMTP id m2mr15491997ild.250.1631709682454;
+ Wed, 15 Sep 2021 05:41:22 -0700 (PDT)
+Date:   Wed, 15 Sep 2021 05:41:22 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ffdae005cc08037e@google.com>
+Subject: [syzbot] KASAN: use-after-free Read in addr_handler (4)
+From:   syzbot <syzbot+dc3dfba010d7671e05f5@syzkaller.appspotmail.com>
+To:     dledford@redhat.com, jgg@ziepe.ca, leon@kernel.org,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, 20 Aug 2021 20:40:23 +0200
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
+Hello,
 
-> Em Fri, 20 Aug 2021 23:22:33 +0530
-> Manivannan Sadhasivam <mani@kernel.org> escreveu:
-> 
-> > On Fri, Aug 20, 2021 at 05:35:43PM +0200, Mauro Carvalho Chehab wrote:
-> > > The fixed-rate and fixed_factor clocks are critical to the
-> > > system: disabling them causes HiKey970 to not finish booting.
-> > >   
-> > 
-> > You mean all fixed rate and fixed factor clocks are critical to the system?
-> > I don't think so.
+syzbot found the following issue on:
 
-I suspect that the actual issue is related to this (at 
-drivers/clk/clk.c):
+HEAD commit:    926de8c4326c Merge tag 'acpi-5.15-rc1-3' of git://git.kern..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=11fd67ed300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=37df9ef5660a8387
+dashboard link: https://syzkaller.appspot.com/bug?extid=dc3dfba010d7671e05f5
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
 
-	late_initcall_sync(clk_disable_unused);
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Based on my tests, clk_disable_unused() is called too early,
-before the init code from the drivers built as module to be called.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+dc3dfba010d7671e05f5@syzkaller.appspotmail.com
 
-See, if the system is left to disable unused clocks, those are the last
-messages at the console:
+==================================================================
+BUG: KASAN: use-after-free in __mutex_lock_common kernel/locking/mutex.c:575 [inline]
+BUG: KASAN: use-after-free in __mutex_lock+0x105b/0x12f0 kernel/locking/mutex.c:729
+Read of size 8 at addr ffff88803991f3b0 by task kworker/u4:3/158
 
-	[   22.348592] initcall acpi_gpio_handle_deferred_request_irqs+0x0/0xa8 returned 0 after 1 usecs, irqs_disabled() 0
-	[   22.366973] calling  fb_logo_late_init+0x0/0x20 @ 1 irqs_disabled() 0
-	[   22.373432] initcall fb_logo_late_init+0x0/0x20 returned 0 after 1 usecs, irqs_disabled() 0
+CPU: 0 PID: 158 Comm: kworker/u4:3 Not tainted 5.14.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: ib_addr process_one_req
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ print_address_description.constprop.0.cold+0x6c/0x309 mm/kasan/report.c:256
+ __kasan_report mm/kasan/report.c:442 [inline]
+ kasan_report.cold+0x83/0xdf mm/kasan/report.c:459
+ __mutex_lock_common kernel/locking/mutex.c:575 [inline]
+ __mutex_lock+0x105b/0x12f0 kernel/locking/mutex.c:729
+ addr_handler+0xac/0x470 drivers/infiniband/core/cma.c:3247
+ process_one_req+0xfa/0x680 drivers/infiniband/core/addr.c:647
+ process_one_work+0x9bf/0x16b0 kernel/workqueue.c:2297
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2444
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
 
-	[   22.381800] calling  clk_disable_unused+0x0/0xe8 @ 1 irqs_disabled() 0
-				==================
+Allocated by task 2916:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track mm/kasan/common.c:46 [inline]
+ set_alloc_info mm/kasan/common.c:434 [inline]
+ ____kasan_kmalloc mm/kasan/common.c:513 [inline]
+ ____kasan_kmalloc mm/kasan/common.c:472 [inline]
+ __kasan_kmalloc+0xa4/0xd0 mm/kasan/common.c:522
+ kmalloc include/linux/slab.h:591 [inline]
+ kzalloc include/linux/slab.h:721 [inline]
+ __rdma_create_id+0x5b/0x550 drivers/infiniband/core/cma.c:839
+ rdma_create_user_id+0x79/0xd0 drivers/infiniband/core/cma.c:893
+ ucma_create_id+0x162/0x360 drivers/infiniband/core/ucma.c:461
+ ucma_write+0x25c/0x350 drivers/infiniband/core/ucma.c:1732
+ vfs_write+0x28e/0xae0 fs/read_write.c:592
+ ksys_write+0x1ee/0x250 fs/read_write.c:647
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-	<SoC dies here... no other messages>
+Freed by task 2916:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
+ kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:360
+ ____kasan_slab_free mm/kasan/common.c:366 [inline]
+ ____kasan_slab_free mm/kasan/common.c:328 [inline]
+ __kasan_slab_free+0xff/0x130 mm/kasan/common.c:374
+ kasan_slab_free include/linux/kasan.h:230 [inline]
+ slab_free_hook mm/slub.c:1700 [inline]
+ slab_free_freelist_hook+0x81/0x190 mm/slub.c:1725
+ slab_free mm/slub.c:3483 [inline]
+ kfree+0xe4/0x530 mm/slub.c:4543
+ ucma_close_id drivers/infiniband/core/ucma.c:185 [inline]
+ ucma_destroy_private_ctx+0x8b3/0xb70 drivers/infiniband/core/ucma.c:576
+ ucma_destroy_id+0x1e6/0x280 drivers/infiniband/core/ucma.c:614
+ ucma_write+0x25c/0x350 drivers/infiniband/core/ucma.c:1732
+ vfs_write+0x28e/0xae0 fs/read_write.c:592
+ ksys_write+0x1ee/0x250 fs/read_write.c:647
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-When I disable clk_disable_unused, There are several other initcall logs
-after it:
+Last potentially related work creation:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_record_aux_stack+0xe9/0x110 mm/kasan/generic.c:348
+ __call_rcu kernel/rcu/tree.c:2987 [inline]
+ call_rcu+0xb1/0x750 kernel/rcu/tree.c:3067
+ netlink_release+0xdd4/0x1dd0 net/netlink/af_netlink.c:812
+ __sock_release+0xcd/0x280 net/socket.c:649
+ sock_close+0x18/0x20 net/socket.c:1314
+ __fput+0x288/0x9f0 fs/file_table.c:280
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+ exit_task_work include/linux/task_work.h:32 [inline]
+ do_exit+0xbae/0x2a30 kernel/exit.c:825
+ do_group_exit+0x125/0x310 kernel/exit.c:922
+ __do_sys_exit_group kernel/exit.c:933 [inline]
+ __se_sys_exit_group kernel/exit.c:931 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:931
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-	[   22.340305] calling  acpi_gpio_handle_deferred_request_irqs+0x0/0xa8 @ 1 irqs_disabled() 0
-	[   22.348594] dwmmc_k3 fc183000.dwmmc2: card claims to support voltages below defined range
-	[   22.348592] initcall acpi_gpio_handle_deferred_request_irqs+0x0/0xa8 returned 0 after 1 usecs, irqs_disabled() 0
-	[   22.366973] calling  fb_logo_late_init+0x0/0x20 @ 1 irqs_disabled() 0
-	[   22.373432] initcall fb_logo_late_init+0x0/0x20 returned 0 after 1 usecs, irqs_disabled() 0
+The buggy address belongs to the object at ffff88803991f000
+ which belongs to the cache kmalloc-2k of size 2048
+The buggy address is located 944 bytes inside of
+ 2048-byte region [ffff88803991f000, ffff88803991f800)
+The buggy address belongs to the page:
+page:ffffea0000e64600 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x39918
+head:ffffea0000e64600 order:3 compound_mapcount:0 compound_pincount:0
+flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+raw: 00fff00000010200 dead000000000100 dead000000000122 ffff888010c42000
+raw: 0000000000000000 0000000000080008 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 6632, ts 274175306325, free_ts 0
+ prep_new_page mm/page_alloc.c:2424 [inline]
+ get_page_from_freelist+0xa72/0x2f80 mm/page_alloc.c:4153
+ __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5375
+ alloc_pages+0x1a7/0x300 mm/mempolicy.c:2197
+ alloc_slab_page mm/slub.c:1763 [inline]
+ allocate_slab mm/slub.c:1900 [inline]
+ new_slab+0x319/0x490 mm/slub.c:1963
+ ___slab_alloc+0x921/0xfe0 mm/slub.c:2994
+ __slab_alloc.constprop.0+0x4d/0xa0 mm/slub.c:3081
+ slab_alloc_node mm/slub.c:3172 [inline]
+ slab_alloc mm/slub.c:3214 [inline]
+ __kmalloc+0x305/0x320 mm/slub.c:4387
+ kmalloc_array include/linux/slab.h:631 [inline]
+ kcalloc include/linux/slab.h:660 [inline]
+ veth_alloc_queues drivers/net/veth.c:1314 [inline]
+ veth_dev_init+0x114/0x2e0 drivers/net/veth.c:1341
+ register_netdevice+0x51e/0x1500 net/core/dev.c:10225
+ veth_newlink+0x58c/0xb20 drivers/net/veth.c:1726
+ __rtnl_newlink+0x106d/0x1750 net/core/rtnetlink.c:3458
+ rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3506
+ rtnetlink_rcv_msg+0x413/0xb80 net/core/rtnetlink.c:5572
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
+ netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
+ netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
+page_owner free stack trace missing
 
-	[   22.356984] initcall clk_disable_unused+0x0/0xe8 returned 0 after 117 usecs, irqs_disabled() 0
-				==================
+Memory state around the buggy address:
+ ffff88803991f280: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88803991f300: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff88803991f380: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                     ^
+ ffff88803991f400: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88803991f480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
 
-	[   22.372335] initcall imx_clk_disable_uart+0x0/0x88 returned 0 after 1 usecs, irqs_disabled() 0
-	[   22.387946] initcall regulator_init_complete+0x0/0x58 returned 0 after 2 usecs, irqs_disabled() 0
-	[   22.404163] initcall of_platform_sync_state_init+0x0/0x20 returned 0 after 1 usecs, irqs_disabled() 0
-	[   22.426508] initcall alsa_sound_last_init+0x0/0x90 returned 0 after 6239 usecs, irqs_disabled() 0
-	[   22.703071] initcall inet6_init+0x0/0x358 [ipv6] returned 0 after 13341 usecs, irqs_disabled() 0
-	[   22.723861] initcall xt_init+0x0/0x1000 [x_tables] returned 0 after 8 usecs, irqs_disabled() 0
-	[   22.744405] initcall ip_tables_init+0x0/0x1000 [ip_tables] returned 0 after 23 usecs, irqs_disabled() 0
-	[   23.467003] initcall fuse_init+0x0/0x154 [fuse] returned 0 after 392 usecs, irqs_disabled() 0
-	[   23.537742] initcall drm_core_init+0x0/0x1000 [drm] returned 0 after 122 usecs, irqs_disabled() 0
-	[   24.519076] initcall rfkill_init+0x0/0x12c [rfkill] returned 0 after 15654 usecs, irqs_disabled() 0
-	[   24.622168] initcall hi3670_pcie_phy_driver_init+0x0/0x1000 [phy_hi3670_pcie] returned 0 after 836 usecs, irqs_disabled() 0
-	[   24.665100] initcall hi3670_phy_driver_init+0x0/0x1000 [phy_hi3670_usb3] returned 0 after 1888 usecs, irqs_disabled() 0
-	[   24.694668] initcall typec_init+0x0/0x1000 [typec] returned 0 after 89 usecs, irqs_disabled() 0
-	[   24.732557] initcall cpu_feature_match_ASIMD_init+0x0/0x1000 [crct10dif_ce] returned 0 after 8838 usecs, irqs_disabled() 0
-	[   24.746636] initcall tcpci_i2c_driver_init+0x0/0x1000 [tcpci] returned 0 after 8607 usecs, irqs_disabled() 0
-	[   24.774541] initcall hisi_hikey_usb_driver_init+0x0/0x1000 [hisi_hikey_usb] returned 0 after 35860 usecs, irqs_disabled() 0
-	[   24.892957] initcall rt1711h_i2c_driver_init+0x0/0x1000 [tcpci_rt1711h] returned 0 after 21500 usecs, irqs_disabled() 0
-	[   24.956528] initcall wl1271_init+0x0/0x1000 [wlcore_sdio] returned 0 after 83582 usecs, irqs_disabled() 0
-	[   25.039853] initcall cfg80211_init+0x0/0xdc [cfg80211] returned 0 after 26291 usecs, irqs_disabled() 0
-	[   25.118288] initcall ieee80211_init+0x0/0x40 [mac80211] returned 0 after 15 usecs, irqs_disabled() 0
-	[   25.335203] initcall wl18xx_driver_init+0x0/0x1000 [wl18xx] returned 0 after 134423 usecs, irqs_disabled() 0
-	[   26.277300] initcall ecdh_init+0x0/0xd0 [ecdh_generic] returned 0 after 302 usecs, irqs_disabled() 0
-	[   26.435409] initcall bt_init+0x0/0xcc [bluetooth] returned 0 after 63051 usecs, irqs_disabled() 0
-	[   26.508033] initcall btusb_driver_init+0x0/0x1000 [btusb] returned 0 after 305 usecs, irqs_disabled() 0
-	[   27.333049] initcall kirin_pcie_driver_init+0x0/0x1000 [pcie_kirin] returned 0 after 805983 usecs, irqs_disabled() 0
 
-It may be unrelated, but, when checking .config, the above init codes
-seem to belong to the drivers compiled as modules:
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-	CONFIG_RFKILL=m
-	CONFIG_DRM=m
-	CONFIG_TYPEC_RT1711H=m
-	CONFIG_TYPEC_TCPCI=m
-	CONFIG_WL18XX=m
-	CONFIG_BT=m
-	CONFIG_HISI_HIKEY_USB=m
-	CONFIG_PHY_HI3670_USB=m
-	CONFIG_PHY_HI3670_PCIE=m
-
-On other words, late_initcall_sync() is calling clk_disable_unused()
-too early. Either its implementation should be changed to take
-module driver init into account, or something like:
-
-	#define after_all_initcalls(fn)		__define_initcall(fn, 8)
-
-would need to be added, in order for this to work properly.
-
-Another alternative would be to start a thread (or a delayed thread)
-via late_initcall_sync() that would only call clk_disable_unused()
-after being sure that *all* driver init code will have finished.
-
-Thanks,
-Mauro
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
