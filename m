@@ -2,257 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A90D840C20F
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 10:53:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55AB140C21D
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 10:55:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236903AbhIOIyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 04:54:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47118 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229464AbhIOIyx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 04:54:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7FCCD60527;
-        Wed, 15 Sep 2021 08:53:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631696014;
-        bh=90q4chnHqBl4Fv9eq18MPsgeRlEm6vM07J+DvSqpV8k=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=gG/35fLu/vYqx/K5P/TVmP3OK5s3iCpU/lbipLiD0pOs65oC8YgtH43Kw9FgH64iD
-         PB+YDtQdt4KKN7xhWeoRUbt4HNbXGzcq8P+MpuLBleTHkXf9fseVgaHE2QP8Oheevs
-         NSIPZ3m0qCrGdlhtPZKXb1YOnYWuW0yqn6v9WmcAx9kO4f8DdjSMDtMzaub66H6DlF
-         cOOwZseFQcW+KemzXC5KSG5FKLWDLNWKQJVXGtGNcsE9Jjpw14K6mmo01XF/VSxYBT
-         30nO+dJqNC083uj7NZkAaFX4JmtLq5wgmtUVJtBu35gyB/hqnpI9DIUoPSv8jD4U4Y
-         1wS8CQSi0aqJw==
-Subject: Re: [PATCH v3 1/8] ARM: dts: omap: Fixup GPMC child nodes
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        tony@atomide.com
-Cc:     robh+dt@kernel.org, grygorii.strashko@ti.com, nm@ti.com,
-        lokeshvutla@ti.com, nsekhar@ti.com, miquel.raynal@bootlin.com,
-        devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210907113226.31876-1-rogerq@kernel.org>
- <20210907113226.31876-2-rogerq@kernel.org>
- <8e29cf74-313f-b8c5-7514-60b5e404833d@canonical.com>
-From:   Roger Quadros <rogerq@kernel.org>
-Message-ID: <ff88463e-50f7-7a65-0a40-09ba2e420885@kernel.org>
-Date:   Wed, 15 Sep 2021 11:53:30 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S237020AbhIOI46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 04:56:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39078 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232888AbhIOI4z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 04:56:55 -0400
+Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 852A2C061575;
+        Wed, 15 Sep 2021 01:55:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
+         s=20161220; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject
+        :Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=GZgd60WrESx2DuwtYGPss1Uw9DuvU+yvrhVYe2f9cRA=; b=sHTDJrIXSoC3UvfuM27ubT+8Hb
+        IeW1e9Fb709cL2+CVWNOaIOrEZasdcRv4a9cBKO062xihPNhCqOiYRAz7lP0zPPkU6SsL4VtiB4hY
+        ZtId0LmB15NOi8h3uOR5dj7MSq2NwMA2NuU5nJTBgSCCPU7qkdmkkXwIqzJeyiD4oZFfzK2a0LF07
+        2rDCtpJE5RsA+kD2jyVDb5fNiARWqlhdZZhB3/AH3rlqcSbcpJYbWjIvJW6J8YDHweJUCkXpHjc20
+        UvXGvnDZV8uI59cAiw+Grw82o4Q+GVJodpTs3cgRzwfUMZ8fth3GKBzN8P/waO1hEh0fe7TvpPvKj
+        zR/ipvOQ==;
+Received: from dsl-hkibng22-54f986-236.dhcp.inet.fi ([84.249.134.236] helo=toshino.localdomain)
+        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <mperttunen@nvidia.com>)
+        id 1mQQhR-000101-KT; Wed, 15 Sep 2021 11:55:25 +0300
+From:   Mikko Perttunen <mperttunen@nvidia.com>
+To:     rafael@kernel.org, viresh.kumar@linaro.org,
+        thierry.reding@gmail.com, jonathanh@nvidia.com,
+        krzysztof.kozlowski@canonical.com, lorenzo.pieralisi@arm.com,
+        robh@kernel.org, kw@linux.com, p.zabel@pengutronix.de,
+        rui.zhang@intel.com, daniel.lezcano@linaro.org, amitk@kernel.org
+Cc:     linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        Mikko Perttunen <mperttunen@nvidia.com>
+Subject: [PATCH 1/5] thermal: tegra-bpmp: Handle errors in BPMP response
+Date:   Wed, 15 Sep 2021 11:55:13 +0300
+Message-Id: <20210915085517.1669675-1-mperttunen@nvidia.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <8e29cf74-313f-b8c5-7514-60b5e404833d@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 84.249.134.236
+X-SA-Exim-Mail-From: mperttunen@nvidia.com
+X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+The return value from tegra_bpmp_transfer indicates the success or
+failure of the IPC transaction with BPMP. If the transaction
+succeeded, we also need to check the actual command's result code.
+Add code to do this.
 
-On 07/09/2021 15:44, Krzysztof Kozlowski wrote:
-> On 07/09/2021 13:32, Roger Quadros wrote:
->> Fixes up the GPMC child nodes to prevent dtbs_check errors
->> after device tree binding conversion to yaml.
->>
->> - Use reg address as node name
->> - gpmc,cycle2cycle-samecsen and gpmc,cycle2cycle-diffcsen are
->>   boolean properties.
->>
->> Signed-off-by: Roger Quadros <rogerq@kernel.org>
->> ---
->>  .../boot/dts/logicpd-som-lv-baseboard.dtsi    |  2 +-
->>  .../boot/dts/logicpd-torpedo-37xx-devkit.dts  |  2 +-
->>  .../boot/dts/logicpd-torpedo-baseboard.dtsi   |  2 +-
->>  arch/arm/boot/dts/omap-gpmc-smsc911x.dtsi     | 62 +++++++++----------
->>  arch/arm/boot/dts/omap-gpmc-smsc9221.dtsi     | 59 +++++++++---------
->>  arch/arm/boot/dts/omap-zoom-common.dtsi       | 16 ++---
->>  arch/arm/boot/dts/omap2430-sdp.dts            |  6 +-
->>  arch/arm/boot/dts/omap3-cm-t3x30.dtsi         |  6 +-
->>  .../arm/boot/dts/omap3-devkit8000-common.dtsi |  4 +-
->>  arch/arm/boot/dts/omap3-evm-37xx.dts          |  1 +
->>  arch/arm/boot/dts/omap3-evm-common.dtsi       |  9 ---
->>  .../boot/dts/omap3-evm-processor-common.dtsi  |  5 +-
->>  arch/arm/boot/dts/omap3-evm.dts               |  1 +
->>  arch/arm/boot/dts/omap3-igep0020-common.dtsi  |  5 +-
->>  arch/arm/boot/dts/omap3-ldp.dts               |  5 +-
->>  arch/arm/boot/dts/omap3-n900.dts              |  2 +-
->>  .../dts/omap3-overo-chestnut43-common.dtsi    |  6 +-
->>  .../arm/boot/dts/omap3-overo-tobi-common.dtsi |  6 +-
->>  .../boot/dts/omap3-overo-tobiduo-common.dtsi  |  8 +--
->>  arch/arm/boot/dts/omap3-sb-t35.dtsi           |  4 +-
->>  arch/arm/boot/dts/omap4-duovero-parlor.dts    |  6 +-
->>  21 files changed, 105 insertions(+), 112 deletions(-)
->>
->> diff --git a/arch/arm/boot/dts/logicpd-som-lv-baseboard.dtsi b/arch/arm/boot/dts/logicpd-som-lv-baseboard.dtsi
->> index 7d0468a23781..f2364cb114c5 100644
->> --- a/arch/arm/boot/dts/logicpd-som-lv-baseboard.dtsi
->> +++ b/arch/arm/boot/dts/logicpd-som-lv-baseboard.dtsi
->> @@ -65,7 +65,7 @@
->>  		  1 0 0x2c000000 0x1000000	/* CS1: 16MB for LAN9221 */
->>  		  2 0 0x10000000 0x2000000>;    /* CS2: 32MB for NOR */
->>  
->> -	ethernet@gpmc {
->> +	gpmc_ethernet: ethernet@1,0 {
->>  		pinctrl-names = "default";
->>  		pinctrl-0 = <&lan9221_pins>;
->>  		interrupt-parent = <&gpio5>;
->> diff --git a/arch/arm/boot/dts/logicpd-torpedo-37xx-devkit.dts b/arch/arm/boot/dts/logicpd-torpedo-37xx-devkit.dts
->> index 5532db04046c..6357915d207b 100644
->> --- a/arch/arm/boot/dts/logicpd-torpedo-37xx-devkit.dts
->> +++ b/arch/arm/boot/dts/logicpd-torpedo-37xx-devkit.dts
->> @@ -4,8 +4,8 @@
->>  
->>  #include "omap36xx.dtsi"
->>  #include "logicpd-torpedo-som.dtsi"
->> -#include "omap-gpmc-smsc9221.dtsi"
->>  #include "logicpd-torpedo-baseboard.dtsi"
->> +#include "omap-gpmc-smsc9221.dtsi"
->>  
->>  / {
->>  	model = "LogicPD Zoom DM3730 Torpedo + Wireless Development Kit";
->> diff --git a/arch/arm/boot/dts/logicpd-torpedo-baseboard.dtsi b/arch/arm/boot/dts/logicpd-torpedo-baseboard.dtsi
->> index 533a47bc4a53..05049a34b6f1 100644
->> --- a/arch/arm/boot/dts/logicpd-torpedo-baseboard.dtsi
->> +++ b/arch/arm/boot/dts/logicpd-torpedo-baseboard.dtsi
->> @@ -95,7 +95,7 @@
->>  	ranges = <0 0 0x30000000 0x1000000	/* CS0: 16MB for NAND */
->>  		  1 0 0x2c000000 0x1000000>;	/* CS1: 16MB for LAN9221 */
->>  
->> -	ethernet@gpmc {
->> +	gpmc_ethernet: ethernet@1,0 {
->>  		pinctrl-names = "default";
->>  		pinctrl-0 = <&lan9221_pins>;
->>  		interrupt-parent = <&gpio5>;
->> diff --git a/arch/arm/boot/dts/omap-gpmc-smsc911x.dtsi b/arch/arm/boot/dts/omap-gpmc-smsc911x.dtsi
->> index ded7e8fec9eb..2a462cb65a7d 100644
->> --- a/arch/arm/boot/dts/omap-gpmc-smsc911x.dtsi
->> +++ b/arch/arm/boot/dts/omap-gpmc-smsc911x.dtsi
->> @@ -20,36 +20,34 @@
->>  	};
->>  };
->>  
->> -&gpmc {
->> -	ethernet@gpmc {
->> -		compatible = "smsc,lan9221", "smsc,lan9115";
->> -		bank-width = <2>;
->> -		gpmc,device-width = <1>;
->> -		gpmc,cycle2cycle-samecsen = <1>;
->> -		gpmc,cycle2cycle-diffcsen = <1>;
->> -		gpmc,cs-on-ns = <5>;
->> -		gpmc,cs-rd-off-ns = <150>;
->> -		gpmc,cs-wr-off-ns = <150>;
->> -		gpmc,adv-on-ns = <0>;
->> -		gpmc,adv-rd-off-ns = <15>;
->> -		gpmc,adv-wr-off-ns = <40>;
->> -		gpmc,oe-on-ns = <45>;
->> -		gpmc,oe-off-ns = <140>;
->> -		gpmc,we-on-ns = <45>;
->> -		gpmc,we-off-ns = <140>;
->> -		gpmc,rd-cycle-ns = <155>;
->> -		gpmc,wr-cycle-ns = <155>;
->> -		gpmc,access-ns = <120>;
->> -		gpmc,page-burst-access-ns = <20>;
->> -		gpmc,bus-turnaround-ns = <75>;
->> -		gpmc,cycle2cycle-delay-ns = <75>;
->> -		gpmc,wait-monitoring-ns = <0>;
->> -		gpmc,clk-activation-ns = <0>;
->> -		gpmc,wr-data-mux-bus-ns = <0>;
->> -		gpmc,wr-access-ns = <0>;
->> -		vddvario-supply = <&vddvario>;
->> -		vdd33a-supply = <&vdd33a>;
->> -		reg-io-width = <4>;
->> -		smsc,save-mac-address;
->> -	};
->> +&gpmc_ethernet {
->> +	compatible = "smsc,lan9221", "smsc,lan9115";
-> 
-> This looks like regular override-by-label instead of full path.
-> Unfortunately change of the indentation causes difficulties to find the
-> real difference - if there is such. Can you split it into separate patch?
-> 
-> The point is that override-by-label should have zero effect on
-> functionality and produce same dtb. This is easy to compare with
-> dtx_diff or fdt-decompile but if you mix it with other changes, the
-> comparison is not straight-forward.
+Signed-off-by: Mikko Perttunen <mperttunen@nvidia.com>
+---
+ drivers/thermal/tegra/tegra-bpmp-thermal.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-OK. I will split the overide-by-label to separate patch and ensure there is no
-change in compiled dtb for that patch.
+diff --git a/drivers/thermal/tegra/tegra-bpmp-thermal.c b/drivers/thermal/tegra/tegra-bpmp-thermal.c
+index 94f1da1dcd69..5affc3d196be 100644
+--- a/drivers/thermal/tegra/tegra-bpmp-thermal.c
++++ b/drivers/thermal/tegra/tegra-bpmp-thermal.c
+@@ -52,6 +52,8 @@ static int tegra_bpmp_thermal_get_temp(void *data, int *out_temp)
+ 	err = tegra_bpmp_transfer(zone->tegra->bpmp, &msg);
+ 	if (err)
+ 		return err;
++	if (msg.rx.ret)
++		return -EINVAL;
+ 
+ 	*out_temp = reply.get_temp.temp;
+ 
+@@ -63,6 +65,7 @@ static int tegra_bpmp_thermal_set_trips(void *data, int low, int high)
+ 	struct tegra_bpmp_thermal_zone *zone = data;
+ 	struct mrq_thermal_host_to_bpmp_request req;
+ 	struct tegra_bpmp_message msg;
++	int err;
+ 
+ 	memset(&req, 0, sizeof(req));
+ 	req.type = CMD_THERMAL_SET_TRIP;
+@@ -76,7 +79,13 @@ static int tegra_bpmp_thermal_set_trips(void *data, int low, int high)
+ 	msg.tx.data = &req;
+ 	msg.tx.size = sizeof(req);
+ 
+-	return tegra_bpmp_transfer(zone->tegra->bpmp, &msg);
++	err = tegra_bpmp_transfer(zone->tegra->bpmp, &msg);
++	if (err)
++		return err;
++	if (msg.rx.ret)
++		return -EINVAL;
++
++	return 0;
+ }
+ 
+ static void tz_device_update_work_fn(struct work_struct *work)
+@@ -140,6 +149,8 @@ static int tegra_bpmp_thermal_get_num_zones(struct tegra_bpmp *bpmp,
+ 	err = tegra_bpmp_transfer(bpmp, &msg);
+ 	if (err)
+ 		return err;
++	if (msg.rx.ret)
++		return -EINVAL;
+ 
+ 	*num_zones = reply.get_num_zones.num;
+ 
+-- 
+2.32.0
 
-> 
->> +	bank-width = <2>;
->> +	gpmc,device-width = <1>;
->> +	gpmc,cycle2cycle-samecsen;
->> +	gpmc,cycle2cycle-diffcsen;
->> +	gpmc,cs-on-ns = <5>;
->> +	gpmc,cs-rd-off-ns = <150>;
->> +	gpmc,cs-wr-off-ns = <150>;
->> +	gpmc,adv-on-ns = <0>;
->> +	gpmc,adv-rd-off-ns = <15>;
->> +	gpmc,adv-wr-off-ns = <40>;
->> +	gpmc,oe-on-ns = <45>;
->> +	gpmc,oe-off-ns = <140>;
->> +	gpmc,we-on-ns = <45>;
->> +	gpmc,we-off-ns = <140>;
->> +	gpmc,rd-cycle-ns = <155>;
->> +	gpmc,wr-cycle-ns = <155>;
->> +	gpmc,access-ns = <120>;
->> +	gpmc,page-burst-access-ns = <20>;
->> +	gpmc,bus-turnaround-ns = <75>;
->> +	gpmc,cycle2cycle-delay-ns = <75>;
->> +	gpmc,wait-monitoring-ns = <0>;
->> +	gpmc,clk-activation-ns = <0>;
->> +	gpmc,wr-data-mux-bus-ns = <0>;
->> +	gpmc,wr-access-ns = <0>;
->> +	vddvario-supply = <&vddvario>;
->> +	vdd33a-supply = <&vdd33a>;
->> +	reg-io-width = <4>;
->> +	smsc,save-mac-address;
->>  };
->> diff --git a/arch/arm/boot/dts/omap-gpmc-smsc9221.dtsi b/arch/arm/boot/dts/omap-gpmc-smsc9221.dtsi
->> index 7f6aefd13451..c1e78f929d2b 100644
->> --- a/arch/arm/boot/dts/omap-gpmc-smsc9221.dtsi
->> +++ b/arch/arm/boot/dts/omap-gpmc-smsc9221.dtsi
->> @@ -24,36 +24,33 @@
->>  	};
->>  };
->>  
->> -&gpmc {
->> -	ethernet@gpmc {
->> -		compatible = "smsc,lan9221","smsc,lan9115";
->> -		bank-width = <2>;
->> +&gpmc_ethernet {
->> +	compatible = "smsc,lan9221","smsc,lan9115";
->> +	bank-width = <2>;
->> +	gpmc,mux-add-data = <0>;
->> +	gpmc,cs-on-ns = <0>;
->> +	gpmc,cs-rd-off-ns = <42>;
->> +	gpmc,cs-wr-off-ns = <36>;
->> +	gpmc,adv-on-ns = <6>;
->> +	gpmc,adv-rd-off-ns = <12>;
->> +	gpmc,adv-wr-off-ns = <12>;
->> +	gpmc,oe-on-ns = <0>;
->> +	gpmc,oe-off-ns = <42>;
->> +	gpmc,we-on-ns = <0>;
->> +	gpmc,we-off-ns = <36>;
->> +	gpmc,rd-cycle-ns = <60>;
->> +	gpmc,wr-cycle-ns = <54>;
->> +	gpmc,access-ns = <36>;
->> +	gpmc,page-burst-access-ns = <0>;
->> +	gpmc,bus-turnaround-ns = <0>;
->> +	gpmc,cycle2cycle-delay-ns = <0>;
->> +	gpmc,wr-data-mux-bus-ns = <18>;
->> +	gpmc,wr-access-ns = <42>;
->> +	gpmc,cycle2cycle-samecsen;
->> +	gpmc,cycle2cycle-diffcsen;
->>  
->> -		gpmc,mux-add-data;
-> 
-> Same here and in other places. Actually here a sneaky change is visible
-> - different property.
-> 
-> Best regards,
-> Krzysztof
-> 
-
-cheers,
--roger
