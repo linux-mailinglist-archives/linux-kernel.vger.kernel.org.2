@@ -2,151 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EBC740C584
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 14:44:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 174C340C587
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 14:44:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237805AbhIOMpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 08:45:52 -0400
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:41564 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237821AbhIOMpt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 08:45:49 -0400
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18FBPnvd025776;
-        Wed, 15 Sep 2021 07:44:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=UloEvTbfEYNH3Z86cpJlpt08LgEbLvh9bAFrRSEG7Js=;
- b=Q3pveP1hhInAu4sgdogqfHmH5CX9FoE16RN/T0TgRUf9xDZpbMTOg3i0el/eeuQ19+FF
- De/eOa5YRXnga8kjUYP+yoyV1qcM8FW6gJkXKQ1XFmwFpsL9RaNHsNnCZShcpArpX1pq
- ARzaUeXKoKE7qe2pyOY02LAu/auw94qHx+rgypE/qjCCjCml/D/IJLmmDg4V+9JwSxer
- Zz6v4Xp9FV6CcLnPKIRyC2znz3oR4cs8LKL8DJlHYQ3h6GwYY2fWZEtOrwlOCDWlmYOm
- q9GROFN1/0YBtuY7kUyZ1btWptE2T8u5ua9x1Nfnj5GV7eqrRiywCWZYyxUqD2blR9NG 8g== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 3b3287gsm4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 15 Sep 2021 07:44:28 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Wed, 15 Sep
- 2021 13:44:26 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via Frontend
- Transport; Wed, 15 Sep 2021 13:44:26 +0100
-Received: from aryzen.ad.cirrus.com (unknown [198.61.64.203])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id BBEAB11C6;
-        Wed, 15 Sep 2021 12:44:26 +0000 (UTC)
-From:   Lucas Tanure <tanureal@opensource.cirrus.com>
-To:     Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
-        Lucas Tanure <tanureal@opensource.cirrus.com>
-Subject: [PATCH v4 2/2] regmap: spi: Check raw_[read|write] against max message size
-Date:   Wed, 15 Sep 2021 13:44:25 +0100
-Message-ID: <20210915124425.34777-2-tanureal@opensource.cirrus.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210915124425.34777-1-tanureal@opensource.cirrus.com>
-References: <20210915124425.34777-1-tanureal@opensource.cirrus.com>
+        id S237861AbhIOMp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 08:45:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57732 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237375AbhIOMpv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 08:45:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CCD461178;
+        Wed, 15 Sep 2021 12:44:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631709872;
+        bh=QRi7E+DEpTJvxSWSI8MFdIh+vqqB9n9nwKqMVosEo2k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QNrJFDq4oO1syPUxeYbTYEIB3JqECcgdIUZtiFDRvQhPKwszWyX5HImCpkOFU3BMR
+         Qgp+0RQ/3D4Jgp+qse17fGelGN4HZLsPgyjKfxWeSJs/R6OJNNa291US5+0maePgu/
+         qvN51SxaDKYamOc7c5IZL4/X4HaQbh9GyKiKK6gVlzoStVOX9geg2WFKD5oCTLQ1b2
+         Y9PN8clOYeSaZ/wxJsxK1is7WU8y4DDUf9AsI1643tJ9K7+kA5Ucvfo/OBWqR+qKhl
+         +0yucvgI1b+arbVm0HyxepI0XXRqytdUfnOyuz2H1roNySeRu0D+h69lNKoRc/LV9k
+         x/z/6NlRjWdiQ==
+Date:   Wed, 15 Sep 2021 15:44:29 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Alaa Hleihel <alaa@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH rdma-rc] RDMA/mlx5: Add dummy umem to IB_MR_TYPE_DM
+Message-ID: <YUHqrUdnbIr3R9DO@unreal>
+References: <9c6478b70dc23cfec3a7bfc345c30ff817e7e799.1631660866.git.leonro@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: NREozzJq3ynENmoOVv7ztmPEbWAqhULM
-X-Proofpoint-ORIG-GUID: NREozzJq3ynENmoOVv7ztmPEbWAqhULM
-X-Proofpoint-Spam-Reason: safe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9c6478b70dc23cfec3a7bfc345c30ff817e7e799.1631660866.git.leonro@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-regmap-spi will split data and address between two transfers
-in the same message, so max_[read|write] must include space
-for the address and padding
+On Wed, Sep 15, 2021 at 02:08:25AM +0300, Leon Romanovsky wrote:
+> From: Alaa Hleihel <alaa@nvidia.com>
+> 
+> After the cited patch, and for the case of IB_MR_TYPE_DM that doesn't
+> have a umem (even though it is a user MR), function mlx5_free_priv_descs()
+> will think that it's a kernel MR, leading to wrongly accessing mr->descs
+> that will get wrong values in the union which leads to attempting to
+> release resources that were not allocated in the first place.
+> 
+> For example:
+>  DMA-API: mlx5_core 0000:08:00.1: device driver tries to free DMA memory it has not allocated [device address=0x0000000000000000] [size=0 bytes]
+>  WARNING: CPU: 8 PID: 1021 at kernel/dma/debug.c:961 check_unmap+0x54f/0x8b0
+>  RIP: 0010:check_unmap+0x54f/0x8b0
+>  Call Trace:
+>   debug_dma_unmap_page+0x57/0x60
+>   mlx5_free_priv_descs+0x57/0x70 [mlx5_ib]
+>   mlx5_ib_dereg_mr+0x1fb/0x3d0 [mlx5_ib]
+>   ib_dereg_mr_user+0x60/0x140 [ib_core]
+>   uverbs_destroy_uobject+0x59/0x210 [ib_uverbs]
+>   uobj_destroy+0x3f/0x80 [ib_uverbs]
+>   ib_uverbs_cmd_verbs+0x435/0xd10 [ib_uverbs]
+>   ? uverbs_finalize_object+0x50/0x50 [ib_uverbs]
+>   ? lock_acquire+0xc4/0x2e0
+>   ? lock_acquired+0x12/0x380
+>   ? lock_acquire+0xc4/0x2e0
+>   ? lock_acquire+0xc4/0x2e0
+>   ? ib_uverbs_ioctl+0x7c/0x140 [ib_uverbs]
+>   ? lock_release+0x28a/0x400
+>   ib_uverbs_ioctl+0xc0/0x140 [ib_uverbs]
+>   ? ib_uverbs_ioctl+0x7c/0x140 [ib_uverbs]
+>   __x64_sys_ioctl+0x7f/0xb0
+>   do_syscall_64+0x38/0x90
+> 
+> Fix it by adding a dummy umem to IB_MR_TYPE_DM MRs.
+> 
+> Fixes: f18ec4223117 ("RDMA/mlx5: Use a union inside mlx5_ib_mr")
+> Signed-off-by: Alaa Hleihel <alaa@nvidia.com>
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+>  drivers/infiniband/core/umem.c  | 21 +++++++++++++++++++++
+>  drivers/infiniband/hw/mlx5/mr.c |  5 +++++
+>  include/rdma/ib_umem.h          |  5 +++++
+>  3 files changed, 31 insertions(+)
 
-Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
----
+Please drop this patch, it seems that the proposed solution is too naive.
 
-Changes v3:
-New series
-
-Changes v4:
-None
-
- drivers/base/regmap/regmap-spi.c |  4 ++++
- drivers/base/regmap/regmap.c     | 15 +++++++++++++++
- include/linux/regmap.h           |  3 +++
- 3 files changed, 22 insertions(+)
-
-diff --git a/drivers/base/regmap/regmap-spi.c b/drivers/base/regmap/regmap-spi.c
-index 0e6552e57ecf..1434c502e340 100644
---- a/drivers/base/regmap/regmap-spi.c
-+++ b/drivers/base/regmap/regmap-spi.c
-@@ -123,6 +123,10 @@ static const struct regmap_bus *regmap_get_spi_bus(struct spi_device *spi,
- 		bus->free_on_exit = true;
- 		bus->max_raw_read = max_size;
- 		bus->max_raw_write = max_size;
-+
-+		if (spi_max_message_size(spi) != SIZE_MAX)
-+			bus->max_combined_rw = spi_max_message_size(spi);
-+
- 		return bus;
- 	}
- 
-diff --git a/drivers/base/regmap/regmap.c b/drivers/base/regmap/regmap.c
-index 21a0c2562ec0..a99152f010f8 100644
---- a/drivers/base/regmap/regmap.c
-+++ b/drivers/base/regmap/regmap.c
-@@ -735,6 +735,7 @@ struct regmap *__regmap_init(struct device *dev,
- 	struct regmap *map;
- 	int ret = -EINVAL;
- 	enum regmap_endian reg_endian, val_endian;
-+	size_t reg_pad_size;
- 	int i, j;
- 
- 	if (!config)
-@@ -840,6 +841,20 @@ struct regmap *__regmap_init(struct device *dev,
- 	if (bus) {
- 		map->max_raw_read = bus->max_raw_read;
- 		map->max_raw_write = bus->max_raw_write;
-+		if (bus->max_combined_rw) {
-+			reg_pad_size = map->format.reg_bytes + map->format.pad_bytes;
-+
-+			if (map->max_raw_read + reg_pad_size > bus->max_combined_rw)
-+				map->max_raw_read -= reg_pad_size;
-+			if (map->max_raw_write + reg_pad_size > bus->max_combined_rw)
-+				map->max_raw_write -= reg_pad_size;
-+
-+			if (map->max_raw_read  < map->format.buf_size ||
-+			    map->max_raw_write < map->format.buf_size) {
-+				ret = -EINVAL;
-+				goto err_hwlock;
-+			}
-+		}
- 	}
- 	map->dev = dev;
- 	map->bus = bus;
-diff --git a/include/linux/regmap.h b/include/linux/regmap.h
-index e3c9a25a853a..a720f578b8e6 100644
---- a/include/linux/regmap.h
-+++ b/include/linux/regmap.h
-@@ -506,6 +506,8 @@ typedef void (*regmap_hw_free_context)(void *context);
-  * @max_raw_read: Max raw read size that can be used on the bus.
-  * @max_raw_write: Max raw write size that can be used on the bus.
-  * @free_on_exit: kfree this on exit of regmap
-+ * @max_combined_rw: Max size for raw_read + raw_write, when they are issued
-+ *                   together as part of the same message
-  */
- struct regmap_bus {
- 	bool fast_io;
-@@ -523,6 +525,7 @@ struct regmap_bus {
- 	enum regmap_endian val_format_endian_default;
- 	size_t max_raw_read;
- 	size_t max_raw_write;
-+	size_t max_combined_rw;
- 	bool free_on_exit;
- };
- 
--- 
-2.33.0
-
+Thanks
