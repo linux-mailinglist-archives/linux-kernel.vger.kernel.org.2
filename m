@@ -2,81 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4875E40CDDD
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 22:20:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B92340CDE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 22:23:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232046AbhIOUVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 16:21:16 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:43020 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231766AbhIOUVP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 16:21:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=g8aS/xkGAi+vDTBvZLmhQHUMkhsVOhjWnP9/XA4zI8w=; b=ioLUW4wT3oJjzjtiwN2aY3fHwD
-        zkES/hsPaaiOjLAgCHjgIduxav+YaVI65maksMyCZqIE271TIyWwlW/8tpe9Ulo7b+3mLd4GrxYle
-        RRlX1Wxt4rOBGJf3lD9D7oYbnkPhE7+8ZF2KrAIAxaNCBMsTUtOab6Yxy8zm5Zc1imG4=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mQbNo-006no5-9W; Wed, 15 Sep 2021 22:19:52 +0200
-Date:   Wed, 15 Sep 2021 22:19:52 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Asmaa Mnebhi <asmaa@nvidia.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        David Thompson <davthompson@nvidia.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Liming Sun <limings@nvidia.com>
-Subject: Re: [PATCH v1 5/6] TODO: gpio: mlxbf2: Introduce IRQ support
-Message-ID: <YUJVaMkjmbuDGGOE@lunn.ch>
-References: <20210816115953.72533-1-andriy.shevchenko@linux.intel.com>
- <20210816115953.72533-6-andriy.shevchenko@linux.intel.com>
- <CH2PR12MB3895ACF821C8242AA55A1DCDD7FD9@CH2PR12MB3895.namprd12.prod.outlook.com>
- <YR0UPG2451aGt9Xg@smile.fi.intel.com>
- <CH2PR12MB3895E8CDC7DC1AD0144E1416D7DB9@CH2PR12MB3895.namprd12.prod.outlook.com>
+        id S231766AbhIOUYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 16:24:31 -0400
+Received: from ssl.serverraum.org ([176.9.125.105]:41123 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231592AbhIOUYa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 16:24:30 -0400
+Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 88F46221E6;
+        Wed, 15 Sep 2021 22:23:08 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1631737388;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=AZkOIOVxYEU9K3hL387iMzqC693gOZa4X6dtkYrx7z0=;
+        b=wEhO+9KE3mVREpOA4yzw/wQjrXm9kVIhgNqnUx1uG1JBlZiKL1OjsTSkX1d2c6F7Ii3gM+
+        5wzW5h68aWwT1binubXnUByRPO5fJmPlaxrhZEDOVhxD0GYFeZu3eieSA3K8VRpNqakAcD
+        zObniXfmtvqpDghZt1oY4/haep5bEZs=
+From:   Michael Walle <michael@walle.cc>
+To:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Yangbo Lu <yangbo.lu@nxp.com>, Yinbo Zhu <yinbo.zhu@nxp.com>,
+        Ashish Kumar <Ashish.Kumar@nxp.com>,
+        Michael Walle <michael@walle.cc>
+Subject: [PATCH] arm64: dts: ls1028a: fix eSDHC2 node
+Date:   Wed, 15 Sep 2021 22:22:59 +0200
+Message-Id: <20210915202259.3000923-1-michael@walle.cc>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CH2PR12MB3895E8CDC7DC1AD0144E1416D7DB9@CH2PR12MB3895.namprd12.prod.outlook.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 07:27:51PM +0000, Asmaa Mnebhi wrote:
-> Hi Andy, Hi Andrew,
-> 
-> I have a question regarding patch submission. I am going to mimic what Andy has done for v5/6 and v6/6 and send 2 patches in a bundle as follows:
-> /* for the cover letter */ : Subject: [PATCH v1 0/2] gpio: mlxbf2: Introduce proper interrupt handling
-> Subject: [PATCH v1 1/2] gpio: mlxbf2: Introduce IRQ support
-> Subject: [PATCH v1 2/2] net: mellanox: mlxbf_gige: Replace non-standard interrupt handling
-> 
-> Questions:
-> 1) do the subject lines look ok? i.e. sending patches that target "net" as opposed to "net-next"
-> 2) would you like me to add a "Fixes" tag to each patch as follows? I am not sure if you consider this a bug?
-> Fixes: f92e1869d74e ("Add Mellanox BlueField Gigabit Ethernet driver")
+On the LS1028A this instance of the eSDHC controller is intended for
+either an eMMC or eSDIO card. It doesn't provide a card detect pin and
+its IO voltage is fixed at 1.8V.
 
-You are posting patches which go into two different subsystems. So you
-need to pay special care here. Pick a maintainer you want to merge
-this, and make sure you Cc: the other maintainer. Make it clear in
-patch 0/X which maintainer you would like to take the patch series,
-and that the other should give an Acked-by if they are happy with the
-patches.
+Remove the bogus broken-cd property, instead add the non-removable
+property. Fix the voltage-ranges property and set it to 1.8V only.
 
-I don't think this should be considered a bug, so no need for a Fixes:
-tag.
+Fixes: 491d3a3fc113 ("arm64: dts: ls1028a: Add esdhc node in dts")
+Signed-off-by: Michael Walle <michael@walle.cc>
+---
+ arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-The subject lines look O.K.
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+index ef771bfad11c..8cee1f79e5c0 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+@@ -407,9 +407,9 @@ esdhc1: mmc@2150000 {
+ 			interrupts = <GIC_SPI 63 IRQ_TYPE_LEVEL_HIGH>;
+ 			clock-frequency = <0>; /* fixed up by bootloader */
+ 			clocks = <&clockgen QORIQ_CLK_HWACCEL 1>;
+-			voltage-ranges = <1800 1800 3300 3300>;
++			voltage-ranges = <1800 1800>;
+ 			sdhci,auto-cmd12;
+-			broken-cd;
++			non-removable;
+ 			little-endian;
+ 			bus-width = <4>;
+ 			status = "disabled";
+-- 
+2.30.2
 
-Also, please fix your mailer to wrap lines at about 75 characters.
-
-      Andrew
