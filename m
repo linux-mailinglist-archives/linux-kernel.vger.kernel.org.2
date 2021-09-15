@@ -2,103 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7672940C2DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 11:38:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05DBD40C2DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 11:39:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237230AbhIOJji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 05:39:38 -0400
-Received: from mga09.intel.com ([134.134.136.24]:58453 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229785AbhIOJjg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 05:39:36 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10107"; a="222310760"
-X-IronPort-AV: E=Sophos;i="5.85,295,1624345200"; 
-   d="scan'208";a="222310760"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2021 02:38:17 -0700
-X-IronPort-AV: E=Sophos;i="5.85,295,1624345200"; 
-   d="scan'208";a="544766083"
-Received: from singanam-mobl1.gar.corp.intel.com ([10.213.67.66])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2021 02:38:13 -0700
-Message-ID: <48eef209ab34b7885790bf25fd93163f3eea4795.camel@linux.intel.com>
-Subject: Re: [PATCH v2] cpufreq: intel_pstate: Add Icelake servers support
- in no-HWP mode
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     Doug Smythies <dsmythies@telus.net>
-Cc:     Giovanni Gherdovich <ggherdovich@suse.cz>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Len Brown <lenb@kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Wed, 15 Sep 2021 02:38:10 -0700
-In-Reply-To: <CAAYoRsUnuNL+orjeXpxEE4fyknGGk3Kngk6Gt+hoCHxLYg9D6A@mail.gmail.com>
-References: <fb6c8a4e284a9b6c043f4ac382387b19bd100976.camel@linux.intel.com>
-         <20210513132051.31465-1-ggherdovich@suse.cz>
-         <CAAYoRsUcyFsFWDE=r+aMgDBa6hcgXgtE2jJ_NHas5e4TdgiBTg@mail.gmail.com>
-         <067ee60e47a0350d01f0c3f216c1032818044b36.camel@suse.cz>
-         <CAAYoRsX0xJf1mm1a_YUCzDy86r8q4QE98iVtS1AMLaUx+KTgQQ@mail.gmail.com>
-         <CAAYoRsXK79PspEUh9pqgj2OGQnxQONkEeK-7af3=5frBzAqULQ@mail.gmail.com>
-         <2a1b000cd101737400f6320ef18c0143d3a5145b.camel@linux.intel.com>
-         <CAAYoRsVeMCivVBp-q_9N23BDOVvkc8ZLS3mubnz+4TREZ9Cz_A@mail.gmail.com>
-         <7abae13c235d74f4789cd93c6c6b0cbf69df243d.camel@linux.intel.com>
-         <CAAYoRsVd4uU7sofcvYWd__evKJTf7HE5mi2ZVDjAYNYWXS3mzQ@mail.gmail.com>
-         <CAAYoRsUnuNL+orjeXpxEE4fyknGGk3Kngk6Gt+hoCHxLYg9D6A@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.0-1 
+        id S229785AbhIOJjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 05:39:52 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:16213 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237308AbhIOJjs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 05:39:48 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4H8Zr76nrBz1DH1g;
+        Wed, 15 Sep 2021 17:37:27 +0800 (CST)
+Received: from dggpemm500004.china.huawei.com (7.185.36.219) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Wed, 15 Sep 2021 17:38:28 +0800
+Received: from [10.174.177.91] (10.174.177.91) by
+ dggpemm500004.china.huawei.com (7.185.36.219) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Wed, 15 Sep 2021 17:38:27 +0800
+Subject: Re: [PATCH -next] irqdomain: fix overflow error
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        <linux-kernel@vger.kernel.org>
+CC:     <maz@kernel.org>, <john.wanghui@huawei.com>
+References: <20210908014623.61357-1-cuibixuan@huawei.com>
+ <87o88vcqvh.ffs@tglx> <4f614b66-ad85-7fa3-6e6e-2a672e8148e3@huawei.com>
+ <87pmtab7no.ffs@tglx>
+From:   Bixuan Cui <cuibixuan@huawei.com>
+Message-ID: <1fe1aa97-97dc-4f55-186e-7aace630c8f1@huawei.com>
+Date:   Wed, 15 Sep 2021 17:38:26 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
+In-Reply-To: <87pmtab7no.ffs@tglx>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.91]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500004.china.huawei.com (7.185.36.219)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-09-14 at 11:41 -0700, Doug Smythies wrote:
-> On Tue, Sep 7, 2021 at 8:43 PM Doug Smythies <dsmythies@telus.net>
-> wrote:
-> > 
 
-[...]
 
-> > The intel_pstate driver works fine.
+On 2021/9/15 15:49, Thomas Gleixner wrote:
+> On Wed, Sep 15 2021 at 10:03, Bixuan Cui wrote:
+>> On 2021/9/14 19:56, Thomas Gleixner wrote:
+>>
+>> And kernel/irq/irqdomain.c
+>> struct irq_domain *irq_domain_create_simple(struct fwnode_handle *fwnode,
+>>                                             unsigned int size,
+>>                                             unsigned int first_irq,
+>>                                             const struct irq_domain_ops *ops,
+>>                                             void *host_data)
+>> {
+>>         struct irq_domain *domain;
+>>
+>>         domain = __irq_domain_add(fwnode, size, size, 0, ops, host_data);
+>>
+>> All 'size' passed to __irq_domain_add() are unsigned int.
+>>
+>> So I think it's more appropriate to replace it with unsigned int.
+> Appropriate is not really a technical reason. Making the code consistent
+> is.
 > 
-> Hi Srinivas,
-Hi Doug,
+> But that has nothing to do with the completely bogus compiler warning in
+> the changelog you provided.
+Hello,
+It is a real compilation warning, It occurs when compiled with
+.config(https://syzkaller.appspot.com/text?tag=KernelConfig&x=4d196bb8b1e038c0).
 
-> 
-> I heard back from ASUS, and they now confirm that they
-> did change the behaviour of the "Auto" setting in BIOS
-> version 2103. They say they did it to fix an issue with
-> ITB3.0, which I assume means Intel Turbo Boost 3.0.
-> I'll copy and paste the relevant portion of the email
-> below:
-> 
-> " I am in direct contact with the engineers.
-> Here is the result from their test:
-> 
-> In BIOS 2103,the “Auto” setting transfers control to
-> the OS with HWP available and enabled.
-> 
-> This is side effect to fix ITBM3.0 not work after HWP enabled.
-> We can remove this patch, but ITBM3.0 will not work when HWP enabled"
-> 
-> Are you familiar with this issue?
-No. I think they mean that they need to expose ACPI CPPC information.
-It is possible they only expose ACPI CPPC information when HWP feature
-is available. But not sure why it requires HWP enable also. We (on
-Linux) depend on ACPI CPPC for turbo 3.0, but don't require HWP to be
-enabled by default.
-
+This is my compile log:
+// cp .config from https://syzkaller.appspot.com/text?tag=KernelConfig&x=4d196bb8b1e038c0
+$ make menuconfig
+$ make kernel/irq/irqdomain.o
+  SYNC    include/config/auto.conf.cmd
+  DESCEND objtool
+  CALL    scripts/atomic/check-atomics.sh
+  CALL    scripts/checksyscalls.sh
+  CC      kernel/irq/irqdomain.o
+In file included from ./include/linux/resource_ext.h:11:0,
+                 from ./include/linux/acpi.h:14,
+                 from kernel/irq/irqdomain.c:5:
+In function ‘kmalloc_node’,
+    inlined from ‘kzalloc_node.constprop’ at ./include/linux/slab.h:743:9,
+    inlined from ‘__irq_domain_add’ at kernel/irq/irqdomain.c:153:9:
+./include/linux/slab.h:618:9: warning: argument 1 value ‘18446744073709551615’ exceeds maximum object size 9223372036854775807 [-Walloc-size-larger-than=]
+  return __kmalloc_node(size, flags, node);
+         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./include/linux/slab.h: In function ‘__irq_domain_add’:
+./include/linux/slab.h:455:7: note: in a call to allocation function ‘__kmalloc_node’ declared here
+ void *__kmalloc_node(size_t size, gfp_t flags, int node) __assume_slab_alignment __malloc;
+       ^~~~~~~~~~~~~~
 
 Thanks,
-Srinivas
+Bixuan Cui
 
 
-
-> 
-> I want the original behaviour of the "Auto" setting, as it is
-> the only way for control to go to the OS with HWP
-> available but disabled.
-> 
-> ... Doug
 
 
