@@ -2,223 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 881A340BF60
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 07:42:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7742840BF61
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 07:42:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236243AbhIOFnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 01:43:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230312AbhIOFnm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 01:43:42 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 470D3C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 22:42:24 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id y16so3377114ybm.3
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 22:42:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xS6971kMWfFM8ZRsfFC8HXtvNqWv+g6MeatQS8jS9a8=;
-        b=qz7i20eQv8LmMaW2/oc8gLbYWstzioKECMeV0fCnS8jUEtg8Ixsw3oM4HOZbdmqKXU
-         FTsYVlm0cW4gZlhpPUOQxZ10D93MVIIZUjLrmkBDsCOKi7Aykn9e27wk436Q+Lbzt51z
-         tJ4TOT/yFXlGh0K/Cuqsx66/9zp/irgcakuFY4X9pVJU2ly/Ga2Ry/ytRSIMS6VIhpnR
-         5TZmONJseviFlGTAr9X5yTzGksmKfgWSttbnuXteozuplvwEHGwkARpkga8nY+W8ZD0s
-         X84yOtMW7VoaBhoaewAKyagckTY2EXAii7lIUeAVYc63IOGh29hCtWKyiT3kEYlw+enw
-         gm7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xS6971kMWfFM8ZRsfFC8HXtvNqWv+g6MeatQS8jS9a8=;
-        b=HJhE6T74Z2Rca/l0VJGMwF/kiyPwtQuiKSIFp9csHYWD3vkDGzZh2YQGNCqxy1yZid
-         GFrwfkDTE2K+sAsC85RPjU0AEkKhu2sY3+afgUTAyBgyBSuDA4nm3b5aaKuyUvyO0UI0
-         NL+re2JObrHV42YfPdzb22+MtMSkNVZCsMFrzjdiBGU3AwwpZSSFMyhTPpJpnPjEomTt
-         Zkno4Sk+88UvQGml2/uItoGGZlMb2KGw+YsrOSGR6Ma0a3hmLbdDna0zGDcI4fP15kjn
-         fWx532zyjRIvOTnamhzhx3pdG6dQ92lClmexWUOTywWKXtqZ9b/J/FxT+4SGDDAaI0zY
-         oZ2A==
-X-Gm-Message-State: AOAM531XOph48HKes9PDndJykFUilX+DInE002xFpohGIJBOPQcMP5lv
-        4LHr1cgPzJVt29ICAXwUvlj/eI+CHM5x+ORmg4Sb5g==
-X-Google-Smtp-Source: ABdhPJynw5V1808rY5EIyqKxaOm0bhcOWf0t3Nr4/nrtB7S+A2wsO5bGVc+TZfXoP5Kdg9fi/CAQp9taKsjyfYYmdZw=
-X-Received: by 2002:a25:2b07:: with SMTP id r7mr3445653ybr.296.1631684543190;
- Tue, 14 Sep 2021 22:42:23 -0700 (PDT)
+        id S236334AbhIOFoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 01:44:05 -0400
+Received: from mout.gmx.net ([212.227.15.19]:37079 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230312AbhIOFn7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 01:43:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1631684543;
+        bh=k/mBnaltl0V4HhcJYi79KyqmAelVS9deee9HO0j5FQs=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=eDB8TmsKSpUc9Lw8xmSOTmba+zkzvzG3kIOfIIUO5fjXE0PxbOdT2G6mpX/ycNGSU
+         o6IlFgIyxJugiJLZhduBsjbPdvUqFt5tf+T8J9uSgJCqA10CVkCeDtlVSiQQ/07GP1
+         U4A01NucfzdAgyAzMDYMUeTVfXlo5fclN1Ev+UH4=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.178.51] ([46.223.119.124]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MStCe-1mLXKz10AA-00UIsW; Wed, 15
+ Sep 2021 07:42:23 +0200
+Subject: Re: [PATCH 0/3] Fix for KSZ DSA switch shutdown
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Saravana Kannan <saravanak@google.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>, p.rosenberger@kunbus.com,
+        woojung.huh@microchip.com, UNGLinuxDriver@microchip.com,
+        vivien.didelot@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <5b899bb3-ed37-19ae-8856-3dabce534cc6@gmx.de>
+ <20210909225457.figd5e5o3yw76mcs@skbuf>
+ <35466c02-16da-0305-6d53-1c3bbf326418@gmail.com> <YTtG3NbYjUbu4jJE@lunn.ch>
+ <20210910145852.4te2zjkchnajb3qw@skbuf>
+ <53f2509f-b648-b33d-1542-17a2c9d69966@gmx.de>
+ <20210912202913.mu3o5u2l64j7mpwe@skbuf>
+ <trinity-e5b95a34-015c-451d-bbfc-83bfb0bdecad-1631529134448@3c-app-gmx-bs55>
+ <20210913104400.oyib42rfq5x2vc56@skbuf>
+ <trinity-6fefc142-df4d-47af-b2bd-84c8212e5b1c-1631530880741@3c-app-gmx-bs55>
+ <20210914184856.vmqv3je4oz5elxvp@skbuf>
+From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Message-ID: <69b914bb-de19-e168-fe9c-61e125410fb6@gmx.de>
+Date:   Wed, 15 Sep 2021 07:42:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210914043928.4066136-1-saravanak@google.com>
- <20210914043928.4066136-3-saravanak@google.com> <CAMuHMdU8n9LH7+sZ-OFuce_y89GsQvt+HGUYdQMYCqOxoM3Y7Q@mail.gmail.com>
- <CAGETcx8myxTU=F63MC_FFLXsWakMqBYBbajneV=buwXGs70j+w@mail.gmail.com>
-In-Reply-To: <CAGETcx8myxTU=F63MC_FFLXsWakMqBYBbajneV=buwXGs70j+w@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Tue, 14 Sep 2021 22:41:47 -0700
-Message-ID: <CAGETcx_2qdcGDtc0NykW68bXUGrxT14ABQUP04sO3TcSx2AxAQ@mail.gmail.com>
-Subject: Re: [PATCH v1 2/5] driver core: Set deferred probe reason when
- deferred by driver core
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Rob Herring <robh+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210914184856.vmqv3je4oz5elxvp@skbuf>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:vd35W0+nzHSNT7qGL8FeWPyrHLMVo5dM9FPqJBuDiKL1nbMqzQP
+ bTDxcEmPTfiAOdze/PzfY8WDp6V8iBUfQiDAG75K6uK4TeTDoEJ+bPajbvSIzhbEJXHizuy
+ yYeGG1GuQYSTLIphmnyZ4X1Ir76S4tHzdDUUQHMBGTbAoHQqwUQuc05pjbOU61/JjUv/5uR
+ 08AE3GftuvqgXmvSQa8Eg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:yn1nOXrNt0o=:lfBWm5eNqVSyXYNJQPIzpR
+ o3LkFwNmD62FPVWfulYx6XQ9vGslkCFxaubBX1l1G9kcXT+BvlKxyae9uk5srJWxyN52qEntK
+ 1r274OxYwzhC8/iNEcS0mB4zyrYUYdH5W0XH3aJ9ImP6fnZC10DmIKSlpCCz1xZ0hzW33I+Lt
+ vU1h9jVpoYT1JOQc1sGOMFlsbozS+uUU46yfQd/kMvdVd1MUx+0uyvq4HgZhx35nbplm4tXGp
+ oSxuvw2OzJaA36iLVxK3zO6A6CJ8z08TWjjLQ5+CpoeL1SDf9mpgCGblJA0eVZOIltdJN16vq
+ zx72bp8hH0vOO0bSeY2oYgKcZylIlwdAgh0Ud8GVEugxN2k9EFjFTsEPWlACzIiMz6iEsp3Gq
+ xB/8p49EdiD4Bas3+pCbo2sxqQAi4x1bqNXFEzYRjWCDcA8wjmVgIrFgHrVKURALcf9VVGP+N
+ 6Zj2BHQ9wmJPerz8XYFZ8C7ZlR7dOFsk/4YYKQqBxWq8rMW62B8sKeV8zwIB3jho/etlQMFJo
+ L4c1oeUrWnInr09ZPsdkDOw36RalUyNkvfQuarMIcewD3a4dWW67m8YpbBR0L8QMoqHTdgDCn
+ +c8ui68kt17IW8VSLDV2KKC7cNcMoc6btaGp8uwqaJ++TCCnxmOFkLMFBbJsck/SyAhj9s1mW
+ FPJf5CXh0sbw9Yqz8JvPLEImSIH9BLwu4D9lAQABycdk9et2oK/WpVjVX7JlBOS9KquviLXR3
+ xTRG5ir3KWH9lIqzBqakE47mMZ7i9r1nHSJnGOYD2vFxAYlH0x4TSkHZ1Md1oKc77XbKsuPVk
+ N3bwCBld2Tca4apFw0m7D70BCgZ6B0vO9soUqaK1A3U6cQ2DwfB6/63xrpZvhgsqrQr9cVdUA
+ quVsTUji1iJ7PTa0Is4XJ8iaBCv0YJtLU2H1iqiR+nKBXDMlAQOqEn+6rZj3KPZX7aqerK6t3
+ do1qo+Az06TLLwSsm8cI0aWKtJcldEXEH+xZ7r3xahFFkfahym1Xf3QLxCg3K68YoQQLsCD0+
+ cYH3nKRtakiDgVUNVm5mtVrXG/Lds//NCY2jFf+aPWNWa1DnRu47VW+qS1je/aNGOfInQ2nFS
+ +GiggS/om4SNG0=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 12:58 AM Saravana Kannan <saravanak@google.com> wrote:
->
-> On Tue, Sep 14, 2021 at 12:01 AM Geert Uytterhoeven
-> <geert@linux-m68k.org> wrote:
-> >
-> > Hi Saravana,
-> >
-> > On Tue, Sep 14, 2021 at 6:39 AM Saravana Kannan <saravanak@google.com> wrote:
-> > > When the driver core defers the probe of a device, set the deferred
-> > > probe reason so that it's easier to debug. The deferred probe reason is
-> > > available in debugfs under devices_deferred.
-> > >
-> > > Signed-off-by: Saravana Kannan <saravanak@google.com>
-> >
-> > Thanks for your patch!
->
-> Thanks for the reviews!
->
-> >
-> > > --- a/drivers/base/core.c
-> > > +++ b/drivers/base/core.c
-> > > @@ -955,6 +955,29 @@ static void device_links_missing_supplier(struct device *dev)
-> > >         }
-> > >  }
-> > >
-> > > +/**
-> > > + * dev_set_def_probe_reason - Set the deferred probe reason for a device
-> > > + * @dev: the pointer to the struct device
-> > > + * @fmt: printf-style format string
-> > > + * @...: arguments as specified in the format string
-> > > + *
-> > > + * This is a more caller-friendly version of device_set_deferred_probe_reason()
-> > > + * that takes variable argument inputs similar to dev_info().
-> > > + */
-> > > +static void dev_set_def_probe_reason(const struct device *dev, const char *fmt, ...)
-> >
-> > So this is indeed similar to device_set_deferred_probe_reason(),
-> > but the function's name is completely different, unlike e.g.
-> > (v)printf()?
->
-> Yes.
->
-> >
-> > > +{
-> > > +       struct va_format vaf;
-> > > +       va_list args;
-> > > +
-> > > +       va_start(args, fmt);
-> > > +       vaf.fmt = fmt;
-> > > +       vaf.va = &args;
-> > > +
-> > > +       device_set_deferred_probe_reason(dev, &vaf);
-> > > +
-> > > +       va_end(args);
-> > > +}
-> >
-> > I think you can just make this a macro wrapper calling
-> > dev_err_probe(dev, -EPROBE_DEFER, fmt, ...).
-> > Or open-code that below.
->
-> Good point. I think I can make it be a wrapper macro.
->
-> >
-> > > +
-> > >  /**
-> > >   * device_links_check_suppliers - Check presence of supplier drivers.
-> > >   * @dev: Consumer device.
-> > > @@ -975,6 +998,7 @@ int device_links_check_suppliers(struct device *dev)
-> > >  {
-> > >         struct device_link *link;
-> > >         int ret = 0;
-> > > +       struct fwnode_handle *sup_fw;
-> > >
-> > >         /*
-> > >          * Device waiting for supplier to become available is not allowed to
-> > > @@ -983,10 +1007,13 @@ int device_links_check_suppliers(struct device *dev)
-> > >         mutex_lock(&fwnode_link_lock);
-> > >         if (dev->fwnode && !list_empty(&dev->fwnode->suppliers) &&
-> > >             !fw_devlink_is_permissive()) {
-> > > +               sup_fw = list_first_entry(&dev->fwnode->suppliers,
-> > > +                                         struct fwnode_link,
-> > > +                                         c_hook)->supplier;
-> > >                 dev_dbg(dev, "probe deferral - wait for supplier %pfwP\n",
-> > > -                       list_first_entry(&dev->fwnode->suppliers,
-> > > -                       struct fwnode_link,
-> > > -                       c_hook)->supplier);
-> > > +                       sup_fw);
-> > > +               dev_set_def_probe_reason(dev,
-> > > +                       "wait for supplier %pfwP\n", sup_fw);
-> >
-> > dev_err_probe() would replace both the dev_dbg() and the
-> > dev_set_def_probe_reason().
->
-> I intentionally didn't use dev_err_probe() because:
->
-> 1. I wanted the messages to be a bit different -- not have the "probe
-> deferral" in the deferred_devices file but have it in the dmesg logs
-> so that the log is clearer.
+Hi,
 
-Nevermind, I see that dev_err_probe() prints the log with
--EPROBE_DEFER but sets the reason without that string. Which is kinda
-similar to what I'm trying to do here. So I'll go with that
-suggestion.
-
-> 2. And more importantly, I'm working on a patch (could take a few
-> weeks) that'll make this place return -EPROBE_DEFER vs -ENODEV (or
-> whatever) for different situations. And using dev_err_probe() with
-> -ENODEV would cause it to print the error (when I don't want it to).
-> And always doing dev_err_probe(dev, -EPROBE_DEFER,...) while returning
-> -ENODEV would be confusing.
-
-I'll deal with this when I send out that patch.
-
-Thanks for the review.
-
--Saravana
-
+On 14.09.21 at 20:48, Vladimir Oltean wrote:
+> On Mon, Sep 13, 2021 at 01:01:20PM +0200, Lino Sanfilippo wrote:
+>>>>> Could you post the full kernel output? The picture you've posted is
+>>>>> truncated and only shows a WARN_ON in rpi_firmware_transaction and i=
+s
+>>>>> probably a symptom and not the issue (which is above and not shown).
+>>>>>
+>>>>
+>>>> Unfortunately I dont see anything in the kernel log. The console outp=
+ut is all I get,
+>>>> thats why I made the photo.
+>>>
+>>> To clarify, are you saying nothing above this line gets printed? Becau=
+se
+>>> the part of the log you've posted in the picture is pretty much
+>>> unworkable:
+>>>
+>>> [   99.375389] [<bf0dc56c>] (bcm2835_spi_shutdown [spi_bcm2835]) from =
+[<c0863ca0>] (platform_drv_shutdown+0x2c/0x30)
+>>>
+>>> How do you access the device's serial console? Use a program with a
+>>> scrollback buffer like GNU screen or something.
+>>>
+>>
+>> Ah no, this is not over a serial console. This is what I see via hdmi. =
+I do not have a working serial connection yet.
+>> Sorry I know this trace part is not very useful, I will try to get a fu=
+ll dump.
 >
-> >
-> > >                 mutex_unlock(&fwnode_link_lock);
-> > >                 return -EPROBE_DEFER;
-> > >         }
-> > > @@ -1003,6 +1030,9 @@ int device_links_check_suppliers(struct device *dev)
-> > >                         device_links_missing_supplier(dev);
-> > >                         dev_dbg(dev, "probe deferral - supplier %s not ready\n",
-> > >                                 dev_name(link->supplier));
-> > > +                       dev_set_def_probe_reason(dev,
-> > > +                               "supplier %s not ready\n",
-> > > +                               dev_name(link->supplier));
-> >
-> > Likewise.
+> Lino, are you going to provide a kernel output so I could look at your n=
+ew breakage?
+> If you could set up a pstore logger with a ramoops region, you could
+> dump the log after the fact. Or if HDMI is all you have, you could use
+> an HDMI capture card to record it. Or just record the screen you're
+> looking at, as long as you don't have very shaky hands, whatever...
 >
-> Same reason as above.
->
-> I mainly added you for comments on 5/5. Hopefully you'll have some
-> comments on that too by the time I'm up tomorrow :)
->
-> -Saravana
->
-> >
-> > >                         ret = -EPROBE_DEFER;
-> > >                         break;
-> > >                 }
-> >
-> > Gr{oetje,eeting}s,
-> >
-> >                         Geert
-> >
-> > --
-> > Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> >
-> > In personal conversations with technical people, I call myself a hacker. But
-> > when I'm talking to journalists I just say "programmer" or something like that.
-> >                                 -- Linus Torvalds
+
+Yes, I will try to get something useful. I have already set up a serial co=
+nnection
+now. I still see the shutdown stopping with your patch but I have not seen=
+ the
+kernel dump any more. I will try further and provide a dump as soon as I a=
+m successful.
+
+Regards,
+Lino
