@@ -2,149 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE76240C9BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 18:07:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBF5540C9CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 18:10:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235240AbhIOQIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 12:08:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54444 "EHLO
+        id S231490AbhIOQMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 12:12:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230022AbhIOQIe (ORCPT
+        with ESMTP id S229728AbhIOQMD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 12:08:34 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95898C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 09:07:15 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id x5so2726265qtq.13
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 09:07:15 -0700 (PDT)
+        Wed, 15 Sep 2021 12:12:03 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84909C061575
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 09:10:44 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id i7so6891499lfr.13
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 09:10:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=labbott.name; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=VQvaj+BATVuAU9GeASbA/D0cvm8/Buiuj4FOo4+QV9E=;
-        b=R3pzufHKwAcdJsYtIx3BndJSeQ4l2vKzndidaFHWAnBrTlHnJhhzlJzHIjC7NhUksI
-         h26AltiD3bVuRMUqXWuqEXFCot/xXRzPYAvBULTUiXfTLwqzs/wrdkyjeQjlgLK2cwS3
-         YvTbf7GTfgHLtbMltAleMZVRSCC/ApcOZSzdQ=
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LG6oYYKQ5hdREOt/eg92Zw7cqO0Rzzfom1gwS1jbMGo=;
+        b=CVtbjEk5K4t/prVtq6j3LDnqxK2VUaLQhWN9DR2to9qfBh1IA2zItyoEd0LcJ9i4yZ
+         cexL6csyt7Av3MfMFFP1MMgcREc7JyE5RNZg0Tw2eOG07Ht5S7Ifp9lrIlwGuN14UZ3s
+         c1POtIjYVGXt1Yf9wk+0o6afCv+4a39i1tHCuHGlsjZMWaMV4Dn3lwvqCPBYScOkxZ17
+         jhsAxq/nOk47WeJ4JTnFI7swTWxgKDozPUGeQvLCg56o4/I1XrBjTsvIR3RrcfjYDaOy
+         IqSfG7g38s0euoVDbuZ/lI/klUUIj42kwdrdz2K+zUV7wknN9ERzRM2b4rHBfA6p+prC
+         /FmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=VQvaj+BATVuAU9GeASbA/D0cvm8/Buiuj4FOo4+QV9E=;
-        b=c+P7XUQjuYmqx7y54XVojMv93VGIZJ4IwfreHvLNvsO4/Duhg1fxOvpr9HnqaChAoU
-         5b+ppkSTYhsLsG9GxNhnw7yFCG26IQmjdzswilHUz1SptZoCWm4nNOgurRjN9YEsmPni
-         yq7gb3+6/6rAjW47S7HHbSf4EGhHF6fq79ObtMtUjhhFsRSsQoGgK2ixkkr1F7YyCttQ
-         G4UYGyhKdoTJ2MKPmv1GyHePhLTWyxoerAZY+/pOzVj35mfgeoooDBNH8edGMbGGpGTG
-         FMzfLSgg0BW42PMQqRh2UX9MOHxESk+1Hwi5luBFViszkXyO1sGdYh6d6PKN2w5geEyx
-         NPQw==
-X-Gm-Message-State: AOAM533Bk1C1NQQBjkbO0tPnUj3jSiCOAZqbnK35Yj7JfLT8XU25foAi
-        1+ZGWLBCpGYdgTGI4xb0N1XmVA==
-X-Google-Smtp-Source: ABdhPJyYbBv8KS4VnwIeQ+1TDX/GR6PuzRd4p00a+oxpjjV9ggNIw610I/iO0OhJfdfxZwv75wTVvQ==
-X-Received: by 2002:ac8:202:: with SMTP id k2mr579857qtg.398.1631722034606;
-        Wed, 15 Sep 2021 09:07:14 -0700 (PDT)
-Received: from [192.168.1.168] (pool-74-109-246-95.pitbpa.fios.verizon.net. [74.109.246.95])
-        by smtp.gmail.com with ESMTPSA id q184sm314997qkd.35.2021.09.15.09.07.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Sep 2021 09:07:14 -0700 (PDT)
-Message-ID: <90e00588-3596-01f5-e5a0-73516224b883@labbott.name>
-Date:   Wed, 15 Sep 2021 12:07:13 -0400
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LG6oYYKQ5hdREOt/eg92Zw7cqO0Rzzfom1gwS1jbMGo=;
+        b=AypQu5NO4h6lVMgPgY6312Ms5mN5C+m4qx9PR4BlWQo9V3Lpb6nPIlYc0ihWsqKpSi
+         cHnMvXhn47fUA8BdjT+YBdqztporG93SJTzswgBLbAx7GgNNHhRNXFY7tvUarvTF0HKl
+         Ouz61lUMVlECzn8oJxcRdlAYfudV51U9K+ebddU19alM0CIRTnpmYGhzxMtAU50T77sT
+         nS3poc8H2Rkwx1ZBVST38XHmqUX387le2vUGDySU0hUBwnonVhjC/dtHjfP2lNZnbz4K
+         2+P9g8fWp2yyzX8zWLLZiKypsDi8+T46Fggn7cYquydDpQ3XjNhZeZdjFWyDo3PnflCm
+         jOTA==
+X-Gm-Message-State: AOAM530Irvc9Gl+uJUf+RX1TRw9oCTpAJhRAAxP6iI0dkwOllHABN4Go
+        PLj5dcvKsRITyGLNrSJRZ6PCQRGiOntH3vEjgS6U6w==
+X-Google-Smtp-Source: ABdhPJwR0G1WRzA28YLxO95CjUKaPkIJXXQeDRc9wNQZlNdHnZmcAdwjge/2MmmhKBKCpnCzlllmX9brYKMNSsouk1U=
+X-Received: by 2002:ac2:483b:: with SMTP id 27mr530040lft.644.1631722242444;
+ Wed, 15 Sep 2021 09:10:42 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: Reminder: Voting procedures for the Linux Foundation Technical
- Advisory Board
-Content-Language: en-US
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     ksummit@lists.linux.dev,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "tech-board-discuss@lists.linuxfoundation.org" 
-        <tech-board-discuss@lists.linuxfoundation.org>
-References: <fccbdadc-a57a-f6fe-68d2-0fbac2fd6b81@labbott.name>
- <b90db9e7-9b6b-c415-d087-3505ba0be0d6@labbott.name>
- <YUH+DO5aHWGVdNb7@pendragon.ideasonboard.com>
- <dc45975a-86df-a70d-ff15-58a3bdcf09ee@labbott.name>
- <YUIHPv3uvAZjJxfB@pendragon.ideasonboard.com>
-From:   Laura Abbott <laura@labbott.name>
-In-Reply-To: <YUIHPv3uvAZjJxfB@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20210914171551.3223715-1-pgonda@google.com> <YUDcvRB3/QOXSi8H@google.com>
+ <CAMkAt6opZoFfW_DiyJUREBAtd8503C6j+ZbjS9YL3z+bhqHR8Q@mail.gmail.com>
+ <YUDsy4W0/FeIEJDr@google.com> <CAMkAt6r9W=bTzLkojjAuc5VpwJnSzg7+JUp=rnK-jO88hSKmxw@mail.gmail.com>
+ <YUDuv1aTauPz9aqo@google.com> <8d58d4cb-bc0b-30a9-6218-323c9ffd1037@redhat.com>
+In-Reply-To: <8d58d4cb-bc0b-30a9-6218-323c9ffd1037@redhat.com>
+From:   Peter Gonda <pgonda@google.com>
+Date:   Wed, 15 Sep 2021 10:10:31 -0600
+Message-ID: <CAMkAt6oPijfkPjT4ARpVmXfdczChf2k3ACBwK0YZeuGOxMAE8Q@mail.gmail.com>
+Subject: Re: [PATCH] KVM: SEV: Disable KVM_CAP_VM_COPY_ENC_CONTEXT_FROM for SEV-ES
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        kvm list <kvm@vger.kernel.org>, Marc Orr <marcorr@google.com>,
+        Nathan Tempelman <natet@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/15/21 10:46, Laurent Pinchart wrote:
-> Hi Laura,
-> 
-> On Wed, Sep 15, 2021 at 10:36:45AM -0400, Laura Abbott wrote:
->> On 9/15/21 10:07, Laurent Pinchart wrote:
->>> On Wed, Sep 15, 2021 at 09:58:32AM -0400, Laura Abbott wrote:
->>>> On 9/9/21 12:49, Laura Abbott wrote:
->>>>> Hi,
->>>>>
->>>>> Reminder that the Linux Foundation Technical Advisory Board (TAB) annual
->>>>> election will be held virtually during the 2021 Kernel Summit and Linux
->>>>> Plumbers Conference. Voting will run from September 20th to September
->>>>> 23rd 16:00 GMT-4 (US/Eastern). The voting criteria for the 2021 election
->>>>> are:
->>>>>
->>>>> There exist three kernel commits in a mainline or stable released
->>>>> kernel that both
->>>>> - Have a commit date in the year 2020 or 2021
->>>>> - Contain an e-mail address in one of the following tags or merged
->>>>> tags (e.g. Reviewed-and-tested-by)
->>>>> -- Signed-off-by
->>>>> -- Tested-by
->>>>> -- Reported-by
->>>>> -- Reviewed-by
->>>>> -- Acked-by
->>>>>
->>>>> If you have more than 50 commits that meet this requirement you will
->>>>> receive a ballot automatically.
->>>>>
->>>>> If you have between 3 and 49 commits that meet this requirement please
->>>>> e-mail tab-elections@lists.linuxfoundation.org to request your ballot.
->>>>> We strongly encourage everyone who meets this criteria to request a
->>>>> ballot.
->>>>>
->>>>> We will be using Condorcet Internet Voting
->>>>> Service (CIVS) https://civs1.civs.us/ . This is a voting service
->>>>> focused on security and privacy. There are sample polls on the
->>>>> website if you would like to see what a ballot will look like.
->>>>>
->>>>> If you have any questions please e-mail
->>>>> tab-elections@lists.linuxfoundation.org.
->>>>>
->>>>> Thanks,
->>>>> Laura
->>>>>
->>>>> P.S. Please also consider this another reminder to consider running for
->>>>> the TAB as well
->>>>
->>>> Final reminder: please remember to request your ballot for the TAB
->>>> elections. If you know others who are eligible please encourage
->>>> them to request a ballot as well.
->>>
->>> When are the ballots supposed to be sent ? It would be nice to avoid
->>> requiring everybody to check whether they're below or above the 50
->>> commits threshold manually :-)
->>
->> The ballots will be sent sometime after Monday September 20th
->> 9:00am GMT-4 (US/Eastern).
->>
->> I did make an attempt to send e-mails to the > 50 commits individuals
->> but there is a chance my e-mail got eaten by spam filters or just
->> didn't get sent out. I discovered Google Apps' e-mail limits and
->> that you should not attempt to bcc too many people. This is something
->> I'd like to handle in a more automated fashion next year to make
->> it easier for both voters and those running the elections.
-> 
-> Does it mean I should ask for a ballot after the 20th if I don't get
-> one, or request one *before* ? I meet the above criteria but haven't
-> received any ballot yet, so I was unsure whether I should ask or wait.
-> 
+On Wed, Sep 15, 2021 at 2:44 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>
+> On 14/09/21 20:49, Sean Christopherson wrote:
+> > On Tue, Sep 14, 2021, Peter Gonda wrote:
+> >> I do not think so. You cannot call KVM_SEV_LAUNCH_UPDATE_VMSA on the mirror
+> >> because svm_mem_enc_op() blocks calls from the mirror. So either you have to
+> >> update vmsa from the mirror or have the original VM read through its mirror's
+> >> vCPUs when calling KVM_SEV_LAUNCH_UPDATE_VMSA. Not sure which way is better
+> >> but I don't see a way to do this without updating KVM.
+> >
+> > Ah, right, I forgot all of the SEV ioctls are blocked on the mirror.  Put something
+> > to that effect into the changelog to squash any argument about whether or not this
+> > is the correct KVM behavior.
+>
+> Indeed, at least KVM_SEV_LAUNCH_UPDATE_VMSA would have to be allowed in
+> the mirror VM.  Do you think anything else would be necessary?
 
-The intention was that if you were in the range of between 3-49 commits
-you would ask for a ballot now.
+Thanks Paolo. Yes I think that only the KVM_SEV_LAUNCH_UPDATE_VMSA
+ioctl needs to be allowed on the mirror VM. But I don't think that's
+the only changes needed. Additionally the mirror VM will need the sev
+'handle' and the sev device 'fd' copied in vm_vm_copy_asid_from(). The
+handle is needed for KVM_SEV_LAUNCH_UPDATE_VMSA, the fd is required
+for sev_issue_cmd(). Also you you'd need to mirror es_active bool. (I
+think its quite confusing that svm_vm_copy_asid_from() only copies
+some of the metadata in sev_info but I can see why as the locked pages
+and cg group metadata shouldn't be copied.)  I *think* that would be
+all that's needed but I haven't tried or tested this in any way.
 
-Thanks,
-Laura
+svm_vm_copy_asid_from() {
+
+   asid = to_kvm_svm(source_kvm)->sev_info.asid;
++ handle = to_kvm_svm(source_kvm)->sev_info.handle;
++ fd = to_kvm_svm(source_kvm)->sev_info.fd;
++ es_active = to_kvm_svm(source_kvm)->sev_info.es_active;
+
+...
+
+    /* Set enc_context_owner and copy its encryption context over */
+    mirror_sev = &to_kvm_svm(kvm)->sev_info;
+    mirror_sev->enc_context_owner = source_kvm;
+    mirror_sev->asid = asid;
+    mirror_sev->active = true;
++  mirror_sev->handle = handle;
++  mirror_sev->fd = fd;
++ mirror_sev->es_active = es_active;
+
+Paolo would you prefer a patch to enable ES mirroring or continue with
+this patch to disable it for now?
+
+>
+> Paolo
+>
