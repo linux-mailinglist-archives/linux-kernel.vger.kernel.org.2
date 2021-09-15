@@ -2,231 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B735D40CA50
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 18:34:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F24E40CA24
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 18:32:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231226AbhIOQfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 12:35:44 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3832 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230226AbhIOQfd (ORCPT
+        id S229750AbhIOQeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 12:34:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31836 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229665AbhIOQeC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 12:35:33 -0400
-Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4H8m2B67JVz67vP9;
-        Thu, 16 Sep 2021 00:31:46 +0800 (CST)
-Received: from roberto-ThinkStation-P620.huawei.com (10.204.63.22) by
- fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Wed, 15 Sep 2021 18:34:10 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     <zohar@linux.ibm.com>, <gregkh@linuxfoundation.org>,
-        <mchehab+huawei@kernel.org>
-CC:     <linux-integrity@vger.kernel.org>,
-        <linux-security-module@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Subject: [RFC][PATCH 9/9] diglim: Admin guide
-Date:   Wed, 15 Sep 2021 18:31:45 +0200
-Message-ID: <20210915163145.1046505-10-roberto.sassu@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210915163145.1046505-1-roberto.sassu@huawei.com>
-References: <20210915163145.1046505-1-roberto.sassu@huawei.com>
+        Wed, 15 Sep 2021 12:34:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631723563;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YHkGOnRH445M1d9hLlLUWfMXPA2J8M8wItfcEOw5gl8=;
+        b=H58BILloeWUdLpi3dd7EBmiqxZsj2HXtYwWSd3C8+n1JV5kw7QDn1pdM3itUYYoYr+RfBy
+        on3W8H97vqljaH3pPsw3d/bCRXHP0sMfGbJqvUPivIQd0PqMRbzLI2hE7pypQ+ezHL0npC
+        4ASfoYSkzrt7AaIR1B8FksBPj5BXSQ4=
+Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
+ [209.85.161.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-137-0YkB5H4mMmucOe1lRJOTKw-1; Wed, 15 Sep 2021 12:32:42 -0400
+X-MC-Unique: 0YkB5H4mMmucOe1lRJOTKw-1
+Received: by mail-oo1-f71.google.com with SMTP id bc36-20020a05682016a400b0028c8e8a2746so3629938oob.5
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 09:32:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=YHkGOnRH445M1d9hLlLUWfMXPA2J8M8wItfcEOw5gl8=;
+        b=eraJVGKl/xGhTGt5FPtLh0Jr4MwQd3x6t5DTwXwZlBR0t2RChya59CbcgtKNOUpliJ
+         nj6fvvDKLff8QpBBZUc3+ow4KrcIalayBI8hAEQQviSXb2l/VQUM1P0TwIUGiNG0Fqsu
+         HdoAhLXMPJHeNIHXey8l3mls1T7tzkCTYetUsaNDYezuDK/t8TCwR39QVDWreW6R1hgs
+         U1G6TKp8VmQp9OMeJF7TLtbvlQO8fXcVoGFn8mnGW2ezY/IKb8Z6N761uI7h0SjjxMdE
+         xuewEnhKMbsPBPN5u55kZYU/CrGcf3zEkAf72Y+w4aZKPC1ERLDGpgLMP4TcT6qQzM3R
+         gDBA==
+X-Gm-Message-State: AOAM532vVQZ/XI+jzmWpeW5843yZT23wk5PZWJXb/djbr+e5j6viVjq/
+        bKbqIdSXgxL5WQPFf359yLIesM+vEWa7mKLbfVyjH9QtoqEcf340Ut4VZ5uSRnOIqBaJ+/PbT2D
+        O+xrs1+50pWHkU4d2PISG1m6B
+X-Received: by 2002:a9d:6398:: with SMTP id w24mr777170otk.140.1631723557705;
+        Wed, 15 Sep 2021 09:32:37 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyEqEMq5Emx3QGBfkQ0rbyCrZIePE3tj2f7Z2WEi4Rv/KLV4WT4gXmfCPEt+bUaapt3BePG7Q==
+X-Received: by 2002:a9d:6398:: with SMTP id w24mr777147otk.140.1631723557449;
+        Wed, 15 Sep 2021 09:32:37 -0700 (PDT)
+Received: from redhat.com ([198.99.80.109])
+        by smtp.gmail.com with ESMTPSA id q131sm122216oif.44.2021.09.15.09.32.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Sep 2021 09:32:37 -0700 (PDT)
+Date:   Wed, 15 Sep 2021 10:32:35 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Matthew Ruffell <matthew.ruffell@canonical.com>
+Cc:     linux-pci@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        kvm@vger.kernel.org, nathan.langford@xcelesunifiedtechnologies.com
+Subject: Re: [PROBLEM] Frequently get "irq 31: nobody cared" when passing
+ through 2x GPUs that share same pci switch via vfio
+Message-ID: <20210915103235.097202d2.alex.williamson@redhat.com>
+In-Reply-To: <9e8d0e9e-1d94-35e8-be1f-cf66916c24b2@canonical.com>
+References: <d4084296-9d36-64ec-8a79-77d82ac6d31c@canonical.com>
+        <20210914104301.48270518.alex.williamson@redhat.com>
+        <9e8d0e9e-1d94-35e8-be1f-cf66916c24b2@canonical.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.204.63.22]
-X-ClientProxiedBy: lhreml753-chm.china.huawei.com (10.201.108.203) To
- fraeml714-chm.china.huawei.com (10.206.15.33)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce a DIGLIM administration guide. Its main purpose is to help users
-to configure a system to load to the kernel all the digests of executable
-and firmware from the RPM DB, and kernel modules of a custom kernel and a
-temporary file mapped as executable as custom digest lists.
+On Wed, 15 Sep 2021 16:44:38 +1200
+Matthew Ruffell <matthew.ruffell@canonical.com> wrote:
+> On 15/09/21 4:43 am, Alex Williamson wrote:
+> > 
+> > FWIW, I have access to a system with an NVIDIA K1 and M60, both use
+> > this same switch on-card and I've not experienced any issues assigning
+> > all the GPUs to a single VM.  Topo:
+> > 
+> >  +-[0000:40]-+-02.0-[42-47]----00.0-[43-47]--+-08.0-[44]----00.0
+> >  |                                           +-09.0-[45]----00.0
+> >  |                                           +-10.0-[46]----00.0
+> >  |                                           \-11.0-[47]----00.0
+> >  \-[0000:00]-+-03.0-[04-07]----00.0-[05-07]--+-08.0-[06]----00.0
+> >                                              \-10.0-[07]----00.0
 
-With further patch sets, it will be possible to load an execution policy in
-IMA and create a measurement list only with digest lists and unknown files,
-and to perform secure boot at application level.
 
-Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
----
- Documentation/admin-guide/diglim.rst | 136 +++++++++++++++++++++++++++
- Documentation/admin-guide/index.rst  |   1 +
- MAINTAINERS                          |   1 +
- 3 files changed, 138 insertions(+)
- create mode 100644 Documentation/admin-guide/diglim.rst
+I've actually found that the above configuration, assigning all 6 GPUs
+to a VM reproduces this pretty readily by simply rebooting the VM.  In
+my case, I don't have the panic-on-warn/oops that must be set on your
+kernel, so the result is far more benign, the IRQ gets masked until
+it's re-registered.
 
-diff --git a/Documentation/admin-guide/diglim.rst b/Documentation/admin-guide/diglim.rst
-new file mode 100644
-index 000000000000..886100cf5a62
---- /dev/null
-+++ b/Documentation/admin-guide/diglim.rst
-@@ -0,0 +1,136 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+======
-+DIGLIM
-+======
-+
-+Digest Lists Integrity Module (DIGLIM) is an integrity extension aiming to
-+facilitate the deployment of remote attestation and secure boot solutions
-+based on Integrity Measurement Architecture (IMA).
-+
-+DIGLIM documentation can be retrieved at ``Documentation/security/diglim``.
-+
-+Kernel Configuration Options
-+============================
-+
-+DIGLIM can be enabled by setting ``CONFIG_DIGLIM=y`` in the kernel
-+configuration. Optionally, it is possible to set
-+``CONFIG_DIGLIM_DIGEST_LISTS_DIR`` with the directory digest lists are
-+taken from by a kernel loader executed at kernel initialization time.
-+Finally, with ``CONFIG_DIGLIM_UPLOADER_PATH`` it is possible to specify the
-+path of the digest list uploader, which will execute user space parsers to
-+process the digest lists in ``CONFIG_DIGLIM_DIGEST_LISTS_DIR`` that are not
-+in the format recognized by the kernel.
-+
-+
-+LSM
-+===
-+
-+DIGLIM includes an LSM to protect user space parsers from other processes,
-+when the parsers convert a digest list and uploads it to the kernel. As for
-+other LSMs, ``diglim`` should be added to the list of enabled LSMs,
-+provided with the ``lsm=`` kernel option. If DIGLIM LSM is not enabled,
-+digest lists uploaded by the parser will not be marked as processed by IMA
-+and will not be suitable for use.
-+
-+
-+Setup
-+=====
-+
-+Digest lists must be loaded as soon as possible, before files are accessed,
-+so that IMA finds the digest of those files with a query. More details on
-+the benefits of DIGLIM for IMA can be found in
-+``Documentation/security/diglim/introduction.rst``.
-+
-+
-+Digest List Generation
-+----------------------
-+
-+Digest lists can be generated with the tools provided in ``tools/diglim``
-+in the kernel sources. In order to compile the tools, it is necessary to
-+install the ``glibc-static`` and ``rpm-devel`` packages.
-+
-+``compact_gen`` can be used to generate digest lists in the compact format,
-+which can be directly uploaded to the kernel.
-+
-+In order to upload digests from the RPM database, it is necessary to
-+generate three digest lists: one for ``upload_digest_lists``, which is
-+responsible to execute the parsers for digest lists not in the compact
-+format; two for ``rpm_parser``, which actually loads the RPM digest lists.
-+
-+``rpm_parser`` requires two digest lists, one for identification by DIGLIM
-+LSM, and the other for measurement and appraisal with IMA. The commands
-+are::
-+
-+ # tools/diglim/compact_gen -d /etc/digest_lists -i /usr/libexec/diglim/rpm_parser -t parser
-+ # tools/diglim/compact_gen -d /etc/digest_lists -i /usr/libexec/diglim/rpm_parser -t file
-+ # tools/diglim/compact_gen -d /etc/digest_lists -i /usr/libexec/diglim/upload_digest_lists -t file
-+
-+Optionally, an appended signature can be added to the generated digest
-+lists, with the sign-file tool included in the kernel sources::
-+
-+ # scripts/sign-file sha256 certs/signing_key.pem certs/signing_key.pem /etc/digest_lists/0-parser_list-compact-rpm_parser
-+ # scripts/sign-file sha256 certs/signing_key.pem certs/signing_key.pem /etc/digest_lists/0-file_list-compact-rpm_parser
-+ # scripts/sign-file sha256 certs/signing_key.pem certs/signing_key.pem /etc/digest_lists/0-file_list-compact-upload_digest_lists
-+
-+With an appropriate policy, appended signatures can be seen in the
-+measurement, by selecting the ``ima-modsig`` template.
-+
-+Afterwards, digest lists can be generated from the RPM database with the
-+command::
-+
-+ # tools/diglim/rpm_gen -d /etc/digest_lists
-+
-+If a custom kernel is used, an additional digest list should be generated
-+for kernel modules::
-+
-+ # tools/diglim/compact_gen -d /etc/digest_lists -i /lib/modules/`uname -r` -t file
-+ # scripts/sign-file sha256 certs/signing_key.pem certs/signing_key.pem /etc/digest_lists/0-file_list-compact-`uname -r`
-+
-+Finally, in Fedora there is an mmap with execution permission on a file
-+with 4K of zeros. A digest list can be generated by executing::
-+
-+ # dd if=/dev/zero of=/tmp/mmap bs=4096 count=1
-+ # tools/diglim/compact_gen -d /etc/digest_lists -i /tmp/mmap -f
-+ # scripts/sign-file sha256 certs/signing_key.pem certs/signing_key.pem /etc/digest_lists/0-file_list-compact-mmap
-+
-+
-+Initial Ram Disk
-+----------------
-+
-+Generated digest lists should be copied to the initial ram disk in the
-+``CONFIG_DIGLIM_DIGEST_LISTS_DIR`` directory. This can be accomplished,
-+with dracut, by adding in /etc/dracut.conf::
-+
-+ install_optional_items+=" /etc/digest_lists/* "
-+
-+if ``CONFIG_DIGLIM_DIGEST_LISTS_DIR=/etc/digest_lists``.
-+
-+``upload_digest_lists`` and ``rpm_parser`` can be also copied to the
-+initial ram disk by adding the following lines in /etc/dracut.conf::
-+
-+ install_optional_items+=" /usr/libexec/diglim/upload_digest_lists "
-+ install_optional_items+=" /usr/libexec/diglim/rpm_parser "
-+
-+assuming that the binaries are installed in /usr/libexec/diglim.
-+
-+Another important option is::
-+
-+ do_strip="no"
-+
-+This prevents dracut from stripping the symbols from binaries. If binaries
-+are altered, their digest will be different from the reference value and
-+will not be found in the DIGLIM hash table.
-+
-+
-+Boot and Digest List Upload
-+---------------------------
-+
-+After generating the initial ram disk and rebooting, digest lists should
-+have been added to the DIGLIM hash table. This can be checked by executing::
-+
-+ # cat /sys/kernel/security/integrity/diglim/digests_count
-+ Parser digests: 1
-+ File digests: 104273
-+ Metadata digests: 0
-+ Digest list digests: 2430
-diff --git a/Documentation/admin-guide/index.rst b/Documentation/admin-guide/index.rst
-index dc00afcabb95..1cc7d3b3e79c 100644
---- a/Documentation/admin-guide/index.rst
-+++ b/Documentation/admin-guide/index.rst
-@@ -79,6 +79,7 @@ configure specific aspects of kernel behavior to your liking.
-    cputopology
-    dell_rbu
-    device-mapper/index
-+   diglim
-    edid
-    efi-stub
-    ext4
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 1efc1724376e..953c86915c49 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5507,6 +5507,7 @@ M:	Roberto Sassu <roberto.sassu@huawei.com>
- L:	linux-integrity@vger.kernel.org
- S:	Supported
- T:	git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git
-+F:	Documentation/admin-guide/diglim.rst
- F:	Documentation/security/diglim/architecture.rst
- F:	Documentation/security/diglim/implementation.rst
- F:	Documentation/security/diglim/index.rst
--- 
-2.25.1
+The fact that my upstream ports are using MSI seems irrelevant.
+
+Adding debugging to the vfio-pci interrupt handler, it's correctly
+deferring the interrupt as the GPU device is not identifying itself as
+the source of the interrupt via the status register.  In fact, setting
+the disable INTx bit in the GPU command register while the interrupt
+storm occurs does not stop the interrupts.
+
+The interrupt storm does seem to be related to the bus resets, but I
+can't figure out yet how multiple devices per switch factors into the
+issue.  Serializing all bus resets via a mutex doesn't seem to change
+the behavior.
+
+I'm still investigating, but if anyone knows how to get access to the
+Broadcom datasheet or errata for this switch, please let me know.
+Thanks,
+
+Alex
 
