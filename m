@@ -2,151 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BB5140BE3A
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 05:29:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D65940BE3E
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 05:29:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236093AbhIODad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 23:30:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50154 "EHLO
+        id S236159AbhIODas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 23:30:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230015AbhIODac (ORCPT
+        with ESMTP id S229983AbhIODaq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 23:30:32 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C87EBC061574;
-        Tue, 14 Sep 2021 20:29:13 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id p29so3012227lfa.11;
-        Tue, 14 Sep 2021 20:29:13 -0700 (PDT)
+        Tue, 14 Sep 2021 23:30:46 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF4E0C061574;
+        Tue, 14 Sep 2021 20:29:28 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so3910991pjr.1;
+        Tue, 14 Sep 2021 20:29:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xjPe0L3/nKX+cxkcdx6J3H8tI9DskxplI0rZEOeSfEI=;
-        b=cItu3tzlIDDd7Y1hg8IJ917JedA08BLloCM/HgDzINxwBv20gae3/2mnvIen/26P63
-         cGIFNnmZp7wbtI8qMriLggtFBUk2+Zvk77SM29S6z/AGp56JT2vMTaUDQ9uBaoUFHkfx
-         F4gUfx3urNci+GoBWnAh6/iVx13KAt7XYF26lRCkn3yZIWrQeHps+Sw0gHckX9Bi1fhs
-         Z7rFQXcr8CF6cMt815lk9ti8IZ5zQlWie6bvy8a2lcVrpQWvqkozqg6INqoNU5PgKYpY
-         dvewlFLqvkOBlKDccqTsQ/0+lES85p0o0G6gQZTUwV5NnxkOhGEBfNCbgiaAVk5Gic0f
-         UDFg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=uT7lgy6zBb7N/ehnvHKTQrLcgZmZaL4s6/TKynv0i24=;
+        b=m+DuAAM4oo4JFjhBYvWp9e7IS0bTVvDEMaBXA4Y3u+GXxoTUVLTm3vptrIvHhUsf+J
+         kgSMV0idgr0HmbfsbOviUd6iHLYZDv1yL1egEIyX5MIqsl/2z7JYA+xbG3RlVBV8uz2U
+         lnUKtd4eDEz4ikmEDkq11lSTTU6Y5VI32cvNv/5qnaVYOYeUEVfKsXb3S8+2NoC/pfCI
+         jSgz8HsY8Wkq/9b+xQhOYyZoA4pyWgO0GeiNFDjWDjLTvRO2HPixRjRbEN3xrm+ZWwsl
+         yDS7qKcfVbCA+exu6QivRCCt1Ty2PC8GdhxK377Y/Au5U1wcds2fwLvyv/n7BCZpDr5e
+         LtCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xjPe0L3/nKX+cxkcdx6J3H8tI9DskxplI0rZEOeSfEI=;
-        b=uCuxaBhY5FCNXg1QRpl3WDoHNFdGMLNajXfvvUV63VJUvUbZZUoHwMRrYXxfGA1JHy
-         f/ICQTpKli8QotWi8u4Mjgb8fUSbhhbhh4MSqsWfTfywGKLq7GGOA5Az07p3atFgw5Bt
-         ImpAWjm/KRV6MbbEb/EafjRx10OhycdHJYJIOCog4hzlLsPHSF0HgyhWjrqX68hctAyO
-         F2wioUVcTeCBmVL4ID0ZV1+McWbawIjy7XKnUUqNMTvktd/L00K4HPS7SxGIppUXc6Bk
-         NTk626M5OyVEhO+56ujmxvWHoOner86dRymjvWdaeMIOw//2T56vr4IoTrpn2FtsbqPz
-         2fQg==
-X-Gm-Message-State: AOAM530qsqcuJFEzjR/4TYS4GYXN3ptWx1EysAALG5WmEXDu9qRkG1jy
-        Tz1r06otRhJjQDkeA+wVRBTss9OSawanyg7ufcS5pwpq
-X-Google-Smtp-Source: ABdhPJyXnY5xw1lixcYCeqp6mFmyw+KSA3GBfEYzlY7tBbUhvQE+FUVohBSaD8cqbi6xH8IjWGRq/6rRlVXN1Gc1sWs=
-X-Received: by 2002:a19:c512:: with SMTP id w18mr14982680lfe.182.1631676552185;
- Tue, 14 Sep 2021 20:29:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200624195811.435857-1-maz@kernel.org> <20200624195811.435857-8-maz@kernel.org>
- <CAMuHMdV+Ev47K5NO8XHsanSq5YRMCHn2gWAQyV-q2LpJVy9HiQ@mail.gmail.com>
- <875yv8d91b.wl-maz@kernel.org> <CAMuHMdV+ydPaXbGf1_O0S-juaPWk1gwBUOK+GeLZukZeoqtMGQ@mail.gmail.com>
- <CANqRtoTqV8sOpL=hdxeZ03tqr+5oeMcfwz+9ERqXv+hze_6Fsw@mail.gmail.com>
- <874kaqdi2z.wl-maz@kernel.org> <CANqRtoTa8g2sw_DoD8+34HR0mcHc_tOWt+4R9KzDT2Eu3d7TTg@mail.gmail.com>
- <CAMuHMdX3Vf8Mxuz3=Aoi1hwMS7BtyYCH178QvVS-GAHDpeMvxg@mail.gmail.com>
-In-Reply-To: <CAMuHMdX3Vf8Mxuz3=Aoi1hwMS7BtyYCH178QvVS-GAHDpeMvxg@mail.gmail.com>
-From:   Magnus Damm <magnus.damm@gmail.com>
-Date:   Wed, 15 Sep 2021 12:28:59 +0900
-Message-ID: <CANqRtoQb1p1X+dOaQjh1atokDAR-oS4NB6m-UrHpO031SZ0hew@mail.gmail.com>
-Subject: Re: [PATCH v2 07/17] irqchip/gic: Atomically update affinity
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Russell King <linux@arm.linux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=uT7lgy6zBb7N/ehnvHKTQrLcgZmZaL4s6/TKynv0i24=;
+        b=lcF3oZJt5GOEkeZa5ERIJ2m2shBz3ojVWxPOyBfvAw7Yy+xYjauAdJJTUMFRSgOKVa
+         NP4mXV9gRnivECqy8VaZ259pi/ZVFFZLnPtdhlXDN4O/MDyECAMCLOItozOfHNtcPeYZ
+         x/q447rS12OmLYsxSZvqkcwZWyiB+9mNYQd7GJJS9trEGyNkz1HTzkqDbrzojXc1Wpvu
+         Qzv913wkFkns10LhJmd1bM4zgOsbaPSvVYnB+D2kQlT+BT7mBUzLeiLcPrYDVr++t8+6
+         sTlX+xgySd/iLmUxcgx00mbBgc2SgF4FfVqq2xDruH1SRYHgB5wE2XYge/Je8Ydh9Ubx
+         CVNA==
+X-Gm-Message-State: AOAM532dF+kSEOBEoN1i/OOSoG0CeoHpa8aIUrjff6GvYlPmuqam5a+A
+        C894Q2Jqaq5ygz9Z/Heq8Kg=
+X-Google-Smtp-Source: ABdhPJynoM/BujMCmyDoKceEwK7oXabTKhQCj975dn97xRe9dewS669tscUlGx7ManitvurHLVc2qQ==
+X-Received: by 2002:a17:90a:718c:: with SMTP id i12mr5934342pjk.182.1631676568267;
+        Tue, 14 Sep 2021 20:29:28 -0700 (PDT)
+Received: from [172.30.1.2] ([14.32.163.5])
+        by smtp.gmail.com with ESMTPSA id t13sm3256731pjj.1.2021.09.14.20.29.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Sep 2021 20:29:27 -0700 (PDT)
+Subject: Re: [RFC 05/19] devfreq: imx8m-ddrc: Use the opps acquired from EL3
+To:     Abel Vesa <abel.vesa@nxp.com>, Rob Herring <robh@kernel.org>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Georgi Djakov <djakov@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
+        linux-serial@vger.kernel.org, NXP Linux Team <linux-imx@nxp.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Valentin Schneider <Valentin.Schneider@arm.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Android Kernel Team <kernel-team@android.com>,
-        stable <stable@vger.kernel.org>,
-        Magnus Damm <damm+renesas@opensource.se>,
-        =?UTF-8?Q?Niklas_S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <1631554694-9599-1-git-send-email-abel.vesa@nxp.com>
+ <1631554694-9599-6-git-send-email-abel.vesa@nxp.com>
+From:   Chanwoo Choi <cwchoi00@gmail.com>
+Message-ID: <b52430cc-1216-8b3e-baec-7d3fffc1274a@gmail.com>
+Date:   Wed, 15 Sep 2021 12:29:20 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <1631554694-9599-6-git-send-email-abel.vesa@nxp.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert, everyone,
+Hi,
 
-On Mon, Sep 13, 2021 at 5:05 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Magnus,
->
-> On Sun, Sep 12, 2021 at 7:40 AM Magnus Damm <magnus.damm@gmail.com> wrote:
-> > On Sun, Sep 12, 2021 at 4:32 AM Marc Zyngier <maz@kernel.org> wrote:
-> > > On Sat, 11 Sep 2021 03:49:20 +0100,
-> > > Magnus Damm <magnus.damm@gmail.com> wrote:
-> > > > On Fri, Sep 10, 2021 at 10:19 PM Geert Uytterhoeven
-> > > > <geert@linux-m68k.org> wrote:
-> > > > > On Fri, Sep 10, 2021 at 12:23 PM Marc Zyngier <maz@kernel.org> wrote:
-> > > > > > On Thu, 09 Sep 2021 16:22:01 +0100,
-> > > > > > Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > > >     GIC: enabling workaround for broken byte access
-> > > >
-> > > > Indeed, byte access is unsupported according to the EMEV2 documentation.
-> > > >
-> > > > The EMEV2 documentation R19UH0036EJ0600 Chapter 7 Interrupt Control on
-> > > > page 97 says:
-> > > > "Interrupt registers can be accessed via the APB bus, in 32-bit units"
-> > > > "For details about register functions, see ARM Generic Interrupt
-> > > > Controller Architecture Specification Architecture version 1.0"
-> > > > The file  "R19UH0036EJ0600_1Chip.pdf" is the 6th edition version
-> > > > published in 2010 and is not marked as confidential.
-> > >
-> > > This is as bad as it gets. Do you know if any other Renesas platform
-> > > is affected by the same issue?
-> >
-> > Next time we have a beer together I would be happy to show you some
-> > legacy interrupt controller code. =)
-> >
-> > EMEV2 and the Emma Mobile product line came from the NEC Electronics
-> > side that got merged into Renesas Electronics in 2010. Historically
-> > NEC Electronics mainly used MIPS I've been told, and the Emma Mobile
-> > SoCs were one of the earlier Cortex-A9 adopters. That might have
-> > something to do with the rather loose interpretation of the spec.
->
-> Indeed.  I used to work on products using EMMA1 and EMMA2, and they
-> were MIPS-based (vr4120A for EMMA2, IIRC).  Later variants (EMMA2H
-> and EMMA3?) did include a small ARM core for standby control.
+OPP is mandatory for devfreq driver. Also, must need to add
+the OPP levels to  devicetree file, it is better to show
+the supported OPP list for the developer who don't know
+the detailed background of driver. If there are no any
+critical issue. I prefer the existing approach for the readability.
 
-Thanks for sharing some more background!
+On 21. 9. 14. 오전 2:38, Abel Vesa wrote:
+> i.MX8M platforms get their dram OPPs from the EL3.
+> We don't need to duplicate that in the kernel dram dts node.
+> We should just trust the OPPs provided by the EL3.
+> 
+> Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
+> ---
+>   drivers/devfreq/imx8m-ddrc.c | 50 +++---------------------------------
+>   1 file changed, 3 insertions(+), 47 deletions(-)
+> 
+> diff --git a/drivers/devfreq/imx8m-ddrc.c b/drivers/devfreq/imx8m-ddrc.c
+> index 583123bf2100..f18a5c3c1c03 100644
+> --- a/drivers/devfreq/imx8m-ddrc.c
+> +++ b/drivers/devfreq/imx8m-ddrc.c
+> @@ -321,38 +321,9 @@ static int imx8m_ddrc_init_freq_info(struct device *dev)
+>   		if (freq->dram_core_parent_index == 2 &&
+>   				freq->dram_alt_parent_index == 0)
+>   			return -ENODEV;
+> -	}
+> -
+> -	return 0;
+> -}
+> -
+> -static int imx8m_ddrc_check_opps(struct device *dev)
+> -{
+> -	struct imx8m_ddrc *priv = dev_get_drvdata(dev);
+> -	struct imx8m_ddrc_freq *freq_info;
+> -	struct dev_pm_opp *opp;
+> -	unsigned long freq;
+> -	int i, opp_count;
+> -
+> -	/* Enumerate DT OPPs and disable those not supported by firmware */
+> -	opp_count = dev_pm_opp_get_opp_count(dev);
+> -	if (opp_count < 0)
+> -		return opp_count;
+> -	for (i = 0, freq = 0; i < opp_count; ++i, ++freq) {
+> -		opp = dev_pm_opp_find_freq_ceil(dev, &freq);
+> -		if (IS_ERR(opp)) {
+> -			dev_err(dev, "Failed enumerating OPPs: %ld\n",
+> -				PTR_ERR(opp));
+> -			return PTR_ERR(opp);
+> -		}
+> -		dev_pm_opp_put(opp);
+>   
+> -		freq_info = imx8m_ddrc_find_freq(priv, freq);
+> -		if (!freq_info) {
+> -			dev_info(dev, "Disable unsupported OPP %luHz %luMT/s\n",
+> -					freq, DIV_ROUND_CLOSEST(freq, 250000));
+> -			dev_pm_opp_disable(dev, freq);
+> -		}
+> +		if (dev_pm_opp_add(dev, freq->rate * 250000, 0))
+> +			return -ENODEV;
+>   	}
+>   
+>   	return 0;
+> @@ -360,7 +331,6 @@ static int imx8m_ddrc_check_opps(struct device *dev)
+>   
+>   static void imx8m_ddrc_exit(struct device *dev)
+>   {
+> -	dev_pm_opp_of_remove_table(dev);
+>   }
+>   
+>   static int imx8m_ddrc_probe(struct platform_device *pdev)
+> @@ -407,16 +377,7 @@ static int imx8m_ddrc_probe(struct platform_device *pdev)
+>   		return ret;
+>   	}
+>   
+> -	ret = dev_pm_opp_of_add_table(dev);
+> -	if (ret < 0) {
+> -		dev_err(dev, "failed to get OPP table\n");
+> -		return ret;
+> -	}
+> -
+> -	ret = imx8m_ddrc_check_opps(dev);
+> -	if (ret < 0)
+> -		goto err;
+> -
+> +	priv->profile.polling_ms = 1000;
 
-> > Renesas SoCs from a similar era:
-> > AP4 (sh7372) AP4EVB (Cortex-A8 + INTCA/INTCS)
->
-> This is no longer supported upstream (and not affected, as no GIC).
+This change is not related to role of this patch.
+Need to make the separate patch.
 
-Right. I might mix it up with the AP4.5 chip that I used for SMP
-prototyping back then. It had 4 x CA9 and obviously a GIC.
+>   	priv->profile.target = imx8m_ddrc_target;
+>   	priv->profile.exit = imx8m_ddrc_exit;
+>   	priv->profile.get_cur_freq = imx8m_ddrc_get_cur_freq;
+> @@ -427,13 +388,8 @@ static int imx8m_ddrc_probe(struct platform_device *pdev)
+>   	if (IS_ERR(priv->devfreq)) {
+>   		ret = PTR_ERR(priv->devfreq);
+>   		dev_err(dev, "failed to add devfreq device: %d\n", ret);
+> -		goto err;
+>   	}
+>   
+> -	return 0;
+> -
+> -err:
+> -	dev_pm_opp_of_remove_table(dev);
+>   	return ret;
+>   }
+>   
+> 
 
-> > R-Mobile A1 (r8a7740) Armadillo-800-EVA (Cortex-A9 + INTCA/INTCS)
->
-> R-Mobile A1 has GIC (PL390), too, and is not affected.
->
-> > R-Car M1A (r8a7778) Bock-W (Cortex-A9 + GIC)
-> > R-Car H1 (r8a7779) Marzen (4 x Cortex-A9 + GIC)
-> > Emma Mobile EMEV2 KZM9D (2 x Cortex-A9 + GIC)
-> > SH-Mobile AG5 (sh73a0) KZM9G (2 x Cortex-A9 + GIC)
->
-> All of these (except for EMEV2) are fine, too.
 
-Thanks for checking!
-
-Cheers,
-
-/ magnus
+-- 
+Best Regards,
+Samsung Electronics
+Chanwoo Choi
