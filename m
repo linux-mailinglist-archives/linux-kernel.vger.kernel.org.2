@@ -2,59 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 377EF40C299
+	by mail.lfdr.de (Postfix) with ESMTP id F081C40C29B
 	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 11:14:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237319AbhIOJPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 05:15:05 -0400
-Received: from foss.arm.com ([217.140.110.172]:53744 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237157AbhIOJPE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 05:15:04 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E34E66D;
-        Wed, 15 Sep 2021 02:13:45 -0700 (PDT)
-Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id BE5D33F5A1;
-        Wed, 15 Sep 2021 02:13:44 -0700 (PDT)
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Liviu Dudau <liviu.dudau@arm.com>, linux-kernel@vger.kernel.org
-Cc:     Sudeep Holla <sudeep.holla@arm.com>
-Subject: Re: [PATCH 1/3] arm64: dts: arm: align watchdog and mmc node names with dtschema
-Date:   Wed, 15 Sep 2021 10:13:33 +0100
-Message-Id: <163169716063.1624125.9381303862313981753.b4-ty@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210820081733.83976-1-krzysztof.kozlowski@canonical.com>
-References: <20210820081733.83976-1-krzysztof.kozlowski@canonical.com>
+        id S237340AbhIOJPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 05:15:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237157AbhIOJPg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 05:15:36 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F7D2C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 02:14:18 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id o66so642736oib.11
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 02:14:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=n2R5sQocnc5nHBs+VrySqd2CEimyp7idPHRQqGykyb8=;
+        b=QsgOKFYHtP7k3b0fDCYInl3hodXFFr8+LOxQTNgoDGCPfFBy2oVBYEP8+fYh6Bjb0t
+         Baoga54t4aVFdX2EGvkEqd53Gpz/6lK+FT2AiGOBRbtOPjHKkixjaxkGgh8Z8UbKSMXn
+         pRNTqSeHX7M3xZRRs9VHFbJHJV76pOsW6ToYi4mT2pxnbwWFbeHLDD9lIKZwZFelkuv/
+         2s5RbMJUmXOPFXBxLuSp8Pe5GUZjVWaC0dXr3FqAEakFYh0LbPVMEyFX5YDXfeelTeex
+         qKQ8F70AKSdCcIg8J+MHoIkH97pgbYUQGLzQyl8J2lwqKiouuqFqDhApKT1pzoT4xlId
+         V34w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=n2R5sQocnc5nHBs+VrySqd2CEimyp7idPHRQqGykyb8=;
+        b=REZw3iaUpWCmM2gjiR4GIOwy512bONuUd6yf/8Cf9qxW0mKUeOrE0qbvjUuAQAqFBG
+         EeA++PbcuZoUjD/9KH29KmIi/1Gu/FX5tf1snQC0ZnMU//A3VdehgSsTn7uDiivN7j1R
+         fE/gMi9tPflFyql0Aq9INEmm01aN4+Frq7095DUZ+vFMTQk8JSBwgCYdmURJsFmtWSt0
+         5cDlmLQ7Cl5KfUXRQoiUHp2nvY1+h1G1TzhUD8vHGCBvTDxdhfIwr8GvJD9NB48iNOVa
+         KdtQ0dhjptIPA66LIBJ9F5RUhNLYWkGFDI1q8kNAvXjVS6n/jjuNsOoI538kH2RB3JlB
+         SeLg==
+X-Gm-Message-State: AOAM5302tHJJOReoh0lxMdSBbw797hibIKGqQ10ttwRwwkQA/AZMVl/b
+        HiLgqksTbeULax414aN49KwNS1HXELer+IsrtZIBYA==
+X-Google-Smtp-Source: ABdhPJxrplVg3i7lev3jvD1KetqKrk8zl3U6724cMh67wfpVYOS0SD87U9serb5ZgRgxlO/ByXmi7ENyfRIlyg+0QQU=
+X-Received: by 2002:aca:f189:: with SMTP id p131mr4569843oih.128.1631697257294;
+ Wed, 15 Sep 2021 02:14:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <000000000000eaacf005ca975d1a@google.com> <20210831074532.2255-1-hdanton@sina.com>
+ <20210914123726.4219-1-hdanton@sina.com> <87v933b3wf.ffs@tglx>
+ <CACT4Y+Yd3pEfZhRUQS9ymW+sQZ4O58Dz714xSqoZvdKa_9s2oQ@mail.gmail.com> <87mtoeb4hb.ffs@tglx>
+In-Reply-To: <87mtoeb4hb.ffs@tglx>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Wed, 15 Sep 2021 11:14:06 +0200
+Message-ID: <CACT4Y+avKp8LCS8vBdaFLXFNcNiCq3vF-8K59o7c1oy86v-ADA@mail.gmail.com>
+Subject: Re: [syzbot] INFO: rcu detected stall in syscall_exit_to_user_mode
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Hillf Danton <hdanton@sina.com>,
+        syzbot <syzbot+0e964fad69a9c462bc1e@syzkaller.appspotmail.com>,
+        linux-kernel@vger.kernel.org, paulmck@kernel.org,
+        syzkaller-bugs@googlegroups.com,
+        Peter Zijlstra <peterz@infradead.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        linux-wireless@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Aug 2021 10:17:31 +0200, Krzysztof Kozlowski wrote:
-> Align the watchdog and mmc device node names with the schema to fix
-> warnings like:
-> 
->   mmci@50000: $nodename:0: 'mmci@50000' does not match '^mmc(@.*)?$'
->   wdt@f0000: $nodename:0: 'wdt@f0000' does not match '^watchdog(@.*|-[0-9a-f])?$'
+On Wed, 15 Sept 2021 at 10:57, Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> On Tue, Sep 14 2021 at 20:00, Dmitry Vyukov wrote:
+> > On Tue, 14 Sept 2021 at 16:58, Thomas Gleixner <tglx@linutronix.de> wrote:
+> >> Now what happens when the mac80211 callback rearms the timer so it
+> >> expires immediately again:
+> >>
+> >>         hrtimer_forward(&data->beacon_timer, hrtimer_get_expires(timer),
+> >>                         ns_to_ktime(bcn_int * NSEC_PER_USEC));
+> >>
+> >> bcn is a user space controlled value. Now lets assume that bcn_int is <=1,
+> >> which would certainly cause the loop in hrtimer_run_queues() to keeping
+> >> looping forever.
+> >>
+> >> That should be easy to verify by implementing a simple test which
+> >> reschedules a hrtimer from the callback with a expiry time close to now.
+> >>
+> >> Not today as I'm about to head home to fire up the pizza oven.
+> >
+> > This question definitely shouldn't take priority over the pizza. But I
+> > think I saw this "rearm a timer with a user-controlled value without
+> > any checks" pattern lots of times and hangs are inherently harder to
+> > localize and reproduce. So I wonder if it makes sense to add a debug
+> > config that would catch such cases right when the timer is set up
+> > (issue a WARNING)?
+>
+> Yes and no. It's hard to differentiate between a valid short expiry
+> rearm and something which is caused by unchecked values. I have some
+> ideas but all of them are expensive and therefore probably debug
+> only. Which is actually better than nothing :)
+>
+> > However, for automated testing there is the usual question of
+> > balancing between false positives and false negatives. The check
+> > should not produce false positives, but at the same time it should
+> > catch [almost] all actual stalls so that they don't manifest as
+> > duplicate stall reports.
+>
+> Right. The problem could be even there with checked values:
+>
+>        start_timer(1ms)
+>        timer_expires()
+>          callback()
+>            forward_timer(timer, now, period(1ms));
+>
+> which might be perfectly fine with a production kernel as it leaves
+> enough time to make overall progress.
+>
+> Now with a full debug kernel with all bells and whistels that callback
+> might just run into this situation:
+>
+>       start_timer(1ms) T0
+>        timer_expires() T1
+>          callback()
+>            do_stuff()
+>            forward_timer(timer, TNOW, period(1ms));
+>
+>
+> T1 - T0   = 1.001ms
+> TNOW - T1 = 0.998 ms
+>
+> So the forward will just rearm it to T0 + 2ms which means it expires in
+> 1us.
+>
+> > If I understand it correctly the timer is not actually set up as
+> > periodic, but rather each callback invocation arms it again. Setting
+> > up a timer for 1 ns _once_ (or few times) is probably fine (right?),
+> > so the check needs to be somewhat more elaborate and detect "infinite"
+> > rearming.
+>
+> Yes.
+>
+> That made me actually look at that mac80211_hwsim callback again.
+>
+>         hrtimer_forward(&data->beacon_timer, hrtimer_get_expires(timer),
+>                         ns_to_ktime(bcn_int * NSEC_PER_USEC));
+>
+> So what this does is really wrong because it tries to schedule the timer
+> on the theoretical periodic timeline. Which goes really south once the
+> timer is late or the callback execution took longer than the
+> period. Hypervisors scheduling out a VCPU at the wrong place will do
+> that for you nicely.
+
+Nice!
+
+You mentioned that hrtimer_run_queues() may not return. Does it mean
+that it can just loop executing the same re-armed callback again and
+again? Maybe then the debug check condition should be that
+hrtimer_run_queues() runs the same callback more than N times w/o
+returning?
 
 
-Applied to sudeep.holla/linux (for-next/juno), thanks!
-
-[1/3] arm64: dts: arm: align watchdog and mmc node names with dtschema
-      https://git.kernel.org/sudeep.holla/c/b43446b4f5
-[2/3] ARM: dts: arm: align watchdog and mmc node names with dtschema
-      https://git.kernel.org/sudeep.holla/c/5f741ef384
-[3/3] arm64: dts: arm: drop unused interrupt-names in MHU
-      https://git.kernel.org/sudeep.holla/c/217cb530a3
-
---
-Regards,
-Sudeep
-
+> What this actually should use is hrtimer_forward_now() which prevents
+> that problem because it will forward the timer in the periodic schedule
+> beyond now. That won't prevent the above corner case, but I doubt you
+> can create an endless loop with that scenario as easy as you can with
+> trying to catch up on your theoretical timeline by using the previous
+> expiry time as a base for the forward. Patch below.
+>
+> /me goes off to audit hrtimer_forward() usage. Sigh...
+>
+> After that figure out ways to debug or even prevent this. More sigh...
+>
+> Thanks,
+>
+>         tglx
+> ---
+>  drivers/net/wireless/mac80211_hwsim.c |    4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> --- a/drivers/net/wireless/mac80211_hwsim.c
+> +++ b/drivers/net/wireless/mac80211_hwsim.c
+> @@ -1867,8 +1867,8 @@ mac80211_hwsim_beacon(struct hrtimer *ti
+>                 bcn_int -= data->bcn_delta;
+>                 data->bcn_delta = 0;
+>         }
+> -       hrtimer_forward(&data->beacon_timer, hrtimer_get_expires(timer),
+> -                       ns_to_ktime(bcn_int * NSEC_PER_USEC));
+> +       hrtimer_forward_now(&data->beacon_timer,
+> +                           ns_to_ktime(bcn_int * NSEC_PER_USEC));
+>         return HRTIMER_RESTART;
+>  }
+>
