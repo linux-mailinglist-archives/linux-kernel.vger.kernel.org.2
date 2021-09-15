@@ -2,136 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6EC640C4F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 14:09:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFF2640C4F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 14:10:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236541AbhIOMLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 08:11:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231500AbhIOMLL (ORCPT
+        id S237602AbhIOMLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 08:11:16 -0400
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:27908 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236610AbhIOMLP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 08:11:11 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7A5CC061574;
-        Wed, 15 Sep 2021 05:09:52 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id c33so576249ljr.8;
-        Wed, 15 Sep 2021 05:09:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=nsbC/14C+kMeJoOAkh98qBGl2wGnLGSFlhXpNUqwCFE=;
-        b=LhPdYdNBwz8NgzDrN2yfcZ22U38rnPVJDJATIRjG63cwjSqJeLcOJ7rb7Mqkfcwr33
-         3/auLAlxO62WVV4QiDO2Df8ksHGq6u9HEH3oLpPwx4Cq9Qj5dUy22XthraTolzPolOaJ
-         E96kLqsddIYf83sJUP/zJ5eyEXN+fxcw2imlkHqzTrIeUZsdad/E3q0cC2y9z5UUqlI5
-         ifZGau8FbHZDNZXkRREq1RuEUHjYLqRrIEK/pF3SQczPs6bpDrNI64nHDcCj81CzN4Na
-         aEB1HaqB8+/GWyI0+TrO8Fh4E1l5bJCHLuFwLvlPKH5nysZxgvKVRb9jvMnVkARREFoB
-         MD8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nsbC/14C+kMeJoOAkh98qBGl2wGnLGSFlhXpNUqwCFE=;
-        b=zfOnTH9OFXyayjiRl5LJEcwe17/vaMAyFiJwtGShVMTHRc5fSs/CwDZxbVmCKK14Jm
-         rE5N1E0o0HUZ58fWrcbbDwiEetVebsFSs2JOFl53IvfCqLGW1sUmEOT3zQwl2kHa1gHg
-         9wkASa+qn4M4SdhuK6gfcnlKmIFP9/YpvT5CZ+h81qhu0GZXKVyPrPtTBkqk0dsfx0Ko
-         zUsXIHJcOBQnq94vggih2OvZwLYCQ9aa+rmU5VWZIHiC/f11J2cbVnfMlZt8TwYQ3oGf
-         B67kkNXS110AucDkf2tEbTlltc9OnvmPqX0LuIYV9+OiOpLw4A3lPn3NYZ2WZZwmCdGz
-         tGQw==
-X-Gm-Message-State: AOAM532Y235VCzstQ77kVtq2ZsZNi+7m+EPiKd+DUS0GMUZxhlFoJYS5
-        PH4ym0E28aGePZGNbtjYSb+dYSRF6zc=
-X-Google-Smtp-Source: ABdhPJzOIae3cS6tf91ZADkHw1B21IDeEToB3I4V6VKYcoxN7S0aHhdx0UnbwyEdNqZF0e1u7b1E9g==
-X-Received: by 2002:a2e:8804:: with SMTP id x4mr18646458ljh.437.1631707789844;
-        Wed, 15 Sep 2021 05:09:49 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-62-67.dynamic.spd-mgts.ru. [94.29.62.67])
-        by smtp.googlemail.com with ESMTPSA id u16sm1798222ljl.9.2021.09.15.05.09.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Sep 2021 05:09:49 -0700 (PDT)
-Subject: Re: [PATCH v6 6/6] iommu/tegra-smmu: Add pagetable mappings to
- debugfs
-To:     Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     thierry.reding@gmail.com, joro@8bytes.org, will@kernel.org,
-        vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <20210914013858.31192-1-nicoleotsuka@gmail.com>
- <20210914013858.31192-7-nicoleotsuka@gmail.com>
- <31501a62-3312-9f04-3bb8-790d0481746c@gmail.com>
- <20210914184933.GA32705@Asurada-Nvidia>
- <25d68aff-323a-df54-45f9-55b22f3089e0@gmail.com>
- <20210915043806.GA19185@Asurada-Nvidia>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <a5a77169-8711-2983-d2cb-4b94061741b9@gmail.com>
-Date:   Wed, 15 Sep 2021 15:09:48 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 15 Sep 2021 08:11:15 -0400
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18F5eGFL026124;
+        Wed, 15 Sep 2021 07:09:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=AJLgP73HU1MgxAMOefytUcAIFWSgMpjDsTMIioDQXHo=;
+ b=br8orGwk0avxRTVpIpjSXHgcQsRHvhv3sM6J5BSPKOksbquvcAY/jMiv6ZHWXMqubY+w
+ /+D9X7JQ2e7yY4+f9nXcycSJ6Xq+Kcvz0peZdB6ctMT6nrPMy/P0HT7vY4xkvmw9swdi
+ T4r2tFmCrhMutA8AarY7bLx8l0ZYCOFauCeK4Ra7oXmKWA1HJqxACxSG9cTM20/QDVLs
+ Qm1bfxrPPZZawXAZpJOzvbveiW0yU1MR3O46H/Cr89LtOHkCEel23gjLXEiDwQo6zOYQ
+ 5KyKfX50WwT0qrXNPtJhdg1rf6JdV6yQFXcspj/hQTBenuL8RzUgcPXngVtFQUfAMb/4 Ww== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 3b3287grj9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 15 Sep 2021 07:09:54 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Wed, 15 Sep
+ 2021 13:09:52 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via Frontend
+ Transport; Wed, 15 Sep 2021 13:09:52 +0100
+Received: from aryzen.ad.cirrus.com (unknown [198.61.64.203])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 6FABDB2F;
+        Wed, 15 Sep 2021 12:09:52 +0000 (UTC)
+From:   Lucas Tanure <tanureal@opensource.cirrus.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
+        Lucas Tanure <tanureal@opensource.cirrus.com>
+Subject: [PATCH v3 1/2] regmap: spi: Set regmap max raw r/w from max_transfer_size
+Date:   Wed, 15 Sep 2021 13:09:50 +0100
+Message-ID: <20210915120951.29907-1-tanureal@opensource.cirrus.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <20210915043806.GA19185@Asurada-Nvidia>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: QGDsf0XeRzGlAx53pV8PK715MJbpuD2Y
+X-Proofpoint-ORIG-GUID: QGDsf0XeRzGlAx53pV8PK715MJbpuD2Y
+X-Proofpoint-Spam-Reason: safe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-15.09.2021 07:38, Nicolin Chen пишет:
-> On Tue, Sep 14, 2021 at 10:20:30PM +0300, Dmitry Osipenko wrote:
->> 14.09.2021 21:49, Nicolin Chen пишет:
->>> On Tue, Sep 14, 2021 at 04:29:15PM +0300, Dmitry Osipenko wrote:
->>>> 14.09.2021 04:38, Nicolin Chen пишет:
->>>>> +static unsigned long pd_pt_index_iova(unsigned int pd_index, unsigned int pt_index)
->>>>> +{
->>>>> +	return ((dma_addr_t)pd_index & (SMMU_NUM_PDE - 1)) << SMMU_PDE_SHIFT |
->>>>> +	       ((dma_addr_t)pt_index & (SMMU_NUM_PTE - 1)) << SMMU_PTE_SHIFT;
->>>>> +}
->>>>
->>>> We know that IOVA is fixed to u32 for this controller. Can we avoid all
->>>> these dma_addr_t castings? It should make code cleaner a tad, IMO.
->>>
->>> Tegra210 actually supports 34-bit IOVA...
->>>
->>
->> It doesn't. 34-bit is PA, 32-bit is VA.
->>
->> Quote from T210 TRM:
->>
->> "The SMMU is a centralized virtual-to-physical translation for MSS. It
->> maps a 32-bit virtual address to a 34-bit physical address. If the
->> client address is 40 bits then bits 39:32 are ignored."
-> 
-> If you scroll down by a couple of sections, you can see 34-bit
-> virtual addresses in section 18.6.1.2; and if checking one ASID
-> register, you can see it mention the extra two bits va[33:32].
+Set regmap raw read/write from spi max_transfer_size
+so regmap_raw_read/write can split the access into chunks
 
-Thanks for the pointer. It says that only certain memory clients allow
-to combine 4 ASIDs to form 34bit VA space. In this case the PA space is
-split into 4GB areas and there are additional bitfields which configure
-the ASID mapping of each 4GB area. Still each ASID is 32bit.
+Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
+---
 
-This is what TRM says:
+Changes v2:
+New series
 
-"For the GPU and other clients with 34-bit address interfaces, the ASID
-registers are extended to point to four ASIDs. The SMMU supports 4GB of
-virtual address space per ASID, so mapping addr[33:32] into ASID[1:0]
-extends the virtual address space of a client to 16GB."
+Changes v3:
+None
 
-> However, the driver currently sets its geometry.aperture_end to
-> 32-bit, and we can only get 32-bit IOVAs using PDE and PTE only,
-> so I think it should be safe to remove the castings here. I'll
-> wait for a couple of days and see if there'd be other comments
-> for me to address in next version.
+ drivers/base/regmap/regmap-spi.c | 36 ++++++++++++++++++++++++++++----
+ 1 file changed, 32 insertions(+), 4 deletions(-)
 
-You will need to read the special "ASID Assignment Register" which
-supports 4 sub-ASIDs to translate the PA address into the actual VA. By
-default all clients are limited to a single ASID and upstream kernel
-doesn't support programming of 34bit VAs. So doesn't worth the effort to
-fully translate the VA, IMO.
+diff --git a/drivers/base/regmap/regmap-spi.c b/drivers/base/regmap/regmap-spi.c
+index c1894e93c378..0e6552e57ecf 100644
+--- a/drivers/base/regmap/regmap-spi.c
++++ b/drivers/base/regmap/regmap-spi.c
+@@ -109,13 +109,37 @@ static const struct regmap_bus regmap_spi = {
+ 	.val_format_endian_default = REGMAP_ENDIAN_BIG,
+ };
+ 
++static const struct regmap_bus *regmap_get_spi_bus(struct spi_device *spi,
++						   const struct regmap_config *config)
++{
++	struct spi_master *master = spi->master;
++	struct regmap_bus *bus = NULL;
++	size_t max_size = spi_max_transfer_size(spi);
++
++	if (max_size != SIZE_MAX) {
++		bus = kmemdup(&regmap_spi, sizeof(*bus), GFP_KERNEL);
++		if (!bus)
++			return ERR_PTR(-ENOMEM);
++		bus->free_on_exit = true;
++		bus->max_raw_read = max_size;
++		bus->max_raw_write = max_size;
++		return bus;
++	}
++
++	return &regmap_spi;
++}
++
+ struct regmap *__regmap_init_spi(struct spi_device *spi,
+ 				 const struct regmap_config *config,
+ 				 struct lock_class_key *lock_key,
+ 				 const char *lock_name)
+ {
+-	return __regmap_init(&spi->dev, &regmap_spi, &spi->dev, config,
+-			     lock_key, lock_name);
++	const struct regmap_bus *bus = regmap_get_spi_bus(spi, config);
++
++	if (IS_ERR(bus))
++		return ERR_CAST(bus);
++
++	return __regmap_init(&spi->dev, bus, &spi->dev, config, lock_key, lock_name);
+ }
+ EXPORT_SYMBOL_GPL(__regmap_init_spi);
+ 
+@@ -124,8 +148,12 @@ struct regmap *__devm_regmap_init_spi(struct spi_device *spi,
+ 				      struct lock_class_key *lock_key,
+ 				      const char *lock_name)
+ {
+-	return __devm_regmap_init(&spi->dev, &regmap_spi, &spi->dev, config,
+-				  lock_key, lock_name);
++	const struct regmap_bus *bus = regmap_get_spi_bus(spi, config);
++
++	if (IS_ERR(bus))
++		return ERR_CAST(bus);
++
++	return __devm_regmap_init(&spi->dev, bus, &spi->dev, config, lock_key, lock_name);
+ }
+ EXPORT_SYMBOL_GPL(__devm_regmap_init_spi);
+ 
+-- 
+2.33.0
 
->> Even if it supported more than 32bit, then the returned ulong is 32bit,
->> which doesn't make sense.
-> 
-> On ARM64 (Tegra210), isn't ulong 64-bit?
-
-Yes, indeed.
