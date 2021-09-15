@@ -2,215 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34DB140BDE0
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 04:47:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F71640BDE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 04:50:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234031AbhIOCs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 22:48:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40838 "EHLO
+        id S229837AbhIOCvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 22:51:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229758AbhIOCsz (ORCPT
+        with ESMTP id S229758AbhIOCva (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 22:48:55 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9547C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 19:47:36 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id bt14so2896021ejb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 19:47:36 -0700 (PDT)
+        Tue, 14 Sep 2021 22:51:30 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B59DC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 19:50:12 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id l16-20020a9d6a90000000b0053b71f7dc83so1582024otq.7
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 19:50:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IPKH7Xo192InGfxWs0L4Ekl+5l+8TPHrMaxQ7ivOq5Y=;
-        b=PVVGosTaVS4eE5h3cFcuDxIkaLh3VXJ7HKYa6jwLboSwv7wWcQP+MlKNqgj8OBFcwf
-         8EPTIQXhAJaA0gp/XsoGwxYqpnaArrH8dC4ovInbNEjGERph2dn+xGov4fkZjLvRN01c
-         W3t4qLeVLww0E5xtENfFVqAI86tSqSgNQrPDOfc8VcUEMG8VP/q+S3j9f/I6BMjP/J9y
-         iRBtA9Bp3NhaUfocsW1KgPQ6vXZI1wjzi986T3394G1saygizjTCeZol5peDK6T0/xeC
-         WtiXBrG3jaNPdVnK+PPIaK7BUTLj5RbMp0IoVZAgcifOS90j8FYzVOKJF9xS0Et9xsAX
-         CdDA==
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=2yO3vh0zz6n3DfjdGSbOZuIL2GY1SRnRrA0ouZp0EVw=;
+        b=YHpuT4aaP/7pRelDYIKhPBxJLKw04TUTFfV2/3iPUvpPdodvC1g9J3/cfEJZdBPmT1
+         fyM2vhjY+AlI8+pHdtUlS2RygDvJTLF7toIIZzlJEBYRxslNtM0e4gTmlG+cM95Dbcis
+         V1dhWIYSVi7xLa3EBGUwAVBdsTPB/8pLE5Rds=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IPKH7Xo192InGfxWs0L4Ekl+5l+8TPHrMaxQ7ivOq5Y=;
-        b=mFoYT0JoH/NBTeQhBAEdhllCN0df0F7p9JVZgU4HPR9VKzfFeiGgPJ0TJUAT9GdPYl
-         UZt5f4zD6QABCaJ8YUgJExw3hHWfW3WifR0ECf5+RYUcs47uJXKSryEsXxVBYvv+UUTi
-         ZcrQAfq7GTjHjHRiswa8eK+qb8EzrR26txqzGUIbGnexN3h2B9fi7wAzwk/RSWqNTF/j
-         oy9HNflIkI4/eQXEx6UZyZVnaBljyj0qP2MFBgIIGYPar8qrVf1+aUlihOIF3NeFZute
-         68RMwYE6zU9oXslP9tP44NBq90MGnSs4lPfWx9UKAuIaZ4PBvPjO5GPLvzUFhxmpE0ge
-         2QMg==
-X-Gm-Message-State: AOAM5305RCFyU9s73J+5ZfE+KGv6JvrkRWALDhSR5CsVOvhxK5YWbBmR
-        5SKON/bKCqJYApfGZD6CA9zaaLivKZqDtSR/O30=
-X-Google-Smtp-Source: ABdhPJzZT+c61dzUPXOqGwWpSmfLVmV9gpGfm+mDvvb0FEqRmSRp/FeL4SIKQlKJEd6akEzCJHFaRumxz4OII50bTHc=
-X-Received: by 2002:a17:906:3854:: with SMTP id w20mr21410193ejc.537.1631674055161;
- Tue, 14 Sep 2021 19:47:35 -0700 (PDT)
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=2yO3vh0zz6n3DfjdGSbOZuIL2GY1SRnRrA0ouZp0EVw=;
+        b=kZRRTyh5wNB6ZoRyr8bCu7GzaJzUYwj5sbo5gk7FkTOw3UmKQV0dypEVGWbbhMhVME
+         vr75nU0waKd8LIs5XQuSPFLzjHiqZWwL+aDguGBfL0GMTFnkJreMhtERxOawGp9OOqpP
+         X9MmMsEI1PiDJdYMLTi8ms5adHRC1X5mP9JOnqBNy65sHpQD/NK9MVmELrDdHEkdqpBS
+         Hu2pHI3est1rRMIm/FsyVD8hummULlZdBhYil/1Pk6S2QgzCPbBDOu0uX9+22aYRu6cv
+         vcgTd3RsCweIYUOCmHQHdCbB4EYwgkTlMPKVx4A7TFDSs4DOJXaHWOowpQUfVypYKeJc
+         dwnw==
+X-Gm-Message-State: AOAM531mOes+ZP1wYQ46MVPOImNHqNdBHR6I5SicnfhxJjhPj5yZk+88
+        TZkxWkdv6IsIAT+BxSBdeXrlia4UfcDL+oBmYC8jiw==
+X-Google-Smtp-Source: ABdhPJwPG+aiHo03dZ21mhzkBLXoLA7VzJC1LzvEFtngRhUFhESCwwfIZw3hC5QxlZjwLBYC6Z0Pi+ISzWf4gr8fQZg=
+X-Received: by 2002:a05:6830:18c7:: with SMTP id v7mr17512442ote.126.1631674211304;
+ Tue, 14 Sep 2021 19:50:11 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 14 Sep 2021 19:50:10 -0700
 MIME-Version: 1.0
-References: <20210914013701.344956-1-ying.huang@intel.com> <20210914013701.344956-2-ying.huang@intel.com>
- <CAHbLzkpRWwtkhnXUZEUk3LgpHtmgNJRPGUjKzd9bhQU33Y4u2g@mail.gmail.com> <8735q63947.fsf@yhuang6-desk2.ccr.corp.intel.com>
-In-Reply-To: <8735q63947.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Tue, 14 Sep 2021 19:47:23 -0700
-Message-ID: <CAHbLzko-hR74s5HKMx5SG6bwaoJvcHSLeKwihkpvhYj7+hX+Sw@mail.gmail.com>
-Subject: Re: [PATCH -V8 1/6] NUMA balancing: optimize page placement for
- memory tiering system
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Rik van Riel <riel@surriel.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Zi Yan <ziy@nvidia.com>, Wei Xu <weixugc@google.com>,
-        osalvador <osalvador@suse.de>,
-        Shakeel Butt <shakeelb@google.com>,
-        Linux MM <linux-mm@kvack.org>
+In-Reply-To: <CAD=FV=WKQg-fU1jaSOh3RTa5HpSAiTzt2-Sycwt59uv1WemYxg@mail.gmail.com>
+References: <20210914162825.v3.1.I85e46da154e3fa570442b496a0363250fff0e44e@changeid>
+ <20210914162825.v3.2.Ib06997ddd73e2ac29e185f039d85cfa8e760d641@changeid>
+ <CAE-0n53BXh3_6jEW5oTbPA-V=MSaN=RvqaU8uoY9GNOm-0Pv_g@mail.gmail.com> <CAD=FV=WKQg-fU1jaSOh3RTa5HpSAiTzt2-Sycwt59uv1WemYxg@mail.gmail.com>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Tue, 14 Sep 2021 19:50:10 -0700
+Message-ID: <CAE-0n539tJLLWHdL65ZU_1qOzA-RsEqGqVi-19VLHz_W5dT6VA@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] drm/bridge: parade-ps8640: Use regmap APIs
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Philip Chen <philipchen@chromium.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 6:45 PM Huang, Ying <ying.huang@intel.com> wrote:
+Quoting Doug Anderson (2021-09-14 19:17:03)
+> Hi,
 >
-> Yang Shi <shy828301@gmail.com> writes:
->
-> > On Mon, Sep 13, 2021 at 6:37 PM Huang Ying <ying.huang@intel.com> wrote:
-> >>
-> >> With the advent of various new memory types, some machines will have
-> >> multiple types of memory, e.g. DRAM and PMEM (persistent memory).  The
-> >> memory subsystem of these machines can be called memory tiering
-> >> system, because the performance of the different types of memory are
-> >> usually different.
-> >>
-> >> In such system, because of the memory accessing pattern changing etc,
-> >> some pages in the slow memory may become hot globally.  So in this
-> >> patch, the NUMA balancing mechanism is enhanced to optimize the page
-> >> placement among the different memory types according to hot/cold
-> >> dynamically.
-> >>
-> >> In a typical memory tiering system, there are CPUs, fast memory and
-> >> slow memory in each physical NUMA node.  The CPUs and the fast memory
-> >> will be put in one logical node (called fast memory node), while the
-> >> slow memory will be put in another (faked) logical node (called slow
-> >> memory node).  That is, the fast memory is regarded as local while the
-> >> slow memory is regarded as remote.  So it's possible for the recently
-> >> accessed pages in the slow memory node to be promoted to the fast
-> >> memory node via the existing NUMA balancing mechanism.
-> >>
-> >> The original NUMA balancing mechanism will stop to migrate pages if the free
-> >> memory of the target node will become below the high watermark.  This
-> >> is a reasonable policy if there's only one memory type.  But this
-> >> makes the original NUMA balancing mechanism almost not work to optimize page
-> >> placement among different memory types.  Details are as follows.
-> >>
-> >> It's the common cases that the working-set size of the workload is
-> >> larger than the size of the fast memory nodes.  Otherwise, it's
-> >> unnecessary to use the slow memory at all.  So in the common cases,
-> >> there are almost always no enough free pages in the fast memory nodes,
-> >> so that the globally hot pages in the slow memory node cannot be
-> >> promoted to the fast memory node.  To solve the issue, we have 2
-> >> choices as follows,
-> >>
-> >> a. Ignore the free pages watermark checking when promoting hot pages
-> >>    from the slow memory node to the fast memory node.  This will
-> >>    create some memory pressure in the fast memory node, thus trigger
-> >>    the memory reclaiming.  So that, the cold pages in the fast memory
-> >>    node will be demoted to the slow memory node.
-> >>
-> >> b. Make kswapd of the fast memory node to reclaim pages until the free
-> >>    pages are a little more (about 10MB) than the high watermark.  Then,
-> >>    if the free pages of the fast memory node reaches high watermark, and
-> >>    some hot pages need to be promoted, kswapd of the fast memory node
-> >>    will be waken up to demote some cold pages in the fast memory node to
-> >>    the slow memory node.  This will free some extra space in the fast
-> >>    memory node, so the hot pages in the slow memory node can be
-> >>    promoted to the fast memory node.
-> >>
-> >> The choice "a" will create the memory pressure in the fast memory
-> >> node.  If the memory pressure of the workload is high, the memory
-> >> pressure may become so high that the memory allocation latency of the
-> >> workload is influenced, e.g. the direct reclaiming may be triggered.
-> >>
-> >> The choice "b" works much better at this aspect.  If the memory
-> >> pressure of the workload is high, the hot pages promotion will stop
-> >> earlier because its allocation watermark is higher than that of the
-> >> normal memory allocation.  So in this patch, choice "b" is
-> >> implemented.
-> >>
-> >> In addition to the original page placement optimization among sockets,
-> >> the NUMA balancing mechanism is extended to be used to optimize page
-> >> placement according to hot/cold among different memory types.  So the
-> >> sysctl user space interface (numa_balancing) is extended in a backward
-> >> compatible way as follow, so that the users can enable/disable these
-> >> functionality individually.
-> >>
-> >> The sysctl is converted from a Boolean value to a bits field.  The
-> >> definition of the flags is,
-> >>
-> >> - 0x0: NUMA_BALANCING_DISABLED
-> >> - 0x1: NUMA_BALANCING_NORMAL
-> >> - 0x2: NUMA_BALANCING_MEMORY_TIERING
+> On Tue, Sep 14, 2021 at 5:29 PM Stephen Boyd <swboyd@chromium.org> wrote:
 > >
-> > Thanks for coming up with the patches. TBH the first question off the
-> > top of my head is all the complexity is really worthy for real life
-> > workload at the moment? And the interfaces (sysctl knob files exported
-> > to users) look complicated for the users. I don't know if the users
-> > know how to set an optimal value for their workloads.
+> > Quoting Philip Chen (2021-09-14 16:28:44)
+> > > diff --git a/drivers/gpu/drm/bridge/parade-ps8640.c b/drivers/gpu/drm/bridge/parade-ps8640.c
+> > > index e340af381e05..8d3e7a147170 100644
+> > > --- a/drivers/gpu/drm/bridge/parade-ps8640.c
+> > > +++ b/drivers/gpu/drm/bridge/parade-ps8640.c
+> > > @@ -368,6 +396,12 @@ static int ps8640_probe(struct i2c_client *client)
+> > >
+> > >         ps_bridge->page[PAGE0_DP_CNTL] = client;
+> > >
+> > > +       ps_bridge->regmap[PAGE0_DP_CNTL] = devm_regmap_init_i2c(client, ps8640_regmap_config);
+> > > +       if (IS_ERR(ps_bridge->regmap[PAGE0_DP_CNTL])) {
+> > > +               return dev_err_probe(dev, PTR_ERR(ps_bridge->regmap[PAGE0_DP_CNTL]),
+> > > +                                    "Error initting page 0 regmap\n");
 > >
-> > I don't disagree the NUMA balancing needs optimization and improvement
-> > for tiering memory, the question we need answer is how far we should
-> > go for now and what the interfaces should look like. Does it make
-> > sense to you?
-> >
-> > IMHO I'd prefer the most simple and straightforward approach at the
-> > moment. For example, we could just skip high water mark check for PMEM
-> > promotion.
+> > This one also doesn't return -EPROBE_DEFER? The dev_err_probe() should
+> > really only be used on "get" style APIs that can defer.
 >
-> Hi, Yang,
+> Any reason why you say that dev_err_probe() should only be used on
+> "get" style APIs that can defer? Even if an API can't return
+> -EPROBE_DEFER, using dev_err_probe() still (IMO) makes the code
+> cleaner and should be used for any error cases like this during probe.
+> Why?
 >
-> Thanks for comments.
->
-> I understand your concerns about complexity.  I have tried to organize
-> the patchset so that the initial patch is as simple as possible and the
-> complexity is introduced step by step.  But it seems that your simplest
-> version is even simpler than my one :-)
->
-> In this patch ([1/6]), I introduced 2 stuff.
->
-> Firstly, a sysctl knob is provided to disable the NUMA balancing based
-> promotion.  Per my understanding, you suggest to remove this.  If so,
-> optimizing cross-socket access and promoting hot PMEM pages to DRAM must
-> be enabled/disabled together.  If a user wants to enable promoting the
-> hot PMEM pages to DRAM but disable optimizing cross-socket access
-> because they have already bound the CPU of the workload so that there's no
-> much cross-socket access, how can they do?
+> * It shows the error code in a standard way for you.
+> * It returns the error code you passed it so you can make your error
+> return "one line" instead of 2.
 
-I should make myself clearer. Here I mean the whole series, not this
-specific patch. I'm concerned that the interfaces (hint fault latency
-and ratelimit) are hard to understand and configure for users and
-whether we go too far at the moment or not. I'm dealing with the end
-users, I'd admit I'm not even sure how to configure the knobs to
-achieve optimal performance for different real life workloads.
-
-For this specific patch I'm ok to a new promotion mode. There might be
-usecase that users just want to do promotion between tiered memory but
-not care about NUMA locality.
+I'd rather see any sort of error message in getter APIs be pushed into
+the callee so that we reduce the text size of the kernel by having one
+message instead of hundreds/thousands about "failure to get something".
+As far as I can tell this API is designed to skip printing anything when
+EPROBE_DEFER is returned, and only print something when it isn't that
+particular error code. The other benefit of this API is it sets the
+deferred reason in debugfs which is nice to know why some device failed
+to probe. Of course now with fw_devlink that almost never triggers so
+the feature is becoming useless.
 
 >
-> Secondly, we add a promote watermark to the DRAM node so that we can
-> demote/promote pages between the high and promote watermark.  Per my
-> understanding, you suggest just to ignore the high watermark checking
-> for promoting.  The problem is that this may make the free pages of the
-> DRAM node too few.  If many pages are promoted in short time, the free
-> pages will be kept near the min watermark for a while, so that the page
-> allocation from the application will trigger direct reclaiming.  We have
-> observed page allocation failure in a test before with a similar policy.
-
-The question is, applicable to the hint fault latency and ratelimit
-too, we already have some NUMA balancing knobs to control scan period
-and scan size and watermark knobs to tune how aggressively kswapd
-works, can they do the same jobs instead of introducing any new knobs?
-
+> Is there some bad thing about dev_err_probe() that makes it
+> problematic to use? If not then the above advantages should be a net
+> win, right?
 >
-> Best Regards,
-> Huang, Ying
+
+I view it as an anti-pattern. We should strive for driver probe to be
+fairly simple so that it's basically getting resources and registering
+with frameworks. The error messages in probe may help when you're trying
+to get the driver to work and the resource APIs don't make any sense but
+after that it's basically debug messages hiding as error messages.
+They're never supposed to happen in practice, because the code is
+tested, right?
