@@ -2,104 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6648540CC17
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 19:58:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A32340CC1D
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 19:59:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230439AbhIOR7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 13:59:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52332 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229697AbhIOR7a (ORCPT
+        id S231153AbhIOSAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 14:00:16 -0400
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:55907 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230203AbhIOSAN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 13:59:30 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2ADEC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 10:58:11 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id b7so4597976iob.4
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 10:58:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=VOwjbYzeXD/cfrrWWmcbH4Jm4bi4xHQwCqaQ6FZ72ds=;
-        b=ksUgv0z/jK1fFxqRkilF0js7nEYkh82ulyizoIIjjlMADlDRxN98LP8vqWZXqOfpUK
-         rebMq7gdURQp/KGTbbtu3cj1dg/jPWmMq3LH+IXBQWeI5sbTSNCSMQbadXmNQ4IevXJZ
-         4qiXITXxiQDdecLKSYyRoEuQFeBZZCYHTltDeLZ2LhPhcjmWNmHuWBYrO7wuoOAJjk8C
-         WI6+DvREQZoXFARaGGcO+aGjvN5QK4bpqHsKiNX9mNgjfkz3+PHsTBLPP6wmDJjvvqxx
-         DyTURT5ZDZJyRXsp8VsxQylRyTN+12LCG83wNy3h9wOX08uKegm2RfsPDzkV5vXYOe8B
-         vS0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VOwjbYzeXD/cfrrWWmcbH4Jm4bi4xHQwCqaQ6FZ72ds=;
-        b=X0vK49Y9odKMuj9qCRrYkI8pbV9hgsCvHdqU6zZSKZG22GKkD9wk3iNW6MhxRZ6LZM
-         R5wM9JviOFQqCiP6BujbwssfXbzQITwa5XcPi1zWfWEqc9T7TD07cjvf1paxLJ/rIpUd
-         rd+jyzthIB4JNryth6GkDtIDCuIbskrwUben+hKElzhBPyj3ulnQQLseBZ/I/hHfFDYd
-         DW1pCXjlmSpMBZezfUa2hwhgSfCp1gQ0QaUk3M9LTEJZYnurBnnQTdn5UHx/HeaAbqhF
-         3BFhs7mMX1H7FYBXThJEOvVf5hXfsMoR3C2439WiwK1o5qs025BX6f/LrJ++R2pf1VUV
-         TWqQ==
-X-Gm-Message-State: AOAM5336pLBpB+8iwOzfZqhUm1pskJHwE69iNQItwqTyCH6FM/jOwHFJ
-        EXY85Ddr0FamjkmxbhZmRXu5lz0EjnGkKMpy7xk=
-X-Google-Smtp-Source: ABdhPJzPPThW3ISQZYCmaCPGxqexmco/UmMS5KLRar/rZQJrYtCxsoQ9xoUCuBaRinX0DsZZeFiaJA==
-X-Received: by 2002:a05:6602:1696:: with SMTP id s22mr1106420iow.198.1631728690936;
-        Wed, 15 Sep 2021 10:58:10 -0700 (PDT)
-Received: from [192.168.1.30] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id z16sm331378ile.72.2021.09.15.10.58.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Sep 2021 10:58:10 -0700 (PDT)
-Subject: Re: [PATCH] blkcg: fix memory leak in blk_iolatency_init
-To:     Yanfei Xu <yanfei.xu@windriver.com>, tj@kernel.org
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org
-References: <20210915072426.4022924-1-yanfei.xu@windriver.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <db4a41c9-9ba6-ea8e-8ebe-cf292d796308@kernel.dk>
-Date:   Wed, 15 Sep 2021 11:58:09 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 15 Sep 2021 14:00:13 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 7EB735C00F9;
+        Wed, 15 Sep 2021 13:58:53 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Wed, 15 Sep 2021 13:58:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ilammy.net; h=
+        from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding; s=fm2; bh=7Q8HGeP+EDgnA
+        p4Z23/+CZpTxVKtu2EPqIYAvB/bUV0=; b=adKxV/ppBDEb0yF+1MkVw4ccgRViI
+        0R0v+zz3XWrWV+MCv4FO5geUlKGkShnib10uKGwCKJRIPfb6eAMi1jX6Gw3q4DMg
+        FZGT8Bf82DDMppzs3EYri2QCQbQ9UimxZDFT3Vsx8p5mHqya5LgbRF/rYz10qhfQ
+        1Q5KP5QzcQe6buf0D8tBmWCSghKx3tbe3Rrb/5MHsryQV0Bd/X9ZEIEif7m0P++8
+        Rlx+gpZBYuw8MyT3Vm/lsZGuWJ2yKScfsMtQ9Xk4Lq+Toci30oUZWkgSLrfZoERj
+        oM3++xoeRLv4UGYLTmuQuXBg9HOYmJorQhdz2C0u2utXCrlTp5M7OxByw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm3; bh=7Q8HGeP+EDgnAp4Z23/+CZpTxVKtu2EPqIYAvB/bUV0=; b=EjpYIBNE
+        zVcRZA9GhDcfNeHFbQ7kno/cpg57vQuA7QyXVUCTk7HBWW+71IizavKc9LqWKcHP
+        HpTGncUuFfpKrBmL4ko4JkKjuXyXx/sv5lUpZcpP7jLXu9vJGoiE/bRSANa9bYkZ
+        yAH2cXnzR8QIP9VeIoWoA57cg14OAgj7IME6jE7xfWEj95HxIUz7qedt/i0m0Erk
+        apDcJp018uuv1l6FaabSt/4JeC3pDoZa7tfbOAN6AUxuky13+I6SbU1KtbC2clUs
+        rtKfBwsRnVp/XfLniyThcHphpAmhF+iyAQHtD/RKL77ODcS9mKYi+GSIMdjqPUUs
+        k9y96BrMp4lZZw==
+X-ME-Sender: <xms:XTRCYb0OTFO7oE64Wg4FzG0eTYjKCTD-BDrwhKoxwt_1fKr3Dxs_hA>
+    <xme:XTRCYaEw0pCXfd49c6ce1eJHkpiiWAzXZy8ubF5QXygTOgcN9LeSLeZTbx_e3GWWQ
+    xqRqirXyJRWOebLfiU>
+X-ME-Received: <xmr:XTRCYb6y--qmOVs3GByKo602-qZkn29SRnxqoGVVWhaaZYPg089hJPwoi141JDCgVpkoqKSbXQqHvHtyN9-gKE_U-b4QFVohkJM2qyxpaUQxf5DYbOE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudehuddgudduiecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomheptehlvgig
+    vghiucfnohiiohhvshhkhicuoehmvgesihhlrghmmhihrdhnvghtqeenucggtffrrghtth
+    gvrhhnpeetueejheekjeeuveeihefgueehleelgefgheefffefkeejudeujeejuefgteeu
+    keenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmvg
+    esihhlrghmmhihrdhnvght
+X-ME-Proxy: <xmx:XTRCYQ07zf8HlGrAjsdJGjuKRnR4ZIhoKFlnfaH0ZcpiQv61iNy7aQ>
+    <xmx:XTRCYeGWrz_vT_OhWG8R93Nye2u8fbDV7kjh77gpS7c7JCsNW8Tj8Q>
+    <xmx:XTRCYR8ApJWQWPU9FQfAk5Upw_9ibSatMyiBvqUOogW-W6xMkqfEeA>
+    <xmx:XTRCYaCqWlH3J5exsrLVhFtUBpBByX78U1oR6S4ZN9hclbE6VhxI4g>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 15 Sep 2021 13:58:51 -0400 (EDT)
+From:   Alexei Lozovsky <me@ilammy.net>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
+        Christoph Lameter <cl@linux.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org
+Subject: [PATCH v2 00/12] proc/stat: Maintain monotonicity of "intr" and "softirq"
+Date:   Thu, 16 Sep 2021 02:58:36 +0900
+Message-Id: <20210915175848.162260-1-me@ilammy.net>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210911034808.24252-1-me@ilammy.net>
+References: <20210911034808.24252-1-me@ilammy.net>
 MIME-Version: 1.0
-In-Reply-To: <20210915072426.4022924-1-yanfei.xu@windriver.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/15/21 1:24 AM, Yanfei Xu wrote:
-> BUG: memory leak
-> unreferenced object 0xffff888129acdb80 (size 96):
->   comm "syz-executor.1", pid 12661, jiffies 4294962682 (age 15.220s)
->   hex dump (first 32 bytes):
->     20 47 c9 85 ff ff ff ff 20 d4 8e 29 81 88 ff ff   G...... ..)....
->     01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->   backtrace:
->     [<ffffffff82264ec8>] kmalloc include/linux/slab.h:591 [inline]
->     [<ffffffff82264ec8>] kzalloc include/linux/slab.h:721 [inline]
->     [<ffffffff82264ec8>] blk_iolatency_init+0x28/0x190 block/blk-iolatency.c:724
->     [<ffffffff8225b8c4>] blkcg_init_queue+0xb4/0x1c0 block/blk-cgroup.c:1185
->     [<ffffffff822253da>] blk_alloc_queue+0x22a/0x2e0 block/blk-core.c:566
->     [<ffffffff8223b175>] blk_mq_init_queue_data block/blk-mq.c:3100 [inline]
->     [<ffffffff8223b175>] __blk_mq_alloc_disk+0x25/0xd0 block/blk-mq.c:3124
->     [<ffffffff826a9303>] loop_add+0x1c3/0x360 drivers/block/loop.c:2344
->     [<ffffffff826a966e>] loop_control_get_free drivers/block/loop.c:2501 [inline]
->     [<ffffffff826a966e>] loop_control_ioctl+0x17e/0x2e0 drivers/block/loop.c:2516
->     [<ffffffff81597eec>] vfs_ioctl fs/ioctl.c:51 [inline]
->     [<ffffffff81597eec>] __do_sys_ioctl fs/ioctl.c:874 [inline]
->     [<ffffffff81597eec>] __se_sys_ioctl fs/ioctl.c:860 [inline]
->     [<ffffffff81597eec>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:860
->     [<ffffffff843fa745>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->     [<ffffffff843fa745>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->     [<ffffffff84600068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> Once blk_throtl_init() queue init failed, blkcg_iolatency_exit() will
-> not be invoked for cleanup. That leads a memory leak. Swap the
-> blk_throtl_init() and blk_iolatency_init() calls can solve this.
+Here's a patch set that makes /proc/stat report total interrupt counts
+as monotonically increasing values, just like individual counters for
+interrupt types and CPUs are.
 
-Applied, thanks.
+The total counters are not actually maintained but computed from
+individual counters. These counters must all have the same width
+for their sum to wrap around in correct and expected manner.
+
+This patch set unifies all counters that are displayed by /proc/stat
+and /proc/interrupts to use "unsigned long" (instead of "unsigned int"
+values that get summed into u64, which causes problems for userspace
+monitoring tools when the individual counters wrap around).
+
+v1 -> v2:
+
+  - Added READ_ONCE to all reads of per-CPU counters
+  - Widened and unified all counters to "unsigned long"
+    instead of clamping them all to "unsigned int"
+  - Fixed typos in documentation
+
+Since the scope of changes has expanded, I think these patches will
+need to be seen and vetted by more people (get-maintainer.pl agrees)
+but for now I'll keep the same CC list as for v1.
+
+Unresolved questions:
+
+  - Does READ_ONCE addition has any merit without WRITE_ONCE?
+
+  - Some counters turned out to be unaccounted for in the total sum.
+    Should they be included there? Or are they omitted on purpose?
+
+  - I haven't tested this on PowerPC since I don't have the hardware
+
+Alexei Lozovsky (12):
+  genirq: Use READ_ONCE for IRQ counter reads
+  genirq: Use unsigned long for IRQ counters
+  powerpc/irq: Use READ_ONCE for IRQ counter reads
+  powerpc/irq: Use unsigned long for IRQ counters
+  powerpc/irq: Use unsigned long for IRQ counter sum
+  x86/irq: Use READ_ONCE for IRQ counter reads
+  x86/irq: Use unsigned long for IRQ counters
+  x86/irq: Use unsigned long for IRQ counters more
+  x86/irq: Use unsigned long for IRQ counter sum
+  proc/stat: Use unsigned long for "intr" sum
+  proc/stat: Use unsigned long for "softirq" sum
+  docs: proc.rst: stat: Note the interrupt counter wrap-around
+
+ Documentation/filesystems/proc.rst |  8 +++
+ arch/powerpc/include/asm/hardirq.h | 20 ++++----
+ arch/powerpc/include/asm/paca.h    |  2 +-
+ arch/powerpc/kernel/irq.c          | 42 +++++++--------
+ arch/x86/include/asm/hardirq.h     | 26 +++++-----
+ arch/x86/include/asm/hw_irq.h      |  4 +-
+ arch/x86/include/asm/mce.h         |  4 +-
+ arch/x86/kernel/apic/apic.c        |  2 +-
+ arch/x86/kernel/apic/io_apic.c     |  4 +-
+ arch/x86/kernel/cpu/mce/core.c     |  4 +-
+ arch/x86/kernel/i8259.c            |  2 +-
+ arch/x86/kernel/irq.c              | 82 +++++++++++++++---------------
+ fs/proc/softirqs.c                 |  2 +-
+ fs/proc/stat.c                     | 12 ++---
+ include/linux/kernel_stat.h        | 10 ++--
+ kernel/rcu/tree.h                  |  2 +-
+ kernel/rcu/tree_stall.h            |  4 +-
+ 17 files changed, 119 insertions(+), 111 deletions(-)
 
 -- 
-Jens Axboe
-
+2.25.1
