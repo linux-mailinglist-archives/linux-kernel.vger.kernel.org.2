@@ -2,78 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9A4D40C06B
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 09:23:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15C3A40C070
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 09:24:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236674AbhIOHY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 03:24:27 -0400
-Received: from mga11.intel.com ([192.55.52.93]:45245 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236486AbhIOHYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 03:24:25 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10107"; a="219060255"
-X-IronPort-AV: E=Sophos;i="5.85,294,1624345200"; 
-   d="scan'208";a="219060255"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2021 00:23:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,294,1624345200"; 
-   d="scan'208";a="610053522"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 15 Sep 2021 00:23:04 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 15 Sep 2021 10:23:04 +0300
-Date:   Wed, 15 Sep 2021 10:23:04 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Sven Peter <sven@svenpeter.dev>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] usb: typec: tipd: Remove WARN_ON in
- tps6598x_block_read
-Message-ID: <YUGfWGLlH3q4hkVL@kuha.fi.intel.com>
-References: <20210914140235.65955-1-sven@svenpeter.dev>
- <20210914140235.65955-3-sven@svenpeter.dev>
+        id S236672AbhIOHZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 03:25:25 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:34840 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236482AbhIOHZY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 03:25:24 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1631690646; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=SPMUc+IeXgwlU6aQYQ8KqJroIVGV8hffE7mWUc2ERIY=;
+ b=jTfFblipj5vZ4/wmtQsa0O19GHYuXsj2BkljdfGrsE8WAqj5J1ocyW9Qd68UGOzbdsr2uWJF
+ x4Q+rl+jxBr11tIk1GQ8EEegew5MsSvS6zWqpvj6lA8p6jjpQgcgH7xWez6YSrF3MZLZVJ9T
+ ouesyN3fTS0p5LfGo1u+IAKo5cM=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 61419f7e648642cc1cd0e828 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 15 Sep 2021 07:23:42
+ GMT
+Sender: pmaliset=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id AA8D0C43617; Wed, 15 Sep 2021 07:23:42 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmaliset)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DBE05C4338F;
+        Wed, 15 Sep 2021 07:23:41 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210914140235.65955-3-sven@svenpeter.dev>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 15 Sep 2021 12:53:41 +0530
+From:   Prasad Malisetty <pmaliset@codeaurora.org>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, bhelgaas@google.com,
+        robh+dt@kernel.org, swboyd@chromium.org, lorenzo.pieralisi@arm.com,
+        svarbanov@mm-sol.com, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dianders@chromium.org,
+        mka@chromium.org, vbadigan@codeaurora.org, sallenki@codeaurora.org,
+        manivannan.sadhasivam@linaro.org
+Subject: Re: [PATCH v7 4/4] PCI: qcom: Switch pcie_1_pipe_clk_src after PHY
+ init in SC7280
+In-Reply-To: <20210914185228.GA1443558@bjorn-Precision-5520>
+References: <20210914185228.GA1443558@bjorn-Precision-5520>
+Message-ID: <c63b7811ad74303fbb80dbbfe2d11a17@codeaurora.org>
+X-Sender: pmaliset@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 04:02:35PM +0200, Sven Peter wrote:
-> Calling tps6598x_block_read with a higher than allowed len can be
-> handled by just returning an error. There's no need to crash systems
-> with panic-on-warn enabled.
+On 2021-09-15 00:22, Bjorn Helgaas wrote:
+> On Tue, Sep 14, 2021 at 11:49:10PM +0530, Prasad Malisetty wrote:
+>> On the SC7280, the clock source for gcc_pcie_1_pipe_clk_src
+>> must be the TCXO while gdsc is enabled. After PHY init successful
+>> clock source should switch to pipe clock for gcc_pcie_1_pipe_clk_src.
+>> 
+>> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
+>> ---
+>>  drivers/pci/controller/dwc/pcie-qcom.c | 90 
+>> +++++++++++++++++++++++++++++-----
+>>  1 file changed, 79 insertions(+), 11 deletions(-)
+>> 
+>> +struct qcom_pcie_cfg {
+>> +	const struct qcom_pcie_ops *ops;
+>> +	bool pcie_1_pipe_clk_src_switch;
 > 
-> Signed-off-by: Sven Peter <sven@svenpeter.dev>
-
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-
-> ---
-> v1 -> v2:
->  - added this patch to also remove the WARN_ON in tps6598x_block_read
->    as suggested by greg k-h
+> This is OK, but all things being equal I like "unsigned int x:1" a
+> little better.  Here's some background:
 > 
->  drivers/usb/typec/tipd/core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
-> index 8c79ba17a157..93e56291f0cf 100644
-> --- a/drivers/usb/typec/tipd/core.c
-> +++ b/drivers/usb/typec/tipd/core.c
-> @@ -117,7 +117,7 @@ tps6598x_block_read(struct tps6598x *tps, u8 reg, void *val, size_t len)
->  	u8 data[TPS_MAX_LEN + 1];
->  	int ret;
->  
-> -	if (WARN_ON(len + 1 > sizeof(data)))
-> +	if (len + 1 > sizeof(data))
->  		return -EINVAL;
->  
->  	if (!tps->i2c_protocol)
-> -- 
-> 2.25.1
+Hi Bjorn,
 
-thanks,
+Thanks for sharing the details.
 
--- 
-heikki
+Sure, I will replace bool with unsigned int in next patch version.
+
+Thanks
+-Prasad
+
+> https://lore.kernel.org/r/CA+55aFzKQ6Pj18TB8p4Yr0M4t+S+BsiHH=BJNmn=76-NcjTj-g@mail.gmail.com/
+> 
+> https://lore.kernel.org/r/CA+55aFxnePDimkVKVtv3gNmRGcwc8KQ5mHYvUxY8sAQg6yvVYg@mail.gmail.com/
+> 
+>> @@ -1467,6 +1531,7 @@ static int qcom_pcie_probe(struct 
+>> platform_device *pdev)
+>>  	struct pcie_port *pp;
+>>  	struct dw_pcie *pci;
+>>  	struct qcom_pcie *pcie;
+>> +	const struct qcom_pcie_cfg *pcie_cfg = NULL;
+> 
+> No need to initialize this, since you always assign it before using
+> it.
+> 
+Agree, I will remove initialization in next patch series.
+
+>>  	int ret;
+>> 
+>>  	pcie = devm_kzalloc(dev, sizeof(*pcie), GFP_KERNEL);
+>> @@ -1488,7 +1553,9 @@ static int qcom_pcie_probe(struct 
+>> platform_device *pdev)
+>> 
+>>  	pcie->pci = pci;
+>> 
+>> -	pcie->ops = of_device_get_match_data(dev);
+>> +	pcie_cfg = of_device_get_match_data(dev);
+>> +	pcie->ops = pcie_cfg->ops;
+>> +	pcie->pcie_1_pipe_clk_src_switch = 
+>> pcie_cfg->pcie_1_pipe_clk_src_switch;
+>> 
+>>  	pcie->reset = devm_gpiod_get_optional(dev, "perst", GPIOD_OUT_HIGH);
+>>  	if (IS_ERR(pcie->reset)) {
+> 
+> Looks good, thanks for working on this!
+
+Thanks Bjorn for the review.
