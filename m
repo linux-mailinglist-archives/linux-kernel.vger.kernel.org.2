@@ -2,164 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B965940BFF5
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 08:59:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 900E640BFF8
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 09:00:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236486AbhIOHAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 03:00:46 -0400
-Received: from mail-oln040093003011.outbound.protection.outlook.com ([40.93.3.11]:47879
-        "EHLO na01-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234862AbhIOHAo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 03:00:44 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=e9ufpY3o96Uw+v/+nUYQLvbhybWWspe2JYriYMKehSUKQ6FMLPSsAkt48MC+/4FYg5aB9Yf2B3o+nxLsCSwuDkfflWVdJ/K3tPtsQ20cURZ6qPFXhgY2XEAkAYo2VLfz40aS/MJwCrO7Ne1YxNM/myPssWTSRv5Ox63kIfltCzvDUdCFtzhbzXxR4+tE32yrolWSlCmIR507Pr2nQ7YSjNnGuwpHuwNL8kTs8ENJqh77sWU0XEdS+zKaZM2mmfLtFVShjPgj2mLLjwXTiGWssmbvVfIdXM8IofgofL8gLbuSqo7TA5Fagxk2fHIfD4tUoBN6CU4BOhzNKtmZJm9Qqg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=4XFdt6C9Cyu3811H2T81Kuy+ZfEVZHTdRXijJ+O188Y=;
- b=kE42vDyywL+wht+9DDvlnuIRViEuA4U3RUfNBJTdUR/PNQgUUi8dwf3B38nFc82p6nQd05rYp/5NrvOlIN5khBpHy3ug3xAuqnPDVwBwPmJHSB3e2sROZZmkgXcAQ/8FFBwrQpy8pfJDH34IPU82+h3OhB/9svL3fzSBI7Q3Cx8LJJveVJOzKQoGFDDVj0EGzVauxDDbTLdncd0hpTQLUOY54YQ0+AWLvJG7naHJ9qQKC7JosZTb5teLMiQe9JYKu+X5YQpLME1CFsVOuVCAmJx73cz4xsgqlPK20wMcOIuBAdHYvARBkd1crOfkiRWYEEmwivO3klKv5APln4umyA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4XFdt6C9Cyu3811H2T81Kuy+ZfEVZHTdRXijJ+O188Y=;
- b=h+DKSr6jTb6P1AubBg4vfQPc/jbjLFnH0V7SOs9gOVtrV/6tOkmWNXT3e0cb+FwlacdpzjrEbIR8YhgUAKROHPcQ8C24Jk8C+0O+VoCljUs8saoN3XqFJEWJWoP5Y0UKGaXhjo0HRgmwsgJ5foFBLIvFVc8ZeQ2ETwxxjIX8gbY=
-Received: from BYAPR21MB1270.namprd21.prod.outlook.com (2603:10b6:a03:105::15)
- by BYAPR21MB1736.namprd21.prod.outlook.com (2603:10b6:a02:ca::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.4; Wed, 15 Sep
- 2021 06:59:19 +0000
-Received: from BYAPR21MB1270.namprd21.prod.outlook.com
- ([fe80::e56b:9b01:9633:78c0]) by BYAPR21MB1270.namprd21.prod.outlook.com
- ([fe80::e56b:9b01:9633:78c0%7]) with mapi id 15.20.4544.002; Wed, 15 Sep 2021
- 06:59:19 +0000
-From:   Dexuan Cui <decui@microsoft.com>
-To:     Deepak Rawat <drawat.floss@gmail.com>
-CC:     Haiyang Zhang <haiyangz@microsoft.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] drm/hyperv: Fix double mouse pointers
-Thread-Topic: [PATCH] drm/hyperv: Fix double mouse pointers
-Thread-Index: AQHXqYGDSoFNik8c8kWZU0a77zui5aukpo7Q
-Date:   Wed, 15 Sep 2021 06:59:18 +0000
-Message-ID: <BYAPR21MB1270C4427C264D14F151A0CCBFDB9@BYAPR21MB1270.namprd21.prod.outlook.com>
-References: <20210913182645.17075-1-decui@microsoft.com>
- <CAHFnvW0iX1FMTcJzQQtjHGosavSJ6-9wkRb7C0Ljv3c+BBUEXQ@mail.gmail.com>
-In-Reply-To: <CAHFnvW0iX1FMTcJzQQtjHGosavSJ6-9wkRb7C0Ljv3c+BBUEXQ@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=cf3e5a5c-eb7d-4f6a-a708-ad5b99f6293c;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-09-15T06:41:59Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 79631515-dbc8-4cf9-3443-08d9781656cc
-x-ms-traffictypediagnostic: BYAPR21MB1736:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR21MB1736B5ACE70C9853F9EB83E5BFDB9@BYAPR21MB1736.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: tluKZDBEcUuw8tKrVrcNfjHouNaj4V7JNsThLen6vGE1zAOGQEU/uzOdngck2iM5G/gPD5/MgxEW8PJQjccSU2v63S6hJqDRK5EqZIleV0cQ5ByDZUOz6ezz7uBn2zTSQsXrCVbYWUL8cy6F43gf1yibtd8FCEaxqhHccy7VNDQe4Jk6KIa04y0/EsoUJSbO/BZVcHrsXu3ICUoDuQ6zWH8c/awPEpVcmgYMAvFbch7fh9S0ePXzTIoO+tEtnNc4ros3RWV66FQbh7iBsjYKSMsF6FXGZD3LoRTL2cGhbueoPZkFO++L0eHpqWGjdF1OugTu9wn2kFmWDsBKLTVe5Uw+9t1tSfdcYpdHkVG9PFm3Y2WZk1uezImS5E3yifbKv3OIUmSpKn1btfDBbNM17zs/9vzxLfSRj3wbG5XjKMKVrmpaCbz4DOKA7rloQgXVW+OocPl9PxK8ZpwMHKvFf6PVlHWA/+EN5gAFkVnktf8l+x7dk5eM5MK3STW8FuqwON+DhmL84Xj8FyRG2ppOTLfaIbKp7Yrpj7aUjwKGlVrnZmsGmetU8UgpStjw8rZZHGRyazwi5OQnB/YiNrcKquUKSo5GvqeWd1PqADiD0Yz1Wl1UTpIVFP9QpAEaKhIbvStSDEkdjP/z2U5VOiidmeKkpnheHh2IKtWy3eetRV4hTQk2+bIBXuy/I2ugDQ3uiJezBNa9tpLJUfN1rOpI6A==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR21MB1270.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(5660300002)(2906002)(7696005)(122000001)(26005)(6506007)(66946007)(8676002)(8990500004)(71200400001)(52536014)(55016002)(4326008)(86362001)(38100700002)(66446008)(82960400001)(64756008)(186003)(9686003)(6916009)(82950400001)(66476007)(66556008)(10290500003)(316002)(54906003)(33656002)(83380400001)(508600001)(76116006)(8936002)(38070700005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?czNmc2NPYmNBRzNwYWRWVm5XOEwza1dtcHBPTkEza013bVhvNW1rcVptTXZM?=
- =?utf-8?B?b3Izc29mdVBHYnZrQVhHS0xkdmd4a0s5Myt2OTJ5dzdSQk9QTjMvcVU4LzFs?=
- =?utf-8?B?clhsQlVOcXJ6cFBDK0ZmVjJCemdvc2lhRkNWc3ROYjNCVUFFc2MyOW9MbFJi?=
- =?utf-8?B?amVtazduUVJ4UDd2TUI5eFg2N2ZwYmZhSWlsYlgvSHJFcDYvdGVDTlc0Zml4?=
- =?utf-8?B?YS9oRldNZmpIZWpYVnkvUG5jaks0UUJzYUhsQkJaWS92OWhEeWFoNjhqTXlo?=
- =?utf-8?B?OHpsa2lOYmxKNnZIeTRMRHNHQ01SZFh3VVhNM2JKMVl4OWs0NHJsUHRwZkpU?=
- =?utf-8?B?NXc3MnRCQjlyQUFiSWRBNDNLNmFiTFR0TUx2LzA1K2VMUnpvdVViUjVhQzVR?=
- =?utf-8?B?MkJkUGtiY1pCbytiVXR4RXQyR05LQUVDbVNkWmlvOVNTNXkzZStXSEd1dTAy?=
- =?utf-8?B?bFNBUjZhbm9qUDh6cHdIUG1aSFBGdTBwYWptM3Y4WFNSaTAwMEFMUFJBZXlP?=
- =?utf-8?B?V1I0WVozL0hhcm1LVU9XdGRCNWowM2pCS1R3d1lyVUZGT0NzVHZXNGlRU0Fl?=
- =?utf-8?B?MUo1UTczSnJHM01DeFBmckR5dFhJaVNDZ2VkRGtBSGNlbGxNNHd2VTFaY3FN?=
- =?utf-8?B?UWlTVnpDaE1vSUMwSUFuT2FWaVNpUUtPRFBlNUhObndqRGFJOHhmZ0ljMGlh?=
- =?utf-8?B?Vm1yVTNlcFhzdW51QkJ4VllxdG5Cc2hqMHlJSlVKbzkzWDZVaW5sbUNSNGVq?=
- =?utf-8?B?b0ZoVFloSzdmKzFNcTh2UEpQejkyZUcyZ0JpMnhRMjhjeE9ZSU9ENjEzTk04?=
- =?utf-8?B?eG0vUmdQODErOGZkWkd4QWxQU2cyRmxrVFE5UC9Xam1lcTdSUGRncW1ORHV6?=
- =?utf-8?B?NXBJbFRqMU1XS1U2VS9yYXFnbEdtSVZYQWJIczZxYmdmcm9yNktweXJkaGNi?=
- =?utf-8?B?NG5Nc1RjVjRNd0VlbEY5aFpxb041bHl5YkNvNTJQMFByKzNLODZ6NTZ1UkdI?=
- =?utf-8?B?NHYvUi9SbHRXSnkvQ056OUFrVGpoRjNJZks2MmtmZGhRenJsNENnY0lHSGhJ?=
- =?utf-8?B?Y0ozRmlFYlIzUTE5S0haYXdLdmJYUmcrVmZIcGZOa3R3MTZEdzE4NzlyRC9a?=
- =?utf-8?B?Y0FmbmdZR3BxMlN2ZDdvNHJ1RVhZNUtmclpldW1GMk1xVURKUjZjQkE1UmZi?=
- =?utf-8?B?OXYxNVZReGV2MldudGxWNlU4RHpUMkU3encvbDl6TzcvYzEweUk5YU5DazFt?=
- =?utf-8?B?SWx1aStRclVSeXZsRjRlUlFOb1hiNnVOaFBydlg0Z1Q5dHk3WkErY0Q1cTha?=
- =?utf-8?B?b1pnWU5DSFljODhHaGxSYlBQdDhGcld4NlhGNE5BZ3hiV3lpU3l6VjJSZ0dY?=
- =?utf-8?B?VWFZN3QwcHNqVkFEOVUvbWkvNzdVbFY1cXV4cG9pcGRuRm01NmhDUFdJWUE4?=
- =?utf-8?B?TUtVTDhtNi9MY1pWZXBjWU5iWE9rSmlrTzZvTXlqSzNZVkEreXU3eFkrdElU?=
- =?utf-8?B?djFxZUZTSWovc05vL2hmd3hEMlI5dmxkQzFYZTcrVlVjR2g3NXl6OS9UUFh4?=
- =?utf-8?B?MFpKQjAra3Q2TEphc1JzcUVDek5lS25aTXNCNXBvcGIrS2hWRjh5dDBPenAx?=
- =?utf-8?B?em1ZMnlWdkJIRFZwQ1BlUDhkUjlDMlp6L0JwWDNRRnhDWXlCWkNKeGhsMnVz?=
- =?utf-8?B?MmpKWXJVN003VXJNYzI0TXJOcHI4OVJndHRJdHM2YTREN1Y3dlNnMldIR3Y0?=
- =?utf-8?Q?c3bzicNOWt3QM8YGYkmlwpS78fhXGOPecsUjctp?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S236501AbhIOHBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 03:01:33 -0400
+Received: from mga03.intel.com ([134.134.136.65]:18149 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234862AbhIOHBc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 03:01:32 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10107"; a="222296073"
+X-IronPort-AV: E=Sophos;i="5.85,294,1624345200"; 
+   d="scan'208";a="222296073"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2021 00:00:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,294,1624345200"; 
+   d="scan'208";a="610046528"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 15 Sep 2021 00:00:09 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 15 Sep 2021 10:00:09 +0300
+Date:   Wed, 15 Sep 2021 10:00:09 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Laurentiu Tudor <laurentiu.tudor@nxp.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        andriy.shevchenko@linux.intel.com, rafael@kernel.org,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jon@solid-run.com, lorenzo.pieralisi@arm.com
+Subject: Re: [PATCH v2] software node: balance refcount for managed sw nodes
+Message-ID: <YUGZ+bBpmYa8WUFb@kuha.fi.intel.com>
+References: <20210914144409.32626-1-laurentiu.tudor@nxp.com>
+ <YUC2q1du1vGjAtsd@kroah.com>
+ <70940e81-c1cb-bb06-5184-32f5a36fb85d@nxp.com>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR21MB1270.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 79631515-dbc8-4cf9-3443-08d9781656cc
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Sep 2021 06:59:18.9163
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 3IxV3A5QnvLaFSTVO0QugTk+6qQWXk/pVH8xEraY/s9UNw2owlucBbKwnqo6S1WG4DgI5cM93dXtXcifm5LkJg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR21MB1736
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <70940e81-c1cb-bb06-5184-32f5a36fb85d@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBGcm9tOiBEZWVwYWsgUmF3YXQgPGRyYXdhdC5mbG9zc0BnbWFpbC5jb20+DQo+IFNlbnQ6IFR1
-ZXNkYXksIFNlcHRlbWJlciAxNCwgMjAyMSA4OjU5IEFNDQo+IC4uLg0KPiA+ICsvKiBTZW5kIG1v
-dXNlIHBvaW50ZXIgaW5mbyB0byBob3N0ICovDQo+ID4gK2ludCBoeXBlcnZfc2VuZF9wdHIoc3Ry
-dWN0IGh2X2RldmljZSAqaGRldikNCj4gPiArew0KPiA+ICsgICAgICAgc3RydWN0IHN5bnRodmlk
-X21zZyBtc2c7DQo+ID4gKw0KPiA+ICsgICAgICAgbWVtc2V0KCZtc2csIDAsIHNpemVvZihzdHJ1
-Y3Qgc3ludGh2aWRfbXNnKSk7DQo+ID4gKyAgICAgICBtc2cudmlkX2hkci50eXBlID0gU1lOVEhW
-SURfUE9JTlRFUl9QT1NJVElPTjsNCj4gPiArICAgICAgIG1zZy52aWRfaGRyLnNpemUgPSBzaXpl
-b2Yoc3RydWN0IHN5bnRodmlkX21zZ19oZHIpICsNCj4gPiArICAgICAgICAgICAgICAgc2l6ZW9m
-KHN0cnVjdCBzeW50aHZpZF9wb2ludGVyX3Bvc2l0aW9uKTsNCj4gPiArICAgICAgIG1zZy5wdHJf
-cG9zLmlzX3Zpc2libGUgPSAxOw0KPiANCj4gImlzX3Zpc2libGUiIHNob3VsZCBiZSAwIHNpbmNl
-IHlvdSB3YW50IHRvIGhpZGUgdGhlIHBvaW50ZXIuIE1heWJlDQo+IGJldHRlciwgYWNjZXB0IHRo
-ZXNlIGZyb20gdGhlIGNhbGxlci4NCg0KQWNjb3JkaW5nIHRvIG15IHRlc3QsICJpc192aXNpYmxl
-ID0gMCIgZG9lc24ndCB3b3JrLCBpLmUuIGNhbid0IGhpZGUgdGhlDQp1bndhbnRlZCBIVyBtb3Vz
-ZSBwb2luZXIuIEl0IGxvb2tzIGxpa2UgdGhlIGZpZWxkIGlzIGZvciBzb21lIHZlcnkgb2xkDQps
-ZWdhY3kgV2luZG93cyBWTXMgbGlrZSBXaW5kb3dzIFZpc3RhLg0KDQpIYWl5YW5nIGFsc28gcmVw
-bGllZCBpbiBhbm90aGVyIGVtYWlsLCBzYXlpbmcgImlzX3Zpc2libGUgPSAwIiBkb2Vzbid0DQp3
-b3JrLg0KDQo+ID4gKyAgICAgICBtc2cucHRyX3Bvcy52aWRlb19vdXRwdXQgPSAwOw0KPiA+ICsg
-ICAgICAgbXNnLnB0cl9wb3MuaW1hZ2VfeCA9IDA7DQo+ID4gKyAgICAgICBtc2cucHRyX3Bvcy5p
-bWFnZV95ID0gMDsNCj4gPiArICAgICAgIGh5cGVydl9zZW5kcGFja2V0KGhkZXYsICZtc2cpOw0K
-PiA+ICsNCj4gPiArICAgICAgIG1lbXNldCgmbXNnLCAwLCBzaXplb2Yoc3RydWN0IHN5bnRodmlk
-X21zZykpOw0KPiA+ICsgICAgICAgbXNnLnZpZF9oZHIudHlwZSA9IFNZTlRIVklEX1BPSU5URVJf
-U0hBUEU7DQo+ID4gKyAgICAgICBtc2cudmlkX2hkci5zaXplID0gc2l6ZW9mKHN0cnVjdCBzeW50
-aHZpZF9tc2dfaGRyKSArDQo+ID4gKyAgICAgICAgICAgICAgIHNpemVvZihzdHJ1Y3Qgc3ludGh2
-aWRfcG9pbnRlcl9zaGFwZSk7DQo+ID4gKyAgICAgICBtc2cucHRyX3NoYXBlLnBhcnRfaWR4ID0g
-U1lOVEhWSURfQ1VSU09SX0NPTVBMRVRFOw0KPiA+ICsgICAgICAgbXNnLnB0cl9zaGFwZS5pc19h
-cmdiID0gMTsNCj4gPiArICAgICAgIG1zZy5wdHJfc2hhcGUud2lkdGggPSAxOw0KPiA+ICsgICAg
-ICAgbXNnLnB0cl9zaGFwZS5oZWlnaHQgPSAxOw0KPiA+ICsgICAgICAgbXNnLnB0cl9zaGFwZS5o
-b3RfeCA9IDA7DQo+ID4gKyAgICAgICBtc2cucHRyX3NoYXBlLmhvdF95ID0gMDsNCj4gPiArICAg
-ICAgIG1zZy5wdHJfc2hhcGUuZGF0YVswXSA9IDA7DQo+ID4gKyAgICAgICBtc2cucHRyX3NoYXBl
-LmRhdGFbMV0gPSAxOw0KPiA+ICsgICAgICAgbXNnLnB0cl9zaGFwZS5kYXRhWzJdID0gMTsNCj4g
-PiArICAgICAgIG1zZy5wdHJfc2hhcGUuZGF0YVszXSA9IDE7DQo+ID4gKyAgICAgICBoeXBlcnZf
-c2VuZHBhY2tldChoZGV2LCAmbXNnKTsNCj4gPiArDQo+IA0KPiBJcyBpdCBuZWNlc3NhcnkgdG8g
-c2VuZCBTWU5USFZJRF9QT0lOVEVSX1NIQVBFIGhlcmU/IFBlcmhhcHMgd2Ugc2hvdWxkDQoNCkFj
-Y29yZGluZyB0byBteSB0ZXN0LCB5ZXMuIElmIEkgZG9uJ3Qgc2VuZCBhIFNZTlRIVklEX1BPSU5U
-RVJfU0hBUEUgbWVzc2FnZSwNCnRoZSB1bndhbnRlZCBtb3VzZSBwb2ludGVyIGNhbid0IGJlIGhp
-ZGRlbi4gQXMgd2Uga25vdywgdGhlIHByb3RvY29sIGJldHdlZW4NCnRoZSBWU0MgYW5kIHRoZSBW
-U1AgaXMgbm90IHdlbGwgZG9jdW1lbnRlZCB0byB1cy4gSSBjYW4gYXNrIEh5cGVyLVYNCnRlYW0g
-Zm9yIHNvbWUgY2xhcmlmaWNhdGlvbiBvbiB0aGlzLCBidXQgaXQncyBwcm9iYWJseSB3ZSBjYW4g
-anVzdCB1c2UgdGhlIGN1cnJlbnQNCnZlcnNpb24gb2YgaGlkaW5nIHRoZSBtb3VzZSBwb2ludGVy
-IGFzLWlzIC0tIHRoaXMgaGFzIGJlZW4gdXNlZCBmb3IgMTArIHllYXJzDQppbiB0aGUgaHlwZXJ2
-X2ZiIGRyaXZlciB3aXRob3V0IGFueSBpc3N1ZS4gOi0pDQoNCj4gc2VwYXJhdGUgU1lOVEhWSURf
-UE9JTlRFUl9QT1NJVElPTiBhbmQgU1lOVEhWSURfUE9JTlRFUl9TSEFQRSBpbnRvDQo+IGRpZmZl
-cmVudCBmdW5jdGlvbnMuDQoNClNpbmNlIHRoZSAyIG1lc3NhZ2VzIGFyZSBvbmx5IHVzZWQgaGVy
-ZSwgSSBzdWdnZXN0IHdlIGtlZXAgaXQgYXMtaXMuDQoNClRoYW5rcywNCi0tIERleHVhbg0K
+On Tue, Sep 14, 2021 at 07:16:04PM +0300, Laurentiu Tudor wrote:
+> 
+> 
+> On 9/14/2021 5:50 PM, Greg KH wrote:
+> > On Tue, Sep 14, 2021 at 05:44:09PM +0300, laurentiu.tudor@nxp.com wrote:
+> >> From: Laurentiu Tudor <laurentiu.tudor@nxp.com>
+> >>
+> >> software_node_notify(), on KOBJ_REMOVE drops the refcount twice on managed
+> >> software nodes, thus leading to underflow errors. Balance the refcount by
+> >> bumping it in the device_create_managed_software_node() function.
+> >>
+> >> The error [1] was encountered after adding a .shutdown() op to our
+> >> fsl-mc-bus driver.
+> >>
+> >> [1]
+> >> pc : refcount_warn_saturate+0xf8/0x150
+> >> lr : refcount_warn_saturate+0xf8/0x150
+> >> sp : ffff80001009b920
+> >> x29: ffff80001009b920 x28: ffff1a2420318000 x27: 0000000000000000
+> >> x26: ffffccac15e7a038 x25: 0000000000000008 x24: ffffccac168e0030
+> >> x23: ffff1a2428a82000 x22: 0000000000080000 x21: ffff1a24287b5000
+> >> x20: 0000000000000001 x19: ffff1a24261f4400 x18: ffffffffffffffff
+> >> x17: 6f72645f726f7272 x16: 0000000000000000 x15: ffff80009009b607
+> >> x14: 0000000000000000 x13: ffffccac16602670 x12: 0000000000000a17
+> >> x11: 000000000000035d x10: ffffccac16602670 x9 : ffffccac16602670
+> >> x8 : 00000000ffffefff x7 : ffffccac1665a670 x6 : ffffccac1665a670
+> >> x5 : 0000000000000000 x4 : 0000000000000000 x3 : 00000000ffffffff
+> >> x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff1a2420318000
+> >> Call trace:
+> >>  refcount_warn_saturate+0xf8/0x150
+> >>  kobject_put+0x10c/0x120
+> >>  software_node_notify+0xd8/0x140
+> >>  device_platform_notify+0x4c/0xb4
+> >>  device_del+0x188/0x424
+> >>  fsl_mc_device_remove+0x2c/0x4c
+> >>  rebofind sp.c__fsl_mc_device_remove+0x14/0x2c
+> >>  device_for_each_child+0x5c/0xac
+> >>  dprc_remove+0x9c/0xc0
+> >>  fsl_mc_driver_remove+0x28/0x64
+> >>  __device_release_driver+0x188/0x22c
+> >>  device_release_driver+0x30/0x50
+> >>  bus_remove_device+0x128/0x134
+> >>  device_del+0x16c/0x424
+> >>  fsl_mc_bus_remove+0x8c/0x114
+> >>  fsl_mc_bus_shutdown+0x14/0x20
+> >>  platform_shutdown+0x28/0x40
+> >>  device_shutdown+0x15c/0x330
+> >>  __do_sys_reboot+0x218/0x2a0
+> >>  __arm64_sys_reboot+0x28/0x34
+> >>  invoke_syscall+0x48/0x114
+> >>  el0_svc_common+0x40/0xdc
+> >>  do_el0_svc+0x2c/0x94
+> >>  el0_svc+0x2c/0x54
+> >>  el0t_64_sync_handler+0xa8/0x12c
+> >>  el0t_64_sync+0x198/0x19c
+> >> ---[ end trace 32eb1c71c7d86821 ]---
+> >>
+> >> Reported-by: Jon Nettleton <jon@solid-run.com>
+> >> Suggested-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> >> Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> >> Signed-off-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
+> >> ---
+> >> Changes since v1:
+> >>  - added Heikki's Reviewed-by: (Thanks!)
+> >>
+> >> Changes since RFC:
+> >>  - use software_node_notify(KOBJ_ADD) instead of directly bumping
+> >>    refcount (Heikki)
+> >>
+> >>  drivers/base/swnode.c | 3 +++
+> >>  1 file changed, 3 insertions(+)
+> >>
+> >> diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
+> >> index d1f1a8240120..bdb50a06c82a 100644
+> >> --- a/drivers/base/swnode.c
+> >> +++ b/drivers/base/swnode.c
+> >> @@ -1113,6 +1113,9 @@ int device_create_managed_software_node(struct device *dev,
+> >>  	to_swnode(fwnode)->managed = true;
+> >>  	set_secondary_fwnode(dev, fwnode);
+> >>  
+> >> +	if (device_is_registered(dev))
+> >> +		software_node_notify(dev, KOBJ_ADD);
+> >> +
+> >>  	return 0;
+> >>  }
+> >>  EXPORT_SYMBOL_GPL(device_create_managed_software_node);
+> >> -- 
+> >> 2.17.1
+> >>
+> > 
+> > I am seeing that this needs to go into 5.15-final, but how about any
+> > further back?  Stable kernels?  
+> 
+> I think that's a good point. I can resend and Cc: stable if everyone's
+> fine with that.
+> 
+> > Does this "fix" a specific commit?
+> 
+> I did not found a certain commit that introduced the breakage so don't
+> know what to say here. I'd let more experienced people comment on this.
+
+This fixes the commit that introduced the function, so:
+
+Fixes: 151f6ff78cdf ("software node: Provide replacement for device_add_properties()")
+
+thanks,
+
+-- 
+heikki
