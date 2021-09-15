@@ -2,265 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC3D340CBE0
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 19:44:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57BD240CBFA
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 19:53:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230482AbhIORp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 13:45:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbhIORp0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 13:45:26 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8E5CC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 10:44:06 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id c19-20020a9d6153000000b0051829acbfc7so4604137otk.9
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 10:44:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wonPalCaX9F+KZ2w00RyDLy7np4dOZ17CrNdnuNESbA=;
-        b=mNCvYC2WClusDkPNwnmFtjCDCfn06nSK2llI5Ef1Ia9EHmBKJWFCkWyTZLUOc+G8tG
-         6pf43nPo6gQAem+fL5U9WJ625jkwjlKE48QqZDKE4W7n0GNPw1HdoCEolCfb9CrG1HNJ
-         OQNbP/dI8KTpv9ucV8ns+U0UHTsUxxoUs1XeY88mf52kaoJIPlzbFZ8lZcW8pOezeMGt
-         6ZFI+MjD9pFnchRJmy6A+IpABaSgHrzDGraq4tdjyryKCE/DUTFRkrOFFWrrgSPqZgHm
-         2uUFj39tFYiUMAmExkiXlX0EkMNNYDUhC1oxMiwWkpsru1MQHUEUJF39RNGhDybagNfb
-         7Xsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wonPalCaX9F+KZ2w00RyDLy7np4dOZ17CrNdnuNESbA=;
-        b=z+9U7qmg7T+pkw6S/xcvwWv0nLLPAtRHABonUBnQ/5Iz+mZeyrxD9/gDyjP4l6753n
-         9Sbc04Ge1zBc2819B28g4me/Qxodi4cukEwMHT5mEjvV8XQllp7rr2eECxWAUoAVnDU1
-         GN5M7cWMe8FBCUHn51YTnLOH/POHeTB/NDK4aWuALknvVsLtGRxnkSq25obELDAzhXL/
-         HrBJzDQ6oCEbrvqPrm3PoynqLwXII5rAHmhkKsX9vLxW9RlZJsGr5HOAxI46Wg9KydEc
-         L8NSYuClXrkpEWeb14oQWyBJVc7EOxglSUR4VdMTWXTKiyFsCsBEU5INn80Wnj1FCmp8
-         d33Q==
-X-Gm-Message-State: AOAM533buIRP7hPXF25NxPJpSxoRvqvnRGqiQMHeu/esMbb7xQu4JcTt
-        0ezjavBhtKAg40WghufA2qh5Aw==
-X-Google-Smtp-Source: ABdhPJwduwJaaSf18cVPub1E76Ic7TyCUAoDWoKdRIviHZi19eKVOUFLbADTd+O5CNE6j3YNYRqilQ==
-X-Received: by 2002:a9d:4003:: with SMTP id m3mr1072678ote.62.1631727846158;
-        Wed, 15 Sep 2021 10:44:06 -0700 (PDT)
-Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id x22sm178067oox.26.2021.09.15.10.44.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Sep 2021 10:44:05 -0700 (PDT)
-Date:   Wed, 15 Sep 2021 10:44:56 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Shawn Guo <shawn.guo@linaro.org>
-Cc:     Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] clk: qcom: smd-rpm: Add rate hooks for
- clk_smd_rpm_branch_ops
-Message-ID: <YUIxGH17+AjVluCM@ripper>
-References: <20210914025554.5686-1-shawn.guo@linaro.org>
- <20210914025554.5686-2-shawn.guo@linaro.org>
- <163165658855.763609.14080313241484048687@swboyd.mtv.corp.google.com>
- <20210915150526.GE25255@dragon>
- <YUIr/002dfXxDWDY@ripper>
+        id S230088AbhIORzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 13:55:05 -0400
+Received: from rfvt.org.uk ([37.187.119.221]:50456 "EHLO rfvt.org.uk"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229479AbhIORzD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 13:55:03 -0400
+X-Greylist: delayed 485 seconds by postgrey-1.27 at vger.kernel.org; Wed, 15 Sep 2021 13:55:03 EDT
+Received: from wylie.me.uk (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by rfvt.org.uk (Postfix) with ESMTPS id 16E5B827CB;
+        Wed, 15 Sep 2021 18:45:34 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=wylie.me.uk;
+        s=mydkim005; t=1631727934;
+        bh=Vd3/6etrg7grVFKe0V8XPsHbhxyz/XnafufXnkG8w1Q=;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To;
+        b=piltGsaHd0Rq3lFOVYJAfKkOBaD8u48GvEE5a6f+PHrKgTZFIt3WvkZ/HID0Ny9Sk
+         4hxNOuUY3vCXI1JqEXoTY1yyry3XIAl5EF4+0RjQ81/xAVTWX3ABYKNW0fpd22pv67
+         zVwu2N8qLa+a5jSWIbWCcuxTGAln3pTXY1cX55y8Oa2jcCOyW9TWRvjZqoPbdUOUbD
+         txexZMj2hdCnWfVFwjvU8FEFr+Rj5K0WSY8TwSpbvQVk2ldf6TJ6rEzCSFrXen0sRp
+         4wBkwfXGS2nevZCDiKCjRk5pqQOvVmPTR0uJvu9LH7ssDT+Bms8W60zMTsR95d7kkG
+         dwjtVNWz6gs7Q==
+From:   alan@wylie.me.uk (Alan J. Wylie)
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Frederic Weisbecker <frederic@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Regression in posix-cpu-timers.c (was Re: Linux 5.14.4)
+References: <1631693373201133@kroah.com>
+Date:   Wed, 15 Sep 2021 18:45:33 +0100
+In-Reply-To: <1631693373201133@kroah.com> (Greg Kroah-Hartman's message of
+        "Wed, 15 Sep 2021 10:09:33 +0200")
+Message-ID: <87ilz1pwaq.fsf@wylie.me.uk>
+User-Agent: Gnus/5.130012 (Ma Gnus v0.12) Emacs/27 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YUIr/002dfXxDWDY@ripper>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 15 Sep 10:23 PDT 2021, Bjorn Andersson wrote:
 
-> On Wed 15 Sep 08:05 PDT 2021, Shawn Guo wrote:
-> 
-> > On Tue, Sep 14, 2021 at 02:56:28PM -0700, Stephen Boyd wrote:
-> > > Quoting Shawn Guo (2021-09-13 19:55:52)
-> > > > On QCM2290 platform, the clock xo_board runs at 38400000, while the
-> > > > child clock bi_tcxo needs to run at 19200000.  That said,
-> > > > clk_smd_rpm_branch_ops needs the capability of setting rate. Add rate
-> > > > hooks into clk_smd_rpm_branch_ops to make it possible.
-> > > 
-> > > This doesn't sound right. The branch is a simple on/off. If xo_board is
-> > > 38.4MHz, then there is an internal divider in the SoC that makes bi_tcxo
-> > > (i.e. the root of the entire clk tree) be 19.2MHz. We don't model the
-> > > divider, I guess because it isn't very important to. Instead, we tack on
-> > > a divider field and implement recalc_rate op. See clk-rpmh.c in the qcom
-> > > directory for this.
-> > 
-> > Thanks for the comment, Stephen!  To be honest, I copied the
-> > implementation from vendor kernel, and wasn't really sure if it's
-> > correct or the best.
-> > 
-> > So here is what I get based on your suggestion.  Let's me know if
-> > it's how you wanted it to be.  Thanks!
-> > 
-> > Shawn
-> > 
-> > ----8<---------
-> > 
-> > From 23dda79fee412738f046b89bdd20ef95a24c35cc Mon Sep 17 00:00:00 2001
-> > From: Shawn Guo <shawn.guo@linaro.org>
-> > Date: Wed, 15 Sep 2021 22:00:32 +0800
-> > Subject: [PATCH] clk: qcom: smd-rpm: Add a divider field for branch clock
-> > 
-> > Similar to clk-rpmh, clk-smd-rpm has the same need to handle the case
-> > where an internal divider is there between xo_board and bi_tcxo.  The
-> > change is made in the a back compatible way below.
-> > 
-> >  - Add div field to struct clk_smd_rpm, and have
-> >    __DEFINE_CLK_SMD_RPM_BRANCH() assign it.
-> > 
-> >  - Update all existing __DEFINE_CLK_SMD_RPM_BRANCH() wrappers to pass a
-> >    zero div.
-> > 
-> >  - Add DEFINE_CLK_SMD_RPM_BRANCH_DIV() which doesn't take rate argument
-> >    but div.
-> > 
-> >  - Update clk_smd_rpm_recalc_rate() to handle div and add it as
-> >    .recalc_rate of clk_smd_rpm_branch_ops.
-> > 
-> 
-> This looks good to me.
-> 
-> And the confirmed that the xo_board in sdm630.dtsi (and hence SDM660) is
-> wrong, it should be 38.4MHz as well.
-> 
-> Unfortunately adding the appropriate divider to the sdm660 bcxo would
-> break existing .dtsi (but we can probably convince the community that it
-> would be ok, if we do it now).
-> 
+Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
 
-And as I sent that and was going to close the editor...
+> I'm announcing the release of the 5.14.4 kernel.
 
-In contrast to clk-rpmh we already have a "rate" defined for each
-clock in clk-smd-rpm, it's just that we don't let anyone know what it is
-for branches.
+I'm seeing a regression in 5.14.4
 
-But with your change of defining recalc_rate() for the branches we would
-return 19.2MHz for the tcxo - without specifying a divider.
+Running Nextcloud (a PHP web application) with a PostgreSQL backend
 
-So your patch can be reduced to simply specifying recalc_rate() - i.e.
-the last line in your patch.
+All was fine with 5.14.3
 
-I tested this on my sdm660 board, by updating xo_board and ensuring that
-all nodes referring to "xo" refers to rpmcc tcxo intead and it boots
-just fine. And it's backwards compatible with existing DT!
+With 5.14.4, Nextcloud hangs loading events/contacts, etc.
 
+As well as the web interface hanging, running this command on the command
+line also errors:
 
+# su apache -s /bin/bash -c "cd /var/www/htdocs/nextcloud/ && php occ maintenance:mode --on"
+PHP Fatal error:  Maximum execution time of 0 seconds exceeded in
+/var/www/htdocs/nextcloud/lib/private/Files/AppData/AppData.php on line 41
 
-However, as we specify recalc_rate(), we'd start reporting that all the
-buffered XO clocks are ticking at 1kHz, so I suspect that there might be
-things that doesn't work. This is done so that rate/1000 becomes 0 or 1
-for the branches.
+# su apache -s /bin/bash -c "cd /var/www/htdocs/nextcloud/ && php occ maintenance:mode --on"
+PHP Fatal error:  Maximum execution time of 0 seconds exceeded in
+/var/www/htdocs/nextcloud/3rdparty/symfony/console/Application.php on line 65
 
-But that will happen with the patch as you have given it as well, until
-we've defined all the divs.
+# su apache -s /bin/bash -c "cd /var/www/htdocs/nextcloud/ && php occ maintenance:mode --on"
+PHP Fatal error:  Maximum execution time of 0 seconds exceeded in
+/var/www/htdocs/nextcloud/lib/public/Files/SimpleFS/ISimpleRoot.php on line 68
 
-In other words, I don't think we should introduce the div, but rather
-just rely on the "rate". And for the buffered clocks we need to correct
-the rate - while ensuring that we pass a binary enable/rate to the
-interface.
+# su apache -s /bin/bash -c "cd /var/www/htdocs/nextcloud/ && php occ maintenance:mode --on"
+PHP Fatal error:  Maximum execution time of 0 seconds exceeded in
+/var/www/htdocs/nextcloud/apps/theming/lib/ImageManager.php on line 313
 
-Regards,
-Bjorn
+Note that the above commands were all run immediately after each other,
+but showed up in different php scripts.
 
-> Regards,
-> Bjorn
-> 
-> > Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-> > ---
-> >  drivers/clk/qcom/clk-smd-rpm.c | 23 ++++++++++++++++-------
-> >  1 file changed, 16 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/drivers/clk/qcom/clk-smd-rpm.c b/drivers/clk/qcom/clk-smd-rpm.c
-> > index 66d7807ee38e..66ef0d3795fd 100644
-> > --- a/drivers/clk/qcom/clk-smd-rpm.c
-> > +++ b/drivers/clk/qcom/clk-smd-rpm.c
-> > @@ -66,13 +66,14 @@
-> >  	}
-> >  
-> >  #define __DEFINE_CLK_SMD_RPM_BRANCH(_platform, _name, _active, type, r_id,    \
-> > -				    stat_id, r, key)			      \
-> > +				    stat_id, r, key, _div)		      \
-> >  	static struct clk_smd_rpm _platform##_##_active;		      \
-> >  	static struct clk_smd_rpm _platform##_##_name = {		      \
-> >  		.rpm_res_type = (type),					      \
-> >  		.rpm_clk_id = (r_id),					      \
-> >  		.rpm_status_id = (stat_id),				      \
-> >  		.rpm_key = (key),					      \
-> > +		.div = (_div),						      \
-> >  		.branch = true,						      \
-> >  		.peer = &_platform##_##_active,				      \
-> >  		.rate = (r),						      \
-> > @@ -92,6 +93,7 @@
-> >  		.rpm_status_id = (stat_id),				      \
-> >  		.active_only = true,					      \
-> >  		.rpm_key = (key),					      \
-> > +		.div = (_div),						      \
-> >  		.branch = true,						      \
-> >  		.peer = &_platform##_##_name,				      \
-> >  		.rate = (r),						      \
-> > @@ -112,7 +114,12 @@
-> >  
-> >  #define DEFINE_CLK_SMD_RPM_BRANCH(_platform, _name, _active, type, r_id, r)   \
-> >  		__DEFINE_CLK_SMD_RPM_BRANCH(_platform, _name, _active, type,  \
-> > -		r_id, 0, r, QCOM_RPM_SMD_KEY_ENABLE)
-> > +		r_id, 0, r, QCOM_RPM_SMD_KEY_ENABLE, 0)
-> > +
-> > +#define DEFINE_CLK_SMD_RPM_BRANCH_DIV(_platform, _name, _active, type, r_id,  \
-> > +				      _div)				      \
-> > +		__DEFINE_CLK_SMD_RPM_BRANCH(_platform, _name, _active, type,  \
-> > +		r_id, 0, 0, QCOM_RPM_SMD_KEY_ENABLE, _div)
-> >  
-> >  #define DEFINE_CLK_SMD_RPM_QDSS(_platform, _name, _active, type, r_id)	      \
-> >  		__DEFINE_CLK_SMD_RPM(_platform, _name, _active, type, r_id,   \
-> > @@ -121,12 +128,12 @@
-> >  #define DEFINE_CLK_SMD_RPM_XO_BUFFER(_platform, _name, _active, r_id)	      \
-> >  		__DEFINE_CLK_SMD_RPM_BRANCH(_platform, _name, _active,	      \
-> >  		QCOM_SMD_RPM_CLK_BUF_A, r_id, 0, 1000,			      \
-> > -		QCOM_RPM_KEY_SOFTWARE_ENABLE)
-> > +		QCOM_RPM_KEY_SOFTWARE_ENABLE, 0)
-> >  
-> >  #define DEFINE_CLK_SMD_RPM_XO_BUFFER_PINCTRL(_platform, _name, _active, r_id) \
-> >  		__DEFINE_CLK_SMD_RPM_BRANCH(_platform, _name, _active,	      \
-> >  		QCOM_SMD_RPM_CLK_BUF_A, r_id, 0, 1000,			      \
-> > -		QCOM_RPM_KEY_PIN_CTRL_CLK_BUFFER_ENABLE_KEY)
-> > +		QCOM_RPM_KEY_PIN_CTRL_CLK_BUFFER_ENABLE_KEY, 0)
-> >  
-> >  #define to_clk_smd_rpm(_hw) container_of(_hw, struct clk_smd_rpm, hw)
-> >  
-> > @@ -140,6 +147,7 @@ struct clk_smd_rpm {
-> >  	bool branch;
-> >  	struct clk_smd_rpm *peer;
-> >  	struct clk_hw hw;
-> > +	u8 div;
-> >  	unsigned long rate;
-> >  	struct qcom_smd_rpm *rpm;
-> >  };
-> > @@ -370,10 +378,10 @@ static unsigned long clk_smd_rpm_recalc_rate(struct clk_hw *hw,
-> >  
-> >  	/*
-> >  	 * RPM handles rate rounding and we don't have a way to
-> > -	 * know what the rate will be, so just return whatever
-> > -	 * rate was set.
-> > +	 * know what the rate will be, so just return divided parent
-> > +	 * rate or whatever rate was set.
-> >  	 */
-> > -	return r->rate;
-> > +	return r->div ? parent_rate / r->div : r->rate;
-> >  }
-> >  
-> >  static int clk_smd_rpm_enable_scaling(struct qcom_smd_rpm *rpm)
-> > @@ -416,6 +424,7 @@ static const struct clk_ops clk_smd_rpm_ops = {
-> >  static const struct clk_ops clk_smd_rpm_branch_ops = {
-> >  	.prepare	= clk_smd_rpm_prepare,
-> >  	.unprepare	= clk_smd_rpm_unprepare,
-> > +	.recalc_rate	= clk_smd_rpm_recalc_rate,
-> >  };
-> >  
-> >  DEFINE_CLK_SMD_RPM(msm8916, pcnoc_clk, pcnoc_a_clk, QCOM_SMD_RPM_BUS_CLK, 0);
-> > -- 
-> > 2.17.1
-> > 
+Similar errors appear in the Apache log.
+
+After reverting this commit in 5.14.4, Nextcloud resumed working.
+
+$ git revert 564005805aadec9cb7e5dc4e14071b8f87cd6b58
+
+This commit is 406dd42bd1ba0c01babf9cde169bb319e52f6147 in Linus's tree
+
+I'll be more than happy to help with debugging / diagnosing this
+
+The server is running up-to-date Gentoo.
+
+postgres (PostgreSQL) 13.3
+PHP 7.4.21 (cli) (built: Jul 11 2021 06:14:49) ( ZTS )
+Server version: Apache/2.4.48 (Unix)
+Nextcloud 21.0.3
+
+$ git bisect bad
+564005805aadec9cb7e5dc4e14071b8f87cd6b58 is the first bad commit
+commit 564005805aadec9cb7e5dc4e14071b8f87cd6b58
+Author: Frederic Weisbecker <frederic@kernel.org>
+Date:   Mon Jul 26 14:55:10 2021 +0200
+
+    posix-cpu-timers: Force next expiration recalc after itimer reset
+    
+    [ Upstream commit 406dd42bd1ba0c01babf9cde169bb319e52f6147 ]
+    
+    When an itimer deactivates a previously armed expiration, it simply doesn't
+    do anything. As a result the process wide cputime counter keeps running and
+    the tick dependency stays set until it reaches the old ghost expiration
+    value.
+    
+    This can be reproduced with the following snippet:
+    
+            void trigger_process_counter(void)
+            {
+                    struct itimerval n = {};
+    
+                    n.it_value.tv_sec = 100;
+                    setitimer(ITIMER_VIRTUAL, &n, NULL);
+                    n.it_value.tv_sec = 0;
+                    setitimer(ITIMER_VIRTUAL, &n, NULL);
+            }
+    
+    Fix this with resetting the relevant base expiration. This is similar to
+    disarming a timer.
+    
+    Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+    Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+    Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+    Link: https://lore.kernel.org/r/20210726125513.271824-4-frederic@kernel.org
+    Signed-off-by: Sasha Levin <sashal@kernel.org>
+
+ kernel/time/posix-cpu-timers.c | 2 --
+ 1 file changed, 2 deletions(-)
+$ 
+
+$ git bisect log
+git bisect start
+# bad: [d6f7bb5bb29096b2935c55deeb545616dab74406] Linux 5.14.4
+git bisect bad d6f7bb5bb29096b2935c55deeb545616dab74406
+# good: [d27a14321366788cef927dbe69854f34460b3f7c] Linux 5.14.3
+git bisect good d27a14321366788cef927dbe69854f34460b3f7c
+# bad: [203baf2a84d30b468ae80868344e7685b8f4124b] net: dsa: tag_sja1105: optionally build as module when switch driver is module if PTP is enabled
+git bisect bad 203baf2a84d30b468ae80868344e7685b8f4124b
+# bad: [d031746f556b344d87033bc9dcee1a65dd6a56a3] drm/panfrost: Fix missing clk_disable_unprepare() on error in panfrost_clk_init()
+git bisect bad d031746f556b344d87033bc9dcee1a65dd6a56a3
+# bad: [115540457feae9a215e5c16e434f71b80860038f] io-wq: remove GFP_ATOMIC allocation off schedule out path
+git bisect bad 115540457feae9a215e5c16e434f71b80860038f
+# bad: [923c1c5ca5a81958a8bfd891bc16c319c4bb9e6d] nvme-tcp: don't update queue count when failing to set io queues
+git bisect bad 923c1c5ca5a81958a8bfd891bc16c319c4bb9e6d
+# good: [f02146cf84e6165cae177aea30acdea7b8d76cf3] EDAC/mce_amd: Do not load edac_mce_amd module on guests
+git bisect good f02146cf84e6165cae177aea30acdea7b8d76cf3
+# bad: [796c0a620178d68900fb2f4bf987cd89a9b38090] udf: Fix iocharset=utf8 mount option
+git bisect bad 796c0a620178d68900fb2f4bf987cd89a9b38090
+# bad: [0d7541f439be37dabb7546889503d16ac59ec29f] hrtimer: Avoid double reprogramming in __hrtimer_start_range_ns()
+git bisect bad 0d7541f439be37dabb7546889503d16ac59ec29f
+# bad: [564005805aadec9cb7e5dc4e14071b8f87cd6b58] posix-cpu-timers: Force next expiration recalc after itimer reset
+git bisect bad 564005805aadec9cb7e5dc4e14071b8f87cd6b58
+# first bad commit: [564005805aadec9cb7e5dc4e14071b8f87cd6b58] posix-cpu-timers: Force next expiration recalc after itimer reset
+$
+
+-- 
+Alan J. Wylie                                          https://www.wylie.me.uk/
+
+Dance like no-one's watching. / Encrypt like everyone is.
+Security is inversely proportional to convenience
