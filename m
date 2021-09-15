@@ -2,107 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C49540C046
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 09:13:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B7FE40C057
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 09:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236554AbhIOHOh convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 15 Sep 2021 03:14:37 -0400
-Received: from relay7-d.mail.gandi.net ([217.70.183.200]:53329 "EHLO
-        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234862AbhIOHOh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 03:14:37 -0400
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 7E3842000E;
-        Wed, 15 Sep 2021 07:13:16 +0000 (UTC)
-Date:   Wed, 15 Sep 2021 09:13:15 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Bert Vermeulen <bert@biot.com>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Christophe Kerello <christophe.kerello@foss.st.com>,
-        Mark Brown <broonie@kernel.org>,
-        Alexander Lobakin <alobakin@pm.me>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH v2] mtd: spinand: Add support for Etron EM73D044VCx
-Message-ID: <20210915091315.2768e9a3@xps13>
-In-Reply-To: <927c7c75-c0d3-b3fb-6b85-13dbc3c6edbe@biot.com>
-References: <20210908201624.237634-1-bert@biot.com>
-        <20210914193108.78df5367@xps13>
-        <1517789471.73175.1631641788145.JavaMail.zimbra@nod.at>
-        <927c7c75-c0d3-b3fb-6b85-13dbc3c6edbe@biot.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S236490AbhIOHVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 03:21:31 -0400
+Received: from mga12.intel.com ([192.55.52.136]:7618 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231326AbhIOHVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 03:21:31 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10107"; a="201746275"
+X-IronPort-AV: E=Sophos;i="5.85,294,1624345200"; 
+   d="scan'208";a="201746275"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2021 00:20:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,294,1624345200"; 
+   d="scan'208";a="610052812"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 15 Sep 2021 00:20:10 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 15 Sep 2021 10:20:09 +0300
+Date:   Wed, 15 Sep 2021 10:20:09 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Sven Peter <sven@svenpeter.dev>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] usb: typec: tipd: Don't read/write more bytes
+ than required
+Message-ID: <YUGeqXb00vgyPrsD@kuha.fi.intel.com>
+References: <20210914140235.65955-1-sven@svenpeter.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210914140235.65955-1-sven@svenpeter.dev>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bert,
-
-bert@biot.com wrote on Tue, 14 Sep 2021 22:03:49 +0200:
-
-> On 9/14/21 7:49 PM, Richard Weinberger wrote:
-> > ----- Ursprüngliche Mail -----  
-> >> bert@biot.com wrote on Wed,  8 Sep 2021 22:16:19 +0200:
-> >>   
-> >>> This adds a new vendor Etron, and support for a 2Gb chip.
-> >>> 
-> >>> The datasheet is available at
-> >>> https://www.etron.com/cn/products/EM73%5B8%5DC%5BD_E_F%5DVC%20SPI%20NAND%20Flash_Promotion_Rev%201_00A.pdf
-> >>> 
-> >>> Signed-off-by: Bert Vermeulen <bert@biot.com>
-> >>> ---
-> >>> v2:
-> >>> - Made ooblayout_free/_ecc depend on chip-specific parameters, instead of
-> >>>   hardcoded to this 2Gb chip only
-> >>> - Fixed manufacturer ordering
-> >>> - Fixed minor formatting issues as reported
-> >>> - Removed debug comment
-> >>> 
-> >>>  drivers/mtd/nand/spi/Makefile |   2 +-
-> >>>  drivers/mtd/nand/spi/core.c   |   1 +
-> >>>  drivers/mtd/nand/spi/etron.c  | 104 ++++++++++++++++++++++++++++++++++
-> >>>  include/linux/mtd/spinand.h   |   1 +
-> >>>  4 files changed, 107 insertions(+), 1 deletion(-)
-> >>>  create mode 100644 drivers/mtd/nand/spi/etron.c  
-> >> 
-> >> [...]
-> >>   
-> >>> +static int etron_ecc_get_status(struct spinand_device *spinand, u8 status)
-> >>> +{
-> >>> +	switch (status & STATUS_ECC_MASK) {
-> >>> +	case STATUS_ECC_NO_BITFLIPS:
-> >>> +		return 0;
-> >>> +
-> >>> +	case STATUS_ECC_HAS_BITFLIPS:
-> >>> +		/* Between 1-7 bitflips were corrected */
-> >>> +		return 7;  
-> >> 
-> >> Mmmh this is a bit problematic, having no intermediate value means a
-> >> single bitflip will trigger UBI to move the data around as its
-> >> threshold will be reached. Richard, any feedback on this?  
-> > 
-> > So, the NAND controller can only report "no bitflips", "some bitflips", "maximum biflips" and "no way to fix"?
-> > If so, yes, this is problematic for UBI because it will trigger wear-leveling way too often.
-> > On a medium aged NAND I'd expect to see STATUS_ECC_HAS_BITFLIPS almost always set. :-(  
+On Tue, Sep 14, 2021 at 04:02:33PM +0200, Sven Peter wrote:
+> tps6598x_block_read/write always read 65 bytes of data even when much
+> less is required when I2C_FUNC_I2C is used. Reduce this to the correct
+> number.
 > 
-> Yes, that's all there is according to the datasheet. Can't be _that_
-> unusual, since that's all the STATUS_ECC_* flags cover.
+> Signed-off-by: Sven Peter <sven@svenpeter.dev>
 
-I forgot about that part which was reminded to me by Richard:
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-https://elixir.bootlin.com/linux/latest/source/drivers/mtd/mtdcore.c#L627
-	/* default value if not set by driver */
-	if (mtd->bitflip_threshold == 0)
-		mtd->bitflip_threshold = mtd->ecc_strength;
+> ---
+> no changes for v2
+> 
+>  drivers/usb/typec/tipd/core.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
+> index 21b3ae25c76d..c18ec3785592 100644
+> --- a/drivers/usb/typec/tipd/core.c
+> +++ b/drivers/usb/typec/tipd/core.c
+> @@ -123,7 +123,7 @@ tps6598x_block_read(struct tps6598x *tps, u8 reg, void *val, size_t len)
+>  	if (!tps->i2c_protocol)
+>  		return regmap_raw_read(tps->regmap, reg, val, len);
+>  
+> -	ret = regmap_raw_read(tps->regmap, reg, data, sizeof(data));
+> +	ret = regmap_raw_read(tps->regmap, reg, data, len + 1);
+>  	if (ret)
+>  		return ret;
+>  
+> @@ -145,7 +145,7 @@ static int tps6598x_block_write(struct tps6598x *tps, u8 reg,
+>  	data[0] = len;
+>  	memcpy(&data[1], val, len);
+>  
+> -	return regmap_raw_write(tps->regmap, reg, data, sizeof(data));
+> +	return regmap_raw_write(tps->regmap, reg, data, len + 1);
+>  }
+>  
+>  static inline int tps6598x_read16(struct tps6598x *tps, u8 reg, u16 *val)
+> -- 
+> 2.25.1
 
-So this is fine.
+thanks,
 
-Thanks,
-Miquèl
+-- 
+heikki
