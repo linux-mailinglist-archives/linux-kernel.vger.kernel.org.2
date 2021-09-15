@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1A9740D073
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 01:47:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E54B540D071
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 01:47:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233532AbhIOXrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 19:47:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49508 "EHLO mail.kernel.org"
+        id S233473AbhIOXrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 19:47:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49506 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233117AbhIOXr0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233133AbhIOXr0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 15 Sep 2021 19:47:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 36654611CE;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E5B4611EE;
         Wed, 15 Sep 2021 23:46:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1631749566;
-        bh=W8d0s1xjvgsX+130ZL2UE1znOG3YJWFh19XNDDcNnow=;
+        bh=xTKDktiwSHNdL7oKoHZhUOKF6h03a9xGCJzWp6ESkSc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mrH6CvR0zHlJEOBwvRXyj06FNNkdx36kNvx3QSEupgkebSSXsXPYYNecboEg0KRG7
-         1JUfSIqPnAadJ5wJ7Sg0nukvckg3QPcsZLT1WcAmZLjMGwPtPrhi6ge5ii180SgTts
-         oQ8qLZE6TiT4BInTc+zn0fh/z6ecoTuuJ3Kqp1b3kui7YBluW/Vb/6cueE5ehfN54Y
-         8sasuntnXl9XWGDUoPOncSrtyH2XEk7hslDayVPB9ZG1g2wy1FDGmjqpF69vbs7OGV
-         NibK3kupMh2EWVgCThFElzt3nK/VIdq0cHMSfpaQ44a8d9KaVRIMnW3r82GZCcBKRA
-         X2t5rAhjAj+KA==
+        b=DnPn5xxLMSqNzj7WdsPY6LWsOVU+fgscgktyY4d+egDJUS6e6tEDrF8GsPk9ur1Vx
+         qSzQoaJaN00gmVJa39UynH1/pNxlSLwHZBqJXcGuSiZRsk8Al7IDymflGXF2KSIRjG
+         ApLqAVhB1XDCaG4wc2yTLGmra2drdAt3YJ+fDkcEHFoE9Hd/ZPCE5X+Vgiaccifvcs
+         ku0EGHEOnj/LuOANBbXp22/UaH6r3M6oHzY02JvkAE9k8nwEdVs6NcqeDzieOjBr8P
+         v3EBko4MP4ob9OKPT38IKIDuHJ4S/yvyAM8pqW1qB8VC/1NcvJgaA/gB3Y2v1V6jwK
+         N8sckiMoRO59Q==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id CA0C65C09F9; Wed, 15 Sep 2021 16:46:05 -0700 (PDT)
+        id CC3FD5C0AD4; Wed, 15 Sep 2021 16:46:05 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -35,9 +35,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         oleg@redhat.com, joel@joelfernandes.org,
         Neeraj Upadhyay <neeraju@codeaurora.org>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 07/13] rcu-tasks: Fix s/rcu_add_holdout/trc_add_holdout/ typo in comment
-Date:   Wed, 15 Sep 2021 16:45:58 -0700
-Message-Id: <20210915234604.3907802-7-paulmck@kernel.org>
+Subject: [PATCH rcu 08/13] rcu-tasks: Correct firstreport usage in check_all_holdout_tasks_trace
+Date:   Wed, 15 Sep 2021 16:45:59 -0700
+Message-Id: <20210915234604.3907802-8-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210915234538.GA3907674@paulmck-ThinkPad-P17-Gen-1>
 References: <20210915234538.GA3907674@paulmck-ThinkPad-P17-Gen-1>
@@ -49,6 +49,9 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Neeraj Upadhyay <neeraju@codeaurora.org>
 
+In check_all_holdout_tasks_trace(), firstreport is a pointer argument;
+so, check the dereferenced value, instead of checking the pointer.
+
 Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
@@ -56,18 +59,18 @@ Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 7e2641783e43..75e7888b3fc9 100644
+index 75e7888b3fc9..e2ec548fc0c4 100644
 --- a/kernel/rcu/tasks.h
 +++ b/kernel/rcu/tasks.h
-@@ -991,7 +991,7 @@ static void trc_wait_for_one_reader(struct task_struct *t,
+@@ -1129,7 +1129,7 @@ static void check_all_holdout_tasks_trace(struct list_head *hop,
+ 	cpus_read_unlock();
  
- 	// If this task is not yet on the holdout list, then we are in
- 	// an RCU read-side critical section.  Otherwise, the invocation of
--	// rcu_add_holdout() that added it to the list did the necessary
-+	// trc_add_holdout() that added it to the list did the necessary
- 	// get_task_struct().  Either way, the task cannot be freed out
- 	// from under this code.
- 
+ 	if (needreport) {
+-		if (firstreport)
++		if (*firstreport)
+ 			pr_err("INFO: rcu_tasks_trace detected stalls? (Late IPI?)\n");
+ 		show_stalled_ipi_trace();
+ 	}
 -- 
 2.31.1.189.g2e36527f23
 
