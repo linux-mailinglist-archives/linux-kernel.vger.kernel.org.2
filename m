@@ -2,361 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C7E240C339
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 12:02:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F76940C426
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 13:09:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237382AbhIOKDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 06:03:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50259 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237143AbhIOKDb (ORCPT
+        id S237494AbhIOLKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 07:10:40 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:15422 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237449AbhIOLKi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 06:03:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631700132;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=T7eYhM+mNQgmtkp4huwTGvse0/UecO0jjpzbRrCPdJE=;
-        b=cJYCzjS8rrp5IJ8g1wSd5q+ieD+UHnT31Gcs7++X/WabEh7oG0qvRUfMjsNcJIbNPJ1jHY
-        B9IYjg1keKrZYOwM14f7UcoF2Ytv3pOIiPnBTeXPeFIN8MbZ9qJDD0/6xywD2k2VUS/rjn
-        MDX2iV326V0OivtXYvmQmSJBb2NJpQ8=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-235-MiyO9dszNdKDMo-UD9H2Jg-1; Wed, 15 Sep 2021 06:02:11 -0400
-X-MC-Unique: MiyO9dszNdKDMo-UD9H2Jg-1
-Received: by mail-wm1-f70.google.com with SMTP id u14-20020a7bcb0e0000b0290248831d46e4so359063wmj.6
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 03:02:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=T7eYhM+mNQgmtkp4huwTGvse0/UecO0jjpzbRrCPdJE=;
-        b=fAOdSAikT4HqC3Xh+0mA4RquS2SHZ1+eMzLnwpMKTLGoJSWz16GREZoOjGUTxrsBAE
-         V89EeKpk5yJ+IdQs9O1XiMsbjM8l0pIyKuBDSDYPFO9OaNJPr9xexsOTtPThPlc89go6
-         29r3aapQzWXeC3rg5lGf6IDo+dDX+LP1H1CJSTTzIxJ5HgQhXABJOlxMZdpUTD95/SWh
-         a0cLijxMFv1WEewzNJIYxyKWX9li0x7qrqnOpXfe65nluBHIlIsiEN0iBg8zTuY/5dQQ
-         LWtvPz6b38h6xkG/4zjxo1OVL92IvXdCDJtknUmxPlIoksrmwUYR+Amno65UC3y/0PKF
-         1Qkw==
-X-Gm-Message-State: AOAM531gkn6YAW3mqcj9xc6Mq2k6F+4js9/jZeX3NYCe/1Ub208cmmf6
-        KPmeyf1wfwVG8uwAbgddc+L/JvTJ1vXg1zNJJ1oYOPqpK/Yu8jmudQXTx0+o6eS2QGJ20pFfCfL
-        sRXcQxPtS7g00m7pMC+9HCHyx
-X-Received: by 2002:adf:fe44:: with SMTP id m4mr4151060wrs.206.1631700129461;
-        Wed, 15 Sep 2021 03:02:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw+vesNYqkbvKmnGn0DYPdg1QzoVRvbyOCGWnlcCErhvrjU+9MMk6+cZQT4KhTefn5/6tlZ1g==
-X-Received: by 2002:adf:fe44:: with SMTP id m4mr4150976wrs.206.1631700128848;
-        Wed, 15 Sep 2021 03:02:08 -0700 (PDT)
-Received: from work-vm (cpc109021-salf6-2-0-cust453.10-2.cable.virginm.net. [82.29.237.198])
-        by smtp.gmail.com with ESMTPSA id x5sm3818031wmk.32.2021.09.15.03.02.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Sep 2021 03:02:08 -0700 (PDT)
-Date:   Wed, 15 Sep 2021 11:02:05 +0100
-From:   "Dr. David Alan Gilbert" <dgilbert@redhat.com>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH Part1 v5 38/38] virt: sevguest: Add support to get
- extended report
-Message-ID: <YUHEnTDKEiSySY4a@work-vm>
-References: <20210820151933.22401-1-brijesh.singh@amd.com>
- <20210820151933.22401-39-brijesh.singh@amd.com>
+        Wed, 15 Sep 2021 07:10:38 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4H8cnM4RVfzRCCx;
+        Wed, 15 Sep 2021 19:05:11 +0800 (CST)
+Received: from dggema757-chm.china.huawei.com (10.1.198.199) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.8; Wed, 15 Sep 2021 19:09:17 +0800
+Received: from localhost.localdomain (10.67.165.2) by
+ dggema757-chm.china.huawei.com (10.1.198.199) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Wed, 15 Sep 2021 19:09:17 +0800
+From:   Qi Liu <liuqi115@huawei.com>
+To:     <will@kernel.org>, <mark.rutland@arm.com>, <bhelgaas@google.com>
+CC:     <linux-pci@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
+        <zhangshaokun@hisilicon.com>
+Subject: [PATCH v10 0/2]  drivers/perf: hisi: Add support for PCIe PMU
+Date:   Wed, 15 Sep 2021 15:45:22 +0800
+Message-ID: <20210915074524.18040-1-liuqi115@huawei.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210820151933.22401-39-brijesh.singh@amd.com>
-User-Agent: Mutt/2.0.7 (2021-05-04)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.165.2]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggema757-chm.china.huawei.com (10.1.198.199)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Brijesh Singh (brijesh.singh@amd.com) wrote:
-> Version 2 of GHCB specification defines NAE to get the extended guest
-> request. It is similar to the SNP_GET_REPORT ioctl. The main difference
+This patchset adds support for HiSilicon PCIe Performance Monitoring
+Unit(PMU). It is a PCIe Root Complex integrated End Point(RCiEP) device
+added on Hip09. Each PCIe Core has a PMU RCiEP to monitor multi root
+ports and all Endpoints downstream these root ports.
 
-^^^^^^^^^ is that 'report' not request?
+HiSilicon PCIe PMU is supported to collect performance data of PCIe bus,
+such as: bandwidth, latency etc.
 
-> is related to the additional data that be returned. The additional
-> data returned is a certificate blob that can be used by the SNP guest
-> user. The certificate blob layout is defined in the GHCB specification.
-> The driver simply treats the blob as a opaque data and copies it to
-> userspace.
-> 
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+Example usage of counting PCIe rx memory write latency::
 
-I'm confused by snp_dev->certs_data - who writes to that, and when?
-I see it's allocated as shared by the probe function but then passed in
-input data in get_ext_report - but get_ext_report memset's it.
-What happens if two threads were to try and get an extended report at
-the same time?
+  $# perf stat -e hisi_pcie0_core0/rx_mwr_latency/
+  $# perf stat -e hisi_pcie0_core0/rx_mwr_cnt/
+  $# perf stat -g -e hisi_pcie0_core0/rx_mwr_latency/ -e hisi_pcie0_core0/rx_mwr_cnt/
 
-Dave
+average rx memory write latency can be calculated like this:
+  latency = rx_mwr_latency / rx_mwr_cnt.
+
+Common PMU events and metrics will be described in JSON file, and will be add
+in userspace perf tool latter.
+
+Changes since v9:
+- Add check in hisi_pcie_pmu_validate_event_group to count counters accurently .
+- Link: https://lore.kernel.org/linux-arm-kernel/20210818051246.29545-1-liuqi115@huawei.com/
+
+Changes since v8:
+- Remove subevent parameter in attr->config.
+- Check the counter scheduling constraints when accepting an event group.
+- Link: https://lore.kernel.org/linux-arm-kernel/20210728080932.72515-1-liuqi115@huawei.com/
+
+Changes since v7:
+- Drop headerfile cpumask.h and cpuhotplug.h.
+- Rename events in perf list: bw->flux, lat->delay, as driver doesn't
+  process bandwidth and average latency data.
+- Link: https://lore.kernel.org/linux-arm-kernel/1624532384-43002-1-git-send-email-liuqi115@huawei.com/
+
+Changes since v6:
+- Move the driver to drivers/perf/hisilicon.
+- Treat content in PMU counter and ext_counter as different PMU events, and
+  export them separately.
+- Address the comments from Will and Krzysztof.
+- Link: https://lore.kernel.org/linux-arm-kernel/1622467951-32114-1-git-send-email-liuqi115@huawei.com/
+
+Changes since v5:
+- Fix some errors when build under ARCH=xtensa.
+- Link: https://lore.kernel.org/linux-arm-kernel/1621946795-14046-1-git-send-email-liuqi115@huawei.com/
+
+Changes since v4:
+- Replace irq_set_affinity_hint() with irq_set_affinity().
+- Link: https://lore.kernel.org/linux-arm-kernel/1621417741-5229-1-git-send-email-liuqi115@huawei.com/
+
+Changes since v3:
+- Fix some warnings when build under 32bits architecture.
+- Address the comments from John.
+- Link: https://lore.kernel.org/linux-arm-kernel/1618490885-44612-1-git-send-email-liuqi115@huawei.com/
+
+Changes since v2:
+- Address the comments from John.
+- Link: https://lore.kernel.org/linux-arm-kernel/1617959157-22956-1-git-send-email-liuqi115@huawei.com/
+
+Changes since v1:
+- Drop the internal Reviewed-by tag.
+- Fix some build warnings when W=1.
+- Link: https://lore.kernel.org/linux-arm-kernel/1617788943-52722-1-git-send-email-liuqi115@huawei.com/
 
 
-> ---
->  Documentation/virt/coco/sevguest.rst  |  22 +++++
->  drivers/virt/coco/sevguest/sevguest.c | 126 ++++++++++++++++++++++++++
->  include/uapi/linux/sev-guest.h        |  13 +++
->  3 files changed, 161 insertions(+)
-> 
-> diff --git a/Documentation/virt/coco/sevguest.rst b/Documentation/virt/coco/sevguest.rst
-> index 25446670d816..7acb8696fca4 100644
-> --- a/Documentation/virt/coco/sevguest.rst
-> +++ b/Documentation/virt/coco/sevguest.rst
-> @@ -85,3 +85,25 @@ on the various fileds passed in the key derivation request.
->  
->  On success, the snp_derived_key_resp.data will contains the derived key
->  value.
-> +
-> +2.2 SNP_GET_EXT_REPORT
-> +----------------------
-> +:Technology: sev-snp
-> +:Type: guest ioctl
-> +:Parameters (in/out): struct snp_ext_report_req
-> +:Returns (out): struct snp_report_resp on success, -negative on error
-> +
-> +The SNP_GET_EXT_REPORT ioctl is similar to the SNP_GET_REPORT. The difference is
-> +related to the additional certificate data that is returned with the report.
-> +The certificate data returned is being provided by the hypervisor through the
-> +SNP_SET_EXT_CONFIG.
-> +
-> +The ioctl uses the SNP_GUEST_REQUEST (MSG_REPORT_REQ) command provided by the SEV-SNP
-> +firmware to get the attestation report.
-> +
-> +On success, the snp_ext_report_resp.data will contains the attestation report
-> +and snp_ext_report_req.certs_address will contains the certificate blob. If the
-> +length of the blob is lesser than expected then snp_ext_report_req.certs_len will
-> +be updated with the expected value.
-> +
-> +See GHCB specification for further detail on how to parse the certificate blob.
-> diff --git a/drivers/virt/coco/sevguest/sevguest.c b/drivers/virt/coco/sevguest/sevguest.c
-> index 621b1c5a9cfc..d978eb432c4c 100644
-> --- a/drivers/virt/coco/sevguest/sevguest.c
-> +++ b/drivers/virt/coco/sevguest/sevguest.c
-> @@ -39,6 +39,7 @@ struct snp_guest_dev {
->  	struct device *dev;
->  	struct miscdevice misc;
->  
-> +	void *certs_data;
->  	struct snp_guest_crypto *crypto;
->  	struct snp_guest_msg *request, *response;
->  };
-> @@ -347,6 +348,117 @@ static int get_derived_key(struct snp_guest_dev *snp_dev, struct snp_user_guest_
->  	return rc;
->  }
->  
-> +static int get_ext_report(struct snp_guest_dev *snp_dev, struct snp_user_guest_request *arg)
-> +{
-> +	struct snp_guest_crypto *crypto = snp_dev->crypto;
-> +	struct snp_guest_request_data input = {};
-> +	struct snp_ext_report_req req;
-> +	int ret, npages = 0, resp_len;
-> +	struct snp_report_resp *resp;
-> +	struct snp_report_req *rreq;
-> +	unsigned long fw_err = 0;
-> +
-> +	if (!arg->req_data || !arg->resp_data)
-> +		return -EINVAL;
-> +
-> +	/* Copy the request payload from the userspace */
-> +	if (copy_from_user(&req, (void __user *)arg->req_data, sizeof(req)))
-> +		return -EFAULT;
-> +
-> +	rreq = &req.data;
-> +
-> +	/* Message version must be non-zero */
-> +	if (!rreq->msg_version)
-> +		return -EINVAL;
-> +
-> +	if (req.certs_len) {
-> +		if (req.certs_len > SEV_FW_BLOB_MAX_SIZE ||
-> +		    !IS_ALIGNED(req.certs_len, PAGE_SIZE))
-> +			return -EINVAL;
-> +	}
-> +
-> +	if (req.certs_address && req.certs_len) {
-> +		if (!access_ok(req.certs_address, req.certs_len))
-> +			return -EFAULT;
-> +
-> +		/*
-> +		 * Initialize the intermediate buffer with all zero's. This buffer
-> +		 * is used in the guest request message to get the certs blob from
-> +		 * the host. If host does not supply any certs in it, then we copy
-> +		 * zeros to indicate that certificate data was not provided.
-> +		 */
-> +		memset(snp_dev->certs_data, 0, req.certs_len);
-> +
-> +		input.data_gpa = __pa(snp_dev->certs_data);
-> +		npages = req.certs_len >> PAGE_SHIFT;
-> +	}
-> +
-> +	/*
-> +	 * The intermediate response buffer is used while decrypting the
-> +	 * response payload. Make sure that it has enough space to cover the
-> +	 * authtag.
-> +	 */
-> +	resp_len = sizeof(resp->data) + crypto->a_len;
-> +	resp = kzalloc(resp_len, GFP_KERNEL_ACCOUNT);
-> +	if (!resp)
-> +		return -ENOMEM;
-> +
-> +	if (copy_from_user(resp, (void __user *)arg->resp_data, sizeof(*resp))) {
-> +		ret = -EFAULT;
-> +		goto e_free;
-> +	}
-> +
-> +	/* Encrypt the userspace provided payload */
-> +	ret = enc_payload(snp_dev, rreq->msg_version, SNP_MSG_REPORT_REQ,
-> +			  &rreq->user_data, sizeof(rreq->user_data));
-> +	if (ret)
-> +		goto e_free;
-> +
-> +	/* Call firmware to process the request */
-> +	input.req_gpa = __pa(snp_dev->request);
-> +	input.resp_gpa = __pa(snp_dev->response);
-> +	input.data_npages = npages;
-> +	memset(snp_dev->response, 0, sizeof(*snp_dev->response));
-> +	ret = snp_issue_guest_request(EXT_GUEST_REQUEST, &input, &fw_err);
-> +
-> +	/* Popogate any firmware error to the userspace */
-> +	arg->fw_err = fw_err;
-> +
-> +	/* If certs length is invalid then copy the returned length */
-> +	if (arg->fw_err == SNP_GUEST_REQ_INVALID_LEN) {
-> +		req.certs_len = input.data_npages << PAGE_SHIFT;
-> +
-> +		if (copy_to_user((void __user *)arg->req_data, &req, sizeof(req)))
-> +			ret = -EFAULT;
-> +
-> +		goto e_free;
-> +	}
-> +
-> +	if (ret)
-> +		goto e_free;
-> +
-> +	/* Decrypt the response payload */
-> +	ret = verify_and_dec_payload(snp_dev, resp->data, resp_len);
-> +	if (ret)
-> +		goto e_free;
-> +
-> +	/* Copy the certificate data blob to userspace */
-> +	if (req.certs_address &&
-> +	    copy_to_user((void __user *)req.certs_address, snp_dev->certs_data,
-> +			 req.certs_len)) {
-> +		ret = -EFAULT;
-> +		goto e_free;
-> +	}
-> +
-> +	/* Copy the response payload to userspace */
-> +	if (copy_to_user((void __user *)arg->resp_data, resp, sizeof(*resp)))
-> +		ret = -EFAULT;
-> +
-> +e_free:
-> +	kfree(resp);
-> +	return ret;
-> +}
-> +
->  static long snp_guest_ioctl(struct file *file, unsigned int ioctl, unsigned long arg)
->  {
->  	struct snp_guest_dev *snp_dev = to_snp_dev(file);
-> @@ -368,6 +480,10 @@ static long snp_guest_ioctl(struct file *file, unsigned int ioctl, unsigned long
->  		ret = get_derived_key(snp_dev, &input);
->  		break;
->  	}
-> +	case SNP_GET_EXT_REPORT: {
-> +		ret = get_ext_report(snp_dev, &input);
-> +		break;
-> +	}
->  	default:
->  		break;
->  	}
-> @@ -453,6 +569,12 @@ static int __init snp_guest_probe(struct platform_device *pdev)
->  		goto e_free_req;
->  	}
->  
-> +	snp_dev->certs_data = alloc_shared_pages(SEV_FW_BLOB_MAX_SIZE);
-> +	if (IS_ERR(snp_dev->certs_data)) {
-> +		ret = PTR_ERR(snp_dev->certs_data);
-> +		goto e_free_resp;
-> +	}
-> +
->  	misc = &snp_dev->misc;
->  	misc->minor = MISC_DYNAMIC_MINOR;
->  	misc->name = DEVICE_NAME;
-> @@ -460,6 +582,9 @@ static int __init snp_guest_probe(struct platform_device *pdev)
->  
->  	return misc_register(misc);
->  
-> +e_free_resp:
-> +	free_shared_pages(snp_dev->response, sizeof(struct snp_guest_msg));
-> +
->  e_free_req:
->  	free_shared_pages(snp_dev->request, sizeof(struct snp_guest_msg));
->  
-> @@ -475,6 +600,7 @@ static int __exit snp_guest_remove(struct platform_device *pdev)
->  
->  	free_shared_pages(snp_dev->request, sizeof(struct snp_guest_msg));
->  	free_shared_pages(snp_dev->response, sizeof(struct snp_guest_msg));
-> +	free_shared_pages(snp_dev->certs_data, SEV_FW_BLOB_MAX_SIZE);
->  	deinit_crypto(snp_dev->crypto);
->  	misc_deregister(&snp_dev->misc);
->  
-> diff --git a/include/uapi/linux/sev-guest.h b/include/uapi/linux/sev-guest.h
-> index 621a9167df7a..23659215fcfb 100644
-> --- a/include/uapi/linux/sev-guest.h
-> +++ b/include/uapi/linux/sev-guest.h
-> @@ -57,6 +57,16 @@ struct snp_derived_key_resp {
->  	__u8 data[64];
->  };
->  
-> +struct snp_ext_report_req {
-> +	struct snp_report_req data;
-> +
-> +	/* where to copy the certificate blob */
-> +	__u64 certs_address;
-> +
-> +	/* length of the certificate blob */
-> +	__u32 certs_len;
-> +};
-> +
->  #define SNP_GUEST_REQ_IOC_TYPE	'S'
->  
->  /* Get SNP attestation report */
-> @@ -65,4 +75,7 @@ struct snp_derived_key_resp {
->  /* Get a derived key from the root */
->  #define SNP_GET_DERIVED_KEY _IOWR(SNP_GUEST_REQ_IOC_TYPE, 0x1, struct snp_user_guest_request)
->  
-> +/* Get SNP extended report as defined in the GHCB specification version 2. */
-> +#define SNP_GET_EXT_REPORT _IOWR(SNP_GUEST_REQ_IOC_TYPE, 0x2, struct snp_user_guest_request)
-> +
->  #endif /* __UAPI_LINUX_SEV_GUEST_H_ */
-> -- 
-> 2.17.1
-> 
-> 
+Qi Liu (2):
+  docs: perf: Add description for HiSilicon PCIe PMU driver
+  drivers/perf: hisi: Add driver for HiSilicon PCIe PMU
+
+ .../admin-guide/perf/hisi-pcie-pmu.rst        | 106 ++
+ MAINTAINERS                                   |   2 +
+ drivers/perf/hisilicon/Kconfig                |   9 +
+ drivers/perf/hisilicon/Makefile               |   2 +
+ drivers/perf/hisilicon/hisi_pcie_pmu.c        | 985 ++++++++++++++++++
+ include/linux/cpuhotplug.h                    |   1 +
+ 6 files changed, 1105 insertions(+)
+ create mode 100644 Documentation/admin-guide/perf/hisi-pcie-pmu.rst
+ create mode 100644 drivers/perf/hisilicon/hisi_pcie_pmu.c
+
 -- 
-Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
+2.33.0
 
