@@ -2,148 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B5D440C4F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 14:10:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2196D40C4F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 14:12:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236741AbhIOMLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 08:11:18 -0400
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:31360 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236649AbhIOMLQ (ORCPT
+        id S232921AbhIOMNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 08:13:55 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:51413 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231500AbhIOMNy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 08:11:16 -0400
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18F5eGFM026124;
-        Wed, 15 Sep 2021 07:09:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=IPz7ZHL4DVBFg7CLcDOD3XwSWrVeeCBXOjZbzTgDi9E=;
- b=QaYSuvDht0+jsZfA8V67dtNJVHpA9oa17UqIoECA/KOgzh1duLfs6ORvq+KMXo81FOO/
- 0nQZsBSUS652bZknXdJ3GezT/8CP2inLmH4BPh5mid+LaLKJHaiHeybTSuRyd4iaLJVv
- LMdSYwOBwfy2vSzqn53YLBgEcE4vBSU5LQSNAj7VY9ifeuEcu9WC8uAuxFCwAbq5YDIw
- SaCwKEzIQlYyY1g4jpVzHPQTqyMTAsSUpxhaRx58x8b2aaViINBo9sI4/dD1j5wrIEzS
- 3jDzAZT/fUyFBje8RVlnIJmnfnpiMFWm/GgWJs4lNmbp/liUPj1GNo7MTsRL+AR7OkfX Wg== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 3b3287grj9-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 15 Sep 2021 07:09:55 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Wed, 15 Sep
- 2021 13:09:53 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via Frontend
- Transport; Wed, 15 Sep 2021 13:09:53 +0100
-Received: from aryzen.ad.cirrus.com (unknown [198.61.64.203])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D8E24B0E;
-        Wed, 15 Sep 2021 12:09:52 +0000 (UTC)
-From:   Lucas Tanure <tanureal@opensource.cirrus.com>
-To:     Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
-        Lucas Tanure <tanureal@opensource.cirrus.com>
-Subject: [PATCH v3 2/2] regmap: spi: Check raw_[read|write] against max message size
-Date:   Wed, 15 Sep 2021 13:09:51 +0100
-Message-ID: <20210915120951.29907-2-tanureal@opensource.cirrus.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210915120951.29907-1-tanureal@opensource.cirrus.com>
-References: <20210915120951.29907-1-tanureal@opensource.cirrus.com>
+        Wed, 15 Sep 2021 08:13:54 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=wuzongyong@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UoUUC9h_1631707954;
+Received: from localhost(mailfrom:wuzongyong@linux.alibaba.com fp:SMTPD_---0UoUUC9h_1631707954)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 15 Sep 2021 20:12:34 +0800
+Date:   Wed, 15 Sep 2021 20:12:34 +0800
+From:   Wu Zongyong <wuzongyong@linux.alibaba.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        wei.yang1@linux.alibaba.com
+Subject: Re: [PATCH v2 4/5] vdpa: add new vdpa attribute
+ VDPA_ATTR_DEV_F_VERSION_1
+Message-ID: <20210915121234.GA19232@L-PF27918B-1352.localdomain>
+Reply-To: Wu Zongyong <wuzongyong@linux.alibaba.com>
+References: <cover.1631101392.git.wuzongyong@linux.alibaba.com>
+ <cover.1631621507.git.wuzongyong@linux.alibaba.com>
+ <834528d24c839080215b2e077f100e9ed5073edc.1631621507.git.wuzongyong@linux.alibaba.com>
+ <20210914085711-mutt-send-email-mst@kernel.org>
+ <CACGkMEu3RUGpe74Vh-FAZD3MwOC3gqU0OEf8A1ULvq7GSMm6Jg@mail.gmail.com>
+ <20210915033756-mutt-send-email-mst@kernel.org>
+ <CACGkMEtN0Z=rgMhaWNO=6h-KXGdosBuOdqoWoND-=Tf+afyUYw@mail.gmail.com>
+ <20210915070805-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: ESxy5mTvlfzs0-iu0aNp8NmPgdcbh766
-X-Proofpoint-ORIG-GUID: ESxy5mTvlfzs0-iu0aNp8NmPgdcbh766
-X-Proofpoint-Spam-Reason: safe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210915070805-mutt-send-email-mst@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-regmap-spi will split data and address between two transfers
-in the same message, so max_[read|write] must include space
-for the address and padding
+On Wed, Sep 15, 2021 at 07:08:51AM -0400, Michael S. Tsirkin wrote:
+> On Wed, Sep 15, 2021 at 04:06:57PM +0800, Jason Wang wrote:
+> > On Wed, Sep 15, 2021 at 3:38 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> > >
+> > > On Wed, Sep 15, 2021 at 11:18:06AM +0800, Jason Wang wrote:
+> > > > On Tue, Sep 14, 2021 at 8:58 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> > > > >
+> > > > > On Tue, Sep 14, 2021 at 08:24:51PM +0800, Wu Zongyong wrote:
+> > > > > > This new attribute advertises whether the vdpa device is legacy or not.
+> > > > > > Users can pick right virtqueue size if the vdpa device is legacy which
+> > > > > > doesn't support to change virtqueue size.
+> > > > > >
+> > > > > > Signed-off-by: Wu Zongyong <wuzongyong@linux.alibaba.com>
+> > > > >
+> > > > > So if we are bothering with legacy,
+> > > >
+> > > > I think we'd better not. I guess the following may work:
+> > > >
+> > > > 1) disable the driver on BE host
+> > > > 2) present VERSION_1 with ACCESS_PLATFORM in get_features()
+> > > > 3) extend the management to advertise max_queue_size and
+> > > > min_queue_size, for ENI they are the same so management layer knows it
+> > > > needs to set the queue_size correctly during launching qemu
+> > > >
+> > > > Thoughts?
+> > > >
+> > > > Thanks
+> > >
+> > > There are other subtle differences such as header size without
+> > > mergeable buffers for net.
+> > 
+> > This can be solved by mandating the feature of a mergeable buffer?
+> > 
+> > Thanks
+> 
+> PXE and some dpdk versions are only some of the guests that
+> disable mergeable buffers feature.
+> 
+So what about this:
 
-Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
----
+1) disable the driver on BE host
+   AFAIK, there are no use cases for ENI to be used in a BE machine. So
+   just disable the driver on BE machine, it will make things simper.
+2) present ACCESS_PLATFORM but not VERSION_1 in get_features()
+3) extend the management to advertise min_queue_size
+   min_queue_size is the same as with max_queue_size for ENI.
 
-Changes v3:
-New series
-
- drivers/base/regmap/regmap-spi.c |  4 ++++
- drivers/base/regmap/regmap.c     | 15 +++++++++++++++
- include/linux/regmap.h           |  3 +++
- 3 files changed, 22 insertions(+)
-
-diff --git a/drivers/base/regmap/regmap-spi.c b/drivers/base/regmap/regmap-spi.c
-index 0e6552e57ecf..1434c502e340 100644
---- a/drivers/base/regmap/regmap-spi.c
-+++ b/drivers/base/regmap/regmap-spi.c
-@@ -123,6 +123,10 @@ static const struct regmap_bus *regmap_get_spi_bus(struct spi_device *spi,
- 		bus->free_on_exit = true;
- 		bus->max_raw_read = max_size;
- 		bus->max_raw_write = max_size;
-+
-+		if (spi_max_message_size(spi) != SIZE_MAX)
-+			bus->max_combined_rw = spi_max_message_size(spi);
-+
- 		return bus;
- 	}
- 
-diff --git a/drivers/base/regmap/regmap.c b/drivers/base/regmap/regmap.c
-index 21a0c2562ec0..a99152f010f8 100644
---- a/drivers/base/regmap/regmap.c
-+++ b/drivers/base/regmap/regmap.c
-@@ -735,6 +735,7 @@ struct regmap *__regmap_init(struct device *dev,
- 	struct regmap *map;
- 	int ret = -EINVAL;
- 	enum regmap_endian reg_endian, val_endian;
-+	size_t reg_pad_size;
- 	int i, j;
- 
- 	if (!config)
-@@ -840,6 +841,20 @@ struct regmap *__regmap_init(struct device *dev,
- 	if (bus) {
- 		map->max_raw_read = bus->max_raw_read;
- 		map->max_raw_write = bus->max_raw_write;
-+		if (bus->max_combined_rw) {
-+			reg_pad_size = map->format.reg_bytes + map->format.pad_bytes;
-+
-+			if (map->max_raw_read + reg_pad_size > bus->max_combined_rw)
-+				map->max_raw_read -= reg_pad_size;
-+			if (map->max_raw_write + reg_pad_size > bus->max_combined_rw)
-+				map->max_raw_write -= reg_pad_size;
-+
-+			if (map->max_raw_read  < map->format.buf_size ||
-+			    map->max_raw_write < map->format.buf_size) {
-+				ret = -EINVAL;
-+				goto err_hwlock;
-+			}
-+		}
- 	}
- 	map->dev = dev;
- 	map->bus = bus;
-diff --git a/include/linux/regmap.h b/include/linux/regmap.h
-index e3c9a25a853a..a720f578b8e6 100644
---- a/include/linux/regmap.h
-+++ b/include/linux/regmap.h
-@@ -506,6 +506,8 @@ typedef void (*regmap_hw_free_context)(void *context);
-  * @max_raw_read: Max raw read size that can be used on the bus.
-  * @max_raw_write: Max raw write size that can be used on the bus.
-  * @free_on_exit: kfree this on exit of regmap
-+ * @max_combined_rw: Max size for raw_read + raw_write, when they are issued
-+ *                   together as part of the same message
-  */
- struct regmap_bus {
- 	bool fast_io;
-@@ -523,6 +525,7 @@ struct regmap_bus {
- 	enum regmap_endian val_format_endian_default;
- 	size_t max_raw_read;
- 	size_t max_raw_write;
-+	size_t max_combined_rw;
- 	bool free_on_exit;
- };
- 
--- 
-2.33.0
-
+ Another choice for 3):
+   extend the management to advertise the flag F_VERSION_1 just like
+   this patch
+> > >
+> > >
+> > > > > I think there are
+> > > > > several things to do when building the interface
+> > > > > - support transitional devices, that is allow userspace
+> > > > >   to tell device it's in legacy mode
+> > > > > - support reporting/setting supporting endian-ness
+> > > > >
+> > > > > > ---
+> > > > > >  drivers/vdpa/vdpa.c          | 6 ++++++
+> > > > > >  drivers/virtio/virtio_vdpa.c | 7 ++++++-
+> > > > > >  include/uapi/linux/vdpa.h    | 1 +
+> > > > > >  3 files changed, 13 insertions(+), 1 deletion(-)
+> > > > > >
+> > > > > > diff --git a/drivers/vdpa/vdpa.c b/drivers/vdpa/vdpa.c
+> > > > > > index 1dc121a07a93..533d7f589eee 100644
+> > > > > > --- a/drivers/vdpa/vdpa.c
+> > > > > > +++ b/drivers/vdpa/vdpa.c
+> > > > > > @@ -12,6 +12,7 @@
+> > > > > >  #include <linux/slab.h>
+> > > > > >  #include <linux/vdpa.h>
+> > > > > >  #include <uapi/linux/vdpa.h>
+> > > > > > +#include <uapi/linux/virtio_config.h>
+> > > > > >  #include <net/genetlink.h>
+> > > > > >  #include <linux/mod_devicetable.h>
+> > > > > >
+> > > > > > @@ -494,6 +495,7 @@ vdpa_dev_fill(struct vdpa_device *vdev, struct sk_buff *msg, u32 portid, u32 seq
+> > > > > >       u16 max_vq_size;
+> > > > > >       u32 device_id;
+> > > > > >       u32 vendor_id;
+> > > > > > +     u64 features;
+> > > > > >       void *hdr;
+> > > > > >       int err;
+> > > > > >
+> > > > > > @@ -508,6 +510,7 @@ vdpa_dev_fill(struct vdpa_device *vdev, struct sk_buff *msg, u32 portid, u32 seq
+> > > > > >       device_id = vdev->config->get_device_id(vdev);
+> > > > > >       vendor_id = vdev->config->get_vendor_id(vdev);
+> > > > > >       max_vq_size = vdev->config->get_vq_num_max(vdev);
+> > > > > > +     features = vdev->config->get_features(vdev);
+> > > > > >
+> > > > > >       err = -EMSGSIZE;
+> > > > > >       if (nla_put_string(msg, VDPA_ATTR_DEV_NAME, dev_name(&vdev->dev)))
+> > > > > > @@ -520,6 +523,9 @@ vdpa_dev_fill(struct vdpa_device *vdev, struct sk_buff *msg, u32 portid, u32 seq
+> > > > > >               goto msg_err;
+> > > > > >       if (nla_put_u16(msg, VDPA_ATTR_DEV_MAX_VQ_SIZE, max_vq_size))
+> > > > > >               goto msg_err;
+> > > > > > +     if (features & BIT_ULL(VIRTIO_F_VERSION_1) &&
+> > > > > > +         nla_put_flag(msg, VDPA_ATTR_DEV_VERSION_1))
+> > > > > > +             goto msg_err;
+> > > > > >
+> > > > > >       genlmsg_end(msg, hdr);
+> > > > > >       return 0;
+> > > > > > diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
+> > > > > > index 72eaef2caeb1..1cba957c4cdc 100644
+> > > > > > --- a/drivers/virtio/virtio_vdpa.c
+> > > > > > +++ b/drivers/virtio/virtio_vdpa.c
+> > > > > > @@ -7,6 +7,7 @@
+> > > > > >   *
+> > > > > >   */
+> > > > > >
+> > > > > > +#include "linux/virtio_config.h"
+> > > > > >  #include <linux/init.h>
+> > > > > >  #include <linux/module.h>
+> > > > > >  #include <linux/device.h>
+> > > > > > @@ -145,6 +146,7 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
+> > > > > >       /* Assume split virtqueue, switch to packed if necessary */
+> > > > > >       struct vdpa_vq_state state = {0};
+> > > > > >       unsigned long flags;
+> > > > > > +     bool may_reduce_num = false;
+> > > > > >       u32 align, num;
+> > > > > >       int err;
+> > > > > >
+> > > > > > @@ -169,10 +171,13 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
+> > > > > >               goto error_new_virtqueue;
+> > > > > >       }
+> > > > > >
+> > > > > > +     if (ops->get_features(vdpa) & BIT_ULL(VIRTIO_F_VERSION_1))
+> > > > > > +             may_reduce_num = true;
+> > > > > > +
+> > > > > >       /* Create the vring */
+> > > > > >       align = ops->get_vq_align(vdpa);
+> > > > > >       vq = vring_create_virtqueue(index, num, align, vdev,
+> > > > > > -                                 true, true, ctx,
+> > > > > > +                                 true, may_reduce_num, ctx,
+> > > > > >                                   virtio_vdpa_notify, callback, name);
+> > > > > >       if (!vq) {
+> > > > > >               err = -ENOMEM;
+> > > > > > diff --git a/include/uapi/linux/vdpa.h b/include/uapi/linux/vdpa.h
+> > > > > > index 66a41e4ec163..ce0b74276a5b 100644
+> > > > > > --- a/include/uapi/linux/vdpa.h
+> > > > > > +++ b/include/uapi/linux/vdpa.h
+> > > > > > @@ -32,6 +32,7 @@ enum vdpa_attr {
+> > > > > >       VDPA_ATTR_DEV_VENDOR_ID,                /* u32 */
+> > > > > >       VDPA_ATTR_DEV_MAX_VQS,                  /* u32 */
+> > > > > >       VDPA_ATTR_DEV_MAX_VQ_SIZE,              /* u16 */
+> > > > > > +     VDPA_ATTR_DEV_VERSION_1,                /* flag */
+> > > > > >
+> > > > > >       /* new attributes must be added above here */
+> > > > > >       VDPA_ATTR_MAX,
+> > > > > > --
+> > > > > > 2.31.1
+> > > > >
+> > >
