@@ -2,63 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C7AA40BCF5
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 03:12:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B40B940BCFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 03:14:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230252AbhIOBOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 21:14:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47748 "EHLO
+        id S231911AbhIOBP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 21:15:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbhIOBOG (ORCPT
+        with ESMTP id S230053AbhIOBP2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 21:14:06 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EDE9C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 18:12:48 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id k4so2450166lfj.7
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 18:12:48 -0700 (PDT)
+        Tue, 14 Sep 2021 21:15:28 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25C37C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 18:14:10 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id i25so2476625lfg.6
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 18:14:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Sj/ckwgRXA0XAritZwn0IRH2Tpo7u3DEDmkQl8JG/xo=;
-        b=dbyS/C0beUkomGpbcmoDo+smCOcStzW4H0jI3Ml2At5hCXRIFGbWz1pwwdjYLAlRYU
-         A98CSjoWpuu43A8QWRL0clUNwdVGLaxezC4DJZvDV9Zk4jWFQqkrc736DsMLED34nzve
-         mUTM6WMWh8zOvT8K26z4LgHYACeX/DfmT1ZHc=
+        bh=YA7y9iBKi4yP4Rc/YesTbY6E2GjKmwv9lciu9v4UGxI=;
+        b=UJuU81i1X1Vwx6sKy1nzNsRQdWA6iHFqLZo4hx/3uL/+A4fAVnd7gPryxK5koHCLvr
+         b1PsJbA+x/bBSxtxnMa4xe7D9L7nw2ZXezaqqJHBcwaLE5s5u3GuZq5GJHv2nwdfasHF
+         lIgFDigAQjL6M1oRTS8liK5ZTYXkIKCvimlK8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Sj/ckwgRXA0XAritZwn0IRH2Tpo7u3DEDmkQl8JG/xo=;
-        b=xoje0cR1yA7oxsu+ttlftE/wDpa6+iL/Hd+8J3aTCh5qDG3rkju5CY7wO5+6myZ39P
-         Fdn1vDlmkpHgzP7PYhVyPArFqM71bwzdg6wEUn3gbRIEIdaRSj233+m3dfxWd5Dh6jBA
-         fr6T9KqSvQFOuuowIe0+1RwAYHD+BMldD/+/9qwZw4iO1iJ6FLVyr41Y3rT6knyk0Teu
-         nvFmrEAJLh6tle7TM4aXXazCQaRJA2k9EuWcwojtF/Wtfut9Lq2490V3NuzCu9JJud3/
-         TtTbzLQlW2b8/XIoxB2ozYshpeDdIl8yKMXuWECGJJQE8XSkt2yVrpNu+dq555uohiTA
-         TYOg==
-X-Gm-Message-State: AOAM532qPz9RkgNq0z1A+tYewLJWJJwZ3Xa+y8ihgBTnwJ51xpxbSs6J
-        vqTkCpqv5zKToZN+yYEJ06ZarXNe368+sQG1i0o=
-X-Google-Smtp-Source: ABdhPJzDwBGUJbVcMrbvZxZdE/GmehN2VuwyUQACmETT6gRooR4zUITLSs7QBLhg2gs8ABQ2Hy/9fg==
-X-Received: by 2002:a05:6512:2281:: with SMTP id f1mr195468lfu.576.1631668366270;
-        Tue, 14 Sep 2021 18:12:46 -0700 (PDT)
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
-        by smtp.gmail.com with ESMTPSA id r13sm1466425ljh.61.2021.09.14.18.12.44
+        bh=YA7y9iBKi4yP4Rc/YesTbY6E2GjKmwv9lciu9v4UGxI=;
+        b=OoOkhaArHuHmYYbLAx1WBG+kXDqkigUOgNL/d7cCweNaR+TXHrTFNjqoF5onTDrANT
+         GDl3ZPTIH8PS0Ejps0dBnhVn8vQN9BzoNuG+XEzNZRjgmFhxRnb08kYLLUxwCjSAG3WY
+         hkJ+uzYsdYgfdtYN7rAGIoRC3srCMKobfiQ3zybhfqwtZru1f4RaSW04gNYqVUjk31W8
+         HKBzBmvUPrnwxB1ZzYCcs+kQBbwg0VmA+rjl9v0UQv1znQuxcwurR+cb2HxEqCmNTFHB
+         w3AZfU8xGdBW/jhiMiPJlF8DX2FPaB1M3POhXWE8MA3IZCokk404+u6/vsHRKaulup9H
+         7bYg==
+X-Gm-Message-State: AOAM533lMtFxOFmOp50Ljm6MGImoR8O0rI5RI/CDBBBEL3D1AuGOb9dZ
+        rARwditzM4NJ9RXfROM4acRBCc27zrBGsewOFd4=
+X-Google-Smtp-Source: ABdhPJwQv9zRn1kdSyp4qlizMvSjgMRaql3tv5EHmOZoGTnTSNi9nYuMu9Hoetp673VUEShm0tf11g==
+X-Received: by 2002:ac2:4ecf:: with SMTP id p15mr15081391lfr.2.1631668447723;
+        Tue, 14 Sep 2021 18:14:07 -0700 (PDT)
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
+        by smtp.gmail.com with ESMTPSA id v4sm1516760ljn.88.2021.09.14.18.14.07
         for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Sep 2021 18:12:44 -0700 (PDT)
-Received: by mail-lf1-f51.google.com with SMTP id a4so2438961lfg.8
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 18:12:44 -0700 (PDT)
-X-Received: by 2002:a19:ae15:: with SMTP id f21mr5676587lfc.402.1631668364073;
- Tue, 14 Sep 2021 18:12:44 -0700 (PDT)
+        Tue, 14 Sep 2021 18:14:07 -0700 (PDT)
+Received: by mail-lj1-f180.google.com with SMTP id j12so2050898ljg.10
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 18:14:07 -0700 (PDT)
+X-Received: by 2002:a2e:8185:: with SMTP id e5mr17384664ljg.31.1631668446766;
+ Tue, 14 Sep 2021 18:14:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <163166717752.510331.12843735095061762373.stgit@devnote2> <163166718582.510331.11732633028925882626.stgit@devnote2>
-In-Reply-To: <163166718582.510331.11732633028925882626.stgit@devnote2>
+References: <163166717752.510331.12843735095061762373.stgit@devnote2> <163166721027.510331.6820619440348067061.stgit@devnote2>
+In-Reply-To: <163166721027.510331.6820619440348067061.stgit@devnote2>
 From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 14 Sep 2021 18:12:28 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whJAyOZN16BzB-YS8zYVNfSsRcCnMuvzfz6CMfuknwPDw@mail.gmail.com>
-Message-ID: <CAHk-=whJAyOZN16BzB-YS8zYVNfSsRcCnMuvzfz6CMfuknwPDw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/5] bootconfig: Fix to check the xbc_node is used
- before free it
+Date:   Tue, 14 Sep 2021 18:13:51 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wigVUWvHaJKZNW+VTKWLQxCvOpoysuXQTYjO6b7VZ3GJg@mail.gmail.com>
+Message-ID: <CAHk-=wigVUWvHaJKZNW+VTKWLQxCvOpoysuXQTYjO6b7VZ3GJg@mail.gmail.com>
+Subject: Re: [PATCH v2 4/5] bootconfig: Free copied bootconfig data after boot
 To:     Masami Hiramatsu <mhiramat@kernel.org>
 Cc:     Steven Rostedt <rostedt@goodmis.org>,
         Mike Rapoport <rppt@kernel.org>,
@@ -73,19 +72,15 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Tue, Sep 14, 2021 at 5:53 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
 >
-> Fix to check the xbc_node is used before calling memblock_free()
-> because passing NULL to phys_addr() will cause a panic.
+> Free copied bootconfig data after booting kernel because that
+> data will not be used anymore.
 
-No.
+Don't do this.
 
-That's the previous bad situation.
+You have already passed in that 'copy' to the xbc code, and
+xbc_destroy_all() should just free it.
 
-The whole point of memblock_free_ptr() is that it actually acts the
-way a memory freeing function *should*, and has no problems with NULL
-pointers.
+Don't add new pointless variables to keep track of state that somebody
+else already keeps track of.
 
->    - Rebase on top of Linus tree.
-
-Please don't do a mindless rebase, take the actual changes into account.
-
-         Linus
+           Linus
