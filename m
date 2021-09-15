@@ -2,1117 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 161D140C2B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 11:25:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 489F140C2C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 11:28:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237186AbhIOJ0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 05:26:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232192AbhIOJ0V (ORCPT
+        id S232192AbhIOJ3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 05:29:47 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:47326 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229785AbhIOJ3q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 05:26:21 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A64EC061575
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 02:25:02 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id ho42so4666687ejc.9
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 02:25:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ne7IVmf9lhVNGkWlCPF6YSObp9GDEAYJRnbhdnycc3A=;
-        b=OBHqu8cZQErDn64+ZVrnht0MJ/nhYNmeNvEJbj+PpM6DiPuPD06cl69QAS29IEUqJQ
-         kKoy2FRfN1NfZkaSKBg/E4cv5U8nM0/wuPCxHkdlVZB2lfJIrCjwkNLns1V66RKX+MQk
-         TzXZYPdiBFlvlotuUJ+f7cEZ++zXOxpzpEVLp5DvZkkD5F6j7j9QPcuU64qJCRpAClb+
-         CE885TL67pI3yR8Ct9iYYqfJHpcC8G5vRMwN+SHineexLHX0dbq5Sp32aKsE2Tg65kbp
-         L/4dsMHVa9CN2bZszDXjBpcbKAMEG9fdiTI6dOFGmoC3KNh0gDwvoSW8F25DCDzOrqBX
-         fxOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=Ne7IVmf9lhVNGkWlCPF6YSObp9GDEAYJRnbhdnycc3A=;
-        b=V94AmgjvhJxzJ2nsme5FsdmeQZpDSgEM3i99vtr1B8TikVRjEvpN4IJ2q6K1OvKXO1
-         5VtQdyLtT/aD/YgD+yxU89X9pmkEo4FfMv47JkW4Lw+ZekT0V2VG1wfghjGJK+4zRcI/
-         p8vA0kFUMd5gvRaR25tijqIlP7PO59jxMEUrfHrIuWQ7kw6hjMw8qMaj9yWLC8WXL7rd
-         B7fLzbADOkkJtu5/I6UBVvtSnRXNs4dasxuSRIH0s/LGcaUw0L1YRAVKYg1lVvnI4y/t
-         MFCqAh7Ogg+3vAMddormshjCWYNBxMWxrrqirhWI9DnsfW88dCvs1xj9HWPYv843p2ZG
-         Hdtw==
-X-Gm-Message-State: AOAM5328Ddb/3MJv6qNGsvEePEtI96HOVWy5nEDYpZ9lgAE2uy6mfO6H
-        JiqVmhRJa/2P4gm0lwjcceEQ4B7Eb53msg==
-X-Google-Smtp-Source: ABdhPJzNWkOGCqiueXsCdHmY0VAujiwFUMTj2eYYPdyTuCqAwngQMiVekVRrnE1BarFrcQ8/5ySALA==
-X-Received: by 2002:a17:906:7047:: with SMTP id r7mr23138466ejj.342.1631697900260;
-        Wed, 15 Sep 2021 02:25:00 -0700 (PDT)
-Received: from localhost ([2a02:768:2307:40d6:f666:9af6:3fed:e53b])
-        by smtp.gmail.com with ESMTPSA id e21sm1119487edj.47.2021.09.15.02.24.59
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 15 Sep 2021 02:24:59 -0700 (PDT)
-Sender: Michal Simek <monstr@monstr.eu>
-From:   Michal Simek <michal.simek@xilinx.com>
-To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
-        michal.simek@xilinx.com, git@xilinx.com,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v4] arm64: zynqmp: Add support for Xilinx Kria SOM board
-Date:   Wed, 15 Sep 2021 11:24:58 +0200
-Message-Id: <ed0e6aa670ac59eabbabe7552883416248ad6c89.1631697878.git.michal.simek@xilinx.com>
-X-Mailer: git-send-email 2.33.0
+        Wed, 15 Sep 2021 05:29:46 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id E5A13221EC;
+        Wed, 15 Sep 2021 09:28:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1631698106; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aKnk6K1PQeRI3usztj+elqZdoJBzOLfZdcbOjbB+Uak=;
+        b=h1W6aOujV4DecO4MFGTmcp/kiPOykON2cIN1Bqgs9oiNkbUQoPm9SYDoxgMAwCOAzD7RrY
+        Mgj4ESq2Civ+4v9o1Z/0idDF4VhfV+LCWLNb2z6HvhlAoyMkdAQyRV1a7VMJCAfVMaCB3T
+        SOjwPZ5mMwqEPVj1OCNiTlANS0CqshA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1631698106;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aKnk6K1PQeRI3usztj+elqZdoJBzOLfZdcbOjbB+Uak=;
+        b=aLbDAyUUnVFj9UYzZrryquEdbZiFc3h3kvIXyu1823l0E5f1EfRfw6P9RLjhvDPUkZt23W
+        iIu1ZsAZnjO9qNDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BD9EB13AD4;
+        Wed, 15 Sep 2021 09:28:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id QkVgLbq8QWEuVwAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Wed, 15 Sep 2021 09:28:26 +0000
+Message-ID: <8a32b437-4cea-f265-b26e-509466d5290b@suse.cz>
+Date:   Wed, 15 Sep 2021 11:28:26 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [GIT PULL] tracing: Fixes to bootconfig memory management
+Content-Language: en-US
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+References: <20210914105620.677b90e5@oasis.local.home>
+ <CAHk-=wj9k4LZTz+svCxLYs5Y1=+yKrbAUArH1+ghyG3OLd8VVg@mail.gmail.com>
+ <20210914145953.189f15dc@oasis.local.home>
+ <CAHk-=whfA=k0CP_cYzCn3Wt7De-OJQbJbOKsvowuYnxKCAavSg@mail.gmail.com>
+ <CAHk-=wg5tJ_+sKKnkzc6nxpfEvvbUG2Yg3zF-vVfUfZD=PFy7Q@mail.gmail.com>
+ <CAHk-=whBd5Sgg4if7HB4o0Zrj3eNprKv9U02uEUB1QhQvrsQZw@mail.gmail.com>
+ <CAHk-=wipBkq-OeUBsgv-_hvTfg=nveTpiZonWeY1dBMofkjEuw@mail.gmail.com>
+ <20210914170553.7c1e1faa@oasis.local.home>
+ <4392e867-0cce-d04a-e3d1-cba152daaa1f@suse.cz>
+ <CAHk-=wimTmUcYC_BPvwv-48OFwpzJhzrX-_9afk--ND6en81Xg@mail.gmail.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <CAHk-=wimTmUcYC_BPvwv-48OFwpzJhzrX-_9afk--ND6en81Xg@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are couple of revisions of SOMs (k26) and associated carrier cards
-(kv260).
-SOM itself has two major versions:
-sm-k26 - SOM with EMMC
-smk-k26 - SOM without EMMC used on starter kit with preprogrammed firmware
-in QSPI.
+On 9/15/21 01:29, Linus Torvalds wrote:
+> On Tue, Sep 14, 2021 at 3:48 PM Vlastimil Babka <vbabka@suse.cz> wrote:
+>>
+>> Well, looks like I can't. Commit 77e02cf57b6cf does boot fine for me,
+>> multiple times. But so now does the parent commit 6a4746ba06191. Looks like
+>> the magic is gone. I'm now surprised how deterministic it was during the
+>> bisect (most bad cases manifested on first boot, only few at second).
+> 
+> Well, your report was clearly memory corruption by the invalid
+> memblock_free() just ending up causing random problems later on.
 
-SOMs are describing only devices available on the SOM or connections which
-are described in specification (for example UART, fwuen).
+> So it could easily be 100% deterministic with a certain memory layout
+> at a particular commit. And then enough other changes later, and it's
+> all gone, because the memory corruption now hits something else that
+> didn't even care.
+> 
+> The code for your oops was
+> 
+>    0: 48 8b 17              mov    (%rdi),%rdx
+>    3: 48 39 d7              cmp    %rdx,%rdi
+>    6: 74 43                je     0x4b
+>    8: 48 8b 47 08          mov    0x8(%rdi),%rax
+>    c: 48 85 c0              test   %rax,%rax
+>    f: 74 23                je     0x34
+>   11: 49 89 c0              mov    %rax,%r8
+>   14:* 48 8b 40 10          mov    0x10(%rax),%rax <-- trapping instruction
+> 
+> and that's the start of rb_next(), so what's going on is that
+> "rb->rb_right" (the second word of 'struct rb_node') ends up having
+> that value in %rax:
+> 
+>   RAX: 343479726f6d656d
+> 
+> which is ASCII "44yromem" rather than a valid pointer if I looked that up right.
 
-Signed-off-by: Michal Simek <michal.simek@xilinx.com>
----
+Yep, I was pretty sure it was related to the
+"/sys/bus/memory/devices/memory44" sysfs object and bisection would lead to
+kobject/sysfs or some memory hotplug related changes. So the result was a
+surprise.
 
-Changes in v4:
-- Remove ina260 and usb5744 nodes
-- Remove compatible string from overlays
+> And just _slightly_ different allocation patterns, and your 'struct
+> rb_node' gets allocated somewhere else, and you don't see the oops at
+> all, or you get it later in some different place.
+> 
+> Most memory corruption doesn't cause oopses, because most memory isn't
+> used as pointers etc.
+> 
+> What you _could_ try if you care enough is
+> 
+>  - go back to the thing you bisectted to where you can still hopefully
+> recreate the problem
+> 
+>  - apply that patch at that point with no other changes
+> 
+> and then the test would hopefully be closer to the state you could
+> re-create the problem.
+> 
+> And hopefully it would still not reproduce, just because the bug is
+> fixed, of course ;)
 
-Changes in v3:
-- Fix led node name
-- Fix compatible string for xlnx,zynqmp-sk-kv260-revA/Y/Z
-- Fix headers alignment
-- Move USB3 PHY properties from DWC3 node to USB node - reported by Manish
-  Narani
-- Change dtb names generated with dtbo
-- Fix emmc comment style
+Yeah, that worked! Commit 40caa127f3c7 was still broken, and cherry-pick of
+77e02cf57b6cf on top fixed it. Thanks!
 
-Changes in v2:
-- Use sugar syntax - reported by Geert
-- Update copyright years
-- Fix SD3.0 comment alignment
-- Remove one newline from Makefile
-
-https://www.xilinx.com/products/som/kria.html
-Based on
-https://lore.kernel.org/r/cover.1628244703.git.michal.simek@xilinx.com
-
----
- .../devicetree/bindings/arm/xilinx.yaml       |  16 +
- arch/arm64/boot/dts/xilinx/Makefile           |  13 +
- .../boot/dts/xilinx/zynqmp-sck-kv-g-revA.dts  | 315 ++++++++++++++++++
- .../boot/dts/xilinx/zynqmp-sck-kv-g-revB.dts  | 298 +++++++++++++++++
- .../boot/dts/xilinx/zynqmp-sm-k26-revA.dts    | 289 ++++++++++++++++
- .../boot/dts/xilinx/zynqmp-smk-k26-revA.dts   |  21 ++
- 6 files changed, 952 insertions(+)
- create mode 100644 arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revA.dts
- create mode 100644 arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revB.dts
- create mode 100644 arch/arm64/boot/dts/xilinx/zynqmp-sm-k26-revA.dts
- create mode 100644 arch/arm64/boot/dts/xilinx/zynqmp-smk-k26-revA.dts
-
-diff --git a/Documentation/devicetree/bindings/arm/xilinx.yaml b/Documentation/devicetree/bindings/arm/xilinx.yaml
-index a0b1ae6e3e71..4dc0e0195974 100644
---- a/Documentation/devicetree/bindings/arm/xilinx.yaml
-+++ b/Documentation/devicetree/bindings/arm/xilinx.yaml
-@@ -116,6 +116,22 @@ properties:
-           - const: xlnx,zynqmp-zcu111
-           - const: xlnx,zynqmp
- 
-+      - description: Xilinx Kria SOMs
-+        items:
-+          - const: xlnx,zynqmp-sm-k26-rev1
-+          - const: xlnx,zynqmp-sm-k26-revB
-+          - const: xlnx,zynqmp-sm-k26-revA
-+          - const: xlnx,zynqmp-sm-k26
-+          - const: xlnx,zynqmp
-+
-+      - description: Xilinx Kria SOMs (starter)
-+        items:
-+          - const: xlnx,zynqmp-smk-k26-rev1
-+          - const: xlnx,zynqmp-smk-k26-revB
-+          - const: xlnx,zynqmp-smk-k26-revA
-+          - const: xlnx,zynqmp-smk-k26
-+          - const: xlnx,zynqmp
-+
- additionalProperties: true
- 
- ...
-diff --git a/arch/arm64/boot/dts/xilinx/Makefile b/arch/arm64/boot/dts/xilinx/Makefile
-index 083ed52337fd..4e159540d031 100644
---- a/arch/arm64/boot/dts/xilinx/Makefile
-+++ b/arch/arm64/boot/dts/xilinx/Makefile
-@@ -17,3 +17,16 @@ dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-zcu104-revA.dtb
- dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-zcu104-revC.dtb
- dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-zcu106-revA.dtb
- dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-zcu111-revA.dtb
-+
-+dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-sm-k26-revA.dtb
-+dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-smk-k26-revA.dtb
-+
-+sm-k26-revA-sck-kv-g-revA-dtbs := zynqmp-sm-k26-revA.dtb zynqmp-sck-kv-g-revA.dtbo
-+sm-k26-revA-sck-kv-g-revB-dtbs := zynqmp-sm-k26-revA.dtb zynqmp-sck-kv-g-revB.dtbo
-+smk-k26-revA-sm-k26-revA-sck-kv-g-revA-dtbs := zynqmp-smk-k26-revA.dtb zynqmp-sck-kv-g-revA.dtbo
-+smk-k26-revA-sm-k26-revA-sck-kv-g-revB-dtbs := zynqmp-smk-k26-revA.dtb zynqmp-sck-kv-g-revB.dtbo
-+
-+dtb-$(CONFIG_ARCH_ZYNQMP) += sm-k26-revA-sck-kv-g-revA.dtb
-+dtb-$(CONFIG_ARCH_ZYNQMP) += sm-k26-revA-sck-kv-g-revB.dtb
-+dtb-$(CONFIG_ARCH_ZYNQMP) += smk-k26-revA-sm-k26-revA-sck-kv-g-revA.dtb
-+dtb-$(CONFIG_ARCH_ZYNQMP) += smk-k26-revA-sm-k26-revA-sck-kv-g-revB.dtb
-diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revA.dts b/arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revA.dts
-new file mode 100644
-index 000000000000..b610e65e0cdf
---- /dev/null
-+++ b/arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revA.dts
-@@ -0,0 +1,315 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * dts file for KV260 revA Carrier Card
-+ *
-+ * (C) Copyright 2020 - 2021, Xilinx, Inc.
-+ *
-+ * SD level shifter:
-+ * "A" – A01 board un-modified (NXP)
-+ * "Y" – A01 board modified with legacy interposer (Nexperia)
-+ * "Z" – A01 board modified with Diode interposer
-+ *
-+ * Michal Simek <michal.simek@xilinx.com>
-+ */
-+
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/net/ti-dp83867.h>
-+#include <dt-bindings/phy/phy.h>
-+#include <dt-bindings/pinctrl/pinctrl-zynqmp.h>
-+
-+/dts-v1/;
-+/plugin/;
-+
-+&i2c1 { /* I2C_SCK C23/C24 - MIO from SOM */
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	pinctrl-names = "default", "gpio";
-+	pinctrl-0 = <&pinctrl_i2c1_default>;
-+	pinctrl-1 = <&pinctrl_i2c1_gpio>;
-+	scl-gpios = <&gpio 24 GPIO_ACTIVE_HIGH>;
-+	sda-gpios = <&gpio 25 GPIO_ACTIVE_HIGH>;
-+
-+	/* u14 - 0x40 - ina260 */
-+	/* u27 - 0xe0 - STDP4320 DP/HDMI splitter */
-+};
-+
-+&amba {
-+	si5332_0: si5332_0 { /* u17 */
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <125000000>;
-+	};
-+
-+	si5332_1: si5332_1 { /* u17 */
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <25000000>;
-+	};
-+
-+	si5332_2: si5332_2 { /* u17 */
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <48000000>;
-+	};
-+
-+	si5332_3: si5332_3 { /* u17 */
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <24000000>;
-+	};
-+
-+	si5332_4: si5332_4 { /* u17 */
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <26000000>;
-+	};
-+
-+	si5332_5: si5332_5 { /* u17 */
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <27000000>;
-+	};
-+};
-+
-+/* DP/USB 3.0 and SATA */
-+&psgtr {
-+	status = "okay";
-+	/* pcie, usb3, sata */
-+	clocks = <&si5332_5>, <&si5332_4>, <&si5332_0>;
-+	clock-names = "ref0", "ref1", "ref2";
-+};
-+
-+&sata {
-+	status = "okay";
-+	/* SATA OOB timing settings */
-+	ceva,p0-cominit-params = /bits/ 8 <0x18 0x40 0x18 0x28>;
-+	ceva,p0-comwake-params = /bits/ 8 <0x06 0x14 0x08 0x0E>;
-+	ceva,p0-burst-params = /bits/ 8 <0x13 0x08 0x4A 0x06>;
-+	ceva,p0-retry-params = /bits/ 16 <0x96A4 0x3FFC>;
-+	ceva,p1-cominit-params = /bits/ 8 <0x18 0x40 0x18 0x28>;
-+	ceva,p1-comwake-params = /bits/ 8 <0x06 0x14 0x08 0x0E>;
-+	ceva,p1-burst-params = /bits/ 8 <0x13 0x08 0x4A 0x06>;
-+	ceva,p1-retry-params = /bits/ 16 <0x96A4 0x3FFC>;
-+	phy-names = "sata-phy";
-+	phys = <&psgtr 3 PHY_TYPE_SATA 1 2>;
-+};
-+
-+&zynqmp_dpsub {
-+	status = "disabled";
-+	phy-names = "dp-phy0", "dp-phy1";
-+	phys = <&psgtr 1 PHY_TYPE_DP 0 0>, <&psgtr 0 PHY_TYPE_DP 1 0>;
-+};
-+
-+&zynqmp_dpdma {
-+	status = "okay";
-+};
-+
-+&usb0 {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_usb0_default>;
-+	phy-names = "usb3-phy";
-+	phys = <&psgtr 2 PHY_TYPE_USB3 0 1>;
-+	/* missing usb5744 - u43 */
-+};
-+
-+&dwc3_0 {
-+	status = "okay";
-+	dr_mode = "host";
-+	snps,usb3_lpm_capable;
-+	maximum-speed = "super-speed";
-+};
-+
-+&sdhci1 { /* on CC with tuned parameters */
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_sdhci1_default>;
-+	/*
-+	 * SD 3.0 requires level shifter and this property
-+	 * should be removed if the board has level shifter and
-+	 * need to work in UHS mode
-+	 */
-+	no-1-8-v;
-+	disable-wp;
-+	xlnx,mio-bank = <1>;
-+};
-+
-+&gem3 { /* required by spec */
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_gem3_default>;
-+	phy-handle = <&phy0>;
-+	phy-mode = "rgmii-id";
-+
-+	mdio: mdio {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		reset-gpios = <&gpio 38 GPIO_ACTIVE_LOW>;
-+		reset-delay-us = <2>;
-+
-+		phy0: ethernet-phy@1 {
-+			#phy-cells = <1>;
-+			reg = <1>;
-+			ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_25_NS>;
-+			ti,tx-internal-delay = <DP83867_RGMIIDCTL_2_75_NS>;
-+			ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
-+			ti,dp83867-rxctrl-strap-quirk;
-+		};
-+	};
-+};
-+
-+&pinctrl0 { /* required by spec */
-+	status = "okay";
-+
-+	pinctrl_uart1_default: uart1-default {
-+		conf {
-+			groups = "uart1_9_grp";
-+			slew-rate = <SLEW_RATE_SLOW>;
-+			power-source = <IO_STANDARD_LVCMOS18>;
-+			drive-strength = <12>;
-+		};
-+
-+		conf-rx {
-+			pins = "MIO37";
-+			bias-high-impedance;
-+		};
-+
-+		conf-tx {
-+			pins = "MIO36";
-+			bias-disable;
-+		};
-+
-+		mux {
-+			groups = "uart1_9_grp";
-+			function = "uart1";
-+		};
-+	};
-+
-+	pinctrl_i2c1_default: i2c1-default {
-+		conf {
-+			groups = "i2c1_6_grp";
-+			bias-pull-up;
-+			slew-rate = <SLEW_RATE_SLOW>;
-+			power-source = <IO_STANDARD_LVCMOS18>;
-+		};
-+
-+		mux {
-+			groups = "i2c1_6_grp";
-+			function = "i2c1";
-+		};
-+	};
-+
-+	pinctrl_i2c1_gpio: i2c1-gpio {
-+		conf {
-+			groups = "gpio0_24_grp", "gpio0_25_grp";
-+			slew-rate = <SLEW_RATE_SLOW>;
-+			power-source = <IO_STANDARD_LVCMOS18>;
-+		};
-+
-+		mux {
-+			groups = "gpio0_24_grp", "gpio0_25_grp";
-+			function = "gpio0";
-+		};
-+	};
-+
-+	pinctrl_gem3_default: gem3-default {
-+		conf {
-+			groups = "ethernet3_0_grp";
-+			slew-rate = <SLEW_RATE_SLOW>;
-+			power-source = <IO_STANDARD_LVCMOS18>;
-+		};
-+
-+		conf-rx {
-+			pins = "MIO70", "MIO72", "MIO74";
-+			bias-high-impedance;
-+			low-power-disable;
-+		};
-+
-+		conf-bootstrap {
-+			pins = "MIO71", "MIO73", "MIO75";
-+			bias-disable;
-+			low-power-disable;
-+		};
-+
-+		conf-tx {
-+			pins = "MIO64", "MIO65", "MIO66",
-+				"MIO67", "MIO68", "MIO69";
-+			bias-disable;
-+			low-power-enable;
-+		};
-+
-+		conf-mdio {
-+			groups = "mdio3_0_grp";
-+			slew-rate = <SLEW_RATE_SLOW>;
-+			power-source = <IO_STANDARD_LVCMOS18>;
-+			bias-disable;
-+		};
-+
-+		mux-mdio {
-+			function = "mdio3";
-+			groups = "mdio3_0_grp";
-+		};
-+
-+		mux {
-+			function = "ethernet3";
-+			groups = "ethernet3_0_grp";
-+		};
-+	};
-+
-+	pinctrl_usb0_default: usb0-default {
-+		conf {
-+			groups = "usb0_0_grp";
-+			slew-rate = <SLEW_RATE_SLOW>;
-+			power-source = <IO_STANDARD_LVCMOS18>;
-+		};
-+
-+		conf-rx {
-+			pins = "MIO52", "MIO53", "MIO55";
-+			bias-high-impedance;
-+		};
-+
-+		conf-tx {
-+			pins = "MIO54", "MIO56", "MIO57", "MIO58", "MIO59",
-+			"MIO60", "MIO61", "MIO62", "MIO63";
-+			bias-disable;
-+		};
-+
-+		mux {
-+			groups = "usb0_0_grp";
-+			function = "usb0";
-+		};
-+	};
-+
-+	pinctrl_sdhci1_default: sdhci1-default {
-+		conf {
-+			groups = "sdio1_0_grp";
-+			slew-rate = <SLEW_RATE_SLOW>;
-+			power-source = <IO_STANDARD_LVCMOS18>;
-+			bias-disable;
-+		};
-+
-+		conf-cd {
-+			groups = "sdio1_cd_0_grp";
-+			bias-high-impedance;
-+			bias-pull-up;
-+			slew-rate = <SLEW_RATE_SLOW>;
-+			power-source = <IO_STANDARD_LVCMOS18>;
-+		};
-+
-+		mux-cd {
-+			groups = "sdio1_cd_0_grp";
-+			function = "sdio1_cd";
-+		};
-+
-+		mux {
-+			groups = "sdio1_0_grp";
-+			function = "sdio1";
-+		};
-+	};
-+};
-+
-+&uart1 {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart1_default>;
-+};
-diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revB.dts b/arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revB.dts
-new file mode 100644
-index 000000000000..a52dafbfd59e
---- /dev/null
-+++ b/arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revB.dts
-@@ -0,0 +1,298 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * dts file for KV260 revA Carrier Card
-+ *
-+ * (C) Copyright 2020 - 2021, Xilinx, Inc.
-+ *
-+ * Michal Simek <michal.simek@xilinx.com>
-+ */
-+
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/net/ti-dp83867.h>
-+#include <dt-bindings/phy/phy.h>
-+#include <dt-bindings/pinctrl/pinctrl-zynqmp.h>
-+
-+/dts-v1/;
-+/plugin/;
-+
-+&i2c1 { /* I2C_SCK C23/C24 - MIO from SOM */
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	pinctrl-names = "default", "gpio";
-+	pinctrl-0 = <&pinctrl_i2c1_default>;
-+	pinctrl-1 = <&pinctrl_i2c1_gpio>;
-+	scl-gpios = <&gpio 24 GPIO_ACTIVE_HIGH>;
-+	sda-gpios = <&gpio 25 GPIO_ACTIVE_HIGH>;
-+
-+	/* u14 - 0x40 - ina260 */
-+	/* u43 - 0x2d - usb5744 */
-+	/* u27 - 0xe0 - STDP4320 DP/HDMI splitter */
-+};
-+
-+&amba {
-+	si5332_0: si5332_0 { /* u17 */
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <125000000>;
-+	};
-+
-+	si5332_1: si5332_1 { /* u17 */
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <25000000>;
-+	};
-+
-+	si5332_2: si5332_2 { /* u17 */
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <48000000>;
-+	};
-+
-+	si5332_3: si5332_3 { /* u17 */
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <24000000>;
-+	};
-+
-+	si5332_4: si5332_4 { /* u17 */
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <26000000>;
-+	};
-+
-+	si5332_5: si5332_5 { /* u17 */
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <27000000>;
-+	};
-+};
-+
-+/* DP/USB 3.0 */
-+&psgtr {
-+	status = "okay";
-+	/* pcie, usb3, sata */
-+	clocks = <&si5332_5>, <&si5332_4>, <&si5332_0>;
-+	clock-names = "ref0", "ref1", "ref2";
-+};
-+
-+&zynqmp_dpsub {
-+	status = "disabled";
-+	phy-names = "dp-phy0", "dp-phy1";
-+	phys = <&psgtr 1 PHY_TYPE_DP 0 0>, <&psgtr 0 PHY_TYPE_DP 1 0>;
-+};
-+
-+&zynqmp_dpdma {
-+	status = "okay";
-+};
-+
-+&usb0 {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_usb0_default>;
-+	phy-names = "usb3-phy";
-+	phys = <&psgtr 2 PHY_TYPE_USB3 0 1>;
-+};
-+
-+&dwc3_0 {
-+	status = "okay";
-+	dr_mode = "host";
-+	snps,usb3_lpm_capable;
-+	maximum-speed = "super-speed";
-+};
-+
-+&sdhci1 { /* on CC with tuned parameters */
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_sdhci1_default>;
-+	/*
-+	 * SD 3.0 requires level shifter and this property
-+	 * should be removed if the board has level shifter and
-+	 * need to work in UHS mode
-+	 */
-+	no-1-8-v;
-+	disable-wp;
-+	xlnx,mio-bank = <1>;
-+	clk-phase-sd-hs = <126>, <60>;
-+	clk-phase-uhs-sdr25 = <120>, <60>;
-+	clk-phase-uhs-ddr50 = <126>, <48>;
-+};
-+
-+&gem3 { /* required by spec */
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_gem3_default>;
-+	phy-handle = <&phy0>;
-+	phy-mode = "rgmii-id";
-+
-+	mdio: mdio {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		reset-gpios = <&gpio 38 GPIO_ACTIVE_LOW>;
-+		reset-delay-us = <2>;
-+
-+		phy0: ethernet-phy@1 {
-+			#phy-cells = <1>;
-+			reg = <1>;
-+			ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_25_NS>;
-+			ti,tx-internal-delay = <DP83867_RGMIIDCTL_2_75_NS>;
-+			ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
-+			ti,dp83867-rxctrl-strap-quirk;
-+		};
-+	};
-+};
-+
-+&pinctrl0 { /* required by spec */
-+	status = "okay";
-+
-+	pinctrl_uart1_default: uart1-default {
-+		conf {
-+			groups = "uart1_9_grp";
-+			slew-rate = <SLEW_RATE_SLOW>;
-+			power-source = <IO_STANDARD_LVCMOS18>;
-+			drive-strength = <12>;
-+		};
-+
-+		conf-rx {
-+			pins = "MIO37";
-+			bias-high-impedance;
-+		};
-+
-+		conf-tx {
-+			pins = "MIO36";
-+			bias-disable;
-+		};
-+
-+		mux {
-+			groups = "uart1_9_grp";
-+			function = "uart1";
-+		};
-+	};
-+
-+	pinctrl_i2c1_default: i2c1-default {
-+		conf {
-+			groups = "i2c1_6_grp";
-+			bias-pull-up;
-+			slew-rate = <SLEW_RATE_SLOW>;
-+			power-source = <IO_STANDARD_LVCMOS18>;
-+		};
-+
-+		mux {
-+			groups = "i2c1_6_grp";
-+			function = "i2c1";
-+		};
-+	};
-+
-+	pinctrl_i2c1_gpio: i2c1-gpio {
-+		conf {
-+			groups = "gpio0_24_grp", "gpio0_25_grp";
-+			slew-rate = <SLEW_RATE_SLOW>;
-+			power-source = <IO_STANDARD_LVCMOS18>;
-+		};
-+
-+		mux {
-+			groups = "gpio0_24_grp", "gpio0_25_grp";
-+			function = "gpio0";
-+		};
-+	};
-+
-+	pinctrl_gem3_default: gem3-default {
-+		conf {
-+			groups = "ethernet3_0_grp";
-+			slew-rate = <SLEW_RATE_SLOW>;
-+			power-source = <IO_STANDARD_LVCMOS18>;
-+		};
-+
-+		conf-rx {
-+			pins = "MIO70", "MIO72", "MIO74";
-+			bias-high-impedance;
-+			low-power-disable;
-+		};
-+
-+		conf-bootstrap {
-+			pins = "MIO71", "MIO73", "MIO75";
-+			bias-disable;
-+			low-power-disable;
-+		};
-+
-+		conf-tx {
-+			pins = "MIO64", "MIO65", "MIO66",
-+				"MIO67", "MIO68", "MIO69";
-+			bias-disable;
-+			low-power-enable;
-+		};
-+
-+		conf-mdio {
-+			groups = "mdio3_0_grp";
-+			slew-rate = <SLEW_RATE_SLOW>;
-+			power-source = <IO_STANDARD_LVCMOS18>;
-+			bias-disable;
-+		};
-+
-+		mux-mdio {
-+			function = "mdio3";
-+			groups = "mdio3_0_grp";
-+		};
-+
-+		mux {
-+			function = "ethernet3";
-+			groups = "ethernet3_0_grp";
-+		};
-+	};
-+
-+	pinctrl_usb0_default: usb0-default {
-+		conf {
-+			groups = "usb0_0_grp";
-+			slew-rate = <SLEW_RATE_SLOW>;
-+			power-source = <IO_STANDARD_LVCMOS18>;
-+		};
-+
-+		conf-rx {
-+			pins = "MIO52", "MIO53", "MIO55";
-+			bias-high-impedance;
-+		};
-+
-+		conf-tx {
-+			pins = "MIO54", "MIO56", "MIO57", "MIO58", "MIO59",
-+			"MIO60", "MIO61", "MIO62", "MIO63";
-+			bias-disable;
-+		};
-+
-+		mux {
-+			groups = "usb0_0_grp";
-+			function = "usb0";
-+		};
-+	};
-+
-+	pinctrl_sdhci1_default: sdhci1-default {
-+		conf {
-+			groups = "sdio1_0_grp";
-+			slew-rate = <SLEW_RATE_SLOW>;
-+			power-source = <IO_STANDARD_LVCMOS18>;
-+			bias-disable;
-+		};
-+
-+		conf-cd {
-+			groups = "sdio1_cd_0_grp";
-+			bias-high-impedance;
-+			bias-pull-up;
-+			slew-rate = <SLEW_RATE_SLOW>;
-+			power-source = <IO_STANDARD_LVCMOS18>;
-+		};
-+
-+		mux-cd {
-+			groups = "sdio1_cd_0_grp";
-+			function = "sdio1_cd";
-+		};
-+
-+		mux {
-+			groups = "sdio1_0_grp";
-+			function = "sdio1";
-+		};
-+	};
-+};
-+
-+&uart1 {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart1_default>;
-+};
-diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-sm-k26-revA.dts b/arch/arm64/boot/dts/xilinx/zynqmp-sm-k26-revA.dts
-new file mode 100644
-index 000000000000..550b389153e6
---- /dev/null
-+++ b/arch/arm64/boot/dts/xilinx/zynqmp-sm-k26-revA.dts
-@@ -0,0 +1,289 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * dts file for Xilinx ZynqMP SM-K26 rev1/B/A
-+ *
-+ * (C) Copyright 2020 - 2021, Xilinx, Inc.
-+ *
-+ * Michal Simek <michal.simek@xilinx.com>
-+ */
-+
-+/dts-v1/;
-+
-+#include "zynqmp.dtsi"
-+#include "zynqmp-clk-ccf.dtsi"
-+#include <dt-bindings/input/input.h>
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/phy/phy.h>
-+
-+/ {
-+	model = "ZynqMP SM-K26 Rev1/B/A";
-+	compatible = "xlnx,zynqmp-sm-k26-rev1", "xlnx,zynqmp-sm-k26-revB",
-+		     "xlnx,zynqmp-sm-k26-revA", "xlnx,zynqmp-sm-k26",
-+		     "xlnx,zynqmp";
-+
-+	aliases {
-+		i2c0 = &i2c0;
-+		i2c1 = &i2c1;
-+		mmc0 = &sdhci0;
-+		mmc1 = &sdhci1;
-+		nvmem0 = &eeprom;
-+		nvmem1 = &eeprom_cc;
-+		rtc0 = &rtc;
-+		serial0 = &uart0;
-+		serial1 = &uart1;
-+		serial2 = &dcc;
-+		spi0 = &qspi;
-+		spi1 = &spi0;
-+		spi2 = &spi1;
-+		usb0 = &usb0;
-+		usb1 = &usb1;
-+	};
-+
-+	chosen {
-+		bootargs = "earlycon";
-+		stdout-path = "serial1:115200n8";
-+	};
-+
-+	memory@0 {
-+		device_type = "memory"; /* 4GB */
-+		reg = <0x0 0x0 0x0 0x80000000>, <0x8 0x00000000 0x0 0x80000000>;
-+	};
-+
-+	gpio-keys {
-+		compatible = "gpio-keys";
-+		autorepeat;
-+		fwuen {
-+			label = "fwuen";
-+			gpios = <&gpio 12 GPIO_ACTIVE_LOW>;
-+		};
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+		ds35-led {
-+			label = "heartbeat";
-+			gpios = <&gpio 7 GPIO_ACTIVE_HIGH>;
-+			linux,default-trigger = "heartbeat";
-+		};
-+
-+		ds36-led {
-+			label = "vbus_det";
-+			gpios = <&gpio 8 GPIO_ACTIVE_HIGH>;
-+			default-state = "on";
-+		};
-+	};
-+};
-+
-+&uart1 { /* MIO36/MIO37 */
-+	status = "okay";
-+};
-+
-+&qspi { /* MIO 0-5 - U143 */
-+	status = "okay";
-+	flash@0 { /* MT25QU512A */
-+		compatible = "mt25qu512a", "jedec,spi-nor"; /* 64MB */
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		reg = <0>;
-+		spi-tx-bus-width = <1>;
-+		spi-rx-bus-width = <4>;
-+		spi-max-frequency = <40000000>; /* 40MHz */
-+		partition@0 {
-+			label = "Image Selector";
-+			reg = <0x0 0x80000>; /* 512KB */
-+			read-only;
-+			lock;
-+		};
-+		partition@80000 {
-+			label = "Image Selector Golden";
-+			reg = <0x80000 0x80000>; /* 512KB */
-+			read-only;
-+			lock;
-+		};
-+		partition@100000 {
-+			label = "Persistent Register";
-+			reg = <0x100000 0x20000>; /* 128KB */
-+		};
-+		partition@120000 {
-+			label = "Persistent Register Backup";
-+			reg = <0x120000 0x20000>; /* 128KB */
-+		};
-+		partition@140000 {
-+			label = "Open_1";
-+			reg = <0x140000 0xC0000>; /* 768KB */
-+		};
-+		partition@200000 {
-+			label = "Image A (FSBL, PMU, ATF, U-Boot)";
-+			reg = <0x200000 0xD00000>; /* 13MB */
-+		};
-+		partition@f00000 {
-+			label = "ImgSel Image A Catch";
-+			reg = <0xF00000 0x80000>; /* 512KB */
-+			read-only;
-+			lock;
-+		};
-+		partition@f80000 {
-+			label = "Image B (FSBL, PMU, ATF, U-Boot)";
-+			reg = <0xF80000 0xD00000>; /* 13MB */
-+		};
-+		partition@1c80000 {
-+			label = "ImgSel Image B Catch";
-+			reg = <0x1C80000 0x80000>; /* 512KB */
-+			read-only;
-+			lock;
-+		};
-+		partition@1d00000 {
-+			label = "Open_2";
-+			reg = <0x1D00000 0x100000>; /* 1MB */
-+		};
-+		partition@1e00000 {
-+			label = "Recovery Image";
-+			reg = <0x1E00000 0x200000>; /* 2MB */
-+			read-only;
-+			lock;
-+		};
-+		partition@2000000 {
-+			label = "Recovery Image Backup";
-+			reg = <0x2000000 0x200000>; /* 2MB */
-+			read-only;
-+			lock;
-+		};
-+		partition@2200000 {
-+			label = "U-Boot storage variables";
-+			reg = <0x2200000 0x20000>; /* 128KB */
-+		};
-+		partition@2220000 {
-+			label = "U-Boot storage variables backup";
-+			reg = <0x2220000 0x20000>; /* 128KB */
-+		};
-+		partition@2240000 {
-+			label = "SHA256";
-+			reg = <0x2240000 0x10000>; /* 256B but 64KB sector */
-+			read-only;
-+			lock;
-+		};
-+		partition@2250000 {
-+			label = "User";
-+			reg = <0x2250000 0x1db0000>; /* 29.5 MB */
-+		};
-+	};
-+};
-+
-+&sdhci0 { /* MIO13-23 - 16GB emmc MTFC16GAPALBH-IT - U133A */
-+	status = "okay";
-+	non-removable;
-+	disable-wp;
-+	bus-width = <8>;
-+	xlnx,mio-bank = <0>;
-+};
-+
-+&spi1 { /* MIO6, 9-11 */
-+	status = "okay";
-+	label = "TPM";
-+	num-cs = <1>;
-+	tpm@0 { /* slm9670 - U144 */
-+		compatible = "infineon,slb9670", "tcg,tpm_tis-spi";
-+		reg = <0>;
-+		spi-max-frequency = <18500000>;
-+	};
-+};
-+
-+&i2c1 {
-+	status = "okay";
-+	clock-frequency = <400000>;
-+	scl-gpios = <&gpio 24 GPIO_ACTIVE_HIGH>;
-+	sda-gpios = <&gpio 25 GPIO_ACTIVE_HIGH>;
-+
-+	eeprom: eeprom@50 { /* u46 - also at address 0x58 */
-+		compatible = "st,24c64", "atmel,24c64"; /* st m24c64 */
-+		reg = <0x50>;
-+		/* WP pin EE_WP_EN connected to slg7x644092@68 */
-+	};
-+
-+	eeprom_cc: eeprom@51 { /* required by spec - also at address 0x59 */
-+		compatible = "st,24c64", "atmel,24c64"; /* st m24c64 */
-+		reg = <0x51>;
-+	};
-+
-+	/* da9062@30 - u170 - also at address 0x31 */
-+	/* da9131@33 - u167 */
-+	da9131: pmic@33 {
-+		compatible = "dlg,da9131";
-+		reg = <0x33>;
-+		regulators {
-+			da9131_buck1: buck1 {
-+				regulator-name = "da9131_buck1";
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+			da9131_buck2: buck2 {
-+				regulator-name = "da9131_buck2";
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+		};
-+	};
-+
-+	/* da9130@32 - u166 */
-+	da9130: pmic@32 {
-+		compatible = "dlg,da9130";
-+		reg = <0x32>;
-+		regulators {
-+			da9130_buck1: buck1 {
-+				regulator-name = "da9130_buck1";
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+		};
-+	};
-+
-+	/* slg7x644091@70 - u168 NOT accessible due to address conflict with stdp4320 */
-+	/*
-+	 * stdp4320 - u27 FW has below two issues to be fixed in next board revision.
-+	 * Device acknowledging to addresses 0x5C, 0x5D, 0x70, 0x72, 0x76.
-+	 * Address conflict with slg7x644091@70 making both the devices NOT accessible.
-+	 * With the FW fix, stdp4320 should respond to address 0x73 only.
-+	 */
-+	/* slg7x644092@68 - u169 */
-+	/* Also connected via JA1C as C23/C24 */
-+};
-+
-+&gpio {
-+	status = "okay";
-+	gpio-line-names = "QSPI_CLK", "QSPI_DQ1", "QSPI_DQ2", "QSPI_DQ3", "QSPI_DQ0", /* 0 - 4 */
-+			  "QSPI_CS_B", "SPI_CLK", "LED1", "LED2", "SPI_CS_B", /* 5 - 9 */
-+			  "SPI_MISO", "SPI_MOSI", "FWUEN", "EMMC_DAT0", "EMMC_DAT1", /* 10 - 14 */
-+			  "EMMC_DAT2", "EMMC_DAT3", "EMMC_DAT4", "EMMC_DAT5", "EMMC_DAT6", /* 15 - 19 */
-+			  "EMMC_DAT7", "EMMC_CMD", "EMMC_CLK", "EMMC_RST", "I2C1_SCL", /* 20 - 24 */
-+			  "I2C1_SDA", "", "", "", "", /* 25 - 29 */
-+			  "", "", "", "", "", /* 30 - 34 */
-+			  "", "", "", "", "", /* 35 - 39 */
-+			  "", "", "", "", "", /* 40 - 44 */
-+			  "", "", "", "", "", /* 45 - 49 */
-+			  "", "", "", "", "", /* 50 - 54 */
-+			  "", "", "", "", "", /* 55 - 59 */
-+			  "", "", "", "", "", /* 60 - 64 */
-+			  "", "", "", "", "", /* 65 - 69 */
-+			  "", "", "", "", "", /* 70 - 74 */
-+			  "", "", "", /* 75 - 77, MIO end and EMIO start */
-+			  "", "", /* 78 - 79 */
-+			  "", "", "", "", "", /* 80 - 84 */
-+			  "", "", "", "", "", /* 85 - 89 */
-+			  "", "", "", "", "", /* 90 - 94 */
-+			  "", "", "", "", "", /* 95 - 99 */
-+			  "", "", "", "", "", /* 100 - 104 */
-+			  "", "", "", "", "", /* 105 - 109 */
-+			  "", "", "", "", "", /* 110 - 114 */
-+			  "", "", "", "", "", /* 115 - 119 */
-+			  "", "", "", "", "", /* 120 - 124 */
-+			  "", "", "", "", "", /* 125 - 129 */
-+			  "", "", "", "", "", /* 130 - 134 */
-+			  "", "", "", "", "", /* 135 - 139 */
-+			  "", "", "", "", "", /* 140 - 144 */
-+			  "", "", "", "", "", /* 145 - 149 */
-+			  "", "", "", "", "", /* 150 - 154 */
-+			  "", "", "", "", "", /* 155 - 159 */
-+			  "", "", "", "", "", /* 160 - 164 */
-+			  "", "", "", "", "", /* 165 - 169 */
-+			  "", "", "", ""; /* 170 - 174 */
-+};
-diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-smk-k26-revA.dts b/arch/arm64/boot/dts/xilinx/zynqmp-smk-k26-revA.dts
-new file mode 100644
-index 000000000000..c70966c1f344
---- /dev/null
-+++ b/arch/arm64/boot/dts/xilinx/zynqmp-smk-k26-revA.dts
-@@ -0,0 +1,21 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * dts file for Xilinx ZynqMP SMK-K26 rev1/B/A
-+ *
-+ * (C) Copyright 2020 - 2021, Xilinx, Inc.
-+ *
-+ * Michal Simek <michal.simek@xilinx.com>
-+ */
-+
-+#include "zynqmp-sm-k26-revA.dts"
-+
-+/ {
-+	model = "ZynqMP SMK-K26 Rev1/B/A";
-+	compatible = "xlnx,zynqmp-smk-k26-rev1", "xlnx,zynqmp-smk-k26-revB",
-+		     "xlnx,zynqmp-smk-k26-revA", "xlnx,zynqmp-smk-k26",
-+		     "xlnx,zynqmp";
-+};
-+
-+&sdhci0 {
-+	status = "disabled";
-+};
--- 
-2.33.0
+> The very unlikely alternative is that your bisect was just pure random
+> bad luck and hit the wrong commit entirely, and the oops was due to
+> some other problem.
+> 
+> But it does seem unlikely to be something else. Usually when bisects
+> go off into the weeds due to not being reproducible, they go very
+> obviously off into the weeds rather than point to something that ends
+> up having a very similar bug.
+> 
+>            Linus
+> 
 
