@@ -2,81 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DB2D40CA86
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 18:40:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D52740CA95
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 18:40:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229647AbhIOQlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 12:41:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229465AbhIOQlW (ORCPT
+        id S229983AbhIOQlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 12:41:50 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:48651 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229746AbhIOQlp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 12:41:22 -0400
-Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B24ACC061574;
-        Wed, 15 Sep 2021 09:40:03 -0700 (PDT)
-Received: by gofer.mess.org (Postfix, from userid 1000)
-        id 9CAF4C63A9; Wed, 15 Sep 2021 17:40:01 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
-        t=1631724001; bh=IABfhztGnlMXEpsxQ8v8A8fnBNDV0RiYcWT+0iLBunM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YQWDQbcXIwUcRTKBnNaeKY7Ecsb+XVDNlE8p6thv3jpib8s1h5WwxaNpll/wjDUSE
-         1qcOxWZh+hNye5YjGETQ5sbR/tY3dq+OGMAgDv56xnYv6Nk1VowQGcEy6L4IOmvHBJ
-         Sfwk20ghziigp2RPQ79ngPw6vDNcbCcNAe1xDErUz18w0VPNLMbbd2QkudS2CQaRFB
-         QN3dh73mLveDsdSAsxIsm7iFy+HbimA6juBlKrA2W+PkUtSakTZkq1tuQSYtIxQDq1
-         NVjO02vcNdP5I8A/++wu5vcDNQA3iag5BQZE1N0ccmzaWlEsGZotivwKRY67ZNblMP
-         4vOTdJKbvnrrQ==
-Date:   Wed, 15 Sep 2021 17:40:01 +0100
-From:   Sean Young <sean@mess.org>
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     mkrufky@linuxtv.org, mchehab@kernel.org, crope@iki.fi,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+5ca0bf339f13c4243001@syzkaller.appspotmail.com
-Subject: Re: [PATCH v3] media: mxl111sf: change mutex_init() location
-Message-ID: <20210915164001.GA18319@gofer.mess.org>
-References: <20210819103859.17498-1-paskripkin@gmail.com>
- <20210819104221.27122-1-paskripkin@gmail.com>
- <c1c0d250-afa1-254e-421a-d35790688c60@gmail.com>
+        Wed, 15 Sep 2021 12:41:45 -0400
+Received: by mail-io1-f69.google.com with SMTP id z26-20020a05660200da00b005b86e36a1f4so2341309ioe.15
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 09:40:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=JKOXM3JGzxLlPHPJi+XJmgy9wU3yxfezlaCgrIxp3Y8=;
+        b=VAmvJUEbjKEgYyh/McUXEF5c0s/W7D9JP2x2wJyn7vB36k3TOFVpEdajoiXaqLk0aa
+         Z6qn9IESr9q6OMcZm/5UnlY2b8+qKolRkY2660RjVIqgtX3ZdQLsxLyjUr6XQs7aEqDM
+         qRydoJHLKB9q7zT7GtRAmUqe4Waov+gv3cN8BjHFQ2unNG8tL4N145shjxcIEdRe/4LZ
+         Mh7/gyWj1WWgsAbHkKMRptLnioeG5utkqHqvpEZ4poKxVWakCwWq9PQ1vjmtjOGdqUJD
+         fWLevla02NC3HUuSUqdfsGO8dpLBElVLyCBx7NmDqgzxacwatJ0k1XhbDK1w6VoEVklw
+         dqyw==
+X-Gm-Message-State: AOAM533BawBjrArbeFbO1b9h5057QgGMsw/vBOZheJBeJNjD0Rrl72OK
+        5EHCj2dRCUpzIXcguTFQYg3EPi2fNlau1hwchgaejihHAwVF
+X-Google-Smtp-Source: ABdhPJyfqKzWRBgw+12y6+VHdVaoIy7XpOGr2lePCKUrkJy7xgLzyNCOwECznCI/W7pcCr8UgXom5LAutbz4R+udP8SWJr6ak7Lf
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c1c0d250-afa1-254e-421a-d35790688c60@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Received: by 2002:a6b:5c0c:: with SMTP id z12mr764703ioh.171.1631724026177;
+ Wed, 15 Sep 2021 09:40:26 -0700 (PDT)
+Date:   Wed, 15 Sep 2021 09:40:26 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f3aadf05cc0b5a3d@google.com>
+Subject: [syzbot] WARNING in ext4_evict_inode (2)
+From:   syzbot <syzbot+80d413b5e0bdc4e192ba@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 12, 2021 at 06:49:52PM +0300, Pavel Skripkin wrote:
-> On 8/19/21 13:42, Pavel Skripkin wrote:
-> > Syzbot reported, that mxl111sf_ctrl_msg() uses uninitialized
-> > mutex. The problem was in wrong mutex_init() location.
-> > 
-> > Previous mutex_init(&state->msg_lock) call was in ->init() function, but
-> > dvb_usbv2_init() has this order of calls:
-> > 
-> > 	dvb_usbv2_init()
-> > 	  dvb_usbv2_adapter_init()
-> > 	    dvb_usbv2_adapter_frontend_init()
-> > 	      props->frontend_attach()
-> > 
-> > 	  props->init()
-> > 
-> > Since mxl111sf_* devices call mxl111sf_ctrl_msg() in ->frontend_attach()
-> > internally we need to initialize state->msg_lock before
-> > frontend_attach(). To achieve it, ->probe() call added to all mxl111sf_*
-> > devices, which will simply initiaize mutex.
-> > 
-> > Reported-and-tested-by: syzbot+5ca0bf339f13c4243001@syzkaller.appspotmail.com
-> > Fixes: 8572211842af ("[media] mxl111sf: convert to new DVB USB")
-> > Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-> 
-> Hi, Sean!
-> 
-> Did you have a chance to review this patch? Thank you :)
+Hello,
 
-Sorry during the merge window (from -rc6 to -rc1) I don't tend to look
-at patches. Looks good to me, I'll merge it.
+syzbot found the following issue on:
 
-Thanks
+HEAD commit:    08dad2f4d541 net: stmmac: allow CSR clock of 300MHz
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=159f1853300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=16e23f04679ec35e
+dashboard link: https://syzkaller.appspot.com/bug?extid=80d413b5e0bdc4e192ba
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
 
-Sean
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+80d413b5e0bdc4e192ba@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 9028 at fs/ext4/inode.c:230 ext4_evict_inode+0xf9a/0x1950 fs/ext4/inode.c:230
+Modules linked in:
+CPU: 1 PID: 9028 Comm: syz-executor.5 Not tainted 5.14.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:ext4_evict_inode+0xf9a/0x1950 fs/ext4/inode.c:230
+Code: 28 41 bc 01 00 00 00 48 89 04 24 e9 60 f6 ff ff c7 44 24 24 06 00 00 00 c7 44 24 20 06 00 00 00 e9 df f6 ff ff e8 56 ad 62 ff <0f> 0b e9 c6 f5 ff ff e8 7a ee a9 ff e9 60 f1 ff ff 48 89 cf e8 6d
+RSP: 0018:ffffc90000f2fca0 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 1ffff920001e5f9a RCX: 0000000000000000
+RDX: ffff88807ef11c80 RSI: ffffffff8213640a RDI: 0000000000000003
+RBP: ffff888042a282a0 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff821359ce R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000001 R14: ffff88814050ab60 R15: ffff8880414e4038
+FS:  000000000230a400(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b32643000 CR3: 000000005087c000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ evict+0x2ed/0x6b0 fs/inode.c:586
+ iput_final fs/inode.c:1662 [inline]
+ iput.part.0+0x539/0x850 fs/inode.c:1688
+ iput+0x58/0x70 fs/inode.c:1678
+ do_unlinkat+0x418/0x650 fs/namei.c:4176
+ __do_sys_unlink fs/namei.c:4217 [inline]
+ __se_sys_unlink fs/namei.c:4215 [inline]
+ __x64_sys_unlink+0xc6/0x110 fs/namei.c:4215
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x465f37
+Code: 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 57 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffd277ea528 EFLAGS: 00000206 ORIG_RAX: 0000000000000057
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 0000000000465f37
+RDX: 00007ffd277ea560 RSI: 00007ffd277ea560 RDI: 00007ffd277ea5f0
+RBP: 00007ffd277ea5f0 R08: 0000000000000001 R09: 00007ffd277ea3c0
+R10: 000000000230b89b R11: 0000000000000206 R12: 00000000004bee90
+R13: 00007ffd277eb6c0 R14: 000000000230b810 R15: 00007ffd277eb700
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
