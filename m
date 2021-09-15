@@ -2,155 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86AF340C1E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 10:41:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53E6540C1EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 10:42:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232307AbhIOImg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 04:42:36 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:9047 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbhIOImf (ORCPT
+        id S232676AbhIOIn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 04:43:27 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:39126 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229464AbhIOIn0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 04:42:35 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4H8YZ55vVwzW2gX;
-        Wed, 15 Sep 2021 16:40:13 +0800 (CST)
-Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.8; Wed, 15 Sep 2021 16:41:12 +0800
-Received: from [10.174.176.73] (10.174.176.73) by
- dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Wed, 15 Sep 2021 16:41:11 +0800
-Subject: Re: [PATCH v6 6/6] nbd: fix uaf in nbd_handle_reply()
-To:     Ming Lei <ming.lei@redhat.com>
-CC:     <axboe@kernel.dk>, <josef@toxicpanda.com>, <hch@infradead.org>,
-        <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <nbd@other.debian.org>, <yi.zhang@huawei.com>
-References: <20210915081537.1684327-1-yukuai3@huawei.com>
- <20210915081537.1684327-7-yukuai3@huawei.com> <YUGuykbPt+Oxt2nk@T590>
-From:   "yukuai (C)" <yukuai3@huawei.com>
-Message-ID: <f4d74d86-b303-0bdf-59c9-32bb2354a2c1@huawei.com>
-Date:   Wed, 15 Sep 2021 16:41:11 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Wed, 15 Sep 2021 04:43:26 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 44174221B6;
+        Wed, 15 Sep 2021 08:42:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1631695327; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ss0cx9db0tE4mKDvUy1qeDM+5YsJGE3aId/CpWQkZJY=;
+        b=PEc06L+q4OSsqr2e2CO2jd60kWPVsnJe60hwmlN1P70NjAg8X1himjcjpe0ZQm0TccloWn
+        76C+Ap5LUTM+EaUmLDZxq0w/Jt2NdkrLMEiMTofWgm+mqRCKj5CIoAmA7m6+n0IgjO6YuN
+        MqHf/ibR7id5X38ZRFnVolfvTbqdb1g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1631695327;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ss0cx9db0tE4mKDvUy1qeDM+5YsJGE3aId/CpWQkZJY=;
+        b=wn6Nm0FqmF2d4WrE02wGsScQ9Fq4hTY72p/+3qqR86tuGWR5/5gN73BoUoiA5SVhhI6Ig6
+        1n14LBRyGSX8e0Dg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1E39013C1A;
+        Wed, 15 Sep 2021 08:42:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id h3y9Bt+xQWGePQAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Wed, 15 Sep 2021 08:42:07 +0000
+Message-ID: <ba5b7957-52fc-d8be-ed51-a2d21a233b4b@suse.cz>
+Date:   Wed, 15 Sep 2021 10:42:06 +0200
 MIME-Version: 1.0
-In-Reply-To: <YUGuykbPt+Oxt2nk@T590>
-Content-Type: text/plain; charset="gbk"; format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Content-Language: en-US
+To:     David Rientjes <rientjes@google.com>
+Cc:     linux-mm@kvack.org, Christoph Lameter <cl@linux.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Jann Horn <jannh@google.com>, linux-kernel@vger.kernel.org,
+        Roman Gushchin <guro@fb.com>
+References: <20210913170148.10992-1-vbabka@suse.cz>
+ <c167ab10-f970-15c-b0e-fd4484ddc637@google.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [RFC PATCH] mm, slub: change percpu partial accounting from
+ objects to pages
+In-Reply-To: <c167ab10-f970-15c-b0e-fd4484ddc637@google.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.73]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggema762-chm.china.huawei.com (10.1.198.204)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/09/15 16:28, Ming Lei wrote:
-> On Wed, Sep 15, 2021 at 04:15:37PM +0800, Yu Kuai wrote:
->> There is a problem that nbd_handle_reply() might access freed request:
->>
->> 1) At first, a normal io is submitted and completed with scheduler:
->>
->> internel_tag = blk_mq_get_tag -> get tag from sched_tags
->>   blk_mq_rq_ctx_init
->>    sched_tags->rq[internel_tag] = sched_tag->static_rq[internel_tag]
->> ...
->> blk_mq_get_driver_tag
->>   __blk_mq_get_driver_tag -> get tag from tags
->>   tags->rq[tag] = sched_tag->static_rq[internel_tag]
->>
->> So, both tags->rq[tag] and sched_tags->rq[internel_tag] are pointing
->> to the request: sched_tags->static_rq[internal_tag]. Even if the
->> io is finished.
->>
->> 2) nbd server send a reply with random tag directly:
->>
->> recv_work
->>   nbd_handle_reply
->>    blk_mq_tag_to_rq(tags, tag)
->>     rq = tags->rq[tag]
->>
->> 3) if the sched_tags->static_rq is freed:
->>
->> blk_mq_sched_free_requests
->>   blk_mq_free_rqs(q->tag_set, hctx->sched_tags, i)
->>    -> step 2) access rq before clearing rq mapping
->>    blk_mq_clear_rq_mapping(set, tags, hctx_idx);
->>    __free_pages() -> rq is freed here
->>
->> 4) Then, nbd continue to use the freed request in nbd_handle_reply
->>
->> Fix the problem by get 'q_usage_counter' before blk_mq_tag_to_rq(),
->> thus request is ensured not to be freed because 'q_usage_counter' is
->> not zero.
->>
->> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
->> ---
->>   block/blk-core.c    |  1 +
->>   drivers/block/nbd.c | 19 ++++++++++++++++++-
->>   2 files changed, 19 insertions(+), 1 deletion(-)
->>
->> diff --git a/block/blk-core.c b/block/blk-core.c
->> index 5454db2fa263..2008e6903166 100644
->> --- a/block/blk-core.c
->> +++ b/block/blk-core.c
->> @@ -489,6 +489,7 @@ void blk_queue_exit(struct request_queue *q)
->>   {
->>   	percpu_ref_put(&q->q_usage_counter);
->>   }
->> +EXPORT_SYMBOL(blk_queue_exit);
->>   
->>   static void blk_queue_usage_counter_release(struct percpu_ref *ref)
->>   {
->> diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
->> index 9a7bbf8ebe74..f065afcc7586 100644
->> --- a/drivers/block/nbd.c
->> +++ b/drivers/block/nbd.c
->> @@ -824,6 +824,7 @@ static void recv_work(struct work_struct *work)
->>   						     work);
->>   	struct nbd_device *nbd = args->nbd;
->>   	struct nbd_config *config = nbd->config;
->> +	struct request_queue *q = nbd->disk->queue;
->>   	struct nbd_sock *nsock;
->>   	struct nbd_cmd *cmd;
->>   	struct request *rq;
->> @@ -834,13 +835,29 @@ static void recv_work(struct work_struct *work)
->>   		if (nbd_read_reply(nbd, args->index, &reply))
->>   			break;
->>   
->> +		/*
->> +		 * Get q_usage_counter can prevent accessing freed request
->> +		 * through blk_mq_tag_to_rq() in nbd_handle_reply(). If
->> +		 * q_usage_counter is zero, then no request is inflight, which
->> +		 * means something is wrong since we expect to find a request to
->> +		 * complete here.
->> +		 */
->> +		if (!percpu_ref_tryget(&q->q_usage_counter)) {
->> +			dev_err(disk_to_dev(nbd->disk), "%s: no io inflight\n",
->> +				__func__);
->> +			break;
->> +		}
->> +
->>   		cmd = nbd_handle_reply(nbd, args->index, &reply);
->> -		if (IS_ERR(cmd))
->> +		if (IS_ERR(cmd)) {
->> +			blk_queue_exit(q);
->>   			break;
->> +		}
->>   
->>   		rq = blk_mq_rq_from_pdu(cmd);
->>   		if (likely(!blk_should_fake_timeout(rq->q)))
->>   			blk_mq_complete_request(rq);
->> +		blk_queue_exit(q);
+On 9/15/21 07:32, David Rientjes wrote:
+> On Mon, 13 Sep 2021, Vlastimil Babka wrote:
 > 
-> You can simply call percpu_ref_put() directly just like what scsi_end_request()
-> is doing.
+>> While this is no longer a problem in kmemcg context thanks to the accounting
+>> rewrite in 5.9, the memory waste is still not ideal and it's questionable
+>> whether it makes sense to perform free object count based control when object
+>> counts can easily become so much inaccurate. So this patch converts the
+>> accounting to be based on number of pages only (which is precise) and removes
+>> the page->pobjects field completely. This is also ultimately simpler.
+>> 
 > 
+> Thanks for the very detailed explanation, this is very timely for us.
+> 
+> I'm wondering if we should be concerned about the memory waste even being 
+> possible, though, now that we have the kmemcg accounting change?
+> 
+> IIUC, because we're accounting objects and not pages, then it *seems* like 
+> we could have a high number of pages but very few objects charged per 
+> page so this memory waste could go unconstrained from any kmemcg 
+> limitation.
 
-Thanks for the adivce, will do that in next iteration. (hopefully the
-last)
+So the main problem before 5.9 was that there were separate kmem caches per
+memcg with their own percpu partial lists, so the memory used was determined
+by caches x cpus x memcgs, now they are shared so it's just caches x cpus.
+What you're saying would be also true, but relatively much smaller issue
+than what it was before 5.9.
 
-Best regards,
-Kuai
+>> To retain the existing set_cpu_partial() heuristic, first calculate the target
+>> number of objects as previously, but then convert it to target number of pages
+>> by assuming the pages will be half-filled on average. This assumption might
+>> obviously also be inaccurate in practice, but cannot degrade to actual number of
+>> pages being equal to the target number of objects.
+>> 
+> 
+> I think that's a fair heuristic.
+> 
+>> We could also skip the intermediate step with target number of objects and
+>> rewrite the heuristic in terms of pages. However we still have the sysfs file
+>> cpu_partial which uses number of objects and could break existing users if it
+>> suddenly becomes number of pages, so this patch doesn't do that.
+>> 
+>> In practice, after this patch the heuristics limit the size of percpu partial
+>> list up to 2 pages. In case of a reported regression (which would mean some
+>> workload has benefited from the previous imprecise object based counting), we
+>> can tune the heuristics to get a better compromise within the new scheme, while
+>> still avoid the unexpectedly long percpu partial lists.
+>> 
+> 
+> Curious if you've tried netperf TCP_RR with this change?  This benchmark 
+> was the most significantly improved benchmark that I recall with the 
+> introduction of per-cpu partial slabs for SLUB.  If there are any 
+> regressions to be introduced by such an approach, I'm willing to bet that 
+> it would be surfaced with that benchmark.
+
+I'll try, thanks for the tip.
