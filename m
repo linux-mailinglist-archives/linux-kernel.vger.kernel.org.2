@@ -2,152 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D18340CE6D
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 22:55:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3A8840CE71
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 22:56:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232016AbhIOU4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 16:56:42 -0400
-Received: from mail-pj1-f54.google.com ([209.85.216.54]:39608 "EHLO
-        mail-pj1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231490AbhIOU4k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 16:56:40 -0400
-Received: by mail-pj1-f54.google.com with SMTP id c13-20020a17090a558d00b00198e6497a4fso5881234pji.4;
-        Wed, 15 Sep 2021 13:55:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kyKayYUu/Gs1O2PFgnxcnIjOBY4qEl7gAKwPm2fa9Qs=;
-        b=50QRZJY+QJ3OnQYh9sh+h6e5n604wAxz3PFKMt0Rh9SSiE5g/zaqRUdmJ5HaRG4wFQ
-         zzranX/up8GSkyG1paG8BNX0QATIem+/SqeJKShxl7EAq35e1ccdzQE8Mxji3H5t5T2z
-         UbiduO8mhPnn4f9Y6I3bam37Gj6B1FnxiFJYxhGYuXWbDc7/wJIauRSc45bUtEDOUPnp
-         kDyXB0bzioBRc3x3WG2+VxQD/ShwLR2qNo5mD4QuHSiSQwdM2SZfpRFJXKhOzjDq7qUe
-         OGiN8d/ZOqPoFUDyUaq3Xu0pDG69GIxvxBclAz0qXnF2TZD4Q6G7IXIKWaV8/WVhg23p
-         aq5w==
-X-Gm-Message-State: AOAM532sYBTpAO0u3Z9/Wz4QK3WGGoRLj7jK9C/JS/9IYcq0m7PlJBRp
-        NEIwCE89EsqhpNaGBgU2OmfgceD+JB8=
-X-Google-Smtp-Source: ABdhPJw5D4Q88+9q/sCxN+l8nPfVaS8kfpRQv+qVlCExwd89PQL/mPL1Ww7631sEJXJ9zJWBWrARcg==
-X-Received: by 2002:a17:902:8494:b0:13b:9365:6f12 with SMTP id c20-20020a170902849400b0013b93656f12mr1319469plo.19.1631739320520;
-        Wed, 15 Sep 2021 13:55:20 -0700 (PDT)
-Received: from localhost ([2601:647:5b00:6f70:be34:681b:b1e9:776f])
-        by smtp.gmail.com with ESMTPSA id i12sm5447990pjv.19.2021.09.15.13.55.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Sep 2021 13:55:19 -0700 (PDT)
-Date:   Wed, 15 Sep 2021 13:55:18 -0700
-From:   Moritz Fischer <mdf@kernel.org>
-To:     Tom Rix <trix@redhat.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, mdf@kernel.org,
-        hao.wu@intel.com, linux-kernel@vger.kernel.org,
-        linux-fpga@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: Add Tom Rix as fpga maintainer
-Message-ID: <YUJdts/9kowAen+K@epycbox.lan>
-References: <20210914182333.3903389-1-trix@redhat.com>
- <YUDw0gvgdijpytfU@kroah.com>
- <25d1dac2-4f9f-b5f0-8ce8-b88442deac9d@redhat.com>
- <YUH9dg01Mtk+kO+C@kroah.com>
- <c0630361-69cf-992a-78bf-a1c8335acd28@redhat.com>
+        id S232179AbhIOU5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 16:57:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43720 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231830AbhIOU5t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 16:57:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 549B06108F;
+        Wed, 15 Sep 2021 20:56:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631739389;
+        bh=pBGc6MBPlKmkYJWBqJlD5hd44E7P23W0e7q7BSRmPAg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gdelZNiZUfwtatkAqqlDS+KgxqYlzfFAGkky5/chQnW925kMBiym+E7CESFMuS2oP
+         ZeVHIAbY2L6Yxe2aWUH3HTuNb+cY5xuHubt6aDW157N2m744v6no2zmmwP471++hjA
+         kbo++TRHNhRO6B4b8BxGuv3iWnHuWuVUBG+K17cLMNBWSpCx5jgBd8t/U4K5vc+Jfu
+         JZVzGxJoE+EhcUGhxZoeBGAp43b54VMdKX1wUbd9NSiXdtWRDbZy3RGHYize1VR/GB
+         Osmrp14v5ZtDFYfqzLzxS3OL2lIOEx5mjL+4NiA3G93jusVnA3igALWNRH9m358/tx
+         q8rFkSPYqhCvg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 40F894038F; Wed, 15 Sep 2021 17:56:26 -0300 (-03)
+Date:   Wed, 15 Sep 2021 17:56:26 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Muhammad Falak R Wani <falakreyaz@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Yu Kuai <yukuai3@huawei.com>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH] perflib: deprecate bpf_map__resize in favor of
+ bpf_map_set_max_entries
+Message-ID: <YUJd+jo1W+mdK0Fv@kernel.org>
+References: <20210815103610.27887-1-falakreyaz@gmail.com>
+ <CAEf4BzZ+3hM9oPxdXsxXRKJD2TCmpXPnkWz1LPnP7mDagprdyA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c0630361-69cf-992a-78bf-a1c8335acd28@redhat.com>
+In-Reply-To: <CAEf4BzZ+3hM9oPxdXsxXRKJD2TCmpXPnkWz1LPnP7mDagprdyA@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 09:12:51AM -0700, Tom Rix wrote:
+Em Mon, Aug 16, 2021 at 12:28:14PM -0700, Andrii Nakryiko escreveu:
+> On Sun, Aug 15, 2021 at 3:36 AM Muhammad Falak R Wani
+> <falakreyaz@gmail.com> wrote:
+> >
+> > As a part of libbpf 1.0 plan[0], this patch deprecates use of
+> > bpf_map__resize in favour of bpf_map__set_max_entries.
+> >
+> > Reference: https://github.com/libbpf/libbpf/issues/304
+> > [0]: https://github.com/libbpf/libbpf/wiki/Libbpf:-the-road-to-v1.0#libbpfh-high-level-apis
+> >
+> > Signed-off-by: Muhammad Falak R Wani <falakreyaz@gmail.com>
+> > ---
 > 
-> On 9/15/21 7:04 AM, Greg KH wrote:
-> > On Wed, Sep 15, 2021 at 06:23:16AM -0700, Tom Rix wrote:
-> > > On 9/14/21 11:58 AM, Greg KH wrote:
-> > > > [note, you got the maintainer's email address wrong on your cc: line
-> > > >    I fixed it up...]
-> > > > 
-> > > > On Tue, Sep 14, 2021 at 11:23:33AM -0700, trix@redhat.com wrote:
-> > > > > From: Tom Rix <trix@redhat.com>
-> > > > > 
-> > > > > I am the maintainer of the fpga/ subsystem for both the kernel and
-> > > > > userspace for Red Hat.  I have been an active reviewer and contributor
-> > > > > on for public fpga/ subsystem for the last year.  I would like to
-> > > > > help out more.
-> > > > > 
-> > > > > Since I am paid to do this work, change the status to Supported.
-> > > > > 
-> > > > > Signed-off-by: Tom Rix <trix@redhat.com>
-> > > > > ---
-> > > > >    MAINTAINERS | 4 ++--
-> > > > >    1 file changed, 2 insertions(+), 2 deletions(-)
-> > > > > 
-> > > > > diff --git a/MAINTAINERS b/MAINTAINERS
-> > > > > index 04fa4edf100b83..0443d7ab826659 100644
-> > > > > --- a/MAINTAINERS
-> > > > > +++ b/MAINTAINERS
-> > > > > @@ -7353,9 +7353,9 @@ F:	include/uapi/linux/fpga-dfl.h
-> > > > >    FPGA MANAGER FRAMEWORK
-> > > > >    M:	Moritz Fischer <mdf@kernel.org>
-> > > > > -R:	Tom Rix <trix@redhat.com>
-> > > > > +M:	Tom Rix <trix@redhat.com>
-> > > > >    L:	linux-fpga@vger.kernel.org
-> > > > > -S:	Maintained
-> > > > > +S:	Supported
-> > > > >    W:	http://www.rocketboards.org
-> > > > >    Q:	http://patchwork.kernel.org/project/linux-fpga/list/
-> > > > >    T:	git git://git.kernel.org/pub/scm/linux/kernel/git/mdf/linux-fpga.git
-> > > > > -- 
-> > > > > 2.26.3
-> > > > > 
-> > > > Traditionally existing maintainers are the ones that add new
-> > > > maintainers, it's not something that you just submit a patch for hoping
-> > > > it will be accepted.
-> > > > 
-> > > > What has changed since the last time you asked to do this?
-> > > Because public and private requests have gone unanswered for so long, it is
-> > > unclear if Moritz is still maintaining the subsystem.
-> > He is, as is evident by the patches I accept from him each merge.
-> > 
-> > > The nearly year old xrt patchset has been pending for 6 weeks with minor
-> > > changes to one patch out of 14 needing reviews.
-> > Code quality is not the maintainer's job, it's the developer's, so the
-> > age and number of reviews is not any indication.
+> All looks good, there is an opportunity to simplify the code a bit (see below).
 > 
-> https://lore.kernel.org/linux-fpga/20210802160521.331031-1-lizhi.hou@xilinx.com/
-> 
-> The review is needed because Moritz asked for the changes v8 here
-> 
-> https://lore.kernel.org/linux-fpga/YP42zE2ljx4hHj40@epycbox.lan/
-> 
-> When the maintainer asks for the changes, they are responsible for the
-> followup.
-> 
-> > > The standard release patchset, which needs an opinion has on an api change,
-> > > has been outstanding for 8 weeks.
-> > Have a pointer to it?
-> 
-> This was a change you requested. the recent patchset is
-> 
-> https://lore.kernel.org/linux-fpga/20210914214327.94048-4-russell.h.weight@intel.com/
-> 
-> The discussion around the api change is
-> 
-> https://lore.kernel.org/linux-fpga/661d53d0-0ba4-d344-8da0-995a9b612905@redhat.com/
-> 
-> In these toss up's if the maintainer does not weigh in as the tie breaker,
-> the patch stalls.
-> 
-> > 
-> > > If maintainership depends on an approving maintainter, what happens when the
-> > > approving maintainer has left ?
-> > Vacations happen in the summer.  I've talked to Moritz many times, and
-> > all is well here.
-> 
-> Yes. in the xrt v9 patch Moritz announced late of a vacation with a return
-> of 9/4.
-> 
-> It has been 11 days.
+> Arnaldo, I assume you'll take this through your tree or you'd like us
 
-I had a family issue that was unforseen combined with an unusual high
-post-vacation workload at $dayjob when I got back.
+Yeah, I'll take the opportunity to try to improve that detection of
+libbpf version, etc.
 
-I'm still catching up, and will get to it when I can.
- 
-- Moritz
+- Arnaldo
+
+> to take it through bpf-next?
+> 
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> 
+> >  tools/perf/util/bpf_counter.c        | 8 ++++----
+> >  tools/perf/util/bpf_counter_cgroup.c | 8 ++++----
+> >  2 files changed, 8 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/tools/perf/util/bpf_counter.c b/tools/perf/util/bpf_counter.c
+> > index ba0f20853651..ced2dac31dcf 100644
+> > --- a/tools/perf/util/bpf_counter.c
+> > +++ b/tools/perf/util/bpf_counter.c
+> > @@ -127,9 +127,9 @@ static int bpf_program_profiler_load_one(struct evsel *evsel, u32 prog_id)
+> >
+> >         skel->rodata->num_cpu = evsel__nr_cpus(evsel);
+> >
+> > -       bpf_map__resize(skel->maps.events, evsel__nr_cpus(evsel));
+> > -       bpf_map__resize(skel->maps.fentry_readings, 1);
+> > -       bpf_map__resize(skel->maps.accum_readings, 1);
+> > +       bpf_map__set_max_entries(skel->maps.events, evsel__nr_cpus(evsel));
+> > +       bpf_map__set_max_entries(skel->maps.fentry_readings, 1);
+> > +       bpf_map__set_max_entries(skel->maps.accum_readings, 1);
+> >
+> >         prog_name = bpf_target_prog_name(prog_fd);
+> >         if (!prog_name) {
+> > @@ -399,7 +399,7 @@ static int bperf_reload_leader_program(struct evsel *evsel, int attr_map_fd,
+> >                 return -1;
+> >         }
+> >
+> > -       bpf_map__resize(skel->maps.events, libbpf_num_possible_cpus());
+> > +       bpf_map__set_max_entries(skel->maps.events, libbpf_num_possible_cpus());
+> 
+> If you set max_entries to 0 (or just skip specifying it) for events
+> map in util/bpf_skel/bperf_cgroup.bpf.c, you won't need to resize it,
+> libbpf will automatically size it to number of possible CPUs.
+> 
+> >         err = bperf_leader_bpf__load(skel);
+> >         if (err) {
+> >                 pr_err("Failed to load leader skeleton\n");
+> > diff --git a/tools/perf/util/bpf_counter_cgroup.c b/tools/perf/util/bpf_counter_cgroup.c
+> > index 89aa5e71db1a..cbc6c2bca488 100644
+> > --- a/tools/perf/util/bpf_counter_cgroup.c
+> > +++ b/tools/perf/util/bpf_counter_cgroup.c
+> > @@ -65,14 +65,14 @@ static int bperf_load_program(struct evlist *evlist)
+> >
+> >         /* we need one copy of events per cpu for reading */
+> >         map_size = total_cpus * evlist->core.nr_entries / nr_cgroups;
+> > -       bpf_map__resize(skel->maps.events, map_size);
+> > -       bpf_map__resize(skel->maps.cgrp_idx, nr_cgroups);
+> > +       bpf_map__set_max_entries(skel->maps.events, map_size);
+> > +       bpf_map__set_max_entries(skel->maps.cgrp_idx, nr_cgroups);
+> >         /* previous result is saved in a per-cpu array */
+> >         map_size = evlist->core.nr_entries / nr_cgroups;
+> > -       bpf_map__resize(skel->maps.prev_readings, map_size);
+> > +       bpf_map__set_max_entries(skel->maps.prev_readings, map_size);
+> >         /* cgroup result needs all events (per-cpu) */
+> >         map_size = evlist->core.nr_entries;
+> > -       bpf_map__resize(skel->maps.cgrp_readings, map_size);
+> > +       bpf_map__set_max_entries(skel->maps.cgrp_readings, map_size);
+> >
+> >         set_max_rlimit();
+> >
+> > --
+> > 2.17.1
+> >
+
+-- 
+
+- Arnaldo
