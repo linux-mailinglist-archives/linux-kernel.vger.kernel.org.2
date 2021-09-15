@@ -2,171 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF39240BC74
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 02:05:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 130E640BC78
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 02:08:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236047AbhIOAHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 20:07:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbhIOAHM (ORCPT
+        id S236080AbhIOAJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 20:09:37 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:64018 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229520AbhIOAJg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 20:07:12 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61E96C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 17:05:54 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id f21so504322plb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 17:05:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=Yx8N9l/bGE2LoTHp+yhv2lg4BxImxyhH5zoxFhp2MbU=;
-        b=ILN2qFAm6tcbOkMGoJePG+t3hm7RfyuSbFBewqtEML3aG+fQV94v3p0gf+7q/1zpYC
-         BNYcVLkoUdEt/Fy484iPpu6Cvvc+6l7G8C1EYjVu/7vMrfLipZwzDPI35VX+9dS+WvUu
-         lS6oYoPdl+SmtlQIEWYzevjpOjU3aMj2TfSRN7h1LToEYLRkEzZsTwPTcnd4iVEzLm3f
-         S8A+UKGr6iE4pPpaZxHjTlQ7LvHiZVAzmXlVw30lGBcKrDqsMaxN2y4S9BYZmQncqWcv
-         WRb0/3IkpmmVEEqMVPKjB5HM5DlpeRYAyXEbvyWgyNi98uP+bzoXBFEkAjTECD0IeiID
-         d6tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=Yx8N9l/bGE2LoTHp+yhv2lg4BxImxyhH5zoxFhp2MbU=;
-        b=s58pIL6eySwxDc3YkbX5O66prFrW7E2+kJvVRTE83eHsW0huIn6KXBqjj1WmI0kWj5
-         LbNfjRe1kVN8rCSHRBhhOeAfraHiKFyJa3gHSVrip2rlJ2Q4S9PT7/+2HQHrKAWMOgLz
-         FlV38rbdu/tgwzxwxi3Zp6/EO1UYuyxfxdBk+jEezHnpPfSItYVybzjt+RG1j5igcCCp
-         vAxq5tgIEHLEnK4u4HyQT0IgWxtKixIKJ+OzBmL5yRK7DnPP4k5t27AU+PpYHd0eshqc
-         7o0JyyqaHBAvMrbqHY7sQV2UnQeBNosROV08TicWGcjhBJDot4Sc2a3opJRKJGx1PMwt
-         ksmg==
-X-Gm-Message-State: AOAM533ogNhTb0HYo7YHhW7/XF01Srja9O9GtOf98AWDjnAmCETvOrFp
-        lqm1hjt5ktqILckosWFA1uxnEs01izc5Cw==
-X-Google-Smtp-Source: ABdhPJz4aQvhnAAFUyLhYIDVfflZvKUr0+AFXK9uT7PMExp7NArB0wn+v1KZ87ZtBYrZTHuWyvUusQ==
-X-Received: by 2002:a17:90a:19db:: with SMTP id 27mr5037425pjj.57.1631664353605;
-        Tue, 14 Sep 2021 17:05:53 -0700 (PDT)
-Received: from [2620:15c:17:3:22e5:69e1:debc:7973] ([2620:15c:17:3:22e5:69e1:debc:7973])
-        by smtp.gmail.com with ESMTPSA id w142sm8535938pfc.47.2021.09.14.17.05.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 17:05:52 -0700 (PDT)
-Date:   Tue, 14 Sep 2021 17:05:52 -0700 (PDT)
-From:   David Rientjes <rientjes@google.com>
-To:     Udo van den Heuvel <udovdh@xs4all.nl>
-cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: 5.13.14 page allocation failure
-In-Reply-To: <9166a3d3-bb22-bf23-453f-8507cc3dc500@xs4all.nl>
-Message-ID: <1546b93d-2e78-e9e6-5d17-cbeea135dca@google.com>
-References: <9166a3d3-bb22-bf23-453f-8507cc3dc500@xs4all.nl>
+        Tue, 14 Sep 2021 20:09:36 -0400
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 18ENS2ac000541;
+        Tue, 14 Sep 2021 17:08:05 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=rIzpamlhf3YRrKrTzwPza7BdNGDMJLxH/ahYtX9xuWA=;
+ b=LUu+M9lGw3Uv1aUz3/WwvvH56XgFC/l/5aVEXXlGpI98ed9F02atcdtjoZ7EiNrcKizH
+ 94qTa6U2GrYo0ZvZOmd718/c73PK8m90HgZ6DXeMJlgj1bgBHxmPHlOxPVz1Fk5EOPLO
+ Y7Touz6R+uOajWbgHoIzYAUGGRErRlvIC6g= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3b33y78qdm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 14 Sep 2021 17:08:04 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Tue, 14 Sep 2021 17:08:03 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PWzvVJKmN3HY9oFk8BUhLcl4ojm4Z9hOmsAqaUYI3s56mk9RStrn0bxusUbnSf0Jw+mPkE6aseNK7HdKos8NcFB8cMIaQojzveXFYnbIYMkYvlEZ+AvCl3JTop8xSXyYlGRTgEn3FWTKRRZ7PUbh5M2WaS5E387wmMEbCzs5N24x6jQeyVvGqxfyU+L6u/5kiqSPnasXeDE+GOLHSchUyb/r4ytFzvWMlzBqGyGZMO6/0FPT1fsJLAcR+gOP7B5y2PeXzsLDt9e/sZo7kS+KpbHVMQVpR6gRFI+kQxQFSWlIHYnjDYdVdP5HAgSI5C1fn8n79jnpoS6j4SSO6q6jQA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=rIzpamlhf3YRrKrTzwPza7BdNGDMJLxH/ahYtX9xuWA=;
+ b=OWsLOuwjucDpd+qJ/TyhxbBCDbDlBO+s+DtFFyEqh43tB+/W29wn6bHkl3EJoLydzPRRP9JbWbfcF6trwzg3cHfRq1eO22ZwcPKUbGiTxUSKAV420/Ovw+ZzgnvD6hb+gm1T3v30Ztp162RHAmcRQsBLoWdnzxC5OWARnescT+PW1j7zZ9oGm3wrVXE7bYLZ5fDm8n9HtXiOoTh/zjrxC1v9sdX9LC6g4UoFoFXEYHr6o+DIg4kaNrQ1nqwR6PAejg10xV3yLwwrZHAZzFwkAcyKcvcWRISEP7+xOAIVAh1I5i9/1FmffqzqpqXpTImcHZximudByhjao2o2HhiYHg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=fb.com;
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SA1PR15MB4433.namprd15.prod.outlook.com (2603:10b6:806:194::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14; Wed, 15 Sep
+ 2021 00:07:58 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::51ef:4b41:5aea:3f75]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::51ef:4b41:5aea:3f75%6]) with mapi id 15.20.4500.019; Wed, 15 Sep 2021
+ 00:07:58 +0000
+Subject: Re: [PATCH bpf-next v2] bpf: update bpf_get_smp_processor_id()
+ documentation
+To:     Matteo Croce <mcroce@linux.microsoft.com>, <bpf@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+References: <20210914235400.59427-1-mcroce@linux.microsoft.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <94b5dd50-ac04-de03-996b-899f7c19a6da@fb.com>
+Date:   Tue, 14 Sep 2021 17:07:55 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
+In-Reply-To: <20210914235400.59427-1-mcroce@linux.microsoft.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BY5PR17CA0042.namprd17.prod.outlook.com
+ (2603:10b6:a03:167::19) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from [IPv6:2620:10d:c085:21cf::1169] (2620:10d:c090:400::5:1c4d) by BY5PR17CA0042.namprd17.prod.outlook.com (2603:10b6:a03:167::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Wed, 15 Sep 2021 00:07:57 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 19fd109e-b8fc-4e50-f045-08d977dcdfb0
+X-MS-TrafficTypeDiagnostic: SA1PR15MB4433:
+X-Microsoft-Antispam-PRVS: <SA1PR15MB4433FADE8CF38ADC434C1050D3DB9@SA1PR15MB4433.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:569;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0mjV0bfnnt+WTX9A0GklwMw23xUrN4cllFUYiyTRlhzbXrTu0QOpQoHqHYJV0xEVCFtV7SK6y58IFlx1hR/fwSVbHi1s3Xob/RiTF0FVnI5+5FuffcaJe9c2N1ZodEAbGeUqXwU7P0lrIuWmnaZCcUkodKn7T2vbur4fA6h3e9eIg6kaGOTVgZjs+vM3Sn9KswftFoL2Y+cPwCIuex+q2S63g6Fk7jXdiftt5ISzqkrsv0wbE593zPtJoNfZDJv5RMDbkgR9Q4DkVT4wRwgdVsJeGwMaGmhWdcym2+8xjAabBrBa/s+pmuymUP0T0qoDE7BYtwuyLz4ISp+cQ8aUBDZXJG69lSAliZwGgnmEboB0eu6sGntwIhHhQpdph1CTuOZAue0RJvKwTokJpthK/AbUR/N/+oGQp4DRE+iEVNcFLrUdmTi6P1Q2HMcKNhwS4yx4gW00sO+73z90MM0s7jGQZ8mDrsNuirahEl86fhb13gC5m/QoLtRrsNjW/jmIAZ+TXKpVYmM49dx+h5fbNXheqEaNVLdiC/N9f5VEY2lohYyoh6d4FT21ivljcswk+29OlptbdVGGwtuJODfHnHphV4m6ZcYwCyHeW0XTUz1aFo6Swzn1s2rAOYCAYNW0thVG+l1BQWS/bfSG9AFFXtqwWQM0+30o4AIkUknuAaFEiUQyQ6aRxk2kCTLFD4i/MCivbGXeY/uiJuywchGXhq2XUHwIfDRoJdqLdQfilWdio126dr4e269x2GFqY3vu
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(346002)(366004)(396003)(136003)(5660300002)(54906003)(86362001)(83380400001)(6486002)(186003)(45080400002)(316002)(38100700002)(31696002)(2616005)(4326008)(31686004)(66476007)(52116002)(53546011)(8936002)(2906002)(478600001)(15650500001)(8676002)(66946007)(4744005)(66556008)(36756003)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?S0lPL09hOTRuR2tYV1psUXl6YUdaZ2R4TlRaY1BBZ0RUd2ZpeURWYkJWTjlt?=
+ =?utf-8?B?amRiYVdPNnlJYWhQVjBUWWpnRXNlZVBQVjZEcWFjMm9lMlJodW9iYXRURWp5?=
+ =?utf-8?B?dXlVdlExOThhNTh0cU9aemRzK3crRVNzZzB2djVjaDFna1YrdEFieDZwQi8z?=
+ =?utf-8?B?STZ4TTFHalB5NitNZmZQVEZBTU55RGE4SG5zenFhM3pxUTg0Yy9qWUlrL20w?=
+ =?utf-8?B?NlVUbnl4RUhjT3RjZDBWWkhLckY1YTgzV2k0c3hZbHdwemYvYjZlcnhmSkJ4?=
+ =?utf-8?B?bUh0RmU3czhLdWsyazRnbmlOTFBmakpJdjZ6RjEvNHNqcHdiTk9jazk2MVVj?=
+ =?utf-8?B?SDV3SkpTYzEzUlpmcERLVWNrMkV1ZDRaY2Zacy9tanMzdWJFWXVna2lRaEhr?=
+ =?utf-8?B?TmJqcXJ0aE5QeUlmRzQxdWJ5Y1NPY0lPaUFFS1R3WnFJOCtWblNLSjZFWHEz?=
+ =?utf-8?B?N0ZsdTJIdVloS2ZkWmpheVFBaG5xNHd3Zml1NzZhOVgvaGdEY0daL28xb3N0?=
+ =?utf-8?B?SHlabkRaaXM3Sit6RXNoQ24vNk9DbDYvdEM4ekJmQnl1WWtxcm1ia1Nocldi?=
+ =?utf-8?B?eGk4NzdHUzRDeU93MFluYS9JcXpqRjJZRUJha0dsTE0vajhOYW4yNHAvZDFa?=
+ =?utf-8?B?M1UyellaQW1uS3JyYzBKL2tCS3R4N3hJT0xDZzJyKzdEZENCTGc4MHdFZE1z?=
+ =?utf-8?B?TzZyYS9icHozaUNUVG0wUnFPdVZTYTVnRjVZVzJCMmg1L21ZRmIrRWRMS1Nq?=
+ =?utf-8?B?TTYrdzc2dkk2SUFUVlVUNDUrR1ZLTVpzaUlYWVpsT0IwKzJpd25ZT3NHZHM3?=
+ =?utf-8?B?MDhJZ0ZiU2U3d0Vwc1NLdzhMT1pvMzZiaDN0V3ZjaXJjUDNXSWVjMDExWGQv?=
+ =?utf-8?B?SXQ0SGlqa2xyN3Z2NTd6eXhqMDk1ZGJ4NERVTEV0REJEaDRHSm1sMi9EWXZn?=
+ =?utf-8?B?dGRwSnFsRWZSWlFWQVVIUGJmQVcxay9vNjZlTlY0Wmo5WnhXV1VwOTJLbm9B?=
+ =?utf-8?B?UUJCSGtzUG1TYitHUnJuSTVjR3NlcGdwQnpHdmtqZ0NORFZEcFBtWHJoZWY1?=
+ =?utf-8?B?THZVUy9kNWdFdENlNE5RMGdhQ2lUMFA2c2J4S0ZST0dXZFYxZ1VwNjhHdWNR?=
+ =?utf-8?B?a3dha3F2cWlBbS9ieDgxYnZ1OXBTSW1Hd2hTSVR6aDE1aTdaQmR3L0dXTVpy?=
+ =?utf-8?B?ekIwRHhuYk5UVTJGTWRPeWQrV2VYRFVOKzRnQlNjTlJ1NjY2Q3NSb2pRNng0?=
+ =?utf-8?B?MG15RzlvZ2w4a1VYcEtyMjg0L0w2TjhSRXJJYmpkd01odllQZ3VXNW96NTgz?=
+ =?utf-8?B?S0ZQMXJYNEk0bjlUeXN2SE1sN3ROQjlJUERoeEhMc1RvWHNSN3F2WE9mOWVR?=
+ =?utf-8?B?Nm9FdFI1NzNXZzNHWVNRaHd4ZGVzOTluV1ZjMVl4Z0J3MGVlYWpCWldqU1ox?=
+ =?utf-8?B?czFFSS9rVkJiZHVCVkRaQ2hxS2tXaGQrZzk4K05nbk9LZ2ZyUmVqWWIxOHMz?=
+ =?utf-8?B?SjlhbGx0aEhuZXk5TVBBMFdKWE11THRUd25MY1ZQWkdjSU1pZkFpT1RxVlFy?=
+ =?utf-8?B?M3JaN0tIdzN6a0hmKzMraEl2TmliaG94bGZoRDJtajh4NW10eFNQenFQUU1j?=
+ =?utf-8?B?TGM0S1VON1lPbXhaUkdWVUdYY2wydGhTMThDUEt6R3hNWkVwMjNCeG5odGVi?=
+ =?utf-8?B?S2RleGlVOWVFaU1sQlBXRkl1L09HNFVSYjdrRytYdmtpL3UxTVppbHREQ05v?=
+ =?utf-8?B?RXJKRkw0ZUZ6cktBemE3T3pXMDJkL21ObFY2ZmdGTVM5NUltODg5VFRsUUNO?=
+ =?utf-8?Q?QVXLQP2nKXzQDa0Bn9UYClEdbT1RJDVpc8YZ4=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 19fd109e-b8fc-4e50-f045-08d977dcdfb0
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2021 00:07:57.9850
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1aWKQZ48uAE9SpuPqnmtzSggUjTHZXMqlKxO2YPSXd+24uwWBs0cg9SJ8W45qXI7
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4433
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: uqvBfmKcmjuJRwhX2xjEnDPEKfJobDe7
+X-Proofpoint-ORIG-GUID: uqvBfmKcmjuJRwhX2xjEnDPEKfJobDe7
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-14_10,2021-09-14_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
+ lowpriorityscore=0 clxscore=1015 priorityscore=1501 mlxlogscore=553
+ impostorscore=0 mlxscore=0 malwarescore=0 adultscore=0 spamscore=0
+ suspectscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2109030001 definitions=main-2109140135
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 8 Sep 2021, Udo van den Heuvel wrote:
 
-> Hello,
-> 
-> Ever since I recently migrated from AMD Ryzen 3400g to 5700g and went from
-> 16GB to 32GB we get these:
-> 
-> Sep  8 16:40:44 knalp3 kernel: chrome: page allocation failure: order:7,
-> mode:0x40a20(GFP_ATOMIC|__GFP_COMP), nodemask=(null)
-> Sep  8 16:40:44 knalp3 kernel: CPU: 0 PID: 156918 Comm: chrome Not tainted
-> 5.13.14 #5
-> Sep  8 16:40:44 knalp3 kernel: Hardware name: Gigabyte Technology Co., Ltd.
-> X570 AORUS PRO/X570 AORUS PRO, BIOS F34 07/08/2021
-> Sep  8 16:40:44 knalp3 kernel: Call Trace:
-> Sep  8 16:40:44 knalp3 kernel: dump_stack+0x64/0x7c
-> Sep  8 16:40:44 knalp3 kernel: warn_alloc.cold+0x6f/0xd3
-> Sep  8 16:40:44 knalp3 kernel: __alloc_pages_slowpath.constprop.0+0x6c3/0xa80
-> Sep  8 16:40:44 knalp3 kernel: ? get_page_from_freelist+0x223/0x9d0
-> Sep  8 16:40:44 knalp3 kernel: __alloc_pages+0x169/0x1d0
-> Sep  8 16:40:44 knalp3 kernel: cache_alloc_refill+0x58f/0x810
-> Sep  8 16:40:44 knalp3 kernel: ? _raw_spin_unlock+0xd/0x20
-> Sep  8 16:40:44 knalp3 kernel: kmem_cache_alloc+0x109/0x120
-> Sep  8 16:40:44 knalp3 kernel: p_dump_task_f+0x19/0xf0 [p_lkrg]
-> Sep  8 16:40:44 knalp3 kernel: p_wake_up_new_task_entry+0x6b/0xe0 [p_lkrg]
 
-I'm not sure of the Linux Kernel Runtiem Guard being used here, but 
-allocating order-7 memory with GFP_ATOMIC is not at all expected to 
-succeed.  The page allocator does not have the ability to do reclaim or to 
-defragment memory using memory compaction in this context.
+On 9/14/21 4:54 PM, Matteo Croce wrote:
+> From: Matteo Croce <mcroce@microsoft.com>
+> 
+> BPF programs run with migration disabled regardless of preemption, as
+> they are protected by migrate_disable().
+> Update the documentation accordingly.
+> 
+> Signed-off-by: Matteo Croce <mcroce@microsoft.com>
 
-Suggest opening a bug for this with Openwall.
-
-> Sep  8 16:40:44 knalp3 kernel: pre_handler_kretprobe+0x8a/0x160
-> Sep  8 16:40:44 knalp3 kernel: opt_pre_handler+0x4a/0x80
-> Sep  8 16:40:44 knalp3 kernel: optimized_callback+0xbe/0xf0
-> Sep  8 16:40:44 knalp3 kernel: 0xffffffffc0076294
-> Sep  8 16:40:44 knalp3 kernel: ? wake_up_new_task+0x1/0x280
-> Sep  8 16:40:44 knalp3 kernel: ? kernel_clone+0xd6/0x380
-> Sep  8 16:40:44 knalp3 kernel: ? __do_sys_clone+0x60/0x80
-> Sep  8 16:40:44 knalp3 kernel: ? do_syscall_64+0x61/0x80
-> Sep  8 16:40:44 knalp3 kernel: ? entry_SYSCALL_64_after_hwframe+0x44/0xae
-> Sep  8 16:40:44 knalp3 kernel: Mem-Info:
-> Sep  8 16:40:44 knalp3 kernel: active_anon:5244 inactive_anon:1494070
-> isolated_anon:0#012 active_file:1098885 inactive_file:4703460
-> isolated_file:0#012 unevictable:639 dirty:948 writeback:0#012
-> slab_reclaimable:74606 slab_unreclaimable:245109#012 mapped:347626
-> shmem:160084 pagetables:16000 bounce:0#012 free:98085 free_pcp:4475 free_cma:0
-> Sep  8 16:40:44 knalp3 kernel: Node 0 active_anon:20976kB
-> inactive_anon:5976280kB active_file:4395540kB inactive_file:18813840kB
-> unevictable:2556kB isolated(anon):0kB isolated(file):0kB mapped:1390504kB
-> dirty:3792kB writeback:0kB shmem:640336kB shmem_thp: 0kB shmem_pmdmapped: 0kB
-> anon_thp: 1681408kB writeback_tmp:0kB kernel_stack:31376kB pagetables:64000kB
-> all_unreclaimable? no
-> Sep  8 16:40:44 knalp3 kernel: DMA free:11264kB min:32kB low:44kB high:56kB
-> reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB
-> inactive_file:0kB unevictable:0kB writepending:0kB present:15984kB
-> managed:15360kB mlocked:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
-> Sep  8 16:40:44 knalp3 kernel: lowmem_reserve[]: 0 2357 31506 31506
-> Sep  8 16:40:44 knalp3 kernel: DMA32 free:118968kB min:5052kB low:7464kB
-> high:9876kB reserved_highatomic:16384KB active_anon:124kB
-> inactive_anon:772432kB active_file:166476kB inactive_file:1282188kB
-> unevictable:16kB writepending:368kB present:2521312kB managed:2455776kB
-> mlocked:16kB bounce:0kB free_pcp:3528kB local_pcp:0kB free_cma:0kB
-> Sep  8 16:40:44 knalp3 kernel: lowmem_reserve[]: 0 0 29148 29148
-> Sep  8 16:40:44 knalp3 kernel: Normal free:262612kB min:64544kB low:94388kB
-> high:124232kB reserved_highatomic:0KB active_anon:20488kB
-> inactive_anon:5202876kB active_file:4228640kB inactive_file:17532192kB
-> unevictable:2540kB writepending:3424kB present:30379008kB managed:29854648kB
-> mlocked:68kB bounce:0kB free_pcp:14248kB local_pcp:64kB free_cma:0kB
-> Sep  8 16:40:44 knalp3 kernel: lowmem_reserve[]: 0 0 0 0
-> Sep  8 16:40:44 knalp3 kernel: DMA: 0*4kB 0*8kB 0*16kB 0*32kB 0*64kB 0*128kB
-> 0*256kB 0*512kB 1*1024kB (U) 1*2048kB (M) 2*4096kB (M) = 11264kB
-> Sep  8 16:40:44 knalp3 kernel: DMA32: 494*4kB (UM) 132*8kB (UM) 194*16kB (M)
-> 710*32kB (M) 224*64kB (UM) 24*128kB (UM) 18*256kB (UM) 13*512kB (M) 6*1024kB
-> (M) 9*2048kB (M) 9*4096kB (M) = 118968kB
-> Sep  8 16:40:44 knalp3 kernel: Normal: 570*4kB (UME) 2546*8kB (UME) 2503*16kB
-> (UME) 1391*32kB (UME) 848*64kB (UME) 549*128kB (UME) 114*256kB (U) 1*512kB (M)
-> 0*1024kB 0*2048kB 0*4096kB = 261448kB
-> Sep  8 16:40:44 knalp3 kernel: Node 0 hugepages_total=0 hugepages_free=0
-> hugepages_surp=0 hugepages_size=2048kB
-> Sep  8 16:40:44 knalp3 kernel: 5963328 total pagecache pages
-> Sep  8 16:40:44 knalp3 kernel: 0 pages in swap cache
-> Sep  8 16:40:44 knalp3 kernel: Swap cache stats: add 170, delete 169, find
-> 61/83
-> Sep  8 16:40:44 knalp3 kernel: Free swap  = 18873848kB
-> Sep  8 16:40:44 knalp3 kernel: Total swap = 18874360kB
-> Sep  8 16:40:44 knalp3 kernel: 8229076 pages RAM
-> Sep  8 16:40:44 knalp3 kernel: 0 pages HighMem/MovableOnly
-> Sep  8 16:40:44 knalp3 kernel: 147630 pages reserved
-> Sep  8 16:40:44 knalp3 kernel: [p_lkrg] p_alloc_ed_pids() returned NULL for
-> pid 156929 :(
-> 
-> This did not happen (unless there really was an OOM) when using 16GB of RAM.
-> 
-> The RAM is from AMD's HCL for AMD Ryzen 3000+. The RAM was tested with
-> memtest86 with no errors. (only a night, but still)
-> 
-> How can I find out what is going on?
-> Did I misconfigure my kernel?
-> Do I make to configure something to use the 'immense' amount of 32GB with no
-> issues?
-> 
-> Please let me know.
-> 
-> 
-> Kind regards,
-> Udo
-> 
+Acked-by: Yonghong Song <yhs@fb.com>
