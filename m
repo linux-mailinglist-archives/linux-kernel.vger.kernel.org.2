@@ -2,96 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4974140CDD6
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 22:19:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4875E40CDDD
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 22:20:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232208AbhIOUUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 16:20:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232062AbhIOUUi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 16:20:38 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4606AC0613E0
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 13:19:14 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id b14so3608578qtb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 13:19:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=h/GsHeyvvkKJdskTxdNmQ/rhjzzyIPbBxi6Rx6oGxp0=;
-        b=OPLjVdWj/J6qm2GAbb9pCHOHcNwy/EUQDdiWSwEfafPVyJzDOdHnIfhn3wJIZLw8tv
-         O72oEqxtXbhBgHf+0NjMZT9HyH4iJe+yyEVsIvqUzuLGkZUL7lnJD1g8e+81dn74PN2s
-         5s+EgXdbDDy+xXgxe5ulH3dSFjiIoN6fJ6PAYB9U5wQ6x+jkDksnBnK8mcwc3K8cYuJZ
-         zgGolzYS4dMIpWyxawfgKfRNVVGv/bOMUEIoDROubFDF9QY/G7GNPs+883u463uGKDLg
-         G8616MvtX89q0g/+/BHVXTLcMjzeo8/gdtKyhvHfdw64cqb2/giPgLHSgMhZKnMinyNN
-         Ddmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=h/GsHeyvvkKJdskTxdNmQ/rhjzzyIPbBxi6Rx6oGxp0=;
-        b=AC26zSSRhBwomLGgkXLJKZfO3bk/q1sDZwY5aUNCcjCLHg6WGvo+3kU05wkSo0IZJV
-         XMnA+o8kYJeyiZwVKoMmtZFzXn4YL/kEhEm4JBRx4M8tEhKhxoywwMz5/eAW2L7ru8FK
-         97LEM5TCoKw/dsGf+lsbK4snkRKYudXE0Ib/hPtDiHCSErO+7PvQdSVUip88+eRmTtjr
-         6up4B83k2xjJ03vG1yOiE+jlBnvh9ncCXJvT3PQKo11S2VZsrudAkzPYvob5BQY4ovm3
-         nIM6CUCNr8xX5bodvMmRB0FweixYiPS6bdbSvOsrszhF8bAElNdeQs83Fi4mSaulEaQL
-         SG3w==
-X-Gm-Message-State: AOAM532NljFyUCpRoszJj7HZaABqgYIo1uJ9HJLfef/7BHRMLQ4xYK61
-        EvI+YxBngZf/j9SYiV0D7kg=
-X-Google-Smtp-Source: ABdhPJxZ1EBd1dS8DIl61uigIBDjQDvMDAwA6xYfYIZQ2gxXT9JtaQR3cQE41+4hbxcJ3UUEh6sbcw==
-X-Received: by 2002:a05:622a:44e:: with SMTP id o14mr1717786qtx.33.1631737153540;
-        Wed, 15 Sep 2021 13:19:13 -0700 (PDT)
-Received: from debianG.lan ([181.166.206.110])
-        by smtp.gmail.com with ESMTPSA id g8sm752834qkm.25.2021.09.15.13.19.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Sep 2021 13:19:13 -0700 (PDT)
-From:   Gaston Gonzalez <gascoar@gmail.com>
-To:     linux-staging@lists.linux.dev
-Cc:     gregkh@linuxfoundation.org, nsaenz@kernel.org,
-        stefan.wahren@i2se.com, arnd@arndb.de, dan.carpenter@oracle.com,
-        ojaswin98@gmail.com, amarjargal16@gmail.com,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-kernel@vger.kernel.org, gascoar@gmail.com
-Subject: [PATCH 7/7] staging: vchiq_arm: use __func__ to get function name in debug message
-Date:   Wed, 15 Sep 2021 17:18:24 -0300
-Message-Id: <20210915201824.413202-7-gascoar@gmail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210915201824.413202-1-gascoar@gmail.com>
-References: <20210915201824.413202-1-gascoar@gmail.com>
+        id S232046AbhIOUVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 16:21:16 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:43020 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231766AbhIOUVP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 16:21:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=g8aS/xkGAi+vDTBvZLmhQHUMkhsVOhjWnP9/XA4zI8w=; b=ioLUW4wT3oJjzjtiwN2aY3fHwD
+        zkES/hsPaaiOjLAgCHjgIduxav+YaVI65maksMyCZqIE271TIyWwlW/8tpe9Ulo7b+3mLd4GrxYle
+        RRlX1Wxt4rOBGJf3lD9D7oYbnkPhE7+8ZF2KrAIAxaNCBMsTUtOab6Yxy8zm5Zc1imG4=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mQbNo-006no5-9W; Wed, 15 Sep 2021 22:19:52 +0200
+Date:   Wed, 15 Sep 2021 22:19:52 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Asmaa Mnebhi <asmaa@nvidia.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        David Thompson <davthompson@nvidia.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Liming Sun <limings@nvidia.com>
+Subject: Re: [PATCH v1 5/6] TODO: gpio: mlxbf2: Introduce IRQ support
+Message-ID: <YUJVaMkjmbuDGGOE@lunn.ch>
+References: <20210816115953.72533-1-andriy.shevchenko@linux.intel.com>
+ <20210816115953.72533-6-andriy.shevchenko@linux.intel.com>
+ <CH2PR12MB3895ACF821C8242AA55A1DCDD7FD9@CH2PR12MB3895.namprd12.prod.outlook.com>
+ <YR0UPG2451aGt9Xg@smile.fi.intel.com>
+ <CH2PR12MB3895E8CDC7DC1AD0144E1416D7DB9@CH2PR12MB3895.namprd12.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CH2PR12MB3895E8CDC7DC1AD0144E1416D7DB9@CH2PR12MB3895.namprd12.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Avoid hardcoded function name using "%s", __func__. This prevents
-potential naming conflict if the function is eventually renamed.
+On Wed, Sep 15, 2021 at 07:27:51PM +0000, Asmaa Mnebhi wrote:
+> Hi Andy, Hi Andrew,
+> 
+> I have a question regarding patch submission. I am going to mimic what Andy has done for v5/6 and v6/6 and send 2 patches in a bundle as follows:
+> /* for the cover letter */ : Subject: [PATCH v1 0/2] gpio: mlxbf2: Introduce proper interrupt handling
+> Subject: [PATCH v1 1/2] gpio: mlxbf2: Introduce IRQ support
+> Subject: [PATCH v1 2/2] net: mellanox: mlxbf_gige: Replace non-standard interrupt handling
+> 
+> Questions:
+> 1) do the subject lines look ok? i.e. sending patches that target "net" as opposed to "net-next"
+> 2) would you like me to add a "Fixes" tag to each patch as follows? I am not sure if you consider this a bug?
+> Fixes: f92e1869d74e ("Add Mellanox BlueField Gigabit Ethernet driver")
 
-Reported by checkpatch.pl
+You are posting patches which go into two different subsystems. So you
+need to pay special care here. Pick a maintainer you want to merge
+this, and make sure you Cc: the other maintainer. Make it clear in
+patch 0/X which maintainer you would like to take the patch series,
+and that the other should give an Acked-by if they are happy with the
+patches.
 
-Signed-off-by: Gaston Gonzalez <gascoar@gmail.com>
----
- drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I don't think this should be considered a bug, so no need for a Fixes:
+tag.
 
-diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-index 3225f0738ef9..fcff2e5bd73f 100644
---- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-+++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-@@ -1025,7 +1025,7 @@ service_callback(enum vchiq_reason reason, struct vchiq_header *header,
- 			spin_unlock(&msg_queue_spinlock);
- 			DEBUG_TRACE(SERVICE_CALLBACK_LINE);
- 			DEBUG_COUNT(MSG_QUEUE_FULL_COUNT);
--			vchiq_log_trace(vchiq_arm_log_level, "service_callback - msg queue full");
-+			vchiq_log_trace(vchiq_arm_log_level, "%s - msg queue full", __func__);
- 			/*
- 			 * If there is no MESSAGE_AVAILABLE in the completion
- 			 * queue, add one
--- 
-2.33.0
+The subject lines look O.K.
 
+Also, please fix your mailer to wrap lines at about 75 characters.
+
+      Andrew
