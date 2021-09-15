@@ -2,122 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F42A40CB64
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 19:06:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A8AE40CB6A
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 19:09:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230024AbhIORHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 13:07:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40364 "EHLO
+        id S229573AbhIORKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 13:10:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229465AbhIORHg (ORCPT
+        with ESMTP id S229465AbhIORKu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 13:07:36 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E282C061574;
-        Wed, 15 Sep 2021 10:06:17 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id b6so4955877wrh.10;
-        Wed, 15 Sep 2021 10:06:17 -0700 (PDT)
+        Wed, 15 Sep 2021 13:10:50 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46313C061575
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 10:09:31 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id i3-20020a056830210300b0051af5666070so4502463otc.4
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 10:09:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=GTVsTGVHzHHxdcEJg4/8YrzvHZvRek9+ki75XlfwV6w=;
-        b=U3vEqEgCOGl+c9PEE+3pQVWcmVpFPwH4Vk1y0emiMUsRJL7SIuEuiz2GuNdcFHZe6C
-         DWyPP5WtNcPjHwquO2rXLaXgsGo3XAGuWZ/2vdt6PjOkXhVU0Zv8NWVXNHUIPRtpE+z/
-         FXyehLwcE/nMqnUUb3yzosCLAtt/aIngZPEhgJTitK23lRkJgXzZGXOPtFiTkZvbDOPt
-         0II9VJR54WTHU5mo/35kAwtjkE7+Wys5Cvyfl0u2ADdMIumGYIZm1cYtFNAB8Ri712Ly
-         wWD3sbj3tK0mwP2PVHMe5hVmFLItWdqcuXTdD+RmRJVK0qlVKQjv95qT1DwMA96qtRiU
-         RdpA==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BHR7QtxSQA+/ZedfBKDXb+NcR7qgBuUccMd7nT8tD0k=;
+        b=HFUlyDSV/PDxVFFF9p8abTMB/VRvN5zoI2a2tQfpl2PbcRHpXLQAdDBD/76ejENIN3
+         t9qQS+FXTdBL05lhAdXuyRGRCZ68NFianmrJSo67fEsMqPEYj/CSPivfSbrSfuocSyQk
+         ykDT1pgkygwsN04Mho/nYvS2Lz0c6GSTSq+qoLoLTrsi3FWvUTC0laq0A4N08SoLw3GI
+         VUsu2CYAb7OGs9KXNtMBk8FviT6fFT1bpI0+0ZPoF0WIlS3papnwN/GQAhA/Y96DpAre
+         5ylwNz1Q12t/g2XHtbjd0g1k4lOdG+nSbV0PoEJ9ewGx/rIKa9fbCPv/MY4dPfPuD6MU
+         pF9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=GTVsTGVHzHHxdcEJg4/8YrzvHZvRek9+ki75XlfwV6w=;
-        b=nraAsBMFULmrqv7A9Se73NLwd91KlbRGcz69U57eougsPYQ0jFwRXP623zIiuGDrz9
-         C7JbmMUxYBUHtKZseJh+a2iDv2GdowwveO4Q7l7RuVPynbtetDyyImTepifDLbPj3Hdd
-         rtCw3WUWVFyRHcalzAHcJ8kLN3pW2ssEegtG1cvvocK41oBVUxXU5k+YmcyAlmezXsyK
-         m8hohy7F5AJ+yDuIcj90WJdKuIo7vrmaDzF/3pPNXUAI11XRAoizKePLwY2NxypkHAJG
-         A4vqDPq7KVHYj5b2I9+CSv8s5FPuPR0oUikZd2nR1QLdwCW/Ch9ufBvM92jpAHsEyJUK
-         dbUw==
-X-Gm-Message-State: AOAM530QxQlH1tTpHBBihwU71oTD1f85qkBorC0moV2eQhb3rfDXwXMd
-        kNrGU2B6WIAbt0y0+h3a+FA=
-X-Google-Smtp-Source: ABdhPJwJpOmUK49E3LeTsgzkI8+y91tIlB46nQfOTD778QVq5gZRib5LmUCXTPjYG103hZ2OLszbrQ==
-X-Received: by 2002:adf:ce0c:: with SMTP id p12mr1204705wrn.194.1631725576068;
-        Wed, 15 Sep 2021 10:06:16 -0700 (PDT)
-Received: from archbook.localnet ([185.213.155.232])
-        by smtp.gmail.com with ESMTPSA id f1sm509887wri.43.2021.09.15.10.06.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Sep 2021 10:06:15 -0700 (PDT)
-From:   Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/4] dt-bindings: sound: add rockchip i2s-tdm binding
-Date:   Wed, 15 Sep 2021 19:06:14 +0200
-Message-ID: <42974939.Tn3hggVSkZ@archbook>
-In-Reply-To: <20210915141012.GC12513@sirena.org.uk>
-References: <20210903231536.225540-1-frattaroli.nicolas@gmail.com> <20210903231536.225540-3-frattaroli.nicolas@gmail.com> <20210915141012.GC12513@sirena.org.uk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BHR7QtxSQA+/ZedfBKDXb+NcR7qgBuUccMd7nT8tD0k=;
+        b=v6GIIjTlac0lohHoRW57zGk05/hipfLuvzTArErJUI3pnA5y6bSKa6ca6vOB7FFz7D
+         RSv9B+sKObjczVTask6UXlSaBIUsDV+n8f8f6WC0LN2i+Rnpac58KQjkG+UBSwezP4w2
+         EJln0pbL62Oc3V+lQsNhFrMsLMJBqxjGkvBokuAcH7VhoqmlLftxGEGrbnZzDyOONIzg
+         GYOFuMvrPC/jrHtcR9Uono3re3UBaG488a40maWJSk47xB9QhguiABEQXX7mXpSWNjfj
+         NGEv+kcF3DQiua8GuGgTWvdoLo4uQaby3OCgqTB+2iUDDFCO+8jWADXg3DG7TgMJKwrS
+         zGpg==
+X-Gm-Message-State: AOAM5332NYqTo/0ga2uH0B9iEcDw0gLvjgWx6m/p/N6ktuk5PO0gtZ1v
+        6QUXOJed2QCikSyoFsjl+yCoDCZyq98GSqm9Hp9+4w==
+X-Google-Smtp-Source: ABdhPJzHU3zgWSrQLQ78yZpdZbzwnhl3H/9f0MKI8xapxPTofOi4gpEq7qToTtFMwZBYHbFkd63BhevCVxUInD+JDkc=
+X-Received: by 2002:a05:6830:349c:: with SMTP id c28mr925796otu.35.1631725770184;
+ Wed, 15 Sep 2021 10:09:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <20210914164727.3007031-1-pgonda@google.com> <20210914164727.3007031-4-pgonda@google.com>
+In-Reply-To: <20210914164727.3007031-4-pgonda@google.com>
+From:   Marc Orr <marcorr@google.com>
+Date:   Wed, 15 Sep 2021 10:09:18 -0700
+Message-ID: <CAA03e5HvC_1KTz_Gyw2uvZkHFpvZJcmrRVTc6ZaOCqCqH16YtQ@mail.gmail.com>
+Subject: Re: [PATCH 3/4 V8] selftest: KVM: Add open sev dev helper
+To:     Peter Gonda <pgonda@google.com>
+Cc:     kvm list <kvm@vger.kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mittwoch, 15. September 2021 16:10:12 CEST Mark Brown wrote:
-> On Sat, Sep 04, 2021 at 01:15:34AM +0200, Nicolas Frattaroli wrote:
-> > +  rockchip,tdm-fsync-half-frame:
-> > +    description: Whether to use half frame fsync.
-> > +    type: boolean
-> > +
-> 
-> Why is this not part of the normal bus format configuration?  I don't
-> know what this is but it sounds a lot like I2S mode...
+On Tue, Sep 14, 2021 at 9:47 AM Peter Gonda <pgonda@google.com> wrote:
+>
+> Refactors out open path support from open_kvm_dev_path_or_exit() and
+> adds new helper for SEV device path.
+>
+> Signed-off-by: Peter Gonda <pgonda@google.com>
+> Suggested-by: Sean Christopherson <seanjc@google.com>
+> Cc: Marc Orr <marcorr@google.com>
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Cc: Sean Christopherson <seanjc@google.com>
+> Cc: David Rientjes <rientjes@google.com>
+> Cc: Dr. David Alan Gilbert <dgilbert@redhat.com>
+> Cc: Brijesh Singh <brijesh.singh@amd.com>
+> Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
+> Cc: Wanpeng Li <wanpengli@tencent.com>
+> Cc: Jim Mattson <jmattson@google.com>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: kvm@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> ---
+>  .../testing/selftests/kvm/include/kvm_util.h  |  1 +
+>  .../selftests/kvm/include/x86_64/svm_util.h   |  2 ++
+>  tools/testing/selftests/kvm/lib/kvm_util.c    | 24 +++++++++++--------
+>  tools/testing/selftests/kvm/lib/x86_64/svm.c  | 13 ++++++++++
+>  4 files changed, 30 insertions(+), 10 deletions(-)
+>
+> diff --git a/tools/testing/selftests/kvm/include/kvm_util.h b/tools/testing/selftests/kvm/include/kvm_util.h
+> index 010b59b13917..368e88305046 100644
+> --- a/tools/testing/selftests/kvm/include/kvm_util.h
+> +++ b/tools/testing/selftests/kvm/include/kvm_util.h
+> @@ -80,6 +80,7 @@ struct vm_guest_mode_params {
+>  };
+>  extern const struct vm_guest_mode_params vm_guest_mode_params[];
+>
+> +int open_path_or_exit(const char *path, int flags);
+>  int open_kvm_dev_path_or_exit(void);
+>  int kvm_check_cap(long cap);
+>  int vm_enable_cap(struct kvm_vm *vm, struct kvm_enable_cap *cap);
+> diff --git a/tools/testing/selftests/kvm/include/x86_64/svm_util.h b/tools/testing/selftests/kvm/include/x86_64/svm_util.h
+> index b7531c83b8ae..587fbe408b99 100644
+> --- a/tools/testing/selftests/kvm/include/x86_64/svm_util.h
+> +++ b/tools/testing/selftests/kvm/include/x86_64/svm_util.h
+> @@ -46,4 +46,6 @@ static inline bool cpu_has_svm(void)
+>         return ecx & CPUID_SVM;
+>  }
+>
+> +int open_sev_dev_path_or_exit(void);
+> +
+>  #endif /* SELFTEST_KVM_SVM_UTILS_H */
+> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
+> index 10a8ed691c66..06a6c04010fb 100644
+> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
+> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+> @@ -31,6 +31,19 @@ static void *align(void *x, size_t size)
+>         return (void *) (((size_t) x + mask) & ~mask);
+>  }
+>
+> +int open_path_or_exit(const char *path, int flags)
+> +{
+> +       int fd;
+> +
+> +       fd = open(path, flags);
+> +       if (fd < 0) {
+> +               print_skip("%s not available (errno: %d)", path, errno);
+> +               exit(KSFT_SKIP);
+> +       }
+> +
+> +       return fd;
+> +}
+> +
+>  /*
+>   * Open KVM_DEV_PATH if available, otherwise exit the entire program.
+>   *
+> @@ -42,16 +55,7 @@ static void *align(void *x, size_t size)
+>   */
+>  static int _open_kvm_dev_path_or_exit(int flags)
+>  {
+> -       int fd;
+> -
+> -       fd = open(KVM_DEV_PATH, flags);
+> -       if (fd < 0) {
+> -               print_skip("%s not available, is KVM loaded? (errno: %d)",
+> -                          KVM_DEV_PATH, errno);
+> -               exit(KSFT_SKIP);
+> -       }
+> -
+> -       return fd;
+> +       return open_path_or_exit(KVM_DEV_PATH, flags);
+>  }
+>
+>  int open_kvm_dev_path_or_exit(void)
+> diff --git a/tools/testing/selftests/kvm/lib/x86_64/svm.c b/tools/testing/selftests/kvm/lib/x86_64/svm.c
+> index 2ac98d70d02b..14a8618efa9c 100644
+> --- a/tools/testing/selftests/kvm/lib/x86_64/svm.c
+> +++ b/tools/testing/selftests/kvm/lib/x86_64/svm.c
+> @@ -13,6 +13,8 @@
+>  #include "processor.h"
+>  #include "svm_util.h"
+>
+> +#define SEV_DEV_PATH "/dev/sev"
+> +
+>  struct gpr64_regs guest_regs;
+>  u64 rflags;
+>
+> @@ -160,3 +162,14 @@ void nested_svm_check_supported(void)
+>                 exit(KSFT_SKIP);
+>         }
+>  }
+> +
+> +/*
+> + * Open SEV_DEV_PATH if available, otherwise exit the entire program.
+> + *
+> + * Return:
+> + *   The opened file descriptor of /dev/sev.
+> + */
+> +int open_sev_dev_path_or_exit(void)
+> +{
+> +       return open_path_or_exit(SEV_DEV_PATH, 0);
+> +}
+> --
+> 2.33.0.309.g3052b89438-goog
+>
 
-This affects all TDM I2S modes, i.e. TDM Normal, TDM Left Justified and TDM 
-Right Justified.
-
-Without tdm-fsync-half-frame, we purportedly get the following output in TDM 
-Normal Mode (I2S Format):
-(ch0l = channel 0 left, ch0r = channel 0 right)
-
-fsync: 	_____________________________
-                     	            \____________________________
-sdi/sdo: ch0l, ch0r, ..., ch3l, ch3r,  ch0l, ch0r, ...
-
-With tdm-fsync-half-frame, we purportedly get the following:
-
-fsync: 	_____________________________
-                     	            \____________________________
-sdi/sdo: ch0l,  ch1l,  ch2l,  ch3l,   ch0r,  ch1r,  ch2r,  ch3r
-
-At least, according to the TRM. I do not have an oscilloscope to verify this 
-myself, and in the following paragraphs, I will elaborate why this seems 
-confusing to me.
-
-The comment block "DAI hardware signal polarity" in soc-dai.h seems to imply 
-that what the TRM says the tdm-fsync-half-frame mode is (if one inverts fsync 
-polarity of those waveforms), is what is expected:
-
-> * FSYNC "normal" polarity depends on the frame format:
-> * - I2S: frame consists of left then right channel data. Left channel starts
-> *      with falling FSYNC edge, right channel starts with rising FSYNC edge.
-> * - Left/Right Justified: frame consists of left then right channel data.
-> *      Left channel starts with rising FSYNC edge, right channel starts with
-> *      falling FSYNC edge.
-
-I don't know if this is only applicable to non-TDM I2S, and whether it's 
-normal to have the channels interleaved like that in TDM.
-
-I don't see any DAIFMT that does what this does in any case.
-
-So to answer the question, it's not part of the bus format because it applies 
-to three bus formats, and I'm completely out of my depth here and wouldn't 
-define three separate bus formats based on my own speculation of how this 
-works.
-
-
+Reviewed-by: Marc Orr <marcorr@google.com>
