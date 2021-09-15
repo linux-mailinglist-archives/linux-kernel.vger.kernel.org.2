@@ -2,103 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD8F040C2A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 11:17:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FF1840C2AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 11:18:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237312AbhIOJSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 05:18:31 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:48121 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237269AbhIOJS3 (ORCPT
+        id S237322AbhIOJTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 05:19:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229785AbhIOJTB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 05:18:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1631697431; x=1663233431;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=Dfa252DYPnAczaB3OriaDcww1m7VLIetrz7OSnE6jpY=;
-  b=KOv00J9iwmDpdtHIYThxLsFqCdljp3nMzE5LsNc8JuJxvpPUpPml6uKB
-   SjVwDlwG1Uq1uDWamkE6QabGQhR4cu6E2xO5Ve5SVf/WaZiD0h6UqfL/p
-   tQwalMoaCa1fgnnxM1Cxf6ujIxzlEFVTXDleYWNPSBTa++IfCcthKDOAd
-   vRI2kivWOPCYyZazbbJ2uQXerIeoeXo87bQ9cCzNIYoNA4sxcN947FSj+
-   CTHXUrkHdbminVWaCVzR8xcYCIBX9oupXoaYWoOZ0E5oG9rJJhP5ZuLLU
-   4rT2mFiw0VXqQgDlX/+LDDZ2eDtcyBFaQMnFdLR7mU2EUxc6Q3An4ZYlD
-   g==;
-IronPort-SDR: m2vU5cRTr3FPVHq5FJPCXpAaTdl0NrtHID8zQOla+eKTUktHPgrjJiLKNMdrbMV2k0rhvLwmkv
- NSGJU9Rhuc5LVKroX3L5xSV+Vxom40nkEyQja5L4cZ/M/txlwi+ccxCHHkxS388jQ91NfIQiJV
- mL9lYKOb48nUWHKQ699ApwBEYFjghROB/Erb7LdfvUI9SLPWVkUUgPW59nzKnwVYOSkaxngWqX
- QCyxSrywHwPkh7dmWpBhuFMJoJ9JU0oAB+1AMLpgb9f0DPAcLZF3ov+jjZ8Xadvg5OBU7t1NZE
- tuzA/iMZIPc1Ngcs2/K1yHRe
-X-IronPort-AV: E=Sophos;i="5.85,295,1624345200"; 
-   d="scan'208";a="136033879"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Sep 2021 02:17:11 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Wed, 15 Sep 2021 02:17:09 -0700
-Received: from [10.171.246.91] (10.10.115.15) by chn-vm-ex03.mchp-main.com
- (10.10.85.151) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
- Transport; Wed, 15 Sep 2021 02:17:07 -0700
-Subject: Re: [PATCH v3 10/10] ARM: dts: at91: sama7g5ek: enable ADC on the
- board
-To:     Eugen Hristev <eugen.hristev@microchip.com>, <jic23@kernel.org>,
-        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <robh+dt@kernel.org>,
-        <ludovic.desroches@microchip.com>
-References: <20210901123013.329792-1-eugen.hristev@microchip.com>
- <20210901123013.329792-11-eugen.hristev@microchip.com>
-From:   Nicolas Ferre <nicolas.ferre@microchip.com>
-Organization: microchip
-Message-ID: <22d425df-a014-a632-d55d-ff5b95852f52@microchip.com>
-Date:   Wed, 15 Sep 2021 11:17:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 15 Sep 2021 05:19:01 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 447A8C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 02:17:43 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id g14so2175711pfm.1
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 02:17:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7Yym1sMZa0HbFN1TnfkZBnrVhuEnYae/tLFANPpbkxc=;
+        b=HZN0rAF31KUWgwdjhYPAAOL62X6/w7lEYomR5RdTEAAmMmC8UxeCMWBih0Q6DBzuIx
+         f5Y+jZ+dnQx9CLxEHYIEhvuJ8vIgDQdRhuPpEegbQbXCWn2cbQoP+OUZBKShypuM9EvY
+         kxddoa0q+ZQ+EAJmmMRswsBRrTB0C/kQQ28BpDBjSFiYnZFCF5LxNs4k7sWwf9ZXisOs
+         /IwZd8Jd4phnRok1ApiOUGTeUBLTkS9MY/OeeZosM9IqzmIgS8utqzL4WwFNa6tXiQ5f
+         1dv/F5NQhw/vrymBOrF7RC55sa9iH8jlCDVrz1W8LKV+yKz8Oo+dJq4eEaacCldNe/8d
+         LNpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7Yym1sMZa0HbFN1TnfkZBnrVhuEnYae/tLFANPpbkxc=;
+        b=KqiS3MVXE8kqpWu0FEwtaqRzPiPg8hoMjB7MqsUccywai8zeGW28SPPUYb/F9ArOaO
+         PeJw+o30xtgV5MCLtvZ1NOX1OodmMzsEg8Rkjm5Tgq4mV5xMOLFEkFW8UcWdoAIE6c0m
+         csnp+r9UGxH2gm7ypc0skYYMIaZ8dAkw13oF/GdmXfAUbYivB6bpuDUbuRA1JSl7//g2
+         8zFyxIy6hKFlyN/SELqAkhqAvKN2vtmBuryB35JJPOpSf6KjB7qDDTNvzyNaT4XGzdoa
+         owPHh1+A6TcYq1NnUUkZg/0PQmJAbW2vjUSowoEXJ8z79s6sN5UNvMblSIct2t+SnA/0
+         D+qA==
+X-Gm-Message-State: AOAM531b7x6bConfaf3GUXq86SBPGVtsIkynnLpy3mJingOJ8WdLxS6s
+        5V11Sw+Fp12svJCWpKfGCAE=
+X-Google-Smtp-Source: ABdhPJw5dU9KybpyYHFJXLsJ8m3W36jHpgzQALTXYkfUl9RQr2dzEcVujPYVkenuVLxR+9WRpENrZw==
+X-Received: by 2002:a63:4c5c:: with SMTP id m28mr19400180pgl.67.1631697462800;
+        Wed, 15 Sep 2021 02:17:42 -0700 (PDT)
+Received: from ubt.spreadtrum.com ([117.18.48.102])
+        by smtp.gmail.com with ESMTPSA id u10sm4168620pjf.46.2021.09.15.02.17.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Sep 2021 02:17:42 -0700 (PDT)
+From:   Chunyan Zhang <zhang.lyra@gmail.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH] mfd: sprd: Add support for SC2730 PMIC
+Date:   Wed, 15 Sep 2021 17:17:26 +0800
+Message-Id: <20210915091726.251031-1-zhang.lyra@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210901123013.329792-11-eugen.hristev@microchip.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/09/2021 at 14:30, Eugen Hristev wrote:
-> The ADC controller on the board is fed by a 2.5V reference voltage.
-> By default the channels #14 and #15 are dedicated to analog input
-> (marked AN on the board), on the connectors mikrobus1 and mikrobus2.
-> 
-> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+From: Chunyan Zhang <chunyan.zhang@unisoc.com>
 
-Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+SC2730 is a PMIC SoC integrated in UMS512.
 
-> ---
->   arch/arm/boot/dts/at91-sama7g5ek.dts | 8 ++++++++
->   1 file changed, 8 insertions(+)
-> 
-> diff --git a/arch/arm/boot/dts/at91-sama7g5ek.dts b/arch/arm/boot/dts/at91-sama7g5ek.dts
-> index 4cbed98cc2f4..c46be165f2ba 100644
-> --- a/arch/arm/boot/dts/at91-sama7g5ek.dts
-> +++ b/arch/arm/boot/dts/at91-sama7g5ek.dts
-> @@ -122,6 +122,14 @@ spdif_out: spdif-out {
->   	};
->   };
->   
-> +&adc {
-> +	vddana-supply = <&vddout25>;
-> +	vref-supply = <&vddout25>;
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_mikrobus1_an_default &pinctrl_mikrobus2_an_default>;
-> +	status = "okay";
-> +};
-> +
->   &cpu0 {
->   	cpu-supply = <&vddcpu>;
->   };
-> 
+Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+---
+ drivers/mfd/sprd-sc27xx-spi.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-
+diff --git a/drivers/mfd/sprd-sc27xx-spi.c b/drivers/mfd/sprd-sc27xx-spi.c
+index 6b7956604a0f..57fb2445720f 100644
+--- a/drivers/mfd/sprd-sc27xx-spi.c
++++ b/drivers/mfd/sprd-sc27xx-spi.c
+@@ -18,6 +18,9 @@
+ #define SPRD_PMIC_INT_RAW_STATUS	0x4
+ #define SPRD_PMIC_INT_EN		0x8
+ 
++#define SPRD_SC2730_IRQ_BASE		0x80
++#define SPRD_SC2730_IRQ_NUMS		10
++#define SPRD_SC2730_CHG_DET		0x1b9c
+ #define SPRD_SC2731_IRQ_BASE		0x140
+ #define SPRD_SC2731_IRQ_NUMS		16
+ #define SPRD_SC2731_CHG_DET		0xedc
+@@ -52,6 +55,12 @@ struct sprd_pmic_data {
+  * base address and irq number, we should save irq number and irq base
+  * in the device data structure.
+  */
++static const struct sprd_pmic_data sc2730_data = {
++	.irq_base = SPRD_SC2730_IRQ_BASE,
++	.num_irqs = SPRD_SC2730_IRQ_NUMS,
++	.charger_det = SPRD_SC2730_CHG_DET,
++};
++
+ static const struct sprd_pmic_data sc2731_data = {
+ 	.irq_base = SPRD_SC2731_IRQ_BASE,
+ 	.num_irqs = SPRD_SC2731_IRQ_NUMS,
+@@ -232,6 +241,7 @@ static SIMPLE_DEV_PM_OPS(sprd_pmic_pm_ops, sprd_pmic_suspend, sprd_pmic_resume);
+ 
+ static const struct of_device_id sprd_pmic_match[] = {
+ 	{ .compatible = "sprd,sc2731", .data = &sc2731_data },
++	{ .compatible = "sprd,sc2730", .data = &sc2730_data },
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(of, sprd_pmic_match);
 -- 
-Nicolas Ferre
+2.25.1
+
