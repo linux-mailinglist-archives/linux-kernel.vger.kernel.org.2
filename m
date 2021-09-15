@@ -2,110 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B06E40BEF7
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 06:40:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8AFD40BEF9
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 06:44:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230174AbhIOEle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 00:41:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37778 "EHLO
+        id S231180AbhIOEpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 00:45:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbhIOElc (ORCPT
+        with ESMTP id S230107AbhIOEpj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 00:41:32 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81127C061574;
-        Tue, 14 Sep 2021 21:40:14 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id c8-20020a9d6c88000000b00517cd06302dso1833749otr.13;
-        Tue, 14 Sep 2021 21:40:14 -0700 (PDT)
+        Wed, 15 Sep 2021 00:45:39 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBB48C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 21:44:21 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id d18so836895pll.11
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 21:44:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vIjgnD6llWLecWS9URuZLYevsrhl82ycmqOPmbjPpGA=;
-        b=aHCo58/7pgnyS8W/eH3M8NbQJRCTuDmU00wx/ZizM6zUGWRmvZ75gJ0bm85FQrxR3I
-         SYMKvUNm0ap3AutIGbbvA5LgCTgm92MWXewwhtDUfeWyM2PN8P4LUEKrI8Yjo3VUDMCp
-         wjcST5c28d87FVkQiPIETOztje0li0lV9+DsKu+9Qv3p99pzQYkPkIBuziJrcdFtX5E9
-         tS/kTz6z4V6+pUPlb0bTp6qutMHMvZ/tak70zvxLsNTnCWfKVbPfVOJrWT62bguZy/ni
-         ORfvX7e/W0cWZ0APeyqPDy2IutZ1HvcGBWRCCL9mPmKlFrUVIOOf6NWjY2U1DQddon6v
-         00pA==
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3ke2SRIGg+XGVFQMj2Nt31WiTZWFxp5XafAaSq0r4/4=;
+        b=IgddcRQ7nEVsnQHD4blpqVfJkt+DwRZsn1JfhZcfU2PVTGfTd0vg73tM/KT+8U8CQe
+         4e69bwZ4MTnHmixKqECl7S9IKK7tTvMFMonN6yRO1YQYg+hWwpT4triYtph1/StYGx34
+         3bofmcgWihb/3d3zyXxlicz/EYNzLwjDzqSrrO6LtGFPJ8hBS24ssqZsBwkjHjJvIFRw
+         1LVMGNbMDi/vkbi8B0Njra7wFPNrPBo9GjErDIN+CFkpa5XmGBMjkjEsbGZYud0bxZPj
+         whnHExG6NPVNyWtCjro3XhdA0frBCxVdE62aac/hH0dUtSGi67RZez0dr3ad+kmbhlap
+         y0Sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=vIjgnD6llWLecWS9URuZLYevsrhl82ycmqOPmbjPpGA=;
-        b=nZp68VTzghvPOcLB0wQvH62q2aPCfecvPHE0FcTkpi0qEpOXzQ9Wp6hDNhzmmIt5uK
-         jHWR3ybCeP3BtAuWPA/T6GwpDednRw6Hq3YSkZPRfugzaPWvIaat+We4N8OTiu9VWjDV
-         cYHSplobyn3AwV0xqMirN2ck8QFdsBs/jWRgIbgy2LDqOfK+m2OFlNGih0QEU4xJzFCp
-         6hUFrGJXopHGxVd8BboYmNLWixzNo2S4C8c7jV6BU+M7P/GkvUi4ksEiG97strCqMO9N
-         JfNgl4E7TiG2fDA+MbbdlA3ATOueCp5Vdv3ItDvh9Zl7dNYawo4EOIdVWl3ssuXQxLFL
-         R5Og==
-X-Gm-Message-State: AOAM5335h5gkFOdT6CbapKoqcvWeEOs8Qnsj/kZCq11/t+6zn7m7XxyP
-        6vtbs/FZK+dZyuENjlrphaQ=
-X-Google-Smtp-Source: ABdhPJwEy2wdlTzeCrHUmbGshHdzuLJsJ11MpmFsV+r4hpH9fc3sf/3Rn5evNGwSXx2+X4kvTs/jYQ==
-X-Received: by 2002:a05:6830:1b78:: with SMTP id d24mr17657592ote.197.1631680813695;
-        Tue, 14 Sep 2021 21:40:13 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id r26sm3072921otn.77.2021.09.14.21.40.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 21:40:13 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Heiko Carstens <hca@linux.ibm.com>
-Cc:     Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH] s390: Add WARN_DYNAMIC_STACK dependencies
-Date:   Tue, 14 Sep 2021 21:40:10 -0700
-Message-Id: <20210915044010.640499-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.33.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3ke2SRIGg+XGVFQMj2Nt31WiTZWFxp5XafAaSq0r4/4=;
+        b=R5Fkk7KDPv4O4pOrfXhdZirdEnlhhTOr//WOte9d4n3rDpKIFQrI7eCddXLrxAccYL
+         ocQTnssMz1UBI5N5R3T6qXYZjvQCRoE8ZLSUc12v1EE2BMi8ARbWhkbcOGqclmL7SkyS
+         aqmSi8LZunjCLzgkgXImE9a6irDLhcV88S6yUz4V7SZi1sNSA6ffitEma8pDOUYr7r5A
+         i21LUM4rqaM8CKoeQl0iCE8PIugDbBn7xoCT1xL106oBVGAaB+pyaJ1CE5sJrd7lTuWd
+         gBUgT10fbcmzTns3ShetNdY6ClRYFA+yNmIly/xSbI+FovkCW/JvK2viD5Vf7e7kJvku
+         P6mQ==
+X-Gm-Message-State: AOAM531YjK1W63yzAl5qYQXdWCG371aVSJCJFgwbphy6X0zVTA4GEKpl
+        ORHk44DjZC8ycGeK/nZSJb+s9KJMR8otor+jW9gjng==
+X-Google-Smtp-Source: ABdhPJzx4g82CIHm0nZUdlQbdJR7J9Aag191pgYrsfIq2kmSlUsJ+IEAjsXoy1QVMvB9zFyoHYJ5VLm80IwNQqJLsCc=
+X-Received: by 2002:a17:90a:d686:: with SMTP id x6mr6263231pju.8.1631681061030;
+ Tue, 14 Sep 2021 21:44:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210914233132.3680546-1-jane.chu@oracle.com>
+In-Reply-To: <20210914233132.3680546-1-jane.chu@oracle.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 14 Sep 2021 21:44:10 -0700
+Message-ID: <CAPcyv4h3KpOKgy_Cwi5fNBZmR=n1hB33mVzA3fqOY7c3G+GrMA@mail.gmail.com>
+Subject: Re: [PATCH 0/3] dax: clear poison on the fly along pwrite
+To:     Jane Chu <jane.chu@oracle.com>
+Cc:     Vishal L Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        "Weiny, Ira" <ira.weiny@intel.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        Linux NVDIMM <nvdimm@lists.linux.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s390:allmodconfig fails to build with the following errors.
+On Tue, Sep 14, 2021 at 4:32 PM Jane Chu <jane.chu@oracle.com> wrote:
+>
+> If pwrite(2) encounters poison in a pmem range, it fails with EIO.
+> This is unecessary if hardware is capable of clearing the poison.
+>
+> Though not all dax backend hardware has the capability of clearing
+> poison on the fly, but dax backed by Intel DCPMEM has such capability,
+> and it's desirable to, first, speed up repairing by means of it;
+> second, maintain backend continuity instead of fragmenting it in
+> search for clean blocks.
+>
+> Jane Chu (3):
+>   dax: introduce dax_operation dax_clear_poison
 
-arch/s390/kernel/syscall.c: In function '__do_syscall':
-arch/s390/kernel/syscall.c:168:1: error:
-	'__do_syscall' uses dynamic stack allocation
+The problem with new dax operations is that they need to be plumbed
+not only through fsdax and pmem, but also through device-mapper.
 
-lib/test_kasan.c: In function 'kasan_alloca_oob_right':
-lib/test_kasan.c:782:1: error:
-	'kasan_alloca_oob_right' uses dynamic stack allocation
+In this case I think we're already covered by dax_zero_page_range().
+That will ultimately trigger pmem_clear_poison() and it is routed
+through device-mapper properly.
 
-lib/test_kasan.c: In function 'kasan_alloca_oob_left':
-lib/test_kasan.c:767:1: error:
-	'kasan_alloca_oob_left' uses dynamic stack allocation
+Can you clarify why the existing dax_zero_page_range() is not sufficient?
 
-The first error is seen if RANDOMIZE_KSTACK_OFFSET_DEFAULT,
-WARN_DYNAMIC_STACK, and WERROR are enabled. The other problems
-are seen if KASAN_KUNIT_TEST, WARN_DYNAMIC_STACK, and WERROR
-are enabled.
-
-It does not make sense to abort a build in that situation.
-If either RANDOMIZE_KSTACK_OFFSET_DEFAULT or KASAN_KUNIT_TEST
-is enabled, dynamic stack allocation is on purpose and should
-not fail the build. Add dependencies to reflect that situation.
-
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
- arch/s390/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index 2bd90c51efd3..776b730e2d15 100644
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -688,6 +688,7 @@ config STACK_GUARD
- config WARN_DYNAMIC_STACK
- 	def_bool n
- 	prompt "Emit compiler warnings for function with dynamic stack usage"
-+	depends on !WERROR || (!RANDOMIZE_KSTACK_OFFSET_DEFAULT && !KASAN_KUNIT_TEST)
- 	help
- 	  This option enables the compiler option -mwarn-dynamicstack. If the
- 	  compiler supports this options generates warnings for functions
--- 
-2.33.0
-
+>   dax: introduce dax_clear_poison to dax pwrite operation
+>   libnvdimm/pmem: Provide pmem_dax_clear_poison for dax operation
+>
+>  drivers/dax/super.c   | 13 +++++++++++++
+>  drivers/nvdimm/pmem.c | 17 +++++++++++++++++
+>  fs/dax.c              |  9 +++++++++
+>  include/linux/dax.h   |  6 ++++++
+>  4 files changed, 45 insertions(+)
+>
+> --
+> 2.18.4
+>
