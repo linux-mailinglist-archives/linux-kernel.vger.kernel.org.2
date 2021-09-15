@@ -2,214 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B20240BEAE
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 05:58:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 204F340BEB1
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 06:00:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236322AbhIOD7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 23:59:30 -0400
-Received: from mga12.intel.com ([192.55.52.136]:41034 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230107AbhIOD73 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 23:59:29 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10107"; a="201708582"
-X-IronPort-AV: E=Sophos;i="5.85,294,1624345200"; 
-   d="scan'208";a="201708582"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2021 20:58:09 -0700
-X-IronPort-AV: E=Sophos;i="5.85,294,1624345200"; 
-   d="scan'208";a="544412091"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.119])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2021 20:58:06 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Rik van Riel <riel@surriel.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Zi Yan <ziy@nvidia.com>, Wei Xu <weixugc@google.com>,
-        osalvador <osalvador@suse.de>,
-        Shakeel Butt <shakeelb@google.com>,
-        Linux MM <linux-mm@kvack.org>
-Subject: Re: [PATCH -V8 1/6] NUMA balancing: optimize page placement for
- memory tiering system
-References: <20210914013701.344956-1-ying.huang@intel.com>
-        <20210914013701.344956-2-ying.huang@intel.com>
-        <CAHbLzkpRWwtkhnXUZEUk3LgpHtmgNJRPGUjKzd9bhQU33Y4u2g@mail.gmail.com>
-        <8735q63947.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <CAHbLzko-hR74s5HKMx5SG6bwaoJvcHSLeKwihkpvhYj7+hX+Sw@mail.gmail.com>
-Date:   Wed, 15 Sep 2021 11:58:04 +0800
-In-Reply-To: <CAHbLzko-hR74s5HKMx5SG6bwaoJvcHSLeKwihkpvhYj7+hX+Sw@mail.gmail.com>
-        (Yang Shi's message of "Tue, 14 Sep 2021 19:47:23 -0700")
-Message-ID: <874kamwkvn.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S229528AbhIOECE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 00:02:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57464 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229450AbhIOECA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 00:02:00 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFF08C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 21:00:41 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id i25so3219093lfg.6
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 21:00:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jLp7NBVpEmFUDWBBFiXkybAZlpHFnSOjtzW3fWt0ZTs=;
+        b=CFr7I9nOS0o4V8Hk2T4m/boN2g5hFYtOg2KVDMucV4phyKCGKabCPwXrBLJGkjW41w
+         TmU156jwHpntdfg0ckGeWINBuBgiJqQq6wIJp/Ls+R9YKxEpzt6gVWCLejwaj7zCdC/a
+         WOHEL/ms5locbfgXMX3F70O4yy6F7zmJZIywWwvjRe3dQU6qj4XEeMFdWhMhlAcc2Zft
+         iQhc2DX24U5yjWlvwT1hrrGP52L3FlowSyIVteeyznDTpuiw+imzKJ2t4MWyE3k1/oAH
+         MjherCgAFTJJKOiXMAu93U3u2/3WYMsLHAjCtkXWMGWnxUhPqME/9/dkr3thJ7PWctKi
+         qm1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jLp7NBVpEmFUDWBBFiXkybAZlpHFnSOjtzW3fWt0ZTs=;
+        b=sfycmixiyJIpS9nb0iN5aDBgZrryrnNc5F7mAN8pAkCvZfexzDZCxdcGXpdybpD8h9
+         O3Ys1exkzqNjrx//WSC/4tbTWPhljfMeJjUT5LHTh37WFLZ22uovE364u5bTOfPkgqqj
+         4Er8D+xioD0P4p9qWxfs4UP8ouxCKXg+tSNcVH9zg91mu/x1MUhi/Bsb6egKCyw+mGxZ
+         AzuHww6nJjEeHHUS2eoaApYX+rD8TS9RiJjIcfQimvEidhErNB9jxRtK0zI3sDQXOJHs
+         ihOKcJadkqmLaNqUvEn6KTC0zbr0AE4wfzB9EhRy/8AXQU7WaM7qqNcVb680UsnYMaC7
+         LtbA==
+X-Gm-Message-State: AOAM530/TdEJnIheTYbHgbvYt3vIMhbalOrlkkagTSAQFpScemshdUFE
+        0gPlZwhLuzVzhtIb2rm3uI9CP3vtL3GfFOvYGFZoew==
+X-Google-Smtp-Source: ABdhPJyzjnun9lDYirXRORDXGZ5axoryqVk9NUUldqkcHOuBtsk+yoEXL9Cj+4WR47lg4bGVPJe6bVEaeX+9YOFx9l4=
+X-Received: by 2002:a05:6512:2291:: with SMTP id f17mr15942387lfu.489.1631678439952;
+ Tue, 14 Sep 2021 21:00:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+References: <c1b1a299-c60d-28a4-07ab-1ecd211d6da9@i-love.sakura.ne.jp>
+ <3bf6f4f4-9c96-6e0c-951d-5509175dddfe@kernel.org> <bb40c26c-dd0f-f7c2-59b7-d6ad361a0cdb@i-love.sakura.ne.jp>
+ <CAHk-=wiiJ47YP7Q4AJC=YSfJdY-HK-8Bh7W=+hrZRqdM2UrAFg@mail.gmail.com>
+In-Reply-To: <CAHk-=wiiJ47YP7Q4AJC=YSfJdY-HK-8Bh7W=+hrZRqdM2UrAFg@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 14 Sep 2021 21:00:28 -0700
+Message-ID: <CAKwvOdktDDgeD+-S41x-9PdTdmbQiixgTvEw-7okFCzgecqdRg@mail.gmail.com>
+Subject: Re: linux: build failure: error: "__has_attribute" is not defined
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yang Shi <shy828301@gmail.com> writes:
-
-> On Tue, Sep 14, 2021 at 6:45 PM Huang, Ying <ying.huang@intel.com> wrote:
->>
->> Yang Shi <shy828301@gmail.com> writes:
->>
->> > On Mon, Sep 13, 2021 at 6:37 PM Huang Ying <ying.huang@intel.com> wrote:
->> >>
->> >> With the advent of various new memory types, some machines will have
->> >> multiple types of memory, e.g. DRAM and PMEM (persistent memory).  The
->> >> memory subsystem of these machines can be called memory tiering
->> >> system, because the performance of the different types of memory are
->> >> usually different.
->> >>
->> >> In such system, because of the memory accessing pattern changing etc,
->> >> some pages in the slow memory may become hot globally.  So in this
->> >> patch, the NUMA balancing mechanism is enhanced to optimize the page
->> >> placement among the different memory types according to hot/cold
->> >> dynamically.
->> >>
->> >> In a typical memory tiering system, there are CPUs, fast memory and
->> >> slow memory in each physical NUMA node.  The CPUs and the fast memory
->> >> will be put in one logical node (called fast memory node), while the
->> >> slow memory will be put in another (faked) logical node (called slow
->> >> memory node).  That is, the fast memory is regarded as local while the
->> >> slow memory is regarded as remote.  So it's possible for the recently
->> >> accessed pages in the slow memory node to be promoted to the fast
->> >> memory node via the existing NUMA balancing mechanism.
->> >>
->> >> The original NUMA balancing mechanism will stop to migrate pages if the free
->> >> memory of the target node will become below the high watermark.  This
->> >> is a reasonable policy if there's only one memory type.  But this
->> >> makes the original NUMA balancing mechanism almost not work to optimize page
->> >> placement among different memory types.  Details are as follows.
->> >>
->> >> It's the common cases that the working-set size of the workload is
->> >> larger than the size of the fast memory nodes.  Otherwise, it's
->> >> unnecessary to use the slow memory at all.  So in the common cases,
->> >> there are almost always no enough free pages in the fast memory nodes,
->> >> so that the globally hot pages in the slow memory node cannot be
->> >> promoted to the fast memory node.  To solve the issue, we have 2
->> >> choices as follows,
->> >>
->> >> a. Ignore the free pages watermark checking when promoting hot pages
->> >>    from the slow memory node to the fast memory node.  This will
->> >>    create some memory pressure in the fast memory node, thus trigger
->> >>    the memory reclaiming.  So that, the cold pages in the fast memory
->> >>    node will be demoted to the slow memory node.
->> >>
->> >> b. Make kswapd of the fast memory node to reclaim pages until the free
->> >>    pages are a little more (about 10MB) than the high watermark.  Then,
->> >>    if the free pages of the fast memory node reaches high watermark, and
->> >>    some hot pages need to be promoted, kswapd of the fast memory node
->> >>    will be waken up to demote some cold pages in the fast memory node to
->> >>    the slow memory node.  This will free some extra space in the fast
->> >>    memory node, so the hot pages in the slow memory node can be
->> >>    promoted to the fast memory node.
->> >>
->> >> The choice "a" will create the memory pressure in the fast memory
->> >> node.  If the memory pressure of the workload is high, the memory
->> >> pressure may become so high that the memory allocation latency of the
->> >> workload is influenced, e.g. the direct reclaiming may be triggered.
->> >>
->> >> The choice "b" works much better at this aspect.  If the memory
->> >> pressure of the workload is high, the hot pages promotion will stop
->> >> earlier because its allocation watermark is higher than that of the
->> >> normal memory allocation.  So in this patch, choice "b" is
->> >> implemented.
->> >>
->> >> In addition to the original page placement optimization among sockets,
->> >> the NUMA balancing mechanism is extended to be used to optimize page
->> >> placement according to hot/cold among different memory types.  So the
->> >> sysctl user space interface (numa_balancing) is extended in a backward
->> >> compatible way as follow, so that the users can enable/disable these
->> >> functionality individually.
->> >>
->> >> The sysctl is converted from a Boolean value to a bits field.  The
->> >> definition of the flags is,
->> >>
->> >> - 0x0: NUMA_BALANCING_DISABLED
->> >> - 0x1: NUMA_BALANCING_NORMAL
->> >> - 0x2: NUMA_BALANCING_MEMORY_TIERING
->> >
->> > Thanks for coming up with the patches. TBH the first question off the
->> > top of my head is all the complexity is really worthy for real life
->> > workload at the moment? And the interfaces (sysctl knob files exported
->> > to users) look complicated for the users. I don't know if the users
->> > know how to set an optimal value for their workloads.
->> >
->> > I don't disagree the NUMA balancing needs optimization and improvement
->> > for tiering memory, the question we need answer is how far we should
->> > go for now and what the interfaces should look like. Does it make
->> > sense to you?
->> >
->> > IMHO I'd prefer the most simple and straightforward approach at the
->> > moment. For example, we could just skip high water mark check for PMEM
->> > promotion.
->>
->> Hi, Yang,
->>
->> Thanks for comments.
->>
->> I understand your concerns about complexity.  I have tried to organize
->> the patchset so that the initial patch is as simple as possible and the
->> complexity is introduced step by step.  But it seems that your simplest
->> version is even simpler than my one :-)
->>
->> In this patch ([1/6]), I introduced 2 stuff.
->>
->> Firstly, a sysctl knob is provided to disable the NUMA balancing based
->> promotion.  Per my understanding, you suggest to remove this.  If so,
->> optimizing cross-socket access and promoting hot PMEM pages to DRAM must
->> be enabled/disabled together.  If a user wants to enable promoting the
->> hot PMEM pages to DRAM but disable optimizing cross-socket access
->> because they have already bound the CPU of the workload so that there's no
->> much cross-socket access, how can they do?
+On Tue, Sep 14, 2021 at 7:59 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
 >
-> I should make myself clearer. Here I mean the whole series, not this
-> specific patch. I'm concerned that the interfaces (hint fault latency
-> and ratelimit) are hard to understand and configure for users and
-> whether we go too far at the moment or not. I'm dealing with the end
-> users, I'd admit I'm not even sure how to configure the knobs to
-> achieve optimal performance for different real life workloads.
-
-Sorry, I misunderstand your original idea.  I understand that the knob
-isn't user-friendly.  But sometimes, we cannot avoid it completely :-(
-In this patchset, I try to introduce the complexity and knobs one by
-one, and show the performance benefit of each step for people to judge
-whether the newly added complexity and knob can be complemented by the
-performance increment.  If the benefit of some patches cannot complement
-its complexity, I am OK to merge just part of the patchset firstly.
-
-So how about be more specific?  For example, if you are general OK about
-the complexity and knob introduced by [1-3/6], but have concerns about
-[4/6], then we can discuss about that specifically?
-
-> For this specific patch I'm ok to a new promotion mode. There might be
-> usecase that users just want to do promotion between tiered memory but
-> not care about NUMA locality.
-
-Yes.
-
->> Secondly, we add a promote watermark to the DRAM node so that we can
->> demote/promote pages between the high and promote watermark.  Per my
->> understanding, you suggest just to ignore the high watermark checking
->> for promoting.  The problem is that this may make the free pages of the
->> DRAM node too few.  If many pages are promoted in short time, the free
->> pages will be kept near the min watermark for a while, so that the page
->> allocation from the application will trigger direct reclaiming.  We have
->> observed page allocation failure in a test before with a similar policy.
+> On Tue, Sep 14, 2021 at 6:05 PM Tetsuo Handa
+> <penguin-kernel@i-love.sakura.ne.jp> wrote:
+> >
+> > It would be nice if Makefile can also check gcc version used for building tools.
 >
-> The question is, applicable to the hint fault latency and ratelimit
-> too, we already have some NUMA balancing knobs to control scan period
-> and scan size and watermark knobs to tune how aggressively kswapd
-> works, can they do the same jobs instead of introducing any new knobs?
+> I think the real problem is that the tool headers are cut-down from
+> the real kernel headers, but not cut down enough, so they are still
+> very complex, often with stuff that just isn't worth it in user space
+> at all.
+>
+> And they _look_ like kernel headers - both in naming and in contents.
+> But they really aren't.
+>
+> And it turns out there are two independent bugs here.
+>
+> Bug #1 is that the tool header files look _so_ much like the main
+> kernel header files, that Nick thought that the
+>
+>    #if GCC_VERSION >= 40300
+>
+> was about the compiler we compile the kernel with.
+>
+> But no, it's about the host compiler.
+>
+> Easy mistake to make when the naming is so similar and the contents
+> are often also fairly closely related too.
 
-In this specific patch, we don't introduce a new knob for the page
-demotion.  For other knobs, how about discuss them in the patch that
-introduce them and one by one?
+No, I got that.
 
-Best Regards,
-Huang, Ying
+I don't get why you wouldn't keep those in sync, at least the minimum
+supported compiler version for both.  Sure, for cross compiling HOSTCC
+and CC could be wildly different versions, but why should the minimum
+supported version differ between the two?
+
+Do we even document anywhere what's the lowest support compiler
+version for tools/ or HOSTCC?
+
+> But basically, commit 4e59869aa655 ("compiler-gcc.h: drop checks for
+> older GCC versions") was buggy, because it took the kernel compiler
+> version logic ("we require 5.1 to build the kernel") and applied it to
+> the tooling header files too (we do _not_ require the kernel compiler
+> for host tools).
+
+That the minimum versions don't need to match between the two is
+surprising to me.  Probably to the reviewers of those patches, too.
+--
+Thanks,
+~Nick Desaulniers
