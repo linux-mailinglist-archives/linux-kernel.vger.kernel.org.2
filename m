@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29D2740D03B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 01:34:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ECEE40D038
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 01:34:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233189AbhIOXfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 19:35:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60462 "EHLO mail.kernel.org"
+        id S233260AbhIOXfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 19:35:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60438 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232935AbhIOXfE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232921AbhIOXfE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 15 Sep 2021 19:35:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 44DDF61212;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4494F611EE;
         Wed, 15 Sep 2021 23:33:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1631748825;
-        bh=+hj63Mjsm9/ZDQadWxfRWJSN0LT4l+ZeTY9+sSnyZZs=;
+        bh=iKxtBFtnlFJKCzP28q4TeWj9wDiFG/P/SG4jrI0Qdxk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bPWbsWdxR0VqxPHGzpSyHV3v/DYjqwBARqN48OFCWTzQ2VUlYq87qxAKKkW3lqxsC
-         3D4sM+dVwegf5PI5yfqIGD+MawMWv/uf3t2QkXrjRq9dgiXE0B407zgLkkqiUZnwbd
-         QCv4XGMq7GfM28+htSaAqOlzopBGejav4NarCM+7R3GYm3j4hVVc+ks0dm4vbBo3hZ
-         NA0AbP3WrLqhfWqpS7hWrIcuI/HKvKHefqGJ0vWKo7KfCYpjqCP7w+LKyOFzWpyfO8
-         WbWVtKQaRo2Om4kaLDV0Eul1pxwBb9AwtLr4Vx54H6a5UOCH7t/FY5AX9rVNjI59DH
-         jVLTXcTxrdWfg==
+        b=TXADJ5myXBrYC2USO+d358WPGtDh9ermM/ZBPZ59iHEytHTfbdNFwyU0MQUtow2Ir
+         MnyBrVw0AZRGgbUPGtb6mTiK4ZK6UQps362nTxEolzjsXINiFOe1qYZyOiwLlY1JGd
+         5V0Vo5dhAdBDHmGwKOkeGr9VLP+ogNIBoNoZAKtG5gZtSrikhmi4d1cEqpOE46n5vi
+         1HLWt/2lOeDRReq1GkQt4fwkJGEZRcWo0JzNcz8Dd5X5sDkEWLKiAhzk00dkuwMC6x
+         Js3yziM1GZPd255/UG+5KhAmimmSJeHBgVkAhB0gR1i+YRYoMAOo2UFC15EoyNNLou
+         EQSQMjZjOFLIA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id CAAF75C0B1B; Wed, 15 Sep 2021 16:33:44 -0700 (PDT)
+        id CCA815C0CCE; Wed, 15 Sep 2021 16:33:44 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -34,9 +34,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 09/14] rcu: Simplify rcu_report_dead() call to rcu_report_exp_rdp()
-Date:   Wed, 15 Sep 2021 16:33:38 -0700
-Message-Id: <20210915233343.3906738-9-paulmck@kernel.org>
+Subject: [PATCH rcu 10/14] rcu: Make rcutree_dying_cpu() use its "cpu" parameter
+Date:   Wed, 15 Sep 2021 16:33:39 -0700
+Message-Id: <20210915233343.3906738-10-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210915233305.GA3906641@paulmck-ThinkPad-P17-Gen-1>
 References: <20210915233305.GA3906641@paulmck-ThinkPad-P17-Gen-1>
@@ -46,34 +46,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, rcu_report_dead() disables preemption across its call to
-rcu_report_exp_rdp(), but this is pointless because interrupts are
-already disabled by the caller.  In addition, rcu_report_dead() computes
-the address of the outgoing CPU's rcu_data structure, which is also
-pointless because this address is already present in local variable rdp.
-This commit therefore drops the preemption disabling and passes rdp
-to rcu_report_exp_rdp().
+The CPU-hotplug functions take a "cpu" parameter, but rcutree_dying_cpu()
+ignores it in favor of this_cpu_ptr().  This works at the moment, but
+it would be better to be consistent.  This might also work better given
+some possible future changes.  This commit therefore uses per_cpu_ptr()
+to avoid ignoring the rcutree_dying_cpu() function's argument.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ kernel/rcu/tree.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 801075e36515..dc2968473593 100644
+index dc2968473593..6a1e9d3374db 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -4294,9 +4294,7 @@ void rcu_report_dead(unsigned int cpu)
- 	do_nocb_deferred_wakeup(rdp);
+@@ -2356,7 +2356,7 @@ rcu_check_quiescent_state(struct rcu_data *rdp)
+ int rcutree_dying_cpu(unsigned int cpu)
+ {
+ 	bool blkd;
+-	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
++	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
+ 	struct rcu_node *rnp = rdp->mynode;
  
- 	/* QS for any half-done expedited grace period. */
--	preempt_disable();
--	rcu_report_exp_rdp(this_cpu_ptr(&rcu_data));
--	preempt_enable();
-+	rcu_report_exp_rdp(rdp);
- 	rcu_preempt_deferred_qs(current);
- 
- 	/* Remove outgoing CPU from mask in the leaf rcu_node structure. */
+ 	if (!IS_ENABLED(CONFIG_HOTPLUG_CPU))
 -- 
 2.31.1.189.g2e36527f23
 
