@@ -2,142 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D16040C9DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 18:15:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 878C140C9E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 18:16:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229645AbhIOQQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 12:16:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45676 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229489AbhIOQQa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 12:16:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E69EC60FED;
-        Wed, 15 Sep 2021 16:15:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631722511;
-        bh=OR95WQryOxqyDGGQxatbwcebZkxzHzVsgPwQh9NaKDE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PwstDstV7bOHvJAm+r4Q8mBJvEfj9RsXWQ8A+/5muktg/NdHD8csLidgBn+j9LTKl
-         q2VQ7Wr7Nsf02xocvqEEk+U0UblMVI3V0/J49bcpS2Agwo0UcaRFUGoT3iSf9HXnJI
-         Fygf5xc61Baf9FKAZ5yrVBJ1lxG4M7SyoU6quZDsN7CCv+8/75Slmq624AkSRnU/4T
-         ahY8/jpClUqF0IcL8MvDRYbxsX/JsYM2MsQ4asAwoR2Z9xfoRu5/kFdOOOfxeLLhdO
-         bBIRDiYjg6xoUx4Yv1n3Ucg0ZAZLq5dzF5b61VnNaCUdtNQmQ1u/WyC2iOIYWuQttb
-         2lHRL35vjK7KQ==
-Date:   Wed, 15 Sep 2021 09:15:10 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Jane Chu <jane.chu@oracle.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Vishal L Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        "Weiny, Ira" <ira.weiny@intel.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Linux NVDIMM <nvdimm@lists.linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH 0/3] dax: clear poison on the fly along pwrite
-Message-ID: <20210915161510.GA34830@magnolia>
-References: <20210914233132.3680546-1-jane.chu@oracle.com>
- <CAPcyv4h3KpOKgy_Cwi5fNBZmR=n1hB33mVzA3fqOY7c3G+GrMA@mail.gmail.com>
- <516ecedc-38b9-1ae3-a784-289a30e5f6df@oracle.com>
+        id S229652AbhIOQR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 12:17:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56548 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229465AbhIOQR1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 12:17:27 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F41BC061574;
+        Wed, 15 Sep 2021 09:16:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
+        Resent-Message-ID:In-Reply-To:References;
+        bh=G27UyJsrbVf8KCKuRCpUnOXbTvnevOaVQgdb3XtruZU=; t=1631722568; x=1632932168; 
+        b=F5n/cFfOzaCNU6dOxZWyo1MP0YHU4n17FoZmW/m1an/UxDWNeADfVw9spcomH+OVMWQgkgBMWeO
+        xd1OBVZIL6hXKlq6IFkGUs32mN8UhIGC4jIbosmLojbrSnDiZrr0IDdbT6L20wIRbUKZ7Y2PSrgVh
+        NN7Ct8tctbOwAFRlbdzOVEWq0QLw9UHQDpCEXi97MxDUBCiiIfbrLmZxlVylXT8qH7iXpmkeeqbqV
+        vRiek87mrQ3hax8+Jjd/89EAfj9JcsZPytFtRexvrt1JpR6bWAAmKmQXp6xt7e8g3vjWWsF9cocwJ
+        WTnr0Bnh4Oi4tog4fC81euqbt//Rv1srhvIg==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.95-RC2)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1mQXZs-007Nae-RW;
+        Wed, 15 Sep 2021 18:16:04 +0200
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     linux-leds@vger.kernel.org
+Cc:     Pavel Machek <pavel@ucw.cz>, linux-kernel@vger.kernel.org,
+        Johannes Berg <johannes.berg@intel.com>, stable@vger.kernel.org
+Subject: [PATCH] leds: trigger: use RCU to protect the led_cdevs list
+Date:   Wed, 15 Sep 2021 18:16:01 +0200
+Message-Id: <20210915181601.99a68f5718be.I1a28b342d2d52cdeeeb81ecd6020c25cbf1dbfc0@changeid>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <516ecedc-38b9-1ae3-a784-289a30e5f6df@oracle.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 12:22:05AM -0700, Jane Chu wrote:
-> Hi, Dan,
-> 
-> On 9/14/2021 9:44 PM, Dan Williams wrote:
-> > On Tue, Sep 14, 2021 at 4:32 PM Jane Chu <jane.chu@oracle.com> wrote:
-> > > 
-> > > If pwrite(2) encounters poison in a pmem range, it fails with EIO.
-> > > This is unecessary if hardware is capable of clearing the poison.
-> > > 
-> > > Though not all dax backend hardware has the capability of clearing
-> > > poison on the fly, but dax backed by Intel DCPMEM has such capability,
-> > > and it's desirable to, first, speed up repairing by means of it;
-> > > second, maintain backend continuity instead of fragmenting it in
-> > > search for clean blocks.
-> > > 
-> > > Jane Chu (3):
-> > >    dax: introduce dax_operation dax_clear_poison
-> > 
-> > The problem with new dax operations is that they need to be plumbed
-> > not only through fsdax and pmem, but also through device-mapper.
-> > 
-> > In this case I think we're already covered by dax_zero_page_range().
-> > That will ultimately trigger pmem_clear_poison() and it is routed
-> > through device-mapper properly.
-> > 
-> > Can you clarify why the existing dax_zero_page_range() is not sufficient?
-> 
-> fallocate ZERO_RANGE is in itself a functionality that applied to dax
-> should lead to zero out the media range.  So one may argue it is part
-> of a block operations, and not something explicitly aimed at clearing
-> poison.
+From: Johannes Berg <johannes.berg@intel.com>
 
-Yeah, Christoph suggested that we make the clearing operation explicit
-in a related thread a few weeks ago:
-https://lore.kernel.org/linux-fsdevel/YRtnlPERHfMZ23Tr@infradead.org/
+Even with the previous commit 27af8e2c90fb
+("leds: trigger: fix potential deadlock with libata")
+to this file, we still get lockdep unhappy, and Boqun
+explained the report here:
+https://lore.kernel.org/r/YNA+d1X4UkoQ7g8a@boqun-archlinux
 
-I like Jane's patchset far better than the one that I sent, because it
-doesn't require a block device wrapper for the pmem, and it enables us
-to tell application writers that they can handle media errors by
-pwrite()ing the bad region, just like they do for nvme and spinners.
+Effectively, this means that the read_lock_irqsave() isn't
+enough here because another CPU might be trying to do a
+write lock, and thus block the readers.
 
-> I'm also thinking about the MOVEDIR64B instruction and how it
-> might be used to clear poison on the fly with a single 'store'.
-> Of course, that means we need to figure out how to narrow down the
-> error blast radius first.
+This is all pretty messy, but it doesn't seem right that
+the LEDs framework imposes some locking requirements on
+users, in particular we'd have to make the spinlock in the
+iwlwifi driver always disable IRQs, even if we don't need
+that for any other reason, just to avoid this deadlock.
 
-That was one of the advantages of Shiyang Ruan's NAKed patchset to
-enable byte-granularity media errors to pass upwards through the stack
-back to the filesystem, which could then tell applications exactly what
-they lost.
+Since writes to the led_cdevs list are rare (and are done
+by userspace), just switch the list to RCU. This costs a
+synchronize_rcu() at removal time so we can ensure things
+are correct, but that seems like a small price to pay for
+getting lock-free iterations and no deadlocks (nor any
+locking requirements imposed on users.)
 
-I want to get back to that, though if Dan won't withdraw the NAK then I
-don't know how to move forward...
+Cc: stable@vger.kernel.org
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+---
+ drivers/leds/led-triggers.c | 41 +++++++++++++++++++------------------
+ include/linux/leds.h        |  2 +-
+ 2 files changed, 22 insertions(+), 21 deletions(-)
 
-> With respect to plumbing through device-mapper, I thought about that,
-> and wasn't sure. I mean the clear-poison work will eventually fall on
-> the pmem driver, and thru the DM layers, how does that play out thru
-> DM?
+diff --git a/drivers/leds/led-triggers.c b/drivers/leds/led-triggers.c
+index 4e7b78a84149..072491d3e17b 100644
+--- a/drivers/leds/led-triggers.c
++++ b/drivers/leds/led-triggers.c
+@@ -157,7 +157,6 @@ EXPORT_SYMBOL_GPL(led_trigger_read);
+ /* Caller must ensure led_cdev->trigger_lock held */
+ int led_trigger_set(struct led_classdev *led_cdev, struct led_trigger *trig)
+ {
+-	unsigned long flags;
+ 	char *event = NULL;
+ 	char *envp[2];
+ 	const char *name;
+@@ -171,10 +170,13 @@ int led_trigger_set(struct led_classdev *led_cdev, struct led_trigger *trig)
+ 
+ 	/* Remove any existing trigger */
+ 	if (led_cdev->trigger) {
+-		write_lock_irqsave(&led_cdev->trigger->leddev_list_lock, flags);
+-		list_del(&led_cdev->trig_list);
+-		write_unlock_irqrestore(&led_cdev->trigger->leddev_list_lock,
+-			flags);
++		spin_lock(&led_cdev->trigger->leddev_list_lock);
++		list_del_rcu(&led_cdev->trig_list);
++		spin_unlock(&led_cdev->trigger->leddev_list_lock);
++
++		/* ensure it's no longer visible on the led_cdevs list */
++		synchronize_rcu();
++
+ 		cancel_work_sync(&led_cdev->set_brightness_work);
+ 		led_stop_software_blink(led_cdev);
+ 		if (led_cdev->trigger->deactivate)
+@@ -186,9 +188,9 @@ int led_trigger_set(struct led_classdev *led_cdev, struct led_trigger *trig)
+ 		led_set_brightness(led_cdev, LED_OFF);
+ 	}
+ 	if (trig) {
+-		write_lock_irqsave(&trig->leddev_list_lock, flags);
+-		list_add_tail(&led_cdev->trig_list, &trig->led_cdevs);
+-		write_unlock_irqrestore(&trig->leddev_list_lock, flags);
++		spin_lock(&trig->leddev_list_lock);
++		list_add_tail_rcu(&led_cdev->trig_list, &trig->led_cdevs);
++		spin_unlock(&trig->leddev_list_lock);
+ 		led_cdev->trigger = trig;
+ 
+ 		if (trig->activate)
+@@ -223,9 +225,10 @@ int led_trigger_set(struct led_classdev *led_cdev, struct led_trigger *trig)
+ 		trig->deactivate(led_cdev);
+ err_activate:
+ 
+-	write_lock_irqsave(&led_cdev->trigger->leddev_list_lock, flags);
+-	list_del(&led_cdev->trig_list);
+-	write_unlock_irqrestore(&led_cdev->trigger->leddev_list_lock, flags);
++	spin_lock(&led_cdev->trigger->leddev_list_lock);
++	list_del_rcu(&led_cdev->trig_list);
++	spin_unlock(&led_cdev->trigger->leddev_list_lock);
++	synchronize_rcu();
+ 	led_cdev->trigger = NULL;
+ 	led_cdev->trigger_data = NULL;
+ 	led_set_brightness(led_cdev, LED_OFF);
+@@ -285,7 +288,7 @@ int led_trigger_register(struct led_trigger *trig)
+ 	struct led_classdev *led_cdev;
+ 	struct led_trigger *_trig;
+ 
+-	rwlock_init(&trig->leddev_list_lock);
++	spin_lock_init(&trig->leddev_list_lock);
+ 	INIT_LIST_HEAD(&trig->led_cdevs);
+ 
+ 	down_write(&triggers_list_lock);
+@@ -378,15 +381,14 @@ void led_trigger_event(struct led_trigger *trig,
+ 			enum led_brightness brightness)
+ {
+ 	struct led_classdev *led_cdev;
+-	unsigned long flags;
+ 
+ 	if (!trig)
+ 		return;
+ 
+-	read_lock_irqsave(&trig->leddev_list_lock, flags);
+-	list_for_each_entry(led_cdev, &trig->led_cdevs, trig_list)
++	rcu_read_lock();
++	list_for_each_entry_rcu(led_cdev, &trig->led_cdevs, trig_list)
+ 		led_set_brightness(led_cdev, brightness);
+-	read_unlock_irqrestore(&trig->leddev_list_lock, flags);
++	rcu_read_unlock();
+ }
+ EXPORT_SYMBOL_GPL(led_trigger_event);
+ 
+@@ -397,20 +399,19 @@ static void led_trigger_blink_setup(struct led_trigger *trig,
+ 			     int invert)
+ {
+ 	struct led_classdev *led_cdev;
+-	unsigned long flags;
+ 
+ 	if (!trig)
+ 		return;
+ 
+-	read_lock_irqsave(&trig->leddev_list_lock, flags);
+-	list_for_each_entry(led_cdev, &trig->led_cdevs, trig_list) {
++	rcu_read_lock();
++	list_for_each_entry_rcu(led_cdev, &trig->led_cdevs, trig_list) {
+ 		if (oneshot)
+ 			led_blink_set_oneshot(led_cdev, delay_on, delay_off,
+ 					      invert);
+ 		else
+ 			led_blink_set(led_cdev, delay_on, delay_off);
+ 	}
+-	read_unlock_irqrestore(&trig->leddev_list_lock, flags);
++	rcu_read_unlock();
+ }
+ 
+ void led_trigger_blink(struct led_trigger *trig,
+diff --git a/include/linux/leds.h b/include/linux/leds.h
+index a0b730be40ad..ba4861ec73d3 100644
+--- a/include/linux/leds.h
++++ b/include/linux/leds.h
+@@ -360,7 +360,7 @@ struct led_trigger {
+ 	struct led_hw_trigger_type *trigger_type;
+ 
+ 	/* LEDs under control by this trigger (for simple triggers) */
+-	rwlock_t	  leddev_list_lock;
++	spinlock_t	  leddev_list_lock;
+ 	struct list_head  led_cdevs;
+ 
+ 	/* Link to next registered trigger */
+-- 
+2.31.1
 
-Each of the dm drivers has to add their own ->clear_poison operation
-that remaps the incoming (sector, len) parameters as appropriate for
-that device and then calls the lower device's ->clear_poison with the
-translated parameters.
-
-This (AFAICT) has already been done for dax_zero_page_range, so I sense
-that Dan is trying to save you a bunch of code plumbing work by nudging
-you towards doing s/dax_clear_poison/dax_zero_page_range/ to this series
-and then you only need patches 2-3.
-
-> BTW, our customer doesn't care about creating dax volume thru DM, so.
-
-They might not care, but anything going upstream should work in the
-general case.
-
---D
-
-> thanks!
-> -jane
-> 
-> 
-> > 
-> > >    dax: introduce dax_clear_poison to dax pwrite operation
-> > >    libnvdimm/pmem: Provide pmem_dax_clear_poison for dax operation
-> > > 
-> > >   drivers/dax/super.c   | 13 +++++++++++++
-> > >   drivers/nvdimm/pmem.c | 17 +++++++++++++++++
-> > >   fs/dax.c              |  9 +++++++++
-> > >   include/linux/dax.h   |  6 ++++++
-> > >   4 files changed, 45 insertions(+)
-> > > 
-> > > --
-> > > 2.18.4
-> > > 
