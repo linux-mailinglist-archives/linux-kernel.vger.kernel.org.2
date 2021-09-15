@@ -2,92 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C04D40D070
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 01:47:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9995E40D076
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 01:47:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233416AbhIOXrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 19:47:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49530 "EHLO mail.kernel.org"
+        id S233478AbhIOXsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 19:48:18 -0400
+Received: from mail.i8u.org ([75.148.87.25]:63648 "EHLO chris.i8u.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233162AbhIOXr0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 19:47:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 52DD661214;
-        Wed, 15 Sep 2021 23:46:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631749566;
-        bh=0pWSiEmXNjeWtq82Tf3g8888CbsbalGodtYiUW4YJUo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tKzkMyjc/Nh2iPsK/qz5EcGvGTin0fpbYMazP4Pa1ekHhIS+Elir9jKImXBaVP6Qn
-         xRte70DQCkcjVnObyz32c3Y8raScsNmd2VfLc8awfnG09+ONuFiIjU/qouUPRpyfNX
-         nGuJPTEeOQVVSJy7sBkRyNCP5+JLIcyCRZ8Hu3/jNfhg833p7zTpWV7DciM6w1wFZG
-         IAJ6pH9CHWg1+4VdKQcIUzrVUJgP0oi8Rm8LrDnIQoWs3SOMz64mSnm30Hxw98quSI
-         SmH51RAriPG7jgeT4acZ35wijLt8CDIFv6eKxCeZiqEogZUAoHL2SbBXubWr0nKCoy
-         q2KsZrdYgmj1g==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id D58A05C0DEE; Wed, 15 Sep 2021 16:46:05 -0700 (PDT)
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>
-Subject: [PATCH rcu 13/13] rcu-tasks: Update comments to cond_resched_tasks_rcu_qs()
-Date:   Wed, 15 Sep 2021 16:46:04 -0700
-Message-Id: <20210915234604.3907802-13-paulmck@kernel.org>
-X-Mailer: git-send-email 2.31.1.189.g2e36527f23
-In-Reply-To: <20210915234538.GA3907674@paulmck-ThinkPad-P17-Gen-1>
-References: <20210915234538.GA3907674@paulmck-ThinkPad-P17-Gen-1>
+        id S232975AbhIOXsQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 19:48:16 -0400
+Received: by chris.i8u.org (Postfix, from userid 1000)
+        id 1609216C94F8; Wed, 15 Sep 2021 16:46:54 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by chris.i8u.org (Postfix) with ESMTP id 147C316C9353;
+        Wed, 15 Sep 2021 16:46:54 -0700 (PDT)
+Date:   Wed, 15 Sep 2021 16:46:54 -0700 (PDT)
+From:   Hisashi T Fujinaka <htodd@twofifty.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+cc:     Dave Jones <davej@codemonkey.org.uk>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>
+Subject: Re: [Intel-wired-lan] Linux 5.15-rc1 - 82599ES VPD access isue
+In-Reply-To: <20210915223218.GA1542966@bjorn-Precision-5520>
+Message-ID: <e5518a29-efe7-1d84-1671-4dc170f6bc53@twofifty.com>
+References: <20210915223218.GA1542966@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The cond_resched_rcu_qs() function no longer exists, despite being mentioned
-several times in kernel/rcu/tasks.h.  This commit therefore updates it to
-the current cond_resched_tasks_rcu_qs().
+On Wed, 15 Sep 2021, Bjorn Helgaas wrote:
 
-Reported-by: Neeraj Upadhyay <neeraju@codeaurora.org>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/tasks.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+> On Wed, Sep 15, 2021 at 09:16:47AM -0700, Hisashi T Fujinaka wrote:
+>> On Wed, 15 Sep 2021, Heiner Kallweit wrote:
+>>> On 15.09.2021 16:18, Hisashi T Fujinaka wrote:
+>>>> On Tue, 14 Sep 2021, Heiner Kallweit wrote:
+>>>>> On 14.09.2021 22:00, Hisashi T Fujinaka wrote:
+>
+>>>>>> I have confirmation that this should be a valid image. The
+>>>>>> VPD is just a series of 3's. There are changes to preboot
+>>>>>> header, flash and BAR size, and as far as I can tell, a
+>>>>>> nonsense subdevice ID, but this should work.
+>>>>>>
+>>>>>> What was the original question?
+>>>>>>
+>>>>> "lspci -vv" complains about an invalid short tag 0x06 and the
+>>>>> PCI VPD code resulted in a stall. So it seems the data doesn't
+>>>>> have valid VPD format as defined in PCI specification.
+>>>>>
+>>>>> 01:00.0 Ethernet controller: Intel Corporation 82599ES 10-Gigabit SFI/SFP+ Network Connection (rev 01)
+>>>>>        Subsystem: Device 1dcf:030a
+>>>>>     ...
+>>>>>             Capabilities: [e0] Vital Product Data
+>>>>>                *Unknown small resource type 06, will not decode more.*
+>>>>>
+>>>>> Not sure which method is used by the driver to get the EEPROM
+>>>>> content.  For the issue here is relevant what is exposed via
+>>>>> PCI VPD.
+>>>>>
+>>>>> The related kernel error message has been reported few times,
+>>>>> e.g. here: https://access.redhat.com/solutions/3001451 Only
+>>>>> due to a change in kernel code this became a more prominent
+>>>>> issue now.
+>>>>>
+>>>>> You say that VPD is just a series of 3's. This may explain why
+>>>>> kernel and tools complain about an invalid VPD format. VPD
+>>>>> misses the tag structure.
+>>>>
+>>>> I think I conflated two issues and yours may not be the one with the
+>>>> weird Amazon NIC. In any case, the VPD does not match the spec and two
+>>>> people have confirmed it's just full of 3's. With the bogus subvendor
+>>>> ID, I'm thinking this is not an Intel NIC.
+>
+> A series of 0x03 0x03 0x03 ... bytes would decode as "small items of
+> type 00", so I assume the VPD contains a series of 0x33 0x33 0x33 ...
+> bytes.  That would decode to a series of "small items of type 06",
+> each of length four (one byte for the tag, three bytes of data).
+>
+> Prior to v5.15, we would complain "invalid short VPD tag 06" and stop
+> reading.  As of v5.15, I think we'll just keep reading looking for a
+> valid "end" tag, but we'll never find one.
+>
+> I think in v5.15 there will be no error message because the series of
+> four-byte small data items happens to fit exactly in the maximum 32KB
+> size of VPD and is technically legal syntactic structure, even though
+> it makes no sense.
+>
+> But it will be much slower and might account for the boot slowdown
+> Dave reported.
+>
+>>> In an earlier mail in this thread was stated that subvendor id is unknown.
+>>> Checking here https://pcisig.com/membership/member-companies?combine=1dcf
+>>> it says: Beijing Sinead Technology Co., Ltd.
+>>
+>> Huh. I didn't realize there was an official list beyond pciids.ucw.cz.
+>>
+>> In any case, that's who you need to talk to about the unlisted (to
+>> Linux) vendor ID and also the odd VPD data.
+>
+> https://pci-ids.ucw.cz/ is definitely unofficial in the sense that it
+> is basically crowd-sourced data, not the "official" Vendor IDs
+> controlled by the PCI SIG.
+>
+> I submitted an addition to https://pci-ids.ucw.cz/
+>
+> Bjorn
 
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 0c10c8407dca..66e7586a33e9 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -368,7 +368,7 @@ static void rcu_tasks_wait_gp(struct rcu_tasks *rtp)
- ////////////////////////////////////////////////////////////////////////
- //
- // Simple variant of RCU whose quiescent states are voluntary context
--// switch, cond_resched_rcu_qs(), user-space execution, and idle.
-+// switch, cond_resched_tasks_rcu_qs(), user-space execution, and idle.
- // As such, grace periods can take one good long time.  There are no
- // read-side primitives similar to rcu_read_lock() and rcu_read_unlock()
- // because this implementation is intended to get the system into a safe
-@@ -539,7 +539,7 @@ DEFINE_RCU_TASKS(rcu_tasks, rcu_tasks_wait_gp, call_rcu_tasks, "RCU Tasks");
-  * period elapses, in other words after all currently executing RCU
-  * read-side critical sections have completed. call_rcu_tasks() assumes
-  * that the read-side critical sections end at a voluntary context
-- * switch (not a preemption!), cond_resched_rcu_qs(), entry into idle,
-+ * switch (not a preemption!), cond_resched_tasks_rcu_qs(), entry into idle,
-  * or transition to usermode execution.  As such, there are no read-side
-  * primitives analogous to rcu_read_lock() and rcu_read_unlock() because
-  * this primitive is intended to determine that all tasks have passed
-@@ -677,7 +677,7 @@ DEFINE_RCU_TASKS(rcu_tasks_rude, rcu_tasks_rude_wait_gp, call_rcu_tasks_rude,
-  * period elapses, in other words after all currently executing RCU
-  * read-side critical sections have completed. call_rcu_tasks_rude()
-  * assumes that the read-side critical sections end at context switch,
-- * cond_resched_rcu_qs(), or transition to usermode execution (as
-+ * cond_resched_tasks_rcu_qs(), or transition to usermode execution (as
-  * usermode execution is schedulable). As such, there are no read-side
-  * primitives analogous to rcu_read_lock() and rcu_read_unlock() because
-  * this primitive is intended to determine that all tasks have passed
--- 
-2.31.1.189.g2e36527f23
+Just for my edumacation, do they keep track of device IDs, subvendor IDs
+(which are probably just the same as vendor IDs), and subdevice IDs in
+the PCI SIG? Or even the branding strings?
 
+Todd Fujinaka <todd.fujinaka@intel.com>
