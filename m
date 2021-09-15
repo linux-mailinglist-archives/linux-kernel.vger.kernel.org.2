@@ -2,82 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90B4840C068
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 09:22:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9A4D40C06B
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 09:23:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236662AbhIOHYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 03:24:00 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:49856 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236490AbhIOHX6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 03:23:58 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0UoSeiPZ_1631690555;
-Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0UoSeiPZ_1631690555)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 15 Sep 2021 15:22:36 +0800
-Subject: Re: [PATCH] perf: fix panic by disable ftrace on fault.c
-To:     Dave Hansen <dave.hansen@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "open list:X86 MM" <linux-kernel@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <netdev@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <bpf@vger.kernel.org>
-References: <ff979a43-045a-dc56-64d1-2c31dd4db381@linux.alibaba.com>
- <d16e7188-1afa-7513-990c-804811747bcb@linux.alibaba.com>
- <d85f9710-67c9-2573-07c4-05d9c677d615@intel.com>
- <d8853e49-8b34-4632-3e29-012eb605bea9@linux.alibaba.com>
- <09777a57-a771-5e17-7e17-afc03ea9b83b@linux.alibaba.com>
- <4f63c8bc-1d09-1717-cf81-f9091a9f9fb0@linux.alibaba.com>
- <18252e42-9c30-73d4-e3bb-0e705a78af41@intel.com>
- <4cba7088-f7c8-edcf-02cd-396eb2a56b46@linux.alibaba.com>
- <bbe09ffb-08b7-824c-943f-dffef51e98c2@intel.com>
-From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-Message-ID: <ac31b8c7-122e-3467-566b-54f053ca0ae2@linux.alibaba.com>
-Date:   Wed, 15 Sep 2021 15:22:35 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        id S236674AbhIOHY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 03:24:27 -0400
+Received: from mga11.intel.com ([192.55.52.93]:45245 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236486AbhIOHYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 03:24:25 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10107"; a="219060255"
+X-IronPort-AV: E=Sophos;i="5.85,294,1624345200"; 
+   d="scan'208";a="219060255"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2021 00:23:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,294,1624345200"; 
+   d="scan'208";a="610053522"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 15 Sep 2021 00:23:04 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 15 Sep 2021 10:23:04 +0300
+Date:   Wed, 15 Sep 2021 10:23:04 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Sven Peter <sven@svenpeter.dev>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] usb: typec: tipd: Remove WARN_ON in
+ tps6598x_block_read
+Message-ID: <YUGfWGLlH3q4hkVL@kuha.fi.intel.com>
+References: <20210914140235.65955-1-sven@svenpeter.dev>
+ <20210914140235.65955-3-sven@svenpeter.dev>
 MIME-Version: 1.0
-In-Reply-To: <bbe09ffb-08b7-824c-943f-dffef51e98c2@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210914140235.65955-3-sven@svenpeter.dev>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/9/15 上午11:27, Dave Hansen wrote:
-> On 9/14/21 6:56 PM, 王贇 wrote:
->>>> [   44.134987][    C0]  ? __sanitizer_cov_trace_pc+0x7/0x60
->>>> [   44.135005][    C0]  ? kcov_common_handle+0x30/0x30
->>> Just turning off tracing for the page fault handler is papering over the
->>> problem.  It'll just come back later with a slightly different form.
->>>
->> Cool~ please let me know when you have the proper approach.
+On Tue, Sep 14, 2021 at 04:02:35PM +0200, Sven Peter wrote:
+> Calling tps6598x_block_read with a higher than allowed len can be
+> handled by just returning an error. There's no need to crash systems
+> with panic-on-warn enabled.
 > 
-> It's an entertaining issue, but I wasn't planning on fixing it myself.
+> Signed-off-by: Sven Peter <sven@svenpeter.dev>
+
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+
+> ---
+> v1 -> v2:
+>  - added this patch to also remove the WARN_ON in tps6598x_block_read
+>    as suggested by greg k-h
 > 
+>  drivers/usb/typec/tipd/core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
+> index 8c79ba17a157..93e56291f0cf 100644
+> --- a/drivers/usb/typec/tipd/core.c
+> +++ b/drivers/usb/typec/tipd/core.c
+> @@ -117,7 +117,7 @@ tps6598x_block_read(struct tps6598x *tps, u8 reg, void *val, size_t len)
+>  	u8 data[TPS_MAX_LEN + 1];
+>  	int ret;
+>  
+> -	if (WARN_ON(len + 1 > sizeof(data)))
+> +	if (len + 1 > sizeof(data))
+>  		return -EINVAL;
+>  
+>  	if (!tps->i2c_protocol)
+> -- 
+> 2.25.1
 
-Do you have any suggestion on how should we fix the problem?
+thanks,
 
-I'd like to help fix it, but sounds like all the known working approach
-are not acceptable...
-
-Regards,
-Michael Wang
+-- 
+heikki
