@@ -2,119 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02F7040BF9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 08:26:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C643040BFA2
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 08:29:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232266AbhIOG1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 02:27:48 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:19504 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232059AbhIOG1p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 02:27:45 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1631687187; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=cDmXnf1WG44BbqUmz+fhdLNOzlI1Uw5eEG5tZmanam8=;
- b=Xg1ViKxuPWy3vahfrbnVzMec2DFPBo1fAXdG3P/QGBl42S1S5j3lSQCZQL8NQas0g6vZPPsM
- nWt9VocImBaDFolYJ2aReqOmpe9e4M/tPH/HzY2wFya0jQvXyap/fT1ANhdDF373sGTs+H+u
- QLRArK5I4+WJYPiOoTWFv/reiQ4=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 6141920dec62f57c9ae59391 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 15 Sep 2021 06:26:21
- GMT
-Sender: okukatla=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id EEE1DC43460; Wed, 15 Sep 2021 06:26:20 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: okukatla)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 84656C4338F;
-        Wed, 15 Sep 2021 06:26:19 +0000 (UTC)
+        id S231166AbhIOGa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 02:30:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51718 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229484AbhIOGa4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 02:30:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B31360BD3;
+        Wed, 15 Sep 2021 06:29:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1631687378;
+        bh=ch01/WbeIC8zu+C33l/ZDhbb3eivc2zeXl3cs9KVGHE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=D8yyuXJaAa84N82v74hL6teSI8tZKGzRVI5hHkhv14Ghy16hPIJEluBEFDG3ajiMe
+         PRGSvdpQZ+Dkshg6oqAeHY18tZ22wwpmOJUh6g+7KV3LVUBKsNEoiWQD1tA5oFjgrF
+         trp2Axf44bOEhFSr29kBF78uexqBl9n7YW/jbJeo=
+Date:   Wed, 15 Sep 2021 08:29:16 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Ronak Jain <ronakj@xilinx.com>
+Cc:     Michal Simek <michals@xilinx.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Rajan Vaja <RAJANV@xilinx.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        Sai Krishna Potthuri <lakshmis@xilinx.com>
+Subject: Re: [PATCH v2 3/3] firmware: xilinx: Add sysfs support for feature
+ config
+Message-ID: <YUGSvO5tHYd4cTkc@kroah.com>
+References: <20210913083955.27146-1-ronak.jain@xilinx.com>
+ <20210913083955.27146-4-ronak.jain@xilinx.com>
+ <YUBpjUGaB3G72wRa@kroah.com>
+ <BYAPR02MB4488F74E21490FC4801BA375A4DB9@BYAPR02MB4488.namprd02.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 15 Sep 2021 11:56:19 +0530
-From:   okukatla@codeaurora.org
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        bjorn.andersson@linaro.org, devicetree@vger.kernel.org,
-        evgreen@google.com, georgi.djakov@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mdtipton@codeaurora.org, sibis@codeaurora.org,
-        saravanak@google.com, seansw@qti.qualcomm.com, elder@linaro.org,
-        linux-pm@vger.kernel.org, linux-arm-msm-owner@vger.kernel.org,
-        okukatla=codeaurora.org@codeaurora.org
-Subject: Re: [v7 3/3] arm64: dts: qcom: sc7280: Add EPSS L3 interconnect
- provider
-In-Reply-To: <749157bdb4613ae370adfb7ba055a2a9@codeaurora.org>
-References: <1629458622-4915-1-git-send-email-okukatla@codeaurora.org>
- <1629458622-4915-4-git-send-email-okukatla@codeaurora.org>
- <CAE-0n51WBdLoJRPs9tWZgdAukJMnkD3V00o7xNYVX77-eToKvw@mail.gmail.com>
- <749157bdb4613ae370adfb7ba055a2a9@codeaurora.org>
-Message-ID: <36fe241f845a27b52509274d007948b1@codeaurora.org>
-X-Sender: okukatla@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BYAPR02MB4488F74E21490FC4801BA375A4DB9@BYAPR02MB4488.namprd02.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-15 10:35, okukatla@codeaurora.org wrote:
-> On 2021-09-04 00:36, Stephen Boyd wrote:
->> Quoting Odelu Kukatla (2021-08-20 04:23:41)
->>> Add Epoch Subsystem (EPSS) L3 interconnect provider node on SC7280
->>> SoCs.
->>> 
->>> Signed-off-by: Odelu Kukatla <okukatla@codeaurora.org>
->>> ---
->>>  arch/arm64/boot/dts/qcom/sc7280.dtsi | 11 +++++++++++
->>>  1 file changed, 11 insertions(+)
->>> 
->>> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi 
->>> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->>> index 53a21d0..cf59b47 100644
->>> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
->>> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->>> @@ -1848,6 +1848,17 @@
->>>                         };
->>>                 };
->>> 
->>> +               epss_l3: interconnect@18590000 {
->>> +                       compatible = "qcom,sc7280-epss-l3";
->>> +                       reg = <0 0x18590000 0 1000>,
->> 
->> Is this supposed to be 0x1000?
->> 
-> No, This is 1000 or 0x3E8.
-We have mapped only required registers for L3 scaling, 1000/0x3E8 is 
-suffice.
-But i will update it to 0x1000 in next revision so that entire clock 
-domain region-0 is mapped.
->>> +                             <0 0x18591000 0 0x100>,
->>> +                             <0 0x18592000 0 0x100>,
->>> +                             <0 0x18593000 0 0x100>;
->>> +                       clocks = <&rpmhcc RPMH_CXO_CLK>, <&gcc 
->>> GCC_GPLL0>;
->>> +                       clock-names = "xo", "alternate";
->>> +                       #interconnect-cells = <1>;
->>> +               };
->>> +
->>>                 cpufreq_hw: cpufreq@18591000 {
->>>                         compatible = "qcom,cpufreq-epss";
->>>                         reg = <0 0x18591100 0 0x900>,
->>> --
->>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
->>> Forum,
->>> a Linux Foundation Collaborative Project
->>> 
+On Wed, Sep 15, 2021 at 06:16:16AM +0000, Ronak Jain wrote:
+> Hi Greg KH,
+> 
+> Thanks for reviewing.
+> 
+> > -----Original Message-----
+> > From: Greg KH <gregkh@linuxfoundation.org>
+> > Sent: Tuesday, September 14, 2021 2:51 PM
+> > To: Ronak Jain <ronakj@xilinx.com>
+> > Cc: Michal Simek <michals@xilinx.com>; linux-kernel@vger.kernel.org; Rajan
+> > Vaja <RAJANV@xilinx.com>; corbet@lwn.net; linux-arm-
+> > kernel@lists.infradead.org; arnd@arndb.de; Sai Krishna Potthuri
+> > <lakshmis@xilinx.com>
+> > Subject: Re: [PATCH v2 3/3] firmware: xilinx: Add sysfs support for feature
+> > config
+> > 
+> > On Mon, Sep 13, 2021 at 01:39:55AM -0700, Ronak Jain wrote:
+> > > Add support for sysfs interface for runtime features configuration.
+> > >  The user can configure the features at runtime. First the user need
+> > > to select the config id of the supported features and then the user
+> > > can configure the parameters of the feature based on the config id.
+> > >  So far the support is added for the over temperature and external
+> > > watchdog features.
+> > >
+> > > Signed-off-by: Ronak Jain <ronak.jain@xilinx.com>
+> > > ---
+> > > Changes in v2:
+> > > - Update commit message
+> > > ---
+> > >  drivers/firmware/xilinx/zynqmp.c | 71
+> > > ++++++++++++++++++++++++++++++++
+> > >  1 file changed, 71 insertions(+)
+> > >
+> > > diff --git a/drivers/firmware/xilinx/zynqmp.c
+> > > b/drivers/firmware/xilinx/zynqmp.c
+> > > index 875d13bc1a57..a1434dd368f2 100644
+> > > --- a/drivers/firmware/xilinx/zynqmp.c
+> > > +++ b/drivers/firmware/xilinx/zynqmp.c
+> > > @@ -1361,6 +1361,75 @@ static DEVICE_ATTR_RW(pggs1);  static
+> > > DEVICE_ATTR_RW(pggs2);  static DEVICE_ATTR_RW(pggs3);
+> > >
+> > > +static atomic_t feature_conf_id;
+> > 
+> > Why does this have to be an atomic?
+> Use atomic to avoid race conditions. Suppose the case where the user
+> is trying to write the variable and at the same time it tries to read,
+> so there might be chances of occurrence of race condition. Also, I am
+> not so sure whether the race condition will occur or not but just to
+> prevent race condition I have used atomic variable so, the read/write
+> operations can handle automatically.
+
+Reading/writing a single variable like this will not be a problem with
+races.  If you care about stuff like this, just use a lock to protect
+it, don't try to mess with an atomic if you do not have to have it.
+
+> > And shouldn't this be per-device, not global to all devices in the system?
+> This is to store the config-id set by the user which will be used to
+> retrieve config. There is only one firmware device so we can consider
+> it systemwide. Please let me know if you think of a better way of
+> handling it.
+
+So is it a device attribute or a driver attribute?
+
+And you never know how many devices you have in a system, do not assume
+you will not have multiple ones.  Use the proper structures to start
+with and you never will have to change things in the future if you have
+multiple devices.
+
+thanks,
+
+greg k-h
