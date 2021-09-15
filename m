@@ -2,84 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37A7340BF9C
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 08:26:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02F7040BF9E
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 08:26:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236368AbhIOG1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 02:27:37 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:16205 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbhIOG1h (ORCPT
+        id S232266AbhIOG1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 02:27:48 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:19504 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232059AbhIOG1p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 02:27:37 -0400
-Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4H8VZM71Xyz1DGxX;
-        Wed, 15 Sep 2021 14:25:15 +0800 (CST)
-Received: from [10.174.177.76] (10.174.177.76) by
- dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Wed, 15 Sep 2021 14:26:15 +0800
-Subject: Re: [PATCH v3] mm/page_isolation: fix potential missing call to
- unset_migratetype_isolate()
-To:     David Hildenbrand <david@redhat.com>, <akpm@linux-foundation.org>
-CC:     <mhocko@suse.com>, <vbabka@suse.cz>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210914114348.15569-1-linmiaohe@huawei.com>
- <454bd51f-d7ee-6304-af23-7c95874f8890@redhat.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <660c452e-521b-a5de-1170-0327421e181e@huawei.com>
-Date:   Wed, 15 Sep 2021 14:26:15 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Wed, 15 Sep 2021 02:27:45 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1631687187; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=cDmXnf1WG44BbqUmz+fhdLNOzlI1Uw5eEG5tZmanam8=;
+ b=Xg1ViKxuPWy3vahfrbnVzMec2DFPBo1fAXdG3P/QGBl42S1S5j3lSQCZQL8NQas0g6vZPPsM
+ nWt9VocImBaDFolYJ2aReqOmpe9e4M/tPH/HzY2wFya0jQvXyap/fT1ANhdDF373sGTs+H+u
+ QLRArK5I4+WJYPiOoTWFv/reiQ4=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 6141920dec62f57c9ae59391 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 15 Sep 2021 06:26:21
+ GMT
+Sender: okukatla=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id EEE1DC43460; Wed, 15 Sep 2021 06:26:20 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: okukatla)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 84656C4338F;
+        Wed, 15 Sep 2021 06:26:19 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <454bd51f-d7ee-6304-af23-7c95874f8890@redhat.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.76]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggeme703-chm.china.huawei.com (10.1.199.99)
-X-CFilter-Loop: Reflected
+Date:   Wed, 15 Sep 2021 11:56:19 +0530
+From:   okukatla@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        bjorn.andersson@linaro.org, devicetree@vger.kernel.org,
+        evgreen@google.com, georgi.djakov@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mdtipton@codeaurora.org, sibis@codeaurora.org,
+        saravanak@google.com, seansw@qti.qualcomm.com, elder@linaro.org,
+        linux-pm@vger.kernel.org, linux-arm-msm-owner@vger.kernel.org,
+        okukatla=codeaurora.org@codeaurora.org
+Subject: Re: [v7 3/3] arm64: dts: qcom: sc7280: Add EPSS L3 interconnect
+ provider
+In-Reply-To: <749157bdb4613ae370adfb7ba055a2a9@codeaurora.org>
+References: <1629458622-4915-1-git-send-email-okukatla@codeaurora.org>
+ <1629458622-4915-4-git-send-email-okukatla@codeaurora.org>
+ <CAE-0n51WBdLoJRPs9tWZgdAukJMnkD3V00o7xNYVX77-eToKvw@mail.gmail.com>
+ <749157bdb4613ae370adfb7ba055a2a9@codeaurora.org>
+Message-ID: <36fe241f845a27b52509274d007948b1@codeaurora.org>
+X-Sender: okukatla@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/9/15 2:13, David Hildenbrand wrote:
-> On 14.09.21 13:43, Miaohe Lin wrote:
->> In start_isolate_page_range() undo path, pfn_to_online_page() just checks
->> the first pfn in a pageblock while __first_valid_page() will traverse the
->> pageblock until the first online pfn is found. So we may miss the call to
->> unset_migratetype_isolate() in undo path and pages will remain isolated
->> unexpectedly. Fix this by calling undo_isolate_page_range() and this will
->> also help to simplify the code further. Note we shouldn't ever trigger it
->> because MAX_ORDER-1 aligned pfn ranges shouldn't contain memory holes now.
->>
->> Fixes: 2ce13640b3f4 ("mm: __first_valid_page skip over offline pages")
->> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> 
-> I read Michals reply, however, I am quite conservative with Fixes: tags. If there is nothing to fix, there is no BUG and the patch consequently merely a cleanup.
-> 
-> I'd have gone with a patch description/subject as follows:
-> 
-> "
-> mm/page_isolation: cleanup start_isolate_page_range()
-> 
-> We can heavily simplify the code by reusing undo_isolate_page_range().
-> 
-> Note that this also tackles a theoretical issue that would have been a real BUG before commit c5e79ef561b0 ("mm/memory_hotplug.c: don't allow to online/offline memory blocks with holes"). In start_isolate_page_range() undo path, pfn_to_online_page() just checks
-> the first pfn in a pageblock while __first_valid_page() will traverse the pageblock until the first online pfn is found. So we may miss the call to unset_migratetype_isolate() in undo path and pages will remain isolated unexpectedly.
-> 
-> Nowadays, start_isolate_page_range() never gets called on ranges that might contain memory holes. Consequently, this patch is not a fix but a cleanup.
-> "
-> 
-> Anyhow, whatever the other people prefer, no strong opinion.
-
-I have no preference too. But if this is preferred, I will do it.
-
-> 
-> Reviewed-by: David Hildenbrand <david@redhat.com>
-
-Many thanks! :)
-
-> 
-
+On 2021-09-15 10:35, okukatla@codeaurora.org wrote:
+> On 2021-09-04 00:36, Stephen Boyd wrote:
+>> Quoting Odelu Kukatla (2021-08-20 04:23:41)
+>>> Add Epoch Subsystem (EPSS) L3 interconnect provider node on SC7280
+>>> SoCs.
+>>> 
+>>> Signed-off-by: Odelu Kukatla <okukatla@codeaurora.org>
+>>> ---
+>>>  arch/arm64/boot/dts/qcom/sc7280.dtsi | 11 +++++++++++
+>>>  1 file changed, 11 insertions(+)
+>>> 
+>>> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi 
+>>> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>>> index 53a21d0..cf59b47 100644
+>>> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>>> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>>> @@ -1848,6 +1848,17 @@
+>>>                         };
+>>>                 };
+>>> 
+>>> +               epss_l3: interconnect@18590000 {
+>>> +                       compatible = "qcom,sc7280-epss-l3";
+>>> +                       reg = <0 0x18590000 0 1000>,
+>> 
+>> Is this supposed to be 0x1000?
+>> 
+> No, This is 1000 or 0x3E8.
+We have mapped only required registers for L3 scaling, 1000/0x3E8 is 
+suffice.
+But i will update it to 0x1000 in next revision so that entire clock 
+domain region-0 is mapped.
+>>> +                             <0 0x18591000 0 0x100>,
+>>> +                             <0 0x18592000 0 0x100>,
+>>> +                             <0 0x18593000 0 0x100>;
+>>> +                       clocks = <&rpmhcc RPMH_CXO_CLK>, <&gcc 
+>>> GCC_GPLL0>;
+>>> +                       clock-names = "xo", "alternate";
+>>> +                       #interconnect-cells = <1>;
+>>> +               };
+>>> +
+>>>                 cpufreq_hw: cpufreq@18591000 {
+>>>                         compatible = "qcom,cpufreq-epss";
+>>>                         reg = <0 0x18591100 0 0x900>,
+>>> --
+>>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+>>> Forum,
+>>> a Linux Foundation Collaborative Project
+>>> 
