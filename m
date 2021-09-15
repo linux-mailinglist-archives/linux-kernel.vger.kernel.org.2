@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 276E840CE8C
+	by mail.lfdr.de (Postfix) with ESMTP id 398C540CE8D
 	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 23:11:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232190AbhIOVMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 17:12:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39610 "EHLO
+        id S232287AbhIOVMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 17:12:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231490AbhIOVMi (ORCPT
+        with ESMTP id S232207AbhIOVMj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 17:12:38 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CF51C061574
+        Wed, 15 Sep 2021 17:12:39 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E73C061574
         for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 14:11:19 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id t6so8520279edi.9
+Received: by mail-ed1-x530.google.com with SMTP id c22so8493410edn.12
         for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 14:11:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oY3HGbrOF2mt1BGRMipDyincASpxkHi2fa1P9CCKn98=;
-        b=UWhHDP4TFkZlolbythk/tC1BCOEUC0tdeXllzWskzXnrW45nyHs79dEbOBWrqE5EA2
-         hdTk3SPt/NdXmwbLl92AmXLnSJz7egRBNOS5uX5jUb3ugH/ED84Tv7YbT07QK4HdhVc/
-         xUc+JcacGgHOEa/2cGorLkqgeMM8Xm1GkgwGnL6RA9h+u++EyH5XF250xpT81TjDSqSS
-         fHzq0xDPMCnOn1EPHFWA0p2uzYpnhJaaC3KEos3qdb0ZiWXLXj4J8Nig5W1NlkJEXB/3
-         pISVwXA+7Y8nuOYEtatp4bKiHWMc4a1r7XOGF+mm6wd/6ps8EX7dQu1SdGzKBmNp9ewj
-         7iGg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=WHYtBovlDjhlHTuwO5h2vC2ttjXjn2hzJRjLpSYKx8Y=;
+        b=AJFiXNAkkNhpW7eZ9JcDy8XDpPoEzVoMtH55xVws5bCs2i2QYG/61hp3i0HEWLMuTR
+         QCA65IbDvED/6QpBRGthGxh80J2HDUmlS1YFKuBr0tc/MvsYDo2L2fyWk6jlOeHVR+DU
+         neIDM6n6T6wlRVhg8VqV8Hl51pNibS0wyPIZjq1Wtyxd887l+QszjhX0zNATLRdZesPv
+         jW4vWQ6KnxMhkUQJrrUcaZVHMRWe0FnG3ChkOANq0c02c3a28KcFspXxheM5oDzpYU5N
+         I6n5WBK1eYYM1Aptp9DLBQfNW12gwGyNQx4EPPBV9y6ECCetj4w8biGxQwqFjpaNLijr
+         BhCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oY3HGbrOF2mt1BGRMipDyincASpxkHi2fa1P9CCKn98=;
-        b=gk3LeaACRY02RrhXKer68Otb6WAkl78ivbD5Ti1SFj5n9RcPc2x5xG3NkkOxPO2yyZ
-         mDQ126bGB8BRMJ4HPx4SpTTo/V5ZCLFKznDR0cTrII2bh0cVAsN7zNlOi5d9qGqV1sWQ
-         f3ZDowPHTyksF5q2Rcfru04WjYBaBp0Pe9pZDViAUfXYGrJp9/fmabrx9FUxRZehZNf7
-         9jlhvF8sFbfuid86bAQNw5Nbs9fKKSwNQRQ/+nLs1v0TBdEnJNoDmqxnNNLukOHLIkhb
-         o3D1+n7omv+Mg6Bad/2CmiR0reGelqEyDNyJqirgxc4iR36hekpL74EXi7kTnqbX6zwa
-         HFFA==
-X-Gm-Message-State: AOAM530Kqg7OY6TYG9Djk5+qfoAIlxXdtOaHfXVc7LFDV9yW6LHJVs0c
-        uOnsYKFXdC0+Oz+9Z7VDsFw=
-X-Google-Smtp-Source: ABdhPJzmjbd+2afGOT5gExnCyvOaVzU0/g0nY52JsN3kLUH5lDNbWhvMPeTuYaWo/Q81yPPPtDX8pA==
-X-Received: by 2002:a05:6402:14c3:: with SMTP id f3mr2295146edx.312.1631740276984;
-        Wed, 15 Sep 2021 14:11:16 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=WHYtBovlDjhlHTuwO5h2vC2ttjXjn2hzJRjLpSYKx8Y=;
+        b=KC9kx9bNy5tSqEdFwv5zWJrobBaIyrF6iZITNzmFDBmkrETQh01HvgA+IjzavYuFd5
+         8F6fAnEiYSr7m4PaKOXhFVpRF98JvEr/crDTUwMb7A74rF8sU8gImStlM6bJ+FATNDxc
+         9h/1RGtOY7gJnCaHoYNpFfl+fgL//tDdR5ZlITBrH4W55HJNzw7X3Ko+Ajg8PiLq8bZ0
+         uyGrkbU7TUSfNdfSkoDds36WrB2yfQ4Xbl2920QQwqMKpR+6karjt8ipydUWV0dp3hM7
+         ekZt/18Xv3e5WX6Ec+O3awZJpMjXP1aSK5wwAuamTQJj34oJZUXcNXceiMqcIJIl6i8t
+         8q8w==
+X-Gm-Message-State: AOAM530YFaImG3/XUzRjF/dtsmnYMSMC30SHt+pe6pYxYtzoPD0cjKtE
+        9XLySe4PTQEVpdgbuwLgFvk=
+X-Google-Smtp-Source: ABdhPJx6q7NNKvUBN36waxSkanJ5WL1rAsJL4dowWe+emqvE+BD4j4V4w8KJfOVfo8+iMFMC1UtP9A==
+X-Received: by 2002:a50:8d08:: with SMTP id s8mr2218418eds.211.1631740278347;
+        Wed, 15 Sep 2021 14:11:18 -0700 (PDT)
 Received: from localhost.localdomain (host-95-235-105-169.retail.telecomitalia.it. [95.235.105.169])
-        by smtp.gmail.com with ESMTPSA id t3sm511618edt.61.2021.09.15.14.11.15
+        by smtp.gmail.com with ESMTPSA id t3sm511618edt.61.2021.09.15.14.11.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Sep 2021 14:11:16 -0700 (PDT)
+        Wed, 15 Sep 2021 14:11:17 -0700 (PDT)
 From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
 To:     Larry Finger <Larry.Finger@lwfinger.net>,
         Phillip Potter <phil@philpotter.co.uk>,
@@ -56,132 +56,147 @@ To:     Larry Finger <Larry.Finger@lwfinger.net>,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         David Laight <david.Laight@aculab.com>,
         Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [PATCH v6 00/19] staging: r8188eu: Shorten and simplify calls chains
-Date:   Wed, 15 Sep 2021 23:10:44 +0200
-Message-Id: <20210915211103.18001-1-fmdefrancesco@gmail.com>
+Cc:     "Fabio M . De Francesco" <fmdefrancesco@gmail.com>
+Subject: [PATCH v6 01/19] staging: r8188eu: remove usb_{read,write}_mem()
+Date:   Wed, 15 Sep 2021 23:10:45 +0200
+Message-Id: <20210915211103.18001-2-fmdefrancesco@gmail.com>
 X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20210915211103.18001-1-fmdefrancesco@gmail.com>
+References: <20210915211103.18001-1-fmdefrancesco@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-io_ops abstraction is useless in this driver, since there is only one ops
-registration. Without io_ops we can get rid of indirect calls mess and
-shorten the calls chain.
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-Shorten the calls chain of rtw_read8/16/32() down to the actual reads.
-For this purpose unify the three usb_read8/16/32 into the new
-usb_read(); make the latter parameterizable with 'size'; embed most of
-the code of usbctrl_vendorreq() into usb_read() and use in it the new
-usb_control_msg_recv() API of USB Core.
+Remove usb_{read,write}_mem() because they are unused.
 
-Shorten the calls chain of rtw_write8/16/32() down to the actual writes.
-For this purpose unify the four usb_write8/16/32/N() into the new
-usb_write(); make the latter parameterizable with 'size'; embed most of
-the code of usbctrl_vendorreq() into usb_write() and use in it the new
-usb_control_msg_send() API of USB Core.
+Co-developed-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+---
+ drivers/staging/r8188eu/core/rtw_io.c         | 29 -------------------
+ drivers/staging/r8188eu/hal/usb_ops_linux.c   |  2 --
+ drivers/staging/r8188eu/include/rtw_io.h      |  4 ---
+ .../staging/r8188eu/include/usb_ops_linux.h   |  3 --
+ .../staging/r8188eu/os_dep/usb_ops_linux.c    |  8 -----
+ 5 files changed, 46 deletions(-)
 
-The code with the modifications was thoroughly tested by Pavel Skripkin
-using a TP-Link TL-WN722N v2 / v3 [Realtek RTL8188EUS] and by Fabio M.
-De Francesco using a ASUSTek Computer, Inc. Realtek 8188EUS [USB-N10 Nano].
-
-Changelog:
-
-v5->v6:
-	- 1-14:
-		Minimal changes to patch subjects to achieve consistent
-		style;
-	- 15:
-		Fix a mistake in the checks of values returned by
-		usb_control_msg();
-	- 16-19:
-		No changes.
-
-v4->v5:
-        - 1-14:
-                No changes;
-        - 15-16:
-                Fix minor formatting issues and use "Reverse Xmas Tree" style,
-                according to suggestions by David Laight and Dan Carpenter;
-        - 17-18:
-                Pavel Skripkin found logical errors in the checks of the
-                values returned by usb_control_msg_{recv,send}(), so fix them;
-                Dan Carpenter suggested to do error handling before success
-                handling, so change the code accordingly;
-        - 19:
-                Add this patch in order to get rid of the shared buffer in
-                usb_read() and usb_write() and remove this field from struct
-                "dvobj_priv".
-
-v3->v4:
-        - 1-14:
-                Split a patch into fourteen;
-        - 15-16:
-                Add these patches for clean-ups of the code that is going to be
-                reused in 17-18/18;
-        - 17-18:
-                Make some changes according to a first review of Greg
-                Kroah-Hartman; furthermore, remove the unnecessary while loop
-                and a couple of if' test; handle the errors returned by
-                usb_control_msg_recv().
-
-v2->v3:
-        - 1-2:
-                No changes;
-        - 3:
-                Fix the version number of the patch.
-
-v1->v2:
-        - 1-2:
-                No changes;
-        - 3:
-                Replace parameter REALTEK_USB_VENQT_READ with REALTEK_USB_VENQT_WRITE
-                in usb_control_msg_send().
-
-v1: https://lore.kernel.org/lkml/20210904150447.14659-1-fmdefrancesco@gmail.com/
-v2: https://lore.kernel.org/lkml/20210904212719.11426-1-fmdefrancesco@gmail.com/
-v3: https://lore.kernel.org/lkml/20210904220048.12822-1-fmdefrancesco@gmail.com/
-v4: https://lore.kernel.org/lkml/20210913181002.16651-1-fmdefrancesco@gmail.com/
-v5: https://lore.kernel.org/lkml/20210915124149.27543-1-fmdefrancesco@gmail.com/
-
-Fabio M. De Francesco (4):
-  staging: r8188eu: Clean up usbctrl_vendorreq()
-  staging: r8188eu: Clean up rtw_read8/16/32() and rtw_write8/16/32/N()
-  staging: r8188eu: Shorten calls chains of rtw_read8/16/32()
-  staging: r8188eu: Shorten calls chains of rtw_write8/16/32/N()
-
-Pavel Skripkin (15):
-  staging: r8188eu: remove usb_{read,write}_mem()
-  staging: r8188eu: remove the helpers of rtw_read8()
-  staging: r8188eu: remove the helpers of rtw_read16()
-  staging: r8188eu: remove the helpers of rtw_read32()
-  staging: r8188eu: remove the helpers of usb_write8()
-  staging: r8188eu: remove the helpers of usb_write16()
-  staging: r8188eu: remove the helpers of usb_write32()
-  staging: r8188eu: remove the helpers of usb_writeN()
-  staging: r8188eu: remove the helpers of usb_read_port()
-  staging: r8188eu: remove the helpers of usb_write_port()
-  staging: r8188eu: remove the helpers of usb_read_port_cancel()
-  staging: r8188eu: remove the helpers of usb_write_port_cancel()
-  staging: r8188eu: remove core/rtw_io.c
-  staging: remove struct _io_ops
-  staging: r8188eu: remove shared buffer for usb requests
-
- drivers/staging/r8188eu/Makefile              |   1 -
- drivers/staging/r8188eu/core/rtw_io.c         | 299 ------------------
- drivers/staging/r8188eu/hal/usb_halinit.c     |   6 +-
- drivers/staging/r8188eu/hal/usb_ops_linux.c   | 261 ++++++++-------
- drivers/staging/r8188eu/include/drv_types.h   |   5 -
- drivers/staging/r8188eu/include/rtw_io.h      |  89 +-----
- drivers/staging/r8188eu/include/usb_ops.h     |   2 -
- .../staging/r8188eu/include/usb_ops_linux.h   |   8 -
- drivers/staging/r8188eu/os_dep/usb_intf.c     |  37 +--
- .../staging/r8188eu/os_dep/usb_ops_linux.c    |  20 +-
- 10 files changed, 166 insertions(+), 562 deletions(-)
- delete mode 100644 drivers/staging/r8188eu/core/rtw_io.c
-
+diff --git a/drivers/staging/r8188eu/core/rtw_io.c b/drivers/staging/r8188eu/core/rtw_io.c
+index cde0205816b1..e6f377377ab2 100644
+--- a/drivers/staging/r8188eu/core/rtw_io.c
++++ b/drivers/staging/r8188eu/core/rtw_io.c
+@@ -175,35 +175,6 @@ int _rtw_write32_async(struct adapter *adapter, u32 addr, u32 val)
+ 	return RTW_STATUS_CODE(ret);
+ }
+ 
+-void _rtw_read_mem(struct adapter *adapter, u32 addr, u32 cnt, u8 *pmem)
+-{
+-	void (*_read_mem)(struct intf_hdl *pintfhdl, u32 addr, u32 cnt, u8 *pmem);
+-	struct io_priv *pio_priv = &adapter->iopriv;
+-	struct	intf_hdl		*pintfhdl = &pio_priv->intf;
+-
+-
+-	if (adapter->bDriverStopped || adapter->bSurpriseRemoved)
+-	     return;
+-	_read_mem = pintfhdl->io_ops._read_mem;
+-	_read_mem(pintfhdl, addr, cnt, pmem);
+-
+-}
+-
+-void _rtw_write_mem(struct adapter *adapter, u32 addr, u32 cnt, u8 *pmem)
+-{
+-	void (*_write_mem)(struct intf_hdl *pintfhdl, u32 addr, u32 cnt, u8 *pmem);
+-	struct io_priv *pio_priv = &adapter->iopriv;
+-	struct	intf_hdl		*pintfhdl = &pio_priv->intf;
+-
+-
+-
+-	_write_mem = pintfhdl->io_ops._write_mem;
+-
+-	_write_mem(pintfhdl, addr, cnt, pmem);
+-
+-
+-}
+-
+ void _rtw_read_port(struct adapter *adapter, u32 addr, u32 cnt, u8 *pmem)
+ {
+ 	u32 (*_read_port)(struct intf_hdl *pintfhdl, u32 addr, u32 cnt, u8 *pmem);
+diff --git a/drivers/staging/r8188eu/hal/usb_ops_linux.c b/drivers/staging/r8188eu/hal/usb_ops_linux.c
+index 065b0d8e030a..7f30b00b3ce6 100644
+--- a/drivers/staging/r8188eu/hal/usb_ops_linux.c
++++ b/drivers/staging/r8188eu/hal/usb_ops_linux.c
+@@ -541,13 +541,11 @@ void rtl8188eu_set_intf_ops(struct _io_ops	*pops)
+ 	pops->_read8 = &usb_read8;
+ 	pops->_read16 = &usb_read16;
+ 	pops->_read32 = &usb_read32;
+-	pops->_read_mem = &usb_read_mem;
+ 	pops->_read_port = &usb_read_port;
+ 	pops->_write8 = &usb_write8;
+ 	pops->_write16 = &usb_write16;
+ 	pops->_write32 = &usb_write32;
+ 	pops->_writeN = &usb_writeN;
+-	pops->_write_mem = &usb_write_mem;
+ 	pops->_write_port = &usb_write_port;
+ 	pops->_read_port_cancel = &usb_read_port_cancel;
+ 	pops->_write_port_cancel = &usb_write_port_cancel;
+diff --git a/drivers/staging/r8188eu/include/rtw_io.h b/drivers/staging/r8188eu/include/rtw_io.h
+index 263a37d49b6e..5ef89c72cc83 100644
+--- a/drivers/staging/r8188eu/include/rtw_io.h
++++ b/drivers/staging/r8188eu/include/rtw_io.h
+@@ -270,8 +270,6 @@ void _rtw_write_port_cancel(struct adapter *adapter);
+ #define rtw_read8(adapter, addr) _rtw_read8((adapter), (addr))
+ #define rtw_read16(adapter, addr) _rtw_read16((adapter), (addr))
+ #define rtw_read32(adapter, addr) _rtw_read32((adapter), (addr))
+-#define rtw_read_mem(adapter, addr, cnt, mem)				\
+-	_rtw_read_mem((adapter), (addr), (cnt), (mem))
+ #define rtw_read_port(adapter, addr, cnt, mem)				\
+ 	_rtw_read_port((adapter), (addr), (cnt), (mem))
+ #define rtw_read_port_cancel(adapter) _rtw_read_port_cancel((adapter))
+@@ -290,8 +288,6 @@ void _rtw_write_port_cancel(struct adapter *adapter);
+ 	_rtw_write16_async((adapter), (addr), (val))
+ #define rtw_write32_async(adapter, addr, val)				\
+ 	_rtw_write32_async((adapter), (addr), (val))
+-#define rtw_write_mem(adapter, addr, cnt, mem)				\
+-	_rtw_write_mem((adapter), (addr), (cnt), (mem))
+ #define rtw_write_port(adapter, addr, cnt, mem)				\
+ 	_rtw_write_port((adapter), (addr), (cnt), (mem))
+ #define rtw_write_port_and_wait(adapter, addr, cnt, mem, timeout_ms)	\
+diff --git a/drivers/staging/r8188eu/include/usb_ops_linux.h b/drivers/staging/r8188eu/include/usb_ops_linux.h
+index c357a3b1560e..37e0614fd15c 100644
+--- a/drivers/staging/r8188eu/include/usb_ops_linux.h
++++ b/drivers/staging/r8188eu/include/usb_ops_linux.h
+@@ -28,9 +28,6 @@
+ 
+ unsigned int ffaddr2pipehdl(struct dvobj_priv *pdvobj, u32 addr);
+ 
+-void usb_read_mem(struct intf_hdl *pintfhdl, u32 addr, u32 cnt, u8 *rmem);
+-void usb_write_mem(struct intf_hdl *pintfhdl, u32 addr, u32 cnt, u8 *wmem);
+-
+ void usb_read_port_cancel(struct intf_hdl *pintfhdl);
+ 
+ u32 usb_write_port(struct intf_hdl *pintfhdl, u32 addr, u32 cnt, u8 *wmem);
+diff --git a/drivers/staging/r8188eu/os_dep/usb_ops_linux.c b/drivers/staging/r8188eu/os_dep/usb_ops_linux.c
+index 928730158450..9afb4df71969 100644
+--- a/drivers/staging/r8188eu/os_dep/usb_ops_linux.c
++++ b/drivers/staging/r8188eu/os_dep/usb_ops_linux.c
+@@ -31,14 +31,6 @@ struct zero_bulkout_context {
+ 	void *padapter;
+ };
+ 
+-void usb_read_mem(struct intf_hdl *pintfhdl, u32 addr, u32 cnt, u8 *rmem)
+-{
+-}
+-
+-void usb_write_mem(struct intf_hdl *pintfhdl, u32 addr, u32 cnt, u8 *wmem)
+-{
+-}
+-
+ void usb_read_port_cancel(struct intf_hdl *pintfhdl)
+ {
+ 	int i;
 -- 
 2.33.0
 
