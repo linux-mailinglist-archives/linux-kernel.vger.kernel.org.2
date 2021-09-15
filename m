@@ -2,86 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A2EF40C640
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 15:20:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 282DA40C5CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 14:58:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237369AbhIONVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 09:21:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234657AbhIONVl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 09:21:41 -0400
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF7E5C0613DF
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 06:20:22 -0700 (PDT)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by albert.telenet-ops.be with bizsmtp
-        id uDLH2500s4C55Sk06DLHoU; Wed, 15 Sep 2021 15:20:20 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mQUnf-004eT9-TO; Wed, 15 Sep 2021 15:18:07 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mQUT7-002gSI-H7; Wed, 15 Sep 2021 14:56:53 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Johan Hovold <johan@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Scott Wood <oss@buserror.net>
-Cc:     linux-serial@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] serial: 8250: SERIAL_8250_FSL should not default to y when compile-testing
-Date:   Wed, 15 Sep 2021 14:56:52 +0200
-Message-Id: <c5f8aa5c081755f3c960b86fc61c2baaa33edcd9.1631710216.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+        id S233143AbhIOM7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 08:59:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38392 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233060AbhIOM7b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 08:59:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D6C961251;
+        Wed, 15 Sep 2021 12:58:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631710692;
+        bh=N6rr3JXgaVvNIcoc45Ek8+E7jTIQE589BC7YgY3vN9Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fwd4fkxB4Lc9RmsbUEyA8m3ZLd+ExIiADhJ3Q0WclLbnekgb4bDxl5da0ojRhoYh9
+         n+6Lz6UtNeav+P/womHVhdSFMkXtfsjOYR0xUAgkUbEIXDpHvtS3clY2t81/CWty/0
+         3Xb+UOXIpMKSYc86W2jsWWCQtNHrU+6vaY23Yf+h4UgP81VaKVmwxvSlBLTVjAgvCe
+         fA8aLmEcZ95MI8sQtZ5LZuSZI90CiNWk/tStTKHPnKp03DnuZ6bF2e1YSP3NK3fj3B
+         H3E1wgjTGZdXYy44webgrowJ4Bl0Dlejyu9oxD3bbRBJXModxKaKpjY6BXOS925mij
+         GdGGgznzLaEpA==
+Date:   Wed, 15 Sep 2021 13:57:31 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Lucas tanure <tanureal@opensource.cirrus.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
+Subject: Re: [PATCH v3 1/2] regmap: spi: Set regmap max raw r/w from
+ max_transfer_size
+Message-ID: <20210915125731.GF5389@sirena.org.uk>
+References: <20210915120951.29907-1-tanureal@opensource.cirrus.com>
+ <20210915123453.GD5389@sirena.org.uk>
+ <ef63110f-a579-aaca-9bde-549392a0628c@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="R6sEYoIZpp9JErk7"
+Content-Disposition: inline
+In-Reply-To: <ef63110f-a579-aaca-9bde-549392a0628c@opensource.cirrus.com>
+X-Cookie: Absence makes the heart grow frantic.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit b1442c55ce8977aa ("serial: 8250: extend compile-test coverage")
-added compile-test support to the Freescale 16550 driver.  However, as
-SERIAL_8250_FSL is an invisible symbol, merely enabling COMPILE_TEST now
-enables this driver.
 
-Fix this by making SERIAL_8250_FSL visible.  Tighten the dependencies to
-prevent asking the user about this driver when configuring a kernel
-without appropriate Freescale SoC or ACPI support.
+--R6sEYoIZpp9JErk7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Fixes: b1442c55ce8977aa ("serial: 8250: extend compile-test coverage")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-Yes, it's ugly, but I see no better solution. Do you?
+On Wed, Sep 15, 2021 at 01:37:03PM +0100, Lucas tanure wrote:
+> On 9/15/21 13:34, Mark Brown wrote:
 
- drivers/tty/serial/8250/Kconfig | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+> Yes, its exactly the same, I forgot to add the second patch the previous
+> one.
+> I will resend with Charles review-by.
 
-diff --git a/drivers/tty/serial/8250/Kconfig b/drivers/tty/serial/8250/Kconfig
-index 808268edd2e82a45..a2978b31144e94f2 100644
---- a/drivers/tty/serial/8250/Kconfig
-+++ b/drivers/tty/serial/8250/Kconfig
-@@ -361,9 +361,13 @@ config SERIAL_8250_BCM2835AUX
- 	  If unsure, say N.
- 
- config SERIAL_8250_FSL
--	bool
-+	bool "Freescale 16550-style UART support (8250 based driver)"
- 	depends on SERIAL_8250_CONSOLE
--	default PPC || ARM || ARM64 || COMPILE_TEST
-+	depends on FSL_SOC || ARCH_LAYERSCAPE || SOC_LS1021A || (ARM64 && ACPI) || COMPILE_TEST
-+	default FSL_SOC || ARCH_LAYERSCAPE || SOC_LS1021A || (ARM64 && ACPI)
-+	help
-+	  Selecting this option will add support for the 16550-style serial
-+	  port hardware found on Freescale SoCs.
- 
- config SERIAL_8250_DW
- 	tristate "Support for Synopsys DesignWare 8250 quirks"
--- 
-2.25.1
+Please allow a bit more time in case people are reviewing your whole
+series.
 
+--R6sEYoIZpp9JErk7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFB7bsACgkQJNaLcl1U
+h9BmEQf9HpUDItBVEjQiyt4rhpSvs2CndVIlEMIMihUdGm4vWokncQUeU0GvtLQH
++Um2tUyaOdmQH9pppU4KWs4reiRbkr209qiMcVSRe9fGWTwZ8RwDhw246H/rAEyu
+qdELO7h0GL2JTtJfkW+E+rjURYuwBhZlKeF0UrrsE9b3grzfEDW5SFmO61Z6ghGs
+LlMP+blM2hU7CCB1FnfBQXF76oQ7WMYOevs/B6j7ui1ZicaQztgATG8OFI2Lguht
+1NIvx9FqAuzwq/IePtpGU5mtq/QSF+3VDPe+1pnVH+x/XTMXzq3PPJZbrOl11ywe
+0q09g7zMoWPTYLEFSF8T79klUucgLA==
+=vk86
+-----END PGP SIGNATURE-----
+
+--R6sEYoIZpp9JErk7--
