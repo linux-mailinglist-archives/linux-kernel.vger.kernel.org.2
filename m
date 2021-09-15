@@ -2,40 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EF1640CEFC
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 23:47:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C553A40CF00
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 23:48:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232415AbhIOVsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 17:48:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51176 "EHLO mail.kernel.org"
+        id S232500AbhIOVsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 17:48:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51196 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232273AbhIOVsh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 17:48:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 821D5610E8;
-        Wed, 15 Sep 2021 21:47:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631742437;
-        bh=AImZg3cFJi8lrrxRbS17WV7+rLbY0cszOVAybcJUWSI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=AQ8XswHJxzRd8/fiIH6sqVT2xDxH14CIs9j7B8uZPEaOxqWBfqIKTx1gQQebUcvkr
-         2QqMdKUKg930TjBwMhLSK+FI8V2RHwPvd6ZzkzHjjcPGFyAEMHrZYFuf3Mf7aeyKsK
-         ZT6gwKUiKxYlgvpef2S1GVBKl6BoYRK2idvCZigStodofDL5HCQgabPp/UgL105kwu
-         fww09oq2j6Q4VhsHobbE5Du07kbyOLgfGjhLkeTYSr9JULpIubUOg1gG8ir1zhJxoo
-         uNOgQacTW0oU0rQ+NeTzy2oNT7UDhEO7sITChvwEYqf0FDdGkgObrlSCzh/QW7yW8F
-         oGjAkVXAeumTg==
-Date:   Wed, 15 Sep 2021 14:47:16 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        bcm-kernel-feedback-list@broadcom.com (open list:BROADCOM ETHERNET PHY
-        DRIVERS), linux-kernel@vger.kernel.org (open list)
-Subject: Re: [PATCH net-next] net: phy: bcm7xxx: Add EPHY entry for 72165
-Message-ID: <20210915144716.12998b33@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210914224042.418365-1-f.fainelli@gmail.com>
-References: <20210914224042.418365-1-f.fainelli@gmail.com>
+        id S232427AbhIOVsj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 17:48:39 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C0C3D60EE4;
+        Wed, 15 Sep 2021 21:47:19 +0000 (UTC)
+Date:   Wed, 15 Sep 2021 17:47:18 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>
+Subject: Re: [PATCH 7/8] ftrace: Add multi direct modify interface
+Message-ID: <20210915174718.77acaf8b@gandalf.local.home>
+In-Reply-To: <20210914174134.1d8fd944@oasis.local.home>
+References: <20210831095017.412311-1-jolsa@kernel.org>
+        <20210831095017.412311-8-jolsa@kernel.org>
+        <20210914174134.1d8fd944@oasis.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -43,83 +37,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Sep 2021 15:40:41 -0700 Florian Fainelli wrote:
-> 72165 is a 16nm process SoC with a 10/100 integrated Ethernet PHY,
-> create a new macro and set of functions for this different process type.
-> 
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> ---
->  drivers/net/phy/bcm7xxx.c | 200 ++++++++++++++++++++++++++++++++++++++
->  include/linux/brcmphy.h   |   1 +
->  2 files changed, 201 insertions(+)
-> 
-> diff --git a/drivers/net/phy/bcm7xxx.c b/drivers/net/phy/bcm7xxx.c
-> index e79297a4bae8..f6912a77a378 100644
-> --- a/drivers/net/phy/bcm7xxx.c
-> +++ b/drivers/net/phy/bcm7xxx.c
-> @@ -398,6 +398,189 @@ static int bcm7xxx_28nm_ephy_config_init(struct phy_device *phydev)
->  	return bcm7xxx_28nm_ephy_apd_enable(phydev);
->  }
->  
-> +static int bcm7xxx_16nm_ephy_afe_config(struct phy_device *phydev)
-> +{
-> +	int tmp, rcalcode, rcalnewcodelp, rcalnewcode11, rcalnewcode11d2;
-> +
-> +	/* Reset PHY */
-> +	tmp = genphy_soft_reset(phydev);
-> +	if (tmp)
-> +		return tmp;
-> +
-> +	/* Reset AFE and PLL */
-> +	bcm_phy_write_exp_sel(phydev, 0x0003, 0x0006);
-> +	/* Clear reset */
-> +	bcm_phy_write_exp_sel(phydev, 0x0003, 0x0000);
-> +
-> +	/* Write PLL/AFE control register to select 54MHz crystal */
-> +	bcm_phy_write_misc(phydev, 0x0030, 0x0001, 0x0000);
-> +	bcm_phy_write_misc(phydev, 0x0031, 0x0000, 0x044a);
-> +
-> +	/* Change Ka,Kp,Ki to pdiv=1 */
-> +	bcm_phy_write_misc(phydev, 0x0033, 0x0002, 0x71a1);
-> +	/* Configuration override */
-> +	bcm_phy_write_misc(phydev, 0x0033, 0x0001, 0x8000);
-> +
-> +	/* Change PLL_NDIV and PLL_NUDGE */
-> +	bcm_phy_write_misc(phydev, 0x0031, 0x0001, 0x2f68);
-> +	bcm_phy_write_misc(phydev, 0x0031, 0x0002, 0x0000);
-> +
-> +	/* Reference frequency is 54Mhz, config_mode[15:14] = 3 (low
-> +	 * phase) */
+On Tue, 14 Sep 2021 17:41:34 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-Checkpatch points out:
+> A better solution, that prevents having to do this, is to first change
+> the function fentry's to call the ftrace list loop function, that calls
+> the ftrace_ops list, and will call the direct call via the ops in the
+> loop. Have the ops->func call the new direct function (all will be
+> immediately affected). Update the entries, and then switch from the
+> loop back to the direct caller.
 
-WARNING: Block comments use a trailing */ on a separate line
-#55: FILE: drivers/net/phy/bcm7xxx.c:429:
-+	 * phase) */
+An easy way to force the loop function to be called instead of the direct
+trampoline, is to register a stub ftrace_ops to each of the functions that
+the direct function attaches to. You can even share the hash in doing so.
 
-> +	/* Drop LSB */
-> +	rcalnewcode11d2 = (rcalnewcode11 & 0xfffe) / 2;
-> +	tmp = bcm_phy_read_misc(phydev, 0x003d, 0x0001);
-> +	/* Clear bits [11:5] */
-> +	tmp &= ~0xfe0;
-> +	/* set txcfg_ch0<5>=1 (enable + set local rcal) */
-> +	tmp |= 0x0020 | (rcalnewcode11d2 * 64);
-> +	bcm_phy_write_misc(phydev, 0x003d, 0x0001, tmp);
-> +	bcm_phy_write_misc(phydev, 0x003d, 0x0002, tmp);
-> +
-> +	tmp = bcm_phy_read_misc(phydev, 0x003d, 0x0000);
-> +	/* set txcfg<45:44>=11 (enable Rextra + invert fullscaledetect)
-> +	 */
-> +	tmp &= ~0x3000;
-> +	tmp |= 0x3000;
+Having the ftrace_ops attached in the same locations as the direct
+trampoline, will force the loop function to be called (to call the stub
+ftrace_ops as well as the direct trampoline ftrace_ops helper).
 
-Clearing then setting the same bits looks a little strange. Especially
-since from the comment it sounds like these are two separate bits, not
-a bitfield which is cleared and set as a whole. Anyway, up to you, just
-jumped out when I was looking thru to see if the use of signed tmp may
-cause any trouble...
+Then change the direct trampoline address, which will have the ftrace_ops
+helper use that direct trampoline immediately*. Then when you remove the
+ftrace_ops stub, it will update all the call sites to call the new direct
+trampoline directly.
 
-> +	bcm_phy_write_misc(phydev, 0x003d, 0x0000, tmp);
-> +
-> +	return 0;
-> +}
+(*) not quite immediately, as there's no read memory barrier with the
+direct helper, so it may still be calling the old trampoline. But this
+shouldn't be an issue. If it is, then you would need to include some memory
+barrier synchronization.
+
+I'm curious to what the use case is for the multi direct modify interface
+is?
+
+-- Steve
