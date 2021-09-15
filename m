@@ -2,173 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C02140BDEE
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 04:57:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9E9740BDF2
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 04:59:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235548AbhIOC60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 22:58:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42940 "EHLO
+        id S234031AbhIODBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 23:01:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229830AbhIOC6X (ORCPT
+        with ESMTP id S229758AbhIODBB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 22:58:23 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0DEEC061574;
-        Tue, 14 Sep 2021 19:57:04 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id y17so1287252pfl.13;
-        Tue, 14 Sep 2021 19:57:04 -0700 (PDT)
+        Tue, 14 Sep 2021 23:01:01 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8F65C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 19:59:42 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id bq5so2909432lfb.9
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 19:59:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=QerLtYFhyBoiMxUDzcHQOlMQYU3YOoR9s6yK1SSR1HA=;
-        b=m9Y3ObsMoZSPstj9eJATcQtCRbIu8YG9qwTWBHvtvLXuWOssP+dHHkmakcpg3RGCal
-         UIAMsjWshHBiWXR+XolGsy8QruK+UiknuBHXKocAn/cXe8dsFRegmR5S/u1sJpgNFQRu
-         CWDzEEJvq/etXgCtigfGepJpZj0aDYFsFbYwmOtMAaeU81U9J9WfQLEVKwEvYbn5qTG7
-         R54kF6JRra/x/fCb2HtbrWBrb5YXll3epYgPibN+dcLtTj9Z9l8PdMtbquG8KdVH2KW4
-         DHTvcVuDWEqgHNtKXCBr9NsjSVgPL3OqoKheQvwtFl/AmpwLHpgpcpA4mBN2sZ2f2ROe
-         OKbg==
+         :cc;
+        bh=zbADmf0RfotFPk92OptkWggkubEXHwFuB6jYYoTJjjo=;
+        b=Qhe9JZ+ZJ18xY02mFI4UlB1jQpdVQDRzQirW5vqP2RIgbNdCjhen7dYsCuzh5X2O8r
+         VjlajUvy80zson73wivnbCYm7VyGI2ZDR0yYns+s54IFkWHDG355MWyGDMVhqFBm3FAE
+         u0JN0MuNDZj316iZDvTrYS1xxa7Shsss8OsoA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=QerLtYFhyBoiMxUDzcHQOlMQYU3YOoR9s6yK1SSR1HA=;
-        b=p01laRfm9OFsZewQ3EEsWqIYeT72yLH6FuDylhQpLAz42ulowivj5AbretXyOSoL9Z
-         luNACsUeqYwBOp0lbIfMtsR15QRJDDRjUiAavMWVeheL2sTYQDVzhPi9NkFjW1B+tpmU
-         mrEnYgLuN1QY5vUAo+mUmaTEhlP7cgrrrbqeoLw2TRV5pcPmTMUK4zt89sKPyybaoXP9
-         njFvPCyJGLEPUNECeGa7HRnE6rZUk2afo4CzqdvFcXPzrNnPMvQVEP0GHFY1KpasWZ/m
-         D9Rm/Qh72daLxINyxt2g/xS0BgBSKxdqSGHsv9ldDC2FccR/UMp9gSiEEfknOM1n9zdQ
-         gQiA==
-X-Gm-Message-State: AOAM530yKtUPb1yl4MF5OLOcydyOLgW96tmcLqkCiDAw1zzKAy0FxO/a
-        AE8sH/mxuAp5ClF29wNzNEjVxMilxhb4RXRpig==
-X-Google-Smtp-Source: ABdhPJx35VGPMxNJWVP3WGniKF6MuphRkRCYx88RnO2+/cYxMCz0JlpmrJcspjcVf+3iet0Iw/afBSJdVhvqIuTuNxo=
-X-Received: by 2002:a65:6389:: with SMTP id h9mr18386923pgv.83.1631674624307;
- Tue, 14 Sep 2021 19:57:04 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=zbADmf0RfotFPk92OptkWggkubEXHwFuB6jYYoTJjjo=;
+        b=R32gYyzyKgA3N02vu2l6R8wl8vuyaOIrd/80AXkVEhL1w/f3y1qBJPaaEDo8OQklyO
+         00LMORbRpi4N2pnns7m2m1e/k4USqDjlrOX1h7BUDjZThrdMwBreWHTn1XBW85fTFCV/
+         6w4XPnR6WDdO3gyKNF9s2TjxVgf1gsNW8WLJC8Y45BtHrgDSDPyeN84dxdaSMw8HhNI7
+         vJ7VsS/vS+RGEJecddx8c1uH76pp/5Ca3w5wohSrHyrbYaMrhx4Z9/I0qPSmi1lrG+Xp
+         Grdbs8k+ETPZ7PY+mrbjhB1SjFC7zZcbafZaNSYJWn3Lyaz5jIdZ1iH61I/yoHqFQklW
+         9jTg==
+X-Gm-Message-State: AOAM5314h/OyoufvX2GaTHYIjQrjbqFNfOe2UCLOQyLVUYsQQz6h4c4T
+        qQsPTYYJhmJnRBfhzMgOwuyReaABdQd/xVHHGaQ=
+X-Google-Smtp-Source: ABdhPJy3IDqx37PzcJaUYD2nVYxldrHZg3rJID6IjZDmGML7EHENHLyQuM/mlJfpy+kYJ0yjDhOqug==
+X-Received: by 2002:a05:6512:3b0f:: with SMTP id f15mr9359842lfv.169.1631674780522;
+        Tue, 14 Sep 2021 19:59:40 -0700 (PDT)
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com. [209.85.167.54])
+        by smtp.gmail.com with ESMTPSA id u24sm1507114ljg.64.2021.09.14.19.59.39
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Sep 2021 19:59:39 -0700 (PDT)
+Received: by mail-lf1-f54.google.com with SMTP id i4so2970426lfv.4
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 19:59:39 -0700 (PDT)
+X-Received: by 2002:a19:ae15:: with SMTP id f21mr5942103lfc.402.1631674779201;
+ Tue, 14 Sep 2021 19:59:39 -0700 (PDT)
 MIME-Version: 1.0
-References: <CACkBjsa0wQ5oDQh0CABfV-UoAa9czS6DAuAA0fBrM_HhVxd6+w@mail.gmail.com>
- <a911ac2c-d743-03ea-513d-0b9756808d17@gmx.com>
-In-Reply-To: <a911ac2c-d743-03ea-513d-0b9756808d17@gmx.com>
-From:   Hao Sun <sunhao.th@gmail.com>
-Date:   Wed, 15 Sep 2021 10:56:53 +0800
-Message-ID: <CACkBjsa6uQU9RGKVmtbkAjBkQn4QZNCWo5N_wq4RHjPcJKt2Kw@mail.gmail.com>
-Subject: Re: WARNING in btrfs_run_delayed_refs
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     clm@fb.com, dsterba@suse.com, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <c1b1a299-c60d-28a4-07ab-1ecd211d6da9@i-love.sakura.ne.jp>
+ <3bf6f4f4-9c96-6e0c-951d-5509175dddfe@kernel.org> <bb40c26c-dd0f-f7c2-59b7-d6ad361a0cdb@i-love.sakura.ne.jp>
+In-Reply-To: <bb40c26c-dd0f-f7c2-59b7-d6ad361a0cdb@i-love.sakura.ne.jp>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 14 Sep 2021 19:59:23 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiiJ47YP7Q4AJC=YSfJdY-HK-8Bh7W=+hrZRqdM2UrAFg@mail.gmail.com>
+Message-ID: <CAHk-=wiiJ47YP7Q4AJC=YSfJdY-HK-8Bh7W=+hrZRqdM2UrAFg@mail.gmail.com>
+Subject: Re: linux: build failure: error: "__has_attribute" is not defined
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Kees Cook <keescook@chromium.org>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Qu Wenruo <quwenruo.btrfs@gmx.com> =E4=BA=8E2021=E5=B9=B49=E6=9C=8815=E6=97=
-=A5=E5=91=A8=E4=B8=89 =E4=B8=8A=E5=8D=8810:20=E5=86=99=E9=81=93=EF=BC=9A
+On Tue, Sep 14, 2021 at 6:05 PM Tetsuo Handa
+<penguin-kernel@i-love.sakura.ne.jp> wrote:
 >
->
->
-> On 2021/9/15 =E4=B8=8A=E5=8D=8810:14, Hao Sun wrote:
-> > Hello,
-> >
-> > When using Healer to fuzz the latest Linux kernel, the following crash
-> > was triggered.
-> >
-> > HEAD commit: 6880fa6c5660 Linux 5.15-rc1
-> > git tree: upstream
-> > console output:
-> > https://drive.google.com/file/d/1gd0dl74MyvvVAYqsCDKSGmcfpZszD0kt/view?=
-usp=3Dsharing
-> > kernel config: https://drive.google.com/file/d/1rUzyMbe5vcs6khA3tL9EHTL=
-JvsUdWcgB/view?usp=3Dsharing
-> > C reproducer: https://drive.google.com/file/d/1WKQukijOJ7D0NYk1iKf47FES=
-jYfAjrlz/view?usp=3Dsharing
-> > Syzlang reproducer:
-> > https://drive.google.com/file/d/1Gi9-Mgbrjw1OI-ymO4zDVIFej2Qf4ppL/view?=
-usp=3Dsharing
-> >
-> > If you fix this issue, please add the following tag to the commit:
-> > Reported-by: Hao Sun <sunhao.th@gmail.com>
-> >
-> > loop11: detected capacity change from 0 to 32768
-> > BTRFS info (device loop11): disk space caching is enabled
-> > BTRFS info (device loop11): has skinny extents
-> > BTRFS info (device loop11): enabling ssd optimizations
-> > FAULT_INJECTION: forcing a failure.
-> > name failslab, interval 1, probability 0, space 0, times 0
-> > CPU: 0 PID: 7769 Comm: syz-executor Not tainted 5.15.0-rc1 #16
-> > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-> > rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-> > Call Trace:
-> >   __dump_stack lib/dump_stack.c:88 [inline]
-> >   dump_stack_lvl+0x8d/0xcf lib/dump_stack.c:106
-> >   fail_dump lib/fault-inject.c:52 [inline]
-> >   should_fail+0x13c/0x160 lib/fault-inject.c:146
-> >   should_failslab+0x5/0x10 mm/slab_common.c:1328
-> >   slab_pre_alloc_hook.constprop.99+0x4e/0xc0 mm/slab.h:494
-> >   slab_alloc_node mm/slub.c:3120 [inline]
-> >   slab_alloc mm/slub.c:3214 [inline]
-> >   kmem_cache_alloc+0x44/0x280 mm/slub.c:3219
-> >   __btrfs_free_extent.isra.53+0x7b/0x1180 fs/btrfs/extent-tree.c:2942
-> >   run_delayed_tree_ref fs/btrfs/extent-tree.c:1687 [inline]
-> >   run_one_delayed_ref fs/btrfs/extent-tree.c:1711 [inline]
-> >   btrfs_run_delayed_refs_for_head fs/btrfs/extent-tree.c:1952 [inline]
-> >   __btrfs_run_delayed_refs+0x83e/0x1a00 fs/btrfs/extent-tree.c:2017
-> >   btrfs_run_delayed_refs+0xb1/0x2b0 fs/btrfs/extent-tree.c:2148
-> >   btrfs_commit_transaction+0x7d/0x1430 fs/btrfs/transaction.c:2065
-> >   btrfs_sync_fs+0x9a/0x430 fs/btrfs/super.c:1426
-> >   btrfs_ioctl+0x209b/0x3be0 fs/btrfs/ioctl.c:4970
-> >   vfs_ioctl fs/ioctl.c:51 [inline]
-> >   __do_sys_ioctl fs/ioctl.c:874 [inline]
-> >   __se_sys_ioctl fs/ioctl.c:860 [inline]
-> >   __x64_sys_ioctl+0xb6/0x100 fs/ioctl.c:860
-> >   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-> >   do_syscall_64+0x34/0xb0 arch/x86/entry/common.c:80
-> >   entry_SYSCALL_64_after_hwframe+0x44/0xae
-> > RIP: 0033:0x46ae99
-> > Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48
-> > 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-> > 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-> > RSP: 002b:00007f8ac08c7c48 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-> > RAX: ffffffffffffffda RBX: 000000000078c0a0 RCX: 000000000046ae99
-> > RDX: 0000000000000000 RSI: 0000000000009408 RDI: 0000000000000003
-> > RBP: 00007f8ac08c7c80 R08: 0000000000000000 R09: 0000000000000000
-> > R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000003
-> > R13: 0000000000000000 R14: 000000000078c0a0 R15: 00007ffccc1d6390
-> > ------------[ cut here ]------------
-> > WARNING: CPU: 0 PID: 7769 at fs/btrfs/extent-tree.c:2150
-> > btrfs_run_delayed_refs+0x245/0x2b0 fs/btrfs/extent-tree.c:2150
->
-> This is again btrfs_abort_transaction().
->
-> This makes me wonder, should we add ENOMEM to abort transaction warning
-> condition to make the ENOMEM injection code happy.
->
-> Mind to test the following diff?
->
-> Thanks,
-> Qu
->
-> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> index 8c6ee947a68d..6bc79f6716fa 100644
-> --- a/fs/btrfs/ctree.h
-> +++ b/fs/btrfs/ctree.h
-> @@ -3548,7 +3548,8 @@ do {
->                  \
->          /* Report first abort since mount */                    \
->          if (!test_and_set_bit(BTRFS_FS_STATE_TRANS_ABORTED,     \
->                          &((trans)->fs_info->fs_state))) {       \
-> -               if ((errno) !=3D -EIO && (errno) !=3D -EROFS) {          =
-   \
-> +               if ((errno) !=3D -EIO && (errno) !=3D -EROFS &&     \
-> +                   (errno) !=3D -ENOMEM) {                       \
->                          WARN(1, KERN_DEBUG                              =
-\
->                          "BTRFS: Transaction aborted (error %d)\n",      =
-\
->                          (errno));                                       =
-\
->
+> It would be nice if Makefile can also check gcc version used for building tools.
 
-Just tested it. This did fixed most `WARNING` reports, e.g., "WARNING
-in btrfs_add_link", "WARNING in btrfs_run_delayed_refs".
-I think it would be better if we can judge whether the  `ENOMEM` is
-caused by `fault injection` or not.
+I think the real problem is that the tool headers are cut-down from
+the real kernel headers, but not cut down enough, so they are still
+very complex, often with stuff that just isn't worth it in user space
+at all.
+
+And they _look_ like kernel headers - both in naming and in contents.
+But they really aren't.
+
+And it turns out there are two independent bugs here.
+
+Bug #1 is that the tool header files look _so_ much like the main
+kernel header files, that Nick thought that the
+
+   #if GCC_VERSION >= 40300
+
+was about the compiler we compile the kernel with.
+
+But no, it's about the host compiler.
+
+Easy mistake to make when the naming is so similar and the contents
+are often also fairly closely related too.
+
+But basically, commit 4e59869aa655 ("compiler-gcc.h: drop checks for
+older GCC versions") was buggy, because it took the kernel compiler
+version logic ("we require 5.1 to build the kernel") and applied it to
+the tooling header files too (we do _not_ require the kernel compiler
+for host tools).
+
+Now, arguably, commit 4eb6bd55cfb2 ("compiler.h: drop fallback
+overflow checkers") has the exact same problem: it too ends up
+changing  both the kernel header files and the tooling header files.
+But tooling really REALLY shouldn't be using those overflow macros, so
+nobody should care.
+
+Famous last words.
+
+I think we should remove that "tools/include/linux/overflow.h" header
+entirely. Yes, it is used - by tools/virtio/linux/kernel.h. But I
+think that overflow handling code should be removed. It's just not
+interesting in user tools.
+
+Now, the _second_ bug was then that when Nathan fixed the tooling
+header file in commit d0ee23f9d78b ("tools: compiler-gcc.h: Guard
+error attribute use with __has_attribute"), he did it the wrong way.
+
+The gcc docs are fairly clear about how to test for __has_attibute correctly:
+
+    https://gcc.gnu.org/onlinedocs/cpp/_005f_005fhas_005fattribute.html
+
+and a host build environment should probably have used
+
+  #if defined __has_attribute
+  #  if __has_attribute (error)
+  ...
+
+and not used any version checks at all.
+
+Of course, I'm not convinced it should do that __compiletime_error()
+at all, and again, I think it would be better to remove the complexity
+rather than anything else.
+
+Anybody want to tackle those issues in
+
+   tools/include/linux/overflow.h
+   tools/include/linux/compiler-gcc.h
+
+and try to simplify the code?
+
+              Linus
