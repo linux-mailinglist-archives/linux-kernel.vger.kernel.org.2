@@ -2,93 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E965E40CD60
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 21:48:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C71BE40CD68
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 21:49:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231679AbhIOTt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 15:49:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230451AbhIOTtX (ORCPT
+        id S231628AbhIOTu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 15:50:57 -0400
+Received: from mail-0201.mail-europe.com ([51.77.79.158]:52283 "EHLO
+        mail-0201.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229732AbhIOTuz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 15:49:23 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37AADC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 12:48:04 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id h16so8787583lfk.10
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 12:48:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Y64G4Nr6eLupd8AyUDQV+QjpzOrG0jVGWqFOvbj7NhQ=;
-        b=Y4csyohCZU+8YoKj/T3AMNnwgk3FRg+INHHD4fuGyDsUm1wq1h6AKxBYulDw3FoQ7G
-         0NziSuibsMyNi5yefbYsucBch28Uj+K3jgCIw+xC9NJQXLVMnDOuhKqiW0u/dIQHiVqz
-         N3nrrQCoMhlCRtjeNcE5DeBxWUyUUAZ/n68kQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Y64G4Nr6eLupd8AyUDQV+QjpzOrG0jVGWqFOvbj7NhQ=;
-        b=PhnCEmKmDcXMShE4gM4TdhYb9eeTWhZAcHL6DlfilmqzYWuwdycCa4kx6j46ytU4+M
-         L7vRBrY8UllJxz2ZAUiTJxyWLOvb2RlHW/biyqjVDrRdFV79daDFrThbMi11ZGH7nWIl
-         x3otaGCrlu5iAeKB6AZ0nr6rndmqg7IAAK64g3gcTj8hFRvtuTMk4vItWRou/Tg9whQM
-         0crVf4dBBePSSMhdzF1ULvo8hpciXeAGDbQ1LuXuIhumbtUK2zn5bITRdit4UIfhm7nT
-         pNpNu0LzuMy29yJvwHpyF7wylsIvhloa4E3t9JD1sgSyEwLIh8Keya3K7r5akOSwp1CQ
-         MADg==
-X-Gm-Message-State: AOAM530iKvQCAfnEWXoazhvxLRnwaUWekmzTlXJpSE+o+p7TQeNY43uB
-        CUrxhHOCkH82rEXqKWKnOBQ+yFHmg4+zVQTW4VE=
-X-Google-Smtp-Source: ABdhPJwv3KXrRXZAmNg4F8D0BnrfMnghM9jBh6BzNTEGDyggRBBE54QrklKkGioEO5S2joNvkdPVUw==
-X-Received: by 2002:a2e:5310:: with SMTP id h16mr1500775ljb.268.1631735281958;
-        Wed, 15 Sep 2021 12:48:01 -0700 (PDT)
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
-        by smtp.gmail.com with ESMTPSA id x4sm93426ljm.98.2021.09.15.12.48.00
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Sep 2021 12:48:01 -0700 (PDT)
-Received: by mail-lf1-f47.google.com with SMTP id c8so8888309lfi.3
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 12:48:00 -0700 (PDT)
-X-Received: by 2002:a05:6512:3991:: with SMTP id j17mr1261083lfu.280.1631735280541;
- Wed, 15 Sep 2021 12:48:00 -0700 (PDT)
+        Wed, 15 Sep 2021 15:50:55 -0400
+Date:   Wed, 15 Sep 2021 19:49:31 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.ch;
+        s=protonmail; t=1631735373;
+        bh=Kzo/FE8G5q953Lxm0/XW9G81Ha9l76W4Mmjg/cMipHM=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=HqPu7vKH7qspnMEGjMQ4CxaUdKAn2LZnYGqo8+sq0XCUkYGuTpHnbv7k+uh/LSPxj
+         6ib28BlfPOG83k0KuLN4SBcgR0vPFuZguM1kJ1WtyXEsPwJIE6743UlELNa4+J2oX9
+         rc5NaZyd4HQQBYrISZBj8uDPdYpw+Kcq/l/iFxUE=
+To:     LKML <linux-kernel@vger.kernel.org>
+From:   Jordan Glover <Golden_Miller83@protonmail.ch>
+Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "legion@kernel.org" <legion@kernel.org>,
+        "containers@lists.linux-foundation.org" 
+        <containers@lists.linux-foundation.org>,
+        "Eric W . Biederman" <ebiederm@xmission.com>
+Reply-To: Jordan Glover <Golden_Miller83@protonmail.ch>
+Subject: linux 5.14.3: free_user_ns causes NULL pointer dereference
+Message-ID: <1M9_d6wrcu6rdPe1ON0_k0lOxJMyyot3KAb1gdyuwzDPC777XVUWPHoTCEVmcK3fYfgu7sIo3PSaLe9KulUdm4TWVuqlbKyYGxRAjsf_Cpk=@protonmail.ch>
 MIME-Version: 1.0
-References: <20210915035227.630204-1-linux@roeck-us.net> <CAHk-=wjXr+NnNPTorhaW81eAbdF90foVo-5pQqRmXZi-ZGaX6Q@mail.gmail.com>
- <47fcc9cc-7d2e-bc79-122b-8eccfe00d8f3@roeck-us.net>
-In-Reply-To: <47fcc9cc-7d2e-bc79-122b-8eccfe00d8f3@roeck-us.net>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 15 Sep 2021 12:47:44 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgdEHPm6vGcJ_Zr-Q_p=Muv1Oby5H2+6QyPGxiZ7_Wv+w@mail.gmail.com>
-Message-ID: <CAHk-=wgdEHPm6vGcJ_Zr-Q_p=Muv1Oby5H2+6QyPGxiZ7_Wv+w@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] Introduce and use absolute_pointer macro
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-parisc@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
-        Sparse Mailing-list <linux-sparse@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.7 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO_END_DIGIT shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 12:35 PM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On a side note, we may revive the parisc patch. Helge isn't entirely
-> happy with the other solution for parisc; it is quite invasive and
-> touches a total of 19 files if I counted correctly.
+Hi, recently I hit system freeze after I was closing few containerized apps=
+ on my system. As for now it occurred only once on linux 5.14.3. I think it=
+ maybe be related to "Count rlimits in each user namespace" patchset merged=
+ during 5.14 window
 
-Ok, my suggestion to use the linker was not a "do it this way", it
-really was just a "maybe alternate approach". So no objections if
-absolute_pointer() ends up being the simpler solution.
+https://lore.kernel.org/all/257aa5fb1a7d81cf0f4c34f39ada2320c4284771.161909=
+4428.git.legion@kernel.org/T/#u
 
-What other notable issues end up being still live? I sent out that one
-patch for sparc, but didn't get any response to it. I'm inclined to
-just apply it (the 'struct mdesc_hdr' pointer misuse one).
+Logs below:
 
-         Linus
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 26546 at kernel/ucount.c:253 dec_ucount+0x43/0x50
+Modules linked in: nft_ct nft_fib_ipv4 nft_fib wireguard curve25519_x86_64 =
+libcurve25519_generic libchacha20poly1305 chacha_x86_64 poly1305_x86_64 udp=
+_tunnel libblake2s blake2s_x86_64 libblake2s_generic libchacha ccm algif_ae=
+ad des_generic libdes ecb algif_skcipher cmac md4 algif_hash af_alg hid_sen=
+sor_custom_intel_hinge hid_sensor_als hid_sensor_magn_3d hid_sensor_rotatio=
+n hid_sensor_accel_3d hid_sensor_gyro_3d hid_sensor_trigger industrialio_tr=
+iggered_buffer hid_sensor_iio_common kfifo_buf industrialio hid_sensor_cust=
+om hid_sensor_hub cros_ec_ishtp cros_ec intel_ishtp_loader nft_counter inte=
+l_ishtp_hid snd_hda_codec_hdmi intel_rapl_msr xt_mark ipt_REJECT nf_reject_=
+ipv4 snd_ctl_led xt_LOG snd_hda_codec_conexant nf_log_syslog snd_hda_codec_=
+generic xt_addrtype xt_tcpudp xt_conntrack nf_conntrack nf_defrag_ipv4 mei_=
+hdcp snd_hda_intel nft_compat wmi_bmof nf_tables intel_rapl_common libcrc32=
+c think_lmi intel_tcc_cooling snd_intel_dspcfg firmware_attributes_class nf=
+netlink iwlmvm
+ intel_wmi_thunderbolt mac80211 x86_pkg_temp_thermal snd_hda_codec intel_po=
+werclamp coretemp libarc4 vfat fat kvm_intel rapl intel_cstate snd_hwdep in=
+tel_uncore iwlwifi snd_hda_core mousedev joydev snd_pcm psmouse cfg80211 sn=
+d_timer mei_me ucsi_acpi wacom intel_ish_ipc intel_xhci_usb_role_switch mei=
+ intel_pch_thermal typec_ucsi roles typec intel_ishtp wmi thinkpad_acpi led=
+trig_audio platform_profile snd soundcore rfkill tpm_crb i2c_hid_acpi i2c_h=
+id acpi_pad tpm_tis mac_hid tpm_tis_core pkcs8_key_parser fuse zram ip_tabl=
+es x_tables ext4 crc32c_generic crc16 mbcache jbd2 usbhid dm_crypt cbc encr=
+ypted_keys trusted asn1_encoder tee tpm rng_core dm_mod rtsx_pci_sdmmc mmc_=
+core serio_raw atkbd libps2 crct10dif_pclmul crc32_pclmul crc32c_intel ghas=
+h_clmulni_intel aesni_intel crypto_simd cryptd xhci_pci rtsx_pci xhci_pci_r=
+enesas i8042 serio kvmgt mdev vfio_iommu_type1 vfio i915 i2c_algo_bit intel=
+_gtt ttm agpgart video drm_kms_helper syscopyarea sysfillrect sysimgblt fb_=
+sys_fops cec
+ drm kvm irqbypass
+CPU: 1 PID: 26546 Comm: kworker/1:1 Not tainted 5.14.3 #1 c719caf0c6c208968=
+387ed83e3061ac05d0faf2f
+Workqueue: events free_user_ns
+RIP: 0010:dec_ucount+0x43/0x50
+Code: 14 01 48 8b 02 48 89 c6 48 83 ee 01 78 1c f0 48 0f b1 32 75 f0 48 8b =
+41 10 48 8b 88 e8 01 00 00 48 85 c9 75 d9 e9 0d fd ff ff <0f> 0b eb e7 66 0=
+f 1f 84 00 00 00 00 00 0f 1f 44 00 00 49 89 f8 48
+RSP: 0018:ffffa82cc2bd7e60 EFLAGS: 00010297
+RAX: 0000000000000000 RBX: ffffa2f53298ee50 RCX: ffffa2f3c0061000
+RDX: ffffa2f3c0061020 RSI: ffffffffffffffff RDI: ffffa2f3c0061000
+RBP: ffffa2f53298ebe0 R08: 0000000000000020 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000000 R12: ffffa2f3c0061000
+R13: 00000000ffffffff R14: 0000000000000000 R15: 0000000000000001
+FS:  0000000000000000(0000) GS:ffffa2f599680000(0000) knlGS:000000000000000=
+0
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000628f892be9f8 CR3: 000000002880e004 CR4: 00000000003706e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ free_user_ns+0x73/0x110
+ process_one_work+0x1e1/0x380
+ worker_thread+0x50/0x3a0
+ ? rescuer_thread+0x360/0x360
+ kthread+0x127/0x150
+ ? set_kthread_struct+0x40/0x40
+ ret_from_fork+0x22/0x30
+---[ end trace eb7a8d38b64b2d3a ]---
+BUG: kernel NULL pointer dereference, address: 00000000000001e8
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+Oops: 0000 [#1] SMP PTI
+CPU: 1 PID: 26546 Comm: kworker/1:1 Tainted: G        W         5.14.3 #1 c=
+719caf0c6c208968387ed83e3061ac05d0faf2f
+Workqueue: events free_user_ns
+RIP: 0010:dec_ucount+0x32/0x50
+Code: 74 34 89 f6 48 89 f9 4c 8d 04 f5 20 00 00 00 4a 8d 14 01 48 8b 02 48 =
+89 c6 48 83 ee 01 78 1c f0 48 0f b1 32 75 f0 48 8b 41 10 <48> 8b 88 e8 01 0=
+0 00 48 85 c9 75 d9 e9 0d fd ff ff 0f 0b eb e7 66
+RSP: 0018:ffffa82cc2bd7e60 EFLAGS: 00010297
+RAX: 0000000000000000 RBX: ffffa2f53298ee50 RCX: ffffa2f3c0061000
+RDX: ffffa2f3c0061020 RSI: ffffffffffffffff RDI: ffffa2f3c0061000
+RBP: ffffa2f53298ebe0 R08: 0000000000000020 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000000 R12: ffffa2f3c0061000
+R13: 00000000ffffffff R14: 0000000000000000 R15: 0000000000000001
+FS:  0000000000000000(0000) GS:ffffa2f599680000(0000) knlGS:000000000000000=
+0
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000000001e8 CR3: 000000002880e004 CR4: 00000000003706e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ free_user_ns+0x73/0x110
+ process_one_work+0x1e1/0x380
+ worker_thread+0x50/0x3a0
+ ? rescuer_thread+0x360/0x360
+ kthread+0x127/0x150
+ ? set_kthread_struct+0x40/0x40
+ ret_from_fork+0x22/0x30
+
