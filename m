@@ -2,195 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 101E940C244
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 11:00:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7D7440C24C
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 11:02:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237165AbhIOJBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 05:01:01 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:54294
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237160AbhIOJAy (ORCPT
+        id S237063AbhIOJDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 05:03:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236766AbhIOJDi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 05:00:54 -0400
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com [209.85.218.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 584134017C
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 08:59:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1631696368;
-        bh=39NyD7eSdjWRLG7akJoaBQq2vkbMMaThM/SwbRfMg/Y=;
-        h=To:Cc:References:From:Subject:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=DMiwzSqYW3AUg3oJEXVZANFWDVp5furaICTstN6E6aPxWTXiynPcTRYl+PlGbzCFl
-         1u3fluTHY/KZlAN+pBly5G9jQ1Jn18g7jdC+Lo4NHhqAcay7AF17xnsP7+7QRWyIXS
-         0Xi4aQ2MXD0qPp4SeQCkYWznJq1+oA3x/R0tGas8MxsUM+98sieIXijXYCZJ3/Q+my
-         aK/RvX1ZgETnxy8VVo1PESmp9N8S7Zg4MDCiOyWannL8P7RlbzspNaE5OPOBJq20B+
-         sO3QRWI/lqTIRQ+l6KkF1mi9aaEcvuwppF4e3jCpPrukF2ir5dw1ce/6h6N+96mnMT
-         L0ItJ4P5xw+3Q==
-Received: by mail-ej1-f72.google.com with SMTP id p24-20020a17090635d800b005f264e9cb99so1156432ejb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 01:59:28 -0700 (PDT)
+        Wed, 15 Sep 2021 05:03:38 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE6ADC061575
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 02:02:19 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id g16so2682389wrb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 02:02:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mqCyO1mG9ovNges4P3yiXDZD1penTas/8IEFz1KTDdI=;
+        b=P17ld7iBxQ3i8w4fb/Ij9aE9sSXdPv2eKQQiOZwnyGvHbkOUmYO8YiKdcFlxp0UFVn
+         l8nkMIqLjBxt1Kw82AqWsf5mx3ode/CSMiQkoIiXbTK2Q7yVfcaVUmkblXKBOdXjvE/N
+         ZaEgEt3sSa2LI51hy4ZROc/BThUVd142muMbHK5WGBXeWPRiO9P7kIWJTTeQaM+wjvhk
+         oEgO8iCRMqSh9R0/iKk7+UNx+M058ZCqeLnPamFci3Jo4TFSeinpsqV2l2of206UaRNH
+         VLqXVFgkE9moT1yAXmnpnxCO1C8hTlHaCE/IDys1yHoAMhhG9mvjEqnu1/qi+HsQ6PFK
+         m4YQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=39NyD7eSdjWRLG7akJoaBQq2vkbMMaThM/SwbRfMg/Y=;
-        b=D7Q2VK+iwoYflyEQizf6KvyK8c05EcibCb/OrHXcB4Iq5Kd38SZPtCle0Em/KnvUtb
-         crGXJ7QrFRzbWJLHcowws8IVq4hvLAZ6RQ3NTRi9jQsX63r6eitKMOOtazyjMTtMjTYd
-         /ifzzb+2GF3NaT8yUvuA0oUwOOb3JVHsvXPYT1lZn1Smy3fFgD6VP7ehwnXkbuilZL03
-         hVwdZp3qVW+4Tx3iVcEq/9fHQpDvVAs7Q01fLqnz6Giu0/jryQSbLBglVTlvIi0ER+jV
-         QXIlDVGaKhGJlZFwhAEKv3giVstM40pCymQy6twVlALMSCcHIbwCAUpFte+2i3tExIPJ
-         3YIQ==
-X-Gm-Message-State: AOAM530XTpy3bRGu4DRaWVDj/gxolssW0JgOlKW6brpx/HeIQrj83a/X
-        nXIgk13iyF6+E3CUV7qbAvwpgN8HaaAeW3LGkDgREFaC+3vrNP62T4KCMuQ6LasEAVrXtlvCD4Q
-        QTOZRR6GIxQEk4ChjJAGrjnFx6F7pYv1K3T4kSZ/HJg==
-X-Received: by 2002:a17:906:f15:: with SMTP id z21mr23428833eji.177.1631696368016;
-        Wed, 15 Sep 2021 01:59:28 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJymRnBWWR852OpGubXgrdOU89q9lNXSyAJz+ZILaji+sCwYZwgAvCN0PKGDsBRUEBEUCnD23A==
-X-Received: by 2002:a17:906:f15:: with SMTP id z21mr23428808eji.177.1631696367855;
-        Wed, 15 Sep 2021 01:59:27 -0700 (PDT)
-Received: from [192.168.3.211] (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
-        by smtp.gmail.com with ESMTPSA id f24sm6703253edc.40.2021.09.15.01.59.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Sep 2021 01:59:27 -0700 (PDT)
-To:     Sam Protsenko <semen.protsenko@linaro.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        =?UTF-8?Q?Pawe=c5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>
-Cc:     Ryu Euiyoul <ryu.real@samsung.com>, Tom Gall <tom.gall@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org
-References: <20210914155607.14122-1-semen.protsenko@linaro.org>
- <20210914155607.14122-7-semen.protsenko@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: Re: [PATCH 6/6] clk: samsung: Introduce Exynos850 clock driver
-Message-ID: <3da75dbe-2f98-39db-c455-46adead7097b@canonical.com>
-Date:   Wed, 15 Sep 2021 10:59:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        bh=mqCyO1mG9ovNges4P3yiXDZD1penTas/8IEFz1KTDdI=;
+        b=5aKeMtoJk+i6PFsyEtwiOC9aVt8uS5m1owpNfkf7XAQA2p+KrOonk0cOHesEfUShHr
+         0Fo0BjsqDiFOK99PcQ1Vn/hR13GIszzUuSs4Cu3U15cL7WtCUvOqe79px6kIKRA7Ale2
+         8M3rmdi3ep/96DsQq9cTC1F2Lbs2Dxm4aTQFADI/7+9Krj2DxgBbFJx1o8Hoc8I6bsPV
+         OI/v8Au0kG4K/KgLOxp7FW2NHHAFBKzr9FHHqhf65HyJqrQYJihLMGiH94DSyMIZTRne
+         p3GQOGyPcivh36juV0SCTdm6YfkeOSwP3+rCdBBmcr37rMYY004YNqRnoGF8cV3wYNtT
+         2Ipw==
+X-Gm-Message-State: AOAM532HSLtm6ndPAgqd+P/NG6lgYsrJAeul2IwHbwrTcZlqN8mGBW10
+        uRxXeqMGxwAdH3YSw3RNVFLpQBDoUNe+8w==
+X-Google-Smtp-Source: ABdhPJxAXDP3qv6YPXzvn7hHyTgu3aJUH3M6woXe70hweKKO1SvalSh4fCZtsmc4DIkJGPiY64lXqw==
+X-Received: by 2002:a05:6000:1623:: with SMTP id v3mr3790400wrb.288.1631696537566;
+        Wed, 15 Sep 2021 02:02:17 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:8108:96c0:3b88::1db2])
+        by smtp.gmail.com with ESMTPSA id n186sm3565530wme.31.2021.09.15.02.02.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Sep 2021 02:02:17 -0700 (PDT)
+From:   Michael Straube <straube.linux@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
+        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Michael Straube <straube.linux@gmail.com>
+Subject: [PATCH v2 0/4] staging: r8188eu: remove unused fields from struct hal_data_8188e
+Date:   Wed, 15 Sep 2021 11:01:52 +0200
+Message-Id: <20210915090156.4169-1-straube.linux@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <20210914155607.14122-7-semen.protsenko@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/09/2021 17:56, Sam Protsenko wrote:
-> This is the initial implementation adding only basic clocks like UART,
-> MMC, I2C and corresponding parent clocks. Design is influenced by
-> Exynos7 and Exynos5433 clock drivers.
-> 
-> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> ---
->  drivers/clk/samsung/Makefile        |   1 +
->  drivers/clk/samsung/clk-exynos850.c | 700 ++++++++++++++++++++++++++++
->  2 files changed, 701 insertions(+)
->  create mode 100644 drivers/clk/samsung/clk-exynos850.c
-> 
-> diff --git a/drivers/clk/samsung/Makefile b/drivers/clk/samsung/Makefile
-> index 028b2e27a37e..c46cf11e4d0b 100644
-> --- a/drivers/clk/samsung/Makefile
-> +++ b/drivers/clk/samsung/Makefile
-> @@ -17,6 +17,7 @@ obj-$(CONFIG_EXYNOS_ARM64_COMMON_CLK)	+= clk-exynos5433.o
->  obj-$(CONFIG_EXYNOS_AUDSS_CLK_CON) += clk-exynos-audss.o
->  obj-$(CONFIG_EXYNOS_CLKOUT)	+= clk-exynos-clkout.o
->  obj-$(CONFIG_EXYNOS_ARM64_COMMON_CLK)	+= clk-exynos7.o
-> +obj-$(CONFIG_EXYNOS_ARM64_COMMON_CLK)	+= clk-exynos850.o
->  obj-$(CONFIG_S3C2410_COMMON_CLK)+= clk-s3c2410.o
->  obj-$(CONFIG_S3C2410_COMMON_DCLK)+= clk-s3c2410-dclk.o
->  obj-$(CONFIG_S3C2412_COMMON_CLK)+= clk-s3c2412.o
-> diff --git a/drivers/clk/samsung/clk-exynos850.c b/drivers/clk/samsung/clk-exynos850.c
-> new file mode 100644
-> index 000000000000..1028caa2102e
-> --- /dev/null
-> +++ b/drivers/clk/samsung/clk-exynos850.c
-> @@ -0,0 +1,700 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (C) 2021 Linaro Ltd.
-> + * Author: Sam Protsenko <semen.protsenko@linaro.org>
-> + *
-> + * Common Clock Framework support for Exynos850 SoC.
-> + */
-> +
-> +#include <linux/clk-provider.h>
-> +#include <linux/of.h>
-> +#include <linux/of_address.h>
-> +
-> +#include <dt-bindings/clock/exynos850.h>
-> +
-> +#include "clk.h"
-> +
-> +/* Gate register bits */
-> +#define GATE_MANUAL		BIT(20)
-> +#define GATE_ENABLE_HWACG	BIT(28)
-> +
-> +/* Gate register offsets range */
-> +#define GATE_OFF_START		0x2000
-> +#define GATE_OFF_END		0x2fff
-> +
-> +/**
-> + * exynos850_init_clocks - Set clocks initial configuration
-> + * @np:			CMU device tree node with "reg" property (CMU addr)
-> + * @reg_offs:		Register offsets array for clocks to init
-> + * @reg_offs_len:	Number of register offsets in reg_offs array
-> + *
-> + * Set manual control mode for all gate clocks.
-> + */
-> +static void __init exynos850_init_clocks(struct device_node *np,
-> +		const unsigned long *reg_offs, size_t reg_offs_len)
-> +{
-> +	const __be32 *regaddr_p;
-> +	u64 regaddr;
-> +	u32 base;
-> +	size_t i;
-> +
-> +	/* Get the base address ("reg" property in dts) */
-> +	regaddr_p = of_get_address(np, 0, NULL, NULL);
-> +	if (!regaddr_p)
-> +		panic("%s: failed to get reg regaddr\n", __func__);
-> +
-> +	regaddr = of_translate_address(np, regaddr_p);
-> +	if (regaddr == OF_BAD_ADDR || !regaddr)
-> +		panic("%s: bad reg regaddr\n", __func__);
-> +
-> +	base = (u32)regaddr;
-> +
-> +	for (i = 0; i < reg_offs_len; ++i) {
-> +		void __iomem *reg;
-> +		u32 val;
-> +
-> +		/* Modify only gate clock registers */
-> +		if (reg_offs[i] < GATE_OFF_START || reg_offs[i] > GATE_OFF_END)
-> +			continue;
-> +
-> +		reg = ioremap(base + reg_offs[i], 4);
+This series removes some unused fields from struct hal_data_8188eu.
 
-You first translate the address to CPU physical address and then apply
-offset. This should be equivalent to one of_iomap() of entire range and
-iterate starting from the base pointer.  IOW, I don't get why you have
-to map each register instead of mapping entire SFR/IO range?
+Tested on x86_64 with Inter-Tech DMG-02.
 
-> +		val = ioread32(reg);
-> +		val |= GATE_MANUAL;
-> +		val &= ~GATE_ENABLE_HWACG;
-> +		iowrite32(val, reg);
+v1 -> v2
+Fixed a typo in the subject line of patch 3/4.
 
-All other drivers use readl/writel, so how about keeping it consistent?
+Michael Straube (4):
+  staging: r8188eu: remove unused macros from rtl8188e_hal.h
+  staging: r8188eu: remove write-only fields from struct hal_data_8188e
+  staging: r8188eu: remove unused enums from rtl8188e_hal.h
+  staging: r8188eu: remove unused field from struct hal_data_8188e
 
-Rest looks good but I did not verify the numbers :)
+ .../staging/r8188eu/hal/rtl8188e_hal_init.c   |  5 -----
+ .../staging/r8188eu/include/rtl8188e_hal.h    | 22 -------------------
+ 2 files changed, 27 deletions(-)
 
-Best regards,
-Krzysztof
+-- 
+2.33.0
+
