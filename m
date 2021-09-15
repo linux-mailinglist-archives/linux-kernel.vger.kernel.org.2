@@ -2,49 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6C4940CBD1
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 19:41:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C97EB40CBD6
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 19:42:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230304AbhIORmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 13:42:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229746AbhIORmW (ORCPT
+        id S230203AbhIORoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 13:44:08 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:36589 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229479AbhIORoH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 13:42:22 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDB11C061574;
-        Wed, 15 Sep 2021 10:41:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=qt2oy9vw0dXIN2QIKk1xtx0ae09ij6yfgJ9fhHl0i8g=; b=V1iybqMKBGo0UF49aDegibTuO4
-        9KRsxbz9kIeDITVYr+X620EG5+yLurXE3Cq+pCcupyd3B4/A5D7rJ8LOamDGqDl6e9NsMM3OhcyBI
-        DAxGVnoBNh+Y2+jXP3I5tcJc1S5aAIvMu41WpD2jFV0bwQEVhPCqgtcKFSxW3VstiFdFRZ70lydCF
-        1sr9SWxF/NVT2Woq1s7vcalDk3Knhh+go2dPCb1phH5u312m3kAPuBurahHH74kkD+QJzoLt7sAvy
-        5P83g8Lg4edQpZ0J2wWd2J5gCL0t6s+DYAgkX8ASczJLTjYrNZ4GpW4Kx6W6PMVuJ2Sgnno84xas1
-        FurilX2Q==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mQYu1-009eBn-JQ; Wed, 15 Sep 2021 17:40:57 +0000
-Date:   Wed, 15 Sep 2021 10:40:57 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     lucas.demarchi@intel.com, linux-modules@vger.kernel.org
-Cc:     live-patching@vger.kernel.org, fstests@vger.kernel.org,
-        linux-block@vger.kernel.org, hare@suse.de, dgilbert@interlog.com,
-        jeyu@kernel.org, osandov@fb.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/3] kmod: add patient module removal support
-Message-ID: <YUIwKUXc7YbVAqut@bombadil.infradead.org>
-References: <20210810051602.3067384-1-mcgrof@kernel.org>
+        Wed, 15 Sep 2021 13:44:07 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 18FHgO2e004544
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Sep 2021 13:42:25 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 360D215C3424; Wed, 15 Sep 2021 13:42:24 -0400 (EDT)
+Date:   Wed, 15 Sep 2021 13:42:24 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Howells <dhowells@redhat.com>, ksummit@lists.linux.dev
+Subject: [MAINTAINER SUMMIT] Folios as a potential Kernel/Maintainers Summit
+ topic?
+Message-ID: <YUIwgGzBqX6ZiGgk@mit.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210810051602.3067384-1-mcgrof@kernel.org>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-*Friendly poke*
+Back when we could fit all or most of the Maintainers plus interested
+developers in a single room, the question of how to make forward
+progress on something like Folios.  These days, all of the interested
+parties wouldn't fit in a single room, which is why Maintainers summit
+focuses only on development process issues.
 
-  Luis
+However, this means that when we need to make a call about what needs
+to happen before Folios can be merged, we don't seem to have a good
+way to make that happen.  And being a file system developer who is
+eagerly looking forward to what Folios will enable, I'm a bit biased
+in terms of wanting to see how we can break the logjam and move
+forward.
+
+So.... I have a proposal.  We could potentially schedule a Wither
+Folios LPC BOF during one of the time slots on Friday when the
+Maintainers Summit is taking place, and we arrange to have all of the
+Maintainers switch over to the LPC BOF room.  If enough of the various
+stakeholders for Folios are going to be attending LPC or Maintainer's
+Summit, and folks (especially Linus, who ultiamtely needs to make the
+final decision), this is something we could do.
+
+Would this be helpful?  (Or Linus could pull either the folio or
+pageset branch, and make this proposal obsolete, which would be great.  :-)
+
+	    	      	       		 - Ted
