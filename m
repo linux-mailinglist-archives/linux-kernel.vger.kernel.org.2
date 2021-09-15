@@ -2,124 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D692940C093
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 09:32:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65C2E40C08B
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 09:31:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236629AbhIOHdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 03:33:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47924 "EHLO
+        id S236672AbhIOHcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 03:32:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231228AbhIOHdW (ORCPT
+        with ESMTP id S232034AbhIOHcJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 03:33:22 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EB15C061574;
-        Wed, 15 Sep 2021 00:32:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=EWvc+q9s1X7xJOMLCiV8ECkEXtDe5FQ0U3D7Zlj18qg=; b=enAQlBdJgwtG7Zlgh7SXmTWZKK
-        RLlwrNTTyJjUB85LBACpvf45Mj/sTBD0uIn29bFznTlLH1Ld8p5RMKWHfDJo/UkzucWlqOezhmkGi
-        gCqU+B3S3YlxZp/K4aREfdwrbmnpSVPIWCebR4evFzRrBnVNAGGHfpoD6wIucs72mduM3z6gFciR9
-        FEHmTOlnPzcYGV7Hm/5lQcD3Hx9X3uPbUZoStV3qsjB8T+0BvfJjbhex7pG03J587ZXo5Ki6HCDtB
-        2crYeD7XOg9574c5ZuEwjnGh0uqTI2/38JxLjQh7GLD+Abbzaf5N1ex8B2jB+Nku9IIYuuLm04eZg
-        rjo7Owmw==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mQPMX-00FSj6-ML; Wed, 15 Sep 2021 07:30:07 +0000
-Date:   Wed, 15 Sep 2021 08:29:45 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Hao Sun <sunhao.th@gmail.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: general protection fault in wb_timer_fn
-Message-ID: <YUGg6aVAPKoYZ+8V@infradead.org>
-References: <CACkBjsZxsm=91sf-ihJgEtx7tmBJr-yTrPbrvg6tP-_J4pGdGw@mail.gmail.com>
- <YUB9Pn4CrqYu7TMC@infradead.org>
- <CACkBjsYwLYLRmX8GpsDpMthagWOjWWrNxqY6ZLNQVr6yx+f5vA@mail.gmail.com>
+        Wed, 15 Sep 2021 03:32:09 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB0BBC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 00:30:50 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id g184so1837047pgc.6
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 00:30:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ansDI2ALwiWUvo/BHMzSUNbG1zi7g1Z2RW2yT9Z/nQU=;
+        b=ORu8quCr4ulyj8peI8bv8LIWYdxUyRLHamjFT4YgcAyCXXSJdSEDIA5RUxfAmRN09J
+         tY/7T5bYctY95S7e+fwttxX+NNE5jGnbTpmByrsUudiTX9yWUMLlenKQBt/TixdSRPsZ
+         LrlLHUqNy1XM3U3BySYeH/YSkyih1AlxBf3CpwC7vZvdDR4Blb2RYh6a1Bq9HCVhkR1+
+         E0XG1SnRFmOSibxEc1rd4fVF8VCvFA6y+XiaAfVwVYGGx/EljBv00XVcINk3zbgbFI37
+         Na9ZrjmuFHRhntxtlqxBJbwI9WZHCcDwJ5mTZqO8dkI54BjWnhGuTajMW1ZdHWDAO0jc
+         U2mQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ansDI2ALwiWUvo/BHMzSUNbG1zi7g1Z2RW2yT9Z/nQU=;
+        b=oRQedRyhgdJZ7EFNyRjN01adTM3EbS8mDpqO7P/N9Y59L6Hq1bITNrcrR5Kc4Gj+nE
+         oV/QRvDZ4NFXqqLJ1aNqoVb+JV3y0rrIdRtJdyGUykng7+DZoJ8ZfzanXEFCirXuBGJm
+         aIAmyAFL1ndt8M3TRCoz6jO3KYyrLa6XWEkUxhZpKiyQ5fVqQW3G+/QaeVjS5/VTr2YZ
+         6gbiDzr33GGp9LwD4yITFYeK0yodrFCscpM8Q9UQKqeK5yZvIv/vcwpUwuzZlHCtFOLc
+         kDbTzFjSAlOmTBVHITB5oMPsGAsacjYobYPz6sQMtF2/AWHyBDZ94vN0LPDbGRarR3Hv
+         RlDw==
+X-Gm-Message-State: AOAM531eEj2eigDDIp4xlzX9TwL6M4nsW4U+Y3dg6s7IH1sUCR6n/T/4
+        fjHxRgU5rmigAJNarwP8k1elmyjXbavDNrEAvRzLqA==
+X-Google-Smtp-Source: ABdhPJyPhEr+fuMcqTX6W8kA2CYRATLI7X4XWaSCGHZXRVAs1Jug54iwzt8yUmfw+4OuE3ywJoZ1ZLM++dY2ReITCo4=
+X-Received: by 2002:aa7:9e8d:0:b0:406:be8:2413 with SMTP id
+ p13-20020aa79e8d000000b004060be82413mr9157759pfq.66.1631691049890; Wed, 15
+ Sep 2021 00:30:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACkBjsYwLYLRmX8GpsDpMthagWOjWWrNxqY6ZLNQVr6yx+f5vA@mail.gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <20210914072938.6440-1-songmuchun@bytedance.com> <YUEEoAUBaN7J0ch3@mit.edu>
+In-Reply-To: <YUEEoAUBaN7J0ch3@mit.edu>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Wed, 15 Sep 2021 15:30:12 +0800
+Message-ID: <CAMZfGtXQ4pvbzQQOCAfZmc0xtt3Yr=szE4ZuTuSJyt9FvWfaZw@mail.gmail.com>
+Subject: Re: [PATCH v3 00/76] Optimize list lru memory consumption
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>, Yang Shi <shy828301@gmail.com>,
+        Alex Shi <alexs@kernel.org>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Dave Chinner <david@fromorbit.com>,
+        trond.myklebust@hammerspace.com, anna.schumaker@netapp.com,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-nfs@vger.kernel.org, Qi Zheng <zhengqi.arch@bytedance.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        fam.zheng@bytedance.com, Muchun Song <smuchun@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 09:49:49AM +0800, Hao Sun wrote:
-> console output: https://paste.ubuntu.com/p/5qHqPXWmCQ/
-> kernel config: https://paste.ubuntu.com/p/VsVbFh9ZpQ/
-> C reproducer: https://paste.ubuntu.com/p/yrYsn4zpcn/
-> Syzlang reproducer: https://paste.ubuntu.com/p/bCWyNyHncJ/
-> 
-> Just tried the C reproducer on the latest Linux kernel (6880fa6c5660
-> Linux 5.15-rc1).
-> The reproducer still crashed the kernel but with a different backtrace.
+On Wed, Sep 15, 2021 at 4:23 AM Theodore Ts'o <tytso@mit.edu> wrote:
+>
+> On Tue, Sep 14, 2021 at 03:28:22PM +0800, Muchun Song wrote:
+> > So we have to convert to new API for all filesystems, which is done in
+> > one patch. Some filesystems are easy to convert (just replace
+> > kmem_cache_alloc() to alloc_inode_sb()), while other filesystems need to
+> > do more work.
+>
+> From what I can tell, three are 54 file systems for which it was a
+> trivial one-line change, and two (f2fs and nfs42) that were a tad bit
+> more complex.
 
-Well, that trace looks very much like an issue in the MM truncate code.
-Adding the linux-mm list.
+Definitely right. Thanks for your clarification.
 
-> 
-> IPv6: ADDRCONF(NETDEV_CHANGE): wlan0: link becomes ready
-> IPv6: ADDRCONF(NETDEV_CHANGE): wlan1: link becomes ready
-> Bluetooth: hci0: command 0x0409 tx timeout
-> ------------[ cut here ]------------
-> kernel BUG at fs/buffer.c:1510!
-> invalid opcode: 0000 [#1] PREEMPT SMP
-> CPU: 0 PID: 5 Comm: kworker/0:0 Not tainted 5.14.0+ #15
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-> rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-> Workqueue: events delayed_fput
-> RIP: 0010:block_invalidatepage+0x27f/0x2a0 -origin/fs/buffer.c:1510
-> Code: ff ff e8 b4 07 d7 ff b9 02 00 00 00 be 02 00 00 00 4c 89 ff 48
-> c7 c2 40 4e 25 84 e8 2b c2 c4 02 e9 c9 fe ff ff e8 91 07 d7 ff <0f> 0b
-> e8 8a 07 d7 ff 0f 0b e8 83 07 d7 ff 48 8d 5d ff e9 57 ff ff
-> RSP: 0018:ffffc9000065bb60 EFLAGS: 00010293
-> RAX: 0000000000000000 RBX: ffffea0000670000 RCX: 0000000000000000
-> RDX: ffff8880097fa240 RSI: ffffffff81608a9f RDI: ffffea0000670000
-> RBP: ffffea0000670000 R08: 0000000000000001 R09: 0000000000000000
-> R10: ffffc9000065b9f8 R11: 0000000000000003 R12: ffffffff81608820
-> R13: ffffc9000065bc68 R14: 0000000000000000 R15: ffffc9000065bbf0
-> FS:  0000000000000000(0000) GS:ffff88807dc00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007f4aef93fb08 CR3: 0000000108cf2000 CR4: 0000000000750ef0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> PKRU: 55555554
-> Call Trace:
->  do_invalidatepage -origin/mm/truncate.c:157 [inline]
->  truncate_cleanup_page+0x15c/0x280 -origin/mm/truncate.c:176
->  truncate_inode_pages_range+0x169/0xc30 -origin/mm/truncate.c:325
->  kill_bdev.isra.29+0x28/0x30
->  blkdev_flush_mapping+0x4c/0x130 -origin/block/bdev.c:658
->  blkdev_put_whole+0x54/0x60 -origin/block/bdev.c:689
->  blkdev_put+0x6f/0x210 -origin/block/bdev.c:953
->  blkdev_close+0x25/0x30 -origin/block/fops.c:459
->  __fput+0xdf/0x380 -origin/fs/file_table.c:280
->  delayed_fput+0x25/0x40 -origin/fs/file_table.c:308
->  process_one_work+0x359/0x850 -origin/kernel/workqueue.c:2297
->  worker_thread+0x41/0x4d0 -origin/kernel/workqueue.c:2444
->  kthread+0x178/0x1b0 -origin/kernel/kthread.c:319
->  ret_from_fork+0x1f/0x30 -origin/arch/x86/entry/entry_64.S:295
-> Modules linked in:
-> Dumping ftrace buffer:
->    (ftrace buffer empty)
-> ---[ end trace 9dbb8f58f2109f10 ]---
-> RIP: 0010:block_invalidatepage+0x27f/0x2a0 -origin/fs/buffer.c:1510
-> Code: ff ff e8 b4 07 d7 ff b9 02 00 00 00 be 02 00 00 00 4c 89 ff 48
-> c7 c2 40 4e 25 84 e8 2b c2 c4 02 e9 c9 fe ff ff e8 91 07 d7 ff <0f> 0b
-> e8 8a 07 d7 ff 0f 0b e8 83 07 d7 ff 48 8d 5d ff e9 57 ff ff
-> RSP: 0018:ffffc9000065bb60 EFLAGS: 00010293
-> RAX: 0000000000000000 RBX: ffffea0000670000 RCX: 0000000000000000
-> RDX: ffff8880097fa240 RSI: ffffffff81608a9f RDI: ffffea0000670000
-> RBP: ffffea0000670000 R08: 0000000000000001 R09: 0000000000000000
-> R10: ffffc9000065b9f8 R11: 0000000000000003 R12: ffffffff81608820
-> R13: ffffc9000065bc68 R14: 0000000000000000 R15: ffffc9000065bbf0
-> FS:  0000000000000000(0000) GS:ffff88807dc00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007ff98674f000 CR3: 0000000106b2e000 CR4: 0000000000750ef0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> PKRU: 55555554
----end quoted text---
+>
+> > In order to make it easy for maintainers of different
+> > filesystems to review their own maintained part, I split the patch into
+> > patches which are per-filesystem in this version. I am not sure if this
+> > is a good idea, because there is going to be more commits.
+>
+> What I'd actually suggest is that you combine all of the trivial file
+> system changes into a single commit, and keep the two more complex
+> changes for f2fs and nfs42 in separate commits.
+
+Got it. Will do in the next version.
+
+>
+> Acked-by: Theodore Ts'o <tytso@mit.edu>
+
+Thanks.
+
+>
+> ... for the ext4 related change.
+>
+>                                                 - Ted
+>
