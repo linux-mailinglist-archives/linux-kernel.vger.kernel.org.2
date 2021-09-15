@@ -2,78 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6EA740C3B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 12:36:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0467F40C3B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 12:40:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232717AbhIOKiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 06:38:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232054AbhIOKiM (ORCPT
+        id S232970AbhIOKmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 06:42:06 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:44108 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232454AbhIOKmE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 06:38:12 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E97ACC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 03:36:53 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id y144so2851335qkb.6
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 03:36:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=/mGcCmjESDIAm3+tF207IbSt9cMpy/yGpDLXhbXJilw=;
-        b=jZC6J42lFWe5NjJGxcOV7d5AVFnElkEpr8x+JCTMRSstrsGQB7n1PDUNmHQE+EjSNI
-         8a8PFwQYT3/eO9AmTYKozh2AB+ToXko00hIRCPFSCtNyWdCeNudFFHu2G5RnjgevgSPT
-         5iY/6u6XgvLeUuGI0IjNvnNWQqUNtyMWw8DqXz6SgkP+6ejr2dKXCtdrKoyA84l0aEmK
-         mr41TRJlBSEcavNsm/QFGj7kBko3Odrd/5rvAZ01j/6mxcqdILwtJ0oQ+7p+jt6xRkNB
-         sKJfnShOM2tR7QOCzqiT0xb4f9MvVKCkRdu8vV6BQr5a5DZqc7vH6Y3jZLJ2OVxALGNc
-         /q/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=/mGcCmjESDIAm3+tF207IbSt9cMpy/yGpDLXhbXJilw=;
-        b=nh29S6pFa9wDRtzHDMxVAlP6ndYCjiX/yCjYHtsr9e2fuD+DYmo6NURbSPivRnmpTd
-         iQ2rjq+P8iWBpYql7oLj1VHW5jHTsPGBS7Kj6UsISPZgzVIe6cUXpIKEWwJlI6hZoVc+
-         8hQ/RFDsPBxB7gUEC4nHuOeyBRGUjQEn7M3y4eX00+Y907e20aebnr1EghzdRESSk6UN
-         a/l9WNj3zHpNq9R97nvFKc4Q3eDen1JoS9OoGq1auHEmZgm8m+n/98DPSWsCh5qZ1NFE
-         jHIwF8vPJyHfuFqjduB/EVRxa6Bi9P20XIY8EpqKU5Hwem+NMwXDvPKDmr0dJQQBaSAf
-         8MyQ==
-X-Gm-Message-State: AOAM532xc7vWn2x1ZOD+SBMV1MQd2XsvlfdzeyN94OfcHKwbcL3lA7Ty
-        wklLxikW6TRKI3h6Xi6QVndY2jM/fueIq9oRW+w=
-X-Google-Smtp-Source: ABdhPJyyeGXQ3+sRzznoBgOxXz9YNLXSOUaweAHcQrmowpOjqhjo5dtOoCXxwX8tTWUygcmhyv3Bpmdep+B6k4C28TY=
-X-Received: by 2002:a05:620a:1388:: with SMTP id k8mr9066031qki.152.1631702213021;
- Wed, 15 Sep 2021 03:36:53 -0700 (PDT)
+        Wed, 15 Sep 2021 06:42:04 -0400
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18FADI8O026708;
+        Wed, 15 Sep 2021 06:40:44 -0400
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 3b2v0sc797-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Sep 2021 06:40:44 -0400
+Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 18FAehnv055463
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 15 Sep 2021 06:40:43 -0400
+Received: from ASHBCASHYB4.ad.analog.com (10.64.17.132) by
+ ASHBMBX8.ad.analog.com (10.64.17.5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5;
+ Wed, 15 Sep 2021 06:40:42 -0400
+Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by
+ ASHBCASHYB4.ad.analog.com (10.64.17.132) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5;
+ Wed, 15 Sep 2021 06:40:42 -0400
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server id 15.2.858.5 via Frontend Transport;
+ Wed, 15 Sep 2021 06:40:42 -0400
+Received: from ramonaalexandra-Precision-5520.ad.analog.com ([10.48.65.154])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 18FAeeUx004353;
+        Wed, 15 Sep 2021 06:40:40 -0400
+From:   Ramona Alexandra Nechita <ramona.nechita@analog.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     <lee.jones@linaro.org>,
+        Ramona Alexandra Nechita <ramona.nechita@analog.com>
+Subject: [PATCH] mfd: fixed typo in Kconfig from AD5520 to ADP5520
+Date:   Wed, 15 Sep 2021 13:40:16 +0300
+Message-ID: <20210915104016.16947-1-ramona.nechita@analog.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <CABXGCsOifMk4+VHi4bnHCL2L_tT+Tm_Rz+KxD3ZQOowx1xms4g@mail.gmail.com>
- <293189a2-3a6b-1e50-7607-33917743b9d8@amd.com> <CABXGCsMMUa=0+GAHxfVdOOFO0Lx=tCa4+ongHN8rF4TAR9nVmg@mail.gmail.com>
- <66f5fdcb-d414-603d-bdb8-70579335b4a2@gmail.com> <CABXGCsOPLH2DkZ09PDXSxStin6JJb_m5bJuQWmXooBLaSJ2Ezg@mail.gmail.com>
- <dcbb87cc-c95d-ae58-d601-413a6277a7f8@amd.com>
-In-Reply-To: <dcbb87cc-c95d-ae58-d601-413a6277a7f8@amd.com>
-From:   Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-Date:   Wed, 15 Sep 2021 15:36:42 +0500
-Message-ID: <CABXGCsOQ8uXY85zrCOOd611gDj3AhtqH4=LcYHD=T9jVEzkuig@mail.gmail.com>
-Subject: Re: [BUG] VAAPI encoder cause kernel panic if encoded video in 4K
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-ORIG-GUID: sdOi8cMVVViRSekjs81Vt5RbakIViebg
+X-Proofpoint-GUID: sdOi8cMVVViRSekjs81Vt5RbakIViebg
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-15_02,2021-09-15_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ priorityscore=1501 clxscore=1011 adultscore=0 mlxlogscore=999
+ impostorscore=0 spamscore=0 malwarescore=0 bulkscore=0 lowpriorityscore=0
+ phishscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109150068
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Sept 2021 at 14:55, Christian K=C3=B6nig <christian.koenig@amd.c=
-om> wrote:
->
-> Yes, absolutely. You should see GPU resets and recovery in the system log=
- after that.
+The description mentioned AD5520, which is a different device.
+Fixed the typo.
 
-Unfortunately, not one DE will survive a GPU reset. All applications
-will terminate abnormally in fact this would be equivalent to reboot
-(and denial of service). :(
+Signed-off-by: Ramona Alexandra Nechita <ramona.nechita@analog.com>
+---
+ drivers/mfd/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---=20
-Best Regards,
-Mike Gavrilov.
+diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+index ae24d3ea68ea..54cd9f2c857f 100644
+--- a/drivers/mfd/Kconfig
++++ b/drivers/mfd/Kconfig
+@@ -93,7 +93,7 @@ config PMIC_ADP5520
+ 	bool "Analog Devices ADP5520/01 MFD PMIC Core Support"
+ 	depends on I2C=y
+ 	help
+-	  Say yes here to add support for Analog Devices AD5520 and ADP5501,
++	  Say yes here to add support for Analog Devices ADP5520 and ADP5501,
+ 	  Multifunction Power Management IC. This includes
+ 	  the I2C driver and the core APIs _only_, you have to select
+ 	  individual components like LCD backlight, LEDs, GPIOs and Kepad
+-- 
+2.25.1
+
