@@ -2,120 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE2AB40C570
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 14:42:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C191D40C586
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 14:44:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235132AbhIOMnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 08:43:25 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:59720 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232179AbhIOMnX (ORCPT
+        id S237847AbhIOMp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 08:45:56 -0400
+Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:29474 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S237823AbhIOMpv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 08:43:23 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 42BE32005E;
-        Wed, 15 Sep 2021 12:42:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631709724; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=c8ppzFWYneNjhYnOY61IFfVXjIUkdpqvAGrP3jiPXNY=;
-        b=BU4gFvgZPXkgGkeAZA8Isz6d5VIGuDlC1iEhdFHcFYBMvbzqGNNT/soHXwDsAwBQuBvjDf
-        PaM78JTRR+b08B3QWTBdEVKo1cMHvWjhAZyhditBPCQ3KPHBFhxjSR300DGu5hNG6wKqn8
-        zpVkPRYhrZ3HPkNYakZy/QOugYICdsw=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 01B8EA3B8F;
-        Wed, 15 Sep 2021 12:42:03 +0000 (UTC)
-Date:   Wed, 15 Sep 2021 14:42:03 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     yongw.pur@gmail.com
-Cc:     tj@kernel.org, peterz@infradead.org, wang.yong12@zte.com.cn,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, yang.yang29@zte.com.cn
-Subject: Re: [PATCH v2] vmpressure: wake up work only when there is
- registration event
-Message-ID: <YUHqG0P6Ahs8FvN+@dhcp22.suse.cz>
-References: <1631635551-8583-1-git-send-email-wang.yong12@zte.com.cn>
+        Wed, 15 Sep 2021 08:45:51 -0400
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18F6hhbD001194;
+        Wed, 15 Sep 2021 07:44:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=unRJE/2nGA8KSMmenuNrP/TykT9yg6kqUcCh+92+IYQ=;
+ b=C57erIdoS72MwAU5x8uc36dsafJnnodzpKe1XsVqR1FVsu117koDcllNJvRuQgmMaImP
+ WgNzDH7Oo7+cWi0QAuIxadymk/XdAcvJKK1LGjz+7Hk9n1IyKPb0J6zW7nJ3ujoX1wl0
+ cze3KJ/u1fAex9N0cihYZef/wSchUlz1nC9nTOyj5gtkwbjqBlPmQYtr+nNZWGhBndTf
+ f8xIkWgYxNQTUBWcrUZ4CJQAjdEd4c6kSIVYFQbzX/cNboknDwKZiRs2EWgy8i8aINcB
+ hpDycYZW3vbOt8i+gIpM+q9Nm3BSmbFLuITjUw+T4B/AAShKzDi+/9WhT+rk0I+BoLoZ LQ== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+        by mx0a-001ae601.pphosted.com with ESMTP id 3b3af8rc9p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 15 Sep 2021 07:44:28 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Wed, 15 Sep
+ 2021 13:44:26 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via Frontend
+ Transport; Wed, 15 Sep 2021 13:44:26 +0100
+Received: from aryzen.ad.cirrus.com (unknown [198.61.64.203])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 0784BB2F;
+        Wed, 15 Sep 2021 12:44:26 +0000 (UTC)
+From:   Lucas Tanure <tanureal@opensource.cirrus.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
+        Lucas Tanure <tanureal@opensource.cirrus.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: [PATCH v4 1/2] regmap: spi: Set regmap max raw r/w from max_transfer_size
+Date:   Wed, 15 Sep 2021 13:44:24 +0100
+Message-ID: <20210915124425.34777-1-tanureal@opensource.cirrus.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1631635551-8583-1-git-send-email-wang.yong12@zte.com.cn>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: edplpCJo8GuEUzMWEpO7jk6G7_qhs3cX
+X-Proofpoint-ORIG-GUID: edplpCJo8GuEUzMWEpO7jk6G7_qhs3cX
+X-Proofpoint-Spam-Reason: safe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 14-09-21 09:05:51, yongw.pur@gmail.com wrote:
-> From: wangyong <wang.yong12@zte.com.cn>
-> 
-> Use the global variable num_events to record the number of vmpressure
-> events registered by the system, and wake up work only when there is
-> registration event.
-> Usually, the vmpressure event is not registered in the system, this patch
-> can avoid waking up work and doing nothing.
+Set regmap raw read/write from spi max_transfer_size
+so regmap_raw_read/write can split the access into chunks
 
-I have asked in the previous version and this changelog doesn't that
-explain again. Why don't you simply bail out early in vmpressure()
-entry?
+Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
+Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
 
-> Test with 5.14.0-rc5-next-20210813 on x86_64 4G ram.
-> Consume cgroup memory until it is about to be reclaimed, then execute
-> "perf stat -I 2000 malloc.out" command to trigger memory reclamation
-> and get performance results.
-> The context-switches is reduced by about 20 times.
+Changes v2:
+New series
 
-Is this test somewhere available so that it can be reproduced by
-others. Also while the number of context switches can be an interesting
-it is not really clear from this evaluation whether that actually
-matters or not. E.g. what does an increase of task-clock and twice as
-many instructions recorded tell us?
+Changes v3:
+None
 
-> unpatched:
-> Average of 10 test results
-> 582.4674048	task-clock(msec)
-> 19910.8		context-switches
-> 0		cpu-migrations
-> 1292.9		page-faults
-> 414784733.1	cycles
+Changes v4:
+Reviewed-by Charles Keepax
 
-> <not supported>	stalled-cycles-frontend
-> <not supported>	stalled-cycles-backend
+ drivers/base/regmap/regmap-spi.c | 36 ++++++++++++++++++++++++++++----
+ 1 file changed, 32 insertions(+), 4 deletions(-)
 
-Why is this a part of the data?
-
-> 580070698.4	instructions
-> 125572244.7	branches
-> 2073541.2	branch-misses
-> 
-> patched
-> Average of 10 test results
-> 973.6174796	task-clock(msec)
-> 988.6		context-switches
-> 0		cpu-migrations
-> 1785.2		page-faults
-> 772883602.4	cycles
-> <not supported>	stalled-cycles-frontend
-> <not supported>	stalled-cycles-backend
-> 1360280911	instructions
-> 290519434.9	branches
-> 3378378.2	branch-misses
-> 
-> Tested-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: wangyong <wang.yong12@zte.com.cn>
-> ---
-> 
-[...]
-> @@ -272,6 +277,9 @@ void vmpressure(gfp_t gfp, struct mem_cgroup *memcg, bool tree,
->  		return;
->  
->  	if (tree) {
-> +		if (!static_branch_unlikely(&num_events))
-> +			return;
-
-We usually hide the change behind a static inline helper (e.g.
-vmpressure_disabled()). I would also put it to the beginning of
-vmpressure or put an explanation why it makes sense only in this branch.
+diff --git a/drivers/base/regmap/regmap-spi.c b/drivers/base/regmap/regmap-spi.c
+index c1894e93c378..0e6552e57ecf 100644
+--- a/drivers/base/regmap/regmap-spi.c
++++ b/drivers/base/regmap/regmap-spi.c
+@@ -109,13 +109,37 @@ static const struct regmap_bus regmap_spi = {
+ 	.val_format_endian_default = REGMAP_ENDIAN_BIG,
+ };
+ 
++static const struct regmap_bus *regmap_get_spi_bus(struct spi_device *spi,
++						   const struct regmap_config *config)
++{
++	struct spi_master *master = spi->master;
++	struct regmap_bus *bus = NULL;
++	size_t max_size = spi_max_transfer_size(spi);
++
++	if (max_size != SIZE_MAX) {
++		bus = kmemdup(&regmap_spi, sizeof(*bus), GFP_KERNEL);
++		if (!bus)
++			return ERR_PTR(-ENOMEM);
++		bus->free_on_exit = true;
++		bus->max_raw_read = max_size;
++		bus->max_raw_write = max_size;
++		return bus;
++	}
++
++	return &regmap_spi;
++}
++
+ struct regmap *__regmap_init_spi(struct spi_device *spi,
+ 				 const struct regmap_config *config,
+ 				 struct lock_class_key *lock_key,
+ 				 const char *lock_name)
+ {
+-	return __regmap_init(&spi->dev, &regmap_spi, &spi->dev, config,
+-			     lock_key, lock_name);
++	const struct regmap_bus *bus = regmap_get_spi_bus(spi, config);
++
++	if (IS_ERR(bus))
++		return ERR_CAST(bus);
++
++	return __regmap_init(&spi->dev, bus, &spi->dev, config, lock_key, lock_name);
+ }
+ EXPORT_SYMBOL_GPL(__regmap_init_spi);
+ 
+@@ -124,8 +148,12 @@ struct regmap *__devm_regmap_init_spi(struct spi_device *spi,
+ 				      struct lock_class_key *lock_key,
+ 				      const char *lock_name)
+ {
+-	return __devm_regmap_init(&spi->dev, &regmap_spi, &spi->dev, config,
+-				  lock_key, lock_name);
++	const struct regmap_bus *bus = regmap_get_spi_bus(spi, config);
++
++	if (IS_ERR(bus))
++		return ERR_CAST(bus);
++
++	return __devm_regmap_init(&spi->dev, bus, &spi->dev, config, lock_key, lock_name);
+ }
+ EXPORT_SYMBOL_GPL(__devm_regmap_init_spi);
+ 
 -- 
-Michal Hocko
-SUSE Labs
+2.33.0
+
