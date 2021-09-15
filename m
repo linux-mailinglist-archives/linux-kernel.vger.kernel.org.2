@@ -2,111 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B625740CF25
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 00:00:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 239C240CF2A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 00:01:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232344AbhIOWCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 18:02:12 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:51234 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229461AbhIOWCK (ORCPT
+        id S232409AbhIOWCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 18:02:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232557AbhIOWCX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 18:02:10 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 18FLkXGE003306;
-        Wed, 15 Sep 2021 18:00:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=7iRl93veTxWRAyX6LRpljyA5dM+WNqPPZrX1ZQjpDxo=;
- b=dr5NBOWW2BLAQtGuDVVqDzyx2X6SolIHIOI/2XdPrfwF3gpwPW6NI+ybxJc455VnssvD
- QW58y+f9A5kqAbRa3TO/2WEFB+8S/xU9PF9Ew7tMIsAs7kI+Lr/IxdXvjx61OG9FUwx8
- uPiEGdXv+dLs2RNPESd5LqET2Mk66fcWQXAMZaY+A5zPoJjmCOJcQ4T9rOh4fZsRWBj0
- YWPuyR9c6BbNXB2HBmVObDoOOtJNrwur6m5FzpPxcEkhtKieQ03UmU+YSSenYHa3TOgb
- Tq9jU0wUD/wlFdvJ7Yvx5/k0bcJf7a47aoCP8vXi5dTx88SXf1ECAbO5c+ZttmP9diAj uQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3b3p7nkgyk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Sep 2021 18:00:49 -0400
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18FLxluZ023762;
-        Wed, 15 Sep 2021 18:00:49 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3b3p7nkgxs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Sep 2021 18:00:48 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18FLcWSX019628;
-        Wed, 15 Sep 2021 22:00:47 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma02fra.de.ibm.com with ESMTP id 3b0m39sxcy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Sep 2021 22:00:47 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18FLuBlI43123000
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 15 Sep 2021 21:56:11 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B1132AE075;
-        Wed, 15 Sep 2021 22:00:42 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EFEE3AE073;
-        Wed, 15 Sep 2021 22:00:41 +0000 (GMT)
-Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.37.195])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Wed, 15 Sep 2021 22:00:41 +0000 (GMT)
-Date:   Thu, 16 Sep 2021 00:00:39 +0200
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Cornelia Huck <cohuck@redhat.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Pierre Morel <pmorel@linux.ibm.com>,
-        Michael Mueller <mimu@linux.ibm.com>,
-        linux-s390@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     bfu@redhat.com, Vineeth Vijayan <vneethv@linux.ibm.com>
-Subject: Re: [PATCH 1/1] virtio/s390: fix vritio-ccw device teardown
-Message-ID: <20210916000039.7aebfe1a.pasic@linux.ibm.com>
-In-Reply-To: <20210915215742.1793314-1-pasic@linux.ibm.com>
-References: <20210915215742.1793314-1-pasic@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Wed, 15 Sep 2021 18:02:23 -0400
+Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFC71C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 15:01:03 -0700 (PDT)
+Received: by mail-vs1-xe2b.google.com with SMTP id n17so3593018vsr.10
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 15:01:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=zGSJw2mijcD917fI6iH/7Zmw4K7gJ7WwhrleRMcWjCU=;
+        b=LBVx6jNrGw1ARumMNWN8gjXgHRgv4QoeCFG8s+d30GDiNRCUhBeoZQEOGM7at5+ZxA
+         YlEDaKkfE5T7wQapssiYzPc+0mfn6SZ/qKsDr+6dxxaaxJDNlXqE2cQyCaf8JsOeBJtt
+         2DydeWngGgU1+3u/dMVj1mSx/JrPW/muOAaZpp14KzYOlfAwXayfBekr8wcM9P0lSs7e
+         MC3kq/lnoI/L08K+K39Zbzny5g3GEjc5zqitkcDi5qmEajO+XqcXSXqoq59PE1cGB1G3
+         7FT/N/gdr8LyRl0DqThGvCtJx3a/TTWQd2V9//rJqXUrkyyHVUq41e/kEEuFibfVoKuy
+         ocWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=zGSJw2mijcD917fI6iH/7Zmw4K7gJ7WwhrleRMcWjCU=;
+        b=dcVQfHo/+muqc1fIJYX+5Eov3FyieE1Hxmr4+EcirzNH/G+n4rAG2tPbNOLesrbD8Z
+         FmpycZsObrr+2CNkm1AG3G/2DS6nkkvPn9CGN+kzB40PC0PtFrnYkHuHcI6FFH+vpbtO
+         48TK1m8xoGAX/6KVaXDe1Rk8Wvj2Qpa7aMej2QefCeA8jb62h2Ar22hHBnQMEjL53Q7n
+         lX5ofizPgQJF8sDabvW608GQ569vPMbzxn7ru7MYBnyMTkBop0o1ynIPVhaO2dovZ3wF
+         UPUD4ALEQhlvawprhjWsdZRI8YqKtBXCsMsmdnbM0i8bcx7d8Zu29JZkp39hZ4uU1wkW
+         V4mQ==
+X-Gm-Message-State: AOAM5328/NoctDnP94BAScqHkayYZBcpVW25p1VGsa1aBm30rL6hKzRa
+        J5yUgYHN1mIHygjxmZtWy0IwaBUEGRq11UVo0PorZg==
+X-Google-Smtp-Source: ABdhPJyOr8yGWQEsGudvQrYqjyuQgXeLh226eqUsm3m0MrCX91sh9IJVmTTEPi2a0+PjKOMEygDNsAmyA5u+GuSIjMo=
+X-Received: by 2002:a67:d589:: with SMTP id m9mr2041213vsj.30.1631743262794;
+ Wed, 15 Sep 2021 15:01:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: hjQy-GMimYKERMsYSCFa8wkPpfhLKgTA
-X-Proofpoint-ORIG-GUID: pE6FKmP0iyw7cx1AdM6mKabhtla7FJn1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.687,Hydra:6.0.235,FMLib:17.0.607.475
- definitions=2020-10-13_15,2020-10-13_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 adultscore=0
- mlxscore=0 phishscore=0 malwarescore=0 bulkscore=0 priorityscore=1501
- mlxlogscore=999 lowpriorityscore=0 impostorscore=0 spamscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109030001 definitions=main-2109150107
+References: <20210914155607.14122-1-semen.protsenko@linaro.org>
+ <20210914155607.14122-7-semen.protsenko@linaro.org> <1428bfc4-520f-9af3-5255-b17308881243@gmail.com>
+In-Reply-To: <1428bfc4-520f-9af3-5255-b17308881243@gmail.com>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Thu, 16 Sep 2021 01:00:51 +0300
+Message-ID: <CAPLW+4k8ZihQtnpYGULcS1uOP+9tvFi_yo27GadP3aa8KNC7aQ@mail.gmail.com>
+Subject: Re: [PATCH 6/6] clk: samsung: Introduce Exynos850 clock driver
+To:     Chanwoo Choi <cwchoi00@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc:     =?UTF-8?Q?Pawe=C5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Ryu Euiyoul <ryu.real@samsung.com>,
+        Tom Gall <tom.gall@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s/vritio/virtio/
-(subject)
+On Wed, 15 Sept 2021 at 21:05, Chanwoo Choi <cwchoi00@gmail.com> wrote:
+>
+> Hi Sam,
+>
+> On 21. 9. 15. =EC=98=A4=EC=A0=84 12:56, Sam Protsenko wrote:
+> > This is the initial implementation adding only basic clocks like UART,
+> > MMC, I2C and corresponding parent clocks. Design is influenced by
+> > Exynos7 and Exynos5433 clock drivers.
+> >
+> > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> > ---
+> >   drivers/clk/samsung/Makefile        |   1 +
+> >   drivers/clk/samsung/clk-exynos850.c | 700 +++++++++++++++++++++++++++=
++
+> >   2 files changed, 701 insertions(+)
+> >   create mode 100644 drivers/clk/samsung/clk-exynos850.c
+> >
+> > diff --git a/drivers/clk/samsung/Makefile b/drivers/clk/samsung/Makefil=
+e
+> > index 028b2e27a37e..c46cf11e4d0b 100644
+> > --- a/drivers/clk/samsung/Makefile
+> > +++ b/drivers/clk/samsung/Makefile
+> > @@ -17,6 +17,7 @@ obj-$(CONFIG_EXYNOS_ARM64_COMMON_CLK)       +=3D clk-=
+exynos5433.o
+> >   obj-$(CONFIG_EXYNOS_AUDSS_CLK_CON) +=3D clk-exynos-audss.o
+> >   obj-$(CONFIG_EXYNOS_CLKOUT) +=3D clk-exynos-clkout.o
+> >   obj-$(CONFIG_EXYNOS_ARM64_COMMON_CLK)       +=3D clk-exynos7.o
+> > +obj-$(CONFIG_EXYNOS_ARM64_COMMON_CLK)        +=3D clk-exynos850.o
+> >   obj-$(CONFIG_S3C2410_COMMON_CLK)+=3D clk-s3c2410.o
+> >   obj-$(CONFIG_S3C2410_COMMON_DCLK)+=3D clk-s3c2410-dclk.o
+> >   obj-$(CONFIG_S3C2412_COMMON_CLK)+=3D clk-s3c2412.o
+> > diff --git a/drivers/clk/samsung/clk-exynos850.c b/drivers/clk/samsung/=
+clk-exynos850.c
+> > new file mode 100644
+> > index 000000000000..1028caa2102e
+> > --- /dev/null
+> > +++ b/drivers/clk/samsung/clk-exynos850.c
+> > @@ -0,0 +1,700 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +/*
+> > + * Copyright (C) 2021 Linaro Ltd.
+> > + * Author: Sam Protsenko <semen.protsenko@linaro.org>
+> > + *
+> > + * Common Clock Framework support for Exynos850 SoC.
+> > + */
+> > +
+> > +#include <linux/clk-provider.h>
+> > +#include <linux/of.h>
+> > +#include <linux/of_address.h>
+> > +
+> > +#include <dt-bindings/clock/exynos850.h>
+> > +
+> > +#include "clk.h"
+> > +
+> > +/* Gate register bits */
+> > +#define GATE_MANUAL          BIT(20)
+> > +#define GATE_ENABLE_HWACG    BIT(28)
+> > +
+> > +/* Gate register offsets range */
+> > +#define GATE_OFF_START               0x2000
+> > +#define GATE_OFF_END         0x2fff
+> > +
+> > +/**
+> > + * exynos850_init_clocks - Set clocks initial configuration
+> > + * @np:                      CMU device tree node with "reg" property =
+(CMU addr)
+> > + * @reg_offs:                Register offsets array for clocks to init
+> > + * @reg_offs_len:    Number of register offsets in reg_offs array
+> > + *
+> > + * Set manual control mode for all gate clocks.
+> > + */
+> > +static void __init exynos850_init_clocks(struct device_node *np,
+> > +             const unsigned long *reg_offs, size_t reg_offs_len)
+> > +{
+> > +     const __be32 *regaddr_p;
+> > +     u64 regaddr;
+> > +     u32 base;
+> > +     size_t i;
+> > +
+> > +     /* Get the base address ("reg" property in dts) */
+> > +     regaddr_p =3D of_get_address(np, 0, NULL, NULL);
+> > +     if (!regaddr_p)
+> > +             panic("%s: failed to get reg regaddr\n", __func__);
+> > +
+> > +     regaddr =3D of_translate_address(np, regaddr_p);
+> > +     if (regaddr =3D=3D OF_BAD_ADDR || !regaddr)
+> > +             panic("%s: bad reg regaddr\n", __func__);
+> > +
+> > +     base =3D (u32)regaddr;
+> > +
+> > +     for (i =3D 0; i < reg_offs_len; ++i) {
+> > +             void __iomem *reg;
+> > +             u32 val;
+> > +
+> > +             /* Modify only gate clock registers */
+> > +             if (reg_offs[i] < GATE_OFF_START || reg_offs[i] > GATE_OF=
+F_END)
+> > +                     continue; > +
+> > +             reg =3D ioremap(base + reg_offs[i], 4);
+> > +             val =3D ioread32(reg);
+> > +             val |=3D GATE_MANUAL;
+> > +             val &=3D ~GATE_ENABLE_HWACG;
+> > +             iowrite32(val, reg);
+> > +             iounmap(reg);
+>
+> I understand your intention for disabling HWACG.
+> But, it is not good to execute ioreamp/iounmap for each clock gate
+> register. I think that we need to consider the more pretty method
+> to initialize the clock register before clock registration.
+>
+> [snip]
+>
 
-[..]
+Hi guys,
 
-On Wed, 15 Sep 2021 23:57:42 +0200
-Halil Pasic <pasic@linux.ibm.com> wrote:
+Thanks for the quick review! I'll address all your comments once I get
+back from vacation (in two weeks), and will send v2.
 
-> Since commit 48720ba56891 ("virtio/s390: use DMA memory for ccw I/O and
-> classic notifiers") we were supposed to make sure that
-> virtio_ccw_release_dev() completes before the ccw device, and the
-> attached dma pool are torn down, but unfortunately we did not.
-> Before that commit it used to be OK to delay cleaning up the memory
-> allocated by virtio-ccw indefinitely (which isn't really intuitive for
-> guys used to destruction happens in reverse construction order).
-> 
-
-[..]
+> --
+> Best Regards,
+> Samsung Electronics
+> Chanwoo Choi
