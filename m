@@ -2,282 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40AFC40CC1A
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 19:58:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06E3140CC1F
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 19:59:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230482AbhIOSAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 14:00:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52460 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230240AbhIOSAB (ORCPT
+        id S231337AbhIOSAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 14:00:25 -0400
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:44231 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231126AbhIOSAP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 14:00:01 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D2D6C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 10:58:42 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id q3so6697496edt.5
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 10:58:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MYK/rcJt6mcsUvGT1TCac6dx4jsTZ6GmnFn7Urn0Nzo=;
-        b=pI6ibrBUGZ/y3BQiGt9xj8Sn6cIX8dKbwDaBSAkBdO8IEMU4t2EKuzO7KivRBLg5Fv
-         dlHaFEmQDUcMqlITguLRyZgVhmibbESbnSvex4JJFwy9a4ZOYB/zMK6bBy6RJqIaWdZp
-         LYVQTCpZfDh0CWc1tpKogFHUavq1s2T6Qad0iebdgjDzNS3DLsIyKWuPMKnX4sEzpz9+
-         Cf9Ac5F4iKiyZXlRQygLsWnOdtMD9wAeLFNJ1tT8ELWnBWkjhP5DW2emd0VahOgO2Yp2
-         yOgDkf6SXuKceqrTnzNoaisOwH7mrUd7v4d1CKQIsDF4lrj8Wb5FH6X7hn7ccR7oo5UA
-         8s+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MYK/rcJt6mcsUvGT1TCac6dx4jsTZ6GmnFn7Urn0Nzo=;
-        b=c6UJYGxpvo1j+jJffc0R0FGc4vC9I0/w+U9SR9QWPMaxjd+1sRMZFjUa8L1NFGZYZY
-         kdZNqDRXuM0osiM89tvu3SWEUNS+qR45StH79DMJIi8DQH7rSIDXuInSrnrM6J0J/KoY
-         P2gwdNbUvJC+5hRswTbEaAsUwTSHcbS9KE/Txp8TXi6a/cCqccDFJgBmIdk0wQFJLens
-         Bo5IZKwX8byX1auTY7bWk1aR1yWuURHICHKs0tRMC+PpmZJ5t3uFL98ZzyACEI3j1M6F
-         FcTYnIfIpE3/IM3L7UyCeWeKi6yKbi6tIdgPer4bu9UGA/88+C0nJflUwEXXaBfAINRH
-         gybA==
-X-Gm-Message-State: AOAM532zOqqPJC9d4APjnMncnkr3mPXTE7FJkOM9BAypAVW/3yVbAC+0
-        AGlpZ3Bztmt1HES0QYzylmM=
-X-Google-Smtp-Source: ABdhPJxdi/JG8c10XwZsrcZvXDgA1bTfn3nW2pCMiwj4CtChcE4eBzyauVxrOJzsOeZsN+TZEssHew==
-X-Received: by 2002:aa7:d2ce:: with SMTP id k14mr1386600edr.396.1631728720668;
-        Wed, 15 Sep 2021 10:58:40 -0700 (PDT)
-Received: from kista.localdomain (cpe-86-58-29-253.static.triera.net. [86.58.29.253])
-        by smtp.gmail.com with ESMTPSA id b38sm314843edf.46.2021.09.15.10.58.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Sep 2021 10:58:40 -0700 (PDT)
-From:   Jernej Skrabec <jernej.skrabec@gmail.com>
-To:     mripard@kernel.org, wens@csie.org
-Cc:     airlied@linux.ie, daniel@ffwll.ch, saravanak@google.com,
-        megous@megous.com, dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Jernej Skrabec <jernej.skrabec@gmail.com>
-Subject: [PATCH v2] drm/sun4i: dw-hdmi: Fix HDMI PHY clock setup
-Date:   Wed, 15 Sep 2021 19:58:36 +0200
-Message-Id: <20210915175836.3158839-1-jernej.skrabec@gmail.com>
-X-Mailer: git-send-email 2.33.0
+        Wed, 15 Sep 2021 14:00:15 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id AC6DA5C0113;
+        Wed, 15 Sep 2021 13:58:55 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Wed, 15 Sep 2021 13:58:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ilammy.net; h=
+        from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding; s=fm2; bh=Vi4AemPzNUewX
+        Z2yAGjziJvBNY9NKWVEUT2EaX3WCcQ=; b=CfIfMmiuIUA9ZoAg/E+ZKsu2wf2+T
+        u34idDDPkfxisThOVWSo5jxZPa1kF1LgnPSn42pM0p93URubpepXJp7EjjVkf+WV
+        QRDzK30AIjLtE+/BFxwhIQuv9KsTZLredtCqRRd3rjVhL464a/rBigAL/1e0pjBd
+        tSpOwnA/HBEWK92ynNwYEECrQ4cMcPbPSx8YCg5mXqn4Fx1LCWxexkmIPAMcXE8c
+        gpO8uIMzffTB7nD6elHBzRuQuL3b2B3LYbhO7glSUDkT7SvpGZcO6Vijo1OEILM/
+        C7LijBdCn2WfoivflAopfTWNxLC7V/y3udkNcWVa8RV1+yfjH2fwsHjGQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm3; bh=Vi4AemPzNUewXZ2yAGjziJvBNY9NKWVEUT2EaX3WCcQ=; b=sfiTasWJ
+        gTZhFtvYPa6Y/1AwTZ/KD67F8DAi39HKhVGoaSH8j9Yw0Mh/80O0/VEbfJymFIl1
+        cB45s41ktDDNKfq/jDuT16SqpaELTj/Ev2Qb4jNS5TFs7kb54b6IXc89LqXk/CUy
+        LlhyCh3CkmkTOhuUBJqTBpObbjCp6KDCcX/CaQdp+Su0h8/fdt9GnsDBAqh+p40m
+        nmQR5wg33Y2vELlKqPIjCaUmV7S7oG5sGYbTCNKs0b+Z5mEoQzhA6K2NpaKrUMgC
+        8kT4mhSiEJeowGBjR88mEwdnSmhhlQE5M9Tk0wN2L8WuSQpLW7NWbc5SlSCijj4v
+        OLRYAFJ9Bsd5gA==
+X-ME-Sender: <xms:XzRCYRSMMyZpyjT0IH8uoDL8PeMC2sNIRc_IE6Pgc0n6Xbc78a_KmQ>
+    <xme:XzRCYay4MlZvRDhjedTDa-9mn4fWVv5eElEi4uQxIGwOuGtp3oHxgcDweqikEJZwb
+    JIs6QcxumiNnxYbm24>
+X-ME-Received: <xmr:XzRCYW2Bc6PmifSFKBeCiPoHQx_9mUKMolVmE9_MaUPxSV3gWO45yuMCY8Wa1k4hxPitgKKdxw-ful7aVpCvTx1IcLiy1rP9CoRDQnH8HflyuZxsTdM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudehuddgudduhecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomheptehlvgig
+    vghiucfnohiiohhvshhkhicuoehmvgesihhlrghmmhihrdhnvghtqeenucggtffrrghtth
+    gvrhhnpeetueejheekjeeuveeihefgueehleelgefgheefffefkeejudeujeejuefgteeu
+    keenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmvg
+    esihhlrghmmhihrdhnvght
+X-ME-Proxy: <xmx:XzRCYZB11XkA03DImNGP2jt0hok9Rqk2AegxwE3WexG6nQ2_LHDDfw>
+    <xmx:XzRCYagyhiSuh4bfmcAIxx9Azk6ke6jPaFraHp9uCVoECHsuG7HJrA>
+    <xmx:XzRCYdodbQJVcWzru7egZWOtf-lRMIoL7KFD0llkFNaSfTZNKBLtgQ>
+    <xmx:XzRCYbukxbFCIX_kDee7t81rjnV9mDMbUvpzi7bLZWB65nk-hLwomw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 15 Sep 2021 13:58:53 -0400 (EDT)
+From:   Alexei Lozovsky <me@ilammy.net>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
+        Christoph Lameter <cl@linux.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org
+Subject: [PATCH v2 01/12] genirq: Use READ_ONCE for IRQ counter reads
+Date:   Thu, 16 Sep 2021 02:58:37 +0900
+Message-Id: <20210915175848.162260-2-me@ilammy.net>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210915175848.162260-1-me@ilammy.net>
+References: <20210911034808.24252-1-me@ilammy.net>
+ <20210915175848.162260-1-me@ilammy.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Recent rework, which made HDMI PHY driver a platform device, inadvertely
-reversed clock setup order. HW is very touchy about it. Proper way is to
-handle controllers resets and clocks first and HDMI PHYs second.
+IRQ counters are updated by each CPU independently, access to them
+does not need to synchronized and it's okay to race: as long as the
+counter is not seen going backwards (hopefully, cache coherency
+takes care of that) and the stores and loads are not torn.
 
-Currently, without this fix, first mode set completely fails (nothing on
-HDMI monitor) on H3 era PHYs. On H6, it still somehow work.
+The last part is currently sorta-kinda expected to happen because
+all the counters use "unsigned int" which is expected to fit into
+machine word and not be torn.
 
-Move HDMI PHY reset & clocks handling to sun8i_hdmi_phy_init() which
-will assure that code is executed after controllers reset & clocks are
-handled. Additionally, add sun8i_hdmi_phy_deinit() which will deinit
-them at controllers driver unload.
+Make this expectation explicit by wrapping the reads in READ_ONCE.
+Note that writes are typically perfomed via this_cpu_inc() and its
+fellows which do not do matching WRITE_ONCE().
 
-Tested on A64, H3, H6 and R40.
-
-Fixes: 9bf3797796f5 ("drm/sun4i: dw-hdmi: Make HDMI PHY into a platform device")
-Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+Signed-off-by: Alexei Lozovsky <me@ilammy.net>
 ---
+ include/linux/kernel_stat.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Changes from v1:
-- if sun8i_hdmi_phy_init() fails, go to error hanling instead of returning
-  immediately
-- rename err_deassert_rst_phy -> err_assert_rst_phy
-
- drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c  |  7 +-
- drivers/gpu/drm/sun4i/sun8i_dw_hdmi.h  |  4 +-
- drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c | 97 ++++++++++++++------------
- 3 files changed, 61 insertions(+), 47 deletions(-)
-
-diff --git a/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c b/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c
-index f75fb157f2ff..016b877051da 100644
---- a/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c
-+++ b/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c
-@@ -216,11 +216,13 @@ static int sun8i_dw_hdmi_bind(struct device *dev, struct device *master,
- 		goto err_disable_clk_tmds;
- 	}
+diff --git a/include/linux/kernel_stat.h b/include/linux/kernel_stat.h
+index 44ae1a7eb9e3..90f2e2faf999 100644
+--- a/include/linux/kernel_stat.h
++++ b/include/linux/kernel_stat.h
+@@ -61,7 +61,7 @@ static inline void kstat_incr_softirqs_this_cpu(unsigned int irq)
  
-+	ret = sun8i_hdmi_phy_init(hdmi->phy);
-+	if (ret)
-+		goto err_disable_clk_tmds;
-+
- 	drm_encoder_helper_add(encoder, &sun8i_dw_hdmi_encoder_helper_funcs);
- 	drm_simple_encoder_init(drm, encoder, DRM_MODE_ENCODER_TMDS);
- 
--	sun8i_hdmi_phy_init(hdmi->phy);
--
- 	plat_data->mode_valid = hdmi->quirks->mode_valid;
- 	plat_data->use_drm_infoframe = hdmi->quirks->use_drm_infoframe;
- 	sun8i_hdmi_phy_set_ops(hdmi->phy, plat_data);
-@@ -262,6 +264,7 @@ static void sun8i_dw_hdmi_unbind(struct device *dev, struct device *master,
- 	struct sun8i_dw_hdmi *hdmi = dev_get_drvdata(dev);
- 
- 	dw_hdmi_unbind(hdmi->hdmi);
-+	sun8i_hdmi_phy_deinit(hdmi->phy);
- 	clk_disable_unprepare(hdmi->clk_tmds);
- 	reset_control_assert(hdmi->rst_ctrl);
- 	gpiod_set_value(hdmi->ddc_en, 0);
-diff --git a/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.h b/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.h
-index 74f6ed0e2570..bffe1b9cd3dc 100644
---- a/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.h
-+++ b/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.h
-@@ -169,6 +169,7 @@ struct sun8i_hdmi_phy {
- 	struct clk			*clk_phy;
- 	struct clk			*clk_pll0;
- 	struct clk			*clk_pll1;
-+	struct device			*dev;
- 	unsigned int			rcal;
- 	struct regmap			*regs;
- 	struct reset_control		*rst_phy;
-@@ -205,7 +206,8 @@ encoder_to_sun8i_dw_hdmi(struct drm_encoder *encoder)
- 
- int sun8i_hdmi_phy_get(struct sun8i_dw_hdmi *hdmi, struct device_node *node);
- 
--void sun8i_hdmi_phy_init(struct sun8i_hdmi_phy *phy);
-+int sun8i_hdmi_phy_init(struct sun8i_hdmi_phy *phy);
-+void sun8i_hdmi_phy_deinit(struct sun8i_hdmi_phy *phy);
- void sun8i_hdmi_phy_set_ops(struct sun8i_hdmi_phy *phy,
- 			    struct dw_hdmi_plat_data *plat_data);
- 
-diff --git a/drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c b/drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c
-index c9239708d398..b64d93da651d 100644
---- a/drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c
-+++ b/drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c
-@@ -506,9 +506,60 @@ static void sun8i_hdmi_phy_init_h3(struct sun8i_hdmi_phy *phy)
- 	phy->rcal = (val & SUN8I_HDMI_PHY_ANA_STS_RCAL_MASK) >> 2;
+ static inline unsigned int kstat_softirqs_cpu(unsigned int irq, int cpu)
+ {
+-       return kstat_cpu(cpu).softirqs[irq];
++	return READ_ONCE(kstat_cpu(cpu).softirqs[irq]);
  }
  
--void sun8i_hdmi_phy_init(struct sun8i_hdmi_phy *phy)
-+int sun8i_hdmi_phy_init(struct sun8i_hdmi_phy *phy)
+ /*
+@@ -74,7 +74,7 @@ extern unsigned int kstat_irqs_usr(unsigned int irq);
+  */
+ static inline unsigned int kstat_cpu_irqs_sum(unsigned int cpu)
  {
-+	int ret;
-+
-+	ret = reset_control_deassert(phy->rst_phy);
-+	if (ret) {
-+		dev_err(phy->dev, "Cannot deassert phy reset control: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = clk_prepare_enable(phy->clk_bus);
-+	if (ret) {
-+		dev_err(phy->dev, "Cannot enable bus clock: %d\n", ret);
-+		goto err_assert_rst_phy;
-+	}
-+
-+	ret = clk_prepare_enable(phy->clk_mod);
-+	if (ret) {
-+		dev_err(phy->dev, "Cannot enable mod clock: %d\n", ret);
-+		goto err_disable_clk_bus;
-+	}
-+
-+	if (phy->variant->has_phy_clk) {
-+		ret = sun8i_phy_clk_create(phy, phy->dev,
-+					   phy->variant->has_second_pll);
-+		if (ret) {
-+			dev_err(phy->dev, "Couldn't create the PHY clock\n");
-+			goto err_disable_clk_mod;
-+		}
-+
-+		clk_prepare_enable(phy->clk_phy);
-+	}
-+
- 	phy->variant->phy_init(phy);
-+
-+	return 0;
-+
-+err_disable_clk_mod:
-+	clk_disable_unprepare(phy->clk_mod);
-+err_disable_clk_bus:
-+	clk_disable_unprepare(phy->clk_bus);
-+err_assert_rst_phy:
-+	reset_control_assert(phy->rst_phy);
-+
-+	return ret;
-+}
-+
-+void sun8i_hdmi_phy_deinit(struct sun8i_hdmi_phy *phy)
-+{
-+	clk_disable_unprepare(phy->clk_mod);
-+	clk_disable_unprepare(phy->clk_bus);
-+	clk_disable_unprepare(phy->clk_phy);
-+
-+	reset_control_assert(phy->rst_phy);
+-	return kstat_cpu(cpu).irqs_sum;
++	return READ_ONCE(kstat_cpu(cpu).irqs_sum);
  }
  
- void sun8i_hdmi_phy_set_ops(struct sun8i_hdmi_phy *phy,
-@@ -638,6 +689,7 @@ static int sun8i_hdmi_phy_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	phy->variant = (struct sun8i_hdmi_phy_variant *)match->data;
-+	phy->dev = dev;
- 
- 	ret = of_address_to_resource(node, 0, &res);
- 	if (ret) {
-@@ -696,47 +748,10 @@ static int sun8i_hdmi_phy_probe(struct platform_device *pdev)
- 		goto err_put_clk_pll1;
- 	}
- 
--	ret = reset_control_deassert(phy->rst_phy);
--	if (ret) {
--		dev_err(dev, "Cannot deassert phy reset control: %d\n", ret);
--		goto err_put_rst_phy;
--	}
--
--	ret = clk_prepare_enable(phy->clk_bus);
--	if (ret) {
--		dev_err(dev, "Cannot enable bus clock: %d\n", ret);
--		goto err_deassert_rst_phy;
--	}
--
--	ret = clk_prepare_enable(phy->clk_mod);
--	if (ret) {
--		dev_err(dev, "Cannot enable mod clock: %d\n", ret);
--		goto err_disable_clk_bus;
--	}
--
--	if (phy->variant->has_phy_clk) {
--		ret = sun8i_phy_clk_create(phy, dev,
--					   phy->variant->has_second_pll);
--		if (ret) {
--			dev_err(dev, "Couldn't create the PHY clock\n");
--			goto err_disable_clk_mod;
--		}
--
--		clk_prepare_enable(phy->clk_phy);
--	}
--
- 	platform_set_drvdata(pdev, phy);
- 
- 	return 0;
- 
--err_disable_clk_mod:
--	clk_disable_unprepare(phy->clk_mod);
--err_disable_clk_bus:
--	clk_disable_unprepare(phy->clk_bus);
--err_deassert_rst_phy:
--	reset_control_assert(phy->rst_phy);
--err_put_rst_phy:
--	reset_control_put(phy->rst_phy);
- err_put_clk_pll1:
- 	clk_put(phy->clk_pll1);
- err_put_clk_pll0:
-@@ -753,12 +768,6 @@ static int sun8i_hdmi_phy_remove(struct platform_device *pdev)
- {
- 	struct sun8i_hdmi_phy *phy = platform_get_drvdata(pdev);
- 
--	clk_disable_unprepare(phy->clk_mod);
--	clk_disable_unprepare(phy->clk_bus);
--	clk_disable_unprepare(phy->clk_phy);
--
--	reset_control_assert(phy->rst_phy);
--
- 	reset_control_put(phy->rst_phy);
- 
- 	clk_put(phy->clk_pll0);
+ #ifdef CONFIG_VIRT_CPU_ACCOUNTING_GEN
 -- 
-2.33.0
+2.25.1
 
