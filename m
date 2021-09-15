@@ -2,159 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85AD840BF8A
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 08:05:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0574540BF8F
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 08:06:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236408AbhIOGFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 02:05:51 -0400
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:28442 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236377AbhIOGFt (ORCPT
+        id S236356AbhIOGHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 02:07:40 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:51777 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230478AbhIOGHi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 02:05:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1631685870; x=1663221870;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=3ryheFD8WMYGXqB3SQZsHh9i8atB7PV0ql6LV51neAI=;
-  b=cZGh3kvq9trh1aJzX3mRGvTdwsi9RyIQTPEykNzokKCy/MOkcUHnaz0d
-   mcEPcCcRsSQRKtVr6tB0OO9B7zmEWPwnNxMZSAukANolFLdxeNKPKKKqL
-   Ht/oxO2Qlor7kHueti56GYqlDGy+/n42gJGitYjZa7HSGD6CWD8ThQMaH
-   x7HeFdbsZHHn+ALv2eGsQf3OpHJBjW++gEZGiAmdIk+IB4J5K+E7HOhEC
-   SkSvFTrVUVwgdNoEndk483aMBXDeihCc+SPgxRaTRZQ/VKKhjbkmJ7U/h
-   6kn8ZCvm1wX8HfDQqZAHvO04N7A9a60n/cdKXce7ogaDJb2WL6iUX5euB
-   Q==;
-X-IronPort-AV: E=Sophos;i="5.85,294,1624291200"; 
-   d="scan'208";a="184828931"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 15 Sep 2021 14:04:30 +0800
-IronPort-SDR: ICUVpuiofCjTTjRPY4804mexlyWAGWDB7rK61tNHdG1Ygj0nmKwW14mRjr/SWNlmcYqZkl6FJQ
- 1cmj00LVQNMkSIkzWiX4k1U0ZtCHZJW080aa9hvoer07ZlG1P1CSg/XLOvi0v0+uYKEua84bW/
- +1k1HpYdu616SHpMPtQjt5sxM9exoLcuQoeKp60HoIKGrW2HFt6UJFuHOXAXppwPpi2y+I0ULa
- 97PdniAI9RZq/zAbqFVItJE6MfiqvHmK1VTGIwJ5KbcOGlz6JOKlsF1ZMmGBahByjTZEFDtnyS
- YjItlbQ4NYPk+OyE7Tfa0dJK
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2021 22:40:54 -0700
-IronPort-SDR: CL+LRpxFApAQWu19BKH/sXv8rUNXHaK2SLUWRqrvpa1unfASF/U24ZGWL8HJAHBW6ssP3QvSxF
- 56qi+eWsmVZuJCOjvK1OMD0tfL+fEDwZM2dlGFfcotmwM+aKSxTEJM49THbCZHZ0G/bGmkKFTi
- kjZ46XYYMAEVvKrJ+R5776K1cz4YKgNjm8Q1U7y7tUH5hnOjZWyWHcCeh/KheIy90gFqsTzCRd
- cfbWvsyJJg0Dcad0cVyS7aRI/tbyFX+KoJqsvXt0d6AIlT5WxGPvr0BB9j52ocMxrlMfxg9hQl
- nlU=
-WDCIronportException: Internal
-Received: from bxygm33.ad.shared ([10.225.32.116])
-  by uls-op-cesaip02.wdc.com with ESMTP; 14 Sep 2021 23:04:28 -0700
-From:   Avri Altman <avri.altman@wdc.com>
-To:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bart Van Assche <bvanassche@acm.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Avri Altman <avri.altman@wdc.com>
-Subject: [PATCH v7 2/2] scsi: ufs: Add temperature notification exception handling
-Date:   Wed, 15 Sep 2021 09:04:07 +0300
-Message-Id: <20210915060407.40-3-avri.altman@wdc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210915060407.40-1-avri.altman@wdc.com>
-References: <20210915060407.40-1-avri.altman@wdc.com>
+        Wed, 15 Sep 2021 02:07:38 -0400
+Received: by mail-il1-f200.google.com with SMTP id f16-20020a92cb50000000b002376905517dso1208235ilq.18
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 23:06:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=oRcwdcQV1H0omKzYkhuLZ+wr8KRDqA6jkU+EpjgxD3Y=;
+        b=ie9O2ySbKTbGV721iem8wVMYQbyHwass2BuKfkI3EH76u8W11EYL47knsmJHYvYkYv
+         syx/PQwKF0tZowEGhwurNrya29PQVu6merOthv9mAdH6PC1kzdEfiZE+FXvEdcivwbx0
+         0nNNtw76mi8aagMHBhNcs56V7Q0ofmBdNE41vzpCPyItzV+GFrvOfloelYljLBhif+yo
+         /AiHLqNfL0UeDJ8YzlAUjqpnL2gFU6btiZBOPhjeu1qIKs1DLcMQ+qtGfSWqBTRH/Jno
+         qc0aLEzEZd7hjuOazLb1mCjFPjU7SiFmmfFo2Bs4mDmeZKJt4k2C3F+VSU5sTMS1Nw9i
+         DXeg==
+X-Gm-Message-State: AOAM530JAcFQWVaX6JN+cCQm4VS+lRy+BrIH7hkyKfHOY5vDF791W4D0
+        NJuw02m53GFUAt7dIch5oKbOVEDiNcNSe1zYpBVg9zvjbuyk
+X-Google-Smtp-Source: ABdhPJzJepNg0KG6KKDUgKLpFoVKg7RsPcyXkE3Nr+qCW9M0EEoqfFshEstwnnB7MhsElkm50LdEOxQxbkxkTcoAeye7boaq2pOf
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a92:cf50:: with SMTP id c16mr14991228ilr.8.1631685979681;
+ Tue, 14 Sep 2021 23:06:19 -0700 (PDT)
+Date:   Tue, 14 Sep 2021 23:06:19 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000343aaf05cc027f83@google.com>
+Subject: [syzbot] WARNING in insert_work
+From:   syzbot <syzbot+4546a69bfcab9a42f280@syzkaller.appspotmail.com>
+To:     bp@alien8.de, dwmw@amazon.co.uk, hpa@zytor.com,
+        linux-kernel@vger.kernel.org, mingo@redhat.com,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The device may notify the host of an extreme temperature by using the
-exception event mechanism. The exception can be raised when the device’s
-Tcase temperature is either too high or too low.
+Hello,
 
-It is essentially up to the platform to decide what further actions need
-to be taken. leave a placeholder for a designated vop for that.
+syzbot found the following issue on:
 
-Signed-off-by: Avri Altman <avri.altman@wdc.com>
+HEAD commit:    926de8c4326c Merge tag 'acpi-5.15-rc1-3' of git://git.kern..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=123a37b9300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=37df9ef5660a8387
+dashboard link: https://syzkaller.appspot.com/bug?extid=4546a69bfcab9a42f280
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+4546a69bfcab9a42f280@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 0 at kernel/workqueue.c:633 set_work_data kernel/workqueue.c:633 [inline]
+WARNING: CPU: 0 PID: 0 at kernel/workqueue.c:633 set_work_pwq kernel/workqueue.c:640 [inline]
+WARNING: CPU: 0 PID: 0 at kernel/workqueue.c:633 insert_work+0x2a7/0x370 kernel/workqueue.c:1356
+Modules linked in:
+CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.14.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:set_work_data kernel/workqueue.c:633 [inline]
+RIP: 0010:set_work_pwq kernel/workqueue.c:640 [inline]
+RIP: 0010:insert_work+0x2a7/0x370 kernel/workqueue.c:1356
+Code: b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 cc 00 00 00 48 8b 7b 40 e8 30 93 05 00 eb 83 e8 09 86 2a 00 <0f> 0b e9 dc fd ff ff 48 89 ef e8 ca d0 71 00 e9 56 ff ff ff 4c 89
+RSP: 0018:ffffc90000007c70 EFLAGS: 00010046
+RAX: 0000000000000000 RBX: ffff888088ac54b0 RCX: 0000000000000100
+RDX: ffffffff8b6bc680 RSI: ffffffff814b8737 RDI: 0000000000000003
+RBP: 0000000000000005 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff814b8511 R11: 0000000000000000 R12: ffff888010c69858
+R13: ffff888147c49800 R14: ffff888010c69800 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f4db76b6ab4 CR3: 000000000b68e000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+Call Trace:
+ <IRQ>
+ __queue_work+0x5ca/0xee0 kernel/workqueue.c:1519
+ call_timer_fn+0x1a5/0x6b0 kernel/time/timer.c:1421
+ expire_timers kernel/time/timer.c:1461 [inline]
+ __run_timers.part.0+0x49f/0xa20 kernel/time/timer.c:1734
+ __run_timers kernel/time/timer.c:1715 [inline]
+ run_timer_softirq+0xb3/0x1d0 kernel/time/timer.c:1747
+ __do_softirq+0x29b/0x9c2 kernel/softirq.c:558
+ invoke_softirq kernel/softirq.c:432 [inline]
+ __irq_exit_rcu+0x123/0x180 kernel/softirq.c:636
+ irq_exit_rcu+0x5/0x20 kernel/softirq.c:648
+ sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1097
+ </IRQ>
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
+RIP: 0010:native_save_fl arch/x86/include/asm/irqflags.h:29 [inline]
+RIP: 0010:arch_local_save_flags arch/x86/include/asm/irqflags.h:70 [inline]
+RIP: 0010:arch_irqs_disabled arch/x86/include/asm/irqflags.h:132 [inline]
+RIP: 0010:acpi_safe_halt drivers/acpi/processor_idle.c:110 [inline]
+RIP: 0010:acpi_idle_do_entry+0x1c6/0x250 drivers/acpi/processor_idle.c:553
+Code: 89 de e8 dd 99 3e f8 84 db 75 ac e8 94 93 3e f8 e8 1f bd 44 f8 eb 0c e8 88 93 3e f8 0f 00 2d 81 5e b8 00 e8 7c 93 3e f8 fb f4 <9c> 5b 81 e3 00 02 00 00 fa 31 ff 48 89 de e8 c7 98 3e f8 48 85 db
+RSP: 0018:ffffffff8b607d60 EFLAGS: 00000293
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffffffff8b6bc680 RSI: ffffffff893779c4 RDI: 0000000000000000
+RBP: ffff8880145f4064 R08: 0000000000000001 R09: 0000000000000001
+R10: ffffffff817c3708 R11: 0000000000000000 R12: 0000000000000001
+R13: ffff8880145f4000 R14: ffff8880145f4064 R15: ffff8881407fa804
+ acpi_idle_enter+0x361/0x500 drivers/acpi/processor_idle.c:688
+ cpuidle_enter_state+0x1b1/0xc80 drivers/cpuidle/cpuidle.c:237
+ cpuidle_enter+0x4a/0xa0 drivers/cpuidle/cpuidle.c:351
+ call_cpuidle kernel/sched/idle.c:158 [inline]
+ cpuidle_idle_call kernel/sched/idle.c:239 [inline]
+ do_idle+0x3e8/0x590 kernel/sched/idle.c:306
+ cpu_startup_entry+0x14/0x20 kernel/sched/idle.c:403
+ start_kernel+0x47a/0x49b init/main.c:1141
+ secondary_startup_64_no_verify+0xb0/0xbb
+----------------
+Code disassembly (best guess):
+   0:	89 de                	mov    %ebx,%esi
+   2:	e8 dd 99 3e f8       	callq  0xf83e99e4
+   7:	84 db                	test   %bl,%bl
+   9:	75 ac                	jne    0xffffffb7
+   b:	e8 94 93 3e f8       	callq  0xf83e93a4
+  10:	e8 1f bd 44 f8       	callq  0xf844bd34
+  15:	eb 0c                	jmp    0x23
+  17:	e8 88 93 3e f8       	callq  0xf83e93a4
+  1c:	0f 00 2d 81 5e b8 00 	verw   0xb85e81(%rip)        # 0xb85ea4
+  23:	e8 7c 93 3e f8       	callq  0xf83e93a4
+  28:	fb                   	sti
+  29:	f4                   	hlt
+* 2a:	9c                   	pushfq <-- trapping instruction
+  2b:	5b                   	pop    %rbx
+  2c:	81 e3 00 02 00 00    	and    $0x200,%ebx
+  32:	fa                   	cli
+  33:	31 ff                	xor    %edi,%edi
+  35:	48 89 de             	mov    %rbx,%rsi
+  38:	e8 c7 98 3e f8       	callq  0xf83e9904
+  3d:	48 85 db             	test   %rbx,%rbx
+
+
 ---
- drivers/scsi/ufs/ufs-hwmon.c | 12 ++++++++++++
- drivers/scsi/ufs/ufshcd.c    | 21 +++++++++++++++++++++
- drivers/scsi/ufs/ufshcd.h    |  2 ++
- 3 files changed, 35 insertions(+)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/scsi/ufs/ufs-hwmon.c b/drivers/scsi/ufs/ufs-hwmon.c
-index 33b66736aaa4..74855491dc8f 100644
---- a/drivers/scsi/ufs/ufs-hwmon.c
-+++ b/drivers/scsi/ufs/ufs-hwmon.c
-@@ -196,3 +196,15 @@ void ufs_hwmon_remove(struct ufs_hba *hba)
- 	hba->hwmon_device = NULL;
- 	kfree(data);
- }
-+
-+void ufs_hwmon_notify_event(struct ufs_hba *hba, u8 ee_mask)
-+{
-+	if (!hba->hwmon_device)
-+		return;
-+
-+	if (ee_mask & MASK_EE_TOO_HIGH_TEMP)
-+		hwmon_notify_event(hba->hwmon_device, hwmon_temp, hwmon_temp_max_alarm, 0);
-+
-+	if (ee_mask & MASK_EE_TOO_LOW_TEMP)
-+		hwmon_notify_event(hba->hwmon_device, hwmon_temp, hwmon_temp_min_alarm, 0);
-+}
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index ce22340024ce..debef631c89a 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -5642,6 +5642,24 @@ static void ufshcd_bkops_exception_event_handler(struct ufs_hba *hba)
- 				__func__, err);
- }
- 
-+static void ufshcd_temp_exception_event_handler(struct ufs_hba *hba, u16 status)
-+{
-+	u32 value;
-+
-+	if (ufshcd_query_attr_retry(hba, UPIU_QUERY_OPCODE_READ_ATTR,
-+				QUERY_ATTR_IDN_CASE_ROUGH_TEMP, 0, 0, &value))
-+		return;
-+
-+	dev_info(hba->dev, "exception Tcase %d\n", value - 80);
-+
-+	ufs_hwmon_notify_event(hba, status & MASK_EE_URGENT_TEMP);
-+
-+	/*
-+	 * A placeholder for the platform vendors to add whatever additional
-+	 * steps required
-+	 */
-+}
-+
- static int __ufshcd_wb_toggle(struct ufs_hba *hba, bool set, enum flag_idn idn)
- {
- 	u8 index;
-@@ -5821,6 +5839,9 @@ static void ufshcd_exception_event_handler(struct work_struct *work)
- 	if (status & hba->ee_drv_mask & MASK_EE_URGENT_BKOPS)
- 		ufshcd_bkops_exception_event_handler(hba);
- 
-+	if (status & hba->ee_drv_mask & MASK_EE_URGENT_TEMP)
-+		ufshcd_temp_exception_event_handler(hba, status);
-+
- 	ufs_debugfs_exception_event(hba, status);
- out:
- 	ufshcd_scsi_unblock_requests(hba);
-diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-index 021c858955af..92d05329de68 100644
---- a/drivers/scsi/ufs/ufshcd.h
-+++ b/drivers/scsi/ufs/ufshcd.h
-@@ -1062,9 +1062,11 @@ static inline u8 ufshcd_wb_get_query_index(struct ufs_hba *hba)
- #ifdef CONFIG_SCSI_UFS_HWMON
- void ufs_hwmon_probe(struct ufs_hba *hba, u8 mask);
- void ufs_hwmon_remove(struct ufs_hba *hba);
-+void ufs_hwmon_notify_event(struct ufs_hba *hba, u8 ee_mask);
- #else
- static inline void ufs_hwmon_probe(struct ufs_hba *hba, u8 mask) {}
- static inline void ufs_hwmon_remove(struct ufs_hba *hba) {}
-+static inline void ufs_hwmon_notify_event(struct ufs_hba *hba, u8 ee_mask) {}
- #endif
- 
- #ifdef CONFIG_PM
--- 
-2.17.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
