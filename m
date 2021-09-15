@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A09B140D034
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 01:34:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88CBD40D039
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 01:34:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233102AbhIOXfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 19:35:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60342 "EHLO mail.kernel.org"
+        id S233289AbhIOXfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 19:35:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60460 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232897AbhIOXfE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232934AbhIOXfE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 15 Sep 2021 19:35:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F073A61131;
-        Wed, 15 Sep 2021 23:33:44 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C2FE611CE;
+        Wed, 15 Sep 2021 23:33:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1631748825;
-        bh=G+c4Zp8HyyHDC/1xdbUnO8ByLENVGrEKTMyNI4qVzWE=;
+        bh=gO1MMFnm1zCJjS/gCVvB0Xfe7BwmJf6Jg0wu6mIXWAw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BYUXyzJ/NtJzKizIQxFPc9eLRMx9wieHozd9y50kElSnHAcg1Y9zjI25+XG9/P1Y/
-         RZPGDLAQqVnS3hlFUSBmTTIW7uW0/Ic5NgSLv3gJuMGRW5K/la5W2t/DqRZE6fpj1G
-         p8U2lLbVRXZU6B+5VbICp6toK+mFLj68K9uUqgpLjz9QQvMjxqmO0Dh9XtA7nIco2Y
-         McZOUCCIM2X8EGIEFyJeGtfSo18FB+KQss346kPab4MK8pvTncNHv9zfkurEwPdnD7
-         tnbMC9huS/Xo5aRkH5YJztGePk7poQFxjRaNOB3iQmb/UxF9aMxghiqXqBBJXrNONC
-         /UUqzkMhG373Q==
+        b=k5LfraBiX/Y1Drs5JcY3RnY9JStA8qh7UOabyHv15hBoMFOq9526N56VL0ieYZFuL
+         WfnyTQ/5DK25J0/RB37Yl+W5SdEOqi9pTHQfeEqB4IcilVqXBqN6Zw9frUwofSAP6o
+         SYjKYzcrzww9irevbCNRYWOAWA0lidRc0LMuXAj+3M0LQcId9XSFPvsIL/E7pAGNPx
+         1R6J2w5r/zFoMZJrWrj1PyIqrSfXiMM9SyFmsUbFTQ8gdSDbww5jZXunIgKlbc6G+h
+         XyDXojajoqk6TPPW6NuN4te1kvI5rx8IUmSXl82GyXDSQBYyyKmvOeQlx8Pd6K0qol
+         950V1VIsCGSGw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C30D15C0926; Wed, 15 Sep 2021 16:33:44 -0700 (PDT)
+        id C543A5C0954; Wed, 15 Sep 2021 16:33:44 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -33,49 +33,199 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 05/14] doc: Add another stall-warning root cause in stallwarn.rst
-Date:   Wed, 15 Sep 2021 16:33:34 -0700
-Message-Id: <20210915233343.3906738-5-paulmck@kernel.org>
+        Zhouyi Zhou <zhouzhouyi@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 06/14] rcu: Fix undefined Kconfig macros
+Date:   Wed, 15 Sep 2021 16:33:35 -0700
+Message-Id: <20210915233343.3906738-6-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210915233305.GA3906641@paulmck-ThinkPad-P17-Gen-1>
 References: <20210915233305.GA3906641@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit adds a bullet item noting that both deficiencies and surpluses
-of calls to rcu_*_enter() and rcu_*_exit() can result in RCU CPU stall
-warnings.
+From: Zhouyi Zhou <zhouzhouyi@gmail.com>
 
+Invoking scripts/checkkconfigsymbols.py in the Linux-kernel source tree
+located the following issues:
+
+1. TREE_PREEMPT_RCU
+Referencing files: arch/sh/configs/sdk7786_defconfig
+
+It should now be CONFIG_PREEMPT_RCU. Except that the CONFIG_PREEMPT=y in
+that same file implies CONFIG_PREEMPT_RCU=y.  Therefore, delete the
+CONFIG_TREE_PREEMPT_RCU=y line.
+
+The reason is as follows:
+
+In kernel/rcu/Kconfig, we have
+config PREEMPT_RCU
+        bool
+        default y if PREEMPTION
+
+https://www.kernel.org/doc/Documentation/kbuild/kconfig-language.txt says,
+"The default value is only assigned to the config symbol if no other value
+ was set by the user (via the input prompt above)."
+there is no prompt in config PREEMPT_RCU entry, so we are guaranteed to
+get CONFIG_PREEMPT_RCU=y when CONFIG_PREEMPT is present.
+
+2. RCU_CPU_STALL_INFO
+Referencing files: arch/xtensa/configs/nommu_kc705_defconfig
+
+The old Kconfig option RCU_CPU_STALL_INFO was removed by commit
+75c27f119b64 ("rcu: Remove CONFIG_RCU_CPU_STALL_INFO"), and the kernel
+now acts as if this Kconfig option was unconditionally enabled.
+
+3. RCU_NOCB_CPU_ALL
+Referencing files:
+Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
+
+This is an old snapshot of the code. I update this from the real
+rcu_prepare_for_idle() function in kernel/rcu/tree_plugin.h.
+This change was tested by invoking "make htmldocs".
+
+4. RCU_TORTURE_TESTS
+Referencing files: kernel/rcu/rcutorture.c
+
+Forward-progress checking conflicts with CPU-stall testing, so we should
+complain at "modprobe rcutorture" when both are enabled.
+
+Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- Documentation/RCU/stallwarn.rst | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ .../Tree-RCU-Memory-Ordering.rst              | 69 +++++++++----------
+ arch/sh/configs/sdk7786_defconfig             |  1 -
+ arch/xtensa/configs/nommu_kc705_defconfig     |  1 -
+ kernel/rcu/rcutorture.c                       |  2 +-
+ 4 files changed, 33 insertions(+), 40 deletions(-)
 
-diff --git a/Documentation/RCU/stallwarn.rst b/Documentation/RCU/stallwarn.rst
-index 5036df24ae61..28f8ad16db25 100644
---- a/Documentation/RCU/stallwarn.rst
-+++ b/Documentation/RCU/stallwarn.rst
-@@ -96,6 +96,16 @@ warnings:
- 	the ``rcu_.*timer wakeup didn't happen for`` console-log message,
- 	which will include additional debugging information.
+diff --git a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
+index eeb351296df1..7fdf151a8680 100644
+--- a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
++++ b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
+@@ -202,49 +202,44 @@ newly arrived RCU callbacks against future grace periods:
+     1 static void rcu_prepare_for_idle(void)
+     2 {
+     3   bool needwake;
+-    4   struct rcu_data *rdp;
+-    5   struct rcu_dynticks *rdtp = this_cpu_ptr(&rcu_dynticks);
+-    6   struct rcu_node *rnp;
+-    7   struct rcu_state *rsp;
+-    8   int tne;
+-    9
+-   10   if (IS_ENABLED(CONFIG_RCU_NOCB_CPU_ALL) ||
+-   11       rcu_is_nocb_cpu(smp_processor_id()))
+-   12     return;
++    4   struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
++    5   struct rcu_node *rnp;
++    6   int tne;
++    7
++    8   lockdep_assert_irqs_disabled();
++    9   if (rcu_rdp_is_offloaded(rdp))
++   10     return;
++   11
++   12   /* Handle nohz enablement switches conservatively. */
+    13   tne = READ_ONCE(tick_nohz_active);
+-   14   if (tne != rdtp->tick_nohz_enabled_snap) {
+-   15     if (rcu_cpu_has_callbacks(NULL))
+-   16       invoke_rcu_core();
+-   17     rdtp->tick_nohz_enabled_snap = tne;
++   14   if (tne != rdp->tick_nohz_enabled_snap) {
++   15     if (!rcu_segcblist_empty(&rdp->cblist))
++   16       invoke_rcu_core(); /* force nohz to see update. */
++   17     rdp->tick_nohz_enabled_snap = tne;
+    18     return;
+-   19   }
++   19	}
+    20   if (!tne)
+    21     return;
+-   22   if (rdtp->all_lazy &&
+-   23       rdtp->nonlazy_posted != rdtp->nonlazy_posted_snap) {
+-   24     rdtp->all_lazy = false;
+-   25     rdtp->nonlazy_posted_snap = rdtp->nonlazy_posted;
+-   26     invoke_rcu_core();
+-   27     return;
+-   28   }
+-   29   if (rdtp->last_accelerate == jiffies)
+-   30     return;
+-   31   rdtp->last_accelerate = jiffies;
+-   32   for_each_rcu_flavor(rsp) {
+-   33     rdp = this_cpu_ptr(rsp->rda);
+-   34     if (rcu_segcblist_pend_cbs(&rdp->cblist))
+-   35       continue;
+-   36     rnp = rdp->mynode;
+-   37     raw_spin_lock_rcu_node(rnp);
+-   38     needwake = rcu_accelerate_cbs(rsp, rnp, rdp);
+-   39     raw_spin_unlock_rcu_node(rnp);
+-   40     if (needwake)
+-   41       rcu_gp_kthread_wake(rsp);
+-   42   }
+-   43 }
++   22
++   23   /*
++   24    * If we have not yet accelerated this jiffy, accelerate all
++   25    * callbacks on this CPU.
++   26   */
++   27   if (rdp->last_accelerate == jiffies)
++   28     return;
++   29   rdp->last_accelerate = jiffies;
++   30   if (rcu_segcblist_pend_cbs(&rdp->cblist)) {
++   31     rnp = rdp->mynode;
++   32     raw_spin_lock_rcu_node(rnp); /* irqs already disabled. */
++   33     needwake = rcu_accelerate_cbs(rnp, rdp);
++   34     raw_spin_unlock_rcu_node(rnp); /* irqs remain disabled. */
++   35     if (needwake)
++   36       rcu_gp_kthread_wake();
++   37   }
++   38 }
  
-+-	A low-level kernel issue that either fails to invoke one of the
-+	variants of rcu_user_enter(), rcu_user_exit(), rcu_idle_enter(),
-+	rcu_idle_exit(), rcu_irq_enter(), or rcu_irq_exit() on the one
-+	hand, or that invokes one of them too many times on the other.
-+	Historically, the most frequent issue has been an omission
-+	of either irq_enter() or irq_exit(), which in turn invoke
-+	rcu_irq_enter() or rcu_irq_exit(), respectively.  Building your
-+	kernel with CONFIG_RCU_EQS_DEBUG=y can help track down these types
-+	of issues, which sometimes arise in architecture-specific code.
-+
- -	A bug in the RCU implementation.
+ But the only part of ``rcu_prepare_for_idle()`` that really matters for
+-this discussion are lines 37–39. We will therefore abbreviate this
++this discussion are lines 32–34. We will therefore abbreviate this
+ function as follows:
  
- -	A hardware failure.  This is quite unlikely, but has occurred
+ .. kernel-figure:: rcu_node-lock.svg
+diff --git a/arch/sh/configs/sdk7786_defconfig b/arch/sh/configs/sdk7786_defconfig
+index f776a1d0d277..a8662b6927ec 100644
+--- a/arch/sh/configs/sdk7786_defconfig
++++ b/arch/sh/configs/sdk7786_defconfig
+@@ -5,7 +5,6 @@ CONFIG_BSD_PROCESS_ACCT=y
+ CONFIG_BSD_PROCESS_ACCT_V3=y
+ CONFIG_AUDIT=y
+ CONFIG_AUDITSYSCALL=y
+-CONFIG_TREE_PREEMPT_RCU=y
+ CONFIG_RCU_TRACE=y
+ CONFIG_IKCONFIG=y
+ CONFIG_IKCONFIG_PROC=y
+diff --git a/arch/xtensa/configs/nommu_kc705_defconfig b/arch/xtensa/configs/nommu_kc705_defconfig
+index 88b2e222d4bf..fcb620ef3799 100644
+--- a/arch/xtensa/configs/nommu_kc705_defconfig
++++ b/arch/xtensa/configs/nommu_kc705_defconfig
+@@ -119,7 +119,6 @@ CONFIG_DEBUG_SPINLOCK=y
+ CONFIG_DEBUG_MUTEXES=y
+ CONFIG_DEBUG_ATOMIC_SLEEP=y
+ CONFIG_STACKTRACE=y
+-# CONFIG_RCU_CPU_STALL_INFO is not set
+ CONFIG_RCU_TRACE=y
+ # CONFIG_FTRACE is not set
+ # CONFIG_LD_NO_RELAX is not set
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index ab4215266ebe..f640cbd9262c 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -2449,7 +2449,7 @@ static int __init rcu_torture_fwd_prog_init(void)
+ 	}
+ 	if (stall_cpu > 0) {
+ 		VERBOSE_TOROUT_STRING("rcu_torture_fwd_prog_init: Disabled, conflicts with CPU-stall testing");
+-		if (IS_MODULE(CONFIG_RCU_TORTURE_TESTS))
++		if (IS_MODULE(CONFIG_RCU_TORTURE_TEST))
+ 			return -EINVAL; /* In module, can fail back to user. */
+ 		WARN_ON(1); /* Make sure rcutorture notices conflict. */
+ 		return 0;
 -- 
 2.31.1.189.g2e36527f23
 
