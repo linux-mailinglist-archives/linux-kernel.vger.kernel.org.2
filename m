@@ -2,113 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F24E40CA24
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 18:32:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7CD440CB52
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 19:00:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229750AbhIOQeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 12:34:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31836 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229665AbhIOQeC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 12:34:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631723563;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YHkGOnRH445M1d9hLlLUWfMXPA2J8M8wItfcEOw5gl8=;
-        b=H58BILloeWUdLpi3dd7EBmiqxZsj2HXtYwWSd3C8+n1JV5kw7QDn1pdM3itUYYoYr+RfBy
-        on3W8H97vqljaH3pPsw3d/bCRXHP0sMfGbJqvUPivIQd0PqMRbzLI2hE7pypQ+ezHL0npC
-        4ASfoYSkzrt7AaIR1B8FksBPj5BXSQ4=
-Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
- [209.85.161.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-137-0YkB5H4mMmucOe1lRJOTKw-1; Wed, 15 Sep 2021 12:32:42 -0400
-X-MC-Unique: 0YkB5H4mMmucOe1lRJOTKw-1
-Received: by mail-oo1-f71.google.com with SMTP id bc36-20020a05682016a400b0028c8e8a2746so3629938oob.5
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 09:32:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=YHkGOnRH445M1d9hLlLUWfMXPA2J8M8wItfcEOw5gl8=;
-        b=eraJVGKl/xGhTGt5FPtLh0Jr4MwQd3x6t5DTwXwZlBR0t2RChya59CbcgtKNOUpliJ
-         nj6fvvDKLff8QpBBZUc3+ow4KrcIalayBI8hAEQQviSXb2l/VQUM1P0TwIUGiNG0Fqsu
-         HdoAhLXMPJHeNIHXey8l3mls1T7tzkCTYetUsaNDYezuDK/t8TCwR39QVDWreW6R1hgs
-         U1G6TKp8VmQp9OMeJF7TLtbvlQO8fXcVoGFn8mnGW2ezY/IKb8Z6N761uI7h0SjjxMdE
-         xuewEnhKMbsPBPN5u55kZYU/CrGcf3zEkAf72Y+w4aZKPC1ERLDGpgLMP4TcT6qQzM3R
-         gDBA==
-X-Gm-Message-State: AOAM532vVQZ/XI+jzmWpeW5843yZT23wk5PZWJXb/djbr+e5j6viVjq/
-        bKbqIdSXgxL5WQPFf359yLIesM+vEWa7mKLbfVyjH9QtoqEcf340Ut4VZ5uSRnOIqBaJ+/PbT2D
-        O+xrs1+50pWHkU4d2PISG1m6B
-X-Received: by 2002:a9d:6398:: with SMTP id w24mr777170otk.140.1631723557705;
-        Wed, 15 Sep 2021 09:32:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyEqEMq5Emx3QGBfkQ0rbyCrZIePE3tj2f7Z2WEi4Rv/KLV4WT4gXmfCPEt+bUaapt3BePG7Q==
-X-Received: by 2002:a9d:6398:: with SMTP id w24mr777147otk.140.1631723557449;
-        Wed, 15 Sep 2021 09:32:37 -0700 (PDT)
-Received: from redhat.com ([198.99.80.109])
-        by smtp.gmail.com with ESMTPSA id q131sm122216oif.44.2021.09.15.09.32.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Sep 2021 09:32:37 -0700 (PDT)
-Date:   Wed, 15 Sep 2021 10:32:35 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Matthew Ruffell <matthew.ruffell@canonical.com>
-Cc:     linux-pci@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        kvm@vger.kernel.org, nathan.langford@xcelesunifiedtechnologies.com
-Subject: Re: [PROBLEM] Frequently get "irq 31: nobody cared" when passing
- through 2x GPUs that share same pci switch via vfio
-Message-ID: <20210915103235.097202d2.alex.williamson@redhat.com>
-In-Reply-To: <9e8d0e9e-1d94-35e8-be1f-cf66916c24b2@canonical.com>
-References: <d4084296-9d36-64ec-8a79-77d82ac6d31c@canonical.com>
-        <20210914104301.48270518.alex.williamson@redhat.com>
-        <9e8d0e9e-1d94-35e8-be1f-cf66916c24b2@canonical.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S229888AbhIORBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 13:01:22 -0400
+Received: from wind.enjellic.com ([76.10.64.91]:58928 "EHLO wind.enjellic.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229690AbhIORBQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 13:01:16 -0400
+X-Greylist: delayed 1542 seconds by postgrey-1.27 at vger.kernel.org; Wed, 15 Sep 2021 13:01:15 EDT
+Received: from wind.enjellic.com (localhost [127.0.0.1])
+        by wind.enjellic.com (8.15.2/8.15.2) with ESMTP id 18FGXT0I002910;
+        Wed, 15 Sep 2021 11:33:29 -0500
+Received: (from greg@localhost)
+        by wind.enjellic.com (8.15.2/8.15.2/Submit) id 18FGXRgh002909;
+        Wed, 15 Sep 2021 11:33:27 -0500
+Date:   Wed, 15 Sep 2021 11:33:27 -0500
+From:   "Dr. Greg" <greg@enjellic.com>
+To:     Vivek Goyal <vgoyal@redhat.com>
+Cc:     Bruce Fields <bfields@redhat.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, virtio-fs@redhat.com,
+        Daniel Walsh <dwalsh@redhat.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Casey Schaufler <casey.schaufler@intel.com>,
+        LSM <linux-security-module@vger.kernel.org>,
+        selinux@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        stephen.smalley.work@gmail.com,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Dave Chinner <david@fromorbit.com>
+Subject: Re: [PATCH v3 0/1] Relax restrictions on user.* xattr
+Message-ID: <20210915163327.GA2324@wind.enjellic.com>
+Reply-To: "Dr. Greg" <greg@enjellic.com>
+References: <YTEEPZJ3kxWkcM9x@redhat.com> <YTENEAv6dw9QoYcY@redhat.com> <3bca47d0-747d-dd49-a03f-e0fa98eaa2f7@schaufler-ca.com> <YTEur7h6fe4xBJRb@redhat.com> <1f33e6ef-e896-09ef-43b1-6c5fac40ba5f@schaufler-ca.com> <YTYr4MgWnOgf/SWY@work-vm> <496e92bf-bf9e-a56b-bd73-3c1d0994a064@schaufler-ca.com> <YUCa6pWpr5cjCNrU@redhat.com> <CAPL3RVHB=E_s1AW1sQMEgrLYJ8ADCdr=qaKsDrpYjVzW-Apq8w@mail.gmail.com> <YUCybaYK/0RLvY9J@redhat.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YUCybaYK/0RLvY9J@redhat.com>
+User-Agent: Mutt/1.4i
+X-Greylist: Sender passed SPF test, not delayed by milter-greylist-4.2.3 (wind.enjellic.com [127.0.0.1]); Wed, 15 Sep 2021 11:33:29 -0500 (CDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Sep 2021 16:44:38 +1200
-Matthew Ruffell <matthew.ruffell@canonical.com> wrote:
-> On 15/09/21 4:43 am, Alex Williamson wrote:
+On Tue, Sep 14, 2021 at 10:32:13AM -0400, Vivek Goyal wrote:
+
+Good morning, I hope the day is going well for everyone.
+
+> On Tue, Sep 14, 2021 at 09:59:19AM -0400, Bruce Fields wrote:
+> > On Tue, Sep 14, 2021 at 8:52 AM Vivek Goyal <vgoyal@redhat.com> wrote:
+> > > Same is the requirement for regular containers and that's why
+> > > podman (and possibly other container managers), make top level
+> > > storage directory only readable and searchable by root, so that
+> > > unpriveleged entities on host can not access container root filesystem
+> > > data.
 > > 
-> > FWIW, I have access to a system with an NVIDIA K1 and M60, both use
-> > this same switch on-card and I've not experienced any issues assigning
-> > all the GPUs to a single VM.  Topo:
-> > 
-> >  +-[0000:40]-+-02.0-[42-47]----00.0-[43-47]--+-08.0-[44]----00.0
-> >  |                                           +-09.0-[45]----00.0
-> >  |                                           +-10.0-[46]----00.0
-> >  |                                           \-11.0-[47]----00.0
-> >  \-[0000:00]-+-03.0-[04-07]----00.0-[05-07]--+-08.0-[06]----00.0
-> >                                              \-10.0-[07]----00.0
+> > Note--if that directory is on NFS, making it readable and searchable
+> > by root is very weak protection, since it's often possible for an
+> > attacker to guess filehandles and access objects without the need for
+> > directory lookups.
 
+> open_by_handle_at() requires CAP_DAC_READ_SEARCH. And if you have
+> CAP_DAC_READ_SEARCH, you don't need to even guess file handles. You
+> should be able to read/search through all directories, IIUC.
+>
+> So how does one make sure that shared directory on host is not
+> accessible to unprivileged entities. If making directory accessible
+> to root only is weaker security, what are the options for stronger
+> security.
 
-I've actually found that the above configuration, assigning all 6 GPUs
-to a VM reproduces this pretty readily by simply rebooting the VM.  In
-my case, I don't have the panic-on-warn/oops that must be set on your
-kernel, so the result is far more benign, the IRQ gets masked until
-it's re-registered.
+I've been watching this thread, with some interest, given what we have
+been working on with respect to providing a new security framework
+that merges IMA and LSM and external security co-processor technology.
 
-The fact that my upstream ports are using MSI seems irrelevant.
+Some observations based on those experiences and this thread.
 
-Adding debugging to the vfio-pci interrupt handler, it's correctly
-deferring the interrupt as the GPU device is not identifying itself as
-the source of the interrupt via the status register.  In fact, setting
-the disable INTx bit in the GPU command register while the interrupt
-storm occurs does not stop the interrupts.
+Casey is an expert on MAC and capability based security systems,
+unfortunately for our industry, particularly bog standard system
+administrators, a rarefied set of skills.  It may be helpful to
+consider his concerns and position on the issues involved in the
+framework of the number of systems that have, and blog posts that
+recommend, setting 'selinux=0' on the kernel command-line.
 
-The interrupt storm does seem to be related to the bus resets, but I
-can't figure out yet how multiple devices per switch factors into the
-issue.  Serializing all bus resets via a mutex doesn't seem to change
-the behavior.
+I believe the best summary of his position on this issue, is the
+notion that placing security labels, even in transitive form in user
+accessible attributes, subordinates the security of the guest system,
+regardless of the MAC policy it implements, to the DAC based policy on
+the host system.
 
-I'm still investigating, but if anyone knows how to get access to the
-Broadcom datasheet or errata for this switch, please let me know.
-Thanks,
+Given that, there are no legitimate security guarantees that are
+inferrable based on the guest MAC policy.
 
-Alex
+A legitimate pundit, could and probably should question, in the face
+of container filesystems and virtual machine images, whether any type
+of inferrable security guarantees are possible, but that is a question
+and argument for another day.
 
+I didn't see any mention of EVM brought up in these discussions, which
+may provide some options to improve the security integrity state of
+the guest.
+
+The 800 pound gorilla in the corner in all of this, is that inferrable
+security guarantees in guests require a certifiable chain of trust
+from the creator of the object to the kernel context that is making
+the security gating decisions on the object.  A hard to implement and
+prove concept in bare metal trusted systems, let alone the myriad of
+edge cases lurking in namespaced and virtual environments.
+
+Which, in a nod to the other corner of the ring, may simply mean, with
+our current state of deployable technology, you pay your money and
+take your chances in these virtual environments.  Which would in turn
+support the notion of a minimum security, ie. DAC, based effort.
+
+> Vivek
+
+Have a good remainder of the week.
+
+Dr. Greg
+
+As always,
+Dr. Greg Wettstein, Ph.D, Worker      Autonomously self-defensive
+Enjellic Systems Development, LLC     IOT platforms and edge devices.
+4206 N. 19th Ave.
+Fargo, ND  58102
+PH: 701-281-1686                      EMAIL: dg@enjellic.com
+------------------------------------------------------------------------------
+"This place is so screwed up.  It's just like the Titanic, only
+ we don't even have a band playing.
+                                -- Terrance George Wieland
+                                   Resurrection.
