@@ -2,76 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EF9B40C4FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 14:14:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4803540C503
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 14:15:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236628AbhIOMQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 08:16:10 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:49060 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231500AbhIOMQJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 08:16:09 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18FCElqC070388;
-        Wed, 15 Sep 2021 07:14:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1631708087;
-        bh=KpLPhlM0LkudEzDGM0tHwWlIvGPMnCVz/SZsoL6gATk=;
-        h=From:To:CC:Subject:Date;
-        b=oHp1VGbCIdeQs1EP1Fm7LXRO1veUEaopYNJztEVAC6Dju3AtpnEWHdyocU9wcc4F0
-         ZjuAcZWlOdz471Dl9SvYQ0S6IaZBZTmz4ragzxoQPdCR6fAn6q5O2kMXwueYD1d2eO
-         oRpLBREqcoujyMGCgcLSoD1+KonRMrTzQDnARPss=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18FCEl6p112946
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 15 Sep 2021 07:14:47 -0500
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 15
- Sep 2021 07:14:47 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Wed, 15 Sep 2021 07:14:47 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18FCElxu093712;
-        Wed, 15 Sep 2021 07:14:47 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Rob Herring <robh+dt@kernel.org>, Tero Kristo <kristo@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, Nishanth Menon <nm@ti.com>
-Subject: [PATCH] arm64: dts: ti: Makefile: Collate AM64 platforms together
-Date:   Wed, 15 Sep 2021 07:14:42 -0500
-Message-ID: <20210915121442.27112-1-nm@ti.com>
-X-Mailer: git-send-email 2.32.0
+        id S237413AbhIOMQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 08:16:40 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:42454 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237379AbhIOMQi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 08:16:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=2oIS4QY+0GOEZidow5b7JM+rhjr0bAga38TzrSaxCWI=; b=rEublDaYwuNgtU5rEMw3+QKxt0
+        teaoWfkxNGDYuIZHKnH/SbwLM7oV/HKkAV3gYSn1fOD38IXDWVISEpPjoJNtaGCp9L4awdD/QlqnQ
+        4RoA+GP1pxQNpsg2+yku5B4CJEhEMgMRLlvabMmwHDk2LC240tnRKdEfrzeIEHrccC9M=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mQToS-006kiE-En; Wed, 15 Sep 2021 14:14:52 +0200
+Date:   Wed, 15 Sep 2021 14:14:52 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Vladimir Oltean <olteanv@gmail.com>, kernel-team@android.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Subject: Re: [PATCH v2 0/6] fw_devlink improvements
+Message-ID: <YUHjvKRX76Jf7Bt5@lunn.ch>
+References: <20210915081139.480263-1-saravanak@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210915081139.480263-1-saravanak@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make sure that the platforms are grouped together per SoC. This helps
-keep the Makefile readable as newer platforms get added to the list.
+On Wed, Sep 15, 2021 at 01:11:32AM -0700, Saravana Kannan wrote:
+> Patches ready for picking up:
+> Patch 1 fixes a bug in fw_devlink.
+> Patch 2-4 are meant to make debugging easier
+> Patch 5 and 6 fix fw_devlink issues with PHYs and networking
+> 
+> Andrew,
+> 
+> I think Patch 5 and 6 should be picked up be Greg too. Let me know if
+> you disagree.
+> 
+> -Saravana
 
-Signed-off-by: Nishanth Menon <nm@ti.com>
----
- arch/arm64/boot/dts/ti/Makefile | 1 -
- 1 file changed, 1 deletion(-)
+You are mixing fixes and development work. You should not do that,
+please keep them separate. They are heading in different
+directions. Fixed should get applied to -rc1, where as development
+work will be queued for the next merge window.
 
-diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
-index d56c742f5a10..7bfc543a578c 100644
---- a/arch/arm64/boot/dts/ti/Makefile
-+++ b/arch/arm64/boot/dts/ti/Makefile
-@@ -15,5 +15,4 @@ dtb-$(CONFIG_ARCH_K3) += k3-j721e-common-proc-board.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-j7200-common-proc-board.dtb
- 
- dtb-$(CONFIG_ARCH_K3) += k3-am642-evm.dtb
--
- dtb-$(CONFIG_ARCH_K3) += k3-am642-sk.dtb
--- 
-2.32.0
+You are also missing Fixes: tags for the two MDIO patches. Stable
+needs them to know how far back to port the fixes.
 
+      Andrew
