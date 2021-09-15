@@ -2,89 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06C9740C77B
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 16:32:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D6AB40C77A
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 16:31:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237980AbhIOOdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 10:33:19 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:40637 "EHLO pegase2.c-s.fr"
+        id S233964AbhIOOdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 10:33:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39574 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237847AbhIOOdN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 10:33:13 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4H8jMs4SmSz9sTD;
-        Wed, 15 Sep 2021 16:31:53 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id IkXJCSmkFJfn; Wed, 15 Sep 2021 16:31:53 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4H8jMs3YkKz9sT5;
-        Wed, 15 Sep 2021 16:31:53 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6A1818B77B;
-        Wed, 15 Sep 2021 16:31:53 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 1p8XSaBWBAN0; Wed, 15 Sep 2021 16:31:53 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [172.25.230.108])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 51F788B763;
-        Wed, 15 Sep 2021 16:31:53 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 18FEVeeq376582
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Wed, 15 Sep 2021 16:31:40 +0200
-Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 18FEVeGm376581;
-        Wed, 15 Sep 2021 16:31:40 +0200
-X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Stan Johnson <userm57@yahoo.com>,
-        Finn Thain <fthain@linux-m68k.org>
-Subject: [PATCH] powerpc: warn on emulation of dcbz instruction
-Date:   Wed, 15 Sep 2021 16:31:40 +0200
-Message-Id: <62b33ca839f3d1d7d4b64b6f56af0bbe4d2c9057.1631716292.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.31.1
+        id S233771AbhIOOdJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 10:33:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8F3D6044F;
+        Wed, 15 Sep 2021 14:31:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631716311;
+        bh=YkclizvbWMmiIkvXewz1CSndv/hj5phCYHjaoOz0nro=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=Cd+aAokzBr430sd/rBB8OtMsmd7hYvE6h+I8Xe7r1UjQeh7R10kFKJf574U4ze2fl
+         3zIJ8iG40SWHAc3VwM3pqtbswxIuibRj21eqLa0Idd7UwmKV+pywSEKxbKOhb9aipd
+         hZWa2rNOt7Rq7ZLb79kG9dhc9Qd0A8Alj7mm0W47UOOL4pmmUdXHazYueHu5upbyYB
+         ofCF/mVTYC/NpeoFpC/WackmXbEW0zduOGvlz/Q7znqJsruhife4SrOnMoyTmu0yNm
+         i4bfpWqP8Uj69zIJSyFIvgM/px74ZEqT+rtN1pLtTW1j53F+b0yxwONKdHIYJ0taf2
+         u6lY1t12EpTxg==
+Date:   Wed, 15 Sep 2021 16:31:48 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     "F.A.Sulaiman" <asha.16@itfac.mrt.ac.lk>
+cc:     benjamin.tissoires@redhat.com, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, paskripkin@gmail.com
+Subject: Re: [PATCH v3] HID: betop: fix slab-out-of-bounds Write in
+ betop_probe
+In-Reply-To: <20210824150730.9118-1-asha.16@itfac.mrt.ac.lk>
+Message-ID: <nycvar.YFH.7.76.2109151631410.15944@cbobk.fhfr.pm>
+References: <20210816201544.26405-1-asha.16@itfac.mrt.ac.lk> <20210824150730.9118-1-asha.16@itfac.mrt.ac.lk>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dcbz instruction shouldn't be used on non-cached memory. Using
-it on non-cached memory can result in alignment exception and
-implies a heavy handling.
+On Tue, 24 Aug 2021, F.A.Sulaiman wrote:
 
-Instead of silentely emulating the instruction and resulting in high
-performance degradation, warn whenever an alignment exception is
-taken due to dcbz, so that the user is made aware that dcbz
-instruction has been used unexpectedly.
+> Syzbot reported slab-out-of-bounds Write bug in hid-betopff driver.
+> The problem is the driver assumes the device must have an input report but
+> some malicious devices violate this assumption.
+> 
+> So this patch checks hid_device's input is non empty before it's been used.
+> 
+> Reported-by: syzbot+07efed3bc5a1407bd742@syzkaller.appspotmail.com
+> Signed-off-by: F.A. SULAIMAN <asha.16@itfac.mrt.ac.lk>
 
-Reported-by: Stan Johnson <userm57@yahoo.com>
-Cc: Finn Thain <fthain@linux-m68k.org>
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/kernel/align.c | 1 +
- 1 file changed, 1 insertion(+)
+Applied, thanks.
 
-diff --git a/arch/powerpc/kernel/align.c b/arch/powerpc/kernel/align.c
-index bbb4181621dd..adc3a4a9c6e4 100644
---- a/arch/powerpc/kernel/align.c
-+++ b/arch/powerpc/kernel/align.c
-@@ -349,6 +349,7 @@ int fix_alignment(struct pt_regs *regs)
- 		if (op.type != CACHEOP + DCBZ)
- 			return -EINVAL;
- 		PPC_WARN_ALIGNMENT(dcbz, regs);
-+		WARN_ON_ONCE(1);
- 		r = emulate_dcbz(op.ea, regs);
- 	} else {
- 		if (type == LARX || type == STCX)
 -- 
-2.31.1
+Jiri Kosina
+SUSE Labs
 
