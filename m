@@ -2,253 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77E7140C94A
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 17:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFE5940C95C
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 18:00:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238299AbhIOQBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 12:01:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52526 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238257AbhIOQBC (ORCPT
+        id S238402AbhIOQBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 12:01:13 -0400
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:3242 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S238370AbhIOQBM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 12:01:02 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF6E6C061574;
-        Wed, 15 Sep 2021 08:59:43 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id g14so3119819pfm.1;
-        Wed, 15 Sep 2021 08:59:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=OkiiGHbQZwoirzVbd8s1wT3AXOTUQoT8rTgbKgTYjH4=;
-        b=i6EO+HrgwbvJsQQ2YpEuIGI4TcPgkJrKnEjI6rVzmv43sG7iAOiMxSi8VMiO7XfNxa
-         xpZLDsFfVQU/Lzfp9ltItNYsiGW6PA2gvJNHY1/7YqNnfNiauIxwd551577USgAzG5vu
-         h2KMGwriNN3SUmjFDXLuTdMYh+iYfbi8Py8eRbAut0j9y8gZwtU4EflVGllx8zeLeMTv
-         B6DiJ9HjgSFfdv4UdIyMy0fLisYWx5BR9r2GKjokxyzeOjeG/YrL0qtET75pbxoB+XfD
-         vDxCwfDEnPDlzKQUrYloEwtQCcTPT1mec32x40Gmc1scCqBPD6iIJSfymnvo3ilAL0d6
-         ZWIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=OkiiGHbQZwoirzVbd8s1wT3AXOTUQoT8rTgbKgTYjH4=;
-        b=M9OH8exjNYo20Z9YEUZyj9WAmNfWuJf1mtPg9A6PWaOHCnVoKwLraMAIOFQhwcj08C
-         6+wI9rDTZMSq1mJToF09uVd2TeSXhJerbtCgmpPl47b2YToaMD3E4X9Asd/NKSbT7Vq2
-         D1NGB7ggQcclagtg5ZZbAs/p1yGDIbNMAlyaYMcUN56ePUK0998fAEm8ER0Qif//xAcj
-         0EQrBELJvovHbaTWM6L/muyzT845xGUV7zYG4uFpTz+VABV8ghJrz9PaQFnrIz8rQW6s
-         fMs7I3YEpCnHNGVKfYv2FijUt7Ao0NgKDdjHc2SMg6KAZ1p7zeBUanBcDqhHki7ub9Zy
-         Ta3g==
-X-Gm-Message-State: AOAM531Igiqhl99QYfupE9w9pLQMyG0pUaHvYQtSBtqY5JzmX+fEpzMx
-        Cu6CIfoXOMCkw/9yaA/U8j4BzI1P92M=
-X-Google-Smtp-Source: ABdhPJzTCnp9h5O3IHeMY3Inj2+Eq4maNRLbgxyOToF3HlhlL29u6LufFYNlHAqNrKXM2EsrSj63KA==
-X-Received: by 2002:a63:841:: with SMTP id 62mr445090pgi.354.1631721582877;
-        Wed, 15 Sep 2021 08:59:42 -0700 (PDT)
-Received: from [172.30.1.2] ([14.32.163.5])
-        by smtp.gmail.com with ESMTPSA id j6sm385502pgq.0.2021.09.15.08.59.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Sep 2021 08:59:41 -0700 (PDT)
-Subject: Re: [PATCH 2/6] clk: samsung: clk-pll: Implement pll0822x PLL type
-To:     Sam Protsenko <semen.protsenko@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        =?UTF-8?Q?Pawe=c5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>
-Cc:     Ryu Euiyoul <ryu.real@samsung.com>, Tom Gall <tom.gall@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org
-References: <20210914155607.14122-1-semen.protsenko@linaro.org>
- <20210914155607.14122-3-semen.protsenko@linaro.org>
-From:   Chanwoo Choi <cwchoi00@gmail.com>
-Message-ID: <faa9a9b7-919a-5b99-f99a-9550cc3d1260@gmail.com>
-Date:   Thu, 16 Sep 2021 00:59:35 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 15 Sep 2021 12:01:12 -0400
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18F9e1m0022522;
+        Wed, 15 Sep 2021 08:59:52 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=BMWfp2gns8ANwDlYRkLVjDJreWmbfvH3yMzfZ6bupFo=;
+ b=Qh68oos/ZYCakCWY28pvRbGoTwqQVOKm2DwjlEnKt6/GAa7D2tNGTjkP/f4+TE94x1BC
+ lBvyYr/pSIJzf/ktuTJyIpW3du9uzQ3jA1MQYbm6IDdP82u7zkNNU9/nO8Jx33+zG97n
+ p5HhAptwV4G0xkQ0gWN26dlHqIAfSk1GmijPVW73JFeHVUOkcvUncSHbtuBgKi/QxE9x
+ iWfgSexyhccL933moo5EEsENzLKtm8iYR5Iez+VbJOz5bqq4Ve1ioY48oL6kaNDBB02Y
+ 9xD89mWU3+sHXSw89C/hs0+kse5NwOyuJYOC5hRTBjQ5dsrQ4KH8izG9qgy/DhICeom6 kQ== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0a-0016f401.pphosted.com with ESMTP id 3b3ed01dg6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 15 Sep 2021 08:59:52 -0700
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 15 Sep
+ 2021 08:59:50 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
+ Transport; Wed, 15 Sep 2021 08:59:50 -0700
+Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
+        by maili.marvell.com (Postfix) with ESMTP id CC5573F706B;
+        Wed, 15 Sep 2021 08:59:47 -0700 (PDT)
+From:   Hariprasad Kelam <hkelam@marvell.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <kuba@kernel.org>, <davem@davemloft.net>, <sgoutham@marvell.com>,
+        <lcherian@marvell.com>, <gakula@marvell.com>, <jerinj@marvell.com>,
+        <sbhatta@marvell.com>, <hkelam@marvell.com>
+Subject: [net-next PATCH v2] octeontx2-pf: CN10K: Hide RPM stats over ethtool
+Date:   Wed, 15 Sep 2021 21:29:46 +0530
+Message-ID: <20210915155946.23330-1-hkelam@marvell.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <20210914155607.14122-3-semen.protsenko@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: vdYUw5_N7N7ISobODU1IR70HHwYNLvsg
+X-Proofpoint-ORIG-GUID: vdYUw5_N7N7ISobODU1IR70HHwYNLvsg
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-15_04,2021-09-15_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21. 9. 15. 오전 12:56, Sam Protsenko wrote:
-> pll0822x PLL is used in Exynos850 SoC for top-level integer PLLs. The
-> code was derived from very similar pll35xx type, with next differences:
-> 
-> 1. Lock time for pll0822x is 150*P_DIV, when for pll35xx it's 270*P_DIV
-> 2. It's not suggested in Exynos850 TRM that S_DIV change doesn't require
->     performing PLL lock procedure (which is done in pll35xx
->     implementation)
-> 
-> When defining pll0822x type, CON3 register offset should be provided as
-> a "con" parameter of PLL() macro, like this:
-> 
->      PLL(pll_0822x, 0, "fout_shared0_pll", "oscclk",
->          PLL_LOCKTIME_PLL_SHARED0, PLL_CON3_PLL_SHARED0,
->          exynos850_shared0_pll_rates),
-> 
-> To define PLL rates table, one can use PLL_35XX_RATE() macro, e.g.:
-> 
->      PLL_35XX_RATE(26 * MHZ, 1600 * MHZ, 800, 13, 0)
-> 
-> as it's completely appropriate for pl0822x type and there is no sense in
-> duplicating that.
-> 
-> If bit #1 (MANUAL_PLL_CTRL) is not set in CON1 register, it won't be
-> possible to set new rate, with next error showing in kernel log:
-> 
->      Could not lock PLL fout_shared1_pll
-> 
-> That can happen for example if bootloader clears that bit beforehand.
-> PLL driver doesn't account for that, so if MANUAL_PLL_CTRL bit was
-> cleared, it's assumed it was done for a reason and it shouldn't be
-> possible to change that PLL's rate at all.
-> 
-> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> ---
->   drivers/clk/samsung/clk-pll.c | 91 +++++++++++++++++++++++++++++++++++
->   drivers/clk/samsung/clk-pll.h |  1 +
->   2 files changed, 92 insertions(+)
-> 
-> diff --git a/drivers/clk/samsung/clk-pll.c b/drivers/clk/samsung/clk-pll.c
-> index 5873a9354b50..03131b149c0b 100644
-> --- a/drivers/clk/samsung/clk-pll.c
-> +++ b/drivers/clk/samsung/clk-pll.c
-> @@ -415,6 +415,89 @@ static const struct clk_ops samsung_pll36xx_clk_min_ops = {
->   	.recalc_rate = samsung_pll36xx_recalc_rate,
->   };
->   
-> +/*
-> + * PLL0822x Clock Type
-> + */
-> +/* Maximum lock time can be 150 * PDIV cycles */
-> +#define PLL0822X_LOCK_FACTOR		(150)
-> +
-> +#define PLL0822X_MDIV_MASK		(0x3FF)
-> +#define PLL0822X_PDIV_MASK		(0x3F)
-> +#define PLL0822X_SDIV_MASK		(0x7)
-> +#define PLL0822X_MDIV_SHIFT		(16)
-> +#define PLL0822X_PDIV_SHIFT		(8)
-> +#define PLL0822X_SDIV_SHIFT		(0)
-> +#define PLL0822X_LOCK_STAT_SHIFT	(29)
-> +#define PLL0822X_ENABLE_SHIFT		(31)
-> +
-> +static unsigned long samsung_pll0822x_recalc_rate(struct clk_hw *hw,
-> +						  unsigned long parent_rate)
-> +{
-> +	struct samsung_clk_pll *pll = to_clk_pll(hw);
-> +	u32 mdiv, pdiv, sdiv, pll_con3;
-> +	u64 fvco = parent_rate;
-> +
-> +	pll_con3 = readl_relaxed(pll->con_reg);
-> +	mdiv = (pll_con3 >> PLL0822X_MDIV_SHIFT) & PLL0822X_MDIV_MASK;
-> +	pdiv = (pll_con3 >> PLL0822X_PDIV_SHIFT) & PLL0822X_PDIV_MASK;
-> +	sdiv = (pll_con3 >> PLL0822X_SDIV_SHIFT) & PLL0822X_SDIV_MASK;
-> +
-> +	fvco *= mdiv;
-> +	do_div(fvco, (pdiv << sdiv));
-> +
-> +	return (unsigned long)fvco;
-> +}
-> +
-> +static int samsung_pll0822x_set_rate(struct clk_hw *hw, unsigned long drate,
-> +				     unsigned long prate)
-> +{
-> +	const struct samsung_pll_rate_table *rate;
-> +	struct samsung_clk_pll *pll = to_clk_pll(hw);
-> +	u32 pll_con3;
-> +
-> +	/* Get required rate settings from table */
-> +	rate = samsung_get_pll_settings(pll, drate);
-> +	if (!rate) {
-> +		pr_err("%s: Invalid rate : %lu for pll clk %s\n", __func__,
-> +			drate, clk_hw_get_name(hw));
-> +		return -EINVAL;
-> +	}
-> +
-> +	/* Change PLL PMS values */
-> +	pll_con3 = readl_relaxed(pll->con_reg);
-> +	pll_con3 &= ~((PLL0822X_MDIV_MASK << PLL0822X_MDIV_SHIFT) |
-> +			(PLL0822X_PDIV_MASK << PLL0822X_PDIV_SHIFT) |
-> +			(PLL0822X_SDIV_MASK << PLL0822X_SDIV_SHIFT));
-> +	pll_con3 |= (rate->mdiv << PLL0822X_MDIV_SHIFT) |
-> +			(rate->pdiv << PLL0822X_PDIV_SHIFT) |
-> +			(rate->sdiv << PLL0822X_SDIV_SHIFT);
-> +
-> +	/* Set PLL lock time */
-> +	writel_relaxed(rate->pdiv * PLL0822X_LOCK_FACTOR,
-> +			pll->lock_reg);
-> +
-> +	/* Write PMS values */
-> +	writel_relaxed(pll_con3, pll->con_reg);
-> +
-> +	/* Wait for PLL lock if the PLL is enabled */
-> +	if (pll_con3 & BIT(pll->enable_offs))
-> +		return samsung_pll_lock_wait(pll, BIT(pll->lock_offs));
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct clk_ops samsung_pll0822x_clk_ops = {
-> +	.recalc_rate = samsung_pll0822x_recalc_rate,
-> +	.round_rate = samsung_pll_round_rate,
-> +	.set_rate = samsung_pll0822x_set_rate,
-> +	.enable = samsung_pll3xxx_enable,
-> +	.disable = samsung_pll3xxx_disable,
-> +};
-> +
-> +static const struct clk_ops samsung_pll0822x_clk_min_ops = {
-> +	.recalc_rate = samsung_pll0822x_recalc_rate,
-> +};
-> +
->   /*
->    * PLL45xx Clock Type
->    */
-> @@ -1296,6 +1379,14 @@ static void __init _samsung_clk_register_pll(struct samsung_clk_provider *ctx,
->   		else
->   			init.ops = &samsung_pll35xx_clk_ops;
->   		break;
-> +	case pll_0822x:
-> +		pll->enable_offs = PLL0822X_ENABLE_SHIFT;
-> +		pll->lock_offs = PLL0822X_LOCK_STAT_SHIFT;
-> +		if (!pll->rate_table)
-> +			init.ops = &samsung_pll0822x_clk_min_ops;
-> +		else
-> +			init.ops = &samsung_pll0822x_clk_ops;
-> +		break;
->   	case pll_4500:
->   		init.ops = &samsung_pll45xx_clk_min_ops;
->   		break;
-> diff --git a/drivers/clk/samsung/clk-pll.h b/drivers/clk/samsung/clk-pll.h
-> index 79e41c226b90..213e94a97f23 100644
-> --- a/drivers/clk/samsung/clk-pll.h
-> +++ b/drivers/clk/samsung/clk-pll.h
-> @@ -36,6 +36,7 @@ enum samsung_pll_type {
->   	pll_1451x,
->   	pll_1452x,
->   	pll_1460x,
-> +	pll_0822x,
->   };
->   
->   #define PLL_RATE(_fin, _m, _p, _s, _k, _ks) \
-> 
+CN10K MAC block (RPM) differs in number of stats compared to Octeontx2
+MAC block (CGX). RPM supports stats for each class of PFC and error
+packets etc. It would be difficult for user to read stats from ethtool
+and map to their definition.
 
-Even if I have not Exynos850 TRM, it looks good to me. Thanks.
+New debugfs file is already added to read RPM stats along with their
+definition. This patch adds proper checks such that RPM stats will not
+be part of ethtool.
 
-Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
+Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
+Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
+---
+v2 - add subject prefix as net-next
+     update commit msg
 
--- 
-Best Regards,
-Samsung Electronics
-Chanwoo Choi
+ .../marvell/octeontx2/nic/otx2_common.h       |  2 +
+ .../marvell/octeontx2/nic/otx2_ethtool.c      | 37 +++++++++++--------
+ 2 files changed, 24 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
+index a51ecd771d07..8e51a1db7e29 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
+@@ -223,6 +223,7 @@ struct otx2_hw {
+ #define HW_TSO			0
+ #define CN10K_MBOX		1
+ #define CN10K_LMTST		2
++#define CN10K_RPM		3
+ 	unsigned long		cap_flag;
+
+ #define LMT_LINE_SIZE		128
+@@ -452,6 +453,7 @@ static inline void otx2_setup_dev_hw_settings(struct otx2_nic *pfvf)
+ 	if (!is_dev_otx2(pfvf->pdev)) {
+ 		__set_bit(CN10K_MBOX, &hw->cap_flag);
+ 		__set_bit(CN10K_LMTST, &hw->cap_flag);
++		__set_bit(CN10K_RPM, &hw->cap_flag);
+ 	}
+ }
+
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c
+index dbfa3bc39e34..38e5924ca8e9 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c
+@@ -121,14 +121,16 @@ static void otx2_get_strings(struct net_device *netdev, u32 sset, u8 *data)
+
+ 	otx2_get_qset_strings(pfvf, &data, 0);
+
+-	for (stats = 0; stats < CGX_RX_STATS_COUNT; stats++) {
+-		sprintf(data, "cgx_rxstat%d: ", stats);
+-		data += ETH_GSTRING_LEN;
+-	}
++	if (!test_bit(CN10K_RPM, &pfvf->hw.cap_flag)) {
++		for (stats = 0; stats < CGX_RX_STATS_COUNT; stats++) {
++			sprintf(data, "cgx_rxstat%d: ", stats);
++			data += ETH_GSTRING_LEN;
++		}
+
+-	for (stats = 0; stats < CGX_TX_STATS_COUNT; stats++) {
+-		sprintf(data, "cgx_txstat%d: ", stats);
+-		data += ETH_GSTRING_LEN;
++		for (stats = 0; stats < CGX_TX_STATS_COUNT; stats++) {
++			sprintf(data, "cgx_txstat%d: ", stats);
++			data += ETH_GSTRING_LEN;
++		}
+ 	}
+
+ 	strcpy(data, "reset_count");
+@@ -205,11 +207,15 @@ static void otx2_get_ethtool_stats(struct net_device *netdev,
+ 						[otx2_drv_stats[stat].index]);
+
+ 	otx2_get_qset_stats(pfvf, stats, &data);
+-	otx2_update_lmac_stats(pfvf);
+-	for (stat = 0; stat < CGX_RX_STATS_COUNT; stat++)
+-		*(data++) = pfvf->hw.cgx_rx_stats[stat];
+-	for (stat = 0; stat < CGX_TX_STATS_COUNT; stat++)
+-		*(data++) = pfvf->hw.cgx_tx_stats[stat];
++
++	if (!test_bit(CN10K_RPM, &pfvf->hw.cap_flag)) {
++		otx2_update_lmac_stats(pfvf);
++		for (stat = 0; stat < CGX_RX_STATS_COUNT; stat++)
++			*(data++) = pfvf->hw.cgx_rx_stats[stat];
++		for (stat = 0; stat < CGX_TX_STATS_COUNT; stat++)
++			*(data++) = pfvf->hw.cgx_tx_stats[stat];
++	}
++
+ 	*(data++) = pfvf->reset_count;
+
+ 	fec_corr_blks = pfvf->hw.cgx_fec_corr_blks;
+@@ -242,18 +248,19 @@ static void otx2_get_ethtool_stats(struct net_device *netdev,
+ static int otx2_get_sset_count(struct net_device *netdev, int sset)
+ {
+ 	struct otx2_nic *pfvf = netdev_priv(netdev);
+-	int qstats_count;
++	int qstats_count, mac_stats = 0;
+
+ 	if (sset != ETH_SS_STATS)
+ 		return -EINVAL;
+
+ 	qstats_count = otx2_n_queue_stats *
+ 		       (pfvf->hw.rx_queues + pfvf->hw.tx_queues);
++	if (!test_bit(CN10K_RPM, &pfvf->hw.cap_flag))
++		mac_stats = CGX_RX_STATS_COUNT + CGX_TX_STATS_COUNT;
+ 	otx2_update_lmac_fec_stats(pfvf);
+
+ 	return otx2_n_dev_stats + otx2_n_drv_stats + qstats_count +
+-	       CGX_RX_STATS_COUNT + CGX_TX_STATS_COUNT + OTX2_FEC_STATS_CNT
+-	       + 1;
++	       mac_stats + OTX2_FEC_STATS_CNT + 1;
+ }
+
+ /* Get no of queues device supports and current queue count */
+--
+2.17.1
