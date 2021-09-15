@@ -2,180 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B017B40C7D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 17:00:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33E2F40C7D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 17:00:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238013AbhIOPBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 11:01:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49925 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237821AbhIOPBL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 11:01:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631717992;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sXIxfXAeAXwqynGXNUuaFoUXwg+GC8ruNUgtA4V3/Js=;
-        b=cAJJ4EXJWHZ9vCSqEDznTD6L9EbkomwKOpYqqLD+hy9vLfGW/UhmGAz/tWGnWahYft7Qma
-        Djk0dS2NRUuD4D/Qt1OgoJnyApnA0x58s8N5wQB79HWkIIrrztU2ispfOFTr/M/C8Jr3tl
-        hfbSBKfE8Bm+e0M9Zoi/mOhd4FvpGfA=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-60-GoPiit2VMwSLoLHgNaP0zg-1; Wed, 15 Sep 2021 10:59:50 -0400
-X-MC-Unique: GoPiit2VMwSLoLHgNaP0zg-1
-Received: by mail-wr1-f71.google.com with SMTP id j1-20020adff541000000b001593715d384so1128955wrp.1
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 07:59:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=sXIxfXAeAXwqynGXNUuaFoUXwg+GC8ruNUgtA4V3/Js=;
-        b=4ND7s7G5YdvWV0P8/X/BiqRaQDIK5SGMDxR+f8+Sc+IfTaGiU10MUMzO5k4iZrsf4+
-         jK4G6NI9j3OvORsRuCad/48Mb5HjRnNP/w+JvunLuZJEk1gzJs2mkld7+eBke7M/iM9o
-         pO97ApRry6uCkAavdHQ+ik43KSEe7lHA/N1H7RuogpukIVWde1UGPAYAba2K2gWMTetX
-         i/4uctRCwdT/stsM4eoBxFCRGQ1N1tXzZBhDNOeyhUnB8fzw23SOB0vvZSA0faUJW1F4
-         kr9V+WerMd52V0u9naZWU9dCDv/m3CN01JtSaoi5oaCBVoa9i4Hyl2hSdl7O7nANx4c5
-         y1JQ==
-X-Gm-Message-State: AOAM532CNfF1IxQ9nhNt3vteq8+FXs/dxvI0kudubkNOzQZxrh2QiHXe
-        g8GtSdKZ2M1XhVFwX1o60S5t8hMTCeLhXKn+hyFFJvGIvK0VuncWm77pwiugBWkro96LzSOTSUQ
-        6qO31f3ySyIpXR9fQ2ylQ2PrP
-X-Received: by 2002:a5d:630a:: with SMTP id i10mr443962wru.178.1631717989705;
-        Wed, 15 Sep 2021 07:59:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx1F2FJo1VqmKuCfy3iFBKkDaaKnmp1KJn/dP3v7qU1ZNwTLAenO3hU3flHn7Ro2t9lWiPT1w==
-X-Received: by 2002:a5d:630a:: with SMTP id i10mr443929wru.178.1631717989498;
-        Wed, 15 Sep 2021 07:59:49 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6426.dip0.t-ipconnect.de. [91.12.100.38])
-        by smtp.gmail.com with ESMTPSA id r129sm204926wmr.7.2021.09.15.07.59.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Sep 2021 07:59:48 -0700 (PDT)
-To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc:     Chao Peng <chao.p.peng@linux.intel.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Andy Lutomirski <luto@kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Andi Kleen <ak@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Varad Gautam <varad.gautam@suse.com>,
-        Dario Faggioli <dfaggioli@suse.com>, x86@kernel.org,
-        linux-mm@kvack.org, linux-coco@lists.linux.dev,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>
-References: <20210824005248.200037-1-seanjc@google.com>
- <20210902184711.7v65p5lwhpr2pvk7@box.shutemov.name>
- <YTE1GzPimvUB1FOF@google.com>
- <20210903191414.g7tfzsbzc7tpkx37@box.shutemov.name>
- <02806f62-8820-d5f9-779c-15c0e9cd0e85@kernel.org>
- <20210910171811.xl3lms6xoj3kx223@box.shutemov.name>
- <20210915195857.GA52522@chaop.bj.intel.com>
- <51a6f74f-6c05-74b9-3fd7-b7cd900fb8cc@redhat.com>
- <20210915142921.bxxsap6xktkt4bek@black.fi.intel.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [RFC] KVM: mm: fd-based approach for supporting KVM guest private
- memory
-Message-ID: <ca80775c-6bcb-f7c2-634b-237bc0ded52a@redhat.com>
-Date:   Wed, 15 Sep 2021 16:59:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210915142921.bxxsap6xktkt4bek@black.fi.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S238026AbhIOPBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 11:01:42 -0400
+Received: from mail-eopbgr1410097.outbound.protection.outlook.com ([40.107.141.97]:35872
+        "EHLO JPN01-OS2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233977AbhIOPBi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 11:01:38 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kKolmBTtPaRuJIipLFhNJnmbsqR4YW/OFQMRK0pCGFP2xwRIlHuYTGGRM97XgnZATksD4hPq076ad0RrUtltiGOWHnOeFOzTKdHxXV+BNXoJ4YzaNjCkJfb0W11XGfgdAFdVq7H457Z1NI058sILgl1QF6T1A2XEZzhJb2jHNTx0oaTvXxPryPsNZFRp3rZNKRrUwZB2pjfgdtMilQayYxNdEadO/VVO9A1WPbFw2yV7XuNjkwpC2oJbnxqiQqNWtINBPA/DtDsyM/MUMyp/q6mN5aR77ahC8tG0Cl5c3XbWJC28A9Nege+7QEYCzLB4kddFx+wOtCcSt24nqBUoGQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=vFroakeF+u57f0KTnX0ymaKB2g5vUB3OHZ5M/nvTS4g=;
+ b=CwozWF2Xj4iJ1Zmx9mDGhEB35A3kWwCkhqeEiP4HO2Iyqig50Dq0J+8arveu9RSSdiqh6rBFClQBQPc8TRHwi1zqM06HZsG8/3FrnHm9yKHg0fhjkJ/VO1Saj8EzdcMvnj/hWB+Hd4o8YUo43bHLh8/fR7jIBFyqzpXXBaSXHdYCJVzKp18ZfxUqt6BRMa8LWoDvtrs96P57gXMXCQGbB9otyNE34c2ouwE7IqWyrEIU6XAI2X238VcAyd9TYKnP8ky+28bIfKLLxq9NetAhseqX8kv05FUdsF7SHbF0yD/KPoYHMWCRmsVKleMoKomsr+Qi7ds+xZ9Mqs+0liByYw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
+ dkim=pass header.d=renesas.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vFroakeF+u57f0KTnX0ymaKB2g5vUB3OHZ5M/nvTS4g=;
+ b=emAQsDWCK1FSU47FeSia7ef6V78YphMecuM2soFdMfHOUOkzISdXMjwigx1qTJgfgZ4rWyXEP/+FlvFMCrrBDZC4CJ4TD46Mbh7mEEBB4dYd8VAgcCyAFGT+Ge2+iAjwENeQe7vTyj5bO1JhNodW7jghMCoc3AnNst8p6NLfGN0=
+Received: from OS3PR01MB6593.jpnprd01.prod.outlook.com (2603:1096:604:101::7)
+ by OSAPR01MB4467.jpnprd01.prod.outlook.com (2603:1096:604:6a::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.18; Wed, 15 Sep
+ 2021 15:00:16 +0000
+Received: from OS3PR01MB6593.jpnprd01.prod.outlook.com
+ ([fe80::84ad:ad49:6f8:1312]) by OS3PR01MB6593.jpnprd01.prod.outlook.com
+ ([fe80::84ad:ad49:6f8:1312%5]) with mapi id 15.20.4523.014; Wed, 15 Sep 2021
+ 15:00:16 +0000
+From:   Min Li <min.li.xe@renesas.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     "derek.kiernan@xilinx.com" <derek.kiernan@xilinx.com>,
+        "dragan.cvetic@xilinx.com" <dragan.cvetic@xilinx.com>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH misc] misc: Add Renesas Synchronization Management Unit
+ (SMU) support
+Thread-Topic: [PATCH misc] misc: Add Renesas Synchronization Management Unit
+ (SMU) support
+Thread-Index: AQHXoCrWcPCOZLcVpEOu9zHAf9JJVKujT1SAgAC5dCCAAJ7XAIAAlN8ggAAD/wCAAAC4AA==
+Date:   Wed, 15 Sep 2021 15:00:15 +0000
+Message-ID: <OS3PR01MB6593101378E924202DD7162ABADB9@OS3PR01MB6593.jpnprd01.prod.outlook.com>
+References: <1630608353-7606-1-git-send-email-min.li.xe@renesas.com>
+ <YUBmIWU6HwIjjeXa@kroah.com>
+ <OS3PR01MB6593057EA6257006C7228542BADA9@OS3PR01MB6593.jpnprd01.prod.outlook.com>
+ <YUGG8iPWMLx5vJ1f@kroah.com>
+ <OS3PR01MB65934A451D6B347C207E222BBADB9@OS3PR01MB6593.jpnprd01.prod.outlook.com>
+ <YUIHLrgU3H2ECoCf@kroah.com>
+In-Reply-To: <YUIHLrgU3H2ECoCf@kroah.com>
+Accept-Language: en-CA, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=none action=none
+ header.from=renesas.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 84829d76-3523-4789-5558-08d9785986e4
+x-ms-traffictypediagnostic: OSAPR01MB4467:
+x-microsoft-antispam-prvs: <OSAPR01MB4467D79E85984D9CAD97325FBADB9@OSAPR01MB4467.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: cGgIQliiEARBzbyVuW1Z4LERmrg68E7SqXfPeEWL//PQm3NTlShv2vzJKH7vVXIrwOW66FWEFUYgvvbMABjY+FBhQnuIuOVpOriyaiEn5tRLITwifM0yVTTPUdwRG6R+pttkHp+4tdvIdW90lPl3G8CgYLTrK4UmD++DKgaEwdjrYv/X0fH8BNrbuys5eXsxGBmR2okylbEiTpPa285H4h7FGIT+J2HNwtR9I4UcP3RJLF6hKSlA8NfhWkUGtlXJ3IvcCzMRpAgs3PhLC81RFHbir/ubuu6j6IBsIpuZVZWXVin5pf3qADk8C30W4iKTbNOvTh2IPWkYDNp0pSqJWrnJyQ0JhI1ZtAx5/Q+WG+M1lJBJNRZeFnftaxsoyQ153IblHqb8wZgUXeR9YD7DAEhncKP8EY7T/0CHg1eEAMTuDZ+kZETRcGu+XS75C0Psxh5fs0xcsrLStc1hJYMwVEcFtbVGljFD6MUg+dKpH1t9h/xmHPWkkct2poy3FrKQIh7fsTDVUaHRdIOSanisiX1V1bCoPiv8QpPizN40P04Btemw9cKnIEHEF29rRT1Xh46cvbU7hiKlvDgDh08ncHuDsGVUfMEw9c9hJgaKwKONeKJw+k0fCM1z9q5rpixtQJUq6vhIclnTe++jwRNX0Seq2g9IEDn6sSgBD5RqGHa1h2SoAtAszJ5TSzxCOAyUhUgOYkEX7oybs6J7FXzQwnysQg0cIwixNcKHRNB6IxQDITaEb5+skuah5BmQL615gZl1wAFmJoIKqWvlQZf//SPrt44alOXvty05IlTIKg8=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS3PR01MB6593.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(366004)(136003)(376002)(346002)(6506007)(478600001)(71200400001)(5660300002)(186003)(26005)(966005)(122000001)(38100700002)(83380400001)(8676002)(4326008)(86362001)(7696005)(8936002)(33656002)(316002)(66446008)(76116006)(66946007)(66556008)(64756008)(66476007)(9686003)(55016002)(52536014)(2906002)(38070700005)(54906003)(6916009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?ni2BrYHJK0D8PoIoVzooUkN+ttqjedfag409aVnWzr22S4ebQi2DGifCLlDX?=
+ =?us-ascii?Q?rgg4tFOUxIp3vM2coQLZwtHy5WnqsGIl4Effa6R4sEBuTDJ63cY5M4uorcGo?=
+ =?us-ascii?Q?IYHQFfEnZ8TIko4LdsvRv+H8esUbEFCpoCt+ILiLHaQkGDX3XGz/z0JJ4T4z?=
+ =?us-ascii?Q?Td6gw4GcD/3gB5cgxlcysv7Jgr74ueD3VgZY8C+PcL4ZEFR2WNhrp6XIONP+?=
+ =?us-ascii?Q?Frnye4GDNIxPd66lY88MjRDCSDpRjPP98lbUvZ9vvb2TCThGAmWpcllHfV08?=
+ =?us-ascii?Q?rhLl66LdbXonZROWDdV05UrfNdkJlAwpK2zSF1s8zfw+5wqlxaZATrZvwTQp?=
+ =?us-ascii?Q?A0yivy4B7h1GASJhyD7vsW/tF35mh3uMXTn1IiKFKL2vzmsyayihvrIHOLY7?=
+ =?us-ascii?Q?81D/Jpy6SnAFFUSMZCA4K1N27dsrHrJhrpr6k30HAsTuO3YQyhWo8bMieGwx?=
+ =?us-ascii?Q?Dz/F3XODkrDe+uV9QC+3yUacdUxYCTQxYVRGuevoEF0kvAvZ7ub/150PnFWy?=
+ =?us-ascii?Q?+0DfcNp1v9znABnqhR+PIBOd0OENuO5HryzXCr0e1m+/FxigTbGjcd/AHove?=
+ =?us-ascii?Q?S/q7EyB9nPjQQy1f0yNx9MMv3tCRrKS7Fjg6RXqi8oLtYbw/vSCROd0bbL46?=
+ =?us-ascii?Q?a9Xv0FEkMGwTm4AwLl/v9q0IANOIQqeiCGjqwt5rsFOZB4VPebsi9T1S1BL+?=
+ =?us-ascii?Q?RRQLht9ZIcbY+K+Gvw9FXSUInNZG7q5pyg6pTelYzNVr7IkGq7IzQ5MEouJx?=
+ =?us-ascii?Q?8Q1H27N3M3vtpLSVye0c97/3VoLUCNAIsCj9ZpdHnO4IcogX1780XGC5u7B6?=
+ =?us-ascii?Q?e59lehxdSS4zeG4xqeMf+C8iMaVJVhIpMu+AkPZFalaI0//BSuK6jefWSyFw?=
+ =?us-ascii?Q?zObnXwIzl+j/99ahBn8kyDhjPd7KwIwUR/IPdKN9w2NKwCNzCWiZCB+JnhFx?=
+ =?us-ascii?Q?w/agLNVL9ttsJ6SViuB7zeEcbR5i9oTCMy/LesjLYsYIiPDl7kgzcldPU24V?=
+ =?us-ascii?Q?dtdmxqPfd406UpHijDzf4x/XNWOqs9UfbONn6JerDTpdw3ED5/elfIduvRy9?=
+ =?us-ascii?Q?lKdBxIwaR2srnAxkYVAFlVK1LGJm8IOoRE5wob3L3KUSccr/Yc4Kqw4IaBgM?=
+ =?us-ascii?Q?gUjxFn6iyyx8T9UOznKLZ/CHRME/05o0GBQUcX3MqDkAZlVZH4Cs7jJigbfj?=
+ =?us-ascii?Q?0loBmq7oZRjGhXPYBYEcDGGZm+Q34twkZ7jNkM6MITjmd+Eii9W1ac5eeACd?=
+ =?us-ascii?Q?/c4F6OUeDNw42gJmlbzl0+ZAyjCW/PPPRleKROhOqCjDuwkjTIYqwOxRRmcZ?=
+ =?us-ascii?Q?FUw9A+LNTIi2dNJ9uEHU1PTr?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: renesas.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: OS3PR01MB6593.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 84829d76-3523-4789-5558-08d9785986e4
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Sep 2021 15:00:15.8904
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 9nebThljaO5Xdd58CUnsJ039fsMw1wimwgFZOm0lkOVJ7fG+zDu9MmVFD1Apmi/4Oi1Eg6RTymDuvHzt13W05Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSAPR01MB4467
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> On Wed, Sep 15, 2021 at 02:42:55PM +0000, Min Li wrote:
+> > > > > > +/*
+> > > > > > + * RSMU IOCTL List
+> > > > > > + */
+> > > > > > +#define RSMU_MAGIC '?'
+> > > > >
+> > > > > Where did you get this value from?
+> > > > >
+> > > > > Where did you reserve it?
+> > > >
+> > > > No I didn't reserve it. I checked other code and they all seem to
+> > > > use a random character
+> > >
+> > > That's not the best way to do this.
+> > >
+> > > Why do you need ioctls at all anyway?  What userspace tools will be
+> > > accessing this driver?  Do you have a link to where they are located =
+at?
+> >
+> > Hi Greg
+> >
+> > The userspace tool is called PCM4L (PTP Clock Manager for Linux) from
+> > Renesas
+> >
+> > https://www.renesas.com/us/en/software-tool/ptp-clock-manager-linux
+> >
+> > But the functions of this misc driver is not ptp related. It is meant
+> > for being called by pcm4l to support GNSS assisted partial timing
+> > support (APTS), which doesn't have abstracted/dedicated Linux Kernel
+> API's. That is why I went for IOCTL in the first place.
+>=20
+> Why not work on a real set of apis for this type of thing so that all dev=
+ices of
+> this type will work properly?
+>=20
+> thanks,
+>=20
+> greg k-h
 
->> I don't think we are, it still feels like we are in the early prototype
->> phase (even way before a PoC). I'd be happy to see something "cleaner" so to
->> say -- it still feels kind of hacky to me, especially there seem to be many
->> pieces of the big puzzle missing so far. Unfortunately, this series hasn't
->> caught the attention of many -MM people so far, maybe because other people
->> miss the big picture as well and are waiting for a complete design proposal.
->>
->> For example, what's unclear to me: we'll be allocating pages with
->> GFP_HIGHUSER_MOVABLE, making them land on MIGRATE_CMA or ZONE_MOVABLE; then
->> we silently turn them unmovable, which breaks these concepts. Who'd migrate
->> these pages away just like when doing long-term pinning, or how is that
->> supposed to work?
-> 
-> That's fair point. We can fix it by changing mapping->gfp_mask.
+Hi Greg
 
-That's essentially what secretmem does when setting up a file.
-
-> 
->> Also unclear to me is how refcount and mapcount will be handled to prevent
->> swapping,
-> 
-> refcount and mapcount are unchanged. Pages not pinned per se. Swapping
-> prevented with the change in shmem_writepage().
-
-So when mapping into the guest, we'd increment the refcount but not the 
-mapcount I assume?
-
-> 
->> who will actually do some kind of gfn-epfn etc. mapping, how we'll
->> forbid access to this memory e.g., via /proc/kcore or when dumping memory
-> 
-> It's not aimed to prevent root to shoot into his leg. Root do root.
-
-IMHO being root is not an excuse to read some random file (actually used 
-in production environments) to result in the machine crashing. Not 
-acceptable for distributions.
-
-I'm still missing the whole gfn-epfn 1:1 mapping discussion we 
-identified as requirements. Is that supposed to be done by KVM? How?
-
-> 
->> ... and how it would ever work with migration/swapping/rmap (it's clearly
->> future work, but it's been raised that this would be the way to make it
->> work, I don't quite see how it would all come together).
-> 
-> Given that hardware supports it migration and swapping can be implemented
-> by providing new callbacks in guest_ops. Like ->migrate_page would
-> transfer encrypted data between pages and ->swapout would provide
-> encrypted blob that can be put on disk or handled back to ->swapin to
-> bring back to memory.
-
-Again, I'm missing the complete picture. To make swapping decisions 
-vmscan code needs track+handle dirty+reference information. How would we 
-be able to track references? Does the hardware allow for temporary 
-unmapping of encrypted memory and faulting on it? How would 
-page_referenced() continue working? "we can add callbacks" is not a 
-satisfying answer, at least for me. Especially, when it comes to 
-eventual locking problems and races.
-
-Maybe saying "migration+swap is not supported" is clearer than "we can 
-add callbacks" and missing some details on the bigger picture.
-
-Again, a complete design proposal would be highly valuable, especially 
-to get some more review from other -MM folks. Otherwise there is a high 
-chance that this will be rejected late when trying to upstream and -MM 
-people stumbling over it (we've had some similar thing happening just 
-recently unfortunately ...).
-
--- 
-Thanks,
-
-David / dhildenb
-
+That plan is on our roadmap. On the other hand, this is a new area that dif=
+ferent company has its
+own hw/sw solution and it takes time to abstract functions to kernel. Also,=
+ our APTS first release
+was already out. Right now we are actively developing another release that =
+we will try out best to
+come up with better solution. =20
