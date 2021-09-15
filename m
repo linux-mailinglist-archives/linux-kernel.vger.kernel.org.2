@@ -2,101 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A069240BDC1
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 04:23:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C020F40BDC5
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 04:23:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230299AbhIOCYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 22:24:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35544 "EHLO
+        id S234235AbhIOCZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 22:25:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229595AbhIOCYv (ORCPT
+        with ESMTP id S232666AbhIOCZF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 22:24:51 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A98BC061574;
-        Tue, 14 Sep 2021 19:23:33 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id m26so1317554pff.3;
-        Tue, 14 Sep 2021 19:23:33 -0700 (PDT)
+        Tue, 14 Sep 2021 22:25:05 -0400
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D407C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 19:23:47 -0700 (PDT)
+Received: by mail-oi1-x22b.google.com with SMTP id bi4so2122188oib.9
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 19:23:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=12wUXhhqWT6EypSPX1Qo4sn/OvorWOKkb7IuIsjoAFA=;
-        b=iRmJEfdwx/SqzJ16EmbSxREzNUZAiVKN9w9t04DydMR/0SzLZRKWePycER9GLi2W85
-         oSUxW4m0yL0wbT4uXTkPV9weGR3c53V8Q7+ch0VsRVXNY75pZfzun4/+H9Elu5agfWHK
-         LljWsqzlQdpiawZPJmjiyH1bkwqOM0c45vXB9ZlUy7LTBp6IxcdjSx8zNXnzzkF1iJTj
-         tKPZxhLW7U3bCEujcGygjAcrRQw3GoCQOArr2jdZb9fec0lu+2KAPoJy2L/PGXtgJywy
-         jk+ULiRRyWRYavMYoi85gLHAbPjVLMOmFwwZZjAaQcWwNx0D/9dR6ogXYCba/KSeuT/j
-         gzLQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZSOMRM/4vS8hdTIr2nFrDzrRQaaDCVXD3i6BnhZi0bU=;
+        b=mMNn6wUl9j40Z5Gxxpp4NJMPs1F0XS9e9G2oaS6Bn5Nsc/lah81b9U3gBap3Mn3c+G
+         OAGjEjM+979b8T+Yryw+Z7q6y9WpcbiDsnDSNgLalMascAswdZzVBD/l74YhMpD7lua/
+         9oW9NW3peuHgGDnlg3YgxLr1i+jqAgyGLNmrVJB3R7TGGZgird7OmxOd6p7grHX7pIPP
+         486GXguUsxo+miFY0iDPT7iIPsLnmayqybKIQvfHIXicD1mApuyIX0ttaK9NkDGRLunO
+         9Ab55U2DsEjxTeo8ALaIOiKzIhOLsjVr0EEKkZt/4d6Q/rRmLaI/GyuNVJGunA0B0Num
+         NxBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=12wUXhhqWT6EypSPX1Qo4sn/OvorWOKkb7IuIsjoAFA=;
-        b=2rpaTlwbRsUFU5x5LyTLhpUjHAKWYQOUALR+AR8UxxKeCUn1+xMD6Hw2fpRyPvukSE
-         kB/89w1Osfjfqd16YiwkEVBc2DAMo/m+GGn7e/jKMkNpGHnWePaA0Q7BB/qBKPhKtSlW
-         vLxmuEmR5wFW8vHSZE4qAPitStF35CFgOZVBUgCwZ48mZGg4OeKLOv6XaLcmi1L1HQvr
-         yxO96KNBnOKnjLtGq9+pvXn3yKlu2OX+UUXfLHEP9kkKRgdBZFK77w/wL1cwidRxOI6a
-         9BLLPqXBRVoVRi3ZNu5ZS4XpGGyssuQ2sZAsqF7qrJ50QK0T3ZXXRXMXXHB707Dq2gEq
-         sDPA==
-X-Gm-Message-State: AOAM5309y+JfoG3dK7Y1PJh6cwgtJbbq9ld7PZKEhFa0dtGoO1HYT2AT
-        U/L0jJmI2tzZ04AigrAGgzsUB1Qf8yw=
-X-Google-Smtp-Source: ABdhPJzqsEjyP6eHKH6vzEQWKxxTcmXgMe4S536pLvzFe2LyK2rBdIMYnzYsUKEWii6FGXl2CXA2dQ==
-X-Received: by 2002:a65:6251:: with SMTP id q17mr18297678pgv.416.1631672612415;
-        Tue, 14 Sep 2021 19:23:32 -0700 (PDT)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id h16sm11686649pfn.215.2021.09.14.19.23.31
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZSOMRM/4vS8hdTIr2nFrDzrRQaaDCVXD3i6BnhZi0bU=;
+        b=V6l4179vMl5mhQlhYcvSSQAsqq3EBuJmJi4MYr3dFD4wyciULJA5lI8tNe1ZX4eK7R
+         LGrRv4iE3Kn2EJh/wH3w6mhvDpP1GNDz6xvHWU865uaZwi4d8tiaOqdM5nMgLzrCeWX+
+         piNUmjeWBlxiNGrn+UugeQjvNotS32BqlNn6cceBsYPIYJv5tYLXKsVnGXvV4pnH2diJ
+         7Ga8Lh4M1NMC4RFUOWbpeJv3WfDsPw9IDJgLMfWFLIotHi2cRs4zgqetF6ytNLD/Kd3I
+         58j8NtkgE7KslH55wSTxhaIHwkTuOvA9SL9y69FducuIqlwcK4JnYEduhX7Xq9mX50B1
+         ssJQ==
+X-Gm-Message-State: AOAM533D/eHqBEs51DI/iF154qzEytPVGjdGRn86M/L5bNFQSSywy8Il
+        HbRe9QpquOGkkPQel0DhGvOyug==
+X-Google-Smtp-Source: ABdhPJy5VuTl2HScSYvWhRx3n2XIj91ZwpF0pc1yM5u4Vp4q8OfNhe0yB/j+knDBuUbs3X6DmGICxw==
+X-Received: by 2002:a05:6808:81:: with SMTP id s1mr3638815oic.130.1631672626538;
+        Tue, 14 Sep 2021 19:23:46 -0700 (PDT)
+Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id l13sm3062159otr.26.2021.09.14.19.23.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 19:23:31 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     geert+renesas@glider.be, Florian Fainelli <f.fainelli@gmail.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        linux-pm@vger.kernel.org (open list:SUSPEND TO RAM)
-Subject: [PATCH] PM / sleep: Do not assume that "mem" is always present
-Date:   Tue, 14 Sep 2021 19:23:28 -0700
-Message-Id: <20210915022328.56702-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 14 Sep 2021 19:23:46 -0700 (PDT)
+Date:   Tue, 14 Sep 2021 19:24:37 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Prasad Malisetty <pmaliset@codeaurora.org>, agross@kernel.org,
+        bhelgaas@google.com, lorenzo.pieralisi@arm.com, robh+dt@kernel.org,
+        svarbanov@mm-sol.com, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dianders@chromium.org,
+        mka@chromium.org, vbadigan@codeaurora.org, sallenki@codeaurora.org,
+        manivannan.sadhasivam@linaro.org
+Subject: Re: [PATCH v7 3/4] arm64: dts: qcom: sc7280: Add PCIe nodes for IDP
+ board
+Message-ID: <YUFZZWQ3t9EH/Z55@ripper>
+References: <1631643550-29960-1-git-send-email-pmaliset@codeaurora.org>
+ <1631643550-29960-4-git-send-email-pmaliset@codeaurora.org>
+ <CAE-0n52p+5rabienYNG_OQfiaLLCgaRj9vfeKR6s3-bCdzHDQA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAE-0n52p+5rabienYNG_OQfiaLLCgaRj9vfeKR6s3-bCdzHDQA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-An implementation of suspend_ops is allowed to reject the PM_SUSPEND_MEM
-suspend type from its ->valid() callback, we should not assume that it
-is always present as this is not a correct reflection of what a firmware
-interface may support.
+On Tue 14 Sep 18:13 PDT 2021, Stephen Boyd wrote:
 
-Fixes: 406e79385f32 ("PM / sleep: System sleep state selection interface rework")
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- kernel/power/suspend.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> Quoting Prasad Malisetty (2021-09-14 11:19:09)
+> > Enable PCIe controller and PHY for sc7280 IDP board.
+> > Add specific NVMe GPIO entries for SKU1 and SKU2 support.
+> >
+> > Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
+> > ---
+> >  arch/arm64/boot/dts/qcom/sc7280-idp.dts  |  9 +++++++++
+> >  arch/arm64/boot/dts/qcom/sc7280-idp.dtsi | 32 ++++++++++++++++++++++++++++++++
+> >  arch/arm64/boot/dts/qcom/sc7280-idp2.dts |  9 +++++++++
+> >  3 files changed, 50 insertions(+)
+> >
+> > diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+> > index 64fc22a..2cc6b0a 100644
+> > --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+> > +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+> > @@ -61,6 +61,15 @@
+> >         modem-init;
+> >  };
+> >
+> > +&pcie1_default_state {
+> > +       nvme-n {
+> > +               pins = "gpio19";
+> > +               function = "gpio";
+> > +
+> > +               bias-pull-up;
+> > +       };
+> 
+> I don't think the style is to have a single container node anymore.
+> Instead, each pin gets a different node and then pinctrl-0 has a list of
+> phandles to the different nodes. qcom maintainers may have more input
+> here.
+> 
 
-diff --git a/kernel/power/suspend.c b/kernel/power/suspend.c
-index eb75f394a059..02e306ad8db8 100644
---- a/kernel/power/suspend.c
-+++ b/kernel/power/suspend.c
-@@ -171,8 +171,7 @@ static bool valid_state(suspend_state_t state)
- 
- void __init pm_states_init(void)
- {
--	/* "mem" and "freeze" are always present in /sys/power/state. */
--	pm_states[PM_SUSPEND_MEM] = pm_labels[PM_SUSPEND_MEM];
-+	/* "freeze" is always present in /sys/power/state. */
- 	pm_states[PM_SUSPEND_TO_IDLE] = pm_labels[PM_SUSPEND_TO_IDLE];
- 	/*
- 	 * Suspend-to-idle should be supported even without any suspend_ops,
-@@ -214,6 +213,7 @@ void suspend_set_ops(const struct platform_suspend_ops *ops)
- 	}
- 	if (valid_state(PM_SUSPEND_MEM)) {
- 		mem_sleep_states[PM_SUSPEND_MEM] = mem_sleep_labels[PM_SUSPEND_MEM];
-+		pm_states[PM_SUSPEND_MEM] = pm_labels[PM_SUSPEND_MEM];
- 		if (mem_sleep_default >= PM_SUSPEND_MEM)
- 			mem_sleep_current = PM_SUSPEND_MEM;
- 	}
--- 
-2.25.1
+Having a container that defines the state and each part thereof is
+preferred (see other PCIe users or how we typically define the Bluetooth
+UART). But is "nvme_n" really part of the "PCI state" or is this related
+to the NVME device instead?
 
+> Also, this should really go into a different section than here. I
+> thought the style was to have a 'board specific' pinctrl section.
+> 
+
+Yes, pushing pinctrl states to the bottom is preferred and rather than
+amending the existing state I think this goes in a state of its own and
+the pinctrl-N amended to include this new state as well.
+
+Regards,
+Bjorn
+
+> > +};
+> > +
+> >  &pmk8350_vadc {
+> >         pmr735a_die_temp {
+> >                 reg = <PMR735A_ADC7_DIE_TEMP>;
