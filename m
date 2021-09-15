@@ -2,120 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E68B340BF4F
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 07:25:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B1DC40BF51
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 07:29:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236311AbhIOF1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 01:27:10 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:42952 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230225AbhIOF1G (ORCPT
+        id S236243AbhIOFar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 01:30:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230225AbhIOFan (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 01:27:06 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 0169420160;
-        Wed, 15 Sep 2021 05:25:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1631683547; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5rpIEUD5so8R8lo0Kya+cAjrjZjxenoFRV8Funr8FNM=;
-        b=HTkyFs6MSrLXg0WBmwRpij6M/0GLyo+CxIVFJ6D35QRqYTjLRHmjsKpG6s5Zzl2evdpfYr
-        68nSBxVD+NMBGCugWu5SX5T+DonUBOalYurNLVbK1LDv96kXAGvXKmO+OH10e3fusaGBBl
-        3cL/i9CpPhzR3L4AhN/PzHB28ontTC4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1631683547;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5rpIEUD5so8R8lo0Kya+cAjrjZjxenoFRV8Funr8FNM=;
-        b=p5hccMX/1F9hQZbpKyU9G4EyM6UQTSNuOyG/CFWbr3Ir97QT7dTE0v3+g1uze/1KReNTqY
-        bQHsvo598OY4T+CQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8B76013C12;
-        Wed, 15 Sep 2021 05:25:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id YA0zEteDQWHtYAAAMHmgww
-        (envelope-from <neilb@suse.de>); Wed, 15 Sep 2021 05:25:43 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+        Wed, 15 Sep 2021 01:30:43 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78184C061574;
+        Tue, 14 Sep 2021 22:29:25 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id g16so1874281wrb.3;
+        Tue, 14 Sep 2021 22:29:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jGiz7cGZSBsnkMFCSyIwQQF5a/ZVfXBNEv6VQRf8G5w=;
+        b=cGOHZjKrT2mePPo10UsxTr2e/gFrwMV7eqrgTso6V9afjr/JUH+T2VA2O7ra6ErJnp
+         2AObkZG1xwP2mV91wrkGOk+/w5cCTlBwMokVW5W7/bZDq+Pc5e2fp0it38YkHt0FGw9W
+         KJW3GoKx58F+m4Pf+SRmMoauNNpfE+o3InAocmhg7RgEkgegrPVeoNfJE4KjKCC59ig6
+         RcKbdoQxYPyQNWG6q55M8CdkEHZdZyFFNr28vld8BJt5agAOeBoO/+Fo5HN4F90vCUBE
+         jAp9o7NtwSJFc0q+3QZhw+9Ef1HYa9uXV6FBy88TGtY9qoZ5szJoXa7bQDTN3xDbptnA
+         NzBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jGiz7cGZSBsnkMFCSyIwQQF5a/ZVfXBNEv6VQRf8G5w=;
+        b=TZ81rmR9yJ9uuaxhDkvvOg1o9CJZPJv/KeoiNBbJzpwOAXkZrjePfEIQr9sLK8K2Bu
+         lA0g6TKmQA+dmjaC1YEEJeAhA9IdWSBxbYieerZkEXhr4l51wpIasQvHeVFvQLlvdkMP
+         2HM0InOnGnGIET/19bMcrChKzPzJsW51tGsIoa+GqlTr4yzAj2QdMttFIsTnBBKPwRkt
+         usrgwDRS8IFudjyWGflqyG0aizkefIQeCvMJlfB+hpp/K+Uo/jgjOnHMrEdDNATJM62/
+         1tH5AlSRmCSWZ8QAUPc4ExeAL1h8bmx5sYaroylmBCrbF2ajfuse/K4sm7a3vD1gU4IP
+         vnmw==
+X-Gm-Message-State: AOAM531/CQfdmS6RlhN9xiDJxbukXLdsaLhCKkhJd+lkexePitXuYGKg
+        4y20q1CnYC9YHL24Du6he+DkmdVU/+oZAH57iAU=
+X-Google-Smtp-Source: ABdhPJxtZiIEpuC0VWVlbYM6btwJHcRMOQz5/ROuXz+iez/yFBHeHJgGVL8MmVppC2vg6ttJxn+2ko9GWjlXtw7Tn7c=
+X-Received: by 2002:adf:fac7:: with SMTP id a7mr2757037wrs.341.1631683763866;
+ Tue, 14 Sep 2021 22:29:23 -0700 (PDT)
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     "Andrew Morton" <akpm@linux-foundation.org>,
-        "Andreas Dilger" <adilger.kernel@dilger.ca>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        "Matthew Wilcox" <willy@infradead.org>,
-        "Mel Gorman" <mgorman@suse.com>, linux-xfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/6] EXT4: Remove ENOMEM/congestion_wait() loops.
-In-reply-to: <YUE+L19JyjqWh+Md@mit.edu>
-References: <163157808321.13293.486682642188075090.stgit@noble.brown>,
- <163157838437.13293.14244628630141187199.stgit@noble.brown>,
- <YUE+L19JyjqWh+Md@mit.edu>
-Date:   Wed, 15 Sep 2021 15:25:40 +1000
-Message-id: <163168354018.3992.580533638417199797@noble.neil.brown.name>
+References: <2c399e52540536df9c4006e46ef93fbccdde88db.1631610825.git.geert+renesas@glider.be>
+In-Reply-To: <2c399e52540536df9c4006e46ef93fbccdde88db.1631610825.git.geert+renesas@glider.be>
+From:   Rahul Bedarkar <rahulbedarkar89@gmail.com>
+Date:   Wed, 15 Sep 2021 10:59:12 +0530
+Message-ID: <CA+NV+Vk-+MrCA4x7kVoVk0Ejr9Qv33PysQjLBzpXqOF4WNfTRw@mail.gmail.com>
+Subject: Re: [PATCH] reset: pistachio: Re-enable driver selection
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Sep 2021, Theodore Ts'o wrote:
-> On Tue, Sep 14, 2021 at 10:13:04AM +1000, NeilBrown wrote:
-> >=20
-> > Of particular interest is the ext4_journal_start family of calls which
-> > can now have EXT4_EX_NOFAIL 'or'ed in to the 'type'.  This could be seen
-> > as a blurring of types.  However 'type' is 8 bits, and EXT4_EX_NOFAIL is
-> > a high bit, so it is safe in practice.
->=20
-> I'm really not fond of this type blurring.  What I'd suggeset doing
-> instead is adding a "gfp_t gfp_mask" parameter to the
-> __ext4_journal_start_sb().  With the exception of one call site in
-> fs/ext4/ialloc.c, most of the callers of __ext4_journal_start_sb() are
-> via #define helper macros or inline funcions.  So it would just
-> require adding a GFP_NOFS as an extra parameter to the various macros
-> and inline functions which call __ext4_journal_start_sb() in
-> ext4_jbd2.h.
->=20
-> The function ext4_journal_start_with_revoke() is called exactly once
-> so we could just bury the __GFP_NOFAIL in the definition of that
-> macros, e.g.:
->=20
-> #define ext4_journal_start_with_revoke(inode, type, blocks, revoke_creds) \
-> 	__ext4_journal_start((inode), __LINE__, (type), (blocks), 0,	\
-> 			     GFP_NOFS | __GFP_NOFAIL, (revoke_creds))
->=20
-> but it's probably better to do something like this:
->=20
-> #define ext4_journal_start_with_revoke(gfp_mask, inode, type, blocks, revok=
-e_creds) \
-> 	__ext4_journal_start((inode), __LINE__, (type), (blocks), 0,	\
-> 			     gfp_mask, (revoke_creds))
->=20
-> So it's explicit in the C function ext4_ext_remove_space() in
-> fs/ext4/extents.c that we are explicitly requesting the __GFP_NOFAIL
-> behavior.
->=20
-> Does that make sense?
+On Tue, Sep 14, 2021 at 2:46 PM Geert Uytterhoeven
+<geert+renesas@glider.be> wrote:
+>
+> After the retirement of MACH_PISTACHIO, the Pistachio Reset Driver is no
+> longer auto-enabled when building a kernel for Pistachio systems.
+> Worse, the driver cannot be enabled by the user at all (unless
+> compile-testing), as the config symbol is invisible.
+>
+> Fix this partially by making the symbol visible again when compiling for
+> MIPS, and dropping the useless default.  The user still has to enable
+> the driver manually when building a kernel for Pistachio systems,
+> though.
+>
+> Fixes: 104f942b2832ab13 ("MIPS: Retire MACH_PISTACHIO")
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Mostly.
-Adding gfp_mask to __ext4_journal_start_sb() make perfect sense.
-There doesn't seem much point adding one to __ext4_journal_start(),
-we can have ext4_journal_start_with_revoke() call
-__ext4_journal_start_sb() directly.
-But I cannot see what it doesn't already do that.
-i.e. why have the inline __ext4_journal_start() at all?
-Is it OK if I don't use that for ext4_journal_start_with_revoke()?
+Reviewed-by: Rahul Bedarkar <rahulbedarkar89@gmail.com>
 
 Thanks,
-NeilBrown
+Rahul
+
+> ---
+>  drivers/reset/Kconfig | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
+> index be799a5abf8a6edc..b0056ae5d463aedd 100644
+> --- a/drivers/reset/Kconfig
+> +++ b/drivers/reset/Kconfig
+> @@ -147,8 +147,8 @@ config RESET_OXNAS
+>         bool
+>
+>  config RESET_PISTACHIO
+> -       bool "Pistachio Reset Driver" if COMPILE_TEST
+> -       default MACH_PISTACHIO
+> +       bool "Pistachio Reset Driver"
+> +       depends on MIPS || COMPILE_TEST
+>         help
+>           This enables the reset driver for ImgTec Pistachio SoCs.
+>
+> --
+> 2.25.1
+>
