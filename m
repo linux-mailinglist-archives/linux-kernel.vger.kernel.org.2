@@ -2,373 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43B7F40CFE6
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 01:08:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8627940CFFF
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 01:10:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232796AbhIOXJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 19:09:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37732 "EHLO
+        id S232836AbhIOXLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 19:11:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229538AbhIOXJx (ORCPT
+        with ESMTP id S231197AbhIOXLv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 19:09:53 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C1B1C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 16:08:34 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id z184-20020a1c7ec1000000b003065f0bc631so6020538wmc.0
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 16:08:33 -0700 (PDT)
+        Wed, 15 Sep 2021 19:11:51 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C5B1C061574;
+        Wed, 15 Sep 2021 16:10:32 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id c21so9632539edj.0;
+        Wed, 15 Sep 2021 16:10:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BYB8HfH1WUfTrqm0ufcX85MH40us2tmPF/Od1zWrTFA=;
-        b=RLmORapuIHOW9SlAbelAXrsmR/bEhWZy9AYuDeN7/QqjjHLRD0JLeFDrEDYdqqVSse
-         MUjYOWrXkZnzesb8697xu7hymV/fEBbQc3XoUpMlbol7tviQd2APIPCVdrkR+BmdU1k3
-         zx5SVJauce71/tL2OHEGlzx9Sl2KL8AypjQVsnrrhGYe0/wLt+gIVNaOTeXTdyOuNK07
-         grbQUQzKU73ojZNSW5NScBPoEtrJRFWjLvyeU132hIcmzJima6uVvOy1QkEnSlzF2DUe
-         /IYu+1ny+x+/usck/+9xsM3L0w+X9kQQNeKxY90xdlKvYx8/8U2Ykafv7NC3wyVdmTy6
-         TUFg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9BtEwTezY+qlQ0z6udcY1NI+sWRfBUg4i/PQVpsepp0=;
+        b=mKDdUXh3ZD6Q0nk7BTUP3zZAAgNh3CAlmZL8bCeApJLsy2E+8udpR+XxK5SomOti9c
+         wE0fKNqqEg3jngk8STojSXv7igrZNhj0Kx9W749QBu/7Id6QwxsqtSBglOSKKJOC5GDM
+         t6Gj5chRhn5m+m//diJNa25h157qVqj5ZUyYAIwx6A5oBB2Mgl1h8D7WXReI+ojaoJAk
+         QIL3zznbP8S53Iafn6ampKpLeDScxlB9nvKm4PJCkyktfNHU7TsbHoNCJdiD49EK5D17
+         eqKsot1RJMRXHlx8Z4CnhcIMMIg6mCokUdNnAsa8M2TVVSm/mSVDh2Joouf0QXlyh6j0
+         MveQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BYB8HfH1WUfTrqm0ufcX85MH40us2tmPF/Od1zWrTFA=;
-        b=RKSmNSV8zdUr52pQtIyPHjnImjIFu+JlZbWzedVexdIemQKsD5rT2lwlLXzlbzygJQ
-         0WTOTMpED/IC3cKW2QadKESQIP7Nr/7WQUimfgaWxxvh6Kf7OYFqZHH+mWJzXNtv2KIZ
-         te8N0rbDSDqJwl/chxPi1jBg0TBoI66UAf/D+12u3yVljVSoLwRocRcoL9W3ynYvccRM
-         M7fjWxD95wQOYTICWJvRUcG8WhyUDfmRyzeeA4YCw2dS+/NHrQ+PWpRc2T+6DsA/hfQL
-         SpmaUbmbPB/CjEJTHyr8kmNnbP2athpCci2NbneE25EFGNIJLs/rFxPqZzd9Ae8wboQC
-         U17Q==
-X-Gm-Message-State: AOAM531/Znxj6W7IWHFZ8eayjUtFjddLh8K0yezCfA7+g9e5Oed9BrZw
-        WA3RSkPSkssx46AqmvEsqmQ=
-X-Google-Smtp-Source: ABdhPJzb/B8eJKXSYBkh/+4mFZoAYuoEl8U/Bc83lwiYk14bCMzQC83r0HHAkThEIi1CJ+FowjCA/g==
-X-Received: by 2002:a7b:c142:: with SMTP id z2mr7081195wmi.10.1631747312389;
-        Wed, 15 Sep 2021 16:08:32 -0700 (PDT)
-Received: from smtp.gmail.com (a95-92-181-29.cpe.netcabo.pt. [95.92.181.29])
-        by smtp.gmail.com with ESMTPSA id j14sm1369985wrp.21.2021.09.15.16.08.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Sep 2021 16:08:31 -0700 (PDT)
-Date:   Thu, 16 Sep 2021 00:08:25 +0100
-From:   Melissa Wen <melissa.srw@gmail.com>
-To:     Sumera Priyadarsini <sylphrenadin@gmail.com>
-Cc:     rodrigosiqueiramelo@gmail.com, hamohammed.sa@gmail.com,
-        daniel@ffwll.ch, airlied@linux.ie, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V6 2/2] drm/vkms: Add support for virtual hardware mode
-Message-ID: <20210915230801.e2q3rtdkottoh7b5@smtp.gmail.com>
-References: <cover.1630512292.git.sylphrenadin@gmail.com>
- <9ba2c2aa6a607b09de5a0f4615550d3ccdbec0fd.1630512292.git.sylphrenadin@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9BtEwTezY+qlQ0z6udcY1NI+sWRfBUg4i/PQVpsepp0=;
+        b=KISEM3WrO1FribNluRSYAwDzlXym6v49oiADr/ZcYJC+v5+QjYe2Ia6U8TCU3mXyeO
+         +vn+ysjDZdqC3oXU3+LcTn+pVcFPFRH9vyxqkI70FMYgBDh4ihD/g49fBLFPjZmAeaYr
+         xaD2pf/l/R9Mldfdd9SkHQQL1qgOXU+n6RDOeZZYMBKOOhxeAZkzkyXsiEPcCO8y720n
+         99c8LWYY5N5ImBIhwyzZEt7eD3HxLQMVlwC7djpw4ya7E734q/6IuquN6iwlAKFFa7yc
+         S7yhEcXKsC2hkAA/NNyz5NGY6LrhE46R/ZhLwU+TqguDoL9fp2chKz6XvDWXypWrkJRX
+         bdDQ==
+X-Gm-Message-State: AOAM532tS+3Isn0B76KulbE8nJvGeQf+jJxoqcFtx8HM2WxMOAOVykO6
+        tkS8nJeNe1MBdL+MyYHP10SLkLYoYFTZs4qMl+Q=
+X-Google-Smtp-Source: ABdhPJwUidQxI6KsoarEmVDuFeGRhn/6QSW1h4jhAdXCpwtLZDplDG7rOxUVfxwKzPWRszACj09qneVbrJeE8mHtByg=
+X-Received: by 2002:a05:6402:14c3:: with SMTP id f3mr2841214edx.312.1631747430578;
+ Wed, 15 Sep 2021 16:10:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9ba2c2aa6a607b09de5a0f4615550d3ccdbec0fd.1630512292.git.sylphrenadin@gmail.com>
+References: <20210914183718.4236-1-shy828301@gmail.com> <20210914183718.4236-3-shy828301@gmail.com>
+ <20210915114947.2zh7inouztenth6o@box.shutemov.name> <CAHbLzkpjAf+V5b40UFH2gWSRN4gVqoFmjHr9_wME2ofWC7Mfkw@mail.gmail.com>
+ <CAHbLzkoyEcKMwg04SRWtWaMZCO3HLpP2BA2_kv3ASuGN6=tE2Q@mail.gmail.com>
+In-Reply-To: <CAHbLzkoyEcKMwg04SRWtWaMZCO3HLpP2BA2_kv3ASuGN6=tE2Q@mail.gmail.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Wed, 15 Sep 2021 16:10:18 -0700
+Message-ID: <CAHbLzkrpWF=WXsn20-1oeRGch1L-HPAAyNXZpojC+RXHopFYfw@mail.gmail.com>
+Subject: Re: [PATCH 2/4] mm: khugepaged: check if file page is on LRU after
+ locking page
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc:     =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>, Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/01, Sumera Priyadarsini wrote:
-> Add a virtual hardware or vblank-less mode as a module
-> to enable VKMS to emulate virtual hardware drivers. This means
-> no vertical blanking events occur and pageflips are completed
-> arbitrarily and when required for updating the frame.
-> 
-> Add a new drm_crtc_funcs struct, vkms_vblankless_crtc_funcs and a
-> drm_crtc_helper_funcs struct, vkms_vblankless_crtc_helper_funcs()
-> which hold the atomic helpers for virtual hardware mode.
-> The existing vkms_crtc_funcs struct and vkms_crtc_helper_funcs
-> struct hold atomic helpers for the default vblank mode.
-> This makes the code flow clearer and testing
-> virtual hardware mode easier.
-> 
-> Add a function vkms_crtc_composer() which calls the helper function,
-> vkms_composer_common() for plane composition in vblank-less mode.
-> vkms_crtc_composer() is directly called in the atomic hook in
-> vkms_crtc_atomic_begin().
-> 
-> However, some crc captures still use vblanks which causes the crc-based
-> igt tests to crash. So, no CRC functions are called in vblankless mode
-> for now and will be implemented in a later patch.
+On Wed, Sep 15, 2021 at 4:00 PM Yang Shi <shy828301@gmail.com> wrote:
+>
+> On Wed, Sep 15, 2021 at 10:48 AM Yang Shi <shy828301@gmail.com> wrote:
+> >
+> > On Wed, Sep 15, 2021 at 4:49 AM Kirill A. Shutemov <kirill@shutemov.name> wrote:
+> > >
+> > > On Tue, Sep 14, 2021 at 11:37:16AM -0700, Yang Shi wrote:
+> > > > The khugepaged does check if the page is on LRU or not but it doesn't
+> > > > hold page lock.  And it doesn't check this again after holding page
+> > > > lock.  So it may race with some others, e.g. reclaimer, migration, etc.
+> > > > All of them isolates page from LRU then lock the page then do something.
+> > > >
+> > > > But it could pass the refcount check done by khugepaged to proceed
+> > > > collapse.  Typically such race is not fatal.  But if the page has been
+> > > > isolated from LRU before khugepaged it likely means the page may be not
+> > > > suitable for collapse for now.
+> > > >
+> > > > The other more fatal case is the following patch will keep the poisoned
+> > > > page in page cache for shmem, so khugepaged may collapse a poisoned page
+> > > > since the refcount check could pass.  3 refcounts come from:
+> > > >   - hwpoison
+> > > >   - page cache
+> > > >   - khugepaged
+> > > >
+> > > > Since it is not on LRU so no refcount is incremented from LRU isolation.
+> > > >
+> > > > This is definitely not expected.  Checking if it is on LRU or not after
+> > > > holding page lock could help serialize against hwpoison handler.
+> > > >
+> > > > But there is still a small race window between setting hwpoison flag and
+> > > > bump refcount in hwpoison handler.  It could be closed by checking
+> > > > hwpoison flag in khugepaged, however this race seems unlikely to happen
+> > > > in real life workload.  So just check LRU flag for now to avoid
+> > > > over-engineering.
+> > > >
+> > > > Signed-off-by: Yang Shi <shy828301@gmail.com>
+> > > > ---
+> > > >  mm/khugepaged.c | 6 ++++++
+> > > >  1 file changed, 6 insertions(+)
+> > > >
+> > > > diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+> > > > index 045cc579f724..bdc161dc27dc 100644
+> > > > --- a/mm/khugepaged.c
+> > > > +++ b/mm/khugepaged.c
+> > > > @@ -1808,6 +1808,12 @@ static void collapse_file(struct mm_struct *mm,
+> > > >                       goto out_unlock;
+> > > >               }
+> > > >
+> > > > +             /* The hwpoisoned page is off LRU but in page cache */
+> > > > +             if (!PageLRU(page)) {
+> > > > +                     result = SCAN_PAGE_LRU;
+> > > > +                     goto out_unlock;
+> > > > +             }
+> > > > +
+> > > >               if (isolate_lru_page(page)) {
+> > >
+> > > isolate_lru_page() should catch the case, no? TestClearPageLRU would fail
+> > > and we get here.
+> >
+> > Hmm... you are definitely right. How could I miss this point.
+> >
+> > It might be because of I messed up the page state by some tests which
+> > may do hole punch then reread the same index. That could drop the
+> > poisoned page then collapse succeed. But I'm not sure. Anyway I didn't
+> > figure out how the poisoned page could be collapsed. It seems
+> > impossible. I will drop this patch.
+>
+> I think I figured out the problem. This problem happened after the
+> page cache split patch and if the hwpoisoned page is not head page. It
+> is because THP split will unfreeze the refcount of tail pages to 2
+> (restore refcount from page cache) then dec refcount to 1. The
+> refcount pin from hwpoison is gone and it is still on LRU. Then
+> khugepged locked the page before hwpoison, the refcount is expected to
+> khugepaged.
+>
+> The worse thing is it seems this problem is applicable to anonymous
+> page too. Once the anonymous THP is split by hwpoison the pin from
+> hwpoison is gone too the refcount is 1 (comes from PTE map). Then
+> khugepaged could collapse it to huge page again. It may incur data
+> corruption.
+>
+> And the poisoned page may be freed back to buddy since the lost refcount pin.
+>
+> If the poisoned page is head page, the code is fine since hwpoison
+> doesn't put the refcount for head page after split.
+>
+> The fix is simple, just keep the refcount pin for hwpoisoned subpage.
 
-Hi Sumera,
+Err... wait... I just realized I missed the below code block:
 
-this approach lgtm.
+if (subpage == page)
+        continue;
 
-something on the writeback engine needs to be adjusted, as I checked a leak
-when unloading the driver (after a kms_writeback testcase).
+It skips the subpage passed to split_huge_page() so the refcount pin
+from the caller for this subpage is kept. And hwpoison doesn't put it.
+So it seems fine.
 
-One fix is pointed below. As far as I checked to the other issue, a wb
-job is prepared and enqueued, but never cleaned up. Not sure if wb ops
-have any dependency on vblanks (and we should also skip) or something
-wrong when getting crtc state during the composer work (wb_pending
-condition is not working as expected when in the vhw mode).
-
-The error log is here: https://paste.debian.net/hidden/54bf7945/
-
-Daniel, do you have any idea from the top of your head?
-
-> 
-> This patchset has been tested with the igt tests- kms_writeback, kms_atomic
-> , kms_lease, kms_flip, kms_pipe_get_crc and preserves results except for
-> subtests related to crc reads and vertical blanking, in which case,
-> tests are skipped.
-> 
-> The patch is based on Rodrigo Siqueira's
-> patch(https://patchwork.freedesktop.org/patch/316851/?series=48469&rev=3)
-> and the ensuing review.
-> 
-> Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
-> ---
-> Changes in V6:
-> - Skip CRC functions in vblankless mode
-> - Refactor helper function names(Melissa)
-> Changes in V5:
-> - Move vkms_crtc_composer() to this patch(Melissa)
-> - Add more clarification for "vblank-less" mode(Pekka)
-> - Replace kzalloc() with kvmalloc() in compose_active_planes()
-> to fix memory allocation error for output frame
-> - Fix checkpatch warnings (Melissa)
-> Changes in V3:
-> - Refactor patchset(Melissa)
-> Changes in V2:
-> - Add atomic helper functions in a separate struct for virtual hardware
-> mode (Daniel)
-> - Remove spinlock across 'vkms_output->lock' in vkms_crtc.c(Daniel)
-> - Add vkms_composer_common() (Daniel)
-> ---
->  drivers/gpu/drm/vkms/vkms_composer.c  | 21 +++++++++++--
->  drivers/gpu/drm/vkms/vkms_crtc.c      | 43 +++++++++++++++++++++++++--
->  drivers/gpu/drm/vkms/vkms_drv.c       | 16 +++++++---
->  drivers/gpu/drm/vkms/vkms_drv.h       |  2 ++
->  drivers/gpu/drm/vkms/vkms_writeback.c |  3 +-
->  5 files changed, 74 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/vkms/vkms_composer.c b/drivers/gpu/drm/vkms/vkms_composer.c
-> index bca746fb5b53..a009589b2c3a 100644
-> --- a/drivers/gpu/drm/vkms/vkms_composer.c
-> +++ b/drivers/gpu/drm/vkms/vkms_composer.c
-> @@ -176,11 +176,12 @@ static int compose_active_planes(void **vaddr_out,
->  {
->  	struct drm_framebuffer *fb = &primary_composer->fb;
->  	struct drm_gem_object *gem_obj = drm_gem_fb_get_obj(fb, 0);
-> +
->  	const void *vaddr;
->  	int i;
->  
->  	if (!*vaddr_out) {
-> -		*vaddr_out = kzalloc(gem_obj->size, GFP_KERNEL);
-> +		*vaddr_out = kvmalloc(gem_obj->size, GFP_KERNEL);
->  		if (!*vaddr_out) {
->  			DRM_ERROR("Cannot allocate memory for output frame.");
->  			return -ENOMEM;
-> @@ -229,7 +230,7 @@ int vkms_composer_common(struct vkms_crtc_state *crtc_state,
->  
->  	if (ret) {
->  		if ((ret == -EINVAL || ret == -ENOMEM) && !wb_pending)
-> -			kfree(vaddr_out);
-> +			kvfree(vaddr_out);
->  		return ret;
->  	}
->  
-> @@ -241,7 +242,7 @@ int vkms_composer_common(struct vkms_crtc_state *crtc_state,
->  		crtc_state->wb_pending = false;
->  		spin_unlock_irq(&out->composer_lock);
->  	} else {
-> -		kfree(vaddr_out);
-> +		kvfree(vaddr_out);
->  	}
->  
->  	return 0;
-> @@ -296,6 +297,20 @@ void vkms_composer_worker(struct work_struct *work)
->  		drm_crtc_add_crc_entry(crtc, true, frame_start++, &crc32);
->  }
->  
-> +void vkms_crtc_composer(struct vkms_crtc_state *crtc_state)
-> +{
-> +	struct drm_crtc *crtc = crtc_state->base.crtc;
-> +	struct vkms_output *out = drm_crtc_to_vkms_output(crtc);
-> +	u32 crc32 = 0;
-> +	int ret;
-> +
-> +	ret = vkms_composer_common(crtc_state, out, crtc_state->wb_pending, &crc32);
-> +	if (ret == -EINVAL)
-> +		return;
-> +
-> +	drm_crtc_add_crc_entry(crtc, true, 0, &crc32);
-> +}
-> +
->  static const char * const pipe_crc_sources[] = {"auto"};
->  
->  const char *const *vkms_get_crc_sources(struct drm_crtc *crtc,
-> diff --git a/drivers/gpu/drm/vkms/vkms_crtc.c b/drivers/gpu/drm/vkms/vkms_crtc.c
-> index 57bbd32e9beb..4a933553e0e4 100644
-> --- a/drivers/gpu/drm/vkms/vkms_crtc.c
-> +++ b/drivers/gpu/drm/vkms/vkms_crtc.c
-> @@ -174,6 +174,15 @@ static const struct drm_crtc_funcs vkms_crtc_funcs = {
->  	.verify_crc_source	= vkms_verify_crc_source,
->  };
->  
-> +static const struct drm_crtc_funcs vkms_vblankless_crtc_funcs = {
-> +	.set_config             = drm_atomic_helper_set_config,
-> +	.destroy                = drm_crtc_cleanup,
-> +	.page_flip              = drm_atomic_helper_page_flip,
-> +	.reset                  = vkms_atomic_crtc_reset,
-> +	.atomic_duplicate_state = vkms_atomic_crtc_duplicate_state,
-> +	.atomic_destroy_state   = vkms_atomic_crtc_destroy_state,
-> +};
-> +
->  static int vkms_crtc_atomic_check(struct drm_crtc *crtc,
->  				  struct drm_atomic_state *state)
->  {
-> @@ -268,6 +277,20 @@ static void vkms_crtc_atomic_flush(struct drm_crtc *crtc,
->  	spin_unlock_irq(&vkms_output->lock);
->  }
->  
-> +/*
-> + * Crtc functions for virtual hardware/vblankless mode
-> + */
-> +static void vkms_vblankless_crtc_atomic_flush(struct drm_crtc *crtc,
-> +					      struct drm_atomic_state *state)
-> +{
-> +	struct vkms_output *vkms_output = drm_crtc_to_vkms_output(crtc);
-> +	struct vkms_crtc_state *vkms_state = to_vkms_crtc_state(crtc->state);
-> +
-> +	vkms_crtc_composer(vkms_state);
-> +
-> +	vkms_output->composer_state = to_vkms_crtc_state(crtc->state);
-> +}
-> +
->  static const struct drm_crtc_helper_funcs vkms_crtc_helper_funcs = {
->  	.atomic_check	= vkms_crtc_atomic_check,
->  	.atomic_begin	= vkms_crtc_atomic_begin,
-> @@ -276,20 +299,34 @@ static const struct drm_crtc_helper_funcs vkms_crtc_helper_funcs = {
->  	.atomic_disable	= vkms_crtc_atomic_disable,
->  };
->  
-> +static const struct drm_crtc_helper_funcs vkms_vblankless_crtc_helper_funcs = {
-> +	.atomic_check	= vkms_crtc_atomic_check,
-> +	.atomic_flush	= vkms_vblankless_crtc_atomic_flush,
-> +};
-> +
->  int vkms_crtc_init(struct drm_device *dev, struct drm_crtc *crtc,
->  		   struct drm_plane *primary, struct drm_plane *cursor)
->  {
->  	struct vkms_output *vkms_out = drm_crtc_to_vkms_output(crtc);
-> +	struct vkms_device *vkmsdev = drm_device_to_vkms_device(dev);
->  	int ret;
->  
-> -	ret = drm_crtc_init_with_planes(dev, crtc, primary, cursor,
-> -					&vkms_crtc_funcs, NULL);
-> +	if (vkmsdev->config->virtual_hw)
-> +		ret = drm_crtc_init_with_planes(dev, crtc, primary, cursor,
-> +						&vkms_vblankless_crtc_funcs, NULL);
-> +	else
-> +		ret = drm_crtc_init_with_planes(dev, crtc, primary, cursor,
-> +						&vkms_crtc_funcs, NULL);
-> +
->  	if (ret) {
->  		DRM_ERROR("Failed to init CRTC\n");
->  		return ret;
->  	}
->  
-> -	drm_crtc_helper_add(crtc, &vkms_crtc_helper_funcs);
-> +	if (vkmsdev->config->virtual_hw)
-> +		drm_crtc_helper_add(crtc, &vkms_vblankless_crtc_helper_funcs);
-> +	else
-> +		drm_crtc_helper_add(crtc, &vkms_crtc_helper_funcs);
->  
->  	spin_lock_init(&vkms_out->lock);
->  	spin_lock_init(&vkms_out->composer_lock);
-> diff --git a/drivers/gpu/drm/vkms/vkms_drv.c b/drivers/gpu/drm/vkms/vkms_drv.c
-> index 0ffe5f0e33f7..ee78f5eef653 100644
-> --- a/drivers/gpu/drm/vkms/vkms_drv.c
-> +++ b/drivers/gpu/drm/vkms/vkms_drv.c
-> @@ -51,6 +51,10 @@ static bool enable_overlay;
->  module_param_named(enable_overlay, enable_overlay, bool, 0444);
->  MODULE_PARM_DESC(enable_overlay, "Enable/Disable overlay support");
->  
-> +static bool enable_virtual_hw;
-> +module_param_named(enable_virtual_hw, enable_virtual_hw, bool, 0444);
-> +MODULE_PARM_DESC(enable_virtual_hw, "Enable/Disable virtual hardware mode(vblank-less mode)");
-> +
->  DEFINE_DRM_GEM_FOPS(vkms_driver_fops);
->  
->  static void vkms_release(struct drm_device *dev)
-> @@ -98,6 +102,7 @@ static int vkms_config_show(struct seq_file *m, void *data)
->  	seq_printf(m, "writeback=%d\n", vkmsdev->config->writeback);
->  	seq_printf(m, "cursor=%d\n", vkmsdev->config->cursor);
->  	seq_printf(m, "overlay=%d\n", vkmsdev->config->overlay);
-> +	seq_printf(m, "virtual_hw=%d\n", vkmsdev->config->virtual_hw);
->  
->  	return 0;
->  }
-> @@ -191,10 +196,12 @@ static int vkms_create(struct vkms_config *config)
->  		goto out_devres;
->  	}
->  
-> -	ret = drm_vblank_init(&vkms_device->drm, 1);
-> -	if (ret) {
-> -		DRM_ERROR("Failed to vblank\n");
-> -		goto out_devres;
-> +	if (!vkms_device->config->virtual_hw) {
-> +		ret = drm_vblank_init(&vkms_device->drm, 1);
-> +		if (ret) {
-> +			DRM_ERROR("Failed to vblank\n");
-> +			goto out_devres;
-> +		}
->  	}
->  
->  	ret = vkms_modeset_init(vkms_device);
-> @@ -229,6 +236,7 @@ static int __init vkms_init(void)
->  	config->cursor = enable_cursor;
->  	config->writeback = enable_writeback;
->  	config->overlay = enable_overlay;
-> +	config->virtual_hw = enable_virtual_hw;
->  
->  	return vkms_create(config);
->  }
-> diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_drv.h
-> index 6f5f63591c20..d64554f21838 100644
-> --- a/drivers/gpu/drm/vkms/vkms_drv.h
-> +++ b/drivers/gpu/drm/vkms/vkms_drv.h
-> @@ -97,6 +97,7 @@ struct vkms_config {
->  	bool writeback;
->  	bool cursor;
->  	bool overlay;
-> +	bool virtual_hw;
->  	/* only set when instantiated */
->  	struct vkms_device *dev;
->  };
-> @@ -141,6 +142,7 @@ int vkms_composer_common(struct vkms_crtc_state *crtc_state, struct vkms_output
->  			 bool wb_pending, uint32_t *crcs);
->  void vkms_composer_worker(struct work_struct *work);
->  void vkms_set_composer(struct vkms_output *out, bool enabled);
-> +void vkms_crtc_composer(struct vkms_crtc_state *crtc_state);
->  
->  /* Writeback */
->  int vkms_enable_writeback_connector(struct vkms_device *vkmsdev);
-> diff --git a/drivers/gpu/drm/vkms/vkms_writeback.c b/drivers/gpu/drm/vkms/vkms_writeback.c
-> index 8694227f555f..6082cacbca1e 100644
-> --- a/drivers/gpu/drm/vkms/vkms_writeback.c
-> +++ b/drivers/gpu/drm/vkms/vkms_writeback.c
-> @@ -120,7 +120,8 @@ static void vkms_wb_atomic_commit(struct drm_connector *conn,
->  	if (!conn_state)
->  		return;
->  
-> -	vkms_set_composer(&vkmsdev->output, true);
-> +	if (!vkmsdev->config->virtual_hw)
-> +		vkms_set_composer(&vkmsdev->output, true);
-
-For the first issue that I mentioned, you should add this same condition
-around set_composer in vkms_wb_cleanup_job. Probably because
-wb_cleanup_job is not called (the other issue), you could not see any
-error.
-
-Thanks,
-
-Melissa
->  
->  	spin_lock_irq(&output->composer_lock);
->  	crtc_state->active_writeback = conn_state->writeback_job->priv;
-> -- 
-> 2.31.1
-> 
+>
+> >
+> > >
+> > > >                       result = SCAN_DEL_PAGE_LRU;
+> > > >                       goto out_unlock;
+> > > > --
+> > > > 2.26.2
+> > > >
+> > > >
+> > >
+> > > --
+> > >  Kirill A. Shutemov
