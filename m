@@ -2,202 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2DDA40C481
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 13:45:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 188F840C488
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 13:46:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237543AbhIOLqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 07:46:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49510 "EHLO
+        id S237480AbhIOLri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 07:47:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237480AbhIOLqf (ORCPT
+        with ESMTP id S232791AbhIOLrb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 07:46:35 -0400
-Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05012C061574;
-        Wed, 15 Sep 2021 04:45:17 -0700 (PDT)
-Received: by mail-vs1-xe31.google.com with SMTP id f18so2452325vsp.2;
-        Wed, 15 Sep 2021 04:45:16 -0700 (PDT)
+        Wed, 15 Sep 2021 07:47:31 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AD1CC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 04:46:12 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id j12so516187ljg.10
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 04:46:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=JPQ0lmcBAe8dYGkU0EvEYTJrUaS/zQBGvMHqnj9DCpE=;
-        b=AfO7uONRJzTenWiiDMTlC3NCBOtOy5RoQbU3QkfWFjGbY2rEBOkwb9UnmXLq/DTymT
-         zdb37kZ8f3QaBxy0DtSUydOGBmrqwMpsK/EuxzOYaspnuVDf/7Vt8JPpeWjmtLkRT1H8
-         zz0zOEeruRMSAguWpXVD/k5cA356A4VKUhExtEYuAzGhRoSATssH7Hboav+mPDT9mN5n
-         WiILOz35dCygaGpSJrkqaN+3NdUQsUWXfe40yMtbga5fNg9z2HRojplR17VP+UkmfqW9
-         8U/LwAZPsLMArqs1HGp1SjJc7lOllc96ZZOXJTs1y1wMTO3kLyAQOqWPHGwVdhPyaaYK
-         IqbA==
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4uYqvhZeHXv+ssAcqC18NkCUO7S23+uQI3/MrtalBV0=;
+        b=jyiV1pAooDObXMWnm3SrBe9VySDlVMgGIdz0ZOAqYFqHTDbGSqfGlclgEpgSJnLk9Q
+         DFka1G8+6sSoD3HNSqa0AppZDm2J1kkZRyV+Ekj0m8uHjXRySHiMBmH7WY9nhKnUr/VT
+         35oCwlYebNGuHog/4c3gCuRkJXVh/bIk6Tdk5zhvhNarQQSivcYCtFgJSW/Rz12DW7GL
+         jUh7hMukNOAQHN5HvXwrMx8rRg97dA6+kwG/LTGpn5AomPepMFIPfwm6cWNOVFkW6QI6
+         7bHQrFQgbUXL52514a9fKrhGs8YBnPNc3rmHQ/wM43OJGLye+GKaW5qLT1AkYcVARpnv
+         qFHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=JPQ0lmcBAe8dYGkU0EvEYTJrUaS/zQBGvMHqnj9DCpE=;
-        b=Q2+Mo/4XFIVkh3GLhoyiQ98hxY3j4+g64VEX9bRBsVR9vymd7FNwPDln4SrhhTpsR9
-         6xJimHOjbzx31LjRSCW52b8xxQcQWnfWJo71l2UuitMFfOuycvmhYb347uF73SVvAd40
-         xi6MB3mgTVym4hvx+Bf6VKcKl/RZ2iLiRX4dWnrAl+VaMNmnis2ZdDV0v+rQpgUp92FN
-         xyrSIQGWB/xByFZkxW12582gGTdabg0e+A1Po9iU6hn8SYYfZ40BLQlz+FFWmV4yHKsv
-         xf2Q1yyNYKDkea8cHgDFzGTIomNyv8OL6sAZ2Ta2V7rpak0R4+C2pFuY/Ttkp7fazZfk
-         BYKQ==
-X-Gm-Message-State: AOAM533enO+nLGrs70fbkcJYJsGLQtpZC5NonxtykZIwP+DFR1u6Icti
-        GWsozk+3K6twxD+Bw3+YJu59PEXjQgoPp6QwY2CifSRw
-X-Google-Smtp-Source: ABdhPJwyzBKqC1C8lCUxcSIQpp0deHXrdLPc6RY5aUQRXRA4cYr5b/xSQCGlhITdJG02zJendeLPTnItrQbmtpSwCjU=
-X-Received: by 2002:a67:ef85:: with SMTP id r5mr2853450vsp.32.1631706316088;
- Wed, 15 Sep 2021 04:45:16 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4uYqvhZeHXv+ssAcqC18NkCUO7S23+uQI3/MrtalBV0=;
+        b=P6GT+i7EmE2UD+VgYSEHaUhMm0ULxhrR4C2KbVSfCOYdQAG6jA/WyL2wszUSRhF7Xj
+         sxxz8jMZcw0pmeyYoKbpfy73UDSdNJDjLIH2Bl9qB2mID2rHahlkfJ/LXn26RFAZs3xg
+         py4/0hvZ91H0ppDNAaG8+2SRnWI5AxjZ4so55K9EEoxBoZwQSMCd2nH6LNpJf9lyVSpA
+         LK9kHI8DK9n73Ud7qgETZMUbTZe26zVas6THpBZw/xkJX5/8J8osLWezW+Ql0rxryTFR
+         z2+wPZ0Da9sJ7jutsiJgmI151SjzCYzxr+ogL/7jiwq2nuMUosF12Nt9Rx1FUIzhpCdD
+         taaA==
+X-Gm-Message-State: AOAM530qEEG7Y6N2lccReJB+WmIQNCZwcG0ECIjfUC4sV3Xo6iMfTh6g
+        Lm9DqEI3z1DO0fVuduiPzCG4zw==
+X-Google-Smtp-Source: ABdhPJwCBpDqQI2MR/6gQuQDuaPc18SeGMEV9d5/MeeH65Opge+QdGLHvzx00+xc1e2k20cqP9RBww==
+X-Received: by 2002:a2e:a546:: with SMTP id e6mr20030432ljn.117.1631706370471;
+        Wed, 15 Sep 2021 04:46:10 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id y14sm107725lfk.237.2021.09.15.04.46.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Sep 2021 04:46:10 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 310A7102F4D; Wed, 15 Sep 2021 14:46:13 +0300 (+03)
+Date:   Wed, 15 Sep 2021 14:46:13 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     naoya.horiguchi@nec.com, hughd@google.com,
+        kirill.shutemov@linux.intel.com, willy@infradead.org,
+        osalvador@suse.de, akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/4] mm: filemap: check if any subpage is hwpoisoned for
+ PMD page fault
+Message-ID: <20210915114613.lo26l64iqjz2qo6a@box.shutemov.name>
+References: <20210914183718.4236-1-shy828301@gmail.com>
+ <20210914183718.4236-2-shy828301@gmail.com>
 MIME-Version: 1.0
-References: <20210823171613.18941-1-romain.perier@gmail.com>
- <CABgxDoJYL-3BDb4p8c85k9j1hB5Bp5s_iWHE8V6MiiG1iB4dmQ@mail.gmail.com> <YUD+uw5Nc4hHEC5X@piout.net>
-In-Reply-To: <YUD+uw5Nc4hHEC5X@piout.net>
-From:   Romain Perier <romain.perier@gmail.com>
-Date:   Wed, 15 Sep 2021 13:45:04 +0200
-Message-ID: <CABgxDoKQSCJ=HQw0O22qyDQBOqhX63TgtVGpxFpfynG0cdbhZg@mail.gmail.com>
-Subject: Re: [PATCH v4 0/3] Add RTC for MStar SoCs
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>,
-        Daniel Palmer <daniel@0x0f.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-rtc@vger.kernel.org,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210914183718.4236-2-shy828301@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le mar. 14 sept. 2021 =C3=A0 21:57, Alexandre Belloni
-<alexandre.belloni@bootlin.com> a =C3=A9crit :
->
-> On 14/09/2021 19:20:56+0200, Romain Perier wrote:
-> > Hi,
-> >
-> > ping,
-> >
->
-> Well, this was sent to close from the merge window and the merge window
-> just closed :)
+On Tue, Sep 14, 2021 at 11:37:15AM -0700, Yang Shi wrote:
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 25fc46e87214..1765bf72ed16 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -3920,8 +3920,17 @@ vm_fault_t do_set_pmd(struct vm_fault *vmf, struct page *page)
+>  	if (unlikely(!pmd_none(*vmf->pmd)))
+>  		goto out;
+>  
+> -	for (i = 0; i < HPAGE_PMD_NR; i++)
+> +	for (i = 0; i < HPAGE_PMD_NR; i++) {
+> +		/*
+> +		 * Just backoff if any subpage of a THP is corrupted otherwise
+> +		 * the corrupted page may mapped by PMD silently to escape the
+> +		 * check.  This kind of THP just can be PTE mapped.  Access to
+> +		 * the corrupted subpage should trigger SIGBUS as expected.
+> +		 */
+> +		if (PageHWPoison(page + i))
+> +			goto out;
+>  		flush_icache_page(vma, page + i);
+> +	}
 
-Ah right, I have forgotten that, my bad ^^.  Ignore my comment then
+This is somewhat costly.
 
-Romain
+flush_icache_page() is empty on most archs so compiler makes the loop go
+away before the change. Also page->flags for most of the pages will not
+necessary be hot.
 
->
-> > Regards,
-> > Romain
-> >
-> > Le lun. 23 ao=C3=BBt 2021 =C3=A0 19:16, Romain Perier <romain.perier@gm=
-ail.com> a =C3=A9crit :
-> > >
-> > > This patches series adds a new driver for the RTC found in the Mstar
-> > > MSC313e SoCs and newer. It adds a basic rtc driver, the corresponding
-> > > devicetree bindings and its documentation.
-> > >
-> > > The rtctest (from selftests) has been passed on this driver, with the
-> > > following output:
-> > > $ rtctest
-> > > TAP version 13
-> > > 1..7
-> > > # Starting 7 tests from 2 test cases.
-> > > #  RUN           rtc.date_read ...
-> > > # rtctest.c:47:date_read:Current RTC date/time is 01/01/1970 00:02:03=
-.
-> > > #            OK  rtc.date_read
-> > > ok 1 rtc.date_read
-> > > #  RUN           rtc.uie_read ...
-> > > #            OK  rtc.uie_read
-> > > ok 2 rtc.uie_read
-> > > #  RUN           rtc.uie_select ...
-> > > #            OK  rtc.uie_select
-> > > ok 3 rtc.uie_select
-> > > #  RUN           rtc.alarm_alm_set ...
-> > > # rtctest.c:136:alarm_alm_set:Alarm time now set to 00:02:12.
-> > > # rtctest.c:156:alarm_alm_set:data: 1a0
-> > > #            OK  rtc.alarm_alm_set
-> > > ok 4 rtc.alarm_alm_set
-> > > #  RUN           rtc.alarm_wkalm_set ...
-> > > # rtctest.c:192:alarm_wkalm_set:Alarm time now set to 01/01/1970 00:0=
-2:15.
-> > > #            OK  rtc.alarm_wkalm_set
-> > > ok 5 rtc.alarm_wkalm_set
-> > > #  RUN           rtc.alarm_alm_set_minute ...
-> > > # rtctest.c:238:alarm_alm_set_minute:Alarm time now set to 00:03:00.
-> > > # rtctest.c:258:alarm_alm_set_minute:data: 1a0
-> > > #            OK  rtc.alarm_alm_set_minute
-> > > ok 6 [  180.545015] random: fast init done
-> > > rtc.alarm_alm_set_minute
-> > > #  RUN           rtc.alarm_wkalm_set_minute ...
-> > > # rtctest.c:294:alarm_wkalm_set_minute:Alarm time now set to 01/01/19=
-70 00:04:00.
-> > > #            OK  rtc.alarm_wkalm_set_minute
-> > > ok 7 rtc.alarm_wkalm_set_minute
-> > > # PASSED: 7 / 7 tests passed.
-> > > # Totals: pass:7 fail:0 xfail:0 xpass:0 skip:0 error:0
-> > >
-> > > Changes since v3:
-> > > - Fixed bad device table in MODULE_DEVICE_TABLE()
-> > > - Use reverse christmas tree ordering for local variables in the prob=
-e()
-> > >   function
-> > > - Removed the "clk" field from the msc313_rtc data structure (not
-> > >   required, only used in the probe function)
-> > >
-> > > Changes since v2:
-> > > - Added dual-license header to the dt-bindings documentation
-> > > - Reordered dts entries, so the rtc device_node is before the watchdo=
-g
-> > >   device_node (because it has a lower address)
-> > > - Updated rtc range_max to U32_MAX
-> > > - Leave range_min to 0 (default value when it is not set at all)
-> > > - Fixed the CNT_EN_BIT logic, so .read_time will only read the time w=
-hen
-> > >   the RTC has been previously set and has a valid state (which is not
-> > >   the case after a POR).
-> > >
-> > > Changes since v1:
-> > > - Fixed the DT bindings documentation and fixed dt_binding_check (an
-> > >   include was missing)
-> > > - Added || COMPILE_TEST to kconfig
-> > > - Removed rtc_valid_tm from msc313_rtc_read_time()
-> > > - Removed the last write of the msc313_rtc_set_time() function (not
-> > >   required) and improved comments
-> > > - Replaced the relaxed io by normal io in msc313_rtc_interrupt()
-> > > - Added checks to be sure that the alarm fired in msc313_rtc_interrup=
-t()
-> > > - Removed msc313_rtc_remove() (replaced by devm_add_action_or_reset)
-> > > - Removed unnecessary software reset of the IP in the probe function
-> > >   (the soft reset is never executed, it is a mistake from the initial
-> > >   refactoring)
-> > > - Switched to devm_rtc_allocate_device() and devm_rtc_register_device=
-(),
-> > >   and dropped the error message related to the rtc device allocation
-> > > - Added an RTC range by setting .range_min and .range_max
-> > > - Added the "start-year" property to the DT bindings documentation
-> > >
-> > > Daniel Palmer (1):
-> > >   rtc: Add support for the MSTAR MSC313 RTC
-> > >
-> > > Romain Perier (2):
-> > >   dt-bindings: rtc: Add Mstar MSC313e RTC devicetree bindings
-> > >     documentation
-> > >   ARM: dts: mstar: Add rtc device node
-> > >
-> > >  .../bindings/rtc/mstar,msc313-rtc.yaml        |  49 ++++
-> > >  MAINTAINERS                                   |   1 +
-> > >  arch/arm/boot/dts/mstar-v7.dtsi               |   8 +
-> > >  drivers/rtc/Kconfig                           |  10 +
-> > >  drivers/rtc/Makefile                          |   1 +
-> > >  drivers/rtc/rtc-msc313.c                      | 258 ++++++++++++++++=
-++
-> > >  6 files changed, 327 insertions(+)
-> > >  create mode 100644 Documentation/devicetree/bindings/rtc/mstar,msc31=
-3-rtc.yaml
-> > >  create mode 100644 drivers/rtc/rtc-msc313.c
-> > >
-> > > --
-> > > 2.30.2
-> > >
->
-> --
-> Alexandre Belloni, co-owner and COO, Bootlin
-> Embedded Linux and Kernel engineering
-> https://bootlin.com
+I wounder if we should consider making PG_hwpoison to cover full compound
+page. On marking page hwpoison we try to split it and mark relevant base
+page, if split fails -- mark full compound page.
+
+As alternative we can have one more flag that indicates that the compound
+page contains at least one hwpoisoned base page. We should have enough
+space in the first tail page.
+
+-- 
+ Kirill A. Shutemov
