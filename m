@@ -2,62 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AA8340BE79
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 05:51:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A2C840BE7A
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 05:51:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236294AbhIODws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 23:52:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55212 "EHLO
+        id S236283AbhIODwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 23:52:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236269AbhIODwo (ORCPT
+        with ESMTP id S236293AbhIODws (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 23:52:44 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4383DC061762
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 20:51:26 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id mi6-20020a17090b4b4600b00199280a31cbso3377147pjb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 20:51:26 -0700 (PDT)
+        Tue, 14 Sep 2021 23:52:48 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFADEC061764
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 20:51:29 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id w8so1370470pgf.5
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 20:51:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=A8ZkYRXsRtqqRT59vuj6cpuh5P+Fz32RUnsmAVG+0rA=;
-        b=d47HmhJh2i+XqKgtsSAM5hqHs4cdiowd47Bg50QX1YDkQZhjYs5Evh1xhZATOYtrIp
-         wC2RJZyW4qmMUleIV0GNp++Sy84TRrOdt+/ieV6HOKE3Ip34xfF0tAnaKnEflVwXGK2W
-         tc+Sm4apj7S3KWcTADy5vO3s7SR9Or04aNHQResNB7GNUNASnsqHqniO9uxUlfGrvTfz
-         qnUOjPHIe40xuhzKTmrKy83y2ZcFOj1swXFR/S1hke5s6dVBYby47OFL7MyazHy6C8Og
-         u5MyO6IwCRaTNQR7fCZDLnZbahiyxkCZ9k44t6nMFIKauRkwBUvfpyp4U8uTjfhNfLvf
-         fYzg==
+        bh=kfimq1QM2ub4RCzsUMT7wxbrZt86ZSDXRQu91Wlfp5Q=;
+        b=JDdFqobRqLt1C9EL/bCPgSLe+1r6014LFaqefAW+z7gCruWRHNhVxaeVuhtSMJhVAG
+         7d9io1vBFiLJrDkxGuRa2hFbGwDl286hlO/XliN6s5UHH3fJVG2/lsJ7LOgZ9yYIX9hc
+         +oxEpNpU979BSNbcSGqj+jeD9xZ4CqDSWYPzfOigKT10PKMQ/C+EaiJF9YRZMMblaQTa
+         AQA5vpD9q2nKDC/pZablhBrkzQ1yc8xJXAHzH1jCKkkX8k521flVQhBXszmmnPdpUMgG
+         b6R9nEqfTq2KocQo1Od9sIcR2oY4E1BuzoOLgBrQ10njQCdAwbdpSh/OvgNe6GHCruAs
+         Oojg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=A8ZkYRXsRtqqRT59vuj6cpuh5P+Fz32RUnsmAVG+0rA=;
-        b=wFUDLjqG5BELzuj+FDfwFFvdUivTzDb0Gzjs+lBPuxzyLjSulsawAKgh4sdjIHaUvz
-         Wk4n3qn1sIsb3MJyG1D/D8NalTn0JK3T7JZj8Ldebtu8c0q4Y5Q2F9F8W6ggEw+5/KpE
-         wL+mtXztkCvFQF7Qop342XIk8fHFINkZuKtUYzLi7ASEtTz1OXIrdgSdoxNdB5KVUAiv
-         D8OYymH3u41gCpT2zwMn9JJjdHhljhutvzNN7qWp6KH+Y377JBCc2vUZ+FLANEG3gp7v
-         nmpc2p9CuLbdv7VNQ5Wws92WwsVb29jZTLnkJmJA6Qp/xlYNIMEuQKeCRQEv5sAuTBtM
-         kmbg==
-X-Gm-Message-State: AOAM533OQEWXCpDGMkMntlOVsTx3ca/LDacSLYt0cXDroeEyV0ZrRPvg
-        YtGq8MvyEdLidTpl70oepKyu/jvf/g==
-X-Google-Smtp-Source: ABdhPJyv4AQmjJA2thsDzuHJOhX/obOa910VjelhhPA6OliCpDKGoOTDXwqeaSRu3nUOVs5QIglWIw==
-X-Received: by 2002:a17:90b:3a8c:: with SMTP id om12mr6041949pjb.137.1631677885292;
-        Tue, 14 Sep 2021 20:51:25 -0700 (PDT)
+        bh=kfimq1QM2ub4RCzsUMT7wxbrZt86ZSDXRQu91Wlfp5Q=;
+        b=YFuh41ZmeZyS+6uAaJDpoGM9ApXdP/7rcdyOando9JE8gP5aJEdxMme6XkzJbjN1jQ
+         7oRBbr/Qjs1+2By7qlHqS9YJWzLKq70LRCcF0zpj8UenU/ElQhnC6aTbZ2ras/KSYOyJ
+         GeI8PGDAG1AVr7axedVqbhbGWl4bxVs+UhWhGSPkJYzV5VRsDETKjUcSdtCsmwMOax74
+         tDs+0WbaYyKZgvu43iRO2T5R6qAts7WNh/OFvad7cQ17zHvl5wqKuiM4z2+INQpxh8q9
+         ZrRDFfgnZlduvZs0KUykngb3LJpYf51Vj9dLsRwdPNuSV+FjxNTz/sfBeCveWl2hCzTm
+         vPCw==
+X-Gm-Message-State: AOAM53070OnURQl/tsmSxpCXiiws7UeBhUOiXSWb7ZZf6+8btA8gFxGi
+        pZK3SqzbZLirHNGnk7gGiP0eU8mKKA==
+X-Google-Smtp-Source: ABdhPJxtTw/h8SXKYy8qHRGgdZjwIdVKXkNtI9YCxrUXlKu0gqKpKdwB6O6AaDhMQY8wAX9yT6jydw==
+X-Received: by 2002:a63:4607:: with SMTP id t7mr18569791pga.332.1631677889263;
+        Tue, 14 Sep 2021 20:51:29 -0700 (PDT)
 Received: from piliu.users.ipa.redhat.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id x13sm8602357pfp.133.2021.09.14.20.51.22
+        by smtp.gmail.com with ESMTPSA id x13sm8602357pfp.133.2021.09.14.20.51.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 20:51:25 -0700 (PDT)
+        Tue, 14 Sep 2021 20:51:29 -0700 (PDT)
 From:   Pingfan Liu <kernelfans@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Pingfan Liu <kernelfans@gmail.com>, Petr Mladek <pmladek@suse.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Wang Qing <wangqing@vivo.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Santosh Sivaraj <santosh@fossix.org>
-Subject: [PATCH 1/5] kernel/watchdog: remove useless WATCHDOG_DEFAULT
-Date:   Wed, 15 Sep 2021 11:50:59 +0800
-Message-Id: <20210915035103.15586-2-kernelfans@gmail.com>
+        Santosh Sivaraj <santosh@fossix.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: [PATCH 2/5] kernel/watchdog_hld: clarify the condition in hardlockup_detector_event_create()
+Date:   Wed, 15 Sep 2021 11:51:00 +0800
+Message-Id: <20210915035103.15586-3-kernelfans@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210915035103.15586-1-kernelfans@gmail.com>
 References: <20210915035103.15586-1-kernelfans@gmail.com>
@@ -67,7 +70,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since no reference to WATCHDOG_DEFAULT, remove it.
+hardlockup_detector_event_create() indirectly calls
+kmem_cache_alloc_node(), which is blockable.
+
+So here, the really planned context is is_percpu_thread().
 
 Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
 Cc: Petr Mladek <pmladek@suse.com>
@@ -75,25 +81,32 @@ Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Wang Qing <wangqing@vivo.com>
 Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
 Cc: Santosh Sivaraj <santosh@fossix.org>
+Cc: Sumit Garg <sumit.garg@linaro.org>
+Cc: Will Deacon <will@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
 To: linux-kernel@vger.kernel.org
 ---
- kernel/watchdog.c | 2 --
- 1 file changed, 2 deletions(-)
+ kernel/watchdog_hld.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/watchdog.c b/kernel/watchdog.c
-index ad912511a0c0..e2a9e3331416 100644
---- a/kernel/watchdog.c
-+++ b/kernel/watchdog.c
-@@ -30,10 +30,8 @@
- static DEFINE_MUTEX(watchdog_mutex);
+diff --git a/kernel/watchdog_hld.c b/kernel/watchdog_hld.c
+index 247bf0b1582c..6876e796dbf5 100644
+--- a/kernel/watchdog_hld.c
++++ b/kernel/watchdog_hld.c
+@@ -165,10 +165,13 @@ static void watchdog_overflow_callback(struct perf_event *event,
  
- #if defined(CONFIG_HARDLOCKUP_DETECTOR) || defined(CONFIG_HAVE_NMI_WATCHDOG)
--# define WATCHDOG_DEFAULT	(SOFT_WATCHDOG_ENABLED | NMI_WATCHDOG_ENABLED)
- # define NMI_WATCHDOG_DEFAULT	1
- #else
--# define WATCHDOG_DEFAULT	(SOFT_WATCHDOG_ENABLED)
- # define NMI_WATCHDOG_DEFAULT	0
- #endif
+ static int hardlockup_detector_event_create(void)
+ {
+-	unsigned int cpu = smp_processor_id();
++	unsigned int cpu;
+ 	struct perf_event_attr *wd_attr;
+ 	struct perf_event *evt;
+ 
++	/* This function plans to execute in cpu bound kthread */
++	BUG_ON(!is_percpu_thread());
++	cpu = raw_smp_processor_id();
+ 	wd_attr = &wd_hw_attr;
+ 	wd_attr->sample_period = hw_nmi_get_sample_period(watchdog_thresh);
  
 -- 
 2.31.1
