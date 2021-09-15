@@ -2,83 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F11F340C436
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 13:15:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFA5540C439
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 13:16:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237536AbhIOLQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 07:16:52 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:21066 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232540AbhIOLQt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 07:16:49 -0400
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18FAUbxR026751;
-        Wed, 15 Sep 2021 07:15:27 -0400
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 3b2v0scb9n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Sep 2021 07:15:27 -0400
-Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 18FBFQiM041096
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 15 Sep 2021 07:15:26 -0400
-Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by ASHBMBX9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5; Wed, 15 Sep 2021
- 07:15:25 -0400
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server id 15.2.858.5 via Frontend
- Transport; Wed, 15 Sep 2021 07:15:25 -0400
-Received: from ramonaalexandra-Precision-5520.ad.analog.com ([10.48.65.154])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 18FBFN3f006537;
-        Wed, 15 Sep 2021 07:15:24 -0400
-From:   Ramona Alexandra Nechita <ramona.nechita@analog.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     <zbr@ioremap.net>,
-        Ramona Alexandra Nechita <ramona.nechita@analog.com>
-Subject: [PATCH] w1: slaves: fixed typo in w1_ds28e04.c initial comment
-Date:   Wed, 15 Sep 2021 14:15:16 +0300
-Message-ID: <20210915111516.17943-1-ramona.nechita@analog.com>
-X-Mailer: git-send-email 2.25.1
+        id S237588AbhIOLR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 07:17:27 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:59304 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232540AbhIOLRQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 07:17:16 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1631704557; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: To:
+ Subject: Sender; bh=ariktyMIf7Dayb70iaKJjrmLCHgnkUzRmqPEPsHm0rU=; b=bL2oeJ9ZFpw/x2zHgijTyfmTvj6gdgzE1mIWS5EDd5o48j5wTDFeXaW5nrSdzRtzwsRxii4J
+ FWK7q5sSb35zFqXN/DppQyu3KU4PfpI3EWSY0G6OZ8ITlrAysm+zWGf8A16jxeNWPi+4kyZi
+ 561CmsUyIUH0H7Icw73EUdKDPBg=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 6141d5e7e0f78151d620a1a2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 15 Sep 2021 11:15:51
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2BF75C43618; Wed, 15 Sep 2021 11:15:51 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.6 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+        version=3.4.0
+Received: from [10.242.137.170] (unknown [202.46.23.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 97A1DC4338F;
+        Wed, 15 Sep 2021 11:15:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 97A1DC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH v2 1/2] ASoC: google: dt-bindings: Add sc7280-herobrine
+ machine bindings
+To:     Stephen Boyd <swboyd@chromium.org>, agross@kernel.org,
+        alsa-devel@alsa-project.org, bgoswami@codeaurora.org,
+        bjorn.andersson@linaro.org, broonie@kernel.org,
+        devicetree@vger.kernel.org, judyhsiao@chromium.org,
+        lgirdwood@gmail.com, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, perex@perex.cz, plai@codeaurora.org,
+        robh+dt@kernel.org, rohitkr@codeaurora.org,
+        srinivas.kandagatla@linaro.org, tiwai@suse.com
+References: <1631539062-28577-1-git-send-email-srivasam@codeaurora.org>
+ <1631539062-28577-2-git-send-email-srivasam@codeaurora.org>
+ <CAE-0n50=ABP+fs1U3JjiqMSKphfxFsZBqQQYwVH2o_iOE1Wu_g@mail.gmail.com>
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Organization: Qualcomm India Private Limited.
+Message-ID: <e1e84488-2af5-2272-010a-474788a498a3@codeaurora.org>
+Date:   Wed, 15 Sep 2021 16:45:43 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-ORIG-GUID: YqZ0U0ABdcBobuSCuKi0c2xXipxUvs5q
-X-Proofpoint-GUID: YqZ0U0ABdcBobuSCuKi0c2xXipxUvs5q
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-15_02,2021-09-15_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- priorityscore=1501 clxscore=1015 adultscore=0 mlxlogscore=999
- impostorscore=0 spamscore=0 malwarescore=0 bulkscore=0 lowpriorityscore=0
- phishscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109030001 definitions=main-2109150073
+In-Reply-To: <CAE-0n50=ABP+fs1U3JjiqMSKphfxFsZBqQQYwVH2o_iOE1Wu_g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DS28E04 is supposed to be DS28E04-100. Fixed in the
-initial comment from w1_ds28ee04.c.
 
-Signed-off-by: Ramona Alexandra Nechita <ramona.nechita@analog.com>
----
- drivers/w1/slaves/w1_ds28e04.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 9/14/2021 1:21 AM, Stephen Boyd wrote:
+> Quoting Srinivasa Rao Mandadapu (2021-09-13 06:17:41)
+>> diff --git a/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml b/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
+>> new file mode 100644
+>> index 0000000..e0d705f
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
+>> @@ -0,0 +1,169 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/sound/google,sc7280-herobrine.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Google SC7280-Herobrine ASoC sound card driver
+>> +
+>> +maintainers:
+>> +  - Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+>> +  - Judy Hsiao <judyhsiao@chromium.org>
+>> +
+>> +description:
+>> +  This binding describes the SC7280 sound card which uses LPASS for audio.
+>> +
+>> +properties:
+>> +  compatible:
+>> +    enum:
+>> +      - google,sc7280-herobrine
+>> +
+>> +  audio-routing:
+>> +    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
+>> +    description:
+>> +      A list of the connections between audio components. Each entry is a
+>> +      pair of strings, the first being the connection's sink, the second
+>> +      being the connection's source.
+>> +
+>> +  model:
+>> +    $ref: /schemas/types.yaml#/definitions/string
+>> +    description: User specified audio sound card name
+>> +
+>> +  "#address-cells":
+>> +    const: 1
+>> +
+>> +  "#size-cells":
+>> +    const: 0
+>> +
+>> +patternProperties:
+>> +  "^dai-link@[0-9a-f]$":
+>> +    description:
+>> +      Each subnode represents a dai link. Subnodes of each dai links would be
+>> +      cpu/codec dais.
+>> +
+>> +    type: object
+>> +
+>> +    properties:
+>> +      link-name:
+>> +        description: Indicates dai-link name and PCM stream name.
+>> +        $ref: /schemas/types.yaml#/definitions/string
+>> +        maxItems: 1
+>> +
+>> +      reg:
+>> +        maxItems: 1
+>> +        description: dai link address.
+>> +
+>> +      cpu:
+>> +        description: Holds subnode which indicates cpu dai.
+>> +        type: object
+>> +        properties:
+>> +          sound-dai: true
+> Shouldn't sound-dai be required?
+Sorry. I didn't get your Query. You mean in below "required:" properties 
+need to add sound-dai also?
+>
+>> +
+>> +      codec:
+>> +        description: Holds subnode which indicates codec dai.
+>> +        type: object
+>> +        properties:
+>> +          sound-dai: true
+> Shouldn't sound-dai be required? I don't know but maybe also additional
+> properties is false for this node too?
+>
+>> +
+>> +    required:
+>> +      - link-name
+>> +      - cpu
+>> +      - codec
+> Should 'reg' be required?
+Okay. I think reg is required. will check and update it.
+>
+>> +
+>> +    additionalProperties: false
 
-diff --git a/drivers/w1/slaves/w1_ds28e04.c b/drivers/w1/slaves/w1_ds28e04.c
-index 8a640f159078..a2199495c873 100644
---- a/drivers/w1/slaves/w1_ds28e04.c
-+++ b/drivers/w1/slaves/w1_ds28e04.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /*
-- *	w1_ds28e04.c - w1 family 1C (DS28E04) driver
-+ *	w1_ds28e04.c - w1 family 1C (DS28E04-100) driver
-  *
-  * Copyright (c) 2012 Markus Franke <franke.m@sebakmt.com>
-  */
 -- 
-2.25.1
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
