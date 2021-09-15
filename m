@@ -2,147 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67FEB40C130
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 10:06:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2829D40C181
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 10:15:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236889AbhIOIHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 04:07:20 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:16258 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236795AbhIOIHJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 04:07:09 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4H8Xng0rDHz8t3n;
-        Wed, 15 Sep 2021 16:05:11 +0800 (CST)
-Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.8; Wed, 15 Sep 2021 16:05:48 +0800
-Received: from huawei.com (10.175.127.227) by dggema762-chm.china.huawei.com
- (10.1.198.204) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.8; Wed, 15
- Sep 2021 16:05:47 +0800
-From:   Yu Kuai <yukuai3@huawei.com>
-To:     <axboe@kernel.dk>, <josef@toxicpanda.com>, <ming.lei@redhat.com>,
-        <hch@infradead.org>
-CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <nbd@other.debian.org>, <yukuai3@huawei.com>, <yi.zhang@huawei.com>
-Subject: [PATCH v6 6/6] nbd: fix uaf in nbd_handle_reply()
-Date:   Wed, 15 Sep 2021 16:15:37 +0800
-Message-ID: <20210915081537.1684327-7-yukuai3@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210915081537.1684327-1-yukuai3@huawei.com>
-References: <20210915081537.1684327-1-yukuai3@huawei.com>
+        id S232895AbhIOIRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 04:17:07 -0400
+Received: from mga06.intel.com ([134.134.136.31]:1361 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229847AbhIOIRG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 04:17:06 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10107"; a="283253942"
+X-IronPort-AV: E=Sophos;i="5.85,294,1624345200"; 
+   d="scan'208";a="283253942"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2021 01:15:47 -0700
+X-IronPort-AV: E=Sophos;i="5.85,294,1624345200"; 
+   d="scan'208";a="508665608"
+Received: from rongch2-mobl.ccr.corp.intel.com (HELO [10.249.174.86]) ([10.249.174.86])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2021 01:15:45 -0700
+Subject: Re: [kbuild-all] Re: [mcgrof-next:20210908-firmware-builtin-v4 2/11]
+ drivers/base/firmware_loader/builtin/main.c:36:6: error: no previous
+ prototype for function 'firmware_is_builtin'
+To:     Luis Chamberlain <mcgrof@kernel.org>,
+        Philip Li <philip.li@intel.com>
+Cc:     kernel test robot <lkp@intel.com>, llvm@lists.linux.dev,
+        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Borislav Petkov <bp@suse.de>
+References: <202109101524.pjY4q0Dy-lkp@intel.com>
+ <YTv817Srt8hoySP5@bombadil.infradead.org> <20210911012853.GA834679@pl-dbox>
+ <YT91dprXpGy+ywBu@bombadil.infradead.org>
+ <YT96jYtYsWVjag8w@bombadil.infradead.org>
+From:   "Chen, Rong A" <rong.a.chen@intel.com>
+Message-ID: <cb65a64e-bb56-d02c-ae7e-ab9714e6d1f8@intel.com>
+Date:   Wed, 15 Sep 2021 16:15:43 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggema762-chm.china.huawei.com (10.1.198.204)
-X-CFilter-Loop: Reflected
+In-Reply-To: <YT96jYtYsWVjag8w@bombadil.infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a problem that nbd_handle_reply() might access freed request:
 
-1) At first, a normal io is submitted and completed with scheduler:
 
-internel_tag = blk_mq_get_tag -> get tag from sched_tags
- blk_mq_rq_ctx_init
-  sched_tags->rq[internel_tag] = sched_tag->static_rq[internel_tag]
-...
-blk_mq_get_driver_tag
- __blk_mq_get_driver_tag -> get tag from tags
- tags->rq[tag] = sched_tag->static_rq[internel_tag]
+On 9/14/2021 12:21 AM, Luis Chamberlain wrote:
+> On Mon, Sep 13, 2021 at 08:59:50AM -0700, Luis Chamberlain wrote:
+>> On Sat, Sep 11, 2021 at 09:28:53AM +0800, Philip Li wrote:
+>>> On Fri, Sep 10, 2021 at 05:48:23PM -0700, Luis Chamberlain wrote:
+>>>> On Fri, Sep 10, 2021 at 03:41:31PM +0800, kernel test robot wrote:
+>>>>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git 20210908-firmware-builtin-v4
+>>>>> head:   1c69d6a17750179d68bcaf6b16f9a08d2e475989
+>>>>> commit: 79e9fce20ee88ffe37542a66277628e6c53dde14 [2/11] firmware_loader: formalize built-in firmware API
+>>>>> config: hexagon-buildonly-randconfig-r004-20210910 (attached as .config)
+>>>>> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 261cbe98c38f8c1ee1a482fe76511110e790f58a)
+>>>>> reproduce (this is a W=1 build):
+>>>>>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>>>>>          chmod +x ~/bin/make.cross
+>>>>>          # https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git/commit/?id=79e9fce20ee88ffe37542a66277628e6c53dde14
+>>>>>          git remote add mcgrof-next https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git
+>>>>>          git fetch --no-tags mcgrof-next 20210908-firmware-builtin-v4
+>>>>>          git checkout 79e9fce20ee88ffe37542a66277628e6c53dde14
+>>>>>          # save the attached .config to linux build tree
+>>>>>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=hexagon
+>>>>>
+>>>>> If you fix the issue, kindly add following tag as appropriate
+>>>>> Reported-by: kernel test robot <lkp@intel.com>
+>>>>>
+>>>>> All errors (new ones prefixed by >>):
+>>>>>
+>>>>>>> drivers/base/firmware_loader/builtin/main.c:36:6: error: no previous prototype for function 'firmware_is_builtin' [-Werror,-Wmissing-prototypes]
+>>>>>     bool firmware_is_builtin(const struct firmware *fw)
+>>>>
+>>>> This is a lie though its defined on drivers/base/firmware_loader/firmware.h
+>>>>
+>>>>>          ^
+>>>>>     drivers/base/firmware_loader/builtin/main.c:36:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+>>>>>     bool firmware_is_builtin(const struct firmware *fw)
+>>>>>     ^
+>>>>>     static
+>>>>>     1 error generated.
+>>>>
+>>>> I get these odd errors:
+>>>>
+>>>> Compiler will be installed in /home/mcgrof/0day
+>>> hi Luis, would you mind to download the make.cross tool again to give a try, it
+>>> was updated recently to use latest clang instead of this 12.0.0?
+>>
+>> I had clang+llvm-12.0.0-cross-hexagon-unknown-linux-musl and this was
+>> used already. Is there a more recent one? Just in case I rm -rf'd it
+>> and tried again with the latest make.cross.
+> 
+> I rm -rf ~/0day and tried again but the failure I get is:
+> 
+>    CALL    scripts/checksyscalls.sh
+>    <stdin>:1515:2: warning: syscall clone3 not implemented [-W#warnings]
+>    #warning syscall clone3 not implemented
+> 
+> Even if I disable CONFIG_WERROR and COMPILE_TEST this still fails here
+> and so I can't even test compile the code in question.
+> 
+>    Luis
 
-So, both tags->rq[tag] and sched_tags->rq[internel_tag] are pointing
-to the request: sched_tags->static_rq[internal_tag]. Even if the
-io is finished.
+Hi Luis,
 
-2) nbd server send a reply with random tag directly:
+Sorry for the inconvenience, the error can be reproduced with W=1,
+we'll update the reproduce step.
 
-recv_work
- nbd_handle_reply
-  blk_mq_tag_to_rq(tags, tag)
-   rq = tags->rq[tag]
-
-3) if the sched_tags->static_rq is freed:
-
-blk_mq_sched_free_requests
- blk_mq_free_rqs(q->tag_set, hctx->sched_tags, i)
-  -> step 2) access rq before clearing rq mapping
-  blk_mq_clear_rq_mapping(set, tags, hctx_idx);
-  __free_pages() -> rq is freed here
-
-4) Then, nbd continue to use the freed request in nbd_handle_reply
-
-Fix the problem by get 'q_usage_counter' before blk_mq_tag_to_rq(),
-thus request is ensured not to be freed because 'q_usage_counter' is
-not zero.
-
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- block/blk-core.c    |  1 +
- drivers/block/nbd.c | 19 ++++++++++++++++++-
- 2 files changed, 19 insertions(+), 1 deletion(-)
-
-diff --git a/block/blk-core.c b/block/blk-core.c
-index 5454db2fa263..2008e6903166 100644
---- a/block/blk-core.c
-+++ b/block/blk-core.c
-@@ -489,6 +489,7 @@ void blk_queue_exit(struct request_queue *q)
- {
- 	percpu_ref_put(&q->q_usage_counter);
- }
-+EXPORT_SYMBOL(blk_queue_exit);
- 
- static void blk_queue_usage_counter_release(struct percpu_ref *ref)
- {
-diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-index 9a7bbf8ebe74..f065afcc7586 100644
---- a/drivers/block/nbd.c
-+++ b/drivers/block/nbd.c
-@@ -824,6 +824,7 @@ static void recv_work(struct work_struct *work)
- 						     work);
- 	struct nbd_device *nbd = args->nbd;
- 	struct nbd_config *config = nbd->config;
-+	struct request_queue *q = nbd->disk->queue;
- 	struct nbd_sock *nsock;
- 	struct nbd_cmd *cmd;
- 	struct request *rq;
-@@ -834,13 +835,29 @@ static void recv_work(struct work_struct *work)
- 		if (nbd_read_reply(nbd, args->index, &reply))
- 			break;
- 
-+		/*
-+		 * Get q_usage_counter can prevent accessing freed request
-+		 * through blk_mq_tag_to_rq() in nbd_handle_reply(). If
-+		 * q_usage_counter is zero, then no request is inflight, which
-+		 * means something is wrong since we expect to find a request to
-+		 * complete here.
-+		 */
-+		if (!percpu_ref_tryget(&q->q_usage_counter)) {
-+			dev_err(disk_to_dev(nbd->disk), "%s: no io inflight\n",
-+				__func__);
-+			break;
-+		}
-+
- 		cmd = nbd_handle_reply(nbd, args->index, &reply);
--		if (IS_ERR(cmd))
-+		if (IS_ERR(cmd)) {
-+			blk_queue_exit(q);
- 			break;
-+		}
- 
- 		rq = blk_mq_rq_from_pdu(cmd);
- 		if (likely(!blk_should_fake_timeout(rq->q)))
- 			blk_mq_complete_request(rq);
-+		blk_queue_exit(q);
- 	}
- 
- 	nsock = config->socks[args->index];
--- 
-2.31.1
-
+Best Regards,
+Rong Chen
