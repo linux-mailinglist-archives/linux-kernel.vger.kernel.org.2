@@ -2,106 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21A8540CA20
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 18:31:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C15B440CA59
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 18:35:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229788AbhIOQco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 12:32:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229665AbhIOQcn (ORCPT
+        id S230023AbhIOQeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 12:34:13 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3823 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229834AbhIOQeJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 12:32:43 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C46A1C061764;
-        Wed, 15 Sep 2021 09:31:23 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id g21so5786231edw.4;
-        Wed, 15 Sep 2021 09:31:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=EFqug29mO3vbFWGSrI/1RvpvL9yEVHmFJFSMpcyO/D0=;
-        b=UXufWIgN+iIt2kTGcgk2/QvgWZXZxZmsFdb+oZHQ/ZaIWInpXjpPT1TO19otc7dapr
-         xCU8SGOLOJYNO5DtjYXx6VtC2Xcph0fy1/m13VC658uw+4m8WeYnejuSuN7uoijpZeCH
-         7osLtNe+9H1/WyAHbX+HjTYIq/x3wnIkv1eU/dBIyIawdUue/tJd7U0FVmKSUBcc/hp8
-         jqNASK8RoNT0KmuKhxlyqzbLtiH70OqW4gHyWCbo83Q1CifY0i0RfxFMa2nsIHo4vYVf
-         hWyE0fkxO4errp83fDAqDSfZT3Y1Av30dnq9UnfXumsucC/J6eprSfHOhY/T+7rzs951
-         DKjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=EFqug29mO3vbFWGSrI/1RvpvL9yEVHmFJFSMpcyO/D0=;
-        b=n8zWKQHUGb4Lj6r73qW33F5BKWoS8NqK8M5oE1nZ1N5ESIL7f3JknLLiiQ2cMny1Vj
-         1KR7WC3U9ylBpLEf1zmU9LLThrWpZL2gzlE32xLuwEkk97OJ9LjvbJPiyof4Ql1esZ7t
-         VoiTMFWADU1af5Jj/vcvb/1xgiSdkeugE6EwDoHeQhjwD0VVwqFgkB3z5NqfGZ/GyoM5
-         t7T2JnfP7DyDSOhZ3fetjuWX4HyBe11K4Eta2P6O8uywZWTVre8FjtVrppmn6ucc8Ds4
-         XVWa1eQlkz+ckC1J3AQzpgdyuOUrQBpTFpQ+b8Iz64QGL1SPGNQajjGVDpYSAk+jMknu
-         Ih2w==
-X-Gm-Message-State: AOAM532CEm1mElvSm+MgLdRX4SOUIJ1nAE5HW+xIIz2IsoSFEvtyFRuq
-        MtKEY6bFX22JMwQ0cObUzrw=
-X-Google-Smtp-Source: ABdhPJyNT5tuWqL5VdFq6b5f10J9qWPN4RnW1uZ2pn60g/i01gH6ZIFSvdpUuCcq2ox80ka2Twlc0Q==
-X-Received: by 2002:a05:6402:1c87:: with SMTP id cy7mr892737edb.311.1631723482246;
-        Wed, 15 Sep 2021 09:31:22 -0700 (PDT)
-Received: from kista.localnet (cpe-86-58-29-253.static.triera.net. [86.58.29.253])
-        by smtp.gmail.com with ESMTPSA id kt19sm207194ejb.26.2021.09.15.09.31.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Sep 2021 09:31:21 -0700 (PDT)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To:     Dang Huynh <danct12@disroot.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH] arm64: dts: allwinner: pinetab: Add HDMI support
-Date:   Wed, 15 Sep 2021 18:31:20 +0200
-Message-ID: <2776109.MaXvng3DlT@kista>
-In-Reply-To: <4816863.IXWdtHWlKd@melttower>
-References: <20210914193732.3047668-1-danct12@disroot.org> <2558517.IGp7HM5rsX@kista> <4816863.IXWdtHWlKd@melttower>
+        Wed, 15 Sep 2021 12:34:09 -0400
+Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4H8m0q01TBz67jmn;
+        Thu, 16 Sep 2021 00:30:35 +0800 (CST)
+Received: from roberto-ThinkStation-P620.huawei.com (10.204.63.22) by
+ fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Wed, 15 Sep 2021 18:32:46 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     <zohar@linux.ibm.com>, <gregkh@linuxfoundation.org>,
+        <mchehab+huawei@kernel.org>
+CC:     <linux-integrity@vger.kernel.org>,
+        <linux-security-module@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Subject: [RFC][PATCH 0/9] integrity: Introduce DIGLIM advanced features
+Date:   Wed, 15 Sep 2021 18:31:36 +0200
+Message-ID: <20210915163145.1046505-1-roberto.sassu@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.204.63.22]
+X-ClientProxiedBy: lhreml753-chm.china.huawei.com (10.201.108.203) To
+ fraeml714-chm.china.huawei.com (10.206.15.33)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne sreda, 15. september 2021 ob 07:47:31 CEST je Dang Huynh napisal(a):
-> On Wednesday, September 15, 2021 3:26:51 AM +07 Jernej =C5=A0krabec wrote:
-> > > +&simplefb_hdmi {
-> > > +	vcc-hdmi-supply =3D <&reg_dldo1>;
-> >=20
-> > You have to set status to okay here.
+Introduction
+============
 
-Sorry, this is actually the job of bootloader, so it's all good.
+This patch set depends on:
+- support for the euid policy keyword for critical data
+  (https://lore.kernel.org/linux-integrity/20210705115650.3373599-1-roberto.sassu@huawei.com/)
+- basic DIGLIM
+  (https://lore.kernel.org/linux-integrity/20210914163401.864635-1-roberto.sassu@huawei.com/)
 
-> >=20
-> > With that fixed, you can add:
+Introduce the remaining features necessary to upload to the kernel
+reference values from RPM headers or digest lists in other formats.
 
-No fixing needed for R-b tag.
+Loader: it will automatically uploads digest lists from a directory
+        specified in the kernel configuration and will execute a user space
+        uploader to upload digest lists in a format that is not recognized
+        by the kernel;
 
-> > Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
-> >=20
-> > Best regards,
-> > Jernej
-> >=20
->=20
-> Is it really needed? The DE2 HDMI driver can be loaded and make this pret=
-ty=20
-> much obsolete.
+LSM: it identifies digest list parsers and monitor their activity for
+     integrity evaluation; it protects digest list parsers from other user
+     space processes considered as untrusted;
 
-DE2 and HDMI driver could read current settings from that node and implemen=
-t=20
-flicker free transition. However, that's not supported yet. Another use cas=
-e is=20
-to optimize kernel size to minimum for storing it in SPI flash by removing =
-DRM=20
-driver if simplefb is good enough.
+Digest list generators: user space tools to generate digest lists from
+                        files (in the compact format) or from the RPM DB;
 
-Anyway, patch looks good. Thanks!
+Digest list uploader and parsers: user space tools responsible to upload to
+                                  the kernel digest lists not in the
+                                  compact format (e.g. those derived from
+                                  the RPM DB);
 
-Best regards,
-Jernej
+Administration guide: it describes the steps necessary to upload to the
+                      kernel all the digests of an RPM-based Linux
+                      distribution, using a custom kernel with the DIGLIM
+                      patches applied.
 
+With these changes, DIGLIM is ready to be used by IMA for measurement and
+appraisal (this functionality will be added with a future patch set).
+
+DIGLIM already supports appended signatures, but at the moment they cannot
+be interpreted by IMA (unsupported ID PKEY_ID_PGP). Another patch set is
+necessary to load the PGP keys from the Linux distribution to the system
+keyring and to verify the PGP signatures of the RPM headers.
+
+With the patch sets above and the execution policies for IMA proposed some
+time ago, it will be possible to generate a measurement list with digest
+lists and unknown files, and enable IMA appraisal in enforcing mode.
+The kernel command line would be:
+
+ima_template=ima-modsig ima_policy="exec_tcb|tmpfs|digest_lists|appraise_exec_tcb|appraise_tmpfs|appraise_digest_lists"
+
+The effort required for Linux distribution vendors will be to generate and
+sign the digest lists for the digest list uploader and the RPM parser. This
+could be done for example in the kernel-tools package (or in a separate
+package). Existing package signatures are sufficient for remaining files.
+
+
+Issues/Questions
+================
+
+Lockdep (patch 2/9)
+-------------------
+
+I'm using iterate_dir() and file_open_root() to iterate and open files
+in a directory. Unfortunately, I get the following warning:
+
+============================================
+WARNING: possible recursive locking detected
+5.15.0-rc1-dont-use-00049-ga5a881519991 #134 Not tainted
+--------------------------------------------
+swapper/1 is trying to acquire lock:
+0000000066812898 (&sb->s_type->i_mutex_key#7){++++}-{4:4}, at: path_openat+0x75d/0xd20
+
+but task is already holding lock:
+0000000066812898 (&sb->s_type->i_mutex_key#7){++++}-{4:4}, at: iterate_dir+0x65/0x250
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&sb->s_type->i_mutex_key#7);
+  lock(&sb->s_type->i_mutex_key#7);
+
+ *** DEADLOCK ***
+
+
+due to the fact that path_openat() might be trying to lock the directory
+already locked by iterate_dir(). What it would be a good way to avoid it?
+
+
+Inode availability in security_file_free() (patch 3/9)
+------------------------------------------------------
+
+It seems that this hook is called when the last reference to a file is
+released. After enabling debugging, sometimes the kernel reported that the
+inode I was trying to access was already freed.
+
+To avoid this situation, I'm grabbing an additional reference of the inode
+in the security_file_open() hook, to ensure that the inode does not
+disappear, and I'm releasing it in the security_file_free() hook. Is this
+solution acceptable?
+
+Roberto Sassu (9):
+  ima: Introduce new hook DIGEST_LIST_CHECK
+  diglim: Loader
+  diglim: LSM
+  diglim: Tests - LSM
+  diglim: Compact digest list generator
+  diglim: RPM digest list generator
+  diglim: Digest list uploader
+  diglim: RPM parser
+  diglim: Admin guide
+
+ Documentation/admin-guide/diglim.rst          | 136 +++++
+ Documentation/admin-guide/index.rst           |   1 +
+ .../security/diglim/implementation.rst        |  16 +
+ Documentation/security/diglim/index.rst       |   1 +
+ Documentation/security/diglim/lsm.rst         |  65 +++
+ Documentation/security/diglim/tests.rst       |  18 +-
+ MAINTAINERS                                   |  10 +
+ security/integrity/diglim/Kconfig             |  14 +
+ security/integrity/diglim/Makefile            |   2 +-
+ security/integrity/diglim/diglim.h            |  27 +
+ security/integrity/diglim/fs.c                |   3 +
+ security/integrity/diglim/hooks.c             | 436 ++++++++++++++++
+ security/integrity/diglim/loader.c            |  92 ++++
+ security/integrity/iint.c                     |   1 +
+ security/integrity/ima/ima.h                  |   1 +
+ security/integrity/ima/ima_main.c             |   3 +-
+ security/integrity/ima/ima_policy.c           |   3 +
+ security/integrity/integrity.h                |   8 +
+ tools/diglim/Makefile                         |  27 +
+ tools/diglim/common.c                         |  79 +++
+ tools/diglim/common.h                         |  59 +++
+ tools/diglim/compact_gen.c                    | 349 +++++++++++++
+ tools/diglim/rpm_gen.c                        | 334 ++++++++++++
+ tools/diglim/rpm_parser.c                     | 483 ++++++++++++++++++
+ tools/diglim/upload_digest_lists.c            | 238 +++++++++
+ tools/testing/selftests/diglim/Makefile       |  12 +-
+ tools/testing/selftests/diglim/common.h       |   9 +
+ tools/testing/selftests/diglim/selftest.c     | 357 ++++++++++++-
+ 28 files changed, 2764 insertions(+), 20 deletions(-)
+ create mode 100644 Documentation/admin-guide/diglim.rst
+ create mode 100644 Documentation/security/diglim/lsm.rst
+ create mode 100644 security/integrity/diglim/hooks.c
+ create mode 100644 security/integrity/diglim/loader.c
+ create mode 100644 tools/diglim/Makefile
+ create mode 100644 tools/diglim/common.c
+ create mode 100644 tools/diglim/common.h
+ create mode 100644 tools/diglim/compact_gen.c
+ create mode 100644 tools/diglim/rpm_gen.c
+ create mode 100644 tools/diglim/rpm_parser.c
+ create mode 100644 tools/diglim/upload_digest_lists.c
+
+-- 
+2.25.1
 
