@@ -2,60 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F37E40CE60
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 22:44:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 518EA40CE6A
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 22:49:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232236AbhIOUpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 16:45:21 -0400
-Received: from www62.your-server.de ([213.133.104.62]:35432 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231703AbhIOUpT (ORCPT
+        id S231940AbhIOUuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 16:50:37 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:49648 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231490AbhIOUug (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 16:45:19 -0400
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mQbl6-0006Ju-Lr; Wed, 15 Sep 2021 22:43:56 +0200
-Received: from [85.5.47.65] (helo=linux.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mQbl6-000AG8-FC; Wed, 15 Sep 2021 22:43:56 +0200
-Subject: Re: [PATCH bpf-next v2] bpf: update bpf_get_smp_processor_id()
- documentation
-To:     Yonghong Song <yhs@fb.com>,
-        Matteo Croce <mcroce@linux.microsoft.com>, bpf@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-References: <20210914235400.59427-1-mcroce@linux.microsoft.com>
- <94b5dd50-ac04-de03-996b-899f7c19a6da@fb.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <a14362ef-eceb-b5ea-0b1c-3be37d2d9a3d@iogearbox.net>
-Date:   Wed, 15 Sep 2021 22:43:56 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Wed, 15 Sep 2021 16:50:36 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 18FKmtSi032013
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Sep 2021 16:48:56 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 17EBB15C3427; Wed, 15 Sep 2021 16:48:55 -0400 (EDT)
+Date:   Wed, 15 Sep 2021 16:48:55 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     James Bottomley <James.Bottomley@hansenpartnership.com>
+Cc:     Chris Mason <clm@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Howells <dhowells@redhat.com>,
+        "ksummit@lists.linux.dev" <ksummit@lists.linux.dev>
+Subject: Re: [MAINTAINER SUMMIT] Folios as a potential Kernel/Maintainers
+ Summit topic?
+Message-ID: <YUJcN/dqa8f4R9w0@mit.edu>
+References: <YUIwgGzBqX6ZiGgk@mit.edu>
+ <f7b70227bac9a684320068b362d28fcade6b65b9.camel@HansenPartnership.com>
+ <YUI5bk/94yHPZIqJ@mit.edu>
+ <17242A0C-3613-41BB-84E4-2617A182216E@fb.com>
+ <f066615c0e2c6fe990fa5c19dd1c17d649bcb03a.camel@HansenPartnership.com>
 MIME-Version: 1.0
-In-Reply-To: <94b5dd50-ac04-de03-996b-899f7c19a6da@fb.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26295/Wed Sep 15 10:22:57 2021)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f066615c0e2c6fe990fa5c19dd1c17d649bcb03a.camel@HansenPartnership.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/15/21 2:07 AM, Yonghong Song wrote:
-> On 9/14/21 4:54 PM, Matteo Croce wrote:
->> From: Matteo Croce <mcroce@microsoft.com>
->>
->> BPF programs run with migration disabled regardless of preemption, as
->> they are protected by migrate_disable().
->> Update the documentation accordingly.
->>
->> Signed-off-by: Matteo Croce <mcroce@microsoft.com>
+On Wed, Sep 15, 2021 at 03:15:13PM -0400, James Bottomley wrote:
 > 
-> Acked-by: Yonghong Song <yhs@fb.com>
+> My reading of the email threads is that they're iterating to an actual
+> conclusion (I admit, I'm surprised) ... or at least the disagreements
+> are getting less.  Since the merge window closed this is now a 5.16
+> thing, so there's no huge urgency to getting it resolved next week.
 
-Applied, thanks & also copied this over to the tools/include/uapi/linux/bpf.h .
+My read was that it was more that people were just getting exhausted,
+and not necessarily that folks were converging.  (Also, Willy is
+currently on vacation.)
+
+I'm happy to be wrong, bu the patches haven't changed since the merge
+window opened, and it's not clear what *needs* to change before it can
+be accepted at the next merge window.
+
+> Well, the current one seems to be working (admittedly eventually, so
+> achieving faster resolution next time might be good) ... but I'm sure
+> you could propose alternatives ... especially in the time to resolution
+> department.
+
+Given how long it took for DAX to converge (years and years and years
+and *multiple* LSF/MM's), I'm not as optimistic that Folios is
+converge and is about to be merged at the next merge window.  But
+again, I'm happy to be proven wrong.
+
+						- Ted
