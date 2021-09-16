@@ -2,76 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23DAD40D87A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 13:24:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3730740D87B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 13:24:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237538AbhIPLZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 07:25:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35882 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235650AbhIPLZ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 07:25:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CB22C61209;
-        Thu, 16 Sep 2021 11:24:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631791448;
-        bh=NMgNoIq6hJP/OBlSS3MAr+6o3KajWt99OdGKIwdT+34=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=flZVHBUkb84eZY2YTJwMjBb1P0hQ7pdNuafibxNm8iWR5LZqHMIihA4bYLoeMia/s
-         SUIFvZevPTxYNOO7hVq1J+RgTp6xjcvcHqI6XOfQbIxqb80HNOfA9C6nmOG/l3FEKu
-         zJ3w7w2FSiFOQwSKjhkf7yOyqmzYD23IzCh20lWlxwaUh9Nqt8YLZeh+tJNmSF4ZU2
-         odPdga05b/CzQBY4H3hX8jBUphFCN7xnB1lUojutI9aUlcJ8mYPj6W1pxYZ7b+fLZs
-         l5l7AO3WC3NuJfLH2bM929NrCBqx9Yjc8js5H/KkVPl/wdVxJlqevpaF6k/TCsRzob
-         wdJpFjx9T8tMg==
-Date:   Thu, 16 Sep 2021 12:23:27 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 24/24] MAINTAINERS: update silergy,sy8106a.yaml reference
-Message-ID: <20210916112327.GC5048@sirena.org.uk>
-References: <cover.1631783482.git.mchehab+huawei@kernel.org>
- <eed037d15b9b919d6401898cd5cdeea0542a41d5.1631783482.git.mchehab+huawei@kernel.org>
+        id S237766AbhIPLZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 07:25:58 -0400
+Received: from smtprelay0119.hostedemail.com ([216.40.44.119]:40006 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S237745AbhIPLZy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 07:25:54 -0400
+Received: from omf15.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 51539182CF666;
+        Thu, 16 Sep 2021 11:24:31 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf15.hostedemail.com (Postfix) with ESMTPA id 1650DC4190;
+        Thu, 16 Sep 2021 11:24:28 +0000 (UTC)
+Message-ID: <4197af5dfc99650e01bd4aacb776c5be9b795814.camel@perches.com>
+Subject: Re: [PATCH 3/7] staging: vchiq_arm: clarify multiplication
+ expressions
+From:   Joe Perches <joe@perches.com>
+To:     Gaston Gonzalez <gascoar@gmail.com>, linux-staging@lists.linux.dev
+Cc:     gregkh@linuxfoundation.org, nsaenz@kernel.org,
+        stefan.wahren@i2se.com, arnd@arndb.de, dan.carpenter@oracle.com,
+        ojaswin98@gmail.com, amarjargal16@gmail.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org
+Date:   Thu, 16 Sep 2021 04:24:27 -0700
+In-Reply-To: <20210915201824.413202-3-gascoar@gmail.com>
+References: <20210915201824.413202-1-gascoar@gmail.com>
+         <20210915201824.413202-3-gascoar@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="vOmOzSkFvhd7u8Ms"
-Content-Disposition: inline
-In-Reply-To: <eed037d15b9b919d6401898cd5cdeea0542a41d5.1631783482.git.mchehab+huawei@kernel.org>
-X-Cookie: We've upped our standards, so up yours!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-0.11
+X-Stat-Signature: 544ueume7b44rqkoammscrdxq1p9crw3
+X-Rspamd-Server: rspamout02
+X-Rspamd-Queue-Id: 1650DC4190
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/jXw/7d8P9VGTIZTO9ZcXYXwOL860FHv4=
+X-HE-Tag: 1631791468-112681
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 2021-09-15 at 17:18 -0300, Gaston Gonzalez wrote:
+> Add spaces around '*' in multiplication expressions to enhance
+> readability.
+[]
+> diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
+[]
+> @@ -466,8 +466,8 @@ int vchiq_platform_init(struct platform_device *pdev, struct vchiq_state *state)
+>  
+>  	g_free_fragments = g_fragments_base;
+>  	for (i = 0; i < (MAX_FRAGMENTS - 1); i++) {
+> -		*(char **)&g_fragments_base[i*g_fragments_size] =
+> -			&g_fragments_base[(i + 1)*g_fragments_size];
+> +		*(char **)&g_fragments_base[i * g_fragments_size] =
+> +			&g_fragments_base[(i + 1) * g_fragments_size];
+>  	}
+>  	*(char **)&g_fragments_base[i * g_fragments_size] = NULL;
 
---vOmOzSkFvhd7u8Ms
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+unrelated:
 
-On Thu, Sep 16, 2021 at 11:14:17AM +0200, Mauro Carvalho Chehab wrote:
-> Changeset b1c36aae51c9 ("regulator: Convert SY8106A binding to a schema")
-> renamed: Documentation/devicetree/bindings/regulator/sy8106a-regulator.txt
-> to: Documentation/devicetree/bindings/regulator/silergy,sy8106a.yaml.
+These '*(char **)&' uses are odd and thankfully rare constructs.
 
-What's the story with dependencies here?  You've just sent a single
-patch with no cover letter or anything.  I can't see any reason why
-there would be any?
 
---vOmOzSkFvhd7u8Ms
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFDKS4ACgkQJNaLcl1U
-h9DwbAf/QW/5nmCsGZ25qSz42lrNLKtYY+VAdQupk1EdCJB62CnwWTWWQ7XhhRln
-T/Ldj7ebSiXJje0QEos53RrumNu1rQyIV72OmeBKHUe81Lb3xizOLmZD1uFMkJzO
-8FeO6f/9aCLCDRvcWA9ijY1O4Ew9NejZVA+C54xWFxwH1gulYHds1U7Nzd0eQ/i1
-XKbDDregcvJw+Q3Kd+8cOIsQpSSKBpUW/4f0CT53tVZJXgx+u6JCeiKQHBa32FfD
-e6AgvOId7q9oJYFCdhST00wPxM4jnr1SjeeWPI5b1ziILMb1dBlgwzAPsF9sQZ0M
-KqXQKdaWLuBphA++ZGGB9e8LotPmOQ==
-=2KFO
------END PGP SIGNATURE-----
-
---vOmOzSkFvhd7u8Ms--
