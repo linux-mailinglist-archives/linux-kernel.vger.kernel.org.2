@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D6CF40E8CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:01:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B608F40E718
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:32:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355429AbhIPRl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:41:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50296 "EHLO mail.kernel.org"
+        id S1347619AbhIPR2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:28:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353611AbhIPRea (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:34:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B874F63228;
-        Thu, 16 Sep 2021 16:48:38 +0000 (UTC)
+        id S243854AbhIPQ4o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:56:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8AECC611F2;
+        Thu, 16 Sep 2021 16:31:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810919;
-        bh=8c/eQqw1Q4DZpbkkKK58w3TPYSvDluXMkTalTg9CsI4=;
+        s=korg; t=1631809862;
+        bh=YK12GWAxZTbr0JzIwxzmGeiwWHiDJ0ouZj/3THpaviI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cCQ0zwvrTZLwsY1wp6bEEuu+2p/WsX40Pk07dltCC+74gz3dY2OKcASlH3fUYy1er
-         SGQ2OIVTI4ZHfs9MSzFAACnelliyoAIXdoftJcLtjx4wCZfoUImWXUP4bY218TUVY2
-         MzuZpho1xNXOGXdUoXabjRMi3uXbf8qMD1Rb5AAs=
+        b=u8E1SIEhJuyq9JNefUR6K58fkghcmySWPvp3QTs89UcGVEv3SEfj6W4rTt1x+AEzS
+         Ow+Z2gTcbHtpEP5PewFU+Rd/K4yWAyGWZTGLgJMD0nCXWu41pL/RFxoF9fQwNnBeYB
+         Ip0sIuPXdsQepun3E85zPaB8842WxOebYtlZvVFo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        stable@vger.kernel.org, Thomas Hebb <tommyhebb@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 317/432] selftests/bpf: Fix flaky send_signal test
+Subject: [PATCH 5.13 309/380] mmc: rtsx_pci: Fix long reads when clock is prescaled
 Date:   Thu, 16 Sep 2021 18:01:06 +0200
-Message-Id: <20210916155821.569903973@linuxfoundation.org>
+Message-Id: <20210916155814.580976320@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,83 +40,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yonghong Song <yhs@fb.com>
+From: Thomas Hebb <tommyhebb@gmail.com>
 
-[ Upstream commit b16ac5bf732a5e23d164cf908ec7742d6a6120d3 ]
+[ Upstream commit 3ac5e45291f3f0d699a721357380d4593bc2dcb3 ]
 
-libbpf CI has reported send_signal test is flaky although
-I am not able to reproduce it in my local environment.
-But I am able to reproduce with on-demand libbpf CI ([1]).
+For unexplained reasons, the prescaler register for this device needs to
+be cleared (set to 1) while performing a data read or else the command
+will hang. This does not appear to affect the real clock rate sent out
+on the bus, so I assume it's purely to work around a hardware bug.
 
-Through code analysis, the following is possible reason.
-The failed subtest runs bpf program in softirq environment.
-Since bpf_send_signal() only sends to a fork of "test_progs"
-process. If the underlying current task is
-not "test_progs", bpf_send_signal() will not be triggered
-and the subtest will fail.
+During normal operation, the prescaler is already set to 1, so nothing
+needs to be done. However, in "initial mode" (which is used for sub-MHz
+clock speeds, like the core sets while enumerating cards), it's set to
+128 and so we need to reset it during data reads. We currently fail to
+do this for long reads.
 
-To reduce the chances where the underlying process is not
-the intended one, this patch boosted scheduling priority to
--20 (highest allowed by setpriority() call). And I did
-10 runs with on-demand libbpf CI with this patch and I
-didn't observe any failures.
+This has no functional affect on the driver's operation currently
+written, as the MMC core always sets a clock above 1MHz before
+attempting any long reads. However, the core could conceivably set any
+clock speed at any time and the driver should still work, so I think
+this fix is worthwhile.
 
- [1] https://github.com/libbpf/libbpf/actions/workflows/ondemand.yml
+I personally encountered this issue while performing data recovery on an
+external chip. My connections had poor signal integrity, so I modified
+the core code to reduce the clock speed. Without this change, I saw the
+card enumerate but was unable to actually read any data.
 
-Signed-off-by: Yonghong Song <yhs@fb.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/bpf/20210817190923.3186725-1-yhs@fb.com
+Writes don't seem to work in the situation described above even with
+this change (and even if the workaround is extended to encompass data
+write commands). I was not able to find a way to get them working.
+
+Signed-off-by: Thomas Hebb <tommyhebb@gmail.com>
+Link: https://lore.kernel.org/r/2fef280d8409ab0100c26c6ac7050227defd098d.1627818365.git.tommyhebb@gmail.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../selftests/bpf/prog_tests/send_signal.c       | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ drivers/mmc/host/rtsx_pci_sdmmc.c | 36 ++++++++++++++++++++-----------
+ 1 file changed, 23 insertions(+), 13 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/send_signal.c b/tools/testing/selftests/bpf/prog_tests/send_signal.c
-index 023cc532992d..839f7ddaec16 100644
---- a/tools/testing/selftests/bpf/prog_tests/send_signal.c
-+++ b/tools/testing/selftests/bpf/prog_tests/send_signal.c
-@@ -1,5 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <test_progs.h>
-+#include <sys/time.h>
-+#include <sys/resource.h>
- #include "test_send_signal_kern.skel.h"
+diff --git a/drivers/mmc/host/rtsx_pci_sdmmc.c b/drivers/mmc/host/rtsx_pci_sdmmc.c
+index 4ca937415734..58cfaffa3c2d 100644
+--- a/drivers/mmc/host/rtsx_pci_sdmmc.c
++++ b/drivers/mmc/host/rtsx_pci_sdmmc.c
+@@ -542,9 +542,22 @@ static int sd_write_long_data(struct realtek_pci_sdmmc *host,
+ 	return 0;
+ }
  
- int sigusr1_received = 0;
-@@ -41,12 +43,23 @@ static void test_send_signal_common(struct perf_event_attr *attr,
++static inline void sd_enable_initial_mode(struct realtek_pci_sdmmc *host)
++{
++	rtsx_pci_write_register(host->pcr, SD_CFG1,
++			SD_CLK_DIVIDE_MASK, SD_CLK_DIVIDE_128);
++}
++
++static inline void sd_disable_initial_mode(struct realtek_pci_sdmmc *host)
++{
++	rtsx_pci_write_register(host->pcr, SD_CFG1,
++			SD_CLK_DIVIDE_MASK, SD_CLK_DIVIDE_0);
++}
++
+ static int sd_rw_multi(struct realtek_pci_sdmmc *host, struct mmc_request *mrq)
+ {
+ 	struct mmc_data *data = mrq->data;
++	int err;
+ 
+ 	if (host->sg_count < 0) {
+ 		data->error = host->sg_count;
+@@ -553,22 +566,19 @@ static int sd_rw_multi(struct realtek_pci_sdmmc *host, struct mmc_request *mrq)
+ 		return data->error;
  	}
  
- 	if (pid == 0) {
-+		int old_prio;
+-	if (data->flags & MMC_DATA_READ)
+-		return sd_read_long_data(host, mrq);
++	if (data->flags & MMC_DATA_READ) {
++		if (host->initial_mode)
++			sd_disable_initial_mode(host);
+ 
+-	return sd_write_long_data(host, mrq);
+-}
++		err = sd_read_long_data(host, mrq);
+ 
+-static inline void sd_enable_initial_mode(struct realtek_pci_sdmmc *host)
+-{
+-	rtsx_pci_write_register(host->pcr, SD_CFG1,
+-			SD_CLK_DIVIDE_MASK, SD_CLK_DIVIDE_128);
+-}
++		if (host->initial_mode)
++			sd_enable_initial_mode(host);
+ 
+-static inline void sd_disable_initial_mode(struct realtek_pci_sdmmc *host)
+-{
+-	rtsx_pci_write_register(host->pcr, SD_CFG1,
+-			SD_CLK_DIVIDE_MASK, SD_CLK_DIVIDE_0);
++		return err;
++	}
 +
- 		/* install signal handler and notify parent */
- 		signal(SIGUSR1, sigusr1_handler);
++	return sd_write_long_data(host, mrq);
+ }
  
- 		close(pipe_c2p[0]); /* close read */
- 		close(pipe_p2c[1]); /* close write */
- 
-+		/* boost with a high priority so we got a higher chance
-+		 * that if an interrupt happens, the underlying task
-+		 * is this process.
-+		 */
-+		errno = 0;
-+		old_prio = getpriority(PRIO_PROCESS, 0);
-+		ASSERT_OK(errno, "getpriority");
-+		ASSERT_OK(setpriority(PRIO_PROCESS, 0, -20), "setpriority");
-+
- 		/* notify parent signal handler is installed */
- 		CHECK(write(pipe_c2p[1], buf, 1) != 1, "pipe_write", "err %d\n", -errno);
- 
-@@ -62,6 +75,9 @@ static void test_send_signal_common(struct perf_event_attr *attr,
- 		/* wait for parent notification and exit */
- 		CHECK(read(pipe_p2c[0], buf, 1) != 1, "pipe_read", "err %d\n", -errno);
- 
-+		/* restore the old priority */
-+		ASSERT_OK(setpriority(PRIO_PROCESS, 0, old_prio), "setpriority");
-+
- 		close(pipe_c2p[1]);
- 		close(pipe_p2c[0]);
- 		exit(0);
+ static void sd_normal_rw(struct realtek_pci_sdmmc *host,
 -- 
 2.30.2
 
