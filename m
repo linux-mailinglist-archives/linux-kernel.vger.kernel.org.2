@@ -2,141 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11CAC40E9C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:20:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80ECC40E9E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:30:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349130AbhIPSVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 14:21:10 -0400
-Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:58463
-        "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S238824AbhIPST6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 14:19:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=PCF+Xo2nLU
-        E+xPInggtNzHSH34QrjJaEbkWXuAtuuhQ=; b=k11ouRv/SSiEQQdpYuIAWQ9hX2
-        w7wcjvaG1K3c+ounlIESJ9VCGfte2VD9rOSp4MDzenNsdgaMJOoUb+OXy5oJJXfh
-        5rJiHteNYSQCGMEgr+7RZinu53ImvkJPXxQ+A0fY0lhwYsdjkHL3V8DUNyp0Pr+s
-        R2oEhC9qzPVPAhC5E=
-Received: from localhost.localdomain (unknown [223.104.212.225])
-        by app2 (Coremail) with SMTP id XQUFCgCnrqJhikNhpMiKAA--.4926S4;
-        Fri, 17 Sep 2021 02:18:27 +0800 (CST)
-From:   Xin Xiong <xiongx18@fudan.edu.cn>
-To:     Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     yuanxzhang@fudan.edu.cn, Xin Xiong <xiongx18@fudan.edu.cn>,
-        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>
-Subject: [PATCH] drivers/mmc: fix reference count leaks in moxart_probe
-Date:   Fri, 17 Sep 2021 02:18:08 +0800
-Message-Id: <20210916181808.2399-1-xiongx18@fudan.edu.cn>
-X-Mailer: git-send-email 2.25.1
+        id S1343757AbhIPSbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 14:31:23 -0400
+Received: from mail-co1nam11on2065.outbound.protection.outlook.com ([40.107.220.65]:64225
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S245412AbhIPSbH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 14:31:07 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VUbaVO5RfyX88f/7sEFF7CnxU/YAOGqQuAwdRUUG9nzieEjThOWOeb1XZ/EsLkyO5JWFOstpXfUxnZ3S/Gty+ilPr7cfvHVABtT69VWaE2GPyWn3bCAbqcL9QZvttjRYLaISLKc5L66m1WnO1P+5VTpv1uULf0etfHTmKHabYKpAXX0dbH9RT8gURoR4aW4/V2BpzyJaL+rjns35JyBNVrIKBVaU1JxckzZmXiisw2eg3rzy+PMjDqab8y/JF3KBZjGiktRyLn1pFVkJUXQ5U8tjBb0JCoVGQ/yAmKeSJns74VRpPkgLiofi4sNQHatkPRFa85FJ3G2xA8lbKr92+g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=QDyDV7jWAEb4taF1dRSbXiMJAeWJGyX96WXp+4fYUdc=;
+ b=BN4Irf/753DLCFe8NRu7hCcCR7pKdtT3uQKXS9jQKBvG4/QSaVOD9SXOJmIukjjr58kZNaZvD11Ti2XtzwlR5azRbvQA7hDw5EYMnqMB3jbEh8NvZ17rGPIzBp4og/mR/zfZAs3PpcOEeD5kFDnjiW435xAfUWrja8S8kVsCXayMEiSAOWdptHxIhrQUS7zRg+Je/eXpoCFQcutildRSQBOUTf5Cj48uMAUosZRxc3B/luj89QqwwV+rxCff0dJVT2vIblhqolVcR6vNg5dUXCIaN7ggvjR5LFFi14hHsG9ncZ25ulVo/Vo7HmXIO5pmM1b7copjOkoA8O2YN4/QDA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=lists.infradead.org
+ smtp.mailfrom=nvidia.com; dmarc=pass (p=quarantine sp=none pct=100)
+ action=none header.from=nvidia.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QDyDV7jWAEb4taF1dRSbXiMJAeWJGyX96WXp+4fYUdc=;
+ b=igNTpOm0dwhWght1NOBD8s/XCvUVKIM19oVUeHzxgwx1HA+9Hi31lOLGRFXosNInjSTmc2EXyKjUofN3JYlezvUyIKfBByVibKe1K2Rb2hgIC8fCEZ+HV7M7Mc2mPRNCm8fU0cFgc8mlnp/i1nqUz2iWAYvCCA3V3JApuK8b1c5T4tmOmTrJYXMYGYUWkT8wtOCStUMPBziSCtwA1QTwcvRrmHVuprkprbzNlKXtmfHMw/ioYymDuCjJfJCEvNqkHnUR3NJoCjVKAqK9GSjdF/y3ZwVFBcqrn3FLR2lTVA15q0nVbdAVMPoXTS/F1OQjvrmwZfkk48OA6H/NqN15xA==
+Received: from BN6PR1701CA0022.namprd17.prod.outlook.com
+ (2603:10b6:405:15::32) by BYAPR12MB4694.namprd12.prod.outlook.com
+ (2603:10b6:a03:a5::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Thu, 16 Sep
+ 2021 18:29:45 +0000
+Received: from BN8NAM11FT003.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:405:15:cafe::dc) by BN6PR1701CA0022.outlook.office365.com
+ (2603:10b6:405:15::32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend
+ Transport; Thu, 16 Sep 2021 18:29:45 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; lists.infradead.org; dkim=none (message not signed)
+ header.d=none;lists.infradead.org; dmarc=pass action=none
+ header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ BN8NAM11FT003.mail.protection.outlook.com (10.13.177.90) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4523.14 via Frontend Transport; Thu, 16 Sep 2021 18:29:44 +0000
+Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 16 Sep
+ 2021 18:29:42 +0000
+Received: from Asurada-Nvidia (172.20.187.6) by mail.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1497.18 via Frontend
+ Transport; Thu, 16 Sep 2021 18:29:42 +0000
+Date:   Thu, 16 Sep 2021 11:21:56 -0700
+From:   Nicolin Chen <nicolinc@nvidia.com>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+CC:     Jason Gunthorpe <jgg@nvidia.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "cohuck@redhat.com" <cohuck@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>
+Subject: Re: [RFC][PATCH v2 00/13] iommu/arm-smmu-v3: Add NVIDIA
+ implementation
+Message-ID: <20210916182155.GA29656@Asurada-Nvidia>
+References: <20210831025923.15812-1-nicolinc@nvidia.com>
+ <20210831101549.237151fa.alex.williamson@redhat.com>
+ <BN9PR11MB5433E064405A1AFEC50C1C9F8CCD9@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <20210902144524.GU1721383@nvidia.com>
+ <BN9PR11MB54337332A83176241C984EC58CCE9@BN9PR11MB5433.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: XQUFCgCnrqJhikNhpMiKAA--.4926S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxZF1fXw1kWr4DAw4Utw1xGrg_yoW5Ww4xpF
-        4rCF9xKryDtrsxAay7Cw4DXF15Zr1Fkw4a9r4ku3s7u345Jrs7Cwn7G3ZYqry8JFyxXFWF
-        gF1YqF15WFy5XaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvv14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IE
-        rcIFxwCY02Avz4vE14v_XwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8Jw
-        C20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAF
-        wI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjx
-        v20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2
-        z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73Uj
-        IFyTuYvjfU0BT5DUUUU
-X-CM-SenderInfo: arytiiqsuqiimz6i3vldqovvfxof0/1tbiAg4GEFKp2a8jBwAAsz
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <BN9PR11MB54337332A83176241C984EC58CCE9@BN9PR11MB5433.namprd11.prod.outlook.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 58d49d23-25c3-43d5-21e5-08d9793ff4d7
+X-MS-TrafficTypeDiagnostic: BYAPR12MB4694:
+X-Microsoft-Antispam-PRVS: <BYAPR12MB4694071662EC2C4EF2EBAFBAABDC9@BYAPR12MB4694.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: /W+GJbluUwgxjml3MEQoeki7zPIuneZBYfJBnhLbWam3O5gRZJN+OBq4BqB2bUtHV7XWptOz6CqFycFvX5ht+5V5yF33mmcF+YWrdfzN3sab34pwUo1NLgr7vaueG09zTR33Ej67NoUkDttM05ZlOo5kKl/CcUGPyIIWCFD38rbNUAJKs91BgzpfZNpQBCDbgVBMwW7bZHwtpgF6l/eW4zau34ueDRi4CBfJYrGA9nSDAupfhv/pD07GfnAnv6Zc7NKsIEfE0GfT+YWjZIEsUI73XvqUB+yG8rPXfJm12YAHceDJW0CYXeBxyo4FZ9VK8CI6MIK/w7T9VtpbdJ80lOK65fJdxH8sHh27H8TE3GjFAPh98JxrQ8gc07kCtF1UyxuwBie+2w1zVS1fwCoInnQAlfhfot4ap0dOvRF9Zs971HvrXep3rKP8Hv2vfYI5c3uhlAEOqcQBRpNgD4RAIDs+7Dd7OELjdSYUaiVa671fh0ZXCujI29ZC1orr/LeIphlyizwpm6DKwJ8eGRzteEW4YfCexRDhecyZlyZ6jSBYIybcQCv0K19EypKTa4CCHHRxtNXueWc30Li9AyPrBSpRVYbqA0GqeqVApMJu4ejsS2409rEhVljj17WnNilrKuEoOfu1jd54yEPTgGdqssEWqoNFuVEcBuK37n0uehMpC4GwVP/At/KWykilNZayD2D5YXM2qyegYfQi12S4Rg==
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(8936002)(508600001)(54906003)(6666004)(7416002)(33716001)(316002)(356005)(5660300002)(336012)(8676002)(26005)(186003)(83380400001)(4326008)(82310400003)(36860700001)(86362001)(47076005)(55016002)(33656002)(426003)(9686003)(1076003)(7636003)(70206006)(70586007)(2906002)(6916009);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2021 18:29:44.5536
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 58d49d23-25c3-43d5-21e5-08d9793ff4d7
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT003.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB4694
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The issue happens in several error handling paths on two refcounted
-object related to the object "host" (dma_chan_rx, dma_chan_tx). In
-these paths, the function forgets to decrement the reference count of
-one or both objects' reference count increased earlier by
-dma_request_chan(), causing reference count leaks.
+Hi Kevin,
 
-Fix it by decreasing reference counts of both objects in each path
-separately.
+On Thu, Sep 02, 2021 at 10:27:06PM +0000, Tian, Kevin wrote:
 
-Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
----
- drivers/mmc/host/moxart-mmc.c | 38 ++++++++++++++++++++++++++---------
- 1 file changed, 28 insertions(+), 10 deletions(-)
+> > Indeed, this looks like a flavour of the accelerated invalidation
+> > stuff we've talked about already.
+> >
+> > I would see it probably exposed as some HW specific IOCTL on the iommu
+> > fd to get access to the accelerated invalidation for IOASID's in the
+> > FD.
+> >
+> > Indeed, this seems like a further example of why /dev/iommu is looking
+> > like a good idea as this RFC is very complicated to do something
+> > fairly simple.
+> >
+> > Where are thing on the /dev/iommu work these days?
+> 
+> We are actively working on the basic skeleton. Our original plan is to send
+> out the 1st draft before LPC, with support of vfio type1 semantics and
+> and pci dev only (single-device group). But later we realized that adding
+> multi-devices group support is also necessary even in the 1st draft to avoid
+> some dirty hacks and build the complete picture. This will add some time
+> though. If things go well, we'll still try hit the original plan. If not, it will be
+> soon after LPC.
 
-diff --git a/drivers/mmc/host/moxart-mmc.c b/drivers/mmc/host/moxart-mmc.c
-index 6c9d38132..b5aa1010c 100644
---- a/drivers/mmc/host/moxart-mmc.c
-+++ b/drivers/mmc/host/moxart-mmc.c
-@@ -606,7 +606,28 @@ static int moxart_probe(struct platform_device *pdev)
- 	host->sysclk = clk_get_rate(clk);
- 	host->fifo_width = readl(host->base + REG_FEATURE) << 2;
- 	host->dma_chan_tx = dma_request_chan(dev, "tx");
-+	if (IS_ERR(host->dma_chan_tx)) {
-+		if (PTR_ERR(host->dma_chan_tx) == -EPROBE_DEFER) {
-+			ret = -EPROBE_DEFER;
-+            goto out;
-+        }
-+    }
-+
- 	host->dma_chan_rx = dma_request_chan(dev, "rx");
-+	if (IS_ERR(host->dma_chan_rx)) {
-+		if (!IS_ERR(host->dma_chan_tx))
-+			dma_release_channel(host->dma_chan_tx);
-+		if (PTR_ERR(host->dma_chan_rx) == -EPROBE_DEFER) {
-+			ret = -EPROBE_DEFER;
-+			goto out;
-+        }
-+        dev_dbg(dev, "PIO mode transfer enabled\n");
-+        host->have_dma = false;
-+    } else if (IS_ERR(host->dma_chan_tx)) {
-+		dma_release_channel(host->chan_rx);
-+		dev_dbg(dev, "PIO mode transfer enabled\n");
-+		host->have_dma = false;
-+    }
- 
- 	spin_lock_init(&host->lock);
- 
-@@ -615,15 +636,7 @@ static int moxart_probe(struct platform_device *pdev)
- 	mmc->f_min = DIV_ROUND_CLOSEST(host->sysclk, CLK_DIV_MASK * 2);
- 	mmc->ocr_avail = 0xffff00;	/* Support 2.0v - 3.6v power. */
- 
--	if (IS_ERR(host->dma_chan_tx) || IS_ERR(host->dma_chan_rx)) {
--		if (PTR_ERR(host->dma_chan_tx) == -EPROBE_DEFER ||
--		    PTR_ERR(host->dma_chan_rx) == -EPROBE_DEFER) {
--			ret = -EPROBE_DEFER;
--			goto out;
--		}
--		dev_dbg(dev, "PIO mode transfer enabled\n");
--		host->have_dma = false;
--	} else {
-+    if (!IS_ERR(host->dma_chan_tx) && !IS_ERR(host->dma_chan_rx)) {
- 		dev_dbg(dev, "DMA channels found (%p,%p)\n",
- 			 host->dma_chan_tx, host->dma_chan_rx);
- 		host->have_dma = true;
-@@ -664,8 +677,13 @@ static int moxart_probe(struct platform_device *pdev)
- 	}
- 
- 	ret = devm_request_irq(dev, irq, moxart_irq, 0, "moxart-mmc", host);
--	if (ret)
-+	if (ret) {
-+		if (host->have_dma) {
-+			dma_release_channel(host->dma_chan_tx);
-+			dma_release_channel(host->dma_chan_rx);
-+		}
- 		goto out;
-+	}
- 
- 	dev_set_drvdata(dev, mmc);
- 	mmc_add_host(mmc);
--- 
-2.25.1
-
+As I also want to take a look at your work for this implementation,
+would you please CC me when you send out your patches? Thank you!
