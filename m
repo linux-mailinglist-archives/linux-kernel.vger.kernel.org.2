@@ -2,131 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CBBA40D372
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 08:52:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35E6240D377
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 08:52:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234587AbhIPGxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 02:53:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232254AbhIPGxG (ORCPT
+        id S234674AbhIPGxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 02:53:47 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:48426 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232254AbhIPGxr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 02:53:06 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC014C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 23:51:45 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id n10so12666995eda.10
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 23:51:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=dg+kf/9nEkO+NwYmoQ+q7KEG9AVdNOlmSwjtW+/Hqvw=;
-        b=NxN9+H9IkH/IFdV5hNdAWWXNWPwTJUNfZ6kAjewcspMk/d/C3rpvp1PszKC39DXjXO
-         jmTjS9O8/IkQmS317MUZkW01wtU/k7UwjSB2RAjNkZCsefiYzEyfFxeST1WCJ90w2xP9
-         5k4qm2iOu/7rzTjnpAdWFxP6slalu52oRVFKz3+qZRpcHrsYQkwzS2vyV15YWlL9hVGk
-         oGLDar+yDaWFV6VjQIgBNUrdUWkU1gqWEOGz3CO8COvW1PWUl7A4nCG/9XCmmz3Nna+R
-         wHPCXy4cFxHXNcIp+0cReJtvSYzJWsil1NEfwKh/MwuFVPbqUZPWFypO+thmNKg3R7RY
-         SQ6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=dg+kf/9nEkO+NwYmoQ+q7KEG9AVdNOlmSwjtW+/Hqvw=;
-        b=uYdh2r5jA7jWqPadIxZvFPLqhuxIUSIDCU+Cnzpdr+DPGuMjJwDGWLnvDN1aZ8//yp
-         zwfzfcK7oGgFij+88M1L0/f6nAlhqntljdLDj9rvc3xqBygiOCQRi3ybZ1nV5p8LReMA
-         yxJqiqIcZldCiYRZKyf5hBXfPAcnoMYUXXeXowXVsKY2Nq+Nxzd5CybDMEQLsDDKYMXE
-         hqlifyp8oBUolhzI1d+AO/odfxi8sD642cltWxeYbKFX5B2T67HpSQ0psgUW6+7N5v69
-         Scw09cPmGYVhALZCkRBvhWme4Wlm6AKsyqlXfyYuRC9gY2VzV6zjKktqO+dBX8EwOmye
-         KaDg==
-X-Gm-Message-State: AOAM531fzPBz/6Rz0qU8XcJYBmqT/tDRI7iQIBYaglpNGCpXQAz5+yUA
-        9SGtlsmZoK7yjkavKr+mktH4ypTWON0=
-X-Google-Smtp-Source: ABdhPJxTag1dKpKpC6gtZ6qPh9GoA9G/g+iGApT75JegmUSYPigjP2GTo2zn11qAPOFi3u1HWIfApQ==
-X-Received: by 2002:a05:6402:5163:: with SMTP id d3mr4828567ede.220.1631775104449;
-        Wed, 15 Sep 2021 23:51:44 -0700 (PDT)
-Received: from agape.jhs ([5.171.81.56])
-        by smtp.gmail.com with ESMTPSA id by26sm933725edb.69.2021.09.15.23.51.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Sep 2021 23:51:44 -0700 (PDT)
-Date:   Thu, 16 Sep 2021 08:51:42 +0200
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     Chanwoo Choi <cwchoi00@gmail.com>
-Cc:     Chanwoo Choi <cw00.choi@samsung.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] extcon: extcon-axp288: use low level P-Unit semaphore
- lock for axp288 register accesses
-Message-ID: <20210916065140.GA1365@agape.jhs>
-References: <20210910073440.2190-1-fabioaiuto83@gmail.com>
- <db4648a4-291c-2941-8f76-29a328eaf25e@gmail.com>
+        Thu, 16 Sep 2021 02:53:47 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id BD63922324;
+        Thu, 16 Sep 2021 06:52:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1631775144; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rgPYC/jO9gO7VeQL2HNt6VwK+j/K8XgK6Ia/iOSZmOA=;
+        b=hyumKxv6Z1+GNRpK2emC5w8B+VLGOQafgHC+qT62hFQsVpViXyiB+mwGicPS7LoAcfjwD/
+        OnsM+osaP8zGhyId8SbUcUt7jIxfG37qnmBQLJNvqD8YBhtYB1FqAqMxHRsalzcEFswLt2
+        KT6QGXECdYCpeVo67h3EGaQ5VfNThQk=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 59A0AA3B87;
+        Thu, 16 Sep 2021 06:52:24 +0000 (UTC)
+Date:   Thu, 16 Sep 2021 08:52:23 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Mel Gorman <mgorman@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/6] EXT4: Remove ENOMEM/congestion_wait() loops.
+Message-ID: <YULpp4gVgZSuH65/@dhcp22.suse.cz>
+References: <163157808321.13293.486682642188075090.stgit@noble.brown>
+ <163157838437.13293.14244628630141187199.stgit@noble.brown>
+ <20210914163432.GR3828@suse.com>
+ <163165609100.3992.1570739756456048657@noble.neil.brown.name>
+ <YUHh2ddnJEDGI8YG@dhcp22.suse.cz>
+ <163174534006.3992.15394603624652359629@noble.neil.brown.name>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <db4648a4-291c-2941-8f76-29a328eaf25e@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <163174534006.3992.15394603624652359629@noble.neil.brown.name>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Chanwoo,
-
-On Thu, Sep 16, 2021 at 02:12:26AM +0900, Chanwoo Choi wrote:
-> Hi,
-> 
-> On 21. 9. 10. 오후 4:34, Fabio Aiuto wrote:
-> > use low level P-Unit semaphore lock for axp288 register
-> > accesses directly and for more than one access a time,
-> > to reduce the number of times this semaphore is locked
-> > and released which is an expensive operation.
+On Thu 16-09-21 08:35:40, Neil Brown wrote:
+> On Wed, 15 Sep 2021, Michal Hocko wrote:
+> > On Wed 15-09-21 07:48:11, Neil Brown wrote:
+> > > 
+> > > Why does __GFP_NOFAIL access the reserves? Why not require that the
+> > > relevant "Try harder" flag (__GFP_ATOMIC or __GFP_MEMALLOC) be included
+> > > with __GFP_NOFAIL if that is justified?
 > > 
-> > i2c-bus to the XPower is shared between the kernel and the
-> > SoCs P-Unit. The P-Unit has a semaphore wich the kernel must
-> > lock for axp288 register accesses. When the P-Unit semaphore
-> > is locked CPU and GPU power states cannot change or the system
-> > will freeze.
-> > 
-> > The P-Unit semaphore lock is already managed inside the regmap
-> > access logic, but for each access the semaphore is locked and
-> > released. So use directly iosf_mbi_(un)block_punit_i2c_access(),
-> > we are safe in doing so because nested calls to the same
-> > semaphore are turned to nops.
-> > 
-> > Suggested-by: Hans de Goede <hdegoede@redhat.com>
-> > Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-> > Tested-by: Hans de Goede <hdegoede@redhat.com>
-> > Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
-> > ---
-> > Changes in v2:
-> > 	- add a new depends on in Kconfig
-> > 	- add Tested-by Reviewed-by tags
-> >   drivers/extcon/Kconfig         |  2 +-
-> >   drivers/extcon/extcon-axp288.c | 14 ++++++++++++++
-> >   2 files changed, 15 insertions(+), 1 deletion(-)
-
-<snip>
-
-> >   #define PS_STAT_VBUS_TRIGGER		BIT(0)
-> > @@ -215,6 +216,8 @@ static int axp288_handle_chrg_det_event(struct axp288_extcon_info *info)
-> >   	unsigned int cable = info->previous_cable;
-> >   	bool vbus_attach = false;
-> > +	iosf_mbi_block_punit_i2c_access();
+> > Does 5020e285856c ("mm, oom: give __GFP_NOFAIL allocations access to
+> > memory reserves") help?
 > 
-> You have to check the return value of iosf_mbi_block_punit_i2c_access()
-
-ok will send a v2, with all the fixes you pointed out.
-
-<snip>
-
+> Yes, that helps.  A bit.
 > 
-> -- 
-> Best Regards,
-> Samsung Electronics
-> Chanwoo Choi
+> I'm not fond of the clause "the allocation request might have come with some
+> locks held".  What if it doesn't?  Does it still have to pay the price.
+> 
+> Should we not require that the caller indicate if any locks are held?
 
-thank you,
+I do not think this would help much TBH. What if the lock in question
+doesn't impose any dependency through allocation problem?
 
-fabio
+> That way callers which don't hold locks can use __GFP_NOFAIL without
+> worrying about imposing on other code.
+> 
+> Or is it so rare that __GFP_NOFAIL would be used without holding a lock
+> that it doesn't matter?
+> 
+> The other commit of interest is
+> 
+> Commit: 6c18ba7a1899 ("mm: help __GFP_NOFAIL allocations which do not trigger OOM killer")
+> 
+> I don't find the reasoning convincing.  It is a bit like "Robbing Peter
+> to pay Paul".  It takes from the reserves to allow a __GFP_NOFAIL to
+> proceed, with out any reason to think this particular allocation has any
+> more 'right' to the reserves than anything else.
+
+I do agree that this is not really optimal. I do not remember exact
+details but these changes were mostly based or inspired by extreme
+memory pressure testing by Tetsuo who has managed to trigger quite some
+corner cases. Especially those where NOFS was involved were problematic.
+
+> While I don't like the reasoning in either of these, they do make it
+> clear (to me) that the use of reserves is entirely an internal policy
+> decision.  They should *not* be seen as part of the API and callers
+> should not have to be concerned about it when deciding whether to use
+> __GFP_NOFAIL or not.
+
+Yes. NOFAIL should have high enough bar to use - essentially there is no
+other way than use it - that memory reserves shouldn't be a road block.
+If we learn that existing users can seriously deplete memory reserves
+then we might need to reconsider the existing logic. So far there are no
+indications that NOFAIL would really cause any problems in that area.
+
+> The use of these reserves is, at most, a hypothetical problem.  If it
+> ever looks like becoming a real practical problem, it needs to be fixed
+> internally to the page allocator.  Maybe an extra water-mark which isn't
+> quite as permissive as ALLOC_HIGH...
+> 
+> I'm inclined to drop all references to reserves from the documentation
+> for __GFP_NOFAIL.
+
+I have found your additions to the documentation useful.
+
+> I think there are enough users already that adding a
+> couple more isn't going to make problems substantially more likely.  And
+> more will be added anyway that the mm/ team won't have the opportunity
+> or bandwidth to review.
+> 
+> Meanwhile I'll see if I can understand the intricacies of alloc_page so
+> that I can contibute to making it more predictable.
+> 
+> Question: In those cases where an open-coded loop is appropriate, such
+> as when you want to handle signals or can drop locks, how bad would it
+> be to have a tight loop without any sleep?
+>
+> should_reclaim_retry() will sleep 100ms (sometimes...).  Is that enough?
+> __GFP_NOFAIL doesn't add any sleep when looping.
+
+Yeah, NOFAIL doesn't add any explicit sleep points. In general there is
+no guarantee that a sleepable allocation will sleep. We do cond_resched
+in general but sleeping is enforced only for worker contexts because WQ
+concurrency depends on an explicit sleeping. So to answer your question,
+if you really need to sleep between retries then you should do it
+manually but cond_resched can be implied.
+-- 
+Michal Hocko
+SUSE Labs
