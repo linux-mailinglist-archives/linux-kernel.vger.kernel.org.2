@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ACF240E85E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFACF40E14F
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:29:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350213AbhIPRjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:39:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50266 "EHLO mail.kernel.org"
+        id S241408AbhIPQ3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:29:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59282 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353041AbhIPR3x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:29:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B67F961056;
-        Thu, 16 Sep 2021 16:46:34 +0000 (UTC)
+        id S241695AbhIPQT7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:19:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6668D61251;
+        Thu, 16 Sep 2021 16:14:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810795;
-        bh=Ijn/RiKqlCAhGkXF5yWoRSlm362FXpqFIR+7f852EWI=;
+        s=korg; t=1631808844;
+        bh=63kIFkHrFm+wRAiUZlOM//EDuHZOFoI1nV/b2PZYWhM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rKPZlsphI+AXlf/+m85kd05qa8XdrsmLROGgOZafhnWKYMWJBv7rW+HkUYOAl3d5d
-         lwHcMdZl/4eW8B9vjvWZMg9+RMHAf2etCsqJcViV9A6sYmrn7A9bsj6K83G10RTxU6
-         UPGxwX9yUlep6LHhwoAO/Ski3r3EhUay/ESOSrG8=
+        b=VrMHfo44vccdOcoDUliu0vvjyVXKePkWGMspCtSsldBPl4bqaaNNDKvE0w0KZZZVE
+         lIwPLCnivczeAf+M5D7lpGJ3xQHPHh/E1ZrA+sjGowMnF5HhFxzHSio+S9R4bIPTs3
+         OKlQPbU5aQztJ7fxYOG5GpYUTgZ4r9lHW/ReDuwY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Martynas Pumputis <m@lambda.lt>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
+        Marcos Paulo de Souza <mpdesouza@suse.com>,
+        David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 238/432] libbpf: Fix race when pinning maps in parallel
+Subject: [PATCH 5.10 242/306] btrfs: tree-log: check btrfs_lookup_data_extent return value
 Date:   Thu, 16 Sep 2021 17:59:47 +0200
-Message-Id: <20210916155818.903922183@linuxfoundation.org>
+Message-Id: <20210916155802.309385902@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,84 +41,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martynas Pumputis <m@lambda.lt>
+From: Marcos Paulo de Souza <mpdesouza@suse.com>
 
-[ Upstream commit 043c5bb3c4f43670ab4fea0b847373ab42d25f3e ]
+[ Upstream commit 3736127a3aa805602b7a2ad60ec9cfce68065fbb ]
 
-When loading in parallel multiple programs which use the same to-be
-pinned map, it is possible that two instances of the loader will call
-bpf_object__create_maps() at the same time. If the map doesn't exist
-when both instances call bpf_object__reuse_map(), then one of the
-instances will fail with EEXIST when calling bpf_map__pin().
+Function btrfs_lookup_data_extent calls btrfs_search_slot to verify if
+the EXTENT_ITEM exists in the extent tree. btrfs_search_slot can return
+values bellow zero if an error happened.
 
-Fix the race by retrying reusing a map if bpf_map__pin() returns
-EEXIST. The fix is similar to the one in iproute2: e4c4685fd6e4 ("bpf:
-Fix race condition with map pinning").
+Function replay_one_extent currently checks if the search found
+something (0 returned) and increments the reference, and if not, it
+seems to evaluate as 'not found'.
 
-Before retrying the pinning, we don't do any special cleaning of an
-internal map state. The closer code inspection revealed that it's not
-required:
+Fix the condition by checking if the value was bellow zero and return
+early.
 
-    - bpf_object__create_map(): map->inner_map is destroyed after a
-      successful call, map->fd is closed if pinning fails.
-    - bpf_object__populate_internal_map(): created map elements is
-      destroyed upon close(map->fd).
-    - init_map_slots(): slots are freed after their initialization.
-
-Signed-off-by: Martynas Pumputis <m@lambda.lt>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/bpf/20210726152001.34845-1-m@lambda.lt
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/bpf/libbpf.c | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
+ fs/btrfs/tree-log.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 95ca17a3bd82..d27e017ebfbe 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -4656,10 +4656,13 @@ bpf_object__create_maps(struct bpf_object *obj)
- 	char *cp, errmsg[STRERR_BUFSIZE];
- 	unsigned int i, j;
- 	int err;
-+	bool retried;
- 
- 	for (i = 0; i < obj->nr_maps; i++) {
- 		map = &obj->maps[i];
- 
-+		retried = false;
-+retry:
- 		if (map->pin_path) {
- 			err = bpf_object__reuse_map(map);
- 			if (err) {
-@@ -4667,6 +4670,12 @@ bpf_object__create_maps(struct bpf_object *obj)
- 					map->name);
- 				goto err_out;
- 			}
-+			if (retried && map->fd < 0) {
-+				pr_warn("map '%s': cannot find pinned map\n",
-+					map->name);
-+				err = -ENOENT;
-+				goto err_out;
-+			}
- 		}
- 
- 		if (map->fd >= 0) {
-@@ -4700,9 +4709,13 @@ bpf_object__create_maps(struct bpf_object *obj)
- 		if (map->pin_path && !map->pinned) {
- 			err = bpf_map__pin(map, NULL);
- 			if (err) {
-+				zclose(map->fd);
-+				if (!retried && err == -EEXIST) {
-+					retried = true;
-+					goto retry;
-+				}
- 				pr_warn("map '%s': failed to auto-pin at '%s': %d\n",
- 					map->name, map->pin_path, err);
--				zclose(map->fd);
- 				goto err_out;
- 			}
- 		}
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index f36928efcf92..ec25e5eab349 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -708,7 +708,9 @@ static noinline int replay_one_extent(struct btrfs_trans_handle *trans,
+ 			 */
+ 			ret = btrfs_lookup_data_extent(fs_info, ins.objectid,
+ 						ins.offset);
+-			if (ret == 0) {
++			if (ret < 0) {
++				goto out;
++			} else if (ret == 0) {
+ 				btrfs_init_generic_ref(&ref,
+ 						BTRFS_ADD_DELAYED_REF,
+ 						ins.objectid, ins.offset, 0);
 -- 
 2.30.2
 
