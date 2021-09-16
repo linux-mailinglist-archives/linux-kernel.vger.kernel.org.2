@@ -2,163 +2,318 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ABD240D973
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 14:05:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01DDC40D977
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 14:06:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239016AbhIPMGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 08:06:18 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:32444 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S238974AbhIPMGQ (ORCPT
+        id S239091AbhIPMHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 08:07:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239074AbhIPMHg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 08:06:16 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 18GBokCc011984;
-        Thu, 16 Sep 2021 08:04:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=5RhjU+LEmgORcq/vv2e0IOKZ6jh2ZKtBlLhFlAHPRHg=;
- b=GHxjWi0AyL+1vvNb7be9plmfgeSx9iPty/SNXCP7Ah0PYh/MLaKRxVTdnkZDvwVOmfcj
- 5/AqtcO2CkGgLKgRoqEJahbXoF6E5qsi0dPTaM+QI5l70nV4Lo8jXvuGh+/nzsBpiKyI
- ujvdhfsUk+PtkhwJQql888ydK7g8/Tn9CbVeb07nm3yORXGAzwD3UMkBXeuk/oTIMQrG
- sLY0Vfrt8ILxhtsCWG/JHQ9Mf16fdElDAC4/0zTPMiUc1ug5DHe28gStaOhBpBPf0EVd
- YkFo/8iWBRq1QP+WSF3ANxv+Voa1oZA2+94018gYlpNRdrFxl4dO3gA5+wsFt054xReg Aw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3b44r3hb65-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 16 Sep 2021 08:04:39 -0400
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18GBpAOe018953;
-        Thu, 16 Sep 2021 08:04:39 -0400
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3b44r3hb5m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 16 Sep 2021 08:04:39 -0400
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18GBuu0s027838;
-        Thu, 16 Sep 2021 12:04:38 GMT
-Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
-        by ppma02wdc.us.ibm.com with ESMTP id 3b0m3cgswa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 16 Sep 2021 12:04:38 +0000
-Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
-        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18GC4cSH22086012
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 16 Sep 2021 12:04:38 GMT
-Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E032528067;
-        Thu, 16 Sep 2021 12:04:37 +0000 (GMT)
-Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F378A2805C;
-        Thu, 16 Sep 2021 12:04:35 +0000 (GMT)
-Received: from li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com (unknown [9.160.174.53])
-        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTPS;
-        Thu, 16 Sep 2021 12:04:35 +0000 (GMT)
-Date:   Thu, 16 Sep 2021 07:04:34 -0500
-From:   "Paul A. Clarke" <pc@us.ibm.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        eranian@google.com
-Subject: Re: [PATCH v2] perf test: Workload test of metric and metricgroups
-Message-ID: <20210916120434.GA4498@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
-References: <20210916060525.1890638-1-irogers@google.com>
+        Thu, 16 Sep 2021 08:07:36 -0400
+Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25C59C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 05:06:16 -0700 (PDT)
+Received: by mail-vs1-xe2c.google.com with SMTP id k10so5813744vsp.12
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 05:06:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=0x0f.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=J5UL/xozUpE+qQ5p1w6FbzHdw42Dyfa73IMjcTE5EdA=;
+        b=IAF70Wv00OuftgUZ5UIxcUZ9/GqHn3yB4Xzm4y5liq2VFPfGuMOAitCNrPSzCqAS5Z
+         kEg+KY/pJG/7hBLi9LYod0HFWWJcPVOJPZ0lLWdUWtfqpjMajJVc6lvHeIbjWsyomPt+
+         TYeYSQM/9AecJ96neZ1zdc/FyefEY6OMa8OAs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=J5UL/xozUpE+qQ5p1w6FbzHdw42Dyfa73IMjcTE5EdA=;
+        b=DZja3dQsLYen68nt+MWZrBrI/A6IBgi3rn/6+lTynOl69QDkN7Sfjiwyshpv5pKttO
+         8MFdCiDvJhaBLFj70DhFG0hhr6lobmDBMQE6Wv3kPcD80ongAebpUfHxQxITxD56sFzf
+         8/jBZxbbz86oz4mC8u+kRv7ey+Mw0087UE/vkfH/8lL9thyxua3PJFbuedMazS+SgfWD
+         MAlGA/7rIUM/7ipkPYW2Z9hwizJ6nvKs2GE0z6rljDPhb43lfuEh4MGbjTeuDa8BC23h
+         YfslQGiym8gaQOfxdUfHhpyeux4rr7ZPUzvYW+xyen0n3DolysI7P1xVSqfMEFfU95sb
+         fWHQ==
+X-Gm-Message-State: AOAM531AhXXFgy6Qkxg5FELPx+pFOUjA/FK3C9a0+jElKL/aDfkO/Ygn
+        reptvgCkaTy7FzOwa40mcnPOITsQYkJGor1fcyANGQ==
+X-Google-Smtp-Source: ABdhPJzwtXBNinoO6mto3WAROebVHf0ybSLBse9r0Rkv0YDxF0jFHxJegCQ/IOaQUBLbXAbXbaR/2kTzuvqK1xdlf08=
+X-Received: by 2002:a67:f60f:: with SMTP id k15mr3711481vso.9.1631793975133;
+ Thu, 16 Sep 2021 05:06:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210916060525.1890638-1-irogers@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: QZlgmHlhqgc6bOwf_oeWkoIU_-VfjeQS
-X-Proofpoint-ORIG-GUID: WhGUe7YqOAMBCriT8Gea9tpvtlqe3mrk
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.687,Hydra:6.0.235,FMLib:17.0.607.475
- definitions=2020-10-13_15,2020-10-13_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- priorityscore=1501 bulkscore=0 adultscore=0 lowpriorityscore=0
- clxscore=1011 phishscore=0 mlxscore=0 mlxlogscore=999 suspectscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109030001 definitions=main-2109160068
+References: <2c2eef3c9a2f57e5609100a4864715ccf253d30f.1631713483.git.geert+renesas@glider.be>
+In-Reply-To: <2c2eef3c9a2f57e5609100a4864715ccf253d30f.1631713483.git.geert+renesas@glider.be>
+From:   Daniel Palmer <daniel@0x0f.com>
+Date:   Thu, 16 Sep 2021 21:06:04 +0900
+Message-ID: <CAFr9PXkCu0KyYXn4gPMfB0Kh3-a9m4z4T-z0siToXamKn3=DGw@mail.gmail.com>
+Subject: Re: [PATCH] sh: pgtable-3level: Fix cast to pointer from integer of
+ different size
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>, linux-mm@kvack.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 11:05:25PM -0700, Ian Rogers wrote:
-> Test every metric and metricgroup with 'true' as a workload.
+On Wed, 15 Sept 2021 at 22:52, Geert Uytterhoeven
+<geert+renesas@glider.be> wrote:
+> Anyone with e.g. a Migo-R or Ecovec to boot-test?
 
-Good idea!  (However...)
+Tested-by: Daniel Palmer <daniel@thingy.jp>
 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/tests/shell/stat_all_metricgroups.sh | 12 ++++++++++++
->  tools/perf/tests/shell/stat_all_metrics.sh      | 16 ++++++++++++++++
->  2 files changed, 28 insertions(+)
->  create mode 100755 tools/perf/tests/shell/stat_all_metricgroups.sh
->  create mode 100755 tools/perf/tests/shell/stat_all_metrics.sh
-> 
-> diff --git a/tools/perf/tests/shell/stat_all_metricgroups.sh b/tools/perf/tests/shell/stat_all_metricgroups.sh
-> new file mode 100755
-> index 000000000000..de24d374ce24
-> --- /dev/null
-> +++ b/tools/perf/tests/shell/stat_all_metricgroups.sh
-> @@ -0,0 +1,12 @@
-> +#!/bin/sh
-> +# perf all metricgroups test
-> +# SPDX-License-Identifier: GPL-2.0
-> +
-> +set -e
-> +
-> +for m in $(perf list --raw-dump metricgroups); do
-> +  echo "Testing $m"
-> +  perf stat -M "$m" true
-> +done
-> +
-> +exit 0
+--- Massive boot log from an ecovec ---
 
-This always succeeds. Is that what you want?
-Maybe check the return code from "perf", at least?
+Bytes transferred = 25788416 (1898000 hex)
+## Booting kernel from Legacy Image at 89000000 ...
+  Image Name:   Linux-5.15.0-rc1
+  Image Type:   SuperH Linux Kernel Image (gzip compressed)
+  Data Size:    3175191 Bytes =  3 MB
+  Load Address: 88001000
+  Entry Point:  88002000
+  Verifying Checksum ... OK
+  Uncompressing Kernel Image ... OK
+Linux version 5.15.0-rc1 (daniel@shiro)
+(sh4-buildroot-linux-gnu-gcc.br_real (Buildroot
+2021.02-715-g5e3799213236) 10.3.0, GNU ld (GNU Binutils) 2.36.1) #6
+Thu Sep 16 21
+Boot params:
+... MOUNT_ROOT_RDONLY - 00000000
+... RAMDISK_FLAGS     - 00000000
+... ORIG_ROOT_DEV     - 00000000
+... LOADER_TYPE       - 00000000
+... INITRD_START      - 00000000
+... INITRD_SIZE       - 00000000
+Memory limited to 248MB
+Booting machvec: R0P7724 (EcoVec)
+initrd disabled
+Zone ranges:
+ Normal   [mem 0x0000000008000000-0x00000000177fffff]
+Movable zone start for each node
+Early memory node ranges
+ node   0: [mem 0x0000000008000000-0x00000000177fffff]
+Initmem setup node 0 [mem 0x0000000008000000-0x00000000177fffff]
+Built 1 zonelists, mobility grouping on.  Total pages: 62930
+Kernel command line: console=tty0, console=ttySC0,115200
+phram.phram=rootfs,0x8a000000,32Mi memmap=32M$0x8a000000
+root=/dev/mmcblk0 ro rootwait mem=248M memchunk.vpu=8mm
+Unknown command line parameters: memmap=32M$0x8a000000
+Dentry cache hash table entries: 32768 (order: 5, 131072 bytes, linear)
+Inode-cache hash table entries: 16384 (order: 4, 65536 bytes, linear)
+Sorting __ex_table...
+mem auto-init: stack:off, heap alloc:off, heap free:off
+PVR=10300b00 CVR=7144040d PRR=00002200
+I-cache : n_ways=4 n_sets=256 way_incr=8192
+I-cache : entry_mask=0x00001fe0 alias_mask=0x00001000 n_aliases=2
+D-cache : n_ways=4 n_sets=256 way_incr=8192
+D-cache : entry_mask=0x00001fe0 alias_mask=0x00001000 n_aliases=2
+S-cache : n_ways=4 n_sets=2048 way_incr=65536
+S-cache : entry_mask=0x0000ffe0 alias_mask=0x0000f000 n_aliases=16
+virtual kernel memory layout:
+   fixmap  : 0xdffd7000 - 0xdffff000   ( 160 kB)
+   vmalloc : 0xc0000000 - 0xdffd5000   ( 511 MB)
+   lowmem  : 0x88000000 - 0x97800000   ( 248 MB) (cached)
+           : 0xa0000000 - 0xc0000000   ( 512 MB) (uncached)
+     .init : 0x884eb000 - 0x8850a000   ( 124 kB)
+     .data : 0x883ab8e8 - 0x884ea3ec   (1274 kB)
+     .text : 0x88001000 - 0x883ab8e8   (3754 kB)
+Memory: 246224K/253952K available (3750K kernel code, 266K rwdata,
+1004K rodata, 124K init, 89K bss, 7724K reserved, 0K cma-reserved)
+SLUB: HWalign=32, Order=0-3, MinObjects=0, CPUs=1, Nodes=1
+NR_IRQS: 8, nr_irqs: 8, preallocated irqs: 0
+intc: Registered controller 'sh7724' with 83 IRQs
+random: get_random_bytes called from start_kernel+0x3d6/0x740 with crng_init=0
+Console: colour dummy device 80x25
+printk: console [tty0] enabled
+sh-cmt-32.0: ch0: used for clock events
+sh-cmt-32.0: ch0: used for periodic clock events
+sh-cmt-32.0: ch0: used as clock source
+clocksource: sh-cmt-32.0: mask: 0xffffffff max_cycles: 0xffffffff,
+max_idle_ns: 466616319891357 ns
+sh-tmu.0: ch0: used for clock events
+sh-tmu.0: ch0: used for periodic clock events
+sh-tmu.0: ch1: used as clock source
+clocksource: sh-tmu.0: mask: 0xffffffff max_cycles: 0xffffffff,
+max_idle_ns: 183481014613 ns
+sched_clock: 32 bits at 250 Hz, resolution 4000000ns, wraps every
+8589934590000000ns
+Calibrating delay loop (skipped)... 499.99 BogoMIPS PRESET (lpj=999999)
+pid_max: default: 32768 minimum: 301
+Mount-cache hash table entries: 1024 (order: 0, 4096 bytes, linear)
+Mountpoint-cache hash table entries: 1024 (order: 0, 4096 bytes, linear)
+CPU: SH7724
+Performance Events: sh4a support registered
+devtmpfs: initialized
+clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff,
+max_idle_ns: 7645041785100000 ns
+futex hash table entries: 256 (order: -1, 3072 bytes, linear)
+pinctrl core: initialized pinctrl subsystem
+NET: Registered PF_NETLINK/PF_ROUTE protocol family
+DMA: preallocated 128 KiB GFP_KERNEL pool for atomic allocations
+vpu: forcing memory chunk size to 0x00800000
+veu0: forcing memory chunk size to 0x00400000
+sh-pfc pfc-sh7724: sh7724_pfc handling gpio 0 -> 179
+sh-pfc pfc-sh7724: sh7724_pfc handling gpio 180 -> 486
+sh-pfc pfc-sh7724: sh7724_pfc support registered
+HW Breakpoints: SH-4A UBC support registered
+sh-pfc pfc-sh7724: Use of GPIO API for function requests is
+deprecated, convert to pinctrl
+USB1 function is selected
+usbcore: registered new interface driver usbfs
+usbcore: registered new interface driver hub
+usbcore: registered new device driver usb
+mc: Linux media interface: v0.10
+videodev: Linux video capture interface: v2.00
+pps_core: LinuxPPS API ver. 1 registered
+pps_core: Software ver. 5.3.6 - Copyright 2005-2007 Rodolfo Giometti
+<giometti@linux.it>
+PTP clock support registered
+sh_cmt sh-cmt-32.0: kept as earlytimer
+sh_tmu sh-tmu.0: kept as earlytimer
+sh_tmu sh-tmu.1: ch0: used for clock events
+sh_tmu sh-tmu.1: ch1: used as clock source
+clocksource: sh-tmu.1: mask: 0xffffffff max_cycles: 0xffffffff,
+max_idle_ns: 183481014613 ns
+Advanced Linux Sound Architecture Driver Initialized.
+clocksource: Switched to clocksource sh-tmu.0
+sh_tmu sh-tmu.0: ch0: used for oneshot clock events
+NET: Registered PF_INET protocol family
+IP idents hash table entries: 4096 (order: 3, 32768 bytes, linear)
+tcp_listen_portaddr_hash hash table entries: 512 (order: 0, 4096 bytes, linear)
+TCP established hash table entries: 2048 (order: 1, 8192 bytes, linear)
+TCP bind hash table entries: 2048 (order: 1, 8192 bytes, linear)
+TCP: Hash tables configured (established 2048 bind 2048)
+UDP hash table entries: 256 (order: 0, 4096 bytes, linear)
+UDP-Lite hash table entries: 256 (order: 0, 4096 bytes, linear)
+sq: Registering store queue API.
+unable to read sh_eth MAC address
+workingset: timestamp_bits=14 max_order=16 bucket_order=2
+squashfs: version 4.0 (2009/01/31) Phillip Lougher
+Console: switching to colour frame buffer device 100x30
+sh_mobile_lcdc_fb sh_mobile_lcdc_fb.0: registered
+sh_mobile_lcdc_fb.0/mainlcd as 800x480 16bpp.
+SuperH (H)SCI(F) driver initialized
+sh-sci.0: ttySC0 at MMIO 0xffe00000 (irq = 80, base_baud = 0) is a scif
+printk: console [ttySC0] enabled
+sh-sci.1: ttySC1 at MMIO 0xffe10000 (irq = 81, base_baud = 0) is a scif
+sh-sci.2: ttySC2 at MMIO 0xffe20000 (irq = 82, base_baud = 0) is a scif
+sh-sci.3: ttySC3 at MMIO 0xa4e30000 (irq = 56, base_baud = 0) is a scifa
+sh-sci.4: ttySC4 at MMIO 0xa4e40000 (irq = 88, base_baud = 0) is a scifa
+sh-sci.5: ttySC5 at MMIO 0xa4e50000 (irq = 109, base_baud = 0) is a scifa
+physmap-flash physmap-flash.0: physmap platform flash device: [mem
+0x00000000-0x03ffffff]
+physmap-flash.0: Found 1 x16 devices at 0x0 in 16-bit bank.
+Manufacturer ID 0x000001 Chip ID 0x002301
+Amd/Fujitsu Extended Query Table at 0x0040
+ Amd/Fujitsu Extended Query version 1.3.
+number of CFI chips: 1
+Creating 2 MTD partitions on "physmap-flash.0":
+0x000000000000-0x000000500000 : "boot loader"
+0x000000500000-0x000004000000 : "free-area"
+phram: rootfs device: 0x2000000 at 0x8a000000 for erasesize 0x1000
+SMSC LAN8700: probe of sh7724-ether-0:1f failed with error -22
+libphy: sh_mii: probed
+sh-eth sh7724-ether.0 eth0: Base address at 0xa4600000,
+00:00:87:6c:1d:c2, IRQ 91.
+r8a66597_hcd r8a66597_hcd.0: USB Host Controller
+r8a66597_hcd r8a66597_hcd.0: new USB bus registered, assigned bus number 1
+r8a66597_hcd r8a66597_hcd.0: irq 65, io base 0xa4d80000
+usb usb1: New USB device found, idVendor=1d6b, idProduct=0002, bcdDevice= 5.15
+usb usb1: New USB device strings: Mfr=3, Product=2, SerialNumber=1
+usb usb1: Product: USB Host Controller
+usb usb1: Manufacturer: Linux 5.15.0-rc1 r8a66597_hcd
+usb usb1: SerialNumber: r8a66597_hcd
+hub 1-0:1.0: USB hub found
+hub 1-0:1.0: 1 port detected
+sh-rtc sh-rtc: registered as rtc0
+sh-rtc sh-rtc: hctosys: unable to read the hardware clock
+renesas-ceu renesas-ceu.0: Renesas Capture Engine Unit renesas-ceu.0
+renesas-ceu renesas-ceu.1: Renesas Capture Engine Unit renesas-ceu.1
+cpufreq: SuperH CPU frequency driver.
+cpufreq: cpufreq_online: ->get() failed
+sh_mmcif sh_mmcif.0: Platform OCR mask is ignored
+heartbeat: version 0.1.2 loaded
+ALSA device list:
+ No soundcards found.
+sh_mmcif sh_mmcif.0: Chip version 0x0000, clock rate 83MHz
+sh_mobile_sdhi sh_mobile_sdhi.0: mmc0 base at 0x04ce0000, max clock rate 83 MHz
+Waiting for root device /dev/mmcblk0...
+random: fast init done
+usb 1-1: new full-speed USB device number 2 using r8a66597_hcd
+mmc0: new SDHC card at address fb83
+mmcblk0: mmc0:fb83 SE08G 7.22 GiB
+VFS: Mounted root (squashfs filesystem) readonly on device 179:0.
+devtmpfs: mounted
+Freeing unused kernel image (initmem) memory: 124K
+This architecture does not have kernel memory protection.
+Run /sbin/init as init process
+usb 1-1: New USB device found, idVendor=10c4, idProduct=ea60, bcdDevice= 1.00
+usb 1-1: New USB device strings: Mfr=1, Product=2, SerialNumber=3
+usb 1-1: Product: CP2102 USB to UART Bridge Controller
+usb 1-1: Manufacturer: Silicon Labs
+usb 1-1: SerialNumber: 0001
+NET: Registered PF_UNIX/PF_LOCAL protocol family
+Starting syslogd: OK
+Starting klogd: OK
+Running sysctl: OK
+Starting mdev... OK
+usbcore: registered new interface driver cp210x
+usbserial: USB Serial support registered for cp210x
+cp210x 1-1:1.0: cp210x converter detected
+usb 1-1: cp210x converter now attached to ttyUSB0
+Saving random seed: SKIP (read-only file system detected)
+Starting haveged: haveged: command socket is listening at fd 3
+OK
+Starting network: Generic PHY sh7724-ether-0:1f: attached PHY driver
+(mii_bus:phy_addr=sh7724-ether-0:1f, irq=POLL)
+sh-eth sh7724-ether.0 eth0: Link is Up - 100Mbps/Full - flow control off
+udhcpc: started, v1.33.0
+NET: Registered PF_PACKET protocol family
+udhcpc: sending discover
+udhcpc: sending select for 192.168.3.251
+udhcpc: lease of 192.168.3.251 obtained, lease time 3600
+deleting routers
+adding dns 192.168.3.1
+adding dns 192.168.3.2
+OK
+Starting openntpd: -s option no longer works and will be removed soon.
+Please reconfigure to use constraints or trusted servers.
+constraint configured without libtls support
+constraint configured without libtls support
+constraint configured without libtls support
+OK
+No persistent location to store SSH host keys. New keys will be
+generated at each boot. Are you sure this is what you want to do?
+Starting dropbear sshd: NET: Registered PF_INET6 protocol family
+Segment Routing with IPv6
+In-situ OAM (IOAM) with IPv6
+OK
+Starting nodectrl: OK
+Starting tlwbe_heartbeat: random: python3: uninitialized urandom read
+(24 bytes read)
+random: crng init done
+CN12 SD/MMC Vdd: incomplete constraints, leaving on
+OK
 
-> diff --git a/tools/perf/tests/shell/stat_all_metrics.sh b/tools/perf/tests/shell/stat_all_metrics.sh
-> new file mode 100755
-> index 000000000000..81b19ba27e68
-> --- /dev/null
-> +++ b/tools/perf/tests/shell/stat_all_metrics.sh
-> @@ -0,0 +1,16 @@
-> +#!/bin/sh
-> +# perf all metrics test
-> +# SPDX-License-Identifier: GPL-2.0
-> +
-> +set -e
-> +
-> +for m in `perf list --raw-dump metrics`; do
-> +  echo "Testing $m"
-> +  result=$(perf stat -M "$m" true)
-
-I don't think this is doing what you want it to do, as it just captures the
-output of "true", which is always empty.
-
-> +  if [[ "$result" =~ "$m" ]]; then
-
-So this always fails to match, and you'll never fail here, either. :-)
-
-> +    echo "Metric not printed: $m"
-> +    exit 1
-> +  fi
-> +done
-> +
-> +exit 0
-
-You may want to redirect the output of the "perf" command to a temporary file,
-then grep within that.  And, you'll need to remove the file before running the
-perf command, because if it fails, it will leave any existing file untouched.
-
-Thanks! :-)
-
-PC
+Welcome to Buildroot
+ecovec24 login: sh4life
+$ cat /proc/cpuinfo
+machine         : R0P7724 (EcoVec)
+processor       : 0
+cpu family      : sh4a
+cpu type        : SH7724
+cut             : 11.x
+cpu flags       : fpu perfctr llsc l2
+cache type      : split (harvard)
+icache size     : 32KiB (4-way)
+dcache size     : 32KiB (4-way)
+scache size     : 256KiB (4-way)
+address sizes   : 29 bits physical
+bogomips        : 499.99
+$
