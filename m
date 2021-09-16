@@ -2,94 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD09240EB16
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 21:49:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0AE240EB1B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 21:49:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234847AbhIPTui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 15:50:38 -0400
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:44940 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233659AbhIPTuh (ORCPT
+        id S234980AbhIPTvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 15:51:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59811 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233659AbhIPTvC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 15:50:37 -0400
-Received: by mail-ot1-f53.google.com with SMTP id y63-20020a9d22c5000000b005453f95356cso2874995ota.11;
-        Thu, 16 Sep 2021 12:49:16 -0700 (PDT)
+        Thu, 16 Sep 2021 15:51:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631821781;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sDj5QquE5wN5sDynUMGxIuSMd5cPh1XI9LhK8+3NFac=;
+        b=SvRPDXSfyyw3YkAJxpKab/Ao4qdMlbudhtwz7F6qjNaBlRs9LKIhQFJ3MP1hltVTQcKnlF
+        Zgrm/CQXTgj4KaOMR8fyt/Sn93oLRZ1bbLbAy7j+oBSjTGTYTkEqhXugzpYl4Ehn2oFeUc
+        W0ZveLFCXih25P6NyQoNbCtynvihv6k=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-321-CDEg18dnP_yqK5gMxfb7ng-1; Thu, 16 Sep 2021 15:49:40 -0400
+X-MC-Unique: CDEg18dnP_yqK5gMxfb7ng-1
+Received: by mail-wr1-f71.google.com with SMTP id m18-20020adfe952000000b0015b0aa32fd6so2839635wrn.12
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 12:49:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=0KsoWtKkhaXMiBJDC0/XxZwnXXQWFGw8B4mYJMIPHr0=;
-        b=SpxCjz1AW/J5PsTvzRCCmPvXqxsy2xGpwFm86c/Vd9vbTwvcR4iNTA4o8ZoXZVqMXO
-         XLxJNJ//imPrevRkKbeFs4T4DJDbFeMGJRxVnlCpnJlIjvtHlSy4T+bmF8ZP+XlLUAky
-         Drb5qdsWDgZf2P7EcB6PrmhGjm9KJcI+gaqIKgWS79+WfTfJjibFkBD61FawGjUuoRDj
-         6aYq8H+Uhc6PsYQnbtYW8DYp+uh3LoMJXnwTZWMfvL1qwpkdLuzMncu+u3CkCfPEhBjP
-         DisHrTMNBbYs4idMLZJ/E5wgURRcMU1VnpdlvcmYkc20Ve8BhWhP8atlAEr9RjFfz3+5
-         63Gw==
-X-Gm-Message-State: AOAM5302EB0H4T3gp1DNrZ8N/gvT83IHzyspEArfQWIAOnIjztPuyXVK
-        DKUiIZhQcg85kvcCUc880g==
-X-Google-Smtp-Source: ABdhPJxEEp/Qsw3alHt8zhmxwHRpVnbr0IilY/Bi03MDyZNTmeQPJrTz7p+nPBP14eKxCi6oX/vdRA==
-X-Received: by 2002:a9d:70cc:: with SMTP id w12mr6143201otj.306.1631821755916;
-        Thu, 16 Sep 2021 12:49:15 -0700 (PDT)
-Received: from robh.at.kernel.org (107-211-252-53.lightspeed.cicril.sbcglobal.net. [107.211.252.53])
-        by smtp.gmail.com with ESMTPSA id z7sm948074oti.65.2021.09.16.12.49.12
+        bh=sDj5QquE5wN5sDynUMGxIuSMd5cPh1XI9LhK8+3NFac=;
+        b=nz5YiS5Y7nkvYQMiFDv8e2jDQlqMMfmb2WxMqBZin1uRp9eHR00/hznCQqwzjqdoA+
+         1c5GIIhpUpuZB/c7LFp49oVdccRkkylb9gvCFcdiOIAaiOcfbN60xoNS8//NtxYoEnYk
+         ipGCuqTD6oheFyoVC+0dTmq0Q15oBdApzbDsK9SsY7sPm5QIwZMPBb4JsFZOgPy3tjBM
+         kvQwY24L8EkmVDuI5G/6/twEzXF4TFvJ78u7YXIHKkVMzNf0/W+EViYFnVvVFGe7r+vU
+         qZkigkcooE5g8Xr5qogpcDYklrsOND+li+LSkNf6nMxtaeF8q8dFZoSqvneAEReoFN5Y
+         Lu4Q==
+X-Gm-Message-State: AOAM532cO/6N5JkQzL7sKXxHlEXeDUZHGnSorxZZrPfNsU1pQEcCpN+j
+        SnjbnqS200hCe+GeOmO79TWrrfCoCGHN8e/OkxHcvQeQ9AFMnd7lDVQfha4DzJUkbXPB6CJ3x+P
+        O3r6zfMWU1jk5WBcdkQooRDQy
+X-Received: by 2002:a7b:c005:: with SMTP id c5mr6900964wmb.59.1631821779044;
+        Thu, 16 Sep 2021 12:49:39 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzowIpQj7MDRnL7vkKs4yBql1LnXPD8G4Fs8z9x1Jol32Zpd/wojf6+iRyz0CfsHKVvoiJdyQ==
+X-Received: by 2002:a7b:c005:: with SMTP id c5mr6900949wmb.59.1631821778833;
+        Thu, 16 Sep 2021 12:49:38 -0700 (PDT)
+Received: from krava ([83.240.63.48])
+        by smtp.gmail.com with ESMTPSA id n186sm8475826wme.31.2021.09.16.12.49.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 12:49:15 -0700 (PDT)
-Received: (nullmailer pid 1377102 invoked by uid 1000);
-        Thu, 16 Sep 2021 19:49:11 -0000
-Date:   Thu, 16 Sep 2021 14:49:11 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Lucas Stach <dev@lynxeye.de>, linux-mmc@vger.kernel.org,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Richard Weinberger <richard@nod.at>,
-        Nishanth Menon <nm@ti.com>, linux-pwm@vger.kernel.org,
-        Lee Jones <lee.jones@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-tegra@vger.kernel.org,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-staging@lists.linux.dev, dri-devel@lists.freedesktop.org,
-        linux-clk@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
-        linux-mtd@lists.infradead.org, Mark Brown <broonie@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-kernel@vger.kernel.org,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        devicetree@vger.kernel.org, Stefan Agner <stefan@agner.ch>,
-        linux-spi@vger.kernel.org,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-pm@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Subject: Re: [PATCH v11 08/34] dt-bindings: host1x: Document Memory Client
- resets of Host1x, GR2D and GR3D
-Message-ID: <YUOftwuVt7EqtA5I@robh.at.kernel.org>
-References: <20210912200832.12312-1-digetx@gmail.com>
- <20210912200832.12312-9-digetx@gmail.com>
+        Thu, 16 Sep 2021 12:49:38 -0700 (PDT)
+Date:   Thu, 16 Sep 2021 21:49:37 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>
+Subject: Re: [PATCH 7/8] ftrace: Add multi direct modify interface
+Message-ID: <YUOf0Wt3+2r9HH6A@krava>
+References: <20210831095017.412311-1-jolsa@kernel.org>
+ <20210831095017.412311-8-jolsa@kernel.org>
+ <20210914174134.1d8fd944@oasis.local.home>
+ <20210915174718.77acaf8b@gandalf.local.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210912200832.12312-9-digetx@gmail.com>
+In-Reply-To: <20210915174718.77acaf8b@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 12 Sep 2021 23:08:06 +0300, Dmitry Osipenko wrote:
-> Memory Client should be blocked before hardware reset is asserted in order
-> to prevent memory corruption and hanging of memory controller.
+On Wed, Sep 15, 2021 at 05:47:18PM -0400, Steven Rostedt wrote:
+> On Tue, 14 Sep 2021 17:41:34 -0400
+> Steven Rostedt <rostedt@goodmis.org> wrote:
 > 
-> Document Memory Client resets of Host1x, GR2D and GR3D hardware units.
+> > A better solution, that prevents having to do this, is to first change
+> > the function fentry's to call the ftrace list loop function, that calls
+> > the ftrace_ops list, and will call the direct call via the ops in the
+> > loop. Have the ops->func call the new direct function (all will be
+> > immediately affected). Update the entries, and then switch from the
+> > loop back to the direct caller.
 > 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  .../bindings/display/tegra/nvidia,tegra20-host1x.txt          | 4 ++++
->  1 file changed, 4 insertions(+)
+> An easy way to force the loop function to be called instead of the direct
+> trampoline, is to register a stub ftrace_ops to each of the functions that
+> the direct function attaches to. You can even share the hash in doing so.
+> 
+> Having the ftrace_ops attached in the same locations as the direct
+> trampoline, will force the loop function to be called (to call the stub
+> ftrace_ops as well as the direct trampoline ftrace_ops helper).
+> 
+> Then change the direct trampoline address, which will have the ftrace_ops
+> helper use that direct trampoline immediately*. Then when you remove the
+> ftrace_ops stub, it will update all the call sites to call the new direct
+> trampoline directly.
+
+ok, that's the way the current direct modify interface is using, right?
+I thought it'd be not so easy to adopt for multiple functions, I'll check
+on that again and come for help ;-)
+
+> 
+> (*) not quite immediately, as there's no read memory barrier with the
+> direct helper, so it may still be calling the old trampoline. But this
+> shouldn't be an issue. If it is, then you would need to include some memory
+> barrier synchronization.
+> 
+> I'm curious to what the use case is for the multi direct modify interface
+> is?
+
+when the trampoline is re-generated by adding or removing program,
+we have same functions to trace and new trampoline to attach
+
+thanks,
+jirka
+
+> 
+> -- Steve
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
