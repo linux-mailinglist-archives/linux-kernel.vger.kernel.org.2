@@ -2,42 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3A1140D56F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 11:01:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19B0140D570
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 11:01:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235405AbhIPJC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 05:02:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36428 "EHLO mail.kernel.org"
+        id S236911AbhIPJCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 05:02:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36430 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235495AbhIPJBY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S235500AbhIPJBY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 16 Sep 2021 05:01:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 255506136A;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 31D1A61372;
         Thu, 16 Sep 2021 09:00:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1631782803;
-        bh=LYe9oOSzt+kJG5LBerNEEaYI0BlPAHReLL+PyWjMW7Q=;
+        bh=lnViX5JeCxtvET+iaFNRtFAQr+eduL6y6bzYMTy334Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nRIibwOAtRc8uGEslucofkf3DeMJ/Y9CPwIdI9al0JPotIcwQM1P5Y4PVFX6dUjnk
-         2vioR2gfdGHxYJi0gjLPGQLsj9XCSYDCIjAn9CPaBRbZMbHXPB1gFqQB23XsvNfRWV
-         M/fb9kIXEJzxfgBkEvMyiMb1udG1oGfUlB6/7jO6lgKH6Emowdg/CRievVYyejh+NE
-         6xIdaEo/0QY+s1DLzfle3gGS7GpZMBsfyMlJnxr8YbEFMvzXsmjiuSBv0/gAydhpoM
-         iYsCkI1YesKwJYDBevF8oHBPMeeSAwtc9h99WqCGTMPGeyMHz5Tc6eT/gipXxCEDyr
-         bnQvbSch7K6mQ==
+        b=JToTUj43gXTBlFxwfSFQ50d77T1VnGL9e+SHQBPqtFtLM8g/e1y0gOkCELSimhHPg
+         hLIxfyk7qaaHxh/0h8N4mriwKfALbAMMWMMqLUr+jHt6uMYxbBfm0YLEGaOtMuBZ+T
+         1Z3sFMdGyibn0p5ChYYM/lFcVdnD8mMRrANJIZJs52AY0/l4OdRpVqRvVa1/S2AjvQ
+         TuLopJtY/2VbFx8kUbfLCRD5gfAafdEsfl/y8TArj+9VEdj0vNIx1dWmGK9udsaDl+
+         tQX+dTi+iVxI0QA0g5o3EChQmQ7klPXGSUelNhdBGEUUDhO56197t4T42nLNBZ62VY
+         p9NiExnewmKgA==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1mQnFR-001ql2-C2; Thu, 16 Sep 2021 11:00:01 +0200
+        id 1mQnFR-001ql6-Dq; Thu, 16 Sep 2021 11:00:01 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 23/30] ABI: sysfs-class-uwb_rc: use wildcards on What definitions
-Date:   Thu, 16 Sep 2021 10:59:50 +0200
-Message-Id: <e723a4d9ea835f02e820142909499c752dab21b7.1631782432.git.mchehab+huawei@kernel.org>
+        "Jonathan Corbet" <corbet@lwn.net>, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 24/30] ABI: sysfs-class-uwb_rc-wusbhc: use wildcards on What definitions
+Date:   Thu, 16 Sep 2021 10:59:51 +0200
+Message-Id: <89dfa95676376f48a7191e1d34264d48a72b3f6a.1631782432.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1631782432.git.mchehab+huawei@kernel.org>
 References: <cover.1631782432.git.mchehab+huawei@kernel.org>
@@ -55,129 +51,55 @@ to convert it into a Regex.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/ABI/testing/sysfs-class-uwb_rc | 26 ++++++++++----------
- 1 file changed, 13 insertions(+), 13 deletions(-)
+ Documentation/ABI/testing/sysfs-class-uwb_rc-wusbhc | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/ABI/testing/sysfs-class-uwb_rc b/Documentation/ABI/testing/sysfs-class-uwb_rc
-index 6c5dcad21e19..a7ea169dc4eb 100644
---- a/Documentation/ABI/testing/sysfs-class-uwb_rc
-+++ b/Documentation/ABI/testing/sysfs-class-uwb_rc
-@@ -18,14 +18,14 @@ Description:
-                 and it will be removed.  The default is 3 superframes
-                 (~197 ms) as required by the specification.
- 
--What:           /sys/class/uwb_rc/uwbN/
-+What:           /sys/class/uwb_rc/uwb<N>/
+diff --git a/Documentation/ABI/testing/sysfs-class-uwb_rc-wusbhc b/Documentation/ABI/testing/sysfs-class-uwb_rc-wusbhc
+index 5977e2875325..55eb55cac92e 100644
+--- a/Documentation/ABI/testing/sysfs-class-uwb_rc-wusbhc
++++ b/Documentation/ABI/testing/sysfs-class-uwb_rc-wusbhc
+@@ -1,4 +1,4 @@
+-What:           /sys/class/uwb_rc/uwbN/wusbhc/wusb_chid
++What:           /sys/class/uwb_rc/uwb<N>/wusbhc/wusb_chid
  Date:           July 2008
  KernelVersion:  2.6.27
- Contact:        linux-usb@vger.kernel.org
- Description:
-                 An individual UWB radio controller.
+ Contact:        David Vrabel <david.vrabel@csr.com>
+@@ -9,7 +9,7 @@ Description:
  
--What:           /sys/class/uwb_rc/uwbN/beacon
-+What:           /sys/class/uwb_rc/uwb<N>/beacon
+                 Set an all zero CHID to stop the host controller.
+ 
+-What:           /sys/class/uwb_rc/uwbN/wusbhc/wusb_trust_timeout
++What:           /sys/class/uwb_rc/uwb<N>/wusbhc/wusb_trust_timeout
  Date:           July 2008
  KernelVersion:  2.6.27
- Contact:        linux-usb@vger.kernel.org
-@@ -43,7 +43,7 @@ Description:
-                 Reading returns the currently active channel, or -1 if
-                 the radio controller is not beaconing.
+ Contact:        David Vrabel <david.vrabel@csr.com>
+@@ -24,7 +24,7 @@ Description:
+                 lifetime of PTKs and GTKs) it should not be changed
+                 from the default.
  
--What:           /sys/class/uwb_rc/uwbN/ASIE
-+What:           /sys/class/uwb_rc/uwb<N>/ASIE
- Date:           August 2014
- KernelVersion:  3.18
- Contact:        linux-usb@vger.kernel.org
-@@ -56,7 +56,7 @@ Description:
-                 Reading returns the current ASIE.  Writing replaces
-                 the current ASIE with the one written.
+-What:           /sys/class/uwb_rc/uwbN/wusbhc/wusb_phy_rate
++What:           /sys/class/uwb_rc/uwb<N>/wusbhc/wusb_phy_rate
+ Date:           August 2009
+ KernelVersion:  2.6.32
+ Contact:        David Vrabel <david.vrabel@csr.com>
+@@ -37,7 +37,7 @@ Description:
+                 Refer to [ECMA-368] section 10.3.1.1 for the value to
+                 use.
  
--What:           /sys/class/uwb_rc/uwbN/scan
-+What:           /sys/class/uwb_rc/uwb<N>/scan
- Date:           July 2008
- KernelVersion:  2.6.27
- Contact:        linux-usb@vger.kernel.org
-@@ -75,7 +75,7 @@ Description:
-                     4   scan (with start time of <bpst offset>)
- 		   ==   =======================================
+-What:           /sys/class/uwb_rc/uwbN/wusbhc/wusb_dnts
++What:           /sys/class/uwb_rc/uwb<N>/wusbhc/wusb_dnts
+ Date:           June 2013
+ KernelVersion:  3.11
+ Contact:        Thomas Pugliese <thomas.pugliese@gmail.com>
+@@ -47,7 +47,7 @@ Description:
+                 often the devices will have the opportunity to send
+                 notifications to the host.
  
--What:           /sys/class/uwb_rc/uwbN/mac_address
-+What:           /sys/class/uwb_rc/uwb<N>/mac_address
- Date:           July 2008
- KernelVersion:  2.6.27
- Contact:        linux-usb@vger.kernel.org
-@@ -85,7 +85,7 @@ Description:
-                 controller's EUI-48 but only do so while the device is
-                 not beaconing or scanning.
- 
--What:           /sys/class/uwb_rc/uwbN/wusbhc
-+What:           /sys/class/uwb_rc/uwb<N>/wusbhc
- Date:           July 2008
- KernelVersion:  2.6.27
- Contact:        linux-usb@vger.kernel.org
-@@ -93,7 +93,7 @@ Description:
-                 A symlink to the device (if any) of the WUSB Host
-                 Controller PAL using this radio controller.
- 
--What:           /sys/class/uwb_rc/uwbN/<EUI-48>/
-+What:           /sys/class/uwb_rc/uwb<N>/<EUI-48>/
- Date:           July 2008
- KernelVersion:  2.6.27
- Contact:        linux-usb@vger.kernel.org
-@@ -102,7 +102,7 @@ Description:
-                 as part of a scan or is a member of the radio
-                 controllers beacon group.
- 
--What:           /sys/class/uwb_rc/uwbN/<EUI-48>/BPST
-+What:           /sys/class/uwb_rc/uwb<N>/<EUI-48>/BPST
- Date:           July 2008
- KernelVersion:  2.6.27
- Contact:        linux-usb@vger.kernel.org
-@@ -111,7 +111,7 @@ Description:
-                 interval superframe timer) of the last beacon from
-                 this device was received.
- 
--What:           /sys/class/uwb_rc/uwbN/<EUI-48>/DevAddr
-+What:           /sys/class/uwb_rc/uwb<N>/<EUI-48>/DevAddr
- Date:           July 2008
- KernelVersion:  2.6.27
- Contact:        linux-usb@vger.kernel.org
-@@ -119,7 +119,7 @@ Description:
-                 The current DevAddr of this device in colon separated
-                 hex octets.
- 
--What:           /sys/class/uwb_rc/uwbN/<EUI-48>/EUI_48
-+What:           /sys/class/uwb_rc/uwb<N>/<EUI-48>/EUI_48
- Date:           July 2008
- KernelVersion:  2.6.27
- Contact:        linux-usb@vger.kernel.org
-@@ -128,7 +128,7 @@ Description:
-                 The EUI-48 of this device in colon separated hex
-                 octets.
- 
--What:           /sys/class/uwb_rc/uwbN/<EUI-48>/IEs
-+What:           /sys/class/uwb_rc/uwb<N>/<EUI-48>/IEs
- Date:           July 2008
- KernelVersion:  2.6.27
- Contact:        linux-usb@vger.kernel.org
-@@ -136,7 +136,7 @@ Description:
-                 The latest IEs included in this device's beacon, in
-                 space separated hex octets with one IE per line.
- 
--What:           /sys/class/uwb_rc/uwbN/<EUI-48>/LQE
-+What:           /sys/class/uwb_rc/uwb<N>/<EUI-48>/LQE
- Date:           July 2008
- KernelVersion:  2.6.27
- Contact:        linux-usb@vger.kernel.org
-@@ -146,7 +146,7 @@ Description:
-                 This gives an estimate on a suitable PHY rate. Refer
-                 to [ECMA-368] section 13.3 for more details.
- 
--What:           /sys/class/uwb_rc/uwbN/<EUI-48>/RSSI
-+What:           /sys/class/uwb_rc/uwb<N>/<EUI-48>/RSSI
- Date:           July 2008
- KernelVersion:  2.6.27
- Contact:        linux-usb@vger.kernel.org
+-What:           /sys/class/uwb_rc/uwbN/wusbhc/wusb_retry_count
++What:           /sys/class/uwb_rc/uwb<N>/wusbhc/wusb_retry_count
+ Date:           June 2013
+ KernelVersion:  3.11
+ Contact:        Thomas Pugliese <thomas.pugliese@gmail.com>
 -- 
 2.31.1
 
