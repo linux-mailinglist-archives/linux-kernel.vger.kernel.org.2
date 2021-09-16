@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4894E40E872
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 287E440E212
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:15:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354320AbhIPRjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:39:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50292 "EHLO mail.kernel.org"
+        id S243735AbhIPQeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:34:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38434 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353298AbhIPRa3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:30:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C1E4661185;
-        Thu, 16 Sep 2021 16:46:53 +0000 (UTC)
+        id S240868AbhIPQZ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:25:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 220D461250;
+        Thu, 16 Sep 2021 16:16:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810814;
-        bh=Sbp8hkmrJH0wllDVah8IY9qF0XbUzi100p4DkLVpl9g=;
+        s=korg; t=1631809020;
+        bh=EYukma/3cUaLYbhuj/YOsFFa6vq8YYgKhLqCA59ZRzc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uqXQy0VqGwJqXl8FUyhbgRUPwntTZaegq1Qvg+tiSBSCIwBV3XDQ8UeFJ2zjHTH8n
-         RLaF//eAgfCIitwnPPyvV/xbb5PH1ZFSYRABecZUpV/zdcbW56MX1OirUl2FGu7wlv
-         Y6iP6YLkMdYTHBoZ6h1foLF8Qt1yC9uIpk875t+A=
+        b=Kxv5Zul5x2JQres7QWV+nJVD8XEJwi8uzOye4UBFl3V7wDuwPbEdIZFS8wk1F7i8s
+         dHLx23zg8J8tDidFT7kAtm1w69hhFd774KSGjgfysqbwAAYGjunRTz1YcceTk5fsG0
+         EfohN7yzTi0TbI1jsNB4jrygj1LA37tE37qIpNQM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 278/432] drm/msm/dsi: Fix DSI and DSI PHY regulator config from SDM660
-Date:   Thu, 16 Sep 2021 18:00:27 +0200
-Message-Id: <20210916155820.235912400@linuxfoundation.org>
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Saurav Kashyap <skashyap@marvell.com>,
+        Nilesh Javali <njavali@marvell.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 5.10 283/306] scsi: qla2xxx: Changes to support kdump kernel
+Date:   Thu, 16 Sep 2021 18:00:28 +0200
+Message-Id: <20210916155803.733269689@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,50 +42,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Konrad Dybcio <konrad.dybcio@somainline.org>
+From: Saurav Kashyap <skashyap@marvell.com>
 
-[ Upstream commit 462f7017a6918d152870bfb8852f3c70fd74b296 ]
+commit 62e0dec59c1e139dab55aff5aa442adc97804271 upstream.
 
-VDDA is not present and the specified load value is wrong. Fix it.
+Avoid allocating firmware dump and only allocate a single queue for a kexec
+kernel.
 
-Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
-Link: https://lore.kernel.org/r/20210728222057.52641-1-konrad.dybcio@somainline.org
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Signed-off-by: Rob Clark <robdclark@chromium.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Link: https://lore.kernel.org/r/20210810043720.1137-12-njavali@marvell.com
+Cc: stable@vger.kernel.org
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+Signed-off-by: Saurav Kashyap <skashyap@marvell.com>
+Signed-off-by: Nilesh Javali <njavali@marvell.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/msm/dsi/dsi_cfg.c          | 1 -
- drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c | 2 +-
- 2 files changed, 1 insertion(+), 2 deletions(-)
+ drivers/scsi/qla2xxx/qla_os.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/gpu/drm/msm/dsi/dsi_cfg.c b/drivers/gpu/drm/msm/dsi/dsi_cfg.c
-index f3f1c03c7db9..763f127e4621 100644
---- a/drivers/gpu/drm/msm/dsi/dsi_cfg.c
-+++ b/drivers/gpu/drm/msm/dsi/dsi_cfg.c
-@@ -154,7 +154,6 @@ static const struct msm_dsi_config sdm660_dsi_cfg = {
- 	.reg_cfg = {
- 		.num = 2,
- 		.regs = {
--			{"vdd", 73400, 32 },	/* 0.9 V */
- 			{"vdda", 12560, 4 },	/* 1.2 V */
- 		},
- 	},
-diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c
-index a34cf151c517..bb31230721bd 100644
---- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c
-+++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c
-@@ -1050,7 +1050,7 @@ const struct msm_dsi_phy_cfg dsi_phy_14nm_660_cfgs = {
- 	.reg_cfg = {
- 		.num = 1,
- 		.regs = {
--			{"vcca", 17000, 32},
-+			{"vcca", 73400, 32},
- 		},
- 	},
- 	.ops = {
--- 
-2.30.2
-
+--- a/drivers/scsi/qla2xxx/qla_os.c
++++ b/drivers/scsi/qla2xxx/qla_os.c
+@@ -14,6 +14,7 @@
+ #include <linux/slab.h>
+ #include <linux/blk-mq-pci.h>
+ #include <linux/refcount.h>
++#include <linux/crash_dump.h>
+ 
+ #include <scsi/scsi_tcq.h>
+ #include <scsi/scsicam.h>
+@@ -2828,6 +2829,11 @@ qla2x00_probe_one(struct pci_dev *pdev,
+ 			return ret;
+ 	}
+ 
++	if (is_kdump_kernel()) {
++		ql2xmqsupport = 0;
++		ql2xallocfwdump = 0;
++	}
++
+ 	/* This may fail but that's ok */
+ 	pci_enable_pcie_error_reporting(pdev);
+ 
 
 
