@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68E0240E79F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:34:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EECFA40E3E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:21:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353857AbhIPRfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:35:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47936 "EHLO mail.kernel.org"
+        id S1344983AbhIPQww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:52:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58998 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348361AbhIPRZz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:25:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 52F686127B;
-        Thu, 16 Sep 2021 16:44:39 +0000 (UTC)
+        id S244871AbhIPQrw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:47:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E0E1361882;
+        Thu, 16 Sep 2021 16:26:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810679;
-        bh=WCtc8QbMqaSbWQcL3hMjaApj4spst0xA4YhKnnQrk+M=;
+        s=korg; t=1631809618;
+        bh=Lc4+sA1v5F/jes2Rb9XXiWEbIV278sT9/liBkcqxlbo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FxTBYKcvQyZryMyL9yWrvx4sW7ZMdQUcxw156KJUww7sGwqny4gUaVAcp01jyLVMe
-         jN4OtXFbCtXF1RTm0ICmKwZ1NRUeAMo0buKpXgjk6Kvb14MeEDaB/JueSLnmCujJ/T
-         YhtiCJ0yjEyTdJPLJ5CNSFHYjE4PYPCemU4pX35I=
+        b=F6S2q+WV1ZjAVZGsEVKPgS0T5Akyi4xhKhEuuB7malV8yvaj/48aUVTnbNINdJRLC
+         VPIRvRnu+LxkRcrMfOmfQEMpOd3Sp4Arq490X/sz6CBIAgVK4lqnpzk6BBGv8XcGow
+         92Ac36NNB2RCkXzgaryuKpxDEvOHW1q8U/sd0kc4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 228/432] s390: make PCI mio support a machine flag
-Date:   Thu, 16 Sep 2021 17:59:37 +0200
-Message-Id: <20210916155818.570440230@linuxfoundation.org>
+Subject: [PATCH 5.13 221/380] ASoC: Intel: bytcr_rt5640: Move "Platform Clock" routes to the maps for the matching in-/output
+Date:   Thu, 16 Sep 2021 17:59:38 +0200
+Message-Id: <20210916155811.607018268@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,102 +41,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Niklas Schnelle <schnelle@linux.ibm.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 3322ba0d7bea1e24ae464418626f6a15b69533ab ]
+[ Upstream commit dccd1dfd0770bfd494b68d1135b4547b2c602c42 ]
 
-Kernel support for the newer PCI mio instructions can be toggled off
-with the pci=nomio command line option which needs to integrate with
-common code PCI option parsing. However this option then toggles static
-branches which can't be toggled yet in an early_param() call.
+Move the "Platform Clock" routes for the "Internal Mic" and "Speaker"
+routes to the intmic_*_map[] / *_spk_map[] arrays.
 
-Thus commit 9964f396f1d0 ("s390: fix setting of mio addressing control")
-moved toggling the static branches to the PCI init routine.
+This ensures that these "Platform Clock" routes do not get added when the
+BYT_RT5640_NO_INTERNAL_MIC_MAP / BYT_RT5640_NO_SPEAKERS quirks are used.
 
-With this setup however we can't check for mio support outside the PCI
-code during early boot, i.e. before switching the static branches, which
-we need to be able to export this as an ELF HWCAP.
-
-Improve on this by turning mio availability into a machine flag that
-gets initially set based on CONFIG_PCI and the facility bit and gets
-toggled off if pci=nomio is found during PCI option parsing allowing
-simple access to this machine flag after early init.
-
-Reviewed-by: Heiko Carstens <hca@linux.ibm.com>
-Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20210802142501.991985-2-hdegoede@redhat.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/include/asm/setup.h | 2 ++
- arch/s390/kernel/early.c      | 4 ++++
- arch/s390/pci/pci.c           | 5 ++---
- 3 files changed, 8 insertions(+), 3 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5640.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/arch/s390/include/asm/setup.h b/arch/s390/include/asm/setup.h
-index 3a77aa96d092..bdb0c77bcfd9 100644
---- a/arch/s390/include/asm/setup.h
-+++ b/arch/s390/include/asm/setup.h
-@@ -36,6 +36,7 @@
- #define MACHINE_FLAG_NX		BIT(15)
- #define MACHINE_FLAG_GS		BIT(16)
- #define MACHINE_FLAG_SCC	BIT(17)
-+#define MACHINE_FLAG_PCI_MIO	BIT(18)
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 22dbd9d93c1e..4bddb969176f 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -290,9 +290,6 @@ static const struct snd_soc_dapm_widget byt_rt5640_widgets[] = {
+ static const struct snd_soc_dapm_route byt_rt5640_audio_map[] = {
+ 	{"Headphone", NULL, "Platform Clock"},
+ 	{"Headset Mic", NULL, "Platform Clock"},
+-	{"Internal Mic", NULL, "Platform Clock"},
+-	{"Speaker", NULL, "Platform Clock"},
+-
+ 	{"Headset Mic", NULL, "MICBIAS1"},
+ 	{"IN2P", NULL, "Headset Mic"},
+ 	{"Headphone", NULL, "HPOL"},
+@@ -300,19 +297,23 @@ static const struct snd_soc_dapm_route byt_rt5640_audio_map[] = {
+ };
  
- #define LPP_MAGIC		BIT(31)
- #define LPP_PID_MASK		_AC(0xffffffff, UL)
-@@ -110,6 +111,7 @@ extern unsigned long mio_wb_bit_mask;
- #define MACHINE_HAS_NX		(S390_lowcore.machine_flags & MACHINE_FLAG_NX)
- #define MACHINE_HAS_GS		(S390_lowcore.machine_flags & MACHINE_FLAG_GS)
- #define MACHINE_HAS_SCC		(S390_lowcore.machine_flags & MACHINE_FLAG_SCC)
-+#define MACHINE_HAS_PCI_MIO	(S390_lowcore.machine_flags & MACHINE_FLAG_PCI_MIO)
+ static const struct snd_soc_dapm_route byt_rt5640_intmic_dmic1_map[] = {
++	{"Internal Mic", NULL, "Platform Clock"},
+ 	{"DMIC1", NULL, "Internal Mic"},
+ };
  
- /*
-  * Console mode. Override with conmode=
-diff --git a/arch/s390/kernel/early.c b/arch/s390/kernel/early.c
-index fb84e3fc1686..9857cb046726 100644
---- a/arch/s390/kernel/early.c
-+++ b/arch/s390/kernel/early.c
-@@ -236,6 +236,10 @@ static __init void detect_machine_facilities(void)
- 		clock_comparator_max = -1ULL >> 1;
- 		__ctl_set_bit(0, 53);
- 	}
-+	if (IS_ENABLED(CONFIG_PCI) && test_facility(153)) {
-+		S390_lowcore.machine_flags |= MACHINE_FLAG_PCI_MIO;
-+		/* the control bit is set during PCI initialization */
-+	}
- }
+ static const struct snd_soc_dapm_route byt_rt5640_intmic_dmic2_map[] = {
++	{"Internal Mic", NULL, "Platform Clock"},
+ 	{"DMIC2", NULL, "Internal Mic"},
+ };
  
- static inline void save_vector_registers(void)
-diff --git a/arch/s390/pci/pci.c b/arch/s390/pci/pci.c
-index 77cd965cffef..34839bad33e4 100644
---- a/arch/s390/pci/pci.c
-+++ b/arch/s390/pci/pci.c
-@@ -893,7 +893,6 @@ static void zpci_mem_exit(void)
- }
+ static const struct snd_soc_dapm_route byt_rt5640_intmic_in1_map[] = {
++	{"Internal Mic", NULL, "Platform Clock"},
+ 	{"Internal Mic", NULL, "MICBIAS1"},
+ 	{"IN1P", NULL, "Internal Mic"},
+ };
  
- static unsigned int s390_pci_probe __initdata = 1;
--static unsigned int s390_pci_no_mio __initdata;
- unsigned int s390_pci_force_floating __initdata;
- static unsigned int s390_pci_initialized;
+ static const struct snd_soc_dapm_route byt_rt5640_intmic_in3_map[] = {
++	{"Internal Mic", NULL, "Platform Clock"},
+ 	{"Internal Mic", NULL, "MICBIAS1"},
+ 	{"IN3P", NULL, "Internal Mic"},
+ };
+@@ -354,6 +355,7 @@ static const struct snd_soc_dapm_route byt_rt5640_ssp0_aif2_map[] = {
+ };
  
-@@ -904,7 +903,7 @@ char * __init pcibios_setup(char *str)
- 		return NULL;
- 	}
- 	if (!strcmp(str, "nomio")) {
--		s390_pci_no_mio = 1;
-+		S390_lowcore.machine_flags &= ~MACHINE_FLAG_PCI_MIO;
- 		return NULL;
- 	}
- 	if (!strcmp(str, "force_floating")) {
-@@ -935,7 +934,7 @@ static int __init pci_base_init(void)
- 		return 0;
- 	}
+ static const struct snd_soc_dapm_route byt_rt5640_stereo_spk_map[] = {
++	{"Speaker", NULL, "Platform Clock"},
+ 	{"Speaker", NULL, "SPOLP"},
+ 	{"Speaker", NULL, "SPOLN"},
+ 	{"Speaker", NULL, "SPORP"},
+@@ -361,6 +363,7 @@ static const struct snd_soc_dapm_route byt_rt5640_stereo_spk_map[] = {
+ };
  
--	if (test_facility(153) && !s390_pci_no_mio) {
-+	if (MACHINE_HAS_PCI_MIO) {
- 		static_branch_enable(&have_mio);
- 		ctl_set_bit(2, 5);
- 	}
+ static const struct snd_soc_dapm_route byt_rt5640_mono_spk_map[] = {
++	{"Speaker", NULL, "Platform Clock"},
+ 	{"Speaker", NULL, "SPOLP"},
+ 	{"Speaker", NULL, "SPOLN"},
+ };
 -- 
 2.30.2
 
