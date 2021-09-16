@@ -2,88 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE92940D9DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 14:23:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2BA040D9E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 14:25:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239479AbhIPMZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 08:25:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235816AbhIPMY7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 08:24:59 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F742C061574;
-        Thu, 16 Sep 2021 05:23:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1631795016;
-        bh=tvQq/RW41hq/eoH7cIdOm3NJUM6nb/RsZdxMfL9AGos=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=t1idrWy8hu31ChYO5iT7xmctdT0+1FAE7PImMBwdaFWH9bPaZvt7aZgTR1AV4FNqK
-         ZqTABwKYTs7StWYeX+KGgcRx3LxLaRwkWMWURFGWNeVcKIzLmfR9VEUkYREwNDUSh5
-         19zD7xQfErUAFwZcar6oZgFv7bkFfEfALf4Mz0w49DHbl+SOxoyH2PLi3s9taMRBky
-         zy0wecn+2wJ4Ny6ZdktftOlHY6wmXIZTkZfAu/CuEHW3979HmVQdU0UmAZG5aY291/
-         8Agevr/GKC7bvcovjWCkJ7ww89VbSPccrfMhY7/5zn0Vp2+SMFVJdb97hBRIB+P/lY
-         NyDE6fhI+BYmA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H9GTN5WkNz9sRK;
-        Thu, 16 Sep 2021 22:23:36 +1000 (AEST)
-Date:   Thu, 16 Sep 2021 22:23:35 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: Improvement suggestion for creation of next [Was: linux-next:
- manual merge of the dmaengine tree with the driver-core tree]
-Message-ID: <20210916222335.3b1751e9@canb.auug.org.au>
-In-Reply-To: <20210916095229.cvsjr4wbro26gev7@pengutronix.de>
-References: <20210723155354.082a62d8@canb.auug.org.au>
-        <20210728071014.dkdvqmiw2lma6ooa@pengutronix.de>
-        <20210916162740.3327df56@canb.auug.org.au>
-        <20210916095229.cvsjr4wbro26gev7@pengutronix.de>
+        id S239515AbhIPM0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 08:26:22 -0400
+Received: from smtpbg128.qq.com ([106.55.201.39]:39858 "EHLO smtpbg587.qq.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235816AbhIPM0U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 08:26:20 -0400
+X-QQ-mid: bizesmtp32t1631795092to1nkx5k
+Received: from localhost.localdomain (unknown [180.113.36.229])
+        by esmtp6.qq.com (ESMTP) with 
+        id ; Thu, 16 Sep 2021 20:24:44 +0800 (CST)
+X-QQ-SSF: 0100000000800030B000000A0000000
+X-QQ-FEAT: gSGF8h2+s1IADEzB2CCwyyD6/XD9p1aGVRPyyJchy5+VAf++gx9oqFzn3LG1A
+        CovWeQ/XIp3aG7oPPk4Ps1jbU+32qjHlyeXKxVUHtvnuvWkjvDfSbH90uWaDy8dQHLuMSpv
+        vNzwDh/hHz7HlfZ55OI7tCUfq+KrL7lHOFqDTqcREgOaFdMeN6UFpkAnhmIzrNfWNJSJZjU
+        EpTFKN0GgJEKuBpOKbDMZnv9wlzycrdiXoJ0ukyqKQgWD1GNV9Jj3MKTPbMxMeFX+lK2tZz
+        yLl1klhtXNq/zJG9PnEprBe+xC4bg3x18gtBJL1kuxjAuVfs/TFi65ZxH7MXSgXVIsmjoZ1
+        RcaAag2WLBTbgy4uZh2mI+k2RzfAw==
+X-QQ-GoodBg: 0
+From:   Xiang wangx <wangxiang@cdjrlc.com>
+To:     bongsu.jeon@samsung.com
+Cc:     shuah@kernel.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xiang wangx <wangxiang@cdjrlc.com>
+Subject: [PATCH v3] selftests: nci: replace unsigned int with int
+Date:   Thu, 16 Sep 2021 20:24:42 +0800
+Message-Id: <20210916122442.14732-1-wangxiang@cdjrlc.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/CmgR6j7xBX=jSNy_rpkk3N+";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/CmgR6j7xBX=jSNy_rpkk3N+
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Should not use comparison of unsigned expressions < 0.
 
-Hi Uwe,
+Signed-off-by: Xiang wangx <wangxiang@cdjrlc.com>
+---
 
-On Thu, 16 Sep 2021 11:52:29 +0200 Uwe Kleine-K=C3=B6nig <u.kleine-koenig@p=
-engutronix.de> wrote:
->
-> I understand that starting from tomorrow the short log will be shorter
-> for the merge commits.
+Changes since v1
+* Change commit log
 
-Exactly.
+Changes since v2
+* Change commit log
 
---=20
-Cheers,
-Stephen Rothwell
+ tools/testing/selftests/nci/nci_dev.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---Sig_/CmgR6j7xBX=jSNy_rpkk3N+
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+diff --git a/tools/testing/selftests/nci/nci_dev.c b/tools/testing/selftests/nci/nci_dev.c
+index e1bf55dabdf6..162c41e9bcae 100644
+--- a/tools/testing/selftests/nci/nci_dev.c
++++ b/tools/testing/selftests/nci/nci_dev.c
+@@ -746,7 +746,7 @@ int read_write_nci_cmd(int nfc_sock, int virtual_fd, const __u8 *cmd, __u32 cmd_
+ 		       const __u8 *rsp, __u32 rsp_len)
+ {
+ 	char buf[256];
+-	unsigned int len;
++	int len;
+ 
+ 	send(nfc_sock, &cmd[3], cmd_len - 3, 0);
+ 	len = read(virtual_fd, buf, cmd_len);
+-- 
+2.20.1
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFDN0cACgkQAVBC80lX
-0GxYQAf+M7Hu05ePLL/Fiz550aUVGqFKg5wiEycQTn4kZcT7dElZiY2m3YY7v6Ar
-L7WiAeFAeQVVAN4Uefp0I8KPGLexGOWqICDO8VI887crPXrX061bdp6clyIBjV+t
-taria2IjF1YddWRfo7HIvEWLQ2IUGIGa3k7Z9138GiXrqggmOz/+aZvQMe68mv0q
-jvoLw4rT+P01Zyh9mSE0TP3TDFL2QwRFCW8Kqjo1jKbXY98jnZulFnfjB7a4bsQi
-wOvut1FFA6pu5usqjlzBvfeqtJ2f1KZwEXTWWZZGKuXTPUdCEN7UXPE95sIP3BPl
-GxO6qNwzSUGOWvqjDt3BJ/aBuUUYgg==
-=x0dK
------END PGP SIGNATURE-----
-
---Sig_/CmgR6j7xBX=jSNy_rpkk3N+--
