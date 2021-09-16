@@ -2,103 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C22E40EAA1
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 21:06:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A60B340EAA5
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 21:06:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347057AbhIPTIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 15:08:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54580 "EHLO
+        id S233099AbhIPTIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 15:08:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244282AbhIPTHy (ORCPT
+        with ESMTP id S1347075AbhIPTIC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 15:07:54 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0BB0C0698D1
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 12:01:33 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id t1so7116973pgv.3
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 12:01:33 -0700 (PDT)
+        Thu, 16 Sep 2021 15:08:02 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E3DCC06AA78
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 12:02:37 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id 97-20020a9d006a000000b00545420bff9eso2705064ota.8
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 12:02:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LWGKCuQIs1J+mHjjQn6Kx7XI5kMAoj6YxGUaQJDbGFk=;
-        b=MBRkHKjm9buVZ2i0rRj8IkbkJrsV/vqBiMGVV7iiQvRhzq2pDAWDoSKl6vKZpqOoTv
-         GE6v5ljOJw3UCUdVlSwLLeN+QZTiq3eJFhRLx4stblW2Ji7suhDN3xmLLdVJPYABmpWs
-         8JIhWsB8S9Z6S5lJjTSu96z9Tng83WUYSZW+/8ULKPPGwGqzB+G9g5DtC20TNxdOwZSC
-         Wrs6SaaBBviwofJu2Slia3KQZM/V56B+tKIm9ATrULYxTSC2K55tBOQ0KRmTVbib4eWK
-         5VLygWRjMqPL35hSBp/YukyOGIxNMLr356QgmmuVBbhDpfIOV3ja4hLI918NMzkFQUlt
-         FSNQ==
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=FWeWVI89CMKoqS12Pp2ofBTtl9f9+kDvHLEYyvtvj3Y=;
+        b=Wt7OcJpNUxw12DAwblAXr10E60SnW77IXBLxYGtjl4MPd+CK4GnWnRs87pe+Uuu3c8
+         ohI3BW3y/F/UIenD56eQVQ6KreefgJIrVNqutHJM0rSM4Fb/zmBfCpOGmXur9lqq2EyJ
+         IzKs4ujCFIvkiccoa6fLoYT+/DDXEJgWTUK08=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LWGKCuQIs1J+mHjjQn6Kx7XI5kMAoj6YxGUaQJDbGFk=;
-        b=4/QhScVSk6H0LoZqe5srhTsuv04n1G5a/+5WkSQnPamQayQJww1+VTfX2EuVP0NN+b
-         K750fb8c2Q8WsW2BoG6HJVNZrbbjm/tnAr8fwAdtm8pgLuWfeo3PV69tP/w3xVJMm3i8
-         PvJ4+YpU3FFCjjyyKjcv5A88r6Y/qTZYk+gyeqBVwk+DJbbdZzVreL6MIeDmSfvZRhqS
-         QZ2rDynKjBfcGB2zDnhR4t1Xj1bEp84LSGkwXj6bfX2ATUHiSXAaY/b05Ikpalc2U0xz
-         p+hdfqiWSZkXinSQJ4KB2oQj67/m2khQ7Ts1Jn6o2a9po0rLlhHTd9HVWiR9PijDufaT
-         2bqw==
-X-Gm-Message-State: AOAM530K45WkbD/lsW7y7g6UpqAVJrr0V0W2MH2Ao9DLQhFvSELUd6ne
-        IpGllfReHfzTPqZC5CGLqTRfxg==
-X-Google-Smtp-Source: ABdhPJxdM+f5k++5dg9ZQ1aaLsllg+p45QsdJwHHJX3JOrhFr2rnv/z1wzRu03c/kyjxU9eCr3MDOg==
-X-Received: by 2002:a63:b218:: with SMTP id x24mr6260838pge.335.1631818892985;
-        Thu, 16 Sep 2021 12:01:32 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id g4sm3511388pjt.56.2021.09.16.12.01.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 12:01:32 -0700 (PDT)
-Date:   Thu, 16 Sep 2021 19:01:28 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Reiji Watanabe <reijiw@google.com>
-Subject: Re: [PATCH 2/3] KVM: VMX: Move RESET emulation to vmx_vcpu_reset()
-Message-ID: <YUOUiD0J5Qihao+4@google.com>
-References: <20210914230840.3030620-1-seanjc@google.com>
- <20210914230840.3030620-3-seanjc@google.com>
- <875yv2167g.fsf@vitty.brq.redhat.com>
- <YUIunxwjea/wq3gd@google.com>
- <87wnnhyolr.fsf@vitty.brq.redhat.com>
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=FWeWVI89CMKoqS12Pp2ofBTtl9f9+kDvHLEYyvtvj3Y=;
+        b=4NKXde9r4eHCTs1wQ2zQmeJlMo4VQB1jvHcI6P0YFQbdD2gHjvNaGsljr2OKILNkZT
+         O/7Qq9A/1WRMAPZ35tUDqYhnrbLekaVaTLN7yyLnKAEyoUM+NIi+IbQVLXWnV5DFa5uc
+         k8JHPJxdbH9sAdDYntruUfAuTLJ86Q3BWbJbvwwbF2TuGMtoVi3ZgbHzu3keWLb9ShE1
+         g/woJB/7zMjWJLb5EaxgaLPmaylV7wlrXfwMEq7snWkeehyQ3lbvZGGesTK8VfwyEkzq
+         k7MX4twkTY76DgRVa7bj32JBpnniNoMi09StjTWGncvjL8cb/WTCSD5Rs0AxIptQiu2+
+         mU5A==
+X-Gm-Message-State: AOAM530H2vsr6YYehjMH7F7JBLGyQ3SrXyIJhbqpYjYzIF0ShRrZ1ZUc
+        EhJIfJGn8bINialQTP+/1s/iSIBA/9xhhfifMHJsEg==
+X-Google-Smtp-Source: ABdhPJzEFLzP9i6NLH2BNZiamfhPoIiZWSUb5DRAGv784Z0t+KDMcv3d9XBq8O+KgpL10r2bUObyqJ+JYSPOsod0imQ=
+X-Received: by 2002:a05:6830:1212:: with SMTP id r18mr5777608otp.159.1631818956932;
+ Thu, 16 Sep 2021 12:02:36 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Thu, 16 Sep 2021 12:02:36 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87wnnhyolr.fsf@vitty.brq.redhat.com>
+In-Reply-To: <1631798498-10864-3-git-send-email-skakit@codeaurora.org>
+References: <1631798498-10864-1-git-send-email-skakit@codeaurora.org> <1631798498-10864-3-git-send-email-skakit@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Thu, 16 Sep 2021 12:02:36 -0700
+Message-ID: <CAE-0n53i4pU==W-dc=md_x+0Tqbd1gtwkPBFode+rtupSFi0WQ@mail.gmail.com>
+Subject: Re: [PATCH V5 2/2] arm64: dts: sc7280: Add volume up support for sc7280-idp
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Satya Priya <skakit@codeaurora.org>
+Cc:     David Collins <collinsd@codeaurora.org>, kgunda@codeaurora.org,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021, Vitaly Kuznetsov wrote:
-> Sean Christopherson <seanjc@google.com> writes:
-> > @@ -10897,6 +10899,9 @@ void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
-> >         kvm_set_rflags(vcpu, X86_EFLAGS_FIXED);
-> >         kvm_rip_write(vcpu, 0xfff0);
-> >
-> > +       vcpu->arch.cr3 = 0;
-> > +       kvm_register_mark_dirty(vcpu, VCPU_EXREG_CR3);
-> > +
-> >         /*
-> >          * CR0.CD/NW are set on RESET, preserved on INIT.  Note, some versions
-> >          * of Intel's SDM list CD/NW as being set on INIT, but they contradict
-> >
-> 
-> A selftest for vCPU create/reset would be really helpful. I can even
-> volunteer to [eventually] write one :-)
+Quoting Satya Priya (2021-09-16 06:21:38)
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
+> index 371a2a9..cbbb0ee 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
+> @@ -12,6 +12,26 @@
+>  #include "pm8350c.dtsi"
+>  #include "pmk8350.dtsi"
+>
+> +/ {
+> +       gpio-keys {
+> +               compatible = "gpio-keys";
+> +               label = "gpio-keys";
+> +
+> +               pinctrl-names = "default";
+> +               pinctrl-0 = <&key_vol_up_default>;
+> +
+> +               volume-up {
+> +                       label = "volume_up";
+> +                       gpios = <&pm7325_gpios 6 GPIO_ACTIVE_LOW>;
+> +                       linux,input-type = <1>;
+> +                       linux,code = <KEY_VOLUMEUP>;
 
-Hmm, I wonder if it would be possible to share code/infrastructure with Erdem's
-in-progress TDX selftest framework[*].  TDX forces vCPUs to start at the legacy
-reset vector with paging disabled, so it needs a lot of the same glue code as a
-from-RESET test would need.  TDX forces 32-bit PM instead of RM, but it should
-be easy enough to allow an optional opening sequence to get into 32-bit PM.
+Is there an include for this define? Looks like
+<dt-bindings/input/input.h> should be added as well? Did you try
+compiling?
 
-We could also test INIT without much trouble since INIT to the BSP will send it
-back to the reset vector, e.g. set a flag somewhere to avoid an infinite loop and
-INIT self.
-
-Let me work with Erdem to see if we can concoct something that will work for
-both TDX and tests that want to take control at RESET.
-
-[*] https://lkml.kernel.org/r/20210726183816.1343022-3-erdemaktas@google.com
+> +                       gpio-key,wakeup;
+> +                       debounce-interval = <15>;
+> +                       linux,can-disable;
+> +               };
+> +       };
+> +};
+> +
+>  &apps_rsc {
+>         pm7325-regulators {
+>                 compatible = "qcom,pm7325-rpmh-regulators";
+> @@ -284,6 +304,17 @@
+>
+>  /* PINCTRL - additions to nodes defined in sc7280.dtsi */
+>
+> +&pm7325_gpios {
+> +       key_vol_up_default: key-vol-up-default {
+> +               pins = "gpio6";
+> +               function = "normal";
+> +               input-enable;
+> +               bias-pull-up;
+> +               power-source = <0>;
+> +               qcom,drive-strength = <3>;
+> +       };
+> +};
+> +
+>  &qup_uart5_default {
+>         tx {
+>                 pins = "gpio46";
+> --
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+> of Code Aurora Forum, hosted by The Linux Foundation
+>
