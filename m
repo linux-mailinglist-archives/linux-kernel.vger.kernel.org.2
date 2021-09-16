@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6372240E20B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:15:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2536840E8C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:01:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242609AbhIPQeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:34:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38286 "EHLO mail.kernel.org"
+        id S1355354AbhIPRlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:41:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50294 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241709AbhIPQZt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:25:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D2A061505;
-        Thu, 16 Sep 2021 16:16:51 +0000 (UTC)
+        id S1353613AbhIPRea (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:34:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CE83560FA0;
+        Thu, 16 Sep 2021 16:48:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809012;
-        bh=LJLgk3YtHGnhIqXPFqy6lL7ykL0hZyTW6uAYpjRp6NI=;
+        s=korg; t=1631810927;
+        bh=COzna+AUvS9AjH9VMQTRotAp6F8lPQK/nnKVsWvii1s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pWyzSk+uWhnhPcYSnGPw1twvewQ3PJ4J00SH6Gp8ITgqi0oG1Uqq1mR9QRlDKuhy8
-         aREQq4kyVqALfxUfzgCkk+ma3wtWuz6yibwH00JjjWVX3Fg/6sd+fP3M7sQmdyJy/e
-         xZOInmIr20on0VoI/0tPuzSUaFrtiUgTBQ/vSQ/I=
+        b=IK4vcY6tMSWy+F/EEM059mkbNhw0b1H/ophWBi53HmJj47SAf9MwO/6KkwvgQP28U
+         j1TenK1j6IIqa2znA5qQqB6TIRG/Zn18J+B2ICAt9J1oe9ldiBJ1P6RO7RlLY/vYlh
+         wjz0BNvtPrZ3bpyertMggO7GJ6gNv6fC4gTyAHZo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        Chris Morgan <macromorgan@hotmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH 5.10 305/306] drm/panfrost: Clamp lock region to Bifrost minimum
-Date:   Thu, 16 Sep 2021 18:00:50 +0200
-Message-Id: <20210916155804.480975528@linuxfoundation.org>
+        stable@vger.kernel.org, Tim Harvey <tharvey@gateworks.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 302/432] arm64: dts: imx8mm-venice-gw700x: fix invalid pmic pin config
+Date:   Thu, 16 Sep 2021 18:00:51 +0200
+Message-Id: <20210916155821.061645761@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,50 +40,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
+From: Tim Harvey <tharvey@gateworks.com>
 
-commit bd7ffbc3ca12629aeb66fb9e28cf42b7f37e3e3b upstream.
+[ Upstream commit 500659f3b401fe6ffd1d63f2449d16d8a4204db7 ]
 
-When locking a region, we currently clamp to a PAGE_SIZE as the minimum
-lock region. While this is valid for Midgard, it is invalid for Bifrost,
-where the minimum locking size is 8x larger than the 4k page size. Add a
-hardware definition for the minimum lock region size (corresponding to
-KBASE_LOCK_REGION_MIN_SIZE_LOG2 in kbase) and respect it.
+The GW700x PMIC does not have an interrupt. Remove the invalid pin
+config.
 
-Signed-off-by: Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
-Tested-by: Chris Morgan <macromorgan@hotmail.com>
-Reviewed-by: Steven Price <steven.price@arm.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Steven Price <steven.price@arm.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210824173028.7528-4-alyssa.rosenzweig@collabora.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Tim Harvey <tharvey@gateworks.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/panfrost/panfrost_mmu.c  |    2 +-
- drivers/gpu/drm/panfrost/panfrost_regs.h |    2 ++
- 2 files changed, 3 insertions(+), 1 deletion(-)
+ arch/arm64/boot/dts/freescale/imx8mm-venice-gw700x.dtsi | 8 --------
+ 1 file changed, 8 deletions(-)
 
---- a/drivers/gpu/drm/panfrost/panfrost_mmu.c
-+++ b/drivers/gpu/drm/panfrost/panfrost_mmu.c
-@@ -63,7 +63,7 @@ static void lock_region(struct panfrost_
- 	/* The size is encoded as ceil(log2) minus(1), which may be calculated
- 	 * with fls. The size must be clamped to hardware bounds.
- 	 */
--	size = max_t(u64, size, PAGE_SIZE);
-+	size = max_t(u64, size, AS_LOCK_REGION_MIN_SIZE);
- 	region_width = fls64(size - 1) - 1;
- 	region |= region_width;
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw700x.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw700x.dtsi
+index 11dda79cc46b..00f86cada30d 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw700x.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw700x.dtsi
+@@ -278,8 +278,6 @@ rtc@68 {
  
---- a/drivers/gpu/drm/panfrost/panfrost_regs.h
-+++ b/drivers/gpu/drm/panfrost/panfrost_regs.h
-@@ -318,6 +318,8 @@
- #define AS_FAULTSTATUS_ACCESS_TYPE_READ		(0x2 << 8)
- #define AS_FAULTSTATUS_ACCESS_TYPE_WRITE	(0x3 << 8)
+ 	pmic@69 {
+ 		compatible = "mps,mp5416";
+-		pinctrl-names = "default";
+-		pinctrl-0 = <&pinctrl_pmic>;
+ 		reg = <0x69>;
  
-+#define AS_LOCK_REGION_MIN_SIZE                 (1ULL << 15)
-+
- #define gpu_write(dev, reg, data) writel(data, dev->iomem + reg)
- #define gpu_read(dev, reg) readl(dev->iomem + reg)
+ 		regulators {
+@@ -444,12 +442,6 @@ MX8MM_IOMUXC_I2C2_SDA_I2C2_SDA		0x400001c3
+ 		>;
+ 	};
  
+-	pinctrl_pmic: pmicgrp {
+-		fsl,pins = <
+-			MX8MM_IOMUXC_GPIO1_IO03_GPIO1_IO3	0x41
+-		>;
+-	};
+-
+ 	pinctrl_uart2: uart2grp {
+ 		fsl,pins = <
+ 			MX8MM_IOMUXC_UART2_RXD_UART2_DCE_RX	0x140
+-- 
+2.30.2
+
 
 
