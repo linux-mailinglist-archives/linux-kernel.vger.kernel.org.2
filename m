@@ -2,124 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62EDB40DA85
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 15:00:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 104FD40DAC0
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 15:10:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239876AbhIPNBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 09:01:48 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:16268 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239831AbhIPNBm (ORCPT
+        id S239943AbhIPNLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 09:11:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239837AbhIPNLh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 09:01:42 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4H9HH20R2jz8tC9;
-        Thu, 16 Sep 2021 20:59:42 +0800 (CST)
-Received: from dggema756-chm.china.huawei.com (10.1.198.198) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.8; Thu, 16 Sep 2021 21:00:20 +0800
-Received: from localhost.localdomain (10.175.112.125) by
- dggema756-chm.china.huawei.com (10.1.198.198) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Thu, 16 Sep 2021 21:00:19 +0800
-From:   Chen Huang <chenhuang5@huawei.com>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-CC:     Chen Huang <chenhuang5@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Darius Rad <darius@bluespec.com>,
-        Jisheng Zhang <jszhang3@mail.ustc.edu.cn>,
-        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 2/2] riscv: Support DCACHE_WORD_ACCESS
-Date:   Thu, 16 Sep 2021 13:08:55 +0000
-Message-ID: <20210916130855.4054926-3-chenhuang5@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210916130855.4054926-1-chenhuang5@huawei.com>
-References: <20210916130855.4054926-1-chenhuang5@huawei.com>
+        Thu, 16 Sep 2021 09:11:37 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70AABC061764
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 06:10:17 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id w17so5377320qta.9
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 06:10:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=J1aPRVnPtvaDDmo3fez14oc8rYGiEsDWBCXDH/Wat7k=;
+        b=SCLGmpBOIX1LyEWjCtTQu5NsbhW1Y4X5/DmQl1XQ9jzusvOLM7zvEkOwz6LOAv+Yok
+         sIWQ6uZy+RXJ3cFeYjVefKkQH0Bt0fEt6Hxm02pQYIdfhNmnfHNX2wDQS3f9HxEUckLT
+         uEUNakxQ26CbdQlN/sagwI+fXugp4FI45KUk2U0+TghLUrgqPs4hSAaLgC+UJKOxxT4E
+         Mc+H12o6j9K7ZldUlePbIj3QazJSlLYL+zG9bxUEh82jSSu4c3hLfm8TlsPXKZBK8Vfn
+         QyTQKfWMizwsKJYk7EULgbEvpNxSTjzFuIhJlbPIm2aqRKQQZUDbcvQh309a66LJBzjd
+         rwyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=J1aPRVnPtvaDDmo3fez14oc8rYGiEsDWBCXDH/Wat7k=;
+        b=Td2WXzT+VP6TobMrJ2SnPjwj12O4L7s6gVZwsXie0e4EXHI6xEGiXZBI4RQC9KGBFR
+         71INpmkzKIFucI2XSU5q6k2YIwWBjxBWQqz/0ATh92gxjSE8xEFjgbdJi8i66NRSRQeK
+         DKdh3tm8KLZ6M+0gWnP7Sp4D1ozzb8kRv2WoMwFVH9fFXxUnODwi2MsyvhQFjp9XetSE
+         1SU7UGnmoMvfESfQBcfk+cTg5zYQarvaMrtD2fmMsw8yKQfxqnz3F6S0Q9Vy9VlbFwCO
+         t+B674NIV6lXlF6Dn34kLv9LIbsYChE6KFpy7LCDxA6Fv+FFdOlfG/nACEIrriEgg6y7
+         GPEg==
+X-Gm-Message-State: AOAM533wLDnCyzvSPF600lWvvGcbd+esWKWJ7QzxfXmHHhX2/45eiIXL
+        RCWsEkBnMdXKIA8WBY2KEcU75g==
+X-Google-Smtp-Source: ABdhPJwoUHOat0GVnmJtcI3QwOrvQdDqw4k+r1J+CwosMJhqmF7+hz2G8rRCHLhPrxcT6+12hGdkXg==
+X-Received: by 2002:ac8:7d42:: with SMTP id h2mr4861309qtb.220.1631797816616;
+        Thu, 16 Sep 2021 06:10:16 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id r23sm1992140qtp.60.2021.09.16.06.10.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Sep 2021 06:10:15 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mQr9a-001MiL-Tq; Thu, 16 Sep 2021 10:10:14 -0300
+Date:   Thu, 16 Sep 2021 10:10:14 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Oded Gabbay <ogabbay@kernel.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Yossi Leybovich <sleybo@amazon.com>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Dave Airlie <airlied@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>
+Subject: Re: [PATCH v6 0/2] Add p2p via dmabuf to habanalabs
+Message-ID: <20210916131014.GK3544071@ziepe.ca>
+References: <20210912165309.98695-1-ogabbay@kernel.org>
+ <YUCvNzpyC091KeaJ@phenom.ffwll.local>
+ <20210914161218.GF3544071@ziepe.ca>
+ <CAFCwf13322953Txr3Afa_MomuD148vnfpEog0xzW7FPWH9=6fg@mail.gmail.com>
+ <YUM5JoMMK7gceuKZ@phenom.ffwll.local>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.112.125]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggema756-chm.china.huawei.com (10.1.198.198)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YUM5JoMMK7gceuKZ@phenom.ffwll.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch selects DCACHE_WORD_ACCESS on riscv and implements support
-for load_unaligned_zeropad.
+On Thu, Sep 16, 2021 at 02:31:34PM +0200, Daniel Vetter wrote:
+> On Wed, Sep 15, 2021 at 10:45:36AM +0300, Oded Gabbay wrote:
+> > On Tue, Sep 14, 2021 at 7:12 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > >
+> > > On Tue, Sep 14, 2021 at 04:18:31PM +0200, Daniel Vetter wrote:
+> > > > On Sun, Sep 12, 2021 at 07:53:07PM +0300, Oded Gabbay wrote:
+> > > > > Hi,
+> > > > > Re-sending this patch-set following the release of our user-space TPC
+> > > > > compiler and runtime library.
+> > > > >
+> > > > > I would appreciate a review on this.
+> > > >
+> > > > I think the big open we have is the entire revoke discussions. Having the
+> > > > option to let dma-buf hang around which map to random local memory ranges,
+> > > > without clear ownership link and a way to kill it sounds bad to me.
+> > > >
+> > > > I think there's a few options:
+> > > > - We require revoke support. But I've heard rdma really doesn't like that,
+> > > >   I guess because taking out an MR while holding the dma_resv_lock would
+> > > >   be an inversion, so can't be done. Jason, can you recap what exactly the
+> > > >   hold-up was again that makes this a no-go?
+> > >
+> > > RDMA HW can't do revoke.
+> 
+> Like why? I'm assuming when the final open handle or whatever for that MR
+> is closed, you do clean up everything? Or does that MR still stick around
+> forever too?
 
-DCACHE_WORD_ACCESS uses the word-at-a-time API for optimised string
-comparisons in the vfs layer.
+It is a combination of uAPI and HW specification.
 
-Signed-off-by: Chen Huang <chenhuang5@huawei.com>
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
----
- arch/riscv/Kconfig                      |  1 +
- arch/riscv/include/asm/word-at-a-time.h | 37 +++++++++++++++++++++++++
- 2 files changed, 38 insertions(+)
+revoke here means you take a MR object and tell it to stop doing DMA
+without causing the MR object to be destructed.
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index cd0be39d4c08..4e98ff76977f 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -44,6 +44,7 @@ config RISCV
- 	select CLONE_BACKWARDS
- 	select CLINT_TIMER if !MMU
- 	select COMMON_CLK
-+	select DCACHE_WORD_ACCESS if HAVE_EFFICIENT_UNALIGNED_ACCESS
- 	select EDAC_SUPPORT
- 	select GENERIC_ARCH_TOPOLOGY if SMP
- 	select GENERIC_ATOMIC64 if !64BIT
-diff --git a/arch/riscv/include/asm/word-at-a-time.h b/arch/riscv/include/asm/word-at-a-time.h
-index 7c086ac6ecd4..8f4ad1ec39fb 100644
---- a/arch/riscv/include/asm/word-at-a-time.h
-+++ b/arch/riscv/include/asm/word-at-a-time.h
-@@ -45,4 +45,41 @@ static inline unsigned long find_zero(unsigned long mask)
- /* The mask we created is directly usable as a bytemask */
- #define zero_bytemask(mask) (mask)
- 
-+#ifdef CONFIG_DCACHE_WORD_ACCESS
-+#include <asm/asm.h>
-+
-+/*
-+ * Load an unaligned word from kernel space.
-+ *
-+ * In the (very unlikely) case of the word being a page-crosser
-+ * and the next page not being mapped, take the exception and
-+ * return zeroes in the non-existing part.
-+ */
-+static inline unsigned long load_unaligned_zeropad(const void *addr)
-+{
-+	unsigned long ret, tmp;
-+
-+	/* Load word from unaligned pointer addr */
-+	asm(
-+	"1:	" REG_L " %0, %3\n"
-+	"2:\n"
-+	"	.section .fixup,\"ax\"\n"
-+	"	.balign 2\n"
-+	"3:	andi	%1, %2, ~0x7\n"
-+	"	" REG_L " %0, (%1)\n"
-+	"	andi	%1, %2, 0x7\n"
-+	"	slli	%1, %1, 0x3\n"
-+	"	srl	%0, %0, %1\n"
-+	"	jump	2b, %1\n"
-+	"	.previous\n"
-+	"	.section __ex_table,\"a\"\n"
-+	"	.balign	" RISCV_SZPTR "\n"
-+	"	" RISCV_PTR "	1b, 3b\n"
-+	"	.previous"
-+	: "=&r" (ret), "=&r" (tmp)
-+	: "r" (addr), "m" (*(unsigned long *)addr));
-+
-+	return ret;
-+}
-+#endif	/* DCACHE_WORD_ACCESS */
- #endif /* _ASM_RISCV_WORD_AT_A_TIME_H */
--- 
-2.25.1
+All the drivers can of course destruct the MR, but doing such a
+destruction without explicit synchronization with user space opens
+things up to a serious use-after potential that could be a security
+issue.
 
+When the open handle closes the userspace is synchronized with the
+kernel and we can destruct the HW objects safely.
+
+So, the special HW feature required is 'stop doing DMA but keep the
+object in an error state' which isn't really implemented, and doesn't
+extend very well to other object types beyond simple MRs.
+
+> 1. User A opens gaudi device, sets up dma-buf export
+> 
+> 2. User A registers that with RDMA, or anything else that doesn't support
+> revoke.
+> 
+> 3. User A closes gaudi device
+> 
+> 4. User B opens gaudi device, assumes that it has full control over the
+> device and uploads some secrets, which happen to end up in the dma-buf
+> region user A set up
+
+I would expect this is blocked so long as the DMABUF exists - eg the
+DMABUF will hold a fget on the FD of #1 until the DMABUF is closed, so
+that #3 can't actually happen.
+
+> It's not mlocked memory, it's mlocked memory and I can exfiltrate
+> it.
+
+That's just bug, don't make buggy drivers :)
+
+Jason
