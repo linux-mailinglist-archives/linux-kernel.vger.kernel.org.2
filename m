@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ECAB40E6A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:31:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2769C40E332
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:19:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352209AbhIPRXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:23:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41020 "EHLO mail.kernel.org"
+        id S1343558AbhIPQqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:46:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52388 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351286AbhIPRPX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:15:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D39396141B;
-        Thu, 16 Sep 2021 16:39:41 +0000 (UTC)
+        id S245023AbhIPQkC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:40:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A245B61A0D;
+        Thu, 16 Sep 2021 16:23:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810382;
-        bh=qLNaAOyqoAqpNxxCdY/eg9rS4f8tRtYL9hWufE04kGs=;
+        s=korg; t=1631809413;
+        bh=UEgh7KQtnW5lA2hV2j533cGjH0PKuJRYcbQtdhF7p9M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hfJOtH7myOh5QlHCn7Ipbs9Z4sAv4+3z4G3+n9nHgdVzOy8xAPWHFCVQum/ypDG0c
-         lITdJ7itsUNcVdrPzeW7l5SYzTQLSKVgSffQFdXMCBXRyJHya5xh3sNe5lfqoM+Ab3
-         E9tc9CdTyDnUViDzSF77s4EvG9q8qg5jtUooRnn0=
+        b=CEAgid+jTx6VflKmIpgKIyrHnVICLnEGXl9BwSXUieWrDJlIXzoMHO64OfIjx01hT
+         z377WvjZ6sG0ZwNlsSp1wgfuoHBTYTqjT1fhjdiIySVtFvygg8Eh9DLSRQ3JkXOYOm
+         pjeRNkvMVZNFkgH8+SvuIrTNrag00HlMxXau04cY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Joel Stanley <joel@jms.id.au>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 120/432] powerpc/config: Fix IPV6 warning in mpc855_ads
-Date:   Thu, 16 Sep 2021 17:57:49 +0200
-Message-Id: <20210916155814.833165587@linuxfoundation.org>
+        stable@vger.kernel.org, Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 113/380] HID: thrustmaster: clean up Makefile and adapt quirks
+Date:   Thu, 16 Sep 2021 17:57:50 +0200
+Message-Id: <20210916155807.876930591@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,50 +39,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joel Stanley <joel@jms.id.au>
+From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
-[ Upstream commit c5ac55b6cbc604ad4144c380feae20f69453df91 ]
+[ Upstream commit 462ba66198a4a8ea996028915af10a698086e302 ]
 
-When building this config there's a warning:
+Commit c49c33637802 ("HID: support for initialization of some Thrustmaster
+wheels") messed up the Makefile and quirks during the refactoring of this
+commit.
 
-  79:warning: override: reassigning to symbol IPV6
+Luckily, ./scripts/checkkconfigsymbols.py warns on non-existing configs:
 
-Commit 9a1762a4a4ff ("powerpc/8xx: Update mpc885_ads_defconfig to
-improve CI") added CONFIG_IPV6=y, but left '# CONFIG_IPV6 is not set'
-in.
+HID_TMINIT
+Referencing files: drivers/hid/Makefile, drivers/hid/hid-quirks.c
 
-IPV6 is default y, so remove both to clean up the build.
+Following the discussion (see Link), CONFIG_HID_THRUSTMASTER is the
+intended config for CONFIG_HID_TMINIT and the file hid-tminit.c was
+actually added as hid-thrustmaster.c.
 
-Fixes: 9a1762a4a4ff ("powerpc/8xx: Update mpc885_ads_defconfig to improve CI")
-Signed-off-by: Joel Stanley <joel@jms.id.au>
-Acked-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210817045407.2445664-2-joel@jms.id.au
+So, clean up Makefile and adapt quirks to that refactoring.
+
+Fixes: c49c33637802 ("HID: support for initialization of some Thrustmaster wheels")
+Link: https://lore.kernel.org/linux-input/CAKXUXMx6dByO03f3dX0X5zjvQp0j2AhJBg0vQFDmhZUhtKxRxw@mail.gmail.com/
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/configs/mpc885_ads_defconfig | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/hid/Makefile     | 1 -
+ drivers/hid/hid-quirks.c | 2 --
+ 2 files changed, 3 deletions(-)
 
-diff --git a/arch/powerpc/configs/mpc885_ads_defconfig b/arch/powerpc/configs/mpc885_ads_defconfig
-index d21f266cea9a..5cd17adf903f 100644
---- a/arch/powerpc/configs/mpc885_ads_defconfig
-+++ b/arch/powerpc/configs/mpc885_ads_defconfig
-@@ -21,7 +21,6 @@ CONFIG_INET=y
- CONFIG_IP_MULTICAST=y
- CONFIG_IP_PNP=y
- CONFIG_SYN_COOKIES=y
--# CONFIG_IPV6 is not set
- # CONFIG_FW_LOADER is not set
- CONFIG_MTD=y
- CONFIG_MTD_BLOCK=y
-@@ -76,7 +75,6 @@ CONFIG_PERF_EVENTS=y
- CONFIG_MATH_EMULATION=y
- CONFIG_VIRT_CPU_ACCOUNTING_NATIVE=y
- CONFIG_STRICT_KERNEL_RWX=y
--CONFIG_IPV6=y
- CONFIG_BPF_JIT=y
- CONFIG_DEBUG_VM_PGTABLE=y
- CONFIG_BDI_SWITCH=y
+diff --git a/drivers/hid/Makefile b/drivers/hid/Makefile
+index 1ea1a7c0b20f..e29efcb1c040 100644
+--- a/drivers/hid/Makefile
++++ b/drivers/hid/Makefile
+@@ -115,7 +115,6 @@ obj-$(CONFIG_HID_STEELSERIES)	+= hid-steelseries.o
+ obj-$(CONFIG_HID_SUNPLUS)	+= hid-sunplus.o
+ obj-$(CONFIG_HID_GREENASIA)	+= hid-gaff.o
+ obj-$(CONFIG_HID_THRUSTMASTER)	+= hid-tmff.o hid-thrustmaster.o
+-obj-$(CONFIG_HID_TMINIT)	+= hid-tminit.o
+ obj-$(CONFIG_HID_TIVO)		+= hid-tivo.o
+ obj-$(CONFIG_HID_TOPSEED)	+= hid-topseed.o
+ obj-$(CONFIG_HID_TWINHAN)	+= hid-twinhan.o
+diff --git a/drivers/hid/hid-quirks.c b/drivers/hid/hid-quirks.c
+index 51b39bda9a9d..2e104682c22b 100644
+--- a/drivers/hid/hid-quirks.c
++++ b/drivers/hid/hid-quirks.c
+@@ -662,8 +662,6 @@ static const struct hid_device_id hid_have_special_driver[] = {
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_THRUSTMASTER, 0xb653) },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_THRUSTMASTER, 0xb654) },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_THRUSTMASTER, 0xb65a) },
+-#endif
+-#if IS_ENABLED(CONFIG_HID_TMINIT)
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_THRUSTMASTER, 0xb65d) },
+ #endif
+ #if IS_ENABLED(CONFIG_HID_TIVO)
 -- 
 2.30.2
 
