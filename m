@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C695440E29D
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:17:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48D5840E624
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:29:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245455AbhIPQk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:40:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43876 "EHLO mail.kernel.org"
+        id S1345684AbhIPRSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:18:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36120 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241708AbhIPQc4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:32:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 331D06138B;
-        Thu, 16 Sep 2021 16:20:00 +0000 (UTC)
+        id S244366AbhIPRKC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:10:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BFBBF619BB;
+        Thu, 16 Sep 2021 16:37:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809200;
-        bh=4AcssDeN5I9YHKWLjv12UTy87NqFCUmNr+F8o0UQwMw=;
+        s=korg; t=1631810255;
+        bh=eC2rf59Zmojs55nhjXME9XIek1WxD/EcBCAsFnPHhKI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Qx0amIblk8dA7fxqbooV1Eoxl5tSU2dFINDhRfX+2/HTfhUkmhU/RQYMAWo9C3in3
-         XbHa8Dyhra+bqLuxoWSELkLKlQQonKqOZudedThkn4AtXJ7ivcNGBDp7kVMMa3VoR7
-         9ZxGTTawcJScwyM8/gBVwzpWUUcR1Eh/kaqicTKM=
+        b=lCz1UDmn7Jq0K8PFcd5rnFmbG4criJ0zRajeGWQnTGuaZoWHHrUIVYXTc0PJtw3dD
+         1g5aqOwiWGSj3BZtBynht84xXk7M4X5qwvztYSCcIZU3W5pqV5sgWFt7dF9SEeknWc
+         ZPZrp2onMyBZNIWvZWcpMf5wJfBQfFdmQ6lw7tCk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>
-Subject: [PATCH 5.13 066/380] PCI: aardvark: Increase polling delay to 1.5s while waiting for PIO response
+        stable@vger.kernel.org, Jack Wang <jinpu.wang@ionos.com>,
+        Aleksei Marov <aleksei.marov@ionos.com>,
+        Gioh Kim <gi-oh.kim@ionos.com>,
+        Md Haris Iqbal <haris.iqbal@ionos.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 074/432] RDMA/rtrs: Enable the same selective signal for heartbeat and IO
 Date:   Thu, 16 Sep 2021 17:57:03 +0200
-Message-Id: <20210916155806.240738748@linuxfoundation.org>
+Message-Id: <20210916155813.292698249@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,52 +43,165 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: Jack Wang <jinpu.wang@ionos.com>
 
-commit 02bcec3ea5591720114f586960490b04b093a09e upstream.
+[ Upstream commit e2d98504c697f9c8e45b815062f8893b10808d8e ]
 
-Measurements in different conditions showed that aardvark hardware PIO
-response can take up to 1.44s. Increase wait timeout from 1ms to 1.5s to
-ensure that we do not miss responses from hardware. After 1.44s hardware
-returns errors (e.g. Completer abort).
+On idle session, because we do not do signal for heartbeat, it will
+overflow the send queue after sometime.
 
-The previous two patches fixed checking for PIO status, so now we can use
-it to also catch errors which are reported by hardware after 1.44s.
+To avoid that, we need to enable the signal for heartbeat. To do that, add
+a new member signal_interval in rtrs_path, which will set min of
+queue_depth and SERVICE_CON_QUEUE_DEPTH, and track it for both heartbeat
+and IO, so the sq queue full accounting is correct.
 
-After applying this patch, kernel can detect and print PIO errors to dmesg:
-
-    [    6.879999] advk-pcie d0070000.pcie: Non-posted PIO Response Status: CA, 0xe00 @ 0x100004
-    [    6.896436] advk-pcie d0070000.pcie: Posted PIO Response Status: COMP_ERR, 0x804 @ 0x100004
-    [    6.913049] advk-pcie d0070000.pcie: Posted PIO Response Status: COMP_ERR, 0x804 @ 0x100010
-    [    6.929663] advk-pcie d0070000.pcie: Non-posted PIO Response Status: CA, 0xe00 @ 0x100010
-    [    6.953558] advk-pcie d0070000.pcie: Posted PIO Response Status: COMP_ERR, 0x804 @ 0x100014
-    [    6.970170] advk-pcie d0070000.pcie: Non-posted PIO Response Status: CA, 0xe00 @ 0x100014
-    [    6.994328] advk-pcie d0070000.pcie: Posted PIO Response Status: COMP_ERR, 0x804 @ 0x100004
-
-Without this patch kernel prints only a generic error to dmesg:
-
-    [    5.246847] advk-pcie d0070000.pcie: config read/write timed out
-
-Link: https://lore.kernel.org/r/20210722144041.12661-3-pali@kernel.org
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Reviewed-by: Marek Behún <kabel@kernel.org>
-Cc: stable@vger.kernel.org # 7fbcb5da811b ("PCI: aardvark: Don't rely on jiffies while holding spinlock")
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: b38041d50add ("RDMA/rtrs: Do not signal for heatbeat")
+Link: https://lore.kernel.org/r/20210712060750.16494-4-jinpu.wang@ionos.com
+Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
+Reviewed-by: Aleksei Marov <aleksei.marov@ionos.com>
+Reviewed-by: Gioh Kim <gi-oh.kim@ionos.com>
+Reviewed-by: Md Haris Iqbal <haris.iqbal@ionos.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/pci-aardvark.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c |  7 +++++--
+ drivers/infiniband/ulp/rtrs/rtrs-pri.h |  1 +
+ drivers/infiniband/ulp/rtrs/rtrs-srv.c | 11 ++++++-----
+ drivers/infiniband/ulp/rtrs/rtrs.c     |  7 ++++++-
+ 4 files changed, 18 insertions(+), 8 deletions(-)
 
---- a/drivers/pci/controller/pci-aardvark.c
-+++ b/drivers/pci/controller/pci-aardvark.c
-@@ -207,7 +207,7 @@
- #define PCIE_CONFIG_WR_TYPE0			0xa
- #define PCIE_CONFIG_WR_TYPE1			0xb
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+index 5cb00ea08919..f023676e05e4 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+@@ -478,7 +478,7 @@ static int rtrs_post_send_rdma(struct rtrs_clt_con *con,
+ 	 * From time to time we have to post signalled sends,
+ 	 * or send queue will fill up and only QP reset can help.
+ 	 */
+-	flags = atomic_inc_return(&con->c.wr_cnt) % sess->queue_depth ?
++	flags = atomic_inc_return(&con->c.wr_cnt) % sess->s.signal_interval ?
+ 			0 : IB_SEND_SIGNALED;
  
--#define PIO_RETRY_CNT			500
-+#define PIO_RETRY_CNT			750000 /* 1.5 s */
- #define PIO_RETRY_DELAY			2 /* 2 us*/
+ 	ib_dma_sync_single_for_device(sess->s.dev->ib_dev, req->iu->dma_addr,
+@@ -680,6 +680,7 @@ static void rtrs_clt_rdma_done(struct ib_cq *cq, struct ib_wc *wc)
+ 	case IB_WC_RDMA_WRITE:
+ 		/*
+ 		 * post_send() RDMA write completions of IO reqs (read/write)
++		 * and hb.
+ 		 */
+ 		break;
  
- #define LINK_WAIT_MAX_RETRIES		10
+@@ -1043,7 +1044,7 @@ static int rtrs_post_rdma_write_sg(struct rtrs_clt_con *con,
+ 	 * From time to time we have to post signalled sends,
+ 	 * or send queue will fill up and only QP reset can help.
+ 	 */
+-	flags = atomic_inc_return(&con->c.wr_cnt) % sess->queue_depth ?
++	flags = atomic_inc_return(&con->c.wr_cnt) % sess->s.signal_interval ?
+ 			0 : IB_SEND_SIGNALED;
+ 
+ 	ib_dma_sync_single_for_device(sess->s.dev->ib_dev, req->iu->dma_addr,
+@@ -1849,6 +1850,8 @@ static int rtrs_rdma_conn_established(struct rtrs_clt_con *con,
+ 				return -ENOMEM;
+ 		}
+ 		sess->queue_depth = queue_depth;
++		sess->s.signal_interval = min_not_zero(queue_depth,
++						(unsigned short) SERVICE_CON_QUEUE_DEPTH);
+ 		sess->max_hdr_size = le32_to_cpu(msg->max_hdr_size);
+ 		sess->max_io_size = le32_to_cpu(msg->max_io_size);
+ 		sess->flags = le32_to_cpu(msg->flags);
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-pri.h b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
+index a44a4fb1b515..b88a4944cb30 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-pri.h
++++ b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
+@@ -109,6 +109,7 @@ struct rtrs_sess {
+ 	unsigned int		con_num;
+ 	unsigned int		irq_con_num;
+ 	unsigned int		recon_cnt;
++	unsigned int		signal_interval;
+ 	struct rtrs_ib_dev	*dev;
+ 	int			dev_ref;
+ 	struct ib_cqe		*hb_cqe;
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+index 31b846ca0c5e..44ed15f38896 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+@@ -201,7 +201,6 @@ static int rdma_write_sg(struct rtrs_srv_op *id)
+ 	struct rtrs_srv_sess *sess = to_srv_sess(s);
+ 	dma_addr_t dma_addr = sess->dma_addr[id->msg_id];
+ 	struct rtrs_srv_mr *srv_mr;
+-	struct rtrs_srv *srv = sess->srv;
+ 	struct ib_send_wr inv_wr;
+ 	struct ib_rdma_wr imm_wr;
+ 	struct ib_rdma_wr *wr = NULL;
+@@ -269,7 +268,7 @@ static int rdma_write_sg(struct rtrs_srv_op *id)
+ 	 * From time to time we have to post signaled sends,
+ 	 * or send queue will fill up and only QP reset can help.
+ 	 */
+-	flags = (atomic_inc_return(&id->con->c.wr_cnt) % srv->queue_depth) ?
++	flags = (atomic_inc_return(&id->con->c.wr_cnt) % s->signal_interval) ?
+ 		0 : IB_SEND_SIGNALED;
+ 
+ 	if (need_inval) {
+@@ -347,7 +346,6 @@ static int send_io_resp_imm(struct rtrs_srv_con *con, struct rtrs_srv_op *id,
+ 	struct ib_send_wr inv_wr, *wr = NULL;
+ 	struct ib_rdma_wr imm_wr;
+ 	struct ib_reg_wr rwr;
+-	struct rtrs_srv *srv = sess->srv;
+ 	struct rtrs_srv_mr *srv_mr;
+ 	bool need_inval = false;
+ 	enum ib_send_flags flags;
+@@ -396,7 +394,7 @@ static int send_io_resp_imm(struct rtrs_srv_con *con, struct rtrs_srv_op *id,
+ 	 * From time to time we have to post signalled sends,
+ 	 * or send queue will fill up and only QP reset can help.
+ 	 */
+-	flags = (atomic_inc_return(&con->c.wr_cnt) % srv->queue_depth) ?
++	flags = (atomic_inc_return(&con->c.wr_cnt) % s->signal_interval) ?
+ 		0 : IB_SEND_SIGNALED;
+ 	imm = rtrs_to_io_rsp_imm(id->msg_id, errno, need_inval);
+ 	imm_wr.wr.next = NULL;
+@@ -1268,8 +1266,9 @@ static void rtrs_srv_rdma_done(struct ib_cq *cq, struct ib_wc *wc)
+ 	case IB_WC_SEND:
+ 		/*
+ 		 * post_send() RDMA write completions of IO reqs (read/write)
++		 * and hb.
+ 		 */
+-		atomic_add(srv->queue_depth, &con->sq_wr_avail);
++		atomic_add(s->signal_interval, &con->sq_wr_avail);
+ 
+ 		if (unlikely(!list_empty_careful(&con->rsp_wr_wait_list)))
+ 			rtrs_rdma_process_wr_wait_list(con);
+@@ -1659,6 +1658,8 @@ static int create_con(struct rtrs_srv_sess *sess,
+ 		max_send_wr = min_t(int, wr_limit,
+ 				    SERVICE_CON_QUEUE_DEPTH * 2 + 2);
+ 		max_recv_wr = max_send_wr;
++		s->signal_interval = min_not_zero(srv->queue_depth,
++						  (size_t)SERVICE_CON_QUEUE_DEPTH);
+ 	} else {
+ 		/* when always_invlaidate enalbed, we need linv+rinv+mr+imm */
+ 		if (always_invalidate)
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs.c b/drivers/infiniband/ulp/rtrs/rtrs.c
+index 61919ebd92b2..a8f8affc546a 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs.c
+@@ -187,10 +187,15 @@ int rtrs_post_rdma_write_imm_empty(struct rtrs_con *con, struct ib_cqe *cqe,
+ 				    struct ib_send_wr *head)
+ {
+ 	struct ib_rdma_wr wr;
++	struct rtrs_sess *sess = con->sess;
++	enum ib_send_flags sflags;
++
++	sflags = (atomic_inc_return(&con->wr_cnt) % sess->signal_interval) ?
++		0 : IB_SEND_SIGNALED;
+ 
+ 	wr = (struct ib_rdma_wr) {
+ 		.wr.wr_cqe	= cqe,
+-		.wr.send_flags	= flags,
++		.wr.send_flags	= sflags,
+ 		.wr.opcode	= IB_WR_RDMA_WRITE_WITH_IMM,
+ 		.wr.ex.imm_data	= cpu_to_be32(imm_data),
+ 	};
+-- 
+2.30.2
+
 
 
