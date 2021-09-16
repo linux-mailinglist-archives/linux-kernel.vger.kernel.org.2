@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FEF040EDC0
+	by mail.lfdr.de (Postfix) with ESMTP id 7D3BE40EDC1
 	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 01:15:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241584AbhIPXPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 19:15:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55382 "EHLO
+        id S241589AbhIPXPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 19:15:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241504AbhIPXO6 (ORCPT
+        with ESMTP id S240887AbhIPXPA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 19:14:58 -0400
+        Thu, 16 Sep 2021 19:15:00 -0400
 Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5469C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 16:13:37 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id t190so11653032qke.7
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 16:13:37 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2458BC061764
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 16:13:39 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id bk29so11633704qkb.8
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 16:13:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=soleen.com; s=google;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=exeHdjIsxyGc1OZ7fPc2yLNva0RUnn224iKjfeO/Tps=;
-        b=csh+0NjNjXq4xVbHcgfV0tkZaYVDDxnR+KyTpl/TMfJf1Bcqjh8iGnlSYcecebap8G
-         6k/safqs9PVQDTztgaPl40nThhrfZi5ed4IK8xePB0T8Sa8MYs+aXBV//x3Fck3k2iV9
-         6a5XjOPT7Lwu25MAGF1c0z2M3Lw/EqJOfJm5d0CoIPTkZth5NctzNRz9VHjYtnSocyrL
-         j31/z+Tl0HcwZVo7n036pWZYjyzxJP7gLbRfZBIkFGRKsYORdyu9Krb9oPdMxFVUemfr
-         nJA+7UTbw0/PsRDqMlZmUc/nfCSJ196huH92bsDYJpqgAJN94ges86+cyx1CJDz6CLvi
-         fijg==
+        bh=BQux9XsHP7dRxDZt08eGPFQfNHY8adQiq/RCf4mKhCc=;
+        b=NoOj5f6yoU9HGkB256tuDMAQ+oQg0DyOgXuLeSabqfzpjeS+7uNGL9VmF19o+suZG4
+         P+8q6IFIevz5R0FrLUfKl2PXuke2OJ7YsQ7gpaXcP6cRzKJIExHQXG4MwsYuJ7zM3+R/
+         yzzoHDGEEmvUq6h4MWsssOfat3nUtPdglWdytijV1K8C2dr/UMZKEwJRMOgLTI/ZpKfk
+         82Rv/1ai89aWXENaXB5FEw2ZvywuM0DeJ7M2PTD9CaUVeEJtoSfs3fB6scvNcVby04xC
+         6vWJyN3x6L+UQepyd9BfZQEO/m9Pil40d4cq+NnZepTUfaz12E/t8QGCIQ2RHj9+BsL+
+         7NoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=exeHdjIsxyGc1OZ7fPc2yLNva0RUnn224iKjfeO/Tps=;
-        b=HdfQLXfHt/kWC/vIn1S1FaW7UQ8ZgX/w/d0auvZIRx/N0b68q6+tgzjP4qTH4OTmzY
-         P9u9U0d/oy2UZ4dp3P5EfyZjB02yHFNfcsdWYGaBeQZpXjb0Fw0wssG0iGB5MnJGaxv7
-         d5rtjnRx+pCFcwrx5TdHPn9ACndt268569nAXlNYcOJNpZhCynS2Sdv83FGb/tQRsK3x
-         IpYW0kNe7XN1l/ylVE3pFgA1STDVJuVt2kX51vGTlvwGZBQveu5REs41cjLAVDcLbczq
-         idbe2ALV/KrV9RIid2KpZ9SClvmmdw7qfwDIftpqY1yxaHko6xykVIv6qYn0Q5BQ4VnR
-         vmXQ==
-X-Gm-Message-State: AOAM532Kf/0z1cfjv94HlpHslExb83emB+l07NZlAYvsTCdoEjKlplcz
-        9xTcntrPuEKVOX8X4IEr5vaHjA==
-X-Google-Smtp-Source: ABdhPJyjBUpS0VkoacHlSf0TOrxrLfXY2aEqHlMPIXlkIZ7kOCY/abeaLzU3ssMdOIXsPkRjrkDvCQ==
-X-Received: by 2002:a37:68d0:: with SMTP id d199mr7411119qkc.96.1631834016835;
-        Thu, 16 Sep 2021 16:13:36 -0700 (PDT)
+        bh=BQux9XsHP7dRxDZt08eGPFQfNHY8adQiq/RCf4mKhCc=;
+        b=jQrSXLwHdLFj2WJrHqPtcmo4qwU9neCgzUzWK7QdtqhJYogDvurlc15E2BI7+d8gc7
+         Ce5snabe+UKTVwUM3sx+f1Rksb1zJjc2xpg8FlkopdXP8Av+mydEHejgVD8baGfthQ8W
+         KJB30OQspoVO6cJH8tlkhPknAYM4WS1QmSVL3p004l7xPKE8iqQsp41F2S+fyz/oHJ+8
+         m0okCC2EISCNRNFrr2/PcwU1mGczfRRohFPU80RfGAOuUjiN7A6CrCoK48XEqlGyi5UE
+         FtHlJs1dTEaeCQFE41/qH16b+rbC8cObEM2JbcZ/wts1axOQD+ojFyLVYXMlJ1qQKUwn
+         LGQg==
+X-Gm-Message-State: AOAM531vHio3cJQFu5ZaFfMn7lhItek54nP5SbTQ2LhsUtXfGm5zEMQ4
+        XrqF1QBfO7x8bDnB6rG5CZvwWg==
+X-Google-Smtp-Source: ABdhPJx+ngjPujbpkT75YECKrfmJxJOEJsaePp8x2rrmF2+9A4AswChr/Jh1n8ne7MSEYUPNLgftWA==
+X-Received: by 2002:a37:ab0d:: with SMTP id u13mr7574675qke.521.1631834018299;
+        Thu, 16 Sep 2021 16:13:38 -0700 (PDT)
 Received: from localhost.localdomain (c-73-69-118-222.hsd1.nh.comcast.net. [73.69.118.222])
-        by smtp.gmail.com with ESMTPSA id az6sm3312891qkb.70.2021.09.16.16.13.35
+        by smtp.gmail.com with ESMTPSA id az6sm3312891qkb.70.2021.09.16.16.13.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 16:13:36 -0700 (PDT)
+        Thu, 16 Sep 2021 16:13:37 -0700 (PDT)
 From:   Pasha Tatashin <pasha.tatashin@soleen.com>
 To:     pasha.tatashin@soleen.com, jmorris@namei.org, sashal@kernel.org,
         ebiederm@xmission.com, kexec@lists.infradead.org,
@@ -60,9 +60,9 @@ To:     pasha.tatashin@soleen.com, jmorris@namei.org, sashal@kernel.org,
         selindag@gmail.com, tyhicks@linux.microsoft.com,
         kernelfans@gmail.com, akpm@linux-foundation.org,
         madvenka@linux.microsoft.com
-Subject: [PATCH v17 06/15] arm64: kexec: Use dcache ops macros instead of open-coding
-Date:   Thu, 16 Sep 2021 19:13:16 -0400
-Message-Id: <20210916231325.125533-7-pasha.tatashin@soleen.com>
+Subject: [PATCH v17 07/15] arm64: kexec: pass kimage as the only argument to relocation function
+Date:   Thu, 16 Sep 2021 19:13:17 -0400
+Message-Id: <20210916231325.125533-8-pasha.tatashin@soleen.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210916231325.125533-1-pasha.tatashin@soleen.com>
 References: <20210916231325.125533-1-pasha.tatashin@soleen.com>
@@ -72,116 +72,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kexec does dcache maintenance when it re-writes all memory. Our
-dcache_by_line_op macro depends on reading the sanitized DminLine
-from memory. Kexec may have overwritten this, so open-codes the
-sequence.
+Currently, kexec relocation function (arm64_relocate_new_kernel) accepts
+the following arguments:
 
-dcache_by_line_op is a whole set of macros, it uses dcache_line_size
-which uses read_ctr for the sanitsed DminLine. Reading the DminLine
-is the first thing the dcache_by_line_op does.
+head:		start of array that contains relocation information.
+entry:		entry point for new kernel or purgatory.
+dtb_mem:	first and only argument to entry.
 
-Rename dcache_by_line_op dcache_by_myline_op and take DminLine as
-an argument. Kexec can now use the slightly smaller macro.
+The number of arguments cannot be easily expended, because this
+function is also called from HVC_SOFT_RESTART, which preserves only
+three arguments. And, also arm64_relocate_new_kernel is written in
+assembly but called without stack, thus no place to move extra arguments
+to free registers.
 
-This makes up-coming changes to the dcache maintenance easier on
-the eye.
+Soon, we will need to pass more arguments: once we enable MMU we
+will need to pass information about page tables.
 
-Code generated by the existing callers is unchanged.
+Pass kimage to arm64_relocate_new_kernel, and teach it to get the
+required fields from kimage.
 
-Suggested-by: James Morse <james.morse@arm.com>
 Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
 ---
- arch/arm64/include/asm/assembler.h  | 30 ++++++++++++++++++++++-------
- arch/arm64/kernel/relocate_kernel.S | 13 +++----------
- 2 files changed, 26 insertions(+), 17 deletions(-)
+ arch/arm64/kernel/asm-offsets.c     |  7 +++++++
+ arch/arm64/kernel/machine_kexec.c   |  7 +++++--
+ arch/arm64/kernel/relocate_kernel.S | 10 ++++------
+ 3 files changed, 16 insertions(+), 8 deletions(-)
 
-diff --git a/arch/arm64/include/asm/assembler.h b/arch/arm64/include/asm/assembler.h
-index 89faca0e740d..71999a325055 100644
---- a/arch/arm64/include/asm/assembler.h
-+++ b/arch/arm64/include/asm/assembler.h
-@@ -405,19 +405,19 @@ alternative_endif
+diff --git a/arch/arm64/kernel/asm-offsets.c b/arch/arm64/kernel/asm-offsets.c
+index 551427ae8cc5..1d3319c7518e 100644
+--- a/arch/arm64/kernel/asm-offsets.c
++++ b/arch/arm64/kernel/asm-offsets.c
+@@ -9,6 +9,7 @@
  
- /*
-  * Macro to perform a data cache maintenance for the interval
-- * [start, end)
-+ * [start, end) with dcache line size explicitly provided.
-  *
-  * 	op:		operation passed to dc instruction
-  * 	domain:		domain used in dsb instruciton
-  * 	start:          starting virtual address of the region
-  * 	end:            end virtual address of the region
-+ *	linesz:		dcache line size
-  * 	fixup:		optional label to branch to on user fault
-- * 	Corrupts:       start, end, tmp1, tmp2
-+ * 	Corrupts:       start, end, tmp
-  */
--	.macro dcache_by_line_op op, domain, start, end, tmp1, tmp2, fixup
--	dcache_line_size \tmp1, \tmp2
--	sub	\tmp2, \tmp1, #1
--	bic	\start, \start, \tmp2
-+	.macro dcache_by_myline_op op, domain, start, end, linesz, tmp, fixup
-+	sub	\tmp, \linesz, #1
-+	bic	\start, \start, \tmp
- .Ldcache_op\@:
- 	.ifc	\op, cvau
- 	__dcache_op_workaround_clean_cache \op, \start
-@@ -436,7 +436,7 @@ alternative_endif
- 	.endif
- 	.endif
- 	.endif
--	add	\start, \start, \tmp1
-+	add	\start, \start, \linesz
- 	cmp	\start, \end
- 	b.lo	.Ldcache_op\@
- 	dsb	\domain
-@@ -444,6 +444,22 @@ alternative_endif
- 	_cond_extable .Ldcache_op\@, \fixup
- 	.endm
+ #include <linux/arm_sdei.h>
+ #include <linux/sched.h>
++#include <linux/kexec.h>
+ #include <linux/mm.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/kvm_host.h>
+@@ -170,6 +171,12 @@ int main(void)
+   DEFINE(PTRAUTH_KERNEL_KEY_APIA,	offsetof(struct ptrauth_keys_kernel, apia));
+ #endif
+   BLANK();
++#endif
++#ifdef CONFIG_KEXEC_CORE
++  DEFINE(KIMAGE_ARCH_DTB_MEM,		offsetof(struct kimage, arch.dtb_mem));
++  DEFINE(KIMAGE_HEAD,			offsetof(struct kimage, head));
++  DEFINE(KIMAGE_START,			offsetof(struct kimage, start));
++  BLANK();
+ #endif
+   return 0;
+ }
+diff --git a/arch/arm64/kernel/machine_kexec.c b/arch/arm64/kernel/machine_kexec.c
+index 7f1cb5a2a463..e210b19592c6 100644
+--- a/arch/arm64/kernel/machine_kexec.c
++++ b/arch/arm64/kernel/machine_kexec.c
+@@ -84,6 +84,9 @@ static void kexec_list_flush(struct kimage *kimage)
+ {
+ 	kimage_entry_t *entry;
  
-+/*
-+ * Macro to perform a data cache maintenance for the interval
-+ * [start, end)
-+ *
-+ * 	op:		operation passed to dc instruction
-+ * 	domain:		domain used in dsb instruciton
-+ * 	start:          starting virtual address of the region
-+ * 	end:            end virtual address of the region
-+ * 	fixup:		optional label to branch to on user fault
-+ * 	Corrupts:       start, end, tmp1, tmp2
-+ */
-+	.macro dcache_by_line_op op, domain, start, end, tmp1, tmp2, fixup
-+	dcache_line_size \tmp1, \tmp2
-+	dcache_by_myline_op \op, \domain, \start, \end, \tmp1, \tmp2, \fixup
-+	.endm
++	dcache_clean_inval_poc((unsigned long)kimage,
++			       (unsigned long)kimage + sizeof(*kimage));
 +
- /*
-  * Macro to perform an instruction cache maintenance for the interval
-  * [start, end)
+ 	for (entry = &kimage->head; ; entry++) {
+ 		unsigned int flag;
+ 		unsigned long addr;
+@@ -206,8 +209,8 @@ void machine_kexec(struct kimage *kimage)
+ 		restart(is_hyp_nvhe(), kimage->start, kimage->arch.dtb_mem,
+ 			0, 0);
+ 	} else {
+-		cpu_soft_restart(kimage->arch.kern_reloc, kimage->head,
+-				 kimage->start, kimage->arch.dtb_mem);
++		cpu_soft_restart(kimage->arch.kern_reloc, virt_to_phys(kimage),
++				 0, 0);
+ 	}
+ 
+ 	BUG(); /* Should never get here. */
 diff --git a/arch/arm64/kernel/relocate_kernel.S b/arch/arm64/kernel/relocate_kernel.S
-index 8058fabe0a76..8c43779e8cc6 100644
+index 8c43779e8cc6..63ea19868f63 100644
 --- a/arch/arm64/kernel/relocate_kernel.S
 +++ b/arch/arm64/kernel/relocate_kernel.S
-@@ -41,16 +41,9 @@ SYM_CODE_START(arm64_relocate_new_kernel)
- 	tbz	x16, IND_SOURCE_BIT, .Ltest_indirection
+@@ -27,9 +27,7 @@
+  */
+ SYM_CODE_START(arm64_relocate_new_kernel)
+ 	/* Setup the list loop variables. */
+-	mov	x18, x2				/* x18 = dtb address */
+-	mov	x17, x1				/* x17 = kimage_start */
+-	mov	x16, x0				/* x16 = kimage_head */
++	ldr	x16, [x0, #KIMAGE_HEAD]		/* x16 = kimage_head */
+ 	mov	x14, xzr			/* x14 = entry ptr */
+ 	mov	x13, xzr			/* x13 = copy dest */
+ 	raw_dcache_line_size x15, x1		/* x15 = dcache line size */
+@@ -63,12 +61,12 @@ SYM_CODE_START(arm64_relocate_new_kernel)
+ 	isb
  
- 	/* Invalidate dest page to PoC. */
--	mov     x2, x13
--	add     x20, x2, #PAGE_SIZE
--	sub     x1, x15, #1
--	bic     x2, x2, x1
--2:	dc      ivac, x2
--	add     x2, x2, x15
--	cmp     x2, x20
--	b.lo    2b
--	dsb     sy
+ 	/* Start new image. */
+-	mov	x0, x18
++	ldr	x4, [x0, #KIMAGE_START]		/* relocation start */
++	ldr	x0, [x0, #KIMAGE_ARCH_DTB_MEM]	/* dtb address */
+ 	mov	x1, xzr
+ 	mov	x2, xzr
+ 	mov	x3, xzr
+-	br	x17
 -
-+	mov	x2, x13
-+	add	x1, x2, #PAGE_SIZE
-+	dcache_by_myline_op ivac, sy, x2, x1, x15, x20
- 	copy_page x13, x12, x1, x2, x3, x4, x5, x6, x7, x8
- 	b	.Lnext
- .Ltest_indirection:
++	br	x4
+ SYM_CODE_END(arm64_relocate_new_kernel)
+ 
+ .align 3	/* To keep the 64-bit values below naturally aligned. */
 -- 
 2.25.1
 
