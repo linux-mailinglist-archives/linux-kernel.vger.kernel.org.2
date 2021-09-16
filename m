@@ -2,43 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBF3640E676
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:30:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60F8040E29A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:17:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346749AbhIPRVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:21:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41016 "EHLO mail.kernel.org"
+        id S245337AbhIPQkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:40:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344390AbhIPRNX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:13:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B280F61263;
-        Thu, 16 Sep 2021 16:38:44 +0000 (UTC)
+        id S243000AbhIPQeE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:34:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CA413617E3;
+        Thu, 16 Sep 2021 16:20:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810325;
-        bh=3QmECldtHr1IgJyWG/9e3DT2CbZjRu4GNBs9oAMSUXE=;
+        s=korg; t=1631809244;
+        bh=VMxKDaM3SrW+qUbRpV5JvN7HFM5PZKPdR0iiyeMpvyE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IwIigM8+nrkkZWDyCGvaVqbf45jYL1QszP91/vVyCQhilPZSL2lJC/dhX+BkOyg45
-         GSuXYuRUxbAF2tzylXqZeyj6rV4m6dLCP3XoDOW/NCiRRHS1w7ep6jAI0r+bMQ5Geu
-         F2r96uhbx6LBNmjFRWhn+AVc3/rRYB6ENt9N0SB0=
+        b=hYu9YvlFnndDdVcaLvMvGLn7ljyk25Xz1o26taHYP7m9XLmt/zfuRq/QGyMoJmbbV
+         E81p5pPk18EYWgaW07BCD+ZiRpqR35A6CIYfvKwxC35ErlrblUKv2ByraidYpOtFJM
+         vGMaG/xYlzAsVaJvBYzP1rzkLLtCp/Y56SUuSGt8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Can Guo <cang@codeaurora.org>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        Avri Altman <avri.altman@wdc.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Enrico Joedecke <joedecke@de.ibm.com>,
+        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 092/432] scsi: ufs: Use DECLARE_COMPLETION_ONSTACK() where appropriate
+Subject: [PATCH 5.13 084/380] cpuidle: pseries: Fixup CEDE0 latency only for POWER10 onwards
 Date:   Thu, 16 Sep 2021 17:57:21 +0200
-Message-Id: <20210916155813.896454635@linuxfoundation.org>
+Message-Id: <20210916155806.893865695@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,94 +41,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bart Van Assche <bvanassche@acm.org>
+From: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
 
-[ Upstream commit 8a686f26eaa4b8a5c494b6b69e8a97815e3ffb82 ]
+[ Upstream commit 50741b70b0cbbafbd9199f5180e66c0c53783a4a ]
 
->From Documentation/scheduler/completion.rst: "When a completion is declared
-as a local variable within a function, then the initialization should
-always use DECLARE_COMPLETION_ONSTACK() explicitly, not just to make
-lockdep happy, but also to make it clear that limited scope had been
-considered and is intentional."
+Commit d947fb4c965c ("cpuidle: pseries: Fixup exit latency for
+CEDE(0)") sets the exit latency of CEDE(0) based on the latency values
+of the Extended CEDE states advertised by the platform
 
-Link: https://lore.kernel.org/r/20210722033439.26550-6-bvanassche@acm.org
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Stanley Chu <stanley.chu@mediatek.com>
-Cc: Can Guo <cang@codeaurora.org>
-Cc: Asutosh Das <asutoshd@codeaurora.org>
-Cc: Avri Altman <avri.altman@wdc.com>
-Reviewed-by: Avri Altman <avri.altman@wdc.com>
-Reviewed-by: Bean Huo <beanhuo@micron.com>
-Reviewed-by: Daejun Park <daejun7.park@samsung.com>
-Signed-off-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+On POWER9 LPARs, the firmwares advertise a very low value of 2us for
+CEDE1 exit latency on a Dedicated LPAR. The latency advertized by the
+PHYP hypervisor corresponds to the latency required to wakeup from the
+underlying hardware idle state. However the wakeup latency from the
+LPAR perspective should include
+
+1. The time taken to transition the CPU from the Hypervisor into the
+   LPAR post wakeup from platform idle state
+
+2. Time taken to send the IPI from the source CPU (waker) to the idle
+   target CPU (wakee).
+
+1. can be measured via timer idle test, where we queue a timer, say
+for 1ms, and enter the CEDE state. When the timer fires, in the timer
+handler we compute how much extra timer over the expected 1ms have we
+consumed. On a a POWER9 LPAR the numbers are
+
+CEDE latency measured using a timer (numbers in ns)
+N       Min      Median   Avg       90%ile  99%ile    Max    Stddev
+400     2601     5677     5668.74    5917    6413     9299   455.01
+
+1. and 2. combined can be determined by an IPI latency test where we
+send an IPI to an idle CPU and in the handler compute the time
+difference between when the IPI was sent and when the handler ran. We
+see the following numbers on POWER9 LPAR.
+
+CEDE latency measured using an IPI (numbers in ns)
+N       Min      Median   Avg       90%ile  99%ile    Max    Stddev
+400     711      7564     7369.43   8559    9514      9698   1200.01
+
+Suppose, we consider the 99th percentile latency value measured using
+the IPI to be the wakeup latency, the value would be 9.5us This is in
+the ballpark of the default value of 10us.
+
+Hence, use the exit latency of CEDE(0) based on the latency values
+advertized by platform only from POWER10 onwards. The values
+advertized on POWER10 platforms is more realistic and informed by the
+latency measurements. For earlier platforms stick to the default value
+of 10us. The fix was suggested by Michael Ellerman.
+
+Fixes: d947fb4c965c ("cpuidle: pseries: Fixup exit latency for CEDE(0)")
+Reported-by: Enrico Joedecke <joedecke@de.ibm.com>
+Signed-off-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/1626676399-15975-2-git-send-email-ego@linux.vnet.ibm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/ufs/ufshcd.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ drivers/cpuidle/cpuidle-pseries.c | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 179227180961..0fe559ddc789 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -2949,11 +2949,11 @@ static int ufshcd_exec_dev_cmd(struct ufs_hba *hba,
- 		enum dev_cmd_type cmd_type, int timeout)
- {
- 	struct request_queue *q = hba->cmd_queue;
-+	DECLARE_COMPLETION_ONSTACK(wait);
- 	struct request *req;
- 	struct ufshcd_lrb *lrbp;
- 	int err;
- 	int tag;
--	struct completion wait;
- 
- 	down_read(&hba->clk_scaling_lock);
- 
-@@ -2978,7 +2978,6 @@ static int ufshcd_exec_dev_cmd(struct ufs_hba *hba,
- 		goto out;
- 	}
- 
--	init_completion(&wait);
- 	lrbp = &hba->lrb[tag];
- 	WARN_ON(lrbp->cmd);
- 	err = ufshcd_compose_dev_cmd(hba, lrbp, cmd_type, tag);
-@@ -3985,14 +3984,13 @@ EXPORT_SYMBOL_GPL(ufshcd_dme_get_attr);
-  */
- static int ufshcd_uic_pwr_ctrl(struct ufs_hba *hba, struct uic_command *cmd)
- {
--	struct completion uic_async_done;
-+	DECLARE_COMPLETION_ONSTACK(uic_async_done);
- 	unsigned long flags;
- 	u8 status;
- 	int ret;
- 	bool reenable_intr = false;
- 
- 	mutex_lock(&hba->uic_cmd_mutex);
--	init_completion(&uic_async_done);
- 	ufshcd_add_delay_before_dme_cmd(hba);
- 
- 	spin_lock_irqsave(hba->host->host_lock, flags);
-@@ -6665,11 +6663,11 @@ static int ufshcd_issue_devman_upiu_cmd(struct ufs_hba *hba,
- 					enum query_opcode desc_op)
- {
- 	struct request_queue *q = hba->cmd_queue;
-+	DECLARE_COMPLETION_ONSTACK(wait);
- 	struct request *req;
- 	struct ufshcd_lrb *lrbp;
- 	int err = 0;
- 	int tag;
--	struct completion wait;
- 	u8 upiu_flags;
- 
- 	down_read(&hba->clk_scaling_lock);
-@@ -6687,7 +6685,6 @@ static int ufshcd_issue_devman_upiu_cmd(struct ufs_hba *hba,
- 		goto out;
- 	}
- 
--	init_completion(&wait);
- 	lrbp = &hba->lrb[tag];
- 	WARN_ON(lrbp->cmd);
- 	lrbp->cmd = NULL;
+diff --git a/drivers/cpuidle/cpuidle-pseries.c b/drivers/cpuidle/cpuidle-pseries.c
+index a2b5c6f60cf0..e592280d8acf 100644
+--- a/drivers/cpuidle/cpuidle-pseries.c
++++ b/drivers/cpuidle/cpuidle-pseries.c
+@@ -419,7 +419,21 @@ static int pseries_idle_probe(void)
+ 			cpuidle_state_table = shared_states;
+ 			max_idle_state = ARRAY_SIZE(shared_states);
+ 		} else {
+-			fixup_cede0_latency();
++			/*
++			 * Use firmware provided latency values
++			 * starting with POWER10 platforms. In the
++			 * case that we are running on a POWER10
++			 * platform but in an earlier compat mode, we
++			 * can still use the firmware provided values.
++			 *
++			 * However, on platforms prior to POWER10, we
++			 * cannot rely on the accuracy of the firmware
++			 * provided latency values. On such platforms,
++			 * go with the conservative default estimate
++			 * of 10us.
++			 */
++			if (cpu_has_feature(CPU_FTR_ARCH_31) || pvr_version_is(PVR_POWER10))
++				fixup_cede0_latency();
+ 			cpuidle_state_table = dedicated_states;
+ 			max_idle_state = NR_DEDICATED_STATES;
+ 		}
 -- 
 2.30.2
 
