@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1AF240E53F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:26:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AF3640E8D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:01:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350292AbhIPRJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:09:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51640 "EHLO mail.kernel.org"
+        id S1348522AbhIPRmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:42:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51274 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347308AbhIPQ6p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:58:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 736F161ABF;
-        Thu, 16 Sep 2021 16:32:01 +0000 (UTC)
+        id S1344610AbhIPRf5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:35:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 88CEE6322F;
+        Thu, 16 Sep 2021 16:49:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809921;
-        bh=vSCHNd0fBThLqXKbCXghXdPcsOfYDxh1LqWH4fhyoko=;
+        s=korg; t=1631810941;
+        bh=n94kMwFHUMe+HkJMYWMwz/mNrdLxyfQDhWM2x1S7TPk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XipPWaH7lMvKhzv6LM3sf4Ydk+hft4Roxn7xY9zabvrSu/EA1aDocZfycuutW0INs
-         61884eXGVyEDiuSnkqxhMiBDKk+xAcNwQKbcfT/S+ofaW8E7bqL9beR7u0gFY5tnpD
-         tlzPHWWN4dNf6B87DFCFzJysABporcbYpWs5QAYg=
+        b=Ce35D9SMnhrWKYHcybyjBWrCwb3i0NXBEvDHOL99IJXH4VFWS1cyEx6t+3juqw57S
+         SyV+39RHfkWPj9AJhMe1PCWB1vzY6x0rOjivFyd4UAzKW07do4WTtJkLOzUXbZp/73
+         Aw8j48OXmIaVUxjX1zyUPy6ipT5gVjnkFFG02rNQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Nadezda Lutovinova <lutovinova@ispras.ru>,
+        stable@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 315/380] usb: dwc3: imx8mp: request irq after initializing dwc3
-Date:   Thu, 16 Sep 2021 18:01:12 +0200
-Message-Id: <20210916155814.768332033@linuxfoundation.org>
+Subject: [PATCH 5.14 324/432] kselftest/arm64: pac: Fix skipping of tests on systems without PAC
+Date:   Thu, 16 Sep 2021 18:01:13 +0200
+Message-Id: <20210916155821.818467461@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,61 +40,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nadezda Lutovinova <lutovinova@ispras.ru>
+From: Mark Brown <broonie@kernel.org>
 
-[ Upstream commit 6a48d0ae01a6ab05ae5e78328546a2f5f6d3054a ]
+[ Upstream commit 0c69bd2ca6ee20064dde7853cd749284e053a874 ]
 
-If IRQ occurs between calling  devm_request_threaded_irq() and
-initializing dwc3_imx->dwc3, then null pointer dereference occurs
-since dwc3_imx->dwc3 is used in dwc3_imx8mp_interrupt().
+The PAC tests check to see if the system supports the relevant PAC features
+but instead of skipping the tests if they can't be executed they fail the
+tests which makes things look like they're not working when they are.
 
-The patch puts registration of the interrupt handler after
-initializing of neccesery data.
-
-Found by Linux Driver Verification project (linuxtesting.org).
-
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
-Acked-by: Felipe Balbi <balbi@kernel.org>
-Signed-off-by: Nadezda Lutovinova <lutovinova@ispras.ru>
-Link: https://lore.kernel.org/r/20210819154818.18334-1-lutovinova@ispras.ru
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20210819165723.43903-1-broonie@kernel.org
+Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/dwc3/dwc3-imx8mp.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ tools/testing/selftests/arm64/pauth/pac.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/usb/dwc3/dwc3-imx8mp.c b/drivers/usb/dwc3/dwc3-imx8mp.c
-index 756faa46d33a..d328d20abfbc 100644
---- a/drivers/usb/dwc3/dwc3-imx8mp.c
-+++ b/drivers/usb/dwc3/dwc3-imx8mp.c
-@@ -152,13 +152,6 @@ static int dwc3_imx8mp_probe(struct platform_device *pdev)
- 	}
- 	dwc3_imx->irq = irq;
+diff --git a/tools/testing/selftests/arm64/pauth/pac.c b/tools/testing/selftests/arm64/pauth/pac.c
+index 592fe538506e..b743daa772f5 100644
+--- a/tools/testing/selftests/arm64/pauth/pac.c
++++ b/tools/testing/selftests/arm64/pauth/pac.c
+@@ -25,13 +25,15 @@
+ do { \
+ 	unsigned long hwcaps = getauxval(AT_HWCAP); \
+ 	/* data key instructions are not in NOP space. This prevents a SIGILL */ \
+-	ASSERT_NE(0, hwcaps & HWCAP_PACA) TH_LOG("PAUTH not enabled"); \
++	if (!(hwcaps & HWCAP_PACA))					\
++		SKIP(return, "PAUTH not enabled"); \
+ } while (0)
+ #define ASSERT_GENERIC_PAUTH_ENABLED() \
+ do { \
+ 	unsigned long hwcaps = getauxval(AT_HWCAP); \
+ 	/* generic key instructions are not in NOP space. This prevents a SIGILL */ \
+-	ASSERT_NE(0, hwcaps & HWCAP_PACG) TH_LOG("Generic PAUTH not enabled"); \
++	if (!(hwcaps & HWCAP_PACG)) \
++		SKIP(return, "Generic PAUTH not enabled");	\
+ } while (0)
  
--	err = devm_request_threaded_irq(dev, irq, NULL, dwc3_imx8mp_interrupt,
--					IRQF_ONESHOT, dev_name(dev), dwc3_imx);
--	if (err) {
--		dev_err(dev, "failed to request IRQ #%d --> %d\n", irq, err);
--		goto disable_clks;
--	}
--
- 	pm_runtime_set_active(dev);
- 	pm_runtime_enable(dev);
- 	err = pm_runtime_get_sync(dev);
-@@ -186,6 +179,13 @@ static int dwc3_imx8mp_probe(struct platform_device *pdev)
- 	}
- 	of_node_put(dwc3_np);
+ void sign_specific(struct signatures *sign, size_t val)
+@@ -256,7 +258,7 @@ TEST(single_thread_different_keys)
+ 	unsigned long hwcaps = getauxval(AT_HWCAP);
  
-+	err = devm_request_threaded_irq(dev, irq, NULL, dwc3_imx8mp_interrupt,
-+					IRQF_ONESHOT, dev_name(dev), dwc3_imx);
-+	if (err) {
-+		dev_err(dev, "failed to request IRQ #%d --> %d\n", irq, err);
-+		goto depopulate;
-+	}
-+
- 	device_set_wakeup_capable(dev, true);
- 	pm_runtime_put(dev);
+ 	/* generic and data key instructions are not in NOP space. This prevents a SIGILL */
+-	ASSERT_NE(0, hwcaps & HWCAP_PACA) TH_LOG("PAUTH not enabled");
++	ASSERT_PAUTH_ENABLED();
+ 	if (!(hwcaps & HWCAP_PACG)) {
+ 		TH_LOG("WARNING: Generic PAUTH not enabled. Skipping generic key checks");
+ 		nkeys = NKEYS - 1;
+@@ -299,7 +301,7 @@ TEST(exec_changed_keys)
+ 	unsigned long hwcaps = getauxval(AT_HWCAP);
  
+ 	/* generic and data key instructions are not in NOP space. This prevents a SIGILL */
+-	ASSERT_NE(0, hwcaps & HWCAP_PACA) TH_LOG("PAUTH not enabled");
++	ASSERT_PAUTH_ENABLED();
+ 	if (!(hwcaps & HWCAP_PACG)) {
+ 		TH_LOG("WARNING: Generic PAUTH not enabled. Skipping generic key checks");
+ 		nkeys = NKEYS - 1;
 -- 
 2.30.2
 
