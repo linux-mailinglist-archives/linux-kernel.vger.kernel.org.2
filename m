@@ -2,322 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14CE740E9F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:35:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7348740EA0C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:39:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242303AbhIPSg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 14:36:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47870 "EHLO
+        id S241508AbhIPSku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 14:40:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243571AbhIPSgw (ORCPT
+        with ESMTP id S1348090AbhIPSkn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 14:36:52 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F5D7C0C1312
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 09:52:27 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id c7so2939276qka.2
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 09:52:27 -0700 (PDT)
+        Thu, 16 Sep 2021 14:40:43 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70EE9C06178A
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 10:00:01 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id mv7-20020a17090b198700b0019c843e7233so1494656pjb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 10:00:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=HAG5t8Z6ZEmVnImWD/owvbZJjgcyGUf+8Wn6GyvNoFM=;
-        b=VTqVNNm2O8pJO4b3NHdXPRmem/Wt3z9n05yAcxx2qvOhfmrice3etnyU90GK+x0FNi
-         lo+88o2dANmif0jii33+xmrRuxiM2W+AHeBMiU/jZ59ZHZ9TUL6lCdM9XXS81/xs3qJm
-         XCaQ3nILmL8d1SocJo5KVdak5tD68p4wUT5zzkVxGRH6v0KegaXBBjs6bvlROKfPYqJU
-         oxpxthvG84THdz0GjYcvyI2+kydMmH3T60xOSadb5kgDzRwOgHxFyi8YzBj6epMjC4OY
-         pKfE/uzSHV2azFiA0aFAeQcvBgBzjkd9N+l7A8isjX2+TjrDI/kBaWwHaLyaJjhTnHRZ
-         CU5Q==
+        bh=DnCi064unWOqrg6AqoEPCgOiFEifTwoQ1hTWjh2ahNc=;
+        b=fjvR7zuO7Qwrh4Tjuo3II0Dper4eSgVuDNHmEHzB39NI5Rx3I3rEo2ydF8No6BWlLP
+         NZseveCXuZJN6lJRAfYdYtXEIeQ9ARiIH0O6jWequicz709VCf0A2djxnCxKaJs2Nksz
+         aLvtfCO5Am1ts1K11SDheSJGatjTcUUQqe8ZGRRbVTk0xEqZeZkOyTdx3Xa4/UtkAT+N
+         SMDOy7kKhnOc6RWpOGRXwKZLlXgE9O3ruEqJS/Ky55HEj5Tc+0aLIswCEWFBtH5gKAuq
+         BCvoNMuv8aMCt9cPEzW6zbpUgj/ZjxkppEL+kkauC/i2vnpv9bkJ8qkF0rmiyCadSmf3
+         Oc8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=HAG5t8Z6ZEmVnImWD/owvbZJjgcyGUf+8Wn6GyvNoFM=;
-        b=2pS0XxF+D1olXWjrj2XhXNAZlxIwt5Nc2uV73NVazoq27CgAaPXEH2FLaKAoTDkvTk
-         qPe01e+kcLyLFcFqQBt7EpKaxpx+W15lZSTPWONoo+SoOhmMniOWboAahX1v3NtmjLIF
-         XEJi4roe7RItLUZaC57ikvy/h7fFOVACK8CavJditV827FPoOoKqi0RZ569tPcm6um34
-         WPEKHL2LJ05NUhKYH8M/b4LeFR/EvUxrf6dXeS8iPsht7PCzvq4K+oxW0sU8zQmFJkm9
-         KL2Tj0Byf8DyZ8dJlk/KWE4bMDAoOh18CrTta2r/JAQohdW2DecOI348boVgSX9oj4Fl
-         XzzQ==
-X-Gm-Message-State: AOAM533jobZBF46Pg8qlh5TulY+5i+pbNFZ8SRGf+ZKaXY7La71xO1Wi
-        Esx+WhmvzNTHhVSQVmQPyQdliyhl4t/kFQ==
-X-Google-Smtp-Source: ABdhPJz7oneNVTKwE4NCpHHvSfKLXdSijXEUphoFdTu4KBPlwqFlhcpi1NFmxR67Yj6eyAq5yD62Zg==
-X-Received: by 2002:a05:620a:110d:: with SMTP id o13mr6065351qkk.108.1631811146475;
-        Thu, 16 Sep 2021 09:52:26 -0700 (PDT)
-Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
-        by smtp.gmail.com with ESMTPSA id c193sm2932863qkg.120.2021.09.16.09.52.24
+        bh=DnCi064unWOqrg6AqoEPCgOiFEifTwoQ1hTWjh2ahNc=;
+        b=TJAP4h3F1og05Qerzvdrd5msr2Nok1Fk+Po68WyF0iybDKDcsaLXHS6cQ4rFODwvKo
+         uaPCQZsc+zKa8cK0O5Co5q6p8aa5LUSns02H6/a+Czv7Pc3trZ2RlMW0boBQqyxGBdUA
+         mBZw8Z+TMB3Sigxgh9znPib1SxpbkLuS2VVk0TIeuHS1OOMTz/S3a9dSRM9xGtQ1eFf5
+         KBCjZK6p9NdKc9JzGdm1RFIneDKFz8yk5W1vXyaChIJre9yXXGi9cK6x9HxrzoMvejEl
+         xXURHUT3tNkNcpmB6+Q33+oRAwX6OsRiLOi4pu0dCe7bjIS/nVM0F2cqmN280OEfwNQh
+         jISA==
+X-Gm-Message-State: AOAM532CUUw/YsJGvnLgoIoFCwgkaMYuFP1pZpyvvwkoQOYcQRVhF3ps
+        4Sd+yNCgL38FnexYzI4uT7OkBA==
+X-Google-Smtp-Source: ABdhPJygVESxOg1NzhOIxcgODu9z0ujnuZx5AxebTB90pJz/tL2iARjKAPvPkE8tUXGK7uvcly8awQ==
+X-Received: by 2002:a17:902:c443:b0:13c:a5e1:caf5 with SMTP id m3-20020a170902c44300b0013ca5e1caf5mr2693674plm.11.1631811600672;
+        Thu, 16 Sep 2021 10:00:00 -0700 (PDT)
+Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id g13sm3790185pfi.176.2021.09.16.09.59.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 09:52:25 -0700 (PDT)
-Date:   Thu, 16 Sep 2021 12:54:22 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Howells <dhowells@redhat.com>
-Subject: Re: Folio discussion recap
-Message-ID: <YUN2vokEM8wgASk8@cmpxchg.org>
-References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
- <YTu9HIu+wWWvZLxp@moria.home.lan>
- <YUIT2/xXwvZ4IErc@cmpxchg.org>
- <20210916025854.GE34899@magnolia>
+        Thu, 16 Sep 2021 09:59:59 -0700 (PDT)
+Date:   Thu, 16 Sep 2021 10:59:57 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Shengjiu Wang <shengjiu.wang@gmail.com>
+Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Ohad Ben Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" 
+        <linux-remoteproc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 3/4] remoteproc: imx_dsp_rproc: Add remoteproc driver
+ for DSP on i.MX
+Message-ID: <20210916165957.GA1825273@p14s>
+References: <1631092255-25150-1-git-send-email-shengjiu.wang@nxp.com>
+ <1631092255-25150-4-git-send-email-shengjiu.wang@nxp.com>
+ <20210915161624.GA1770838@p14s>
+ <CAA+D8AO0c+jk_k7j=ZvNFsVvC-p_zMLPJDS3qmLjNbJ+U0E9Cg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210916025854.GE34899@magnolia>
+In-Reply-To: <CAA+D8AO0c+jk_k7j=ZvNFsVvC-p_zMLPJDS3qmLjNbJ+U0E9Cg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 07:58:54PM -0700, Darrick J. Wong wrote:
-> On Wed, Sep 15, 2021 at 11:40:11AM -0400, Johannes Weiner wrote:
-> > On Fri, Sep 10, 2021 at 04:16:28PM -0400, Kent Overstreet wrote:
-> > > One particularly noteworthy idea was having struct page refer to
-> > > multiple hardware pages, and using slab/slub for larger
-> > > alloctions. In my view, the primary reason for making this change
-> > > isn't the memory overhead to struct page (though reducing that would
-> > > be nice);
-> > 
-> > Don't underestimate this, however.
-> > 
-> > Picture the near future Willy describes, where we don't bump struct
-> > page size yet but serve most cache with compound huge pages.
-> > 
-> > On x86, it would mean that the average page cache entry has 512
-> > mapping pointers, 512 index members, 512 private pointers, 1024 LRU
-> > list pointers, 512 dirty flags, 512 writeback flags, 512 uptodate
-> > flags, 512 memcg pointers etc. - you get the idea.
-> > 
-> > This is a ton of memory. I think this doesn't get more traction
-> > because it's memory we've always allocated, and we're simply more
-> > sensitive to regressions than long-standing pain. But nevertheless
-> > this is a pretty low-hanging fruit.
-> > 
-> > The folio makes a great first step moving those into a separate data
-> > structure, opening the door to one day realizing these savings. Even
-> > when some MM folks say this was never the intent behind the patches, I
-> > think this is going to matter significantly, if not more so, later on.
+[...]
+
+> > > +
+> > > +/**
+> > > + * imx_dsp_rproc_elf_load_segments() - load firmware segments to memory
+> > > + * @rproc: remote processor which will be booted using these fw segments
+> > > + * @fw: the ELF firmware image
+> > > + *
+> > > + * This function specially checks if memsz is zero or not, otherwise it
+> > > + * is mostly same as rproc_elf_load_segments().
+> > > + */
+> > > +static int imx_dsp_rproc_elf_load_segments(struct rproc *rproc,
+> > > +                                        const struct firmware *fw)
+> > > +{
+> > > +     struct device *dev = &rproc->dev;
+> > > +     u8 class = fw_elf_get_class(fw);
+> > > +     u32 elf_phdr_get_size = elf_size_of_phdr(class);
+> > > +     const u8 *elf_data = fw->data;
+> > > +     const void *ehdr, *phdr;
+> > > +     int i, ret = 0;
+> > > +     u16 phnum;
+> > > +
+> > > +     ehdr = elf_data;
+> > > +     phnum = elf_hdr_get_e_phnum(class, ehdr);
+> > > +     phdr = elf_data + elf_hdr_get_e_phoff(class, ehdr);
+> > > +
+> > > +     /* go through the available ELF segments */
+> > > +     for (i = 0; i < phnum; i++, phdr += elf_phdr_get_size) {
+> > > +             u64 da = elf_phdr_get_p_paddr(class, phdr);
+> > > +             u64 memsz = elf_phdr_get_p_memsz(class, phdr);
+> > > +             u64 filesz = elf_phdr_get_p_filesz(class, phdr);
+> > > +             u64 offset = elf_phdr_get_p_offset(class, phdr);
+> > > +             u32 type = elf_phdr_get_p_type(class, phdr);
+> > > +             void *ptr;
+> > > +             bool is_iomem;
+> > > +
+> > > +             if (type != PT_LOAD || !memsz)
+> >
+> > You did a really good job with adding comments but this part is undocumented...
+> > If I read this correctly you need to check for !memsz because some part of
+> > the program segment may have a header but its memsz is zero, in which case it can
+> > be safely skipped.  So why is that segment in the image to start with, and why
+> > is it marked PT_LOAD if it is not needed?  This is very puzzling...
 > 
-> So ... I chatted with Kent the other day, who suggested to me that maybe
-> the point you're really after is that you want to increase the hw page
-> size to reduce overhead while retaining the ability to hand out parts of
-> those larger pages to the page cache, and folios don't get us there?
+> Actually I have added comments in the header of this function.
 
-Yes, that's one of the points.
+Indeed there is a mention of memsz in the function's header but it doesn't
+mention _why_ this is needed, and that is what I'm looking for.
 
-It's exporting the huge page model we've been using for anonymous
-memory to the filesystems, even though that model has shown
-significant limitations in practice: it doesn't work well out of the
-box, the necessary configuration is painful and complicated, and even
-when done correctly it still has high allocation latencies. It's much
-more "handtuned HPC workload" than "general purpose feature".
-
-Fixing this is an open problem. I don't know for sure if we need to
-increase the page size for that, but neither does anybody else. This
-is simply work and experiments that haven't been done on the MM side.
-
-Exposing the filesystems to that implementation now exposes them to
-the risk of a near-term do-over, and puts a significantly higher
-barrier on fixing the allocation model down the line.
-
-There isn't a technical reason for this coupling the filesystems that
-tightly to the allocation model. It's just that the filesystem people
-would like a size-agnostic cache object, and some MM folks would like
-to clean up the compound page mess, and folio tries to do both of
-these things at once.
-
-> > > Fortunately, Matthew made a big step in the right direction by making folios a
-> > > new type. Right now, struct folio is not separately allocated - it's just
-> > > unionized/overlayed with struct page - but perhaps in the future they could be
-> > > separately allocated. I don't think that is a remotely realistic goal for _this_
-> > > patch series given the amount of code that touches struct page (thing: writeback
-> > > code, LRU list code, page fault handlers!) - but I think that's a goal we could
-> > > keep in mind going forward.
-> > 
-> > Yeah, agreed. Not doable out of the gate, but retaining the ability to
-> > allocate the "cache entry descriptor" bits - mapping, index etc. -
-> > on-demand would be a huge benefit down the road for the above reason.
-> > 
-> > For that they would have to be in - and stay in - their own type.
-> > 
-> > > We should also be clear on what _exactly_ folios are for, so they don't become
-> > > the new dumping ground for everyone to stash their crap. They're to be a new
-> > > core abstraction, and we should endeaver to keep our core data structures
-> > > _small_, and _simple_.
-> > 
-> > Right. struct page is a lot of things and anything but simple and
-> > obvious today. struct folio in its current state does a good job
-> > separating some of that stuff out.
-> > 
-> > However, when we think about *which* of the struct page mess the folio
-> > wants to address, I think that bias toward recent pain over much
-> > bigger long-standing pain strikes again.
-> > 
-> > The compound page proliferation is new, and we're sensitive to the
-> > ambiguity it created between head and tail pages. It's added some
-> > compound_head() in lower-level accessor functions that are not
-> > necessary for many contexts. The folio type safety will help clean
-> > that up, and this is great.
-> > 
-> > However, there is a much bigger, systematic type ambiguity in the MM
-> > world that we've just gotten used to over the years: anon vs file vs
-> > shmem vs slab vs ...
-> > 
-> > - Many places rely on context to say "if we get here, it must be
-> >   anon/file", and then unsafely access overloaded member elements:
-> >   page->mapping, PG_readahead, PG_swapcache, PG_private
-> > 
-> > - On the other hand, we also have low-level accessor functions that
-> >   disambiguate the type and impose checks on contexts that may or may
-> >   not actually need them - not unlike compound_head() in PageActive():
-> > 
-> >   struct address_space *folio_mapping(struct folio *folio)
-> >   {
-> > 	struct address_space *mapping;
-> > 
-> > 	/* This happens if someone calls flush_dcache_page on slab page */
-> > 	if (unlikely(folio_test_slab(folio)))
-> > 		return NULL;
-> > 
-> > 	if (unlikely(folio_test_swapcache(folio)))
-> > 		return swap_address_space(folio_swap_entry(folio));
-> > 
-> > 	mapping = folio->mapping;
-> > 	if ((unsigned long)mapping & PAGE_MAPPING_ANON)
-> > 		return NULL;
-> > 
-> > 	return (void *)((unsigned long)mapping & ~PAGE_MAPPING_FLAGS);
-> >   }
-> > 
-> >   Then we go identify places that say "we know it's at least not a
-> >   slab page!" and convert them to page_mapping_file() which IS safe to
-> >   use with anon. Or we say "we know this MUST be a file page" and just
-> >   access the (unsafe) mapping pointer directly.
-> > 
-> > - We have a singular page lock, but what it guards depends on what
-> >   type of page we're dealing with. For a cache page it protects
-> >   uptodate and the mapping. For an anon page it protects swap state.
-> > 
-> >   A lot of us can remember the rules if we try, but the code doesn't
-> >   help and it gets really tricky when dealing with multiple types of
-> >   pages simultaneously. Even mature code like reclaim just serializes
-> >   the operation instead of protecting data - the writeback checks and
-> >   the page table reference tests don't seem to need page lock.
-> > 
-> >   When the cgroup folks wrote the initial memory controller, they just
-> >   added their own page-scope lock to protect page->memcg even though
-> >   the page lock would have covered what it needed.
-> > 
-> > - shrink_page_list() uses page_mapping() in the first half of the
-> >   function to tell whether the page is anon or file, but halfway
-> >   through we do this:
-> > 
-> > 	  /* Adding to swap updated mapping */
-> >           mapping = page_mapping(page);
-> > 
-> >   and then use PageAnon() to disambiguate the page type.
-> > 
-> > - At activate_locked:, we check PG_swapcache directly on the page and
-> >   rely on it doing the right thing for anon, file, and shmem pages.
-> >   But this flag is PG_owner_priv_1 and actually used by the filesystem
-> >   for something else. I guess PG_checked pages currently don't make it
-> >   this far in reclaim, or we'd crash somewhere in try_to_free_swap().
-> > 
-> >   I suppose we're also never calling page_mapping() on PageChecked
-> >   filesystem pages right now, because it would return a swap mapping
-> >   before testing whether this is a file page. You know, because shmem.
 > 
-> (Yes, it would be helpful to fix these ambiguities, because I feel like
-> discussions about all these other non-pagecache uses of memory keep
-> coming up on fsdevel and the code /really/ doesn't help me figure out
-> what everyone's talking about before the discussion moves on...)
-
-Excellent.
-
-However, after listening to Kent and other filesystem folks, I think
-it's important to point out that the folio is not a dedicated page
-cache page descriptor that will address any of the above examples.
-
-The MM POV (and the justification for both the acks and the naks of
-the patchset) is that it's a generic, untyped compound page
-abstraction, which applies to file, anon, slab, networking
-pages. Certainly, the folio patches as of right now also convert anon
-page handling to the folio. If followed to its conclusion, the folio
-will have plenty of members and API functions for non-pagecache users
-and look pretty much like struct page today, just with a dynamic size.
-
-I know Kent was surprised by this. I know Dave Chinner suggested to
-call it "cache page" or "cage" early on, which also suggests an
-understanding of a *dedicated* cache page descriptor.
-
-I don't think the ambiguous folio name and the ambiguous union with
-the page helped in any way in aligning fs and mm folks on what this
-thing is actually supposed to be!
-
-I agree with what I think the filesystems want: instead of an untyped,
-variable-sized block of memory, I think we should have a typed page
-cache desciptor.
-
-That would work better for the filesystems, and I think would also
-work better for the MM code down the line and fix the above examples.
-
-The headpage/tailpage cleanup would come free with that.
-
-> > These are just a few examples from an MM perspective. I'm sure the FS
-> > folks have their own stories and examples about pitfalls in dealing
-> > with struct page members.
+> memsz= 0 with PT_LOAD issue, I have asked the toolchain's vendor,
+> they said that this case is allowed by elf spec...
 > 
-> We do, and I thought we were making good progress pushing a lot of that
-> into the fs/iomap/ library.  With fs iomap, disk filesystems pass space
-> mapping data to the iomap functions and let them deal with pages (or
-> folios).  IOWs, filesystems don't deal with pages directly anymore, and
-> folios sounded like an easy transition (for a filesystem) to whatever
-> comes next.  At some point it would be nice to get fscrypt and fsverify
-> hooked up so that we could move ext4 further off of buffer heads.
+> And in the "pru_rproc.c" and "mtk_scp.c", seems they met same problem
+> they also check the filesz in their internal xxx_elf_load_segments() function.
+
+In both cases they are skipping PT_LOAD sections where "filesz" is '0', which
+makes sense because we don't know how many bytes to copy.  But here you are
+skipping over a PT_LOAD section with a potentially valid filesz, and that is the
+part I don't understand.
+
 > 
-> I don't know how we proceed from here -- there's quite a bit of
-> filesystems work that depended on the folios series actually landing.
-> Given that Linus has neither pulled it, rejected it, or told willy what
-> to do, and the folio series now has a NAK on it, I can't even start on
-> how to proceed from here.
-
-I think divide and conquer is the way forward.
-
-The crux of the matter is that folio is trying to 1) replace struct
-page as the filesystem interface to the MM and 2) replace struct page
-as the internal management object for file and anon, and conceptually
-also slab & networking pages all at the same time.
-
-As you can guess, goals 1) and 2) have vastly different scopes.
-
-Replacing struct page in the filesystem isn't very controversial, and
-filesystem folks seem uniformly ready to go. I agree.
-
-Replacing struct page in MM code is much less clear cut. We have some
-people who say it'll be great, some people who say we can probably
-figure out open questions down the line, and we have some people who
-have expressed doubts that all this churn will ever be worth it. I
-think it's worth replacing, but not with an untyped compound thing.
-
-It's sh*tty that the filesystem people are acutely blocked on
-large-scope, long-term MM discussions they don't care about.
-
-It's also sh*tty that these MM discussions are rushed by folks who
-aren't familiar with or care too much about the MM internals.
-
-This friction isn't necessary. The folio conversion is an incremental
-process. It's not like everything in MM code has been fully converted
-already - some stuff deals with the folio, most stuff with the page.
-
-An easy way forward that I see is to split this large, open-ended
-project into more digestible pieces. E.g. separate 1) and 2): merge a
-"size-agnostic cache page" type now; give MM folks the time they need
-to figure out how and if they want to replace struct page internally.
-
-That's why I suggested to drop the anon page conversion bits in
-swap.c, workingset.c, memcontrol.c etc, and just focus on the
-uncontroversial page cache bits for now.
+> >
+> >
+> > > +                     continue;
+> > > +
+> > > +             dev_dbg(dev, "phdr: type %d da 0x%llx memsz 0x%llx filesz 0x%llx\n",
+> > > +                     type, da, memsz, filesz);
+> > > +
+> > > +             if (filesz > memsz) {
+> > > +                     dev_err(dev, "bad phdr filesz 0x%llx memsz 0x%llx\n",
+> > > +                             filesz, memsz);
+> > > +                     ret = -EINVAL;
+> > > +                     break;
+> > > +             }
+> > > +
+> > > +             if (offset + filesz > fw->size) {
+> > > +                     dev_err(dev, "truncated fw: need 0x%llx avail 0x%zx\n",
+> > > +                             offset + filesz, fw->size);
+> > > +                     ret = -EINVAL;
+> > > +                     break;
+> > > +             }
+> > > +
+> > > +             if (!rproc_u64_fit_in_size_t(memsz)) {
+> > > +                     dev_err(dev, "size (%llx) does not fit in size_t type\n",
+> > > +                             memsz);
+> > > +                     ret = -EOVERFLOW;
+> > > +                     break;
+> > > +             }
+> > > +
+> > > +             /* grab the kernel address for this device address */
+> > > +             ptr = rproc_da_to_va(rproc, da, memsz, &is_iomem);
+> >
+> >                 rproc_da_to_va(rproc, da, memsz, NULL);
+> 
+> yes, will update it.
+> 
+> >
+> > More comments to follow later today or tomorrow.
+> 
+> Thanks.
+> 
+> Best regards
+> Wang Shengjiu
