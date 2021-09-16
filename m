@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ABF140E577
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:27:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 313AF40E259
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:16:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350683AbhIPRLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:11:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34054 "EHLO mail.kernel.org"
+        id S241815AbhIPQhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:37:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349315AbhIPRD6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:03:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 99EC661B1E;
-        Thu, 16 Sep 2021 16:34:52 +0000 (UTC)
+        id S242872AbhIPQ3o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:29:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E93261130;
+        Thu, 16 Sep 2021 16:18:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810093;
-        bh=NzQsahbJeCcZsdM3Q+gVkSPVs96XJNu+smK2RrDgGOg=;
+        s=korg; t=1631809124;
+        bh=EX9RbR/g7CdtthmohUNp1pQW/MaDhhIkIsTCRNQMkB0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bHcvF88/mYkWBvgk2luOJN3DEc6/KtpXGkUuL3ZZRQqIPbIbdVdYplZwjz6byUx5C
-         WpdCVczaRUizbAnqMCWlFVW2EG9mKqzsP3jxxUCODCMSzG8uRHN+j6AwTatwDC9UKv
-         huVALGN5vavKuO3L3OIbS2EgGw74B6KrBn4OHhHI=
+        b=aDCjnyc+H6ygtaNpEUKs7/u7WwOLecEvVbw818/Bwum7juhohVKhcWKbBzHZwgNFi
+         lwa+NLNFflYpBvtl8DB4MqbxpA9ZR5/PNo8L7W5Vmvd+ASPWwwqOlJuqU094LKf5su
+         X0GKpR7P+9JW9d6u4hlbjCv0jnRhSu6Oqw7erxXo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,12 +27,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Alexander Tsvetkov <alexander.tsvetkov@oracle.com>,
         Anand Jain <anand.jain@oracle.com>,
         David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.14 015/432] btrfs: fix upper limit for max_inline for page size 64K
+Subject: [PATCH 5.13 007/380] btrfs: fix upper limit for max_inline for page size 64K
 Date:   Thu, 16 Sep 2021 17:56:04 +0200
-Message-Id: <20210916155811.333836009@linuxfoundation.org>
+Message-Id: <20210916155804.220225336@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -67,7 +67,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/fs/btrfs/disk-io.c
 +++ b/fs/btrfs/disk-io.c
-@@ -3314,6 +3314,30 @@ int __cold open_ctree(struct super_block
+@@ -3329,6 +3329,30 @@ int __cold open_ctree(struct super_block
  	 */
  	fs_info->compress_type = BTRFS_COMPRESS_ZLIB;
  
@@ -98,7 +98,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  	ret = btrfs_parse_options(fs_info, options, sb->s_flags);
  	if (ret) {
  		err = ret;
-@@ -3341,30 +3365,6 @@ int __cold open_ctree(struct super_block
+@@ -3356,30 +3380,6 @@ int __cold open_ctree(struct super_block
  		btrfs_info(fs_info, "has skinny extents");
  
  	/*
