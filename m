@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2222840E2A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:17:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEA2840DFCD
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:15:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242927AbhIPQkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:40:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44322 "EHLO mail.kernel.org"
+        id S236821AbhIPQOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:14:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48650 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244197AbhIPQe7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:34:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B9C3561929;
-        Thu, 16 Sep 2021 16:20:59 +0000 (UTC)
+        id S235046AbhIPQIV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:08:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A26B6124D;
+        Thu, 16 Sep 2021 16:07:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809260;
-        bh=l1be1k5OVhJ9QTLPu5Ubj4jASKcLxzliZfPktnfbmXc=;
+        s=korg; t=1631808421;
+        bh=zMcik/nzzmFt2mRxjeyxZnCqYxTirD4UdVU3pvmaC94=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ez9I7XJizz/ZKKm8N61xdC8nGc4C4MRrsU2ifyZ3z1Zl9dHJBElrdnHPGnZvk09sr
-         53UA+qPM39UfKc+ZPqRZWFiXiJKV66fnMcrC8vmAu7YoknRkgv0FpCfEFGVxCvqCpH
-         wXf0dOXbkgqR6uGBJ6wiFRRavjC82MF8M7UXOYzY=
+        b=Ux+Zc7+CigbbkNGdAz6Ety1C0wUELX+jvp1O1yetjVjqsTxHjqjIU78RRggpkEiRI
+         gTtP2Nu22S1NQxIMMpCeWgtW3CSZm7adcSkQ5zXTqqFTx05wcV2PtqEjTMckE1hUhp
+         0/C/DpTXWcNW7gRUMmvLe+ldr6/DA+q9apRPwBLA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
-        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 072/380] scsi: bsg: Remove support for SCSI_IOCTL_SEND_COMMAND
-Date:   Thu, 16 Sep 2021 17:57:09 +0200
-Message-Id: <20210916155806.456248772@linuxfoundation.org>
+Subject: [PATCH 5.10 085/306] scsi: smartpqi: Fix an error code in pqi_get_raid_map()
+Date:   Thu, 16 Sep 2021 17:57:10 +0200
+Message-Id: <20210916155756.949932288@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,43 +40,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit beec64d0c9749afedf51c3c10cf52de1d9a89cc0 ]
+[ Upstream commit d1f6581a6796c4e9fd8a4a24e8b77463d18f0df1 ]
 
-SCSI_IOCTL_SEND_COMMAND has been deprecated longer than bsg exists and has
-been warning for just as long.  More importantly it harcodes SCSI CDBs and
-thus will do the wrong thing on non-SCSI bsg nodes.
+Return -EINVAL on failure instead of success.
 
-Link: https://lore.kernel.org/r/20210724072033.1284840-2-hch@lst.de
-Fixes: aa387cc89567 ("block: add bsg helper library")
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Acked-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Link: https://lore.kernel.org/r/20210810084613.GB23810@kili
+Fixes: a91aaae0243b ("scsi: smartpqi: allow for larger raid maps")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/bsg.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/scsi/smartpqi/smartpqi_init.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/block/bsg.c b/block/bsg.c
-index bd10922d5cbb..4d0ad5846ccf 100644
---- a/block/bsg.c
-+++ b/block/bsg.c
-@@ -371,10 +371,13 @@ static long bsg_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 	case SG_GET_RESERVED_SIZE:
- 	case SG_SET_RESERVED_SIZE:
- 	case SG_EMULATED_HOST:
--	case SCSI_IOCTL_SEND_COMMAND:
- 		return scsi_cmd_ioctl(bd->queue, NULL, file->f_mode, cmd, uarg);
- 	case SG_IO:
- 		return bsg_sg_io(bd->queue, file->f_mode, uarg);
-+	case SCSI_IOCTL_SEND_COMMAND:
-+		pr_warn_ratelimited("%s: calling unsupported SCSI_IOCTL_SEND_COMMAND\n",
-+				current->comm);
-+		return -EINVAL;
- 	default:
- 		return -ENOTTY;
+diff --git a/drivers/scsi/smartpqi/smartpqi_init.c b/drivers/scsi/smartpqi/smartpqi_init.c
+index 5083e5d2b467..de73ade70c24 100644
+--- a/drivers/scsi/smartpqi/smartpqi_init.c
++++ b/drivers/scsi/smartpqi/smartpqi_init.c
+@@ -1207,6 +1207,7 @@ static int pqi_get_raid_map(struct pqi_ctrl_info *ctrl_info,
+ 				"Requested %d bytes, received %d bytes",
+ 				raid_map_size,
+ 				get_unaligned_le32(&raid_map->structure_size));
++			rc = -EINVAL;
+ 			goto error;
+ 		}
  	}
 -- 
 2.30.2
