@@ -2,150 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2932940EA89
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 21:02:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2616B40E9F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:36:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235555AbhIPTD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 15:03:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52826 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346240AbhIPTDh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 15:03:37 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB60DC07E5C1
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 11:35:57 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id g1so22286296lfj.12
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 11:35:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=t51QwKIKWkGOiuP6SJMrhP/dJST+bSD7Qp/ejqOgA0s=;
-        b=PYrRSLFVlXcDD2+pFS2QiDv72x9PP+CSDGgHHxrtNHys/SFAhFt/K9Dl2YKY3s46v4
-         n1V6egkmODP63nyS2heOSJmRcvJd8e+uQG22Bg5vVGD2JMQ2HAT6BYtwWfythdLKnTmE
-         1gprbKiTFCMpaERdEBSQKexI+QYMoZlOHeBbU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=t51QwKIKWkGOiuP6SJMrhP/dJST+bSD7Qp/ejqOgA0s=;
-        b=WCtio8hgyPKOy8tBv51+WvbmBstyyd/giFHgi+gYrMM4E57GjKQYbiz2IpTOFsiQOE
-         gcNVg31DFeaYtRUG1WZ9JhJ25qxUpAYTJKeCtHY42IJvNHCoaW7epyzPDpmoEdm5/LKB
-         hpFC5VKpw2EJ740oIKDia9SI8I9kKDLS+uZowE6OyHtWjABNMiyX0DNTXgbHEUjhzrK9
-         PIuuBeqjPXFAw3kA+AW9eedjnt11CBbVfoNqhWBA5+efbG5p6ySgp6lTaeWw4joTNoqR
-         uL9TnTOL9K3w3C5EPbxFvkggIMrMJTopj9AhRk7ePR0Igp/DQjgZpwA9Zpa6fda8sMle
-         Pt6w==
-X-Gm-Message-State: AOAM530duMmz26B3hwyM9Bok7i4FWuj1vyflC5B1J+8/03TPJ1GnFoji
-        9ji6rzPXkzSrWUeqRPbgl9c/qczt4aMt7Tuh
-X-Google-Smtp-Source: ABdhPJxW3NLGkQVeHK2uc/G/0yiw0VZqee/DFZwBSAmpc7+F5aLybuyKALDmtn59CYrQzq6AYx/VRQ==
-X-Received: by 2002:a2e:b5a7:: with SMTP id f7mr6133123ljn.19.1631817355751;
-        Thu, 16 Sep 2021 11:35:55 -0700 (PDT)
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
-        by smtp.gmail.com with ESMTPSA id d7sm358846lfa.80.2021.09.16.11.35.53
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Sep 2021 11:35:54 -0700 (PDT)
-Received: by mail-lf1-f42.google.com with SMTP id c8so22421087lfi.3
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 11:35:53 -0700 (PDT)
-X-Received: by 2002:a2e:b53a:: with SMTP id z26mr5708746ljm.95.1631817352669;
- Thu, 16 Sep 2021 11:35:52 -0700 (PDT)
+        id S1348687AbhIPSh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 14:37:27 -0400
+Received: from mga07.intel.com ([134.134.136.100]:52262 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1347077AbhIPShV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 14:37:21 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10109"; a="286319718"
+X-IronPort-AV: E=Sophos;i="5.85,299,1624345200"; 
+   d="scan'208";a="286319718"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2021 11:36:00 -0700
+X-IronPort-AV: E=Sophos;i="5.85,299,1624345200"; 
+   d="scan'208";a="545819374"
+Received: from rswart-mobl1.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.255.64.59])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2021 11:35:59 -0700
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        VMware Inc <pv-drivers@vmware.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v7 00/12] Add TDX Guest Support (Initial support)
+Date:   Thu, 16 Sep 2021 11:35:38 -0700
+Message-Id: <20210916183550.15349-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210915035227.630204-1-linux@roeck-us.net> <CAHk-=wjXr+NnNPTorhaW81eAbdF90foVo-5pQqRmXZi-ZGaX6Q@mail.gmail.com>
- <47fcc9cc-7d2e-bc79-122b-8eccfe00d8f3@roeck-us.net> <CAHk-=wgdEHPm6vGcJ_Zr-Q_p=Muv1Oby5H2+6QyPGxiZ7_Wv+w@mail.gmail.com>
- <20210915223342.GA1556394@roeck-us.net>
-In-Reply-To: <20210915223342.GA1556394@roeck-us.net>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 16 Sep 2021 11:35:36 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgQ4jsPadbo4kr4=UKn0nR+UvWUZF9Q-xv0QUXb33SVRA@mail.gmail.com>
-Message-ID: <CAHk-=wgQ4jsPadbo4kr4=UKn0nR+UvWUZF9Q-xv0QUXb33SVRA@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] Introduce and use absolute_pointer macro
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Michael Cree <mcree@orcon.net.nz>
-Cc:     Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-parisc@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
-        Sparse Mailing-list <linux-sparse@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 3:33 PM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> drivers/net/ethernet/3com/3c515.c: In function 'corkscrew_start_xmit':
-> drivers/net/ethernet/3com/3c515.c:1053:22: error:
->         cast from pointer to integer of different size
->
-> That is a typecast from a pointer to an int, which is then sent to an
-> i/o port. That driver should probably be disabled for 64-bit builds.
+Hi All,
 
-Naah. I think the Jensen actually had an ISA slot. Came with a
-whopping 8MB too, so the ISA DMA should work just fine.
+Intel's Trust Domain Extensions (TDX) protect guest VMs from malicious
+hosts and some physical attacks. This series adds the basic TDX guest
+infrastructure support (including #VE handler support, and #VE support
+for halt and CPUID). This is just a subset of patches in the bare minimum
+TDX support patch list which is required for supporting minimal
+functional TDX guest. Other basic feature features like #VE support for
+IO, MMIO, boot optimization fixes and shared-mm support will be submitted
+in a separate patch set. To make reviewing easier we split it into smaller
+series. This series alone is not necessarily fully functional.
 
-Or maybe it was EISA only? I really don't remember.
+Also, the host-side support patches, and support for advanced TD guest
+features like attestation or debug-mode will be submitted at a later time.
+Also, at this point it is not secure with some known holes in drivers, and
+also hasn’t been fully audited and fuzzed yet.
 
-It's possible that alpha should get rid of the ISA config option, and
-use ISA_BUS instead. That would be the proper config if there aren't
-actually any ISA _slots_, and it would disable the 3c515 driver.
+TDX has a lot of similarities to SEV. It enhances confidentiality and
+of guest memory and state (like registers) and includes a new exception
+(#VE) for the same basic reasons as SEV-ES. Like SEV-SNP (not merged
+yet), TDX limits the host's ability to effect changes in the guest
+physical address space. With TDX the host cannot access the guest memory,
+so various functionality that would normally be done in KVM has moved
+into a (paravirtualized) guest. Partially this is done using the
+Virtualization Exception (#VE) and partially with direct paravirtual hooks.
 
-But it turns out that the compile error is easy to fix. Just make it
-use isa_virt_to_bus(), which that driver does elsewhere anyway.
+The TDX architecture also includes a new CPU mode called
+Secure-Arbitration Mode (SEAM). The software (TDX module) running in this
+mode arbitrates interactions between host and guest and implements many of
+the guarantees of the TDX architecture.
 
-I have no way - or interest - to test that on real hardware, but I did
-check that if I relax the config I can at least build it cleanly on
-x86-64 with that change.
+Some of the key differences between TD and regular VM is,
 
-It can't make matters worse, and it's the RightThing(tm).
+1. Multi CPU bring-up is done using the ACPI MADT wake-up table.
+2. A new #VE exception handler is added. The TDX module injects #VE exception
+   to the guest TD in cases of instructions that need to be emulated, disallowed
+   MSR accesses, etc.
+3. By default memory is marked as private, and TD will selectively share it with
+   VMM based on need.
+   
+Note that the kernel will also need to be hardened against low level inputs from
+the now untrusted hosts. This will be done in follow on patches.
 
-Since Micheal replied about that other alpha issue, maybe he knows
-about the ISA slot situation too?
+You can find TDX related documents in the following link.
 
-But anyway, 3c515 should compile cleanly again.
+https://software.intel.com/content/www/br/pt/develop/articles/intel-trust-domain-extensions.html
 
-> drivers/net/wan/lmc/lmc_main.c: In function 'lmc_softreset':
-> drivers/net/wan/lmc/lmc_main.c:1782:50: error:
->         passing argument 1 of 'virt_to_bus' discards 'volatile' qualifier from pointer target type
->
-> and several other similar errors.
->
-> patch:
->         https://lore.kernel.org/lkml/20210909050033.1564459-1-linux@roeck-us.net/
-> Arnd sent an Ack, but it doesn't look like it was picked up.
+This patchset has dependency on protected guest changes submitted by Tom Lendacky
 
-I picked it up manually now along with the arm vexpress cpufreq one.
+https://lore.kernel.org/patchwork/cover/1468760/
 
-> m68k:
+Changes since v6
+ * Fixed #ifdef format as per Boris comment in patch titled
+   "x86/paravirt: Move halt paravirt calls under CONFIG_PARAVIRT".
+ * Fixed commit log of "x86/tdx: Handle CPUID via #VE" as per Dave
+   Hansen review comments.
+ * Removed TDX changes from "x86/tdx: Add protected guest support for
+   TDX guest" and created "x86/tdx: Add Intel version of
+   cc_platform_has()"
+ * Rebased on top of Tom Landecky's CC platform support patch series
+   https://lore.kernel.org/linux-iommu/f9951644147e27772bf4512325e8ba6472e363b7.1631141919.git.thomas.lendacky@amd.com/T/
+ * Rebased on top of v5.15-rc1.
 
-I think these should be fixed as of the pull request this morning.
+Changes since v5:
+ * Moved patch titled "x86/tdx: Get TD execution environment
+   information via TDINFO" to the series which uses it.
+ * Rest of the change log is added per patch.
 
-> mips:
->
-> In file included from arch/mips/include/asm/sibyte/sb1250.h:28,
->                  from drivers/watchdog/sb_wdog.c:58:
-> arch/mips/include/asm/sibyte/bcm1480_scd.h:261: error: "M_SPC_CFG_CLEAR" redefined
->
-> and similar. Patch:
->
-> https://patchwork.kernel.org/project/linux-watchdog/patch/20210913073220.1159520-1-liu.yun@linux.dev/
->
-> I'll need to get Wim to push it.
+Changes since v4:
+ * Added a patch that adds TDX guest exception for CSTAR MSR.
+ * Rebased on top of Tom Lendacky's protected guest changes.
+ * Rest of the change log is added per patch.
 
-Ok, that hasn't hit my tree yet.
+Changes since v3:
+ * Moved generic protected guest changes from patch titled "x86:
+   Introduce generic protected guest abstraction" into seperate
+   patch outside this patchset. Also, TDX specific changes are
+   moved to patch titled "x86/tdx: Add protected guest support
+   for TDX guest"
+ * Rebased on top of v5.14-rc1.
+ * Rest of the change log is added per patch.
 
-> parisc:
+Changes since v1 (v2 is partial set submission):
+ * Patch titled "x86/x86: Add early_is_tdx_guest() interface" is moved
+   out of this series.
+ * Rest of the change log is added per patch.
 
-This one should be fixed as of the parisc pull this morning.
+Andi Kleen (1):
+  x86/tdx: Don't write CSTAR MSR on Intel
 
-So a few more remaining (mainly the suspend/resume ones), but slowly
-making progress.
+Kirill A. Shutemov (6):
+  x86/paravirt: Move halt paravirt calls under CONFIG_PARAVIRT
+  x86/traps: Add #VE support for TDX guest
+  x86/tdx: Add HLT support for TDX guest
+  x86/tdx: Wire up KVM hypercalls
+  x86/tdx: Add MSR support for TDX guest
+  x86/tdx: Handle CPUID via #VE
 
-             Linus
+Kuppuswamy Sathyanarayanan (5):
+  x86/tdx: Add Intel ARCH support to cc_platform_has()
+  x86/tdx: Introduce INTEL_TDX_GUEST config option
+  x86/cpufeatures: Add TDX Guest CPU feature
+  x86/tdx: Add TDX guest support to intel_cc_platform_has()
+  x86/tdx: Add __tdx_module_call() and __tdx_hypercall() helper
+    functions
+
+ arch/x86/Kconfig                         |  15 ++
+ arch/x86/include/asm/asm-prototypes.h    |   1 +
+ arch/x86/include/asm/cpufeatures.h       |   1 +
+ arch/x86/include/asm/idtentry.h          |   4 +
+ arch/x86/include/asm/intel_cc_platform.h |  15 ++
+ arch/x86/include/asm/irqflags.h          |  46 ++--
+ arch/x86/include/asm/kvm_para.h          |  22 ++
+ arch/x86/include/asm/paravirt.h          |  20 +-
+ arch/x86/include/asm/paravirt_types.h    |   3 +-
+ arch/x86/include/asm/tdx.h               | 107 ++++++++
+ arch/x86/kernel/Makefile                 |   2 +
+ arch/x86/kernel/asm-offsets.c            |  23 ++
+ arch/x86/kernel/cc_platform.c            |   5 +
+ arch/x86/kernel/cpu/common.c             |  11 +-
+ arch/x86/kernel/cpu/intel.c              |  16 ++
+ arch/x86/kernel/head64.c                 |   3 +
+ arch/x86/kernel/idt.c                    |   6 +
+ arch/x86/kernel/paravirt.c               |   3 +-
+ arch/x86/kernel/tdcall.S                 | 314 +++++++++++++++++++++++
+ arch/x86/kernel/tdx.c                    | 247 ++++++++++++++++++
+ arch/x86/kernel/traps.c                  |  77 ++++++
+ include/linux/cc_platform.h              |   9 +
+ 22 files changed, 917 insertions(+), 33 deletions(-)
+ create mode 100644 arch/x86/include/asm/intel_cc_platform.h
+ create mode 100644 arch/x86/include/asm/tdx.h
+ create mode 100644 arch/x86/kernel/tdcall.S
+ create mode 100644 arch/x86/kernel/tdx.c
+
+-- 
+2.25.1
+
