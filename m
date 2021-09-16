@@ -2,155 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F9AA40D984
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 14:11:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8966240D988
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 14:12:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239321AbhIPMMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 08:12:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59244 "EHLO mail.kernel.org"
+        id S239375AbhIPMNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 08:13:25 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:35977 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239314AbhIPMMW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 08:12:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C41360F4A;
-        Thu, 16 Sep 2021 12:11:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631794262;
-        bh=1E+0gkrKQHhzUs0Znhw+hQhC/uCcBN+yengliddJvig=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SCmFxRA7uuQmYy8uEtEiev9Y3jks05b96i+cUZxP55nKuwCXBS7TNXMJg7f0fpm+i
-         hDgLf/DWseqG497zaWIxnZMguYEZw0N/OOnK82Y8AzrnfOxwXWMW0nfzAttXsByqLH
-         pVQvS/EvXoHZRWbl6eZkQf2+FbS3tECtyMvVISOemChvk2Y7UOobbzEMK3gcYYI+nS
-         XVApNtw7X+1Bvk2xHsuw8KJKWHRdLLQVd0RDPMWd5P5omKSXvCs9TIe6yQrzr3Z/z6
-         qJS9iXtzg36ldON27ggdFxuxhryLvl8zNa7/juwBwrhpRVpFJVHI1of9UAKGEWxlvp
-         dCPnOZTUxdTcg==
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E . McKenney" <paulmck@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org,
-        urezki@gmail.com, boqun.feng@gmail.com,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        joel@joelfernandes.org
-Subject: [PATCH 4/4] rcu: Remove rcu_data.exp_deferred_qs and convert to rcu_data.cpu no_qs.b.exp
-Date:   Thu, 16 Sep 2021 14:10:48 +0200
-Message-Id: <20210916121048.36623-5-frederic@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210916121048.36623-1-frederic@kernel.org>
-References: <20210916121048.36623-1-frederic@kernel.org>
+        id S239110AbhIPMNY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 08:13:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1631794321;
+        bh=7sztpVLHF3xzQJBZaKGK0+5UlIXFQCYGKYPDrXPda+s=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ePagv1MZ186VTzn8ozXg3BM7J2UvTGuG/1vYvB99Y0gML7e/XpMrjzrRPhn/EKOZz
+         +M16vTA/IJudxGA+KRBA0Xzudjg1+YmLeiuEKRxGBJgasr/PgMFll6lZuS8x+D1/Nr
+         enM8O6UaYVXFredz/yu6Gw4yAwsNmGLHq1jzupr+6sKPuUmKdFpUgB+WmCPUzn8nmY
+         8umAndZ8r9iruOOSKU6ZrzFPkwKogVsCTztjifsWFd+GsZ4kyM94l8VzzeOdYJ+3LI
+         Pyn1z8nhlc3gVaAERqnlAMBXscyLeOPoPvC44LgJ7yDZTmh5GrOpX8a0dlVfViTyub
+         W240okspa9uwg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H9GD02n62z9sXS;
+        Thu, 16 Sep 2021 22:12:00 +1000 (AEST)
+Date:   Thu, 16 Sep 2021 22:11:59 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        M Chetan Kumar <m.chetan.kumar@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the net-next tree
+Message-ID: <20210916221159.7a495aca@canb.auug.org.au>
+In-Reply-To: <CAK7LNASCbVJ0EYoGN8iz+yskpHUuR_PZnePUUtgJu9UZqGW2cg@mail.gmail.com>
+References: <20210914121550.39cfd366@canb.auug.org.au>
+        <CAK7LNASCbVJ0EYoGN8iz+yskpHUuR_PZnePUUtgJu9UZqGW2cg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/mzcw7ryvAFRIOGzBw.57AtL";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Having two fields for the same purpose with subtle differences
-on different RCU flavours is confusing, especially when both fields
-always exist on both RCU flavours.
+--Sig_/mzcw7ryvAFRIOGzBw.57AtL
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Fortunately it's now safe for preemptible RCU to rely on rcu_data.cpu
-no_qs.b.exp instead of its own ad-hoc exp_deferred_qs field.
+Hi Masahiro,
 
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
----
- kernel/rcu/tree.h        |  1 -
- kernel/rcu/tree_exp.h    |  5 ++---
- kernel/rcu/tree_plugin.h | 12 ++++++------
- 3 files changed, 8 insertions(+), 10 deletions(-)
+On Thu, 16 Sep 2021 18:03:26 +0900 Masahiro Yamada <masahiroy@kernel.org> w=
+rote:
+>
+> I am sad to see the kbuild change reverted, not the net one.
+>=20
+> 13bb8429ca98 is apparently doing wrong.
+>=20
+> Including <linux/types.h> should be fine.
 
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index 305cf6aeb408..ea46ed40f6bc 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -157,7 +157,6 @@ struct rcu_data {
- 	bool		core_needs_qs;	/* Core waits for quiescent state. */
- 	bool		beenonline;	/* CPU online at least once. */
- 	bool		gpwrap;		/* Possible ->gp_seq wrap. */
--	bool		exp_deferred_qs; /* This CPU awaiting a deferred QS? */
- 	bool		cpu_started;	/* RCU watching this onlining CPU. */
- 	struct rcu_node *mynode;	/* This CPU's leaf of hierarchy */
- 	unsigned long grpmask;		/* Mask to apply to leaf qsmask. */
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index 992f9475d243..64e454345d52 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -255,7 +255,6 @@ static void rcu_report_exp_cpu_mult(struct rcu_node *rnp,
-  */
- static void rcu_report_exp_rdp(struct rcu_data *rdp)
- {
--	rdp->exp_deferred_qs = false;
- 	rdp->cpu_no_qs.b.exp = false;
- 	rcu_report_exp_cpu_mult(rdp->mynode, rdp->grpmask, true);
- }
-@@ -656,7 +655,7 @@ static void rcu_exp_handler(void *unused)
- 		    rcu_dynticks_curr_cpu_in_eqs()) {
- 			rcu_report_exp_rdp(rdp);
- 		} else {
--			rdp->exp_deferred_qs = true;
-+			rdp->cpu_no_qs.b.exp = true;
- 			set_tsk_need_resched(t);
- 			set_preempt_need_resched();
- 		}
-@@ -678,7 +677,7 @@ static void rcu_exp_handler(void *unused)
- 	if (depth > 0) {
- 		raw_spin_lock_irqsave_rcu_node(rnp, flags);
- 		if (rnp->expmask & rdp->grpmask) {
--			rdp->exp_deferred_qs = true;
-+			rdp->cpu_no_qs.b.exp = true;
- 			t->rcu_read_unlock_special.b.exp_hint = true;
- 		}
- 		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index b20634fde43d..796c4913bbb8 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -260,10 +260,10 @@ static void rcu_preempt_ctxt_queue(struct rcu_node *rnp, struct rcu_data *rdp)
- 	 * no need to check for a subsequent expedited GP.  (Though we are
- 	 * still in a quiescent state in any case.)
- 	 */
--	if (blkd_state & RCU_EXP_BLKD && rdp->exp_deferred_qs)
-+	if (blkd_state & RCU_EXP_BLKD && rdp->cpu_no_qs.b.exp)
- 		rcu_report_exp_rdp(rdp);
- 	else
--		WARN_ON_ONCE(rdp->exp_deferred_qs);
-+		WARN_ON_ONCE(rdp->cpu_no_qs.b.exp);
- }
- 
- /*
-@@ -354,7 +354,7 @@ void rcu_note_context_switch(bool preempt)
- 	 * means that we continue to block the current grace period.
- 	 */
- 	rcu_qs();
--	if (rdp->exp_deferred_qs)
-+	if (rdp->cpu_no_qs.b.exp)
- 		rcu_report_exp_rdp(rdp);
- 	rcu_tasks_qs(current, preempt);
- 	trace_rcu_utilization(TPS("End context switch"));
-@@ -481,7 +481,7 @@ rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
- 	 */
- 	special = t->rcu_read_unlock_special;
- 	rdp = this_cpu_ptr(&rcu_data);
--	if (!special.s && !rdp->exp_deferred_qs) {
-+	if (!special.s && !rdp->cpu_no_qs.b.exp) {
- 		local_irq_restore(flags);
- 		return;
- 	}
-@@ -501,7 +501,7 @@ rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
- 	 * tasks are handled when removing the task from the
- 	 * blocked-tasks list below.
- 	 */
--	if (rdp->exp_deferred_qs)
-+	if (rdp->cpu_no_qs.b.exp)
- 		rcu_report_exp_rdp(rdp);
- 
- 	/* Clean up if blocked during RCU read-side critical section. */
-@@ -584,7 +584,7 @@ rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
-  */
- static bool rcu_preempt_need_deferred_qs(struct task_struct *t)
- {
--	return (__this_cpu_read(rcu_data.exp_deferred_qs) ||
-+	return (__this_cpu_read(rcu_data.cpu_no_qs.b.exp) ||
- 		READ_ONCE(t->rcu_read_unlock_special.s)) &&
- 	       rcu_preempt_depth() == 0;
- }
--- 
-2.25.1
+This was fixed in the net-next tree.
 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/mzcw7ryvAFRIOGzBw.57AtL
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFDNI8ACgkQAVBC80lX
+0GzUYwf/TGSVUPLkcU16Z7h2pDpCF/LCT6RnKKKhBIc7LOJEr9Nu34vRnCbxohn0
+sd2PY3KXSngViYVczk+1lpSyI36TIhtZQ5+IjiVa48450qUVFw5rXGOac5DKLsYG
+NdNdlkUg4MSt2Pmdmn2jIyywaUA3BuH1jk0VBnEGNvV22FZhAXD60aLek94IAOv2
+8XneTE7R50TyefrAbEl5EGssAc06zzdaaPzrsxsiC3A0Oc2hkIEJP/kFQ8z3I1ia
+pXl7VuNG0x77SqzXvPpucWDt5GkqW2JzMxdxGv3TgPb+/1IXADB+iGK8kC1dxanN
+3OHj7vBaF3QZpjuynJWiKIPA6i4YVg==
+=MuDj
+-----END PGP SIGNATURE-----
+
+--Sig_/mzcw7ryvAFRIOGzBw.57AtL--
