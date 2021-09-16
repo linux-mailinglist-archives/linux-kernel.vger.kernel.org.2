@@ -2,125 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2688C40D129
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 03:20:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01B5840D12B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 03:20:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232171AbhIPBWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 21:22:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39932 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229816AbhIPBWF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 21:22:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F3F060F93
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 01:20:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631755245;
-        bh=N8vdbjyf2kqAOWnVrEA55RFKSMKRgVPo8mZ596qmFTs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=aCA9nZNVQ69O0f+yv/wo3D1I0gnuAseS7SrmlT9uFmDp4Vas95th0CZqUCQCAYsoE
-         CTd8jk1mSUAARkLeGoMMgxyqSN4DA8ebpmteW2PCI4pP6tdzd+V9YOgT4gaMl5Se1w
-         /bKTV5NcKG2KpZfaAhHXJFTOtRBXSp/b7l1+ex6yQx2o3pRZwoasJEoNUxQuWUszIG
-         mD5fJXz/5k+d/4OBT3u4VtlURFEm9AyBHo62jCl1MmR//eLZ1BMAAw/mF0aMF6V2AJ
-         m56ZvQQ56apZjYrr9k0frhQpss7qtRIJp+2wGN19n/Ntr2hMkR5v+cipoJLJT0rUBF
-         WMRkU+MT1czyw==
-Received: by mail-lf1-f43.google.com with SMTP id y28so11874617lfb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 18:20:45 -0700 (PDT)
-X-Gm-Message-State: AOAM533nf6PqwqdjbskEBLQJWIarMynMtOp32PjAC/81XPiCCPkqcZkx
-        uzc1vJe/grm9E5nWoInHZkv3jbYk6aBsoI5/yFo=
-X-Google-Smtp-Source: ABdhPJz+GXHr4HX2v0FUy9aKwpP8QUXw8A79CVUhuNj8Hy1BRETa0saqeya2VTa2CI7/Bd1Vfz9vb5u3+LerP+oeraU=
-X-Received: by 2002:a05:651c:1548:: with SMTP id y8mr2571362ljp.507.1631755243805;
- Wed, 15 Sep 2021 18:20:43 -0700 (PDT)
+        id S233648AbhIPBWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 21:22:14 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:9881 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233637AbhIPBWL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 21:22:11 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4H8zgW1GwQz8yC3;
+        Thu, 16 Sep 2021 09:16:23 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Thu, 16 Sep 2021 09:20:50 +0800
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Thu, 16 Sep 2021 09:20:49 +0800
+Subject: Re: [PATCH v2 2/3] kfence: maximize allocation wait timeout duration
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+To:     Marco Elver <elver@google.com>, <akpm@linux-foundation.org>
+CC:     <glider@google.com>, <dvyukov@google.com>, <jannh@google.com>,
+        <mark.rutland@arm.com>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>, <kasan-dev@googlegroups.com>,
+        <hdanton@sina.com>
+References: <20210421105132.3965998-1-elver@google.com>
+ <20210421105132.3965998-3-elver@google.com>
+ <6c0d5f40-5067-3a59-65fa-6977b6f70219@huawei.com>
+Message-ID: <abd74d5a-1236-4f0e-c123-a41e56e22391@huawei.com>
+Date:   Thu, 16 Sep 2021 09:20:49 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-References: <20210911092139.79607-1-guoren@kernel.org> <20210911092139.79607-4-guoren@kernel.org>
- <20210915074827.GC20024@lst.de>
-In-Reply-To: <20210915074827.GC20024@lst.de>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Thu, 16 Sep 2021 09:20:32 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTSZLieg1kYA6a0CPajPukHzwN0wvPuh4RQ-t45fciFOYA@mail.gmail.com>
-Message-ID: <CAJF2gTSZLieg1kYA6a0CPajPukHzwN0wvPuh4RQ-t45fciFOYA@mail.gmail.com>
-Subject: Re: [RFC PATCH V4 3/6] RISC-V: Support a new config option for
- non-coherent DMA
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Anup Patel <anup.patel@wdc.com>, Atish Patra <atish.patra@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        =?UTF-8?Q?Christoph_M=C3=BCllner?= <christoph.muellner@vrull.eu>,
-        Philipp Tomsich <philipp.tomsich@vrull.eu>,
-        liush <liush@allwinnertech.com>, wefu@redhat.com,
-        =?UTF-8?B?V2VpIFd1ICjlkLTkvJ8p?= <lazyparser@gmail.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        taiten.peng@canonical.com, aniket.ponkshe@canonical.com,
-        heinrich.schuchardt@canonical.com, gordan.markus@canonical.com,
-        Guo Ren <guoren@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <6c0d5f40-5067-3a59-65fa-6977b6f70219@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.174.177.243]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 3:48 PM Christoph Hellwig <hch@lst.de> wrote:
+Hi Marco,
+
+We found kfence_test will fails  on ARM64 with this patch with/without  
+CONFIG_DETECT_HUNG_TASK,
+
+Any thought ?
+
+
+On 2021/9/16 9:02, Kefeng Wang wrote:
 >
-> On Sat, Sep 11, 2021 at 05:21:36PM +0800, guoren@kernel.org wrote:
-> > +     select DMA_GLOBAL_POOL
-> > +     select DMA_DIRECT_REMAP
->
-> No need to select DMA_GLOBAL_POOL when DMA_DIRECT_REMAP is select.
-If we want to support PBMT & global_dma_pool both in riscv. Could they
-work together in arch/riscv with [1]?
-
-[1]: https://lore.kernel.org/lkml/20210818142715.GA10755@lst.de/T/
-
->
-> Also a patch just to add a option that is not selected and won't build
-> if selected does not make sense.
-I just want to rebase on Atish's patch and append DMA_DIRECT_REMAP.
-Okay, DMA_DIRECT_REMAP & DMA_GLOBAL_POOL should be separated from the
-patch.
-
-
-
---- a/kernel/dma/direct.c
-+++ b/kernel/dma/direct.c
-@@ -156,9 +156,14 @@ void *dma_direct_alloc(struct device *dev, size_t size,
-
-  if (!IS_ENABLED(CONFIG_ARCH_HAS_DMA_SET_UNCACHED) &&
-     !IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) &&
-+    !IS_ENABLED(CONFIG_DMA_GLOBAL_POOL) &&
-     !dev_is_dma_coherent(dev))
-  return arch_dma_alloc(dev, size, dma_handle, gfp, attrs);
-
-+ if (IS_ENABLED(CONFIG_DMA_GLOBAL_POOL) &&
-+    !dev_is_dma_coherent(dev))
-+ return dma_alloc_from_global_coherent(dev, size, dma_handle);
-+
-  /*
-  * Remapping or decrypting memory may block. If either is required and
-  * we can't block, allocate the memory from the atomic pools.
-@@ -255,11 +260,19 @@ void dma_direct_free(struct device *dev, size_t size,
-
-  if (!IS_ENABLED(CONFIG_ARCH_HAS_DMA_SET_UNCACHED) &&
-     !IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) &&
-+    !IS_ENABLED(CONFIG_DMA_GLOBAL_POOL) &&
-     !dev_is_dma_coherent(dev)) {
-  arch_dma_free(dev, size, cpu_addr, dma_addr, attrs);
-  return;
-  }
-
-+ if (IS_ENABLED(CONFIG_DMA_GLOBAL_POOL) &&
-+    !dev_is_dma_coherent(dev)) {
-+ if (!dma_release_from_global_coherent(page_order, cpu_addr))
-+ WARN_ON_ONCE(1);
-+ return;
-+ }
-+
-Here CONFIG_DMA_GLOBAL_POOL is independent from CONFIG_DMA_DIRECT_REMAP.
-
-  /* If cpu_addr is not from an atomic pool, dma_free_from_pool() fails */
-  if (IS_ENABLED(CONFIG_DMA_COHERENT_POOL) &&
-     dma_free_from_pool(dev, cpu_addr, PAGE_ALIGN(size)))
-
--- 
-Best Regards
- Guo Ren
-
-ML: https://lore.kernel.org/linux-csky/
+> On 2021/4/21 18:51, Marco Elver wrote:
+>> The allocation wait timeout was initially added because of warnings due
+>> to CONFIG_DETECT_HUNG_TASK=y [1]. While the 1 sec timeout is sufficient
+>> to resolve the warnings (given the hung task timeout must be 1 sec or
+>> larger) it may cause unnecessary wake-ups if the system is idle.
+>> [1] 
+>> https://lkml.kernel.org/r/CADYN=9J0DQhizAGB0-jz4HOBBh+05kMBXb4c0cXMS7Qi5NAJiw@mail.gmail.com
+>>
+>> Fix it by computing the timeout duration in terms of the current
+>> sysctl_hung_task_timeout_secs value.
+>>
+>> Signed-off-by: Marco Elver <elver@google.com>
+>> ---
+>>   mm/kfence/core.c | 12 +++++++++++-
+>>   1 file changed, 11 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/mm/kfence/core.c b/mm/kfence/core.c
+>> index 235d726f88bc..9742649f3f88 100644
+>> --- a/mm/kfence/core.c
+>> +++ b/mm/kfence/core.c
+>> @@ -20,6 +20,7 @@
+>>   #include <linux/moduleparam.h>
+>>   #include <linux/random.h>
+>>   #include <linux/rcupdate.h>
+>> +#include <linux/sched/sysctl.h>
+>>   #include <linux/seq_file.h>
+>>   #include <linux/slab.h>
+>>   #include <linux/spinlock.h>
+>> @@ -621,7 +622,16 @@ static void toggle_allocation_gate(struct 
+>> work_struct *work)
+>>       /* Enable static key, and await allocation to happen. */
+>>       static_branch_enable(&kfence_allocation_key);
+>>   -    wait_event_timeout(allocation_wait, 
+>> atomic_read(&kfence_allocation_gate), HZ);
+>> +    if (sysctl_hung_task_timeout_secs) {
+>> +        /*
+>> +         * During low activity with no allocations we might wait a
+>> +         * while; let's avoid the hung task warning.
+>> +         */
+>> +        wait_event_timeout(allocation_wait, 
+>> atomic_read(&kfence_allocation_gate),
+>> +                   sysctl_hung_task_timeout_secs * HZ / 2);
+>> +    } else {
+>> +        wait_event(allocation_wait, 
+>> atomic_read(&kfence_allocation_gate));
+>> +    }
+>>         /* Disable static key and reset timer. */
+>>       static_branch_disable(&kfence_allocation_key);
