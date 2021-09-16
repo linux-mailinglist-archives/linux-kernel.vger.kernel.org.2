@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9207C40E922
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:01:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF63B40E53A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:26:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356302AbhIPRth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:49:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57086 "EHLO mail.kernel.org"
+        id S1350063AbhIPRJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:09:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34036 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355399AbhIPRl0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:41:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 93EB761357;
-        Thu, 16 Sep 2021 16:52:52 +0000 (UTC)
+        id S1348403AbhIPRCq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:02:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F7DA6139F;
+        Thu, 16 Sep 2021 16:33:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631811173;
-        bh=8B59y0L/wT2zvmO07cGzKGTGPzz20BmRT7PsdET3T74=;
+        s=korg; t=1631810025;
+        bh=Q2Ovodfp8re7jwomZOCLSBh1cGJXYJoKDevgiklErVc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=x4MCBBII86dMRu67RIkpDPrdIn3GiCf6vu0H/N0odJdETPZiJxvo3p9LvSMKwMKk4
-         B7WtXG6QUaxldiOgFfHcBEhdxmNUnmcOKVedMwEenKJvK7SIOpGyYq33ufhKQUU2If
-         7uc7YEexg7V0wamLyDcuBYR5FAyxszCevQ1sEGV0=
+        b=aGX75xdOXgQKUfkNP3GibFtuHZBI+RbrRbht6m9Pwep4F5JWY4j1SwxqiOxnG2emb
+         MscI1+POOd52xT/gvFPkPMR7HOJTsycj3M+AElJFzOChZE6jVQHH1bLNWn0C5YoXpa
+         2UF53ove67BBBe3lAloM8Q9CUX305KVJ5wBz7iXE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Rui Miguel Silva <rui.silva@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 377/432] usb: isp1760: fix memory pool initialization
-Date:   Thu, 16 Sep 2021 18:02:06 +0200
-Message-Id: <20210916155823.594534994@linuxfoundation.org>
+        stable@vger.kernel.org, Rajkumar Subbiah <rsubbia@codeaurora.org>,
+        Kuogee Hsieh <khsieh@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Jani Nikula <jani.nikula@intel.com>,
+        Lyude Paul <lyude@redhat.com>
+Subject: [PATCH 5.13 370/380] drm/dp_mst: Fix return code on sideband message failure
+Date:   Thu, 16 Sep 2021 18:02:07 +0200
+Message-Id: <20210916155816.639793884@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +42,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rui Miguel Silva <rui.silva@linaro.org>
+From: Rajkumar Subbiah <rsubbia@codeaurora.org>
 
-[ Upstream commit f757f9291f920e1da4c6cfd4064c6bf59639983e ]
+commit 92bd92c44d0d9be5dcbcda315b4be4b909ed9740 upstream.
 
-The loops to setup the memory pool were skipping some
-blocks, that was not visible on the ISP1763 because it has
-fewer blocks than the ISP1761. But won testing on that IP
-from the family that would be an issue.
+Commit 2f015ec6eab6 ("drm/dp_mst: Add sideband down request tracing +
+selftests") added some debug code for sideband message tracing. But
+it seems to have unintentionally changed the behavior on sideband message
+failure. It catches and returns failure only if DRM_UT_DP is enabled.
+Otherwise it ignores the error code and returns success. So on an MST
+unplug, the caller is unaware that the clear payload message failed and
+ends up waiting for 4 seconds for the response. Fixes the issue by
+returning the proper error code.
 
-Reported-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Tested-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Signed-off-by: Rui Miguel Silva <rui.silva@linaro.org>
-Link: https://lore.kernel.org/r/20210827131154.4151862-2-rui.silva@linaro.org
+Changes in V2:
+-- Revise commit text as review comment
+-- add Fixes text
+
+Changes in V3:
+-- remove "unlikely" optimization
+
+Fixes: 2f015ec6eab6 ("drm/dp_mst: Add sideband down request tracing + selftests")
+Cc: <stable@vger.kernel.org> # v5.5+
+Signed-off-by: Rajkumar Subbiah <rsubbia@codeaurora.org>
+Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Reviewed-by: Jani Nikula <jani.nikula@intel.com>
+Reviewed-by: Lyude Paul <lyude@redhat.com>
+Signed-off-by: Lyude Paul <lyude@redhat.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/1625585434-9562-1-git-send-email-khsieh@codeaurora.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/isp1760/isp1760-hcd.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/drm_dp_mst_topology.c |   10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/usb/isp1760/isp1760-hcd.c b/drivers/usb/isp1760/isp1760-hcd.c
-index 27168b4a4ef2..ffb3a0c8c909 100644
---- a/drivers/usb/isp1760/isp1760-hcd.c
-+++ b/drivers/usb/isp1760/isp1760-hcd.c
-@@ -588,8 +588,8 @@ static void init_memory(struct isp1760_hcd *priv)
+--- a/drivers/gpu/drm/drm_dp_mst_topology.c
++++ b/drivers/gpu/drm/drm_dp_mst_topology.c
+@@ -2867,11 +2867,13 @@ static int process_single_tx_qlock(struc
+ 	idx += tosend + 1;
  
- 	payload_addr = PAYLOAD_OFFSET;
+ 	ret = drm_dp_send_sideband_msg(mgr, up, chunk, idx);
+-	if (unlikely(ret) && drm_debug_enabled(DRM_UT_DP)) {
+-		struct drm_printer p = drm_debug_printer(DBG_PREFIX);
++	if (ret) {
++		if (drm_debug_enabled(DRM_UT_DP)) {
++			struct drm_printer p = drm_debug_printer(DBG_PREFIX);
  
--	for (i = 0, curr = 0; i < ARRAY_SIZE(mem->blocks); i++) {
--		for (j = 0; j < mem->blocks[i]; j++, curr++) {
-+	for (i = 0, curr = 0; i < ARRAY_SIZE(mem->blocks); i++, curr += j) {
-+		for (j = 0; j < mem->blocks[i]; j++) {
- 			priv->memory_pool[curr + j].start = payload_addr;
- 			priv->memory_pool[curr + j].size = mem->blocks_size[i];
- 			priv->memory_pool[curr + j].free = 1;
--- 
-2.30.2
-
+-		drm_printf(&p, "sideband msg failed to send\n");
+-		drm_dp_mst_dump_sideband_msg_tx(&p, txmsg);
++			drm_printf(&p, "sideband msg failed to send\n");
++			drm_dp_mst_dump_sideband_msg_tx(&p, txmsg);
++		}
+ 		return ret;
+ 	}
+ 
 
 
