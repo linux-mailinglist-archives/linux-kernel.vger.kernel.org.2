@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 610BC40E33A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:20:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEB6640E341
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:20:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243716AbhIPQqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:46:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50990 "EHLO mail.kernel.org"
+        id S1344638AbhIPQq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:46:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51058 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245439AbhIPQk2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:40:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 037CA61A2A;
-        Thu, 16 Sep 2021 16:23:43 +0000 (UTC)
+        id S245451AbhIPQk3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:40:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D539961A35;
+        Thu, 16 Sep 2021 16:23:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809424;
-        bh=pwAd2PsMoekzDJkxhzFxwpXSoO+urj7Sr1DFVU276sc=;
+        s=korg; t=1631809427;
+        bh=oTepdI6ryG6UI04Rity1xJVC6Jkt6F1a8CWCPuDrM8o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ib+rqkzTgqmfkEVH3TFGT6Guj8Y51XOwE/R4ca47Be8+RWflxP/ISEN2IeGTedKhr
-         lzem2tG/dQBxJlhDhjdA5+1+nim6zD4jVue7cn8FbJYgfA34Jwq28RW8VAjH8e3Ukx
-         mGidNuWRsMgp3OYXrbrXIwyXcnh7CUfKuGtd9pf8=
+        b=0kjT+of7rUfcQBEurRHKr/7m5IPJQAMZK1VbZ+PguUmbPwlo5OZnneU6okDc490Po
+         yih4W0JGpd2IJGmn0I1PhJzXjbgSEWDPhy6r3iZjgUvJv2xC3bSq62alMJwcwMrAsl
+         in5j+HhJryu5dHQOQxhH41EZAEtTypdhPF2h2UPI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Zimmermann <tzimmermann@suse.de>,
-        Melissa Wen <melissa.srw@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 150/380] drm/vkms: Let shadow-plane helpers prepare the planes FB
-Date:   Thu, 16 Sep 2021 17:58:27 +0200
-Message-Id: <20210916155809.162639538@linuxfoundation.org>
+        stable@vger.kernel.org, Ani Sinha <ani@anisinha.ca>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 151/380] x86/hyperv: fix for unwanted manipulation of sched_clock when TSC marked unstable
+Date:   Thu, 16 Sep 2021 17:58:28 +0200
+Message-Id: <20210916155809.194023305@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
 References: <20210916155803.966362085@linuxfoundation.org>
@@ -40,90 +40,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Zimmermann <tzimmermann@suse.de>
+From: Ani Sinha <ani@anisinha.ca>
 
-[ Upstream commit b43e2ec03b0de040d536591713ea9c875ff34ba9 ]
+[ Upstream commit c445535c3efbfb8cb42d098e624d46ab149664b7 ]
 
-Replace vkms' prepare_fb and cleanup_fb functions with the generic
-code for shadow-buffered planes. No functional changes.
+Marking TSC as unstable has a side effect of marking sched_clock as
+unstable when TSC is still being used as the sched_clock. This is not
+desirable. Hyper-V ultimately uses a paravirtualized clock source that
+provides a stable scheduler clock even on systems without TscInvariant
+CPU capability. Hence, mark_tsc_unstable() call should be called _after_
+scheduler clock has been changed to the paravirtualized clocksource. This
+will prevent any unwanted manipulation of the sched_clock. Only TSC will
+be correctly marked as unstable.
 
-This change also fixes a problem where IGT kms_flip tests would
-create a segmentation fault within vkms. The driver's prepare_fb
-function did not report an error if a BO's vmap operation failed.
-The kernel later tried to operate on the non-mapped memory areas.
-The shared shadow-plane helpers handle errors correctly, so that
-the driver now avoids the segmantation fault.
-
-v2:
-	* include paragraph about IGT tests in commit message (Melissa)
-
-Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
-Reviewed-by: Melissa Wen <melissa.srw@gmail.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210705074633.9425-4-tzimmermann@suse.de
+Signed-off-by: Ani Sinha <ani@anisinha.ca>
+Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+Tested-by: Michael Kelley <mikelley@microsoft.com>
+Link: https://lore.kernel.org/r/20210713030522.1714803-1-ani@anisinha.ca
+Signed-off-by: Wei Liu <wei.liu@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/vkms/vkms_plane.c | 38 +------------------------------
- 1 file changed, 1 insertion(+), 37 deletions(-)
+ arch/x86/kernel/cpu/mshyperv.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/vkms/vkms_plane.c b/drivers/gpu/drm/vkms/vkms_plane.c
-index 6d310d31b75d..1b10ab2b80a3 100644
---- a/drivers/gpu/drm/vkms/vkms_plane.c
-+++ b/drivers/gpu/drm/vkms/vkms_plane.c
-@@ -8,7 +8,6 @@
- #include <drm/drm_gem_atomic_helper.h>
- #include <drm/drm_gem_framebuffer_helper.h>
- #include <drm/drm_plane_helper.h>
--#include <drm/drm_gem_shmem_helper.h>
+diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
+index 4fa0a4280895..ea87d9ed77e9 100644
+--- a/arch/x86/kernel/cpu/mshyperv.c
++++ b/arch/x86/kernel/cpu/mshyperv.c
+@@ -370,8 +370,6 @@ static void __init ms_hyperv_init_platform(void)
+ 	if (ms_hyperv.features & HV_ACCESS_TSC_INVARIANT) {
+ 		wrmsrl(HV_X64_MSR_TSC_INVARIANT_CONTROL, 0x1);
+ 		setup_force_cpu_cap(X86_FEATURE_TSC_RELIABLE);
+-	} else {
+-		mark_tsc_unstable("running on Hyper-V");
+ 	}
  
- #include "vkms_drv.h"
- 
-@@ -150,45 +149,10 @@ static int vkms_plane_atomic_check(struct drm_plane *plane,
- 	return 0;
+ 	/*
+@@ -432,6 +430,13 @@ static void __init ms_hyperv_init_platform(void)
+ 	/* Register Hyper-V specific clocksource */
+ 	hv_init_clocksource();
+ #endif
++	/*
++	 * TSC should be marked as unstable only after Hyper-V
++	 * clocksource has been initialized. This ensures that the
++	 * stability of the sched_clock is not altered.
++	 */
++	if (!(ms_hyperv.features & HV_ACCESS_TSC_INVARIANT))
++		mark_tsc_unstable("running on Hyper-V");
  }
  
--static int vkms_prepare_fb(struct drm_plane *plane,
--			   struct drm_plane_state *state)
--{
--	struct drm_gem_object *gem_obj;
--	struct dma_buf_map map;
--	int ret;
--
--	if (!state->fb)
--		return 0;
--
--	gem_obj = drm_gem_fb_get_obj(state->fb, 0);
--	ret = drm_gem_shmem_vmap(gem_obj, &map);
--	if (ret)
--		DRM_ERROR("vmap failed: %d\n", ret);
--
--	return drm_gem_plane_helper_prepare_fb(plane, state);
--}
--
--static void vkms_cleanup_fb(struct drm_plane *plane,
--			    struct drm_plane_state *old_state)
--{
--	struct drm_gem_object *gem_obj;
--	struct drm_gem_shmem_object *shmem_obj;
--	struct dma_buf_map map;
--
--	if (!old_state->fb)
--		return;
--
--	gem_obj = drm_gem_fb_get_obj(old_state->fb, 0);
--	shmem_obj = to_drm_gem_shmem_obj(drm_gem_fb_get_obj(old_state->fb, 0));
--	dma_buf_map_set_vaddr(&map, shmem_obj->vaddr);
--	drm_gem_shmem_vunmap(gem_obj, &map);
--}
--
- static const struct drm_plane_helper_funcs vkms_primary_helper_funcs = {
- 	.atomic_update		= vkms_plane_atomic_update,
- 	.atomic_check		= vkms_plane_atomic_check,
--	.prepare_fb		= vkms_prepare_fb,
--	.cleanup_fb		= vkms_cleanup_fb,
-+	DRM_GEM_SHADOW_PLANE_HELPER_FUNCS,
- };
- 
- struct drm_plane *vkms_plane_init(struct vkms_device *vkmsdev,
+ static bool __init ms_hyperv_x2apic_available(void)
 -- 
 2.30.2
 
