@@ -2,44 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66E2840D6DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 11:56:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A53440D6C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 11:56:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237499AbhIPJ5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 05:57:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57890 "EHLO mail.kernel.org"
+        id S235640AbhIPJ5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 05:57:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57848 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236019AbhIPJ4q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S235798AbhIPJ4q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 16 Sep 2021 05:56:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 378ED61216;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 310CA61207;
         Thu, 16 Sep 2021 09:55:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1631786126;
-        bh=JwWCjmG96CZuiWgSlG9dyPmxEM9GvaJcEKBMYRMsB90=;
+        bh=83vkFWOnmUdHmvdZYCb71ZYm+RoKY7l/VWT0C4zUsJ4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MKTqSxcIt9p5H4pJmyp/Oz2PN3adV7AHogAAT8d74S4+05T1Hv1sedSSPJm4eh3ze
-         qQJ2sNzbydSsI52T7JA1TjEvaEeePhI4fOBziTnEtac7yJhfMH6YMVmAbwdqm/32GI
-         Ua2OxhexmmefTGPcIxMu1VZjG+3RGNw1uIAP9JT+Q2F0EmtpcriB7ahpjv4TzfoMIL
-         IybzAi+bhHHP9aCVb8CKx9Iu9/Ky+HCtmhmo05rn2Huery+53QC4518C7ygCLxnto3
-         i921Ceq5frvN9c3tyCE6HcpCu4Svjlmy3ydv1n9R6w+shpEkKW7ulm944yyeUhLE8B
-         vCMRgQeslZMYA==
+        b=fquf9bYIq5SlSufpDS1BDsZ19/XUMK5RAlO+U5fsudwHtCD+/l5NdxtjD8AEi+eKQ
+         qjngZ4Aoi453AdyK88FH6Hk4mHN/dvzNMEur4FL44Pp2K3dQaZVYpQRSsQaJuSqIOM
+         jjfU6me+8hAcPtevDwJb2c8O7mfrZwTc3lNCL+VnEq9uSrRwe+9kw0U3N5Gjn9JAlX
+         +whcAbbHkZSkRWsD6LoO0m+C2sdRCLSBeJk7qC5tGoGxhj1z+DNThl+kmh85DqAef/
+         0ixJ0ZDm84i3tPrj1p+RexpxrVCFgDepYcMHOOtLmZBkUpffpOZ2RScdBSajSplp/2
+         8abhky0XkdPMA==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1mQo72-001vTb-9T; Thu, 16 Sep 2021 11:55:24 +0200
+        id 1mQo72-001vTf-BQ; Thu, 16 Sep 2021 11:55:24 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Jonathan Corbet <corbet@lwn.net>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Cai Huoqing <caihuoqing@baidu.com>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Rob Herring <robh@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Yang Li <abaci-bugfix@linux.alibaba.com>,
-        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-omap@vger.kernel.org
-Subject: [PATCH v2 05/23] dt-bindings: mmc: update mmc-card.yaml reference
-Date:   Thu, 16 Sep 2021 11:55:04 +0200
-Message-Id: <820bb7a1d7e0e51cbea72c9bee6bce806427d1f3.1631785820.git.mchehab+huawei@kernel.org>
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Grant Seltzer <grantseltzer@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH v2 06/23] libbpf: update index.rst reference
+Date:   Thu, 16 Sep 2021 11:55:05 +0200
+Message-Id: <854e410df660c62e4e4c8f22c4ae9c6f6594f4a1.1631785820.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1631785820.git.mchehab+huawei@kernel.org>
 References: <cover.1631785820.git.mchehab+huawei@kernel.org>
@@ -50,31 +52,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changeset 922eefdafc80 ("dt-bindings: mmc: Convert MMC Card binding to a schema")
-renamed: Documentation/devicetree/bindings/mmc/mmc-card.txt
-to: Documentation/devicetree/bindings/mmc/mmc-card.yaml.
+Changeset d20b41115ad5 ("libbpf: Rename libbpf documentation index file")
+renamed: Documentation/bpf/libbpf/libbpf.rst
+to: Documentation/bpf/libbpf/index.rst.
 
 Update its cross-reference accordingly.
 
-Fixes: 922eefdafc80 ("dt-bindings: mmc: Convert MMC Card binding to a schema")
+Fixes: d20b41115ad5 ("libbpf: Rename libbpf documentation index file")
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- drivers/mmc/host/omap_hsmmc.c | 2 +-
+ Documentation/bpf/index.rst | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mmc/host/omap_hsmmc.c b/drivers/mmc/host/omap_hsmmc.c
-index 7a29ad542e4a..9dafcbf969d9 100644
---- a/drivers/mmc/host/omap_hsmmc.c
-+++ b/drivers/mmc/host/omap_hsmmc.c
-@@ -1510,7 +1510,7 @@ static void omap_hsmmc_init_card(struct mmc_host *mmc, struct mmc_card *card)
- 		 * REVISIT: should be moved to sdio core and made more
- 		 * general e.g. by expanding the DT bindings of child nodes
- 		 * to provide a mechanism to provide this information:
--		 * Documentation/devicetree/bindings/mmc/mmc-card.txt
-+		 * Documentation/devicetree/bindings/mmc/mmc-card.yaml
- 		 */
+diff --git a/Documentation/bpf/index.rst b/Documentation/bpf/index.rst
+index 1ceb5d704a97..817a201a1282 100644
+--- a/Documentation/bpf/index.rst
++++ b/Documentation/bpf/index.rst
+@@ -15,7 +15,7 @@ that goes into great technical depth about the BPF Architecture.
+ libbpf
+ ======
  
- 		np = of_get_compatible_child(np, "ti,wl1251");
+-Documentation/bpf/libbpf/libbpf.rst is a userspace library for loading and interacting with bpf programs.
++Documentation/bpf/libbpf/index.rst is a userspace library for loading and interacting with bpf programs.
+ 
+ BPF Type Format (BTF)
+ =====================
 -- 
 2.31.1
 
