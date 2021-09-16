@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6274C40E731
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:32:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08C7B40E0F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:28:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353101AbhIPR37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:29:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44398 "EHLO mail.kernel.org"
+        id S241826AbhIPQ0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:26:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55230 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351995AbhIPRUK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:20:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 60EA361B7E;
-        Thu, 16 Sep 2021 16:42:08 +0000 (UTC)
+        id S235171AbhIPQSQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:18:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C6F361355;
+        Thu, 16 Sep 2021 16:12:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810529;
-        bh=5xZLFXILOHTZSJwOfgebXMcLk7lu/kNLiMKTHZekKOE=;
+        s=korg; t=1631808762;
+        bh=FV5zm2F1vM97RGgqT2SFLaNiWF0Id1j+xbU6FBbSKQg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qRsa7HNXqsr/jWei4KgCeyAInhwXZ3g27KaWAO9Y7hTLB8LORrS0D8YGrxOZkLASV
-         wyet5dACyujuBOeGzdpiXaD+/AzNMYnkt9BGh4XcIGMaoT5fW3wruru2fdDUbwkumP
-         o7qgc5fBVdHnzzRks9atGNOHvhlmerq9csKDb29E=
+        b=xEeH+HjeHhYsF+h3mUrpg6USSJqJt9R21Jtw+QJlW9KsgwJhQ4gcbdQWr5hW6JA4i
+         OLCcvsJpvGT0ppmJxPcoj8Oio7nKgKjWIP9Kw3ZFRlXSSiNdRqvheFuEpIQv6gX9SD
+         YPo4j3L4QvHUH8O7xyOEsI3GBn6o0FrInIjcEGsk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Anderson <sean.anderson@seco.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        stable@vger.kernel.org, Umang Jain <umang.jain@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 175/432] crypto: mxs-dcp - Use sg_mapping_iter to copy data
-Date:   Thu, 16 Sep 2021 17:58:44 +0200
-Message-Id: <20210916155816.672097033@linuxfoundation.org>
+Subject: [PATCH 5.10 180/306] media: imx258: Limit the max analogue gain to 480
+Date:   Thu, 16 Sep 2021 17:58:45 +0200
+Message-Id: <20210916155800.219522100@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,136 +43,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Anderson <sean.anderson@seco.com>
+From: Umang Jain <umang.jain@ideasonboard.com>
 
-[ Upstream commit 2e6d793e1bf07fe5e20cfbbdcec9e1af7e5097eb ]
+[ Upstream commit f809665ee75fff3f4ea8907f406a66d380aeb184 ]
 
-This uses the sg_pcopy_from_buffer to copy data, instead of doing it
-ourselves.
+The range for analog gain mentioned in the datasheet is [0, 480].
+The real gain formula mentioned in the datasheet is:
 
-In addition to reducing code size, this fixes the following oops
-resulting from failing to kmap the page:
+	Gain = 512 / (512 – X)
 
-[   68.896381] Unable to handle kernel NULL pointer dereference at virtual address 00000ab8
-[   68.904539] pgd = 3561adb3
-[   68.907475] [00000ab8] *pgd=00000000
-[   68.911153] Internal error: Oops: 805 [#1] ARM
-[   68.915618] Modules linked in: cfg80211 rfkill des_generic libdes arc4 libarc4 cbc ecb algif_skcipher sha256_generic libsha256 sha1_generic hmac aes_generic libaes cmac sha512_generic md5 md4 algif_hash af_alg i2c_imx i2c_core ci_hdrc_imx ci_hdrc mxs_dcp ulpi roles udc_core imx_sdma usbmisc_imx usb_common firmware_class virt_dma phy_mxs_usb nf_tables nfnetlink ip_tables x_tables ipv6 autofs4
-[   68.950741] CPU: 0 PID: 139 Comm: mxs_dcp_chan/ae Not tainted 5.10.34 #296
-[   68.958501] Hardware name: Freescale i.MX6 Ultralite (Device Tree)
-[   68.964710] PC is at memcpy+0xa8/0x330
-[   68.968479] LR is at 0xd7b2bc9d
-[   68.971638] pc : [<c053e7c8>]    lr : [<d7b2bc9d>]    psr: 000f0013
-[   68.977920] sp : c2cbbee4  ip : 00000010  fp : 00000010
-[   68.983159] r10: 00000000  r9 : c3283a40  r8 : 1a5a6f08
-[   68.988402] r7 : 4bfe0ecc  r6 : 76d8a220  r5 : c32f9050  r4 : 00000001
-[   68.994945] r3 : 00000ab8  r2 : fffffff0  r1 : c32f9050  r0 : 00000ab8
-[   69.001492] Flags: nzcv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
-[   69.008646] Control: 10c53c7d  Table: 83664059  DAC: 00000051
-[   69.014414] Process mxs_dcp_chan/ae (pid: 139, stack limit = 0x667b57ab)
-[   69.021133] Stack: (0xc2cbbee4 to 0xc2cbc000)
-[   69.025519] bee0:          c32f9050 c3235408 00000010 00000010 00000ab8 00000001 bf10406c
-[   69.033720] bf00: 00000000 00000000 00000010 00000000 c32355d0 832fb080 00000000 c13de2fc
-[   69.041921] bf20: c3628010 00000010 c33d5780 00000ab8 bf1067e8 00000002 c21e5010 c2cba000
-[   69.050125] bf40: c32f8040 00000000 bf106a40 c32f9040 c3283a80 00000001 bf105240 c3234040
-[   69.058327] bf60: ffffe000 c3204100 c2c69800 c2cba000 00000000 bf103b84 00000000 c2eddc54
-[   69.066530] bf80: c3204144 c0140d1c c2cba000 c2c69800 c0140be8 00000000 00000000 00000000
-[   69.074730] bfa0: 00000000 00000000 00000000 c0100114 00000000 00000000 00000000 00000000
-[   69.082932] bfc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-[   69.091131] bfe0: 00000000 00000000 00000000 00000000 00000013 00000000 00000000 00000000
-[   69.099364] [<c053e7c8>] (memcpy) from [<bf10406c>] (dcp_chan_thread_aes+0x4e8/0x840 [mxs_dcp])
-[   69.108117] [<bf10406c>] (dcp_chan_thread_aes [mxs_dcp]) from [<c0140d1c>] (kthread+0x134/0x160)
-[   69.116941] [<c0140d1c>] (kthread) from [<c0100114>] (ret_from_fork+0x14/0x20)
-[   69.124178] Exception stack(0xc2cbbfb0 to 0xc2cbbff8)
-[   69.129250] bfa0:                                     00000000 00000000 00000000 00000000
-[   69.137450] bfc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-[   69.145648] bfe0: 00000000 00000000 00000000 00000000 00000013 00000000
-[   69.152289] Code: e320f000 e4803004 e4804004 e4805004 (e4806004)
+Hence, values larger than 511 clearly makes no sense. The gain
+register field is also documented to be of 9-bits in the datasheet.
 
-Signed-off-by: Sean Anderson <sean.anderson@seco.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Certainly, it is enough to infer that, the kernel driver currently
+advertises an arbitrary analog gain max. Fix it by rectifying the
+value as per the data sheet i.e. 480.
+
+Signed-off-by: Umang Jain <umang.jain@ideasonboard.com>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/mxs-dcp.c | 36 +++++++++---------------------------
- 1 file changed, 9 insertions(+), 27 deletions(-)
+ drivers/media/i2c/imx258.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/mxs-dcp.c b/drivers/crypto/mxs-dcp.c
-index f397cc5bf102..d19e5ffb5104 100644
---- a/drivers/crypto/mxs-dcp.c
-+++ b/drivers/crypto/mxs-dcp.c
-@@ -300,21 +300,20 @@ static int mxs_dcp_aes_block_crypt(struct crypto_async_request *arq)
- 
- 	struct scatterlist *dst = req->dst;
- 	struct scatterlist *src = req->src;
--	const int nents = sg_nents(req->src);
-+	int dst_nents = sg_nents(dst);
- 
- 	const int out_off = DCP_BUF_SZ;
- 	uint8_t *in_buf = sdcp->coh->aes_in_buf;
- 	uint8_t *out_buf = sdcp->coh->aes_out_buf;
- 
--	uint8_t *out_tmp, *src_buf, *dst_buf = NULL;
- 	uint32_t dst_off = 0;
-+	uint8_t *src_buf = NULL;
- 	uint32_t last_out_len = 0;
- 
- 	uint8_t *key = sdcp->coh->aes_key;
- 
- 	int ret = 0;
--	int split = 0;
--	unsigned int i, len, clen, rem = 0, tlen = 0;
-+	unsigned int i, len, clen, tlen = 0;
- 	int init = 0;
- 	bool limit_hit = false;
- 
-@@ -332,7 +331,7 @@ static int mxs_dcp_aes_block_crypt(struct crypto_async_request *arq)
- 		memset(key + AES_KEYSIZE_128, 0, AES_KEYSIZE_128);
- 	}
- 
--	for_each_sg(req->src, src, nents, i) {
-+	for_each_sg(req->src, src, sg_nents(src), i) {
- 		src_buf = sg_virt(src);
- 		len = sg_dma_len(src);
- 		tlen += len;
-@@ -357,34 +356,17 @@ static int mxs_dcp_aes_block_crypt(struct crypto_async_request *arq)
- 			 * submit the buffer.
- 			 */
- 			if (actx->fill == out_off || sg_is_last(src) ||
--				limit_hit) {
-+			    limit_hit) {
- 				ret = mxs_dcp_run_aes(actx, req, init);
- 				if (ret)
- 					return ret;
- 				init = 0;
- 
--				out_tmp = out_buf;
-+				sg_pcopy_from_buffer(dst, dst_nents, out_buf,
-+						     actx->fill, dst_off);
-+				dst_off += actx->fill;
- 				last_out_len = actx->fill;
--				while (dst && actx->fill) {
--					if (!split) {
--						dst_buf = sg_virt(dst);
--						dst_off = 0;
--					}
--					rem = min(sg_dma_len(dst) - dst_off,
--						  actx->fill);
--
--					memcpy(dst_buf + dst_off, out_tmp, rem);
--					out_tmp += rem;
--					dst_off += rem;
--					actx->fill -= rem;
--
--					if (dst_off == sg_dma_len(dst)) {
--						dst = sg_next(dst);
--						split = 0;
--					} else {
--						split = 1;
--					}
--				}
-+				actx->fill = 0;
- 			}
- 		} while (len);
+diff --git a/drivers/media/i2c/imx258.c b/drivers/media/i2c/imx258.c
+index c0a691a73ec9..e6104ee97ed2 100644
+--- a/drivers/media/i2c/imx258.c
++++ b/drivers/media/i2c/imx258.c
+@@ -46,7 +46,7 @@
+ /* Analog gain control */
+ #define IMX258_REG_ANALOG_GAIN		0x0204
+ #define IMX258_ANA_GAIN_MIN		0
+-#define IMX258_ANA_GAIN_MAX		0x1fff
++#define IMX258_ANA_GAIN_MAX		480
+ #define IMX258_ANA_GAIN_STEP		1
+ #define IMX258_ANA_GAIN_DEFAULT		0x0
  
 -- 
 2.30.2
