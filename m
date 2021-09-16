@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C15C740E311
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:19:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED49A40E312
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:19:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344203AbhIPQov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:44:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51238 "EHLO mail.kernel.org"
+        id S1344226AbhIPQox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:44:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51468 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244490AbhIPQjL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:39:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 51221619F9;
-        Thu, 16 Sep 2021 16:23:02 +0000 (UTC)
+        id S244564AbhIPQjT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:39:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D1AFB6140D;
+        Thu, 16 Sep 2021 16:23:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809382;
-        bh=xlvMOsq3B07TF5p8zOcYN2pH12KXIkCZO8EBk5X2kAA=;
+        s=korg; t=1631809388;
+        bh=SrWbsL2c+wTgUKVBk/2/fr0BKD/MEpUT2ZCFzwO+5tw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gQylnP0KCJxMEco1vBalhodhecD29pH+V737/KV6I2Zab3vMrOibfVtlaI6fEcqg/
-         8ZsTIp55cF5WZx3Ed5XymUlm9EGj/70LN+9MICwcl/x5HP4S/3e3t3+VPRek/4YiU6
-         haUQOdzrJYGO77jCgEQPXWDTTKf9DA2ICWzCD9YM=
+        b=mWfO7QxKUvU4RDoLuzHn18tdKzHlfT6tFZklAr8qj4NcpKfUhbwZjhqJz9AnL6NGO
+         s3UHMuHP0lf9tyS5Ic1J4YTqVt+qldxchAdTAq+Lvo0JElQe7+ujo4DYraCzzrNGEa
+         +oezw4oTeK8aINCd6jbs7kzhnl2OztH2r2DUsJNM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Chao Yu <chao@kernel.org>,
         Jaegeuk Kim <jaegeuk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 134/380] f2fs: deallocate compressed pages when error happens
-Date:   Thu, 16 Sep 2021 17:58:11 +0200
-Message-Id: <20210916155808.595999713@linuxfoundation.org>
+Subject: [PATCH 5.13 135/380] f2fs: should put a page beyond EOF when preparing a write
+Date:   Thu, 16 Sep 2021 17:58:12 +0200
+Message-Id: <20210916155808.633622396@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
 References: <20210916155803.966362085@linuxfoundation.org>
@@ -42,52 +42,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jaegeuk Kim <jaegeuk@kernel.org>
 
-[ Upstream commit 827f02842e40ea2e00f401e8f4cb1bccf3b8cd86 ]
+[ Upstream commit 9605f75cf36e0bcc0f4ada07b5be712d30107607 ]
 
-In f2fs_write_multi_pages(), f2fs_compress_pages() allocates pages for
-compression work in cc->cpages[]. Then, f2fs_write_compressed_pages() initiates
-bio submission. But, if there's any error before submitting the IOs like early
-f2fs_cp_error(), previously it didn't free cpages by f2fs_compress_free_page().
-Let's fix memory leak by putting that just before deallocating cc->cpages.
+The prepare_compress_overwrite() gets/locks a page to prepare a read, and calls
+f2fs_read_multi_pages() which checks EOF first. If there's any page beyond EOF,
+we unlock the page and set cc->rpages[i] = NULL, which we can't put the page
+anymore. This makes page leak, so let's fix by putting that page.
 
-Fixes: 4c8ff7095bef ("f2fs: support data compression")
+Fixes: a949dc5f2c5c ("f2fs: compress: fix race condition of overwrite vs truncate")
 Reviewed-by: Chao Yu <chao@kernel.org>
 Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/f2fs/compress.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ fs/f2fs/data.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-index ba188722ba43..14e6a78503f1 100644
---- a/fs/f2fs/compress.c
-+++ b/fs/f2fs/compress.c
-@@ -1363,12 +1363,6 @@ static int f2fs_write_compressed_pages(struct compress_ctx *cc,
- 
- 	for (--i; i >= 0; i--)
- 		fscrypt_finalize_bounce_page(&cc->cpages[i]);
--	for (i = 0; i < cc->nr_cpages; i++) {
--		if (!cc->cpages[i])
--			continue;
--		f2fs_compress_free_page(cc->cpages[i]);
--		cc->cpages[i] = NULL;
--	}
- out_put_cic:
- 	kmem_cache_free(cic_entry_slab, cic);
- out_put_dnode:
-@@ -1379,6 +1373,12 @@ static int f2fs_write_compressed_pages(struct compress_ctx *cc,
- 	else
- 		f2fs_unlock_op(sbi);
- out_free:
-+	for (i = 0; i < cc->nr_cpages; i++) {
-+		if (!cc->cpages[i])
-+			continue;
-+		f2fs_compress_free_page(cc->cpages[i]);
-+		cc->cpages[i] = NULL;
-+	}
- 	page_array_free(cc->inode, cc->cpages, cc->nr_cpages);
- 	cc->cpages = NULL;
- 	return -EAGAIN;
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index 3cd509b085f2..198e5ad7c98b 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -2151,6 +2151,8 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
+ 			continue;
+ 		}
+ 		unlock_page(page);
++		if (for_write)
++			put_page(page);
+ 		cc->rpages[i] = NULL;
+ 		cc->nr_rpages--;
+ 	}
 -- 
 2.30.2
 
