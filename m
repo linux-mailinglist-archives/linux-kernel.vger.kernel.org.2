@@ -2,79 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24E2540D50A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 10:50:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AA4D40D510
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 10:51:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235510AbhIPIvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 04:51:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235495AbhIPIvB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 04:51:01 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7783CC0613C1
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 01:49:39 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id c19-20020a9d6153000000b0051829acbfc7so7406000otk.9
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 01:49:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vIP749jeRM51PP+EheT1+GJQiFSryXau4Nw9wt2MR9o=;
-        b=ib0a2fLDYWnjqZoTZ2hv2mqWpo0hxUiuak1z8zTBm5r0xV/7KaW/JbUV25PKvnGvTy
-         bFs639CZnjaV49OWYkXGOaipp0xWiE3EQFig/rlZBYZVLal2Dz23Y7n+hcBfSbvJyGq6
-         0x/9XTrelZbk/G7wpUU/6D37k2Qg9f2IxTOirWCacrGFIj29wrJz6nvF2J52/AZVpVOl
-         VcA8YnGAzh0qDhwLtiL93l5UlzwE6Fh1955ClLCsOouv38pRaQebmWv/fzIu4CZhbSn4
-         jyf5Jex3LTofcZwSiNA3D0omXfwDoSopXsQ2EyH2Sw0HDn4INDyfoivTV8hGI15Hb06h
-         hCeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vIP749jeRM51PP+EheT1+GJQiFSryXau4Nw9wt2MR9o=;
-        b=4GgZhX9RbETXPmQ8ftvrfJKE7uRAJbZm0ONGCVQIJyr1MlsrzBCFia5+RFH70HqIvt
-         LU6Gd4IWC18DNt2JNdsHoTJjLSVlv0UESzpMC6Br8F/gO8JNdTuuoMIHk1rDP0TJNZeu
-         pDIVqTAGXW2UCBOnkerZbdjDkGTTmRvU3NwspEnU48AIc1ED59k9m21fQXSn8bgx5NFA
-         Y5L7llpnmkPDmDI9lE8iTx8EHlP4uvGC2HgF8I7X094AGE1ryFTZuxXrdkC++bdxq3hN
-         7CbEv4ys1wEvSDPP1yyMbMCDxTC2ShqY2JpX+YOycTxHQTcgJ+s5SeQveTzH5PaqEjj2
-         5ukg==
-X-Gm-Message-State: AOAM5324SDAIzUmss2Qiwm4aHzm4WisytjE+ZbpgLRPNE1sjOgjoXM8P
-        3Oj7+RpRYIKxBr5AwYTcHwY+YYVeTJwhDtYh9DB50Q==
-X-Google-Smtp-Source: ABdhPJz3110GOQH0TXL0WZg5/2ZsApOW/cZ8gCqx6RYVU3IQy90hLLmlWEzVPbFdklWHNIUmQvOmVKas6KBPlKGgdGQ=
-X-Received: by 2002:a9d:71db:: with SMTP id z27mr3758946otj.292.1631782178670;
- Thu, 16 Sep 2021 01:49:38 -0700 (PDT)
+        id S235291AbhIPIw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 04:52:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33000 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235226AbhIPIwY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 04:52:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AA1396120F;
+        Thu, 16 Sep 2021 08:51:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1631782264;
+        bh=NKcmBxwkV3R3tW4bY4JaBczY3HPYWnC0xy3S7LWGRSM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0HPOUTzzQeuM5ZQE4uXfcBNZXnxETW8Y+I48clm9G3Lu1sJSyxpRCAAiYEUfN6hlb
+         TJyDHBn8Xl3BaeGkV8Cg/lZaeImya0yHMsytNW87XMyUMxKtyDwj1UHie9UOD9LWBH
+         rxsFnwoerQzSGnnwsgvboDjHFzeWgr7h5uUBET+E=
+Date:   Thu, 16 Sep 2021 10:51:01 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Alan J. Wylie" <alan@wylie.me.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: Regression in posix-cpu-timers.c (was Re: Linux 5.14.4)
+Message-ID: <YUMFdVETIYkCAmZx@kroah.com>
+References: <1631693373201133@kroah.com>
+ <87ilz1pwaq.fsf@wylie.me.uk>
+ <YUI26QI7dfgjUioT@kroah.com>
+ <24898.16666.838506.586861@wylie.me.uk>
 MIME-Version: 1.0
-References: <20210421105132.3965998-1-elver@google.com> <20210421105132.3965998-3-elver@google.com>
- <6c0d5f40-5067-3a59-65fa-6977b6f70219@huawei.com> <abd74d5a-1236-4f0e-c123-a41e56e22391@huawei.com>
-In-Reply-To: <abd74d5a-1236-4f0e-c123-a41e56e22391@huawei.com>
-From:   Marco Elver <elver@google.com>
-Date:   Thu, 16 Sep 2021 10:49:27 +0200
-Message-ID: <CANpmjNNXiuQbjMBP=5+uZRNAiduV7v067pPmAgsYzSPpR8Y2yg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] kfence: maximize allocation wait timeout duration
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     akpm@linux-foundation.org, glider@google.com, dvyukov@google.com,
-        jannh@google.com, mark.rutland@arm.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        kasan-dev@googlegroups.com, hdanton@sina.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <24898.16666.838506.586861@wylie.me.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Sept 2021 at 03:20, Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
-> Hi Marco,
->
-> We found kfence_test will fails  on ARM64 with this patch with/without
-> CONFIG_DETECT_HUNG_TASK,
->
-> Any thought ?
+On Wed, Sep 15, 2021 at 07:53:14PM +0100, Alan J. Wylie wrote:
+> at 20:09 on Wed 15-Sep-2021 Greg Kroah-Hartman (gregkh@linuxfoundation.org) wrote:
+> 
+> > Does 5.15-rc1 also fail in this same way, or does it work ok?
+> 
+> It fails
+> 
+> # uname -a
+> Linux bilbo 5.15.0-rc1 #1 SMP PREEMPT Wed Sep 15 19:19:48 BST 2021
+> x86_64 AMD FX(tm)-4300 Quad-Core Processor AuthenticAMD GNU/Linux
+> 
+> # su apache -s /bin/bash -c "cd /var/www/htdocs/nextcloud/ && php occ maintenance:mode --off"
+> PHP Fatal error: Maximum execution time of 0 seconds exceeded in
+> /var/www/htdocs/nextcloud/3rdparty/symfony/console/Application.php on
+> line 65
 
-Please share log and instructions to reproduce if possible. Also, if
-possible, please share bisection log that led you to this patch.
+Thanks for testing this and letting us know so quickly.
 
-I currently do not see how this patch would cause that, it only
-increases the timeout duration.
+I'll go drop this from all of the pending stable queues, and revert it
+from the released stable trees and push out an update in a few hours.
 
-I know that under QEMU TCG mode, there are occasionally timeouts in
-the test simply due to QEMU being extremely slow or other weirdness.
+thanks,
+
+greg k-h
