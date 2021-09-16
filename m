@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DF5040E339
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:20:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F37F440E65C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:30:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244086AbhIPQqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:46:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50780 "EHLO mail.kernel.org"
+        id S244657AbhIPRVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:21:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39920 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245356AbhIPQkU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:40:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C84261A0B;
-        Thu, 16 Sep 2021 16:23:38 +0000 (UTC)
+        id S1346588AbhIPROE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:14:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C985B613A7;
+        Thu, 16 Sep 2021 16:39:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809418;
-        bh=3U+Q2ExehCpShUzp7qfyAw0zZCRiu3dm9wxhWnkUSOE=;
+        s=korg; t=1631810363;
+        bh=SPe3Atrtx8dggmwlZ7vQgSMlq1837EZK1fqXLmcadxc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KighQ/pUt7d80AZIYZWwiejw99hkIe7BeIrX9l+FFJBUWlro8+U3kJXLhqcaivdsU
-         d+UEPsLARfAMlP9EipoZa19Defdl7AAZp10R2CFWysmIFRabJaZWkj24ptrY1Y2taB
-         Xfz/gm9G/nglW1yVG5FEdrbVaLDhMVIBe8oI+qbA=
+        b=zgjfx55cbYoXpfUEbh98xiNQDhK1TJCe6VEVLHO21irWBZncB5eG3JOz9R7q3nWUS
+         KClVJwevj1ni1YEOFQh2cPsVa7F5DFikmAMwoSRktLn5Lgy1EiGsBvqWYqXD0ejeVz
+         RS9HwudkjlcpeewglDHI2YKFc754yiqMKVbh6Rt8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Manish Rangankar <mrangankar@marvell.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 105/380] scsi: qedi: Fix error codes in qedi_alloc_global_queues()
+Subject: [PATCH 5.14 113/432] pinctrl: single: Fix error return code in pcs_parse_bits_in_pinctrl_entry()
 Date:   Thu, 16 Sep 2021 17:57:42 +0200
-Message-Id: <20210916155807.615511554@linuxfoundation.org>
+Message-Id: <20210916155814.596471890@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,80 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit 4dbe57d46d54a847875fa33e7d05877bb341585e ]
+[ Upstream commit d789a490d32fdf0465275e3607f8a3bc87d3f3ba ]
 
-This function had some left over code that returned 1 on error instead
-negative error codes.  Convert everything to use negative error codes.  The
-caller treats all non-zero returns the same so this does not affect run
-time.
+Fix to return -ENOTSUPP instead of 0 when PCS_HAS_PINCONF is true, which
+is the same as that returned in pcs_parse_pinconf().
 
-A couple places set "rc" instead of "status" so those error paths ended up
-returning success by mistake.  Get rid of the "rc" variable and use
-"status" everywhere.
-
-Remove the bogus "status = 0" initialization, as a future proofing measure
-so the compiler will warn about uninitialized error codes.
-
-Link: https://lore.kernel.org/r/20210810084753.GD23810@kili
-Fixes: ace7f46ba5fd ("scsi: qedi: Add QLogic FastLinQ offload iSCSI driver framework.")
-Acked-by: Manish Rangankar <mrangankar@marvell.com>
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: 4e7e8017a80e ("pinctrl: pinctrl-single: enhance to configure multiple pins of different modules")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Link: https://lore.kernel.org/r/20210722033930.4034-2-thunder.leizhen@huawei.com
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/qedi/qedi_main.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/pinctrl/pinctrl-single.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/scsi/qedi/qedi_main.c b/drivers/scsi/qedi/qedi_main.c
-index edf915432704..99e1a323807d 100644
---- a/drivers/scsi/qedi/qedi_main.c
-+++ b/drivers/scsi/qedi/qedi_main.c
-@@ -1621,7 +1621,7 @@ static int qedi_alloc_global_queues(struct qedi_ctx *qedi)
- {
- 	u32 *list;
- 	int i;
--	int status = 0, rc;
-+	int status;
- 	u32 *pbl;
- 	dma_addr_t page;
- 	int num_pages;
-@@ -1632,14 +1632,14 @@ static int qedi_alloc_global_queues(struct qedi_ctx *qedi)
- 	 */
- 	if (!qedi->num_queues) {
- 		QEDI_ERR(&qedi->dbg_ctx, "No MSI-X vectors available!\n");
--		return 1;
-+		return -ENOMEM;
+diff --git a/drivers/pinctrl/pinctrl-single.c b/drivers/pinctrl/pinctrl-single.c
+index e3aa64798f7d..4fcae8458359 100644
+--- a/drivers/pinctrl/pinctrl-single.c
++++ b/drivers/pinctrl/pinctrl-single.c
+@@ -1224,6 +1224,7 @@ static int pcs_parse_bits_in_pinctrl_entry(struct pcs_device *pcs,
+ 
+ 	if (PCS_HAS_PINCONF) {
+ 		dev_err(pcs->dev, "pinconf not supported\n");
++		res = -ENOTSUPP;
+ 		goto free_pingroups;
  	}
  
- 	/* Make sure we allocated the PBL that will contain the physical
- 	 * addresses of our queues
- 	 */
- 	if (!qedi->p_cpuq) {
--		status = 1;
-+		status = -EINVAL;
- 		goto mem_alloc_failure;
- 	}
- 
-@@ -1654,13 +1654,13 @@ static int qedi_alloc_global_queues(struct qedi_ctx *qedi)
- 		  "qedi->global_queues=%p.\n", qedi->global_queues);
- 
- 	/* Allocate DMA coherent buffers for BDQ */
--	rc = qedi_alloc_bdq(qedi);
--	if (rc)
-+	status = qedi_alloc_bdq(qedi);
-+	if (status)
- 		goto mem_alloc_failure;
- 
- 	/* Allocate DMA coherent buffers for NVM_ISCSI_CFG */
--	rc = qedi_alloc_nvm_iscsi_cfg(qedi);
--	if (rc)
-+	status = qedi_alloc_nvm_iscsi_cfg(qedi);
-+	if (status)
- 		goto mem_alloc_failure;
- 
- 	/* Allocate a CQ and an associated PBL for each MSI-X
 -- 
 2.30.2
 
