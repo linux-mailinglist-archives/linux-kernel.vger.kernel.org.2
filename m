@@ -2,153 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2E4F40DD8C
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 17:05:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8AD140DD9A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 17:09:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239042AbhIPPHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 11:07:02 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:38121 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231702AbhIPPG6 (ORCPT
+        id S238608AbhIPPKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 11:10:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231351AbhIPPKN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 11:06:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1631804736;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=IP9Nv0cIrdlrBoAnJCxni7bp4ywqxfkmNM9UrWGzWYA=;
-        b=WLxIgR2s+41eIX9orcyQ6LxBDz+yXQpe5B8FKKQqpVSb50cZFuB+92X0ADX2xpm4xJEkKG
-        8ELVnKMhVrrGcT56GqQVunY7SEBuy4re/jjYJsfpdlC1NoHx+s+O9MDP/+JjowP0wZQacL
-        fCTaX0nx+usa3P20iAsrfXNTFE9pLGk=
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com
- (mail-he1eur04lp2053.outbound.protection.outlook.com [104.47.13.53]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- de-mta-33-sTps91zyMpWuwZIP37Keqw-2; Thu, 16 Sep 2021 17:05:35 +0200
-X-MC-Unique: sTps91zyMpWuwZIP37Keqw-2
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ns8PIUH4HBPYN8nG/aNG+hoF+00HD2FvBYj04W+wLoQOLj3EPWr5pupwDtfkcdAavvCQVPOYb7jE2NX7iHDL6vbpVvhhOdHilnCQs+CtHQdckCmt345stSHVYCpjdaUhCayz2Ozkj+rRmd9PDVOdL6Iq0E9kKHNwFhuyQrKzFiiZxaJbU8FAgQ0HwydrJYlUUquEzU17i/bGehJlgN70eMEphMLsjlrsDqWFFIacDSFNZQl49m40vq+qVAT9QdBsvQSnEdd6yqqiPw3xyGopeAcj6SBFF5wi43WSb7FNcekqylm2obOJu74alV2Q6Ql24ud4mPBnoMLQkny1oZQHhQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=IP9Nv0cIrdlrBoAnJCxni7bp4ywqxfkmNM9UrWGzWYA=;
- b=C8flN417nCodQ2W3sFYV88/LHD78fPsNqZnE264MVif5zbV744T0LWwe+KsPa0b/WwmYiCsEF6iMfUOQFkoX4V7PSgMuYdToNrUGMZft2zM6jqBd84UNJkE1dQ/0Wt4MqFCOfFj7u8E2bniTRE8xs82JhSfdn5Iclk21IEcgUmyEx75jo2gQyUcbhZKLZ/4FaANJKZZpjooKMJinH5qn+8tnIGnsWit4S9s7wz16gY2i2gKqUkpDloTGKrKBT6T3Z16M6hrT3zpS1cnYPMGcKlVOBUp6au5+b9+RLGPZl/8vq72jbJiSivN8oYuioY/GlC57CIo+V4b1/12Pjt58CA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: lists.xenproject.org; dkim=none (message not signed)
- header.d=none;lists.xenproject.org; dmarc=none action=none
- header.from=suse.com;
-Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
- by VI1PR0402MB3391.eurprd04.prod.outlook.com (2603:10a6:803:3::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Thu, 16 Sep
- 2021 15:05:31 +0000
-Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
- ([fe80::4d37:ec64:4e90:b16b]) by VI1PR04MB5600.eurprd04.prod.outlook.com
- ([fe80::4d37:ec64:4e90:b16b%7]) with mapi id 15.20.4523.016; Thu, 16 Sep 2021
- 15:05:31 +0000
-To:     Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc:     Stefano Stabellini <sstabellini@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
-From:   Jan Beulich <jbeulich@suse.com>
-Subject: [PATCH] xen/x86: drop redundant zeroing from cpu_initialize_context()
-Message-ID: <14881835-a48e-29fa-0870-e177b10fcf65@suse.com>
-Date:   Thu, 16 Sep 2021 17:05:29 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PR1P264CA0028.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:102:19f::15) To VI1PR04MB5600.eurprd04.prod.outlook.com
- (2603:10a6:803:e7::16)
+        Thu, 16 Sep 2021 11:10:13 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4B45C061764
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 08:08:52 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id 17so6432238pgp.4
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 08:08:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WJkNM/xMmKX6sPuM9GYihXmKT4k9g9uXLWNaRS8FvpY=;
+        b=Lpii0tXvNXhCFogtIrCW7tJj37+9qjyt5pZfAVGGVDyD7jVBrHlezlF5Hnp6j9NJqP
+         LvIZ6Z+THH/B+6jAqOhNj+vtAdQsDedafZwuzZ08S2Vwmykts7+rJ9nsyIkO+wvc/MKc
+         iBB3KpZvafauK3Hr2Kov+izg925MtgPew/XuzUm2KDmWNSfiCN3++llYB9RZoS/frZFN
+         I3DFLGuR77lDnkxc8pCFoxv0KkG0j507w++LqxSN1L9Jmd71rXUvIJb6bLYKQ9CF+tFh
+         MQ5uZJFUYu9RZ/d5OzMHY0WNuGBKbUXvOW/K66FDx41If/LghN9dzBKB63MTslJ0D4YF
+         HO/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WJkNM/xMmKX6sPuM9GYihXmKT4k9g9uXLWNaRS8FvpY=;
+        b=dM/tKN9PyfvlHw5WIn5OL8h2LgUjKUDVJV3rxdp/bfR6NEWV91rCXjTr6fSmcTKFhy
+         nHey4f5bi/R0dFRuOeJ9EVq9HM825Hb2uxod1jE0Rk5wStuxGmuN5yZsouxjHENLp9yg
+         eg5k7MWCHSHUV//rr/w7FV5sn7Ryh17t+DWA9Xc8cba7pp6/CTGs/77po1Tgt+Sq5HeK
+         4502iH70UYHErAG1Zt5mew6JGN+vXFWKEGRT02RfuArWO83K0XkqEiyp0tCk5wWsP2Fg
+         wGr1gJF0dV3iPBP9OOqKcd26SC5QDE8pg2WYyTjET5bhauTudmpsOxmNNAYeuHaejF24
+         dR3Q==
+X-Gm-Message-State: AOAM5309xwNQG7KgoMhWe14cAhopfmLoqzAatXj1bipHSTuLKzAId1mo
+        Co1l7f7CNnmjYE0Bx2cNqTZkFw==
+X-Google-Smtp-Source: ABdhPJz9s4X2hqqgVh5+wNVkI9McM26vR77EykgQ5qDe32ykmFwS/lAJFbopVaug6VSGX/wwGwmJLw==
+X-Received: by 2002:a63:3449:: with SMTP id b70mr5372824pga.315.1631804932296;
+        Thu, 16 Sep 2021 08:08:52 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id a71sm3496584pfd.86.2021.09.16.08.08.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Sep 2021 08:08:51 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mQt0M-001mZM-6a; Thu, 16 Sep 2021 12:08:50 -0300
+Date:   Thu, 16 Sep 2021 12:08:50 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     syzbot <syzbot+dc3dfba010d7671e05f5@syzkaller.appspotmail.com>,
+        dledford@redhat.com, leon@kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        Aleksandr Nogikh <nogikh@google.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in addr_handler (4)
+Message-ID: <20210916150850.GN3544071@ziepe.ca>
+References: <000000000000ffdae005cc08037e@google.com>
+ <20210915193601.GI3544071@ziepe.ca>
+ <CACT4Y+bxDuLggCzkLAchrGkKQxC2v4bhc01ciBg+oc17q2=HHw@mail.gmail.com>
+ <20210916130459.GJ3544071@ziepe.ca>
+ <CACT4Y+aUFbj3_+iBpeP2qrQ=RbGrssr0-6EZv1nx73at7fdbfA@mail.gmail.com>
+ <CACT4Y+ZrQL3n=N2GOfJ6vLNW2_4MdiwywXvZpQ=as_NbJ8PXjw@mail.gmail.com>
+ <CACT4Y+ZrXft1cMg0X48TrvbLj0moCb5nyWs1HG0WAZkpKmiBaA@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.156.60.236] (37.24.206.209) by PR1P264CA0028.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:19f::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.16 via Frontend Transport; Thu, 16 Sep 2021 15:05:31 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7d05d157-bfbf-459e-c8bf-08d979236d7f
-X-MS-TrafficTypeDiagnostic: VI1PR0402MB3391:
-X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR0402MB33912E40E85F83CA726EB613B3DC9@VI1PR0402MB3391.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 626dTTzEhrXcrterC0Mzfw5SNpDHveJqKy6BuH4I3wv9m0pqsqwQBHOkHizgtrVXqnvXy/C8iFJIPE1XCE1UG4VpFo/iEeO7w6eIkore8FXzPKrnOtom5QCyfYd6O7uLZ4KjKBUo3Ggs1rBJUZmDLwuG8smFl2QVacYXl3wErLYZkG3JgC9Nn7Uozf03BPF7yGYs7D7L5rcdQ208NMO2U5KRWyscVA6jm/lkZii5qIicSfslol+nkIJEM+DpmNsQJm75wEdhYdaqtbIPaocNThJyDGoJF+CD1uVq0spfPeURUyHZqt0/KJHygVagP/F04sXMLw+nOg61tLNZK8XnuriUfYEqhGcdNHe0PSNLv9aXdKIuwVLbQC0Zt8EQ2qoSk5A13Xjffz7NfL1JEEVcTjEc2XpexDLdjsagEo53p0+qTSvqdyP9vGbQfLDSd6FmlWYHxPaLVepYMBwIx6u/uGTU5GTSHTUH/ltxMyWwKJwAjP28uZIX6zL8pZ5H41/bTqpc7xDMm5bptzOEHeCItnowPORvCxRwPbZkGr29Badtl31Wr54uSAgYJ7V/REVp9iddGXt2fjLV4Qx1xnR6wHnFY4EH4mlXY9WLyXpsqQxR2fb91MTCIPVHd70EzTruitOhTrtO37qoAkpPe+jtDU3rZN9yHrf2sHrRuzr0L+8/15ZyUN+57u/RjYY3b/RxEBFrdUw55CPwzQwiBCoXmRmOYgCJbEIty92GxDdRzco=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(956004)(4326008)(36756003)(66556008)(26005)(54906003)(2906002)(66946007)(66476007)(2616005)(31686004)(8936002)(16576012)(508600001)(38100700002)(186003)(86362001)(4744005)(110136005)(316002)(5660300002)(31696002)(8676002)(6486002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NE9rdGRYNGdyWG96WTlqZHVacVB4N3I1cFNIaW5KRWVIQUdtaUhRMmlPT3Qw?=
- =?utf-8?B?c3l3ZTNKRlBWTGk2SFlFMWlqeFp0L2Z6QVFVZGpEM3d3NHcrWmNIYU9qR2hv?=
- =?utf-8?B?dnE2bDVoT0hUZ0pXNzhsbmVpZkJaZFg1TmVNUmdyWk1vMXM0VWg5MFZxcVFC?=
- =?utf-8?B?akozTURtNkg5aXM2bVYyVm05clg2UHB2NFBBUXdyS1NhZ0NrNEhOZ0lXMWNM?=
- =?utf-8?B?eUt2Z1JEUEJsdkZzek5LTVo0dVRpT2dFTUdJMkZVQVcrRHNQUGc5RnFHTitJ?=
- =?utf-8?B?MnZncWNOd3NXZTY5Q0hNaTJ4b1BOYVp5M1JPc2I4THM2ZEdBQWhLWGhDNUti?=
- =?utf-8?B?Q0FBdmRLa3RINVE3SG91TGlOY09GdXJSSzdGVmVZY2dpNzdvNG02VFJmaXVq?=
- =?utf-8?B?ZXEwSlpHdGZvMGk4UXVsU2FNK0NCNUVTbXJNdExCN0RRaEt2dVR1MFBnczB4?=
- =?utf-8?B?UHVMZkpXV0hJVDZEK2NPY25ndVNoS2tLclJPL01Tc3hFS0FiaFFuYzBKKzJT?=
- =?utf-8?B?UGt0Qm9mSm5FTjJHcWhoTWNLc1ZWK1ZyT2FyV1NmUnhPc2IrRytZa3dXZDJU?=
- =?utf-8?B?SVRqdHROaDRWY0thRWp6R1FOYXk0bUp6d3pzU25GQ1VSNzVxTXpHdE14K011?=
- =?utf-8?B?VzdkOTVVM1Jqb1p0dXhWMnErVzQxUE1RWlo0TXpxaWJBK3NkUnFvdCs5aHQy?=
- =?utf-8?B?aTVUT2tXNTQ3RnUzMmM2aGRNNlc4K3p2QVppSUFyV2N2Q3F4TzZiNFV1bTNj?=
- =?utf-8?B?TkZGRDZ3UWF5dWFzOFMzdzRtaGtaN0dIKzJOemE0blZRSWtDVE5SK1NVcFJz?=
- =?utf-8?B?NUprb09iTk02c0RueGx3RzB0azF2Um9raXZWYXZJZWlSb04yNG5YZ1BRdm5t?=
- =?utf-8?B?SGMxMGY2ZFZzbHpIcXdKNUIwTjNFU0FMRW9XeUJVVU41am1Odm9uNFJCRmNT?=
- =?utf-8?B?WkdEbmJFUktRc0U5UTRXemtXcnVjSEk5VjlPVHlCaVBqaUpEK3FhWDE2NTVm?=
- =?utf-8?B?Um5lOWhrS1RqMFpST3F4Wm9JVitiSDB1WDVxZHZFR3FhaG5JeC9abWJLcksw?=
- =?utf-8?B?aWltUytrRWwrRjNxbDZmUTI0ekFTRGowaEZjZXpaYmdDU2IyekZUWTdnN21R?=
- =?utf-8?B?UHM3a0NWN3BzVzFDK3owUTBxQkNOTFIzRnZseHBHYkVUcUsrUyt4dTdzQjhx?=
- =?utf-8?B?akk0d3N3OUh5TmVJOExIWVBsZ0JiUEQ2L01EcWpLS1hFOVhobVFETW5ISHRG?=
- =?utf-8?B?a1hIT2tUQXhaeGlGL0JBSTNaRHJqM0VhSDFwZVArS3Z2d0hveXdFczJoY3Vj?=
- =?utf-8?B?Zy9Fd2IwYktKWFBSOEQwRU9VU285TXNaQ21lYjFITDd3MDRYT1ZZSlJuQitC?=
- =?utf-8?B?MU5EUDBaMkovRCs1SUlZMlNZV3oram42RW5XaEJ6aFZYSjROQjdXV1JFUHFr?=
- =?utf-8?B?VHVhOFNBWVBpaW1vY1VzQ0NhanNoUUl5bjhiYm00RTRxak9OSkpqYndyRHFY?=
- =?utf-8?B?MkNsOUE5OTIvbmVSM1VsSytwUlVzK3o1S1JyTTJUR3Z5NmlZTjROYTlwZXgw?=
- =?utf-8?B?MEdGTnJEaURQSThLY1dMZTRld3Z1S2tMc0J1UUxQUE1CTzNYeGYwQjVRMzlu?=
- =?utf-8?B?V2E3bXBVZlZnMzJuUHV3aUJMNmg1TzdqalZwSG1odHlzZCt2VmNLUkRQQTk3?=
- =?utf-8?B?TGEyOHFCL1VCSUx2OUZnME1mdHV4WlFsaEtoMHNFdmNGdklSTW15L3FNYlJD?=
- =?utf-8?Q?xagxOGHF87mcWg/M0176/MiXG7YujzI0E0zrxAu?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7d05d157-bfbf-459e-c8bf-08d979236d7f
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2021 15:05:31.8492
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Md2NeniJOpnnxW+2giAAEG2h9qgoEcLURlpj3saEUuEUFQn5fZGFYQcAYOphC7yMENC4hi/iwMBUz1PRQzjLVA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3391
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACT4Y+ZrXft1cMg0X48TrvbLj0moCb5nyWs1HG0WAZkpKmiBaA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just after having obtained the pointer from kzalloc() there's no reason
-at all to set part of the area to all zero yet another time. Similarly
-there's no point explicitly clearing "ldt_ents".
+On Thu, Sep 16, 2021 at 04:55:16PM +0200, Dmitry Vyukov wrote:
 
-Signed-off-by: Jan Beulich <jbeulich@suse.com>
+> > I noticed we also had 2 KCSAN reports that mention rdma_resolve_addr.
+> >
+> > On commit 1df0d896:
+> > ==================================================================
+> > BUG: KCSAN: data-race in addr_handler / cma_check_port
+> >
+> > write to 0xffff88809fa40a1c of 4 bytes by task 21 on cpu 1:
+> >  cma_comp_exch drivers/infiniband/core/cma.c:426 [inline]
+> >  addr_handler+0x9f/0x2b0 drivers/infiniband/core/cma.c:3141
+> >  process_one_req+0x22f/0x300 drivers/infiniband/core/addr.c:645
+> >  process_one_work+0x3e1/0x9a0 kernel/workqueue.c:2269
+> >  worker_thread+0x665/0xbe0 kernel/workqueue.c:2415
+> >  kthread+0x20d/0x230 kernel/kthread.c:291
+> >  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
+> >
+> > read to 0xffff88809fa40a1c of 4 bytes by task 11997 on cpu 0:
+> >  cma_check_port+0xbd/0x700 drivers/infiniband/core/cma.c:3506
 
---- a/arch/x86/xen/smp_pv.c
-+++ b/arch/x86/xen/smp_pv.c
-@@ -290,8 +290,6 @@ cpu_initialize_context(unsigned int cpu,
- 
- 	gdt = get_cpu_gdt_rw(cpu);
- 
--	memset(&ctxt->fpu_ctxt, 0, sizeof(ctxt->fpu_ctxt));
--
- 	/*
- 	 * Bring up the CPU in cpu_bringup_and_idle() with the stack
- 	 * pointing just below where pt_regs would be if it were a normal
-@@ -308,8 +306,6 @@ cpu_initialize_context(unsigned int cpu,
- 
- 	xen_copy_trap_info(ctxt->trap_ctxt);
- 
--	ctxt->ldt_ents = 0;
--
- 	BUG_ON((unsigned long)gdt & ~PAGE_MASK);
- 
- 	gdt_mfn = arbitrary_virt_to_mfn(gdt);
+This has since been fixed, cma_check_port() no longer reads state
 
+> > and on commit 5863cc79:
+
+I can't find this commit? Current rdma_resolve_addr should not trigger
+this KCSAN.
+
+> This does not immediately explain the use-after-free for me, but these
+> races suggest that everything is not protected by a single mutex and
+> that there may be some surprising interleavings.
+> E.g. rdma_resolve_addr checks status, and then conditionally executes
+> cma_bind_addr, but the status can change concurrently.
+
+It is true, they weren't, however I've fixed them all. These hits look
+like they all from before it got fixed up..
+
+Jason
