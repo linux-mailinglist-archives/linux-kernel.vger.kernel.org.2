@@ -2,229 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDA8640D3AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 09:19:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 537ED40D3B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 09:23:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234718AbhIPHUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 03:20:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36340 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234568AbhIPHUh (ORCPT
+        id S234769AbhIPHY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 03:24:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234718AbhIPHYX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 03:20:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631776757;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LGfg0GcIluFSJ92DGpwm8iHnNl5dpXDbW0fpaZHOCJ0=;
-        b=E/v2+Q+OUs6oQClmwbXvw+3pqXNnXz5RuDOIipBbCaGF51k63Nx0ngn8CO8K3ak6cgUWcD
-        lgSxOrP4mC5ItItoeoyfSypbop6AyVkQvP3SUvAzXUOqPwtX8h+2k8ssEleM6hZTZyH2+k
-        W/rBXMpNHwVh+mltupAjpvdTg1SQe+A=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-480-bD1OoDRWMxy8C080uVRguQ-1; Thu, 16 Sep 2021 03:19:15 -0400
-X-MC-Unique: bD1OoDRWMxy8C080uVRguQ-1
-Received: by mail-ed1-f71.google.com with SMTP id j6-20020aa7de86000000b003d4ddaf2bf9so4377260edv.7
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 00:19:15 -0700 (PDT)
+        Thu, 16 Sep 2021 03:24:23 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C02AAC061764
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 00:23:03 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id n18so5282026pgm.12
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 00:23:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=h9+JjymWywjibzYahIE08Q7Lk+YbzJ8GWAwAgGuQw44=;
+        b=CAU4jQUppKg76S8sxSwN4FATl9tAoUi0pf7tVytHg2CWKGP6dmI4UmJ4aS6EeI3u4b
+         H5+6lrvJ+E6PWvkj22Of5x3zQcPjQaxWGMUShPwQm4Nzak1xjQfDZ4AOASyHjSpwpaHU
+         w8ZFS65wuMpJAqgLD3DS+RzAhWZvZ0N/wHT2VuvgUO2SrS55yuwsKGugQeUF6Ol2v2xM
+         mzFZJOQI1XxmTDcinj85Qj+GooSieocbQvWUvaH5nT6AUoIFSI10E5Uz+lHug7yGybOf
+         sullI8IOsVNPMSAWJIZToPeMcUz8ufMbAEQYiHJmBHGDHhNqP507mZ8X6rxecFZtHIhE
+         HoWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=LGfg0GcIluFSJ92DGpwm8iHnNl5dpXDbW0fpaZHOCJ0=;
-        b=p95SWllsl5OKcSlnfuEfbhvom1WauN694uX0+9S3XDppjqJd/LWOyKNGDgiKO3Chwp
-         VCjzXpJWLjx4x6oNU5hj2f9JWY0y6Nr+IRv9DC9Tj6o+xsuyffsZa+/jSDDPQxxbH4Zp
-         vcx+DA1bK4/+tJUlkwzc1HAm+KjLSIAbQxIcOfFt57+vt4pqfML1YNuXYGYaQS/l1GTY
-         1ZRuko0bQjjMuoxuclhMJ5qNV9P9JwbhoG/Ir3Y4zY7JPgF+F0LZMx6yS/Bz1QqUQQHG
-         qC5ZckjYrzq/04nVfltnqm6rB7hsguvAkBezUnu7tAKQkN6qN/0EVV2lSHP59JgFuFgY
-         VwVA==
-X-Gm-Message-State: AOAM530J7FvrvFmoeR2SODgbyrfc++zkJdMsBDDbP/yNVhaD6RsmscRL
-        8JMw7g1zrUCSNkF0MnXCP845KHwOD7jEduFWimvKW48wkO3/f8zzjqG3uLz/2BOyzcu9mJcx747
-        oWtaR22imwfR1T0Rx39EkpcN0
-X-Received: by 2002:a17:907:75da:: with SMTP id jl26mr4735655ejc.300.1631776754167;
-        Thu, 16 Sep 2021 00:19:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzM8a8cQ5bqm/0JB8lYSrx8o4brn0zc/3kIz05qhtVinvsJWf+IE2TSrwxq+ncm0peCSQxHeA==
-X-Received: by 2002:a17:907:75da:: with SMTP id jl26mr4735635ejc.300.1631776753873;
-        Thu, 16 Sep 2021 00:19:13 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id la1sm851403ejc.48.2021.09.16.00.19.12
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=h9+JjymWywjibzYahIE08Q7Lk+YbzJ8GWAwAgGuQw44=;
+        b=GYQijJSpIsMT2xA/lkiaD/2sp8Mq8LpnLSZLGiwDRrppvMInVWH0oIFQugPUeg2cjI
+         F2vV6TJ8Tn6nSbypNpH8B25KWpIodVYrKQNbOlz6xyMkJ33pxE8X4XjcDDfszHxpafJa
+         dHcRLQrjKu2n1ad+mpOC4imcmH0z2TWu/44zppp1+9ntKhDzV0TVfesxPCzhmf12bdSz
+         BdDW65Fjes/SS8YbI4cXHifjCYzag+ATc9GzAwsSnPWpsvv3kT4kGBdSLr0TL8AE9VtB
+         ybhz5OTnuMth6wvVul23AHL1h9gZH+gQMP0pztZ8etTrNmaNK+77V4dd89Rxv0qYOYIw
+         KnZw==
+X-Gm-Message-State: AOAM533jXF549WoM/qHJM2gd59KvCx7Fi7zUNHbNM3LGQuHQcqLBxhHc
+        3Ir1bjkzp8wyhjKtsSrSRpjgt6PUPi//uA==
+X-Google-Smtp-Source: ABdhPJxrw/i8/N4QcV/OPohGevkmBciVqntAoM3lzV9qrc0fJyPndAZSM9qimFhphx8j3XIivyK8ew==
+X-Received: by 2002:a65:6251:: with SMTP id q17mr3761839pgv.416.1631776982664;
+        Thu, 16 Sep 2021 00:23:02 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:ab:1cc3:dd84:94f3])
+        by smtp.gmail.com with ESMTPSA id c15sm1102192pfn.105.2021.09.16.00.23.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 00:19:13 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Reiji Watanabe <reijiw@google.com>
-Subject: Re: [PATCH 2/3] KVM: VMX: Move RESET emulation to vmx_vcpu_reset()
-In-Reply-To: <YUIunxwjea/wq3gd@google.com>
-References: <20210914230840.3030620-1-seanjc@google.com>
- <20210914230840.3030620-3-seanjc@google.com>
- <875yv2167g.fsf@vitty.brq.redhat.com> <YUIunxwjea/wq3gd@google.com>
-Date:   Thu, 16 Sep 2021 09:19:12 +0200
-Message-ID: <87wnnhyolr.fsf@vitty.brq.redhat.com>
+        Thu, 16 Sep 2021 00:23:01 -0700 (PDT)
+Date:   Thu, 16 Sep 2021 00:22:55 -0700
+From:   Benson Leung <bleung@google.com>
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     Adam Thomson <Adam.Thomson.Opensource@diasemi.com>,
+        Prashant Malani <pmalani@chromium.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "bleung@chromium.org" <bleung@chromium.org>,
+        "badhri@google.com" <badhri@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [RFC PATCH 2/3] power: supply: Add support for PDOs props
+Message-ID: <YULwz8NsoA3+vrhA@google.com>
+References: <20210902213500.3795948-1-pmalani@chromium.org>
+ <20210902213500.3795948-3-pmalani@chromium.org>
+ <YT9SYMAnOCTWGi5P@kuha.fi.intel.com>
+ <DB9PR10MB4652B4A6A2A2157018307AE380D99@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
+ <YUB16up3JDwi3HfI@kuha.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="xat0VWzVRBLGhR0l"
+Content-Disposition: inline
+In-Reply-To: <YUB16up3JDwi3HfI@kuha.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sean Christopherson <seanjc@google.com> writes:
 
-> On Wed, Sep 15, 2021, Vitaly Kuznetsov wrote:
->> Sean Christopherson <seanjc@google.com> writes:
->> > +static void __vmx_vcpu_reset(struct kvm_vcpu *vcpu)
->> > +{
->> > +	struct vcpu_vmx *vmx = to_vmx(vcpu);
->> > +
->> > +	init_vmcs(vmx);
->> > +
->> > +	if (nested)
->> > +		memcpy(&vmx->nested.msrs, &vmcs_config.nested, sizeof(vmx->nested.msrs));
->> > +
->> > +	vcpu_setup_sgx_lepubkeyhash(vcpu);
->> > +
->> > +	vmx->nested.posted_intr_nv = -1;
->> > +	vmx->nested.current_vmptr = -1ull;
->> > +	vmx->nested.hv_evmcs_vmptr = EVMPTR_INVALID;
->> 
->> What would happen in (hypothetical) case when enlightened VMCS is
->> currently in use? If we zap 'hv_evmcs_vmptr' here, the consequent
->> nested_release_evmcs() (called from
->> nested_vmx_handle_enlightened_vmptrld(), for example) will not do 
->> kvm_vcpu_unmap() while it should.
->
-> The short answer is that there's a lot of stuff that needs to be addressed before
-> KVM can expose a RESET ioctl().  My goal with these patches is to carve out the
-> stubs and move the few bits of RESET emulation into the "stubs".  This is the same
-> answer for the MSR question/comment at the end.
->
->> This, however, got me thinking: should we free all-things-nested with
->> free_nested()/nested_vmx_free_vcpu() upon vcpu reset? I can't seem to
->> find us doing that... (I do remember that INIT is blocked in VMX-root
->> mode and nobody else besides kvm_arch_vcpu_create()/
->> kvm_apic_accept_events() seems to call kvm_vcpu_reset()) but maybe we
->> should at least add a WARN_ON() guardian here?
->
-> I think that makes sense.  Maybe use CR0 as a sentinel since it has a non-zero
-> RESET value?  E.g. WARN if CR0 is non-zero at RESET.
->
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 86539c1686fa..3ac074376821 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -10813,6 +10813,11 @@ void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
->         unsigned long new_cr0;
->         u32 eax, dummy;
->
-> +       /*
-> +        * <comment about KVM not supporting arbitrary RESET>
-> +        */
-> +       WARN_ON_ONCE(!init_event && old_cr0);
-> +
->         kvm_lapic_reset(vcpu, init_event);
->
->         vcpu->arch.hflags = 0;
->
+--xat0VWzVRBLGhR0l
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Should work (assuming nothing in VMX would want to call vmx_vcpu_reset()/
-__vmx_vcpu_reset() directly).
+Hi Heikki,
 
-> Huh, typing that out made me realize commit 0aa1837533e5 ("KVM: x86: Properly
-> reset MMU context at vCPU RESET/INIT") technically introduced a bug.  kvm_vcpu_reset()
-> does kvm_read_cr0() and thus reads vmcs.GUEST_CR0 because vcpu->arch.regs_avail is
-> (correctly) not stuffed to ALL_ONES until later in kvm_vcpu_reset().  init_vmcs()
-> doesn't explicitly zero vmcs.GUEST_CR0 (along with many other guest fields), and
-> so VMREAD(GUEST_CR0) is technically consuming garbage.  In practice, it's consuming
-> '0' because no known CPU or VMM inverts values in the VMCS, i.e. zero allocating
-> the VMCS is functionally equivalent to writing '0' to all fields via VMWRITE.
->
-> And staring more at kvm_vcpu_reset(), this code is terrifying for INIT
->
-> 	memset(vcpu->arch.regs, 0, sizeof(vcpu->arch.regs));
-> 	vcpu->arch.regs_avail = ~0;
-> 	vcpu->arch.regs_dirty = ~0;
->
-> because it means cr0 and cr4 are marked available+dirty without immediately writing
-> vcpu->arch.cr0/cr4.  And VMX subtly relies on that, as vmx_set_cr0() grabs CR0.PG
-> via kvm_read_cr0_bits(), i.e. zeroing vcpu->arch.cr0 would "break" the INIT flow.
-> Ignoring for the moment that CR0.PG is never guest-owned and thus never stale in
-> vcpu->arch.cr0, KVM is also technically relying on the earlier kvm_read_cr0() in
-> kvm_vcpu_reset() to ensure vcpu->arch.cr0 is fresh.
->
-> Stuffing regs_avail technically means vmx_set_rflags() -> vmx_get_rflags() is
-> consuming stale data.  It doesn't matter in practice because the old value is
-> only used to re-evaluate vmx->emulation_required, which is guaranteed to be up
-> refreshed by vmx_set_cr0() and friends.  PDPTRs and EXIT_INFO are in a similar
-> boat; KVM shouldn't be reading those fields (CR0.PG=0, not an exit path), but
-> marking them dirty without actually updating the cached values is wrong.
->
-> There's also one concrete bug: KVM doesn't set vcpu->arch.cr3=0 on RESET/INIT.
-> That bug has gone unnoticed because no real word BIOS/kernel is going to rely on
-> INIT to set CR3=0.  
->
-> I'm strongly leaning towards stuffing regs_avail/dirty in kvm_arch_vcpu_create(),
-> and relying on explicit kvm_register_mark_dirty() calls for the 3 or so cases where
-> x86 code writes a vcpu->arch register directly.  That would fix the CR0 read bug
-> and also prevent subtle bugs from sneaking in.  Adding new EXREGS would be slightly
-> more costly, but IMO that's a good thing as would force us to actually think about
-> how to handle each register.
->
-> E.g. implement this over 2-3 patches:
->
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 114847253e0a..743146ac8307 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -4385,6 +4385,7 @@ static void vmx_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
->         kvm_set_cr8(vcpu, 0);
->
->         vmx_segment_cache_clear(vmx);
-> +       kvm_register_mark_available(vcpu, VCPU_EXREG_SEGMENTS);
->
->         seg_setup(VCPU_SREG_CS);
->         vmcs_write16(GUEST_CS_SELECTOR, 0xf000);
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 86539c1686fa..ab907a0b9eeb 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -10656,6 +10656,8 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
->         int r;
->
->         vcpu->arch.last_vmentry_cpu = -1;
-> +       vcpu->arch.regs_avail = ~0;
-> +       vcpu->arch.regs_dirty = ~0;
->
->         if (!irqchip_in_kernel(vcpu->kvm) || kvm_vcpu_is_reset_bsp(vcpu))
->                 vcpu->arch.mp_state = KVM_MP_STATE_RUNNABLE;
-> @@ -10874,9 +10876,9 @@ void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
->                 vcpu->arch.xcr0 = XFEATURE_MASK_FP;
->         }
->
-> +       /* All GPRs except RDX (handled below) are zeroed on RESET/INIT. */
->         memset(vcpu->arch.regs, 0, sizeof(vcpu->arch.regs));
-> -       vcpu->arch.regs_avail = ~0;
-> -       vcpu->arch.regs_dirty = ~0;
-> +       kvm_register_mark_dirty(vcpu, VCPU_REGS_RSP);
->
->         /*
->          * Fall back to KVM's default Family/Model/Stepping of 0x600 (P6/Athlon)
-> @@ -10897,6 +10899,9 @@ void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
->         kvm_set_rflags(vcpu, X86_EFLAGS_FIXED);
->         kvm_rip_write(vcpu, 0xfff0);
->
-> +       vcpu->arch.cr3 = 0;
-> +       kvm_register_mark_dirty(vcpu, VCPU_EXREG_CR3);
-> +
->         /*
->          * CR0.CD/NW are set on RESET, preserved on INIT.  Note, some versions
->          * of Intel's SDM list CD/NW as being set on INIT, but they contradict
->
+On Tue, Sep 14, 2021 at 01:14:02PM +0300, Heikki Krogerus wrote:
+> Mon, Sep 13, 2021 at 03:15:46PM +0000, Adam Thomson kirjoitti:
+> >=20
+> > Hi Heikki,
+> >=20
+> > Thanks for CCing me. My two pence worth is that I always envisaged the =
+PSY
+> > representation as being 1 PSY for 1 power source. I consider this in a
+> > similar manner to the Regulator framework, where 1 regulator can suppor=
+t a range
+> > of voltages and currents, but this is covered by 1 regulator instance a=
+s it's
+> > just a single output. For USB-PD we have a number of options for voltag=
+e/current
+> > combos, including PPS which is even lower granularity, but it's still o=
+nly one
+> > port. I get the feeling that having PSY instances for each and every PD=
+O might
+> > be a little confusing and these will never be concurrent.
+> >=20
+> > However, I'd be keen to understand further and see what restrictions/is=
+sues are
+> > currently present as I probably don't have a complete view of this righ=
+t now. I
+> > wouldn't want to dismiss something out of turn, especially when you obv=
+iously
+> > have good reason to suggest such an approach.
+>=20
+> I'm not proposing that we drop the port-psys. I'm sorry if I've been
+> unclear about that. The port-psy we can not drop because of several
+> reasons. For starters, we still can not assume that USB PD is always
+> supported.
+>=20
+> What I'm trying to propose is that we take advantage of the
+> power-supply framework by building a "dynamic" hierarchy of power
+> supplies that supply each other in order to represent the actual
+> situation as closely as possible. For example, a port-psy that is
+> supplied by port-Fixed-sink-psy that is supplied by
+> port-partner-Fixed-source (that is supplied by port-partner-psy).
+> Something like that. The only "static" part in the hierarchy is the
+> port-psy, as everything else about it can change, even without
+> disconnection.
+>=20
+> So the port-psy always either supplies another psy or is supplied by
+> another psy in this hierarchy, depending on the role of the port. But
+> most importantly, the properties of the port-psy itself are _newer_
+> adjustable - they are read-only. The psy that supplies the port-psy
+> can be adjustable, if it's for example PPS, but not the port-psy
+> itself.
+>=20
+> The problem with having only a single psy per port (and possibly
+> partners) is that it does not work well enough when the capabilities
+> change, and the capabilities can really change at any moment, we don't
+> need to disconnect for that to happen - simply by plugging another
+> device to another port can change the power budget for your port and
+> change your capabilities. The biggest problem is when we loose the
+> ability to adjust the values if we for example loose the PPS that we
+> were using in the middle of operation. The single psy has to attempt
+> to handle the situation by adjusting something like the ranges of the
+> properties, because it can't change the actual property set itself.
+> That is hacky, and to be honest, a little bit risky, because it leaves
+> us at the mercy of programmers completely unnecessarily.
+>=20
+> With my proposal, if the capabilities change, it only means we rebuild
+> the psy hierarchy, and that's it. Nothing else needs to be done in
+> kernel, and all changes are super visible and clear in user space.
+>=20
 
-A selftest for vCPU create/reset would be really helpful. I can even
-volunteer to [eventually] write one :-)
+Thanks for providing the clarification. So you're proposing a port-psy and a
+port-partner-psy that are connected to each other (one supplying the other).
+If PD is not present, those two will exist per port and partner, and there
+will be information about Type-C current (and possibly BC 1.2 and other
+methods?)
 
--- 
-Vitaly
+Do you have an example hierarchy you could share that explains what it would
+look like in /sys/class/power_supply with PD with Source Caps and Sink Caps=
+ on
+both sides?
 
+I think this all makes sense if the connector class is a read interface
+for this info. Have you considered how the type-c connector class and this =
+pd
+psy support will handle dynamic PDO changes for advertisement FROM the port=
+s?
+
+For example, let's say you wanted the kernel and user to manage two USB-C p=
+orts
+with higher power support (meaning, 5V, 9V, 15V, 20V capable), but then your
+kernel and user needs to edit the Source Caps on the fly based on load
+balancing.
+
+If caps are represented as a group of psys together, how do you as a kernel
+and user create an modify the set of Source_Caps you put out on a port?
+
+Thanks,
+Benson
+
+> thanks,
+>=20
+> --=20
+> heikki
+
+--=20
+Benson Leung
+Staff Software Engineer
+Chrome OS Kernel
+Google Inc.
+bleung@google.com
+Chromium OS Project
+bleung@chromium.org
+
+--xat0VWzVRBLGhR0l
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQQCtZK6p/AktxXfkOlzbaomhzOwwgUCYULwzwAKCRBzbaomhzOw
+wom1AQCNZ/hwtQBhee1O29UF9wqYqjzyNI6WzWJuXmz4sjeWhAEA74S5yLRF7Vq0
+kvMtyRkRQ+IMZkUJK8w4DM9wIFGXvA4=
+=qhlX
+-----END PGP SIGNATURE-----
+
+--xat0VWzVRBLGhR0l--
