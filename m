@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CCBD40E7FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 152F740E405
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:22:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349027AbhIPRgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:36:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46940 "EHLO mail.kernel.org"
+        id S1346185AbhIPQy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:54:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37422 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348917AbhIPR1v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:27:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CEE4961A55;
-        Thu, 16 Sep 2021 16:45:17 +0000 (UTC)
+        id S244507AbhIPQsv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:48:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CB4361A7A;
+        Thu, 16 Sep 2021 16:27:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810718;
-        bh=CMqxuankr/nLAtF68BcOJcYLaZl/uFUfJwFMddfQBVE=;
+        s=korg; t=1631809659;
+        bh=Bssx5ZbEaCre/TweHxP/RvtlxoCykNbf0SQAZ4MT+ac=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oXmPRdRi86+Mmd/Cunxb1dCPXPrlpo5n81yibnF7Bplf8oGnlcw1UY58mfR5H5E+w
-         eZiXUEU751nTSLLPqk8fn1i702kvnWOjCr6qLKdUns6SAzgDtKn4nGhlfExH3YWslM
-         u5PoDYBYy6zYWiJASaaHf0OrKorRxOD72lQVgDeQ=
+        b=B8TR5E/SRisckRLRU+Jog/loxdy+sbI3tPdzeF6T4CFtmxOjX+yFkVeL9EU8Q5OkQ
+         /TqDPsLzmnWewX+u67ZNtB6iwOJ2xfvZubqIZTeF2A2MNHLDS35rPvGPVeKFgCCl5C
+         1xKSj8T9CEM844zso7fQyCxpu5ZIDLwnK1dxkRpk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        Patrick Delaunay <patrick.delaunay@foss.st.com>,
-        kernel@dh-electronics.com,
-        linux-stm32@st-md-mailman.stormreply.com,
+        stable@vger.kernel.org, Carl Philipp Klemm <philipp@uvos.xyz>,
+        Merlijn Wajer <merlijn@wizzup.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        Sebastian Reichel <sre@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tony Lindgren <tony@atomide.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 243/432] ARM: dts: stm32: Set {bitclock,frame}-master phandles on DHCOM SoM
+Subject: [PATCH 5.13 235/380] serial: 8250_omap: Handle optional overrun-throttle-ms property
 Date:   Thu, 16 Sep 2021 17:59:52 +0200
-Message-Id: <20210916155819.073365056@linuxfoundation.org>
+Message-Id: <20210916155812.077221127@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,51 +44,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Vasut <marex@denx.de>
+From: Tony Lindgren <tony@atomide.com>
 
-[ Upstream commit a79e78c391dc074742c855dc0108a88f781d56a3 ]
+[ Upstream commit 1fe0e1fa3209ad8e9124147775bd27b1d9f04bd4 ]
 
-Fix the following dtbs_check warning:
-arch/arm/boot/dts/stm32mp157c-dhcom-pdk2.dt.yaml: codec@a: port:endpoint@0:frame-master: True is not of type 'array'
-arch/arm/boot/dts/stm32mp157c-dhcom-pdk2.dt.yaml: codec@a: port:endpoint@0:bitclock-master: True is not of type 'array'
+Handle optional overrun-throttle-ms property as done for 8250_fsl in commit
+6d7f677a2afa ("serial: 8250: Rate limit serial port rx interrupts during
+input overruns"). This can be used to rate limit the UART interrupts on
+noisy lines that end up producing messages like the following:
 
-Signed-off-by: Marek Vasut <marex@denx.de>
-Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
-Cc: Patrice Chotard <patrice.chotard@foss.st.com>
-Cc: Patrick Delaunay <patrick.delaunay@foss.st.com>
-Cc: kernel@dh-electronics.com
-Cc: linux-stm32@st-md-mailman.stormreply.com
-To: linux-arm-kernel@lists.infradead.org
-Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
+ttyS ttyS2: 4 input overrun(s)
+
+At least on droid4, the multiplexed USB and UART port is left to UART mode
+by the bootloader for a debug console, and if a USB charger is connected
+on boot, we get noise on the UART until the PMIC related drivers for PHY
+and charger are loaded.
+
+With this patch and overrun-throttle-ms = <500> we avoid the extra rx
+interrupts.
+
+Cc: Carl Philipp Klemm <philipp@uvos.xyz>
+Cc: Merlijn Wajer <merlijn@wizzup.org>
+Cc: Pavel Machek <pavel@ucw.cz>
+Cc: Sebastian Reichel <sre@kernel.org>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+Link: https://lore.kernel.org/r/20210727103533.51547-2-tony@atomide.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/tty/serial/8250/8250_omap.c | 25 ++++++++++++++++++++++++-
+ 1 file changed, 24 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi b/arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi
-index 6cf1c8b4c6e2..c9577ba2973d 100644
---- a/arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi
-+++ b/arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi
-@@ -172,15 +172,15 @@ sgtl5000_port: port {
- 			sgtl5000_tx_endpoint: endpoint@0 {
- 				reg = <0>;
- 				remote-endpoint = <&sai2a_endpoint>;
--				frame-master;
--				bitclock-master;
-+				frame-master = <&sgtl5000_tx_endpoint>;
-+				bitclock-master = <&sgtl5000_tx_endpoint>;
- 			};
+diff --git a/drivers/tty/serial/8250/8250_omap.c b/drivers/tty/serial/8250/8250_omap.c
+index 79418d4beb48..b6c731a267d2 100644
+--- a/drivers/tty/serial/8250/8250_omap.c
++++ b/drivers/tty/serial/8250/8250_omap.c
+@@ -617,7 +617,7 @@ static irqreturn_t omap8250_irq(int irq, void *dev_id)
+ 	struct uart_port *port = dev_id;
+ 	struct omap8250_priv *priv = port->private_data;
+ 	struct uart_8250_port *up = up_to_u8250p(port);
+-	unsigned int iir;
++	unsigned int iir, lsr;
+ 	int ret;
  
- 			sgtl5000_rx_endpoint: endpoint@1 {
- 				reg = <1>;
- 				remote-endpoint = <&sai2b_endpoint>;
--				frame-master;
--				bitclock-master;
-+				frame-master = <&sgtl5000_rx_endpoint>;
-+				bitclock-master = <&sgtl5000_rx_endpoint>;
- 			};
- 		};
+ #ifdef CONFIG_SERIAL_8250_DMA
+@@ -628,6 +628,7 @@ static irqreturn_t omap8250_irq(int irq, void *dev_id)
+ #endif
  
+ 	serial8250_rpm_get(up);
++	lsr = serial_port_in(port, UART_LSR);
+ 	iir = serial_port_in(port, UART_IIR);
+ 	ret = serial8250_handle_irq(port, iir);
+ 
+@@ -642,6 +643,24 @@ static irqreturn_t omap8250_irq(int irq, void *dev_id)
+ 		serial_port_in(port, UART_RX);
+ 	}
+ 
++	/* Stop processing interrupts on input overrun */
++	if ((lsr & UART_LSR_OE) && up->overrun_backoff_time_ms > 0) {
++		unsigned long delay;
++
++		up->ier = port->serial_in(port, UART_IER);
++		if (up->ier & (UART_IER_RLSI | UART_IER_RDI)) {
++			port->ops->stop_rx(port);
++		} else {
++			/* Keep restarting the timer until
++			 * the input overrun subsides.
++			 */
++			cancel_delayed_work(&up->overrun_backoff);
++		}
++
++		delay = msecs_to_jiffies(up->overrun_backoff_time_ms);
++		schedule_delayed_work(&up->overrun_backoff, delay);
++	}
++
+ 	serial8250_rpm_put(up);
+ 
+ 	return IRQ_RETVAL(ret);
+@@ -1353,6 +1372,10 @@ static int omap8250_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
++	if (of_property_read_u32(np, "overrun-throttle-ms",
++				 &up.overrun_backoff_time_ms) != 0)
++		up.overrun_backoff_time_ms = 0;
++
+ 	priv->wakeirq = irq_of_parse_and_map(np, 1);
+ 
+ 	pdata = of_device_get_match_data(&pdev->dev);
 -- 
 2.30.2
 
