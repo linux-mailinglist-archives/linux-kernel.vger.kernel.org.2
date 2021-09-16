@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7026D40E167
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:29:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7935640E41F
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:22:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243257AbhIPQaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:30:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59300 "EHLO mail.kernel.org"
+        id S243974AbhIPQz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:55:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36928 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237271AbhIPQVh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:21:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 348D861439;
-        Thu, 16 Sep 2021 16:15:04 +0000 (UTC)
+        id S1345722AbhIPQuj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:50:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D9B960F92;
+        Thu, 16 Sep 2021 16:28:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808904;
-        bh=BXcgJ5FGrSa1vP6CBtltDNlV8URBJBSRWoUnZO/prXY=;
+        s=korg; t=1631809707;
+        bh=VK4cR/Kme6NffHumA+SnASBM6WDsCiW7w2C6aNEn0NE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=e5TFPHIcR3KlsgmMyxissHIzg1Rp9bHW2iAPrPHG7TcvSxUTp8PM0MyGyDpYpVg9K
-         k4BJQtrDunrETx7Nnb/mtOcXyuLmIXm4CVqbwbbN1jWchbnm5HPuTQ3+rZn7Dkz/vT
-         x95ONeqPHwoo4xWISgwqa8AauXPTSUdam4855MV4=
+        b=rncbJjnw+ebnm3l3boW9pBPAsAr8Rz1cbtOA8fNVP+CssVV28DXixUTYqxzjgXgAA
+         CwFRqMPzHo7YLwtf4DwLD9QALsWX1b31G+jCALMNTfnoT7y0nb59nRpOlnwBF0neYu
+         TYU3TBf37U/gaPTWDvGwhUeqUpoDXyPl5G+WSKXU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 265/306] iwlwifi: fw: correctly limit to monitor dump
-Date:   Thu, 16 Sep 2021 18:00:10 +0200
-Message-Id: <20210916155803.104107853@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Zack Rusin <zackr@vmware.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 254/380] drm/vmwgfx: fix potential UAF in vmwgfx_surface.c
+Date:   Thu, 16 Sep 2021 18:00:11 +0200
+Message-Id: <20210916155812.722015456@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,38 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
 
-[ Upstream commit e6344c060209ef4e970cac18adeac1676a2a73cd ]
+[ Upstream commit 2bc5da528dd570c5ecabc107e6fbdbc55974276f ]
 
-In commit 79f033f6f229 ("iwlwifi: dbg: don't limit dump decisions
-to all or monitor") we changed the code to pass around a bitmap,
-but in the monitor_only case, one place accidentally used the bit
-number, not the bit mask, resulting in CSR and FW_INFO getting
-dumped instead of monitor data. Fix that.
+drm_file.master should be protected by either drm_device.master_mutex
+or drm_file.master_lookup_lock when being dereferenced. However,
+drm_master_get is called on unprotected file_priv->master pointers in
+vmw_surface_define_ioctl and vmw_gb_surface_define_internal.
 
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
-Link: https://lore.kernel.org/r/iwlwifi.20210805141826.774fd8729a33.Ic985a787071d1c0b127ef0ba8367da896ee11f57@changeid
-Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+This is fixed by replacing drm_master_get with drm_file_get_master.
+
+Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Reviewed-by: Zack Rusin <zackr@vmware.com>
+Signed-off-by: Zack Rusin <zackr@vmware.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210724111824.59266-4-desmondcheongzx@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/intel/iwlwifi/fw/dbg.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/vmwgfx/vmwgfx_surface.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/fw/dbg.c b/drivers/net/wireless/intel/iwlwifi/fw/dbg.c
-index ab4a8b942c81..419eaa5cf0b5 100644
---- a/drivers/net/wireless/intel/iwlwifi/fw/dbg.c
-+++ b/drivers/net/wireless/intel/iwlwifi/fw/dbg.c
-@@ -2303,7 +2303,7 @@ static void iwl_fw_error_dump(struct iwl_fw_runtime *fwrt,
- 		return;
+diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_surface.c b/drivers/gpu/drm/vmwgfx/vmwgfx_surface.c
+index 5ff88f8c2382..0c62cd400b64 100644
+--- a/drivers/gpu/drm/vmwgfx/vmwgfx_surface.c
++++ b/drivers/gpu/drm/vmwgfx/vmwgfx_surface.c
+@@ -869,7 +869,7 @@ int vmw_surface_define_ioctl(struct drm_device *dev, void *data,
+ 	user_srf->prime.base.shareable = false;
+ 	user_srf->prime.base.tfile = NULL;
+ 	if (drm_is_primary_client(file_priv))
+-		user_srf->master = drm_master_get(file_priv->master);
++		user_srf->master = drm_file_get_master(file_priv);
  
- 	if (dump_data->monitor_only)
--		dump_mask &= IWL_FW_ERROR_DUMP_FW_MONITOR;
-+		dump_mask &= BIT(IWL_FW_ERROR_DUMP_FW_MONITOR);
+ 	/**
+ 	 * From this point, the generic resource management functions
+@@ -1540,7 +1540,7 @@ vmw_gb_surface_define_internal(struct drm_device *dev,
  
- 	fw_error_dump.trans_ptr = iwl_trans_dump_data(fwrt->trans, dump_mask);
- 	file_len = le32_to_cpu(dump_file->file_len);
+ 	user_srf = container_of(srf, struct vmw_user_surface, srf);
+ 	if (drm_is_primary_client(file_priv))
+-		user_srf->master = drm_master_get(file_priv->master);
++		user_srf->master = drm_file_get_master(file_priv);
+ 
+ 	ret = ttm_read_lock(&dev_priv->reservation_sem, true);
+ 	if (unlikely(ret != 0))
 -- 
 2.30.2
 
