@@ -2,106 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC97540EBAB
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 22:25:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13C9140EBAE
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 22:27:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233983AbhIPU1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 16:27:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230338AbhIPU1M (ORCPT
+        id S236100AbhIPU2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 16:28:43 -0400
+Received: from hosting.gsystem.sk ([212.5.213.30]:34370 "EHLO
+        hosting.gsystem.sk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230338AbhIPU2m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 16:27:12 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FAEFC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 13:25:51 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id i4so23350259lfv.4
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 13:25:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ndSLOBCyHr0CqKUTyXcxV7ueR+cLp8PrHz0AxU0LIug=;
-        b=MushEZjyEhrjXlWoUV3Uqjb83CmhFXrZC4Nc+jwBRJFxxDdB8bMGjuyGmT68YyaCCu
-         gjfyKlppV4mHDNlpXDh6ku01URAfSUmIod+EpYHIgBNun2WFP27ZPY17qVCMoFShjlmU
-         SncI6jirQrSTS3yeyqP+cM+/8T7/q5A+dsVvo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ndSLOBCyHr0CqKUTyXcxV7ueR+cLp8PrHz0AxU0LIug=;
-        b=sI5EH5VCpY8p0XqPzQ4TwzwurHxkKN2d+2asxDXhzWlIu7a7gfCobd9rG+FsGySbQD
-         WmowDUjeu54GhhWxkBblhpuWM7QWVKQTQ/dHTrSOvd3AcZkE4+7i3j+P4yreaLAc3V67
-         0QP3+NUNUe1YyUdvROB1gC6GB8kxYhXT+yrhM9W/D4TMj8l1oCkhT7B1ktxNs13X2uJB
-         WpPTqOm6ZGdGfP+AZfvEmSkf9MxQOE34Je/FOP3wqFWGT0vOp3Uq+zKyZqNFi1tVd7kH
-         hCubQpgwNf+29kcMzqzJyfZ7+88jzs+RxcrQLR31TIAaos8uEwVKhNpHPpJhf3GE2Y/F
-         6YMg==
-X-Gm-Message-State: AOAM533ZqU7NIUOrtqg4ytsqG4Gmmk91IR79cJLo0jYJtY+/E7sEm+CT
-        hIEb7ZaluOXPzQqrACrulnVwAj78PAShXMb0QQU=
-X-Google-Smtp-Source: ABdhPJzXD8SBNQJxT3jQuAFHGheXaZI7lu29voJrM+++Pzbc/DJDe6xhN5YR9t4Odhod02PPVA+iSQ==
-X-Received: by 2002:a05:6512:3d94:: with SMTP id k20mr5303444lfv.633.1631823949297;
-        Thu, 16 Sep 2021 13:25:49 -0700 (PDT)
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
-        by smtp.gmail.com with ESMTPSA id d20sm346213lfv.117.2021.09.16.13.25.48
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Sep 2021 13:25:48 -0700 (PDT)
-Received: by mail-lf1-f45.google.com with SMTP id c8so23574600lfi.3
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 13:25:48 -0700 (PDT)
-X-Received: by 2002:a2e:8107:: with SMTP id d7mr6761409ljg.68.1631823948194;
- Thu, 16 Sep 2021 13:25:48 -0700 (PDT)
+        Thu, 16 Sep 2021 16:28:42 -0400
+Received: from [192.168.0.2] (chello089173232159.chello.sk [89.173.232.159])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by hosting.gsystem.sk (Postfix) with ESMTPSA id 4A5A57A0214;
+        Thu, 16 Sep 2021 22:27:20 +0200 (CEST)
+From:   Ondrej Zary <linux@zary.sk>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: IOPL emulation breaks hpasmd (hp-health) needed by HP DL380 G4 servers
+Date:   Thu, 16 Sep 2021 22:27:17 +0200
+User-Agent: KMail/1.9.10
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org
+References: <202109151423.43604.linux@zary.sk> <87pmt8a1mc.ffs@tglx>
+In-Reply-To: <87pmt8a1mc.ffs@tglx>
+X-KMail-QuotePrefix: > 
 MIME-Version: 1.0
-References: <YUNi6hTcS8nUrrpF@ls3530> <b3d13e4f-c9cd-495b-5df2-1080ca4d3aa3@roeck-us.net>
- <f3713fe6-2806-9d65-618b-a9d210193e60@infradead.org> <26cfe07e-98b0-ec46-9665-01d2f8761c40@roeck-us.net>
-In-Reply-To: <26cfe07e-98b0-ec46-9665-01d2f8761c40@roeck-us.net>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 16 Sep 2021 13:25:32 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wh82AyhEQmNoWzqoFQjmwaQ8XiNL3u=knmr844LKkJQTg@mail.gmail.com>
-Message-ID: <CAHk-=wh82AyhEQmNoWzqoFQjmwaQ8XiNL3u=knmr844LKkJQTg@mail.gmail.com>
-Subject: Re: [GIT PULL] parisc architecture warning fix for kernel v5.15-rc2
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Randy Dunlap <rdunlap@infradead.org>, Helge Deller <deller@gmx.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <202109162227.17415.linux@zary.sk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 1:10 PM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On 9/16/21 1:03 PM, Randy Dunlap wrote:
+On Thursday 16 September 2021 19:09:31 Thomas Gleixner wrote:
+> Ondrej,
+> 
+> On Wed, Sep 15 2021 at 14:23, Ondrej Zary wrote:
+> > after upgrading Debian from 10 (kernel 4.19.194) to 11 (kernel 5.10.46) on HP
+> > DL380 G4 servers, hpasmd segfaults. Booting the 4.19.194 kernel allows hpasmd
+> > to work.
 > >
-> > Already merged in the net tree.
->
-> Ah, ok. Sorry for the noise (I already sent that patch).
+> > Noticed the iopl(3) call. Checked out a kernel before "x86/iopl: Remove legacy IOPL option"
+> > (a24ca9976843156eabbc5f2d798954b5674d1b61) and built with CONFIG_X86_IOPL_LEGACY.
+> > It works!.
+> >
+> > I even disassembled /opt/hp/hp-health/bin/IrqRouteTbl (it's only 5952 bytes
+> > and does not use any hp libs). There's no CLI, only a couple of INs and OUTs:
+> > ...
+> >  8048f75:       66 ba 84 00             mov    dx,0x84
+> >  8048f79:       66 b8 00 00             mov    ax,0x0
+> >  8048f7d:       ee                      out    dx,al
+> >  8048f7e:       66 ba 85 00             mov    dx,0x85
+> >  8048f82:       ee                      out    dx,al
+> >
+> > But I still don't know what's going on.
+> 
+> That's weird. Let me think about a way to debug that. I just ran a
+> trivial test program which issues iopl(3) and reads all ports from
+> 0-65535. That works like a charm.
+> 
+> #include <stdio.h>
+> #include <sys/io.h>
+> 
+> int main(void)
+> {
+> 	unsigned int i;
+> 	int ret;
+> 
+> 	ret = iopl(3);
+> 	if (ret)
+> 		return ret;
+> 
+> 	for (i = 0; i < 65536; i++)
+> 		printf("%5u: %02x\n", i, inb(i));
+> 
+> 	return 0;
+> }
+> 
+> Which CPU is in that machine?
 
-Well, I _just_ got the networking pull, so now that particular problem
-is solved in my tree too.
+A Netburst-based Xeon (1-core, HT):
+# cat /proc/cpuinfo
+processor       : 0
+vendor_id       : GenuineIntel
+cpu family      : 15
+model           : 4
+model name      : Intel(R) Xeon(TM) CPU 3.00GHz
+stepping        : 3
+microcode       : 0x5
+cpu MHz         : 2999.868
+cache size      : 2048 KB
+physical id     : 0
+siblings        : 2
+core id         : 0
+cpu cores       : 1
+apicid          : 0
+initial apicid  : 0
+fpu             : yes
+fpu_exception   : yes
+cpuid level     : 5
+wp              : yes
+flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx lm constant_tsc pebs bts nopl cpuid pni dtes64 monitor ds_cpl cid cx16 xtpr pti
+bugs            : cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs
+bogomips        : 5999.73
+clflush size    : 64
+cache_alignment : 128
+address sizes   : 36 bits physical, 48 bits virtual
+power management:
 
-There's a few more from your list, but I _think_ they are at least
-mostly pending in other trees and patch queues, so I'll ignore them
-unless told otherwise.
+> Can you please run that failing program with GDB and figure out which
+> instruction causes #GP and what the register content is.
 
-But I've literally set aside this week to just get this mess sorted out.
+(gdb) run
+Starting program: /opt/hp/hp-health/bin/IrqRouteTbl
 
-Not only do I think it's time to just *fix* these damn warning issues,
-but usually the week after rc1 is somewhat quiet since it takes a
-while for people to find regressions.
+Program received signal SIGSEGV, Segmentation fault.
+0xf7fc509b in ?? ()
+(gdb) bt
+#0  0xf7fc509b in ?? ()
+#1  0x08048848 in ?? ()
+#2  0x08048aa1 in ?? ()
+#3  0x08048e05 in ?? ()
+#4  0xf7df9e46 in __libc_start_main () from /lib32/libc.so.6
+#5  0xf7ffd000 in ?? () from /lib/ld-linux.so.2
+Backtrace stopped: previous frame inner to this frame (corrupt stack?)
+(gdb) x/3i $pc
+=> 0xf7fc509b:  cli
+   0xf7fc509c:  push   %ebp
+   0xf7fc509d:  mov    %esp,%ebp
 
-So I have actually spent more time than I would normally consider
-healthy on code that I in any normal situation wouldn't care about at
-all.
+OMG, maybe is it calling into the mmapped BIOS area?
 
-(I realize that Arnd and Guenther are now scoffing at my "normally
-consider healthy" since they have put even more time into this, but
-hey, I usually actively try to avoid reading grotty code in areas I
-don't actually care for).
 
-So if somebody is aware of some warning situation that still remains
-and doesn't seem to have any movement, please point me at all. Maybe
-we can't force-enable -Wall, but I want us to be really really close.
-
-            Linus
+-- 
+Ondrej Zary
