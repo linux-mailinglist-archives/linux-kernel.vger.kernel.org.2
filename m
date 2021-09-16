@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75DCA40E17F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:30:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BC0B40E858
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233882AbhIPQax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:30:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59354 "EHLO mail.kernel.org"
+        id S241548AbhIPRi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:38:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50268 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236839AbhIPQV6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:21:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 44C38613A8;
-        Thu, 16 Sep 2021 16:15:15 +0000 (UTC)
+        id S1353042AbhIPR3x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:29:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B1B5861CA7;
+        Thu, 16 Sep 2021 16:46:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808915;
-        bh=6GYGAVk2gYlgVH3/XQYaDlJTce6H+5zqR3EON9Hy2B4=;
+        s=korg; t=1631810784;
+        bh=Bssx5ZbEaCre/TweHxP/RvtlxoCykNbf0SQAZ4MT+ac=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yom4g18U5U5EPoVypOqLalF9rv1ftqB61H2MZbKW69BJ5FGzl7a1lSZ/B9H8UeWBl
-         pCQJCpCEikeoOy89FqgkW6G2bUQF9CoBY/3diEi9U36ZrpJhzhl+sZdWmeRUE77k1y
-         atVGsSwYrZc6ETfek7npBC0bMDX/5fEVbqZuw9GM=
+        b=u4yXyuUulsTzHS91NNj0xR6k+5be39puozM1WlSbzPxkZ+MUdJ40EPsk4k6ksitQf
+         j9PQn48JX1vZeeGVLkGuowHPpAY4lXY9bqHpRGPNIOIE9LKzeHOXboQNvUJOldFEXp
+         61xWjRVRmOqpSsbf1UNX9Xk0jfxr95WuylppP1Ds=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Colin Ian King <colin.king@canonical.com>,
+        stable@vger.kernel.org, Carl Philipp Klemm <philipp@uvos.xyz>,
+        Merlijn Wajer <merlijn@wizzup.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        Sebastian Reichel <sre@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tony Lindgren <tony@atomide.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 269/306] parport: remove non-zero check on count
+Subject: [PATCH 5.14 265/432] serial: 8250_omap: Handle optional overrun-throttle-ms property
 Date:   Thu, 16 Sep 2021 18:00:14 +0200
-Message-Id: <20210916155803.242399027@linuxfoundation.org>
+Message-Id: <20210916155819.802863646@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +44,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Tony Lindgren <tony@atomide.com>
 
-[ Upstream commit 0be883a0d795d9146f5325de582584147dd0dcdc ]
+[ Upstream commit 1fe0e1fa3209ad8e9124147775bd27b1d9f04bd4 ]
 
-The check for count appears to be incorrect since a non-zero count
-check occurs a couple of statements earlier. Currently the check is
-always false and the dev->port->irq != PARPORT_IRQ_NONE part of the
-check is never tested and the if statement is dead-code. Fix this
-by removing the check on count.
+Handle optional overrun-throttle-ms property as done for 8250_fsl in commit
+6d7f677a2afa ("serial: 8250: Rate limit serial port rx interrupts during
+input overruns"). This can be used to rate limit the UART interrupts on
+noisy lines that end up producing messages like the following:
 
-Note that this code is pre-git history, so I can't find a sha for
-it.
+ttyS ttyS2: 4 input overrun(s)
 
-Acked-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Addresses-Coverity: ("Logically dead code")
-Link: https://lore.kernel.org/r/20210730100710.27405-1-colin.king@canonical.com
+At least on droid4, the multiplexed USB and UART port is left to UART mode
+by the bootloader for a debug console, and if a USB charger is connected
+on boot, we get noise on the UART until the PMIC related drivers for PHY
+and charger are loaded.
+
+With this patch and overrun-throttle-ms = <500> we avoid the extra rx
+interrupts.
+
+Cc: Carl Philipp Klemm <philipp@uvos.xyz>
+Cc: Merlijn Wajer <merlijn@wizzup.org>
+Cc: Pavel Machek <pavel@ucw.cz>
+Cc: Sebastian Reichel <sre@kernel.org>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+Link: https://lore.kernel.org/r/20210727103533.51547-2-tony@atomide.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/parport/ieee1284_ops.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/tty/serial/8250/8250_omap.c | 25 ++++++++++++++++++++++++-
+ 1 file changed, 24 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/parport/ieee1284_ops.c b/drivers/parport/ieee1284_ops.c
-index 2c11bd3fe1fd..17061f1df0f4 100644
---- a/drivers/parport/ieee1284_ops.c
-+++ b/drivers/parport/ieee1284_ops.c
-@@ -518,7 +518,7 @@ size_t parport_ieee1284_ecp_read_data (struct parport *port,
- 				goto out;
+diff --git a/drivers/tty/serial/8250/8250_omap.c b/drivers/tty/serial/8250/8250_omap.c
+index 79418d4beb48..b6c731a267d2 100644
+--- a/drivers/tty/serial/8250/8250_omap.c
++++ b/drivers/tty/serial/8250/8250_omap.c
+@@ -617,7 +617,7 @@ static irqreturn_t omap8250_irq(int irq, void *dev_id)
+ 	struct uart_port *port = dev_id;
+ 	struct omap8250_priv *priv = port->private_data;
+ 	struct uart_8250_port *up = up_to_u8250p(port);
+-	unsigned int iir;
++	unsigned int iir, lsr;
+ 	int ret;
  
- 			/* Yield the port for a while. */
--			if (count && dev->port->irq != PARPORT_IRQ_NONE) {
-+			if (dev->port->irq != PARPORT_IRQ_NONE) {
- 				parport_release (dev);
- 				schedule_timeout_interruptible(msecs_to_jiffies(40));
- 				parport_claim_or_block (dev);
+ #ifdef CONFIG_SERIAL_8250_DMA
+@@ -628,6 +628,7 @@ static irqreturn_t omap8250_irq(int irq, void *dev_id)
+ #endif
+ 
+ 	serial8250_rpm_get(up);
++	lsr = serial_port_in(port, UART_LSR);
+ 	iir = serial_port_in(port, UART_IIR);
+ 	ret = serial8250_handle_irq(port, iir);
+ 
+@@ -642,6 +643,24 @@ static irqreturn_t omap8250_irq(int irq, void *dev_id)
+ 		serial_port_in(port, UART_RX);
+ 	}
+ 
++	/* Stop processing interrupts on input overrun */
++	if ((lsr & UART_LSR_OE) && up->overrun_backoff_time_ms > 0) {
++		unsigned long delay;
++
++		up->ier = port->serial_in(port, UART_IER);
++		if (up->ier & (UART_IER_RLSI | UART_IER_RDI)) {
++			port->ops->stop_rx(port);
++		} else {
++			/* Keep restarting the timer until
++			 * the input overrun subsides.
++			 */
++			cancel_delayed_work(&up->overrun_backoff);
++		}
++
++		delay = msecs_to_jiffies(up->overrun_backoff_time_ms);
++		schedule_delayed_work(&up->overrun_backoff, delay);
++	}
++
+ 	serial8250_rpm_put(up);
+ 
+ 	return IRQ_RETVAL(ret);
+@@ -1353,6 +1372,10 @@ static int omap8250_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
++	if (of_property_read_u32(np, "overrun-throttle-ms",
++				 &up.overrun_backoff_time_ms) != 0)
++		up.overrun_backoff_time_ms = 0;
++
+ 	priv->wakeirq = irq_of_parse_and_map(np, 1);
+ 
+ 	pdata = of_device_get_match_data(&pdev->dev);
 -- 
 2.30.2
 
