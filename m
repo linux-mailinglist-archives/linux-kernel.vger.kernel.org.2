@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C981340E2F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:17:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAFD640E730
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:32:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244175AbhIPQnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:43:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52364 "EHLO mail.kernel.org"
+        id S1352922AbhIPR30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:29:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43512 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243167AbhIPQiF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:38:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 28938619EE;
-        Thu, 16 Sep 2021 16:22:32 +0000 (UTC)
+        id S1351939AbhIPRUA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:20:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 94D2661A2C;
+        Thu, 16 Sep 2021 16:41:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809352;
-        bh=oDmVq/m/FO2d3NUR8EAoddW1ktVDSA17pYA8mnq7Me8=;
+        s=korg; t=1631810502;
+        bh=zwOIMvoBmS6R/zgbikS3UgbFPZyQvie+oCY0Ss1puM4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Rw29nJHzkJL9f5HlL0GLnbhETzEt6rEcnzs0dSQ7SEnuVIsBDEFC0ds7iVpKmwP5F
-         /n7Yz8k3h65beDuN9gpL0mNOidAAuy9Gog+CUMgIMYW2I4C7DLHPe/lM/PXIvMo2n2
-         +uhYxCvGKvzB2RpX4zngziQXoG3tR44UzqcFOorY=
+        b=lskV4hVI7lo2JA1h8LL+Av7Gbtg74H/HQgqKcVwrQSVLz+926qgflrFry5KSdcEKk
+         qmEJpwJURid1js0vVkMukKtovF30vcLFCmBIngK/MvzQKhGsoR987lclIBcDO4DbIz
+         hD6RU4nNuvYn0IGCx71/LAafqN8W5gLflUIs7bZo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 124/380] powerpc/smp: Update cpu_core_map on all PowerPc systems
+Subject: [PATCH 5.14 132/432] scsi: ufs: ufs-exynos: Fix static checker warning
 Date:   Thu, 16 Sep 2021 17:58:01 +0200
-Message-Id: <20210916155808.261653450@linuxfoundation.org>
+Message-Id: <20210916155815.234784735@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,169 +41,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+From: Alim Akhtar <alim.akhtar@samsung.com>
 
-[ Upstream commit b8b928030332a0ca16d42433eb2c3085600d8704 ]
+[ Upstream commit 313bf281f2091552f509fd05a74172c70ce7572f ]
 
-lscpu() uses core_siblings to list the number of sockets in the
-system. core_siblings is set using topology_core_cpumask.
+clk_get_rate() returns unsigned long and currently this driver stores the
+return value in u32 type, resulting the below warning:
 
-While optimizing the powerpc bootup path, Commit 4ca234a9cbd7
-("powerpc/smp: Stop updating cpu_core_mask").  it was found that
-updating cpu_core_mask() ended up taking a lot of time. It was thought
-that on Powerpc, cpu_core_mask() would always be same as
-cpu_cpu_mask() i.e number of sockets will always be equal to number of
-nodes. As an optimization, cpu_core_mask() was made a snapshot of
-cpu_cpu_mask().
+Fixed smatch warnings:
 
-However that was found to be false with PowerPc KVM guests, where each
-node could have more than one socket. So with Commit c47f892d7aa6
-("powerpc/smp: Reintroduce cpu_core_mask"), cpu_core_mask was updated
-based on chip_id but in an optimized way using some mask manipulations
-and chip_id caching.
+        drivers/scsi/ufs/ufs-exynos.c:286 exynos_ufs_get_clk_info()
+        warn: wrong type for 'ufs->mclk_rate' (should be 'ulong')
 
-However on non-PowerNV and non-pseries KVM guests (i.e not
-implementing cpu_to_chip_id(), continued to use a copy of
-cpu_cpu_mask().
+        drivers/scsi/ufs/ufs-exynos.c:287 exynos_ufs_get_clk_info()
+        warn: wrong type for 'pclk_rate' (should be 'ulong')
 
-There are two issues that were noticed on such systems
-1. lscpu would report one extra socket.
-On a IBM,9009-42A (aka zz system) which has only 2 chips/ sockets/
-nodes, lscpu would report
-Architecture:        ppc64le
-Byte Order:          Little Endian
-CPU(s):              160
-On-line CPU(s) list: 0-159
-Thread(s) per core:  8
-Core(s) per socket:  6
-Socket(s):           3                <--------------
-NUMA node(s):        2
-Model:               2.2 (pvr 004e 0202)
-Model name:          POWER9 (architected), altivec supported
-Hypervisor vendor:   pHyp
-Virtualization type: para
-L1d cache:           32K
-L1i cache:           32K
-L2 cache:            512K
-L3 cache:            10240K
-NUMA node0 CPU(s):   0-79
-NUMA node1 CPU(s):   80-159
-
-2. Currently cpu_cpu_mask is updated when a core is
-added/removed. However its not updated when smt mode switching or on
-CPUs are explicitly offlined. However all other percpu masks are
-updated to ensure only active/online CPUs are in the masks.
-This results in build_sched_domain traces since there will be CPUs in
-cpu_cpu_mask() but those CPUs are not present in SMT / CACHE / MC /
-NUMA domains. A loop of threads running smt mode switching and core
-add/remove will soon show this trace.
-Hence cpu_cpu_mask has to be update at smt mode switch.
-
-This will have impact on cpu_core_mask(). cpu_core_mask() is a
-snapshot of cpu_cpu_mask. Different CPUs within the same socket will
-end up having different cpu_core_masks since they are snapshots at
-different points of time. This means when lscpu will start reporting
-many more sockets than the actual number of sockets/ nodes / chips.
-
-Different ways to handle this problem:
-A. Update the snapshot aka cpu_core_mask for all CPUs whenever
-   cpu_cpu_mask is updated. This would a non-optimal solution.
-B. Instead of a cpumask_var_t, make cpu_core_map a cpumask pointer
-   pointing to cpu_cpu_mask. However percpu cpumask pointer is frowned
-   upon and we need a clean way to handle PowerPc KVM guest which is
-   not a snapshot.
-C. Update cpu_core_masks all PowerPc systems like in PowerPc KVM
-guests using mask manipulations. This approach is relatively simple
-and unifies with the existing code.
-D. On top of 3, we could also resurrect get_physical_package_id which
-   could return a nid for the said CPU. However this is not needed at this
-   time.
-
-Option C is the preferred approach for now.
-
-While this is somewhat a revert of Commit 4ca234a9cbd7 ("powerpc/smp:
-Stop updating cpu_core_mask").
-
-1. Plain revert has some conflicts
-2. For chip_id == -1, the cpu_core_mask is made identical to
-cpu_cpu_mask, unlike previously where cpu_core_mask was set to a core
-if chip_id doesn't exist.
-
-This goes by the principle that if chip_id is not exposed, then
-sockets / chip / node share the same set of CPUs.
-
-With the fix, lscpu o/p would be
-Architecture:        ppc64le
-Byte Order:          Little Endian
-CPU(s):              160
-On-line CPU(s) list: 0-159
-Thread(s) per core:  8
-Core(s) per socket:  6
-Socket(s):           2                     <--------------
-NUMA node(s):        2
-Model:               2.2 (pvr 004e 0202)
-Model name:          POWER9 (architected), altivec supported
-Hypervisor vendor:   pHyp
-Virtualization type: para
-L1d cache:           32K
-L1i cache:           32K
-L2 cache:            512K
-L3 cache:            10240K
-NUMA node0 CPU(s):   0-79
-NUMA node1 CPU(s):   80-159
-
-Fixes: 4ca234a9cbd7 ("powerpc/smp: Stop updating cpu_core_mask")
-Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210826100401.412519-3-srikar@linux.vnet.ibm.com
+Link: https://lore.kernel.org/r/20210819171131.55912-1-alim.akhtar@samsung.com
+Fixes: 55f4b1f73631 ("scsi: ufs: ufs-exynos: Add UFS host support for Exynos SoCs")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Alim Akhtar <alim.akhtar@samsung.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kernel/smp.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ drivers/scsi/ufs/ufs-exynos.c | 4 ++--
+ drivers/scsi/ufs/ufs-exynos.h | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
-index 7da1e01e2c7f..fe505d8ed55b 100644
---- a/arch/powerpc/kernel/smp.c
-+++ b/arch/powerpc/kernel/smp.c
-@@ -1503,6 +1503,7 @@ static void add_cpu_to_masks(int cpu)
- 	 * add it to it's own thread sibling mask.
- 	 */
- 	cpumask_set_cpu(cpu, cpu_sibling_mask(cpu));
-+	cpumask_set_cpu(cpu, cpu_core_mask(cpu));
- 
- 	for (i = first_thread; i < first_thread + threads_per_core; i++)
- 		if (cpu_online(i))
-@@ -1520,11 +1521,6 @@ static void add_cpu_to_masks(int cpu)
- 	if (chip_id_lookup_table && ret)
- 		chip_id = cpu_to_chip_id(cpu);
- 
--	if (chip_id == -1) {
--		cpumask_copy(per_cpu(cpu_core_map, cpu), cpu_cpu_mask(cpu));
--		goto out;
--	}
--
- 	if (shared_caches)
- 		submask_fn = cpu_l2_cache_mask;
- 
-@@ -1534,6 +1530,10 @@ static void add_cpu_to_masks(int cpu)
- 	/* Skip all CPUs already part of current CPU core mask */
- 	cpumask_andnot(mask, cpu_online_mask, cpu_core_mask(cpu));
- 
-+	/* If chip_id is -1; limit the cpu_core_mask to within DIE*/
-+	if (chip_id == -1)
-+		cpumask_and(mask, mask, cpu_cpu_mask(cpu));
-+
- 	for_each_cpu(i, mask) {
- 		if (chip_id == cpu_to_chip_id(i)) {
- 			or_cpumasks_related(cpu, i, submask_fn, cpu_core_mask);
-@@ -1543,7 +1543,6 @@ static void add_cpu_to_masks(int cpu)
- 		}
+diff --git a/drivers/scsi/ufs/ufs-exynos.c b/drivers/scsi/ufs/ufs-exynos.c
+index cf46d6f86e0e..427a2ff7e9da 100644
+--- a/drivers/scsi/ufs/ufs-exynos.c
++++ b/drivers/scsi/ufs/ufs-exynos.c
+@@ -260,7 +260,7 @@ static int exynos_ufs_get_clk_info(struct exynos_ufs *ufs)
+ 	struct ufs_hba *hba = ufs->hba;
+ 	struct list_head *head = &hba->clk_list_head;
+ 	struct ufs_clk_info *clki;
+-	u32 pclk_rate;
++	unsigned long pclk_rate;
+ 	u32 f_min, f_max;
+ 	u8 div = 0;
+ 	int ret = 0;
+@@ -299,7 +299,7 @@ static int exynos_ufs_get_clk_info(struct exynos_ufs *ufs)
  	}
  
--out:
- 	free_cpumask_var(mask);
- }
- 
+ 	if (unlikely(pclk_rate < f_min || pclk_rate > f_max)) {
+-		dev_err(hba->dev, "not available pclk range %d\n", pclk_rate);
++		dev_err(hba->dev, "not available pclk range %lu\n", pclk_rate);
+ 		ret = -EINVAL;
+ 		goto out;
+ 	}
+diff --git a/drivers/scsi/ufs/ufs-exynos.h b/drivers/scsi/ufs/ufs-exynos.h
+index 67505fe32ebf..dadf4fd10dd8 100644
+--- a/drivers/scsi/ufs/ufs-exynos.h
++++ b/drivers/scsi/ufs/ufs-exynos.h
+@@ -184,7 +184,7 @@ struct exynos_ufs {
+ 	u32 pclk_div;
+ 	u32 pclk_avail_min;
+ 	u32 pclk_avail_max;
+-	u32 mclk_rate;
++	unsigned long mclk_rate;
+ 	int avail_ln_rx;
+ 	int avail_ln_tx;
+ 	int rx_sel_idx;
 -- 
 2.30.2
 
