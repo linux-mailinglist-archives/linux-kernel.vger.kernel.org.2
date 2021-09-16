@@ -2,102 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA9E840E553
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:27:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B43B040E4F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:25:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244731AbhIPRK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:10:28 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:37514 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346683AbhIPQ55 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:57:57 -0400
-Received: from zn.tnic (p200300ec2f11c6001e49ea6afe1054f5.dip0.t-ipconnect.de [IPv6:2003:ec:2f11:c600:1e49:ea6a:fe10:54f5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S244208AbhIPRGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:06:18 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:58902
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1348284AbhIPRCZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:02:25 -0400
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com [209.85.128.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 211431EC0277;
-        Thu, 16 Sep 2021 18:56:30 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1631811390;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=CsguPVegY1Z3/cHkTvyO5SSM87RXYzv+szSa5MU4dro=;
-        b=Y9B3Lju7uANekQ/vNO1kgsIJoEUoNMktGkOPAuf61gUG3/WfraP1VY1HDl/EF4DE+WMM0G
-        ofFGOckCcDnYYrqRrz50rI90T6nYdB8WXn2m2WPaCJAiVmQZKUs9nmqa7f9Kvafb01t8GQ
-        YNWW7riHkc74G2m2g7g3cj+hKDcPN14=
-Date:   Thu, 16 Sep 2021 18:56:22 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH Part2 v5 01/45] x86/cpufeatures: Add SEV-SNP CPU feature
-Message-ID: <YUN3Nquhsn4OD9S8@zn.tnic>
-References: <20210820155918.7518-1-brijesh.singh@amd.com>
- <20210820155918.7518-2-brijesh.singh@amd.com>
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 2432640261
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 17:01:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1631811663;
+        bh=kGvrlwC8dgj36kHCoqcN/7cctXrefdaA9zTh75o6nwc=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=O5lWQNZ0vjXAAINv8zoMm998Bo76oUWH+eJ3tzSTB85IaBL5eWlEBVpB2rmA4Wsnt
+         nGZBbS1rFBzaUqRMdAn13m4pzilKsB8PDNhx27B8QqiscQGQpxuCM71Eev9hBQRkev
+         BePTEdFsfj4eBh3k3884kBw1Cc3o7JYhbXmTbsRHbAmZL3NXHzDIPu2uauHf4y99F7
+         Hoj1jfW2X3voPTImLXCFMWhtheZp4Y6xRfN73KLSasc01st9XwduMW+Di73T2nQk5i
+         hdoW8/4BZ1OYz5F6ZHhe987Ds/V79Xo4HEArI6xKBcVvThZMCV2Np5Pyu8ZxnojWd7
+         edut1ymigigkg==
+Received: by mail-wm1-f69.google.com with SMTP id j16-20020a1c2310000000b0030b3dce20e1so577377wmj.0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 10:01:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kGvrlwC8dgj36kHCoqcN/7cctXrefdaA9zTh75o6nwc=;
+        b=jwGb6Gjdi20qC6Iu0l6W6AwC/6nwlAEcxovCgr5qyrr4uembuXEotsy8f4Nt3jY4ue
+         N+bKv5SVhbYNeujw1WHGykHSeV5/4OaEBCcj4w/sImI4GJMEWRyl+hI9HKnxNBeq7KW5
+         X2y/NNWDl/nrlX2PDJM78g2sOvFwr1sD+0RAtESL7FXLNQyqfidtn5VpGqWf4i1/HVZ1
+         Ae8Tlil6Ctsg9I8WmPMFlhK33EhtBuSO7RawiZZIRyTtwy9TNPCIMabItGBy5GQBLlJ0
+         5i2H/NALZpRlN5b3UYYFmxTQ1VIwAlEfZD0Jn4y9V2wDa+c5VvWG472JBjAxgE9VRHlP
+         edpw==
+X-Gm-Message-State: AOAM533om7+0W2Mf6LyzLkfFmuvy/KKdLVl3PKyVxRpb4OznOWXkXYTb
+        8Zbv186To6jkTyv1O+IK97ebQTEnwmaLj73N8ozjUiMdrK0jFwh1OpBU6qIyR71HOUHX6tURNiK
+        Z6NFvgfLeMxVaIFey4aRVRp3pSc1pmbfOfkdmZF1brQ==
+X-Received: by 2002:adf:f084:: with SMTP id n4mr7440204wro.362.1631811662695;
+        Thu, 16 Sep 2021 10:01:02 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwZv2NplR10Hi7PCHwaacjnOu8R/e6iK1WzNnokBmPAZv6ETWalQ+ItW3RvnaNG42gpPNXYng==
+X-Received: by 2002:adf:f084:: with SMTP id n4mr7440176wro.362.1631811662501;
+        Thu, 16 Sep 2021 10:01:02 -0700 (PDT)
+Received: from kozik-lap.lan (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
+        by smtp.gmail.com with ESMTPSA id q7sm4062646wrr.10.2021.09.16.10.01.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Sep 2021 10:01:01 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, Matan Ziv-Av <matan@svgalib.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: [PATCH 1/2] platform: lg-laptop: drop unneeded MODULE_ALIAS
+Date:   Thu, 16 Sep 2021 19:00:53 +0200
+Message-Id: <20210916170054.136790-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210820155918.7518-2-brijesh.singh@amd.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 10:58:34AM -0500, Brijesh Singh wrote:
-> Add CPU feature detection for Secure Encrypted Virtualization with
-> Secure Nested Paging. This feature adds a strong memory integrity
-> protection to help prevent malicious hypervisor-based attacks like
-> data replay, memory re-mapping, and more.
-> 
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> ---
->  arch/x86/include/asm/cpufeatures.h       | 1 +
->  arch/x86/kernel/cpu/amd.c                | 3 ++-
->  tools/arch/x86/include/asm/cpufeatures.h | 1 +
->  3 files changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-> index d0ce5cfd3ac1..62f458680772 100644
-> --- a/arch/x86/include/asm/cpufeatures.h
-> +++ b/arch/x86/include/asm/cpufeatures.h
-> @@ -398,6 +398,7 @@
->  #define X86_FEATURE_SEV			(19*32+ 1) /* AMD Secure Encrypted Virtualization */
->  #define X86_FEATURE_VM_PAGE_FLUSH	(19*32+ 2) /* "" VM Page Flush MSR is supported */
->  #define X86_FEATURE_SEV_ES		(19*32+ 3) /* AMD Secure Encrypted Virtualization - Encrypted State */
-> +#define X86_FEATURE_SEV_SNP		(19*32+4)  /* AMD Secure Encrypted Virtualization - Secure Nested Paging */
+The MODULE_DEVICE_TABLE already creates proper alias for ACPI driver.
+Having another MODULE_ALIAS causes the alias to be duplicated.
 
-s/AMD Secure Encrypted Virtualization/AMD SEV/g
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+---
+ drivers/platform/x86/lg-laptop.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Bit 1 above already has that string - no need for repeating it
-everywhere.
-
-Also, note the vertical alignment (space after the '+'):
-
-					(19*32+ 4)
-
+diff --git a/drivers/platform/x86/lg-laptop.c b/drivers/platform/x86/lg-laptop.c
+index 3e520d5bca07..4f3ece819f4c 100644
+--- a/drivers/platform/x86/lg-laptop.c
++++ b/drivers/platform/x86/lg-laptop.c
+@@ -60,7 +60,6 @@ MODULE_ALIAS("wmi:" WMI_EVENT_GUID2);
+ MODULE_ALIAS("wmi:" WMI_EVENT_GUID3);
+ MODULE_ALIAS("wmi:" WMI_METHOD_WMAB);
+ MODULE_ALIAS("wmi:" WMI_METHOD_WMBB);
+-MODULE_ALIAS("acpi*:LGEX0815:*");
+ 
+ static struct platform_device *pf_device;
+ static struct input_dev *wmi_input_dev;
 -- 
-Regards/Gruss,
-    Boris.
+2.30.2
 
-https://people.kernel.org/tglx/notes-about-netiquette
