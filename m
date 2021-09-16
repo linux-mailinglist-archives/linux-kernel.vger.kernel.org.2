@@ -2,112 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 468E140EB53
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 22:05:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6297840EB57
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 22:06:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236821AbhIPUHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 16:07:00 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:27566 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233356AbhIPUG7 (ORCPT
+        id S237030AbhIPUHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 16:07:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236946AbhIPUHV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 16:06:59 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18GK0i4u018920;
-        Thu, 16 Sep 2021 16:05:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=I8WeDmPI0MEkPVFIH6T9tJ6ZkkfSB2x0+8T7Nri6nTs=;
- b=YbHttMVptamkis3i2eSBpHlkflBgiGbF4IpmhOE1E2IR9nzI9fB+/v4FU3wJzgdT3Eey
- n+RQxvUJ7+V0lw84Rhd6ysfuXB+9DSPHRKNOodjFtdXICSgJgHToGcTnsJaygfXH8HQd
- LpsW4ogmqNMFO9juQ7YGJVhDMFRX7MsGd5/9wcem7Fuj9DG1ABve58sZ2BiUZWjPoU/N
- FboYx8bnM4MptPOALQw7daPMbbvl/EJCtne5ExgKOxdOylIKNU2M8A4ZrlhTCdFgBBke
- bd63hrVJKENQOuRdQJ0WQr+oyUKPzpBYIBUbacO0Hy/TB5MBW6Y+p+OodtRkBTez7bUy tA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3b48psnea4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 16 Sep 2021 16:05:12 -0400
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18GK1HTu023304;
-        Thu, 16 Sep 2021 16:05:08 -0400
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3b48psne8b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 16 Sep 2021 16:05:08 -0400
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18GJwBJh021984;
-        Thu, 16 Sep 2021 20:05:05 GMT
-Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
-        by ppma04dal.us.ibm.com with ESMTP id 3b0m3cxvy1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 16 Sep 2021 20:05:05 +0000
-Received: from b03ledav001.gho.boulder.ibm.com (b03ledav001.gho.boulder.ibm.com [9.17.130.232])
-        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18GK53Jc39453040
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 16 Sep 2021 20:05:03 GMT
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BD39E6E06C;
-        Thu, 16 Sep 2021 20:05:03 +0000 (GMT)
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3A44C6E079;
-        Thu, 16 Sep 2021 20:05:02 +0000 (GMT)
-Received: from li-4b5937cc-25c4-11b2-a85c-cea3a66903e4.ibm.com (unknown [9.163.30.115])
-        by b03ledav001.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu, 16 Sep 2021 20:05:02 +0000 (GMT)
-Subject: Re: [PATCH v6 03/13] KEYS: CA link restriction
-To:     Eric Snowberg <eric.snowberg@oracle.com>, keyrings@vger.kernel.org,
-        linux-integrity@vger.kernel.org, zohar@linux.ibm.com,
-        dhowells@redhat.com, dwmw2@infradead.org,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        jarkko@kernel.org, jmorris@namei.org, serge@hallyn.com
-Cc:     keescook@chromium.org, gregkh@linuxfoundation.org,
-        torvalds@linux-foundation.org, scott.branden@broadcom.com,
-        weiyongjun1@huawei.com, nayna@linux.ibm.com, ebiggers@google.com,
-        ardb@kernel.org, nramas@linux.microsoft.com, lszubowi@redhat.com,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        James.Bottomley@HansenPartnership.com, pjones@redhat.com,
-        konrad.wilk@oracle.com
-References: <20210914211416.34096-1-eric.snowberg@oracle.com>
- <20210914211416.34096-4-eric.snowberg@oracle.com>
-From:   Nayna <nayna@linux.vnet.ibm.com>
-Message-ID: <d3d8a1ce-a982-2662-28f6-3c06cb679d5f@linux.vnet.ibm.com>
-Date:   Thu, 16 Sep 2021 16:05:01 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-In-Reply-To: <20210914211416.34096-4-eric.snowberg@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 8XXxDtkcikJYvbvBEOythfdkGkYX1Zys
-X-Proofpoint-ORIG-GUID: Vehnqpk729pJQxbKMrLp6UJ6qaIbxbfZ
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Thu, 16 Sep 2021 16:07:21 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54622C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 13:06:00 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id g184so7258650pgc.6
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 13:06:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=C825OJtm+GsMiw0RkquyzXjumHiD8fMhLXCP+cnD56A=;
+        b=x12uH75PWv2yZJlJ1u7RjEbR2L7wCjfESWLWNzOFEvBDLAfT3rb9fr70Z6A6Z6Tx5Q
+         5e51a7LLT0SCHChzUHm8OhpH7TMT/L/tRBadrT+4phG2S4ZlbqMZQFq+BBhMqFZD1B52
+         LNzKRkGyjVKIGQTacRagcrYX9r99ZjYEGexp8hYp+2TOEE3I0Is/W+ql13idrY5kP392
+         WJDwfEbrc48LFQbtmucPb9XYNHtl9WeYQGO95FS7EGIOXQIAJfk/Hze8lmzMvovzHpzZ
+         C6ibLTDnpZXRDeo1qdeMxThJF336v8VuWY4HvesOhzBpV2LNaTmlZgj/fQWSppksg/e7
+         KN2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=C825OJtm+GsMiw0RkquyzXjumHiD8fMhLXCP+cnD56A=;
+        b=QGDZCPUIl0nHXe0piBvs9waDUUyQpj6dRR8/ib+trFBW3wk9RyhhOMsXwFWnddMVvn
+         QvCpWax8UlEXSjat7FKzZUf0YpbNSQ6XRevMxIRhAHlouWEPZwgU3bXxvHBgIyXLpA/A
+         VTqjqYwJfJnW9CbHdSReRYjWbCu+HR4cuqfCk1n+HVCtbMQTGrS21B1/YS+lL/dzouX5
+         kmY4T9lUkbPtsiQ36KNCXN1v6Awpg3k9a+w26R6L/5e3T8TzOWdpRNwBNdI1PmD4mxRh
+         WIhipWjUyZR4FRWOcZjSwIncNegTPPf3PBYzBxsgIuucCSnvxYZQUpyP18nYiIrVFUmJ
+         /Qzg==
+X-Gm-Message-State: AOAM5332wAFbRm9dfugL43D7zynfy7xijGUstgKhe6hAtfff+l+xHC5r
+        QPAuYeMv9ABCRNjN3Alxk5bDTg==
+X-Google-Smtp-Source: ABdhPJzJXNLpWvp/YAi+c/sg/mnucACdcnd/GWm+TJH6cXdxMA2wtm3fWmCFcSek7ktIo3cduNaZ/Q==
+X-Received: by 2002:a62:2f47:0:b0:43c:11:69ce with SMTP id v68-20020a622f47000000b0043c001169cemr6974646pfv.24.1631822759785;
+        Thu, 16 Sep 2021 13:05:59 -0700 (PDT)
+Received: from localhost.localdomain ([122.171.196.148])
+        by smtp.gmail.com with ESMTPSA id c133sm3800045pfb.39.2021.09.16.13.05.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Sep 2021 13:05:59 -0700 (PDT)
+From:   Amit Pundir <amit.pundir@linaro.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>, Alex Elder <elder@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        dt <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: [PATCH] arm64: dts: qcom: sdm850-yoga: Reshuffle IPA memory mappings
+Date:   Fri, 17 Sep 2021 01:35:54 +0530
+Message-Id: <20210916200554.2434439-1-amit.pundir@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.687,Hydra:6.0.235,FMLib:17.0.607.475
- definitions=2020-10-13_15,2020-10-13_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
- spamscore=0 malwarescore=0 phishscore=0 priorityscore=1501 suspectscore=0
- impostorscore=0 mlxlogscore=999 clxscore=1015 adultscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109030001 definitions=main-2109160113
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Upstream commit 2e01e0c21459 ("arm64: dts: qcom: sdm850-yoga:
+Enable IPA") shuffled reserved memory regions in sdm845.dtsi
+to make firmware loading succeed and enable the ipa device on
+sdm845-yoga but it broke the other common users of those
+memory regions like Xiaomi Pocophone F1.
 
-On 9/14/21 5:14 PM, Eric Snowberg wrote:
-> Add a new link restriction.  Restrict the addition of keys in a keyring
-> based on the key to be added being a CA (self-signed).
+So this patch effectively revert those upstream commit changes
+and move all the relevant changes to sdm850-lenovo-yoga-c630.dts
+instead.
 
-A self-signed cert can be a root CA cert or a code-signing cert. The way 
-to differentiate a CA cert is by checking BasicConstraints CA:TRUE and 
-keyUsage:keyCertSign. Refer to Section Basic Constraints and Key Usage 
-in the document - https://datatracker.ietf.org/doc/html/rfc5280.
+Fixes: 2e01e0c21459 ("arm64: dts: qcom: sdm850-yoga: Enable IPA")
+Signed-off-by: Amit Pundir <amit.pundir@linaro.org>
+---
+Smoke tested on PocoF1 and not on Yoga-C630.
 
-Thanks & Regards,
+ arch/arm64/boot/dts/qcom/sdm845.dtsi          | 21 +++++++-----
+ .../boot/dts/qcom/sdm850-lenovo-yoga-c630.dts | 34 +++++++++++++++++++
+ 2 files changed, 47 insertions(+), 8 deletions(-)
 
-      - Nayna
+diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+index 6d7172e6f4c3..b3b911926184 100644
+--- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
++++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+@@ -128,23 +128,28 @@ camera_mem: memory@8bf00000 {
+ 			no-map;
+ 		};
+ 
+-		wlan_msa_mem: memory@8c400000 {
+-			reg = <0 0x8c400000 0 0x100000>;
++		ipa_fw_mem: memory@8c400000 {
++			reg = <0 0x8c400000 0 0x10000>;
+ 			no-map;
+ 		};
+ 
+-		gpu_mem: memory@8c515000 {
+-			reg = <0 0x8c515000 0 0x2000>;
++		ipa_gsi_mem: memory@8c410000 {
++			reg = <0 0x8c410000 0 0x5000>;
+ 			no-map;
+ 		};
+ 
+-		ipa_fw_mem: memory@8c517000 {
+-			reg = <0 0x8c517000 0 0x5a000>;
++		gpu_mem: memory@8c415000 {
++			reg = <0 0x8c415000 0 0x2000>;
+ 			no-map;
+ 		};
+ 
+-		adsp_mem: memory@8c600000 {
+-			reg = <0 0x8c600000 0 0x1a00000>;
++		adsp_mem: memory@8c500000 {
++			reg = <0 0x8c500000 0 0x1a00000>;
++			no-map;
++		};
++
++		wlan_msa_mem: memory@8df00000 {
++			reg = <0 0x8df00000 0 0x100000>;
+ 			no-map;
+ 		};
+ 
+diff --git a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
+index 385e5029437d..2ba23aa582a1 100644
+--- a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
++++ b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
+@@ -16,6 +16,17 @@
+ #include "sdm850.dtsi"
+ #include "pm8998.dtsi"
+ 
++/*
++ * Update following upstream (sdm845.dtsi) reserved
++ * memory mappings for firmware loading to succeed
++ * and enable the IPA device.
++ */
++/delete-node/ &ipa_fw_mem;
++/delete-node/ &ipa_gsi_mem;
++/delete-node/ &gpu_mem;
++/delete-node/ &adsp_mem;
++/delete-node/ &wlan_msa_mem;
++
+ / {
+ 	model = "Lenovo Yoga C630";
+ 	compatible = "lenovo,yoga-c630", "qcom,sdm845";
+@@ -58,6 +69,29 @@ panel_in_edp: endpoint {
+ 		};
+ 	};
+ 
++	/* Reserved memory changes for IPA */
++	reserved-memory {
++		wlan_msa_mem: memory@8c400000 {
++			reg = <0 0x8c400000 0 0x100000>;
++			no-map;
++		};
++
++		gpu_mem: memory@8c515000 {
++			reg = <0 0x8c515000 0 0x2000>;
++			no-map;
++		};
++
++		ipa_fw_mem: memory@8c517000 {
++			reg = <0 0x8c517000 0 0x5a000>;
++			no-map;
++		};
++
++		adsp_mem: memory@8c600000 {
++			reg = <0 0x8c600000 0 0x1a00000>;
++			no-map;
++		};
++	};
++
+ 	sn65dsi86_refclk: sn65dsi86-refclk {
+ 		compatible = "fixed-clock";
+ 		#clock-cells = <0>;
+-- 
+2.25.1
 
