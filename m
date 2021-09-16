@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B35140E71F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:32:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2BEA40E2F0
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:17:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349113AbhIPR3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:29:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43518 "EHLO mail.kernel.org"
+        id S242353AbhIPQnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:43:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52008 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351935AbhIPRUA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:20:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C5D1160F50;
-        Thu, 16 Sep 2021 16:41:38 +0000 (UTC)
+        id S243332AbhIPQht (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:37:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E1046142A;
+        Thu, 16 Sep 2021 16:22:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810499;
-        bh=VVPSPpRvmn4ZsitzR1THjzMYO1QDw/mTwAOXH1M8shM=;
+        s=korg; t=1631809350;
+        bh=z1DqO8IRBjaZIL8F3r1F3PtmWISEyGlTglJpiRdy8Qc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X6pvAoadiT2HMyGH1JMnowbEyZv5/+jEzt/rWjAgX2EwMuF+f+X4Q4lFtLj592vYJ
-         /2acSwE6aR8G2lpxBxtYZyyZH+GBqLinLFsEbBmZLDIFAQ/fMOkJk0YfhbIHMlRArp
-         L9gXDQ/HTc87OAbF77LLIDD1PZ0DqcO6swaNZVvQ=
+        b=MA+1YSPntlp+B9MduzkKH6YQHsxdLbUTLRqlja+Jf/RKPeL42KeoMYGjjR10CqHOT
+         C+ZvxkGPV08Mka67tKJCiBe4spdYMOancjow9fDVdyngXQLzz9nVwceXxhIBWgM8bB
+         wA9DPD7wfB+JfnARgfjk0oP8qF4m8RzboeWVQSWg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Fabiano Rosas <farosas@linux.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
+        stable@vger.kernel.org,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 131/432] KVM: PPC: Book3S HV: Fix copy_tofrom_guest routines
+Subject: [PATCH 5.13 123/380] powerpc/smp: Fix a crash while booting kvm guest with nr_cpus=2
 Date:   Thu, 16 Sep 2021 17:58:00 +0200
-Message-Id: <20210916155815.204407521@linuxfoundation.org>
+Message-Id: <20210916155808.229133033@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,76 +42,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fabiano Rosas <farosas@linux.ibm.com>
+From: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
 
-[ Upstream commit 5d7d6dac8fe99ed59eee2300e4a03370f94d5222 ]
+[ Upstream commit 8efd249babea2fec268cff90b9f5ca723dbb7499 ]
 
-The __kvmhv_copy_tofrom_guest_radix function was introduced along with
-nested HV guest support. It uses the platform's Radix MMU quadrants to
-provide a nested hypervisor with fast access to its nested guests
-memory (H_COPY_TOFROM_GUEST hypercall). It has also since been added
-as a fast path for the kvmppc_ld/st routines which are used during
-instruction emulation.
+Aneesh reported a crash with a fairly recent upstream kernel when
+booting kernel whose commandline was appended with nr_cpus=2
 
-The commit def0bfdbd603 ("powerpc: use probe_user_read() and
-probe_user_write()") changed the low level copy function from
-raw_copy_from_user to probe_user_read, which adds a check to
-access_ok. In powerpc that is:
+1:mon> e
+cpu 0x1: Vector: 300 (Data Access) at [c000000008a67bd0]
+    pc: c00000000002557c: cpu_to_chip_id+0x3c/0x100
+    lr: c000000000058380: start_secondary+0x460/0xb00
+    sp: c000000008a67e70
+   msr: 8000000000001033
+   dar: 10
+ dsisr: 80000
+  current = 0xc00000000891bb00
+  paca    = 0xc0000018ff981f80   irqmask: 0x03   irq_happened: 0x01
+    pid   = 0, comm = swapper/1
+Linux version 5.13.0-rc3-15704-ga050a6d2b7e8 (kvaneesh@ltc-boston8) (gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0, GNU ld (GNU Binutils for Ubuntu) 2.34) #433 SMP Tue May 25 02:38:49 CDT 2021
+1:mon> t
+[link register   ] c000000000058380 start_secondary+0x460/0xb00
+[c000000008a67e70] c000000008a67eb0 (unreliable)
+[c000000008a67eb0] c0000000000589d4 start_secondary+0xab4/0xb00
+[c000000008a67f90] c00000000000c654 start_secondary_prolog+0x10/0x14
 
- static inline bool __access_ok(unsigned long addr, unsigned long size)
- {
-         return addr < TASK_SIZE_MAX && size <= TASK_SIZE_MAX - addr;
- }
+Current code assumes that num_possible_cpus() is always greater than
+threads_per_core. However this may not be true when using nr_cpus=2 or
+similar options. Handle the case where num_possible_cpus() is not an
+exact multiple of  threads_per_core.
 
-and TASK_SIZE_MAX is 0x0010000000000000UL for 64-bit, which means that
-setting the two MSBs of the effective address (which correspond to the
-quadrant) now cause access_ok to reject the access.
-
-This was not caught earlier because the most common code path via
-kvmppc_ld/st contains a fallback (kvm_read_guest) that is likely to
-succeed for L1 guests. For nested guests there is no fallback.
-
-Another issue is that probe_user_read (now __copy_from_user_nofault)
-does not return the number of bytes not copied in case of failure, so
-the destination memory is not being cleared anymore in
-kvmhv_copy_from_guest_radix:
-
- ret = kvmhv_copy_tofrom_guest_radix(vcpu, eaddr, to, NULL, n);
- if (ret > 0)                            <-- always false!
-         memset(to + (n - ret), 0, ret);
-
-This patch fixes both issues by skipping access_ok and open-coding the
-low level __copy_to/from_user_inatomic.
-
-Fixes: def0bfdbd603 ("powerpc: use probe_user_read() and probe_user_write()")
-Signed-off-by: Fabiano Rosas <farosas@linux.ibm.com>
-Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
+Fixes: c1e53367dab1 ("powerpc/smp: Cache CPU to chip lookup")
+Reported-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Debugged-by: Michael Ellerman <mpe@ellerman.id.au>
 Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210805212616.2641017-2-farosas@linux.ibm.com
+Link: https://lore.kernel.org/r/20210826100401.412519-2-srikar@linux.vnet.ibm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kvm/book3s_64_mmu_radix.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ arch/powerpc/kernel/smp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/kvm/book3s_64_mmu_radix.c b/arch/powerpc/kvm/book3s_64_mmu_radix.c
-index b5905ae4377c..44eb7b1ef289 100644
---- a/arch/powerpc/kvm/book3s_64_mmu_radix.c
-+++ b/arch/powerpc/kvm/book3s_64_mmu_radix.c
-@@ -65,10 +65,12 @@ unsigned long __kvmhv_copy_tofrom_guest_radix(int lpid, int pid,
+diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
+index df6b468976d5..7da1e01e2c7f 100644
+--- a/arch/powerpc/kernel/smp.c
++++ b/arch/powerpc/kernel/smp.c
+@@ -1085,7 +1085,7 @@ void __init smp_prepare_cpus(unsigned int max_cpus)
  	}
- 	isync();
  
-+	pagefault_disable();
- 	if (is_load)
--		ret = copy_from_user_nofault(to, (const void __user *)from, n);
-+		ret = __copy_from_user_inatomic(to, (const void __user *)from, n);
- 	else
--		ret = copy_to_user_nofault((void __user *)to, from, n);
-+		ret = __copy_to_user_inatomic((void __user *)to, from, n);
-+	pagefault_enable();
+ 	if (cpu_to_chip_id(boot_cpuid) != -1) {
+-		int idx = num_possible_cpus() / threads_per_core;
++		int idx = DIV_ROUND_UP(num_possible_cpus(), threads_per_core);
  
- 	/* switch the pid first to avoid running host with unallocated pid */
- 	if (quadrant == 1 && pid != old_pid)
+ 		/*
+ 		 * All threads of a core will all belong to the same core,
 -- 
 2.30.2
 
