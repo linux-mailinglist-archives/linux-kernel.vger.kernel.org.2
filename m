@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 484E940E3F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:22:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AAB640E151
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:29:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243237AbhIPQxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:53:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36668 "EHLO mail.kernel.org"
+        id S242159AbhIPQ3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:29:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59302 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344773AbhIPQsd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:48:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A1F361A70;
-        Thu, 16 Sep 2021 16:27:25 +0000 (UTC)
+        id S241712AbhIPQUC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:20:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D769361390;
+        Thu, 16 Sep 2021 16:14:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809646;
-        bh=Mgk6zcJV3cp/1FnKDc4HTUGsqHEyT0cD/bodCBNyz7k=;
+        s=korg; t=1631808847;
+        bh=GiDCcw8EAI/e3m9h772NNoRn4DlkDc9x34kowoRI6tw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gokfI4YJvhh5FS1dAOS6t2QANt3kGUIvwQQ6Z5F32833PJ2VKUaBaRxTeWKen3/Zq
-         ufWflsKDW1g4rZzjXO1rLq7j4O2Cs/h0f93yvhTJRFnp8Fqe9AHpNeobS5FKs5PE1M
-         GjYCoAijDLOFogcQgZKEQI5PaETNulFRtsUeGnPY=
+        b=o7OqTCdZBgPgB7bIFDm0B5CDfmOuNcBWcK7zcFKiTZXRy8Y+mb4D37oTtsSl0Ao1m
+         Bkqa6Z+6nqnR1rrOa8DNBGRn9sSa/4mac97T2Vbvu5BtE9r8+TUFEDBiGCGfK+Btit
+         aqZ4B3u3+dnIYgdRe53q1YTPdLE8KplXwuJIvjDI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Evgeny Novikov <novikov@ispras.ru>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 230/380] media: tegra-cec: Handle errors of clk_prepare_enable()
-Date:   Thu, 16 Sep 2021 17:59:47 +0200
-Message-Id: <20210916155811.908947885@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 243/306] soundwire: intel: fix potential race condition during power down
+Date:   Thu, 16 Sep 2021 17:59:48 +0200
+Message-Id: <20210916155802.349997999@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,51 +42,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Evgeny Novikov <novikov@ispras.ru>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-[ Upstream commit 38367073c796a37a61549b1f66a71b3adb03802d ]
+[ Upstream commit ea6942dad4b2a7e1735aa0f10f3d0b04b847750f ]
 
-tegra_cec_probe() and tegra_cec_resume() ignored possible errors of
-clk_prepare_enable(). The patch fixes this.
+The power down sequence sets the link_up flag as false outside of the
+mutex_lock. This is potentially unsafe.
 
-Found by Linux Driver Verification project (linuxtesting.org).
+In additional the flow in that sequence can be improved by first
+testing if the link was powered, setting the link_up flag as false and
+proceeding with the power down. In case the CPA bits cannot be
+cleared, we only flag an error since we cannot deal with interrupts
+any longer.
 
-Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Link: https://lore.kernel.org/r/20210818024954.16873-2-yung-chuan.liao@linux.intel.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/cec/platform/tegra/tegra_cec.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ drivers/soundwire/intel.c | 23 +++++++++++++----------
+ 1 file changed, 13 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/media/cec/platform/tegra/tegra_cec.c b/drivers/media/cec/platform/tegra/tegra_cec.c
-index 1ac0c70a5981..5e907395ca2e 100644
---- a/drivers/media/cec/platform/tegra/tegra_cec.c
-+++ b/drivers/media/cec/platform/tegra/tegra_cec.c
-@@ -366,7 +366,11 @@ static int tegra_cec_probe(struct platform_device *pdev)
- 		return -ENOENT;
+diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+index 6a1e862b16c3..dad4326a2a71 100644
+--- a/drivers/soundwire/intel.c
++++ b/drivers/soundwire/intel.c
+@@ -537,12 +537,14 @@ static int intel_link_power_down(struct sdw_intel *sdw)
+ 
+ 	mutex_lock(sdw->link_res->shim_lock);
+ 
+-	intel_shim_master_ip_to_glue(sdw);
+-
+ 	if (!(*shim_mask & BIT(link_id)))
+ 		dev_err(sdw->cdns.dev,
+ 			"%s: Unbalanced power-up/down calls\n", __func__);
+ 
++	sdw->cdns.link_up = false;
++
++	intel_shim_master_ip_to_glue(sdw);
++
+ 	*shim_mask &= ~BIT(link_id);
+ 
+ 	if (!*shim_mask) {
+@@ -559,20 +561,21 @@ static int intel_link_power_down(struct sdw_intel *sdw)
+ 		link_control &=  spa_mask;
+ 
+ 		ret = intel_clear_bit(shim, SDW_SHIM_LCTL, link_control, cpa_mask);
++		if (ret < 0) {
++			dev_err(sdw->cdns.dev, "%s: could not power down link\n", __func__);
++
++			/*
++			 * we leave the sdw->cdns.link_up flag as false since we've disabled
++			 * the link at this point and cannot handle interrupts any longer.
++			 */
++		}
  	}
  
--	clk_prepare_enable(cec->clk);
-+	ret = clk_prepare_enable(cec->clk);
-+	if (ret) {
-+		dev_err(&pdev->dev, "Unable to prepare clock for CEC\n");
-+		return ret;
-+	}
+ 	link_control = intel_readl(shim, SDW_SHIM_LCTL);
  
- 	/* set context info. */
- 	cec->dev = &pdev->dev;
-@@ -446,9 +450,7 @@ static int tegra_cec_resume(struct platform_device *pdev)
+ 	mutex_unlock(sdw->link_res->shim_lock);
  
- 	dev_notice(&pdev->dev, "Resuming\n");
- 
--	clk_prepare_enable(cec->clk);
+-	if (ret < 0) {
+-		dev_err(sdw->cdns.dev, "%s: could not power down link\n", __func__);
 -
+-		return ret;
+-	}
+-
+-	sdw->cdns.link_up = false;
 -	return 0;
-+	return clk_prepare_enable(cec->clk);
++	return ret;
  }
- #endif
  
+ static void intel_shim_sync_arm(struct sdw_intel *sdw)
 -- 
 2.30.2
 
