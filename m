@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B061640E7A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:34:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D297A40E116
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:28:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348163AbhIPRf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:35:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46948 "EHLO mail.kernel.org"
+        id S242230AbhIPQ1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:27:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55230 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348338AbhIPRZw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:25:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A5A2F61BF6;
-        Thu, 16 Sep 2021 16:44:36 +0000 (UTC)
+        id S241476AbhIPQTi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:19:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CA2776137D;
+        Thu, 16 Sep 2021 16:13:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810677;
-        bh=uwA0nUERC+utH2fpcqTViMZbqrZcqe6qSSC9TEOQ8Yg=;
+        s=korg; t=1631808815;
+        bh=+fvd5OzYrWN5OOWbb3QENra4Vd4JtouksqyN195Z6wA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BEHVdwvTyh3M8Uy3FJDkqSzEcpIttWifuq520mGrJ4wsRKx/DRoKnUDKyJQvKYD7g
-         //62ErO/hsstsKf7j0Dbjz192nJf7d1nzI9+MSgIsLM9KaxVh7fG7eKYnQEm+SxMwh
-         k12z88mcmlyzd7BnmQHk4ZopCCuXs/IpHB0Qo1hg=
+        b=L5MxjZmRdZH+Y2LvdoE4VeabLcbpsJR9ENL1tf37WV5yceK1TCT31buMxk15qtps0
+         7mEm/iE6qlB8s87Q249rkamgeMXTP61v+W8pUGsmGf6ITFewmjgzatCosbKMvRt5ip
+         oBV/Qs+NgyxE0oKNg/lRA8Jcx0RvarzQxyWv5RHc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 227/432] s390/jump_label: print real address in a case of a jump label bug
-Date:   Thu, 16 Sep 2021 17:59:36 +0200
-Message-Id: <20210916155818.538921806@linuxfoundation.org>
+Subject: [PATCH 5.10 232/306] gfs2: Dont call dlm after protocol is unmounted
+Date:   Thu, 16 Sep 2021 17:59:37 +0200
+Message-Id: <20210916155801.959951707@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,33 +39,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiko Carstens <hca@linux.ibm.com>
+From: Bob Peterson <rpeterso@redhat.com>
 
-[ Upstream commit 5492886c14744d239e87f1b0b774b5a341e755cc ]
+[ Upstream commit d1340f80f0b8066321b499a376780da00560e857 ]
 
-In case of a jump label print the real address of the piece of code
-where a mismatch was detected. This is right before the system panics,
-so there is nothing revealed.
+In the gfs2 withdraw sequence, the dlm protocol is unmounted with a call
+to lm_unmount. After a withdraw, users are allowed to unmount the
+withdrawn file system. But at that point we may still have glocks left
+over that we need to free via unmount's call to gfs2_gl_hash_clear.
+These glocks may have never been completed because of whatever problem
+caused the withdraw (IO errors or whatever).
 
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Before this patch, function gdlm_put_lock would still try to call into
+dlm to unlock these leftover glocks, which resulted in dlm returning
+-EINVAL because the lock space was abandoned. These glocks were never
+freed because there was no mechanism after that to free them.
+
+This patch adds a check to gdlm_put_lock to see if the locking protocol
+was inactive (DFL_UNMOUNT flag) and if so, free the glock and not
+make the invalid call into dlm.
+
+I could have combined this "if" with the one that follows, related to
+leftover glock LVBs, but I felt the code was more readable with its own
+if clause.
+
+Signed-off-by: Bob Peterson <rpeterso@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/kernel/jump_label.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/gfs2/lock_dlm.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/arch/s390/kernel/jump_label.c b/arch/s390/kernel/jump_label.c
-index ab584e8e3527..9156653b56f6 100644
---- a/arch/s390/kernel/jump_label.c
-+++ b/arch/s390/kernel/jump_label.c
-@@ -36,7 +36,7 @@ static void jump_label_bug(struct jump_entry *entry, struct insn *expected,
- 	unsigned char *ipe = (unsigned char *)expected;
- 	unsigned char *ipn = (unsigned char *)new;
+diff --git a/fs/gfs2/lock_dlm.c b/fs/gfs2/lock_dlm.c
+index 153272f82984..5564aa8b4592 100644
+--- a/fs/gfs2/lock_dlm.c
++++ b/fs/gfs2/lock_dlm.c
+@@ -296,6 +296,11 @@ static void gdlm_put_lock(struct gfs2_glock *gl)
+ 	gfs2_sbstats_inc(gl, GFS2_LKS_DCOUNT);
+ 	gfs2_update_request_times(gl);
  
--	pr_emerg("Jump label code mismatch at %pS [%p]\n", ipc, ipc);
-+	pr_emerg("Jump label code mismatch at %pS [%px]\n", ipc, ipc);
- 	pr_emerg("Found:    %6ph\n", ipc);
- 	pr_emerg("Expected: %6ph\n", ipe);
- 	pr_emerg("New:      %6ph\n", ipn);
++	/* don't want to call dlm if we've unmounted the lock protocol */
++	if (test_bit(DFL_UNMOUNT, &ls->ls_recover_flags)) {
++		gfs2_glock_free(gl);
++		return;
++	}
+ 	/* don't want to skip dlm_unlock writing the lvb when lock has one */
+ 
+ 	if (test_bit(SDF_SKIP_DLM_UNLOCK, &sdp->sd_flags) &&
 -- 
 2.30.2
 
