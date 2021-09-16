@@ -2,76 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AD0740D6E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 11:57:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 981EA40D6F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 11:59:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236608AbhIPJ6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 05:58:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58056 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236311AbhIPJ4w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 05:56:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AD902613A9;
-        Thu, 16 Sep 2021 09:55:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631786126;
-        bh=9HM99bp42GrDo8Wh8WFpyjKqMlQVsdN9rnF+mvtZRYw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JXMWPRfl8clOecIpLQ+0or+fcVaWPbp+aeTNkhOFTQx1fWuZ+EzKw2SB5dSQAa3vg
-         4FkSr9izc4DcZqH9SOh3M+FHJiX9ZQF74dS/RLcYOloLMsK4qK2z3qQn8Q+3yBjvDZ
-         RGAdHFsV5rp0/V1Id7kSa7YM6OON59hT0fMsqoycqaKXYmsMeqsE7i582URYqz1Qig
-         hnFFpVi3+/iqDCK0vfL0sELFhKDKNJlY0jtp8/J5yTrG0iTnuaXQKXIndfV+WXnKPM
-         XSHklKvrAivyzkdbDXKPkGklxnliE+8JoaVqGXq0uHrVaKNztDzmKjxTC/BucvEae7
-         GTrMx/sL5FdFA==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1mQo72-001vUo-W3; Thu, 16 Sep 2021 11:55:25 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Rob Herring <robh@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 23/23] MAINTAINERS: update ti,am654-hbmc.yaml reference
-Date:   Thu, 16 Sep 2021 11:55:22 +0200
-Message-Id: <86f95f891eb73a9b9865d9b3dd4338bc54aac54d.1631785820.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1631785820.git.mchehab+huawei@kernel.org>
-References: <cover.1631785820.git.mchehab+huawei@kernel.org>
+        id S237719AbhIPKAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 06:00:21 -0400
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:39294 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237200AbhIPJ7H (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 05:59:07 -0400
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18G6UqLC017886;
+        Thu, 16 Sep 2021 04:57:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=ha17yogEQU4qUFAR7cWFbPaW839EX045J1Xb9CypQhc=;
+ b=U42uK82d138PV2FiMjHB6SQYsz7P0lo0o6uQCs/khVjit7ufPu780IaTutRJFJkj4BDa
+ cbqZN86wAxKnY6XZdqQ8r/M6ViuyYD7kbbba83Oi9F1+xSg5UNzHEy7rG2n77R6xZWwg
+ k4GoVerwuGm3jZz2Ncvj6HoXxQfnTFwH2gbNKjwmq9th5CwdkKV7xFeAD/YR5ov6nhzX
+ bDVTr3hd031wa90RiyBQstmuHT2NQ23Kpleu1Bvhwk7Omnvzjw5DIZ54//NTceE2Ssl9
+ 1pXyzA2bp9jChVMW0kOGO+PkSzRbqcoZCJQr8PCFpex4Dx6T1a0GyoTlmaoljyVV27kI Yw== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 3b3wfv0b8u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 16 Sep 2021 04:57:02 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Thu, 16 Sep
+ 2021 10:57:01 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via Frontend
+ Transport; Thu, 16 Sep 2021 10:57:01 +0100
+Received: from vitaly-Inspiron-5415.ad.cirrus.com (unknown [198.90.238.230])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 19C96B15;
+        Thu, 16 Sep 2021 09:57:00 +0000 (UTC)
+From:   Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+CC:     <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-kernel@vger.kernel.org>,
+        Stefan Binding <sbinding@opensource.cirrus.com>
+Subject: [PATCH] ALSA: hda/cs8409: Setup Dolphin Headset Mic as Phantom Jack
+Date:   Thu, 16 Sep 2021 10:56:46 +0100
+Message-ID: <20210916095646.7631-1-vitalyr@opensource.cirrus.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+Content-Type: text/plain
+X-Proofpoint-GUID: 9eaEMjPcBWfdvc6H-_2mCOrYJ3a9_56S
+X-Proofpoint-ORIG-GUID: 9eaEMjPcBWfdvc6H-_2mCOrYJ3a9_56S
+X-Proofpoint-Spam-Reason: safe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changeset 6947ad674944 ("dt-bindings: mtd: Convert ti, am654-hbmc.txt to YAML schema")
-renamed: Documentation/devicetree/bindings/mtd/ti,am654-hbmc.txt
-to: Documentation/devicetree/bindings/mtd/ti,am654-hbmc.yaml.
+From: Stefan Binding <sbinding@opensource.cirrus.com>
 
-Update its cross-reference accordingly.
+Dell's requirement to have headset mic as phantom jack on this
+specific dolphin hardware platform.
 
-Fixes: 6947ad674944 ("dt-bindings: mtd: Convert ti, am654-hbmc.txt to YAML schema")
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 ---
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/pci/hda/patch_cs8409.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 067ae42b53aa..8fed382b1935 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8725,7 +8725,7 @@ Q:	http://patchwork.ozlabs.org/project/linux-mtd/list/
- C:	irc://irc.oftc.net/mtd
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git cfi/next
- F:	Documentation/devicetree/bindings/mtd/mtd-physmap.yaml
--F:	Documentation/devicetree/bindings/mtd/ti,am654-hbmc.txt
-+F:	Documentation/devicetree/bindings/mtd/ti,am654-hbmc.yaml
- F:	drivers/mtd/hyperbus/
- F:	include/linux/mtd/hyperbus.h
+diff --git a/sound/pci/hda/patch_cs8409.c b/sound/pci/hda/patch_cs8409.c
+index 3c7ef55d016e..31ff11ab868e 100644
+--- a/sound/pci/hda/patch_cs8409.c
++++ b/sound/pci/hda/patch_cs8409.c
+@@ -1207,6 +1207,9 @@ void dolphin_fixups(struct hda_codec *codec, const struct hda_fixup *fix, int ac
+ 		snd_hda_jack_add_kctl(codec, DOLPHIN_LO_PIN_NID, "Line Out", true,
+ 				      SND_JACK_HEADPHONE, NULL);
  
++		snd_hda_jack_add_kctl(codec, DOLPHIN_AMIC_PIN_NID, "Microphone", true,
++				      SND_JACK_MICROPHONE, NULL);
++
+ 		cs8409_fix_caps(codec, DOLPHIN_HP_PIN_NID);
+ 		cs8409_fix_caps(codec, DOLPHIN_LO_PIN_NID);
+ 		cs8409_fix_caps(codec, DOLPHIN_AMIC_PIN_NID);
 -- 
-2.31.1
+2.25.1
 
