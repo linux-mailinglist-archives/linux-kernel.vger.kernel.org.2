@@ -2,104 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD48E40E485
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:24:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A42040E480
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:24:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349005AbhIPRD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:03:26 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:47194 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346884AbhIPQ4U (ORCPT
+        id S1348840AbhIPRDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:03:16 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:45030 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346786AbhIPQ4J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:56:20 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18GGsfZL041074;
-        Thu, 16 Sep 2021 11:54:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1631811281;
-        bh=Yh9GiJTL96YzEGggAd4MW2P4bYFr16XP7mFUuGQI04E=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=InxjydOvMNmS02IZKwjoYjEAVM6oUEXyXVfPbC5wSS1FYu2Dp/o8Y6jV4tvy1GYz4
-         8HJP+wTCDJsZOmFovAkeW8U7u6tp/GgIil87fdkvBZhr9qtx/kUdPhqxL2WAbL/bKi
-         M7+pLEjAhxr2GmO4aH2JekAOvKgNwiRFnEBba51c=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18GGsfYK002084
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 16 Sep 2021 11:54:41 -0500
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Thu, 16
- Sep 2021 11:54:41 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Thu, 16 Sep 2021 11:54:41 -0500
-Received: from [10.250.69.57] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18GGsekI023402;
-        Thu, 16 Sep 2021 11:54:40 -0500
-Subject: Re: [PATCH] bus: ti-sysc: Fix external abort for am335x pruss probe
-To:     Tony Lindgren <tony@atomide.com>, <linux-omap@vger.kernel.org>
-CC:     Dave Gerlach <d-gerlach@ti.com>, Faiz Abbas <faiz_abbas@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Keerthy <j-keerthy@ti.com>, Nishanth Menon <nm@ti.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Kishon Vijay Abraham <kishon@ti.com>
-References: <20210915065032.45013-1-tony@atomide.com>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <3fd1968e-491e-6d98-ec9c-d29baed3158f@ti.com>
-Date:   Thu, 16 Sep 2021 11:54:40 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Thu, 16 Sep 2021 12:56:09 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id F11B3223DE;
+        Thu, 16 Sep 2021 16:54:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1631811286; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7uWc/isEx7YjByDmQyGGHCRMkAHZN5mipQsQaZZJ1tQ=;
+        b=dZt27ppRz5+oStbVdVf+IvLwTY4Ij8fKzYkeLEeIICxIOyIDaYOVbjrI4DRyDNTkjMZpSl
+        MqKyWlrLNBpwko2YrCxMmdYRl75d6OYH2r9ib42izcddip67jy31ZnvsgtYuOAr7T53AY9
+        82hAn6gkSuvkix8AQGjQPK4eTe0A+Sc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1631811286;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7uWc/isEx7YjByDmQyGGHCRMkAHZN5mipQsQaZZJ1tQ=;
+        b=stBOAsR9XxN8BkXcdjRqq9UmN1RAth4b18G90tDbCy3uzoRflJP4HuI5s2gtKqOyrPJaQs
+        Gqn4pJ9yFR596gCw==
+Received: from quack2.suse.cz (unknown [10.100.224.230])
+        by relay2.suse.de (Postfix) with ESMTP id C731DA42EE;
+        Thu, 16 Sep 2021 16:54:46 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id A1B031E0C06; Thu, 16 Sep 2021 18:54:46 +0200 (CEST)
+Date:   Thu, 16 Sep 2021 18:54:46 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Vivek Goyal <vgoyal@redhat.com>
+Cc:     Jan Kara <jack@suse.cz>, viro@zeniv.linux.org.uk,
+        Linux fsdevel mailing list <linux-fsdevel@vger.kernel.org>,
+        linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        xu.xin16@zte.com.cn, Christoph Hellwig <hch@infradead.org>,
+        zhang.yunkai@zte.com.cn
+Subject: Re: [PATCH] init/do_mounts.c: Harden split_fs_names() against buffer
+ overflow
+Message-ID: <20210916165446.GK10610@quack2.suse.cz>
+References: <YUIPnPV2ttOHNIcX@redhat.com>
+ <20210916110016.GG10610@quack2.suse.cz>
+ <YUNlwdCf53HqRhKd@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210915065032.45013-1-tony@atomide.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YUNlwdCf53HqRhKd@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tony,
-
-On 9/15/21 1:50 AM, Tony Lindgren wrote:
-> Starting with v5.15-rc1, I'm now seeing am335x beaglebone black produce
-> the following error on pruss probe:
+On Thu 16-09-21 11:41:53, Vivek Goyal wrote:
+> On Thu, Sep 16, 2021 at 01:00:16PM +0200, Jan Kara wrote:
+> > On Wed 15-09-21 11:22:04, Vivek Goyal wrote:
+> > > split_fs_names() currently takes comma separated list of filesystems
+> > > and converts it into individual filesystem strings. Pleaces these
+> > > strings in the input buffer passed by caller and returns number of
+> > > strings.
+> > > 
+> > > If caller manages to pass input string bigger than buffer, then we
+> > > can write beyond the buffer. Or if string just fits buffer, we will
+> > > still write beyond the buffer as we append a '\0' byte at the end.
+> > > 
+> > > Will be nice to pass size of input buffer to split_fs_names() and
+> > > put enough checks in place so such buffer overrun possibilities
+> > > do not occur.
+> > > 
+> > > Hence this patch adds "size" parameter to split_fs_names() and makes
+> > > sure we do not access memory beyond size. If input string "names"
+> > > is larger than passed in buffer, input string will be truncated to
+> > > fit in buffer.
+> > > 
+> > > Reported-by: xu xin <xu.xin16@zte.com.cn>
+> > > Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
+> > 
+> > The patch looks correct but IMO is more complicated than it needs to be...
+> > See below.
+> > 
+> > > Index: redhat-linux/init/do_mounts.c
+> > > ===================================================================
+> > > --- redhat-linux.orig/init/do_mounts.c	2021-09-15 08:46:33.801689806 -0400
+> > > +++ redhat-linux/init/do_mounts.c	2021-09-15 09:52:09.884449718 -0400
+> > > @@ -338,19 +338,20 @@ __setup("rootflags=", root_data_setup);
+> > >  __setup("rootfstype=", fs_names_setup);
+> > >  __setup("rootdelay=", root_delay_setup);
+> > >  
+> > > -static int __init split_fs_names(char *page, char *names)
+> > > +static int __init split_fs_names(char *page, size_t size, char *names)
+> > >  {
+> > >  	int count = 0;
+> > > -	char *p = page;
+> > > +	char *p = page, *end = page + size - 1;
+> > > +
+> > > +	strncpy(p, root_fs_names, size);
+> > 
+> > Why not strlcpy()? That way you don't have to explicitely terminate the
+> > string...
 > 
-> Unhandled fault: external abort on non-linefetch (0x1008) at 0xe0326000
+> Sure, will use strlcpy().
 > 
-> This seems to have started with the enabling of pruss for am335x in the
-> dts files. Adding a read-back after write to the sysconfig register fixes
-> the issue for me.
-
-Let me take a look at this during the weekend. I did verify the AM335x PRUSS
-when I posted the dts patches on 5.14-rc. You should be able to check as well
-from your staging branch with PRUSS patches.
-
-regards
-Suman
-
+> > 
+> > > +	*end = '\0';
+> > >  
+> > > -	strcpy(p, root_fs_names);
+> > >  	while (*p++) {
+> > >  		if (p[-1] == ',')
+> > >  			p[-1] = '\0';
+> > >  	}
+> > > -	*p = '\0';
+> > >  
+> > > -	for (p = page; *p; p += strlen(p)+1)
+> > > +	for (p = page; p < end && *p; p += strlen(p)+1)
+> > >  		count++;
+> > 
+> > And I kind of fail to see why you have a separate loop for counting number
+> > of elements when you could count them directly when changing ',' to '\0'.
+> > There's this small subtlety that e.g. string 'foo,,bar' will report to have
+> > only 1 element with the above code while direct computation would return 3
+> > but that's hardly problem IMHO.
 > 
-> Cc: Suman Anna <s-anna@ti.com>
-> Signed-off-by: Tony Lindgren <tony@atomide.com>
-> ---
->  drivers/bus/ti-sysc.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
-> --- a/drivers/bus/ti-sysc.c
-> +++ b/drivers/bus/ti-sysc.c
-> @@ -2037,6 +2037,9 @@ static int sysc_reset(struct sysc *ddata)
->  		sysc_val = sysc_read_sysconfig(ddata);
->  		sysc_val |= sysc_mask;
->  		sysc_write(ddata, sysc_offset, sysc_val);
-> +
-> +		/* Flush posted write */
-> +		sysc_read_sysconfig(ddata);
->  	}
->  
->  	if (ddata->cfg.srst_udelay)
-> 
+> Ok, will make this change. One side affect of this change will be that now
+> split_fs_names() can return zero sized strings and caller will have
+> to check for those and skip to next string.
 
+Or we can just abort the loop early and don't bother with converting
+further ',' if 0-length strings are indeed any problem.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
