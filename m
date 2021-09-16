@@ -2,90 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8E1A40E939
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:01:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BD9340E943
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:02:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356815AbhIPRuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:50:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57130 "EHLO mail.kernel.org"
+        id S1357019AbhIPRvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:51:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57064 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355672AbhIPRl6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:41:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F111763264;
-        Thu, 16 Sep 2021 16:53:55 +0000 (UTC)
+        id S1355808AbhIPRmJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:42:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 893AF6327B;
+        Thu, 16 Sep 2021 16:54:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631811236;
-        bh=wvv6VEjVnDkbYBwoKIDwcJZaj2kf3bkYzQSmU93wabg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=so6SOQWK6XpjyiwSML3PmTbW98NIJNTEk7kpsuXZwELafsIT1YccMTag/Dx+9KHVo
-         AdNjGqHoVMR6wflzoFC6n/iWUY8E/ytejr0ZuR5nGnKJ2oRjHbGAoqsPo/5x1Fcx72
-         fAO3v/xQbIQEDC0ttJ9zhwPwR32scRLwdRru/zHM=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        "Qiang.Zhang" <qiang.zhang@windriver.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 5.14 432/432] tracing/osnoise: Fix missed cpus_read_unlock() in start_per_cpu_kthreads()
-Date:   Thu, 16 Sep 2021 18:03:01 +0200
-Message-Id: <20210916155825.490889167@linuxfoundation.org>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
-User-Agent: quilt/0.66
+        s=korg; t=1631811261;
+        bh=ymQzYeMkLSk6v7VLwAJT4gG7bsnwMv9w8QyoD1DrwQI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QyOh7q7xkv+WP1e95rr6xb6oYW92hu5MI8ZsvQkDdmGHv6C9EkbpoiPQGOVZbzWiD
+         XmmRtdIoz0tQAcACw5mp66RhQBm1jigAlpaMZNih9teUVJUlNWJwAtrYaHI7dyAfL6
+         OsUkrawTFYPGMPo+ZJ9zn8y6J+uO2fxA0DbjKfUQ=
+Date:   Thu, 16 Sep 2021 18:05:16 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Min Li <min.li.xe@renesas.com>
+Cc:     "arnd@arndb.de" <arnd@arndb.de>,
+        "derek.kiernan@xilinx.com" <derek.kiernan@xilinx.com>,
+        "dragan.cvetic@xilinx.com" <dragan.cvetic@xilinx.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "lee.jones@linaro.or" <lee.jones@linaro.or>
+Subject: Re: [PATCH misc v2 2/2] misc: Add Renesas Synchronization Management
+ Unit (SMU) support
+Message-ID: <YUNrPD5pbq5NBi26@kroah.com>
+References: <1631731629-20862-1-git-send-email-min.li.xe@renesas.com>
+ <1631731629-20862-2-git-send-email-min.li.xe@renesas.com>
+ <YULVYrvUM+JQils9@kroah.com>
+ <OS3PR01MB659340151F61C6ABA2D9043BBADC9@OS3PR01MB6593.jpnprd01.prod.outlook.com>
+ <YUNlQ1d8gsNzY0mz@kroah.com>
+ <OS3PR01MB65937881AFAA1D8C575E63DABADC9@OS3PR01MB6593.jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <OS3PR01MB65937881AFAA1D8C575E63DABADC9@OS3PR01MB6593.jpnprd01.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiang.Zhang <qiang.zhang@windriver.com>
+On Thu, Sep 16, 2021 at 03:54:52PM +0000, Min Li wrote:
+> > 
+> > Please put that link in the changelog comment and in the .c code as well so
+> > that people know where to find it.
+> > 
+> > > >
+> > > > Why is this new api not a standard one?
+> > > >
+> > >
+> > > There is no actual standard for the GNSS assisted partial timing
+> > > support (APTS) In terms of Linux kernel API
+> > 
+> > Then make one!  :)
+> 
+> Yes it is on our roadmap to do that for next release
 
-commit 4b6b08f2e45edda4c067ac40833e3c1f84383c0b upstream.
+Please do it for this kernel api, otherwise you have to support this for
+the next 20+ years as-is :(
 
-When start_kthread() return error, the cpus_read_unlock() need
-to be called.
+> > Why not just do this all from userspace then?  You can have spi/i2c
+> > userspace code, right?  Why does this have to be a kernel driver?
+> > 
+> We used to do everything in userspace. But since PHC (ptp hardware clock) came along, we decided
+> to move the driver part to kernel. Please take a look at drivers/ptp/ptp_clockmatrix.c for reference.
+> Recently, we have some functions like APTS that doesn't belong to PTP or anything else so we have to split those functions
+> to RSMU misc driver and i2c/spi bus accesses to RSMU MFD driver.
 
-Link: https://lkml.kernel.org/r/20210831022919.27630-1-qiang.zhang@windriver.com
+I still do not understand why this has to be a kernel driver, sorry.
+What exactly forces it to be that way?
 
-Cc: <stable@vger.kernel.org>
-Fixes: c8895e271f79 ("trace/osnoise: Support hotplug operations")
-Acked-by: Daniel Bristot de Oliveira <bristot@kernel.org>
-Signed-off-by: Qiang.Zhang <qiang.zhang@windriver.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- kernel/trace/trace_osnoise.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+thanks,
 
---- a/kernel/trace/trace_osnoise.c
-+++ b/kernel/trace/trace_osnoise.c
-@@ -1548,7 +1548,7 @@ static int start_kthread(unsigned int cp
- static int start_per_cpu_kthreads(struct trace_array *tr)
- {
- 	struct cpumask *current_mask = &save_cpumask;
--	int retval;
-+	int retval = 0;
- 	int cpu;
- 
- 	get_online_cpus();
-@@ -1568,13 +1568,13 @@ static int start_per_cpu_kthreads(struct
- 		retval = start_kthread(cpu);
- 		if (retval) {
- 			stop_per_cpu_kthreads();
--			return retval;
-+			break;
- 		}
- 	}
- 
- 	put_online_cpus();
- 
--	return 0;
-+	return retval;
- }
- 
- #ifdef CONFIG_HOTPLUG_CPU
-
-
+greg k-h
