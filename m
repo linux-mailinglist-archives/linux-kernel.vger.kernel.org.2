@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B572C40E346
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:20:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66F3140E0A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:27:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243931AbhIPQqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:46:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51238 "EHLO mail.kernel.org"
+        id S236574AbhIPQWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:22:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55070 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245521AbhIPQke (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:40:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EB390614C8;
-        Thu, 16 Sep 2021 16:23:54 +0000 (UTC)
+        id S240862AbhIPQOd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:14:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 893B161246;
+        Thu, 16 Sep 2021 16:10:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809435;
-        bh=gZSwC0zgH7uKuhTf6Vj0YFvlrtu91Lurr2NRQKm8+uQ=;
+        s=korg; t=1631808640;
+        bh=8e0DDvsPXf1kH0LnFdERMGCtpGzYk7PCmA9MgBhGK6g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xVvse82/1H0girjDZaLFzs6ESDLuALDsDtXGomCzfpJqIF0N9K5k7k1ahAKPjgZkD
-         DXi4bLoXZvmP22ab3tOKvxiiCNF5KlHQb3mhJUKtH1f+LLigAxePhjalKIPKcZWuJS
-         2Mcq7/NjMW/B3JAOVtUiEnNSWWcF1jnarhNSy+WE=
+        b=ezzpT+CpYcb0jGOUs+aX6iEVZFrg0nqNkd+SL2Z+EhNGO6IkY5k//KcaBmosjCJfu
+         RrpScqW3ow4/IzF5SW8ZdEAHVLdnpUp6S1XFNETWIQpRcn4UVBisdQCqgIHiFPzQez
+         9uEDyqN5yu9wWSH1PsRglJlArFc3rM2yGWoWb39Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xin Long <lucien.xin@gmail.com>,
-        Jon Maloy <jmaloy@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Martynas Pumputis <m@lambda.lt>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 154/380] tipc: keep the skb in rcv queue until the whole data is read
-Date:   Thu, 16 Sep 2021 17:58:31 +0200
-Message-Id: <20210916155809.304140527@linuxfoundation.org>
+Subject: [PATCH 5.10 167/306] libbpf: Fix race when pinning maps in parallel
+Date:   Thu, 16 Sep 2021 17:58:32 +0200
+Message-Id: <20210916155759.774620841@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,106 +40,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Martynas Pumputis <m@lambda.lt>
 
-[ Upstream commit f4919ff59c2828064b4156e3c3600a169909bcf4 ]
+[ Upstream commit 043c5bb3c4f43670ab4fea0b847373ab42d25f3e ]
 
-Currently, when userspace reads a datagram with a buffer that is
-smaller than this datagram, the data will be truncated and only
-part of it can be received by users. It doesn't seem right that
-users don't know the datagram size and have to use a huge buffer
-to read it to avoid the truncation.
+When loading in parallel multiple programs which use the same to-be
+pinned map, it is possible that two instances of the loader will call
+bpf_object__create_maps() at the same time. If the map doesn't exist
+when both instances call bpf_object__reuse_map(), then one of the
+instances will fail with EEXIST when calling bpf_map__pin().
 
-This patch to fix it by keeping the skb in rcv queue until the
-whole data is read by users. Only the last msg of the datagram
-will be marked with MSG_EOR, just as TCP/SCTP does.
+Fix the race by retrying reusing a map if bpf_map__pin() returns
+EEXIST. The fix is similar to the one in iproute2: e4c4685fd6e4 ("bpf:
+Fix race condition with map pinning").
 
-Note that this will work as above only when MSG_EOR is set in the
-flags parameter of recvmsg(), so that it won't break any old user
-applications.
+Before retrying the pinning, we don't do any special cleaning of an
+internal map state. The closer code inspection revealed that it's not
+required:
 
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Acked-by: Jon Maloy <jmaloy@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+    - bpf_object__create_map(): map->inner_map is destroyed after a
+      successful call, map->fd is closed if pinning fails.
+    - bpf_object__populate_internal_map(): created map elements is
+      destroyed upon close(map->fd).
+    - init_map_slots(): slots are freed after their initialization.
+
+Signed-off-by: Martynas Pumputis <m@lambda.lt>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/20210726152001.34845-1-m@lambda.lt
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/tipc/socket.c | 36 +++++++++++++++++++++++++++---------
- 1 file changed, 27 insertions(+), 9 deletions(-)
+ tools/lib/bpf/libbpf.c | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
-diff --git a/net/tipc/socket.c b/net/tipc/socket.c
-index a0dce194a404..5d036b9c15d2 100644
---- a/net/tipc/socket.c
-+++ b/net/tipc/socket.c
-@@ -1905,6 +1905,7 @@ static int tipc_recvmsg(struct socket *sock, struct msghdr *m,
- 	bool connected = !tipc_sk_type_connectionless(sk);
- 	struct tipc_sock *tsk = tipc_sk(sk);
- 	int rc, err, hlen, dlen, copy;
-+	struct tipc_skb_cb *skb_cb;
- 	struct sk_buff_head xmitq;
- 	struct tipc_msg *hdr;
- 	struct sk_buff *skb;
-@@ -1928,6 +1929,7 @@ static int tipc_recvmsg(struct socket *sock, struct msghdr *m,
- 		if (unlikely(rc))
- 			goto exit;
- 		skb = skb_peek(&sk->sk_receive_queue);
-+		skb_cb = TIPC_SKB_CB(skb);
- 		hdr = buf_msg(skb);
- 		dlen = msg_data_sz(hdr);
- 		hlen = msg_hdr_sz(hdr);
-@@ -1947,18 +1949,33 @@ static int tipc_recvmsg(struct socket *sock, struct msghdr *m,
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 0dad862b3b9d..b337d6f29098 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -4284,10 +4284,13 @@ bpf_object__create_maps(struct bpf_object *obj)
+ 	char *cp, errmsg[STRERR_BUFSIZE];
+ 	unsigned int i, j;
+ 	int err;
++	bool retried;
  
- 	/* Capture data if non-error msg, otherwise just set return value */
- 	if (likely(!err)) {
--		copy = min_t(int, dlen, buflen);
--		if (unlikely(copy != dlen))
--			m->msg_flags |= MSG_TRUNC;
--		rc = skb_copy_datagram_msg(skb, hlen, m, copy);
-+		int offset = skb_cb->bytes_read;
-+
-+		copy = min_t(int, dlen - offset, buflen);
-+		rc = skb_copy_datagram_msg(skb, hlen + offset, m, copy);
-+		if (unlikely(rc))
-+			goto exit;
-+		if (unlikely(offset + copy < dlen)) {
-+			if (flags & MSG_EOR) {
-+				if (!(flags & MSG_PEEK))
-+					skb_cb->bytes_read = offset + copy;
-+			} else {
-+				m->msg_flags |= MSG_TRUNC;
-+				skb_cb->bytes_read = 0;
+ 	for (i = 0; i < obj->nr_maps; i++) {
+ 		map = &obj->maps[i];
+ 
++		retried = false;
++retry:
+ 		if (map->pin_path) {
+ 			err = bpf_object__reuse_map(map);
+ 			if (err) {
+@@ -4295,6 +4298,12 @@ bpf_object__create_maps(struct bpf_object *obj)
+ 					map->name);
+ 				goto err_out;
+ 			}
++			if (retried && map->fd < 0) {
++				pr_warn("map '%s': cannot find pinned map\n",
++					map->name);
++				err = -ENOENT;
++				goto err_out;
 +			}
-+		} else {
-+			if (flags & MSG_EOR)
-+				m->msg_flags |= MSG_EOR;
-+			skb_cb->bytes_read = 0;
-+		}
- 	} else {
- 		copy = 0;
- 		rc = 0;
--		if (err != TIPC_CONN_SHUTDOWN && connected && !m->msg_control)
-+		if (err != TIPC_CONN_SHUTDOWN && connected && !m->msg_control) {
- 			rc = -ECONNRESET;
-+			goto exit;
-+		}
- 	}
--	if (unlikely(rc))
--		goto exit;
+ 		}
  
- 	/* Mark message as group event if applicable */
- 	if (unlikely(grp_evt)) {
-@@ -1981,9 +1998,10 @@ static int tipc_recvmsg(struct socket *sock, struct msghdr *m,
- 		tipc_node_distr_xmit(sock_net(sk), &xmitq);
- 	}
- 
--	tsk_advance_rx_queue(sk);
-+	if (!skb_cb->bytes_read)
-+		tsk_advance_rx_queue(sk);
- 
--	if (likely(!connected))
-+	if (likely(!connected) || skb_cb->bytes_read)
- 		goto exit;
- 
- 	/* Send connection flow control advertisement when applicable */
+ 		if (map->fd >= 0) {
+@@ -4328,9 +4337,13 @@ bpf_object__create_maps(struct bpf_object *obj)
+ 		if (map->pin_path && !map->pinned) {
+ 			err = bpf_map__pin(map, NULL);
+ 			if (err) {
++				zclose(map->fd);
++				if (!retried && err == -EEXIST) {
++					retried = true;
++					goto retry;
++				}
+ 				pr_warn("map '%s': failed to auto-pin at '%s': %d\n",
+ 					map->name, map->pin_path, err);
+-				zclose(map->fd);
+ 				goto err_out;
+ 			}
+ 		}
 -- 
 2.30.2
 
