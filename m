@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02E9540E09C
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:21:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 356C940E723
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:32:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240826AbhIPQWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:22:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55042 "EHLO mail.kernel.org"
+        id S1352947AbhIPR32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:29:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43506 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240806AbhIPQOa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:14:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A5A0E613A5;
-        Thu, 16 Sep 2021 16:10:33 +0000 (UTC)
+        id S1351941AbhIPRUA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:20:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4766A61B7B;
+        Thu, 16 Sep 2021 16:41:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808634;
-        bh=bkivChkdpLFO1TZYQV/g8jfevgN1DLu5GcAyvQybj68=;
+        s=korg; t=1631810515;
+        bh=JMuvoOMn0WXbrk8IZIC+V8mXCbi5cEU69e4oQiPf2E0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iafAttmWo7G+wuwI11/kTMCBvjIrbL3wnYa+uCfFx0Wtsoh6q9GF3KD1wTBtcGuCj
-         NFa7ptRsYeUFMTonQu4b69MB++2aoZD0EggdX9tB7NtZ86AAb2KtBWiN9pCoYVdob8
-         47E9yC+gHxAANoFVD5eG05b0yR1gY02ZOiTIR7Zo=
+        b=fkrcOQwY3vGotA6ZY3CNfnV8Lh0mDXqKkZWNMmw1/3hskbnf+HqzyWWlWwnfmS8yV
+         0IV+zsf9Uqz4d/aBJyUoAQoezLX+Z20q57AZkSIDdzFwmH7dcXJUxGVerdgbMggSWj
+         lGle7gkXf3gW24QGFPyqgouHVAMyvLxbqEBYVkXk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
+        Alexander Deucher <Alexander.Deucher@amd.com>,
+        Luben Tuikov <luben.tuikov@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 165/306] staging: ks7010: Fix the initialization of the sleep_status structure
-Date:   Thu, 16 Sep 2021 17:58:30 +0200
-Message-Id: <20210916155759.708001132@linuxfoundation.org>
+Subject: [PATCH 5.14 162/432] drm/amdgpu: Fix amdgpu_ras_eeprom_init()
+Date:   Thu, 16 Sep 2021 17:58:31 +0200
+Message-Id: <20210916155816.238341955@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,36 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Luben Tuikov <luben.tuikov@amd.com>
 
-[ Upstream commit 56315e55119c0ea57e142b6efb7c31208628ad86 ]
+[ Upstream commit dce4400e6516d18313d23de45b5be8a18980b00e ]
 
-'sleep_status' has 3 atomic_t members. Initialize the 3 of them instead of
-initializing only 2 of them and setting 0 twice to the same variable.
+No need to account for the 2 bytes of EEPROM
+address--this is now well abstracted away by
+the fixes the the lower layers.
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/d2e52a33a9beab41879551d0ae2fdfc99970adab.1626856991.git.christophe.jaillet@wanadoo.fr
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Andrey Grodzovsky <andrey.grodzovsky@amd.com>
+Cc: Alexander Deucher <Alexander.Deucher@amd.com>
+Signed-off-by: Luben Tuikov <luben.tuikov@amd.com>
+Acked-by: Alexander Deucher <Alexander.Deucher@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/ks7010/ks7010_sdio.c | 2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ras_eeprom.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/staging/ks7010/ks7010_sdio.c b/drivers/staging/ks7010/ks7010_sdio.c
-index 78dc8beeae98..8c740c771f50 100644
---- a/drivers/staging/ks7010/ks7010_sdio.c
-+++ b/drivers/staging/ks7010/ks7010_sdio.c
-@@ -939,9 +939,9 @@ static void ks7010_private_init(struct ks_wlan_private *priv,
- 	memset(&priv->wstats, 0, sizeof(priv->wstats));
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ras_eeprom.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ras_eeprom.c
+index 38222de921d1..8dd151c9e459 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ras_eeprom.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ras_eeprom.c
+@@ -325,7 +325,7 @@ int amdgpu_ras_eeprom_init(struct amdgpu_ras_eeprom_control *control,
+ 		return ret;
+ 	}
  
- 	/* sleep mode */
-+	atomic_set(&priv->sleepstatus.status, 0);
- 	atomic_set(&priv->sleepstatus.doze_request, 0);
- 	atomic_set(&priv->sleepstatus.wakeup_request, 0);
--	atomic_set(&priv->sleepstatus.wakeup_request, 0);
+-	__decode_table_header_from_buff(hdr, &buff[2]);
++	__decode_table_header_from_buff(hdr, buff);
  
- 	trx_device_init(priv);
- 	hostif_init(priv);
+ 	if (hdr->header == EEPROM_TABLE_HDR_VAL) {
+ 		control->num_recs = (hdr->tbl_size - EEPROM_TABLE_HEADER_SIZE) /
 -- 
 2.30.2
 
