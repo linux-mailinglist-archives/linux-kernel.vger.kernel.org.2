@@ -2,97 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6A6940D07C
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 01:53:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C68440D086
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 02:02:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233083AbhIOXyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 19:54:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47818 "EHLO
+        id S233102AbhIPADs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 20:03:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232836AbhIOXyP (ORCPT
+        with ESMTP id S232465AbhIPADm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 19:54:15 -0400
-Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD59CC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 16:52:55 -0700 (PDT)
-Received: by mail-oo1-xc2c.google.com with SMTP id k18-20020a4abd92000000b002915ed21fb8so1487399oop.11
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 16:52:55 -0700 (PDT)
+        Wed, 15 Sep 2021 20:03:42 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74C10C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 17:02:22 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id d11so931276ilc.8
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 17:02:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7C1wZtgkn98K1s9hJS5xXSJjkhUevEkSW9mrpvuaWm4=;
-        b=hLBJGo+pwXj3tiajuAfWSCB3+zZHZaNKghjYaH867FtvJPhgJVpcpJ+L5Mlzuz0kkK
-         qaVS6cbiu+CMlkQKHGn9mkrjZ85DjytX6FbMwS9DKiJU0CLOt/8+tEMko/UZNQqsFWWM
-         pa80EEoihsx4Gjde2/+il8a63TUAD8b4obWcg=
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Ax8LShNyO/ytGnXDG0PMZkXXR8JTT6V4lJvXKtadg9U=;
+        b=SkOrlPfjrXdP/RELV+Vo7978cJgloQd/OPaiCrR1IlQJh60BxLSh4Jq3HO7QRKjsIt
+         Vd3UzKhvuMbIu9EivUwLSukwAaPJD6nyAKBEgiYmdZ59wm9CluMW+9MchrdXvemv+KY6
+         0UIBnyzjfRcB5cKCGhHx5SLBWPeDfZaJ3kFxI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7C1wZtgkn98K1s9hJS5xXSJjkhUevEkSW9mrpvuaWm4=;
-        b=M5YGGHxWSE4vwsj0eW7WzLAP1LxF29o2KIE2eUu6oZvhc98iTqLl6eU5lyShLbGcIu
-         dF4y+AFfxgsTAkFoypBkP1X0810/PumxfRxPfEbGJAkAkcFO+pstWyTttg8DptCjn+B+
-         QPBcEWl+FNJ6aXxKjagze1bATzYfefOuXHQhz+s2wK4z1MqaMPlYc9KXfDXbfPHRu/az
-         ZtvLolFZMYEWsQLXvYYRqisena/K8T2+CGRTCCFLmVsqkK5uy+Oo7OPX7n+EIF9Bj++C
-         9tJYIUQtOq/EHsK+8XdDcod3PPyQuGxWK6v2k/cdy9RYNFsAkLiTKbdy4CksTVWE5T01
-         jHaA==
-X-Gm-Message-State: AOAM533XHjGNApUs0APXDt7TLZwEK0uFjmYNYxcg6/Dh7EbS7v/4fIaj
-        VkmW8qQ0VunoTuvvtdzGU4hPAnBKaX/sqA==
-X-Google-Smtp-Source: ABdhPJyTm4VTa48YR1fqqrAOavmGduLom2q9/QK5jfj8OoIfWIVar/RDwo0XP2JjLbMUfo2PDEOF2g==
-X-Received: by 2002:a4a:3e58:: with SMTP id t85mr2069779oot.81.1631749974573;
-        Wed, 15 Sep 2021 16:52:54 -0700 (PDT)
-Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com. [209.85.167.176])
-        by smtp.gmail.com with ESMTPSA id bh25sm422442oib.40.2021.09.15.16.52.53
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Ax8LShNyO/ytGnXDG0PMZkXXR8JTT6V4lJvXKtadg9U=;
+        b=TGayrHW9w8xzVtr+408YGev3XpV/Sf9CNvZX08GAndNQ72bn7H9kkvaKjxrVudPNGS
+         w+9q6tPqsTP3NsONl0y+vWF7HaraRy+EvkRfZ/Ri5XCIOfSu3HeZgq6+RPzH4hYw85a1
+         YcHqbtWUdwCp3P6WbdMjhpjcQtPFybw0nG4hBdCLiKMP7/3ZtRAzYJUdFrPj5Wb993eU
+         Mi45Z2Hct2VjTYW6QZZgdZ9WgeomQ6aGwtYh90uB93+ehte6uzhs9tG7FuOiKq4eYgXR
+         UtyAANOte02vFNJk6A4nSHC/8Z0dr/rY1UjB7HIK/15DXYWN+SeUQCLO2JSxluUlQNm9
+         zBdw==
+X-Gm-Message-State: AOAM533bU0eLol+BzLjvA9G3s3F69o/BaAXbWKGwxwsilPhIB1WqnOlq
+        O1BT38yyYAm7V/PIgQbtjyM8cw==
+X-Google-Smtp-Source: ABdhPJz/RWH8z4Hqoi2kvBlptcDKBKVHEfRehR1OOG7S9aDfiBX8O/Dmxg2CcInJc+gDvk3gjl/Ctw==
+X-Received: by 2002:a05:6e02:1d8b:: with SMTP id h11mr1855401ila.94.1631750541908;
+        Wed, 15 Sep 2021 17:02:21 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id s10sm737176iom.40.2021.09.15.17.02.21
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Sep 2021 16:52:54 -0700 (PDT)
-Received: by mail-oi1-f176.google.com with SMTP id j66so6543158oih.12
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 16:52:53 -0700 (PDT)
-X-Received: by 2002:a05:6808:1892:: with SMTP id bi18mr6905790oib.105.1631749973525;
- Wed, 15 Sep 2021 16:52:53 -0700 (PDT)
+        Wed, 15 Sep 2021 17:02:21 -0700 (PDT)
+Subject: Re: [PATCH 0/4] selftests: kvm: fscanf warn fixes and cleanups
+To:     Paolo Bonzini <pbonzini@redhat.com>, shuah@kernel.org
+Cc:     kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <cover.1631737524.git.skhan@linuxfoundation.org>
+ <56178039-ab72-fca3-38fa-a1d422e4d3ef@redhat.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <aca932b9-5864-be95-c9f6-f745b6a6b7f3@linuxfoundation.org>
+Date:   Wed, 15 Sep 2021 18:02:20 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210903182839.1.I20856983f2841b78936134dcf9cdf6ecafe632b9@changeid>
- <CA+ASDXPC7M-5zYms=bop6=qnWigKHm_P+8ErzfqwFEc91LRV4Q@mail.gmail.com>
-In-Reply-To: <CA+ASDXPC7M-5zYms=bop6=qnWigKHm_P+8ErzfqwFEc91LRV4Q@mail.gmail.com>
-From:   Brian Norris <briannorris@chromium.org>
-Date:   Wed, 15 Sep 2021 16:52:42 -0700
-X-Gmail-Original-Message-ID: <CA+ASDXPhJGNdS-f+r+haLgAQqmBrF6u9rzcmVZ3pgh9UHxU5zQ@mail.gmail.com>
-Message-ID: <CA+ASDXPhJGNdS-f+r+haLgAQqmBrF6u9rzcmVZ3pgh9UHxU5zQ@mail.gmail.com>
-Subject: Re: [PATCH] coresight: cpu-debug: control default behavior via Kconfig
-To:     Leo Yan <leo.yan@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     coresight@lists.linaro.org,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <56178039-ab72-fca3-38fa-a1d422e4d3ef@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 4:41 PM Brian Norris <briannorris@chromium.org> wrote:
->
-> On Fri, Sep 3, 2021 at 6:29 PM Brian Norris <briannorris@chromium.org> wrote:
-> > --- a/drivers/hwtracing/coresight/Kconfig
-> > +++ b/drivers/hwtracing/coresight/Kconfig
-> > @@ -150,6 +150,19 @@ config CORESIGHT_CPU_DEBUG
->
-> > +config CORESIGHT_CPU_DEBUG_DEFAULT_ON
-> > +       bool "Enable CoreSight CPU Debug by default
->
-> ^^ Eek, I failed to terminate this string, and kbuild is even warning about it:
->
-> drivers/hwtracing/coresight/Kconfig:145:warning: multi-line strings
-> not supported
->
-> Sorry about that; I can submit a v2 if you'd like, or feel free to fix
-> up my mistake when you apply it.
+On 9/15/21 4:34 PM, Paolo Bonzini wrote:
+> On 15/09/21 23:28, Shuah Khan wrote:
+>> This patch series fixes fscanf() ignoring return value warnings.
+>> Consolidates get_run_delay() duplicate defines moving it to
+>> common library.
+>>
+>> Shuah Khan (4):
+>>    selftests:kvm: fix get_warnings_count() ignoring fscanf() return warn
+>>    selftests:kvm: fix get_trans_hugepagesz() ignoring fscanf() return
+>>      warn
+>>    selftests: kvm: move get_run_delay() into lib/test_util
+>>    selftests: kvm: fix get_run_delay() ignoring fscanf() return warn
+>>
+>>   .../testing/selftests/kvm/include/test_util.h |  3 +++
+>>   tools/testing/selftests/kvm/lib/test_util.c   | 22 ++++++++++++++++++-
+>>   tools/testing/selftests/kvm/steal_time.c      | 16 --------------
+>>   .../selftests/kvm/x86_64/mmio_warning_test.c  |  3 ++-
+>>   .../selftests/kvm/x86_64/xen_shinfo_test.c    | 15 -------------
+>>   5 files changed, 26 insertions(+), 33 deletions(-)
+>>
+> 
+> Acked-by: Paolo Bonzini <pbonzini@redhat.com>
+> 
+> Thanks Shuah!
+> 
 
-And I see you already fixed it -- should've checked before posting:
+Thank you. I can take these through linux-kselftest - let me know
+if that causes issues for kvm tree.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/coresight/linux.git/commit/?id=616ac6902c982f03da9d0b1e4f845df0980d055d
-[Fixed missing double quote in Kconfig title]
-
-Thanks,
-Brian
+thanks,
+-- Shuah
