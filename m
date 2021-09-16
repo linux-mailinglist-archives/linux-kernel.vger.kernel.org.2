@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4808040DF01
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:04:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B37440E57B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:27:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240618AbhIPQF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:05:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44698 "EHLO mail.kernel.org"
+        id S243146AbhIPRL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:11:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34052 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240539AbhIPQFe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:05:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C321561241;
-        Thu, 16 Sep 2021 16:04:12 +0000 (UTC)
+        id S1349281AbhIPRD4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:03:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DFF3D6187C;
+        Thu, 16 Sep 2021 16:34:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808253;
-        bh=LDOCNYiRG8y48Kp3dDBTvpKz232yVRp7s0kGyjwtVgU=;
+        s=korg; t=1631810090;
+        bh=c7fUCHeXoCaLMfyJzYxzKjsaNOBLhp+B2S0ZdKjyg58=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UDrvZQzFPP8V8heeJl9qvN/tShQY50BqWYyY9I8RFUuGDIGA72/l/wMv8xZMh3UCf
-         uhwi+6oTpZ318qkk4ZWVAdl3HO+Lzdr2NlS4DGTZax/4IOrM7VfqZ8Qo8qGFJueSHf
-         mYGYKv2ok7gZokhXGu4nVvuJjiF1uyDldA8yBDNI=
+        b=jD1HY7KFGgpEapA9d13uvADEB7v4rRe7YftF4Vdn3kWOnwPCoOX9o0xIR0XPx5Zfu
+         Hq2D825WrF2NINa5ipB2FxEeamKVthaGCklJwYcfrMlOAW2wsCY6IdLQoMfImMQhXL
+         ZLMvBu1YXIIUipEmK/uXzQcecgBAdGhRK5qhurwU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kris Chaplin <kris.chaplin@intel.com>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>
-Subject: [PATCH 5.10 018/306] clk: socfpga: agilex: fix the parents of the psi_ref_clk
+        stable@vger.kernel.org,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 5.14 014/432] btrfs: zoned: suppress reclaim error message on EAGAIN
 Date:   Thu, 16 Sep 2021 17:56:03 +0200
-Message-Id: <20210916155754.547037615@linuxfoundation.org>
+Message-Id: <20210916155811.300358700@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinh Nguyen <dinguyen@kernel.org>
+From: Naohiro Aota <naohiro.aota@wdc.com>
 
-commit 9d563236cca43fc4fe190b3be173444bd48e2a3b upstream.
+commit ba86dd9fe60e5853fbff96f2658212908b83f271 upstream.
 
-The psi_ref_clk comes from the C2 node of the main_pll and periph_pll,
-not the C3.
+btrfs_relocate_chunk() can fail with -EAGAIN when e.g. send operations are
+running. The message can fail btrfs/187 and it's unnecessary because we
+anyway add it back to the reclaim list.
 
-Fixes: 80c6b7a0894f ("clk: socfpga: agilex: add clock driver for the Agilex platform")
-Cc: stable@vger.kernel.org
-Signed-off-by: Kris Chaplin <kris.chaplin@intel.com>
-Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
-Link: https://lore.kernel.org/r/20210713144621.605140-1-dinguyen@kernel.org
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+btrfs_reclaim_bgs_work()
+`-> btrfs_relocate_chunk()
+    `-> btrfs_relocate_block_group()
+        `-> reloc_chunk_start()
+            `-> if (fs_info->send_in_progress)
+                `-> return -EAGAIN
+
+CC: stable@vger.kernel.org # 5.13+
+Fixes: 18bb8bbf13c1 ("btrfs: zoned: automatically reclaim zones")
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/clk/socfpga/clk-agilex.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ fs/btrfs/block-group.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/clk/socfpga/clk-agilex.c
-+++ b/drivers/clk/socfpga/clk-agilex.c
-@@ -107,10 +107,10 @@ static const struct clk_parent_data gpio
- };
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -1561,7 +1561,7 @@ void btrfs_reclaim_bgs_work(struct work_
+ 				div64_u64(zone_unusable * 100, bg->length));
+ 		trace_btrfs_reclaim_block_group(bg);
+ 		ret = btrfs_relocate_chunk(fs_info, bg->start);
+-		if (ret)
++		if (ret && ret != -EAGAIN)
+ 			btrfs_err(fs_info, "error relocating chunk %llu",
+ 				  bg->start);
  
- static const struct clk_parent_data psi_ref_free_mux[] = {
--	{ .fw_name = "main_pll_c3",
--	  .name = "main_pll_c3", },
--	{ .fw_name = "peri_pll_c3",
--	  .name = "peri_pll_c3", },
-+	{ .fw_name = "main_pll_c2",
-+	  .name = "main_pll_c2", },
-+	{ .fw_name = "peri_pll_c2",
-+	  .name = "peri_pll_c2", },
- 	{ .fw_name = "osc1",
- 	  .name = "osc1", },
- 	{ .fw_name = "cb-intosc-hs-div2-clk",
 
 
