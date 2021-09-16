@@ -2,197 +2,278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B082F40DB16
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 15:22:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BC0B40DB19
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 15:22:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240108AbhIPNXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 09:23:38 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:44970 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240084AbhIPNXc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 09:23:32 -0400
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18GBUC6E008855;
-        Thu, 16 Sep 2021 13:22:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : content-type : mime-version; s=corp-2021-07-09;
- bh=gqaxF0jGQvAcnAfukYN6P65kcc2d4KBjtWiwSMuZAdI=;
- b=wR3CN9x+WluBcPXQbm98cOocknVZqXukGf9bEgiATrDgSvkdgJzDBtnCF8FDS6lMTsOj
- WqXtzbkOqcQhVPSGamD/iMCtBjQx0LkACoG4Kq9foqvTCnepDUUNdN6LKaE6PZUWenry
- T8NruMj2jWzE2o3uyPeYkSL+LkIq3y3LL7+UqxCFOPbONhZTo3GqwgPVnCtfTEbf3Pje
- /I/ToDUsdipYv+ny8e2zMA4JuWI4rIHkVmiyAqRiTASdk9OsxmWNDKZlC3kp8szRhMV7
- z4p5PREIAMtU0gq0Cw+L5ZYL2j11T0g7z98o3RvHwimpL3WLxm3ad+EULEsnbNlaoPP5 9A== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : content-type : mime-version; s=corp-2020-01-29;
- bh=gqaxF0jGQvAcnAfukYN6P65kcc2d4KBjtWiwSMuZAdI=;
- b=KUx4NW8W3feiAeZPuXpLeORIDb7ZNpxxzde7BkOkuEHma3NniEZwtOtvZ5v/0FDu2r6M
- R5Zvkmd4DhIoskko++pOj1CcHEOGdpYJx0ZZkTeE4ykZ4ykMngU1KjXO4+hQJw2GZ5zV
- r3aY1l5BWWyuAxSqUp99nLLpV3skxcUrOZoHUiDwk+fzx+wQJGUxtu4nQpV7pfTWxJKc
- CeNsahiou0TzSZTGiG9Cu1T10Mi/NRsKMejEk33dQnWS5vvvi/jrk5m2uKJteUYAkJ0Z
- uvdsflgyH29AofgkcMRoCgRLt9xP9VtOKtQ7w6Amu+CuPhkqlDwWsUlcszVToFcqzOYG XA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3b3vj11u3v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 16 Sep 2021 13:22:09 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18GDKqin178953;
-        Thu, 16 Sep 2021 13:22:08 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2108.outbound.protection.outlook.com [104.47.58.108])
-        by aserp3030.oracle.com with ESMTP id 3b0jgg4fp2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 16 Sep 2021 13:22:08 +0000
+        id S240136AbhIPNXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 09:23:45 -0400
+Received: from mail-bn8nam08on2049.outbound.protection.outlook.com ([40.107.100.49]:7250
+        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S240084AbhIPNXj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 09:23:39 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dPo3X2uxsgFDUtxqUMyJO2Rf6bDM0L/AXQA+R7YjHAa4i7zX6oB+Ye2NBii9VLgMF3pYwe2ZyLQ0ex/BxX6U5nioflb5QLhGO4VDtXCw555WuviURXbJz25bHo85DHOSG0dlHPNXA+iIEefySGTvrGg/IQpdUPQ6t+v+/o2g/AeW897hZdUqEcGW9n41eJfoS23VPzhcqlhj+M5aRBje2raABWc39tzua84HUAC48pZuNehM36wJO1jJK7mAeNA6Y3igyKoapx4JxzoLTLLmF2FDTE8grPEx64aeg0Op7W1CJfWajSfgBlOVUtwixDYmDetvkbO3G8Qzecyq5pLRTg==
+ b=dJyAYoWTDEkC4QUSqR4Q0aBDd2v20lmaQBAlLdzCMyS5U59FZ82yoAk3OvB0oJ8l3npZxigvF/DmGL8vVQ5UPq5NAIwfnSbX37+Xzj0Zkqu9huHywONrMpvvvjGOC/rFNNdncBrx9jMAbfQFNMF6OSSot69RbblRw+dEuK32+slkTE8XGmJDlx6Hb63KAlNbBd8Jz6d1Q7v0cWaLlEbR05zWwD4q8QXmMCkDkHxCNeOxdyu7G28uHx61Sr56A/wq+0IDxjRSWMymqbHpIN/QvmXjFx05M36QEJEieFEIpqtji8Y/Gc05bon9xuZkIuz+wIDXVByfOn3UiNugCP5Ojg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=gqaxF0jGQvAcnAfukYN6P65kcc2d4KBjtWiwSMuZAdI=;
- b=Be5eqaKT4pftWccoY9ufNNIj4tkjx4xJkJhtd/rEdcEsBg2Bfhx1hlwwFYNqLL/4PjmlQCxGXXz1arMrm0peo4oSBmM3k6kfIBQCF6fZk9TO9m/ogl2dh67MQrvAALRVVMXVvuHwH22I72sZs/wHY71cR5LeDF3aBb+3BtVL3+VOeD0DUYoDLPPRdVOUi7SEM+UnKKzjdloojsYWNoNu1FjG5gnmreTlnfO91ZjZEn4IMsZFQC4zGwNKDff0HTSuJb8dfsVYTrNAKliWhtNvrp68Agxc4TrEEMkPMyBMlBte3m/AUzvhg3OfgWLMJwRAPjh7iesnE4B2QdbcJTwnLA==
+ bh=5ug+1bv/qsY27Qlf/34L6qa+5mtU5laCu5zlHixo+xQ=;
+ b=hGbLuRLf2bWxWHDAx9SMtiqjiNXZGp7Sgsjqc0Hq73PAya5VLPvoitRloUYdY6rezsDD30vJxMR8WkTjKA7RtpMc+djRGmRVCt0MPqXcvMN/UiBWIW3fNvqxJ3dCW3cw2fw/C5L0h99v79Dewc1ZU7wJ4dVUEPBVwA6bcIJHLwwT2M5bpUa55P8FN1YkCcod86pC4xdswhxopSS4ech4AjiZQ8C1zO7XQXRVDLkLup078T6gdtBu9UumdHICL4MnCfNh928jVoTfYUMZhtL9lfSpjJzuGjPbTagh7ifEP313S/y/sxi4cSCwGaW8rf9mHCNpw+jmBT7kKNS5p8h99w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gqaxF0jGQvAcnAfukYN6P65kcc2d4KBjtWiwSMuZAdI=;
- b=di9Igi5TT8s50e+KP+6ZHXBvKBHwPb3V3dzb9Y73RbyaKTYYFmhgeIE2w4R15ZFkwAqtn5rdah8tb+AVbeuE0UC7c8KMxpQRfkcmNHt3e3iQoif5TvPy6kISyGpnYNrz4HckhnkMPm1X39OlN/OFEzOKwco0LiFKdSO5jjvBc5Q=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28) by MWHPR10MB1615.namprd10.prod.outlook.com
- (2603:10b6:301:7::21) with Microsoft SMTP Server (version=TLS1_2,
+ bh=5ug+1bv/qsY27Qlf/34L6qa+5mtU5laCu5zlHixo+xQ=;
+ b=n0s8e+XAilBbJCATBvNF0ULKWque4xA6WYIPYum/ZZGtf2qqsd7iNBe33Xmm9ExrOd5lEyueV4c2rgvkrOhR6fZ6xJdRXW0bMk391/IR5A6/dev7Rlz51soPM8ulDh0vf6OFBsfmnDARWFVqbkJfVnDCefXn++aBX4OEX4Z+WBU=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from SA0PR12MB4510.namprd12.prod.outlook.com (2603:10b6:806:94::8)
+ by SA0PR12MB4431.namprd12.prod.outlook.com (2603:10b6:806:95::11) with
+ Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Thu, 16 Sep
- 2021 13:22:06 +0000
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::d409:11b5:5eb2:6be9]) by MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::d409:11b5:5eb2:6be9%5]) with mapi id 15.20.4523.016; Thu, 16 Sep 2021
- 13:22:06 +0000
-Date:   Thu, 16 Sep 2021 16:21:54 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Jiri Kosina <jikos@kernel.org>
-Cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH] HID: hid-debug: clean up snprintf() checks in
- hid_resolv_usage()
-Message-ID: <20210916132154.GC25094@kili>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-ClientProxiedBy: ZRAP278CA0017.CHEP278.PROD.OUTLOOK.COM
- (2603:10a6:910:10::27) To MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28)
+ 2021 13:22:18 +0000
+Received: from SA0PR12MB4510.namprd12.prod.outlook.com
+ ([fe80::f909:b733:33ff:e3b1]) by SA0PR12MB4510.namprd12.prod.outlook.com
+ ([fe80::f909:b733:33ff:e3b1%4]) with mapi id 15.20.4523.016; Thu, 16 Sep 2021
+ 13:22:17 +0000
+Subject: Re: [PATCH v2] platform/x86: amd-pmc: Export Idlemask values based on
+ the APU
+To:     Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
+        Sanket Goswami <Sanket.Goswami@amd.com>, hdegoede@redhat.com,
+        mgross@linux.intel.com
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210916124002.2529-1-Sanket.Goswami@amd.com>
+ <de42f717-4cb1-6056-bec1-b46271bbcab8@amd.com>
+From:   "Limonciello, Mario" <mario.limonciello@amd.com>
+Message-ID: <89d803d0-cd74-0af8-6920-4665d4f1f105@amd.com>
+Date:   Thu, 16 Sep 2021 08:22:17 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+In-Reply-To: <de42f717-4cb1-6056-bec1-b46271bbcab8@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SN6PR2101CA0018.namprd21.prod.outlook.com
+ (2603:10b6:805:106::28) To SA0PR12MB4510.namprd12.prod.outlook.com
+ (2603:10b6:806:94::8)
 MIME-Version: 1.0
-Received: from kili (62.8.83.99) by ZRAP278CA0017.CHEP278.PROD.OUTLOOK.COM (2603:10a6:910:10::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Thu, 16 Sep 2021 13:22:03 +0000
+Received: from [10.236.185.111] (165.204.77.1) by SN6PR2101CA0018.namprd21.prod.outlook.com (2603:10b6:805:106::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.1 via Frontend Transport; Thu, 16 Sep 2021 13:22:17 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 440e7424-5882-457b-970e-08d97914fae1
-X-MS-TrafficTypeDiagnostic: MWHPR10MB1615:
+X-MS-Office365-Filtering-Correlation-Id: f010ea3d-f2af-4da1-313b-08d979150186
+X-MS-TrafficTypeDiagnostic: SA0PR12MB4431:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MWHPR10MB161533EE147BFE9E126DAFE78EDC9@MWHPR10MB1615.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-Microsoft-Antispam-PRVS: <SA0PR12MB4431D3BBECC4EBCD1CDE7E61E2DC9@SA0PR12MB4431.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:525;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dyzh/xoEUgFEpJaa412N9cWO02FGQ1e6JW5mZFroMb4xpWIlE+ow8h9XdcPJYJ1olofLtoju3tBkEiFDp22YQuTBKKlZonpfv0HeXpk0KuF+MlNkt7ZaKgFD9jwsDnSuUBqxTblzGev2wWKCL4Wbx6kw0mFQAKji+k303JPb1F/QdQ708dIPM2VSqb9Yv+KgSlOL9eLLdCJ8Asrjk6cHzVfp6M/2Uu3vs/6XlQsfrcfUtm4VMARz9HTRat5knrnYe3xjwEOZPv65/PkkKTR1X2hu/Flw3gmz2aWKCgaQkSVz2RG3mIwGbWabShVZxH+VR6jHlhiOnoKDFrNpVKb/1TmbhGKd7pPADS8DDzuYgGcpu0xwHkQctQqji/YhN3z1GrKoDYXCjPALFYg+CjZOnrAJnRdIPqnM5SfRqgEwrxQw9AO+ICd32ma6i7MFJEqsw/gYC1zX5/I/NnRn2dO+0lWYc4+Hryc1COTWBAw3u17WAe1K/FK2/Ljt6i2itFAjrXE2FofBK5HkBbWfoT9id5ZEsDj9MS53TQBkPJ02uAdqBnGPjIb5PQJwFuKT4GYBjr3U5L9F5SylbPV9mv1Lq79N87cFC+BkDF2Mku4AOoQeJQjbwM82qvzU70/gvsXsFbGT566Zt7RgifANwmUrvXyuStuIfnOvtZrUP1HJWF1haq+0txhDmxumtes21Mn8FLbjlFMzlB9hbOZADCi/sA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(366004)(396003)(376002)(136003)(346002)(66556008)(186003)(8936002)(8676002)(1076003)(9576002)(6916009)(4326008)(9686003)(6496006)(316002)(478600001)(6666004)(86362001)(33656002)(5660300002)(2906002)(44832011)(66946007)(956004)(38350700002)(83380400001)(55016002)(33716001)(38100700002)(66476007)(52116002)(26005);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: 2VB8mOjsgIQ+xoVkikR2fDxtyy0R4Ee0q1IlU1Dye1J8yR1wv5PqoCHWOgMmOzSiX+jk10mhKAjMxC+G/CsnUxdgXYtMiXLQ7dajYDHw3GdRZmQlXKZFaLwzm4cimVN36F8+lTYgt54YlrwVkyhhHbv4AreNeVHFJ22AOu/U3nIM8PjLUxShPjJY0f6xacwwdT9mdV69gsgyH3HChLmRWof2/XxuE96wqxPU7TmnApqgX6s0FsByCq3WsfdMRFGXD/dst2GXzaO8uMQa5BJ0hv5wa2UnNKeBP7ey5Zj6ctW812ZxW1Hmxv0Xjil4YqNoNZxV99RG9PPwCW8xjxYwX1fxrH1PSwuq7Yq2HcewAXBzeOziftniKZtPcQL33mhI7EXZudWs7qROx7xUCCTkFdM2fJEayIg2aNxT6EkcKNts49gpFkCaS/DLduTBMo35YqFQQ8SkJbbPjIVDCd+7fSNpqpEnEq55voohwniVt5Vbf8Uf3oAQV/WhOB1wdX2QuWd1niG+S7MLq+qF3fZF6D9Kw9vxIUuB3XgGuXzW09QuQx8oEtQBy5vCHRyNFwuroreNiTJ2VWqCKmPEJAeNoKMm/WxxMvPUqxXJXVmNQ3H30lYl4fT/8MRBfHMEVYzJQi/QA8esMmjVJq8Gb/IAqEecd+caHgTg2xH7+q1DHqlCQcBVTNDUUI4YS5NhF5FQQwoGhV0A8BTF4mL90tmpwk9ec+zyZtRTCrIprXP+LbY7wdSB3MGQvU5F0/uH3PEQ
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA0PR12MB4510.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(366004)(39850400004)(346002)(136003)(316002)(8676002)(26005)(2906002)(83380400001)(16576012)(4326008)(8936002)(86362001)(31696002)(478600001)(53546011)(110136005)(36756003)(66476007)(66556008)(6486002)(2616005)(38100700002)(5660300002)(31686004)(956004)(66946007)(186003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?qPPlWsdB7Bpa2WOFTCfIpFgtfjGvLlDwhqAvZyhzYoP/vKJkkcLksgCpLR4o?=
- =?us-ascii?Q?EMF+Gru1JQFMcLwCYz0A9EFPwB5NAhqK0O+5/9Ed0Q7ztrZnhVRw51fX7FWo?=
- =?us-ascii?Q?5S34/oOwX8YuNEV3EALOKtxvC0rkXQW8eOv0Cc/NIR1XOVDNo0MFJ4sY0F4j?=
- =?us-ascii?Q?68LTLsXvX2FXMGS2XOIMUnpbFOBjbCgB1uyjxcslb8DCG74ONvNevsme69+N?=
- =?us-ascii?Q?AyOD55yNYn8BRX1wftfrw+DuXYI0uR+u36JWCg2WnfpcITcyOf2F9ANgBtBR?=
- =?us-ascii?Q?hwOSKpgYfCQTmUHWXHd6EcHv2pHPGDXQ7h0ujwEpKXtmjFzfvwKLxgsNKEdc?=
- =?us-ascii?Q?GuP5KKiAi4MztNlPYkZoi1XTHafhbUhAwXDhnn2HnzeonBA/9edd+QpDjhh/?=
- =?us-ascii?Q?Yr6j3I75OngQNb2jQzkOf672JtubewgHWHpQDXpj3Rvle05fZ5j4x26fLPN4?=
- =?us-ascii?Q?75g23I8OCcecxKaLS/fJRfxI2uaZf641YHfYH9nzpWN+CxgDp7YaHNJdv3D4?=
- =?us-ascii?Q?c0edVgJDSEsFeK4CYubxLTHQrYDkApIVheMkSBXnsivaVr/+NMbIxozGgjwE?=
- =?us-ascii?Q?auPRGIL1Wj+gYx+sSfT3KwpOdSgGd20T5fc9IJFHQSrePpVO8ST35nF2G2P4?=
- =?us-ascii?Q?PgNMj0qRTX+FZupXVisNpRQytw4qIw30dujehDoH6Pz2oMH7DPRYk65hhhIZ?=
- =?us-ascii?Q?XNb0yzLgBb0ghxingKFxuIks/xj5leoM2IAQyX3W5jWGolmDAjjnqwN4OvgO?=
- =?us-ascii?Q?HwstJevvdVGJMXjeI/eKMMft8G076X+K5NT62Rqpu4FYHyc6uGa8bZxFA/wv?=
- =?us-ascii?Q?Qte7SAuBO68Nv/QjGkaKfOEW3tppX2zKBtwildQrvUqewv4iBuW7FUMRDw3M?=
- =?us-ascii?Q?jNxLz0ePNL/atLVZ4bT2/+tuqz3VPM4yesWc0XtFXF7pPy31JxMSc7+l7jeb?=
- =?us-ascii?Q?l8CL4HWSUf4xReOQTEiwBbKPpK3zKMNOHbmtNq4mLKUtHk0tPb5UUZZtDxVd?=
- =?us-ascii?Q?ic0C2IdSNAC1gPC7LhTeHrXnUUnhlTQ1tDc1XiNg+rFa15leQQL9P1SOGQHg?=
- =?us-ascii?Q?F6kNmqMd8R8i4KyhrLdX+Tl/2xYqzc3MU4vgbXi3Qy0RD/yBFZAw6EPC+f06?=
- =?us-ascii?Q?DXFavZE4gFGyk7Shy/67hUVkVqJTFHo2KjNdLcWSJaLTe7mOiG3OHS83MTqo?=
- =?us-ascii?Q?/cbhYwX48uY2k3034izmAYfsu/vURFRqegHDddzCng7/DFpNUD5J66PQLYH2?=
- =?us-ascii?Q?kXYWa4Wgtbm3SDt4JAF4dU3nyupk7YO2L/JJ3s8P2M3p3borxB2v6eyCqNeF?=
- =?us-ascii?Q?+dsablYQWk7k7d7stI+ulxe0?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 440e7424-5882-457b-970e-08d97914fae1
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SnQxa3FEdnpoRnd3emdSRDQ3eHpUSU1KMytVRlo5WHNyT3lOWXJVWlFtTkZj?=
+ =?utf-8?B?dkt6ODIycEgzUjRBanZ2dTYxbG5TUnN6ZEpGNDcxQnRLTkxaMnBFNWIxRHkw?=
+ =?utf-8?B?ZTRqR2piZWsxbVNHUlIxeTNwYzVNTFF3VzJjNlJFd01FSWdiMlJNWWp1QWZh?=
+ =?utf-8?B?dTliWmRoQmdwUDhEOG9zV3ZWZ1RuWTgrcEI3R2ZCSDFXeHRXeGd3dUtNUFFP?=
+ =?utf-8?B?N3NyQXRGMzIzRkFBdlc0TTQzQ0Ruaitzc2l0SnR0YjgyZ0lpaUN4NHBYbnBW?=
+ =?utf-8?B?aTRFbG1jVFBwR3FnWFQxT2NNRHp1UTYzUGpRdDg0Y1YweTlmMlJ0bmVtb3JL?=
+ =?utf-8?B?UjhNRFRVS25pUDFYRDI1YXc2Z2R5THhaS3ZDcWtkWUVyMFJna0t2ZDQ0N0Jr?=
+ =?utf-8?B?ci9PNWhpVHQ4UkxSVXlxNHZBTW5oVFdnZ213eDFUdkdhUkVxYjlIejVCdTlU?=
+ =?utf-8?B?UnNENW1Md0V3M1Q2WmlQOWNJYXpua005SzNlSEtqUjVHbzc1dDVpcDJlc2xB?=
+ =?utf-8?B?QzFuTjdtSS9OeFZ4d1NMOVcxc3N6RHBaczFSdDVMQnF6bjRSVjA1ZnBxTzF0?=
+ =?utf-8?B?ZUlUNWN2L2J5SVpFbVB6WlJsNFcrVTErNkYvRko4YVVtR3hNeW4zei9sTURq?=
+ =?utf-8?B?QjBQUXB3OEFuckxvd0lhQU1KMExaTC9vcUJodkFVdUhaTU96ZXpzY0tScWdF?=
+ =?utf-8?B?SG9BQlJ0MjZROGEwUWVWV0hiWWdNWjNocmg2ZjQwYmhJdVJTREhMZ0M3bVpG?=
+ =?utf-8?B?SGVKeFdIT3Nnc3RBUDF1RlN0UG9Tdytncy9PUEI4bU13dFpRc1ExN3lyVHdR?=
+ =?utf-8?B?d3E5ZmtzNXNLV2JFbitUTkpEa0lIYVA3SDByQ1lWS3RkZGRWUmoySFFqRGNp?=
+ =?utf-8?B?NUVWcG56MjJHUVlKTlRvUG8xcEUyN2NHYTZyOE8ydCtDRWZka2Y1c290cTNQ?=
+ =?utf-8?B?ZkdrWi9YRnhqTDlmeEhlUXN1Y1R0ZGdjYkN0YjdqaWIvSDNHNTV4V1dJMUNG?=
+ =?utf-8?B?WURDMS9rNGpNNHZZb1lhNXlrZ3doMjNPNC9FSmEwaVpESmpHeVBHT3JUNTlS?=
+ =?utf-8?B?RGxCdytRcFI5Uk43NkpLZDlxVjA5aitrZnlzZVJOTzZjZ0JVUkdpV2krOVdL?=
+ =?utf-8?B?aHpUZ0c2cEswNEpINUcxTkRCMStneFp6WjNvM2lGMDFBSUtYRkhvdzRQM3M2?=
+ =?utf-8?B?T3RhZEQxcUhud3dQbjF3aTZzaVA4NG9YYW1kVmt0R3lVWk9hclNPaFZOSVZr?=
+ =?utf-8?B?TW9lQkVqRk5lWmt5YktHVFpBTEh5dmpEOUYrYVkxMjVvc215S0NGbnpldmNW?=
+ =?utf-8?B?TTh4YlZRMWJGQnFyTW5NR2ZUb3Zsc0MvVk5ETGVrZnczelFQWjQ5eUhSY0xr?=
+ =?utf-8?B?a2ZUdjF0ZjdkdUpzTm94TEJlNTUvWDZoM3pMblBjR3ovWGdjTUFrOEpGRTlG?=
+ =?utf-8?B?eUlRdUhJQk5YdkNSRWtTTlVRaCtRVCtQajRJL1huTEVYbWt5Nk1uSVVab3Nk?=
+ =?utf-8?B?bFJmSVRlWFAySWd0QnJPaFZUREw5b25NVytzRTdiMGt3TEgwSHNkMXF0d3Rh?=
+ =?utf-8?B?bDZHc1MzNEFLRnJKL3RMNFROcVdtcGVIaE9LMWJhMCs2Nm8wK3RWV2VHSnk5?=
+ =?utf-8?B?K09LdlgxYVJRYm1tVXYxMjMzTmV6a2Zia2JhNDJqSGVaaFRCSUdCREc2Y2Rw?=
+ =?utf-8?B?T1VtNTFuWGFucmRFYjZveDBZdmFGbms4VkhEejNpcHpRTnhwOVVweWhRSE9Y?=
+ =?utf-8?Q?Mosj/qxAEZKQstarSXxyuvXdfGU2uLzN/aEd5Hl?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f010ea3d-f2af-4da1-313b-08d979150186
+X-MS-Exchange-CrossTenant-AuthSource: SA0PR12MB4510.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2021 13:22:06.6120
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2021 13:22:17.7706
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: JHrR+zKchSnLXuss2CRYtQz+mwfSyxOvR5GpSKYXqr7B46eLcUmjX3b2o/w/HO/EmPDKEvWFqeQBGJW0If6qZK6eQWUZZCf2fDQoEUVmt68=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1615
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10108 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0
- mlxlogscore=999 adultscore=0 bulkscore=0 spamscore=0 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109030001 definitions=main-2109160085
-X-Proofpoint-ORIG-GUID: 1_jKt52Ym47gAut5HOfUJiPGH2meO-2k
-X-Proofpoint-GUID: 1_jKt52Ym47gAut5HOfUJiPGH2meO-2k
+X-MS-Exchange-CrossTenant-UserPrincipalName: I5T19h4cpQ5xmxZCO2nYtuAIZpuRvi/i9vCXDCAT/zDj2D/GHV11RIlhXlqS/VSvB9cOXdH/UvSfGkO5DAvIOQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4431
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The snprintf() limits are complicated and slightly wrong when it does:
+On 9/16/2021 08:00, Shyam Sundar S K wrote:
+> +Mario
+> 
+> On 9/16/2021 6:10 PM, Sanket Goswami wrote:
+>> IdleMask is the metric used by the PM firmware to know the status of each
+>> of the Hardware IP blocks monitored by the PM firmware.
+>>
+>> Knowing this value is key to get the information of s2idle suspend/resume
+>> status. This value is mapped to PMC scratch registers, retrieve them
+>> accordingly based on the CPU family and the underlying firmware support.
+>>
+>> Co-developed-by: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
+>> Signed-off-by: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
+>> Signed-off-by: Sanket Goswami <Sanket.Goswami@amd.com>
+>> ---
+>> Changes in v2:
+>> - Add separate routine amd_pmc_idlemask_read to get the value.
+>> - Address review comments from Mario.
+>>
+>>   drivers/platform/x86/amd-pmc.c | 76 ++++++++++++++++++++++++++++++++++
+>>   1 file changed, 76 insertions(+)
+>>
+>> diff --git a/drivers/platform/x86/amd-pmc.c b/drivers/platform/x86/amd-pmc.c
+>> index 3481479a2942..0c970f613e09 100644
+>> --- a/drivers/platform/x86/amd-pmc.c
+>> +++ b/drivers/platform/x86/amd-pmc.c
+>> @@ -29,6 +29,10 @@
+>>   #define AMD_PMC_REGISTER_RESPONSE	0x980
+>>   #define AMD_PMC_REGISTER_ARGUMENT	0x9BC
+>>   
+>> +/* PMC Scratch Registers */
+>> +#define AMD_PMC_SCRATCH_REG_CZN		0x94
+>> +#define AMD_PMC_SCRATCH_REG_YC		0xD14
+>> +
+>>   /* Base address of SMU for mapping physical address to virtual address */
+>>   #define AMD_PMC_SMU_INDEX_ADDRESS	0xB8
+>>   #define AMD_PMC_SMU_INDEX_DATA		0xBC
+>> @@ -110,6 +114,10 @@ struct amd_pmc_dev {
+>>   	u32 base_addr;
+>>   	u32 cpu_id;
+>>   	u32 active_ips;
+>> +/* SMU version information */
+>> +	u16 major;
+>> +	u16 minor;
+>> +	u16 rev;
+>>   	struct device *dev;
+>>   	struct mutex lock; /* generic mutex lock */
+>>   #if IS_ENABLED(CONFIG_DEBUG_FS)
+>> @@ -201,6 +209,66 @@ static int s0ix_stats_show(struct seq_file *s, void *unused)
+>>   }
+>>   DEFINE_SHOW_ATTRIBUTE(s0ix_stats);
+>>   
+>> +static int amd_pmc_get_smu_version(struct amd_pmc_dev *dev)
+>> +{
+>> +	int rc;
+>> +	u32 val;
+>> +
+>> +	rc = amd_pmc_send_cmd(dev, 0, &val, SMU_MSG_GETSMUVERSION, 1);
+>> +	if (rc)
+>> +		return rc;
+>> +
+>> +	dev->major = (val >> 16) & GENMASK(15, 0);
+>> +	dev->minor = (val >> 8) & GENMASK(7, 0);
+>> +	dev->rev = (val >> 0) & GENMASK(7, 0);
+>> +
+>> +	dev_dbg(dev->dev, "SMU version is %u.%u.%u\n", dev->major, dev->minor, dev->rev);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int amd_pmc_idlemask_read(struct amd_pmc_dev *pdev, struct device *dev,
+>> +				 struct seq_file *s)
+>> +{
+>> +	u32 val;
+>> +
+>> +	switch (pdev->cpu_id) {
+>> +	case AMD_CPU_ID_CZN:
+>> +		val = amd_pmc_reg_read(pdev, AMD_PMC_SCRATCH_REG_CZN);
+>> +		break;
+>> +	case AMD_CPU_ID_YC:
+>> +		val = amd_pmc_reg_read(pdev, AMD_PMC_SCRATCH_REG_YC);
+>> +		break;
+>> +	default:
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	if (dev)
+>> +		dev_dbg(pdev->dev, "SMU idlemask s0i3: 0x%x\n", val);
+>> +
+>> +	if (s)
+>> +		seq_printf(s, "SMU idlemask : 0x%x\n", val);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int amd_pmc_idlemask_show(struct seq_file *s, void *unused)
+>> +{
+>> +	struct amd_pmc_dev *dev = s->private;
+>> +	int rc;
+>> +
+>> +	if (dev->major > 56 || (dev->major >= 55 && dev->minor >= 37)) {
+>> +		rc = amd_pmc_idlemask_read(dev, NULL, s);
+>> +		if (rc)
+>> +			return rc;
+>> +	} else {
+>> +		seq_puts(s, "Unsupported SMU version for Idlemask\n");
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +DEFINE_SHOW_ATTRIBUTE(amd_pmc_idlemask);
+>> +
+>>   static void amd_pmc_dbgfs_unregister(struct amd_pmc_dev *dev)
+>>   {
+>>   	debugfs_remove_recursive(dev->dbgfs_dir);
+>> @@ -213,6 +281,8 @@ static void amd_pmc_dbgfs_register(struct amd_pmc_dev *dev)
+>>   			    &smu_fw_info_fops);
+>>   	debugfs_create_file("s0ix_stats", 0644, dev->dbgfs_dir, dev,
+>>   			    &s0ix_stats_fops);
+>> +	debugfs_create_file("amd_pmc_idlemask", 0644, dev->dbgfs_dir, dev,
+>> +			    &amd_pmc_idlemask_fops);
+>>   }
+>>   #else
+>>   static inline void amd_pmc_dbgfs_register(struct amd_pmc_dev *dev)
+>> @@ -349,6 +419,8 @@ static int __maybe_unused amd_pmc_suspend(struct device *dev)
+>>   	amd_pmc_send_cmd(pdev, 0, NULL, SMU_MSG_LOG_RESET, 0);
+>>   	amd_pmc_send_cmd(pdev, 0, NULL, SMU_MSG_LOG_START, 0);
+>>   
+>> +	/* Dump the IdleMask before we send hint to SMU */
+>> +	amd_pmc_idlemask_read(pdev, dev, NULL);
+>>   	msg = amd_pmc_get_os_hint(pdev);
+>>   	rc = amd_pmc_send_cmd(pdev, 1, NULL, msg, 0);
+>>   	if (rc)
+>> @@ -371,6 +443,9 @@ static int __maybe_unused amd_pmc_resume(struct device *dev)
+>>   	if (rc)
+>>   		dev_err(pdev->dev, "resume failed\n");
+>>   
+>> +	/* Dump the IdleMask to see the blockers */
+>> +	amd_pmc_idlemask_read(pdev, dev, NULL);
+>> +
+>>   	return 0;
+>>   }
+>>   
+>> @@ -457,6 +532,7 @@ static int amd_pmc_probe(struct platform_device *pdev)
+>>   	if (err)
+>>   		dev_err(dev->dev, "SMU debugging info not supported on this platform\n");
+>>   
+>> +	amd_pmc_get_smu_version(dev);
+>>   	platform_set_drvdata(pdev, dev);
+>>   	amd_pmc_dbgfs_register(dev);
+>>   	return 0;
+>>
+> 
+> Looks good to me.
+> 
+> Acked-by: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
+> 
 
-	max(0, HID_DEBUG_BUFSIZE - len - 1)
+Looks good to me too, thanks.
 
-The "- 1" should not be there.  It means we can't use the last
-byte of the buffer.  If we change the first snprintf() to scnprintf()
-then we can remove the max().
-
-At the start of the function the strlen(buf) is going always going to
-be < HID_DEBUG_BUFSIZE so that is safe.  If it were > HID_DEBUG_BUFSIZE
-then that would result in a WARN().
-
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- drivers/hid/hid-debug.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/hid/hid-debug.c b/drivers/hid/hid-debug.c
-index fa57d05badf7..3f62fe3b0a49 100644
---- a/drivers/hid/hid-debug.c
-+++ b/drivers/hid/hid-debug.c
-@@ -486,8 +486,7 @@ char *hid_resolv_usage(unsigned usage, struct seq_file *f) {
- 
- 	if (!f) {
- 		len = strlen(buf);
--		snprintf(buf+len, max(0, HID_DEBUG_BUFSIZE - len), ".");
--		len++;
-+		len += scnprintf(buf + len, HID_DEBUG_BUFSIZE - len, ".");
- 	}
- 	else {
- 		seq_printf(f, ".");
-@@ -498,7 +497,7 @@ char *hid_resolv_usage(unsigned usage, struct seq_file *f) {
- 				if (p->usage == (usage & 0xffff)) {
- 					if (!f)
- 						snprintf(buf + len,
--							max(0,HID_DEBUG_BUFSIZE - len - 1),
-+							HID_DEBUG_BUFSIZE - len,
- 							"%s", p->description);
- 					else
- 						seq_printf(f,
-@@ -509,8 +508,8 @@ char *hid_resolv_usage(unsigned usage, struct seq_file *f) {
- 			break;
- 		}
- 	if (!f)
--		snprintf(buf + len, max(0, HID_DEBUG_BUFSIZE - len - 1),
--				"%04x", usage & 0xffff);
-+		snprintf(buf + len, HID_DEBUG_BUFSIZE - len, "%04x",
-+			 usage & 0xffff);
- 	else
- 		seq_printf(f, "%04x", usage & 0xffff);
- 	return buf;
--- 
-2.20.1
+Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
 
