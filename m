@@ -2,150 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3335E40E387
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:20:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 349BD40E633
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:29:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344860AbhIPQtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:49:19 -0400
-Received: from mga14.intel.com ([192.55.52.115]:11538 "EHLO mga14.intel.com"
+        id S1345977AbhIPRTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:19:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244356AbhIPQmq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:42:46 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10109"; a="222263863"
-X-IronPort-AV: E=Sophos;i="5.85,298,1624345200"; 
-   d="scan'208";a="222263863"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2021 09:36:36 -0700
-X-IronPort-AV: E=Sophos;i="5.85,298,1624345200"; 
-   d="scan'208";a="554156676"
-Received: from xuanguan-mobl.amr.corp.intel.com (HELO [10.213.180.84]) ([10.213.180.84])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2021 09:36:35 -0700
-Subject: Re: [PATCH v3 16/30] ABI: sysfs-bus-soundwire-slave: use wildcards on
- What definitions
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>, Vinod Koul <vkoul@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <cover.1631782432.git.mchehab+huawei@kernel.org>
- <416f4a746c116147abb08fb0155a6a4ed065dfd7.1631782432.git.mchehab+huawei@kernel.org>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <9a379f0a-e076-844c-fb5d-130359e36754@linux.intel.com>
-Date:   Thu, 16 Sep 2021 11:36:33 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+        id S1350539AbhIPRLW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:11:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D20A61B4F;
+        Thu, 16 Sep 2021 16:37:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631810277;
+        bh=xHw2IsddA05zwge0IIPYU87cx7/lezcngaOiXWY6cJE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=cj8IXlDlTeFbyNUaf+ZMuWYnZaJIHz/Ce5d4hIH6yDewYGC8vifIwazuuAX4GoM+V
+         lCWLxehY+1XhCvUGnMM4oqhmpVIxtzZGQzNdif/oAkyl51JNHtTnLGscjY90y0LfUB
+         yO3uGKxFss9m7uja0BltRIEO1etgA13QxzSB2FejOOZPGHuraP61th2HIXYDB0fRnf
+         lp3Zl2dLQlJ+UPhwr1lmmmpBrYMCOzrJbllK4Tm8wE9LG//fvr/lC5AMRqRC7ebrW/
+         4UBR7y/fJ0yZBOxBV/E1qKxhAuvBnvJUf9KggrA+aSD4zbZO6cAnUZAbSn4OuF5FcH
+         KpnTEZ3tXVIAw==
+Date:   Thu, 16 Sep 2021 11:37:55 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     airlied@linux.ie, daniel@ffwll.ch,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, alexander.deucher@amd.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, Huacai Chen <chenhuacai@kernel.org>
+Subject: Re: [PATCH] vgaarb: Use ACPI HID name to find integrated GPU
+Message-ID: <20210916163755.GA1620802@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <416f4a746c116147abb08fb0155a6a4ed065dfd7.1631782432.git.mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210519135723.525997-1-kai.heng.feng@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+[+cc Huacai, linux-pci]
 
-
-On 9/16/21 3:59 AM, Mauro Carvalho Chehab wrote:
-> An "N" upper letter is not a wildcard, nor can easily be identified
-> by script, specially since the USB sysfs define things like.
-> bNumInterfaces. Use, instead, <N>, in order to let script/get_abi.pl
-> to convert it into a Regex.
+On Wed, May 19, 2021 at 09:57:23PM +0800, Kai-Heng Feng wrote:
+> Commit 3d42f1ddc47a ("vgaarb: Keep adding VGA device in queue") assumes
+> the first device is an integrated GPU. However, on AMD platforms an
+> integrated GPU can have higher PCI device number than a discrete GPU.
 > 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
-I also realized that we have a similar with the 'master' case
-
-more sysfs-bus-soundwire-master
-What:		/sys/bus/soundwire/devices/sdw-master-N/revision
-		/sys/bus/soundwire/devices/sdw-master-N/clk_stop_modes
-		/sys/bus/soundwire/devices/sdw-master-N/clk_freq
-		/sys/bus/soundwire/devices/sdw-master-N/clk_gears
-		/sys/bus/soundwire/devices/sdw-master-N/default_col
-		/sys/bus/soundwire/devices/sdw-master-N/default_frame_rate
-		/sys/bus/soundwire/devices/sdw-master-N/default_row
-		/sys/bus/soundwire/devices/sdw-master-N/dynamic_shape
-		/sys/bus/soundwire/devices/sdw-master-N/err_threshold
-		/sys/bus/soundwire/devices/sdw-master-N/max_clk_freq
-
-If there is an update we should modify this as well for consistency with
-sdw-master-<N>?
-
+> Integrated GPU on ACPI platform generally has _DOD and _DOS method, so
+> use that as predicate to find integrated GPU. If the new strategy
+> doesn't work, fallback to use the first device as boot VGA.
+> 
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 > ---
->  .../ABI/testing/sysfs-bus-soundwire-slave     | 60 +++++++++----------
->  1 file changed, 30 insertions(+), 30 deletions(-)
+>  drivers/gpu/vga/vgaarb.c | 31 ++++++++++++++++++++++++++-----
+>  1 file changed, 26 insertions(+), 5 deletions(-)
 > 
-> diff --git a/Documentation/ABI/testing/sysfs-bus-soundwire-slave b/Documentation/ABI/testing/sysfs-bus-soundwire-slave
-> index d324aa0b678f..fbf55834dfee 100644
-> --- a/Documentation/ABI/testing/sysfs-bus-soundwire-slave
-> +++ b/Documentation/ABI/testing/sysfs-bus-soundwire-slave
-> @@ -64,37 +64,37 @@ Description:	SoundWire Slave Data Port-0 DisCo properties.
->  		Data port 0 are used by the bus to configure the Data Port 0.
+> diff --git a/drivers/gpu/vga/vgaarb.c b/drivers/gpu/vga/vgaarb.c
+> index 5180c5687ee5..949fde433ea2 100644
+> --- a/drivers/gpu/vga/vgaarb.c
+> +++ b/drivers/gpu/vga/vgaarb.c
+> @@ -50,6 +50,7 @@
+>  #include <linux/screen_info.h>
+>  #include <linux/vt.h>
+>  #include <linux/console.h>
+> +#include <linux/acpi.h>
 >  
+>  #include <linux/uaccess.h>
 >  
-> -What:		/sys/bus/soundwire/devices/sdw:.../dpN_src/max_word
-> -		/sys/bus/soundwire/devices/sdw:.../dpN_src/min_word
-> -		/sys/bus/soundwire/devices/sdw:.../dpN_src/words
-> -		/sys/bus/soundwire/devices/sdw:.../dpN_src/type
-> -		/sys/bus/soundwire/devices/sdw:.../dpN_src/max_grouping
-> -		/sys/bus/soundwire/devices/sdw:.../dpN_src/simple_ch_prep_sm
-> -		/sys/bus/soundwire/devices/sdw:.../dpN_src/ch_prep_timeout
-> -		/sys/bus/soundwire/devices/sdw:.../dpN_src/imp_def_interrupts
-> -		/sys/bus/soundwire/devices/sdw:.../dpN_src/min_ch
-> -		/sys/bus/soundwire/devices/sdw:.../dpN_src/max_ch
-> -		/sys/bus/soundwire/devices/sdw:.../dpN_src/channels
-> -		/sys/bus/soundwire/devices/sdw:.../dpN_src/ch_combinations
-> -		/sys/bus/soundwire/devices/sdw:.../dpN_src/max_async_buffer
-> -		/sys/bus/soundwire/devices/sdw:.../dpN_src/block_pack_mode
-> -		/sys/bus/soundwire/devices/sdw:.../dpN_src/port_encoding
-> +What:		/sys/bus/soundwire/devices/sdw:.../dp<N>_src/max_word
-> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_src/min_word
-> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_src/words
-> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_src/type
-> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_src/max_grouping
-> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_src/simple_ch_prep_sm
-> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_src/ch_prep_timeout
-> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_src/imp_def_interrupts
-> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_src/min_ch
-> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_src/max_ch
-> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_src/channels
-> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_src/ch_combinations
-> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_src/max_async_buffer
-> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_src/block_pack_mode
-> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_src/port_encoding
+> @@ -1450,9 +1451,23 @@ static struct miscdevice vga_arb_device = {
+>  	MISC_DYNAMIC_MINOR, "vga_arbiter", &vga_arb_device_fops
+>  };
 >  
-> -		/sys/bus/soundwire/devices/sdw:.../dpN_sink/max_word
-> -		/sys/bus/soundwire/devices/sdw:.../dpN_sink/min_word
-> -		/sys/bus/soundwire/devices/sdw:.../dpN_sink/words
-> -		/sys/bus/soundwire/devices/sdw:.../dpN_sink/type
-> -		/sys/bus/soundwire/devices/sdw:.../dpN_sink/max_grouping
-> -		/sys/bus/soundwire/devices/sdw:.../dpN_sink/simple_ch_prep_sm
-> -		/sys/bus/soundwire/devices/sdw:.../dpN_sink/ch_prep_timeout
-> -		/sys/bus/soundwire/devices/sdw:.../dpN_sink/imp_def_interrupts
-> -		/sys/bus/soundwire/devices/sdw:.../dpN_sink/min_ch
-> -		/sys/bus/soundwire/devices/sdw:.../dpN_sink/max_ch
-> -		/sys/bus/soundwire/devices/sdw:.../dpN_sink/channels
-> -		/sys/bus/soundwire/devices/sdw:.../dpN_sink/ch_combinations
-> -		/sys/bus/soundwire/devices/sdw:.../dpN_sink/max_async_buffer
-> -		/sys/bus/soundwire/devices/sdw:.../dpN_sink/block_pack_mode
-> -		/sys/bus/soundwire/devices/sdw:.../dpN_sink/port_encoding
-> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_sink/max_word
-> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_sink/min_word
-> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_sink/words
-> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_sink/type
-> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_sink/max_grouping
-> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_sink/simple_ch_prep_sm
-> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_sink/ch_prep_timeout
-> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_sink/imp_def_interrupts
-> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_sink/min_ch
-> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_sink/max_ch
-> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_sink/channels
-> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_sink/ch_combinations
-> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_sink/max_async_buffer
-> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_sink/block_pack_mode
-> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_sink/port_encoding
+> +#if defined(CONFIG_ACPI)
+> +static bool vga_arb_integrated_gpu(struct device *dev)
+> +{
+> +	struct acpi_device *adev = ACPI_COMPANION(dev);
+> +
+> +	return adev && !strcmp(acpi_device_hid(adev), ACPI_VIDEO_HID);
+> +}
+> +#else
+> +static bool vga_arb_integrated_gpu(struct device *dev)
+> +{
+> +	return false;
+> +}
+> +#endif
+> +
+>  static void __init vga_arb_select_default_device(void)
+>  {
+> -	struct pci_dev *pdev;
+> +	struct pci_dev *pdev, *found = NULL;
+>  	struct vga_device *vgadev;
 >  
->  Date:		May 2020
+>  #if defined(CONFIG_X86) || defined(CONFIG_IA64)
+> @@ -1505,20 +1520,26 @@ static void __init vga_arb_select_default_device(void)
+>  #endif
 >  
+>  	if (!vga_default_device()) {
+> -		list_for_each_entry(vgadev, &vga_list, list) {
+> +		list_for_each_entry_reverse(vgadev, &vga_list, list) {
+
+Hi Kai-Heng, do you remember why you changed the order of this list
+traversal?
+
+I guess the list_add_tail() in vga_arbiter_add_pci_device() means
+vga_list is generally ordered with small device numbers first and
+large ones last.
+
+So you pick the integrated GPU with the largest device number.  Are
+there systems with more than one integrated GPU?  If so, I would
+naively expect that in the absence of an indication otherwise, we'd
+want the one with the *smallest* device number.
+
+>  			struct device *dev = &vgadev->pdev->dev;
+>  			u16 cmd;
+>  
+>  			pdev = vgadev->pdev;
+>  			pci_read_config_word(pdev, PCI_COMMAND, &cmd);
+>  			if (cmd & (PCI_COMMAND_IO | PCI_COMMAND_MEMORY)) {
+> -				vgaarb_info(dev, "setting as boot device (VGA legacy resources not available)\n");
+> -				vga_set_default_device(pdev);
+> -				break;
+> +				found = pdev;
+> +				if (vga_arb_integrated_gpu(dev))
+> +					break;
+>  			}
+>  		}
+>  	}
+>  
+> +	if (found) {
+> +		vgaarb_info(&found->dev, "setting as boot device (VGA legacy resources not available)\n");
+> +		vga_set_default_device(found);
+> +		return;
+> +	}
+> +
+>  	if (!vga_default_device()) {
+>  		vgadev = list_first_entry_or_null(&vga_list,
+>  						  struct vga_device, list);
+> -- 
+> 2.31.1
 > 
