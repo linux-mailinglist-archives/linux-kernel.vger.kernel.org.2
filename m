@@ -2,90 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C63640DCBE
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 16:33:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B28B140DCC7
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 16:33:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236120AbhIPOe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 10:34:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56416 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237656AbhIPOeT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 10:34:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E281761214;
-        Thu, 16 Sep 2021 14:32:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631802779;
-        bh=VAoz05Oj6Ro+NaKLzDh0krZCRZNIAvmgNKrs4VEOQzM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=vLshLpePQEPOFCXlBz3lca6aEQpEDLhsG4Uy+RNWDy9cnpOMzDKEM2pGRFOdq4aPo
-         6LnO90Bky46bjlrPmEfhUGHoguQAr4QOm/Zlxy6BOLWHvQ9pVwJ2Xx1LRSpupRdSie
-         WM0H2jZMTIMni+3XxA5Iruu4cjlLRj182qZsmJSaEUXC9PjJ3JBtF+mpu9ddu/PVSF
-         KDoH6jvnBdeqPtZQQvBsSy0xBsSAb9NbKGgbMPB7UIQ3hbH086gnj9344kj327PAjY
-         KfeRuDPBf3Z/FJihEp0FzS1autpkAdrNbIQUo8FK/S3qs8ZI5QnWIQBh+5vgjiOIUL
-         vYZPW2zf30TSQ==
-Date:   Thu, 16 Sep 2021 09:32:57 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI: aardvark: Implement re-issuing config requests on
- CRS response
-Message-ID: <20210916143257.GA1608462@bjorn-Precision-5520>
+        id S236227AbhIPOex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 10:34:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49306 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236465AbhIPOeu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 10:34:50 -0400
+Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E2F8C061767;
+        Thu, 16 Sep 2021 07:33:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
+         s=20161220; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=FAxQfVs0XUgPOc5w57uRZTWwy52AV59K8Fd1WIGVx2A=; b=f/tL66xeF24xoPcEiNGy8a0tIK
+        i42YS2NH7KBptGaFg7VkMooZ4M5qGIMDQZUU6qKrQYd2lisuDPYXN12VLRh1AJSnTbfaJmmZ8DIn8
+        Knhd5ZooULTIMm6ssamr9RAK73QMJoVThwApalDCPDdUkCmhsmDMPgL13hyOy5//dpx5yxbInAJ7/
+        0NpCH0qcvh6QYPfLgwsbOzEAuIIhI+ioRZj962taOZmlDiYOMZI2I3kDoKA9K8MBfD6KQ9b5pXnCf
+        fpAUeHy4PXtPb9FkkO787JTA8HuA70cCbz6vJfRe8GutZEGHk/BEHmKWGpop40mGjDVGpZfsDHcZ/
+        bwe815Kg==;
+Received: from dsl-hkibng22-54f986-236.dhcp.inet.fi ([84.249.134.236] helo=toshino.localdomain)
+        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <mperttunen@nvidia.com>)
+        id 1mQsRw-0005Xx-1M; Thu, 16 Sep 2021 17:33:16 +0300
+From:   Mikko Perttunen <mperttunen@nvidia.com>
+To:     thierry.reding@gmail.com, jonathanh@nvidia.com, joro@8bytes.org,
+        will@kernel.org, robh+dt@kernel.org, robin.murphy@arm.com
+Cc:     linux-tegra@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Mikko Perttunen <mperttunen@nvidia.com>
+Subject: [PATCH v2 3/8] gpu: host1x: Program context stream ID on submission
+Date:   Thu, 16 Sep 2021 17:32:57 +0300
+Message-Id: <20210916143302.2024933-4-mperttunen@nvidia.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210916143302.2024933-1-mperttunen@nvidia.com>
+References: <20210916143302.2024933-1-mperttunen@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210915105553.6eaqakvrmag6vxeq@pali>
+X-SA-Exim-Connect-IP: 84.249.134.236
+X-SA-Exim-Mail-From: mperttunen@nvidia.com
+X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 12:55:53PM +0200, Pali Rohár wrote:
-> On Tuesday 14 September 2021 15:55:26 Bjorn Helgaas wrote:
+Add code to do stream ID switching at the beginning of a job. The
+stream ID is switched to the stream ID specified by the context
+passed in the job structure.
 
-> > It is illegal for a device to return CRS after it has returned a
-> > successful completion unless an intervening reset has occurred, so
-> > drivers and other code should never see it.
-> > 
-> > > And issue is there also with write requests. Is somebody checking return
-> > > value of pci_bus_write_config function?
-> > 
-> > Similar case here.  The enumeration and wait-after-reset paths always
-> > do *reads* until we get a successful completion, so I don't think we
-> > ever issue a write that can get CRS.
-> 
-> Yes, in normal conditions we should not see it.
-> 
-> But for testing purposes (that emulated bridge works fine) I'm using
-> setpci for changing some configuration.
-> 
-> And via setpci it is possible to turn off CRSSVE bit in which case then
-> Root Complex should re-issue request again.
-> 
-> I'm not sure how "legal" it is if userspace / setpci changes some of
-> these bits. At least on a hardware with a real Root Port device it
-> should be fully transparent. As hardware handles this re-issue and
-> kernel then would see (reissued) response.
+Before switching the stream ID, an OP_DONE wait is done on the
+channel's engine to ensure that there is no residual ongoing
+work that might do DMA using the new stream ID.
 
-If setpci changes bits like these, all bets are off.  We can't tell
-what happened, so we can't rely on any configuration Linux did.  I
-think we really should taint the kernel when this happens.
+Signed-off-by: Mikko Perttunen <mperttunen@nvidia.com>
+---
+ drivers/gpu/host1x/hw/channel_hw.c        | 52 +++++++++++++++++++++--
+ drivers/gpu/host1x/hw/host1x06_hardware.h | 10 +++++
+ drivers/gpu/host1x/hw/host1x07_hardware.h | 10 +++++
+ include/linux/host1x.h                    |  4 ++
+ 4 files changed, 72 insertions(+), 4 deletions(-)
 
-> Test case: Initialize device, then unbind it from sysfs, reset it (hot
-> reset or warm reset) and then rescan / reinit it again. Here device is
-> permitted to send CRS response.
-> 
-> We know that more PCIe cards are buggy and sometimes firmware on cards
-> crashes or resets card logic. Which may put card into initialization
-> state when it is again permitted to send CRS response.
+diff --git a/drivers/gpu/host1x/hw/channel_hw.c b/drivers/gpu/host1x/hw/channel_hw.c
+index 1999780a7203..d451f8437f62 100644
+--- a/drivers/gpu/host1x/hw/channel_hw.c
++++ b/drivers/gpu/host1x/hw/channel_hw.c
+@@ -159,6 +159,45 @@ static void host1x_channel_set_streamid(struct host1x_channel *channel)
+ #endif
+ }
+ 
++static void host1x_channel_program_engine_streamid(struct host1x_job *job)
++{
++#if HOST1X_HW >= 6
++	u32 fence;
++
++	if (!job->context)
++		return;
++
++	fence = host1x_syncpt_incr_max(job->syncpt, 1);
++
++	/* First, increment a syncpoint on OP_DONE condition.. */
++
++	host1x_cdma_push(&job->channel->cdma,
++		host1x_opcode_nonincr(HOST1X_UCLASS_INCR_SYNCPT, 1),
++		HOST1X_UCLASS_INCR_SYNCPT_INDX_F(job->syncpt->id) |
++			HOST1X_UCLASS_INCR_SYNCPT_COND_F(1));
++
++	/* Wait for syncpoint to increment */
++
++	host1x_cdma_push(&job->channel->cdma,
++		host1x_opcode_setclass(HOST1X_CLASS_HOST1X,
++			host1x_uclass_wait_syncpt_r(), 1),
++		host1x_class_host_wait_syncpt(job->syncpt->id, fence));
++
++	/*
++	 * Now that we know the engine is idle, return to class and
++	 * change stream ID.
++	 */
++
++	host1x_cdma_push(&job->channel->cdma,
++		host1x_opcode_setclass(job->class, 0, 0),
++		HOST1X_OPCODE_NOP);
++
++	host1x_cdma_push(&job->channel->cdma,
++		host1x_opcode_setpayload(job->context->stream_id),
++		host1x_opcode_setstreamid(job->engine_streamid_offset / 4));
++#endif
++}
++
+ static int channel_submit(struct host1x_job *job)
+ {
+ 	struct host1x_channel *ch = job->channel;
+@@ -214,18 +253,23 @@ static int channel_submit(struct host1x_job *job)
+ 	if (sp->base)
+ 		synchronize_syncpt_base(job);
+ 
+-	syncval = host1x_syncpt_incr_max(sp, user_syncpt_incrs);
+-
+ 	host1x_hw_syncpt_assign_to_channel(host, sp, ch);
+ 
+-	job->syncpt_end = syncval;
+-
+ 	/* add a setclass for modules that require it */
+ 	if (job->class)
+ 		host1x_cdma_push(&ch->cdma,
+ 				 host1x_opcode_setclass(job->class, 0, 0),
+ 				 HOST1X_OPCODE_NOP);
+ 
++	/*
++	 * Ensure engine DMA is idle and set new stream ID. May increment
++	 * syncpt max.
++	 */
++	host1x_channel_program_engine_streamid(job);
++
++	syncval = host1x_syncpt_incr_max(sp, user_syncpt_incrs);
++	job->syncpt_end = syncval;
++
+ 	submit_gathers(job, syncval - user_syncpt_incrs);
+ 
+ 	/* end CDMA submit & stash pinned hMems into sync queue */
+diff --git a/drivers/gpu/host1x/hw/host1x06_hardware.h b/drivers/gpu/host1x/hw/host1x06_hardware.h
+index 01a142a09800..5d515745eee7 100644
+--- a/drivers/gpu/host1x/hw/host1x06_hardware.h
++++ b/drivers/gpu/host1x/hw/host1x06_hardware.h
+@@ -127,6 +127,16 @@ static inline u32 host1x_opcode_gather_incr(unsigned offset, unsigned count)
+ 	return (6 << 28) | (offset << 16) | BIT(15) | BIT(14) | count;
+ }
+ 
++static inline u32 host1x_opcode_setstreamid(unsigned streamid)
++{
++	return (7 << 28) | streamid;
++}
++
++static inline u32 host1x_opcode_setpayload(unsigned payload)
++{
++	return (9 << 28) | payload;
++}
++
+ static inline u32 host1x_opcode_gather_wide(unsigned count)
+ {
+ 	return (12 << 28) | count;
+diff --git a/drivers/gpu/host1x/hw/host1x07_hardware.h b/drivers/gpu/host1x/hw/host1x07_hardware.h
+index e6582172ebfd..82c0cc9bb0b5 100644
+--- a/drivers/gpu/host1x/hw/host1x07_hardware.h
++++ b/drivers/gpu/host1x/hw/host1x07_hardware.h
+@@ -127,6 +127,16 @@ static inline u32 host1x_opcode_gather_incr(unsigned offset, unsigned count)
+ 	return (6 << 28) | (offset << 16) | BIT(15) | BIT(14) | count;
+ }
+ 
++static inline u32 host1x_opcode_setstreamid(unsigned streamid)
++{
++	return (7 << 28) | streamid;
++}
++
++static inline u32 host1x_opcode_setpayload(unsigned payload)
++{
++	return (9 << 28) | payload;
++}
++
+ static inline u32 host1x_opcode_gather_wide(unsigned count)
+ {
+ 	return (12 << 28) | count;
+diff --git a/include/linux/host1x.h b/include/linux/host1x.h
+index f3073738564a..eb0ca304ca92 100644
+--- a/include/linux/host1x.h
++++ b/include/linux/host1x.h
+@@ -277,6 +277,10 @@ struct host1x_job {
+ 
+ 	/* Whether host1x-side firewall should be ran for this job or not */
+ 	bool enable_firewall;
++
++	/* Options for configuring engine data stream ID */
++	struct host1x_context *context;
++	u32 engine_streamid_offset;
+ };
+ 
+ struct host1x_job *host1x_job_alloc(struct host1x_channel *ch,
+-- 
+2.32.0
 
-Yep.  That's a buggy device and normally we would work around it with
-a quirk.  This particular kind of bug would be hard to work around,
-but a host bridge driver doesn't seem like the right place to do it
-because we'd have to do it in *every* such driver.
-
-Bjorn
