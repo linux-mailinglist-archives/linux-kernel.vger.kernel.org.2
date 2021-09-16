@@ -2,41 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 796E540E230
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:15:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D2D840DF3E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:07:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241977AbhIPQfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:35:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38206 "EHLO mail.kernel.org"
+        id S233589AbhIPQH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:07:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45366 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241027AbhIPQ1s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:27:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED2B0615E0;
-        Thu, 16 Sep 2021 16:17:43 +0000 (UTC)
+        id S240611AbhIPQGK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:06:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3076361261;
+        Thu, 16 Sep 2021 16:04:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809064;
-        bh=9iClfcn2FvwaNTaQw0Bk6+vBHtIgyJFO+KgfvpvKnfs=;
+        s=korg; t=1631808289;
+        bh=hD292FD4NdtQAlFLWGGc2S5Oyv61JzF6WNbtQrAVybQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OlVi2f22f+i5A9+8LmoVOx9ZNI4a03VtmEFrsahq/LpSY/axWp+N8hdGaAtaN5rxt
-         56HqZ8XvK4FNQqm7ncyo1ss2dZYnc1LVeXx+nuHIXOYdNHMmcJZjh9sOZKQv0kMG50
-         AZvC8oRmzO/HEmvcbqrmAKcVlRsnL1liGUruSejg=
+        b=l+65Zd5YAKQnQ2laClhvctxxB508VIPxJMkA0f40yB5KKkpxSbEn0w4XBjU+TDgIo
+         pPqidtOevTC0BGx0ilJYftpKSkJUqdb7VzDO4C/vqUp+kJ3hT0fl8syzt1XfIa3AgF
+         nNixg3kPI76O+znh2gtmrRW1N3pQuV1dVcEFFOLE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Tzvetomir Stoyanov" <tz.stoyanov@gmail.com>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kselftest@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 5.13 018/380] selftests/ftrace: Fix requirement check of README file
-Date:   Thu, 16 Sep 2021 17:56:15 +0200
-Message-Id: <20210916155804.589461544@linuxfoundation.org>
+        stable@vger.kernel.org, Damien Le Moal <damien.lemoal@wdc.com>,
+        Hannes Reinecke <hare@suse.de>, Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.10 031/306] block: bfq: fix bfq_set_next_ioprio_data()
+Date:   Thu, 16 Sep 2021 17:56:16 +0200
+Message-Id: <20210916155755.002135787@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,43 +39,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steven Rostedt (VMware) <rostedt@goodmis.org>
+From: Damien Le Moal <damien.lemoal@wdc.com>
 
-commit 210f9df02611cbe641ced3239122b270fd907d86 upstream.
+commit a680dd72ec336b81511e3bff48efac6dbfa563e7 upstream.
 
-The selftest for ftrace checks some features by checking if the README has
-text that states the feature is supported by that kernel. Unfortunately,
-this check gives false positives because it many not be checked if there's
-spaces in the string to check. This is due to the compare between the
-required variable with the ":README" string stripped, because neither has
-quotes around them.
+For a request that has a priority level equal to or larger than
+IOPRIO_BE_NR, bfq_set_next_ioprio_data() prints a critical warning but
+defaults to setting the request new_ioprio field to IOPRIO_BE_NR. This
+is not consistent with the warning and the allowed values for priority
+levels. Fix this by setting the request new_ioprio field to
+IOPRIO_BE_NR - 1, the lowest priority level allowed.
 
-Link: https://lkml.kernel.org/r/20210820204742.087177341@goodmis.org
-
-Cc: "Tzvetomir Stoyanov" <tz.stoyanov@gmail.com>
-Cc: Tom Zanussi <zanussi@kernel.org>
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: Shuah Khan <skhan@linuxfoundation.org>
-Cc: linux-kselftest@vger.kernel.org
-Cc: stable@vger.kernel.org
-Fixes: 1b8eec510ba64 ("selftests/ftrace: Support ":README" suffix for requires")
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Cc: <stable@vger.kernel.org>
+Fixes: aee69d78dec0 ("block, bfq: introduce the BFQ-v0 I/O scheduler as an extra scheduler")
+Signed-off-by: Damien Le Moal <damien.lemoal@wdc.com>
+Reviewed-by: Hannes Reinecke <hare@suse.de>
+Link: https://lore.kernel.org/r/20210811033702.368488-2-damien.lemoal@wdc.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/testing/selftests/ftrace/test.d/functions |    2 +-
+ block/bfq-iosched.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/tools/testing/selftests/ftrace/test.d/functions
-+++ b/tools/testing/selftests/ftrace/test.d/functions
-@@ -115,7 +115,7 @@ check_requires() { # Check required file
-                 echo "Required tracer $t is not configured."
-                 exit_unsupported
-             fi
--        elif [ $r != $i ]; then
-+        elif [ "$r" != "$i" ]; then
-             if ! grep -Fq "$r" README ; then
-                 echo "Required feature pattern \"$r\" is not in README."
-                 exit_unsupported
+--- a/block/bfq-iosched.c
++++ b/block/bfq-iosched.c
+@@ -5011,7 +5011,7 @@ bfq_set_next_ioprio_data(struct bfq_queu
+ 	if (bfqq->new_ioprio >= IOPRIO_BE_NR) {
+ 		pr_crit("bfq_set_next_ioprio_data: new_ioprio %d\n",
+ 			bfqq->new_ioprio);
+-		bfqq->new_ioprio = IOPRIO_BE_NR;
++		bfqq->new_ioprio = IOPRIO_BE_NR - 1;
+ 	}
+ 
+ 	bfqq->entity.new_weight = bfq_ioprio_to_weight(bfqq->new_ioprio);
 
 
