@@ -2,91 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BB8D40ECBC
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 23:39:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFA0A40ECC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 23:41:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233725AbhIPVku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 17:40:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33850 "EHLO
+        id S234847AbhIPVm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 17:42:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231255AbhIPVkt (ORCPT
+        with ESMTP id S231255AbhIPVm1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 17:40:49 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FF0CC061574;
-        Thu, 16 Sep 2021 14:39:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1631828360;
-        bh=k+p/4hGDgm5K+z7CnvZZURub58LrzLwa4ARYzEzDcMI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=XyepaZxRZpJ5o03i+IcP2iMIOzpCFgcYUDrFCUY6p/3NjwRfxJbVulBcCNCENGgjk
-         pjwuj1CUTY/jQdlO0TSYwyXlVb7QD/vT2Wrq4Tq5KKOvgYYtaQJlSdwPkMGf4M1gcG
-         CGPM52IEJosxbBaOE0qrIO52sO9YtTc3V3d+CAerlPULWF0l5vCr72nr5dyBnm1LeF
-         biCAlG4JD58P7ryCcrU8OS82PPM6oM/d4uf+gJ7+RIOQ+mMj1d7pjRE/RcaryF83Zm
-         TZcoimO0ZXqxXPfI7H8h0DBTTwTjgsuMfmGVRAU8LcoE7ONVtov29GWx105UcZDfbz
-         3CFOcIP75ziPQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H9Vpc027jz9sVw;
-        Fri, 17 Sep 2021 07:39:19 +1000 (AEST)
-Date:   Fri, 17 Sep 2021 07:39:18 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Vadim Pasternak <vadimp@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the hwmon-fixes tree
-Message-ID: <20210917073918.1213288f@canb.auug.org.au>
+        Thu, 16 Sep 2021 17:42:27 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2354FC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 14:41:06 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id on12-20020a17090b1d0c00b001997c60aa29so6864464pjb.1
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 14:41:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=H6MB2ODxA8ncTb3aji91NU1uUQ9q1AebxOl6ENeKyck=;
+        b=MXQC+ZfLxlKAl3MhEJW1BaTu7x3eZBr25vDIOP4P1K/hKKNsBxR9bYAbQrcXeqx0IT
+         UwrZDJawrFH60RbkF94BswFhIwo0cou0aN+gLacubbeU6IcTTMJrkdfHEYWn3Q3CVBfY
+         FWOlqrCFMP2DA28EATBAk/sg6Cxl8pCwP9qJHgGrwzQTOnAwwW0mxDrD/8RBAtDi8Sen
+         7O4AbiMouCC1KnoWzOLrohcS9Vtb2Dd0sBl4eKlMlTi8+NrzRnGujJOfnGMsmwaTYUXB
+         tHZDCMU2HvcsbXJF8DOiqaPVnBEOB3kiFk+1tNf5dSr4/Tt9/mMCbKmuD1xBAf0iTv/g
+         rERQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=H6MB2ODxA8ncTb3aji91NU1uUQ9q1AebxOl6ENeKyck=;
+        b=NFXykzSC0OH9qyoFN8Lk8jYZcgcx8wAhfv2bDHA3LvP2iIkHi54Zzn+r/E5qVpNNIE
+         ykP7r3eeLrAg942O3XWe3Kq6h3lk6pjUQdob767nOSX6I1o7fLLZhc2Jngul3STYGQRt
+         OevlcisKAJ1kT/Zymd+ZvNLIFlW4ooJ9jAz1BZ1UM/Ee/JwAvA9z6G6P5MKLU8EF+hRD
+         kcJ3rttNwH8nhxmRuH+Symps7ehCAcmHLa6NOC7cZMoyEouW/n0hOouE0QdwBpTjDyOg
+         7eztt3jy9xINjtIp4UW+H+5aT2Y0bmdlPyQIyCAQoR6GAIW13xw/R+3eeydTnxycQBpV
+         3eFw==
+X-Gm-Message-State: AOAM531AX3Vd70l9QbxU75dURLKHItnQhAPn4DRQN/3sHBGn3y68lm+b
+        1Wsw+FPynuJ4TWOsf27gdF4sRw==
+X-Google-Smtp-Source: ABdhPJyEB8CLbdwiUNdfZdvrZtOKbQbkduopskaqSrtZd3BkA7cXNgyeY28844ULJzTSWyVMUXnICw==
+X-Received: by 2002:a17:903:244e:b0:13c:802d:92c with SMTP id l14-20020a170903244e00b0013c802d092cmr6486996pls.78.1631828465371;
+        Thu, 16 Sep 2021 14:41:05 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id z11sm4163558pff.144.2021.09.16.14.41.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Sep 2021 14:41:04 -0700 (PDT)
+Date:   Thu, 16 Sep 2021 21:41:01 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        Artem Kashkanov <artem.kashkanov@intel.com>,
+        Like Xu <like.xu.linux@gmail.com>,
+        Zhu Lingshan <lingshan.zhu@intel.com>
+Subject: Re: [PATCH v2 01/13] perf: Ensure perf_guest_cbs aren't reloaded
+ between !NULL check and deref
+Message-ID: <YUO57TlEGlUk2Q03@google.com>
+References: <20210828003558.713983-1-seanjc@google.com>
+ <20210828003558.713983-2-seanjc@google.com>
+ <20210828194421.GB4353@worktop.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/NpIlKwZMMj11h83EYNrAJAH";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210828194421.GB4353@worktop.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/NpIlKwZMMj11h83EYNrAJAH
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Sat, Aug 28, 2021, Peter Zijlstra wrote:
+> On Fri, Aug 27, 2021 at 05:35:46PM -0700, Sean Christopherson wrote:
+> > diff --git a/kernel/events/core.c b/kernel/events/core.c
+> > index 464917096e73..2126f6327321 100644
+> > --- a/kernel/events/core.c
+> > +++ b/kernel/events/core.c
+> > @@ -6491,14 +6491,19 @@ struct perf_guest_info_callbacks *perf_guest_cbs;
+> >  
+> >  int perf_register_guest_info_callbacks(struct perf_guest_info_callbacks *cbs)
+> >  {
+> > -	perf_guest_cbs = cbs;
+> > +	if (WARN_ON_ONCE(perf_guest_cbs))
+> > +		return -EBUSY;
+> > +
+> > +	WRITE_ONCE(perf_guest_cbs, cbs);
+> > +	synchronize_rcu();
+> 
+> You're waiting for all NULL users to go away? :-) IOW, we can do without
+> this synchronize_rcu() call.
 
-Hi all,
+Doh, right.  I was thinking KVM needed to wait for in-progress NMI to exit to
+ensure guest PT interrupts are handled correctly, but obviously the NMI handler
+needs to exit for that CPU to get into a guest...
 
-In commit
+> >  	return 0;
+> >  }
+> >  EXPORT_SYMBOL_GPL(perf_register_guest_info_callbacks);
+> >  
+> >  int perf_unregister_guest_info_callbacks(struct perf_guest_info_callbacks *cbs)
+> >  {
+> > -	perf_guest_cbs = NULL;
+> 
+> 	if (WARN_ON_ONCE(perf_guest_cbs != cbs))
+> 		return -EBUSY;
+> 
+> ?
 
-  d74057b1a5bc ("hwmon: (mlxreg-fan) Return non-zero value when fan current=
- state is enforced from sysfs")
-
-Fixes tag
-
-  Fixes: 65afb4c8e7e4: (hwmon: (mlxreg-fan) Add support for Mellanox FAN dr=
-iver)
-
-has these problem(s):
-
-  - missing space between the SHA1 and the subject
-  - Subject does not match target commit subject
-    Just use
-	git log -1 --format=3D'Fixes: %h ("%s")'
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/NpIlKwZMMj11h83EYNrAJAH
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFDuYYACgkQAVBC80lX
-0GxiQwgAkUDYaOj060f2OYCh9LvirPz/abuc6KA4JqcIxCEfe2/wHw652vNWUdN3
-qi4EK8+D9I8Eq2bl4IBfgk6Ia0q54LpeM5u6cePZQP/IqjtFwLUHCpwy/VwbuhTk
-tCAHrvMN9/xJLBNR/hkUWkHAJAdNQC2jCdlmwWgiInBt7RE42A0ZbsCX3XPTetMT
-DAW97zk6O0j3nktYWK+KwhatPWtdSgo8WOgy1HZsM+aSIErrmOoEwzg8wWsqg6Wb
-2deELvKZwMsg+RXyusGo0zOXSvsUwxTy5wkYYsXS/bx3gWwoFzId7A/8zRmkmcE8
-72fgSXClAziMevlz4RWMUvdoQKQkgg==
-=vq1M
------END PGP SIGNATURE-----
-
---Sig_/NpIlKwZMMj11h83EYNrAJAH--
+Works for me.  I guess I'm more optimistic about people not being morons :-)
