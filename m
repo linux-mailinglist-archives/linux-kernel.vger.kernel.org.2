@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6ED840E3A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:21:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC59A40E3D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:21:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229925AbhIPQvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:51:21 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:53278
+        id S245620AbhIPQwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:52:32 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:53344
         "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244157AbhIPQql (ORCPT
+        by vger.kernel.org with ESMTP id S243791AbhIPQrb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:46:41 -0400
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com [209.85.128.71])
+        Thu, 16 Sep 2021 12:47:31 -0400
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com [209.85.221.70])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 4DDE43F4B9
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 16:45:19 +0000 (UTC)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id DF8A240286
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 16:46:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1631810719;
-        bh=Bsa8JOGGCKGqD18D4sehfiJwGit16PjwUVoBvcbwuaE=;
-        h=From:To:Subject:Date:Message-Id:MIME-Version;
-        b=FOFao9op70RKIETayHtyeTujsjwJlRD796Ak1KKguLOI6LnEXXtlK4Rfy6V333ys/
-         FK72QFGK7H/Iv8FjQbNCUiRiOPb+SWCLgHc/jSUtWmTM7TnhAupdGvaNLbOu28ZiG8
-         oImL7ezfjZCoEbv4eQlcHQ7X6p3VMiGj2PgrA6I8xvNWm/Hw0f+8EwuPQo9HJFQLMY
-         1BBDBj6hMulWHY3xiZLeGsWhAHBHU4iu5Mm0xDbsI8a6q9p3hUEMv1+m0XA62v6FsC
-         +9eTQR6dE23RrfNBbOx4eHZeiT5NmSL1D5b6idYA0sL/5EJ11fO9mMdnF81H+0/K3P
-         LYbQ+KYksu0Zg==
-Received: by mail-wm1-f71.google.com with SMTP id 5-20020a1c00050000b02902e67111d9f0so3378676wma.4
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 09:45:19 -0700 (PDT)
+        s=20210705; t=1631810769;
+        bh=TkTHOhbG7+Cs8KGkPzHFU+IfRiM3V1/WUAdUOTTHlrE=;
+        h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
+         MIME-Version;
+        b=mMnCA+/kscSnPsUCIRZcQEDwgBNdIn+/tSkJOdpsjzs8cBcXFuwXiJ1rPK4EAmZMW
+         d4mEPwtk/B9uG6hJDPJcLCzWaQ+pnV/3hCZSCPItEz4A30teXdL4SjhG7039CPVx9T
+         dj1nKM3W4cS8gL/J7Dw9NsqRhxfqMiQ1TxNLqgsUZDZh0NglnFBZuxg29J8V1ZJfdM
+         etYcHe2u/E8UnEIUYUIr/9ZORIx7j9xGSexOw+8kO8pPlAiJVzsvGrpXZbJLfHH1cF
+         ngkEXMJ3ONRlT8C3mcTSq2JAIESbIejwSeA6do/eJtcayrV2wDPBXgUwwmwpSIMNVY
+         nAmZsla72X52g==
+Received: by mail-wr1-f70.google.com with SMTP id r9-20020a5d4989000000b0015d0fbb8823so2659578wrq.18
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 09:46:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Bsa8JOGGCKGqD18D4sehfiJwGit16PjwUVoBvcbwuaE=;
-        b=4e2wK/DQ1sobQgTq9/e/lLKKiBZ5pIqn0dIoK6lAue4a1YxDP8qrbRj5ovgFVo/Ool
-         66KJGul7gPQUb0jg31uFAI4mh+i4NQvns5wR4dSvUiqIpvdtApwcqytzFo2hEBNBCcuA
-         pqtJLX/8phIx+4e8t1tEr7CT3Km+fC5uiuht6d6h74whU74vF+rJPDg9Tr0+GP1rcZVZ
-         ZjhVt2H6bYXJdwSmVVL7Su6W18esg0JzykoUvl/dOe5iAsret5xfY84V8WyOqTTkKn3X
-         9wQuehA7hDK9infi2cpOBcnQGBU5rnY2OwGJDZn0wmrH0hU7ExuvEMGsyGur1x1us8QO
-         0s3A==
-X-Gm-Message-State: AOAM532c8iruULUH3dTelVwqQZ8pjbIB+rgyMnMMCU7//0oaSBruCcVN
-        j6h/lCrfT2Oe7+WYGadev79x7gsSxuK42mVqmy6PEcrq1NcBM069VvgVKCgJuyK69l0vE0V+lTW
-        KiQOZFcOZye8xwW45J6NQFpHqVVHFTYa5ptBNzn31NA==
-X-Received: by 2002:a7b:cd90:: with SMTP id y16mr10706132wmj.84.1631810718440;
-        Thu, 16 Sep 2021 09:45:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz2JuDX3DqgsifbIvvV1lhfVqk1firlNmZ4F0o08GsrlrdHsnMaJzFPqkY3TSk0PC9I7m7bQg==
-X-Received: by 2002:a7b:cd90:: with SMTP id y16mr10706126wmj.84.1631810718312;
-        Thu, 16 Sep 2021 09:45:18 -0700 (PDT)
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=TkTHOhbG7+Cs8KGkPzHFU+IfRiM3V1/WUAdUOTTHlrE=;
+        b=5/bUjYjK62XSCosx+SVuJ5xD3rSOPCbC+nwnAdt/66/o0oDyxF6zI6pgqp15UNXMHb
+         7y3C2/87w3ENMv93FyIVJXMukekoA345t+iDb2PzD5+gnQWICSLHA2EhFzqQXD7Wb2rk
+         pg5oNvuQPCTrbROXDzz1OltT5szrz6mqAL8iqMdwPrCuryJqEkehlvW8+wzmpOot3zZ0
+         5T3Zmf7oOQAw+Q621n1xgjGc+6QNdoI43psz51Q5gPbqllC4TtiEIpzeolzt3xI3aLkk
+         MRw8XDOA+X8m54K+GFbosLpos3DX0VgwQenb7ApSb8Qca59r+rVYBcqIBnTnEVwHOHK3
+         2wlg==
+X-Gm-Message-State: AOAM531SusUmfzRYsxVoADRVN97kYLEeH6xVR7/yv2BG/Qou0e+LLSWY
+        Uw/16kfj8y2HBEFTir1m/K1qjyGk5bNlhNbxrqGZslonDfQl28Hcy+bgFIIHc3KnqNEGjYCBymo
+        aMbI3aN+QO6EdPsafS05t6krT6FTzof5wSB8QPnB6aw==
+X-Received: by 2002:a05:600c:4f0b:: with SMTP id l11mr10746887wmq.0.1631810769631;
+        Thu, 16 Sep 2021 09:46:09 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxyW+OkIKkP01ToiSTSOU4G0hJjjzBqvO2StScpKKfwwlhY9dJZUVxfnRqcLlXIIqO+lwZLbw==
+X-Received: by 2002:a05:600c:4f0b:: with SMTP id l11mr10746871wmq.0.1631810769456;
+        Thu, 16 Sep 2021 09:46:09 -0700 (PDT)
 Received: from kozik-lap.lan (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
-        by smtp.gmail.com with ESMTPSA id j27sm3388187wms.6.2021.09.16.09.45.16
+        by smtp.gmail.com with ESMTPSA id l21sm3718194wmh.31.2021.09.16.09.46.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 09:45:17 -0700 (PDT)
+        Thu, 16 Sep 2021 09:46:08 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To:     Alessandro Zummo <a.zummo@towertech.it>,
         Alexandre Belloni <alexandre.belloni@bootlin.com>,
@@ -60,10 +61,12 @@ To:     Alessandro Zummo <a.zummo@towertech.it>,
         Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
         linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-samsung-soc@vger.kernel.org
-Subject: [PATCH 1/2] rtc: omap: drop unneeded MODULE_ALIAS
-Date:   Thu, 16 Sep 2021 18:45:12 +0200
-Message-Id: <20210916164513.134725-1-krzysztof.kozlowski@canonical.com>
+Subject: [PATCH 2/2] rtc: s5m: drop unneeded MODULE_ALIAS
+Date:   Thu, 16 Sep 2021 18:46:04 +0200
+Message-Id: <20210916164604.134924-1-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210916164513.134725-1-krzysztof.kozlowski@canonical.com>
+References: <20210916164513.134725-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -75,20 +78,18 @@ driver.  Having another MODULE_ALIAS causes the alias to be duplicated.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- drivers/rtc/rtc-omap.c | 1 -
+ drivers/rtc/rtc-s5m.c | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/drivers/rtc/rtc-omap.c b/drivers/rtc/rtc-omap.c
-index d46e0f0cc502..4d4f3b1a7309 100644
---- a/drivers/rtc/rtc-omap.c
-+++ b/drivers/rtc/rtc-omap.c
-@@ -1029,6 +1029,5 @@ static struct platform_driver omap_rtc_driver = {
- 
- module_platform_driver(omap_rtc_driver);
- 
--MODULE_ALIAS("platform:omap_rtc");
- MODULE_AUTHOR("George G. Davis (and others)");
+diff --git a/drivers/rtc/rtc-s5m.c b/drivers/rtc/rtc-s5m.c
+index fb9c6b709e13..4243fe6d3842 100644
+--- a/drivers/rtc/rtc-s5m.c
++++ b/drivers/rtc/rtc-s5m.c
+@@ -861,4 +861,3 @@ module_platform_driver(s5m_rtc_driver);
+ MODULE_AUTHOR("Sangbeom Kim <sbkim73@samsung.com>");
+ MODULE_DESCRIPTION("Samsung S5M/S2MPS14 RTC driver");
  MODULE_LICENSE("GPL");
+-MODULE_ALIAS("platform:s5m-rtc");
 -- 
 2.30.2
 
