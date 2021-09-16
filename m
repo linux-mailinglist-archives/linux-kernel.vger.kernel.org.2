@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01FF540E409
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:22:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 697B340E7DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:59:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346383AbhIPQyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:54:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36670 "EHLO mail.kernel.org"
+        id S1347510AbhIPRgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:36:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47082 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344774AbhIPQsf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:48:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E22AC61506;
-        Thu, 16 Sep 2021 16:27:30 +0000 (UTC)
+        id S1352263AbhIPR04 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:26:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9880D613D5;
+        Thu, 16 Sep 2021 16:45:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809651;
-        bh=wlrHyYfPWKz23ai1ZnO5b4NKnVRwj7Rn0UBQRRpgyJU=;
+        s=korg; t=1631810713;
+        bh=wmAn7NASzO3JH9q1wnZ3WbFIdI3bcHKwprsxehcilEY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LahYNnNukTxCKmMBvfqx79G1nIRCp9uHlnDwP8lBgL6H6A4M8eiyRTXeS/NKQlsWQ
-         DzfKxHyftW6hT3dJFhsH+pDiwfmikYdFLCQSuVZzVUEiLKD7BSI5m6uZd6vDBga9VU
-         yw+s4BW8xFjorn0lX+kPOyLQd+8FVfkvghS2lk9I=
+        b=omHmKDoV9/+M8L9i3Kcvq9hCtrr1xHZEj5RvXhTIL8O6hJYGusKJbxRGnDRVrlu6f
+         tM5WvQExkEyTvfS1rZaC1YnCGfQO/tcSvF71lp4NhqPa0YXv5jMSfjCPMLhtShtYmV
+         PiZNCGDtr73WTTsrxWOzJ7C7xFUGgL06p1kSJbjY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        syzbot+66264bf2fd0476be7e6c@syzkaller.appspotmail.com,
+        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 232/380] arm64: dts: qcom: sdm630: Rewrite memory map
-Date:   Thu, 16 Sep 2021 17:59:49 +0200
-Message-Id: <20210916155811.974265274@linuxfoundation.org>
+Subject: [PATCH 5.14 241/432] Bluetooth: skip invalid hci_sync_conn_complete_evt
+Date:   Thu, 16 Sep 2021 17:59:50 +0200
+Message-Id: <20210916155819.001775369@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,113 +42,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+From: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
 
-[ Upstream commit 26e02c98a9ad63eb21b9be4ac92002f555130d3b ]
+[ Upstream commit 92fe24a7db751b80925214ede43f8d2be792ea7b ]
 
-The memory map was wrong. Fix it.
+Syzbot reported a corrupted list in kobject_add_internal [1]. This
+happens when multiple HCI_EV_SYNC_CONN_COMPLETE event packets with
+status 0 are sent for the same HCI connection. This causes us to
+register the device more than once which corrupts the kset list.
 
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
-Link: https://lore.kernel.org/r/20210728222542.54269-2-konrad.dybcio@somainline.org
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+As this is forbidden behavior, we add a check for whether we're
+trying to process the same HCI_EV_SYNC_CONN_COMPLETE event multiple
+times for one connection. If that's the case, the event is invalid, so
+we report an error that the device is misbehaving, and ignore the
+packet.
+
+Link: https://syzkaller.appspot.com/bug?extid=66264bf2fd0476be7e6c [1]
+Reported-by: syzbot+66264bf2fd0476be7e6c@syzkaller.appspotmail.com
+Tested-by: syzbot+66264bf2fd0476be7e6c@syzkaller.appspotmail.com
+Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/sdm630.dtsi | 41 ++++++++++++----------------
- 1 file changed, 18 insertions(+), 23 deletions(-)
+ net/bluetooth/hci_event.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm630.dtsi b/arch/arm64/boot/dts/qcom/sdm630.dtsi
-index f91a928466c3..5ea3884b3ccb 100644
---- a/arch/arm64/boot/dts/qcom/sdm630.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm630.dtsi
-@@ -343,10 +343,19 @@ wlan_msa_mem: wlan-msa-mem@85700000 {
- 		};
+diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+index 1c3018202564..ea7fc09478be 100644
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -4382,6 +4382,21 @@ static void hci_sync_conn_complete_evt(struct hci_dev *hdev,
  
- 		qhee_code: qhee-code@85800000 {
--			reg = <0x0 0x85800000 0x0 0x3700000>;
-+			reg = <0x0 0x85800000 0x0 0x600000>;
- 			no-map;
- 		};
- 
-+		rmtfs_mem: memory@85e00000 {
-+			compatible = "qcom,rmtfs-mem";
-+			reg = <0x0 0x85e00000 0x0 0x200000>;
-+			no-map;
+ 	switch (ev->status) {
+ 	case 0x00:
++		/* The synchronous connection complete event should only be
++		 * sent once per new connection. Receiving a successful
++		 * complete event when the connection status is already
++		 * BT_CONNECTED means that the device is misbehaving and sent
++		 * multiple complete event packets for the same new connection.
++		 *
++		 * Registering the device more than once can corrupt kernel
++		 * memory, hence upon detecting this invalid event, we report
++		 * an error and ignore the packet.
++		 */
++		if (conn->state == BT_CONNECTED) {
++			bt_dev_err(hdev, "Ignoring connect complete event for existing connection");
++			goto unlock;
++		}
 +
-+			qcom,client-id = <1>;
-+			qcom,vmid = <15>;
-+		};
-+
- 		smem_region: smem-mem@86000000 {
- 			reg = <0 0x86000000 0 0x200000>;
- 			no-map;
-@@ -357,58 +366,44 @@ tz_mem: memory@86200000 {
- 			no-map;
- 		};
- 
--		modem_fw_mem: modem-fw-region@8ac00000 {
-+		mpss_region: mpss@8ac00000 {
- 			reg = <0x0 0x8ac00000 0x0 0x7e00000>;
- 			no-map;
- 		};
- 
--		adsp_fw_mem: adsp-fw-region@92a00000 {
-+		adsp_region: adsp@92a00000 {
- 			reg = <0x0 0x92a00000 0x0 0x1e00000>;
- 			no-map;
- 		};
- 
--		pil_mba_mem: pil-mba-region@94800000 {
-+		mba_region: mba@94800000 {
- 			reg = <0x0 0x94800000 0x0 0x200000>;
- 			no-map;
- 		};
- 
--		buffer_mem: buffer-region@94a00000 {
-+		buffer_mem: tzbuffer@94a00000 {
- 			reg = <0x0 0x94a00000 0x0 0x100000>;
- 			no-map;
- 		};
- 
--		venus_fw_mem: venus-fw-region@9f800000 {
-+		venus_region: venus@9f800000 {
- 			reg = <0x0 0x9f800000 0x0 0x800000>;
- 			no-map;
- 		};
- 
--		secure_region2: secure-region2@f7c00000 {
--			reg = <0x0 0xf7c00000 0x0 0x5c00000>;
--			no-map;
--		};
--
- 		adsp_mem: adsp-region@f6000000 {
- 			reg = <0x0 0xf6000000 0x0 0x800000>;
- 			no-map;
- 		};
- 
--		qseecom_ta_mem: qseecom-ta-region@fec00000 {
--			reg = <0x0 0xfec00000 0x0 0x1000000>;
--			no-map;
--		};
--
- 		qseecom_mem: qseecom-region@f6800000 {
- 			reg = <0x0 0xf6800000 0x0 0x1400000>;
- 			no-map;
- 		};
- 
--		secure_display_memory: secure-region@f5c00000 {
--			reg = <0x0 0xf5c00000 0x0 0x5c00000>;
--			no-map;
--		};
--
--		cont_splash_mem: cont-splash-region@9d400000 {
--			reg = <0x0 0x9d400000 0x0 0x23ff000>;
-+		zap_shader_region: gpu@fed00000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0x0 0xfed00000 0x0 0xa00000>;
- 			no-map;
- 		};
- 	};
+ 		conn->handle = __le16_to_cpu(ev->handle);
+ 		conn->state  = BT_CONNECTED;
+ 		conn->type   = ev->link_type;
 -- 
 2.30.2
 
