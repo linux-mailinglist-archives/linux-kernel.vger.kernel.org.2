@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B962240E370
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:20:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80A2840E6FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:32:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245357AbhIPQsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:48:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58604 "EHLO mail.kernel.org"
+        id S1348104AbhIPR1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:27:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44338 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343662AbhIPQnb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:43:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E0B061A51;
-        Thu, 16 Sep 2021 16:25:06 +0000 (UTC)
+        id S1351716AbhIPRT1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:19:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F04CA61A0C;
+        Thu, 16 Sep 2021 16:41:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809507;
-        bh=QPnP8Y83eXrqB45XfSTnst6zMUhMxU7dGsBKRkwtUKA=;
+        s=korg; t=1631810485;
+        bh=kc1FYvBpSgEy2QFyFkir9/64Xk8FZ8y5oackNASlSTc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RXNGtmsrHB+DlPWMYDMojhiQV7sLEhDFXzw7qoFVLznH60tVoMgM4c+vSoQMAqwRl
-         FhnmbddxUuLIrtYq9kQTeT13z4eYsWJkEvMQ8SbGmfTpDQ+q4f7pIkIXyKbATfuWL1
-         /twUTSEAJe3izlXdb7SUIE5O/TgCyYD0T9YD68xM=
+        b=KpWSKdrFuYUYK3rLdBGghhljeB/ZEmAHeIhAQsWTXTs99ww1uYxfd+/mheAwV7CJe
+         NSGgN4ROMhyJlNQLUHULXifcotoyZxzuI5rZHYJ5KL29VFDoebiRKxedsuOrQFBqwq
+         QfHgqjvNvFg2tSdAeY3goXxn0QXW76hBglkAa+nQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Zack Rusin <zackr@vmware.com>,
+        Roland Scheidegger <sroland@vmware.com>,
+        Martin Krastev <krastevm@vmware.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 148/380] media: ti-vpe: cal: fix queuing of the initial buffer
-Date:   Thu, 16 Sep 2021 17:58:25 +0200
-Message-Id: <20210916155809.096006550@linuxfoundation.org>
+Subject: [PATCH 5.14 157/432] drm/vmwgfx: Fix subresource updates with new contexts
+Date:   Thu, 16 Sep 2021 17:58:26 +0200
+Message-Id: <20210916155816.068448325@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,40 +41,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+From: Zack Rusin <zackr@vmware.com>
 
-[ Upstream commit 892c37f8a3d673b945e951a8754695c119a2b1b0 ]
+[ Upstream commit a12be0277316ed923411c9c80b2899ee74d2b033 ]
 
-When starting streaming the driver currently programs the buffer
-address to the CAL base-address register and assigns the buffer pointer
-to ctx->dma.pending. This is not correct, as the buffer is not
-"pending", but active, and causes the first buffer to be needlessly
-written twice.
+The has_dx variable was only set during the initialization which
+meant that UPDATE_SUBRESOURCE was never used. We were emulating it
+with UPDATE_GB_IMAGE but that's always been a stop-gap. Instead
+of has_dx which has been deprecated a long time ago we need to check
+for whether shader model 4.0 or newer is available to the device.
 
-Fix this by assigning the buffer pointer to ctx->dma.active.
-
-Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Zack Rusin <zackr@vmware.com>
+Reviewed-by: Roland Scheidegger <sroland@vmware.com>
+Reviewed-by: Martin Krastev <krastevm@vmware.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210609172307.131929-4-zackr@vmware.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/ti-vpe/cal-video.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/vmwgfx/vmwgfx_surface.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/media/platform/ti-vpe/cal-video.c b/drivers/media/platform/ti-vpe/cal-video.c
-index 7b7436a355ee..b9405f70af9f 100644
---- a/drivers/media/platform/ti-vpe/cal-video.c
-+++ b/drivers/media/platform/ti-vpe/cal-video.c
-@@ -694,7 +694,7 @@ static int cal_start_streaming(struct vb2_queue *vq, unsigned int count)
+diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_surface.c b/drivers/gpu/drm/vmwgfx/vmwgfx_surface.c
+index 0835468bb2ee..47c03a276515 100644
+--- a/drivers/gpu/drm/vmwgfx/vmwgfx_surface.c
++++ b/drivers/gpu/drm/vmwgfx/vmwgfx_surface.c
+@@ -1872,7 +1872,6 @@ static void vmw_surface_dirty_range_add(struct vmw_resource *res, size_t start,
+ static int vmw_surface_dirty_sync(struct vmw_resource *res)
+ {
+ 	struct vmw_private *dev_priv = res->dev_priv;
+-	bool has_dx = 0;
+ 	u32 i, num_dirty;
+ 	struct vmw_surface_dirty *dirty =
+ 		(struct vmw_surface_dirty *) res->dirty;
+@@ -1899,7 +1898,7 @@ static int vmw_surface_dirty_sync(struct vmw_resource *res)
+ 	if (!num_dirty)
+ 		goto out;
  
- 	spin_lock_irq(&ctx->dma.lock);
- 	buf = list_first_entry(&ctx->dma.queue, struct cal_buffer, list);
--	ctx->dma.pending = buf;
-+	ctx->dma.active = buf;
- 	list_del(&buf->list);
- 	spin_unlock_irq(&ctx->dma.lock);
- 
+-	alloc_size = num_dirty * ((has_dx) ? sizeof(*cmd1) : sizeof(*cmd2));
++	alloc_size = num_dirty * ((has_sm4_context(dev_priv)) ? sizeof(*cmd1) : sizeof(*cmd2));
+ 	cmd = VMW_CMD_RESERVE(dev_priv, alloc_size);
+ 	if (!cmd)
+ 		return -ENOMEM;
+@@ -1917,7 +1916,7 @@ static int vmw_surface_dirty_sync(struct vmw_resource *res)
+ 		 * DX_UPDATE_SUBRESOURCE is aware of array surfaces.
+ 		 * UPDATE_GB_IMAGE is not.
+ 		 */
+-		if (has_dx) {
++		if (has_sm4_context(dev_priv)) {
+ 			cmd1->header.id = SVGA_3D_CMD_DX_UPDATE_SUBRESOURCE;
+ 			cmd1->header.size = sizeof(cmd1->body);
+ 			cmd1->body.sid = res->id;
 -- 
 2.30.2
 
