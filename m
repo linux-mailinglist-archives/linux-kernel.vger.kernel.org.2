@@ -2,71 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CA6540DC7C
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 16:11:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2999540DC7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 16:11:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238353AbhIPOMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 10:12:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52144 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238063AbhIPOMh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 10:12:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D8F361056;
-        Thu, 16 Sep 2021 14:11:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631801476;
-        bh=zRKM9ywgNPfShQPgTqpbqd7+yg4RwBKPi0Wl+h62Wsg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=aUk3hETcCCNBuwI9m8JCpw5R+ZEcEwCk4ihMMajLHCccmwpXzpj/9O0RkW0TxnF2J
-         Q3ENSDNsHEpfqE4pGy8lEmiGAs32rm1w+DGOWxWGDHNzrS6dRMEKz6/GOJ/2mbv/yg
-         yco8whsKWIKc1LNEdquLtI6H5r9geLJ6ned10Tv0yQujWTKMauWdeZT3xyJmEmdRst
-         6/8Zhq/eWxkdMdZEaOTkuETZil83P7RKGEjGwJDmZRLrlv2n2uqx8Z+TXzJRR8FRYM
-         uHWU+nRoDvXKl4NGc6//q8E+pNFMrKpNGiAJ7Qu34SnVJJwds7aDVa5HUAOukk2K3m
-         HcTUjt4kCJsFg==
-Date:   Thu, 16 Sep 2021 07:11:15 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jiri Pirko <jiri@nvidia.com>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH net-next] devlink: Delete not-used devlink APIs
-Message-ID: <20210916071115.09cfc02a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <YUNMAi0Qjj5Dxiiw@unreal>
-References: <a45674a8cb1c1e0133811d95756357b787673e52.1631788678.git.leonro@nvidia.com>
-        <20210916063318.7275cadf@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <YUNMAi0Qjj5Dxiiw@unreal>
+        id S235489AbhIPOMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 10:12:55 -0400
+Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:49403 "EHLO
+        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235557AbhIPOMy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 10:12:54 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id 580FE822CD;
+        Thu, 16 Sep 2021 17:11:32 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1631801492;
+        bh=ItArpZzrHU+TglHzR+KVEuwuqP1JeFCPdBeCYCtmFrw=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=SdpBBxNU3uI0E5FxdAe++amGnylgKmxtotvaSKgAonoADGitwNNWy31f1mv91P3Qd
+         nkdEJ8rFyUNLzUgrcTfkAb3mZs/Tdk/BdrwLAP2IgqHpbVHL9CBgXxsDDOksw4+fUV
+         OJiCdp+dkKfto+JbQZs0lAVO77Acd0pXhTcXHv1o=
+Received: from [192.168.211.100] (192.168.211.100) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 16 Sep 2021 17:11:32 +0300
+Message-ID: <9ddd042f-cb8e-cb8a-bcaf-0ada1345c899@paragon-software.com>
+Date:   Thu, 16 Sep 2021 17:11:31 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH 0/4] Fix error path and use kernel macros for
+ min/max/calmp
+Content-Language: en-US
+To:     Kari Argillander <kari.argillander@gmail.com>,
+        <ntfs3@lists.linux.dev>
+CC:     <linux-kernel@vger.kernel.org>
+References: <20210907142842.133181-1-kari.argillander@gmail.com>
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+In-Reply-To: <20210907142842.133181-1-kari.argillander@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.168.211.100]
+X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
+ vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Sep 2021 16:52:02 +0300 Leon Romanovsky wrote:
-> > The port_param functions are "symmetric" with the global param 
-> > ones. Removing them makes the API look somewhat incomplete.  
-> 
-> There is no value in having "complete" API that no one uses.
 
-Well, for an API which we are hoping to attract vendors to, the
-"completeness" could be useful. If kernel needs to be extended
-some will fall back to their out of tree tools.
 
-> > Obviously the general guidance is that we shouldn't export 
-> > functions which have no upstream users but that applies to 
-> > meaningful APIs. For all practical purposes this is just a 
-> > sliver of an API, completeness gives nice warm feelings.  
+On 07.09.2021 17:28, Kari Argillander wrote:
+> First fix some error path fault which I found during when I did this.
+> It should go to 5.15.
 > 
-> It is misleading, I have much more warm feeling when I see API that is
-> used. Once it will be needed, the next developer will copy/paste it
-> pretty fast.
+> For better code readability we can use kernel defined macros. Patch
+> 2/4 also removes some dead code so that it would be more clear why
+> do we do what we do in patch 3/4.
 > 
-> > Anyway, just curious what made you do this. I wouldn't do it 
-> > myself but neither am I substantially opposed.  
+> Series is tested with xfs-tests. No recression in my tests.
 > 
-> Move of devlink_register() to be last command in the devlink init flow
-> and removal of devlink_*_publish() calls as an outcome of that.
+> Kari Argillander (4):
+>   fs/ntfs3: Fix ntfs_look_for_free_space() does only report -ENOSPC
+>   fs/ntfs3: Remove always false condition check
+>   fs/ntfs3: Use clamp/max macros instead of comparisons
+>   fs/ntfs3: Use min/max macros instated of ternary operators
+> 
+>  fs/ntfs3/attrib.c |  3 ++-
+>  fs/ntfs3/bitmap.c | 11 ++++----
+>  fs/ntfs3/fsntfs.c | 68 +++++++++++++++++++++++------------------------
+>  3 files changed, 41 insertions(+), 41 deletions(-)
+> 
+> 
+> base-commit: 2e3a51b59ea26544303e168de8a0479915f09aa3
+> 
 
-Alrighty:
-
-Acked-by: Jakub Kicinski <kuba@kernel.org>
+Thanks for patches, applied!
