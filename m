@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 698C240E2F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:18:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99E2840E721
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:32:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242702AbhIPQnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:43:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52388 "EHLO mail.kernel.org"
+        id S1352846AbhIPR3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:29:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43514 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235565AbhIPQiG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:38:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B846261409;
-        Thu, 16 Sep 2021 16:22:37 +0000 (UTC)
+        id S1351937AbhIPRUA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:20:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 51EFD61A10;
+        Thu, 16 Sep 2021 16:41:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809358;
-        bh=Zh/G5Xqaj523wWnMSa1wm05xzCg7ZM7AILOsvKO3ddQ=;
+        s=korg; t=1631810504;
+        bh=21bRNlJHjvzXKdcnLpXqGJVjQNQ/P5nEphiX9ffc22A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1tKl4Ajv/o5bOA/60Lnb2fwMYaLbAVAn/673Yf4w+aQ9JqMEgHa0EMDHuh9hQbfG3
-         F38b0sipA2EBgVEzGF3ZCvkEIRWGm87NEGum/Dd08HTQ4dq541WnKFwuPwAci+B5GD
-         +GBBPp0sw7VmsmOMnfpjX1Sf4/fVetmLHOjNDAF4=
+        b=KgNRuTHsR+a2nLtGq4VpXzHBh+j8FLQL0GsXH0uj7UXOGMq9RoRRKoF/4OrMj3++G
+         M/8da/faMFKWLYAF+CNwhz3wpV1Wpi/LJ3cMSYj+WV/EFTvZYVizNAnTWKd0ptDDp5
+         uElSb78mivcr/LGAr92hhzDyPiPboCVpV4LV7GCg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wenpeng Liang <liangwenpeng@huawei.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Fabiano Rosas <farosas@linux.ibm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 125/380] RDMA/hns: Fix QPs resp incomplete assignment
+Subject: [PATCH 5.14 133/432] KVM: PPC: Book3S HV Nested: Reflect guest PMU in-use to L0 when guest SPRs are live
 Date:   Thu, 16 Sep 2021 17:58:02 +0200
-Message-Id: <20210916155808.292671168@linuxfoundation.org>
+Message-Id: <20210916155815.268614011@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,52 +41,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wenpeng Liang <liangwenpeng@huawei.com>
+From: Nicholas Piggin <npiggin@gmail.com>
 
-[ Upstream commit d2e0ccffcdd7209fc9881c8970d2a7e28dcb43b9 ]
+[ Upstream commit 1782663897945a5cf28e564ba5eed730098e9aa4 ]
 
-The resp passed to the user space represents the enable flag of qp,
-incomplete assignment will cause some features of the user space to be
-disabled.
+After the L1 saves its PMU SPRs but before loading the L2's PMU SPRs,
+switch the pmcregs_in_use field in the L1 lppaca to the value advertised
+by the L2 in its VPA. On the way out of the L2, set it back after saving
+the L2 PMU registers (if they were in-use).
 
-Fixes: 90ae0b57e4a5 ("RDMA/hns: Combine enable flags of qp")
-Fixes: aba457ca890c ("RDMA/hns: Support owner mode doorbell")
-Link: https://lore.kernel.org/r/1629985056-57004-3-git-send-email-liangwenpeng@huawei.com
-Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+This transfers the PMU liveness indication between the L1 and L2 at the
+points where the registers are not live.
+
+This fixes the nested HV bug for which a workaround was added to the L0
+HV by commit 63279eeb7f93a ("KVM: PPC: Book3S HV: Always save guest pmu
+for guest capable of nesting"), which explains the problem in detail.
+That workaround is no longer required for guests that include this bug
+fix.
+
+Fixes: 360cae313702 ("KVM: PPC: Book3S HV: Nested guest entry via hypercall")
+Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Reviewed-by: Fabiano Rosas <farosas@linux.ibm.com>
+Link: https://lore.kernel.org/r/20210811160134.904987-10-npiggin@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/hns/hns_roce_qp.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ arch/powerpc/include/asm/pmc.h |  7 +++++++
+ arch/powerpc/kvm/book3s_hv.c   | 20 ++++++++++++++++++++
+ 2 files changed, 27 insertions(+)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-index 80661d368860..5d5dd0b5d507 100644
---- a/drivers/infiniband/hw/hns/hns_roce_qp.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-@@ -835,7 +835,6 @@ static int alloc_qp_db(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
- 				goto err_out;
- 			}
- 			hr_qp->en_flags |= HNS_ROCE_QP_CAP_SQ_RECORD_DB;
--			resp->cap_flags |= HNS_ROCE_QP_CAP_SQ_RECORD_DB;
- 		}
+diff --git a/arch/powerpc/include/asm/pmc.h b/arch/powerpc/include/asm/pmc.h
+index c6bbe9778d3c..3c09109e708e 100644
+--- a/arch/powerpc/include/asm/pmc.h
++++ b/arch/powerpc/include/asm/pmc.h
+@@ -34,6 +34,13 @@ static inline void ppc_set_pmu_inuse(int inuse)
+ #endif
+ }
  
- 		if (user_qp_has_rdb(hr_dev, init_attr, udata, resp)) {
-@@ -848,7 +847,6 @@ static int alloc_qp_db(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
- 				goto err_sdb;
- 			}
- 			hr_qp->en_flags |= HNS_ROCE_QP_CAP_RQ_RECORD_DB;
--			resp->cap_flags |= HNS_ROCE_QP_CAP_RQ_RECORD_DB;
- 		}
- 	} else {
- 		if (hr_dev->pci_dev->revision >= PCI_REVISION_ID_HIP09)
-@@ -1060,6 +1058,7 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
- 	}
++#ifdef CONFIG_KVM_BOOK3S_HV_POSSIBLE
++static inline int ppc_get_pmu_inuse(void)
++{
++	return get_paca()->pmcregs_in_use;
++}
++#endif
++
+ extern void power4_enable_pmcs(void);
  
- 	if (udata) {
-+		resp.cap_flags = hr_qp->en_flags;
- 		ret = ib_copy_to_udata(udata, &resp,
- 				       min(udata->outlen, sizeof(resp)));
- 		if (ret) {
+ #else /* CONFIG_PPC64 */
+diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
+index 085fb8ecbf68..af822f09785f 100644
+--- a/arch/powerpc/kvm/book3s_hv.c
++++ b/arch/powerpc/kvm/book3s_hv.c
+@@ -59,6 +59,7 @@
+ #include <asm/kvm_book3s.h>
+ #include <asm/mmu_context.h>
+ #include <asm/lppaca.h>
++#include <asm/pmc.h>
+ #include <asm/processor.h>
+ #include <asm/cputhreads.h>
+ #include <asm/page.h>
+@@ -3852,6 +3853,18 @@ static int kvmhv_p9_guest_entry(struct kvm_vcpu *vcpu, u64 time_limit,
+ 	    cpu_has_feature(CPU_FTR_P9_TM_HV_ASSIST))
+ 		kvmppc_restore_tm_hv(vcpu, vcpu->arch.shregs.msr, true);
+ 
++#ifdef CONFIG_PPC_PSERIES
++	if (kvmhv_on_pseries()) {
++		barrier();
++		if (vcpu->arch.vpa.pinned_addr) {
++			struct lppaca *lp = vcpu->arch.vpa.pinned_addr;
++			get_lppaca()->pmcregs_in_use = lp->pmcregs_in_use;
++		} else {
++			get_lppaca()->pmcregs_in_use = 1;
++		}
++		barrier();
++	}
++#endif
+ 	kvmhv_load_guest_pmu(vcpu);
+ 
+ 	msr_check_and_set(MSR_FP | MSR_VEC | MSR_VSX);
+@@ -3986,6 +3999,13 @@ static int kvmhv_p9_guest_entry(struct kvm_vcpu *vcpu, u64 time_limit,
+ 	save_pmu |= nesting_enabled(vcpu->kvm);
+ 
+ 	kvmhv_save_guest_pmu(vcpu, save_pmu);
++#ifdef CONFIG_PPC_PSERIES
++	if (kvmhv_on_pseries()) {
++		barrier();
++		get_lppaca()->pmcregs_in_use = ppc_get_pmu_inuse();
++		barrier();
++	}
++#endif
+ 
+ 	vc->entry_exit_map = 0x101;
+ 	vc->in_guest = 0;
 -- 
 2.30.2
 
