@@ -2,115 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D08640D22E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 05:58:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EB6540D231
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 06:01:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234201AbhIPD7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 23:59:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56180 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232217AbhIPD7W (ORCPT
+        id S230344AbhIPECx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 00:02:53 -0400
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:6828 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229463AbhIPECw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 23:59:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631764681;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hNTVI4DHdE4iH7+lWLOfR6K8Vz2L3FwykdFKQ1bK5eo=;
-        b=NuMMS2clKsFBUAjAEq629rbNsGcqgSPuovtOxNM0yb94DUznVz8MwINf17aHsVz1+90b2x
-        bgIrQUBd0LRK5+LF/GRmJQlq+3T815gecwm0w8p6k4Bv092csPmYLbK4Dl4+rBKORE0ePP
-        3E0Mn9Xmqm0ZqZPpNJUlEkbQN5GKzok=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-387-dCJgUVJpM26-lcpE4cnw-A-1; Wed, 15 Sep 2021 23:57:58 -0400
-X-MC-Unique: dCJgUVJpM26-lcpE4cnw-A-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9F360343D0;
-        Thu, 16 Sep 2021 03:57:55 +0000 (UTC)
-Received: from piliu.users.ipa.redhat.com (ovpn-8-20.pek2.redhat.com [10.72.8.20])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0DB0810016FB;
-        Thu, 16 Sep 2021 03:57:48 +0000 (UTC)
-Date:   Thu, 16 Sep 2021 11:57:44 +0800
-From:   Pingfan Liu <piliu@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Pingfan Liu <kernelfans@gmail.com>, linux-kernel@vger.kernel.org,
-        Petr Mladek <pmladek@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Wang Qing <wangqing@vivo.com>,
-        Santosh Sivaraj <santosh@fossix.org>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH 2/5] kernel/watchdog_hld: clarify the condition in
- hardlockup_detector_event_create()
-Message-ID: <YULAuEeSSeLTcBM9@piliu.users.ipa.redhat.com>
-References: <20210915035103.15586-1-kernelfans@gmail.com>
- <20210915035103.15586-3-kernelfans@gmail.com>
- <YUH44qrky9oM+3nU@hirez.programming.kicks-ass.net>
+        Thu, 16 Sep 2021 00:02:52 -0400
+IronPort-Data: =?us-ascii?q?A9a23=3A357CzKBYh08fLxVW/1Liw5YqxClBgxIJ4g17XOL?=
+ =?us-ascii?q?fBlW7gTxz1zcByjAaWj/XOf2LZDD8Kt1xbo208EIEsJOAx9UxeLYW3SszFioV8?=
+ =?us-ascii?q?6IpJjg4wn/YZnrUdouaJK5ex512huLocYZkExcwmj/3auK49Sgli/nRLlbBILW?=
+ =?us-ascii?q?s1h5ZFFYMpBgJ2UoLd94R2uaEsPDha++/kYqaT/73ZDdJ7wVJ3lc8sMpvnv/AU?=
+ =?us-ascii?q?MPa41v0tnRmDRxCUcS3e3M9VPrzLonpR5f0rxU9IwK0ewrD5OnREmLx9BFrBM6?=
+ =?us-ascii?q?nk6rgbwsBRbu60Qqm0yIQAvb9xEMZ4HFaPqUTbZLwbW9NljyPhME3xtNWqbS+V?=
+ =?us-ascii?q?AUoIrbR3u8aVnG0FgknZPEbpeSXeyfXXcu7iheun2HX6/lnEkA6FYMC/eNwG2t?=
+ =?us-ascii?q?P6boTLzVlRg+Cg+an6LO9RPNliskqII/sJox3kn1py3fbS+knRZTCSqDRzd5ew?=
+ =?us-ascii?q?Do0wMtJGJ72a8gGbjxgRBfNeRtCPhEQEp1WtOG2inj6dhVcqUmJvuwz4m7O3Ep?=
+ =?us-ascii?q?93aaFGNreevSOXtkTkkvwjnjJ+GD1HQAcHMeC0jfD/n/EruvOmz7rHYwJGLCm+?=
+ =?us-ascii?q?/pCnlKe3CoQBQcQWF/9puO24ma6WtRCOwkX9zAooKwa6kOmVJ/+Uge+rXrCuQQ?=
+ =?us-ascii?q?TM/JUEusn+ESdxLH8/QmUHC4HQyRHZdhgs9U5LRQ010WOt8HkAz1x9rmUT2+Ns?=
+ =?us-ascii?q?LCOonWvOkAowcUqDcMfZVJdpYC9/8do1VSSJuuP2ZWd1rXdcQwcCRjTxMTmu4g?=
+ =?us-ascii?q?usA=3D=3D?=
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AQbzQjKHfi1gB9f85pLqE1MeALOsnbusQ8zAX?=
+ =?us-ascii?q?PiFKOHhom6mj+vxG88506faKslwssR0b+OxoW5PwJE80l6QFgrX5VI3KNGbbUQ?=
+ =?us-ascii?q?CTXeNfBOXZowHIKmnX8+5x8eNaebFiNduYNzNHpPe/zA6mM9tI+rW6zJw=3D?=
+X-IronPort-AV: E=Sophos;i="5.85,297,1624291200"; 
+   d="scan'208";a="114553827"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 16 Sep 2021 12:01:30 +0800
+Received: from G08CNEXMBPEKD06.g08.fujitsu.local (unknown [10.167.33.206])
+        by cn.fujitsu.com (Postfix) with ESMTP id B49994D0DC75;
+        Thu, 16 Sep 2021 12:01:26 +0800 (CST)
+Received: from G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.85) by
+ G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.23; Thu, 16 Sep 2021 12:01:20 +0800
+Received: from [127.0.0.1] (10.167.225.141) by
+ G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
+ id 15.0.1497.23 via Frontend Transport; Thu, 16 Sep 2021 12:01:20 +0800
+Subject: Re: [PATCH v9 8/8] xfs: Add dax dedupe support
+To:     "Darrick J. Wong" <djwong@kernel.org>
+CC:     <hch@lst.de>, <linux-xfs@vger.kernel.org>,
+        <dan.j.williams@intel.com>, <david@fromorbit.com>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <nvdimm@lists.linux.dev>, <rgoldwyn@suse.de>,
+        <viro@zeniv.linux.org.uk>, <willy@infradead.org>
+References: <20210915104501.4146910-1-ruansy.fnst@fujitsu.com>
+ <20210915104501.4146910-9-ruansy.fnst@fujitsu.com>
+ <20210916003008.GE34830@magnolia>
+From:   Shiyang Ruan <ruansy.fnst@fujitsu.com>
+Message-ID: <38eeee6f-aa11-4c13-b7c0-2e48927b85dc@fujitsu.com>
+Date:   Thu, 16 Sep 2021 12:01:18 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YUH44qrky9oM+3nU@hirez.programming.kicks-ass.net>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <20210916003008.GE34830@magnolia>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-yoursite-MailScanner-ID: B49994D0DC75.A3825
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: ruansy.fnst@fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 03:45:06PM +0200, Peter Zijlstra wrote:
-> On Wed, Sep 15, 2021 at 11:51:00AM +0800, Pingfan Liu wrote:
-> > hardlockup_detector_event_create() indirectly calls
-> > kmem_cache_alloc_node(), which is blockable.
-> > 
-> > So here, the really planned context is is_percpu_thread().
-> > 
-> > Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
-> > Cc: Petr Mladek <pmladek@suse.com>
-> > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > Cc: Wang Qing <wangqing@vivo.com>
-> > Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
-> > Cc: Santosh Sivaraj <santosh@fossix.org>
-> > Cc: Sumit Garg <sumit.garg@linaro.org>
-> > Cc: Will Deacon <will@kernel.org>
-> > Cc: Mark Rutland <mark.rutland@arm.com>
-> > To: linux-kernel@vger.kernel.org
-> > ---
-> >  kernel/watchdog_hld.c | 5 ++++-
-> >  1 file changed, 4 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/kernel/watchdog_hld.c b/kernel/watchdog_hld.c
-> > index 247bf0b1582c..6876e796dbf5 100644
-> > --- a/kernel/watchdog_hld.c
-> > +++ b/kernel/watchdog_hld.c
-> > @@ -165,10 +165,13 @@ static void watchdog_overflow_callback(struct perf_event *event,
-> >  
-> >  static int hardlockup_detector_event_create(void)
-> >  {
-> > -	unsigned int cpu = smp_processor_id();
-> > +	unsigned int cpu;
-> >  	struct perf_event_attr *wd_attr;
-> >  	struct perf_event *evt;
-> >  
-> > +	/* This function plans to execute in cpu bound kthread */
-> > +	BUG_ON(!is_percpu_thread());
-> > +	cpu = raw_smp_processor_id();
-> >  	wd_attr = &wd_hw_attr;
-> >  	wd_attr->sample_period = hw_nmi_get_sample_period(watchdog_thresh);
+
+
+On 2021/9/16 8:30, Darrick J. Wong wrote:
+> On Wed, Sep 15, 2021 at 06:45:01PM +0800, Shiyang Ruan wrote:
+>> Introduce xfs_mmaplock_two_inodes_and_break_dax_layout() for dax files
+>> who are going to be deduped.  After that, call compare range function
+>> only when files are both DAX or not.
+>>
+>> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
+>> Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+>> Reviewed-by: Christoph Hellwig <hch@lst.de>
+>> ---
+>>   fs/xfs/xfs_file.c    |  2 +-
+>>   fs/xfs/xfs_inode.c   | 80 +++++++++++++++++++++++++++++++++++++++++---
+>>   fs/xfs/xfs_inode.h   |  1 +
+>>   fs/xfs/xfs_reflink.c |  4 +--
+>>   4 files changed, 80 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
+>> index 2ef1930374d2..c3061723613c 100644
+>> --- a/fs/xfs/xfs_file.c
+>> +++ b/fs/xfs/xfs_file.c
+>> @@ -846,7 +846,7 @@ xfs_wait_dax_page(
+>>   	xfs_ilock(ip, XFS_MMAPLOCK_EXCL);
+>>   }
+>>   
+>> -static int
+>> +int
+>>   xfs_break_dax_layouts(
+>>   	struct inode		*inode,
+>>   	bool			*retry)
+>> diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
+>> index a4f6f034fb81..bdc084cdbf46 100644
+>> --- a/fs/xfs/xfs_inode.c
+>> +++ b/fs/xfs/xfs_inode.c
+>> @@ -3790,6 +3790,61 @@ xfs_iolock_two_inodes_and_break_layout(
+>>   	return 0;
+>>   }
+>>   
+>> +static int
+>> +xfs_mmaplock_two_inodes_and_break_dax_layout(
+>> +	struct xfs_inode	*ip1,
+>> +	struct xfs_inode	*ip2)
+>> +{
+>> +	int			error, attempts = 0;
+>> +	bool			retry;
+>> +	struct page		*page;
+>> +	struct xfs_log_item	*lp;
+>> +
+>> +	if (ip1->i_ino > ip2->i_ino)
+>> +		swap(ip1, ip2);
+>> +
+>> +again:
+>> +	retry = false;
+>> +	/* Lock the first inode */
+>> +	xfs_ilock(ip1, XFS_MMAPLOCK_EXCL);
+>> +	error = xfs_break_dax_layouts(VFS_I(ip1), &retry);
+>> +	if (error || retry) {
+>> +		xfs_iunlock(ip1, XFS_MMAPLOCK_EXCL);
+>> +		if (error == 0 && retry)
+>> +			goto again;
+>> +		return error;
+>> +	}
+>> +
+>> +	if (ip1 == ip2)
+>> +		return 0;
+>> +
+>> +	/* Nested lock the second inode */
+>> +	lp = &ip1->i_itemp->ili_item;
+>> +	if (lp && test_bit(XFS_LI_IN_AIL, &lp->li_flags)) {
+>> +		if (!xfs_ilock_nowait(ip2,
+>> +		    xfs_lock_inumorder(XFS_MMAPLOCK_EXCL, 1))) {
+>> +			xfs_iunlock(ip1, XFS_MMAPLOCK_EXCL);
+>> +			if ((++attempts % 5) == 0)
+>> +				delay(1); /* Don't just spin the CPU */
+>> +			goto again;
+>> +		}
 > 
-> This patch makes no sense.
+> I suspect we don't need this part for grabbing the MMAPLOCK^W pagecache
+> invalidatelock.  The AIL only grabs the ILOCK, never the IOLOCK or the
+> MMAPLOCK.
 
-This patch aims to disable any attempt such as using get_cpu()/put_cpu() to
-shut up the check_preemption_disabled().
+Maybe I have misunderstood this part.
 
-But if anybody is familiar with the integration of watchdog_hld and
-cpuhp, he should know the right way without this BUG_ON() or warn.
+What I want is to lock the two inode nestedly.  This code is copied from 
+xfs_lock_two_inodes(), which checks this AIL during locking two inode 
+with each of the three kinds of locks.
 
-Do you still think it is pointless?
+But I also found the recent merged function: 
+filemap_invalidate_lock_two() just locks two inode directly without 
+checking AIL.  So, I am not if the AIL check is needed in this case.
+
+> 
+>> +	} else
+>> +		xfs_ilock(ip2, xfs_lock_inumorder(XFS_MMAPLOCK_EXCL, 1));
+>> +	/*
+>> +	 * We cannot use xfs_break_dax_layouts() directly here because it may
+>> +	 * need to unlock & lock the XFS_MMAPLOCK_EXCL which is not suitable
+>> +	 * for this nested lock case.
+>> +	 */
+>> +	page = dax_layout_busy_page(VFS_I(ip2)->i_mapping);
+>> +	if (page && page_ref_count(page) != 1) {
+> 
+> Do you think the patch "ext4/xfs: add page refcount helper" would be a
+> good cleanup to head this series?
+> 
+> https://lore.kernel.org/linux-xfs/20210913161604.31981-1-alex.sierra@amd.com/T/#m59cf7cd5c0d521ad487fa3a15d31c3865db88bdf
+
+Got it.
 
 
+--
 Thanks,
+Ruan
 
-	Pingfan
+> 
+> The rest of the logic looks ok.
+> 
+> --D
+> 
+>> +		xfs_iunlock(ip2, XFS_MMAPLOCK_EXCL);
+>> +		xfs_iunlock(ip1, XFS_MMAPLOCK_EXCL);
+>> +		goto again;
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +
+>>   /*
+>>    * Lock two inodes so that userspace cannot initiate I/O via file syscalls or
+>>    * mmap activity.
+>> @@ -3804,8 +3859,19 @@ xfs_ilock2_io_mmap(
+>>   	ret = xfs_iolock_two_inodes_and_break_layout(VFS_I(ip1), VFS_I(ip2));
+>>   	if (ret)
+>>   		return ret;
+>> -	filemap_invalidate_lock_two(VFS_I(ip1)->i_mapping,
+>> -				    VFS_I(ip2)->i_mapping);
+>> +
+>> +	if (IS_DAX(VFS_I(ip1)) && IS_DAX(VFS_I(ip2))) {
+>> +		ret = xfs_mmaplock_two_inodes_and_break_dax_layout(ip1, ip2);
+>> +		if (ret) {
+>> +			inode_unlock(VFS_I(ip2));
+>> +			if (ip1 != ip2)
+>> +				inode_unlock(VFS_I(ip1));
+>> +			return ret;
+>> +		}
+>> +	} else
+>> +		filemap_invalidate_lock_two(VFS_I(ip1)->i_mapping,
+>> +					    VFS_I(ip2)->i_mapping);
+>> +
+>>   	return 0;
+>>   }
+>>   
+>> @@ -3815,8 +3881,14 @@ xfs_iunlock2_io_mmap(
+>>   	struct xfs_inode	*ip1,
+>>   	struct xfs_inode	*ip2)
+>>   {
+>> -	filemap_invalidate_unlock_two(VFS_I(ip1)->i_mapping,
+>> -				      VFS_I(ip2)->i_mapping);
+>> +	if (IS_DAX(VFS_I(ip1)) && IS_DAX(VFS_I(ip2))) {
+>> +		xfs_iunlock(ip2, XFS_MMAPLOCK_EXCL);
+>> +		if (ip1 != ip2)
+>> +			xfs_iunlock(ip1, XFS_MMAPLOCK_EXCL);
+>> +	} else
+>> +		filemap_invalidate_unlock_two(VFS_I(ip1)->i_mapping,
+>> +					      VFS_I(ip2)->i_mapping);
+>> +
+>>   	inode_unlock(VFS_I(ip2));
+>>   	if (ip1 != ip2)
+>>   		inode_unlock(VFS_I(ip1));
+>> diff --git a/fs/xfs/xfs_inode.h b/fs/xfs/xfs_inode.h
+>> index b21b177832d1..f7e26fe31a26 100644
+>> --- a/fs/xfs/xfs_inode.h
+>> +++ b/fs/xfs/xfs_inode.h
+>> @@ -472,6 +472,7 @@ enum xfs_prealloc_flags {
+>>   
+>>   int	xfs_update_prealloc_flags(struct xfs_inode *ip,
+>>   				  enum xfs_prealloc_flags flags);
+>> +int	xfs_break_dax_layouts(struct inode *inode, bool *retry);
+>>   int	xfs_break_layouts(struct inode *inode, uint *iolock,
+>>   		enum layout_break_reason reason);
+>>   
+>> diff --git a/fs/xfs/xfs_reflink.c b/fs/xfs/xfs_reflink.c
+>> index 9d876e268734..3b99c9dfcf0d 100644
+>> --- a/fs/xfs/xfs_reflink.c
+>> +++ b/fs/xfs/xfs_reflink.c
+>> @@ -1327,8 +1327,8 @@ xfs_reflink_remap_prep(
+>>   	if (XFS_IS_REALTIME_INODE(src) || XFS_IS_REALTIME_INODE(dest))
+>>   		goto out_unlock;
+>>   
+>> -	/* Don't share DAX file data for now. */
+>> -	if (IS_DAX(inode_in) || IS_DAX(inode_out))
+>> +	/* Don't share DAX file data with non-DAX file. */
+>> +	if (IS_DAX(inode_in) != IS_DAX(inode_out))
+>>   		goto out_unlock;
+>>   
+>>   	if (!IS_DAX(inode_in))
+>> -- 
+>> 2.33.0
+>>
+>>
+>>
+
 
