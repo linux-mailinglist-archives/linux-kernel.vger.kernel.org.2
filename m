@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE38040E23E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:16:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C37C740E249
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:16:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243136AbhIPQgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:36:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38934 "EHLO mail.kernel.org"
+        id S243564AbhIPQgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:36:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36998 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241886AbhIPQ21 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:28:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F212161357;
-        Thu, 16 Sep 2021 16:18:07 +0000 (UTC)
+        id S234178AbhIPQ2r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:28:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BA7D61359;
+        Thu, 16 Sep 2021 16:18:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809088;
-        bh=Ij2J7ZY0EYA4SRi/ycfyi++V5khckp+5urzgc9BwJ4k=;
+        s=korg; t=1631809091;
+        bh=9Il0Hw1D98NLQ7HT7OgkMPuWKBxbTH4IlNe5LuYf0rQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B0uizy+d3RuaKSgLqe4QrGjjLGtmy46pFeOMD8LTSvrBSNXr3b0p0bhozd/D+Tsvx
-         eTqoTVZUS3I7AE0FIqpaMveTHU/jqtkQobvdU7Wu9bjvH9nxz0llQS21JOe1Axl+Oh
-         9RmTaqOt/JIHj5IBXrqcRcBqCOsEHfUzMiDASjyk=
+        b=TAc2NMgUrij8uB2g7SNntdtUe5GMSmTfhepew496Z3BmUeoygI8Qc5t/JccMJG16n
+         FSVF9yS9q1HRyBT9aBCC8yt6C/LMZbctOMgP003GSP9ZnZSJI0Dc7mj4A1Lh1Znzn1
+         zlva1JSbOGbZF9AA1NHGIvpgEYQVM3kTNQJfJcGo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Eizan Miyamoto <eizan@chromium.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Subject: [PATCH 5.13 026/380] soc: mediatek: mmsys: Fix missing UFOE component in mt8173 table routing
-Date:   Thu, 16 Sep 2021 17:56:23 +0200
-Message-Id: <20210916155804.858985532@linuxfoundation.org>
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Subject: [PATCH 5.13 027/380] soc: qcom: aoss: Fix the out of bound usage of cooling_devs
+Date:   Thu, 16 Sep 2021 17:56:24 +0200
+Message-Id: <20210916155804.891369289@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
 References: <20210916155803.966362085@linuxfoundation.org>
@@ -41,42 +40,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-commit 25423731956b3d72bc35d336227c88ada49148e8 upstream.
+commit a89f355e469dcda129c2522be4fdba00c1c74c83 upstream.
 
-The UFOE (data compression engine) component needs to be enabled to have
-the imgtec gpu driver working. If we don't enable it we see a black screen.
-Looks like when we switched to use and array for setting the routing
-registers in commit 440147639ac7 ("soc: mediatek: mmsys: Use an array for
-setting the routing registers") we missed to add this component in the new
-routing table, it was present before that commit, so fix it by adding
-this component in the mt8173 routing table.
+In "qmp_cooling_devices_register", the count value is initially
+QMP_NUM_COOLING_RESOURCES, which is 2. Based on the initial count value,
+the memory for cooling_devs is allocated. Then while calling the
+"qmp_cooling_device_add" function, count value is post-incremented for
+each child node.
 
-Fixes: 440147639ac7 ("soc: mediatek: mmsys: Use an array for setting the routing registers")
-Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Tested-by: Eizan Miyamoto <eizan@chromium.org>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210625062448.3462177-1-enric.balletbo@collabora.com
-[mb: taking into account mask value]
-Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
+This makes the out of bound access to the cooling_dev array. Fix it by
+passing the QMP_NUM_COOLING_RESOURCES definition to devm_kzalloc() and
+initializing the count to 0.
+
+While at it, let's also free the memory allocated to cooling_dev if no
+cooling device is found in DT and during unroll phase.
+
+Cc: stable@vger.kernel.org # 5.4
+Fixes: 05589b30b21a ("soc: qcom: Extend AOSS QMP driver to support resources that are used to wake up the SoC.")
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Link: https://lore.kernel.org/r/20210629153249.73428-1-manivannan.sadhasivam@linaro.org
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/soc/mediatek/mtk-mmsys.h |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/soc/qcom/qcom_aoss.c |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
---- a/drivers/soc/mediatek/mtk-mmsys.h
-+++ b/drivers/soc/mediatek/mtk-mmsys.h
-@@ -262,6 +262,10 @@ static const struct mtk_mmsys_routes mms
- 		DDP_COMPONENT_RDMA2, DDP_COMPONENT_DSI3,
- 		DISP_REG_CONFIG_DSIO_SEL_IN, DSI3_SEL_IN_MASK,
- 		DSI3_SEL_IN_RDMA2
-+	}, {
-+		DDP_COMPONENT_UFOE, DDP_COMPONENT_DSI0,
-+		DISP_REG_CONFIG_DISP_UFOE_MOUT_EN, UFOE_MOUT_EN_DSI0,
-+		UFOE_MOUT_EN_DSI0
- 	}
- };
+--- a/drivers/soc/qcom/qcom_aoss.c
++++ b/drivers/soc/qcom/qcom_aoss.c
+@@ -476,12 +476,12 @@ static int qmp_cooling_device_add(struct
+ static int qmp_cooling_devices_register(struct qmp *qmp)
+ {
+ 	struct device_node *np, *child;
+-	int count = QMP_NUM_COOLING_RESOURCES;
++	int count = 0;
+ 	int ret;
  
+ 	np = qmp->dev->of_node;
+ 
+-	qmp->cooling_devs = devm_kcalloc(qmp->dev, count,
++	qmp->cooling_devs = devm_kcalloc(qmp->dev, QMP_NUM_COOLING_RESOURCES,
+ 					 sizeof(*qmp->cooling_devs),
+ 					 GFP_KERNEL);
+ 
+@@ -497,12 +497,16 @@ static int qmp_cooling_devices_register(
+ 			goto unroll;
+ 	}
+ 
++	if (!count)
++		devm_kfree(qmp->dev, qmp->cooling_devs);
++
+ 	return 0;
+ 
+ unroll:
+ 	while (--count >= 0)
+ 		thermal_cooling_device_unregister
+ 			(qmp->cooling_devs[count].cdev);
++	devm_kfree(qmp->dev, qmp->cooling_devs);
+ 
+ 	return ret;
+ }
 
 
