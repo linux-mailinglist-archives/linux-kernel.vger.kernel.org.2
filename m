@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B928B40E275
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:16:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 180D340E61C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:29:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232878AbhIPQi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:38:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44322 "EHLO mail.kernel.org"
+        id S1346364AbhIPRSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:18:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37566 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234478AbhIPQbI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:31:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 30D14615E6;
-        Thu, 16 Sep 2021 16:19:10 +0000 (UTC)
+        id S245472AbhIPRKG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:10:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 01FC761B49;
+        Thu, 16 Sep 2021 16:37:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809151;
-        bh=7k9mglpMG+27vjeUF7L6W+gVYfPjiWAuqo6rduvlxfE=;
+        s=korg; t=1631810260;
+        bh=nd89eXtBFKueYaWwtvBp619RU0dRzWtOpxQO35ufTUg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q2Ftvo9WY8lGK4MLuBm3d9JgPcWa1MRruvx5kNnDHluONH5D+klppy54bjYwlSFza
-         GTg/69S3kAoot+2Ii2yMZgZ6RpeHoE4VWy2sxep8H1iMFFrWIegXNUIJNEUwOjMfHi
-         uUROcW4zG58lc3+wCFxUANSfM3+C/izRtpMwc4ys=
+        b=vVXTP84u48O+r6VNgjXBfO5kMHKd3jImbxdf1/410U3ooXFtMjbHHc/WS7pgOmm7i
+         /vg3yXhDQxLCfz5MOWUVn5Fkz6L4xnN6h1uxLii5MqPAXswrgs/JgQazopdzQQVctq
+         q9AVURf3WyiLd3MueDJhPhXZHuUJA0jA6YIhVIkQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Robin Gong <yibin.gong@nxp.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Richard Leitner <richard.leitner@skidata.com>,
-        Shawn Guo <shawnguo@kernel.org>
-Subject: [PATCH 5.13 050/380] dmaengine: imx-sdma: remove duplicated sdma_load_context
+        stable@vger.kernel.org,
+        =?UTF-8?q?Mantas=20Mikul=C4=97nas?= <grawity@gmail.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>
+Subject: [PATCH 5.14 058/432] watchdog: iTCO_wdt: Fix detection of SMI-off case
 Date:   Thu, 16 Sep 2021 17:56:47 +0200
-Message-Id: <20210916155805.684179808@linuxfoundation.org>
+Message-Id: <20210916155812.757434358@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,44 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Robin Gong <yibin.gong@nxp.com>
+From: Jan Kiszka <jan.kiszka@siemens.com>
 
-commit e555a03b112838883fdd8185d613c35d043732f2 upstream.
+commit aec42642d91fc86ddc03e97f0139c6c34ee6b6b1 upstream.
 
-Since sdma_transfer_init() will do sdma_load_context before any
-sdma transfer, no need once more in sdma_config_channel().
+Obviously, the test needs to run against the register content, not its
+address.
 
-Fixes: ad0d92d7ba6a ("dmaengine: imx-sdma: refine to load context only once")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Robin Gong <yibin.gong@nxp.com>
-Acked-by: Vinod Koul <vkoul@kernel.org>
-Tested-by: Richard Leitner <richard.leitner@skidata.com>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Fixes: cb011044e34c ("watchdog: iTCO_wdt: Account for rebooting on second timeout")
+Cc: stable@vger.kernel.org
+Reported-by: Mantas Mikulėnas <grawity@gmail.com>
+Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
+Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Tested-by: Mantas Mikulėnas <grawity@gmail.com>
+Link: https://lore.kernel.org/r/d84f8e06-f646-8b43-d063-fb11f4827044@siemens.com
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/dma/imx-sdma.c |    5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ drivers/watchdog/iTCO_wdt.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/dma/imx-sdma.c
-+++ b/drivers/dma/imx-sdma.c
-@@ -1107,7 +1107,6 @@ static void sdma_set_watermarklevel_for_
- static int sdma_config_channel(struct dma_chan *chan)
- {
- 	struct sdma_channel *sdmac = to_sdma_chan(chan);
--	int ret;
+--- a/drivers/watchdog/iTCO_wdt.c
++++ b/drivers/watchdog/iTCO_wdt.c
+@@ -362,7 +362,7 @@ static int iTCO_wdt_set_timeout(struct w
+ 	 * Otherwise, the BIOS generally reboots when the SMI triggers.
+ 	 */
+ 	if (p->smi_res &&
+-	    (SMI_EN(p) & (TCO_EN | GBL_SMI_EN)) != (TCO_EN | GBL_SMI_EN))
++	    (inl(SMI_EN(p)) & (TCO_EN | GBL_SMI_EN)) != (TCO_EN | GBL_SMI_EN))
+ 		tmrval /= 2;
  
- 	sdma_disable_channel(chan);
- 
-@@ -1147,9 +1146,7 @@ static int sdma_config_channel(struct dm
- 		sdmac->watermark_level = 0; /* FIXME: M3_BASE_ADDRESS */
- 	}
- 
--	ret = sdma_load_context(sdmac);
--
--	return ret;
-+	return 0;
- }
- 
- static int sdma_set_channel_priority(struct sdma_channel *sdmac,
+ 	/* from the specs: */
 
 
