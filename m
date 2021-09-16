@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1E5840E63D
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:29:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27BAB40E63C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:29:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351836AbhIPRTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:19:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39810 "EHLO mail.kernel.org"
+        id S1351818AbhIPRTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:19:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39808 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350674AbhIPRLz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1350671AbhIPRLz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 16 Sep 2021 13:11:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A98476140F;
-        Thu, 16 Sep 2021 16:38:17 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A246161B51;
+        Thu, 16 Sep 2021 16:38:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810298;
-        bh=ZtrKLeLVWbqB664sLNuRoEgEqzoe5fiWVqCH3F4UCO8=;
+        s=korg; t=1631810301;
+        bh=pTDZCgOLLECpEO7/lKsJDsIJa5J/YPBKF3eTQv/de/g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nWiEkHSLFpLt4x7looYOsEGxlKlfsDnGvp8pcjCOxN56jk7YSCYlThpKANotkyav1
-         GvbkSimyfOxPVY6HjNFpw6QnOpCb0uz9D+iNSHSDhGOEWLPCKlMmg6wsnubfNs6llE
-         Fc/fqqhQz00ce0hyhrJ8MWzVIJnJagMl4Wjzgz94=
+        b=nQK1VtABycTe1e7MUlxSF4Wyv5hBK+QT/eCvrlgZv3+SSwl19Gxo49IIVNcqjJnxM
+         ljQ++mTO1mR0K1FvhvtTzjTcXQi2P43tgdKIObD0AzkNgg1s+qWOGd/VRNYbDzMSff
+         n4v9SRU3AecJi9w/ywn2NikkQSp9QCrlhZBhHrgk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daeho Jeong <daehojeong@google.com>,
-        Youngjin Gil <youngjin.gil@samsung.com>,
-        Hyeong Jun Kim <hj514.kim@samsung.com>,
-        Chao Yu <chao@kernel.org>, Jaegeuk Kim <jaegeuk@kernel.org>,
+        stable@vger.kernel.org, Chao Yu <chao@kernel.org>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 088/432] f2fs: turn back remapped address in compressed page endio
-Date:   Thu, 16 Sep 2021 17:57:17 +0200
-Message-Id: <20210916155813.767494801@linuxfoundation.org>
+Subject: [PATCH 5.14 089/432] f2fs: fix wrong checkpoint_changed value in f2fs_remount()
+Date:   Thu, 16 Sep 2021 17:57:18 +0200
+Message-Id: <20210916155813.799896659@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
 References: <20210916155810.813340753@linuxfoundation.org>
@@ -42,54 +40,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daeho Jeong <daehojeong@google.com>
+From: Chao Yu <chao@kernel.org>
 
-[ Upstream commit 4931e0c93e124357308893a3e5e224cbeeabc721 ]
+[ Upstream commit 277afbde6ca2b38729683fc17c031b4bc942068d ]
 
-Turned back the remmaped sector address to the address in the partition,
-when ending io, for compress cache to work properly.
+In f2fs_remount(), return value of test_opt() is an unsigned int type
+variable, however when we compare it to a bool type variable, it cause
+wrong result, fix it.
 
-Fixes: 6ce19aff0b8c ("f2fs: compress: add compress_inode to cache
-compressed blocks")
-Signed-off-by: Daeho Jeong <daehojeong@google.com>
-Signed-off-by: Youngjin Gil <youngjin.gil@samsung.com>
-Signed-off-by: Hyeong Jun Kim <hj514.kim@samsung.com>
-Reviewed-by: Chao Yu <chao@kernel.org>
+Fixes: 4354994f097d ("f2fs: checkpoint disabling")
+Signed-off-by: Chao Yu <chao@kernel.org>
 Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/f2fs/data.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ fs/f2fs/super.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index ba120d55e9b1..6eda24768d4b 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -116,6 +116,7 @@ struct bio_post_read_ctx {
- 	struct f2fs_sb_info *sbi;
- 	struct work_struct work;
- 	unsigned int enabled_steps;
-+	block_t fs_blkaddr;
- };
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 7cdccb79b378..2b093a209ae4 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -2071,11 +2071,10 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+ 	bool need_restart_ckpt = false, need_stop_ckpt = false;
+ 	bool need_restart_flush = false, need_stop_flush = false;
+ 	bool no_extent_cache = !test_opt(sbi, EXTENT_CACHE);
+-	bool disable_checkpoint = test_opt(sbi, DISABLE_CHECKPOINT);
++	bool enable_checkpoint = !test_opt(sbi, DISABLE_CHECKPOINT);
+ 	bool no_io_align = !F2FS_IO_ALIGNED(sbi);
+ 	bool no_atgc = !test_opt(sbi, ATGC);
+ 	bool no_compress_cache = !test_opt(sbi, COMPRESS_CACHE);
+-	bool checkpoint_changed;
+ #ifdef CONFIG_QUOTA
+ 	int i, j;
+ #endif
+@@ -2120,8 +2119,6 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+ 	err = parse_options(sb, data, true);
+ 	if (err)
+ 		goto restore_opts;
+-	checkpoint_changed =
+-			disable_checkpoint != test_opt(sbi, DISABLE_CHECKPOINT);
  
- static void f2fs_finish_read_bio(struct bio *bio)
-@@ -228,7 +229,7 @@ static void f2fs_handle_step_decompress(struct bio_post_read_ctx *ctx)
- 	struct bio_vec *bv;
- 	struct bvec_iter_all iter_all;
- 	bool all_compressed = true;
--	block_t blkaddr = SECTOR_TO_BLOCK(ctx->bio->bi_iter.bi_sector);
-+	block_t blkaddr = ctx->fs_blkaddr;
- 
- 	bio_for_each_segment_all(bv, ctx->bio, iter_all) {
- 		struct page *page = bv->bv_page;
-@@ -1003,6 +1004,7 @@ static struct bio *f2fs_grab_read_bio(struct inode *inode, block_t blkaddr,
- 		ctx->bio = bio;
- 		ctx->sbi = sbi;
- 		ctx->enabled_steps = post_read_steps;
-+		ctx->fs_blkaddr = blkaddr;
- 		bio->bi_private = ctx;
+ 	/*
+ 	 * Previous and new state of filesystem is RO,
+@@ -2243,7 +2240,7 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+ 		need_stop_flush = true;
  	}
  
+-	if (checkpoint_changed) {
++	if (enable_checkpoint == !!test_opt(sbi, DISABLE_CHECKPOINT)) {
+ 		if (test_opt(sbi, DISABLE_CHECKPOINT)) {
+ 			err = f2fs_disable_checkpoint(sbi);
+ 			if (err)
 -- 
 2.30.2
 
