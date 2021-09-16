@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D488440E5C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:28:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 038DA40E28F
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:16:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351361AbhIPRPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:15:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36054 "EHLO mail.kernel.org"
+        id S244997AbhIPQj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:39:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44670 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349924AbhIPRH7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:07:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D3BF960EE9;
-        Thu, 16 Sep 2021 16:36:36 +0000 (UTC)
+        id S242768AbhIPQd1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:33:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A9A8861246;
+        Thu, 16 Sep 2021 16:20:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810197;
-        bh=pyaFfPQl4fIsQ5peAzl8S7+zBYo8OovL20U4Kt/OzJU=;
+        s=korg; t=1631809219;
+        bh=0c//bAemLoDvXKWr4N8pr+rWcNRrAJaNgqoPpGOPbAs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gA10/z3B8645zQr3VXLq6E37P465LNX2osNtbnSofbpNqFi0gnm17iypIMA16V8Th
-         HIwj+Shk2kcpf+nL+7Xf97t0AHEtFzA1A7a5DTgKjYh/D8/MVAIq5IvJPREVtasIkT
-         GE6Qa0CG4sYCKBqfwzzkSIV/IjtmFStDOiY7Sc9k=
+        b=z1E0pghq/oV3+L67AEImUHksa7nQ5qHbBw+IDp/NnOrCiAAL3czD4mmgaAJf6c7NP
+         UrNXqlPA1Zsh/6LrXVJPmbBFay26JsPc1LGEgLdMK38n4jtTIKzB6uwgKAsUSrFdwD
+         55ZQVXfSSJ0jpCh9FaViLLMg3Add/+vkw6V5QkC4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 5.14 051/432] media: uvc: dont do DMA on stack
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Wang Hai <wanghai38@huawei.com>
+Subject: [PATCH 5.13 043/380] VMCI: fix NULL pointer dereference when unmapping queue pair
 Date:   Thu, 16 Sep 2021 17:56:40 +0200
-Message-Id: <20210916155812.534310047@linuxfoundation.org>
+Message-Id: <20210916155805.441101696@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,96 +40,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+From: Wang Hai <wanghai38@huawei.com>
 
-commit 1a10d7fdb6d0e235e9d230916244cc2769d3f170 upstream.
+commit a30dc6cf0dc51419021550152e435736aaef8799 upstream.
 
-As warned by smatch:
-	drivers/media/usb/uvc/uvc_v4l2.c:911 uvc_ioctl_g_input() error: doing dma on the stack (&i)
-	drivers/media/usb/uvc/uvc_v4l2.c:943 uvc_ioctl_s_input() error: doing dma on the stack (&i)
+I got a NULL pointer dereference report when doing fuzz test:
 
-those two functions call uvc_query_ctrl passing a pointer to
-a data at the DMA stack. those are used to send URBs via
-usb_control_msg(). Using DMA stack is not supported and should
-not work anymore on modern Linux versions.
+Call Trace:
+  qp_release_pages+0xae/0x130
+  qp_host_unregister_user_memory.isra.25+0x2d/0x80
+  vmci_qp_broker_unmap+0x191/0x320
+  ? vmci_host_do_alloc_queuepair.isra.9+0x1c0/0x1c0
+  vmci_host_unlocked_ioctl+0x59f/0xd50
+  ? do_vfs_ioctl+0x14b/0xa10
+  ? tomoyo_file_ioctl+0x28/0x30
+  ? vmci_host_do_alloc_queuepair.isra.9+0x1c0/0x1c0
+  __x64_sys_ioctl+0xea/0x120
+  do_syscall_64+0x34/0xb0
+  entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-So, use a kmalloc'ed buffer.
+When a queue pair is created by the following call, it will not
+register the user memory if the page_store is NULL, and the
+entry->state will be set to VMCIQPB_CREATED_NO_MEM.
 
-Cc: stable@vger.kernel.org	# Kernel 4.9 and upper
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+vmci_host_unlocked_ioctl
+  vmci_host_do_alloc_queuepair
+    vmci_qp_broker_alloc
+      qp_broker_alloc
+        qp_broker_create // set entry->state = VMCIQPB_CREATED_NO_MEM;
+
+When unmapping this queue pair, qp_host_unregister_user_memory() will
+be called to unregister the non-existent user memory, which will
+result in a null pointer reference. It will also change
+VMCIQPB_CREATED_NO_MEM to VMCIQPB_CREATED_MEM, which should not be
+present in this operation.
+
+Only when the qp broker has mem, it can unregister the user
+memory when unmapping the qp broker.
+
+Only when the qp broker has no mem, it can register the user
+memory when mapping the qp broker.
+
+Fixes: 06164d2b72aa ("VMCI: queue pairs implementation.")
+Cc: stable <stable@vger.kernel.org>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Reviewed-by: Jorgen Hansen <jhansen@vmware.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Link: https://lore.kernel.org/r/20210818124845.488312-1-wanghai38@huawei.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/usb/uvc/uvc_v4l2.c |   34 +++++++++++++++++++++++-----------
- 1 file changed, 23 insertions(+), 11 deletions(-)
+ drivers/misc/vmw_vmci/vmci_queue_pair.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/drivers/media/usb/uvc/uvc_v4l2.c
-+++ b/drivers/media/usb/uvc/uvc_v4l2.c
-@@ -899,8 +899,8 @@ static int uvc_ioctl_g_input(struct file
- {
- 	struct uvc_fh *handle = fh;
- 	struct uvc_video_chain *chain = handle->chain;
-+	u8 *buf;
- 	int ret;
--	u8 i;
+--- a/drivers/misc/vmw_vmci/vmci_queue_pair.c
++++ b/drivers/misc/vmw_vmci/vmci_queue_pair.c
+@@ -2243,7 +2243,8 @@ int vmci_qp_broker_map(struct vmci_handl
  
- 	if (chain->selector == NULL ||
- 	    (chain->dev->quirks & UVC_QUIRK_IGNORE_SELECTOR_UNIT)) {
-@@ -908,22 +908,27 @@ static int uvc_ioctl_g_input(struct file
- 		return 0;
+ 	result = VMCI_SUCCESS;
+ 
+-	if (context_id != VMCI_HOST_CONTEXT_ID) {
++	if (context_id != VMCI_HOST_CONTEXT_ID &&
++	    !QPBROKERSTATE_HAS_MEM(entry)) {
+ 		struct vmci_qp_page_store page_store;
+ 
+ 		page_store.pages = guest_mem;
+@@ -2350,7 +2351,8 @@ int vmci_qp_broker_unmap(struct vmci_han
+ 		goto out;
  	}
  
-+	buf = kmalloc(1, GFP_KERNEL);
-+	if (!buf)
-+		return -ENOMEM;
-+
- 	ret = uvc_query_ctrl(chain->dev, UVC_GET_CUR, chain->selector->id,
- 			     chain->dev->intfnum,  UVC_SU_INPUT_SELECT_CONTROL,
--			     &i, 1);
--	if (ret < 0)
--		return ret;
-+			     buf, 1);
-+	if (!ret)
-+		*input = *buf - 1;
- 
--	*input = i - 1;
--	return 0;
-+	kfree(buf);
-+
-+	return ret;
- }
- 
- static int uvc_ioctl_s_input(struct file *file, void *fh, unsigned int input)
- {
- 	struct uvc_fh *handle = fh;
- 	struct uvc_video_chain *chain = handle->chain;
-+	u8 *buf;
- 	int ret;
--	u32 i;
- 
- 	ret = uvc_acquire_privileges(handle);
- 	if (ret < 0)
-@@ -939,10 +944,17 @@ static int uvc_ioctl_s_input(struct file
- 	if (input >= chain->selector->bNrInPins)
- 		return -EINVAL;
- 
--	i = input + 1;
--	return uvc_query_ctrl(chain->dev, UVC_SET_CUR, chain->selector->id,
--			      chain->dev->intfnum, UVC_SU_INPUT_SELECT_CONTROL,
--			      &i, 1);
-+	buf = kmalloc(1, GFP_KERNEL);
-+	if (!buf)
-+		return -ENOMEM;
-+
-+	*buf = input + 1;
-+	ret = uvc_query_ctrl(chain->dev, UVC_SET_CUR, chain->selector->id,
-+			     chain->dev->intfnum, UVC_SU_INPUT_SELECT_CONTROL,
-+			     buf, 1);
-+	kfree(buf);
-+
-+	return ret;
- }
- 
- static int uvc_ioctl_queryctrl(struct file *file, void *fh,
+-	if (context_id != VMCI_HOST_CONTEXT_ID) {
++	if (context_id != VMCI_HOST_CONTEXT_ID &&
++	    QPBROKERSTATE_HAS_MEM(entry)) {
+ 		qp_acquire_queue_mutex(entry->produce_q);
+ 		result = qp_save_headers(entry);
+ 		if (result < VMCI_SUCCESS)
 
 
