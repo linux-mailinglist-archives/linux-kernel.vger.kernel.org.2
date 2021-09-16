@@ -2,106 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF92940EA5F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:56:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C312D40E9B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:17:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343842AbhIPS5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 14:57:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52160 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245360AbhIPS5Z (ORCPT
+        id S243841AbhIPSSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 14:18:41 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:54248 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236388AbhIPSR0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 14:57:25 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A878BC04A147;
-        Thu, 16 Sep 2021 11:15:13 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id t190so9228025qke.7;
-        Thu, 16 Sep 2021 11:15:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EAjkFUEsfXQq9m+NH377nLxFioGs0vqlQsNCCnQGszM=;
-        b=Fmi/z6191sBg6d5GFTA+l4arFm1+p7Be0zRoZBL3weKZHgObfQG6Ae1q11vAUXfPbA
-         vEaBXeXkXtuSwM3gB2Q6uxS9/mqqSRXEz9S0sNM2TFWNp5mkUb5g/BRr6wUZWOyfZ9t8
-         p2OG64u70MQCs8SEUaQ58ntR0m3Gd/cevZF67FyckQiz0hDkWl2vITY6j2tnO2BJTBoc
-         pGQo4TZZeLy1MNwGtHDjBhUrofp5clKEtENe+nmWs9w8nUyn8+o6sfncn3nBEyXZXiUN
-         xfDklhjjmZ68GmjfBaxw24xbTFny+BMXMJWzrMAFmWs5yRW9tEeRfhi95362pn3/iwkY
-         tMEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EAjkFUEsfXQq9m+NH377nLxFioGs0vqlQsNCCnQGszM=;
-        b=5DG0TAAydyy3SJxqoDajDpsszdidcJRst+cZkWot4W/k30u3GZZSNYI9KQ8Vpsxyt6
-         RKd8KmN/Gny+F53WaHyie6WhJcH8Gskp7hvAKm2IGILW89dt2iW/OhZWX2cQmkM2X36H
-         F8Fy6ksuQiSxLXseATMkuYhO+G1ZIEKgmXLeaYEFm+diaYi6nUBYGcU/xM/BYfs3OQr+
-         jQTesAZW4b9O+ypdSD0MWnQcOSf57iTP3jqs/yo8nmxEA6jWUUSJkuPNClI2f31lmuZi
-         SqUf5GoBFmbXGX25lvRYZJK1Z2vO9oU662nzj5kksYxoelYGmGmxqiT766+1QVR56xco
-         4Bhw==
-X-Gm-Message-State: AOAM530ielA8EPuuNArdm62+EIhgwwaw85AGrZNIyr5jyVnHwbf3VzSm
-        Rf6SOmbn8s1x5gsioMpEcUXe+q0GaM98jb55FucpeGv0t20=
-X-Google-Smtp-Source: ABdhPJwOTcoAREbB2hHzNgSIMj+VkJOgxTM+fwcIrAxa4Ds3cu+y2BPOWsdG+4whEAoSUXKA716SGF1HDyRbfiK/1Mc=
-X-Received: by 2002:a5b:408:: with SMTP id m8mr8687138ybp.2.1631816112770;
- Thu, 16 Sep 2021 11:15:12 -0700 (PDT)
+        Thu, 16 Sep 2021 14:17:26 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id EDECF223E0;
+        Thu, 16 Sep 2021 18:16:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1631816163; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=YVjbA3qw0sNlkujtQrRfEqRTdtm/0oEWmxsFhdHvpUE=;
+        b=xXPDs0LSCSAzVvEDSZ2qCsNPwaOMP2aVM5DvYN5TcJ7qrashsEklK2nR3IR65nuFh0Zz5S
+        x2KH3oGX9AL0I7zU6jpDlb7qragbtc139Oz4xYdzerH8aij/YKzgBSyOy+gyUlyMdK6KqF
+        XC0HBNbnSSwSzG56nkIxc6ne/jy1ixE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1631816163;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=YVjbA3qw0sNlkujtQrRfEqRTdtm/0oEWmxsFhdHvpUE=;
+        b=2jH7bodZHVKT9iVQHzclDESXGiqKhaaTWM2n5bIEKJHEWTlYn8s8b5KqTfRcd9oHCJSg4D
+        5zYsOmzau3S7HnAg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A15F013D67;
+        Thu, 16 Sep 2021 18:16:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id pXsIJuOJQ2FleQAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Thu, 16 Sep 2021 18:16:03 +0000
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+To:     airlied@redhat.com, airlied@linux.ie, daniel@ffwll.ch,
+        hdegoede@redhat.com, marcan@marcan.st, maz@kernel.org,
+        akpm@linux-foundation.org, npiggin@gmail.com,
+        thunder.leizhen@huawei.com, gregkh@linuxfoundation.org
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Subject: [PATCH 0/5] lib: devres: Add managed helpers for write-combine setup
+Date:   Thu, 16 Sep 2021 20:15:56 +0200
+Message-Id: <20210916181601.9146-1-tzimmermann@suse.de>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <cover.1631785820.git.mchehab+huawei@kernel.org> <854e410df660c62e4e4c8f22c4ae9c6f6594f4a1.1631785820.git.mchehab+huawei@kernel.org>
-In-Reply-To: <854e410df660c62e4e4c8f22c4ae9c6f6594f4a1.1631785820.git.mchehab+huawei@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 16 Sep 2021 11:15:01 -0700
-Message-ID: <CAEf4BzYqW0Gc_tCtnykYiTVy3Z7-_WXsEfpVGaGPqaPR4aseLA@mail.gmail.com>
-Subject: Re: [PATCH v2 06/23] libbpf: update index.rst reference
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Grant Seltzer <grantseltzer@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 2:55 AM Mauro Carvalho Chehab
-<mchehab+huawei@kernel.org> wrote:
->
-> Changeset d20b41115ad5 ("libbpf: Rename libbpf documentation index file")
-> renamed: Documentation/bpf/libbpf/libbpf.rst
-> to: Documentation/bpf/libbpf/index.rst.
->
-> Update its cross-reference accordingly.
->
-> Fixes: d20b41115ad5 ("libbpf: Rename libbpf documentation index file")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
+Add devm_arch_phys_wc_add() and devm_arch_io_reserve_memtype_wc() for
+automatic cleanup of writecombine setup.
 
-Thanks!
+Several DRM drivers use the non-managed functions for setting their
+framebuffer memory to write-combine access. Convert ast, mgag200 and
+vboxvideo. Remove rsp clean-up code form drivers.
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Tested on mgag200 hardware.
 
->  Documentation/bpf/index.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/Documentation/bpf/index.rst b/Documentation/bpf/index.rst
-> index 1ceb5d704a97..817a201a1282 100644
-> --- a/Documentation/bpf/index.rst
-> +++ b/Documentation/bpf/index.rst
-> @@ -15,7 +15,7 @@ that goes into great technical depth about the BPF Architecture.
->  libbpf
->  ======
->
-> -Documentation/bpf/libbpf/libbpf.rst is a userspace library for loading and interacting with bpf programs.
-> +Documentation/bpf/libbpf/index.rst is a userspace library for loading and interacting with bpf programs.
->
->  BPF Type Format (BTF)
->  =====================
-> --
-> 2.31.1
->
+Thomas Zimmermann (5):
+  lib: devres: Add managed arch_phys_wc_add()
+  lib: devres: Add managed arch_io_reserve_memtype_wc()
+  drm/ast: Use managed interfaces for framebuffer write combining
+  drm/mgag200: Use managed interfaces for framebuffer write combining
+  drm/vboxvideo: Use managed interfaces for framebuffer write combining
+
+ drivers/gpu/drm/ast/ast_drv.h         |  2 -
+ drivers/gpu/drm/ast/ast_mm.c          | 27 ++++-----
+ drivers/gpu/drm/mgag200/mgag200_drv.h |  2 -
+ drivers/gpu/drm/mgag200/mgag200_mm.c  | 35 +++---------
+ drivers/gpu/drm/vboxvideo/vbox_drv.c  |  5 +-
+ drivers/gpu/drm/vboxvideo/vbox_drv.h  |  1 -
+ drivers/gpu/drm/vboxvideo/vbox_ttm.c  | 17 +++---
+ include/linux/io.h                    |  5 ++
+ lib/devres.c                          | 82 +++++++++++++++++++++++++++
+ 9 files changed, 113 insertions(+), 63 deletions(-)
+
+--
+2.33.0
+
