@@ -2,115 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AFF040E95D
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:02:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC53F40E7E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:59:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357805AbhIPRwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:52:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57130 "EHLO mail.kernel.org"
+        id S1347769AbhIPRgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:36:19 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:42316 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355841AbhIPRmL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:42:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D2EFA60F6D;
-        Thu, 16 Sep 2021 17:22:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631812966;
-        bh=Q08H6DZ4BxEkJU51LQTF5dWsZstlotAhOnYpzocUYrE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LOuIWXdWIRQsT/0L1Ibt06eIM32VeSHQ2vmabx301G+E2x5v4EfaA9tlAUeNgtbqr
-         z8xj/i3khu0VRr5cOZRqU0UGZlX++5vd26VWctRjU5WgbiETuFzpVsz701jYWGGi6t
-         hpsf4rKeulnUCseI4Ryzdh7vj3Nd74A9y8IgAcnw=
-Date:   Thu, 16 Sep 2021 19:22:43 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Min Li <min.li.xe@renesas.com>
-Cc:     "arnd@arndb.de" <arnd@arndb.de>,
-        "derek.kiernan@xilinx.com" <derek.kiernan@xilinx.com>,
-        "dragan.cvetic@xilinx.com" <dragan.cvetic@xilinx.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "lee.jones@linaro.or" <lee.jones@linaro.or>
-Subject: Re: [PATCH misc v2 2/2] misc: Add Renesas Synchronization Management
- Unit (SMU) support
-Message-ID: <YUN9Y7+R/+DbRgby@kroah.com>
-References: <1631731629-20862-1-git-send-email-min.li.xe@renesas.com>
- <1631731629-20862-2-git-send-email-min.li.xe@renesas.com>
- <YULVYrvUM+JQils9@kroah.com>
- <OS3PR01MB659340151F61C6ABA2D9043BBADC9@OS3PR01MB6593.jpnprd01.prod.outlook.com>
- <YUNlQ1d8gsNzY0mz@kroah.com>
- <OS3PR01MB65937881AFAA1D8C575E63DABADC9@OS3PR01MB6593.jpnprd01.prod.outlook.com>
- <YUNrPD5pbq5NBi26@kroah.com>
- <OS3PR01MB6593C988FB68699B58609D4ABADC9@OS3PR01MB6593.jpnprd01.prod.outlook.com>
+        id S1352754AbhIPR1j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:27:39 -0400
+Received: from zn.tnic (p200300ec2f11c6001e49ea6afe1054f5.dip0.t-ipconnect.de [IPv6:2003:ec:2f11:c600:1e49:ea6a:fe10:54f5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5ED201EC01DF;
+        Thu, 16 Sep 2021 19:26:08 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1631813168;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=oOtmNTM2jr/g9JVg0OexwbFg2/pG+8cff5fWd4oubyk=;
+        b=HA43ImuGZC1WGrvAhfNdFt6SUtTLcSGWTR/UJVK0nwQVPxc+EN+ytuygjgJvsDLf/v619f
+        /mdq87L35kG6yS8syIKPfSYSI0oP8iaQEgeOJlWiTRfBbdN6rLm+JNU+WDuyQBUs5a0bmU
+        GfQ50AjWPdgVTca2lYAIWjSFmICdB2A=
+Date:   Thu, 16 Sep 2021 19:26:07 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH Part2 v5 02/45] iommu/amd: Introduce function to check
+ SEV-SNP support
+Message-ID: <YUN+L0dlFMbC3bd4@zn.tnic>
+References: <20210820155918.7518-1-brijesh.singh@amd.com>
+ <20210820155918.7518-3-brijesh.singh@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <OS3PR01MB6593C988FB68699B58609D4ABADC9@OS3PR01MB6593.jpnprd01.prod.outlook.com>
+In-Reply-To: <20210820155918.7518-3-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 05:01:10PM +0000, Min Li wrote:
+On Fri, Aug 20, 2021 at 10:58:35AM -0500, Brijesh Singh wrote:
+> The SEV-SNP support requires that IOMMU must to enabled, see the IOMMU
+
+s/must to/is/
+
+> spec section 2.12 for further details. If IOMMU is not enabled or the
+> SNPSup extended feature register is not set then the SNP_INIT command
+> (used for initializing firmware) will fail.
 > 
+> The iommu_sev_snp_supported() can be used to check if IOMMU supports the
+
+"can be used"?
+
+Just say what is going to use it.
+
+> SEV-SNP feature.
 > 
-> > -----Original Message-----
-> > From: Greg KH <gregkh@linuxfoundation.org>
-> > Sent: September 16, 2021 12:05 PM
-> > To: Min Li <min.li.xe@renesas.com>
-> > Cc: arnd@arndb.de; derek.kiernan@xilinx.com; dragan.cvetic@xilinx.com;
-> > linux-kernel@vger.kernel.org; lee.jones@linaro.or
-> > Subject: Re: [PATCH misc v2 2/2] misc: Add Renesas Synchronization
-> > Management Unit (SMU) support
-> > 
-> > On Thu, Sep 16, 2021 at 03:54:52PM +0000, Min Li wrote:
-> > > >
-> > > > Please put that link in the changelog comment and in the .c code as
-> > > > well so that people know where to find it.
-> > > >
-> > > > > >
-> > > > > > Why is this new api not a standard one?
-> > > > > >
-> > > > >
-> > > > > There is no actual standard for the GNSS assisted partial timing
-> > > > > support (APTS) In terms of Linux kernel API
-> > > >
-> > > > Then make one!  :)
-> > >
-> > > Yes it is on our roadmap to do that for next release
-> > 
-> > Please do it for this kernel api, otherwise you have to support this for the
-> > next 20+ years as-is :(
-> > 
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> ---
+>  drivers/iommu/amd/init.c | 30 ++++++++++++++++++++++++++++++
+>  include/linux/iommu.h    |  9 +++++++++
+>  2 files changed, 39 insertions(+)
 > 
-> In that case, I would have to get back to you in a few months. If you are rejecting this
-> change due to this reason. Please tell me explicitly so that I can copy paste to my manager
-> and that would be it. Thanks 
+> diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
+> index 46280e6e1535..bd420fb71126 100644
+> --- a/drivers/iommu/amd/init.c
+> +++ b/drivers/iommu/amd/init.c
+> @@ -3320,3 +3320,33 @@ int amd_iommu_pc_set_reg(struct amd_iommu *iommu, u8 bank, u8 cntr, u8 fxn, u64
+>  
+>  	return iommu_pc_get_set_reg(iommu, bank, cntr, fxn, value, true);
+>  }
+> +
+> +bool iommu_sev_snp_supported(void)
+> +{
+> +	struct amd_iommu *iommu;
+> +
+> +	/*
+> +	 * The SEV-SNP support requires that IOMMU must be enabled, and is
+> +	 * not configured in the passthrough mode.
+> +	 */
+> +	if (no_iommu || iommu_default_passthrough()) {
+> +		pr_err("SEV-SNP: IOMMU is either disabled or configured in passthrough mode.\n");
+> +		return false;
+> +	}
+> +
+> +	/*
+> +	 * Iterate through all the IOMMUs and verify the SNPSup feature is
+> +	 * enabled.
+> +	 */
+> +	for_each_iommu(iommu) {
+> +		if (!iommu_feature(iommu, FEATURE_SNP)) {
+> +			pr_err("SNPSup is disabled (devid: %02x:%02x.%x)\n",
+> +			       PCI_BUS_NUM(iommu->devid), PCI_SLOT(iommu->devid),
+> +			       PCI_FUNC(iommu->devid));
+> +			return false;
+> +		}
+> +	}
+> +
+> +	return true;
+> +}
+> +EXPORT_SYMBOL_GPL(iommu_sev_snp_supported);
 
-Please come up with a unified api that will work with all devices of
-this type, and not a one-off ioctl with random structures in it that are
-directly tied to the hardware.
+That export is not needed.
 
-> > > > Why not just do this all from userspace then?  You can have spi/i2c
-> > > > userspace code, right?  Why does this have to be a kernel driver?
-> > > >
-> > > We used to do everything in userspace. But since PHC (ptp hardware
-> > > clock) came along, we decided to move the driver part to kernel. Please
-> > take a look at drivers/ptp/ptp_clockmatrix.c for reference.
-> > > Recently, we have some functions like APTS that doesn't belong to PTP
-> > > or anything else so we have to split those functions to RSMU misc driver
-> > and i2c/spi bus accesses to RSMU MFD driver.
-> > 
-> > I still do not understand why this has to be a kernel driver, sorry.
-> > What exactly forces it to be that way?
-> > 
-> That is our management decision since everyone is trying to move their driver to Linux kernel
-> to contribute so that we don't have to release the driver to each customer separately. The customer
-> can just grab the driver from linux
+> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+> index 32d448050bf7..269abc17b2c3 100644
+> --- a/include/linux/iommu.h
+> +++ b/include/linux/iommu.h
+> @@ -604,6 +604,12 @@ struct iommu_sva *iommu_sva_bind_device(struct device *dev,
+>  void iommu_sva_unbind_device(struct iommu_sva *handle);
+>  u32 iommu_sva_get_pasid(struct iommu_sva *handle);
+>  
+> +#ifdef CONFIG_AMD_MEM_ENCRYPT
+> +bool iommu_sev_snp_supported(void);
+> +#else
+> +static inline bool iommu_sev_snp_supported(void) { return false; }
+> +#endif
+> +
+>  #else /* CONFIG_IOMMU_API */
+>  
+>  struct iommu_ops {};
+> @@ -999,6 +1005,9 @@ static inline struct iommu_fwspec *dev_iommu_fwspec_get(struct device *dev)
+>  {
+>  	return NULL;
+>  }
+> +
+> +static inline bool iommu_sev_snp_supported(void) { return false; }
+> +
 
-Don't use the kernel as your distribution method for things that should
-not belong in the kernel.  There is no need for creating and maintain
-kernel modules for drivers that do not need to be drivers at all.  That
-feels like you would be doing extra work here.  Writing a simple
-userspace library for this that works for all kernel versions would be
-much easier.
+Most of those stubs and ifdeffery is not needed if you put the function
+itself in
 
-thanks,
+#ifdef CONFIG_AMD_MEM_ENCRYPT
 
-greg k-h
+...
+
+#endif
+
+as it is called by sev.c only, AFAICT, and latter is enabled by
+CONFIG_AMD_MEM_ENCRYPT anyway.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
