@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 968D940E384
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:20:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 270FA40E14D
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:29:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243153AbhIPQtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:49:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57410 "EHLO mail.kernel.org"
+        id S241998AbhIPQ3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:29:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55014 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343556AbhIPQm3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:42:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA3FF61A2F;
-        Thu, 16 Sep 2021 16:24:47 +0000 (UTC)
+        id S241222AbhIPQPV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:15:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CB03D613CE;
+        Thu, 16 Sep 2021 16:11:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809488;
-        bh=BTWXSsieuPMWhb2ZtLLTiG5NA3rJD+1qYGypUtcwUOg=;
+        s=korg; t=1631808683;
+        bh=Q0lK3HoIcSET0s++2jaRwIXt4hru6VLJ3SveAsdzYjk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Uljdpq61cGdHVicrGN55vJSetNv86DLI8wxK8m60cOWM0f8+UICqzf3uJ/rLaHRTR
-         ASUEPB87f4K+8YOGoFn1Y/uu8vF2NTD9sUBXChUkaNqArzQQYHQDhKtlM2/RCzvGKC
-         Fy7T3EFnw8aX92AP2pOlobe3XKSNz4YeFIiSDgRU=
+        b=YuappmrBX2XRwAAA8cVokRlFs0UHyl8oVZURyCNetXnlaNvGmZqXHmSXmeu1tHGa5
+         bL0qf/CDbRVyhqzP2t2ymKCoFFGYTE286XuEa63sZ+0ZnFGR76flP2pFyuWP3hEvGM
+         m/0RyNwQgw66PWkiZzCfuFzpRqImc1zWd2sJVxzY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kelly Devilliv <kelly.devilliv@gmail.com>,
+        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 171/380] usb: host: fotg210: fix the actual_length of an iso packet
-Date:   Thu, 16 Sep 2021 17:58:48 +0200
-Message-Id: <20210916155809.894047336@linuxfoundation.org>
+Subject: [PATCH 5.10 184/306] gfs2: Fix glock recursion in freeze_go_xmote_bh
+Date:   Thu, 16 Sep 2021 17:58:49 +0200
+Message-Id: <20210916155800.353176323@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,58 +39,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kelly Devilliv <kelly.devilliv@gmail.com>
+From: Bob Peterson <rpeterso@redhat.com>
 
-[ Upstream commit 091cb2f782f32ab68c6f5f326d7868683d3d4875 ]
+[ Upstream commit 9d9b16054b7d357afde69a027514c695092b0d22 ]
 
-We should acquire the actual_length of an iso packet
-from the iTD directly using FOTG210_ITD_LENGTH() macro.
+We must not call gfs2_consist (which does a file system withdraw) from
+the freeze glock's freeze_go_xmote_bh function because the withdraw
+will try to use the freeze glock, thus causing a glock recursion error.
 
-Signed-off-by: Kelly Devilliv <kelly.devilliv@gmail.com>
-Link: https://lore.kernel.org/r/20210627125747.127646-4-kelly.devilliv@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This patch changes freeze_go_xmote_bh to call function
+gfs2_assert_withdraw_delayed instead of gfs2_consist to avoid recursion.
+
+Signed-off-by: Bob Peterson <rpeterso@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/host/fotg210-hcd.c | 5 ++---
- drivers/usb/host/fotg210.h     | 5 -----
- 2 files changed, 2 insertions(+), 8 deletions(-)
+ fs/gfs2/glops.c | 17 +++++++----------
+ 1 file changed, 7 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/usb/host/fotg210-hcd.c b/drivers/usb/host/fotg210-hcd.c
-index 3b5d185c108a..670a2fecc9c7 100644
---- a/drivers/usb/host/fotg210-hcd.c
-+++ b/drivers/usb/host/fotg210-hcd.c
-@@ -4459,13 +4459,12 @@ static bool itd_complete(struct fotg210_hcd *fotg210, struct fotg210_itd *itd)
+diff --git a/fs/gfs2/glops.c b/fs/gfs2/glops.c
+index 3faa421568b0..bf539eab92c6 100644
+--- a/fs/gfs2/glops.c
++++ b/fs/gfs2/glops.c
+@@ -623,16 +623,13 @@ static int freeze_go_xmote_bh(struct gfs2_glock *gl, struct gfs2_holder *gh)
+ 		j_gl->gl_ops->go_inval(j_gl, DIO_METADATA);
  
- 			/* HC need not update length with this error */
- 			if (!(t & FOTG210_ISOC_BABBLE)) {
--				desc->actual_length =
--					fotg210_itdlen(urb, desc, t);
-+				desc->actual_length = FOTG210_ITD_LENGTH(t);
- 				urb->actual_length += desc->actual_length;
- 			}
- 		} else if (likely((t & FOTG210_ISOC_ACTIVE) == 0)) {
- 			desc->status = 0;
--			desc->actual_length = fotg210_itdlen(urb, desc, t);
-+			desc->actual_length = FOTG210_ITD_LENGTH(t);
- 			urb->actual_length += desc->actual_length;
- 		} else {
- 			/* URB was too late */
-diff --git a/drivers/usb/host/fotg210.h b/drivers/usb/host/fotg210.h
-index 6cee40ec65b4..67f59517ebad 100644
---- a/drivers/usb/host/fotg210.h
-+++ b/drivers/usb/host/fotg210.h
-@@ -686,11 +686,6 @@ static inline unsigned fotg210_read_frame_index(struct fotg210_hcd *fotg210)
- 	return fotg210_readl(fotg210, &fotg210->regs->frame_index);
+ 		error = gfs2_find_jhead(sdp->sd_jdesc, &head, false);
+-		if (error)
+-			gfs2_consist(sdp);
+-		if (!(head.lh_flags & GFS2_LOG_HEAD_UNMOUNT))
+-			gfs2_consist(sdp);
+-
+-		/*  Initialize some head of the log stuff  */
+-		if (!gfs2_withdrawn(sdp)) {
+-			sdp->sd_log_sequence = head.lh_sequence + 1;
+-			gfs2_log_pointers_init(sdp, head.lh_blkno);
+-		}
++		if (gfs2_assert_withdraw_delayed(sdp, !error))
++			return error;
++		if (gfs2_assert_withdraw_delayed(sdp, head.lh_flags &
++						 GFS2_LOG_HEAD_UNMOUNT))
++			return -EIO;
++		sdp->sd_log_sequence = head.lh_sequence + 1;
++		gfs2_log_pointers_init(sdp, head.lh_blkno);
+ 	}
+ 	return 0;
  }
- 
--#define fotg210_itdlen(urb, desc, t) ({			\
--	usb_pipein((urb)->pipe) ?				\
--	(desc)->length - FOTG210_ITD_LENGTH(t) :			\
--	FOTG210_ITD_LENGTH(t);					\
--})
- /*-------------------------------------------------------------------------*/
- 
- #endif /* __LINUX_FOTG210_H */
 -- 
 2.30.2
 
