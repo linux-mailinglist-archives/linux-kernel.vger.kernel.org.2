@@ -2,177 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C659C40EC62
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 23:21:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71FA540EC65
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 23:21:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240186AbhIPVWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 17:22:39 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:46164 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232785AbhIPVWd (ORCPT
+        id S240392AbhIPVWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 17:22:50 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:19416 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234249AbhIPVWh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 17:22:33 -0400
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18GJu7YR019729;
-        Thu, 16 Sep 2021 21:21:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
- date : message-id : content-transfer-encoding : content-type :
- mime-version; s=corp-2021-07-09;
- bh=G4osKdktX/ZEqtQ4EpH1N9vM9fppqprnCvtuI1aUGoU=;
- b=zBJqtzGnSWZs/QgbZn69ldsQu0X7Nk/xoxJwtVRjy6pPJkmHhohG15opt3hPoWoedyPp
- ErupFlp4TZCZoswILGc5vxqGxMJaZc5V+I4x9PveR+o0b7WkFNCAmXiLDA4XckBWX/DJ
- w4vQcZNfFR7G8h8hqN3TDoyabBeqPjB8iB6oHWuZcRYYE+j943JedwyY60lAa+Y6vug3
- 0roskznRQU2r4+NVQ9iueyNDTY1RoWPAtKnp0PSnXusvc4NO+QTA8GpllLdJnSD3I2TY
- CssAH2Iit9+gVEu5tUWLEQzF8xYq5lBdxbakXThnBDjqj8iC9NYp91t8qEqS9rJv8fGL Dw== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
- date : message-id : content-transfer-encoding : content-type :
- mime-version; s=corp-2020-01-29;
- bh=G4osKdktX/ZEqtQ4EpH1N9vM9fppqprnCvtuI1aUGoU=;
- b=rqsTe+6zYp3q2Bj964XFlouVz0xfKbLeedoBatPwRVNFzWjwUbwpshVtZ52z+fAEws3C
- R2VQIzdW1+72zWbniA1eAwf8w49vQb7MytYYZvADqme9GeldQa2vK0mHkYEWbX0rMUIR
- kdWIZIhm17OEQO+Lg0jMHVil9KeCHvy9onFN9Ot4TLMvmayUHgSJBsOQuKufxgeFZYeP
- 99QGN50vICRTwGkcLcJ+7vJKxYlpzkfaRHhEAd5RmYnO/J0JV9KmpjdIjkXuO4KzV7FM
- zbarnXhhVhR8vM8MruAjKCs3hWxSqtV2EGM0WLpF1ccc9r8m5RzS3yj61yfkafGaZmKz 4w== 
+        Thu, 16 Sep 2021 17:22:37 -0400
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18GK5R5a010759;
+        Thu, 16 Sep 2021 21:21:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references :
+ content-transfer-encoding : content-type : mime-version;
+ s=corp-2021-07-09; bh=/cvzxwZtxEgsiDzhYZDo+UjkF4zhNV8spCgc3PFY9sg=;
+ b=DRRgHV3UlIL+rJXgzfCUii3wVbX4YaN543TMiWr6PFBb5TlOo7wYlIPn768fK2XoX5yY
+ fwK7AH3erQmGnysnI0+AdPFHHC4TDmoLgLVvOpNsSWl3xiGpI6n0np5dO6i1RZlIusDh
+ zGIDQNuKxmWk/ltQqNR0s+ZVKCGuj5SLjmUOFhYNN1NrIof+cQcn5ulkuBFu7A2xmXVM
+ GFwOwBA4WqHkaclZhhEgAtc/nESpCePQ3cYFD1Qyj19JRDi2FvF+qgHyLJDq8ZiBDN9N
+ SjQStPU/du5KG9U25jo8ak5PC1QMfqRt/2zwjfg/LbF36fbgcWDSK97fcpHDonu8F8S+ 1g== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references :
+ content-transfer-encoding : content-type : mime-version;
+ s=corp-2020-01-29; bh=/cvzxwZtxEgsiDzhYZDo+UjkF4zhNV8spCgc3PFY9sg=;
+ b=Z4sKIcZi9+ERVV0NTQctM18lSArr12k0JbAeyoAA1zwgl0QJp0s+j4gEGx8HgPT3wI3d
+ u+/aGZuR08t4aYPz4MoDIV5MvqgmA/EnIYNVcVJcG4qQAp25U9kj6duxxJncPp6qJXkN
+ eLCy76S+SQw6B0srY4C4dOXwyt+Uhfgb+Mku7jmB9pKNlZfGiHdDqkvOT53nrt+nKHhf
+ dc1XP7LjFXMo7sHPOBGpCXhO9gpeMLYCbZ2Fzy8IN+FEeW65Wy3+HaHblPxWmhftWhuO
+ eleqkK0Kz/Be4gaONEA4PcRIK1+Vq/DEA/QlFMaeZzRv2Gc5p3Yy85bhuO2+b42nnkGt 9A== 
 Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3b3t92m6q5-1
+        by mx0b-00069f02.pphosted.com with ESMTP id 3b3tnhv271-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 16 Sep 2021 21:21:05 +0000
+        Thu, 16 Sep 2021 21:21:07 +0000
 Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18GL5XNn011268;
-        Thu, 16 Sep 2021 21:21:04 GMT
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18GL5XNp011268;
+        Thu, 16 Sep 2021 21:21:06 GMT
 Received: from nam02-bn1-obe.outbound.protection.outlook.com (mail-bn1nam07lp2046.outbound.protection.outlook.com [104.47.51.46])
-        by userp3030.oracle.com with ESMTP id 3b0hjyuvpe-1
+        by userp3030.oracle.com with ESMTP id 3b0hjyuvpe-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 16 Sep 2021 21:21:04 +0000
+        Thu, 16 Sep 2021 21:21:06 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZX7EFMKlm8EeSAZLILEPuUuCgonFDpLxYMIS8D05O61uUk2VHym3Mzm112ZVBFoTBlCGppsAqQTseX/pYU6TPSE3l9BYB2GTn5LBKtLjIs8b9Rr70Ul6PvY2PlRG1qWrS5RCiV2FjWtyQn3KQ/4EArbcNvTEfmDBnxIoX/1Un6zO83e3wZbuQ8NS3IBhF/dYMQK5jiyCTb6WdyUkskDFx4pTQiJ7+0SqoNXjeyWATXEAMIzfQV277mg131pAZEbJcV0gD5fQC4vSc1+MPIwcgL3+qopYdwFN7fQOPSD2coU9QtU/pGg8c0IoZgDIkVYA+xzMSWFj9d5GT1RIK6Ov1Q==
+ b=Y9B2HdFmmWcnaDrWS5fTh5bM/HgX5dzOMJM17n3vgWbttyH/RJmBcWy4DKX9yRhgv4L+jsrbo9ZPXbhkWPnJ7OWrLeRJK2/kXhiSHedUU9er71ZLFsCT8GsUZZAVyLjLuweEMjtki+ySGM+sqXKTkN2H+Ma72sUKk1atIsDwwFdZzQhO/ZCPWL84ETbRRJtAAFycdO+l7ul8bGF1BN3/Tz9NyrzhSUfDvp3ppI+UZGW3tVT4M1EvImxBkfiu/xKQWgr/EgIZfvB2RNMtEi9Zu6qybY0fWOaPU3SanbGq/oKHjQ7KLGRVQuygXRiBbfnOCepmFltKRGPcbQcFOEIDuQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=G4osKdktX/ZEqtQ4EpH1N9vM9fppqprnCvtuI1aUGoU=;
- b=O75lcEdUKFSv6AM4O+eHRADdawTqVQiJ2DrB/kxS67KyfzIm3LF848nUYbbrMNpgKLzzHSHLr5rqZ82J5Wz0aJrpOpCYtiwAnac5ZM6+zk9f4ewJX8DLkZRDZHesdyQGe3K22YSGWN1VudXGEQkxTOmKVMD9QD9xVN554SQAQR8YS8/3QD7W5uy8RGBKGjhtq/0cgssJ/Q+EU2xNwBdhGexKcAOnDEljLN4kszRb/ma5hY0ZZYZYP7d+m5BNiEP992kFK9f78XezgBTV2f+l1qHDVQrEHj8vuibY8AuJKjgvtrnzpMNMvemRc7nfhFJwPGuTcc9GYoexpuUCZv0SYA==
+ bh=/cvzxwZtxEgsiDzhYZDo+UjkF4zhNV8spCgc3PFY9sg=;
+ b=oYmkvj/uVto4BiIJY2tBelbWrD/Xr2J3eP43fyly/uiNf+8RQ1wRDUinsGvSv6ZJ9yR0mDX1Av56TtZy9k1UBhXBaugZbI/pGGTvdpll+5eiYeUQVSgj0XCsPR6/czW8v9laKGGEl15IpreDBRqb3VTJO4ct52Yx3ZeIHUMK9LmcLfWiyUCiaeMc0stacEumGljsCJl7fFVNAuQBD1EhO8dfr1nC2MlYaR1X0OqM7zXuWSBCHOiSpCzm81uHgLWKSpuEgX84U+3ydhIAhkPYzpfcJD8VqSMnpZfv27ynpEsf8MeYHNmWNCaUYQLmOFtza5a3rk38b19aOYVqgcccGw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G4osKdktX/ZEqtQ4EpH1N9vM9fppqprnCvtuI1aUGoU=;
- b=rWdKwq4Ft9vilTRYKGiuLeHQN5gQd9HnyI7J4EKETCoDKFMo+fYMSBT4T7Wjz7ItY9VnoMh4OlWAi6Ges1PrWl4z9XdFNXyn5vAjK85i7riViq0YVdJ16s6Up07Obi6/2SYvWjXO6kFCnNd3t0uFxtAZMQtBxmhJP4LA5Z1ExCk=
+ bh=/cvzxwZtxEgsiDzhYZDo+UjkF4zhNV8spCgc3PFY9sg=;
+ b=C8le5lrTaZmxPm3XfZzHt8UGql9jLPpelAFwMJjPuvEbNmz7vumYSo4lswCzi+lFoWWLPYx9Ct8xjbRU8S0SsHXgukwpTQqNK4f6B9+ovCOEvvfwmGExTVw2cbd2OdCByg56jLc/eu+uWfLhR3/vOiw6nLOVIeZ0Td5e/st1MrA=
 Authentication-Results: redhat.com; dkim=none (message not signed)
  header.d=none;redhat.com; dmarc=none action=none header.from=oracle.com;
 Received: from BYAPR10MB3573.namprd10.prod.outlook.com (2603:10b6:a03:11e::32)
  by BYAPR10MB2935.namprd10.prod.outlook.com (2603:10b6:a03:8e::20) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.18; Thu, 16 Sep
- 2021 21:21:01 +0000
+ 2021 21:21:02 +0000
 Received: from BYAPR10MB3573.namprd10.prod.outlook.com
  ([fe80::5881:380c:7098:5701]) by BYAPR10MB3573.namprd10.prod.outlook.com
  ([fe80::5881:380c:7098:5701%6]) with mapi id 15.20.4523.014; Thu, 16 Sep 2021
- 21:21:01 +0000
+ 21:21:02 +0000
 From:   Mike Christie <michael.christie@oracle.com>
 To:     stefanha@redhat.com, jasowang@redhat.com, mst@redhat.com,
         sgarzare@redhat.com, virtualization@lists.linux-foundation.org,
         christian.brauner@ubuntu.com, axboe@kernel.dk,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 0/8] Use copy_process/create_io_thread in vhost layer
-Date:   Thu, 16 Sep 2021 16:20:43 -0500
-Message-Id: <20210916212051.6918-1-michael.christie@oracle.com>
+Cc:     Mike Christie <michael.christie@oracle.com>
+Subject: [PATCH 1/8] fork: add helper to clone a process
+Date:   Thu, 16 Sep 2021 16:20:44 -0500
+Message-Id: <20210916212051.6918-2-michael.christie@oracle.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210916212051.6918-1-michael.christie@oracle.com>
+References: <20210916212051.6918-1-michael.christie@oracle.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-ClientProxiedBy: DM5PR04CA0027.namprd04.prod.outlook.com
  (2603:10b6:3:12b::13) To BYAPR10MB3573.namprd10.prod.outlook.com
  (2603:10b6:a03:11e::32)
 MIME-Version: 1.0
-Received: from localhost.localdomain (73.88.28.6) by DM5PR04CA0027.namprd04.prod.outlook.com (2603:10b6:3:12b::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Thu, 16 Sep 2021 21:21:00 +0000
+Received: from localhost.localdomain (73.88.28.6) by DM5PR04CA0027.namprd04.prod.outlook.com (2603:10b6:3:12b::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Thu, 16 Sep 2021 21:21:01 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b0f7061b-fc5e-4c1b-e0d3-08d97957e1e5
+X-MS-Office365-Filtering-Correlation-Id: 3c7f127d-244b-47dd-4167-08d97957e295
 X-MS-TrafficTypeDiagnostic: BYAPR10MB2935:
-X-Microsoft-Antispam-PRVS: <BYAPR10MB293544560A6E3D694F72052DF1DC9@BYAPR10MB2935.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR10MB2935BAD917665F71A98CB9F0F1DC9@BYAPR10MB2935.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2399;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Szz0ScDlZ4mrxKgZpi07Dk/6kMmWbieKZ1sDmo0Fnp6D/s6Wz5kClkmqnvOAtvt53qerae7KRM8Li5i0jjFSDGZMwBl4jTjMJXJnyRndF5uKJYp8tXRWD+D6jw07cl6UMsP/AEFBhbki8U/BTbYqSop9bFu+sE5zh4rY3Z4EdBImvWAMsoLTgidvzzepYgn6Qde5uFO03mLOE2HBwrzl1gcOnrvD4IhWyejJVDKnTP8gwvFdI7yVdXMHTMev2NK4JHkLBVu913VEI4Tu9SnKDObenorBKWthVGv7/MEAh2AcQg6nH9qdCDVbkoQr/46ATn6Zhz1p953JnzMqwhxjuDAabDFHynDN/7brcuaciaAEObPg4oW9yoRS4817ehfS/x7A29FUHme/itwL3R1zN1pgHmh4gROThxgoQKHOGd57TM6/Gl1sPq1bQHsGZ8dVCpIYirX/UVz5u/vucskEvcyz+czgplsswMP5cH9fQsfE9/kKjGVNh5WZICieWpVaAePVsXusJv891tRsqUT0QFdMhap5cIukWaApeKY/fm43t9fKBuTMWMDFZ5Je7LnVYQ5KL4BL++iU5sbOMfPRcDLfaN8yOZqe/41N0xtDntA5ni49RIiRxhP1gnCvJuoWpBzmD9jW7Ryubt2t/JZkDFCdv8k2JFYStF4C2tOVxuobUhSzduodEUs0LDBrtLPH/BqIbDRsTOG/Vr7bIKqtfUSDe6CUdXwW6INRW3HeLlOFuE1nDlDUhFhoBU9wNwJDFRY8AKH9MRKqaVmJNEr7Jw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB3573.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(966005)(316002)(86362001)(36756003)(26005)(508600001)(8676002)(8936002)(66556008)(83380400001)(66946007)(5660300002)(6506007)(66476007)(6486002)(2906002)(38100700002)(38350700002)(1076003)(52116002)(2616005)(6512007)(956004)(6666004)(186003);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: CBMSG2QHuiXzbaSCpG+rC6moFJ2oCx+VE7LVRxTWsAdbp1XcmVG2dSR2DOCNBRhNBFmIm17zGGpKKCKzAIe8/2hNLlpxyVyCb4oBpFU05MTODDEUQuNhhbLlQRvHYOLbU9avT2U41MmU0eMR8he4LcT3IxOWYY6wCTaTPRL6YkkemFvK03NTb6pN/JKesqsOGeqTnMnRsWLEdtqEdXgdGXan+rjUeRIGtCRvh2+KLz9c1C4agYtHvVpMZneJvELU+tMarYfubxBO7YhDTGiO4n+vztqQOEz8e5My/zkIiZACOUAisfr8GsF79G6Fi4J3AqEzEdFn/9UUVO5aGHgJXPYpDYhkroBt0c1haUcI4oTFFMZ71J10FDAWfQI5d/N2nja+Ofnv03qLDN+JNTbl5eoo7M5Ca8FgOvRgsF273jeLxmgM4Vg3Rar8SFQb5bH+XPBRqYziBd3/7rc6UnVCkqNdPIg5R8QTQdHSOzIfCTxEED1PszizYih6x6FSpYRe6cdglX2LluBT3Uftw8WdS8b/zCWcu3EszjDCRPUMGLJYuToxsxEknTWeJOm0/3iUPIB5xKEifV2NVcO49GBX9tFSYD01HOXptTZFQ2c3U++tVxgVPi0MWXTJ0Qb4U5OKpnejVeu+TwWqYseiRbzUY6MQtEYEtHxJWjZ1qLDTrJcHkLtH8MGYknjMMl72DxnyY3T8K1ErSegZyRQRsDKvOQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB3573.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(316002)(86362001)(36756003)(26005)(107886003)(508600001)(8676002)(8936002)(66556008)(83380400001)(66946007)(5660300002)(6506007)(66476007)(4326008)(6486002)(2906002)(38100700002)(38350700002)(1076003)(52116002)(2616005)(6512007)(956004)(6666004)(186003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?bzOTk/8/A+ZRPIKu/9aYfTrvoGLpVCl19XnZIHtGVfyDtto4AFcsTmwuHj7R?=
- =?us-ascii?Q?ejaz72cgoidpu5ptfToMXPTXpUaW7c6mTkjCp4aiTqVAxgDxVs3CQVETaead?=
- =?us-ascii?Q?o2eFaGJuvSTXhv5xj2d4QFk/MrAVuQtRQ4cpk/T06S1xt/l5EZ7vP+VOWWnp?=
- =?us-ascii?Q?JHlJNRCUcPGxPzzq6qij2iOjuhTbH2TaFFmSF/dHo+d02tED/DPFfAgQH9A1?=
- =?us-ascii?Q?FUwz6bXy5oUF6/D2Pz3rvk21pEzRdZ7jCdrI6MvxwsK/sz5xw2NpwNZoeskM?=
- =?us-ascii?Q?e2bl8O/58vR6FYsxJC+5JJ2GUdI8OgxNM2JggVq6w+5xkEazJJreBM526ody?=
- =?us-ascii?Q?qk2zlZ/d7JQEocrjeN2TcV2qkDTtywgCR92mZ7KeDLJg8zMZanlu5u6zBpy9?=
- =?us-ascii?Q?P3PlioKDpVcgZKEWxQtnWLF8b7KvKiEhWgHIatx+dkQsFUxA4JHKx/czT7TC?=
- =?us-ascii?Q?CIJBoU6envUuJ29t/LpIVM00sAMz3PjYVA2JhqRHDt7RV9QKH/XKDYvhLyiv?=
- =?us-ascii?Q?nHtQMM2Y+KKlAZvO+qLyIW51zJgowYWBHzZ29aRxYfvrV+KI4BLZj8deUm0F?=
- =?us-ascii?Q?Ep572vbipXu3uyvxVFZTEfL5IOB7rduGDpPAEGtV5vMqUmPb4stxFjXwPWqa?=
- =?us-ascii?Q?1SIrtkmb9S+UE9FrWkhbVvpp5qbfIhfU4O1J58hzkoCQzIVQYbMTOsertTmP?=
- =?us-ascii?Q?qB5eVj/umq2mQkQ7m5rnM/qmxEZJU8n6BtPcQKgyPubICT7M/bnIjC/cSRYF?=
- =?us-ascii?Q?owegTi7v3A6aiX2D7vfz90UGFU43k9dK2E6aQop8xEDu2nKluG4X6/WAgsIz?=
- =?us-ascii?Q?Kz271+Nx+BwtqdaFJjO7fcb4cAKV2WaQVZjQu0kngfRRUKHRzfYOt4HkDHvj?=
- =?us-ascii?Q?DGTPkScIx45SA0TDyLyq+9repLFI/WWyHciE6e+xlrcSprvGoR/hL85pMiCN?=
- =?us-ascii?Q?9DsU166WvtOhncuZPFeh5rbjOQ6S406XxXns7BX47jx7kQSBN+CCq+KUxri1?=
- =?us-ascii?Q?iTDG+UFByYsB9msoofDMqRAcdmVsD1eCq9J7xKeL1RLMyKJhyWs2XtpHiRH3?=
- =?us-ascii?Q?nOwCSxEpV4iU+qingzPumbZ3+siPyPm/hhqLHQtT/xyUJ7/dCq2CE7f3eE9b?=
- =?us-ascii?Q?t5v+82Xa0l2Qq8UG7BYwvewEehxhHVwX56DjpWrUXM6aEztW930RNZvkWCfH?=
- =?us-ascii?Q?OX5JZ1IREQEEpkqGxxT9fcVTpNlPSdIM9wI1BnfAAhTh4K2SudcGp2xAOPd0?=
- =?us-ascii?Q?fbwYyULttUiyilAWHQ/uIboV1/jRAKNodzyWXO9SOTpbTSJzx6LcwDdOD3Kt?=
- =?us-ascii?Q?6KNdiopJCkPF6QwTC1zsJCsL?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?C7wG8HHrSjxYFW8lZw4W3q60l74vIl6xFXBaz8ITKop14V5XoHV80bKmsQ03?=
+ =?us-ascii?Q?lAjDtt2PvlraY45c33k/32Bm11coZf33jMvs1p/sDLL18QM1RLL2oNljLQT2?=
+ =?us-ascii?Q?cH8R9aboxLLkqoSxaefMU8Pzmi0A0S65VwYah97OMtsE+AOpJZeoO0Sw0uWh?=
+ =?us-ascii?Q?WWXLwZxN+qUvJUaIkwj9O0KsPBnnVGTTgz3QatoaQetLe0rzHMLPgnoznxD8?=
+ =?us-ascii?Q?PqNpAAvvIpxIvJmMPT+U+kJ4yNfl0RNuVGepI28x6leW/if2rHCBcfBOwE2q?=
+ =?us-ascii?Q?LSUzhDf1882Kuq3R8x7hBNEHsY4ErWK8/Ld4puFCowqpbud9PyK58zsM5hYg?=
+ =?us-ascii?Q?Eprh1TjPdZOyyFo5VTAkq18Y125sDUlO4jEnPeC4VUi6lY16fyNS6tzCoyBg?=
+ =?us-ascii?Q?ze5PFHb/9U4r4/x4TGbqj3eNQC43nDcCsktndC1n0SfUV2pbcZVLzg6RSG3C?=
+ =?us-ascii?Q?ubeETxbty/tJhZ+u1s2PIiEUhooqT35Xy4Fgsbdtapb1BlLez21TC3diNSXI?=
+ =?us-ascii?Q?DGqCabO0HlM+jddzkcWsv5cnKoPX0rnTyVf8RrHO1lGYUj+hdYGkTfTV0Smn?=
+ =?us-ascii?Q?AvG9Sb7f3yxPOcl0lc4vz6WjPkno3ordILXYad4IY2/no5SSA2+0nfzB9jVv?=
+ =?us-ascii?Q?KX84nThBOnkuWW4a7HDkjabCNN5xJUg0mI01jfeHJ+05CNu4ws3Aw1vi0OMG?=
+ =?us-ascii?Q?Aen5/jf/QXnu78WBiROU33HVrEuAGAjv+EJCyf0ySyMEPNHXiLfyS1Hw5EPT?=
+ =?us-ascii?Q?jd0irFgsaT2iQv2OLxdqFwCscKRdu1sIDLVTpazq/0a6ZcLr8fNxoqPTABrk?=
+ =?us-ascii?Q?oqr6RE6OPMZpgz4cHKDBNwv9KFwR8+G+h5hWN8eJAbb+tmVDV4IiIRztMO4Y?=
+ =?us-ascii?Q?XWOZ/IgAWW/OwMFenfqlVUTpBd5G6jj/UjYuHkKlCFc7Q8dmq6jnDgnOs2l7?=
+ =?us-ascii?Q?Lgnr5bKL6OA4Vi2A5oPMaPXCUikHqlgCnPoTVvT4zKP2P/d48DBxeV36EBgM?=
+ =?us-ascii?Q?0DxFuOBlGSK+qbqHh7weWze7q2kEUaJsPgdG1Ej/JaODbdeEc9qJhxsfMLqH?=
+ =?us-ascii?Q?AcJPAWNt4419vg5UuBP0kcJyx3SpDwgzGhVeJBONS3YbmP98/JGbxHrtmMvA?=
+ =?us-ascii?Q?k5eKDv+oNd5VxZhtXGhQPyhjL3jQ/7Z/K/LUjbhm0dv06sSojWkOLbmuWjuv?=
+ =?us-ascii?Q?tsYbnyBb20jCAN3t/STtM5xwDXo1d+OQxzWVbz1BqMSHQTw7/513fGTXr89G?=
+ =?us-ascii?Q?hpfbYnT6gnL69w+nSwFyI0cnVBd/UIdx5lBHGJuQQuzyBuRcj2XJr3JrQ6eO?=
+ =?us-ascii?Q?IRNT9AE0bm5qqe8+8XrPi2y0?=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b0f7061b-fc5e-4c1b-e0d3-08d97957e1e5
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3c7f127d-244b-47dd-4167-08d97957e295
 X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB3573.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2021 21:21:01.1119
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2021 21:21:02.3881
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: eIbnsfIC2+xJppu44z8x28LgZdtp7PRDNfH6/crjAwPIEJEEO/Xqfh3BirhnvYUe5ZEE896BKCM4A8YRjD1qZedly7vseY0sBpxgMemFET8=
+X-MS-Exchange-CrossTenant-UserPrincipalName: iCJn4O3SgixoAlEUbpoW3s83qc+Gi3+0gBmSqM/9G+YUwBdeSsM1sffFjOGVjuu1dUwlglpoEDXzHYoj4aMKZyD0R/pZajO2CL3MXXoXjmA=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB2935
 X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10109 signatures=668682
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 adultscore=0 phishscore=0
- mlxlogscore=621 suspectscore=0 spamscore=0 bulkscore=0 malwarescore=0
+ mlxlogscore=999 suspectscore=0 spamscore=0 bulkscore=0 malwarescore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109030001
  definitions=main-2109160122
-X-Proofpoint-ORIG-GUID: W97TARUWu4r82xKml8FbYpYlmkvDzqKU
-X-Proofpoint-GUID: W97TARUWu4r82xKml8FbYpYlmkvDzqKU
+X-Proofpoint-GUID: JhTQ-nWIf3axvEFmnQSUw0YHSZy6LaU2
+X-Proofpoint-ORIG-GUID: JhTQ-nWIf3axvEFmnQSUw0YHSZy6LaU2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following patches were made over linus's tree and also apply over
-Jens's 5.15 io_ring branch and Michael's vhost branch.
+The vhost layer has similar requirements as io_uring where its worker
+threads need to access the userspace thread's memory, want to inherit the
+parents's cgroups and namespaces, and be checked against the parent's
+RLIMITs. Right now, the vhost layer uses the kthread API which has
+kthread_use_mm for mem access, and those threads can use
+cgroup_attach_task_all for v1 cgroups, but there are no helpers for the
+other items.
 
-The patchset allows the vhost layer to do a copy_process on the thread
-that does the VHOST_SET_OWNER ioctl like how io_uring does a copy_process
-against its userspace app (Jens, the patches make create_io_thread more
-generic so that's why you are cc'd). This allows the vhost layer's worker
-threads to inherit cgroups, namespaces, address space, etc and this worker
-thread will also be accounted for against that owner/parent process's
-RLIMIT_NPROC limit.
+This adds a helper to clone a process so we can inherit everything we
+want in one call. It's a more generic version of create_io_thread which
+will be used by the vhost layer and io_uring in later patches in this set.
 
-Here is a more detailed problem description:
+This patch also exports __set_task_comm and wake_up_new_task which is
+needed by modules to use the new helper. io_uring calls these functions
+already but its always built into the kernel so was not needed before.
 
-Qemu will create vhost devices in the kernel which perform network, SCSI,
-etc IO and management operations from worker threads created by the
-kthread API. Because the kthread API does a copy_process on the kthreadd
-thread, the vhost layer has to use kthread_use_mm to access the Qemu
-thread's memory and cgroup_attach_task_all to add itself to the Qemu
-thread's cgroups.
+Signed-off-by: Mike Christie <michael.christie@oracle.com>
+---
+ fs/exec.c                  |  7 +++++++
+ include/linux/sched/task.h |  3 +++
+ kernel/fork.c              | 29 +++++++++++++++++++++++++++++
+ kernel/sched/core.c        |  4 +++-
+ 4 files changed, 42 insertions(+), 1 deletion(-)
 
-The problem with this approach is that we then have to add new functions/
-args/functionality for every thing we want to inherit. I started doing
-that here:
-
-https://lkml.org/lkml/2021/6/23/1233
-
-for the RLIMIT_NPROC check, but it seems it might be easier to just
-inherit everything from the beginning, becuase I'd need to do something
-like that patch several times. For example, the current approach does not
-support cgroups v2 so commands like virsh emulatorpin do not work. The
-qemu process can go over its RLIMIT_NPROC. And for future vhost interfaces
-where we export the vhost thread pid we will want the namespace info.
-
-
+diff --git a/fs/exec.c b/fs/exec.c
+index a098c133d8d7..9fc4bb0c5c7e 100644
+--- a/fs/exec.c
++++ b/fs/exec.c
+@@ -1220,6 +1220,12 @@ EXPORT_SYMBOL_GPL(__get_task_comm);
+  * so that a new one can be started
+  */
+ 
++/**
++ * __set_task_comm - set the task's executable name
++ * @tsk: task_struct to modify
++ * @buf: executable name
++ * @exec: true if called during a process exec. false for name changes.
++ */
+ void __set_task_comm(struct task_struct *tsk, const char *buf, bool exec)
+ {
+ 	task_lock(tsk);
+@@ -1228,6 +1234,7 @@ void __set_task_comm(struct task_struct *tsk, const char *buf, bool exec)
+ 	task_unlock(tsk);
+ 	perf_event_comm(tsk, exec);
+ }
++EXPORT_SYMBOL_GPL(__set_task_comm);
+ 
+ /*
+  * Calling this is the point of no return. None of the failures will be
+diff --git a/include/linux/sched/task.h b/include/linux/sched/task.h
+index ef02be869cf2..c55f1eb69d41 100644
+--- a/include/linux/sched/task.h
++++ b/include/linux/sched/task.h
+@@ -84,6 +84,9 @@ extern void exit_itimers(struct signal_struct *);
+ 
+ extern pid_t kernel_clone(struct kernel_clone_args *kargs);
+ struct task_struct *create_io_thread(int (*fn)(void *), void *arg, int node);
++struct task_struct *kernel_copy_process(int (*fn)(void *), void *arg, int node,
++					unsigned long clone_flags,
++					int io_thread);
+ struct task_struct *fork_idle(int);
+ struct mm_struct *copy_init_mm(void);
+ extern pid_t kernel_thread(int (*fn)(void *), void *arg, unsigned long flags);
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 38681ad44c76..cec7b6011beb 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -2532,6 +2532,35 @@ struct task_struct *create_io_thread(int (*fn)(void *), void *arg, int node)
+ 	return copy_process(NULL, 0, node, &args);
+ }
+ 
++/**
++ * kernel_copy_process - create a copy of a process to be used by the kernel
++ * @fn: thread stack
++ * @arg: data to be passed to fn
++ * @node: numa node to allocate task from
++ * @clone_flags: CLONE flags
++ * @io_thread: 1 if this will be a PF_IO_WORKER else 0.
++ *
++ * This returns a created task, or an error pointer. The returned task is
++ * inactive, and the caller must fire it up through wake_up_new_task(p). If
++ * this is an PF_IO_WORKER all singals but KILL and STOP are blocked.
++ */
++struct task_struct *kernel_copy_process(int (*fn)(void *), void *arg, int node,
++					unsigned long clone_flags,
++					int io_thread)
++{
++	struct kernel_clone_args args = {
++		.flags		= ((lower_32_bits(clone_flags) | CLONE_VM |
++				    CLONE_UNTRACED) & ~CSIGNAL),
++		.exit_signal	= (lower_32_bits(clone_flags) & CSIGNAL),
++		.stack		= (unsigned long)fn,
++		.stack_size	= (unsigned long)arg,
++		.io_thread	= io_thread,
++	};
++
++	return copy_process(NULL, 0, node, &args);
++}
++EXPORT_SYMBOL_GPL(kernel_copy_process);
++
+ /*
+  *  Ok, this is the main fork-routine.
+  *
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 1bba4128a3e6..a0b9508ea202 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -4429,8 +4429,9 @@ unsigned long to_ratio(u64 period, u64 runtime)
+ 	return div64_u64(runtime << BW_SHIFT, period);
+ }
+ 
+-/*
++/**
+  * wake_up_new_task - wake up a newly created task for the first time.
++ * @p: task to wake up
+  *
+  * This function will do some initial scheduler statistics housekeeping
+  * that must be done for every newly created context, then puts the task
+@@ -4476,6 +4477,7 @@ void wake_up_new_task(struct task_struct *p)
+ #endif
+ 	task_rq_unlock(rq, p, &rf);
+ }
++EXPORT_SYMBOL_GPL(wake_up_new_task);
+ 
+ #ifdef CONFIG_PREEMPT_NOTIFIERS
+ 
+-- 
+2.25.1
 
