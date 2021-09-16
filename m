@@ -2,140 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6806940D163
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 03:48:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A200140D166
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 03:49:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233798AbhIPBt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 21:49:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233652AbhIPBt2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 21:49:28 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EE57C061574;
-        Wed, 15 Sep 2021 18:48:08 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id t190so5777474qke.7;
-        Wed, 15 Sep 2021 18:48:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=S5F/7mjVj19VhN5UayFkb0ojfwArPd1OGau/OzEMQK8=;
-        b=AfM+bL5kGDU93dq+t5Fpx0WuIXoIkp+VaA79arh/hd8VxjZGJHaCHNs0qJI/2FAH9k
-         3OtpMvq+9Vzl6JPyeNb4NXwLYFsKIRNs4sZ77iB4FmG5FfstNnC4jZ5/qXbEvGRrK8N9
-         eWHDEkLmzNMcug9dq8fAGdPPtQdFTYPvat3N/NsFKIp2II7p2BBH5XsxNC92q5Zii1Dk
-         ljUQqYZXzNWHj2UR5vSPLrPBeiNIDYY9yu9dh+AIUQqihvO1cjdtor5PsWEz70BXt6BU
-         iYEF+RF5mVKXIk51FWkYfMGZks0NaGSXna0OZMsJiCR99yFSpf1cumodv7ggt1pGz3zr
-         VTgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=S5F/7mjVj19VhN5UayFkb0ojfwArPd1OGau/OzEMQK8=;
-        b=3fFcVxb7JoOVpLJ381BELZ3hy0UBm8kl1N9FyV5o81CgCVdhSI4yDfVPhmU3PY6DTW
-         SGwkRdxO0EvixdRDwmrnMzH13YXU7zd96ZjnJaSNMxyPqceXmLt4RLKcmKEHBr8hsWAx
-         L/BSDJOnnsByzx5X+AmNEaYuEw8Ht/bIYV9o8ixVVT2yp2moacb7FJ2q7FH8i5GYkx5f
-         PpRNjErEGjsBkiUUk6G8LYvo77Myo4ZohV2JV6fNYRwCrTdEmFkjt63VZtFNgy78S4+d
-         ey531BTJtZI+++1TPXRRI7+owXE6QBlHHH+MeYwQi4fWuShbV7Xof4MYPX/j0pKPlL3c
-         x7/Q==
-X-Gm-Message-State: AOAM53263zdOjXCZiI+oXHl9QyDzLd7Dd2Jlvy944j1njmCPjP3GqNqV
-        vMe/4/v5+KODVPh9S2wqTwMwAL8QHrs=
-X-Google-Smtp-Source: ABdhPJzaTBQ7Y+4BeSYYgvQmkcWWMbTi516YrVgbwIKAWdxUoIERJ2DP7HLiCBEjXijanSyO2dSk1A==
-X-Received: by 2002:a05:620a:2094:: with SMTP id e20mr2920736qka.171.1631756887785;
-        Wed, 15 Sep 2021 18:48:07 -0700 (PDT)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id q10sm1392867qke.108.2021.09.15.18.48.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Sep 2021 18:48:07 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailauth.nyi.internal (Postfix) with ESMTP id F0AE227C0054;
-        Wed, 15 Sep 2021 21:48:06 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Wed, 15 Sep 2021 21:48:06 -0400
-X-ME-Sender: <xms:VqJCYe0ydqv2MwvbzyDPSGK7HlmsVr-oT3T-R8f7M11R4IMWnVn13A>
-    <xme:VqJCYRG5hvPxVRgRmHJnAmt3LFN9yz_usoqLcWSpQD720UnO56Oq4SHF1HAE2FTc3
-    8a-pooNJvpOzi5AUA>
-X-ME-Received: <xmr:VqJCYW5qrgv5nmiGMO4XWcbm3YdlDNCcE7_EdH78kKVkG-iZot3_7QOLeNs>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudehfedggeelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
-    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
-    htvghrnhepvdelieegudfggeevjefhjeevueevieetjeeikedvgfejfeduheefhffggedv
-    geejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsg
-    hoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieeg
-    qddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigi
-    hmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:VqJCYf2QLXMvJALRrV-9b6RPDpOTA0dRmwJQKpARShSDfRhQUPdFVg>
-    <xmx:VqJCYRHOKUYfl0TOIRvdL9eBHcgiSMR5e8BaKtPkMN9Wa0XrG0ElEw>
-    <xmx:VqJCYY-fgqX8sz1EvjjoVd2tpkzSUz3lRh0bMDVGekzrfsJj47swfg>
-    <xmx:VqJCYecUkM7GjKpaneehSSZosmVIplHA6rtGsCo6EUKbhg77z6ymyI4HWMM>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 15 Sep 2021 21:48:06 -0400 (EDT)
-Date:   Thu, 16 Sep 2021 09:48:02 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Sunil Muthuswamy <sunilmut@microsoft.com>
-Cc:     Michael Kelley <mikelley@microsoft.com>,
-        Boqun Feng <Boqun.Feng@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        =?utf-8?Q?=22Krzysztof_Wilczy=C5=84ski=22?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] PCI: hv: Make the code arch neutral
-Message-ID: <YUKiUuwPfuGEFqr+@boqun-archlinux>
-References: <MW4PR21MB2002AE9B673A54D748BD1F2DC0D99@MW4PR21MB2002.namprd21.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MW4PR21MB2002AE9B673A54D748BD1F2DC0D99@MW4PR21MB2002.namprd21.prod.outlook.com>
+        id S233858AbhIPBuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 21:50:24 -0400
+Received: from smtp23.cstnet.cn ([159.226.251.23]:47524 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233809AbhIPBuV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 21:50:21 -0400
+Received: from localhost.localdomain (unknown [124.16.138.128])
+        by APP-03 (Coremail) with SMTP id rQCowADn7Xl1okJhgDmVAA--.28835S2;
+        Thu, 16 Sep 2021 09:48:38 +0800 (CST)
+From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
+To:     pshelar@ovn.org, davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, dev@openvswitch.org,
+        linux-kernel@vger.kernel.org, Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Subject: [PATCH] openvswitch: Fix condition check by using nla_ok()
+Date:   Thu, 16 Sep 2021 01:48:36 +0000
+Message-Id: <1631756916-3759083-1-git-send-email-jiasheng@iscas.ac.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: rQCowADn7Xl1okJhgDmVAA--.28835S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrtr13GrW5uF1xAry8XF15twb_yoWfZrcEka
+        n3t3ykW3y2yw4SkF48Jws0yrn2vr1fWrnY9w13KFZxA340qwsxuwn8GFZ7Jr18ur17Zr9x
+        Wan3tr1YgF47ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb4xFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
+        Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr
+        1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
+        7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r
+        1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_
+        KwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r
+        1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij
+        64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr
+        0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4U
+        MIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUChFxUUU
+        UU=
+X-Originating-IP: [124.16.138.128]
+X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 05:36:46PM +0000, Sunil Muthuswamy wrote:
-> This patch makes the Hyper-V vPCI code architectural neutral by
-> moving the architectural dependent pieces into arch specific
-> code. This allows for the implementation of Hyper-V vPCI for
-> other architecture such as ARM64.
-> 
-> There are no functional changes expected from this patch.
-> 
-> Signed-off-by: Sunil Muthuswamy <sunilmut@microsoft.com>
+Just using 'rem > 0' might be unsafe, so it's better
+to use the nla_ok() instead.
+Because we can see from the nla_next() that
+'*remaining' might be smaller than 'totlen'. And nla_ok()
+will avoid it happening.
 
-This overall looks good to me, I think you may want to base on 5.15-rc1
-which has Michael's and my patches on which this patchset depends.
+Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
+---
+ net/openvswitch/actions.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-A small nit below:
+diff --git a/net/openvswitch/actions.c b/net/openvswitch/actions.c
+index 116e38a..8209ab1 100644
+--- a/net/openvswitch/actions.c
++++ b/net/openvswitch/actions.c
+@@ -915,7 +915,7 @@ static int output_userspace(struct datapath *dp, struct sk_buff *skb,
+ 	upcall.cmd = OVS_PACKET_CMD_ACTION;
+ 	upcall.mru = OVS_CB(skb)->mru;
+ 
+-	for (a = nla_data(attr), rem = nla_len(attr); rem > 0;
++	for (a = nla_data(attr), rem = nla_len(attr); nla_ok(a, rem);
+ 	     a = nla_next(a, &rem)) {
+ 		switch (nla_type(a)) {
+ 		case OVS_USERSPACE_ATTR_USERDATA:
+-- 
+2.7.4
 
-[...]
-> diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
-> index 62dbe98d1fe1..b7213b57b4ec 100644
-> --- a/drivers/pci/controller/pci-hyperv.c
-> +++ b/drivers/pci/controller/pci-hyperv.c
-> @@ -44,8 +44,8 @@
->  #include <linux/delay.h>
->  #include <linux/semaphore.h>
->  #include <linux/irqdomain.h>
-> -#include <asm/irqdomain.h>
-> -#include <asm/apic.h>
-> +//#include <asm/irqdomain.h>
-> +//#include <asm/apic.h>
-
-remove the commented out #include too.
-
-Regards,
-Boqun
-
->  #include <linux/irq.h>
->  #include <linux/msi.h>
->  #include <linux/hyperv.h>
-[...]
