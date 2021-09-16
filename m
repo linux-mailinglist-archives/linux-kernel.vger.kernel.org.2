@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A03A840E372
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:20:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF4C440E743
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:32:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245421AbhIPQsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:48:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59000 "EHLO mail.kernel.org"
+        id S1344453AbhIPRbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:31:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43518 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243151AbhIPQnw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:43:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B38F26127B;
-        Thu, 16 Sep 2021 16:25:14 +0000 (UTC)
+        id S245649AbhIPRV5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:21:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C70FB61440;
+        Thu, 16 Sep 2021 16:42:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809515;
-        bh=JU4iJc6oY871eBLmLglTyk8lAnK2nHC5KV9FVXhDFpo=;
+        s=korg; t=1631810553;
+        bh=35atDnHr5kKPvD7ZRVCpmrxJQhwkKsyZnBkWc0xcL9g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jtGkrFt7dhX4eUkiOHI1LuV/ZdJTQGL8HUxoHaLWTOIQQW2Zs4s2I0mTT1hg8JG27
-         0q/QQht/HPJVzVlvedIJOdGEPapc+sKnLrLtyP8pD/FlyVh+TWyPsIGfrA5wnjGwTs
-         KmFcmO5df5AqXTh82mgduqtGhVbo4ueP6V1/sKwE=
+        b=K02YOYNUXht4vFC5AG0sKgUUrwNCf+A762aUy/ffds0gULIP1fGVzyPYuGql4r4i0
+         A1rBRbhNEDL1k44i4CwuX+XzYEpBD5shXIHtyMMjgrH5SwBdqPIu/+JVop+PWqydl0
+         3cRxUfvSQ75JkdwMuUJ4jU5uRjYheBerBakKe/yU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
+        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 175/380] staging: board: Fix uninitialized spinlock when attaching genpd
+Subject: [PATCH 5.14 183/432] video: fbdev: kyro: fix a DoS bug by restricting user input
 Date:   Thu, 16 Sep 2021 17:58:52 +0200
-Message-Id: <20210916155810.037997254@linuxfoundation.org>
+Message-Id: <20210916155816.933160894@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,65 +40,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Zheyu Ma <zheyuma97@gmail.com>
 
-[ Upstream commit df00609821bf17f50a75a446266d19adb8339d84 ]
+[ Upstream commit 98a65439172dc69cb16834e62e852afc2adb83ed ]
 
-On Armadillo-800-EVA with CONFIG_DEBUG_SPINLOCK=y:
+The user can pass in any value to the driver through the 'ioctl'
+interface. The driver dost not check, which may cause DoS bugs.
 
-    BUG: spinlock bad magic on CPU#0, swapper/1
-     lock: lcdc0_device+0x10c/0x308, .magic: 00000000, .owner: <none>/-1, .owner_cpu: 0
-    CPU: 0 PID: 1 Comm: swapper Not tainted 5.11.0-rc5-armadillo-00036-gbbca04be7a80-dirty #287
-    Hardware name: Generic R8A7740 (Flattened Device Tree)
-    [<c010c3c8>] (unwind_backtrace) from [<c010a49c>] (show_stack+0x10/0x14)
-    [<c010a49c>] (show_stack) from [<c0159534>] (do_raw_spin_lock+0x20/0x94)
-    [<c0159534>] (do_raw_spin_lock) from [<c040858c>] (dev_pm_get_subsys_data+0x8c/0x11c)
-    [<c040858c>] (dev_pm_get_subsys_data) from [<c05fbcac>] (genpd_add_device+0x78/0x2b8)
-    [<c05fbcac>] (genpd_add_device) from [<c0412db4>] (of_genpd_add_device+0x34/0x4c)
-    [<c0412db4>] (of_genpd_add_device) from [<c0a1ea74>] (board_staging_register_device+0x11c/0x148)
-    [<c0a1ea74>] (board_staging_register_device) from [<c0a1eac4>] (board_staging_register_devices+0x24/0x28)
+The following log reveals it:
 
-of_genpd_add_device() is called before platform_device_register(), as it
-needs to attach the genpd before the device is probed.  But the spinlock
-is only initialized when the device is registered.
+divide error: 0000 [#1] PREEMPT SMP KASAN PTI
+RIP: 0010:SetOverlayViewPort+0x133/0x5f0 drivers/video/fbdev/kyro/STG4000OverlayDevice.c:476
+Call Trace:
+ kyro_dev_overlay_viewport_set drivers/video/fbdev/kyro/fbdev.c:378 [inline]
+ kyrofb_ioctl+0x2eb/0x330 drivers/video/fbdev/kyro/fbdev.c:603
+ do_fb_ioctl+0x1f3/0x700 drivers/video/fbdev/core/fbmem.c:1171
+ fb_ioctl+0xeb/0x130 drivers/video/fbdev/core/fbmem.c:1185
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x19b/0x220 fs/ioctl.c:739
+ do_syscall_64+0x32/0x80 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Fix this by open-coding the spinlock initialization, cfr.
-device_pm_init_common() in the internal drivers/base code, and in the
-SuperH early platform code.
-
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Link: https://lore.kernel.org/r/57783ece7ddae55f2bda2f59f452180bff744ea0.1626257398.git.geert+renesas@glider.be
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/1626235762-2590-1-git-send-email-zheyuma97@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/board/board.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/video/fbdev/kyro/fbdev.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/staging/board/board.c b/drivers/staging/board/board.c
-index cb6feb34dd40..f980af037345 100644
---- a/drivers/staging/board/board.c
-+++ b/drivers/staging/board/board.c
-@@ -136,6 +136,7 @@ int __init board_staging_register_clock(const struct board_staging_clk *bsc)
- static int board_staging_add_dev_domain(struct platform_device *pdev,
- 					const char *domain)
- {
-+	struct device *dev = &pdev->dev;
- 	struct of_phandle_args pd_args;
- 	struct device_node *np;
+diff --git a/drivers/video/fbdev/kyro/fbdev.c b/drivers/video/fbdev/kyro/fbdev.c
+index 8fbde92ae8b9..4b8c7c16b1df 100644
+--- a/drivers/video/fbdev/kyro/fbdev.c
++++ b/drivers/video/fbdev/kyro/fbdev.c
+@@ -372,6 +372,11 @@ static int kyro_dev_overlay_viewport_set(u32 x, u32 y, u32 ulWidth, u32 ulHeight
+ 		/* probably haven't called CreateOverlay yet */
+ 		return -EINVAL;
  
-@@ -148,7 +149,11 @@ static int board_staging_add_dev_domain(struct platform_device *pdev,
- 	pd_args.np = np;
- 	pd_args.args_count = 0;
- 
--	return of_genpd_add_device(&pd_args, &pdev->dev);
-+	/* Initialization similar to device_pm_init_common() */
-+	spin_lock_init(&dev->power.lock);
-+	dev->power.early_init = true;
++	if (ulWidth == 0 || ulWidth == 0xffffffff ||
++	    ulHeight == 0 || ulHeight == 0xffffffff ||
++	    (x < 2 && ulWidth + 2 == 0))
++		return -EINVAL;
 +
-+	return of_genpd_add_device(&pd_args, dev);
- }
- #else
- static inline int board_staging_add_dev_domain(struct platform_device *pdev,
+ 	/* Stop Ramdac Output */
+ 	DisableRamdacOutput(deviceInfo.pSTGReg);
+ 
 -- 
 2.30.2
 
