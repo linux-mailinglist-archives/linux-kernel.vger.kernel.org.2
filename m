@@ -2,135 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA9EA40ED61
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 00:32:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A42240ED65
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 00:33:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241096AbhIPWdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 18:33:41 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:50640 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240613AbhIPWdk (ORCPT
+        id S241132AbhIPWeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 18:34:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241130AbhIPWeV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 18:33:40 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1631831538;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DT+9pVxDdkzVajA69BUNZ64MrcJ23eaOZGo/IfmeHxU=;
-        b=iqzNPQls+JtFXwLkJqm8voGlsofPMJce9A2mnjKb5sA+9TN+u0x2zHMLsmneu2Yj2FfOo/
-        5NPEwShS/yOmclGt5uOmcUpyHmYX+WkLW8nsVjajUiqTwbkRfc4OtGR0JaUMLhdC+7Mr+n
-        hsEiVSdugNVSOIPcOPShPqBFozDPKZ7sPj4xI4YKIsz4j+u9REJU+EtOS8YUWLYCw0D+uD
-        RWqjODz7cSb9/g0wj6FefQXBrOFs/D8ZKJHUhl8oT1aFA/fxGViFic1PhWoez6G7i7GHdM
-        J4qdsSATFhc2rUV5/QtPmaWVo3hiuvOyuXMNjWlTE5uyObKREMl756bT7j6G6A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1631831538;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DT+9pVxDdkzVajA69BUNZ64MrcJ23eaOZGo/IfmeHxU=;
-        b=X21Tc/gKbpt6oYyQC/HQ7oMy/sxDmBaqYHFgwpmhX7fGdAzSChXPir3luUiWn9TKgPxXYW
-        Gb2dHl53yDqj8zAQ==
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "# 3.4.x" <stable@vger.kernel.org>,
-        Lukas Hannen <lukas.hannen@opensource.tttech-industrial.com>
-Subject: Re: [PATCH 5.14 298/334] time: Handle negative seconds correctly in
- timespec64_to_ns()
-In-Reply-To: <CAK8P3a0z5jE=Z3Ps5bFTCFT7CHZR1JQ8VhdntDJAfsUxSPCcEw@mail.gmail.com>
-References: <20210913131113.390368911@linuxfoundation.org>
- <20210913131123.500712780@linuxfoundation.org>
- <CAK8P3a0z5jE=Z3Ps5bFTCFT7CHZR1JQ8VhdntDJAfsUxSPCcEw@mail.gmail.com>
-Date:   Fri, 17 Sep 2021 00:32:17 +0200
-Message-ID: <874kak9moe.ffs@tglx>
+        Thu, 16 Sep 2021 18:34:21 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AD16C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 15:33:00 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id b15so6061237lfe.7
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 15:33:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=C2Pd9oQGhsIAALkBCdNNs3Jk3IqYwXgIkUsJNmKqGe4=;
+        b=AFSoc9u3yI+qZzT607V2n1nfEHCXO38yJEtaibfgn8ZEFzLgedJN/Rop5q/SWjAqam
+         NExNaUbhkeVgxA/JRNTOLd+QU79s8Y0aRXFaxaTY9UbFHBAAjtNlESlSl/L/dMqas/vG
+         +prNUa2EEa2Ft6E1RlwGuxTVLZjNN8Stgh+JZr3AtjtKO62Q/XIs3iS6mNbSSQUw1eCz
+         fgHlZx78TKrmNlK/BOZrlviCUFCG3Ip8T8nDqFbZB8w5r/F6h9uu89rWa+upbH3cJpcY
+         0wlfA0GY9GgbLoNL4fllS6wGxeD06CTdJZ7HMLfPfpKeTyefnImaRTMjLjJsKql8PrUe
+         YBvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=C2Pd9oQGhsIAALkBCdNNs3Jk3IqYwXgIkUsJNmKqGe4=;
+        b=jG8XkWOzlhPZbmh9w2sBEU340m4+KDq2FIFn8x+QGlrTrG3blxbOdwfCZfRWUB4G1Z
+         SZmxZ9ZPqprKn9nppcjfaSE5j09csw9ejDaYw8hVdKTC/n3oCNr+KQolCApuYwixcEN3
+         PwiRyVpyJMB1nyfto4DdIETIb7U6SdRhlTFBeP8KaQWdkmdQQddu43vZA7IYAG7kAesV
+         fbsQioT1nQiwQJAd0UQe8whBSxFovNUfoSYgQxo3+IRFVmmhYf5g0p2jCwjxxY0OHziy
+         OySukYbyW1iL21YFbh+AlAXBuHXuQzTNggm7vUHPU+5DEPkL5/7+sxhsSQ+OehRIzBTO
+         IXdw==
+X-Gm-Message-State: AOAM532Py/VHCsRDxQesxw+FAKkubdL03KENwUTo9Yax5Y5xoPtmPa2k
+        mYWZPANc8Pj9QIWIqfXB8imP/6yPNaAI4RIaqNxN2w==
+X-Google-Smtp-Source: ABdhPJyxqxvinOj8aMJiZNnMyx2DgvsDEllzpmCWgV30ksZxAhfVIZ1rNGoh75+UjjbXoIY477ApJn6fT4OHdj1weFc=
+X-Received: by 2002:a2e:5758:: with SMTP id r24mr6861004ljd.432.1631831578894;
+ Thu, 16 Sep 2021 15:32:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210911071046.17349-1-zhiyong.tao@mediatek.com> <20210911071046.17349-2-zhiyong.tao@mediatek.com>
+In-Reply-To: <20210911071046.17349-2-zhiyong.tao@mediatek.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 17 Sep 2021 00:32:48 +0200
+Message-ID: <CACRpkdYim-2xcKux+4M3JTwRuE7SgEH7d2HszPXO3Z=AKdHTrg@mail.gmail.com>
+Subject: Re: [PATCH v1] pinctrl: mediatek: mt8195: Add pm_ops
+To:     Zhiyong Tao <zhiyong.tao@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sean Wang <sean.wang@kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        hui.liu@mediatek.com, Light Hsieh <light.hsieh@mediatek.com>,
+        Biao Huang <biao.huang@mediatek.com>,
+        Hongzhou Yang <hongzhou.yang@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Seiya Wang <seiya.wang@mediatek.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Chen-Yu Tsai <wenst@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arnd,
+On Sat, Sep 11, 2021 at 9:10 AM Zhiyong Tao <zhiyong.tao@mediatek.com> wrote:
 
-On Wed, Sep 15 2021 at 21:00, Arnd Bergmann wrote:
-> On Tue, Sep 14, 2021 at 1:22 AM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
->>  /*
->>   * Limits for settimeofday():
->> @@ -124,10 +126,13 @@ static inline bool timespec64_valid_sett
->>   */
->>  static inline s64 timespec64_to_ns(const struct timespec64 *ts)
->>  {
->> -       /* Prevent multiplication overflow */
->> -       if ((unsigned long long)ts->tv_sec >= KTIME_SEC_MAX)
->> +       /* Prevent multiplication overflow / underflow */
->> +       if (ts->tv_sec >= KTIME_SEC_MAX)
->>                 return KTIME_MAX;
->>
->> +       if (ts->tv_sec <= KTIME_SEC_MIN)
->> +               return KTIME_MIN;
->> +
+> Setting this up will configure wake from suspend properly,
+> and wake only for the interrupts that are setup in wake_mask,
+> not all interrupts.
 >
-> I just saw this get merged for the stable kernels, and had not seen this when
-> Thomas originally merged it.
->
-> I can see how this helps the ptp_clock_adjtime() users, but I just
-> double-checked
-> what other callers exist, and I think it introduces a regression in setitimer(),
-> which does
->
->         nval = timespec64_to_ns(&value->it_value);
->         ninterval = timespec64_to_ns(&value->it_interval);
->
-> without any further range checking that I could find. Setting timers
-> with negative intervals sounds like a bad idea, and interpreting negative
-> it_value as a past time instead of KTIME_SEC_MAX sounds like an
-> unintended interface change.
->
-> I haven't done any proper analysis of the changes, so maybe it's all
-> good, but I think we need to double-check this, and possibly revert
-> it from the stable kernels until a final conclusion.
+> Fixes: 6cf5e9ef362af824de2e4e8afb78d74537f1e3db ("pinctrl: add pinctrl driver on mt8195")
+> Signed-off-by: Zhiyong Tao <zhiyong.tao@mediatek.com>
+> Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
 
-I have done the analysis. setitimer() does not have any problem with
-that simply because it already checks at the call site that the seconds
-value is > 0 and so do all the other user visible interfaces. See
-get_itimerval() ...
+Patch applied.
 
-Granted  that the kernel internal interfaces do not have those checks,
-but they already have other safety nets in place to prevent this and I
-could not identify any callsite which has trouble with that change.
-
-If I failed to spot one then what the heck is the problem? It was broken
-before that change already!
-
-I usually spend quite some time on tagging patches for stable and it's
-annoying me that this patch got reverted while stuff which I explicitely
-did not tag for stable got backported for whatever reason and completely
-against the stable rules:
-
-  627ef5ae2df8 ("hrtimer: Avoid double reprogramming in __hrtimer_start_range_ns()")
-
-What the heck qualifies this to be backported?
-
- 1) It's hot of the press and just got merged in the 5.15-rc1 merge
-    window and is not tagged for stable
-
- 2) https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
-
-    clearly states the rules but obviously our new fangled "AI" driven
-    approach to select patches for stable is blissfully ignorant of
-    these rules. I assume that AI stands for "Artifical Ignorance' here.
-
-I already got a private bug report vs. that on 5.10.65. Annoyingly
-5.10.5 does not have the issue despite the fact that the resulting diff
-between those two versions in hrtimer.c is just in comments.
-
-Bah!
-
-Thanks,
-
-        tglx
-
-
-
+Yours,
+Linus Walleij
