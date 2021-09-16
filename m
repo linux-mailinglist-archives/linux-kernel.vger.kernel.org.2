@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83A2B40E213
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:15:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F39540E469
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:24:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243762AbhIPQeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:34:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38452 "EHLO mail.kernel.org"
+        id S241183AbhIPQ6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:58:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36668 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241791AbhIPQZ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:25:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AB95E61506;
-        Thu, 16 Sep 2021 16:17:02 +0000 (UTC)
+        id S240891AbhIPQwl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:52:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7933561A89;
+        Thu, 16 Sep 2021 16:29:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809023;
-        bh=/bBx7XA8qo2igtgTHuh0YjHpZvmk6qCG93MHBHSKgN0=;
+        s=korg; t=1631809758;
+        bh=smrg7xdiaHk44GbPsjmDFBSTWmaqt+YyDAr2cps7BDs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lHpM1w2vz+stbUJdfZ1aekTboXMSvboSXli6ik+xXgqJoxoaCfi/K5ZvKHUnwMZyl
-         Ru/q7nREHHRnfvttMAb9osA2etoSTY+tArd4lCAnWo5KjGQGRiJPCfXHYUb93f8UjH
-         JoOv+qzWueWf0Hz9lmnjJmk+i405vWUtLt0YThJE=
+        b=EDDqsgydUhJYbnsudoCg8KpnPY5Y/uHO3lE4MV0ccEFW0vtr/KFN0apzhLWx/ZGMG
+         hJicabRD2bUwQ7rnAd0h2Zezse51X1oxyZ6GWxtuApy6ejDrbTd6tR1qFijlKznCTL
+         EYVA5mJSuJX+uXOIuq91WFSEfNLmIFKoPSLTJ5gw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Himanshu Madhani <himanshu.madhani@oracle.com>,
-        Saurav Kashyap <skashyap@marvell.com>,
-        Nilesh Javali <njavali@marvell.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 5.10 284/306] scsi: qla2xxx: Sync queue idx with queue_pair_map idx
+        stable@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Daniel Wagner <dwagner@suse.de>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 272/380] nvme-tcp: dont check blk_mq_tag_to_rq when receiving pdu data
 Date:   Thu, 16 Sep 2021 18:00:29 +0200
-Message-Id: <20210916155803.774836919@linuxfoundation.org>
+Message-Id: <20210916155813.324701191@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,98 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Saurav Kashyap <skashyap@marvell.com>
+From: Sagi Grimberg <sagi@grimberg.me>
 
-commit c8fadf019964d0eb1da410ba8b629494d3339db9 upstream.
+[ Upstream commit 3b01a9d0caa8276d9ce314e09610f7fb70f49a00 ]
 
-The first invocation of function find_first_zero_bit will return 0 and
-queue_id gets set to 0.
+We already validate it when receiving the c2hdata pdu header
+and this is not changing so this is a redundant check.
 
-An index of queue_pair_map also gets set to 0.
-
-	qpair_id = find_first_zero_bit(ha->qpair_qid_map, ha->max_qpairs);
-
-        set_bit(qpair_id, ha->qpair_qid_map);
-        ha->queue_pair_map[qpair_id] = qpair;
-
-In the alloc_queue callback driver checks the map, if queue is already
-allocated:
-
-	ha->queue_pair_map[qidx]
-
-This works fine as long as max_qpairs is greater than nvme_max_hw_queues(8)
-since the size of the queue_pair_map is equal to max_qpair. In case nr_cpus
-is less than 8, max_qpairs is less than 8. This creates wrong value
-returned as qpair.
-
-[ 1572.353669] qla2xxx [0000:24:00.3]-2121:6: Returning existing qpair of 4e00000000000000 for idx=2
-[ 1572.354458] general protection fault: 0000 [#1] SMP PTI
-[ 1572.354461] CPU: 1 PID: 44 Comm: kworker/1:1H Kdump: loaded Tainted: G          IOE    --------- -  - 4.18.0-304.el8.x86_64 #1
-[ 1572.354462] Hardware name: HP ProLiant DL380p Gen8, BIOS P70 03/01/2013
-[ 1572.354467] Workqueue: kblockd blk_mq_run_work_fn
-[ 1572.354485] RIP: 0010:qla_nvme_post_cmd+0x92/0x760 [qla2xxx]
-[ 1572.354486] Code: 84 24 5c 01 00 00 00 00 b8 0a 74 1e 66 83 79 48 00 0f 85 a8 03 00 00 48 8b 44 24 08 48 89 ee 4c 89 e7 8b 50 24 e8 5e 8e 00 00 <f0> 41 ff 47 04 0f ae f0 41 f6 47 24 04 74 19 f0 41 ff 4f 04 b8 f0
-[ 1572.354487] RSP: 0018:ffff9c81c645fc90 EFLAGS: 00010246
-[ 1572.354489] RAX: 0000000000000001 RBX: ffff8ea3e5070138 RCX: 0000000000000001
-[ 1572.354490] RDX: 0000000000000001 RSI: 0000000000000001 RDI: ffff8ea4c866b800
-[ 1572.354491] RBP: ffff8ea4c866b800 R08: 0000000000005010 R09: ffff8ea4c866b800
-[ 1572.354492] R10: 0000000000000001 R11: 000000069d1ca3ff R12: ffff8ea4bc460000
-[ 1572.354493] R13: ffff8ea3e50702b0 R14: ffff8ea4c4c16a58 R15: 4e00000000000000
-[ 1572.354494] FS:  0000000000000000(0000) GS:ffff8ea4dfd00000(0000) knlGS:0000000000000000
-[ 1572.354495] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 1572.354496] CR2: 000055884504fa58 CR3: 00000005a1410001 CR4: 00000000000606e0
-[ 1572.354497] Call Trace:
-[ 1572.354503]  ? check_preempt_curr+0x62/0x90
-[ 1572.354506]  ? dma_direct_map_sg+0x72/0x1f0
-[ 1572.354509]  ? nvme_fc_start_fcp_op.part.32+0x175/0x460 [nvme_fc]
-[ 1572.354511]  ? blk_mq_dispatch_rq_list+0x11c/0x730
-[ 1572.354515]  ? __switch_to_asm+0x35/0x70
-[ 1572.354516]  ? __switch_to_asm+0x41/0x70
-[ 1572.354518]  ? __switch_to_asm+0x35/0x70
-[ 1572.354519]  ? __switch_to_asm+0x41/0x70
-[ 1572.354521]  ? __switch_to_asm+0x35/0x70
-[ 1572.354522]  ? __switch_to_asm+0x41/0x70
-[ 1572.354523]  ? __switch_to_asm+0x35/0x70
-[ 1572.354525]  ? entry_SYSCALL_64_after_hwframe+0xb9/0xca
-[ 1572.354527]  ? __switch_to_asm+0x41/0x70
-[ 1572.354529]  ? __blk_mq_sched_dispatch_requests+0xc6/0x170
-[ 1572.354531]  ? blk_mq_sched_dispatch_requests+0x30/0x60
-[ 1572.354532]  ? __blk_mq_run_hw_queue+0x51/0xd0
-[ 1572.354535]  ? process_one_work+0x1a7/0x360
-[ 1572.354537]  ? create_worker+0x1a0/0x1a0
-[ 1572.354538]  ? worker_thread+0x30/0x390
-[ 1572.354540]  ? create_worker+0x1a0/0x1a0
-[ 1572.354541]  ? kthread+0x116/0x130
-[ 1572.354543]  ? kthread_flush_work_fn+0x10/0x10
-[ 1572.354545]  ? ret_from_fork+0x35/0x40
-
-Fix is to use index 0 for admin and first IO queue.
-
-Link: https://lore.kernel.org/r/20210810043720.1137-14-njavali@marvell.com
-Fixes: e84067d74301 ("scsi: qla2xxx: Add FC-NVMe F/W initialization and transport registration")
-Cc: stable@vger.kernel.org
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-Signed-off-by: Saurav Kashyap <skashyap@marvell.com>
-Signed-off-by: Nilesh Javali <njavali@marvell.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Hannes Reinecke <hare@suse.de>
+Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
+Reviewed-by: Daniel Wagner <dwagner@suse.de>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/qla2xxx/qla_nvme.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/nvme/host/tcp.c | 14 +++-----------
+ 1 file changed, 3 insertions(+), 11 deletions(-)
 
---- a/drivers/scsi/qla2xxx/qla_nvme.c
-+++ b/drivers/scsi/qla2xxx/qla_nvme.c
-@@ -91,8 +91,9 @@ static int qla_nvme_alloc_queue(struct n
- 	struct qla_hw_data *ha;
- 	struct qla_qpair *qpair;
+diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c
+index ab1ea5b0888e..da289b8f8a27 100644
+--- a/drivers/nvme/host/tcp.c
++++ b/drivers/nvme/host/tcp.c
+@@ -702,17 +702,9 @@ static int nvme_tcp_recv_data(struct nvme_tcp_queue *queue, struct sk_buff *skb,
+ 			      unsigned int *offset, size_t *len)
+ {
+ 	struct nvme_tcp_data_pdu *pdu = (void *)queue->pdu;
+-	struct nvme_tcp_request *req;
+-	struct request *rq;
+-
+-	rq = blk_mq_tag_to_rq(nvme_tcp_tagset(queue), pdu->command_id);
+-	if (!rq) {
+-		dev_err(queue->ctrl->ctrl.device,
+-			"queue %d tag %#x not found\n",
+-			nvme_tcp_queue_id(queue), pdu->command_id);
+-		return -ENOENT;
+-	}
+-	req = blk_mq_rq_to_pdu(rq);
++	struct request *rq =
++		blk_mq_tag_to_rq(nvme_tcp_tagset(queue), pdu->command_id);
++	struct nvme_tcp_request *req = blk_mq_rq_to_pdu(rq);
  
--	if (!qidx)
--		qidx++;
-+	/* Map admin queue and 1st IO queue to index 0 */
-+	if (qidx)
-+		qidx--;
- 
- 	vha = (struct scsi_qla_host *)lport->private;
- 	ha = vha->hw;
+ 	while (true) {
+ 		int recv_len, ret;
+-- 
+2.30.2
+
 
 
