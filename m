@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A224340E226
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:15:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C56E440E644
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:30:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244402AbhIPQfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:35:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37898 "EHLO mail.kernel.org"
+        id S1352074AbhIPRUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:20:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37128 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236996AbhIPQ1a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:27:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C3FC961529;
-        Thu, 16 Sep 2021 16:17:32 +0000 (UTC)
+        id S240991AbhIPRHT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:07:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C56161B2E;
+        Thu, 16 Sep 2021 16:36:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809053;
-        bh=c4V6EWY3Wn/cNSs1oKxOGg3WnslcDrOHs2+AwiRU454=;
+        s=korg; t=1631810164;
+        bh=UGHrKtu/1BmUM34YT/nG1a3LYXSd907BIv+JWrNiEwA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q1Z2eoc0DJUT/faJI4uRiavZO3Hi4Ty/MmKv+o8VVZVTZ5cP+gcpg8QHoGYxnHCGq
-         SUChXvtCjKfqNJSMG6+Y03DW87UGNA38VMxpdSLSLYrlwhf5tOBh/R7WIFZ+lUneIn
-         qSLGaAzxpQINu7raQIvmEevjRYSL72TlmEcqUkcM=
+        b=Np0UaftB4KEtDs8oh1IRnVgjIX12sNlQA8gpgelxdZgSi/sAh2GQ2ciM9ZWNx9/SZ
+         p6n0CNVwuaXujdlbByuKpvRZQukGFCRd5OzBoEjSugoZn2Wz7oRXoLZkQUTQdJPSuG
+         m8aiipzD74a7kKLWqX/dSPbTe02LNMWU6QhXV1Js=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Juergen Gross <jgross@suse.com>,
-        Jan Beulich <jbeulich@suse.com>
-Subject: [PATCH 5.13 014/380] xen: fix setting of max_pfn in shared_info
-Date:   Thu, 16 Sep 2021 17:56:11 +0200
-Message-Id: <20210916155804.456268156@linuxfoundation.org>
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Ilya Dryomov <idryomov@gmail.com>
+Subject: [PATCH 5.14 023/432] ceph: fix dereference of null pointer cf
+Date:   Thu, 16 Sep 2021 17:56:12 +0200
+Message-Id: <20210916155811.609654755@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,51 +39,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Juergen Gross <jgross@suse.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-commit 4b511d5bfa74b1926daefd1694205c7f1bcf677f upstream.
+commit 05a444d3f90a3c3e6362e88a1bf13e1a60f8cace upstream.
 
-Xen PV guests are specifying the highest used PFN via the max_pfn
-field in shared_info. This value is used by the Xen tools when saving
-or migrating the guest.
+Currently in the case where kmem_cache_alloc fails the null pointer
+cf is dereferenced when assigning cf->is_capsnap = false. Fix this
+by adding a null pointer check and return path.
 
-Unfortunately this field is misnamed, as in reality it is specifying
-the number of pages (including any memory holes) of the guest, so it
-is the highest used PFN + 1. Renaming isn't possible, as this is a
-public Xen hypervisor interface which needs to be kept stable.
-
-The kernel will set the value correctly initially at boot time, but
-when adding more pages (e.g. due to memory hotplug or ballooning) a
-real PFN number is stored in max_pfn. This is done when expanding the
-p2m array, and the PFN stored there is even possibly wrong, as it
-should be the last possible PFN of the just added P2M frame, and not
-one which led to the P2M expansion.
-
-Fix that by setting shared_info->max_pfn to the last possible PFN + 1.
-
-Fixes: 98dd166ea3a3c3 ("x86/xen/p2m: hint at the last populated P2M entry")
 Cc: stable@vger.kernel.org
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Reviewed-by: Jan Beulich <jbeulich@suse.com>
-Link: https://lore.kernel.org/r/20210730092622.9973-2-jgross@suse.com
-Signed-off-by: Juergen Gross <jgross@suse.com>
+Addresses-Coverity: ("Dereference null return")
+Fixes: b2f9fa1f3bd8 ("ceph: correctly handle releasing an embedded cap flush")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Reviewed-by: Ilya Dryomov <idryomov@gmail.com>
+Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/xen/p2m.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/ceph/caps.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/arch/x86/xen/p2m.c
-+++ b/arch/x86/xen/p2m.c
-@@ -618,8 +618,8 @@ int xen_alloc_p2m_entry(unsigned long pf
- 	}
+--- a/fs/ceph/caps.c
++++ b/fs/ceph/caps.c
+@@ -1746,6 +1746,9 @@ struct ceph_cap_flush *ceph_alloc_cap_fl
+ 	struct ceph_cap_flush *cf;
  
- 	/* Expanded the p2m? */
--	if (pfn > xen_p2m_last_pfn) {
--		xen_p2m_last_pfn = pfn;
-+	if (pfn >= xen_p2m_last_pfn) {
-+		xen_p2m_last_pfn = ALIGN(pfn + 1, P2M_PER_PAGE);
- 		HYPERVISOR_shared_info->arch.max_pfn = xen_p2m_last_pfn;
- 	}
- 
+ 	cf = kmem_cache_alloc(ceph_cap_flush_cachep, GFP_KERNEL);
++	if (!cf)
++		return NULL;
++
+ 	cf->is_capsnap = false;
+ 	return cf;
+ }
 
 
