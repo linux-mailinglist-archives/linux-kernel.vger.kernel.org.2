@@ -2,93 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6B9740D4F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 10:49:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0985040D4FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 10:49:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235400AbhIPIuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 04:50:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60210 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235242AbhIPIuJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 04:50:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 36874611C4;
-        Thu, 16 Sep 2021 08:48:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631782129;
-        bh=XNlHT7SsRm0aHT+xH8JBSxeM0QmbStCHOez0rQuhyXY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=X9AncDACv15clITXSoMN8JlY/fHST1jd/e9N0jbnUiMkFQ1awv+Xz2BY1ebm4ROkU
-         WtlLbobgOfRX4FhcODDSqIdImAlaK7bAoqify6yFBoJ/I3ijV4yfp3ZwLyraiLbeHb
-         HPQBZM2OEKNtjeUBP9WROZ8co+97PxO3rKUl+Ymw=
-Date:   Thu, 16 Sep 2021 10:48:47 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>, Pavel Machek <pavel@denx.de>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Mattijs Korpershoek <mkorpershoek@baylibre.com>
-Subject: Re: [PATCH 5.10 157/236] Bluetooth: Move shutdown callback before
- flushing tx and rx queue
-Message-ID: <YUME73+UUdOOHzMd@kroah.com>
-References: <20210913131100.316353015@linuxfoundation.org>
- <20210913131105.720088593@linuxfoundation.org>
- <20210915111843.GA16198@duo.ucw.cz>
- <20210915143238.GA2403125@roeck-us.net>
- <YUKWK4EflIdFxFsp@sashalap>
+        id S235327AbhIPIut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 04:50:49 -0400
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:8573 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S235295AbhIPIus (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 04:50:48 -0400
+IronPort-Data: =?us-ascii?q?A9a23=3A4RFknata6+LEC8JdMQgqKSy4i+fnVEZfMUV32f8?=
+ =?us-ascii?q?akzHdYEJGY0x3zGAYWm6HPv3Za2SmL99/boy/9ktQuJGGx4c2TQBvqS9gHilAw?=
+ =?us-ascii?q?SbnLY7Hdx+vZUt+DSFioHpPtpxYMp+ZRCwNZie0SiyFb/6x8BGQ6YnSHuClUL+?=
+ =?us-ascii?q?dZHgoLeNZYHxJZSxLyrdRbrFA0YDR7zOl4bsekuWHULOX82cc3lE8t8pvnChSU?=
+ =?us-ascii?q?MHa41v0iLCRicdj5zcyn1FNZH4WyDrYw3HQGuG4FcbiLwrPIS3Qw4/Xw/stIov?=
+ =?us-ascii?q?NfrfTeUtMTKPQPBSVlzxdXK3Kbhpq/3R0i/hkcqFHLxo/ZzahxridzP1XqJW2U?=
+ =?us-ascii?q?hZvMKvXhMwTThtZDzpje6ZB/dcrJFDm6JDOkRGbKyWEL/JGSRte0Zcj0up+H2B?=
+ =?us-ascii?q?C3fICLzUKdBqCm6S9x7fTYvZtgsAyBMjtMpkWtnxpwXfeF/lOaZzKRePIo8BZ2?=
+ =?us-ascii?q?DMxj8VVNffYe8cdLzFoaXzobx9QPVEYIJEzhuGlgj/4aTIwgEiUuacs42j7yA1?=
+ =?us-ascii?q?3zairMdDQPNeNQK19mFiUp2fD12D4GQ0BctiezyeVtH6hmIfnnSj7cIYJCPu0+?=
+ =?us-ascii?q?5ZCmlKUwmAMGRs+TkagrL+1hyaWX9NZNlxR9DEioLY/8GS1QdTnGR61uniJulg?=
+ =?us-ascii?q?bQdU4O+k77hydj6nZ+QCUAkAaQTNbLt8rrsk7QXotzFDht9foAyF/9a2bUlqD+?=
+ =?us-ascii?q?bqO6zC/Iy4YKSkFfyBsZRUE+d7Lsow1jwyJStdlDb7zicf6Xyzzqw1mBgBWa64?=
+ =?us-ascii?q?71JZNjvvkuwucxW/Em3QAdSZtji2/Y45vxloRiFaZWrGV?=
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3ATIgbQa5lZdAbEfTAlwPXwPTXdLJyesId70hD?=
+ =?us-ascii?q?6qkRc20wTiX8ra2TdZsguyMc9wx6ZJhNo7G90cq7MBbhHPxOkOos1N6ZNWGIhI?=
+ =?us-ascii?q?LCFvAB0WKN+V3dMhy73utc+IMlSKJmFeD3ZGIQse/KpCW+DPYsqePqzJyV?=
+X-IronPort-AV: E=Sophos;i="5.85,297,1624291200"; 
+   d="scan'208";a="114564506"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 16 Sep 2021 16:49:26 +0800
+Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
+        by cn.fujitsu.com (Postfix) with ESMTP id D7E564D0DC71;
+        Thu, 16 Sep 2021 16:49:21 +0800 (CST)
+Received: from G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.85) by
+ G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.23; Thu, 16 Sep 2021 16:49:22 +0800
+Received: from [127.0.0.1] (10.167.225.141) by
+ G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
+ id 15.0.1497.23 via Frontend Transport; Thu, 16 Sep 2021 16:49:20 +0800
+Subject: Re: [PATCH v9 5/8] fsdax: Add dax_iomap_cow_copy() for dax_iomap_zero
+To:     Christoph Hellwig <hch@lst.de>
+CC:     <djwong@kernel.org>, <linux-xfs@vger.kernel.org>,
+        <dan.j.williams@intel.com>, <david@fromorbit.com>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <nvdimm@lists.linux.dev>, <rgoldwyn@suse.de>,
+        <viro@zeniv.linux.org.uk>, <willy@infradead.org>,
+        Ritesh Harjani <riteshh@linux.ibm.com>
+References: <20210915104501.4146910-1-ruansy.fnst@fujitsu.com>
+ <20210915104501.4146910-6-ruansy.fnst@fujitsu.com>
+ <20210916061654.GB13306@lst.de>
+From:   Shiyang Ruan <ruansy.fnst@fujitsu.com>
+Message-ID: <9fb0c82f-b2ae-82e3-62df-f0a473ed6395@fujitsu.com>
+Date:   Thu, 16 Sep 2021 16:49:19 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YUKWK4EflIdFxFsp@sashalap>
+In-Reply-To: <20210916061654.GB13306@lst.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-yoursite-MailScanner-ID: D7E564D0DC71.A0D63
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: ruansy.fnst@fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 08:56:11PM -0400, Sasha Levin wrote:
-> On Wed, Sep 15, 2021 at 07:32:38AM -0700, Guenter Roeck wrote:
-> > On Wed, Sep 15, 2021 at 01:18:43PM +0200, Pavel Machek wrote:
-> > > Hi!
-> > > 
-> > > > [ Upstream commit 0ea53674d07fb6db2dd7a7ec2fdc85a12eb246c2 ]
-> > > 
-> > > Upstream commit is okay...
-> > > 
-> > > > So move the shutdown callback before flushing TX/RX queue to resolve the
-> > > > issue.
-> > > 
-> > > ...but something went wrong in stable. This is not moving code, this
-> > > is duplicating it:
-> > > 
-> > > > --- a/net/bluetooth/hci_core.c
-> > > > +++ b/net/bluetooth/hci_core.c
-> > > > @@ -1726,6 +1726,14 @@ int hci_dev_do_close(struct hci_dev *hdev)
-> > > >  	hci_request_cancel_all(hdev);
-> > > >  	hci_req_sync_lock(hdev);
-> > > >
-> > > > +	if (!hci_dev_test_flag(hdev, HCI_UNREGISTER) &&
-> > > > +	    !hci_dev_test_flag(hdev, HCI_USER_CHANNEL) &&
-> > > > +	    test_bit(HCI_UP, &hdev->flags)) {
-> > > > +		/* Execute vendor specific shutdown routine */
-> > > > +		if (hdev->shutdown)
-> > > > +			hdev->shutdown(hdev);
-> > > > +	}
-> > > > +
-> > > >  	if (!test_and_clear_bit(HCI_UP, &hdev->flags)) {
-> > > >  		cancel_delayed_work_sync(&hdev->cmd_timer);
-> > > >  		hci_req_sync_unlock(hdev);
-> > > 
-> > > And yes, we end up with 2 copies in 5.10.
-> > > 
-> > 
-> > Same problem in v5.4.y, unfortunately.
+
+
+On 2021/9/16 14:16, Christoph Hellwig wrote:
+> On Wed, Sep 15, 2021 at 06:44:58PM +0800, Shiyang Ruan wrote:
+>> +	rc = dax_direct_access(iomap->dax_dev, pgoff, 1, &kaddr, NULL);
+>> +	if (rc < 0)
+>> +		goto out;
+>> +	memset(kaddr + offset, 0, size);
+>> +	if (srcmap->addr != IOMAP_HOLE && srcmap->addr != iomap->addr) {
 > 
-> Ugh, odd - it wasn't manually backported :/
+> Should we also check that ->dax_dev for iomap and srcmap are different
+> first to deal with case of file system with multiple devices?
+
+I have not thought of this case.  Isn't it possible to CoW between 
+different devices?
+
+
+--
+Thanks,
+Ruan
+
 > 
-> I'll drop it.
+> Otherwise looks good:
+> 
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> 
 
-Also now dropped from 5.13.y.
 
-thanks,
-
-greg k-h
