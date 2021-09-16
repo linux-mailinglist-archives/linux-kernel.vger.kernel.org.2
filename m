@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10A7D40DFBF
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:12:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68AF340E2ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:17:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239008AbhIPQNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:13:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48410 "EHLO mail.kernel.org"
+        id S243430AbhIPQnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:43:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51058 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234410AbhIPQIK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:08:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B221F60232;
-        Thu, 16 Sep 2021 16:06:49 +0000 (UTC)
+        id S244444AbhIPQhD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:37:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 73172613A9;
+        Thu, 16 Sep 2021 16:22:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808410;
-        bh=IacLRNOYMI8SqT0DcdKhrMVyP5qC88k37WGxZ7t0bZk=;
+        s=korg; t=1631809322;
+        bh=nBbiiUM8+A0aAI3/1cxfNapOK0o82GZqEzmHJ3JVPm4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OQFv0soP5jq0C4LmGqresEKHxdcSo49ecSanACP7fRQAOebivUdogWH03pTrZr+p1
-         RQMhh0TO58oK7nlmgJm00+LYe3n7TmXxGSuON+3M+Tp3v77WEhWBBpW5fgNKc88g9z
-         RcU/2tE1rwgMsqnMVVq9x1ZAiqnNLJqOrjT5MHoM=
+        b=h5BCCOMild6h6oD31mUAaDwkwQF+kdfR2wNXebToSNbZuvN5pPGuNjOUDy55GAGMs
+         hdM0QoPXWc4wm33GtUAcFJSxNJKBOusZFVgvwGrQOjIpm53ht325R8WkEgYoo38VMu
+         LpZFtv6Dhd7F1D7Vy+XERzLO25vcteOO/mv+sN4o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anna Schumaker <Anna.Schumaker@Netapp.com>,
+        stable@vger.kernel.org, Chao Yu <chao@kernel.org>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 081/306] sunrpc: Fix return value of get_srcport()
-Date:   Thu, 16 Sep 2021 17:57:06 +0200
-Message-Id: <20210916155756.813372821@linuxfoundation.org>
+Subject: [PATCH 5.13 070/380] f2fs: quota: fix potential deadlock
+Date:   Thu, 16 Sep 2021 17:57:07 +0200
+Message-Id: <20210916155806.384071210@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,33 +40,231 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anna Schumaker <Anna.Schumaker@Netapp.com>
+From: Chao Yu <chao@kernel.org>
 
-[ Upstream commit 5d46dd04cb68771f77ba66dbf6fd323a4a2ce00d ]
+[ Upstream commit 9de71ede81e6d1a111fdd868b2d78d459fa77f80 ]
 
-Since bc1c56e9bbe9 transport->srcport may by unset, causing
-get_srcport() to return 0 when called. Fix this by querying the port
-from the underlying socket instead of the transport.
+xfstest generic/587 reports a deadlock issue as below:
 
-Fixes: bc1c56e9bbe9 (SUNRPC: prevent port reuse on transports which don't request it)
-Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
+======================================================
+WARNING: possible circular locking dependency detected
+5.14.0-rc1 #69 Not tainted
+------------------------------------------------------
+repquota/8606 is trying to acquire lock:
+ffff888022ac9320 (&sb->s_type->i_mutex_key#18){+.+.}-{3:3}, at: f2fs_quota_sync+0x207/0x300 [f2fs]
+
+but task is already holding lock:
+ffff8880084bcde8 (&sbi->quota_sem){.+.+}-{3:3}, at: f2fs_quota_sync+0x59/0x300 [f2fs]
+
+which lock already depends on the new lock.
+
+the existing dependency chain (in reverse order) is:
+
+-> #2 (&sbi->quota_sem){.+.+}-{3:3}:
+       __lock_acquire+0x648/0x10b0
+       lock_acquire+0x128/0x470
+       down_read+0x3b/0x2a0
+       f2fs_quota_sync+0x59/0x300 [f2fs]
+       f2fs_quota_on+0x48/0x100 [f2fs]
+       do_quotactl+0x5e3/0xb30
+       __x64_sys_quotactl+0x23a/0x4e0
+       do_syscall_64+0x3b/0x90
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+-> #1 (&sbi->cp_rwsem){++++}-{3:3}:
+       __lock_acquire+0x648/0x10b0
+       lock_acquire+0x128/0x470
+       down_read+0x3b/0x2a0
+       f2fs_unlink+0x353/0x670 [f2fs]
+       vfs_unlink+0x1c7/0x380
+       do_unlinkat+0x413/0x4b0
+       __x64_sys_unlinkat+0x50/0xb0
+       do_syscall_64+0x3b/0x90
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+-> #0 (&sb->s_type->i_mutex_key#18){+.+.}-{3:3}:
+       check_prev_add+0xdc/0xb30
+       validate_chain+0xa67/0xb20
+       __lock_acquire+0x648/0x10b0
+       lock_acquire+0x128/0x470
+       down_write+0x39/0xc0
+       f2fs_quota_sync+0x207/0x300 [f2fs]
+       do_quotactl+0xaff/0xb30
+       __x64_sys_quotactl+0x23a/0x4e0
+       do_syscall_64+0x3b/0x90
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+other info that might help us debug this:
+
+Chain exists of:
+  &sb->s_type->i_mutex_key#18 --> &sbi->cp_rwsem --> &sbi->quota_sem
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&sbi->quota_sem);
+                               lock(&sbi->cp_rwsem);
+                               lock(&sbi->quota_sem);
+  lock(&sb->s_type->i_mutex_key#18);
+
+ *** DEADLOCK ***
+
+3 locks held by repquota/8606:
+ #0: ffff88801efac0e0 (&type->s_umount_key#53){++++}-{3:3}, at: user_get_super+0xd9/0x190
+ #1: ffff8880084bc380 (&sbi->cp_rwsem){++++}-{3:3}, at: f2fs_quota_sync+0x3e/0x300 [f2fs]
+ #2: ffff8880084bcde8 (&sbi->quota_sem){.+.+}-{3:3}, at: f2fs_quota_sync+0x59/0x300 [f2fs]
+
+stack backtrace:
+CPU: 6 PID: 8606 Comm: repquota Not tainted 5.14.0-rc1 #69
+Hardware name: innotek GmbH VirtualBox/VirtualBox, BIOS VirtualBox 12/01/2006
+Call Trace:
+ dump_stack_lvl+0xce/0x134
+ dump_stack+0x17/0x20
+ print_circular_bug.isra.0.cold+0x239/0x253
+ check_noncircular+0x1be/0x1f0
+ check_prev_add+0xdc/0xb30
+ validate_chain+0xa67/0xb20
+ __lock_acquire+0x648/0x10b0
+ lock_acquire+0x128/0x470
+ down_write+0x39/0xc0
+ f2fs_quota_sync+0x207/0x300 [f2fs]
+ do_quotactl+0xaff/0xb30
+ __x64_sys_quotactl+0x23a/0x4e0
+ do_syscall_64+0x3b/0x90
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f883b0b4efe
+
+The root cause is ABBA deadlock of inode lock and cp_rwsem,
+reorder locks in f2fs_quota_sync() as below to fix this issue:
+- lock inode
+- lock cp_rwsem
+- lock quota_sem
+
+Fixes: db6ec53b7e03 ("f2fs: add a rw_sem to cover quota flag changes")
+Signed-off-by: Chao Yu <chao@kernel.org>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sunrpc/xprtsock.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/f2fs/super.c | 84 ++++++++++++++++++++++++++++---------------------
+ 1 file changed, 48 insertions(+), 36 deletions(-)
 
-diff --git a/net/sunrpc/xprtsock.c b/net/sunrpc/xprtsock.c
-index 7d7c08af54de..16c7758e7bf3 100644
---- a/net/sunrpc/xprtsock.c
-+++ b/net/sunrpc/xprtsock.c
-@@ -1642,7 +1642,7 @@ static int xs_get_srcport(struct sock_xprt *transport)
- unsigned short get_srcport(struct rpc_xprt *xprt)
- {
- 	struct sock_xprt *sock = container_of(xprt, struct sock_xprt, xprt);
--	return sock->srcport;
-+	return xs_sock_getport(sock->sock);
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 716b4b8bb9a9..8b2b34500b2a 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -2399,6 +2399,33 @@ static int f2fs_enable_quotas(struct super_block *sb)
+ 	return 0;
  }
- EXPORT_SYMBOL(get_srcport);
+ 
++static int f2fs_quota_sync_file(struct f2fs_sb_info *sbi, int type)
++{
++	struct quota_info *dqopt = sb_dqopt(sbi->sb);
++	struct address_space *mapping = dqopt->files[type]->i_mapping;
++	int ret = 0;
++
++	ret = dquot_writeback_dquots(sbi->sb, type);
++	if (ret)
++		goto out;
++
++	ret = filemap_fdatawrite(mapping);
++	if (ret)
++		goto out;
++
++	/* if we are using journalled quota */
++	if (is_journalled_quota(sbi))
++		goto out;
++
++	ret = filemap_fdatawait(mapping);
++
++	truncate_inode_pages(&dqopt->files[type]->i_data, 0);
++out:
++	if (ret)
++		set_sbi_flag(sbi, SBI_QUOTA_NEED_REPAIR);
++	return ret;
++}
++
+ int f2fs_quota_sync(struct super_block *sb, int type)
+ {
+ 	struct f2fs_sb_info *sbi = F2FS_SB(sb);
+@@ -2406,57 +2433,42 @@ int f2fs_quota_sync(struct super_block *sb, int type)
+ 	int cnt;
+ 	int ret;
+ 
+-	/*
+-	 * do_quotactl
+-	 *  f2fs_quota_sync
+-	 *  down_read(quota_sem)
+-	 *  dquot_writeback_dquots()
+-	 *  f2fs_dquot_commit
+-	 *                            block_operation
+-	 *                            down_read(quota_sem)
+-	 */
+-	f2fs_lock_op(sbi);
+-
+-	down_read(&sbi->quota_sem);
+-	ret = dquot_writeback_dquots(sb, type);
+-	if (ret)
+-		goto out;
+-
+ 	/*
+ 	 * Now when everything is written we can discard the pagecache so
+ 	 * that userspace sees the changes.
+ 	 */
+ 	for (cnt = 0; cnt < MAXQUOTAS; cnt++) {
+-		struct address_space *mapping;
+ 
+ 		if (type != -1 && cnt != type)
+ 			continue;
+-		if (!sb_has_quota_active(sb, cnt))
+-			continue;
+ 
+-		mapping = dqopt->files[cnt]->i_mapping;
++		if (!sb_has_quota_active(sb, type))
++			return 0;
+ 
+-		ret = filemap_fdatawrite(mapping);
+-		if (ret)
+-			goto out;
++		inode_lock(dqopt->files[cnt]);
+ 
+-		/* if we are using journalled quota */
+-		if (is_journalled_quota(sbi))
+-			continue;
++		/*
++		 * do_quotactl
++		 *  f2fs_quota_sync
++		 *  down_read(quota_sem)
++		 *  dquot_writeback_dquots()
++		 *  f2fs_dquot_commit
++		 *			      block_operation
++		 *			      down_read(quota_sem)
++		 */
++		f2fs_lock_op(sbi);
++		down_read(&sbi->quota_sem);
+ 
+-		ret = filemap_fdatawait(mapping);
+-		if (ret)
+-			set_sbi_flag(F2FS_SB(sb), SBI_QUOTA_NEED_REPAIR);
++		ret = f2fs_quota_sync_file(sbi, cnt);
++
++		up_read(&sbi->quota_sem);
++		f2fs_unlock_op(sbi);
+ 
+-		inode_lock(dqopt->files[cnt]);
+-		truncate_inode_pages(&dqopt->files[cnt]->i_data, 0);
+ 		inode_unlock(dqopt->files[cnt]);
++
++		if (ret)
++			break;
+ 	}
+-out:
+-	if (ret)
+-		set_sbi_flag(F2FS_SB(sb), SBI_QUOTA_NEED_REPAIR);
+-	up_read(&sbi->quota_sem);
+-	f2fs_unlock_op(sbi);
+ 	return ret;
+ }
  
 -- 
 2.30.2
