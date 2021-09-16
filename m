@@ -2,153 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 104FD40DAC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 15:10:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD32E40DAC5
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 15:10:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239943AbhIPNLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 09:11:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239837AbhIPNLh (ORCPT
+        id S239965AbhIPNMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 09:12:02 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:9741 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239837AbhIPNMB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 09:11:37 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70AABC061764
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 06:10:17 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id w17so5377320qta.9
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 06:10:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=J1aPRVnPtvaDDmo3fez14oc8rYGiEsDWBCXDH/Wat7k=;
-        b=SCLGmpBOIX1LyEWjCtTQu5NsbhW1Y4X5/DmQl1XQ9jzusvOLM7zvEkOwz6LOAv+Yok
-         sIWQ6uZy+RXJ3cFeYjVefKkQH0Bt0fEt6Hxm02pQYIdfhNmnfHNX2wDQS3f9HxEUckLT
-         uEUNakxQ26CbdQlN/sagwI+fXugp4FI45KUk2U0+TghLUrgqPs4hSAaLgC+UJKOxxT4E
-         Mc+H12o6j9K7ZldUlePbIj3QazJSlLYL+zG9bxUEh82jSSu4c3hLfm8TlsPXKZBK8Vfn
-         QyTQKfWMizwsKJYk7EULgbEvpNxSTjzFuIhJlbPIm2aqRKQQZUDbcvQh309a66LJBzjd
-         rwyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=J1aPRVnPtvaDDmo3fez14oc8rYGiEsDWBCXDH/Wat7k=;
-        b=Td2WXzT+VP6TobMrJ2SnPjwj12O4L7s6gVZwsXie0e4EXHI6xEGiXZBI4RQC9KGBFR
-         71INpmkzKIFucI2XSU5q6k2YIwWBjxBWQqz/0ATh92gxjSE8xEFjgbdJi8i66NRSRQeK
-         DKdh3tm8KLZ6M+0gWnP7Sp4D1ozzb8kRv2WoMwFVH9fFXxUnODwi2MsyvhQFjp9XetSE
-         1SU7UGnmoMvfESfQBcfk+cTg5zYQarvaMrtD2fmMsw8yKQfxqnz3F6S0Q9Vy9VlbFwCO
-         t+B674NIV6lXlF6Dn34kLv9LIbsYChE6KFpy7LCDxA6Fv+FFdOlfG/nACEIrriEgg6y7
-         GPEg==
-X-Gm-Message-State: AOAM533wLDnCyzvSPF600lWvvGcbd+esWKWJ7QzxfXmHHhX2/45eiIXL
-        RCWsEkBnMdXKIA8WBY2KEcU75g==
-X-Google-Smtp-Source: ABdhPJwoUHOat0GVnmJtcI3QwOrvQdDqw4k+r1J+CwosMJhqmF7+hz2G8rRCHLhPrxcT6+12hGdkXg==
-X-Received: by 2002:ac8:7d42:: with SMTP id h2mr4861309qtb.220.1631797816616;
-        Thu, 16 Sep 2021 06:10:16 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id r23sm1992140qtp.60.2021.09.16.06.10.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 06:10:15 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mQr9a-001MiL-Tq; Thu, 16 Sep 2021 10:10:14 -0300
-Date:   Thu, 16 Sep 2021 10:10:14 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Oded Gabbay <ogabbay@kernel.org>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Gal Pressman <galpress@amazon.com>,
-        Yossi Leybovich <sleybo@amazon.com>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Dave Airlie <airlied@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>
-Subject: Re: [PATCH v6 0/2] Add p2p via dmabuf to habanalabs
-Message-ID: <20210916131014.GK3544071@ziepe.ca>
-References: <20210912165309.98695-1-ogabbay@kernel.org>
- <YUCvNzpyC091KeaJ@phenom.ffwll.local>
- <20210914161218.GF3544071@ziepe.ca>
- <CAFCwf13322953Txr3Afa_MomuD148vnfpEog0xzW7FPWH9=6fg@mail.gmail.com>
- <YUM5JoMMK7gceuKZ@phenom.ffwll.local>
+        Thu, 16 Sep 2021 09:12:01 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4H9HVS0xL6zW2Zm;
+        Thu, 16 Sep 2021 21:09:36 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.8; Thu, 16 Sep 2021 21:10:38 +0800
+Received: from [10.174.176.73] (10.174.176.73) by
+ dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Thu, 16 Sep 2021 21:10:37 +0800
+Subject: Re: [patch v8 7/7] nbd: fix uaf in nbd_handle_reply()
+To:     Ming Lei <ming.lei@redhat.com>
+CC:     <josef@toxicpanda.com>, <axboe@kernel.dk>, <hch@infradead.org>,
+        <linux-block@vger.kernel.org>, <nbd@other.debian.org>,
+        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
+References: <20210916093350.1410403-1-yukuai3@huawei.com>
+ <20210916093350.1410403-8-yukuai3@huawei.com> <YUM/cNzr6PTXFVAX@T590>
+From:   "yukuai (C)" <yukuai3@huawei.com>
+Message-ID: <f0a72b72-19c9-f01d-806d-d27f854dea8f@huawei.com>
+Date:   Thu, 16 Sep 2021 21:10:37 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YUM5JoMMK7gceuKZ@phenom.ffwll.local>
+In-Reply-To: <YUM/cNzr6PTXFVAX@T590>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.73]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 02:31:34PM +0200, Daniel Vetter wrote:
-> On Wed, Sep 15, 2021 at 10:45:36AM +0300, Oded Gabbay wrote:
-> > On Tue, Sep 14, 2021 at 7:12 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> > >
-> > > On Tue, Sep 14, 2021 at 04:18:31PM +0200, Daniel Vetter wrote:
-> > > > On Sun, Sep 12, 2021 at 07:53:07PM +0300, Oded Gabbay wrote:
-> > > > > Hi,
-> > > > > Re-sending this patch-set following the release of our user-space TPC
-> > > > > compiler and runtime library.
-> > > > >
-> > > > > I would appreciate a review on this.
-> > > >
-> > > > I think the big open we have is the entire revoke discussions. Having the
-> > > > option to let dma-buf hang around which map to random local memory ranges,
-> > > > without clear ownership link and a way to kill it sounds bad to me.
-> > > >
-> > > > I think there's a few options:
-> > > > - We require revoke support. But I've heard rdma really doesn't like that,
-> > > >   I guess because taking out an MR while holding the dma_resv_lock would
-> > > >   be an inversion, so can't be done. Jason, can you recap what exactly the
-> > > >   hold-up was again that makes this a no-go?
-> > >
-> > > RDMA HW can't do revoke.
+On 2021/09/16 20:58, Ming Lei wrote:
+> On Thu, Sep 16, 2021 at 05:33:50PM +0800, Yu Kuai wrote:
+>> There is a problem that nbd_handle_reply() might access freed request:
+>>
+>> 1) At first, a normal io is submitted and completed with scheduler:
+>>
+>> internel_tag = blk_mq_get_tag -> get tag from sched_tags
+>>   blk_mq_rq_ctx_init
+>>    sched_tags->rq[internel_tag] = sched_tag->static_rq[internel_tag]
+>> ...
+>> blk_mq_get_driver_tag
+>>   __blk_mq_get_driver_tag -> get tag from tags
+>>   tags->rq[tag] = sched_tag->static_rq[internel_tag]
+>>
+>> So, both tags->rq[tag] and sched_tags->rq[internel_tag] are pointing
+>> to the request: sched_tags->static_rq[internal_tag]. Even if the
+>> io is finished.
+>>
+>> 2) nbd server send a reply with random tag directly:
+>>
+>> recv_work
+>>   nbd_handle_reply
+>>    blk_mq_tag_to_rq(tags, tag)
+>>     rq = tags->rq[tag]
+>>
+>> 3) if the sched_tags->static_rq is freed:
+>>
+>> blk_mq_sched_free_requests
+>>   blk_mq_free_rqs(q->tag_set, hctx->sched_tags, i)
+>>    -> step 2) access rq before clearing rq mapping
+>>    blk_mq_clear_rq_mapping(set, tags, hctx_idx);
+>>    __free_pages() -> rq is freed here
+>>
+>> 4) Then, nbd continue to use the freed request in nbd_handle_reply
+>>
+>> Fix the problem by get 'q_usage_counter' before blk_mq_tag_to_rq(),
+>> thus request is ensured not to be freed because 'q_usage_counter' is
+>> not zero.
+>>
+>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+>> ---
+>>   drivers/block/nbd.c | 14 ++++++++++++++
+>>   1 file changed, 14 insertions(+)
+>>
+>> diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+>> index 69dc5eac9ad3..b3a47fc6237f 100644
+>> --- a/drivers/block/nbd.c
+>> +++ b/drivers/block/nbd.c
+>> @@ -825,6 +825,7 @@ static void recv_work(struct work_struct *work)
+>>   						     work);
+>>   	struct nbd_device *nbd = args->nbd;
+>>   	struct nbd_config *config = nbd->config;
+>> +	struct request_queue *q = nbd->disk->queue;
+>>   	struct nbd_sock *nsock;
+>>   	struct nbd_cmd *cmd;
+>>   	struct request *rq;
+>> @@ -835,7 +836,20 @@ static void recv_work(struct work_struct *work)
+>>   		if (nbd_read_reply(nbd, args->index, &reply))
+>>   			break;
+>>   
+>> +		/*
+>> +		 * Grab .q_usage_counter so request pool won't go away, then no
+>> +		 * request use-after-free is possible during nbd_handle_reply().
+>> +		 * If queue is frozen, there won't be any inflight requests, we
+>> +		 * needn't to handle the incoming garbage message.
+>> +		 */
+>> +		if (!percpu_ref_tryget(&q->q_usage_counter)) {
+>> +			dev_err(disk_to_dev(nbd->disk), "%s: no io inflight\n",
+>> +				__func__);
+>> +			break;
+>> +		}
+>> +
+>>   		cmd = nbd_handle_reply(nbd, args->index, &reply);
+>> +		percpu_ref_put(&q->q_usage_counter);
+>>   		if (IS_ERR(cmd))
+>>   			break;
 > 
-> Like why? I'm assuming when the final open handle or whatever for that MR
-> is closed, you do clean up everything? Or does that MR still stick around
-> forever too?
+> The refcount needs to be grabbed when completing the request because
+> the request may be completed from other code path, then the request pool
+> will be freed from that code path when the request is referred.
 
-It is a combination of uAPI and HW specification.
+Hi,
 
-revoke here means you take a MR object and tell it to stop doing DMA
-without causing the MR object to be destructed.
+The request can't complete concurrently, thus put ref here is safe.
 
-All the drivers can of course destruct the MR, but doing such a
-destruction without explicit synchronization with user space opens
-things up to a serious use-after potential that could be a security
-issue.
+There used to be a commet here that I tried to explain it... It's fine
+to me to move it behind anyway.
 
-When the open handle closes the userspace is synchronized with the
-kernel and we can destruct the HW objects safely.
-
-So, the special HW feature required is 'stop doing DMA but keep the
-object in an error state' which isn't really implemented, and doesn't
-extend very well to other object types beyond simple MRs.
-
-> 1. User A opens gaudi device, sets up dma-buf export
-> 
-> 2. User A registers that with RDMA, or anything else that doesn't support
-> revoke.
-> 
-> 3. User A closes gaudi device
-> 
-> 4. User B opens gaudi device, assumes that it has full control over the
-> device and uploads some secrets, which happen to end up in the dma-buf
-> region user A set up
-
-I would expect this is blocked so long as the DMABUF exists - eg the
-DMABUF will hold a fget on the FD of #1 until the DMABUF is closed, so
-that #3 can't actually happen.
-
-> It's not mlocked memory, it's mlocked memory and I can exfiltrate
-> it.
-
-That's just bug, don't make buggy drivers :)
-
-Jason
+Thanks,
+Kuai
