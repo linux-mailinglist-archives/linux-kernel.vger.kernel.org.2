@@ -2,35 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7459640DFD2
+	by mail.lfdr.de (Postfix) with ESMTP id 2B6A440DFD1
 	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:15:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240755AbhIPQO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:14:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48902 "EHLO mail.kernel.org"
+        id S240717AbhIPQOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:14:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47920 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233045AbhIPQIf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:08:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A8E2F61241;
-        Thu, 16 Sep 2021 16:07:13 +0000 (UTC)
+        id S235287AbhIPQIh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:08:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FC5B60698;
+        Thu, 16 Sep 2021 16:07:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808434;
-        bh=ODfC5cu1o0iQv3QAYJGyXeX/iLMHG3K0L77eLf7t8js=;
+        s=korg; t=1631808437;
+        bh=McsK7Kc7A5CYCUqTXR2l4d64T/NaYUnB+1lCXtJkRPY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XIcn5udK7URA54LsZzupzCI3Pr97erQWPRF36cZJtSi/MejKbDVY33nGW4vR68GUF
-         lPu6y5PQSTYErRWrM4mRdQZK5L35joLfYIoONLBM7pJ1f63gKGKXveVcwXLo15WpVr
-         r3+rLmih+OwJobVfEG5RhAo6JK31k59e4sqqZEbw=
+        b=tKvW2za0veS+hL6SGMIXly3vJwmK74MGmI6ZEJQvrw9YvM1yYPRn+5f4rj6a4wE7q
+         3zpFR56j55Em/qbpszLEOC7cXy6GqF/V1/vGU+23h2aB/sjzT6puZcQ/ULlhUyKJNp
+         t1AF4Wx6t1lkMxnoj6pBJO3Vh4O7rE8iHScV9TtM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lu Baolu <baolu.lu@linux.intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Sanjay Kumar <sanjay.k.kumar@intel.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Joerg Roedel <jroedel@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 089/306] iommu/vt-d: Update the virtual command related registers
-Date:   Thu, 16 Sep 2021 17:57:14 +0200
-Message-Id: <20210916155757.096699921@linuxfoundation.org>
+        stable@vger.kernel.org, Jim Broadus <jbroadus@gmail.com>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 090/306] HID: i2c-hid: Fix Elan touchpad regression
+Date:   Thu, 16 Sep 2021 17:57:15 +0200
+Message-Id: <20210916155757.137020440@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
 References: <20210916155753.903069397@linuxfoundation.org>
@@ -42,68 +39,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lu Baolu <baolu.lu@linux.intel.com>
+From: Jim Broadus <jbroadus@gmail.com>
 
-[ Upstream commit 4d99efb229e63928c6b03a756a2e38cd4777fbe8 ]
+[ Upstream commit 786537063bbfb3a7ebc6fc21b2baf37fb91df401 ]
 
-The VT-d spec Revision 3.3 updated the virtual command registers, virtual
-command opcode B register, virtual command response register and virtual
-command capability register (Section 10.4.43, 10.4.44, 10.4.45, 10.4.46).
-This updates the virtual command interface implementation in the Intel
-IOMMU driver accordingly.
+A quirk was recently added for Elan devices that has same device match
+as an entry earlier in the list. The i2c_hid_lookup_quirk function will
+always return the last match in the list, so the new entry shadows the
+old entry. The quirk in the previous entry, I2C_HID_QUIRK_BOGUS_IRQ,
+silenced a flood of messages which have reappeared in the 5.13 kernel.
 
-Fixes: 24f27d32ab6b7 ("iommu/vt-d: Enlightened PASID allocation")
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-Cc: Ashok Raj <ashok.raj@intel.com>
-Cc: Sanjay Kumar <sanjay.k.kumar@intel.com>
-Cc: Kevin Tian <kevin.tian@intel.com>
-Link: https://lore.kernel.org/r/20210713042649.3547403-1-baolu.lu@linux.intel.com
-Link: https://lore.kernel.org/r/20210818134852.1847070-2-baolu.lu@linux.intel.com
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
+This change moves the two quirk flags into the same entry.
+
+Fixes: ca66a6770bd9 (HID: i2c-hid: Skip ELAN power-on command after reset)
+Signed-off-by: Jim Broadus <jbroadus@gmail.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iommu/intel/pasid.h | 10 +++++-----
- include/linux/intel-iommu.h |  6 +++---
- 2 files changed, 8 insertions(+), 8 deletions(-)
+ drivers/hid/i2c-hid/i2c-hid-core.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/iommu/intel/pasid.h b/drivers/iommu/intel/pasid.h
-index 30cb30046b15..35963e6bf9fa 100644
---- a/drivers/iommu/intel/pasid.h
-+++ b/drivers/iommu/intel/pasid.h
-@@ -28,12 +28,12 @@
- #define VCMD_CMD_ALLOC			0x1
- #define VCMD_CMD_FREE			0x2
- #define VCMD_VRSP_IP			0x1
--#define VCMD_VRSP_SC(e)			(((e) >> 1) & 0x3)
-+#define VCMD_VRSP_SC(e)			(((e) & 0xff) >> 1)
- #define VCMD_VRSP_SC_SUCCESS		0
--#define VCMD_VRSP_SC_NO_PASID_AVAIL	2
--#define VCMD_VRSP_SC_INVALID_PASID	2
--#define VCMD_VRSP_RESULT_PASID(e)	(((e) >> 8) & 0xfffff)
--#define VCMD_CMD_OPERAND(e)		((e) << 8)
-+#define VCMD_VRSP_SC_NO_PASID_AVAIL	16
-+#define VCMD_VRSP_SC_INVALID_PASID	16
-+#define VCMD_VRSP_RESULT_PASID(e)	(((e) >> 16) & 0xfffff)
-+#define VCMD_CMD_OPERAND(e)		((e) << 16)
- /*
-  * Domain ID reserved for pasid entries programmed for first-level
-  * only and pass-through transfer modes.
-diff --git a/include/linux/intel-iommu.h b/include/linux/intel-iommu.h
-index c00ee3458a91..142ec79cda84 100644
---- a/include/linux/intel-iommu.h
-+++ b/include/linux/intel-iommu.h
-@@ -122,9 +122,9 @@
- #define DMAR_MTRR_PHYSMASK8_REG 0x208
- #define DMAR_MTRR_PHYSBASE9_REG 0x210
- #define DMAR_MTRR_PHYSMASK9_REG 0x218
--#define DMAR_VCCAP_REG		0xe00 /* Virtual command capability register */
--#define DMAR_VCMD_REG		0xe10 /* Virtual command register */
--#define DMAR_VCRSP_REG		0xe20 /* Virtual command response register */
-+#define DMAR_VCCAP_REG		0xe30 /* Virtual command capability register */
-+#define DMAR_VCMD_REG		0xe00 /* Virtual command register */
-+#define DMAR_VCRSP_REG		0xe10 /* Virtual command response register */
- 
- #define OFFSET_STRIDE		(9)
+diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
+index 1f08c848c33d..998aad8a9e60 100644
+--- a/drivers/hid/i2c-hid/i2c-hid-core.c
++++ b/drivers/hid/i2c-hid/i2c-hid-core.c
+@@ -176,8 +176,6 @@ static const struct i2c_hid_quirks {
+ 		I2C_HID_QUIRK_NO_IRQ_AFTER_RESET },
+ 	{ I2C_VENDOR_ID_RAYDIUM, I2C_PRODUCT_ID_RAYDIUM_3118,
+ 		I2C_HID_QUIRK_NO_IRQ_AFTER_RESET },
+-	{ USB_VENDOR_ID_ELAN, HID_ANY_ID,
+-		 I2C_HID_QUIRK_BOGUS_IRQ },
+ 	{ USB_VENDOR_ID_ALPS_JP, HID_ANY_ID,
+ 		 I2C_HID_QUIRK_RESET_ON_RESUME },
+ 	{ I2C_VENDOR_ID_SYNAPTICS, I2C_PRODUCT_ID_SYNAPTICS_SYNA2393,
+@@ -188,7 +186,8 @@ static const struct i2c_hid_quirks {
+ 	 * Sending the wakeup after reset actually break ELAN touchscreen controller
+ 	 */
+ 	{ USB_VENDOR_ID_ELAN, HID_ANY_ID,
+-		 I2C_HID_QUIRK_NO_WAKEUP_AFTER_RESET },
++		 I2C_HID_QUIRK_NO_WAKEUP_AFTER_RESET |
++		 I2C_HID_QUIRK_BOGUS_IRQ },
+ 	{ 0, 0 }
+ };
  
 -- 
 2.30.2
