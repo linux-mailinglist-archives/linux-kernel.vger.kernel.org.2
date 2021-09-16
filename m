@@ -2,277 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7108640DE9A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 17:50:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1009C40DEAC
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 17:51:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240282AbhIPPvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 11:51:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240197AbhIPPvG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 11:51:06 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A101DC0613C1
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 08:49:42 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id s15so5907826qta.10
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 08:49:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UmS/7tV9mt9x6zEOIU7L7BJNgTTpfIT11ZHesMF3Uxs=;
-        b=VnsxMBo5W1r+RnEuA2XS+T6edK1ir3f0GNnWWcuDNvMYC+a40qiQKcaMrnb5Eog9oz
-         AqfrZlLqZRIEQ8+pA3RpJMi8M9WkaxFtBZA4JJszqbkVktr0plxMFL/fbRs7hPRRtFsr
-         3azasOy5lKJAn0Q/2xP+5x5a3O06EdYJcD4xA0ThGkhDEdCsJmzKMUMk/bfqVi2QHLnQ
-         3qdK13cetht8BRr08JHGxOMHMxiBt6WBrVkKkg6PWRcgXtQ3/c4opfgE3e9JN6kyN9jv
-         PPWght6KkSJ5bX3Nv5UIDIrGpOb+HmcZL6vw4P5ML+f42dp1LcYhVoHW0pYzc1MohOgH
-         hwnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=UmS/7tV9mt9x6zEOIU7L7BJNgTTpfIT11ZHesMF3Uxs=;
-        b=sZJQs7/rVuHATzpitAhtiYsaW/GaOP0tfvxtia+s15UfvxoSjkbDf2cV2oueBB+VsI
-         7vmfgEdwJzh47uNCO7VAhcoMQSYkIVKOMdOIb1vCtv8WYCtkGqO0xC74bXkeL0TkOsOL
-         gZughsOYjSYnoiL1fJcE0+Z9n2TRadVmWKh1gbe5nfTRfzvAvNnVfsZoxq1r1FItHO87
-         k2mnCQpVKO040GJsCT+TNwUg+MZnI53EzGjGJ2zKaoTnb36KciJXE+/PMXc+ZS8RX9e+
-         tIZw2zyhkxw1QVL/QP0DLhrwRV8Cpol/ffwn/LtGh0k6KdjzrXX8JzWE7ZVd0PJ2boKf
-         mZKg==
-X-Gm-Message-State: AOAM532hcQYgkUdtocbJyQ5hhTRAZ+PtH5BrjWT0sXu6aQye1EMsoWw4
-        Wc+0vVZNd0YclvDhQkQnEtSwjgy4rnj9pA==
-X-Google-Smtp-Source: ABdhPJw/FmtRxcXZPesSFTgpwLllyv4s21ndAh2wcqxpR8ITYxPurtNxyk7YxSkLrYduA1RBwF9JDw==
-X-Received: by 2002:ac8:45cf:: with SMTP id e15mr5715442qto.322.1631807381704;
-        Thu, 16 Sep 2021 08:49:41 -0700 (PDT)
-Received: from localhost.localdomain ([130.44.160.152])
-        by smtp.gmail.com with ESMTPSA id c4sm2839903qkf.122.2021.09.16.08.49.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 08:49:41 -0700 (PDT)
-Sender: Konrad Rzeszutek Wilk <konrad.r.wilk@gmail.com>
-Date:   Thu, 16 Sep 2021 11:49:39 -0400
-From:   Konrad Rzeszutek Wilk <konrad@darnok.org>
-To:     Chao Gao <chao.gao@intel.com>
-Cc:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Andi Kleen <ak@linux.intel.com>
-Subject: Re: [PATCH] swiotlb: allocate memory in a cache-friendly way
-Message-ID: <YUNnkxiVnHUszg7G@localhost.localdomain>
-References: <20210901042135.103981-1-chao.gao@intel.com>
+        id S240424AbhIPPwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 11:52:20 -0400
+Received: from mout.gmx.net ([212.227.17.21]:53683 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240260AbhIPPv0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 11:51:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1631807400;
+        bh=NqVVwzeNWwEQk/AH9IAdroOp0Zewk+TH9OlgrOa/d6k=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=g0JiMKjsxv+7t975Uxx7FMptmex2oLUzPZJetuPKZr2DlSyfUznIeFvRfSDA9RvsA
+         GxiUhFM5epDdPunCK2QsF+Ll+02twmrfCHQW3mvH78w+ZomKoBFqEmFZFSqP7Qs54B
+         M9pB9YEbSMB9D/w0gTOx0jhN3MbIBtKEhP8M9XCw=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.221.149.64]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1N5GE1-1ms9GP20rV-0119As; Thu, 16
+ Sep 2021 17:50:00 +0200
+Message-ID: <b14d79e49e3abe3fdf00cf18bb8c992b4575c5cc.camel@gmx.de>
+Subject: Re: data loss when doing ls-remote and piped to command
+From:   Mike Galbraith <efault@gmx.de>
+To:     Rolf Eike Beer <eb@emlix.com>, git@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Tobias Ulmer <tu@emlix.com>, Junio C Hamano <gitster@pobox.com>,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 16 Sep 2021 17:49:59 +0200
+In-Reply-To: <2677927.DK6gFqPMyL@devpool47>
+References: <6786526.72e2EbofS7@devpool47> <2279155.Qy0YqsFniq@devpool47>
+         <85a103f6-8b3c-2f21-cc0f-04f517c0c9a1@emlix.com>
+         <2677927.DK6gFqPMyL@devpool47>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.41.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210901042135.103981-1-chao.gao@intel.com>
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:zjb95XSYmLriFpx4k9d48zBomGRzo4W1Dxm6ED4bwUcICm/rtFS
+ czgPSnlJ4tsxdnUog5ZG9/aWPVpAuGYE/LH/jhWI9jcN5zvEASQ8vqa0pspfuM7tw8rm3Cr
+ Uzt0q1r6QnDg1azxS3A7v8T6uaMXk0zpS3V+sXs/HVlWe5oJNoX8xByhCmWbszEBPSLcvw5
+ K+ZPX4WLA/Cu4ZWUSdxvA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:5l5HbZwJxpU=:GKFoQbq7FgUVIanhTs1VGP
+ AWai0zr4lJMJp+xS1zat4NAvoj4vTf3Jk8zOJb6n2uNyp9H76phPuOvE7MiUfsNJZ+0nwlZiI
+ cBN/qy23GKuKV+5joQ9zo5qlPYqEpGnu4/yGnwjivRq1ZvdAd/Vz8yV4OP0nkba9A3MFtksnS
+ roVtbfV2OwQXdH7NVHNIPhW3bc1TPhM6fzCYchcOPD/r0pJbY+0trpa4nDohYEOcqzheXuuXT
+ C+inJPzh1M2uu9wIjAVB38oyLvhH0SFSmwue2XaVR4XVMeMvvO/VC70XpoiJ/fJCu9j9g8njU
+ oUzS+ZWjtXqvxdna/ZScXJIUKQH1xUcbZN7/8uQp9ChTj8uq+uJoUhnxfs4QC+JpiR+34CUkB
+ KGZPL34GiRrLTkj8Q6cb0eT11UgIAwVxES0r9tHhDJqFKLAGln536YjOBtcy/QD4ALGFx6DU6
+ iw6AXaEOpEPrezy7eJqwsjR6oH6obpU+G94ZO6crmtDwb34YHRweNbnaEPPEPR+ZzVCDLzLLe
+ jBryg9eYCFzVeyow1uRJ4MxvoNcbGLP8Y/0Xlby6Y1bMOk93HR7d1j23UTNjMCNoOewnA5z7d
+ HLClfvrTJZVqeOyI7WL/TJtZbuXo42DMcuKEYu24235PTpOHbwx/ikJIpWFh6XXA45wkmjwip
+ raES7ygfsqGSWsq8vKbRiMRd5FGCMjmoEaeq9tRvYfVxo3J5CKODXEZVbQFd2hR91LPQM738u
+ 3Rwa+eIXn/u2FRId3m94SJ6p+94M2kMP6Wuw/GmzNl3ulOBR7mk75VSWpa93oLNaMvRlhgucs
+ xuoIhp4DYy64vxLtytl1aexUI5V4SNCM2uiQj6LGbJ1864JkNyRixIffkCU1bIdlN1JZZj8h3
+ 5W0aDgcuktu299WX4GI/a6+hqNhHwkLHhn7SY9RuhGKbhALpQr+2XFPkcT65jliAFOkoxvKqo
+ IeFT9Bo3sD3YJPQu7/KzEP9rjNRH73yv3xan6HDDyPlHwFh6Bkp/JiOx+I3A4AJ1etgzDta6z
+ US6ji5yT7i9Zc9CsIk8s661qjfm8xMBQADNU+8tXSbjV/d5NinRwHUd2i5V7v9+Sai9Q4Hulf
+ T+29SxldoE+hwk=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 01, 2021 at 12:21:35PM +0800, Chao Gao wrote:
-> Currently, swiotlb uses a global index to indicate the starting point
-> of next search. The index increases from 0 to the number of slots - 1
-> and then wraps around. It is straightforward but not cache-friendly
-> because the "oldest" slot in swiotlb tends to be used first.
-> 
-> Freed slots are probably accessed right before being freed, especially
-> in VM's case (device backends access them in DMA_TO_DEVICE mode; guest
-> accesses them in other DMA modes). Thus those just freed slots may
-> reside in cache. Then reusing those just freed slots can reduce cache
-> misses.
-> 
-> To that end, maintain a free list for free slots and insert freed slots
-> from the head and searching for free slots always starts from the head.
-> 
-> With this optimization, network throughput of sending data from host to
-> guest, measured by iperf3, increases by 7%.
+On Thu, 2021-09-16 at 14:17 +0200, Rolf Eike Beer wrote:
+> Am Donnerstag, 16. September 2021, 12:12:48 CEST schrieb Tobias Ulmer:
+> > On 16/09/2021 08:38, Rolf Eike Beer wrote:
+> > ...
+> >
+> > > The redirection seems to be an important part of it. I now did:
+> > >
+> > > git ... 2>&1 | sha256sum
+> >
+> > I've tried to reproduce this since yesterday, but couldn't until now:
+> >
+> > 2>&1 made all the difference, took less than a minute.
+> >
+> > Different repo, different machine, but also running Tumbleweed
+> > 5.14.1-1-default, git 2.33.0
+> >
+> > while [ "`git --git-dir=3D$PWD/in/linux/.git ls-remote origin 2>&1 | t=
+ee
+> > failed.out | sha1sum`" =3D "7fa299e589bacdc908395730beff542b0fc684eb=
+=C2=A0 -"
+> > ]; do echo -n .; done
+> > ..........
+> >
+> > failed.out has multiple lines like this:
+> >
+> > --8<--
+> > 4e77f7f1261f65cff06918bc5e66d02a418fc842=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 refs/tags/v3.10.18^{}
+> > f7b8df0cc81cf82a4ac6834225bddbe46a340455a4a5d52f29d08d923ce8d232b0b497=
+da674d
+> > d2c refs/tags/v3.18
+> > b2776bf7149bddd1f4161f14f79520f17fc1d71d=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 refs/tags/v3.18^{}
+> > --8<--
+> >
+> >
+> > Running the same on Archlinux (5.13.13-arch1-1, 2.33.0) doesn't show t=
+he
+> > problem.
+> > This may well turn out not to be git, but a kernel issue.
+>
+> Linus,
+>
+> since you have been hacking around in pipe.c recently, I fear this isn't
+> entirely impossible. Have you any idea?
+>
+> For easier reference, the complete thread is at:
+>
+> https://public-inbox.org/git/85a103f6-8b3c-2f21-cc0f-04f517c0c9a1@emlix.=
+com/T/
+>
 
-Wow, that is pretty awesome!
+I use git-daemon (2.33) and reference clones for my local pile of
+kernel trees (74), so out of curiosity, modified the above ls-remote
+loop to fit one of them, and tried to reproduce with both master.today
+(ff1ffd71) and SUSE's stable branch (where Tumbleweed gets source,
+currently at 5.14.4).  Both kernels failed to reproduce given a few
+minutes each (zzzz) to do so.  I'm running Leap-15.3 vs Tumbleweed, but
+that shouldn't matter.
 
-Are there any other benchmarks that you ran that showed a negative
-performance?
-
-Thank you.
-> 
-> A bad side effect of this patch is we cannot use a large stride to skip
-> unaligned slots when there is an alignment requirement. Currently, a
-> large stride is used when a) device has an alignment requirement, stride
-> is calculated according to the requirement; b) the requested size is
-> larger than PAGE_SIZE. For x86 with 4KB page size, stride is set to 2.
-> 
-> For case a), few devices have an alignment requirement; the impact is
-> limited. For case b) this patch probably leads to one (or more if page size
-> is larger than 4K) additional lookup; but as the "io_tlb_slot" struct of
-> free slots are also accessed when freeing slots, they probably resides in
-> CPU cache as well and then the overhead is almost negligible.
-> 
-> Suggested-by: Andi Kleen <ak@linux.intel.com>
-> Signed-off-by: Chao Gao <chao.gao@intel.com>
-> ---
->  include/linux/swiotlb.h | 15 ++++++++------
->  kernel/dma/swiotlb.c    | 43 +++++++++++------------------------------
->  2 files changed, 20 insertions(+), 38 deletions(-)
-> 
-> diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
-> index b0cb2a9973f4..8cafafd218af 100644
-> --- a/include/linux/swiotlb.h
-> +++ b/include/linux/swiotlb.h
-> @@ -63,6 +63,13 @@ dma_addr_t swiotlb_map(struct device *dev, phys_addr_t phys,
->  #ifdef CONFIG_SWIOTLB
->  extern enum swiotlb_force swiotlb_force;
->  
-> +struct io_tlb_slot {
-> +	phys_addr_t orig_addr;
-> +	size_t alloc_size;
-> +	unsigned int list;
-> +	struct list_head node;
-> +};
-> +
->  /**
->   * struct io_tlb_mem - IO TLB Memory Pool Descriptor
->   *
-> @@ -93,17 +100,13 @@ struct io_tlb_mem {
->  	phys_addr_t end;
->  	unsigned long nslabs;
->  	unsigned long used;
-> -	unsigned int index;
-> +	struct list_head free_slots;
->  	spinlock_t lock;
->  	struct dentry *debugfs;
->  	bool late_alloc;
->  	bool force_bounce;
->  	bool for_alloc;
-> -	struct io_tlb_slot {
-> -		phys_addr_t orig_addr;
-> -		size_t alloc_size;
-> -		unsigned int list;
-> -	} *slots;
-> +	struct io_tlb_slot *slots;
->  };
->  extern struct io_tlb_mem io_tlb_default_mem;
->  
-> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-> index 87c40517e822..12b5b8471e54 100644
-> --- a/kernel/dma/swiotlb.c
-> +++ b/kernel/dma/swiotlb.c
-> @@ -184,7 +184,7 @@ static void swiotlb_init_io_tlb_mem(struct io_tlb_mem *mem, phys_addr_t start,
->  	mem->nslabs = nslabs;
->  	mem->start = start;
->  	mem->end = mem->start + bytes;
-> -	mem->index = 0;
-> +	INIT_LIST_HEAD(&mem->free_slots);
->  	mem->late_alloc = late_alloc;
->  
->  	if (swiotlb_force == SWIOTLB_FORCE)
-> @@ -195,6 +195,7 @@ static void swiotlb_init_io_tlb_mem(struct io_tlb_mem *mem, phys_addr_t start,
->  		mem->slots[i].list = IO_TLB_SEGSIZE - io_tlb_offset(i);
->  		mem->slots[i].orig_addr = INVALID_PHYS_ADDR;
->  		mem->slots[i].alloc_size = 0;
-> +		list_add_tail(&mem->slots[i].node, &mem->free_slots);
->  	}
->  	memset(vaddr, 0, bytes);
->  }
-> @@ -447,13 +448,6 @@ static inline unsigned long get_max_slots(unsigned long boundary_mask)
->  	return nr_slots(boundary_mask + 1);
->  }
->  
-> -static unsigned int wrap_index(struct io_tlb_mem *mem, unsigned int index)
-> -{
-> -	if (index >= mem->nslabs)
-> -		return 0;
-> -	return index;
-> -}
-> -
->  /*
->   * Find a suitable number of IO TLB entries size that will fit this request and
->   * allocate a buffer from that IO TLB pool.
-> @@ -462,38 +456,29 @@ static int swiotlb_find_slots(struct device *dev, phys_addr_t orig_addr,
->  			      size_t alloc_size)
->  {
->  	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
-> +	struct io_tlb_slot *slot, *tmp;
->  	unsigned long boundary_mask = dma_get_seg_boundary(dev);
->  	dma_addr_t tbl_dma_addr =
->  		phys_to_dma_unencrypted(dev, mem->start) & boundary_mask;
->  	unsigned long max_slots = get_max_slots(boundary_mask);
->  	unsigned int iotlb_align_mask =
->  		dma_get_min_align_mask(dev) & ~(IO_TLB_SIZE - 1);
-> -	unsigned int nslots = nr_slots(alloc_size), stride;
-> -	unsigned int index, wrap, count = 0, i;
-> +	unsigned int nslots = nr_slots(alloc_size);
-> +	unsigned int index, count = 0, i;
->  	unsigned int offset = swiotlb_align_offset(dev, orig_addr);
->  	unsigned long flags;
->  
->  	BUG_ON(!nslots);
->  
-> -	/*
-> -	 * For mappings with an alignment requirement don't bother looping to
-> -	 * unaligned slots once we found an aligned one.  For allocations of
-> -	 * PAGE_SIZE or larger only look for page aligned allocations.
-> -	 */
-> -	stride = (iotlb_align_mask >> IO_TLB_SHIFT) + 1;
-> -	if (alloc_size >= PAGE_SIZE)
-> -		stride = max(stride, stride << (PAGE_SHIFT - IO_TLB_SHIFT));
-> -
->  	spin_lock_irqsave(&mem->lock, flags);
->  	if (unlikely(nslots > mem->nslabs - mem->used))
->  		goto not_found;
->  
-> -	index = wrap = wrap_index(mem, ALIGN(mem->index, stride));
-> -	do {
-> +	list_for_each_entry_safe(slot, tmp, &mem->free_slots, node) {
-> +		index = slot - mem->slots;
->  		if (orig_addr &&
->  		    (slot_addr(tbl_dma_addr, index) & iotlb_align_mask) !=
->  			    (orig_addr & iotlb_align_mask)) {
-> -			index = wrap_index(mem, index + 1);
->  			continue;
->  		}
->  
-> @@ -505,11 +490,10 @@ static int swiotlb_find_slots(struct device *dev, phys_addr_t orig_addr,
->  		if (!iommu_is_span_boundary(index, nslots,
->  					    nr_slots(tbl_dma_addr),
->  					    max_slots)) {
-> -			if (mem->slots[index].list >= nslots)
-> +			if (slot->list >= nslots)
->  				goto found;
->  		}
-> -		index = wrap_index(mem, index + stride);
-> -	} while (index != wrap);
-> +	}
->  
->  not_found:
->  	spin_unlock_irqrestore(&mem->lock, flags);
-> @@ -520,19 +504,13 @@ static int swiotlb_find_slots(struct device *dev, phys_addr_t orig_addr,
->  		mem->slots[i].list = 0;
->  		mem->slots[i].alloc_size =
->  			alloc_size - (offset + ((i - index) << IO_TLB_SHIFT));
-> +		list_del(&mem->slots[i].node);
->  	}
->  	for (i = index - 1;
->  	     io_tlb_offset(i) != IO_TLB_SEGSIZE - 1 &&
->  	     mem->slots[i].list; i--)
->  		mem->slots[i].list = ++count;
->  
-> -	/*
-> -	 * Update the indices to avoid searching in the next round.
-> -	 */
-> -	if (index + nslots < mem->nslabs)
-> -		mem->index = index + nslots;
-> -	else
-> -		mem->index = 0;
->  	mem->used += nslots;
->  
->  	spin_unlock_irqrestore(&mem->lock, flags);
-> @@ -613,6 +591,7 @@ static void swiotlb_release_slots(struct device *dev, phys_addr_t tlb_addr)
->  		mem->slots[i].list = ++count;
->  		mem->slots[i].orig_addr = INVALID_PHYS_ADDR;
->  		mem->slots[i].alloc_size = 0;
-> +		list_add(&mem->slots[i].node, &mem->free_slots);
->  	}
->  
->  	/*
-> -- 
-> 2.25.1
-> 
+	-Mike
