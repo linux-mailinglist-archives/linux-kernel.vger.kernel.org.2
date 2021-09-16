@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CB9F40DF5D
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:09:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C48840E670
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:30:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236214AbhIPQJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:09:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45880 "EHLO mail.kernel.org"
+        id S245590AbhIPRVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:21:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37020 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232046AbhIPQGe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:06:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 96BBB6124B;
-        Thu, 16 Sep 2021 16:05:13 +0000 (UTC)
+        id S1345449AbhIPRHK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:07:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6804061401;
+        Thu, 16 Sep 2021 16:35:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808314;
-        bh=ag+uAeWKPVFNvafpIGu/c0r020QZZsSQcstWyrND3a0=;
+        s=korg; t=1631810158;
+        bh=3YzuJpnFC6++lS73Cjev2j2VE/KDl8KjmZAwuijIgWQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kMjRJYoX3x1upYWDVcGgDJYkhnfscFHikN72FiM2P4gc1VADMgwTVfHoXY/heBw2R
-         +3Sza1LS2+FrsOwPnyF4BfRJiYgGdaUpNDVSk6xmQQJ1ONBzJXQgGanjWNIIjcrjsu
-         vUBrXLhDTW1Us4WyxGzRqGk0krkWpi7UPr3eTJwc=
+        b=ZgrExLQPe+qBCZmlRA2/uAGY/VXbv3T7d0tiO8/Jd+6iSq6X37Znr5aA+mUss7n6a
+         V5un6TK5JCe/MiWai3CaH4wwcJpwytoRtiCsO5aaxnPvUOJbnPeHJYI/i4/kyNWa07
+         HaNE/CVIS6xGkv0nhi26Po0TgOXiqiEDfa1hnVrU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kate Hsuan <hpa@redhat.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.10 043/306] libata: add ATA_HORKAGE_NO_NCQ_TRIM for Samsung 860 and 870 SSDs
+        stable@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Steve Capper <steve.capper@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Subject: [PATCH 5.14 039/432] arm64: head: avoid over-mapping in map_memory
 Date:   Thu, 16 Sep 2021 17:56:28 +0200
-Message-Id: <20210916155755.412749543@linuxfoundation.org>
+Message-Id: <20210916155812.144477991@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,50 +43,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Mark Rutland <mark.rutland@arm.com>
 
-commit 8a6430ab9c9c87cb64c512e505e8690bbaee190b upstream.
+commit 90268574a3e8a6b883bd802d702a2738577e1006 upstream.
 
-Commit ca6bfcb2f6d9 ("libata: Enable queued TRIM for Samsung SSD 860")
-limited the existing ATA_HORKAGE_NO_NCQ_TRIM quirk from "Samsung SSD 8*",
-covering all Samsung 800 series SSDs, to only apply to "Samsung SSD 840*"
-and "Samsung SSD 850*" series based on information from Samsung.
+The `compute_indices` and `populate_entries` macros operate on inclusive
+bounds, and thus the `map_memory` macro which uses them also operates
+on inclusive bounds.
 
-But there is a large number of users which is still reporting issues
-with the Samsung 860 and 870 SSDs combined with Intel, ASmedia or
-Marvell SATA controllers and all reporters also report these problems
-going away when disabling queued trims.
+We pass `_end` and `_idmap_text_end` to `map_memory`, but these are
+exclusive bounds, and if one of these is sufficiently aligned (as a
+result of kernel configuration, physical placement, and KASLR), then:
 
-Note that with AMD SATA controllers users are reporting even worse
-issues and only completely disabling NCQ helps there, this will be
-addressed in a separate patch.
+* In `compute_indices`, the computed `iend` will be in the page/block *after*
+  the final byte of the intended mapping.
 
-Fixes: ca6bfcb2f6d9 ("libata: Enable queued TRIM for Samsung SSD 860")
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=203475
-Cc: stable@vger.kernel.org
-Cc: Kate Hsuan <hpa@redhat.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Reviewed-by: Damien Le Moal <damien.lemoal@wdc.com>
-Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
-Link: https://lore.kernel.org/r/20210823095220.30157-1-hdegoede@redhat.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+* In `populate_entries`, an unnecessary entry will be created at the end
+  of each level of table. At the leaf level, this entry will map up to
+  SWAPPER_BLOCK_SIZE bytes of physical addresses that we did not intend
+  to map.
+
+As we may map up to SWAPPER_BLOCK_SIZE bytes more than intended, we may
+violate the boot protocol and map physical address past the 2MiB-aligned
+end address we are permitted to map. As we map these with Normal memory
+attributes, this may result in further problems depending on what these
+physical addresses correspond to.
+
+The final entry at each level may require an additional table at that
+level. As EARLY_ENTRIES() calculates an inclusive bound, we allocate
+enough memory for this.
+
+Avoid the extraneous mapping by having map_memory convert the exclusive
+end address to an inclusive end address by subtracting one, and do
+likewise in EARLY_ENTRIES() when calculating the number of required
+tables. For clarity, comments are updated to more clearly document which
+boundaries the macros operate on.  For consistency with the other
+macros, the comments in map_memory are also updated to describe `vstart`
+and `vend` as virtual addresses.
+
+Fixes: 0370b31e4845 ("arm64: Extend early page table code to allow for larger kernels")
+Cc: <stable@vger.kernel.org> # 4.16.x
+Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Cc: Steve Capper <steve.capper@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Acked-by: Will Deacon <will@kernel.org>
+Link: https://lore.kernel.org/r/20210823101253.55567-1-mark.rutland@arm.com
+Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/ata/libata-core.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ arch/arm64/include/asm/kernel-pgtable.h |    4 ++--
+ arch/arm64/kernel/head.S                |   11 ++++++-----
+ 2 files changed, 8 insertions(+), 7 deletions(-)
 
---- a/drivers/ata/libata-core.c
-+++ b/drivers/ata/libata-core.c
-@@ -3950,6 +3950,10 @@ static const struct ata_blacklist_entry
- 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
- 	{ "Samsung SSD 850*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
- 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
-+	{ "Samsung SSD 860*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
-+						ATA_HORKAGE_ZERO_AFTER_TRIM, },
-+	{ "Samsung SSD 870*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
-+						ATA_HORKAGE_ZERO_AFTER_TRIM, },
- 	{ "FCCT*M500*",			NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
- 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
+--- a/arch/arm64/include/asm/kernel-pgtable.h
++++ b/arch/arm64/include/asm/kernel-pgtable.h
+@@ -65,8 +65,8 @@
+ #define EARLY_KASLR	(0)
+ #endif
  
+-#define EARLY_ENTRIES(vstart, vend, shift) (((vend) >> (shift)) \
+-					- ((vstart) >> (shift)) + 1 + EARLY_KASLR)
++#define EARLY_ENTRIES(vstart, vend, shift) \
++	((((vend) - 1) >> (shift)) - ((vstart) >> (shift)) + 1 + EARLY_KASLR)
+ 
+ #define EARLY_PGDS(vstart, vend) (EARLY_ENTRIES(vstart, vend, PGDIR_SHIFT))
+ 
+--- a/arch/arm64/kernel/head.S
++++ b/arch/arm64/kernel/head.S
+@@ -177,7 +177,7 @@ SYM_CODE_END(preserve_boot_args)
+  * to be composed of multiple pages. (This effectively scales the end index).
+  *
+  *	vstart:	virtual address of start of range
+- *	vend:	virtual address of end of range
++ *	vend:	virtual address of end of range - we map [vstart, vend]
+  *	shift:	shift used to transform virtual address into index
+  *	ptrs:	number of entries in page table
+  *	istart:	index in table corresponding to vstart
+@@ -214,17 +214,18 @@ SYM_CODE_END(preserve_boot_args)
+  *
+  *	tbl:	location of page table
+  *	rtbl:	address to be used for first level page table entry (typically tbl + PAGE_SIZE)
+- *	vstart:	start address to map
+- *	vend:	end address to map - we map [vstart, vend]
++ *	vstart:	virtual address of start of range
++ *	vend:	virtual address of end of range - we map [vstart, vend - 1]
+  *	flags:	flags to use to map last level entries
+  *	phys:	physical address corresponding to vstart - physical memory is contiguous
+  *	pgds:	the number of pgd entries
+  *
+  * Temporaries:	istart, iend, tmp, count, sv - these need to be different registers
+- * Preserves:	vstart, vend, flags
+- * Corrupts:	tbl, rtbl, istart, iend, tmp, count, sv
++ * Preserves:	vstart, flags
++ * Corrupts:	tbl, rtbl, vend, istart, iend, tmp, count, sv
+  */
+ 	.macro map_memory, tbl, rtbl, vstart, vend, flags, phys, pgds, istart, iend, tmp, count, sv
++	sub \vend, \vend, #1
+ 	add \rtbl, \tbl, #PAGE_SIZE
+ 	mov \sv, \rtbl
+ 	mov \count, #0
 
 
