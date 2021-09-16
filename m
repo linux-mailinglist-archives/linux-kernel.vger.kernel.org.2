@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D67AE40E683
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:30:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6A0140E67C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:30:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343798AbhIPRWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:22:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39800 "EHLO mail.kernel.org"
+        id S1344245AbhIPRV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:21:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39812 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350545AbhIPRN4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:13:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7BD62619F7;
-        Thu, 16 Sep 2021 16:39:09 +0000 (UTC)
+        id S1350526AbhIPRN5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:13:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 19A66619FA;
+        Thu, 16 Sep 2021 16:39:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810350;
-        bh=kDUuPOfXsWSJHGRpIB1p9brj1swMW//9eNzdQHy8r0k=;
+        s=korg; t=1631810352;
+        bh=812aiSYfVNZXsO980ECgTbBYBDHnA8NEVpQikyjAFrw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kbMxxRk9BPJ49IdQVpyW9t+ajU5gu63HlJF/Bxlhz+CyY8BUjrQzYnv8LnPLqTR0J
-         ozmEsz5URbnpKpYgFEg/3GYpCxUTNBQ7CTzRAAhBYn93a8I6YFnRopatbEZAJHLJF5
-         3RKhC3sIecAfKSE6ye3CgcMJ2MaHJJsvbLjNSYdc=
+        b=zhSN8U/OIodJck6JZymkgOId94/9sNBV72k20lNIg8nCXz1qDWSOD6CuYBc9DTT6Z
+         UKF0MmJYUk3IkQfd1HP/duLt72GQ9gDz8tVH8wwPllO2ZHyhcKCRsoyDldSvROi18H
+         aKt7KaARti0rIBUzUjCFkROZM+m57M0Ev9/wJR8g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anna Schumaker <Anna.Schumaker@Netapp.com>,
+        stable@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
+        Colin Ian King <colin.king@canonical.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 109/432] sunrpc: Fix return value of get_srcport()
-Date:   Thu, 16 Sep 2021 17:57:38 +0200
-Message-Id: <20210916155814.466355096@linuxfoundation.org>
+Subject: [PATCH 5.14 110/432] scsi: ufs: Fix unsigned int compared with less than zero
+Date:   Thu, 16 Sep 2021 17:57:39 +0200
+Message-Id: <20210916155814.503823240@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
 References: <20210916155810.813340753@linuxfoundation.org>
@@ -39,34 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anna Schumaker <Anna.Schumaker@Netapp.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit 5d46dd04cb68771f77ba66dbf6fd323a4a2ce00d ]
+[ Upstream commit a5402cdcc2a925835db89ea336909b2b724189df ]
 
-Since bc1c56e9bbe9 transport->srcport may by unset, causing
-get_srcport() to return 0 when called. Fix this by querying the port
-from the underlying socket instead of the transport.
+Variable 'tag' is currently an unsigned int and is being compared to less
+than zero, this check is always false. Fix this by making 'tag' an int.
 
-Fixes: bc1c56e9bbe9 (SUNRPC: prevent port reuse on transports which don't request it)
-Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
+Link: https://lore.kernel.org/r/20210806144301.19864-1-colin.king@canonical.com
+Fixes: 4728ab4a8e64 ("scsi: ufs: Remove ufshcd_valid_tag()")
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Addresses-Coverity: ("Macro compares unsigned to 0")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sunrpc/xprtsock.c | 2 +-
+ drivers/scsi/ufs/ufshcd.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/sunrpc/xprtsock.c b/net/sunrpc/xprtsock.c
-index e573dcecdd66..02b071dbdd22 100644
---- a/net/sunrpc/xprtsock.c
-+++ b/net/sunrpc/xprtsock.c
-@@ -1656,7 +1656,7 @@ static int xs_get_srcport(struct sock_xprt *transport)
- unsigned short get_srcport(struct rpc_xprt *xprt)
- {
- 	struct sock_xprt *sock = container_of(xprt, struct sock_xprt, xprt);
--	return sock->srcport;
-+	return xs_sock_getport(sock->sock);
- }
- EXPORT_SYMBOL(get_srcport);
- 
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 1708d7ced527..8275127749d2 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -6969,7 +6969,7 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
+ 	struct Scsi_Host *host;
+ 	struct ufs_hba *hba;
+ 	unsigned long flags;
+-	unsigned int tag;
++	int tag;
+ 	int err = FAILED;
+ 	struct ufshcd_lrb *lrbp;
+ 	u32 reg;
 -- 
 2.30.2
 
