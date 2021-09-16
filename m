@@ -2,54 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD26F40DA97
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 15:03:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00A8E40DA9A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 15:04:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239824AbhIPNFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 09:05:07 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:44110 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239126AbhIPNFE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 09:05:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=8B+OSG6AvJiUOcpkuo1so2J3WnuBg527X2nenttNjoQ=; b=tbWQib1AOzPx+m/HjVbjSuSgUi
-        Qxlvem8kHDl1TyqR2BDJ3v0G+DT9TAPKn6aLSsbMZjzTgYgt+MAVvaGZwt/ag13NgTiwnZiE+UMoU
-        2u52dsesIOKGU8Xl3sEv/8ymrNU61aUbYQe8+6R3J+c/eWXM+mF3AEPSmmwmxxn76678=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mQr3C-006uNJ-0a; Thu, 16 Sep 2021 15:03:38 +0200
-Date:   Thu, 16 Sep 2021 15:03:37 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Claudiu Beznea <claudiu.beznea@microchip.com>
-Cc:     nicolas.ferre@microchip.com, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] net: macb: add support for mii on rgmii
-Message-ID: <YUNAqSz3sUPqoGx6@lunn.ch>
-References: <20210915064721.5530-1-claudiu.beznea@microchip.com>
- <20210915064721.5530-4-claudiu.beznea@microchip.com>
+        id S239888AbhIPNFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 09:05:14 -0400
+Received: from mail-il1-f180.google.com ([209.85.166.180]:38616 "EHLO
+        mail-il1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239847AbhIPNFN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 09:05:13 -0400
+Received: by mail-il1-f180.google.com with SMTP id q14so6548661ils.5;
+        Thu, 16 Sep 2021 06:03:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Xm9Xe5gjMezORsww/slJFTPNqAjcAangvFqeNrb/6gY=;
+        b=Y3NJZwP80slc3NFLFUHlhb+qHl4kAFpKY80Q+B1bLjcRXTcgzjHz17L28df6kVSgVh
+         +EnOa9ncdQmiptASKYOGCfjbic7+doQcNonykUBfobA9pUytmFaGIW4uGO/RjRmQFXbf
+         iFXIf3VpfQiqJ4TwL5D9xSzlXKmK5xsD1djOBTOPeiShi81NuKnB4vwXiHIHkjPCmEGy
+         ZG9V056i51c3yYG/3+9w+EBrKfdNC3LplE/Y3feC9dK0hqfsHyYoi4EsV2xOISYP3+QB
+         2Zdz+fKXkPlN9EqqtbjeOFmLmDFVccbOs95WsUwgTkS43Gu+XWc0MzOOZrxn/3nj3UJT
+         cIjQ==
+X-Gm-Message-State: AOAM531RlGMPh5jocWSQLcBwJyAmAop0sH2FBelznaOOMVLs2g+Z+xnD
+        RLtVTQGLDoMYA+lXxrED6Ehy72L1nw==
+X-Google-Smtp-Source: ABdhPJzvAmFQ5t5GjSdvsOIzuFbTAjayjg+B9Q7VZG0D4kQxYJb6vlyLOVLr5Mu2OjhHrbTrX4w2lw==
+X-Received: by 2002:a92:c211:: with SMTP id j17mr3908832ilo.57.1631797432572;
+        Thu, 16 Sep 2021 06:03:52 -0700 (PDT)
+Received: from robh.at.kernel.org (96-84-70-89-static.hfc.comcastbusiness.net. [96.84.70.89])
+        by smtp.gmail.com with ESMTPSA id y11sm1733089ilh.73.2021.09.16.06.03.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Sep 2021 06:03:52 -0700 (PDT)
+Received: (nullmailer pid 1177697 invoked by uid 1000);
+        Thu, 16 Sep 2021 13:03:51 -0000
+Date:   Thu, 16 Sep 2021 08:03:51 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Chunyan Zhang <zhang.lyra@gmail.com>
+Cc:     linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        Stephen Boyd <sboyd@kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>
+Subject: Re: [PATCH v2 1/4] dt-bindings: mfd: sprd: Add bindings for ums512
+ global registers
+Message-ID: <YUNAtwXJzQy1cQgR@robh.at.kernel.org>
+References: <20210916084714.311048-1-zhang.lyra@gmail.com>
+ <20210916084714.311048-2-zhang.lyra@gmail.com>
+ <1631794913.500942.1119419.nullmailer@robh.at.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210915064721.5530-4-claudiu.beznea@microchip.com>
+In-Reply-To: <1631794913.500942.1119419.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 09:47:21AM +0300, Claudiu Beznea wrote:
-> Cadence IP has option to enable MII support on RGMII interface. This
-> could be selected though bit 28 of network control register. This option
-> is not enabled on all the IP versions thus add a software capability to
-> be selected by the proper implementation of this IP.
+On Thu, Sep 16, 2021 at 07:21:53AM -0500, Rob Herring wrote:
+> On Thu, 16 Sep 2021 16:47:11 +0800, Chunyan Zhang wrote:
+> > From: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> > 
+> > Add bindings for Unisoc system global register which provide register map
+> > for clocks.
+> > 
+> > Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> > ---
+> >  .../bindings/mfd/sprd,ums512-glbreg.yaml      | 67 +++++++++++++++++++
+> >  1 file changed, 67 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/mfd/sprd,ums512-glbreg.yaml
+> > 
+> 
+> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+> 
+> yamllint warnings/errors:
+> 
+> dtschema/dtc warnings/errors:
+> Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/clock/sprd,ums512-clk.yaml'
+> xargs: dt-doc-validate: exited with status 255; aborting
+> make[1]: *** Deleting file 'Documentation/devicetree/bindings/mfd/sprd,ums512-glbreg.example.dt.yaml'
+> Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/clock/sprd,ums512-clk.yaml'
+> make[1]: *** [scripts/Makefile.lib:385: Documentation/devicetree/bindings/mfd/sprd,ums512-glbreg.example.dt.yaml] Error 255
+> make[1]: *** Waiting for unfinished jobs....
+> make: *** [Makefile:1441: dt_binding_check] Error 2
 
-Hi Claudiu
-
-You are adding a feature without a user. That is generally not
-accepted. Could you please also extend one of the macb_config structs
-to make use of this?
-
-Thanks
-	Andrew
+Please reorder your patches to avoid this.
