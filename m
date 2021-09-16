@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6734640E729
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:32:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1EF540E0FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:28:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353172AbhIPRaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:30:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44128 "EHLO mail.kernel.org"
+        id S240910AbhIPQ0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:26:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55356 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352147AbhIPRUo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:20:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 078E66126A;
-        Thu, 16 Sep 2021 16:42:13 +0000 (UTC)
+        id S236296AbhIPQSa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:18:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 916A0613AB;
+        Thu, 16 Sep 2021 16:12:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810534;
-        bh=h/J+lRErKmMj5N1ByHUQ1j907SmpW/jRj4xMf1urAno=;
+        s=korg; t=1631808767;
+        bh=2mOwxmgFZCtHQ0+2X8MGSLYTgNI7A/inLgvNKnDqod0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Qg5QJDSV4GfTXqR7WJIuuafYHgSj6djaMFbxNNtVeOe+klfQtOfaVed+ClBHt4qyY
-         1T+ScQw2rEty0GvTwGeDvasfwSx5Y0kPgfRtUKkZdYVeooIQILv6xpcl9/bjQGZ2c7
-         zi/rYq3XWyDbApxC98yJCPNmTnbW4i2o14iottGs=
+        b=vZm2gJobH6O+h/IqAHpilAJNYsPJXs0lLK7Ya8+dIxFrhsWfXFTnMxJDr17zdMOzJ
+         X9MHkqjhN8mcSMtGHaorcIIZWpILY0EwtYB8Qj1TdfbarYvCa8lCBHsmUH9NGMvoiK
+         NFdw/f93JsP7Yvp49VTVxmT0hqPbJiuUBN60RqCA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xin Long <lucien.xin@gmail.com>,
-        Jon Maloy <jmaloy@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Krzysztof=20Ha=C5=82asa?= <khalasa@piap.pl>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 177/432] tipc: keep the skb in rcv queue until the whole data is read
-Date:   Thu, 16 Sep 2021 17:58:46 +0200
-Message-Id: <20210916155816.740247969@linuxfoundation.org>
+Subject: [PATCH 5.10 182/306] media: TDA1997x: fix tda1997x_query_dv_timings() return value
+Date:   Thu, 16 Sep 2021 17:58:47 +0200
+Message-Id: <20210916155800.280958852@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,106 +42,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Krzysztof Hałasa <khalasa@piap.pl>
 
-[ Upstream commit f4919ff59c2828064b4156e3c3600a169909bcf4 ]
+[ Upstream commit 7dee1030871a48d4f3c5a74227a4b4188463479a ]
 
-Currently, when userspace reads a datagram with a buffer that is
-smaller than this datagram, the data will be truncated and only
-part of it can be received by users. It doesn't seem right that
-users don't know the datagram size and have to use a huge buffer
-to read it to avoid the truncation.
+Correctly propagate the tda1997x_detect_std error value.
 
-This patch to fix it by keeping the skb in rcv queue until the
-whole data is read by users. Only the last msg of the datagram
-will be marked with MSG_EOR, just as TCP/SCTP does.
-
-Note that this will work as above only when MSG_EOR is set in the
-flags parameter of recvmsg(), so that it won't break any old user
-applications.
-
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Acked-by: Jon Maloy <jmaloy@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Krzysztof Hałasa <khalasa@piap.pl>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/tipc/socket.c | 36 +++++++++++++++++++++++++++---------
- 1 file changed, 27 insertions(+), 9 deletions(-)
+ drivers/media/i2c/tda1997x.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/net/tipc/socket.c b/net/tipc/socket.c
-index 8754bd885169..a155cfaf01f2 100644
---- a/net/tipc/socket.c
-+++ b/net/tipc/socket.c
-@@ -1886,6 +1886,7 @@ static int tipc_recvmsg(struct socket *sock, struct msghdr *m,
- 	bool connected = !tipc_sk_type_connectionless(sk);
- 	struct tipc_sock *tsk = tipc_sk(sk);
- 	int rc, err, hlen, dlen, copy;
-+	struct tipc_skb_cb *skb_cb;
- 	struct sk_buff_head xmitq;
- 	struct tipc_msg *hdr;
- 	struct sk_buff *skb;
-@@ -1909,6 +1910,7 @@ static int tipc_recvmsg(struct socket *sock, struct msghdr *m,
- 		if (unlikely(rc))
- 			goto exit;
- 		skb = skb_peek(&sk->sk_receive_queue);
-+		skb_cb = TIPC_SKB_CB(skb);
- 		hdr = buf_msg(skb);
- 		dlen = msg_data_sz(hdr);
- 		hlen = msg_hdr_sz(hdr);
-@@ -1928,18 +1930,33 @@ static int tipc_recvmsg(struct socket *sock, struct msghdr *m,
+diff --git a/drivers/media/i2c/tda1997x.c b/drivers/media/i2c/tda1997x.c
+index 9554c8348c02..17cc69c3227f 100644
+--- a/drivers/media/i2c/tda1997x.c
++++ b/drivers/media/i2c/tda1997x.c
+@@ -1695,14 +1695,15 @@ static int tda1997x_query_dv_timings(struct v4l2_subdev *sd,
+ 				     struct v4l2_dv_timings *timings)
+ {
+ 	struct tda1997x_state *state = to_state(sd);
++	int ret;
  
- 	/* Capture data if non-error msg, otherwise just set return value */
- 	if (likely(!err)) {
--		copy = min_t(int, dlen, buflen);
--		if (unlikely(copy != dlen))
--			m->msg_flags |= MSG_TRUNC;
--		rc = skb_copy_datagram_msg(skb, hlen, m, copy);
-+		int offset = skb_cb->bytes_read;
-+
-+		copy = min_t(int, dlen - offset, buflen);
-+		rc = skb_copy_datagram_msg(skb, hlen + offset, m, copy);
-+		if (unlikely(rc))
-+			goto exit;
-+		if (unlikely(offset + copy < dlen)) {
-+			if (flags & MSG_EOR) {
-+				if (!(flags & MSG_PEEK))
-+					skb_cb->bytes_read = offset + copy;
-+			} else {
-+				m->msg_flags |= MSG_TRUNC;
-+				skb_cb->bytes_read = 0;
-+			}
-+		} else {
-+			if (flags & MSG_EOR)
-+				m->msg_flags |= MSG_EOR;
-+			skb_cb->bytes_read = 0;
-+		}
- 	} else {
- 		copy = 0;
- 		rc = 0;
--		if (err != TIPC_CONN_SHUTDOWN && connected && !m->msg_control)
-+		if (err != TIPC_CONN_SHUTDOWN && connected && !m->msg_control) {
- 			rc = -ECONNRESET;
-+			goto exit;
-+		}
- 	}
--	if (unlikely(rc))
--		goto exit;
+ 	v4l_dbg(1, debug, state->client, "%s\n", __func__);
+ 	memset(timings, 0, sizeof(struct v4l2_dv_timings));
+ 	mutex_lock(&state->lock);
+-	tda1997x_detect_std(state, timings);
++	ret = tda1997x_detect_std(state, timings);
+ 	mutex_unlock(&state->lock);
  
- 	/* Mark message as group event if applicable */
- 	if (unlikely(grp_evt)) {
-@@ -1962,9 +1979,10 @@ static int tipc_recvmsg(struct socket *sock, struct msghdr *m,
- 		tipc_node_distr_xmit(sock_net(sk), &xmitq);
- 	}
+-	return 0;
++	return ret;
+ }
  
--	tsk_advance_rx_queue(sk);
-+	if (!skb_cb->bytes_read)
-+		tsk_advance_rx_queue(sk);
- 
--	if (likely(!connected))
-+	if (likely(!connected) || skb_cb->bytes_read)
- 		goto exit;
- 
- 	/* Send connection flow control advertisement when applicable */
+ static const struct v4l2_subdev_video_ops tda1997x_video_ops = {
 -- 
 2.30.2
 
