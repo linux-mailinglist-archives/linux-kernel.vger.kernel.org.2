@@ -2,35 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5C0E40E587
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:27:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5657440DEFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:04:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243180AbhIPRMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:12:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34032 "EHLO mail.kernel.org"
+        id S240627AbhIPQFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:05:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44584 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349199AbhIPRDv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:03:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B142061B22;
-        Thu, 16 Sep 2021 16:34:41 +0000 (UTC)
+        id S240533AbhIPQF3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:05:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E4DE461250;
+        Thu, 16 Sep 2021 16:04:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810082;
-        bh=QL4aZuOEJkfchcacfa6x3lAC/IoaWcbnIqERGifXzk0=;
+        s=korg; t=1631808248;
+        bh=9iClfcn2FvwaNTaQw0Bk6+vBHtIgyJFO+KgfvpvKnfs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G7x94EI+Te4DnwuLZv8SsciOZ4ZMq2SO2Zk6XSkX9cbs/YztQV7BxunEZjJ6DRjNU
-         1uGvvM/lF1AsfH9gmJ/LRYzW5ndPeTSaQN+NdhOVvmAGobe59o+6tPnvfVjcvZy3vC
-         4pwg/wq351kq/WISIL5JzKpke4s7qFbv1TaT8dWQ=
+        b=IHM0ZYK0VFfD2hEzfeTOHxHVKderwdgdFaN4IxALXmMoeRGdHRiZd2zPxUO6oToCI
+         XshWFx7TwsLWTMEepJLpTQ/fdJCAD5c1s6CkjqJRj9hn8Lgj+kmN8pOy5s9xvV7grN
+         ZaprO3LSz6LorPJwWQGVDtwYu0VgpDjvbGwLO5us=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.14 011/432] btrfs: reduce the preemptive flushing threshold to 90%
-Date:   Thu, 16 Sep 2021 17:56:00 +0200
-Message-Id: <20210916155811.192987085@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Tzvetomir Stoyanov" <tz.stoyanov@gmail.com>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kselftest@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 5.10 016/306] selftests/ftrace: Fix requirement check of README file
+Date:   Thu, 16 Sep 2021 17:56:01 +0200
+Message-Id: <20210916155754.482921785@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,39 +45,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-commit 93c60b17f2b5fca2c5931d7944788d1ef5f25528 upstream.
+commit 210f9df02611cbe641ced3239122b270fd907d86 upstream.
 
-The preemptive flushing code was added in order to avoid needing to
-synchronously wait for ENOSPC flushing to recover space.  Once we're
-almost full however we can essentially flush constantly.  We were using
-98% as a threshold to determine if we were simply full, however in
-practice this is a really high bar to hit.  For example reports of
-systems running into this problem had around 94% usage and thus
-continued to flush.  Fix this by lowering the threshold to 90%, which is
-a more sane value, especially for smaller file systems.
+The selftest for ftrace checks some features by checking if the README has
+text that states the feature is supported by that kernel. Unfortunately,
+this check gives false positives because it many not be checked if there's
+spaces in the string to check. This is due to the compare between the
+required variable with the ":README" string stripped, because neither has
+quotes around them.
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=212185
-CC: stable@vger.kernel.org # 5.12+
-Fixes: 576fa34830af ("btrfs: improve preemptive background space flushing")
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Link: https://lkml.kernel.org/r/20210820204742.087177341@goodmis.org
+
+Cc: "Tzvetomir Stoyanov" <tz.stoyanov@gmail.com>
+Cc: Tom Zanussi <zanussi@kernel.org>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: Shuah Khan <skhan@linuxfoundation.org>
+Cc: linux-kselftest@vger.kernel.org
+Cc: stable@vger.kernel.org
+Fixes: 1b8eec510ba64 ("selftests/ftrace: Support ":README" suffix for requires")
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/btrfs/space-info.c |    2 +-
+ tools/testing/selftests/ftrace/test.d/functions |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/btrfs/space-info.c
-+++ b/fs/btrfs/space-info.c
-@@ -733,7 +733,7 @@ static bool need_preemptive_reclaim(stru
- {
- 	u64 global_rsv_size = fs_info->global_block_rsv.reserved;
- 	u64 ordered, delalloc;
--	u64 thresh = div_factor_fine(space_info->total_bytes, 98);
-+	u64 thresh = div_factor_fine(space_info->total_bytes, 90);
- 	u64 used;
- 
- 	/* If we're just plain full then async reclaim just slows us down. */
+--- a/tools/testing/selftests/ftrace/test.d/functions
++++ b/tools/testing/selftests/ftrace/test.d/functions
+@@ -115,7 +115,7 @@ check_requires() { # Check required file
+                 echo "Required tracer $t is not configured."
+                 exit_unsupported
+             fi
+-        elif [ $r != $i ]; then
++        elif [ "$r" != "$i" ]; then
+             if ! grep -Fq "$r" README ; then
+                 echo "Required feature pattern \"$r\" is not in README."
+                 exit_unsupported
 
 
