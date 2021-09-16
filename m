@@ -2,135 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCBC640D904
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 13:45:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09C6940D909
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 13:47:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238191AbhIPLq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 07:46:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39810 "EHLO mail.kernel.org"
+        id S237400AbhIPLso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 07:48:44 -0400
+Received: from mga17.intel.com ([192.55.52.151]:48176 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237952AbhIPLq1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 07:46:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A91C560F3A;
-        Thu, 16 Sep 2021 11:45:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631792707;
-        bh=AJ1KkjnvIE+QcVe8giadY2v9LfVNqivpphrKWxtOCnw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QTbMlY1PIzEPqsf1ldf7QdzysqvgTUXvKc9nxPHvNHWJuB0ekHhHebu6SBa5mJffF
-         iUhsKq9Oip5/bdQnUz7zH7edRF1vEs34y1CowPCcHQf4pghRdJ0KuKupLKQYg30s5W
-         7dHrBZ2b5zfurxrmG+FMI5BSX+bkolRUWmcW3Ki4=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, stable@vger.kernel.org
-Cc:     lwn@lwn.net, jslaby@suse.cz,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: Linux 5.4.147
-Date:   Thu, 16 Sep 2021 13:44:56 +0200
-Message-Id: <163179268620542@kroah.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <16317926868288@kroah.com>
-References: <16317926868288@kroah.com>
+        id S233746AbhIPLsm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 07:48:42 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10108"; a="202700800"
+X-IronPort-AV: E=Sophos;i="5.85,298,1624345200"; 
+   d="scan'208";a="202700800"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2021 04:47:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,298,1624345200"; 
+   d="scan'208";a="610617645"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 16 Sep 2021 04:47:19 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 16 Sep 2021 14:47:18 +0300
+Date:   Thu, 16 Sep 2021 14:47:18 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org
+Subject: Re: [PATCH v3 11/30] ABI: sysfs-class-typec: fix a typo on a What
+ field
+Message-ID: <YUMuxlSEvJbEJJZl@kuha.fi.intel.com>
+References: <cover.1631782432.git.mchehab+huawei@kernel.org>
+ <bff0e7c137fb4f41ac0b2ed9c5a21c0948203f15.1631782432.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bff0e7c137fb4f41ac0b2ed9c5a21c0948203f15.1631782432.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-diff --git a/Makefile b/Makefile
-index 48d0c03acfc5..98227dae3494 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- VERSION = 5
- PATCHLEVEL = 4
--SUBLEVEL = 146
-+SUBLEVEL = 147
- EXTRAVERSION =
- NAME = Kleptomaniac Octopus
- 
-diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-index bc3ab98855cf..25e81b1a59a5 100644
---- a/drivers/block/nbd.c
-+++ b/drivers/block/nbd.c
-@@ -1744,17 +1744,7 @@ static int nbd_dev_add(int index)
- 	refcount_set(&nbd->refs, 1);
- 	INIT_LIST_HEAD(&nbd->list);
- 	disk->major = NBD_MAJOR;
--
--	/* Too big first_minor can cause duplicate creation of
--	 * sysfs files/links, since first_minor will be truncated to
--	 * byte in __device_add_disk().
--	 */
- 	disk->first_minor = index << part_shift;
--	if (disk->first_minor > 0xff) {
--		err = -EINVAL;
--		goto out_free_idr;
--	}
--
- 	disk->fops = &nbd_fops;
- 	disk->private_data = nbd;
- 	sprintf(disk->disk_name, "nbd%d", index);
-diff --git a/include/linux/time64.h b/include/linux/time64.h
-index f6059c505986..5eab3f263518 100644
---- a/include/linux/time64.h
-+++ b/include/linux/time64.h
-@@ -33,9 +33,7 @@ struct itimerspec64 {
- #define TIME64_MIN			(-TIME64_MAX - 1)
- 
- #define KTIME_MAX			((s64)~((u64)1 << 63))
--#define KTIME_MIN			(-KTIME_MAX - 1)
- #define KTIME_SEC_MAX			(KTIME_MAX / NSEC_PER_SEC)
--#define KTIME_SEC_MIN			(KTIME_MIN / NSEC_PER_SEC)
- 
- /*
-  * Limits for settimeofday():
-@@ -134,13 +132,10 @@ static inline bool timespec64_valid_settod(const struct timespec64 *ts)
-  */
- static inline s64 timespec64_to_ns(const struct timespec64 *ts)
- {
--	/* Prevent multiplication overflow / underflow */
--	if (ts->tv_sec >= KTIME_SEC_MAX)
-+	/* Prevent multiplication overflow */
-+	if ((unsigned long long)ts->tv_sec >= KTIME_SEC_MAX)
- 		return KTIME_MAX;
- 
--	if (ts->tv_sec <= KTIME_SEC_MIN)
--		return KTIME_MIN;
--
- 	return ((s64) ts->tv_sec * NSEC_PER_SEC) + ts->tv_nsec;
- }
- 
-diff --git a/kernel/time/posix-cpu-timers.c b/kernel/time/posix-cpu-timers.c
-index 30e061b210b7..eacb0ca30193 100644
---- a/kernel/time/posix-cpu-timers.c
-+++ b/kernel/time/posix-cpu-timers.c
-@@ -1201,6 +1201,8 @@ void set_process_cpu_timer(struct task_struct *tsk, unsigned int clkid,
- 			}
- 		}
- 
-+		if (!*newval)
-+			return;
- 		*newval += now;
- 	}
- 
-diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
-index bdd330527cfa..c50e3e8afbd3 100644
---- a/net/bluetooth/hci_core.c
-+++ b/net/bluetooth/hci_core.c
-@@ -1691,14 +1691,6 @@ int hci_dev_do_close(struct hci_dev *hdev)
- 	hci_request_cancel_all(hdev);
- 	hci_req_sync_lock(hdev);
- 
--	if (!hci_dev_test_flag(hdev, HCI_UNREGISTER) &&
--	    !hci_dev_test_flag(hdev, HCI_USER_CHANNEL) &&
--	    test_bit(HCI_UP, &hdev->flags)) {
--		/* Execute vendor specific shutdown routine */
--		if (hdev->shutdown)
--			hdev->shutdown(hdev);
--	}
--
- 	if (!test_and_clear_bit(HCI_UP, &hdev->flags)) {
- 		cancel_delayed_work_sync(&hdev->cmd_timer);
- 		hci_req_sync_unlock(hdev);
+On Thu, Sep 16, 2021 at 10:59:38AM +0200, Mauro Carvalho Chehab wrote:
+> This what:
+> 	/sys/class/typec/<port>-partner>/identity/
+> 
+> Contains an extra ">" character. Remove it.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+
+> ---
+>  Documentation/ABI/testing/sysfs-class-typec | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-class-typec b/Documentation/ABI/testing/sysfs-class-typec
+> index 40122d915ae1..75088ecad202 100644
+> --- a/Documentation/ABI/testing/sysfs-class-typec
+> +++ b/Documentation/ABI/testing/sysfs-class-typec
+> @@ -200,7 +200,7 @@ Description:	USB Power Delivery Specification defines a set of product types
+>  		amc			Alternate Mode Controller
+>  		======================  ==========================
+>  
+> -What:		/sys/class/typec/<port>-partner>/identity/
+> +What:		/sys/class/typec/<port>-partner/identity/
+>  Date:		April 2017
+>  Contact:	Heikki Krogerus <heikki.krogerus@linux.intel.com>
+>  Description:
+> -- 
+> 2.31.1
+
+thanks,
+
+-- 
+heikki
