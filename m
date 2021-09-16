@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2769C40E332
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:19:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6E3140E6A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:31:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343558AbhIPQqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:46:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52388 "EHLO mail.kernel.org"
+        id S1348536AbhIPRXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:23:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41016 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245023AbhIPQkC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:40:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A245B61A0D;
-        Thu, 16 Sep 2021 16:23:32 +0000 (UTC)
+        id S1351291AbhIPRPY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:15:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6357A61B65;
+        Thu, 16 Sep 2021 16:39:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809413;
-        bh=UEgh7KQtnW5lA2hV2j533cGjH0PKuJRYcbQtdhF7p9M=;
+        s=korg; t=1631810387;
+        bh=zc3aboCk0saY7I/sLex5/I6UwQO7I+Kz3RvTDi6mJTE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CEAgid+jTx6VflKmIpgKIyrHnVICLnEGXl9BwSXUieWrDJlIXzoMHO64OfIjx01hT
-         z377WvjZ6sG0ZwNlsSp1wgfuoHBTYTqjT1fhjdiIySVtFvygg8Eh9DLSRQ3JkXOYOm
-         pjeRNkvMVZNFkgH8+SvuIrTNrag00HlMxXau04cY=
+        b=iQoojTiGm+4+fsW+2EAJnoquDlWlwiOrMdRMm7dx4sepl4Gs/JNEUkfcGDRGtNU+Z
+         gQD6l7LEWWTtPoKBUkIQa2zVhgwXM7PrYfsrmTwiXVX3NfT47LArdNdo1WLT3q4JN1
+         2oIWSGC/3OztUPqLnTY/l9u6cpzi45Fx7Y0uVnvQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 113/380] HID: thrustmaster: clean up Makefile and adapt quirks
+        stable@vger.kernel.org, Joel Stanley <joel@jms.id.au>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 121/432] powerpc/config: Renable MTD_PHYSMAP_OF
 Date:   Thu, 16 Sep 2021 17:57:50 +0200
-Message-Id: <20210916155807.876930591@linuxfoundation.org>
+Message-Id: <20210916155814.865924741@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,60 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+From: Joel Stanley <joel@jms.id.au>
 
-[ Upstream commit 462ba66198a4a8ea996028915af10a698086e302 ]
+[ Upstream commit d0e28a6145c3455b69991245e7f6147eb914b34a ]
 
-Commit c49c33637802 ("HID: support for initialization of some Thrustmaster
-wheels") messed up the Makefile and quirks during the refactoring of this
-commit.
+CONFIG_MTD_PHYSMAP_OF is not longer enabled as it depends on
+MTD_PHYSMAP which is not enabled.
 
-Luckily, ./scripts/checkkconfigsymbols.py warns on non-existing configs:
+This is a regression from commit 642b1e8dbed7 ("mtd: maps: Merge
+physmap_of.c into physmap-core.c"), which added the extra dependency.
+Add CONFIG_MTD_PHYSMAP=y so this stays in the config, as Christophe said
+it is useful for build coverage.
 
-HID_TMINIT
-Referencing files: drivers/hid/Makefile, drivers/hid/hid-quirks.c
-
-Following the discussion (see Link), CONFIG_HID_THRUSTMASTER is the
-intended config for CONFIG_HID_TMINIT and the file hid-tminit.c was
-actually added as hid-thrustmaster.c.
-
-So, clean up Makefile and adapt quirks to that refactoring.
-
-Fixes: c49c33637802 ("HID: support for initialization of some Thrustmaster wheels")
-Link: https://lore.kernel.org/linux-input/CAKXUXMx6dByO03f3dX0X5zjvQp0j2AhJBg0vQFDmhZUhtKxRxw@mail.gmail.com/
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Fixes: 642b1e8dbed7 ("mtd: maps: Merge physmap_of.c into physmap-core.c")
+Signed-off-by: Joel Stanley <joel@jms.id.au>
+Acked-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20210817045407.2445664-3-joel@jms.id.au
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/Makefile     | 1 -
- drivers/hid/hid-quirks.c | 2 --
- 2 files changed, 3 deletions(-)
+ arch/powerpc/configs/mpc885_ads_defconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/hid/Makefile b/drivers/hid/Makefile
-index 1ea1a7c0b20f..e29efcb1c040 100644
---- a/drivers/hid/Makefile
-+++ b/drivers/hid/Makefile
-@@ -115,7 +115,6 @@ obj-$(CONFIG_HID_STEELSERIES)	+= hid-steelseries.o
- obj-$(CONFIG_HID_SUNPLUS)	+= hid-sunplus.o
- obj-$(CONFIG_HID_GREENASIA)	+= hid-gaff.o
- obj-$(CONFIG_HID_THRUSTMASTER)	+= hid-tmff.o hid-thrustmaster.o
--obj-$(CONFIG_HID_TMINIT)	+= hid-tminit.o
- obj-$(CONFIG_HID_TIVO)		+= hid-tivo.o
- obj-$(CONFIG_HID_TOPSEED)	+= hid-topseed.o
- obj-$(CONFIG_HID_TWINHAN)	+= hid-twinhan.o
-diff --git a/drivers/hid/hid-quirks.c b/drivers/hid/hid-quirks.c
-index 51b39bda9a9d..2e104682c22b 100644
---- a/drivers/hid/hid-quirks.c
-+++ b/drivers/hid/hid-quirks.c
-@@ -662,8 +662,6 @@ static const struct hid_device_id hid_have_special_driver[] = {
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_THRUSTMASTER, 0xb653) },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_THRUSTMASTER, 0xb654) },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_THRUSTMASTER, 0xb65a) },
--#endif
--#if IS_ENABLED(CONFIG_HID_TMINIT)
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_THRUSTMASTER, 0xb65d) },
- #endif
- #if IS_ENABLED(CONFIG_HID_TIVO)
+diff --git a/arch/powerpc/configs/mpc885_ads_defconfig b/arch/powerpc/configs/mpc885_ads_defconfig
+index 5cd17adf903f..cd08f9ed2c8d 100644
+--- a/arch/powerpc/configs/mpc885_ads_defconfig
++++ b/arch/powerpc/configs/mpc885_ads_defconfig
+@@ -33,6 +33,7 @@ CONFIG_MTD_CFI_GEOMETRY=y
+ # CONFIG_MTD_CFI_I2 is not set
+ CONFIG_MTD_CFI_I4=y
+ CONFIG_MTD_CFI_AMDSTD=y
++CONFIG_MTD_PHYSMAP=y
+ CONFIG_MTD_PHYSMAP_OF=y
+ # CONFIG_BLK_DEV is not set
+ CONFIG_NETDEVICES=y
 -- 
 2.30.2
 
