@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1AC940E6E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:31:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2385C40E0B2
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:27:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347276AbhIPR0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:26:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43516 "EHLO mail.kernel.org"
+        id S241750AbhIPQXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:23:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48902 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350949AbhIPRSA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:18:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D5A5861BA5;
-        Thu, 16 Sep 2021 16:40:54 +0000 (UTC)
+        id S239484AbhIPQNU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:13:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4889A611F2;
+        Thu, 16 Sep 2021 16:09:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810455;
-        bh=l7sCcpz+EikM5+nd93nOW43zOFYmRLpPP3UjL/+xjfo=;
+        s=korg; t=1631808594;
+        bh=zFSR/y0zf3mMjO+hWHcjRXVdXR3DnvExAtTzipWi3QY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H964oy1AiK2MRqK5e2rc3ic6RPeS+vGAQ7RpEP9I+pgY+WtHjBltrUtUETsWB2sz1
-         tqnSbNS7RDVTqjBpzEuB9rwfb79ZVQyGP9ZW2l2mADyp15vV/GJijoOXuIQRRPp5Qz
-         8I6GIBhuHWIR/qJBid4R52MOUVGJ58MDnkqvXbK8=
+        b=gDRIWji/E/tBhVlTElMnrXUeeC8fonrd5YS5Mak4FUZtv/M6MuycUlUdfkkwtcSfC
+         +yGI+sx0fvjQfx9uDMu8Pv9XbosLzt6m8kQCypLQue/dh3a+v3QhX8/L5Ku7CfGPRt
+         dhsfKC59sDEOsrrxQoNG5Ed30UZy6fAKG8uzci9g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 147/432] KVM: PPC: Fix clearing never mapped TCEs in realmode
+Subject: [PATCH 5.10 151/306] bpf/tests: Do not PASS tests without actually testing the result
 Date:   Thu, 16 Sep 2021 17:58:16 +0200
-Message-Id: <20210916155815.738424404@linuxfoundation.org>
+Message-Id: <20210916155759.222323968@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,67 +41,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexey Kardashevskiy <aik@ozlabs.ru>
+From: Johan Almbladh <johan.almbladh@anyfinetworks.com>
 
-[ Upstream commit 1d78dfde33a02da1d816279c2e3452978b7abd39 ]
+[ Upstream commit 2b7e9f25e590726cca76700ebdb10e92a7a72ca1 ]
 
-Since commit e1a1ef84cd07 ("KVM: PPC: Book3S: Allocate guest TCEs on
-demand too"), pages for TCE tables for KVM guests are allocated only
-when needed. This allows skipping any update when clearing TCEs. This
-works mostly fine as TCE updates are handled when the MMU is enabled.
-The realmode handlers fail with H_TOO_HARD when pages are not yet
-allocated, except when clearing a TCE in which case KVM prints a warning
-and proceeds to dereference a NULL pointer, which crashes the host OS.
+Each test case can have a set of sub-tests, where each sub-test can
+run the cBPF/eBPF test snippet with its own data_size and expected
+result. Before, the end of the sub-test array was indicated by both
+data_size and result being zero. However, most or all of the internal
+eBPF tests has a data_size of zero already. When such a test also had
+an expected value of zero, the test was never run but reported as
+PASS anyway.
 
-This has not been caught so far as the change in commit e1a1ef84cd07 is
-reasonably new, and POWER9 runs mostly radix which does not use realmode
-handlers. With hash, the default TCE table is memset() by QEMU when the
-machine is reset which triggers page faults and the KVM TCE device's
-kvm_spapr_tce_fault() handles those with MMU on. And the huge DMA
-windows are not cleared by VMs which instead successfully create a DMA
-window big enough to map the VM memory 1:1 and then VMs just map
-everything without clearing.
+Now the test runner always runs the first sub-test, regardless of the
+data_size and result values. The sub-test array zero-termination only
+applies for any additional sub-tests.
 
-This started crashing now as commit 381ceda88c4c ("powerpc/pseries/iommu:
-Make use of DDW for indirect mapping") added a mode when a dymanic DMA
-window not big enough to map the VM memory 1:1 but it is used anyway,
-and the VM now is the first (i.e. not QEMU) to clear a just created
-table. Note that upstream QEMU needs to be modified to trigger the VM to
-trigger the host OS crash.
+There are other ways fix it of course, but this solution at least
+removes the surprise of eBPF tests with a zero result always succeeding.
 
-This replaces WARN_ON_ONCE_RM() with a check and return, and adds
-another warning if TCE is not being cleared.
-
-Fixes: e1a1ef84cd07 ("KVM: PPC: Book3S: Allocate guest TCEs on demand too")
-Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210827040706.517652-1-aik@ozlabs.ru
+Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/20210721103822.3755111-1-johan.almbladh@anyfinetworks.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kvm/book3s_64_vio_hv.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ lib/test_bpf.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/kvm/book3s_64_vio_hv.c b/arch/powerpc/kvm/book3s_64_vio_hv.c
-index dc6591548f0c..636c6ae0939b 100644
---- a/arch/powerpc/kvm/book3s_64_vio_hv.c
-+++ b/arch/powerpc/kvm/book3s_64_vio_hv.c
-@@ -173,10 +173,13 @@ static void kvmppc_rm_tce_put(struct kvmppc_spapr_tce_table *stt,
- 	idx -= stt->offset;
- 	page = stt->pages[idx / TCES_PER_PAGE];
- 	/*
--	 * page must not be NULL in real mode,
--	 * kvmppc_rm_ioba_validate() must have taken care of this.
-+	 * kvmppc_rm_ioba_validate() allows pages not be allocated if TCE is
-+	 * being cleared, otherwise it returns H_TOO_HARD and we skip this.
- 	 */
--	WARN_ON_ONCE_RM(!page);
-+	if (!page) {
-+		WARN_ON_ONCE_RM(tce != 0);
-+		return;
-+	}
- 	tbl = kvmppc_page_address(page);
+diff --git a/lib/test_bpf.c b/lib/test_bpf.c
+index ca8eef2f6442..4a9137c8551a 100644
+--- a/lib/test_bpf.c
++++ b/lib/test_bpf.c
+@@ -6664,7 +6664,14 @@ static int run_one(const struct bpf_prog *fp, struct bpf_test *test)
+ 		u64 duration;
+ 		u32 ret;
  
- 	tbl[idx % TCES_PER_PAGE] = tce;
+-		if (test->test[i].data_size == 0 &&
++		/*
++		 * NOTE: Several sub-tests may be present, in which case
++		 * a zero {data_size, result} tuple indicates the end of
++		 * the sub-test array. The first test is always run,
++		 * even if both data_size and result happen to be zero.
++		 */
++		if (i > 0 &&
++		    test->test[i].data_size == 0 &&
+ 		    test->test[i].result == 0)
+ 			break;
+ 
 -- 
 2.30.2
 
