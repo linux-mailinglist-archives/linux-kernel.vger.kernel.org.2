@@ -2,94 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 135EA40DBB8
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 15:51:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8856740DBBE
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 15:52:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236328AbhIPNwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 09:52:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24867 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235923AbhIPNwk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 09:52:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631800279;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4lVrPdsoP5O/cM/OSAIFtewkyqRFucE9aREXO9piQ+4=;
-        b=GJEY+q7ZHlx70i89tL9FqRWIO7VE4749Mec3cEBQmQXaRsVIaIM3fHg3E7+MCTDQbenCPp
-        5ehJjO/mBSH8Pckq19fMALs+oQGYKULv/DV/5NG9XZbUiKdpUFXDmxQZTYg9D56OU2f8PZ
-        nx+QizACcsaQoiM1WiH3Bk03rogGy18=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-416-wINEPB07OC23uIxFVwSC_g-1; Thu, 16 Sep 2021 09:51:18 -0400
-X-MC-Unique: wINEPB07OC23uIxFVwSC_g-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 88A48100C660;
-        Thu, 16 Sep 2021 13:51:15 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.44])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5CB6E5D9C6;
-        Thu, 16 Sep 2021 13:51:12 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <YUJcN/dqa8f4R9w0@mit.edu>
-References: <YUJcN/dqa8f4R9w0@mit.edu> <YUIwgGzBqX6ZiGgk@mit.edu> <f7b70227bac9a684320068b362d28fcade6b65b9.camel@HansenPartnership.com> <YUI5bk/94yHPZIqJ@mit.edu> <17242A0C-3613-41BB-84E4-2617A182216E@fb.com> <f066615c0e2c6fe990fa5c19dd1c17d649bcb03a.camel@HansenPartnership.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     dhowells@redhat.com,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Chris Mason <clm@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        "ksummit@lists.linux.dev" <ksummit@lists.linux.dev>
-Subject: Re: [MAINTAINER SUMMIT] Folios as a potential Kernel/Maintainers Summit topic?
+        id S236308AbhIPNx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 09:53:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42900 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235830AbhIPNx0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 09:53:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DAEB60EB4;
+        Thu, 16 Sep 2021 13:52:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631800326;
+        bh=8ELhNZODoBEnLGmVtTcOezvWfOBIyyv5HdPY1TeJV+4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tsSVmF47v39BfdWENa8eDDjjWXd1w54uLiCVo0OyD/iwal2WWQUWRKElcy9tGmzet
+         ZSL2SC2x/5W+CyvSCbBy3lp2ksaLuT7f3EPo1d8KtsWT70jlmSvDcfXMGrMZJpjAtH
+         X3sPJcyYS4dcFlOneQnnYq1ZoMt+M04v/w1hqd5T0C4dqPSYjiUt1EWFehxNhMXcHF
+         I3FNx/YV3+zgFOr6+VwUVICNBS+9bPQw4T+zuB92XUA8k1iZA5SDYEZLrAzs9NwpSc
+         Gt0eeNtedigIl82YUE97pe6kAKzqMf6YLl0GKDz5IRdfTAJdLJZ5Y7zLfC8fVmcmKZ
+         x59mD59iuEpuw==
+Date:   Thu, 16 Sep 2021 16:52:02 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jiri Pirko <jiri@nvidia.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH net-next] devlink: Delete not-used devlink APIs
+Message-ID: <YUNMAi0Qjj5Dxiiw@unreal>
+References: <a45674a8cb1c1e0133811d95756357b787673e52.1631788678.git.leonro@nvidia.com>
+ <20210916063318.7275cadf@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1763246.1631800271.1@warthog.procyon.org.uk>
-Date:   Thu, 16 Sep 2021 14:51:11 +0100
-Message-ID: <1763247.1631800271@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210916063318.7275cadf@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Theodore Ts'o <tytso@mit.edu> wrote:
-
-> > My reading of the email threads is that they're iterating to an actual
-> > conclusion (I admit, I'm surprised) ... or at least the disagreements
-> > are getting less.  Since the merge window closed this is now a 5.16
-> > thing, so there's no huge urgency to getting it resolved next week.
+On Thu, Sep 16, 2021 at 06:33:18AM -0700, Jakub Kicinski wrote:
+> On Thu, 16 Sep 2021 13:38:33 +0300 Leon Romanovsky wrote:
+> > From: Leon Romanovsky <leonro@nvidia.com>
+> > 
+> > Devlink core exported generously the functions calls that were used
+> > by netdevsim tests or not used at all.
+> > 
+> > Delete such APIs with one exception - devlink_alloc_ns(). That function
+> > should be spared from deleting because it is a special form of devlink_alloc()
+> > needed for the netdevsim.
 > 
-> My read was that it was more that people were just getting exhausted,
-> and not necessarily that folks were converging.
+> Do you have a reason to do this or are you just cleaning up?
 
-The problem, from where I sit, is that I'd started rebasing my stuff on top of
-Willy's patches and making use of them in the expectation that they were
-likely to go in - and I think other people might have been doing that too
-based on some of the comments.
+Yes for both questions. The trigger was my need to move parameter
+notifications to be delayed till devlink register (like you asked). At
+some point of time, I realized that devlink_*_publish() API is rubbish
+and can be deleted (integrated into devlink_register). So I started to
+cleanup as much as possible.
 
-However, that's all been thrown up in the air.  Not only did they not get
-merged in this window, it's not currently looking certain that they'd get
-merged in the next window either.
+> 
+> The fmsg functions are not actually removed, just unexported.
+> Are there out of tree drivers abusing them?
 
-So what do I do?  Do I defoliate my patches - which then risks merge conflicts
-with the folio patches?  Or do I stick with the foliation and hope that
-Willy's goes in next time?
+I don't know, but exported symbols pollute symbols table and the less we
+have there, the better will be for everyone.
 
-Some guidance as to what's likely to happen to the folio patches would be
-really appreciated!
+> 
+> The port_param functions are "symmetric" with the global param 
+> ones. Removing them makes the API look somewhat incomplete.
 
-David
+There is no value in having "complete" API that no one uses.
 
+> 
+> Obviously the general guidance is that we shouldn't export 
+> functions which have no upstream users but that applies to 
+> meaningful APIs. For all practical purposes this is just a 
+> sliver of an API, completeness gives nice warm feelings.
+
+It is misleading, I have much more warm feeling when I see API that is
+used. Once it will be needed, the next developer will copy/paste it
+pretty fast.
+
+> 
+> Anyway, just curious what made you do this. I wouldn't do it 
+> myself but neither am I substantially opposed.
+
+Move of devlink_register() to be last command in the devlink init flow
+and removal of devlink_*_publish() calls as an outcome of that.
+
+Thanks
