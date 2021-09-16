@@ -2,146 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F1E140EA00
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:37:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68F5040EA92
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 21:03:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350129AbhIPSii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 14:38:38 -0400
-Received: from mga07.intel.com ([134.134.136.100]:52262 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349780AbhIPSiG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 14:38:06 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10109"; a="286319763"
-X-IronPort-AV: E=Sophos;i="5.85,299,1624345200"; 
-   d="scan'208";a="286319763"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2021 11:36:10 -0700
-X-IronPort-AV: E=Sophos;i="5.85,299,1624345200"; 
-   d="scan'208";a="545819478"
-Received: from rswart-mobl1.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.255.64.59])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2021 11:36:09 -0700
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        VMware Inc <pv-drivers@vmware.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        id S239962AbhIPTEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 15:04:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53468 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346329AbhIPTES (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 15:04:18 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6157BC0C6CA3
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 11:36:59 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id w19so6670540pfn.12
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 11:36:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=eF3yoGSWauBjlP/PEtThaGKhCaV9nfWn2WtwyHMH5NA=;
+        b=fQ61flgpbxr+3ScvmslX6Y6UYzBrHyw+jxLOpGznkQ26CXbogaME6z2xm8KhJSqTnn
+         77lgkkMT6qVpSVnIMa9CA4IUAN0kgb27nXujFw1dSciBp8EZicTCozWpovAxRZAevT+M
+         3PJgfF7BblG4eAokXOWjQ1ObtUEq1NA0DMPduSUtk/8Z6AptRA77vHC+lN+6CI0dZ7iS
+         TlrJPbz77xVRa9MxLxts1RuG0yon5hKXJbxU7TTYE0S0roeX8RCMGqTTcoRHQiEheJWR
+         ZtJBPpysHanNjaKBKtSZ1ZOhPjcngD+VZRRKp1jNeA1evJj3KV7+WwMeqZhIbT+A+5CN
+         d3Yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eF3yoGSWauBjlP/PEtThaGKhCaV9nfWn2WtwyHMH5NA=;
+        b=qUm8a8NVm/9v9P/b9M4vJhcNY+m5qf/gCAVtUaoppSFxAwMz0VWID3flM8Vqpi4cGO
+         i3P8CcH+6HGeWKfgSnQ/jEfhRAS5ShOOznEiW/Q7Vt10ebHBoF9D2ScSNQTQwoSe37Zm
+         4bqYb6ndO/pDQ8PFf08vnhWj5VtBLb8R0nRuvmHFI+LfC39t9y9zZ8hlGjKfrcQdlu7K
+         d7d/6VXX25RjpjvsHUGTGGBtcRkUs4ohBLXQqnIT10CeJ2QguKbft2E9s5xDcMz65acB
+         ICExduMow9fnIvI3CUQTyvuTpdLNx0bAVgdprPkBtW5QR2+LjeYpOqmNXxfPteLpkIzM
+         rB2g==
+X-Gm-Message-State: AOAM531cIMJn06SOENAtV6kjjeaYFK9MY1IZuSND60gNiCIN9PKofmC0
+        QNpFpSHYY0Vu0ULfNyHHi+f0yJRuvHEbOw==
+X-Google-Smtp-Source: ABdhPJwLJjgKEcXSC9TA+AobePDdZy/P1mekisB/+SUfd6z0VLYVgxBHgOvJIavtKHhdqdSbJdImwA==
+X-Received: by 2002:a65:5643:: with SMTP id m3mr6176916pgs.224.1631817418780;
+        Thu, 16 Sep 2021 11:36:58 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id t14sm3895421pga.62.2021.09.16.11.36.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Sep 2021 11:36:58 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mQwFk-001qrZ-OF; Thu, 16 Sep 2021 15:36:56 -0300
+Date:   Thu, 16 Sep 2021 15:36:56 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Hao Sun <sunhao.th@gmail.com>
+Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org, leon@kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v7 12/12] x86/tdx: Handle CPUID via #VE
-Date:   Thu, 16 Sep 2021 11:35:50 -0700
-Message-Id: <20210916183550.15349-13-sathyanarayanan.kuppuswamy@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210916183550.15349-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-References: <20210916183550.15349-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: Re: INFO: task hung in _destroy_id
+Message-ID: <20210916183656.GS3544071@ziepe.ca>
+References: <CACkBjsYvt46E2WqeJwEuemUr7pST_uk3=wvEBmdtdiAPmG40vQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACkBjsYvt46E2WqeJwEuemUr7pST_uk3=wvEBmdtdiAPmG40vQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+On Fri, Sep 03, 2021 at 03:44:54PM +0800, Hao Sun wrote:
+> Hello,
+> 
+> When using Healer to fuzz the latest Linux kernel, the following crash
+> was triggered.
+> 
+> HEAD commit: 9e9fb7655ed58-Merge tag 'net-next-5.15'
+> git tree: upstream
+> console output:
+> https://drive.google.com/file/d/19ZvzEBJnFYlQJIn-TklSjE9ZWsxoEF7X/view?usp=sharing
+> kernel config: https://drive.google.com/file/d/1zgxbwaYkrM26KEmJ-5sUZX57gfXtRrwA/view?usp=sharing
+> 
+> Sorry, I don't have a reproducer for this crash, hope the symbolized
+> report can help.
+> If you fix this issue, please add the following tag to the commit:
+> Reported-by: Hao Sun <sunhao.th@gmail.com>
 
-When running virtualized, the CPUID instruction is handled differently
-based on the leaf being accessed.  The behavior depends only on the
-leaf and applies equally to both kernel/ring-0 and userspace/ring-3
-execution of CPUID. Historically, there are two basic classes:
+I think this is probably fixed by this:
 
- * Leaves handled transparently to the guest
- * Leaves handled by the VMM
+https://lore.kernel.org/r/20210913093344.17230-1-thomas.liu@ucloud.cn
 
-In a typical guest without TDX, "handled by the VMM" leaves cause a
-VMEXIT.  TDX replaces these VMEXITs with a #VE exception in the guest.
-The guest typically handles the #VE by making a hypercall to the VMM.
-
-The TDX module specification [1], section titled "CPUID Virtualization"
-talks about a few more classes of CPUID handling. But, for the purposes
-of this patch, the "handled transparently" CPUID leaves are all lumped
-together because the guest handling is the same.
-
-[1] - https://software.intel.com/content/dam/develop/external/us/en/documents/tdx-module-1.0-public-spec-v0.931.pdf
-
-Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
----
-
-Changes since v6:
- * Fixed commit log as per Dave Hansen comments.
- * Added extra comments for _tdx_hypercall() usage.
-
-Changes since v5:
- * Fixed commit log as per review comments.
- * Removed WARN_ON() in tdx_handle_cpuid().
- * Renamed "tdg" prefix with "tdx".
-
-Changes since v4:
- * None
-
-Changes since v3:
- * None
-
- arch/x86/kernel/tdx.c | 28 ++++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
-
-diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
-index 5c52dde4a5fd..45dbd8863ec0 100644
---- a/arch/x86/kernel/tdx.c
-+++ b/arch/x86/kernel/tdx.c
-@@ -150,6 +150,31 @@ static int tdx_write_msr_safe(unsigned int msr, unsigned int low,
- 	return ret ? -EIO : 0;
- }
- 
-+static u64 tdx_handle_cpuid(struct pt_regs *regs)
-+{
-+	struct tdx_hypercall_output out = {0};
-+	u64 ret;
-+
-+	/*
-+	 * Emulate CPUID instruction via hypercall. More info about
-+	 * ABI can be found in TDX Guest-Host-Communication Interface
-+	 * (GHCI), section titled "VP.VMCALL<Instruction.CPUID>".
-+	 */
-+	ret = _tdx_hypercall(EXIT_REASON_CPUID, regs->ax, regs->cx, 0, 0, &out);
-+
-+	/*
-+	 * As per TDX GHCI CPUID ABI, r12-r15 registers contains contents of
-+	 * EAX, EBX, ECX, EDX registers after CPUID instruction execution.
-+	 * So copy the register contents back to pt_regs.
-+	 */
-+	regs->ax = out.r12;
-+	regs->bx = out.r13;
-+	regs->cx = out.r14;
-+	regs->dx = out.r15;
-+
-+	return ret;
-+}
-+
- unsigned long tdx_get_ve_info(struct ve_info *ve)
- {
- 	struct tdx_module_output out = {0};
-@@ -193,6 +218,9 @@ int tdx_handle_virtualization_exception(struct pt_regs *regs,
- 	case EXIT_REASON_MSR_WRITE:
- 		ret = tdx_write_msr_safe(regs->cx, regs->ax, regs->dx);
- 		break;
-+	case EXIT_REASON_CPUID:
-+		ret = tdx_handle_cpuid(regs);
-+		break;
- 	default:
- 		pr_warn("Unexpected #VE: %lld\n", ve->exit_reason);
- 		return -EFAULT;
--- 
-2.25.1
-
+Jason
