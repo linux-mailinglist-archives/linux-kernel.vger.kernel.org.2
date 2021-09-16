@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92B5540E72C
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:32:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9053F40E148
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:29:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353251AbhIPRaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:30:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44338 "EHLO mail.kernel.org"
+        id S242042AbhIPQ3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:29:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55040 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352227AbhIPRUu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:20:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A006461B74;
-        Thu, 16 Sep 2021 16:42:27 +0000 (UTC)
+        id S241252AbhIPQPX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:15:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ABCEA61350;
+        Thu, 16 Sep 2021 16:11:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810548;
-        bh=+oD3Z40EPoxc+Zp2fbcCpgeZeVQzVYMYQ5lI2GkuKSw=;
+        s=korg; t=1631808686;
+        bh=uvcOn9u3AjrNTH6GU4l9aWzCKroJegd43P3y47cF5OE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tWhqQGi85uv7ei+HFIvyqjalaENFuzrZbxq0EARSf7fmR38O1gnNJMYIJHi7NYWnL
-         AiAcvbExvSZiXvDWmQliNRbBgQU9AmVauJTcxTEkNBd4xYoR0UBp0CQIS7YuleSpgg
-         knKdBGKoh6THDP/by5l3c6c5sGHNL/GEKiyHSjHs=
+        b=T0rGEWdJL5z1Kyb1qOR8mtSFF1Kns7yDcfTGcZdSXInAC6oJaqrv4HjzF2oX6ZwkE
+         apHJ4VmAG9XSI7JCDhuueE5yatv/6IHp6xYnQZLFwxlrUbH3rPMEN1sjFm5Q2eFmKK
+         cIvYHVT9ocVLNIqs0xpRTfh2thALSwe2ruHDLgHk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefan Assmann <sassmann@kpanic.de>,
-        Konrad Jankowski <konrad0.jankowski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 181/432] iavf: fix locking of critical sections
+Subject: [PATCH 5.10 185/306] arm64: dts: qcom: sdm630: Rewrite memory map
 Date:   Thu, 16 Sep 2021 17:58:50 +0200
-Message-Id: <20210916155816.869611259@linuxfoundation.org>
+Message-Id: <20210916155800.392790379@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,178 +43,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Assmann <sassmann@kpanic.de>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
 
-[ Upstream commit 226d528512cfac890a1619aea4301f3dd314fe60 ]
+[ Upstream commit 26e02c98a9ad63eb21b9be4ac92002f555130d3b ]
 
-To avoid races between iavf_init_task(), iavf_reset_task(),
-iavf_watchdog_task(), iavf_adminq_task() as well as the shutdown and
-remove functions more locking is required.
-The current protection by __IAVF_IN_CRITICAL_TASK is needed in
-additional places.
+The memory map was wrong. Fix it.
 
-- The reset task performs state transitions, therefore needs locking.
-- The adminq task acts on replies from the PF in
-  iavf_virtchnl_completion() which may alter the states.
-- The init task is not only run during probe but also if a VF gets stuck
-  to reinitialize it.
-- The shutdown function performs a state transition.
-- The remove function performs a state transition and also free's
-  resources.
-
-iavf_lock_timeout() is introduced to avoid waiting infinitely
-and cause a deadlock. Rather unlock and print a warning.
-
-Signed-off-by: Stefan Assmann <sassmann@kpanic.de>
-Tested-by: Konrad Jankowski <konrad0.jankowski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+Link: https://lore.kernel.org/r/20210728222542.54269-2-konrad.dybcio@somainline.org
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/iavf/iavf_main.c | 57 ++++++++++++++++++---
- 1 file changed, 50 insertions(+), 7 deletions(-)
+ arch/arm64/boot/dts/qcom/sdm630.dtsi | 41 ++++++++++++----------------
+ 1 file changed, 18 insertions(+), 23 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/iavf/iavf_main.c b/drivers/net/ethernet/intel/iavf/iavf_main.c
-index 0d0f16617dde..e5e6a5b11e6d 100644
---- a/drivers/net/ethernet/intel/iavf/iavf_main.c
-+++ b/drivers/net/ethernet/intel/iavf/iavf_main.c
-@@ -131,6 +131,30 @@ enum iavf_status iavf_free_virt_mem_d(struct iavf_hw *hw,
- 	return 0;
- }
+diff --git a/arch/arm64/boot/dts/qcom/sdm630.dtsi b/arch/arm64/boot/dts/qcom/sdm630.dtsi
+index deb928d303c2..7da420cd21ba 100644
+--- a/arch/arm64/boot/dts/qcom/sdm630.dtsi
++++ b/arch/arm64/boot/dts/qcom/sdm630.dtsi
+@@ -343,10 +343,19 @@ wlan_msa_mem: wlan-msa-mem@85700000 {
+ 		};
  
-+/**
-+ * iavf_lock_timeout - try to set bit but give up after timeout
-+ * @adapter: board private structure
-+ * @bit: bit to set
-+ * @msecs: timeout in msecs
-+ *
-+ * Returns 0 on success, negative on failure
-+ **/
-+static int iavf_lock_timeout(struct iavf_adapter *adapter,
-+			     enum iavf_critical_section_t bit,
-+			     unsigned int msecs)
-+{
-+	unsigned int wait, delay = 10;
+ 		qhee_code: qhee-code@85800000 {
+-			reg = <0x0 0x85800000 0x0 0x3700000>;
++			reg = <0x0 0x85800000 0x0 0x600000>;
+ 			no-map;
+ 		};
+ 
++		rmtfs_mem: memory@85e00000 {
++			compatible = "qcom,rmtfs-mem";
++			reg = <0x0 0x85e00000 0x0 0x200000>;
++			no-map;
 +
-+	for (wait = 0; wait < msecs; wait += delay) {
-+		if (!test_and_set_bit(bit, &adapter->crit_section))
-+			return 0;
++			qcom,client-id = <1>;
++			qcom,vmid = <15>;
++		};
 +
-+		msleep(delay);
-+	}
-+
-+	return -1;
-+}
-+
- /**
-  * iavf_schedule_reset - Set the flags and schedule a reset event
-  * @adapter: board private structure
-@@ -2097,6 +2121,10 @@ static void iavf_reset_task(struct work_struct *work)
- 	if (test_bit(__IAVF_IN_REMOVE_TASK, &adapter->crit_section))
- 		return;
+ 		smem_region: smem-mem@86000000 {
+ 			reg = <0 0x86000000 0 0x200000>;
+ 			no-map;
+@@ -357,58 +366,44 @@ tz_mem: memory@86200000 {
+ 			no-map;
+ 		};
  
-+	if (iavf_lock_timeout(adapter, __IAVF_IN_CRITICAL_TASK, 200)) {
-+		schedule_work(&adapter->reset_task);
-+		return;
-+	}
- 	while (test_and_set_bit(__IAVF_IN_CLIENT_TASK,
- 				&adapter->crit_section))
- 		usleep_range(500, 1000);
-@@ -2311,6 +2339,8 @@ static void iavf_adminq_task(struct work_struct *work)
- 	if (!event.msg_buf)
- 		goto out;
+-		modem_fw_mem: modem-fw-region@8ac00000 {
++		mpss_region: mpss@8ac00000 {
+ 			reg = <0x0 0x8ac00000 0x0 0x7e00000>;
+ 			no-map;
+ 		};
  
-+	if (iavf_lock_timeout(adapter, __IAVF_IN_CRITICAL_TASK, 200))
-+		goto freedom;
- 	do {
- 		ret = iavf_clean_arq_element(hw, &event, &pending);
- 		v_op = (enum virtchnl_ops)le32_to_cpu(event.desc.cookie_high);
-@@ -2324,6 +2354,7 @@ static void iavf_adminq_task(struct work_struct *work)
- 		if (pending != 0)
- 			memset(event.msg_buf, 0, IAVF_MAX_AQ_BUF_SIZE);
- 	} while (pending);
-+	clear_bit(__IAVF_IN_CRITICAL_TASK, &adapter->crit_section);
+-		adsp_fw_mem: adsp-fw-region@92a00000 {
++		adsp_region: adsp@92a00000 {
+ 			reg = <0x0 0x92a00000 0x0 0x1e00000>;
+ 			no-map;
+ 		};
  
- 	if ((adapter->flags &
- 	     (IAVF_FLAG_RESET_PENDING | IAVF_FLAG_RESET_NEEDED)) ||
-@@ -3628,6 +3659,10 @@ static void iavf_init_task(struct work_struct *work)
- 						    init_task.work);
- 	struct iavf_hw *hw = &adapter->hw;
+-		pil_mba_mem: pil-mba-region@94800000 {
++		mba_region: mba@94800000 {
+ 			reg = <0x0 0x94800000 0x0 0x200000>;
+ 			no-map;
+ 		};
  
-+	if (iavf_lock_timeout(adapter, __IAVF_IN_CRITICAL_TASK, 5000)) {
-+		dev_warn(&adapter->pdev->dev, "failed to set __IAVF_IN_CRITICAL_TASK in %s\n", __FUNCTION__);
-+		return;
-+	}
- 	switch (adapter->state) {
- 	case __IAVF_STARTUP:
- 		if (iavf_startup(adapter) < 0)
-@@ -3640,14 +3675,14 @@ static void iavf_init_task(struct work_struct *work)
- 	case __IAVF_INIT_GET_RESOURCES:
- 		if (iavf_init_get_resources(adapter) < 0)
- 			goto init_failed;
--		return;
-+		goto out;
- 	default:
- 		goto init_failed;
- 	}
+-		buffer_mem: buffer-region@94a00000 {
++		buffer_mem: tzbuffer@94a00000 {
+ 			reg = <0x0 0x94a00000 0x0 0x100000>;
+ 			no-map;
+ 		};
  
- 	queue_delayed_work(iavf_wq, &adapter->init_task,
- 			   msecs_to_jiffies(30));
--	return;
-+	goto out;
- init_failed:
- 	if (++adapter->aq_wait_count > IAVF_AQ_MAX_ERR) {
- 		dev_err(&adapter->pdev->dev,
-@@ -3656,9 +3691,11 @@ static void iavf_init_task(struct work_struct *work)
- 		iavf_shutdown_adminq(hw);
- 		adapter->state = __IAVF_STARTUP;
- 		queue_delayed_work(iavf_wq, &adapter->init_task, HZ * 5);
--		return;
-+		goto out;
- 	}
- 	queue_delayed_work(iavf_wq, &adapter->init_task, HZ);
-+out:
-+	clear_bit(__IAVF_IN_CRITICAL_TASK, &adapter->crit_section);
- }
+-		venus_fw_mem: venus-fw-region@9f800000 {
++		venus_region: venus@9f800000 {
+ 			reg = <0x0 0x9f800000 0x0 0x800000>;
+ 			no-map;
+ 		};
  
- /**
-@@ -3675,9 +3712,12 @@ static void iavf_shutdown(struct pci_dev *pdev)
- 	if (netif_running(netdev))
- 		iavf_close(netdev);
+-		secure_region2: secure-region2@f7c00000 {
+-			reg = <0x0 0xf7c00000 0x0 0x5c00000>;
+-			no-map;
+-		};
+-
+ 		adsp_mem: adsp-region@f6000000 {
+ 			reg = <0x0 0xf6000000 0x0 0x800000>;
+ 			no-map;
+ 		};
  
-+	if (iavf_lock_timeout(adapter, __IAVF_IN_CRITICAL_TASK, 5000))
-+		dev_warn(&adapter->pdev->dev, "failed to set __IAVF_IN_CRITICAL_TASK in %s\n", __FUNCTION__);
- 	/* Prevent the watchdog from running. */
- 	adapter->state = __IAVF_REMOVE;
- 	adapter->aq_required = 0;
-+	clear_bit(__IAVF_IN_CRITICAL_TASK, &adapter->crit_section);
+-		qseecom_ta_mem: qseecom-ta-region@fec00000 {
+-			reg = <0x0 0xfec00000 0x0 0x1000000>;
+-			no-map;
+-		};
+-
+ 		qseecom_mem: qseecom-region@f6800000 {
+ 			reg = <0x0 0xf6800000 0x0 0x1400000>;
+ 			no-map;
+ 		};
  
- #ifdef CONFIG_PM
- 	pci_save_state(pdev);
-@@ -3911,10 +3951,6 @@ static void iavf_remove(struct pci_dev *pdev)
- 				 err);
- 	}
- 
--	/* Shut down all the garbage mashers on the detention level */
--	adapter->state = __IAVF_REMOVE;
--	adapter->aq_required = 0;
--	adapter->flags &= ~IAVF_FLAG_REINIT_ITR_NEEDED;
- 	iavf_request_reset(adapter);
- 	msleep(50);
- 	/* If the FW isn't responding, kick it once, but only once. */
-@@ -3922,6 +3958,13 @@ static void iavf_remove(struct pci_dev *pdev)
- 		iavf_request_reset(adapter);
- 		msleep(50);
- 	}
-+	if (iavf_lock_timeout(adapter, __IAVF_IN_CRITICAL_TASK, 5000))
-+		dev_warn(&adapter->pdev->dev, "failed to set __IAVF_IN_CRITICAL_TASK in %s\n", __FUNCTION__);
-+
-+	/* Shut down all the garbage mashers on the detention level */
-+	adapter->state = __IAVF_REMOVE;
-+	adapter->aq_required = 0;
-+	adapter->flags &= ~IAVF_FLAG_REINIT_ITR_NEEDED;
- 	iavf_free_all_tx_resources(adapter);
- 	iavf_free_all_rx_resources(adapter);
- 	iavf_misc_irq_disable(adapter);
+-		secure_display_memory: secure-region@f5c00000 {
+-			reg = <0x0 0xf5c00000 0x0 0x5c00000>;
+-			no-map;
+-		};
+-
+-		cont_splash_mem: cont-splash-region@9d400000 {
+-			reg = <0x0 0x9d400000 0x0 0x23ff000>;
++		zap_shader_region: gpu@fed00000 {
++			compatible = "shared-dma-pool";
++			reg = <0x0 0xfed00000 0x0 0xa00000>;
+ 			no-map;
+ 		};
+ 	};
 -- 
 2.30.2
 
