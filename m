@@ -2,136 +2,540 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24A2640D2C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 07:04:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBAEF40D2C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 07:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234289AbhIPFGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 01:06:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59724 "EHLO
+        id S234324AbhIPFHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 01:07:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233549AbhIPFFw (ORCPT
+        with ESMTP id S234176AbhIPFHH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 01:05:52 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91A9BC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 22:04:31 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id w19so4717103pfn.12
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 22:04:31 -0700 (PDT)
+        Thu, 16 Sep 2021 01:07:07 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0DC5C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 22:05:46 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id c21so12070039edj.0
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 22:05:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=m8pZguFuGhNfWPMK3DmEgTUY5gKWHuK0UZr8qzbuIE8=;
-        b=B+TGQJxmKEGSc6t2j6mF/MTC9uF/Pt3UZv+uKFZCWgbwxD1YxsKnbgyHRwSbpUach5
-         pu/GkPk4PdJzibuK3pQ7TDNeOdyfU6wzNrJ8vn5kpPVOBk6dhlxVl2mV2S8FJKYdUsoz
-         n1KG/CinnA/0MLc9ZcnNY7Xo1ce52YE+01PYSeQyFeHMoOdC9LKy/bFKMm1yLeI7Ce5A
-         nLFhM08VvvPf7HkfzQFIiKPKKvAqTOGxPS+y2eV350lMKLII2AwBebdrYy8PFP2420XI
-         alBvBbQvfAgu8hMp1NSfsIuBc427UgJnfOPL8SkwLA1bD3WrdpFmzVqKPy+5RW5UJNs9
-         F1nA==
+        d=vanguardiasur-com-ar.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VoD2qmZ/fNfRcJwUxEEWLDk1W6vmafuG6EyLNrB0mys=;
+        b=OZaUsGLTB/RTKAzXhD27i0Fd54yLeeIRZnRevNzY+eEHFgk4D8QyhStdeSCtO+JuLs
+         RaWp89Zmi/j2igdV8HTjYq4yozfaA1MCAwEZaGF7xWPvim2myrkcdkz/zNDifQcUnHgi
+         KS8urK6SXaIpIDiCFVBWpnEvTq1nRUrYRSksmXD765vQwY3SaLwKbHusORaz5i6gGeoq
+         bLukNcnrnzXC5Bp1Qp3+JMytMD7Sk7c8Zip+PGM/cEXSRiya2RmdTzVojYuuhrUjWWq/
+         wd+EtJ/vMvX92lF5rbWfL9gtcgHfcN8VHvY+/fhIqZBSAORfO/YmMg6+P+6FLanTmSml
+         mPJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=m8pZguFuGhNfWPMK3DmEgTUY5gKWHuK0UZr8qzbuIE8=;
-        b=BaPOH3AwFaNvnNIDGvWU0y1Yv/JacO+LcGgTpc+F0JCHetCR2YQ+f6Aa2UHNyzI8GW
-         /JMct+IdTxSl4AHKOKJzKdX003mEO0UiwAJ/GWVxwexdjxOfOKhXXW1G5eLeJWWZK1Nq
-         cBcorXK/DsyDr4OtgMylWP3V28z7Z+lveobHGd2kmu76CWF3Aq70UUFkv7WoxdLs3b4x
-         iBSPp2jkxBU3cXMeMfgAxAL3j5bGZnsnGka7AH/jWR+2XyR/kWToJYcNzMDNWEl9zA8u
-         YTL1ojI/HcAw1C6ulGnVu3jXMhjs9xsywo/lZEo8QnkgfATdfhjkpqSnxFGm3FTq1A6E
-         UqdQ==
-X-Gm-Message-State: AOAM531RlVxhuyc1Sii5s2ZzhQs0XNA6VHxp/FmQZRj7IqqNZhz8Tdjt
-        MrSoOWpGmsDuIi1e1FLnTf5Rww==
-X-Google-Smtp-Source: ABdhPJyZ3lZHJLjMxaOxtl//zK+Bx2+Knn0ildGND0zESTIraqGjWOSxIEkQV9lV/6Ws71LrCdJJLA==
-X-Received: by 2002:a05:6a00:22d5:b0:440:3750:f5f4 with SMTP id f21-20020a056a0022d500b004403750f5f4mr3579272pfj.64.1631768670992;
-        Wed, 15 Sep 2021 22:04:30 -0700 (PDT)
-Received: from dragon (80.251.214.228.16clouds.com. [80.251.214.228])
-        by smtp.gmail.com with ESMTPSA id g13sm1440188pfi.176.2021.09.15.22.04.28
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 15 Sep 2021 22:04:30 -0700 (PDT)
-Date:   Thu, 16 Sep 2021 13:04:24 +0800
-From:   Shawn Guo <shawn.guo@linaro.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] clk: qcom: smd-rpm: Add rate hooks for
- clk_smd_rpm_branch_ops
-Message-ID: <20210916050423.GG25255@dragon>
-References: <20210914025554.5686-1-shawn.guo@linaro.org>
- <20210914025554.5686-2-shawn.guo@linaro.org>
- <163165658855.763609.14080313241484048687@swboyd.mtv.corp.google.com>
- <20210915150526.GE25255@dragon>
- <YUIr/002dfXxDWDY@ripper>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VoD2qmZ/fNfRcJwUxEEWLDk1W6vmafuG6EyLNrB0mys=;
+        b=ebd89FgJZUqXHIRwcXQY2ppSGT0/4Zdh1mB7vKAdU/rqlt+Fzv+tk0GuTBnpyDIwRm
+         lhhUhm/O+MqX3Mvmi8eAvhRePIkryDiTXeYGXQ4/WhzzqArk/H6qNFmDjubSZTgzsIj6
+         hwWZxRjVOciiAKJ4aQJKbtyUSzNika/RJWORH7FjnmRLWvKoWlTNHV0qK9371NY+LENT
+         QKmWafwtJ1r34QR3mFBh5150u3E/dnkXKdhnJN2inWCNWJZx/l0kvuDejQh+2lXQuzPt
+         7BTkVIISRECmibcyqI2THlSrx6cfU8+Q0uK0d0TEyjFjLXO3skLtdJuZDnneWZdJVT+r
+         oEDg==
+X-Gm-Message-State: AOAM533eeNm9zn+s8brV0WLPnCryuwmV8Sx8Up46n3pign3cTjR7FkA4
+        oJkSnpGYzzXvn3/pSgb/rOOROi6kQYYclxwRgiXwPQ==
+X-Google-Smtp-Source: ABdhPJwuRmqYFEi6jJ8o/kU5gLq/s+iJai9rvo3BPXeQRXe5qy83zmClrUa+H1bn6gLTuHFDfwaFttPK4MlahlnnqvA=
+X-Received: by 2002:a17:906:e20e:: with SMTP id gf14mr4203948ejb.244.1631768745206;
+ Wed, 15 Sep 2021 22:05:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YUIr/002dfXxDWDY@ripper>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210915162324.25513-1-dafna.hirschfeld@collabora.com> <20210915162324.25513-3-dafna.hirschfeld@collabora.com>
+In-Reply-To: <20210915162324.25513-3-dafna.hirschfeld@collabora.com>
+From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Date:   Thu, 16 Sep 2021 02:05:33 -0300
+Message-ID: <CAAEAJfA5p_W8VKa=varFYqg+0pQhdk_125F7cdy9LrrbQ2QKpw@mail.gmail.com>
+Subject: Re: [PATCH 2/6] staging: media: wave5: Add the vdi layer
+To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Cc:     Robert Beckett <bob.beckett@collabora.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:MEDIA INPUT INFRASTRUCTURE (V4L/DVB)" 
+        <linux-media@vger.kernel.org>,
+        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
+        open list <linux-kernel@vger.kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Dafna Hirschfeld <dafna3@gmail.com>,
+        kiril.bicevski@collabora.com,
+        Nas Chung <nas.chung@chipsnmedia.com>,
+        lafley.kim@chipsnmedia.com, scott.woo@chipsnmedia.com,
+        olivier.crete@collabora.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 10:23:11AM -0700, Bjorn Andersson wrote:
-> On Wed 15 Sep 08:05 PDT 2021, Shawn Guo wrote:
-> 
-> > On Tue, Sep 14, 2021 at 02:56:28PM -0700, Stephen Boyd wrote:
-> > > Quoting Shawn Guo (2021-09-13 19:55:52)
-> > > > On QCM2290 platform, the clock xo_board runs at 38400000, while the
-> > > > child clock bi_tcxo needs to run at 19200000.  That said,
-> > > > clk_smd_rpm_branch_ops needs the capability of setting rate. Add rate
-> > > > hooks into clk_smd_rpm_branch_ops to make it possible.
-> > > 
-> > > This doesn't sound right. The branch is a simple on/off. If xo_board is
-> > > 38.4MHz, then there is an internal divider in the SoC that makes bi_tcxo
-> > > (i.e. the root of the entire clk tree) be 19.2MHz. We don't model the
-> > > divider, I guess because it isn't very important to. Instead, we tack on
-> > > a divider field and implement recalc_rate op. See clk-rpmh.c in the qcom
-> > > directory for this.
-> > 
-> > Thanks for the comment, Stephen!  To be honest, I copied the
-> > implementation from vendor kernel, and wasn't really sure if it's
-> > correct or the best.
-> > 
-> > So here is what I get based on your suggestion.  Let's me know if
-> > it's how you wanted it to be.  Thanks!
-> > 
-> > Shawn
-> > 
-> > ----8<---------
-> > 
-> > From 23dda79fee412738f046b89bdd20ef95a24c35cc Mon Sep 17 00:00:00 2001
-> > From: Shawn Guo <shawn.guo@linaro.org>
-> > Date: Wed, 15 Sep 2021 22:00:32 +0800
-> > Subject: [PATCH] clk: qcom: smd-rpm: Add a divider field for branch clock
-> > 
-> > Similar to clk-rpmh, clk-smd-rpm has the same need to handle the case
-> > where an internal divider is there between xo_board and bi_tcxo.  The
-> > change is made in the a back compatible way below.
-> > 
-> >  - Add div field to struct clk_smd_rpm, and have
-> >    __DEFINE_CLK_SMD_RPM_BRANCH() assign it.
-> > 
-> >  - Update all existing __DEFINE_CLK_SMD_RPM_BRANCH() wrappers to pass a
-> >    zero div.
-> > 
-> >  - Add DEFINE_CLK_SMD_RPM_BRANCH_DIV() which doesn't take rate argument
-> >    but div.
-> > 
-> >  - Update clk_smd_rpm_recalc_rate() to handle div and add it as
-> >    .recalc_rate of clk_smd_rpm_branch_ops.
-> > 
-> 
-> This looks good to me.
-> 
-> And the confirmed that the xo_board in sdm630.dtsi (and hence SDM660) is
-> wrong, it should be 38.4MHz as well.
+Hello,
 
-Hmm, I see CAF kernel has 19.2MHz for SDM630/660 xo_board clock.  Or am
-I looking at the wrong place?
+On Wed, 15 Sept 2021 at 13:24, Dafna Hirschfeld
+<dafna.hirschfeld@collabora.com> wrote:
+>
+> Add the vdi directory of the wave5 codec driver.
+> The vdi.h header defines common helper functions
+> such as writing/reading register and handling endianness.
+>
+> Signed-off-by: Robert Beckett <bob.beckett@collabora.com>
+> Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+> ---
+>  drivers/staging/media/wave5/vdi/vdi.c | 325 ++++++++++++++++++++++++++
+>  drivers/staging/media/wave5/vdi/vdi.h |  79 +++++++
+>  2 files changed, 404 insertions(+)
+>  create mode 100644 drivers/staging/media/wave5/vdi/vdi.c
+>  create mode 100644 drivers/staging/media/wave5/vdi/vdi.h
+>
+> diff --git a/drivers/staging/media/wave5/vdi/vdi.c b/drivers/staging/media/wave5/vdi/vdi.c
+> new file mode 100644
+> index 000000000000..95bc120407a4
+> --- /dev/null
+> +++ b/drivers/staging/media/wave5/vdi/vdi.c
+> @@ -0,0 +1,325 @@
+> +// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+> +/*
+> + * Wave5 series multi-standard codec IP - low level access functions
+> + *
+> + * Copyright (C) 2021 CHIPS&MEDIA INC
+> + */
+> +#include <linux/bug.h>
+> +#include "vdi.h"
+> +#include "../v4l2/vpu.h"
+> +#include "../vpuapi/wave/wave5_regdefine.h"
+> +#include <linux/delay.h>
+> +#define VDI_SRAM_BASE_ADDR                  0x00
+> +
+> +#define VDI_SYSTEM_ENDIAN                VDI_LITTLE_ENDIAN
+> +#define VDI_128BIT_BUS_SYSTEM_ENDIAN     VDI_128BIT_LITTLE_ENDIAN
+> +
+> +static int vdi_allocate_common_memory(struct device *dev)
 
-Shawn
+I would get rid of this entirely and just use the DMA API allocators.
 
-> Unfortunately adding the appropriate divider to the sdm660 bcxo would
-> break existing .dtsi (but we can probably convince the community that it
-> would be ok, if we do it now).
+> +{
+> +       int ret;
+> +       struct vpu_device *vpu_dev = dev_get_drvdata(dev);
+> +
+> +       if (!vpu_dev->common_mem.vaddr) {
+> +               vpu_dev->common_mem.size = SIZE_COMMON;
+> +               ret = vdi_allocate_dma_memory(vpu_dev, &vpu_dev->common_mem);
+> +               if (ret) {
+> +                       dev_err(dev, "unable to allocate common buffer\n");
+> +                       return ret;
+> +               }
+> +       }
+> +
+> +       dev_dbg(dev, "common_mem: daddr=%pad size=%zu vaddr=0x%p\n",
+> +               &vpu_dev->common_mem.daddr, vpu_dev->common_mem.size,
+> +                       vpu_dev->common_mem.vaddr);
+> +
+> +       return 0;
+> +}
+> +
+> +int vdi_init(struct device *dev)
+
+As mentioned on patch 3/6, please prefix functions, e.g. "wave5_vdi_init".
+
+> +{
+> +       struct vpu_platform_data *pdata = dev_get_platdata(dev);
+> +       struct vpu_device *vpu_dev = dev_get_drvdata(dev);
+> +       int i;
+> +
+> +       if (vdi_allocate_common_memory(dev) < 0) {
+> +               pr_err("[VDI] fail to get vpu common buffer from driver\n");
+
+As mentioned on patch 3/6, please clean the pr_{} with dev_{},
+if possible.
+
+If you need to use pr_{} for some reason, you can use pr_fmt
+instead of having that "[VDI]". This stuff is even nicely
+documented Documentation/core-api/printk-basics.rst :-)
+
+> +               goto ERR_VDI_INIT;
+> +       }
+> +
+> +       if (pdata && pdata->reset)
+> +               pdata->reset(dev, vpu_dev->vdb_register.vaddr);
+> +
+> +       if (pdata && pdata->pre_fw_init) {
+> +               if (pdata->pre_fw_init(dev, vpu_dev->vdb_register.vaddr))
+> +                       goto ERR_VDI_INIT;
+> +       }
+> +
+> +       if (PRODUCT_CODE_W_SERIES(vpu_dev->product_code)) {
+> +               // if BIT processor is not running.
+> +               if (vdi_read_register(vpu_dev, W5_VCPU_CUR_PC) == 0) {
+> +                       for (i = 0; i < 64; i++)
+> +                               vdi_write_register(vpu_dev, (i * 4) + 0x100, 0x0);
+> +               }
+> +       } else {
+> +               WARN_ONCE(1, "unsupported product code 0x%x\n", vpu_dev->product_code);
+> +       }
+> +
+> +       pr_info("[VDI] success to init driver\n");
+> +
+> +       return 0;
+> +
+> +ERR_VDI_INIT:
+> +
+
+Avoid caps.
+
+> +       vdi_release(dev);
+> +       return -1;
+> +}
+> +EXPORT_SYMBOL(vdi_init);
+> +
+
+Exported to whom?
+
+> +int vdi_release(struct device *dev)
+> +{
+> +       struct vpu_device *vpu_dev = dev_get_drvdata(dev);
+> +
+> +       memset(&vpu_dev->vdb_register, 0x00, sizeof(vpu_dev->vdb_register));
+> +       vdi_free_dma_memory(vpu_dev, &vpu_dev->common_mem);
+> +
+> +       return 0;
+> +}
+> +EXPORT_SYMBOL(vdi_release);
+> +
+> +void vdi_write_register(struct vpu_device *vpu_dev, unsigned int addr, unsigned int data)
+> +{
+> +       struct vpu_platform_data *pdata;
+> +
+> +       pdata = dev_get_platdata(vpu_dev->dev);
+> +       if (pdata && pdata->write_register)
+> +               return pdata->write_register(vpu_dev->dev, vpu_dev->vdb_register.vaddr, addr, data);
+> +
+> +       writel(data, vpu_dev->vdb_register.vaddr + addr);
+> +}
+> +
+> +unsigned int vdi_read_register(struct vpu_device *vpu_dev, unsigned int addr)
+> +{
+> +       struct vpu_platform_data *pdata;
+> +
+> +       pdata = dev_get_platdata(vpu_dev->dev);
+> +       if (pdata && pdata->read_register)
+> +               return pdata->read_register(vpu_dev->dev, vpu_dev->vdb_register.vaddr, addr);
+> +
+> +       return readl(vpu_dev->vdb_register.vaddr + addr);
+> +}
+> +EXPORT_SYMBOL(vdi_read_register);
+> +
+> +int vdi_buffer_sync(struct device *dev, struct vpu_buf *vb, int dir)
+> +{
+> +       struct vpu_device *vpu_dev = dev_get_drvdata(dev);
+> +       struct vpu_platform_data *pdata;
+> +
+> +       if (!vb || !vb->vaddr) {
+> +               pr_err("%s(): unable to clear unmapped buffer\n", __func__);
+> +               return -EINVAL;
+> +       }
+> +
+> +       pdata = dev_get_platdata(dev);
+> +       if (pdata && pdata->buffer_sync)
+> +               return pdata->buffer_sync(dev, vpu_dev->vdb_register.vaddr, vb, 0, vb->size, dir);
+> +
+> +       return 0;
+> +}
+> +EXPORT_SYMBOL(vdi_buffer_sync);
+> +
+> +int vdi_clear_memory(struct vpu_device *vpu_dev, struct vpu_buf *vb)
+> +{
+> +       struct vpu_platform_data *pdata;
+> +
+> +       if (!vb || !vb->vaddr) {
+> +               pr_err("%s(): unable to clear unmapped buffer\n", __func__);
+> +               return -EINVAL;
+> +       }
+> +
+> +       memset(vb->vaddr, 0, vb->size);
+> +       pdata = dev_get_platdata(vpu_dev->dev);
+> +       if (pdata && pdata->buffer_sync)
+> +               pdata->buffer_sync(vpu_dev->dev, vpu_dev->vdb_register.vaddr, vb, 0, vb->size, VPU_BUF_SYNC_TO_DEVICE);
+> +
+> +       return vb->size;
+> +}
+> +
+> +static int swap_endian(struct vpu_device *vpu_dev, unsigned char *data, int len, int endian);
+> +
+> +int vdi_write_memory(struct vpu_device *vpu_dev, struct vpu_buf *vb, size_t offset, unsigned char *data, int len, int endian)
+> +{
+> +       struct vpu_platform_data *pdata;
+> +
+> +       if (!vb || !vb->vaddr) {
+> +               pr_err("%s(): unable to write to unmapped buffer\n", __func__);
+> +               return -EINVAL;
+> +       }
+> +
+> +       if ((offset + len) > vb->size) {
+> +               pr_err("%s(): buffer too small\n", __func__);
+> +               return -ENOSPC;
+> +       }
+> +
+> +       swap_endian(vpu_dev, data, len, endian);
+> +       memcpy(vb->vaddr + offset, data, len);
+> +       pdata = dev_get_platdata(vpu_dev->dev);
+> +       if (pdata && pdata->buffer_sync)
+> +               pdata->buffer_sync(vpu_dev->dev, vpu_dev->vdb_register.vaddr, vb, offset, len, VPU_BUF_SYNC_TO_DEVICE);
+> +
+> +       return len;
+> +}
+> +
+> +int vdi_allocate_dma_memory(struct vpu_device *vpu_dev, struct vpu_buf *vb)
+> +{
+> +       void *vaddr;
+> +       dma_addr_t daddr;
+> +       struct vpu_platform_data *pdata;
+> +
+> +       if (!vb->size) {
+> +               dev_err(vpu_dev->dev, "%s(): requested size==0\n", __func__);
+> +               return -EINVAL;
+> +       }
+> +
+> +       pdata = dev_get_platdata(vpu_dev->dev);
+> +       if (pdata && pdata->buffer_alloc)
+> +               return pdata->buffer_alloc(vpu_dev->dev, vb);
+
+I don't see buffer_alloc implemented, but like I said, better to just
+ditch this ad-hoc allocator and do follow kernel-style, like all drivers.
+
+> +
+> +       vaddr = dma_alloc_coherent(vpu_dev->dev, vb->size, &daddr, GFP_KERNEL);
+> +       if (!vaddr)
+> +               return -ENOMEM;
+> +       vb->vaddr = vaddr;
+> +       vb->daddr = daddr;
+> +
+> +       return 0;
+> +}
+> +EXPORT_SYMBOL(vdi_allocate_dma_memory);
+> +
+> +void vdi_free_dma_memory(struct vpu_device *vpu_dev, struct vpu_buf *vb)
+> +{
+> +       struct vpu_platform_data *pdata;
+> +
+> +       if (vb->size == 0)
+> +               return;
+> +
+> +       pdata = dev_get_platdata(vpu_dev->dev);
+> +       if (pdata && pdata->buffer_free)
+> +               return pdata->buffer_free(vpu_dev->dev, vb);
+> +
+> +       if (!vb->vaddr)
+> +               dev_err(vpu_dev->dev, "%s(): requested free of unmapped buffer\n", __func__);
+> +       else
+> +               dma_free_coherent(vpu_dev->dev, vb->size, vb->vaddr, vb->daddr);
+> +
+> +       memset(vb, 0, sizeof(*vb));
+> +}
+> +EXPORT_SYMBOL(vdi_free_dma_memory);
+> +
+> +int vdi_convert_endian(struct vpu_device *vpu_dev, unsigned int endian)
+> +{
+> +       if (PRODUCT_CODE_W_SERIES(vpu_dev->product_code)) {
+> +               switch (endian) {
+> +               case VDI_LITTLE_ENDIAN:
+> +                       endian = 0x00;
+> +                       break;
+> +               case VDI_BIG_ENDIAN:
+> +                       endian = 0x0f;
+> +                       break;
+> +               case VDI_32BIT_LITTLE_ENDIAN:
+> +                       endian = 0x04;
+> +                       break;
+> +               case VDI_32BIT_BIG_ENDIAN:
+> +                       endian = 0x03;
+> +                       break;
+> +               }
+> +       }
+> +
+> +       return (endian & 0x0f);
+> +}
+> +
+> +void byte_swap(unsigned char *data, int len)
+> +{
+> +       u8 temp;
+> +       s32 i;
+> +
+> +       for (i = 0; i < len; i += 2) {
+> +               temp      = data[i];
+> +               data[i]   = data[i + 1];
+> +               data[i + 1] = temp;
+> +       }
+> +}
+> +
+> +void word_swap(unsigned char *data, int len)
+
+Perhaps there's some library function for all these?
+
+> +{
+> +       u16  temp;
+> +       u16 *ptr = (uint16_t *)data;
+> +       s32   i, size = len / (int)sizeof(uint16_t);
+> +
+> +       for (i = 0; i < size; i += 2) {
+> +               temp     = ptr[i];
+> +               ptr[i]   = ptr[i + 1];
+> +               ptr[i + 1] = temp;
+> +       }
+> +}
+> +
+> +void dword_swap(unsigned char *data, int len)
+> +{
+> +       u32  temp;
+> +       u32 *ptr = (uint32_t *)data;
+> +       s32   i, size = len / (int)sizeof(uint32_t);
+> +
+> +       for (i = 0; i < size; i += 2) {
+> +               temp     = ptr[i];
+> +               ptr[i]   = ptr[i + 1];
+> +               ptr[i + 1] = temp;
+> +       }
+> +}
+> +
+> +void lword_swap(unsigned char *data, int len)
+> +{
+> +       u64  temp;
+> +       u64 *ptr = (uint64_t *)data;
+> +       s32   i, size = len / (int)sizeof(uint64_t);
+> +
+> +       for (i = 0; i < size; i += 2) {
+> +               temp     = ptr[i];
+> +               ptr[i]   = ptr[i + 1];
+> +               ptr[i + 1] = temp;
+> +       }
+> +}
+> +
+> +static int swap_endian(struct vpu_device *vpu_dev, unsigned char *data, int len, int endian)
+> +{
+> +       int         changes;
+> +       int         sys_endian;
+> +       bool        byte_change, word_change, dword_change, lword_change;
+> +
+> +       if (PRODUCT_CODE_W_SERIES(vpu_dev->product_code)) {
+> +               sys_endian = VDI_128BIT_BUS_SYSTEM_ENDIAN;
+> +       } else {
+> +               pr_err("unknown product id : %08x\n", vpu_dev->product_code);
+> +               return -1;
+> +       }
+> +
+> +       endian     = vdi_convert_endian(vpu_dev, endian);
+> +       sys_endian = vdi_convert_endian(vpu_dev, sys_endian);
+> +       if (endian == sys_endian)
+> +               return 0;
+> +
+> +       changes     = endian ^ sys_endian;
+> +       byte_change  = changes & 0x01;
+> +       word_change  = ((changes & 0x02) == 0x02);
+> +       dword_change = ((changes & 0x04) == 0x04);
+> +       lword_change = ((changes & 0x08) == 0x08);
+> +
+> +       if (byte_change)
+> +               byte_swap(data, len);
+> +       if (word_change)
+> +               word_swap(data, len);
+> +       if (dword_change)
+> +               dword_swap(data, len);
+> +       if (lword_change)
+> +               lword_swap(data, len);
+> +
+> +       return 1;
+> +}
+> +
+> diff --git a/drivers/staging/media/wave5/vdi/vdi.h b/drivers/staging/media/wave5/vdi/vdi.h
+> new file mode 100644
+> index 000000000000..31fcea026755
+> --- /dev/null
+> +++ b/drivers/staging/media/wave5/vdi/vdi.h
+> @@ -0,0 +1,79 @@
+> +/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+> +/*
+> + * Wave5 series multi-standard codec IP - low level access functions
+> + *
+> + * Copyright (C) 2021 CHIPS&MEDIA INC
+> + */
+> +
+> +#ifndef _VDI_H_
+> +#define _VDI_H_
+> +
+> +#include "../vpuapi/vpuconfig.h"
+> +#include <linux/string.h>
+> +#include <linux/slab.h>
+> +#include <linux/device.h>
+> +
+> +/************************************************************************/
+> +/* COMMON REGISTERS                                                     */
+> +/************************************************************************/
+> +#define VPU_PRODUCT_CODE_REGISTER                 0x1044
+> +
+> +/* system register write */
+> +#define vpu_write_reg(VPU_INST, ADDR, DATA) vdi_write_register(VPU_INST, ADDR, DATA)
+> +// system register read
+> +#define vpu_read_reg(CORE, ADDR) vdi_read_register(CORE, ADDR)
+> +// system memory write
+> +#define vpu_write_mem(CORE, VB, OFFSET, DATA, LEN, ENDIAN)    \
+> +       vdi_write_memory(CORE, VB, OFFSET, DATA, LEN, ENDIAN)
+> +
+> +struct vpu_buf {
+> +       size_t size;
+> +       dma_addr_t daddr;
+> +       void __iomem *vaddr;
+> +};
+> +
+> +enum endian_mode {
+> +       VDI_LITTLE_ENDIAN = 0,      /* 64bit LE */
+> +       VDI_BIG_ENDIAN,             /* 64bit BE */
+> +       VDI_32BIT_LITTLE_ENDIAN,
+> +       VDI_32BIT_BIG_ENDIAN,
+> +       /* WAVE PRODUCTS */
+> +       VDI_128BIT_LITTLE_ENDIAN    = 16,
+> +       VDI_128BIT_LE_BYTE_SWAP,
+> +       VDI_128BIT_LE_WORD_SWAP,
+> +       VDI_128BIT_LE_WORD_BYTE_SWAP,
+> +       VDI_128BIT_LE_DWORD_SWAP,
+> +       VDI_128BIT_LE_DWORD_BYTE_SWAP,
+> +       VDI_128BIT_LE_DWORD_WORD_SWAP,
+> +       VDI_128BIT_LE_DWORD_WORD_BYTE_SWAP,
+> +       VDI_128BIT_BE_DWORD_WORD_BYTE_SWAP,
+> +       VDI_128BIT_BE_DWORD_WORD_SWAP,
+> +       VDI_128BIT_BE_DWORD_BYTE_SWAP,
+> +       VDI_128BIT_BE_DWORD_SWAP,
+> +       VDI_128BIT_BE_WORD_BYTE_SWAP,
+> +       VDI_128BIT_BE_WORD_SWAP,
+> +       VDI_128BIT_BE_BYTE_SWAP,
+> +       VDI_128BIT_BIG_ENDIAN        = 31,
+> +       VDI_ENDIAN_MAX
+> +};
+> +
+> +#define VDI_128BIT_ENDIAN_MASK 0xf
+> +
+> +int vdi_init(struct device *dev);
+> +int vdi_release(struct device *dev);   //this function may be called only at system off.
+> +
+> +/**
+> + * @brief       make clock stable before changing clock frequency
+> + * @detail      before inoking vdi_set_clock_freg caller MUST invoke vdi_ready_change_clock
+> + *             function.
+> + *              after changing clock frequency caller also invoke vdi_done_change_clock() function.
+> + * @return  0   failure
+> + *          1   success
+> + */
+> +int vdi_ready_change_clock(unsigned long core_idx);
+> +int vdi_set_change_clock(unsigned long core_idx, unsigned long clock_mask);
+> +int vdi_done_change_clock(unsigned long core_idx);
+> +int vdi_buffer_sync(struct device *dev, struct vpu_buf *vb, int dir);
+> +
+> +#endif //#ifndef _VDI_H_
+> +
+> --
+> 2.17.1
+>
+
+Regards,
+Ezequiel
