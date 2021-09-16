@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AA6A40E270
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:16:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 430E240DF86
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:10:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234532AbhIPQiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:38:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38934 "EHLO mail.kernel.org"
+        id S235852AbhIPQKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:10:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47058 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243183AbhIPQaJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:30:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 209FA613AD;
-        Thu, 16 Sep 2021 16:19:02 +0000 (UTC)
+        id S234166AbhIPQHQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:07:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E780061241;
+        Thu, 16 Sep 2021 16:05:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809143;
-        bh=ItDa3DZB83Wn4oaMui8ZmDfswbUzyvlWkCkK2LB/1z8=;
+        s=korg; t=1631808355;
+        bh=rtOLzNItH6yW4WKLFulortgA2dK8mRuL7jlquMxKKyE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a9Z0MkQ5os0RNjRK/rtYI6QwRHgPvlmMAmSBtPnoeME5vMLBnY3wQYFnloO1THxBl
-         0psfR4qe2rUpEoyMEliRthiG6cpFrkdqryDVTdBQQH2iZsmjn9bDMveAvhV51wVDFZ
-         MkTokfDKmdmYAnk9JXJMMZekXUw84177zmoDIQH4=
+        b=tigFHyPriKwRrAMkta/RNPnYKbjwAon9LBHWcYyZdI771qT/OFrae+JMNbgW+f+Ka
+         w7RzcxbWTknQy1rJr4MpUlevPKrJ0RyVNhL+4wJw+P1GzBkRN7m6nI12x9dRNmp5zt
+         5OTtO/TKZBEZAPY0OIj1wuNMvEnV0SDeI7MCzn/Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Julian Wiedmann <jwi@linux.ibm.com>,
-        Benjamin Block <bblock@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>
-Subject: [PATCH 5.13 047/380] s390/qdio: fix roll-back after timeout on ESTABLISH ccw
+        stable@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 059/306] clk: rockchip: drop GRF dependency for rk3328/rk3036 pll types
 Date:   Thu, 16 Sep 2021 17:56:44 +0200
-Message-Id: <20210916155805.586635600@linuxfoundation.org>
+Message-Id: <20210916155755.954618003@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,110 +40,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Julian Wiedmann <jwi@linux.ibm.com>
+From: Peter Geis <pgwipeout@gmail.com>
 
-commit 2c197870e4701610ec3b1143808d4e31152caf30 upstream.
+[ Upstream commit 6fffe52fb336ec2063270a7305652a93ea677ca1 ]
 
-When qdio_establish() times out while waiting for the ESTABLISH ccw to
-complete, it calls qdio_shutdown() to roll back all of its previous
-actions. But at this point the qdio_irq's state is still
-QDIO_IRQ_STATE_INACTIVE, so qdio_shutdown() will exit immediately
-without doing any actual work.
+The rk3036/rk3328 pll types were converted to checking the lock status
+via the internal register in january 2020, so don't need the grf
+reference since then.
 
-Which means that eg. the qdio_irq's thinint-indicator stays registered,
-and cdev->handler isn't restored to its old value. And since
-commit 954d6235be41 ("s390/qdio: make thinint registration symmetric")
-the qdio_irq also stays on the tiq_list, so on the next qdio_establish()
-we might get a helpful BUG from the list-debugging code:
+But it was forgotten to remove grf check when deciding between the
+pll rate ops (read-only vs. read-write), so a clock driver without
+the needed grf reference might've been put into the read-only mode
+just because the grf reference was missing.
 
-...
-[ 4633.512591] list_add double add: new=00000000005a4110, prev=00000001b357db78, next=00000000005a4110.
-[ 4633.512621] ------------[ cut here ]------------
-[ 4633.512623] kernel BUG at lib/list_debug.c:29!
-...
-[ 4633.512796]  [<00000001b2c6ee9a>] __list_add_valid+0x82/0xa0
-[ 4633.512798] ([<00000001b2c6ee96>] __list_add_valid+0x7e/0xa0)
-[ 4633.512800]  [<00000001b2fcecce>] qdio_establish_thinint+0x116/0x190
-[ 4633.512805]  [<00000001b2fcbe58>] qdio_establish+0x128/0x498
-...
+This affected the rk356x that needs to reclock certain plls at boot.
 
-Fix this by extracting a goto-chain from the existing error exits in
-qdio_establish(), and check the return value of the wait_event_...()
-to detect the timeout condition.
+Fix this by removing the check for the grf for selecting the utilized
+operations.
 
-Fixes: 779e6e1c724d ("[S390] qdio: new qdio driver.")
-Root-caused-by: Benjamin Block <bblock@linux.ibm.com>
-Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
-Reviewed-by: Benjamin Block <bblock@linux.ibm.com>
-Cc: <stable@vger.kernel.org> # 2.6.27
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Suggested-by: Heiko Stuebner <heiko@sntech.de>
+Fixes: 7f6ffbb885d1 ("clk: rockchip: convert rk3036 pll type to use internal lock status")
+Signed-off-by: Peter Geis <pgwipeout@gmail.com>
+[adjusted the commit message, adjusted the fixes tag]
+Link: https://lore.kernel.org/r/20210728180034.717953-3-pgwipeout@gmail.com
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/s390/cio/qdio_main.c |   31 +++++++++++++++++++------------
- 1 file changed, 19 insertions(+), 12 deletions(-)
+ drivers/clk/rockchip/clk-pll.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/s390/cio/qdio_main.c
-+++ b/drivers/s390/cio/qdio_main.c
-@@ -1079,6 +1079,7 @@ int qdio_establish(struct ccw_device *cd
- {
- 	struct qdio_irq *irq_ptr = cdev->private->qdio_data;
- 	struct subchannel_id schid;
-+	long timeout;
- 	int rc;
- 
- 	ccw_device_get_schid(cdev, &schid);
-@@ -1107,11 +1108,8 @@ int qdio_establish(struct ccw_device *cd
- 	qdio_setup_irq(irq_ptr, init_data);
- 
- 	rc = qdio_establish_thinint(irq_ptr);
--	if (rc) {
--		qdio_shutdown_irq(irq_ptr);
--		mutex_unlock(&irq_ptr->setup_mutex);
--		return rc;
--	}
-+	if (rc)
-+		goto err_thinint;
- 
- 	/* establish q */
- 	irq_ptr->ccw.cmd_code = irq_ptr->equeue.cmd;
-@@ -1127,15 +1125,16 @@ int qdio_establish(struct ccw_device *cd
- 	if (rc) {
- 		DBF_ERROR("%4x est IO ERR", irq_ptr->schid.sch_no);
- 		DBF_ERROR("rc:%4x", rc);
--		qdio_shutdown_thinint(irq_ptr);
--		qdio_shutdown_irq(irq_ptr);
--		mutex_unlock(&irq_ptr->setup_mutex);
--		return rc;
-+		goto err_ccw_start;
- 	}
- 
--	wait_event_interruptible_timeout(cdev->private->wait_q,
--		irq_ptr->state == QDIO_IRQ_STATE_ESTABLISHED ||
--		irq_ptr->state == QDIO_IRQ_STATE_ERR, HZ);
-+	timeout = wait_event_interruptible_timeout(cdev->private->wait_q,
-+						   irq_ptr->state == QDIO_IRQ_STATE_ESTABLISHED ||
-+						   irq_ptr->state == QDIO_IRQ_STATE_ERR, HZ);
-+	if (timeout <= 0) {
-+		rc = (timeout == -ERESTARTSYS) ? -EINTR : -ETIME;
-+		goto err_ccw_timeout;
-+	}
- 
- 	if (irq_ptr->state != QDIO_IRQ_STATE_ESTABLISHED) {
- 		mutex_unlock(&irq_ptr->setup_mutex);
-@@ -1152,6 +1151,14 @@ int qdio_establish(struct ccw_device *cd
- 	qdio_print_subchannel_info(irq_ptr);
- 	qdio_setup_debug_entries(irq_ptr);
- 	return 0;
-+
-+err_ccw_timeout:
-+err_ccw_start:
-+	qdio_shutdown_thinint(irq_ptr);
-+err_thinint:
-+	qdio_shutdown_irq(irq_ptr);
-+	mutex_unlock(&irq_ptr->setup_mutex);
-+	return rc;
- }
- EXPORT_SYMBOL_GPL(qdio_establish);
- 
+diff --git a/drivers/clk/rockchip/clk-pll.c b/drivers/clk/rockchip/clk-pll.c
+index 4c6c9167ef50..bbbf9ce42867 100644
+--- a/drivers/clk/rockchip/clk-pll.c
++++ b/drivers/clk/rockchip/clk-pll.c
+@@ -940,7 +940,7 @@ struct clk *rockchip_clk_register_pll(struct rockchip_clk_provider *ctx,
+ 	switch (pll_type) {
+ 	case pll_rk3036:
+ 	case pll_rk3328:
+-		if (!pll->rate_table || IS_ERR(ctx->grf))
++		if (!pll->rate_table)
+ 			init.ops = &rockchip_rk3036_pll_clk_norate_ops;
+ 		else
+ 			init.ops = &rockchip_rk3036_pll_clk_ops;
+-- 
+2.30.2
+
 
 
