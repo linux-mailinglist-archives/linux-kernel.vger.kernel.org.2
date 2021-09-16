@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7192340DF89
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:10:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30FA940DF93
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:11:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232464AbhIPQLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:11:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46666 "EHLO mail.kernel.org"
+        id S233872AbhIPQLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:11:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47324 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233137AbhIPQHU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:07:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 90E4961251;
-        Thu, 16 Sep 2021 16:05:59 +0000 (UTC)
+        id S234221AbhIPQHZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:07:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E2C261261;
+        Thu, 16 Sep 2021 16:06:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808360;
-        bh=QY6MBd25QKZiu36ewlOr0ps4BMJR4Qlho/OjIvbK2xw=;
+        s=korg; t=1631808364;
+        bh=Q/gVRKdZshQ5u/4ZGJ6JiYrwBp8RdvdKrP0Z7HyKZts=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=begjlYQoR+5i0D31R1nskgEjP3d6/OhvDpxvRDXPVKjbKOcbadJsq0y4BlmFCsU4Z
-         rKMME8nt+4/xdl/1WJBrrLr/En46yGHOIKIlfGkQPJ+DnNfIMjaNxfa53m9kfrsJpO
-         91sqZDw+QeowyY0iqQtjQVD1jCLxUKcg8MFl5pdg=
+        b=XpvYokwzRev5NYEn4Dm6nyQVoits2EsNSqIknUJ5wRi5X43IRS8RchOY2/MOz5b3i
+         19lwqEAsjh0A+ocXJdjfsKcq493ye9dxUqZxvb/6jRjhsA2farncY6b5v5xym+YM8X
+         yvzfSlToxiNtOsh7Rwb/uT8OR+29kFbHCqvneMyU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>,
         Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 061/306] RDMA/iwcm: Release resources if iw_cm module initialization fails
-Date:   Thu, 16 Sep 2021 17:56:46 +0200
-Message-Id: <20210916155756.027920734@linuxfoundation.org>
+Subject: [PATCH 5.10 062/306] docs: Fix infiniband uverbs minor number
+Date:   Thu, 16 Sep 2021 17:56:47 +0200
+Message-Id: <20210916155756.058277948@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
 References: <20210916155753.903069397@linuxfoundation.org>
@@ -42,68 +42,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Leon Romanovsky <leonro@nvidia.com>
 
-[ Upstream commit e677b72a0647249370f2635862bf0241c86f66ad ]
+[ Upstream commit 8d7e415d55610d503fdb8815344846b72d194a40 ]
 
-The failure during iw_cm module initialization partially left the system
-with unreleased memory and other resources. Rewrite the module init/exit
-routines in such way that netlink commands will be opened only after
-successful initialization.
+Starting from the beginning of infiniband subsystem, the uverbs char
+devices start from 192 as a minor number, see
+commit bc38a6abdd5a ("[PATCH] IB uverbs: core implementation").
 
-Fixes: b493d91d333e ("iwcm: common code for port mapper")
-Link: https://lore.kernel.org/r/b01239f99cb1a3e6d2b0694c242d89e6410bcd93.1627048781.git.leonro@nvidia.com
+This patch updates the admin guide documentation to reflect it.
+
+Fixes: 9d85025b0418 ("docs-rst: create an user's manual book")
+Link: https://lore.kernel.org/r/bad03e6bcde45550c01e12908a6fe7dfa4770703.1627477347.git.leonro@nvidia.com
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/core/iwcm.c | 19 ++++++++++++-------
- 1 file changed, 12 insertions(+), 7 deletions(-)
+ Documentation/admin-guide/devices.txt | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/infiniband/core/iwcm.c b/drivers/infiniband/core/iwcm.c
-index da8adadf4755..75b6da00065a 100644
---- a/drivers/infiniband/core/iwcm.c
-+++ b/drivers/infiniband/core/iwcm.c
-@@ -1187,29 +1187,34 @@ static int __init iw_cm_init(void)
+diff --git a/Documentation/admin-guide/devices.txt b/Documentation/admin-guide/devices.txt
+index 63fd4e6a014b..8b738855e1c5 100644
+--- a/Documentation/admin-guide/devices.txt
++++ b/Documentation/admin-guide/devices.txt
+@@ -3003,10 +3003,10 @@
+ 		65 = /dev/infiniband/issm1     Second InfiniBand IsSM device
+ 		  ...
+ 		127 = /dev/infiniband/issm63    63rd InfiniBand IsSM device
+-		128 = /dev/infiniband/uverbs0   First InfiniBand verbs device
+-		129 = /dev/infiniband/uverbs1   Second InfiniBand verbs device
++		192 = /dev/infiniband/uverbs0   First InfiniBand verbs device
++		193 = /dev/infiniband/uverbs1   Second InfiniBand verbs device
+ 		  ...
+-		159 = /dev/infiniband/uverbs31  31st InfiniBand verbs device
++		223 = /dev/infiniband/uverbs31  31st InfiniBand verbs device
  
- 	ret = iwpm_init(RDMA_NL_IWCM);
- 	if (ret)
--		pr_err("iw_cm: couldn't init iwpm\n");
--	else
--		rdma_nl_register(RDMA_NL_IWCM, iwcm_nl_cb_table);
-+		return ret;
-+
- 	iwcm_wq = alloc_ordered_workqueue("iw_cm_wq", 0);
- 	if (!iwcm_wq)
--		return -ENOMEM;
-+		goto err_alloc;
- 
- 	iwcm_ctl_table_hdr = register_net_sysctl(&init_net, "net/iw_cm",
- 						 iwcm_ctl_table);
- 	if (!iwcm_ctl_table_hdr) {
- 		pr_err("iw_cm: couldn't register sysctl paths\n");
--		destroy_workqueue(iwcm_wq);
--		return -ENOMEM;
-+		goto err_sysctl;
- 	}
- 
-+	rdma_nl_register(RDMA_NL_IWCM, iwcm_nl_cb_table);
- 	return 0;
-+
-+err_sysctl:
-+	destroy_workqueue(iwcm_wq);
-+err_alloc:
-+	iwpm_exit(RDMA_NL_IWCM);
-+	return -ENOMEM;
- }
- 
- static void __exit iw_cm_cleanup(void)
- {
-+	rdma_nl_unregister(RDMA_NL_IWCM);
- 	unregister_net_sysctl_table(iwcm_ctl_table_hdr);
- 	destroy_workqueue(iwcm_wq);
--	rdma_nl_unregister(RDMA_NL_IWCM);
- 	iwpm_exit(RDMA_NL_IWCM);
- }
- 
+  232 char	Biometric Devices
+ 		0 = /dev/biometric/sensor0/fingerprint	first fingerprint sensor on first device
 -- 
 2.30.2
 
