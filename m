@@ -2,105 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8AF540EDD9
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 01:28:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A876D40EDDE
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 01:33:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241404AbhIPX2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 19:28:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58426 "EHLO
+        id S234889AbhIPXeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 19:34:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234929AbhIPX2S (ORCPT
+        with ESMTP id S234396AbhIPXeY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 19:28:18 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51E8FC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 16:26:57 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id i25so25308482lfg.6
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 16:26:57 -0700 (PDT)
+        Thu, 16 Sep 2021 19:34:24 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7D32C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 16:33:02 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id x27so25141684lfu.5
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 16:33:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=qGW+TlqgmksvmhUEkFUHjtdzrHaBOdCApfV4N+CESfA=;
-        b=iI1AB/uL5IKlwdLyO2RhbtZpmeHcOT7OX2ULVresTNDmhDk7gIub2LhVdRwBJcqLMh
-         XiglApUPu0QaUlAIg3Y2Q/B/XfDAWJ8EwWq/x9pDJoySoMsCcG1PLPPEwJRItLFqgtgQ
-         2Dcn6u5gso9HAm1IiaNkjCw2h+gSWvm1yETAxzuvKVvRKvBesxAXQPH05FjTvDbqoBQi
-         jTRMpZzbRCe5EFJzplvt/uT9gKTFvtzpxBIst9k02ZJqRz1bTgiXUCmAmTDQcY7ULtdK
-         rA814LQ1TmQI9v8bQ9U8FKSz+S8nc7jTfWmUqkuX1d1CjzocsbFRpFebjHhR+wPM8vxS
-         P1hg==
+        bh=rjHqvEYv6+gMyg4Tq+Rh/G8JnWMIR7cUG1Fmcv07v/Y=;
+        b=mVwI96FJbGbROeb+waDs8Fr9jg58Ppg3G2f/qwPZr8axanVXE1bqdoj0ztls5rFeZs
+         7VP7jjoGJfuz3jYXmZXGUUni8EfJ0lHPi6gBIwHP/3X+JyNUfkM64ieQN7Eup9QB3k9+
+         vuJiV+V11n2Sz8DjTwNiUX7vhU6ELwHZd9a1rYo3jBA8DojYTwgzZN1KmzCSV73sP+lr
+         XQiXPoqQ9zuPRQKFU7kB7mBZs4lDHUt202CByLC5d9bKgKa3M18kMIbzFQ/7AvVQvp2f
+         Mv4pVqPYTnLLv3IYLLOI9QoERjjqo3vdcr/qYaQ/3TiL0X0yeZOBfspENrBEt6KUVBUs
+         6vIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=qGW+TlqgmksvmhUEkFUHjtdzrHaBOdCApfV4N+CESfA=;
-        b=cfCKqmUodm+XPfOse+/qmtpBfGmz2nEUpQFH58Yh0mPcX0kLg4o1b/5q/khMDvm2Ub
-         vTUPyfAhZFWb2XwAmntQs2fIszmwIpvmeTRxmfHI8V/60E9L+fo6bBriqYxeIsW7/2Ic
-         mcTzFgurKWobMtFcRPKdYb4qLTbeMgb+WJaLGdwBnfrzserOxnyLVGxSv5df9XNP6VyL
-         /KfGu3ZdS0B1NjINhiaEdSxyfFnD/iw61xhpEr3G2lkp2r5h8G7f64lIJEUlcC/+XroR
-         dH8NiwP8liOCQgQxmrDkHJ1r6mufVZCQKv2DZNho+6qjsSU060usV48gowXUy51Ps4of
-         3fgw==
-X-Gm-Message-State: AOAM530x0qEYegiqiNg1Dj3VszSZB5XSJyG+C2ZdBNcVUP7M0i5qwsRt
-        IfeudHWRxCDrT6sIIHbpbx5/wADtBcRr3y/U72qg5g==
-X-Google-Smtp-Source: ABdhPJy1ZYuYhqdlBzLoZg+vMF2Sg/WTKkh6TEdBxkvxcWnSTiA4cw7O+M0iwQlNphJQppOLamlPKpz35Q1eonR6kwE=
-X-Received: by 2002:a05:6512:3b9e:: with SMTP id g30mr5707949lfv.651.1631834815384;
- Thu, 16 Sep 2021 16:26:55 -0700 (PDT)
+        bh=rjHqvEYv6+gMyg4Tq+Rh/G8JnWMIR7cUG1Fmcv07v/Y=;
+        b=QeUCFv68BLmg68Wks/7X3kklcl78QB0Qzi9NPyhvGIt0MHlDU+ah0LEXr8Uj+fTZe+
+         gO70gbDcY/6uXVhxctFU4u0gdPP2lPee883LT5K0pISAPs/501ciPiQZt7rTdfFRc3DO
+         OAbNSGEIi5JIYfj9D8WWjwnaozsA2AvgG06dBNDD7jhJT/b+KkgKb3h8PekjGm7f2hwX
+         j5XA3ToTbJfW5sKWt3MQBtKH5f6ivrOhuLECO8TWopl2j9bcy5bBcqUSoYn72/sn4V8d
+         f5wSjSHAezpIFyg+E3okuRT0u9NWF05W9frWWrB1dz8/YxDwJ5Gegqb8bmizcZF12W3T
+         EzTQ==
+X-Gm-Message-State: AOAM532TZrH7CDSuVuNkE7t1ah/7GjVbgPr7DkPhT2qPMKuDrXcj1jQe
+        3zAg8I5rEsPs/VqNG3tnbnXkTd46BqFLtwJJDso7zA==
+X-Google-Smtp-Source: ABdhPJx3qUqm8D+MvhzJv8yo3TmSo9hTYPFYIbXvo26tL6U4gur7fI6B/LsMvGG2bOFUWelJ1aarRW0hBAjmL6Wq+v0=
+X-Received: by 2002:a19:f249:: with SMTP id d9mr5952890lfk.229.1631835180984;
+ Thu, 16 Sep 2021 16:33:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210830213846.2609349-1-ndesaulniers@google.com> <CACRpkdap==EPZpAggMmd0XN1J-DwK=OQu3oGn-V=zPOaq5XnHw@mail.gmail.com>
-In-Reply-To: <CACRpkdap==EPZpAggMmd0XN1J-DwK=OQu3oGn-V=zPOaq5XnHw@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 16 Sep 2021 16:26:44 -0700
-Message-ID: <CAKwvOdmmrxs2eMqvUm+Zg6Lpin+9BoQRPh9CF3Tdnc-+9eeQSw@mail.gmail.com>
-Subject: Re: [PATCH] ARM: select HAVE_FUTEX_CMPXCHG
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        llvm@lists.linux.dev, Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Mike Rapoport <rppt@kernel.org>,
+References: <20210908013218.29702-1-wenbin.mei@mediatek.com> <20210908013218.29702-2-wenbin.mei@mediatek.com>
+In-Reply-To: <20210908013218.29702-2-wenbin.mei@mediatek.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 17 Sep 2021 01:32:50 +0200
+Message-ID: <CACRpkdYxSwr05eK1x+BAgHxgccQWGUxW-_q_xSGmfkTHEbs+5w@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] dt-bindings: mmc: mtk-sd: add hs400 dly3 setting
+To:     Wenbin Mei <wenbin.mei@mediatek.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Chaotian Jing <chaotian.jing@mediatek.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Yue Hu <huyue2@yulong.com>, Bean Huo <beanhuo@micron.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
         linux-kernel <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
+        Rob Herring <robh@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 3:40 PM Linus Walleij <linus.walleij@linaro.org> wrote:
->
-> On Mon, Aug 30, 2021 at 11:38 PM Nick Desaulniers
-> <ndesaulniers@google.com> wrote:
->
-> > tglx notes:
-> >   This function [futex_detect_cmpxchg] is only needed when an
-> >   architecture has to runtime discover whether the CPU supports it or
-> >   not.  ARM has unconditional support for this, so the obvious thing to
-> >   do is the below.
-> >
-> > Fixes linkage failure from Clang randconfigs:
-> > kernel/futex.o:(.text.fixup+0x5c): relocation truncated to fit: R_ARM_JUMP24 against `.init.text'
-> > and boot failures for CONFIG_THUMB2_KERNEL.
-> >
-> > Link: https://github.com/ClangBuiltLinux/linux/issues/325
-> > Reported-by: Arnd Bergmann <arnd@arndb.de>
-> > Reported-by: Nathan Chancellor <nathan@kernel.org>
-> > Suggested-by: Thomas Gleixner <tglx@linutronix.de>
-> > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
->
-> LGTM
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
->
-> Please put this into Russell's patch tracker!
+On Wed, Sep 8, 2021 at 3:32 AM Wenbin Mei <wenbin.mei@mediatek.com> wrote:
 
-Done!
-https://www.armlinux.org.uk/developer/patches/viewpatch.php?id=9122/1
-Thanks for the review!
+> Add hs400 dly3 setting for mtk-sd yaml
+>
+> Signed-off-by: Wenbin Mei <wenbin.mei@mediatek.com>
+> Acked-by: Rob Herring <robh@kernel.org>
 
--- 
-Thanks,
-~Nick Desaulniers
+Excellent doc!
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+
+Yours,
+Linus Walleij
