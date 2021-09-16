@@ -2,165 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A44FC40EBEF
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 23:01:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F42240EBF3
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 23:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234138AbhIPVC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 17:02:56 -0400
-Received: from mail-lf1-f47.google.com ([209.85.167.47]:42753 "EHLO
-        mail-lf1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233742AbhIPVCy (ORCPT
+        id S233110AbhIPVGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 17:06:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232910AbhIPVGY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 17:02:54 -0400
-Received: by mail-lf1-f47.google.com with SMTP id bq5so23880581lfb.9
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 14:01:33 -0700 (PDT)
+        Thu, 16 Sep 2021 17:06:24 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D362C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 14:05:03 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id b15so5257406lfe.7
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 14:05:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=23HNxgixZz7HROjNjlGvcSmaUCblTGeHOsIAJ8Co38s=;
+        b=iDY2xncG8BV1STCUKqiHq9fAWVQ7uxUoGme0MVCBxmh0aeyhBCf4QisYop1+EzjZiX
+         JjchHn4ne/4IhtARj18LA568/XiZdt4l6zVCrqpGkeQYafx6Xgb/1KqQuyA8PxpRWTqf
+         sXWiyC06t52sI02f1Xa+skdlNHN06dBwScnhizH1tsPyTfWgY/UUXu7kblbx0w8Q8sS5
+         KfcoSjEAUHx19x0avJSMHFmkBTMRzcoYeqTeWG7To6tj9p3zVZJzTHliHZq8KrNPzm/J
+         G6vVuoVisa4WrkOoXs4o9llycKGwVEY80vsvzzkEyvL2IFokW+c+/NVjnuuXol2J2kNi
+         jFvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=3lh/g9O9FeL09Lf0YdCKHSaBVJAsgIhPbExscrbybvw=;
-        b=Sn2vbLxFEJyUJd3RphcXzWvWtRDka1vWscVJVaBdrdwKtBXAW/RF1D23cj805ZWSDm
-         qAJVMrxdKJaU1LgkYpjfkbZWONwMR85IgVBTKqOjxZM5H5V3Nn58vzQTs8GXPj72qXxv
-         2YxG1VK5/O3r0aWvjYCdBDeWAxqW1qUvG6D7GL+vWRPZCJeYNOt1UrxZ02g+C+juHLh3
-         N/zaoXDk65pgwq7uPZtRVeQKffmfYOsBklbAzPRBxg7KHbsFxhA9XByrhpxkCwKFWD3m
-         9oS5KezCd+1eb2Pl2psaPztdk35P5a7+ngPqlOCoNJN1u/iPiPueN6wbFPimStvi+hf5
-         V2mQ==
-X-Gm-Message-State: AOAM533EM9lOddCA4WIM/lHRINvWfj1R75IXWJLyqcq2viOfbIMK1If2
-        wIzThlkHX6VC3ZdCW14gZaIrCCrinvziTHX9Q7c=
-X-Google-Smtp-Source: ABdhPJyyJ2f9AEJnLToxBLZZfzGpvbxD9P4/c5UZyAWnAp0N3Ppb5ut+Q9dVs0eG5+vXh/WXI7xqcF+gyRDSL5XHEpQ=
-X-Received: by 2002:a05:651c:a12:: with SMTP id k18mr6546638ljq.90.1631826092625;
- Thu, 16 Sep 2021 14:01:32 -0700 (PDT)
+        bh=23HNxgixZz7HROjNjlGvcSmaUCblTGeHOsIAJ8Co38s=;
+        b=zrOe9K4tDm9tjb3gekry8ISMNUvDb1+NwdS84AbD6VaobkboxHXAWfjbkbvBPw2qjM
+         QeoeHXwZA96m2l1B8lPULy/9zB+og8+LlC0d+vAWsEPPvss4napRb6oTQAp1JX2gWZIt
+         QEIO19KvrhR4tdHc6Apb0da6FtxWLxR7+kw4Ul3xeOH7yQtwg5Hnnsd0JP37E5Zpkx2T
+         pRsHQREm9Bg8mnnMe/OfaZDBTGjJnJa8fv2D1kVSXtcz4Da0kq4zP55KWknQeKK5CYCJ
+         cTGqHc0GMc7tZegFXGgq3GKt82Xrg3TgnmU0jYgejFufgVwXixmIER9AXuR5Pd1i/nXj
+         Zlow==
+X-Gm-Message-State: AOAM532B/TD98i4CTyVLhUZjSVAZkJaIPnk/Q01y4rhrgekRRZ6E4hq4
+        07OQjD5QcOJX1lN/A2V4zrLda3z/vDR8wdIjz95VoA==
+X-Google-Smtp-Source: ABdhPJy2MhLJVak4fVGGClbNu8ki6/UdSBfbyC5LLDi2KCOHNV5eRMb85bbEIUmQfPma5wYrcd4boLOFNgfq/5O9DPA=
+X-Received: by 2002:a2e:9ed9:: with SMTP id h25mr6435874ljk.40.1631826301732;
+ Thu, 16 Sep 2021 14:05:01 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210916001748.1525291-1-namhyung@kernel.org> <20210916135418.GA383600@leoy-ThinkPad-X240s>
-In-Reply-To: <20210916135418.GA383600@leoy-ThinkPad-X240s>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Thu, 16 Sep 2021 14:01:21 -0700
-Message-ID: <CAM9d7chQjzEm7=UpjtTBbsob7kT+=9v16P30hWxnna7mbHu=2g@mail.gmail.com>
-Subject: Re: [RFC] perf arm-spe: Track task context switch for cpu-mode events
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        James Clark <james.clark@arm.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
+References: <CAHk-=whiFC8Az2wD5_DCeysw+DV4srAj3sCbVP4asPPEJbOpqQ@mail.gmail.com>
+ <64b88941-9ec0-8552-d05d-6503497f6f9d@MichaelLarabel.com> <CAHk-=wgcPrGW1=A9XetuUZv_QHf1p7znUUGbm7UCcawbboxRCQ@mail.gmail.com>
+In-Reply-To: <CAHk-=wgcPrGW1=A9XetuUZv_QHf1p7znUUGbm7UCcawbboxRCQ@mail.gmail.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Thu, 16 Sep 2021 14:04:50 -0700
+Message-ID: <CALvZod73acr3zhbGzzQ8YyNGhTOe-6NhUNH6Z6O6FbD+oFoAmw@mail.gmail.com>
+Subject: Re: memcg: infrastructure to flush memcg stats
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Feng Tang <feng.tang@intel.com>,
+        Michael Larabel <Michael@michaellarabel.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Leo,
-
-(Removing Tan as the email bounced)
-
-On Thu, Sep 16, 2021 at 6:54 AM Leo Yan <leo.yan@linaro.org> wrote:
+On Thu, Sep 16, 2021 at 1:45 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
 >
-> Hi Namhyung,
+> So the kernel test robot complained about this commit back when it was
+> in the -mm tree:
 >
-> On Wed, Sep 15, 2021 at 05:17:48PM -0700, Namhyung Kim wrote:
-> > When perf report synthesize events from ARM SPE data, it refers to
-> > current cpu, pid and tid in the machine.  But there's no place to set
-> > them in the ARM SPE decoder.  I'm seeing all pid/tid is set to -1 and
-> > user symbols are not resolved in the output.
-> >
-> >   # perf record -a -e arm_spe_0/ts_enable=1/ sleep 1
-> >
-> >   # perf report -q | head
-> >      8.77%     8.77%  :-1      [kernel.kallsyms]  [k] format_decode
-> >      7.02%     7.02%  :-1      [kernel.kallsyms]  [k] seq_printf
-> >      7.02%     7.02%  :-1      [unknown]          [.] 0x0000ffff9f687c34
-> >      5.26%     5.26%  :-1      [kernel.kallsyms]  [k] vsnprintf
-> >      3.51%     3.51%  :-1      [kernel.kallsyms]  [k] string
-> >      3.51%     3.51%  :-1      [unknown]          [.] 0x0000ffff9f66ae20
-> >      3.51%     3.51%  :-1      [unknown]          [.] 0x0000ffff9f670b3c
-> >      3.51%     3.51%  :-1      [unknown]          [.] 0x0000ffff9f67c040
-> >      1.75%     1.75%  :-1      [kernel.kallsyms]  [k] ___cache_free
-> >      1.75%     1.75%  :-1      [kernel.kallsyms]  [k] __count_memcg_events
-> >
-> > Like Intel PT, add context switch records to track task info.  As ARM
-> > SPE support was added later than PERF_RECORD_SWITCH_CPU_WIDE, I think
-> > we can safely set the attr.context_switch bit and use it.
+>   https://lore.kernel.org/all/20210726022421.GB21872@xsang-OptiPlex-9020/
 >
-> Thanks for the patch.
+> but I never really saw anything else about it, and left it alone.
 >
-> Before we had discussion for enabling PID/TID for SPE samples; in the patch
-> set [1], patches 07, 08 set sample's pid/tid based on the Arm SPE context
-> packets.  To enable hardware tracing context ID, you also needs to enable
-> kernel config CONFIG_PID_IN_CONTEXTIDR.
-
-Thanks for sharing this.
-
-Yeah I also look at the context info but having a dependency on a kconfig
-looks limiting its functionality.  Also the kconfig says it has some overhead
-in the critical path (even if perf is not running, right?) - but not sure how
-much it can add.
-
-config PID_IN_CONTEXTIDR
-    bool "Write the current PID to the CONTEXTIDR register"
-    help
-      Enabling this option causes the kernel to write the current PID to
-      the CONTEXTIDR register, at the expense of some additional
-      instructions during context switch. Say Y here only if you are
-      planning to use hardware trace tools with this kernel.
-
+> However, now Michael Larabel (of phoronix) points to this commit too,
+> and says it regresses several of his benchmarks too.
 >
-> At that time, there have a concern is the hardware context ID might
-> introduce confusion for non-root namespace.
-
-Sounds like a problem.
-
+> Shakeel, are you looking at this? Based on previous experience,
+> Michael is great at running benchmarks on patches that you come up
+> with.
 >
-> We also considered to use PERF_RECORD_SWITCH_CPU_WIDE event for setting
-> pid/tid, the Intel PT implementation uses two things to set sample's
-> pid/tid: one is PERF_RECORD_SWITCH_CPU_WIDE event and another is to detect
-> the branch instruction is the symbol "__switch_to".  Since the trace
-> event PERF_RECORD_SWITCH_CPU_WIDE is coarse, so it only uses the new
-> pid/tid after the branch instruction for "__switch_to".  Arm SPE is
-> 'statistical', thus it cannot promise the trace data must contain the
-> branch instruction for "__switch_to", please see details [2].
 
-I can see the need in the Intel PT as it needs to trace all (branch)
-instructions, but is it really needed for ARM SPE too?
-Maybe I am missing something, but it seems enough to have a
-coarse-grained context switch for sampling events..
+Yes, I am actively looking into this and the discussion is happening
+at https://lore.kernel.org/all/20210905124439.GA15026@xsang-OptiPlex-9020/T/#u
 
->
-> I think the feasible way is to use CONTEXTIDR to trace PID/TID _only_
-> for root namespace, and the perf tool uses context packet to set
-> pid/tid for samples.  So except we need patches 07 and 08, we also
-> need a change in Arm SPE driver as below:
->
-> diff --git a/drivers/perf/arm_spe_pmu.c b/drivers/perf/arm_spe_pmu.c
-> index d44bcc29d99c..2553d53d3772 100644
-> --- a/drivers/perf/arm_spe_pmu.c
-> +++ b/drivers/perf/arm_spe_pmu.c
-> @@ -272,7 +272,9 @@ static u64 arm_spe_event_to_pmscr(struct perf_event *event)
->         if (!attr->exclude_kernel)
->                 reg |= BIT(SYS_PMSCR_EL1_E1SPE_SHIFT);
->
-> -       if (IS_ENABLED(CONFIG_PID_IN_CONTEXTIDR) && perfmon_capable())
-> +       /* Only enable context ID tracing for root namespace */
-> +       if (IS_ENABLED(CONFIG_PID_IN_CONTEXTIDR) && perfmon_capable() &&
-> +           (task_active_pid_ns(current) == &init_pid_ns))
->                 reg |= BIT(SYS_PMSCR_EL1_CX_SHIFT);
->
->         return reg;
->
-> Could you confirm if this works for you?  If it's okay for you, I will
-> sync with James for upstreaming the changes.
+I would definitely take up with Michael on helping with running the benchmarks.
 
-Let me think about this more..
+We know the source of the regression which is queue_work() in
+__mod_memcg_lruvec_state(). Previously we were doing atomic addition
+up the memcg tree. I have to come up with an approach to reduce the
+calls to queue_work() in that path.
 
-Thanks,
-Namhyung
-
-
->
-> Thanks,
-> Leo
->
-> [1] https://lore.kernel.org/lkml/20210119144658.793-8-james.clark@arm.com/
-> [2] https://lore.kernel.org/lkml/20210204102734.GA4737@leoy-ThinkPad-X240s/
+thanks,
+Shakeel
