@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD91B40E0FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:28:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A83B740E798
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:34:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241884AbhIPQ0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:26:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55010 "EHLO mail.kernel.org"
+        id S1353581AbhIPReX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:34:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47084 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241093AbhIPQTQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:19:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA77A6138B;
-        Thu, 16 Sep 2021 16:13:07 +0000 (UTC)
+        id S1352544AbhIPRYv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:24:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B3B9461BE4;
+        Thu, 16 Sep 2021 16:44:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808788;
-        bh=Pa/TsOTkeToUqSfDytYXPjHwWOrJDllgJUZXJA2hrxY=;
+        s=korg; t=1631810652;
+        bh=p+sAzM/XDE2JhZloIqQUgcKpO2Gb1o+zgmF5bat62yk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CLR/5dNTWSwaoUvqiIr8mukE5e1fciBAKZ343qrljutLQJ6Hzlq64IBTDsLel+OHI
-         tFJ7TrmeOswQ4t8DYzNACYS37iY4fEfIDRcaqhVNgNK+vyew7RYBNp6RIsdzstqPkH
-         tNYGjCO8BhBcaAckM8QNFWtQ8KeFZkRrYxMzCOuA=
+        b=GpncoXwRj8RgZM/bMY2kXjchIoznA7HiHOJREPd6KPXhwKvXGExgUfX1HnphPlCfI
+         pTnO2aXibAmcUXdaNpGxpCM9RECECePpDML254xr57ef++/zEtbiKmeiDQFdz364Ud
+         aic7zvXDihWGeTUsT8MuEqmkMdvrJAza6B0R/Hz4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Darrick J. Wong" <djwong@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        stable@vger.kernel.org, Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Maxime Ripard <maxime@cerno.tech>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 223/306] iomap: pass writeback errors to the mapping
+Subject: [PATCH 5.14 219/432] arm64: dts: allwinner: h6: tanix-tx6: Fix regulator node names
 Date:   Thu, 16 Sep 2021 17:59:28 +0200
-Message-Id: <20210916155801.654535592@linuxfoundation.org>
+Message-Id: <20210916155818.265642717@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Darrick J. Wong <djwong@kernel.org>
+From: Jernej Skrabec <jernej.skrabec@gmail.com>
 
-[ Upstream commit b69eea82d37d9ee7cfb3bf05103549dd4ed5ffc3 ]
+[ Upstream commit 7ab1f6539762946de06ca14d7401ae123821bc40 ]
 
-Modern-day mapping_set_error has the ability to squash the usual
-negative error code into something appropriate for long-term storage in
-a struct address_space -- ENOSPC becomes AS_ENOSPC, and everything else
-becomes EIO.  iomap squashes /everything/ to EIO, just as XFS did before
-that, but this doesn't make sense.
+Regulator node names don't reflect class of the device. Fix that by
+prefixing names with "regulator-".
 
-Fix this by making it so that we can pass ENOSPC to userspace when
-writeback fails due to space problems.
-
-Signed-off-by: Darrick J. Wong <djwong@kernel.org>
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Link: https://lore.kernel.org/r/20210722161220.51181-2-jernej.skrabec@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/iomap/buffered-io.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/allwinner/sun50i-h6-tanix-tx6.dts | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-index 10cc7979ce38..caed9d98c64a 100644
---- a/fs/iomap/buffered-io.c
-+++ b/fs/iomap/buffered-io.c
-@@ -1045,7 +1045,7 @@ iomap_finish_page_writeback(struct inode *inode, struct page *page,
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-tanix-tx6.dts b/arch/arm64/boot/dts/allwinner/sun50i-h6-tanix-tx6.dts
+index be81330db14f..02641191682e 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h6-tanix-tx6.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-tanix-tx6.dts
+@@ -32,14 +32,14 @@ hdmi_con_in: endpoint {
+ 		};
+ 	};
  
- 	if (error) {
- 		SetPageError(page);
--		mapping_set_error(inode->i_mapping, -EIO);
-+		mapping_set_error(inode->i_mapping, error);
- 	}
+-	reg_vcc3v3: vcc3v3 {
++	reg_vcc3v3: regulator-vcc3v3 {
+ 		compatible = "regulator-fixed";
+ 		regulator-name = "vcc3v3";
+ 		regulator-min-microvolt = <3300000>;
+ 		regulator-max-microvolt = <3300000>;
+ 	};
  
- 	WARN_ON_ONCE(i_blocks_per_page(inode, page) > 1 && !iop);
+-	reg_vdd_cpu_gpu: vdd-cpu-gpu {
++	reg_vdd_cpu_gpu: regulator-vdd-cpu-gpu {
+ 		compatible = "regulator-fixed";
+ 		regulator-name = "vdd-cpu-gpu";
+ 		regulator-min-microvolt = <1135000>;
 -- 
 2.30.2
 
