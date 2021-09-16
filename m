@@ -2,109 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60F1340D2C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 07:06:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A307D40D2D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 07:13:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234369AbhIPFHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 01:07:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33850 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233301AbhIPFHa (ORCPT
+        id S234320AbhIPFOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 01:14:53 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:60044
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233301AbhIPFOv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 01:07:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631768768;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CKN8XQ4WQkJPsTlSjGiV3oiFQPmnO4fijF4pI7KTQvg=;
-        b=TTCVxV0RMF6VA8SwMPC83xZiF8xRYQf1WrjxywbmcGiDOmDXgB58oETXTx8dSFL6b+F8P/
-        gobCE+ozkpE6nhwIa9lz9zJkmLFSsfHU53nLNy1FVGSigTS2ygENzhDj1OTo1ZeuD4CE7H
-        wbNRckiN3drMIUUC8JliM/pOKjv/NIM=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-573-uzCvfwqxMA6wNuFKdc2bNg-1; Thu, 16 Sep 2021 01:06:08 -0400
-X-MC-Unique: uzCvfwqxMA6wNuFKdc2bNg-1
-Received: by mail-ed1-f72.google.com with SMTP id n5-20020a05640206c500b003cf53f7cef2so1283179edy.12
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 22:06:07 -0700 (PDT)
+        Thu, 16 Sep 2021 01:14:51 -0400
+Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com [209.85.216.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 755F13FDC7
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 05:13:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1631769210;
+        bh=hSiD7I+b6Yuq8W+sJ8bufKGiKQgP8tTvc9YDJ5YkefU=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=Ns7vLkOwDC4CWhDdYloFYk55l8ZGf3Ha/rGHPNmPBm+GzO3eczEVzsSSKj5GaMZpn
+         0I9vURCGKB5oqNVCTJuuVJzAywFKY6asrGcYWp/Xhl+X2oHTDkQO+IRuyYn1zz5mKQ
+         9YSTy/mEfVcAYnGP80uxUrBsgQ0i0i3PSe0XQeO8trA4ONcyQyzqfnEulCQeTIT0fC
+         Gk0nR2g9Jswfwk1FF34EFwBAjbjhK1j5+p56CsbcetFbmje9U1ezuaEbNU+10I2Hlp
+         6xSIbgDJhHwROwPIHT7Fi2F4X1mNB7fkT7nPUoq+ExWAbRNBRAGjIph67Rnzj33sNQ
+         LjZplmLgjaBhQ==
+Received: by mail-pj1-f70.google.com with SMTP id cp5-20020a17090afb8500b0019b050e88f7so3700486pjb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 22:13:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=CKN8XQ4WQkJPsTlSjGiV3oiFQPmnO4fijF4pI7KTQvg=;
-        b=12TAsDZbk5ILNWK2EDVhaGViYkJ+S7GiAg1Gs8nfq8qkWIw5e2lPiPPdabhCLovMPR
-         KHBgUKWaMkzt/t6xWQiGqVRt/+dThL+oMUuJeHYz15MAML6qnrTnX+N9xEkcwUkgIhxI
-         KRpldvM6KFH4rWSUk6mwb0kSbn6HeMgd2DSQKeMjmSVXwnsprW2pEQeiHEWKHiXWERUP
-         LpAUaG8JHB0xRAswcqZ1N8nUzMcGHE0lp2xOsPeJU8A++k26i3OJmJnLaIiAErN7rXS6
-         tWIFrqwl8m/x4l4PhJ6VqI3yi6OjZrNtwWjlP1LaoteU6fOsFV9BEdYjoS0v/HmnUBl5
-         iYLw==
-X-Gm-Message-State: AOAM532Xm3O2MzRpMWGeLM3lLgas4fGlWOkUjv9eh0qAdg9iuwNYTP4U
-        B6KRyEJki2MLq3bzMGgN8MnfIDfUL8tkVw12U+xRsuTcmc+xDL4X5xim9oiRKxpPeUJ92gVwmW5
-        26cpj4RQ3VO+B74qlD1S2CiRnw7+3sPV3P4XgADsDPVCk7pJytbxURI3VH27HRi8xkgvS3MpZkK
-        MO
-X-Received: by 2002:a05:6402:42d5:: with SMTP id i21mr4302154edc.14.1631768766426;
-        Wed, 15 Sep 2021 22:06:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx1bdIwbG7TUmxAk3tSV06VOIwCk8kiZfGgssZZPwl5DDnRixxI9jEnMirROatK9dy9eF1wuA==
-X-Received: by 2002:a05:6402:42d5:: with SMTP id i21mr4302128edc.14.1631768766157;
-        Wed, 15 Sep 2021 22:06:06 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
-        by smtp.gmail.com with ESMTPSA id u4sm740910ejc.19.2021.09.15.22.06.05
+        bh=hSiD7I+b6Yuq8W+sJ8bufKGiKQgP8tTvc9YDJ5YkefU=;
+        b=JoDU0WWzE0nIqmsBBo5J2yfkwRv9qR8Vxto2iOyvewcPMi4nCphtx3rUqgSuS6whPQ
+         KCktLGQcDPiusk5/+eTpAfbXxGVCQsR8u+G35qVZoQ25uPnpdgysHIS8pC9tvttIduOX
+         TULChnYeVx0wcBsxRMYsoFPc58B7ptfUYv1UQtL/nuwmBTBU2ajDRxGk6KloBTRza9Ow
+         kxl2/LV1+yh4E9T3QMZpMuWU2vldSPZy4+DKOHix04asNQKLvwSFjkRK5E1yKR3PV3xt
+         0pSls2bC0FgpV6C8VIJN6EFIP6JmUYVW5AWlVmEk/yV3I4k/LQMENI6SGPUTDth8X/AK
+         bxXA==
+X-Gm-Message-State: AOAM532dEEQiCn7rUabPZJzhP8HTMzXy4SYi0ru15T0oozUFVKCHPHGc
+        das5d40I88aTem8MubPC9gUT8aUdFm6rKR61KRQQqePJ3oiULpX7pMe6IIjBJtM7izZYvLF5dye
+        g721e8JigQLWfrVIWd3EHWgf/JnAWPFLDT196v6PyTw==
+X-Received: by 2002:a17:903:1208:b0:13a:8c8:8a33 with SMTP id l8-20020a170903120800b0013a08c88a33mr2955895plh.89.1631769208660;
+        Wed, 15 Sep 2021 22:13:28 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzL+9MLr7N9W7Q9KOrVaSyEil3UeLX/dMrujMKOIQ5bZoFKNvaH6rKNCaPbQBEkbICsbNCmXQ==
+X-Received: by 2002:a17:903:1208:b0:13a:8c8:8a33 with SMTP id l8-20020a170903120800b0013a08c88a33mr2955869plh.89.1631769208277;
+        Wed, 15 Sep 2021 22:13:28 -0700 (PDT)
+Received: from [192.168.1.107] (125-237-197-94-fibre.sparkbb.co.nz. [125.237.197.94])
+        by smtp.gmail.com with ESMTPSA id z9sm1443369pfn.22.2021.09.15.22.13.24
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Sep 2021 22:06:05 -0700 (PDT)
-Subject: Re: [PATCH 0/4] selftests: kvm: fscanf warn fixes and cleanups
-To:     Shuah Khan <skhan@linuxfoundation.org>, shuah@kernel.org
-Cc:     kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1631737524.git.skhan@linuxfoundation.org>
- <56178039-ab72-fca3-38fa-a1d422e4d3ef@redhat.com>
- <aca932b9-5864-be95-c9f6-f745b6a6b7f3@linuxfoundation.org>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <d9da3a33-6ecc-3d52-8f9a-f465692ecb93@redhat.com>
-Date:   Thu, 16 Sep 2021 07:06:04 +0200
+        Wed, 15 Sep 2021 22:13:27 -0700 (PDT)
+Subject: Re: [PROBLEM] Frequently get "irq 31: nobody cared" when passing
+ through 2x GPUs that share same pci switch via vfio
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     linux-pci@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        kvm@vger.kernel.org, nathan.langford@xcelesunifiedtechnologies.com
+References: <d4084296-9d36-64ec-8a79-77d82ac6d31c@canonical.com>
+ <20210914104301.48270518.alex.williamson@redhat.com>
+ <9e8d0e9e-1d94-35e8-be1f-cf66916c24b2@canonical.com>
+ <20210915103235.097202d2.alex.williamson@redhat.com>
+From:   Matthew Ruffell <matthew.ruffell@canonical.com>
+Message-ID: <4d9d0366-1769-691f-fcb0-3b14d468e36e@canonical.com>
+Date:   Thu, 16 Sep 2021 17:13:21 +1200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <aca932b9-5864-be95-c9f6-f745b6a6b7f3@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210915103235.097202d2.alex.williamson@redhat.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/09/21 02:02, Shuah Khan wrote:
-> On 9/15/21 4:34 PM, Paolo Bonzini wrote:
->> On 15/09/21 23:28, Shuah Khan wrote:
->>> This patch series fixes fscanf() ignoring return value warnings.
->>> Consolidates get_run_delay() duplicate defines moving it to
->>> common library.
+On 16/09/21 4:32 am, Alex Williamson wrote:
+> On Wed, 15 Sep 2021 16:44:38 +1200
+> Matthew Ruffell <matthew.ruffell@canonical.com> wrote:
+>> On 15/09/21 4:43 am, Alex Williamson wrote:
 >>>
->>> Shuah Khan (4):
->>>    selftests:kvm: fix get_warnings_count() ignoring fscanf() return warn
->>>    selftests:kvm: fix get_trans_hugepagesz() ignoring fscanf() return
->>>      warn
->>>    selftests: kvm: move get_run_delay() into lib/test_util
->>>    selftests: kvm: fix get_run_delay() ignoring fscanf() return warn
+>>> FWIW, I have access to a system with an NVIDIA K1 and M60, both use
+>>> this same switch on-card and I've not experienced any issues assigning
+>>> all the GPUs to a single VM.  Topo:
 >>>
->>>   .../testing/selftests/kvm/include/test_util.h |  3 +++
->>>   tools/testing/selftests/kvm/lib/test_util.c   | 22 ++++++++++++++++++-
->>>   tools/testing/selftests/kvm/steal_time.c      | 16 --------------
->>>   .../selftests/kvm/x86_64/mmio_warning_test.c  |  3 ++-
->>>   .../selftests/kvm/x86_64/xen_shinfo_test.c    | 15 -------------
->>>   5 files changed, 26 insertions(+), 33 deletions(-)
->>>
->>
->> Acked-by: Paolo Bonzini <pbonzini@redhat.com>
->>
->> Thanks Shuah!
->>
+>>>  +-[0000:40]-+-02.0-[42-47]----00.0-[43-47]--+-08.0-[44]----00.0
+>>>  |                                           +-09.0-[45]----00.0
+>>>  |                                           +-10.0-[46]----00.0
+>>>  |                                           \-11.0-[47]----00.0
+>>>  \-[0000:00]-+-03.0-[04-07]----00.0-[05-07]--+-08.0-[06]----00.0
+>>>                                              \-10.0-[07]----00.0
 > 
-> Thank you. I can take these through linux-kselftest - let me know
-> if that causes issues for kvm tree.
+> 
+> I've actually found that the above configuration, assigning all 6 GPUs
+> to a VM reproduces this pretty readily by simply rebooting the VM.  In
+> my case, I don't have the panic-on-warn/oops that must be set on your
+> kernel, so the result is far more benign, the IRQ gets masked until
+> it's re-registered.
+> 
+> The fact that my upstream ports are using MSI seems irrelevant.
 
-Go ahead if it's for 5.15-rc, I don't have any selftests patches pending.
+Hi Alex,
 
-Paolo
 
+
+It is good news that you can reproduce an interrupt storm locally. Did a single
+
+reboot trigger the storm, or did you have to loop the VM a few times?
+
+
+
+On our system, if we don't have panic-on-warn/oops set, the system will
+
+eventually grind to a halt and lock up, so we try to reset earlier on the first
+
+oops, but we still get stuck in the crashkernel copying the IR tables from dmar.
+
+> 
+> Adding debugging to the vfio-pci interrupt handler, it's correctly
+> deferring the interrupt as the GPU device is not identifying itself as
+> the source of the interrupt via the status register.  In fact, setting
+> the disable INTx bit in the GPU command register while the interrupt
+> storm occurs does not stop the interrupts.
+> 
+
+Interesting. So the source of the interrupts could be from the PEX switch
+
+itself?
+
+
+
+We did a run with DisIntx+ set on the PEX switches, but it didn't make any
+
+difference. Serial log showing DisIntx+ and full dmesg below:
+
+
+
+https://paste.ubuntu.com/p/n3XshCxPT8/
+
+> The interrupt storm does seem to be related to the bus resets, but I
+> can't figure out yet how multiple devices per switch factors into the
+> issue.  Serializing all bus resets via a mutex doesn't seem to change
+> the behavior.
+
+Very interesting indeed.
+
+> I'm still investigating, but if anyone knows how to get access to the
+> Broadcom datasheet or errata for this switch, please let me know.
+
+I have tried reaching out to Broadcom asking for the datasheet and errata, but
+
+I am unsure if they will get back to me.
+
+
+
+They list the errata as publicly available on their website, in the 
+
+Documentation > errata tab.
+
+https://www.broadcom.com/products/pcie-switches-bridges/pcie-switches/pex8749#documentation
+
+
+
+The file "PEX 8749/48/47/33/32/25/24/23/17/16/13/12 Errata" seems to be missing
+
+though.
+
+https://docs.broadcom.com/docs/PEX8749-48-47-33-32-25-24-23-17-16-13-12%20Errata-and-Cautions
+
+
+
+An Intel document talks about the errata for the PEX 8749:
+
+https://www.intel.com/content/dam/www/programmable/us/en/pdfs/literature/rn/rn-ias-n3000-n.pdf
+
+It links to the following URL, also missing.
+
+https://docs.broadcom.com/docs/pub-005018
+
+
+
+I did however find an older errata document at:
+
+
+
+PEX 87xx Errata Version 1.14, September 25, 2015
+
+https://docs.broadcom.com/doc/pub-005017
+
+
+
+I will keep trying, and I will let you know if we manage to come across any
+
+documents.
+
+
+
+Thank you for your efforts.
+
+Matthew
+
+> Thanks,
+> Alex
+> 
