@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7413F40DF29
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:06:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 716F240E223
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232324AbhIPQHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:07:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44956 "EHLO mail.kernel.org"
+        id S244315AbhIPQfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:35:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37488 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240635AbhIPQFs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:05:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 175EB61251;
-        Thu, 16 Sep 2021 16:04:26 +0000 (UTC)
+        id S242190AbhIPQ1J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:27:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F29C6154B;
+        Thu, 16 Sep 2021 16:17:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808267;
-        bh=9Il0Hw1D98NLQ7HT7OgkMPuWKBxbTH4IlNe5LuYf0rQ=;
+        s=korg; t=1631809048;
+        bh=tupHmxPw+XerXzPsoto+Ct0/EvARjfdxIA1OwPdZcs0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=emKoic8eMmtzzrPNIB+ADiIJxmolILvmDr3EoEFfSAYM/3IvJscQazIP2kSXxXCv6
-         Qnp2OP7aRgvM2NcDNHXgPcc/35IfMXZOt/wmkFwv5GIcAR7KYIzcA8V+icMI0ansOs
-         mLSEBFJWg6qOfgcPmUJY+KWcn9KA1DLbDveBXNLQ=
+        b=RkwGkcPRvC5s6kvcBNqFs6P1K8hThtlvuPW3mB/7ILkMdnoAbNMGjpif0ZciArJ27
+         DAn9Ya7focNOqKYfa2LiuRigRksIy3hXQfcmkBJyX0Bt6wVj3PegHnBAEK+lT92lvu
+         22fAk1xhkH6sqMHr0GRzsGQ35AyrVW3IyEPUde0s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: [PATCH 5.10 023/306] soc: qcom: aoss: Fix the out of bound usage of cooling_devs
-Date:   Thu, 16 Sep 2021 17:56:08 +0200
-Message-Id: <20210916155754.727259705@linuxfoundation.org>
+        =?UTF-8?q?Marek=20Marczykowski-G=C3=B3recki?= 
+        <marmarek@invisiblethingslab.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: [PATCH 5.13 012/380] PCI/MSI: Skip masking MSI-X on Xen PV
+Date:   Thu, 16 Sep 2021 17:56:09 +0200
+Message-Id: <20210916155804.388603016@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,66 +42,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+From: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
 
-commit a89f355e469dcda129c2522be4fdba00c1c74c83 upstream.
+commit 1a519dc7a73c977547d8b5108d98c6e769c89f4b upstream.
 
-In "qmp_cooling_devices_register", the count value is initially
-QMP_NUM_COOLING_RESOURCES, which is 2. Based on the initial count value,
-the memory for cooling_devs is allocated. Then while calling the
-"qmp_cooling_device_add" function, count value is post-incremented for
-each child node.
+When running as Xen PV guest, masking MSI-X is a responsibility of the
+hypervisor. The guest has no write access to the relevant BAR at all - when
+it tries to, it results in a crash like this:
 
-This makes the out of bound access to the cooling_dev array. Fix it by
-passing the QMP_NUM_COOLING_RESOURCES definition to devm_kzalloc() and
-initializing the count to 0.
+    BUG: unable to handle page fault for address: ffffc9004069100c
+    #PF: supervisor write access in kernel mode
+    #PF: error_code(0x0003) - permissions violation
+    RIP: e030:__pci_enable_msix_range.part.0+0x26b/0x5f0
+     e1000e_set_interrupt_capability+0xbf/0xd0 [e1000e]
+     e1000_probe+0x41f/0xdb0 [e1000e]
+     local_pci_probe+0x42/0x80
+    (...)
 
-While at it, let's also free the memory allocated to cooling_dev if no
-cooling device is found in DT and during unroll phase.
+The recently introduced function msix_mask_all() does not check the global
+variable pci_msi_ignore_mask which is set by XEN PV to bypass the masking
+of MSI[-X] interrupts.
 
-Cc: stable@vger.kernel.org # 5.4
-Fixes: 05589b30b21a ("soc: qcom: Extend AOSS QMP driver to support resources that are used to wake up the SoC.")
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Link: https://lore.kernel.org/r/20210629153249.73428-1-manivannan.sadhasivam@linaro.org
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Add the check to make this function XEN PV compatible.
+
+Fixes: 7d5ec3d36123 ("PCI/MSI: Mask all unused MSI-X entries")
+Signed-off-by: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20210826170342.135172-1-marmarek@invisiblethingslab.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/soc/qcom/qcom_aoss.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/pci/msi.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/soc/qcom/qcom_aoss.c
-+++ b/drivers/soc/qcom/qcom_aoss.c
-@@ -476,12 +476,12 @@ static int qmp_cooling_device_add(struct
- static int qmp_cooling_devices_register(struct qmp *qmp)
- {
- 	struct device_node *np, *child;
--	int count = QMP_NUM_COOLING_RESOURCES;
-+	int count = 0;
- 	int ret;
+--- a/drivers/pci/msi.c
++++ b/drivers/pci/msi.c
+@@ -776,6 +776,9 @@ static void msix_mask_all(void __iomem *
+ 	u32 ctrl = PCI_MSIX_ENTRY_CTRL_MASKBIT;
+ 	int i;
  
- 	np = qmp->dev->of_node;
- 
--	qmp->cooling_devs = devm_kcalloc(qmp->dev, count,
-+	qmp->cooling_devs = devm_kcalloc(qmp->dev, QMP_NUM_COOLING_RESOURCES,
- 					 sizeof(*qmp->cooling_devs),
- 					 GFP_KERNEL);
- 
-@@ -497,12 +497,16 @@ static int qmp_cooling_devices_register(
- 			goto unroll;
- 	}
- 
-+	if (!count)
-+		devm_kfree(qmp->dev, qmp->cooling_devs);
++	if (pci_msi_ignore_mask)
++		return;
 +
- 	return 0;
- 
- unroll:
- 	while (--count >= 0)
- 		thermal_cooling_device_unregister
- 			(qmp->cooling_devs[count].cdev);
-+	devm_kfree(qmp->dev, qmp->cooling_devs);
- 
- 	return ret;
+ 	for (i = 0; i < tsize; i++, base += PCI_MSIX_ENTRY_SIZE)
+ 		writel(ctrl, base + PCI_MSIX_ENTRY_VECTOR_CTRL);
  }
 
 
