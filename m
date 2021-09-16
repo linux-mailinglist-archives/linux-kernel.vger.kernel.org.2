@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EE5040D55E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 11:01:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CDCF40D57B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 11:01:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235782AbhIPJBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 05:01:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36122 "EHLO mail.kernel.org"
+        id S237279AbhIPJDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 05:03:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36182 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235352AbhIPJBW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S235384AbhIPJBW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 16 Sep 2021 05:01:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F90761242;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 55B786124E;
         Thu, 16 Sep 2021 09:00:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1631782802;
-        bh=omLihTTkbbmL7wIzlqe8Cy3U+pVQfVA1OrggMS33ax4=;
+        bh=XrTWM3XUmOYwQg4h4rg2YNW0ywb33mfG3HDzuCggoYg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mVBG/hXI7JDss9Q+jJqkj3TfpB+OXbetHzNP4olp3iWLCuZNzsalqMRT5LMKOpkaP
-         dn96iCT5XBcDQT6hEB5QRBS+EzJlBDsEY3epW6gjNIweY4gIhkLV3qdiGU7eYAArVx
-         uKQp7shwPwlJR8YD4MSOGLIRzzBEJvIOuBCFNiU6HEfvytSF02rC4ydpN455A5slq7
-         OZGPQ+SqvVzqwoHfKzK/LdGNT/u/L7Qz6PW8/rpW1JpNNVz0QvWBigquWdJsF9YQb4
-         cSQxYgjhdeG45Uf6CszXLt+NLdxOrctqaA3GvqKT+XcaGulVZ9xhm95ZMBgZcjE/B1
-         c8kkU9oYCOzFw==
+        b=DvR3Qf+k/Q7sPFc4MBwz51EaAvKJS/UdfZCZtp+fB1aWz64p5452UgaJQB9pPj/zp
+         hLzgdD/QRhw/OolRl3HCzN1sJh16kiv/KsNRlX1Ctq4AR0ZNfAFA49X1DkNaf0Noay
+         B4JL2Li/HCzg75I1BvoIthtAizZt+XXqqucULD095PIBbsiz3UL1RDtPbx0eDE9DMP
+         wD8yqKixtftLzR8uJ02DFLSLfTmpCacw6lvBbNGbqECFGwQWHX+WqwQWqPnCUqiQXy
+         NEoDShuOX4la3jiqsqPAUrDhCbZ6n8JoWdSl+u1zr3HzG5/CRgj4Voj4ewc+dx3E4d
+         DZgGY/TiMbHpw==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1mQnFQ-001qjv-Gq; Thu, 16 Sep 2021 11:00:00 +0200
+        id 1mQnFQ-001qjz-IM; Thu, 16 Sep 2021 11:00:00 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "Jonathan Corbet" <corbet@lwn.net>,
-        Fabrice Gasnier <fabrice.gasnier@st.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 06/30] ABI: sysfs-bus-rapidio: use wildcards on What definitions
-Date:   Thu, 16 Sep 2021 10:59:33 +0200
-Message-Id: <207762e994d50eec0bf8d61c3adf153030c821eb.1631782432.git.mchehab+huawei@kernel.org>
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH v3 07/30] ABI: sysfs-class-cxl: place "not in a guest" at description
+Date:   Thu, 16 Sep 2021 10:59:34 +0200
+Message-Id: <cb1f2af183369d682a46efa4e5c01ad5f66e99c4.1631782432.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1631782432.git.mchehab+huawei@kernel.org>
 References: <cover.1631782432.git.mchehab+huawei@kernel.org>
@@ -47,172 +47,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While humans may be able to understand that something like:
+The What: field should have just the location of the ABI.
+Anything else should be inside the description.
 
-	/sys/bus/rapidio/devices/nn:d:iiii
+This fixes its parsing by get_abi.pl script.
 
-could actually mean:
-
-	/sys/bus/rapidio/devices/00:e:0000
-
-This is something that computers can't easily identify. As
-get_abi.pl needs to convert it into a regex, change What: lines
-to:
-
-	/sys/bus/rapidio/devices/<nn>:<d>:<iiii>
-
-Which is the commonly-used pattern on ABI files for wildcards.
-
+Acked-by: Andrew Donnellan <ajd@linux.ibm.com>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/ABI/testing/sysfs-bus-rapidio | 32 ++++++++++-----------
- 1 file changed, 16 insertions(+), 16 deletions(-)
+ Documentation/ABI/testing/sysfs-class-cxl | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-rapidio b/Documentation/ABI/testing/sysfs-bus-rapidio
-index 634ea207a50a..f8b6728dac10 100644
---- a/Documentation/ABI/testing/sysfs-bus-rapidio
-+++ b/Documentation/ABI/testing/sysfs-bus-rapidio
-@@ -1,4 +1,4 @@
--What:		/sys/bus/rapidio/devices/nn:d:iiii
-+What:		/sys/bus/rapidio/devices/<nn>:<d>:<iiii>
- Description:
- 		For each RapidIO device, the RapidIO subsystem creates files in
- 		an individual subdirectory with the following name format of
-@@ -29,7 +29,7 @@ Description:
- Attributes Common for All RapidIO Devices
- -----------------------------------------
+diff --git a/Documentation/ABI/testing/sysfs-class-cxl b/Documentation/ABI/testing/sysfs-class-cxl
+index 818f55970efb..3c77677e0ca7 100644
+--- a/Documentation/ABI/testing/sysfs-class-cxl
++++ b/Documentation/ABI/testing/sysfs-class-cxl
+@@ -166,10 +166,11 @@ Description:    read only
+                 Decimal value of the Per Process MMIO space length.
+ Users:		https://github.com/ibm-capi/libcxl
  
--What:		/sys/bus/rapidio/devices/nn:d:iiii/did
-+What:		/sys/bus/rapidio/devices/<nn>:<d>:<iiii>/did
- Date:		Nov, 2005
- KernelVersion:	v2.6.15
- Contact:	Matt Porter <mporter@kernel.crashing.org>,
-@@ -37,7 +37,7 @@ Contact:	Matt Porter <mporter@kernel.crashing.org>,
- Description:
- 		(RO) returns the device identifier
+-What:           /sys/class/cxl/<afu>m/pp_mmio_off (not in a guest)
++What:           /sys/class/cxl/<afu>m/pp_mmio_off
+ Date:           September 2014
+ Contact:        linuxppc-dev@lists.ozlabs.org
+ Description:    read only
++                (not in a guest)
+                 Decimal value of the Per Process MMIO space offset.
+ Users:		https://github.com/ibm-capi/libcxl
  
--What:		/sys/bus/rapidio/devices/nn:d:iiii/vid
-+What:		/sys/bus/rapidio/devices/<nn>:<d>:<iiii>/vid
- Date:		Nov, 2005
- KernelVersion:	v2.6.15
- Contact:	Matt Porter <mporter@kernel.crashing.org>,
-@@ -45,7 +45,7 @@ Contact:	Matt Porter <mporter@kernel.crashing.org>,
- Description:
- 		(RO) returns the device vendor identifier
+@@ -190,28 +191,31 @@ Description:    read only
+                 Identifies the revision level of the PSL.
+ Users:		https://github.com/ibm-capi/libcxl
  
--What:		/sys/bus/rapidio/devices/nn:d:iiii/device_rev
-+What:		/sys/bus/rapidio/devices/<nn>:<d>:<iiii>/device_rev
- Date:		Nov, 2005
- KernelVersion:	v2.6.15
- Contact:	Matt Porter <mporter@kernel.crashing.org>,
-@@ -53,7 +53,7 @@ Contact:	Matt Porter <mporter@kernel.crashing.org>,
- Description:
- 		(RO) returns the device revision level
+-What:           /sys/class/cxl/<card>/base_image (not in a guest)
++What:           /sys/class/cxl/<card>/base_image
+ Date:           September 2014
+ Contact:        linuxppc-dev@lists.ozlabs.org
+ Description:    read only
++                (not in a guest)
+                 Identifies the revision level of the base image for devices
+                 that support loadable PSLs. For FPGAs this field identifies
+                 the image contained in the on-adapter flash which is loaded
+                 during the initial program load.
+ Users:		https://github.com/ibm-capi/libcxl
  
--What:		/sys/bus/rapidio/devices/nn:d:iiii/asm_did
-+What:		/sys/bus/rapidio/devices/<nn>:<d>:<iiii>/asm_did
- Date:		Nov, 2005
- KernelVersion:	v2.6.15
- Contact:	Matt Porter <mporter@kernel.crashing.org>,
-@@ -61,7 +61,7 @@ Contact:	Matt Porter <mporter@kernel.crashing.org>,
- Description:
- 		(RO) returns identifier for the assembly containing the device
+-What:           /sys/class/cxl/<card>/image_loaded (not in a guest)
++What:           /sys/class/cxl/<card>/image_loaded
+ Date:           September 2014
+ Contact:        linuxppc-dev@lists.ozlabs.org
+ Description:    read only
++                (not in a guest)
+                 Will return "user" or "factory" depending on the image loaded
+                 onto the card.
+ Users:		https://github.com/ibm-capi/libcxl
  
--What:		/sys/bus/rapidio/devices/nn:d:iiii/asm_rev
-+What:		/sys/bus/rapidio/devices/<nn>:<d>:<iiii>/asm_rev
- Date:		Nov, 2005
- KernelVersion:	v2.6.15
- Contact:	Matt Porter <mporter@kernel.crashing.org>,
-@@ -70,7 +70,7 @@ Description:
- 		(RO) returns revision level of the assembly containing the
- 		device
+-What:           /sys/class/cxl/<card>/load_image_on_perst (not in a guest)
++What:           /sys/class/cxl/<card>/load_image_on_perst
+ Date:           December 2014
+ Contact:        linuxppc-dev@lists.ozlabs.org
+ Description:    read/write
++                (not in a guest)
+                 Valid entries are "none", "user", and "factory".
+                 "none" means PERST will not cause image to be loaded to the
+                 card.  A power cycle is required to load the image.
+@@ -235,10 +239,11 @@ Description:    write only
+                 contexts on the card AFUs.
+ Users:		https://github.com/ibm-capi/libcxl
  
--What:		/sys/bus/rapidio/devices/nn:d:iiii/asm_vid
-+What:		/sys/bus/rapidio/devices/<nn>:<d>:<iiii>/asm_vid
- Date:		Nov, 2005
- KernelVersion:	v2.6.15
- Contact:	Matt Porter <mporter@kernel.crashing.org>,
-@@ -79,7 +79,7 @@ Description:
- 		(RO) returns vendor identifier of the assembly containing the
- 		device
+-What:		/sys/class/cxl/<card>/perst_reloads_same_image (not in a guest)
++What:		/sys/class/cxl/<card>/perst_reloads_same_image
+ Date:		July 2015
+ Contact:	linuxppc-dev@lists.ozlabs.org
+ Description:	read/write
++                (not in a guest)
+ 		Trust that when an image is reloaded via PERST, it will not
+ 		have changed.
  
--What:		/sys/bus/rapidio/devices/nn:d:iiii/destid
-+What:		/sys/bus/rapidio/devices/<nn>:<d>:<iiii>/destid
- Date:		Mar, 2011
- KernelVersion:	v2.6.3
- Contact:	Matt Porter <mporter@kernel.crashing.org>,
-@@ -88,7 +88,7 @@ Description:
- 		(RO) returns device destination ID assigned by the enumeration
- 		routine
- 
--What:		/sys/bus/rapidio/devices/nn:d:iiii/lprev
-+What:		/sys/bus/rapidio/devices/<nn>:<d>:<iiii>/lprev
- Date:		Mar, 2011
- KernelVersion:	v2.6.39
- Contact:	Matt Porter <mporter@kernel.crashing.org>,
-@@ -97,7 +97,7 @@ Description:
- 		(RO) returns name of previous device (switch) on the path to the
- 		device that that owns this attribute
- 
--What:		/sys/bus/rapidio/devices/nn:d:iiii/modalias
-+What:		/sys/bus/rapidio/devices/<nn>:<d>:<iiii>/modalias
- Date:		Jul, 2013
- KernelVersion:	v3.11
- Contact:	Matt Porter <mporter@kernel.crashing.org>,
-@@ -105,7 +105,7 @@ Contact:	Matt Porter <mporter@kernel.crashing.org>,
- Description:
- 		(RO) returns the device modalias
- 
--What:		/sys/bus/rapidio/devices/nn:d:iiii/config
-+What:		/sys/bus/rapidio/devices/<nn>:<d>:<iiii>/config
- Date:		Nov, 2005
- KernelVersion:	v2.6.15
- Contact:	Matt Porter <mporter@kernel.crashing.org>,
-@@ -128,7 +128,7 @@ device-specific sysfs attributes by specifying a callback function that may be
- set by the switch initialization routine during enumeration or discovery
- process.
- 
--What:		/sys/bus/rapidio/devices/nn:s:iiii/routes
-+What:		/sys/bus/rapidio/devices/<nn>:<s>:<iiii>/routes
- Date:		Nov, 2005
- KernelVersion:	v2.6.15
- Contact:	Matt Porter <mporter@kernel.crashing.org>,
-@@ -138,7 +138,7 @@ Description:
- 		This attribute reports only valid routing table entries, one
- 		line for each entry.
- 
--What:		/sys/bus/rapidio/devices/nn:s:iiii/destid
-+What:		/sys/bus/rapidio/devices/<nn>:<s>:<iiii>/destid
- Date:		Mar, 2011
- KernelVersion:	v2.6.3
- Contact:	Matt Porter <mporter@kernel.crashing.org>,
-@@ -147,7 +147,7 @@ Description:
- 		(RO) device destination ID of the associated device that defines
- 		a route to the switch
- 
--What:		/sys/bus/rapidio/devices/nn:s:iiii/hopcount
-+What:		/sys/bus/rapidio/devices/<nn>:<s>:<iiii>/hopcount
- Date:		Mar, 2011
- KernelVersion:	v2.6.39
- Contact:	Matt Porter <mporter@kernel.crashing.org>,
-@@ -155,7 +155,7 @@ Contact:	Matt Porter <mporter@kernel.crashing.org>,
- Description:
- 		(RO) number of hops on the path to the switch
- 
--What:		/sys/bus/rapidio/devices/nn:s:iiii/lnext
-+What:		/sys/bus/rapidio/devices/<nn>:<s>:<iiii>/lnext
- Date:		Mar, 2011
- KernelVersion:	v2.6.39
- Contact:	Matt Porter <mporter@kernel.crashing.org>,
-@@ -172,7 +172,7 @@ Device-specific Switch Attributes
- 
- IDT_GEN2-
- 
--What:		/sys/bus/rapidio/devices/nn:s:iiii/errlog
-+What:		/sys/bus/rapidio/devices/<nn>:<s>:<iiii>/errlog
- Date:		Oct, 2010
- KernelVersion:	v2.6.37
- Contact:	Matt Porter <mporter@kernel.crashing.org>,
 -- 
 2.31.1
 
