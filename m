@@ -2,207 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A307D40D2D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 07:13:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7941C40D2D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 07:16:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234320AbhIPFOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 01:14:53 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:60044
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233301AbhIPFOv (ORCPT
+        id S234300AbhIPFRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 01:17:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45248 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234292AbhIPFR1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 01:14:51 -0400
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com [209.85.216.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 755F13FDC7
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 05:13:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1631769210;
-        bh=hSiD7I+b6Yuq8W+sJ8bufKGiKQgP8tTvc9YDJ5YkefU=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=Ns7vLkOwDC4CWhDdYloFYk55l8ZGf3Ha/rGHPNmPBm+GzO3eczEVzsSSKj5GaMZpn
-         0I9vURCGKB5oqNVCTJuuVJzAywFKY6asrGcYWp/Xhl+X2oHTDkQO+IRuyYn1zz5mKQ
-         9YSTy/mEfVcAYnGP80uxUrBsgQ0i0i3PSe0XQeO8trA4ONcyQyzqfnEulCQeTIT0fC
-         Gk0nR2g9Jswfwk1FF34EFwBAjbjhK1j5+p56CsbcetFbmje9U1ezuaEbNU+10I2Hlp
-         6xSIbgDJhHwROwPIHT7Fi2F4X1mNB7fkT7nPUoq+ExWAbRNBRAGjIph67Rnzj33sNQ
-         LjZplmLgjaBhQ==
-Received: by mail-pj1-f70.google.com with SMTP id cp5-20020a17090afb8500b0019b050e88f7so3700486pjb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 22:13:30 -0700 (PDT)
+        Thu, 16 Sep 2021 01:17:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631769367;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/KaFR0tN7fnlxcmr5XgEGx0dxN0WywjqCKHOBH6+mas=;
+        b=friyk0AObk6l2gpK1OUXYq0tLSeiOKA09Xfd/I0MJTtkMx3pPZwI6g+aN93W41L+nxH5f2
+        iz0ZvG3v+dnXwdU3ARpv681RBVUec308TaIMHMd4T/TLOxYjtNNdVzjBkBVEA3v1OqzJ/9
+        kIWh9LAUX4eNbrPyc8CNUarcCaz1QP4=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-580-Ndiz-fqvOlqs7eiHm8ABFA-1; Thu, 16 Sep 2021 01:16:05 -0400
+X-MC-Unique: Ndiz-fqvOlqs7eiHm8ABFA-1
+Received: by mail-wr1-f71.google.com with SMTP id c15-20020a5d4ccf000000b0015dff622f39so1930566wrt.21
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 22:16:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+        h=x-gm-message-state:from:to:cc:references:subject:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=hSiD7I+b6Yuq8W+sJ8bufKGiKQgP8tTvc9YDJ5YkefU=;
-        b=JoDU0WWzE0nIqmsBBo5J2yfkwRv9qR8Vxto2iOyvewcPMi4nCphtx3rUqgSuS6whPQ
-         KCktLGQcDPiusk5/+eTpAfbXxGVCQsR8u+G35qVZoQ25uPnpdgysHIS8pC9tvttIduOX
-         TULChnYeVx0wcBsxRMYsoFPc58B7ptfUYv1UQtL/nuwmBTBU2ajDRxGk6KloBTRza9Ow
-         kxl2/LV1+yh4E9T3QMZpMuWU2vldSPZy4+DKOHix04asNQKLvwSFjkRK5E1yKR3PV3xt
-         0pSls2bC0FgpV6C8VIJN6EFIP6JmUYVW5AWlVmEk/yV3I4k/LQMENI6SGPUTDth8X/AK
-         bxXA==
-X-Gm-Message-State: AOAM532dEEQiCn7rUabPZJzhP8HTMzXy4SYi0ru15T0oozUFVKCHPHGc
-        das5d40I88aTem8MubPC9gUT8aUdFm6rKR61KRQQqePJ3oiULpX7pMe6IIjBJtM7izZYvLF5dye
-        g721e8JigQLWfrVIWd3EHWgf/JnAWPFLDT196v6PyTw==
-X-Received: by 2002:a17:903:1208:b0:13a:8c8:8a33 with SMTP id l8-20020a170903120800b0013a08c88a33mr2955895plh.89.1631769208660;
-        Wed, 15 Sep 2021 22:13:28 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzL+9MLr7N9W7Q9KOrVaSyEil3UeLX/dMrujMKOIQ5bZoFKNvaH6rKNCaPbQBEkbICsbNCmXQ==
-X-Received: by 2002:a17:903:1208:b0:13a:8c8:8a33 with SMTP id l8-20020a170903120800b0013a08c88a33mr2955869plh.89.1631769208277;
-        Wed, 15 Sep 2021 22:13:28 -0700 (PDT)
-Received: from [192.168.1.107] (125-237-197-94-fibre.sparkbb.co.nz. [125.237.197.94])
-        by smtp.gmail.com with ESMTPSA id z9sm1443369pfn.22.2021.09.15.22.13.24
+        bh=/KaFR0tN7fnlxcmr5XgEGx0dxN0WywjqCKHOBH6+mas=;
+        b=COw5SibOPZz1xfEhf3j7ZA7//gdInuhlEqH1CfzMSjpi8a/yzSarJgUszhQBB5XCPd
+         Wj4Uag+/AqlICAC7wRkeZ4ONxucmtAnXoA9Gelv7Mfe7DmhLUJQ/cPbJN/w3r7dFbOyf
+         1QCOJr5gEOPcj9hPc/LFil3YW4LZr77U1MzxfBNpAIhVkfyVKtY1lmErjfJryvZ+YspW
+         GDUn8d/g4i1+t7BFaQ9EEA0VDEMoaYy19RwFHXZlgpiQFf96V84W4u7646diXQ1cVzB+
+         pbctT+1vhojo1ad915RpRlpANnNbOaDl83I9JzFhvL9UwWxZOjK3/XVJzzchmys+KDbU
+         NKtw==
+X-Gm-Message-State: AOAM530nxqDvErfNRACKF5AZEq3gG/BSznkaZsHSakGYGLDecFDD2Vl+
+        iZropWB1UwGls+WEGL2geSlRRpb73iVN+Y2lrrYRZvQH7UgXJTNjBxrj6NTTFmnUQ07AoEIng6d
+        xNWTmhrgt93Q9DnEA0Km5pTRO
+X-Received: by 2002:a05:600c:4f13:: with SMTP id l19mr3071060wmq.39.1631769364711;
+        Wed, 15 Sep 2021 22:16:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz7wr3csCaThBnqZG+k1sReSQw2OECASRVpR3W9+CFv3sVgqMd0KKm8+wwp7iqsCYc3nWGJbg==
+X-Received: by 2002:a05:600c:4f13:: with SMTP id l19mr3071033wmq.39.1631769364503;
+        Wed, 15 Sep 2021 22:16:04 -0700 (PDT)
+Received: from thuth.remote.csb (dynamic-046-114-144-075.46.114.pool.telefonica.de. [46.114.144.75])
+        by smtp.gmail.com with ESMTPSA id z13sm2315375wrs.90.2021.09.15.22.16.02
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Sep 2021 22:13:27 -0700 (PDT)
-Subject: Re: [PROBLEM] Frequently get "irq 31: nobody cared" when passing
- through 2x GPUs that share same pci switch via vfio
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     linux-pci@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        kvm@vger.kernel.org, nathan.langford@xcelesunifiedtechnologies.com
-References: <d4084296-9d36-64ec-8a79-77d82ac6d31c@canonical.com>
- <20210914104301.48270518.alex.williamson@redhat.com>
- <9e8d0e9e-1d94-35e8-be1f-cf66916c24b2@canonical.com>
- <20210915103235.097202d2.alex.williamson@redhat.com>
-From:   Matthew Ruffell <matthew.ruffell@canonical.com>
-Message-ID: <4d9d0366-1769-691f-fcb0-3b14d468e36e@canonical.com>
-Date:   Thu, 16 Sep 2021 17:13:21 +1200
+        Wed, 15 Sep 2021 22:16:03 -0700 (PDT)
+From:   Thomas Huth <thuth@redhat.com>
+To:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>
+Cc:     "J. Bruce Fields" <bfields@fieldses.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        linux-s390@vger.kernel.org, Jia He <hejianet@gmail.com>
+References: <20210803105937.52052-1-thuth@redhat.com>
+ <20210803105937.52052-2-thuth@redhat.com>
+ <5e359b28-6233-a97e-a30f-0a30fa516833@redhat.com>
+Subject: Re: [PATCH 1/2] sysctl: introduce new proc handler proc_dobool
+Message-ID: <4772120f-7bf5-336c-06ef-620b9953f591@redhat.com>
+Date:   Thu, 16 Sep 2021 07:16:01 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210915103235.097202d2.alex.williamson@redhat.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <5e359b28-6233-a97e-a30f-0a30fa516833@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/09/21 4:32 am, Alex Williamson wrote:
-> On Wed, 15 Sep 2021 16:44:38 +1200
-> Matthew Ruffell <matthew.ruffell@canonical.com> wrote:
->> On 15/09/21 4:43 am, Alex Williamson wrote:
->>>
->>> FWIW, I have access to a system with an NVIDIA K1 and M60, both use
->>> this same switch on-card and I've not experienced any issues assigning
->>> all the GPUs to a single VM.  Topo:
->>>
->>>  +-[0000:40]-+-02.0-[42-47]----00.0-[43-47]--+-08.0-[44]----00.0
->>>  |                                           +-09.0-[45]----00.0
->>>  |                                           +-10.0-[46]----00.0
->>>  |                                           \-11.0-[47]----00.0
->>>  \-[0000:00]-+-03.0-[04-07]----00.0-[05-07]--+-08.0-[06]----00.0
->>>                                              \-10.0-[07]----00.0
+On 18/08/2021 11.38, Thomas Huth wrote:
+> On 03/08/2021 12.59, Thomas Huth wrote:
+>> From: Jia He <hejianet@gmail.com>
+>>
+>> This is to let bool variable could be correctly displayed in
+>> big/little endian sysctl procfs. sizeof(bool) is arch dependent,
+>> proc_dobool should work in all arches.
+>>
+>> Suggested-by: Pan Xinhui <xinhui@linux.vnet.ibm.com>
+>> Signed-off-by: Jia He <hejianet@gmail.com>
+>> [thuth: rebased the patch to the current kernel version]
+>> Signed-off-by: Thomas Huth <thuth@redhat.com>
+>> ---
+>>   include/linux/sysctl.h |  2 ++
+>>   kernel/sysctl.c        | 42 ++++++++++++++++++++++++++++++++++++++++++
+>>   2 files changed, 44 insertions(+)
+>>
+>> diff --git a/include/linux/sysctl.h b/include/linux/sysctl.h
+>> index d99ca99837de..1fa2b69c6fc3 100644
+>> --- a/include/linux/sysctl.h
+>> +++ b/include/linux/sysctl.h
+>> @@ -48,6 +48,8 @@ typedef int proc_handler(struct ctl_table *ctl, int 
+>> write, void *buffer,
+>>           size_t *lenp, loff_t *ppos);
+>>   int proc_dostring(struct ctl_table *, int, void *, size_t *, loff_t *);
+>> +int proc_dobool(struct ctl_table *table, int write, void *buffer,
+>> +        size_t *lenp, loff_t *ppos);
+>>   int proc_dointvec(struct ctl_table *, int, void *, size_t *, loff_t *);
+>>   int proc_douintvec(struct ctl_table *, int, void *, size_t *, loff_t *);
+>>   int proc_dointvec_minmax(struct ctl_table *, int, void *, size_t *, 
+>> loff_t *);
+>> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+>> index 272f4a272f8c..25e49b4d8049 100644
+>> --- a/kernel/sysctl.c
+>> +++ b/kernel/sysctl.c
+>> @@ -536,6 +536,21 @@ static void proc_put_char(void **buf, size_t *size, 
+>> char c)
+>>       }
+>>   }
+>> +static int do_proc_dobool_conv(bool *negp, unsigned long *lvalp,
+>> +                int *valp,
+>> +                int write, void *data)
+>> +{
+>> +    if (write) {
+>> +        *(bool *)valp = *lvalp;
+>> +    } else {
+>> +        int val = *(bool *)valp;
+>> +
+>> +        *lvalp = (unsigned long)val;
+>> +        *negp = false;
+>> +    }
+>> +    return 0;
+>> +}
+>> +
+>>   static int do_proc_dointvec_conv(bool *negp, unsigned long *lvalp,
+>>                    int *valp,
+>>                    int write, void *data)
+>> @@ -798,6 +813,26 @@ static int do_proc_douintvec(struct ctl_table *table, 
+>> int write,
+>>                      buffer, lenp, ppos, conv, data);
+>>   }
+>> +/**
+>> + * proc_dobool - read/write a bool
+>> + * @table: the sysctl table
+>> + * @write: %TRUE if this is a write to the sysctl file
+>> + * @buffer: the user buffer
+>> + * @lenp: the size of the user buffer
+>> + * @ppos: file position
+>> + *
+>> + * Reads/writes up to table->maxlen/sizeof(unsigned int) integer
+>> + * values from/to the user buffer, treated as an ASCII string.
+>> + *
+>> + * Returns 0 on success.
+>> + */
+>> +int proc_dobool(struct ctl_table *table, int write, void *buffer,
+>> +        size_t *lenp, loff_t *ppos)
+>> +{
+>> +    return do_proc_dointvec(table, write, buffer, lenp, ppos,
+>> +                do_proc_dobool_conv, NULL);
+>> +}
+>> +
+>>   /**
+>>    * proc_dointvec - read a vector of integers
+>>    * @table: the sysctl table
+>> @@ -1630,6 +1665,12 @@ int proc_dostring(struct ctl_table *table, int write,
+>>       return -ENOSYS;
+>>   }
+>> +int proc_dobool(struct ctl_table *table, int write,
+>> +        void *buffer, size_t *lenp, loff_t *ppos)
+>> +{
+>> +    return -ENOSYS;
+>> +}
+>> +
+>>   int proc_dointvec(struct ctl_table *table, int write,
+>>             void *buffer, size_t *lenp, loff_t *ppos)
+>>   {
+>> @@ -3425,6 +3466,7 @@ int __init sysctl_init(void)
+>>    * No sense putting this after each symbol definition, twice,
+>>    * exception granted :-)
+>>    */
+>> +EXPORT_SYMBOL(proc_dobool);
+>>   EXPORT_SYMBOL(proc_dointvec);
+>>   EXPORT_SYMBOL(proc_douintvec);
+>>   EXPORT_SYMBOL(proc_dointvec_jiffies);
+>>
 > 
+> Friendly ping!
 > 
-> I've actually found that the above configuration, assigning all 6 GPUs
-> to a VM reproduces this pretty readily by simply rebooting the VM.  In
-> my case, I don't have the panic-on-warn/oops that must be set on your
-> kernel, so the result is far more benign, the IRQ gets masked until
-> it's re-registered.
-> 
-> The fact that my upstream ports are using MSI seems irrelevant.
+> Luis, Kees, Iurii, could you please have a look and provide an Ack if this 
+> looks ok to you?
 
-Hi Alex,
+Ping again!
 
+Could anybody please provide an Ack?
 
+Thanks,
+  Thomas
 
-It is good news that you can reproduce an interrupt storm locally. Did a single
-
-reboot trigger the storm, or did you have to loop the VM a few times?
-
-
-
-On our system, if we don't have panic-on-warn/oops set, the system will
-
-eventually grind to a halt and lock up, so we try to reset earlier on the first
-
-oops, but we still get stuck in the crashkernel copying the IR tables from dmar.
-
-> 
-> Adding debugging to the vfio-pci interrupt handler, it's correctly
-> deferring the interrupt as the GPU device is not identifying itself as
-> the source of the interrupt via the status register.  In fact, setting
-> the disable INTx bit in the GPU command register while the interrupt
-> storm occurs does not stop the interrupts.
-> 
-
-Interesting. So the source of the interrupts could be from the PEX switch
-
-itself?
-
-
-
-We did a run with DisIntx+ set on the PEX switches, but it didn't make any
-
-difference. Serial log showing DisIntx+ and full dmesg below:
-
-
-
-https://paste.ubuntu.com/p/n3XshCxPT8/
-
-> The interrupt storm does seem to be related to the bus resets, but I
-> can't figure out yet how multiple devices per switch factors into the
-> issue.  Serializing all bus resets via a mutex doesn't seem to change
-> the behavior.
-
-Very interesting indeed.
-
-> I'm still investigating, but if anyone knows how to get access to the
-> Broadcom datasheet or errata for this switch, please let me know.
-
-I have tried reaching out to Broadcom asking for the datasheet and errata, but
-
-I am unsure if they will get back to me.
-
-
-
-They list the errata as publicly available on their website, in the 
-
-Documentation > errata tab.
-
-https://www.broadcom.com/products/pcie-switches-bridges/pcie-switches/pex8749#documentation
-
-
-
-The file "PEX 8749/48/47/33/32/25/24/23/17/16/13/12 Errata" seems to be missing
-
-though.
-
-https://docs.broadcom.com/docs/PEX8749-48-47-33-32-25-24-23-17-16-13-12%20Errata-and-Cautions
-
-
-
-An Intel document talks about the errata for the PEX 8749:
-
-https://www.intel.com/content/dam/www/programmable/us/en/pdfs/literature/rn/rn-ias-n3000-n.pdf
-
-It links to the following URL, also missing.
-
-https://docs.broadcom.com/docs/pub-005018
-
-
-
-I did however find an older errata document at:
-
-
-
-PEX 87xx Errata Version 1.14, September 25, 2015
-
-https://docs.broadcom.com/doc/pub-005017
-
-
-
-I will keep trying, and I will let you know if we manage to come across any
-
-documents.
-
-
-
-Thank you for your efforts.
-
-Matthew
-
-> Thanks,
-> Alex
-> 
