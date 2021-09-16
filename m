@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8752F40E879
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CAE540E44F
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:23:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354436AbhIPRkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:40:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50252 "EHLO mail.kernel.org"
+        id S1343884AbhIPQ5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:57:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347147AbhIPRbv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:31:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 31A8F61A6C;
-        Thu, 16 Sep 2021 16:47:06 +0000 (UTC)
+        id S237688AbhIPQwx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:52:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C76E6135E;
+        Thu, 16 Sep 2021 16:29:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810827;
-        bh=qMBC1L/AVg6yHH1DMtljl6zFQJ6blv5t5dZtGJ+J2Zk=;
+        s=korg; t=1631809771;
+        bh=vltmrNgN+E0W7LKarKrqHmP9bA245YK9RPBi7h2Hvrs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vCLN0AWTXn9LZ6q19SWg2ZrR0jxKPyg4XGakWieh5e3+GikEa75y5mpr/25hkT87t
-         Rqu8KsT2f+pe205MXKfsbGAJwIPN2q+Iwb+pWXcLqXB3HBaPbz9WsAuUoMusWz3UxY
-         BVTTpyjkRBpSEi9rwgl840ikG3Xl2T/I5iMbH4xY=
+        b=uIlGtmN957C3TL7s5d5GrxqK4DaLHGsoFI3tSZLX2MoqehxB7fk3d/NRz+Dg6oil8
+         Eu0GSp56oVqlBAEo+YHkDTx+qhjAm894IzjUsLuKrt8EvRG0mhGun/zKbUR8feN1UR
+         HtHsJMRJVXjR3r/leZSUGFztiV0Luh/9wuVi8Thw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anson Jacob <Anson.Jacob@amd.com>,
-        Roy Chan <roy.chan@amd.com>,
-        Daniel Wheeler <daniel.wheeler@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Ulrich Hecht <uli+renesas@fpond.eu>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 283/432] drm/amd/display: fix missing writeback disablement if plane is removed
-Date:   Thu, 16 Sep 2021 18:00:32 +0200
-Message-Id: <20210916155820.403621919@linuxfoundation.org>
+Subject: [PATCH 5.13 276/380] serial: sh-sci: fix break handling for sysrq
+Date:   Thu, 16 Sep 2021 18:00:33 +0200
+Message-Id: <20210916155813.468148963@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,81 +39,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roy Chan <roy.chan@amd.com>
+From: Ulrich Hecht <uli+renesas@fpond.eu>
 
-[ Upstream commit 82367e7f22d085092728f45fd5fbb15e3fb997c0 ]
+[ Upstream commit 87b8061bad9bd4b549b2daf36ffbaa57be2789a2 ]
 
-[Why]
-If the plane has been removed, the writeback disablement logic
-doesn't run
+This fixes two issues that cause the sysrq sequence to be inadvertently
+aborted on SCIF serial consoles:
 
-[How]
-fix the logic order
+- a NUL character remains in the RX queue after a break has been detected,
+  which is then passed on to uart_handle_sysrq_char()
+- the break interrupt is handled twice on controllers with multiplexed ERI
+  and BRI interrupts
 
-Acked-by: Anson Jacob <Anson.Jacob@amd.com>
-Signed-off-by: Roy Chan <roy.chan@amd.com>
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Ulrich Hecht <uli+renesas@fpond.eu>
+Link: https://lore.kernel.org/r/20210816162201.28801-1-uli+renesas@fpond.eu
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c | 14 ++++++++------
- drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c | 12 +++++++++++-
- 2 files changed, 19 insertions(+), 7 deletions(-)
+ drivers/tty/serial/sh-sci.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c
-index 5c2853654cca..a47ba1d45be9 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c
-@@ -1723,13 +1723,15 @@ void dcn20_program_front_end_for_ctx(
+diff --git a/drivers/tty/serial/sh-sci.c b/drivers/tty/serial/sh-sci.c
+index 2d5487bf6855..a2e62f372e10 100644
+--- a/drivers/tty/serial/sh-sci.c
++++ b/drivers/tty/serial/sh-sci.c
+@@ -1760,6 +1760,10 @@ static irqreturn_t sci_br_interrupt(int irq, void *ptr)
  
- 				pipe = pipe->bottom_pipe;
- 			}
--			/* Program secondary blending tree and writeback pipes */
--			pipe = &context->res_ctx.pipe_ctx[i];
--			if (!pipe->prev_odm_pipe && pipe->stream->num_wb_info > 0
--					&& (pipe->update_flags.raw || pipe->plane_state->update_flags.raw || pipe->stream->update_flags.raw)
--					&& hws->funcs.program_all_writeback_pipes_in_tree)
--				hws->funcs.program_all_writeback_pipes_in_tree(dc, pipe->stream, context);
- 		}
-+		/* Program secondary blending tree and writeback pipes */
-+		pipe = &context->res_ctx.pipe_ctx[i];
-+		if (!pipe->top_pipe && !pipe->prev_odm_pipe
-+				&& pipe->stream && pipe->stream->num_wb_info > 0
-+				&& (pipe->update_flags.raw || (pipe->plane_state && pipe->plane_state->update_flags.raw)
-+					|| pipe->stream->update_flags.raw)
-+				&& hws->funcs.program_all_writeback_pipes_in_tree)
-+			hws->funcs.program_all_writeback_pipes_in_tree(dc, pipe->stream, context);
- 	}
- }
- 
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c
-index 2e8ab9775fa3..fafed1e4a998 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c
-@@ -398,12 +398,22 @@ void dcn30_program_all_writeback_pipes_in_tree(
- 			for (i_pipe = 0; i_pipe < dc->res_pool->pipe_count; i_pipe++) {
- 				struct pipe_ctx *pipe_ctx = &context->res_ctx.pipe_ctx[i_pipe];
- 
-+				if (!pipe_ctx->plane_state)
-+					continue;
+ 	/* Handle BREAKs */
+ 	sci_handle_breaks(port);
 +
- 				if (pipe_ctx->plane_state == wb_info.writeback_source_plane) {
- 					wb_info.mpcc_inst = pipe_ctx->plane_res.mpcc_inst;
- 					break;
- 				}
- 			}
--			ASSERT(wb_info.mpcc_inst != -1);
++	/* drop invalid character received before break was detected */
++	serial_port_in(port, SCxRDR);
 +
-+			if (wb_info.mpcc_inst == -1) {
-+				/* Disable writeback pipe and disconnect from MPCC
-+				 * if source plane has been removed
-+				 */
-+				dc->hwss.disable_writeback(dc, wb_info.dwb_pipe_inst);
-+				continue;
-+			}
+ 	sci_clear_SCxSR(port, SCxSR_BREAK_CLEAR(port));
  
- 			ASSERT(wb_info.dwb_pipe_inst < dc->res_pool->res_cap->num_dwb);
- 			dwb = dc->res_pool->dwbc[wb_info.dwb_pipe_inst];
+ 	return IRQ_HANDLED;
+@@ -1839,7 +1843,8 @@ static irqreturn_t sci_mpxed_interrupt(int irq, void *ptr)
+ 		ret = sci_er_interrupt(irq, ptr);
+ 
+ 	/* Break Interrupt */
+-	if ((ssr_status & SCxSR_BRK(port)) && err_enabled)
++	if (s->irqs[SCIx_ERI_IRQ] != s->irqs[SCIx_BRI_IRQ] &&
++	    (ssr_status & SCxSR_BRK(port)) && err_enabled)
+ 		ret = sci_br_interrupt(irq, ptr);
+ 
+ 	/* Overrun Interrupt */
 -- 
 2.30.2
 
