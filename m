@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 582E540E8A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D162640E483
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:24:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354927AbhIPRkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:40:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50270 "EHLO mail.kernel.org"
+        id S1348952AbhIPRDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:03:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353448AbhIPRdy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:33:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 840AD61882;
-        Thu, 16 Sep 2021 16:48:25 +0000 (UTC)
+        id S1346808AbhIPQ4M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:56:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E72D161AE1;
+        Thu, 16 Sep 2021 16:30:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810906;
-        bh=nmZlJjMfVm8UXxDXZfpM14Y9C+so6nIKPHyHfBjxfQ0=;
+        s=korg; t=1631809848;
+        bh=9foygNpkQDwOr2qCWW90C35W1j1hFTBdaVPZhzHL2Es=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ok0sjFbccB1MfUy3D7kKjqp8Ly7ukYMpAvzoCuuxXaP9z90fVPvHgw/EdqdqIT0ei
-         cNuopgRv7Kk+zP47F1tBScyPFqWr5rMTZ0B17j1/O2kz6/1UmmyTZF6W3rg1liC1us
-         Kj+jGMch+47Ho07ewCwRksl4jfBcOtVmWUcC/1OQ=
+        b=1gThQKtZ2yOlaDe8JyLHzJtEI8Mp5gWa1bKj6F56ccopHyGfbib55XeYCnF46cxOS
+         AnJt7N3W7KPALlj++ZsndCaxOco4MMCLDXCZ3fY2TFtbq2JtN5YeC+wqzzhHTFrmzV
+         9bxCKLNUTPg3HosYfETUzBkAqXG/RcABTI7XG3OI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Luke Hsiao <lukehsiao@google.com>,
-        Neal Cardwell <ncardwell@google.com>,
-        Yuchung Cheng <ycheng@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org,
+        Gustaw Lewandowski <gustaw.lewandowski@linux.intel.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Lukasz Majczak <lma@semihalf.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 312/432] tcp: enable data-less, empty-cookie SYN with TFO_SERVER_COOKIE_NOT_REQD
-Date:   Thu, 16 Sep 2021 18:01:01 +0200
-Message-Id: <20210916155821.396157025@linuxfoundation.org>
+Subject: [PATCH 5.13 305/380] ASoC: Intel: Skylake: Fix passing loadable flag for module
+Date:   Thu, 16 Sep 2021 18:01:02 +0200
+Message-Id: <20210916155814.435986102@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,56 +43,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luke Hsiao <lukehsiao@google.com>
+From: Gustaw Lewandowski <gustaw.lewandowski@linux.intel.com>
 
-[ Upstream commit e3faa49bcecdfcc80e94dd75709d6acb1a5d89f6 ]
+[ Upstream commit c5ed9c547cba1dc1238c6e8a0c290fd62ee6e127 ]
 
-Since the original TFO server code was implemented in commit
-168a8f58059a22feb9e9a2dcc1b8053dbbbc12ef ("tcp: TCP Fast Open Server -
-main code path") the TFO server code has supported the sysctl bit flag
-TFO_SERVER_COOKIE_NOT_REQD. Currently, when the TFO_SERVER_ENABLE and
-TFO_SERVER_COOKIE_NOT_REQD sysctl bit flags are set, a server connection
-will accept a SYN with N bytes of data (N > 0) that has no TFO cookie,
-create a new fast open connection, process the incoming data in the SYN,
-and make the connection ready for accepting. After accepting, the
-connection is ready for read()/recvmsg() to read the N bytes of data in
-the SYN, ready for write()/sendmsg() calls and data transmissions to
-transmit data.
+skl_get_module_info() tries to set mconfig->module->loadable before
+mconfig->module has been assigned thus flag was always set to false
+and driver did not try to load module binaries.
 
-This commit changes an edge case in this feature by changing this
-behavior to apply to (N >= 0) bytes of data in the SYN rather than only
-(N > 0) bytes of data in the SYN. Now, a server will accept a data-less
-SYN without a TFO cookie if TFO_SERVER_COOKIE_NOT_REQD is set.
-
-Caveat! While this enables a new kind of TFO (data-less empty-cookie
-SYN), some firewall rules setup may not work if they assume such packets
-are not legit TFOs and will filter them.
-
-Signed-off-by: Luke Hsiao <lukehsiao@google.com>
-Acked-by: Neal Cardwell <ncardwell@google.com>
-Acked-by: Yuchung Cheng <ycheng@google.com>
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Link: https://lore.kernel.org/r/20210816205105.2533289-1-luke.w.hsiao@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Gustaw Lewandowski <gustaw.lewandowski@linux.intel.com>
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Tested-by: Lukasz Majczak <lma@semihalf.com>
+Link: https://lore.kernel.org/r/20210818075742.1515155-7-cezary.rojewski@intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/tcp_fastopen.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/intel/skylake/skl-pcm.c | 25 +++++++++----------------
+ 1 file changed, 9 insertions(+), 16 deletions(-)
 
-diff --git a/net/ipv4/tcp_fastopen.c b/net/ipv4/tcp_fastopen.c
-index 25fa4c01a17f..f1e90fc1cd18 100644
---- a/net/ipv4/tcp_fastopen.c
-+++ b/net/ipv4/tcp_fastopen.c
-@@ -379,8 +379,7 @@ struct sock *tcp_try_fastopen(struct sock *sk, struct sk_buff *skb,
- 		return NULL;
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index b1ca64d2f7ea..031d5dc7e660 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -1317,21 +1317,6 @@ static int skl_get_module_info(struct skl_dev *skl,
+ 		return -EIO;
  	}
  
--	if (syn_data &&
--	    tcp_fastopen_no_cookie(sk, dst, TFO_SERVER_COOKIE_NOT_REQD))
-+	if (tcp_fastopen_no_cookie(sk, dst, TFO_SERVER_COOKIE_NOT_REQD))
- 		goto fastopen;
+-	list_for_each_entry(module, &skl->uuid_list, list) {
+-		if (guid_equal(uuid_mod, &module->uuid)) {
+-			mconfig->id.module_id = module->id;
+-			if (mconfig->module)
+-				mconfig->module->loadable = module->is_loadable;
+-			ret = 0;
+-			break;
+-		}
+-	}
+-
+-	if (ret)
+-		return ret;
+-
+-	uuid_mod = &module->uuid;
+-	ret = -EIO;
+ 	for (i = 0; i < skl->nr_modules; i++) {
+ 		skl_module = skl->modules[i];
+ 		uuid_tplg = &skl_module->uuid;
+@@ -1341,10 +1326,18 @@ static int skl_get_module_info(struct skl_dev *skl,
+ 			break;
+ 		}
+ 	}
++
+ 	if (skl->nr_modules && ret)
+ 		return ret;
  
- 	if (foc->len == 0) {
++	ret = -EIO;
+ 	list_for_each_entry(module, &skl->uuid_list, list) {
++		if (guid_equal(uuid_mod, &module->uuid)) {
++			mconfig->id.module_id = module->id;
++			mconfig->module->loadable = module->is_loadable;
++			ret = 0;
++		}
++
+ 		for (i = 0; i < MAX_IN_QUEUE; i++) {
+ 			pin_id = &mconfig->m_in_pin[i].id;
+ 			if (guid_equal(&pin_id->mod_uuid, &module->uuid))
+@@ -1358,7 +1351,7 @@ static int skl_get_module_info(struct skl_dev *skl,
+ 		}
+ 	}
+ 
+-	return 0;
++	return ret;
+ }
+ 
+ static int skl_populate_modules(struct skl_dev *skl)
 -- 
 2.30.2
 
