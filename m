@@ -2,100 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59F0440D946
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 14:00:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D32240DA57
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 14:51:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239009AbhIPMBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 08:01:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238808AbhIPMAy (ORCPT
+        id S239781AbhIPMwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 08:52:22 -0400
+Received: from zimbra-mta.lsd.ufcg.edu.br ([150.165.15.74]:49542 "EHLO
+        zimbra-mta.lsd.ufcg.edu.br" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230299AbhIPMwU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 08:00:54 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3072C0613CF;
-        Thu, 16 Sep 2021 04:59:33 -0700 (PDT)
-Date:   Thu, 16 Sep 2021 11:59:31 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1631793572;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ol3fZGCyJT1wVKos2VLXEk/1aUNdYsozN88GQN84voc=;
-        b=CWv/cz8teUIUFkWkd1uy7HNDc4EXXSmBSjqVjaiAFoaNZs67qLzJNvoxjQur1YlqvBFcvP
-        7zZEG1qfrd7h9HLbziE5feg9MDNSf3k/CJTqUpRWd8asv10aA4Vysn/s4eOqizC8z34aAv
-        KtHmGWiZbrNlmwks/srjIWwF3P22jS7egTdZleDT5nVDfPl1Un6yb9ylPiWqaAlZ8ADBcK
-        uFXWFRZ1WYkM/Nl5DI8cRuNOW/cuVONTy1Xo5KOoyhM7bg0sGHZCsbZT/ZYeqOxJ2BxfcA
-        +nxH7kRhZf6vSbcjAyJXT8a3zZ5LvtyczYVQx9Mb/C0LM8KSSQje/Yut2q7j2Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1631793572;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ol3fZGCyJT1wVKos2VLXEk/1aUNdYsozN88GQN84voc=;
-        b=5fuiu6poIin4nCzEANlKwYSbKa15tgndsWe0KqU/MaIjWaVvu0PdSju5Oi975vS23NSIez
-        QgGwf12n46YJDeAQ==
-From:   "tip-bot2 for Yafang Shao" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/fair: Use __schedstat_set() in set_next_entity()
-Cc:     Yafang Shao <laoar.shao@gmail.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210905143547.4668-2-laoar.shao@gmail.com>
-References: <20210905143547.4668-2-laoar.shao@gmail.com>
+        Thu, 16 Sep 2021 08:52:20 -0400
+X-Greylist: delayed 13155 seconds by postgrey-1.27 at vger.kernel.org; Thu, 16 Sep 2021 08:52:20 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by zimbra-mta.lsd.ufcg.edu.br (Postfix) with ESMTP id 84B401CE84A;
+        Thu, 16 Sep 2021 04:29:25 -0300 (-03)
+Received: from zimbra-mta.lsd.ufcg.edu.br ([127.0.0.1])
+        by localhost (zimbra-mta.lsd.ufcg.edu.br [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id tLAlWy-I6v75; Thu, 16 Sep 2021 04:29:25 -0300 (-03)
+Received: from localhost (localhost [127.0.0.1])
+        by zimbra-mta.lsd.ufcg.edu.br (Postfix) with ESMTP id 37F791CE629;
+        Thu, 16 Sep 2021 04:25:57 -0300 (-03)
+DKIM-Filter: OpenDKIM Filter v2.10.3 zimbra-mta.lsd.ufcg.edu.br 37F791CE629
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lsd.ufcg.edu.br;
+        s=3E82003E-F604-11EB-A491-7C6DDB2713F3; t=1631777157;
+        bh=wM9aGZhlvcNHZeIcDIZ9o/jldE1rU6dCr79BTrGFl3Q=;
+        h=MIME-Version:To:From:Date:Message-Id;
+        b=MoClDNnPF5mGFgn7CNziz+rj+8/+rK09IRokNmnOVW4+x00ZuMp63jY5IhaQ3PjsG
+         7A8t6MpkML1ytMh7rFasyQq0ewor5n8N72VD+0ac4RMjvBLKL6142tpinh4n5zQuC7
+         m8Dz7Fei4vEAUhgb/Ev+MMKVl6jZpCAbirC8SQdUog4MePb8S2+AaVpjWx6oeMYp81
+         gPcxTDPeFuVGlB7LbdOV6yrFcO2IjOlhcyPOQgIPDcQCmBGNoM3/5ZG/5dbUwTDgsK
+         m0WeP4nLQGfX54hHzwABlg+e1Ltho3+QowkqJNqES0/VypfMVCccIquO9d4cN/kmcA
+         bJU5rFVyNQ/Ew==
+X-Virus-Scanned: amavisd-new at lsd.ufcg.edu.br
+Received: from zimbra-mta.lsd.ufcg.edu.br ([127.0.0.1])
+        by localhost (zimbra-mta.lsd.ufcg.edu.br [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id F6OLvuWkc5ub; Thu, 16 Sep 2021 04:25:57 -0300 (-03)
+Received: from [10.0.0.2] (unknown [213.156.145.159])
+        by zimbra-mta.lsd.ufcg.edu.br (Postfix) with ESMTPSA id F1E5F1CE5A0;
+        Thu, 16 Sep 2021 04:20:05 -0300 (-03)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Message-ID: <163179357151.25758.3430253645020974508.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: Your $ 3,350,000.00 USD
+To:     Recipients <benardi@lsd.ufcg.edu.br>
+From:   "Leonardo Del" <benardi@lsd.ufcg.edu.br>
+Date:   Thu, 16 Sep 2021 08:19:44 +0100
+Reply-To: leonardodelve20@gmail.com
+Message-Id: <20210916072005.F1E5F1CE5A0@zimbra-mta.lsd.ufcg.edu.br>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/core branch of tip:
+I'm Leonardo Del Vecchio, an Italian business, investor, Founder and chairm=
+an of Luxottica, Which is now the world's largest producer and retailer of =
+glasses and lenses. I gave away 25 percent of my personal wealth to charity=
+. And I also pledged to give away the rest of 25% this year 2021 to Individ=
+uals. I have decided to donate (Three Million, Three Hundred and Fifty Thou=
+sand Dollars)to you. If you are interested in my donation,
 
-Commit-ID:     5855e81a4a3b6eb8967bff760e7d1f1b82228525
-Gitweb:        https://git.kernel.org/tip/5855e81a4a3b6eb8967bff760e7d1f1b82228525
-Author:        Yafang Shao <laoar.shao@gmail.com>
-AuthorDate:    Sun, 05 Sep 2021 14:35:40 
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 15 Sep 2021 17:48:58 +02:00
 
-sched/fair: Use __schedstat_set() in set_next_entity()
+Do contact me: leonardodelve20@gmail.com
 
-schedstat_enabled() has been already checked, so we can use
-__schedstat_set() directly.
 
-Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Mel Gorman <mgorman@suse.de>
-Link: https://lore.kernel.org/r/20210905143547.4668-2-laoar.shao@gmail.com
----
- kernel/sched/fair.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 3594884..148b830 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -4501,9 +4501,9 @@ set_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *se)
- 	 */
- 	if (schedstat_enabled() &&
- 	    rq_of(cfs_rq)->cfs.load.weight >= 2*se->load.weight) {
--		schedstat_set(se->statistics.slice_max,
--			max((u64)schedstat_val(se->statistics.slice_max),
--			    se->sum_exec_runtime - se->prev_sum_exec_runtime));
-+		__schedstat_set(se->statistics.slice_max,
-+				max((u64)se->statistics.slice_max,
-+				    se->sum_exec_runtime - se->prev_sum_exec_runtime));
- 	}
- 
- 	se->prev_sum_exec_runtime = se->sum_exec_runtime;
+Warm Regard
+Founder and chairman of Luxottica
+Leonardo Del Vecchio
