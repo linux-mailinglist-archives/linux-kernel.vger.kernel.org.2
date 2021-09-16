@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66F3140E0A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:27:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DBD440E345
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:20:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236574AbhIPQWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:22:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55070 "EHLO mail.kernel.org"
+        id S244533AbhIPQqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:46:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51236 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240862AbhIPQOd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:14:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 893B161246;
-        Thu, 16 Sep 2021 16:10:39 +0000 (UTC)
+        id S245524AbhIPQkf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:40:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8EF4961501;
+        Thu, 16 Sep 2021 16:23:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808640;
-        bh=8e0DDvsPXf1kH0LnFdERMGCtpGzYk7PCmA9MgBhGK6g=;
+        s=korg; t=1631809438;
+        bh=vL1tCi+P8oHoCWquG29pMGeUOGlw7/g0zHRAzDDPO2Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ezzpT+CpYcb0jGOUs+aX6iEVZFrg0nqNkd+SL2Z+EhNGO6IkY5k//KcaBmosjCJfu
-         RrpScqW3ow4/IzF5SW8ZdEAHVLdnpUp6S1XFNETWIQpRcn4UVBisdQCqgIHiFPzQez
-         9uEDyqN5yu9wWSH1PsRglJlArFc3rM2yGWoWb39Q=
+        b=jPjcW6eEYQvToo/+wIllTOb4MIw4RYnu5P11EdXBTTtdV/atHV5MASXhus1B/bCe6
+         IcdGUUKzjuI4+aSGEpZa3GvkuwmmfHO1n4GZbTmLDpzhtT1mI5oudA+wF5bp3DlV5B
+         M5cz9vEg2OhsOVY1A5LNXOadVsbv1J0JW2M1qjYo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Martynas Pumputis <m@lambda.lt>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 167/306] libbpf: Fix race when pinning maps in parallel
+Subject: [PATCH 5.13 155/380] net: phy: Fix data type in DP83822 dp8382x_disable_wol()
 Date:   Thu, 16 Sep 2021 17:58:32 +0200
-Message-Id: <20210916155759.774620841@linuxfoundation.org>
+Message-Id: <20210916155809.343387376@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,84 +42,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martynas Pumputis <m@lambda.lt>
+From: Marek Vasut <marex@denx.de>
 
-[ Upstream commit 043c5bb3c4f43670ab4fea0b847373ab42d25f3e ]
+[ Upstream commit 0d6835ffe50c9c1f098b5704394331710b67af48 ]
 
-When loading in parallel multiple programs which use the same to-be
-pinned map, it is possible that two instances of the loader will call
-bpf_object__create_maps() at the same time. If the map doesn't exist
-when both instances call bpf_object__reuse_map(), then one of the
-instances will fail with EEXIST when calling bpf_map__pin().
+The last argument of phy_clear_bits_mmd(..., u16 val); is u16 and not
+int, just inline the value into the function call arguments.
 
-Fix the race by retrying reusing a map if bpf_map__pin() returns
-EEXIST. The fix is similar to the one in iproute2: e4c4685fd6e4 ("bpf:
-Fix race condition with map pinning").
+No functional change.
 
-Before retrying the pinning, we don't do any special cleaning of an
-internal map state. The closer code inspection revealed that it's not
-required:
-
-    - bpf_object__create_map(): map->inner_map is destroyed after a
-      successful call, map->fd is closed if pinning fails.
-    - bpf_object__populate_internal_map(): created map elements is
-      destroyed upon close(map->fd).
-    - init_map_slots(): slots are freed after their initialization.
-
-Signed-off-by: Martynas Pumputis <m@lambda.lt>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/bpf/20210726152001.34845-1-m@lambda.lt
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Andrew Lunn <andrew@lunn.ch>
+Cc: Florian Fainelli <f.fainelli@gmail.com>
+Cc: David S. Miller <davem@davemloft.net>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/bpf/libbpf.c | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
+ drivers/net/phy/dp83822.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 0dad862b3b9d..b337d6f29098 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -4284,10 +4284,13 @@ bpf_object__create_maps(struct bpf_object *obj)
- 	char *cp, errmsg[STRERR_BUFSIZE];
- 	unsigned int i, j;
- 	int err;
-+	bool retried;
+diff --git a/drivers/net/phy/dp83822.c b/drivers/net/phy/dp83822.c
+index f7a2ec150e54..211b5476a6f5 100644
+--- a/drivers/net/phy/dp83822.c
++++ b/drivers/net/phy/dp83822.c
+@@ -326,11 +326,9 @@ static irqreturn_t dp83822_handle_interrupt(struct phy_device *phydev)
  
- 	for (i = 0; i < obj->nr_maps; i++) {
- 		map = &obj->maps[i];
+ static int dp8382x_disable_wol(struct phy_device *phydev)
+ {
+-	int value = DP83822_WOL_EN | DP83822_WOL_MAGIC_EN |
+-		    DP83822_WOL_SECURE_ON;
+-
+-	return phy_clear_bits_mmd(phydev, DP83822_DEVADDR,
+-				  MII_DP83822_WOL_CFG, value);
++	return phy_clear_bits_mmd(phydev, DP83822_DEVADDR, MII_DP83822_WOL_CFG,
++				  DP83822_WOL_EN | DP83822_WOL_MAGIC_EN |
++				  DP83822_WOL_SECURE_ON);
+ }
  
-+		retried = false;
-+retry:
- 		if (map->pin_path) {
- 			err = bpf_object__reuse_map(map);
- 			if (err) {
-@@ -4295,6 +4298,12 @@ bpf_object__create_maps(struct bpf_object *obj)
- 					map->name);
- 				goto err_out;
- 			}
-+			if (retried && map->fd < 0) {
-+				pr_warn("map '%s': cannot find pinned map\n",
-+					map->name);
-+				err = -ENOENT;
-+				goto err_out;
-+			}
- 		}
- 
- 		if (map->fd >= 0) {
-@@ -4328,9 +4337,13 @@ bpf_object__create_maps(struct bpf_object *obj)
- 		if (map->pin_path && !map->pinned) {
- 			err = bpf_map__pin(map, NULL);
- 			if (err) {
-+				zclose(map->fd);
-+				if (!retried && err == -EEXIST) {
-+					retried = true;
-+					goto retry;
-+				}
- 				pr_warn("map '%s': failed to auto-pin at '%s': %d\n",
- 					map->name, map->pin_path, err);
--				zclose(map->fd);
- 				goto err_out;
- 			}
- 		}
+ static int dp83822_read_status(struct phy_device *phydev)
 -- 
 2.30.2
 
