@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99E2840E721
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:32:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D63440E078
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:21:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352846AbhIPR3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:29:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43514 "EHLO mail.kernel.org"
+        id S236951AbhIPQVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:21:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48410 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351937AbhIPRUA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:20:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 51EFD61A10;
-        Thu, 16 Sep 2021 16:41:44 +0000 (UTC)
+        id S234838AbhIPQMo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:12:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B3B116128B;
+        Thu, 16 Sep 2021 16:09:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810504;
-        bh=21bRNlJHjvzXKdcnLpXqGJVjQNQ/P5nEphiX9ffc22A=;
+        s=korg; t=1631808567;
+        bh=YSGUJuDHSnZzOzXmBsKZOAT80LCOSLiqvtDEwYmOCJs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KgNRuTHsR+a2nLtGq4VpXzHBh+j8FLQL0GsXH0uj7UXOGMq9RoRRKoF/4OrMj3++G
-         M/8da/faMFKWLYAF+CNwhz3wpV1Wpi/LJ3cMSYj+WV/EFTvZYVizNAnTWKd0ptDDp5
-         uElSb78mivcr/LGAr92hhzDyPiPboCVpV4LV7GCg=
+        b=OkjfebJz8ad8mIIdOklMjzHKpycDtZ0HZtoOlWkPPlxVtLyLBHW5I8YTKL/mzOUIz
+         v8YSvUxAwUiEuzXPG5gQEw54HlftuV+Uf73Hi/zg+O0G8MyKPSvJFmgZrHFJ5M5xYj
+         AZ0qn/SUinc8Nosz4zvzGQzikSwKFHXnYQdvTSrY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Fabiano Rosas <farosas@linux.ibm.com>,
+        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 133/432] KVM: PPC: Book3S HV Nested: Reflect guest PMU in-use to L0 when guest SPRs are live
-Date:   Thu, 16 Sep 2021 17:58:02 +0200
-Message-Id: <20210916155815.268614011@linuxfoundation.org>
+Subject: [PATCH 5.10 138/306] tty: serial: jsm: hold port lock when reporting modem line changes
+Date:   Thu, 16 Sep 2021 17:58:03 +0200
+Message-Id: <20210916155758.747243753@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,98 +39,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Piggin <npiggin@gmail.com>
+From: Zheyu Ma <zheyuma97@gmail.com>
 
-[ Upstream commit 1782663897945a5cf28e564ba5eed730098e9aa4 ]
+[ Upstream commit 240e126c28df084222f0b661321e8e3ecb0d232e ]
 
-After the L1 saves its PMU SPRs but before loading the L2's PMU SPRs,
-switch the pmcregs_in_use field in the L1 lppaca to the value advertised
-by the L2 in its VPA. On the way out of the L2, set it back after saving
-the L2 PMU registers (if they were in-use).
+uart_handle_dcd_change() requires a port lock to be held and will emit a
+warning when lockdep is enabled.
 
-This transfers the PMU liveness indication between the L1 and L2 at the
-points where the registers are not live.
+Held corresponding lock to fix the following warnings.
 
-This fixes the nested HV bug for which a workaround was added to the L0
-HV by commit 63279eeb7f93a ("KVM: PPC: Book3S HV: Always save guest pmu
-for guest capable of nesting"), which explains the problem in detail.
-That workaround is no longer required for guests that include this bug
-fix.
+[  132.528648] WARNING: CPU: 5 PID: 11600 at drivers/tty/serial/serial_core.c:3046 uart_handle_dcd_change+0xf4/0x120
+[  132.530482] Modules linked in:
+[  132.531050] CPU: 5 PID: 11600 Comm: jsm Not tainted 5.14.0-rc1-00003-g7fef2edf7cc7-dirty #31
+[  132.535268] RIP: 0010:uart_handle_dcd_change+0xf4/0x120
+[  132.557100] Call Trace:
+[  132.557562]  ? __free_pages+0x83/0xb0
+[  132.558213]  neo_parse_modem+0x156/0x220
+[  132.558897]  neo_param+0x399/0x840
+[  132.559495]  jsm_tty_open+0x12f/0x2d0
+[  132.560131]  uart_startup.part.18+0x153/0x340
+[  132.560888]  ? lock_is_held_type+0xe9/0x140
+[  132.561660]  uart_port_activate+0x7f/0xe0
+[  132.562351]  ? uart_startup.part.18+0x340/0x340
+[  132.563003]  tty_port_open+0x8d/0xf0
+[  132.563523]  ? uart_set_options+0x1e0/0x1e0
+[  132.564125]  uart_open+0x24/0x40
+[  132.564604]  tty_open+0x15c/0x630
 
-Fixes: 360cae313702 ("KVM: PPC: Book3S HV: Nested guest entry via hypercall")
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Reviewed-by: Fabiano Rosas <farosas@linux.ibm.com>
-Link: https://lore.kernel.org/r/20210811160134.904987-10-npiggin@gmail.com
+Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+Link: https://lore.kernel.org/r/1626242003-3809-1-git-send-email-zheyuma97@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/include/asm/pmc.h |  7 +++++++
- arch/powerpc/kvm/book3s_hv.c   | 20 ++++++++++++++++++++
- 2 files changed, 27 insertions(+)
+ drivers/tty/serial/jsm/jsm_neo.c | 2 ++
+ drivers/tty/serial/jsm/jsm_tty.c | 3 +++
+ 2 files changed, 5 insertions(+)
 
-diff --git a/arch/powerpc/include/asm/pmc.h b/arch/powerpc/include/asm/pmc.h
-index c6bbe9778d3c..3c09109e708e 100644
---- a/arch/powerpc/include/asm/pmc.h
-+++ b/arch/powerpc/include/asm/pmc.h
-@@ -34,6 +34,13 @@ static inline void ppc_set_pmu_inuse(int inuse)
- #endif
+diff --git a/drivers/tty/serial/jsm/jsm_neo.c b/drivers/tty/serial/jsm/jsm_neo.c
+index bf0e2a4cb0ce..c6f927a76c3b 100644
+--- a/drivers/tty/serial/jsm/jsm_neo.c
++++ b/drivers/tty/serial/jsm/jsm_neo.c
+@@ -815,7 +815,9 @@ static void neo_parse_isr(struct jsm_board *brd, u32 port)
+ 		/* Parse any modem signal changes */
+ 		jsm_dbg(INTR, &ch->ch_bd->pci_dev,
+ 			"MOD_STAT: sending to parse_modem_sigs\n");
++		spin_lock_irqsave(&ch->uart_port.lock, lock_flags);
+ 		neo_parse_modem(ch, readb(&ch->ch_neo_uart->msr));
++		spin_unlock_irqrestore(&ch->uart_port.lock, lock_flags);
+ 	}
  }
  
-+#ifdef CONFIG_KVM_BOOK3S_HV_POSSIBLE
-+static inline int ppc_get_pmu_inuse(void)
-+{
-+	return get_paca()->pmcregs_in_use;
-+}
-+#endif
-+
- extern void power4_enable_pmcs(void);
+diff --git a/drivers/tty/serial/jsm/jsm_tty.c b/drivers/tty/serial/jsm/jsm_tty.c
+index 689774c073ca..8438454ca653 100644
+--- a/drivers/tty/serial/jsm/jsm_tty.c
++++ b/drivers/tty/serial/jsm/jsm_tty.c
+@@ -187,6 +187,7 @@ static void jsm_tty_break(struct uart_port *port, int break_state)
  
- #else /* CONFIG_PPC64 */
-diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
-index 085fb8ecbf68..af822f09785f 100644
---- a/arch/powerpc/kvm/book3s_hv.c
-+++ b/arch/powerpc/kvm/book3s_hv.c
-@@ -59,6 +59,7 @@
- #include <asm/kvm_book3s.h>
- #include <asm/mmu_context.h>
- #include <asm/lppaca.h>
-+#include <asm/pmc.h>
- #include <asm/processor.h>
- #include <asm/cputhreads.h>
- #include <asm/page.h>
-@@ -3852,6 +3853,18 @@ static int kvmhv_p9_guest_entry(struct kvm_vcpu *vcpu, u64 time_limit,
- 	    cpu_has_feature(CPU_FTR_P9_TM_HV_ASSIST))
- 		kvmppc_restore_tm_hv(vcpu, vcpu->arch.shregs.msr, true);
+ static int jsm_tty_open(struct uart_port *port)
+ {
++	unsigned long lock_flags;
+ 	struct jsm_board *brd;
+ 	struct jsm_channel *channel =
+ 		container_of(port, struct jsm_channel, uart_port);
+@@ -240,6 +241,7 @@ static int jsm_tty_open(struct uart_port *port)
+ 	channel->ch_cached_lsr = 0;
+ 	channel->ch_stops_sent = 0;
  
-+#ifdef CONFIG_PPC_PSERIES
-+	if (kvmhv_on_pseries()) {
-+		barrier();
-+		if (vcpu->arch.vpa.pinned_addr) {
-+			struct lppaca *lp = vcpu->arch.vpa.pinned_addr;
-+			get_lppaca()->pmcregs_in_use = lp->pmcregs_in_use;
-+		} else {
-+			get_lppaca()->pmcregs_in_use = 1;
-+		}
-+		barrier();
-+	}
-+#endif
- 	kvmhv_load_guest_pmu(vcpu);
++	spin_lock_irqsave(&port->lock, lock_flags);
+ 	termios = &port->state->port.tty->termios;
+ 	channel->ch_c_cflag	= termios->c_cflag;
+ 	channel->ch_c_iflag	= termios->c_iflag;
+@@ -259,6 +261,7 @@ static int jsm_tty_open(struct uart_port *port)
+ 	jsm_carrier(channel);
  
- 	msr_check_and_set(MSR_FP | MSR_VEC | MSR_VSX);
-@@ -3986,6 +3999,13 @@ static int kvmhv_p9_guest_entry(struct kvm_vcpu *vcpu, u64 time_limit,
- 	save_pmu |= nesting_enabled(vcpu->kvm);
+ 	channel->ch_open_count++;
++	spin_unlock_irqrestore(&port->lock, lock_flags);
  
- 	kvmhv_save_guest_pmu(vcpu, save_pmu);
-+#ifdef CONFIG_PPC_PSERIES
-+	if (kvmhv_on_pseries()) {
-+		barrier();
-+		get_lppaca()->pmcregs_in_use = ppc_get_pmu_inuse();
-+		barrier();
-+	}
-+#endif
- 
- 	vc->entry_exit_map = 0x101;
- 	vc->in_guest = 0;
+ 	jsm_dbg(OPEN, &channel->ch_bd->pci_dev, "finish\n");
+ 	return 0;
 -- 
 2.30.2
 
