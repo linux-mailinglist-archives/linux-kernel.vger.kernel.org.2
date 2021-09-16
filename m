@@ -2,132 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC84540DAF0
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 15:18:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C7F740DAF9
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 15:18:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240001AbhIPNTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 09:19:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60332 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239938AbhIPNTn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 09:19:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 351026120F;
-        Thu, 16 Sep 2021 13:18:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631798302;
-        bh=5QDco+H6yKaDHQBgOn3z6hTcONmXAHYxpTTjoyccPr4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=WPjkidT7YXXVCKctwIF6oNsCxPGA3XFpFE+jDMXaP/pjt6LnGlYZs+t0gDpBGQ0jd
-         9398xpRXlC/capRZfjGq9OZzBulnRK8JuOIGWN+K4Ozwpleici8iqAvt+dSwrwgWYF
-         wNeplkL6/wqW8Haoa7Eio6ZuQEF98S+yLkbuDyOrRsCXPM7SwQcJHhC4q7acXzFc28
-         53Bu3kCUL9dLH/T4YBt0lKMLO0uN7bp8Cswte0H/lU2YqDx5aUhqIVoE9izb/O7lJJ
-         PA6YXGPaPBreNc4xj/bQ+2a25T+ucWtp35QYz4KJHxP0d2g9zVezDVPJVohdDyPoAb
-         NE98J9tRjV83Q==
-From:   Will Deacon <will@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [RFC PATCH] fs/compat_binfmt_elf: Introduce sysctl to disable compat ELF loader
-Date:   Thu, 16 Sep 2021 14:18:16 +0100
-Message-Id: <20210916131816.8841-1-will@kernel.org>
-X-Mailer: git-send-email 2.20.1
+        id S240049AbhIPNUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 09:20:08 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:47880 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240008AbhIPNUG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 09:20:06 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 18GD0N2m029064;
+        Thu, 16 Sep 2021 09:18:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=oVkxofZeBhWFIRtnW0yTddOC+EkElRBzdsYHJchrF8g=;
+ b=LyfQJtTQ7N7ml5O1J94ziPDSSstuoeGsKsSUJmAffjY0O2jGJSMZlM5gczlfsMwWo9eU
+ YfaDSsIdAY2wlxrAofpdkjRzmAPdA29H8qehRd5ED2fpMLAF86H4x6Er/+ZuQS7Lh4az
+ ocSJQiUmhHzXr+vXJCjz/le7MaG7NbzBLq93XRDKuR1sCiHg3ddL7srifQoWOas4sItl
+ uR/7BFuvxgflRTKlrfReIVFSDeP0egl9NLCjw3Od+otFVu5fO950397JW4jQyVmwpxaj
+ 05pDAcNlTHjD8V7LQov11xgFxNVy0uX8WpzLJ9A+/4hqvel/oPEooTYgQ1yGvGU8hvlR ag== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3b46e98fp7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 16 Sep 2021 09:18:44 -0400
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18GD1OKo031879;
+        Thu, 16 Sep 2021 09:18:44 -0400
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3b46e98fnk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 16 Sep 2021 09:18:43 -0400
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18GD8pdw004195;
+        Thu, 16 Sep 2021 13:18:42 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma01fra.de.ibm.com with ESMTP id 3b0m39s268-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 16 Sep 2021 13:18:42 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18GDE27C58130854
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 16 Sep 2021 13:14:02 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 75E5E11C04A;
+        Thu, 16 Sep 2021 13:18:38 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A9D8D11C06E;
+        Thu, 16 Sep 2021 13:18:37 +0000 (GMT)
+Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.66.107])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Thu, 16 Sep 2021 13:18:37 +0000 (GMT)
+Date:   Thu, 16 Sep 2021 15:18:35 +0200
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Cornelia Huck <cohuck@redhat.com>
+Cc:     Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Pierre Morel <pmorel@linux.ibm.com>,
+        Michael Mueller <mimu@linux.ibm.com>,
+        linux-s390@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bfu@redhat.com,
+        Vineeth Vijayan <vneethv@linux.ibm.com>,
+        Halil Pasic <pasic@linux.ibm.com>
+Subject: Re: [PATCH 1/1] virtio/s390: fix vritio-ccw device teardown
+Message-ID: <20210916151835.4ab512b2.pasic@linux.ibm.com>
+In-Reply-To: <87pmt8hp5o.fsf@redhat.com>
+References: <20210915215742.1793314-1-pasic@linux.ibm.com>
+ <87pmt8hp5o.fsf@redhat.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: SjFQ9cught4KPEvl1ldA4b5PUyKZbhTb
+X-Proofpoint-ORIG-GUID: Fz25Jva0wLuz3n6TfQ6ZGY0_juWbeQm6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.687,Hydra:6.0.235,FMLib:17.0.607.475
+ definitions=2020-10-13_15,2020-10-13_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
+ priorityscore=1501 lowpriorityscore=0 malwarescore=0 mlxlogscore=999
+ bulkscore=0 suspectscore=0 phishscore=0 clxscore=1015 spamscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109160072
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Distributions such as Android which support a mixture of 32-bit (compat)
-and 64-bit (native) tasks necessarily ship with the compat ELF loader
-enabled in their kernels. However, as time goes by, an ever-increasing
-proportion of userspace consists of native applications and in some cases
-32-bit capabilities are starting to be removed from the CPUs altogether.
+On Thu, 16 Sep 2021 10:59:15 +0200
+Cornelia Huck <cohuck@redhat.com> wrote:
 
-Inevitably, this means that the compat code becomes somewhat of a
-maintenance burden, receiving less testing coverage and exposing an
-additional kernel attack surface to userspace during the lengthy
-transitional period where some shipping devices require support for
-32-bit binaries.
+> > Since commit 48720ba56891 ("virtio/s390: use DMA memory for ccw I/O and
+> > classic notifiers") we were supposed to make sure that
+> > virtio_ccw_release_dev() completes before the ccw device, and the
+> > attached dma pool are torn down, but unfortunately we did not.
+> > Before that commit it used to be OK to delay cleaning up the memory
+> > allocated by virtio-ccw indefinitely (which isn't really intuitive for
+> > guys used to destruction happens in reverse construction order).
+> >
+> > To accomplish this let us take a reference on the ccw device before we
+> > allocate the dma_area and give it up after dma_area was freed.
+> >
+> > Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
+> > Fixes: 48720ba56891 ("virtio/s390: use DMA memory for ccw I/O and
+> > classic notifiers")
+> > Reported-by: bfu@redhat.com
+> > ---
+> >
+> > I'm not certain this is the only hot-unplug and teardonw related problem
+> > with virtio-ccw.
+> >
+> > Some things that are not perfectly clear to me:
+> > * What would happen if we observed an hot-unplug while we are doing
+> >   wait_event() in ccw_io_helper()? Do we get stuck? I don't thin we
+> >   are guaranteed to receive an irq for a subchannel that is gone.  
+> 
+> Hm. I think we may need to do a wake_up during remove handling.
 
-Introduce a new sysctl 'fs.compat-binfmt-elf-enable' to allow the compat
-ELF loader to be disabled dynamically on devices where it is not required.
-On arm64, this is sufficient to prevent userspace from executing 32-bit
-code at all.
+My guess is that the BQL is saving us from ever seeing this with QEMU
+as the hypervisor-userspace. Nevertheless I don't think we should rely
+on that. 
 
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Will Deacon <will@kernel.org>
----
- fs/compat_binfmt_elf.c | 24 +++++++++++++++++++++++-
- 1 file changed, 23 insertions(+), 1 deletion(-)
+> 
+> > * cdev->online seems to be manipulated under cdev->ccwlock, but
+> >   in virtio_ccw_remove() we look at it to decide should we clean up
+> >   or not. What is the idea there? I guess we want to avoid doing
+> >   if nothing is there or twice. But I don't understand how stuff
+> >   interlocks.  
+> 
+> We only created the virtio device when we onlined the ccw device. Do you
+> have a better idea how to check for that? (And yes, I'm not sure the
+> locking is correct.)
+> 
 
-I started off hacking this into the arch code, but then I realised it was
-just as easy doing it in the core for everybody to enjoy. Unfortunately,
-after talking to Peter, it sounds like it doesn't really help on x86
-where userspace can switch to 32-bit without involving the kernel at all.
+Thanks, if I find time for it, I will try to understand this better and
+come back with my findings.
 
-Thoughts?
+> > * Can virtio_ccw_remove() get called while !cdev->online and 
+> >   virtio_ccw_online() is running on a different cpu? If yes, what would
+> >   happen then?  
+> 
+> All of the remove/online/... etc. callbacks are invoked via the ccw bus
+> code. We have to trust that it gets it correct :) (Or have the common
+> I/O layer maintainers double-check it.)
+> 
 
-diff --git a/fs/compat_binfmt_elf.c b/fs/compat_binfmt_elf.c
-index 95e72d271b95..e8ce6c8fff42 100644
---- a/fs/compat_binfmt_elf.c
-+++ b/fs/compat_binfmt_elf.c
-@@ -15,6 +15,8 @@
-  */
- 
- #include <linux/elfcore-compat.h>
-+#include <linux/init.h>
-+#include <linux/sysctl.h>
- #include <linux/time.h>
- 
- #define ELF_COMPAT	1
-@@ -63,7 +65,8 @@
-  */
- 
- #undef	elf_check_arch
--#define	elf_check_arch	compat_elf_check_arch
-+#define	elf_check_arch(ex)	\
-+	(compat_binfmt_elf_enable && compat_elf_check_arch(ex))
- 
- #ifdef	COMPAT_ELF_PLATFORM
- #undef	ELF_PLATFORM
-@@ -136,6 +139,25 @@
- #define init_elf_binfmt		init_compat_elf_binfmt
- #define exit_elf_binfmt		exit_compat_elf_binfmt
- 
-+static int compat_binfmt_elf_enable = 1;
-+
-+static struct ctl_table compat_elf_sysctl_table[] = {
-+	{
-+		.procname	= "compat-binfmt-elf-enable",
-+		.data		= &compat_binfmt_elf_enable,
-+		.maxlen		= sizeof(int),
-+		.mode		= 0644,
-+		.proc_handler	= proc_dointvec,
-+	},
-+	{ },
-+};
-+
-+static int __init compat_elf_init(void)
-+{
-+	return register_sysctl("fs", compat_elf_sysctl_table) == NULL;
-+}
-+fs_initcall(compat_elf_init);
-+
- /*
-  * We share all the actual code with the native (64-bit) version.
-  */
--- 
-2.33.0.464.g1972c5931b-goog
+Vineeth, what is your take on this? Are the struct ccw_driver
+virtio_ccw_remove and the virtio_ccw_online callbacks mutually
+exclusive. Please notice that we may initiate the onlining by
+calling ccw_device_set_online() from a workqueue.
+
+@Conny: I'm not sure what is your definition of 'it gets it correct'...
+I doubt CIO can make things 100% foolproof in this area.
+
+> >  
+> > The main addresse of these questions is Conny ;).
+
+In any case, I think we can go step by step. I would like the issue
+this patch intends to address, addressed first. Then we can think
+about the rest.
+
+> >
+> > An alternative to this approach would be to inc and dec the refcount
+> > in ccw_device_dma_zalloc() and ccw_device_dma_free() respectively.  
+> 
+> Yeah, I also thought about that. This would give us more get/put
+> operations, but might be the safer option.
+
+My understanding is, that having the ccw device go away while in a
+middle of doing ccw stuff (about to submit, or waiting for a channel
+program, or whatever) was bad before. So my intuition tells me that
+drivers should manage explicitly. Yes virtio_ccw happens to have dma
+memory whose lifetime is more or less the lifetime of struct virtio_ccw,
+but that may not be always the case.
+
+Thanks for your comments!
+
+Regards,
+Halil
 
