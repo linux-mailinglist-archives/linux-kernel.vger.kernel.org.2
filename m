@@ -2,97 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B9E640DD6A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 16:58:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D32340DD68
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 16:57:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238274AbhIPO7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 10:59:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36808 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235474AbhIPO7u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 10:59:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C0DF860F6B;
-        Thu, 16 Sep 2021 14:58:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631804309;
-        bh=AgqdIcDpy91eL8LK1OITNsHLzbyaPNMmq9RB0DZLZQ8=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=HuUVKWhN0Cyc3CwcojR+XB+bbOC/LqtJv/hJmtqmtM3VctvEWQLqUSvol9yx3+vxP
-         ursQPNIXbL6KAvPrdcxJ/WvldvdmJAEBvlQ3vvNoj5I7eKH1Z6XvsU9PXrzuXEVnPL
-         +wUuxZgO8GpkpffycTf1COG/dR8Jkht3YwJDqHhL5Xo/r6thIa3oAy5d0KM5916EG8
-         KEGdZGyVc7VZSrcRzy7rVOD9bugyjPV39/0tBW1qrBpoCCMRI4Rk62EBrQMkLhULib
-         9Pq0UOJbjh4fPJ6fxnBnt2fEpsBDuvINm3PK7z1Lg4FF70fU90ORMU5SJqLJadmQzA
-         BSwdASIONLGXg==
-Subject: Re: [PATCH] lib/zlib_inflate/inffast: Check config in C to avoid
- unused function warning
-To:     Paul Menzel <pmenzel@molgen.mpg.de>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-References: <20210916142210.26722-1-pmenzel@molgen.mpg.de>
-From:   Nathan Chancellor <nathan@kernel.org>
-Message-ID: <decede05-591b-b51c-bd5f-d844b1895e54@kernel.org>
-Date:   Thu, 16 Sep 2021 07:58:27 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S239026AbhIPO7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 10:59:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235474AbhIPO7K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 10:59:10 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6916CC061764
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 07:57:50 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id c42-20020a05683034aa00b0051f4b99c40cso8722627otu.0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 07:57:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2ojGxC9vujlZc6BKBj4erHX2ecNDJAjcVaF4hMOlH4o=;
+        b=mIxrq7XkbBn6Zxtgzhd+JfrtYQifKCFKvMjoInuUAeT+oearKX4kwCosgE4+vxlWpX
+         HazLhxZUv1kcyk8S2Y/eJaxxvCvjQHZ1Lf1ZeOg6SNn9kGrvYckflN+gpKbgwuctJPQz
+         +zuBzTDsf08/rLD1cNd4GBx5bZSI8v4xCbioFbzh4T6nZO0znfa8oTMlKfqlJfoM7pd9
+         1MHmteJmnPla195abUIc7dPgv118di4y6QaGXvva/zDTZUifBN2bRkBA4FRLmla/2xP4
+         /k6IyqBFZmGTGTRjCAymnuGOd4rNwGvBshkV1ltWMk7s+iMfFitYqpvScHokaubHIoXi
+         ARsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2ojGxC9vujlZc6BKBj4erHX2ecNDJAjcVaF4hMOlH4o=;
+        b=R3AKJWGvTJQMP+5RMQ2CInEFxBnkkMUAd/HyemL0Jf1kyqYwdAdFkM1zM4lgHLzLuQ
+         FPHXGDt2AtfpmbNNfcP+OsWlAvdqMsRtTFC0EQvgIR4uUBuzGAOxXNWe09/NUyvMV3zm
+         n17o51cVFtg+q7g4a3Zw5Ou3ZN4hUEc/HlZHUMA4AQwfnxcUXaEmxHGABQCXS2xCyu/9
+         QInJ8B6peGtgxBtf9xtAoTa6jF3CyPfuaGJQojASclo0QdOcEdr1e+TGkRz3fiTu4rLM
+         V7hZdHhPdc5TCiHKhqFvssLiR0TMlZIzxkdRBEHqmOztXE0AioBirJMq1ZbfDyOjejqS
+         FSjA==
+X-Gm-Message-State: AOAM5315EHcSEm8pDqTfHelOQw7ySGXESSufV9DzjQ0f559n8XIGIkzL
+        NqXOFRQccJNdDoOTCofOqk4xaQ==
+X-Google-Smtp-Source: ABdhPJxvx5aZVF3jwkCQ9pRxe/zGSTNOvZZirDWCK8+/Ou26JoxFK38MBnpygOQrI2sTDdpH41xq7A==
+X-Received: by 2002:a9d:6046:: with SMTP id v6mr5168492otj.234.1631804269687;
+        Thu, 16 Sep 2021 07:57:49 -0700 (PDT)
+Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id l21sm761050oop.22.2021.09.16.07.57.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Sep 2021 07:57:49 -0700 (PDT)
+Date:   Thu, 16 Sep 2021 07:58:38 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Amit Pundir <amit.pundir@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Alex Elder <elder@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        dt <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] arm64: dts: qcom: sdm850-yoga: Enable IPA
+Message-ID: <YUNbntpsxISYxOro@ripper>
+References: <20210615232816.835325-1-bjorn.andersson@linaro.org>
+ <CAMi1Hd0hZV7antTa7ShKvfS5CRxRei4TNycM9EJ9NR5qEBJV7g@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210916142210.26722-1-pmenzel@molgen.mpg.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMi1Hd0hZV7antTa7ShKvfS5CRxRei4TNycM9EJ9NR5qEBJV7g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+On Thu 16 Sep 03:52 PDT 2021, Amit Pundir wrote:
 
-On 9/16/2021 7:22 AM, Paul Menzel wrote:
-> Building Linux for ppc64le with Ubuntu clang version 12.0.0-3ubuntu1~21.04.1
-> shows the warning below.
+> Hi Bjorn,
 > 
->      arch/powerpc/boot/inffast.c:20:1: warning: unused function 'get_unaligned16' [-Wunused-function]
->      get_unaligned16(const unsigned short *p)
->      ^
->      1 warning generated.
+> On Wed, 16 Jun 2021 at 04:58, Bjorn Andersson
+> <bjorn.andersson@linaro.org> wrote:
+> >
+> > Shuffle memory regions to make firmware loading succeed and then enable
+> > the ipa device.
 > 
-> Fix it, by moving the check from the preprocessor to C, so the compiler
-> sees the use.
-> 
-> Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
-> ---
->   lib/zlib_inflate/inffast.c | 6 +-----
->   1 file changed, 1 insertion(+), 5 deletions(-)
-> 
-> diff --git a/lib/zlib_inflate/inffast.c b/lib/zlib_inflate/inffast.c
-> index f19c4fbe1be7..444ad3c3ccd3 100644
-> --- a/lib/zlib_inflate/inffast.c
-> +++ b/lib/zlib_inflate/inffast.c
-> @@ -254,11 +254,7 @@ void inflate_fast(z_streamp strm, unsigned start)
->   			sfrom = (unsigned short *)(from);
->   			loops = len >> 1;
->   			do
-> -#ifdef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
-> -			    *sout++ = *sfrom++;
-> -#else
-> -			    *sout++ = get_unaligned16(sfrom++);
-> -#endif
-> +			    *sout++ = CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS ? *sfrom++ : get_unaligned16(sfrom++);
->   			while (--loops);
->   			out = (unsigned char *)sout;
->   			from = (unsigned char *)sfrom;
+> Just a heads-up, this reserved memory region shuffling in sdm845.dtsi
+> broke PocoF1 and may be other devices too(?) which do not override
+> these regions.
 > 
 
-Thanks for the patch. This should probably be
+Thanks for the report!
 
-IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS) ? ...
+> IIRC you once had a patch to move the reserved memory regions to board
+> specific dts files, is it still on the cards so that we don't run into
+> breakages like this?
+> 
 
-which matches the rest of the kernel tree, as certain CONFIG_... values 
-are not guaranteed to always be defined.
+As you might remember the feedback I got was to not move the regions to
+the individual devices and it was better to just deal with the problem
+this way...
 
-Cheers,
-Nathan
+But apparently I was too optimistic and should have played the usual
+game of deleting the inherited nodes and made the changes in the yoga
+dts...
+
+> Meanwhile I'll go and add these regions in sdm845-xiaomi-beryllium.dts.
+> 
+
+Let's prepare a fix that moves this change into the yoga.dts and get
+that landed asap.
+
+Regards,
+Bjorn
+
+> Regards,
+> Amit Pundir
+> 
+> 
+> 
+> >
+> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > ---
+> >  arch/arm64/boot/dts/qcom/sdm845.dtsi          | 21 +++++++------------
+> >  .../boot/dts/qcom/sdm850-lenovo-yoga-c630.dts |  5 +++++
+> >  2 files changed, 13 insertions(+), 13 deletions(-)
+> >
+> > diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> > index 1796ae8372be..49624eadce84 100644
+> > --- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> > +++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> > @@ -128,28 +128,23 @@ camera_mem: memory@8bf00000 {
+> >                         no-map;
+> >                 };
+> >
+> > -               ipa_fw_mem: memory@8c400000 {
+> > -                       reg = <0 0x8c400000 0 0x10000>;
+> > +               wlan_msa_mem: memory@8c400000 {
+> > +                       reg = <0 0x8c400000 0 0x100000>;
+> >                         no-map;
+> >                 };
+> >
+> > -               ipa_gsi_mem: memory@8c410000 {
+> > -                       reg = <0 0x8c410000 0 0x5000>;
+> > +               gpu_mem: memory@8c515000 {
+> > +                       reg = <0 0x8c515000 0 0x2000>;
+> >                         no-map;
+> >                 };
+> >
+> > -               gpu_mem: memory@8c415000 {
+> > -                       reg = <0 0x8c415000 0 0x2000>;
+> > +               ipa_fw_mem: memory@8c517000 {
+> > +                       reg = <0 0x8c517000 0 0x5a000>;
+> >                         no-map;
+> >                 };
+> >
+> > -               adsp_mem: memory@8c500000 {
+> > -                       reg = <0 0x8c500000 0 0x1a00000>;
+> > -                       no-map;
+> > -               };
+> > -
+> > -               wlan_msa_mem: memory@8df00000 {
+> > -                       reg = <0 0x8df00000 0 0x100000>;
+> > +               adsp_mem: memory@8c600000 {
+> > +                       reg = <0 0x8c600000 0 0x1a00000>;
+> >                         no-map;
+> >                 };
+> >
+> > diff --git a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
+> > index c2a709a384e9..3eaa42dc3794 100644
+> > --- a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
+> > +++ b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
+> > @@ -415,6 +415,11 @@ ecsh: hid@5c {
+> >         };
+> >  };
+> >
+> > +&ipa {
+> > +       status = "okay";
+> > +       memory-region = <&ipa_fw_mem>;
+> > +};
+> > +
+> >  &mdss {
+> >         status = "okay";
+> >  };
+> > --
+> > 2.31.0
+> >
