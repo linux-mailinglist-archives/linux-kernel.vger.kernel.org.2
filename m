@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1782440E16B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:29:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E00C40E45D
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:24:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241695AbhIPQaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:30:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59262 "EHLO mail.kernel.org"
+        id S1343720AbhIPQ55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:57:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39404 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240632AbhIPQVV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:21:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A9B8613A9;
-        Thu, 16 Sep 2021 16:14:50 +0000 (UTC)
+        id S244035AbhIPQxo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:53:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D06C561A8C;
+        Thu, 16 Sep 2021 16:29:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808891;
-        bh=BZrkluB2099K/J1qS8KSKoiffuQQBK2F02rugxMspQk=;
+        s=korg; t=1631809780;
+        bh=o2FipU2T4oBNLWJncdRN5X/QBl6xzwY3qSkx4eTQtaU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NzuBYgf5al87MWapcPX97wtEuPNpclgoTyrSUBZ6E2ZjHRYsML2YLDc7MhmaSKvvS
-         Fjs/sM4onvBtYb9MZ2oMKd9vbPiuDpIXsOqTVk3Kb2Y8VP3ik2rF/IO7eBRggBpNmY
-         S7IhY7M7+Md+xOLP3idikl0SpR3mQdlSwhBV1GHc=
+        b=BFAMzldZlwS1IO37kzO/ehxN1LyRBro8Ai5teBtw8SyoSoBuHmHYXma90L4Gyoju+
+         T50AQEHBZC9/U6Rr8Ez4ftQblE7bwrufNPtPaS1lQfriPdTw6ZG4Ha/WrTs9R81hhZ
+         uGydWYMIfTzZkasevlavgwCePFbSo07GKBRLwyMI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
+        stable@vger.kernel.org,
+        Quanyang Wang <quanyang.wang@windriver.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 261/306] iwlwifi: pcie: free RBs during configure
+Subject: [PATCH 5.13 249/380] drm: xlnx: zynqmp: release reset to DP controller before accessing DP registers
 Date:   Thu, 16 Sep 2021 18:00:06 +0200
-Message-Id: <20210916155802.970532519@linuxfoundation.org>
+Message-Id: <20210916155812.551515062@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,66 +41,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Quanyang Wang <quanyang.wang@windriver.com>
 
-[ Upstream commit 6ac5720086c8b176794eb74c5cc09f8b79017f38 ]
+[ Upstream commit a338619bd76011035d462f0f9e8b2f24d7fe5a1e ]
 
-When switching op-modes, or more generally when reconfiguring,
-we might switch the RB size. In _iwl_pcie_rx_init() we have a
-comment saying we must free all RBs since we might switch the
-size, but this is actually too late: the switch has been done
-and we'll free the buffers with the wrong size.
+When insmod zynqmp-dpsub.ko after rmmod it, system will hang with the
+error log as below:
 
-Fix this by always freeing the buffers, if any, at the start
-of configure, instead of only after the size may have changed.
+root@xilinx-zynqmp:~# insmod zynqmp-dpsub.ko
+[   88.391289] [drm] Initialized zynqmp-dpsub 1.0.0 20130509 for fd4a0000.display on minor 0
+[   88.529906] Console: switching to colour frame buffer device 128x48
+[   88.549402] zynqmp-dpsub fd4a0000.display: [drm] fb0: zynqmp-dpsubdrm frame buffer device
+[   88.571624] zynqmp-dpsub fd4a0000.display: ZynqMP DisplayPort Subsystem driver probed
+root@xilinx-zynqmp:~# rmmod zynqmp_dpsub
+[   94.023404] Console: switching to colour dummy device 80x25
+root@xilinx-zynqmp:~# insmod zynqmp-dpsub.ko
+	<hang here>
 
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
-Link: https://lore.kernel.org/r/iwlwifi.20210802170640.42d7c93279c4.I07f74e65aab0e3d965a81206fcb289dc92d74878@changeid
-Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+This is because that in zynqmp_dp_probe it tries to access some DP
+registers while the DP controller is still in the reset state. When
+running "rmmod zynqmp_dpsub", zynqmp_dp_reset(dp, true) in
+zynqmp_dp_phy_exit is called to force the DP controller into the reset
+state. Then insmod will call zynqmp_dp_probe to program the DP registers,
+but at this moment the DP controller hasn't been brought out of the reset
+state yet since the function zynqmp_dp_reset(dp, false) is called later and
+this will result the system hang.
+
+Releasing the reset to DP controller before any read/write operation to it
+will fix this issue. And for symmetry, move zynqmp_dp_reset() call from
+zynqmp_dp_phy_exit() to zynqmp_dp_remove().
+
+Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/intel/iwlwifi/pcie/rx.c    | 5 ++++-
- drivers/net/wireless/intel/iwlwifi/pcie/trans.c | 3 +++
- 2 files changed, 7 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/xlnx/zynqmp_dp.c | 22 ++++++++++++----------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/rx.c b/drivers/net/wireless/intel/iwlwifi/pcie/rx.c
-index 94299f259518..2c13fa8f2820 100644
---- a/drivers/net/wireless/intel/iwlwifi/pcie/rx.c
-+++ b/drivers/net/wireless/intel/iwlwifi/pcie/rx.c
-@@ -544,6 +544,9 @@ void iwl_pcie_free_rbs_pool(struct iwl_trans *trans)
- 	struct iwl_trans_pcie *trans_pcie = IWL_TRANS_GET_PCIE_TRANS(trans);
- 	int i;
+diff --git a/drivers/gpu/drm/xlnx/zynqmp_dp.c b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+index 59d1fb017da0..13811332b349 100644
+--- a/drivers/gpu/drm/xlnx/zynqmp_dp.c
++++ b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+@@ -402,10 +402,6 @@ static int zynqmp_dp_phy_init(struct zynqmp_dp *dp)
+ 		}
+ 	}
  
-+	if (!trans_pcie->rx_pool)
-+		return;
+-	ret = zynqmp_dp_reset(dp, false);
+-	if (ret < 0)
+-		return ret;
+-
+ 	zynqmp_dp_clr(dp, ZYNQMP_DP_PHY_RESET, ZYNQMP_DP_PHY_RESET_ALL_RESET);
+ 
+ 	/*
+@@ -441,8 +437,6 @@ static void zynqmp_dp_phy_exit(struct zynqmp_dp *dp)
+ 				ret);
+ 	}
+ 
+-	zynqmp_dp_reset(dp, true);
+-
+ 	for (i = 0; i < dp->num_lanes; i++) {
+ 		ret = phy_exit(dp->phy[i]);
+ 		if (ret)
+@@ -1682,9 +1676,13 @@ int zynqmp_dp_probe(struct zynqmp_dpsub *dpsub, struct drm_device *drm)
+ 		return PTR_ERR(dp->reset);
+ 	}
+ 
++	ret = zynqmp_dp_reset(dp, false);
++	if (ret < 0)
++		return ret;
 +
- 	for (i = 0; i < RX_POOL_SIZE(trans_pcie->num_rx_bufs); i++) {
- 		if (!trans_pcie->rx_pool[i].page)
- 			continue;
-@@ -1094,7 +1097,7 @@ static int _iwl_pcie_rx_init(struct iwl_trans *trans)
- 	INIT_LIST_HEAD(&rba->rbd_empty);
- 	spin_unlock(&rba->lock);
+ 	ret = zynqmp_dp_phy_probe(dp);
+ 	if (ret)
+-		return ret;
++		goto err_reset;
  
--	/* free all first - we might be reconfigured for a different size */
-+	/* free all first - we overwrite everything here */
- 	iwl_pcie_free_rbs_pool(trans);
+ 	/* Initialize the hardware. */
+ 	zynqmp_dp_write(dp, ZYNQMP_DP_TX_PHY_POWER_DOWN,
+@@ -1696,7 +1694,7 @@ int zynqmp_dp_probe(struct zynqmp_dpsub *dpsub, struct drm_device *drm)
  
- 	for (i = 0; i < RX_QUEUE_SIZE; i++)
-diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/trans.c b/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
-index bb990be7c870..082768ec8aa8 100644
---- a/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
-+++ b/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
-@@ -1909,6 +1909,9 @@ static void iwl_trans_pcie_configure(struct iwl_trans *trans,
- {
- 	struct iwl_trans_pcie *trans_pcie = IWL_TRANS_GET_PCIE_TRANS(trans);
+ 	ret = zynqmp_dp_phy_init(dp);
+ 	if (ret)
+-		return ret;
++		goto err_reset;
  
-+	/* free all first - we might be reconfigured for a different size */
-+	iwl_pcie_free_rbs_pool(trans);
+ 	zynqmp_dp_write(dp, ZYNQMP_DP_TRANSMITTER_ENABLE, 1);
+ 
+@@ -1708,15 +1706,18 @@ int zynqmp_dp_probe(struct zynqmp_dpsub *dpsub, struct drm_device *drm)
+ 					zynqmp_dp_irq_handler, IRQF_ONESHOT,
+ 					dev_name(dp->dev), dp);
+ 	if (ret < 0)
+-		goto error;
++		goto err_phy_exit;
+ 
+ 	dev_dbg(dp->dev, "ZynqMP DisplayPort Tx probed with %u lanes\n",
+ 		dp->num_lanes);
+ 
+ 	return 0;
+ 
+-error:
++err_phy_exit:
+ 	zynqmp_dp_phy_exit(dp);
++err_reset:
++	zynqmp_dp_reset(dp, true);
 +
- 	trans->txqs.cmd.q_id = trans_cfg->cmd_queue;
- 	trans->txqs.cmd.fifo = trans_cfg->cmd_fifo;
- 	trans->txqs.cmd.wdg_timeout = trans_cfg->cmd_q_wdg_timeout;
+ 	return ret;
+ }
+ 
+@@ -1734,4 +1735,5 @@ void zynqmp_dp_remove(struct zynqmp_dpsub *dpsub)
+ 	zynqmp_dp_write(dp, ZYNQMP_DP_INT_DS, 0xffffffff);
+ 
+ 	zynqmp_dp_phy_exit(dp);
++	zynqmp_dp_reset(dp, true);
+ }
 -- 
 2.30.2
 
