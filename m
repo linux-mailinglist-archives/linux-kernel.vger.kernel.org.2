@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAB3640E74A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:32:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CC0940E3C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:21:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244961AbhIPRbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:31:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43512 "EHLO mail.kernel.org"
+        id S242501AbhIPQwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:52:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57406 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346893AbhIPRV5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:21:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4278561BB3;
-        Thu, 16 Sep 2021 16:42:41 +0000 (UTC)
+        id S1344670AbhIPQqb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:46:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A19A6135F;
+        Thu, 16 Sep 2021 16:26:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810561;
-        bh=Fl89BLpZqkI7d42dfLouRxVDKhNQxznxdmuRukWnMdk=;
+        s=korg; t=1631809593;
+        bh=eKh/RbB0FE66jRLZpFyPGhzq2+Rphm3XQMLhLeNhtUM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ed33caLHRAH7lV2DfN07B39f0Z9V/ezOkT6x+h4L0vQYonDENHklxilMVv7Cnsl9S
-         AsHxRikEMFjv2HoXrQ0YI8fuDrJXwRfpq31B5wB1weArsP1lsF0R88w1J2R0FMKZei
-         +nDyOV7qx34mhTTmdtYHjtIHsjwwM0P71vvrZGtg=
+        b=yCPMKEYKHLjwcw4o9Ac/AH+WVrSg56DyCUadR8bPSee9uLpiIcHV8tRBmKYKol07V
+         h6hE6apZfDPWcN1jcrKfEsfQU/MfXd5DUFZP9gUMr/my1Y7khoXNMVtjr644vU0Ydw
+         ysamNW8RlH18yLifU24ZM794Ag4UTPx06hlm7YWc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        stable@vger.kernel.org, Laurentiu Tudor <laurentiu.tudor@nxp.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 186/432] arm64: dts: qcom: Fix usb entries for SA8155p adp board
-Date:   Thu, 16 Sep 2021 17:58:55 +0200
-Message-Id: <20210916155817.045010293@linuxfoundation.org>
+Subject: [PATCH 5.13 179/380] bus: fsl-mc: fix mmio base address for child DPRCs
+Date:   Thu, 16 Sep 2021 17:58:56 +0200
+Message-Id: <20210916155810.163220070@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,121 +39,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+From: Laurentiu Tudor <laurentiu.tudor@nxp.com>
 
-[ Upstream commit 12dd4ebda47abd5e3907da386b6fe1d8181ad179 ]
+[ Upstream commit 8990f96a012f42543005b07d9e482694192e9309 ]
 
-SA8155p adp board has two USB A-type receptacles called
-USB-portB and USB-portC respectively.
+Some versions of the MC firmware wrongly report 0 for register base
+address of the DPMCP associated with child DPRC objects thus rendering
+them unusable. This is particularly troublesome in ACPI boot scenarios
+where the legacy way of extracting this base address from the device
+tree does not apply.
+Given that DPMCPs share the same base address, workaround this by using
+the base address extracted from the root DPRC container.
 
-While USB-portB is a USB High-Speed connector/interface, the
-USB-portC one is a USB 3.1 Super-Speed connector/interface.
-
-Also the USB-portB is used as the USB emergency
-download port (for image download purposes).
-
-Enable both the ports on the board in USB Host mode (since all
-the USB interfaces are brought out to USB Type A
-connectors).
-
-Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Link: https://lore.kernel.org/r/20210627114616.717101-4-bhupesh.sharma@linaro.org
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
+Link: https://lore.kernel.org/r/20210715140718.8513-8-laurentiu.tudor@nxp.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/sa8155p-adp.dts | 60 ++++++++++++++++++++----
- 1 file changed, 51 insertions(+), 9 deletions(-)
+ drivers/bus/fsl-mc/fsl-mc-bus.c | 24 ++++++++++++++++++++++--
+ 1 file changed, 22 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sa8155p-adp.dts b/arch/arm64/boot/dts/qcom/sa8155p-adp.dts
-index 0da7a3b8d1bf..5ae2ddc65f7e 100644
---- a/arch/arm64/boot/dts/qcom/sa8155p-adp.dts
-+++ b/arch/arm64/boot/dts/qcom/sa8155p-adp.dts
-@@ -307,10 +307,6 @@ &qupv3_id_1 {
- 	status = "okay";
- };
+diff --git a/drivers/bus/fsl-mc/fsl-mc-bus.c b/drivers/bus/fsl-mc/fsl-mc-bus.c
+index 74faaf3e4e27..57f78d1cc9d8 100644
+--- a/drivers/bus/fsl-mc/fsl-mc-bus.c
++++ b/drivers/bus/fsl-mc/fsl-mc-bus.c
+@@ -67,6 +67,8 @@ struct fsl_mc_addr_translation_range {
+ #define MC_FAPR_PL	BIT(18)
+ #define MC_FAPR_BMT	BIT(17)
  
--&tlmm {
--	gpio-reserved-ranges = <0 4>;
--};
--
- &uart2 {
- 	status = "okay";
- };
-@@ -337,6 +333,16 @@ &ufs_mem_phy {
- 	vdda-pll-max-microamp = <18300>;
- };
++static phys_addr_t mc_portal_base_phys_addr;
++
+ /**
+  * fsl_mc_bus_match - device to driver matching callback
+  * @dev: the fsl-mc device to match against
+@@ -702,14 +704,30 @@ static int fsl_mc_device_get_mmio_regions(struct fsl_mc_device *mc_dev,
+ 		 * If base address is in the region_desc use it otherwise
+ 		 * revert to old mechanism
+ 		 */
+-		if (region_desc.base_address)
++		if (region_desc.base_address) {
+ 			regions[i].start = region_desc.base_address +
+ 						region_desc.base_offset;
+-		else
++		} else {
+ 			error = translate_mc_addr(mc_dev, mc_region_type,
+ 					  region_desc.base_offset,
+ 					  &regions[i].start);
  
-+&usb_1 {
-+	status = "okay";
-+};
++			/*
++			 * Some versions of the MC firmware wrongly report
++			 * 0 for register base address of the DPMCP associated
++			 * with child DPRC objects thus rendering them unusable.
++			 * This is particularly troublesome in ACPI boot
++			 * scenarios where the legacy way of extracting this
++			 * base address from the device tree does not apply.
++			 * Given that DPMCPs share the same base address,
++			 * workaround this by using the base address extracted
++			 * from the root DPRC container.
++			 */
++			if (is_fsl_mc_bus_dprc(mc_dev) &&
++			    regions[i].start == region_desc.base_offset)
++				regions[i].start += mc_portal_base_phys_addr;
++		}
 +
-+&usb_1_dwc3 {
-+	dr_mode = "host";
+ 		if (error < 0) {
+ 			dev_err(parent_dev,
+ 				"Invalid MC offset: %#x (for %s.%d\'s region %d)\n",
+@@ -1125,6 +1143,8 @@ static int fsl_mc_bus_probe(struct platform_device *pdev)
+ 	plat_res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	mc_portal_phys_addr = plat_res->start;
+ 	mc_portal_size = resource_size(plat_res);
++	mc_portal_base_phys_addr = mc_portal_phys_addr & ~0x3ffffff;
 +
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&usb2phy_ac_en1_default>;
-+};
- 
- &usb_1_hsphy {
- 	status = "okay";
-@@ -346,15 +352,51 @@ &usb_1_hsphy {
- };
- 
- &usb_1_qmpphy {
-+	status = "disabled";
-+};
-+
-+&usb_2 {
- 	status = "okay";
--	vdda-phy-supply = <&vreg_l8c_1p2>;
--	vdda-pll-supply = <&vdda_usb_ss_dp_core_1>;
- };
- 
--&usb_1 {
-+&usb_2_dwc3 {
-+	dr_mode = "host";
-+
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&usb2phy_ac_en2_default>;
-+};
-+
-+&usb_2_hsphy {
- 	status = "okay";
-+	vdda-pll-supply = <&vdd_usb_hs_core>;
-+	vdda33-supply = <&vdda_usb_hs_3p1>;
-+	vdda18-supply = <&vdda_usb_hs_1p8>;
- };
- 
--&usb_1_dwc3 {
--	dr_mode = "peripheral";
-+&usb_2_qmpphy {
-+	status = "okay";
-+	vdda-phy-supply = <&vreg_l8c_1p2>;
-+	vdda-pll-supply = <&vdda_usb_ss_dp_core_1>;
-+};
-+
-+&tlmm {
-+	gpio-reserved-ranges = <0 4>;
-+
-+	usb2phy_ac_en1_default: usb2phy_ac_en1_default {
-+		mux {
-+			pins = "gpio113";
-+			function = "usb2phy_ac";
-+			bias-disable;
-+			drive-strength = <2>;
-+		};
-+	};
-+
-+	usb2phy_ac_en2_default: usb2phy_ac_en2_default {
-+		mux {
-+			pins = "gpio123";
-+			function = "usb2phy_ac";
-+			bias-disable;
-+			drive-strength = <2>;
-+		};
-+	};
- };
+ 	error = fsl_create_mc_io(&pdev->dev, mc_portal_phys_addr,
+ 				 mc_portal_size, NULL,
+ 				 FSL_MC_IO_ATOMIC_CONTEXT_PORTAL, &mc_io);
 -- 
 2.30.2
 
