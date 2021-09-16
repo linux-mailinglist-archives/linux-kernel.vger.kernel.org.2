@@ -2,102 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FC9F40D69F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 11:52:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 253C440D6A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 11:54:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235640AbhIPJx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 05:53:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40042 "EHLO
+        id S235591AbhIPJ4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 05:56:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235539AbhIPJx5 (ORCPT
+        with ESMTP id S235287AbhIPJ4D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 05:53:57 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0630CC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 02:52:36 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mQo4I-0000tI-2F; Thu, 16 Sep 2021 11:52:34 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mQo4E-0003jX-2O; Thu, 16 Sep 2021 11:52:30 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mQo4E-00084Q-1D; Thu, 16 Sep 2021 11:52:30 +0200
-Date:   Thu, 16 Sep 2021 11:52:29 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: Improvement suggestion for creation of next [Was: linux-next:
- manual merge of the dmaengine tree with the driver-core tree]
-Message-ID: <20210916095229.cvsjr4wbro26gev7@pengutronix.de>
-References: <20210723155354.082a62d8@canb.auug.org.au>
- <20210728071014.dkdvqmiw2lma6ooa@pengutronix.de>
- <20210916162740.3327df56@canb.auug.org.au>
+        Thu, 16 Sep 2021 05:56:03 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAE45C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 02:54:42 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id g8so14609470edt.7
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 02:54:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=Qdp0SHs3xmfRjgLIyqNwEa9EGz3sQom2u8TOqtBT/Zc=;
+        b=NjWw1lyaAjcVJnTjxjfa4JFklxXQJZA+2OvGN+4wyf0OJLrPW6Qah9cJY0BfNKS/Mm
+         JFZULGIZClqtxNhrbpwXytd0IhAYMhQTvTHDJ0ODZEoiNhNizXGAcVkqAkRJF66M8KMj
+         Nq6R0JAuynvigZvxHiU0+VABGx8GsUE2mKaoPRAC8z8ShOWLNanMWtdc4cR4Id+iYUsD
+         +W3r/EQCdNq3y78ZgK16nE1wHLdsdgqWelO3YX4gr4E8s5btxT93fQCOpI6dV9tZIbqE
+         jJ9n+c6bXexSz0I/P5e8TsQmPzX0/UVlU0PgrGeBtWbjO/cP6pQaK6Jc5xWcrKCMaS/Y
+         HMKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=Qdp0SHs3xmfRjgLIyqNwEa9EGz3sQom2u8TOqtBT/Zc=;
+        b=k5so/oBdqDBELkHs/e+xZLAavjLFDHX6CM93hUkntTtGwPCMvYam5JzRUWvCJG5X8o
+         5SLOITVT6EJSNNYFLCY6CKAoNPihTAwtmTYX6WrfoofUT+ctvj81TQamQE2IPAwAhsGn
+         z2g6yAiYEKmwFs3+V3e/e1t90Q03TpkCZGfmFl337zR4mNQyqMSd8tlGab2NOVYARXb8
+         JhZibToxTwtyRNhoH73mVEbDr5rxyHBtbIWFqPAL+UwQok3OGOBhXwJx4CsT/+fQTatF
+         AVj0NXSlOR2fSime2SY40tSiTu7ydfZhgdAU4IhZpjKoWwOB/gOF1MJSXnL3N+qWvZ8f
+         3YGw==
+X-Gm-Message-State: AOAM531KCuhpt0rmtJOHm07oB/Emf57bVo5leJvI/5/jNSBthoWW54W6
+        sNpmxjZ/9Z4BG+Gy0JFX2v+3DK/b3CyfhK74p7k=
+X-Google-Smtp-Source: ABdhPJz82V2H7mA0BeWBTKyAOoRlD9bz12fc2cxQ+BiNLYLv778QhrPjjNTyGVtJx1wNxgaxMnwmRuAmiUCURrp2QE0=
+X-Received: by 2002:a17:906:ece4:: with SMTP id qt4mr5408199ejb.250.1631786081188;
+ Thu, 16 Sep 2021 02:54:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="4q5izlngyi7lxack"
-Content-Disposition: inline
-In-Reply-To: <20210916162740.3327df56@canb.auug.org.au>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Sender: mrs.nicolemarois555@gmail.com
+Received: by 2002:a17:906:78f:0:0:0:0 with HTTP; Thu, 16 Sep 2021 02:54:40
+ -0700 (PDT)
+From:   "Mrs.Nicole  Marois" <nicole1563marois@gmail.com>
+Date:   Thu, 16 Sep 2021 09:54:40 +0000
+X-Google-Sender-Auth: Ig0ez9AyQjHBTOKcM_HlnaJfaww
+Message-ID: <CANiD9SJLB4wYCv8SOQ8taxn+WF5eBhaw+_Ksz+1F7e8pF9KhTA@mail.gmail.com>
+Subject: Hello Dear,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Dear,
 
---4q5izlngyi7lxack
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Please do not feel disturbed for contacting you, based on the critical
+condition I find mine self though, it's not financial problem, but my
+health you might have know that cancer is not what to talk home about,
+I am married to Mr.Duclos Marois who worked with Tunisia embassy in
+Burkina Faso for nine years before he died in the year 2012.We were
+married for eleven years without a child. He died after a brief
+illness that lasted for five days.
 
-Hello Stephen,
+Since his death I decided not to remarry, When my late husband was
+alive he deposited the sum of US$ 9.2m (Nine million two hundred
+thousand dollars) in a bank in Burkina Faso, Presently this money is
+still in bank. And My Doctor told me that I don't have much time to
+live because of the cancer problem, Having known my condition I
+decided to hand you over this fond to take care of the less-privileged
+people, you will utilize this money the way I am going to instruct
+herein. I want you to take 30 Percent of the total money for your
+personal use While 70% of the money will go to charity" people and
+helping the orphanage.
 
-On Thu, Sep 16, 2021 at 04:27:40PM +1000, Stephen Rothwell wrote:
-> [Sorry this took so long]
+I don't want my husband's efforts to be used by the Government. I grew
+up as an Orphan and I don't have anybody as my family member,
 
-No problem. Thanks for picking up my suggestion (and not loosing it in
-your mailbox).
+Regards,
 
-> I prefer to fetch all the trees (and run my checking scripts across
-> them independently of the merge/build cycle.  However, I have improved
-> the merge commit messages (I think).  Please check out today's
-> linux-next.
-
-Looks great. Thanks.
-
-> I have decided to remove the SHA1 from the message, as you
-> can see that from what is merged anyway.
-
-I understand that starting from tomorrow the short log will be shorter
-for the merge commits.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---4q5izlngyi7lxack
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmFDE9oACgkQwfwUeK3K
-7AkGiwgAg+Smsw36CajyKiZKN132GI4xDMz2/p6ea+vDvQ3fHYoTVOb0wVExpvul
-C/4YOlE4sW5aHPGCIghonEgNvZ+VLH6JmfdefhPFOLuMdz7JHRrqRKKBV2f8Nw2E
-2zcqQKt+mYx1yoIM+OkZZa3cykuB04RxbvYpFR8/eYpyinN5VheHfmnCLSl9TMm+
-OlvLvgU/9ymBkudsM7RRlVQxK3zAWY/ctCIxxoAJbhOdw4ZwfzyjydC2Lx+ksle9
-ZwLChRDoQcqbWg0Qwa8mzthce8v1Ut5zrefTfJSqHoZvu5f6IHNtpsm+yPnN2RCi
-iHUe9fhT5G09rY90Z2Hhocghk4Rw8A==
-=k/Mj
------END PGP SIGNATURE-----
-
---4q5izlngyi7lxack--
+Mrs.Nicole Marois.
+written from Hospital.
