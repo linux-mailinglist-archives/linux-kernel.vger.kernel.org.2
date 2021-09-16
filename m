@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E41BE40E864
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0672940E3EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:21:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354169AbhIPRj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:39:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50270 "EHLO mail.kernel.org"
+        id S1345956AbhIPQxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:53:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59260 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353040AbhIPR3x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:29:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 86F59630EB;
-        Thu, 16 Sep 2021 16:46:26 +0000 (UTC)
+        id S244127AbhIPQsG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:48:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 859A961526;
+        Thu, 16 Sep 2021 16:27:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810787;
-        bh=vZMjlN8+KlE6QllsSovulefHp3o4DnHg4Vgqw+JfgcI=;
+        s=korg; t=1631809635;
+        bh=YC8/XbiDbaj/RxCg++JrowC1boSNXqHMcH+BfvlVeiw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZUg3jA1Z1ZNKFV+EdjIN3w/af60cwlxL/NwsLIXZvMUjdx3XVoot0rdFrMRNJrt0q
-         4YIFFT0Ld7aM5zUyCw/f/NQ2Y18P+8p9wMfSMNJwyfauZHDq46ULbFLD2UsS3dHswM
-         OkqSn8sqp0bNJCdydkLAPpT78UZmJI6y+9N7yyeU=
+        b=qwnt+l+g4r7PcFtyBicUyFCNd/oHpPmvMV7Z1Bqga3hq+ax6gpACVzEz3MD5ABveo
+         5BTqJHtVR3++71U9+XcWtfa3mV+a91KIMY7nNlpCWRFEXu4oWWY43Qaxmm/Xa3ylCy
+         beRdLk1aMgBt3ri8xvhkdnxyCautKpBHFdArCiaI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Martin Kepplinger <martin.kepplinger@puri.sm>,
+        Rui Miguel Silva <rmfrfs@gmail.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 235/432] staging: ks7010: Fix the initialization of the sleep_status structure
+Subject: [PATCH 5.13 227/380] media: imx: imx7-media-csi: Fix buffer return upon stream start failure
 Date:   Thu, 16 Sep 2021 17:59:44 +0200
-Message-Id: <20210916155818.808083330@linuxfoundation.org>
+Message-Id: <20210916155811.810102976@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,36 +43,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-[ Upstream commit 56315e55119c0ea57e142b6efb7c31208628ad86 ]
+[ Upstream commit 0ada1697ed4256b38225319c9896661142a3572d ]
 
-'sleep_status' has 3 atomic_t members. Initialize the 3 of them instead of
-initializing only 2 of them and setting 0 twice to the same variable.
+When the stream fails to start, the first two buffers in the queue have
+been moved to the active_vb2_buf array and are returned to vb2 by
+imx7_csi_dma_unsetup_vb2_buf(). The function is called with the buffer
+state set to VB2_BUF_STATE_ERROR unconditionally, which is correct when
+stopping the stream, but not when the start operation fails. In that
+case, the state should be set to VB2_BUF_STATE_QUEUED. Fix it.
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/d2e52a33a9beab41879551d0ae2fdfc99970adab.1626856991.git.christophe.jaillet@wanadoo.fr
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Tested-by: Martin Kepplinger <martin.kepplinger@puri.sm>
+Reviewed-by: Rui Miguel Silva <rmfrfs@gmail.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/ks7010/ks7010_sdio.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/staging/media/imx/imx7-media-csi.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/staging/ks7010/ks7010_sdio.c b/drivers/staging/ks7010/ks7010_sdio.c
-index cbc0032c1604..98d759e7cc95 100644
---- a/drivers/staging/ks7010/ks7010_sdio.c
-+++ b/drivers/staging/ks7010/ks7010_sdio.c
-@@ -939,9 +939,9 @@ static void ks7010_private_init(struct ks_wlan_private *priv,
- 	memset(&priv->wstats, 0, sizeof(priv->wstats));
+diff --git a/drivers/staging/media/imx/imx7-media-csi.c b/drivers/staging/media/imx/imx7-media-csi.c
+index f85a2f5f1413..ad1bca3fe047 100644
+--- a/drivers/staging/media/imx/imx7-media-csi.c
++++ b/drivers/staging/media/imx/imx7-media-csi.c
+@@ -361,6 +361,7 @@ static void imx7_csi_dma_unsetup_vb2_buf(struct imx7_csi *csi,
  
- 	/* sleep mode */
-+	atomic_set(&priv->sleepstatus.status, 0);
- 	atomic_set(&priv->sleepstatus.doze_request, 0);
- 	atomic_set(&priv->sleepstatus.wakeup_request, 0);
--	atomic_set(&priv->sleepstatus.wakeup_request, 0);
+ 			vb->timestamp = ktime_get_ns();
+ 			vb2_buffer_done(vb, return_status);
++			csi->active_vb2_buf[i] = NULL;
+ 		}
+ 	}
+ }
+@@ -386,9 +387,10 @@ static int imx7_csi_dma_setup(struct imx7_csi *csi)
+ 	return 0;
+ }
  
- 	trx_device_init(priv);
- 	hostif_init(priv);
+-static void imx7_csi_dma_cleanup(struct imx7_csi *csi)
++static void imx7_csi_dma_cleanup(struct imx7_csi *csi,
++				 enum vb2_buffer_state return_status)
+ {
+-	imx7_csi_dma_unsetup_vb2_buf(csi, VB2_BUF_STATE_ERROR);
++	imx7_csi_dma_unsetup_vb2_buf(csi, return_status);
+ 	imx_media_free_dma_buf(csi->dev, &csi->underrun_buf);
+ }
+ 
+@@ -537,9 +539,10 @@ static int imx7_csi_init(struct imx7_csi *csi)
+ 	return 0;
+ }
+ 
+-static void imx7_csi_deinit(struct imx7_csi *csi)
++static void imx7_csi_deinit(struct imx7_csi *csi,
++			    enum vb2_buffer_state return_status)
+ {
+-	imx7_csi_dma_cleanup(csi);
++	imx7_csi_dma_cleanup(csi, return_status);
+ 	imx7_csi_init_default(csi);
+ 	imx7_csi_dmareq_rff_disable(csi);
+ 	clk_disable_unprepare(csi->mclk);
+@@ -702,7 +705,7 @@ static int imx7_csi_s_stream(struct v4l2_subdev *sd, int enable)
+ 
+ 		ret = v4l2_subdev_call(csi->src_sd, video, s_stream, 1);
+ 		if (ret < 0) {
+-			imx7_csi_deinit(csi);
++			imx7_csi_deinit(csi, VB2_BUF_STATE_QUEUED);
+ 			goto out_unlock;
+ 		}
+ 
+@@ -712,7 +715,7 @@ static int imx7_csi_s_stream(struct v4l2_subdev *sd, int enable)
+ 
+ 		v4l2_subdev_call(csi->src_sd, video, s_stream, 0);
+ 
+-		imx7_csi_deinit(csi);
++		imx7_csi_deinit(csi, VB2_BUF_STATE_ERROR);
+ 	}
+ 
+ 	csi->is_streaming = !!enable;
 -- 
 2.30.2
 
