@@ -2,142 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B49C40D9E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 14:27:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23ADE40D9EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 14:30:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239547AbhIPM20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 08:28:26 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:39596
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239363AbhIPM2Z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 08:28:25 -0400
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com [209.85.216.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 08FE93FE02
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 12:27:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1631795224;
-        bh=oruoXINM9lE6NQF44gguXgq2pHTP8iv51Cw7Sf30Jug=;
-        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-         MIME-Version;
-        b=DJPdjkvub6rKzh7w+p1NEC/Uz7PbxB2Pl4Zu56+SK2qnkpKx/qEEZmfF2sqI7X2gC
-         tA5eiGXhfKJOzTQ3k8Sh8EkK6nc47AtIVFXPbdq23aajpGI6r6byTS5aHMa+HggfiK
-         7oh+5f7O/mlkvSWV0GB611JMe5pdkpkqM+KRVdy2onr1R+CumolsvccJQJc0VGMgr0
-         sK93ENyyk2UFtoZoQx2vDQcaQE+2YKCw0nh3kbAHKjS/DCIOVzvSs2tFz6MNHPZ3I3
-         6FlnIqfCiQBwk4w84fbK5bbcJeNaAXZACF2l8eVF3s3ZuMVn2vK5Z5tTVabglotUul
-         EArlSXEt205vQ==
-Received: by mail-pj1-f72.google.com with SMTP id 41-20020a17090a0fac00b00195a5a61ab8so4635960pjz.3
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 05:27:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=oruoXINM9lE6NQF44gguXgq2pHTP8iv51Cw7Sf30Jug=;
-        b=LHqyqABDVojUX/bYcg1iIUP/F0Y01reNEihzLE/vjNx9iejkfEp9qicoovCmyUItvx
-         pDUYYqhGuw5R2Zlwp0BFnAL8gevjxpMwQfTGRVyuFZgO1vcDJWqn/4zSTQQzP9s58ZoL
-         ei7cTizfs/YLwuCWDXxu7rfwq5btVGtyZcAd/JqFQk00uxIj79JkrQkZGs3u5R8A2O2n
-         09fFZi63IzwonJH5IvP4WtFnJ3SZzUAYmr/9K5OtkZ33oaASin+8y1mDUzj+5g2IIk6y
-         m7+WWBzeFoWsIle4UhOzJg9LAtvleKtYp/+PNIEvCnFr/OrnnHGsQzwVrrE0USFARlzI
-         VWCg==
-X-Gm-Message-State: AOAM530o95v62bp+oeqAx7xdv8okEpdfYMH/moGm5TQ+Dgo98kKvCj2g
-        QX+iA1HjJazRu9Ieb99mQd3pds9ZYv/qcheSEZFSZTn7z/6AjHXIYIopIZ9hG33ZWLYaWiZrDls
-        7P0Z0n+ByYv74QvCZhTkKC/srV+jNPq5pV8bRRrC2rg==
-X-Received: by 2002:a17:902:7488:b0:13c:9740:3c13 with SMTP id h8-20020a170902748800b0013c97403c13mr4614644pll.76.1631795222566;
-        Thu, 16 Sep 2021 05:27:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxNDmpBb62DYJob9a3dod7hjLoK8Qzzsy/X+2T2gIfx2zDj4qcfTeyPuJyeL4eX5C+Fx5VmHA==
-X-Received: by 2002:a17:902:7488:b0:13c:9740:3c13 with SMTP id h8-20020a170902748800b0013c97403c13mr4614631pll.76.1631795222361;
-        Thu, 16 Sep 2021 05:27:02 -0700 (PDT)
-Received: from localhost.localdomain ([69.163.84.166])
-        by smtp.gmail.com with ESMTPSA id s9sm2897369pfu.129.2021.09.16.05.27.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 05:27:02 -0700 (PDT)
-From:   Tim Gardner <tim.gardner@canonical.com>
-To:     intel-gfx@lists.freedesktop.org
-Cc:     tim.gardner@canonical.com,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] drm/i915: use strscpy() to avoid buffer overrun
-Date:   Thu, 16 Sep 2021 06:26:49 -0600
-Message-Id: <20210916122649.12691-1-tim.gardner@canonical.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <dc88e195-949c-bb46-b7d3-18e90df9b064@canonical.com>
-References: <dc88e195-949c-bb46-b7d3-18e90df9b064@canonical.com>
+        id S239499AbhIPMb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 08:31:27 -0400
+Received: from out2.migadu.com ([188.165.223.204]:18001 "EHLO out2.migadu.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235767AbhIPMb0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 08:31:26 -0400
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1631795403;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=WiOqDYtkI9QfC+0Q/1OUY8VFFwUScpv3DTzHFGB/Hnw=;
+        b=SYWZS2B3+Aq/W9xjYHTQKR9cuGaLaYUWxZ8DtliaqxngGoulnm7TZv/hyh1vT92AgGD47f
+        Zx1lYENQhKSjq0fnJ9pm1STNiyngQT+WkbBvWUGsww8QHrqpf7zZlrWfReHSPWxseVUO4H
+        X2g5zQch+ay/u/0+pj14WOlkpZvJfh4=
+From:   Yajun Deng <yajun.deng@linux.dev>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yajun Deng <yajun.deng@linux.dev>
+Subject: [PATCH net-next] net: socket: add the case sock_no_xxx support
+Date:   Thu, 16 Sep 2021 20:29:43 +0800
+Message-Id: <20210916122943.19849-1-yajun.deng@linux.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: yajun.deng@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In capture_vma() Coverity complains of a possible buffer overrun. Even
-though this is a static function where all call sites can be checked,
-limiting the copy length could save some future grief.
+Those sock_no_{mmap, socketpair, listen, accept, connect, shutdown,
+sendpage} functions are used many times in struct proto_ops, but they are
+meaningless. So we can add them support in socket and delete them in struct
+proto_ops.
 
-CID 93300 (#1 of 1): Copy into fixed size buffer (STRING_OVERFLOW)
-4. fixed_size_dest: You might overrun the 16-character fixed-size string c->name
-   by copying name without checking the length.
-5. parameter_as_source: Note: This defect has an elevated risk because the
-   source argument is a parameter of the current function.
-1326        strcpy(c->name, name);
-
-Fix any possible overflows by using strscpy() which guarantees NULL termination.
-
-Also correct 2 other strcpy() call sites with the same potential for Coverity
-warnings or overruns.
-
-v2 - Change $SUBJECT from "drm/i915: zero fill vma name buffer"
-     Use strscpy() instead of strncpy(). Its a much simpler change.
-
-Cc: Jani Nikula <jani.nikula@linux.intel.com>
-Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
-Cc: David Airlie <airlied@linux.ie>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: intel-gfx@lists.freedesktop.org
-Cc: dri-devel@lists.freedesktop.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
+Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
 ---
- drivers/gpu/drm/i915/i915_gpu_error.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ net/socket.c | 71 ++++++++++++++++++++++++++++++++++++++++++----------
+ 1 file changed, 58 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/gpu/drm/i915/i915_gpu_error.c b/drivers/gpu/drm/i915/i915_gpu_error.c
-index 9cf6ac575de1..7f246f51959d 100644
---- a/drivers/gpu/drm/i915/i915_gpu_error.c
-+++ b/drivers/gpu/drm/i915/i915_gpu_error.c
-@@ -1015,7 +1015,7 @@ i915_vma_coredump_create(const struct intel_gt *gt,
- 		return NULL;
+diff --git a/net/socket.c b/net/socket.c
+index 7f64a6eccf63..4d0e1a2970fb 100644
+--- a/net/socket.c
++++ b/net/socket.c
+@@ -1306,6 +1306,9 @@ static int sock_mmap(struct file *file, struct vm_area_struct *vma)
+ {
+ 	struct socket *sock = file->private_data;
+ 
++	if (likely(!sock->ops->mmap))
++		return -ENODEV;
++
+ 	return sock->ops->mmap(file, sock, vma);
+ }
+ 
+@@ -1629,11 +1632,19 @@ int __sys_socketpair(int family, int type, int protocol, int __user *usockvec)
+ 		goto out;
  	}
  
--	strcpy(dst->name, name);
-+	strscpy(dst->name, name, sizeof(dst->name));
- 	dst->next = NULL;
- 
- 	dst->gtt_offset = vma->node.start;
-@@ -1279,7 +1279,7 @@ static bool record_context(struct i915_gem_context_coredump *e,
- 	rcu_read_lock();
- 	task = pid_task(ctx->pid, PIDTYPE_PID);
- 	if (task) {
--		strcpy(e->comm, task->comm);
-+		strscpy(e->comm, task->comm, sizeof(e->comm));
- 		e->pid = task->pid;
+-	err = sock1->ops->socketpair(sock1, sock2);
+-	if (unlikely(err < 0)) {
++	if (likely(!sock1->ops->socketpair)) {
++		err = -EOPNOTSUPP;
+ 		sock_release(sock2);
+ 		sock_release(sock1);
+ 		goto out;
++
++	} else {
++		err = sock1->ops->socketpair(sock1, sock2);
++		if (unlikely(err < 0)) {
++			sock_release(sock2);
++			sock_release(sock1);
++			goto out;
++		}
  	}
- 	rcu_read_unlock();
-@@ -1323,7 +1323,7 @@ capture_vma(struct intel_engine_capture_vma *next,
- 		return next;
+ 
+ 	newfile1 = sock_alloc_file(sock1, flags, NULL);
+@@ -1704,6 +1715,14 @@ SYSCALL_DEFINE3(bind, int, fd, struct sockaddr __user *, umyaddr, int, addrlen)
+ 	return __sys_bind(fd, umyaddr, addrlen);
+ }
+ 
++static int __sock_listen(struct socket *sock, int backlog)
++{
++	if (likely(!sock->ops->listen))
++		return -EOPNOTSUPP;
++
++	return sock->ops->listen(sock, backlog);
++}
++
+ /*
+  *	Perform a listen. Basically, we allow the protocol to do anything
+  *	necessary for a listen, and if that works, we mark the socket as
+@@ -1724,7 +1743,7 @@ int __sys_listen(int fd, int backlog)
+ 
+ 		err = security_socket_listen(sock, backlog);
+ 		if (!err)
+-			err = sock->ops->listen(sock, backlog);
++			err = __sock_listen(sock, backlog);
+ 
+ 		fput_light(sock->file, fput_needed);
  	}
+@@ -1736,6 +1755,15 @@ SYSCALL_DEFINE2(listen, int, fd, int, backlog)
+ 	return __sys_listen(fd, backlog);
+ }
  
--	strcpy(c->name, name);
-+	strscpy(c->name, name, sizeof(c->name));
- 	c->vma = vma; /* reference held while active */
++static int __sock_accept(struct socket *sock, struct socket *newsock,
++			 int flags, bool kern)
++{
++	if (likely(!sock->ops->accept))
++		return -EOPNOTSUPP;
++
++	return sock->ops->accept(sock, newsock, flags, kern);
++}
++
+ struct file *do_accept(struct file *file, unsigned file_flags,
+ 		       struct sockaddr __user *upeer_sockaddr,
+ 		       int __user *upeer_addrlen, int flags)
+@@ -1770,8 +1798,8 @@ struct file *do_accept(struct file *file, unsigned file_flags,
+ 	if (err)
+ 		goto out_fd;
  
- 	c->next = next;
+-	err = sock->ops->accept(sock, newsock, sock->file->f_flags | file_flags,
+-					false);
++	err = __sock_accept(sock, newsock, sock->file->f_flags | file_flags,
++			    false);
+ 	if (err < 0)
+ 		goto out_fd;
+ 
+@@ -1864,6 +1892,15 @@ SYSCALL_DEFINE3(accept, int, fd, struct sockaddr __user *, upeer_sockaddr,
+ 	return __sys_accept4(fd, upeer_sockaddr, upeer_addrlen, 0);
+ }
+ 
++static int __sock_connect(struct socket *sock, struct sockaddr *saddr,
++			  int len, int flags)
++{
++	if (likely(!sock->ops->connect))
++		return -EOPNOTSUPP;
++
++	return sock->ops->connect(sock, saddr, len, flags);
++}
++
+ /*
+  *	Attempt to connect to a socket with the server address.  The address
+  *	is in user space so we verify it is OK and move it to kernel space.
+@@ -1893,8 +1930,8 @@ int __sys_connect_file(struct file *file, struct sockaddr_storage *address,
+ 	if (err)
+ 		goto out;
+ 
+-	err = sock->ops->connect(sock, (struct sockaddr *)address, addrlen,
+-				 sock->file->f_flags | file_flags);
++	err = __sock_connect(sock, (struct sockaddr *)address, addrlen,
++			     sock->file->f_flags | file_flags);
+ out:
+ 	return err;
+ }
+@@ -2235,6 +2272,14 @@ SYSCALL_DEFINE5(getsockopt, int, fd, int, level, int, optname,
+ 	return __sys_getsockopt(fd, level, optname, optval, optlen);
+ }
+ 
++static int __sock_shutdown(struct socket *sock, int how)
++{
++	if (likely(!sock->ops->shutdown))
++		return -EOPNOTSUPP;
++
++	return sock->ops->shutdown(sock, how);
++}
++
+ /*
+  *	Shutdown a socket.
+  */
+@@ -2245,7 +2290,7 @@ int __sys_shutdown_sock(struct socket *sock, int how)
+ 
+ 	err = security_socket_shutdown(sock, how);
+ 	if (!err)
+-		err = sock->ops->shutdown(sock, how);
++		err = __sock_shutdown(sock, how);
+ 
+ 	return err;
+ }
+@@ -3394,7 +3439,7 @@ EXPORT_SYMBOL(kernel_bind);
+ 
+ int kernel_listen(struct socket *sock, int backlog)
+ {
+-	return sock->ops->listen(sock, backlog);
++	return __sock_listen(sock, backlog);
+ }
+ EXPORT_SYMBOL(kernel_listen);
+ 
+@@ -3419,7 +3464,7 @@ int kernel_accept(struct socket *sock, struct socket **newsock, int flags)
+ 	if (err < 0)
+ 		goto done;
+ 
+-	err = sock->ops->accept(sock, *newsock, flags, true);
++	err = __sock_accept(sock, *newsock, flags, true);
+ 	if (err < 0) {
+ 		sock_release(*newsock);
+ 		*newsock = NULL;
+@@ -3450,7 +3495,7 @@ EXPORT_SYMBOL(kernel_accept);
+ int kernel_connect(struct socket *sock, struct sockaddr *addr, int addrlen,
+ 		   int flags)
+ {
+-	return sock->ops->connect(sock, addr, addrlen, flags);
++	return __sock_connect(sock, addr, addrlen, flags);
+ }
+ EXPORT_SYMBOL(kernel_connect);
+ 
+@@ -3498,7 +3543,7 @@ EXPORT_SYMBOL(kernel_getpeername);
+ int kernel_sendpage(struct socket *sock, struct page *page, int offset,
+ 		    size_t size, int flags)
+ {
+-	if (sock->ops->sendpage) {
++	if (unlikely(sock->ops->sendpage)) {
+ 		/* Warn in case the improper page to zero-copy send */
+ 		WARN_ONCE(!sendpage_ok(page), "improper page for zero-copy send");
+ 		return sock->ops->sendpage(sock, page, offset, size, flags);
+@@ -3542,7 +3587,7 @@ EXPORT_SYMBOL(kernel_sendpage_locked);
+ 
+ int kernel_sock_shutdown(struct socket *sock, enum sock_shutdown_cmd how)
+ {
+-	return sock->ops->shutdown(sock, how);
++	return __sock_shutdown(sock, how);
+ }
+ EXPORT_SYMBOL(kernel_sock_shutdown);
+ 
 -- 
-2.33.0
+2.32.0
 
