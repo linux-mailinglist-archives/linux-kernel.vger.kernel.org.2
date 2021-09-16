@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D79EF40E3DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:21:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4811F40E128
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:29:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245690AbhIPQwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:52:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59000 "EHLO mail.kernel.org"
+        id S240768AbhIPQ17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:27:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55354 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244868AbhIPQrw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:47:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B02BE61A71;
-        Thu, 16 Sep 2021 16:27:00 +0000 (UTC)
+        id S241512AbhIPQTm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:19:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D84C6613B3;
+        Thu, 16 Sep 2021 16:13:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809621;
-        bh=i06AM4DVmRVPJBNARjGrF5thGGhhF9wFivOaNz4+sWI=;
+        s=korg; t=1631808823;
+        bh=76pG/1mTrO5PLLh788TwM7n8iSFCwidakWpyicrLVjc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KDKee3/hl+8Zhxbhjjyea8tBy3fGD6rsfqzEcChh/QYzz7sqIN4J6H0JlRFGpCmNB
-         ABNtcvWaetLS8wR1iRHBkO9tbDMEreV2RdknK1VwH4K+tA6nHxZoxMXbI3xvgfV9NO
-         VTN7sYbzOwLy7lyB+jxaYWNDkS6wu+Q95Bra/4lg=
+        b=DYeDU0vs0XtiRG7LHT6xd/kWiwoXL8rxZ/3oe3pVGrXUTJeXVnbT7LRXxqZ1pcgl+
+         K7qy9wAwxZLkOTO4Nv7xod0Hk9fzhnoXOv9udruiWOiG6SD5d+slYlnBdjkXxfGGxt
+         wIt3+53Td/fktZllcaWBREB3c9V8b+hlycJncA54=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Inki Dae <inki.dae@samsung.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 222/380] ASoC: Intel: update sof_pcm512x quirks
-Date:   Thu, 16 Sep 2021 17:59:39 +0200
-Message-Id: <20210916155811.640407286@linuxfoundation.org>
+Subject: [PATCH 5.10 235/306] drm/exynos: Always initialize mapping in exynos_drm_register_dma()
+Date:   Thu, 16 Sep 2021 17:59:40 +0200
+Message-Id: <20210916155802.067131314@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,74 +41,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Nathan Chancellor <nathan@kernel.org>
 
-[ Upstream commit 22414cade8dfec25ab94df52b3a4f7aa8edb6120 ]
+[ Upstream commit c626f3864bbbb28bbe06476b0b497c1330aa4463 ]
 
-The default SOF topology enables SSP capture and DMICs, even though
-both of these hardware capabilities are not always available in
-hardware (specific versions of HiFiberry and DMIC kit needed).
+In certain randconfigs, clang warns:
 
-For the SSP capture, this leads to annoying "SP5-Codec: ASoC: no
-backend capture" and "streamSSP5-Codec: ASoC: no users capture at
-close - state 0" errors.
+drivers/gpu/drm/exynos/exynos_drm_dma.c:121:19: warning: variable
+'mapping' is uninitialized when used here [-Wuninitialized]
+                priv->mapping = mapping;
+                                ^~~~~~~
+drivers/gpu/drm/exynos/exynos_drm_dma.c:111:16: note: initialize the
+variable 'mapping' to silence this warning
+                void *mapping;
+                             ^
+                              = NULL
+1 warning generated.
 
-Update the quirks to match what the topology needs, which also allows
-for the ability to remove SSP capture and DMIC support.
+This occurs when CONFIG_EXYNOS_IOMMU is enabled and both
+CONFIG_ARM_DMA_USE_IOMMU and CONFIG_IOMMU_DMA are disabled, which makes
+the code look like
 
-BugLink: https://github.com/thesofproject/linux/issues/3061
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Link: https://lore.kernel.org/r/20210802152151.15832-4-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+  void *mapping;
+
+  if (0)
+    mapping = arm_iommu_create_mapping()
+  else if (0)
+    mapping = iommu_get_domain_for_dev()
+
+  ...
+  priv->mapping = mapping;
+
+Add an else branch that initializes mapping to the -ENODEV error pointer
+so that there is no more warning and the driver does not change during
+runtime.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Inki Dae <inki.dae@samsung.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/sof_pcm512x.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/exynos/exynos_drm_dma.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/intel/boards/sof_pcm512x.c b/sound/soc/intel/boards/sof_pcm512x.c
-index 8620d4f38493..335c212c1961 100644
---- a/sound/soc/intel/boards/sof_pcm512x.c
-+++ b/sound/soc/intel/boards/sof_pcm512x.c
-@@ -26,11 +26,16 @@
+diff --git a/drivers/gpu/drm/exynos/exynos_drm_dma.c b/drivers/gpu/drm/exynos/exynos_drm_dma.c
+index 0644936afee2..bf33c3084cb4 100644
+--- a/drivers/gpu/drm/exynos/exynos_drm_dma.c
++++ b/drivers/gpu/drm/exynos/exynos_drm_dma.c
+@@ -115,6 +115,8 @@ int exynos_drm_register_dma(struct drm_device *drm, struct device *dev,
+ 				EXYNOS_DEV_ADDR_START, EXYNOS_DEV_ADDR_SIZE);
+ 		else if (IS_ENABLED(CONFIG_IOMMU_DMA))
+ 			mapping = iommu_get_domain_for_dev(priv->dma_dev);
++		else
++			mapping = ERR_PTR(-ENODEV);
  
- #define SOF_PCM512X_SSP_CODEC(quirk)		((quirk) & GENMASK(3, 0))
- #define SOF_PCM512X_SSP_CODEC_MASK			(GENMASK(3, 0))
-+#define SOF_PCM512X_ENABLE_SSP_CAPTURE		BIT(4)
-+#define SOF_PCM512X_ENABLE_DMIC			BIT(5)
- 
- #define IDISP_CODEC_MASK	0x4
- 
- /* Default: SSP5 */
--static unsigned long sof_pcm512x_quirk = SOF_PCM512X_SSP_CODEC(5);
-+static unsigned long sof_pcm512x_quirk =
-+	SOF_PCM512X_SSP_CODEC(5) |
-+	SOF_PCM512X_ENABLE_SSP_CAPTURE |
-+	SOF_PCM512X_ENABLE_DMIC;
- 
- static bool is_legacy_cpu;
- 
-@@ -245,8 +250,9 @@ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
- 	links[id].dpcm_playback = 1;
- 	/*
- 	 * capture only supported with specific versions of the Hifiberry DAC+
--	 * links[id].dpcm_capture = 1;
- 	 */
-+	if (sof_pcm512x_quirk & SOF_PCM512X_ENABLE_SSP_CAPTURE)
-+		links[id].dpcm_capture = 1;
- 	links[id].no_pcm = 1;
- 	links[id].cpus = &cpus[id];
- 	links[id].num_cpus = 1;
-@@ -381,6 +387,9 @@ static int sof_audio_probe(struct platform_device *pdev)
- 
- 	ssp_codec = sof_pcm512x_quirk & SOF_PCM512X_SSP_CODEC_MASK;
- 
-+	if (!(sof_pcm512x_quirk & SOF_PCM512X_ENABLE_DMIC))
-+		dmic_be_num = 0;
-+
- 	/* compute number of dai links */
- 	sof_audio_card_pcm512x.num_links = 1 + dmic_be_num + hdmi_num;
- 
+ 		if (IS_ERR(mapping))
+ 			return PTR_ERR(mapping);
 -- 
 2.30.2
 
