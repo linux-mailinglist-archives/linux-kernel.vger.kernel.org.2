@@ -2,34 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E74DD40DF71
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:09:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90A6940DF8D
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:10:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235500AbhIPQJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:09:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46520 "EHLO mail.kernel.org"
+        id S232971AbhIPQLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:11:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47282 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232429AbhIPQG4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:06:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D97061268;
-        Thu, 16 Sep 2021 16:05:35 +0000 (UTC)
+        id S233065AbhIPQHX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:07:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C45EE61260;
+        Thu, 16 Sep 2021 16:06:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808335;
-        bh=frPAwLbf1HlBn4EoL7eJbcqnXhFjHlwwCAZ4reVWNXw=;
+        s=korg; t=1631808362;
+        bh=nbiyBuqkmhXc8mBRqs8IiGTsvEoSLK5Qk4DzIZOScVI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FbYOs5yL/3HZ/vuH+m67YLJXc0owt872aDn3pW5YwbrWuEcS4u23VizYi6/ERGQQu
-         Mkw02icgWu3CayuQLcN0wvPLpseXrl5gzJHEPBhozUVVcIP2KOK51QwBBY35qMuIsw
-         eA5FgntPP1NrWqclsm5IEe4WZ7HdLewoo1eyibYQ=
+        b=GBTUyJlwbofdDNh62ibq9B2GEyPAg22bJzsUiU2UGRUlRe/tTeFedJDoDwig7YrHS
+         XUTvwiBiseJgE42l9YCmO+728zagO4unrjfXbpVdTOmldBEs4qnx519b/BZk2oIzmh
+         k8nfgRnGEQIGCPuI5533hszby19lUSmRkuhPYmBA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, DJ Gregor <dj@corelight.com>,
-        Mikulas Patocka <mpatocka@redhat.com>,
-        Arne Welzel <arne.welzel@corelight.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 5.10 034/306] dm crypt: Avoid percpu_counter spinlock contention in crypt_page_alloc()
-Date:   Thu, 16 Sep 2021 17:56:19 +0200
-Message-Id: <20210916155755.111389304@linuxfoundation.org>
+        stable@vger.kernel.org, Lucas Nussbaum <lucas.nussbaum@inria.fr>,
+        stable@kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        David Rientjes <rientjes@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@gmail.com>
+Subject: [PATCH 5.10 035/306] crypto: ccp - shutdown SEV firmware on kexec
+Date:   Thu, 16 Sep 2021 17:56:20 +0200
+Message-Id: <20210916155755.146705807@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
 References: <20210916155753.903069397@linuxfoundation.org>
@@ -41,128 +44,151 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arne Welzel <arne.welzel@corelight.com>
+From: Brijesh Singh <brijesh.singh@amd.com>
 
-commit 528b16bfc3ae5f11638e71b3b63a81f9999df727 upstream.
+commit 5441a07a127f106c9936e4f9fa1a8a93e3f31828 upstream.
 
-On systems with many cores using dm-crypt, heavy spinlock contention in
-percpu_counter_compare() can be observed when the page allocation limit
-for a given device is reached or close to be reached. This is due
-to percpu_counter_compare() taking a spinlock to compute an exact
-result on potentially many CPUs at the same time.
+The commit 97f9ac3db6612 ("crypto: ccp - Add support for SEV-ES to the
+PSP driver") added support to allocate Trusted Memory Region (TMR)
+used during the SEV-ES firmware initialization. The TMR gets locked
+during the firmware initialization and unlocked during the shutdown.
+While the TMR is locked, access to it is disallowed.
 
-Switch to non-exact comparison of allocated and allowed pages by using
-the value returned by percpu_counter_read_positive() to avoid taking
-the percpu_counter spinlock.
+Currently, the CCP driver does not shutdown the firmware during the
+kexec reboot, leaving the TMR memory locked.
 
-This may over/under estimate the actual number of allocated pages by at
-most (batch-1) * num_online_cpus().
+Register a callback to shutdown the SEV firmware on the kexec boot.
 
-Currently, batch is bounded by 32. The system on which this issue was
-first observed has 256 CPUs and 512GB of RAM. With a 4k page size, this
-change may over/under estimate by 31MB. With ~10G (2%) allowed dm-crypt
-allocations, this seems an acceptable error. Certainly preferred over
-running into the spinlock contention.
-
-This behavior was reproduced on an EC2 c5.24xlarge instance with 96 CPUs
-and 192GB RAM as follows, but can be provoked on systems with less CPUs
-as well.
-
- * Disable swap
- * Tune vm settings to promote regular writeback
-     $ echo 50 > /proc/sys/vm/dirty_expire_centisecs
-     $ echo 25 > /proc/sys/vm/dirty_writeback_centisecs
-     $ echo $((128 * 1024 * 1024)) > /proc/sys/vm/dirty_background_bytes
-
- * Create 8 dmcrypt devices based on files on a tmpfs
- * Create and mount an ext4 filesystem on each crypt devices
- * Run stress-ng --hdd 8 within one of above filesystems
-
-Total %system usage collected from sysstat goes to ~35%. Write throughput
-on the underlying loop device is ~2GB/s. perf profiling an individual
-kworker kcryptd thread shows the following profile, indicating spinlock
-contention in percpu_counter_compare():
-
-    99.98%     0.00%  kworker/u193:46  [kernel.kallsyms]  [k] ret_from_fork
-      |
-      --ret_from_fork
-        kthread
-        worker_thread
-        |
-         --99.92%--process_one_work
-            |
-            |--80.52%--kcryptd_crypt
-            |    |
-            |    |--62.58%--mempool_alloc
-            |    |  |
-            |    |   --62.24%--crypt_page_alloc
-            |    |     |
-            |    |      --61.51%--__percpu_counter_compare
-            |    |        |
-            |    |         --61.34%--__percpu_counter_sum
-            |    |           |
-            |    |           |--58.68%--_raw_spin_lock_irqsave
-            |    |           |  |
-            |    |           |   --58.30%--native_queued_spin_lock_slowpath
-            |    |           |
-            |    |            --0.69%--cpumask_next
-            |    |                |
-            |    |                 --0.51%--_find_next_bit
-            |    |
-            |    |--10.61%--crypt_convert
-            |    |          |
-            |    |          |--6.05%--xts_crypt
-            ...
-
-After applying this patch and running the same test, %system usage is
-lowered to ~7% and write throughput on the loop device increases
-to ~2.7GB/s. perf report shows mempool_alloc() as ~8% rather than ~62%
-in the profile and not hitting the percpu_counter() spinlock anymore.
-
-    |--8.15%--mempool_alloc
-    |    |
-    |    |--3.93%--crypt_page_alloc
-    |    |    |
-    |    |     --3.75%--__alloc_pages
-    |    |         |
-    |    |          --3.62%--get_page_from_freelist
-    |    |              |
-    |    |               --3.22%--rmqueue_bulk
-    |    |                   |
-    |    |                    --2.59%--_raw_spin_lock
-    |    |                      |
-    |    |                       --2.57%--native_queued_spin_lock_slowpath
-    |    |
-    |     --3.05%--_raw_spin_lock_irqsave
-    |               |
-    |                --2.49%--native_queued_spin_lock_slowpath
-
-Suggested-by: DJ Gregor <dj@corelight.com>
-Reviewed-by: Mikulas Patocka <mpatocka@redhat.com>
-Signed-off-by: Arne Welzel <arne.welzel@corelight.com>
-Fixes: 5059353df86e ("dm crypt: limit the number of allocated pages")
-Cc: stable@vger.kernel.org
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+Fixes: 97f9ac3db6612 ("crypto: ccp - Add support for SEV-ES to the PSP driver")
+Reported-by: Lucas Nussbaum <lucas.nussbaum@inria.fr>
+Tested-by: Lucas Nussbaum <lucas.nussbaum@inria.fr>
+Cc: <stable@kernel.org>
+Cc: Tom Lendacky <thomas.lendacky@amd.com>
+Cc: Joerg Roedel <jroedel@suse.de>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: David Rientjes <rientjes@google.com>
+Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+Acked-by: Tom Lendacky <thomas.lendacky@gmail.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/md/dm-crypt.c |    7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/crypto/ccp/sev-dev.c |   49 ++++++++++++++++++++-----------------------
+ drivers/crypto/ccp/sp-pci.c  |   12 ++++++++++
+ 2 files changed, 35 insertions(+), 26 deletions(-)
 
---- a/drivers/md/dm-crypt.c
-+++ b/drivers/md/dm-crypt.c
-@@ -2643,7 +2643,12 @@ static void *crypt_page_alloc(gfp_t gfp_
- 	struct crypt_config *cc = pool_data;
- 	struct page *page;
+--- a/drivers/crypto/ccp/sev-dev.c
++++ b/drivers/crypto/ccp/sev-dev.c
+@@ -278,6 +278,9 @@ static int __sev_platform_shutdown_locke
+ 	struct sev_device *sev = psp_master->sev_data;
+ 	int ret;
  
--	if (unlikely(percpu_counter_compare(&cc->n_allocated_pages, dm_crypt_pages_per_client) >= 0) &&
-+	/*
-+	 * Note, percpu_counter_read_positive() may over (and under) estimate
-+	 * the current usage by at most (batch - 1) * num_online_cpus() pages,
-+	 * but avoids potential spinlock contention of an exact result.
-+	 */
-+	if (unlikely(percpu_counter_read_positive(&cc->n_allocated_pages) >= dm_crypt_pages_per_client) &&
- 	    likely(gfp_mask & __GFP_NORETRY))
- 		return NULL;
++	if (sev->state == SEV_STATE_UNINIT)
++		return 0;
++
+ 	ret = __sev_do_cmd_locked(SEV_CMD_SHUTDOWN, NULL, error);
+ 	if (ret)
+ 		return ret;
+@@ -1018,6 +1021,20 @@ e_err:
+ 	return ret;
+ }
+ 
++static void sev_firmware_shutdown(struct sev_device *sev)
++{
++	sev_platform_shutdown(NULL);
++
++	if (sev_es_tmr) {
++		/* The TMR area was encrypted, flush it from the cache */
++		wbinvd_on_all_cpus();
++
++		free_pages((unsigned long)sev_es_tmr,
++			   get_order(SEV_ES_TMR_SIZE));
++		sev_es_tmr = NULL;
++	}
++}
++
+ void sev_dev_destroy(struct psp_device *psp)
+ {
+ 	struct sev_device *sev = psp->sev_data;
+@@ -1025,6 +1042,8 @@ void sev_dev_destroy(struct psp_device *
+ 	if (!sev)
+ 		return;
+ 
++	sev_firmware_shutdown(sev);
++
+ 	if (sev->misc)
+ 		kref_put(&misc_dev->refcount, sev_exit);
+ 
+@@ -1055,21 +1074,6 @@ void sev_pci_init(void)
+ 	if (sev_get_api_version())
+ 		goto err;
+ 
+-	/*
+-	 * If platform is not in UNINIT state then firmware upgrade and/or
+-	 * platform INIT command will fail. These command require UNINIT state.
+-	 *
+-	 * In a normal boot we should never run into case where the firmware
+-	 * is not in UNINIT state on boot. But in case of kexec boot, a reboot
+-	 * may not go through a typical shutdown sequence and may leave the
+-	 * firmware in INIT or WORKING state.
+-	 */
+-
+-	if (sev->state != SEV_STATE_UNINIT) {
+-		sev_platform_shutdown(NULL);
+-		sev->state = SEV_STATE_UNINIT;
+-	}
+-
+ 	if (sev_version_greater_or_equal(0, 15) &&
+ 	    sev_update_firmware(sev->dev) == 0)
+ 		sev_get_api_version();
+@@ -1114,17 +1118,10 @@ err:
+ 
+ void sev_pci_exit(void)
+ {
+-	if (!psp_master->sev_data)
+-		return;
+-
+-	sev_platform_shutdown(NULL);
++	struct sev_device *sev = psp_master->sev_data;
+ 
+-	if (sev_es_tmr) {
+-		/* The TMR area was encrypted, flush it from the cache */
+-		wbinvd_on_all_cpus();
++	if (!sev)
++		return;
+ 
+-		free_pages((unsigned long)sev_es_tmr,
+-			   get_order(SEV_ES_TMR_SIZE));
+-		sev_es_tmr = NULL;
+-	}
++	sev_firmware_shutdown(sev);
+ }
+--- a/drivers/crypto/ccp/sp-pci.c
++++ b/drivers/crypto/ccp/sp-pci.c
+@@ -241,6 +241,17 @@ e_err:
+ 	return ret;
+ }
+ 
++static void sp_pci_shutdown(struct pci_dev *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct sp_device *sp = dev_get_drvdata(dev);
++
++	if (!sp)
++		return;
++
++	sp_destroy(sp);
++}
++
+ static void sp_pci_remove(struct pci_dev *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+@@ -370,6 +381,7 @@ static struct pci_driver sp_pci_driver =
+ 	.id_table = sp_pci_table,
+ 	.probe = sp_pci_probe,
+ 	.remove = sp_pci_remove,
++	.shutdown = sp_pci_shutdown,
+ 	.driver.pm = &sp_pci_pm_ops,
+ };
  
 
 
