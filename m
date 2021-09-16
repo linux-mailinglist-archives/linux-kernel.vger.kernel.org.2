@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD0DE40E343
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:20:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F94E40E782
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:33:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344695AbhIPQqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:46:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51038 "EHLO mail.kernel.org"
+        id S1349255AbhIPRdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:33:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46940 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245450AbhIPQk3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:40:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7BF9C6147F;
-        Thu, 16 Sep 2021 16:23:52 +0000 (UTC)
+        id S1348097AbhIPRX6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:23:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D363761A40;
+        Thu, 16 Sep 2021 16:43:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809433;
-        bh=KpKH8o4i6PIgSJ1r6pt29OkXPG0DEy42939Vk8js6VY=;
+        s=korg; t=1631810608;
+        bh=h7WoPbhk4P1tddmUKXsOWaZI7zGyW1QsZZxFbB4hm/E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IlSYDH/9DYSKL/H3DhXHHjkIAefa+LUCY3AC7KyNeULoaW3vpy/mVeJyG2Z/CuLLk
-         BtsF8vzfvPr7EvA7gp+64/POBmXF69vUyBmOUzpFYMtwr3d33j2eHqkgwqgFgp2i6q
-         v3yT0rsv2X16PtECGWXdHxcjd6CeZMaBZR96fLro=
+        b=Aeg8BH7Yp5kfL86n4Ucn3F5GToiX4xidbzJBI2mryR4Rims44nEMyeKgNfCt6LJzf
+         u4e0ORWZ2febI6QP++0LP0cHTA5FxlEGNB8ybxUYY6DdKStcFoZ600u8rfoo9whbio
+         VV9lavh6BeMnY4EPgn8oVRIUmXSfjBO/TBQqBnwo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maximilian Luz <luzmaximilian@gmail.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        stable@vger.kernel.org,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Tomi Valkeinen <tomba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 153/380] PCI: Use pci_update_current_state() in pci_enable_device_flags()
+Subject: [PATCH 5.14 161/432] drm/omap: Follow implicit fencing in prepare_fb
 Date:   Thu, 16 Sep 2021 17:58:30 +0200
-Message-Id: <20210916155809.264420011@linuxfoundation.org>
+Message-Id: <20210916155816.207004228@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,51 +42,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+From: Daniel Vetter <daniel.vetter@ffwll.ch>
 
-[ Upstream commit 14858dcc3b3587f4bb5c48e130ee7d68fc2b0a29 ]
+[ Upstream commit 942d8344d5f14b9ea2ae43756f319b9f44216ba4 ]
 
-Updating the current_state field of struct pci_dev the way it is done
-in pci_enable_device_flags() before calling do_pci_enable_device() may
-not work.  For example, if the given PCI device depends on an ACPI
-power resource whose _STA method initially returns 0 ("off"), but the
-config space of the PCI device is accessible and the power state
-retrieved from the PCI_PM_CTRL register is D0, the current_state
-field in the struct pci_dev representing that device will get out of
-sync with the power.state of its ACPI companion object and that will
-lead to power management issues going forward.
+I guess no one ever tried running omap together with lima or panfrost,
+not even sure that's possible. Anyway for consistency, fix this.
 
-To avoid such issues, make pci_enable_device_flags() call
-pci_update_current_state() which takes ACPI device power management
-into account, if present, to retrieve the current power state of the
-device.
-
-Link: https://lore.kernel.org/lkml/20210314000439.3138941-1-luzmaximilian@gmail.com/
-Reported-by: Maximilian Luz <luzmaximilian@gmail.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Tested-by: Maximilian Luz <luzmaximilian@gmail.com>
+Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+Cc: Tomi Valkeinen <tomba@kernel.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210622165511.3169559-12-daniel.vetter@ffwll.ch
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/pci.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ drivers/gpu/drm/omapdrm/omap_plane.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index a9d0530b7846..8b3cb62c63cc 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -1906,11 +1906,7 @@ static int pci_enable_device_flags(struct pci_dev *dev, unsigned long flags)
- 	 * so that things like MSI message writing will behave as expected
- 	 * (e.g. if the device really is in D0 at enable time).
- 	 */
--	if (dev->pm_cap) {
--		u16 pmcsr;
--		pci_read_config_word(dev, dev->pm_cap + PCI_PM_CTRL, &pmcsr);
--		dev->current_state = (pmcsr & PCI_PM_CTRL_STATE_MASK);
--	}
-+	pci_update_current_state(dev, dev->current_state);
+diff --git a/drivers/gpu/drm/omapdrm/omap_plane.c b/drivers/gpu/drm/omapdrm/omap_plane.c
+index 801da917507d..512af976b7e9 100644
+--- a/drivers/gpu/drm/omapdrm/omap_plane.c
++++ b/drivers/gpu/drm/omapdrm/omap_plane.c
+@@ -6,6 +6,7 @@
  
- 	if (atomic_inc_return(&dev->enable_cnt) > 1)
- 		return 0;		/* already enabled */
+ #include <drm/drm_atomic.h>
+ #include <drm/drm_atomic_helper.h>
++#include <drm/drm_gem_atomic_helper.h>
+ #include <drm/drm_plane_helper.h>
+ 
+ #include "omap_dmm_tiler.h"
+@@ -29,6 +30,8 @@ static int omap_plane_prepare_fb(struct drm_plane *plane,
+ 	if (!new_state->fb)
+ 		return 0;
+ 
++	drm_gem_plane_helper_prepare_fb(plane, new_state);
++
+ 	return omap_framebuffer_pin(new_state->fb);
+ }
+ 
 -- 
 2.30.2
 
