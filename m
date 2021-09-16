@@ -2,174 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC53F40E7E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:59:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CAB640E823
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347769AbhIPRgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:36:19 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:42316 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352754AbhIPR1j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:27:39 -0400
-Received: from zn.tnic (p200300ec2f11c6001e49ea6afe1054f5.dip0.t-ipconnect.de [IPv6:2003:ec:2f11:c600:1e49:ea6a:fe10:54f5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1349417AbhIPRiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:38:07 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:51006 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352842AbhIPR3A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:29:00 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5ED201EC01DF;
-        Thu, 16 Sep 2021 19:26:08 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1631813168;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=oOtmNTM2jr/g9JVg0OexwbFg2/pG+8cff5fWd4oubyk=;
-        b=HA43ImuGZC1WGrvAhfNdFt6SUtTLcSGWTR/UJVK0nwQVPxc+EN+ytuygjgJvsDLf/v619f
-        /mdq87L35kG6yS8syIKPfSYSI0oP8iaQEgeOJlWiTRfBbdN6rLm+JNU+WDuyQBUs5a0bmU
-        GfQ50AjWPdgVTca2lYAIWjSFmICdB2A=
-Date:   Thu, 16 Sep 2021 19:26:07 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH Part2 v5 02/45] iommu/amd: Introduce function to check
- SEV-SNP support
-Message-ID: <YUN+L0dlFMbC3bd4@zn.tnic>
-References: <20210820155918.7518-1-brijesh.singh@amd.com>
- <20210820155918.7518-3-brijesh.singh@amd.com>
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 4D71F222B1;
+        Thu, 16 Sep 2021 17:27:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1631813258; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cvK4RXBYn91QzdGRQO8ETT/MbJS108gNvDV2Bm77VSw=;
+        b=g2cR74dM9mV8sBHPclIkqNNYBdjiXRKZTeZkNhlFViio+LdIN+sGa6Enltu5AmfLlie/Kp
+        VkjOTxmmuWL2FJNMttZjG+t9JZb/jb04ulYKViftq1bD3GLRLfO6NS/D3QmKbTREr03CVN
+        CwfT2tCvT8v2F/dZpgbLP9IaKcePfn8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1631813258;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cvK4RXBYn91QzdGRQO8ETT/MbJS108gNvDV2Bm77VSw=;
+        b=8EHMhJYjXkmUAIMHP5WKT1tSzgu2ioOa1afxMEA/W27p55GSj4vTR3LQckKJmzklRyDxM6
+        vcBFgLPcuCxSzjCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3A51413D5A;
+        Thu, 16 Sep 2021 17:27:38 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id wGkADop+Q2ETZQAAMHmgww
+        (envelope-from <dbueso@suse.de>); Thu, 16 Sep 2021 17:27:38 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210820155918.7518-3-brijesh.singh@amd.com>
+Date:   Thu, 16 Sep 2021 10:27:37 -0700
+From:   Davidlohr Bueso <dbueso@suse.de>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Davidlohr Bueso <dave@stgolabs.net>, peterz@infradead.org,
+        mingo@kernel.org, rostedt@goodmis.org, longman@redhat.com,
+        boqun.feng@gmail.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] locking/rwbase_rt: Lockless reader waking up a writer
+In-Reply-To: <20210916170223.ocefifs33ul6lx6h@linutronix.de>
+References: <20210901222825.6313-1-dave@stgolabs.net>
+ <20210901222825.6313-3-dave@stgolabs.net> <87ilz4fyzi.ffs@tglx>
+ <87wnnjcuam.ffs@tglx> <20210916170223.ocefifs33ul6lx6h@linutronix.de>
+User-Agent: Roundcube Webmail
+Message-ID: <266c7b13b614e45b5d01747b1ac70eb1@suse.de>
+X-Sender: dbueso@suse.de
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 10:58:35AM -0500, Brijesh Singh wrote:
-> The SEV-SNP support requires that IOMMU must to enabled, see the IOMMU
-
-s/must to/is/
-
-> spec section 2.12 for further details. If IOMMU is not enabled or the
-> SNPSup extended feature register is not set then the SNP_INIT command
-> (used for initializing firmware) will fail.
+On 2021-09-16 10:02, Sebastian Andrzej Siewior wrote:
+> On 2021-09-14 12:42:41 [+0200], Thomas Gleixner wrote:
+>> Something like the untested below should work.
 > 
-> The iommu_sev_snp_supported() can be used to check if IOMMU supports the
+> works.
 
-"can be used"?
+Works for me too. Also survived an overnight round of mmap_sem pounding 
+on v5.14-rt.
 
-Just say what is going to use it.
-
-> SEV-SNP feature.
-> 
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> ---
->  drivers/iommu/amd/init.c | 30 ++++++++++++++++++++++++++++++
->  include/linux/iommu.h    |  9 +++++++++
->  2 files changed, 39 insertions(+)
-> 
-> diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
-> index 46280e6e1535..bd420fb71126 100644
-> --- a/drivers/iommu/amd/init.c
-> +++ b/drivers/iommu/amd/init.c
-> @@ -3320,3 +3320,33 @@ int amd_iommu_pc_set_reg(struct amd_iommu *iommu, u8 bank, u8 cntr, u8 fxn, u64
->  
->  	return iommu_pc_get_set_reg(iommu, bank, cntr, fxn, value, true);
->  }
-> +
-> +bool iommu_sev_snp_supported(void)
-> +{
-> +	struct amd_iommu *iommu;
-> +
-> +	/*
-> +	 * The SEV-SNP support requires that IOMMU must be enabled, and is
-> +	 * not configured in the passthrough mode.
-> +	 */
-> +	if (no_iommu || iommu_default_passthrough()) {
-> +		pr_err("SEV-SNP: IOMMU is either disabled or configured in passthrough mode.\n");
-> +		return false;
-> +	}
-> +
-> +	/*
-> +	 * Iterate through all the IOMMUs and verify the SNPSup feature is
-> +	 * enabled.
-> +	 */
-> +	for_each_iommu(iommu) {
-> +		if (!iommu_feature(iommu, FEATURE_SNP)) {
-> +			pr_err("SNPSup is disabled (devid: %02x:%02x.%x)\n",
-> +			       PCI_BUS_NUM(iommu->devid), PCI_SLOT(iommu->devid),
-> +			       PCI_FUNC(iommu->devid));
-> +			return false;
-> +		}
-> +	}
-> +
-> +	return true;
-> +}
-> +EXPORT_SYMBOL_GPL(iommu_sev_snp_supported);
-
-That export is not needed.
-
-> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-> index 32d448050bf7..269abc17b2c3 100644
-> --- a/include/linux/iommu.h
-> +++ b/include/linux/iommu.h
-> @@ -604,6 +604,12 @@ struct iommu_sva *iommu_sva_bind_device(struct device *dev,
->  void iommu_sva_unbind_device(struct iommu_sva *handle);
->  u32 iommu_sva_get_pasid(struct iommu_sva *handle);
->  
-> +#ifdef CONFIG_AMD_MEM_ENCRYPT
-> +bool iommu_sev_snp_supported(void);
-> +#else
-> +static inline bool iommu_sev_snp_supported(void) { return false; }
-> +#endif
-> +
->  #else /* CONFIG_IOMMU_API */
->  
->  struct iommu_ops {};
-> @@ -999,6 +1005,9 @@ static inline struct iommu_fwspec *dev_iommu_fwspec_get(struct device *dev)
->  {
->  	return NULL;
->  }
-> +
-> +static inline bool iommu_sev_snp_supported(void) { return false; }
-> +
-
-Most of those stubs and ifdeffery is not needed if you put the function
-itself in
-
-#ifdef CONFIG_AMD_MEM_ENCRYPT
-
-...
-
-#endif
-
-as it is called by sev.c only, AFAICT, and latter is enabled by
-CONFIG_AMD_MEM_ENCRYPT anyway.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks,
+Davidlohr
