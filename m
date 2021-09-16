@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E2B940E29E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:17:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAC5040E62C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:29:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245485AbhIPQkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:40:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44322 "EHLO mail.kernel.org"
+        id S1351607AbhIPRSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:18:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37016 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236218AbhIPQdJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:33:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0465E613A2;
-        Thu, 16 Sep 2021 16:20:04 +0000 (UTC)
+        id S1348881AbhIPRLM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:11:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5169A613A9;
+        Thu, 16 Sep 2021 16:37:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809205;
-        bh=WB562ppGrXpRjcf0C5XbCaUMLjcnT/uVFt2p/QwcutQ=;
+        s=korg; t=1631810265;
+        bh=zJhYzoABb5BbEKbkrkFnagJCsOz1csIUNBbgmhs5j+k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Nz9KPxXUss3c9YMxcI3w9aJJi5sc5kymvNISuGvvvZaQBZsOaaNFvkfnnQLd1N2zT
-         IjMG7CdCXtgIS20izB4cg9Ae9unLXJwqlLqFqdCSG6uBdUrwLXUhQw/1Yq0omKc2AS
-         0C3QOTjBSsE1Yi4dzzfRzPmoANTVcpMdp0MCAD4k=
+        b=kbTTGpr3NXIISljZeDqOUG6KFezvcKF26d1+lQYGPZ3YuTUm7Cg0hVS8Kw/lPa0G5
+         xKghPlDmWYj/9zEYjxKY3OWd7AICUZEhv+XbwgwjpEFSiildRC1tTiEY8YWAQwmJne
+         Ndx5EwQ1vlQi/8TuxuJa7Li0VgIbf6ojl7f4OvaM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, 5kft <5kft@5kft.org>,
-        Chao Yu <chao@kernel.org>, Jaegeuk Kim <jaegeuk@kernel.org>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 068/380] f2fs: compress: fix to set zstd compress level correctly
-Date:   Thu, 16 Sep 2021 17:57:05 +0200
-Message-Id: <20210916155806.303782127@linuxfoundation.org>
+Subject: [PATCH 5.14 077/432] clk: renesas: rzg2l: Fix off-by-one check in rzg2l_cpg_clk_src_twocell_get()
+Date:   Thu, 16 Sep 2021 17:57:06 +0200
+Message-Id: <20210916155813.393546570@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,41 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chao Yu <chao@kernel.org>
+From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-[ Upstream commit 01f6afd0f3ccaa2d5f7fb87e7bd910dc17eef06b ]
+[ Upstream commit 1606e81543f80fc3b1912957cf6d8fa62e40b8e5 ]
 
-As 5kft reported in [1]:
+Fix clock index out of range check for module clocks in
+rzg2l_cpg_clk_src_twocell_get().
 
-set_compress_context() should set compress level into .i_compress_flag
-for zstd as well as lz4hc, otherwise, zstd compressor will still use
-default zstd compress level during compression, fix it.
-
-[1] https://lore.kernel.org/linux-f2fs-devel/8e29f52b-6b0d-45ec-9520-e63eb254287a@www.fastmail.com/T/#u
-
-Fixes: 3fde13f817e2 ("f2fs: compress: support compress level")
-Reported-by: 5kft <5kft@5kft.org>
-Signed-off-by: Chao Yu <chao@kernel.org>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Fixes: ef3c613ccd68 ("clk: renesas: Add CPG core wrapper for RZ/G2L SoC")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Link: https://lore.kernel.org/r/20210617155432.18827-1-prabhakar.mahadev-lad.rj@bp.renesas.com
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/f2fs/f2fs.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/clk/renesas/renesas-rzg2l-cpg.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index a5de48e768d7..71af6a64a241 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -4020,7 +4020,8 @@ static inline void set_compress_context(struct inode *inode)
- 				1 << COMPRESS_CHKSUM : 0;
- 	F2FS_I(inode)->i_cluster_size =
- 			1 << F2FS_I(inode)->i_log_cluster_size;
--	if (F2FS_I(inode)->i_compress_algorithm == COMPRESS_LZ4 &&
-+	if ((F2FS_I(inode)->i_compress_algorithm == COMPRESS_LZ4 ||
-+		F2FS_I(inode)->i_compress_algorithm == COMPRESS_ZSTD) &&
- 			F2FS_OPTION(sbi).compress_level)
- 		F2FS_I(inode)->i_compress_flag |=
- 				F2FS_OPTION(sbi).compress_level <<
+diff --git a/drivers/clk/renesas/renesas-rzg2l-cpg.c b/drivers/clk/renesas/renesas-rzg2l-cpg.c
+index e7c59af2a1d8..f894a210de90 100644
+--- a/drivers/clk/renesas/renesas-rzg2l-cpg.c
++++ b/drivers/clk/renesas/renesas-rzg2l-cpg.c
+@@ -229,7 +229,7 @@ static struct clk
+ 
+ 	case CPG_MOD:
+ 		type = "module";
+-		if (clkidx > priv->num_mod_clks) {
++		if (clkidx >= priv->num_mod_clks) {
+ 			dev_err(dev, "Invalid %s clock index %u\n", type,
+ 				clkidx);
+ 			return ERR_PTR(-EINVAL);
 -- 
 2.30.2
 
