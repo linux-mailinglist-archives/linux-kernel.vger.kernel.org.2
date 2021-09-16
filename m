@@ -2,114 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FF1A40D3BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 09:25:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEF4540D3C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 09:28:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234729AbhIPH1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 03:27:13 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:16768 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232254AbhIPH1J (ORCPT
+        id S234792AbhIPH3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 03:29:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234708AbhIPH3V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 03:27:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1631777149; x=1663313149;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=+cB0Ekh8IpXQNeJaDPNfiBsWeb1pt6pnZjUTIg4exrk=;
-  b=SMfISRg+f8NMfbxcTtYhrVORo1s8Q4KAl2JIFcDNsoC//RKFAvGoIIa+
-   8Zck7Di8Msap/6++ng7do/0EiayQi8ZlpHX8gRj2K87xOchaE3uOUdGg9
-   KTl0huPkz50YSn8Z1v/olVX1JujcS2G/4MDWklmFkVNOlHUhTF0r2LKub
-   5WN7Flk8o+8ykFyCqq1xXD8SuQXdRlptOY0j+dSylj61zZHQ7r7l5cN1q
-   ltujLSkwX+Q6N5WZ7tEGDSRAg2L2Uyk1GRJoovArrW7kXLF+E2Iljg9KU
-   zYzG/x4Qg5S1hWqnKzNw1w2hazP6mumvY16NlVxwftt+JvqW4/ZA5PFeo
-   Q==;
-IronPort-SDR: Gf7KAlYbfeU97ZXiPz7s1LTH2P/EKuKZ5dd3bjr2IG7rAy9BuljZP6aXbiXTKxlFES0l6j98wy
- k2Bn5iKBlESO6tkTq47kSGU40RmjCGeQ5dLc4vtQI5w/DXkUhaBZuJJU94dFVzctdNj2PWngyY
- ltPbo0oco0lDzTNN45y7MmLSJCNH5L0vq6zi3hZ8b7Jfsplrksn/OjXugPYjN5yLDTRqmMTPLM
- WChDFNpWEvvVNXtsU2bWd1uNDhAkVZlNP7clCMpS4F9TksLPT1Poa77tLy+f7NHrCqZ5MEVVGR
- VcVItcthE/i+Pct3DH63uxZ9
-X-IronPort-AV: E=Sophos;i="5.85,297,1624345200"; 
-   d="scan'208";a="144332533"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 16 Sep 2021 00:25:48 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Thu, 16 Sep 2021 00:25:48 -0700
-Received: from [10.159.245.112] (10.10.115.15) by chn-vm-ex01.mchp-main.com
- (10.10.85.143) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
- Transport; Thu, 16 Sep 2021 00:25:46 -0700
-Subject: Re: [PATCH] net: cadence: macb: Make use of the helper function
- dev_err_probe()
-To:     Cai Huoqing <caihuoqing@baidu.com>
-CC:     Claudiu Beznea <claudiu.beznea@microchip.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210915145804.7357-1-caihuoqing@baidu.com>
-From:   Nicolas Ferre <nicolas.ferre@microchip.com>
-Organization: microchip
-Message-ID: <9318f9be-88f3-5405-11fa-b51a8ada7c2c@microchip.com>
-Date:   Thu, 16 Sep 2021 09:25:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 16 Sep 2021 03:29:21 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A544C061574;
+        Thu, 16 Sep 2021 00:28:01 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id g11so4747132qtk.5;
+        Thu, 16 Sep 2021 00:28:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pVbyhvmeHGYeGOFh7qjQY4cFr9i92ZBaof0BazQUorI=;
+        b=hOKvbfNdu+GhgoP1GNbaEScCzXmyTWBWgdYBhb5l8fstFGaqVohSBlYUQJmQlFdd10
+         7/AT/hWvHODQNjcP1ij+cWi0UtdJYXMB+uxKm3dwk9CLaIygKK9PlF3KWSiXERJWi5ku
+         qf3g6KdrqLRx7T0+CVDKk6QZ9b8jvw5+88YNA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pVbyhvmeHGYeGOFh7qjQY4cFr9i92ZBaof0BazQUorI=;
+        b=DjTrifoZBiTdCS4SuZ1mC3mFzXHh2SneO704z1OUD43TL9B1TM46jX8zX4O5VeI/OB
+         fhUadqPv27RVcK1rMJyp5YpxygyiNfWs+xK6T2IrywISWO8VOJghjXYVeVpzbLNFAOBQ
+         r6S26UC4WhH9cQ2gnftmtrQFTUUDToBm35m+hwOpPquq+PPpvjvrPtiZnb3nfEAo10Y5
+         OVK6GmpDWSD3vD1YcTglcN51pKkAhnXRabrvivftQhq8HMOEOqZt1xaGkGtnH8xGvuJc
+         sCFq9zDBYZE2RDyc66xVX/uL9Suj8vrvgcV8dUYeOLynP1By64ZQI1xqDITYe/IlF4s0
+         Fnrw==
+X-Gm-Message-State: AOAM530pRucRnpdQGWGf0jVm4Z/aVBARIvpXtOcTvNVq0jY6m6ZtQ6Uj
+        vUjfzrYAUYucx18/qyme15Ufu3zWWgsakPfgC9E=
+X-Google-Smtp-Source: ABdhPJxcKmaCp7WgCIndqSTIhP31PNoyITQMAxTDCqB49y2c4oqobHacueUm6hYd6oIICTiHiNkLmYbi1LF+89qnlV4=
+X-Received: by 2002:a05:622a:15d2:: with SMTP id d18mr3628592qty.145.1631777280136;
+ Thu, 16 Sep 2021 00:28:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210915145804.7357-1-caihuoqing@baidu.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210914213543.73351-1-eajames@linux.ibm.com> <20210914213543.73351-4-eajames@linux.ibm.com>
+ <20210915161333.GA3712393@roeck-us.net> <ac8d30e988ab6cc16d4c7446d259b87deb734910.camel@linux.ibm.com>
+In-Reply-To: <ac8d30e988ab6cc16d4c7446d259b87deb734910.camel@linux.ibm.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Thu, 16 Sep 2021 07:27:48 +0000
+Message-ID: <CACPK8Xfqf7siS9jtQbrd5mDNmCURS2==B3wGXpHibB8546o60g@mail.gmail.com>
+Subject: Re: [PATCH 3/3] hwmon: (occ) Provide the SBEFIFO FFDC in binary sysfs
+To:     Eddie James <eajames@linux.ibm.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>, linux-fsi@lists.ozlabs.org,
+        linux-hwmon@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Alistair Popple <alistair@popple.id.au>,
+        Jeremy Kerr <jk@ozlabs.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/09/2021 at 16:58, Cai Huoqing wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> 
-> When possible use dev_err_probe help to properly deal with the
-> PROBE_DEFER error, the benefit is that DEFER issue will be logged
-> in the devices_deferred debugfs file.
+On Wed, 15 Sept 2021 at 21:11, Eddie James <eajames@linux.ibm.com> wrote:
+>
+> On Wed, 2021-09-15 at 09:13 -0700, Guenter Roeck wrote:
+> > On Tue, Sep 14, 2021 at 04:35:43PM -0500, Eddie James wrote:
+> > > Save any FFDC provided by the OCC driver, and provide it to
+> > > userspace
+> > > through a binary sysfs entry. Do some basic state management to
+> > > ensure that userspace can always collect the data if there was an
+> > > error. Notify polling userspace when there is an error too.
+> > >
+> > > Signed-off-by: Eddie James <eajames@linux.ibm.com>
+> >
+> > This is now the 2nd series that we have pending, and the first series
+> > (from July) still didn't make it into the upstream kernel because the
+> > fsi code
+> > seems to go nowhere. Any chance to address that ?
+>
+> Yes... Joel, can we merge that? I don't have any comments to address.
 
-Well, I don't see where the PROBE_DEFER error could be triggered by the 
-call graph of this function: can you please point me to where this error 
-could come from?
+Thanks for the reminder. We have a queue of FSI patches to send out. I
+hope to get that done this coming merge window.
 
-Best regards,
-   Nicolas
+Cheers,
 
-
-> And using dev_err_probe() can reduce code size, and simplify the code.
-> 
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
-
-NACK, for now.
-
-> ---
->   drivers/net/ethernet/cadence/macb_pci.c | 6 ++----
->   1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/cadence/macb_pci.c b/drivers/net/ethernet/cadence/macb_pci.c
-> index 8b7b59908a1a..d09c570a15ae 100644
-> --- a/drivers/net/ethernet/cadence/macb_pci.c
-> +++ b/drivers/net/ethernet/cadence/macb_pci.c
-> @@ -35,10 +35,8 @@ static int macb_probe(struct pci_dev *pdev, const struct pci_device_id *id)
-> 
->          /* enable pci device */
->          err = pcim_enable_device(pdev);
-> -       if (err < 0) {
-> -               dev_err(&pdev->dev, "Enabling PCI device has failed: %d", err);
-> -               return err;
-> -       }
-> +       if (err < 0)
-> +               return dev_err_probe(&pdev->dev, err, "Enabling PCI device has failed\n");
-> 
->          pci_set_master(pdev);
-> 
-> --
-> 2.25.1
-> 
-
-
--- 
-Nicolas Ferre
+Joel
