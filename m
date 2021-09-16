@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D57D40E911
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:01:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5692B40E6A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:31:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345643AbhIPRsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:48:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53744 "EHLO mail.kernel.org"
+        id S244747AbhIPRXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:23:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34142 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354956AbhIPRkw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:40:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BAAA961A58;
-        Thu, 16 Sep 2021 16:51:42 +0000 (UTC)
+        id S1348695AbhIPRDH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:03:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D165061241;
+        Thu, 16 Sep 2021 16:34:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631811103;
-        bh=Uh4gAPJjL7EvxAYvjfESQ3h7Yip6zR0rBwfOQmMswjk=;
+        s=korg; t=1631810049;
+        bh=MFn2xFF6eedNKjNLfyzWj+URVZpOwNk54p1yf31t4VU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AJQa+6P8PPedxi+DDBSMPTpHhxqLkk8gSakBJcAKFwJPXISpIATM3R5h4VilNhV40
-         5wKZyMsP3m3ogNswjBL2NJK0MtWF66ZcwD1rVov0caoNAksy+bcFVdQNSfMfnGISwk
-         ywvKiq4SmvYf+V4P3YONUnRCI2/ICmOwYy+N+gDE=
+        b=AsPdnn1AXlv+0+BxMJ8Ge8XbP4WnobJSFU4AVkUKC0LeolDfBxMrlEqAK4in7xWqU
+         HU8y9Hl5olROSjdhE9k3JwbkmGWFggUgvc1tEA8vifRNx2W2EBhWkZm2nTxaSQjqH6
+         T711LRdIqEv3kLe+5Lp7H1W4c2pPYmHf+R/riYMs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zekun Shen <bruceshenzk@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 385/432] ath9k: fix OOB read ar9300_eeprom_restore_internal
-Date:   Thu, 16 Sep 2021 18:02:14 +0200
-Message-Id: <20210916155823.856410610@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        Steven Price <steven.price@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Chris Morgan <macromorgan@hotmail.com>
+Subject: [PATCH 5.13 378/380] drm/panfrost: Simplify lock_region calculation
+Date:   Thu, 16 Sep 2021 18:02:15 +0200
+Message-Id: <20210916155816.904358577@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,48 +42,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zekun Shen <bruceshenzk@gmail.com>
+From: Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
 
-[ Upstream commit 23151b9ae79e3bc4f6a0c4cd3a7f355f68dad128 ]
+commit b5fab345654c603c07525100d744498f28786929 upstream.
 
-Bad header can have large length field which can cause OOB.
-cptr is the last bytes for read, and the eeprom is parsed
-from high to low address. The OOB, triggered by the condition
-length > cptr could cause memory error with a read on
-negative index.
+In lock_region, simplify the calculation of the region_width parameter.
+This field is the size, but encoded as ceil(log2(size)) - 1.
+ceil(log2(size)) may be computed directly as fls(size - 1). However, we
+want to use the 64-bit versions as the amount to lock can exceed
+32-bits.
 
-There are some sanity check around length, but it is not
-compared with cptr (the remaining bytes). Here, the
-corrupted/bad EEPROM can cause panic.
+This avoids undefined (and completely wrong) behaviour when locking all
+memory (size ~0). In this case, the old code would "round up" ~0 to the
+nearest page, overflowing to 0. Since fls(0) == 0, this would calculate
+a region width of 10 + 0 = 10. But then the code would shift by
+(region_width - 11) = -1. As shifting by a negative number is undefined,
+UBSAN flags the bug. Of course, even if it were defined the behaviour is
+wrong, instead of locking all memory almost none would get locked.
 
-I was able to reproduce the crash, but I cannot find the
-log and the reproducer now. After I applied the patch, the
-bug is no longer reproducible.
+The new form of the calculation corrects this special case and avoids
+the undefined behaviour.
 
-Signed-off-by: Zekun Shen <bruceshenzk@gmail.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/YM3xKsQJ0Hw2hjrc@Zekuns-MBP-16.fios-router.home
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
+Reported-and-tested-by: Chris Morgan <macromorgan@hotmail.com>
+Fixes: f3ba91228e8e ("drm/panfrost: Add initial panfrost driver")
+Cc: <stable@vger.kernel.org>
+Reviewed-by: Steven Price <steven.price@arm.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Steven Price <steven.price@arm.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210824173028.7528-2-alyssa.rosenzweig@collabora.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/wireless/ath/ath9k/ar9003_eeprom.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/panfrost/panfrost_mmu.c |   19 +++++--------------
+ 1 file changed, 5 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath9k/ar9003_eeprom.c b/drivers/net/wireless/ath/ath9k/ar9003_eeprom.c
-index b4885a700296..b0a4ca3559fd 100644
---- a/drivers/net/wireless/ath/ath9k/ar9003_eeprom.c
-+++ b/drivers/net/wireless/ath/ath9k/ar9003_eeprom.c
-@@ -3351,7 +3351,8 @@ static int ar9300_eeprom_restore_internal(struct ath_hw *ah,
- 			"Found block at %x: code=%d ref=%d length=%d major=%d minor=%d\n",
- 			cptr, code, reference, length, major, minor);
- 		if ((!AR_SREV_9485(ah) && length >= 1024) ||
--		    (AR_SREV_9485(ah) && length > EEPROM_DATA_LEN_9485)) {
-+		    (AR_SREV_9485(ah) && length > EEPROM_DATA_LEN_9485) ||
-+		    (length > cptr)) {
- 			ath_dbg(common, EEPROM, "Skipping bad header\n");
- 			cptr -= COMP_HDR_LEN;
- 			continue;
--- 
-2.30.2
-
+--- a/drivers/gpu/drm/panfrost/panfrost_mmu.c
++++ b/drivers/gpu/drm/panfrost/panfrost_mmu.c
+@@ -59,21 +59,12 @@ static void lock_region(struct panfrost_
+ {
+ 	u8 region_width;
+ 	u64 region = iova & PAGE_MASK;
+-	/*
+-	 * fls returns:
+-	 * 1 .. 32
+-	 *
+-	 * 10 + fls(num_pages)
+-	 * results in the range (11 .. 42)
+-	 */
+-
+-	size = round_up(size, PAGE_SIZE);
+ 
+-	region_width = 10 + fls(size >> PAGE_SHIFT);
+-	if ((size >> PAGE_SHIFT) != (1ul << (region_width - 11))) {
+-		/* not pow2, so must go up to the next pow2 */
+-		region_width += 1;
+-	}
++	/* The size is encoded as ceil(log2) minus(1), which may be calculated
++	 * with fls. The size must be clamped to hardware bounds.
++	 */
++	size = max_t(u64, size, PAGE_SIZE);
++	region_width = fls64(size - 1) - 1;
+ 	region |= region_width;
+ 
+ 	/* Lock the region that needs to be updated */
 
 
