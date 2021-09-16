@@ -2,42 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98E7B40DA2B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 14:41:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C15C440DA29
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 14:41:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239625AbhIPMmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 08:42:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43476 "EHLO mail.kernel.org"
+        id S239868AbhIPMl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 08:41:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43266 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239835AbhIPMln (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 08:41:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 9625561260;
+        id S239852AbhIPMl3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 08:41:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 842146124D;
         Thu, 16 Sep 2021 12:40:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1631796008;
-        bh=nuz36/tY889PWXqfLn/1Ryug5OdOy3qE6tlL9C7PxP4=;
+        bh=bMy5jcnyDhYXJ7IbY/Xy+tdP8cT5QmMISv/iCsm7Mvs=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=sfS+j5AXtfyWfjnj3290OyL0gp/pE+31MOhIe23xMQPICwoOzVfXKSYnP8xiRPFV0
-         6OA3i3u7KXA7CNX20ZLKilCaW5wH7VtwvoTsEgzQuzH/Zu3L42GT6WLUBx1iW73TvK
-         le0B4ujFDE720dP9MygJ1GPAqM3zOirT02kbl6NI7kae5dEqaBjdmeGZwWYOzEuVOa
-         muIAyh7PXvz7BE+peXe1BOTJ4veyCTmprfoD38eFrM3dF5S83495t9ephwE+/3qFL7
-         3C5z0hNLuWjIw9jNa52c+FAcsL4e0OsGF8EQvYf5b0OcDmbWxTl9d3qIUKF+X08Dj/
-         AyqerEWGpLbYg==
+        b=R0IWbGBCtYLeEhEPnDXtYqWcWfvsP8Uvme/SzOQ2cytoxbnjMpM4eVJDRygegHll7
+         3ER1MIx2WzBki7fUxh6almYLkzQKT+ban0mmEeychxhgGhtL3rGSE4FKaezvIT/l82
+         Fa5AAJkNXNcVGu3uFPof6pq5u2jgSRibK6kPQ26LSK2EVSr3uVeNf3uySp7ZYkh9c/
+         8EyUmzdB8qfldRdAGYEs5OPIWSsE/uIRnmxpODj9uwtMF+oFEeqprzBNxH7rqRWcSL
+         TgiW4hN1057bQfB++W8ZompWSzOfMlNGWHYHkx9di3ZOVN5r75Tnxpqq96ShQobJxn
+         YbJ/krLrklSiw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8D8BC60A22;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 747DA60BCF;
         Thu, 16 Sep 2021 12:40:08 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: arc_emac: Make use of the helper function
+Subject: Re: [PATCH] net: thunderx: Make use of the helper function
  dev_err_probe()
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163179600857.19379.5224983752075834228.git-patchwork-notify@kernel.org>
+Message-Id: <163179600847.19379.13162897389182688013.git-patchwork-notify@kernel.org>
 Date:   Thu, 16 Sep 2021 12:40:08 +0000
-References: <20210915145741.7198-1-caihuoqing@baidu.com>
-In-Reply-To: <20210915145741.7198-1-caihuoqing@baidu.com>
+References: <20210915145843.7622-1-caihuoqing@baidu.com>
+In-Reply-To: <20210915145843.7622-1-caihuoqing@baidu.com>
 To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+Cc:     sgoutham@marvell.com, davem@davemloft.net, kuba@kernel.org,
+        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -47,7 +48,7 @@ Hello:
 
 This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Wed, 15 Sep 2021 22:57:41 +0800 you wrote:
+On Wed, 15 Sep 2021 22:58:42 +0800 you wrote:
 > When possible use dev_err_probe help to properly deal with the
 > PROBE_DEFER error, the benefit is that DEFER issue will be logged
 > in the devices_deferred debugfs file.
@@ -58,8 +59,8 @@ On Wed, 15 Sep 2021 22:57:41 +0800 you wrote:
 > [...]
 
 Here is the summary with links:
-  - net: arc_emac: Make use of the helper function dev_err_probe()
-    https://git.kernel.org/netdev/net-next/c/95b5fc03c189
+  - net: thunderx: Make use of the helper function dev_err_probe()
+    https://git.kernel.org/netdev/net-next/c/52583c8d8b12
 
 You are awesome, thank you!
 --
