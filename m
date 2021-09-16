@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AD8B40E7EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:59:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD4E840E7F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349942AbhIPRnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:43:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54230 "EHLO mail.kernel.org"
+        id S1349982AbhIPRna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:43:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54244 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347950AbhIPRgV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:36:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF06961A78;
-        Thu, 16 Sep 2021 16:49:26 +0000 (UTC)
+        id S1348046AbhIPRgW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:36:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF39F6322A;
+        Thu, 16 Sep 2021 16:49:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810967;
-        bh=UhJbAOTg8rw5DkHiDRKHLx50nt/i+eF0c2XS6wFmyr4=;
+        s=korg; t=1631810970;
+        bh=AQ1AXbf3TXp0Se5YbZsSSuS8QQ/TcHAk528OBfqdgds=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iL8XDmpfg71WyGUKZPIShxNsUv0bilA9wrMft8x9RUSTM8ZNALR3G/1IQlzFo/sAE
-         YTTQKF6VYAM9BBQ+HQydlBCjU1ZP9JrgEa6J4HJ9AgwjyYwe4vWWURTo0kQ/UWW7Ci
-         jpmuJ8PllI4yJTEKgkepK+J64pFwkoQoK776ViLE=
+        b=iIjpFxGvRPy+VSL/LiKoBJCiud7KizIMCsPmmo44Fny8UbrDmeLR4g8VtRrbrC8yO
+         6Cyt9PvNx8iExXKY+4wpJoriEs/oefsPoBnO+c/Ym5/cGqAJQQGCCkFCtS7udNcpgp
+         2To/63RfOtlz8qx19Nuy/Ww6r5KvY6TNDz6WlbTc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chin-Yen Lee <timlee@realtek.com>,
-        Ping-Ke Shih <pkshih@realtek.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Subbaraya Sundeep <sbhatta@marvell.com>,
+        Hariprasad Kelam <hkelam@marvell.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 333/432] rtw88: wow: fix size access error of probe request
-Date:   Thu, 16 Sep 2021 18:01:22 +0200
-Message-Id: <20210916155822.129648171@linuxfoundation.org>
+Subject: [PATCH 5.14 334/432] octeontx2-pf: Fix NIX1_RX interface backpressure
+Date:   Thu, 16 Sep 2021 18:01:23 +0200
+Message-Id: <20210916155822.163226949@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
 References: <20210916155810.813340753@linuxfoundation.org>
@@ -41,85 +42,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chin-Yen Lee <timlee@realtek.com>
+From: Subbaraya Sundeep <sbhatta@marvell.com>
 
-[ Upstream commit 69c7044526d984df672b8d9b6d6998c34617cde4 ]
+[ Upstream commit e8fb4df1f5d84bc08dd4f4827821a851d2eab241 ]
 
-Current flow will lead to null ptr access because of trying
-to get the size of freed probe-request packets. We store the
-information of packet size into rsvd page instead and also fix
-the size error issue, which will cause unstable behavoir of
-sending probe request by wow firmware.
+'bp_ena' in Aura context is NIX block index, setting it
+zero will always backpressure NIX0 block, even if NIXLF
+belongs to NIX1. Hence fix this by setting it appropriately
+based on NIX block address.
 
-Signed-off-by: Chin-Yen Lee <timlee@realtek.com>
-Signed-off-by: Ping-Ke Shih <pkshih@realtek.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210728014335.8785-6-pkshih@realtek.com
+Signed-off-by: Subbaraya Sundeep <sbhatta@marvell.com>
+Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
+Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/realtek/rtw88/fw.c | 8 ++++++--
- drivers/net/wireless/realtek/rtw88/fw.h | 1 +
- 2 files changed, 7 insertions(+), 2 deletions(-)
+ .../ethernet/marvell/octeontx2/nic/otx2_common.c  | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/drivers/net/wireless/realtek/rtw88/fw.c b/drivers/net/wireless/realtek/rtw88/fw.c
-index 3bfa5ecc0053..e6399519584b 100644
---- a/drivers/net/wireless/realtek/rtw88/fw.c
-+++ b/drivers/net/wireless/realtek/rtw88/fw.c
-@@ -819,7 +819,7 @@ static u16 rtw_get_rsvd_page_probe_req_size(struct rtw_dev *rtwdev,
- 			continue;
- 		if ((!ssid && !rsvd_pkt->ssid) ||
- 		    rtw_ssid_equal(rsvd_pkt->ssid, ssid))
--			size = rsvd_pkt->skb->len;
-+			size = rsvd_pkt->probe_req_size;
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+index 94dfd64f526f..9c8aa1f3dbbb 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+@@ -1204,7 +1204,22 @@ static int otx2_aura_init(struct otx2_nic *pfvf, int aura_id,
+ 	/* Enable backpressure for RQ aura */
+ 	if (aura_id < pfvf->hw.rqpool_cnt && !is_otx2_lbkvf(pfvf->pdev)) {
+ 		aq->aura.bp_ena = 0;
++		/* If NIX1 LF is attached then specify NIX1_RX.
++		 *
++		 * Below NPA_AURA_S[BP_ENA] is set according to the
++		 * NPA_BPINTF_E enumeration given as:
++		 * 0x0 + a*0x1 where 'a' is 0 for NIX0_RX and 1 for NIX1_RX so
++		 * NIX0_RX is 0x0 + 0*0x1 = 0
++		 * NIX1_RX is 0x0 + 1*0x1 = 1
++		 * But in HRM it is given that
++		 * "NPA_AURA_S[BP_ENA](w1[33:32]) - Enable aura backpressure to
++		 * NIX-RX based on [BP] level. One bit per NIX-RX; index
++		 * enumerated by NPA_BPINTF_E."
++		 */
++		if (pfvf->nix_blkaddr == BLKADDR_NIX1)
++			aq->aura.bp_ena = 1;
+ 		aq->aura.nix0_bpid = pfvf->bpid[0];
++
+ 		/* Set backpressure level for RQ's Aura */
+ 		aq->aura.bp = RQ_BP_LVL_AURA;
  	}
- 
- 	return size;
-@@ -1047,6 +1047,8 @@ static struct sk_buff *rtw_get_rsvd_page_skb(struct ieee80211_hw *hw,
- 							 ssid->ssid_len, 0);
- 		else
- 			skb_new = ieee80211_probereq_get(hw, vif->addr, NULL, 0, 0);
-+		if (skb_new)
-+			rsvd_pkt->probe_req_size = (u16)skb_new->len;
- 		break;
- 	case RSVD_NLO_INFO:
- 		skb_new = rtw_nlo_info_get(hw);
-@@ -1643,6 +1645,7 @@ int rtw_fw_dump_fifo(struct rtw_dev *rtwdev, u8 fifo_sel, u32 addr, u32 size,
- static void __rtw_fw_update_pkt(struct rtw_dev *rtwdev, u8 pkt_id, u16 size,
- 				u8 location)
- {
-+	struct rtw_chip_info *chip = rtwdev->chip;
- 	u8 h2c_pkt[H2C_PKT_SIZE] = {0};
- 	u16 total_size = H2C_PKT_HDR_SIZE + H2C_PKT_UPDATE_PKT_LEN;
- 
-@@ -1653,6 +1656,7 @@ static void __rtw_fw_update_pkt(struct rtw_dev *rtwdev, u8 pkt_id, u16 size,
- 	UPDATE_PKT_SET_LOCATION(h2c_pkt, location);
- 
- 	/* include txdesc size */
-+	size += chip->tx_pkt_desc_sz;
- 	UPDATE_PKT_SET_SIZE(h2c_pkt, size);
- 
- 	rtw_fw_send_h2c_packet(rtwdev, h2c_pkt);
-@@ -1662,7 +1666,7 @@ void rtw_fw_update_pkt_probe_req(struct rtw_dev *rtwdev,
- 				 struct cfg80211_ssid *ssid)
- {
- 	u8 loc;
--	u32 size;
-+	u16 size;
- 
- 	loc = rtw_get_rsvd_page_probe_req_location(rtwdev, ssid);
- 	if (!loc) {
-diff --git a/drivers/net/wireless/realtek/rtw88/fw.h b/drivers/net/wireless/realtek/rtw88/fw.h
-index a8a7162fbe64..a3a28ac6f1de 100644
---- a/drivers/net/wireless/realtek/rtw88/fw.h
-+++ b/drivers/net/wireless/realtek/rtw88/fw.h
-@@ -147,6 +147,7 @@ struct rtw_rsvd_page {
- 	u8 page;
- 	bool add_txdesc;
- 	struct cfg80211_ssid *ssid;
-+	u16 probe_req_size;
- };
- 
- enum rtw_keep_alive_pkt_type {
 -- 
 2.30.2
 
