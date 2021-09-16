@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1602040DFBA
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:12:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA8E640E28A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:16:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233960AbhIPQNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:13:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48012 "EHLO mail.kernel.org"
+        id S244832AbhIPQjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:39:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44780 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233417AbhIPQH5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:07:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B20D260F5B;
-        Thu, 16 Sep 2021 16:06:36 +0000 (UTC)
+        id S243485AbhIPQbb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:31:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C79966162E;
+        Thu, 16 Sep 2021 16:19:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808397;
-        bh=kwXb65ngb3Yluy6mC2lK115LE0OqELi2xKnKY6rV1ZM=;
+        s=korg; t=1631809173;
+        bh=ag+uAeWKPVFNvafpIGu/c0r020QZZsSQcstWyrND3a0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RuFN3lcSDMS79oJY+b+IhUYBY+P1GYp7MNYjMQyHLKCuzlfFWhfJZdkcvfKV/OCjN
-         SwUwtVE+iWl+PcWTPo88hpugoQrXlz47fumLc4mH2K3fQ2cFjbnxiG5xORLranv7J7
-         zi9GD7exAk/OEzPcYLx07z9V61Tip6SlNMxmw2fQ=
+        b=1Qh01YW958Nb9lZoGcfsd6Wwus5JiG6qDUfrjC1Ur4f38d+RBVYqeZXH/swxbdb2F
+         ESoUQ+bpMj8k9s1qkCumv1/iLRR+ENwn7+J7k11qiEogZXqIjlpy+nANlZ/gkaAZ2b
+         36xm4jJzlp0iZemnch+kqsyew6iilmzCzhWecvWs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Gal Pressman <galpress@amazon.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 069/306] RDMA/efa: Remove double QP type assignment
+        stable@vger.kernel.org, Kate Hsuan <hpa@redhat.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.13 057/380] libata: add ATA_HORKAGE_NO_NCQ_TRIM for Samsung 860 and 870 SSDs
 Date:   Thu, 16 Sep 2021 17:56:54 +0200
-Message-Id: <20210916155756.407874071@linuxfoundation.org>
+Message-Id: <20210916155805.928036763@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +42,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit f9193d266347fe9bed5c173e7a1bf96268142a79 ]
+commit 8a6430ab9c9c87cb64c512e505e8690bbaee190b upstream.
 
-The QP type is set by the IB/core and shouldn't be set in the driver.
+Commit ca6bfcb2f6d9 ("libata: Enable queued TRIM for Samsung SSD 860")
+limited the existing ATA_HORKAGE_NO_NCQ_TRIM quirk from "Samsung SSD 8*",
+covering all Samsung 800 series SSDs, to only apply to "Samsung SSD 840*"
+and "Samsung SSD 850*" series based on information from Samsung.
 
-Fixes: 40909f664d27 ("RDMA/efa: Add EFA verbs implementation")
-Link: https://lore.kernel.org/r/838c40134c1590167b888ca06ad51071139ff2ae.1627040189.git.leonro@nvidia.com
-Acked-by: Gal Pressman <galpress@amazon.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+But there is a large number of users which is still reporting issues
+with the Samsung 860 and 870 SSDs combined with Intel, ASmedia or
+Marvell SATA controllers and all reporters also report these problems
+going away when disabling queued trims.
+
+Note that with AMD SATA controllers users are reporting even worse
+issues and only completely disabling NCQ helps there, this will be
+addressed in a separate patch.
+
+Fixes: ca6bfcb2f6d9 ("libata: Enable queued TRIM for Samsung SSD 860")
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=203475
+Cc: stable@vger.kernel.org
+Cc: Kate Hsuan <hpa@redhat.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Reviewed-by: Damien Le Moal <damien.lemoal@wdc.com>
+Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
+Link: https://lore.kernel.org/r/20210823095220.30157-1-hdegoede@redhat.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/infiniband/hw/efa/efa_verbs.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/ata/libata-core.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
-index 4e940fc50bba..2ece682c7835 100644
---- a/drivers/infiniband/hw/efa/efa_verbs.c
-+++ b/drivers/infiniband/hw/efa/efa_verbs.c
-@@ -717,7 +717,6 @@ struct ib_qp *efa_create_qp(struct ib_pd *ibpd,
+--- a/drivers/ata/libata-core.c
++++ b/drivers/ata/libata-core.c
+@@ -3950,6 +3950,10 @@ static const struct ata_blacklist_entry
+ 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
+ 	{ "Samsung SSD 850*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
+ 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
++	{ "Samsung SSD 860*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
++						ATA_HORKAGE_ZERO_AFTER_TRIM, },
++	{ "Samsung SSD 870*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
++						ATA_HORKAGE_ZERO_AFTER_TRIM, },
+ 	{ "FCCT*M500*",			NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
+ 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
  
- 	qp->qp_handle = create_qp_resp.qp_handle;
- 	qp->ibqp.qp_num = create_qp_resp.qp_num;
--	qp->ibqp.qp_type = init_attr->qp_type;
- 	qp->max_send_wr = init_attr->cap.max_send_wr;
- 	qp->max_recv_wr = init_attr->cap.max_recv_wr;
- 	qp->max_send_sge = init_attr->cap.max_send_sge;
--- 
-2.30.2
-
 
 
