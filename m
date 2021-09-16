@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13E6E40E8AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95ABC40E86C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355021AbhIPRk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:40:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50272 "EHLO mail.kernel.org"
+        id S1354258AbhIPRjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:39:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50286 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353446AbhIPRdy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:33:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F77F61C15;
-        Thu, 16 Sep 2021 16:48:11 +0000 (UTC)
+        id S1353246AbhIPRaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:30:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 729BC611CA;
+        Thu, 16 Sep 2021 16:46:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810892;
-        bh=MA9Q8cU7Z78EOKO/dTu2ryzIHA7RNsG+Nr8gEJp1LHI=;
+        s=korg; t=1631810809;
+        bh=A/QQumOH8O6k/Xn5qDY6TMC4AxTRp7rzpMcWLtKRmjY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RKJ+bgdCUrqiH/8fOchE4fsodN1T7eiY8Vp3Sl+gP/cZgGcKlzkFnkXKwo8yak0Fz
-         uAr7zGgb4kSfTb6zuMBbxEPcASk+0S/R9XBC41jgYen3ejB11MHUdgO2VG0hCiENzT
-         qUNnkCVPVU3lJ9v5QMA0ur43bnJW77miZWDYsFLA=
+        b=BeEXECLUXj0FIPqsxy8EOMkvaUcbQNibMWzm8FNMMGnVnbveZwvmKT2R33RV1GyZa
+         CM0AFdtA1PzMulAwmbr0sVioikgjLTWolmEyk66n79A0JvJOM1ncvsOXbM7yxVbEpN
+         /tJASpEREATYyo/9kKgWDUK0Ns2dDwTHGUWCGAmY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        stable@vger.kernel.org, Sami Tolvanen <samitolvanen@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 275/432] nvmem: qfprom: Fix up qfprom_disable_fuse_blowing() ordering
-Date:   Thu, 16 Sep 2021 18:00:24 +0200
-Message-Id: <20210916155820.130629357@linuxfoundation.org>
+Subject: [PATCH 5.14 276/432] net: ethernet: stmmac: Do not use unreachable() in ipq806x_gmac_probe()
+Date:   Thu, 16 Sep 2021 18:00:25 +0200
+Message-Id: <20210916155820.163927137@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
 References: <20210916155810.813340753@linuxfoundation.org>
@@ -41,54 +41,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rajendra Nayak <rnayak@codeaurora.org>
+From: Nathan Chancellor <nathan@kernel.org>
 
-[ Upstream commit 11c4b3e264d68ba6dcd52d12dbcfd3f564f2f137 ]
+[ Upstream commit 4367355dd90942a71641c98c40c74589c9bddf90 ]
 
-qfprom_disable_fuse_blowing() disables a bunch of resources,
-and then does a few register writes in the 'conf' address
-space.
-It works perhaps because the resources are needed only for the
-'raw' register space writes, and that the 'conf' space allows
-read/writes regardless.
-However that makes the code look confusing, so just move the
-register writes before turning off the resources in the
-function.
+When compiling with clang in certain configurations, an objtool warning
+appears:
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
-Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20210806085947.22682-3-srinivas.kandagatla@linaro.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.o: warning: objtool:
+ipq806x_gmac_probe() falls through to next function phy_modes()
+
+This happens because the unreachable annotation in the third switch
+statement is not eliminated. The compiler should know that the first
+default case would prevent the second and third from being reached as
+the comment notes but sanitizer options can make it harder for the
+compiler to reason this out.
+
+Help the compiler out by eliminating the unreachable() annotation and
+unifying the default case error handling so that there is no objtool
+warning, the meaning of the code stays the same, and there is less
+duplication.
+
+Reported-by: Sami Tolvanen <samitolvanen@google.com>
+Tested-by: Sami Tolvanen <samitolvanen@google.com>
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvmem/qfprom.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ .../ethernet/stmicro/stmmac/dwmac-ipq806x.c    | 18 ++++++++----------
+ 1 file changed, 8 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/nvmem/qfprom.c b/drivers/nvmem/qfprom.c
-index 81fbad5e939d..b0ca4c626466 100644
---- a/drivers/nvmem/qfprom.c
-+++ b/drivers/nvmem/qfprom.c
-@@ -139,6 +139,9 @@ static void qfprom_disable_fuse_blowing(const struct qfprom_priv *priv,
- {
- 	int ret;
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
+index 28dd0ed85a82..f7dc8458cde8 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
+@@ -289,10 +289,7 @@ static int ipq806x_gmac_probe(struct platform_device *pdev)
+ 		val &= ~NSS_COMMON_GMAC_CTL_PHY_IFACE_SEL;
+ 		break;
+ 	default:
+-		dev_err(&pdev->dev, "Unsupported PHY mode: \"%s\"\n",
+-			phy_modes(gmac->phy_mode));
+-		err = -EINVAL;
+-		goto err_remove_config_dt;
++		goto err_unsupported_phy;
+ 	}
+ 	regmap_write(gmac->nss_common, NSS_COMMON_GMAC_CTL(gmac->id), val);
  
-+	writel(old->timer_val, priv->qfpconf + QFPROM_BLOW_TIMER_OFFSET);
-+	writel(old->accel_val, priv->qfpconf + QFPROM_ACCEL_OFFSET);
+@@ -309,10 +306,7 @@ static int ipq806x_gmac_probe(struct platform_device *pdev)
+ 			NSS_COMMON_CLK_SRC_CTRL_OFFSET(gmac->id);
+ 		break;
+ 	default:
+-		dev_err(&pdev->dev, "Unsupported PHY mode: \"%s\"\n",
+-			phy_modes(gmac->phy_mode));
+-		err = -EINVAL;
+-		goto err_remove_config_dt;
++		goto err_unsupported_phy;
+ 	}
+ 	regmap_write(gmac->nss_common, NSS_COMMON_CLK_SRC_CTRL, val);
+ 
+@@ -329,8 +323,7 @@ static int ipq806x_gmac_probe(struct platform_device *pdev)
+ 				NSS_COMMON_CLK_GATE_GMII_TX_EN(gmac->id);
+ 		break;
+ 	default:
+-		/* We don't get here; the switch above will have errored out */
+-		unreachable();
++		goto err_unsupported_phy;
+ 	}
+ 	regmap_write(gmac->nss_common, NSS_COMMON_CLK_GATE, val);
+ 
+@@ -361,6 +354,11 @@ static int ipq806x_gmac_probe(struct platform_device *pdev)
+ 
+ 	return 0;
+ 
++err_unsupported_phy:
++	dev_err(&pdev->dev, "Unsupported PHY mode: \"%s\"\n",
++		phy_modes(gmac->phy_mode));
++	err = -EINVAL;
 +
- 	/*
- 	 * This may be a shared rail and may be able to run at a lower rate
- 	 * when we're not blowing fuses.  At the moment, the regulator framework
-@@ -159,9 +162,6 @@ static void qfprom_disable_fuse_blowing(const struct qfprom_priv *priv,
- 			 "Failed to set clock rate for disable (ignoring)\n");
+ err_remove_config_dt:
+ 	stmmac_remove_config_dt(pdev, plat_dat);
  
- 	clk_disable_unprepare(priv->secclk);
--
--	writel(old->timer_val, priv->qfpconf + QFPROM_BLOW_TIMER_OFFSET);
--	writel(old->accel_val, priv->qfpconf + QFPROM_ACCEL_OFFSET);
- }
- 
- /**
 -- 
 2.30.2
 
