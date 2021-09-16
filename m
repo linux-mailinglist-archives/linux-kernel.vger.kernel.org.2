@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE1C840E77B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:33:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50CDF40E15B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:29:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352683AbhIPRdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:33:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46964 "EHLO mail.kernel.org"
+        id S242978AbhIPQ3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:29:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348187AbhIPRYF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:24:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BD57661BE2;
-        Thu, 16 Sep 2021 16:43:52 +0000 (UTC)
+        id S241768AbhIPQUH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:20:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4801061268;
+        Thu, 16 Sep 2021 16:14:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810633;
-        bh=UG3wFphemK0QyVhxrHNI+4F4NkJgNfaz6M0NIhwyY/8=;
+        s=korg; t=1631808860;
+        bh=bXd0XILONge7uFoWc+BDvqYnrBLisRONyyx29I2aG64=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qCaFE+cY6mcGddeDiHKLggUBJS0B3C6qhkj8zYIYr+WTmfcga4Ox51drO0Gu6P86C
-         3F/kyYNSbyMFGV2eDPSn+CVZEcgDr1Kv8cqrh+FaZNuT5RZpVxymbngrwXTMm1D+CA
-         4kDAj07n5VQjaREITrroSMKjpwUrPo6X2fBESTY8=
+        b=kYKS3NFYNeFO1LnhX6YRlDjJf+zi9Jj5Z/JEoiHeizZb+iZ0wULWb4bPBGuDEEjZp
+         1/E8U1TGoFEIM0qNhc1jv2jhoaLsZaabFDRd0T2udG6ntjSY0HCJIiDpx55DD3tY9C
+         8u+LENkMh/IFpO7bp0WTcpeBXl0JyKFpwEW1flNk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Jake Wang <haonan.wang2@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Raag Jadav <raagjadav@gmail.com>,
+        Li Yang <leoyang.li@nxp.com>, Shawn Guo <shawnguo@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 213/432] drm/amd/display: Fixed hardware power down bypass during headless boot
+Subject: [PATCH 5.10 217/306] arm64: dts: ls1046a: fix eeprom entries
 Date:   Thu, 16 Sep 2021 17:59:22 +0200
-Message-Id: <20210916155818.055798973@linuxfoundation.org>
+Message-Id: <20210916155801.445274806@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,136 +40,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jake Wang <haonan.wang2@amd.com>
+From: Raag Jadav <raagjadav@gmail.com>
 
-[ Upstream commit 3addbde269f21ffc735f6d3d0c2237664923824e ]
+[ Upstream commit c1a6018d1839c9cb8f807dc863a50102a1a5c412 ]
 
-[Why]
-During headless boot, DIG may be on which causes HW/SW discrepancies.
-To avoid this we power down hardware on boot if DIG is turned on. With
-introduction of multiple eDP, hardware power down is being bypassed
-under certain conditions.
+ls1046afrwy and ls1046ardb boards have CAT24C04[1] and CAT24C05[2]
+eeproms respectively. Both are 4Kb (512 bytes) in size,
+and compatible with AT24C04[3].
+Remove multi-address entries, as both the boards have a single chip each.
 
-[How]
-Fixed hardware power down bypass, and ensured hardware will power down
-if DIG is on and seamless boot is not enabled.
+[1] https://www.onsemi.com/pdf/datasheet/cat24c01-d.pdf
+[2] https://www.onsemi.com/pdf/datasheet/cat24c03-d.pdf
+[3] https://ww1.microchip.com/downloads/en/DeviceDoc/doc0180.pdf
 
-Reviewed-by: Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>
-Acked-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Signed-off-by: Jake Wang <haonan.wang2@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Raag Jadav <raagjadav@gmail.com>
+Acked-by: Li Yang <leoyang.li@nxp.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../amd/display/dc/dcn10/dcn10_hw_sequencer.c | 27 +++++++++----------
- .../drm/amd/display/dc/dcn30/dcn30_hwseq.c    | 25 ++++++++---------
- .../drm/amd/display/dc/dcn31/dcn31_hwseq.c    |  5 +++-
- 3 files changed, 27 insertions(+), 30 deletions(-)
+ arch/arm64/boot/dts/freescale/fsl-ls1046a-frwy.dts | 8 +-------
+ arch/arm64/boot/dts/freescale/fsl-ls1046a-rdb.dts  | 7 +------
+ 2 files changed, 2 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
-index c545eddabdcc..dee1ce5f9609 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
-@@ -1502,25 +1502,22 @@ void dcn10_init_hw(struct dc *dc)
- void dcn10_power_down_on_boot(struct dc *dc)
- {
- 	struct dc_link *edp_links[MAX_NUM_EDP];
--	struct dc_link *edp_link;
-+	struct dc_link *edp_link = NULL;
- 	int edp_num;
- 	int i = 0;
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1046a-frwy.dts b/arch/arm64/boot/dts/freescale/fsl-ls1046a-frwy.dts
+index db3d303093f6..6d22efbd645c 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1046a-frwy.dts
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1046a-frwy.dts
+@@ -83,15 +83,9 @@ rtc@51 {
+ 			};
  
- 	get_edp_links(dc, edp_links, &edp_num);
+ 			eeprom@52 {
+-				compatible = "atmel,24c512";
++				compatible = "onnn,cat24c04", "atmel,24c04";
+ 				reg = <0x52>;
+ 			};
 -
--	if (edp_num) {
--		for (i = 0; i < edp_num; i++) {
--			edp_link = edp_links[i];
--			if (edp_link->link_enc->funcs->is_dig_enabled &&
--					edp_link->link_enc->funcs->is_dig_enabled(edp_link->link_enc) &&
--					dc->hwseq->funcs.edp_backlight_control &&
--					dc->hwss.power_down &&
--					dc->hwss.edp_power_control) {
--				dc->hwseq->funcs.edp_backlight_control(edp_link, false);
--				dc->hwss.power_down(dc);
--				dc->hwss.edp_power_control(edp_link, false);
--			}
--		}
-+	if (edp_num)
-+		edp_link = edp_links[0];
-+
-+	if (edp_link && edp_link->link_enc->funcs->is_dig_enabled &&
-+			edp_link->link_enc->funcs->is_dig_enabled(edp_link->link_enc) &&
-+			dc->hwseq->funcs.edp_backlight_control &&
-+			dc->hwss.power_down &&
-+			dc->hwss.edp_power_control) {
-+		dc->hwseq->funcs.edp_backlight_control(edp_link, false);
-+		dc->hwss.power_down(dc);
-+		dc->hwss.edp_power_control(edp_link, false);
- 	} else {
- 		for (i = 0; i < dc->link_count; i++) {
- 			struct dc_link *link = dc->links[i];
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c
-index c68e3a708a33..2e8ab9775fa3 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c
-@@ -580,22 +580,19 @@ void dcn30_init_hw(struct dc *dc)
- 	 */
- 	if (dc->config.power_down_display_on_boot) {
- 		struct dc_link *edp_links[MAX_NUM_EDP];
--		struct dc_link *edp_link;
-+		struct dc_link *edp_link = NULL;
+-			eeprom@53 {
+-				compatible = "atmel,24c512";
+-				reg = <0x53>;
+-			};
+-
+ 		};
+ 	};
+ };
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1046a-rdb.dts b/arch/arm64/boot/dts/freescale/fsl-ls1046a-rdb.dts
+index d53ccc56bb63..07139e35686d 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1046a-rdb.dts
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1046a-rdb.dts
+@@ -58,14 +58,9 @@ temp-sensor@4c {
+ 	};
  
- 		get_edp_links(dc, edp_links, &edp_num);
--		if (edp_num) {
--			for (i = 0; i < edp_num; i++) {
--				edp_link = edp_links[i];
--				if (edp_link->link_enc->funcs->is_dig_enabled &&
--						edp_link->link_enc->funcs->is_dig_enabled(edp_link->link_enc) &&
--						dc->hwss.edp_backlight_control &&
--						dc->hwss.power_down &&
--						dc->hwss.edp_power_control) {
--					dc->hwss.edp_backlight_control(edp_link, false);
--					dc->hwss.power_down(dc);
--					dc->hwss.edp_power_control(edp_link, false);
--				}
--			}
-+		if (edp_num)
-+			edp_link = edp_links[0];
-+		if (edp_link && edp_link->link_enc->funcs->is_dig_enabled &&
-+				edp_link->link_enc->funcs->is_dig_enabled(edp_link->link_enc) &&
-+				dc->hwss.edp_backlight_control &&
-+				dc->hwss.power_down &&
-+				dc->hwss.edp_power_control) {
-+			dc->hwss.edp_backlight_control(edp_link, false);
-+			dc->hwss.power_down(dc);
-+			dc->hwss.edp_power_control(edp_link, false);
- 		} else {
- 			for (i = 0; i < dc->link_count; i++) {
- 				struct dc_link *link = dc->links[i];
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn31/dcn31_hwseq.c b/drivers/gpu/drm/amd/display/dc/dcn31/dcn31_hwseq.c
-index 8a2119d8ca0d..8189606537c5 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn31/dcn31_hwseq.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn31/dcn31_hwseq.c
-@@ -226,6 +226,7 @@ void dcn31_init_hw(struct dc *dc)
- 	if (dc->config.power_down_display_on_boot) {
- 		struct dc_link *edp_links[MAX_NUM_EDP];
- 		struct dc_link *edp_link;
-+		bool power_down = false;
+ 	eeprom@52 {
+-		compatible = "atmel,24c512";
++		compatible = "onnn,cat24c05", "atmel,24c04";
+ 		reg = <0x52>;
+ 	};
+-
+-	eeprom@53 {
+-		compatible = "atmel,24c512";
+-		reg = <0x53>;
+-	};
+ };
  
- 		get_edp_links(dc, edp_links, &edp_num);
- 		if (edp_num) {
-@@ -239,9 +240,11 @@ void dcn31_init_hw(struct dc *dc)
- 					dc->hwss.edp_backlight_control(edp_link, false);
- 					dc->hwss.power_down(dc);
- 					dc->hwss.edp_power_control(edp_link, false);
-+					power_down = true;
- 				}
- 			}
--		} else {
-+		}
-+		if (!power_down) {
- 			for (i = 0; i < dc->link_count; i++) {
- 				struct dc_link *link = dc->links[i];
- 
+ &i2c3 {
 -- 
 2.30.2
 
