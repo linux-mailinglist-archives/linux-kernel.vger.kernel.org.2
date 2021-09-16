@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAF8240E908
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:01:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 011A640E50A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:26:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345810AbhIPRrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:47:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54410 "EHLO mail.kernel.org"
+        id S1345423AbhIPRHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:07:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51090 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354593AbhIPRkZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:40:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 965D3615E2;
-        Thu, 16 Sep 2021 16:51:23 +0000 (UTC)
+        id S245754AbhIPQ62 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:58:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9DD046103C;
+        Thu, 16 Sep 2021 16:31:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631811084;
-        bh=n5trVym9rA9eKT958C+3eitE2IdRM6j8B2EA8KcOOJs=;
+        s=korg; t=1631809908;
+        bh=SyAxMhOp2pwQ74LlnnoLxvfi9WBzRJkbZSYLuemmFXQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sCwi2/58KM1iTJqpB3N6FUmeSbF0Vr+BqIPx6Qz5KoK3tW3gjGEGm/efhCMOB0+FV
-         k3NZJc48xTPmPbBpYH0+dDRoJbQwTJcExRV5bF7jryArPM0nfjJxrZMylLEjbvJ+mm
-         A3A+d1C5DK+gFD3hGLAW9KwAiTNMQwn13hLBm0+Y=
+        b=UVY7g+H/qX3Sd90tUg1BnY0rkgj16fAk1fu1tD2PS8U95jCg18dJ0N51Ulma/348a
+         9/9BKxBQ2M4rJrQ+sehtSVzTdnQJD7+0HaqDWptrYDhKLgQU72SWYi0Phz4yxP6bgn
+         26z4X/nwbHpxrJ3cB48EgEE+IKunwm3+CS30xxw0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Greg Ungerer <gerg@linux-m68k.org>,
+        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 335/432] m68knommu: only set CONFIG_ISA_DMA_API for ColdFire sub-arch
-Date:   Thu, 16 Sep 2021 18:01:24 +0200
-Message-Id: <20210916155822.202926935@linuxfoundation.org>
+Subject: [PATCH 5.13 328/380] iwlwifi: mvm: fix a memory leak in iwl_mvm_mac_ctxt_beacon_changed
+Date:   Thu, 16 Sep 2021 18:01:25 +0200
+Message-Id: <20210916155815.205514852@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,80 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Zhang Qilong <zhangqilong3@huawei.com>
 
-[ Upstream commit db87db65c1059f3be04506d122f8ec9b2fa3b05e ]
+[ Upstream commit 0f5d44ac6e55551798dd3da0ff847c8df5990822 ]
 
-> Hi Arnd,
->
-> First bad commit (maybe != root cause):
->
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-> head:   2f73937c9aa561e2082839bc1a8efaac75d6e244
-> commit: 47fd22f2b84765a2f7e3f150282497b902624547 [4771/5318] cs89x0: rework driver configuration
-> config: m68k-randconfig-c003-20210804 (attached as .config)
-> compiler: m68k-linux-gcc (GCC) 10.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=47fd22f2b84765a2f7e3f150282497b902624547
->         git remote add linux-next https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
->         git fetch --no-tags linux-next master
->         git checkout 47fd22f2b84765a2f7e3f150282497b902624547
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-10.3.0 make.cross ARCH=m68k
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All errors (new ones prefixed by >>):
->
->    In file included from include/linux/kernel.h:19,
->                     from include/linux/list.h:9,
->                     from include/linux/module.h:12,
->                     from drivers/net/ethernet/cirrus/cs89x0.c:51:
->    drivers/net/ethernet/cirrus/cs89x0.c: In function 'net_open':
->    drivers/net/ethernet/cirrus/cs89x0.c:897:20: error: implicit declaration of function 'isa_virt_to_bus'; did you mean 'virt_to_bus'? [-Werror=implicit-function-declaration]
->      897 |     (unsigned long)isa_virt_to_bus(lp->dma_buff));
->          |                    ^~~~~~~~~~~~~~~
->    include/linux/printk.h:141:17: note: in definition of macro 'no_printk'
->      141 |   printk(fmt, ##__VA_ARGS__);  \
->          |                 ^~~~~~~~~~~
->    drivers/net/ethernet/cirrus/cs89x0.c:86:3: note: in expansion of macro 'pr_debug'
->       86 |   pr_##level(fmt, ##__VA_ARGS__);   \
->          |   ^~~
->    drivers/net/ethernet/cirrus/cs89x0.c:894:3: note: in expansion of macro 'cs89_dbg'
->      894 |   cs89_dbg(1, debug, "%s: dma %lx %lx\n",
->          |   ^~~~~~~~
-> >> drivers/net/ethernet/cirrus/cs89x0.c:914:3: error: implicit declaration of function 'disable_dma'; did you mean 'disable_irq'? [-Werror=implicit-function-declaration]
+If beacon_inject_active is true, we will return without freeing
+beacon.  Fid that by freeing it before returning.
 
-As far as I can tell, this is a bug with the m68kmmu architecture, not
-with my driver:
-The CONFIG_ISA_DMA_API option is provided for coldfire, which implements it,
-but dragonball also sets the option as a side-effect, without actually
-implementing
-the interfaces. The patch below should fix it.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+[reworded the commit message]
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Link: https://lore.kernel.org/r/iwlwifi.20210802172232.d16206ca60fc.I9984a9b442c84814c307cee3213044e24d26f38a@changeid
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/m68k/Kconfig.bus | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/intel/iwlwifi/mvm/mac-ctxt.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/m68k/Kconfig.bus b/arch/m68k/Kconfig.bus
-index f1be832e2b74..d1e93a39cd3b 100644
---- a/arch/m68k/Kconfig.bus
-+++ b/arch/m68k/Kconfig.bus
-@@ -63,7 +63,7 @@ source "drivers/zorro/Kconfig"
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/mac-ctxt.c b/drivers/net/wireless/intel/iwlwifi/mvm/mac-ctxt.c
+index fd5e08961651..7f0c82189808 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/mac-ctxt.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/mac-ctxt.c
+@@ -1005,8 +1005,10 @@ int iwl_mvm_mac_ctxt_beacon_changed(struct iwl_mvm *mvm,
+ 		return -ENOMEM;
  
- endif
+ #ifdef CONFIG_IWLWIFI_DEBUGFS
+-	if (mvm->beacon_inject_active)
++	if (mvm->beacon_inject_active) {
++		dev_kfree_skb(beacon);
+ 		return -EBUSY;
++	}
+ #endif
  
--if !MMU
-+if COLDFIRE
- 
- config ISA_DMA_API
- 	def_bool !M5272
+ 	ret = iwl_mvm_mac_ctxt_send_beacon(mvm, vif, beacon);
 -- 
 2.30.2
 
