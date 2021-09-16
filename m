@@ -2,70 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99ACD40D3B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 09:20:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6180E40D3A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 09:15:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234752AbhIPHWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 03:22:13 -0400
-Received: from gate.crashing.org ([63.228.1.57]:33881 "EHLO gate.crashing.org"
+        id S234708AbhIPHRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 03:17:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42064 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234568AbhIPHWL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 03:22:11 -0400
-Received: from ip6-localhost (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 18G7FGqQ031443;
-        Thu, 16 Sep 2021 02:15:17 -0500
-Message-ID: <2c0fd775625c76c4dd09b3e923da4405a003f3bd.camel@kernel.crashing.org>
-Subject: Re: [PATCH] powerpc: warn on emulation of dcbz instruction
-From:   Benjamin Herrenschmidt <benh@kernel.crashing.org>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Stan Johnson <userm57@yahoo.com>,
-        Finn Thain <fthain@linux-m68k.org>
-Date:   Thu, 16 Sep 2021 17:15:16 +1000
-In-Reply-To: <62b33ca839f3d1d7d4b64b6f56af0bbe4d2c9057.1631716292.git.christophe.leroy@csgroup.eu>
-References: <62b33ca839f3d1d7d4b64b6f56af0bbe4d2c9057.1631716292.git.christophe.leroy@csgroup.eu>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        id S232254AbhIPHQ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 03:16:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E172160F51;
+        Thu, 16 Sep 2021 07:15:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631776539;
+        bh=XR0iDHgJpz1GsMhQZUOrZND8ovGzw3mdUlGSBvzw0rY=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=M1rGMdBB/f3uAvoZJYaEMutJ54nUbNMjSsgtlgWtsuNiQZzJaXLCrmOLl+54YWTYb
+         IlTlwfWgkmYLNn96xqFdcODcG9Utlor5iSNLSUPnn8/JctcDjP25ImY1Ju8g2e8ZMr
+         9FwpM+jk3DR37pi8NrZgCNQbiAHRtmb/uIsdgw8e6xgXxJL/cHdoKTOz2zT0+0P83G
+         C3MoaMokvpKG6H4vn/fRjtPoIu/qetwy9w1YKZES/rjnjEGrDGSU7pYKWlTTsGeDru
+         QZRXRu3/hG0Ita24VX0h7sfQES5uyOmByW3WuQgOlRNcSQdXaFt4jiJnGRZ1t1UIwq
+         m1Y8lI8WWh5VA==
+Date:   Thu, 16 Sep 2021 09:15:36 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Evgeny Novikov <novikov@ispras.ru>
+cc:     Nehal Shah <nehal-bakulchandra.shah@amd.com>,
+        Sandeep Singh <sandeep.singh@amd.com>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ldv-project@linuxtesting.org
+Subject: Re: [PATCH] AMD_SFH: Fix potential NULL pointer dereference
+In-Reply-To: <20210601163801.17848-1-novikov@ispras.ru>
+Message-ID: <nycvar.YFH.7.76.2109160915270.15944@cbobk.fhfr.pm>
+References: <20210601163801.17848-1-novikov@ispras.ru>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-09-15 at 16:31 +0200, Christophe Leroy wrote:
-> dcbz instruction shouldn't be used on non-cached memory. Using
-> it on non-cached memory can result in alignment exception and
-> implies a heavy handling.
-> 
-> Instead of silentely emulating the instruction and resulting in high
-> performance degradation, warn whenever an alignment exception is
-> taken due to dcbz, so that the user is made aware that dcbz
-> instruction has been used unexpectedly.
-> 
-> Reported-by: Stan Johnson <userm57@yahoo.com>
-> Cc: Finn Thain <fthain@linux-m68k.org>
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> ---
->  arch/powerpc/kernel/align.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/powerpc/kernel/align.c
-> b/arch/powerpc/kernel/align.c
-> index bbb4181621dd..adc3a4a9c6e4 100644
-> --- a/arch/powerpc/kernel/align.c
-> +++ b/arch/powerpc/kernel/align.c
-> @@ -349,6 +349,7 @@ int fix_alignment(struct pt_regs *regs)
->  		if (op.type != CACHEOP + DCBZ)
->  			return -EINVAL;
->  		PPC_WARN_ALIGNMENT(dcbz, regs);
-> +		WARN_ON_ONCE(1);
+On Tue, 1 Jun 2021, Evgeny Novikov wrote:
 
-This is heavy handed ... It will be treated as an oops by various
-things uselessly spit out a kernel backtrace. Isn't PPC_WARN_ALIGNMENT
-enough ?
+> devm_add_action_or_reset() can suddenly invoke amd_mp2_pci_remove() at
+> registration that will cause NULL pointer dereference since
+> corresponding data is not initialized yet. The patch moves
+> initialization of data before devm_add_action_or_reset().
+> 
+> Found by Linux Driver Verification project (linuxtesting.org).
+> 
+> Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
 
-Ben.
+Applied, thank you.
 
+-- 
+Jiri Kosina
+SUSE Labs
 
