@@ -2,371 +2,323 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FEFD40DD28
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 16:46:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93B6A40DD2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 16:47:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238812AbhIPOru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 10:47:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32790 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238711AbhIPOrr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 10:47:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6415361244;
-        Thu, 16 Sep 2021 14:46:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631803586;
-        bh=22rxIjv1rE4uFsJEAEsxB7/kV1REJ7s4P+7NA+MQ5W4=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=M26To7GpoyidZEq4IMoswguBpMqd/c7BbfA4As2rCccNv15dLH2bLTWHVo4vJAqvo
-         y3mwhmVIVl36DacmAGkddFy8KRnnyf39m03qAYKgnCKFlXVVszimW3feigR1iuL8qx
-         eAEUrl1iimFcxLZqRBSNlhNHXXSm/SxJcvcX/GQiuTB/kt6SBsEjq1OiorGGRFOI0S
-         THyCEU/7epKJ4gpI3LYulYTMre8eSgVoQ7JuKnhKr5CCyLeFjGJFD2YsHX8xxuHvFp
-         6CgaxV3L9lmh31X439vY4R6FddEpn8Em+zEtXgJ18P378ySuIEjLas3lopDROb720A
-         Dc8fAYuja1fJw==
-Message-ID: <8b8678505d4fe299a2f3a82133d81f41b2c527b7.camel@kernel.org>
-Subject: Re: [PATCH v2] integrity: support including firmware ".platform"
- keys at build time
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Nayna Jain <nayna@linux.ibm.com>, linux-integrity@vger.kernel.org,
-        keyrings@vger.kernel.org
-Cc:     dhowells@redhat.com, zohar@linux.ibm.com,
-        seth.forshee@canonical.com, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Date:   Thu, 16 Sep 2021 17:46:24 +0300
-In-Reply-To: <20210916125756.89908-1-nayna@linux.ibm.com>
-References: <20210916125756.89908-1-nayna@linux.ibm.com>
+        id S238856AbhIPOsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 10:48:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238768AbhIPOsg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 10:48:36 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB4EEC061764
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 07:47:15 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id 97-20020a9d006a000000b00545420bff9eso1710134ota.8
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 07:47:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=vv+VArWfrN/1hjcqo4jsjzCt6lnQ/bgmTZBlhLjdhxM=;
+        b=Lh9qTEdCVjOCqLSlpkHHDInXQRPcIFdae07Thb+6Pjr+IugzxqsGSnb+qhIYkLrD+X
+         PvQuUavAZgfJ+WIIHXU/QR70qKROs7C3sFus81ys5btmqAkwyT/Lc9uw7WwhKXdMHIxE
+         5JoRTdr6/aVCBy4ha/nJEt0keo8o0i+sWeT4cH48WFWDiXygBmiIP8zYsNzn03RWG0ub
+         ZNYpSWfB5JbA0ab9qeg7EE0xPe90hQZg4j5x8FACmEzfLMjpQRXqsZL8qheKmMm3AOFV
+         MaJk4aGJwkMlIWq8/x1+JaKqhE4ka50p1RKgR7a4uWOUgnqZpVo19NJWapFQFphiNeSv
+         U3VA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=vv+VArWfrN/1hjcqo4jsjzCt6lnQ/bgmTZBlhLjdhxM=;
+        b=1GwV4b9RuYg088JoTQu4BFMp5EVWEWohY2/54n6Ur1FnYi9gEsSU5KrUrcI4U6XsxN
+         p03EVgi6SMzwFspYsw5ZfbeHQmqDhCQ10hVtuFGpk2BR0GgMmgyaFM4MR6K5/W/QNflM
+         GoDTbo6cw/4DGaobwnUGT+fn+/tfj8HEX8l/7h/ObPzSBB8fvkwkf2ntEU/20D/KWzen
+         IciQ5AqCyEaQ2IrY6T1ZuSqzpuYv1/jQvFhXb/TLyY6qA4OVdKG/I0pmWlcBFPJhl/6j
+         jcjMNJc8uF1F4NsLjDRLm8RJHgkiTS4boqf9IzpxlahmzFVW7a1Nj/s/fRkAanJ2spkh
+         2rHg==
+X-Gm-Message-State: AOAM530neqnN3SjvOQ5ylLkBDG+LpByz7eW5tCc3krNKnhh+mWPQVCuL
+        UON9JRI8RTBpuW2mwk80KaTRDyEg4wRPdtVxKoHkpw==
+X-Google-Smtp-Source: ABdhPJygRNVWQaJnVEpLvZBH5cv2bcA8S0CjAs2JOnihc2zLTeU0MLC7smvoHbtDXuVd2oj6jpxKYupgVAgTKIiqX1g=
+X-Received: by 2002:a05:6830:34b:: with SMTP id h11mr5070170ote.319.1631803634823;
+ Thu, 16 Sep 2021 07:47:14 -0700 (PDT)
+MIME-Version: 1.0
+References: <000000000000ffdae005cc08037e@google.com> <20210915193601.GI3544071@ziepe.ca>
+ <CACT4Y+bxDuLggCzkLAchrGkKQxC2v4bhc01ciBg+oc17q2=HHw@mail.gmail.com>
+ <20210916130459.GJ3544071@ziepe.ca> <CACT4Y+aUFbj3_+iBpeP2qrQ=RbGrssr0-6EZv1nx73at7fdbfA@mail.gmail.com>
+In-Reply-To: <CACT4Y+aUFbj3_+iBpeP2qrQ=RbGrssr0-6EZv1nx73at7fdbfA@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 16 Sep 2021 16:47:03 +0200
+Message-ID: <CACT4Y+ZrQL3n=N2GOfJ6vLNW2_4MdiwywXvZpQ=as_NbJ8PXjw@mail.gmail.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in addr_handler (4)
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     syzbot <syzbot+dc3dfba010d7671e05f5@syzkaller.appspotmail.com>,
+        dledford@redhat.com, leon@kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        Aleksandr Nogikh <nogikh@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.36.5-0ubuntu1 
-MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-09-16 at 08:57 -0400, Nayna Jain wrote:
-> Some firmware support secureboot by embedding static keys to verify the
-> Linux kernel during boot. However, these firmware do not expose an
-> interface for the kernel to load firmware keys onto ".platform" keyring.
-> This would prevent kernel signature verification on kexec. For those
-> environments, allow firmware keys to be compiled into the kernel and
-> loaded onto the ".platform" keyring.
-
-"allow" means absolutely nothing. Just tell what your patch does,=20
-and approach taken. Already the patch description should roughly
-give idea what and why of code changes. There's nothing here.
-
->=20
-> Reported-by: kernel test robot <lkp@intel.com>
-
-I don't get this reported-by here.
-
-> Signed-off-by: Nayna Jain <nayna@linux.ibm.com>
-> ---
->=20
-> v2:
-> * Fixed the error reported by kernel test robot
-> * Updated patch description based on Jarkko's feedback.
->=20
->  certs/Makefile                                |  3 ++-
->  certs/blacklist.c                             |  1 -
->  certs/common.c                                |  2 +-
->  certs/common.h                                |  9 -------
->  certs/system_keyring.c                        |  1 -
->  include/keys/system_keyring.h                 |  3 +++
->  security/integrity/Kconfig                    | 10 +++++++
->  security/integrity/Makefile                   | 17 +++++++++++-
->  security/integrity/digsig.c                   |  2 +-
->  security/integrity/integrity.h                |  6 +++++
->  .../integrity/platform_certs/platform_cert.S  | 23 ++++++++++++++++
->  .../platform_certs/platform_keyring.c         | 26 +++++++++++++++++++
->  12 files changed, 88 insertions(+), 15 deletions(-)
->  delete mode 100644 certs/common.h
->  create mode 100644 security/integrity/platform_certs/platform_cert.S
->=20
-> diff --git a/certs/Makefile b/certs/Makefile
-> index 279433783b10..64ee37f38b85 100644
-> --- a/certs/Makefile
-> +++ b/certs/Makefile
-> @@ -3,7 +3,8 @@
->  # Makefile for the linux kernel signature checking certificates.
->  #
-> =20
-> -obj-$(CONFIG_SYSTEM_TRUSTED_KEYRING) +=3D system_keyring.o system_certif=
-icates.o common.o
-> +obj-$(CONFIG_KEYS) +=3D common.o
-> +obj-$(CONFIG_SYSTEM_TRUSTED_KEYRING) +=3D system_keyring.o system_certif=
-icates.o
->  obj-$(CONFIG_SYSTEM_BLACKLIST_KEYRING) +=3D blacklist.o common.o
->  obj-$(CONFIG_SYSTEM_REVOCATION_LIST) +=3D revocation_certificates.o
->  ifneq ($(CONFIG_SYSTEM_BLACKLIST_HASH_LIST),"")
-> diff --git a/certs/blacklist.c b/certs/blacklist.c
-> index c9a435b15af4..b95e9b19c42f 100644
-> --- a/certs/blacklist.c
-> +++ b/certs/blacklist.c
-> @@ -17,7 +17,6 @@
->  #include <linux/uidgid.h>
->  #include <keys/system_keyring.h>
->  #include "blacklist.h"
-> -#include "common.h"
-> =20
->  static struct key *blacklist_keyring;
-> =20
-> diff --git a/certs/common.c b/certs/common.c
-> index 16a220887a53..41f763415a00 100644
-> --- a/certs/common.c
-> +++ b/certs/common.c
-> @@ -2,7 +2,7 @@
-> =20
->  #include <linux/kernel.h>
->  #include <linux/key.h>
-> -#include "common.h"
-
-Why this include is removed?
-
-You should include to your commit message *also* the approach
-you are taking. If you export a function, you should mention
-it explicitly.
-
-> +#include <keys/system_keyring.h>
-> =20
->  int load_certificate_list(const u8 cert_list[],
->  			  const unsigned long list_size,
-> diff --git a/certs/common.h b/certs/common.h
-> deleted file mode 100644
-> index abdb5795936b..000000000000
-> --- a/certs/common.h
-> +++ /dev/null
-> @@ -1,9 +0,0 @@
-> -/* SPDX-License-Identifier: GPL-2.0-or-later */
-> -
-> -#ifndef _CERT_COMMON_H
-> -#define _CERT_COMMON_H
-> -
-> -int load_certificate_list(const u8 cert_list[], const unsigned long list=
-_size,
-> -			  const struct key *keyring);
-> -
-> -#endif
-> diff --git a/certs/system_keyring.c b/certs/system_keyring.c
-> index 692365dee2bd..d130d5a96e09 100644
-> --- a/certs/system_keyring.c
-> +++ b/certs/system_keyring.c
-> @@ -16,7 +16,6 @@
->  #include <keys/asymmetric-type.h>
->  #include <keys/system_keyring.h>
->  #include <crypto/pkcs7.h>
-> -#include "common.h"
-> =20
->  static struct key *builtin_trusted_keys;
->  #ifdef CONFIG_SECONDARY_TRUSTED_KEYRING
-> diff --git a/include/keys/system_keyring.h b/include/keys/system_keyring.=
-h
-> index 6acd3cf13a18..842d770b2a46 100644
-> --- a/include/keys/system_keyring.h
-> +++ b/include/keys/system_keyring.h
-> @@ -10,6 +10,9 @@
-> =20
->  #include <linux/key.h>
-> =20
-> +extern int load_certificate_list(const u8 cert_list[],
-> +				 const unsigned long list_size,
-> +				 const struct key *keyring);
-
-Remove "extern". It's not needed for functions.
-
->  #ifdef CONFIG_SYSTEM_TRUSTED_KEYRING
-> =20
->  extern int restrict_link_by_builtin_trusted(struct key *keyring,
-> diff --git a/security/integrity/Kconfig b/security/integrity/Kconfig
-> index 71f0177e8716..b2009b792882 100644
-> --- a/security/integrity/Kconfig
-> +++ b/security/integrity/Kconfig
-> @@ -62,6 +62,16 @@ config INTEGRITY_PLATFORM_KEYRING
->           provided by the platform for verifying the kexec'ed kerned imag=
-e
->           and, possibly, the initramfs signature.
-> =20
-> +config INTEGRITY_PLATFORM_BUILTIN_KEYS
-> +        string "Builtin X.509 keys for .platform keyring"
-> +        depends on KEYS
-> +        depends on ASYMMETRIC_KEY_TYPE
-> +        depends on INTEGRITY_PLATFORM_KEYRING
-> +        help
-> +          If set, this option should be the filename of a PEM-formatted =
-file
-> +          containing X.509 certificates to be loaded onto the ".platform=
-"
-> +          keyring.
-> +
->  config LOAD_UEFI_KEYS
->         depends on INTEGRITY_PLATFORM_KEYRING
->         depends on EFI
-> diff --git a/security/integrity/Makefile b/security/integrity/Makefile
-> index 7ee39d66cf16..a45f083589b8 100644
-> --- a/security/integrity/Makefile
-> +++ b/security/integrity/Makefile
-> @@ -3,13 +3,18 @@
->  # Makefile for caching inode integrity data (iint)
->  #
-> =20
-> +quiet_cmd_extract_certs  =3D EXTRACT_CERTS   $(patsubst "%",%,$(2))
-> +      cmd_extract_certs  =3D scripts/extract-cert $(2) $@
-> +$(eval $(call config_filename,INTEGRITY_PLATFORM_BUILTIN_KEYS))
-> +
->  obj-$(CONFIG_INTEGRITY) +=3D integrity.o
-> =20
->  integrity-y :=3D iint.o
->  integrity-$(CONFIG_INTEGRITY_AUDIT) +=3D integrity_audit.o
->  integrity-$(CONFIG_INTEGRITY_SIGNATURE) +=3D digsig.o
->  integrity-$(CONFIG_INTEGRITY_ASYMMETRIC_KEYS) +=3D digsig_asymmetric.o
-> -integrity-$(CONFIG_INTEGRITY_PLATFORM_KEYRING) +=3D platform_certs/platf=
-orm_keyring.o
-> +integrity-$(CONFIG_INTEGRITY_PLATFORM_KEYRING) +=3D platform_certs/platf=
-orm_keyring.o \
-> +						  platform_certs/platform_cert.o
->  integrity-$(CONFIG_LOAD_UEFI_KEYS) +=3D platform_certs/efi_parser.o \
->  				      platform_certs/load_uefi.o \
->  				      platform_certs/keyring_handler.o
-> @@ -19,3 +24,13 @@ integrity-$(CONFIG_LOAD_PPC_KEYS) +=3D platform_certs/=
-efi_parser.o \
->                                       platform_certs/keyring_handler.o
->  obj-$(CONFIG_IMA)			+=3D ima/
->  obj-$(CONFIG_EVM)			+=3D evm/
-> +
-> +
-> +$(obj)/platform_certs/platform_cert.o: $(obj)/platform_certs/platform_ce=
-rtificate_list
-> +
-> +targets +=3D platform_certificate_list
-> +
-> +$(obj)/platform_certs/platform_certificate_list: scripts/extract-cert $(=
-INTEGRITY_PLATFORM_BUILTIN_KEYS_FILENAME) FORCE
-> +	$(call if_changed,extract_certs,$(CONFIG_INTEGRITY_PLATFORM_BUILTIN_KEY=
-S))
-> +
-> +clean-files :=3D platform_certs/platform_certificate_list
-> diff --git a/security/integrity/digsig.c b/security/integrity/digsig.c
-> index 3b06a01bd0fd..0ea40ed8dfcb 100644
-> --- a/security/integrity/digsig.c
-> +++ b/security/integrity/digsig.c
-> @@ -38,7 +38,7 @@ static const char * const keyring_name[INTEGRITY_KEYRIN=
-G_MAX] =3D {
->  #define restrict_link_to_ima restrict_link_by_builtin_trusted
->  #endif
-> =20
-> -static struct key *integrity_keyring_from_id(const unsigned int id)
-> +struct key *integrity_keyring_from_id(const unsigned int id)
->  {
->  	if (id >=3D INTEGRITY_KEYRING_MAX)
->  		return ERR_PTR(-EINVAL);
-> diff --git a/security/integrity/integrity.h b/security/integrity/integrit=
-y.h
-> index 547425c20e11..feb84e1b1105 100644
-> --- a/security/integrity/integrity.h
-> +++ b/security/integrity/integrity.h
-> @@ -167,6 +167,7 @@ int __init integrity_init_keyring(const unsigned int =
-id);
->  int __init integrity_load_x509(const unsigned int id, const char *path);
->  int __init integrity_load_cert(const unsigned int id, const char *source=
-,
->  			       const void *data, size_t len, key_perm_t perm);
-> +struct key *integrity_keyring_from_id(const unsigned int id);
->  #else
-> =20
->  static inline int integrity_digsig_verify(const unsigned int id,
-> @@ -194,6 +195,11 @@ static inline int __init integrity_load_cert(const u=
-nsigned int id,
->  {
->  	return 0;
->  }
-> +
-> +static inline struct key *integrity_keyring_from_id(const unsigned int i=
-d)
-> +{
-> +	return ERR_PTR(-EOPNOTSUPP);
-> +}
->  #endif /* CONFIG_INTEGRITY_SIGNATURE */
-> =20
->  #ifdef CONFIG_INTEGRITY_ASYMMETRIC_KEYS
-> diff --git a/security/integrity/platform_certs/platform_cert.S b/security=
-/integrity/platform_certs/platform_cert.S
-> new file mode 100644
-> index 000000000000..20bccce5dc5a
-> --- /dev/null
-> +++ b/security/integrity/platform_certs/platform_cert.S
-> @@ -0,0 +1,23 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#include <linux/export.h>
-> +#include <linux/init.h>
-> +
-> +	__INITRODATA
-> +
-> +	.align 8
-> +#ifdef CONFIG_INTEGRITY_PLATFORM_KEYRING
-> +	.globl platform_certificate_list
-> +platform_certificate_list:
-> +__cert_list_start:
-> +	.incbin "security/integrity/platform_certs/platform_certificate_list"
-> +__cert_list_end:
-> +#endif
-> +
-> +	.align 8
-> +	.globl platform_certificate_list_size
-> +platform_certificate_list_size:
-> +#ifdef CONFIG_64BIT
-> +	.quad __cert_list_end - __cert_list_start
-> +#else
-> +	.long __cert_list_end - __cert_list_start
-> +#endif
-> diff --git a/security/integrity/platform_certs/platform_keyring.c b/secur=
-ity/integrity/platform_certs/platform_keyring.c
-> index bcafd7387729..17535050d08d 100644
-> --- a/security/integrity/platform_certs/platform_keyring.c
-> +++ b/security/integrity/platform_certs/platform_keyring.c
-> @@ -12,8 +12,12 @@
->  #include <linux/cred.h>
->  #include <linux/err.h>
->  #include <linux/slab.h>
-> +#include <keys/system_keyring.h>
->  #include "../integrity.h"
-> =20
-> +extern __initconst const u8 platform_certificate_list[];
-> +extern __initconst const unsigned long platform_certificate_list_size;
-> +
->  /**
->   * add_to_platform_keyring - Add to platform keyring without validation.
->   * @source: Source of key
-> @@ -37,6 +41,28 @@ void __init add_to_platform_keyring(const char *source=
-, const void *data,
->  		pr_info("Error adding keys to platform keyring %s\n", source);
->  }
-> =20
-> +static __init int load_builtin_platform_cert(void)
-> +{
-> +	const u8 *p;
-> +	unsigned long size;
-> +	int rc;
-> +	struct key *keyring;
-> +
-> +	p =3D platform_certificate_list;
-> +	size =3D platform_certificate_list_size;
-> +
-> +	keyring =3D integrity_keyring_from_id(INTEGRITY_KEYRING_PLATFORM);
-> +	if (IS_ERR(keyring))
-> +		return PTR_ERR(keyring);
-> +
-> +	rc =3D load_certificate_list(p, size, keyring);
-> +	if (rc)
-> +		pr_info("Error adding keys to platform keyring %d\n", rc);
-> +
-> +	return rc;
-> +}
-> +late_initcall(load_builtin_platform_cert);
-> +
->  /*
->   * Create the trusted keyrings.
->   */
+On Thu, 16 Sept 2021 at 16:45, Dmitry Vyukov <dvyukov@google.com> wrote:
+> > > > On Wed, Sep 15, 2021 at 05:41:22AM -0700, syzbot wrote:
+> > > > > Hello,
+> > > > >
+> > > > > syzbot found the following issue on:
+> > > > >
+> > > > > HEAD commit:    926de8c4326c Merge tag 'acpi-5.15-rc1-3' of git:/=
+/git.kern..
+> > > > > git tree:       upstream
+> > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=3D11fd6=
+7ed300000
+> > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D37df9=
+ef5660a8387
+> > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=3Ddc3dfba=
+010d7671e05f5
+> > > > > compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GN=
+U Binutils for Debian) 2.35.1
+> > > > >
+> > > > > Unfortunately, I don't have any reproducer for this issue yet.
+> > > > >
+> > > > > IMPORTANT: if you fix the issue, please add the following tag to =
+the commit:
+> > > > > Reported-by: syzbot+dc3dfba010d7671e05f5@syzkaller.appspotmail.co=
+m
+> > > >
+> > > > #syz dup: KASAN: use-after-free Write in addr_resolve (2)
+> > > >
+> > > > Frankly, I still can't figure out how this is happening
+> > > >
+> > > > RDMA_USER_CM_CMD_RESOLVE_IP triggers a background work and
+> > > > RDMA_USER_CM_CMD_DESTROY_ID triggers destruction of the memory the
+> > > > work touches.
+> > > >
+> > > > rdma_addr_cancel() is supposed to ensure that the work isn't and wo=
+n't
+> > > > run.
+> > > >
+> > > > So to hit this we have to either not call rdma_addr_cancel() when i=
+t
+> > > > is need, or rdma_addr_cancel() has to be broken and continue to all=
+ow
+> > > > the work.
+> > > >
+> > > > I could find nothing along either path, though rdma_addr_cancel()
+> > > > relies on some complicated properties of the workqueues I'm not
+> > > > entirely positive about.
+> > >
+> > > I stared at the code, but it's too complex to grasp it all entirely.
+> > > There are definitely lots of tricky concurrent state transitions and
+> > > potential for unexpected interleavings. My bet would be on some trick=
+y
+> > > hard-to-trigger thread interleaving.
+> >
+> > From a uapi perspective the entire thing is serialized with a mutex..
+> >
+> > > The only thing I can think of is adding more WARNINGs to the code to
+> > > check more of these assumptions. But I don't know if there are any
+> > > useful testable assumptions...
+> >
+> > Do you have any idea why we can't get a reproduction out of syzkaller
+> > here?
+> >
+> > I feel less comfortable with syzkaller's debug output, can you give
+> > some idea what it might be doing concurrently?
+>
+> It looks like a very hard to trigger race (few crashes, no reproducer,
+> but KASAN reports look sensible). That's probably the reason syzkaller
+> can't create a reproducer.
+> From the log it looks like it was triggered by one of these programs
+> below. But I tried to reproduce manually and had no success.
+> We are currently doing some improvements to race triggering code in
+> syzkaller, and may try to use this as a litmus test to see if
+> syzkaller will do any better:
+> https://github.com/google/syzkaller/issues/612#issuecomment-920961538
+>
+> Answering your question re what was running concurrently with what.
+> Each of the syscalls in these programs can run up to 2 times and
+> ultimately any of these calls can race with any. Potentially syzkaller
+> can predict values kernel will return (e.g. id's) before kernel
+> actually returned them. I guess this does not restrict search area for
+> the bug a lot...
+>
+>
+> 11:16:53 executing program 3:
+> write$RDMA_USER_CM_CMD_CONNECT(0xffffffffffffffff,
+> &(0x7f0000000280)=3D{0x6, 0x118, 0xfa00, {{0xfffffff7, 0x6a492eae,
+> "e0e55819482a40c1c535b72b0bc0bc5e4478995957e1d0fe2311a39ee3960d3488407d52=
+fbef30809118fcbaef590c27d04918aa1348b409d45ba277d9f73bd18868a9c4fde75602882=
+98bde7e9a96c1ef280ca62f4a6f591a2181f2e3d3cf52212fa5ae101aa1bf975763cef32e3a=
+2c73b79d0af1d2e58b82243731e6082cab1cb1c643b7bbec2e6d45bca8a6980f148aaefb71f=
+1933ffa50534b83267139b2324e51ffecb57959bf7e98b60516cebc8f05838a7976cef33b64=
+410626c14dca7dcb22f0902aeb045b88656268a6dd922d6a0e7b7002e8ea90020650dced319=
+050db3130089e5011994d90340a93088e0a8b03ea61ac3f53312342b3d6e038ae",
+> 0xfc, 0xe1, 0xb2, 0xd0, 0x7, 0x40, 0x0, 0x1}}}, 0x120)
+> r0 =3D openat$pfkey(0xffffffffffffff9c, &(0x7f00000001c0), 0x80800, 0x0)
+> r1 =3D syz_io_uring_setup(0x1c7, &(0x7f0000000080)=3D{0x0, 0x0, 0x0, 0x0,
+> 0x7f, 0x0, r0}, &(0x7f00007b6000/0x2000)=3Dnil,
+> &(0x7f0000ffd000/0x3000)=3Dnil, &(0x7f0000000140)=3D<r2=3D>0x0,
+> &(0x7f0000000100)=3D<r3=3D>0x0)
+> socketpair$unix(0x1, 0x5, 0x0, &(0x7f0000000040)=3D{0xffffffffffffffff,
+> <r4=3D>0xffffffffffffffff})
+> r5 =3D openat(0xffffffffffffff9c,
+> &(0x7f0000000000)=3D'/proc/self/exe\x00', 0x0, 0x0)
+> mmap(&(0x7f0000000000/0x800000)=3Dnil, 0x800000, 0x0, 0x12, r5, 0x0)
+> r6 =3D openat$rdma_cm(0xffffffffffffff9c, &(0x7f0000000540), 0x2, 0x0)
+> write$RDMA_USER_CM_CMD_CREATE_ID(r6, &(0x7f0000000080)=3D{0x0, 0x18,
+> 0xfa00, {0xffffffffffffffff,
+> &(0x7f0000000000)=3D{<r7=3D>0xffffffffffffffff}, 0x13f}}, 0x20)
+> write$RDMA_USER_CM_CMD_RESOLVE_IP(r6, &(0x7f0000000100)=3D{0x3, 0x40,
+> 0xfa00, {{}, {0xa, 0x0, 0x0, @mcast2}, r7}}, 0x48)
+> write$RDMA_USER_CM_CMD_RESOLVE_IP(r6, &(0x7f0000000180)=3D{0x3, 0x40,
+> 0xfa00, {{0xa, 0x0, 0x0, @local}, {0xa, 0x0, 0x0, @mcast1}, r7}},
+> 0x48)
+> write$RDMA_USER_CM_CMD_DESTROY_ID(r6, &(0x7f0000000280)=3D{0x1, 0x10,
+> 0xfa00, {&(0x7f0000000240), r7}}, 0x18)
+> write$RDMA_USER_CM_CMD_CONNECT(r5, &(0x7f00000003c0)=3D{0x6, 0x118,
+> 0xfa00, {{0x9, 0x9,
+> "f703ff619e427c1d7d50fc023c22feb64ea5083376891585a4a8b539bead7f61210a9010=
+d88379b67ebe7a1fc77fbdd4dccaec4b498eafe4b08e7e5b28e9fe54606f87e9618b9ade4e2=
+8b66e04c73fe4660de33c075bb9b1a43c59e485dcc259fb21fed21380f9ec2c61e8d29b6069=
+786e8bc3da0f3bded0acd13548d2d76af6e701a258307fbce30c0f452b6a25f39209c830fe5=
+57de6f1fb3fdfe4347be3a9fdfeaca47b97e333a266013beef7cb7d7ea746bca1d3a929747a=
+269df24d019e3e413309e58095182dd5dc3c8a088e94abf8d5cd389749cc80e4e452c8dabe7=
+eaadd8144e2c4392e35c1b5ad3369ee7b2f855e5ebe9bdc0e8a464e8a9e4f54c0",
+> 0x2, 0xff, 0x1, 0x8f, 0x6, 0x3, 0x6}, r7}}, 0x120)
+> syz_io_uring_submit(r2, r3,
+> &(0x7f0000000180)=3D@IORING_OP_READ=3D@pass_buffer=3D{0x16, 0x4, 0x0,
+> @fd=3Dr4, 0x0, &(0x7f0000000000)=3D""/7, 0x7}, 0x0)
+> syz_io_uring_submit(r2, r3,
+> &(0x7f0000002f80)=3D@IORING_OP_LINK_TIMEOUT=3D{0xf, 0x0, 0x0, 0x0, 0x0,
+> &(0x7f0000000240)=3D{0x0, 0x3938700}}, 0x10000007)
+> io_uring_enter(r1, 0x45f5, 0x0, 0x0, 0x0, 0xf5ff)
+>
+>
+>
+> 11:16:55 executing program 4:
+> r0 =3D openat$rdma_cm(0xffffffffffffff9c, &(0x7f0000000540), 0x2, 0x0)
+> write$RDMA_USER_CM_CMD_CREATE_ID(r0, &(0x7f0000000080)=3D{0x0, 0x18,
+> 0xfa00, {0xffffffffffffffff,
+> &(0x7f0000000000)=3D{<r1=3D>0xffffffffffffffff}, 0x13f}}, 0x20)
+> write$RDMA_USER_CM_CMD_RESOLVE_IP(r0, &(0x7f0000000100)=3D{0x3, 0x40,
+> 0xfa00, {{0xa, 0xfffd}, {0xa, 0x0, 0x10000000, @ipv4=3D{'\x00',
+> '\xff\xff', @broadcast}, 0x3}, r1, 0xfffffffe}}, 0x48)
+> write$RDMA_USER_CM_CMD_RESOLVE_IP(r0, &(0x7f0000000180)=3D{0x3, 0x40,
+> 0xfa00, {{0xa, 0x2, 0x0, @ipv4=3D{'\x00', '\xff\xff', @multicast2}},
+> {0xa, 0x0, 0x0, @initdev=3D{0xfe, 0x88, '\x00', 0x1, 0x0}}, r1}}, 0xd5)
+> write$RDMA_USER_CM_CMD_DESTROY_ID(r0, &(0x7f0000000280)=3D{0x1, 0x10,
+> 0xfa00, {&(0x7f0000000240), r1}}, 0x18)
+> write$RDMA_USER_CM_CMD_BIND_IP(0xffffffffffffffff,
+> &(0x7f0000000000)=3D{0x2, 0x28, 0xfa00, {0x0, {0xa, 0x4e23, 0x9,
+> @ipv4=3D{'\x00', '\xff\xff', @rand_addr=3D0x64010102}, 0x100}, r1}}, 0x30=
+)
+> openat$qrtrtun(0xffffffffffffff9c, &(0x7f0000002740), 0x101002)
+> io_setup(0x8, &(0x7f0000000600)=3D<r2=3D>0x0)
+> clock_getres(0xfffffffffffffffd, 0x0)
+> r3 =3D openat$hwrng(0xffffffffffffff9c, &(0x7f0000000040), 0x400, 0x0)
+> r4 =3D openat$vcsa(0xffffffffffffff9c, &(0x7f00000002c0), 0x8000, 0x0)
+> r5 =3D openat$rdma_cm(0xffffffffffffff9c, &(0x7f0000000540), 0x2, 0x0)
+> write$RDMA_USER_CM_CMD_CREATE_ID(r5, &(0x7f0000000080)=3D{0x0, 0x18,
+> 0xfa00, {0xffffffffffffffff,
+> &(0x7f0000000000)=3D{<r6=3D>0xffffffffffffffff}, 0x13f}}, 0x20)
+> write$RDMA_USER_CM_CMD_RESOLVE_IP(r5, &(0x7f0000000100)=3D{0x3, 0x40,
+> 0xfa00, {{}, {0xa, 0x0, 0x0, @mcast2}, r6}}, 0x48)
+> write$RDMA_USER_CM_CMD_RESOLVE_IP(r5, &(0x7f0000000180)=3D{0x3, 0x40,
+> 0xfa00, {{0xa, 0x0, 0x0, @local}, {0xa, 0x0, 0x0, @mcast1}, r6}},
+> 0x48)
+> write$RDMA_USER_CM_CMD_DESTROY_ID(r5, &(0x7f0000000280)=3D{0x1, 0x10,
+> 0xfa00, {&(0x7f0000000240), r6}}, 0x18)
+> pipe2(&(0x7f0000000340)=3D{<r7=3D>0xffffffffffffffff}, 0x800)
+> write$RDMA_USER_CM_CMD_RESOLVE_IP(r7, &(0x7f0000000380)=3D{0x3, 0x40,
+> 0xfa00, {{0xa, 0x4e23, 0x8, @remote, 0x3ff}, {0xa, 0x4e22, 0x8000,
+> @initdev=3D{0xfe, 0x88, '\x00', 0x1, 0x0}, 0x8}, r1, 0x1f}}, 0x48)
+> write$RDMA_USER_CM_CMD_LISTEN(r4, &(0x7f0000000300)=3D{0x7, 0x8, 0xfa00,
+> {r6, 0x8}}, 0x10)
+> io_submit(r2, 0x1, &(0x7f0000000200)=3D[&(0x7f00000000c0)=3D{0x0, 0x0,
+> 0x0, 0x1, 0x0, 0xffffffffffffffff,
+> &(0x7f0000000400)=3D"03a0a445bc5d7a9d6c", 0x9, 0x7fffffff, 0x0, 0x0,
+> r3}])
 
 
-/Jarkko
+I noticed we also had 2 KCSAN reports that mention rdma_resolve_addr.
 
+On commit 1df0d896:
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+BUG: KCSAN: data-race in addr_handler / cma_check_port
+
+write to 0xffff88809fa40a1c of 4 bytes by task 21 on cpu 1:
+ cma_comp_exch drivers/infiniband/core/cma.c:426 [inline]
+ addr_handler+0x9f/0x2b0 drivers/infiniband/core/cma.c:3141
+ process_one_req+0x22f/0x300 drivers/infiniband/core/addr.c:645
+ process_one_work+0x3e1/0x9a0 kernel/workqueue.c:2269
+ worker_thread+0x665/0xbe0 kernel/workqueue.c:2415
+ kthread+0x20d/0x230 kernel/kthread.c:291
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
+
+read to 0xffff88809fa40a1c of 4 bytes by task 11997 on cpu 0:
+ cma_check_port+0xbd/0x700 drivers/infiniband/core/cma.c:3506
+ cma_use_port drivers/infiniband/core/cma.c:3541 [inline]
+ cma_get_port drivers/infiniband/core/cma.c:3623 [inline]
+ rdma_bind_addr+0x1639/0x1910 drivers/infiniband/core/cma.c:3741
+ cma_bind_addr drivers/infiniband/core/cma.c:3252 [inline]
+ rdma_resolve_addr+0x486/0x1240 drivers/infiniband/core/cma.c:3264
+ ucma_resolve_ip+0x121/0x1b0 drivers/infiniband/core/ucma.c:722
+ ucma_write+0x229/0x250 drivers/infiniband/core/ucma.c:1764
+ vfs_write+0x1d6/0x690 fs/read_write.c:576
+ ksys_write+0xce/0x180 fs/read_write.c:631
+ __do_sys_write fs/read_write.c:643 [inline]
+ __se_sys_write fs/read_write.c:640 [inline]
+ __x64_sys_write+0x3e/0x50 fs/read_write.c:640
+ do_syscall_64+0x51/0xb0 arch/x86/entry/common.c:384
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Reported by Kernel Concurrency Sanitizer on:
+CPU: 0 PID: 11997 Comm: syz-executor.4 Not tainted 5.8.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine,
+BIOS Google 01/01/2011
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+and on commit 5863cc79:
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+BUG: KCSAN: data-race in cma_comp_exch / rdma_resolve_addr
+
+write to 0xffff8880a73bda1c of 4 bytes by task 7740 on cpu 0:
+ cma_comp_exch+0x84/0xc0 drivers/infiniband/core/cma.c:441
+ addr_handler+0x80/0x2f0 drivers/infiniband/core/cma.c:3033
+ process_one_req+0xc2/0x3a0 drivers/infiniband/core/addr.c:644
+ process_one_work+0x3d4/0x890 kernel/workqueue.c:2269
+ worker_thread+0xa0/0x800 kernel/workqueue.c:2415
+ kthread+0x1d4/0x200 drivers/block/aoe/aoecmd.c:1253
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:352
+
+read to 0xffff8880a73bda1c of 4 bytes by task 30237 on cpu 1:
+ rdma_resolve_addr+0x56/0x10e0 drivers/infiniband/core/cma.c:3156
+ ucma_resolve_ip+0x105/0x180 drivers/infiniband/core/ucma.c:708
+ ucma_write+0x1fe/0x2a0 drivers/infiniband/core/ucma.c:1684
+ __vfs_write+0x67/0xc0 fs/read_write.c:494
+ vfs_write fs/read_write.c:558 [inline]
+ vfs_write+0x18a/0x390 fs/read_write.c:542
+ ksys_write+0x17b/0x1b0 fs/read_write.c:611
+ __do_sys_write fs/read_write.c:623 [inline]
+ __se_sys_write fs/read_write.c:620 [inline]
+ __x64_sys_write+0x4c/0x60 fs/read_write.c:620
+ do_syscall_64+0xcc/0x370 arch/x86/entry/common.c:290
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Reported by Kernel Concurrency Sanitizer on:
+CPU: 1 PID: 30237 Comm: syz-executor.0 Not tainted 5.4.0-rc7+ #0
+Hardware name: Google Google Compute Engine/Google Compute Engine,
+BIOS Google 01/01/2011
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
