@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE78F40E309
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:19:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15E3840E695
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:31:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343862AbhIPQoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:44:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51356 "EHLO mail.kernel.org"
+        id S1347753AbhIPRWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:22:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40896 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244523AbhIPQjP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:39:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1745961414;
-        Thu, 16 Sep 2021 16:23:04 +0000 (UTC)
+        id S1351205AbhIPRPQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:15:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D06B461B63;
+        Thu, 16 Sep 2021 16:39:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809385;
-        bh=/OGP/yAmYACff1XTpF9TAvEyyXaIy5z49YGbG8LHycA=;
+        s=korg; t=1631810371;
+        bh=4zGDp9DQBCT6MhNwNV6mwLkG2nvXf/iNZYIZcDbNJxU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RlI5HUAV3cZdf3kbb/754iQUKcJpvTmypH6sFp7G5i95rREWQZYFyvYzKzpP60+up
-         +/a6F5fnYybPC/PoFt04Kmi/XVUQgsRE1QdsKSvFaW82CJU4d01Dv6FNz2VhfTSJSZ
-         fBKwlEb1nlG2UfslcHmESpylpLqpGQHxNBRPy5Lo=
+        b=ksQ7TCdnmE6gvAVmSm0KCIkUona1fiu5CtqZSyI2YfsDmLPbaMJHaLL21CPF66Nv1
+         kxudDb530WqCPHhivFCe0H8WE+X27T8zttuv5vBYnwLNhK9ERhYSy2nt3RuhKP6hGj
+         wDyfmvKV8c5T0DWYQc6woUy/KAVE6ZKdV28E9TaM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chao Yu <chao@kernel.org>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
+        stable@vger.kernel.org,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 108/380] f2fs: fix to keep compatibility of fault injection interface
+Subject: [PATCH 5.14 116/432] platform/x86: ISST: Fix optimization with use of numa
 Date:   Thu, 16 Sep 2021 17:57:45 +0200
-Message-Id: <20210916155807.711982481@linuxfoundation.org>
+Message-Id: <20210916155814.698293182@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,47 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chao Yu <chao@kernel.org>
+From: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
 
-[ Upstream commit b96d9b3b09f0427b289332c6f6bfbf747a19b654 ]
+[ Upstream commit d36d4a1d75d2a8bd14ec00d5cb0ce166f6886146 ]
 
-The value of FAULT_* macros and its description in f2fs.rst became
-inconsistent, fix this to keep compatibility of fault injection
-interface.
+When numa is used to map CPU to PCI device, the optimized path to read
+from cached data is not working and still calls _isst_if_get_pci_dev().
 
-Fixes: 67883ade7a98 ("f2fs: remove FAULT_ALLOC_BIO")
-Signed-off-by: Chao Yu <chao@kernel.org>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+The reason is that when caching the mapping, numa information is not
+available as it is read later. So move the assignment of
+isst_cpu_info[cpu].numa_node before calling _isst_if_get_pci_dev().
+
+Fixes: aa2ddd242572 ("platform/x86: ISST: Use numa node id for cpu pci dev mapping")
+Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Link: https://lore.kernel.org/r/20210727165052.427238-1-srinivas.pandruvada@linux.intel.com
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Documentation/filesystems/f2fs.rst | 1 +
- fs/f2fs/f2fs.h                     | 1 +
- 2 files changed, 2 insertions(+)
+ drivers/platform/x86/intel_speed_select_if/isst_if_common.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
-index b91e5a8444d5..7f52d9079d76 100644
---- a/Documentation/filesystems/f2fs.rst
-+++ b/Documentation/filesystems/f2fs.rst
-@@ -185,6 +185,7 @@ fault_type=%d		 Support configuring fault injection type, should be
- 			 FAULT_KVMALLOC		  0x000000002
- 			 FAULT_PAGE_ALLOC	  0x000000004
- 			 FAULT_PAGE_GET		  0x000000008
-+			 FAULT_ALLOC_BIO	  0x000000010 (obsolete)
- 			 FAULT_ALLOC_NID	  0x000000020
- 			 FAULT_ORPHAN		  0x000000040
- 			 FAULT_BLOCK		  0x000000080
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 7084b42a4437..395f18e90a8f 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -43,6 +43,7 @@ enum {
- 	FAULT_KVMALLOC,
- 	FAULT_PAGE_ALLOC,
- 	FAULT_PAGE_GET,
-+	FAULT_ALLOC_BIO,	/* it's obsolete due to bio_alloc() will never fail */
- 	FAULT_ALLOC_NID,
- 	FAULT_ORPHAN,
- 	FAULT_BLOCK,
+diff --git a/drivers/platform/x86/intel_speed_select_if/isst_if_common.c b/drivers/platform/x86/intel_speed_select_if/isst_if_common.c
+index 6f0cc679c8e5..8a4d52a9028d 100644
+--- a/drivers/platform/x86/intel_speed_select_if/isst_if_common.c
++++ b/drivers/platform/x86/intel_speed_select_if/isst_if_common.c
+@@ -379,6 +379,8 @@ static int isst_if_cpu_online(unsigned int cpu)
+ 	u64 data;
+ 	int ret;
+ 
++	isst_cpu_info[cpu].numa_node = cpu_to_node(cpu);
++
+ 	ret = rdmsrl_safe(MSR_CPU_BUS_NUMBER, &data);
+ 	if (ret) {
+ 		/* This is not a fatal error on MSR mailbox only I/F */
+@@ -397,7 +399,6 @@ static int isst_if_cpu_online(unsigned int cpu)
+ 		return ret;
+ 	}
+ 	isst_cpu_info[cpu].punit_cpu_id = data;
+-	isst_cpu_info[cpu].numa_node = cpu_to_node(cpu);
+ 
+ 	isst_restore_msr_local(cpu);
+ 
 -- 
 2.30.2
 
