@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ABBF40E862
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40E1740E866
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354155AbhIPRjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:39:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50272 "EHLO mail.kernel.org"
+        id S1354199AbhIPRja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:39:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50274 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353039AbhIPR3x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1353045AbhIPR3x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 16 Sep 2021 13:29:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 95C276113E;
-        Thu, 16 Sep 2021 16:46:37 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C61263220;
+        Thu, 16 Sep 2021 16:46:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810798;
-        bh=0SQO3dsOesV/b1l38s4e7bxFqHBn1nCeqqbt7vgjWlU=;
+        s=korg; t=1631810800;
+        bh=TVNg8zjVBTknJKY0S5oiSuuLo65vTE87yCYMkTpBwpg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2H1BFAL1y6kHBjltq44NpWYymRhm9HOErZYhcEi1w94V+xThTHiUo1+o38O7zgg42
-         OtQUI4oMzh84OM+JOA8oiddAGLJiJnKK3EkolA4IrLuI0YEZ6TPi/u1sRfy5XI6QAG
-         bcbVlvhrhhscX0W5sftVnPOGWqrL30pHr8u9O77E=
+        b=0lN1rZtHPjJPM7ShOmJcemGVUoz0dwddPWR1WEnRzp4RhOQLtZGyCjcB2gxj+NjY1
+         rM8dqr5lTHIgxcUQfo4p2ZaRroG9nP5i27FWFqAAy0JMYWkMRVP7QBkoS0yqC5GeYU
+         GqK/5evO/MLLsBIPQI+uChfUyoyLk4D81REJW2eM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 239/432] ata: sata_dwc_460ex: No need to call phy_exit() befre phy_init()
-Date:   Thu, 16 Sep 2021 17:59:48 +0200
-Message-Id: <20210916155818.936644577@linuxfoundation.org>
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 240/432] drm: rcar-du: Shutdown the display on system shutdown
+Date:   Thu, 16 Sep 2021 17:59:49 +0200
+Message-Id: <20210916155818.970320814@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
 References: <20210916155810.813340753@linuxfoundation.org>
@@ -40,56 +41,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
 
-[ Upstream commit 3ad4a31620355358316fa08fcfab37b9d6c33347 ]
+[ Upstream commit 015f2ebb93767d40c442e749642fffaf10316d78 ]
 
-Last change to device managed APIs cleaned up error path to simple phy_exit()
-call, which in some cases has been executed with NULL parameter. This per se
-is not a problem, but rather logical misconception: no need to free resource
-when it's for sure has not been allocated yet. Fix the driver accordingly.
+When the system shuts down or warm reboots, the display may be active,
+with the hardware accessing system memory. Upon reboot, the DDR will not
+be accessible, which may cause issues.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Link: https://lore.kernel.org/r/20210727125130.19977-1-andriy.shevchenko@linux.intel.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Implement the platform_driver .shutdown() operation and shut down the
+display to fix this.
+
+Signed-off-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ata/sata_dwc_460ex.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+ drivers/gpu/drm/rcar-du/rcar_du_drv.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/ata/sata_dwc_460ex.c b/drivers/ata/sata_dwc_460ex.c
-index f0ef844428bb..338c2e50f759 100644
---- a/drivers/ata/sata_dwc_460ex.c
-+++ b/drivers/ata/sata_dwc_460ex.c
-@@ -1259,24 +1259,20 @@ static int sata_dwc_probe(struct platform_device *ofdev)
- 	irq = irq_of_parse_and_map(np, 0);
- 	if (irq == NO_IRQ) {
- 		dev_err(&ofdev->dev, "no SATA DMA irq\n");
--		err = -ENODEV;
--		goto error_out;
-+		return -ENODEV;
- 	}
+diff --git a/drivers/gpu/drm/rcar-du/rcar_du_drv.c b/drivers/gpu/drm/rcar-du/rcar_du_drv.c
+index c22551c2facb..2a06ec1cbefb 100644
+--- a/drivers/gpu/drm/rcar-du/rcar_du_drv.c
++++ b/drivers/gpu/drm/rcar-du/rcar_du_drv.c
+@@ -559,6 +559,13 @@ static int rcar_du_remove(struct platform_device *pdev)
+ 	return 0;
+ }
  
- #ifdef CONFIG_SATA_DWC_OLD_DMA
- 	if (!of_find_property(np, "dmas", NULL)) {
- 		err = sata_dwc_dma_init_old(ofdev, hsdev);
- 		if (err)
--			goto error_out;
-+			return err;
- 	}
- #endif
- 
- 	hsdev->phy = devm_phy_optional_get(hsdev->dev, "sata-phy");
--	if (IS_ERR(hsdev->phy)) {
--		err = PTR_ERR(hsdev->phy);
--		hsdev->phy = NULL;
--		goto error_out;
--	}
-+	if (IS_ERR(hsdev->phy))
-+		return PTR_ERR(hsdev->phy);
- 
- 	err = phy_init(hsdev->phy);
- 	if (err)
++static void rcar_du_shutdown(struct platform_device *pdev)
++{
++	struct rcar_du_device *rcdu = platform_get_drvdata(pdev);
++
++	drm_atomic_helper_shutdown(&rcdu->ddev);
++}
++
+ static int rcar_du_probe(struct platform_device *pdev)
+ {
+ 	struct rcar_du_device *rcdu;
+@@ -615,6 +622,7 @@ static int rcar_du_probe(struct platform_device *pdev)
+ static struct platform_driver rcar_du_platform_driver = {
+ 	.probe		= rcar_du_probe,
+ 	.remove		= rcar_du_remove,
++	.shutdown	= rcar_du_shutdown,
+ 	.driver		= {
+ 		.name	= "rcar-du",
+ 		.pm	= &rcar_du_pm_ops,
 -- 
 2.30.2
 
