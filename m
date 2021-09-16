@@ -2,145 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41B9640D518
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 10:52:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68BC840D51C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 10:52:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235312AbhIPIxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 04:53:25 -0400
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:38535 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S235160AbhIPIxY (ORCPT
+        id S235355AbhIPIxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 04:53:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54254 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235318AbhIPIxb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 04:53:24 -0400
-IronPort-Data: =?us-ascii?q?A9a23=3AufBqI6LU8EL9jBDaFE+RqpQlxSXFcZb7ZxGrkP8?=
- =?us-ascii?q?bfHC9gDIrhjdUyWJLWmyOPviNNjCme9olaou09kMA78TUzoNqS1BcGVNFFSwT8?=
- =?us-ascii?q?ZWfbTi6wuYcBwvLd4ubChsPA/w2MrEsF+hpCC+BzvuRGuK59yAkhPjWHuOU5NP?=
- =?us-ascii?q?sYUideyc1EU/Ntjozw4bVsqYw6TSIK1vlVeHa+qUzC3f5s9JACV/43orYwP9ZU?=
- =?us-ascii?q?FsejxtD1rA2TagjUFYzDBD5BrpHTU26ByOQroW5goeHq+j/ILGRpgs1/j8mDJW?=
- =?us-ascii?q?rj7T6blYXBLXVOGBiiFIPA+773EcE/Xd0j87XN9JFAatToy+UltZq2ZNDs4esY?=
- =?us-ascii?q?Qk0PKzQg/lbWB5de817FfQfpOKZfSbj4aR/yGWDKRMA2c5GAEgoPIEw9PxwBGZ?=
- =?us-ascii?q?U//0EbjsKa3irmOOyxKOTS+9inM0vIcDneoQFtRlIwTjfS/RgXpHHR6TD4MRw3?=
- =?us-ascii?q?TEsi8QIFvHbD+IVayVoahvoYBBVPFoTTpUkk4+AgGfzcjhdgFaUvrYspWzSyhF?=
- =?us-ascii?q?hlrTgLrL9eteKbcFOggCUqwru5Wv+Bh0FJdq30iee/zSgi4fnmSL9RZJXGqa0+?=
- =?us-ascii?q?+BnhHWNyWEJTh4bT122pb++kEHWc9ZeLVEEvykjt64/8GS1QdTnGR61uniJulg?=
- =?us-ascii?q?bQdU4O+k77hydj7ra+C6HCWUeCD1MctorsIkxXzNC/kGIhdTBFzFpsaPTTXOb6?=
- =?us-ascii?q?6fSqim9fzUWRVLuzwdsoRAtuoGl+d9syEmUCIsLLUJ8tfWtcRmY/txAhHJWa20?=
- =?us-ascii?q?vsPM2?=
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3A8IRmZaqc17xjsK0rwAU8fX8aV5pOeYIsimQD?=
- =?us-ascii?q?101hICG9E/b5qynAppkmPHPP4gr5O0tApTnjAsa9qBrnnPYf3WB4B8bAYOCMgg?=
- =?us-ascii?q?eVxe9Zg7ff/w=3D=3D?=
-X-IronPort-AV: E=Sophos;i="5.85,297,1624291200"; 
-   d="scan'208";a="114564648"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 16 Sep 2021 16:52:02 +0800
-Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
-        by cn.fujitsu.com (Postfix) with ESMTP id 917834D0DC6E;
-        Thu, 16 Sep 2021 16:52:01 +0800 (CST)
-Received: from G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.85) by
- G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
- (TLS) id 15.0.1497.23; Thu, 16 Sep 2021 16:51:51 +0800
-Received: from [127.0.0.1] (10.167.225.141) by
- G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
- id 15.0.1497.23 via Frontend Transport; Thu, 16 Sep 2021 16:51:50 +0800
-Subject: Re: [PATCH v9 7/8] xfs: support CoW in fsdax mode
-To:     Christoph Hellwig <hch@lst.de>
-CC:     <djwong@kernel.org>, <linux-xfs@vger.kernel.org>,
-        <dan.j.williams@intel.com>, <david@fromorbit.com>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <nvdimm@lists.linux.dev>, <rgoldwyn@suse.de>,
-        <viro@zeniv.linux.org.uk>, <willy@infradead.org>
-References: <20210915104501.4146910-1-ruansy.fnst@fujitsu.com>
- <20210915104501.4146910-8-ruansy.fnst@fujitsu.com>
- <20210916062357.GD13306@lst.de>
-From:   Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Message-ID: <dfa28f5e-cecb-65c4-23e1-a63ef646d2b0@fujitsu.com>
-Date:   Thu, 16 Sep 2021 16:51:48 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Thu, 16 Sep 2021 04:53:31 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 638D2C061574;
+        Thu, 16 Sep 2021 01:52:11 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id j13so13939367edv.13;
+        Thu, 16 Sep 2021 01:52:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xxWwwXaPtwzixrTvfV1r3DRbHfKM5D2dTw0M8rpmnPY=;
+        b=mEdyFAlsg0ymfoR3fwHqBitnOcRVHfsX57UH/NOESZ0BThMDh/XUVh2ZK3XufQmydh
+         l2NZHDotBMQFVBlaji4G0IGapldaoDCLOS3RqDvC3nfr0D7xJoEYHWsbsfM7aAoKTo2I
+         ty+4IKwqUULbj4sMWA4/fZ5AzWCRU6Tobm7EOWfhEMhHwK6IDlqxflqByh++SEGgi0zB
+         i2WUKjPRWA38wk4M8ZX64gfpFcC6ftPLYOAq1DConnkC80NBi/AJAhCY8Lo0rvsUn379
+         bn8TFyZi8V+lKu0F3w8kdNrq3PgGSGlSx8hfItJ1pHgn958ZlLIA+N3sB8MFa+5CTCLR
+         wtjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xxWwwXaPtwzixrTvfV1r3DRbHfKM5D2dTw0M8rpmnPY=;
+        b=ajDL61L/0eLlwVE891l8Zj6LVp8Am67zNLdbVJLD/UiONkJAjPlczJbbRyb6ebAkre
+         U2wrz8oKkyYNY8U+1X6zXAwBoZAPpjP50pZDpkHriueF7t7iFOlqGm9CJfEbksbwm3aY
+         ObHtyDYnNlhn/gz4yxxSGnk6mjs7gI2Bx2LBqjEW6LG1paZHtXWS+C+btVRWOQRUtMaz
+         dAqa4VaUQsuPRq5wnZywCLC1lu71aX2aSTrKVdTVFw4PSjsrUICuzdUIKdBBtzjNVU9w
+         uyDC58/fJ/8xwD4Npth0fobGvDS/R2coqMbO24QqUB4z00usO1SQjcgb7uCT0FWKWcdh
+         3Qfg==
+X-Gm-Message-State: AOAM530oviuh95mYTpUBGMJEOF4Nq94OifC3ckahoKsW0/d/QSMyX8Ft
+        nXyQUb6pKFNiIN7cTE94lDL0J3vpvx8Lsg==
+X-Google-Smtp-Source: ABdhPJyQvZuZNGsMPNbOZX1r8OE9RMP6c92Zf5N24D0TH1SP8H37hvejDLHSmu3d9oZy4/BSM7vIKw==
+X-Received: by 2002:a17:906:ae9b:: with SMTP id md27mr5010598ejb.380.1631782329996;
+        Thu, 16 Sep 2021 01:52:09 -0700 (PDT)
+Received: from localhost.localdomain (catv-176-63-0-115.catv.broadband.hu. [176.63.0.115])
+        by smtp.googlemail.com with ESMTPSA id t24sm1112961edr.84.2021.09.16.01.52.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Sep 2021 01:52:09 -0700 (PDT)
+From:   "Saheed O. Bolarinwa" <refactormyself@gmail.com>
+To:     helgaas@kernel.org
+Cc:     "Bolarinwa O. Saheed" <refactormyself@gmail.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kw@linux.com
+Subject: [RFC PATCH 0/3] PCI/ASPM: Remove unncessary linked list in aspm.c
+Date:   Thu, 16 Sep 2021 10:52:02 +0200
+Message-Id: <20210916085206.2268-1-refactormyself@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20210916062357.GD13306@lst.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-yoursite-MailScanner-ID: 917834D0DC6E.A1C30
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: ruansy.fnst@fujitsu.com
-X-Spam-Status: No
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: "Bolarinwa O. Saheed" <refactormyself@gmail.com>
 
+An extra linked list is created inside aspm.c to keep track of devices
+on which the link state was enabled. However, it is possible to access
+them via existing device lists.
 
-On 2021/9/16 14:23, Christoph Hellwig wrote:
-> On Wed, Sep 15, 2021 at 06:45:00PM +0800, Shiyang Ruan wrote:
->> +static int
->> +xfs_dax_write_iomap_end(
->> +	struct inode 		*inode,
->> +	loff_t 			pos,
->> +	loff_t 			length,
->> +	ssize_t 		written,
->> +	unsigned 		flags,
->> +	struct iomap 		*iomap)
->> +{
->> +	struct xfs_inode	*ip = XFS_I(inode);
->> +	/*
->> +	 * Usually we use @written to indicate whether the operation was
->> +	 * successful.  But it is always positive or zero.  The CoW needs the
->> +	 * actual error code from actor().  So, get it from
->> +	 * iomap_iter->processed.
->> +	 */
->> +	const struct iomap_iter *iter =
->> +				container_of(iomap, typeof(*iter), iomap);
->> +
->> +	if (!xfs_is_cow_inode(ip))
->> +		return 0;
->> +
->> +	if (iter->processed <= 0) {
->> +		xfs_reflink_cancel_cow_range(ip, pos, length, true);
->> +		return 0;
->> +	}
->> +
->> +	return xfs_reflink_end_cow(ip, pos, iter->processed);
-> 
-> Didn't we come to the conflusion last time that we don't actually
-> need to poke into the iomap_iter here as the written argument is equal
-> to iter->processed if it is > 0:
-> 
-> 	if (iter->iomap.length && ops->iomap_end) {
-> 		ret = ops->iomap_end(iter->inode, iter->pos, iomap_length(iter),
-> 				iter->processed > 0 ? iter->processed : 0,
-> 				iter->flags, &iter->iomap);
-> 		..
-> 
-> So should be able to just do:
-> 
-> static int
-> xfs_dax_write_iomap_end(
-> 	struct inode 		*inode,
-> 	loff_t 			pos,
-> 	loff_t 			length,
-> 	ssize_t 		written,
-> 	unsigned 		flags,
-> 	struct iomap 		*iomap)
-> {
-> 	struct xfs_inode	*ip = XFS_I(inode);
-> 
-> 	if (!xfs_is_cow_inode(ip))
-> 		return 0;
-> 
-> 	if (!written) {
-> 		xfs_reflink_cancel_cow_range(ip, pos, length, true);
-> 		return 0;
-> 	}
-> 
-> 	return xfs_reflink_end_cow(ip, pos, written);
-> }
-> 
+This series remove the extra linked list and other related members of
+the struct pcie_link_state: `root`, `parent` and `downstream`. All these
+are now either calculated or obtained directly when needed.
 
-I see.  Thanks for your guidance.
+Bolarinwa O. Saheed (4):
+  PCI/ASPM: Remove struct pcie_link_state.parent
+  PCI/ASPM: Remove struct pcie_link_state.root
+  PCI/ASPM: Remove struct pcie_link_state.downstream
+  PCI/ASPM: Remove unncessary linked list defined within aspm.c
 
+ drivers/pci/pcie/aspm.c | 121 +++++++++++++++++++++-------------------
+ 1 file changed, 64 insertions(+), 57 deletions(-)
 
---
-Ruan
-
+-- 
+2.20.1
 
