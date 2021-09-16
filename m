@@ -2,103 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DBB540D882
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 13:27:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF72E40D887
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 13:30:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238026AbhIPL2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 07:28:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234769AbhIPL2K (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 07:28:10 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2909DC061574;
-        Thu, 16 Sep 2021 04:26:50 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1mQpXN-0002K7-IT; Thu, 16 Sep 2021 13:26:41 +0200
-Date:   Thu, 16 Sep 2021 13:26:41 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>
-Cc:     pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
-        davem@davemloft.net, kuba@kernel.org, shuah@kernel.org,
-        linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, netdev@vger.kernel.org,
-        Anthony Lineham <anthony.lineham@alliedtelesis.co.nz>,
-        Scott Parlane <scott.parlane@alliedtelesis.co.nz>,
-        Blair Steven <blair.steven@alliedtelesis.co.nz>
-Subject: Re: [PATCH net v4] net: netfilter: Fix port selection of FTP for
- NF_NAT_RANGE_PROTO_SPECIFIED
-Message-ID: <20210916112641.GC20414@breakpoint.cc>
-References: <20210916041057.459-1-Cole.Dishington@alliedtelesis.co.nz>
+        id S237558AbhIPLbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 07:31:43 -0400
+Received: from mx.socionext.com ([202.248.49.38]:40993 "EHLO mx.socionext.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234769AbhIPLbm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 07:31:42 -0400
+Received: from unknown (HELO kinkan2-ex.css.socionext.com) ([172.31.9.52])
+  by mx.socionext.com with ESMTP; 16 Sep 2021 20:30:21 +0900
+Received: from mail.mfilter.local (m-filter-1 [10.213.24.61])
+        by kinkan2-ex.css.socionext.com (Postfix) with ESMTP id 5C7662059034;
+        Thu, 16 Sep 2021 20:30:21 +0900 (JST)
+Received: from 172.31.9.51 (172.31.9.51) by m-FILTER with ESMTP; Thu, 16 Sep 2021 20:30:21 +0900
+Received: from yuzu2.css.socionext.com (yuzu2 [172.31.9.57])
+        by kinkan2.css.socionext.com (Postfix) with ESMTP id 0994CAB192;
+        Thu, 16 Sep 2021 20:30:21 +0900 (JST)
+Received: from [10.212.183.234] (unknown [10.212.183.234])
+        by yuzu2.css.socionext.com (Postfix) with ESMTP id 1FD3EB62B3;
+        Thu, 16 Sep 2021 20:30:16 +0900 (JST)
+Subject: Re: [PATCH v2] PCI: endpoint: Use sysfs_emit() in "show" functions
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1630472957-26857-1-git-send-email-hayashi.kunihiko@socionext.com>
+From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Message-ID: <b9eb71b0-8328-fb05-3b8c-112cb8dbbda2@socionext.com>
+Date:   Thu, 16 Sep 2021 20:30:13 +0900
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210916041057.459-1-Cole.Dishington@alliedtelesis.co.nz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1630472957-26857-1-git-send-email-hayashi.kunihiko@socionext.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cole Dishington <Cole.Dishington@alliedtelesis.co.nz> wrote:
-> +	/* Avoid applying nat->range to the reply direction */
-> +	if (!exp->dir || !nat->range_info.min_proto.all || !nat->range_info.max_proto.all) {
-> +		min = ntohs(exp->saved_proto.tcp.port);
-> +		range_size = 65535 - min + 1;
-> +	} else {
-> +		min = ntohs(nat->range_info.min_proto.all);
-> +		range_size = ntohs(nat->range_info.max_proto.all) - min + 1;
-> +	}
-> +
->  	/* Try to get same port: if not, try to change it. */
-> -	for (port = ntohs(exp->saved_proto.tcp.port); port != 0; port++) {
-> -		int ret;
-> +	first_port = ntohs(exp->saved_proto.tcp.port);
-> +	if (min > first_port || first_port > (min + range_size - 1))
-> +		first_port = min;
->  
-> +	for (i = 0, port = first_port; i < range_size; i++, port = (port - first_port + i) % range_size) {
+Gentle ping, are there any comments?
 
-This looks complicated.  As far as I understand, this could instead be
-written like this (not even compile tested):
+Thank you,
 
-	/* Avoid applying nat->range to the reply direction */
-	if (!exp->dir || !nat->range_info.min_proto.all || !nat->range_info.max_proto.all) {
-		min = 1;
-		max = 65535;
-		range_size = 65535;
-	} else {
-		min = ntohs(nat->range_info.min_proto.all);
-		max = ntohs(nat->range_info.max_proto.all);
-		range_size = max - min + 1;
-	}
+On 2021/09/01 14:09, Kunihiko Hayashi wrote:
+> Convert sprintf() in sysfs "show" functions to sysfs_emit() in order to
+> check for buffer overruns in sysfs outputs.
+> 
+> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+> Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
+> ---
+> Changes since v1:
+> - Add Reviewed-by line
+> 
+> ---
+> drivers/pci/endpoint/functions/pci-epf-ntb.c |  4 ++--
+>   drivers/pci/endpoint/pci-ep-cfs.c            | 13 ++++++-------
+>   2 files changed, 8 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/pci/endpoint/functions/pci-epf-ntb.c b/drivers/pci/endpoint/functions/pci-epf-ntb.c
+> index 8b47561..99266f05 100644
+> --- a/drivers/pci/endpoint/functions/pci-epf-ntb.c
+> +++ b/drivers/pci/endpoint/functions/pci-epf-ntb.c
+> @@ -1937,7 +1937,7 @@ static ssize_t epf_ntb_##_name##_show(struct config_item *item,		\
+>   	struct config_group *group = to_config_group(item);		\
+>   	struct epf_ntb *ntb = to_epf_ntb(group);			\
+>   									\
+> -	return sprintf(page, "%d\n", ntb->_name);			\
+> +	return sysfs_emit(page, "%d\n", ntb->_name);			\
+>   }
+>   
+>   #define EPF_NTB_W(_name)						\
+> @@ -1968,7 +1968,7 @@ static ssize_t epf_ntb_##_name##_show(struct config_item *item,		\
+>   									\
+>   	sscanf(#_name, "mw%d", &win_no);				\
+>   									\
+> -	return sprintf(page, "%lld\n", ntb->mws_size[win_no - 1]);	\
+> +	return sysfs_emit(page, "%lld\n", ntb->mws_size[win_no - 1]);	\
+>   }
+>   
+>   #define EPF_NTB_MW_W(_name)						\
+> diff --git a/drivers/pci/endpoint/pci-ep-cfs.c b/drivers/pci/endpoint/pci-ep-cfs.c
+> index 9999118..5a0394a 100644
+> --- a/drivers/pci/endpoint/pci-ep-cfs.c
+> +++ b/drivers/pci/endpoint/pci-ep-cfs.c
+> @@ -198,8 +198,7 @@ static ssize_t pci_epc_start_store(struct config_item *item, const char *page,
+>   
+>   static ssize_t pci_epc_start_show(struct config_item *item, char *page)
+>   {
+> -	return sprintf(page, "%d\n",
+> -		       to_pci_epc_group(item)->start);
+> +	return sysfs_emit(page, "%d\n", to_pci_epc_group(item)->start);
+>   }
+>   
+>   CONFIGFS_ATTR(pci_epc_, start);
+> @@ -321,7 +320,7 @@ static ssize_t pci_epf_##_name##_show(struct config_item *item,	char *page)    \
+>   	struct pci_epf *epf = to_pci_epf_group(item)->epf;		       \
+>   	if (WARN_ON_ONCE(!epf->header))					       \
+>   		return -EINVAL;						       \
+> -	return sprintf(page, "0x%04x\n", epf->header->_name);		       \
+> +	return sysfs_emit(page, "0x%04x\n", epf->header->_name);	       \
+>   }
+>   
+>   #define PCI_EPF_HEADER_W_u32(_name)					       \
+> @@ -390,8 +389,8 @@ static ssize_t pci_epf_msi_interrupts_store(struct config_item *item,
+>   static ssize_t pci_epf_msi_interrupts_show(struct config_item *item,
+>   					   char *page)
+>   {
+> -	return sprintf(page, "%d\n",
+> -		       to_pci_epf_group(item)->epf->msi_interrupts);
+> +	return sysfs_emit(page, "%d\n",
+> +			  to_pci_epf_group(item)->epf->msi_interrupts);
+>   }
+>   
+>   static ssize_t pci_epf_msix_interrupts_store(struct config_item *item,
+> @@ -412,8 +411,8 @@ static ssize_t pci_epf_msix_interrupts_store(struct config_item *item,
+>   static ssize_t pci_epf_msix_interrupts_show(struct config_item *item,
+>   					    char *page)
+>   {
+> -	return sprintf(page, "%d\n",
+> -		       to_pci_epf_group(item)->epf->msix_interrupts);
+> +	return sysfs_emit(page, "%d\n",
+> +			  to_pci_epf_group(item)->epf->msix_interrupts);
+>   }
+>   
+>   PCI_EPF_HEADER_R(vendorid)
+> 
 
-  	/* Try to get same port: if not, try to change it. */
-	port = ntohs(exp->saved_proto.tcp.port);
-
-	if (port < min || port > max)
-		port = min;
-
-	for (i = 0; i < range_size; i++) {
-  		exp->tuple.dst.u.tcp.port = htons(port);
-  		ret = nf_ct_expect_related(exp, 0);
-		if (ret != -EBUSY)
- 			break;
-		port++;
-		if (port > max)
-			port = min;
-  	}
-
-	if (ret != 0) {
-	...
-
-AFAICS this is the same, we loop at most range_size times,
-in case range_size is 64k, we will loop through all (hmmm,
-not good actually, but better make that a different change)
-else through given min - max range.
-
-If orig port was in-range, we try it first, then increment.
-If port exceeds upper bound, cycle back to min.
-
-What do you think?
+-- 
+---
+Best Regards
+Kunihiko Hayashi
