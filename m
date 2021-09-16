@@ -2,103 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A46740D238
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 06:10:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 744B540D23A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 06:11:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230152AbhIPELx convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 16 Sep 2021 00:11:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47950 "EHLO
+        id S231283AbhIPEMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 00:12:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbhIPELv (ORCPT
+        with ESMTP id S229463AbhIPEMb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 00:11:51 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0530C061574;
-        Wed, 15 Sep 2021 21:10:31 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a00:5f00:102:0:f4d2:afff:fe2b:18b5])
+        Thu, 16 Sep 2021 00:12:31 -0400
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6A32C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 21:11:10 -0700 (PDT)
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: krisman)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 161211F435AC;
-        Thu, 16 Sep 2021 05:10:28 +0100 (BST)
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     =?utf-8?Q?Andr=C3=A9?= Almeida <andrealmeid@collabora.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        kernel@collabora.com, linux-api@vger.kernel.org,
-        libc-alpha@sourceware.org, mtk.manpages@gmail.com,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v3 2/6] futex2: Implement vectorized wait
-Organization: Collabora
-References: <20210913175249.81074-1-andrealmeid@collabora.com>
-        <20210913175249.81074-3-andrealmeid@collabora.com>
-        <875yv4ge83.fsf@collabora.com>
-        <58536544-e032-1954-ce30-d131869dc95e@collabora.com>
-Date:   Thu, 16 Sep 2021 00:10:25 -0400
-In-Reply-To: <58536544-e032-1954-ce30-d131869dc95e@collabora.com>
- (=?utf-8?Q?=22Andr=C3=A9?=
-        Almeida"'s message of "Tue, 14 Sep 2021 14:18:58 -0300")
-Message-ID: <8735q5dutq.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 36FC1806A8;
+        Thu, 16 Sep 2021 16:11:06 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1631765466;
+        bh=xzFoaghB6J50a9Z3r8Mfbhqg3yDoiQQCqdhnRGIjaIo=;
+        h=From:To:Cc:Subject:Date;
+        b=hluijJ9qmc0De+wXQjuFTPAKO0qurTKIKiPHotnV6JaLQndMqlJUAu33dx2W8ebTP
+         DsORN+UW6/NC7c35gAxMA1vlUenwVSVtsY+uENgfHdNuAOdnLlH9hqbK6egSrx6m8O
+         TINSk+rDssUSBeFmnScey/grDjMr0yVwQSfRPJfP4lCQKE3fLlu4xEqT6gs2kJLSzK
+         hngBnIse3w3YLe5hPIb7rvK3dRXNTPWChxcEG8p7VUrSFFnMrV+8k7xw/wnl318cKE
+         jGVMWg9zyCHGI9dMiF0IGvUTpgFlAEFcs5zENty1hR0oT9iZBy/afSsPhvkX/EYVQd
+         9/DUHIqepBp5A==
+Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+        id <B6142c3d90000>; Thu, 16 Sep 2021 16:11:05 +1200
+Received: from coled-dl.ws.atlnz.lc (coled-dl.ws.atlnz.lc [10.33.25.26])
+        by pat.atlnz.lc (Postfix) with ESMTP id EA44113ED4A;
+        Thu, 16 Sep 2021 16:11:05 +1200 (NZST)
+Received: by coled-dl.ws.atlnz.lc (Postfix, from userid 1801)
+        id E38802428CC; Thu, 16 Sep 2021 16:11:05 +1200 (NZST)
+From:   Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>
+To:     pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
+        davem@davemloft.net, kuba@kernel.org, shuah@kernel.org
+Cc:     linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, netdev@vger.kernel.org,
+        Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>,
+        Anthony Lineham <anthony.lineham@alliedtelesis.co.nz>,
+        Scott Parlane <scott.parlane@alliedtelesis.co.nz>,
+        Blair Steven <blair.steven@alliedtelesis.co.nz>
+Subject: [PATCH net v4] net: netfilter: Fix port selection of FTP for NF_NAT_RANGE_PROTO_SPECIFIED
+Date:   Thu, 16 Sep 2021 16:10:57 +1200
+Message-Id: <20210916041057.459-1-Cole.Dishington@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: quoted-printable
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=fY/TNHYF c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=7QKq2e-ADPsA:10 a=xOT0nC9th1TpZTiSAT0A:9 a=7Zwj6sZBwVKJAoWSPKxL6X1jA+E=:19
+X-SEG-SpamProfiler-Score: 0
+x-atlnz-ls: pat
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-André Almeida <andrealmeid@collabora.com> writes:
+FTP port selection ignores specified port ranges (with iptables
+masquerade --to-ports) when creating an expectation, based on
+FTP commands PORT or PASV, for the data connection.
 
->>> +/**
->>> + * struct futex_waitv - A waiter for vectorized wait
->>> + * @val:	Expected value at uaddr
->>> + * @uaddr:	User address to wait on
->>> + * @flags:	Flags for this waiter
->>> + * @__reserved:	Reserved member to preserve data alignment. Should be 0.
->>> + */
->>> +struct futex_waitv {
->>> +	__u64 val;
->>> +	__u64 uaddr;
->>> +	__u32 flags;
->>> +	__u32 __reserved;
->>> +};
->> 
->> why force uaddr  to be __u64, even for 32-bit?  uaddr could be a (void*) for
->> all we care, no?  Also, by adding a reserved field, you are wasting 32
->> bits even on 32-bit architectures.
->> 
->
-> We do that to make the structure layout compatible with both entry
-> points, remove the need for special cast and duplicated code, as
-> suggested by Thomas and Arnd:
->
-> https://lore.kernel.org/lkml/87v94310gm.ffs@tglx/
->
-> https://lore.kernel.org/lkml/CAK8P3a0MO1qJLRkCH8KrZ3+=L66KOsMRmcbrUvYdMoKykdKoyQ@mail.gmail.com/
+For masquerading, this issue allows an FTP client to use unassigned sourc=
+e ports
+for their data connection (in both the PORT and PASV cases). This can
+cause problems in setups that allocate different masquerade port ranges f=
+or each
+client.
 
-I find this weird.  I'm not even juts talking about compat, but even on
-native 32-bit. But also, 32 applications on 64, which is a big use
-case for games.
+The proposed fix involves storing a port range (on nf_conn_nat) to:
+- Fix FTP PORT data connections using the stored port range to select a
+  port number in nf_conntrack_ftp.
+- Fix FTP PASV data connections using the stored port range to specify a
+  port range on source port in nf_nat_helper if the FTP PORT/PASV packet
+  comes from the client.
 
-The structure is mandating a 64 bit uaddr field and has an unnecessary
-pad.  You are wasting 20% of the space, which is gonna be elements of a
-vector coming from user space.  Worst case, you are doing copy_from_user
-of an extra 1k bytes in the critical path of futex_waitv for no good
-reason.
+Co-developed-by: Anthony Lineham <anthony.lineham@alliedtelesis.co.nz>
+Signed-off-by: Anthony Lineham <anthony.lineham@alliedtelesis.co.nz>
+Co-developed-by: Scott Parlane <scott.parlane@alliedtelesis.co.nz>
+Signed-off-by: Scott Parlane <scott.parlane@alliedtelesis.co.nz>
+Co-developed-by: Blair Steven <blair.steven@alliedtelesis.co.nz>
+Signed-off-by: Blair Steven <blair.steven@alliedtelesis.co.nz>
+Signed-off-by: Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>
+---
 
-Also, if I understand correctly, Arnd suggestion, at least, was to have
-two parser functions and a single syscall entry point, that would do the
-translation:
+Notes:
+    Thanks for your time reviewing!
+   =20
+    Changes:
+    - Avoid allocating same port to ftp data connection expectation as us=
+ed for ftp control.
+      - Changed ftp port selection back to a for loop with expectation ch=
+ecking.
+      - Iterate over a range of ports rather than exp dst port to max por=
+t.
+    - Added further description to commit message to detail the problem t=
+his patch is fixing.
 
-if (in_compat_syscall())
-   futex_parse_waitv_compat(futexv, waiters, nr_futexes);
-else
-   futex_parse_waitv(futexv, waiters, nr_futexes);
+ include/net/netfilter/nf_nat.h |  6 ++++++
+ net/netfilter/nf_nat_core.c    |  9 +++++++++
+ net/netfilter/nf_nat_ftp.c     | 29 +++++++++++++++++++++--------
+ net/netfilter/nf_nat_helper.c  | 10 ++++++++++
+ 4 files changed, 46 insertions(+), 8 deletions(-)
 
--- 
-Gabriel Krisman Bertazi
+diff --git a/include/net/netfilter/nf_nat.h b/include/net/netfilter/nf_na=
+t.h
+index 0d412dd63707..231cffc16722 100644
+--- a/include/net/netfilter/nf_nat.h
++++ b/include/net/netfilter/nf_nat.h
+@@ -27,12 +27,18 @@ union nf_conntrack_nat_help {
+ #endif
+ };
+=20
++struct nf_conn_nat_range_info {
++	union nf_conntrack_man_proto    min_proto;
++	union nf_conntrack_man_proto    max_proto;
++};
++
+ /* The structure embedded in the conntrack structure. */
+ struct nf_conn_nat {
+ 	union nf_conntrack_nat_help help;
+ #if IS_ENABLED(CONFIG_NF_NAT_MASQUERADE)
+ 	int masq_index;
+ #endif
++	struct nf_conn_nat_range_info range_info;
+ };
+=20
+ /* Set up the info structure to map into this range. */
+diff --git a/net/netfilter/nf_nat_core.c b/net/netfilter/nf_nat_core.c
+index ea923f8cf9c4..5ae27cf7e808 100644
+--- a/net/netfilter/nf_nat_core.c
++++ b/net/netfilter/nf_nat_core.c
+@@ -623,6 +623,15 @@ nf_nat_setup_info(struct nf_conn *ct,
+ 			   &ct->tuplehash[IP_CT_DIR_REPLY].tuple);
+=20
+ 	get_unique_tuple(&new_tuple, &curr_tuple, range, ct, maniptype);
++	if (range && (range->flags & NF_NAT_RANGE_PROTO_SPECIFIED)) {
++		struct nf_conn_nat *nat =3D nf_ct_nat_ext_add(ct);
++
++		if (!nat)
++			return NF_DROP;
++
++		nat->range_info.min_proto =3D range->min_proto;
++		nat->range_info.max_proto =3D range->max_proto;
++	}
+=20
+ 	if (!nf_ct_tuple_equal(&new_tuple, &curr_tuple)) {
+ 		struct nf_conntrack_tuple reply;
+diff --git a/net/netfilter/nf_nat_ftp.c b/net/netfilter/nf_nat_ftp.c
+index aace6768a64e..499798ade988 100644
+--- a/net/netfilter/nf_nat_ftp.c
++++ b/net/netfilter/nf_nat_ftp.c
+@@ -72,8 +72,14 @@ static unsigned int nf_nat_ftp(struct sk_buff *skb,
+ 	u_int16_t port;
+ 	int dir =3D CTINFO2DIR(ctinfo);
+ 	struct nf_conn *ct =3D exp->master;
++	struct nf_conn_nat *nat =3D nfct_nat(ct);
++	unsigned int i, first_port, min, range_size;
+ 	char buffer[sizeof("|1||65535|") + INET6_ADDRSTRLEN];
+ 	unsigned int buflen;
++	int ret;
++
++	if (WARN_ON_ONCE(!nat))
++		return NF_DROP;
+=20
+ 	pr_debug("type %i, off %u len %u\n", type, matchoff, matchlen);
+=20
+@@ -86,21 +92,28 @@ static unsigned int nf_nat_ftp(struct sk_buff *skb,
+ 	 * this one. */
+ 	exp->expectfn =3D nf_nat_follow_master;
+=20
++	/* Avoid applying nat->range to the reply direction */
++	if (!exp->dir || !nat->range_info.min_proto.all || !nat->range_info.max=
+_proto.all) {
++		min =3D ntohs(exp->saved_proto.tcp.port);
++		range_size =3D 65535 - min + 1;
++	} else {
++		min =3D ntohs(nat->range_info.min_proto.all);
++		range_size =3D ntohs(nat->range_info.max_proto.all) - min + 1;
++	}
++
+ 	/* Try to get same port: if not, try to change it. */
+-	for (port =3D ntohs(exp->saved_proto.tcp.port); port !=3D 0; port++) {
+-		int ret;
++	first_port =3D ntohs(exp->saved_proto.tcp.port);
++	if (min > first_port || first_port > (min + range_size - 1))
++		first_port =3D min;
+=20
++	for (i =3D 0, port =3D first_port; i < range_size; i++, port =3D (port =
+- first_port + i) % range_size) {
+ 		exp->tuple.dst.u.tcp.port =3D htons(port);
+ 		ret =3D nf_ct_expect_related(exp, 0);
+-		if (ret =3D=3D 0)
+-			break;
+-		else if (ret !=3D -EBUSY) {
+-			port =3D 0;
++		if (ret !=3D -EBUSY)
+ 			break;
+-		}
+ 	}
+=20
+-	if (port =3D=3D 0) {
++	if (ret !=3D 0) {
+ 		nf_ct_helper_log(skb, ct, "all ports in use");
+ 		return NF_DROP;
+ 	}
+diff --git a/net/netfilter/nf_nat_helper.c b/net/netfilter/nf_nat_helper.=
+c
+index a263505455fc..718fc423bc44 100644
+--- a/net/netfilter/nf_nat_helper.c
++++ b/net/netfilter/nf_nat_helper.c
+@@ -188,6 +188,16 @@ void nf_nat_follow_master(struct nf_conn *ct,
+ 	range.flags =3D NF_NAT_RANGE_MAP_IPS;
+ 	range.min_addr =3D range.max_addr
+ 		=3D ct->master->tuplehash[!exp->dir].tuple.dst.u3;
++	if (!exp->dir) {
++		struct nf_conn_nat *nat =3D nfct_nat(exp->master);
++
++		if (nat && nat->range_info.min_proto.all &&
++		    nat->range_info.max_proto.all) {
++			range.min_proto =3D nat->range_info.min_proto;
++			range.max_proto =3D nat->range_info.max_proto;
++			range.flags |=3D NF_NAT_RANGE_PROTO_SPECIFIED;
++		}
++	}
+ 	nf_nat_setup_info(ct, &range, NF_NAT_MANIP_SRC);
+=20
+ 	/* For DST manip, map port here to where it's expected. */
+--=20
+2.33.0
+
