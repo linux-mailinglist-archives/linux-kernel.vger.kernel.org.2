@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA8E640E28A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A16240E647
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:30:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244832AbhIPQjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:39:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44780 "EHLO mail.kernel.org"
+        id S1352132AbhIPRUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:20:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243485AbhIPQbb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:31:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C79966162E;
-        Thu, 16 Sep 2021 16:19:32 +0000 (UTC)
+        id S244112AbhIPRNO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:13:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 93AA461425;
+        Thu, 16 Sep 2021 16:38:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809173;
-        bh=ag+uAeWKPVFNvafpIGu/c0r020QZZsSQcstWyrND3a0=;
+        s=korg; t=1631810320;
+        bh=2WoSXoG2EqbWWaKQO8rHAhKmc2XqnwYnzZvb8UsbPcw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1Qh01YW958Nb9lZoGcfsd6Wwus5JiG6qDUfrjC1Ur4f38d+RBVYqeZXH/swxbdb2F
-         ESoUQ+bpMj8k9s1qkCumv1/iLRR+ENwn7+J7k11qiEogZXqIjlpy+nANlZ/gkaAZ2b
-         36xm4jJzlp0iZemnch+kqsyew6iilmzCzhWecvWs=
+        b=lcHtcPL50b3aWR59ohoqo9RXSpzACW8qcbDR2frre4sQUQR4zBWcP9fx+cLl6lSr8
+         sWhQcFYo2awROHT01Hp594YbatbYD67lrY+qkiZgcGCrBiqVu/0Fk+IIRIRhSur7UA
+         fKnfpg9bOMShafVSOD05gy2tVjxtnLOnFxSaalw4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kate Hsuan <hpa@redhat.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.13 057/380] libata: add ATA_HORKAGE_NO_NCQ_TRIM for Samsung 860 and 870 SSDs
+        stable@vger.kernel.org,
+        =?UTF-8?q?R=C3=B6tti?= 
+        <espressobinboardarmbiantempmailaddress@posteo.de>,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+Subject: [PATCH 5.14 065/432] PCI: Restrict ASMedia ASM1062 SATA Max Payload Size Supported
 Date:   Thu, 16 Sep 2021 17:56:54 +0200
-Message-Id: <20210916155805.928036763@linuxfoundation.org>
+Message-Id: <20210916155812.992970884@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,50 +44,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Marek Behún <kabel@kernel.org>
 
-commit 8a6430ab9c9c87cb64c512e505e8690bbaee190b upstream.
+commit b12d93e9958e028856cbcb061b6e64728ca07755 upstream.
 
-Commit ca6bfcb2f6d9 ("libata: Enable queued TRIM for Samsung SSD 860")
-limited the existing ATA_HORKAGE_NO_NCQ_TRIM quirk from "Samsung SSD 8*",
-covering all Samsung 800 series SSDs, to only apply to "Samsung SSD 840*"
-and "Samsung SSD 850*" series based on information from Samsung.
+The ASMedia ASM1062 SATA controller advertises Max_Payload_Size_Supported
+of 512, but in fact it cannot handle incoming TLPs with payload size of
+512.
 
-But there is a large number of users which is still reporting issues
-with the Samsung 860 and 870 SSDs combined with Intel, ASmedia or
-Marvell SATA controllers and all reporters also report these problems
-going away when disabling queued trims.
+We discovered this issue on PCIe controllers capable of MPS = 512 (Aardvark
+and DesignWare), where the issue presents itself as an External Abort.
+Bjorn Helgaas says:
 
-Note that with AMD SATA controllers users are reporting even worse
-issues and only completely disabling NCQ helps there, this will be
-addressed in a separate patch.
+  Probably ASM1062 reports a Malformed TLP error when it receives a data
+  payload of 512 bytes, and Aardvark, DesignWare, etc convert this to an
+  arm64 External Abort. [1]
 
-Fixes: ca6bfcb2f6d9 ("libata: Enable queued TRIM for Samsung SSD 860")
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=203475
+To avoid this problem, limit the ASM1062 Max Payload Size Supported to 256
+bytes, so we set the Max Payload Size of devices that may send TLPs to the
+ASM1062 to 256 or less.
+
+[1] https://lore.kernel.org/linux-pci/20210601170907.GA1949035@bjorn-Precision-5520/
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=212695
+Link: https://lore.kernel.org/r/20210624171418.27194-2-kabel@kernel.org
+Reported-by: Rötti <espressobinboardarmbiantempmailaddress@posteo.de>
+Signed-off-by: Marek Behún <kabel@kernel.org>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
+Reviewed-by: Pali Rohár <pali@kernel.org>
 Cc: stable@vger.kernel.org
-Cc: Kate Hsuan <hpa@redhat.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Reviewed-by: Damien Le Moal <damien.lemoal@wdc.com>
-Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
-Link: https://lore.kernel.org/r/20210823095220.30157-1-hdegoede@redhat.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/ata/libata-core.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/pci/quirks.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/ata/libata-core.c
-+++ b/drivers/ata/libata-core.c
-@@ -3950,6 +3950,10 @@ static const struct ata_blacklist_entry
- 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
- 	{ "Samsung SSD 850*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
- 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
-+	{ "Samsung SSD 860*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
-+						ATA_HORKAGE_ZERO_AFTER_TRIM, },
-+	{ "Samsung SSD 870*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
-+						ATA_HORKAGE_ZERO_AFTER_TRIM, },
- 	{ "FCCT*M500*",			NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
- 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -3241,6 +3241,7 @@ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_SO
+ 			PCI_DEVICE_ID_SOLARFLARE_SFC4000A_1, fixup_mpss_256);
+ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_SOLARFLARE,
+ 			PCI_DEVICE_ID_SOLARFLARE_SFC4000B, fixup_mpss_256);
++DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_ASMEDIA, 0x0612, fixup_mpss_256);
  
+ /*
+  * Intel 5000 and 5100 Memory controllers have an erratum with read completion
 
 
