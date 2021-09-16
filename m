@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77A8B40E0BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:27:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9D6A40E6B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:31:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234956AbhIPQXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:23:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48850 "EHLO mail.kernel.org"
+        id S1352522AbhIPRYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:24:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41428 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237698AbhIPQNM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:13:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4279361391;
-        Thu, 16 Sep 2021 16:09:46 +0000 (UTC)
+        id S1344041AbhIPRQJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:16:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DE6761BC0;
+        Thu, 16 Sep 2021 16:40:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808586;
-        bh=reU0cyggiRXlCOoC8r79/ZpqbrPAprKiA8MNgItW210=;
+        s=korg; t=1631810423;
+        bh=ig9EcBqXY6LDZOr2mmoioVqswGauocand/g+xEfDmbo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p3CtTbgJhsO8NUbbFLYtHrcRwsaNDKDzKejh5KOpLErM0Gcj+pVYKpsNWL/9PWJEK
-         KmJqNHX6hXJkDjs1PO2Hw4eMDsip6VlvquDp0SYVukjNNtdSMRGrHM/7x76vGA2X1Z
-         WeAmf5flVKXQamDi6QMBInNRk/vUommijbyIUldw=
+        b=YR4G8soqkSuMJoqM33rxPZmrQJ2yq8i/3kRQJvkmra1LBGesSYQmjiDv3jvEoUvPD
+         KEs66HzQOjmGFAAmQtUZGNFD1m7WiAMycBZnoDsBHfyIZaELL45Lr4VQ7Wn8xT+Qj7
+         IwZP7EsYZK+CWUt4jgj3QzpoKL8kd7x41WjP6fW4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>,
+        stable@vger.kernel.org,
+        Junxian Huang <huangjunxian4@hisilicon.com>,
+        Wenpeng Liang <liangwenpeng@huawei.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 140/306] selftests: firmware: Fix ignored return val of asprintf() warn
+Subject: [PATCH 5.14 136/432] RDMA/hns: Bugfix for data type of dip_idx
 Date:   Thu, 16 Sep 2021 17:58:05 +0200
-Message-Id: <20210916155758.821178399@linuxfoundation.org>
+Message-Id: <20210916155815.363869628@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,40 +42,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shuah Khan <skhan@linuxfoundation.org>
+From: Junxian Huang <huangjunxian4@hisilicon.com>
 
-[ Upstream commit fe968ca2cac91888310b143a483123c84906e3fc ]
+[ Upstream commit 4303e61264c45cb535255c5b76400f5c4ab1305d ]
 
-Fix the following ingonred return val of asprintf() warn during
-build:
+dip_idx is associated with qp_num whose data type is u32. However, dip_idx
+is incorrectly defined as u8 data in the hns_roce_dip struct, which leads
+to data truncation during value assignment.
 
-cc -Wall -O2    fw_namespace.c  -o ../tools/testing/selftests/firmware/fw_namespace
-fw_namespace.c: In function ‘main’:
-fw_namespace.c:132:2: warning: ignoring return value of ‘asprintf’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
-  132 |  asprintf(&fw_path, "/lib/firmware/%s", fw_name);
-      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-Link: https://lore.kernel.org/r/20210708031827.51293-1-skhan@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: f91696f2f053 ("RDMA/hns: Support congestion control type selection according to the FW")
+Link: https://lore.kernel.org/r/1629884592-23424-2-git-send-email-liangwenpeng@huawei.com
+Signed-off-by: Junxian Huang <huangjunxian4@hisilicon.com>
+Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/firmware/fw_namespace.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/firmware/fw_namespace.c b/tools/testing/selftests/firmware/fw_namespace.c
-index 5ebc1aec7923..817b2f1e8ee6 100644
---- a/tools/testing/selftests/firmware/fw_namespace.c
-+++ b/tools/testing/selftests/firmware/fw_namespace.c
-@@ -129,7 +129,8 @@ int main(int argc, char **argv)
- 		die("mounting tmpfs to /lib/firmware failed\n");
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+index b8a09d411e2e..68c8c4b225ca 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+@@ -1447,7 +1447,7 @@ struct hns_roce_v2_priv {
  
- 	sys_path = argv[1];
--	asprintf(&fw_path, "/lib/firmware/%s", fw_name);
-+	if (asprintf(&fw_path, "/lib/firmware/%s", fw_name) < 0)
-+		die("error: failed to build full fw_path\n");
- 
- 	setup_fw(fw_path);
+ struct hns_roce_dip {
+ 	u8 dgid[GID_LEN_V2];
+-	u8 dip_idx;
++	u32 dip_idx;
+ 	struct list_head node;	/* all dips are on a list */
+ };
  
 -- 
 2.30.2
