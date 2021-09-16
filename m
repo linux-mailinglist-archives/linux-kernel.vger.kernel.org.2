@@ -2,287 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8308340DA1F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 14:40:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF4B340DA18
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 14:39:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239795AbhIPMl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 08:41:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43102 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239800AbhIPMlX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 08:41:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B1EAE60F6D;
-        Thu, 16 Sep 2021 12:40:01 +0000 (UTC)
-From:   Huacai Chen <chenhuacai@loongson.cn>
-To:     Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier <maz@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        Huacai Chen <chenhuacai@gmail.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Huacai Chen <chenhuacai@loongson.cn>
-Subject: [PATCH V5 10/10] irqchip: Add Loongson PCH LPC controller support
-Date:   Thu, 16 Sep 2021 20:31:38 +0800
-Message-Id: <20210916123138.3490474-11-chenhuacai@loongson.cn>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210916123138.3490474-1-chenhuacai@loongson.cn>
-References: <20210916123138.3490474-1-chenhuacai@loongson.cn>
+        id S239750AbhIPMkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 08:40:47 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3836 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239768AbhIPMkq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 08:40:46 -0400
+Received: from fraeml740-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4H9Gmz2s5Wz67bGM;
+        Thu, 16 Sep 2021 20:37:07 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml740-chm.china.huawei.com (10.206.15.221) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Thu, 16 Sep 2021 14:39:23 +0200
+Received: from localhost.localdomain (10.69.192.58) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Thu, 16 Sep 2021 13:39:19 +0100
+From:   John Garry <john.garry@huawei.com>
+To:     <will@kernel.org>, <mathieu.poirier@linaro.org>,
+        <leo.yan@linaro.org>, <peterz@infradead.org>, <mingo@redhat.com>,
+        <acme@kernel.org>, <mark.rutland@arm.com>,
+        <alexander.shishkin@linux.intel.com>, <jolsa@redhat.com>,
+        <namhyung@kernel.org>
+CC:     <irogers@google.com>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@huawei.com>, <zhangshaokun@hisilicon.com>,
+        <liuqi115@huawei.com>, John Garry <john.garry@huawei.com>
+Subject: [PATCH 0/5] Improve perf list support for hisi uncore PMUs
+Date:   Thu, 16 Sep 2021 20:34:20 +0800
+Message-ID: <1631795665-240946-1-git-send-email-john.garry@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We are preparing to add new Loongson (based on LoongArch, not compatible
-with old MIPS-based Loongson) support. This patch add Loongson PCH LPC
-interrupt controller support.
+Currently event aliases are supported for HiSilicon uncore PMUs, such that
+we get events listed like the following:
 
-Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
----
- drivers/irqchip/Kconfig                |   8 +
- drivers/irqchip/Makefile               |   1 +
- drivers/irqchip/irq-loongson-pch-lpc.c | 203 +++++++++++++++++++++++++
- 3 files changed, 212 insertions(+)
- create mode 100644 drivers/irqchip/irq-loongson-pch-lpc.c
+$perf list
+...
+uncore ddrc:
+  uncore_hisi_ddrc.act_cmd
+       [DDRC active commands. Unit: hisi_sccl,ddrc]
+  uncore_hisi_ddrc.flux_rcmd
+       [DDRC read commands. Unit: hisi_sccl,ddrc]
+  uncore_hisi_ddrc.flux_rd 
+       [DDRC total read operations. Unit: hisi_sccl,ddrc]
+  uncore_hisi_ddrc.flux_wcmd
+... 
 
-diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-index aff08ad824c9..29cd8107690d 100644
---- a/drivers/irqchip/Kconfig
-+++ b/drivers/irqchip/Kconfig
-@@ -593,6 +593,14 @@ config LOONGSON_PCH_MSI
- 	help
- 	  Support for the Loongson PCH MSI Controller.
- 
-+config LOONGSON_PCH_LPC
-+	bool "Loongson PCH LPC Controller"
-+	depends on MACH_LOONGSON64
-+	default MACH_LOONGSON64
-+	select IRQ_DOMAIN_HIERARCHY
-+	help
-+	  Support for the Loongson PCH LPC Controller.
-+
- config MST_IRQ
- 	bool "MStar Interrupt Controller"
- 	depends on ARCH_MEDIATEK || ARCH_MSTARV7 || COMPILE_TEST
-diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
-index eb3fdc6fe808..6fd07980fa47 100644
---- a/drivers/irqchip/Makefile
-+++ b/drivers/irqchip/Makefile
-@@ -112,6 +112,7 @@ obj-$(CONFIG_LOONGSON_HTPIC)		+= irq-loongson-htpic.o
- obj-$(CONFIG_LOONGSON_HTVEC)		+= irq-loongson-htvec.o
- obj-$(CONFIG_LOONGSON_PCH_PIC)		+= irq-loongson-pch-pic.o
- obj-$(CONFIG_LOONGSON_PCH_MSI)		+= irq-loongson-pch-msi.o
-+obj-$(CONFIG_LOONGSON_PCH_LPC)		+= irq-loongson-pch-lpc.o
- obj-$(CONFIG_MST_IRQ)			+= irq-mst-intc.o
- obj-$(CONFIG_SL28CPLD_INTC)		+= irq-sl28cpld.o
- obj-$(CONFIG_MACH_REALTEK_RTL)		+= irq-realtek-rtl.o
-diff --git a/drivers/irqchip/irq-loongson-pch-lpc.c b/drivers/irqchip/irq-loongson-pch-lpc.c
-new file mode 100644
-index 000000000000..06053f377af8
---- /dev/null
-+++ b/drivers/irqchip/irq-loongson-pch-lpc.c
-@@ -0,0 +1,203 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Loongson LPC Interrupt Controller support
-+ *
-+ * Copyright (C) 2020-2021 Loongson Technology Corporation Limited
-+ */
-+
-+#define pr_fmt(fmt) "lpc: " fmt
-+
-+#include <linux/interrupt.h>
-+#include <linux/irq.h>
-+#include <linux/irqchip.h>
-+#include <linux/irqchip/chained_irq.h>
-+#include <linux/irqdomain.h>
-+#include <linux/kernel.h>
-+#include <linux/syscore_ops.h>
-+
-+/* Registers */
-+#define LPC_INT_CTL		0x00
-+#define LPC_INT_ENA		0x04
-+#define LPC_INT_STS		0x08
-+#define LPC_INT_CLR		0x0c
-+#define LPC_INT_POL		0x10
-+#define LPC_COUNT		16
-+
-+struct pch_lpc {
-+	void __iomem		*base;
-+	struct irq_domain	*lpc_domain;
-+	struct fwnode_handle	*domain_handle;
-+	raw_spinlock_t		lpc_lock;
-+	u32			saved_reg_ctl;
-+	u32			saved_reg_ena;
-+	u32			saved_reg_pol;
-+};
-+
-+struct pch_lpc *pch_lpc_priv;
-+
-+static void ack_lpc_irq(struct irq_data *d)
-+{
-+	unsigned long flags;
-+
-+	raw_spin_lock_irqsave(&pch_lpc_priv->lpc_lock, flags);
-+	writel(0x1 << d->irq, pch_lpc_priv->base + LPC_INT_CLR);
-+	raw_spin_unlock_irqrestore(&pch_lpc_priv->lpc_lock, flags);
-+}
-+static void mask_lpc_irq(struct irq_data *d)
-+{
-+	unsigned long flags;
-+
-+	raw_spin_lock_irqsave(&pch_lpc_priv->lpc_lock, flags);
-+	writel(readl(pch_lpc_priv->base + LPC_INT_ENA) & (~(0x1 << (d->irq))),
-+			pch_lpc_priv->base + LPC_INT_ENA);
-+	raw_spin_unlock_irqrestore(&pch_lpc_priv->lpc_lock, flags);
-+}
-+
-+static void mask_ack_lpc_irq(struct irq_data *d)
-+{
-+}
-+
-+static void unmask_lpc_irq(struct irq_data *d)
-+{
-+	unsigned long flags;
-+
-+	raw_spin_lock_irqsave(&pch_lpc_priv->lpc_lock, flags);
-+	writel(readl(pch_lpc_priv->base + LPC_INT_ENA) | (0x1 << (d->irq)),
-+			pch_lpc_priv->base + LPC_INT_ENA);
-+	raw_spin_unlock_irqrestore(&pch_lpc_priv->lpc_lock, flags);
-+}
-+
-+static struct irq_chip pch_lpc_irq_chip = {
-+	.name			= "PCH LPC",
-+	.irq_mask		= mask_lpc_irq,
-+	.irq_unmask		= unmask_lpc_irq,
-+	.irq_ack		= ack_lpc_irq,
-+	.irq_mask_ack		= mask_ack_lpc_irq,
-+	.irq_eoi		= unmask_lpc_irq,
-+	.flags			= IRQCHIP_SKIP_SET_WAKE,
-+};
-+
-+static void lpc_irq_dispatch(struct irq_desc *desc)
-+{
-+	struct irq_chip *chip = irq_desc_get_chip(desc);
-+	u32 pending;
-+
-+	chained_irq_enter(chip, desc);
-+
-+	pending = readl(pch_lpc_priv->base + LPC_INT_ENA);
-+	pending &= readl(pch_lpc_priv->base + LPC_INT_STS);
-+	if (!pending)
-+		spurious_interrupt();
-+
-+	while (pending) {
-+		int bit = __ffs(pending);
-+
-+		generic_handle_irq(bit);
-+		pending &= ~BIT(bit);
-+	}
-+	chained_irq_exit(chip, desc);
-+}
-+
-+static int pch_lpc_map(struct irq_domain *d, unsigned int irq,
-+			irq_hw_number_t hw)
-+{
-+	irq_set_chip_and_handler(irq, &pch_lpc_irq_chip, handle_level_irq);
-+	return 0;
-+}
-+
-+static const struct irq_domain_ops pch_lpc_domain_ops = {
-+	.map = pch_lpc_map,
-+	.xlate = irq_domain_xlate_onecell,
-+};
-+
-+static void pch_lpc_reset(struct pch_lpc *priv)
-+{
-+	/* Enable the LPC interrupt, bit31: en  bit30: edge */
-+	writel(0x80000000, priv->base + LPC_INT_CTL);
-+	writel(0, priv->base + LPC_INT_ENA);
-+	/* Clear all 18-bit interrpt bit */
-+	writel(0x3ffff, priv->base + LPC_INT_CLR);
-+}
-+
-+static int pch_lpc_disabled(struct pch_lpc *priv)
-+{
-+	return (readl(priv->base + LPC_INT_ENA) == 0xffffffff) &&
-+			(readl(priv->base + LPC_INT_STS) == 0xffffffff);
-+}
-+
-+static int pch_lpc_suspend(void)
-+{
-+	pch_lpc_priv->saved_reg_ctl = readl(pch_lpc_priv->base + LPC_INT_CTL);
-+	pch_lpc_priv->saved_reg_ena = readl(pch_lpc_priv->base + LPC_INT_ENA);
-+	pch_lpc_priv->saved_reg_pol = readl(pch_lpc_priv->base + LPC_INT_POL);
-+	return 0;
-+}
-+
-+static void pch_lpc_resume(void)
-+{
-+	writel(pch_lpc_priv->saved_reg_ctl, pch_lpc_priv->base + LPC_INT_CTL);
-+	writel(pch_lpc_priv->saved_reg_ena, pch_lpc_priv->base + LPC_INT_ENA);
-+	writel(pch_lpc_priv->saved_reg_pol, pch_lpc_priv->base + LPC_INT_POL);
-+}
-+
-+static struct syscore_ops pch_lpc_syscore_ops = {
-+	.suspend = pch_lpc_suspend,
-+	.resume = pch_lpc_resume,
-+};
-+
-+struct irq_domain *pch_lpc_acpi_init(struct irq_domain *parent,
-+					struct acpi_madt_lpc_pic *acpi_pchlpc)
-+{
-+	int parent_irq;
-+	struct pch_lpc *priv;
-+	struct irq_fwspec fwspec;
-+
-+	if (!acpi_pchlpc)
-+		return NULL;
-+
-+	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return NULL;
-+
-+	raw_spin_lock_init(&priv->lpc_lock);
-+
-+	priv->base = ioremap(acpi_pchlpc->address, acpi_pchlpc->size);
-+	if (!priv->base)
-+		goto free_priv;
-+
-+	if (pch_lpc_disabled(priv)) {
-+		pr_err("Failed to get LPC status\n");
-+		goto iounmap_base;
-+	}
-+
-+	priv->domain_handle = irq_domain_alloc_fwnode((phys_addr_t *)acpi_pchlpc);
-+	if (!priv->domain_handle) {
-+		pr_err("Unable to allocate domain handle\n");
-+		goto iounmap_base;
-+	}
-+	priv->lpc_domain = irq_domain_add_legacy(NULL, LPC_COUNT, 0, 0,
-+						&pch_lpc_domain_ops, priv);
-+	if (!priv->lpc_domain) {
-+		pr_err("Failed to create IRQ domain\n");
-+		goto iounmap_base;
-+	}
-+	pch_lpc_reset(priv);
-+
-+	fwspec.param_count = 2;
-+	fwspec.param[0] = acpi_pchlpc->cascade;
-+	fwspec.param[1] = IRQ_TYPE_LEVEL_HIGH;
-+	parent_irq = irq_domain_alloc_irqs(parent, 1, NUMA_NO_NODE, &fwspec);
-+	irq_set_chained_handler_and_data(parent_irq, lpc_irq_dispatch, priv);
-+	pch_lpc_priv = priv;
-+
-+	register_syscore_ops(&pch_lpc_syscore_ops);
-+
-+	return irq_find_matching_fwnode(priv->domain_handle, DOMAIN_BUS_ANY);
-+
-+iounmap_base:
-+	iounmap(priv->base);
-+free_priv:
-+	kfree(priv);
-+
-+	return NULL;
-+}
+However we still get the events listed from the PMUs event files, like:
+
+$perf list
+...
+  hisi_sccl1_ddrc0/act_cmd/                          [Kernel PMU event]
+  hisi_sccl1_ddrc0/flux_rcmd/                        [Kernel PMU event]
+  hisi_sccl1_ddrc0/flux_rd/                          [Kernel PMU event]
+  hisi_sccl1_ddrc0/flux_wcmd/                        [Kernel PMU event]
+  hisi_sccl1_ddrc0/flux_wr/                          [Kernel PMU event]
+  hisi_sccl1_ddrc0/pre_cmd/                          [Kernel PMU event]
+  hisi_sccl1_ddrc0/rnk_chg/                          [Kernel PMU event]
+  hisi_sccl1_ddrc0/rw_chg/                           [Kernel PMU event]
+  hisi_sccl1_ddrc1/act_cmd/                          [Kernel PMU event]
+...   
+
+The list of events will include every event for every PMU in the sysfs event
+folder, so the list can be huge:
+
+$perf list | grep hisi_scc | wc -l
+783
+
+And it will get larger for the next gen of HiSi SoCs, which has more PMUs.
+
+Fortunately the perf PMU code can merge events when an alias with the
+same name exists. So renaming the events in the JSONs to remove the
+"uncore_hisi_XXX." prefix from the name to fully match the sysfs
+name will mean events are merged. The list will then not show the
+individual events per PMU, and rather just the aliases:
+
+$perf list
+...
+uncore ddrc:
+  act_cmd
+       [DDRC active commands. Unit: hisi_sccl,ddrc]
+  flux_rcmd
+       [DDRC read commands. Unit: hisi_sccl,ddrc]
+  flux_rd
+       [DDRC total read operations. Unit: hisi_sccl,ddrc]
+  flux_wcmd
+       [DDRC write commands. Unit: hisi_sccl,ddrc]
+...
+
+To get the stat for the event, just run something like this:
+
+$perf stat -v -e act_cmd sleep 1                
+Using CPUID 0x00000000480fd010
+act_cmd -> hisi_sccl1_ddrc0/config=0x5/
+act_cmd -> hisi_sccl3_ddrc1/config=0x5/
+act_cmd -> hisi_sccl5_ddrc2/config=0x5/
+act_cmd -> hisi_sccl7_ddrc3/config=0x5/
+act_cmd -> hisi_sccl5_ddrc0/config=0x5/
+Control descriptor is not initialized
+act_cmd: 0 1001546260 1001546260
+act_cmd: 0 1001542780 1001542780
+act_cmd: 0 1001531630 1001531630
+act_cmd: 0 1001518570 1001518570
+act_cmd: 0 1001527830 1001527830
+
+ Performance counter stats for 'system wide':  
+
+            48,142      act_cmd
+
+       1.001518294 seconds time elapsed
+
+And to run for an individual PMU, run something like this:
+
+$perf stat -v -e hisi_sccl1_ddrc0/act_cmd/ sleep 1
+
+hisi_sccl1_ddrc0/act_cmd/: 0 1000818310 1000818310
+
+ Performance counter stats for 'system wide':
+
+                 0      hisi_sccl1_ddrc0/act_cmd/
+
+       1.000827061 seconds time elapsed
+
+I expect that having the same event name for different types of PMUs
+may give unexpected results, so best to use -v option to verify the 
+PMUs used are as expected.
+
+John Garry (5):
+  perf parse-events: Set numeric term config
+  perf jevents: Support ConfigCode
+  perf test: Verify more event members in pmu-events test
+  perf test: Add pmu-event test for event described as "config="
+  perf vendor events arm64: Revise hip08 uncore events
+
+ .../arm64/hisilicon/hip08/uncore-ddrc.json    |  32 ++---
+ .../arm64/hisilicon/hip08/uncore-hha.json     | 120 +++++++++++++++---
+ .../arm64/hisilicon/hip08/uncore-l3c.json     |  52 ++++----
+ .../arch/test/test_soc/sys/uncore.json        |   7 +
+ tools/perf/pmu-events/jevents.c               |  13 +-
+ tools/perf/tests/parse-events.c               |   8 +-
+ tools/perf/tests/pmu-events.c                 |  81 ++++++++++--
+ tools/perf/util/parse-events.c                |   2 +-
+ 8 files changed, 234 insertions(+), 81 deletions(-)
+
 -- 
-2.27.0
+2.26.2
 
