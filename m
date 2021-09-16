@@ -2,177 +2,314 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C7A740D9F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 14:31:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 543C540DA0C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 14:38:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239534AbhIPMdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 08:33:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48786 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239471AbhIPMc7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 08:32:59 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD5EEC061766
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 05:31:38 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id t8so9238724wrq.4
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 05:31:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yVn4bOUftTP0XsVCYOhP2MVjOD5RXLBjZ2je0UhYRc0=;
-        b=UllxjW1pQN4AmYZEbLg7VrErGUqD+1ja2ihP7bNIWt/uTZGlmL71/XP9jjO6KhmKY0
-         fiRtXpVcCH1hQKOY2jdfchmwYGS0XP4lfMRLycLsW6+OfxpIvDESU51aAUOmrcst/rON
-         qWFSoQtqfz711rHCKql1DqY94oNcjEZ2J6WVI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=yVn4bOUftTP0XsVCYOhP2MVjOD5RXLBjZ2je0UhYRc0=;
-        b=6lM2Oe0xBRcsAAVF+ZAiMofKxM8AEOmJUmmXH1+lbJ4x7QFvPfqW1XnRjfPTl2D1FD
-         POQsy/8DNsvQLKnvdKDmsD6dQbbGpShk4cxDz5meB/z/+wO5NVOiypvnI741QGR8hyMQ
-         yzPzNNnV3GcpPT4QkHNRJBTnAC2UA2z4/3ODtxTXNfN/1MPQmudbLHwUzqiQwSjYaMIl
-         nl6l3Htd+paLC5auKAIEhJTVDeS4s74jl1tHK6Nx8PuY74vEvbTWORDdYxwRicCzVdJW
-         pwxF7NBDMU3Yztd5+zyzIjIk7ZdIXgbEBez/X/pFT2n4B5ISv9yYPIEHUUE946Q3kBvi
-         CzAA==
-X-Gm-Message-State: AOAM530zLJUT6vVdsHT+g6Jt/ZyKvjrR/9s0zikkYLdnVSK9sNt3p4BM
-        nxg/CBWOnEh7yM77dcZCDZhVow==
-X-Google-Smtp-Source: ABdhPJyNeVVi6f4gVXn8CFkrZVMl66WAIJsG4jZYF2OG8FsFOYQQOCNHITS4sqBQA+1lZuWg++BXfA==
-X-Received: by 2002:a5d:6da9:: with SMTP id u9mr5766027wrs.155.1631795497459;
-        Thu, 16 Sep 2021 05:31:37 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id g5sm3285526wrq.80.2021.09.16.05.31.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 05:31:36 -0700 (PDT)
-Date:   Thu, 16 Sep 2021 14:31:34 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Oded Gabbay <ogabbay@kernel.org>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Gal Pressman <galpress@amazon.com>,
-        Yossi Leybovich <sleybo@amazon.com>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Dave Airlie <airlied@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>
-Subject: Re: [PATCH v6 0/2] Add p2p via dmabuf to habanalabs
-Message-ID: <YUM5JoMMK7gceuKZ@phenom.ffwll.local>
-Mail-Followup-To: Oded Gabbay <ogabbay@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Gal Pressman <galpress@amazon.com>,
-        Yossi Leybovich <sleybo@amazon.com>,
-        Maling list - DRI developers <dri-devel@lists.freedesktop.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Doug Ledford <dledford@redhat.com>, Dave Airlie <airlied@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Leon Romanovsky <leonro@nvidia.com>, Christoph Hellwig <hch@lst.de>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" <linaro-mm-sig@lists.linaro.org>
-References: <20210912165309.98695-1-ogabbay@kernel.org>
- <YUCvNzpyC091KeaJ@phenom.ffwll.local>
- <20210914161218.GF3544071@ziepe.ca>
- <CAFCwf13322953Txr3Afa_MomuD148vnfpEog0xzW7FPWH9=6fg@mail.gmail.com>
+        id S239593AbhIPMjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 08:39:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41648 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239561AbhIPMjr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 08:39:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B8CC960F6D;
+        Thu, 16 Sep 2021 12:38:24 +0000 (UTC)
+From:   Huacai Chen <chenhuacai@loongson.cn>
+To:     Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier <maz@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
+        Huacai Chen <chenhuacai@gmail.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Huacai Chen <chenhuacai@loongson.cn>
+Subject: [PATCH V5 07/10] irqchip/loongson-liointc: Add ACPI init support
+Date:   Thu, 16 Sep 2021 20:31:35 +0800
+Message-Id: <20210916123138.3490474-8-chenhuacai@loongson.cn>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210916123138.3490474-1-chenhuacai@loongson.cn>
+References: <20210916123138.3490474-1-chenhuacai@loongson.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFCwf13322953Txr3Afa_MomuD148vnfpEog0xzW7FPWH9=6fg@mail.gmail.com>
-X-Operating-System: Linux phenom 5.10.0-8-amd64 
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 10:45:36AM +0300, Oded Gabbay wrote:
-> On Tue, Sep 14, 2021 at 7:12 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> >
-> > On Tue, Sep 14, 2021 at 04:18:31PM +0200, Daniel Vetter wrote:
-> > > On Sun, Sep 12, 2021 at 07:53:07PM +0300, Oded Gabbay wrote:
-> > > > Hi,
-> > > > Re-sending this patch-set following the release of our user-space TPC
-> > > > compiler and runtime library.
-> > > >
-> > > > I would appreciate a review on this.
-> > >
-> > > I think the big open we have is the entire revoke discussions. Having the
-> > > option to let dma-buf hang around which map to random local memory ranges,
-> > > without clear ownership link and a way to kill it sounds bad to me.
-> > >
-> > > I think there's a few options:
-> > > - We require revoke support. But I've heard rdma really doesn't like that,
-> > >   I guess because taking out an MR while holding the dma_resv_lock would
-> > >   be an inversion, so can't be done. Jason, can you recap what exactly the
-> > >   hold-up was again that makes this a no-go?
-> >
-> > RDMA HW can't do revoke.
+We are preparing to add new Loongson (based on LoongArch, not compatible
+with old MIPS-based Loongson) support. LoongArch use ACPI other than DT
+as its boot protocol, so add ACPI init support.
 
-Like why? I'm assuming when the final open handle or whatever for that MR
-is closed, you do clean up everything? Or does that MR still stick around
-forever too?
+Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+---
+ drivers/irqchip/irq-loongson-liointc.c | 200 +++++++++++++++----------
+ 1 file changed, 121 insertions(+), 79 deletions(-)
 
-> > So we have to exclude almost all the HW and several interesting use
-> > cases to enable a revoke operation.
-> >
-> > >   - For non-revokable things like these dma-buf we'd keep a drm_master
-> > >     reference around. This would prevent the next open to acquire
-> > >     ownership rights, which at least prevents all the nasty potential
-> > >     problems.
-> >
-> > This is what I generally would expect, the DMABUF FD and its DMA
-> > memory just floats about until the unrevokable user releases it, which
-> > happens when the FD that is driving the import eventually gets closed.
-> This is exactly what we are doing in the driver. We make sure
-> everything is valid until the unrevokable user releases it and that
-> happens only when the dmabuf fd gets closed.
-> And the user can't close it's fd of the device until he performs the
-> above, so there is no leakage between users.
-
-Maybe I got the device security model all wrong, but I thought Guadi is
-single user, and the only thing it protects is the system against the
-Gaudi device trhough iommu/device gart. So roughly the following can
-happen:
-
-1. User A opens gaudi device, sets up dma-buf export
-
-2. User A registers that with RDMA, or anything else that doesn't support
-revoke.
-
-3. User A closes gaudi device
-
-4. User B opens gaudi device, assumes that it has full control over the
-device and uploads some secrets, which happen to end up in the dma-buf
-region user A set up
-
-5. User B extracts secrets.
-
-> > I still don't think any of the complexity is needed, pinnable memory
-> > is a thing in Linux, just account for it in mlocked and that is
-> > enough.
-
-It's not mlocked memory, it's mlocked memory and I can exfiltrate it.
-Mlock is fine, exfiltration not so much. It's mlock, but a global pool and
-if you didn't munlock then the next mlock from a completely different user
-will alias with your stuff.
-
-Or is there something that prevents that? Oded at least explain that gaudi
-works like a gpu from 20 years ago, single user, no security at all within
-the device.
--Daniel
+diff --git a/drivers/irqchip/irq-loongson-liointc.c b/drivers/irqchip/irq-loongson-liointc.c
+index 649c58391618..c034b85d5246 100644
+--- a/drivers/irqchip/irq-loongson-liointc.c
++++ b/drivers/irqchip/irq-loongson-liointc.c
+@@ -16,10 +16,14 @@
+ #include <linux/smp.h>
+ #include <linux/irqchip/chained_irq.h>
+ 
++#ifdef CONFIG_MIPS
+ #include <loongson.h>
++#else
++#include <asm/loongson.h>
++#endif
+ 
+ #define LIOINTC_CHIP_IRQ	32
+-#define LIOINTC_NUM_PARENT 4
++#define LIOINTC_NUM_PARENT	4
+ #define LIOINTC_NUM_CORES	4
+ 
+ #define LIOINTC_INTC_CHIP_START	0x20
+@@ -41,6 +45,7 @@ struct liointc_handler_data {
+ };
+ 
+ struct liointc_priv {
++	struct fwnode_handle		*domain_handle;
+ 	struct irq_chip_generic		*gc;
+ 	struct liointc_handler_data	handler[LIOINTC_NUM_PARENT];
+ 	void __iomem			*core_isr[LIOINTC_NUM_CORES];
+@@ -53,7 +58,7 @@ static void liointc_chained_handle_irq(struct irq_desc *desc)
+ 	struct liointc_handler_data *handler = irq_desc_get_handler_data(desc);
+ 	struct irq_chip *chip = irq_desc_get_chip(desc);
+ 	struct irq_chip_generic *gc = handler->priv->gc;
+-	int core = get_ebase_cpunum() % LIOINTC_NUM_CORES;
++	int core = cpu_logical_map(smp_processor_id()) % LIOINTC_NUM_CORES;
+ 	u32 pending;
+ 
+ 	chained_irq_enter(chip, desc);
+@@ -143,97 +148,61 @@ static void liointc_resume(struct irq_chip_generic *gc)
+ 	irq_gc_unlock_irqrestore(gc, flags);
+ }
+ 
+-static const char * const parent_names[] = {"int0", "int1", "int2", "int3"};
+-static const char * const core_reg_names[] = {"isr0", "isr1", "isr2", "isr3"};
++static int parent_irq[LIOINTC_NUM_PARENT];
++static u32 parent_int_map[LIOINTC_NUM_PARENT];
++static const char *const parent_names[] = {"int0", "int1", "int2", "int3"};
++static const char *const core_reg_names[] = {"isr0", "isr1", "isr2", "isr3"};
+ 
+-static void __iomem *liointc_get_reg_byname(struct device_node *node,
+-						const char *name)
+-{
+-	int index = of_property_match_string(node, "reg-names", name);
+-
+-	if (index < 0)
+-		return NULL;
+-
+-	return of_iomap(node, index);
+-}
+-
+-static int __init liointc_of_init(struct device_node *node,
+-				  struct device_node *parent)
++static int liointc_init(phys_addr_t addr, unsigned long size, int revision,
++		struct fwnode_handle *domain_handle, struct device_node *node)
+ {
++	int i, index, err;
++	void __iomem *base;
++	struct irq_chip_type *ct;
+ 	struct irq_chip_generic *gc;
+ 	struct irq_domain *domain;
+-	struct irq_chip_type *ct;
+ 	struct liointc_priv *priv;
+-	void __iomem *base;
+-	u32 of_parent_int_map[LIOINTC_NUM_PARENT];
+-	int parent_irq[LIOINTC_NUM_PARENT];
+-	bool have_parent = FALSE;
+-	int sz, i, err = 0;
+ 
+ 	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
+ 	if (!priv)
+ 		return -ENOMEM;
+ 
+-	if (of_device_is_compatible(node, "loongson,liointc-2.0")) {
+-		base = liointc_get_reg_byname(node, "main");
+-		if (!base) {
+-			err = -ENODEV;
+-			goto out_free_priv;
+-		}
++	base = ioremap(addr, size);
++	if (!base)
++		goto out_free_priv;
+ 
+-		for (i = 0; i < LIOINTC_NUM_CORES; i++)
+-			priv->core_isr[i] = liointc_get_reg_byname(node, core_reg_names[i]);
+-		if (!priv->core_isr[0]) {
+-			err = -ENODEV;
+-			goto out_iounmap_base;
+-		}
+-	} else {
+-		base = of_iomap(node, 0);
+-		if (!base) {
+-			err = -ENODEV;
+-			goto out_free_priv;
+-		}
++	priv->domain_handle = domain_handle;
+ 
+-		for (i = 0; i < LIOINTC_NUM_CORES; i++)
+-			priv->core_isr[i] = base + LIOINTC_REG_INTC_STATUS;
+-	}
++	for (i = 0; i < LIOINTC_NUM_CORES; i++)
++		priv->core_isr[i] = base + LIOINTC_REG_INTC_STATUS;
+ 
+-	for (i = 0; i < LIOINTC_NUM_PARENT; i++) {
+-		parent_irq[i] = of_irq_get_byname(node, parent_names[i]);
+-		if (parent_irq[i] > 0)
+-			have_parent = TRUE;
+-	}
+-	if (!have_parent) {
+-		err = -ENODEV;
+-		goto out_iounmap_isr;
+-	}
++	for (i = 0; i < LIOINTC_NUM_PARENT; i++)
++		priv->handler[i].parent_int_map = parent_int_map[i];
+ 
+-	sz = of_property_read_variable_u32_array(node,
+-						"loongson,parent_int_map",
+-						&of_parent_int_map[0],
+-						LIOINTC_NUM_PARENT,
+-						LIOINTC_NUM_PARENT);
+-	if (sz < 4) {
+-		pr_err("loongson-liointc: No parent_int_map\n");
+-		err = -ENODEV;
+-		goto out_iounmap_isr;
+-	}
++#ifdef CONFIG_OF
++	if (revision > 1) {
++		for (i = 0; i < LIOINTC_NUM_CORES; i++) {
++			index = of_property_match_string(node, "reg-names", core_reg_names[i]);
+ 
+-	for (i = 0; i < LIOINTC_NUM_PARENT; i++)
+-		priv->handler[i].parent_int_map = of_parent_int_map[i];
++			if (index < 0)
++				return -EINVAL;
++
++			priv->core_isr[i] = of_iomap(node, index);
++		}
++	}
++#endif
+ 
+ 	/* Setup IRQ domain */
+-	domain = irq_domain_add_linear(node, 32,
++	domain = irq_domain_create_linear(domain_handle, LIOINTC_CHIP_IRQ,
+ 					&irq_generic_chip_ops, priv);
+ 	if (!domain) {
+ 		pr_err("loongson-liointc: cannot add IRQ domain\n");
+-		err = -EINVAL;
+-		goto out_iounmap_isr;
++		goto out_iounmap;
+ 	}
+ 
+-	err = irq_alloc_domain_generic_chips(domain, 32, 1,
+-					node->full_name, handle_level_irq,
+-					IRQ_NOPROBE, 0, 0);
++	err = irq_alloc_domain_generic_chips(domain, LIOINTC_CHIP_IRQ, 1,
++					(node ? node->full_name : "LIOINTC"),
++					handle_level_irq, 0, IRQ_NOPROBE, 0);
+ 	if (err) {
+ 		pr_err("loongson-liointc: unable to register IRQ domain\n");
+ 		goto out_free_domain;
+@@ -293,20 +262,93 @@ static int __init liointc_of_init(struct device_node *node,
+ 
+ out_free_domain:
+ 	irq_domain_remove(domain);
+-out_iounmap_isr:
+-	for (i = 0; i < LIOINTC_NUM_CORES; i++) {
+-		if (!priv->core_isr[i])
+-			continue;
+-		iounmap(priv->core_isr[i]);
+-	}
+-out_iounmap_base:
++out_iounmap:
+ 	iounmap(base);
+ out_free_priv:
+ 	kfree(priv);
+ 
+-	return err;
++	return -EINVAL;
++}
++
++#ifdef CONFIG_OF
++
++static int __init liointc_of_init(struct device_node *node,
++				  struct device_node *parent)
++{
++	bool have_parent = FALSE;
++	int sz, i, index, revision, err = 0;
++	struct resource res;
++
++	if (!of_device_is_compatible(node, "loongson,liointc-2.0")) {
++		index = 0;
++		revision = 1;
++	} else {
++		index = of_property_match_string(node, "reg-names", "main");
++		revision = 2;
++	}
++
++	if (of_address_to_resource(node, index, &res))
++		return -EINVAL;
++
++	for (i = 0; i < LIOINTC_NUM_PARENT; i++) {
++		parent_irq[i] = of_irq_get_byname(node, parent_names[i]);
++		if (parent_irq[i] > 0)
++			have_parent = TRUE;
++	}
++	if (!have_parent)
++		return -ENODEV;
++
++	sz = of_property_read_variable_u32_array(node,
++						"loongson,parent_int_map",
++						&parent_int_map[0],
++						LIOINTC_NUM_PARENT,
++						LIOINTC_NUM_PARENT);
++	if (sz < 4) {
++		pr_err("loongson-liointc: No parent_int_map\n");
++		return -ENODEV;
++	}
++
++	err = liointc_init(res.start, resource_size(&res),
++			revision, of_node_to_fwnode(node), node);
++	if (err < 0)
++		return err;
++
++	return 0;
+ }
+ 
+ IRQCHIP_DECLARE(loongson_liointc_1_0, "loongson,liointc-1.0", liointc_of_init);
+ IRQCHIP_DECLARE(loongson_liointc_1_0a, "loongson,liointc-1.0a", liointc_of_init);
+ IRQCHIP_DECLARE(loongson_liointc_2_0, "loongson,liointc-2.0", liointc_of_init);
++
++#endif
++
++#ifdef CONFIG_ACPI
++
++struct irq_domain *liointc_acpi_init(struct irq_domain *parent,
++				     struct acpi_madt_lio_pic *acpi_liointc)
++{
++	int ret;
++	struct fwnode_handle *domain_handle;
++
++	parent_int_map[0] = acpi_liointc->cascade_map[0];
++	parent_int_map[1] = acpi_liointc->cascade_map[1];
++
++	parent_irq[0] = irq_create_mapping(parent, acpi_liointc->cascade[0]);
++	if (!cpu_has_extioi)
++		parent_irq[1] = irq_create_mapping(parent, acpi_liointc->cascade[1]);
++
++	domain_handle = irq_domain_alloc_fwnode((phys_addr_t *)acpi_liointc);
++	if (!domain_handle) {
++		pr_err("Unable to allocate domain handle\n");
++		return NULL;
++	}
++
++	ret = liointc_init(acpi_liointc->address, acpi_liointc->size,
++			   1, domain_handle, NULL);
++	if (ret < 0)
++		return NULL;
++
++	return irq_find_matching_fwnode(domain_handle, DOMAIN_BUS_ANY);
++}
++
++#endif
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+2.27.0
+
