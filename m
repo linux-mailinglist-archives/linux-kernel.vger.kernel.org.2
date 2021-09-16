@@ -2,182 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FD6340D643
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 11:33:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CA3A40D604
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 11:24:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235591AbhIPJfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 05:35:06 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:19988 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229494AbhIPJfC (ORCPT
+        id S235321AbhIPJZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 05:25:24 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:16264 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235219AbhIPJZX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 05:35:02 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4H9BcY5XwSzbmTl;
-        Thu, 16 Sep 2021 17:29:33 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Thu, 16 Sep 2021 17:33:40 +0800
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.8; Thu, 16 Sep
- 2021 17:33:40 +0800
-Subject: Re: [Linuxarm] Re: [PATCH net-next v2 3/3] skbuff: keep track of pp
- page when __skb_frag_ref() is called
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-CC:     Jesper Dangaard Brouer <jbrouer@redhat.com>, <brouer@redhat.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
-        <hawk@kernel.org>, <jonathan.lemon@gmail.com>, <alobakin@pm.me>,
-        <willemb@google.com>, <cong.wang@bytedance.com>,
-        <pabeni@redhat.com>, <haokexin@gmail.com>, <nogikh@google.com>,
-        <elver@google.com>, <memxor@gmail.com>, <edumazet@google.com>,
-        <dsahern@gmail.com>
-References: <20210914121114.28559-1-linyunsheng@huawei.com>
- <20210914121114.28559-4-linyunsheng@huawei.com>
- <CAKgT0Ud7NXpHghiPeGzRg=83jYAP1Dx75z3ZE0qV8mT0zNMDhA@mail.gmail.com>
- <9467ec14-af34-bba4-1ece-6f5ea199ec97@huawei.com>
- <YUHtf+lI8ktBdjsQ@apalos.home>
- <0337e2f6-5428-2c75-71a5-6db31c60650a@redhat.com>
- <fef7d148-95d6-4893-8924-1071ed43ff1b@huawei.com>
- <YUMD2v7ffs1xAjaW@apalos.home>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <ac16cc82-8d98-6a2c-b0a6-7c186808c72c@huawei.com>
-Date:   Thu, 16 Sep 2021 17:33:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Thu, 16 Sep 2021 05:25:23 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4H9BTQ73xtz8t83;
+        Thu, 16 Sep 2021 17:23:22 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.8; Thu, 16 Sep 2021 17:24:01 +0800
+Received: from huawei.com (10.175.127.227) by dggema762-chm.china.huawei.com
+ (10.1.198.204) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.8; Thu, 16
+ Sep 2021 17:24:00 +0800
+From:   Yu Kuai <yukuai3@huawei.com>
+To:     <josef@toxicpanda.com>, <axboe@kernel.dk>, <ming.lei@redhat.com>,
+        <hch@infradead.org>
+CC:     <linux-block@vger.kernel.org>, <nbd@other.debian.org>,
+        <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
+        <yi.zhang@huawei.com>
+Subject: [patch v8 0/7] handle unexpected message from server
+Date:   Thu, 16 Sep 2021 17:33:43 +0800
+Message-ID: <20210916093350.1410403-1-yukuai3@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <YUMD2v7ffs1xAjaW@apalos.home>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme704-chm.china.huawei.com (10.1.199.100) To
- dggpemm500005.china.huawei.com (7.185.36.74)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/9/16 16:44, Ilias Apalodimas wrote:
->>>> appear if we try to pull in your patches on using page pool and recycling
-> 
-> [...]
-> 
->>>> for Tx where TSO and skb_split are used?
->>
->> As my understanding, the problem might exists without tx recycling, because a
->> skb from wire would be passed down to the tcp stack and retransmited back to
->> the wire theoretically. As I am not able to setup a configuration to verify
->> and test it and the handling seems tricky, so I am targetting net-next branch
->> instead of net branch.
->>
->>>>
->>>> I'll be honest, when I came up with the recycling idea for page pool, I
->>>> never intended to support Tx.  I agree with Alexander here,  If people want
->>>> to use it on Tx and think there's value,  we might need to go back to the
->>>> drawing board and see what I've missed.  It's still early and there's a
->>>> handful of drivers using it,  so it will less painful now.
->>
->> Yes, we also need to prototype it to see if there is something missing in the
->> drawing board and how much improvement we get from that:)
->>
->>>
->>> I agree, page_pool is NOT designed or intended for TX support.
->>> E.g. it doesn't make sense to allocate a page_pool instance per socket, as the backing memory structures for page_pool are too much.
->>> As the number RX-queues are more limited it was deemed okay that we use page_pool per RX-queue, which sacrifice some memory to gain speed.
->>
->> As memtioned before, Tx recycling is based on page_pool instance per socket.
->> it shares the page_pool instance with rx.
->>
->> Anyway, based on feedback from edumazet and dsahern, I am still trying to
->> see if the page pool is meaningful for tx.
->>
->>>
->>>
->>>> The pp_recycle_bit was introduced to make the checking faster, instead of
->>>> getting stuff into cache and check the page signature.  If that ends up
->>>> being counterproductive, we could just replace the entire logic with the
->>>> frag count and the page signature, couldn't we?  In that case we should be
->>>> very cautious and measure potential regression on the standard path.
->>>
->>> +1
->>
->> I am not sure "pp_recycle_bit was introduced to make the checking faster" is a
->> valid. The size of "struct page" is only about 9 words(36/72 bytes), which is
->> mostly to be in the same cache line, and both standard path and recycle path have
->> been touching the "struct page", so it seems the overhead for checking signature
->> seems minimal.
->>
->> I agree that we need to be cautious and measure potential regression on the
->> standard path.
-> 
-> well pp_recycle is on the same cache line boundary with the head_frag we
-> need to decide on recycling. After that we start checking page signatures
-> etc,  which means the default release path remains mostly unaffected.  
-> 
-> I guess what you are saying here, is that 'struct page' is going to be
-> accessed eventually by the default network path,  so there won't be any 
-> noticeable performance hit?  What about the other usecases we have
+This patch set tries to fix that client might oops if nbd server send
+unexpected message to client, for example, our syzkaller report a uaf
+in nbd_read_stat():
 
-Yes.
+Call trace:
+ dump_backtrace+0x0/0x310 arch/arm64/kernel/time.c:78
+ show_stack+0x28/0x38 arch/arm64/kernel/traps.c:158
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x144/0x1b4 lib/dump_stack.c:118
+ print_address_description+0x68/0x2d0 mm/kasan/report.c:253
+ kasan_report_error mm/kasan/report.c:351 [inline]
+ kasan_report+0x134/0x2f0 mm/kasan/report.c:409
+ check_memory_region_inline mm/kasan/kasan.c:260 [inline]
+ __asan_load4+0x88/0xb0 mm/kasan/kasan.c:699
+ __read_once_size include/linux/compiler.h:193 [inline]
+ blk_mq_rq_state block/blk-mq.h:106 [inline]
+ blk_mq_request_started+0x24/0x40 block/blk-mq.c:644
+ nbd_read_stat drivers/block/nbd.c:670 [inline]
+ recv_work+0x1bc/0x890 drivers/block/nbd.c:749
+ process_one_work+0x3ec/0x9e0 kernel/workqueue.c:2147
+ worker_thread+0x80/0x9d0 kernel/workqueue.c:2302
+ kthread+0x1d8/0x1e0 kernel/kthread.c:255
+ ret_from_fork+0x10/0x18 arch/arm64/kernel/entry.S:1174
 
-> for pp_recycle right now?  __skb_frag_unref() in skb_shift() or
-> skb_try_coalesce() (the latter can probably be removed tbh).
+1) At first, a normal io is submitted and completed with scheduler:
 
-If we decide to go with accurate indicator of a pp page, we just need
-to make sure network stack use __skb_frag_unref() and __skb_frag_ref()
-to put and get a page frag, the indicator checking need only done in
-__skb_frag_unref() and __skb_frag_ref(), so the skb_shift() and
-skb_try_coalesce() should be fine too.
+internel_tag = blk_mq_get_tag -> get tag from sched_tags
+ blk_mq_rq_ctx_init
+  sched_tags->rq[internel_tag] = sched_tag->static_rq[internel_tag]
+...
+blk_mq_get_driver_tag
+ __blk_mq_get_driver_tag -> get tag from tags
+ tags->rq[tag] = sched_tag->static_rq[internel_tag]
 
-> 
->>
->> Another way is to use the bit 0 of frag->bv_page ptr to indicate if a frag
->> page is from page pool.
-> 
-> Instead of the 'struct page' signature?  And the pp_recycle bit will
-> continue to exist?  
+So, both tags->rq[tag] and sched_tags->rq[internel_tag] are pointing
+to the request: sched_tags->static_rq[internal_tag]. Even if the
+io is finished.
 
-pp_recycle bit might only exist or is only used for the head page for the skb.
-The bit 0 of frag->bv_page ptr can be used to indicate a frag page uniquely.
-Doing a memcpying of shinfo or "*fragto = *fragfrom" automatically pass the
-indicator to the new shinfo before doing a __skb_frag_ref(), and __skb_frag_ref()
-will increment the _refcount or pp_frag_count according to the bit 0 of
-frag->bv_page.
+2) nbd server send a reply with random tag directly:
 
-By the way, I also prototype the above idea, and it seems to work well too.
+recv_work
+ nbd_read_stat
+  blk_mq_tag_to_rq(tags, tag)
+   rq = tags->rq[tag]
 
-> .
-> Right now the 'naive' explanation on the recycling decision is something like:
-> 
-> if (pp_recycle) <--- recycling bit is set
->     (check page signature) <--- signature matches page pool
-> 		(check fragment refcnt) <--- If frags are enabled and is the last consumer
-> 			recycle
-> 
-> If we can proove the performance is unaffected when we eliminate the first if,
-> then obviously we should remove it.  I'll try running that test here and see,
-> but keep in mind I am only testing on an 1GB interface.  Any chance we can get 
-> measurements on a beefier hardware using hns3 ?
+3) if the sched_tags->static_rq is freed:
 
-Sure, I will try it.
-As the kind of performance overhead is small, any performance testcase in mind?
+blk_mq_sched_free_requests
+ blk_mq_free_rqs(q->tag_set, hctx->sched_tags, i)
+  -> step 2) access rq before clearing rq mapping
+  blk_mq_clear_rq_mapping(set, tags, hctx_idx);
+  __free_pages() -> rq is freed here
 
-> 
->>
->>>
->>>> But in general,  I'd be happier if we only had a simple logic in our
->>>> testing for the pages we have to recycle.  Debugging and understanding this
->>>> otherwise will end up being a mess.
->>>
->>>
-> 
-> [...]
-> 
-> Regards
-> /Ilias
-> .
-> 
+4) Then, nbd continue to use the freed request in nbd_read_stat()
+
+Changes in v8:
+ - add patch 5 to this series.
+ - modify some words.
+Changes in v7:
+ - instead of exposing blk_queue_exit(), using percpu_ref_put()
+ directly.
+ - drop the ref right after nbd_handle_reply().
+Changes in v6:
+ - don't set cmd->status to error if request is completed before
+ nbd_clear_req().
+ - get 'q_usage_counter' to prevent accessing freed request through
+ blk_mq_tag_to_rq(), instead of using blk_mq_find_and_get_req().
+Changes in v5:
+ - move patch 1 & 2 in v4 (patch 4 & 5 in v5) behind
+ - add some comment in patch 5
+Changes in v4:
+ - change the name of the patchset, since uaf is not the only problem
+ if server send unexpected reply message.
+ - instead of adding new interface, use blk_mq_find_and_get_req().
+ - add patch 5 to this series
+Changes in v3:
+ - v2 can't fix the problem thoroughly, add patch 3-4 to this series.
+ - modify descriptions.
+ - patch 5 is just a cleanup
+Changes in v2:
+ - as Bart suggested, add a new helper function for drivers to get
+ request by tag.
+
+Yu Kuai (7):
+  nbd: don't handle response without a corresponding request message
+  nbd: make sure request completion won't concurrent
+  nbd: check sock index in nbd_read_stat()
+  nbd: don't start request if nbd_queue_rq() failed
+  nbd: clean up return value checking of sock_xmit()
+  nbd: partition nbd_read_stat() into nbd_read_reply() and
+    nbd_handle_reply()
+  nbd: fix uaf in nbd_handle_reply()
+
+ drivers/block/nbd.c | 135 +++++++++++++++++++++++++++++++-------------
+ 1 file changed, 96 insertions(+), 39 deletions(-)
+
+-- 
+2.31.1
+
