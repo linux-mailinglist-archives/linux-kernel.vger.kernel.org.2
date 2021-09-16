@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B37440E57B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:27:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B945940DF0B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:06:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243146AbhIPRL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:11:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34052 "EHLO mail.kernel.org"
+        id S232085AbhIPQGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:06:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44740 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349281AbhIPRD4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:03:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DFF3D6187C;
-        Thu, 16 Sep 2021 16:34:49 +0000 (UTC)
+        id S240574AbhIPQFg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:05:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 229C361241;
+        Thu, 16 Sep 2021 16:04:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810090;
-        bh=c7fUCHeXoCaLMfyJzYxzKjsaNOBLhp+B2S0ZdKjyg58=;
+        s=korg; t=1631808255;
+        bh=zKFwVPh6w7sSAUCjNbZlm7mreJ4hxC0yCAVig3VfeiU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jD1HY7KFGgpEapA9d13uvADEB7v4rRe7YftF4Vdn3kWOnwPCoOX9o0xIR0XPx5Zfu
-         Hq2D825WrF2NINa5ipB2FxEeamKVthaGCklJwYcfrMlOAW2wsCY6IdLQoMfImMQhXL
-         ZLMvBu1YXIIUipEmK/uXzQcecgBAdGhRK5qhurwU=
+        b=iOG+MJcKO/g66QH6VB0jfWMVKYCqJOAfStWChhYrGBgIxMxqvPaJu5VAswkhV6YDU
+         ecI1WfDkcN5Boyg0EzOaxPrhhVVftmESqXkhnC0mPsl5qzhoMFyeN11vUJQFpi57dS
+         Q3T5arynjGKLLLTg33n8Uj74bzPmeUao6PHSIQpk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.14 014/432] btrfs: zoned: suppress reclaim error message on EAGAIN
-Date:   Thu, 16 Sep 2021 17:56:03 +0200
-Message-Id: <20210916155811.300358700@linuxfoundation.org>
+        stable@vger.kernel.org, Kris Chaplin <kris.chaplin@intel.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>
+Subject: [PATCH 5.10 019/306] clk: socfpga: agilex: fix up s2f_user0_clk representation
+Date:   Thu, 16 Sep 2021 17:56:04 +0200
+Message-Id: <20210916155754.586782819@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Naohiro Aota <naohiro.aota@wdc.com>
+From: Dinh Nguyen <dinguyen@kernel.org>
 
-commit ba86dd9fe60e5853fbff96f2658212908b83f271 upstream.
+commit f817c132db679d492d96c60993fa2f2c67ab18d0 upstream.
 
-btrfs_relocate_chunk() can fail with -EAGAIN when e.g. send operations are
-running. The message can fail btrfs/187 and it's unnecessary because we
-anyway add it back to the reclaim list.
+Correct the s2f_user0_mux clock representation.
 
-btrfs_reclaim_bgs_work()
-`-> btrfs_relocate_chunk()
-    `-> btrfs_relocate_block_group()
-        `-> reloc_chunk_start()
-            `-> if (fs_info->send_in_progress)
-                `-> return -EAGAIN
-
-CC: stable@vger.kernel.org # 5.13+
-Fixes: 18bb8bbf13c1 ("btrfs: zoned: automatically reclaim zones")
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Fixes: 80c6b7a0894f ("clk: socfpga: agilex: add clock driver for the Agilex platform")
+Cc: stable@vger.kernel.org
+Signed-off-by: Kris Chaplin <kris.chaplin@intel.com>
+Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
+Link: https://lore.kernel.org/r/20210713144621.605140-2-dinguyen@kernel.org
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/btrfs/block-group.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/clk/socfpga/clk-agilex.c |    9 +++++++++
+ 1 file changed, 9 insertions(+)
 
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -1561,7 +1561,7 @@ void btrfs_reclaim_bgs_work(struct work_
- 				div64_u64(zone_unusable * 100, bg->length));
- 		trace_btrfs_reclaim_block_group(bg);
- 		ret = btrfs_relocate_chunk(fs_info, bg->start);
--		if (ret)
-+		if (ret && ret != -EAGAIN)
- 			btrfs_err(fs_info, "error relocating chunk %llu",
- 				  bg->start);
+--- a/drivers/clk/socfpga/clk-agilex.c
++++ b/drivers/clk/socfpga/clk-agilex.c
+@@ -193,6 +193,13 @@ static const struct clk_parent_data sdmm
+ 	  .name = "boot_clk", },
+ };
  
++static const struct clk_parent_data s2f_user0_mux[] = {
++	{ .fw_name = "s2f_user0_free_clk",
++	  .name = "s2f_user0_free_clk", },
++	{ .fw_name = "boot_clk",
++	  .name = "boot_clk", },
++};
++
+ static const struct clk_parent_data s2f_user1_mux[] = {
+ 	{ .fw_name = "s2f_user1_free_clk",
+ 	  .name = "s2f_user1_free_clk", },
+@@ -306,6 +313,8 @@ static const struct stratix10_gate_clock
+ 	  4, 0x98, 0, 16, 0x88, 3, 0},
+ 	{ AGILEX_SDMMC_CLK, "sdmmc_clk", NULL, sdmmc_mux, ARRAY_SIZE(sdmmc_mux), 0, 0x7C,
+ 	  5, 0, 0, 0, 0x88, 4, 4},
++	{ AGILEX_S2F_USER0_CLK, "s2f_user0_clk", NULL, s2f_user0_mux, ARRAY_SIZE(s2f_user0_mux), 0, 0x24,
++	  6, 0, 0, 0, 0x30, 2, 0},
+ 	{ AGILEX_S2F_USER1_CLK, "s2f_user1_clk", NULL, s2f_user1_mux, ARRAY_SIZE(s2f_user1_mux), 0, 0x7C,
+ 	  6, 0, 0, 0, 0x88, 5, 0},
+ 	{ AGILEX_PSI_REF_CLK, "psi_ref_clk", NULL, psi_mux, ARRAY_SIZE(psi_mux), 0, 0x7C,
 
 
