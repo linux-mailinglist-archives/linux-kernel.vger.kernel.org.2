@@ -2,111 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7BCE40DD08
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 16:41:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EE0A40DD15
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 16:43:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238680AbhIPOmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 10:42:37 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:52704
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238671AbhIPOmf (ORCPT
+        id S238711AbhIPOpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 10:45:00 -0400
+Received: from mail-io1-f52.google.com ([209.85.166.52]:42734 "EHLO
+        mail-io1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237526AbhIPOo7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 10:42:35 -0400
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com [209.85.221.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 7A61F3FE09
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 14:41:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1631803273;
-        bh=sXPKIv1Z5blwcAQur9L48AooSj2mfgTEzoX9n61thXY=;
-        h=From:To:Subject:Date:Message-Id:MIME-Version;
-        b=otlLfJpaMdoB8RAvk4PlL2sJvbDgrcXli09EPpALNJ6w7LRceUN2wddUWfcNu2S6K
-         tjb0vXQv7fapBaUQUfrLHU/owfH/TQP5du1HURCNBuB3mTY91XUo5urcFFe8MNT/vl
-         qlRsScIYbCFJYfLwi84ed22Agun2LHqr9bcsgL4FLmwySt6C+iToFIxqujksDr3zCI
-         j2KJ/nq95MgMKrBJZEQ4N7vhzEqY7h//zukc+Mii7dI7+O8MnJE07XRSN4MumguBUe
-         1FrHFdJhEaZ0Dcm8JqqIlEhLuVDFg7Rr0lhjy/gXGLK4EpvlSofRKZSLaMwlldaQQB
-         X9aXGzZqQKXnQ==
-Received: by mail-wr1-f70.google.com with SMTP id x2-20020a5d54c2000000b0015dfd2b4e34so2518955wrv.6
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 07:41:13 -0700 (PDT)
+        Thu, 16 Sep 2021 10:44:59 -0400
+Received: by mail-io1-f52.google.com with SMTP id b10so8178813ioq.9;
+        Thu, 16 Sep 2021 07:43:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sXPKIv1Z5blwcAQur9L48AooSj2mfgTEzoX9n61thXY=;
-        b=1it67HCqr+u1vpFghqYAezN6KHhdAOCFCQQoL3Z64aJwqpp0/2PHeTCscLfAhk/o+k
-         YOremzul4HlbBQT3LLWTdonsLZjwsUaFLwIgL3KT4bwafrSYZzfbUmvD9vEzAtD/1aSt
-         nzxxbf+ANw2Z5wcaNetIQ+iDAdkxLpvj/bFswvXdIy+P6NRDj4UxmJ/5JrMQCcocBpAe
-         0kJP1NLT1VbnyaHx8EjVFYW8LE9PSXhKPb4e1mkW692TU0NOkq/Zi67B7g3tptN/xlI4
-         WtmNudlEdIllt/tSAXnX/KV7HGHF8Fr181p01S8P0YXwj7yfEHgwimpiYJfyyVKYL8TG
-         Ofow==
-X-Gm-Message-State: AOAM532aGQD566+4OQBOrD+1x+YfMz2WWy6/HJ1ffGoEfQnCgk9d2OMe
-        HsRR1iFQhKC+FUkEr3X1mJx6wGowCTSoEQlCjLmdgUuS9MYsJQYZmJNa8JR/o2tmLOkDfFCahPn
-        MyvwJFcdV7CZT+Btd5qssP8B/D7JYoVPRKJyGYiQVtA==
-X-Received: by 2002:adf:eb02:: with SMTP id s2mr6626645wrn.294.1631803273237;
-        Thu, 16 Sep 2021 07:41:13 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJylucwgzoEGxTQLoEP8E/uaGJMZjuIkjzwRPGytc8aksHOsXXDtMiwWfOrzuySnVSRyt8Xatg==
-X-Received: by 2002:adf:eb02:: with SMTP id s2mr6626629wrn.294.1631803273061;
-        Thu, 16 Sep 2021 07:41:13 -0700 (PDT)
-Received: from kozik-lap.lan (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
-        by smtp.gmail.com with ESMTPSA id u25sm7741432wmj.10.2021.09.16.07.41.10
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PBMbyG66JcsJeX8hysmtBlI8q6/uwacbLt8pVZtH9oY=;
+        b=3oIy7Zp5jijawIACXMMZEP4nqsk7uS79Kr5GF0/bzYSKiZRA71iIJdoyJAwVI1RAUO
+         zrdYHsbC1zn3YSBA3Pf8n2+vzSen1ts81EjpmqQRIifShhLcnJsUSxm1ZtrWXZ0ngy0z
+         j5m5C4Aek27qCa2cF4p7MPHcgmeJqJX7uukQfFXNmheJbGBIjjkVy2DFYcJiDb/fxd0n
+         UKW9dmcmlyQR25n/cfq+H1QPw6eYFN49zWRB6Kfr7RrzeUJSHGrbgFIBNj7vquS2fSJ1
+         J2I1XIlbT5w1zBtzz8+8+ViWtfcMV+ocj/ZI0Snc+pW/D0lP6e8j0vyLybELqloM2dZ4
+         qsOw==
+X-Gm-Message-State: AOAM531YGOMZdmRHwNgkU2efxlVJhU4+AkLA6D7eR2P+ByEGCh5gLnRS
+        7zd5SMN3ue9RUeR/ro4AJw==
+X-Google-Smtp-Source: ABdhPJxxammQEcKK3G2JWaR69oSUKLj81sFdPLSuBn/OtrrWh35XAzDzP/+ey1dgIMCyhEre4XQ7RA==
+X-Received: by 2002:a05:6638:3890:: with SMTP id b16mr4807745jav.65.1631803418434;
+        Thu, 16 Sep 2021 07:43:38 -0700 (PDT)
+Received: from robh.at.kernel.org (96-84-70-89-static.hfc.comcastbusiness.net. [96.84.70.89])
+        by smtp.gmail.com with ESMTPSA id q17sm2011045ilc.81.2021.09.16.07.43.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 07:41:12 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Chanwoo Choi <cw00.choi@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-kernel@vger.kernel.org
-Subject: [RFT][PATCH] regulator: max14577: Revert "regulator: max14577: Add proper module aliases strings"
-Date:   Thu, 16 Sep 2021 16:41:02 +0200
-Message-Id: <20210916144102.120980-1-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        Thu, 16 Sep 2021 07:43:37 -0700 (PDT)
+Received: (nullmailer pid 1327692 invoked by uid 1000);
+        Thu, 16 Sep 2021 14:43:36 -0000
+Date:   Thu, 16 Sep 2021 09:43:36 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     amirmizi6@gmail.com
+Cc:     jgg@ziepe.ca, devicetree@vger.kernel.org, oshrialkoby85@gmail.com,
+        gregkh@linuxfoundation.org, kgoldman@us.ibm.com,
+        robh+dt@kernel.org, alexander.steffen@infineon.com,
+        jarkko@kernel.org, oshri.alkoby@nuvoton.com, peterhuewe@gmx.de,
+        linux-kernel@vger.kernel.org, benoit.houyere@st.com,
+        Eyal.Cohen@nuvoton.com, gcwilson@us.ibm.com, mark.rutland@arm.com,
+        joel@jms.id.au, Dan.Morav@nuvoton.com, shmulik.hager@nuvoton.com,
+        amir.mizinski@nuvoton.com, oren.tanami@nuvoton.com,
+        tmaimon77@gmail.com, arnd@arndb.de,
+        linux-integrity@vger.kernel.org, eajames@linux.ibm.com
+Subject: Re: [PATCH v15 6/6] tpm: Add YAML schema for TPM TIS I2C options
+Message-ID: <YUNYGNktq0HgiThT@robh.at.kernel.org>
+References: <20210914151032.216122-1-amirmizi6@gmail.com>
+ <20210914151032.216122-7-amirmizi6@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210914151032.216122-7-amirmizi6@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 0da6736ecd10b45e535b100acd58df2db4c099d8.
+On Tue, 14 Sep 2021 18:10:32 +0300, amirmizi6@gmail.com wrote:
+> From: Amir Mizinski <amirmizi6@gmail.com>
+> 
+> Add a YAML schema to support tpm tis i2c related dt-bindings for the I2c
+> PTP based physical layer.
+> 
+> This patch adds the documentation for corresponding device tree bindings of
+> I2C based Physical TPM.
+> Refer to the 'I2C Interface Definition' section in
+> 'TCG PC Client PlatformTPMProfile(PTP) Specification' publication
+> for specification.
+> 
+> Signed-off-by: Amir Mizinski <amirmizi6@gmail.com>
+> ---
+>  .../bindings/security/tpm/tpm-tis-i2c.yaml         | 52 ++++++++++++++++++++++
+>  1 file changed, 52 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/security/tpm/tpm-tis-i2c.yaml
+> 
 
-The MODULE_DEVICE_TABLE already creates proper alias.  Having another
-MODULE_ALIAS causes the alias to be duplicated:
-
-  $ modinfo max14577-regulator.ko
-
-  alias:          platform:max77836-regulator
-  alias:          platform:max14577-regulator
-  description:    Maxim 14577/77836 regulator driver
-  alias:          platform:max77836-regulator
-  alias:          platform:max14577-regulator
-
-Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-Fixes: 0da6736ecd10 ("regulator: max14577: Add proper module aliases strings")
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-
----
-
-Not tested. Please test/comment.  This is an RFT also because reverted
-commit said to fix autoloading issue which I even reviewed... but really
-it should not be needed - alias gets duplicated.
----
- drivers/regulator/max14577-regulator.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/drivers/regulator/max14577-regulator.c b/drivers/regulator/max14577-regulator.c
-index 1d78b455cc48..e34face736f4 100644
---- a/drivers/regulator/max14577-regulator.c
-+++ b/drivers/regulator/max14577-regulator.c
-@@ -269,5 +269,3 @@ module_exit(max14577_regulator_exit);
- MODULE_AUTHOR("Krzysztof Kozlowski <krzk@kernel.org>");
- MODULE_DESCRIPTION("Maxim 14577/77836 regulator driver");
- MODULE_LICENSE("GPL");
--MODULE_ALIAS("platform:max14577-regulator");
--MODULE_ALIAS("platform:max77836-regulator");
--- 
-2.30.2
-
+Reviewed-by: Rob Herring <robh@kernel.org>
