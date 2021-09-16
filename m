@@ -2,91 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ABC640EA9D
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 21:06:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4594D40EA9F
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 21:06:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242929AbhIPTHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 15:07:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54284 "EHLO
+        id S242484AbhIPTHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 15:07:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346951AbhIPTH2 (ORCPT
+        with ESMTP id S231225AbhIPTHl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 15:07:28 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B0BEC0613B5;
-        Thu, 16 Sep 2021 11:59:37 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id w19so6730975pfn.12;
-        Thu, 16 Sep 2021 11:59:37 -0700 (PDT)
+        Thu, 16 Sep 2021 15:07:41 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF0CCC05BD33
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 12:00:47 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id c13-20020a17090a558d00b00198e6497a4fso8226935pji.4
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 12:00:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=Mjgi8XeN/cBVgQfdEOFYYeQ4LhqIBS4y+Zl+2GKXRcA=;
-        b=AZ4TNfRWRj4KLFcrJTVjfvUxFkC22yZQ4HdH8pBOha7x5753jTXjlFWh47zz95J0yf
-         S+8Ql2KqA34Nnjjc5TUac+3RjzrPpdUB8MYh/Acts3sV4vZAdI/sAqYu+gqE8oqq97ET
-         zoxwkzwhMS0eA0GEB10a87U+63lV51mqIEvmjUXkyDiiVNHn+rk/+Cp99v8igpvYDCV9
-         CoP5CiXh8XF+qqqx2aJX55qe3qlJghAOzycvcGEJkOjb49+2E1kHQSGXGT/CovAH2xHK
-         Ys0YsWVJPNlNgYCZtVasswS9op5P+1uxvjV1unbuiFR7LHkjlxXZwtT/TnYJRv5jXhTh
-         SS4Q==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gDle1D5qDlY1io3U/w9WI6fFvLYZB9m9Ur/yNTQt+70=;
+        b=TFNc7J9JfrTCpgW2/kVBoKubQATYoDQyXmnnonwqB0SL39hFsbmZWswQP7EKvMDlPX
+         5iAgDjJnygqRUFZtz0fqAL6m8npECs+T23ZVcfcfmyi/Wn7n4E2qxw3gTTXUL/3Orp6o
+         94F2sN6KGdNXJkU4VMBtt0PhALBOuVuX2sjWOF6lfijdwXciVka45bYf4WU/Gz9C8I02
+         du7Z1IGIspXAx6pIsF55QHi4U3exAVgbp6CXq5MBmEvToDAhLqVh+HmR0AHR8gRld25o
+         QdiloMIxTcdQKnbT9w3x9wpgXD484NeLHlI8mCa3SZcfU8VgtYrRfufYdimsS05TyE8Q
+         Pieg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=Mjgi8XeN/cBVgQfdEOFYYeQ4LhqIBS4y+Zl+2GKXRcA=;
-        b=DxB0hm3FrsVvgbu6rlydPmfoMacrszp1Q43QOooIOK4ZQvljZ3tTPPcv95smC4fI1n
-         EluD7LSbJtnrxUHCrlz2M8faixwf//d1DVJn+1W+nQaGmmdSkwgtITviUtVQ9JOdgOWb
-         HPe4ku9AI4DYNRG4dsh898AG6SMlR2O1+mrYPMtBw84pNUAti7bL23tZweEwXbN8My+8
-         iI+uqn4Xc+QpFP8YPzEkXnzWe+bbnHEAbN+qfKCLjSuz4J0bDTJNQl5ADhctesQ5Bjx/
-         VYGdLFZqEwsdkKb9wolptxYus6Ivg5B8OcyJJ9U8bhZUNfoGnP2uJrkbSx9b4c6BCh0Y
-         KXBw==
-X-Gm-Message-State: AOAM530JiU3pn/Ge+CeAWhlg/p47hNXDvgK/UEfeh4prtjqrHvAMA6Hu
-        SKz+72aG+cjgSZRVXFrot1lin2FIH5l1+ygEeVk=
-X-Google-Smtp-Source: ABdhPJyhH/VFfmVOgtnSphG29A7hfX6NmbD34cvjdM1mR9VyA5inKkjD8hQ6PBN4UnCB1ads2yCyJw==
-X-Received: by 2002:a62:8496:0:b0:43c:204e:acc8 with SMTP id k144-20020a628496000000b0043c204eacc8mr6417506pfd.71.1631818776516;
-        Thu, 16 Sep 2021 11:59:36 -0700 (PDT)
-Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
-        by smtp.gmail.com with ESMTPSA id b129sm2199577pfg.157.2021.09.16.11.59.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 11:59:35 -0700 (PDT)
-Message-ID: <61439417.1c69fb81.e4b11.7255@mx.google.com>
-Date:   Thu, 16 Sep 2021 11:59:35 -0700 (PDT)
-X-Google-Original-Date: Thu, 16 Sep 2021 18:59:34 GMT
-From:   Fox Chen <foxhlchen@gmail.com>
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-Subject: RE: [PATCH 5.10 000/306] 5.10.67-rc1 review
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Fox Chen <foxhlchen@gmail.com>
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gDle1D5qDlY1io3U/w9WI6fFvLYZB9m9Ur/yNTQt+70=;
+        b=PtQOlSFb9dcRqqXyBJbQrbiR4qxCKF4YcKe9zGBCNIgV825UdnT1/+22PG3hBJL/8l
+         inmH6o6+d+Igh6EGeHJnFqgE+Gf61FwbsdlP3Fcn01grmC9SFCP1KHsKKol2wYaUVF2r
+         oJxpzTo+vmGFokAF3oqcg63UtsO/1P2C9roaA9/O4q4G1UvDkYOzCugfBEWHD9/n0p3y
+         /t0rx0afj8H3qFav39zmRFkDEGgHmvRezW7YbiNUreKENKp141WZOaxa+tYC1ueLLlm9
+         uN89XT3gaZNM3RV+uTrW5tEfbAlr1eCDrMs1raGv/CNLEHKVS5+GH2NF5gnQKGDKl+yS
+         sdkA==
+X-Gm-Message-State: AOAM531c3ROuXa4ja0BhpPEEaGhIC4QILfoz2UU5mjQNlJWKacBsojyp
+        B6aUt4Owyrt+tHg7aExfzRSeboQ12ECWpEw4hKE4zA==
+X-Google-Smtp-Source: ABdhPJz8WFd7q3yrrn0b7IjuukIdRWzTN5grfcCF/fTtPqjRPmRKQuLgjQPFWOeKIThctEUUyqq7563jAfuUsiswctA=
+X-Received: by 2002:a17:90a:4894:: with SMTP id b20mr7617153pjh.13.1631818847166;
+ Thu, 16 Sep 2021 12:00:47 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210914171551.3223715-1-pgonda@google.com> <YUDcvRB3/QOXSi8H@google.com>
+ <CAMkAt6opZoFfW_DiyJUREBAtd8503C6j+ZbjS9YL3z+bhqHR8Q@mail.gmail.com>
+ <YUDsy4W0/FeIEJDr@google.com> <CAMkAt6r9W=bTzLkojjAuc5VpwJnSzg7+JUp=rnK-jO88hSKmxw@mail.gmail.com>
+ <YUDuv1aTauPz9aqo@google.com> <8d58d4cb-bc0b-30a9-6218-323c9ffd1037@redhat.com>
+ <CAMkAt6oPijfkPjT4ARpVmXfdczChf2k3ACBwK0YZeuGOxMAE8Q@mail.gmail.com>
+ <9feed4e4-937e-2f11-bb56-0da5959c7dbd@redhat.com> <CAKiEG5oirC30Ga=mrzKq24mkwSYvbzMw9AVfL6epVG4O0EZE7A@mail.gmail.com>
+In-Reply-To: <CAKiEG5oirC30Ga=mrzKq24mkwSYvbzMw9AVfL6epVG4O0EZE7A@mail.gmail.com>
+From:   Nathan Tempelman <natet@google.com>
+Date:   Thu, 16 Sep 2021 12:00:36 -0700
+Message-ID: <CAKiEG5qJZ0kk-dZLLp853K634+hTFUEGDtzpQiGxqgoYqP+QAw@mail.gmail.com>
+Subject: Re: [PATCH] KVM: SEV: Disable KVM_CAP_VM_COPY_ENC_CONTEXT_FROM for SEV-ES
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Peter Gonda <pgonda@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        kvm list <kvm@vger.kernel.org>, Marc Orr <marcorr@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        linux-kernel@vger.kernel.org,
+        Steve Rutherford <srutherford@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Sep 2021 17:55:45 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.10.67 release.
-> There are 306 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 18 Sep 2021 15:57:06 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.67-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+On Thu, Sep 16, 2021 at 11:08 AM Nathan Tempelman <natet@google.com> wrote:
+>
+> On Wed, Sep 15, 2021 at 3:33 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
+> >
+> > On 15/09/21 18:10, Peter Gonda wrote:
+> > > svm_vm_copy_asid_from() {
+> > >
+> > >     asid = to_kvm_svm(source_kvm)->sev_info.asid;
+> > > + handle = to_kvm_svm(source_kvm)->sev_info.handle;
+> > > + fd = to_kvm_svm(source_kvm)->sev_info.fd;
+> > > + es_active = to_kvm_svm(source_kvm)->sev_info.es_active;
+> > >
+> > > ...
+> > >
+> > >      /* Set enc_context_owner and copy its encryption context over */
+> > >      mirror_sev = &to_kvm_svm(kvm)->sev_info;
+> > >      mirror_sev->enc_context_owner = source_kvm;
+> > >      mirror_sev->asid = asid;
+> > >      mirror_sev->active = true;
+> > > +  mirror_sev->handle = handle;
+> > > +  mirror_sev->fd = fd;
+> > > + mirror_sev->es_active = es_active;
+> > >
+> > > Paolo would you prefer a patch to enable ES mirroring or continue with
+> > > this patch to disable it for now?
+> >
+> > If it's possible to enable it, it would be better.  The above would be a
+> > reasonable patch for 5.15-rc.
+> >
+> > Paolo
+> >
+>
+> +1. We don't have any immediate plans for sev-es, but it would be nice
+> to have while we're here. But if you want to make the trivial fix I
+> can come along and do it later.
 
-5.10.67-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
-                
-Tested-by: Fox Chen <foxhlchen@gmail.com>
-
++Steve Rutherford
