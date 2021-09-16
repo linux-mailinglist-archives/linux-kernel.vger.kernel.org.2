@@ -2,63 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBECA40DCF4
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 16:38:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAB3940DCF7
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 16:38:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236491AbhIPOji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 10:39:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58654 "EHLO mail.kernel.org"
+        id S238510AbhIPOkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 10:40:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58860 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235955AbhIPOjc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 10:39:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 91E4A6120C;
-        Thu, 16 Sep 2021 14:38:11 +0000 (UTC)
+        id S236152AbhIPOkI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 10:40:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B0B16120C;
+        Thu, 16 Sep 2021 14:38:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631803092;
-        bh=9THwCtBJYOWaA92FDr4unEhQt+b4WDannF0kKlmelkY=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=YuRZRoGWC0l7oFoFWECLSF16/+J1mmRN3HLzVg8jlL1NhLaMtONq2XZvGh0uXq42b
-         ZsQwWlDjE4b5FjVBRtAEm3+Gz5tktXmqdAt+yzsO6RwSu2xGz7NP/fhJiegDDXwrRW
-         efeGyIG+nDyEa0kqpQ49zjhKdERo54JgxuiSgb2XeHE4WJXwtGI0IqKWzNNffdzsRC
-         oK2ArxOo0PF3g21QrCDZXoKoN+/uJpb3TAcGmtSBNvmAHBEI9f4zPENhkweOWe6H84
-         /GGzsPpeZe1VcPoV3j/QePrvdRdNWs0upXFCV8CBtGo7nPR9ZmjuH0EsOYGqCvP6DB
-         wtkaJjkbbAYJQ==
-Message-ID: <dda727c928867ec5194703ab59c1dcfdcb4f6220.camel@kernel.org>
-Subject: Re: [PATCH 01/14] selftests/x86/sgx: Fix a benign linker warning
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Reinette Chatre <reinette.chatre@intel.com>,
-        linux-sgx@vger.kernel.org, shuah@kernel.org
-Cc:     seanjc@google.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Thu, 16 Sep 2021 17:38:09 +0300
-In-Reply-To: <84b02b56d45792971cabf8ba832a9862fb20990e.1631731214.git.reinette.chatre@intel.com>
-References: <cover.1631731214.git.reinette.chatre@intel.com>
-         <84b02b56d45792971cabf8ba832a9862fb20990e.1631731214.git.reinette.chatre@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        s=k20201202; t=1631803127;
+        bh=VizvyrKA/9G+ItaOY/JY1TvKtQ6RYDHfj7esRMFMBEU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=KrTIiPJhTAtfCx/XLWrZwg1PkKsxc0I0pfi6RduJEvRxRUnLknsOowkEottopLauQ
+         bAXfz2xCbNJIHTV+liX94Uyd25Hk4NDafKrKhNJh6J0zJtDrGMLFepx/Eh2DvqopkP
+         K3UuOhrBW1BHVFedY+YGanzFoXLwzPr9y026vqJ4mVpXQnXFUhS9m6VprJTLR5R5Fe
+         EiaQXFC63aNSU+OYV/S0iW7YUlOTCZFXy0rbmBZG61tIzgnPMOz85W0wwCF1C8YuxQ
+         ccbwk7DJhn0ZfsKyP7db8/bJ6IhNohovdblszG6Zsz5j1fULaljcpRXpkZlWmJkkZ4
+         zk9kV9Y8amo2w==
+Date:   Thu, 16 Sep 2021 07:38:46 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Cc:     pshelar@ovn.org, davem@davemloft.net, netdev@vger.kernel.org,
+        dev@openvswitch.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] openvswitch: Fix condition check by using nla_ok()
+Message-ID: <20210916073846.31b43b2a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210916073640.7e87718a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <1631756603-3706451-1-git-send-email-jiasheng@iscas.ac.cn>
+        <20210916073640.7e87718a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-09-15 at 13:30 -0700, Reinette Chatre wrote:
-> From: Sean Christopherson <sean.j.christopherson@intel.com>
->=20
-> Pass a build id of "none" to the linker to suppress a warning about the
-> build id being ignored:
->=20
->   /usr/bin/ld: warning: .note.gnu.build-id section discarded, --build-id
->   ignored.
->=20
-> Link: https://lore.kernel.org/linux-sgx/20191017030340.18301-2-sean.j.chr=
-istopherson@intel.com/
-> Co-developed-by: Cedric Xing <cedric.xing@intel.com>
-> Signed-off-by: Cedric Xing <cedric.xing@intel.com>
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Reinette Chatre <reinette.chatre@intel.com>
+On Thu, 16 Sep 2021 07:36:40 -0700 Jakub Kicinski wrote:
+> On Thu, 16 Sep 2021 01:43:23 +0000 Jiasheng Jiang wrote:
+> > Just using 'rem > 0' might be unsafe, so it's better
+> > to use the nla_ok() instead.
+> > Because we can see from the nla_next() that
+> > '*remaining' might be smaller than 'totlen'. And nla_ok()
+> > will avoid it happening.
+> > 
+> > Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>  
+> 
+> Are the attributes coming from the user space here or are generated 
+> by the kernel / were already validated?  Depending on that this is
+> either a fix and needs to be backported or a possible cleanup.
+> 
+> Please repost with the explanation where attrs come from in the commit
+> message, and if it's indeed a bug please add a Fixes tag.
 
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+And please use different subject for each patch, otherwise patchwork
+bot thinks this is just two versions of the same patch and marks the 
+one posted earlier as Superseded.
 
-/Jarkko
+> If we do need the nla_ok() we should probably also switch to
+> nla_for_each_attr() and nla_for_each_nested().
 
