@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5C8840E6A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:31:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C6CB40E02E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351582AbhIPRXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:23:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41018 "EHLO mail.kernel.org"
+        id S241705AbhIPQUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:20:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48650 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351287AbhIPRPY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:15:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F369061B80;
-        Thu, 16 Sep 2021 16:39:38 +0000 (UTC)
+        id S238278AbhIPQLP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:11:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 913A96136A;
+        Thu, 16 Sep 2021 16:08:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810379;
-        bh=1Csc+8o81KU3aiwd68pdpavxjXbzIBVDOKB8t/TXAA8=;
+        s=korg; t=1631808528;
+        bh=35atDnHr5kKPvD7ZRVCpmrxJQhwkKsyZnBkWc0xcL9g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YXi6oFLZU2oPJY/W8K3p4Iai0ferFUPvdkd3d0p7RjE4UoZADugg/khmEhJbnfhrQ
-         H4q6tuy8/w5ds51L68KN9VqUgO1ceZEKz2SpazobLHfrnaSdZn3DG7HrLBTcileENE
-         rJqT4ODL3rgpQ8eYNNhvA2XQ390172UCFmONQnjU=
+        b=EEGuITG7Jxen2hdBhdfW+d0a0vujXLOJifdZDUEUqm/T/OriQWaFqd4EZhTKxUeno
+         oBfG5IWMVTk4AP/t3EDqK3Ajs4SkWQJmORcoLdsElyjqNUbfJ25/jgOWAYNXVbmkZe
+         mJM/Atq55Gb0/TZP2gYiNdV69OyGvFiDP+Gc8Ni8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Manish Rangankar <mrangankar@marvell.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 119/432] scsi: qedf: Fix error codes in qedf_alloc_global_queues()
-Date:   Thu, 16 Sep 2021 17:57:48 +0200
-Message-Id: <20210916155814.795193627@linuxfoundation.org>
+Subject: [PATCH 5.10 124/306] video: fbdev: kyro: fix a DoS bug by restricting user input
+Date:   Thu, 16 Sep 2021 17:57:49 +0200
+Message-Id: <20210916155758.294474070@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,75 +40,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Zheyu Ma <zheyuma97@gmail.com>
 
-[ Upstream commit ccc89737aa6b9f248cf1623014038beb6c2b7f56 ]
+[ Upstream commit 98a65439172dc69cb16834e62e852afc2adb83ed ]
 
-This driver has some left over "return 1" on failure style code mixed with
-"return negative error codes" style code.  The caller doesn't care so we
-should just convert everything to return negative error codes.
+The user can pass in any value to the driver through the 'ioctl'
+interface. The driver dost not check, which may cause DoS bugs.
 
-Then there was a problem that there were two variables used to store error
-codes which just resulted in confusion.  If qedf_alloc_bdq() returned a
-negative error code, we accidentally returned success instead of
-propagating the error code.  So get rid of the "rc" variable and use
-"status" every where.
+The following log reveals it:
 
-Also remove the "status = 0" initialization so that these sorts of bugs
-will be detected by the compiler in the future.
+divide error: 0000 [#1] PREEMPT SMP KASAN PTI
+RIP: 0010:SetOverlayViewPort+0x133/0x5f0 drivers/video/fbdev/kyro/STG4000OverlayDevice.c:476
+Call Trace:
+ kyro_dev_overlay_viewport_set drivers/video/fbdev/kyro/fbdev.c:378 [inline]
+ kyrofb_ioctl+0x2eb/0x330 drivers/video/fbdev/kyro/fbdev.c:603
+ do_fb_ioctl+0x1f3/0x700 drivers/video/fbdev/core/fbmem.c:1171
+ fb_ioctl+0xeb/0x130 drivers/video/fbdev/core/fbmem.c:1185
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x19b/0x220 fs/ioctl.c:739
+ do_syscall_64+0x32/0x80 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Link: https://lore.kernel.org/r/20210810085023.GA23998@kili
-Fixes: 61d8658b4a43 ("scsi: qedf: Add QLogic FastLinQ offload FCoE driver framework.")
-Acked-by: Manish Rangankar <mrangankar@marvell.com>
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/1626235762-2590-1-git-send-email-zheyuma97@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/qedf/qedf_main.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/video/fbdev/kyro/fbdev.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/scsi/qedf/qedf_main.c b/drivers/scsi/qedf/qedf_main.c
-index 85f41abcb56c..42d0d941dba5 100644
---- a/drivers/scsi/qedf/qedf_main.c
-+++ b/drivers/scsi/qedf/qedf_main.c
-@@ -3004,7 +3004,7 @@ static int qedf_alloc_global_queues(struct qedf_ctx *qedf)
- {
- 	u32 *list;
- 	int i;
--	int status = 0, rc;
-+	int status;
- 	u32 *pbl;
- 	dma_addr_t page;
- 	int num_pages;
-@@ -3016,7 +3016,7 @@ static int qedf_alloc_global_queues(struct qedf_ctx *qedf)
- 	 */
- 	if (!qedf->num_queues) {
- 		QEDF_ERR(&(qedf->dbg_ctx), "No MSI-X vectors available!\n");
--		return 1;
-+		return -ENOMEM;
- 	}
+diff --git a/drivers/video/fbdev/kyro/fbdev.c b/drivers/video/fbdev/kyro/fbdev.c
+index 8fbde92ae8b9..4b8c7c16b1df 100644
+--- a/drivers/video/fbdev/kyro/fbdev.c
++++ b/drivers/video/fbdev/kyro/fbdev.c
+@@ -372,6 +372,11 @@ static int kyro_dev_overlay_viewport_set(u32 x, u32 y, u32 ulWidth, u32 ulHeight
+ 		/* probably haven't called CreateOverlay yet */
+ 		return -EINVAL;
  
- 	/*
-@@ -3024,7 +3024,7 @@ static int qedf_alloc_global_queues(struct qedf_ctx *qedf)
- 	 * addresses of our queues
- 	 */
- 	if (!qedf->p_cpuq) {
--		status = 1;
-+		status = -EINVAL;
- 		QEDF_ERR(&qedf->dbg_ctx, "p_cpuq is NULL.\n");
- 		goto mem_alloc_failure;
- 	}
-@@ -3040,8 +3040,8 @@ static int qedf_alloc_global_queues(struct qedf_ctx *qedf)
- 		   "qedf->global_queues=%p.\n", qedf->global_queues);
++	if (ulWidth == 0 || ulWidth == 0xffffffff ||
++	    ulHeight == 0 || ulHeight == 0xffffffff ||
++	    (x < 2 && ulWidth + 2 == 0))
++		return -EINVAL;
++
+ 	/* Stop Ramdac Output */
+ 	DisableRamdacOutput(deviceInfo.pSTGReg);
  
- 	/* Allocate DMA coherent buffers for BDQ */
--	rc = qedf_alloc_bdq(qedf);
--	if (rc) {
-+	status = qedf_alloc_bdq(qedf);
-+	if (status) {
- 		QEDF_ERR(&qedf->dbg_ctx, "Unable to allocate bdq.\n");
- 		goto mem_alloc_failure;
- 	}
 -- 
 2.30.2
 
