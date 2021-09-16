@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D657640E153
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:29:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4225F40E399
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:21:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242658AbhIPQ3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:29:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59300 "EHLO mail.kernel.org"
+        id S1345594AbhIPQu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:50:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58998 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241713AbhIPQUC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:20:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B754361246;
-        Thu, 16 Sep 2021 16:14:09 +0000 (UTC)
+        id S244065AbhIPQpv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:45:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E48A461A65;
+        Thu, 16 Sep 2021 16:26:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808850;
-        bh=5Tmo5EoUoUNPILBlPgR5l9L/1NDvicyyvoVo8uwBhKQ=;
+        s=korg; t=1631809566;
+        bh=uwA0nUERC+utH2fpcqTViMZbqrZcqe6qSSC9TEOQ8Yg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m89ZXVvF+pXpuXesv2Fcz7Ydf2Xyiks1+PhOdSBOdjqRsraHdc6RT+2S/NoUPkJkv
-         dt00/ppFVQOHS9TC3N0BEV4nB+KTZC0idTl6K+XNxhnoGbkr8qoix4Tq8ktHiG0qBh
-         9boZmtA1GlodRG0czFoWqdI7F3Pg74FeHGUPrrn4=
+        b=FtlrtN7Auz22K8Dco7pp9nlZqKOHYC3z06sSpP96/P2F4E1X5bsMwloLKGR/PGjgz
+         PCY4OHajLwOGX8VEqBp153y0O05qtK28VijOVUrhyq0WaL63FDEmiF3nTVo0DNOpW4
+         dPoKJE6hEleAi5jonXvTvce7OX2bJP6+UslPp8h0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        Johannes Berg <johannes.berg@intel.com>,
+        stable@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 213/306] mac80211: Fix monitor MTU limit so that A-MSDUs get through
+Subject: [PATCH 5.13 201/380] s390/jump_label: print real address in a case of a jump label bug
 Date:   Thu, 16 Sep 2021 17:59:18 +0200
-Message-Id: <20210916155801.301283700@linuxfoundation.org>
+Message-Id: <20210916155810.910970411@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,51 +39,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+From: Heiko Carstens <hca@linux.ibm.com>
 
-[ Upstream commit 79f5962baea74ce1cd4e5949598944bff854b166 ]
+[ Upstream commit 5492886c14744d239e87f1b0b774b5a341e755cc ]
 
-The maximum MTU was set to 2304, which is the maximum MSDU size. While
-this is valid for normal WLAN interfaces, it is too low for monitor
-interfaces. A monitor interface may receive and inject MPDU frames, and
-the maximum MPDU frame size is larger than 2304. The MPDU may also
-contain an A-MSDU frame, in which case the size may be much larger than
-the MTU limit. Since the maximum size of an A-MSDU depends on the PHY
-mode of the transmitting STA, it is not possible to set an exact MTU
-limit for a monitor interface. Now the maximum MTU for a monitor
-interface is unrestricted.
+In case of a jump label print the real address of the piece of code
+where a mismatch was detected. This is right before the system panics,
+so there is nothing revealed.
 
-Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Link: https://lore.kernel.org/r/20210628123246.2070558-1-johan.almbladh@anyfinetworks.com
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/iface.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ arch/s390/kernel/jump_label.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/mac80211/iface.c b/net/mac80211/iface.c
-index 30589b4c09da..3a15ef8dd322 100644
---- a/net/mac80211/iface.c
-+++ b/net/mac80211/iface.c
-@@ -2000,9 +2000,16 @@ int ieee80211_if_add(struct ieee80211_local *local, const char *name,
+diff --git a/arch/s390/kernel/jump_label.c b/arch/s390/kernel/jump_label.c
+index ab584e8e3527..9156653b56f6 100644
+--- a/arch/s390/kernel/jump_label.c
++++ b/arch/s390/kernel/jump_label.c
+@@ -36,7 +36,7 @@ static void jump_label_bug(struct jump_entry *entry, struct insn *expected,
+ 	unsigned char *ipe = (unsigned char *)expected;
+ 	unsigned char *ipn = (unsigned char *)new;
  
- 		netdev_set_default_ethtool_ops(ndev, &ieee80211_ethtool_ops);
- 
--		/* MTU range: 256 - 2304 */
-+		/* MTU range is normally 256 - 2304, where the upper limit is
-+		 * the maximum MSDU size. Monitor interfaces send and receive
-+		 * MPDU and A-MSDU frames which may be much larger so we do
-+		 * not impose an upper limit in that case.
-+		 */
- 		ndev->min_mtu = 256;
--		ndev->max_mtu = local->hw.max_mtu;
-+		if (type == NL80211_IFTYPE_MONITOR)
-+			ndev->max_mtu = 0;
-+		else
-+			ndev->max_mtu = local->hw.max_mtu;
- 
- 		ret = register_netdevice(ndev);
- 		if (ret) {
+-	pr_emerg("Jump label code mismatch at %pS [%p]\n", ipc, ipc);
++	pr_emerg("Jump label code mismatch at %pS [%px]\n", ipc, ipc);
+ 	pr_emerg("Found:    %6ph\n", ipc);
+ 	pr_emerg("Expected: %6ph\n", ipe);
+ 	pr_emerg("New:      %6ph\n", ipn);
 -- 
 2.30.2
 
