@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 044F840E0DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:28:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A4A840E394
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:21:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240757AbhIPQZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:25:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54936 "EHLO mail.kernel.org"
+        id S1345345AbhIPQuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:50:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240646AbhIPQRS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:17:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F1CC6613AD;
-        Thu, 16 Sep 2021 16:12:03 +0000 (UTC)
+        id S1343682AbhIPQoD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:44:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 204AB61A3C;
+        Thu, 16 Sep 2021 16:25:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808724;
-        bh=xeQWfEsv1S3omZYVhggyNOkJWt5UqAbHAXYCl5P3d1c=;
+        s=korg; t=1631809523;
+        bh=vJf/hOLRbSjBB5md0JjqiGgNpfTuhUqJ4jPhXj65f/0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jECEXwNqTohxCzxm30KA0v0J6oYw+bS25SG01zrBBHXoM5B9G8M4/i0zDQ380BHFL
-         33emKVS+n54LH3yzzg9lTBvQsTZEksGZ3Rd2YTFyuAHUhqWp2sJ2VAap1Xt0Cmin1i
-         M9Z62XKWZPApA1rhvzpsaiEoHCF8gpfUeSGhFyuo=
+        b=Yss6P1hfe79OEUxAmINU7lKdfh0+qcqmVrNqOPU4jtKrgUUJ4L/aiIH0w5xXgNedZ
+         ssDagslkaEYcE4TpHHjHIIXi2a1d46cGkOunjAE6E4o8iAcpjBi4/xHQ5X/FVU1iJp
+         +UZQmyfbdHAe4pUsJPgXS87QhQ/HCsNczxkYVSKM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Heidelberg <david@ixit.cz>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Rob Clark <robdclark@chromium.org>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 198/306] drm/msm: mdp4: drop vblank get/put from prepare/complete_commit
+Subject: [PATCH 5.13 186/380] media: atomisp: pci: fix error return code in atomisp_pci_probe()
 Date:   Thu, 16 Sep 2021 17:59:03 +0200
-Message-Id: <20210916155800.810620307@linuxfoundation.org>
+Message-Id: <20210916155810.405291990@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,66 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Heidelberg <david@ixit.cz>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit 56bd931ae506730c9ab1e4cc4bfefa43fc2d18fa ]
+[ Upstream commit d14e272958bdfdc40dcafb827d24ba6fdafa9d52 ]
 
-msm_atomic is doing vblank get/put's already,
-currently there no need to duplicate the effort in MDP4
+If init_atomisp_wdts() fails, atomisp_pci_probe() need return
+error code.
 
-Fix warning:
-...
-WARNING: CPU: 3 PID: 79 at drivers/gpu/drm/drm_vblank.c:1194 drm_vblank_put+0x1cc/0x1d4
-...
-and multiple vblank time-outs:
-...
-msm 5100000.mdp: vblank time out, crtc=1
-...
-
-Tested on Nexus 7 2013 (deb), LTS 5.10.50.
-
-Introduced by: 119ecb7fd3b5 ("drm/msm/mdp4: request vblank during modeset")
-
-Signed-off-by: David Heidelberg <david@ixit.cz>
-Link: https://lore.kernel.org/r/20210715060925.7880-1-david@ixit.cz
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Signed-off-by: Rob Clark <robdclark@chromium.org>
+Link: https://lore.kernel.org/linux-media/20210617072329.1233662-1-yangyingliang@huawei.com
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c | 13 -------------
- 1 file changed, 13 deletions(-)
+ drivers/staging/media/atomisp/pci/atomisp_v4l2.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c b/drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c
-index c1c152e39918..39577bf9215a 100644
---- a/drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c
-+++ b/drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c
-@@ -89,13 +89,6 @@ static void mdp4_disable_commit(struct msm_kms *kms)
+diff --git a/drivers/staging/media/atomisp/pci/atomisp_v4l2.c b/drivers/staging/media/atomisp/pci/atomisp_v4l2.c
+index 02f774ed80c8..fa1bd99cd6f1 100644
+--- a/drivers/staging/media/atomisp/pci/atomisp_v4l2.c
++++ b/drivers/staging/media/atomisp/pci/atomisp_v4l2.c
+@@ -1763,7 +1763,8 @@ static int atomisp_pci_probe(struct pci_dev *pdev, const struct pci_device_id *i
+ 	if (err < 0)
+ 		goto register_entities_fail;
+ 	/* init atomisp wdts */
+-	if (init_atomisp_wdts(isp) != 0)
++	err = init_atomisp_wdts(isp);
++	if (err != 0)
+ 		goto wdt_work_queue_fail;
  
- static void mdp4_prepare_commit(struct msm_kms *kms, struct drm_atomic_state *state)
- {
--	int i;
--	struct drm_crtc *crtc;
--	struct drm_crtc_state *crtc_state;
--
--	/* see 119ecb7fd */
--	for_each_new_crtc_in_state(state, crtc, crtc_state, i)
--		drm_crtc_vblank_get(crtc);
- }
- 
- static void mdp4_flush_commit(struct msm_kms *kms, unsigned crtc_mask)
-@@ -114,12 +107,6 @@ static void mdp4_wait_flush(struct msm_kms *kms, unsigned crtc_mask)
- 
- static void mdp4_complete_commit(struct msm_kms *kms, unsigned crtc_mask)
- {
--	struct mdp4_kms *mdp4_kms = to_mdp4_kms(to_mdp_kms(kms));
--	struct drm_crtc *crtc;
--
--	/* see 119ecb7fd */
--	for_each_crtc_mask(mdp4_kms->dev, crtc, crtc_mask)
--		drm_crtc_vblank_put(crtc);
- }
- 
- static long mdp4_round_pixclk(struct msm_kms *kms, unsigned long rate,
+ 	/* save the iunit context only once after all the values are init'ed. */
 -- 
 2.30.2
 
