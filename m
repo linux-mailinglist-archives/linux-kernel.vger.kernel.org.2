@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F94B40E47D
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:24:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F4B340E88B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348726AbhIPRDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:03:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40180 "EHLO mail.kernel.org"
+        id S1354624AbhIPRk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:40:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50272 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241111AbhIPQyK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:54:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 526DD61AA5;
-        Thu, 16 Sep 2021 16:29:56 +0000 (UTC)
+        id S1347171AbhIPRby (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:31:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E64561283;
+        Thu, 16 Sep 2021 16:47:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809796;
-        bh=7+34lJuA8T+mx98Ol2bt76efZapjIJYr/sKnp1rvVO4=;
+        s=korg; t=1631810843;
+        bh=RsNbpUXOvFtGeqXzND5NjNN4Jx90ICq+KZhqkX27TLk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ix4vGfxdY7krwrERtHLWd5gam6l6v+9omVPxFUNRKUgkMTvkBaYGiNY5FecMOfl9k
-         pMR4HIPFsJgstOIcKeyYXzBtttfRemhWDNDP84FnXB1vMKuvh/ZW3A+EK8iibe3R4l
-         3pbal3EOZLdFCNpFRdsULD4NoJMTaaE9PemXv9s4=
+        b=fF1bKoHJjFOoH8w20iQvpaOwlozEmYa7M3DJk5B0YaJ/lOWdaJTw/z5I+KMN3Ict6
+         2HIPAH6R62BOkdOY/6UqItUb2cP6NpGeEmHadcIwKYgbm+1U1++HZW3xkQW4CIMEBd
+         J/6blaL13dsHt6rZ5UUp9fBvTD6oM8VGFUkjhDkU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 279/380] locking/rtmutex: Set proper wait context for lockdep
-Date:   Thu, 16 Sep 2021 18:00:36 +0200
-Message-Id: <20210916155813.571901669@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+2f6d7c28bb4bf7e82060@syzkaller.appspotmail.com,
+        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 288/432] Bluetooth: schedule SCO timeouts with delayed_work
+Date:   Thu, 16 Sep 2021 18:00:37 +0200
+Message-Id: <20210916155820.583732783@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,68 +42,146 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
 
-[ Upstream commit b41cda03765580caf7723b8c1b672d191c71013f ]
+[ Upstream commit ba316be1b6a00db7126ed9a39f9bee434a508043 ]
 
-RT mutexes belong to the LD_WAIT_SLEEP class. Make them so.
+struct sock.sk_timer should be used as a sock cleanup timer. However,
+SCO uses it to implement sock timeouts.
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20210815211302.031014562@linutronix.de
+This causes issues because struct sock.sk_timer's callback is run in
+an IRQ context, and the timer callback function sco_sock_timeout takes
+a spin lock on the socket. However, other functions such as
+sco_conn_del and sco_conn_ready take the spin lock with interrupts
+enabled.
+
+This inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} lock usage could
+lead to deadlocks as reported by Syzbot [1]:
+       CPU0
+       ----
+  lock(slock-AF_BLUETOOTH-BTPROTO_SCO);
+  <Interrupt>
+    lock(slock-AF_BLUETOOTH-BTPROTO_SCO);
+
+To fix this, we use delayed work to implement SCO sock timouts
+instead. This allows us to avoid taking the spin lock on the socket in
+an IRQ context, and corrects the misuse of struct sock.sk_timer.
+
+As a note, cancel_delayed_work is used instead of
+cancel_delayed_work_sync in sco_sock_set_timer and
+sco_sock_clear_timer to avoid a deadlock. In the future, the call to
+bh_lock_sock inside sco_sock_timeout should be changed to lock_sock to
+synchronize with other functions using lock_sock. However, since
+sco_sock_set_timer and sco_sock_clear_timer are sometimes called under
+the locked socket (in sco_connect and __sco_sock_close),
+cancel_delayed_work_sync might cause them to sleep until an
+sco_sock_timeout that has started finishes running. But
+sco_sock_timeout would also sleep until it can grab the lock_sock.
+
+Using cancel_delayed_work is fine because sco_sock_timeout does not
+change from run to run, hence there is no functional difference
+between:
+1. waiting for a timeout to finish running before scheduling another
+timeout
+2. scheduling another timeout while a timeout is running.
+
+Link: https://syzkaller.appspot.com/bug?id=9089d89de0502e120f234ca0fc8a703f7368b31e [1]
+Reported-by: syzbot+2f6d7c28bb4bf7e82060@syzkaller.appspotmail.com
+Tested-by: syzbot+2f6d7c28bb4bf7e82060@syzkaller.appspotmail.com
+Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/rtmutex.h  | 19 ++++++++++++-------
- kernel/locking/rtmutex.c |  2 +-
- 2 files changed, 13 insertions(+), 8 deletions(-)
+ net/bluetooth/sco.c | 35 +++++++++++++++++++++++++++++------
+ 1 file changed, 29 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/rtmutex.h b/include/linux/rtmutex.h
-index d1672de9ca89..87b325aec508 100644
---- a/include/linux/rtmutex.h
-+++ b/include/linux/rtmutex.h
-@@ -52,17 +52,22 @@ do { \
- } while (0)
+diff --git a/net/bluetooth/sco.c b/net/bluetooth/sco.c
+index b5ab842c7c4a..9cf1ead1d832 100644
+--- a/net/bluetooth/sco.c
++++ b/net/bluetooth/sco.c
+@@ -48,6 +48,8 @@ struct sco_conn {
+ 	spinlock_t	lock;
+ 	struct sock	*sk;
  
- #ifdef CONFIG_DEBUG_LOCK_ALLOC
--#define __DEP_MAP_RT_MUTEX_INITIALIZER(mutexname) \
--	, .dep_map = { .name = #mutexname }
-+#define __DEP_MAP_RT_MUTEX_INITIALIZER(mutexname)	\
-+	.dep_map = {					\
-+		.name = #mutexname,			\
-+		.wait_type_inner = LD_WAIT_SLEEP,	\
-+	}
- #else
- #define __DEP_MAP_RT_MUTEX_INITIALIZER(mutexname)
- #endif
++	struct delayed_work	timeout_work;
++
+ 	unsigned int    mtu;
+ };
  
--#define __RT_MUTEX_INITIALIZER(mutexname) \
--	{ .wait_lock = __RAW_SPIN_LOCK_UNLOCKED(mutexname.wait_lock) \
--	, .waiters = RB_ROOT_CACHED \
--	, .owner = NULL \
--	__DEP_MAP_RT_MUTEX_INITIALIZER(mutexname)}
-+#define __RT_MUTEX_INITIALIZER(mutexname)				\
-+{									\
-+	.wait_lock = __RAW_SPIN_LOCK_UNLOCKED(mutexname.wait_lock),	\
-+	.waiters = RB_ROOT_CACHED,					\
-+	.owner = NULL,							\
-+	__DEP_MAP_RT_MUTEX_INITIALIZER(mutexname)			\
-+}
+@@ -74,9 +76,20 @@ struct sco_pinfo {
+ #define SCO_CONN_TIMEOUT	(HZ * 40)
+ #define SCO_DISCONN_TIMEOUT	(HZ * 2)
  
- #define DEFINE_RT_MUTEX(mutexname) \
- 	struct rt_mutex mutexname = __RT_MUTEX_INITIALIZER(mutexname)
-diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
-index 3c20afbc19e1..ae5afba2162b 100644
---- a/kernel/locking/rtmutex.c
-+++ b/kernel/locking/rtmutex.c
-@@ -1556,7 +1556,7 @@ void __sched __rt_mutex_init(struct rt_mutex *lock, const char *name,
- 		     struct lock_class_key *key)
+-static void sco_sock_timeout(struct timer_list *t)
++static void sco_sock_timeout(struct work_struct *work)
  {
- 	debug_check_no_locks_freed((void *)lock, sizeof(*lock));
--	lockdep_init_map(&lock->dep_map, name, key, 0);
-+	lockdep_init_map_wait(&lock->dep_map, name, key, 0, LD_WAIT_SLEEP);
+-	struct sock *sk = from_timer(sk, t, sk_timer);
++	struct sco_conn *conn = container_of(work, struct sco_conn,
++					     timeout_work.work);
++	struct sock *sk;
++
++	sco_conn_lock(conn);
++	sk = conn->sk;
++	if (sk)
++		sock_hold(sk);
++	sco_conn_unlock(conn);
++
++	if (!sk)
++		return;
  
- 	__rt_mutex_basic_init(lock);
+ 	BT_DBG("sock %p state %d", sk, sk->sk_state);
+ 
+@@ -90,14 +103,21 @@ static void sco_sock_timeout(struct timer_list *t)
+ 
+ static void sco_sock_set_timer(struct sock *sk, long timeout)
+ {
++	if (!sco_pi(sk)->conn)
++		return;
++
+ 	BT_DBG("sock %p state %d timeout %ld", sk, sk->sk_state, timeout);
+-	sk_reset_timer(sk, &sk->sk_timer, jiffies + timeout);
++	cancel_delayed_work(&sco_pi(sk)->conn->timeout_work);
++	schedule_delayed_work(&sco_pi(sk)->conn->timeout_work, timeout);
+ }
+ 
+ static void sco_sock_clear_timer(struct sock *sk)
+ {
++	if (!sco_pi(sk)->conn)
++		return;
++
+ 	BT_DBG("sock %p state %d", sk, sk->sk_state);
+-	sk_stop_timer(sk, &sk->sk_timer);
++	cancel_delayed_work(&sco_pi(sk)->conn->timeout_work);
+ }
+ 
+ /* ---- SCO connections ---- */
+@@ -177,6 +197,9 @@ static void sco_conn_del(struct hci_conn *hcon, int err)
+ 		sco_chan_del(sk, err);
+ 		bh_unlock_sock(sk);
+ 		sock_put(sk);
++
++		/* Ensure no more work items will run before freeing conn. */
++		cancel_delayed_work_sync(&conn->timeout_work);
+ 	}
+ 
+ 	hcon->sco_data = NULL;
+@@ -191,6 +214,8 @@ static void __sco_chan_add(struct sco_conn *conn, struct sock *sk,
+ 	sco_pi(sk)->conn = conn;
+ 	conn->sk = sk;
+ 
++	INIT_DELAYED_WORK(&conn->timeout_work, sco_sock_timeout);
++
+ 	if (parent)
+ 		bt_accept_enqueue(parent, sk, true);
+ }
+@@ -496,8 +521,6 @@ static struct sock *sco_sock_alloc(struct net *net, struct socket *sock,
+ 
+ 	sco_pi(sk)->setting = BT_VOICE_CVSD_16BIT;
+ 
+-	timer_setup(&sk->sk_timer, sco_sock_timeout, 0);
+-
+ 	bt_sock_link(&sco_sk_list, sk);
+ 	return sk;
  }
 -- 
 2.30.2
