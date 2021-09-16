@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E5D940E41A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:22:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 860BD40E0FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:28:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243216AbhIPQzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:55:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36672 "EHLO mail.kernel.org"
+        id S240944AbhIPQ0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:26:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54968 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345702AbhIPQui (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:50:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A4A6A615E1;
-        Thu, 16 Sep 2021 16:28:21 +0000 (UTC)
+        id S241065AbhIPQTO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:19:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 17D7A6137E;
+        Thu, 16 Sep 2021 16:13:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809702;
-        bh=HHzXryoclVb28PAEcdGV2ae0lvs1Y5+1rSLNsbTxRDc=;
+        s=korg; t=1631808785;
+        bh=5M+U9qXHvYHNEZev3mvucxufKEpHdDaJvFQ8BTUZvE4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0nDYLLM8YkCoEk+llQd++7nKwANjq6Uop/jAG8mE1HrwhYBE3B1Xxg6S/zVkFHrIk
-         rUqJT+CY1tadZ8EeYLwveEp/3nRoCMrAZsq1LdnylHQEZZVC+zTIC9pqd0fgiM7DTf
-         71GxOKV8j0G85kE2quWTe3xKAyFXDXinObIog3DI=
+        b=fTj8XfK8H1r/rsUEYJvu1CE/ZDEbQJnKlpUKZjmZDtOE3MjMDD8ql00IlQs09GOVl
+         qHlOPm19ywMSzAqYFfCqmcC1ch6Rmd0GzhgqYUWYXW+OjaIAm1fnmSVaMWR9Pn5RoC
+         ctyhgNfE7+IPfBtl+YSfqlVi0BIVjaRutph7VzKg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Martynas Pumputis <m@lambda.lt>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        stable@vger.kernel.org, Ulrich Hecht <uli+renesas@fpond.eu>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 209/380] libbpf: Fix race when pinning maps in parallel
-Date:   Thu, 16 Sep 2021 17:59:26 +0200
-Message-Id: <20210916155811.188893140@linuxfoundation.org>
+Subject: [PATCH 5.10 222/306] serial: sh-sci: fix break handling for sysrq
+Date:   Thu, 16 Sep 2021 17:59:27 +0200
+Message-Id: <20210916155801.622433253@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,84 +39,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martynas Pumputis <m@lambda.lt>
+From: Ulrich Hecht <uli+renesas@fpond.eu>
 
-[ Upstream commit 043c5bb3c4f43670ab4fea0b847373ab42d25f3e ]
+[ Upstream commit 87b8061bad9bd4b549b2daf36ffbaa57be2789a2 ]
 
-When loading in parallel multiple programs which use the same to-be
-pinned map, it is possible that two instances of the loader will call
-bpf_object__create_maps() at the same time. If the map doesn't exist
-when both instances call bpf_object__reuse_map(), then one of the
-instances will fail with EEXIST when calling bpf_map__pin().
+This fixes two issues that cause the sysrq sequence to be inadvertently
+aborted on SCIF serial consoles:
 
-Fix the race by retrying reusing a map if bpf_map__pin() returns
-EEXIST. The fix is similar to the one in iproute2: e4c4685fd6e4 ("bpf:
-Fix race condition with map pinning").
+- a NUL character remains in the RX queue after a break has been detected,
+  which is then passed on to uart_handle_sysrq_char()
+- the break interrupt is handled twice on controllers with multiplexed ERI
+  and BRI interrupts
 
-Before retrying the pinning, we don't do any special cleaning of an
-internal map state. The closer code inspection revealed that it's not
-required:
-
-    - bpf_object__create_map(): map->inner_map is destroyed after a
-      successful call, map->fd is closed if pinning fails.
-    - bpf_object__populate_internal_map(): created map elements is
-      destroyed upon close(map->fd).
-    - init_map_slots(): slots are freed after their initialization.
-
-Signed-off-by: Martynas Pumputis <m@lambda.lt>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/bpf/20210726152001.34845-1-m@lambda.lt
+Signed-off-by: Ulrich Hecht <uli+renesas@fpond.eu>
+Link: https://lore.kernel.org/r/20210816162201.28801-1-uli+renesas@fpond.eu
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/bpf/libbpf.c | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
+ drivers/tty/serial/sh-sci.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index c4d36328069c..533512d933c6 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -4570,10 +4570,13 @@ bpf_object__create_maps(struct bpf_object *obj)
- 	char *cp, errmsg[STRERR_BUFSIZE];
- 	unsigned int i, j;
- 	int err;
-+	bool retried;
+diff --git a/drivers/tty/serial/sh-sci.c b/drivers/tty/serial/sh-sci.c
+index 70898a999a49..f700bfaef129 100644
+--- a/drivers/tty/serial/sh-sci.c
++++ b/drivers/tty/serial/sh-sci.c
+@@ -1760,6 +1760,10 @@ static irqreturn_t sci_br_interrupt(int irq, void *ptr)
  
- 	for (i = 0; i < obj->nr_maps; i++) {
- 		map = &obj->maps[i];
+ 	/* Handle BREAKs */
+ 	sci_handle_breaks(port);
++
++	/* drop invalid character received before break was detected */
++	serial_port_in(port, SCxRDR);
++
+ 	sci_clear_SCxSR(port, SCxSR_BREAK_CLEAR(port));
  
-+		retried = false;
-+retry:
- 		if (map->pin_path) {
- 			err = bpf_object__reuse_map(map);
- 			if (err) {
-@@ -4581,6 +4584,12 @@ bpf_object__create_maps(struct bpf_object *obj)
- 					map->name);
- 				goto err_out;
- 			}
-+			if (retried && map->fd < 0) {
-+				pr_warn("map '%s': cannot find pinned map\n",
-+					map->name);
-+				err = -ENOENT;
-+				goto err_out;
-+			}
- 		}
+ 	return IRQ_HANDLED;
+@@ -1839,7 +1843,8 @@ static irqreturn_t sci_mpxed_interrupt(int irq, void *ptr)
+ 		ret = sci_er_interrupt(irq, ptr);
  
- 		if (map->fd >= 0) {
-@@ -4614,9 +4623,13 @@ bpf_object__create_maps(struct bpf_object *obj)
- 		if (map->pin_path && !map->pinned) {
- 			err = bpf_map__pin(map, NULL);
- 			if (err) {
-+				zclose(map->fd);
-+				if (!retried && err == -EEXIST) {
-+					retried = true;
-+					goto retry;
-+				}
- 				pr_warn("map '%s': failed to auto-pin at '%s': %d\n",
- 					map->name, map->pin_path, err);
--				zclose(map->fd);
- 				goto err_out;
- 			}
- 		}
+ 	/* Break Interrupt */
+-	if ((ssr_status & SCxSR_BRK(port)) && err_enabled)
++	if (s->irqs[SCIx_ERI_IRQ] != s->irqs[SCIx_BRI_IRQ] &&
++	    (ssr_status & SCxSR_BRK(port)) && err_enabled)
+ 		ret = sci_br_interrupt(irq, ptr);
+ 
+ 	/* Overrun Interrupt */
 -- 
 2.30.2
 
