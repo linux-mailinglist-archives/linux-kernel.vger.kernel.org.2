@@ -2,69 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2541740EAC8
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 21:27:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 055CA40EACC
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 21:28:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230051AbhIPT2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 15:28:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53736 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229455AbhIPT2Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 15:28:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5DF9B610E9;
-        Thu, 16 Sep 2021 19:26:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1631820413;
-        bh=cj4YYql3ialFH5a3FIsQKbEh3n2waZxbKmXBYlo5ynk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=wdf67NTnj8bDQNSnGOX2sXk1GF2gDGSOttrakL9aAa7bg20ZWrn1C5mEpcQd9Vw1r
-         K14k1JMqcRv2/wJBiXdHtKJ6WEM8L6rNW8lcAaoV0/6Z5nLmt5E/tjLUeErUhnajMU
-         Rm7FKOONV0I+tiPRTX5DNzKLBHBEXAYdfQ8Q5QwQ=
-Date:   Thu, 16 Sep 2021 12:26:52 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Chris Mason <clm@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Howells <dhowells@redhat.com>,
-        "ksummit@lists.linux.dev" <ksummit@lists.linux.dev>
-Subject: Re: [MAINTAINER SUMMIT] Folios as a potential Kernel/Maintainers
- Summit topic?
-Message-Id: <20210916122652.b6ab789e968263eb4ab31626@linux-foundation.org>
-In-Reply-To: <YUOX0VxkO+/1kT7u@mit.edu>
-References: <YUIwgGzBqX6ZiGgk@mit.edu>
-        <f7b70227bac9a684320068b362d28fcade6b65b9.camel@HansenPartnership.com>
-        <YUI5bk/94yHPZIqJ@mit.edu>
-        <17242A0C-3613-41BB-84E4-2617A182216E@fb.com>
-        <f066615c0e2c6fe990fa5c19dd1c17d649bcb03a.camel@HansenPartnership.com>
-        <E655F510-14EB-4F40-BCF8-C5266C07443F@fb.com>
-        <33a2000f56d51284e2df0cfcd704e93977684b59.camel@HansenPartnership.com>
-        <YUOX0VxkO+/1kT7u@mit.edu>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S231351AbhIPT3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 15:29:22 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:35470
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230298AbhIPT3U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 15:29:20 -0400
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com [209.85.128.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id C919140269
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 19:27:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1631820478;
+        bh=MMcgzru3ZwhyKOsYx2iFuNW8JodY417NqNj4jNsFMOQ=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=WmsgSjgvRZbCGGvLpwIqgyndnz1GO8TIzbqyguhA46DPqcSXONcGKWFEeHR8us0yl
+         erGEGG1N0iPahnFMhHjqKX68P8lhXEYttk61jD60yBxtOLHIELfL9O4BCRnBBua6F1
+         q/RZ5umPWYLE8Q8tsZ7nonXuoUXVi2qvoKDOdL9X2MbHnUfmy83R7srXi0m89tiCxU
+         pFbxqN4pR7IJiLrVqH3SMF1fxn0FKeouaOhwLgN6UvVvs93vL6D/XMW+l1WAbhbwop
+         ZDrNAbuDxucDrUvwiBjz9BL6vXQhq/5q4zmDe/YK2IlX6S40UCfUpuhYJOQdG/9AmO
+         kJzGcRCSp7VPQ==
+Received: by mail-wm1-f69.google.com with SMTP id y12-20020a1c7d0c000000b003077f64d75fso3530986wmc.7
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 12:27:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=MMcgzru3ZwhyKOsYx2iFuNW8JodY417NqNj4jNsFMOQ=;
+        b=I7YUBpf/n3qYm1Q/tQBtM1sJ4yFspfLz/RNMuLgsoCpucyhOrk+lpHjGXydQSi9hBk
+         yRiY1nJGmOUikajOg/RXYMgS6RuNfBBX6DQyS0jSVtoYq8qqf9xsNafL532PtdYYGHPp
+         BANEWuaTkI+J8FB2zhDzuaF/IZJ1uGo/zRSCB+zA1TuREaKgUm+UaI6MmWX5vb/cC+Ms
+         TvxAs61Q3QDLhfIlIi/cw2XFR5B5lUFaoX97ZM6593t4k2loQlEu4RVMKOrF8i8zFLu3
+         y1kXdvRi5p4XIQdLldH/UoA4Uzy+BT3bujWT8WWVrqWpjE77uKevQxkf14fkdxaj4xN8
+         pEew==
+X-Gm-Message-State: AOAM5326fiNLbWMnz+nyVS+CSWIWKkqvIzF8V52vi1IPYQ3VJpbYpW8c
+        /0EJtKe7JB6eLUAs/39Y+QnAiU3F+Le2s2CkiSrhOAnFdY6qN0Ukpc94rPszjNOkxGKaNzyz/mg
+        IFNhYlny6U0HfCVqpLSwxM69N1WmYnqjW9FV69OyVJQ==
+X-Received: by 2002:a1c:7f57:: with SMTP id a84mr6593059wmd.34.1631820478294;
+        Thu, 16 Sep 2021 12:27:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwqn1+ESA3K0zllvSWstH2qMZ0N3R38ReyqO045tBhcLAJAO9cDYj4nPSe6W+hMxkhv/fTfPg==
+X-Received: by 2002:a1c:7f57:: with SMTP id a84mr6593050wmd.34.1631820478167;
+        Thu, 16 Sep 2021 12:27:58 -0700 (PDT)
+Received: from [192.168.2.211] (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
+        by smtp.gmail.com with ESMTPSA id k6sm7063711wmo.37.2021.09.16.12.27.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Sep 2021 12:27:57 -0700 (PDT)
+Subject: Re: [PATCH] nfc: trf7970a: Make use of the helper function
+ dev_err_probe()
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     Mark Greer <mgreer@animalcreek.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210916153621.16576-1-caihuoqing@baidu.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <21782e6d-038f-9009-ed8a-d65c2cdfb761@canonical.com>
+Date:   Thu, 16 Sep 2021 21:27:56 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <20210916153621.16576-1-caihuoqing@baidu.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Sep 2021 15:15:29 -0400 "Theodore Ts'o" <tytso@mit.edu> wrote:
+On 16/09/2021 17:36, Cai Huoqing wrote:
+> When possible use dev_err_probe help to properly deal with the
+> PROBE_DEFER error, the benefit is that DEFER issue will be logged
+> in the devices_deferred debugfs file.
+> Using dev_err_probe() can reduce code size, and the error value
+> gets printed.
+> 
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+> ---
+>  drivers/nfc/trf7970a.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
 
-> What typically happens is if someone were to try to play games like
-> this inside, say, the Networking subsystem, past a certain point,
-> David Miller will just take the patch series, ignoring people who have
-> NACK's down if they can't be justified.  The difference is that even
-> though Andrew Morton (the titular maintainer for all of Memory
-> Management, per the MAINTAINERS file), Andrew seems to have a much
-> lighter touch on how the mm subsystem is run.
+Please don't send patches one-by-one, but group them in series.
 
-I do the Dave thing sometimes.  We aren't at that point with folios
-though.  The discussions and objections and approvals are all
-substantial and things are still playing out.
+Same response - I think the preferred approach was Rob's dev_err removal.
+
+P.S. You need to Cc all folks and all lists. The cc-list here is too short.
+
+Best regards,
+Krzysztof
