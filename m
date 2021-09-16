@@ -2,87 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEF4540D3C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 09:28:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 074FA40D3C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 09:29:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234792AbhIPH3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 03:29:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34948 "EHLO
+        id S234769AbhIPHag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 03:30:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234708AbhIPH3V (ORCPT
+        with ESMTP id S232254AbhIPHae (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 03:29:21 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A544C061574;
-        Thu, 16 Sep 2021 00:28:01 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id g11so4747132qtk.5;
-        Thu, 16 Sep 2021 00:28:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pVbyhvmeHGYeGOFh7qjQY4cFr9i92ZBaof0BazQUorI=;
-        b=hOKvbfNdu+GhgoP1GNbaEScCzXmyTWBWgdYBhb5l8fstFGaqVohSBlYUQJmQlFdd10
-         7/AT/hWvHODQNjcP1ij+cWi0UtdJYXMB+uxKm3dwk9CLaIygKK9PlF3KWSiXERJWi5ku
-         qf3g6KdrqLRx7T0+CVDKk6QZ9b8jvw5+88YNA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pVbyhvmeHGYeGOFh7qjQY4cFr9i92ZBaof0BazQUorI=;
-        b=DjTrifoZBiTdCS4SuZ1mC3mFzXHh2SneO704z1OUD43TL9B1TM46jX8zX4O5VeI/OB
-         fhUadqPv27RVcK1rMJyp5YpxygyiNfWs+xK6T2IrywISWO8VOJghjXYVeVpzbLNFAOBQ
-         r6S26UC4WhH9cQ2gnftmtrQFTUUDToBm35m+hwOpPquq+PPpvjvrPtiZnb3nfEAo10Y5
-         OVK6GmpDWSD3vD1YcTglcN51pKkAhnXRabrvivftQhq8HMOEOqZt1xaGkGtnH8xGvuJc
-         sCFq9zDBYZE2RDyc66xVX/uL9Suj8vrvgcV8dUYeOLynP1By64ZQI1xqDITYe/IlF4s0
-         Fnrw==
-X-Gm-Message-State: AOAM530pRucRnpdQGWGf0jVm4Z/aVBARIvpXtOcTvNVq0jY6m6ZtQ6Uj
-        vUjfzrYAUYucx18/qyme15Ufu3zWWgsakPfgC9E=
-X-Google-Smtp-Source: ABdhPJxcKmaCp7WgCIndqSTIhP31PNoyITQMAxTDCqB49y2c4oqobHacueUm6hYd6oIICTiHiNkLmYbi1LF+89qnlV4=
-X-Received: by 2002:a05:622a:15d2:: with SMTP id d18mr3628592qty.145.1631777280136;
- Thu, 16 Sep 2021 00:28:00 -0700 (PDT)
+        Thu, 16 Sep 2021 03:30:34 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A66EC061574;
+        Thu, 16 Sep 2021 00:29:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=6+0oJHkC1WPybChCSiGgjurT2CwvEQ/aq6741k0XJjc=; b=ope2r8fq7aD8JVQ8vGaKdo0Z9I
+        ai4abU8HGTFUAyfOvjV4ev+Hyfp+iqHaUw5GU6O+bmhP4+rCBVoO7FmHf9JfRPovQOLbSANkpKHSW
+        zw+kMH3rdobOtDxlHx1sjw4+/WpwmZmtrjSHNwk+ujoLgTm6iIsrkxAuBVg5sjZTln42AnMu9DyrN
+        MRsEabgCvHXmgHmfzfmDOlpufHeITGcWwmaMXG+DPjYg5cb8tI9dbUqgyDTyYjw4O8LrK0FTYLr+T
+        Zs0XvcOZXPrCXMLl6aLXQe+XgcL9fqEzUxo7WEiB82dBc73BiL7OgzHUSBUpPmOYPF5dPI14LyVvo
+        ZtsbMhcA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mQlp9-003bQU-DF; Thu, 16 Sep 2021 07:28:47 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A0247300093;
+        Thu, 16 Sep 2021 09:28:45 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 712E4200A5E23; Thu, 16 Sep 2021 09:28:45 +0200 (CEST)
+Date:   Thu, 16 Sep 2021 09:28:45 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org
+Subject: Re: [PATCH rcu 10/14] rcu: Make rcutree_dying_cpu() use its "cpu"
+ parameter
+Message-ID: <YULyLRwSJ6jj1bTF@hirez.programming.kicks-ass.net>
+References: <20210915233305.GA3906641@paulmck-ThinkPad-P17-Gen-1>
+ <20210915233343.3906738-10-paulmck@kernel.org>
 MIME-Version: 1.0
-References: <20210914213543.73351-1-eajames@linux.ibm.com> <20210914213543.73351-4-eajames@linux.ibm.com>
- <20210915161333.GA3712393@roeck-us.net> <ac8d30e988ab6cc16d4c7446d259b87deb734910.camel@linux.ibm.com>
-In-Reply-To: <ac8d30e988ab6cc16d4c7446d259b87deb734910.camel@linux.ibm.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Thu, 16 Sep 2021 07:27:48 +0000
-Message-ID: <CACPK8Xfqf7siS9jtQbrd5mDNmCURS2==B3wGXpHibB8546o60g@mail.gmail.com>
-Subject: Re: [PATCH 3/3] hwmon: (occ) Provide the SBEFIFO FFDC in binary sysfs
-To:     Eddie James <eajames@linux.ibm.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>, linux-fsi@lists.ozlabs.org,
-        linux-hwmon@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Alistair Popple <alistair@popple.id.au>,
-        Jeremy Kerr <jk@ozlabs.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210915233343.3906738-10-paulmck@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Sept 2021 at 21:11, Eddie James <eajames@linux.ibm.com> wrote:
->
-> On Wed, 2021-09-15 at 09:13 -0700, Guenter Roeck wrote:
-> > On Tue, Sep 14, 2021 at 04:35:43PM -0500, Eddie James wrote:
-> > > Save any FFDC provided by the OCC driver, and provide it to
-> > > userspace
-> > > through a binary sysfs entry. Do some basic state management to
-> > > ensure that userspace can always collect the data if there was an
-> > > error. Notify polling userspace when there is an error too.
-> > >
-> > > Signed-off-by: Eddie James <eajames@linux.ibm.com>
-> >
-> > This is now the 2nd series that we have pending, and the first series
-> > (from July) still didn't make it into the upstream kernel because the
-> > fsi code
-> > seems to go nowhere. Any chance to address that ?
->
-> Yes... Joel, can we merge that? I don't have any comments to address.
+On Wed, Sep 15, 2021 at 04:33:39PM -0700, Paul E. McKenney wrote:
+> The CPU-hotplug functions take a "cpu" parameter, but rcutree_dying_cpu()
+> ignores it in favor of this_cpu_ptr().  This works at the moment, but
+> it would be better to be consistent.  This might also work better given
+> some possible future changes.  This commit therefore uses per_cpu_ptr()
+> to avoid ignoring the rcutree_dying_cpu() function's argument.
+> 
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
-Thanks for the reminder. We have a queue of FSI patches to send out. I
-hope to get that done this coming merge window.
+I think even in the old days dying and starting ran on the affected CPU,
+and I don't ever see that changing.
 
-Cheers,
-
-Joel
+Then again, none of this is hot-path in any way, so *meh* :-)
