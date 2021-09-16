@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9F7540D5E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 11:15:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3092140D5DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 11:15:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236064AbhIPJQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 05:16:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41044 "EHLO mail.kernel.org"
+        id S236254AbhIPJQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 05:16:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40962 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235607AbhIPJPm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S235615AbhIPJPm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 16 Sep 2021 05:15:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B7ED56137C;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C74C0613A2;
         Thu, 16 Sep 2021 09:14:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1631783661;
-        bh=QX/TeP1Up2fv1mURikMxAXqlLxKM5NI4Xwq7REw08Q0=;
+        bh=2SVVmMnkmAjkn1l77UCkyCYYDmTX5xgWflVu9QvAi8Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A2Sctvuu11a6dCuVcnGVsCzQL/1WWj1LJh5vJbdi7UBypPWP0DKIsWot9KXsxphdm
-         aFktjaUJtSe43KQnJk8J0VECcjRNgX004XWLxfWeG6EBZ1/y9zRzvDPIjP4wnxWB97
-         v01wY8g8y5S/sfoD/ecXcrtWXtkyHyMbnoiax7aj0t2QOcI4qR9JLlrGSVzlw88NSJ
-         Rz4750HEEnfdLCNBJQDG61xTVUotPE3REEah+aDTRJ8eNNGVklxpN35CmihNHrpW1I
-         ho2J/cEGEmf8LZ5k4AG7scWSaeWpNZD6329ubJVINXA+gOQpesvs5BjaWqa48AsSkQ
-         dc8qrQec4y8qQ==
+        b=AZAbTXy17kJN+nwcFYr+yva1UqShglvl6rX9LlwyOW9GCiaVPgCoQh2W7oSKkI08Y
+         1kNKS+z/2FIBcEmxJoR/i6ijt8DVC3Auv1+bmC6aw0m+XJGSxXl4FxEeoAA9gHjihI
+         jVC0P/l0SXo7BC++/ImAVqDGrnTHbazY5Ey3/0YFx7w9dULhjY42A83KQjBFMjScp2
+         BGfi0OT+4K20M1IZ3T+8NPuUp0exEVq7A/sAgwnGZ3GgeJCjSDXCAwidLLklIRZaI0
+         bYCc53klMXEZsHySQKq6REblMFrdJJk73pv9N9M52L407OCRsrlPA/II0H9sIOQ0J6
+         QWzVdiuV5G/og==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1mQnTI-001sM5-1h; Thu, 16 Sep 2021 11:14:20 +0200
+        id 1mQnTI-001sM9-2h; Thu, 16 Sep 2021 11:14:20 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Jonathan Corbet <corbet@lwn.net>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH 21/24] MAINTAINERS: update gemini.yaml reference
-Date:   Thu, 16 Sep 2021 11:14:14 +0200
-Message-Id: <fa3ae6ac15fc49ac63360d00f041deee5983b4fe.1631783482.git.mchehab+huawei@kernel.org>
+        "David S. Miller" <davem@davemloft.net>,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 22/24] MAINTAINERS: update brcm,unimac-mdio.yaml reference
+Date:   Thu, 16 Sep 2021 11:14:15 +0200
+Message-Id: <39e251389606fb11d0d5888d76aacaf595643da8.1631783482.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1631783482.git.mchehab+huawei@kernel.org>
 References: <cover.1631783482.git.mchehab+huawei@kernel.org>
@@ -45,31 +47,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changeset 7da6ebf5f5a5 ("dt-bindings: arm: Convert Gemini boards to YAML")
-renamed: Documentation/devicetree/bindings/arm/gemini.txt
-to: Documentation/devicetree/bindings/arm/gemini.yaml.
+Changeset 5d1c5594b646 ("dt-bindings: net: brcm,unimac-mdio: convert to the json-schema")
+renamed: Documentation/devicetree/bindings/net/brcm,unimac-mdio.txt
+to: Documentation/devicetree/bindings/net/brcm,unimac-mdio.yaml.
 
 Update its cross-reference accordingly.
 
-Fixes: 7da6ebf5f5a5 ("dt-bindings: arm: Convert Gemini boards to YAML")
+Fixes: 5d1c5594b646 ("dt-bindings: net: brcm,unimac-mdio: convert to the json-schema")
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
  MAINTAINERS | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 9f1d2b8a769e..de18144b8c52 100644
+index de18144b8c52..adce2bdedb9e 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -1872,7 +1872,7 @@ M:	Linus Walleij <linus.walleij@linaro.org>
- L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
- S:	Maintained
- T:	git git://github.com/ulli-kroll/linux.git
--F:	Documentation/devicetree/bindings/arm/gemini.txt
-+F:	Documentation/devicetree/bindings/arm/gemini.yaml
- F:	Documentation/devicetree/bindings/net/cortina,gemini-ethernet.txt
- F:	Documentation/devicetree/bindings/pinctrl/cortina,gemini-pinctrl.txt
- F:	Documentation/devicetree/bindings/rtc/faraday,ftrtc010.yaml
+@@ -3757,7 +3757,7 @@ L:	bcm-kernel-feedback-list@broadcom.com
+ L:	netdev@vger.kernel.org
+ S:	Supported
+ F:	Documentation/devicetree/bindings/net/brcm,bcmgenet.txt
+-F:	Documentation/devicetree/bindings/net/brcm,unimac-mdio.txt
++F:	Documentation/devicetree/bindings/net/brcm,unimac-mdio.yaml
+ F:	drivers/net/ethernet/broadcom/genet/
+ F:	drivers/net/ethernet/broadcom/unimac.h
+ F:	drivers/net/mdio/mdio-bcm-unimac.c
 -- 
 2.31.1
 
