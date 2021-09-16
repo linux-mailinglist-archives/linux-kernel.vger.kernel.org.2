@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E535840D6E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 11:57:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C98D40D6E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 11:57:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237485AbhIPJ6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 05:58:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58046 "EHLO mail.kernel.org"
+        id S237003AbhIPJ6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 05:58:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58058 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236091AbhIPJ4s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S236222AbhIPJ4s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 16 Sep 2021 05:56:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 53F4F61251;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 518E761250;
         Thu, 16 Sep 2021 09:55:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1631786126;
-        bh=f7KEII6zbM/s1ow9VZn6Ba4YgTKnQf1/xmRqyKEMF40=;
+        bh=5NDlzf4eP8l4M2S6FcMNJNFMEBZhMmg9s4MM+7P16Sw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kEPLS+Z/BJdnRBvbblkvqFIASGvTDHgxGmID6SANMowySg5p1upNFEEhgr1dGi2lL
-         NqRFb8MJzZzpAppBqqvJ+UOMr/JXRoSs/qNjUdURVhrIjVWiOp4cD4ial6UQd3T06v
-         ajzhlWT5BctbZwz7tEunoQHnq2DzVKciv3Bxiw733cprOCNaRqakr+HfefouckmyN4
-         KPRE2jQCPEoFcLzy6IMq2bCq+6gVSRgMopMMHYKeTPDyKjnolKU7jG3pdc6PX3X3DM
-         /QjYft5aYmXfbLt6dH4+3Feq4u0J9UCxIt9VBM64c7nevThfxzHpO3pgvtw7boCKvf
-         qV13GautZo10Q==
+        b=l1mhDDpjzJPE+BMZ01iDY43t4CSuZ4T/jC9IZF7TsH8OJaLMWwlPj4288bX2K+XNM
+         qPpXYVNugTvbdQMC8uWMj/aDPvGagQi8LaKy/UrqekDnZXWm3k6al8xt380lNKndll
+         T22bAcaAIG5zVeXEINf4Jrz/JhgAstAMMzhg9UPeKWLxmXMlt+A9iBIftJc5Ao9k68
+         L7IzdxiZMQjUPqoBm49AIuI0ZW54snjZg2eSIo+sZ5NNGlnrLdZUL2km5AHu9234U7
+         Tuh8RbcEksTEmocK9wN3pwLmf9UeoPHF/s4piLdmCQJKQz5AjKdOeuk0dlguj896OL
+         OjjyKtQDiK9rA==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1mQo72-001vU4-J7; Thu, 16 Sep 2021 11:55:24 +0200
+        id 1mQo72-001vU8-KJ; Thu, 16 Sep 2021 11:55:24 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Jonathan Corbet <corbet@lwn.net>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Jamin Lin <jamin_lin@aspeedtech.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Corentin Labbe <clabbe@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
         Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 12/23] MAINTAINERS: update aspeed,i2c.yaml reference
-Date:   Thu, 16 Sep 2021 11:55:11 +0200
-Message-Id: <3e3b05f4a2517f3ed784dfb441a13ba0cfb6a7ea.1631785820.git.mchehab+huawei@kernel.org>
+Subject: [PATCH v2 13/23] MAINTAINERS: update faraday,ftrtc010.yaml reference
+Date:   Thu, 16 Sep 2021 11:55:12 +0200
+Message-Id: <b3da577ccfafb60841a945011535b3662ba3c1f1.1631785820.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1631785820.git.mchehab+huawei@kernel.org>
 References: <cover.1631785820.git.mchehab+huawei@kernel.org>
@@ -45,31 +47,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changeset 810e4441946c ("dt-bindings: aspeed-i2c: Convert txt to yaml format")
-renamed: Documentation/devicetree/bindings/i2c/i2c-aspeed.txt
-to: Documentation/devicetree/bindings/i2c/aspeed,i2c.yaml.
+Changeset 8df65d4adca6 ("dt-bindings: convert rtc/faraday,ftrtc01 to yaml")
+renamed: Documentation/devicetree/bindings/rtc/faraday,ftrtc010.txt
+to: Documentation/devicetree/bindings/rtc/faraday,ftrtc010.yaml.
 
 Update its cross-reference accordingly.
 
-Fixes: 810e4441946c ("dt-bindings: aspeed-i2c: Convert txt to yaml format")
+Fixes: 8df65d4adca6 ("dt-bindings: convert rtc/faraday,ftrtc01 to yaml")
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
  MAINTAINERS | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index ddea1f2cdadc..e63f3c4fceb9 100644
+index e63f3c4fceb9..edf8d4253142 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -1745,7 +1745,7 @@ R:	Joel Stanley <joel@jms.id.au>
- L:	linux-i2c@vger.kernel.org
- L:	openbmc@lists.ozlabs.org (moderated for non-subscribers)
- S:	Maintained
--F:	Documentation/devicetree/bindings/i2c/i2c-aspeed.txt
-+F:	Documentation/devicetree/bindings/i2c/aspeed,i2c.yaml
- F:	Documentation/devicetree/bindings/interrupt-controller/aspeed,ast2400-i2c-ic.txt
- F:	drivers/i2c/busses/i2c-aspeed.c
- F:	drivers/irqchip/irq-aspeed-i2c-ic.c
+@@ -1875,7 +1875,7 @@ T:	git git://github.com/ulli-kroll/linux.git
+ F:	Documentation/devicetree/bindings/arm/gemini.txt
+ F:	Documentation/devicetree/bindings/net/cortina,gemini-ethernet.txt
+ F:	Documentation/devicetree/bindings/pinctrl/cortina,gemini-pinctrl.txt
+-F:	Documentation/devicetree/bindings/rtc/faraday,ftrtc010.txt
++F:	Documentation/devicetree/bindings/rtc/faraday,ftrtc010.yaml
+ F:	arch/arm/boot/dts/gemini*
+ F:	arch/arm/mach-gemini/
+ F:	drivers/crypto/gemini/
 -- 
 2.31.1
 
