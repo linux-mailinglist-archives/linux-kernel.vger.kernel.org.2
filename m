@@ -2,81 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 039C240EB60
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 22:08:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FAE040EB43
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 22:03:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237058AbhIPUJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 16:09:59 -0400
-Received: from mleia.com ([178.79.152.223]:49050 "EHLO mail.mleia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231994AbhIPUJ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 16:09:56 -0400
-X-Greylist: delayed 589 seconds by postgrey-1.27 at vger.kernel.org; Thu, 16 Sep 2021 16:09:55 EDT
-Received: from mail.mleia.com (localhost [127.0.0.1])
-        by mail.mleia.com (Postfix) with ESMTP id 830C9210E9;
-        Thu, 16 Sep 2021 19:58:45 +0000 (UTC)
-Subject: Re: [PATCH] Input: lpc32xx-keys - Make use of the helper function
- dev_err_probe()
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20210916153311.14628-1-caihuoqing@baidu.com>
-From:   Vladimir Zapolskiy <vz@mleia.com>
-Message-ID: <5f832f6c-0807-9cfb-f441-6eff820c40e1@mleia.com>
-Date:   Thu, 16 Sep 2021 22:58:44 +0300
+        id S235473AbhIPUEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 16:04:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40078 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229534AbhIPUEu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 16:04:50 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3466FC061574;
+        Thu, 16 Sep 2021 13:03:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:
+        Subject:Sender:Reply-To:Cc:Content-ID:Content-Description;
+        bh=KqxRy0WLPGBV4wdZfMfm1u6INYHRT5mHQEbiujkzzfA=; b=4YJ/7yjUlMNVy5sm7r8fyAy9d8
+        R3A/56UyXqQ8+keVYtEFbZI2VxlPyKHmMsNibGllk58CSqOTvItHL9Y0CNUaKg3scjkgyZ2iIcl9Z
+        AYfE4OcGYDqlqxh3ojXK/ZXeBTUB/n7Gw47qAqtbCqybR9KhkjKnSi2TIyxFP/z1ijqF1ezgrm1dA
+        lHVsl3lhEgaE2YGFPs8ui+seqfxNK0sRI7KuchTEVNBcPokksjMY42B2njlPnHQndCDCKoQY4yJbi
+        oU+tcXPP4CH0hK8oqJBDGGxIz+SUqoio6IXfAEiDP50ZdXDlN/fj+d/b2tDlpBTDg3iuXjzbNmsSD
+        CzsWGf6g==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mQxbT-00CJJl-Ao; Thu, 16 Sep 2021 20:03:27 +0000
+Subject: Re: [GIT PULL] parisc architecture warning fix for kernel v5.15-rc2
+To:     Guenter Roeck <linux@roeck-us.net>, Helge Deller <deller@gmx.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+References: <YUNi6hTcS8nUrrpF@ls3530>
+ <b3d13e4f-c9cd-495b-5df2-1080ca4d3aa3@roeck-us.net>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <f3713fe6-2806-9d65-618b-a9d210193e60@infradead.org>
+Date:   Thu, 16 Sep 2021 13:03:26 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210916153311.14628-1-caihuoqing@baidu.com>
+In-Reply-To: <b3d13e4f-c9cd-495b-5df2-1080ca4d3aa3@roeck-us.net>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-49551924 
-X-CRM114-CacheID: sfid-20210916_195845_556695_4A8AB492 
-X-CRM114-Status: GOOD (  17.01  )
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Cai,
-
-On 9/16/21 6:33 PM, Cai Huoqing wrote:
-> When possible use dev_err_probe help to properly deal with the
-> PROBE_DEFER error, the benefit is that DEFER issue will be logged
-> in the devices_deferred debugfs file.
-> Using dev_err_probe() can reduce code size, and the error value
-> gets printed.
+On 9/16/21 12:45 PM, Guenter Roeck wrote:
+> On 9/16/21 8:29 AM, Helge Deller wrote:
+>> Hi Linus,
+>>
+>> please pull one parisc architecture warning fix for kernel 5.15-rc2 from:
+>>
+>>    http://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git tags/for-5.15/parisc-4
+>>
+>> One patch which fixes a build warning when using the PAGE0 pointer.
+>>
 > 
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
-> ---
->   drivers/input/keyboard/lpc32xx-keys.c | 7 +++----
->   1 file changed, 3 insertions(+), 4 deletions(-)
+> Grumble:
 > 
-> diff --git a/drivers/input/keyboard/lpc32xx-keys.c b/drivers/input/keyboard/lpc32xx-keys.c
-> index 943aeeb0de79..12bdf68b8fe7 100644
-> --- a/drivers/input/keyboard/lpc32xx-keys.c
-> +++ b/drivers/input/keyboard/lpc32xx-keys.c
-> @@ -227,10 +227,9 @@ static int lpc32xx_kscan_probe(struct platform_device *pdev)
->   
->   	/* Get the key scanner clock */
->   	kscandat->clk = devm_clk_get(&pdev->dev, NULL);
-> -	if (IS_ERR(kscandat->clk)) {
-> -		dev_err(&pdev->dev, "failed to get clock\n");
-> -		return PTR_ERR(kscandat->clk);
-> -	}
-> +	if (IS_ERR(kscandat->clk))
-> +		return dev_err_probe(&pdev->dev, PTR_ERR(kscandat->clk),
-> +				     "failed to get clock\n");
->   
->   	/* Configure the key scanner */
->   	error = clk_prepare_enable(kscandat->clk);
+> Building parisc:allmodconfig ... failed
+> --------------
+> Error log:
+> In file included from drivers/net/phy/dp83640.c:23:
+> drivers/net/phy/dp83640_reg.h:8: error: "PAGE0" redefined [-Werror]
+>      8 | #define PAGE0                     0x0000
 > 
+> No, I didn't see that coming either. It _was_ there before, I just didn't notice.
+> 
+> Looks like that define isn't even used anywhere.
+> I'll send a patch to remove it.
 
-thank you for the change!
+Already merged in the net tree.
 
-Acked-by: Vladimir Zapolskiy <vz@mleia.com>
 
---
-Best wishes,
-Vladimir
+-- 
+~Randy
+
