@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0AF840E07E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:21:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4251D40E2C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:17:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241522AbhIPQVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:21:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48354 "EHLO mail.kernel.org"
+        id S242319AbhIPQlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:41:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44746 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235075AbhIPQMo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:12:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B05B6138B;
-        Thu, 16 Sep 2021 16:09:29 +0000 (UTC)
+        id S244431AbhIPQfO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:35:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 22C73613A1;
+        Thu, 16 Sep 2021 16:21:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808569;
-        bh=xy6Pskwf2LsTKup1sy1FUidV65P0qDqckPExucv4B0w=;
+        s=korg; t=1631809276;
+        bh=2q+XIKWDWafQd4e0ZI4eVsfsQHMA/3IsAN2Ms9BzVLQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BQme5CPNowPX0GtzlkfwzAG/9cZYARO7XxAx5unyhhhlapywM+Mas0C2Ozqh2a3eQ
-         /OAh5AqEDywKcLLPA2GtRrTgF+1CXKZe5ZN36SiOot3bulGvxomlaqXclxNfKJPPpE
-         /x2G5zTYO9M3wS4/LUQnc1peyuHMNxSar8jDgZKc=
+        b=AsWttJkyBcUBX6rH2eGnoiJCNcGAyTcJUKoBpAGmn00v5W31HxMKzJQZ9d9UI1gCM
+         uOr6UaGSuDwzfytHMi7hLYWSmyXChnc9Z/cFU4PO0fefha+G+0U4/Cv8BYLjeIRrl9
+         Sb60mmtaUpAY3e335AVnISaZc14CufxB9rLGV2F4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oleksij Rempel <o.rempel@pengutronix.de>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        stable@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <Anna.Schumaker@Netapp.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 107/306] MIPS: Malta: fix alignment of the devicetree buffer
+Subject: [PATCH 5.13 095/380] NFSv4/pNFS: Always allow update of a zero valued layout barrier
 Date:   Thu, 16 Sep 2021 17:57:32 +0200
-Message-Id: <20210916155757.727486102@linuxfoundation.org>
+Message-Id: <20210916155807.268697706@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,42 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oleksij Rempel <o.rempel@pengutronix.de>
+From: Trond Myklebust <trond.myklebust@hammerspace.com>
 
-[ Upstream commit bea6a94a279bcbe6b2cde348782b28baf12255a5 ]
+[ Upstream commit 45baadaad7bf9183651fb74f4ed1200da48505a5 ]
 
-Starting with following patch MIPS Malta is not able to boot:
-| commit 79edff12060fe7772af08607eff50c0e2486c5ba
-| Author: Rob Herring <robh@kernel.org>
-| scripts/dtc: Update to upstream version v1.6.0-51-g183df9e9c2b9
+A zero value for the layout barrier indicates that it has been cleared
+(since seqid '0' is an illegal value), so we should always allow it to
+be updated.
 
-The reason is the alignment test added to the fdt_ro_probe_(). To fix
-this issue, we need to make sure that fdt_buf is aligned.
-
-Since the dtc patch was designed to uncover potential issue, I handle
-initial MIPS Malta patch as initial bug.
-
-Fixes: e81a8c7dabac ("MIPS: Malta: Setup RAM regions via DT")
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Fixes: d29b468da4f9 ("pNFS/NFSv4: Improve rejection of out-of-order layouts")
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/mti-malta/malta-dtshim.c | 2 +-
+ fs/nfs/pnfs.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/mti-malta/malta-dtshim.c b/arch/mips/mti-malta/malta-dtshim.c
-index 0ddf03df6268..f451268f6c38 100644
---- a/arch/mips/mti-malta/malta-dtshim.c
-+++ b/arch/mips/mti-malta/malta-dtshim.c
-@@ -22,7 +22,7 @@
- #define  ROCIT_CONFIG_GEN1_MEMMAP_SHIFT	8
- #define  ROCIT_CONFIG_GEN1_MEMMAP_MASK	(0xf << 8)
+diff --git a/fs/nfs/pnfs.c b/fs/nfs/pnfs.c
+index 3ee607aa007b..6cc5ae51fd80 100644
+--- a/fs/nfs/pnfs.c
++++ b/fs/nfs/pnfs.c
+@@ -335,7 +335,7 @@ static bool pnfs_seqid_is_newer(u32 s1, u32 s2)
  
--static unsigned char fdt_buf[16 << 10] __initdata;
-+static unsigned char fdt_buf[16 << 10] __initdata __aligned(8);
+ static void pnfs_barrier_update(struct pnfs_layout_hdr *lo, u32 newseq)
+ {
+-	if (pnfs_seqid_is_newer(newseq, lo->plh_barrier))
++	if (pnfs_seqid_is_newer(newseq, lo->plh_barrier) || !lo->plh_barrier)
+ 		lo->plh_barrier = newseq;
+ }
  
- /* determined physical memory size, not overridden by command line args	 */
- extern unsigned long physical_memsize;
 -- 
 2.30.2
 
