@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9230240E40B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:22:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA37140E1DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:15:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346455AbhIPQyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:54:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39406 "EHLO mail.kernel.org"
+        id S242081AbhIPQcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:32:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59300 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345147AbhIPQtl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:49:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 832226159A;
-        Thu, 16 Sep 2021 16:27:52 +0000 (UTC)
+        id S238703AbhIPQXi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:23:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CB35761502;
+        Thu, 16 Sep 2021 16:15:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809673;
-        bh=grpqI8sJsgtdBrayXqXN5K8Cvo1phWPDGxjB1M24YFE=;
+        s=korg; t=1631808956;
+        bh=wm3vgGq28kagCEy8O6Nt9xmU1mL0EuDDPzYz6pRSOJE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X/gT1Fi5+4ABHqjRHFfNNB/pQCCWz8mQzvguQ6SNHhi6VhiVOJz/nZnpPYd6872X1
-         UgO9s4AC0I8oboeujWq4U0iqCZT4HNoK7B4Lhz9kWUUzvZsTrJlQqHEsJpggQKzmhB
-         WwqtgUsyxmUCPVp+i3ifbbxDAZ44IeahdC0icGDc=
+        b=G85/ySwVyLr8JLaXcFID8EPGQeplFUOEeFxFhBiuxHOo8iAOFnAGwQPZdquOParCY
+         CurmQaXS7VTK1MQM37cqW6tLwgwEFHvI2SZjbj9f6CHLTBGEgT3XGgjHWwEFtSvSwO
+         K51XoVf5LsFxRrqDxXYD0gFGx+EiBJHxVB46c7MI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        stable@vger.kernel.org, Ding Hui <dinghui@sangfor.com.cn>,
+        "Paulo Alcantara (SUSE)" <pc@cjr.nz>,
+        Steve French <stfrench@microsoft.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 239/380] arm64: dts: qcom: ipq6018: drop 0x from unit address
-Date:   Thu, 16 Sep 2021 17:59:56 +0200
-Message-Id: <20210916155812.209966259@linuxfoundation.org>
+Subject: [PATCH 5.10 252/306] cifs: fix wrong release in sess_alloc_buffer() failed path
+Date:   Thu, 16 Sep 2021 17:59:57 +0200
+Message-Id: <20210916155802.658764736@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vinod Koul <vkoul@kernel.org>
+From: Ding Hui <dinghui@sangfor.com.cn>
 
-[ Upstream commit 1b91b8ef60e9a67141e66af3cca532c00f4605fe ]
+[ Upstream commit d72c74197b70bc3c95152f351a568007bffa3e11 ]
 
-Nodes need not contain '0x' for the unit address. Drop it to fix the
-below warning:
+smb_buf is allocated by small_smb_init_no_tc(), and buf type is
+CIFS_SMALL_BUFFER, so we should use cifs_small_buf_release() to
+release it in failed path.
 
-arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dt.yaml: reserved-memory:
-'memory@0x60000' does not match any of the regexes
-
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Link: https://lore.kernel.org/r/20210308060826.3074234-19-vkoul@kernel.org
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Ding Hui <dinghui@sangfor.com.cn>
+Reviewed-by: Paulo Alcantara (SUSE) <pc@cjr.nz>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/ipq6018.dtsi | 2 +-
+ fs/cifs/sess.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/ipq6018.dtsi b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-index 9fa5b028e4f3..23ee1bfa4318 100644
---- a/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-@@ -151,7 +151,7 @@ reserved-memory {
- 		#size-cells = <2>;
- 		ranges;
+diff --git a/fs/cifs/sess.c b/fs/cifs/sess.c
+index 1a0298d1e7cd..d58c5ffeca0d 100644
+--- a/fs/cifs/sess.c
++++ b/fs/cifs/sess.c
+@@ -888,7 +888,7 @@ sess_alloc_buffer(struct sess_data *sess_data, int wct)
+ 	return 0;
  
--		rpm_msg_ram: memory@0x60000 {
-+		rpm_msg_ram: memory@60000 {
- 			reg = <0x0 0x60000 0x0 0x6000>;
- 			no-map;
- 		};
+ out_free_smb_buf:
+-	kfree(smb_buf);
++	cifs_small_buf_release(smb_buf);
+ 	sess_data->iov[0].iov_base = NULL;
+ 	sess_data->iov[0].iov_len = 0;
+ 	sess_data->buf0_type = CIFS_NO_BUFFER;
 -- 
 2.30.2
 
