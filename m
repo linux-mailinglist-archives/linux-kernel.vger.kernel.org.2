@@ -2,87 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8966240D988
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 14:12:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D8FF40D9AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 14:18:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239375AbhIPMNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 08:13:25 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:35977 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239110AbhIPMNY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 08:13:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1631794321;
-        bh=7sztpVLHF3xzQJBZaKGK0+5UlIXFQCYGKYPDrXPda+s=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ePagv1MZ186VTzn8ozXg3BM7J2UvTGuG/1vYvB99Y0gML7e/XpMrjzrRPhn/EKOZz
-         +M16vTA/IJudxGA+KRBA0Xzudjg1+YmLeiuEKRxGBJgasr/PgMFll6lZuS8x+D1/Nr
-         enM8O6UaYVXFredz/yu6Gw4yAwsNmGLHq1jzupr+6sKPuUmKdFpUgB+WmCPUzn8nmY
-         8umAndZ8r9iruOOSKU6ZrzFPkwKogVsCTztjifsWFd+GsZ4kyM94l8VzzeOdYJ+3LI
-         Pyn1z8nhlc3gVaAERqnlAMBXscyLeOPoPvC44LgJ7yDZTmh5GrOpX8a0dlVfViTyub
-         W240okspa9uwg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H9GD02n62z9sXS;
-        Thu, 16 Sep 2021 22:12:00 +1000 (AEST)
-Date:   Thu, 16 Sep 2021 22:11:59 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        M Chetan Kumar <m.chetan.kumar@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the net-next tree
-Message-ID: <20210916221159.7a495aca@canb.auug.org.au>
-In-Reply-To: <CAK7LNASCbVJ0EYoGN8iz+yskpHUuR_PZnePUUtgJu9UZqGW2cg@mail.gmail.com>
-References: <20210914121550.39cfd366@canb.auug.org.au>
-        <CAK7LNASCbVJ0EYoGN8iz+yskpHUuR_PZnePUUtgJu9UZqGW2cg@mail.gmail.com>
+        id S235905AbhIPMTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 08:19:33 -0400
+Received: from 82-65-109-163.subs.proxad.net ([82.65.109.163]:49298 "EHLO
+        luna.linkmauve.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235737AbhIPMTd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 08:19:33 -0400
+X-Greylist: delayed 327 seconds by postgrey-1.27 at vger.kernel.org; Thu, 16 Sep 2021 08:19:32 EDT
+Received: by luna.linkmauve.fr (Postfix, from userid 1000)
+        id 256ABF40B33; Thu, 16 Sep 2021 14:12:41 +0200 (CEST)
+Date:   Thu, 16 Sep 2021 14:12:40 +0200
+From:   Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] nvmem: NVMEM_NINTENDO_OTP should depend on WII
+Message-ID: <20210916121240.okknaglns4bjmczp@luna>
+Jabber-ID: linkmauve@linkmauve.fr
+References: <01318920709dddc4d85fe895e2083ca0eee234d8.1631611652.git.geert+renesas@glider.be>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/mzcw7ryvAFRIOGzBw.57AtL";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="4qla4vdo44bvrd6u"
+Content-Disposition: inline
+In-Reply-To: <01318920709dddc4d85fe895e2083ca0eee234d8.1631611652.git.geert+renesas@glider.be>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/mzcw7ryvAFRIOGzBw.57AtL
-Content-Type: text/plain; charset=US-ASCII
+
+--4qla4vdo44bvrd6u
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi Masahiro,
+Hi, thanks for this patch, once the Wii=A0U platform will be added it will
+need an additional test for WIIU, but for now this is:
 
-On Thu, 16 Sep 2021 18:03:26 +0900 Masahiro Yamada <masahiroy@kernel.org> w=
-rote:
->
-> I am sad to see the kbuild change reverted, not the net one.
->=20
-> 13bb8429ca98 is apparently doing wrong.
->=20
-> Including <linux/types.h> should be fine.
+Reviewed-by: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
 
-This was fixed in the net-next tree.
+On Tue, Sep 14, 2021 at 11:29:49AM +0200, Geert Uytterhoeven wrote:
+> The Nintendo Wii and Wii U OTP is only present on Nintendo Wii and Wii U
+> consoles.  Hence add a dependency on WII, to prevent asking the user
+> about this driver when configuring a kernel without Nintendo Wii and Wii
+> U console support.
+>=20
+> Fixes: 3683b761fe3a10ad ("nvmem: nintendo-otp: Add new driver for the Wii=
+ and Wii U OTP")
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+>  drivers/nvmem/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/drivers/nvmem/Kconfig b/drivers/nvmem/Kconfig
+> index 39854d43758be3fb..da414617a54d4b99 100644
+> --- a/drivers/nvmem/Kconfig
+> +++ b/drivers/nvmem/Kconfig
+> @@ -109,6 +109,7 @@ config MTK_EFUSE
+> =20
+>  config NVMEM_NINTENDO_OTP
+>  	tristate "Nintendo Wii and Wii U OTP Support"
+> +	depends on WII || COMPILE_TEST
+>  	help
+>  	  This is a driver exposing the OTP of a Nintendo Wii or Wii U console.
+> =20
+> --=20
+> 2.25.1
 
 --=20
-Cheers,
-Stephen Rothwell
+Emmanuel Gil Peyrot
 
---Sig_/mzcw7ryvAFRIOGzBw.57AtL
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+--4qla4vdo44bvrd6u
+Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFDNI8ACgkQAVBC80lX
-0GzUYwf/TGSVUPLkcU16Z7h2pDpCF/LCT6RnKKKhBIc7LOJEr9Nu34vRnCbxohn0
-sd2PY3KXSngViYVczk+1lpSyI36TIhtZQ5+IjiVa48450qUVFw5rXGOac5DKLsYG
-NdNdlkUg4MSt2Pmdmn2jIyywaUA3BuH1jk0VBnEGNvV22FZhAXD60aLek94IAOv2
-8XneTE7R50TyefrAbEl5EGssAc06zzdaaPzrsxsiC3A0Oc2hkIEJP/kFQ8z3I1ia
-pXl7VuNG0x77SqzXvPpucWDt5GkqW2JzMxdxGv3TgPb+/1IXADB+iGK8kC1dxanN
-3OHj7vBaF3QZpjuynJWiKIPA6i4YVg==
-=MuDj
+iQEzBAABCAAdFiEEjrVT1SzTln43kCLJOWgfYkb2LpAFAmFDNLQACgkQOWgfYkb2
+LpA6OQgAqnp5vZBBdcMfXSA8IEnqzcZRa0PHdW/d3FK7bczJocUPNc4mvQFexP0t
+7AuWaXNMOEWq2xOd05eggwhSQgB2OMZ/wtA63fKOrP5gq1QdzSN5hDzM2ew1MnyR
+x8x/CoMc4JOk/mmbZFSTiYx8wC3M37uCkfugZdS0actXv/2kuiWfPhUIvvlrZG92
+ebYlFUQMhQX43c62Au0DUCwRy0VQJW2+lRVlIHghtrSUfey1m79qfICnt5+g5Llv
+DA0kchTFuBpyO2s3pGAmKnd3fCOQ8jBtqLgg3ZJNrqbfwnl3ezoS7f0tw8qQeBQy
+4VVzKdfPm7I3b9Od3GDm8Suv9HIvtg==
+=6DDx
 -----END PGP SIGNATURE-----
 
---Sig_/mzcw7ryvAFRIOGzBw.57AtL--
+--4qla4vdo44bvrd6u--
