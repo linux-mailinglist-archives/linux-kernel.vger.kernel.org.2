@@ -2,109 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9889F40D440
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 10:04:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC91440D442
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 10:04:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235072AbhIPIFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 04:05:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234982AbhIPIFF (ORCPT
+        id S234982AbhIPIFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 04:05:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52632 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234963AbhIPIFg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 04:05:05 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D206EC061764;
-        Thu, 16 Sep 2021 01:03:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=fpa9ttX7CF1WZpIhVuTpbNvQaQpZawGIXndIWrx5+jI=; b=da246jrz6odDZwWz+BVZfJ4yVr
-        kc2G1ZX29712svPo5vvsUWoJLZigW9CJuhX7+ms5NojlbOnq5+ioReV+ThkFGQoEUiN8dZYakN3vq
-        ZuVIm6a4pv0BeeUNgMThsJE09igsaVqzNbXmskExLG2bsRAkirGVP1oF6sJvmjGjvKpGIb5fjIfhI
-        HaJSE0EjAA7uNnvtbzAGlwnzOrZe+OSSytjVBZ3a5tXmk0HWZtLSfWQ4v582RlMKNMghoht4bUQW7
-        0zj9WYRHhfc/6QWWSkx4HGKz4qVGhI5WpcmoaiV4S/vaoxJMyd2z8D+p8/LLITI15kT2+WfIfO0i7
-        WEQgbzqQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mQmMZ-003bgn-QM; Thu, 16 Sep 2021 08:03:20 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5C822300093;
-        Thu, 16 Sep 2021 10:03:19 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4348E2CD48C44; Thu, 16 Sep 2021 10:03:19 +0200 (CEST)
-Date:   Thu, 16 Sep 2021 10:03:19 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     =?utf-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
-        <linux-perf-users@vger.kernel.org>,
-        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
-        <linux-kernel@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <netdev@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <bpf@vger.kernel.org>, jroedel@suse.de, x86@kernel.org
-Subject: Re: [PATCH] x86/dumpstack/64: Add guard pages to stack_info
-Message-ID: <YUL6R5AH6WNxu5sH@hirez.programming.kicks-ass.net>
-References: <ff979a43-045a-dc56-64d1-2c31dd4db381@linux.alibaba.com>
- <20210910153839.GH4323@worktop.programming.kicks-ass.net>
- <f38987a5-dc36-a20d-8c5e-81e8ead5b4dc@linux.alibaba.com>
- <YT8m2B6D2yWc5Umq@hirez.programming.kicks-ass.net>
- <3fb7c51f-696b-da70-1965-1dda9910cb14@linux.alibaba.com>
- <YUB5VchM3a/MiZpX@hirez.programming.kicks-ass.net>
- <3f26f7a2-0a09-056a-3a7a-4795b6723b60@linux.alibaba.com>
- <YUIOgmOfnOqPrE+z@hirez.programming.kicks-ass.net>
- <76de02b7-4d87-4a3a-e4d4-048829749887@linux.alibaba.com>
- <YUL5j/lY0mtx4NMq@hirez.programming.kicks-ass.net>
+        Thu, 16 Sep 2021 04:05:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631779455;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pwNZJ4rNg2Bbq40eOmQLhg4v/7JOjLDWypf+dMjwfo4=;
+        b=hrSHJUUHrUVGW7sRZEaDpLx68yLV7GAZpdjEdLan2gfVVMwmxDgZXI6HiPRzkTEqHBLxcY
+        l5NRS4XA2y/yYROZnqlZDAbL6OKWAVOerT1I2/IKDNo5SwtOtxL0+HYiHwKwot7JE1gtAC
+        fCfnch/++Uaa11eyArmtAE2OlyU2/2E=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-271-RAYFqjLUNw6spN_5yVw8cw-1; Thu, 16 Sep 2021 04:04:12 -0400
+X-MC-Unique: RAYFqjLUNw6spN_5yVw8cw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 38726802928;
+        Thu, 16 Sep 2021 08:04:11 +0000 (UTC)
+Received: from T590 (ovpn-12-89.pek2.redhat.com [10.72.12.89])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A41CE60C82;
+        Thu, 16 Sep 2021 08:04:04 +0000 (UTC)
+Date:   Thu, 16 Sep 2021 16:04:16 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Yu Kuai <yukuai3@huawei.com>
+Cc:     josef@toxicpanda.com, axboe@kernel.dk, hch@infradead.org,
+        linux-block@vger.kernel.org, nbd@other.debian.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
+Subject: Re: [PATCH v7 6/6] nbd: fix uaf in nbd_handle_reply()
+Message-ID: <YUL6gJhaNy58Il3v@T590>
+References: <20210915092010.2087371-1-yukuai3@huawei.com>
+ <20210915092010.2087371-7-yukuai3@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YUL5j/lY0mtx4NMq@hirez.programming.kicks-ass.net>
+In-Reply-To: <20210915092010.2087371-7-yukuai3@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 10:00:15AM +0200, Peter Zijlstra wrote:
-> On Thu, Sep 16, 2021 at 11:47:49AM +0800, 王贇 wrote:
+On Wed, Sep 15, 2021 at 05:20:10PM +0800, Yu Kuai wrote:
+> There is a problem that nbd_handle_reply() might access freed request:
 > 
-> > I did some debug and found the issue, we are missing:
-> > 
-> > @@ -122,7 +137,10 @@ static __always_inline bool in_exception_stack(unsigned long *stack, struct stac
-> >         info->type      = ep->type;
-> >         info->begin     = (unsigned long *)begin;
-> >         info->end       = (unsigned long *)end;
-> > -       info->next_sp   = (unsigned long *)regs->sp;
-> > +
-> > +       if (!(ep->type & STACK_TYPE_GUARD))
-> > +               info->next_sp   = (unsigned long *)regs->sp;
-> > +
-> >         return true;
-> >  }
-> > 
-> > as the guard page are not working as real stack I guess?
+> 1) At first, a normal io is submitted and completed with scheduler:
 > 
-> Correct, but I thought I put if (type & GUARD) terminators in all paths
-> that ended up caring about ->next_sp. Clearly I seem to have missed one
-> :/
+> internel_tag = blk_mq_get_tag -> get tag from sched_tags
+>  blk_mq_rq_ctx_init
+>   sched_tags->rq[internel_tag] = sched_tag->static_rq[internel_tag]
+> ...
+> blk_mq_get_driver_tag
+>  __blk_mq_get_driver_tag -> get tag from tags
+>  tags->rq[tag] = sched_tag->static_rq[internel_tag]
 > 
-> Let me try and figure out where that happens.
+> So, both tags->rq[tag] and sched_tags->rq[internel_tag] are pointing
+> to the request: sched_tags->static_rq[internal_tag]. Even if the
+> io is finished.
+> 
+> 2) nbd server send a reply with random tag directly:
+> 
+> recv_work
+>  nbd_handle_reply
+>   blk_mq_tag_to_rq(tags, tag)
+>    rq = tags->rq[tag]
+> 
+> 3) if the sched_tags->static_rq is freed:
+> 
+> blk_mq_sched_free_requests
+>  blk_mq_free_rqs(q->tag_set, hctx->sched_tags, i)
+>   -> step 2) access rq before clearing rq mapping
+>   blk_mq_clear_rq_mapping(set, tags, hctx_idx);
+>   __free_pages() -> rq is freed here
+> 
+> 4) Then, nbd continue to use the freed request in nbd_handle_reply
+> 
+> Fix the problem by get 'q_usage_counter' before blk_mq_tag_to_rq(),
+> thus request is ensured not to be freed because 'q_usage_counter' is
+> not zero.
+> 
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> ---
+>  drivers/block/nbd.c | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+> 
+> diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+> index 9a7bbf8ebe74..3e8b70b5d4f9 100644
+> --- a/drivers/block/nbd.c
+> +++ b/drivers/block/nbd.c
+> @@ -824,6 +824,7 @@ static void recv_work(struct work_struct *work)
+>  						     work);
+>  	struct nbd_device *nbd = args->nbd;
+>  	struct nbd_config *config = nbd->config;
+> +	struct request_queue *q = nbd->disk->queue;
+>  	struct nbd_sock *nsock;
+>  	struct nbd_cmd *cmd;
+>  	struct request *rq;
+> @@ -834,7 +835,24 @@ static void recv_work(struct work_struct *work)
+>  		if (nbd_read_reply(nbd, args->index, &reply))
+>  			break;
+>  
+> +		/*
+> +		 * Grab ref of q_usage_counter can prevent request being freed
+> +		 * during nbd_handle_reply(). If q_usage_counter is zero, then
+> +		 * no request is inflight, which means something is wrong since
+> +		 * we expect to find a request to complete here.
+> +		 */
 
-Oh, I'm an idiot... yes it tries to read regs the stack, but clearly
-that won't work for the guard page.
+The above comment is wrong, the purpose is simply for avoiding request
+pool freed, such as elevator switching won't happen once
+->q_usage_counter is grabbed. So no any request UAF can be triggered
+when calling into nbd_handle_reply().
+
+> +		if (!percpu_ref_tryget(&q->q_usage_counter)) {
+> +			dev_err(disk_to_dev(nbd->disk), "%s: no io inflight\n",
+> +				__func__);
+> +			break;
+> +		}
+> +
+>  		cmd = nbd_handle_reply(nbd, args->index, &reply);
+> +		/*
+> +		 * It's safe to drop ref before request completion, inflight
+> +		 * request will ensure q_usage_counter won't be zero.
+> +		 */
+
+The above comment is useless actually.
+
+-- 
+Ming
+
