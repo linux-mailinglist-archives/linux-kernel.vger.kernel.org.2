@@ -2,141 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1A2340E98C
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:06:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE9D940E9A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:16:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345999AbhIPSIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 14:08:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40452 "EHLO
+        id S237179AbhIPSNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 14:13:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351505AbhIPSGV (ORCPT
+        with ESMTP id S1347846AbhIPSLN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 14:06:21 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8621C061D6C
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 09:37:29 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id r3-20020a0cc403000000b00377a3318261so59374628qvi.11
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 09:37:29 -0700 (PDT)
+        Thu, 16 Sep 2021 14:11:13 -0400
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E252C0470ED
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 09:39:49 -0700 (PDT)
+Received: by mail-oi1-x229.google.com with SMTP id bi4so9815504oib.9
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 09:39:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=sBm/kHNsJOwk5GfFSoVxh83u5s0/i8ma9jvWkgSwVDk=;
-        b=q7TdV5nqyczGXKbDqK5IDRxzCdI5uOWbNjmqKEblwGVPIUd7/rLYzYGuoU9+4UMuXM
-         TfOY5CKLh+FugU5A/lRxwJDyvdOgGMzc5jIDKFcYdx6wBhkn6JWKMbKcua31Pe9ESdoh
-         Q05R0T3MrLUJGPe07AuurLURngQSxJHl6+fOXiAlH259Zm6f+nCrCPpj0KeHoIIE6vUN
-         hhuo7b1wnzJCfdCKhP5JJf6cAhBlJPV/EW5oO0UOIX+/GDgQVXj8M0JzU9+gdTpr4HNG
-         eWFdo1dTzisoRAqPlaTABMbsDwqjHcuSFMxS4OJQrSmS4RdS5qnTZE2joweuoD1EjhRP
-         4yJQ==
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:reply-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Qy3pOAsrra7KT/ngtb/QFh7afi84SrbV2cOHQJxGstg=;
+        b=h/Wj+RXf+luqlt8A5CP0bsUtHT8NqxT8VRlOcVq2tdjCMr//bVYG9NOA6uTE31YvMC
+         zoWi3PWFnfgwnzpUo0BzuU1DK45wZIOd/RCxSfOKeGMD8N8zMAWhns0zeb3QZL6RKoK9
+         maRg9jM+f+Dil7H/ctPWb9jixsB8SFilbC+sNZBZ04J+z1R6jc3YGyET/sTSWvIye9RW
+         7cgyhLeiCxJhI0dl5CLxCNeXLJjBdSppPHSnvc9+AQIpTUur+6C5AOngB392efXib13S
+         IqxAb/GFwW1vBxRCtozEmtcqPhuSrJkKl1U1D3m7IzItHroVQ4dS4DZlPOwprnhhTGd+
+         M5HA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=sBm/kHNsJOwk5GfFSoVxh83u5s0/i8ma9jvWkgSwVDk=;
-        b=yK8jfjY+kpOKrvFANB8Ic+fuK//c+h9OGSOtEEByG1Cu+Wy3lzuVP4ClbNvFerNEM9
-         6w8cjEjylYyqwRMjWskQDHhbOM3awhJo/Jwpp7H07GgGS562KGCyWn7wH1eKwcpBvXgx
-         Oay3qefFv/Nndz9xFZkT4rxnVpQQowLtGblt50S3VNfsiRELMJVt5Rev7Ar/s2BXA13v
-         rfrmiwLi1nTOt352TiVlOjhcJLwOVU3BoTAAODqIs7yi+1lRjYf56sbiv0pqL9dkQaPe
-         /KDeEulVGpMtpLCJ94mLrP983QTy3h5/NOlQjC8dmH1VzgWaNNJdOY8rndz4oHyIL3Nw
-         ycmw==
-X-Gm-Message-State: AOAM530Ud+AopmYgsHrsWm1GIUPjICK2K5ehwM7hmGEUGWVyIrAGzA3i
-        yH0/PcGPxNfjKmwLFd4oGS2uIMVGJhYpA3oh
-X-Google-Smtp-Source: ABdhPJxE5nz90QMz6Xzc7bna2lWCZZomuSyI5AGtTrduj1/XGylKS5eKSRFy9SiFmO8ShPGinLF0SyBqMXiycn9B
-X-Received: from clapinski.waw.corp.google.com ([2a00:79e0:2:11:1fc6:3621:21bf:1e5a])
- (user=mclapinski job=sendgmr) by 2002:ad4:4a93:: with SMTP id
- h19mr6265953qvx.41.1631810249185; Thu, 16 Sep 2021 09:37:29 -0700 (PDT)
-Date:   Thu, 16 Sep 2021 18:37:17 +0200
-Message-Id: <20210916163717.3179496-1-mclapinski@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.309.g3052b89438-goog
-Subject: [PATCH] ipc: check checkpoint_restore_ns_capable() to modify C/R proc files
-From:   Michal Clapinski <mclapinski@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Michal Clapinski <mclapinski@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :reply-to:references:mime-version:content-disposition:in-reply-to;
+        bh=Qy3pOAsrra7KT/ngtb/QFh7afi84SrbV2cOHQJxGstg=;
+        b=Nl6FZ6eoO5TUWDB6zYzwN+oI20zsWZylGCbf0av/TpAi4jntat79K+n2kVyyDPUyVf
+         My6zICaePywGfB4wpIG5jz9JMXSwgp3p3ipR38eEPCOG4irwHkKUcL6s216Izs8VIyy/
+         sEpLmWq0Qg4lnnEciwH0kkFYxEeHzKCtxCxvGqD4w1k+/3TfUQ6G7TRcYLVEEFR4eYHN
+         5Lk44wtEj0k5t9i/aPdaH3qoXejDrBX1WGkm4OxLTt8oDQl87LcOeqRSpW6ac5LXcBUB
+         1Y0ba4BMXNqkgEz6W+WEXLgMo7xGZO1HRHDx/kjXBn11Pb0C8itVpJyCrgB1Bg/AYOEi
+         Tfxg==
+X-Gm-Message-State: AOAM531PZu1opKTpVPKowYh6wiMzr9WtbuGNaFgSV4OGWVy/gl+HzDTp
+        JzHq7IbXpzpSQnr9puN7ag==
+X-Google-Smtp-Source: ABdhPJzwncS5iHvX5bxcRrpNe4012zEgfmItpvnAJ4Oo6PfiPrtFGz2pH3WTJzW1phlYCbyJq+Nghg==
+X-Received: by 2002:aca:2b05:: with SMTP id i5mr552713oik.55.1631810388587;
+        Thu, 16 Sep 2021 09:39:48 -0700 (PDT)
+Received: from serve.minyard.net ([47.184.156.158])
+        by smtp.gmail.com with ESMTPSA id a11sm803798oiw.36.2021.09.16.09.39.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Sep 2021 09:39:47 -0700 (PDT)
+Sender: Corey Minyard <tcminyard@gmail.com>
+Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:1df5:faca:2d59:6c4c])
+        by serve.minyard.net (Postfix) with ESMTPSA id 496E918000C;
+        Thu, 16 Sep 2021 16:39:46 +0000 (UTC)
+Date:   Thu, 16 Sep 2021 11:39:45 -0500
+From:   Corey Minyard <minyard@acm.org>
+To:     Anton Lundin <glance@acc.umu.se>
+Cc:     openipmi-developer@lists.sourceforge.net,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: Issue with panic handling and ipmi
+Message-ID: <20210916163945.GY545073@minyard.net>
+Reply-To: minyard@acm.org
+References: <20210916145300.GD108031@montezuma.acc.umu.se>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210916145300.GD108031@montezuma.acc.umu.se>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit removes the requirement to be root to modify sem_next_id,
-msg_next_id and shm_next_id and checks checkpoint_restore_ns_capable
-instead.
+On Thu, Sep 16, 2021 at 04:53:00PM +0200, Anton Lundin wrote:
+> Hi.
+> 
+> I've just done a upgrade of the kernel we're using in a product from
+> 4.19 to 5.10 and I noted a issue.
+> 
+> It started that with that we didn't get panic and oops dumps in our erst
+> backed pstore, and when debugging that I noted that the reboot on panic
+> timer didn't work either.
+> 
+> I've bisected it down to 2033f6858970 ("ipmi: Free receive messages when
+> in an oops").
 
-Since those files are specific to the IPC namespace, there is no reason
-they should require root privileges. This is similar to ns_last_pid,
-which also only checks checkpoint_restore_ns_capable.
+Hmm.  Unfortunately removing that will break other things.  Can you try
+the following patch?  It's a good idea, in general, to do as little as
+possible in the panic path, this should cover a multitude of issues.
 
-Signed-off-by: Michal Clapinski <mclapinski@google.com>
----
- ipc/ipc_sysctl.c | 28 ++++++++++++++++++++++------
- 1 file changed, 22 insertions(+), 6 deletions(-)
+Thanks for the report.
 
-diff --git a/ipc/ipc_sysctl.c b/ipc/ipc_sysctl.c
-index 3f312bf2b116..f8e27203ca49 100644
---- a/ipc/ipc_sysctl.c
-+++ b/ipc/ipc_sysctl.c
-@@ -104,6 +104,19 @@ static int proc_ipc_sem_dointvec(struct ctl_table *table, int write,
- 	return ret;
+-corey
+
+> 
+> I tested just reverting that and both dumps to pstore and the panic
+> reboot timer started working again.
+> 
+> 
+> //Anton
+
+commit e28aa211190b7d3a1135f051f0c30b0195016489
+Author: Corey Minyard <cminyard@mvista.com>
+Date:   Thu Sep 16 11:36:20 2021 -0500
+
+    ipmi: Disable some operations during a panic
+
+    Don't do kfree or other risky things when oops_in_progress is set.
+
+    Reported-by: Anton Lundin <glance@acc.umu.se>
+    Fixes: 2033f6858970 ("ipmi: Free receive messages when > in an oops")
+    Signed-off-by: Corey Minyard <cminyard@mvista.com>
+
+diff --git a/drivers/char/ipmi/ipmi_msghandler.c b/drivers/char/ipmi/ipmi_msghandler.c
+index e96cb5c4f97a..a08f53f208bf 100644
+--- a/drivers/char/ipmi/ipmi_msghandler.c
++++ b/drivers/char/ipmi/ipmi_msghandler.c
+@@ -4789,7 +4789,9 @@ static atomic_t recv_msg_inuse_count = ATOMIC_INIT(0);
+ static void free_smi_msg(struct ipmi_smi_msg *msg)
+ {
+ 	atomic_dec(&smi_msg_inuse_count);
+-	kfree(msg);
++	/* Try to keep as much stuff out of the panic path as possible. */
++	if (!oops_in_progress)
++		kfree(msg);
  }
- 
-+#ifdef CONFIG_CHECKPOINT_RESTORE
-+static int proc_ipc_dointvec_minmax_checkpoint_restore(struct ctl_table *table,
-+		int write, void *buffer, size_t *lenp, loff_t *ppos)
-+{
-+	struct user_namespace *user_ns = current->nsproxy->ipc_ns->user_ns;
-+
-+	if (write && !checkpoint_restore_ns_capable(user_ns))
-+		return -EPERM;
-+
-+	return proc_ipc_dointvec_minmax(table, write, buffer, lenp, ppos);
-+}
-+#endif
-+
- #else
- #define proc_ipc_doulongvec_minmax NULL
- #define proc_ipc_dointvec	   NULL
-@@ -111,6 +124,9 @@ static int proc_ipc_sem_dointvec(struct ctl_table *table, int write,
- #define proc_ipc_dointvec_minmax_orphans   NULL
- #define proc_ipc_auto_msgmni	   NULL
- #define proc_ipc_sem_dointvec	   NULL
-+#ifdef CONFIG_CHECKPOINT_RESTORE
-+#define proc_ipc_dointvec_minmax_checkpoint_restore	NULL
-+#endif	/* CONFIG_CHECKPOINT_RESTORE */
- #endif
- 
- int ipc_mni = IPCMNI;
-@@ -198,8 +214,8 @@ static struct ctl_table ipc_kern_table[] = {
- 		.procname	= "sem_next_id",
- 		.data		= &init_ipc_ns.ids[IPC_SEM_IDS].next_id,
- 		.maxlen		= sizeof(init_ipc_ns.ids[IPC_SEM_IDS].next_id),
--		.mode		= 0644,
--		.proc_handler	= proc_ipc_dointvec_minmax,
-+		.mode		= 0666,
-+		.proc_handler	= proc_ipc_dointvec_minmax_checkpoint_restore,
- 		.extra1		= SYSCTL_ZERO,
- 		.extra2		= SYSCTL_INT_MAX,
- 	},
-@@ -207,8 +223,8 @@ static struct ctl_table ipc_kern_table[] = {
- 		.procname	= "msg_next_id",
- 		.data		= &init_ipc_ns.ids[IPC_MSG_IDS].next_id,
- 		.maxlen		= sizeof(init_ipc_ns.ids[IPC_MSG_IDS].next_id),
--		.mode		= 0644,
--		.proc_handler	= proc_ipc_dointvec_minmax,
-+		.mode		= 0666,
-+		.proc_handler	= proc_ipc_dointvec_minmax_checkpoint_restore,
- 		.extra1		= SYSCTL_ZERO,
- 		.extra2		= SYSCTL_INT_MAX,
- 	},
-@@ -216,8 +232,8 @@ static struct ctl_table ipc_kern_table[] = {
- 		.procname	= "shm_next_id",
- 		.data		= &init_ipc_ns.ids[IPC_SHM_IDS].next_id,
- 		.maxlen		= sizeof(init_ipc_ns.ids[IPC_SHM_IDS].next_id),
--		.mode		= 0644,
--		.proc_handler	= proc_ipc_dointvec_minmax,
-+		.mode		= 0666,
-+		.proc_handler	= proc_ipc_dointvec_minmax_checkpoint_restore,
- 		.extra1		= SYSCTL_ZERO,
- 		.extra2		= SYSCTL_INT_MAX,
- 	},
--- 
-2.33.0.309.g3052b89438-goog
+
+ struct ipmi_smi_msg *ipmi_alloc_smi_msg(void)
+@@ -4808,7 +4810,9 @@ EXPORT_SYMBOL(ipmi_alloc_smi_msg);
+ static void free_recv_msg(struct ipmi_recv_msg *msg)
+ {
+ 	atomic_dec(&recv_msg_inuse_count);
+-	kfree(msg);
++	/* Try to keep as much stuff out of the panic path as possible. */
++	if (!oops_in_progress)
++		kfree(msg);
+ }
+
+ static struct ipmi_recv_msg *ipmi_alloc_recv_msg(void)
+@@ -4826,7 +4830,7 @@ static struct ipmi_recv_msg *ipmi_alloc_recv_msg(void)
+
+ void ipmi_free_recv_msg(struct ipmi_recv_msg *msg)
+ {
+-	if (msg->user)
++	if (msg->user && !oops_in_progress)
+ 		kref_put(&msg->user->refcount, free_user);
+ 	msg->done(msg);
+ }
 
