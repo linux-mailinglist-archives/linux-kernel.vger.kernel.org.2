@@ -2,141 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D81D940D12E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 03:24:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF5A840D131
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 03:28:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233637AbhIPBZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 21:25:29 -0400
-Received: from mail-mw2nam12on2138.outbound.protection.outlook.com ([40.107.244.138]:22337
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229816AbhIPBZZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 21:25:25 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XihfSW0ysefBdZB5SduinvOS68oEit8eyiE03dyv2JHecNkCsa5v4/b24s0rLa8LL/gSOCMf2c9oq4/xhCIAuTediP3rZu1x5d8TmBVr04dxGSHY/vOuYtY1G5RgJaWqp0np0TeJHJ8RQDikRzU4mDu8qoM2bZWUBQnEJLrcbkX8Sz2izh0mshuhZQIKAHMcUmcMTFXLaKBfZOYXHYKyz6PPSlrEqGY9f6IIj7iOgW1lq0x1HASLfvYwFXYOsWyll18pAxnxhlyOa9/z2cgDzfuJW7nl3tE24HG/ovQxuk+dLuBs9XQCs0U5N6EOUfCB013q6hnVQF8/UIfG9M8rGA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=W+nYrNRTczcC/F+zm3qOYKT0wSVCAHDK92oah3UepVs=;
- b=POu/cAI72ORSnw7huB96/vF6r7eT3rOB9iT+bI49I7CcTnqXUIPcTVDJteTragefUx5NtahoW2BWnXp5jGPZx4dd+cfsfM4Gvd67KIDE3sLxM1SPBIELP1DbpEiZtgpNC/QlLY/mH67b32kfRKyQFbWUSxhxSbgbv5nsHUF1NmsW3Zb13PVjCQe+cNa57f3dvqNsUyI4yoscUVSihSa3WGf/Ik8cVCsJhrfQ4c5MAWbD1OegmReQxJwY/4Rxitk4se7h+CqawwqdDz/nj/VEB03HdckCYUq0eG7UK+nlcJV0/OIR5GYBz4Ur4x3wPdzlAr96C/NavoCtmb38gQL3Dw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=in-advantage.com; dmarc=pass action=none
- header.from=in-advantage.com; dkim=pass header.d=in-advantage.com; arc=none
+        id S233729AbhIPB3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 21:29:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40740 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233688AbhIPB3c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 21:29:32 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D221C061574;
+        Wed, 15 Sep 2021 18:28:11 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id x27so11857749lfu.5;
+        Wed, 15 Sep 2021 18:28:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=inadvantage.onmicrosoft.com; s=selector2-inadvantage-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=W+nYrNRTczcC/F+zm3qOYKT0wSVCAHDK92oah3UepVs=;
- b=KbWrrxDzZnsaTSONJjobG7Z8xwT5J60wp9/6vZ8hc550xQbgEc3buylNEj/o486Rz9nDX/3woPd2xpOlAdZ/F4gThxpaCCbJQJjVXmNgvYh/5UTmAXTjceRDvrS6YaC5D8sBU7duQxznvfgvBNreMMaBebUBK9mTMIdX0gL7RLI=
-Authentication-Results: in-advantage.com; dkim=none (message not signed)
- header.d=none;in-advantage.com; dmarc=none action=none
- header.from=in-advantage.com;
-Received: from MWHPR1001MB2351.namprd10.prod.outlook.com
- (2603:10b6:301:35::37) by CO6PR10MB5633.namprd10.prod.outlook.com
- (2603:10b6:303:148::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.16; Thu, 16 Sep
- 2021 01:24:01 +0000
-Received: from MWHPR1001MB2351.namprd10.prod.outlook.com
- ([fe80::bc3f:264a:a18d:cf93]) by MWHPR1001MB2351.namprd10.prod.outlook.com
- ([fe80::bc3f:264a:a18d:cf93%7]) with mapi id 15.20.4500.020; Thu, 16 Sep 2021
- 01:24:01 +0000
-From:   Colin Foster <colin.foster@in-advantage.com>
-To:     colin.foster@in-advantage.com,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        UNGLinuxDriver@microchip.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1 net] net: mscc: ocelot: remove buggy duplicate write to DEV_CLOCK_CFG
-Date:   Wed, 15 Sep 2021 18:23:40 -0700
-Message-Id: <20210916012341.518512-1-colin.foster@in-advantage.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: MW4PR03CA0129.namprd03.prod.outlook.com
- (2603:10b6:303:8c::14) To MWHPR1001MB2351.namprd10.prod.outlook.com
- (2603:10b6:301:35::37)
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=nn45bUIl96WIFsT4CN3x7DghHPbrAhKFSaIduPWSZkU=;
+        b=D8DU4mSw6cSYFQ8suIyp64R0VVAZh6DQCoxHnANYkUTfVZiEEyVKQ+yqiou/6fQ5Qm
+         vkTu7PInawFreqF8g4x91QuV7ppLmVabWqAguheLpb0FFTDxs5bekaBqMe492Ws3v4LM
+         YYQpIW00z///2b2I9Jca54Q1yhdNCrLD+fPPAV6XCOtA0yBi/2AyuLRE0P+30+6LYjQC
+         68yzExokhqLpcT/KhCmFV2d9/ZKHpDTswSjQHddq58MjMELZTx2akWj18YzOzAWaUF1G
+         W36Zys7m7RQCoASklp67URZIo7p6eeRtZT8Lv4cxud3KxPDsvC3hIrOQsULYHjDMk4gq
+         jP9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=nn45bUIl96WIFsT4CN3x7DghHPbrAhKFSaIduPWSZkU=;
+        b=ActXdSq1jjZ1t7cmI46rmXzIf3Pg1FaXUZNw5uJSqxIzdKPNdEYpyxepT/83BA9x7J
+         Z98z0kzeG8ES0PpKiFW55sWKT+2iNEXoHtJ0a5wFaOWbQLCSiG/rY7anuYseQBTgiIK9
+         oqwYLBO6UubPujj1aiYXNxznrzPo4aLw6swzwX6UnNWJulvDBr76gt5qdixq0VzfrN1L
+         7AOUAr/Iik2UaqtxNBjdymHicnwmT+ek7qmZ66Ohye4KEzP5aVdcgsG/qZt1IPKPrlKL
+         TVHtH34F1HWAJntet8v/5jvHii7CF3+ryDyo8XB7VMrE7qGg9jc4atvtsIIsQZvPikgc
+         SW2g==
+X-Gm-Message-State: AOAM532om5Ked8JxiPGajfvO30HqUFd15bY1Se+viiEh5PjPmBosz6zP
+        Qg2HyDPWnTePh1q5ITU1bjs=
+X-Google-Smtp-Source: ABdhPJzbUSUXPW9or3AwwwZSR/K3KohU1VLv2sABEALCC/gpyM3zULJdOtF7UOBfYYrMwSl4YhDk7w==
+X-Received: by 2002:a05:6512:3fa8:: with SMTP id x40mr2051116lfa.536.1631755689417;
+        Wed, 15 Sep 2021 18:28:09 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-62-67.dynamic.spd-mgts.ru. [94.29.62.67])
+        by smtp.googlemail.com with ESMTPSA id x192sm121892lff.154.2021.09.15.18.28.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Sep 2021 18:28:08 -0700 (PDT)
+Subject: Re: [PATCH v1 4/4] PM / devfreq: tegra30: Check whether
+ clk_round_rate() returns zero rate
+To:     Chanwoo Choi <cwchoi00@gmail.com>
+Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>
+References: <20210912184458.17995-1-digetx@gmail.com>
+ <20210912184458.17995-5-digetx@gmail.com>
+ <9fa66405-883a-3653-eb5d-3cd7eee07a0a@gmail.com>
+ <e9233eeb-6780-b390-dffa-8de9315effa3@gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <26d90b01-13d5-3bd8-da0a-b9ff61c7845a@gmail.com>
+Date:   Thu, 16 Sep 2021 04:28:07 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Received: from localhost.localdomain (67.185.175.147) by MW4PR03CA0129.namprd03.prod.outlook.com (2603:10b6:303:8c::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Thu, 16 Sep 2021 01:24:00 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9ca47370-443a-42bf-5b4b-08d978b0a9eb
-X-MS-TrafficTypeDiagnostic: CO6PR10MB5633:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CO6PR10MB5633B2261F86157236748972A4DC9@CO6PR10MB5633.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0GyFAebY4BTFoWy5fM2DPFZynoegu3HUpvA3+d8ge21DLnTDcSXj+LMDdNa4c+aMUFZT8Ai9LtyDgTja9TVTk8TEKfKsg2Hr1tJP8DnHjPJUPei0592Y6/WTYp0yIct+gG/MUoJmLdSCvYSouCedewXfmEXTJLPLIwWbI4/klVdC02Eep44PJY+xI00dny/laM0ta/UdWVh3clSowpcM+uNYlgAx0EVUz9ArRdb8kgfGgefQpTjHF+jFM8E6ZiacojPCTxRIGyhppg6Qff+PjHWRuiB63VChuF9GcR+aQQ2owf4IVIn36dzAI9eH3fN9577UOn6XCJh80Ab2r8B7eZXS44OhURpzV//BmJ0Z9mLaFQnrJMxMbsKPEUauCwNH9c3nMrdrjy2qruLoNkUn/9D3sJkoeRtVJ6c7UL7tCIVlJTxqavbYJ6Bp6mdU5GQqZW7XbrRqKPm9Dw+n/fNIHivVqDvNSh6xfWahjR23VindEmfGxRRQ1cgEhcuj3iRFK+fgue0MXxsSaiSQWfB6K/y4Mcnqk7mDT41ng2yJdjw7GlUZCKhZFH2GUxkyjENqgnoWIEyw5qOb1NfSEyEj78CuyR/lHo4OmHOHNaGdKLTmAHgHRzK7so1iwu/4nfNArbEf9KcGm3RRoz9kncByw/EogPCasX3CXwGBA9I+OVdX2enJsqc9O/03jmyDbt3y0CfvPqzed3xTlwb9pD7T4Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2351.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(396003)(376002)(366004)(39830400003)(136003)(52116002)(6506007)(110136005)(186003)(956004)(2616005)(26005)(66946007)(66476007)(5660300002)(86362001)(66556008)(6666004)(1076003)(44832011)(36756003)(83380400001)(8676002)(2906002)(8936002)(4326008)(478600001)(6512007)(316002)(38100700002)(38350700002)(6486002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?noKo9o8NBe0DnAvIOSvm9fX7soFvgVm1xhTvQXWtt+XqjLFcSefq5wp1/Cy+?=
- =?us-ascii?Q?YiH/XqkiKbJiI4URSaHahaQCiqqX/aiYFy6obPYo50Pa+cmYo94ex1p0Ya+s?=
- =?us-ascii?Q?uE7moX/GV3vcxWQS9uPgbGzjAdPReZTvSVGWXhDic/0+yB2mGxu2XlL+S8gV?=
- =?us-ascii?Q?MveEk+TS2i6ywGgPiMXGl1q+J6yInbNfBtG7VSf9ekMQp/AQVk1RUCrtkkjA?=
- =?us-ascii?Q?sJcpyuUXVbvh915GgLa1iNbW/oQ/XQqqdHREcvTHYCvm0AJrsnF4ncmmDXIH?=
- =?us-ascii?Q?pBfFPfkX8Xt2abvSpSxQ3P8bYaHekQg1crkT1k6TgjwhGfI9b8AnlBa4VZ2w?=
- =?us-ascii?Q?f62lyXKp34OaExdavmPG46pEAv+FWrkJW2V1RQvcF+11nOM1EdueyU2Sz33m?=
- =?us-ascii?Q?ntdFnB+RKCV8DCG6abP7S7ncZ/8Rn0ecH80JQft8US0juVVbvIoLOWDVZrmb?=
- =?us-ascii?Q?aFzEpeWZR3tMOPbhHmcVLof87tq4H2mJv1DFfmFKJbr9GvQVSe6qdQHYjaal?=
- =?us-ascii?Q?cKCjYP/7mvOJfrz5racNDIhGt0MnD5nJQp0CpHw7hws/UQ6dKDOG2u2LzJIy?=
- =?us-ascii?Q?WnGyrFA+L8EjzivpbDLw6nfvmbHER6w1DSjS1464Rvf/JIjubSBFb+UILBP5?=
- =?us-ascii?Q?0YqJ9Zyvz5llNPuVyeKcfRU/HOq5oPCL1Dhg/QpUMJFSP8CR6D6RNrk7PIGA?=
- =?us-ascii?Q?7sCFQUVS7IJPG8uh1uq4gREi5aqZwFuXmRfQWXjtFEa28MLyuAKAfQg3131G?=
- =?us-ascii?Q?9HkK5WBk08gsO0aLtnjgZl7/lFYmAUnW4vAierpLxHRSsJ5/VEq2gEtxP1Q0?=
- =?us-ascii?Q?xHRHNoZpfWYoNWa7FZRXOA74XKoa9CoKf/dXsRMp6JAsZaPZxn+dcAf2i3uQ?=
- =?us-ascii?Q?QCyTLTmbLq6xWsYHjyZu1PO4U9faS+Q6Llo3/DGXL8isVv7xSMU2XEyxHxGH?=
- =?us-ascii?Q?PjRYgix+GqrxoxHI4334S2+/JR1GLvZ1SLsQ2+1ign3r1O51A5ZbslVNOocp?=
- =?us-ascii?Q?X1XL/SRmLq9xh8Fd98ihlW2qpdPkCNihEx3ef94j8X3cm3wleKBvAwW02c99?=
- =?us-ascii?Q?HGd58uEoyfJaPw0yFvmZK1Gvh8wSjzABUgsh334fwxtCc5DRmVw4DjnzQB68?=
- =?us-ascii?Q?ztmb3ZwgxIKfEgNvllwfxrTfhH52HA+7vQi+ar0dg+g0Y8ispBhb6fl52fTd?=
- =?us-ascii?Q?iSAoFs1XgxvtND8IHRn3YLxJbPWWoPWF4mrS+ci57WQJ91vcGcANPQstlxLB?=
- =?us-ascii?Q?rYsDSt1MjNCIHGPmTs5VY8xhwCDd9ixHRkuVemR1WamSc93GmRbzcW7NZVwU?=
- =?us-ascii?Q?DA/1e6OmdUQyOuT/fGsNVgfk?=
-X-OriginatorOrg: in-advantage.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9ca47370-443a-42bf-5b4b-08d978b0a9eb
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2351.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2021 01:24:01.2235
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 48e842ca-fbd8-4633-a79d-0c955a7d3aae
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7zuOSpmdhd0bX4TfI78ahojLlIp9/20Nns+3mKxhpyEuWrGsuSwQ1R0jRM16BcwqJztlNePV+mKieCEpt9WHVOKO1jELABFJx1pctXJl4rU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR10MB5633
+In-Reply-To: <e9233eeb-6780-b390-dffa-8de9315effa3@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When updating ocelot to use phylink, a second write to DEV_CLOCK_CFG was
-mistakenly left in. It used the variable "speed" which, previously, would
-would have been assigned a value of OCELOT_SPEED_1000. In phylink the
-variable is be SPEED_1000, which is invalid for the
-DEV_CLOCK_LINK_SPEED macro. Removing it as unnecessary and buggy.
+15.09.2021 21:31, Chanwoo Choi пишет:
+> On 21. 9. 15. 오후 12:51, Chanwoo Choi wrote:
+>> Hi,
+>>
+>> On 21. 9. 13. 오전 3:44, Dmitry Osipenko wrote:
+>>> EMC clock is always-on and can't be zero. Check whether clk_round_rate()
+>>> returns zero rate and error out if it does. It can return zero if clock
+>>> tree isn't initialized properly.
+>>>
+>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>>> ---
+>>>   drivers/devfreq/tegra30-devfreq.c | 4 ++--
+>>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/devfreq/tegra30-devfreq.c
+>>> b/drivers/devfreq/tegra30-devfreq.c
+>>> index d83fdc2713ed..65ecf17a36f4 100644
+>>> --- a/drivers/devfreq/tegra30-devfreq.c
+>>> +++ b/drivers/devfreq/tegra30-devfreq.c
+>>> @@ -891,9 +891,9 @@ static int tegra_devfreq_probe(struct
+>>> platform_device *pdev)
+>>>           return err;
+>>>       rate = clk_round_rate(tegra->emc_clock, ULONG_MAX);
+>>> -    if (rate < 0) {
+>>> +    if (rate <= 0) {
+>>>           dev_err(&pdev->dev, "Failed to round clock rate: %ld\n",
+>>> rate);
+>>> -        return rate;
+>>> +        return rate ?: -EINVAL;
+> 
+> If rate is 0, It doesn't return and fall-through? even if print the
+> error message. 'return rate ?: -EINVAL;' style is strange for me
+> because it doesn't specify the 'return value' when rate is true.
 
-Fixes: e6e12df625f2 ("net: mscc: ocelot: convert to phylink")
-Signed-off-by: Colin Foster <colin.foster@in-advantage.com>
----
- drivers/net/ethernet/mscc/ocelot.c | 6 ------
- 1 file changed, 6 deletions(-)
+It's not clear to me what do you mean by "return and fall-through".
 
-diff --git a/drivers/net/ethernet/mscc/ocelot.c b/drivers/net/ethernet/mscc/ocelot.c
-index 08be0440af28..729ba826ba17 100644
---- a/drivers/net/ethernet/mscc/ocelot.c
-+++ b/drivers/net/ethernet/mscc/ocelot.c
-@@ -563,12 +563,6 @@ void ocelot_phylink_mac_link_up(struct ocelot *ocelot, int port,
- 	ocelot_port_writel(ocelot_port, DEV_MAC_ENA_CFG_RX_ENA |
- 			   DEV_MAC_ENA_CFG_TX_ENA, DEV_MAC_ENA_CFG);
- 
--	/* Take MAC, Port, Phy (intern) and PCS (SGMII/Serdes) clock out of
--	 * reset
--	 */
--	ocelot_port_writel(ocelot_port, DEV_CLOCK_CFG_LINK_SPEED(speed),
--			   DEV_CLOCK_CFG);
--
- 	/* Core: Enable port for frame transfer */
- 	ocelot_fields_write(ocelot, port,
- 			    QSYS_SWITCH_PORT_MODE_PORT_ENA, 1);
--- 
-2.25.1
+It specifies the 'return value' when rate is true. It's a short form of
+"rate ? rate : -EINVAL".
 
+The final returned value will be printed by the driver's core. The value
+returned by clk_round_rate() is important here since it tells the reason
+of the error.
+
+https://elixir.bootlin.com/linux/v5.15-rc1/source/drivers/base/dd.c#L533
