@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A8C240E47C
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:24:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EA2140E852
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348678AbhIPRDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:03:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40182 "EHLO mail.kernel.org"
+        id S1354126AbhIPRil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:38:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50250 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344179AbhIPQyK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:54:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DF4AF61374;
-        Thu, 16 Sep 2021 16:29:50 +0000 (UTC)
+        id S1353027AbhIPR3v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:29:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CAF2461CF3;
+        Thu, 16 Sep 2021 16:46:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809791;
-        bh=35mbzRvU6JfJ7yvh2CXrenvC6BWUwLp9YJcEV3nMwhw=;
+        s=korg; t=1631810773;
+        bh=hBMpEcqTLqk1Iuuh/VqFCCsSi3SUvQ2kusH5coJhz90=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ga30uxutSVVe9G8u8Ue0tqpdrw/sCTkx+IMdgDXnaPdupiL5a7+AlmSNrZoQCaMTb
-         xNhHQ0MlcWEPirqGEqTKF23fa7PSqR3OoHN3b4g2P/bMpgEAX8Z7E5taB8f9BJe3us
-         1NE1w4nhbqACHf+7LAMw+S0WuqowbksEusAO78zI=
+        b=2YFVUh311YwGJSXQmpKg/RsW7kZTWC/Yi59TOasilmdE7XAicfnXkvJXAbNReLWr4
+         OJSdbGR9CZWQf/tM5YJUwNd+8wKuyYjF+qknR/HA4bIUiC1zABERnRJcE0zYCzA6kh
+         KgDa5bO+qSUTapHQZv7n8ms8plGS41sHPDSkYGQ4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jussi Maki <joamaki@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 253/380] selftests/bpf: Fix xdp_tx.c prog section name
+Subject: [PATCH 5.14 261/432] gfs2: Fix glock recursion in freeze_go_xmote_bh
 Date:   Thu, 16 Sep 2021 18:00:10 +0200
-Message-Id: <20210916155812.690258404@linuxfoundation.org>
+Message-Id: <20210916155819.669871805@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,50 +39,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jussi Maki <joamaki@gmail.com>
+From: Bob Peterson <rpeterso@redhat.com>
 
-[ Upstream commit 95413846cca37f20000dd095cf6d91f8777129d7 ]
+[ Upstream commit 9d9b16054b7d357afde69a027514c695092b0d22 ]
 
-The program type cannot be deduced from 'tx' which causes an invalid
-argument error when trying to load xdp_tx.o using the skeleton.
-Rename the section name to "xdp" so that libbpf can deduce the type.
+We must not call gfs2_consist (which does a file system withdraw) from
+the freeze glock's freeze_go_xmote_bh function because the withdraw
+will try to use the freeze glock, thus causing a glock recursion error.
 
-Signed-off-by: Jussi Maki <joamaki@gmail.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/bpf/20210731055738.16820-7-joamaki@gmail.com
+This patch changes freeze_go_xmote_bh to call function
+gfs2_assert_withdraw_delayed instead of gfs2_consist to avoid recursion.
+
+Signed-off-by: Bob Peterson <rpeterso@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/bpf/progs/xdp_tx.c   | 2 +-
- tools/testing/selftests/bpf/test_xdp_veth.sh | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ fs/gfs2/glops.c | 17 +++++++----------
+ 1 file changed, 7 insertions(+), 10 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/xdp_tx.c b/tools/testing/selftests/bpf/progs/xdp_tx.c
-index 94e6c2b281cb..5f725c720e00 100644
---- a/tools/testing/selftests/bpf/progs/xdp_tx.c
-+++ b/tools/testing/selftests/bpf/progs/xdp_tx.c
-@@ -3,7 +3,7 @@
- #include <linux/bpf.h>
- #include <bpf/bpf_helpers.h>
+diff --git a/fs/gfs2/glops.c b/fs/gfs2/glops.c
+index 54d3fbeb3002..384565d63eea 100644
+--- a/fs/gfs2/glops.c
++++ b/fs/gfs2/glops.c
+@@ -610,16 +610,13 @@ static int freeze_go_xmote_bh(struct gfs2_glock *gl)
+ 		j_gl->gl_ops->go_inval(j_gl, DIO_METADATA);
  
--SEC("tx")
-+SEC("xdp")
- int xdp_tx(struct xdp_md *xdp)
- {
- 	return XDP_TX;
-diff --git a/tools/testing/selftests/bpf/test_xdp_veth.sh b/tools/testing/selftests/bpf/test_xdp_veth.sh
-index ba8ffcdaac30..995278e684b6 100755
---- a/tools/testing/selftests/bpf/test_xdp_veth.sh
-+++ b/tools/testing/selftests/bpf/test_xdp_veth.sh
-@@ -108,7 +108,7 @@ ip link set dev veth2 xdp pinned $BPF_DIR/progs/redirect_map_1
- ip link set dev veth3 xdp pinned $BPF_DIR/progs/redirect_map_2
- 
- ip -n ns1 link set dev veth11 xdp obj xdp_dummy.o sec xdp_dummy
--ip -n ns2 link set dev veth22 xdp obj xdp_tx.o sec tx
-+ip -n ns2 link set dev veth22 xdp obj xdp_tx.o sec xdp
- ip -n ns3 link set dev veth33 xdp obj xdp_dummy.o sec xdp_dummy
- 
- trap cleanup EXIT
+ 		error = gfs2_find_jhead(sdp->sd_jdesc, &head, false);
+-		if (error)
+-			gfs2_consist(sdp);
+-		if (!(head.lh_flags & GFS2_LOG_HEAD_UNMOUNT))
+-			gfs2_consist(sdp);
+-
+-		/*  Initialize some head of the log stuff  */
+-		if (!gfs2_withdrawn(sdp)) {
+-			sdp->sd_log_sequence = head.lh_sequence + 1;
+-			gfs2_log_pointers_init(sdp, head.lh_blkno);
+-		}
++		if (gfs2_assert_withdraw_delayed(sdp, !error))
++			return error;
++		if (gfs2_assert_withdraw_delayed(sdp, head.lh_flags &
++						 GFS2_LOG_HEAD_UNMOUNT))
++			return -EIO;
++		sdp->sd_log_sequence = head.lh_sequence + 1;
++		gfs2_log_pointers_init(sdp, head.lh_blkno);
+ 	}
+ 	return 0;
+ }
 -- 
 2.30.2
 
