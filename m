@@ -2,78 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37E2240E781
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:33:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E0E740E398
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:21:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348051AbhIPRde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:33:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46946 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348146AbhIPRX6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:23:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8EE8961BD1;
-        Thu, 16 Sep 2021 16:43:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631810620;
-        bh=s/eE8MQCbRlB/JbAF45EWPTDmeJAF5NuQ61zEC913j8=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Ha3kQcDSm0xzs+5Sf6sq84zgdcKeE8mziK5GvCAiLEafrYXOcSnITqmLtd6LfAidG
-         4Or/y6oX8N6gP5Pi6Dbf2gS+O7pNbFR4PSoyRsUO2CxZqlmfMafXchVfYRsID4ekzk
-         K/lL/QWvD0fMduiTlZN+j9Hm5bPRMwkIybOdgznJYnhTCw+wN7GFKBhLstu/gUnVRT
-         KOFziDKuRzqUfZhtVGUYq3x2seitW1EeTvkh7S+nGWccFpNvi75q3Yx0l5eNPSFDIN
-         /5Epp9G9RB0HDpRRUvnHIboFcw6liRhpjBnJrwldnILsUt1CpPNev/NcTHGdkD+7sd
-         9eAPgqbVeeEqA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 584E35C028C; Thu, 16 Sep 2021 09:43:40 -0700 (PDT)
-Date:   Thu, 16 Sep 2021 09:43:40 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
-        urezki@gmail.com, boqun.feng@gmail.com,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        joel@joelfernandes.org
-Subject: Re: [PATCH 2/4] rcu: Remove useless WRITE_ONCE() on
- rcu_data.exp_deferred_qs
-Message-ID: <20210916164340.GF4156@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210916121048.36623-1-frederic@kernel.org>
- <20210916121048.36623-3-frederic@kernel.org>
+        id S1345570AbhIPQu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:50:26 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:58224
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241076AbhIPQpt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:45:49 -0400
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com [209.85.128.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 46BCA3F324
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 16:44:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1631810667;
+        bh=yBmMOuuxnsSmKY/MvasMRfssB0igqWI4HNZ3xPJ3pBo=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=LP15ITHZHQGlpdsaO2ph90tBi39b1T6EnyUR4FKNckDBuv6OzLUvuzuvewdSoVMto
+         pBKYSDKkhupDbut1kwl8pys5rkNvB0T/nOqW6jPPLtaE7w9P7qpTHpHKg9ju6CEUbI
+         a+7EG9Z6x9+0/1xvt1oJCpVnVu4T2HBCLfT2HArVo/Knkwp3oKI3crFfswM7991Cku
+         La4rqbaUS1Z6CT2xuKFbid90cpgCgxXyEtBT+V+flQ6A4Q3xNcNbH2Y4du0nTsISR2
+         0+UbKmxF1CHssnnpxK/bfG4UYRC7bQatmsM8/qGYhEZ0pwgkRF1C4o3Ctd9SI2MbMu
+         m3PuQ8Q35H41A==
+Received: by mail-wm1-f72.google.com with SMTP id b139-20020a1c8091000000b002fb33c467c8so3368340wmd.5
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 09:44:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yBmMOuuxnsSmKY/MvasMRfssB0igqWI4HNZ3xPJ3pBo=;
+        b=Wbgsi4mZTOQ7HCxxZKAX/RCX7Vnxu7HZ2CDy8VNtgwcEiDxOLT9qs3rhVhchxlxclT
+         BDswTeJIaxg3knVQVdfcdDt4XYE+i/FzDgaRIn69PcglSVg3eo1m3i42kA/5rlfAzGVL
+         4KD1c8DWihgWo5KNIlc4GO08ey291QCWhgimJ0g0hRioKLSoJtdZoDCvNt2rVnHJDh6u
+         w9SgJvvbmsfWJEdNic7aV60fAwZCZqEALquAZ+S/k+UmUH51n6LaufhFs/mqNEJxD6W+
+         xCFQ0OJixXdV/sfj9cwzhVIVPp6Pfv1et3r2ldsA0cuS2px3uV+bKAwm9mlAvje677JV
+         K1PQ==
+X-Gm-Message-State: AOAM533/9kWz3xedr+cU5OjgJc/Q/7ct06ADVp/g65dyNmVFCGxc0xPA
+        xbPcPE6kmK/duw25R805cRFRpH9bCFlSaTbxdJmKzwlTgjdJOmSi/pwWhREkVRho9a58F8e3VgG
+        314Nfz+/KJqfKoyoc0RBYR/wzSgP1fxqMxP2eAsQVLA==
+X-Received: by 2002:adf:8144:: with SMTP id 62mr7325143wrm.144.1631810666990;
+        Thu, 16 Sep 2021 09:44:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxpsyrgDKxaM6Pd+NJV9qAsOHR82paB1P4J3TxYLo88IvDY24kRO2y6ux/ve5eKWqDHLRW+rg==
+X-Received: by 2002:adf:8144:: with SMTP id 62mr7325127wrm.144.1631810666810;
+        Thu, 16 Sep 2021 09:44:26 -0700 (PDT)
+Received: from kozik-lap.lan (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
+        by smtp.gmail.com with ESMTPSA id 129sm3747538wmz.26.2021.09.16.09.44.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Sep 2021 09:44:26 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: [PATCH 1/2] spi: rspi: drop unneeded MODULE_ALIAS
+Date:   Thu, 16 Sep 2021 18:44:22 +0200
+Message-Id: <20210916164423.134603-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210916121048.36623-3-frederic@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 02:10:46PM +0200, Frederic Weisbecker wrote:
-> This variable is never written nor read remotely. Remove this confusion.
-> 
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> ---
->  kernel/rcu/tree_exp.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-> index f3947c49eee7..4266610b4587 100644
-> --- a/kernel/rcu/tree_exp.h
-> +++ b/kernel/rcu/tree_exp.h
-> @@ -255,7 +255,7 @@ static void rcu_report_exp_cpu_mult(struct rcu_node *rnp,
->   */
->  static void rcu_report_exp_rdp(struct rcu_data *rdp)
->  {
-> -	WRITE_ONCE(rdp->exp_deferred_qs, false);
-> +	rdp->exp_deferred_qs = false;
+The MODULE_DEVICE_TABLE already creates proper alias for platform
+driver.  Having another MODULE_ALIAS causes the alias to be duplicated.
 
-Are you sure that this can never be invoked from an interrupt handler?
-And that rdp->exp_deferred_qs is never read from an interrupt handler?
-If either can happen, then the WRITE_ONCE() does play a role, right?
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+---
+ drivers/spi/spi-rspi.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-							Thanx, Paul
+diff --git a/drivers/spi/spi-rspi.c b/drivers/spi/spi-rspi.c
+index d16ed88802d3..41761f0d892a 100644
+--- a/drivers/spi/spi-rspi.c
++++ b/drivers/spi/spi-rspi.c
+@@ -1427,4 +1427,3 @@ module_platform_driver(rspi_driver);
+ MODULE_DESCRIPTION("Renesas RSPI bus driver");
+ MODULE_LICENSE("GPL v2");
+ MODULE_AUTHOR("Yoshihiro Shimoda");
+-MODULE_ALIAS("platform:rspi");
+-- 
+2.30.2
 
->  	rcu_report_exp_cpu_mult(rdp->mynode, rdp->grpmask, true);
->  }
->  
-> -- 
-> 2.25.1
-> 
