@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16B0B40E2D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:17:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDD3C40E2D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:17:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231225AbhIPQmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:42:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44898 "EHLO mail.kernel.org"
+        id S241950AbhIPQmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:42:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44916 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242383AbhIPQf2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:35:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8304F619E5;
-        Thu, 16 Sep 2021 16:21:24 +0000 (UTC)
+        id S242451AbhIPQf3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:35:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 335F6619A6;
+        Thu, 16 Sep 2021 16:21:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809285;
-        bh=5uWLQIGjypxunhfDBSoc978te0fgAKCKAPXtNb+PCdo=;
+        s=korg; t=1631809287;
+        bh=ajjy6T4IfK8uBofyoeCYRqWiaeg9CzcoAga4+dJTkRI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LT5Xk+wR708p43QCsJncuPitRwm6lNARZZA4B5TT4wCugNbe8Eif4hrJAinRL66Bg
-         r9SGC+7BfBOhCA8qSHm2OUbmHnwt5RQ0IeX9PGqyCeGR5OUlr5vXdeZ3DWEN3XM4bR
-         cQHOp4dbMgVq2NFVTPF3CxTfaEjykzW8RLit3Ib4=
+        b=b1D3dT7pj6byT/hNYMOWwb8oPXxdGZrGABkRychhX41khdd5mE8SwQuuoHuC8ezsF
+         SMJ/g3ls/mhs6l2drHYkG4INpkxXUAX3jNbBfKXoDoS4qbeLQoXtreJPbl399NiSt4
+         kM8hTJLL3vC1P1a/XstycMj8gZL54sEl0Yum7UJM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
+        stable@vger.kernel.org, Olga Kornievskaia <kolga@netapp.com>,
         Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <Anna.Schumaker@Netapp.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 098/380] SUNRPC/xprtrdma: Fix reconnection locking
-Date:   Thu, 16 Sep 2021 17:57:35 +0200
-Message-Id: <20210916155807.361980100@linuxfoundation.org>
+Subject: [PATCH 5.13 099/380] SUNRPC query transports source port
+Date:   Thu, 16 Sep 2021 17:57:36 +0200
+Message-Id: <20210916155807.393221437@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
 References: <20210916155803.966362085@linuxfoundation.org>
@@ -41,77 +40,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Olga Kornievskaia <kolga@netapp.com>
 
-[ Upstream commit f99fa50880f5300fbbb3c0754ddc7f8738d24fe7 ]
+[ Upstream commit a8482488a7d6d320f63a9ee1912dbb5ae5b80a61 ]
 
-The xprtrdma client code currently relies on the task that initiated the
-connect to hold the XPRT_LOCK for the duration of the connection
-attempt. If the task is woken early, due to some other event, then that
-lock could get released early.
-Avoid races by using the same mechanism that the socket code uses of
-transferring lock ownership to the RDMA connect worker itself. That
-frees us to call rpcrdma_xprt_disconnect() directly since we're now
-guaranteed exclusion w.r.t. other callers.
+Provide ability to query transport's source port.
 
-Fixes: 4cf44be6f1e8 ("xprtrdma: Fix recursion into rpcrdma_xprt_disconnect()")
+Signed-off-by: Olga Kornievskaia <kolga@netapp.com>
 Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
-Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sunrpc/xprt.c               |  2 ++
- net/sunrpc/xprtrdma/transport.c | 11 +++++------
- 2 files changed, 7 insertions(+), 6 deletions(-)
+ include/linux/sunrpc/xprtsock.h | 1 +
+ net/sunrpc/xprtsock.c           | 7 +++++++
+ 2 files changed, 8 insertions(+)
 
-diff --git a/net/sunrpc/xprt.c b/net/sunrpc/xprt.c
-index 19fa8616b8cf..8d3983c8b4d6 100644
---- a/net/sunrpc/xprt.c
-+++ b/net/sunrpc/xprt.c
-@@ -872,6 +872,7 @@ bool xprt_lock_connect(struct rpc_xprt *xprt,
- 	spin_unlock(&xprt->transport_lock);
- 	return ret;
- }
-+EXPORT_SYMBOL_GPL(xprt_lock_connect);
+diff --git a/include/linux/sunrpc/xprtsock.h b/include/linux/sunrpc/xprtsock.h
+index 3c1423ee74b4..8c2a712cb242 100644
+--- a/include/linux/sunrpc/xprtsock.h
++++ b/include/linux/sunrpc/xprtsock.h
+@@ -10,6 +10,7 @@
  
- void xprt_unlock_connect(struct rpc_xprt *xprt, void *cookie)
- {
-@@ -888,6 +889,7 @@ void xprt_unlock_connect(struct rpc_xprt *xprt, void *cookie)
- 	spin_unlock(&xprt->transport_lock);
- 	wake_up_bit(&xprt->state, XPRT_LOCKED);
- }
-+EXPORT_SYMBOL_GPL(xprt_unlock_connect);
+ int		init_socket_xprt(void);
+ void		cleanup_socket_xprt(void);
++unsigned short	get_srcport(struct rpc_xprt *);
  
- /**
-  * xprt_connect - schedule a transport connect operation
-diff --git a/net/sunrpc/xprtrdma/transport.c b/net/sunrpc/xprtrdma/transport.c
-index 19a49d26b1e4..d2052f06acfa 100644
---- a/net/sunrpc/xprtrdma/transport.c
-+++ b/net/sunrpc/xprtrdma/transport.c
-@@ -249,12 +249,9 @@ xprt_rdma_connect_worker(struct work_struct *work)
- 					   xprt->stat.connect_start;
- 		xprt_set_connected(xprt);
- 		rc = -EAGAIN;
--	} else {
--		/* Force a call to xprt_rdma_close to clean up */
--		spin_lock(&xprt->transport_lock);
--		set_bit(XPRT_CLOSE_WAIT, &xprt->state);
--		spin_unlock(&xprt->transport_lock);
--	}
-+	} else
-+		rpcrdma_xprt_disconnect(r_xprt);
-+	xprt_unlock_connect(xprt, r_xprt);
- 	xprt_wake_pending_tasks(xprt, rc);
+ #define RPC_MIN_RESVPORT	(1U)
+ #define RPC_MAX_RESVPORT	(65535U)
+diff --git a/net/sunrpc/xprtsock.c b/net/sunrpc/xprtsock.c
+index 3228b7a1836a..3bbf47046e8a 100644
+--- a/net/sunrpc/xprtsock.c
++++ b/net/sunrpc/xprtsock.c
+@@ -1648,6 +1648,13 @@ static int xs_get_srcport(struct sock_xprt *transport)
+ 	return port;
  }
  
-@@ -487,6 +484,8 @@ xprt_rdma_connect(struct rpc_xprt *xprt, struct rpc_task *task)
- 	struct rpcrdma_ep *ep = r_xprt->rx_ep;
- 	unsigned long delay;
- 
-+	WARN_ON_ONCE(!xprt_lock_connect(xprt, task, r_xprt));
++unsigned short get_srcport(struct rpc_xprt *xprt)
++{
++	struct sock_xprt *sock = container_of(xprt, struct sock_xprt, xprt);
++	return sock->srcport;
++}
++EXPORT_SYMBOL(get_srcport);
 +
- 	delay = 0;
- 	if (ep && ep->re_connect_status != 0) {
- 		delay = xprt_reconnect_delay(xprt);
+ static unsigned short xs_next_srcport(struct sock_xprt *transport, unsigned short port)
+ {
+ 	if (transport->srcport != 0)
 -- 
 2.30.2
 
