@@ -2,56 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A063640DD63
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 16:57:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FA8740DD37
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 16:49:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239005AbhIPO6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 10:58:06 -0400
-Received: from smtp99.ord1d.emailsrvr.com ([184.106.54.99]:60947 "EHLO
-        smtp99.ord1d.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238922AbhIPO6D (ORCPT
+        id S231793AbhIPOup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 10:50:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53146 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229660AbhIPOup (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 10:58:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
-        s=20190130-41we5z8j; t=1631803656;
-        bh=oGcCGIKnGjk/ZPJFTm5ie8WYtb0aCti6vzAcVLvJMEI=;
-        h=Subject:To:From:Date:From;
-        b=Y5LKOGPVapbM2N7GyiHcL+8DYO0K0yHroB17OHBnTXg/tmMpOwCClxMpVUWnYy576
-         a7zK6CxcmBefHz6hiu9p8zC81FRk+TfsxmP5rnGm6QbYQ942BuEHBCZYHuoP2gRj6L
-         xEiOoEYtr3hkHF/7moQSEq7TYNvCu4vBU2IKrSs8=
-X-Auth-ID: abbotti@mev.co.uk
-Received: by smtp21.relay.ord1d.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 4E3BA6019B;
-        Thu, 16 Sep 2021 10:47:35 -0400 (EDT)
-Subject: Re: [PATCH] comedi: Fix memory leak in compat_insnlist()
-To:     linux-kernel@vger.kernel.org
-Cc:     H Hartley Sweeten <hsweeten@visionengravers.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Greg Kroah-Hartman <greglh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, stable@vger.kernel.org
-References: <20210916144438.156858-1-abbotti@mev.co.uk>
-From:   Ian Abbott <abbotti@mev.co.uk>
-Organization: MEV Ltd.
-Message-ID: <631771cd-4fde-210d-2bf8-ac36f8e6cdda@mev.co.uk>
-Date:   Thu, 16 Sep 2021 15:47:34 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Thu, 16 Sep 2021 10:50:45 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90355C061574;
+        Thu, 16 Sep 2021 07:49:24 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1631803761;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jYKdI5AQx0UIdmFogKaBa5wIbcy1J8qgQFTO/dSJlvY=;
+        b=jusvQV+UrZf9umKAi8WLOwRAUw8F+0SyoEdSjScAbzTVc4ha3cxWOev2W80S/pJ1TFUm0c
+        N+oDDjJfvyKIKWKh8UA3/3DnmYFLA9uaLv0OmSUDKVHgb13ZovOg7V6G1GEXzbSoUOwGto
+        vlhbc6UNAfl/KLf37pwDm8zvam2bXOQTznaMvtThJwZXnbF9iHShY2GC6K2ScMdk1D0LrQ
+        7n5BPOBjdDQSRhyGNcfwWcDIUoJmCYgt6MYVHW9o3QVEoaQJQ6kA0D9Xp20+tJEEZBR3Ur
+        TyVMqkcCZ8JdnZi5XFJZM/T/U+e9g0IAJ5wTwAAJSiS6/vo3T80D7qQcCYIMpA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1631803761;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jYKdI5AQx0UIdmFogKaBa5wIbcy1J8qgQFTO/dSJlvY=;
+        b=zD4Kis/djKpAJG7OI9RzP5aed/KL0qJ6+DSOiuL3VGw2odLUXeynKNwKzG+qkfN/sUMq81
+        Uehc/ZlWhZW9TnDA==
+To:     Paul Eggert <eggert@cs.ucla.edu>,
+        Peter Zijlstra <peterz@infradead.org>,
+        andrealmeid@collabora.com, mingo@redhat.com, dvhart@infradead.org,
+        rostedt@goodmis.org, bigeasy@linutronix.de
+Cc:     dave@stgolabs.net, libc-alpha@sourceware.org,
+        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mtk.manpages@gmail.com, kernel@collabora.com, krisman@collabora.com
+Subject: Re: [PATCH 16/20] futex: Implement sys_futex_waitv()
+In-Reply-To: <bdeb5453-e019-7c5b-1bf0-7a225401d358@cs.ucla.edu>
+References: <20210915140710.596174479@infradead.org>
+ <20210915141525.621568509@infradead.org>
+ <YUITUXbnzAK98DEl@hirez.programming.kicks-ass.net>
+ <bdeb5453-e019-7c5b-1bf0-7a225401d358@cs.ucla.edu>
+Date:   Thu, 16 Sep 2021 16:49:21 +0200
+Message-ID: <87tuika83y.ffs@tglx>
 MIME-Version: 1.0
-In-Reply-To: <20210916144438.156858-1-abbotti@mev.co.uk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Classification-ID: 17782ee8-0505-4b13-9f0a-5b33163ea9a9-1-1
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/09/2021 15:44, Ian Abbott wrote:
-> Cc: Greg Kroah-Hartman <greglh@linuxfoundation.org>
+On Wed, Sep 15 2021 at 10:34, Paul Eggert wrote:
 
-Sorry, I need to resend it to fix that typo.
+> On 9/15/21 8:37 AM, Peter Zijlstra wrote:
+>> I utterly detest timespec.. it makes no sense what so ever.
+>>=20
+>> Can't we just, for new syscalls, simply use a s64 nsec argument and call
+>> it a day?
+>
+> This would stop working in the year 2262. Not a good idea.
 
--- 
--=( Ian Abbott <abbotti@mev.co.uk> || MEV Ltd. is a company  )=-
--=( registered in England & Wales.  Regd. number: 02862268.  )=-
--=( Regd. addr.: S11 & 12 Building 67, Europa Business Park, )=-
--=( Bird Hall Lane, STOCKPORT, SK3 0XA, UK. || www.mev.co.uk )=-
+Make it u64 and it stops in 2552, i.e. 584 years from now which is
+plenty. Lot's of the kernel internal timekeeping will stop working at
+that point, so that interface is the least of my worries. And TBH, my
+worries about the Y2552 problem are extremly close to zero.
+
+> Any improvements on struct timespec should be a strict superset, not a=20
+> subset. For example, you could advocate a signed 128-bit argument=20
+> counting in units of attoseconds (10=E2=81=BB=C2=B9=E2=81=B8 s), the high=
+est power-of-1000=20
+> resolution that does not lose info when converting from struct
+> timespec.
+
+Which requires a 128bit division on every syscall for no value at all.
+
+Thanks,
+
+        tglx
