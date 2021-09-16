@@ -2,140 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC58440DA05
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 14:36:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FC4840DA0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 14:38:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239555AbhIPMhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 08:37:42 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:48685 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235767AbhIPMhl (ORCPT
+        id S239621AbhIPMjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 08:39:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50404 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239600AbhIPMju (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 08:37:41 -0400
-Received: by mail-io1-f71.google.com with SMTP id z26-20020a05660200da00b005b86e36a1f4so10563384ioe.15
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 05:36:21 -0700 (PDT)
+        Thu, 16 Sep 2021 08:39:50 -0400
+Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F171C061764
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 05:38:30 -0700 (PDT)
+Received: by mail-ua1-x934.google.com with SMTP id v9so3828484uak.1
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 05:38:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=0x0f.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0vConzKPLEXeSY5isEj44b9ioB3WiTKXOOeH8M/qhMg=;
+        b=ZOd3cKON6cosT+oUHSUoX8lYXRB1ivz8ksbhrz2g13ab681NxxqUYouzoyOdApRjHN
+         9C7G3gkXybIsaQK6CR0OXJbCoityPI/bsDx9cxeBDryg0SrTlJdsGYQHAjRZcFqHNnep
+         w8T/bY5gwyKErMCiBenZMnLf2a/1lO38d9s9o=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=QPHEIdxU7DQNimsTFhfi84oUywJMvtus7syU0lNoVtM=;
-        b=yYG4xzKNYGg58uHoMOi5DD7QEwGGGrnKrC12Jbwlhg93a/9rLcQxHBDqOKYmE/mRtl
-         uVDNPWJGRjeYAQdPBujKhZQOe+Lm+p6htp1Zf78CJxZXy8gSRICFJVL9brC7pA0ozFbh
-         tn5/xiO5sa3l+7zSC5EQq8oW6qBeyObocIJ3kF6/sdkO5W0Th8+YSdrOOUJYQquNntUL
-         5aDdni3+sqHVwyHeyrKuHcNx9TcCUJKQPU7+ETRjD8UgKC1dzrutrMafL7keqt30IIH4
-         +FggYsW8F60RZOozvOCl9Z3NKeebgtAGLmdgS6MZaB/vRdsPpWbnnpriDwfYE7Ceiu6c
-         rP7Q==
-X-Gm-Message-State: AOAM530KPM/x//v1rAcw3FhfCDeBJYb6SzBMouZzNg0zt+Fl1DkSZ1nn
-        ndwYcpEbuYqFt3Z+Sg+nU9T6s9oTGLziGzqyLdotkoHySa3Z
-X-Google-Smtp-Source: ABdhPJyoi78sxYRFgsqNmZe4NnbBQthKjTf5W/BF8nJoc75jbfLhyUYulbLltLsOds7mscnDl5McGuqxPuK3OAZgkaremrCk5+8y
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0vConzKPLEXeSY5isEj44b9ioB3WiTKXOOeH8M/qhMg=;
+        b=otuwC7a0t2SHxwtkOqn5sfrguOPLfwtk2ztHClVsqwcL3/d7fxHJy6A/94Qpbu20+w
+         FzK3MG93nalb8joDFjutaEvojfuWs7o9VvUhVgP+83zcOd9ObvkTY/b2OyLwo0vnhJ48
+         W48qOjYC4l4Fl2NX4EAsYTnjBo/miWxE7p/ynrikAu3XXlSU/3AsVNGOEDnpXOpt1Wv8
+         ZbR7qOdwWvEWwJmr/HPIAXlvdua6k0i6IVXKfUaKNiS+hysYOKxvLsagnttW1CbEu5U6
+         aFKrixiXH1p2GHXVu4wtSaVsE4HZ2WYyn3LTZ2Wo/7tieTdaycQraSFcxMCMSb1X1c27
+         TJ8g==
+X-Gm-Message-State: AOAM533NvHNbya2Jm2xiIFYmA4p3UFaavQA5LwOqs9qihzBlgIHKBVfB
+        P3A5c07Vf5vYBg0mpTRPFp+mWXTCwUAgDrI/quxuAA==
+X-Google-Smtp-Source: ABdhPJwWiK0lSKm+XTwl96Bf3/5KQdNtghCcUqgRmYvdz8qjWXlQJhdlhbS1vXZu/Mk2fnAln2bQsGBTgBZfLDmB4Dg=
+X-Received: by 2002:ab0:10f:: with SMTP id 15mr3588186uak.113.1631795908405;
+ Thu, 16 Sep 2021 05:38:28 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a6b:6918:: with SMTP id e24mr4136362ioc.71.1631795781178;
- Thu, 16 Sep 2021 05:36:21 -0700 (PDT)
-Date:   Thu, 16 Sep 2021 05:36:21 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e217b005cc1c0fcb@google.com>
-Subject: [syzbot] BUG: unable to handle kernel paging request in cfb_imageblit (2)
-From:   syzbot <syzbot+219cc51510158a7d8290@syzkaller.appspotmail.com>
-To:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <20210915162324.25513-1-dafna.hirschfeld@collabora.com>
+In-Reply-To: <20210915162324.25513-1-dafna.hirschfeld@collabora.com>
+From:   Daniel Palmer <daniel@0x0f.com>
+Date:   Thu, 16 Sep 2021 21:38:17 +0900
+Message-ID: <CAFr9PXkpEDfa_P_UfTCwrBHOMsqyGm8MQgOsY=_OjFGc4+ApAQ@mail.gmail.com>
+Subject: Re: [PATCH 0/6] staging: media: wave5: add wave5 codec driver
+To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:MEDIA INPUT INFRASTRUCTURE (V4L/DVB)" 
+        <linux-media@vger.kernel.org>,
+        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
+        open list <linux-kernel@vger.kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        hverkuil@xs4all.nl, kernel@collabora.com, dafna3@gmail.com,
+        bob.beckett@collabora.com, kiril.bicevski@collabora.com,
+        Nas Chung <nas.chung@chipsnmedia.com>,
+        lafley.kim@chipsnmedia.com, scott.woo@chipsnmedia.com,
+        olivier.crete@collabora.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Dafna,
 
-syzbot found the following issue on:
+On Thu, 16 Sept 2021 at 01:23, Dafna Hirschfeld
+<dafna.hirschfeld@collabora.com> wrote:
+>
+> The wave5 codec is a stateful encoder/decoder.
+> It is found on the JH7100 SoC.
+>
 
-HEAD commit:    78e709522d2c Merge tag 'for_linus' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16029aed300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2150ebd7e72fa695
-dashboard link: https://syzkaller.appspot.com/bug?extid=219cc51510158a7d8290
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+For what it's worth; I think this is also the video decoder block on
+the SigmaStar SSD201/SSD202D (32bit ARM..) that have some limited
+support in mainline.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Cheers,
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+219cc51510158a7d8290@syzkaller.appspotmail.com
-
-BUG: unable to handle page fault for address: ffff88800010f038
-#PF: supervisor write access in kernel mode
-#PF: error_code(0x0003) - permissions violation
-PGD 10801067 P4D 10801067 PUD 10802067 PMD 10803067 PTE 800000000010f161
-Oops: 0003 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 7973 Comm: kworker/0:4 Not tainted 5.14.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events_power_efficient fb_flashcursor
-RIP: 0010:__writel arch/x86/include/asm/io.h:71 [inline]
-RIP: 0010:fast_imageblit drivers/video/fbdev/core/cfbimgblt.c:257 [inline]
-RIP: 0010:cfb_imageblit+0x648/0x1240 drivers/video/fbdev/core/cfbimgblt.c:300
-Code: 42 0f b6 0c 3a 48 89 c2 83 e2 07 83 c2 03 38 ca 7c 08 84 c9 0f 85 1f 0b 00 00 8b 7c 24 18 49 8d 5e 04 23 38 8b 44 24 10 31 f8 <41> 89 06 31 ff 44 89 e6 e8 ab 85 69 fd 45 85 e4 75 0f e8 61 7e 69
-RSP: 0018:ffffc900171af970 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: ffff88800010f03c RCX: 0000000000000000
-RDX: 0000000000000003 RSI: ffffffff840c8e86 RDI: 0000000000000000
-RBP: ffff8880180a5359 R08: 000000000000001f R09: ffffffff840c8d14
-R10: ffffffff840c8e77 R11: 0000000000000008 R12: 0000000000000004
-R13: 0000000000000001 R14: ffff88800010f038 R15: dffffc0000000000
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffff88800010f038 CR3: 000000001e6a0000 CR4: 0000000000350ef0
-Call Trace:
- vga_imageblit_expand drivers/video/fbdev/vga16fb.c:1207 [inline]
- vga16fb_imageblit+0x681/0x2200 drivers/video/fbdev/vga16fb.c:1260
- soft_cursor+0x514/0xa30 drivers/video/fbdev/core/softcursor.c:74
- bit_cursor+0xd07/0x1740 drivers/video/fbdev/core/bitblit.c:377
- fb_flashcursor+0x38b/0x430 drivers/video/fbdev/core/fbcon.c:387
- process_one_work+0x9bf/0x16b0 kernel/workqueue.c:2297
- worker_thread+0x658/0x11f0 kernel/workqueue.c:2444
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-Modules linked in:
-CR2: ffff88800010f038
----[ end trace 3e2fb001e55b5406 ]---
-RIP: 0010:__writel arch/x86/include/asm/io.h:71 [inline]
-RIP: 0010:fast_imageblit drivers/video/fbdev/core/cfbimgblt.c:257 [inline]
-RIP: 0010:cfb_imageblit+0x648/0x1240 drivers/video/fbdev/core/cfbimgblt.c:300
-Code: 42 0f b6 0c 3a 48 89 c2 83 e2 07 83 c2 03 38 ca 7c 08 84 c9 0f 85 1f 0b 00 00 8b 7c 24 18 49 8d 5e 04 23 38 8b 44 24 10 31 f8 <41> 89 06 31 ff 44 89 e6 e8 ab 85 69 fd 45 85 e4 75 0f e8 61 7e 69
-RSP: 0018:ffffc900171af970 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: ffff88800010f03c RCX: 0000000000000000
-RDX: 0000000000000003 RSI: ffffffff840c8e86 RDI: 0000000000000000
-RBP: ffff8880180a5359 R08: 000000000000001f R09: ffffffff840c8d14
-R10: ffffffff840c8e77 R11: 0000000000000008 R12: 0000000000000004
-R13: 0000000000000001 R14: ffff88800010f038 R15: dffffc0000000000
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffff88800010f038 CR3: 000000001e6a0000 CR4: 0000000000350ef0
-----------------
-Code disassembly (best guess):
-   0:	42 0f b6 0c 3a       	movzbl (%rdx,%r15,1),%ecx
-   5:	48 89 c2             	mov    %rax,%rdx
-   8:	83 e2 07             	and    $0x7,%edx
-   b:	83 c2 03             	add    $0x3,%edx
-   e:	38 ca                	cmp    %cl,%dl
-  10:	7c 08                	jl     0x1a
-  12:	84 c9                	test   %cl,%cl
-  14:	0f 85 1f 0b 00 00    	jne    0xb39
-  1a:	8b 7c 24 18          	mov    0x18(%rsp),%edi
-  1e:	49 8d 5e 04          	lea    0x4(%r14),%rbx
-  22:	23 38                	and    (%rax),%edi
-  24:	8b 44 24 10          	mov    0x10(%rsp),%eax
-  28:	31 f8                	xor    %edi,%eax
-* 2a:	41 89 06             	mov    %eax,(%r14) <-- trapping instruction
-  2d:	31 ff                	xor    %edi,%edi
-  2f:	44 89 e6             	mov    %r12d,%esi
-  32:	e8 ab 85 69 fd       	callq  0xfd6985e2
-  37:	45 85 e4             	test   %r12d,%r12d
-  3a:	75 0f                	jne    0x4b
-  3c:	e8                   	.byte 0xe8
-  3d:	61                   	(bad)
-  3e:	7e 69                	jle    0xa9
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Daniel
