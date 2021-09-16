@@ -2,107 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 363E440E9BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:19:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11CAC40E9C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:20:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348381AbhIPSUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 14:20:36 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:37852 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348445AbhIPST2 (ORCPT
+        id S1349130AbhIPSVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 14:21:10 -0400
+Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:58463
+        "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with SMTP id S238824AbhIPST6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 14:19:28 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18GII26a072604;
-        Thu, 16 Sep 2021 13:18:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1631816282;
-        bh=pyw9qfNvaWdLSiz1gujXS6WUJuA+dp3Tth+WCvjmhP0=;
-        h=From:To:CC:Subject:Date;
-        b=gHttkm+7FmDOQZqeCnfvj5kj4FCHgXgVO/dkBoBfgohtSr44IHd4WXsO2naS86a6h
-         x7F5x9xHVTk1hC1NiopWOhXZMiwmrEZwbJRAgL0sP5EunIxhjJt+zy+I+AynE6SmO0
-         g8LEp/qiTiQch9h9p0/CcKJai5BLTmqEhB+WMI7Y=
-Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18GII2oq112717
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 16 Sep 2021 13:18:02 -0500
-Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Thu, 16
- Sep 2021 13:18:02 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Thu, 16 Sep 2021 13:18:02 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18GII10w082245;
-        Thu, 16 Sep 2021 13:18:01 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Rob Herring <robh+dt@kernel.org>, Tero Kristo <kristo@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, Nishanth Menon <nm@ti.com>,
-        Amit Kucheria <amit.kucheria@linaro.org>,
-        Keerthy <j-keerthy@ti.com>
-Subject: [PATCH] arm64: dts: ti: k3-am65: Relocate thermal-zones to SoC specific location
-Date:   Thu, 16 Sep 2021 13:18:01 -0500
-Message-ID: <20210916181801.32588-1-nm@ti.com>
-X-Mailer: git-send-email 2.32.0
+        Thu, 16 Sep 2021 14:19:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=PCF+Xo2nLU
+        E+xPInggtNzHSH34QrjJaEbkWXuAtuuhQ=; b=k11ouRv/SSiEQQdpYuIAWQ9hX2
+        w7wcjvaG1K3c+ounlIESJ9VCGfte2VD9rOSp4MDzenNsdgaMJOoUb+OXy5oJJXfh
+        5rJiHteNYSQCGMEgr+7RZinu53ImvkJPXxQ+A0fY0lhwYsdjkHL3V8DUNyp0Pr+s
+        R2oEhC9qzPVPAhC5E=
+Received: from localhost.localdomain (unknown [223.104.212.225])
+        by app2 (Coremail) with SMTP id XQUFCgCnrqJhikNhpMiKAA--.4926S4;
+        Fri, 17 Sep 2021 02:18:27 +0800 (CST)
+From:   Xin Xiong <xiongx18@fudan.edu.cn>
+To:     Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     yuanxzhang@fudan.edu.cn, Xin Xiong <xiongx18@fudan.edu.cn>,
+        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>
+Subject: [PATCH] drivers/mmc: fix reference count leaks in moxart_probe
+Date:   Fri, 17 Sep 2021 02:18:08 +0800
+Message-Id: <20210916181808.2399-1-xiongx18@fudan.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-CM-TRANSID: XQUFCgCnrqJhikNhpMiKAA--.4926S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxZF1fXw1kWr4DAw4Utw1xGrg_yoW5Ww4xpF
+        4rCF9xKryDtrsxAay7Cw4DXF15Zr1Fkw4a9r4ku3s7u345Jrs7Cwn7G3ZYqry8JFyxXFWF
+        gF1YqF15WFy5XaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvv14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IE
+        rcIFxwCY02Avz4vE14v_XwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8Jw
+        C20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAF
+        wI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjx
+        v20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2
+        z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73Uj
+        IFyTuYvjfU0BT5DUUUU
+X-CM-SenderInfo: arytiiqsuqiimz6i3vldqovvfxof0/1tbiAg4GEFKp2a8jBwAAsz
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When commit 64f9147d914d ("arm64: dts: ti: am654: Add thermal
-zones") introduced thermal-zones for am654, it defined as under the
-common am65-wakeup bus segment, when it is am654 specific (other SoC
-spins can have slightly different thermal characteristics). Futher,
-thermal-zones is introduced under simple-bus node, when it has no
-actual register or base address.
+The issue happens in several error handling paths on two refcounted
+object related to the object "host" (dma_chan_rx, dma_chan_tx). In
+these paths, the function forgets to decrement the reference count of
+one or both objects' reference count increased earlier by
+dma_request_chan(), causing reference count leaks.
 
-So, move it to it's rightful place under am654 SoC dtsi under the base
-node.
+Fix it by decreasing reference counts of both objects in each path
+separately.
 
-Signed-off-by: Nishanth Menon <nm@ti.com>
+Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
 ---
+ drivers/mmc/host/moxart-mmc.c | 38 ++++++++++++++++++++++++++---------
+ 1 file changed, 28 insertions(+), 10 deletions(-)
 
-NOTE:
-1. This is a cosmetic fixup, so skip the "Fixes" tag.
-2. This fixes up noisy dtbs_check warning around thermal.
-
- arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi | 4 ----
- arch/arm64/boot/dts/ti/k3-am654.dtsi       | 4 ++++
- 2 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi
-index 9d21cdf6fce8..9c69d0917f69 100644
---- a/arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi
-@@ -100,8 +100,4 @@ wkup_vtm0: temperature-sensor@42050000 {
- 		power-domains = <&k3_pds 80 TI_SCI_PD_EXCLUSIVE>;
- 		#thermal-sensor-cells = <1>;
- 	};
--
--	thermal_zones: thermal-zones {
--		#include "k3-am654-industrial-thermal.dtsi"
--	};
- };
-diff --git a/arch/arm64/boot/dts/ti/k3-am654.dtsi b/arch/arm64/boot/dts/ti/k3-am654.dtsi
-index f0a6541b8042..a89257900047 100644
---- a/arch/arm64/boot/dts/ti/k3-am654.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am654.dtsi
-@@ -112,4 +112,8 @@ msmc_l3: l3-cache0 {
- 		compatible = "cache";
- 		cache-level = <3>;
- 	};
+diff --git a/drivers/mmc/host/moxart-mmc.c b/drivers/mmc/host/moxart-mmc.c
+index 6c9d38132..b5aa1010c 100644
+--- a/drivers/mmc/host/moxart-mmc.c
++++ b/drivers/mmc/host/moxart-mmc.c
+@@ -606,7 +606,28 @@ static int moxart_probe(struct platform_device *pdev)
+ 	host->sysclk = clk_get_rate(clk);
+ 	host->fifo_width = readl(host->base + REG_FEATURE) << 2;
+ 	host->dma_chan_tx = dma_request_chan(dev, "tx");
++	if (IS_ERR(host->dma_chan_tx)) {
++		if (PTR_ERR(host->dma_chan_tx) == -EPROBE_DEFER) {
++			ret = -EPROBE_DEFER;
++            goto out;
++        }
++    }
 +
-+	thermal_zones: thermal-zones {
-+		#include "k3-am654-industrial-thermal.dtsi"
-+	};
- };
+ 	host->dma_chan_rx = dma_request_chan(dev, "rx");
++	if (IS_ERR(host->dma_chan_rx)) {
++		if (!IS_ERR(host->dma_chan_tx))
++			dma_release_channel(host->dma_chan_tx);
++		if (PTR_ERR(host->dma_chan_rx) == -EPROBE_DEFER) {
++			ret = -EPROBE_DEFER;
++			goto out;
++        }
++        dev_dbg(dev, "PIO mode transfer enabled\n");
++        host->have_dma = false;
++    } else if (IS_ERR(host->dma_chan_tx)) {
++		dma_release_channel(host->chan_rx);
++		dev_dbg(dev, "PIO mode transfer enabled\n");
++		host->have_dma = false;
++    }
+ 
+ 	spin_lock_init(&host->lock);
+ 
+@@ -615,15 +636,7 @@ static int moxart_probe(struct platform_device *pdev)
+ 	mmc->f_min = DIV_ROUND_CLOSEST(host->sysclk, CLK_DIV_MASK * 2);
+ 	mmc->ocr_avail = 0xffff00;	/* Support 2.0v - 3.6v power. */
+ 
+-	if (IS_ERR(host->dma_chan_tx) || IS_ERR(host->dma_chan_rx)) {
+-		if (PTR_ERR(host->dma_chan_tx) == -EPROBE_DEFER ||
+-		    PTR_ERR(host->dma_chan_rx) == -EPROBE_DEFER) {
+-			ret = -EPROBE_DEFER;
+-			goto out;
+-		}
+-		dev_dbg(dev, "PIO mode transfer enabled\n");
+-		host->have_dma = false;
+-	} else {
++    if (!IS_ERR(host->dma_chan_tx) && !IS_ERR(host->dma_chan_rx)) {
+ 		dev_dbg(dev, "DMA channels found (%p,%p)\n",
+ 			 host->dma_chan_tx, host->dma_chan_rx);
+ 		host->have_dma = true;
+@@ -664,8 +677,13 @@ static int moxart_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	ret = devm_request_irq(dev, irq, moxart_irq, 0, "moxart-mmc", host);
+-	if (ret)
++	if (ret) {
++		if (host->have_dma) {
++			dma_release_channel(host->dma_chan_tx);
++			dma_release_channel(host->dma_chan_rx);
++		}
+ 		goto out;
++	}
+ 
+ 	dev_set_drvdata(dev, mmc);
+ 	mmc_add_host(mmc);
 -- 
-2.32.0
+2.25.1
 
