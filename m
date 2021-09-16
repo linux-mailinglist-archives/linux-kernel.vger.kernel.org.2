@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF24D40E8AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3EB240E8C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356098AbhIPRpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:45:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54172 "EHLO mail.kernel.org"
+        id S1356152AbhIPRpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:45:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54244 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345608AbhIPRiS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:38:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1CFFE63242;
-        Thu, 16 Sep 2021 16:50:17 +0000 (UTC)
+        id S1354030AbhIPRiW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:38:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 83E916154B;
+        Thu, 16 Sep 2021 16:50:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631811018;
-        bh=vSCHNd0fBThLqXKbCXghXdPcsOfYDxh1LqWH4fhyoko=;
+        s=korg; t=1631811024;
+        bh=L+Zrw3R7HuZQRklNozrduxknMAPTxCggBqZfIcjfZ9Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qr615oJJ2x1pJT1OXfUlQf9ZGHpe/0ga7C9G6ZRcqmc2h0bMqR1vaCw9TI60RzY/e
-         BpdinplIe5IZ43OfCQ6H5yfuWOG4V8nN/EiRnTPd4bWsDbJCMZik88z6RSnf3jBMPl
-         T1j5C37UAMpRHDejwfdEFtv+Npt0D8YToXuTady8=
+        b=yNsikHktXcwVAcYi7UQtg93PF7hs+ilypLwgPDueNiUv2EnNSErrDkdfhhLFqmjgH
+         hXleTLDzowMVInQSPo2IJqhFCe4l61qeoPepAMcyiV6ZEKEohtR57Shaq1cSJeQWFC
+         QPlaphyoaVxTvLH0yRzkX7z0IYfTDJrJxq1N+au0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Nadezda Lutovinova <lutovinova@ispras.ru>,
+        stable@vger.kernel.org, Nadezda Lutovinova <lutovinova@ispras.ru>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 354/432] usb: dwc3: imx8mp: request irq after initializing dwc3
-Date:   Thu, 16 Sep 2021 18:01:43 +0200
-Message-Id: <20210916155822.813708515@linuxfoundation.org>
+Subject: [PATCH 5.14 355/432] usb: musb: musb_dsps: request_irq() after initializing musb
+Date:   Thu, 16 Sep 2021 18:01:44 +0200
+Message-Id: <20210916155822.844615645@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
 References: <20210916155810.813340753@linuxfoundation.org>
@@ -43,59 +41,59 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Nadezda Lutovinova <lutovinova@ispras.ru>
 
-[ Upstream commit 6a48d0ae01a6ab05ae5e78328546a2f5f6d3054a ]
+[ Upstream commit 7c75bde329d7e2a93cf86a5c15c61f96f1446cdc ]
 
-If IRQ occurs between calling  devm_request_threaded_irq() and
-initializing dwc3_imx->dwc3, then null pointer dereference occurs
-since dwc3_imx->dwc3 is used in dwc3_imx8mp_interrupt().
+If IRQ occurs between calling  dsps_setup_optional_vbus_irq()
+and  dsps_create_musb_pdev(), then null pointer dereference occurs
+since glue->musb wasn't initialized yet.
 
-The patch puts registration of the interrupt handler after
-initializing of neccesery data.
+The patch puts initializing of neccesery data before registration
+of the interrupt handler.
 
 Found by Linux Driver Verification project (linuxtesting.org).
 
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
-Acked-by: Felipe Balbi <balbi@kernel.org>
 Signed-off-by: Nadezda Lutovinova <lutovinova@ispras.ru>
-Link: https://lore.kernel.org/r/20210819154818.18334-1-lutovinova@ispras.ru
+Link: https://lore.kernel.org/r/20210819163323.17714-1-lutovinova@ispras.ru
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/dwc3/dwc3-imx8mp.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/usb/musb/musb_dsps.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/usb/dwc3/dwc3-imx8mp.c b/drivers/usb/dwc3/dwc3-imx8mp.c
-index 756faa46d33a..d328d20abfbc 100644
---- a/drivers/usb/dwc3/dwc3-imx8mp.c
-+++ b/drivers/usb/dwc3/dwc3-imx8mp.c
-@@ -152,13 +152,6 @@ static int dwc3_imx8mp_probe(struct platform_device *pdev)
- 	}
- 	dwc3_imx->irq = irq;
+diff --git a/drivers/usb/musb/musb_dsps.c b/drivers/usb/musb/musb_dsps.c
+index 5892f3ce0cdc..ce9fc46c9266 100644
+--- a/drivers/usb/musb/musb_dsps.c
++++ b/drivers/usb/musb/musb_dsps.c
+@@ -890,23 +890,22 @@ static int dsps_probe(struct platform_device *pdev)
+ 	if (!glue->usbss_base)
+ 		return -ENXIO;
  
--	err = devm_request_threaded_irq(dev, irq, NULL, dwc3_imx8mp_interrupt,
--					IRQF_ONESHOT, dev_name(dev), dwc3_imx);
--	if (err) {
--		dev_err(dev, "failed to request IRQ #%d --> %d\n", irq, err);
--		goto disable_clks;
+-	if (usb_get_dr_mode(&pdev->dev) == USB_DR_MODE_PERIPHERAL) {
+-		ret = dsps_setup_optional_vbus_irq(pdev, glue);
+-		if (ret)
+-			goto err_iounmap;
 -	}
 -
- 	pm_runtime_set_active(dev);
- 	pm_runtime_enable(dev);
- 	err = pm_runtime_get_sync(dev);
-@@ -186,6 +179,13 @@ static int dwc3_imx8mp_probe(struct platform_device *pdev)
- 	}
- 	of_node_put(dwc3_np);
+ 	platform_set_drvdata(pdev, glue);
+ 	pm_runtime_enable(&pdev->dev);
+ 	ret = dsps_create_musb_pdev(glue, pdev);
+ 	if (ret)
+ 		goto err;
  
-+	err = devm_request_threaded_irq(dev, irq, NULL, dwc3_imx8mp_interrupt,
-+					IRQF_ONESHOT, dev_name(dev), dwc3_imx);
-+	if (err) {
-+		dev_err(dev, "failed to request IRQ #%d --> %d\n", irq, err);
-+		goto depopulate;
++	if (usb_get_dr_mode(&pdev->dev) == USB_DR_MODE_PERIPHERAL) {
++		ret = dsps_setup_optional_vbus_irq(pdev, glue);
++		if (ret)
++			goto err;
 +	}
 +
- 	device_set_wakeup_capable(dev, true);
- 	pm_runtime_put(dev);
+ 	return 0;
  
+ err:
+ 	pm_runtime_disable(&pdev->dev);
+-err_iounmap:
+ 	iounmap(glue->usbss_base);
+ 	return ret;
+ }
 -- 
 2.30.2
 
