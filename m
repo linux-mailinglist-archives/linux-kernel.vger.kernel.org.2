@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52C0E40E242
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:16:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8006C40E5AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:28:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242938AbhIPQgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:36:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38924 "EHLO mail.kernel.org"
+        id S239687AbhIPROA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:14:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242450AbhIPQ2Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:28:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D07E161288;
-        Thu, 16 Sep 2021 16:18:02 +0000 (UTC)
+        id S1349473AbhIPRFw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:05:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B8B1161872;
+        Thu, 16 Sep 2021 16:35:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809083;
-        bh=z9UWIe0h1arWcJQZ3XEB/LMGrmp16FhSrvp1PuCqdhc=;
+        s=korg; t=1631810143;
+        bh=Ij2J7ZY0EYA4SRi/ycfyi++V5khckp+5urzgc9BwJ4k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W59koAjMpAIuLtbk13ezFJ3+yknRHfzUpzFIyUvjU6VUs7TXMUcIpllsCWUXOnlRQ
-         T3eCBYTf9uWVgNVD+gz6+gHLq1WEAPf+0tsNWVCJODKRgMsQcA/xzL2gNoSEadgGc7
-         kTmW2bq56PzjSz/6+rh7i0QLF3jyHLDJdW+Uv3M4=
+        b=BwPEHvVSj8NpPXK4Fc4jkP0H+EKkNZON2tC6E3CEAvmOWnoX0hbLq3cMjVnNf41kg
+         MXDInCqx+4o934PuEQMtTmljd2xbawyNdBbGAioBjAzHpTUvLfqGC/QLjmrB2RZma3
+         kmfggxm3F9CkoaM41SSM/3e54DwKK+qGsx7GfWTc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
-        =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20 ?= 
-        <zhouyanjie@wanyeetech.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 5.13 024/380] pinctrl: ingenic: Fix incorrect pull up/down info
-Date:   Thu, 16 Sep 2021 17:56:21 +0200
-Message-Id: <20210916155804.793575424@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Eizan Miyamoto <eizan@chromium.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Subject: [PATCH 5.14 033/432] soc: mediatek: mmsys: Fix missing UFOE component in mt8173 table routing
+Date:   Thu, 16 Sep 2021 17:56:22 +0200
+Message-Id: <20210916155811.942436912@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,49 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Cercueil <paul@crapouillou.net>
+From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 
-commit d5e931403942b3af39212960c2592b5ba741b2bf upstream.
+commit 25423731956b3d72bc35d336227c88ada49148e8 upstream.
 
-Fix the pull up/down info for both the JZ4760 and JZ4770 SoCs, as the
-previous values sometimes contradicted what's written in the programming
-manual.
+The UFOE (data compression engine) component needs to be enabled to have
+the imgtec gpu driver working. If we don't enable it we see a black screen.
+Looks like when we switched to use and array for setting the routing
+registers in commit 440147639ac7 ("soc: mediatek: mmsys: Use an array for
+setting the routing registers") we missed to add this component in the new
+routing table, it was present before that commit, so fix it by adding
+this component in the mt8173 routing table.
 
-Fixes: b5c23aa46537 ("pinctrl: add a pinctrl driver for the Ingenic jz47xx SoCs")
-Cc: <stable@vger.kernel.org> # v4.12
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-Tested-by: 周琰杰 (Zhou Yanjie)<zhouyanjie@wanyeetech.com>
-Link: https://lore.kernel.org/r/20210717174836.14776-1-paul@crapouillou.net
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Fixes: 440147639ac7 ("soc: mediatek: mmsys: Use an array for setting the routing registers")
+Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Tested-by: Eizan Miyamoto <eizan@chromium.org>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210625062448.3462177-1-enric.balletbo@collabora.com
+[mb: taking into account mask value]
+Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pinctrl/pinctrl-ingenic.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/soc/mediatek/mtk-mmsys.h |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/pinctrl/pinctrl-ingenic.c
-+++ b/drivers/pinctrl/pinctrl-ingenic.c
-@@ -710,7 +710,7 @@ static const struct ingenic_chip_info jz
+--- a/drivers/soc/mediatek/mtk-mmsys.h
++++ b/drivers/soc/mediatek/mtk-mmsys.h
+@@ -262,6 +262,10 @@ static const struct mtk_mmsys_routes mms
+ 		DDP_COMPONENT_RDMA2, DDP_COMPONENT_DSI3,
+ 		DISP_REG_CONFIG_DSIO_SEL_IN, DSI3_SEL_IN_MASK,
+ 		DSI3_SEL_IN_RDMA2
++	}, {
++		DDP_COMPONENT_UFOE, DDP_COMPONENT_DSI0,
++		DISP_REG_CONFIG_DISP_UFOE_MOUT_EN, UFOE_MOUT_EN_DSI0,
++		UFOE_MOUT_EN_DSI0
+ 	}
  };
  
- static const u32 jz4760_pull_ups[6] = {
--	0xffffffff, 0xfffcf3ff, 0xffffffff, 0xffffcfff, 0xfffffb7c, 0xfffff00f,
-+	0xffffffff, 0xfffcf3ff, 0xffffffff, 0xffffcfff, 0xfffffb7c, 0x0000000f,
- };
- 
- static const u32 jz4760_pull_downs[6] = {
-@@ -936,11 +936,11 @@ static const struct ingenic_chip_info jz
- };
- 
- static const u32 jz4770_pull_ups[6] = {
--	0x3fffffff, 0xfff0030c, 0xffffffff, 0xffff4fff, 0xfffffb7c, 0xffa7f00f,
-+	0x3fffffff, 0xfff0f3fc, 0xffffffff, 0xffff4fff, 0xfffffb7c, 0x0024f00f,
- };
- 
- static const u32 jz4770_pull_downs[6] = {
--	0x00000000, 0x000f0c03, 0x00000000, 0x0000b000, 0x00000483, 0x00580ff0,
-+	0x00000000, 0x000f0c03, 0x00000000, 0x0000b000, 0x00000483, 0x005b0ff0,
- };
- 
- static int jz4770_uart0_data_pins[] = { 0xa0, 0xa3, };
 
 
