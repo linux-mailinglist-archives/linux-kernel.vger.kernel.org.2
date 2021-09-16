@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3109640E1CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:14:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DAD840E82E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230051AbhIPQbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:31:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59262 "EHLO mail.kernel.org"
+        id S1343570AbhIPRiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:38:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241923AbhIPQXW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:23:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 13F90614C8;
-        Thu, 16 Sep 2021 16:15:44 +0000 (UTC)
+        id S1348931AbhIPR1v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:27:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C597B61BF8;
+        Thu, 16 Sep 2021 16:45:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808945;
-        bh=WANJpW8yev+oEtAtw71e8zPFe2o8jLjScIPcYNsFcsU=;
+        s=korg; t=1631810721;
+        bh=/Xxj20sRBcLNdFFwDKnISn2whS1d6LP/xeNOEoV1zBw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eQPiDCP0MC7X7QfJrP7qIhidM+xmL9qnX+AdGQYvKM9DERdyQtONm/hXyxuIX6SmD
-         zb3QKrGa9I4vdBLjN1ktTflZYSUTP52OHLsIRiUyVWdyfZe9eeEnsqbvuk8m16/xLP
-         9dmTY3ev4cN2ntXPK5xVluUxAA1plU6ppv1O2MfI=
+        b=VajeBxaf9v6bCpotfxMVX9zA6GnysZzbHAqif90XT9uY1MqgbHXZynrqKNQ5DI8gD
+         cQVVVfd1bxv2iI5aBlzWKS8ZuH1yIX5B8z689GIIo/rILES70XWX0qubF3q216Ca0t
+         0E5eVJtKFlLbGwLPQFNXtqlZXkWpGq/MGiauWDeA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Manish Narani <manish.narani@xilinx.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
+        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Patrick Delaunay <patrick.delaunay@foss.st.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 248/306] mmc: sdhci-of-arasan: Check return value of non-void funtions
+Subject: [PATCH 5.14 244/432] ARM: dts: stm32: Set {bitclock,frame}-master phandles on ST DKx
 Date:   Thu, 16 Sep 2021 17:59:53 +0200
-Message-Id: <20210916155802.521646122@linuxfoundation.org>
+Message-Id: <20210916155819.106181271@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,67 +43,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Manish Narani <manish.narani@xilinx.com>
+From: Marek Vasut <marex@denx.de>
 
-[ Upstream commit 66bad6ed2204fdb78a0a8fb89d824397106a5471 ]
+[ Upstream commit 8aec45d7884f16cc21d668693c5b88bff8df0f02 ]
 
-At a couple of places, the return values of the non-void functions were
-not getting checked. This was reported by the coverity tool. Modify the
-code to check the return values of the same.
+Fix the following dtbs_check warning:
+cs42l51@4a: port:endpoint@0:frame-master: True is not of type 'array'
+cs42l51@4a: port:endpoint@0:bitclock-master: True is not of type 'array'
 
-Addresses-Coverity: ("check_return")
-Signed-off-by: Manish Narani <manish.narani@xilinx.com>
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-Link: https://lore.kernel.org/r/1623753837-21035-5-git-send-email-manish.narani@xilinx.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Cc: Patrice Chotard <patrice.chotard@foss.st.com>
+Cc: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Cc: linux-stm32@st-md-mailman.stormreply.com
+To: linux-arm-kernel@lists.infradead.org
+Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/sdhci-of-arasan.c | 18 +++++++++++++++---
- 1 file changed, 15 insertions(+), 3 deletions(-)
+ arch/arm/boot/dts/stm32mp15xx-dkx.dtsi | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mmc/host/sdhci-of-arasan.c b/drivers/mmc/host/sdhci-of-arasan.c
-index 0c5479a06e9e..fc38db64a6b4 100644
---- a/drivers/mmc/host/sdhci-of-arasan.c
-+++ b/drivers/mmc/host/sdhci-of-arasan.c
-@@ -273,7 +273,12 @@ static void sdhci_arasan_set_clock(struct sdhci_host *host, unsigned int clock)
- 			 * through low speeds without power cycling.
- 			 */
- 			sdhci_set_clock(host, host->max_clk);
--			phy_power_on(sdhci_arasan->phy);
-+			if (phy_power_on(sdhci_arasan->phy)) {
-+				pr_err("%s: Cannot power on phy.\n",
-+				       mmc_hostname(host->mmc));
-+				return;
-+			}
-+
- 			sdhci_arasan->is_phy_on = true;
+diff --git a/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi b/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
+index 59f18846cf5d..586aac8a998c 100644
+--- a/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
++++ b/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
+@@ -220,15 +220,15 @@ cs42l51_port: port {
+ 			cs42l51_tx_endpoint: endpoint@0 {
+ 				reg = <0>;
+ 				remote-endpoint = <&sai2a_endpoint>;
+-				frame-master;
+-				bitclock-master;
++				frame-master = <&cs42l51_tx_endpoint>;
++				bitclock-master = <&cs42l51_tx_endpoint>;
+ 			};
  
- 			/*
-@@ -323,7 +328,12 @@ static void sdhci_arasan_set_clock(struct sdhci_host *host, unsigned int clock)
- 		msleep(20);
- 
- 	if (ctrl_phy) {
--		phy_power_on(sdhci_arasan->phy);
-+		if (phy_power_on(sdhci_arasan->phy)) {
-+			pr_err("%s: Cannot power on phy.\n",
-+			       mmc_hostname(host->mmc));
-+			return;
-+		}
-+
- 		sdhci_arasan->is_phy_on = true;
- 	}
- }
-@@ -479,7 +489,9 @@ static int sdhci_arasan_suspend(struct device *dev)
- 		ret = phy_power_off(sdhci_arasan->phy);
- 		if (ret) {
- 			dev_err(dev, "Cannot power off phy.\n");
--			sdhci_resume_host(host);
-+			if (sdhci_resume_host(host))
-+				dev_err(dev, "Cannot resume host.\n");
-+
- 			return ret;
- 		}
- 		sdhci_arasan->is_phy_on = false;
+ 			cs42l51_rx_endpoint: endpoint@1 {
+ 				reg = <1>;
+ 				remote-endpoint = <&sai2b_endpoint>;
+-				frame-master;
+-				bitclock-master;
++				frame-master = <&cs42l51_rx_endpoint>;
++				bitclock-master = <&cs42l51_rx_endpoint>;
+ 			};
+ 		};
+ 	};
 -- 
 2.30.2
 
