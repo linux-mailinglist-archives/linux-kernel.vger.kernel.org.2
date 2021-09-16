@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 040B840E413
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:22:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0F1D40E15E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:29:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236996AbhIPQzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:55:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40182 "EHLO mail.kernel.org"
+        id S243072AbhIPQ36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:29:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60152 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345304AbhIPQuF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:50:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C210B615A3;
-        Thu, 16 Sep 2021 16:28:02 +0000 (UTC)
+        id S235820AbhIPQUi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:20:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 048F861401;
+        Thu, 16 Sep 2021 16:14:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809683;
-        bh=EoVBRezxiudV/exghT9iiYnKT72jZ6yFDZw05w4XH+M=;
+        s=korg; t=1631808874;
+        bh=7mmHLthpFheFiPyehS8KBoLv55k9vZhDiW0Qcdq4vcI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aX9UGx5HSZEH8GM0zmVgnYikSisfbvtaQwb8X2Vs+Z0JXHp7B3VesVG8lSDSIsMWa
-         f0De1LvhKoi5c5dXqEJL+DhX4fsxQNx+FGdjUKxMGM0JX+LO87AhlYLTK+LrUkxoCg
-         rMNbtSm4vLxoERKs5c0DQYtdw+gcCWWgS1unHMsI=
+        b=zedpTxLthfYgurv+tDL1tVlm+yHgkDH9QCyVlenN1G88u9iGSgy09ID+pPFhdghIc
+         aU5iJnpLHMeoIskjcgvcurwGoRAmy5BoZmnXhZ116Y0uDA4kcgMVKraj9OZt1PK7gV
+         +5umyGs47tsknxR5/Y+3UHlxVa68ZviuUFWhwlx8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Georgi Djakov <georgi.djakov@linaro.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        stable@vger.kernel.org,
+        syzbot+74d6ef051d3d2eacf428@syzkaller.appspotmail.com,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Anirudh Rayabharam <mail@anirudhrb.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 243/380] arm64: dts: qcom: sm8250: Fix epss_l3 unit address
+Subject: [PATCH 5.10 255/306] usbip: give back URBs for unsent unlink requests during cleanup
 Date:   Thu, 16 Sep 2021 18:00:00 +0200
-Message-Id: <20210916155812.339930084@linuxfoundation.org>
+Message-Id: <20210916155802.762327694@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,35 +42,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Georgi Djakov <georgi.djakov@linaro.org>
+From: Anirudh Rayabharam <mail@anirudhrb.com>
 
-[ Upstream commit 77b53d65dc1e54321ec841912f06bcb558a079c0 ]
+[ Upstream commit 258c81b341c8025d79073ce2d6ce19dcdc7d10d2 ]
 
-The unit address of the epss_l3 node is incorrect and does not match
-the address of its "reg" property. Let's fix it.
+In vhci_device_unlink_cleanup(), the URBs for unsent unlink requests are
+not given back. This sometimes causes usb_kill_urb to wait indefinitely
+for that urb to be given back. syzbot has reported a hung task issue [1]
+for this.
 
-Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Reviewed-by: Sibi Sankar <sibis@codeaurora.org>
-Link: https://lore.kernel.org/r/20210211193637.9737-1-georgi.djakov@linaro.org
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+To fix this, give back the urbs corresponding to unsent unlink requests
+(unlink_tx list) similar to how urbs corresponding to unanswered unlink
+requests (unlink_rx list) are given back.
+
+[1]: https://syzkaller.appspot.com/bug?id=08f12df95ae7da69814e64eb5515d5a85ed06b76
+
+Reported-by: syzbot+74d6ef051d3d2eacf428@syzkaller.appspotmail.com
+Tested-by: syzbot+74d6ef051d3d2eacf428@syzkaller.appspotmail.com
+Reviewed-by: Shuah Khan <skhan@linuxfoundation.org>
+Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
+Link: https://lore.kernel.org/r/20210820190122.16379-2-mail@anirudhrb.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/sm8250.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/usbip/vhci_hcd.c | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-index 1316bea3eab5..6d28bfd9a8f5 100644
---- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-@@ -3773,7 +3773,7 @@ apps_bcm_voter: bcm_voter {
- 			};
- 		};
+diff --git a/drivers/usb/usbip/vhci_hcd.c b/drivers/usb/usbip/vhci_hcd.c
+index 4ba6bcdaa8e9..190bd3d1c1f0 100644
+--- a/drivers/usb/usbip/vhci_hcd.c
++++ b/drivers/usb/usbip/vhci_hcd.c
+@@ -957,8 +957,32 @@ static void vhci_device_unlink_cleanup(struct vhci_device *vdev)
+ 	spin_lock(&vdev->priv_lock);
  
--		epss_l3: interconnect@18591000 {
-+		epss_l3: interconnect@18590000 {
- 			compatible = "qcom,sm8250-epss-l3";
- 			reg = <0 0x18590000 0 0x1000>;
+ 	list_for_each_entry_safe(unlink, tmp, &vdev->unlink_tx, list) {
++		struct urb *urb;
++
++		/* give back urb of unsent unlink request */
+ 		pr_info("unlink cleanup tx %lu\n", unlink->unlink_seqnum);
++
++		urb = pickup_urb_and_free_priv(vdev, unlink->unlink_seqnum);
++		if (!urb) {
++			list_del(&unlink->list);
++			kfree(unlink);
++			continue;
++		}
++
++		urb->status = -ENODEV;
++
++		usb_hcd_unlink_urb_from_ep(hcd, urb);
++
+ 		list_del(&unlink->list);
++
++		spin_unlock(&vdev->priv_lock);
++		spin_unlock_irqrestore(&vhci->lock, flags);
++
++		usb_hcd_giveback_urb(hcd, urb, urb->status);
++
++		spin_lock_irqsave(&vhci->lock, flags);
++		spin_lock(&vdev->priv_lock);
++
+ 		kfree(unlink);
+ 	}
  
 -- 
 2.30.2
