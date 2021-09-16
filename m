@@ -2,90 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D82AC40DC86
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 16:14:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CCAE40DC6D
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 16:08:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235557AbhIPOPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 10:15:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52652 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235546AbhIPOPU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 10:15:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 27C1A61164;
-        Thu, 16 Sep 2021 14:13:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631801639;
-        bh=Ou7RB0CenpTfBy4XOy0FC9vI/kcV12k9i3vow3MfXfk=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=PayO4Q/7lTE0w+RUF1dqMtjN7OalRzVPBLuechm5DKitA/8NOqWti8a0fBSpg9fVP
-         mpYM7qwJjVWnnE1Q+dGYqKntjXbcrOlDNvRyzxtV2bV5z6P7gR7trPEEoRLwvGriW1
-         Nxe+XYki75Eg/SgFPV8aa2i5fwywDy78gQLhV7aqkYgnH0fdKkMV4m+83+1HPY0q0l
-         fkkdabsCY3lBV59Qo5E6k+Hy3LYdSqsS3K+rcxyMssSXc98bgxSOzzHg8qcGqWKbkv
-         w3g8rgU+xC4ygh3PxvcNLvukaZFJAdFDuwUwhnWa2WWm64fL6ltqtrktM73Rpuxr4+
-         CjyQbuGQrVIWA==
-Message-ID: <d6bf64ddd231f766aafe6f7775ba9fb2adad95c5.camel@kernel.org>
-Subject: Re: [PATCH 00/14] selftests/sgx: Oversubscription, page permission,
- thread entry
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Reinette Chatre <reinette.chatre@intel.com>,
-        linux-sgx@vger.kernel.org, shuah@kernel.org
-Cc:     seanjc@google.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Thu, 16 Sep 2021 17:13:57 +0300
-In-Reply-To: <cover.1631731214.git.reinette.chatre@intel.com>
-References: <cover.1631731214.git.reinette.chatre@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        id S238178AbhIPOJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 10:09:50 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:16222 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236328AbhIPOJq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 10:09:46 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4H9Jn40dyyz1DH1k;
+        Thu, 16 Sep 2021 22:07:20 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.8; Thu, 16 Sep 2021 22:08:22 +0800
+Received: from huawei.com (10.175.127.227) by dggema762-chm.china.huawei.com
+ (10.1.198.204) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.8; Thu, 16
+ Sep 2021 22:08:21 +0800
+From:   Yu Kuai <yukuai3@huawei.com>
+To:     <josef@toxicpanda.com>, <axboe@kernel.dk>, <ming.lei@redhat.com>
+CC:     <linux-block@vger.kernel.org>, <nbd@other.debian.org>,
+        <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
+        <yi.zhang@huawei.com>
+Subject: [PATCH v9] nbd: fix uaf in nbd_handle_reply()
+Date:   Thu, 16 Sep 2021 22:18:10 +0800
+Message-ID: <20210916141810.2325276-1-yukuai3@huawei.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210916093350.1410403-8-yukuai3@huawei.com>
+References: <20210916093350.1410403-8-yukuai3@huawei.com>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-09-15 at 13:30 -0700, Reinette Chatre wrote:
-> Hi Everybody,
->=20
-> This series consists out of outstanding SGX selftests changes, rebased
-> and gathered in a single series that is more easily merged for testing
-> and development, and a few more changes added to expand the existing test=
-s.
->=20
-> The outstanding SGX selftest changes included in this series that have al=
-ready
-> been submitted separately are:
->=20
-> * An almost two year old patch fixing a benign linker warning that is sti=
-ll
->   present today:
->   https://lore.kernel.org/linux-sgx/20191017030340.18301-2-sean.j.christo=
-pherson@intel.com/
->   The original patch is added intact and not all email addresses
->   within are valid.
->=20
-> * Latest (v4) of Jarkko Sakkinen's series to add an oversubscription test=
-:
->   https://lore.kernel.org/linux-sgx/20210809093127.76264-1-jarkko@kernel.=
-org/
->=20
-> * Latest (v2) of Jarkko Sakkinen's patch that provides provide per-op
->   parameter structs for the test enclave:
->   https://lore.kernel.org/linux-sgx/20210812224645.90280-1-jarkko@kernel.=
-org/
->=20
-> The reason why most of these patches are outstanding is that they depend
-> on a kernel change that is still under discussion. Decision to wait in:
-> https://lore.kernel.org/linux-sgx/f8674dac5579a8a424de1565f7ffa2b5bf2f8e3=
-6.camel@kernel.org/
-> The original patch for this kernel dependency continues to be included in
-> this series as a placeholder until the ongoing discussions are concluded.
->=20
-> The new changes introduced in this series builds on Jarkko's outstanding
-> SGX selftest changes and adds new tests for page permissions, exception
-> handling, and thread entry.
+There is a problem that nbd_handle_reply() might access freed request:
 
-Thanks for including my patches into this! It's a good idea that
-we carry single series (and probably least confusing to Shuah).
+1) At first, a normal io is submitted and completed with scheduler:
 
-Thank you.
+internel_tag = blk_mq_get_tag -> get tag from sched_tags
+ blk_mq_rq_ctx_init
+  sched_tags->rq[internel_tag] = sched_tag->static_rq[internel_tag]
+...
+blk_mq_get_driver_tag
+ __blk_mq_get_driver_tag -> get tag from tags
+ tags->rq[tag] = sched_tag->static_rq[internel_tag]
 
-/Jarkko
+So, both tags->rq[tag] and sched_tags->rq[internel_tag] are pointing
+to the request: sched_tags->static_rq[internal_tag]. Even if the
+io is finished.
+
+2) nbd server send a reply with random tag directly:
+
+recv_work
+ nbd_handle_reply
+  blk_mq_tag_to_rq(tags, tag)
+   rq = tags->rq[tag]
+
+3) if the sched_tags->static_rq is freed:
+
+blk_mq_sched_free_requests
+ blk_mq_free_rqs(q->tag_set, hctx->sched_tags, i)
+  -> step 2) access rq before clearing rq mapping
+  blk_mq_clear_rq_mapping(set, tags, hctx_idx);
+  __free_pages() -> rq is freed here
+
+4) Then, nbd continue to use the freed request in nbd_handle_reply
+
+Fix the problem by get 'q_usage_counter' before blk_mq_tag_to_rq(),
+thus request is ensured not to be freed because 'q_usage_counter' is
+not zero.
+
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+---
+Changes in v9:
+ - move percpu_ref_put() behind.
+
+ drivers/block/nbd.c | 18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+index 69dc5eac9ad3..f9d63794275e 100644
+--- a/drivers/block/nbd.c
++++ b/drivers/block/nbd.c
+@@ -825,6 +825,7 @@ static void recv_work(struct work_struct *work)
+ 						     work);
+ 	struct nbd_device *nbd = args->nbd;
+ 	struct nbd_config *config = nbd->config;
++	struct request_queue *q = nbd->disk->queue;
+ 	struct nbd_sock *nsock;
+ 	struct nbd_cmd *cmd;
+ 	struct request *rq;
+@@ -835,13 +836,28 @@ static void recv_work(struct work_struct *work)
+ 		if (nbd_read_reply(nbd, args->index, &reply))
+ 			break;
+ 
++		/*
++		 * Grab .q_usage_counter so request pool won't go away, then no
++		 * request use-after-free is possible during nbd_handle_reply().
++		 * If queue is frozen, there won't be any inflight requests, we
++		 * needn't to handle the incoming garbage message.
++		 */
++		if (!percpu_ref_tryget(&q->q_usage_counter)) {
++			dev_err(disk_to_dev(nbd->disk), "%s: no io inflight\n",
++				__func__);
++			break;
++		}
++
+ 		cmd = nbd_handle_reply(nbd, args->index, &reply);
+-		if (IS_ERR(cmd))
++		if (IS_ERR(cmd)) {
++			percpu_ref_put(&q->q_usage_counter);
+ 			break;
++		}
+ 
+ 		rq = blk_mq_rq_from_pdu(cmd);
+ 		if (likely(!blk_should_fake_timeout(rq->q)))
+ 			blk_mq_complete_request(rq);
++		percpu_ref_put(&q->q_usage_counter);
+ 	}
+ 
+ 	nsock = config->socks[args->index];
+-- 
+2.31.1
+
