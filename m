@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 617A140E28B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:16:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1602040DFBA
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:12:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244866AbhIPQjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:39:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44760 "EHLO mail.kernel.org"
+        id S233960AbhIPQNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:13:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48012 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243445AbhIPQba (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:31:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 28095613CF;
-        Thu, 16 Sep 2021 16:19:29 +0000 (UTC)
+        id S233417AbhIPQH5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:07:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B20D260F5B;
+        Thu, 16 Sep 2021 16:06:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809170;
-        bh=d0fHBIfx08XKWD8DTM9jPJ7oQy9BeJaZM42sdC6BiCM=;
+        s=korg; t=1631808397;
+        bh=kwXb65ngb3Yluy6mC2lK115LE0OqELi2xKnKY6rV1ZM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZvAT4VMXb02HDnTu6K9ZnGCix3Arhmg+gJOhSz7CmV6SDWZB9KTzhYXM3c+zNWmoJ
-         B4eMFgZDJ14PMT8HLBevkrJ7DLPIW0EjflKqsRPRflLcSFZKnJlGgv1YBdhC7lprdt
-         iqJQEzPPAdiMFQ195vSY3S56YMysu8BQ2ozvaENs=
+        b=RuFN3lcSDMS79oJY+b+IhUYBY+P1GYp7MNYjMQyHLKCuzlfFWhfJZdkcvfKV/OCjN
+         SwUwtVE+iWl+PcWTPo88hpugoQrXlz47fumLc4mH2K3fQ2cFjbnxiG5xORLranv7J7
+         zi9GD7exAk/OEzPcYLx07z9V61Tip6SlNMxmw2fQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Begunkov <asml.silence@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.13 056/380] io_uring: fail links of cancelled timeouts
-Date:   Thu, 16 Sep 2021 17:56:53 +0200
-Message-Id: <20210916155805.890592498@linuxfoundation.org>
+        stable@vger.kernel.org, Gal Pressman <galpress@amazon.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 069/306] RDMA/efa: Remove double QP type assignment
+Date:   Thu, 16 Sep 2021 17:56:54 +0200
+Message-Id: <20210916155756.407874071@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,33 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Begunkov <asml.silence@gmail.com>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-commit 2ae2eb9dde18979b40629dd413b9adbd6c894cdf upstream.
+[ Upstream commit f9193d266347fe9bed5c173e7a1bf96268142a79 ]
 
-When we cancel a timeout we should mark it with REQ_F_FAIL, so
-linked requests are cancelled as well, but not queued for further
-execution.
+The QP type is set by the IB/core and shouldn't be set in the driver.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
-Link: https://lore.kernel.org/r/fff625b44eeced3a5cae79f60e6acf3fbdf8f990.1631192135.git.asml.silence@gmail.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 40909f664d27 ("RDMA/efa: Add EFA verbs implementation")
+Link: https://lore.kernel.org/r/838c40134c1590167b888ca06ad51071139ff2ae.1627040189.git.leonro@nvidia.com
+Acked-by: Gal Pressman <galpress@amazon.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/io_uring.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/infiniband/hw/efa/efa_verbs.c | 1 -
+ 1 file changed, 1 deletion(-)
 
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -1307,6 +1307,8 @@ static void io_kill_timeout(struct io_ki
- 	struct io_timeout_data *io = req->async_data;
+diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
+index 4e940fc50bba..2ece682c7835 100644
+--- a/drivers/infiniband/hw/efa/efa_verbs.c
++++ b/drivers/infiniband/hw/efa/efa_verbs.c
+@@ -717,7 +717,6 @@ struct ib_qp *efa_create_qp(struct ib_pd *ibpd,
  
- 	if (hrtimer_try_to_cancel(&io->timer) != -1) {
-+		if (status)
-+			req_set_fail_links(req);
- 		atomic_set(&req->ctx->cq_timeouts,
- 			atomic_read(&req->ctx->cq_timeouts) + 1);
- 		list_del_init(&req->timeout.list);
+ 	qp->qp_handle = create_qp_resp.qp_handle;
+ 	qp->ibqp.qp_num = create_qp_resp.qp_num;
+-	qp->ibqp.qp_type = init_attr->qp_type;
+ 	qp->max_send_wr = init_attr->cap.max_send_wr;
+ 	qp->max_recv_wr = init_attr->cap.max_recv_wr;
+ 	qp->max_send_sge = init_attr->cap.max_send_sge;
+-- 
+2.30.2
+
 
 
