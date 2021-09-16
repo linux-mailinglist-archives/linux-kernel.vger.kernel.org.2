@@ -2,75 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7A0640ED25
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 00:11:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58E0A40ED2B
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 00:13:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240759AbhIPWMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 18:12:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234072AbhIPWMr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 18:12:47 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 837E7C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 15:11:26 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id m3so22599302lfu.2
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 15:11:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6LvSfd+oI41H6Om1rL7Jhn9kpcVwL+kRoJZVRWE5RMg=;
-        b=iNZ53wr8Hb4bzCLF6PkVEFxG14WopLJYJsVixNsrZoo5Ff823mrGn+lr3Tk+9nPmUV
-         5QgR0leP2yIQsq6L9/iXiNV9RjJOhHZJFQGRJXJpCNr+mTgSvoXjpleLfGB/IbvZEGjp
-         QsYkD+m3Z5ySKZgERdi1pghoyA5o1+ymply0OS6+ldsL1fHiZ7HbTKmiC2QZIZWnpx2u
-         KYyBs7Iwy98ITyr+GZ1B5GyStUc5Tn0DLMaZQH6X2QVnPJk69i6tB98tfyHai7Y8TEfJ
-         e+XNBKwqWfuLcKm6EGmIW+yIWtrH6k+PVAAa2xly/zw+BVa4jmaQKhYTBAbte0DwNJ/2
-         f1jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6LvSfd+oI41H6Om1rL7Jhn9kpcVwL+kRoJZVRWE5RMg=;
-        b=LKoCkbB9cm2vzO/CG3NERt61z0542Ds67PkAWwfNdTzikWQ9a2QqxLgSnFIzNZyWlh
-         yx+xMV0ga+oEgMezPJOiro+KprtTaHX67+huwDTkPnu10QuzrK2zRUxj0/GUSgUB634X
-         Z8bRbxrJjrkB74xq8vnoiMJzKGvg8v0WhYLYKe3ahraVWWYySrOq0kghbWiuPTJd0smU
-         L6A46P3XGyyyyjTPJsLJdWbUf87pLvMWC+b0t94RLFjfk/J1bC0cxxSDwNZJCbuu55sO
-         4eETkPyFnuNjNW5C9thExjxH2TLALEhl/+7Aiv5ieVpFMegUWOGNWs+f11Jon7e6UXOI
-         ++6w==
-X-Gm-Message-State: AOAM530dq2SAvcvtUVhTPa91JetJX2iGK6usSRUEJ72ZxomxEvDDdNMv
-        LQY/ewPf2lxffvpatxQljG9YQjiorZVDqLc43mtxnMUuxV0=
-X-Google-Smtp-Source: ABdhPJwzHDkcJA9/P85VBxJeOWAsCoQzQpiUX95nEcEBvcAi594TiH8xGSb3V+Sxej7UbLGijHC6SzgPBXNBapvEhtU=
-X-Received: by 2002:a2e:1548:: with SMTP id 8mr6691975ljv.358.1631830284908;
- Thu, 16 Sep 2021 15:11:24 -0700 (PDT)
+        id S240780AbhIPWOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 18:14:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58142 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240764AbhIPWOc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 18:14:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CB7AA6108F;
+        Thu, 16 Sep 2021 22:13:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631830390;
+        bh=dsOuovH9Kp0/Y7aVaHgWs9poFvSiJI5QPHtFbQ7UB+U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ECs+MA7oh2od9NNE8nBOlbqxT7yq7iR/f4JXp6nWXxahLC/Ka6ZW8xVLiWPxs0lIB
+         97SE/93aqf2sTmlDvu1ucW52PJX+HwFQGeNuZDyZyJL6IGcT50DHEm76EnEr9XDti8
+         KkihsjNQ9iUrNKemFIN+23f10GEYNXnnVwcoT1ZNURNsHwJkOFeUv5s1vLThEEIITq
+         g+TOOC6x3CWCewConmgDSqEcpuISMpmybj2KHUFvLZA+40SZYBo+cf63RLgSFewVor
+         Rn60/6jCHVP0dPNK8l+cN67igpGAoUwQrigOvak4QlnxISYzZSvLbWJRJO77OCSt0H
+         yvoqdWZhSDS9g==
+Date:   Thu, 16 Sep 2021 18:13:08 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH 5.13 345/380] KVM: arm64: vgic: move irq->get_input_level
+ into an ops structure
+Message-ID: <YUPBdFVrQwUHAXzf@sashalap>
+References: <20210916155803.966362085@linuxfoundation.org>
+ <20210916155815.779126002@linuxfoundation.org>
+ <87r1dobco8.wl-maz@kernel.org>
 MIME-Version: 1.0
-References: <20210826123516.14441-1-colin.king@canonical.com>
-In-Reply-To: <20210826123516.14441-1-colin.king@canonical.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 17 Sep 2021 00:11:14 +0200
-Message-ID: <CACRpkdYDWN+7DG_93P239YD4qMa2=d8wYw9BOdgp0YpbNTiM+g@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: Fix spelling mistake "atleast" -> "at least"
-To:     Colin King <colin.king@canonical.com>
-Cc:     Patrice Chotard <patrice.chotard@foss.st.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <87r1dobco8.wl-maz@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 2:35 PM Colin King <colin.king@canonical.com> wrote:
-
-> From: Colin Ian King <colin.king@canonical.com>
+On Thu, Sep 16, 2021 at 07:25:27PM +0100, Marc Zyngier wrote:
+>On Thu, 16 Sep 2021 17:01:42 +0100,
+>Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+>>
+>> From: Marc Zyngier <maz@kernel.org>
+>>
+>> [ Upstream commit db75f1a33f82ad332b6e139c5960e01999969d2c ]
+>>
+>> We already have the option to attach a callback to an interrupt
+>> to retrieve its pending state. As we are planning to expand this
+>> facility, move this callback into its own data structure.
+>>
+>> This will limit the size of individual interrupts as the ops
+>> structures can be shared across multiple interrupts.
+>>
+>> Signed-off-by: Marc Zyngier <maz@kernel.org>
+>> Signed-off-by: Sasha Levin <sashal@kernel.org>
+>> ---
+>>  arch/arm64/kvm/arch_timer.c |  8 ++++++--
+>>  arch/arm64/kvm/vgic/vgic.c  | 14 +++++++-------
+>>  include/kvm/arm_vgic.h      | 28 +++++++++++++++++-----------
+>>  3 files changed, 30 insertions(+), 20 deletions(-)
 >
-> There is a spelling mistake in a dev_err message. Fix it.
->
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+>As I replied to Sasha earlier, I don't see a good reason to backport
+>this, as it doesn't improve anything on its own. Unless there is a
+>compelling reason to get this backported, I'd rather see it dropped.
 
-Patch applied.
+Yes, I'll drop it. I originally brought it as a dependency for a patch
+that ended up being dropped. Thanks for pointing it out!
 
-Yours,
-Linus Walleij
+-- 
+Thanks,
+Sasha
