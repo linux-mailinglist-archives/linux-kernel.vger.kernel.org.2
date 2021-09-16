@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C9C640E88F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA98140E700
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:32:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354684AbhIPRka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:40:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51274 "EHLO mail.kernel.org"
+        id S242620AbhIPR1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:27:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244039AbhIPRby (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:31:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 32CAD630EE;
-        Thu, 16 Sep 2021 16:47:37 +0000 (UTC)
+        id S1347032AbhIPQ4u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:56:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A5EF61381;
+        Thu, 16 Sep 2021 16:31:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810857;
-        bh=0bo7ow20Vjjagu611zzbdx4DpyRacN4U9snfytX4aUM=;
+        s=korg; t=1631809880;
+        bh=wT3iu+1KsIblfmC2Xxu1rpoOWJc5iroPFIXC6zv3PRM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aLILAzOT/c8tmrj3wo0O89GGvTM42Kaq0KjVkJBj3Swctfewed9YcW/zhk91rUnsx
-         pYolsCkBJjBLp6rC8KMhkmQMJmMjwQ61K+k4KQVIsvIfyYAgON8Wm48UiB2+Y0vQZw
-         WfpFT4LiOuqCfPerfZ10ViLH07hnNvAkWojrhc3I=
+        b=aTNqd+yZRFwBpPTxPDSv1YDluD3Ql2Ew0VlpZrI5rBCMNSnrYHS7wnoyAEdWthrcW
+         eEZcFrm/5ZeJyIZnkNJqhZckG7Hxr54c2wzmQR47CLO5ZNB4icApdN/8QF3xtbTqyF
+         Rihh+xeJNwOuLC/zRjKxaJyT4Y1YoVuDkjqGc1zA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kuogee Hsieh <khsieh@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Rob Clark <robdclark@chromium.org>,
+        stable@vger.kernel.org, linux-staging@lists.linux.dev,
+        Kees Cook <keescook@chromium.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 293/432] drm/msm/dp: do not end dp link training until video is ready
+Subject: [PATCH 5.13 285/380] staging: rts5208: Fix get_ms_information() heap buffer size
 Date:   Thu, 16 Sep 2021 18:00:42 +0200
-Message-Id: <20210916155820.765189256@linuxfoundation.org>
+Message-Id: <20210916155813.771281329@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,146 +40,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kuogee Hsieh <khsieh@codeaurora.org>
+From: Kees Cook <keescook@chromium.org>
 
-[ Upstream commit 2e0adc765d884cc080baa501e250bfad97035b09 ]
+[ Upstream commit cbe34165cc1b7d1110b268ba8b9f30843c941639 ]
 
-Initialize both pre-emphasis and voltage swing level to 0 before
-start link training and do not end link training until video is
-ready to reduce the period between end of link training and video
-start to meet Link Layer CTS requirement.  Some dongle main link
-symbol may become unlocked again if host did not end link training
-soon enough after completion of link training 2. Host have to re
-train main link if loss of symbol locked detected before end link
-training so that the coming video stream can be transmitted to sink
-properly. This fixes Link Layer CTS cases 4.3.2.1, 4.3.2.2, 4.3.2.3
-and 4.3.2.4.
+Fix buf allocation size (it needs to be 2 bytes larger). Found when
+__alloc_size() annotations were added to kmalloc() interfaces.
 
-Changes in v3:
--- merge retrain link if loss of symbol locked happen into this patch
--- replace dp_ctrl_loss_symbol_lock() with dp_ctrl_channel_eq_ok()
+In file included from ./include/linux/string.h:253,
+                 from ./include/linux/bitmap.h:10,
+                 from ./include/linux/cpumask.h:12,
+                 from ./arch/x86/include/asm/paravirt.h:17,
+                 from ./arch/x86/include/asm/irqflags.h:63,
+                 from ./include/linux/irqflags.h:16,
+                 from ./include/linux/rcupdate.h:26,
+                 from ./include/linux/rculist.h:11,
+                 from ./include/linux/pid.h:5,
+                 from ./include/linux/sched.h:14,
+                 from ./include/linux/blkdev.h:5,
+                 from drivers/staging/rts5208/rtsx_scsi.c:12:
+In function 'get_ms_information',
+    inlined from 'ms_sp_cmnd' at drivers/staging/rts5208/rtsx_scsi.c:2877:12,
+    inlined from 'rtsx_scsi_handler' at drivers/staging/rts5208/rtsx_scsi.c:3247:12:
+./include/linux/fortify-string.h:54:29: warning: '__builtin_memcpy' forming offset [106, 107] is out
+ of the bounds [0, 106] [-Warray-bounds]
+   54 | #define __underlying_memcpy __builtin_memcpy
+      |                             ^
+./include/linux/fortify-string.h:417:2: note: in expansion of macro '__underlying_memcpy'
+  417 |  __underlying_##op(p, q, __fortify_size);   \
+      |  ^~~~~~~~~~~~~
+./include/linux/fortify-string.h:463:26: note: in expansion of macro '__fortify_memcpy_chk'
+  463 | #define memcpy(p, q, s)  __fortify_memcpy_chk(p, q, s,   \
+      |                          ^~~~~~~~~~~~~~~~~~~~
+drivers/staging/rts5208/rtsx_scsi.c:2851:3: note: in expansion of macro 'memcpy'
+ 2851 |   memcpy(buf + i, ms_card->raw_sys_info, 96);
+      |   ^~~~~~
 
-Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-Link: https://lore.kernel.org/r/1628196295-7382-7-git-send-email-khsieh@codeaurora.org
-Signed-off-by: Rob Clark <robdclark@chromium.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-staging@lists.linux.dev
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Link: https://lore.kernel.org/r/20210818044252.1533634-1-keescook@chromium.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/dp/dp_ctrl.c | 56 +++++++++++++++++++++++---------
- 1 file changed, 41 insertions(+), 15 deletions(-)
+ drivers/staging/rts5208/rtsx_scsi.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
-index 30d20e3beb29..6f5e45d54b26 100644
---- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
-+++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
-@@ -1480,6 +1480,9 @@ static int dp_ctrl_link_maintenance(struct dp_ctrl_private *ctrl)
- 
- 	dp_ctrl_push_idle(&ctrl->dp_ctrl);
- 
-+	ctrl->link->phy_params.p_level = 0;
-+	ctrl->link->phy_params.v_level = 0;
-+
- 	ctrl->dp_ctrl.pixel_rate = ctrl->panel->dp_mode.drm_mode.clock;
- 
- 	ret = dp_ctrl_setup_main_link(ctrl, &training_step);
-@@ -1632,6 +1635,16 @@ static bool dp_ctrl_clock_recovery_any_ok(
- 	return drm_dp_clock_recovery_ok(link_status, reduced_cnt);
- }
- 
-+static bool dp_ctrl_channel_eq_ok(struct dp_ctrl_private *ctrl)
-+{
-+	u8 link_status[DP_LINK_STATUS_SIZE];
-+	int num_lanes = ctrl->link->link_params.num_lanes;
-+
-+	dp_ctrl_read_link_status(ctrl, link_status);
-+
-+	return drm_dp_channel_eq_ok(link_status, num_lanes);
-+}
-+
- int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl)
- {
- 	int rc = 0;
-@@ -1666,6 +1679,9 @@ int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl)
- 		ctrl->link->link_params.rate,
- 		ctrl->link->link_params.num_lanes, ctrl->dp_ctrl.pixel_rate);
- 
-+	ctrl->link->phy_params.p_level = 0;
-+	ctrl->link->phy_params.v_level = 0;
-+
- 	rc = dp_ctrl_enable_mainlink_clocks(ctrl);
- 	if (rc)
- 		return rc;
-@@ -1731,17 +1747,19 @@ int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl)
- 	if (ctrl->link->sink_request & DP_TEST_LINK_PHY_TEST_PATTERN)
- 		return rc;
- 
--	/* stop txing train pattern */
--	dp_ctrl_clear_training_pattern(ctrl);
-+	if (rc == 0) {  /* link train successfully */
-+		/*
-+		 * do not stop train pattern here
-+		 * stop link training at on_stream
-+		 * to pass compliance test
-+		 */
-+	} else  {
-+		/*
-+		 * link training failed
-+		 * end txing train pattern here
-+		 */
-+		dp_ctrl_clear_training_pattern(ctrl);
- 
--	/*
--	 * keep transmitting idle pattern until video ready
--	 * to avoid main link from loss of sync
--	 */
--	if (rc == 0)  /* link train successfully */
--		dp_ctrl_push_idle(dp_ctrl);
--	else  {
--		/* link training failed */
- 		dp_ctrl_deinitialize_mainlink(ctrl);
- 		rc = -ECONNRESET;
+diff --git a/drivers/staging/rts5208/rtsx_scsi.c b/drivers/staging/rts5208/rtsx_scsi.c
+index 1deb74112ad4..11d9d9155eef 100644
+--- a/drivers/staging/rts5208/rtsx_scsi.c
++++ b/drivers/staging/rts5208/rtsx_scsi.c
+@@ -2802,10 +2802,10 @@ static int get_ms_information(struct scsi_cmnd *srb, struct rtsx_chip *chip)
  	}
-@@ -1749,9 +1767,15 @@ int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl)
- 	return rc;
- }
  
-+static int dp_ctrl_link_retrain(struct dp_ctrl_private *ctrl)
-+{
-+	int training_step = DP_TRAINING_NONE;
-+
-+	return dp_ctrl_setup_main_link(ctrl, &training_step);
-+}
-+
- int dp_ctrl_on_stream(struct dp_ctrl *dp_ctrl)
- {
--	u32 rate = 0;
- 	int ret = 0;
- 	bool mainlink_ready = false;
- 	struct dp_ctrl_private *ctrl;
-@@ -1761,10 +1785,6 @@ int dp_ctrl_on_stream(struct dp_ctrl *dp_ctrl)
+ 	if (dev_info_id == 0x15) {
+-		buf_len = 0x3A;
++		buf_len = 0x3C;
+ 		data_len = 0x3A;
+ 	} else {
+-		buf_len = 0x6A;
++		buf_len = 0x6C;
+ 		data_len = 0x6A;
+ 	}
  
- 	ctrl = container_of(dp_ctrl, struct dp_ctrl_private, dp_ctrl);
+@@ -2855,11 +2855,7 @@ static int get_ms_information(struct scsi_cmnd *srb, struct rtsx_chip *chip)
+ 	}
  
--	rate = ctrl->panel->link_info.rate;
+ 	rtsx_stor_set_xfer_buf(buf, buf_len, srb);
 -
--	ctrl->link->link_params.rate = rate;
--	ctrl->link->link_params.num_lanes = ctrl->panel->link_info.num_lanes;
- 	ctrl->dp_ctrl.pixel_rate = ctrl->panel->dp_mode.drm_mode.clock;
+-	if (dev_info_id == 0x15)
+-		scsi_set_resid(srb, scsi_bufflen(srb) - 0x3C);
+-	else
+-		scsi_set_resid(srb, scsi_bufflen(srb) - 0x6C);
++	scsi_set_resid(srb, scsi_bufflen(srb) - buf_len);
  
- 	DRM_DEBUG_DP("rate=%d, num_lanes=%d, pixel_rate=%d\n",
-@@ -1779,6 +1799,12 @@ int dp_ctrl_on_stream(struct dp_ctrl *dp_ctrl)
- 		}
- 	}
- 
-+	if (!dp_ctrl_channel_eq_ok(ctrl))
-+		dp_ctrl_link_retrain(ctrl);
-+
-+	/* stop txing train pattern to end link training */
-+	dp_ctrl_clear_training_pattern(ctrl);
-+
- 	ret = dp_ctrl_enable_stream_clocks(ctrl);
- 	if (ret) {
- 		DRM_ERROR("Failed to start pixel clocks. ret=%d\n", ret);
+ 	kfree(buf);
+ 	return STATUS_SUCCESS;
 -- 
 2.30.2
 
