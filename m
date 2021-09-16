@@ -2,479 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF40F40EBA8
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 22:23:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3180F40EB9D
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 22:22:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239070AbhIPUYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 16:24:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44772 "EHLO
+        id S235627AbhIPUYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 16:24:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232179AbhIPUYL (ORCPT
+        with ESMTP id S232933AbhIPUX7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 16:24:11 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB13FC061756;
-        Thu, 16 Sep 2021 13:22:50 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id z94so21172854ede.8;
-        Thu, 16 Sep 2021 13:22:50 -0700 (PDT)
+        Thu, 16 Sep 2021 16:23:59 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DA04C061574;
+        Thu, 16 Sep 2021 13:22:38 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id t10so17640683lfd.8;
+        Thu, 16 Sep 2021 13:22:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=xw1GbCBUdMl0EfmUk7weeSI9otQ8jIW+/NiU/fSTPCo=;
-        b=jl+bpyFaGMWXqw+laki4e36uKj0RmjJh7hpPlfpp6gp9vRWwdj1QM9PIXZf1vL5rt6
-         Vy1ZWHVVXJmdPD7g9XeKu8Db7MC29PcwtBbf2e27M2sFmiI5/rXrwReQOkyT3jta2MCs
-         UPlQwlIrRHBTY1yrfxwb2yrEj+UPfJ1E+UPQ2WBca2nHMHhv59qu40Qhvnh47D7COS0X
-         elgIUfdQMm8oE22KsRJEnNk/3YseUzxcc4a9qbNe54wjxxOBHGQ7fsq/vn3redjq2+Hi
-         tJCJNOTs0iw9BskYFLnrzbf0ecwuqOPZT3SHBBOefmcTvMBZRSkvlk+b6KeChB/5qGXU
-         VszQ==
+        h=date:from:to:subject:message-id:mime-version:content-disposition;
+        bh=8VUiP6+2u2V8QzuQi6KvtfefqLq7RUfr7TNSLsXSBWY=;
+        b=AxxLxc1VRzIFp04dKkbd1ktr6IGkixlUy4/IfnNFbGyGjqqk2I+nko/LPAX73ebidT
+         K2x1jNKhWhXf5UJzBQptWlQ2VyGQxA9WeluAJH27QTK6ON8qPhc/7Zwx4IA6fBrPw+K4
+         qXxIwfuJDALHbMEmBmFNlcN3Q+chIU8IVLA51vBwzBhzxpXqdaF7Zo0FwLW+7C1biyXB
+         WKtxUrhnctBl+KnSousjCXPloKh1VFHxQw3V3CVupuC0+gsU/x54pZO1VH7/+7DQAlkD
+         ox8qCYbRQniOS6Q7VauFtm2PSQhI0FNDPlkddyGy0YrLoYtQvW7zDBz0sT612kcm/Ghm
+         lyTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=xw1GbCBUdMl0EfmUk7weeSI9otQ8jIW+/NiU/fSTPCo=;
-        b=pCimEI5T9XFzsdQHdpTKHuqdCWuXdwYRz0hqKJWZMYtnKUB+HjhAH2/ClpPbi39wHM
-         10prFO7BXtUuTRNb4jWlY8KyrGPeu8Bc6T1USBX+yTkqb8p7YdLzP4a8ly00VzfxrjQL
-         MCc8mSIuFYNiwaMCOzVL0BooI1ar8NAR0nbYvdyJc+vB3MU3UgJWrUm1P8OYx4J6bad8
-         jLflGHEAkeJjvCe6q4V23Aj+ELao8joirlcS0lEScccFs7LibdtKnwyo14bRBxQzkW6h
-         gE24dt4cxbjKx+/Ziub/+BQAX8PmT/sX1HfUClGUKDRoS3aN8/AKrlLssmFeN/SqdVzN
-         qM2g==
-X-Gm-Message-State: AOAM5307Cpq5YCq3YutkYeUVAYIb1BdYHcdqnackxYBgUvWAjhtiVlnH
-        V1QJACIe4mKk3w+awJkW4tQ=
-X-Google-Smtp-Source: ABdhPJwBC5BCRUPjXzi/V8Sue9JnVeSzsU4YNumZjrE/IdJ04GH2c8A9BiyFE7U036wiH0CkZhegoQ==
-X-Received: by 2002:a17:907:2632:: with SMTP id aq18mr8435443ejc.211.1631823769225;
-        Thu, 16 Sep 2021 13:22:49 -0700 (PDT)
-Received: from localhost.localdomain (32-46-179-94.pool.ukrtel.net. [94.179.46.32])
-        by smtp.gmail.com with ESMTPSA id d16sm1501661ejk.39.2021.09.16.13.22.47
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition;
+        bh=8VUiP6+2u2V8QzuQi6KvtfefqLq7RUfr7TNSLsXSBWY=;
+        b=DW29dxhj6nzNoivjxDbiv/fyUAx4sVjzfD5oaxX/oTPR0yApPvB1Jx+uX2cVE8et3G
+         g297G9zjVpmp34HTU203vsUIlclxz5lbKwpSiL5HobN5EC8uog6k1BlfuH0NsqSoqqPu
+         6ZdgT+ugfqa/3/N9/I6XZouSa8jKUxFYn6/6Dg3algtwvR0a8G12mzXM5K18N1njrMZc
+         7GzLfwhYA4qSgYucvpxnz2UYf6KFqN8m5Y2vPRtZVi1DYpCrBaaZu/aZIHepXQT87Za1
+         vN/+7vuhwm9zHmVomAnFWekKoysq/qY2jIGqN1v+p2FyRoYQjW8rxJy70LTJRl7sHOwo
+         71lw==
+X-Gm-Message-State: AOAM533DhTyaFS/f6ap07G9czEBG0hSHtXf95FtJcUBawHeFLzHlHLze
+        hmYVKiAM1Ka1gcVCV6SHEpw=
+X-Google-Smtp-Source: ABdhPJzAbINQyLGbfXLUoFOQWW3YGgznjiFZ+KhChS4TbIUKE9IlqmMEJ+vMnrU7I050wrVF5g7ung==
+X-Received: by 2002:a2e:3910:: with SMTP id g16mr6431025lja.499.1631823756719;
+        Thu, 16 Sep 2021 13:22:36 -0700 (PDT)
+Received: from ilya-330s ([93.157.255.113])
+        by smtp.gmail.com with ESMTPSA id b8sm346433lff.106.2021.09.16.13.22.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 13:22:48 -0700 (PDT)
-From:   Denis Pauk <pauk.denis@gmail.com>
-Cc:     pauk.denis@gmail.com, Bernhard Seibold <mail@bernhard-seibold.de>,
-        =?UTF-8?q?P=C3=A4r=20Ekholm?= <pehlm@pekholm.org>,
-        to.eivind@gmail.com, "Artem S . Tashkinov" <aros@gmx.com>,
-        Vittorio Roberto Alfieri <me@rebtoor.com>,
-        Sahan Fernando <sahan.h.fernando@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v7 3/3] hwmon: (nct6775) Support access via Asus WMI
-Date:   Thu, 16 Sep 2021 23:22:33 +0300
-Message-Id: <20210916202233.40334-5-pauk.denis@gmail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916202233.40334-1-pauk.denis@gmail.com>
-References: <20210916202233.40334-1-pauk.denis@gmail.com>
+        Thu, 16 Sep 2021 13:22:36 -0700 (PDT)
+Date:   Thu, 16 Sep 2021 23:22:34 +0300
+From:   Ilya Skriblovsky <ilyaskriblovsky@gmail.com>
+To:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
+Subject: [PATCH v2] Support for side buttons of Xiaomi Mi Dual Mode Wireless
+ Mouse Silent Edition
+Message-ID: <YUOninNA2UMADRVt@ilya-330s>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support accessing the NCT677x via Asus WMI functions.
+This patch enables side-buttons of Xiaomi Bluetooth mouse (specifically
+Xiaomi Mi Dual Mode Wireless Mouse Silent Edition).
 
-On mainboards that support this way of accessing the chip, the driver will
-usually not work without this option since in these mainboards, ACPI will
-mark the I/O port as used.
+The mouse sends invalid button count in its HID Report Descriptor and
+this patch just replaces its descriptor with corrected one. With this
+driver side buttons work as expected acting like Back/Forward buttons.
 
-Code uses ACPI firmware interface to communicate with sensors with ASUS
-motherboards:
-* PRIME B460-PLUS,
-* ROG CROSSHAIR VIII IMPACT,
-* ROG STRIX B550-E GAMING,
-* ROG STRIX B550-F GAMING,
-* ROG STRIX B550-F GAMING (WI-FI),
-* ROG STRIX Z490-I GAMING,
-* TUF GAMING B550M-PLUS,
-* TUF GAMING B550M-PLUS (WI-FI),
-* TUF GAMING B550-PLUS,
-* TUF GAMING X570-PLUS,
-* TUF GAMING X570-PRO (WI-FI).
-
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=204807
-Signed-off-by: Denis Pauk <pauk.denis@gmail.com>
-Co-developed-by: Bernhard Seibold <mail@bernhard-seibold.de>
-Signed-off-by: Bernhard Seibold <mail@bernhard-seibold.de>
-Tested-by: Pär Ekholm <pehlm@pekholm.org>
-Tested-by: <to.eivind@gmail.com>
-Tested-by: Artem S. Tashkinov <aros@gmx.com>
-Tested-by: Vittorio Roberto Alfieri <me@rebtoor.com>
-Tested-by: Sahan Fernando <sahan.h.fernando@gmail.com>
-Cc: Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc: Guenter Roeck <linux@roeck-us.net>
-
+Signed-off-by: Ilya Skriblovsky <ilyaskriblovsky@gmail.com>
 ---
-Changes in v7:
-  - Remove unrequred & 0xff with int8 variables.
-  - Make ASUSWMI_UNSUPPORTED_METHOD as default value for WMI responce,
-    before run wmi_evaluate_method().
-  - Rename ASUSWMI_MGMT2_GUID to ASUSWMI_MONITORING_GUID.
-  - Replace checks of 'err != -EINVAL' with 'err >= 0' for match_string result.
-
-Changes in v6:
-  - Minimaze codes inside code inside defined(CONFIG_ACPI_WMI).
-
-Changes in v5:
-  - Use IS_ENABLED(CONFIG_ACPI_WMI) instead defined(CONFIG_ACPI_WMI)
-
-Changes in v4:
-  - Fix build without ACPI WMI.
-
-Changes in v3:
-  - Remove unrequired type conversions.
-  - Save result of match_string before check.
-
-Changes in v2:
-  - Split changes to separate patches.
-  - Limit WMI usage by DMI_BOARD_NAME in checked ASUS motherboards.
+Changes since v1:
+ - Fixed syntax of Kconfig
 ---
- drivers/hwmon/Kconfig   |   1 +
- drivers/hwmon/nct6775.c | 230 ++++++++++++++++++++++++++++++++++++----
- 2 files changed, 210 insertions(+), 21 deletions(-)
+ drivers/hid/Kconfig      |   7 +++
+ drivers/hid/Makefile     |   1 +
+ drivers/hid/hid-xiaomi.c | 103 +++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 111 insertions(+)
+ create mode 100644 drivers/hid/hid-xiaomi.c
 
-diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
-index e3675377bc5d..9eefb1014b53 100644
---- a/drivers/hwmon/Kconfig
-+++ b/drivers/hwmon/Kconfig
-@@ -1423,6 +1423,7 @@ config SENSORS_NCT6683
- config SENSORS_NCT6775
- 	tristate "Nuvoton NCT6775F and compatibles"
- 	depends on !PPC
-+	depends on ACPI_WMI || ACPI_WMI=n
- 	select HWMON_VID
+diff --git a/drivers/hid/Kconfig b/drivers/hid/Kconfig
+index 76937f716fbe..cc0d3169fe75 100644
+--- a/drivers/hid/Kconfig
++++ b/drivers/hid/Kconfig
+@@ -467,6 +467,13 @@ config HID_VIEWSONIC
  	help
- 	  If you say yes here you get support for the hardware monitoring
-diff --git a/drivers/hwmon/nct6775.c b/drivers/hwmon/nct6775.c
-index 4253eed7f5b0..46262d9d3bd9 100644
---- a/drivers/hwmon/nct6775.c
-+++ b/drivers/hwmon/nct6775.c
-@@ -55,6 +55,7 @@
- #include <linux/dmi.h>
- #include <linux/io.h>
- #include <linux/nospec.h>
-+#include <linux/wmi.h>
- #include "lm75.h"
+ 	  Support for ViewSonic/Signotec PD1011 signature pad.
  
- #define USE_ALTERNATE
-@@ -132,10 +133,13 @@ MODULE_PARM_DESC(fan_debounce, "Enable debouncing for fan RPM signal");
- #define SIO_ID_MASK		0xFFF8
- 
- enum pwm_enable { off, manual, thermal_cruise, speed_cruise, sf3, sf4 };
-+enum sensor_access { access_direct, access_asuswmi };
- 
- struct nct6775_sio_data {
- 	int sioreg;
-+	int ld;
- 	enum kinds kind;
-+	enum sensor_access access;
- 
- 	/* superio_() callbacks  */
- 	void (*sio_outb)(struct nct6775_sio_data *sio_data, int reg, int val);
-@@ -145,6 +149,90 @@ struct nct6775_sio_data {
- 	void (*sio_exit)(struct nct6775_sio_data *sio_data);
- };
- 
-+#define ASUSWMI_MONITORING_GUID		"466747A0-70EC-11DE-8A39-0800200C9A66"
-+#define ASUSWMI_METHODID_RSIO		0x5253494F
-+#define ASUSWMI_METHODID_WSIO		0x5753494F
-+#define ASUSWMI_METHODID_RHWM		0x5248574D
-+#define ASUSWMI_METHODID_WHWM		0x5748574D
-+#define ASUSWMI_UNSUPPORTED_METHOD	0xFFFFFFFE
++config HID_XIAOMI
++	tristate "Xiaomi"
++	depends on HID
++	help
++	  Adds support for side buttons of Xiaomi Mi Dual Mode Wireless
++	  Mouse Silent Edition.
 +
-+static int asuswmi_evaluate_method(u32 method_id, u8 bank, u8 reg, u8 val, u32 *retval)
-+{
-+#if IS_ENABLED(CONFIG_ACPI_WMI)
-+	u32 args = bank | (reg << 8) | (val << 16);
-+	struct acpi_buffer input = { (acpi_size) sizeof(args), &args };
-+	struct acpi_buffer output = { ACPI_ALLOCATE_BUFFER, NULL };
-+	acpi_status status;
-+	union acpi_object *obj;
-+	u32 tmp = ASUSWMI_UNSUPPORTED_METHOD;
+ config HID_GYRATION
+ 	tristate "Gyration remote control"
+ 	depends on HID
+diff --git a/drivers/hid/Makefile b/drivers/hid/Makefile
+index 1ea1a7c0b20f..c89a25b9c4b9 100644
+--- a/drivers/hid/Makefile
++++ b/drivers/hid/Makefile
+@@ -126,6 +126,7 @@ hid-uclogic-objs		:= hid-uclogic-core.o \
+ obj-$(CONFIG_HID_UCLOGIC)	+= hid-uclogic.o
+ obj-$(CONFIG_HID_UDRAW_PS3)	+= hid-udraw-ps3.o
+ obj-$(CONFIG_HID_LED)		+= hid-led.o
++obj-$(CONFIG_HID_XIAOMI)	+= hid-xiaomi.o
+ obj-$(CONFIG_HID_XINMO)		+= hid-xinmo.o
+ obj-$(CONFIG_HID_ZEROPLUS)	+= hid-zpff.o
+ obj-$(CONFIG_HID_ZYDACRON)	+= hid-zydacron.o
+diff --git a/drivers/hid/hid-xiaomi.c b/drivers/hid/hid-xiaomi.c
+new file mode 100644
+index 000000000000..56e8edd3d62f
+--- /dev/null
++++ b/drivers/hid/hid-xiaomi.c
+@@ -0,0 +1,103 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * HID driver for Xiaomi Mi Dual Mode Wireless Mouse Silent Edition
++ *
++ * Copyright (c) 2021 Ilya Skriblovsky
++ */
 +
-+	status = wmi_evaluate_method(ASUSWMI_MONITORING_GUID, 0,
-+				     method_id, &input, &output);
++/*
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License as published by the Free
++ * Software Foundation; either version 2 of the License, or (at your option)
++ * any later version.
++ */
 +
-+	if (ACPI_FAILURE(status))
-+		return -EIO;
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include <linux/hid.h>
 +
-+	obj = output.pointer;
-+	if (obj && obj->type == ACPI_TYPE_INTEGER)
-+		tmp = obj->integer.value;
++#define USB_VENDOR_ID_XIAOMI    0x2717
++#define USB_DEVICE_ID_MI_SILENT_MOUSE   0x5014
 +
-+	if (retval)
-+		*retval = tmp;
-+
-+	kfree(obj);
-+
-+	if (tmp == ASUSWMI_UNSUPPORTED_METHOD)
-+		return -ENODEV;
-+	return 0;
-+#else
-+	return -EOPNOTSUPP;
-+#endif
-+}
-+
-+static inline int nct6775_asuswmi_write(u8 bank, u8 reg, u8 val)
-+{
-+	return asuswmi_evaluate_method(ASUSWMI_METHODID_WHWM, bank,
-+							      reg, val, NULL);
-+}
-+
-+static inline int nct6775_asuswmi_read(u8 bank, u8 reg, u8 *val)
-+{
-+	u32 tmp = 0;
-+	int ret = asuswmi_evaluate_method(ASUSWMI_METHODID_RHWM, bank,
-+				     reg, 0, &tmp);
-+	*val = tmp;
-+	return ret;
-+}
-+
-+static int superio_wmi_inb(struct nct6775_sio_data *sio_data, int reg)
-+{
-+	int tmp;
-+
-+	asuswmi_evaluate_method(ASUSWMI_METHODID_RSIO, sio_data->ld,
-+				reg, 0, &tmp);
-+	return tmp;
-+}
-+
-+static void superio_wmi_outb(struct nct6775_sio_data *sio_data, int reg, int val)
-+{
-+	asuswmi_evaluate_method(ASUSWMI_METHODID_WSIO, sio_data->ld,
-+				reg, val, NULL);
-+}
-+
-+static void superio_wmi_select(struct nct6775_sio_data *sio_data, int ld)
-+{
-+	sio_data->ld = ld;
-+}
-+
-+static int superio_wmi_enter(struct nct6775_sio_data *sio_data)
-+{
-+	return 0;
-+}
-+
-+static void superio_wmi_exit(struct nct6775_sio_data *sio_data)
-+{
-+}
-+
- static void superio_outb(struct nct6775_sio_data *sio_data, int reg, int val)
- {
- 	int ioreg = sio_data->sioreg;
-@@ -207,6 +295,7 @@ static void superio_exit(struct nct6775_sio_data *sio_data)
- 
- #define NCT6775_REG_BANK	0x4E
- #define NCT6775_REG_CONFIG	0x40
-+#define NCT6775_PORT_CHIPID	0x58
- 
- /*
-  * Not currently used:
-@@ -1423,6 +1512,45 @@ static bool is_word_sized(struct nct6775_data *data, u16 reg)
- 	return false;
- }
- 
-+static inline void nct6775_wmi_set_bank(struct nct6775_data *data, u16 reg)
-+{
-+	u8 bank = reg >> 8;
-+
-+	data->bank = bank;
-+}
-+
-+static u16 nct6775_wmi_read_value(struct nct6775_data *data, u16 reg)
-+{
-+	int res, word_sized = is_word_sized(data, reg);
-+	u8 tmp;
-+
-+	nct6775_wmi_set_bank(data, reg);
-+
-+	nct6775_asuswmi_read(data->bank, reg, &tmp);
-+	res = tmp;
-+	if (word_sized) {
-+		nct6775_asuswmi_read(data->bank, (reg & 0xff) + 1, &tmp);
-+		res = (res << 8) + tmp;
-+	}
-+	return res;
-+}
-+
-+static int nct6775_wmi_write_value(struct nct6775_data *data, u16 reg, u16 value)
-+{
-+	int word_sized = is_word_sized(data, reg);
-+
-+	nct6775_wmi_set_bank(data, reg);
-+
-+	if (word_sized) {
-+		nct6775_asuswmi_write(data->bank, reg & 0xff, value >> 8);
-+		nct6775_asuswmi_write(data->bank, (reg & 0xff) + 1, value);
-+	} else {
-+		nct6775_asuswmi_write(data->bank, reg & 0xff, value);
-+	}
-+
-+	return 0;
-+}
-+
- /*
-  * On older chips, only registers 0x50-0x5f are banked.
-  * On more recent chips, all registers are banked.
-@@ -3818,10 +3946,12 @@ static int nct6775_probe(struct platform_device *pdev)
- 	struct device *hwmon_dev;
- 	int num_attr_groups = 0;
- 
--	res = platform_get_resource(pdev, IORESOURCE_IO, 0);
--	if (!devm_request_region(&pdev->dev, res->start, IOREGION_LENGTH,
--				 DRVNAME))
--		return -EBUSY;
-+	if (sio_data->access == access_direct) {
-+		res = platform_get_resource(pdev, IORESOURCE_IO, 0);
-+		if (!devm_request_region(&pdev->dev, res->start, IOREGION_LENGTH,
-+					 DRVNAME))
-+			return -EBUSY;
-+	}
- 
- 	data = devm_kzalloc(&pdev->dev, sizeof(struct nct6775_data),
- 			    GFP_KERNEL);
-@@ -3830,9 +3960,16 @@ static int nct6775_probe(struct platform_device *pdev)
- 
- 	data->kind = sio_data->kind;
- 	data->sioreg = sio_data->sioreg;
--	data->addr = res->start;
--	data->read_value = nct6775_read_value;
--	data->write_value = nct6775_write_value;
-+
-+	if (sio_data->access == access_direct) {
-+		data->addr = res->start;
-+		data->read_value = nct6775_read_value;
-+		data->write_value = nct6775_write_value;
-+	} else {
-+		data->read_value = nct6775_wmi_read_value;
-+		data->write_value = nct6775_wmi_write_value;
-+	}
-+
- 	mutex_init(&data->update_lock);
- 	data->name = nct6775_device_names[data->kind];
- 	data->bank = 0xff;		/* Force initial bank selection */
-@@ -4743,6 +4880,7 @@ static int __init nct6775_find(int sioaddr, struct nct6775_sio_data *sio_data)
- 	int err;
- 	int addr;
- 
-+	sio_data->access = access_direct;
- 	sio_data->sioreg = sioaddr;
- 
- 	err = sio_data->sio_enter(sio_data);
-@@ -4837,6 +4975,23 @@ static int __init nct6775_find(int sioaddr, struct nct6775_sio_data *sio_data)
-  */
- static struct platform_device *pdev[2];
- 
-+static const char * const asus_wmi_boards[] = {
-+	"PRIME B460-PLUS",
-+	"ROG CROSSHAIR VIII DARK HERO",
-+	"ROG CROSSHAIR VIII HERO",
-+	"ROG CROSSHAIR VIII IMPACT",
-+	"ROG STRIX B550-E GAMING",
-+	"ROG STRIX B550-F GAMING",
-+	"ROG STRIX B550-F GAMING (WI-FI)",
-+	"ROG STRIX Z490-I GAMING",
-+	"TUF GAMING B550M-PLUS",
-+	"TUF GAMING B550M-PLUS (WI-FI)",
-+	"TUF GAMING B550-PLUS",
-+	"TUF GAMING X570-PLUS",
-+	"TUF GAMING X570-PLUS (WI-FI)",
-+	"TUF GAMING X570-PRO (WI-FI)",
++/* Fixed Mi Silent Mouse report descriptor */
++/* Button's Usage Maximum changed from 3 to 5 to make side buttons work */
++#define MI_SILENT_MOUSE_ORIG_RDESC_LENGTH   87
++static __u8 mi_silent_mouse_rdesc_fixed[] = {
++	0x05, 0x01,         /*  Usage Page (Desktop),               */
++	0x09, 0x02,         /*  Usage (Mouse),                      */
++	0xA1, 0x01,         /*  Collection (Application),           */
++	0x85, 0x03,         /*      Report ID (3),                  */
++	0x09, 0x01,         /*      Usage (Pointer),                */
++	0xA1, 0x00,         /*      Collection (Physical),          */
++	0x05, 0x09,         /*          Usage Page (Button),        */
++	0x19, 0x01,         /*          Usage Minimum (01h),        */
++	0x29, 0x05, /* X */ /*          Usage Maximum (05h),        */
++	0x15, 0x00,         /*          Logical Minimum (0),        */
++	0x25, 0x01,         /*          Logical Maximum (1),        */
++	0x75, 0x01,         /*          Report Size (1),            */
++	0x95, 0x05,         /*          Report Count (5),           */
++	0x81, 0x02,         /*          Input (Variable),           */
++	0x75, 0x03,         /*          Report Size (3),            */
++	0x95, 0x01,         /*          Report Count (1),           */
++	0x81, 0x01,         /*          Input (Constant),           */
++	0x05, 0x01,         /*          Usage Page (Desktop),       */
++	0x09, 0x30,         /*          Usage (X),                  */
++	0x09, 0x31,         /*          Usage (Y),                  */
++	0x15, 0x81,         /*          Logical Minimum (-127),     */
++	0x25, 0x7F,         /*          Logical Maximum (127),      */
++	0x75, 0x08,         /*          Report Size (8),            */
++	0x95, 0x02,         /*          Report Count (2),           */
++	0x81, 0x06,         /*          Input (Variable, Relative), */
++	0x09, 0x38,         /*          Usage (Wheel),              */
++	0x15, 0x81,         /*          Logical Minimum (-127),     */
++	0x25, 0x7F,         /*          Logical Maximum (127),      */
++	0x75, 0x08,         /*          Report Size (8),            */
++	0x95, 0x01,         /*          Report Count (1),           */
++	0x81, 0x06,         /*          Input (Variable, Relative), */
++	0xC0,               /*      End Collection,                 */
++	0xC0,               /*  End Collection,                     */
++	0x06, 0x01, 0xFF,   /*  Usage Page (FF01h),                 */
++	0x09, 0x01,         /*  Usage (01h),                        */
++	0xA1, 0x01,         /*  Collection (Application),           */
++	0x85, 0x05,         /*      Report ID (5),                  */
++	0x09, 0x05,         /*      Usage (05h),                    */
++	0x15, 0x00,         /*      Logical Minimum (0),            */
++	0x26, 0xFF, 0x00,   /*      Logical Maximum (255),          */
++	0x75, 0x08,         /*      Report Size (8),                */
++	0x95, 0x04,         /*      Report Count (4),               */
++	0xB1, 0x02,         /*      Feature (Variable),             */
++	0xC0                /*  End Collection                      */
 +};
 +
- static int __init sensors_nct6775_init(void)
- {
- 	int i, err;
-@@ -4845,11 +5000,32 @@ static int __init sensors_nct6775_init(void)
- 	struct resource res;
- 	struct nct6775_sio_data sio_data;
- 	int sioaddr[2] = { 0x2e, 0x4e };
-+	enum sensor_access access = access_direct;
-+	const char *board_vendor, *board_name;
-+	u8 tmp;
- 
- 	err = platform_driver_register(&nct6775_driver);
- 	if (err)
- 		return err;
- 
-+	board_vendor = dmi_get_system_info(DMI_BOARD_VENDOR);
-+	board_name = dmi_get_system_info(DMI_BOARD_NAME);
-+
-+	if (board_name && board_vendor &&
-+	    !strcmp(board_vendor, "ASUSTeK COMPUTER INC.")) {
-+		err = match_string(asus_wmi_boards, ARRAY_SIZE(asus_wmi_boards),
-+				   board_name);
-+		if (err >= 0) {
-+			/* if reading chip id via WMI succeeds, use WMI */
-+			if (!nct6775_asuswmi_read(0, NCT6775_PORT_CHIPID, &tmp)) {
-+				pr_info("Using Asus WMI to access %#x chip.\n", tmp);
-+				access = access_asuswmi;
-+			} else {
-+				pr_err("Can't read ChipID by Asus WMI.\n");
-+			}
++static __u8 *xiaomi_report_fixup(struct hid_device *hdev, __u8 *rdesc,
++				 unsigned int *rsize)
++{
++	switch (hdev->product) {
++	case USB_DEVICE_ID_MI_SILENT_MOUSE:
++		if (*rsize == MI_SILENT_MOUSE_ORIG_RDESC_LENGTH) {
++			hid_info(hdev, "fixing up Mi Silent Mouse report descriptor\n");
++			rdesc = mi_silent_mouse_rdesc_fixed;
++			*rsize = sizeof(mi_silent_mouse_rdesc_fixed);
 +		}
++		break;
 +	}
++	return rdesc;
++}
 +
- 	/*
- 	 * initialize sio_data->kind and sio_data->sioreg.
- 	 *
-@@ -4870,6 +5046,16 @@ static int __init sensors_nct6775_init(void)
- 
- 		found = true;
- 
-+		sio_data.access = access;
++static const struct hid_device_id xiaomi_devices[] = {
++	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_XIAOMI, USB_DEVICE_ID_MI_SILENT_MOUSE) },
++	{ }
++};
++MODULE_DEVICE_TABLE(hid, xiaomi_devices);
 +
-+		if (access == access_asuswmi) {
-+			sio_data.sio_outb = superio_wmi_outb;
-+			sio_data.sio_inb = superio_wmi_inb;
-+			sio_data.sio_select = superio_wmi_select;
-+			sio_data.sio_enter = superio_wmi_enter;
-+			sio_data.sio_exit = superio_wmi_exit;
-+		}
++static struct hid_driver xiaomi_driver = {
++	.name = "xiaomi",
++	.id_table = xiaomi_devices,
++	.report_fixup = xiaomi_report_fixup,
++};
++module_hid_driver(xiaomi_driver);
 +
- 		pdev[i] = platform_device_alloc(DRVNAME, address);
- 		if (!pdev[i]) {
- 			err = -ENOMEM;
-@@ -4881,23 +5067,25 @@ static int __init sensors_nct6775_init(void)
- 		if (err)
- 			goto exit_device_put;
- 
--		memset(&res, 0, sizeof(res));
--		res.name = DRVNAME;
--		res.start = address + IOREGION_OFFSET;
--		res.end = address + IOREGION_OFFSET + IOREGION_LENGTH - 1;
--		res.flags = IORESOURCE_IO;
-+		if (sio_data.access == access_direct) {
-+			memset(&res, 0, sizeof(res));
-+			res.name = DRVNAME;
-+			res.start = address + IOREGION_OFFSET;
-+			res.end = address + IOREGION_OFFSET + IOREGION_LENGTH - 1;
-+			res.flags = IORESOURCE_IO;
-+
-+			err = acpi_check_resource_conflict(&res);
-+			if (err) {
-+				platform_device_put(pdev[i]);
-+				pdev[i] = NULL;
-+				continue;
-+			}
- 
--		err = acpi_check_resource_conflict(&res);
--		if (err) {
--			platform_device_put(pdev[i]);
--			pdev[i] = NULL;
--			continue;
-+			err = platform_device_add_resources(pdev[i], &res, 1);
-+			if (err)
-+				goto exit_device_put;
- 		}
- 
--		err = platform_device_add_resources(pdev[i], &res, 1);
--		if (err)
--			goto exit_device_put;
--
- 		/* platform_device_add calls probe() */
- 		err = platform_device_add(pdev[i]);
- 		if (err)
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Ilya Skriblovsky <IlyaSkriblovsky@gmail.com>");
++MODULE_DESCRIPTION("Fixing side buttons of Xiaomi Mi Silent Mouse");
 -- 
-2.33.0
+2.30.2
 
