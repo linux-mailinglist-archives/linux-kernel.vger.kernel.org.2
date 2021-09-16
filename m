@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3946640E6A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:31:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CE0740DFDE
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:15:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351996AbhIPRXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:23:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41022 "EHLO mail.kernel.org"
+        id S241330AbhIPQP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:15:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48410 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351290AbhIPRPY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:15:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8AD7B61B7F;
-        Thu, 16 Sep 2021 16:39:44 +0000 (UTC)
+        id S236019AbhIPQJN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:09:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 755416128B;
+        Thu, 16 Sep 2021 16:07:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810385;
-        bh=VMxKDaM3SrW+qUbRpV5JvN7HFM5PZKPdR0iiyeMpvyE=;
+        s=korg; t=1631808464;
+        bh=oWRUCAFDJYgHIjgHuS3unULmVDpG7sU3d4EIncw7RW8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cY2zTE+Mgq7TgYMp76x7LfnoGM+98DU8GhpXOh/mpMoAnTs4oz+0blPri2taK/PKL
-         71vqeMiZ2oQaBJhWbuDOMtxUAOWnFmqZ3H0Gi2GiLXYHbSewvpS+JsooUu/KBuM858
-         wUO+KMjt/xwDQmOmom2eTKSxlYdVRWKP5BHx8W54=
+        b=i1Z9M3/ESm9VL3M97HGSrcTgxqEjHjYaWn85AjEur444nBhllhpTv/3QQhQRAXC7z
+         gNzmI1r/arQKo3rI5Xr5BM3aZa1LGKycVSiFjMDdj3NtADucjDbfxB+TeGgeKZdBtN
+         Au7H0CkCT4rVaqUWYEFvq1wIaA02KeA5l1gDqPGA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Enrico Joedecke <joedecke@de.ibm.com>,
-        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org,
+        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 094/432] cpuidle: pseries: Fixup CEDE0 latency only for POWER10 onwards
-Date:   Thu, 16 Sep 2021 17:57:23 +0200
-Message-Id: <20210916155813.968979874@linuxfoundation.org>
+Subject: [PATCH 5.10 099/306] clk: at91: clk-generated: Limit the requested rate to our range
+Date:   Thu, 16 Sep 2021 17:57:24 +0200
+Message-Id: <20210916155757.448562794@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,91 +42,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
+From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 
-[ Upstream commit 50741b70b0cbbafbd9199f5180e66c0c53783a4a ]
+[ Upstream commit af7651e67b9d5f7e63ea23b118e3672ac662244a ]
 
-Commit d947fb4c965c ("cpuidle: pseries: Fixup exit latency for
-CEDE(0)") sets the exit latency of CEDE(0) based on the latency values
-of the Extended CEDE states advertised by the platform
+On clk_generated_determine_rate(), the requested rate could be outside
+of clk's range. Limit the rate to the clock's range to not return an
+error.
 
-On POWER9 LPARs, the firmwares advertise a very low value of 2us for
-CEDE1 exit latency on a Dedicated LPAR. The latency advertized by the
-PHYP hypervisor corresponds to the latency required to wakeup from the
-underlying hardware idle state. However the wakeup latency from the
-LPAR perspective should include
-
-1. The time taken to transition the CPU from the Hypervisor into the
-   LPAR post wakeup from platform idle state
-
-2. Time taken to send the IPI from the source CPU (waker) to the idle
-   target CPU (wakee).
-
-1. can be measured via timer idle test, where we queue a timer, say
-for 1ms, and enter the CEDE state. When the timer fires, in the timer
-handler we compute how much extra timer over the expected 1ms have we
-consumed. On a a POWER9 LPAR the numbers are
-
-CEDE latency measured using a timer (numbers in ns)
-N       Min      Median   Avg       90%ile  99%ile    Max    Stddev
-400     2601     5677     5668.74    5917    6413     9299   455.01
-
-1. and 2. combined can be determined by an IPI latency test where we
-send an IPI to an idle CPU and in the handler compute the time
-difference between when the IPI was sent and when the handler ran. We
-see the following numbers on POWER9 LPAR.
-
-CEDE latency measured using an IPI (numbers in ns)
-N       Min      Median   Avg       90%ile  99%ile    Max    Stddev
-400     711      7564     7369.43   8559    9514      9698   1200.01
-
-Suppose, we consider the 99th percentile latency value measured using
-the IPI to be the wakeup latency, the value would be 9.5us This is in
-the ballpark of the default value of 10us.
-
-Hence, use the exit latency of CEDE(0) based on the latency values
-advertized by platform only from POWER10 onwards. The values
-advertized on POWER10 platforms is more realistic and informed by the
-latency measurements. For earlier platforms stick to the default value
-of 10us. The fix was suggested by Michael Ellerman.
-
-Fixes: d947fb4c965c ("cpuidle: pseries: Fixup exit latency for CEDE(0)")
-Reported-by: Enrico Joedecke <joedecke@de.ibm.com>
-Signed-off-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/1626676399-15975-2-git-send-email-ego@linux.vnet.ibm.com
+Fixes: df70aeef6083 ("clk: at91: add generated clock driver")
+Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Link: https://lore.kernel.org/r/20210707131213.3283509-1-codrin.ciubotariu@microchip.com
+Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/cpuidle/cpuidle-pseries.c | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+ drivers/clk/at91/clk-generated.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/cpuidle/cpuidle-pseries.c b/drivers/cpuidle/cpuidle-pseries.c
-index a2b5c6f60cf0..e592280d8acf 100644
---- a/drivers/cpuidle/cpuidle-pseries.c
-+++ b/drivers/cpuidle/cpuidle-pseries.c
-@@ -419,7 +419,21 @@ static int pseries_idle_probe(void)
- 			cpuidle_state_table = shared_states;
- 			max_idle_state = ARRAY_SIZE(shared_states);
- 		} else {
--			fixup_cede0_latency();
-+			/*
-+			 * Use firmware provided latency values
-+			 * starting with POWER10 platforms. In the
-+			 * case that we are running on a POWER10
-+			 * platform but in an earlier compat mode, we
-+			 * can still use the firmware provided values.
-+			 *
-+			 * However, on platforms prior to POWER10, we
-+			 * cannot rely on the accuracy of the firmware
-+			 * provided latency values. On such platforms,
-+			 * go with the conservative default estimate
-+			 * of 10us.
-+			 */
-+			if (cpu_has_feature(CPU_FTR_ARCH_31) || pvr_version_is(PVR_POWER10))
-+				fixup_cede0_latency();
- 			cpuidle_state_table = dedicated_states;
- 			max_idle_state = NR_DEDICATED_STATES;
- 		}
+diff --git a/drivers/clk/at91/clk-generated.c b/drivers/clk/at91/clk-generated.c
+index b4fc8d71daf2..b656d25a9767 100644
+--- a/drivers/clk/at91/clk-generated.c
++++ b/drivers/clk/at91/clk-generated.c
+@@ -128,6 +128,12 @@ static int clk_generated_determine_rate(struct clk_hw *hw,
+ 	int i;
+ 	u32 div;
+ 
++	/* do not look for a rate that is outside of our range */
++	if (gck->range.max && req->rate > gck->range.max)
++		req->rate = gck->range.max;
++	if (gck->range.min && req->rate < gck->range.min)
++		req->rate = gck->range.min;
++
+ 	for (i = 0; i < clk_hw_get_num_parents(hw); i++) {
+ 		if (gck->chg_pid == i)
+ 			continue;
 -- 
 2.30.2
 
