@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 099C840E283
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:16:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D4C440E614
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:29:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244581AbhIPQjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:39:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44986 "EHLO mail.kernel.org"
+        id S1351524AbhIPRSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:18:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35940 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242296AbhIPQbr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:31:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B62F061884;
-        Thu, 16 Sep 2021 16:19:46 +0000 (UTC)
+        id S1350464AbhIPRJy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:09:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7861D61B44;
+        Thu, 16 Sep 2021 16:37:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809187;
-        bh=tMRUhg+5IP7iS3QDrQIfnJwdTixPGUXbFkAY1SQ5LYU=;
+        s=korg; t=1631810247;
+        bh=PigDoh3hyPXh6lz7HeYb2Ci/XfGGvqQFWZpJhMgen44=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QjP3ovaxDmjMRHCEc4+pJskzNmqjHQEn+jEWMR4J4vQsV1jVjfFlZ4f1EseBVScTU
-         6JJG0vC9Vlx7JCfRyKEoTSv9A9Cpflq4o3e6I84ig0cbQHOpxLnu5W3JUXt0o1t0Vh
-         AIqQPgWVSOkh/6cdb8p7iXyCypQwgLALi0yZ+ABM=
+        b=zdTWgH8bPF4niM4pXxZyrHqX0Km0+bjKWm4mxUbwGet3oXEEUryJSf8XmOf2aL5qH
+         hXvrvo55QNbkhR2BfZZiz4Jygu1LDgQ7WKkDrjH3zn66yzOSytZpN9rlTwmRsGEADS
+         gfyuCJsxXyl6NiyBYWdxN2EfLuHNjOhT1Zs5NHY4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH 5.13 062/380] PCI: Return ~0 data on pciconfig_read() CAP_SYS_ADMIN failure
-Date:   Thu, 16 Sep 2021 17:56:59 +0200
-Message-Id: <20210916155806.102726781@linuxfoundation.org>
+        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Subject: [PATCH 5.14 071/432] PCI: aardvark: Fix masking and unmasking legacy INTx interrupts
+Date:   Thu, 16 Sep 2021 17:57:00 +0200
+Message-Id: <20210916155813.193730834@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,53 +40,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Wilczyński <kw@linux.com>
+From: Pali Rohár <pali@kernel.org>
 
-commit a8bd29bd49c4156ea0ec5a97812333e2aeef44e7 upstream.
+commit d212dcee27c1f89517181047e5485fcbba4a25c2 upstream.
 
-The pciconfig_read() syscall reads PCI configuration space using
-hardware-dependent config accessors.
+irq_mask and irq_unmask callbacks need to be properly guarded by raw spin
+locks as masking/unmasking procedure needs atomic read-modify-write
+operation on hardware register.
 
-If the read fails on PCI, most accessors don't return an error; they
-pretend the read was successful and got ~0 data from the device, so the
-syscall returns success with ~0 data in the buffer.
-
-When the accessor does return an error, pciconfig_read() normally fills the
-user's buffer with ~0 and returns an error in errno.  But after
-e4585da22ad0 ("pci syscall.c: Switch to refcounting API"), we don't fill
-the buffer with ~0 for the EPERM "user lacks CAP_SYS_ADMIN" error.
-
-Userspace may rely on the ~0 data to detect errors, but after e4585da22ad0,
-that would not detect CAP_SYS_ADMIN errors.
-
-Restore the original behaviour of filling the buffer with ~0 when the
-CAP_SYS_ADMIN check fails.
-
-[bhelgaas: commit log, fold in Nathan's fix
-https://lore.kernel.org/r/20210803200836.500658-1-nathan@kernel.org]
-Fixes: e4585da22ad0 ("pci syscall.c: Switch to refcounting API")
-Link: https://lore.kernel.org/r/20210729233755.1509616-1-kw@linux.com
-Signed-off-by: Krzysztof Wilczyński <kw@linux.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Link: https://lore.kernel.org/r/20210820155020.3000-1-pali@kernel.org
+Reported-by: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Acked-by: Marc Zyngier <maz@kernel.org>
 Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pci/syscall.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/pci/controller/pci-aardvark.c |    9 +++++++++
+ 1 file changed, 9 insertions(+)
 
---- a/drivers/pci/syscall.c
-+++ b/drivers/pci/syscall.c
-@@ -22,8 +22,10 @@ SYSCALL_DEFINE5(pciconfig_read, unsigned
- 	long err;
- 	int cfg_ret;
+--- a/drivers/pci/controller/pci-aardvark.c
++++ b/drivers/pci/controller/pci-aardvark.c
+@@ -230,6 +230,7 @@ struct advk_pcie {
+ 	u8 wins_count;
+ 	struct irq_domain *irq_domain;
+ 	struct irq_chip irq_chip;
++	raw_spinlock_t irq_lock;
+ 	struct irq_domain *msi_domain;
+ 	struct irq_domain *msi_inner_domain;
+ 	struct irq_chip msi_bottom_irq_chip;
+@@ -1045,22 +1046,28 @@ static void advk_pcie_irq_mask(struct ir
+ {
+ 	struct advk_pcie *pcie = d->domain->host_data;
+ 	irq_hw_number_t hwirq = irqd_to_hwirq(d);
++	unsigned long flags;
+ 	u32 mask;
  
-+	err = -EPERM;
-+	dev = NULL;
- 	if (!capable(CAP_SYS_ADMIN))
--		return -EPERM;
-+		goto error;
++	raw_spin_lock_irqsave(&pcie->irq_lock, flags);
+ 	mask = advk_readl(pcie, PCIE_ISR1_MASK_REG);
+ 	mask |= PCIE_ISR1_INTX_ASSERT(hwirq);
+ 	advk_writel(pcie, mask, PCIE_ISR1_MASK_REG);
++	raw_spin_unlock_irqrestore(&pcie->irq_lock, flags);
+ }
  
- 	err = -ENODEV;
- 	dev = pci_get_domain_bus_and_slot(0, bus, dfn);
+ static void advk_pcie_irq_unmask(struct irq_data *d)
+ {
+ 	struct advk_pcie *pcie = d->domain->host_data;
+ 	irq_hw_number_t hwirq = irqd_to_hwirq(d);
++	unsigned long flags;
+ 	u32 mask;
+ 
++	raw_spin_lock_irqsave(&pcie->irq_lock, flags);
+ 	mask = advk_readl(pcie, PCIE_ISR1_MASK_REG);
+ 	mask &= ~PCIE_ISR1_INTX_ASSERT(hwirq);
+ 	advk_writel(pcie, mask, PCIE_ISR1_MASK_REG);
++	raw_spin_unlock_irqrestore(&pcie->irq_lock, flags);
+ }
+ 
+ static int advk_pcie_irq_map(struct irq_domain *h,
+@@ -1144,6 +1151,8 @@ static int advk_pcie_init_irq_domain(str
+ 	struct irq_chip *irq_chip;
+ 	int ret = 0;
+ 
++	raw_spin_lock_init(&pcie->irq_lock);
++
+ 	pcie_intc_node =  of_get_next_child(node, NULL);
+ 	if (!pcie_intc_node) {
+ 		dev_err(dev, "No PCIe Intc node found\n");
 
 
