@@ -2,77 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 125F240DCAD
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 16:28:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B127B40DCB2
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 16:29:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238146AbhIPO3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 10:29:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236200AbhIPO3O (ORCPT
+        id S238289AbhIPOay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 10:30:54 -0400
+Received: from mail-il1-f177.google.com ([209.85.166.177]:37855 "EHLO
+        mail-il1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234701AbhIPOaw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 10:29:14 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A123C061574;
-        Thu, 16 Sep 2021 07:27:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=e0kfV41WHc7RPbsfEn/+AVY29neHekRcD2dCKV7QMcM=; b=BiF8x1PthcevAOjk6Qz7pofGsD
-        w407n0EDr4M1O2zwSRUvxdJPtOL8loYME+Sk/Gfi+cibd8CgcdfOSMQyY5t7FNz/4+cqtK2DQofV9
-        45+AoJT5XCZXqp772e225znV1A8ZymeOQ7D3lBfhWzBMfP7z5z0RjC448dnX+u4DNLLDEZZGprfuj
-        u696plFmD3TMEqpuhc1VJ+L+zF/tgCecZ/zCupul6NR1hWe/tzC06pnVITv1pgFafzm4nL7zquQTf
-        GEjAraOApAHlNd0DiJ5SmTcEtb8xowPaoXPulb3/eL5MQtdTyYRPAHw44SKuXpTIidLBhQn1l3MHn
-        oloD1Eiw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mQsMB-003fkK-5I; Thu, 16 Sep 2021 14:27:19 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E41C530003A;
-        Thu, 16 Sep 2021 16:27:15 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id B46E62CEC0F72; Thu, 16 Sep 2021 16:27:15 +0200 (CEST)
-Date:   Thu, 16 Sep 2021 16:27:15 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org,
-        Juri Lelli <juri.lelli@redhat.com>
-Subject: Re: [PATCH rcu 11/14] rcu: Make rcu_normal_after_boot writable again
-Message-ID: <YUNUQ564PKq9wtTF@hirez.programming.kicks-ass.net>
-References: <20210915233305.GA3906641@paulmck-ThinkPad-P17-Gen-1>
- <20210915233343.3906738-11-paulmck@kernel.org>
- <YULyiT+RbAgHxO7u@hirez.programming.kicks-ass.net>
- <20210916135712.GB4156@paulmck-ThinkPad-P17-Gen-1>
+        Thu, 16 Sep 2021 10:30:52 -0400
+Received: by mail-il1-f177.google.com with SMTP id i13so6792114ilm.4;
+        Thu, 16 Sep 2021 07:29:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=frRlwJ/10bK38eYStAOqRcdEJX7eQoVjAi5npDQfV+M=;
+        b=m3CzB870ix24SFKv5OjiXhrjPuJ+Y3WKL8FPEdusmUPkSiTSq+1Dgw4HLwu8eIvqIk
+         QUEdy3vMtrgTykMWFTfpb/nuSR0DF+bO7BdiRTDjYszU19f/mlGqqjldyKKl8mpfOZCp
+         YLslTZ//c8sW6zPVl3IYvjb2/lbr5QUaz9M9x3ZfZVgi3CV0wVCF6UVSuZcm2+Vr90i2
+         HX50MdBF+IkzeJKP5Fta2FUxSopoNSOjRSfTJBV/jd80FHdEeBdFw7QCzzNZrugcDrTv
+         0+SxA9ar3YzORCwJZpYMcz7lvToQjb+RZvR8sxi8ilikJ/3Lj8e8jiOL+xWkPw3jIorh
+         te5Q==
+X-Gm-Message-State: AOAM530CNbxO/oK6KyjBwVAkRUdXVCaYvrWSVzVfaRqTrrxzs+GH5kir
+        JHAaF6GNoE0PuieblnyNxw==
+X-Google-Smtp-Source: ABdhPJwNYZd7xpVuZDfxAUPHXc9QXyAk3Crli9jNKY8hibPZMTQIDmY+hfVbpBd8eOJzBJLhoj3V+g==
+X-Received: by 2002:a05:6e02:1546:: with SMTP id j6mr4137495ilu.154.1631802571878;
+        Thu, 16 Sep 2021 07:29:31 -0700 (PDT)
+Received: from robh.at.kernel.org (96-84-70-89-static.hfc.comcastbusiness.net. [96.84.70.89])
+        by smtp.gmail.com with ESMTPSA id r7sm1826408ilm.5.2021.09.16.07.29.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Sep 2021 07:29:31 -0700 (PDT)
+Received: (nullmailer pid 1304478 invoked by uid 1000);
+        Thu, 16 Sep 2021 14:29:30 -0000
+Date:   Thu, 16 Sep 2021 09:29:30 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Chunyan Zhang <zhang.lyra@gmail.com>
+Cc:     Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, Baolin Wang <baolin.wang7@gmail.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 2/4] dt-bindings: clk: sprd: Add bindings for ums512
+ clock controller
+Message-ID: <YUNUyolr6ksEoZI3@robh.at.kernel.org>
+References: <20210916084714.311048-1-zhang.lyra@gmail.com>
+ <20210916084714.311048-3-zhang.lyra@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210916135712.GB4156@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20210916084714.311048-3-zhang.lyra@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 06:57:12AM -0700, Paul E. McKenney wrote:
-> RT systems they avoid expedited grace periods by booting with either
-> the rcupdate.rcu_normal or the rcupdate.rcu_normal_after_boot kernel
-> boot parameters.  And here is the definition for the latter:
+On Thu, Sep 16, 2021 at 04:47:12PM +0800, Chunyan Zhang wrote:
+> From: Chunyan Zhang <chunyan.zhang@unisoc.com>
 > 
-> static int rcu_normal_after_boot = IS_ENABLED(CONFIG_PREEMPT_RT);
+> Add a new bindings to describe ums512 clock compatible strings.
 > 
-> In other words, RT systems shut off expedited grace periods by default,
-> and are thus free to use nohz_full CPU or not, as they choose.  When using
-> nohz_full, they can also enable expedited grace periods by booting with
-> rcupdate.rcu_normal_after_boot=0.  Or not, sysadm's choice.
+> Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> ---
+>  .../bindings/clock/sprd,ums512-clk.yaml       | 106 ++++++++++++++++++
+>  1 file changed, 106 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/clock/sprd,ums512-clk.yaml
 > 
-> So I am not seeing a problem here.  What am I missing?
+> diff --git a/Documentation/devicetree/bindings/clock/sprd,ums512-clk.yaml b/Documentation/devicetree/bindings/clock/sprd,ums512-clk.yaml
+> new file mode 100644
+> index 000000000000..be3c37180279
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/clock/sprd,ums512-clk.yaml
+> @@ -0,0 +1,106 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +# Copyright 2019-2021 Unisoc Inc.
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/clock/sprd,ums512-clk.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: UMS512 Clock Control Unit Device Tree Bindings
+> +
+> +maintainers:
+> +  - Orson Zhai <orsonzhai@gmail.com>
+> +  - Baolin Wang <baolin.wang7@gmail.com>
+> +  - Chunyan Zhang <zhang.lyra@gmail.com>
+> +
+> +properties:
+> +  "#clock-cells":
+> +    const: 1
+> +
+> +  compatible:
+> +    enum:
+> +      - sprd,ums512-apahb-gate
+> +      - sprd,ums512-ap-clk
+> +      - sprd,ums512-aonapb-clk
+> +      - sprd,ums512-pmu-gate
+> +      - sprd,ums512-g0-pll
+> +      - sprd,ums512-g2-pll
+> +      - sprd,ums512-g3-pll
+> +      - sprd,ums512-gc-pll
+> +      - sprd,ums512-aon-gate
+> +      - sprd,ums512-audcpapb-gate
+> +      - sprd,ums512-audcpahb-gate
+> +      - sprd,ums512-gpu-clk
+> +      - sprd,ums512-mm-clk
+> +      - sprd,ums512-mm-gate-clk
+> +      - sprd,ums512-apapb-gate
+> +
+> +  clocks:
+> +    minItems: 1
+> +    maxItems: 4
+> +    description: |
+> +      The input parent clock(s) phandle for this clock, only list fixed
+> +      clocks which are declared in devicetree.
+> +
+> +  clock-names:
+> +    minItems: 1
+> +    maxItems: 4
+> +    items:
+> +      - const: ext-26m
+> +      - const: ext-32k
+> +      - const: ext-4m
+> +      - const: rco-100m
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - '#clock-cells'
+> +
+> +if:
+> +  properties:
+> +    compatible:
+> +      enum:
+> +        - sprd,ums512-ap-clk
+> +        - sprd,ums512-aonapb-clk
+> +        - sprd,ums512-mm-clk
+> +then:
+> +  required:
+> +    - reg
+> +
+> +else:
+> +  description: |
+> +    Other UMS512 clock nodes should be the child of a syscon node in
+> +    which compatible string should be:
+> +            "sprd,ums512-glbregs", "syscon", "simple-mfd"
+> +
+> +    The 'reg' property for the clock node is also required if there is a sub
+> +    range of registers for the clocks.
 
-That wasn't at all clear to me from the Changelog. I thought it was
-enabling expedited crud for RT.
+In which cases is this not true?
+
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    ap_clk: clock-controller@20200000 {
+> +      compatible = "sprd,ums512-ap-clk";
+> +      reg = <0x20200000 0x1000>;
+> +      clocks = <&ext_26m>;
+> +      clock-names = "ext-26m";
+> +      #clock-cells = <1>;
+> +    };
+> +
+> +  - |
+> +    ap_apb_regs: syscon@71000000 {
+> +      compatible = "sprd,ums512-glbregs", "syscon", "simple-mfd";
+> +      reg = <0x71000000 0x3000>;
+> +      #address-cells = <1>;
+> +      #size-cells = <1>;
+> +      ranges = <0 0x71000000 0x3000>;
+> +
+> +      apahb_gate: clock-controller@0 {
+> +        compatible = "sprd,ums512-apahb-gate";
+> +        reg = <0x0 0x2000>;
+> +        #clock-cells = <1>;
+> +      };
+
+We have this example in the MFD schema, so drop it here.
