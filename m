@@ -2,99 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0985040D4FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 10:49:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCE2440D503
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 10:50:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235327AbhIPIut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 04:50:49 -0400
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:8573 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S235295AbhIPIus (ORCPT
+        id S235339AbhIPIuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 04:50:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235376AbhIPIuy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 04:50:48 -0400
-IronPort-Data: =?us-ascii?q?A9a23=3A4RFknata6+LEC8JdMQgqKSy4i+fnVEZfMUV32f8?=
- =?us-ascii?q?akzHdYEJGY0x3zGAYWm6HPv3Za2SmL99/boy/9ktQuJGGx4c2TQBvqS9gHilAw?=
- =?us-ascii?q?SbnLY7Hdx+vZUt+DSFioHpPtpxYMp+ZRCwNZie0SiyFb/6x8BGQ6YnSHuClUL+?=
- =?us-ascii?q?dZHgoLeNZYHxJZSxLyrdRbrFA0YDR7zOl4bsekuWHULOX82cc3lE8t8pvnChSU?=
- =?us-ascii?q?MHa41v0iLCRicdj5zcyn1FNZH4WyDrYw3HQGuG4FcbiLwrPIS3Qw4/Xw/stIov?=
- =?us-ascii?q?NfrfTeUtMTKPQPBSVlzxdXK3Kbhpq/3R0i/hkcqFHLxo/ZzahxridzP1XqJW2U?=
- =?us-ascii?q?hZvMKvXhMwTThtZDzpje6ZB/dcrJFDm6JDOkRGbKyWEL/JGSRte0Zcj0up+H2B?=
- =?us-ascii?q?C3fICLzUKdBqCm6S9x7fTYvZtgsAyBMjtMpkWtnxpwXfeF/lOaZzKRePIo8BZ2?=
- =?us-ascii?q?DMxj8VVNffYe8cdLzFoaXzobx9QPVEYIJEzhuGlgj/4aTIwgEiUuacs42j7yA1?=
- =?us-ascii?q?3zairMdDQPNeNQK19mFiUp2fD12D4GQ0BctiezyeVtH6hmIfnnSj7cIYJCPu0+?=
- =?us-ascii?q?5ZCmlKUwmAMGRs+TkagrL+1hyaWX9NZNlxR9DEioLY/8GS1QdTnGR61uniJulg?=
- =?us-ascii?q?bQdU4O+k77hydj6nZ+QCUAkAaQTNbLt8rrsk7QXotzFDht9foAyF/9a2bUlqD+?=
- =?us-ascii?q?bqO6zC/Iy4YKSkFfyBsZRUE+d7Lsow1jwyJStdlDb7zicf6Xyzzqw1mBgBWa64?=
- =?us-ascii?q?71JZNjvvkuwucxW/Em3QAdSZtji2/Y45vxloRiFaZWrGV?=
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3ATIgbQa5lZdAbEfTAlwPXwPTXdLJyesId70hD?=
- =?us-ascii?q?6qkRc20wTiX8ra2TdZsguyMc9wx6ZJhNo7G90cq7MBbhHPxOkOos1N6ZNWGIhI?=
- =?us-ascii?q?LCFvAB0WKN+V3dMhy73utc+IMlSKJmFeD3ZGIQse/KpCW+DPYsqePqzJyV?=
-X-IronPort-AV: E=Sophos;i="5.85,297,1624291200"; 
-   d="scan'208";a="114564506"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 16 Sep 2021 16:49:26 +0800
-Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
-        by cn.fujitsu.com (Postfix) with ESMTP id D7E564D0DC71;
-        Thu, 16 Sep 2021 16:49:21 +0800 (CST)
-Received: from G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.85) by
- G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
- (TLS) id 15.0.1497.23; Thu, 16 Sep 2021 16:49:22 +0800
-Received: from [127.0.0.1] (10.167.225.141) by
- G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
- id 15.0.1497.23 via Frontend Transport; Thu, 16 Sep 2021 16:49:20 +0800
-Subject: Re: [PATCH v9 5/8] fsdax: Add dax_iomap_cow_copy() for dax_iomap_zero
-To:     Christoph Hellwig <hch@lst.de>
-CC:     <djwong@kernel.org>, <linux-xfs@vger.kernel.org>,
-        <dan.j.williams@intel.com>, <david@fromorbit.com>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <nvdimm@lists.linux.dev>, <rgoldwyn@suse.de>,
-        <viro@zeniv.linux.org.uk>, <willy@infradead.org>,
-        Ritesh Harjani <riteshh@linux.ibm.com>
-References: <20210915104501.4146910-1-ruansy.fnst@fujitsu.com>
- <20210915104501.4146910-6-ruansy.fnst@fujitsu.com>
- <20210916061654.GB13306@lst.de>
-From:   Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Message-ID: <9fb0c82f-b2ae-82e3-62df-f0a473ed6395@fujitsu.com>
-Date:   Thu, 16 Sep 2021 16:49:19 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Thu, 16 Sep 2021 04:50:54 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FC8EC061574;
+        Thu, 16 Sep 2021 01:49:34 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id q3so13975540edt.5;
+        Thu, 16 Sep 2021 01:49:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RghzY+Kr6ii4zy/l8PSj0jZZ3WiFqsQbVS2VgK2YnCU=;
+        b=FTZu4rVpkyKBlyUG3Km0eh5mC1e7ZgAVTEEEJny30aXc/HkndrebRRm6fmjlqK3NwV
+         UcicwZa7BSsIbVSblaliDcgdozkaA5kI9M+9ZT+ySuIH8cQG5vTCdYpslo8AIrnGbHpV
+         27+5GykYgD3vClydVi05W/VA8W0FTzo/WMAbhooeqwDpzLQQJvtACsZ1dwwcgA36Q4WV
+         bjEOWoul3ShyCtPMmquqvkTW5m9CcPSpCKHLusSSbPFHx5v/e8ZwS0820TRfiz1nqqUD
+         rh+hlXmOlSx1Yz0Sk/W85LmgjIAiArMOROobrxvu10GXuasK3EDBVfo261PlTKDsCsHc
+         1aWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RghzY+Kr6ii4zy/l8PSj0jZZ3WiFqsQbVS2VgK2YnCU=;
+        b=rBarTf4e+/v/IDBvMNbmfP2zTRLy55dzzbs3XLPm7VrxKhVCtuFBfSecoRjO/orYCi
+         zJD5W1ehx90faxw5oGzx80z8RiSPDftbKZoe/sg5w0RGukKcXIhl50lCHUavOCWXrIJG
+         8s9vw961oTxsfqGFfxTbgjrXSJcD+JHV1Kw4i6299Tb9TsRXSX9VY2lu9N0HnOKSyPYS
+         HZvaMBl4NdBvFff7VzXV9OuyFdGgdFbviiLGiiTzw2NGjcRjvC5XwH/1brKREmeoHPjS
+         BkVvQsYXwnsRUvMNPZ7xji/U9m7guUZkiCbTQNG/XsF7P0gv9HruLJnK79oT9p5QsKoU
+         M/Wg==
+X-Gm-Message-State: AOAM530qqu2S5GDP1s20ZBOHRP5D+4xbR+z8GAJx2GMTukFj01loQlFk
+        JQ+7wL6HlDctdAp3ZVy2jDk=
+X-Google-Smtp-Source: ABdhPJw5/UNz2ZEZlE7afoarYctRKgd64tJacrRlyLLIdnI9khDPj2mduIho+XxmxcFNZJAs4T5uOg==
+X-Received: by 2002:a17:906:dbf0:: with SMTP id yd16mr5047087ejb.445.1631782172680;
+        Thu, 16 Sep 2021 01:49:32 -0700 (PDT)
+Received: from localhost.localdomain (catv-176-63-0-115.catv.broadband.hu. [176.63.0.115])
+        by smtp.googlemail.com with ESMTPSA id dh16sm1085838edb.63.2021.09.16.01.49.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Sep 2021 01:49:32 -0700 (PDT)
+From:   "Saheed O. Bolarinwa" <refactormyself@gmail.com>
+To:     helgaas@kernel.org
+Cc:     "Bolarinwa O. Saheed" <refactormyself@gmail.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kw@linux.com
+Subject: [RFC PATCH 0/3 v2] PCI/ASPM: Remove struct aspm_latency
+Date:   Thu, 16 Sep 2021 10:49:23 +0200
+Message-Id: <20210916084926.32614-1-refactormyself@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20210916061654.GB13306@lst.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-yoursite-MailScanner-ID: D7E564D0DC71.A0D63
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: ruansy.fnst@fujitsu.com
-X-Spam-Status: No
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: "Bolarinwa O. Saheed" <refactormyself@gmail.com>
 
+To validate and set link latency capability, `struct aspm_latency` and
+related members defined within `struct pcie_link_state` are used.
+However, since there are not many access to theses values, it is possible
+to directly access and compute these values.
+Doing this will also reduce the dependency on `struct pcie_link_state`.
 
-On 2021/9/16 14:16, Christoph Hellwig wrote:
-> On Wed, Sep 15, 2021 at 06:44:58PM +0800, Shiyang Ruan wrote:
->> +	rc = dax_direct_access(iomap->dax_dev, pgoff, 1, &kaddr, NULL);
->> +	if (rc < 0)
->> +		goto out;
->> +	memset(kaddr + offset, 0, size);
->> +	if (srcmap->addr != IOMAP_HOLE && srcmap->addr != iomap->addr) {
-> 
-> Should we also check that ->dax_dev for iomap and srcmap are different
-> first to deal with case of file system with multiple devices?
+The series removes `struct aspm_latency` and related members within 
+`struct pcie_link_state`. All latencies are now calculated when needed.
 
-I have not thought of this case.  Isn't it possible to CoW between 
-different devices?
+Changes in this version:
+ - directly access downstream by calling `pci_function_0()` instead of
+   used the `struct pcie_link_state`
 
+Saheed O. Bolarinwa (3):
+  PCI/ASPM: Remove link latencies cached within struct pcie_link_state
+  PCI/ASPM: Remove struct pcie_link_state.acceptable
+  PCI/ASPM: Remove struct aspm_latency
 
---
-Thanks,
-Ruan
+ drivers/pci/pcie/aspm.c | 89 ++++++++++++++++++-----------------------
+ 1 file changed, 38 insertions(+), 51 deletions(-)
 
-> 
-> Otherwise looks good:
-> 
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> 
-
+-- 
+2.20.1
 
