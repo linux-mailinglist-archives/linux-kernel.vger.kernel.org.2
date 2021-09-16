@@ -2,98 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAC9040DD9E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 17:09:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 320EF40DDAF
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 17:13:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239015AbhIPPKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 11:10:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57894 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231351AbhIPPKu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 11:10:50 -0400
-Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B57B8C061574;
-        Thu, 16 Sep 2021 08:09:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
-         s=20161220; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject
-        :Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=1Qt8eZVGXXPoJliytaxomQR7Nt9R4Kd4tnZSMiZb234=; b=ITEDWgRTX8u92noycsKy8kC8zW
-        uoEBd5MsebiVz5tfHkaj0h/NVe5yN6qVj9xdeMloF3SzbGxhzvvEFvA/p5bVo0vfKR1PlvpNo/X4h
-        RnBPVRHAkEXzdUtXlDuxqrEc7gv5PyPIi+5r5tvicgbruONp0h0fX0wxEQ1BG2so6mYTerCz28jBJ
-        j3XpBj98nEHwI2xz3NJyRehLYA+hDt5qRpfTFqN/mVPzQSGlnJ8MmR4Iit18PS4s2M+zRx+la9NFY
-        gR0MMCMCSy4SXWBvbc/0oGRDhvQo26e9shKfz8hXFSN0nSbh69za6N4ugOzFhgEvMxgHu3Ij778pA
-        qbyx0F4A==;
-Received: from dsl-hkibng22-54f986-236.dhcp.inet.fi ([84.249.134.236] helo=toshino.localdomain)
-        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <mperttunen@nvidia.com>)
-        id 1mQt0v-0006by-QU; Thu, 16 Sep 2021 18:09:25 +0300
-From:   Mikko Perttunen <mperttunen@nvidia.com>
-To:     thierry.reding@gmail.com, jonathanh@nvidia.com
-Cc:     dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Mikko Perttunen <mperttunen@nvidia.com>
-Subject: [PATCH] drm/tegra: Bump VIC/NVDEC clock rates to Fmax
-Date:   Thu, 16 Sep 2021 18:09:20 +0300
-Message-Id: <20210916150920.2136180-1-mperttunen@nvidia.com>
-X-Mailer: git-send-email 2.32.0
+        id S239044AbhIPPPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 11:15:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40654 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238593AbhIPPPD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 11:15:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C9ABA60296;
+        Thu, 16 Sep 2021 15:13:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631805222;
+        bh=+lq6B1zWF0TxdP6rMUUAWORQ3vfDH10KdhrcUzKH1ls=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=S5welG3KaOYvfAHM1r8AmI87dJHTLcWvkqdE0tUnz7sr39kG6QmgCO2vsmulBZYda
+         OwhhGO39vYS0KiD/ZyNV0QbakYzcR7QbL0uaBCfLr7e/yrik/LlHETD54b3SuvIV2N
+         ccGTE7u1CxOn2EkJF1Xr8SoyH42N6miBKm8R705Ma+AzdDlRA7cLRL/1K64jLXvM35
+         Wo4jeExg5xBkGwHSdmh9dzNHt3yazFq8VRVG4xXUU/yfiQ2dv6Agkvo4xi8lf3RugJ
+         HNMT/YgqwOdFw3Dw01D7H1nRsyq43NKgOuLn8DStFsMCBpNx0BkqkkhGEKdagVbI6u
+         oNXfpYJUClOng==
+Date:   Thu, 16 Sep 2021 16:13:37 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [RFC PATCH] fs/compat_binfmt_elf: Introduce sysctl to disable
+ compat ELF loader
+Message-ID: <20210916151330.GA9000@willie-the-truck>
+References: <20210916131816.8841-1-will@kernel.org>
+ <CAK8P3a0jQXiYg9u=o2LzqNSdiqMC=4=6o_NttPk_Wx4C3Gx98A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 84.249.134.236
-X-SA-Exim-Mail-From: mperttunen@nvidia.com
-X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a0jQXiYg9u=o2LzqNSdiqMC=4=6o_NttPk_Wx4C3Gx98A@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To get full performance out of these engines, bump their clock rates
-to maximum. In the future we may want something smarter but this
-should be fine for now.
+Hi Arnd,
 
-Signed-off-by: Mikko Perttunen <mperttunen@nvidia.com>
----
- drivers/gpu/drm/tegra/nvdec.c | 6 ++++++
- drivers/gpu/drm/tegra/vic.c   | 6 ++++++
- 2 files changed, 12 insertions(+)
+On Thu, Sep 16, 2021 at 04:46:15PM +0200, Arnd Bergmann wrote:
+> On Thu, Sep 16, 2021 at 3:18 PM Will Deacon <will@kernel.org> wrote:
+> >
+> > Distributions such as Android which support a mixture of 32-bit (compat)
+> > and 64-bit (native) tasks necessarily ship with the compat ELF loader
+> > enabled in their kernels. However, as time goes by, an ever-increasing
+> > proportion of userspace consists of native applications and in some cases
+> > 32-bit capabilities are starting to be removed from the CPUs altogether.
+> >
+> > Inevitably, this means that the compat code becomes somewhat of a
+> > maintenance burden, receiving less testing coverage and exposing an
+> > additional kernel attack surface to userspace during the lengthy
+> > transitional period where some shipping devices require support for
+> > 32-bit binaries.
+> >
+> > Introduce a new sysctl 'fs.compat-binfmt-elf-enable' to allow the compat
+> > ELF loader to be disabled dynamically on devices where it is not required.
+> > On arm64, this is sufficient to prevent userspace from executing 32-bit
+> > code at all.
+> >
+> > Cc: Al Viro <viro@zeniv.linux.org.uk>
+> > Cc: Andy Lutomirski <luto@kernel.org>
+> > Cc: Arnd Bergmann <arnd@arndb.de>
+> > Cc: Catalin Marinas <catalin.marinas@arm.com>
+> > Cc: Kees Cook <keescook@chromium.org>
+> > Cc: Linus Torvalds <torvalds@linux-foundation.org>
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Signed-off-by: Will Deacon <will@kernel.org>
+> > ---
+> >  fs/compat_binfmt_elf.c | 24 +++++++++++++++++++++++-
+> >  1 file changed, 23 insertions(+), 1 deletion(-)
+> >
+> > I started off hacking this into the arch code, but then I realised it was
+> > just as easy doing it in the core for everybody to enjoy. Unfortunately,
+> > after talking to Peter, it sounds like it doesn't really help on x86
+> > where userspace can switch to 32-bit without involving the kernel at all.
+> >
+> > Thoughts?
+> 
+> I'm not sure I understand the logic behind the sysctl. Are you worried
+> about exposing attack surface on devices that don't support 32-bit
+> instructions at all but might be tricked into loading a 32-bit binary that
+> exploits a bug in the elf loader, or do you want to remove compat support
+> on some but not all devices running the same kernel?
 
-diff --git a/drivers/gpu/drm/tegra/nvdec.c b/drivers/gpu/drm/tegra/nvdec.c
-index c3b6fe7fb454..48c90e26e90a 100644
---- a/drivers/gpu/drm/tegra/nvdec.c
-+++ b/drivers/gpu/drm/tegra/nvdec.c
-@@ -374,6 +374,12 @@ static int nvdec_probe(struct platform_device *pdev)
- 		return PTR_ERR(nvdec->clk);
- 	}
- 
-+	err = clk_set_rate(nvdec->clk, ULONG_MAX);
-+	if (err < 0) {
-+		dev_err(&pdev->dev, "failed to set clock rate\n");
-+		return err;
-+	}
-+
- 	err = of_property_read_u32(dev->of_node, "nvidia,host1x-class", &host_class);
- 	if (err < 0)
- 		host_class = HOST1X_CLASS_NVDEC;
-diff --git a/drivers/gpu/drm/tegra/vic.c b/drivers/gpu/drm/tegra/vic.c
-index c02010ff2b7f..dec5e56f6780 100644
---- a/drivers/gpu/drm/tegra/vic.c
-+++ b/drivers/gpu/drm/tegra/vic.c
-@@ -441,6 +441,12 @@ static int vic_probe(struct platform_device *pdev)
- 		return PTR_ERR(vic->clk);
- 	}
- 
-+	err = clk_set_rate(vic->clk, ULONG_MAX);
-+	if (err < 0) {
-+		dev_err(&pdev->dev, "failed to set clock rate\n");
-+		return err;
-+	}
-+
- 	if (!dev->pm_domain) {
- 		vic->rst = devm_reset_control_get(dev, "vic");
- 		if (IS_ERR(vic->rst)) {
--- 
-2.32.0
+It's the latter case. With the GKI effort in Android, we want to run the
+same kernel binary across multiple devices. However, for some devices
+we may be able to determine that there is no need to support 32-bit
+applications even though the hardware may support them, and we would
+like to ensure that things like the compat syscall wrappers, compat vDSO,
+signal handling etc are not accessible to applications.
 
+> In the first case, having the kernel make the decision based on CPU
+> feature flags would be easier. In the second case, I would expect this
+> to be a per-process setting similar to prctl, capability or seccomp.
+> This would make it possible to do it for separately per container
+> and avoid ambiguity about what happens to already-running 32-bit
+> tasks.
+
+I'm not sure I follow the per-process aspect of your suggestion -- we want
+to prevent 32-bit tasks from existing at all. If it wasn't for GKI, we'd
+just disable CONFIG_COMPAT altogether, but while there is a need for 32-bit
+support on some devices then we're not able to do that.
+
+Does that make more sense now?
+
+Cheers,
+
+Will
