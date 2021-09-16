@@ -2,82 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EE0A40DD15
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 16:43:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A238A40DD1A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 16:44:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238711AbhIPOpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 10:45:00 -0400
-Received: from mail-io1-f52.google.com ([209.85.166.52]:42734 "EHLO
-        mail-io1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237526AbhIPOo7 (ORCPT
+        id S238780AbhIPOpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 10:45:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51906 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237526AbhIPOpb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 10:44:59 -0400
-Received: by mail-io1-f52.google.com with SMTP id b10so8178813ioq.9;
-        Thu, 16 Sep 2021 07:43:38 -0700 (PDT)
+        Thu, 16 Sep 2021 10:45:31 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A595C061574;
+        Thu, 16 Sep 2021 07:44:11 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id t4so4052644plo.0;
+        Thu, 16 Sep 2021 07:44:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=daOJCQ5ZGPvwc1951n97peFQn5CdNcYRqjhdeKz1vfU=;
+        b=kFhwzpK+Y6fzZ8X7nPLZDzATwjammU+fVatUdP6GQmmOa4cwb7pps1Nw0JafcdN05c
+         us+rB0fvubZS9oiEAFzEFlFf312AuI1o1bEmAQE4QmcO1zjNKu1RZh97KgxL0BNdbt63
+         0Jr+VY4PzihMoQPiBbmbSubnZSyQYJcQQgB+obVuZmtoGKsNqbBtlR5Gbo8zv710wZ9R
+         a8mRhJlIllHxWHu31340de111QSrO67EpQHGFhSYs/S/jlv0B8eWaFAGTKy4KKxxqu/i
+         pxm1iG7a99zgqWZv5DChQlteGUPk7MFUk4oD2MTOCUtVe1ZR4X5ZKY5Ua3wnolLudPA4
+         hmZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PBMbyG66JcsJeX8hysmtBlI8q6/uwacbLt8pVZtH9oY=;
-        b=3oIy7Zp5jijawIACXMMZEP4nqsk7uS79Kr5GF0/bzYSKiZRA71iIJdoyJAwVI1RAUO
-         zrdYHsbC1zn3YSBA3Pf8n2+vzSen1ts81EjpmqQRIifShhLcnJsUSxm1ZtrWXZ0ngy0z
-         j5m5C4Aek27qCa2cF4p7MPHcgmeJqJX7uukQfFXNmheJbGBIjjkVy2DFYcJiDb/fxd0n
-         UKW9dmcmlyQR25n/cfq+H1QPw6eYFN49zWRB6Kfr7RrzeUJSHGrbgFIBNj7vquS2fSJ1
-         J2I1XIlbT5w1zBtzz8+8+ViWtfcMV+ocj/ZI0Snc+pW/D0lP6e8j0vyLybELqloM2dZ4
-         qsOw==
-X-Gm-Message-State: AOAM531YGOMZdmRHwNgkU2efxlVJhU4+AkLA6D7eR2P+ByEGCh5gLnRS
-        7zd5SMN3ue9RUeR/ro4AJw==
-X-Google-Smtp-Source: ABdhPJxxammQEcKK3G2JWaR69oSUKLj81sFdPLSuBn/OtrrWh35XAzDzP/+ey1dgIMCyhEre4XQ7RA==
-X-Received: by 2002:a05:6638:3890:: with SMTP id b16mr4807745jav.65.1631803418434;
-        Thu, 16 Sep 2021 07:43:38 -0700 (PDT)
-Received: from robh.at.kernel.org (96-84-70-89-static.hfc.comcastbusiness.net. [96.84.70.89])
-        by smtp.gmail.com with ESMTPSA id q17sm2011045ilc.81.2021.09.16.07.43.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 07:43:37 -0700 (PDT)
-Received: (nullmailer pid 1327692 invoked by uid 1000);
-        Thu, 16 Sep 2021 14:43:36 -0000
-Date:   Thu, 16 Sep 2021 09:43:36 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     amirmizi6@gmail.com
-Cc:     jgg@ziepe.ca, devicetree@vger.kernel.org, oshrialkoby85@gmail.com,
-        gregkh@linuxfoundation.org, kgoldman@us.ibm.com,
-        robh+dt@kernel.org, alexander.steffen@infineon.com,
-        jarkko@kernel.org, oshri.alkoby@nuvoton.com, peterhuewe@gmx.de,
-        linux-kernel@vger.kernel.org, benoit.houyere@st.com,
-        Eyal.Cohen@nuvoton.com, gcwilson@us.ibm.com, mark.rutland@arm.com,
-        joel@jms.id.au, Dan.Morav@nuvoton.com, shmulik.hager@nuvoton.com,
-        amir.mizinski@nuvoton.com, oren.tanami@nuvoton.com,
-        tmaimon77@gmail.com, arnd@arndb.de,
-        linux-integrity@vger.kernel.org, eajames@linux.ibm.com
-Subject: Re: [PATCH v15 6/6] tpm: Add YAML schema for TPM TIS I2C options
-Message-ID: <YUNYGNktq0HgiThT@robh.at.kernel.org>
-References: <20210914151032.216122-1-amirmizi6@gmail.com>
- <20210914151032.216122-7-amirmizi6@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=daOJCQ5ZGPvwc1951n97peFQn5CdNcYRqjhdeKz1vfU=;
+        b=hQFiDPa/zWuqOizk67ZxzUc/hig4SPZafaAyO5E1dGfBxJKQOUxHbSnsVmhtgnazOz
+         0mNpptgOPSTFDgRjZwvct8aZlnijU8GfqocN8AyrQdtCUKhVAL6l/O8vAtNn++TEkfVf
+         4w6GXcLVqYDrWSn+uVokCiN9X7lv7LviqHVfELqTCnLfpMSCvHV5IN7VhnPgcKiqDKtx
+         +9mqeHPB/RCmPq34PovdkN+qnj4jqHR2h0nRgs9IVefnqtzyuDO+KEPnNIFYlVQejqMb
+         D766ZqcBfZ9WA19uYN5evwGaTisga2pH9vG64+wBDB8Kuynxb1rUtf323GT3l3hZx7Lq
+         kV7g==
+X-Gm-Message-State: AOAM531zvE2MeOfwfjXIsALjVkoGZcNhA4ZmShZeM8zTjXOtZnVJZOuZ
+        /EN93lFv7gzOPZWg2MZ0cE4=
+X-Google-Smtp-Source: ABdhPJy1NmsnM3CBTxeh4uCd/At4jyjgdaLl8A9jDJfcHgoAtY82XgoTk9uMDIbNLVKuF0mho51VHA==
+X-Received: by 2002:a17:903:248f:b029:128:d5ea:18a7 with SMTP id p15-20020a170903248fb0290128d5ea18a7mr5070119plw.83.1631803450601;
+        Thu, 16 Sep 2021 07:44:10 -0700 (PDT)
+Received: from ?IPv6:2404:f801:0:5:8000::50b? ([2404:f801:9000:1a:efea::50b])
+        by smtp.gmail.com with ESMTPSA id d3sm3759819pga.7.2021.09.16.07.43.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Sep 2021 07:44:10 -0700 (PDT)
+Subject: Re: [PATCH V5 12/12] net: netvsc: Add Isolation VM support for netvsc
+ driver
+To:     Michael Kelley <mikelley@microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
+        "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
+        "jgross@suse.com" <jgross@suse.com>,
+        "sstabellini@kernel.org" <sstabellini@kernel.org>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "will@kernel.org" <will@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "arnd@arndb.de" <arnd@arndb.de>, "hch@lst.de" <hch@lst.de>,
+        "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "brijesh.singh@amd.com" <brijesh.singh@amd.com>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+        "pgonda@google.com" <pgonda@google.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+        "rppt@kernel.org" <rppt@kernel.org>,
+        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
+        "aneesh.kumar@linux.ibm.com" <aneesh.kumar@linux.ibm.com>,
+        "saravanand@fb.com" <saravanand@fb.com>,
+        "krish.sadhukhan@oracle.com" <krish.sadhukhan@oracle.com>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        "tj@kernel.org" <tj@kernel.org>,
+        "rientjes@google.com" <rientjes@google.com>
+Cc:     "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        vkuznets <vkuznets@redhat.com>,
+        "parri.andrea@gmail.com" <parri.andrea@gmail.com>,
+        "dave.hansen@intel.com" <dave.hansen@intel.com>
+References: <20210914133916.1440931-1-ltykernel@gmail.com>
+ <20210914133916.1440931-13-ltykernel@gmail.com>
+ <MWHPR21MB15939A5D74CA1DF25EE816ADD7DB9@MWHPR21MB1593.namprd21.prod.outlook.com>
+From:   Tianyu Lan <ltykernel@gmail.com>
+Message-ID: <850a0129-ef82-67e9-165f-8503da6889dd@gmail.com>
+Date:   Thu, 16 Sep 2021 22:43:56 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210914151032.216122-7-amirmizi6@gmail.com>
+In-Reply-To: <MWHPR21MB15939A5D74CA1DF25EE816ADD7DB9@MWHPR21MB1593.namprd21.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Sep 2021 18:10:32 +0300, amirmizi6@gmail.com wrote:
-> From: Amir Mizinski <amirmizi6@gmail.com>
-> 
-> Add a YAML schema to support tpm tis i2c related dt-bindings for the I2c
-> PTP based physical layer.
-> 
-> This patch adds the documentation for corresponding device tree bindings of
-> I2C based Physical TPM.
-> Refer to the 'I2C Interface Definition' section in
-> 'TCG PC Client PlatformTPMProfile(PTP) Specification' publication
-> for specification.
-> 
-> Signed-off-by: Amir Mizinski <amirmizi6@gmail.com>
-> ---
->  .../bindings/security/tpm/tpm-tis-i2c.yaml         | 52 ++++++++++++++++++++++
->  1 file changed, 52 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/security/tpm/tpm-tis-i2c.yaml
+On 9/16/2021 12:21 AM, Michael Kelley wrote:
+> I think you are proposing this approach to allocating memory for the send
+> and receive buffers so that you can avoid having two virtual mappings for
+> the memory, per comments from Christop Hellwig.  But overall, the approach
+> seems a bit complex and I wonder if it is worth it.  If allocating large contiguous
+> chunks of physical memory is successful, then there is some memory savings
+> in that the data structures needed to keep track of the physical pages is
+> smaller than the equivalent page tables might be.  But if you have to revert
+> to allocating individual pages, then the memory savings is reduced.
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Yes, this version follows idea from Christop in the previous 
+discussion.(https://lkml.org/lkml/2021/9/2/112)
+This patch shows the implementation and check whether this is a right 
+direction.
+
+> Ultimately, the list of actual PFNs has to be kept somewhere.  Another approach
+> would be to do the reverse of what hv_map_memory() from the v4 patch
+> series does.  I.e., you could do virt_to_phys() on each virtual address that
+> maps above VTOM, and subtract out the shared_gpa_boundary to get the
+> list of actual PFNs that need to be freed.
+
+virt_to_phys() doesn't work for virtual address returned by 
+vmap/vmap_pfn() (just like it doesn't work for va returned by 
+vmalloc()). The pfn above vTom doesn't have struct page backing and
+vmap_pfn() populates the pfn directly in the pte.(Please see the
+vmap_pfn_apply()). So it's not easy to convert the va to pa.
+
+>   This way you don't have two copies
+> of the list of PFNs -- one with and one without the shared_gpa_boundary added.
+> But it comes at the cost of additional code so that may not be a great idea.
+> 
+> I think what you have here works, and I don't have a clearly better solution
+> at the moment except perhaps to revert to the v4 solution and just have two
+> virtual mappings.  I'll keep thinking about it.  Maybe Christop has other
+> thoughts.
+
+
+
