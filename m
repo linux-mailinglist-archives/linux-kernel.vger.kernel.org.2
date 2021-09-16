@@ -2,66 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31C6540D1ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 05:08:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC9FC40D1FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 05:21:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234057AbhIPDJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 23:09:37 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:9737 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234059AbhIPDJ3 (ORCPT
+        id S234147AbhIPDWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 23:22:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37254 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234037AbhIPDWp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 23:09:29 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4H927D2h7ZzW2LP;
-        Thu, 16 Sep 2021 11:07:04 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Thu, 16 Sep 2021 11:08:06 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Thu, 16 Sep
- 2021 11:08:05 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>
-CC:     <gregkh@linuxfoundation.org>, <stern@rowland.harvard.edu>
-Subject: [PATCH v2] usb: host: ohci-tmio: check return value after calling platform_get_resource()
-Date:   Thu, 16 Sep 2021 11:13:17 +0800
-Message-ID: <20210916031317.2871282-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 15 Sep 2021 23:22:45 -0400
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A28BC061574;
+        Wed, 15 Sep 2021 20:21:23 -0700 (PDT)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mQhxh-004a4S-9q; Thu, 16 Sep 2021 03:21:21 +0000
+Date:   Thu, 16 Sep 2021 03:21:21 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Michael Schmitz <schmitzmic@gmail.com>
+Cc:     linux-m68k@lists.linux-m68k.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] m68k: leave stack mangling to asm wrapper of
+ sigreturn()
+Message-ID: <YUK4MWzI73lwRq0W@zeniv-ca.linux.org.uk>
+References: <YP2c1xk9LJ0zE3KW@zeniv-ca.linux.org.uk>
+ <YP2dTQPm1wGPWFgD@zeniv-ca.linux.org.uk>
+ <08183665-f846-0c5e-a8c7-d0a65e78a3da@gmail.com>
+ <YUKNn3erTbH+ytpM@zeniv-ca.linux.org.uk>
+ <48dafad1-4f0c-4ab7-792c-b34a81d26799@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <48dafad1-4f0c-4ab7-792c-b34a81d26799@gmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It will cause null-ptr-deref if platform_get_resource() returns NULL,
-we need check the return value.
+On Thu, Sep 16, 2021 at 12:53:53PM +1200, Michael Schmitz wrote:
+> > You'd need to
+> > 	* load the frame type from sigcontext (and deal with EFAULT, etc.)
+> > 	* make decision based on that
+> > 	* pass the type down into sigreturn(), so we wouldn't run into
+> > mismatches.
+> > 
+> > And all that just to avoid a single "subtract a constant from stack pointer"
+> > insn.  We are on a very shallow kernel stack here - it's a syscall entry,
+> > after all.  And the stack footprint of do_sigreturn() is fairly small - e.g.
+> > stat(2) eats a lot more.
+> 
+> Thanks, that's what I was wondering. Not worth the extra complexity then.
+> 
+> > 
+> > We are not initializing the gap either - it's just reserved on stack; we only
+> > access it if we need to enlarge the stack frame.
+> > 
+> > IOW, what would be the benefit of trying to avoid unconditional gap there?
+> 
+> Avoiding a kernel stack overflow - there are comments in the code that warn
+> against that, but those may be largely historic...
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- drivers/usb/host/ohci-tmio.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/usb/host/ohci-tmio.c b/drivers/usb/host/ohci-tmio.c
-index 08ec2ab0d95a..3f3d62dc0674 100644
---- a/drivers/usb/host/ohci-tmio.c
-+++ b/drivers/usb/host/ohci-tmio.c
-@@ -199,7 +199,7 @@ static int ohci_hcd_tmio_drv_probe(struct platform_device *dev)
- 	if (usb_disabled())
- 		return -ENODEV;
- 
--	if (!cell)
-+	if (!cell || !regs || !config || !sram)
- 		return -EINVAL;
- 
- 	if (irq < 0)
--- 
-2.25.1
-
+This is syscall entry; moreover, it critically relies upon the fixed stack
+layout - type 0 exception frame + pt_regs + switch_stack + (now) gap.
+Followed by fairly shallow C call chain.  I suspect that the deepest you
+can get there is when you get an unmapped page when reading the sigframe
+and go into page fault handling, with call chain going into some filesystem's
+->readpage().  If it was that close to stack overflow, we'd see them all
+the time in e.g. random net ioctl doing copy_from_user() - that's going
+to be deeper.  Or in stat(2), for that matter.
