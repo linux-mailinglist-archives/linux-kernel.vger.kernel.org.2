@@ -2,93 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEEDC40D107
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 02:56:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 654D440D10B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 03:02:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233569AbhIPA5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 20:57:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52572 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233393AbhIPA5c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 20:57:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C0811610D1;
-        Thu, 16 Sep 2021 00:56:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631753773;
-        bh=pgnKBG0IkPmD5mHwnJGP4MO9grHBDDzdzGVxl2qC78U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=u4MqB+Ol2Pu2+kDVyTXIumMPFx3phXhiXNm1EUAkGf7H0szTpY3eW4bWlBRbHUFkW
-         ErHNFPq6capQGoryArp9v1M7R3E6T6fKCBoKCVrpHrosYUZ7fksMHMGjpXBrO4C5/I
-         gMHis44MCQ/bG/nJd3Qldt9rVHXILfn1fxCP8fdNpupS5VPX4P20wLYzNkBZzj1P6+
-         21uX+nHtHkKhXayodDGiAa4yhBN0Y1TW5EFS35eeIhzrpvSL+D8AhkoFUHkQjZZbA1
-         Ex86rQKD7wvp4IIDeeFBKJbsvF8rOZ6GlnwPZrf+Ng0SB4TOv9y4OqcTvJ5LsLkL1B
-         Wa9IgE2aSDNyg==
-Date:   Wed, 15 Sep 2021 20:56:11 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Pavel Machek <pavel@denx.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Mattijs Korpershoek <mkorpershoek@baylibre.com>
-Subject: Re: [PATCH 5.10 157/236] Bluetooth: Move shutdown callback before
- flushing tx and rx queue
-Message-ID: <YUKWK4EflIdFxFsp@sashalap>
-References: <20210913131100.316353015@linuxfoundation.org>
- <20210913131105.720088593@linuxfoundation.org>
- <20210915111843.GA16198@duo.ucw.cz>
- <20210915143238.GA2403125@roeck-us.net>
+        id S233485AbhIPBD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 21:03:56 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:9880 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233284AbhIPBDx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 21:03:53 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4H8zGM50MFz8yZ6;
+        Thu, 16 Sep 2021 08:58:03 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Thu, 16 Sep 2021 09:02:29 +0800
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Thu, 16 Sep 2021 09:02:28 +0800
+Subject: Re: [PATCH v2 2/3] kfence: maximize allocation wait timeout duration
+To:     Marco Elver <elver@google.com>, <akpm@linux-foundation.org>
+CC:     <glider@google.com>, <dvyukov@google.com>, <jannh@google.com>,
+        <mark.rutland@arm.com>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>, <kasan-dev@googlegroups.com>,
+        <hdanton@sina.com>
+References: <20210421105132.3965998-1-elver@google.com>
+ <20210421105132.3965998-3-elver@google.com>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+Message-ID: <6c0d5f40-5067-3a59-65fa-6977b6f70219@huawei.com>
+Date:   Thu, 16 Sep 2021 09:02:27 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210915143238.GA2403125@roeck-us.net>
+In-Reply-To: <20210421105132.3965998-3-elver@google.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.174.177.243]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 07:32:38AM -0700, Guenter Roeck wrote:
->On Wed, Sep 15, 2021 at 01:18:43PM +0200, Pavel Machek wrote:
->> Hi!
->>
->> > [ Upstream commit 0ea53674d07fb6db2dd7a7ec2fdc85a12eb246c2 ]
->>
->> Upstream commit is okay...
->>
->> > So move the shutdown callback before flushing TX/RX queue to resolve the
->> > issue.
->>
->> ...but something went wrong in stable. This is not moving code, this
->> is duplicating it:
->>
->> > --- a/net/bluetooth/hci_core.c
->> > +++ b/net/bluetooth/hci_core.c
->> > @@ -1726,6 +1726,14 @@ int hci_dev_do_close(struct hci_dev *hdev)
->> >  	hci_request_cancel_all(hdev);
->> >  	hci_req_sync_lock(hdev);
->> >
->> > +	if (!hci_dev_test_flag(hdev, HCI_UNREGISTER) &&
->> > +	    !hci_dev_test_flag(hdev, HCI_USER_CHANNEL) &&
->> > +	    test_bit(HCI_UP, &hdev->flags)) {
->> > +		/* Execute vendor specific shutdown routine */
->> > +		if (hdev->shutdown)
->> > +			hdev->shutdown(hdev);
->> > +	}
->> > +
->> >  	if (!test_and_clear_bit(HCI_UP, &hdev->flags)) {
->> >  		cancel_delayed_work_sync(&hdev->cmd_timer);
->> >  		hci_req_sync_unlock(hdev);
->>
->> And yes, we end up with 2 copies in 5.10.
->>
+
+On 2021/4/21 18:51, Marco Elver wrote:
+> The allocation wait timeout was initially added because of warnings due
+> to CONFIG_DETECT_HUNG_TASK=y [1]. While the 1 sec timeout is sufficient
+> to resolve the warnings (given the hung task timeout must be 1 sec or
+> larger) it may cause unnecessary wake-ups if the system is idle.
+> [1] https://lkml.kernel.org/r/CADYN=9J0DQhizAGB0-jz4HOBBh+05kMBXb4c0cXMS7Qi5NAJiw@mail.gmail.com
 >
->Same problem in v5.4.y, unfortunately.
-
-Ugh, odd - it wasn't manually backported :/
-
-I'll drop it.
-
--- 
-Thanks,
-Sasha
+> Fix it by computing the timeout duration in terms of the current
+> sysctl_hung_task_timeout_secs value.
+>
+> Signed-off-by: Marco Elver <elver@google.com>
+> ---
+>   mm/kfence/core.c | 12 +++++++++++-
+>   1 file changed, 11 insertions(+), 1 deletion(-)
+>
+> diff --git a/mm/kfence/core.c b/mm/kfence/core.c
+> index 235d726f88bc..9742649f3f88 100644
+> --- a/mm/kfence/core.c
+> +++ b/mm/kfence/core.c
+> @@ -20,6 +20,7 @@
+>   #include <linux/moduleparam.h>
+>   #include <linux/random.h>
+>   #include <linux/rcupdate.h>
+> +#include <linux/sched/sysctl.h>
+>   #include <linux/seq_file.h>
+>   #include <linux/slab.h>
+>   #include <linux/spinlock.h>
+> @@ -621,7 +622,16 @@ static void toggle_allocation_gate(struct work_struct *work)
+>   	/* Enable static key, and await allocation to happen. */
+>   	static_branch_enable(&kfence_allocation_key);
+>   
+> -	wait_event_timeout(allocation_wait, atomic_read(&kfence_allocation_gate), HZ);
+> +	if (sysctl_hung_task_timeout_secs) {
+> +		/*
+> +		 * During low activity with no allocations we might wait a
+> +		 * while; let's avoid the hung task warning.
+> +		 */
+> +		wait_event_timeout(allocation_wait, atomic_read(&kfence_allocation_gate),
+> +				   sysctl_hung_task_timeout_secs * HZ / 2);
+> +	} else {
+> +		wait_event(allocation_wait, atomic_read(&kfence_allocation_gate));
+> +	}
+>   
+>   	/* Disable static key and reset timer. */
+>   	static_branch_disable(&kfence_allocation_key);
