@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B608F40E718
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:32:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C32D040E8C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:01:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347619AbhIPR2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:28:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51638 "EHLO mail.kernel.org"
+        id S1355405AbhIPRl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:41:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50292 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243854AbhIPQ4o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:56:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8AECC611F2;
-        Thu, 16 Sep 2021 16:31:01 +0000 (UTC)
+        id S1353612AbhIPRea (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:34:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 885D06322B;
+        Thu, 16 Sep 2021 16:48:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809862;
-        bh=YK12GWAxZTbr0JzIwxzmGeiwWHiDJ0ouZj/3THpaviI=;
+        s=korg; t=1631810922;
+        bh=ZMGrjSMZimhJuSbuiJ/hE2EWyRHaKnHeNyrA6L3KprY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u8E1SIEhJuyq9JNefUR6K58fkghcmySWPvp3QTs89UcGVEv3SEfj6W4rTt1x+AEzS
-         Ow+Z2gTcbHtpEP5PewFU+Rd/K4yWAyGWZTGLgJMD0nCXWu41pL/RFxoF9fQwNnBeYB
-         Ip0sIuPXdsQepun3E85zPaB8842WxOebYtlZvVFo=
+        b=pTcmAC/MGbvYBNEns8xmQjMRdVu5KNkwKujUJL3/K5Qz1fyXNBhmRGDhjGzB/bEAC
+         40yd4GfPv6ldQgRyB8siZdLrbhNisYtT80BEaQdy0A91BMQr/SQisWXLYT/jIA+JA5
+         QoQ08R6Df6bB2gL9r3QkC8Yhfkn1mB+YjdeaF3ck=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Hebb <tommyhebb@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
+        stable@vger.kernel.org, Brandon Wyman <bjwyman@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 309/380] mmc: rtsx_pci: Fix long reads when clock is prescaled
-Date:   Thu, 16 Sep 2021 18:01:06 +0200
-Message-Id: <20210916155814.580976320@linuxfoundation.org>
+Subject: [PATCH 5.14 318/432] hwmon: (pmbus/ibm-cffps) Fix write bits for LED control
+Date:   Thu, 16 Sep 2021 18:01:07 +0200
+Message-Id: <20210916155821.603476621@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,104 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Hebb <tommyhebb@gmail.com>
+From: Brandon Wyman <bjwyman@gmail.com>
 
-[ Upstream commit 3ac5e45291f3f0d699a721357380d4593bc2dcb3 ]
+[ Upstream commit 76b72736f574ec38b3e94603ea5f74b1853f26b0 ]
 
-For unexplained reasons, the prescaler register for this device needs to
-be cleared (set to 1) while performing a data read or else the command
-will hang. This does not appear to affect the real clock rate sent out
-on the bus, so I assume it's purely to work around a hardware bug.
+When doing a PMBus write for the LED control on the IBM Common Form
+Factor Power Supplies (ibm-cffps), the DAh command requires that bit 7
+be low and bit 6 be high in order to indicate that you are truly
+attempting to do a write.
 
-During normal operation, the prescaler is already set to 1, so nothing
-needs to be done. However, in "initial mode" (which is used for sub-MHz
-clock speeds, like the core sets while enumerating cards), it's set to
-128 and so we need to reset it during data reads. We currently fail to
-do this for long reads.
-
-This has no functional affect on the driver's operation currently
-written, as the MMC core always sets a clock above 1MHz before
-attempting any long reads. However, the core could conceivably set any
-clock speed at any time and the driver should still work, so I think
-this fix is worthwhile.
-
-I personally encountered this issue while performing data recovery on an
-external chip. My connections had poor signal integrity, so I modified
-the core code to reduce the clock speed. Without this change, I saw the
-card enumerate but was unable to actually read any data.
-
-Writes don't seem to work in the situation described above even with
-this change (and even if the workaround is extended to encompass data
-write commands). I was not able to find a way to get them working.
-
-Signed-off-by: Thomas Hebb <tommyhebb@gmail.com>
-Link: https://lore.kernel.org/r/2fef280d8409ab0100c26c6ac7050227defd098d.1627818365.git.tommyhebb@gmail.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Brandon Wyman <bjwyman@gmail.com>
+Link: https://lore.kernel.org/r/20210806225131.1808759-1-bjwyman@gmail.com
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/rtsx_pci_sdmmc.c | 36 ++++++++++++++++++++-----------
- 1 file changed, 23 insertions(+), 13 deletions(-)
+ drivers/hwmon/pmbus/ibm-cffps.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mmc/host/rtsx_pci_sdmmc.c b/drivers/mmc/host/rtsx_pci_sdmmc.c
-index 4ca937415734..58cfaffa3c2d 100644
---- a/drivers/mmc/host/rtsx_pci_sdmmc.c
-+++ b/drivers/mmc/host/rtsx_pci_sdmmc.c
-@@ -542,9 +542,22 @@ static int sd_write_long_data(struct realtek_pci_sdmmc *host,
- 	return 0;
- }
+diff --git a/drivers/hwmon/pmbus/ibm-cffps.c b/drivers/hwmon/pmbus/ibm-cffps.c
+index 5668d8305b78..df712ce4b164 100644
+--- a/drivers/hwmon/pmbus/ibm-cffps.c
++++ b/drivers/hwmon/pmbus/ibm-cffps.c
+@@ -50,9 +50,9 @@
+ #define CFFPS_MFR_VAUX_FAULT			BIT(6)
+ #define CFFPS_MFR_CURRENT_SHARE_WARNING		BIT(7)
  
-+static inline void sd_enable_initial_mode(struct realtek_pci_sdmmc *host)
-+{
-+	rtsx_pci_write_register(host->pcr, SD_CFG1,
-+			SD_CLK_DIVIDE_MASK, SD_CLK_DIVIDE_128);
-+}
-+
-+static inline void sd_disable_initial_mode(struct realtek_pci_sdmmc *host)
-+{
-+	rtsx_pci_write_register(host->pcr, SD_CFG1,
-+			SD_CLK_DIVIDE_MASK, SD_CLK_DIVIDE_0);
-+}
-+
- static int sd_rw_multi(struct realtek_pci_sdmmc *host, struct mmc_request *mrq)
- {
- 	struct mmc_data *data = mrq->data;
-+	int err;
+-#define CFFPS_LED_BLINK				BIT(0)
+-#define CFFPS_LED_ON				BIT(1)
+-#define CFFPS_LED_OFF				BIT(2)
++#define CFFPS_LED_BLINK				(BIT(0) | BIT(6))
++#define CFFPS_LED_ON				(BIT(1) | BIT(6))
++#define CFFPS_LED_OFF				(BIT(2) | BIT(6))
+ #define CFFPS_BLINK_RATE_MS			250
  
- 	if (host->sg_count < 0) {
- 		data->error = host->sg_count;
-@@ -553,22 +566,19 @@ static int sd_rw_multi(struct realtek_pci_sdmmc *host, struct mmc_request *mrq)
- 		return data->error;
- 	}
- 
--	if (data->flags & MMC_DATA_READ)
--		return sd_read_long_data(host, mrq);
-+	if (data->flags & MMC_DATA_READ) {
-+		if (host->initial_mode)
-+			sd_disable_initial_mode(host);
- 
--	return sd_write_long_data(host, mrq);
--}
-+		err = sd_read_long_data(host, mrq);
- 
--static inline void sd_enable_initial_mode(struct realtek_pci_sdmmc *host)
--{
--	rtsx_pci_write_register(host->pcr, SD_CFG1,
--			SD_CLK_DIVIDE_MASK, SD_CLK_DIVIDE_128);
--}
-+		if (host->initial_mode)
-+			sd_enable_initial_mode(host);
- 
--static inline void sd_disable_initial_mode(struct realtek_pci_sdmmc *host)
--{
--	rtsx_pci_write_register(host->pcr, SD_CFG1,
--			SD_CLK_DIVIDE_MASK, SD_CLK_DIVIDE_0);
-+		return err;
-+	}
-+
-+	return sd_write_long_data(host, mrq);
- }
- 
- static void sd_normal_rw(struct realtek_pci_sdmmc *host,
+ enum {
 -- 
 2.30.2
 
