@@ -2,97 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDA0940EB01
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 21:45:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C13240EB03
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 21:45:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234095AbhIPTqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 15:46:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230267AbhIPTqf (ORCPT
+        id S232467AbhIPTqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 15:46:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20382 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230267AbhIPTqq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 15:46:35 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7403CC061574;
-        Thu, 16 Sep 2021 12:45:14 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id c42-20020a05683034aa00b0051f4b99c40cso9821544otu.0;
-        Thu, 16 Sep 2021 12:45:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:to:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ZcmUx7XdmCPkdGO1AKL5I0Bz1i/a7ehtmDKaflW5syo=;
-        b=FxZ8LBsHGS4XO0UxnDWpTvBYx34qTRb0bDohqTQ4fuKF/u/ONUMbQWkOJ6YCgrOXSy
-         +1pFkWVySOog2jhqt3P3OMri+Jdnavo1gQcaJuHD5+k1vIPz3RW87Zir06V9DE7+f3LV
-         XYl03C0caEdUbu9u5D2Vpq+5U5J2d9QwDr8dhQyu9197Srph0iP/heUPwQ7bDsq3fkBC
-         IgrvesQlA/Lg41HvonGLGlm1Et12vhPCpnGmr8qnP+xcj3Ju2MLxtEUNP1ADwPqYcROA
-         SdmpvPT+BBYwaIhEp/upbCPeKYZ+KkqNzNUPrdpzZECrJ4bvCcshuJFh24O0V0u5Uy/f
-         Tqqw==
+        Thu, 16 Sep 2021 15:46:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631821525;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8EIXj1eTdFllKG2x0MKyDoudkx15dHgU5ERjZMzPtZk=;
+        b=De+tDiYE69H3NvgFmpiesAjHpToxiu22omXMpsO7/jcGh4AJdhW4TpjbaKYaN/EBRMvpqa
+        6W2VYgEZ1qFPCMEbMI5/edJS0M23YRfSVr5P54y/dNumGXBhvl298zYedrcNlVT3XWcNnQ
+        CkQVJNTbPzBPfoSYKQY5DqgjQQ4aP24=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-74-vtVibAsUMZCRgl6Zr6n1gw-1; Thu, 16 Sep 2021 15:45:24 -0400
+X-MC-Unique: vtVibAsUMZCRgl6Zr6n1gw-1
+Received: by mail-wm1-f71.google.com with SMTP id c187-20020a1c35c4000000b00304b489f2d8so3552516wma.6
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 12:45:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:to:references:from:subject:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZcmUx7XdmCPkdGO1AKL5I0Bz1i/a7ehtmDKaflW5syo=;
-        b=2TcqfeLiyr76pLw0PgbjfVwSczCAWvR/w3SdOkFsdWySNh/zA11xFsuFHOOp/1dTg6
-         +F5YRxXPCjdSBqlN1MXH2IQtlKnajBNUaTRVd5havGi+k1feOMoP53LDwT2ffim8Tkox
-         g45q8pPJ9Y7CeVTc/+WtENSDKj9ZqN8aVTCDcwpfYY7ut2vk58DIK54zIfveD4dwVVIv
-         78Mnbo4dl+Ujd+sQiFn8Cm7HTThiEvWzyA+k9+gzPpKlZ519wTkvAmVyZYaWljTHnZh/
-         StBnf2iSUZ7DrkTCKiQUOdxyAob/2TVnTzx7LVa20iDFP2Emj5JzDanlnE3KtUyxOmrl
-         SNqA==
-X-Gm-Message-State: AOAM533G5o6hgDUiA6YFLJuO/4qmz7f0/jPAW0e4rNXKcq2j5aLMO+mX
-        DtRgWps7OJZrz0jQEmaM9Wc=
-X-Google-Smtp-Source: ABdhPJwo6Ah9op2xylXAoj11A2Rwc8xJes3PJGxyPzCYCEL3ssafgCZQAggUTnI2kD/Q79FQ06Z5Vg==
-X-Received: by 2002:a05:6830:411d:: with SMTP id w29mr3005282ott.83.1631821513895;
-        Thu, 16 Sep 2021 12:45:13 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id v2sm888773ooh.28.2021.09.16.12.45.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Sep 2021 12:45:13 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-To:     Helge Deller <deller@gmx.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
-References: <YUNi6hTcS8nUrrpF@ls3530>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [GIT PULL] parisc architecture warning fix for kernel v5.15-rc2
-Message-ID: <b3d13e4f-c9cd-495b-5df2-1080ca4d3aa3@roeck-us.net>
-Date:   Thu, 16 Sep 2021 12:45:11 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8EIXj1eTdFllKG2x0MKyDoudkx15dHgU5ERjZMzPtZk=;
+        b=3Hcte2eqUAxJbrb/fHbFdJUXo844y08QReEsREMyTbx6/PCjZiPlxFMdyrrZaF6ClY
+         y2EvKzagmgQ7ewfvJQjuHjRh8EzBflnNrdppq+BtgEz2n6hCbJNRNsvC30u48oaUGBem
+         xzodMSHKCSP2JGdDD+YnGRynQkGKNkS4Oe6+Nk2aGzHN0oIs9DcGLo5rKNEh0BrNTsHG
+         8VHilibB/JFQklAajzIfj4Elwzs+uKgKYbXG/zZh0AOtV4MYgTGQcezZB33SevHT/oSL
+         UiF3QRvxzgcp4KzqC6AFYVhdZki6TB5tOnHrYNf0W11oESzhZxuFlJYR17f/6q+1kifq
+         +f0A==
+X-Gm-Message-State: AOAM530QfWbJyQJpoa+0+AIP3xpkKR31zwlCam4aXI1F7QbyCDQDofG4
+        cE/9KWMdSRLCE0EnZYeDsy54ATyudVf6IcMsIoCsde5fYYi172PjfQ0W+En2m5nOuPglG4OH31u
+        8CbGhMsGuPzG7cCZXJOthYM1C
+X-Received: by 2002:a05:6000:46:: with SMTP id k6mr8058623wrx.104.1631821522767;
+        Thu, 16 Sep 2021 12:45:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxnLJMUGMm7CW5qCBSs4rHGG2l/xsXrV2lGc9VELDH3HdkmfPm05RNHVGdfGH+zYIHqpHHkkg==
+X-Received: by 2002:a05:6000:46:: with SMTP id k6mr8058610wrx.104.1631821522513;
+        Thu, 16 Sep 2021 12:45:22 -0700 (PDT)
+Received: from krava ([83.240.63.48])
+        by smtp.gmail.com with ESMTPSA id g9sm9062070wmg.21.2021.09.16.12.45.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Sep 2021 12:45:22 -0700 (PDT)
+Date:   Thu, 16 Sep 2021 21:45:20 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>
+Subject: Re: [PATCH 6/8] ftrace: Add multi direct register/unregister
+ interface
+Message-ID: <YUOe0Pl8Rmu4lU4X@krava>
+References: <20210831095017.412311-1-jolsa@kernel.org>
+ <20210831095017.412311-7-jolsa@kernel.org>
+ <20210914173555.056cd20c@oasis.local.home>
 MIME-Version: 1.0
-In-Reply-To: <YUNi6hTcS8nUrrpF@ls3530>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210914173555.056cd20c@oasis.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/16/21 8:29 AM, Helge Deller wrote:
-> Hi Linus,
+On Tue, Sep 14, 2021 at 05:35:55PM -0400, Steven Rostedt wrote:
+> On Tue, 31 Aug 2021 11:50:15 +0200
+> Jiri Olsa <jolsa@redhat.com> wrote:
 > 
-> please pull one parisc architecture warning fix for kernel 5.15-rc2 from:
+> > Adding interface to register multiple direct functions
+> > within single call. Adding following functions:
+> > 
+> >   register_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
+> >   unregister_ftrace_direct_multi(struct ftrace_ops *ops)
+> > 
+> > The register_ftrace_direct_multi registers direct function (addr)
+> > with all functions in ops filter. The ops filter can be updated
+> > before with ftrace_set_filter_ip calls.
+> > 
+> > All requested functions must not have direct function currently
+> > registered, otherwise register_ftrace_direct_multi will fail.
+> > 
+> > The unregister_ftrace_direct_multi unregisters ops related direct
+> > functions.
+> > 
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  include/linux/ftrace.h |  11 ++++
+> >  kernel/trace/ftrace.c  | 111 +++++++++++++++++++++++++++++++++++++++++
+> >  2 files changed, 122 insertions(+)
+> > 
+> > diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
+> > index d399621a67ee..e40b5201c16e 100644
+> > --- a/include/linux/ftrace.h
+> > +++ b/include/linux/ftrace.h
+> > @@ -316,7 +316,10 @@ int ftrace_modify_direct_caller(struct ftrace_func_entry *entry,
+> >  				unsigned long old_addr,
+> >  				unsigned long new_addr);
+> >  unsigned long ftrace_find_rec_direct(unsigned long ip);
+> > +int register_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr);
+> > +int unregister_ftrace_direct_multi(struct ftrace_ops *ops);
+> >  #else
+> > +struct ftrace_ops;
+> >  # define ftrace_direct_func_count 0
+> >  static inline int register_ftrace_direct(unsigned long ip, unsigned long addr)
+> >  {
+> > @@ -346,6 +349,14 @@ static inline unsigned long ftrace_find_rec_direct(unsigned long ip)
+> >  {
+> >  	return 0;
+> >  }
+> > +static inline int register_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
+> > +{
+> > +	return -ENODEV;
+> > +}
+> > +static inline int unregister_ftrace_direct_multi(struct ftrace_ops *ops)
+> > +{
+> > +	return -ENODEV;
+> > +}
+> >  #endif /* CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS */
+> >  
+> >  #ifndef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
+> > diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+> > index c60217d81040..7243769493c9 100644
+> > --- a/kernel/trace/ftrace.c
+> > +++ b/kernel/trace/ftrace.c
+> > @@ -5407,6 +5407,117 @@ int modify_ftrace_direct(unsigned long ip,
+> >  	return ret;
+> >  }
+> >  EXPORT_SYMBOL_GPL(modify_ftrace_direct);
+> > +
+> > +#define MULTI_FLAGS (FTRACE_OPS_FL_IPMODIFY | FTRACE_OPS_FL_DIRECT | \
+> > +		     FTRACE_OPS_FL_SAVE_REGS)
+> > +
+> > +static int check_direct_multi(struct ftrace_ops *ops)
+> > +{
+> > +	if (!(ops->flags & FTRACE_OPS_FL_INITIALIZED))
+> > +		return -EINVAL;
+> > +	if ((ops->flags & MULTI_FLAGS) != MULTI_FLAGS)
+> > +		return -EINVAL;
+> > +	return 0;
+> > +}
+> > +
 > 
->    http://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git tags/for-5.15/parisc-4
+> Needs kernel doc comments as this is an interface outside this file.
+
+right, will add
+
 > 
-> One patch which fixes a build warning when using the PAGE0 pointer.
+> > +int register_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
+> > +{
+> > +	struct ftrace_hash *hash, *free_hash = NULL;
+> > +	struct ftrace_func_entry *entry, *new;
+> > +	int err = -EBUSY, size, i;
+> > +
+> > +	if (ops->func || ops->trampoline)
+> > +		return -EINVAL;
+> > +	if (!(ops->flags & FTRACE_OPS_FL_INITIALIZED))
+> > +		return -EINVAL;
+> > +	if (ops->flags & FTRACE_OPS_FL_ENABLED)
+> > +		return -EINVAL;
+> > +
+> > +	hash = ops->func_hash->filter_hash;
+> > +	if (ftrace_hash_empty(hash))
+> > +		return -EINVAL;
+> > +
+> > +	mutex_lock(&direct_mutex);
+> > +
+> > +	/* Make sure requested entries are not already registered.. */
+> > +	size = 1 << hash->size_bits;
+> > +	for (i = 0; i < size; i++) {
+> > +		hlist_for_each_entry(entry, &hash->buckets[i], hlist) {
+> > +			if (ftrace_find_rec_direct(entry->ip))
+> > +				goto out_unlock;
+> > +		}
+> > +	}
+> > +
+> > +	/* ... and insert them to direct_functions hash. */
+> > +	err = -ENOMEM;
+> > +	for (i = 0; i < size; i++) {
+> > +		hlist_for_each_entry(entry, &hash->buckets[i], hlist) {
+> > +			new = ftrace_add_rec_direct(entry->ip, addr, &free_hash);
+> > +			if (!new)
+> > +				goto out_remove;
+> > +			entry->direct = addr;
+> > +		}
+> > +	}
+> > +
+> > +	ops->func = call_direct_funcs;
+> > +	ops->flags = MULTI_FLAGS;
+> > +	ops->trampoline = FTRACE_REGS_ADDR;
+> > +
+> > +	err = register_ftrace_function(ops);
+> > +
+> > + out_remove:
+> > +	if (err) {
+> 
+> The below code:
+> 
+> > +		for (i = 0; i < size; i++) {
+> > +			hlist_for_each_entry(entry, &hash->buckets[i], hlist) {
+> > +				new = __ftrace_lookup_ip(direct_functions, entry->ip);
+> > +				if (new) {
+> > +					remove_hash_entry(direct_functions, new);
+> > +					kfree(new);
+> > +				}
+> > +			}
+> > +		}
+> 
+> is identical to code below.
+> 
+> > +	}
+> > +
+> > + out_unlock:
+> > +	mutex_unlock(&direct_mutex);
+> > +
+> > +	if (free_hash) {
+> > +		synchronize_rcu_tasks();
+> > +		free_ftrace_hash(free_hash);
+> > +	}
+> > +	return err;
+> > +}
+> > +EXPORT_SYMBOL_GPL(register_ftrace_direct_multi);
+> > +
+> 
+> Should have kernel doc as well.
+
+ok
+
+> 
+> > +int unregister_ftrace_direct_multi(struct ftrace_ops *ops)
+> > +{
+> > +	struct ftrace_hash *hash = ops->func_hash->filter_hash;
+> > +	struct ftrace_func_entry *entry, *new;
+> > +	int err, size, i;
+> > +
+> > +	if (check_direct_multi(ops))
+> > +		return -EINVAL;
+> > +	if (!(ops->flags & FTRACE_OPS_FL_ENABLED))
+> > +		return -EINVAL;
+> > +
+> > +	mutex_lock(&direct_mutex);
+> > +	err = unregister_ftrace_function(ops);
+> > +
+> > +	size = 1 << hash->size_bits;
+> 
+> 
+> > +	for (i = 0; i < size; i++) {
+> > +		hlist_for_each_entry(entry, &hash->buckets[i], hlist) {
+> > +			new = __ftrace_lookup_ip(direct_functions, entry->ip);
+> > +			if (new) {
+> > +				remove_hash_entry(direct_functions, new);
+> > +				kfree(new);
+> > +			}
+> > +		}
+> > +	}
+> 
+> Would probably make sense to turn this into a static inline helper.
+
+ok
+
+thanks,
+jirka
+
+> 
+> -- Steve
+> 
+> 
+> > +
+> > +	mutex_unlock(&direct_mutex);
+> > +	return err;
+> > +}
+> > +EXPORT_SYMBOL_GPL(unregister_ftrace_direct_multi);
+> >  #endif /* CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS */
+> >  
+> >  /**
 > 
 
-Grumble:
-
-Building parisc:allmodconfig ... failed
---------------
-Error log:
-In file included from drivers/net/phy/dp83640.c:23:
-drivers/net/phy/dp83640_reg.h:8: error: "PAGE0" redefined [-Werror]
-     8 | #define PAGE0                     0x0000
-
-No, I didn't see that coming either. It _was_ there before, I just didn't notice.
-
-Looks like that define isn't even used anywhere.
-I'll send a patch to remove it.
-
-Guenter
