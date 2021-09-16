@@ -2,139 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C693D40D44E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 10:11:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9499A40D455
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 10:13:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234972AbhIPIMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 04:12:47 -0400
-Received: from mga09.intel.com ([134.134.136.24]:57558 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229908AbhIPIMq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 04:12:46 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10108"; a="222551855"
-X-IronPort-AV: E=Sophos;i="5.85,297,1624345200"; 
-   d="scan'208";a="222551855"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2021 01:11:15 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,297,1624345200"; 
-   d="scan'208";a="698775843"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.151])
-  by fmsmga006.fm.intel.com with ESMTP; 16 Sep 2021 01:11:12 -0700
-Date:   Thu, 16 Sep 2021 16:11:12 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     David Rientjes <rientjes@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] mm/page_alloc: detect allocation forbidden by cpuset
- and bail out early
-Message-ID: <20210916081112.GA41645@shbuild999.sh.intel.com>
-References: <1631590828-25565-1-git-send-email-feng.tang@intel.com>
- <3bd87d8a-d09e-ac7-1d1d-25ad1b9d5ed9@google.com>
- <20210915053247.GG56674@shbuild999.sh.intel.com>
- <YUHZU4OHaJy3WtRk@dhcp22.suse.cz>
+        id S235019AbhIPIOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 04:14:38 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:44070
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229908AbhIPIOg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 04:14:36 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 098E83F045;
+        Thu, 16 Sep 2021 08:13:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1631779995;
+        bh=7G1LzZqDywSBFjqaKTOSvBQIcHl8kqxKpUEtrX69ypc=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=X7k65UOn7es9rdKT1/jeK6PyuYC7KiTZp5Bjf7fFaaalNqQpU0FS45PUPw2HwmVna
+         RiUnq2M6LdqQCRs67YO9Tp0hn63JQB1vaGqcaFKevQNSxUtDBOq/rMUOKwczhj8y8I
+         vIDcabVdgNxbR9xjPq4vhZeP6Mun5ebH8X9o6k51CTWygOPkszqkcGMAslvpJ6td5r
+         xwRHrEM5xT4rlbFdGFJgD3lloZ6ZA8hS5fEs9QpoJpFHTTesjQIV1l+rGJuZvHW8iY
+         KshXOmx6lDyu52sTgzEwtX6M+/9nnocEj5SCC7PYaAAymGICNFC/FyluIzpGC5REmj
+         nX6EhXjXxrnKw==
+From:   Colin King <colin.king@canonical.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-perf-users@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] perf vendor events: Fix spelling mistake "icach" -> "icache"
+Date:   Thu, 16 Sep 2021 09:13:14 +0100
+Message-Id: <20210916081314.41751-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YUHZU4OHaJy3WtRk@dhcp22.suse.cz>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 01:30:27PM +0200, Michal Hocko wrote:
-> On Wed 15-09-21 13:32:47, Feng Tang wrote:
-> > On Tue, Sep 14, 2021 at 05:30:03PM -0700, David Rientjes wrote:
-> [...]
-> > > I'm wondering about a single node nodemask, for example, where all 
-> > > ZONE_NORMAL memory is hot-removed.
-> 
-> While this is theoretically possible it is highly unlikely to happen.
-> Non movable memory just takes one kernel allocation to prevent any
-> hotremove operation to finish. I have to say I was not aware of the
-> hotplug callback. It all seems rather suspicious. I will have a look.
-> 
-> Anyway something worth having covered "just in case". Thanks for
-> pointing it out.
->  
-> > Thanks for the reminding! Yes, memory hot remove can change the
-> > cpuset's effective nodemask, we may need to add similar check inside
-> > cpuset_hotplug_update_tasks() which is called by cpuset_hotplug_workfn(), 
-> > something like below?
-> > 
-> > diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> > index 7fa633e..d5f6776 100644
-> > --- a/kernel/cgroup/cpuset.c
-> > +++ b/kernel/cgroup/cpuset.c
-> > @@ -3186,6 +3186,14 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
-> >  	cpus_updated = !cpumask_equal(&new_cpus, cs->effective_cpus);
-> >  	mems_updated = !nodes_equal(new_mems, cs->effective_mems);
-> >  
-> > +	if (mems_updated && !cpusets_insane_config() &&
-> > +		movable_only_nodes(new_mems)) {
-> > +		static_branch_enable(&cpusets_insane_config_key);
-> > +		pr_info("Unsupported (movable nodes only) cpuset configuration detected (nmask=%*pbl) after memory hotplug."
-> > +			"Cpuset allocations might fail even with a lot of memory available.\n",
-> > +			nodemask_pr_args(new_mems);
-> > +	}
-> 
-> Please create a helper rather than two copies of the same. Thanks!
+From: Colin Ian King <colin.king@canonical.com>
 
-Sure. Some draft add-on patch below.
+There is a spelling mistake in the description text, fix it.
 
-Thanks,
-Feng
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ tools/perf/pmu-events/arch/powerpc/power8/other.json | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 7fa633e..3bb9f4ea 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -391,6 +391,18 @@ static inline bool is_in_v2_mode(void)
- 	      (cpuset_cgrp_subsys.root->flags & CGRP_ROOT_CPUSET_V2_MODE);
- }
- 
-+static inline void check_insane_mems_config(nodemask_t *nodes)
-+{
-+	if (!cpusets_insane_config() &&
-+		movable_only_nodes(nodes)) {
-+		static_branch_enable(&cpusets_insane_config_key);
-+		pr_info("Unsupported (movable nodes only) cpuset configuration detected (nmask=%*pbl)! "
-+			"Cpuset allocations might fail even with a lot of memory available.\n",
-+			nodemask_pr_args(nodes));
-+	}
-+}
-+
- /*
-  * Return in pmask the portion of a task's cpusets's cpus_allowed that
-  * are online and are capable of running the task.  If none are found,
-@@ -1875,13 +1887,7 @@ static int update_nodemask(struct cpuset *cs, struct cpuset *trialcs,
- 	if (retval < 0)
- 		goto done;
- 
--	if (!cpusets_insane_config() &&
--		movable_only_nodes(&trialcs->mems_allowed)) {
--		static_branch_enable(&cpusets_insane_config_key);
--		pr_info("Unsupported (movable nodes only) cpuset configuration detected (nmask=%*pbl)! "
--			"Cpuset allocations might fail even with a lot of memory available.\n",
--			nodemask_pr_args(&trialcs->mems_allowed));
--	}
-+	check_insane_mems_config(&trialcs->mems_allowed);
- 
- 	spin_lock_irq(&callback_lock);
- 	cs->mems_allowed = trialcs->mems_allowed;
-@@ -3186,6 +3192,9 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
- 	cpus_updated = !cpumask_equal(&new_cpus, cs->effective_cpus);
- 	mems_updated = !nodes_equal(new_mems, cs->effective_mems);
- 
-+	if (mems_updated)
-+		check_insane_mems_config(&new_mems);
-+
- 	if (is_in_v2_mode())
- 		hotplug_update_tasks(cs, &new_cpus, &new_mems,
- 				     cpus_updated, mems_updated);
+diff --git a/tools/perf/pmu-events/arch/powerpc/power8/other.json b/tools/perf/pmu-events/arch/powerpc/power8/other.json
+index 84a0cedf1fd9..f1f2965f6775 100644
+--- a/tools/perf/pmu-events/arch/powerpc/power8/other.json
++++ b/tools/perf/pmu-events/arch/powerpc/power8/other.json
+@@ -1046,7 +1046,7 @@
+   {
+     "EventCode": "0x4e010",
+     "EventName": "PM_GCT_NOSLOT_IC_L3MISS",
+-    "BriefDescription": "Gct empty for this thread due to icach l3 miss",
++    "BriefDescription": "Gct empty for this thread due to icache l3 miss",
+     "PublicDescription": ""
+   },
+   {
+-- 
+2.32.0
 
