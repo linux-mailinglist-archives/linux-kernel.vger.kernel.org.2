@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5566940E386
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:20:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92B5540E72C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:32:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344838AbhIPQtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:49:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57530 "EHLO mail.kernel.org"
+        id S1353251AbhIPRaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:30:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44338 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343594AbhIPQmf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:42:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D28661A3F;
-        Thu, 16 Sep 2021 16:24:52 +0000 (UTC)
+        id S1352227AbhIPRUu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:20:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A006461B74;
+        Thu, 16 Sep 2021 16:42:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809493;
-        bh=wb0vY1I/LJsIEVsnaF93j3dbSb5rsRNBhEY+WdFPy2M=;
+        s=korg; t=1631810548;
+        bh=+oD3Z40EPoxc+Zp2fbcCpgeZeVQzVYMYQ5lI2GkuKSw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aTVBuSJbq/Ivksu0wIdzEk7wbAZKyhOR9Tl5sm69msX4J6vJihTzy3jNlWvrGsFsq
-         sdDxcG8DlCNdGFcoxXNWdmYAFwrfDehO4lviyDP5HqlUFn1XoiIOflXsAf87TF4spm
-         ieQYtxw7ViZI4l1tgAtu8rhh42ZIJT9upocmf7Ig=
+        b=tWhqQGi85uv7ei+HFIvyqjalaENFuzrZbxq0EARSf7fmR38O1gnNJMYIJHi7NYWnL
+         AiAcvbExvSZiXvDWmQliNRbBgQU9AmVauJTcxTEkNBd4xYoR0UBp0CQIS7YuleSpgg
+         knKdBGKoh6THDP/by5l3c6c5sGHNL/GEKiyHSjHs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
-        Evgeny Novikov <novikov@ispras.ru>,
+        stable@vger.kernel.org, Stefan Assmann <sassmann@kpanic.de>,
+        Konrad Jankowski <konrad0.jankowski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 173/380] USB: EHCI: ehci-mv: improve error handling in mv_ehci_enable()
+Subject: [PATCH 5.14 181/432] iavf: fix locking of critical sections
 Date:   Thu, 16 Sep 2021 17:58:50 +0200
-Message-Id: <20210916155809.958717492@linuxfoundation.org>
+Message-Id: <20210916155816.869611259@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,69 +41,178 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Evgeny Novikov <novikov@ispras.ru>
+From: Stefan Assmann <sassmann@kpanic.de>
 
-[ Upstream commit 61136a12cbed234374ec6f588af57c580b20b772 ]
+[ Upstream commit 226d528512cfac890a1619aea4301f3dd314fe60 ]
 
-mv_ehci_enable() did not disable and unprepare clocks in case of
-failures of phy_init(). Besides, it did not take into account failures
-of ehci_clock_enable() (in effect, failures of clk_prepare_enable()).
-The patch fixes both issues and gets rid of redundant wrappers around
-clk_prepare_enable() and clk_disable_unprepare() to simplify this a bit.
+To avoid races between iavf_init_task(), iavf_reset_task(),
+iavf_watchdog_task(), iavf_adminq_task() as well as the shutdown and
+remove functions more locking is required.
+The current protection by __IAVF_IN_CRITICAL_TASK is needed in
+additional places.
 
-Found by Linux Driver Verification project (linuxtesting.org).
+- The reset task performs state transitions, therefore needs locking.
+- The adminq task acts on replies from the PF in
+  iavf_virtchnl_completion() which may alter the states.
+- The init task is not only run during probe but also if a VF gets stuck
+  to reinitialize it.
+- The shutdown function performs a state transition.
+- The remove function performs a state transition and also free's
+  resources.
 
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
-Link: https://lore.kernel.org/r/20210708083056.21543-1-novikov@ispras.ru
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+iavf_lock_timeout() is introduced to avoid waiting infinitely
+and cause a deadlock. Rather unlock and print a warning.
+
+Signed-off-by: Stefan Assmann <sassmann@kpanic.de>
+Tested-by: Konrad Jankowski <konrad0.jankowski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/host/ehci-mv.c | 23 +++++++++++------------
- 1 file changed, 11 insertions(+), 12 deletions(-)
+ drivers/net/ethernet/intel/iavf/iavf_main.c | 57 ++++++++++++++++++---
+ 1 file changed, 50 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/usb/host/ehci-mv.c b/drivers/usb/host/ehci-mv.c
-index cffdc8d01b2a..8fd27249ad25 100644
---- a/drivers/usb/host/ehci-mv.c
-+++ b/drivers/usb/host/ehci-mv.c
-@@ -42,26 +42,25 @@ struct ehci_hcd_mv {
- 	int (*set_vbus)(unsigned int vbus);
- };
+diff --git a/drivers/net/ethernet/intel/iavf/iavf_main.c b/drivers/net/ethernet/intel/iavf/iavf_main.c
+index 0d0f16617dde..e5e6a5b11e6d 100644
+--- a/drivers/net/ethernet/intel/iavf/iavf_main.c
++++ b/drivers/net/ethernet/intel/iavf/iavf_main.c
+@@ -131,6 +131,30 @@ enum iavf_status iavf_free_virt_mem_d(struct iavf_hw *hw,
+ 	return 0;
+ }
  
--static void ehci_clock_enable(struct ehci_hcd_mv *ehci_mv)
-+static int mv_ehci_enable(struct ehci_hcd_mv *ehci_mv)
- {
--	clk_prepare_enable(ehci_mv->clk);
--}
-+	int retval;
- 
--static void ehci_clock_disable(struct ehci_hcd_mv *ehci_mv)
--{
--	clk_disable_unprepare(ehci_mv->clk);
--}
-+	retval = clk_prepare_enable(ehci_mv->clk);
-+	if (retval)
-+		return retval;
- 
--static int mv_ehci_enable(struct ehci_hcd_mv *ehci_mv)
--{
--	ehci_clock_enable(ehci_mv);
--	return phy_init(ehci_mv->phy);
-+	retval = phy_init(ehci_mv->phy);
-+	if (retval)
-+		clk_disable_unprepare(ehci_mv->clk);
++/**
++ * iavf_lock_timeout - try to set bit but give up after timeout
++ * @adapter: board private structure
++ * @bit: bit to set
++ * @msecs: timeout in msecs
++ *
++ * Returns 0 on success, negative on failure
++ **/
++static int iavf_lock_timeout(struct iavf_adapter *adapter,
++			     enum iavf_critical_section_t bit,
++			     unsigned int msecs)
++{
++	unsigned int wait, delay = 10;
 +
-+	return retval;
++	for (wait = 0; wait < msecs; wait += delay) {
++		if (!test_and_set_bit(bit, &adapter->crit_section))
++			return 0;
++
++		msleep(delay);
++	}
++
++	return -1;
++}
++
+ /**
+  * iavf_schedule_reset - Set the flags and schedule a reset event
+  * @adapter: board private structure
+@@ -2097,6 +2121,10 @@ static void iavf_reset_task(struct work_struct *work)
+ 	if (test_bit(__IAVF_IN_REMOVE_TASK, &adapter->crit_section))
+ 		return;
+ 
++	if (iavf_lock_timeout(adapter, __IAVF_IN_CRITICAL_TASK, 200)) {
++		schedule_work(&adapter->reset_task);
++		return;
++	}
+ 	while (test_and_set_bit(__IAVF_IN_CLIENT_TASK,
+ 				&adapter->crit_section))
+ 		usleep_range(500, 1000);
+@@ -2311,6 +2339,8 @@ static void iavf_adminq_task(struct work_struct *work)
+ 	if (!event.msg_buf)
+ 		goto out;
+ 
++	if (iavf_lock_timeout(adapter, __IAVF_IN_CRITICAL_TASK, 200))
++		goto freedom;
+ 	do {
+ 		ret = iavf_clean_arq_element(hw, &event, &pending);
+ 		v_op = (enum virtchnl_ops)le32_to_cpu(event.desc.cookie_high);
+@@ -2324,6 +2354,7 @@ static void iavf_adminq_task(struct work_struct *work)
+ 		if (pending != 0)
+ 			memset(event.msg_buf, 0, IAVF_MAX_AQ_BUF_SIZE);
+ 	} while (pending);
++	clear_bit(__IAVF_IN_CRITICAL_TASK, &adapter->crit_section);
+ 
+ 	if ((adapter->flags &
+ 	     (IAVF_FLAG_RESET_PENDING | IAVF_FLAG_RESET_NEEDED)) ||
+@@ -3628,6 +3659,10 @@ static void iavf_init_task(struct work_struct *work)
+ 						    init_task.work);
+ 	struct iavf_hw *hw = &adapter->hw;
+ 
++	if (iavf_lock_timeout(adapter, __IAVF_IN_CRITICAL_TASK, 5000)) {
++		dev_warn(&adapter->pdev->dev, "failed to set __IAVF_IN_CRITICAL_TASK in %s\n", __FUNCTION__);
++		return;
++	}
+ 	switch (adapter->state) {
+ 	case __IAVF_STARTUP:
+ 		if (iavf_startup(adapter) < 0)
+@@ -3640,14 +3675,14 @@ static void iavf_init_task(struct work_struct *work)
+ 	case __IAVF_INIT_GET_RESOURCES:
+ 		if (iavf_init_get_resources(adapter) < 0)
+ 			goto init_failed;
+-		return;
++		goto out;
+ 	default:
+ 		goto init_failed;
+ 	}
+ 
+ 	queue_delayed_work(iavf_wq, &adapter->init_task,
+ 			   msecs_to_jiffies(30));
+-	return;
++	goto out;
+ init_failed:
+ 	if (++adapter->aq_wait_count > IAVF_AQ_MAX_ERR) {
+ 		dev_err(&adapter->pdev->dev,
+@@ -3656,9 +3691,11 @@ static void iavf_init_task(struct work_struct *work)
+ 		iavf_shutdown_adminq(hw);
+ 		adapter->state = __IAVF_STARTUP;
+ 		queue_delayed_work(iavf_wq, &adapter->init_task, HZ * 5);
+-		return;
++		goto out;
+ 	}
+ 	queue_delayed_work(iavf_wq, &adapter->init_task, HZ);
++out:
++	clear_bit(__IAVF_IN_CRITICAL_TASK, &adapter->crit_section);
  }
  
- static void mv_ehci_disable(struct ehci_hcd_mv *ehci_mv)
- {
- 	phy_exit(ehci_mv->phy);
--	ehci_clock_disable(ehci_mv);
-+	clk_disable_unprepare(ehci_mv->clk);
- }
+ /**
+@@ -3675,9 +3712,12 @@ static void iavf_shutdown(struct pci_dev *pdev)
+ 	if (netif_running(netdev))
+ 		iavf_close(netdev);
  
- static int mv_ehci_reset(struct usb_hcd *hcd)
++	if (iavf_lock_timeout(adapter, __IAVF_IN_CRITICAL_TASK, 5000))
++		dev_warn(&adapter->pdev->dev, "failed to set __IAVF_IN_CRITICAL_TASK in %s\n", __FUNCTION__);
+ 	/* Prevent the watchdog from running. */
+ 	adapter->state = __IAVF_REMOVE;
+ 	adapter->aq_required = 0;
++	clear_bit(__IAVF_IN_CRITICAL_TASK, &adapter->crit_section);
+ 
+ #ifdef CONFIG_PM
+ 	pci_save_state(pdev);
+@@ -3911,10 +3951,6 @@ static void iavf_remove(struct pci_dev *pdev)
+ 				 err);
+ 	}
+ 
+-	/* Shut down all the garbage mashers on the detention level */
+-	adapter->state = __IAVF_REMOVE;
+-	adapter->aq_required = 0;
+-	adapter->flags &= ~IAVF_FLAG_REINIT_ITR_NEEDED;
+ 	iavf_request_reset(adapter);
+ 	msleep(50);
+ 	/* If the FW isn't responding, kick it once, but only once. */
+@@ -3922,6 +3958,13 @@ static void iavf_remove(struct pci_dev *pdev)
+ 		iavf_request_reset(adapter);
+ 		msleep(50);
+ 	}
++	if (iavf_lock_timeout(adapter, __IAVF_IN_CRITICAL_TASK, 5000))
++		dev_warn(&adapter->pdev->dev, "failed to set __IAVF_IN_CRITICAL_TASK in %s\n", __FUNCTION__);
++
++	/* Shut down all the garbage mashers on the detention level */
++	adapter->state = __IAVF_REMOVE;
++	adapter->aq_required = 0;
++	adapter->flags &= ~IAVF_FLAG_REINIT_ITR_NEEDED;
+ 	iavf_free_all_tx_resources(adapter);
+ 	iavf_free_all_rx_resources(adapter);
+ 	iavf_misc_irq_disable(adapter);
 -- 
 2.30.2
 
