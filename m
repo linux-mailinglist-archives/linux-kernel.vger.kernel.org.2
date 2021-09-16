@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1EF540E0FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:28:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 368C840E733
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:32:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240910AbhIPQ0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:26:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55356 "EHLO mail.kernel.org"
+        id S1353204AbhIPRaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:30:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236296AbhIPQSa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:18:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 916A0613AB;
-        Thu, 16 Sep 2021 16:12:46 +0000 (UTC)
+        id S1352148AbhIPRUo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:20:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DC0DC61A64;
+        Thu, 16 Sep 2021 16:42:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808767;
-        bh=2mOwxmgFZCtHQ0+2X8MGSLYTgNI7A/inLgvNKnDqod0=;
+        s=korg; t=1631810537;
+        bh=vL1tCi+P8oHoCWquG29pMGeUOGlw7/g0zHRAzDDPO2Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vZm2gJobH6O+h/IqAHpilAJNYsPJXs0lLK7Ya8+dIxFrhsWfXFTnMxJDr17zdMOzJ
-         X9MHkqjhN8mcSMtGHaorcIIZWpILY0EwtYB8Qj1TdfbarYvCa8lCBHsmUH9NGMvoiK
-         NFdw/f93JsP7Yvp49VTVxmT0hqPbJiuUBN60RqCA=
+        b=gor5w1q7TIubEmgXtRdyjj81p8emttVUmD7VZgfPcFyxYejRl2ymtIbkeEEoNjBV0
+         NCj670RQZUPVTxjJDhbcqnSLjBI06Dgs12C5u3sf4lzgQIU6W0NaOwdMxvxKluWjvw
+         shCLK9UI5jPJhZBSG2lhJcta56FSYn9sEpEbd6K4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Krzysztof=20Ha=C5=82asa?= <khalasa@piap.pl>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 182/306] media: TDA1997x: fix tda1997x_query_dv_timings() return value
+Subject: [PATCH 5.14 178/432] net: phy: Fix data type in DP83822 dp8382x_disable_wol()
 Date:   Thu, 16 Sep 2021 17:58:47 +0200
-Message-Id: <20210916155800.280958852@linuxfoundation.org>
+Message-Id: <20210916155816.773851056@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,42 +42,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Hałasa <khalasa@piap.pl>
+From: Marek Vasut <marex@denx.de>
 
-[ Upstream commit 7dee1030871a48d4f3c5a74227a4b4188463479a ]
+[ Upstream commit 0d6835ffe50c9c1f098b5704394331710b67af48 ]
 
-Correctly propagate the tda1997x_detect_std error value.
+The last argument of phy_clear_bits_mmd(..., u16 val); is u16 and not
+int, just inline the value into the function call arguments.
 
-Signed-off-by: Krzysztof Hałasa <khalasa@piap.pl>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+No functional change.
+
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Andrew Lunn <andrew@lunn.ch>
+Cc: Florian Fainelli <f.fainelli@gmail.com>
+Cc: David S. Miller <davem@davemloft.net>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/i2c/tda1997x.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/net/phy/dp83822.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/media/i2c/tda1997x.c b/drivers/media/i2c/tda1997x.c
-index 9554c8348c02..17cc69c3227f 100644
---- a/drivers/media/i2c/tda1997x.c
-+++ b/drivers/media/i2c/tda1997x.c
-@@ -1695,14 +1695,15 @@ static int tda1997x_query_dv_timings(struct v4l2_subdev *sd,
- 				     struct v4l2_dv_timings *timings)
+diff --git a/drivers/net/phy/dp83822.c b/drivers/net/phy/dp83822.c
+index f7a2ec150e54..211b5476a6f5 100644
+--- a/drivers/net/phy/dp83822.c
++++ b/drivers/net/phy/dp83822.c
+@@ -326,11 +326,9 @@ static irqreturn_t dp83822_handle_interrupt(struct phy_device *phydev)
+ 
+ static int dp8382x_disable_wol(struct phy_device *phydev)
  {
- 	struct tda1997x_state *state = to_state(sd);
-+	int ret;
- 
- 	v4l_dbg(1, debug, state->client, "%s\n", __func__);
- 	memset(timings, 0, sizeof(struct v4l2_dv_timings));
- 	mutex_lock(&state->lock);
--	tda1997x_detect_std(state, timings);
-+	ret = tda1997x_detect_std(state, timings);
- 	mutex_unlock(&state->lock);
- 
--	return 0;
-+	return ret;
+-	int value = DP83822_WOL_EN | DP83822_WOL_MAGIC_EN |
+-		    DP83822_WOL_SECURE_ON;
+-
+-	return phy_clear_bits_mmd(phydev, DP83822_DEVADDR,
+-				  MII_DP83822_WOL_CFG, value);
++	return phy_clear_bits_mmd(phydev, DP83822_DEVADDR, MII_DP83822_WOL_CFG,
++				  DP83822_WOL_EN | DP83822_WOL_MAGIC_EN |
++				  DP83822_WOL_SECURE_ON);
  }
  
- static const struct v4l2_subdev_video_ops tda1997x_video_ops = {
+ static int dp83822_read_status(struct phy_device *phydev)
 -- 
 2.30.2
 
