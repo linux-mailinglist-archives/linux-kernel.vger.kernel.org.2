@@ -2,93 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E63D640ED07
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 00:00:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D537C40ED0F
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 00:03:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240624AbhIPWBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 18:01:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38660 "EHLO
+        id S240632AbhIPWEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 18:04:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240317AbhIPWBk (ORCPT
+        with ESMTP id S231887AbhIPWEn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 18:01:40 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E2E6C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 15:00:19 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id t10so18582825lfd.8
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 15:00:19 -0700 (PDT)
+        Thu, 16 Sep 2021 18:04:43 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D422C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 15:03:22 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id g184so7563272pgc.6
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 15:03:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dYxeJw3YeroKM6/An6mAzn8eNYhfCfCV9PLV4I2gARI=;
-        b=t7YII+ZhPDFrUSuyjj/fygY3MZuzQ0NBeg5Jm+cGpkkAxKRk6mz+oZBoYdLMxrGD8f
-         bce8gYPfEo2LLAfWW/NbYCCAT4Hh951rBha3l6ooqSOwIDl/piwRyOTVTwg4bid5UXhI
-         vs6z1Js41owlA8Q3UKEtCQs9OKjHn0yySjG45s+2KYrZGVH+XRgpFJAfOk0WKu9Wiu3A
-         JwpnZnYRXL4QsBUklB2PMTUoHaYQB5XbuQZ9fWmAAW0oE+59iXGWQh3tnxPDavT+WV0h
-         0wDfoyYf/FyBquJKGvwT5lEYJKL7KtGgcgdJU/bKtEYVgORcs/UvQF3fkyKymAmuhlQu
-         oExg==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4stWjV+988moSr8o995OIf8ggHEv0wfGWBUivSMtLdE=;
+        b=P4NV3mSxnseSsUwN1r4NRyp6pr/mGZacESSUAMJ4OA+ZSrKJezFJJLBTBqIGE5zj29
+         fGLa8Iljpr3nqHZTQFQp8l5bvDwsrhpN+vnIpX//X5XzvsLhDyiRXqjCRtt+6PGG5T2A
+         2/1o6jaBirRCA+eTm6GobnrXmpuh83bdlbabE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dYxeJw3YeroKM6/An6mAzn8eNYhfCfCV9PLV4I2gARI=;
-        b=M0+B/EMlLOfsikfCo8gb/3b0nl20K9aNUvjqaDqqA+ZVY2CNZbPqitzcbm46G4etZK
-         HW+jPkaY+6mRct03KLSYJJkoHtq0ZpDw6HSG4zFSTE8GrtKzA2yHzYXyyScZ9zDktxCb
-         S8bIvEIn5eSGyZv88qtfaHw6vs75sDqlc+JsE4Kgsz1k8JkKci8gkPuBmZ00xQMH+57u
-         OxtsAKDvw27eVQfeWBQOJVUACnocBTHrkLgtyBNqHQKwp7HQVjc+ChyrVyDrQEkx6urD
-         wOTv5PTpqxz6zeV2Ji3nv0PAC7n9D4ilE/hZWeXfJe6cr1HVwduupopma4itwLsAEk+5
-         U0ag==
-X-Gm-Message-State: AOAM530ct1dkj8fP8WTi26UggTI3OsAggT2SSzd78IHwZgZ7QeycIcvL
-        fKf0nuu+AS/uyDbcT/umpeea65tv+srdRF/XjSvNyA==
-X-Google-Smtp-Source: ABdhPJzpONGnnlfySn0Wq3vjyZScc6QDgbkxwu3qxwx30S2fEwr5dHP7q6ZqOwWRWGZRMQ3XxGlvvIWmJ/n/OKlOGFc=
-X-Received: by 2002:a19:f249:: with SMTP id d9mr5716153lfk.229.1631829616694;
- Thu, 16 Sep 2021 15:00:16 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4stWjV+988moSr8o995OIf8ggHEv0wfGWBUivSMtLdE=;
+        b=uofJz+8i2Ot8LJv7iC1B0M7bGVqU6AqP9/pfwE6wm2olEc6wzI79Sf/rQXAR/u+bKr
+         dcyuZt7AIfIxjXsprtDcpt868lHvgBslwgd4gddKG8RP1I/znYtFNTgOm0vprtFnz7Vh
+         H8/dc9iY7OLBGT3joltvoQZBk+DJiPcWoyJCRuchsRswG5yEf9F7c3kx9Ju8qOqJVA+a
+         SIc7QXt5ots0SltNAlcFM+1iEm7TJOvEuaEK+IH9x0y7Uwu9cXnaiucoxpv8+1CedNVg
+         MRt1HihNCAtBSM5ThIdyE+08qrwCqLo0sOcs5J6qzlMCWGsR/hZ92rQ1zSKtMi541Qta
+         4NCg==
+X-Gm-Message-State: AOAM5339PWqkRMACXzhuDysPi2gMZosdLbIvkcptBNsGNfytbFONQF8/
+        v7TUX34u7KSyxVLl1JwXbXxZug==
+X-Google-Smtp-Source: ABdhPJzByTUQfNUTQXxfAdKQO1SbJaWR9nrJXL7Z5u9uxynbmpO0acSoreFm30VnzwHjGd5cvjNgCw==
+X-Received: by 2002:a63:5c1b:: with SMTP id q27mr6786249pgb.284.1631829801905;
+        Thu, 16 Sep 2021 15:03:21 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id z11sm4184633pff.144.2021.09.16.15.03.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Sep 2021 15:03:21 -0700 (PDT)
+Date:   Thu, 16 Sep 2021 15:03:20 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Thomas Huth <thuth@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-nfs@vger.kernel.org,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>, linux-s390@vger.kernel.org,
+        Jia He <hejianet@gmail.com>,
+        Pan Xinhui <xinhui.pan@linux.vnet.ibm.com>
+Subject: Re: [PATCH 1/2] sysctl: introduce new proc handler proc_dobool
+Message-ID: <202109161502.7B79ED57F@keescook>
+References: <20210803105937.52052-1-thuth@redhat.com>
+ <20210803105937.52052-2-thuth@redhat.com>
 MIME-Version: 1.0
-References: <20210824164801.28896-1-lakshmi.sowjanya.d@intel.com> <20210824164801.28896-16-lakshmi.sowjanya.d@intel.com>
-In-Reply-To: <20210824164801.28896-16-lakshmi.sowjanya.d@intel.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 17 Sep 2021 00:00:05 +0200
-Message-ID: <CACRpkdYZpQqYPYLaMrqQxOzvaU2DqaxWOwhfq4=2EK6hMP8oHQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 15/20] pwm: Add capability for PWM Driver managed state
-To:     "D, Lakshmi Sowjanya" <lakshmi.sowjanya.d@intel.com>,
-        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        "open list:PWM SUBSYSTEM" <linux-pwm@vger.kernel.org>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Saha, Tamal" <tamal.saha@intel.com>, bala.senthil@intel.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210803105937.52052-2-thuth@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 6:48 PM <lakshmi.sowjanya.d@intel.com> wrote:
+On Tue, Aug 03, 2021 at 12:59:36PM +0200, Thomas Huth wrote:
+> From: Jia He <hejianet@gmail.com>
+> 
+> This is to let bool variable could be correctly displayed in
+> big/little endian sysctl procfs. sizeof(bool) is arch dependent,
+> proc_dobool should work in all arches.
+> 
+> Suggested-by: Pan Xinhui <xinhui@linux.vnet.ibm.com>
+> Signed-off-by: Jia He <hejianet@gmail.com>
 
-> From: Christopher Hall <christopher.s.hall@intel.com>
->
-> Add additional flag that can be set by drivers to indicate that the
-> driver will manage its own PWM state. When calling pwm_ops.apply the
-> driver applies the requested state change to the pwm_device reconciling,
-> if possible, any conflicting requests.
->
-> Intel(R) Timed I/O devices support very limited PWM capabilities. The
-> duty cycle must always be 50% of the period. When changing one parameter
-> at a time through the sysfs interface, it isn't possible for the user or
-> the PWM subsystem to maintain this relation.
->
-> Signed-off-by: Christopher Hall <christopher.s.hall@intel.com>
-> Signed-off-by: Tamal Saha <tamal.saha@intel.com>
-> Signed-off-by: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
-> Reviewed-by: Mark Gross <mgross@linux.intel.com>
+Hi! I apologize for the delay. Yes, this looks good to me; thanks!
 
-These PWM changes clearly need to be reviewed by the PWM
-subsystem maintainers, and I think all of the output generation
-portions of this really need to go into the PWM subsystem.
+Acked-by: Kees Cook <keescook@chromium.org>
 
-Yours,
-Linus Walleij
+-- 
+Kees Cook
