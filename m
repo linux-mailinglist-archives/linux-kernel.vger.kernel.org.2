@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16A0C40E207
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:15:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A98C540E8B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242932AbhIPQdw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:33:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38076 "EHLO mail.kernel.org"
+        id S1355201AbhIPRlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:41:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50292 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241633AbhIPQZj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:25:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E149061269;
-        Thu, 16 Sep 2021 16:16:46 +0000 (UTC)
+        id S1348509AbhIPRc3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:32:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2569663211;
+        Thu, 16 Sep 2021 16:47:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809007;
-        bh=MFn2xFF6eedNKjNLfyzWj+URVZpOwNk54p1yf31t4VU=;
+        s=korg; t=1631810876;
+        bh=eH78ZO8br28WU6kJd750zNC7axdeaw4weOlZh2QrV2w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=baEm8fuSNgwVzjSy0YSCgZnuu/9dN7SGPGyte4hc9yx1svERrX1oLzYrpcApEVV6D
-         pGEx1PXDL28hK1KcxuocEvB5etcSZiLdDPmL2pJVZBDlcnhGomRtJSkYdx9KYo4BSp
-         1Mke9Ss/yUSzuInlyoXwTveuHs4hmHVDYJM8byQc=
+        b=omzQjxBKenOEVtDANtxpBRnWgzty3qYvPwn82pPL0wxiTq1RUC/uSaWm0fFX1NXGT
+         9jeYiGa/Ovuxh3afKi2tCTFXcj9nRWXh1Ztn726UYRg/IctW334hkP7lSYFMulGkIy
+         7YUxKKzSl1x9kwRXPPiXmSI/ufP+nX3CEQjtRZbg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        Steven Price <steven.price@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Chris Morgan <macromorgan@hotmail.com>
-Subject: [PATCH 5.10 303/306] drm/panfrost: Simplify lock_region calculation
+        Andreas Obergschwandtner <andreas.obergschwandtner@gmail.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 299/432] ARM: tegra: tamonten: Fix UART pad setting
 Date:   Thu, 16 Sep 2021 18:00:48 +0200
-Message-Id: <20210916155804.418777102@linuxfoundation.org>
+Message-Id: <20210916155820.961819041@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,68 +41,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
+From: Andreas Obergschwandtner <andreas.obergschwandtner@gmail.com>
 
-commit b5fab345654c603c07525100d744498f28786929 upstream.
+[ Upstream commit 2270ad2f4e123336af685ecedd1618701cb4ca1e ]
 
-In lock_region, simplify the calculation of the region_width parameter.
-This field is the size, but encoded as ceil(log2(size)) - 1.
-ceil(log2(size)) may be computed directly as fls(size - 1). However, we
-want to use the 64-bit versions as the amount to lock can exceed
-32-bits.
+This patch fixes the tristate and pullup configuration for UART 1 to 3
+on the Tamonten SOM.
 
-This avoids undefined (and completely wrong) behaviour when locking all
-memory (size ~0). In this case, the old code would "round up" ~0 to the
-nearest page, overflowing to 0. Since fls(0) == 0, this would calculate
-a region width of 10 + 0 = 10. But then the code would shift by
-(region_width - 11) = -1. As shifting by a negative number is undefined,
-UBSAN flags the bug. Of course, even if it were defined the behaviour is
-wrong, instead of locking all memory almost none would get locked.
-
-The new form of the calculation corrects this special case and avoids
-the undefined behaviour.
-
-Signed-off-by: Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
-Reported-and-tested-by: Chris Morgan <macromorgan@hotmail.com>
-Fixes: f3ba91228e8e ("drm/panfrost: Add initial panfrost driver")
-Cc: <stable@vger.kernel.org>
-Reviewed-by: Steven Price <steven.price@arm.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Steven Price <steven.price@arm.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210824173028.7528-2-alyssa.rosenzweig@collabora.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Andreas Obergschwandtner <andreas.obergschwandtner@gmail.com>
+Signed-off-by: Thierry Reding <treding@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/panfrost/panfrost_mmu.c |   19 +++++--------------
- 1 file changed, 5 insertions(+), 14 deletions(-)
+ arch/arm/boot/dts/tegra20-tamonten.dtsi | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
---- a/drivers/gpu/drm/panfrost/panfrost_mmu.c
-+++ b/drivers/gpu/drm/panfrost/panfrost_mmu.c
-@@ -59,21 +59,12 @@ static void lock_region(struct panfrost_
- {
- 	u8 region_width;
- 	u64 region = iova & PAGE_MASK;
--	/*
--	 * fls returns:
--	 * 1 .. 32
--	 *
--	 * 10 + fls(num_pages)
--	 * results in the range (11 .. 42)
--	 */
--
--	size = round_up(size, PAGE_SIZE);
- 
--	region_width = 10 + fls(size >> PAGE_SHIFT);
--	if ((size >> PAGE_SHIFT) != (1ul << (region_width - 11))) {
--		/* not pow2, so must go up to the next pow2 */
--		region_width += 1;
--	}
-+	/* The size is encoded as ceil(log2) minus(1), which may be calculated
-+	 * with fls. The size must be clamped to hardware bounds.
-+	 */
-+	size = max_t(u64, size, PAGE_SIZE);
-+	region_width = fls64(size - 1) - 1;
- 	region |= region_width;
- 
- 	/* Lock the region that needs to be updated */
+diff --git a/arch/arm/boot/dts/tegra20-tamonten.dtsi b/arch/arm/boot/dts/tegra20-tamonten.dtsi
+index 95e6bccdb4f6..dd4d506683de 100644
+--- a/arch/arm/boot/dts/tegra20-tamonten.dtsi
++++ b/arch/arm/boot/dts/tegra20-tamonten.dtsi
+@@ -185,8 +185,9 @@ conf_ata {
+ 				nvidia,pins = "ata", "atb", "atc", "atd", "ate",
+ 					"cdev1", "cdev2", "dap1", "dtb", "gma",
+ 					"gmb", "gmc", "gmd", "gme", "gpu7",
+-					"gpv", "i2cp", "pta", "rm", "slxa",
+-					"slxk", "spia", "spib", "uac";
++					"gpv", "i2cp", "irrx", "irtx", "pta",
++					"rm", "slxa", "slxk", "spia", "spib",
++					"uac";
+ 				nvidia,pull = <TEGRA_PIN_PULL_NONE>;
+ 				nvidia,tristate = <TEGRA_PIN_DISABLE>;
+ 			};
+@@ -211,7 +212,7 @@ conf_crtp {
+ 			conf_ddc {
+ 				nvidia,pins = "ddc", "dta", "dtd", "kbca",
+ 					"kbcb", "kbcc", "kbcd", "kbce", "kbcf",
+-					"sdc";
++					"sdc", "uad", "uca";
+ 				nvidia,pull = <TEGRA_PIN_PULL_UP>;
+ 				nvidia,tristate = <TEGRA_PIN_DISABLE>;
+ 			};
+@@ -221,10 +222,9 @@ conf_hdint {
+ 					"lvp0", "owc", "sdb";
+ 				nvidia,tristate = <TEGRA_PIN_ENABLE>;
+ 			};
+-			conf_irrx {
+-				nvidia,pins = "irrx", "irtx", "sdd", "spic",
+-					"spie", "spih", "uaa", "uab", "uad",
+-					"uca", "ucb";
++			conf_sdd {
++				nvidia,pins = "sdd", "spic", "spie", "spih",
++					"uaa", "uab", "ucb";
+ 				nvidia,pull = <TEGRA_PIN_PULL_UP>;
+ 				nvidia,tristate = <TEGRA_PIN_ENABLE>;
+ 			};
+-- 
+2.30.2
+
 
 
