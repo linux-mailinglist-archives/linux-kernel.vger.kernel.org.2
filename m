@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAC5040E62C
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:29:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DB9D40E28C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:16:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351607AbhIPRSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:18:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37016 "EHLO mail.kernel.org"
+        id S244903AbhIPQjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:39:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44326 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348881AbhIPRLM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:11:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5169A613A9;
-        Thu, 16 Sep 2021 16:37:45 +0000 (UTC)
+        id S237311AbhIPQdK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:33:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BF789613DA;
+        Thu, 16 Sep 2021 16:20:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810265;
-        bh=zJhYzoABb5BbEKbkrkFnagJCsOz1csIUNBbgmhs5j+k=;
+        s=korg; t=1631809208;
+        bh=eiUJ5cm6EUjMXmWsOkIArvbUh1BH3xkBosG2IV0HxsU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kbTTGpr3NXIISljZeDqOUG6KFezvcKF26d1+lQYGPZ3YuTUm7Cg0hVS8Kw/lPa0G5
-         xKghPlDmWYj/9zEYjxKY3OWd7AICUZEhv+XbwgwjpEFSiildRC1tTiEY8YWAQwmJne
-         Ndx5EwQ1vlQi/8TuxuJa7Li0VgIbf6ojl7f4OvaM=
+        b=GeZDtM2vdL1ksOzRYEuSlzO/LJtA07vAPQXMG2a7eNWnJ81+7IPb62JlYtKRlZjN1
+         SNQD7EsJnss4qM1PBhEHTKHn03p9CVhhzbj7CN2p2nEC5DQut7kHUvmE7dUTGb+JV4
+         1x5r2fMaPSUCtgchsrUuLiwWc53FC3hCX39fkDjs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 077/432] clk: renesas: rzg2l: Fix off-by-one check in rzg2l_cpg_clk_src_twocell_get()
+        stable@vger.kernel.org, Kenneth Albanowski <kenalba@google.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 069/380] HID: input: do not report stylus battery state as "full"
 Date:   Thu, 16 Sep 2021 17:57:06 +0200
-Message-Id: <20210916155813.393546570@linuxfoundation.org>
+Message-Id: <20210916155806.343364653@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-[ Upstream commit 1606e81543f80fc3b1912957cf6d8fa62e40b8e5 ]
+[ Upstream commit f4abaa9eebde334045ed6ac4e564d050f1df3013 ]
 
-Fix clock index out of range check for module clocks in
-rzg2l_cpg_clk_src_twocell_get().
+The power supply states of discharging, charging, full, etc, represent
+state of charging, not the capacity level of the battery (for which
+we have a separate property). Current HID usage tables to not allow
+for expressing charging state of the batteries found in generic
+styli, so we should simply assume that the battery is discharging
+even if current capacity is at 100% when battery strength reporting
+is done via HID interface. In fact, we were doing just that before
+commit 581c4484769e.
 
-Fixes: ef3c613ccd68 ("clk: renesas: Add CPG core wrapper for RZ/G2L SoC")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Link: https://lore.kernel.org/r/20210617155432.18827-1-prabhakar.mahadev-lad.rj@bp.renesas.com
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+This change helps UIs to not mis-represent fully charged batteries in
+styli as being charging/topping-off.
+
+Fixes: 581c4484769e ("HID: input: map digitizer battery usage")
+Reported-by: Kenneth Albanowski <kenalba@google.com>
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/renesas/renesas-rzg2l-cpg.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/hid/hid-input.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/clk/renesas/renesas-rzg2l-cpg.c b/drivers/clk/renesas/renesas-rzg2l-cpg.c
-index e7c59af2a1d8..f894a210de90 100644
---- a/drivers/clk/renesas/renesas-rzg2l-cpg.c
-+++ b/drivers/clk/renesas/renesas-rzg2l-cpg.c
-@@ -229,7 +229,7 @@ static struct clk
+diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
+index 68c8644234a4..f43b40450e97 100644
+--- a/drivers/hid/hid-input.c
++++ b/drivers/hid/hid-input.c
+@@ -419,8 +419,6 @@ static int hidinput_get_battery_property(struct power_supply *psy,
  
- 	case CPG_MOD:
- 		type = "module";
--		if (clkidx > priv->num_mod_clks) {
-+		if (clkidx >= priv->num_mod_clks) {
- 			dev_err(dev, "Invalid %s clock index %u\n", type,
- 				clkidx);
- 			return ERR_PTR(-EINVAL);
+ 		if (dev->battery_status == HID_BATTERY_UNKNOWN)
+ 			val->intval = POWER_SUPPLY_STATUS_UNKNOWN;
+-		else if (dev->battery_capacity == 100)
+-			val->intval = POWER_SUPPLY_STATUS_FULL;
+ 		else
+ 			val->intval = POWER_SUPPLY_STATUS_DISCHARGING;
+ 		break;
 -- 
 2.30.2
 
