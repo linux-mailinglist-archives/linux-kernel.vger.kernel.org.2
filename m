@@ -2,126 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B44840D816
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 13:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA31C40D81A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 13:03:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237104AbhIPLBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 07:01:44 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:38420 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235628AbhIPLBm (ORCPT
+        id S236785AbhIPLEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 07:04:34 -0400
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:55745 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237459AbhIPLEa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 07:01:42 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id ACA7420074;
-        Thu, 16 Sep 2021 11:00:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1631790021; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NiFKkoj10cp+F/ra/0aEbVdN5ucaMmJMXGzMTQn3Qf4=;
-        b=ztuEKtb6GT3HMts+fqm3Qi9K3wnKkY9g961MfsJC9Rd/3rFM0aKszn3L1gxOqr/5N8JH9q
-        PE5Ajq6B1o2kHWOtGT3jzL2ynVNK642R+F3Kq93XrBL96BRv49lZBW451aCKbTjQXfty6h
-        8dFAjKdhRn9j6dyzVJawm6vFwCspVpg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1631790021;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NiFKkoj10cp+F/ra/0aEbVdN5ucaMmJMXGzMTQn3Qf4=;
-        b=MqtywI4BDdy4ENd2fWnciZNzKRYlw48nTDclsOd+YLSddJAarIWl+XPyvmkwZGWUUIN2lp
-        tk29dTBN/vn+6TAg==
-Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id 9E543A3B9B;
-        Thu, 16 Sep 2021 11:00:16 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id DF6A01E0C04; Thu, 16 Sep 2021 13:00:16 +0200 (CEST)
-Date:   Thu, 16 Sep 2021 13:00:16 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     viro@zeniv.linux.org.uk,
-        Linux fsdevel mailing list <linux-fsdevel@vger.kernel.org>,
-        linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>, xu.xin16@zte.com.cn,
-        Christoph Hellwig <hch@infradead.org>, zhang.yunkai@zte.com.cn
-Subject: Re: [PATCH] init/do_mounts.c: Harden split_fs_names() against buffer
- overflow
-Message-ID: <20210916110016.GG10610@quack2.suse.cz>
-References: <YUIPnPV2ttOHNIcX@redhat.com>
+        Thu, 16 Sep 2021 07:04:30 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id 256805C0234;
+        Thu, 16 Sep 2021 07:03:09 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Thu, 16 Sep 2021 07:03:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=uPb9yOuBxieDtxwFX1tkC2xNg2n
+        jrloQioaAV8Ncf2Q=; b=4TJ56iNw+IW/RYm+oP5gGyR7YAJxoYSE8w1OyOHPoQM
+        f7UIW2PnQQgcdbwu7f3XNiYT1bKmGK2fcMGMH0/eLpStBkV2gZ5Zx0nTkH+vkr02
+        5ZNBe1MuuW3nP9bPcSO27aCWHsZl5zcOfq8c/Iv/zF8qy6VH8hHNbQ1k3GMbQwPw
+        adz0AgphUZht7Ql1wLrcIueVexVQskd8HK2kU206dzOkc3/RurlSD8JZmJk3l0TV
+        Ak71DccBgjnbuqLai0PYTpGjvgYFS/7PSNDW4zfmIMRQKkVg7WAZAohDJzUjVoqd
+        utdvejTocyEuVsPuBlz7MlufIYhfMuVNGpf3KrHLsrA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=uPb9yO
+        uBxieDtxwFX1tkC2xNg2njrloQioaAV8Ncf2Q=; b=cDjUyjpdsRwwZ/y9Tx6uOp
+        p8UcPkqyV7ADQsjWCuE1svMQ/zeY55mPOyv9ZmrcNcm4GA0Df9E/WdV9gjoWN1h6
+        HRHoPtVyFr7Y/obiWXaTE7I+Xxkklm4FBSgfmQBp33ZQ7rli50Z5ryEkhmk9Eu+6
+        4zvdxuJRziV80HEZb5PHg7wj5M/7aW+/yq28w+GDmcSJD0mFoQXNkrOMgKQ3aHtt
+        Fy8cta+qSjTc1kOY+G1xmPBX9YXYXQuVzbjrGwvzcCFJ+VTz83DAOUsthw6Hit7T
+        fnNx0LEwcT888In56JTnnr4/3hLNGGwtSuLn/B+CxjLBZnL6nnZ8jZjiej1fz/sw
+        ==
+X-ME-Sender: <xms:ayRDYa1srlIR1ROV1_spfcxfP2ApQIj4P4YCKnM1k1_sRF8bdwYk8A>
+    <xme:ayRDYdHPWWfDAbf4C0EG_323BGhFazY4Oo9j7J1JqNdoXxWI7d1lsC0qRvoNDOCt3
+    RECXUEmF3VbjP4fUSE>
+X-ME-Received: <xmr:ayRDYS6a_3uNs93s0ABObOnlzvUowlH8GFqq5WSFfwGnFId9eq9MXJdq3YGLfb6BtgS_74I2Xu5NJiLj4jfXgucp4ba63MCDtiDX>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudehgedgfeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddunecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepuddvudfhkeekhefgffetffelgffftdehffduffegveetffehueeivddvjedv
+    gfevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
+    grgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:ayRDYb1lpbuNZ706wKM7Vv_HAEtClkqUmzd-1bTRyoCAD5qiyBHp_Q>
+    <xmx:ayRDYdHjU2uZVyF4E-5QG-YOWIxtFegPMzEX2_HwyQbJDOhpH5Tomw>
+    <xmx:ayRDYU9i-NQUBtWtSjqnmnxU_PUZKTqJmvnTPpkw32Vniv9sKmMx5w>
+    <xmx:bSRDYS5X9CTEylFp4PhC-oBbP61Hfh_Zl8Za2rKJzHM5gPC7VH8SZg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 16 Sep 2021 07:03:07 -0400 (EDT)
+Date:   Thu, 16 Sep 2021 13:03:05 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     roucaries.bastien@gmail.com
+Cc:     Chen-Yu Tsai <wens@csie.org>, Chen-Yu Tsai <wens@kernel.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Salvatore Bonaccorso <carnil@debian.org>,
+        Bastien =?utf-8?Q?Roucari=C3=A8s?= <rouca@debian.org>
+Subject: Re: [PATCH] [PATCH] ARM: dts: sun7i: A20-olinuxino-lime2: Fix
+ ethernet phy-mode
+Message-ID: <20210916110305.ehmaspxht4nnhksg@gilmour>
+References: <20210916081721.237137-1-rouca@debian.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="tm6zdv7bbtikgw5o"
 Content-Disposition: inline
-In-Reply-To: <YUIPnPV2ttOHNIcX@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210916081721.237137-1-rouca@debian.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 15-09-21 11:22:04, Vivek Goyal wrote:
-> split_fs_names() currently takes comma separated list of filesystems
-> and converts it into individual filesystem strings. Pleaces these
-> strings in the input buffer passed by caller and returns number of
-> strings.
-> 
-> If caller manages to pass input string bigger than buffer, then we
-> can write beyond the buffer. Or if string just fits buffer, we will
-> still write beyond the buffer as we append a '\0' byte at the end.
-> 
-> Will be nice to pass size of input buffer to split_fs_names() and
-> put enough checks in place so such buffer overrun possibilities
-> do not occur.
-> 
-> Hence this patch adds "size" parameter to split_fs_names() and makes
-> sure we do not access memory beyond size. If input string "names"
-> is larger than passed in buffer, input string will be truncated to
-> fit in buffer.
-> 
-> Reported-by: xu xin <xu.xin16@zte.com.cn>
-> Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
 
-The patch looks correct but IMO is more complicated than it needs to be...
-See below.
+--tm6zdv7bbtikgw5o
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Index: redhat-linux/init/do_mounts.c
-> ===================================================================
-> --- redhat-linux.orig/init/do_mounts.c	2021-09-15 08:46:33.801689806 -0400
-> +++ redhat-linux/init/do_mounts.c	2021-09-15 09:52:09.884449718 -0400
-> @@ -338,19 +338,20 @@ __setup("rootflags=", root_data_setup);
->  __setup("rootfstype=", fs_names_setup);
->  __setup("rootdelay=", root_delay_setup);
->  
-> -static int __init split_fs_names(char *page, char *names)
-> +static int __init split_fs_names(char *page, size_t size, char *names)
->  {
->  	int count = 0;
-> -	char *p = page;
-> +	char *p = page, *end = page + size - 1;
-> +
-> +	strncpy(p, root_fs_names, size);
+Hi,
 
-Why not strlcpy()? That way you don't have to explicitely terminate the
-string...
+On Thu, Sep 16, 2021 at 08:17:21AM +0000, roucaries.bastien@gmail.com wrote:
+> From: Bastien Roucari=E8s <rouca@debian.org>
+>=20
+> Commit bbc4d71d6354 ("net: phy: realtek: fix rtl8211e rx/tx delay
+> config") sets the RX/TX delay according to the phy-mode property in the
+> device tree. For the A20-olinuxino-lime2 board this is "rgmii", which is =
+the
+> wrong setting.
+>=20
+> Following the example of a900cac3750b ("ARM: dts: sun7i: a20: bananapro:
+> Fix ethernet phy-mode") the phy-mode is changed to "rgmii-id" which gets
+> the Ethernet working again on this board.
+>=20
+> Signed-off-by: Bastien Roucari=E8s <rouca@debian.org>
 
-> +	*end = '\0';
->  
-> -	strcpy(p, root_fs_names);
->  	while (*p++) {
->  		if (p[-1] == ',')
->  			p[-1] = '\0';
->  	}
-> -	*p = '\0';
->  
-> -	for (p = page; *p; p += strlen(p)+1)
-> +	for (p = page; p < end && *p; p += strlen(p)+1)
->  		count++;
+It's the third time you've sent it since yesterday, what are the
+differences and which one am I supposed to apply?
 
-And I kind of fail to see why you have a separate loop for counting number
-of elements when you could count them directly when changing ',' to '\0'.
-There's this small subtlety that e.g. string 'foo,,bar' will report to have
-only 1 element with the above code while direct computation would return 3
-but that's hardly problem IMHO.
+Maxime
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+--tm6zdv7bbtikgw5o
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYUMkaQAKCRDj7w1vZxhR
+xVLdAQDcZH3Hq07ZYLZqSjCMR9ApO8Oe4siueWivrUaAQqXqXwD/SEBY9vWMjNkS
+Qd4WH0dLMENPwzBUoOjMHobwpA4nuA4=
+=1SqP
+-----END PGP SIGNATURE-----
+
+--tm6zdv7bbtikgw5o--
