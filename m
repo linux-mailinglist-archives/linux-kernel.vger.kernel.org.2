@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71D5F40DFD8
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:15:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FF4E40E29C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:17:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241062AbhIPQPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:15:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47552 "EHLO mail.kernel.org"
+        id S245411AbhIPQk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:40:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43910 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234826AbhIPQIE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:08:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D2F436120F;
-        Thu, 16 Sep 2021 16:06:41 +0000 (UTC)
+        id S241910AbhIPQc4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:32:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 88A0F613D3;
+        Thu, 16 Sep 2021 16:20:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808403;
-        bh=b0TWJ15KrBh9XOl6wwdaFm0lsYM5VY1rrABEVgV8nNk=;
+        s=korg; t=1631809203;
+        bh=PigDoh3hyPXh6lz7HeYb2Ci/XfGGvqQFWZpJhMgen44=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wt6yS1vu4fQQSrW0rBwzovtn/LvTguy62D56lAnEzl55s+59CmjFa01DE1MXHgpku
-         uQy2RfUynYaeELwyAHjYT+aSPbEE7yNCPUN2sEKuJ8dyhHOZ5YevR3EQLe5j8vuwi9
-         ZO1hXV7qbyIGv+gjy2pMSoA0ALSFl8Yic6waVWEE=
+        b=1aIsmiho1UNTeCt/dKJjTODbF4N3UPSPPckNuk6JhYrxtaYxl+r1Mqh9QCOUExoU7
+         v69j38HJYbyq1h0aNCPNNQ2cCFqZae+pHX72dDqhWaHvJm5zI5s2QU5bqojXR+tP6U
+         +DedOPGHX295AkXt/qZ7BcddhPE12oQ1xM2KCy2w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <Anna.Schumaker@Netapp.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 079/306] SUNRPC/xprtrdma: Fix reconnection locking
+        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Subject: [PATCH 5.13 067/380] PCI: aardvark: Fix masking and unmasking legacy INTx interrupts
 Date:   Thu, 16 Sep 2021 17:57:04 +0200
-Message-Id: <20210916155756.748474748@linuxfoundation.org>
+Message-Id: <20210916155806.271913475@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,79 +40,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Pali Rohár <pali@kernel.org>
 
-[ Upstream commit f99fa50880f5300fbbb3c0754ddc7f8738d24fe7 ]
+commit d212dcee27c1f89517181047e5485fcbba4a25c2 upstream.
 
-The xprtrdma client code currently relies on the task that initiated the
-connect to hold the XPRT_LOCK for the duration of the connection
-attempt. If the task is woken early, due to some other event, then that
-lock could get released early.
-Avoid races by using the same mechanism that the socket code uses of
-transferring lock ownership to the RDMA connect worker itself. That
-frees us to call rpcrdma_xprt_disconnect() directly since we're now
-guaranteed exclusion w.r.t. other callers.
+irq_mask and irq_unmask callbacks need to be properly guarded by raw spin
+locks as masking/unmasking procedure needs atomic read-modify-write
+operation on hardware register.
 
-Fixes: 4cf44be6f1e8 ("xprtrdma: Fix recursion into rpcrdma_xprt_disconnect()")
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
-Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Link: https://lore.kernel.org/r/20210820155020.3000-1-pali@kernel.org
+Reported-by: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Acked-by: Marc Zyngier <maz@kernel.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/sunrpc/xprt.c               |  2 ++
- net/sunrpc/xprtrdma/transport.c | 11 +++++------
- 2 files changed, 7 insertions(+), 6 deletions(-)
+ drivers/pci/controller/pci-aardvark.c |    9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/net/sunrpc/xprt.c b/net/sunrpc/xprt.c
-index ccfa85e995fd..8201531ce5d9 100644
---- a/net/sunrpc/xprt.c
-+++ b/net/sunrpc/xprt.c
-@@ -844,6 +844,7 @@ bool xprt_lock_connect(struct rpc_xprt *xprt,
- 	spin_unlock(&xprt->transport_lock);
- 	return ret;
- }
-+EXPORT_SYMBOL_GPL(xprt_lock_connect);
- 
- void xprt_unlock_connect(struct rpc_xprt *xprt, void *cookie)
+--- a/drivers/pci/controller/pci-aardvark.c
++++ b/drivers/pci/controller/pci-aardvark.c
+@@ -230,6 +230,7 @@ struct advk_pcie {
+ 	u8 wins_count;
+ 	struct irq_domain *irq_domain;
+ 	struct irq_chip irq_chip;
++	raw_spinlock_t irq_lock;
+ 	struct irq_domain *msi_domain;
+ 	struct irq_domain *msi_inner_domain;
+ 	struct irq_chip msi_bottom_irq_chip;
+@@ -1045,22 +1046,28 @@ static void advk_pcie_irq_mask(struct ir
  {
-@@ -860,6 +861,7 @@ void xprt_unlock_connect(struct rpc_xprt *xprt, void *cookie)
- 	spin_unlock(&xprt->transport_lock);
- 	wake_up_bit(&xprt->state, XPRT_LOCKED);
- }
-+EXPORT_SYMBOL_GPL(xprt_unlock_connect);
+ 	struct advk_pcie *pcie = d->domain->host_data;
+ 	irq_hw_number_t hwirq = irqd_to_hwirq(d);
++	unsigned long flags;
+ 	u32 mask;
  
- /**
-  * xprt_connect - schedule a transport connect operation
-diff --git a/net/sunrpc/xprtrdma/transport.c b/net/sunrpc/xprtrdma/transport.c
-index c26db0a37996..8e2368a0c2a2 100644
---- a/net/sunrpc/xprtrdma/transport.c
-+++ b/net/sunrpc/xprtrdma/transport.c
-@@ -249,12 +249,9 @@ xprt_rdma_connect_worker(struct work_struct *work)
- 					   xprt->stat.connect_start;
- 		xprt_set_connected(xprt);
- 		rc = -EAGAIN;
--	} else {
--		/* Force a call to xprt_rdma_close to clean up */
--		spin_lock(&xprt->transport_lock);
--		set_bit(XPRT_CLOSE_WAIT, &xprt->state);
--		spin_unlock(&xprt->transport_lock);
--	}
-+	} else
-+		rpcrdma_xprt_disconnect(r_xprt);
-+	xprt_unlock_connect(xprt, r_xprt);
- 	xprt_wake_pending_tasks(xprt, rc);
++	raw_spin_lock_irqsave(&pcie->irq_lock, flags);
+ 	mask = advk_readl(pcie, PCIE_ISR1_MASK_REG);
+ 	mask |= PCIE_ISR1_INTX_ASSERT(hwirq);
+ 	advk_writel(pcie, mask, PCIE_ISR1_MASK_REG);
++	raw_spin_unlock_irqrestore(&pcie->irq_lock, flags);
  }
  
-@@ -487,6 +484,8 @@ xprt_rdma_connect(struct rpc_xprt *xprt, struct rpc_task *task)
- 	struct rpcrdma_ep *ep = r_xprt->rx_ep;
- 	unsigned long delay;
+ static void advk_pcie_irq_unmask(struct irq_data *d)
+ {
+ 	struct advk_pcie *pcie = d->domain->host_data;
+ 	irq_hw_number_t hwirq = irqd_to_hwirq(d);
++	unsigned long flags;
+ 	u32 mask;
  
-+	WARN_ON_ONCE(!xprt_lock_connect(xprt, task, r_xprt));
++	raw_spin_lock_irqsave(&pcie->irq_lock, flags);
+ 	mask = advk_readl(pcie, PCIE_ISR1_MASK_REG);
+ 	mask &= ~PCIE_ISR1_INTX_ASSERT(hwirq);
+ 	advk_writel(pcie, mask, PCIE_ISR1_MASK_REG);
++	raw_spin_unlock_irqrestore(&pcie->irq_lock, flags);
+ }
+ 
+ static int advk_pcie_irq_map(struct irq_domain *h,
+@@ -1144,6 +1151,8 @@ static int advk_pcie_init_irq_domain(str
+ 	struct irq_chip *irq_chip;
+ 	int ret = 0;
+ 
++	raw_spin_lock_init(&pcie->irq_lock);
 +
- 	delay = 0;
- 	if (ep && ep->re_connect_status != 0) {
- 		delay = xprt_reconnect_delay(xprt);
--- 
-2.30.2
-
+ 	pcie_intc_node =  of_get_next_child(node, NULL);
+ 	if (!pcie_intc_node) {
+ 		dev_err(dev, "No PCIe Intc node found\n");
 
 
