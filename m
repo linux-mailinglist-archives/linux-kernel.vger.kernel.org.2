@@ -2,100 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5245840ED3E
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 00:18:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42B3A40ED43
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 00:19:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240914AbhIPWTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 18:19:40 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:55096 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240827AbhIPWTk (ORCPT
+        id S240951AbhIPWVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 18:21:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40971 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240938AbhIPWU7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 18:19:40 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 405AD22293;
-        Thu, 16 Sep 2021 22:18:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1631830698; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        Thu, 16 Sep 2021 18:20:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631830778;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=DBzVatUHKFu0Cyk7pN9Ddz6kBstECbffWfHI3HWpgnw=;
-        b=MzpzwYmHK6IHe/Wggxw00m7dOgq0DG4OMOxiM6R+h5+ObovCqHjt6Zgq77+uD2D632RiO2
-        LBrEiD0wg4qdy/VMn0bPMVBbrWSDH7jUgsvDuKnrfM2bzNlxbudufixfGuFZkdnvHX0Ez3
-        HraWPUwJ6EBv5cpi52RE3Uir3glCumc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1631830698;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DBzVatUHKFu0Cyk7pN9Ddz6kBstECbffWfHI3HWpgnw=;
-        b=XNR4lite8fITY4tYX0a2WIgmLRwMIqxR2LfY68Wg7YGUP83o2apY6s4r1dJ5f/+WMsM3wm
-        Uhm1EWl3f7GK8QBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        bh=LNQZtZk5ThEEV8nRic1GVZzg3YqPdgzLNMNUtC2mm6g=;
+        b=EZ7BGca2Os3Ykfm2PZy2HGWclyHC+Ow0a0JChNDCF1mHUMbmg5xOgatVdVFUfilQXSbBWI
+        MS9WxQUCWzd/rwMZg4pPy81PDAXi6W7nqN3QgGuzFDqXqVKRid8n5sNbHidXS9GEErl6fY
+        V4taXPs3lvcfQiYp5GViO+2cry6+euA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-443-Dy_LADkBNmysRyRpTdB3yA-1; Thu, 16 Sep 2021 18:19:37 -0400
+X-MC-Unique: Dy_LADkBNmysRyRpTdB3yA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1FB4A13D6B;
-        Thu, 16 Sep 2021 22:18:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 1wmjBqrCQ2GuVQAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Thu, 16 Sep 2021 22:18:18 +0000
-Subject: Re: [PATCH] mm/smaps: Use vma->vm_pgoff directly when counting
- partial swap
-To:     Peter Xu <peterx@redhat.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>
-References: <20210916215839.95177-1-peterx@redhat.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <738511ae-b253-9927-eca1-97d621d9f149@suse.cz>
-Date:   Fri, 17 Sep 2021 00:17:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 113EF824FA7;
+        Thu, 16 Sep 2021 22:19:34 +0000 (UTC)
+Received: from redhat.com (ovpn-112-133.phx2.redhat.com [10.3.112.133])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id AADF319C79;
+        Thu, 16 Sep 2021 22:19:24 +0000 (UTC)
+Date:   Thu, 16 Sep 2021 18:19:22 -0400
+From:   Peter Jones <pjones@redhat.com>
+To:     Eric Snowberg <eric.snowberg@oracle.com>
+Cc:     keyrings@vger.kernel.org, linux-integrity@vger.kernel.org,
+        zohar@linux.ibm.com, dhowells@redhat.com, dwmw2@infradead.org,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        jarkko@kernel.org, jmorris@namei.org, serge@hallyn.com,
+        keescook@chromium.org, gregkh@linuxfoundation.org,
+        torvalds@linux-foundation.org, scott.branden@broadcom.com,
+        weiyongjun1@huawei.com, nayna@linux.ibm.com, ebiggers@google.com,
+        ardb@kernel.org, nramas@linux.microsoft.com, lszubowi@redhat.com,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        James.Bottomley@HansenPartnership.com, konrad.wilk@oracle.com
+Subject: Re: [PATCH v6 12/13] integrity: Trust MOK keys if MokListTrustedRT
+ found
+Message-ID: <20210916221922.xjplaobua2iss2bn@redhat.com>
+References: <20210914211416.34096-1-eric.snowberg@oracle.com>
+ <20210914211416.34096-13-eric.snowberg@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <20210916215839.95177-1-peterx@redhat.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20210914211416.34096-13-eric.snowberg@oracle.com>
+User-Agent: NeoMutt/20180716
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/16/21 11:58 PM, Peter Xu wrote:
-> linear_page_index(vma, vma->vm_start) of a shmem vma is exactly vm_pgoff.
+On Tue, Sep 14, 2021 at 05:14:15PM -0400, Eric Snowberg wrote:
+> +/*
+> + * Try to load the MokListTrustedRT UEFI variable to see if we should trust
+> + * the mok keys within the kernel. It is not an error if this variable
+> + * does not exist.  If it does not exist, mok keys should not be trusted
+> + * within the machine keyring.
+> + */
+> +static __init bool uefi_check_trust_mok_keys(void)
+> +{
+> +	efi_status_t status;
+> +	unsigned int mtrust = 0;
+> +	unsigned long size = sizeof(mtrust);
+> +	efi_guid_t guid = EFI_SHIM_LOCK_GUID;
+> +	u32 attr;
+> +
+> +	status = efi.get_variable(L"MokListTrustedRT", &guid, &attr, &size, &mtrust);
 
-Could you use "vma->vm_pgoff + vma_pages(vma)" instead of the other
-linear_page_index() then?
+This should use efi_mokvar_entry_find("MokListTrustedRT") instead,
+similar to how load_moklist_certs() does.  It's a *much* more reliable
+mechanism.  We don't even need to fall back to checking for the
+variable, as any version of shim that populates this supports the config
+table method.
 
-But now I wonder, is smaps_pte_hole() broken? it calls
-shmem_partial_swap_usage with addresses, not pgoffs?
-
-> Cc: Vlastimil Babka <vbabka@suse.cz>
-> Cc: Hugh Dickins <hughd@google.com>
-> Signed-off-by: Peter Xu <peterx@redhat.com>
-> ---
->  mm/shmem.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index 96ccf6e941aa..2aef5b8e17c9 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -856,8 +856,7 @@ unsigned long shmem_swap_usage(struct vm_area_struct *vma)
->  		return swapped << PAGE_SHIFT;
->  
->  	/* Here comes the more involved part */
-> -	return shmem_partial_swap_usage(mapping,
-> -			linear_page_index(vma, vma->vm_start),
-> +	return shmem_partial_swap_usage(mapping, vma->vm_pgoff,
->  			linear_page_index(vma, vma->vm_end));
->  }
->  
-> 
+-- 
+        Peter
 
