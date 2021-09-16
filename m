@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D966640E53C
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:26:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C913B40E949
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:02:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350138AbhIPRJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:09:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51936 "EHLO mail.kernel.org"
+        id S1357186AbhIPRva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:51:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347356AbhIPQ6v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:58:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE69B6139D;
-        Thu, 16 Sep 2021 16:32:11 +0000 (UTC)
+        id S1353971AbhIPRh7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:37:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 99D4F63237;
+        Thu, 16 Sep 2021 16:49:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809932;
-        bh=6GYGAVk2gYlgVH3/XQYaDlJTce6H+5zqR3EON9Hy2B4=;
+        s=korg; t=1631810995;
+        bh=KGkS7OUjv67aEGceRwx3OK2/OzlLJ/+NxgxkJRzgIXM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oRG09060+dEbfft9n7KWDSR9Ia7WncOTKYJ9HG9bmk2zL1uVpRmxKDfJF7b3K129S
-         OemKp7uyTqPXdiXRM4S0Ka45P8JJUFS/ipK38BKCDDQ98BKwjbN21Tb1HGwgvod7T5
-         cl1QWaAqvArDdOUKNBoigS3tyNhEkyGirwY4SNyU=
+        b=J21pAywJtBw/Q1wRlVXMnbTpoUs8st0+AbvrTU6/oG3wvcFT158KqUUEjJ99as5QM
+         hITLLCL4Rnrr1wC8z9v+1PXLVZOq0nvwVj9eXHRdA03Lu5HNo+1GMd6Ot5xPpdvO/e
+         WUGxswluU04AqZZTMfXxMWhLbPUOxtEDftVcpkbQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Colin Ian King <colin.king@canonical.com>,
+        stable@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 336/380] parport: remove non-zero check on count
-Date:   Thu, 16 Sep 2021 18:01:33 +0200
-Message-Id: <20210916155815.473472906@linuxfoundation.org>
+Subject: [PATCH 5.14 345/432] mmc: core: Avoid hogging the CPU while polling for busy for mmc ioctls
+Date:   Thu, 16 Sep 2021 18:01:34 +0200
+Message-Id: <20210916155822.522528425@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Ulf Hansson <ulf.hansson@linaro.org>
 
-[ Upstream commit 0be883a0d795d9146f5325de582584147dd0dcdc ]
+[ Upstream commit 468108155b0f89cc08189cc33f9bacfe9da8a125 ]
 
-The check for count appears to be incorrect since a non-zero count
-check occurs a couple of statements earlier. Currently the check is
-always false and the dev->port->irq != PARPORT_IRQ_NONE part of the
-check is never tested and the if statement is dead-code. Fix this
-by removing the check on count.
+When __mmc_blk_ioctl_cmd() calls card_busy_detect() to verify that the
+card's states moves back into transfer state, the polling with CMD13 is
+done without any delays in between the commands being sent.
 
-Note that this code is pre-git history, so I can't find a sha for
-it.
+Rather than fixing card_busy_detect() in this regards, let's instead
+convert into using the common mmc_poll_for_busy(), which also helps us to
+avoid open-coding.
 
-Acked-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Addresses-Coverity: ("Logically dead code")
-Link: https://lore.kernel.org/r/20210730100710.27405-1-colin.king@canonical.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Reviewed-by: Shawn Lin <shawn.lin@rock-chips.com>
+Link: https://lore.kernel.org/r/20210702134229.357717-3-ulf.hansson@linaro.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/parport/ieee1284_ops.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mmc/core/block.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/parport/ieee1284_ops.c b/drivers/parport/ieee1284_ops.c
-index 2c11bd3fe1fd..17061f1df0f4 100644
---- a/drivers/parport/ieee1284_ops.c
-+++ b/drivers/parport/ieee1284_ops.c
-@@ -518,7 +518,7 @@ size_t parport_ieee1284_ecp_read_data (struct parport *port,
- 				goto out;
+diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+index 170343411f53..c30d0ab15539 100644
+--- a/drivers/mmc/core/block.c
++++ b/drivers/mmc/core/block.c
+@@ -605,7 +605,8 @@ static int __mmc_blk_ioctl_cmd(struct mmc_card *card, struct mmc_blk_data *md,
+ 		 * Ensure RPMB/R1B command has completed by polling CMD13
+ 		 * "Send Status".
+ 		 */
+-		err = card_busy_detect(card, MMC_BLK_TIMEOUT_MS, NULL);
++		err = mmc_poll_for_busy(card, MMC_BLK_TIMEOUT_MS, false,
++					MMC_BUSY_IO);
+ 	}
  
- 			/* Yield the port for a while. */
--			if (count && dev->port->irq != PARPORT_IRQ_NONE) {
-+			if (dev->port->irq != PARPORT_IRQ_NONE) {
- 				parport_release (dev);
- 				schedule_timeout_interruptible(msecs_to_jiffies(40));
- 				parport_claim_or_block (dev);
+ 	return err;
 -- 
 2.30.2
 
