@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3293A40E524
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:26:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EE2140E8DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:01:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244504AbhIPRIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:08:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55314 "EHLO mail.kernel.org"
+        id S1344781AbhIPRmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:42:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51236 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347669AbhIPRAO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:00:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8753A617E1;
-        Thu, 16 Sep 2021 16:32:30 +0000 (UTC)
+        id S1344609AbhIPRf5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:35:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0518963234;
+        Thu, 16 Sep 2021 16:49:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809951;
-        bh=L+Zrw3R7HuZQRklNozrduxknMAPTxCggBqZfIcjfZ9Q=;
+        s=korg; t=1631810943;
+        bh=AV9wRD9lEMp2Qb/zjeTJnb2M22/TDCzs8tAi3oi+/+Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vIxzRcHPqzc2Wm17hVG5qgr8pQkBZ4PsZFTHaYgFDy+h+6CMmROOE2Hb5yKQd/14A
-         CEnywrfha2mr6ozJK2/nv563zoF3Q12hxul1xuSbxFVWDA03b4LowsQisyvs8MJ8Jf
-         HAh5075wxBBP/VomochC5ibU97LIQ4gECP5oGP8E=
+        b=nEimV/dCU9q+02yVvzlaspJG4ur67oCy3+/l7nqxOX/9qSNdQCe0HvskmuTpL1LpT
+         zAorar9Rw2yKVSqkYKB0tdD+jZbUOqz6nDp7JeiGZ0zZeVTKUhvMVMUvoHxEYwdT7B
+         5SGuc39d4kWbDbOuooXu2jVO438Pd/Ckv60hgeGw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nadezda Lutovinova <lutovinova@ispras.ru>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 316/380] usb: musb: musb_dsps: request_irq() after initializing musb
-Date:   Thu, 16 Sep 2021 18:01:13 +0200
-Message-Id: <20210916155814.799182403@linuxfoundation.org>
+Subject: [PATCH 5.14 325/432] ASoC: rsnd: adg: clearly handle clock error / NULL case
+Date:   Thu, 16 Sep 2021 18:01:14 +0200
+Message-Id: <20210916155821.859668974@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,61 +41,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nadezda Lutovinova <lutovinova@ispras.ru>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-[ Upstream commit 7c75bde329d7e2a93cf86a5c15c61f96f1446cdc ]
+[ Upstream commit cc64c390b215b404524725a94857d6fb58d9a62a ]
 
-If IRQ occurs between calling  dsps_setup_optional_vbus_irq()
-and  dsps_create_musb_pdev(), then null pointer dereference occurs
-since glue->musb wasn't initialized yet.
+This driver is assuming that all adg->clk[i] is not NULL.
+Because of this prerequisites, for_each_rsnd_clk() is possible to work
+for all clk without checking NULL. In other words, all adg->clk[i]
+should not NULL.
 
-The patch puts initializing of neccesery data before registration
-of the interrupt handler.
+Some SoC might doesn't have clk_a/b/c/i. devm_clk_get() returns error in
+such case. This driver calls rsnd_adg_null_clk_get() and use null_clk
+instead of NULL in such cases.
 
-Found by Linux Driver Verification project (linuxtesting.org).
+But devm_clk_get() might returns NULL even though such clocks exist, but
+it doesn't mean error (user deliberately chose to disable the feature).
+NULL clk itself is not error from clk point of view, but is error from
+this driver point of view because it is not assuming such case.
 
-Signed-off-by: Nadezda Lutovinova <lutovinova@ispras.ru>
-Link: https://lore.kernel.org/r/20210819163323.17714-1-lutovinova@ispras.ru
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+But current code is using IS_ERR() which doesn't care NULL.
+This driver uses IS_ERR_OR_NULL() instead of IS_ERR() for clk check.
+And it uses ERR_CAST() to clarify null_clk error.
+
+One concern here is that it unconditionally uses null_clk if clk_a/b/c/i
+was error. It is correct if it doesn't exist, but is not correct if it
+returns error even though it exist.
+It needs to check "clock-names" from DT before calling devm_clk_get() to
+handling such case. But let's assume it is overkill so far.
+
+Link: https://lore.kernel.org/r/YMCmhfQUimHCSH/n@mwanda
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Link: https://lore.kernel.org/r/87v940wyf9.wl-kuninori.morimoto.gx@renesas.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/musb/musb_dsps.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+ sound/soc/sh/rcar/adg.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/usb/musb/musb_dsps.c b/drivers/usb/musb/musb_dsps.c
-index 5892f3ce0cdc..ce9fc46c9266 100644
---- a/drivers/usb/musb/musb_dsps.c
-+++ b/drivers/usb/musb/musb_dsps.c
-@@ -890,23 +890,22 @@ static int dsps_probe(struct platform_device *pdev)
- 	if (!glue->usbss_base)
- 		return -ENXIO;
+diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
+index 0ebee1ed06a9..5f1e72edfee0 100644
+--- a/sound/soc/sh/rcar/adg.c
++++ b/sound/soc/sh/rcar/adg.c
+@@ -391,9 +391,9 @@ static struct clk *rsnd_adg_create_null_clk(struct rsnd_priv *priv,
+ 	struct clk *clk;
  
--	if (usb_get_dr_mode(&pdev->dev) == USB_DR_MODE_PERIPHERAL) {
--		ret = dsps_setup_optional_vbus_irq(pdev, glue);
--		if (ret)
--			goto err_iounmap;
--	}
--
- 	platform_set_drvdata(pdev, glue);
- 	pm_runtime_enable(&pdev->dev);
- 	ret = dsps_create_musb_pdev(glue, pdev);
- 	if (ret)
- 		goto err;
+ 	clk = clk_register_fixed_rate(dev, name, parent, 0, 0);
+-	if (IS_ERR(clk)) {
++	if (IS_ERR_OR_NULL(clk)) {
+ 		dev_err(dev, "create null clk error\n");
+-		return NULL;
++		return ERR_CAST(clk);
+ 	}
  
-+	if (usb_get_dr_mode(&pdev->dev) == USB_DR_MODE_PERIPHERAL) {
-+		ret = dsps_setup_optional_vbus_irq(pdev, glue);
-+		if (ret)
-+			goto err;
-+	}
-+
- 	return 0;
+ 	return clk;
+@@ -430,9 +430,9 @@ static int rsnd_adg_get_clkin(struct rsnd_priv *priv)
+ 	for (i = 0; i < CLKMAX; i++) {
+ 		clk = devm_clk_get(dev, clk_name[i]);
  
- err:
- 	pm_runtime_disable(&pdev->dev);
--err_iounmap:
- 	iounmap(glue->usbss_base);
- 	return ret;
- }
+-		if (IS_ERR(clk))
++		if (IS_ERR_OR_NULL(clk))
+ 			clk = rsnd_adg_null_clk_get(priv);
+-		if (IS_ERR(clk))
++		if (IS_ERR_OR_NULL(clk))
+ 			goto err;
+ 
+ 		adg->clk[i] = clk;
+@@ -582,7 +582,7 @@ static int rsnd_adg_get_clkout(struct rsnd_priv *priv)
+ 	if (!count) {
+ 		clk = clk_register_fixed_rate(dev, clkout_name[CLKOUT],
+ 					      parent_clk_name, 0, req_rate[0]);
+-		if (IS_ERR(clk))
++		if (IS_ERR_OR_NULL(clk))
+ 			goto err;
+ 
+ 		adg->clkout[CLKOUT] = clk;
+@@ -596,7 +596,7 @@ static int rsnd_adg_get_clkout(struct rsnd_priv *priv)
+ 			clk = clk_register_fixed_rate(dev, clkout_name[i],
+ 						      parent_clk_name, 0,
+ 						      req_rate[0]);
+-			if (IS_ERR(clk))
++			if (IS_ERR_OR_NULL(clk))
+ 				goto err;
+ 
+ 			adg->clkout[i] = clk;
 -- 
 2.30.2
 
