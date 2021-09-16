@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A585740DF9B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:11:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E65EC40E279
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:16:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236812AbhIPQMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:12:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47416 "EHLO mail.kernel.org"
+        id S243089AbhIPQjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:39:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234904AbhIPQHf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:07:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EE6FD6126A;
-        Thu, 16 Sep 2021 16:06:08 +0000 (UTC)
+        id S241721AbhIPQbL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:31:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 63012613B3;
+        Thu, 16 Sep 2021 16:19:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808369;
-        bh=kpl33kKMeZMUubWNj7vLmzSzZZZhpqs9qa4frqpNY/g=;
+        s=korg; t=1631809160;
+        bh=9qzOOVlXj9CvbQk0c20wZuNl8a+gAvsb6TB4E+j+PDI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W2nrMjXgxpgJchlYC/o7ahMxw1s5flVDtJocNbTk6S7ljAzs4gbjlMXBDxeBg8SZ6
-         lTXJi43ibEmK2IyBm+B5dFoSnwBQe1gc5eEdN+8tVGprHZFY15BCb0+kbtGvXJ7/IN
-         fjAf4jN6GvAKzv9agVxpd2YtI/XlfibLUhjmxmwM=
+        b=V2i0DZt4BEcnWJK7FmkCgumU6//d1yb/zZ+tRmcSwUNfU12cEMK9JzvL5xFtSfFmh
+         x1Jk3cyJ3J1cC2u3fZ4laZ9QlzX2jkPSEP/biUGU/u8mU0q4cbHMbyUmQcKfebgsDM
+         uscM3ffUpF7uJN2eqkOTQa6mD70isjV/07qm6UVU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jaehyoung Choi <jkkkkk.choi@samsung.com>,
-        Sam Protsenko <semen.protsenko@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 064/306] pinctrl: samsung: Fix pinctrl bank pin count
-Date:   Thu, 16 Sep 2021 17:56:49 +0200
-Message-Id: <20210916155756.127566954@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+b0c9d1588ae92866515f@syzkaller.appspotmail.com,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.13 053/380] io_uring: fix io_try_cancel_userdata race for iowq
+Date:   Thu, 16 Sep 2021 17:56:50 +0200
+Message-Id: <20210916155805.788018933@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +41,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jaehyoung Choi <jkkkkk.choi@samsung.com>
+From: Pavel Begunkov <asml.silence@gmail.com>
 
-[ Upstream commit 70115558ab02fe8d28a6634350b3491a542aaa02 ]
+commit dadebc350da2bef62593b1df007a6e0b90baf42a upstream.
 
-Commit 1abd18d1a51a ("pinctrl: samsung: Register pinctrl before GPIO")
-changes the order of GPIO and pinctrl registration: now pinctrl is
-registered before GPIO. That means gpio_chip->ngpio is not set when
-samsung_pinctrl_register() called, and one cannot rely on that value
-anymore. Use `pin_bank->nr_pins' instead of `pin_bank->gpio_chip.ngpio'
-to fix mentioned inconsistency.
+WARNING: CPU: 1 PID: 5870 at fs/io_uring.c:5975 io_try_cancel_userdata+0x30f/0x540 fs/io_uring.c:5975
+CPU: 0 PID: 5870 Comm: iou-wrk-5860 Not tainted 5.14.0-rc6-next-20210820-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:io_try_cancel_userdata+0x30f/0x540 fs/io_uring.c:5975
+Call Trace:
+ io_async_cancel fs/io_uring.c:6014 [inline]
+ io_issue_sqe+0x22d5/0x65a0 fs/io_uring.c:6407
+ io_wq_submit_work+0x1dc/0x300 fs/io_uring.c:6511
+ io_worker_handle_work+0xa45/0x1840 fs/io-wq.c:533
+ io_wqe_worker+0x2cc/0xbb0 fs/io-wq.c:582
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
 
-Fixes: 1abd18d1a51a ("pinctrl: samsung: Register pinctrl before GPIO")
-Signed-off-by: Jaehyoung Choi <jkkkkk.choi@samsung.com>
-Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-Link: https://lore.kernel.org/r/20210730192905.7173-1-semen.protsenko@linaro.org
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+io_try_cancel_userdata() can be called from io_async_cancel() executing
+in the io-wq context, so the warning fires, which is there to alert
+anyone accessing task->io_uring->io_wq in a racy way. However,
+io_wq_put_and_exit() always first waits for all threads to complete,
+so the only detail left is to zero tctx->io_wq after the context is
+removed.
+
+note: one little assumption is that when IO_WQ_WORK_CANCEL, the executor
+won't touch ->io_wq, because io_wq_destroy() might cancel left pending
+requests in such a way.
+
+Cc: stable@vger.kernel.org
+Reported-by: syzbot+b0c9d1588ae92866515f@syzkaller.appspotmail.com
+Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+Link: https://lore.kernel.org/r/dfdd37a80cfa9ffd3e59538929c99cdd55d8699e.1629721757.git.asml.silence@gmail.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pinctrl/samsung/pinctrl-samsung.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/io_uring.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/pinctrl/samsung/pinctrl-samsung.c b/drivers/pinctrl/samsung/pinctrl-samsung.c
-index 608eb5a07248..7f809a57bee5 100644
---- a/drivers/pinctrl/samsung/pinctrl-samsung.c
-+++ b/drivers/pinctrl/samsung/pinctrl-samsung.c
-@@ -918,7 +918,7 @@ static int samsung_pinctrl_register(struct platform_device *pdev,
- 		pin_bank->grange.pin_base = drvdata->pin_base
- 						+ pin_bank->pin_base;
- 		pin_bank->grange.base = pin_bank->grange.pin_base;
--		pin_bank->grange.npins = pin_bank->gpio_chip.ngpio;
-+		pin_bank->grange.npins = pin_bank->nr_pins;
- 		pin_bank->grange.gc = &pin_bank->gpio_chip;
- 		pinctrl_add_gpio_range(drvdata->pctl_dev, &pin_bank->grange);
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -6289,6 +6289,7 @@ static void io_wq_submit_work(struct io_
+ 	if (timeout)
+ 		io_queue_linked_timeout(timeout);
+ 
++	/* either cancelled or io-wq is dying, so don't touch tctx->iowq */
+ 	if (work->flags & IO_WQ_WORK_CANCEL)
+ 		ret = -ECANCELED;
+ 
+@@ -9098,8 +9099,8 @@ static void io_uring_clean_tctx(struct i
+ 		 * Must be after io_uring_del_task_file() (removes nodes under
+ 		 * uring_lock) to avoid race with io_uring_try_cancel_iowq().
+ 		 */
+-		tctx->io_wq = NULL;
+ 		io_wq_put_and_exit(wq);
++		tctx->io_wq = NULL;
  	}
--- 
-2.30.2
-
+ }
+ 
 
 
