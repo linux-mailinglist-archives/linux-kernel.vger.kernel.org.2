@@ -2,130 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92F1540D104
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 02:49:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 300A240D105
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 02:55:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233463AbhIPAub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 20:50:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49228 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233405AbhIPAua (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 20:50:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 78A9761186
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 00:49:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631753350;
-        bh=0fKIb1wSJtzBX6f3dXc+/Xbaxxti6nBaEoOdmYLZUIk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=WCvnczTQPx2dh1r9Q2ZKG5wBOfjDM8AxcKQHwq5bUKOcy/kF4rvxBJv9Tn/T9Gjll
-         ysjVntR1bAPllMoGBE0Lr6QgPig14HlVYVgp4mglTOu9sBKg5WDY5nKghhUsUirveX
-         vd5/OfJ1mUx3hbzdHVLGy/9JYEQSiw0OyTq3vdGuPJDgqY2g1oPdgU9/gqB61SsQtV
-         jAAZtlLKseywDxOGO04SYZAr1mzmLV+5H8ndbtuc8u275zUs69aBO1NdetVUkP6ccS
-         L/PeQEd0lIMjohnGzF1Q6nStfu//tF+xGPVO0qq6XbFW6ZNXQ3lmqmMk5oZp8Eyxxw
-         YnJIHB/CLVcvw==
-Received: by mail-lf1-f49.google.com with SMTP id b18so10350207lfb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 17:49:10 -0700 (PDT)
-X-Gm-Message-State: AOAM531j3X+9DqErtb0Oyqdf7XloCwknjDsOtZKQQetaZLfW4tPSzDPg
-        Gi9w4YhRJr76rG7pMWgoNW0XS08T12tb2oB3RYM=
-X-Google-Smtp-Source: ABdhPJwZWPa7mrnasG5fOmbf2PwdvOe0X12pKkbc9DRuVQ2YmRoDJWly+mMIvlfW0LUkmJZBCBhrPIVa0wvTyC+zIME=
-X-Received: by 2002:a2e:3307:: with SMTP id d7mr2546833ljc.292.1631753348776;
- Wed, 15 Sep 2021 17:49:08 -0700 (PDT)
+        id S233367AbhIPA5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 20:57:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233393AbhIPA47 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 20:56:59 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8535C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 17:55:39 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id w19so4264602pfn.12
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 17:55:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:references:cc:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=SWJ+O7xTSzypvU9MJRBc08IDjBowgyZWTz1sphL3dYk=;
+        b=akkR7UKwuWbMnFjhU5j2rkW9tCSFFFsih8pI/4GPU6sdGhgBHOFHvI+75b58PWtfQd
+         Gn1M66O0oKXvkBY1qXCgd+EhfSBIYLywKhfyMOz98nKpjKb7emKwwGoi7OwuCwj9zY0q
+         KDOJVvIStgpLe7QFRDKZfeFVU+93/xOPEG9n43cStar8KrjQtxtUt5FPdeBrDhUnRurZ
+         HrWsw9nNo1YwjRoXThjRZamAFCS3vYlcpNAx3T72DobiW2oFlIPCXiyxSFLnV01EgIeO
+         Ayqfgu9pzWaYu/jarNyNmmFp+kpQf3A8JjvfOeSbUCjuqe6epqIF/gy28yVZRP6efcwg
+         nUeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=SWJ+O7xTSzypvU9MJRBc08IDjBowgyZWTz1sphL3dYk=;
+        b=c0gWsRtLDiH5XFLzZ2gzlapj9pAXNeISmqPl/KmGzFDgLntZo6B4+HyDqTiy3vhYzC
+         3Vdeektv8E5lfY+JAGwWu76MAnmaunPeA7p4xRqWCkV96DotbZoc73VhSIAie4GjTFmQ
+         /w6ml22a1pse/0Vjl6NHvZoBMxtufo2sH8lzQFCWseuchyZuF2l52a+WI+Ar7+aSlNHQ
+         +s7V3RC5M1opeDHaAH9LX1SAujtToSGFWjnNxEmb5vYj5mWoimorBl236fjX2SJa9uu/
+         WfFO87cEtbmmqpgLl9hnkHlIJcUJs5TKEA/2HSVYhCRW99CY1HEKJCcUT4AHWvVaxarI
+         LxhQ==
+X-Gm-Message-State: AOAM530pZpn5q6G2uN9gSJeMbml945u+Pxg2uLGVsOIojTm2Y+ajIaSH
+        Dd5+EzBOdrEKNkq3MKqWuAHnKnEbVuI=
+X-Google-Smtp-Source: ABdhPJwioxc8JaG7f5o3726IurGWuN9u1wbkngYQCOiO2ErIDSougiTuAcaoEc9EgAOmZbZN0gV4vw==
+X-Received: by 2002:a63:7a0e:: with SMTP id v14mr2450023pgc.466.1631753739076;
+        Wed, 15 Sep 2021 17:55:39 -0700 (PDT)
+Received: from [10.1.1.26] (222-155-4-20-adsl.sparkbb.co.nz. [222.155.4.20])
+        by smtp.gmail.com with ESMTPSA id m18sm706514pjq.32.2021.09.15.17.55.35
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 15 Sep 2021 17:55:38 -0700 (PDT)
+Subject: Re: [PATCH 3/3] m68k: leave stack mangling to asm wrapper of
+ sigreturn()
+To:     Al Viro <viro@zeniv.linux.org.uk>
+References: <YP2c1xk9LJ0zE3KW@zeniv-ca.linux.org.uk>
+ <YP2dTQPm1wGPWFgD@zeniv-ca.linux.org.uk>
+ <08183665-f846-0c5e-a8c7-d0a65e78a3da@gmail.com>
+ <YUKNn3erTbH+ytpM@zeniv-ca.linux.org.uk>
+Cc:     linux-m68k@lists.linux-m68k.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        linux-kernel@vger.kernel.org
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <48dafad1-4f0c-4ab7-792c-b34a81d26799@gmail.com>
+Date:   Thu, 16 Sep 2021 12:53:53 +1200
+User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:45.0) Gecko/20100101
+ Thunderbird/45.8.0
 MIME-Version: 1.0
-References: <20210911092139.79607-1-guoren@kernel.org> <20210911092139.79607-3-guoren@kernel.org>
- <20210915074727.GB20024@lst.de>
-In-Reply-To: <20210915074727.GB20024@lst.de>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Thu, 16 Sep 2021 08:48:57 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTSHvm5h8ZjB40jnCpT15YxA1eanMO8kghRbLWV1xqv9jg@mail.gmail.com>
-Message-ID: <CAJF2gTSHvm5h8ZjB40jnCpT15YxA1eanMO8kghRbLWV1xqv9jg@mail.gmail.com>
-Subject: Re: [RFC PATCH V4 2/6] riscv: errata: pgtable: Add custom Svpbmt
- supported for Allwinner D1
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Anup Patel <anup.patel@wdc.com>, Atish Patra <atish.patra@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        =?UTF-8?Q?Christoph_M=C3=BCllner?= <christoph.muellner@vrull.eu>,
-        Philipp Tomsich <philipp.tomsich@vrull.eu>,
-        liush <liush@allwinnertech.com>, wefu@redhat.com,
-        =?UTF-8?B?V2VpIFd1ICjlkLTkvJ8p?= <lazyparser@gmail.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        taiten.peng@canonical.com, aniket.ponkshe@canonical.com,
-        heinrich.schuchardt@canonical.com, gordan.markus@canonical.com,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Arnd Bergmann <arnd@arndb.de>, Chen-Yu Tsai <wens@csie.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        Greg Favor <gfavor@ventanamicro.com>,
-        Andrea Mondelli <andrea.mondelli@huawei.com>,
-        Jonathan Behrens <behrensj@mit.edu>,
-        Xinhaoqu <xinhaoqu@huawei.com>,
-        Bill Huffman <huffman@cadence.com>,
-        Nick Kossifidis <mick@ics.forth.gr>,
-        Allen Baum <allen.baum@esperantotech.com>,
-        Josh Scheid <jscheid@ventanamicro.com>,
-        Richard Trauben <rtrauben@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YUKNn3erTbH+ytpM@zeniv-ca.linux.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 3:47 PM Christoph Hellwig <hch@lst.de> wrote:
+Hi Al,
+
+On 16/09/21 12:19, Al Viro wrote:
+> On Thu, Sep 16, 2021 at 11:35:05AM +1200, Michael Schmitz wrote:
 >
-> This is the wrong way around.  We need to design around the PBMT
-> definitions.
-I've defined them in arch/riscv/include/asm/pgtable-bits.h first, that
-follow current latest draft. Then I undefine them in
-errata/thead/errata.c to illustrate we should follow standard PBMT,
-not a custom one.
+>> This one's a little harder - you use a 84 byte gap on each sigreturn, no
+>> matter what the frame size we need to restore. The original
+>> mangle_kernel_stack() only makes room on the stack when it has no other
+>> option (using twice as much size - correct me if I'm wrong).
+>>
+>> Ideally, we'd only leave a gap for mangle_kernel_stack() to use if the frame
+>> size requires us to do so. Working that out in asm glue would be
+>> sufficiently convoluted as to cancel out the benefits of cleaning up the C
+>> sigreturn part. Probably not worth it.
+>
+> You'd need to
+> 	* load the frame type from sigcontext (and deal with EFAULT, etc.)
+> 	* make decision based on that
+> 	* pass the type down into sigreturn(), so we wouldn't run into
+> mismatches.
+>
+> And all that just to avoid a single "subtract a constant from stack pointer"
+> insn.  We are on a very shallow kernel stack here - it's a syscall entry,
+> after all.  And the stack footprint of do_sigreturn() is fairly small - e.g.
+> stat(2) eats a lot more.
 
-> If we want to hack in support for completely broken SOCs
-> that intentionally violate the specification it should be done after
-> the fact,
-When c9xx was released in 2018, there is no clear direction for how to
-solve the non-coherent problem. We just thought PBMT is the correct
-direction, but we can't predict how encoding exactly in the highest
-bits. (Maybe we should keep the highest bits zero for _P/SXXX in
-pgtable.h, but it was really hard to guess at that time.) So don't
-imply we "intentionally" here! When the svpbmt is frozen in the
-future, we would follow that in our next-generation processor.
+Thanks, that's what I was wondering. Not worth the extra complexity then.
 
-> in a separate patch, using alternatives and clearly documenting
-> how broken these SOCs are.
-Okay, I would separate errata into another patch.
+>
+> We are not initializing the gap either - it's just reserved on stack; we only
+> access it if we need to enlarge the stack frame.
+>
+> IOW, what would be the benefit of trying to avoid unconditional gap there?
 
-About documenting, I've illustrated c9xx PTE format's detail and using
-undef _PAGE_XXX to show that we replaced standard's in errata:
+Avoiding a kernel stack overflow - there are comments in the code that 
+warn against that, but those may be largely historic...
 
-+/*
-+ * T-HEAD C9xx PTE format:
-+ * | 63 | 62 | 61 | 60 | 59-8 | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0
-+ *   SO   C    B    SH   RSW    D   A   G   U   X   W   R   V
-+ *   ^    ^    ^    ^    ^
-+ * BIT(63): SO - Strong Order
-+ * BIT(62): C  - Cacheable
-+ * BIT(61): B  - Bufferable
-+ * BIT(60): SH - Shareable
-+ *
-+ * MT_MASK : [63 - 59]
-+ * MT_PMA  : C + SH
-+ * MT_NC   : (none)
-+ * MT_IO   : SO
-+ */
-+#undef _PAGE_MT_MASK
-+#undef _PAGE_MT_PMA
-+#undef _PAGE_MT_NC
-+#undef _PAGE_MT_IO
-+
-+#define _PAGE_MT_MASK  0xf800000000000000
-+#define _PAGE_MT_PMA   0x5000000000000000
-+#define _PAGE_MT_NC    0x0
-+#define _PAGE_MT_IO    0x8000000000000000
-+#endif
+Cheers,
 
-
--- 
-Best Regards
- Guo Ren
-
-ML: https://lore.kernel.org/linux-csky/
+	Michael
