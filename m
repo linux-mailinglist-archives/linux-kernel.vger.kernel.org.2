@@ -2,90 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5104440EDAA
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 01:06:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30A4A40EDB0
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 01:08:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239164AbhIPXHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 19:07:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53746 "EHLO
+        id S241374AbhIPXKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 19:10:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229997AbhIPXHm (ORCPT
+        with ESMTP id S241216AbhIPXKJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 19:07:42 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4356AC061574;
-        Thu, 16 Sep 2021 16:06:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1631833579;
-        bh=NVLNJise4O43rAhgNgQnmJZqXyUWeHQ89TeyIjf5OtU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=rp0kycHBYlszh5bxwiLmEFYTjd5CaFwC7xXQWli6r8WRSDcTNiZwYX154FCrBoo34
-         xycL8zJtz8aUFNPoK+Yt1DQspNMPIwUuIC9JlCyYqytldWEXZvSwrWXhN9zIu8d/5r
-         OR8nhvphV9oarf6JayfJIb/y8YTx1QNEN9qfnynz6yIbNDS1gXbkSmdguGsnkZUyrX
-         gKD7zxGJuHhXrMv8DuwdXo2do8WYAD1rNPwgVmuHUc+w2zGdGIJDrPh/E8zZj0qPSZ
-         YOUjoK767+NLf3Ke36NtuTxrbjWxZ0rfiQVMSC7iKJHOlZF/AHRVf5c2pnsUe8bqjj
-         ezruhfKdQE2MQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H9Xkz0DXrz9sXk;
-        Fri, 17 Sep 2021 09:06:18 +1000 (AEST)
-Date:   Fri, 17 Sep 2021 09:06:18 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Abel Vesa <abel.vesa@nxp.com>
-Cc:     Jacky Bai <ping.bai@nxp.com>, Peng Fan <peng.fan@nxp.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the clk-imx tree
-Message-ID: <20210917090618.3a7ac4be@canb.auug.org.au>
+        Thu, 16 Sep 2021 19:10:09 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2ADEC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 16:08:47 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id b15so6361106lfe.7
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 16:08:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EEZ3KzJ/OoVk3tZxbZ8tD6FSY51r/kCa6gRIxucdHJM=;
+        b=z48XNACMi5II30bJAbbmdTmkselHRQoTfWaZRmNYCVPyXUj5bLzFr1Bh2hqfadlIV/
+         qUOax18dNGgiRKBPpDX9sEtQ5kjm7KUNdIrkxI218QPrls6K2KTjGz6+mjYo3emrVm5X
+         WRnJFUdDh1oUplNZCRK2y/l9zMClcM+nkpOsFqu/F6awihIeu6bWgVLsqQPJEwZ/DDsd
+         9nrySfUBYR/rPcaL06JHsseWnnK1k3WPoZsUcvZyn+yu6sicOR85UeR0K0/erM6ggzjh
+         dBKggmeAp1OhpVf1hcKPytH37NiRy7FXKYi3VrsfWugw50mnNUe2ZYNI3XCJFJFNLZE8
+         YnjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EEZ3KzJ/OoVk3tZxbZ8tD6FSY51r/kCa6gRIxucdHJM=;
+        b=Gaqae2yO9KSlZnpmYo0Dz67abTnjA3Vr7OBfwlcVp8Eb+khKjgpRlZKQ5mvRXV0YvV
+         IuUKXy9pRnafuksgl5ihz0RLj8k06f5gdHeA0DzDVXZUmcoRHcwFaGdYGPsHXhL9mdBa
+         TVfyQaiXHNVtVP1fRwcvFDOGCH41RajK+D/3rEfkbeOsMKMXVkLjuOL1158NUabGY1TC
+         CT8oSu+e0Kflvvv1XppXoG1/yRfQig0GWsG0i6K0PvLyKLW1X92mQTU3M7nPhTvNIlUh
+         jhUiNQXzenWMk0BibRPKOlp2Q9NgGe5mpL62Dd1wehTM1JbEpWFqEfyjCapQLiTVTV1F
+         kZxQ==
+X-Gm-Message-State: AOAM5317ec6N2Dg5BSzzETeeWrxSTdcRtptGL0EGEHwIeHA5YPynBgSE
+        hria5yjZnQ3Un+oaL47OOYeaW+dzxX4BSBjmYMVMiw==
+X-Google-Smtp-Source: ABdhPJymcPdf0VI+AxaenTQWWVdAj6oiW83pqHfJDqYKIz35Ixkc9MmtlBYPB2581adUDpiVJFaiyWCHh3v//qtvxac=
+X-Received: by 2002:a2e:4c19:: with SMTP id z25mr663526lja.145.1631833726007;
+ Thu, 16 Sep 2021 16:08:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/b8dF_tbP=zcH1ieeJHlsPoK";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <1631798498-10864-1-git-send-email-skakit@codeaurora.org> <1631798498-10864-2-git-send-email-skakit@codeaurora.org>
+In-Reply-To: <1631798498-10864-2-git-send-email-skakit@codeaurora.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 17 Sep 2021 01:08:35 +0200
+Message-ID: <CACRpkdYenJw10ddiXh1FhwQQvCJ-ssV96ezQxVboDe5bVzpR5A@mail.gmail.com>
+Subject: Re: [PATCH V5 1/2] pinctrl: qcom: spmi-gpio: correct parent irqspec translation
+To:     Satya Priya <skakit@codeaurora.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        David Collins <collinsd@codeaurora.org>,
+        Kiran Gunda <kgunda@codeaurora.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, MSM <linux-arm-msm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/b8dF_tbP=zcH1ieeJHlsPoK
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Sep 16, 2021 at 3:22 PM Satya Priya <skakit@codeaurora.org> wrote:
 
-Hi all,
+> From: David Collins <collinsd@codeaurora.org>
+>
+> pmic_gpio_child_to_parent_hwirq() and
+> gpiochip_populate_parent_fwspec_fourcell() translate a pinctrl-
+> spmi-gpio irqspec to an SPMI controller irqspec.  When they do
+> this, they use a fixed SPMI slave ID of 0 and a fixed GPIO
+> peripheral offset of 0xC0 (corresponding to SPMI address 0xC000).
+> This translation results in an incorrect irqspec for secondary
+> PMICs that don't have a slave ID of 0 as well as for PMIC chips
+> which have GPIO peripherals located at a base address other than
+> 0xC000.
+>
+> Correct this issue by passing the slave ID of the pinctrl-spmi-
+> gpio device's parent in the SPMI controller irqspec and by
+> calculating the peripheral ID base from the device tree 'reg'
+> property of the pinctrl-spmi-gpio device.
+>
+> Signed-off-by: David Collins <collinsd@codeaurora.org>
+> Signed-off-by: satya priya <skakit@codeaurora.org>
+> Fixes: ca69e2d165eb ("qcom: spmi-gpio: add support for hierarchical IRQ chip")
+> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
 
-After merging the clk-imx tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
+Patch applied for fixes.
 
-ERROR: modpost: "imx_clk_hw_pfdv2" [drivers/clk/imx/clk-imx8ulp.ko] undefin=
-ed!
-ERROR: modpost: "imx_clk_hw_pllv4" [drivers/clk/imx/clk-imx8ulp.ko] undefin=
-ed!
-ERROR: modpost: "imx8ulp_clk_hw_composite" [drivers/clk/imx/clk-imx8ulp.ko]=
- undefined!
+Is a similar patch needed for
+drivers/pinctrl/qcom/pinctrl-ssbi-gpio.c
+?
 
-Caused by commit
+Notice ssbi rather than sbmi...
 
-  86ce2d393ff7 ("clk: imx: Add clock driver for imx8ulp")
-
-I have used the clk-imx tree from next-20210916 fot today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/b8dF_tbP=zcH1ieeJHlsPoK
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFDzeoACgkQAVBC80lX
-0Gy2pAf+LlQ1PAlKmvsdPaOx8cZG21uN8mHEyli0TKqZHGr3ax/HQnpJEQh6GVcu
-1csMNg+Yqicq2VVxFp1F1Z+j4CwefABKl6BdqKOwN2ADxHhOqfnbOm59ViUBlwR8
-M/3Ee4gJibURQq5FB0BJ4VnDOJo5fcMP7/0g48DB1FltQy5Y6d+9BwEepUIrHf3V
-kDPRFzplb+peNtvwJ/R0/05LTj4n/i1mGkT3G7gJLMNHMHoglCtHP1qKZPC1IFLl
-H2zja1uWF3QG+HdUI/SF6u8IlihAHz5VwDVGZ7WkavjzQ7aHV5Q3cqzvaD7E/ZEK
-DyTJH5kvqryr+4EAIjA/bvCESmDlFg==
-=0r0u
------END PGP SIGNATURE-----
-
---Sig_/b8dF_tbP=zcH1ieeJHlsPoK--
+Yours,
+Linus Walleij
