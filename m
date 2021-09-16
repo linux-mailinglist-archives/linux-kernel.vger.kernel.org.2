@@ -2,123 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CFD440D63E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 11:30:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57C3440D640
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 11:31:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235852AbhIPJcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 05:32:01 -0400
-Received: from mail-mw2nam10on2079.outbound.protection.outlook.com ([40.107.94.79]:40929
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235481AbhIPJbz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 05:31:55 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jkyUkjkLYGC56h2921zM3BfDZ2c/HCLHehe3DoknyiZQtl+5oH553lieA11Cz/ODtHulDnD6XI+4r7M2wXE7vYx/T8oIvAwIbUpidkJfMQ9PvJA1inj9LDufap0b12ig/6Okdm/dRYyM053iwUtsIsig7hmzsu/lJayRCTkMzg5GiOO0hJ7C8kycJCiyAGk9fhm1/sAJwSnHL6mDeCKICQ2qMt1yOdHiJohVeShSpPt4BcuT9xtRv3HRaA2DQzja3MMawptcCq17bD412mFj5UD/JX3hi3bowlhPR855ByyWUzl3AKRTwu70ox1JtTo0H3pVsCNFnzbCWv4+76f6jQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=JU07ocTRAWQofNexg+gbdyHyqLAt/i0qpcokFBXgsGc=;
- b=Dmcva8UHgelr2EWqWhuWDnNaXd/f/6V6yyra5ENhBGvLDfl22iDb5tINP5llNBiqlNC9uS7oyFbRyUUlB8U8uw4MxKJP56EJOfemi5muModIPyonDSSZjz8518O7aT40Iu9XLUKmiRqsIyM+6PUl80UWg9G3X5ys6ywF/fcgMePJ21CdDp++PGk1Rc3lAfTXcm9Wfh4/gPccA+zzqlOVMpLWF+YRYgsoDzCOptk6ESt49R3Ws8MItcSAPEoSYHV6xyMnrf4w4/3lr6WFSf323aiyC4GQvlLQdrgSW20JnKZNvj7MTqJWXaEG81J5Z5QSeSqQdNEJ9DCTdfpQ2mn34w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=alien8.de smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JU07ocTRAWQofNexg+gbdyHyqLAt/i0qpcokFBXgsGc=;
- b=xV8oXWlaR1WgwXO7sRvneaM+hLAulmp9gwICcQ7Sq0xMEn/AzrkKSzdVQSMHZ3xcZauxVbArUk29eifA9LxPaD4/UhsXw97XbpJYw9G4aa0ASmkNrK6wZo4e88gmFxQRCkOzkMKJrb4vH57MIS4gKtmUhtNVgbef1cEpKH7pUxk=
-Received: from BN9PR03CA0688.namprd03.prod.outlook.com (2603:10b6:408:10e::33)
- by CH2PR12MB3957.namprd12.prod.outlook.com (2603:10b6:610:2c::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Thu, 16 Sep
- 2021 09:30:32 +0000
-Received: from BN8NAM11FT012.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:10e:cafe::af) by BN9PR03CA0688.outlook.office365.com
- (2603:10b6:408:10e::33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend
- Transport; Thu, 16 Sep 2021 09:30:32 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; alien8.de; dkim=none (message not signed)
- header.d=none;alien8.de; dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BN8NAM11FT012.mail.protection.outlook.com (10.13.177.55) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4523.14 via Frontend Transport; Thu, 16 Sep 2021 09:30:30 +0000
-Received: from hr-amd (10.180.168.240) by SATLEXMB04.amd.com (10.181.40.145)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Thu, 16 Sep
- 2021 04:30:26 -0500
-Date:   Thu, 16 Sep 2021 17:30:27 +0800
-From:   Huang Rui <ray.huang@amd.com>
-To:     Borislav Petkov <bp@alien8.de>
-CC:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        "Ingo Molnar" <mingo@kernel.org>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "Sharma, Deepak" <Deepak.Sharma@amd.com>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "Limonciello, Mario" <Mario.Limonciello@amd.com>,
-        "Fontenot, Nathan" <Nathan.Fontenot@amd.com>,
-        "Su, Jinzhou (Joe)" <Jinzhou.Su@amd.com>,
-        "Du, Xiaojian" <Xiaojian.Du@amd.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>
-Subject: Re: [PATCH 01/19] x86/cpufreatures: add AMD CPPC extension feature
- flag
-Message-ID: <20210916093027.GD3755511@hr-amd>
-References: <20210908150001.3702552-1-ray.huang@amd.com>
- <20210908150001.3702552-2-ray.huang@amd.com>
- <YTpLO6M2C0IqJ9XC@zn.tnic>
- <20210913094851.GB3731830@hr-amd>
- <YT9ManjgABReBVX2@zn.tnic>
+        id S235857AbhIPJci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 05:32:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235321AbhIPJch (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 05:32:37 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E80C0C061574;
+        Thu, 16 Sep 2021 02:31:16 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id ay33so6617051qkb.10;
+        Thu, 16 Sep 2021 02:31:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=A2Iia96pxfixNeVHvIK/3gOcz3FNSlkYOFHSjf8UkDs=;
+        b=Z/0MiOhFfYt3ctm+hYPOgoqkeqpc4XfpyHWwVbd74eONJWlNMsho7KwrMoMTt3jmNc
+         IHGITiqb+NJVoe+CSKNWczkOZDn/Zeu06X8K+3z/zy+6az59g+6vzCmShp051vzddETE
+         SHhCq3ic8q3VPnIrdPGqpQwUXQjnwD0KlCSGP9dy+jSJ4g2uGY2JJojE41TXz+99bJau
+         +a1O+gFpE2brtPe39Bvpi0LMUf+djwNgNg28/PyBBOXftD1nkgp2yUAwfslEkO9xLBIi
+         JsO2mtUyIjZiGZMf1xv/FcsOj94vHhMUiihKeUIKBa7GwFUt1PenY2fogiXF2bXeAYew
+         DHDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=A2Iia96pxfixNeVHvIK/3gOcz3FNSlkYOFHSjf8UkDs=;
+        b=J0Wu2fHpzw32hMWtvIB+yA6g2ndQ/2MjBMtY+8om3JxWQmvjH2iRtSVZZUkpw4Juwp
+         Qiq+XlUlBFxJlKKDOYPaZMchILya7GeWpTBkOnzjatk1dhLo7RRrduYc8+nTfA4ZnJhA
+         LMrN3blFhKUr+6mWe/hn4FD+GaPKtmm7diqTIAPMA8+Eoa8TQioNnjJtlUpumC4zC/ag
+         uLxzU1nTsLPk3V0/OXMYxmCKUDs2HtIMdCydLA/JKtvVn/hyAQsGBrNmOCURDGHfh+TY
+         hISMpCLJc05CuCmNGtlzgQO/5QTN4HyYDWFTOAs1u3WqMwTFfnSSdMTFw+D+zcFVpYwx
+         lFtQ==
+X-Gm-Message-State: AOAM5316ea3UVjZhUeyyttmUuGIx8zC/l4IdXFsyDL/ptcXGNqAQqbGY
+        nX5JM359OugpGA4jFawrbPHaaMZt5rq37DcdtKc=
+X-Google-Smtp-Source: ABdhPJw7tjiUFSlwG5uoIbh22odK4hg2khdmS0oT71+TN7k+0N2eSejm6G6mqzqb1Ws5vLyNIF1EGx3aNedCSoF8QMo=
+X-Received: by 2002:a05:620a:5a7:: with SMTP id q7mr4114196qkq.163.1631784676081;
+ Thu, 16 Sep 2021 02:31:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <YT9ManjgABReBVX2@zn.tnic>
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f15c07c5-caa9-4571-5a52-08d978f4a081
-X-MS-TrafficTypeDiagnostic: CH2PR12MB3957:
-X-Microsoft-Antispam-PRVS: <CH2PR12MB3957478857297BFE34ABB8CEECDC9@CH2PR12MB3957.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: d94OapSG6xqnAnatvtZU5V9XYjIIT4ZTqciWXmEyOeZfpInCEdrysZ5YsNCfg2LFNiTjKMsV800mfFAK76c8Qn4Nq/BhJSlnIfhmfbS1e0zLtoY1+QjhU3nrjcxJ+F5vNy2va4rTbkE5LaQZ78NE2qFWj2j/Y2TeAEKCZC1drWx11wDyFEh3vDoCIU8SLXSBgmwIKffGtl2J+5i3pPNMwsDXeJfTxcxWNaKNvBVGrW0hykOP3OpCYeAgjbFnM0CBwbRkWFW1pcpAjZ4yoX0OV1vOg8w/qsDUkNTC49lBolfDmcU80skt7squ/VooRq/oD1oxvNAEYRmN26al0P41Zt58/sWGoh7T6gAUU0aQBJp1HUjQfFo3FWwaiqpdCr6pN6ANhJtu1AozDEQKOgpkO0jZqz2rKkqg3LJlXLsx74DAMZ5I6QIOR0/z7xpyGm7y/D9lHCyWXuOIhfEzoomrHvojqnM4rIb7ZlNxZksMZyjGYki+wIEwgdakGwHACZpEykJcw8kuKtKHaZiTeJEbjQV/yrYc5icQ0BgvC8oQ0Cfr7pYsaJENa8FF9rgdUJ27auSJU0d5z3OAPz6vw4ZzYR+vwN06gvuTEjzb2d16u604TfXXP9i39XYZo+pU2+MtjT3l15Vl44jFOjU02zRnNh9EyZngjbnJz+4zf8n48c6ZIvOVYQ0kJoLGUTtoogPon3NJ8xs14dVGXyrRw2a33TBcQrlvM+KL3ZdzITag8lo=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(396003)(39860400002)(46966006)(36840700001)(83380400001)(8936002)(1076003)(9686003)(36860700001)(5660300002)(478600001)(70586007)(4744005)(70206006)(6916009)(86362001)(33716001)(8676002)(82310400003)(4326008)(356005)(81166007)(16526019)(186003)(2906002)(54906003)(426003)(316002)(47076005)(82740400003)(336012)(26005)(33656002)(55016002)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2021 09:30:30.8691
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: f15c07c5-caa9-4571-5a52-08d978f4a081
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT012.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB3957
+References: <20210906012559.8605-1-baptiste.lepers@gmail.com>
+In-Reply-To: <20210906012559.8605-1-baptiste.lepers@gmail.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Thu, 16 Sep 2021 10:30:40 +0100
+Message-ID: <CAL3q7H65GG54XcOOhn1Xc-4tMBO+NuLKrgC9AiFEY8=iqwGn+g@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: transaction: Fix misplaced barrier in btrfs_record_root_in_trans
+To:     Baptiste Lepers <baptiste.lepers@gmail.com>
+Cc:     "Paul E . McKenney" <paulmck@linux.ibm.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 09:04:42PM +0800, Borislav Petkov wrote:
-> On Mon, Sep 13, 2021 at 05:48:51PM +0800, Huang Rui wrote:
-> > This feature flag indicates the full MSR hardware solution of AMD
-> > P-States, if it is not set, that means we will go with in shared
-> > memory hardware solution. So we name this as extension.
-> 
-> Nobody cares whether it is an extension except you guys. Also, having
-> AMD_CPPC_EXT suggests there already is AMD_CPPC. But there isn't.
-> 
-> So call it X86_FEATURE_AMD_CPPC, please, for simplicity's sake.
-> 
+On Mon, Sep 6, 2021 at 2:38 AM Baptiste Lepers
+<baptiste.lepers@gmail.com> wrote:
+>
+> Per comment, record_root_in_trans orders the writes of the root->state
+> and root->last_trans:
+>       set_bit(BTRFS_ROOT_IN_TRANS_SETUP, &root->state);
+>       smp_wmb();
+>       root->last_trans =3D trans->transid;
+>
+> But the barrier that enforces the order on the read side is misplaced:
+>      smp_rmb(); <-- misplaced
+>      if (root->last_trans =3D=3D trans->transid &&
+>     <-- missing barrier here -->
+>             !test_bit(BTRFS_ROOT_IN_TRANS_SETUP, &root->state))
+>
+> This patches fixes the ordering and wraps the racy accesses with
+> READ_ONCE and WRITE_ONCE calls to avoid load/store tearing.
+>
+> Fixes: 7585717f304f5 ("Btrfs: fix relocation races")
+> Signed-off-by: Baptiste Lepers <baptiste.lepers@gmail.com>
+> ---
+>  fs/btrfs/transaction.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+>
+> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+> index 14b9fdc8aaa9..a609222e6704 100644
+> --- a/fs/btrfs/transaction.c
+> +++ b/fs/btrfs/transaction.c
+> @@ -437,7 +437,7 @@ static int record_root_in_trans(struct btrfs_trans_ha=
+ndle *trans,
+>                                    (unsigned long)root->root_key.objectid=
+,
+>                                    BTRFS_ROOT_TRANS_TAG);
+>                 spin_unlock(&fs_info->fs_roots_radix_lock);
+> -               root->last_trans =3D trans->transid;
+> +               WRITE_ONCE(root->last_trans, trans->transid);
+>
+>                 /* this is pretty tricky.  We don't want to
+>                  * take the relocation lock in btrfs_record_root_in_trans
+> @@ -489,7 +489,7 @@ int btrfs_record_root_in_trans(struct btrfs_trans_han=
+dle *trans,
+>                                struct btrfs_root *root)
+>  {
+>         struct btrfs_fs_info *fs_info =3D root->fs_info;
+> -       int ret;
+> +       int ret, last_trans;
 
-OK, no problem. I will update this in V2.
+last_trans should be u64, as root->last_trans is a u64.
 
-Thanks,
-Ray
+Other than that it looks good to me.
+Thanks.
+
+>
+>         if (!test_bit(BTRFS_ROOT_SHAREABLE, &root->state))
+>                 return 0;
+> @@ -498,8 +498,9 @@ int btrfs_record_root_in_trans(struct btrfs_trans_han=
+dle *trans,
+>          * see record_root_in_trans for comments about IN_TRANS_SETUP usa=
+ge
+>          * and barriers
+>          */
+> +       last_trans =3D READ_ONCE(root->last_trans);
+>         smp_rmb();
+> -       if (root->last_trans =3D=3D trans->transid &&
+> +       if (last_trans =3D=3D trans->transid &&
+>             !test_bit(BTRFS_ROOT_IN_TRANS_SETUP, &root->state))
+>                 return 0;
+>
+> --
+> 2.17.1
+>
+
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
