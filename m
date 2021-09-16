@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7732D40E2D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:17:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE75E40E2D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:17:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242570AbhIPQmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:42:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44968 "EHLO mail.kernel.org"
+        id S242725AbhIPQmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:42:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44970 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237633AbhIPQfp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:35:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A42C5619EC;
-        Thu, 16 Sep 2021 16:21:32 +0000 (UTC)
+        id S242555AbhIPQfq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:35:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B08561108;
+        Thu, 16 Sep 2021 16:21:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809293;
-        bh=O+LQ4DDfiI2Si5+OUE/qGGfq3U5Ne/55Ci9eA1GnmQc=;
+        s=korg; t=1631809295;
+        bh=7jspRymjruWv8ZVQQoIyyjjJyKqgfsOq/RILWjA1krM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oeAHUlFFLlHuaFdWWhRoIpg1tV6VmVWlRcqvusSS1XtjLui2U852i/jq2m6QcMCI4
-         Tem5OCxqA1VAXPMFOYBR2YGc9hmdJkAz8CuPGNtRwNG+Z1gdVBzc0gqcezEDTJebsa
-         0UTcCXfM9tkxgIjRcVCbEH7PCfG4zu70Nkcmf2ro=
+        b=uwLAV0rHHPSsj7nKOH7H3/+NRlfTJNjSwfPWHHIpswAerD2plMQALLCV0GS1IECZB
+         +SmjtT7EJF4bs4PB1EW4hOSP/MFEzmwxX4pS6M8ZEqyce2QP6P+f4F1UfrTf2OQxw7
+         +Zeq+YDIjX/3Y4RHv3muClkuX7OnAksQv9AjvKxU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anna Schumaker <Anna.Schumaker@Netapp.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wei Li <liwei391@huawei.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 100/380] sunrpc: Fix return value of get_srcport()
-Date:   Thu, 16 Sep 2021 17:57:37 +0200
-Message-Id: <20210916155807.434276921@linuxfoundation.org>
+Subject: [PATCH 5.13 101/380] scsi: fdomain: Fix error return code in fdomain_probe()
+Date:   Thu, 16 Sep 2021 17:57:38 +0200
+Message-Id: <20210916155807.470689965@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
 References: <20210916155803.966362085@linuxfoundation.org>
@@ -39,34 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anna Schumaker <Anna.Schumaker@Netapp.com>
+From: Wei Li <liwei391@huawei.com>
 
-[ Upstream commit 5d46dd04cb68771f77ba66dbf6fd323a4a2ce00d ]
+[ Upstream commit 632c4ae6da1d629eddf9da1e692d7617c568c256 ]
 
-Since bc1c56e9bbe9 transport->srcport may by unset, causing
-get_srcport() to return 0 when called. Fix this by querying the port
-from the underlying socket instead of the transport.
+If request_region() fails the return value is not set. Return -EBUSY on
+error.
 
-Fixes: bc1c56e9bbe9 (SUNRPC: prevent port reuse on transports which don't request it)
-Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
+Link: https://lore.kernel.org/r/20210715032625.1395495-1-liwei391@huawei.com
+Fixes: 8674a8aa2c39 ("scsi: fdomain: Add PCMCIA support")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wei Li <liwei391@huawei.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sunrpc/xprtsock.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/pcmcia/fdomain_cs.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/net/sunrpc/xprtsock.c b/net/sunrpc/xprtsock.c
-index 3bbf47046e8a..b836b4c322fc 100644
---- a/net/sunrpc/xprtsock.c
-+++ b/net/sunrpc/xprtsock.c
-@@ -1651,7 +1651,7 @@ static int xs_get_srcport(struct sock_xprt *transport)
- unsigned short get_srcport(struct rpc_xprt *xprt)
- {
- 	struct sock_xprt *sock = container_of(xprt, struct sock_xprt, xprt);
--	return sock->srcport;
-+	return xs_sock_getport(sock->sock);
- }
- EXPORT_SYMBOL(get_srcport);
+diff --git a/drivers/scsi/pcmcia/fdomain_cs.c b/drivers/scsi/pcmcia/fdomain_cs.c
+index e42acf314d06..33df6a9ba9b5 100644
+--- a/drivers/scsi/pcmcia/fdomain_cs.c
++++ b/drivers/scsi/pcmcia/fdomain_cs.c
+@@ -45,8 +45,10 @@ static int fdomain_probe(struct pcmcia_device *link)
+ 		goto fail_disable;
  
+ 	if (!request_region(link->resource[0]->start, FDOMAIN_REGION_SIZE,
+-			    "fdomain_cs"))
++			    "fdomain_cs")) {
++		ret = -EBUSY;
+ 		goto fail_disable;
++	}
+ 
+ 	sh = fdomain_create(link->resource[0]->start, link->irq, 7, &link->dev);
+ 	if (!sh) {
 -- 
 2.30.2
 
