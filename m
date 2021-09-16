@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B0B240E926
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:01:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91D6B40E907
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:01:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356418AbhIPRuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:50:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55272 "EHLO mail.kernel.org"
+        id S1345424AbhIPRrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:47:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54416 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355406AbhIPRl1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:41:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C347661A88;
-        Thu, 16 Sep 2021 16:53:00 +0000 (UTC)
+        id S1354598AbhIPRk0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:40:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5CEE9615A6;
+        Thu, 16 Sep 2021 16:51:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631811181;
-        bh=X+FLbjA7aUy6pDS2PfreaYIzs44DNysFpu7NLz6bn04=;
+        s=korg; t=1631811086;
+        bh=NtxiJotfvSHrPqcHKU2qSeQshjA17BTklKdd5THu/yU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cr3tpFcVGIjEprXLIxctCzCaxFI/Q4iLWNWq4ltGQ/UePshfwg8L8Kl5oUWmHcTD9
-         9640h8MttN6ddpd5jYJ9bech8IYDuZ4NzWcmQ2t95lVIPTRPk0OruC8T5BjkUI1mOq
-         dbeCsEXIkajeToU7mEcCMxUwpNipAQvOu93msPlc=
+        b=eQzndrvZTsV8YOlzUV7ZIvkknHIqk8dtuYUGRGKMeH9rBV5T81uFj92TePaGByyI6
+         XEQHKbupMLrnrXuL60ZPGzCjwFWMR+Lo0QIrK9JOpWnyQ0212OAfPLOhlWbIJdSmYd
+         ZqBChJHElNN60FlShhHCvZvQU3EWNEABwmTCkf7g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ilan Peer <ilan.peer@intel.com>,
+        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
         Luca Coelho <luciano.coelho@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 370/432] iwlwifi: mvm: Fix umac scan request probe parameters
-Date:   Thu, 16 Sep 2021 18:01:59 +0200
-Message-Id: <20210916155823.345828857@linuxfoundation.org>
+Subject: [PATCH 5.14 371/432] iwlwifi: mvm: fix access to BSS elements
+Date:   Thu, 16 Sep 2021 18:02:00 +0200
+Message-Id: <20210916155823.377222583@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
 References: <20210916155810.813340753@linuxfoundation.org>
@@ -40,54 +40,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ilan Peer <ilan.peer@intel.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit 35fc5feca7b24b97e828e6e6a4243b4b9b0131f8 ]
+[ Upstream commit 6c608cd6962ebdf84fd3de6d42f88ed64d2f4e1b ]
 
-Both 'iwl_scan_probe_params_v3' and 'iwl_scan_probe_params_v4'
-wrongly addressed the 'bssid_array' field which should supposed
-to be any array of BSSIDs each of size ETH_ALEN and not the
-opposite. Fix it.
+BSS elements are protected using RCU, so we need to use
+RCU properly to access them, fix that.
 
-Signed-off-by: Ilan Peer <ilan.peer@intel.com>
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
-Link: https://lore.kernel.org/r/iwlwifi.20210802215208.04146f24794f.I90726440ddff75013e9fecbe9fa1a05c69e3f17b@changeid
+Link: https://lore.kernel.org/r/iwlwifi.20210805130823.fd8b5791ab44.Iba26800a6301078d3782fb249c476dd8ac2bf3c6@changeid
 Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/intel/iwlwifi/fw/api/scan.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/fw/api/scan.h b/drivers/net/wireless/intel/iwlwifi/fw/api/scan.h
-index b2605aefc290..8b200379f7c2 100644
---- a/drivers/net/wireless/intel/iwlwifi/fw/api/scan.h
-+++ b/drivers/net/wireless/intel/iwlwifi/fw/api/scan.h
-@@ -1,6 +1,6 @@
- /* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
- /*
-- * Copyright (C) 2012-2014, 2018-2020 Intel Corporation
-+ * Copyright (C) 2012-2014, 2018-2021 Intel Corporation
-  * Copyright (C) 2013-2015 Intel Mobile Communications GmbH
-  * Copyright (C) 2016-2017 Intel Deutschland GmbH
-  */
-@@ -874,7 +874,7 @@ struct iwl_scan_probe_params_v3 {
- 	u8 reserved;
- 	struct iwl_ssid_ie direct_scan[PROBE_OPTION_MAX];
- 	__le32 short_ssid[SCAN_SHORT_SSID_MAX_SIZE];
--	u8 bssid_array[ETH_ALEN][SCAN_BSSID_MAX_SIZE];
-+	u8 bssid_array[SCAN_BSSID_MAX_SIZE][ETH_ALEN];
- } __packed; /* SCAN_PROBE_PARAMS_API_S_VER_3 */
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c b/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c
+index 70ebecb73c24..79f44435972e 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c
+@@ -2987,16 +2987,20 @@ static void iwl_mvm_check_he_obss_narrow_bw_ru_iter(struct wiphy *wiphy,
+ 						    void *_data)
+ {
+ 	struct iwl_mvm_he_obss_narrow_bw_ru_data *data = _data;
++	const struct cfg80211_bss_ies *ies;
+ 	const struct element *elem;
  
- /**
-@@ -894,7 +894,7 @@ struct iwl_scan_probe_params_v4 {
- 	__le16 reserved;
- 	struct iwl_ssid_ie direct_scan[PROBE_OPTION_MAX];
- 	__le32 short_ssid[SCAN_SHORT_SSID_MAX_SIZE];
--	u8 bssid_array[ETH_ALEN][SCAN_BSSID_MAX_SIZE];
-+	u8 bssid_array[SCAN_BSSID_MAX_SIZE][ETH_ALEN];
- } __packed; /* SCAN_PROBE_PARAMS_API_S_VER_4 */
+-	elem = cfg80211_find_elem(WLAN_EID_EXT_CAPABILITY, bss->ies->data,
+-				  bss->ies->len);
++	rcu_read_lock();
++	ies = rcu_dereference(bss->ies);
++	elem = cfg80211_find_elem(WLAN_EID_EXT_CAPABILITY, ies->data,
++				  ies->len);
  
- #define SCAN_MAX_NUM_CHANS_V3 67
+ 	if (!elem || elem->datalen < 10 ||
+ 	    !(elem->data[10] &
+ 	      WLAN_EXT_CAPA10_OBSS_NARROW_BW_RU_TOLERANCE_SUPPORT)) {
+ 		data->tolerated = false;
+ 	}
++	rcu_read_unlock();
+ }
+ 
+ static void iwl_mvm_check_he_obss_narrow_bw_ru(struct ieee80211_hw *hw,
 -- 
 2.30.2
 
