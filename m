@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88C5140EDC4
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 01:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B35240EDC6
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 01:15:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241524AbhIPXPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 19:15:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55426 "EHLO
+        id S241728AbhIPXPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 19:15:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241544AbhIPXPD (ORCPT
+        with ESMTP id S241495AbhIPXPF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 19:15:03 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12C41C0613C1
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 16:13:42 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id p4so11669254qki.3
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 16:13:42 -0700 (PDT)
+        Thu, 16 Sep 2021 19:15:05 -0400
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B5DCC0613D9
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 16:13:43 -0700 (PDT)
+Received: by mail-qv1-xf2e.google.com with SMTP id u4so5306776qvb.6
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 16:13:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=soleen.com; s=google;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=NWsMjir7JLvcnjD8xhnB6n3wImzlZNO2jGCGH+AGQL4=;
-        b=cB/9gAHcI9xMOZMGhUHMmoaZ4eX9ZrPDip4z8OjM0AZioqvYvr8GL+MRm6GnudDDNx
-         G5BDmCaZBnOmiXHQZk8ZBd932wVBTMnFyT8sauWkYq6K9u/7xeWnNj8UhO7OJYvjYftR
-         uc/o15lKpVu1WgNZg5Qm9ouL/178MWWpFwiC+fHOfQy1x4IVEQBtoEaqHHBM516RKyYH
-         RSsyXSosIpPE7JwRtT7ENWoaill1to/kSd/F+/gXXDAlRgQqU32S8HRHng/VS5zAm+1S
-         TT4vhAi8GfrQabgkyNPRnNTMUNO/wj4iLrCQ2E8RZ6KTRgbOVjA1adfYyHqkmFYaTIde
-         K33A==
+        bh=Ax+khFLMo4ZiuU9FVutUfzu+NTMgGKavPhnStp8tBHw=;
+        b=PbkZVHKG1lzCk69ODfdNdcgHyqZquLzFuzVT6KKZbcORyICTzwb+CxRxFl+5dybvEe
+         z5P1PAlMuXnW8gDxKtYN+y0VFpBI/4JZD836aPq+Utuovdu67emLZ1VcVCUaMdzpSVz+
+         jfj3a0cCtAqkUVzTY2rw6CsM66A1xZIFxR2KsV+OEVGs9vK9lgMNVT10JUej/4xxxlV+
+         MkUCl6eEpYQ6ZYv2h2qH8N3xLG7l1HWudXMoAu5ghDCXRUhezxdJzB9CtCgdQJo7XP9Q
+         PyP3+Hp2uq7may6hJyp/yc2W8oIDztRnQWLXlPgBjWkE8QqDyv86IlK99GHbmABoXA1f
+         Gl8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=NWsMjir7JLvcnjD8xhnB6n3wImzlZNO2jGCGH+AGQL4=;
-        b=ka2YcMFgpdgk1+M/cGDZsnzO4qW6WEFTqzxCvrR1vHXmLB3amOL/8u8LMpJgo9Px+V
-         cSyaPChXXWUh04ni787w0puKevXBDwBHUryOxlCtfgTVk8U4Dgq654c35mT/KiksoKEe
-         xRhUlZVjUsdoK8W75menGDnXXMUUG4Ieawp7qky5UaBffP5iprqnVt7pUneOn7uf1zh+
-         +dfsOtmnyDNjOMMD2NIHNTTj8R2oo+wJaesFwhs1mwWWJIvipUnm58vhzZ9d6GQheth4
-         VWmyA9BVrUXnXI7aim4kofSqvuFmwg6HavfjpvUnuybMwO5UTyE7ThnPLGtLaN6PyFju
-         05yA==
-X-Gm-Message-State: AOAM5311xAtv6ETK2AEmKpJXMB3U+U9aj/kHJBlPpj287shxPLaDLN/x
-        FrfvJLGnfIKVgHNgcj+HomiSLg==
-X-Google-Smtp-Source: ABdhPJyr/w2wgeq1H7NcfK32k0qrGhT2vhypkOOkKoRwzsQC6ihtdXUgyVzeBL/bHBxHZgee8ex8RA==
-X-Received: by 2002:a05:620a:4404:: with SMTP id v4mr7806522qkp.344.1631834021164;
-        Thu, 16 Sep 2021 16:13:41 -0700 (PDT)
+        bh=Ax+khFLMo4ZiuU9FVutUfzu+NTMgGKavPhnStp8tBHw=;
+        b=Ldxoffd7Io5v01pNPaYrL7++9CuyTFuj/F/gnTI3vgZOk9rRFpImA/BGZj9ZpPasNc
+         7DCiOqRy4TsQqLFK16i9pU1mxfa5QyHQJ6PIRF8f+JuPFF+R8RUbiaT7/El3qcbjqG7M
+         h6H6abxth/0Wb0wIZXV9WbkHcqikiIRvS9TkXqb/GTFwbzTlcL+febWsQBkyyxSFE2kL
+         +J6UR8WFKxbntlQrG87tFdOXe6flc3gUo2CkVloIqPkIC3YNAsJLVxd/5fKOFF435rot
+         4GBnUlC8baDUl+4WY9/eYyWoE6+RymRVlznlRDSHebHaV+eq6X/7QvdL8ApL9ldU0dAx
+         N+cg==
+X-Gm-Message-State: AOAM532VcNEvlMmdnw3+JXtz6B3B766YLXH17gazjRnp7bhoINuYWX5x
+        onuAIavBpDfQEsbrKdv2y8xk8w==
+X-Google-Smtp-Source: ABdhPJxdt0Gno/JIaUtNR1NRx65yQhLTr3uYqpdqpaJPl0uNatREDKubCc3nBMJAWCg6/G4DMYc9CQ==
+X-Received: by 2002:ad4:5583:: with SMTP id e3mr8239009qvx.42.1631834022594;
+        Thu, 16 Sep 2021 16:13:42 -0700 (PDT)
 Received: from localhost.localdomain (c-73-69-118-222.hsd1.nh.comcast.net. [73.69.118.222])
-        by smtp.gmail.com with ESMTPSA id az6sm3312891qkb.70.2021.09.16.16.13.39
+        by smtp.gmail.com with ESMTPSA id az6sm3312891qkb.70.2021.09.16.16.13.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 16:13:40 -0700 (PDT)
+        Thu, 16 Sep 2021 16:13:42 -0700 (PDT)
 From:   Pasha Tatashin <pasha.tatashin@soleen.com>
 To:     pasha.tatashin@soleen.com, jmorris@namei.org, sashal@kernel.org,
         ebiederm@xmission.com, kexec@lists.infradead.org,
@@ -60,9 +60,9 @@ To:     pasha.tatashin@soleen.com, jmorris@namei.org, sashal@kernel.org,
         selindag@gmail.com, tyhicks@linux.microsoft.com,
         kernelfans@gmail.com, akpm@linux-foundation.org,
         madvenka@linux.microsoft.com
-Subject: [PATCH v17 09/15] arm64: kexec: relocate in EL1 mode
-Date:   Thu, 16 Sep 2021 19:13:19 -0400
-Message-Id: <20210916231325.125533-10-pasha.tatashin@soleen.com>
+Subject: [PATCH v17 10/15] arm64: kexec: use ld script for relocation function
+Date:   Thu, 16 Sep 2021 19:13:20 -0400
+Message-Id: <20210916231325.125533-11-pasha.tatashin@soleen.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210916231325.125533-1-pasha.tatashin@soleen.com>
 References: <20210916231325.125533-1-pasha.tatashin@soleen.com>
@@ -72,86 +72,159 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since we are going to keep MMU enabled during relocation, we need to
-keep EL1 mode throughout the relocation.
+Currently, relocation code declares start and end variables
+which are used to compute its size.
 
-Keep EL1 enabled, and switch EL2 only before entering the new world.
+The better way to do this is to use ld script incited, and put relocation
+function in its own section.
 
-Suggested-by: James Morse <james.morse@arm.com>
 Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
 ---
- arch/arm64/kernel/cpu-reset.h       |  3 +--
- arch/arm64/kernel/machine_kexec.c   |  4 ++--
- arch/arm64/kernel/relocate_kernel.S | 13 +++++++++++--
- 3 files changed, 14 insertions(+), 6 deletions(-)
+ arch/arm64/include/asm/sections.h   |  1 +
+ arch/arm64/kernel/machine_kexec.c   | 16 ++++++----------
+ arch/arm64/kernel/relocate_kernel.S | 15 ++-------------
+ arch/arm64/kernel/vmlinux.lds.S     | 19 +++++++++++++++++++
+ 4 files changed, 28 insertions(+), 23 deletions(-)
 
-diff --git a/arch/arm64/kernel/cpu-reset.h b/arch/arm64/kernel/cpu-reset.h
-index 81b3d0fe7a63..296abbac7192 100644
---- a/arch/arm64/kernel/cpu-reset.h
-+++ b/arch/arm64/kernel/cpu-reset.h
-@@ -20,11 +20,10 @@ static inline void __noreturn __nocfi cpu_soft_restart(unsigned long entry,
- {
- 	typeof(__cpu_soft_restart) *restart;
+diff --git a/arch/arm64/include/asm/sections.h b/arch/arm64/include/asm/sections.h
+index e4ad9db53af1..152cb35bf9df 100644
+--- a/arch/arm64/include/asm/sections.h
++++ b/arch/arm64/include/asm/sections.h
+@@ -21,5 +21,6 @@ extern char __exittext_begin[], __exittext_end[];
+ extern char __irqentry_text_start[], __irqentry_text_end[];
+ extern char __mmuoff_data_start[], __mmuoff_data_end[];
+ extern char __entry_tramp_text_start[], __entry_tramp_text_end[];
++extern char __relocate_new_kernel_start[], __relocate_new_kernel_end[];
  
--	unsigned long el2_switch = is_hyp_nvhe();
- 	restart = (void *)__pa_symbol(function_nocfi(__cpu_soft_restart));
- 
- 	cpu_install_idmap();
--	restart(el2_switch, entry, arg0, arg1, arg2);
-+	restart(0, entry, arg0, arg1, arg2);
- 	unreachable();
- }
- 
+ #endif /* __ASM_SECTIONS_H */
 diff --git a/arch/arm64/kernel/machine_kexec.c b/arch/arm64/kernel/machine_kexec.c
-index 59a4b4172b68..cf5d6f22a041 100644
+index cf5d6f22a041..83da6045cd45 100644
 --- a/arch/arm64/kernel/machine_kexec.c
 +++ b/arch/arm64/kernel/machine_kexec.c
-@@ -240,8 +240,8 @@ void machine_kexec(struct kimage *kimage)
- 	} else {
- 		if (is_hyp_nvhe())
- 			__hyp_set_vectors(kimage->arch.el2_vectors);
--		cpu_soft_restart(kimage->arch.kern_reloc, virt_to_phys(kimage),
--				 0, 0);
-+		cpu_soft_restart(kimage->arch.kern_reloc,
-+				 virt_to_phys(kimage), 0, 0);
+@@ -21,14 +21,11 @@
+ #include <asm/mmu.h>
+ #include <asm/mmu_context.h>
+ #include <asm/page.h>
++#include <asm/sections.h>
+ #include <asm/trans_pgd.h>
+ 
+ #include "cpu-reset.h"
+ 
+-/* Global variables for the arm64_relocate_new_kernel routine. */
+-extern const unsigned char arm64_relocate_new_kernel[];
+-extern const unsigned long arm64_relocate_new_kernel_size;
+-
+ /**
+  * kexec_image_info - For debugging output.
+  */
+@@ -163,6 +160,7 @@ static void *kexec_page_alloc(void *arg)
+ int machine_kexec_post_load(struct kimage *kimage)
+ {
+ 	void *reloc_code = page_to_virt(kimage->control_code_page);
++	long reloc_size;
+ 	struct trans_pgd_info info = {
+ 		.trans_alloc_page	= kexec_page_alloc,
+ 		.trans_alloc_arg	= kimage,
+@@ -183,17 +181,15 @@ int machine_kexec_post_load(struct kimage *kimage)
+ 			return rc;
  	}
  
- 	BUG(); /* Should never get here. */
+-	memcpy(reloc_code, arm64_relocate_new_kernel,
+-	       arm64_relocate_new_kernel_size);
++	reloc_size = __relocate_new_kernel_end - __relocate_new_kernel_start;
++	memcpy(reloc_code, __relocate_new_kernel_start, reloc_size);
+ 	kimage->arch.kern_reloc = __pa(reloc_code);
+ 
+ 	/* Flush the reloc_code in preparation for its execution. */
+ 	dcache_clean_inval_poc((unsigned long)reloc_code,
+-			       (unsigned long)reloc_code +
+-			       arm64_relocate_new_kernel_size);
++			       (unsigned long)reloc_code +  reloc_size);
+ 	icache_inval_pou((uintptr_t)reloc_code,
+-			 (uintptr_t)reloc_code +
+-			 arm64_relocate_new_kernel_size);
++			 (uintptr_t)reloc_code + reloc_size);
+ 	kexec_list_flush(kimage);
+ 	kexec_image_info(kimage);
+ 
 diff --git a/arch/arm64/kernel/relocate_kernel.S b/arch/arm64/kernel/relocate_kernel.S
-index 63ea19868f63..b4fb97312a80 100644
+index b4fb97312a80..9d2400855ee4 100644
 --- a/arch/arm64/kernel/relocate_kernel.S
 +++ b/arch/arm64/kernel/relocate_kernel.S
-@@ -13,6 +13,7 @@
- #include <asm/kexec.h>
- #include <asm/page.h>
+@@ -15,6 +15,7 @@
  #include <asm/sysreg.h>
-+#include <asm/virt.h>
+ #include <asm/virt.h>
  
++.pushsection    ".kexec_relocate.text", "ax"
  /*
   * arm64_relocate_new_kernel - Put a 2nd stage image in place and boot it.
-@@ -61,12 +62,20 @@ SYM_CODE_START(arm64_relocate_new_kernel)
- 	isb
- 
- 	/* Start new image. */
-+	ldr	x1, [x0, #KIMAGE_ARCH_EL2_VECTORS]	/* relocation start */
-+	cbz	x1, .Lel1
-+	ldr	x1, [x0, #KIMAGE_START]		/* relocation start */
-+	ldr	x2, [x0, #KIMAGE_ARCH_DTB_MEM]	/* dtb address */
-+	mov	x3, xzr
-+	mov	x4, xzr
-+	mov     x0, #HVC_SOFT_RESTART
-+	hvc	#0				/* Jumps from el2 */
-+.Lel1:
- 	ldr	x4, [x0, #KIMAGE_START]		/* relocation start */
- 	ldr	x0, [x0, #KIMAGE_ARCH_DTB_MEM]	/* dtb address */
--	mov	x1, xzr
- 	mov	x2, xzr
+  *
+@@ -77,16 +78,4 @@ SYM_CODE_START(arm64_relocate_new_kernel)
  	mov	x3, xzr
--	br	x4
-+	br	x4				/* Jumps from el1 */
+ 	br	x4				/* Jumps from el1 */
  SYM_CODE_END(arm64_relocate_new_kernel)
+-
+-.align 3	/* To keep the 64-bit values below naturally aligned. */
+-
+-.Lcopy_end:
+-.org	KEXEC_CONTROL_PAGE_SIZE
+-
+-/*
+- * arm64_relocate_new_kernel_size - Number of bytes to copy to the
+- * control_code_page.
+- */
+-.globl arm64_relocate_new_kernel_size
+-arm64_relocate_new_kernel_size:
+-	.quad	.Lcopy_end - arm64_relocate_new_kernel
++.popsection
+diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
+index f6b1a88245db..ab457b609e69 100644
+--- a/arch/arm64/kernel/vmlinux.lds.S
++++ b/arch/arm64/kernel/vmlinux.lds.S
+@@ -63,6 +63,7 @@
+ #include <asm-generic/vmlinux.lds.h>
+ #include <asm/cache.h>
+ #include <asm/kernel-pgtable.h>
++#include <asm/kexec.h>
+ #include <asm/memory.h>
+ #include <asm/page.h>
  
- .align 3	/* To keep the 64-bit values below naturally aligned. */
+@@ -100,6 +101,16 @@ jiffies = jiffies_64;
+ #define HIBERNATE_TEXT
+ #endif
+ 
++#ifdef CONFIG_KEXEC_CORE
++#define KEXEC_TEXT					\
++	. = ALIGN(SZ_4K);				\
++	__relocate_new_kernel_start = .;		\
++	*(.kexec_relocate.text)				\
++	__relocate_new_kernel_end = .;
++#else
++#define KEXEC_TEXT
++#endif
++
+ #ifdef CONFIG_UNMAP_KERNEL_AT_EL0
+ #define TRAMP_TEXT					\
+ 	. = ALIGN(PAGE_SIZE);				\
+@@ -160,6 +171,7 @@ SECTIONS
+ 			HYPERVISOR_TEXT
+ 			IDMAP_TEXT
+ 			HIBERNATE_TEXT
++			KEXEC_TEXT
+ 			TRAMP_TEXT
+ 			*(.fixup)
+ 			*(.gnu.warning)
+@@ -348,3 +360,10 @@ ASSERT(swapper_pg_dir - reserved_pg_dir == RESERVED_SWAPPER_OFFSET,
+ ASSERT(swapper_pg_dir - tramp_pg_dir == TRAMP_SWAPPER_OFFSET,
+        "TRAMP_SWAPPER_OFFSET is wrong!")
+ #endif
++
++#ifdef CONFIG_KEXEC_CORE
++/* kexec relocation code should fit into one KEXEC_CONTROL_PAGE_SIZE */
++ASSERT(__relocate_new_kernel_end - (__relocate_new_kernel_start & ~(SZ_4K - 1))
++	<= SZ_4K, "kexec relocation code is too big or misaligned")
++ASSERT(KEXEC_CONTROL_PAGE_SIZE >= SZ_4K, "KEXEC_CONTROL_PAGE_SIZE is brokern")
++#endif
 -- 
 2.25.1
 
