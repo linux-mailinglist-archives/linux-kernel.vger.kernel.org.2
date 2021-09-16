@@ -2,104 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDF5F40DB99
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 15:45:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 118DF40DBA7
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 15:47:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240318AbhIPNql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 09:46:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38012 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240253AbhIPNqk (ORCPT
+        id S240407AbhIPNtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 09:49:04 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:39765 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240336AbhIPNtA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 09:46:40 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6162C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 06:45:19 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id i6so17059032edu.1
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 06:45:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=CuDRdf94nh8ahjQ5dmyXV/DzX/ticPqZna0IdhNsx6Q=;
-        b=ADlDcoNU+Pq3zJPekjQB3ysBZYbLLJuUjJ0ggyxhUh3l23WhDHJe0OA+3RBtzvkLaL
-         riKiVAfTySYt7i2AR2nqJB8DLrqNkOgNwLurMZigXK4t+R7mbfoODaIwPAdzybFwqtEi
-         gXQ22RCFm0BiOMDooVh7HlhtBZFIMazSE0MKMd13qNUS/sNT9eY3iTLcMAjr7NfoIliB
-         4f/2yr52oLIGism7T/kYSqcj939z5RDHf+++H/V4rCx1OW592Ruc66LP4q1F+Ee+DLTT
-         VEtTfea+tQb0+IjeGPGFECmdRDfTDBReWeg2IoShmQZn6bQ3QghRejQq+VwEunRt/Yi7
-         fzLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=CuDRdf94nh8ahjQ5dmyXV/DzX/ticPqZna0IdhNsx6Q=;
-        b=y5m0OkmakZVN9uraktjp0ugJjXW8kJ0/KXsitkx2O9WBPJOuQPkkeACSBeBvYpAgFr
-         vtWJTmhxTDv0MFFCNEIjArOlhUKJZXNzDLigSDEQ7KPNwTsQaUy+xuDxpqDwGHjSiZou
-         BTyMFqFuShgDLUUvckHXA4hahB2OFbDmV6xI45ScaucNTWQMCs1HNkYJhEYytR4sHt37
-         oyE7NzLq2OAFDGtm0kV8A4mXjJDQ2YhEzkCK6qQz2Y/rO3tYMtHbmM3HL3ufWm0X3YTu
-         jH2J4KJvrntQbhATadQLVoPaGpVRwR52s+ORoR29VdYpN2/mj0y1S+2B9QUMd5RzicvM
-         ihKg==
-X-Gm-Message-State: AOAM5320bYhuMrMiZvBkDW1tE3TZZ+OikmpaNHlMdcGoCDArd/JmIjJw
-        FY8TsKGg2SvPceOShP7doAlb3yeuccbyW+K8rzISF5rjt72p1A==
-X-Google-Smtp-Source: ABdhPJyQ45IBx7Fabd36aGEldKbrPCgbXM1LoYtPS7imQxgxjPnIvGFFB6GTQUFW83uB9WNBMYIHCUSQlhUI0RZc9VE=
-X-Received: by 2002:aa7:dcd0:: with SMTP id w16mr6605186edu.288.1631799916008;
- Thu, 16 Sep 2021 06:45:16 -0700 (PDT)
+        Thu, 16 Sep 2021 09:49:00 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.west.internal (Postfix) with ESMTP id 53571320098F;
+        Thu, 16 Sep 2021 09:47:38 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Thu, 16 Sep 2021 09:47:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=rZIDhlnuGK6V5cK46t4Uvw4Yatx
+        suOQ9msENEMMFQqI=; b=uv/epXvay+8cnwW6oginqM584OwhufyHQT+S40iMGgK
+        vPXbLjOOX8k6QAS5g6DCS3j31W3GVXuX56KJNa+hPnrem0A9pJdpLbSvTZAR2EoJ
+        nts2jUyVa+bl62kUBk8L8wMhqb8T106TVur2xcPSbVAZD3c9paMK+Es/u5wX5Xpu
+        1OCuOtRxycdvbvYCk7qEc6jlKyU+mTEs8i1O4aWO1buVOxnelsc4z2BnE9L3Leex
+        FkoLYfKVg15qL29ayW+K+yOyQzE08ZbIz5MFIlNh6UYwi3uLRICTUv+3bUUXjDCf
+        keY0idC36xt0JbjEFn89iMI6tjgmkqXyi26LEcdEQFA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=rZIDhl
+        nuGK6V5cK46t4Uvw4YatxsuOQ9msENEMMFQqI=; b=dJS9yWAXBKBHPQoeFPhIOm
+        UKsY5+U52WPnXbNE9gbXqCfpxuzqnVyY8u4H0k9HeCianCiXsAjjVHVRgxckijP8
+        UT/KvgCcy3Da+t9XvO8rcta3RyyA7kW6m2JoSJOVRsqTGMFh/ic5i+HTbYRvYsoS
+        IlkoL9ChqdWfz3Yn723dEA3yiA5vMNj0kezOZWFeXgP2Qcz0DclhmZQbDj5P+znU
+        qnAwhGao/ezWiENFRfkatARJumjp+HlAxJBoJHM0DYPTM2x47TkTaNVF5aFXOweV
+        sTVfD4rsjJu7dUIE/MsidkjSOiDOtuDSnvHtgv694QuVomGjHBGasuiXcUtgoYeg
+        ==
+X-ME-Sender: <xms:90pDYYKz52dtZfZFQPIdBg6vYDuZXW7Jezd71XKuATEWfEz7WLNVQQ>
+    <xme:90pDYYJWvOhOpLL6HuEk0VpBDCta_IUVGmAOhmgLSDUvGprUYipkyxEnP5cU2cREq
+    nmdzAuUOKp-mkXOQL8>
+X-ME-Received: <xmr:90pDYYv5IcH41WLpUpttmTdYUwCwM-o-rcvcWVJT6G3R-pUZA1LVuIqQG3O-DocYWc8ZB0vem_GhNsDdxRyELJJ_DKpEEpPZeObx>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudehgedgieefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
+    grgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:90pDYVaOsZxLsFhBUfmXtDfXH0cGlAmgLCtWSWGSazV-Exr14QD6dg>
+    <xmx:90pDYfaiBkWcPrDkuh1x39HoFVYH9UD1tE4A_ibDllbSKHpk3_9WAQ>
+    <xmx:90pDYRAD62klcaI8dDpBd3EYP6s3UPfaJegCdazVOwsF35g7738ZLw>
+    <xmx:-UpDYT6F0HWMwp2jPwntqaXgoi2LhKh1ktAA5XNnHsw8POUml6VI3Q>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 16 Sep 2021 09:47:34 -0400 (EDT)
+Date:   Thu, 16 Sep 2021 15:47:32 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/sun4i: dw-hdmi: Make use of the helper function
+ dev_err_probe()
+Message-ID: <20210916134732.nrzetz4io5fmbxpq@gilmour>
+References: <20210916105633.12162-1-caihuoqing@baidu.com>
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 16 Sep 2021 19:15:04 +0530
-Message-ID: <CA+G9fYu0dngeohP9M39Odj5-5ax97ZgA=KqV8_g2yYLdOGMQSg@mail.gmail.com>
-Subject: clang: error: unsupported argument '-mimplicit-it=always' to option 'Wa,'
-To:     open list <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        lkft-triage@lists.linaro.org, llvm@lists.linux.dev,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="42fvjejcppad3kvp"
+Content-Disposition: inline
+In-Reply-To: <20210916105633.12162-1-caihuoqing@baidu.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Following build warnings/ errors noticed while building linux next-20210916
-with clang-10, clang-11 and clang-12  for arm architecture.
-      - allnoconfig
-      - tinyconfig
 
-But builds PASS with clang-13.
+--42fvjejcppad3kvp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-clang: error: unsupported argument '-mimplicit-it=always' to option 'Wa,'
-make[2]: *** [/builds/linux/scripts/Makefile.build:288:
-scripts/mod/empty.o] Error 1
-make[2]: Target '__build' not remade because of errors.
-make[1]: *** [/builds/linux/Makefile:1329: prepare0] Error 2
-make[1]: Target '__all' not remade because of errors.
-make: *** [Makefile:226: __sub-make] Error 2
-make: Target '__all' not remade because of errors.
+On Thu, Sep 16, 2021 at 06:56:32PM +0800, Cai Huoqing wrote:
+> When possible use dev_err_probe help to properly deal with the
+> PROBE_DEFER error, the benefit is that DEFER issue will be logged
+> in the devices_deferred debugfs file.
+> And using dev_err_probe() can reduce code size, the error value
+> gets printed.
+>=20
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
 
-Build config:
-https://builds.tuxbuild.com/1yDgHTBClkDVAW6MLcYwAdsXznO/config
+Applied, thanks
+Maxime
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+--42fvjejcppad3kvp
+Content-Type: application/pgp-signature; name="signature.asc"
 
-meta data:
---------------
-    git_describe: next-20210916
-    git_ref: master
-    git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
-    git_sha: 368847b165bbfbdcf0bd4c96b167893dcdb13aba
-    git_short_log: 368847b165bb (\"Add linux-next specific files for 20210916\")
-    kconfig: [
-        allnoconfig
-    ],
-    kernel_version: 5.14.0
-    target_arch: arm
-    toolchain: clang-12
+-----BEGIN PGP SIGNATURE-----
 
-Steps to reproduce:
-tuxmake --runtime podman --target-arch arm --toolchain clang-12
---kconfig allnoconfig
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYUNK9AAKCRDj7w1vZxhR
+xTSkAP98QRtzTOPuHy5A4zj83HE4sXcoxFGmghpXGhbYDhK6EAEAgs7KVG1NXR0z
+loVt2Z3KCbUWVguTpLIBYkbQxonnMAE=
+=vbrR
+-----END PGP SIGNATURE-----
 
---
-Linaro LKFT
-https://lkft.linaro.org
+--42fvjejcppad3kvp--
