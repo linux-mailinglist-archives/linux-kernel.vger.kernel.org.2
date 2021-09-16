@@ -2,181 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 284C040D8ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 13:37:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB53340D8F0
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 13:39:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238066AbhIPLjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 07:39:14 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:42758
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238088AbhIPLjN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 07:39:13 -0400
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com [209.85.215.200])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 17C2240262
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 11:37:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1631792271;
-        bh=908BDomxjWW13dJ+h5+IM/p6bjjEbnfsipmAx3G+qQk=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=mBtaNSilOEf22C0wURChaHF5QhPdYld4ejvTMRBKeQhk9OuZVH9Z4u1Fgk/lHPekP
-         B225albEp9tWH3PM+b3krkGXFNPZBmgzGD7wHxrqYok2+RLw0BZWknjPiPmncHyoi6
-         b1e+8ci92P5T4DwAh0BBLH8d2PCfnmYnrBv3O6kyiNx1a7Z/xNs3fZGQzGesUeqfPR
-         EEorOXQE9hWyVQ0Z/5k02R7B1wiVqYH6g7N/sv/CO9KlJWZhskirOS4bJjSlhtOH7H
-         GE6CSAu53bagwJ87nZlUKyXB7NAkm0fjGdesNgHgMHCK6AbYRvdwlgHazVXaZYVk8/
-         fKVVPo7e8Hi2g==
-Received: by mail-pg1-f200.google.com with SMTP id t28-20020a63461c000000b00252078b83e4so4843388pga.15
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 04:37:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=908BDomxjWW13dJ+h5+IM/p6bjjEbnfsipmAx3G+qQk=;
-        b=Vkvfrb7bsRuERpFcrbQcc2KhSY0hjKljp1Y3GbPzJ5iC55L0oZcuh+1cFdgf4vcBOJ
-         FyZi4oPrWmXig6akqgVUOAIkZ9BLgy8C0mgvmrAa/fb1aDnj4yZ+z32AsctXj+M6x4mH
-         T5s9eO577wL9zZ0dTVE79pDjEKgMFcge15Uxlx9QrtJ1CJjGE5dys9XjYMHjmiUcXjRT
-         /re0vsvUqQHw/cDvsNvBisqzH5PG3Iiallto1pjfVM24yZU6Wx4K8ArA3mvUO9YsGryQ
-         RlNx/YQjD56xSk6PHjCk1J8mEOHBRZZLE7tHX2CZSuoCiXSMQT+D8eAMZ/YEHuoTX1qL
-         5h+g==
-X-Gm-Message-State: AOAM530aWXpCP9VxrbSWOXm726lukm5xZE028UgqGaoqDk91VkBn0w82
-        b3mmgyIwrA95X1LbL01Zo1OeZCW+Eq1FuzQnZzCfeFHoX5EbIqLo50x1K33F08k8X/EfAptc1Sp
-        AA7tD1CklwC7Jjw7lJnebItvs7Aun/aDuxR6GGSq5TQ==
-X-Received: by 2002:a17:90b:1642:: with SMTP id il2mr14228765pjb.133.1631792269402;
-        Thu, 16 Sep 2021 04:37:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxLagWl0Y6m5fry/PR5aoSchKNH70gRTQIBS9Soy65wMzgO8Re9fUCU8+kZz5YLK+ougSaEog==
-X-Received: by 2002:a17:90b:1642:: with SMTP id il2mr14228747pjb.133.1631792269161;
-        Thu, 16 Sep 2021 04:37:49 -0700 (PDT)
-Received: from [192.168.1.124] ([69.163.84.166])
-        by smtp.gmail.com with ESMTPSA id j25sm2783466pff.34.2021.09.16.04.37.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Sep 2021 04:37:48 -0700 (PDT)
-Subject: Re: [Intel-gfx] [PATCH] drm/i915: zero fill vma name buffer
-To:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-References: <20210915192318.2061-1-tim.gardner@canonical.com>
- <7a653532-046d-c68a-3dc9-ef2deaf455f9@linux.intel.com>
- <87ee9ox0kv.fsf@intel.com>
-From:   Tim Gardner <tim.gardner@canonical.com>
-Message-ID: <dc88e195-949c-bb46-b7d3-18e90df9b064@canonical.com>
-Date:   Thu, 16 Sep 2021 05:37:47 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <87ee9ox0kv.fsf@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S237953AbhIPLkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 07:40:41 -0400
+Received: from mail-eopbgr80051.outbound.protection.outlook.com ([40.107.8.51]:48966
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S237526AbhIPLki (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 07:40:38 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PDBTfgANy+5NU0I7rerYGhNsoKoo+oQ5ARv4ljeLrx+dhB/hhS4rHh61qjomb1jK3PrD1Gqcmoj3Q3LWIPKB3fc0Ms3MgG74war42BwxYvFvlwi8YNmqeZDOFsUzAprNS12BDKCvtWeYLHf1hg65U5xF5FG+Ede3TkdXCRzu9p1hs7LvzmdiFaB0PwpFFvQAB88ULGix40zI/CI5j3ln1wzXJgY9qW0ZyWUAfbEXR+rzNDyexNjVgYoCMDAJZ+Oi/OYUMHlWDcHIMNBFGd7ZZ/AHwFa+Pch3zdCQKPjH85WmwSsD7dQ/VV/aiMlmFm/zpp4erVm1Y5URfkyR2BDtCQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=UWFZtDPVNj8juU6TIgvp7roroPOrWVPxUv+RP6EU8JE=;
+ b=nfDepyOPxF0lfc/AhGvE11GyFnhs04oIQxEwFlKTV/c1GSSNrBS3gRthzqVwEqKbU7JFza1SUgSni5Uyl6iIUea4UMw6ZcM0us9FitBKKbBFwJGd8mkdOZ7g3CL20U+zP3q5R9cczJIqNWQjleJ2gHBUrpIYgNX4TNQ0lNEGEO27V8+4cBz7x1JLvMkzgPhO8uJt+oP3Ll2rNgrUzwjLOoudA0TofijhxU8lfAqi+kNb8kwIHCzkqp+y82MDAC71BIe7p1QSkb13pkIQLo8ZWHtIC0pkE9DUZ1GSJaPHAXPXaOJ3SNfXnDxw05e3rRFXC3VFs7intx6GvqRu2MzgEw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UWFZtDPVNj8juU6TIgvp7roroPOrWVPxUv+RP6EU8JE=;
+ b=Zy+diYD1PAfu7A1TyKJoL5+fRIuqjTwFljBM+yg9SI7MD6jT64nFhVM23xtSoOwak+B9hUo9Lgg4NS/8TtbcR8Vu/vqDmD0g9/J26ENGYXFAtg77jGDURwaVaKZ6uttcIvalBWBcZ0gY7K1THrDO0MVG9KjdR6Wwgh9giPGGhfY=
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19)
+ by VI1PR04MB5344.eurprd04.prod.outlook.com (2603:10a6:803:4b::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.18; Thu, 16 Sep
+ 2021 11:39:15 +0000
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::109:1995:3e6b:5bd0]) by VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::109:1995:3e6b:5bd0%2]) with mapi id 15.20.4500.019; Thu, 16 Sep 2021
+ 11:39:15 +0000
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     Colin Foster <colin.foster@in-advantage.com>
+CC:     Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 net] net: mscc: ocelot: remove buggy duplicate write to
+ DEV_CLOCK_CFG
+Thread-Topic: [PATCH v1 net] net: mscc: ocelot: remove buggy duplicate write
+ to DEV_CLOCK_CFG
+Thread-Index: AQHXqpmLU5hIUf81/UamU4A4Gp46daumib8A
+Date:   Thu, 16 Sep 2021 11:39:15 +0000
+Message-ID: <20210916113914.3mgy3jkwsfiqyg5f@skbuf>
+References: <20210916012341.518512-1-colin.foster@in-advantage.com>
+In-Reply-To: <20210916012341.518512-1-colin.foster@in-advantage.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: in-advantage.com; dkim=none (message not signed)
+ header.d=none;in-advantage.com; dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 1818ba5a-fca9-42b1-8248-08d979069c76
+x-ms-traffictypediagnostic: VI1PR04MB5344:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR04MB5344EDDA1EC67757C043AE76E0DC9@VI1PR04MB5344.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: dtcn9jsjDtUdRY0AqRCTL38TU6S36wDx7J2ge1nRCZNxUnExb2EfKoaxg7hG4+8L/1BuNujYsQ+Z63RKI4gs9e7AsCDD9swaT4J/u8t8hYmraZOE/MIw2iw7ugyWtCqHNjXwxAo9aUdnBxg8FYCebsQL4QvKhpwPEOKAMeqrFnaXaJ1BNC1CuF6xTNb+yEafD+8rsdiCN+1TJYZ/i8xJ/unutQxllTFsrxdtHzPqxxbR8J0jLtdcOVdpTZyxdxLtxnb4LQZwX7btGYtQXTsOOf+7EYJtnEBZDF3rTDk/8my9i0blHbx1CbkvulJlDwhdkStFKCUQnd36vFFvyzRL+2nY2HMLL03tQF44uWI4MnsAKGaDx5muvAjyo9S8PuAqAs53zABVP/3UQvn6KzZYN9xq1SwkqSGgpzdcWurxg2hjqMcrb53ejYZzx3kZ/bYuVwQngsV1gzI1bQTHleMQ/4RMGK1vCT9k65vbGxIW3yyfq+XNpr7j5xy+BFxdyn/RRgfLsXY6u0AnaySCXoFN1nEEH0KEFoqTvTEK+EQyG1o4EbmJD7CeJr5kNrCEO/aEiDa8QfDX33n3XMFE6VCu4NCeNB0b7qpDFO0fdr2yqhbL7ix4nxs+9pxVIioyeQjENFwjlBkqaGv3Xg1Y4ONzuI6AzwhB5IOnmWkD0PpeeMkmT/Rl0tXNZV7MtQErdv/PifgHiCS2kwn5DiKwzNg6DQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5136.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(346002)(39860400002)(366004)(136003)(396003)(376002)(2906002)(54906003)(26005)(4326008)(4744005)(6486002)(66446008)(38070700005)(91956017)(478600001)(6916009)(76116006)(71200400001)(44832011)(1076003)(316002)(83380400001)(38100700002)(8676002)(122000001)(186003)(6506007)(66476007)(64756008)(66556008)(5660300002)(66946007)(8936002)(33716001)(6512007)(86362001)(9686003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?J0sHPq1Os8wbt1H8U3AoXKQwfpGoZCnSFAN95qGCUrmU6IdE/9hHEqCwmlaT?=
+ =?us-ascii?Q?D+itWDAiY0nRiHyb+MNJa6A36Ush3Kmo2ib+OFU1IROGFiEKpKxN8pvI5YAt?=
+ =?us-ascii?Q?xLC91nLrYWG3C6RMxAl3D7B9NFEFhcC3dBtdRm9sUmIjgOcO5cjD+2Ldp4Fg?=
+ =?us-ascii?Q?jVvLgOa3v42xURMR0FMrpymAu34KFKxn21IOibOU6CAoJ2h460/whG7aCHNN?=
+ =?us-ascii?Q?qsP3da+Dg80MUS9eXP+zqn03lD6mpGR65gmXgwcZGUINQK8qOrfbz8tL3b3f?=
+ =?us-ascii?Q?MSc00ZXlPJwMJemSDsgNa76adYONg+8mspX92JA3IE6dG9TxV7K4boWMT1Js?=
+ =?us-ascii?Q?Pk8ah4mRwrkfOXT/Jz1JXwrR0GdjMXmobpyUFiMdU/co/oJXXqIswoS9JIuG?=
+ =?us-ascii?Q?p8uQ7/H3w3vWC9BDPj4LbuCPxrmdrzzMhbCN/QUOfLrbJLhlnAhSfoiBATWX?=
+ =?us-ascii?Q?q3CGa8TAlG4PbaIr0exbuSWcxk197QzfwDalfXmNptxdkCPOlH5d4Ke/fKRN?=
+ =?us-ascii?Q?J+jV+XcKY+S7nYd4vnTpFenXBopVr0LZQuZuFdTcpX1NxoV56CbA0Bs3wEBn?=
+ =?us-ascii?Q?SspRuKhSThgulNn1GzRw0hlRdV7Z2T6+K6DrC9U/kS0Mvk3doFsFkdP8DAcc?=
+ =?us-ascii?Q?hYCOf7jCyABf/tjbKjfBuy68eTrRApyHgnPPuq4tDPsoD5NaMNGN5Lg11P9w?=
+ =?us-ascii?Q?IUy5aPWXox6/0RwLiOFwujaKSUpgfHnALEXh/D3iCrN2tCPCCR0mIX/G+Man?=
+ =?us-ascii?Q?ayAswQVGp9xrRKwElF26fzCvL2EqEe7GLTufq0ILoA4XhYAiphM3YAtpR8Ha?=
+ =?us-ascii?Q?4puubZDvTwb5uLk9seA5cXkWXSI+/iXaTe/U+66dEE8nXMQ5EektkcvY/L67?=
+ =?us-ascii?Q?HbZoNsO0jtAHTfcMMjL3fh/kX2G1lKbYPPlIiKKkYhEE5GWQu1HfKkrM/E/J?=
+ =?us-ascii?Q?Ca+hCHv3ypROy8+5n8iOMBVAe2zozE71bgfugTciTT5wSynOj7YzbnZxW63M?=
+ =?us-ascii?Q?bUJDT/QRUB9So0PxOKpXnshHHhkpEabS9/Fa7Cna4pT7wf2Na641ckKTHneu?=
+ =?us-ascii?Q?WlXxAHe9FNIyXOZWqvL6kgLzDosKn1WtTFweVoiIg71Lm64Ez9AM5oP4WV2p?=
+ =?us-ascii?Q?tTK3cbAvWfm+o4RXqrKYcuKOzmh74YH3Mdf+0VdVeYQtz6MHO7eA/Qsg2JUX?=
+ =?us-ascii?Q?N8kgOv/9bwfdwMVSHscaLNi9ifunU1eblqx8xI+knYDJ/lOAZG1ypoktEwi4?=
+ =?us-ascii?Q?HybT24HedA4MXwBy2V3VWJHncG6YFINvgvL+M83PCF2M7+Etnaat48E5Nw0R?=
+ =?us-ascii?Q?I5C01TEfH2x0i1l5KAPqcO/S?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <CD85596B90984A4289A448A6A2A8CFBD@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5136.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1818ba5a-fca9-42b1-8248-08d979069c76
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Sep 2021 11:39:15.0313
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: uLCbkA6ogmeuBJAyWqbus/fGl0t5SFR/p0RVOyrtJHdMOR4ygIJKEQ5mgXzCAq10iPqyC+O38fm5bOcXixsAWw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5344
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 15, 2021 at 06:23:40PM -0700, Colin Foster wrote:
+> When updating ocelot to use phylink, a second write to DEV_CLOCK_CFG was
+> mistakenly left in. It used the variable "speed" which, previously, would
+> would have been assigned a value of OCELOT_SPEED_1000. In phylink the
+> variable is be SPEED_1000, which is invalid for the
+> DEV_CLOCK_LINK_SPEED macro. Removing it as unnecessary and buggy.
+>=20
+> Fixes: e6e12df625f2 ("net: mscc: ocelot: convert to phylink")
+> Signed-off-by: Colin Foster <colin.foster@in-advantage.com>
+> ---
 
-
-On 9/16/21 4:43 AM, Jani Nikula wrote:
-> On Thu, 16 Sep 2021, Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com> wrote:
->> On 15/09/2021 20:23, Tim Gardner wrote:
->>> In capture_vma() Coverity complains of a possible buffer overrun. Even
->>> though this is a static function where all call sites can be checked,
->>> limiting the copy length could save some future grief.
->>>
->>> CID 93300 (#1 of 1): Copy into fixed size buffer (STRING_OVERFLOW)
->>> 4. fixed_size_dest: You might overrun the 16-character fixed-size string c->name
->>>      by copying name without checking the length.
->>> 5. parameter_as_source: Note: This defect has an elevated risk because the
->>>      source argument is a parameter of the current function.
->>> 1326        strcpy(c->name, name);
->>>
->>> Fix any possible overflows by using strncpy(). Zero fill the name buffer to
->>> guarantee ASCII string NULL termination.
->>>
->>> Cc: Jani Nikula <jani.nikula@linux.intel.com>
->>> Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
->>> Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
->>> Cc: David Airlie <airlied@linux.ie>
->>> Cc: Daniel Vetter <daniel@ffwll.ch>
->>> Cc: intel-gfx@lists.freedesktop.org
->>> Cc: dri-devel@lists.freedesktop.org
->>> Cc: linux-kernel@vger.kernel.org
->>> Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
->>> ---
->>>    drivers/gpu/drm/i915/i915_gpu_error.c | 7 ++++---
->>>    1 file changed, 4 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/drivers/gpu/drm/i915/i915_gpu_error.c b/drivers/gpu/drm/i915/i915_gpu_error.c
->>> index 9cf6ac575de1..154df174e2d7 100644
->>> --- a/drivers/gpu/drm/i915/i915_gpu_error.c
->>> +++ b/drivers/gpu/drm/i915/i915_gpu_error.c
->>> @@ -1297,10 +1297,11 @@ static bool record_context(struct i915_gem_context_coredump *e,
->>>    	return simulated;
->>>    }
->>>    
->>> +#define VMA_NAME_LEN 16
->>>    struct intel_engine_capture_vma {
->>>    	struct intel_engine_capture_vma *next;
->>>    	struct i915_vma *vma;
->>> -	char name[16];
->>> +	char name[VMA_NAME_LEN];
->>>    };
->>>    
->>>    static struct intel_engine_capture_vma *
->>> @@ -1314,7 +1315,7 @@ capture_vma(struct intel_engine_capture_vma *next,
->>>    	if (!vma)
->>>    		return next;
->>>    
->>> -	c = kmalloc(sizeof(*c), gfp);
->>> +	c = kzalloc(sizeof(*c), gfp);
->>>    	if (!c)
->>>    		return next;
->>>    
->>> @@ -1323,7 +1324,7 @@ capture_vma(struct intel_engine_capture_vma *next,
->>>    		return next;
->>>    	}
->>>    
->>> -	strcpy(c->name, name);
->>> +	strncpy(c->name, name, VMA_NAME_LEN-1);
->>
->> GCC is supposed to catch any problems here as you say in the commit message.
->>
->> But to fix I suggest a single line change to strlcpy(c->name, name,
->> sizeof(c->name)) which always null terminates as bonus.
-> 
-> strscpy() is preferred over both strncpy() and strlcpy(). :)
-> 
-> BR,
-> Jani.
-> 
-
-Good call. v2 on the way.
-
-rtg
-
->>
->> Probably same in i915_vma_coredump_create() which with strncpy would
->> have a theoretical chance of attempting to copy over a
->> non-null-terminated string.
->>
->> Regards,
->>
->> Tvrtko
->>
->>>    	c->vma = vma; /* reference held while active */
->>>    
->>>    	c->next = next;
->>>
-> 
-
--- 
------------
-Tim Gardner
-Canonical, Inc
+Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>=
