@@ -2,204 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0214F40D7EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 12:54:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA5CF40D7EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 12:56:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236785AbhIPK4H convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 16 Sep 2021 06:56:07 -0400
-Received: from mout.kundenserver.de ([212.227.17.13]:50737 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235487AbhIPK4C (ORCPT
+        id S237017AbhIPK5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 06:57:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54722 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235487AbhIPK5i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 06:56:02 -0400
-Received: from [192.168.1.107] ([37.4.249.93]) by mrelayeu.kundenserver.de
- (mreue107 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1MdeKd-1mzsrs3QDB-00Zigg; Thu, 16 Sep 2021 12:54:21 +0200
-Subject: Re: [PATCH 1/7] staging: vchiq_arm: cleanup code alignment issues
-To:     Gaston Gonzalez <gascoar@gmail.com>, linux-staging@lists.linux.dev
-Cc:     gregkh@linuxfoundation.org, nsaenz@kernel.org, arnd@arndb.de,
-        dan.carpenter@oracle.com, ojaswin98@gmail.com,
-        amarjargal16@gmail.com, linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org
-References: <20210915201824.413202-1-gascoar@gmail.com>
-From:   Stefan Wahren <stefan.wahren@i2se.com>
-Autocrypt: addr=stefan.wahren@i2se.com; keydata=
- LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tClZlcnNpb246IEdudVBHIHYy
- CgptUUlOQkZ0NmdCTUJFQUN1Yi9wQmV2SHhidkplZnlaRzMySklObW4yYnNFUFgyNVY2ZmVq
- bXlZd21DR0tqRnRMCi9Eb1VNRVZIRHhDSjQ3Qk1YbzM0NGZIVjFDM0FudWRnTjFCZWhMb0J0
- TEh4bW5lQ3pnSDNLY1B0V1c3cHRqNEcKdEp2OUNRRFp5MjdTS29FUHh5YUk4Q0YweWdSeEpj
- NzJNOUk5d21zUFo1YlVIc0x1WVdNcVE3SmNSbVBzNkQ4ZwpCa2srOC95bmdFeU5FeHd4SnBS
- MXlsajVianhXREh5WVF2dUo1THpaS3VPOUxCM2xYVnNjNGJxWEVqYzZWRnVaCkZDQ2svc3lp
- by9ZaHNlOE4rUXN4N01RYWd6NHdLVWtRUWJmWGcxVnFrVG5BaXZYczQyVm5Ja211NWd6SXcv
- MHQKUkp2NTBGUmhIaHhweUtBSThCOG5oTjhRdng3TVZrUGM1dkRmZDN1R1lXNDdKUGhWUUJj
- VXdKd05rLzQ5RjllQQp2ZzJtdE1QRm5GT1JrV1VSdlArRzZGSmZtNitDdk92N1lmUDF1ZXdB
- aTRsbitKTzFnK2dqVklXbC9XSnB5MG5UCmlwZGZlSDlkSGtnU2lmUXVuWWN1Y2lzTXlvUmJG
- OTU1dENna0VZOUVNRWRZMXQ4aUdEaUNnWDZzNTBMSGJpM2sKNDUzdWFjcHhmUVhTYUF3UGtz
- bDhNa0NPc3YyZUVyNElOQ0hZUUR5WmljbEJ1dUNnOEVOYlI2QUdWdFpTUGNRYgplbnpTektS
- Wm9POUNhcUlEK2ZhdkxpQi9kaHptSEErOWJnSWhtWGZ2WFJMRFp6ZThwbzFkeXQzRTFzaFhp
- ZGRaClBBOE51SlZ6RUl0MmxtSTZWOHBaRHBuMjIxcmZLaml2UlFpYW9zNTRUZ1pqak1ZSTdu
- bko3ZTZ4endBUkFRQUIKdENCVGRHVm1ZVzRnVjJGb2NtVnVJRHgzWVdoeVpXNXpkRUJuYlhn
- dWJtVjBQb2tDTndRVEFRZ0FJUVVDWElkYwo0Z0liQXdVTENRZ0hBZ1lWQ0FrS0N3SUVGZ0lE
- QVFJZUFRSVhnQUFLQ1JDVWdld1BFWkR5MjFPVEQvOUdpWkxkCnRSWWNteVJKZ2x0aVFRekFp
- UWRjSUQ3OGxHb1dwL3grci92Y1U2YjZqdVl1ZVR3Z1Iwclc3djdsMklSQnlEN24KSEp4YSt0
- SVNvUVpCZ2hvbE1JZmI5TXRoR09KTENZNzdrL1FoQWhuMzJOR1prZWp3OXR6a3MvNDBtclpT
- VVQ4NApaeWJzUVhyTE0vSFI2VElJL0RlUEIwbktEM0ppcHBzMlVIUUQ5cUQySWpFd1NRUGxI
- akNPckVaaDQ1UFo3bTkrClo5M0x6aVRlc1dabFlRdUxpSndzNHJLcHRIVzFkL3dSZWxzaG1t
- NlFxY0wybDRDL2U0MGVEQjlncTRkU1poOVgKUEVZbGxpeU5RaDdhMkxTZHVtRTFyK2NTd0lq
- RS91ZHRSdmRPOWFLb0psT2JVSzVkTmpTUEg3d0tUYndkWGRZRApHUHdEaFhkNThOQXdyK1BY
- QmxQajB0STFMQ3ErTEJ4ZUt6aFdYK0dWcTlEb2pWanlVREV4Rk5Ga1h1b0M3ZzhtClY5VDB0
- ZUJpdVpSbm91WEt3VjJGcHRaT0hIN0JVRVd0a0t0aGgxZXRmT1dwaWdCemtVN2JQc2ZJWVQr
- cnk5dGIKMW9KK3Y0MVBOYXFaRW1QVXBKeHZmek5UN3Ayd01lRDdaajlmMHJ1YlJQdExBSjJR
- R2pyRkhzdVh3QU9xcHl6ZQoxOEVidHNZazBOMHp1SEVoY2orUEJJQmZoMFlJWWQ1MW9mNkdJ
- aU95UjlxMFhYdHBsVUo3VDIvSDF1UXFrWGxwCitnVzRWa2lmc2NJckl1eWZueFpXMTJlSXZq
- NnlicVdMN2FZS0dZbVQ2aUxDUGJIWXlZY2F5bDRFa0ZjckNGN0UKZTBXVC9zY1ZNaE8vNVgv
- SGFOQTVIQngvcjUycGdMY3Y0aTlNeExRbVUzUmxabUZ1SUZkaGFISmxiaUE4YzNSbApabUZ1
- TG5kaGFISmxia0JwTW5ObExtTnZiVDZKQWpnRUV3RUNBQ0lGQWx0NmdCTUNHd01HQ3drSUJ3
- TUNCaFVJCkFna0tDd1FXQWdNQkFoNEJBaGVBQUFvSkVKU0I3QThSa1BMYmpic1AvamdqYVNz
- NUh0bGtBSXZXUytGcm15N2MKaG5jT0F4TFRWL0Q2UkV3SU95R0poRkt3d29pck55UTJnOXZV
- YTNZQ1lDZjFmSjh3RWhhS09COWQwTHBNUm5MNApkRVQ4ZDgyMzhFL3BLK0hxTktpSXNKaHM2
- SnNLOFpnalZRR3JtbWZua0dyWisxdjBIQnV4ZGljZ0duUC9XdHVBClVsOGw2Mi9BTGJheXlq
- KzYxQ2xyc0V0UklhcU82N0xJWXdQaVBEUkkrWGlNek5pR3pIRi8xUTZHUjAyUkg2YTMKRjg5
- ejhhUHhjSGkxWnZDdDJ5a3o2VUVjaHpQMHI1Z3FGSisvTC9VcHU4ME1YaVk0djVlSWFCNTJn
- VlBnaXlNQQpsTDJkRHMxbUladm5yUkxSWTJ0YjNtQVlOa1Y1QjVJRFQzcGtXeTZrS281T0Nn
- SytZZFlPUjhGTloyb04ydDhPCnJLK1ZudGFLN01NU0tIbG1ZL3NPd3RSbEVoMU9CbXJjQ3dH
- d21wLzA1R2tSNDZmL0lzaFJWZUZPUmF3K0dBcXQKUDIrQ0ZhMkNOQS9JSG5aTm95aWtsRHpQ
- UUhVVUdzck5wcERyaFg5Sm1oQm1nMXYyeXdIMU5YdTFpRGZQMUJBdwpLZ29rdDVmNVVhUkY5
- c0FBNTN2V0V2YlVVTjllZXNGR0x6UFdkSkdRNWhwZC9WSDVJUXk5U0JyaC93SWNla3E1Cm4w
- a042cGJUSHhHRTUyU2kvTVZJa05UdURaM2FwbjJqbERaNHBPdHBCWEkydlAzYlBPK05pcUJa
- anNVM3R4TGkKV2R2MkZqeXp6NlhMUndlV1JZVkw1SGE2TER0eG9yMnZ1NlVQMDdwOXh6MXhS
- WmFPRFczb1lsSEZ6WXBhNFc1ZwpMSGIybEVrSXVVZlNjaWNHYmpqQXRDbFRkR1ZtWVc0Z1Yy
- Rm9jbVZ1SUR4emRHVm1ZVzR1ZDJGb2NtVnVRR2x1CkxYUmxZMmd1WTI5dFBva0NOd1FUQVFn
- QUlRVUNYSWRlaHdJYkF3VUxDUWdIQWdZVkNBa0tDd0lFRmdJREFRSWUKQVFJWGdBQUtDUkNV
- Z2V3UEVaRHkyeUhURC85VUY3UWxEa0d4elE3QWFDSTZOOTVpUWY4LzFvU1VhRE51Mlk2SQpL
- K0R6UXBiMVRiVE9yM1ZKd3dZOGEzT1d6NU5MU09MTVdlVnh0K29zTW1sUUlHdWJEM09EWko4
- aXpQbEcvSnJOCnQ1elNkbU41SUE1ZjNlc1dXUVZLdmdoWkFnVERxZHB2K1pIVzJFbXhuQUox
- dUxGWFhlUWQzVVpjQzVyMy9nL3YKU2FNbzl4ZWszSjVtTnVEbTcxbEVXc0FzL0JBY0ZjK3lu
- TGh4d0JXQld3c3Z3UjhiSHRKNURPTVd2YUt1RHNrcApJR0ZVZS9LYjJCK2pyYXZRM1RuNnMv
- SHFKTTBjZXhTSHo1cGUrMHNHdlArdDlKNzIzNEJGUXdlRkV4cmlleThVCkl4T3I0WEFiYWFi
- U3J5WW5VL3pWSDlVMWkyQUlRWk1XSkFldkN2VmdRL1UrTmVSaFh1ZGU5WVVtRE1EbzJzQjIK
- VkFGRUFxaUYyUVVIUEEybThhN0VPM3lmTDRyTWswaUh6TElLdmg2L3JIOFFDWThpM1h4VE5M
- OWlDTHpCV3UvTgpPbkNBYlMremx2TFphaVNNaDVFZnV4VHR2NFBsVmRFamY2MlArWkhJRDE2
- Z1VEd0VtYXpMQU1yeDY2NmpINWt1ClVDVFZ5bWJMMFR2Qis2TDZBUmw4QU55TTRBRG1rV2tw
- eU0yMmtDdUlTWUFFZlFSM3VXWFo5WWd4YVBNcWJWK3cKQnJoSmc0SGFONkM2eFRxR3YzcjRC
- MmFxYjc3L0NWb1JKMVo5Y3BIQ3dpT3pJYUFtdnl6UFU2TXhDRFhaOEZnWQpsVDR2MjNHNWlt
- SlAyemdYNXMrRjZBQ1VKOVVRUEQwdVRmK0o5RGEycitza2gvc1dPbloreWNvSE5CUXZvY1pF
- Ck5BSFFmN2tDRFFSYmVvQVRBUkFBMkhkMGZzRFZLNzJSTFNESGJ5ME9oZ0RjRGxWQk0yTSto
- WVlwTzNmWDFyKysKc2hpcVBLQ0hWQXNRNWJ4ZTdIbUppbUhhNEtLWXMya3YvbWx0L0NhdUNK
- Ly9wbWN5Y0JNN0d2d25Lem11WHp1QQpHbVZUWkM2V1I1TGtha0ZydEhPelZtc0VHcE52NVJj
- OWw2SFlGcExrYlNrVmk1U1BRWkp5K0VNZ01DRmdqclpmClZGNnlvdHdFMWFmN0hOdE1oTlBh
- TEROMW9VS0Y1aitSeVJnNWl3SnVDRGtuSGp3QlFWNHBndzIvNXZTOEE3WlEKdjJNYlcvVExF
- eXBLWGlmNzhJaGdBelh0RTJYck0xbi9vNlpINzFvUkZGS096NDJsRmR6ZHJTWDBZc3FYZ0hD
- WAo1Z0l0TGZxemoxcHNNYTlvMWVpTlRFbTFkVlFyVHFueXMwbDE4b2FsUk5zd1lsUW1uWUJ3
- cHdDa2FUSExNSHdLCmZHQmJvNWRMUEVzaHRWb3dJNm5zZ3FMVHlRSG1xSFlxVVpZSXBpZ21t
- QzNTd0JXWTFWNmZmVUVta3FwQUFDRW4KTDQvZ1Vnbjd5US81ZDBzZXFuQXEycFNCSE1VVW9D
- Y1R6RVFVV1ZraUR2M1JrN2hURm1oVHNNcTc4eHYyWFJzWApNUjZ5UWhTVFBGWkNZRFVFeEVs
- RXNTbzlGV0hXcjZ6SHlZY2M4cURMRnZHOUZQaG1RdVQyczlCbHg2Z0kzMjNHCm5FcTFsd1dQ
- SlZ6UDRqUWtKS0lBWHdGcHYrVzhDV0xxekRXT3ZkbHJEYVRhVk1zY0ZUZUg1VzZVcHJsNjVq
- cUYKUUdNcGNSR0NzOEdDVVcxM0gwSXlPdFF0d1dYQTRueStTTDgxcHZpQW1hU1hVOGxhS2FS
- dTkxVk9WYUY5ZjRzQQpFUUVBQVlrQ0h3UVlBUUlBQ1FVQ1czcUFFd0liREFBS0NSQ1VnZXdQ
- RVpEeTIrb1hELzljSEhSa0JaT2ZrbVNxCjE0U3Z4MDYyUHRVMEtWNDcwVFNucC9qV29ZSm5L
- SXczRzBtWElSZ3J0SDJkUHdwSWdWanNZeVJTVk1LbVNwdDUKWnJEZjlOdFRiTldnazhWb0xl
- WnpZRW8rSjNvUHFGclRNczNhWVl2N2U0K0pLNjk1WW5tUSttT0Q5bmlhOTE1dApyNUFaajk1
- VWZTVGx5VW15aWMxZDhvdnNmMWZQN1hDVVZSRmNSamZOZkRGMW9ML3BEZ01QNUdaMk93YVRl
- am15CkN1SGpNOElSMUNpYXZCcFlEbUJuVFlrN1B0aHk2YXRXdllsMGZ5L0NxYWpUS3N4Nytw
- OXh6aXU4WmZWWCtpS0IKQ2MrSGUrRURFZEdJRGh2TlovSVFIZk9CMlBVWFdHUytzOUZOVHhy
- L0E2bkxHWG5BOVk2dzkzaVBkWUl3eFM3SwpYTG9LSmVlMTBEamx6c1lzUmZsRk9XMFpPaVNp
- aElDWGlRVjF1cU02dHpGRzlndFJjaXVzNVVBdGhXYU8xT3dVClNDUW1mQ09tNGZ2TUlKSUE5
- cnh0b1M2T3FSUWNpRjNjcm1vMHJKQ3ROMmF3WmZnaThYRWlmN2Q2aGp2MEVLTTkKWFpvaUFa
- WVpEKy9pTG01VGFLV042b0dJdGkwVmpKdjhaWk9aT2ZDYjZ2cUZJa0pXK2FPdTRvclRMRk16
- MjhhbwpVM1F5V3BOQzhGRm1kWXNWdWE4czZnTjFOSWE2eTNxYS9aQjhiQS9pa3k1OUFFejRp
- RElScmdVek1FZzhBazdUCmZtMUtpWWVpVHRCRENvMjVCdlhqYnFzeXhrUUQxbmtSbTZGQVZ6
- RXVPUEllOEp1cVcyeEQ5aXhHWXZqVTVoa1IKZ0pwM2dQNWIrY25HM0xQcXF1UTJFNmdvS1VN
- TEFia0NEUVJiZmw5REFSQUFzRExjYStMbFAydm5mdEVHaHBjQQpCR1ZOUUVGbkdQckNhdVU2
- SGhOODA1V3RQVHRtc1JPdUp6cWdVVDBtcHFXSWZacTZzTXd5dkhLOVRzL0tIM0paClVWYlJD
- M3oyaDNLZmhIL0RhZjk1cGQ2bVBjL2g5dkYvT3kzK2VUV2hnR25QNmNBNWtsUitmTzFXaEc4
- VnJpWHYKck5lUkcyMHN6emplSG9jblNJY1Q1WHVaUjB1REhPaUd4T2l6MXNNUkZUR3h6R095
- MTlSOXJ2dTYzdGlJM2Q3dgpnYzc1T0NBZGtlQi9TZUNFbGFSdzBUZjdMWmJQampzRjI2M0JZ
- bk1mNGtrTkVLdnFXY1UyaWNNcCtxZXpqeW5CCnB2ZXVlMHJDVFFCWUFRbG9GQ1ZUR0hyV1dB
- NkQ0VzVPMkFmSWRJYzF1MUpDWnAyZjVMV1ZvVUZUVklyUW5RUVUKU0hDaWZyOU1aeExUdFBK
- ZFU1Mm9TUHczZGs0aExQOGlKSUx1dnYvYXZhakNzUVlIRXR3WXNiZUZaeGl1TGdscApBN1lj
- Sk5ObXBnQ3BNRDR3VWh2bEN0QUtOQlFXeXIyOTc2OThFUVRuNDZlQmVVNkttMkNpaFhrZ3dD
- eWY4ZXlLCkxFM3NYZXdhcTVrZ1pXdk5xNml1NXFZSVJCOXl3K2NYYzYwZE9aRE9scTkzWDVT
- QVJZemFvZXBrSHo0cmtMa1AKUG8rdENIeUhRUHNHblBYYzlXVDgwREM5Tm5KR2R2VWx5NXJk
- TUk0eHBaeWdlb2tqd293VlFsUFV1Y1M2TXluNwpmOHc4Y2dmQjdDMklBSWNEeDJwUC9IendY
- dmtDT1FOQTdtVjFsTTA4bitnVmtUcnpweGlwNURicTRDSW9ZeDJNCkpaVDhiR1JINlhqY1VE
- S2EwOVFoeVpzQUVRRUFBWWtFUkFRWUFRZ0FEd1VDVzM1ZlF3SWJBZ1VKQThKbkFBSXAKQ1JD
- VWdld1BFWkR5MjhGZElBUVpBUWdBQmdVQ1czNWZRd0FLQ1JCVnhETFBjVk1NamNkc0QvMFJo
- QXN1UVlPeQpyMTNCbDNOaFhrWUFaR3AyWkZER3VrZTdPU2tWOG9qT09UZFR5ei9jT1JHQ2J5
- ZEQrRGd2cUZ5VmRuT1hLZ08wCmxKbUd3ckdlTGRnZ0F2aDBpaHJwNU8wWVVKOWJCU1htR01t
- UVRZSC9BbUxUR2FkYnVqQ1dqNWZGVWtDeXd4aW0KSHV5MFBiMjRwelR2UzUwR1k1WStxSDBG
- SE5haWdka2tpV04zcnVnN0haRXUvQ3lsUFpqT1h6K0QxUVBNckV4dwo3ZC9NS2FiVis5YU5i
- UVlabGRJajk4UXd2VUYxS1N6YThqbFVJdnBoUnEyN0FUOGZER1lHUGZERU1nMmNCT2FlCkty
- N29uUXM0YjdhV082aWZEbHhRVHB6c3pvK0FuODA3Tk1TdFZFRmYrczNBaFZEM2U3bmY4SkJh
- dmJWckFlMGsKb20yNm96elBubnh6K2xxVlZ0dzZVazRYTUl6dGl4L0h3SFl3dUNuY1VYWndL
- MEkzeUFKd2pZd29vck9DaEozUwpFVWJKUVB0R3NneFJERXhWQkZlNk5MUC82MnhQOU82dGFj
- d09kYjBNbVAxYjM5cFJBVEM3YmdkMWxkVUxpNzVaCmxKckowL1NpVkVyb3FOWXk3OXRmbWdB
- WjJVeFptczlTckV5Nm85UVNmc24xYVh2K01QTDlKYUNHbWtQNnpiTFEKTm5kajBKY2FRbmtD
- MHZneWRPMUJtNk11OTZQOXVmbEtaY0FTNndtTE01SWRIT3lqTDg4d0h3anVjakFPQnRjdwpw
- MG9HVG5WT25Sc05ZU084VzhZWi9LZGJ1Nzg1ZGF6TXFKMmlOakFEdUJiZG02TjRqNUVkTW5r
- TG4wQklmUEpwCmRnbTR2bDJVcExqd1JHci9NM3dtbTVwdnMrNnVCN2hrL0ZKaUQvNGxsRU5Q
- NGVNMWg3U200aitWcTZOMSt6VEIKSVhKQWViSXFhc0RwNXlaUzdYcnk0STM2bjg1WEVZZkcw
- MWx0QXlob05WMkRPOFNJUlFwdWkydHErOVJQM1JLMQpKREJ4eEVKWTJFTzVKWjhNeGFQSFEw
- RFQwNWxSRmpLMkFsaGRFSXRqTGpwSjNmVW05c3FMeE1XeHpQNlV6M2lpCjJ1YTR1bnJ0Nk9D
- VHFRd2lqRi8zYlRXaXd2VkFBSG5NRlVpb1hzaEhhb2hWRGNWZm5lSU1mVjBiUUNYWWkzTnAK
- WTB2MFp3Y2lGSCtnU0M3cUQ2WE51aHBWR1NMNElpbGlGeS9TemNhSkV6QUhlTERTaFpQMkNX
- ZG5DNHZnbDM3dApocHg4aDU1WWhKbjZIU3VVelBnaGFLdFZCMmsrajdaZXlaK1NGeHA3SXVi
- SEN3TEhsUWhUNzVSd1EzaUF4S242CjBxajUxY1lUbnF4ZFpYVzZmSDNQa3VNellVNUdwcVIv
- MU9sNWMvd2ZJNmc2QW04eUtXLzBFVUx0K0tuNExGc1MKbTdZM201SDV2MTJVNkpCWXZWK3Ix
- M2paaW9zNEVFREU5M0Q1c05IMk1JeVJ6Q0RxMXpkZHQ0WHV5S0ZqUEtXMQo5aWJaRGZGVjdL
- dUNzdnVMMjNzQmMxc0NNb3ArRTFtVC9ReE9JQTZvRFQxTVFzdHdPVnVReURDdi9PdktTZ2Z6
- CjhGWEdMNkFQY2xqQ3FqOEFKaHhReXN4ZG9pUVA4bS92dStialdHR3Z4dzVzMWxncGlSRFRS
- VVBnY0pKTmFHWTIKVklEclpRaTROU2lOUTBOSWkrZGp1NGZOTW1DcFFxZzh0YkMzY0FhNnl3
- bTZvUUIxU0JobURYMmUxMWdSbGx1SQpPblRHUEUwSFRvM2w3MmxoYmc9PQo9cVpNVgotLS0t
- LUVORCBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tCg==
-Message-ID: <025d76f9-69ca-ee12-cc98-023a2ac2714d@i2se.com>
-Date:   Thu, 16 Sep 2021 12:54:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 16 Sep 2021 06:57:38 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43BD0C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 03:56:18 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id k4so16843680lfj.7
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 03:56:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=QpODtz5kNV13zbzrD4XGvb+ecxhxeYMLq4B36itEY0U=;
+        b=D2adqWHxzPeaQQ0unEiQknykGlmnp69FWEo3XrUsaNqOpARqkjcKHd3FmED/3Six33
+         mpwQJkHApO7HNYsKuG6nGoAGTKTI30fMAp4xMN1pH1GwpB9pLWeRcaJcz54f6tH/Rhf8
+         SR24mAIJcKYwHArrvSdiv16k19rfXYrIy0Rv5WVgiHPqZZXvjWzTVCeQf5PjHV6M667V
+         ceWzVlG+l4c7BMYSLuWsIrqtooWSh1AJLDc47N4VbLMQ9o1hZVaSsN4JdJYws7lE0lDN
+         qmwxY9f94pOvFtvJ8/DpS29/XiDhttQSik8rBgxDq4H3Uz5+ixNqOw6q3PhWghvQByMm
+         qvNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=QpODtz5kNV13zbzrD4XGvb+ecxhxeYMLq4B36itEY0U=;
+        b=ZQLwQfYhS7B2vAB8gIOgqc7soBj7fWLbKybN4KfYStmRUPTp8oKV4/Mt+9VXiNJABt
+         +4XKTtfwXDGCDjr+QGvCy9ZuZ4av2cFSDm5JfXDmq/CYt3t5oEdZWSt6GYa9VygaDwC9
+         +uVePvBBe7lL3mOGB2TcPBzSSSv+7wCHlSaJmCxx5bMxuAMY8phBXzog2Ks4YfhHMn7G
+         C3S2imsgRM5CrN9XjxEwB6yvideQ1gpxz/vENAFYJqdzJ1g+PraLl5VT67zyJIlbkB2i
+         d7u4FS7MFFmGQRI6pSQ4U4GEcnpjc7tARLdBFiUdsZYX2M3fYpTXlpmlMogciIUdLmnU
+         BPlg==
+X-Gm-Message-State: AOAM531wD33Oy+SnLthrODbhBSYfLS8379cs+KWj7mfhkGwb+HAxlTJD
+        O9OwJDRrmjecg4jLIHUnRyU=
+X-Google-Smtp-Source: ABdhPJzK6tbPd35vSKttR5Rtx2/GudKgeXox7HdZQXcvRXSX/X5GlxqevP3nMKNfhmEaBHaARX1EcQ==
+X-Received: by 2002:ac2:5f78:: with SMTP id c24mr3804631lfc.554.1631789776513;
+        Thu, 16 Sep 2021 03:56:16 -0700 (PDT)
+Received: from [192.168.1.11] ([46.235.67.49])
+        by smtp.gmail.com with ESMTPSA id r13sm304820ljh.61.2021.09.16.03.56.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Sep 2021 03:56:15 -0700 (PDT)
+Message-ID: <de0621ea-a7f4-bbb2-1560-7cf4f65d651c@gmail.com>
+Date:   Thu, 16 Sep 2021 13:56:11 +0300
 MIME-Version: 1.0
-In-Reply-To: <20210915201824.413202-1-gascoar@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.3
+Subject: Re: [syzbot] WARNING in internal_create_group
 Content-Language: en-US
-X-Provags-ID: V03:K1:6D33VnWQkta/RYZ2NiDApnrr8adORujM9CxmmgMhA/RVQqYagYh
- 3P4+s5PoY9LeqgCMy8ZcbWEg1iPic746vTt6VzMkYbIx4m/5/3W7N8H6AdALIW/IeYb7gXk
- +R5HiLIDogxBLjajg7BUyG3/QbeQvymwINU8o+4JVjm3/tcAWjAwYnecYHmjzy8UWbZ3Thp
- 9ttfU2ViozkoBQ8zJf4Dw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:VBu9tEkyOTA=:fevkQlUebt+0SPl6azkBHy
- ZLgamNxxb8hc6vS+1WOPj8dSxeukcGeS/BTP6eX/YAjwVKCklIZkBRPGF480b39Z2JPIkUC2r
- TfoRNsQKUfhbTtYZIl9uOakV2Je0AJUqfDTV/JFOeKdITPgUXpkVqh3dZkQZwgq6SC6MVIiuK
- Q11g8B7fFZQ14K0HV3RNX4LLrHJYRYcKTl7o2NZNkMEH17YS1uE5hDk6GOJ+6BL1bFweVY0zf
- UwSF74w8uiH5W3zzCaUjDnhtGzcVbG4kPt3iet6BrwbsYdFAUVqc12ja5boCcwBSEj19WvOE2
- 3RD3Ov57BZD69BmuY+6eHA5MvCABQ4A6vvHAjqENxIIWXyCmCVQF5INbIU7fB9WsWwiOHju6H
- p0nzE+c+8a2fq4y3HPj2zLnA/UxoxkBXdytcEQh9cIppdCjLNdzgo1VwoTDGaq26iH8cnpm4S
- bI5rDMKXT6ngQZG7dFQkFEg9rzvPOToqTM+j46H23pINsNUIBMyFsKWdAwvqcBmsZALLU5+qE
- uO3xYBUD1G2qW3q7rdvECoPJZY+4NGpcWKUcpEv2/srQt28pPV1FJDKiz0CZllORtaxKGT4mL
- GvoFF+wTz1PCDmWZXm4FyfEv+Ak9jvbHCaaMPQDHfULGBVQLPLp0iMdYFMViWNehMuNx03RCD
- CCP8WQBfjEmND+rllBZFymfpXNeheYrcz0OP/f39s7mw4kTiM+KKDgNVNEGCGEcWd3M7mJYxO
- mO1Ryv/wN/W2HOXIfGf9PD/GSz0HfjgTy0GAmNq//1yKFfl60TlIw5uTa+s=
+To:     Joel Stanley <joel@jms.id.au>, Sasha Levin <sashal@kernel.org>
+Cc:     Christoph Hellwig <hch@lst.de>, Hillf Danton <hdanton@sina.com>,
+        syzbot <syzbot+9937dc42271cd87d4b98@syzkaller.appspotmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs@googlegroups.com, Eric Sandeen <sandeen@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <000000000000bd7c8a05c719ecf2@google.com>
+ <20210721033703.949-1-hdanton@sina.com> <20210721043034.GB7444@lst.de>
+ <39ac87a8-42ac-acf7-11eb-ba0b6a9f4a95@gmail.com>
+ <CACPK8XfUWoOHr-0RwRoYoskia4fbAbZ7DYf5wWBnv6qUnGq18w@mail.gmail.com>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+In-Reply-To: <CACPK8XfUWoOHr-0RwRoYoskia4fbAbZ7DYf5wWBnv6qUnGq18w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gaston,
+On 9/16/21 09:55, Joel Stanley wrote:
+> On Wed, 11 Aug 2021 at 21:39, Pavel Skripkin <paskripkin@gmail.com> wrote:
+>>
+>> On 7/21/21 7:30 AM, Christoph Hellwig wrote:
+>> > On Wed, Jul 21, 2021 at 11:37:03AM +0800, Hillf Danton wrote:
+>> >> On Tue, 20 Jul 2021 11:53:27 -0700
+>> >> >syzbot has found a reproducer for the following issue on:
+>> >> >
+>> >> >HEAD commit:    8cae8cd89f05 seq_file: disallow extremely large seq buffer..
+>> >> >git tree:       upstream
+>> >> >console output: https://syzkaller.appspot.com/x/log.txt?x=116f92ec300000
+>> >> >kernel config:  https://syzkaller.appspot.com/x/.config?x=7273c75708b55890
+>> >> >dashboard link: https://syzkaller.appspot.com/bug?extid=9937dc42271cd87d4b98
+>> >> >syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15fc287c300000
+>> >> >C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=178cbf6a300000
+>> >
+>> > <snip>
+>> >
+>> >> >WARNING: CPU: 0 PID: 8435 at fs/sysfs/group.c:116 internal_create_group+0x911/0xb20 fs/sysfs/group.c:116
+>> >
+>> > <snip>
+>> >
+>> >> The device_add(ddev) in register_disk() may fail but it proceeds to register
+>> >> block queue even at the failure ... this falls in the class of known issue
+>> >> given the comment line.
+>> >>
+>> >>  * FIXME: error handling
+>> >>  */
+>> >> static void __device_add_disk(struct device *parent, struct gendisk *disk,
+>> >
+>> > Yes, Luis is working on actually fixing this - but it requires changes
+>> > to every single block driver.  How does a cap on the seq_buf size
+>> > propagate here, though?
+>> >
+>>
+>> Hi!
+>>
+>> I've looked into this, and, I think, we can add sanity check for
+>> first_minor. If user will pass too big index (syzbot's repro passes
+>> 1048576) this value will be shifted to part_shift and then truncated to
+>> byte in __device_add_disk() and assigned to dev->devt. User may be
+>> confused about why he passed 1048576, but sysfs warns about duplicate
+>> creation of /dev/block/43:0
+>>
+>> So, these type of errors can be handled before passing wrong values to
+>> sysfs API like this:
+>>
+>> diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+>> index c38317979f74..600e9bab5d43 100644
+>> --- a/drivers/block/nbd.c
+>> +++ b/drivers/block/nbd.c
+>> @@ -1725,7 +1725,17 @@ static int nbd_dev_add(int index)
+>>         refcount_set(&nbd->refs, 1);
+>>         INIT_LIST_HEAD(&nbd->list);
+>>         disk->major = NBD_MAJOR;
+>> +
+>> +       /* Too big first_minor can cause duplicate creation of
+>> +        * sysfs files/links, since first_minor will be truncated to
+>> +        * byte in __device_add_disk().
+>> +        */
+>>         disk->first_minor = index << part_shift;
+>> +       if (disk->first_minor > 0xff) {
+>> +               err = -EINVAL;
+>> +               goto out_free_idr;
+>> +       }
+>> +
+>>         disk->minors = 1 << part_shift;
+>>         disk->fops = &nbd_fops;
+>>         disk->private_data = nbd;
+>>
+> 
+> This one got backported to v5.10.65, and causes a warning on boot:
+> 
+> [    7.114976] ------------[ cut here ]------------
+> [    7.116811] WARNING: CPU: 0 PID: 1 at block/blk-mq.c:3045
+> blk_mq_release+0x84/0x114
+> [    7.117510] Modules linked in:
+> [    7.118593] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.65 #196
+> [    7.118691] Hardware name: Generic DT based system
+> [    7.119088] Backtrace:
+> [    7.119675] [<8093aff0>] (dump_backtrace) from [<8093b294>]
+> (show_stack+0x20/0x24)
+> [    7.120052]  r7:00000009 r6:60000153 r5:00000000 r4:80e75938
+> [    7.120223] [<8093b274>] (show_stack) from [<80940938>]
+> (dump_stack+0xc8/0xe4)
+> [    7.120298] [<80940870>] (dump_stack) from [<80123174>] (__warn+0xe8/0x154)
+> [    7.120355]  r7:00000009 r6:00000be5 r5:804bc594 r4:80b53c80
+> [    7.120415] [<8012308c>] (__warn) from [<8093b9b4>]
+> (warn_slowpath_fmt+0x6c/0xe4)
+> [    7.120465]  r7:00000009 r6:00000be5 r5:80b53c80 r4:00000000
+> [    7.120537] [<8093b94c>] (warn_slowpath_fmt) from [<804bc594>]
+> (blk_mq_release+0x84/0x114)
+> [    7.120594]  r8:80b53c80 r7:857b7390 r6:00000001 r5:80ea6efd r4:00000000
+> [    7.120656] [<804bc510>] (blk_mq_release) from [<804ad65c>]
+> (blk_release_queue+0xb8/0x128)
+> [    7.120756]  r9:00000001 r8:80eee400 r7:00000000 r6:857b7390
+> r5:00000001 r4:857b73d8
+> [    7.120836] [<804ad5a4>] (blk_release_queue) from [<8052f87c>]
+> (kobject_put+0xc8/0x210)
+> [    7.120891]  r7:00000000 r6:00000000 r5:80e751bc r4:857b73d8
+> [    7.120948] [<8052f7b4>] (kobject_put) from [<804a9b00>]
+> (blk_put_queue+0x1c/0x20)
+> [    7.120998]  r7:00000000 r6:857b3800 r5:00000000 r4:857b3860
+> [    7.121055] [<804a9ae4>] (blk_put_queue) from [<804c2784>]
+> (disk_release+0xb0/0x118)
+> [    7.121118] [<804c26d4>] (disk_release) from [<805f717c>]
+> (device_release+0x40/0xb4)
+> [    7.121168]  r7:00000000 r6:00000000 r5:00000000 r4:857b3860
+> [    7.121224] [<805f713c>] (device_release) from [<8052f87c>]
+> (kobject_put+0xc8/0x210)
+> [    7.121265]  r5:80e81154 r4:857b3860
+> [    7.121318] [<8052f7b4>] (kobject_put) from [<804c1c74>] (put_disk+0x24/0x28)
+> [    7.121368]  r7:ffffffea r6:00000008 r5:857b3800 r4:857bca00
+> [    7.121440] [<804c1c50>] (put_disk) from [<806286f4>]
+> (nbd_dev_add+0x214/0x27c)
+> [    7.121670] [<806284e0>] (nbd_dev_add) from [<80d22f80>]
+> (nbd_init+0xec/0x120)
+> [    7.121740]  r10:80ec7000 r9:80c06b34 r8:80d39834 r7:00000000
+> r6:80e82aa8 r5:00000009
+> [    7.121777]  r4:00000000
+> [    7.121842] [<80d22e94>] (nbd_init) from [<80102364>]
+> (do_one_initcall+0x50/0x274)
+> [    7.121893]  r7:00000000 r6:00000007 r5:8116d180 r4:80d22e94
+> [    7.121956] [<80102314>] (do_one_initcall) from [<80d012e8>]
+> (kernel_init_freeable+0x1b8/0x240)
+> [    7.122005]  r7:80d39854 r6:00000007 r5:8116d180 r4:80d5e788
+> [    7.122067] [<80d01130>] (kernel_init_freeable) from [<80947bac>]
+> (kernel_init+0x18/0x130)
+> [    7.122126]  r10:00000000 r9:00000000 r8:00000000 r7:00000000
+> r6:00000000 r5:80947b94
+> [    7.122161]  r4:00000000
+> [    7.122218] [<80947b94>] (kernel_init) from [<80100168>]
+> (ret_from_fork+0x14/0x2c)
+> [    7.122413] Exception stack(0x810b7fb0 to 0x810b7ff8)
+> [    7.122936] 7fa0:                                     00000000
+> 00000000 00000000 00000000
+> [    7.123287] 7fc0: 00000000 00000000 00000000 00000000 00000000
+> 00000000 00000000 00000000
+> [    7.123545] 7fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+> [    7.123728]  r5:80947b94 r4:00000000
+> [    7.124011] ---[ end trace d69e5842dc8c9352 ]---
+> 
+> There's been a bit going on in this driver since v5.10, so I assume
+> it's missing some dependent changes.
+> 
 
-Am 15.09.21 um 22:18 schrieb Gaston Gonzalez:
-> Fix code alignment issues.
->
-> Reported by checkpatch.pl
->
-> Signed-off-by: Gaston Gonzalez <gascoar@gmail.com>
+Hi, Joel,
 
-please:
+Thank you for report!
 
-- use a version for your patch series
-- add a cover letter with version changes
-- try to give reviewers more time before sending a new version
-- try to avoid multiple patch series for the same driver at the same time
-
-Regards
+Did reverting my commit remove this warning? I don't get how sanity 
+check could cause this warning, but I might be missing something.
 
 
+
+With regards,
+Pavel Skripkin
