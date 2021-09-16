@@ -2,141 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC91440D442
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 10:04:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3610D40D444
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 10:05:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234982AbhIPIFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 04:05:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52632 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234963AbhIPIFg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 04:05:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631779455;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pwNZJ4rNg2Bbq40eOmQLhg4v/7JOjLDWypf+dMjwfo4=;
-        b=hrSHJUUHrUVGW7sRZEaDpLx68yLV7GAZpdjEdLan2gfVVMwmxDgZXI6HiPRzkTEqHBLxcY
-        l5NRS4XA2y/yYROZnqlZDAbL6OKWAVOerT1I2/IKDNo5SwtOtxL0+HYiHwKwot7JE1gtAC
-        fCfnch/++Uaa11eyArmtAE2OlyU2/2E=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-271-RAYFqjLUNw6spN_5yVw8cw-1; Thu, 16 Sep 2021 04:04:12 -0400
-X-MC-Unique: RAYFqjLUNw6spN_5yVw8cw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 38726802928;
-        Thu, 16 Sep 2021 08:04:11 +0000 (UTC)
-Received: from T590 (ovpn-12-89.pek2.redhat.com [10.72.12.89])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A41CE60C82;
-        Thu, 16 Sep 2021 08:04:04 +0000 (UTC)
-Date:   Thu, 16 Sep 2021 16:04:16 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Yu Kuai <yukuai3@huawei.com>
-Cc:     josef@toxicpanda.com, axboe@kernel.dk, hch@infradead.org,
-        linux-block@vger.kernel.org, nbd@other.debian.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
-Subject: Re: [PATCH v7 6/6] nbd: fix uaf in nbd_handle_reply()
-Message-ID: <YUL6gJhaNy58Il3v@T590>
-References: <20210915092010.2087371-1-yukuai3@huawei.com>
- <20210915092010.2087371-7-yukuai3@huawei.com>
+        id S235009AbhIPIGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 04:06:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50838 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234878AbhIPIGl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 04:06:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 477186112E;
+        Thu, 16 Sep 2021 08:05:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1631779521;
+        bh=J7eYvvZW4hfUTsIO3JbkvWBWcb1H+sTTJemQsKl98bY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=F5mcBb02/LDuLER7yksFmDaEAEqhHBsHKeRtiXSQ08VbDkVV0WyiLQCK75ZefcJ7Z
+         2BvPkOhNUmXcvm7kcswZu9NPn6pb2KPrC/4dJbdfVGx7FuwSGqNaHxWI+UE2pUA3NE
+         1V+YhS9O3vMg7vvxLN2yKK7hynJxTOgziMIFk6is=
+Date:   Thu, 16 Sep 2021 10:05:19 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Joel Stanley <joel@jms.id.au>
+Cc:     Pavel Skripkin <paskripkin@gmail.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Hillf Danton <hdanton@sina.com>,
+        syzbot <syzbot+9937dc42271cd87d4b98@syzkaller.appspotmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs@googlegroups.com, Eric Sandeen <sandeen@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Luis Chamberlain <mcgrof@kernel.org>
+Subject: Re: [syzbot] WARNING in internal_create_group
+Message-ID: <YUL6vx5w5kHZM9t1@kroah.com>
+References: <000000000000bd7c8a05c719ecf2@google.com>
+ <20210721033703.949-1-hdanton@sina.com>
+ <20210721043034.GB7444@lst.de>
+ <39ac87a8-42ac-acf7-11eb-ba0b6a9f4a95@gmail.com>
+ <CACPK8XfUWoOHr-0RwRoYoskia4fbAbZ7DYf5wWBnv6qUnGq18w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210915092010.2087371-7-yukuai3@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <CACPK8XfUWoOHr-0RwRoYoskia4fbAbZ7DYf5wWBnv6qUnGq18w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 05:20:10PM +0800, Yu Kuai wrote:
-> There is a problem that nbd_handle_reply() might access freed request:
+On Thu, Sep 16, 2021 at 06:55:13AM +0000, Joel Stanley wrote:
+> On Wed, 11 Aug 2021 at 21:39, Pavel Skripkin <paskripkin@gmail.com> wrote:
+> >
+> > On 7/21/21 7:30 AM, Christoph Hellwig wrote:
+> > > On Wed, Jul 21, 2021 at 11:37:03AM +0800, Hillf Danton wrote:
+> > >> On Tue, 20 Jul 2021 11:53:27 -0700
+> > >> >syzbot has found a reproducer for the following issue on:
+> > >> >
+> > >> >HEAD commit:    8cae8cd89f05 seq_file: disallow extremely large seq buffer..
+> > >> >git tree:       upstream
+> > >> >console output: https://syzkaller.appspot.com/x/log.txt?x=116f92ec300000
+> > >> >kernel config:  https://syzkaller.appspot.com/x/.config?x=7273c75708b55890
+> > >> >dashboard link: https://syzkaller.appspot.com/bug?extid=9937dc42271cd87d4b98
+> > >> >syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15fc287c300000
+> > >> >C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=178cbf6a300000
+> > >
+> > > <snip>
+> > >
+> > >> >WARNING: CPU: 0 PID: 8435 at fs/sysfs/group.c:116 internal_create_group+0x911/0xb20 fs/sysfs/group.c:116
+> > >
+> > > <snip>
+> > >
+> > >> The device_add(ddev) in register_disk() may fail but it proceeds to register
+> > >> block queue even at the failure ... this falls in the class of known issue
+> > >> given the comment line.
+> > >>
+> > >>  * FIXME: error handling
+> > >>  */
+> > >> static void __device_add_disk(struct device *parent, struct gendisk *disk,
+> > >
+> > > Yes, Luis is working on actually fixing this - but it requires changes
+> > > to every single block driver.  How does a cap on the seq_buf size
+> > > propagate here, though?
+> > >
+> >
+> > Hi!
+> >
+> > I've looked into this, and, I think, we can add sanity check for
+> > first_minor. If user will pass too big index (syzbot's repro passes
+> > 1048576) this value will be shifted to part_shift and then truncated to
+> > byte in __device_add_disk() and assigned to dev->devt. User may be
+> > confused about why he passed 1048576, but sysfs warns about duplicate
+> > creation of /dev/block/43:0
+> >
+> > So, these type of errors can be handled before passing wrong values to
+> > sysfs API like this:
+> >
+> > diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+> > index c38317979f74..600e9bab5d43 100644
+> > --- a/drivers/block/nbd.c
+> > +++ b/drivers/block/nbd.c
+> > @@ -1725,7 +1725,17 @@ static int nbd_dev_add(int index)
+> >         refcount_set(&nbd->refs, 1);
+> >         INIT_LIST_HEAD(&nbd->list);
+> >         disk->major = NBD_MAJOR;
+> > +
+> > +       /* Too big first_minor can cause duplicate creation of
+> > +        * sysfs files/links, since first_minor will be truncated to
+> > +        * byte in __device_add_disk().
+> > +        */
+> >         disk->first_minor = index << part_shift;
+> > +       if (disk->first_minor > 0xff) {
+> > +               err = -EINVAL;
+> > +               goto out_free_idr;
+> > +       }
+> > +
+> >         disk->minors = 1 << part_shift;
+> >         disk->fops = &nbd_fops;
+> >         disk->private_data = nbd;
+> >
 > 
-> 1) At first, a normal io is submitted and completed with scheduler:
+> This one got backported to v5.10.65, and causes a warning on boot:
 > 
-> internel_tag = blk_mq_get_tag -> get tag from sched_tags
->  blk_mq_rq_ctx_init
->   sched_tags->rq[internel_tag] = sched_tag->static_rq[internel_tag]
-> ...
-> blk_mq_get_driver_tag
->  __blk_mq_get_driver_tag -> get tag from tags
->  tags->rq[tag] = sched_tag->static_rq[internel_tag]
+> [    7.114976] ------------[ cut here ]------------
+> [    7.116811] WARNING: CPU: 0 PID: 1 at block/blk-mq.c:3045
+> blk_mq_release+0x84/0x114
+> [    7.117510] Modules linked in:
+> [    7.118593] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.65 #196
+> [    7.118691] Hardware name: Generic DT based system
+> [    7.119088] Backtrace:
+> [    7.119675] [<8093aff0>] (dump_backtrace) from [<8093b294>]
+> (show_stack+0x20/0x24)
+> [    7.120052]  r7:00000009 r6:60000153 r5:00000000 r4:80e75938
+> [    7.120223] [<8093b274>] (show_stack) from [<80940938>]
+> (dump_stack+0xc8/0xe4)
+> [    7.120298] [<80940870>] (dump_stack) from [<80123174>] (__warn+0xe8/0x154)
+> [    7.120355]  r7:00000009 r6:00000be5 r5:804bc594 r4:80b53c80
+> [    7.120415] [<8012308c>] (__warn) from [<8093b9b4>]
+> (warn_slowpath_fmt+0x6c/0xe4)
+> [    7.120465]  r7:00000009 r6:00000be5 r5:80b53c80 r4:00000000
+> [    7.120537] [<8093b94c>] (warn_slowpath_fmt) from [<804bc594>]
+> (blk_mq_release+0x84/0x114)
+> [    7.120594]  r8:80b53c80 r7:857b7390 r6:00000001 r5:80ea6efd r4:00000000
+> [    7.120656] [<804bc510>] (blk_mq_release) from [<804ad65c>]
+> (blk_release_queue+0xb8/0x128)
+> [    7.120756]  r9:00000001 r8:80eee400 r7:00000000 r6:857b7390
+> r5:00000001 r4:857b73d8
+> [    7.120836] [<804ad5a4>] (blk_release_queue) from [<8052f87c>]
+> (kobject_put+0xc8/0x210)
+> [    7.120891]  r7:00000000 r6:00000000 r5:80e751bc r4:857b73d8
+> [    7.120948] [<8052f7b4>] (kobject_put) from [<804a9b00>]
+> (blk_put_queue+0x1c/0x20)
+> [    7.120998]  r7:00000000 r6:857b3800 r5:00000000 r4:857b3860
+> [    7.121055] [<804a9ae4>] (blk_put_queue) from [<804c2784>]
+> (disk_release+0xb0/0x118)
+> [    7.121118] [<804c26d4>] (disk_release) from [<805f717c>]
+> (device_release+0x40/0xb4)
+> [    7.121168]  r7:00000000 r6:00000000 r5:00000000 r4:857b3860
+> [    7.121224] [<805f713c>] (device_release) from [<8052f87c>]
+> (kobject_put+0xc8/0x210)
+> [    7.121265]  r5:80e81154 r4:857b3860
+> [    7.121318] [<8052f7b4>] (kobject_put) from [<804c1c74>] (put_disk+0x24/0x28)
+> [    7.121368]  r7:ffffffea r6:00000008 r5:857b3800 r4:857bca00
+> [    7.121440] [<804c1c50>] (put_disk) from [<806286f4>]
+> (nbd_dev_add+0x214/0x27c)
+> [    7.121670] [<806284e0>] (nbd_dev_add) from [<80d22f80>]
+> (nbd_init+0xec/0x120)
+> [    7.121740]  r10:80ec7000 r9:80c06b34 r8:80d39834 r7:00000000
+> r6:80e82aa8 r5:00000009
+> [    7.121777]  r4:00000000
+> [    7.121842] [<80d22e94>] (nbd_init) from [<80102364>]
+> (do_one_initcall+0x50/0x274)
+> [    7.121893]  r7:00000000 r6:00000007 r5:8116d180 r4:80d22e94
+> [    7.121956] [<80102314>] (do_one_initcall) from [<80d012e8>]
+> (kernel_init_freeable+0x1b8/0x240)
+> [    7.122005]  r7:80d39854 r6:00000007 r5:8116d180 r4:80d5e788
+> [    7.122067] [<80d01130>] (kernel_init_freeable) from [<80947bac>]
+> (kernel_init+0x18/0x130)
+> [    7.122126]  r10:00000000 r9:00000000 r8:00000000 r7:00000000
+> r6:00000000 r5:80947b94
+> [    7.122161]  r4:00000000
+> [    7.122218] [<80947b94>] (kernel_init) from [<80100168>]
+> (ret_from_fork+0x14/0x2c)
+> [    7.122413] Exception stack(0x810b7fb0 to 0x810b7ff8)
+> [    7.122936] 7fa0:                                     00000000
+> 00000000 00000000 00000000
+> [    7.123287] 7fc0: 00000000 00000000 00000000 00000000 00000000
+> 00000000 00000000 00000000
+> [    7.123545] 7fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+> [    7.123728]  r5:80947b94 r4:00000000
+> [    7.124011] ---[ end trace d69e5842dc8c9352 ]---
 > 
-> So, both tags->rq[tag] and sched_tags->rq[internel_tag] are pointing
-> to the request: sched_tags->static_rq[internal_tag]. Even if the
-> io is finished.
-> 
-> 2) nbd server send a reply with random tag directly:
-> 
-> recv_work
->  nbd_handle_reply
->   blk_mq_tag_to_rq(tags, tag)
->    rq = tags->rq[tag]
-> 
-> 3) if the sched_tags->static_rq is freed:
-> 
-> blk_mq_sched_free_requests
->  blk_mq_free_rqs(q->tag_set, hctx->sched_tags, i)
->   -> step 2) access rq before clearing rq mapping
->   blk_mq_clear_rq_mapping(set, tags, hctx_idx);
->   __free_pages() -> rq is freed here
-> 
-> 4) Then, nbd continue to use the freed request in nbd_handle_reply
-> 
-> Fix the problem by get 'q_usage_counter' before blk_mq_tag_to_rq(),
-> thus request is ensured not to be freed because 'q_usage_counter' is
-> not zero.
-> 
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> ---
->  drivers/block/nbd.c | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
-> 
-> diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-> index 9a7bbf8ebe74..3e8b70b5d4f9 100644
-> --- a/drivers/block/nbd.c
-> +++ b/drivers/block/nbd.c
-> @@ -824,6 +824,7 @@ static void recv_work(struct work_struct *work)
->  						     work);
->  	struct nbd_device *nbd = args->nbd;
->  	struct nbd_config *config = nbd->config;
-> +	struct request_queue *q = nbd->disk->queue;
->  	struct nbd_sock *nsock;
->  	struct nbd_cmd *cmd;
->  	struct request *rq;
-> @@ -834,7 +835,24 @@ static void recv_work(struct work_struct *work)
->  		if (nbd_read_reply(nbd, args->index, &reply))
->  			break;
->  
-> +		/*
-> +		 * Grab ref of q_usage_counter can prevent request being freed
-> +		 * during nbd_handle_reply(). If q_usage_counter is zero, then
-> +		 * no request is inflight, which means something is wrong since
-> +		 * we expect to find a request to complete here.
-> +		 */
+> There's been a bit going on in this driver since v5.10, so I assume
+> it's missing some dependent changes.
 
-The above comment is wrong, the purpose is simply for avoiding request
-pool freed, such as elevator switching won't happen once
-->q_usage_counter is grabbed. So no any request UAF can be triggered
-when calling into nbd_handle_reply().
+Ugh, ok, I'll just go revert this for now in here, and in 5.4.y to be
+safe.
 
-> +		if (!percpu_ref_tryget(&q->q_usage_counter)) {
-> +			dev_err(disk_to_dev(nbd->disk), "%s: no io inflight\n",
-> +				__func__);
-> +			break;
-> +		}
-> +
->  		cmd = nbd_handle_reply(nbd, args->index, &reply);
-> +		/*
-> +		 * It's safe to drop ref before request completion, inflight
-> +		 * request will ensure q_usage_counter won't be zero.
-> +		 */
+thanks,
 
-The above comment is useless actually.
-
--- 
-Ming
-
+greg k-h
