@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62C1140DFDA
+	by mail.lfdr.de (Postfix) with ESMTP id CFDDC40DFDB
 	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:15:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241147AbhIPQPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:15:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48012 "EHLO mail.kernel.org"
+        id S241204AbhIPQPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:15:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47416 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235476AbhIPQJH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:09:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D6A956135E;
-        Thu, 16 Sep 2021 16:07:32 +0000 (UTC)
+        id S235566AbhIPQJJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:09:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B62D61357;
+        Thu, 16 Sep 2021 16:07:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808453;
-        bh=kQ5PrhTdPYpk3ywUsdGkW4dHUxC9DRcGu0JK8ZVm+R4=;
+        s=korg; t=1631808456;
+        bh=B7hmzROZ2q5FW/UnPmYrUguLrogA8mOrEXTRK0wGW/M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vLGbh+n4Ex2ZOCtVPGH1GUJf+b01iI0KUDqz23d5jETK7l1rEUAzMH/Tf2CDT0TME
-         +D6/eL/Ii5tV8PU1bQ0fEffo50DV/pYAuQPI+dcdUgyz8FtsMiZOyv2jxYP7SXo+57
-         0kT4pPNFtyUzke5swYqF2dIHwThIwDfPG0wt3tSQ=
+        b=gy8FmY/5Ap8HxjsniLVm1W8Rm24EzTHXAPkp/pMZ+ALnre9GwWlfsXqqx02RtGHRZ
+         J/ZLfdwxBGBqTo2/QJLMxPSVtGwoQaqmKXOa2Bh0Z96Ygt8sBZ+PVE+iMEctMIYkgE
+         DvtHSqnwn6A4essL6hp6bB1NKEMMiUTtUoBRog4A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org, Wenpeng Liang <liangwenpeng@huawei.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 096/306] powerpc/smp: Update cpu_core_map on all PowerPc systems
-Date:   Thu, 16 Sep 2021 17:57:21 +0200
-Message-Id: <20210916155757.332816390@linuxfoundation.org>
+Subject: [PATCH 5.10 097/306] RDMA/hns: Fix QPs resp incomplete assignment
+Date:   Thu, 16 Sep 2021 17:57:22 +0200
+Message-Id: <20210916155757.372842193@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
 References: <20210916155753.903069397@linuxfoundation.org>
@@ -41,169 +40,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+From: Wenpeng Liang <liangwenpeng@huawei.com>
 
-[ Upstream commit b8b928030332a0ca16d42433eb2c3085600d8704 ]
+[ Upstream commit d2e0ccffcdd7209fc9881c8970d2a7e28dcb43b9 ]
 
-lscpu() uses core_siblings to list the number of sockets in the
-system. core_siblings is set using topology_core_cpumask.
+The resp passed to the user space represents the enable flag of qp,
+incomplete assignment will cause some features of the user space to be
+disabled.
 
-While optimizing the powerpc bootup path, Commit 4ca234a9cbd7
-("powerpc/smp: Stop updating cpu_core_mask").  it was found that
-updating cpu_core_mask() ended up taking a lot of time. It was thought
-that on Powerpc, cpu_core_mask() would always be same as
-cpu_cpu_mask() i.e number of sockets will always be equal to number of
-nodes. As an optimization, cpu_core_mask() was made a snapshot of
-cpu_cpu_mask().
-
-However that was found to be false with PowerPc KVM guests, where each
-node could have more than one socket. So with Commit c47f892d7aa6
-("powerpc/smp: Reintroduce cpu_core_mask"), cpu_core_mask was updated
-based on chip_id but in an optimized way using some mask manipulations
-and chip_id caching.
-
-However on non-PowerNV and non-pseries KVM guests (i.e not
-implementing cpu_to_chip_id(), continued to use a copy of
-cpu_cpu_mask().
-
-There are two issues that were noticed on such systems
-1. lscpu would report one extra socket.
-On a IBM,9009-42A (aka zz system) which has only 2 chips/ sockets/
-nodes, lscpu would report
-Architecture:        ppc64le
-Byte Order:          Little Endian
-CPU(s):              160
-On-line CPU(s) list: 0-159
-Thread(s) per core:  8
-Core(s) per socket:  6
-Socket(s):           3                <--------------
-NUMA node(s):        2
-Model:               2.2 (pvr 004e 0202)
-Model name:          POWER9 (architected), altivec supported
-Hypervisor vendor:   pHyp
-Virtualization type: para
-L1d cache:           32K
-L1i cache:           32K
-L2 cache:            512K
-L3 cache:            10240K
-NUMA node0 CPU(s):   0-79
-NUMA node1 CPU(s):   80-159
-
-2. Currently cpu_cpu_mask is updated when a core is
-added/removed. However its not updated when smt mode switching or on
-CPUs are explicitly offlined. However all other percpu masks are
-updated to ensure only active/online CPUs are in the masks.
-This results in build_sched_domain traces since there will be CPUs in
-cpu_cpu_mask() but those CPUs are not present in SMT / CACHE / MC /
-NUMA domains. A loop of threads running smt mode switching and core
-add/remove will soon show this trace.
-Hence cpu_cpu_mask has to be update at smt mode switch.
-
-This will have impact on cpu_core_mask(). cpu_core_mask() is a
-snapshot of cpu_cpu_mask. Different CPUs within the same socket will
-end up having different cpu_core_masks since they are snapshots at
-different points of time. This means when lscpu will start reporting
-many more sockets than the actual number of sockets/ nodes / chips.
-
-Different ways to handle this problem:
-A. Update the snapshot aka cpu_core_mask for all CPUs whenever
-   cpu_cpu_mask is updated. This would a non-optimal solution.
-B. Instead of a cpumask_var_t, make cpu_core_map a cpumask pointer
-   pointing to cpu_cpu_mask. However percpu cpumask pointer is frowned
-   upon and we need a clean way to handle PowerPc KVM guest which is
-   not a snapshot.
-C. Update cpu_core_masks all PowerPc systems like in PowerPc KVM
-guests using mask manipulations. This approach is relatively simple
-and unifies with the existing code.
-D. On top of 3, we could also resurrect get_physical_package_id which
-   could return a nid for the said CPU. However this is not needed at this
-   time.
-
-Option C is the preferred approach for now.
-
-While this is somewhat a revert of Commit 4ca234a9cbd7 ("powerpc/smp:
-Stop updating cpu_core_mask").
-
-1. Plain revert has some conflicts
-2. For chip_id == -1, the cpu_core_mask is made identical to
-cpu_cpu_mask, unlike previously where cpu_core_mask was set to a core
-if chip_id doesn't exist.
-
-This goes by the principle that if chip_id is not exposed, then
-sockets / chip / node share the same set of CPUs.
-
-With the fix, lscpu o/p would be
-Architecture:        ppc64le
-Byte Order:          Little Endian
-CPU(s):              160
-On-line CPU(s) list: 0-159
-Thread(s) per core:  8
-Core(s) per socket:  6
-Socket(s):           2                     <--------------
-NUMA node(s):        2
-Model:               2.2 (pvr 004e 0202)
-Model name:          POWER9 (architected), altivec supported
-Hypervisor vendor:   pHyp
-Virtualization type: para
-L1d cache:           32K
-L1i cache:           32K
-L2 cache:            512K
-L3 cache:            10240K
-NUMA node0 CPU(s):   0-79
-NUMA node1 CPU(s):   80-159
-
-Fixes: 4ca234a9cbd7 ("powerpc/smp: Stop updating cpu_core_mask")
-Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210826100401.412519-3-srikar@linux.vnet.ibm.com
+Fixes: 90ae0b57e4a5 ("RDMA/hns: Combine enable flags of qp")
+Fixes: aba457ca890c ("RDMA/hns: Support owner mode doorbell")
+Link: https://lore.kernel.org/r/1629985056-57004-3-git-send-email-liangwenpeng@huawei.com
+Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kernel/smp.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_qp.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
-index 26a028a9233a..91f274134884 100644
---- a/arch/powerpc/kernel/smp.c
-+++ b/arch/powerpc/kernel/smp.c
-@@ -1385,6 +1385,7 @@ static void add_cpu_to_masks(int cpu)
- 	 * add it to it's own thread sibling mask.
- 	 */
- 	cpumask_set_cpu(cpu, cpu_sibling_mask(cpu));
-+	cpumask_set_cpu(cpu, cpu_core_mask(cpu));
- 
- 	for (i = first_thread; i < first_thread + threads_per_core; i++)
- 		if (cpu_online(i))
-@@ -1399,11 +1400,6 @@ static void add_cpu_to_masks(int cpu)
- 	if (has_coregroup_support())
- 		update_coregroup_mask(cpu, &mask);
- 
--	if (chip_id == -1 || !ret) {
--		cpumask_copy(per_cpu(cpu_core_map, cpu), cpu_cpu_mask(cpu));
--		goto out;
--	}
--
- 	if (shared_caches)
- 		submask_fn = cpu_l2_cache_mask;
- 
-@@ -1413,6 +1409,10 @@ static void add_cpu_to_masks(int cpu)
- 	/* Skip all CPUs already part of current CPU core mask */
- 	cpumask_andnot(mask, cpu_online_mask, cpu_core_mask(cpu));
- 
-+	/* If chip_id is -1; limit the cpu_core_mask to within DIE*/
-+	if (chip_id == -1)
-+		cpumask_and(mask, mask, cpu_cpu_mask(cpu));
-+
- 	for_each_cpu(i, mask) {
- 		if (chip_id == cpu_to_chip_id(i)) {
- 			or_cpumasks_related(cpu, i, submask_fn, cpu_core_mask);
-@@ -1422,7 +1422,6 @@ static void add_cpu_to_masks(int cpu)
+diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
+index ef1452215b17..7ce9ad8aee1e 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_qp.c
++++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
+@@ -740,7 +740,6 @@ static int alloc_qp_db(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
+ 				goto err_out;
+ 			}
+ 			hr_qp->en_flags |= HNS_ROCE_QP_CAP_SQ_RECORD_DB;
+-			resp->cap_flags |= HNS_ROCE_QP_CAP_SQ_RECORD_DB;
  		}
+ 
+ 		if (user_qp_has_rdb(hr_dev, init_attr, udata, resp)) {
+@@ -752,7 +751,6 @@ static int alloc_qp_db(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
+ 				goto err_sdb;
+ 			}
+ 			hr_qp->en_flags |= HNS_ROCE_QP_CAP_RQ_RECORD_DB;
+-			resp->cap_flags |= HNS_ROCE_QP_CAP_RQ_RECORD_DB;
+ 		}
+ 	} else {
+ 		/* QP doorbell register address */
+@@ -959,6 +957,7 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
  	}
  
--out:
- 	free_cpumask_var(mask);
- }
- 
+ 	if (udata) {
++		resp.cap_flags = hr_qp->en_flags;
+ 		ret = ib_copy_to_udata(udata, &resp,
+ 				       min(udata->outlen, sizeof(resp)));
+ 		if (ret) {
 -- 
 2.30.2
 
