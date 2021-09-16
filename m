@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FFD740E43C
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:23:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED77140E431
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:22:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245656AbhIPQ4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:56:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39406 "EHLO mail.kernel.org"
+        id S1346847AbhIPQ4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:56:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39404 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240638AbhIPQvn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240656AbhIPQvn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 16 Sep 2021 12:51:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2056A61A84;
-        Thu, 16 Sep 2021 16:28:45 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E987361288;
+        Thu, 16 Sep 2021 16:28:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809726;
-        bh=sYydYxRyDsnWxhv0ACQkOPeeGjMFpExS/qG7QDvFyBU=;
+        s=korg; t=1631809729;
+        bh=taatuuLuDBoBSsvAWC34YtQ3EAR1kJj2dTPwEIz+LIE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Lp9IDGKrCHwFHRMA/nID7lKDk2ZK2sSDt12Fc0mOHBVFtYV5uMn8M8nBoIARlw5YN
-         STMDsPzcSrY0tTM/Ahb9L33NblhcRPZiuuU2qNM/KhBcvLx9s0LUK4QQ6nw/LGXTTN
-         yNssFk2FI3eTYT6viGPQZATaVUNQxaJqMtZv76YE=
+        b=e2q45D5CRXLGzBlu8Z1qa/6ubayHJN/YJaLVxMFxidMrH3197ZOIXtTkJEMQZnSEk
+         wRVgG70LhtTS0DQGMdNtHQ+fF/LxuVNJasPTGTGecum3/QFPXlOAeZwCeccGB3qxBN
+         CFAdXv9mrIGWy9x8rhnYufy8v0gkauKkvPMblvO4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Eran Ben Elisha <eranbe@nvidia.com>,
-        Moshe Shemesh <moshe@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
+        stable@vger.kernel.org, TOTE Robot <oslab@tsinghua.edu.cn>,
+        Tuo Li <islituo@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 261/380] net/mlx5: Fix variable type to match 64bit
-Date:   Thu, 16 Sep 2021 18:00:18 +0200
-Message-Id: <20210916155812.956220743@linuxfoundation.org>
+Subject: [PATCH 5.13 262/380] gpu: drm: amd: amdgpu: amdgpu_i2c: fix possible uninitialized-variable access in amdgpu_i2c_router_select_ddc_port()
+Date:   Thu, 16 Sep 2021 18:00:19 +0200
+Message-Id: <20210916155812.987786448@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
 References: <20210916155803.966362085@linuxfoundation.org>
@@ -43,65 +41,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eran Ben Elisha <eranbe@nvidia.com>
+From: Tuo Li <islituo@gmail.com>
 
-[ Upstream commit 979aa51967add26b37f9d77e01729d44a2da8e5f ]
+[ Upstream commit a211260c34cfadc6068fece8c9e99e0fe1e2a2b6 ]
 
-Fix the following smatch warning:
-wait_func_handle_exec_timeout() warn: should '1 << ent->idx' be a 64 bit type?
+The variable val is declared without initialization, and its address is
+passed to amdgpu_i2c_get_byte(). In this function, the value of val is
+accessed in:
+  DRM_DEBUG("i2c 0x%02x 0x%02x read failed\n",
+       addr, *val);
 
-Use 1ULL, to have a 64 bit type variable.
+Also, when amdgpu_i2c_get_byte() returns, val may remain uninitialized,
+but it is accessed in:
+  val &= ~amdgpu_connector->router.ddc_mux_control_pin;
 
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Eran Ben Elisha <eranbe@nvidia.com>
-Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+To fix this possible uninitialized-variable access, initialize val to 0 in
+amdgpu_i2c_router_select_ddc_port().
+
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Tuo Li <islituo@gmail.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/cmd.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_i2c.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-index 9d79c5ec31e9..db5dfff585c9 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-@@ -877,7 +877,7 @@ static void cb_timeout_handler(struct work_struct *work)
- 	ent->ret = -ETIMEDOUT;
- 	mlx5_core_warn(dev, "cmd[%d]: %s(0x%x) Async, timeout. Will cause a leak of a command resource\n",
- 		       ent->idx, mlx5_command_str(msg_to_opcode(ent->in)), msg_to_opcode(ent->in));
--	mlx5_cmd_comp_handler(dev, 1UL << ent->idx, true);
-+	mlx5_cmd_comp_handler(dev, 1ULL << ent->idx, true);
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_i2c.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_i2c.c
+index bca4dddd5a15..82608df43396 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_i2c.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_i2c.c
+@@ -339,7 +339,7 @@ static void amdgpu_i2c_put_byte(struct amdgpu_i2c_chan *i2c_bus,
+ void
+ amdgpu_i2c_router_select_ddc_port(const struct amdgpu_connector *amdgpu_connector)
+ {
+-	u8 val;
++	u8 val = 0;
  
- out:
- 	cmd_ent_put(ent); /* for the cmd_ent_get() took on schedule delayed work */
-@@ -994,7 +994,7 @@ static void cmd_work_handler(struct work_struct *work)
- 		MLX5_SET(mbox_out, ent->out, status, status);
- 		MLX5_SET(mbox_out, ent->out, syndrome, drv_synd);
- 
--		mlx5_cmd_comp_handler(dev, 1UL << ent->idx, true);
-+		mlx5_cmd_comp_handler(dev, 1ULL << ent->idx, true);
+ 	if (!amdgpu_connector->router.ddc_valid)
  		return;
- 	}
- 
-@@ -1008,7 +1008,7 @@ static void cmd_work_handler(struct work_struct *work)
- 		poll_timeout(ent);
- 		/* make sure we read the descriptor after ownership is SW */
- 		rmb();
--		mlx5_cmd_comp_handler(dev, 1UL << ent->idx, (ent->ret == -ETIMEDOUT));
-+		mlx5_cmd_comp_handler(dev, 1ULL << ent->idx, (ent->ret == -ETIMEDOUT));
- 	}
- }
- 
-@@ -1068,7 +1068,7 @@ static void wait_func_handle_exec_timeout(struct mlx5_core_dev *dev,
- 		       mlx5_command_str(msg_to_opcode(ent->in)), msg_to_opcode(ent->in));
- 
- 	ent->ret = -ETIMEDOUT;
--	mlx5_cmd_comp_handler(dev, 1UL << ent->idx, true);
-+	mlx5_cmd_comp_handler(dev, 1ULL << ent->idx, true);
- }
- 
- static int wait_func(struct mlx5_core_dev *dev, struct mlx5_cmd_work_ent *ent)
 -- 
 2.30.2
 
