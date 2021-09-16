@@ -2,91 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 633CF40EA1F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:42:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E69B140EA97
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 21:04:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349303AbhIPSno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 14:43:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44738 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348867AbhIPSn2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 14:43:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B876E6103B;
-        Thu, 16 Sep 2021 18:42:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631817727;
-        bh=+Ka55t+zK8hXcliKTLebgVmF2QEIa1Ci4abGrfu4t7g=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sreg9WjosXGGTgtw/e840hKZkI6/W2sz0RJKHKlfvPnOJvMs/BsHNbUVRCGSlFidD
-         o0ACjDq37MUmY6jPhs887PQMPfCmtX4uYm3czgPgBJgdANzspfC9ITaM35/HIkVfa1
-         CjC3njZqtRskHPI539xD+hTuBhkniyAkeFiNFni0LR7DEMYIsOHidJHpwCF9MJY/ex
-         AQ6yP/7u1VKzRrW2GHf0xiLnhYqHGjcUcFc/zMRh+3iDFSHSXt4xFxOax8YN/1gFfB
-         VHTDSeEpOfVgqxoYLPFuWgDYJF8s+qhguk+k66+NvSyjFUzYwpo1Zr3nHotFYWlnmy
-         xBbyp2pE/hx0w==
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        llvm@lists.linux.dev, Nathan Chancellor <nathan@kernel.org>
-Subject: [PATCH v2 2/2] kbuild: Add -Werror=ignored-optimization-argument to CLANG_FLAGS
-Date:   Thu, 16 Sep 2021 11:40:17 -0700
-Message-Id: <20210916184017.1881473-3-nathan@kernel.org>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916184017.1881473-1-nathan@kernel.org>
-References: <20210916184017.1881473-1-nathan@kernel.org>
+        id S243406AbhIPTFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 15:05:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344750AbhIPTFR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 15:05:17 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEE96C06639C
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 11:40:39 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id f129so7063576pgc.1
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 11:40:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Wf67Cflfm8IYYsTzaYKBdKTyyIkowqSuJvIyiG8CUCY=;
+        b=LvlvtWTKlD9s/EDivdE4mILBwFWDacQU+lTor8a93tgHOXWU9Jp17vq0h3RX4ogJjN
+         DVLh6goKK3t5EHBKcD6gMMpy7qnqsMS/0B6dWGUuyi4lJ0Z/Zgl4lhfSEARlWNyDkJk8
+         PTt3irJB9bwoir0gqUfmv7MClmERI2AdcVOEJYG8BrkHFLVEDTLbempK83vBXFiIFhXq
+         P+E12qv6w7MDRccMJuObh/6EEkzrslmfLzfOtkIqPvTt5XDZJ8JVeY9yc6l4TZ0k1GwY
+         HnuSiSoamLaphKntM41GgfAPVBlUnM1GwZZLJl9I/3psnuonX+9T+KuqE/5ruoj2w6f+
+         h4IA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Wf67Cflfm8IYYsTzaYKBdKTyyIkowqSuJvIyiG8CUCY=;
+        b=G4VGracyLIoBcZIL6RazHZnPxiyQbimMYSOUdGf1cB1FPEbRcbD2cRTKnOqn08yQys
+         5MQy2aAgwGDFURgTzxvCz2RID9MWAvMqK+EH0xqfmOZqnimtps9hXuiI+XA6vJvSI5ov
+         rjzTkorugC+iI/QLR5+Wd+8lZVxK7LbkgRoNQrNIKBkCs1TXd+aR+tNTFR3wN9rnMHIO
+         jTzARvjWPOYF8vFRco+M7LpflqlIc6aTCkceboWRheZZECdsDTz4c/5tZfnlqClBdgid
+         4HRuHJVozg1El3yf4Hp91wRdNm4c6KWFqmxt44QVMyWWBG4bSGnb/6oyY+JlRGxWA5Sp
+         t77A==
+X-Gm-Message-State: AOAM533VZahvn2jE8GQAewxk22UUYplfh3ZOadvkPs9QOg57LDKGOqXN
+        3c9kjQixBY6Mp7Ou48al7cfv82G2rcaIOGrhxiWfEA==
+X-Google-Smtp-Source: ABdhPJzELJdpBHezctnL7cSPyzwljRxL/PM+INjo/MR1amWdcvrpzwpjsPu/TvVdYHWHVeKNatCqBtUgaI9XGGs40LI=
+X-Received: by 2002:a62:1b92:0:b0:3eb:3f92:724 with SMTP id
+ b140-20020a621b92000000b003eb3f920724mr6491253pfb.3.1631817639221; Thu, 16
+ Sep 2021 11:40:39 -0700 (PDT)
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+References: <20210914233132.3680546-1-jane.chu@oracle.com> <CAPcyv4h3KpOKgy_Cwi5fNBZmR=n1hB33mVzA3fqOY7c3G+GrMA@mail.gmail.com>
+ <516ecedc-38b9-1ae3-a784-289a30e5f6df@oracle.com> <20210915161510.GA34830@magnolia>
+ <CAPcyv4jaCiSXU61gsQTaoN_cdDTDMvFSfMYfBz2yLKx11fdwOQ@mail.gmail.com> <YULuMO86NrQAPcpf@infradead.org>
+In-Reply-To: <YULuMO86NrQAPcpf@infradead.org>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 16 Sep 2021 11:40:28 -0700
+Message-ID: <CAPcyv4g_qPBER2W+OhCf29kw-+tjs++TsTiRGWgX3trv11+28A@mail.gmail.com>
+Subject: Re: [PATCH 0/3] dax: clear poison on the fly along pwrite
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        Jane Chu <jane.chu@oracle.com>,
+        Vishal L Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        "Weiny, Ira" <ira.weiny@intel.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        Linux NVDIMM <nvdimm@lists.linux.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Similar to commit 589834b3a009 ("kbuild: Add
--Werror=unknown-warning-option to CLANG_FLAGS").
+On Thu, Sep 16, 2021 at 12:12 AM Christoph Hellwig <hch@infradead.org> wrote:
+>
+> On Wed, Sep 15, 2021 at 01:27:47PM -0700, Dan Williams wrote:
+> > > Yeah, Christoph suggested that we make the clearing operation explicit
+> > > in a related thread a few weeks ago:
+> > > https://lore.kernel.org/linux-fsdevel/YRtnlPERHfMZ23Tr@infradead.org/
+> >
+> > That seemed to be tied to a proposal to plumb it all the way out to an
+> > explicit fallocate() mode, not make it a silent side effect of
+> > pwrite().
+>
+> Yes.
+>
+> > >
+> > > Each of the dm drivers has to add their own ->clear_poison operation
+> > > that remaps the incoming (sector, len) parameters as appropriate for
+> > > that device and then calls the lower device's ->clear_poison with the
+> > > translated parameters.
+> > >
+> > > This (AFAICT) has already been done for dax_zero_page_range, so I sense
+> > > that Dan is trying to save you a bunch of code plumbing work by nudging
+> > > you towards doing s/dax_clear_poison/dax_zero_page_range/ to this series
+> > > and then you only need patches 2-3.
+> >
+> > Yes, but it sounds like Christoph was saying don't overload
+> > dax_zero_page_range(). I'd be ok splitting the difference and having a
+> > new fallocate clear poison mode map to dax_zero_page_range()
+> > internally.
+>
+> That was my gut feeling.  If everyone feels 100% comfortable with
+> zeroingas the mechanism to clear poisoning I'll cave in.  The most
+> important bit is that we do that through a dedicated DAX path instead
+> of abusing the block layer even more.
 
-Clang ignores certain GCC flags that it has not implemented, only
-emitting a warning:
+...or just rename dax_zero_page_range() to dax_reset_page_range()?
+Where reset == "zero + clear-poison"?
 
-$ echo | clang -fsyntax-only -falign-jumps -x c -
-clang-14: warning: optimization flag '-falign-jumps' is not supported
-[-Wignored-optimization-argument]
+> > > > BTW, our customer doesn't care about creating dax volume thru DM, so.
+> > >
+> > > They might not care, but anything going upstream should work in the
+> > > general case.
+> >
+> > Agree.
+>
+> I'm really worried about both patartitions on DAX and DM passing through
+> DAX because they deeply bind DAX to the block layer, which is just a bad
+> idea.  I think we also need to sort that whole story out before removing
+> the EXPERIMENTAL tags.
 
-When one of these flags gets added to KBUILD_CFLAGS unconditionally, all
-subsequent cc-{disable-warning,option} calls fail because -Werror was
-added to these invocations to turn the above warning and the equivalent
--W flag warning into errors.
+I do think it was a mistake to allow for DAX on partitions of a pmemX
+block-device.
 
-To catch the presence of these flags earlier, turn
--Wignored-optimization-argument into an error so that the flags can
-either be implemented or ignored via cc-option and there are no more
-weird errors.
-
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
- scripts/Makefile.clang | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/scripts/Makefile.clang b/scripts/Makefile.clang
-index 4cce8fd0779c..51fc23e2e9e5 100644
---- a/scripts/Makefile.clang
-+++ b/scripts/Makefile.clang
-@@ -29,7 +29,12 @@ CLANG_FLAGS	+= --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
- else
- CLANG_FLAGS	+= -fintegrated-as
- endif
-+# By default, clang only warns when it encounters an unknown warning flag or
-+# certain optimization flags it knows it has not implemented.
-+# Make it behave more like gcc by erroring when these flags are encountered
-+# so they can be implemented or wrapped in cc-option.
- CLANG_FLAGS	+= -Werror=unknown-warning-option
-+CLANG_FLAGS	+= -Werror=ignored-optimization-argument
- KBUILD_CFLAGS	+= $(CLANG_FLAGS)
- KBUILD_AFLAGS	+= $(CLANG_FLAGS)
- export CLANG_FLAGS
--- 
-2.33.0
-
+DAX-reflink support may be the opportunity to start deprecating that
+support. Only enable DAX-reflink for direct mounting on /dev/pmemX
+without partitions (later add dax-device direct mounting), change
+DAX-experimental warning to a deprecation notification for DAX on
+DM/partitions, continue to fail / never fix DAX-reflink for
+DM/partitions, direct people to use namespace provisioning for
+sub-divisions of PMEM capacity, and finally look into adding
+concatenation and additional software striping support to the new CXL
+region creation facility.
