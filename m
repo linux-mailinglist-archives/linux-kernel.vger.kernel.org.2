@@ -2,72 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2384A40D42A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 09:58:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD6C940D42F
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 10:00:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234902AbhIPH7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 03:59:49 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:53726
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234767AbhIPH7o (ORCPT
+        id S234928AbhIPIBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 04:01:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234767AbhIPIBU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 03:59:44 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id A9E9740192;
-        Thu, 16 Sep 2021 07:58:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1631779096;
-        bh=7MOW+7qfNtgLsGqjeoC/U1KrOytXlAne/nGknVdF/2A=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=tHzgWX+5lebIYVHlEJwQ4gFIuzigyIzuTsK8PPir4FTXwhP8+ohjvp2HcbNOzl77+
-         TDrnxHrLaZF9HnWzXPKaycJgZBocvrFTEWxoTARJ1qfi4RmMlwIGYJ1oUr77HO5rsr
-         lZPMdAVnkXX2QAeWtjryiG5fDLocOGAJV59WDMjZK+cWKY9K622rQq3IhtGLwxkATV
-         vFavcmDlxQH3r72c+Ni/kbiAEcdmA/sW1elhS/7CAba8mVXbc8alJLWrnj1BUAv8PQ
-         k2Bp68ZRzQ5/1NaPbSK+hB97rtGIZcSOJMFP4SqnBWfmamFXz1PsWXsCwHkFh0IAVD
-         /z8QjgoPchreg==
-From:   Colin King <colin.king@canonical.com>
-To:     VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        Zack Rusin <zackr@vmware.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/vmwgfx: Fix spelling mistake "vmw_surface_cach" -> "vmw_surface_cache"
-Date:   Thu, 16 Sep 2021 08:58:16 +0100
-Message-Id: <20210916075816.41295-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        Thu, 16 Sep 2021 04:01:20 -0400
+Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48AD8C061764
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 01:00:00 -0700 (PDT)
+Received: by mail-oo1-xc2c.google.com with SMTP id g4-20020a4ab044000000b002900bf3b03fso1812868oon.1
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 01:00:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=93zx3vU1aklDWU/pl0rAprDMWU2o0pwv4FUA4FyOCAc=;
+        b=Nh3thr9/uwyT4GqeuZdCadhw3TTv9l0fUkLi4cddtGIVWB/kSoHsl8RTQbXDy5GtT6
+         wjIzSY6/nzhY3Fc7vPfgHXDXQlFjS38SbEqO52gLhY7c0UBT72zY3Y6nYK4JTwqzCZI/
+         qFwoCHIJM81r1ojcjumVtghzPeYlmah802j9eAtxSnxipUWOoeU1WYA9BYbiUblowCll
+         ru/hes4cVP8nQnR1HUMMazk26L/mC97CFDZhAjxqVBDhpE18Dbm6V6s+ot1wnykLKzV9
+         S7V+FTjKBAIyAND6vb6Y5jSEpeAi0x/tYu1olh4Nm76fhsHdzEfKzLkfzENxcf7P6UAB
+         YHww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=93zx3vU1aklDWU/pl0rAprDMWU2o0pwv4FUA4FyOCAc=;
+        b=iKB6Y/gcmQ7Z7iDc8gfJbK5uTsNrXO52JovQHPh3clcbpRlrfcydtwfnufMat3TKxg
+         wXrkXD4ijCWtx99Zl6mjaRZ4S3xEQDwBpy3vocLmljOMU/b7oqcauAyuqoX0XhNNDYLq
+         9PVsiof03j8Bx9BiLaTTJXHQJs/UilBVS4F5qEysjLou2+/lZ7pPyq78NaGL0MNibWam
+         lR5tWfjtKRQuKuoxiv0DFNCxihSazTSlglEpImcWImcOu5DCAUZt6EmEVdPx029nl3pd
+         ldb/NT72xw9O6utdXhX68zKiqAt56E47tGGE8d8y5G6onGGWHu5AbzRlZMqA52BnwYoI
+         72Mw==
+X-Gm-Message-State: AOAM5309et7MZhFfoVcQ8yN+eBU17ui/I16mWCyzQUtpD0FTLL85ML6U
+        zFkYzlqICouqPTDHFZXtpf9Apq4+mtLTbpcqZ2zrJg==
+X-Google-Smtp-Source: ABdhPJx9WYkZtAm+l9hmPej8DdPKD0lNlKUA5YclHnJHZua1+FIPkm8muONXSS2oM1OJ+gYUhz1mA/ik1Z98A1nQUt4=
+X-Received: by 2002:a4a:e792:: with SMTP id x18mr3298706oov.53.1631779199332;
+ Thu, 16 Sep 2021 00:59:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <0000000000006e9e0705bd91f762@google.com> <0000000000006ab57905cbdd002c@google.com>
+In-Reply-To: <0000000000006ab57905cbdd002c@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 16 Sep 2021 09:59:48 +0200
+Message-ID: <CACT4Y+avszKiyXYBTRus9DqeSUoGrWC8d2uEiJN3z=oYQSdz0g@mail.gmail.com>
+Subject: Re: [syzbot] WARNING in __percpu_ref_exit (2)
+To:     syzbot <syzbot+d6218cb2fae0b2411e9d@syzkaller.appspotmail.com>
+Cc:     asml.silence@gmail.com, axboe@kernel.dk, coreteam@netfilter.org,
+        davem@davemloft.net, dsahern@kernel.org, fw@strlen.de,
+        hdanton@sina.com, io-uring@vger.kernel.org, kadlec@netfilter.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org, ming.lei@redhat.com,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        pablo@netfilter.org, syzkaller-bugs@googlegroups.com,
+        yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Mon, 13 Sept 2021 at 11:22, syzbot
+<syzbot+d6218cb2fae0b2411e9d@syzkaller.appspotmail.com> wrote:
+>
+> syzbot suspects this issue was fixed by commit:
+>
+> commit 43016d02cf6e46edfc4696452251d34bba0c0435
+> Author: Florian Westphal <fw@strlen.de>
+> Date:   Mon May 3 11:51:15 2021 +0000
+>
+>     netfilter: arptables: use pernet ops struct during unregister
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10acd273300000
+> start commit:   c98ff1d013d2 Merge tag 'scsi-fixes' of git://git.kernel.or..
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=1c70e618af4c2e92
+> dashboard link: https://syzkaller.appspot.com/bug?extid=d6218cb2fae0b2411e9d
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=145cb2b6d00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=157b72b1d00000
+>
+> If the result looks correct, please mark the issue as fixed by replying with:
+>
+> #syz fix: netfilter: arptables: use pernet ops struct during unregister
+>
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
-There is a spelling mistake in the cache argument in the comment block,
-fix it.
-
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/gpu/drm/vmwgfx/vmw_surface_cache.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/vmwgfx/vmw_surface_cache.h b/drivers/gpu/drm/vmwgfx/vmw_surface_cache.h
-index b0d87c5f58d8..e9536c901213 100644
---- a/drivers/gpu/drm/vmwgfx/vmw_surface_cache.h
-+++ b/drivers/gpu/drm/vmwgfx/vmw_surface_cache.h
-@@ -371,7 +371,7 @@ static inline u32 vmw_surface_subres(const struct vmw_surface_cache *cache,
-  * @format: The surface format.
-  * @num_mip_levels: Number of mipmap levels.
-  * @num_layers: Number of layers.
-- * @cache: Pointer to a struct vmw_surface_cach object to be filled in.
-+ * @cache: Pointer to a struct vmw_surface_cache object to be filled in.
-  *
-  * Return: Zero on success, -EINVAL on invalid surface layout.
-  */
--- 
-2.32.0
-
+I guess this is a wrong commit and it was fixed by something in io_uring.
+Searching for refcount fixes I see
+a298232ee6b9a1d5d732aa497ff8be0d45b5bd82 "io_uring: fix link timeout
+refs".
+Pavel, does it look right to you?
