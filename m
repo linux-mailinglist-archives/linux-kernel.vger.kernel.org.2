@@ -2,270 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C7E140D408
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 09:46:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAF1440D40E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 09:48:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234902AbhIPHsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 03:48:10 -0400
-Received: from mga12.intel.com ([192.55.52.136]:61638 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234879AbhIPHsI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 03:48:08 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10108"; a="202007586"
-X-IronPort-AV: E=Sophos;i="5.85,297,1624345200"; 
-   d="scan'208";a="202007586"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2021 00:46:48 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,297,1624345200"; 
-   d="scan'208";a="545422590"
-Received: from fedora29.sh.intel.com ([10.239.182.87])
-  by FMSMGA003.fm.intel.com with ESMTP; 16 Sep 2021 00:46:45 -0700
-From:   Pengfei Xu <pengfei.xu@intel.com>
-To:     Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kselftest <linux-kselftest@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Cc:     Pengfei Xu <pengfei.xu@intel.com>, Heng Su <heng.su@intel.com>,
-        Yu Yu-cheng <yu-cheng.yu@intel.com>,
-        Yu Fenghua <fenghua.yu@intel.com>,
-        Hansen Dave <dave.hansen@intel.com>,
-        Luck Tony <tony.luck@intel.com>,
-        Mehta Sohil <sohil.mehta@intel.com>,
-        Chen Yu C <yu.c.chen@intel.com>
-Subject: [RFC PATCH v4 2/2] selftests/xsave: add xsave test during and after signal handling
-Date:   Thu, 16 Sep 2021 15:45:33 +0800
-Message-Id: <28a8d9c3c3454e57016efc8cf276d36392535b58.1631776654.git.pengfei.xu@intel.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <cover.1631776654.git.pengfei.xu@intel.com>
-References: <cover.1631776654.git.pengfei.xu@intel.com>
+        id S234879AbhIPHuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 03:50:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234799AbhIPHt6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 03:49:58 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22AF2C061764
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 00:48:38 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id z184-20020a1c7ec1000000b003065f0bc631so6705447wmc.0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 00:48:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=836pQNEOAKs5EjUipaYr5iTmWSGcl9uSpxBTxlPDNwg=;
+        b=Vc4NxgDeb0/J8lHl8oOnMqlN5Jy1ogBUkUF54zM6lb5a7hvUtkGJEmc+HeNZLIjEri
+         IJrMYLP7RuOAYLgsCGhcG/gl5mGL6JJ/VqdMCFomG73uCCLVaFZyhOTzk20t3WqQWIGi
+         PgcQMwSKmUwIRd0RXchHMHAqL2GL7EPpfOdtFYKcrcXQiLHyn2A1BnnnWJRrGVTHBTPC
+         Mgx2ZzcHcYBH4z2IAue2Zwzsrk1/3km74E6dNEnfdYH6wMLI5EgGeS7eSVC+PE+pHPwJ
+         dKpwLquo+/CPwel76EsFxgERIXW6m+qvJF5bnbUT8oq6CjlaW/1fGLwXB+u6gNkUoMBQ
+         JJBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=836pQNEOAKs5EjUipaYr5iTmWSGcl9uSpxBTxlPDNwg=;
+        b=5eQHHEHCQfmgxCeeTSgWTx7/OosRe78tm8YD8jAqnC2iUFGTz0h5inv4lqJIXmw4sF
+         MDv32QpR7TNU++GYUTkq/zEptf/KV1qsZXKdoH01DcH81ltLSWWP9VjbTxrNxSmS8dUV
+         OSRJPLVazi+Gg5/uBl+eMyeJQ8GQylMFgR2IwRSno9PLQbPMVPsV+Nmr8Fv7/q5esvHv
+         wLnkgs9MNXgqZsDyPcMSUkQmN+vix71fjL7C97o8HSkEQPR7vsa7Zr8MeoaZSCHWpopV
+         k2Ltj9ZvPuH01kyojY1x1/RqB7FCHD/FKAumYhyPlhT+1Ioc4Gby1uTrelLa/7+2rgSa
+         oI6g==
+X-Gm-Message-State: AOAM53155W4Wk9+0t9jXJSVFG7XgWY6tnYr60ey1eHUQW14YKCsKh7sh
+        YJ0vlQ1LQJQzhtg4nCfz269vMg==
+X-Google-Smtp-Source: ABdhPJw2KytWoJGk8kUldFaBNIU3o57ulqI57sR8NeimQGmqAg+hDLglDQ/tA3JvLXNoX5X131ax4Q==
+X-Received: by 2002:a1c:9a12:: with SMTP id c18mr8649130wme.51.1631778516430;
+        Thu, 16 Sep 2021 00:48:36 -0700 (PDT)
+Received: from [10.1.3.24] (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
+        by smtp.gmail.com with ESMTPSA id h18sm2375509wrb.33.2021.09.16.00.48.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Sep 2021 00:48:35 -0700 (PDT)
+Subject: Re: [PATCH 08/16] tty: drivers/tty/serial/, stop using
+ tty_flip_buffer_push
+To:     Jiri Slaby <jslaby@suse.cz>, gregkh@linuxfoundation.org
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Al Cooper <alcooperx@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Tobias Klauser <tklauser@distanz.ch>,
+        Russell King <linux@armlinux.org.uk>,
+        Vineet Gupta <vgupta@kernel.org>,
+        Richard Genoud <richard.genoud@gmail.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Alexander Shiyan <shc_work@mail.ru>,
+        Baruch Siach <baruch@tkos.co.il>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Karol Gugala <kgugala@antmicro.com>,
+        Mateusz Holenko <mholenko@antmicro.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Liviu Dudau <liviu.dudau@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Kevin Cernekee <cernekee@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Peter Korsgaard <jacmet@sunsite.dk>,
+        Timur Tabi <timur@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>
+References: <20210914091134.17426-1-jslaby@suse.cz>
+ <20210914091415.17918-1-jslaby@suse.cz>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Organization: Baylibre
+Message-ID: <ba18bc51-6d4a-bc3b-5e4b-55a7315a2ed2@baylibre.com>
+Date:   Thu, 16 Sep 2021 09:48:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <20210914091415.17918-1-jslaby@suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to ensure that the XSAVE content in the same process is not affected
-by signal handling, this case tests that the XSAVE content of the process
-should not change during and after the nested signal handling.
+On 14/09/2021 11:14, Jiri Slaby wrote:
+> Since commit a9c3f68f3cd8d (tty: Fix low_latency BUG) in 2014,
+> tty_flip_buffer_push() is only a wrapper to tty_schedule_flip(). We are
+> going to remove the former, so call the latter directly in
+> drivers/tty/serial/.
+> 
+> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+> Cc: Joel Stanley <joel@jms.id.au>
+> Cc: Andrew Jeffery <andrew@aj.id.au>
+> Cc: Al Cooper <alcooperx@gmail.com>
+> Cc: Matthias Brugger <matthias.bgg@gmail.com>
+> Cc: Tobias Klauser <tklauser@distanz.ch>
+> Cc: Russell King <linux@armlinux.org.uk>
+> Cc: Vineet Gupta <vgupta@kernel.org>
+> Cc: Richard Genoud <richard.genoud@gmail.com>
+> Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
+> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
+> Cc: Florian Fainelli <f.fainelli@gmail.com>
+> Cc: bcm-kernel-feedback-list@broadcom.com
+> Cc: Alexander Shiyan <shc_work@mail.ru>
+> Cc: Baruch Siach <baruch@tkos.co.il>
+> Cc: "Maciej W. Rozycki" <macro@orcam.me.uk>
+> Cc: Shawn Guo <shawnguo@kernel.org>
+> Cc: Sascha Hauer <s.hauer@pengutronix.de>
+> Cc: Pengutronix Kernel Team <kernel@pengutronix.de>
+> Cc: Fabio Estevam <festevam@gmail.com>
+> Cc: NXP Linux Team <linux-imx@nxp.com>
+> Cc: Karol Gugala <kgugala@antmicro.com>
+> Cc: Mateusz Holenko <mholenko@antmicro.com>
+> Cc: Vladimir Zapolskiy <vz@mleia.com>
+> Cc: Neil Armstrong <narmstrong@baylibre.com>
+> Cc: Kevin Hilman <khilman@baylibre.com>
+> Cc: Jerome Brunet <jbrunet@baylibre.com>
+> Cc: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> Cc: Liviu Dudau <liviu.dudau@arm.com>
+> Cc: Sudeep Holla <sudeep.holla@arm.com>
+> Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+> Cc: Andy Gross <agross@kernel.org>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: "Andreas Färber" <afaerber@suse.de>
+> Cc: Manivannan Sadhasivam <mani@kernel.org>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> Cc: Paul Mackerras <paulus@samba.org>
+> Cc: Kevin Cernekee <cernekee@gmail.com>
+> Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> Cc: Laxman Dewangan <ldewangan@nvidia.com>
+> Cc: Thierry Reding <thierry.reding@gmail.com>
+> Cc: Jonathan Hunter <jonathanh@nvidia.com>
+> Cc: Palmer Dabbelt <palmer@dabbelt.com>
+> Cc: Paul Walmsley <paul.walmsley@sifive.com>
+> Cc: Orson Zhai <orsonzhai@gmail.com>
+> Cc: Baolin Wang <baolin.wang7@gmail.com>
+> Cc: Chunyan Zhang <zhang.lyra@gmail.com>
+> Cc: Patrice Chotard <patrice.chotard@foss.st.com>
+> Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+> Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Peter Korsgaard <jacmet@sunsite.dk>
+> Cc: Timur Tabi <timur@kernel.org>
+> Cc: Michal Simek <michal.simek@xilinx.com>
+> ---
+>  drivers/tty/serial/21285.c                  |  2 +-
+>  drivers/tty/serial/8250/8250_aspeed_vuart.c |  2 +-
+>  drivers/tty/serial/8250/8250_bcm7271.c      |  2 +-
+>  drivers/tty/serial/8250/8250_dma.c          |  2 +-
+>  drivers/tty/serial/8250/8250_mtk.c          |  2 +-
+>  drivers/tty/serial/8250/8250_omap.c         |  2 +-
+>  drivers/tty/serial/8250/8250_port.c         |  2 +-
+>  drivers/tty/serial/altera_jtaguart.c        |  2 +-
+>  drivers/tty/serial/altera_uart.c            |  2 +-
+>  drivers/tty/serial/amba-pl010.c             |  2 +-
+>  drivers/tty/serial/amba-pl011.c             |  6 +++---
+>  drivers/tty/serial/apbuart.c                |  2 +-
+>  drivers/tty/serial/ar933x_uart.c            |  2 +-
+>  drivers/tty/serial/arc_uart.c               |  2 +-
+>  drivers/tty/serial/atmel_serial.c           |  6 +++---
+>  drivers/tty/serial/bcm63xx_uart.c           |  2 +-
+>  drivers/tty/serial/clps711x.c               |  2 +-
+>  drivers/tty/serial/cpm_uart/cpm_uart_core.c |  2 +-
+>  drivers/tty/serial/digicolor-usart.c        |  2 +-
+>  drivers/tty/serial/dz.c                     |  2 +-
+>  drivers/tty/serial/fsl_linflexuart.c        |  2 +-
+>  drivers/tty/serial/fsl_lpuart.c             |  6 +++---
+>  drivers/tty/serial/icom.c                   |  2 +-
+>  drivers/tty/serial/imx.c                    |  6 +++---
+>  drivers/tty/serial/ip22zilog.c              |  4 ++--
+>  drivers/tty/serial/jsm/jsm_tty.c            |  2 +-
+>  drivers/tty/serial/kgdb_nmi.c               |  2 +-
+>  drivers/tty/serial/lantiq.c                 |  4 ++--
+>  drivers/tty/serial/liteuart.c               |  2 +-
+>  drivers/tty/serial/lpc32xx_hs.c             |  2 +-
+>  drivers/tty/serial/max3100.c                |  4 ++--
+>  drivers/tty/serial/max310x.c                |  2 +-
+>  drivers/tty/serial/mcf.c                    |  2 +-
+>  drivers/tty/serial/men_z135_uart.c          |  2 +-
+>  drivers/tty/serial/meson_uart.c             |  2 +-
+>  drivers/tty/serial/milbeaut_usio.c          |  2 +-
+>  drivers/tty/serial/mpc52xx_uart.c           |  2 +-
+>  drivers/tty/serial/mps2-uart.c              |  4 ++--
+>  drivers/tty/serial/msm_serial.c             |  6 +++---
+>  drivers/tty/serial/mux.c                    |  2 +-
+>  drivers/tty/serial/mvebu-uart.c             |  2 +-
+>  drivers/tty/serial/mxs-auart.c              |  4 ++--
+>  drivers/tty/serial/omap-serial.c            |  2 +-
+>  drivers/tty/serial/owl-uart.c               |  2 +-
+>  drivers/tty/serial/pch_uart.c               |  4 ++--
+>  drivers/tty/serial/pic32_uart.c             |  2 +-
+>  drivers/tty/serial/pmac_zilog.c             |  4 ++--
+>  drivers/tty/serial/pxa.c                    |  2 +-
+>  drivers/tty/serial/qcom_geni_serial.c       |  4 ++--
+>  drivers/tty/serial/rda-uart.c               |  2 +-
+>  drivers/tty/serial/rp2.c                    |  2 +-
+>  drivers/tty/serial/sa1100.c                 |  2 +-
+>  drivers/tty/serial/samsung_tty.c            |  6 +++---
+>  drivers/tty/serial/sb1250-duart.c           |  2 +-
+>  drivers/tty/serial/sc16is7xx.c              |  2 +-
+>  drivers/tty/serial/sccnxp.c                 |  2 +-
+>  drivers/tty/serial/serial-tegra.c           |  2 +-
+>  drivers/tty/serial/serial_core.c            |  2 +-
+>  drivers/tty/serial/serial_txx9.c            |  2 +-
+>  drivers/tty/serial/sh-sci.c                 | 12 ++++++------
+>  drivers/tty/serial/sifive.c                 |  2 +-
+>  drivers/tty/serial/sprd_serial.c            |  4 ++--
+>  drivers/tty/serial/st-asc.c                 |  2 +-
+>  drivers/tty/serial/stm32-usart.c            |  2 +-
+>  drivers/tty/serial/sunhv.c                  |  2 +-
+>  drivers/tty/serial/sunsab.c                 |  2 +-
+>  drivers/tty/serial/sunsu.c                  |  2 +-
+>  drivers/tty/serial/sunzilog.c               |  4 ++--
+>  drivers/tty/serial/tegra-tcu.c              |  2 +-
+>  drivers/tty/serial/timbuart.c               |  2 +-
+>  drivers/tty/serial/uartlite.c               |  2 +-
+>  drivers/tty/serial/ucc_uart.c               |  2 +-
+>  drivers/tty/serial/vr41xx_siu.c             |  2 +-
+>  drivers/tty/serial/vt8500_serial.c          |  2 +-
+>  drivers/tty/serial/xilinx_uartps.c          |  2 +-
+>  drivers/tty/serial/zs.c                     |  2 +-
+>  76 files changed, 103 insertions(+), 103 deletions(-)
 
-Signed-off-by: Pengfei Xu <pengfei.xu@intel.com>
----
- tools/testing/selftests/xsave/.gitignore      |   1 +
- tools/testing/selftests/xsave/Makefile        |   2 +-
- .../selftests/xsave/xsave_signal_handle.c     | 184 ++++++++++++++++++
- 3 files changed, 186 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/xsave/xsave_signal_handle.c
+For meson_uart:
 
-diff --git a/tools/testing/selftests/xsave/.gitignore b/tools/testing/selftests/xsave/.gitignore
-index 00b9970360c4..b448d36186f3 100644
---- a/tools/testing/selftests/xsave/.gitignore
-+++ b/tools/testing/selftests/xsave/.gitignore
-@@ -1,2 +1,3 @@
- # SPDX-License-Identifier: GPL-2.0-only
- xsave_instruction
-+xsave_signal_handle
-diff --git a/tools/testing/selftests/xsave/Makefile b/tools/testing/selftests/xsave/Makefile
-index dafdb0abdeb3..fedae2778297 100644
---- a/tools/testing/selftests/xsave/Makefile
-+++ b/tools/testing/selftests/xsave/Makefile
-@@ -1,6 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0-only
- CFLAGS := -g -Wall -mxsave -O2
- 
--TEST_GEN_PROGS := xsave_instruction
-+TEST_GEN_PROGS := xsave_instruction xsave_signal_handle
- 
- include ../lib.mk
-diff --git a/tools/testing/selftests/xsave/xsave_signal_handle.c b/tools/testing/selftests/xsave/xsave_signal_handle.c
-new file mode 100644
-index 000000000000..0afcba3a1bd5
---- /dev/null
-+++ b/tools/testing/selftests/xsave/xsave_signal_handle.c
-@@ -0,0 +1,184 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * It's for xsave/xrstor during signal handling tests
-+ */
-+
-+#include <stdio.h>
-+#include <stdint.h>
-+#include <stdlib.h>
-+#include <x86intrin.h>
-+#include <string.h>
-+#include <signal.h>
-+#include <unistd.h>
-+#include <sched.h>
-+#include <sys/wait.h>
-+#include <time.h>
-+
-+#include "../kselftest.h"
-+#include "xsave_common.h"
-+
-+static unsigned char *xsave_buf0, *xsave_buf1, *xsave_buf2, *xsave_buf3;
-+static int result[2];
-+
-+static void change_fpu_content(uint32_t ui32_random, double flt)
-+{
-+	asm volatile ("fldl %0" : : "m" (flt));
-+	asm volatile ("vbroadcastss %0, %%ymm0" : : "m" (ui32_random));
-+	asm volatile ("vbroadcastss %0, %%ymm1" : : "m" (ui32_random));
-+	asm volatile ("vbroadcastss %0, %%ymm2" : : "m" (ui32_random));
-+	asm volatile ("vbroadcastss %0, %%ymm3" : : "m" (ui32_random));
-+	asm volatile ("vbroadcastss %0, %%ymm4" : : "m" (ui32_random));
-+	asm volatile ("vbroadcastss %0, %%ymm5" : : "m" (ui32_random));
-+	asm volatile ("vbroadcastss %0, %%ymm6" : : "m" (ui32_random));
-+	asm volatile ("vbroadcastss %0, %%ymm7" : : "m" (ui32_random));
-+	#ifndef __i386__
-+	asm volatile ("vbroadcastss %0, %%ymm8" : : "m" (ui32_random));
-+	asm volatile ("vbroadcastss %0, %%ymm9" : : "m" (ui32_random));
-+	asm volatile ("vbroadcastss %0, %%ymm10" : : "m" (ui32_random));
-+	asm volatile ("vbroadcastss %0, %%ymm11" : : "m" (ui32_random));
-+	asm volatile ("vbroadcastss %0, %%ymm12" : : "m" (ui32_random));
-+	asm volatile ("vbroadcastss %0, %%ymm13" : : "m" (ui32_random));
-+	asm volatile ("vbroadcastss %0, %%ymm14" : : "m" (ui32_random));
-+	asm volatile ("vbroadcastss %0, %%ymm15" : : "m" (ui32_random));
-+	#endif
-+}
-+
-+static void usr1_handler(int signum, siginfo_t *info, void *__ctxp)
-+{
-+	uint32_t ui32_random;
-+	double flt;
-+	int xsave_size;
-+	const char *test_name = "Child XSAVE should not change in nested signal";
-+
-+	ui32_random = rand();
-+	flt = ui32_random/10000.0;
-+	if (signum == SIGUSR1) {
-+		ksft_print_msg("SIGUSR1:0x%x changed fld:%f & ymm0-15:0x%x\n",
-+			SIGUSR1, flt, ui32_random);
-+		change_fpu_content(ui32_random, flt);
-+	}
-+	xsave_size = get_xsave_size();
-+	XSAVE(xsave_buf2, SAVE_MASK);
-+	raise(SIGUSR2);
-+	XSAVE(xsave_buf3, SAVE_MASK);
-+	result[0] = check_xsave_buf(xsave_buf2, xsave_buf2, xsave_size, test_name,
-+				NO_CHANGE);
-+}
-+
-+static void usr2_handler(int signum, siginfo_t *info, void *__ctxp)
-+{
-+	uint32_t ui32_random;
-+	double flt;
-+
-+	ui32_random = rand();
-+	flt = ui32_random/10000.0;
-+	if (signum == SIGUSR2) {
-+		ksft_print_msg("SIGUSR2:0x%x changed fld:%f & ymm0-15:0x%x\n",
-+			SIGUSR2, flt, ui32_random);
-+		change_fpu_content(ui32_random, flt);
-+	}
-+}
-+
-+static void set_signal_handle(void)
-+{
-+	struct sigaction sigact;
-+
-+	memset(&sigact, 0, sizeof(sigact));
-+	if (sigemptyset(&sigact.sa_mask))
-+		execution_failed("FAIL: sigemptyset error\n");
-+
-+	sigact.sa_flags = SA_SIGINFO;
-+
-+	sigact.sa_sigaction = usr1_handler;
-+	if (sigaction(SIGUSR1, &sigact, NULL))
-+		execution_failed("FAIL: SIGUSR1 handling failed\n");
-+
-+	sigact.sa_sigaction = usr2_handler;
-+	if (sigaction(SIGUSR2, &sigact, NULL))
-+		execution_failed("FAIL: SIGUSR2 handling failed\n");
-+}
-+
-+static void sig_handle_xsave_test(void)
-+{
-+	int i, loop_times = 100, xsave_size;
-+	const char *sig_test_name0 = "Child XSAVE was same in nested signal test";
-+	const char *sig_test_name1 = "Child XSAVE content was same after signal";
-+
-+	xsave_size = get_xsave_size();
-+	/* SDM XSAVE: misalignment to a 64-byte boundary will result in #GP */
-+	xsave_buf0 = aligned_alloc(64, xsave_size);
-+	if (!xsave_buf0)
-+		execution_failed("aligned_alloc xsave_buf0 failed\n");
-+	xsave_buf1 = aligned_alloc(64, xsave_size);
-+	if (!xsave_buf1)
-+		execution_failed("aligned_alloc xsave_buf1 failed\n");
-+	xsave_buf2 = aligned_alloc(64, xsave_size);
-+	if (!xsave_buf2)
-+		execution_failed("aligned_alloc xsave_buf2 failed\n");
-+	xsave_buf3 = aligned_alloc(64, xsave_size);
-+	if (!xsave_buf3)
-+		execution_failed("aligned_alloc xsave_buf3 failed\n");
-+
-+	srand(time(NULL));
-+	result[0] = RESULT_PASS;
-+	result[1] = RESULT_PASS;
-+
-+	XSAVE(xsave_buf0, SAVE_MASK);
-+	for (i = 1; i <= loop_times; i++) {
-+		raise(SIGUSR1);
-+		XSAVE(xsave_buf1, SAVE_MASK);
-+		result[1] = check_xsave_buf(xsave_buf0, xsave_buf1, xsave_size,
-+						sig_test_name1, NO_CHANGE);
-+		if (result[1] != RESULT_PASS)
-+			break;
-+	}
-+
-+	check_result(result[0], sig_test_name0);
-+	check_result(result[1], sig_test_name1);
-+}
-+
-+static void test_xsave_sig_handle(void)
-+{
-+	const char *test_name0 = "xsave in child nested signal handling test";
-+	const char *test_name1 = "xsave after child signal handling test";
-+	pid_t child;
-+	int status, fd[2], readbuf[2];
-+
-+	set_signal_handle();
-+
-+	/* Use pipe to transfer test result of child process to parent process */
-+	if (pipe(fd) < 0)
-+		execution_failed("FAIL: create pipe failed\n");
-+
-+	/* Use child process testing to avoid abnormal blocking the next test */
-+	child = fork();
-+	if (child < 0)
-+		execution_failed("FAIL: create child pid failed\n");
-+	else if	(child == 0) {
-+		populate_fpu_regs();
-+		sig_handle_xsave_test();
-+		close(fd[0]);
-+		write(fd[1], &result, sizeof(result));
-+	} else {
-+		if (waitpid(child, &status, 0) != child ||
-+			!WIFEXITED(status))
-+			execution_failed("FAIL: Child died unexpectedly\n");
-+		else {
-+			close(fd[1]);
-+			read(fd[0], &readbuf, sizeof(readbuf));
-+
-+			check_result(readbuf[0], test_name0);
-+			check_result(readbuf[1], test_name1);
-+		}
-+	}
-+}
-+
-+int main(void)
-+{
-+	ksft_print_header();
-+	ksft_set_plan(2);
-+
-+	test_xsave_sig_handle();
-+
-+	ksft_exit(!ksft_get_fail_cnt());
-+}
--- 
-2.20.1
+Acked-by: Neil Armstrong <narmstrong@baylibre.com>
 
+Neil
