@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4200D40E322
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:19:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2C9940E6E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:31:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243329AbhIPQp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:45:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51674 "EHLO mail.kernel.org"
+        id S1347302AbhIPR0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:26:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43512 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244688AbhIPQj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:39:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BEAA261452;
-        Thu, 16 Sep 2021 16:23:13 +0000 (UTC)
+        id S1351522AbhIPRSA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:18:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A803A61A08;
+        Thu, 16 Sep 2021 16:40:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809394;
-        bh=7mFka9LzrtqigieZU60zukE5rqmPUDqyqXjmuylp0YU=;
+        s=korg; t=1631810447;
+        bh=3YFunZ3hlc2GCNPhew0LSVgKaXkLPk5AYp8WX289ifY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0zXy7FNQnuFmI3AT7SLhJUvpLg1JRau5eydz9GvhmsRnAbn9XcRJ868B9ml4AiFG5
-         dDDDCEnm98xBLOdSqFOGoR5/2jso+xAccKTmc81PBJZAn39qJqFg+cq7leRR/v4IKk
-         xuSU+Rue5kVT3vyrNNQDoPHBk+bcrS8hGTzykeZg=
+        b=R3F6/A3tiYUGu+9/4hXKxhxNr45Td5sO5jOu8cYoOQL2Reguqec/ZCUdiWoU/xaeh
+         UldYqt2y6IV4fym6Ku/oTsLgLPj2YaPwNxEEQ0DGiBwotHSWlNKVFqHnwcfPJCvBeV
+         zd1qU+wqcibnVoGA0DKDXKClL/Jkt2YSDan73UN4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
+        stable@vger.kernel.org,
+        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+        Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 137/380] kbuild: Fix no symbols warning when CONFIG_TRIM_UNUSD_KSYMS=y
+Subject: [PATCH 5.14 145/432] clk: ralink: avoid to set CLK_IS_CRITICAL flag for gates
 Date:   Thu, 16 Sep 2021 17:58:14 +0200
-Message-Id: <20210916155808.698071142@linuxfoundation.org>
+Message-Id: <20210916155815.674575731@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,51 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masahiro Yamada <masahiroy@kernel.org>
+From: Sergio Paracuellos <sergio.paracuellos@gmail.com>
 
-[ Upstream commit 52d83df682c82055961531853c066f4f16e234ea ]
+[ Upstream commit c16edf5ff8ece9c4135175da4103cee1bec360be ]
 
-When CONFIG_TRIM_UNUSED_KSYMS is enabled, I see some warnings like this:
+'clk_init_data' for gates is setting up 'CLK_IS_CRITICAL'
+flag for all of them. This was being doing because some
+drivers of this SoC might not be ready to use the clock
+and we don't wanted the kernel to disable them since default
+behaviour without clock driver was to set all gate bits to
+enabled state. After a bit more testing and checking driver
+code it is safe to remove this flag and just let the kernel
+to disable those gates that are not in use. No regressions
+seems to appear.
 
-  nm: arch/x86/entry/vdso/vdso32/note.o: no symbols
-
-$NM (both GNU nm and llvm-nm) warns when no symbol is found in the
-object. Suppress the stderr.
-
-Fangrui Song mentioned binutils>=2.37 `nm -q` can be used to suppress
-"no symbols" [1], and llvm-nm>=13.0.0 supports -q as well.
-
-We cannot use it for now, but note it as a TODO.
-
-[1]: https://sourceware.org/bugzilla/show_bug.cgi?id=27408
-
-Fixes: bbda5ec671d3 ("kbuild: simplify dependency generation for CONFIG_TRIM_UNUSED_KSYMS")
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Fixes: 48df7a26f470 ("clk: ralink: add clock driver for mt7621 SoC")
+Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Link: https://lore.kernel.org/r/20210727055537.11785-1-sergio.paracuellos@gmail.com
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- scripts/gen_ksymdeps.sh | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/clk/ralink/clk-mt7621.c | 9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
 
-diff --git a/scripts/gen_ksymdeps.sh b/scripts/gen_ksymdeps.sh
-index 1324986e1362..725e8c9c1b53 100755
---- a/scripts/gen_ksymdeps.sh
-+++ b/scripts/gen_ksymdeps.sh
-@@ -4,7 +4,13 @@
- set -e
- 
- # List of exported symbols
--ksyms=$($NM $1 | sed -n 's/.*__ksym_marker_\(.*\)/\1/p' | tr A-Z a-z)
-+#
-+# If the object has no symbol, $NM warns 'no symbols'.
-+# Suppress the stderr.
-+# TODO:
-+#   Use -q instead of 2>/dev/null when we upgrade the minimum version of
-+#   binutils to 2.37, llvm to 13.0.0.
-+ksyms=$($NM $1 2>/dev/null | sed -n 's/.*__ksym_marker_\(.*\)/\1/p' | tr A-Z a-z)
- 
- if [ -z "$ksyms" ]; then
- 	exit 0
+diff --git a/drivers/clk/ralink/clk-mt7621.c b/drivers/clk/ralink/clk-mt7621.c
+index 857da1e274be..a2c045390f00 100644
+--- a/drivers/clk/ralink/clk-mt7621.c
++++ b/drivers/clk/ralink/clk-mt7621.c
+@@ -131,14 +131,7 @@ static int mt7621_gate_ops_init(struct device *dev,
+ 				struct mt7621_gate *sclk)
+ {
+ 	struct clk_init_data init = {
+-		/*
+-		 * Until now no clock driver existed so
+-		 * these SoC drivers are not prepared
+-		 * yet for the clock. We don't want kernel to
+-		 * disable anything so we add CLK_IS_CRITICAL
+-		 * flag here.
+-		 */
+-		.flags = CLK_SET_RATE_PARENT | CLK_IS_CRITICAL,
++		.flags = CLK_SET_RATE_PARENT,
+ 		.num_parents = 1,
+ 		.parent_names = &sclk->parent_name,
+ 		.ops = &mt7621_gate_ops,
 -- 
 2.30.2
 
