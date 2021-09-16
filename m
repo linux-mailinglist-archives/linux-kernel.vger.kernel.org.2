@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B4A640E15F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:29:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA7A140E837
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243116AbhIPQaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:30:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60150 "EHLO mail.kernel.org"
+        id S1353594AbhIPRiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:38:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236066AbhIPQUi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:20:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C9B6461406;
-        Thu, 16 Sep 2021 16:14:36 +0000 (UTC)
+        id S1348260AbhIPR17 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:27:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B90D61C14;
+        Thu, 16 Sep 2021 16:45:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808877;
-        bh=ipq2xZ7CFfhWJwJIgNAoPCVmyXRWSBM7cc6PGH9Baig=;
+        s=korg; t=1631810749;
+        bh=UkmetQFb8WOvVhip1IW5gDZASBQJkf52lUb32ZARoPM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qhVcWrF9S0JmFsxPFKxPpPW1t2hzCqYbrI0yc4tXDunVaGwcYNvRto4nxJ4UHowFT
-         G4UDjCKbodg2BZCztwgtV7l03jXXQIx9EC1f27dZfzwzV056IQEsDjlcGG6kplqzPD
-         ZsJs27DEG7oCb+lzpLyCJJxzXH9VdyTvP2Qcd+Dk=
+        b=OG1cY3+/Hfcjx/tmZjy/Aujm3FB//ygFgwfTRBx15gNr92BcbWVDlLhqwwJKdkeOB
+         yqcqpvdkYadvEqD8qInbEZ/XfC8wFxCsgcn8onK3ai60eatfASB+KBbraKc4Td9eA0
+         xgqclROeHsU2sRL9PoGhM3verWPAZPOcWm3SsL/s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael <msbroadf@gmail.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
+        stable@vger.kernel.org,
+        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 256/306] usbip:vhci_hcd USB port can get stuck in the disabled state
-Date:   Thu, 16 Sep 2021 18:00:01 +0200
-Message-Id: <20210916155802.794908059@linuxfoundation.org>
+Subject: [PATCH 5.14 253/432] Bluetooth: Fix not generating RPA when required
+Date:   Thu, 16 Sep 2021 18:00:02 +0200
+Message-Id: <20210916155819.400187015@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,56 +41,261 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shuah Khan <skhan@linuxfoundation.org>
+From: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
 
-[ Upstream commit 66cce9e73ec61967ed1f97f30cee79bd9a2bb7ee ]
+[ Upstream commit c45074d68a9b1e893d86520af71fab37693c3d7e ]
 
-When a remote usb device is attached to the local Virtual USB
-Host Controller Root Hub port, the bound device driver may send
-a port reset command.
+Code was checking if random_addr and hdev->rpa match without first
+checking if the RPA has not been set (BDADDR_ANY), furthermore it was
+clearing HCI_RPA_EXPIRED before the command completes and the RPA is
+actually programmed which in case of failure would leave the expired
+RPA still set.
 
-vhci_hcd accepts port resets only when the device doesn't have
-port address assigned to it. When reset happens device is in
-assigned/used state and vhci_hcd rejects it leaving the port in
-a stuck state.
+Since advertising instance have a similar problem the clearing of
+HCI_RPA_EXPIRED has been moved to hci_event.c after checking the random
+address is in fact the hdev->rap and then proceed to set the expire
+timeout.
 
-This problem was found when a blue-tooth or xbox wireless dongle
-was passed through using usbip.
-
-A few drivers reset the port during probe including mt76 driver
-specific to this bug report. Fix the problem with a change to
-honor reset requests when device is in used state (VDEV_ST_USED).
-
-Reported-and-tested-by: Michael <msbroadf@gmail.com>
-Suggested-by: Michael <msbroadf@gmail.com>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-Link: https://lore.kernel.org/r/20210819225937.41037-1-skhan@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/usbip/vhci_hcd.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ include/net/bluetooth/hci_core.h |  4 ++
+ net/bluetooth/hci_event.c        | 32 +++++++++----
+ net/bluetooth/hci_request.c      | 81 ++++++++++++++------------------
+ 3 files changed, 61 insertions(+), 56 deletions(-)
 
-diff --git a/drivers/usb/usbip/vhci_hcd.c b/drivers/usb/usbip/vhci_hcd.c
-index 190bd3d1c1f0..b07b2925ff78 100644
---- a/drivers/usb/usbip/vhci_hcd.c
-+++ b/drivers/usb/usbip/vhci_hcd.c
-@@ -455,8 +455,14 @@ static int vhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
- 			vhci_hcd->port_status[rhport] &= ~(1 << USB_PORT_FEAT_RESET);
- 			vhci_hcd->re_timeout = 0;
+diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
+index db4312e44d47..c17e5557a007 100644
+--- a/include/net/bluetooth/hci_core.h
++++ b/include/net/bluetooth/hci_core.h
+@@ -1412,6 +1412,10 @@ void hci_conn_del_sysfs(struct hci_conn *conn);
+ 				!hci_dev_test_flag(dev, HCI_AUTO_OFF))
+ #define bredr_sc_enabled(dev)  (lmp_sc_capable(dev) && \
+ 				hci_dev_test_flag(dev, HCI_SC_ENABLED))
++#define rpa_valid(dev)         (bacmp(&dev->rpa, BDADDR_ANY) && \
++				!hci_dev_test_flag(dev, HCI_RPA_EXPIRED))
++#define adv_rpa_valid(adv)     (bacmp(&adv->random_addr, BDADDR_ANY) && \
++				!adv->rpa_expired)
  
-+			/*
-+			 * A few drivers do usb reset during probe when
-+			 * the device could be in VDEV_ST_USED state
+ #define scan_1m(dev) (((dev)->le_tx_def_phys & HCI_LE_SET_PHY_1M) || \
+ 		      ((dev)->le_rx_def_phys & HCI_LE_SET_PHY_1M))
+diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+index ea7fc09478be..78032f1d8838 100644
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -40,6 +40,8 @@
+ #define ZERO_KEY "\x00\x00\x00\x00\x00\x00\x00\x00" \
+ 		 "\x00\x00\x00\x00\x00\x00\x00\x00"
+ 
++#define secs_to_jiffies(_secs) msecs_to_jiffies((_secs) * 1000)
++
+ /* Handle HCI Event packets */
+ 
+ static void hci_cc_inquiry_cancel(struct hci_dev *hdev, struct sk_buff *skb,
+@@ -1171,6 +1173,12 @@ static void hci_cc_le_set_random_addr(struct hci_dev *hdev, struct sk_buff *skb)
+ 
+ 	bacpy(&hdev->random_addr, sent);
+ 
++	if (!bacmp(&hdev->rpa, sent)) {
++		hci_dev_clear_flag(hdev, HCI_RPA_EXPIRED);
++		queue_delayed_work(hdev->workqueue, &hdev->rpa_expired,
++				   secs_to_jiffies(hdev->rpa_timeout));
++	}
++
+ 	hci_dev_unlock(hdev);
+ }
+ 
+@@ -1201,24 +1209,30 @@ static void hci_cc_le_set_adv_set_random_addr(struct hci_dev *hdev,
+ {
+ 	__u8 status = *((__u8 *) skb->data);
+ 	struct hci_cp_le_set_adv_set_rand_addr *cp;
+-	struct adv_info *adv_instance;
++	struct adv_info *adv;
+ 
+ 	if (status)
+ 		return;
+ 
+ 	cp = hci_sent_cmd_data(hdev, HCI_OP_LE_SET_ADV_SET_RAND_ADDR);
+-	if (!cp)
++	/* Update only in case the adv instance since handle 0x00 shall be using
++	 * HCI_OP_LE_SET_RANDOM_ADDR since that allows both extended and
++	 * non-extended adverting.
++	 */
++	if (!cp || !cp->handle)
+ 		return;
+ 
+ 	hci_dev_lock(hdev);
+ 
+-	if (!cp->handle) {
+-		/* Store in hdev for instance 0 (Set adv and Directed advs) */
+-		bacpy(&hdev->random_addr, &cp->bdaddr);
+-	} else {
+-		adv_instance = hci_find_adv_instance(hdev, cp->handle);
+-		if (adv_instance)
+-			bacpy(&adv_instance->random_addr, &cp->bdaddr);
++	adv = hci_find_adv_instance(hdev, cp->handle);
++	if (adv) {
++		bacpy(&adv->random_addr, &cp->bdaddr);
++		if (!bacmp(&hdev->rpa, &cp->bdaddr)) {
++			adv->rpa_expired = false;
++			queue_delayed_work(hdev->workqueue,
++					   &adv->rpa_expired_cb,
++					   secs_to_jiffies(hdev->rpa_timeout));
++		}
+ 	}
+ 
+ 	hci_dev_unlock(hdev);
+diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
+index 1d14adc023e9..f15626607b2d 100644
+--- a/net/bluetooth/hci_request.c
++++ b/net/bluetooth/hci_request.c
+@@ -2072,8 +2072,6 @@ int hci_get_random_address(struct hci_dev *hdev, bool require_privacy,
+ 	 * current RPA has expired then generate a new one.
+ 	 */
+ 	if (use_rpa) {
+-		int to;
+-
+ 		/* If Controller supports LL Privacy use own address type is
+ 		 * 0x03
+ 		 */
+@@ -2084,14 +2082,10 @@ int hci_get_random_address(struct hci_dev *hdev, bool require_privacy,
+ 			*own_addr_type = ADDR_LE_DEV_RANDOM;
+ 
+ 		if (adv_instance) {
+-			if (!adv_instance->rpa_expired &&
+-			    !bacmp(&adv_instance->random_addr, &hdev->rpa))
++			if (adv_rpa_valid(adv_instance))
+ 				return 0;
+-
+-			adv_instance->rpa_expired = false;
+ 		} else {
+-			if (!hci_dev_test_and_clear_flag(hdev, HCI_RPA_EXPIRED) &&
+-			    !bacmp(&hdev->random_addr, &hdev->rpa))
++			if (rpa_valid(hdev))
+ 				return 0;
+ 		}
+ 
+@@ -2103,14 +2097,6 @@ int hci_get_random_address(struct hci_dev *hdev, bool require_privacy,
+ 
+ 		bacpy(rand_addr, &hdev->rpa);
+ 
+-		to = msecs_to_jiffies(hdev->rpa_timeout * 1000);
+-		if (adv_instance)
+-			queue_delayed_work(hdev->workqueue,
+-					   &adv_instance->rpa_expired_cb, to);
+-		else
+-			queue_delayed_work(hdev->workqueue,
+-					   &hdev->rpa_expired, to);
+-
+ 		return 0;
+ 	}
+ 
+@@ -2153,6 +2139,30 @@ void __hci_req_clear_ext_adv_sets(struct hci_request *req)
+ 	hci_req_add(req, HCI_OP_LE_CLEAR_ADV_SETS, 0, NULL);
+ }
+ 
++static void set_random_addr(struct hci_request *req, bdaddr_t *rpa)
++{
++	struct hci_dev *hdev = req->hdev;
++
++	/* If we're advertising or initiating an LE connection we can't
++	 * go ahead and change the random address at this time. This is
++	 * because the eventual initiator address used for the
++	 * subsequently created connection will be undefined (some
++	 * controllers use the new address and others the one we had
++	 * when the operation started).
++	 *
++	 * In this kind of scenario skip the update and let the random
++	 * address be updated at the next cycle.
++	 */
++	if (hci_dev_test_flag(hdev, HCI_LE_ADV) ||
++	    hci_lookup_le_connect(hdev)) {
++		bt_dev_dbg(hdev, "Deferring random address update");
++		hci_dev_set_flag(hdev, HCI_RPA_EXPIRED);
++		return;
++	}
++
++	hci_req_add(req, HCI_OP_LE_SET_RANDOM_ADDR, 6, rpa);
++}
++
+ int __hci_req_setup_ext_adv_instance(struct hci_request *req, u8 instance)
+ {
+ 	struct hci_cp_le_set_ext_adv_params cp;
+@@ -2255,6 +2265,13 @@ int __hci_req_setup_ext_adv_instance(struct hci_request *req, u8 instance)
+ 		} else {
+ 			if (!bacmp(&random_addr, &hdev->random_addr))
+ 				return 0;
++			/* Instance 0x00 doesn't have an adv_info, instead it
++			 * uses hdev->random_addr to track its address so
++			 * whenever it needs to be updated this also set the
++			 * random address since hdev->random_addr is shared with
++			 * scan state machine.
 +			 */
- 			if (vhci_hcd->vdev[rhport].ud.status ==
--			    VDEV_ST_NOTASSIGNED) {
-+				VDEV_ST_NOTASSIGNED ||
-+			    vhci_hcd->vdev[rhport].ud.status ==
-+				VDEV_ST_USED) {
- 				usbip_dbg_vhci_rh(
- 					" enable rhport %d (status %u)\n",
- 					rhport,
++			set_random_addr(req, &random_addr);
+ 		}
+ 
+ 		memset(&cp, 0, sizeof(cp));
+@@ -2512,30 +2529,6 @@ void hci_req_clear_adv_instance(struct hci_dev *hdev, struct sock *sk,
+ 						false);
+ }
+ 
+-static void set_random_addr(struct hci_request *req, bdaddr_t *rpa)
+-{
+-	struct hci_dev *hdev = req->hdev;
+-
+-	/* If we're advertising or initiating an LE connection we can't
+-	 * go ahead and change the random address at this time. This is
+-	 * because the eventual initiator address used for the
+-	 * subsequently created connection will be undefined (some
+-	 * controllers use the new address and others the one we had
+-	 * when the operation started).
+-	 *
+-	 * In this kind of scenario skip the update and let the random
+-	 * address be updated at the next cycle.
+-	 */
+-	if (hci_dev_test_flag(hdev, HCI_LE_ADV) ||
+-	    hci_lookup_le_connect(hdev)) {
+-		bt_dev_dbg(hdev, "Deferring random address update");
+-		hci_dev_set_flag(hdev, HCI_RPA_EXPIRED);
+-		return;
+-	}
+-
+-	hci_req_add(req, HCI_OP_LE_SET_RANDOM_ADDR, 6, rpa);
+-}
+-
+ int hci_update_random_address(struct hci_request *req, bool require_privacy,
+ 			      bool use_rpa, u8 *own_addr_type)
+ {
+@@ -2547,8 +2540,6 @@ int hci_update_random_address(struct hci_request *req, bool require_privacy,
+ 	 * the current RPA in use, then generate a new one.
+ 	 */
+ 	if (use_rpa) {
+-		int to;
+-
+ 		/* If Controller supports LL Privacy use own address type is
+ 		 * 0x03
+ 		 */
+@@ -2558,8 +2549,7 @@ int hci_update_random_address(struct hci_request *req, bool require_privacy,
+ 		else
+ 			*own_addr_type = ADDR_LE_DEV_RANDOM;
+ 
+-		if (!hci_dev_test_and_clear_flag(hdev, HCI_RPA_EXPIRED) &&
+-		    !bacmp(&hdev->random_addr, &hdev->rpa))
++		if (rpa_valid(hdev))
+ 			return 0;
+ 
+ 		err = smp_generate_rpa(hdev, hdev->irk, &hdev->rpa);
+@@ -2570,9 +2560,6 @@ int hci_update_random_address(struct hci_request *req, bool require_privacy,
+ 
+ 		set_random_addr(req, &hdev->rpa);
+ 
+-		to = msecs_to_jiffies(hdev->rpa_timeout * 1000);
+-		queue_delayed_work(hdev->workqueue, &hdev->rpa_expired, to);
+-
+ 		return 0;
+ 	}
+ 
 -- 
 2.30.2
 
