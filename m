@@ -2,183 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FA3540DC88
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 16:14:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D82AC40DC86
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 16:14:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238338AbhIPOPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 10:15:23 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:16270 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235489AbhIPOPV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S235557AbhIPOPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 16 Sep 2021 10:15:21 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4H9Jvx3SZCz8t3K;
-        Thu, 16 Sep 2021 22:13:17 +0800 (CST)
-Received: from dggpemm500004.china.huawei.com (7.185.36.219) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Thu, 16 Sep 2021 22:13:55 +0800
-Received: from [10.174.177.69] (10.174.177.69) by
- dggpemm500004.china.huawei.com (7.185.36.219) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.8; Thu, 16 Sep 2021 22:13:55 +0800
-Message-ID: <8812a7f9-462c-a417-fc17-eb359b22f2a9@huawei.com>
-Date:   Thu, 16 Sep 2021 22:13:54 +0800
+Received: from mail.kernel.org ([198.145.29.99]:52652 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235546AbhIPOPU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 10:15:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 27C1A61164;
+        Thu, 16 Sep 2021 14:13:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631801639;
+        bh=Ou7RB0CenpTfBy4XOy0FC9vI/kcV12k9i3vow3MfXfk=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=PayO4Q/7lTE0w+RUF1dqMtjN7OalRzVPBLuechm5DKitA/8NOqWti8a0fBSpg9fVP
+         mpYM7qwJjVWnnE1Q+dGYqKntjXbcrOlDNvRyzxtV2bV5z6P7gR7trPEEoRLwvGriW1
+         Nxe+XYki75Eg/SgFPV8aa2i5fwywDy78gQLhV7aqkYgnH0fdKkMV4m+83+1HPY0q0l
+         fkkdabsCY3lBV59Qo5E6k+Hy3LYdSqsS3K+rcxyMssSXc98bgxSOzzHg8qcGqWKbkv
+         w3g8rgU+xC4ygh3PxvcNLvukaZFJAdFDuwUwhnWa2WWm64fL6ltqtrktM73Rpuxr4+
+         CjyQbuGQrVIWA==
+Message-ID: <d6bf64ddd231f766aafe6f7775ba9fb2adad95c5.camel@kernel.org>
+Subject: Re: [PATCH 00/14] selftests/sgx: Oversubscription, page permission,
+ thread entry
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Reinette Chatre <reinette.chatre@intel.com>,
+        linux-sgx@vger.kernel.org, shuah@kernel.org
+Cc:     seanjc@google.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 16 Sep 2021 17:13:57 +0300
+In-Reply-To: <cover.1631731214.git.reinette.chatre@intel.com>
+References: <cover.1631731214.git.reinette.chatre@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: [PATCH -next] blk-mq: fix tag_get wait task can't be awakened
-Content-Language: en-US
-To:     <axboe@kernel.dk>, <linux-kernel@vger.kernel.org>,
-        <linux-block@vger.kernel.org>
-References: <16d831ec8e624fb5acb7ad8f2dc0b7bf@huawei.com>
-CC:     <martin.petersen@oracle.com>, <ming.lei@redhat.com>,
-        <hare@suse.de>, <asml.silence@gmail.com>, <bvanassche@acm.org>
-From:   QiuLaibin <qiulaibin@huawei.com>
-In-Reply-To: <16d831ec8e624fb5acb7ad8f2dc0b7bf@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.69]
-X-ClientProxiedBy: dggeme708-chm.china.huawei.com (10.1.199.104) To
- dggpemm500004.china.huawei.com (7.185.36.219)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ping...
+On Wed, 2021-09-15 at 13:30 -0700, Reinette Chatre wrote:
+> Hi Everybody,
+>=20
+> This series consists out of outstanding SGX selftests changes, rebased
+> and gathered in a single series that is more easily merged for testing
+> and development, and a few more changes added to expand the existing test=
+s.
+>=20
+> The outstanding SGX selftest changes included in this series that have al=
+ready
+> been submitted separately are:
+>=20
+> * An almost two year old patch fixing a benign linker warning that is sti=
+ll
+>   present today:
+>   https://lore.kernel.org/linux-sgx/20191017030340.18301-2-sean.j.christo=
+pherson@intel.com/
+>   The original patch is added intact and not all email addresses
+>   within are valid.
+>=20
+> * Latest (v4) of Jarkko Sakkinen's series to add an oversubscription test=
+:
+>   https://lore.kernel.org/linux-sgx/20210809093127.76264-1-jarkko@kernel.=
+org/
+>=20
+> * Latest (v2) of Jarkko Sakkinen's patch that provides provide per-op
+>   parameter structs for the test enclave:
+>   https://lore.kernel.org/linux-sgx/20210812224645.90280-1-jarkko@kernel.=
+org/
+>=20
+> The reason why most of these patches are outstanding is that they depend
+> on a kernel change that is still under discussion. Decision to wait in:
+> https://lore.kernel.org/linux-sgx/f8674dac5579a8a424de1565f7ffa2b5bf2f8e3=
+6.camel@kernel.org/
+> The original patch for this kernel dependency continues to be included in
+> this series as a placeholder until the ongoing discussions are concluded.
+>=20
+> The new changes introduced in this series builds on Jarkko's outstanding
+> SGX selftest changes and adds new tests for page permissions, exception
+> handling, and thread entry.
 
-On 2021/9/16 22:10, qiulaibin wrote:
-> When multiple hctx share one tagset. The wake_batch is calculated during initialization by queue_depth. But when multiple hctx share one tagset. The queue depth assigned to each user may be smaller than wakup_batch. This may cause the waiting queue to fail to wakup and leads to Hang.
->
-> Fix this by recalculating wake_batch when inc or dec active_queues.
->
-> Fixes: 0d2602ca30e41 ("blk-mq: improve support for shared tags maps")
-> Signed-off-by: Laibin Qiu <qiulaibin@huawei.com>
-> ---
->   block/blk-mq-tag.c      | 44 +++++++++++++++++++++++++++++++++++++++--
->   include/linux/sbitmap.h |  8 ++++++++
->   lib/sbitmap.c           |  3 ++-
->   3 files changed, 52 insertions(+), 3 deletions(-)
->
-> diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c index 86f87346232a..d02f5ac0004c 100644
-> --- a/block/blk-mq-tag.c
-> +++ b/block/blk-mq-tag.c
-> @@ -16,6 +16,27 @@
->   #include "blk-mq-sched.h"
->   #include "blk-mq-tag.h"
->   
-> +static void bt_update_wake_batch(struct sbitmap_queue *bt, unsigned int
-> +users) {
-> +	unsigned int depth;
-> +
-> +	depth = max((bt->sb.depth + users - 1) / users, 4U);
-> +	sbitmap_queue_update_wake_batch(bt, depth); }
-> +
-> +/*
-> + * Recalculate wakeup batch when tag is shared by hctx.
-> + */
-> +static void blk_mq_update_wake_batch(struct sbitmap_queue *bitmap_tags,
-> +		struct sbitmap_queue *breserved_tags, unsigned int users) {
-> +	if (!users)
-> +		return;
-> +
-> +	bt_update_wake_batch(bitmap_tags, users);
-> +	bt_update_wake_batch(breserved_tags, users); }
-> +
->   /*
->    * If a previously inactive queue goes active, bump the active user count.
->    * We need to do this before try to allocate driver tag, then even if fail @@ -24,17 +45,29 @@
->    */
->   bool __blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)  {
-> +	unsigned int users;
-> +
->   	if (blk_mq_is_sbitmap_shared(hctx->flags)) {
->   		struct request_queue *q = hctx->queue;
->   		struct blk_mq_tag_set *set = q->tag_set;
->   
->   		if (!test_bit(QUEUE_FLAG_HCTX_ACTIVE, &q->queue_flags) &&
-> -		    !test_and_set_bit(QUEUE_FLAG_HCTX_ACTIVE, &q->queue_flags))
-> +		    !test_and_set_bit(QUEUE_FLAG_HCTX_ACTIVE, &q->queue_flags)) {
->   			atomic_inc(&set->active_queues_shared_sbitmap);
-> +
-> +			users = atomic_read(&set->active_queues_shared_sbitmap);
-> +			blk_mq_update_wake_batch(&set->__bitmap_tags,
-> +					&set->__breserved_tags, users);
-> +		}
->   	} else {
->   		if (!test_bit(BLK_MQ_S_TAG_ACTIVE, &hctx->state) &&
-> -		    !test_and_set_bit(BLK_MQ_S_TAG_ACTIVE, &hctx->state))
-> +		    !test_and_set_bit(BLK_MQ_S_TAG_ACTIVE, &hctx->state)) {
->   			atomic_inc(&hctx->tags->active_queues);
-> +
-> +			users = atomic_read(&hctx->tags->active_queues);
-> +			blk_mq_update_wake_batch(&hctx->tags->__bitmap_tags,
-> +					&hctx->tags->__breserved_tags, users);
-> +		}
->   	}
->   
->   	return true;
-> @@ -59,16 +92,23 @@ void __blk_mq_tag_idle(struct blk_mq_hw_ctx *hctx)
->   	struct blk_mq_tags *tags = hctx->tags;
->   	struct request_queue *q = hctx->queue;
->   	struct blk_mq_tag_set *set = q->tag_set;
-> +	unsigned int users;
->   
->   	if (blk_mq_is_sbitmap_shared(hctx->flags)) {
->   		if (!test_and_clear_bit(QUEUE_FLAG_HCTX_ACTIVE,
->   					&q->queue_flags))
->   			return;
->   		atomic_dec(&set->active_queues_shared_sbitmap);
-> +		users = atomic_read(&set->active_queues_shared_sbitmap);
-> +		blk_mq_update_wake_batch(&set->__bitmap_tags,
-> +				&set->__breserved_tags, users);
->   	} else {
->   		if (!test_and_clear_bit(BLK_MQ_S_TAG_ACTIVE, &hctx->state))
->   			return;
->   		atomic_dec(&tags->active_queues);
-> +		users = atomic_read(&tags->active_queues);
-> +		blk_mq_update_wake_batch(&tags->__bitmap_tags,
-> +				&tags->__breserved_tags, users);
->   	}
->   
->   	blk_mq_tag_wakeup_all(tags, false);
-> diff --git a/include/linux/sbitmap.h b/include/linux/sbitmap.h index 2713e689ad66..d49e4f054bfe 100644
-> --- a/include/linux/sbitmap.h
-> +++ b/include/linux/sbitmap.h
-> @@ -406,6 +406,14 @@ static inline void sbitmap_queue_free(struct sbitmap_queue *sbq)
->   	sbitmap_free(&sbq->sb);
->   }
->   
-> +/**
-> + * sbitmap_queue_update_wake_batch() - Recalucate wake batch.
-> + * @sbq: Bitmap queue.
-> + * @depth: New number of queue depth.
-> + */
-> +void sbitmap_queue_update_wake_batch(struct sbitmap_queue *sbq,
-> +				     unsigned int depth);
-> +
->   /**
->    * sbitmap_queue_resize() - Resize a &struct sbitmap_queue.
->    * @sbq: Bitmap queue to resize.
-> diff --git a/lib/sbitmap.c b/lib/sbitmap.c index b25db9be938a..bbe1d663763f 100644
-> --- a/lib/sbitmap.c
-> +++ b/lib/sbitmap.c
-> @@ -457,7 +457,7 @@ int sbitmap_queue_init_node(struct sbitmap_queue *sbq, unsigned int depth,  }  EXPORT_SYMBOL_GPL(sbitmap_queue_init_node);
->   
-> -static void sbitmap_queue_update_wake_batch(struct sbitmap_queue *sbq,
-> +void sbitmap_queue_update_wake_batch(struct sbitmap_queue *sbq,
->   					    unsigned int depth)
->   {
->   	unsigned int wake_batch = sbq_calc_wake_batch(sbq, depth); @@ -475,6 +475,7 @@ static void sbitmap_queue_update_wake_batch(struct sbitmap_queue *sbq,
->   			atomic_set(&sbq->ws[i].wait_cnt, 1);
->   	}
->   }
-> +EXPORT_SYMBOL_GPL(sbitmap_queue_update_wake_batch);
->   
->   void sbitmap_queue_resize(struct sbitmap_queue *sbq, unsigned int depth)  {
-> --
-> 2.22.0
->
-> .
+Thanks for including my patches into this! It's a good idea that
+we carry single series (and probably least confusing to Shuah).
+
+Thank you.
+
+/Jarkko
