@@ -2,66 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66EAE40E5C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:28:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0F2D40E5C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:28:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351319AbhIPRP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:15:26 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:54312
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1347669AbhIPRIc (ORCPT
+        id S1351289AbhIPRPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:15:23 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:59424
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1345135AbhIPRIr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:08:32 -0400
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com [209.85.128.70])
+        Thu, 16 Sep 2021 13:08:47 -0400
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com [209.85.128.71])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id F07A9402A0
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 17:05:34 +0000 (UTC)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 198DA402D8
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 17:05:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1631811934;
-        bh=xmMlFpxNYUGHhWNpAFsSQHnuFL2wu1djSf/pThsAMRw=;
+        s=20210705; t=1631811938;
+        bh=dlCoWNlSGazTh8Qcc02M/YkZ2Um4v8y/vWjZioKN8vA=;
         h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=RTUe6+LUJnJhHIddAHptDxOSdL5xPGpCviAAE+7NWTZLTPY+dlxcjG1O1TvxXjV5E
-         JTw9nTxLoALMrGKZcsNPXUKh2cLeBEcEaEFerWzavjzV8R3Yoaef6HAMqdAM42kEoo
-         qXirkkQHkf22OWCARxAH1K33udJKhai6y+gwcGUCSZVPdthYrrWH645RtbnYfQqXiY
-         S2uEAFlI5VYK+sNWuZUxV9vwwLUWSckJa4GxjkBcZK1wQkRdZAIYwuS/4qAICgqVuf
-         QrlkGFPa2J2UgYjV7vPG3kKkG5wgWWYVg2WSCeSnonrrO7M4g1R2ZHGq3kBfziPp79
-         u3MF8KwrEYt7g==
-Received: by mail-wm1-f70.google.com with SMTP id y12-20020a1c7d0c000000b003077f64d75fso3389061wmc.7
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 10:05:34 -0700 (PDT)
+        b=dyB1IO8Ocwm7eTlrg5OPsz+iv4abacJUohmQPIyjEum8MR2yLYu+XvwzYzT2ljk/K
+         P4RP1xXykSanVQy1nK6KNpdz/ZcOnuX7mdtbvrxTYVGWIS3S2MZo6bh8KK3wTy0vdn
+         cAVm8xTLWX5/6u3u8X+Pqz1X8WKQEHFEhihrnkC8ItItvacyJwQU9OTcOMWzJflSIQ
+         HjoHSGLVKvKtDHGbCvQDRttfRN2NuXZOvbN0kKAz0sEPaKixLEjcZ09sJZg4j1ZLDk
+         /SHGKwUvh7LYYtARmRFPlyoHaVferJCjPo/8b9x2BeqdAj9ML4YXSZHGJXCRaQ4VpJ
+         xBzWcP6bDT3UQ==
+Received: by mail-wm1-f71.google.com with SMTP id j16-20020a1c2310000000b0030b3dce20e1so583682wmj.0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 10:05:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=xmMlFpxNYUGHhWNpAFsSQHnuFL2wu1djSf/pThsAMRw=;
-        b=XKtxi5+51mf+UDjkKnvOv7w4FWqV0XF2Wc0UoOXyjJt25FeEt4vlIS2m9YTni7geox
-         3rjw/DT5fboW61J03H66ZrDavNkJ/MGDhJR7jl2wlRh9foohy9F70/EfTvo12JVP3ibk
-         iKJ/L0c76nMDIpHD4by1fxRU4dnpCKSsaJYKmT1YFbFNMt5eJa8Aq7Fp+em9DbRjOgSg
-         gpA+6TnYW51Y7SBtKG1eVml4b+SxFWCGZZW4DjzvC+2OBv4XjIrBTePwxATasdnQJErh
-         YHR9wAUpYZeUvjxvEQVnpSMEQ/3uwTORdKG2nbVi9WhJMPiBAYpo10SF/8jU4AQ9uzLk
-         n6qQ==
-X-Gm-Message-State: AOAM533u9w2xkSESSqM/Q0ZePHDbXmLosp+tyL2Xa+RdXgSqTZgaUo/h
-        WPJf73aJrXq1kNI2hTd5c/y/uQS4ibMdsUGcP8Csn30ntE5VyZ0zoJ7pP6ip3SF0t8ZMWKPeNBH
-        5yof/HeUs2Y8a6XLfDoVN67dhapyUYeMpAO3+gMI4cQ==
-X-Received: by 2002:adf:e384:: with SMTP id e4mr7278490wrm.163.1631811934458;
-        Thu, 16 Sep 2021 10:05:34 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxmMz9cgr5kJ+3gR03Sf0NrO0bEAz5zD+KEznHUHd9k7UtPSJUPKB5wOA6I1DqE0hLK+jXvKg==
-X-Received: by 2002:adf:e384:: with SMTP id e4mr7278470wrm.163.1631811934335;
-        Thu, 16 Sep 2021 10:05:34 -0700 (PDT)
+        bh=dlCoWNlSGazTh8Qcc02M/YkZ2Um4v8y/vWjZioKN8vA=;
+        b=Gdk9jhJ4Nu9AUK/4b0sVvwdNReyq/VMfjfEMxOvJEB2zcfnbwFtzVS5n3KgPRbXKrt
+         5ukOFTlrDiD9Q1iVdBI0D2WNpXktkt8UYgk8vmmmt+YsLDm0LOczPawAWRILQqnEBWzX
+         QFvFNDv170QsUjt6QhAhzqZQmW/CzYV7VOGgRYAZX00MdG0MqLuvbI9femIrZdemYQhd
+         j/5zJjPm8cdxb2v641SPSaQZhRSsoIoS8efPuqvwmJE0jla9XLPxcR/izPsi6O1Y5L7Q
+         vflcA8NvZ/nysPjNKZqlRjklPu0SL1L2FJEr3EImxnyKeGfV9JLSjEQOAL9Oz/0s5V09
+         wkzw==
+X-Gm-Message-State: AOAM531xiOf3X1AztMP+iyd+r85vKT8onnaF+w05Ii5lGaS/z+uOrCcT
+        SvleIEIAFcqxsQ/zwzTHBfWz8IXtHZdZ5gumhhHrI8xVZH1/vGmzQymDzj8VW5p+l2RXXb3fzmn
+        S2UiE689LpOz+iom69qorCV9XwRFoPet1LbJJraI0PQ==
+X-Received: by 2002:a05:6000:1081:: with SMTP id y1mr7475983wrw.14.1631811937409;
+        Thu, 16 Sep 2021 10:05:37 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxfjjaXZKWySs09tvYZERIX2axhpXqImUmYwsH4UD10db/ect7dwo/3Q45CynCQtVVBhWd8HQ==
+X-Received: by 2002:a05:6000:1081:: with SMTP id y1mr7475972wrw.14.1631811937292;
+        Thu, 16 Sep 2021 10:05:37 -0700 (PDT)
 Received: from kozik-lap.lan (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
-        by smtp.gmail.com with ESMTPSA id u25sm4425269wmm.5.2021.09.16.10.05.33
+        by smtp.gmail.com with ESMTPSA id d70sm3836799wmd.3.2021.09.16.10.05.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 10:05:33 -0700 (PDT)
+        Thu, 16 Sep 2021 10:05:36 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lubomir Rintel <lkundrak@v3.sk>, linux-usb@vger.kernel.org
-Subject: [PATCH] usb: host: ehci-mv: drop duplicated MODULE_ALIAS
-Date:   Thu, 16 Sep 2021 19:05:31 +0200
-Message-Id: <20210916170531.138335-1-krzysztof.kozlowski@canonical.com>
+        Lee Jones <lee.jones@linaro.org>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>
+Subject: [PATCH] mfd: cros_ec: drop unneeded MODULE_ALIAS
+Date:   Thu, 16 Sep 2021 19:05:34 +0200
+Message-Id: <20210916170534.138395-1-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -69,27 +70,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is one MODULE_ALIAS already.
+The MODULE_DEVICE_TABLE already creates proper alias.  Having another
+MODULE_ALIAS causes the alias to be duplicated:
 
-Fixes: 0440fa3d1b4e ("USB: EHCI: make ehci-mv a separate driver")
+  $ modinfo cros_ec_dev.ko
+
+  alias:          platform:cros-ec-dev
+  srcversion:     F84A69D2156719A4F717A76
+  alias:          platform:cros-ec-dev
+
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- drivers/usb/host/ehci-mv.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/mfd/cros_ec_dev.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/usb/host/ehci-mv.c b/drivers/usb/host/ehci-mv.c
-index 8fd27249ad25..fa46d217dd10 100644
---- a/drivers/usb/host/ehci-mv.c
-+++ b/drivers/usb/host/ehci-mv.c
-@@ -258,8 +258,6 @@ static int mv_ehci_remove(struct platform_device *pdev)
- 	return 0;
- }
+diff --git a/drivers/mfd/cros_ec_dev.c b/drivers/mfd/cros_ec_dev.c
+index 8c08d1c55726..81cee1a5daa6 100644
+--- a/drivers/mfd/cros_ec_dev.c
++++ b/drivers/mfd/cros_ec_dev.c
+@@ -326,7 +326,6 @@ static void __exit cros_ec_dev_exit(void)
+ module_init(cros_ec_dev_init);
+ module_exit(cros_ec_dev_exit);
  
--MODULE_ALIAS("mv-ehci");
--
- static const struct platform_device_id ehci_id_table[] = {
- 	{"pxa-u2oehci", 0},
- 	{"pxa-sph", 0},
+-MODULE_ALIAS("platform:" DRV_NAME);
+ MODULE_AUTHOR("Bill Richardson <wfrichar@chromium.org>");
+ MODULE_DESCRIPTION("Userspace interface to the Chrome OS Embedded Controller");
+ MODULE_VERSION("1.0");
 -- 
 2.30.2
 
