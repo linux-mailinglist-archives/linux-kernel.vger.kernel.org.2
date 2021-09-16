@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0F0440E224
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:15:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A6E940DF1B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:06:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244340AbhIPQfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:35:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37486 "EHLO mail.kernel.org"
+        id S232749AbhIPQGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:06:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45040 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242194AbhIPQ1K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:27:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B37A615A2;
-        Thu, 16 Sep 2021 16:17:30 +0000 (UTC)
+        id S240664AbhIPQFx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:05:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC3AA61250;
+        Thu, 16 Sep 2021 16:04:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809050;
-        bh=ObqOYrgdwAJO8POxMzYgQTUoEN6o0v/uM2wFd+WSdug=;
+        s=korg; t=1631808272;
+        bh=9ys4q/Cq6uxiYo0LVkXwRkBOrR9jLBigOEKO29P6kHo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qhH8blhJ7Wj0wDZqTcPpMNwSVPpdySCpJHz6Cv6MJeHGJE8Y29IrUmStZPhgM4PRN
-         c53k1bp1xvP6f/XdSZylzhw8o+RlxkgUMFChS/woRBVeFZgHBuKXPBZ7sGb4rRDJHy
-         xv5IfODBGc1wc7bR06I9/SqDQJnBTYXLGRs+jjJg=
+        b=EraNnlEvjWlKGCqj68RVYDaGJtq0kBd6PSRa3eIDjDBgvwjlggs9gDBq88u5uKa9F
+         6YCcz5cnLxJnMHiZPT82IombYNk+Jb1m70pdw8GgX7L5uPlmsyaMTjttMJG1P7RStP
+         nk27Q6N7A0fgo+i7t/Xh9OqiSj5ALQaC0T9JlghQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Nageswara R Sastry <rnsastry@linux.ibm.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.13 013/380] powerpc/perf/hv-gpci: Fix counter value parsing
+        Iwona Winiarska <iwona.winiarska@intel.com>,
+        Andrew Jeffery <andrew@aj.id.au>, Joel Stanley <joel@aj.id.au>,
+        Joel Stanley <joel@jms.id.au>
+Subject: [PATCH 5.10 025/306] soc: aspeed: p2a-ctrl: Fix boundary check for mmap
 Date:   Thu, 16 Sep 2021 17:56:10 +0200
-Message-Id: <20210916155804.422589210@linuxfoundation.org>
+Message-Id: <20210916155754.803480552@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,67 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kajol Jain <kjain@linux.ibm.com>
+From: Iwona Winiarska <iwona.winiarska@intel.com>
 
-commit f9addd85fbfacf0d155e83dbee8696d6df5ed0c7 upstream.
+commit 8b07e990fb254fcbaa919616ac77f981cb48c73d upstream.
 
-H_GetPerformanceCounterInfo (0xF080) hcall returns the counter data in
-the result buffer. Result buffer has specific format defined in the PAPR
-specification. One of the fields is counter offset and width of the
-counter data returned.
+The check mixes pages (vm_pgoff) with bytes (vm_start, vm_end) on one
+side of the comparison, and uses resource address (rather than just the
+resource size) on the other side of the comparison.
+This can allow malicious userspace to easily bypass the boundary check and
+map pages that are located outside memory-region reserved by the driver.
 
-Counter data are returned in a unsigned char array in big endian byte
-order. To get the final counter data, the values must be left shifted
-byte at a time. But commit 220a0c609ad17 ("powerpc/perf: Add support for
-the hv gpci (get performance counter info) interface") made the shifting
-bitwise and also assumed little endian order. Because of that, hcall
-counters values are reported incorrectly.
-
-In particular this can lead to counters go backwards which messes up the
-counter prev vs now calculation and leads to huge counter value
-reporting:
-
-  #: perf stat -e hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
-           -C 0 -I 1000
-        time             counts unit events
-     1.000078854 18,446,744,073,709,535,232      hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
-     2.000213293                  0      hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
-     3.000320107                  0      hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
-     4.000428392                  0      hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
-     5.000537864                  0      hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
-     6.000649087                  0      hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
-     7.000760312                  0      hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
-     8.000865218             16,448      hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
-     9.000978985 18,446,744,073,709,535,232      hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
-    10.001088891             16,384      hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
-    11.001201435                  0      hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
-    12.001307937 18,446,744,073,709,535,232      hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
-
-Fix the shifting logic to correct match the format, ie. read bytes in
-big endian order.
-
-Fixes: e4f226b1580b ("powerpc/perf/hv-gpci: Increase request buffer size")
-Cc: stable@vger.kernel.org # v4.6+
-Reported-by: Nageswara R Sastry<rnsastry@linux.ibm.com>
-Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
-Tested-by: Nageswara R Sastry<rnsastry@linux.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210813082158.429023-1-kjain@linux.ibm.com
+Fixes: 01c60dcea9f7 ("drivers/misc: Add Aspeed P2A control driver")
+Cc: stable@vger.kernel.org
+Signed-off-by: Iwona Winiarska <iwona.winiarska@intel.com>
+Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
+Tested-by: Andrew Jeffery <andrew@aj.id.au>
+Reviewed-by: Joel Stanley <joel@aj.id.au>
+Signed-off-by: Joel Stanley <joel@jms.id.au>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/perf/hv-gpci.c |    2 +-
+ drivers/soc/aspeed/aspeed-p2a-ctrl.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/powerpc/perf/hv-gpci.c
-+++ b/arch/powerpc/perf/hv-gpci.c
-@@ -175,7 +175,7 @@ static unsigned long single_gpci_request
- 	 */
- 	count = 0;
- 	for (i = offset; i < offset + length; i++)
--		count |= arg->bytes[i] << (i - offset);
-+		count |= (u64)(arg->bytes[i]) << ((length - 1 - (i - offset)) * 8);
+--- a/drivers/soc/aspeed/aspeed-p2a-ctrl.c
++++ b/drivers/soc/aspeed/aspeed-p2a-ctrl.c
+@@ -110,7 +110,7 @@ static int aspeed_p2a_mmap(struct file *
+ 	vsize = vma->vm_end - vma->vm_start;
+ 	prot = vma->vm_page_prot;
  
- 	*value = count;
- out:
+-	if (vma->vm_pgoff + vsize > ctrl->mem_base + ctrl->mem_size)
++	if (vma->vm_pgoff + vma_pages(vma) > ctrl->mem_size >> PAGE_SHIFT)
+ 		return -EINVAL;
+ 
+ 	/* ast2400/2500 AHB accesses are not cache coherent */
 
 
