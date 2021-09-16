@@ -2,251 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9981740D247
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 06:18:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E05E40D266
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 06:25:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232155AbhIPETc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 00:19:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57658 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229463AbhIPETb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 00:19:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E19A36113E;
-        Thu, 16 Sep 2021 04:18:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631765892;
-        bh=07MliWGJfGAK+LhqNrCmA5FdUeLaldL2r83Wm9CtfwE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YNy7NcFBStdeULkAFLP1P/e8exSZKD/ocG0UoVxepppronIhq3DuOcEgY9DbIUpUx
-         Ts2B4qsGqOZQhEMvr6kuBvwouJoPBd+IRhbRnBDTX1AjM6riW5JXJ+NY33FHu0gIXM
-         nmKYOky1JW4mWHdpPchdsUvl8QmapizQ2FC12gQuBYvW7acddNmqmmpQAWLOMZv/gB
-         ze8EhCyoCvudfheaRV91fy4ERv3QgoJAqNvLrDvL3B6aqnroPjQmF1icxewkc/fb+I
-         zjsTo0QCjyPN+ngTpfAjH3w0myrvPJU4gL0bmaOkJjn8ZtE4XJBS1PYvTozRzYlyuR
-         TcyJEfRDi+ACw==
-Date:   Wed, 15 Sep 2021 21:18:11 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Cc:     hch@lst.de, linux-xfs@vger.kernel.org, dan.j.williams@intel.com,
-        david@fromorbit.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev,
-        rgoldwyn@suse.de, viro@zeniv.linux.org.uk, willy@infradead.org
-Subject: Re: [PATCH v9 8/8] xfs: Add dax dedupe support
-Message-ID: <20210916041811.GB34874@magnolia>
-References: <20210915104501.4146910-1-ruansy.fnst@fujitsu.com>
- <20210915104501.4146910-9-ruansy.fnst@fujitsu.com>
- <20210916003008.GE34830@magnolia>
- <38eeee6f-aa11-4c13-b7c0-2e48927b85dc@fujitsu.com>
+        id S232155AbhIPE0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 00:26:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229521AbhIPE0L (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 00:26:11 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05FD5C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 21:24:50 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id q11so7209231wrr.9
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 21:24:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3F+o0j9jxKTxiI+Asnv/VhXByAoLQ8BKv0fUB5qlTq0=;
+        b=t3/5Icsh9RDoPOdDCqDC7zfKbtWPaJ0wgaKU1BJ4Z/dd8cj0/PCkM9X6W7+QXkKFbh
+         iT3ZA2KEuPEQY0Dma7pyaJQJQr6Y1tHoQ/919xDOzE2l7ZF8YYlGNar6oaZjxpVWJoxf
+         DIqnJUyTU+UF1L1K1a9OsN+jXfIdHeKrbxDWzIPWWLI3FHH8LiAnbgHDRjxSqC8nlVL6
+         rKA/gHU3xSGcjyxN63ZCGgXcjw27hu6xp3yPwLI93eyj6i1FzjC++XxcfQZBZKw12Mca
+         +OBJ/LZCsUr4ZIc5qBShY9G78PMxn69PcSEEYfxcq6OSlaPjiuBQ4+qsN5UACI+fx3Wn
+         Go2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3F+o0j9jxKTxiI+Asnv/VhXByAoLQ8BKv0fUB5qlTq0=;
+        b=wmeZG438l1lLwq4Tb+DqUrtzwCR1vpt7Ocz8nwR3SHjCoaAv7RyhAnbo4ZVcVCEhTD
+         gbvWR/Dn30gU7FOVjM7/4BsssU43gdXhXz+S21QgKTy7vajLfPti5P0crZGDsVZ9JGf4
+         dsPkDASjnSjxcaoKDKJQZb67ud5zWJebYsIYF6r5+c0m31ytmw/oh9QlwexIO2OJV/uf
+         jBYykLaVsSu75ktdJYi7jgTnJLp2AMF/5JEGPYjf3mfvCud934Pne01NYK0SFL8I78g8
+         mlA8v4JMGuuVUtOWcjIyucAi+2ByOb+jsWULjRDkFFpm+KZSZqoIv9Ce0tKGZlFvkcql
+         L3SA==
+X-Gm-Message-State: AOAM532NBcdm0UHcr+WLFB72WBFyQVyhiuv/qj37viaeuGY9wiBP67ru
+        dt4cUM8rfA0ZhoiMyYFvCi/ssb31Hjx7m7GY0M+C+g==
+X-Google-Smtp-Source: ABdhPJx2cKD6nQJM73FlWA5hhY8gQepri1EBWZutYONDNBJS3CwQcDwu7fycgaovPzDCqM/S71/7KiH0VcYH/dtpP+Q=
+X-Received: by 2002:adf:d084:: with SMTP id y4mr3545518wrh.249.1631766288162;
+ Wed, 15 Sep 2021 21:24:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <38eeee6f-aa11-4c13-b7c0-2e48927b85dc@fujitsu.com>
+References: <20210911092139.79607-1-guoren@kernel.org> <20210911092139.79607-5-guoren@kernel.org>
+ <20210915075007.GD20024@lst.de> <CAJF2gTSgbmff7aTjwTD+rhQroWeaXfjepGeEAmooBV6d4u70kg@mail.gmail.com>
+In-Reply-To: <CAJF2gTSgbmff7aTjwTD+rhQroWeaXfjepGeEAmooBV6d4u70kg@mail.gmail.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Thu, 16 Sep 2021 09:54:36 +0530
+Message-ID: <CAAhSdy1hdgn94eQKkgG6WtWxf-cNEFnaxPtKTgOKeRaBO5V-zg@mail.gmail.com>
+Subject: Re: [RFC PATCH V4 4/6] RISC-V: Implement arch_sync_dma* functions
+To:     Guo Ren <guoren@kernel.org>
+Cc:     Christoph Hellwig <hch@lst.de>, Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        =?UTF-8?Q?Christoph_M=C3=BCllner?= <christoph.muellner@vrull.eu>,
+        Philipp Tomsich <philipp.tomsich@vrull.eu>,
+        liush <liush@allwinnertech.com>, wefu@redhat.com,
+        =?UTF-8?B?V2VpIFd1ICjlkLTkvJ8p?= <lazyparser@gmail.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        taiten.peng@canonical.com, aniket.ponkshe@canonical.com,
+        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
+        gordan.markus@canonical.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 12:01:18PM +0800, Shiyang Ruan wrote:
-> 
-> 
-> On 2021/9/16 8:30, Darrick J. Wong wrote:
-> > On Wed, Sep 15, 2021 at 06:45:01PM +0800, Shiyang Ruan wrote:
-> > > Introduce xfs_mmaplock_two_inodes_and_break_dax_layout() for dax files
-> > > who are going to be deduped.  After that, call compare range function
-> > > only when files are both DAX or not.
-> > > 
-> > > Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
-> > > Reviewed-by: Darrick J. Wong <djwong@kernel.org>
-> > > Reviewed-by: Christoph Hellwig <hch@lst.de>
-> > > ---
-> > >   fs/xfs/xfs_file.c    |  2 +-
-> > >   fs/xfs/xfs_inode.c   | 80 +++++++++++++++++++++++++++++++++++++++++---
-> > >   fs/xfs/xfs_inode.h   |  1 +
-> > >   fs/xfs/xfs_reflink.c |  4 +--
-> > >   4 files changed, 80 insertions(+), 7 deletions(-)
-> > > 
-> > > diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
-> > > index 2ef1930374d2..c3061723613c 100644
-> > > --- a/fs/xfs/xfs_file.c
-> > > +++ b/fs/xfs/xfs_file.c
-> > > @@ -846,7 +846,7 @@ xfs_wait_dax_page(
-> > >   	xfs_ilock(ip, XFS_MMAPLOCK_EXCL);
-> > >   }
-> > > -static int
-> > > +int
-> > >   xfs_break_dax_layouts(
-> > >   	struct inode		*inode,
-> > >   	bool			*retry)
-> > > diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
-> > > index a4f6f034fb81..bdc084cdbf46 100644
-> > > --- a/fs/xfs/xfs_inode.c
-> > > +++ b/fs/xfs/xfs_inode.c
-> > > @@ -3790,6 +3790,61 @@ xfs_iolock_two_inodes_and_break_layout(
-> > >   	return 0;
-> > >   }
-> > > +static int
-> > > +xfs_mmaplock_two_inodes_and_break_dax_layout(
-> > > +	struct xfs_inode	*ip1,
-> > > +	struct xfs_inode	*ip2)
+On Thu, Sep 16, 2021 at 7:03 AM Guo Ren <guoren@kernel.org> wrote:
+>
+> On Wed, Sep 15, 2021 at 3:50 PM Christoph Hellwig <hch@lst.de> wrote:
+> >
+> > On Sat, Sep 11, 2021 at 05:21:37PM +0800, guoren@kernel.org wrote:
+> > > +static void __dma_sync(phys_addr_t paddr, size_t size, enum dma_data_direction dir)
 > > > +{
-> > > +	int			error, attempts = 0;
-> > > +	bool			retry;
-> > > +	struct page		*page;
-> > > +	struct xfs_log_item	*lp;
-> > > +
-> > > +	if (ip1->i_ino > ip2->i_ino)
-> > > +		swap(ip1, ip2);
-> > > +
-> > > +again:
-> > > +	retry = false;
-> > > +	/* Lock the first inode */
-> > > +	xfs_ilock(ip1, XFS_MMAPLOCK_EXCL);
-> > > +	error = xfs_break_dax_layouts(VFS_I(ip1), &retry);
-> > > +	if (error || retry) {
-> > > +		xfs_iunlock(ip1, XFS_MMAPLOCK_EXCL);
-> > > +		if (error == 0 && retry)
-> > > +			goto again;
-> > > +		return error;
-> > > +	}
-> > > +
-> > > +	if (ip1 == ip2)
-> > > +		return 0;
-> > > +
-> > > +	/* Nested lock the second inode */
-> > > +	lp = &ip1->i_itemp->ili_item;
-> > > +	if (lp && test_bit(XFS_LI_IN_AIL, &lp->li_flags)) {
-> > > +		if (!xfs_ilock_nowait(ip2,
-> > > +		    xfs_lock_inumorder(XFS_MMAPLOCK_EXCL, 1))) {
-> > > +			xfs_iunlock(ip1, XFS_MMAPLOCK_EXCL);
-> > > +			if ((++attempts % 5) == 0)
-> > > +				delay(1); /* Don't just spin the CPU */
-> > > +			goto again;
-> > > +		}
-> > 
-> > I suspect we don't need this part for grabbing the MMAPLOCK^W pagecache
-> > invalidatelock.  The AIL only grabs the ILOCK, never the IOLOCK or the
-> > MMAPLOCK.
-> 
-> Maybe I have misunderstood this part.
-> 
-> What I want is to lock the two inode nestedly.  This code is copied from
-> xfs_lock_two_inodes(), which checks this AIL during locking two inode with
-> each of the three kinds of locks.
-
-<nod> It's totally reasonable to copy-paste the function you want and
-change it as needed...
-
-> But I also found the recent merged function: filemap_invalidate_lock_two()
-> just locks two inode directly without checking AIL.  So, I am not if the AIL
-> check is needed in this case.
-
-...especially when even the maintainer is only 99% sure that the AIL
-checking chunk here can be removed.  Anyone else have an opinion?
-
---D
-
-> > 
-> > > +	} else
-> > > +		xfs_ilock(ip2, xfs_lock_inumorder(XFS_MMAPLOCK_EXCL, 1));
-> > > +	/*
-> > > +	 * We cannot use xfs_break_dax_layouts() directly here because it may
-> > > +	 * need to unlock & lock the XFS_MMAPLOCK_EXCL which is not suitable
-> > > +	 * for this nested lock case.
-> > > +	 */
-> > > +	page = dax_layout_busy_page(VFS_I(ip2)->i_mapping);
-> > > +	if (page && page_ref_count(page) != 1) {
-> > 
-> > Do you think the patch "ext4/xfs: add page refcount helper" would be a
-> > good cleanup to head this series?
-> > 
-> > https://lore.kernel.org/linux-xfs/20210913161604.31981-1-alex.sierra@amd.com/T/#m59cf7cd5c0d521ad487fa3a15d31c3865db88bdf
-> 
-> Got it.
-> 
-> 
-> --
-> Thanks,
-> Ruan
-> 
-> > 
-> > The rest of the logic looks ok.
-> > 
-> > --D
-> > 
-> > > +		xfs_iunlock(ip2, XFS_MMAPLOCK_EXCL);
-> > > +		xfs_iunlock(ip1, XFS_MMAPLOCK_EXCL);
-> > > +		goto again;
-> > > +	}
-> > > +
-> > > +	return 0;
+> > > +     if ((dir == DMA_FROM_DEVICE) && (dma_cache_sync->cache_invalidate))
+> > > +             dma_cache_sync->cache_invalidate(paddr, size);
+> > > +     else if ((dir == DMA_TO_DEVICE) && (dma_cache_sync->cache_clean))
+> > > +             dma_cache_sync->cache_clean(paddr, size);
+> > > +     else if ((dir == DMA_BIDIRECTIONAL) && dma_cache_sync->cache_flush)
+> > > +             dma_cache_sync->cache_flush(paddr, size);
 > > > +}
-> > > +
-> > >   /*
-> > >    * Lock two inodes so that userspace cannot initiate I/O via file syscalls or
-> > >    * mmap activity.
-> > > @@ -3804,8 +3859,19 @@ xfs_ilock2_io_mmap(
-> > >   	ret = xfs_iolock_two_inodes_and_break_layout(VFS_I(ip1), VFS_I(ip2));
-> > >   	if (ret)
-> > >   		return ret;
-> > > -	filemap_invalidate_lock_two(VFS_I(ip1)->i_mapping,
-> > > -				    VFS_I(ip2)->i_mapping);
-> > > +
-> > > +	if (IS_DAX(VFS_I(ip1)) && IS_DAX(VFS_I(ip2))) {
-> > > +		ret = xfs_mmaplock_two_inodes_and_break_dax_layout(ip1, ip2);
-> > > +		if (ret) {
-> > > +			inode_unlock(VFS_I(ip2));
-> > > +			if (ip1 != ip2)
-> > > +				inode_unlock(VFS_I(ip1));
-> > > +			return ret;
-> > > +		}
-> > > +	} else
-> > > +		filemap_invalidate_lock_two(VFS_I(ip1)->i_mapping,
-> > > +					    VFS_I(ip2)->i_mapping);
-> > > +
-> > >   	return 0;
-> > >   }
-> > > @@ -3815,8 +3881,14 @@ xfs_iunlock2_io_mmap(
-> > >   	struct xfs_inode	*ip1,
-> > >   	struct xfs_inode	*ip2)
-> > >   {
-> > > -	filemap_invalidate_unlock_two(VFS_I(ip1)->i_mapping,
-> > > -				      VFS_I(ip2)->i_mapping);
-> > > +	if (IS_DAX(VFS_I(ip1)) && IS_DAX(VFS_I(ip2))) {
-> > > +		xfs_iunlock(ip2, XFS_MMAPLOCK_EXCL);
-> > > +		if (ip1 != ip2)
-> > > +			xfs_iunlock(ip1, XFS_MMAPLOCK_EXCL);
-> > > +	} else
-> > > +		filemap_invalidate_unlock_two(VFS_I(ip1)->i_mapping,
-> > > +					      VFS_I(ip2)->i_mapping);
-> > > +
-> > >   	inode_unlock(VFS_I(ip2));
-> > >   	if (ip1 != ip2)
-> > >   		inode_unlock(VFS_I(ip1));
-> > > diff --git a/fs/xfs/xfs_inode.h b/fs/xfs/xfs_inode.h
-> > > index b21b177832d1..f7e26fe31a26 100644
-> > > --- a/fs/xfs/xfs_inode.h
-> > > +++ b/fs/xfs/xfs_inode.h
-> > > @@ -472,6 +472,7 @@ enum xfs_prealloc_flags {
-> > >   int	xfs_update_prealloc_flags(struct xfs_inode *ip,
-> > >   				  enum xfs_prealloc_flags flags);
-> > > +int	xfs_break_dax_layouts(struct inode *inode, bool *retry);
-> > >   int	xfs_break_layouts(struct inode *inode, uint *iolock,
-> > >   		enum layout_break_reason reason);
-> > > diff --git a/fs/xfs/xfs_reflink.c b/fs/xfs/xfs_reflink.c
-> > > index 9d876e268734..3b99c9dfcf0d 100644
-> > > --- a/fs/xfs/xfs_reflink.c
-> > > +++ b/fs/xfs/xfs_reflink.c
-> > > @@ -1327,8 +1327,8 @@ xfs_reflink_remap_prep(
-> > >   	if (XFS_IS_REALTIME_INODE(src) || XFS_IS_REALTIME_INODE(dest))
-> > >   		goto out_unlock;
-> > > -	/* Don't share DAX file data for now. */
-> > > -	if (IS_DAX(inode_in) || IS_DAX(inode_out))
-> > > +	/* Don't share DAX file data with non-DAX file. */
-> > > +	if (IS_DAX(inode_in) != IS_DAX(inode_out))
-> > >   		goto out_unlock;
-> > >   	if (!IS_DAX(inode_in))
-> > > -- 
-> > > 2.33.0
-> > > 
-> > > 
-> > > 
-> 
-> 
+> >
+> > Despite various snipplets this is a still pretty much the broken previous
+> > versions.  These need to use the CMO instructions directly which are
+> > about to go into review, and then your SBI can trap on those can call
+> > whatever non-standard mess you're using.
+> I think you mean put an ALTERNATIVE slot in the prologue of __dma_sync?
+>
+> #define ALT_DMA_SYNC()                                           \
+> asm(ALTERNATIVE(".rept 64\n nop\n .endr\n", "<vendor code>",
+> XXX_VENDOR_ID,        \
+>                 ERRATA_XXX, CONFIG_ERRATA_XXX)  \
+>                 : : : "memory")
+>
+> static void __dma_sync(phys_addr_t paddr, size_t size, enum
+> dma_data_direction dir)
+> {
+>         ALT_DMA_SYNC();
+>
+>         /* future cmo codes */
+> }
+
+I think Christoph is suggesting to always use CMO instructions for
+implementing arch specific DMA sync functions. The SBI implementation
+will trap-n-emulate CMO instructions when underlying HW does not
+have it. This means custom cache instructions on D1 can reside in
+the platform support code of OpenSBI.
+
+I also agree with the above suggestion. At least, this will ensure that we
+have only one way of doing cache operations from S-mode perspective
+which is CMO instructions.
+
+Regards,
+Anup
+
+>
+>
+>
+>
+> --
+> Best Regards
+>  Guo Ren
+>
+> ML: https://lore.kernel.org/linux-csky/
