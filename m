@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB10640E856
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7E9140E179
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:29:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241192AbhIPRiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:38:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47936 "EHLO mail.kernel.org"
+        id S241953AbhIPQap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:30:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58970 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353036AbhIPR3x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:29:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0656563156;
-        Thu, 16 Sep 2021 16:46:20 +0000 (UTC)
+        id S241609AbhIPQV6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:21:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6653A61263;
+        Thu, 16 Sep 2021 16:15:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810781;
-        bh=uLZ/voZxpdGW5MEY6zifV7PeAzyie8gXGgGTSK/r0Kw=;
+        s=korg; t=1631808912;
+        bh=uDb6O9YEaltjgRU4uukfRp0mRS5qa6nxUwPccZ5ji1k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DO9UZILpQ0nFUIu0KG3qlsH5Td6k13OCUaZ7FXwNTV+V3kLq83tG7gnUsNxRAQi/k
-         kzGwEY1oT4RE+9p1gOh8xJSXpG7o6weRIZxdNqf3Taogm5h8iaBuQLHCJy9zS7KftY
-         nZpPbxT63moVVX6L0Y25DnquHEXyl0pUsBykQL3c=
+        b=v9JUIf6tYz3epouWMSFe9ZE+zresNBJnmedfVpBe8nW1BDQ+ktwuCQ1J5kxuRCZW9
+         ZlbsvyeN/toaKq9D6dDrXBbGIszM0/PsH7X6LBT4k3BzADSiOgJzvQOU8xeMIal3RQ
+         0tOk7tWM57ezhr3Ijb80J5aCDggEpb/zG16EcdNY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alex Elder <elder@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Yevgeny Kliteynik <kliteyn@nvidia.com>,
+        Alex Vesker <valex@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 264/432] net: ipa: fix IPA v4.9 interconnects
+Subject: [PATCH 5.10 268/306] net/mlx5: DR, Enable QP retransmission
 Date:   Thu, 16 Sep 2021 18:00:13 +0200
-Message-Id: <20210916155819.772539221@linuxfoundation.org>
+Message-Id: <20210916155803.209795002@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,46 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Elder <elder@linaro.org>
+From: Yevgeny Kliteynik <kliteyn@nvidia.com>
 
-[ Upstream commit 0fd75f5760b6a7a7f35dff46a6cdc4f6d1a86ee8 ]
+[ Upstream commit ec449ed8230cd30769de3cb70ee0fce293047372 ]
 
-Three interconnects are defined for IPA version 4.9, but there
-should only be two.  They should also use names that match what's
-used for other platforms (and specified in the Device Tree binding).
+Under high stress, SW steering might get stuck on polling for completion
+that never comes.
+For such cases QP needs to have protocol retransmission mechanism enabled.
+Currently the retransmission timeout is defined as 0 (unlimited). Fix this
+by defining a real timeout.
 
-Signed-off-by: Alex Elder <elder@linaro.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Yevgeny Kliteynik <kliteyn@nvidia.com>
+Reviewed-by: Alex Vesker <valex@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ipa/ipa_data-v4.9.c | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/steering/dr_send.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ipa/ipa_data-v4.9.c b/drivers/net/ipa/ipa_data-v4.9.c
-index 798d43e1eb13..4cce5dce9215 100644
---- a/drivers/net/ipa/ipa_data-v4.9.c
-+++ b/drivers/net/ipa/ipa_data-v4.9.c
-@@ -416,18 +416,13 @@ static const struct ipa_mem_data ipa_mem_data = {
- /* Interconnect rates are in 1000 byte/second units */
- static const struct ipa_interconnect_data ipa_interconnect_data[] = {
- 	{
--		.name			= "ipa_to_llcc",
-+		.name			= "memory",
- 		.peak_bandwidth		= 600000,	/* 600 MBps */
- 		.average_bandwidth	= 150000,	/* 150 MBps */
- 	},
--	{
--		.name			= "llcc_to_ebi1",
--		.peak_bandwidth		= 1804000,	/* 1.804 GBps */
--		.average_bandwidth	= 150000,	/* 150 MBps */
--	},
- 	/* Average rate is unused for the next interconnect */
- 	{
--		.name			= "appss_to_ipa",
-+		.name			= "config",
- 		.peak_bandwidth		= 74000,	/* 74 MBps */
- 		.average_bandwidth	= 0,		/* unused */
- 	},
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_send.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_send.c
+index ea3c6cf27db4..eb6677f737a0 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_send.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_send.c
+@@ -605,6 +605,7 @@ static int dr_cmd_modify_qp_rtr2rts(struct mlx5_core_dev *mdev,
+ 
+ 	MLX5_SET(qpc, qpc, retry_count, attr->retry_cnt);
+ 	MLX5_SET(qpc, qpc, rnr_retry, attr->rnr_retry);
++	MLX5_SET(qpc, qpc, primary_address_path.ack_timeout, 0x8); /* ~1ms */
+ 
+ 	MLX5_SET(rtr2rts_qp_in, in, opcode, MLX5_CMD_OP_RTR2RTS_QP);
+ 	MLX5_SET(rtr2rts_qp_in, in, qpn, dr_qp->qpn);
 -- 
 2.30.2
 
