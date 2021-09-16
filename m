@@ -2,303 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAFED40DEAB
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 17:51:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C4D240DEA7
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 17:51:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240347AbhIPPwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 11:52:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239207AbhIPPv6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 11:51:58 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36AE4C061767
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 08:50:37 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id m3so18528709lfu.2
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 08:50:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Zwk6zmApajzib1boNWKTOMdLLReNFGQ/0MpvWS/8P0U=;
-        b=cTjicLSfanCEgGBzAqfvA/IELb8oEJirAV59YnwHnZCeYJhbOCFFWh9vxveldvud4O
-         6I2rLHDC5tXbidvXXSg+vQaOsM7AkJGuJiTe8p6kqdrGfva1CsKkRxCQTK4T3K43hKwR
-         FpW39PhdklEotFvDMpjitCbQiFNYGGDx42EuUjFobfkiEDSsKuhDHIrfXBhFZrQ7URfe
-         dp7KAr8pJHUr5iPQZHREmOTy1NE4VAH28bDxHhiSwGccFyyh1VIVEsFqrupQxwIJU2Z1
-         KZuIUxKiu/hDL1wPVNMeKTRmS9vY1qbs6pI9wq3hpGSwxOWEhW3bpX9qVtv/AFd+gSfe
-         dPxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Zwk6zmApajzib1boNWKTOMdLLReNFGQ/0MpvWS/8P0U=;
-        b=0sbfqzlxODjLmZ6JRit9qHK/w3/KPImmVxSsEYgsrWzWPZkFrgnVQnVEQfxlH48rDd
-         TDruHzP4bBIZB2jKx2EbOwN3hORGXPRbjUDycoCh+Uw/GA+NRac3CMI6a98BX/awsrE7
-         OrgrndNGu3YQ+lQjFTjZ3egAN+5kBAqL+Z38kme73Va2dfhhLrfROKaaanuTIOzGjDma
-         bbKjfm2BPHFkBv8GlPxQdeuWjecGhIt6u0G1xth8QpRCOh2+2yy4QYFYD4RrGOmTlB9b
-         5m1Y3fraIyJyNLQZgvBDItywsjo7gzmV20DzYX3zoyIL8k1IRCP08esFVlD4A2OfpI9b
-         eFVg==
-X-Gm-Message-State: AOAM533lNZ0PMBetaqxxy14rPP+HemNXr0JKUGZ5EaJfOli9OAyUYA48
-        JMPqO7ETOxy+2kEN8SbW8NzUPj/yT8fQU51wQ9fH9Q==
-X-Google-Smtp-Source: ABdhPJwkbKSDYLlCX5fkswyKiFZ7bhPlQkzAo8N8dvnrUnSaMNDOKLzUs9c5Fa7H/0tIyMwOD2cTouwiJn3exX/9JP8=
-X-Received: by 2002:a2e:2f02:: with SMTP id v2mr4500745ljv.132.1631807435179;
- Thu, 16 Sep 2021 08:50:35 -0700 (PDT)
+        id S238146AbhIPPwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 11:52:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39608 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240307AbhIPPvw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 11:51:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FF5560F51;
+        Thu, 16 Sep 2021 15:50:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1631807431;
+        bh=P2L2Oi/gSe2RrKROPMRV8i054hHPUcCZWhcbeKtWzPc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vdLjDKulRiGNPHxTETnbnwvUkFSAVSL/33ao0GvfIKS7aq8gOdc1cK36QEiAzwn0r
+         CkKen01F3/f/2u68u7U8Ea60kwUNG0fRwbPbHWCzguc8YjUXtuddbX2/Bdr9N2OY1e
+         RQ2pj7EV1EAI2B1nYbgz7MZIPCznPmTqC1e6i654=
+Date:   Thu, 16 Sep 2021 17:50:29 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     min.li.xe@renesas.com
+Cc:     arnd@arndb.de, derek.kiernan@xilinx.com, dragan.cvetic@xilinx.com,
+        linux-kernel@vger.kernel.org, lee.jones@linaro.org
+Subject: Re: [PATCH misc v2 1/2] mfd: rsmu: Resolve naming conflict between
+ idt8a340_reg.h and idt82p33_reg.h
+Message-ID: <YUNnxbhiRv73tDfX@kroah.com>
+References: <1631806867-25003-1-git-send-email-min.li.xe@renesas.com>
 MIME-Version: 1.0
-References: <20210820155918.7518-1-brijesh.singh@amd.com> <20210820155918.7518-24-brijesh.singh@amd.com>
-In-Reply-To: <20210820155918.7518-24-brijesh.singh@amd.com>
-From:   Peter Gonda <pgonda@google.com>
-Date:   Thu, 16 Sep 2021 09:50:23 -0600
-Message-ID: <CAMkAt6q9izy0kObMjjHiKuOVR5OXrdFFaeVQiArm0mMA4w8uXw@mail.gmail.com>
-Subject: Re: [PATCH Part2 v5 23/45] KVM: SVM: Add KVM_SNP_INIT command
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        kvm list <kvm@vger.kernel.org>, linux-coco@lists.linux.dev,
-        linux-mm@kvack.org, linux-crypto@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        Marc Orr <marcorr@google.com>,
-        sathyanarayanan.kuppuswamy@linux.intel.com,
-        Pavan Kumar Paluri <papaluri@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1631806867-25003-1-git-send-email-min.li.xe@renesas.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 10:00 AM Brijesh Singh <brijesh.singh@amd.com> wrote:
->
-> The KVM_SNP_INIT command is used by the hypervisor to initialize the
-> SEV-SNP platform context. In a typical workflow, this command should be the
-> first command issued. When creating SEV-SNP guest, the VMM must use this
-> command instead of the KVM_SEV_INIT or KVM_SEV_ES_INIT.
->
-> The flags value must be zero, it will be extended in future SNP support to
-> communicate the optional features (such as restricted INT injection etc).
->
-> Co-developed-by: Pavan Kumar Paluri <papaluri@amd.com>
-> Signed-off-by: Pavan Kumar Paluri <papaluri@amd.com>
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+On Thu, Sep 16, 2021 at 11:41:06AM -0400, min.li.xe@renesas.com wrote:
+> From: Min Li <min.li.xe@renesas.com>
+> 
+> Resolve name conflicts so that rsmu misc driver can be simplified to
+> one c file suggested by Greg KH
+> 
+> Signed-off-by: Min Li <min.li.xe@renesas.com>
 > ---
->  .../virt/kvm/amd-memory-encryption.rst        | 27 ++++++++++++
->  arch/x86/include/asm/svm.h                    |  2 +
->  arch/x86/kvm/svm/sev.c                        | 44 ++++++++++++++++++-
->  arch/x86/kvm/svm/svm.h                        |  4 ++
->  include/uapi/linux/kvm.h                      | 13 ++++++
->  5 files changed, 88 insertions(+), 2 deletions(-)
->
-> diff --git a/Documentation/virt/kvm/amd-memory-encryption.rst b/Documentation/virt/kvm/amd-memory-encryption.rst
-> index 5c081c8c7164..7b1d32fb99a8 100644
-> --- a/Documentation/virt/kvm/amd-memory-encryption.rst
-> +++ b/Documentation/virt/kvm/amd-memory-encryption.rst
-> @@ -427,6 +427,33 @@ issued by the hypervisor to make the guest ready for execution.
->
->  Returns: 0 on success, -negative on error
->
-> +18. KVM_SNP_INIT
-> +----------------
+>  include/linux/mfd/idt82p33_reg.h | 148 ++++++++++++++++++++-------------------
+>  1 file changed, 75 insertions(+), 73 deletions(-)
+> 
+> diff --git a/include/linux/mfd/idt82p33_reg.h b/include/linux/mfd/idt82p33_reg.h
+> index 129a6c0..ded0ab8 100644
+> --- a/include/linux/mfd/idt82p33_reg.h
+> +++ b/include/linux/mfd/idt82p33_reg.h
+> @@ -7,106 +7,108 @@
+>  #ifndef HAVE_IDT82P33_REG
+>  #define HAVE_IDT82P33_REG
+>  
+> +#define SABRE_REG_ADDR(page, offset) (((page) << 0x7) | ((offset) & 0x7f))
 > +
-> +The KVM_SNP_INIT command can be used by the hypervisor to initialize SEV-SNP
-> +context. In a typical workflow, this command should be the first command issued.
+>  /* Register address */
+> -#define DPLL1_TOD_CNFG 0x134
+> -#define DPLL2_TOD_CNFG 0x1B4
+> +#define SABRE_DPLL1_TOD_CNFG 0x134
+> +#define SABRE_DPLL2_TOD_CNFG 0x1B4
+>  
+> -#define DPLL1_TOD_STS 0x10B
+> -#define DPLL2_TOD_STS 0x18B
+> +#define SABRE_DPLL1_TOD_STS 0x10B
+> +#define SABRE_DPLL2_TOD_STS 0x18B
+>  
+> -#define DPLL1_TOD_TRIGGER 0x115
+> -#define DPLL2_TOD_TRIGGER 0x195
+> +#define SABRE_DPLL1_TOD_TRIGGER 0x115
+> +#define SABRE_DPLL2_TOD_TRIGGER 0x195
+>  
+> -#define DPLL1_OPERATING_MODE_CNFG 0x120
+> -#define DPLL2_OPERATING_MODE_CNFG 0x1A0
+> +#define SABRE_DPLL1_OPERATING_MODE_CNFG 0x120
+> +#define SABRE_DPLL2_OPERATING_MODE_CNFG 0x1A0
+>  
+> -#define DPLL1_HOLDOVER_FREQ_CNFG 0x12C
+> -#define DPLL2_HOLDOVER_FREQ_CNFG 0x1AC
+> +#define SABRE_DPLL1_HOLDOVER_FREQ_CNFG 0x12C
+> +#define SABRE_DPLL2_HOLDOVER_FREQ_CNFG 0x1AC
+>  
+> -#define DPLL1_PHASE_OFFSET_CNFG 0x143
+> -#define DPLL2_PHASE_OFFSET_CNFG 0x1C3
+> +#define SABRE_DPLL1_PHASE_OFFSET_CNFG 0x143
+> +#define SABRE_DPLL2_PHASE_OFFSET_CNFG 0x1C3
+>  
+> -#define DPLL1_SYNC_EDGE_CNFG 0x140
+> -#define DPLL2_SYNC_EDGE_CNFG 0x1C0
+> +#define SABRE_DPLL1_SYNC_EDGE_CNFG 0x140
+> +#define SABRE_DPLL2_SYNC_EDGE_CNFG 0x1C0
+>  
+> -#define DPLL1_INPUT_MODE_CNFG 0x116
+> -#define DPLL2_INPUT_MODE_CNFG 0x196
+> +#define SABRE_DPLL1_INPUT_MODE_CNFG 0x116
+> +#define SABRE_DPLL2_INPUT_MODE_CNFG 0x196
+>  
+> -#define DPLL1_OPERATING_STS 0x102
+> -#define DPLL2_OPERATING_STS 0x182
+> +#define SABRE_DPLL1_OPERATING_STS 0x102
+> +#define SABRE_DPLL2_OPERATING_STS 0x182
+>  
+> -#define DPLL1_CURRENT_FREQ_STS 0x103
+> -#define DPLL2_CURRENT_FREQ_STS 0x183
+> +#define SABRE_DPLL1_CURRENT_FREQ_STS 0x103
+> +#define SABRE_DPLL2_CURRENT_FREQ_STS 0x183
+>  
+> -#define REG_SOFT_RESET 0X381
+> +#define SABRE_REG_SOFT_RESET 0X381
+>  
+> -#define OUT_MUX_CNFG(outn) REG_ADDR(0x6, (0xC * (outn)))
+> +#define SABRE_OUT_MUX_CNFG(outn) REG_ADDR(0x6, (0xC * (outn)))
+>  
+>  /* Register bit definitions */
+> -#define SYNC_TOD BIT(1)
+> -#define PH_OFFSET_EN BIT(7)
+> -#define SQUELCH_ENABLE BIT(5)
+> +#define SABRE_SYNC_TOD BIT(1)
+> +#define SABRE_PH_OFFSET_EN BIT(7)
+> +#define SABRE_SQUELCH_ENABLE BIT(5)
+>  
+>  /* Bit definitions for the DPLL_MODE register */
+> -#define PLL_MODE_SHIFT		(0)
+> -#define PLL_MODE_MASK		(0x1F)
+> -#define COMBO_MODE_EN		BIT(5)
+> -#define COMBO_MODE_SHIFT	(6)
+> -#define COMBO_MODE_MASK		(0x3)
+> +#define SABRE_PLL_MODE_SHIFT		(0)
+> +#define SABRE_PLL_MODE_MASK		(0x1F)
+> +#define SABRE_COMBO_MODE_EN		BIT(5)
+> +#define SABRE_COMBO_MODE_SHIFT	(6)
+> +#define SABRE_COMBO_MODE_MASK		(0x3)
+>  
+>  /* Bit definitions for DPLL_OPERATING_STS register */
+> -#define OPERATING_STS_MASK	(0x7)
+> -#define OPERATING_STS_SHIFT	(0x0)
+> +#define SABRE_OPERATING_STS_MASK	(0x7)
+> +#define SABRE_OPERATING_STS_SHIFT	(0x0)
+>  
+>  /* Bit definitions for DPLL_TOD_TRIGGER register */
+> -#define READ_TRIGGER_MASK	(0xF)
+> -#define READ_TRIGGER_SHIFT	(0x0)
+> -#define WRITE_TRIGGER_MASK	(0xF0)
+> -#define WRITE_TRIGGER_SHIFT	(0x4)
+> +#define SABRE_READ_TRIGGER_MASK	(0xF)
+> +#define SABRE_READ_TRIGGER_SHIFT	(0x0)
+> +#define SABRE_WRITE_TRIGGER_MASK	(0xF0)
+> +#define SABRE_WRITE_TRIGGER_SHIFT	(0x4)
+>  
+>  /* Bit definitions for REG_SOFT_RESET register */
+> -#define SOFT_RESET_EN		BIT(7)
+> -
+> -enum pll_mode {
+> -	PLL_MODE_MIN = 0,
+> -	PLL_MODE_AUTOMATIC = PLL_MODE_MIN,
+> -	PLL_MODE_FORCE_FREERUN = 1,
+> -	PLL_MODE_FORCE_HOLDOVER = 2,
+> -	PLL_MODE_FORCE_LOCKED = 4,
+> -	PLL_MODE_FORCE_PRE_LOCKED2 = 5,
+> -	PLL_MODE_FORCE_PRE_LOCKED = 6,
+> -	PLL_MODE_FORCE_LOST_PHASE = 7,
+> -	PLL_MODE_DCO = 10,
+> -	PLL_MODE_WPH = 18,
+> -	PLL_MODE_MAX = PLL_MODE_WPH,
+> +#define SABRE_SOFT_RESET_EN		BIT(7)
 > +
-> +Parameters (in/out): struct kvm_snp_init
-> +
-> +Returns: 0 on success, -negative on error
-> +
-> +::
-> +
-> +        struct kvm_snp_init {
-> +                __u64 flags;
-> +        };
-> +
-> +The flags bitmap is defined as::
-> +
-> +   /* enable the restricted injection */
-> +   #define KVM_SEV_SNP_RESTRICTED_INJET   (1<<0)
-> +
-> +   /* enable the restricted injection timer */
-> +   #define KVM_SEV_SNP_RESTRICTED_TIMER_INJET   (1<<1)
-> +
-> +If the specified flags is not supported then return -EOPNOTSUPP, and the supported
-> +flags are returned.
-> +
->  References
->  ==========
->
-> diff --git a/arch/x86/include/asm/svm.h b/arch/x86/include/asm/svm.h
-> index 44a3f920f886..a39e31845a33 100644
-> --- a/arch/x86/include/asm/svm.h
-> +++ b/arch/x86/include/asm/svm.h
-> @@ -218,6 +218,8 @@ struct __attribute__ ((__packed__)) vmcb_control_area {
->  #define SVM_NESTED_CTL_SEV_ENABLE      BIT(1)
->  #define SVM_NESTED_CTL_SEV_ES_ENABLE   BIT(2)
->
-> +#define SVM_SEV_FEAT_SNP_ACTIVE                BIT(0)
-> +
->  struct vmcb_seg {
->         u16 selector;
->         u16 attrib;
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index 50fddbe56981..93da463545ef 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -235,10 +235,30 @@ static void sev_unbind_asid(struct kvm *kvm, unsigned int handle)
->         sev_decommission(handle);
->  }
->
-> +static int verify_snp_init_flags(struct kvm *kvm, struct kvm_sev_cmd *argp)
-> +{
-> +       struct kvm_snp_init params;
-> +       int ret = 0;
-> +
-> +       if (copy_from_user(&params, (void __user *)(uintptr_t)argp->data, sizeof(params)))
-> +               return -EFAULT;
-> +
-> +       if (params.flags & ~SEV_SNP_SUPPORTED_FLAGS)
-> +               ret = -EOPNOTSUPP;
-> +
-> +       params.flags = SEV_SNP_SUPPORTED_FLAGS;
-> +
-> +       if (copy_to_user((void __user *)(uintptr_t)argp->data, &params, sizeof(params)))
-> +               ret = -EFAULT;
-> +
-> +       return ret;
-> +}
-> +
->  static int sev_guest_init(struct kvm *kvm, struct kvm_sev_cmd *argp)
->  {
-> +       bool es_active = (argp->id == KVM_SEV_ES_INIT || argp->id == KVM_SEV_SNP_INIT);
->         struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
-> -       bool es_active = argp->id == KVM_SEV_ES_INIT;
-> +       bool snp_active = argp->id == KVM_SEV_SNP_INIT;
->         int asid, ret;
+> +enum sabre_pll_mode {
+> +	SABRE_PLL_MODE_MIN = 0,
+> +	SABRE_PLL_MODE_AUTOMATIC = SABRE_PLL_MODE_MIN,
+> +	SABRE_PLL_MODE_FORCE_FREERUN = 1,
+> +	SABRE_PLL_MODE_FORCE_HOLDOVER = 2,
+> +	SABRE_PLL_MODE_FORCE_LOCKED = 4,
+> +	SABRE_PLL_MODE_FORCE_PRE_LOCKED2 = 5,
+> +	SABRE_PLL_MODE_FORCE_PRE_LOCKED = 6,
+> +	SABRE_PLL_MODE_FORCE_LOST_PHASE = 7,
+> +	SABRE_PLL_MODE_DCO = 10,
+> +	SABRE_PLL_MODE_WPH = 18,
+> +	SABRE_PLL_MODE_MAX = SABRE_PLL_MODE_WPH,
+>  };
+>  
+> -enum hw_tod_trig_sel {
+> -	HW_TOD_TRIG_SEL_MIN = 0,
+> -	HW_TOD_TRIG_SEL_NO_WRITE = HW_TOD_TRIG_SEL_MIN,
+> -	HW_TOD_TRIG_SEL_NO_READ = HW_TOD_TRIG_SEL_MIN,
+> -	HW_TOD_TRIG_SEL_SYNC_SEL = 1,
+> -	HW_TOD_TRIG_SEL_IN12 = 2,
+> -	HW_TOD_TRIG_SEL_IN13 = 3,
+> -	HW_TOD_TRIG_SEL_IN14 = 4,
+> -	HW_TOD_TRIG_SEL_TOD_PPS = 5,
+> -	HW_TOD_TRIG_SEL_TIMER_INTERVAL = 6,
+> -	HW_TOD_TRIG_SEL_MSB_PHASE_OFFSET_CNFG = 7,
+> -	HW_TOD_TRIG_SEL_MSB_HOLDOVER_FREQ_CNFG = 8,
+> -	HW_TOD_WR_TRIG_SEL_MSB_TOD_CNFG = 9,
+> -	HW_TOD_RD_TRIG_SEL_LSB_TOD_STS = HW_TOD_WR_TRIG_SEL_MSB_TOD_CNFG,
+> -	WR_TRIG_SEL_MAX = HW_TOD_WR_TRIG_SEL_MSB_TOD_CNFG,
+> +enum sabre_hw_tod_trig_sel {
+> +	SABRE_HW_TOD_TRIG_SEL_MIN = 0,
+> +	SABRE_HW_TOD_TRIG_SEL_NO_WRITE = SABRE_HW_TOD_TRIG_SEL_MIN,
+> +	SABRE_HW_TOD_TRIG_SEL_NO_READ = SABRE_HW_TOD_TRIG_SEL_MIN,
+> +	SABRE_HW_TOD_TRIG_SEL_SYNC_SEL = 1,
+> +	SABRE_HW_TOD_TRIG_SEL_IN12 = 2,
+> +	SABRE_HW_TOD_TRIG_SEL_IN13 = 3,
+> +	SABRE_HW_TOD_TRIG_SEL_IN14 = 4,
+> +	SABRE_HW_TOD_TRIG_SEL_TOD_PPS = 5,
+> +	SABRE_HW_TOD_TRIG_SEL_TIMER_INTERVAL = 6,
+> +	SABRE_HW_TOD_TRIG_SEL_MSB_PHASE_OFFSET_CNFG = 7,
+> +	SABRE_HW_TOD_TRIG_SEL_MSB_HOLDOVER_FREQ_CNFG = 8,
+> +	SABRE_HW_TOD_WR_TRIG_SEL_MSB_TOD_CNFG = 9,
+> +	SABRE_HW_TOD_RD_TRIG_SEL_LSB_TOD_STS = SABRE_HW_TOD_WR_TRIG_SEL_MSB_TOD_CNFG,
+> +	SABRE_WR_TRIG_SEL_MAX = SABRE_HW_TOD_WR_TRIG_SEL_MSB_TOD_CNFG,
+>  };
+>  
+>  /** @brief Enumerated type listing DPLL operational modes */
+> -enum dpll_state {
+> -	DPLL_STATE_FREERUN = 1,
+> -	DPLL_STATE_HOLDOVER = 2,
+> -	DPLL_STATE_LOCKED = 4,
+> -	DPLL_STATE_PRELOCKED2 = 5,
+> -	DPLL_STATE_PRELOCKED = 6,
+> -	DPLL_STATE_LOSTPHASE = 7,
+> -	DPLL_STATE_MAX
+> +enum sabre_dpll_state {
+> +	SABRE_DPLL_STATE_FREERUN = 1,
+> +	SABRE_DPLL_STATE_HOLDOVER = 2,
+> +	SABRE_DPLL_STATE_LOCKED = 4,
+> +	SABRE_DPLL_STATE_PRELOCKED2 = 5,
+> +	SABRE_DPLL_STATE_PRELOCKED = 6,
+> +	SABRE_DPLL_STATE_LOSTPHASE = 7,
+> +	SABRE_DPLL_STATE_MAX
+>  };
+>  
+>  #endif
+> -- 
+> 2.7.4
+> 
 
-Not sure if this is the patch place for this but I think you want to
-disallow svm_vm_copy_asid_from() if snp_active == true.
+Hi,
 
->
->         if (kvm->created_vcpus)
-> @@ -249,12 +269,22 @@ static int sev_guest_init(struct kvm *kvm, struct kvm_sev_cmd *argp)
->                 return ret;
->
->         sev->es_active = es_active;
-> +       sev->snp_active = snp_active;
->         asid = sev_asid_new(sev);
->         if (asid < 0)
->                 goto e_no_asid;
->         sev->asid = asid;
->
-> -       ret = sev_platform_init(&argp->error);
-> +       if (snp_active) {
-> +               ret = verify_snp_init_flags(kvm, argp);
-> +               if (ret)
-> +                       goto e_free;
-> +
-> +               ret = sev_snp_init(&argp->error);
-> +       } else {
-> +               ret = sev_platform_init(&argp->error);
-> +       }
-> +
->         if (ret)
->                 goto e_free;
->
-> @@ -600,6 +630,10 @@ static int sev_es_sync_vmsa(struct vcpu_svm *svm)
->         save->pkru = svm->vcpu.arch.pkru;
->         save->xss  = svm->vcpu.arch.ia32_xss;
->
-> +       /* Enable the SEV-SNP feature */
-> +       if (sev_snp_guest(svm->vcpu.kvm))
-> +               save->sev_features |= SVM_SEV_FEAT_SNP_ACTIVE;
-> +
->         return 0;
->  }
->
-> @@ -1532,6 +1566,12 @@ int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
->         }
->
->         switch (sev_cmd.id) {
-> +       case KVM_SEV_SNP_INIT:
-> +               if (!sev_snp_enabled) {
-> +                       r = -ENOTTY;
-> +                       goto out;
-> +               }
-> +               fallthrough;
->         case KVM_SEV_ES_INIT:
->                 if (!sev_es_enabled) {
->                         r = -ENOTTY;
-> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-> index 01953522097d..57c3c404b0b3 100644
-> --- a/arch/x86/kvm/svm/svm.h
-> +++ b/arch/x86/kvm/svm/svm.h
-> @@ -69,6 +69,9 @@ enum {
->  /* TPR and CR2 are always written before VMRUN */
->  #define VMCB_ALWAYS_DIRTY_MASK ((1U << VMCB_INTR) | (1U << VMCB_CR2))
->
-> +/* Supported init feature flags */
-> +#define SEV_SNP_SUPPORTED_FLAGS                0x0
-> +
->  struct kvm_sev_info {
->         bool active;            /* SEV enabled guest */
->         bool es_active;         /* SEV-ES enabled guest */
-> @@ -81,6 +84,7 @@ struct kvm_sev_info {
->         u64 ap_jump_table;      /* SEV-ES AP Jump Table address */
->         struct kvm *enc_context_owner; /* Owner of copied encryption context */
->         struct misc_cg *misc_cg; /* For misc cgroup accounting */
-> +       u64 snp_init_flags;
->  };
->
->  struct kvm_svm {
-> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-> index d9e4aabcb31a..944e2bf601fe 100644
-> --- a/include/uapi/linux/kvm.h
-> +++ b/include/uapi/linux/kvm.h
-> @@ -1712,6 +1712,9 @@ enum sev_cmd_id {
->         /* Guest Migration Extension */
->         KVM_SEV_SEND_CANCEL,
->
-> +       /* SNP specific commands */
-> +       KVM_SEV_SNP_INIT,
-> +
->         KVM_SEV_NR_MAX,
->  };
->
-> @@ -1808,6 +1811,16 @@ struct kvm_sev_receive_update_data {
->         __u32 trans_len;
->  };
->
-> +/* enable the restricted injection */
-> +#define KVM_SEV_SNP_RESTRICTED_INJET   (1 << 0)
-> +
-> +/* enable the restricted injection timer */
-> +#define KVM_SEV_SNP_RESTRICTED_TIMER_INJET   (1 << 1)
-> +
-> +struct kvm_snp_init {
-> +       __u64 flags;
-> +};
-> +
->  #define KVM_DEV_ASSIGN_ENABLE_IOMMU    (1 << 0)
->  #define KVM_DEV_ASSIGN_PCI_2_3         (1 << 1)
->  #define KVM_DEV_ASSIGN_MASK_INTX       (1 << 2)
-> --
-> 2.17.1
->
->
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
+
+You are receiving this message because of the following common error(s)
+as indicated below:
+
+- You did not specify a description of why the patch is needed, or
+  possibly, any description at all, in the email body.  Please read the
+  section entitled "The canonical patch format" in the kernel file,
+  Documentation/SubmittingPatches for what is needed in order to
+  properly describe the change.
+
+- This looks like a new version of a previously submitted patch, but you
+  did not list below the --- line any changes from the previous version.
+  Please read the section entitled "The canonical patch format" in the
+  kernel file, Documentation/SubmittingPatches for what needs to be done
+  here to properly describe this.
+
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
