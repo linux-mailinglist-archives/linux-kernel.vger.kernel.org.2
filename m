@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00DCE40E796
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:34:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E8A140E38C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:20:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241355AbhIPReL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:34:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47064 "EHLO mail.kernel.org"
+        id S1345079AbhIPQtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:49:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57408 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352490AbhIPRYj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:24:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E6C0361A51;
-        Thu, 16 Sep 2021 16:44:00 +0000 (UTC)
+        id S1344056AbhIPQoa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:44:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2707D61A58;
+        Thu, 16 Sep 2021 16:25:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810641;
-        bh=9dp2HsjXh0v3QGCZzbXCEO3dbuO7d+bUPgzfJXClYpg=;
+        s=korg; t=1631809537;
+        bh=AYQhEn4gMZmcLoNT07wc57M/nDMYkBJk57pULHZv7/U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VWTXqwhXorzfMZWBL7P/zQHmIL8bxCa4hSn1AoUOkE2/X70+4qvcdY4fStRiRj8bF
-         bOT5YCHw7z7LIuj5BTCeia9WF8919Aj6ElhJNDkskvEcSmaVI9RfGyhfHLiOdFvZYi
-         8jnVAJjzNsk45H/QGrSpvxF43svqO6SP2x18VENA=
+        b=EDNKDtMelfWEF9/O2+7ORA0VrlHNrEcPkTH0evKd1cGDK5YNHzIx7EJuwpNRuxsIm
+         D8EiEqJZs9+Izv5mb86REP4G1W2JI30TmqqVc+Y9Ccv7dAfpDOskmsp9DFwTcpkWUf
+         B9OrWh6un5fqE/Pszn8gbJsytoGI/Ak6II+loL5g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
-        Ronak Vijay Raheja <rraheja@codeaurora.org>,
-        Jack Pham <jackp@codeaurora.org>,
+        stable@vger.kernel.org,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 198/432] usb: gadget: composite: Allow bMaxPower=0 if self-powered
-Date:   Thu, 16 Sep 2021 17:59:07 +0200
-Message-Id: <20210916155817.514315041@linuxfoundation.org>
+Subject: [PATCH 5.13 191/380] bpf/tests: Fix copy-and-paste error in double word test
+Date:   Thu, 16 Sep 2021 17:59:08 +0200
+Message-Id: <20210916155810.571780878@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,67 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jack Pham <jackp@codeaurora.org>
+From: Johan Almbladh <johan.almbladh@anyfinetworks.com>
 
-[ Upstream commit bcacbf06c891374e7fdd7b72d11cda03b0269b43 ]
+[ Upstream commit ae7f47041d928b1a2f28717d095b4153c63cbf6a ]
 
-Currently the composite driver encodes the MaxPower field of
-the configuration descriptor by reading the c->MaxPower of the
-usb_configuration only if it is non-zero, otherwise it falls back
-to using the value hard-coded in CONFIG_USB_GADGET_VBUS_DRAW.
-However, there are cases when a configuration must explicitly set
-bMaxPower to 0, particularly if its bmAttributes also has the
-Self-Powered bit set, which is a valid combination.
+This test now operates on DW as stated instead of W, which was
+already covered by another test.
 
-This is specifically called out in the USB PD specification section
-9.1, in which a PDUSB device "shall report zero in the bMaxPower
-field after negotiating a mutually agreeable Contract", and also
-verified by the USB Type-C Functional Test TD.4.10.2 Sink Power
-Precedence Test.
-
-The fix allows the c->MaxPower to be used for encoding the bMaxPower
-even if it is 0, if the self-powered bit is also set.  An example
-usage of this would be for a ConfigFS gadget to be dynamically
-updated by userspace when the Type-C connection is determined to be
-operating in Power Delivery mode.
-
-Co-developed-by: Ronak Vijay Raheja <rraheja@codeaurora.org>
-Acked-by: Felipe Balbi <balbi@kernel.org>
-Signed-off-by: Ronak Vijay Raheja <rraheja@codeaurora.org>
-Signed-off-by: Jack Pham <jackp@codeaurora.org>
-Link: https://lore.kernel.org/r/20210720080907.30292-1-jackp@codeaurora.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/20210721104058.3755254-1-johan.almbladh@anyfinetworks.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/composite.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ lib/test_bpf.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/usb/gadget/composite.c b/drivers/usb/gadget/composite.c
-index 72a9797dbbae..504c1cbc255d 100644
---- a/drivers/usb/gadget/composite.c
-+++ b/drivers/usb/gadget/composite.c
-@@ -482,7 +482,7 @@ static u8 encode_bMaxPower(enum usb_device_speed speed,
- {
- 	unsigned val;
- 
--	if (c->MaxPower)
-+	if (c->MaxPower || (c->bmAttributes & USB_CONFIG_ATT_SELFPOWER))
- 		val = c->MaxPower;
- 	else
- 		val = CONFIG_USB_GADGET_VBUS_DRAW;
-@@ -936,7 +936,11 @@ static int set_config(struct usb_composite_dev *cdev,
- 	}
- 
- 	/* when we return, be sure our power usage is valid */
--	power = c->MaxPower ? c->MaxPower : CONFIG_USB_GADGET_VBUS_DRAW;
-+	if (c->MaxPower || (c->bmAttributes & USB_CONFIG_ATT_SELFPOWER))
-+		power = c->MaxPower;
-+	else
-+		power = CONFIG_USB_GADGET_VBUS_DRAW;
-+
- 	if (gadget->speed < USB_SPEED_SUPER)
- 		power = min(power, 500U);
- 	else
+diff --git a/lib/test_bpf.c b/lib/test_bpf.c
+index 4dc4dcbecd12..f826df50355b 100644
+--- a/lib/test_bpf.c
++++ b/lib/test_bpf.c
+@@ -4286,8 +4286,8 @@ static struct bpf_test tests[] = {
+ 		.u.insns_int = {
+ 			BPF_LD_IMM64(R0, 0),
+ 			BPF_LD_IMM64(R1, 0xffffffffffffffffLL),
+-			BPF_STX_MEM(BPF_W, R10, R1, -40),
+-			BPF_LDX_MEM(BPF_W, R0, R10, -40),
++			BPF_STX_MEM(BPF_DW, R10, R1, -40),
++			BPF_LDX_MEM(BPF_DW, R0, R10, -40),
+ 			BPF_EXIT_INSN(),
+ 		},
+ 		INTERNAL,
 -- 
 2.30.2
 
