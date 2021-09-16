@@ -2,150 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B345340DBDF
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 15:55:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5C3D40DBE8
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 15:56:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236801AbhIPN4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 09:56:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42509 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235959AbhIPN4Z (ORCPT
+        id S236398AbhIPN5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 09:57:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40706 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232753AbhIPN5q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 09:56:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631800504;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=O5MT7htep4lfFb5DF7TWazpr34VmiixYifF4+r3+XCo=;
-        b=ZRxSC7AFRVQ67AEcvr6SooSqRv/bQgT0e2dpx2xz9fvz311OlFVVbp196J8Q/xvK04Avvs
-        wfMVNT8Gd/LfVLNeowV+ls/T/OfNnNA0EkkwrVKnkZxqkOWTgstXmdq/Uay8q3s3+/I434
-        eKhTJoGlHcXv/SGGwvAsq3VURgfiXJg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-368-iEVy8uiXOMe8szfMmGzbTA-1; Thu, 16 Sep 2021 09:55:01 -0400
-X-MC-Unique: iEVy8uiXOMe8szfMmGzbTA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EF79C802947;
-        Thu, 16 Sep 2021 13:54:59 +0000 (UTC)
-Received: from T590 (ovpn-12-89.pek2.redhat.com [10.72.12.89])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 77A675C1D5;
-        Thu, 16 Sep 2021 13:54:49 +0000 (UTC)
-Date:   Thu, 16 Sep 2021 21:55:01 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     "yukuai (C)" <yukuai3@huawei.com>
-Cc:     josef@toxicpanda.com, axboe@kernel.dk, hch@infradead.org,
-        linux-block@vger.kernel.org, nbd@other.debian.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
-Subject: Re: [patch v8 7/7] nbd: fix uaf in nbd_handle_reply()
-Message-ID: <YUNMtcDYG+Uk/gzO@T590>
-References: <20210916093350.1410403-1-yukuai3@huawei.com>
- <20210916093350.1410403-8-yukuai3@huawei.com>
- <YUM/cNzr6PTXFVAX@T590>
- <f0a72b72-19c9-f01d-806d-d27f854dea8f@huawei.com>
+        Thu, 16 Sep 2021 09:57:46 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B1FDC061574;
+        Thu, 16 Sep 2021 06:56:26 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id w19so5901448pfn.12;
+        Thu, 16 Sep 2021 06:56:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=VQdB0cmtRyC2OUQYF1nmKrbKRoOhkmjS2WdWxiwvfV0=;
+        b=CIfTuZFoNILRqkZ8DcW/GNbMyGgDnxBr4dVf4uWbZjU8pjj4lrHMRtQVPwcdxklAuQ
+         JZziDYokWmjzVIErChST09t12g0u5Q0uRpqfgz1HLLBW1rjGMPZLz0kZ+aU/1VtdGCBf
+         ScvmIZdC/KAH9/s5zwFCH/t+wJJgREk4jkxOEav0yNRvD2PeR9Mt0gXD43CEjS0rWa6X
+         1ojan6I2m/RB70FhK0zBN0wx5wwjfaYXFG9iPhqmYChnfbWqL1/mqLAFucMtI4L4kMUT
+         mDpT/XbuXdWRn1Ki+KD46f09IzCVvENPhyPuOqItQNeOtC2mXKgNu7d+59tp7LLGPGIj
+         mQdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VQdB0cmtRyC2OUQYF1nmKrbKRoOhkmjS2WdWxiwvfV0=;
+        b=mm5Jcb5NdRlsCB9HoB33b4242Pg9E5CzZMYcqy6K7oYa1DJeI1IqXGA1ZRf3M2SJWa
+         6oHTB0ocx6YfeIWNuFcQVDioCgkAqjUQMewqv4qc3xpGmfWKT+10DcSYH47a4wmkYHPc
+         5sw0qGPXEFV6z/6kyNzgUVfRVpGVaIcFTT+tiKL0/MsGJBDbiSQt3iQMPfuEnDsVe64J
+         2cuBNc9YBqpaIAI22nbL/F1ETrDe/bbYuHnM91EyG3UAvWTvdDqXOaZXRbz2ZfT1kq0X
+         FgXANfhbGNlMIpLEYUd+PNoCgO3uWG5ePZzY4DwBMyZDfO5W8N+sME3oPaecytu6AWGJ
+         njhw==
+X-Gm-Message-State: AOAM530j0P7VuTmTbz2RCtNDAOYAJvlhMlraO19PDO9J1oFDfi4NC9a6
+        1FvNBhBWL8uADKHh/CgNKKY=
+X-Google-Smtp-Source: ABdhPJwil566vQyG+FPIeqOpCAnK+VdYspH+w8JoanT8EwRLxY95XCPpJH9ls0yqVjdetF6RlrGZEg==
+X-Received: by 2002:a65:44c4:: with SMTP id g4mr5187939pgs.254.1631800585774;
+        Thu, 16 Sep 2021 06:56:25 -0700 (PDT)
+Received: from ?IPv6:2404:f801:0:5:8000::50b? ([2404:f801:9000:18:efec::50b])
+        by smtp.gmail.com with ESMTPSA id w11sm3376724pfj.65.2021.09.16.06.56.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Sep 2021 06:56:25 -0700 (PDT)
+Subject: Re: [PATCH V5 12/12] net: netvsc: Add Isolation VM support for netvsc
+ driver
+To:     Haiyang Zhang <haiyangz@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
+        "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
+        "jgross@suse.com" <jgross@suse.com>,
+        "sstabellini@kernel.org" <sstabellini@kernel.org>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "will@kernel.org" <will@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "arnd@arndb.de" <arnd@arndb.de>, "hch@lst.de" <hch@lst.de>,
+        "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "brijesh.singh@amd.com" <brijesh.singh@amd.com>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+        "pgonda@google.com" <pgonda@google.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+        "rppt@kernel.org" <rppt@kernel.org>,
+        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
+        "aneesh.kumar@linux.ibm.com" <aneesh.kumar@linux.ibm.com>,
+        "saravanand@fb.com" <saravanand@fb.com>,
+        "krish.sadhukhan@oracle.com" <krish.sadhukhan@oracle.com>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        "tj@kernel.org" <tj@kernel.org>,
+        "rientjes@google.com" <rientjes@google.com>
+Cc:     "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        vkuznets <vkuznets@redhat.com>,
+        "parri.andrea@gmail.com" <parri.andrea@gmail.com>,
+        "dave.hansen@intel.com" <dave.hansen@intel.com>
+References: <20210914133916.1440931-1-ltykernel@gmail.com>
+ <20210914133916.1440931-13-ltykernel@gmail.com>
+ <MWHPR21MB15939A5D74CA1DF25EE816ADD7DB9@MWHPR21MB1593.namprd21.prod.outlook.com>
+ <MN2PR21MB12959F10240EC1BB2270B345CADB9@MN2PR21MB1295.namprd21.prod.outlook.com>
+From:   Tianyu Lan <ltykernel@gmail.com>
+Message-ID: <31da994f-a032-dd40-a90e-bfdaf313d45d@gmail.com>
+Date:   Thu, 16 Sep 2021 21:56:11 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f0a72b72-19c9-f01d-806d-d27f854dea8f@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <MN2PR21MB12959F10240EC1BB2270B345CADB9@MN2PR21MB1295.namprd21.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 09:10:37PM +0800, yukuai (C) wrote:
-> On 2021/09/16 20:58, Ming Lei wrote:
-> > On Thu, Sep 16, 2021 at 05:33:50PM +0800, Yu Kuai wrote:
-> > > There is a problem that nbd_handle_reply() might access freed request:
-> > > 
-> > > 1) At first, a normal io is submitted and completed with scheduler:
-> > > 
-> > > internel_tag = blk_mq_get_tag -> get tag from sched_tags
-> > >   blk_mq_rq_ctx_init
-> > >    sched_tags->rq[internel_tag] = sched_tag->static_rq[internel_tag]
-> > > ...
-> > > blk_mq_get_driver_tag
-> > >   __blk_mq_get_driver_tag -> get tag from tags
-> > >   tags->rq[tag] = sched_tag->static_rq[internel_tag]
-> > > 
-> > > So, both tags->rq[tag] and sched_tags->rq[internel_tag] are pointing
-> > > to the request: sched_tags->static_rq[internal_tag]. Even if the
-> > > io is finished.
-> > > 
-> > > 2) nbd server send a reply with random tag directly:
-> > > 
-> > > recv_work
-> > >   nbd_handle_reply
-> > >    blk_mq_tag_to_rq(tags, tag)
-> > >     rq = tags->rq[tag]
-> > > 
-> > > 3) if the sched_tags->static_rq is freed:
-> > > 
-> > > blk_mq_sched_free_requests
-> > >   blk_mq_free_rqs(q->tag_set, hctx->sched_tags, i)
-> > >    -> step 2) access rq before clearing rq mapping
-> > >    blk_mq_clear_rq_mapping(set, tags, hctx_idx);
-> > >    __free_pages() -> rq is freed here
-> > > 
-> > > 4) Then, nbd continue to use the freed request in nbd_handle_reply
-> > > 
-> > > Fix the problem by get 'q_usage_counter' before blk_mq_tag_to_rq(),
-> > > thus request is ensured not to be freed because 'q_usage_counter' is
-> > > not zero.
-> > > 
-> > > Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> > > ---
-> > >   drivers/block/nbd.c | 14 ++++++++++++++
-> > >   1 file changed, 14 insertions(+)
-> > > 
-> > > diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-> > > index 69dc5eac9ad3..b3a47fc6237f 100644
-> > > --- a/drivers/block/nbd.c
-> > > +++ b/drivers/block/nbd.c
-> > > @@ -825,6 +825,7 @@ static void recv_work(struct work_struct *work)
-> > >   						     work);
-> > >   	struct nbd_device *nbd = args->nbd;
-> > >   	struct nbd_config *config = nbd->config;
-> > > +	struct request_queue *q = nbd->disk->queue;
-> > >   	struct nbd_sock *nsock;
-> > >   	struct nbd_cmd *cmd;
-> > >   	struct request *rq;
-> > > @@ -835,7 +836,20 @@ static void recv_work(struct work_struct *work)
-> > >   		if (nbd_read_reply(nbd, args->index, &reply))
-> > >   			break;
-> > > +		/*
-> > > +		 * Grab .q_usage_counter so request pool won't go away, then no
-> > > +		 * request use-after-free is possible during nbd_handle_reply().
-> > > +		 * If queue is frozen, there won't be any inflight requests, we
-> > > +		 * needn't to handle the incoming garbage message.
-> > > +		 */
-> > > +		if (!percpu_ref_tryget(&q->q_usage_counter)) {
-> > > +			dev_err(disk_to_dev(nbd->disk), "%s: no io inflight\n",
-> > > +				__func__);
-> > > +			break;
-> > > +		}
-> > > +
-> > >   		cmd = nbd_handle_reply(nbd, args->index, &reply);
-> > > +		percpu_ref_put(&q->q_usage_counter);
-> > >   		if (IS_ERR(cmd))
-> > >   			break;
-> > 
-> > The refcount needs to be grabbed when completing the request because
-> > the request may be completed from other code path, then the request pool
-> > will be freed from that code path when the request is referred.
+On 9/16/2021 12:46 AM, Haiyang Zhang wrote:
+>>> +				memset(vmap_pages, 0,
+>>> +				       sizeof(*vmap_pages) * vmap_page_index);
+>>> +				vmap_page_index = 0;
+>>> +
+>>> +				for (j = 0; j < i; j++)
+>>> +					__free_pages(pages[j], alloc_unit);
+>>> +
+>>> +				kfree(pages);
+>>> +				alloc_unit = 1;
+>> This is the case where a large enough contiguous physical memory chunk
+>> could not be found.  But rather than dropping all the way down to single
+>> pages, would it make sense to try something smaller, but not 1?  For
+>> example, cut the alloc_unit in half and try again.  But I'm not sure of
+>> all the implications.
+> I had the same question. But probably gradually decrementing uses too much
+> time?
 > 
-> Hi,
-> 
-> The request can't complete concurrently, thus put ref here is safe.
-> 
-> There used to be a commet here that I tried to explain it... It's fine
-> to me to move it behind anyway.
 
-Never see such comment. cmd->lock isn't held here, so I believe
-concurrent completion is possible here.
+This version is to propose the solution. We may optimize this to try
+smaller size until to single page if this is right direction.
 
-
-Thanks,
-Ming
 
