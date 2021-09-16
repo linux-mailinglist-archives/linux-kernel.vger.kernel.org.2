@@ -2,98 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4B9040DC39
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 16:02:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5E7540DC48
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 16:03:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238467AbhIPODX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 10:03:23 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:24107 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238315AbhIPODB (ORCPT
+        id S236033AbhIPOFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 10:05:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36294 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235536AbhIPOFJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 10:03:01 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1631800901; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=Ja0ch2BKFqV8Z+kWiGBFMXL83Jhiecq8a/U0GuvQfuI=; b=sR/8RHwfYe1p+POFxNrujAlyzNd+tWNOTRSEmK69Ov/i3sZcPwgZSGYhjHUJi5DLlvIDnpVV
- MPv9042yzZkkczopbBf9Ej5iNqdpgZiI1DJXi/1gjaltG+sVID12qNSKAVkPMKYhwLXWvUBt
- aP65isVOymUD5DQgPjOzWLmDGLI=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 61434e1cd914b05182965daa (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 16 Sep 2021 14:01:00
- GMT
-Sender: sibis=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 11D9DC43617; Thu, 16 Sep 2021 14:00:58 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-87.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 35FA2C43617;
-        Thu, 16 Sep 2021 14:00:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 35FA2C43617
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     mka@chromium.org, swboyd@chromium.org, bjorn.andersson@linaro.org,
-        robh+dt@kernel.org
-Cc:     ulf.hansson@linaro.org, rjw@rjwysocki.net, agross@kernel.org,
-        ohad@wizery.com, mathieu.poirier@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dianders@chromium.org, rishabhb@codeaurora.org,
-        sidgup@codeaurora.org, Sibi Sankar <sibis@codeaurora.org>
-Subject: [PATCH v7 13/13] dt-bindings: soc: qcom: aoss: Delete unused power-domain definitions
-Date:   Thu, 16 Sep 2021 19:29:30 +0530
-Message-Id: <1631800770-371-14-git-send-email-sibis@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1631800770-371-1-git-send-email-sibis@codeaurora.org>
-References: <1631800770-371-1-git-send-email-sibis@codeaurora.org>
+        Thu, 16 Sep 2021 10:05:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631801028;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=InkSSQy+zkt1/Sq2nJaTJOAqUI+Qk6BMdAVU8hoiD9c=;
+        b=JzpCOuhTM7msh1MensiJ3xLj8cQEmy9n7jp5Ef7WdTgfDLqLmKqE7AkjJYGM+a/FKXvXwR
+        roBEK/b0whzny3FJLJ9OUfPGS6iqUePYo+5nKoTXCumAz/jCRYxKJkF4bgx/P1vR3pMYmu
+        jgqACkIpn9iGeClf44L4cQZ3PZMddT4=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-315-MV3rGsXlNKGbM03oOltzEw-1; Thu, 16 Sep 2021 10:03:46 -0400
+X-MC-Unique: MV3rGsXlNKGbM03oOltzEw-1
+Received: by mail-wr1-f71.google.com with SMTP id r9-20020a5d4989000000b0015d0fbb8823so2457277wrq.18
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 07:03:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=InkSSQy+zkt1/Sq2nJaTJOAqUI+Qk6BMdAVU8hoiD9c=;
+        b=Ga23tSImJpVzG4+yyGvp7Xky4CLadsj08P1Eqv8b5CsjKitYPKRJJJvtU47wKHkqLF
+         /2iN0Xj1f69Fl84MR/xjYh8FdDCXMBKUlUVBUSId+VEaPy0TZsf5DCq4R0vnchci4FbT
+         DaXcfpwy5LXFFapqjYIP15ruDvIf+xp6cxh9K5SRSVST7ExsJYDYlnyD1kG5NUKVF3Wq
+         BZwRi3AbhV8eHQiQa1hnyJ9hilEsscKCpzNqGvas7/xSFkNehsUqlmPr8tnubuaquVYx
+         3kCmOHAtEXJkxlol9le3rWSQpw4kiLtXjLj0G/sQTR9WEZs0+G81EDCFzdKemj2F8CeU
+         awRA==
+X-Gm-Message-State: AOAM532H4XnLwPcZIn5UO6qsNrXuxbK0pmeYY7qeKF+L7WClbGVDs9X3
+        1ZF0rxD0vqJ5RQdLb44iVl3V7fl+obo6pr5qaF3DHAyWEs6IQarJhrBff5z2MKJ/jYhkmFG3zml
+        hmKTwKu/msjw6GQp3YOGXzgNF
+X-Received: by 2002:adf:e74b:: with SMTP id c11mr6371112wrn.101.1631801025692;
+        Thu, 16 Sep 2021 07:03:45 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx/lhk0vbwJSHMlHYygHpizbHLXpjbz403gb1bSwePYyjBwbWX/UNKyVaKVGPdD3tXAKLjHow==
+X-Received: by 2002:adf:e74b:: with SMTP id c11mr6371074wrn.101.1631801025407;
+        Thu, 16 Sep 2021 07:03:45 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff23828.dip0.t-ipconnect.de. [79.242.56.40])
+        by smtp.gmail.com with ESMTPSA id s15sm3612858wrb.22.2021.09.16.07.03.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Sep 2021 07:03:44 -0700 (PDT)
+Subject: Re: [PATCH v4 1/1] s390x: KVM: accept STSI for CPU topology
+ information
+To:     Pierre Morel <pmorel@linux.ibm.com>, kvm@vger.kernel.org
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        borntraeger@de.ibm.com, frankja@linux.ibm.com, cohuck@redhat.com,
+        thuth@redhat.com, imbrenda@linux.ibm.com, hca@linux.ibm.com,
+        gor@linux.ibm.com
+References: <1631799845-24860-1-git-send-email-pmorel@linux.ibm.com>
+ <1631799845-24860-2-git-send-email-pmorel@linux.ibm.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <eef5ed95-3f54-b709-894d-cdf75bc3180b@redhat.com>
+Date:   Thu, 16 Sep 2021 16:03:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <1631799845-24860-2-git-send-email-pmorel@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Delete unused power-domain definitions exposed by AOSS QMP.
+>   struct kvm_vm_stat {
+> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+> index 51d1594bd6cd..f3887e13c5db 100644
+> --- a/arch/s390/kvm/kvm-s390.c
+> +++ b/arch/s390/kvm/kvm-s390.c
+> @@ -608,6 +608,9 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
+>   	case KVM_CAP_S390_PROTECTED:
+>   		r = is_prot_virt_host();
+>   		break;
+> +	case KVM_CAP_S390_CPU_TOPOLOGY:
+> +		r = test_facility(11);
+> +		break;
+>   	default:
+>   		r = 0;
+>   	}
+> @@ -819,6 +822,19 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm, struct kvm_enable_cap *cap)
+>   		icpt_operexc_on_all_vcpus(kvm);
+>   		r = 0;
+>   		break;
+> +	case KVM_CAP_S390_CPU_TOPOLOGY:
 
-Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-Acked-by: Rob Herring <robh@kernel.org>
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
----
- include/dt-bindings/power/qcom-aoss-qmp.h | 14 --------------
- 1 file changed, 14 deletions(-)
- delete mode 100644 include/dt-bindings/power/qcom-aoss-qmp.h
+As given in my example, this should be
 
-diff --git a/include/dt-bindings/power/qcom-aoss-qmp.h b/include/dt-bindings/power/qcom-aoss-qmp.h
-deleted file mode 100644
-index ec336d31dee4..000000000000
---- a/include/dt-bindings/power/qcom-aoss-qmp.h
-+++ /dev/null
-@@ -1,14 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--/* Copyright (c) 2018, Linaro Ltd. */
--
--#ifndef __DT_BINDINGS_POWER_QCOM_AOSS_QMP_H
--#define __DT_BINDINGS_POWER_QCOM_AOSS_QMP_H
--
--#define AOSS_QMP_LS_CDSP		0
--#define AOSS_QMP_LS_LPASS	1
--#define AOSS_QMP_LS_MODEM	2
--#define AOSS_QMP_LS_SLPI		3
--#define AOSS_QMP_LS_SPSS		4
--#define AOSS_QMP_LS_VENUS	5
--
--#endif
+r = -EINVAL;
+mutex_lock(&kvm->lock);
+if (kvm->created_vcpus) {
+	r = -EBUSY;
+} else if (test_facility(11)) {
+...
+}
+
+Similar to how we handle KVM_CAP_S390_VECTOR_REGISTERS.
+
+[...]
+
+> +
+> +	/* PTF needs both host and guest facilities to enable interpretation */
+> +	if (test_kvm_facility(vcpu->kvm, 11) && test_facility(11))
+> +		vcpu->arch.sie_block->ecb |= ECB_PTF;
+
+This should be simplified to
+
+if (test_kvm_facility(vcpu->kvm, 11))
+
+then. (vsie code below is correct)
+
+
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Thanks,
+
+David / dhildenb
 
