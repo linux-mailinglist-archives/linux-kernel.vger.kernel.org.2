@@ -2,135 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEE8940D46E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 10:23:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A88B840D474
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 10:26:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235087AbhIPIZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 04:25:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24973 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234998AbhIPIZB (ORCPT
+        id S235005AbhIPI1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 04:27:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234904AbhIPI1q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 04:25:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631780621;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2gYTVUstSGum8vCgM4ToltbBv2THH4KeZDSf5iCyLvY=;
-        b=JUxM/kBoAJCalOozO5d+OAnytsfe71chzX7PRZxE+dJE5a+Nqj9j9bKRPGMxEeIWzdTvBL
-        PrCY8Ef+Nx6V4Ohrw62jofe67OI6tqcF/R/QeBPim3pJkTaz34mE1cWq88ryauBfveZFqR
-        0KD0jTajXCHI6iJFkRAqSzZhDtY9HwI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-538-TUBi5zIKMy-P7na6kgC6Ug-1; Thu, 16 Sep 2021 04:23:40 -0400
-X-MC-Unique: TUBi5zIKMy-P7na6kgC6Ug-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 08DCF835DE2;
-        Thu, 16 Sep 2021 08:23:39 +0000 (UTC)
-Received: from T590 (ovpn-12-89.pek2.redhat.com [10.72.12.89])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0635C6D982;
-        Thu, 16 Sep 2021 08:23:28 +0000 (UTC)
-Date:   Thu, 16 Sep 2021 16:23:40 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     pkalever@redhat.com
-Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        nbd@other.debian.org, josef@toxicpanda.com, axboe@kernel.dk,
-        idryomov@redhat.com, xiubli@redhat.com,
-        Prasanna Kumar Kalever <prasanna.kalever@redhat.com>
-Subject: Re: [PATCH v1 2/2] nbd: reset the queue/io_timeout to default on
- disconnect
-Message-ID: <YUL/DGZiUnQQGHVX@T590>
-References: <20210806142914.70556-1-pkalever@redhat.com>
- <20210806142914.70556-3-pkalever@redhat.com>
+        Thu, 16 Sep 2021 04:27:46 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C38C8C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 01:26:26 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id a10so6478686qka.12
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 01:26:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=7Rct0wxwR3oFXMND7vzY4QU1vkyKpfX925qIsFciJhk=;
+        b=NOqInXBtppRbkqGyfjRBKjoqezYMjP9oqBCi2yd+xyxGpF0uPJR94CDRl+r/6Z9XkZ
+         790DURD8mThd8ldC3RUYbWpAPSi1Au2a5ko6mg9YGo4AdF2yKsa1MQzu8te48acVNkjB
+         VeR2nG3ecgbSgW5Y23lEW7N68l5PKr47ZmnXM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=7Rct0wxwR3oFXMND7vzY4QU1vkyKpfX925qIsFciJhk=;
+        b=f1P6WlTlg8HzSQmbwFCsWhKc/siy3BlsSps6fPe1a2lAiA8PsQqNBaGF/uN3WpMBWq
+         kgzK8b2gbWa2vAoSdVZFX2zbpI5PQ4yrRd1gRILaaoPmZJ/NvujenBNGZGoxxgpWzhgI
+         YKdL9Ks/b/lkKrGItPjHVMmVMHJ7HvdlfeAywcHIVLeoSWrbhof8+cZ014HmlyuJTEaN
+         WAd5OfDrZ3y9K5+H07LZg7ZjMlfLM0Y6OilyGxWsccoYmK3gbD3/UFe8bNGD4jJDfg9D
+         29f/IrkHfliNUk4TE6mu5dXNQWCN871237e//ezTbYvkQ4hnWRp3SkyrcATdsm11miJI
+         BT3Q==
+X-Gm-Message-State: AOAM531ktok8libXsHiEM497sjEcxzHOHEOP/986uPHfg/fkjOb9PUOk
+        sdGrcMF9kDMZavkL/i/SL5OJcrfAWobX4iKMTm+/aPFf29kbUw==
+X-Google-Smtp-Source: ABdhPJxPp/BaYSMVCvnILhfHvZwrIcNJiTkW9EBfdo6RciEiPrlfODO+6UtmOaj/AMnqFq6VSVTBUTJhu9Q9007ySb4=
+X-Received: by 2002:a05:620a:149c:: with SMTP id w28mr3970119qkj.292.1631780785804;
+ Thu, 16 Sep 2021 01:26:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210806142914.70556-3-pkalever@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Thu, 16 Sep 2021 08:26:14 +0000
+Message-ID: <CACPK8XfTHOOksA8q7MeHW=7ijP_49iOyq1pDj2SQnqSBTDUoaA@mail.gmail.com>
+Subject: [GIT PULL] ARM: config: multi v7 defconfig cleanups
+To:     SoC Team <soc@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 06, 2021 at 07:59:14PM +0530, pkalever@redhat.com wrote:
-> From: Prasanna Kumar Kalever <prasanna.kalever@redhat.com>
-> 
-> Without any changes to NBD_ATTR_TIMEOUT (default is 30 secs),
-> $ rbd-nbd map rbd-pool/image0 --try-netlink
-> /dev/nbd0
-> $ cat /sys/block/nbd0/queue/io_timeout
-> 30000
-> $ rbd-nbd unmap /dev/nbd0
-> $ cat /sys/block/nbd0/queue/io_timeout
-> 30000
-> 
-> Now user sets NBD_ATTR_TIMEOUT to 60,
-> $ rbd-nbd map rbd-pool/image0 --try-netlink --io-timeout 60
-> /dev/nbd0
-> $ cat /sys/block/nbd0/queue/io_timeout
-> 60000
-> $ rbd-nbd unmap /dev/nbd0
-> $ cat /sys/block/nbd0/queue/io_timeout
-> 60000
-> 
-> Now user doesn't alter NBD_ATTR_TIMEOUT, but sysfs still shows it as 60,
-> $ rbd-nbd map rbd-pool/image0 --try-netlink
-> /dev/nbd0
-> $ cat /sys/block/nbd0/queue/io_timeout
-> 60000
-> $ rbd-nbd unmap /dev/nbd0
-> $ cat /sys/block/nbd0/queue/io_timeout
-> 60000
-> 
-> The problem exists with ioctl interface too.
-> 
-> Signed-off-by: Prasanna Kumar Kalever <prasanna.kalever@redhat.com>
-> ---
->  drivers/block/nbd.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-> index 16a1a14b1fd1..a45aabc4914b 100644
-> --- a/drivers/block/nbd.c
-> +++ b/drivers/block/nbd.c
-> @@ -158,6 +158,7 @@ static void nbd_connect_reply(struct genl_info *info, int index);
->  static int nbd_genl_status(struct sk_buff *skb, struct genl_info *info);
->  static void nbd_dead_link_work(struct work_struct *work);
->  static void nbd_disconnect_and_put(struct nbd_device *nbd);
-> +static void nbd_set_cmd_timeout(struct nbd_device *nbd, u64 timeout);
->  
->  static inline struct device *nbd_to_dev(struct nbd_device *nbd)
->  {
-> @@ -1250,7 +1251,7 @@ static void nbd_config_put(struct nbd_device *nbd)
->  			destroy_workqueue(nbd->recv_workq);
->  		nbd->recv_workq = NULL;
->  
-> -		nbd->tag_set.timeout = 0;
-> +		nbd_set_cmd_timeout(nbd, 0);
->  		nbd->disk->queue->limits.discard_granularity = 0;
->  		nbd->disk->queue->limits.discard_alignment = 0;
->  		blk_queue_max_discard_sectors(nbd->disk->queue, UINT_MAX);
-> @@ -2124,6 +2125,10 @@ static int nbd_genl_reconfigure(struct sk_buff *skb, struct genl_info *info)
->  	if (ret)
->  		goto out;
->  
-> +	/*
-> +	 * On reconfigure, if NBD_ATTR_TIMEOUT is not provided, we will
-> +	 * continue to use the cmd timeout provided with connect initially.
-> +	 */
->  	if (info->attrs[NBD_ATTR_TIMEOUT])
->  		nbd_set_cmd_timeout(nbd,
->  				    nla_get_u64(info->attrs[NBD_ATTR_TIMEOUT]));
-> -- 
-> 2.31.1
-> 
+Hello soc maintainers,
 
-Looks fine:
+Arnd has taken a few of the series through the fixes tree. The rest
+can probably wait for v5.16.
 
-Reviewed-by: Ming Lei <ming.lei@redhat.com>
+The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
 
--- 
-Ming
+  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
 
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/joel/bmc.git
+tags/multiv7-defconfig-5.16
+
+for you to fetch changes up to 6c5faa6e07d3d42c5e6dd5a19ea1e1d9d097cf0f:
+
+  ARM: config: multi v7: Regenerate defconifg (2021-09-16 17:06:38 +0930)
+
+----------------------------------------------------------------
+ARMv7 multiplatform defconfig updates
+
+A cleanup of the mutliplatform defconfig to make it easier to maintian.
+
+----------------------------------------------------------------
+Joel Stanley (4):
+      ARM: config: multi v7: Drop unavailable options
+      ARM: config: multi v7: Clean up enabled by default options
+      ARM: config: multi v7: Add renamed symbols
+      ARM: config: multi v7: Regenerate defconifg
+
+ arch/arm/configs/multi_v7_defconfig | 87 +++++++++++++------------------------
+ 1 file changed, 30 insertions(+), 57 deletions(-)
