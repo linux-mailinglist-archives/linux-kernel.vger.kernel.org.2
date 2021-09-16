@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2560D40E356
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:20:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ED0D40E0CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:28:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235481AbhIPQrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:47:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51674 "EHLO mail.kernel.org"
+        id S241100AbhIPQYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:24:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55232 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244179AbhIPQl1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:41:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D28261A64;
-        Thu, 16 Sep 2021 16:24:08 +0000 (UTC)
+        id S240996AbhIPQO6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:14:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BB6B9613A7;
+        Thu, 16 Sep 2021 16:10:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809449;
-        bh=ul6PfnBjkugntozSWDHDKLQiBHMJHl1pcpXfnDvZA/Q=;
+        s=korg; t=1631808653;
+        bh=9LvXklZcj9/XIzUWmLc1rL+l4+S8t4zhjjs4G1YCB7o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RStNq5gcBwKQE811QiDDEfqyA8vaEfIjg2jPtFOqvnceamJxZMlyUreNpPtMNr6M4
-         fourmqxXmvbM0berdxqeRp1tSd0pK4YUxuqmLElzQs0oCdyebfswmlArr3z/HHejkO
-         I0bbw1fPgwJ/+5XIEQDXmGHXxsL1K+spPKbsazMw=
+        b=fy736kbX6rlmqvIgIslNlxCzSdW/fEYO0yKtEybr4ze0rEhmUViQnGZdMHmQnT6hI
+         QbZPmyTafeOCGaoPUcjAtWAD2LGvg4SIRk2maDQhsLMcgf9zCMmjSc03WdnsxktNh5
+         VEARv4fy1R23EuEbIxb6cfoxZYOXF41HVUDQMcow=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Brian Masney <masneyb@onstation.org>,
-        David Heidelberg <david@ixit.cz>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Patrick Delaunay <patrick.delaunay@foss.st.com>,
+        kernel@dh-electronics.com,
+        linux-stm32@st-md-mailman.stormreply.com,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 159/380] ARM: dts: qcom: apq8064: correct clock names
+Subject: [PATCH 5.10 171/306] ARM: dts: stm32: Set {bitclock,frame}-master phandles on DHCOM SoM
 Date:   Thu, 16 Sep 2021 17:58:36 +0200
-Message-Id: <20210916155809.495911581@linuxfoundation.org>
+Message-Id: <20210916155759.915426024@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,48 +44,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Heidelberg <david@ixit.cz>
+From: Marek Vasut <marex@denx.de>
 
-[ Upstream commit 0dc6c59892ead17a9febd11202c9f6794aac1895 ]
+[ Upstream commit a79e78c391dc074742c855dc0108a88f781d56a3 ]
 
-Since new code doesn't take old clk names in account, it does fixes
-error:
+Fix the following dtbs_check warning:
+arch/arm/boot/dts/stm32mp157c-dhcom-pdk2.dt.yaml: codec@a: port:endpoint@0:frame-master: True is not of type 'array'
+arch/arm/boot/dts/stm32mp157c-dhcom-pdk2.dt.yaml: codec@a: port:endpoint@0:bitclock-master: True is not of type 'array'
 
-msm_dsi 4700000.mdss_dsi: dev_pm_opp_set_clkname: Couldn't find clock: -2
-
-and following kernel oops introduced by
-b0530eb1191 ("drm/msm/dpu: Use OPP API to set clk/perf state").
-
-Also removes warning about deprecated clock names.
-
-Tested against linux-5.10.y LTS on Nexus 7 2013.
-
-Reviewed-by: Brian Masney <masneyb@onstation.org>
-Signed-off-by: David Heidelberg <david@ixit.cz>
-Link: https://lore.kernel.org/r/20210707131453.24041-1-david@ixit.cz
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Cc: Patrice Chotard <patrice.chotard@foss.st.com>
+Cc: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Cc: kernel@dh-electronics.com
+Cc: linux-stm32@st-md-mailman.stormreply.com
+To: linux-arm-kernel@lists.infradead.org
+Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/qcom-apq8064.dtsi | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm/boot/dts/qcom-apq8064.dtsi b/arch/arm/boot/dts/qcom-apq8064.dtsi
-index 2687c4e890ba..e36d590e8373 100644
---- a/arch/arm/boot/dts/qcom-apq8064.dtsi
-+++ b/arch/arm/boot/dts/qcom-apq8064.dtsi
-@@ -1262,9 +1262,9 @@ dsi0: mdss_dsi@4700000 {
- 				<&mmcc DSI1_BYTE_CLK>,
- 				<&mmcc DSI_PIXEL_CLK>,
- 				<&mmcc DSI1_ESC_CLK>;
--			clock-names = "iface_clk", "bus_clk", "core_mmss_clk",
--					"src_clk", "byte_clk", "pixel_clk",
--					"core_clk";
-+			clock-names = "iface", "bus", "core_mmss",
-+					"src", "byte", "pixel",
-+					"core";
+diff --git a/arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi b/arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi
+index 633079245601..fd0cd10cb093 100644
+--- a/arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi
++++ b/arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi
+@@ -172,15 +172,15 @@ sgtl5000_port: port {
+ 			sgtl5000_tx_endpoint: endpoint@0 {
+ 				reg = <0>;
+ 				remote-endpoint = <&sai2a_endpoint>;
+-				frame-master;
+-				bitclock-master;
++				frame-master = <&sgtl5000_tx_endpoint>;
++				bitclock-master = <&sgtl5000_tx_endpoint>;
+ 			};
  
- 			assigned-clocks = <&mmcc DSI1_BYTE_SRC>,
- 					<&mmcc DSI1_ESC_SRC>,
+ 			sgtl5000_rx_endpoint: endpoint@1 {
+ 				reg = <1>;
+ 				remote-endpoint = <&sai2b_endpoint>;
+-				frame-master;
+-				bitclock-master;
++				frame-master = <&sgtl5000_rx_endpoint>;
++				bitclock-master = <&sgtl5000_rx_endpoint>;
+ 			};
+ 		};
+ 
 -- 
 2.30.2
 
