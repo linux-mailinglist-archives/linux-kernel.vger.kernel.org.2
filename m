@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9531940E868
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 495D040E12E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:29:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354235AbhIPRjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:39:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47996 "EHLO mail.kernel.org"
+        id S237200AbhIPQ2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:28:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58820 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353054AbhIPR3y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:29:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CBA7360F6B;
-        Thu, 16 Sep 2021 16:46:42 +0000 (UTC)
+        id S241630AbhIPQTz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:19:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 77C67613DA;
+        Thu, 16 Sep 2021 16:13:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810803;
-        bh=KMk49yov0aAIJvFdbrdKIwR8Zc6m977asTdDdJtRt4Q=;
+        s=korg; t=1631808826;
+        bh=M/5LBEPPTORhcqx3JN0jmF/ewLoZaMPYF79cxMbO9Eo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N6n2ISLtpFSMwnHcLv5JI4ru+zs5jv1GQGDzoSBit/65oLeFxI+RXo3RCYgsFjtxv
-         /IOl61LcL5CkGd/vXMGCD0Obh/ryQatqF6nJLKGRY/HsDX0RhTb0LIPwJ+XGgCDUKh
-         Gr8qr/V7ivdXiYm5mon/dfFBaWfQOJOxIazGPgfY=
+        b=G1x1DX3EGH9+BcDslV4wbcNfxUp6jOcxeM5ABzzhHCEWbk6EMjXVvBl3y6r0LlQCw
+         U7bB4fMcATREP37ygko0f6BxfGT8OSoap2KxjGSIz61aI9Nu0b/WNun7OrWMyU+rou
+         +jR6EOGBqAtw6T46FWfuG4XHBoL5rQg/rOYeQybM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-xtensa@linux-xtensa.org, Jiri Slaby <jslaby@suse.cz>,
+        stable@vger.kernel.org, Chris Chiu <chris.chiu@canonical.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 231/432] xtensa: ISS: dont panic in rs_init
-Date:   Thu, 16 Sep 2021 17:59:40 +0200
-Message-Id: <20210916155818.675080589@linuxfoundation.org>
+Subject: [PATCH 5.10 236/306] rtl8xxxu: Fix the handling of TX A-MPDU aggregation
+Date:   Thu, 16 Sep 2021 17:59:41 +0200
+Message-Id: <20210916155802.098647038@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,71 +40,134 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Slaby <jslaby@suse.cz>
+From: Chris Chiu <chris.chiu@canonical.com>
 
-[ Upstream commit 23411c720052ad860b3e579ee4873511e367130a ]
+[ Upstream commit 95a581ab3592082c60a08090aabe09ac7d0bd650 ]
 
-While alloc_tty_driver failure in rs_init would mean we have much bigger
-problem, there is no reason to panic when tty_register_driver fails
-there. It can fail for various reasons.
+The TX A-MPDU aggregation is not handled in the driver since the
+ieee80211_start_tx_ba_session has never been started properly.
+Start and stop the TX BA session by tracking the TX aggregation
+status of each TID. Fix the ampdu_action and the tx descriptor
+accordingly with the given TID.
 
-So handle the failure gracefully. Actually handle them both while at it.
-This will make at least the console functional as it was enabled earlier
-by console_initcall in iss_console_init. Instead of shooting down the
-whole system.
-
-We move tty_port_init() after alloc_tty_driver(), so that we don't need
-to destroy the port in case the latter function fails.
-
-Cc: Chris Zankel <chris@zankel.net>
-Cc: Max Filippov <jcmvbkbc@gmail.com>
-Cc: linux-xtensa@linux-xtensa.org
-Acked-by: Max Filippov <jcmvbkbc@gmail.com>
-Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-Link: https://lore.kernel.org/r/20210723074317.32690-2-jslaby@suse.cz
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Chris Chiu <chris.chiu@canonical.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210804151325.86600-1-chris.chiu@canonical.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/xtensa/platforms/iss/console.c | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+ .../net/wireless/realtek/rtl8xxxu/rtl8xxxu.h  |  2 ++
+ .../wireless/realtek/rtl8xxxu/rtl8xxxu_core.c | 33 ++++++++++++++-----
+ 2 files changed, 26 insertions(+), 9 deletions(-)
 
-diff --git a/arch/xtensa/platforms/iss/console.c b/arch/xtensa/platforms/iss/console.c
-index 21184488c277..0108504dfb45 100644
---- a/arch/xtensa/platforms/iss/console.c
-+++ b/arch/xtensa/platforms/iss/console.c
-@@ -136,9 +136,13 @@ static const struct tty_operations serial_ops = {
+diff --git a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu.h b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu.h
+index acb6b0cd3667..b28fa0c4d180 100644
+--- a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu.h
++++ b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu.h
+@@ -1378,6 +1378,8 @@ struct rtl8xxxu_priv {
+ 	u8 no_pape:1;
+ 	u8 int_buf[USB_INTR_CONTENT_LENGTH];
+ 	u8 rssi_level;
++	DECLARE_BITMAP(tx_aggr_started, IEEE80211_NUM_TIDS);
++	DECLARE_BITMAP(tid_tx_operational, IEEE80211_NUM_TIDS);
+ 	/*
+ 	 * Only one virtual interface permitted because only STA mode
+ 	 * is supported and no iface_combinations are provided.
+diff --git a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
+index 5cd7ef3625c5..0d374a294840 100644
+--- a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
++++ b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
+@@ -4805,6 +4805,8 @@ rtl8xxxu_fill_txdesc_v1(struct ieee80211_hw *hw, struct ieee80211_hdr *hdr,
+ 	struct ieee80211_rate *tx_rate = ieee80211_get_tx_rate(hw, tx_info);
+ 	struct rtl8xxxu_priv *priv = hw->priv;
+ 	struct device *dev = &priv->udev->dev;
++	u8 *qc = ieee80211_get_qos_ctl(hdr);
++	u8 tid = qc[0] & IEEE80211_QOS_CTL_TID_MASK;
+ 	u32 rate;
+ 	u16 rate_flags = tx_info->control.rates[0].flags;
+ 	u16 seq_number;
+@@ -4828,7 +4830,7 @@ rtl8xxxu_fill_txdesc_v1(struct ieee80211_hw *hw, struct ieee80211_hdr *hdr,
  
- static int __init rs_init(void)
- {
--	tty_port_init(&serial_port);
-+	int ret;
+ 	tx_desc->txdw3 = cpu_to_le32((u32)seq_number << TXDESC32_SEQ_SHIFT);
  
- 	serial_driver = alloc_tty_driver(SERIAL_MAX_NUM_LINES);
-+	if (!serial_driver)
-+		return -ENOMEM;
+-	if (ampdu_enable)
++	if (ampdu_enable && test_bit(tid, priv->tid_tx_operational))
+ 		tx_desc->txdw1 |= cpu_to_le32(TXDESC32_AGG_ENABLE);
+ 	else
+ 		tx_desc->txdw1 |= cpu_to_le32(TXDESC32_AGG_BREAK);
+@@ -4876,6 +4878,8 @@ rtl8xxxu_fill_txdesc_v2(struct ieee80211_hw *hw, struct ieee80211_hdr *hdr,
+ 	struct rtl8xxxu_priv *priv = hw->priv;
+ 	struct device *dev = &priv->udev->dev;
+ 	struct rtl8xxxu_txdesc40 *tx_desc40;
++	u8 *qc = ieee80211_get_qos_ctl(hdr);
++	u8 tid = qc[0] & IEEE80211_QOS_CTL_TID_MASK;
+ 	u32 rate;
+ 	u16 rate_flags = tx_info->control.rates[0].flags;
+ 	u16 seq_number;
+@@ -4902,7 +4906,7 @@ rtl8xxxu_fill_txdesc_v2(struct ieee80211_hw *hw, struct ieee80211_hdr *hdr,
+ 
+ 	tx_desc40->txdw9 = cpu_to_le32((u32)seq_number << TXDESC40_SEQ_SHIFT);
+ 
+-	if (ampdu_enable)
++	if (ampdu_enable && test_bit(tid, priv->tid_tx_operational))
+ 		tx_desc40->txdw2 |= cpu_to_le32(TXDESC40_AGG_ENABLE);
+ 	else
+ 		tx_desc40->txdw2 |= cpu_to_le32(TXDESC40_AGG_BREAK);
+@@ -5015,12 +5019,19 @@ static void rtl8xxxu_tx(struct ieee80211_hw *hw,
+ 	if (ieee80211_is_data_qos(hdr->frame_control) && sta) {
+ 		if (sta->ht_cap.ht_supported) {
+ 			u32 ampdu, val32;
++			u8 *qc = ieee80211_get_qos_ctl(hdr);
++			u8 tid = qc[0] & IEEE80211_QOS_CTL_TID_MASK;
+ 
+ 			ampdu = (u32)sta->ht_cap.ampdu_density;
+ 			val32 = ampdu << TXDESC_AMPDU_DENSITY_SHIFT;
+ 			tx_desc->txdw2 |= cpu_to_le32(val32);
+ 
+ 			ampdu_enable = true;
 +
-+	tty_port_init(&serial_port);
++			if (!test_bit(tid, priv->tx_aggr_started) &&
++			    !(skb->protocol == cpu_to_be16(ETH_P_PAE)))
++				if (!ieee80211_start_tx_ba_session(sta, tid, 0))
++					set_bit(tid, priv->tx_aggr_started);
+ 		}
+ 	}
  
- 	/* Initialize the tty_driver structure */
+@@ -6095,6 +6106,7 @@ rtl8xxxu_ampdu_action(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
+ 	struct device *dev = &priv->udev->dev;
+ 	u8 ampdu_factor, ampdu_density;
+ 	struct ieee80211_sta *sta = params->sta;
++	u16 tid = params->tid;
+ 	enum ieee80211_ampdu_mlme_action action = params->action;
  
-@@ -156,8 +160,15 @@ static int __init rs_init(void)
- 	tty_set_operations(serial_driver, &serial_ops);
- 	tty_port_link_device(&serial_port, serial_driver, 0);
- 
--	if (tty_register_driver(serial_driver))
--		panic("Couldn't register serial driver\n");
-+	ret = tty_register_driver(serial_driver);
-+	if (ret) {
-+		pr_err("Couldn't register serial driver\n");
-+		tty_driver_kref_put(serial_driver);
-+		tty_port_destroy(&serial_port);
-+
-+		return ret;
-+	}
-+
- 	return 0;
- }
- 
+ 	switch (action) {
+@@ -6107,17 +6119,20 @@ rtl8xxxu_ampdu_action(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
+ 		dev_dbg(dev,
+ 			"Changed HT: ampdu_factor %02x, ampdu_density %02x\n",
+ 			ampdu_factor, ampdu_density);
+-		break;
++		return IEEE80211_AMPDU_TX_START_IMMEDIATE;
++	case IEEE80211_AMPDU_TX_STOP_CONT:
+ 	case IEEE80211_AMPDU_TX_STOP_FLUSH:
+-		dev_dbg(dev, "%s: IEEE80211_AMPDU_TX_STOP_FLUSH\n", __func__);
+-		rtl8xxxu_set_ampdu_factor(priv, 0);
+-		rtl8xxxu_set_ampdu_min_space(priv, 0);
+-		break;
+ 	case IEEE80211_AMPDU_TX_STOP_FLUSH_CONT:
+-		dev_dbg(dev, "%s: IEEE80211_AMPDU_TX_STOP_FLUSH_CONT\n",
+-			 __func__);
++		dev_dbg(dev, "%s: IEEE80211_AMPDU_TX_STOP\n", __func__);
+ 		rtl8xxxu_set_ampdu_factor(priv, 0);
+ 		rtl8xxxu_set_ampdu_min_space(priv, 0);
++		clear_bit(tid, priv->tx_aggr_started);
++		clear_bit(tid, priv->tid_tx_operational);
++		ieee80211_stop_tx_ba_cb_irqsafe(vif, sta->addr, tid);
++		break;
++	case IEEE80211_AMPDU_TX_OPERATIONAL:
++		dev_dbg(dev, "%s: IEEE80211_AMPDU_TX_OPERATIONAL\n", __func__);
++		set_bit(tid, priv->tid_tx_operational);
+ 		break;
+ 	case IEEE80211_AMPDU_RX_START:
+ 		dev_dbg(dev, "%s: IEEE80211_AMPDU_RX_START\n", __func__);
 -- 
 2.30.2
 
