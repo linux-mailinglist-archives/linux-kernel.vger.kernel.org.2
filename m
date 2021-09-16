@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62C7C40E34D
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:20:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA40640E353
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:20:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243236AbhIPQq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:46:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51356 "EHLO mail.kernel.org"
+        id S242962AbhIPQrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:47:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51468 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241780AbhIPQkk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:40:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 60A7461A0C;
-        Thu, 16 Sep 2021 16:24:00 +0000 (UTC)
+        id S242114AbhIPQks (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:40:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2638361A10;
+        Thu, 16 Sep 2021 16:24:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809440;
-        bh=IyiNhFKL0KxUs4JnoWiHh+h0HctV5ZgiE4YJXvvLK8I=;
+        s=korg; t=1631809443;
+        bh=p7uRIQ6xAKswJhj7snL0VgWGtQnH/OK2ukEsfDj4EoA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xyTFxEFYB+ShqdZSy/nSu81LJ9R04kzsdgk4i9x/zXiosMSA8VNfzZFhdgjKnuSEU
-         8Zs7rwutOzPb4lwnKDkzc7UBhv4fio7RWFYvy43wRTudrBNKL0fu7CRP1xsvVYMtN9
-         mOtZy58JOtI71qomPCXlnbPQnuf81JtqpzMvsQqM=
+        b=L00X0yuRBM6dIUuGkOAM7vzXzdSb3eARddb3ui6JNznVDq+BPONL3ociodbTo+J6V
+         M8DunRPD9mSiRX3LAfP5gdsaqSifMQHc3Oa/5ItP406wJjx/K4cpQ470sKA06oNEkd
+         vY8zpQYdvX0EP1hz/uDE6CTUcVGiX2shO9tyq9Y8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        kernel test robot <lkp@intel.com>,
-        =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
+        stable@vger.kernel.org, Stefan Assmann <sassmann@kpanic.de>,
+        Konrad Jankowski <konrad0.jankowski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 156/380] iio: dac: ad5624r: Fix incorrect handling of an optional regulator.
-Date:   Thu, 16 Sep 2021 17:58:33 +0200
-Message-Id: <20210916155809.383028702@linuxfoundation.org>
+Subject: [PATCH 5.13 157/380] iavf: do not override the adapter state in the watchdog task
+Date:   Thu, 16 Sep 2021 17:58:34 +0200
+Message-Id: <20210916155809.423041835@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
 References: <20210916155803.966362085@linuxfoundation.org>
@@ -42,66 +41,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Stefan Assmann <sassmann@kpanic.de>
 
-[ Upstream commit 97683c851f9cdbd3ea55697cbe2dcb6af4287bbd ]
+[ Upstream commit 22c8fd71d3a5e6fe584ccc2c1e8760e5baefd5aa ]
 
-The naming of the regulator is problematic.  VCC is usually a supply
-voltage whereas these devices have a separate VREF pin.
+The iavf watchdog task overrides adapter->state to __IAVF_RESETTING
+when it detects a pending reset. Then schedules iavf_reset_task() which
+takes care of the reset.
 
-Secondly, the regulator core might have provided a stub regulator if
-a real regulator wasn't provided. That would in turn have failed to
-provide a voltage when queried. So reality was that there was no way
-to use the internal reference.
+The reset task is capable of handling the reset without changing
+adapter->state. In fact we lose the state information when the watchdog
+task prematurely changes the adapter state. This may lead to a crash if
+instead of the reset task the iavf_remove() function gets called before
+the reset task.
+In that case (if we were in state __IAVF_RUNNING previously) the
+iavf_remove() function triggers iavf_close() which fails to close the
+device because of the incorrect state information.
 
-In order to avoid breaking any dts out in the wild, make sure to fallback
-to the original vcc naming if vref is not available.
+This may result in a crash due to pending interrupts.
+kernel BUG at drivers/pci/msi.c:357!
+[...]
+Call Trace:
+ [<ffffffffbddf24dd>] pci_disable_msix+0x3d/0x50
+ [<ffffffffc08d2a63>] iavf_reset_interrupt_capability+0x23/0x40 [iavf]
+ [<ffffffffc08d312a>] iavf_remove+0x10a/0x350 [iavf]
+ [<ffffffffbddd3359>] pci_device_remove+0x39/0xc0
+ [<ffffffffbdeb492f>] __device_release_driver+0x7f/0xf0
+ [<ffffffffbdeb49c3>] device_release_driver+0x23/0x30
+ [<ffffffffbddcabb4>] pci_stop_bus_device+0x84/0xa0
+ [<ffffffffbddcacc2>] pci_stop_and_remove_bus_device+0x12/0x20
+ [<ffffffffbddf361f>] pci_iov_remove_virtfn+0xaf/0x160
+ [<ffffffffbddf3bcc>] sriov_disable+0x3c/0xf0
+ [<ffffffffbddf3ca3>] pci_disable_sriov+0x23/0x30
+ [<ffffffffc0667365>] i40e_free_vfs+0x265/0x2d0 [i40e]
+ [<ffffffffc0667624>] i40e_pci_sriov_configure+0x144/0x1f0 [i40e]
+ [<ffffffffbddd5307>] sriov_numvfs_store+0x177/0x1d0
+Code: 00 00 e8 3c 25 e3 ff 49 c7 86 88 08 00 00 00 00 00 00 5b 41 5c 41 5d 41 5e 41 5f 5d c3 48 8b 7b 28 e8 0d 44
+RIP  [<ffffffffbbbf1068>] free_msi_irqs+0x188/0x190
 
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Acked-by: Nuno Sá <nuno.sa@analog.com>
-Link: https://lore.kernel.org/r/20210627163244.1090296-9-jic23@kernel.org
+The solution is to not touch the adapter->state in iavf_watchdog_task()
+and let the reset task handle the state transition.
+
+Signed-off-by: Stefan Assmann <sassmann@kpanic.de>
+Tested-by: Konrad Jankowski <konrad0.jankowski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/dac/ad5624r_spi.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/intel/iavf/iavf_main.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/iio/dac/ad5624r_spi.c b/drivers/iio/dac/ad5624r_spi.c
-index 9bde86982912..530529feebb5 100644
---- a/drivers/iio/dac/ad5624r_spi.c
-+++ b/drivers/iio/dac/ad5624r_spi.c
-@@ -229,7 +229,7 @@ static int ad5624r_probe(struct spi_device *spi)
- 	if (!indio_dev)
- 		return -ENOMEM;
- 	st = iio_priv(indio_dev);
--	st->reg = devm_regulator_get(&spi->dev, "vcc");
-+	st->reg = devm_regulator_get_optional(&spi->dev, "vref");
- 	if (!IS_ERR(st->reg)) {
- 		ret = regulator_enable(st->reg);
- 		if (ret)
-@@ -240,6 +240,22 @@ static int ad5624r_probe(struct spi_device *spi)
- 			goto error_disable_reg;
- 
- 		voltage_uv = ret;
-+	} else {
-+		if (PTR_ERR(st->reg) != -ENODEV)
-+			return PTR_ERR(st->reg);
-+		/* Backwards compatibility. This naming is not correct */
-+		st->reg = devm_regulator_get_optional(&spi->dev, "vcc");
-+		if (!IS_ERR(st->reg)) {
-+			ret = regulator_enable(st->reg);
-+			if (ret)
-+				return ret;
-+
-+			ret = regulator_get_voltage(st->reg);
-+			if (ret < 0)
-+				goto error_disable_reg;
-+
-+			voltage_uv = ret;
-+		}
- 	}
- 
- 	spi_set_drvdata(spi, indio_dev);
+diff --git a/drivers/net/ethernet/intel/iavf/iavf_main.c b/drivers/net/ethernet/intel/iavf/iavf_main.c
+index 606a01ce4073..0d0f16617dde 100644
+--- a/drivers/net/ethernet/intel/iavf/iavf_main.c
++++ b/drivers/net/ethernet/intel/iavf/iavf_main.c
+@@ -1984,7 +1984,6 @@ static void iavf_watchdog_task(struct work_struct *work)
+ 		/* check for hw reset */
+ 	reg_val = rd32(hw, IAVF_VF_ARQLEN1) & IAVF_VF_ARQLEN1_ARQENABLE_MASK;
+ 	if (!reg_val) {
+-		adapter->state = __IAVF_RESETTING;
+ 		adapter->flags |= IAVF_FLAG_RESET_PENDING;
+ 		adapter->aq_required = 0;
+ 		adapter->current_op = VIRTCHNL_OP_UNKNOWN;
 -- 
 2.30.2
 
