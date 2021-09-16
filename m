@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8D3640E422
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:22:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E54340E16A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:29:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244620AbhIPQzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:55:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36926 "EHLO mail.kernel.org"
+        id S240714AbhIPQa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:30:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59314 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345725AbhIPQuj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:50:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE11361284;
-        Thu, 16 Sep 2021 16:28:29 +0000 (UTC)
+        id S241604AbhIPQVu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:21:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8575F61452;
+        Thu, 16 Sep 2021 16:15:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809710;
-        bh=CtX/yPRZcRIVIBZ1kDR812ScIe02+qvh++rMn6IRlyc=;
+        s=korg; t=1631808910;
+        bh=AzYyWIvTFUu7ICwG/e78kzaZiT+m17+3Ake8DT55j8s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=un3by2Y6JQwpcR9bC46MbYce9ZovKJjN5Z0gbBA9qeOpts0BhLOi9YM//DiAFD7b1
-         6js2Vz2KK2ehXyzEh8mWHY2Y8Nw3n0tvIIP07j9KNlQeKstglP3zeSpUn641WLGh3w
-         VOTKNdvf1+XZDNVpSGAUB5g3QK8FH6Odnawxuu0A=
+        b=MR86ZyDHxmD+t8z54MYPSymFw6QjcIZCi/jsw4Ipomr2YPwiZfd2/ULTwBwl7wIhs
+         LxRLKeJ+CaO0jBPbQheujU7GF6WlFmDiv+AtJUCL+REbbIY1FwbOwy6wJYnBaEKZpD
+         LAS5vaH3E3xMBk2t/iDwNi3aEzgWNjCF5n22H6R8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Fabio Aiuto <fabioaiuto83@gmail.com>,
+        stable@vger.kernel.org, Wentao_Liang <Wentao_Liang_g@163.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 255/380] staging: rtl8723bs: fix right side of condition
+Subject: [PATCH 5.10 267/306] net/mlx5: DR, fix a potential use-after-free bug
 Date:   Thu, 16 Sep 2021 18:00:12 +0200
-Message-Id: <20210916155812.754094176@linuxfoundation.org>
+Message-Id: <20210916155803.177798682@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,35 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fabio Aiuto <fabioaiuto83@gmail.com>
+From: Wentao_Liang <Wentao_Liang_g@163.com>
 
-[ Upstream commit e3678dc1ea40425b7218c20e2fe7b00a72f23a41 ]
+[ Upstream commit 6cc64770fb386b10a64a1fe09328396de7bb5262 ]
 
-TxNum value is compared against ODM_RF_PATH_D,
-which is inconsistent. Compare it against
-RF_MAX_TX_NUM, as in other places in the same file.
+In line 849 (#1), "mlx5dr_htbl_put(cur_htbl);" drops the reference to
+cur_htbl and may cause cur_htbl to be freed.
 
-Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
-Link: https://lore.kernel.org/r/147631fe6f4f5de84cc54a62ba71d739b92697be.1628329348.git.fabioaiuto83@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+However, cur_htbl is subsequently used in the next line, which may result
+in an use-after-free bug.
+
+Fix this by calling mlx5dr_err() before the cur_htbl is put.
+
+Signed-off-by: Wentao_Liang <Wentao_Liang_g@163.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/rtl8723bs/hal/hal_com_phycfg.c | 2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/steering/dr_rule.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/staging/rtl8723bs/hal/hal_com_phycfg.c b/drivers/staging/rtl8723bs/hal/hal_com_phycfg.c
-index 94d11689b4ac..33ff80da3277 100644
---- a/drivers/staging/rtl8723bs/hal/hal_com_phycfg.c
-+++ b/drivers/staging/rtl8723bs/hal/hal_com_phycfg.c
-@@ -707,7 +707,7 @@ static void PHY_StoreTxPowerByRateNew(
- 	if (RfPath > ODM_RF_PATH_D)
- 		return;
- 
--	if (TxNum > ODM_RF_PATH_D)
-+	if (TxNum > RF_MAX_TX_NUM)
- 		return;
- 
- 	for (i = 0; i < rateNum; ++i) {
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_rule.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_rule.c
+index b3c9dc032026..478de5ded7c2 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_rule.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_rule.c
+@@ -824,9 +824,9 @@ dr_rule_handle_ste_branch(struct mlx5dr_rule *rule,
+ 			new_htbl = dr_rule_rehash(rule, nic_rule, cur_htbl,
+ 						  ste_location, send_ste_list);
+ 			if (!new_htbl) {
+-				mlx5dr_htbl_put(cur_htbl);
+ 				mlx5dr_err(dmn, "Failed creating rehash table, htbl-log_size: %d\n",
+ 					   cur_htbl->chunk_size);
++				mlx5dr_htbl_put(cur_htbl);
+ 			} else {
+ 				cur_htbl = new_htbl;
+ 			}
 -- 
 2.30.2
 
