@@ -2,129 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5E7540DC48
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 16:03:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FBFD40DC53
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 16:05:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236033AbhIPOFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 10:05:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36294 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235536AbhIPOFJ (ORCPT
+        id S238204AbhIPOHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 10:07:10 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:9888 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235474AbhIPOHJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 10:05:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631801028;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=InkSSQy+zkt1/Sq2nJaTJOAqUI+Qk6BMdAVU8hoiD9c=;
-        b=JzpCOuhTM7msh1MensiJ3xLj8cQEmy9n7jp5Ef7WdTgfDLqLmKqE7AkjJYGM+a/FKXvXwR
-        roBEK/b0whzny3FJLJ9OUfPGS6iqUePYo+5nKoTXCumAz/jCRYxKJkF4bgx/P1vR3pMYmu
-        jgqACkIpn9iGeClf44L4cQZ3PZMddT4=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-315-MV3rGsXlNKGbM03oOltzEw-1; Thu, 16 Sep 2021 10:03:46 -0400
-X-MC-Unique: MV3rGsXlNKGbM03oOltzEw-1
-Received: by mail-wr1-f71.google.com with SMTP id r9-20020a5d4989000000b0015d0fbb8823so2457277wrq.18
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 07:03:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=InkSSQy+zkt1/Sq2nJaTJOAqUI+Qk6BMdAVU8hoiD9c=;
-        b=Ga23tSImJpVzG4+yyGvp7Xky4CLadsj08P1Eqv8b5CsjKitYPKRJJJvtU47wKHkqLF
-         /2iN0Xj1f69Fl84MR/xjYh8FdDCXMBKUlUVBUSId+VEaPy0TZsf5DCq4R0vnchci4FbT
-         DaXcfpwy5LXFFapqjYIP15ruDvIf+xp6cxh9K5SRSVST7ExsJYDYlnyD1kG5NUKVF3Wq
-         BZwRi3AbhV8eHQiQa1hnyJ9hilEsscKCpzNqGvas7/xSFkNehsUqlmPr8tnubuaquVYx
-         3kCmOHAtEXJkxlol9le3rWSQpw4kiLtXjLj0G/sQTR9WEZs0+G81EDCFzdKemj2F8CeU
-         awRA==
-X-Gm-Message-State: AOAM532H4XnLwPcZIn5UO6qsNrXuxbK0pmeYY7qeKF+L7WClbGVDs9X3
-        1ZF0rxD0vqJ5RQdLb44iVl3V7fl+obo6pr5qaF3DHAyWEs6IQarJhrBff5z2MKJ/jYhkmFG3zml
-        hmKTwKu/msjw6GQp3YOGXzgNF
-X-Received: by 2002:adf:e74b:: with SMTP id c11mr6371112wrn.101.1631801025692;
-        Thu, 16 Sep 2021 07:03:45 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx/lhk0vbwJSHMlHYygHpizbHLXpjbz403gb1bSwePYyjBwbWX/UNKyVaKVGPdD3tXAKLjHow==
-X-Received: by 2002:adf:e74b:: with SMTP id c11mr6371074wrn.101.1631801025407;
-        Thu, 16 Sep 2021 07:03:45 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23828.dip0.t-ipconnect.de. [79.242.56.40])
-        by smtp.gmail.com with ESMTPSA id s15sm3612858wrb.22.2021.09.16.07.03.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Sep 2021 07:03:44 -0700 (PDT)
-Subject: Re: [PATCH v4 1/1] s390x: KVM: accept STSI for CPU topology
- information
-To:     Pierre Morel <pmorel@linux.ibm.com>, kvm@vger.kernel.org
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        borntraeger@de.ibm.com, frankja@linux.ibm.com, cohuck@redhat.com,
-        thuth@redhat.com, imbrenda@linux.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com
-References: <1631799845-24860-1-git-send-email-pmorel@linux.ibm.com>
- <1631799845-24860-2-git-send-email-pmorel@linux.ibm.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <eef5ed95-3f54-b709-894d-cdf75bc3180b@redhat.com>
-Date:   Thu, 16 Sep 2021 16:03:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 16 Sep 2021 10:07:09 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4H9Jf6474tz8yPn;
+        Thu, 16 Sep 2021 22:01:18 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.8; Thu, 16 Sep 2021 22:05:46 +0800
+Received: from [10.174.176.73] (10.174.176.73) by
+ dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Thu, 16 Sep 2021 22:05:45 +0800
+Subject: Re: [patch v8 7/7] nbd: fix uaf in nbd_handle_reply()
+To:     Ming Lei <ming.lei@redhat.com>
+CC:     <josef@toxicpanda.com>, <axboe@kernel.dk>, <hch@infradead.org>,
+        <linux-block@vger.kernel.org>, <nbd@other.debian.org>,
+        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
+References: <20210916093350.1410403-1-yukuai3@huawei.com>
+ <20210916093350.1410403-8-yukuai3@huawei.com> <YUM/cNzr6PTXFVAX@T590>
+ <f0a72b72-19c9-f01d-806d-d27f854dea8f@huawei.com> <YUNMtcDYG+Uk/gzO@T590>
+From:   "yukuai (C)" <yukuai3@huawei.com>
+Message-ID: <66441ad9-629e-e50b-5d81-67edb79e51f2@huawei.com>
+Date:   Thu, 16 Sep 2021 22:05:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <1631799845-24860-2-git-send-email-pmorel@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+In-Reply-To: <YUNMtcDYG+Uk/gzO@T590>
+Content-Type: text/plain; charset="gbk"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.73]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->   struct kvm_vm_stat {
-> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-> index 51d1594bd6cd..f3887e13c5db 100644
-> --- a/arch/s390/kvm/kvm-s390.c
-> +++ b/arch/s390/kvm/kvm-s390.c
-> @@ -608,6 +608,9 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
->   	case KVM_CAP_S390_PROTECTED:
->   		r = is_prot_virt_host();
->   		break;
-> +	case KVM_CAP_S390_CPU_TOPOLOGY:
-> +		r = test_facility(11);
-> +		break;
->   	default:
->   		r = 0;
->   	}
-> @@ -819,6 +822,19 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm, struct kvm_enable_cap *cap)
->   		icpt_operexc_on_all_vcpus(kvm);
->   		r = 0;
->   		break;
-> +	case KVM_CAP_S390_CPU_TOPOLOGY:
+On 2021/09/16 21:55, Ming Lei write:
+> On Thu, Sep 16, 2021 at 09:10:37PM +0800, yukuai (C) wrote:
+>> On 2021/09/16 20:58, Ming Lei wrote:
+>>> On Thu, Sep 16, 2021 at 05:33:50PM +0800, Yu Kuai wrote:
+>>>> There is a problem that nbd_handle_reply() might access freed request:
+>>>>
+>>>> 1) At first, a normal io is submitted and completed with scheduler:
+>>>>
+>>>> internel_tag = blk_mq_get_tag -> get tag from sched_tags
+>>>>    blk_mq_rq_ctx_init
+>>>>     sched_tags->rq[internel_tag] = sched_tag->static_rq[internel_tag]
+>>>> ...
+>>>> blk_mq_get_driver_tag
+>>>>    __blk_mq_get_driver_tag -> get tag from tags
+>>>>    tags->rq[tag] = sched_tag->static_rq[internel_tag]
+>>>>
+>>>> So, both tags->rq[tag] and sched_tags->rq[internel_tag] are pointing
+>>>> to the request: sched_tags->static_rq[internal_tag]. Even if the
+>>>> io is finished.
+>>>>
+>>>> 2) nbd server send a reply with random tag directly:
+>>>>
+>>>> recv_work
+>>>>    nbd_handle_reply
+>>>>     blk_mq_tag_to_rq(tags, tag)
+>>>>      rq = tags->rq[tag]
+>>>>
+>>>> 3) if the sched_tags->static_rq is freed:
+>>>>
+>>>> blk_mq_sched_free_requests
+>>>>    blk_mq_free_rqs(q->tag_set, hctx->sched_tags, i)
+>>>>     -> step 2) access rq before clearing rq mapping
+>>>>     blk_mq_clear_rq_mapping(set, tags, hctx_idx);
+>>>>     __free_pages() -> rq is freed here
+>>>>
+>>>> 4) Then, nbd continue to use the freed request in nbd_handle_reply
+>>>>
+>>>> Fix the problem by get 'q_usage_counter' before blk_mq_tag_to_rq(),
+>>>> thus request is ensured not to be freed because 'q_usage_counter' is
+>>>> not zero.
+>>>>
+>>>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+>>>> ---
+>>>>    drivers/block/nbd.c | 14 ++++++++++++++
+>>>>    1 file changed, 14 insertions(+)
+>>>>
+>>>> diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+>>>> index 69dc5eac9ad3..b3a47fc6237f 100644
+>>>> --- a/drivers/block/nbd.c
+>>>> +++ b/drivers/block/nbd.c
+>>>> @@ -825,6 +825,7 @@ static void recv_work(struct work_struct *work)
+>>>>    						     work);
+>>>>    	struct nbd_device *nbd = args->nbd;
+>>>>    	struct nbd_config *config = nbd->config;
+>>>> +	struct request_queue *q = nbd->disk->queue;
+>>>>    	struct nbd_sock *nsock;
+>>>>    	struct nbd_cmd *cmd;
+>>>>    	struct request *rq;
+>>>> @@ -835,7 +836,20 @@ static void recv_work(struct work_struct *work)
+>>>>    		if (nbd_read_reply(nbd, args->index, &reply))
+>>>>    			break;
+>>>> +		/*
+>>>> +		 * Grab .q_usage_counter so request pool won't go away, then no
+>>>> +		 * request use-after-free is possible during nbd_handle_reply().
+>>>> +		 * If queue is frozen, there won't be any inflight requests, we
+>>>> +		 * needn't to handle the incoming garbage message.
+>>>> +		 */
+>>>> +		if (!percpu_ref_tryget(&q->q_usage_counter)) {
+>>>> +			dev_err(disk_to_dev(nbd->disk), "%s: no io inflight\n",
+>>>> +				__func__);
+>>>> +			break;
+>>>> +		}
+>>>> +
+>>>>    		cmd = nbd_handle_reply(nbd, args->index, &reply);
+>>>> +		percpu_ref_put(&q->q_usage_counter);
+>>>>    		if (IS_ERR(cmd))
+>>>>    			break;
+>>>
+>>> The refcount needs to be grabbed when completing the request because
+>>> the request may be completed from other code path, then the request pool
+>>> will be freed from that code path when the request is referred.
+>>
+>> Hi,
+>>
+>> The request can't complete concurrently, thus put ref here is safe.
+>>
+>> There used to be a commet here that I tried to explain it... It's fine
+>> to me to move it behind anyway.
+> 
+> Never see such comment. cmd->lock isn't held here, so I believe
+> concurrent completion is possible here.
+> 
 
-As given in my example, this should be
+After patch 2, __test_and_clear_bit(NBD_CMD_INFLIGHT) must pass
+while cmd->lock is held before completing the request, thus request
+completion won't concurrent...
 
-r = -EINVAL;
-mutex_lock(&kvm->lock);
-if (kvm->created_vcpus) {
-	r = -EBUSY;
-} else if (test_facility(11)) {
-...
-}
-
-Similar to how we handle KVM_CAP_S390_VECTOR_REGISTERS.
-
-[...]
-
-> +
-> +	/* PTF needs both host and guest facilities to enable interpretation */
-> +	if (test_kvm_facility(vcpu->kvm, 11) && test_facility(11))
-> +		vcpu->arch.sie_block->ecb |= ECB_PTF;
-
-This should be simplified to
-
-if (test_kvm_facility(vcpu->kvm, 11))
-
-then. (vsie code below is correct)
-
-
--- 
 Thanks,
-
-David / dhildenb
-
+Kuai
