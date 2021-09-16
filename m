@@ -2,201 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5772B40DBD8
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 15:54:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFAE840DBAB
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 15:48:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235489AbhIPNzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 09:55:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240476AbhIPNyZ (ORCPT
+        id S240412AbhIPNtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 09:49:10 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:48003 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235828AbhIPNtJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 09:54:25 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4305C0613D5
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 06:53:02 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id m26so6001718pff.3
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 06:53:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=9zJ+rajzCodDQWeoI37cULUx5xfm+EYhpR+j50QMba8=;
-        b=UH0q2kMvwpE+oXiVGNhyaG/DpfCTcD3yJP4RI4OdyNI3bcpaFQG+yzqb8NVQKg1DpN
-         DOUPe7YQUg3P01t3908CUfgU/X1z6/ooubNFka5e13rDo+0bEhnFU/wbaqU6bTOP2sjj
-         ARz2nxJHBlGoK7BXo6ZKwbwWkMHew6yfg7dmmPwtmSmOxnVwzGTs4hVBSAcnaAqu3Bw3
-         dFopBR5Z7ZNZTkQxdsyqoEBiicslqlwytz0mt3/JfKVOkrmmuX82jNFNyDBYuLmvAikv
-         U/COC/LXn5akRPaFXjlFHPLYnCbAj5jOLctJSqtysE8hPp08hvYBr7Ujy+BO89yjik3b
-         9UTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=9zJ+rajzCodDQWeoI37cULUx5xfm+EYhpR+j50QMba8=;
-        b=uRwzy1Xne2vZboWAR47XFke0AVBpFuN074DdsS3ty7v+IBDnLG8nwEDbbmcz7cumnr
-         q32OM5unmR/rHGF/4J3JPaBC4Dvhh50Hb22zjHAcPF7T465wyqJWPk3DQThbP+oI8Dfj
-         yrk10o4sJQMdFq3Cu2LtvOskH3vbLAfsfvpgCt571OqHC7XbknfTO5FSdlRqDUGfZmLO
-         Y+Cs8cX5gNKJkiNlkgULD3RUSSkacacmv8bCWyN/pMPYIgsBcPCW31zOjTCY29ZkNIh3
-         jLrUpyHjoCW10Bao/lnPw1tHWWs/bx8kj72exbPcwpzLSXgCPTG/EFi0VSVyVYXF8nbe
-         5fxA==
-X-Gm-Message-State: AOAM530HRKQOExdxtguk7QzikBjXC/PCuaJ5lafeJpK8j5LxME6vU7qt
-        VQyAgQUX6Z4P2+aJkLqgiSI7gw==
-X-Google-Smtp-Source: ABdhPJwxGZVjBFXnUvLHMSj361dGfdo0pyqFzMu2FSl2ZkHX6t6WAMc0bR0oqwQWyHCKbeJyZ6uePw==
-X-Received: by 2002:a63:da14:: with SMTP id c20mr5099842pgh.155.1631800382477;
-        Thu, 16 Sep 2021 06:53:02 -0700 (PDT)
-Received: from localhost.localdomain ([139.177.225.226])
-        by smtp.gmail.com with ESMTPSA id o9sm3617443pfh.217.2021.09.16.06.52.56
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 16 Sep 2021 06:53:02 -0700 (PDT)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     guro@fb.com, hannes@cmpxchg.org, mhocko@kernel.org,
-        akpm@linux-foundation.org, shakeelb@google.com,
-        vdavydov.dev@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        duanxiongchun@bytedance.com, fam.zheng@bytedance.com,
-        bsingharora@gmail.com, shy828301@gmail.com, alexs@kernel.org,
-        smuchun@gmail.com, zhengqi.arch@bytedance.com,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v2 09/13] mm: memcontrol: introduce memcg_reparent_ops
-Date:   Thu, 16 Sep 2021 21:47:44 +0800
-Message-Id: <20210916134748.67712-10-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
-In-Reply-To: <20210916134748.67712-1-songmuchun@bytedance.com>
-References: <20210916134748.67712-1-songmuchun@bytedance.com>
+        Thu, 16 Sep 2021 09:49:09 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 28A233200976;
+        Thu, 16 Sep 2021 09:47:48 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Thu, 16 Sep 2021 09:47:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=ZsbUYBExbqhrIvcodkWis41pjnV
+        EaK1V3/eLOX62TBQ=; b=W+s6UTB6l8lSVuMjAxWYuNkuG8F7xxYigx53h6P0ioI
+        4DidS0a/xXDLC330xrwf1TBWMHWNO4nthqwr3+NmAg4CYWDNxCH8kb2RrrsYiW0e
+        BmveAq4tgqg+4Hx64XzcNqr8pb2QDxt9rQk7kqQLQgJ9UmMamVLz5zSh3xUxEvFl
+        UgLBvjlUnVaGUJDKDe/73amPv8D8e9ojLnHvdCoSGTY4LfBoo8Jf+sgLLJtDbSv/
+        xS6834GcIV1va1Zz2h/hWQHTlarqXFTqcxTCYIAYFMc7D1Q2fNTipuy/VJ3Nf5Od
+        kOKutV+K7ddIHRx3Vh+KrypT2Yp1bn3JXEXPSwuJ3Gw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=ZsbUYB
+        ExbqhrIvcodkWis41pjnVEaK1V3/eLOX62TBQ=; b=jSJLqlrt0ZVjNe9Xj/KMZJ
+        TbtDTvi7HORgYAVtc6ZEV1U+5wp0t9J73aFA/vy0mOntfJkDBCpMwSfWc/4WSvhQ
+        aJsfKuolUOmrDJFLYLRR8CBelIkNYgordHlGe6sBBTT5YgUCFKu/SH7crSf+ab+O
+        xOD5BefIxge3+nHBAbiqZvlpP/QuPQqXYF2p1lRHrcHAjpgrxODT1j5lFV+iWa5G
+        N76k1xVXlp3DOYZhyl0gOnk/bIlywMSk3+zEksCmYtMYd9ROA0nJmIrXJC1OYP3W
+        2UNechr5oPDImK5yf+YccfGvo/QeayS+mo2J1CpHpXcYSQY51PhBxmoqjxaBcF+w
+        ==
+X-ME-Sender: <xms:AktDYUJc1hmn3vnqglBnsH4U2c0M9qpvBv-Zt-zxMdZFCtiPljRJbA>
+    <xme:AktDYUKw9iejnp3gWuU57bbRSMfhhPbQBv6gQvcWjxgy6jugkqwmwg7eZEGjiAkLr
+    W-B63Yf1i0-m6cvdMc>
+X-ME-Received: <xmr:AktDYUuwnFb2WovRidvArhBpjyjDbn67NQKl_iRYIvDNuWG0-yL36CBi5liIU8bw7Jo_HYLT9eG9zTnfxs0mqAAeAn1afUYj4frA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudehgedgieefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
+    grgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:AktDYRbeIXtb8CNe4T_GFjWWFmYZbbhbSxOmhqvzbkvi-AWp-JHtxA>
+    <xmx:AktDYbYXf-et9YM1lCtxJu5W1d72JMv7eVWavilMAVFHlfFvZrujjA>
+    <xmx:AktDYdA4GfEICEcMs0NeC-xnzggsww-5N-UoLtB-0mtPveHjcRwl8A>
+    <xmx:A0tDYf7OVKMmnwE975Gbg2JIqxN3KF-pb3nDk-cqhDhfDvwWpyxFlA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 16 Sep 2021 09:47:46 -0400 (EDT)
+Date:   Thu, 16 Sep 2021 15:47:45 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     Chen-Yu Tsai <wens@csie.org>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/sun4i: dsi: Make use of the helper function
+ dev_err_probe()
+Message-ID: <20210916134745.xhnnu6gszcvlxxvy@gilmour>
+References: <20210916105625.12109-1-caihuoqing@baidu.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="6g2ybwxxr5blhdme"
+Content-Disposition: inline
+In-Reply-To: <20210916105625.12109-1-caihuoqing@baidu.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the previous patch, we know how to make the lruvec lock safe when the
-LRU pages reparented. We should do something like following.
 
-    memcg_reparent_objcgs(memcg)
-        1) lock
-        // lruvec belongs to memcg and lruvec_parent belongs to parent memcg.
-        spin_lock(&lruvec->lru_lock);
-        spin_lock(&lruvec_parent->lru_lock);
+--6g2ybwxxr5blhdme
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-        2) do reparent
-        // Move all the pages from the lruvec list to the parent lruvec list.
+On Thu, Sep 16, 2021 at 06:56:24PM +0800, Cai Huoqing wrote:
+> When possible use dev_err_probe help to properly deal with the
+> PROBE_DEFER error, the benefit is that DEFER issue will be logged
+> in the devices_deferred debugfs file.
+> And using dev_err_probe() can reduce code size, the error value
+> gets printed.
+>=20
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
 
-        3) unlock
-        spin_unlock(&lruvec_parent->lru_lock);
-        spin_unlock(&lruvec->lru_lock);
+Applied, thanks
+Maxime
 
-Apart from the page lruvec lock, the deferred split queue lock (THP only)
-also needs to do something similar. So we extract the necessary three steps
-in the memcg_reparent_objcgs().
+--6g2ybwxxr5blhdme
+Content-Type: application/pgp-signature; name="signature.asc"
 
-    memcg_reparent_objcgs(memcg)
-        1) lock
-        memcg_reparent_ops->lock(memcg, parent);
+-----BEGIN PGP SIGNATURE-----
 
-        2) reparent
-        memcg_reparent_ops->reparent(memcg, reparent);
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYUNLAQAKCRDj7w1vZxhR
+xTMPAQDzNZ+t8LIuIVzLhPMZ/9gUqrnyYy7kPviLapc0Zu6l9AD/TygXQ+IKJysl
+7C52jM60DNbDDF+Wnmktxs+JaD2sxwE=
+=/2Gv
+-----END PGP SIGNATURE-----
 
-        3) unlock
-        memcg_reparent_ops->unlock(memcg, reparent);
-
-Now there are two different locks (e.g. lruvec lock and deferred split
-queue lock) need to use this infrastructure. In the next patch, we will
-use those APIs to make those locks safe when the LRU pages reparented.
-
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- include/linux/memcontrol.h |  7 +++++++
- mm/memcontrol.c            | 43 +++++++++++++++++++++++++++++++++++++++++--
- 2 files changed, 48 insertions(+), 2 deletions(-)
-
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index ab3cd844e91d..18344c1f4333 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -350,6 +350,13 @@ struct mem_cgroup {
- 	struct mem_cgroup_per_node *nodeinfo[];
- };
- 
-+struct memcg_reparent_ops {
-+	/* Irq is disabled before calling those callbacks. */
-+	void (*lock)(struct mem_cgroup *memcg, struct mem_cgroup *parent);
-+	void (*unlock)(struct mem_cgroup *memcg, struct mem_cgroup *parent);
-+	void (*reparent)(struct mem_cgroup *memcg, struct mem_cgroup *parent);
-+};
-+
- /*
-  * size of first charge trial. "32" comes from vmscan.c's magic value.
-  * TODO: maybe necessary to use big numbers in big irons.
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 16db5b39cb81..3a73fd192734 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -333,6 +333,35 @@ static struct obj_cgroup *obj_cgroup_alloc(void)
- 	return objcg;
- }
- 
-+static const struct memcg_reparent_ops *memcg_reparent_ops[] = {};
-+
-+static void memcg_reparent_lock(struct mem_cgroup *memcg,
-+				struct mem_cgroup *parent)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(memcg_reparent_ops); i++)
-+		memcg_reparent_ops[i]->lock(memcg, parent);
-+}
-+
-+static void memcg_reparent_unlock(struct mem_cgroup *memcg,
-+				  struct mem_cgroup *parent)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(memcg_reparent_ops); i++)
-+		memcg_reparent_ops[i]->unlock(memcg, parent);
-+}
-+
-+static void memcg_do_reparent(struct mem_cgroup *memcg,
-+			      struct mem_cgroup *parent)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(memcg_reparent_ops); i++)
-+		memcg_reparent_ops[i]->reparent(memcg, parent);
-+}
-+
- static void memcg_reparent_objcgs(struct mem_cgroup *memcg)
- {
- 	struct obj_cgroup *objcg, *iter;
-@@ -342,9 +371,13 @@ static void memcg_reparent_objcgs(struct mem_cgroup *memcg)
- 	if (!parent)
- 		parent = root_mem_cgroup;
- 
-+	local_irq_disable();
-+
-+	memcg_reparent_lock(memcg, parent);
-+
- 	objcg = rcu_replace_pointer(memcg->objcg, NULL, true);
- 
--	spin_lock_irq(&css_set_lock);
-+	spin_lock(&css_set_lock);
- 
- 	/* 1) Ready to reparent active objcg. */
- 	list_add(&objcg->list, &memcg->objcg_list);
-@@ -354,7 +387,13 @@ static void memcg_reparent_objcgs(struct mem_cgroup *memcg)
- 	/* 3) Move already reparented objcgs to the parent's list */
- 	list_splice(&memcg->objcg_list, &parent->objcg_list);
- 
--	spin_unlock_irq(&css_set_lock);
-+	spin_unlock(&css_set_lock);
-+
-+	memcg_do_reparent(memcg, parent);
-+
-+	memcg_reparent_unlock(memcg, parent);
-+
-+	local_irq_enable();
- 
- 	percpu_ref_kill(&objcg->refcnt);
- }
--- 
-2.11.0
-
+--6g2ybwxxr5blhdme--
