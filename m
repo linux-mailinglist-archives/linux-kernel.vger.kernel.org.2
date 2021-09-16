@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 735F140E396
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:21:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D23B40E13C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:29:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345430AbhIPQuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:50:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58604 "EHLO mail.kernel.org"
+        id S242087AbhIPQ2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:28:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59262 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344419AbhIPQpS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:45:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A110361A62;
-        Thu, 16 Sep 2021 16:26:00 +0000 (UTC)
+        id S241665AbhIPQT6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:19:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EE43960F5B;
+        Thu, 16 Sep 2021 16:13:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809561;
-        bh=SRdQCPEwZvVgjGZFCEs93cZmMKILet+Vok/yBQz6qTg=;
+        s=korg; t=1631808834;
+        bh=f/x94BKXVtLCgWGdN4LWr4PMGYpzsb3r3DjsQl4NM0o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uQHmcJVkPHqeozCMWRZ1frCULMFVmJsROS8ZhOrRHsHczljMowx8k9odpiCBDovTN
-         yoRvPU9ToPzcVmlqgNjWZuLpu9IeMnGmswjgJF/Wf2Q5NsG5TV07lSIwCvzzpv+hUf
-         C5gvkENH4dgTIwrxMJSq4AVqycgsfWepxsP8smtA=
+        b=0TNNX+Z3Bi9ov/BUQm97o70lonXyiw1LyxKU1KIF4iwAbxLB6xn0nZWIu77oDdSYe
+         Zlqkwf9s0kDmLbUMHRWyDA+/+/BzgLzaKjypdP2BhfljvHJvBFBfn0HHndoX9pZvJH
+         Xiwq+UZAxcwhu6NIQXoDJGnMP0FrG5Wf+tzRDa9Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, TOTE Robot <oslab@tsinghua.edu.cn>,
+        Tuo Li <islituo@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 199/380] ipv4: ip_output.c: Fix out-of-bounds warning in ip_copy_addrs()
-Date:   Thu, 16 Sep 2021 17:59:16 +0200
-Message-Id: <20210916155810.841083279@linuxfoundation.org>
+Subject: [PATCH 5.10 212/306] drm/display: fix possible null-pointer dereference in dcn10_set_clock()
+Date:   Thu, 16 Sep 2021 17:59:17 +0200
+Message-Id: <20210916155801.269374988@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,57 +41,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gustavo A. R. Silva <gustavoars@kernel.org>
+From: Tuo Li <islituo@gmail.com>
 
-[ Upstream commit 6321c7acb82872ef6576c520b0e178eaad3a25c0 ]
+[ Upstream commit 554594567b1fa3da74f88ec7b2dc83d000c58e98 ]
 
-Fix the following out-of-bounds warning:
+The variable dc->clk_mgr is checked in:
+  if (dc->clk_mgr && dc->clk_mgr->funcs->get_clock)
 
-    In function 'ip_copy_addrs',
-        inlined from '__ip_queue_xmit' at net/ipv4/ip_output.c:517:2:
-net/ipv4/ip_output.c:449:2: warning: 'memcpy' offset [40, 43] from the object at 'fl' is out of the bounds of referenced subobject 'saddr' with type 'unsigned int' at offset 36 [-Warray-bounds]
-      449 |  memcpy(&iph->saddr, &fl4->saddr,
-          |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      450 |         sizeof(fl4->saddr) + sizeof(fl4->daddr));
-          |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This indicates dc->clk_mgr can be NULL.
+However, it is dereferenced in:
+    if (!dc->clk_mgr->funcs->get_clock)
 
-The problem is that the original code is trying to copy data into a
-couple of struct members adjacent to each other in a single call to
-memcpy(). This causes a legitimate compiler warning because memcpy()
-overruns the length of &iph->saddr and &fl4->saddr. As these are just
-a couple of struct members, fix this by using direct assignments,
-instead of memcpy().
+To fix this null-pointer dereference, check dc->clk_mgr and the function
+pointer dc->clk_mgr->funcs->get_clock earlier, and return if one of them
+is NULL.
 
-This helps with the ongoing efforts to globally enable -Warray-bounds
-and get us closer to being able to tighten the FORTIFY_SOURCE routines
-on memcpy().
-
-Link: https://github.com/KSPP/linux/issues/109
-Reported-by: kernel test robot <lkp@intel.com>
-Link: https://lore.kernel.org/lkml/d5ae2e65-1f18-2577-246f-bada7eee6ccd@intel.com/
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Tuo Li <islituo@gmail.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/ip_output.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ .../gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
-index 8d8a8da3ae7e..a202dcec0dc2 100644
---- a/net/ipv4/ip_output.c
-+++ b/net/ipv4/ip_output.c
-@@ -446,8 +446,9 @@ static void ip_copy_addrs(struct iphdr *iph, const struct flowi4 *fl4)
- {
- 	BUILD_BUG_ON(offsetof(typeof(*fl4), daddr) !=
- 		     offsetof(typeof(*fl4), saddr) + sizeof(fl4->saddr));
--	memcpy(&iph->saddr, &fl4->saddr,
--	       sizeof(fl4->saddr) + sizeof(fl4->daddr));
-+
-+	iph->saddr = fl4->saddr;
-+	iph->daddr = fl4->daddr;
- }
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
+index 0d1e7b56fb39..532f6a1145b5 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
+@@ -3740,13 +3740,12 @@ enum dc_status dcn10_set_clock(struct dc *dc,
+ 	struct dc_clock_config clock_cfg = {0};
+ 	struct dc_clocks *current_clocks = &context->bw_ctx.bw.dcn.clk;
  
- /* Note: skb->sk can be different from sk, in case of tunnels */
+-	if (dc->clk_mgr && dc->clk_mgr->funcs->get_clock)
+-				dc->clk_mgr->funcs->get_clock(dc->clk_mgr,
+-						context, clock_type, &clock_cfg);
+-
+-	if (!dc->clk_mgr->funcs->get_clock)
++	if (!dc->clk_mgr || !dc->clk_mgr->funcs->get_clock)
+ 		return DC_FAIL_UNSUPPORTED_1;
+ 
++	dc->clk_mgr->funcs->get_clock(dc->clk_mgr,
++		context, clock_type, &clock_cfg);
++
+ 	if (clk_khz > clock_cfg.max_clock_khz)
+ 		return DC_FAIL_CLK_EXCEED_MAX;
+ 
+@@ -3764,7 +3763,7 @@ enum dc_status dcn10_set_clock(struct dc *dc,
+ 	else
+ 		return DC_ERROR_UNEXPECTED;
+ 
+-	if (dc->clk_mgr && dc->clk_mgr->funcs->update_clocks)
++	if (dc->clk_mgr->funcs->update_clocks)
+ 				dc->clk_mgr->funcs->update_clocks(dc->clk_mgr,
+ 				context, true);
+ 	return DC_OK;
 -- 
 2.30.2
 
