@@ -2,91 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1E3A40DDFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 17:30:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B2C240DDFA
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 17:30:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239161AbhIPPbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 11:31:34 -0400
-Received: from mout.gmx.net ([212.227.15.15]:40777 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238967AbhIPPbc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S239146AbhIPPbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 16 Sep 2021 11:31:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1631806192;
-        bh=9S4rziGDk/XnX1ilrM487cBPhExkLOTdPPxWzVzXfhc=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject;
-        b=VeLi6F1wKxncsX5OZsTz0GaS3jU+uPGqSYPbUTocatNOI+BbM5NeQ0lrsWZuGT0hv
-         Lomh3YlCAZLNsKjkDCzjPAjAdDJZXAPn/n4apfjFDKOEL+mb/5OUPYgFUF66a9vHhS
-         MrY67HYeaKFiB70f8SET8PbV2QbftSulQzthyIHQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from ls3530 ([92.116.154.218]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MnakR-1n9ozK31qX-00jdGQ; Thu, 16
- Sep 2021 17:29:51 +0200
-Date:   Thu, 16 Sep 2021 17:29:46 +0200
-From:   Helge Deller <deller@gmx.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
-Cc:     Guenter Roeck <linux@roeck-us.net>
-Subject: [GIT PULL] parisc architecture warning fix for kernel v5.15-rc2
-Message-ID: <YUNi6hTcS8nUrrpF@ls3530>
+Received: from mga11.intel.com ([192.55.52.93]:64133 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238988AbhIPPbb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 11:31:31 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10109"; a="219403588"
+X-IronPort-AV: E=Sophos;i="5.85,298,1624345200"; 
+   d="scan'208";a="219403588"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2021 08:30:08 -0700
+X-IronPort-AV: E=Sophos;i="5.85,298,1624345200"; 
+   d="scan'208";a="482750265"
+Received: from mpbarre-mobl1.amr.corp.intel.com (HELO [10.212.167.35]) ([10.212.167.35])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2021 08:30:08 -0700
+Subject: Re: [PATCH 12/14] selftests/sgx: Add page permission and exception
+ test
+To:     Reinette Chatre <reinette.chatre@intel.com>,
+        linux-sgx@vger.kernel.org, jarkko@kernel.org, shuah@kernel.org
+Cc:     seanjc@google.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1631731214.git.reinette.chatre@intel.com>
+ <a6e69ea22a2694d252302af283ee3e3f023d3577.1631731214.git.reinette.chatre@intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <9990d737-9b9c-911f-3850-c9f3bc43c29b@intel.com>
+Date:   Thu, 16 Sep 2021 08:30:05 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Provags-ID: V03:K1:320d/I+FgMCCu5pnyCi58+GJ49VX+EP+MegT1c1/k/t1giePYLe
- 0E1iwiDOY9MCoTfZPXRDNNSLXdBbcJL4EfN1ku2KCLa/Z9sekCcPa0yahYsI5re9GPco4iK
- IthxUjYdKLkgHEbXTk8ofiwt07LEZW0nZkTZK7bJIQTpaWfB/xy48njeLTpW00R0EzHsXF0
- ZnOyz7bqtiGJva98R85hQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Vxg8q6NxpDE=:ryXUBfHW0Y6bcDm2pQAfPs
- jKm+OPBrjlx3ddAhCg8egp+E67jKovPpHcUtV0sQHITOliKbzOBjHtvHXG67kcG80rMIVQBJR
- PWZo7ISVKvAsoQtjo6CVmG+56Nh2xnOHyNc8SWOgx9bGf1O673Ei5si8Nm8yJbjatqd0lKMJL
- b1ic0Sjzopb9cP2SVtjFx5772gBze9nLREodnJDtSrfS/DLx92SnIXXyyqVfO4FRt/FtYMLSA
- RCbRdXXwA321DliSd3Cq6gL+ishZjhAFW4FznUPGjERYhKjJs3aGzCrGQ0y3NH4xLvbj854w4
- DBHZvWK1Xg4LC7MRup0IhxAO3btLiljjDqhCYl/SEqr+c6KhQvCQZHNLWClSoTQ5h/3T0C/jW
- QQB+jaHowBRfH0WfVAILXpzBKK+cm72IcG9/CICqiHWgrUstLpBm6MVWeqn2iwX99JLMTYl/e
- 0vHZ0p6r3xeZ+OPXcWOh5BapNkPWxrpfC0IUmON/aM5v4gmAXDHfbpcziIXh9RCt8wjXdbZ29
- 7g23fQPm61z2MoM7Mqw6negT0VtVDhfbpP0xxfcgdOTsRwz6UuJoZ+S4+SUm/8w0SlIp1I2gz
- dCicheNBTvTTlw56Uh6rw2dr/u/f0L8CnHyIN5ZvcDZJil6rTb+XthJ2s+genRcCnd3Cb0Z41
- ZZvk0sef+h44VTCmKOTO45W5ZmumGEP2hlsY/m8q6+d1wPpLzCTwdOl2sDsQiHHMaDfuVT+EZ
- jEYDFz+kImSEZFZJo1TSdsxCS+faC/q+98LaBk1lMGeOc9wlFs5evboWjJjS/OoZH2zElBifJ
- YKyBolXxE9e23hY5djCva1xYQsEgCcjQal70KatRGkFk1yEzLdXEvrEKYTb6gnLLXYIdfO6N7
- iSx5G4dl2HMAeAbumFO4TYFxjuvrW2o6Ui41d2iJDTJ/XzDF3Ic0UKkgzaGlmMX3jQ+wz7Laf
- DVjv6xl8iXbHtgh77FwPb9Pa/N4hRUs8vEr1rrx3XiUC6hgPUu/LeDDAruDOBLqhIq6FsHHyn
- P0gpnMVBxqUfX9GrtyzaSjTaO8AKSCLxEsoMGPk7I+O+Jf3bXrYiyBeX9aXsj4ttXr3oAt2GZ
- N2PMuCevvgg3fM=
+In-Reply-To: <a6e69ea22a2694d252302af283ee3e3f023d3577.1631731214.git.reinette.chatre@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On 9/15/21 1:31 PM, Reinette Chatre wrote:
+> Add a test to ensure that (1) PTE permissions can be changed as long as
+> they do not exceed EPCM permissions, and (2) even if EPCM permissions
+> allow a page to be written to, if the PTE permissions do not then a #PF
+> should be generated when attempting to write to a (from PTE perspective)
+> read-only page.
 
-please pull one parisc architecture warning fix for kernel 5.15-rc2 from:
+It took me a minute to figure out what this was trying to say.  Maybe
+breaking it down into these three steps would help:
 
-  http://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git tags/for-5.15/parisc-4
+Add a test that:
+ (1) Creates an SGX enclave page with writable EPCM permission
+ (2) Changes the PTE permission on the page to read-only.  This should
+     be permitted because the permission does not exceed the EPCM
+     permission.
+ (3) Attempts a write to the page and generate a page fault (#PF)
+     because of the read-only PTE.
 
-One patch which fixes a build warning when using the PAGE0 pointer.
-
-Thanks,
-Helge
-
-------------
-The following changes since commit ff1ffd71d5f0612cf194f5705c671d6b64bf5f91:
-
-  Merge tag 'hyperv-fixes-signed-20210915' of git://git.kernel.org/pub/scm/linux/kernel/git/hyperv/linux (2021-09-15 17:18:56 -0700)
-
-are available in the Git repository at:
-
-  http://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-5.15-4
-
-for you to fetch changes up to 90cc7bed1ed19f869ae7221a6b41887fe762a6a3:
-
-  parisc: Use absolute_pointer() to define PAGE0 (2021-09-16 08:35:42 +0200)
-
-----------------------------------------------------------------
-Helge Deller (1):
-      parisc: Use absolute_pointer() to define PAGE0
-
- arch/parisc/include/asm/page.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
