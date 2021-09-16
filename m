@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61D8A40E87E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 086B240E218
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:15:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354476AbhIPRkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:40:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50250 "EHLO mail.kernel.org"
+        id S243938AbhIPQeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:34:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38934 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244752AbhIPRbv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:31:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D5D361A61;
-        Thu, 16 Sep 2021 16:47:04 +0000 (UTC)
+        id S241916AbhIPQ00 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:26:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D98CE6124B;
+        Thu, 16 Sep 2021 16:17:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810825;
-        bh=6+FigFe1JfRp3EsUrqy4XkTFd6p4WNxKygRAKeaCjxE=;
+        s=korg; t=1631809031;
+        bh=86SkcsOZkAWlN95A54tyIhtwcSWmeBkWL2qRJF9eVT8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qoNdNFNNL5544OXUeFyo59SaNwQaKGXVW0eZQAz4umyzT8albjSHtfMEGCTq5Ym09
-         qKVdQB+UEzAGXTSLHo8L6WcScOH/8PooXbsjUUV69+nIYp9XmuEYIe8hR65TYWVIeM
-         Y8o9bY/Si6CIALeU2GNTzyARwZjC7bXceUsJ9moQ=
+        b=LHqTOrU339b7tF/WTbhOh7fC/utx6rd9NZHfRdTdJZ//BO+hdkCdZ8qrbX+VyV0RC
+         7qfKPeTgkAsfw89kwXHC0G0fC2MB3xCn7VQuf1+3WSkvS+xgGoUxVnuzSn6RWsk7z+
+         ONpE7jh9A8xSSlN/HvKaNEuVPdpl+RLfIjX9Y9+U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Basavaraj Natikar <Basavaraj.Natikar@amd.com>,
-        Sanjay R Mehta <sanju.mehta@amd.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 282/432] thunderbolt: Fix port linking by checking all adapters
-Date:   Thu, 16 Sep 2021 18:00:31 +0200
-Message-Id: <20210916155820.371039093@linuxfoundation.org>
+        stable@vger.kernel.org, Mike Kravetz <mike.kravetz@oracle.com>,
+        Guillaume Morin <guillaume@morinfr.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.10 287/306] hugetlb: fix hugetlb cgroup refcounting during vma split
+Date:   Thu, 16 Sep 2021 18:00:32 +0200
+Message-Id: <20210916155803.886798245@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,43 +41,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sanjay R Mehta <sanju.mehta@amd.com>
+From: Mike Kravetz <mike.kravetz@oracle.com>
 
-[ Upstream commit 42716425ad7e1b6529ec61c260c11176841f4b5f ]
+commit 09a26e832705fdb7a9484495b71a05e0bbc65207 upstream.
 
-In tb_switch_default_link_ports(), while linking of ports,
-only odd-numbered ports (1,3,5..) are considered and even-numbered
-ports are not considered.
+Guillaume Morin reported hitting the following WARNING followed by GPF or
+NULL pointer deference either in cgroups_destroy or in the kill_css path.:
 
-AMD host router has lane adapters at 2 and 3 and link ports at adapter 2
-is not considered due to which lane bonding gets disabled.
+    percpu ref (css_release) <= 0 (-1) after switching to atomic
+    WARNING: CPU: 23 PID: 130 at lib/percpu-refcount.c:196 percpu_ref_switch_to_atomic_rcu+0x127/0x130
+    CPU: 23 PID: 130 Comm: ksoftirqd/23 Kdump: loaded Tainted: G           O      5.10.60 #1
+    RIP: 0010:percpu_ref_switch_to_atomic_rcu+0x127/0x130
+    Call Trace:
+       rcu_core+0x30f/0x530
+       rcu_core_si+0xe/0x10
+       __do_softirq+0x103/0x2a2
+       run_ksoftirqd+0x2b/0x40
+       smpboot_thread_fn+0x11a/0x170
+       kthread+0x10a/0x140
+       ret_from_fork+0x22/0x30
 
-Hence added a fix such that all ports are considered during
-linking of ports.
+Upon further examination, it was discovered that the css structure was
+associated with hugetlb reservations.
 
-Signed-off-by: Basavaraj Natikar <Basavaraj.Natikar@amd.com>
-Signed-off-by: Sanjay R Mehta <sanju.mehta@amd.com>
-Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+For private hugetlb mappings the vma points to a reserve map that
+contains a pointer to the css.  At mmap time, reservations are set up
+and a reference to the css is taken.  This reference is dropped in the
+vma close operation; hugetlb_vm_op_close.  However, if a vma is split no
+additional reference to the css is taken yet hugetlb_vm_op_close will be
+called twice for the split vma resulting in an underflow.
+
+Fix by taking another reference in hugetlb_vm_op_open.  Note that the
+reference is only taken for the owner of the reserve map.  In the more
+common fork case, the pointer to the reserve map is cleared for
+non-owning vmas.
+
+Link: https://lkml.kernel.org/r/20210830215015.155224-1-mike.kravetz@oracle.com
+Fixes: e9fe92ae0cd2 ("hugetlb_cgroup: add reservation accounting for private mappings")
+Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+Reported-by: Guillaume Morin <guillaume@morinfr.org>
+Suggested-by: Guillaume Morin <guillaume@morinfr.org>
+Tested-by: Guillaume Morin <guillaume@morinfr.org>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/thunderbolt/switch.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/hugetlb_cgroup.h |   12 ++++++++++++
+ mm/hugetlb.c                   |    4 +++-
+ 2 files changed, 15 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/thunderbolt/switch.c b/drivers/thunderbolt/switch.c
-index 10d6b228cc94..eec59030c3a7 100644
---- a/drivers/thunderbolt/switch.c
-+++ b/drivers/thunderbolt/switch.c
-@@ -2443,7 +2443,7 @@ static void tb_switch_default_link_ports(struct tb_switch *sw)
+--- a/include/linux/hugetlb_cgroup.h
++++ b/include/linux/hugetlb_cgroup.h
+@@ -118,6 +118,13 @@ static inline void hugetlb_cgroup_put_rs
+ 	css_put(&h_cg->css);
+ }
+ 
++static inline void resv_map_dup_hugetlb_cgroup_uncharge_info(
++						struct resv_map *resv_map)
++{
++	if (resv_map->css)
++		css_get(resv_map->css);
++}
++
+ extern int hugetlb_cgroup_charge_cgroup(int idx, unsigned long nr_pages,
+ 					struct hugetlb_cgroup **ptr);
+ extern int hugetlb_cgroup_charge_cgroup_rsvd(int idx, unsigned long nr_pages,
+@@ -196,6 +203,11 @@ static inline void hugetlb_cgroup_put_rs
  {
- 	int i;
+ }
  
--	for (i = 1; i <= sw->config.max_port_number; i += 2) {
-+	for (i = 1; i <= sw->config.max_port_number; i++) {
- 		struct tb_port *port = &sw->ports[i];
- 		struct tb_port *subordinate;
++static inline void resv_map_dup_hugetlb_cgroup_uncharge_info(
++						struct resv_map *resv_map)
++{
++}
++
+ static inline int hugetlb_cgroup_charge_cgroup(int idx, unsigned long nr_pages,
+ 					       struct hugetlb_cgroup **ptr)
+ {
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -3659,8 +3659,10 @@ static void hugetlb_vm_op_open(struct vm
+ 	 * after this open call completes.  It is therefore safe to take a
+ 	 * new reference here without additional locking.
+ 	 */
+-	if (resv && is_vma_resv_set(vma, HPAGE_RESV_OWNER))
++	if (resv && is_vma_resv_set(vma, HPAGE_RESV_OWNER)) {
++		resv_map_dup_hugetlb_cgroup_uncharge_info(resv);
+ 		kref_get(&resv->refs);
++	}
+ }
  
--- 
-2.30.2
-
+ static void hugetlb_vm_op_close(struct vm_area_struct *vma)
 
 
