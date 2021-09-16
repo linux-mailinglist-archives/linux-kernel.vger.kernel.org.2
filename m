@@ -2,78 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 983FE40EA3A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:48:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3E4540EA47
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:54:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242690AbhIPSto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 14:49:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50524 "EHLO
+        id S245683AbhIPSz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 14:55:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241232AbhIPStf (ORCPT
+        with ESMTP id S245451AbhIPSzW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 14:49:35 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A998CC10F0AD;
-        Thu, 16 Sep 2021 10:30:15 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id lb1-20020a17090b4a4100b001993f863df2so5280467pjb.5;
-        Thu, 16 Sep 2021 10:30:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ebkOsHOS3BmA29HrPh4F0iuDS711PPxxicUxo8bOCF0=;
-        b=Q3Lckh7REMO0mYPsXfnrDd4d3IauqlyD668D+HZloI4P8Pb0p3sNbu+Q9rJQtzLGe7
-         hBi77SylodtNTy74FSA8OqahTd5no8zdn0BME/mt41bLbVfSQsyEMikUJAgVxenyNT4a
-         hOCGj+q5HIbG3dep00yN5/niPoZHBER5Vf/761JeEWJsYOUMe4fLbn5y7kw/xblSQO3K
-         CdsrNzcXEKcVoKArP3CkGXQs7tR0viGKB1OZ1mmA9c0HJiP1+x3XTikpu7oQOjlFGQiv
-         hp6izB5z5vGkW5fzFJESmD+/xHdvV8z6N6075MXxHOQ8q/Yn4KekTLQZ6gbaUfCO48JW
-         t1ag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ebkOsHOS3BmA29HrPh4F0iuDS711PPxxicUxo8bOCF0=;
-        b=OE1RvJc5tRogepAxp7rifwmIwgDlYrcgSZB1YTlz5qyPdr5IA0ddDfEWb8no6Qi80G
-         A6HgzZd7wGdQMtPCxU/F45cW87BkyHaKOAanJMTEc3JyfkJ191pkNEiF5TWdmCJmnU/F
-         lWs9VrRRqLax25mvDTTLYJ4Om931IAs4ceTuCcVHvooyX2IXc/2jA46Tqkr8J5j2ZbdE
-         0QehofwcbgmGD2bHeU7/DwRx8jp7cXpLygGjHAa1TydxsjDcq/hXSeXTDgMQhiNz40C0
-         1/Yj8xkurl3DNWB4MLuH0Tu5WJUfR/ZQFcXqLxcqCxu2f75IabyIzlj22svn7svB/4qH
-         rkxg==
-X-Gm-Message-State: AOAM530/rvnOHoB3kahOPZtKzrGikM6BgimFWrX9wc4u5md3PkEfgi1n
-        zze5LxftveHjiugeMfosuEgHFd/4tzmHBw16zTY=
-X-Google-Smtp-Source: ABdhPJzJJGrYThXV1bJ16bIQ8TES6HlXKBAj5USX9HKny21PIXrS6nFe/L33RGAuh05KGXKzLrCTvbVM4ncB8sGD4Mo=
-X-Received: by 2002:a17:903:32c6:b0:13b:9cd4:908d with SMTP id
- i6-20020a17090332c600b0013b9cd4908dmr5859504plr.20.1631813415024; Thu, 16 Sep
- 2021 10:30:15 -0700 (PDT)
+        Thu, 16 Sep 2021 14:55:22 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 296B2C0A88C4;
+        Thu, 16 Sep 2021 10:53:09 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f11c6001e49ea6afe1054f5.dip0.t-ipconnect.de [IPv6:2003:ec:2f11:c600:1e49:ea6a:fe10:54f5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 975A31EC0277;
+        Thu, 16 Sep 2021 19:53:03 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1631814783;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=EEkuSQCOMaoXJOs3sjBNoQG569101MNKKDHKzzaH6BA=;
+        b=gB9bssBwKtntsSk6SjyASK0fEoVxVOrTA+b7MYDuZ2k3mhJVVa90o3dHzqyz+RqjVwvJtG
+        XyztbHk0mwKTHy3MdPB1mOJzitX4JtNoAHIiHlfIY9T4piwATl9/TQfhZVOlj86N2wHwlh
+        iTcoSBJhW5WBSs1UjcH8NL/7xda00nE=
+Date:   Thu, 16 Sep 2021 19:52:57 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     David Edmondson <dme@dme.org>, linux-kernel@vger.kernel.org,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        David Matlack <dmatlack@google.com>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jim Mattson <jmattson@google.com>,
+        David Edmondson <david.edmondson@oracle.com>
+Subject: Re: [PATCH v5 1/4] KVM: x86: Clarify the kvm_run.emulation_failure
+ structure layout
+Message-ID: <YUOEeceHJFI6JJaJ@zn.tnic>
+References: <20210916083239.2168281-1-david.edmondson@oracle.com>
+ <20210916083239.2168281-2-david.edmondson@oracle.com>
+ <YUNu2npJv2LPBRop@google.com>
 MIME-Version: 1.0
-References: <20210916161111.7f44d2a3@canb.auug.org.au>
-In-Reply-To: <20210916161111.7f44d2a3@canb.auug.org.au>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 16 Sep 2021 10:30:04 -0700
-Message-ID: <CAADnVQJ+BnWKf61rfDhKsOv05yFRXeRrMs4d443dcSOycaTRcg@mail.gmail.com>
-Subject: Re: linux-next: Tree for Sep 16
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jiri Olsa <jolsa@kernel.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YUNu2npJv2LPBRop@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 11:11 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> Changes since 20210915:
->
-> The bpf-next tree still had its build failure so I used the version from
-> next-20210913.
+On Thu, Sep 16, 2021 at 04:20:42PM +0000, Sean Christopherson wrote:
+> On Thu, Sep 16, 2021, David Edmondson wrote:
+> 
+> For all these patches, assuming you want the Author credit to go to your @oracle.com
+> email, they need an explicit
+> 
+>   From: David Edmondson <david.edmondson@oracle.com>
+> 
+> otherwise git will default to the "From" email header and make the Author
+> "David Edmondson <dme@dme.org>".  And then checkpatch will rightly complain that
+> the SOB does not match the Author.
+> 
+> Adding From: can be handled automatically by "git format-patch" via "--from", e.g.
+> 
+>   git format-patch --from="David Edmondson <dme@dme.org>" ...
 
-Arnaldo,
+Or you can put
 
-could you please push Andrii's fix into your tree asap
-and then cleanup/follow up with a better fix if necessary?
+[user]
+        name = David Edmondson
+        email = david.edmondson@oracle.com
+
+in .git/config and then it'll use that as the author and you can send
+from any random mail service using git send-email it'll slap the From:
+correctly.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
