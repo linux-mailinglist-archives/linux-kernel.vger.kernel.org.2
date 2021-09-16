@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 746C740E6E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:31:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBCA340E155
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:29:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346961AbhIPR0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:26:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43508 "EHLO mail.kernel.org"
+        id S242732AbhIPQ33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:29:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350881AbhIPRSA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:18:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 372E261423;
-        Thu, 16 Sep 2021 16:40:44 +0000 (UTC)
+        id S241183AbhIPQPT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:15:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F1162613AC;
+        Thu, 16 Sep 2021 16:11:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810444;
-        bh=3QzOoWllqrVwAdmoOqhylwbj530Jk04mhqnaBOffYo8=;
+        s=korg; t=1631808675;
+        bh=QoClUXnsgUsdkKIUK3S7YihV40s5FkTGnHPGa3PGaME=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nd0oPe0/oygwtB065DjZLDVRrHd7Zb8XdK3P9SZhoolqOejG0aHHg3DEgKQZJeQav
-         Hx2o0OZ93Xct70bjS08bFhdjHEhVbX7c0rLeaIBQCakNGEhdgxwF0we2qAaiJb7WcU
-         Sl4S/CCjCiFhel5y84rWyTR1PItUXAVxXefV6eU0=
+        b=bkaDilMsJ9f1doBP2lnXeoVAmjGR0KElIcSMnjy3GtLrzRk4xiaoekXiQFw1+u++b
+         GKiJMe5cHSh5k3db8dcsez8hTB67nQSD4wok7fndSuihh4mIFInP/xhR43YB+y43oc
+         H7fL7rvR/g2SvufnDcKbGrrQUfGvs0UY8pNPVUzU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Howells <dhowells@redhat.com>,
-        Jeff Layton <jlayton@redhat.com>, linux-cachefs@redhat.com,
+        stable@vger.kernel.org, Oak Zeng <Oak.Zeng@amd.com>,
+        Christian Konig <christian.koenig@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 144/432] fscache: Fix cookie key hashing
+Subject: [PATCH 5.10 148/306] drm/amdgpu: Fix a printing message
 Date:   Thu, 16 Sep 2021 17:58:13 +0200
-Message-Id: <20210916155815.643366765@linuxfoundation.org>
+Message-Id: <20210916155759.101621605@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,133 +41,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Howells <dhowells@redhat.com>
+From: Oak Zeng <Oak.Zeng@amd.com>
 
-[ Upstream commit 35b72573e977ed6b18b094136a4fa3e0ffb13603 ]
+[ Upstream commit 95f71f12aa45d65b7f2ccab95569795edffd379a ]
 
-The current hash algorithm used for hashing cookie keys is really bad,
-producing almost no dispersion (after a test kernel build, ~30000 files
-were split over just 18 out of the 32768 hash buckets).
+The printing message "PSP loading VCN firmware" is mis-leading because
+people might think driver is loading VCN firmware. Actually when this
+message is printed, driver is just preparing some VCN ucode, not loading
+VCN firmware yet. The actual VCN firmware loading will be in the PSP block
+hw_init. Fix the printing message
 
-Borrow the full_name_hash() hash function into fscache to do the hashing
-for cookie keys and, in the future, volume keys.
-
-I don't want to use full_name_hash() as-is because I want the hash value to
-be consistent across arches and over time as the hash value produced may
-get used on disk.
-
-I can also optimise parts of it away as the key will always be a padded
-array of aligned 32-bit words.
-
-Fixes: ec0328e46d6e ("fscache: Maintain a catalogue of allocated cookies")
-Signed-off-by: David Howells <dhowells@redhat.com>
-Reviewed-by: Jeff Layton <jlayton@redhat.com>
-cc: linux-cachefs@redhat.com
-Link: https://lore.kernel.org/r/162431201844.2908479.8293647220901514696.stgit@warthog.procyon.org.uk/
+Signed-off-by: Oak Zeng <Oak.Zeng@amd.com>
+Reviewed-by: Christian Konig <christian.koenig@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/fscache/cookie.c   | 14 +-------------
- fs/fscache/internal.h |  2 ++
- fs/fscache/main.c     | 39 +++++++++++++++++++++++++++++++++++++++
- 3 files changed, 42 insertions(+), 13 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c | 2 +-
+ drivers/gpu/drm/amd/amdgpu/vcn_v2_0.c | 2 +-
+ drivers/gpu/drm/amd/amdgpu/vcn_v2_5.c | 2 +-
+ drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/fs/fscache/cookie.c b/fs/fscache/cookie.c
-index 751bc5b1cddf..6104f627cc71 100644
---- a/fs/fscache/cookie.c
-+++ b/fs/fscache/cookie.c
-@@ -74,10 +74,8 @@ void fscache_free_cookie(struct fscache_cookie *cookie)
- static int fscache_set_key(struct fscache_cookie *cookie,
- 			   const void *index_key, size_t index_key_len)
- {
--	unsigned long long h;
- 	u32 *buf;
- 	int bufs;
--	int i;
- 
- 	bufs = DIV_ROUND_UP(index_key_len, sizeof(*buf));
- 
-@@ -91,17 +89,7 @@ static int fscache_set_key(struct fscache_cookie *cookie,
+diff --git a/drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c b/drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c
+index aa8ae0ca62f9..e8737fa438f0 100644
+--- a/drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c
+@@ -120,7 +120,7 @@ static int vcn_v1_0_sw_init(void *handle)
+ 		adev->firmware.ucode[AMDGPU_UCODE_ID_VCN].fw = adev->vcn.fw;
+ 		adev->firmware.fw_size +=
+ 			ALIGN(le32_to_cpu(hdr->ucode_size_bytes), PAGE_SIZE);
+-		DRM_INFO("PSP loading VCN firmware\n");
++		dev_info(adev->dev, "Will use PSP to load VCN firmware\n");
  	}
  
- 	memcpy(buf, index_key, index_key_len);
--
--	/* Calculate a hash and combine this with the length in the first word
--	 * or first half word
--	 */
--	h = (unsigned long)cookie->parent;
--	h += index_key_len + cookie->type;
--
--	for (i = 0; i < bufs; i++)
--		h += buf[i];
--
--	cookie->key_hash = h ^ (h >> 32);
-+	cookie->key_hash = fscache_hash(0, buf, bufs);
- 	return 0;
- }
+ 	r = amdgpu_vcn_resume(adev);
+diff --git a/drivers/gpu/drm/amd/amdgpu/vcn_v2_0.c b/drivers/gpu/drm/amd/amdgpu/vcn_v2_0.c
+index fc939d4f4841..f493b5c3d382 100644
+--- a/drivers/gpu/drm/amd/amdgpu/vcn_v2_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/vcn_v2_0.c
+@@ -122,7 +122,7 @@ static int vcn_v2_0_sw_init(void *handle)
+ 		adev->firmware.ucode[AMDGPU_UCODE_ID_VCN].fw = adev->vcn.fw;
+ 		adev->firmware.fw_size +=
+ 			ALIGN(le32_to_cpu(hdr->ucode_size_bytes), PAGE_SIZE);
+-		DRM_INFO("PSP loading VCN firmware\n");
++		dev_info(adev->dev, "Will use PSP to load VCN firmware\n");
+ 	}
  
-diff --git a/fs/fscache/internal.h b/fs/fscache/internal.h
-index c483863b740a..aee639d980ba 100644
---- a/fs/fscache/internal.h
-+++ b/fs/fscache/internal.h
-@@ -97,6 +97,8 @@ extern struct workqueue_struct *fscache_object_wq;
- extern struct workqueue_struct *fscache_op_wq;
- DECLARE_PER_CPU(wait_queue_head_t, fscache_object_cong_wait);
+ 	r = amdgpu_vcn_resume(adev);
+diff --git a/drivers/gpu/drm/amd/amdgpu/vcn_v2_5.c b/drivers/gpu/drm/amd/amdgpu/vcn_v2_5.c
+index 2c328362eee3..ce64d4016f90 100644
+--- a/drivers/gpu/drm/amd/amdgpu/vcn_v2_5.c
++++ b/drivers/gpu/drm/amd/amdgpu/vcn_v2_5.c
+@@ -152,7 +152,7 @@ static int vcn_v2_5_sw_init(void *handle)
+ 			adev->firmware.fw_size +=
+ 				ALIGN(le32_to_cpu(hdr->ucode_size_bytes), PAGE_SIZE);
+ 		}
+-		DRM_INFO("PSP loading VCN firmware\n");
++		dev_info(adev->dev, "Will use PSP to load VCN firmware\n");
+ 	}
  
-+extern unsigned int fscache_hash(unsigned int salt, unsigned int *data, unsigned int n);
-+
- static inline bool fscache_object_congested(void)
- {
- 	return workqueue_congested(WORK_CPU_UNBOUND, fscache_object_wq);
-diff --git a/fs/fscache/main.c b/fs/fscache/main.c
-index c1e6cc9091aa..4207f98e405f 100644
---- a/fs/fscache/main.c
-+++ b/fs/fscache/main.c
-@@ -93,6 +93,45 @@ static struct ctl_table fscache_sysctls_root[] = {
- };
- #endif
+ 	r = amdgpu_vcn_resume(adev);
+diff --git a/drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c b/drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c
+index c9c888be1228..2099f6ebd833 100644
+--- a/drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c
+@@ -148,7 +148,7 @@ static int vcn_v3_0_sw_init(void *handle)
+ 			adev->firmware.fw_size +=
+ 				ALIGN(le32_to_cpu(hdr->ucode_size_bytes), PAGE_SIZE);
+ 		}
+-		DRM_INFO("PSP loading VCN firmware\n");
++		dev_info(adev->dev, "Will use PSP to load VCN firmware\n");
+ 	}
  
-+/*
-+ * Mixing scores (in bits) for (7,20):
-+ * Input delta: 1-bit      2-bit
-+ * 1 round:     330.3     9201.6
-+ * 2 rounds:   1246.4    25475.4
-+ * 3 rounds:   1907.1    31295.1
-+ * 4 rounds:   2042.3    31718.6
-+ * Perfect:    2048      31744
-+ *            (32*64)   (32*31/2 * 64)
-+ */
-+#define HASH_MIX(x, y, a)	\
-+	(	x ^= (a),	\
-+	y ^= x,	x = rol32(x, 7),\
-+	x += y,	y = rol32(y,20),\
-+	y *= 9			)
-+
-+static inline unsigned int fold_hash(unsigned long x, unsigned long y)
-+{
-+	/* Use arch-optimized multiply if one exists */
-+	return __hash_32(y ^ __hash_32(x));
-+}
-+
-+/*
-+ * Generate a hash.  This is derived from full_name_hash(), but we want to be
-+ * sure it is arch independent and that it doesn't change as bits of the
-+ * computed hash value might appear on disk.  The caller also guarantees that
-+ * the hashed data will be a series of aligned 32-bit words.
-+ */
-+unsigned int fscache_hash(unsigned int salt, unsigned int *data, unsigned int n)
-+{
-+	unsigned int a, x = 0, y = salt;
-+
-+	for (; n; n--) {
-+		a = *data++;
-+		HASH_MIX(x, y, a);
-+	}
-+	return fold_hash(x, y);
-+}
-+
- /*
-  * initialise the fs caching module
-  */
+ 	r = amdgpu_vcn_resume(adev);
 -- 
 2.30.2
 
