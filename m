@@ -2,118 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0959940E960
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:02:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AB1140E280
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:16:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240791AbhIPRxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:53:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357669AbhIPRwH (ORCPT
+        id S244509AbhIPQjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:39:13 -0400
+Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:51859 "EHLO
+        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243454AbhIPQba (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:52:07 -0400
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 324D5C061159
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 09:28:53 -0700 (PDT)
-Received: by mail-qv1-xf33.google.com with SMTP id di6so4522443qvb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 09:28:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Fdwa28QkrUk+ZMzYhJSldQN0VGRLNdcL9nebtWVtzLM=;
-        b=E8D9bW787M1G4AJpW8OuL+X3ihQtbTfv0+KAkq2GaHxXbm58syya4/spFNQre1Y+nO
-         Wd5iiVyl9haMfICfAqFi0lkL1HHDZ05Qz+MyRAL6IyNI05FjbltxRQsyXRLM0K2R43SK
-         gNCMqIqf8IxTStJ2owd7dWzkBEy4QHY5YCyAVCnT3QCZkkTmpHphZjO3jpE9apbYvFBM
-         RBXGBBQGCFnmc1y1YNwVOyPQFZSaEact8XLmstmR0q9obkRjeRKnzcCHCgc+29DlKv/H
-         R8/+slepQNIuFIQL/FkmaSjqRDeCeeF9EERoZlTJIXn//KBdq+2eew9qPrWB+NL4dpGZ
-         F1yQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Fdwa28QkrUk+ZMzYhJSldQN0VGRLNdcL9nebtWVtzLM=;
-        b=OyuFrEUuHsy368uKvLPLZwXz1Q3g61zxZy0lkAusywNdLmYnLDZfkR0PAUSZI7OFoo
-         /wvjHKlv8YIA9PIp8S1jzmYEEsaFWWlJxg7dRw6MnX10wnl+sgYlTuPW8BiBvMsKTFt/
-         mrGow+Q4UHPW02DJK28GXWCbIZk5542dY9MZQL8IlGIpc5i+nrjLgMN81Lg43hUQu4wN
-         15OhYqeTcDKjsXw2tvZAJ2TRB3KY0vky0eO3hXuioPz5C+eOknG3xPULI8d4nyDa0iiv
-         OxD4PCmClt1Yhpku6sUGA2LRRO4w0ipVnTS8v/6TdFfaTSMzpugqfwHJFWbsUTNxpsLu
-         g7Xw==
-X-Gm-Message-State: AOAM532r71USE2anZ3vWE+rVeK9QuRvR5uzNkXtdOup/c0hF7eQVjd4G
-        4GKvGbqzOlYEVRdLiS797J1NzoGoaXMBGg==
-X-Google-Smtp-Source: ABdhPJybK6E/HepS1UuLw+FCS5jvfsBeslO2m1O08/qfO7f1wUmVEzQQ0rRAEfwv0BFo/nLtA+YRkQ==
-X-Received: by 2002:a0c:f047:: with SMTP id b7mr6193496qvl.15.1631809732392;
-        Thu, 16 Sep 2021 09:28:52 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id g13sm2752589qkk.110.2021.09.16.09.28.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 09:28:51 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mQuFn-001niQ-06; Thu, 16 Sep 2021 13:28:51 -0300
-Date:   Thu, 16 Sep 2021 13:28:50 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzbot <syzbot+dc3dfba010d7671e05f5@syzkaller.appspotmail.com>,
-        dledford@redhat.com, leon@kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        Aleksandr Nogikh <nogikh@google.com>
-Subject: Re: [syzbot] KASAN: use-after-free Read in addr_handler (4)
-Message-ID: <20210916162850.GQ3544071@ziepe.ca>
-References: <000000000000ffdae005cc08037e@google.com>
- <20210915193601.GI3544071@ziepe.ca>
- <CACT4Y+bxDuLggCzkLAchrGkKQxC2v4bhc01ciBg+oc17q2=HHw@mail.gmail.com>
- <20210916130459.GJ3544071@ziepe.ca>
- <CACT4Y+aUFbj3_+iBpeP2qrQ=RbGrssr0-6EZv1nx73at7fdbfA@mail.gmail.com>
+        Thu, 16 Sep 2021 12:31:30 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.west.internal (Postfix) with ESMTP id B62142B00B18;
+        Thu, 16 Sep 2021 12:30:07 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Thu, 16 Sep 2021 12:30:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=Lqt0we4A/T0SHYBhw0ZBiteVrFa
+        e9rbK0EPrRuFl3oY=; b=LnIWuareiS2jP4nnsunZoVLeH91/ijKlwjtNs0JMLTq
+        W5SkajmnGWk707CsLe1azxnZa8myH4n+bFwA8ckwnQjA8EphQZ0JCTbh4Y6K4n92
+        g2g1F/E53xOP06kQjsn+JOMXRyEu2S88ZzuGGJQxDVYZTatLErit5ewiKV6u2BdI
+        lsdp1cZ5a3HMBapmFj07mGRW4hl42aMEFuzE7fU2OxArRkU7uz0Iikxns502WK2A
+        VurLq8I/YfExtRjENhb9CeCKHxLmcZVIj9cZsKuRCnd2TZcIYlaMPv+7tJ16zeKO
+        lv+MK8f24hm/KgC6L9xe5JnBP56ZQ7rQAeA2NIPzziw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=Lqt0we
+        4A/T0SHYBhw0ZBiteVrFae9rbK0EPrRuFl3oY=; b=hzcmiTskzfJ0LpViQyTC36
+        ukeBnRV3kVOlWsu8LkC8k3TIb0V6CrrFJkdx5Op//6RBN8W6uLa83Op2gJZ5M6bA
+        5CKZYAMI8pT3jB91IQObI/Zwdf7H9RY3lcqQvuTZhmouwzJmpjnAINJFQk9RZqCP
+        oU/PuigbRr66lGhsqy7F+GrdxXBtRVpmg3VbU/sccLOyqg5GIWO6uiqOk+75rKvi
+        GRDXS8VgLCMv6LllYt39AjMMPv/a9ZRqCUaBNHwX4nrPHQB95LHjWGSY5fpeEy9C
+        I78PdIa9tVQJn/iwGijd8nj+guRXbXSpCIkz5ojHdqqkHjRo0hnQ5vsB7RyPdKEA
+        ==
+X-ME-Sender: <xms:DHFDYefc5hj8gi4dxWD0LPwIZ-7eCAuChRgl45hXKphK3maJmwnwXg>
+    <xme:DHFDYYO0rUPS9nmSFSqwpcxqfQ_pQUfnIXBaWh_gKPlov19Nv09H08sl9fMbW8jej
+    x4FLS8PBE-WDjuxu1Q>
+X-ME-Received: <xmr:DHFDYfjlR9vtTu4VW1DUC-1go9vAGAgiu4mdYnnLPoc-sg8jUE3667OYC6LwQ6eKgLK2bp65AsiHYahP4-YRGqqoixLRb-JI6Ggs>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudehgedgleeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
+    grgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:DHFDYb8mvUuKkKkddxegg6gItiZ5TjT8Cc64Qf7pAUHPtYmMU-xSjA>
+    <xmx:DHFDYavdsMaQrdk1zzZdfVtKrlwD3fDdTKdBvT-bzXktew1v5aVQpw>
+    <xmx:DHFDYSGgAKXuaQV93QNJ2A44fGIJFswzUnmo5pe6HbLIx8qSeTi1UA>
+    <xmx:D3FDYVkgEXJK3xiJFUwFzoVSyYi_MlOVvwBGpewYBcsbvogO0Rptf9nzLW8>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 16 Sep 2021 12:30:03 -0400 (EDT)
+Date:   Thu, 16 Sep 2021 18:30:00 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-staging@lists.linux.dev,
+        Yong Deng <yong.deng@magewell.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Helen Koike <helen.koike@collabora.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH 01/22] clk: sunxi-ng: v3s: Make the ISP PLL clock public
+Message-ID: <20210916163000.6ezo6muhq23bewyi@gilmour>
+References: <20210910184147.336618-1-paul.kocialkowski@bootlin.com>
+ <20210910184147.336618-2-paul.kocialkowski@bootlin.com>
+ <20210913075417.ampb2jt4quftpqzj@gilmour>
+ <YT8RnzVqLebtPMD+@aptenodytes>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="6h7nudibxh245pvl"
 Content-Disposition: inline
-In-Reply-To: <CACT4Y+aUFbj3_+iBpeP2qrQ=RbGrssr0-6EZv1nx73at7fdbfA@mail.gmail.com>
+In-Reply-To: <YT8RnzVqLebtPMD+@aptenodytes>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 04:45:27PM +0200, Dmitry Vyukov wrote:
 
-> Answering your question re what was running concurrently with what.
-> Each of the syscalls in these programs can run up to 2 times and
-> ultimately any of these calls can race with any. Potentially syzkaller
-> can predict values kernel will return (e.g. id's) before kernel
-> actually returned them. I guess this does not restrict search area for
-> the bug a lot...
+--6h7nudibxh245pvl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I have a reasonable theory now..
+Salut Paul,
 
-Based on the ops you provided this FSM sequence is possible
+On Mon, Sep 13, 2021 at 10:53:51AM +0200, Paul Kocialkowski wrote:
+> On Mon 13 Sep 21, 09:54, Maxime Ripard wrote:
+> > On Fri, Sep 10, 2021 at 08:41:26PM +0200, Paul Kocialkowski wrote:
+> > > In order to reparent the CSI module clock to the ISP PLL via
+> > > device-tree, export the ISP PLL clock declaration in the public
+> > > device-tree header.
+> >=20
+> > You use clk_set_rate_exclusive in the ISP driver on the module clock so
+> > it should prevent what you're mentioning from happening.
+>=20
+> It does, but then it breaks display support entirely (because the DRM
+> driver doesn't use clk_set_rate_exclusive).
+>=20
+> The bottomline is that using the same PLL for both display and camera
+> easily results in conflicts.
 
-RDMA_USER_CM_CMD_RESOLVE_IP
-  RDMA_CM_IDLE -> RDMA_CM_ADDR_QUERY
-  does rdma_resolve_ip(addr_handler)
+The commit log should reflect that then
 
-			  addr_handler
-			    RDMA_CM_ADDR_QUERY -> RDMA_CM_ADDR_BOUND
-			    [.. handler still running ..]
+> > If it doesn't, then clk_set_rate_exclusive has a bug and should be
+> > fixed.
+> >=20
+> > Either way, using assigned-clock-parents is not a good solution here
+> > either, it only makes sure that this is the case when probe is run.
+>=20
+> I'm not sure what could provide better guarantees. There is a clock
+> parenting API (in the clock framework) which may, but this implies
+> providing the parent clock to the driver which seems way out of line
+> since this is a platform-specific matter that should certainly not
+> be handled by the driver.
+>=20
+> I also tried hardcoding the reparenting bit in the CCU driver, but
+> this felt less clean than doing it in device-tree.
+>=20
+> What do you think?
 
-RDMA_USER_CM_CMD_RESOLVE_IP
-  RDMA_CM_ADDR_BOUND -> RDMA_CM_ADDR_QUERY
-  does rdma_resolve_ip(addr_handler)
+This is essentially policy, and putting it in the DT fails for the
+reason we already discussed, but also if we ever want to change it for
+example to optimize it a bit. In this case, we would have to deal with
+the old and new DT, and the possible consequences.
 
-RDMA_DESTROY_ID
-  rdma_addr_cancel()
+So yeah, hardcoding it in the clock driver seems like a more sensible
+choice.
 
-Which, if it happens fast enough, could trigger a situation where the
-'&id_priv->id.route.addr.dev_addr' "handle" is in the req_list twice
-beacause the addr_handler work queue hasn't yet got to the point of
-deleting it from the req_list before the the 2nd one is added.
+Maxime
 
-The issue is rdma_addr_cancel() has to be called rdma_resolve_ip() can
-be called again.
+--6h7nudibxh245pvl
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Skipping it will cause 'req_list' to have two items in the internal
-linked list with the same key and it will not cancel the newest one
-with the active timer. This would cause the use after free syndrome
-like this trace is showing.
+-----BEGIN PGP SIGNATURE-----
 
-I can make a patch, but have no way to know if it is any good :\
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYUNxCAAKCRDj7w1vZxhR
+xTHSAP94s1QU8mIU0mn77banRpkH0ZGKIUjPYygrvhOgdlCSegD/UryBgzqTDNlY
+omqVVtLWlYLTj9NQE+yJaYV+lXE3oQo=
+=K8KU
+-----END PGP SIGNATURE-----
 
-Jason
+--6h7nudibxh245pvl--
