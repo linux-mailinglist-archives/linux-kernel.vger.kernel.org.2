@@ -2,96 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4206540ED4F
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 00:26:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81E0540ED50
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 00:27:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234419AbhIPW13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 18:27:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44496 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231534AbhIPW12 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 18:27:28 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 694D5C061574;
-        Thu, 16 Sep 2021 15:26:07 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id j6so7305593pfa.4;
-        Thu, 16 Sep 2021 15:26:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=K6+JaY039DlaFbi+21JP19lSDodq4tvysqsCfKLRO2M=;
-        b=UJJ3AnKrEDzNFhezYT1L2sw/eGnrs64PUIl6se1MxMEMbJThgmxzIDoVal61cTMZY9
-         qXarRJ01L8PxGqXb7skSdkj0JrXOxZJAKWFo2MhjlJomHrjKOZQy5zPmu7QrkZLpBa1t
-         F6jVl6FBmmevJxG80WRXMSkdBLP+IDkeyW19QGVR1XYbURcyxCBccM0g+uAZZiHV9oal
-         JYrl1DbXVPmjSHDqQIRSkBktuSS3Lbk8eRgwKxql/Jcl0nDj/3ZESxKGjjpKK07iNxRL
-         JWk9Oy29JJ29JrK5UFisUFufX/Bce/zX+fWecQIg7xtYMO9KKxy8tQ4GzKXbkV7h+vEh
-         IcqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=K6+JaY039DlaFbi+21JP19lSDodq4tvysqsCfKLRO2M=;
-        b=wYN3MKVPD2xbSdURwO232YEtipFxrz5dospDdToMbYm4sRd3nmJwOoTpy74VwICkpH
-         t+IOIyj2hVDKCxEOTDAcQlzFPr9JiDqfaXmzgxlOsVtrxxTjjmdYutgdvEARofWJQKtL
-         5N2GFbOyw1mNxQwGVdqRP6lQlND3dID481Rico0+/E/xkUWnAQYzff3pIioUPyEs5lN8
-         FVSG25iqGSOuAW6gYnjnbHu54KAH8xyuXqXsBvpVuwUAO4Q++FxXuV1y2gLvNc7jfaho
-         VByggLX5kFx+JC06SWjP+tMGHbv/YT0ao6C9KodarplFO53Vnh4Ous0VajrnDUAEzkbr
-         3Rog==
-X-Gm-Message-State: AOAM532bl/g98wAUIjX2zT4KA3TVLKyymWPrQtdDsrtM/Ewdo+Og5SOF
-        sKiAeH2qYan+ljb1dDtOSuPKyg7wpMc=
-X-Google-Smtp-Source: ABdhPJz71CJd0hE1eLVEU03SUBWilT2c8lM+TZBjzT2Ynap5Pu4JOGMz9LN3bG3PIm8OzUH4h6AmzA==
-X-Received: by 2002:a62:7508:0:b0:43d:d9cf:1f95 with SMTP id q8-20020a627508000000b0043dd9cf1f95mr7228343pfc.4.1631831166277;
-        Thu, 16 Sep 2021 15:26:06 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id d15sm8460694pjw.4.2021.09.16.15.26.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Sep 2021 15:26:05 -0700 (PDT)
-Subject: Re: [PATCH 5.10 000/306] 5.10.67-rc1 review
+        id S240780AbhIPW2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 18:28:30 -0400
+Received: from sym2.noone.org ([178.63.92.236]:52064 "EHLO sym2.noone.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234573AbhIPW23 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 18:28:29 -0400
+X-Greylist: delayed 105990 seconds by postgrey-1.27 at vger.kernel.org; Thu, 16 Sep 2021 18:28:29 EDT
+Received: by sym2.noone.org (Postfix, from userid 1002)
+        id 4H9Wsj1sDTzvjfm; Fri, 17 Sep 2021 00:27:05 +0200 (CEST)
+From:   Tobias Klauser <tklauser@distanz.ch>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Barry Song <song.bao.hua@hisilicon.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Yury Norov <yury.norov@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
         linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210916155753.903069397@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <582ff14f-983a-d774-a528-cb17b92f8d61@gmail.com>
-Date:   Thu, 16 Sep 2021 15:26:03 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Subject: [PATCH] cpumask: Omit terminating null byte in cpumap_print_{list,bitmask}_to_buf
+Date:   Fri, 17 Sep 2021 00:27:05 +0200
+Message-Id: <20210916222705.13554-1-tklauser@distanz.ch>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/16/21 8:55 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.67 release.
-> There are 306 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 18 Sep 2021 15:57:06 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.67-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+The changes in the patch series [1] introduced a terminating null byte
+when reading from cpulist or cpumap sysfs files, for example:
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
+  $ xxd /sys/devices/system/node/node0/cpulist
+  00000000: 302d 310a 00                             0-1..
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+Before this change, the output looked as follows:
+
+  $ xxd /sys/devices/system/node/node0/cpulist
+  00000000: 302d 310a                                0-1.
+
+Fix this regression by excluding the terminating null byte from the
+returned length in cpumap_print_list_to_buf and
+cpumap_print_bitmask_to_buf.
+
+[1] https://lore.kernel.org/all/20210806110251.560-1-song.bao.hua@hisilicon.com/
+
+Fixes: 1fae562983ca ("cpumask: introduce cpumap_print_list/bitmask_to_buf to support large bitmask and list")
+Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
+---
+ include/linux/cpumask.h | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
+index 5d4d07a9e1ed..1e7399fc69c0 100644
+--- a/include/linux/cpumask.h
++++ b/include/linux/cpumask.h
+@@ -996,14 +996,15 @@ cpumap_print_to_pagebuf(bool list, char *buf, const struct cpumask *mask)
+  * cpumask; Typically used by bin_attribute to export cpumask bitmask
+  * ABI.
+  *
+- * Returns the length of how many bytes have been copied.
++ * Returns the length of how many bytes have been copied, excluding
++ * terminating '\0'.
+  */
+ static inline ssize_t
+ cpumap_print_bitmask_to_buf(char *buf, const struct cpumask *mask,
+ 		loff_t off, size_t count)
+ {
+ 	return bitmap_print_bitmask_to_buf(buf, cpumask_bits(mask),
+-				   nr_cpu_ids, off, count);
++				   nr_cpu_ids, off, count) - 1;
+ }
+ 
+ /**
+@@ -1018,7 +1019,7 @@ cpumap_print_list_to_buf(char *buf, const struct cpumask *mask,
+ 		loff_t off, size_t count)
+ {
+ 	return bitmap_print_list_to_buf(buf, cpumask_bits(mask),
+-				   nr_cpu_ids, off, count);
++				   nr_cpu_ids, off, count) - 1;
+ }
+ 
+ #if NR_CPUS <= BITS_PER_LONG
 -- 
-Florian
+2.33.0
+
