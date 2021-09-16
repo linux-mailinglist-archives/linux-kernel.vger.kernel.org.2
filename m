@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76CF140E7D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:59:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3890C40E12F
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:29:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347098AbhIPRgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:36:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47084 "EHLO mail.kernel.org"
+        id S242351AbhIPQ2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:28:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58822 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352260AbhIPR0z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:26:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E3BF61A59;
-        Thu, 16 Sep 2021 16:45:09 +0000 (UTC)
+        id S241632AbhIPQTz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:19:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A8C2613A0;
+        Thu, 16 Sep 2021 16:13:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810710;
-        bh=feZctuRMHO3yQPCszFkVhvDJ3n8/xXu4EUqmJR3PgeQ=;
+        s=korg; t=1631808828;
+        bh=S0XaWsB7k/mB7Pcpqzo+AJANBh9RP8g0gr0MnXtt/zo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tmp88+vU087f0xImbXfZBDc9fd+ohPIwApiwRyMMoWphTrAHfH7h7k4T7ERwGQJ+i
-         7lyXBA4nnTmPaDs98gQ4DwKkh1RX891/TeKJKb2AQwnHTSD3dm+S4NRNwCLA4gYua1
-         YtV/yfpX5Zf5YmsNUQhlO635JmqVgxklvFbZQMOc=
+        b=f7Hocbz3hlNTmG1SdemF9/Rwtexc3s0V2AOQHJA4n3Dlpt44Z3UcfEsVxAzDA5zpL
+         tkpY7pMj59CTcK+2KAgQpWZaLVQ3jmUyRN91STD6uIh476ZmKj/hxqmRampE6S/7ZE
+         VQiA6kJSnRPhX8EqSxGSxTefgCDSTjz7nBBw1l9Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Jiri Slaby <jslaby@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 232/432] hvsi: dont panic on tty_register_driver failure
-Date:   Thu, 16 Sep 2021 17:59:41 +0200
-Message-Id: <20210916155818.713126340@linuxfoundation.org>
+        stable@vger.kernel.org, Chin-Yen Lee <timlee@realtek.com>,
+        Ping-Ke Shih <pkshih@realtek.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 237/306] rtw88: use read_poll_timeout instead of fixed sleep
+Date:   Thu, 16 Sep 2021 17:59:42 +0200
+Message-Id: <20210916155802.138780350@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,70 +41,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Slaby <jslaby@suse.cz>
+From: Chin-Yen Lee <timlee@realtek.com>
 
-[ Upstream commit 7ccbdcc4d08a6d7041e4849219bbb12ffa45db4c ]
+[ Upstream commit 02a55c0009a55b204e1e5c17295431f0a9e7d3b6 ]
 
-The alloc_tty_driver failure is handled gracefully in hvsi_init. But
-tty_register_driver is not. panic is called if that one fails.
+In current wow flow, driver calls rtw_wow_fw_start and sleep for 100ms,
+to wait firmware finish preliminary work and then update the value of
+WOWLAN_WAKE_REASON register to zero. But later firmware will start wow
+function with power-saving mode, in which mode the value of
+WOWLAN_WAKE_REASON register is 0xea. So driver may get 0xea value and
+return fail. We use read_poll_timeout instead to check the value to avoid
+this issue.
 
-So handle the failure of tty_register_driver gracefully too. This will
-keep at least the console functional as it was enabled earlier by
-console_initcall in hvsi_console_init. Instead of shooting down the
-whole system.
-
-This means, we disable interrupts and restore hvsi_wait back to
-poll_for_state().
-
-Cc: linuxppc-dev@lists.ozlabs.org
-Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-Link: https://lore.kernel.org/r/20210723074317.32690-3-jslaby@suse.cz
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Chin-Yen Lee <timlee@realtek.com>
+Signed-off-by: Ping-Ke Shih <pkshih@realtek.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210728014335.8785-2-pkshih@realtek.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/hvc/hvsi.c | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
+ drivers/net/wireless/realtek/rtw88/wow.c | 21 ++++++++++++++++-----
+ 1 file changed, 16 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/tty/hvc/hvsi.c b/drivers/tty/hvc/hvsi.c
-index bfc15279d5bc..f0bc8e780051 100644
---- a/drivers/tty/hvc/hvsi.c
-+++ b/drivers/tty/hvc/hvsi.c
-@@ -1038,7 +1038,7 @@ static const struct tty_operations hvsi_ops = {
+diff --git a/drivers/net/wireless/realtek/rtw88/wow.c b/drivers/net/wireless/realtek/rtw88/wow.c
+index 2fcdf70a3a77..bb2fd4e544f0 100644
+--- a/drivers/net/wireless/realtek/rtw88/wow.c
++++ b/drivers/net/wireless/realtek/rtw88/wow.c
+@@ -283,15 +283,26 @@ static void rtw_wow_rx_dma_start(struct rtw_dev *rtwdev)
  
- static int __init hvsi_init(void)
+ static int rtw_wow_check_fw_status(struct rtw_dev *rtwdev, bool wow_enable)
  {
--	int i;
-+	int i, ret;
+-	/* wait 100ms for wow firmware to finish work */
+-	msleep(100);
++	int ret;
++	u8 check;
++	u32 check_dis;
  
- 	hvsi_driver = alloc_tty_driver(hvsi_count);
- 	if (!hvsi_driver)
-@@ -1069,12 +1069,25 @@ static int __init hvsi_init(void)
+ 	if (wow_enable) {
+-		if (rtw_read8(rtwdev, REG_WOWLAN_WAKE_REASON))
++		ret = read_poll_timeout(rtw_read8, check, !check, 1000,
++					100000, true, rtwdev,
++					REG_WOWLAN_WAKE_REASON);
++		if (ret)
+ 			goto wow_fail;
+ 	} else {
+-		if (rtw_read32_mask(rtwdev, REG_FE1IMR, BIT_FS_RXDONE) ||
+-		    rtw_read32_mask(rtwdev, REG_RXPKT_NUM, BIT_RW_RELEASE))
++		ret = read_poll_timeout(rtw_read32_mask, check_dis,
++					!check_dis, 1000, 100000, true, rtwdev,
++					REG_FE1IMR, BIT_FS_RXDONE);
++		if (ret)
++			goto wow_fail;
++		ret = read_poll_timeout(rtw_read32_mask, check_dis,
++					!check_dis, 1000, 100000, false, rtwdev,
++					REG_RXPKT_NUM, BIT_RW_RELEASE);
++		if (ret)
+ 			goto wow_fail;
  	}
- 	hvsi_wait = wait_for_state; /* irqs active now */
- 
--	if (tty_register_driver(hvsi_driver))
--		panic("Couldn't register hvsi console driver\n");
-+	ret = tty_register_driver(hvsi_driver);
-+	if (ret) {
-+		pr_err("Couldn't register hvsi console driver\n");
-+		goto err_free_irq;
-+	}
- 
- 	printk(KERN_DEBUG "HVSI: registered %i devices\n", hvsi_count);
- 
- 	return 0;
-+err_free_irq:
-+	hvsi_wait = poll_for_state;
-+	for (i = 0; i < hvsi_count; i++) {
-+		struct hvsi_struct *hp = &hvsi_ports[i];
-+
-+		free_irq(hp->virq, hp);
-+	}
-+	tty_driver_kref_put(hvsi_driver);
-+
-+	return ret;
- }
- device_initcall(hvsi_init);
  
 -- 
 2.30.2
