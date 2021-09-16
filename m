@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3E5640EDCA
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 01:15:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D27740EDCB
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 01:15:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238977AbhIPXPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 19:15:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55476 "EHLO
+        id S241661AbhIPXPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 19:15:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241616AbhIPXPK (ORCPT
+        with ESMTP id S241642AbhIPXPM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 19:15:10 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B57AC0613D5
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 16:13:49 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id j13so2312998qtq.6
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 16:13:49 -0700 (PDT)
+        Thu, 16 Sep 2021 19:15:12 -0400
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A84C4C0613E4
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 16:13:50 -0700 (PDT)
+Received: by mail-qv1-xf34.google.com with SMTP id w8so5341926qvt.0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 16:13:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=soleen.com; s=google;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=7N5nVHzB6dwVIUX0EUd0g/YbIEPJbmQC1LjYPlojIKk=;
-        b=mLpqe1KaYQMF0cLBRzJ45xIIqNHIVBadFlMTXXvcP/DL6J6XCYhX74U44EBDufy4ce
-         oOPKIl0jWuW1B972+mQbVW2HKYLnhuAhozgdt9HJo3N8FWne8glStby4hooCqfP00nXI
-         Bl2MSKg9JOu/Yo5Nu/D1S3uDZqwkKKm2I4bRQEHqCbttLbtiNn7fnjRHbSDW9wFOBBSU
-         EpZkNHivP47/YGJ5UIUnfekArrWeqIRb2ShLmYRLM5agEzscVgXk/6bEyEgcQ0iNwapC
-         yYPa5RjNJ1eCkZVuiwIRs3cBm2bo17ClU8EaAZjpXBNzS2zWCk2goeGXX9MtEHeHBZIg
-         ntcQ==
+        bh=Y1Uk63vpkrh4HSEXHQNbtcSjOksblIyIRxi91WKbEAM=;
+        b=ZX6T1oIM4R3goFT9v/2cf0FQGFBs9qoQ1Dv0TkKRDmuJXkp0fJ4WJqes6t87z1iuLS
+         2dvwca0W8lx+DFNgimo62pYY1v2NlFLAvt6vo2HthGJRqDkA1Ogsd1ivXC/NEzdln8KQ
+         kC/vjnO88YyNTPWT214IP97mzvlq7sozyzRAtDw78VAOk43svmZFJuicv3ozQSnczCBf
+         Uy+BK2ojCcJhc8bdfYtDAvjzrxlx/H7zJkRdVeS8tHN5S5i3ZVsCxPzLB+zVPcxwCzuZ
+         ygQjb4HPG6I7UqyVUggGHNtedtZTV6stzxnmQ6pDF1ArDvMDsiNABNm17COwOLbtS/gz
+         pAfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=7N5nVHzB6dwVIUX0EUd0g/YbIEPJbmQC1LjYPlojIKk=;
-        b=5wdFqIibuCX0PgwZ5KmSdfmBXJxlFiXycv07alBHGmpqam2OL2Ur3+lNzf4ch8D+Vw
-         p9izxEr8IJtuSD4AnWaCMtJCPJv+gmGRfLDRNxBKSSDdP8zjgNYJ7nQivOtuR6wN4BjM
-         YwAY0oO+5Xk3eoChn5Y9YhoI0gveCaKCmtUAMsEoiZQNrzkvuVMm0nfFINl1cdUXyHp9
-         F0sKysJvgkuATqrXR0QJltKovpjx+fiiS45Og95jDWBY5AryTHVgPJP7KxMAsH9bnV41
-         FfmvMRjT984V+JkbMmmmztDnoq1jOk17XChcvzMyNripUgqUjdIf1cg3kq2iuvO4xSea
-         ddSQ==
-X-Gm-Message-State: AOAM530q7Oaet5ugwwgBfBSZ4RorHCwHoy00rHBuZTTM0UOi7ZXQKBMx
-        VfDH4DBCffoa80d3VnIBlWc5mQ==
-X-Google-Smtp-Source: ABdhPJyIuGt330ZUOfC/l/iZXTFzzUZyl4ceVHMabmenoyk7fIVAEKa2yGLWG9gwg8yBpK8tkWOCBQ==
-X-Received: by 2002:ac8:4818:: with SMTP id g24mr7438906qtq.328.1631834028420;
-        Thu, 16 Sep 2021 16:13:48 -0700 (PDT)
+        bh=Y1Uk63vpkrh4HSEXHQNbtcSjOksblIyIRxi91WKbEAM=;
+        b=BQrj6fvQDao34R92THarmSNbVIQqGYLIpcXhRMoNmsAijCYB24w0lcdZh3etDneNys
+         5UFaZuhWvC0oyBE1872eyLuzehauZiAIA7bzgXtC+Wa/xkTmabxq7Lgo/9vIFhzO1Gvg
+         f8UlaVfcSbtSLCzJyYdf2EFrFsC/a5bHVnJ4/YuaO9+lbJK1wDghyKCtWSemqCTdSr1X
+         II5pH6YeO9ChelF/zyw0PR+rWfG8DdqoeLX0UuZbzFdnmqSAT5BG5rgRqGOA71OfOpHv
+         iLBDHnyVZsZ2n8YFOnNTU5TchM9OteGrHSeS2CYGE3KDHCXURLTwdgydCUvxgJyu920C
+         d3DQ==
+X-Gm-Message-State: AOAM530ewj6n5gUnUTGUrNbyP2SyoH6RWzvZbPxm7w+6jHfMaYBkv0BK
+        JWSK2tKIv6YDEYO48xTcnwKxZ9yCaowBVg==
+X-Google-Smtp-Source: ABdhPJzANQuYEdGyFPzM2h5cBvhaMadksnrGaWSms5XeNGsc2+WLwnbrziOAQEnBWBa9YCXfDzrokQ==
+X-Received: by 2002:ad4:54b2:: with SMTP id r18mr8169426qvy.6.1631834029839;
+        Thu, 16 Sep 2021 16:13:49 -0700 (PDT)
 Received: from localhost.localdomain (c-73-69-118-222.hsd1.nh.comcast.net. [73.69.118.222])
-        by smtp.gmail.com with ESMTPSA id az6sm3312891qkb.70.2021.09.16.16.13.47
+        by smtp.gmail.com with ESMTPSA id az6sm3312891qkb.70.2021.09.16.16.13.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 16:13:48 -0700 (PDT)
+        Thu, 16 Sep 2021 16:13:49 -0700 (PDT)
 From:   Pasha Tatashin <pasha.tatashin@soleen.com>
 To:     pasha.tatashin@soleen.com, jmorris@namei.org, sashal@kernel.org,
         ebiederm@xmission.com, kexec@lists.infradead.org,
@@ -60,9 +60,9 @@ To:     pasha.tatashin@soleen.com, jmorris@namei.org, sashal@kernel.org,
         selindag@gmail.com, tyhicks@linux.microsoft.com,
         kernelfans@gmail.com, akpm@linux-foundation.org,
         madvenka@linux.microsoft.com
-Subject: [PATCH v17 14/15] arm64: kexec: remove cpu-reset.h
-Date:   Thu, 16 Sep 2021 19:13:24 -0400
-Message-Id: <20210916231325.125533-15-pasha.tatashin@soleen.com>
+Subject: [PATCH v17 15/15] arm64: trans_pgd: remove trans_pgd_map_page()
+Date:   Thu, 16 Sep 2021 19:13:25 -0400
+Message-Id: <20210916231325.125533-16-pasha.tatashin@soleen.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210916231325.125533-1-pasha.tatashin@soleen.com>
 References: <20210916231325.125533-1-pasha.tatashin@soleen.com>
@@ -72,130 +72,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This header contains only cpu_soft_restart() which is never used directly
-anymore. So, remove this header, and rename the helper to be
-cpu_soft_restart().
+The intend of trans_pgd_map_page() was to map contiguous range of VA
+memory to the memory that is getting relocated during kexec. However,
+since we are now using linear map instead of contiguous range this
+function is not needed
 
-Suggested-by: James Morse <james.morse@arm.com>
+Suggested-by: Pingfan Liu <kernelfans@gmail.com>
 Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
 ---
- arch/arm64/include/asm/kexec.h    |  6 ++++++
- arch/arm64/kernel/cpu-reset.S     |  7 +++----
- arch/arm64/kernel/cpu-reset.h     | 30 ------------------------------
- arch/arm64/kernel/machine_kexec.c |  6 ++----
- 4 files changed, 11 insertions(+), 38 deletions(-)
- delete mode 100644 arch/arm64/kernel/cpu-reset.h
+ arch/arm64/include/asm/trans_pgd.h |  5 +--
+ arch/arm64/mm/trans_pgd.c          | 57 ------------------------------
+ 2 files changed, 1 insertion(+), 61 deletions(-)
 
-diff --git a/arch/arm64/include/asm/kexec.h b/arch/arm64/include/asm/kexec.h
-index dca6dedc3b25..9839bfc163d7 100644
---- a/arch/arm64/include/asm/kexec.h
-+++ b/arch/arm64/include/asm/kexec.h
-@@ -90,6 +90,12 @@ static inline void crash_prepare_suspend(void) {}
- static inline void crash_post_resume(void) {}
- #endif
- 
-+#if defined(CONFIG_KEXEC_CORE)
-+void cpu_soft_restart(unsigned long el2_switch, unsigned long entry,
-+		      unsigned long arg0, unsigned long arg1,
-+		      unsigned long arg2);
-+#endif
-+
- #define ARCH_HAS_KIMAGE_ARCH
- 
- struct kimage_arch {
-diff --git a/arch/arm64/kernel/cpu-reset.S b/arch/arm64/kernel/cpu-reset.S
-index d47ff63a5b66..48a8af97faa9 100644
---- a/arch/arm64/kernel/cpu-reset.S
-+++ b/arch/arm64/kernel/cpu-reset.S
-@@ -16,8 +16,7 @@
- .pushsection    .idmap.text, "awx"
- 
+diff --git a/arch/arm64/include/asm/trans_pgd.h b/arch/arm64/include/asm/trans_pgd.h
+index 7b04d32b102c..033d400a4ea4 100644
+--- a/arch/arm64/include/asm/trans_pgd.h
++++ b/arch/arm64/include/asm/trans_pgd.h
+@@ -15,7 +15,7 @@
  /*
-- * __cpu_soft_restart(el2_switch, entry, arg0, arg1, arg2) - Helper for
-- * cpu_soft_restart.
-+ * cpu_soft_restart(el2_switch, entry, arg0, arg1, arg2)
+  * trans_alloc_page
+  *	- Allocator that should return exactly one zeroed page, if this
+- *	  allocator fails, trans_pgd_create_copy() and trans_pgd_map_page()
++ *	  allocator fails, trans_pgd_create_copy() and trans_pgd_idmap_page()
+  *	  return -ENOMEM error.
   *
-  * @el2_switch: Flag to indicate a switch to EL2 is needed.
-  * @entry: Location to jump to for soft reset.
-@@ -29,7 +28,7 @@
-  * branch to what would be the reset vector. It must be executed with the
-  * flat identity mapping.
-  */
--SYM_CODE_START(__cpu_soft_restart)
-+SYM_CODE_START(cpu_soft_restart)
- 	mov_q	x12, INIT_SCTLR_EL1_MMU_OFF
- 	pre_disable_mmu_workaround
- 	/*
-@@ -48,6 +47,6 @@ SYM_CODE_START(__cpu_soft_restart)
- 	mov	x1, x3				// arg1
- 	mov	x2, x4				// arg2
- 	br	x8
--SYM_CODE_END(__cpu_soft_restart)
-+SYM_CODE_END(cpu_soft_restart)
+  * trans_alloc_arg
+@@ -30,9 +30,6 @@ struct trans_pgd_info {
+ int trans_pgd_create_copy(struct trans_pgd_info *info, pgd_t **trans_pgd,
+ 			  unsigned long start, unsigned long end);
  
- .popsection
-diff --git a/arch/arm64/kernel/cpu-reset.h b/arch/arm64/kernel/cpu-reset.h
-deleted file mode 100644
-index 296abbac7192..000000000000
---- a/arch/arm64/kernel/cpu-reset.h
-+++ /dev/null
-@@ -1,30 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-only */
+-int trans_pgd_map_page(struct trans_pgd_info *info, pgd_t *trans_pgd,
+-		       void *page, unsigned long dst_addr, pgprot_t pgprot);
+-
+ int trans_pgd_idmap_page(struct trans_pgd_info *info, phys_addr_t *trans_ttbr0,
+ 			 unsigned long *t0sz, void *page);
+ 
+diff --git a/arch/arm64/mm/trans_pgd.c b/arch/arm64/mm/trans_pgd.c
+index 26bd8f2d95af..d7da8ca40d2e 100644
+--- a/arch/arm64/mm/trans_pgd.c
++++ b/arch/arm64/mm/trans_pgd.c
+@@ -217,63 +217,6 @@ int trans_pgd_create_copy(struct trans_pgd_info *info, pgd_t **dst_pgdp,
+ 	return rc;
+ }
+ 
 -/*
-- * CPU reset routines
+- * Add map entry to trans_pgd for a base-size page at PTE level.
+- * info:	contains allocator and its argument
+- * trans_pgd:	page table in which new map is added.
+- * page:	page to be mapped.
+- * dst_addr:	new VA address for the page
+- * pgprot:	protection for the page.
 - *
-- * Copyright (C) 2015 Huawei Futurewei Technologies.
+- * Returns 0 on success, and -ENOMEM on failure.
 - */
--
--#ifndef _ARM64_CPU_RESET_H
--#define _ARM64_CPU_RESET_H
--
--#include <asm/virt.h>
--
--void __cpu_soft_restart(unsigned long el2_switch, unsigned long entry,
--	unsigned long arg0, unsigned long arg1, unsigned long arg2);
--
--static inline void __noreturn __nocfi cpu_soft_restart(unsigned long entry,
--						       unsigned long arg0,
--						       unsigned long arg1,
--						       unsigned long arg2)
+-int trans_pgd_map_page(struct trans_pgd_info *info, pgd_t *trans_pgd,
+-		       void *page, unsigned long dst_addr, pgprot_t pgprot)
 -{
--	typeof(__cpu_soft_restart) *restart;
+-	pgd_t *pgdp;
+-	p4d_t *p4dp;
+-	pud_t *pudp;
+-	pmd_t *pmdp;
+-	pte_t *ptep;
 -
--	restart = (void *)__pa_symbol(function_nocfi(__cpu_soft_restart));
+-	pgdp = pgd_offset_pgd(trans_pgd, dst_addr);
+-	if (pgd_none(READ_ONCE(*pgdp))) {
+-		p4dp = trans_alloc(info);
+-		if (!pgdp)
+-			return -ENOMEM;
+-		pgd_populate(NULL, pgdp, p4dp);
+-	}
 -
--	cpu_install_idmap();
--	restart(0, entry, arg0, arg1, arg2);
--	unreachable();
+-	p4dp = p4d_offset(pgdp, dst_addr);
+-	if (p4d_none(READ_ONCE(*p4dp))) {
+-		pudp = trans_alloc(info);
+-		if (!pudp)
+-			return -ENOMEM;
+-		p4d_populate(NULL, p4dp, pudp);
+-	}
+-
+-	pudp = pud_offset(p4dp, dst_addr);
+-	if (pud_none(READ_ONCE(*pudp))) {
+-		pmdp = trans_alloc(info);
+-		if (!pmdp)
+-			return -ENOMEM;
+-		pud_populate(NULL, pudp, pmdp);
+-	}
+-
+-	pmdp = pmd_offset(pudp, dst_addr);
+-	if (pmd_none(READ_ONCE(*pmdp))) {
+-		ptep = trans_alloc(info);
+-		if (!ptep)
+-			return -ENOMEM;
+-		pmd_populate_kernel(NULL, pmdp, ptep);
+-	}
+-
+-	ptep = pte_offset_kernel(pmdp, dst_addr);
+-	set_pte(ptep, pfn_pte(virt_to_pfn(page), pgprot));
+-
+-	return 0;
 -}
 -
--#endif
-diff --git a/arch/arm64/kernel/machine_kexec.c b/arch/arm64/kernel/machine_kexec.c
-index b1856f34cc51..6f1da3fd5320 100644
---- a/arch/arm64/kernel/machine_kexec.c
-+++ b/arch/arm64/kernel/machine_kexec.c
-@@ -24,8 +24,6 @@
- #include <asm/sections.h>
- #include <asm/trans_pgd.h>
- 
--#include "cpu-reset.h"
--
- /**
-  * kexec_image_info - For debugging output.
-  */
-@@ -201,10 +199,10 @@ void machine_kexec(struct kimage *kimage)
- 	 * In kexec_file case, the kernel starts directly without purgatory.
- 	 */
- 	if (kimage->head & IND_DONE) {
--		typeof(__cpu_soft_restart) *restart;
-+		typeof(cpu_soft_restart) *restart;
- 
- 		cpu_install_idmap();
--		restart = (void *)__pa_symbol(function_nocfi(__cpu_soft_restart));
-+		restart = (void *)__pa_symbol(function_nocfi(cpu_soft_restart));
- 		restart(is_hyp_nvhe(), kimage->start, kimage->arch.dtb_mem,
- 			0, 0);
- 	} else {
+ /*
+  * The page we want to idmap may be outside the range covered by VA_BITS that
+  * can be built using the kernel's p?d_populate() helpers. As a one off, for a
 -- 
 2.25.1
 
