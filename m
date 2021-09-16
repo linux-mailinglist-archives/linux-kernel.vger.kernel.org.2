@@ -2,222 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBD1440D7C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 12:48:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B835540D7C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 12:48:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237132AbhIPKs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 06:48:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52644 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236992AbhIPKsq (ORCPT
+        id S236611AbhIPKto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 06:49:44 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:41046
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235628AbhIPKtn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 06:48:46 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E1B7C061574;
-        Thu, 16 Sep 2021 03:47:26 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id t1so5773832pgv.3;
-        Thu, 16 Sep 2021 03:47:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YC9YYN4ZYlzqQeEAIPt4H6+3LrIiiG00V4GERK24HN8=;
-        b=EXudBpudxdjE2aRI1Aiz+vZvRKpCpeCEp7mAvEdE+a9nJ5s4hejAldxo0AvmlYrVrL
-         bWZh+7Vn1ryy7YuqPv7bfYzQYRscx3I2mzW3RAPBJ/F9e7opXp6yrDhYZem3uPkGgiqE
-         ZNhPWq9LH4CbwjmEyksT3ICgyKguDwPmBa4CV81rCCt0iR4faKx/j6vweZSLhTLx52iu
-         5o3chcJEbSDCkgCTJ3Qk5SX9wYOTeff/f1xY52LmL5flaCr25npik3BJR7cVbsvtg2B7
-         wqRJDwFLEzJIrKSisAyexacHygqxeTmQyksZYh/K3pTMQB+xXTiC390BQ1RqUp34Ertk
-         JxFQ==
+        Thu, 16 Sep 2021 06:49:43 -0400
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 94A983FDC7
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 10:48:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1631789302;
+        bh=kVs9piweAjfYKX1/D2zYPYLh8oMdXLORitDm0x3OItc=;
+        h=To:Cc:References:From:Subject:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=Z+L8RQG5ANhF34LExzxkQYwIdTOymYuyFGbAHKYFocaLCX0/e2gUFpLHUB9WHRMMs
+         7A2Y25zay3vg8bmSJm1K40XQMR2jhvOsRc4vZkPB27prf/XX70m7XzbDbKEzOrsDA5
+         4eN/c8CFj+3UMf/Id1ONvw7cbHle7KJshuKrLgiYqok8CT6sAc05yIyJCAraZx1k3b
+         N0/Nj9iN/a3to9lQ3xF20cC6lxLica/SZUGPtlS0AB1vyKuV8NEbijWM3BcMnrCN6Q
+         YunoCZdIEJnEx1excPiW39+kxfF95/AHsSnOkbL1sCOA6iNY/j3y4UVdrfkZDtEbs8
+         Q/5MwZYmU8B9w==
+Received: by mail-ed1-f71.google.com with SMTP id n5-20020a05640206c500b003cf53f7cef2so2230128edy.12
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 03:48:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YC9YYN4ZYlzqQeEAIPt4H6+3LrIiiG00V4GERK24HN8=;
-        b=A0KzebCrbHpd1Kfu5iBAoZee7viE+c5gXMwGfiQ3jZ/43VElXGJ2BypEiyyqQo9JZn
-         vxmknb96XzbYraX2g7/GXkAAU6vgTj5oUjZ0FGZG8hytrQA2l9lPz45EFc1rBdvTpoBm
-         XGbrRX5CpAAYqiTR0AWJI0kJRpTWdIgWTCIjLewn/0r9iY4eUWlcomOu8b3Tjs75tAls
-         N2k4PPnuA61et5LCezJpWC1JkRzRokUwMyBL5vCR417eDVahr2K59sPyz/GobMluQ7Gf
-         Jc5z8GTWvdcGSmSdygk1OYL68MXtVdojlS/ZmzjsqERhM9ysyOyVKHtsNgc5zrdxfEOG
-         j9Jw==
-X-Gm-Message-State: AOAM532YXVeZzmpZ9HSbdKsAH9E8MHElYis9CrXKkN5BxrWI+vOtKEx8
-        Ae01z8kgXRy2+fbvc1Pnq3mfylmTpFs3Ly58dg==
-X-Google-Smtp-Source: ABdhPJyHwe9xgXRDr79PSt5a5uvpmT/aJwcMoLHSh6v+RpXkiC3rLZpIxDnkYPofhFDxm5SVul9nIo40weH6WKtq/vA=
-X-Received: by 2002:a65:6389:: with SMTP id h9mr4382216pgv.83.1631789245670;
- Thu, 16 Sep 2021 03:47:25 -0700 (PDT)
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kVs9piweAjfYKX1/D2zYPYLh8oMdXLORitDm0x3OItc=;
+        b=QrnWaLx98beYAcs8zn/kEfy45BNIU9jqYxNtIZc9T4RGCpHuBasrGJVfoqZw9JHHWS
+         ToznBCjYi76kDScxE0aRQwg3I/kaCiOhTxZTVwyLtyF+NR65uW+RB8b7g5SvRgjoWojB
+         nyR8sjqsNeVcVCrGBq7JwojbG1TrkwbjmzKtjhnHIU31vaBgU0DiQufNR3pXZQudbZ9G
+         yPmGfmV24Sav1mk/PEictoOORIU/CsZm2uyRfV7sVlefGnuDp7inOR550ZoJlIYC/Fbe
+         0kJNjky61g+u/y+pDKjQ3wQEtSJh/Dt9VpLnd6mbbYg7s6lLW7OM3WvwJHMhsvrf5288
+         F9XQ==
+X-Gm-Message-State: AOAM531G0alsXXzQko/2mU7rSVMuY5OX67MwnAczRMZGLzqAdITs3M8L
+        4oqX41g3pa5gBGsVgySHs5OqHz/dY3lYtZZRg61MYzpQetlB9KXLuGuUEBzZiopQ0ARropUoTZl
+        LMMOALcbyQ7yo12qJuBFuCK/sYmG2WY+3cmoydjJLgw==
+X-Received: by 2002:a17:906:d045:: with SMTP id bo5mr5518403ejb.461.1631789301890;
+        Thu, 16 Sep 2021 03:48:21 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJynS1M3E+u6uh9PExpnyfy/1dCw+s8TwhyM85ZmKchIA4QZXHFyZ+/z9Io2RWKgwjZkL25Tow==
+X-Received: by 2002:a17:906:d045:: with SMTP id bo5mr5518370ejb.461.1631789301532;
+        Thu, 16 Sep 2021 03:48:21 -0700 (PDT)
+Received: from [192.168.3.211] (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
+        by smtp.gmail.com with ESMTPSA id m10sm1007452ejx.76.2021.09.16.03.48.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Sep 2021 03:48:21 -0700 (PDT)
+To:     Roger Quadros <rogerq@kernel.org>, tony@atomide.com
+Cc:     robh+dt@kernel.org, grygorii.strashko@ti.com, nm@ti.com,
+        lokeshvutla@ti.com, nsekhar@ti.com, miquel.raynal@bootlin.com,
+        devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210907113226.31876-1-rogerq@kernel.org>
+ <20210907113226.31876-9-rogerq@kernel.org>
+ <aa465bd9-b3d5-8d75-3e59-e86c2cd093cd@canonical.com>
+ <a881ac1f-2f00-e675-aea6-154b28ca6eff@kernel.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: Re: [PATCH v3 8/8] memory: gpmc-omap: "gpmc,device-width" DT property
+ is optional
+Message-ID: <35643319-e3b0-bde1-c51b-57c3b5474146@canonical.com>
+Date:   Thu, 16 Sep 2021 12:48:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <CACkBjsZxsm=91sf-ihJgEtx7tmBJr-yTrPbrvg6tP-_J4pGdGw@mail.gmail.com>
- <YUB9Pn4CrqYu7TMC@infradead.org> <CACkBjsYwLYLRmX8GpsDpMthagWOjWWrNxqY6ZLNQVr6yx+f5vA@mail.gmail.com>
- <YUGg6aVAPKoYZ+8V@infradead.org> <CAHbLzkp7hyNa58ghiPy2MQCLLG-oXp=_syP8vvFkWK1SviJuPw@mail.gmail.com>
-In-Reply-To: <CAHbLzkp7hyNa58ghiPy2MQCLLG-oXp=_syP8vvFkWK1SviJuPw@mail.gmail.com>
-From:   Hao Sun <sunhao.th@gmail.com>
-Date:   Thu, 16 Sep 2021 18:47:13 +0800
-Message-ID: <CACkBjsZnemb=zGa83yhTj9v091kp6CZ_D39fGCn-uRTjteNw6A@mail.gmail.com>
-Subject: Re: general protection fault in wb_timer_fn
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <a881ac1f-2f00-e675-aea6-154b28ca6eff@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> The BUG is triggered if it tries to invalidate across pages. But it
-> hardcoded PAGE_SIZE. The offset passed in by truncate_cleanup_page()
-> is 0, but the length might be > PAGE_SIZE if it is a compound page. It
-> might be caused by READ_ONLY_THP_FOR_FS.
->
-> Could you please try the below debug patch to dump page details? I saw
-> your kernel config has DEBUG_VM enabled.
->
-> diff --git a/fs/buffer.c b/fs/buffer.c
-> index ab7573d72dd7..ed7256112c2b 100644
-> --- a/fs/buffer.c
-> +++ b/fs/buffer.c
-> @@ -1507,7 +1507,8 @@ void block_invalidatepage(struct page *page,
-> unsigned int offset,
->         /*
->          * Check for overflow
->          */
-> -       BUG_ON(stop > PAGE_SIZE || stop < length);
-> +       VM_BUG_ON_PAGE((stop > PAGE_SIZE), page);
-> +       VM_BUG_ON_PAGE((stop < length), page);
->
->         head = page_buffers(page);
->         bh = head;
->
+On 15/09/2021 11:11, Roger Quadros wrote:
+> Hi Krzysztof,
+> 
+> On 07/09/2021 15:36, Krzysztof Kozlowski wrote:
+>> On 07/09/2021 13:32, Roger Quadros wrote:
+>>> Check for valid gpmc,device-width, nand-bus-width and bank-width
+>>> at one place. Default to 8-bit width if none present.
+>>
+>> I don't understand the message in the context of the patch. The title
+>> says one property is optional - that's it. The message says you
+>> consolidate checks. How is this related to the title?
+>>
+>> The patch itself moves around checking of properties and reads
+>> nand-bus-width *always*. It does not "check at one place" but rather
+>> "check always". In the same time, the patch does not remove
+>> gpmc,device-width check in other place.
+>>
+>> All three elements - the title, message and patch - do different things.
+>> What did you want to achieve here? Can you help in clarifying it?
+>>
+> 
+> OK I will explain it better in commit log in next revision. Let me explain here a bit.
+> 
+> Prior to this patch it was working like this
+> 
+> 	/* in gpmc_read_settings_dt() */
+> 	s->device_width = 0;	/* invalid width, should be 1 for 8-bit, 2 for 16-bit */
+> 	of_property_read_u32(np, "gpmc,device-width", s->device_width);
+> 
+> 	/* in gpmc_probe_generic_child () */
+> 	if (of_device_is_compatible(child, "ti,omap2-nand")) {
+> 		/* check for nand-bus-width, if absent set s->device_width to 1 (i.e. 8-bit) */
+> 	} else {
+> 		/* check for bank-width, if absent and s->device_width not set, error out */
+> 	}
+> 
+> So that means if all three, "gpmc,device-width". "nand-bus-width" and "bank-width" are missing then
+> it would create an error situation.
+> 
+> The patch is doing 3 things.
+> 1) Make sure all DT checks related to bus width are being done at one place for better readability.
 
-Just patched it.
-The following log was printed after executing the C reproducer.
+Not entirely. The gpmc,device-width is still done in the other place
+because you did not remove it from the code. Unless you meant parsing of
+gpmc,device-width not reading from DT? But then another round of checks
+is in gpmc_cs_program_settings() so not in one place.
 
-IPv6: ADDRCONF(NETDEV_CHANGE): wlan0: link becomes ready
-IPv6: ADDRCONF(NETDEV_CHANGE): wlan1: link becomes ready
-Bluetooth: hci0: command 0x0409 tx timeout
-Bluetooth: hci0: command 0x041b tx timeout
-Bluetooth: hci0: command 0x040f tx timeout
-Bluetooth: hci0: command 0x0419 tx timeout
-page:ffffea00009c0000 refcount:514 mapcount:0 mapping:ffff8881060db7b0
-index:0x0 pfn:0x27000
-head:ffffea00009c0000 order:9 compound_mapcount:0 compound_pincount:0
-memcg:ffff8880118bc000
-aops:def_blk_aops ino:fa00000
-flags: 0xfff00000012037(locked|referenced|uptodate|lru|active|private|head|node=0|zone=1|lastcpupid=0x7ff)
-raw: 00fff00000012037 ffffea00009491c8 ffff888010c7d030 ffff8881060db7b0
-raw: 0000000000000000 ffff888025d10658 00000202ffffffff ffff8880118bc000
-page dumped because: VM_BUG_ON_PAGE((stop > ((1UL) << 12)))
-page_owner tracks the page as allocated
-page last allocated via order 9, migratetype Movable, gfp_mask
-0x13c24ca(GFP_TRANSHUGE|__GFP_THISNODE), pid 35, ts 579054356699,
-free_ts 543915753195
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook mm/page_alloc.c:2418 [inline]
- prep_new_page+0x1a5/0x240 mm/page_alloc.c:2424
- get_page_from_freelist+0x1f10/0x3b70 mm/page_alloc.c:4153
- __alloc_pages+0x306/0x6e0 mm/page_alloc.c:5375
- __alloc_pages_node include/linux/gfp.h:570 [inline]
- khugepaged_alloc_page+0xa0/0x170 mm/khugepaged.c:881
- collapse_file+0x20a/0x45f0 mm/khugepaged.c:1655
- khugepaged_scan_file mm/khugepaged.c:2051 [inline]
- khugepaged_scan_mm_slot mm/khugepaged.c:2146 [inline]
- khugepaged_do_scan mm/khugepaged.c:2230 [inline]
- khugepaged+0x2e65/0x5c50 mm/khugepaged.c:2275
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1338 [inline]
- free_pcp_prepare+0x412/0x900 mm/page_alloc.c:1389
- free_unref_page_prepare mm/page_alloc.c:3315 [inline]
- free_unref_page+0x19/0x580 mm/page_alloc.c:3394
- release_pages+0x87f/0x2920 mm/swap.c:926
- tlb_batch_pages_flush mm/mmu_gather.c:49 [inline]
- tlb_flush_mmu_free mm/mmu_gather.c:242 [inline]
- tlb_flush_mmu+0x8d/0x610 mm/mmu_gather.c:249
- tlb_finish_mmu+0x93/0x3c0 mm/mmu_gather.c:340
- unmap_region+0x27f/0x350 mm/mmap.c:2653
- __do_munmap+0xabc/0x11e0 mm/mmap.c:2884
- do_munmap mm/mmap.c:2895 [inline]
- munmap_vma_range mm/mmap.c:603 [inline]
- mmap_region+0x2c4/0x1340 mm/mmap.c:1742
- do_mmap+0x7f5/0xe60 mm/mmap.c:1575
- vm_mmap_pgoff+0x1b7/0x290 mm/util.c:519
- ksys_mmap_pgoff+0x49f/0x620 mm/mmap.c:1624
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-------------[ cut here ]------------
-kernel BUG at fs/buffer.c:1511!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 2954 Comm: kworker/1:2 Not tainted 5.15.0-rc1+ #4
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-1.13.0-1ubuntu1.1 04/01/2014
-Workqueue: events delayed_fput
-RIP: 0010:block_invalidatepage+0x599/0x680 fs/buffer.c:1511
-Code: 0f 0b e8 9a 6b 9c ff 31 f6 4c 89 e7 e8 10 d7 bf ff e9 df fe ff
-ff e8 86 6b 9c ff 48 c7 c6 00 4e 9a 89 4c 89 e7 e8 c7 16 d0 ff <0f> 0b
-e8 70 6b 9c ff 48 c7 c6 60 4e 9a 89 4c 89 e7 e8 b1 16 d0 ff
-RSP: 0018:ffffc9000e9078b8 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffff888100bd9c80
-RDX: 0000000000000000 RSI: ffff888100bd9c80 RDI: 0000000000000002
-RBP: 0000000000000000 R08: ffffffff81d9e369 R09: 000000000000ffff
-R10: 0000000000000003 R11: ffffed1026b83f53 R12: ffffea00009c0000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000200000
-FS:  0000000000000000(0000) GS:ffff888135c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffde41e8960 CR3: 0000000019cef000 CR4: 0000000000350ee0
-Call Trace:
- do_invalidatepage mm/truncate.c:157 [inline]
- truncate_cleanup_page+0x3e4/0x620 mm/truncate.c:176
- truncate_inode_pages_range+0x26c/0x1910 mm/truncate.c:325
- kill_bdev.isra.0+0x5f/0x80 block/bdev.c:77
- blkdev_flush_mapping+0xdf/0x2e0 block/bdev.c:658
- blkdev_put_whole+0xe8/0x110 block/bdev.c:689
- blkdev_put+0x23c/0x6f0 block/bdev.c:953
- blkdev_close+0x8d/0xb0 block/fops.c:459
- __fput+0x288/0x9f0 fs/file_table.c:280
- delayed_fput+0x56/0x70 fs/file_table.c:308
- process_one_work+0x9df/0x16d0 kernel/workqueue.c:2297
- worker_thread+0x90/0xed0 kernel/workqueue.c:2444
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-Modules linked in:
-Dumping ftrace buffer:
-   (ftrace buffer empty)
----[ end trace 77cfca54575c5255 ]---
-RIP: 0010:block_invalidatepage+0x599/0x680 fs/buffer.c:1511
-Code: 0f 0b e8 9a 6b 9c ff 31 f6 4c 89 e7 e8 10 d7 bf ff e9 df fe ff
-ff e8 86 6b 9c ff 48 c7 c6 00 4e 9a 89 4c 89 e7 e8 c7 16 d0 ff <0f> 0b
-e8 70 6b 9c ff 48 c7 c6 60 4e 9a 89 4c 89 e7 e8 b1 16 d0 ff
-RSP: 0018:ffffc9000e9078b8 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffff888100bd9c80
-RDX: 0000000000000000 RSI: ffff888100bd9c80 RDI: 0000000000000002
-RBP: 0000000000000000 R08: ffffffff81d9e369 R09: 000000000000ffff
-R10: 0000000000000003 R11: ffffed1026b83f53 R12: ffffea00009c0000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000200000
-FS:  0000000000000000(0000) GS:ffff888135c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f78dffb7ef8 CR3: 000000001f2ef000 CR4: 0000000000350ee0
+If you consolidate the checks to one place, I would expect the code to
+be removed from other places, so from gpmc_cs_program_settings() and
+gpmc_read_settings_dt(). Since this is not happening, the message
+confuses me.
 
+> 2) even if all 3 width properties are absent, we will not treat it as error and default to 8-bit.
 
-> If my speculation is correct, I think the below patch should be able
-> to fix this issue.
->
-> diff --git a/fs/buffer.c b/fs/buffer.c
-> index ab7573d72dd7..18428cee59af 100644
-> --- a/fs/buffer.c
-> +++ b/fs/buffer.c
-> @@ -1507,7 +1507,7 @@ void block_invalidatepage(struct page *page,
-> unsigned int offset,
->         /*
->          * Check for overflow
->          */
-> -       BUG_ON(stop > PAGE_SIZE || stop < length);
-> +       BUG_ON(stop > thp_size(page) || stop < length);
->
->         head = page_buffers(page);
->         bh = head;
->
+This is not mentioned in commit msg.
 
-Yes, the C reproducer can not crash the kernel anymore after patching
-the above code.
+> 3) check for nand-bus-width regardless of whether compatible to "ti,omap2-nand" or not.
+
+Also not mentioned in commit msg.
+
+Your commit reorganizes parsing and validating the child DT properties
+but it does not change from "multiple place" to "one place".
+
+At least I don't see it.
+
+Best regards,
+Krzysztof
