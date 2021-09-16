@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A41B440E220
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:15:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E21040DF06
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:04:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244218AbhIPQfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:35:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37484 "EHLO mail.kernel.org"
+        id S240606AbhIPQGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:06:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44566 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241257AbhIPQ1H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:27:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E89126159A;
-        Thu, 16 Sep 2021 16:17:21 +0000 (UTC)
+        id S240563AbhIPQF1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:05:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D67A61251;
+        Thu, 16 Sep 2021 16:04:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809042;
-        bh=86PE/a9TFm7ZEbARjogtSHzEyNP9FhLi7eyc6ct1KdI=;
+        s=korg; t=1631808246;
+        bh=N18S5Tvi29WFXYbMLSY9EpfDhlRStKbfYDG3j4ASmK8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YfhbJf+PfHfF958rat2WCPWTuMFAj+IthsKZd0XhzxaEmwpTFI6PWkRL/boqf/sxo
-         +eG9Rx8pyzq8AGkn8dJxzeeg8cvdQjZUjTAiUcUrx58K4YjjG1xSP7mh47+0XNy9IA
-         vg6hgycQ034kHuAtlEzZhG2v6bylY+lfkS6CZ7cg=
+        b=nk476Fsjs4BjF60m0On60bzrFQpTORnj/jGrf9EngKHDqRBiQqK0VwlrdtIUB6FnW
+         I2DlxwfHFchArI7FpR3h5KioCIxYe7LxQP406tIqLu5heQdbOQLs3Q8NHfc/u4kIE4
+         HMXxpE63hIsvXgQKr7zgSV53GzfoZOPB6IjEzSxs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.13 002/380] btrfs: wake up async_delalloc_pages waiters after submit
-Date:   Thu, 16 Sep 2021 17:55:59 +0200
-Message-Id: <20210916155804.056573565@linuxfoundation.org>
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Ilya Dryomov <idryomov@gmail.com>
+Subject: [PATCH 5.10 015/306] ceph: fix dereference of null pointer cf
+Date:   Thu, 16 Sep 2021 17:56:00 +0200
+Message-Id: <20210916155754.443185441@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,54 +39,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-commit ac98141d140444fe93e26471d3074c603b70e2ca upstream.
+commit 05a444d3f90a3c3e6362e88a1bf13e1a60f8cace upstream.
 
-We use the async_delalloc_pages mechanism to make sure that we've
-completed our async work before trying to continue our delalloc
-flushing.  The reason for this is we need to see any ordered extents
-that were created by our delalloc flushing.  However we're waking up
-before we do the submit work, which is before we create the ordered
-extents.  This is a pretty wide race window where we could potentially
-think there are no ordered extents and thus exit shrink_delalloc
-prematurely.  Fix this by waking us up after we've done the work to
-create ordered extents.
+Currently in the case where kmem_cache_alloc fails the null pointer
+cf is dereferenced when assigning cf->is_capsnap = false. Fix this
+by adding a null pointer check and return path.
 
-CC: stable@vger.kernel.org # 5.4+
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Cc: stable@vger.kernel.org
+Addresses-Coverity: ("Dereference null return")
+Fixes: b2f9fa1f3bd8 ("ceph: correctly handle releasing an embedded cap flush")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Reviewed-by: Ilya Dryomov <idryomov@gmail.com>
+Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/btrfs/inode.c |   10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ fs/ceph/caps.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -1248,11 +1248,6 @@ static noinline void async_cow_submit(st
- 	nr_pages = (async_chunk->end - async_chunk->start + PAGE_SIZE) >>
- 		PAGE_SHIFT;
+--- a/fs/ceph/caps.c
++++ b/fs/ceph/caps.c
+@@ -1755,6 +1755,9 @@ struct ceph_cap_flush *ceph_alloc_cap_fl
+ 	struct ceph_cap_flush *cf;
  
--	/* atomic_sub_return implies a barrier */
--	if (atomic_sub_return(nr_pages, &fs_info->async_delalloc_pages) <
--	    5 * SZ_1M)
--		cond_wake_up_nomb(&fs_info->async_submit_wait);
--
- 	/*
- 	 * ->inode could be NULL if async_chunk_start has failed to compress,
- 	 * in which case we don't have anything to submit, yet we need to
-@@ -1261,6 +1256,11 @@ static noinline void async_cow_submit(st
- 	 */
- 	if (async_chunk->inode)
- 		submit_compressed_extents(async_chunk);
+ 	cf = kmem_cache_alloc(ceph_cap_flush_cachep, GFP_KERNEL);
++	if (!cf)
++		return NULL;
 +
-+	/* atomic_sub_return implies a barrier */
-+	if (atomic_sub_return(nr_pages, &fs_info->async_delalloc_pages) <
-+	    5 * SZ_1M)
-+		cond_wake_up_nomb(&fs_info->async_submit_wait);
+ 	cf->is_capsnap = false;
+ 	return cf;
  }
- 
- static noinline void async_cow_free(struct btrfs_work *work)
 
 
