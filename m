@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6436B40DFC9
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:12:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D053040E2E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:17:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235708AbhIPQOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:14:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48684 "EHLO mail.kernel.org"
+        id S243432AbhIPQmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:42:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50778 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235132AbhIPQIY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:08:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 22D8C61268;
-        Thu, 16 Sep 2021 16:07:02 +0000 (UTC)
+        id S242155AbhIPQgs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:36:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 48CE0619BB;
+        Thu, 16 Sep 2021 16:21:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808423;
-        bh=8XWIXUWufZn5FSq7J1t9wv5kAwa8ORERlVdBzcM35mA=;
+        s=korg; t=1631809309;
+        bh=QY6MBd25QKZiu36ewlOr0ps4BMJR4Qlho/OjIvbK2xw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KjVKu8L1FX3xZ+zFyCJmkds25IpenixjVwjXJvGagU1V0ko2qAhscDRqzDYfyi8Ss
-         dWP7VHPba+kqSIgEfOP4amzKeyZY4saigB6ngl9STxk9OBKLnRVz5bK8FBVUL3Ujaa
-         Dy+K5hBeVYeOPtP0Jv2qpFDTRSlJtZWsYjbEFUN8=
+        b=uPT1O23/ET317Djo9+lCdATzV9zGyZyz9EzWN06ur1gP8kwSqA+gSBPB87q3Rpfs1
+         +kB0zAE8ukgMZcotydCrbFABSlI9YwmigDkDlNy09pyV4mC13Nz9XxMqNdTPGkHqiP
+         Bo8t1kFa8Rw48vnmsdozYdjmCM17UVt8wlB0Lt+E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Manish Rangankar <mrangankar@marvell.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 086/306] scsi: qedi: Fix error codes in qedi_alloc_global_queues()
-Date:   Thu, 16 Sep 2021 17:57:11 +0200
-Message-Id: <20210916155756.988397094@linuxfoundation.org>
+Subject: [PATCH 5.13 075/380] RDMA/iwcm: Release resources if iw_cm module initialization fails
+Date:   Thu, 16 Sep 2021 17:57:12 +0200
+Message-Id: <20210916155806.559276644@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,80 +40,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-[ Upstream commit 4dbe57d46d54a847875fa33e7d05877bb341585e ]
+[ Upstream commit e677b72a0647249370f2635862bf0241c86f66ad ]
 
-This function had some left over code that returned 1 on error instead
-negative error codes.  Convert everything to use negative error codes.  The
-caller treats all non-zero returns the same so this does not affect run
-time.
+The failure during iw_cm module initialization partially left the system
+with unreleased memory and other resources. Rewrite the module init/exit
+routines in such way that netlink commands will be opened only after
+successful initialization.
 
-A couple places set "rc" instead of "status" so those error paths ended up
-returning success by mistake.  Get rid of the "rc" variable and use
-"status" everywhere.
-
-Remove the bogus "status = 0" initialization, as a future proofing measure
-so the compiler will warn about uninitialized error codes.
-
-Link: https://lore.kernel.org/r/20210810084753.GD23810@kili
-Fixes: ace7f46ba5fd ("scsi: qedi: Add QLogic FastLinQ offload iSCSI driver framework.")
-Acked-by: Manish Rangankar <mrangankar@marvell.com>
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: b493d91d333e ("iwcm: common code for port mapper")
+Link: https://lore.kernel.org/r/b01239f99cb1a3e6d2b0694c242d89e6410bcd93.1627048781.git.leonro@nvidia.com
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/qedi/qedi_main.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/infiniband/core/iwcm.c | 19 ++++++++++++-------
+ 1 file changed, 12 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/scsi/qedi/qedi_main.c b/drivers/scsi/qedi/qedi_main.c
-index b33eff9ea80b..299d0369e4f0 100644
---- a/drivers/scsi/qedi/qedi_main.c
-+++ b/drivers/scsi/qedi/qedi_main.c
-@@ -1623,7 +1623,7 @@ static int qedi_alloc_global_queues(struct qedi_ctx *qedi)
+diff --git a/drivers/infiniband/core/iwcm.c b/drivers/infiniband/core/iwcm.c
+index da8adadf4755..75b6da00065a 100644
+--- a/drivers/infiniband/core/iwcm.c
++++ b/drivers/infiniband/core/iwcm.c
+@@ -1187,29 +1187,34 @@ static int __init iw_cm_init(void)
+ 
+ 	ret = iwpm_init(RDMA_NL_IWCM);
+ 	if (ret)
+-		pr_err("iw_cm: couldn't init iwpm\n");
+-	else
+-		rdma_nl_register(RDMA_NL_IWCM, iwcm_nl_cb_table);
++		return ret;
++
+ 	iwcm_wq = alloc_ordered_workqueue("iw_cm_wq", 0);
+ 	if (!iwcm_wq)
+-		return -ENOMEM;
++		goto err_alloc;
+ 
+ 	iwcm_ctl_table_hdr = register_net_sysctl(&init_net, "net/iw_cm",
+ 						 iwcm_ctl_table);
+ 	if (!iwcm_ctl_table_hdr) {
+ 		pr_err("iw_cm: couldn't register sysctl paths\n");
+-		destroy_workqueue(iwcm_wq);
+-		return -ENOMEM;
++		goto err_sysctl;
+ 	}
+ 
++	rdma_nl_register(RDMA_NL_IWCM, iwcm_nl_cb_table);
+ 	return 0;
++
++err_sysctl:
++	destroy_workqueue(iwcm_wq);
++err_alloc:
++	iwpm_exit(RDMA_NL_IWCM);
++	return -ENOMEM;
+ }
+ 
+ static void __exit iw_cm_cleanup(void)
  {
- 	u32 *list;
- 	int i;
--	int status = 0, rc;
-+	int status;
- 	u32 *pbl;
- 	dma_addr_t page;
- 	int num_pages;
-@@ -1634,14 +1634,14 @@ static int qedi_alloc_global_queues(struct qedi_ctx *qedi)
- 	 */
- 	if (!qedi->num_queues) {
- 		QEDI_ERR(&qedi->dbg_ctx, "No MSI-X vectors available!\n");
--		return 1;
-+		return -ENOMEM;
- 	}
++	rdma_nl_unregister(RDMA_NL_IWCM);
+ 	unregister_net_sysctl_table(iwcm_ctl_table_hdr);
+ 	destroy_workqueue(iwcm_wq);
+-	rdma_nl_unregister(RDMA_NL_IWCM);
+ 	iwpm_exit(RDMA_NL_IWCM);
+ }
  
- 	/* Make sure we allocated the PBL that will contain the physical
- 	 * addresses of our queues
- 	 */
- 	if (!qedi->p_cpuq) {
--		status = 1;
-+		status = -EINVAL;
- 		goto mem_alloc_failure;
- 	}
- 
-@@ -1656,13 +1656,13 @@ static int qedi_alloc_global_queues(struct qedi_ctx *qedi)
- 		  "qedi->global_queues=%p.\n", qedi->global_queues);
- 
- 	/* Allocate DMA coherent buffers for BDQ */
--	rc = qedi_alloc_bdq(qedi);
--	if (rc)
-+	status = qedi_alloc_bdq(qedi);
-+	if (status)
- 		goto mem_alloc_failure;
- 
- 	/* Allocate DMA coherent buffers for NVM_ISCSI_CFG */
--	rc = qedi_alloc_nvm_iscsi_cfg(qedi);
--	if (rc)
-+	status = qedi_alloc_nvm_iscsi_cfg(qedi);
-+	if (status)
- 		goto mem_alloc_failure;
- 
- 	/* Allocate a CQ and an associated PBL for each MSI-X
 -- 
 2.30.2
 
