@@ -2,108 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1427C40D629
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 11:26:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C977E40D632
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 11:27:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236437AbhIPJ1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 05:27:16 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:32278 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236297AbhIPJ1N (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 05:27:13 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 18G95FLC009660;
-        Thu, 16 Sep 2021 17:05:17 +0800 (GMT-8)
-        (envelope-from chiawei_wang@aspeedtech.com)
-Received: from ChiaWeiWang-PC.aspeed.com (192.168.2.66) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 16 Sep
- 2021 17:25:13 +0800
-From:   Chia-Wei Wang <chiawei_wang@aspeedtech.com>
-To:     <robh+dt@kernel.org>, <joel@jms.id.au>, <andrew@aj.id.au>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <openbmc@lists.ozlabs.org>
-CC:     <osk@google.com>, <yulei.sh@bytedance.com>
-Subject: [PATCH v5 4/4] ARM: dts: aspeed: Add uart routing to device tree
-Date:   Thu, 16 Sep 2021 17:25:15 +0800
-Message-ID: <20210916092515.10553-5-chiawei_wang@aspeedtech.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210916092515.10553-1-chiawei_wang@aspeedtech.com>
-References: <20210916092515.10553-1-chiawei_wang@aspeedtech.com>
+        id S235539AbhIPJ2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 05:28:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48124 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235237AbhIPJ2n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 05:28:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BF87B60EE5;
+        Thu, 16 Sep 2021 09:27:21 +0000 (UTC)
+Date:   Thu, 16 Sep 2021 11:27:19 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>,
+        Linux API <linux-api@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>
+Subject: Re: [RFC] Expose request_module via syscall
+Message-ID: <20210916092719.v4pkhhugdiq7ytcp@wittgenstein>
+References: <705fde50-37a6-49ed-b9c2-c9107cd88189@t-8ch.de>
+ <CALCETrUM0cko=5ki-Dd402DNFU2TmgnJTz_vfrsaofkGD-1kmA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [192.168.2.66]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 18G95FLC009660
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALCETrUM0cko=5ki-Dd402DNFU2TmgnJTz_vfrsaofkGD-1kmA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add LPC uart routing to the device tree for Aspeed SoCs.
+On Wed, Sep 15, 2021 at 09:47:25AM -0700, Andy Lutomirski wrote:
+> On Wed, Sep 15, 2021 at 8:50 AM Thomas Weißschuh <thomas@t-8ch.de> wrote:
+> >
+> > Hi,
+> >
+> > I would like to propose a new syscall that exposes the functionality of
+> > request_module() to userspace.
+> >
+> > Propsed signature: request_module(char *module_name, char **args, int flags);
+> > Where args and flags have to be NULL and 0 for the time being.
+> >
+> > Rationale:
+> >
+> > We are using nested, privileged containers which are loading kernel modules.
+> > Currently we have to always pass around the contents of /lib/modules from the
+> > root namespace which contains the modules.
+> > (Also the containers need to have userspace components for moduleloading
+> > installed)
+> >
+> > The syscall would remove the need for this bookkeeping work.
+> 
+> I feel like I'm missing something, and I don't understand the purpose
+> of this syscall.  Wouldn't the right solution be for the container to
+> have a stub module loader (maybe doable with a special /sbin/modprobe
+> or maybe a kernel patch would be needed, depending on the exact use
+> case) and have the stub call out to the container manager to request
+> the module?  The container manager would check its security policy and
+> load the module or not load it as appropriate.
 
-Signed-off-by: Oskar Senft <osk@google.com>
-Signed-off-by: Chia-Wei Wang <chiawei_wang@aspeedtech.com>
-Tested-by: Lei YU <yulei.sh@bytedance.com>
----
- arch/arm/boot/dts/aspeed-g4.dtsi | 6 ++++++
- arch/arm/boot/dts/aspeed-g5.dtsi | 6 ++++++
- arch/arm/boot/dts/aspeed-g6.dtsi | 6 ++++++
- 3 files changed, 18 insertions(+)
+I don't see the need for a syscall like this yet either.
 
-diff --git a/arch/arm/boot/dts/aspeed-g4.dtsi b/arch/arm/boot/dts/aspeed-g4.dtsi
-index c5aeb3cf3a09..b313a1cf5f73 100644
---- a/arch/arm/boot/dts/aspeed-g4.dtsi
-+++ b/arch/arm/boot/dts/aspeed-g4.dtsi
-@@ -383,6 +383,12 @@
- 					interrupts = <8>;
- 					status = "disabled";
- 				};
-+
-+				uart_routing: uart-routing@9c {
-+					compatible = "aspeed,ast2400-uart-routing";
-+					reg = <0x9c 0x4>;
-+					status = "disabled";
-+				};
- 			};
- 
- 			uart2: serial@1e78d000 {
-diff --git a/arch/arm/boot/dts/aspeed-g5.dtsi b/arch/arm/boot/dts/aspeed-g5.dtsi
-index 73ca1ec6fc24..c7049454c7cb 100644
---- a/arch/arm/boot/dts/aspeed-g5.dtsi
-+++ b/arch/arm/boot/dts/aspeed-g5.dtsi
-@@ -491,6 +491,12 @@
- 					#reset-cells = <1>;
- 				};
- 
-+				uart_routing: uart-routing@9c {
-+					compatible = "aspeed,ast2500-uart-routing";
-+					reg = <0x9c 0x4>;
-+					status = "disabled";
-+				};
-+
- 				lhc: lhc@a0 {
- 					compatible = "aspeed,ast2500-lhc";
- 					reg = <0xa0 0x24 0xc8 0x8>;
-diff --git a/arch/arm/boot/dts/aspeed-g6.dtsi b/arch/arm/boot/dts/aspeed-g6.dtsi
-index 1b47be1704f8..cdc59c5d86fe 100644
---- a/arch/arm/boot/dts/aspeed-g6.dtsi
-+++ b/arch/arm/boot/dts/aspeed-g6.dtsi
-@@ -551,6 +551,12 @@
- 					#reset-cells = <1>;
- 				};
- 
-+				uart_routing: uart-routing@98 {
-+					compatible = "aspeed,ast2600-uart-routing";
-+					reg = <0x98 0x8>;
-+					status = "disabled";
-+				};
-+
- 				ibt: ibt@140 {
- 					compatible = "aspeed,ast2600-ibt-bmc";
- 					reg = <0x140 0x18>;
--- 
-2.17.1
+This should be the job of the container manager. modprobe just calls the
+init_module() syscall, right?
 
+If so the seccomp notifier can be used to intercept this system call for
+the container and verify the module against an allowlist similar to how
+we currently handle mount.
+
+Christian
