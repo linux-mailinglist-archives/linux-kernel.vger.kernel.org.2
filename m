@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 913CE40E44E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:23:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E63F40E8BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343769AbhIPQ5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:57:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40182 "EHLO mail.kernel.org"
+        id S1355254AbhIPRlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:41:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50268 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243774AbhIPQwJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:52:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE79161357;
-        Thu, 16 Sep 2021 16:28:56 +0000 (UTC)
+        id S1349164AbhIPRdy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:33:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AA6176321D;
+        Thu, 16 Sep 2021 16:48:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809737;
-        bh=DGJlaWkXczT7hs0YZrX1UHK2Uy0SYQKrZyStzYEnIvc=;
+        s=korg; t=1631810887;
+        bh=8ktpIn8aD+vf73izuBIF3RDcvDUaoOZclSnHSOlqX9Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=taLzCtAfodBbaH0aXZOczLGA7+welF7/Q9ZSwxbjSexLYMhiEOkZ6pp2QHRZKcVAv
-         amy3Oxpo5NgXF3J9ERozmOYsZc7ejNQEccG+/dsRTsVcTsrAQxtF8DR1fXmz7weqET
-         hLbAZb63yYsqzIvYUU/uuyxEw86HxUmGYJHTqGdE=
+        b=O/qC4IF8arI+FNyeExjGonNqYrLEjFJh2yVm5UpWyszJugVQ6MCJLqBhGm/8rvHd0
+         Z2W7NB7M4FHsV1A/VRl6zAWBC8bhLqtUxHJeWldvjqZJqPIjTr1cKPmEuHv25JVmtl
+         EFlN+TxBgrfZ7MsI85pqiu2GuozackVCkhnAL+8E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        Johannes Berg <johannes.berg@intel.com>,
+        stable@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 264/380] mac80211: Fix monitor MTU limit so that A-MSDUs get through
-Date:   Thu, 16 Sep 2021 18:00:21 +0200
-Message-Id: <20210916155813.058664391@linuxfoundation.org>
+Subject: [PATCH 5.14 273/432] arm64: dts: qcom: msm8996: dont use underscore in node name
+Date:   Thu, 16 Sep 2021 18:00:22 +0200
+Message-Id: <20210916155820.062076984@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,51 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+From: Vinod Koul <vkoul@kernel.org>
 
-[ Upstream commit 79f5962baea74ce1cd4e5949598944bff854b166 ]
+[ Upstream commit 84f3efbe5b4654077608bc2fc027177fe4592321 ]
 
-The maximum MTU was set to 2304, which is the maximum MSDU size. While
-this is valid for normal WLAN interfaces, it is too low for monitor
-interfaces. A monitor interface may receive and inject MPDU frames, and
-the maximum MPDU frame size is larger than 2304. The MPDU may also
-contain an A-MSDU frame, in which case the size may be much larger than
-the MTU limit. Since the maximum size of an A-MSDU depends on the PHY
-mode of the transmitting STA, it is not possible to set an exact MTU
-limit for a monitor interface. Now the maximum MTU for a monitor
-interface is unrestricted.
+We have underscore (_) in node name leading to warning:
 
-Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Link: https://lore.kernel.org/r/20210628123246.2070558-1-johan.almbladh@anyfinetworks.com
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+arch/arm64/boot/dts/qcom/apq8096-db820c.dt.yaml: clocks: $nodename:0: 'clocks' does not match '^([a-z][a-z0-9\\-]+-bus|bus|soc|axi|ahb|apb)(@[0-9a-f]+)?$'
+arch/arm64/boot/dts/qcom/apq8096-db820c.dt.yaml: clocks: xo_board: {'type': 'object'} is not allowed for {'compatible': ['fixed-clock'], '#clock-cells': [[0]], 'clock-frequency': [[19200000]], 'clock-output-names': ['xo_board'], 'phandle': [[115]]}
+
+Fix this by changing node name to use dash (-)
+
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Link: https://lore.kernel.org/r/20210308060826.3074234-10-vkoul@kernel.org
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/iface.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ arch/arm64/boot/dts/qcom/msm8996.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/mac80211/iface.c b/net/mac80211/iface.c
-index 137fa4c50e07..8df7ab34911c 100644
---- a/net/mac80211/iface.c
-+++ b/net/mac80211/iface.c
-@@ -1985,9 +1985,16 @@ int ieee80211_if_add(struct ieee80211_local *local, const char *name,
+diff --git a/arch/arm64/boot/dts/qcom/msm8996.dtsi b/arch/arm64/boot/dts/qcom/msm8996.dtsi
+index 78c55ca10ba9..77bc233f8380 100644
+--- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
+@@ -19,14 +19,14 @@ / {
+ 	chosen { };
  
- 		netdev_set_default_ethtool_ops(ndev, &ieee80211_ethtool_ops);
+ 	clocks {
+-		xo_board: xo_board {
++		xo_board: xo-board {
+ 			compatible = "fixed-clock";
+ 			#clock-cells = <0>;
+ 			clock-frequency = <19200000>;
+ 			clock-output-names = "xo_board";
+ 		};
  
--		/* MTU range: 256 - 2304 */
-+		/* MTU range is normally 256 - 2304, where the upper limit is
-+		 * the maximum MSDU size. Monitor interfaces send and receive
-+		 * MPDU and A-MSDU frames which may be much larger so we do
-+		 * not impose an upper limit in that case.
-+		 */
- 		ndev->min_mtu = 256;
--		ndev->max_mtu = local->hw.max_mtu;
-+		if (type == NL80211_IFTYPE_MONITOR)
-+			ndev->max_mtu = 0;
-+		else
-+			ndev->max_mtu = local->hw.max_mtu;
- 
- 		ret = cfg80211_register_netdevice(ndev);
- 		if (ret) {
+-		sleep_clk: sleep_clk {
++		sleep_clk: sleep-clk {
+ 			compatible = "fixed-clock";
+ 			#clock-cells = <0>;
+ 			clock-frequency = <32764>;
 -- 
 2.30.2
 
