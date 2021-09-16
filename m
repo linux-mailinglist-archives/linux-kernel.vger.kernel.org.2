@@ -2,55 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CDF440D6F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 11:59:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 941D540D6BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 11:55:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237427AbhIPKAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 06:00:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58044 "EHLO mail.kernel.org"
+        id S236911AbhIPJ5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 05:57:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57834 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236073AbhIPJ4s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 05:56:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D6596120F;
+        id S235649AbhIPJ4q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 05:56:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B3CD61244;
         Thu, 16 Sep 2021 09:55:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1631786126;
-        bh=75WrKbSFBKg3yzGt07IbXwPNTFQ0wIIFH/Or+OVz1tk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=uF5yJPv/qiKbXXEFvin6OmfsjMRrph3HNOgVM4VP8l98VyCCn6ZiDH4Vz9ThIa3nO
-         /R3BLqZrexnLqAhaLqqje35cJvGT4N3rzjw+tJcda+Ho3iJSy3WwY5wVLASpoPMaG0
-         BdVfOxuhSoKonDNgYiYNAV5b+jhnTDG3G0iRsZjuDNsSqouJPu1+uSll78aJKox5Ns
-         KwHB376rUBOCM9pslwyGU8l8WVSDWBaAmSdRQHZs7Vn9W0IUzd/0QWauFDPCMtQEHo
-         PeyD1wssHY2MBiz2gKKjgNgw/LEq0+KlatdR8BlJsvdBjXO7hPlAu8a1uYbkmb9sPv
-         1LdRPeVp9uZAg==
+        bh=bpIM64MitjT0L278MXyuSFiAmcVN5+3I+6bnlUhY+Ss=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=KAqxwWKZIY4hpag0sDa27pCROvnTE7jj2Pogm6S4LSkXjzU92QwHH6m/AmH+kxEuZ
+         byT/7S6WjvRFcGgrxYO2x9wgDDzf1VFc5HCTO1GnsR9ibWxHeZE33ITmR4f+HG4jl0
+         wDkEdz4+SylWOqocTOkjJE96pcXRBeGxD/A+nPsVYYoE+eafJndqm3w9rhub+1Qb7x
+         sV7zc4HBH2Oyno9hWMQS4uvK1j8lzMDPAEnuaGfj6LhD5F2ZogWrpgC1jmhg4+k7dF
+         eFr8PTnC1iTkDxCNusuEjh/S0y7f4rEDKLuI5oMe2ZgADigNpVCY3XLiMEUxDjS7bX
+         bGWap0OjAxQFw==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1mQo72-001vTH-32; Thu, 16 Sep 2021 11:55:24 +0200
+        id 1mQo72-001vTK-4a; Thu, 16 Sep 2021 11:55:24 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Jonathan Corbet <corbet@lwn.net>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Evgeniy Polyakov <zbr@ioremap.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        bpf@vger.kernel.org, devicetree@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-kselftest@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-mmc@vger.kernel.org,
-        linux-omap@vger.kernel.org, netdev@vger.kernel.org,
-        sparmaintainer@unisys.com
-Subject: [PATCH v2 00/23] Fix some issues at documentation
-Date:   Thu, 16 Sep 2021 11:54:59 +0200
-Message-Id: <cover.1631785820.git.mchehab+huawei@kernel.org>
+        David Kershner <david.kershner@unisys.com>,
+        linux-kernel@vger.kernel.org, sparmaintainer@unisys.com
+Subject: [PATCH v2 01/23] visorbus: fix a copyright symbol that was bad encoded
+Date:   Thu, 16 Sep 2021 11:55:00 +0200
+Message-Id: <be5fae76111c41c62866686a386fbe21ee7a7b33.1631785820.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <cover.1631785820.git.mchehab+huawei@kernel.org>
+References: <cover.1631785820.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -59,69 +46,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi John,
+The copyright symbol was badly encoded using the
+REPLACEMENT CHARACTER U+fffd ('�'), probably due to some
+bad charset conversion.
 
-Please ignore the previous series I sent today [1].  I forgot that I had
-already submitted a first version of this series.
+Fix it.
 
-[1]  https://lore.kernel.org/all/cover.1631783482.git.mchehab+huawei@kernel.org/
-
-
-The first patch in this series fix a bad character used instead of
-a "(c)" UTF-8 symbol.
-
-The remaining ones fix several broken references to files
-under Documentation/, several due to DT schema conversions
-from .txt to .yaml.
-
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
+ drivers/visorbus/visorbus_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-v2:
-   - Added a couple of extra fixes;
-   - merged two patches touching mtd-physmap.yaml;
-   - added missing tags (acked-by/reviewed-by) received after v1.
-v1: https://lore.kernel.org/all/cover.1626947923.git.mchehab+huawei@kernel.org/
-
-
-
-Mauro Carvalho Chehab (23):
-  visorbus: fix a copyright symbol that was bad encoded
-  dt-bindings: net: dsa: sja1105: update nxp,sja1105.yaml reference
-  dt-bindings: arm: mediatek: mmsys: update mediatek,mmsys.yaml
-    reference
-  dt-bindings: w1: update w1-gpio.yaml reference
-  dt-bindings: mmc: update mmc-card.yaml reference
-  libbpf: update index.rst reference
-  docs: accounting: update delay-accounting.rst reference
-  tools: bpftool: update bpftool-prog.rst reference
-  tools: bpftool: update bpftool-map.rst reference
-  bpftool: update bpftool-cgroup.rst reference
-  MAINTAINERS: update arm,vic.yaml reference
-  MAINTAINERS: update aspeed,i2c.yaml reference
-  MAINTAINERS: update faraday,ftrtc010.yaml reference
-  MAINTAINERS: update fsl,fec.yaml reference
-  MAINTAINERS: update ti,sci.yaml reference
-  MAINTAINERS: update intel,ixp46x-rng.yaml reference
-  MAINTAINERS: update nxp,imx8-jpeg.yaml reference
-  MAINTAINERS: update gemini.yaml reference
-  MAINTAINERS: update brcm,unimac-mdio.yaml reference
-  MAINTAINERS: update chipone,icn8318.yaml reference
-  MAINTAINERS: update silergy,sy8106a.yaml reference
-  MAINTAINERS: update mtd-physmap.yaml reference
-  MAINTAINERS: update ti,am654-hbmc.yaml reference
-
- Documentation/admin-guide/sysctl/kernel.rst   |  2 +-
- Documentation/bpf/index.rst                   |  2 +-
- .../display/mediatek/mediatek,disp.txt        |  2 +-
- Documentation/networking/dsa/sja1105.rst      |  2 +-
- Documentation/w1/masters/w1-gpio.rst          |  2 +-
- MAINTAINERS                                   | 28 +++++++++----------
- drivers/mmc/host/omap_hsmmc.c                 |  2 +-
- drivers/visorbus/visorbus_main.c              |  2 +-
- .../selftests/bpf/test_bpftool_synctypes.py   |  6 ++--
- 9 files changed, 24 insertions(+), 24 deletions(-)
-
+diff --git a/drivers/visorbus/visorbus_main.c b/drivers/visorbus/visorbus_main.c
+index 152fd29f04f2..0aa4cff670dc 100644
+--- a/drivers/visorbus/visorbus_main.c
++++ b/drivers/visorbus/visorbus_main.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /*
+- * Copyright � 2010 - 2015 UNISYS CORPORATION
++ * Copyright © 2010 - 2015 UNISYS CORPORATION
+  * All rights reserved.
+  */
+ 
 -- 
 2.31.1
-
 
