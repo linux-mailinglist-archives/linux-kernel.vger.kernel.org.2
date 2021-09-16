@@ -2,90 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A42240ED65
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 00:33:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1FE740ED6D
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 00:38:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241132AbhIPWeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 18:34:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46126 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241130AbhIPWeV (ORCPT
+        id S241147AbhIPWkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 18:40:05 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:50664 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231521AbhIPWkD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 18:34:21 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AD16C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 15:33:00 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id b15so6061237lfe.7
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 15:33:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=C2Pd9oQGhsIAALkBCdNNs3Jk3IqYwXgIkUsJNmKqGe4=;
-        b=AFSoc9u3yI+qZzT607V2n1nfEHCXO38yJEtaibfgn8ZEFzLgedJN/Rop5q/SWjAqam
-         NExNaUbhkeVgxA/JRNTOLd+QU79s8Y0aRXFaxaTY9UbFHBAAjtNlESlSl/L/dMqas/vG
-         +prNUa2EEa2Ft6E1RlwGuxTVLZjNN8Stgh+JZr3AtjtKO62Q/XIs3iS6mNbSSQUw1eCz
-         fgHlZx78TKrmNlK/BOZrlviCUFCG3Ip8T8nDqFbZB8w5r/F6h9uu89rWa+upbH3cJpcY
-         0wlfA0GY9GgbLoNL4fllS6wGxeD06CTdJZ7HMLfPfpKeTyefnImaRTMjLjJsKql8PrUe
-         YBvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C2Pd9oQGhsIAALkBCdNNs3Jk3IqYwXgIkUsJNmKqGe4=;
-        b=jG8XkWOzlhPZbmh9w2sBEU340m4+KDq2FIFn8x+QGlrTrG3blxbOdwfCZfRWUB4G1Z
-         SZmxZ9ZPqprKn9nppcjfaSE5j09csw9ejDaYw8hVdKTC/n3oCNr+KQolCApuYwixcEN3
-         PwiRyVpyJMB1nyfto4DdIETIb7U6SdRhlTFBeP8KaQWdkmdQQddu43vZA7IYAG7kAesV
-         fbsQioT1nQiwQJAd0UQe8whBSxFovNUfoSYgQxo3+IRFVmmhYf5g0p2jCwjxxY0OHziy
-         OySukYbyW1iL21YFbh+AlAXBuHXuQzTNggm7vUHPU+5DEPkL5/7+sxhsSQ+OehRIzBTO
-         IXdw==
-X-Gm-Message-State: AOAM532Py/VHCsRDxQesxw+FAKkubdL03KENwUTo9Yax5Y5xoPtmPa2k
-        mYWZPANc8Pj9QIWIqfXB8imP/6yPNaAI4RIaqNxN2w==
-X-Google-Smtp-Source: ABdhPJyxqxvinOj8aMJiZNnMyx2DgvsDEllzpmCWgV30ksZxAhfVIZ1rNGoh75+UjjbXoIY477ApJn6fT4OHdj1weFc=
-X-Received: by 2002:a2e:5758:: with SMTP id r24mr6861004ljd.432.1631831578894;
- Thu, 16 Sep 2021 15:32:58 -0700 (PDT)
+        Thu, 16 Sep 2021 18:40:03 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1631831921;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PsTwjeDxSlQlFP4KCCxKbdSN7ofxhqMzyKM26GDMRW8=;
+        b=AoeDZljOHB9PCNMj8dgWpMYNPmHShah6zKFHPSHP8Ez/3Szk3/pYio984hw3fW0Wgc8ggC
+        TxBtLmGUDJJyVAPGfapJKCvLKCEOF7Fwp+qGMU5C8OCIrDws212QBkBCrQXXV+DAr6/82l
+        VRCiv5LbUnTfU8SW6iPQh3Gscq422CBM8PDaMnDZjOwy7JLFUpetYk/j/dag3kkCsrzU2O
+        p4NSO8l9xGJGgvLhr3EEik6WPiQWFVLMTocaSh0LwXeErA2yLZAspn/PUCUqPFCSt2ye81
+        23qxECV8x7cnwS1VG8EdGQcBTb1K2/iZ3P9NE2vsordzbG/EAW7g1mvbJoExjA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1631831921;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PsTwjeDxSlQlFP4KCCxKbdSN7ofxhqMzyKM26GDMRW8=;
+        b=CecphcR1xepvXa2c4tQ05VcI36Kkz/zZuC6Ye3i+gPdrLHjYkWKLGrVx1k7wJl/kjnhBGG
+        uIDM0k/njD5F3MCA==
+To:     Arnd Bergmann <arnd@kernel.org>,
+        OPENSOURCE Lukas Hannen 
+        <lukas.hannen@opensource.tttech-industrial.com>
+Cc:     "EMC: linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "# 3.4.x" <stable@vger.kernel.org>
+Subject: Re: [PATCH 5.14 298/334] time: Handle negative seconds correctly in
+ timespec64_to_ns()
+In-Reply-To: <CAK8P3a0Cnr7LjWmXqSbhnc_jyjseCCztxLv8+v5ojhLXJ+_MyQ@mail.gmail.com>
+References: <20210913131113.390368911@linuxfoundation.org>
+ <20210913131123.500712780@linuxfoundation.org>
+ <CAK8P3a0z5jE=Z3Ps5bFTCFT7CHZR1JQ8VhdntDJAfsUxSPCcEw@mail.gmail.com>
+ <AM0PR01MB5410E0963A0AF9A525509DB2EEDC9@AM0PR01MB5410.eurprd01.prod.exchangelabs.com>
+ <CAK8P3a0Cnr7LjWmXqSbhnc_jyjseCCztxLv8+v5ojhLXJ+_MyQ@mail.gmail.com>
+Date:   Fri, 17 Sep 2021 00:38:41 +0200
+Message-ID: <871r5o9mdq.ffs@tglx>
 MIME-Version: 1.0
-References: <20210911071046.17349-1-zhiyong.tao@mediatek.com> <20210911071046.17349-2-zhiyong.tao@mediatek.com>
-In-Reply-To: <20210911071046.17349-2-zhiyong.tao@mediatek.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 17 Sep 2021 00:32:48 +0200
-Message-ID: <CACRpkdYim-2xcKux+4M3JTwRuE7SgEH7d2HszPXO3Z=AKdHTrg@mail.gmail.com>
-Subject: Re: [PATCH v1] pinctrl: mediatek: mt8195: Add pm_ops
-To:     Zhiyong Tao <zhiyong.tao@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Sean Wang <sean.wang@kernel.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        hui.liu@mediatek.com, Light Hsieh <light.hsieh@mediatek.com>,
-        Biao Huang <biao.huang@mediatek.com>,
-        Hongzhou Yang <hongzhou.yang@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Seiya Wang <seiya.wang@mediatek.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Chen-Yu Tsai <wenst@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 11, 2021 at 9:10 AM Zhiyong Tao <zhiyong.tao@mediatek.com> wrote:
-
-> Setting this up will configure wake from suspend properly,
-> and wake only for the interrupts that are setup in wake_mask,
-> not all interrupts.
+On Thu, Sep 16 2021 at 22:57, Arnd Bergmann wrote:
+> On Thu, Sep 16, 2021 at 6:50 PM OPENSOURCE Lukas Hannen
+> <lukas.hannen@opensource.tttech-industrial.com> wrote:
+> I did stumble over one small detail:
 >
-> Fixes: 6cf5e9ef362af824de2e4e8afb78d74537f1e3db ("pinctrl: add pinctrl driver on mt8195")
-> Signed-off-by: Zhiyong Tao <zhiyong.tao@mediatek.com>
-> Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
+>         if (ts->tv_sec <= KTIME_SEC_MIN)
+>                 return KTIME_MIN;
+>
+> I think this is not entirely correct for the case of tv_sec==KTIME_SEC_MIN
+> with a nonzero tv_nsec, as we now round down to the full second. Not sure
+> if that's worth changing, as we also round up for any value between
+> KTIME_SEC_MAX*NSEC_PER_SEC and KTIME_MAX, or between
+> KTIME_MIN and KTIME_SEC_MIN*NSEC_PER_SEC.
+> In practice I guess we care very little about the last nanosecond in the corner
+> cases.
 
-Patch applied.
+It's completely irrelevant whether the result is off by one second
+related to the 292 years limit.
 
-Yours,
-Linus Walleij
+Thanks,
+
+        tglx
