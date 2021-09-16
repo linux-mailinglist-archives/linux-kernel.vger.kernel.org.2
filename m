@@ -2,87 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3584C40D3CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 09:30:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4443040D3E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 09:37:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234828AbhIPHcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 03:32:11 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3834 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234715AbhIPHcH (ORCPT
+        id S234853AbhIPHik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 03:38:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37062 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234296AbhIPHij (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 03:32:07 -0400
-Received: from fraeml701-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4H97wf6bg0z67tFm;
-        Thu, 16 Sep 2021 15:28:18 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml701-chm.china.huawei.com (10.206.15.50) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Thu, 16 Sep 2021 09:30:42 +0200
-Received: from [10.47.81.58] (10.47.81.58) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Thu, 16 Sep
- 2021 08:30:39 +0100
-Subject: Re: [RFC PATCH] perf test: Workload test of metric and metricgroups
-To:     Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>
-CC:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "Jin Yao" <yao.jin@linux.intel.com>,
-        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <eranian@google.com>
-References: <20210819055629.1059168-1-irogers@google.com>
- <YS52wU9r9U/x4lkb@krava>
- <CAP-5=fUf5zK-GEjzqK--6G_R=nj4qERCzo2+muQhKWwreWBCww@mail.gmail.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <2ec8cbf6-cbc1-0dc2-0025-08da764f1ade@huawei.com>
-Date:   Thu, 16 Sep 2021 08:34:15 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Thu, 16 Sep 2021 03:38:39 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67D8DC061574;
+        Thu, 16 Sep 2021 00:37:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=2++NPtO3N0EKqFjod0lHOXuAnY0BGUp6aM9ZEKLL5JE=; b=fWRQGikoRH60qW6X6cnfcWri00
+        fDV87hJx5JKFIvzB1VghIwXfR96995PVo8kJThgH16NHXA2LcXb/0OUEJDBAk0Bl2qY21EgB/LD6j
+        yuWyo9QXuRb+rz8UdmseafctcU4F9oq4wcHZEeHDZVIzPeJnu/6YD92kHFeC+wADiwV5E0NuXTS9x
+        jELwwp0a1YxSUBTjc7IgjCeSLvhtV8GlZBWss3rZbkljK+45CzD5XrvvLhnYPJ9BPLbg34ibU5Ghh
+        G1NZvE9u3nz/CT9pZxRqgWh1izea0fJlYNRSpJ58AX24QI5uzGRKRidRWQ1bEE28SggGB+0Z9QdPn
+        qQ0W6UAQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mQlvQ-00GQBb-Sl; Thu, 16 Sep 2021 07:35:38 +0000
+Date:   Thu, 16 Sep 2021 08:35:16 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sathyanarayanan Kuppuswamy 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        linux-efi@vger.kernel.org, Brijesh Singh <brijesh.singh@amd.com>,
+        kvm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        platform-driver-x86@vger.kernel.org,
+        Paul Mackerras <paulus@samba.org>, linux-s390@vger.kernel.org,
+        Andi Kleen <ak@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>, x86@kernel.org,
+        amd-gfx@lists.freedesktop.org,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-graphics-maintainer@vmware.com,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v3 4/8] powerpc/pseries/svm: Add a powerpc version of
+ cc_platform_has()
+Message-ID: <YULztMRLJ55YLVU9@infradead.org>
+References: <cover.1631141919.git.thomas.lendacky@amd.com>
+ <9d4fc3f8ea7b325aaa1879beab1286876f45d450.1631141919.git.thomas.lendacky@amd.com>
+ <YUCOTIPPsJJpLO/d@zn.tnic>
+ <87lf3yk7g4.fsf@mpe.ellerman.id.au>
+ <YUHGDbtiGrDz5+NS@zn.tnic>
+ <f8388f18-5e90-5d0f-d681-0b17f8307dd4@csgroup.eu>
 MIME-Version: 1.0
-In-Reply-To: <CAP-5=fUf5zK-GEjzqK--6G_R=nj4qERCzo2+muQhKWwreWBCww@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.81.58]
-X-ClientProxiedBy: lhreml727-chm.china.huawei.com (10.201.108.78) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f8388f18-5e90-5d0f-d681-0b17f8307dd4@csgroup.eu>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->>> --- /dev/null
->>> +++ b/tools/perf/tests/shell/stat_all_metrics.sh
->>> @@ -0,0 +1,16 @@
->>> +#!/bin/sh
->>> +# perf all metrics test
->>> +# SPDX-License-Identifier: GPL-2.0
->>> +
->>> +set -e
->>> +
->>> +for m in `perf list --raw-dump metrics`; do
->>> +  echo "Testing $m"
->>> +  result=$(perf stat -M "$m" perf bench internals synthesize)
->> good test, but takes forever.. running 'true' should be enough for the test?
->>
->> jirka
-> Agreed/done:
-> https://lore.kernel.org/linux-perf-users/20210916060525.1890638-1-irogers@google.com/T/#u
-> There is an issue that I see a lot of "<not counted>" for metricgroups
-> like this. 
+On Wed, Sep 15, 2021 at 07:18:34PM +0200, Christophe Leroy wrote:
+> Could you please provide more explicit explanation why inlining such an
+> helper is considered as bad practice and messy ?
 
-https://lore.kernel.org/linux-perf-users/CAP-5=fVERioMuK=JgKr1QWXKvU0Y31efQjxh7hX32ifL9V+_EA@mail.gmail.com/
+Because now we get architectures to all subly differ.  Look at the mess
+for ioremap and the ioremap* variant.
 
-Same issue, right?
-
-Thanks,
-John
-
-> Note, the metricgroups test is also failing on my skylake
-> as I hit the bug fixed in:
-> https://lore.kernel.org/lkml/20210819054707.1057819-1-irogers@google.com/
-
+The only good reason to allow for inlines if if they are used in a hot
+path.  Which cc_platform_has is not, especially not on powerpc.
