@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0215D40E32C
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:19:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98F6740E02D
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:20:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243199AbhIPQps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:45:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51974 "EHLO mail.kernel.org"
+        id S241646AbhIPQT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:19:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48608 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244793AbhIPQjt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:39:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E9BF261A09;
-        Thu, 16 Sep 2021 16:23:24 +0000 (UTC)
+        id S230152AbhIPQLM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:11:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B23B061351;
+        Thu, 16 Sep 2021 16:08:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809405;
-        bh=KR40IZYrHh8b0Qe0F50d+uCZNuE9iqq88TBKH+LGqd4=;
+        s=korg; t=1631808525;
+        bh=ul6PfnBjkugntozSWDHDKLQiBHMJHl1pcpXfnDvZA/Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ahKjbUyKMWnvfAL4YiDn39X/8x9jnXrI7Owe005U/dpt/1AOkW38KkdmNm5RArTE8
-         DZd7qCwhoXkED7WQzXadG/PQRahtJfWDwoTJTQMCLLsfm6Xb1+Qn5neYh+ZoIySCEG
-         pg4prr7uk6FvjFzX378vg++Sop9AN7AMAq7czuFc=
+        b=Ax9t1bnM+v3Erm5G6Uit6o+XJjVcvy+mZgARyaLt+SL52R5Lgrd6zKYr7ayTwQRFQ
+         QBaK9trb+CQ0LbHxCfCGR+70ZNmsLV0wdkwbqZQCZeMipruoiTXzVDHWdYM/0iqZ5q
+         JiJI7XO6ccEimDwJPZ1llIU+dkbMXiija+7Fqb04=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Brian Masney <masneyb@onstation.org>,
+        David Heidelberg <david@ixit.cz>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 110/380] RDMA/hns: Fix return in hns_roce_rereg_user_mr()
-Date:   Thu, 16 Sep 2021 17:57:47 +0200
-Message-Id: <20210916155807.774581553@linuxfoundation.org>
+Subject: [PATCH 5.10 123/306] ARM: dts: qcom: apq8064: correct clock names
+Date:   Thu, 16 Sep 2021 17:57:48 +0200
+Message-Id: <20210916155758.263447062@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +41,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: YueHaibing <yuehaibing@huawei.com>
+From: David Heidelberg <david@ixit.cz>
 
-[ Upstream commit c4c7d7a43246a42b0355692c3ed53dff7cbb29bb ]
+[ Upstream commit 0dc6c59892ead17a9febd11202c9f6794aac1895 ]
 
-If re-registering an MR in hns_roce_rereg_user_mr(), we should return NULL
-instead of passing 0 to ERR_PTR for clarity.
+Since new code doesn't take old clk names in account, it does fixes
+error:
 
-Fixes: 4e9fc1dae2a9 ("RDMA/hns: Optimize the MR registration process")
-Link: https://lore.kernel.org/r/20210804125939.20516-1-yuehaibing@huawei.com
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+msm_dsi 4700000.mdss_dsi: dev_pm_opp_set_clkname: Couldn't find clock: -2
+
+and following kernel oops introduced by
+b0530eb1191 ("drm/msm/dpu: Use OPP API to set clk/perf state").
+
+Also removes warning about deprecated clock names.
+
+Tested against linux-5.10.y LTS on Nexus 7 2013.
+
+Reviewed-by: Brian Masney <masneyb@onstation.org>
+Signed-off-by: David Heidelberg <david@ixit.cz>
+Link: https://lore.kernel.org/r/20210707131453.24041-1-david@ixit.cz
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/hns/hns_roce_mr.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/arm/boot/dts/qcom-apq8064.dtsi | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_mr.c b/drivers/infiniband/hw/hns/hns_roce_mr.c
-index b8454dcb0318..39a085f8e605 100644
---- a/drivers/infiniband/hw/hns/hns_roce_mr.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_mr.c
-@@ -361,7 +361,9 @@ struct ib_mr *hns_roce_rereg_user_mr(struct ib_mr *ibmr, int flags, u64 start,
- free_cmd_mbox:
- 	hns_roce_free_cmd_mailbox(hr_dev, mailbox);
+diff --git a/arch/arm/boot/dts/qcom-apq8064.dtsi b/arch/arm/boot/dts/qcom-apq8064.dtsi
+index 2687c4e890ba..e36d590e8373 100644
+--- a/arch/arm/boot/dts/qcom-apq8064.dtsi
++++ b/arch/arm/boot/dts/qcom-apq8064.dtsi
+@@ -1262,9 +1262,9 @@ dsi0: mdss_dsi@4700000 {
+ 				<&mmcc DSI1_BYTE_CLK>,
+ 				<&mmcc DSI_PIXEL_CLK>,
+ 				<&mmcc DSI1_ESC_CLK>;
+-			clock-names = "iface_clk", "bus_clk", "core_mmss_clk",
+-					"src_clk", "byte_clk", "pixel_clk",
+-					"core_clk";
++			clock-names = "iface", "bus", "core_mmss",
++					"src", "byte", "pixel",
++					"core";
  
--	return ERR_PTR(ret);
-+	if (ret)
-+		return ERR_PTR(ret);
-+	return NULL;
- }
- 
- int hns_roce_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
+ 			assigned-clocks = <&mmcc DSI1_BYTE_SRC>,
+ 					<&mmcc DSI1_ESC_SRC>,
 -- 
 2.30.2
 
