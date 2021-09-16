@@ -2,136 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CCAE40DC6D
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 16:08:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1038040DCA2
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 16:22:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238178AbhIPOJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 10:09:50 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:16222 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236328AbhIPOJq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 10:09:46 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4H9Jn40dyyz1DH1k;
-        Thu, 16 Sep 2021 22:07:20 +0800 (CST)
-Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.8; Thu, 16 Sep 2021 22:08:22 +0800
-Received: from huawei.com (10.175.127.227) by dggema762-chm.china.huawei.com
- (10.1.198.204) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.8; Thu, 16
- Sep 2021 22:08:21 +0800
-From:   Yu Kuai <yukuai3@huawei.com>
-To:     <josef@toxicpanda.com>, <axboe@kernel.dk>, <ming.lei@redhat.com>
-CC:     <linux-block@vger.kernel.org>, <nbd@other.debian.org>,
-        <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
-        <yi.zhang@huawei.com>
-Subject: [PATCH v9] nbd: fix uaf in nbd_handle_reply()
-Date:   Thu, 16 Sep 2021 22:18:10 +0800
-Message-ID: <20210916141810.2325276-1-yukuai3@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210916093350.1410403-8-yukuai3@huawei.com>
-References: <20210916093350.1410403-8-yukuai3@huawei.com>
+        id S237408AbhIPOYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 10:24:08 -0400
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:44623 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230243AbhIPOYC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 10:24:02 -0400
+Received: from ersatz.molgen.mpg.de (g45.guest.molgen.mpg.de [141.14.220.45])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id C00FB61E64761;
+        Thu, 16 Sep 2021 16:22:39 +0200 (CEST)
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+To:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org, Paul Menzel <pmenzel@molgen.mpg.de>,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Subject: [PATCH] lib/zlib_inflate/inffast: Check config in C to avoid unused function warning
+Date:   Thu, 16 Sep 2021 16:22:10 +0200
+Message-Id: <20210916142210.26722-1-pmenzel@molgen.mpg.de>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggema762-chm.china.huawei.com (10.1.198.204)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a problem that nbd_handle_reply() might access freed request:
+Building Linux for ppc64le with Ubuntu clang version 12.0.0-3ubuntu1~21.04.1
+shows the warning below.
 
-1) At first, a normal io is submitted and completed with scheduler:
+    arch/powerpc/boot/inffast.c:20:1: warning: unused function 'get_unaligned16' [-Wunused-function]
+    get_unaligned16(const unsigned short *p)
+    ^
+    1 warning generated.
 
-internel_tag = blk_mq_get_tag -> get tag from sched_tags
- blk_mq_rq_ctx_init
-  sched_tags->rq[internel_tag] = sched_tag->static_rq[internel_tag]
-...
-blk_mq_get_driver_tag
- __blk_mq_get_driver_tag -> get tag from tags
- tags->rq[tag] = sched_tag->static_rq[internel_tag]
+Fix it, by moving the check from the preprocessor to C, so the compiler
+sees the use.
 
-So, both tags->rq[tag] and sched_tags->rq[internel_tag] are pointing
-to the request: sched_tags->static_rq[internal_tag]. Even if the
-io is finished.
-
-2) nbd server send a reply with random tag directly:
-
-recv_work
- nbd_handle_reply
-  blk_mq_tag_to_rq(tags, tag)
-   rq = tags->rq[tag]
-
-3) if the sched_tags->static_rq is freed:
-
-blk_mq_sched_free_requests
- blk_mq_free_rqs(q->tag_set, hctx->sched_tags, i)
-  -> step 2) access rq before clearing rq mapping
-  blk_mq_clear_rq_mapping(set, tags, hctx_idx);
-  __free_pages() -> rq is freed here
-
-4) Then, nbd continue to use the freed request in nbd_handle_reply
-
-Fix the problem by get 'q_usage_counter' before blk_mq_tag_to_rq(),
-thus request is ensured not to be freed because 'q_usage_counter' is
-not zero.
-
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
 ---
-Changes in v9:
- - move percpu_ref_put() behind.
+ lib/zlib_inflate/inffast.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
- drivers/block/nbd.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-index 69dc5eac9ad3..f9d63794275e 100644
---- a/drivers/block/nbd.c
-+++ b/drivers/block/nbd.c
-@@ -825,6 +825,7 @@ static void recv_work(struct work_struct *work)
- 						     work);
- 	struct nbd_device *nbd = args->nbd;
- 	struct nbd_config *config = nbd->config;
-+	struct request_queue *q = nbd->disk->queue;
- 	struct nbd_sock *nsock;
- 	struct nbd_cmd *cmd;
- 	struct request *rq;
-@@ -835,13 +836,28 @@ static void recv_work(struct work_struct *work)
- 		if (nbd_read_reply(nbd, args->index, &reply))
- 			break;
- 
-+		/*
-+		 * Grab .q_usage_counter so request pool won't go away, then no
-+		 * request use-after-free is possible during nbd_handle_reply().
-+		 * If queue is frozen, there won't be any inflight requests, we
-+		 * needn't to handle the incoming garbage message.
-+		 */
-+		if (!percpu_ref_tryget(&q->q_usage_counter)) {
-+			dev_err(disk_to_dev(nbd->disk), "%s: no io inflight\n",
-+				__func__);
-+			break;
-+		}
-+
- 		cmd = nbd_handle_reply(nbd, args->index, &reply);
--		if (IS_ERR(cmd))
-+		if (IS_ERR(cmd)) {
-+			percpu_ref_put(&q->q_usage_counter);
- 			break;
-+		}
- 
- 		rq = blk_mq_rq_from_pdu(cmd);
- 		if (likely(!blk_should_fake_timeout(rq->q)))
- 			blk_mq_complete_request(rq);
-+		percpu_ref_put(&q->q_usage_counter);
- 	}
- 
- 	nsock = config->socks[args->index];
+diff --git a/lib/zlib_inflate/inffast.c b/lib/zlib_inflate/inffast.c
+index f19c4fbe1be7..444ad3c3ccd3 100644
+--- a/lib/zlib_inflate/inffast.c
++++ b/lib/zlib_inflate/inffast.c
+@@ -254,11 +254,7 @@ void inflate_fast(z_streamp strm, unsigned start)
+ 			sfrom = (unsigned short *)(from);
+ 			loops = len >> 1;
+ 			do
+-#ifdef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+-			    *sout++ = *sfrom++;
+-#else
+-			    *sout++ = get_unaligned16(sfrom++);
+-#endif
++			    *sout++ = CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS ? *sfrom++ : get_unaligned16(sfrom++);
+ 			while (--loops);
+ 			out = (unsigned char *)sout;
+ 			from = (unsigned char *)sfrom;
 -- 
-2.31.1
+2.33.0
 
