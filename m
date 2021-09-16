@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3372B40E6FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:32:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73B8240E099
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:21:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348172AbhIPR1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:27:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44342 "EHLO mail.kernel.org"
+        id S241651AbhIPQWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:22:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55014 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351717AbhIPRT1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:19:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B3A561BA2;
-        Thu, 16 Sep 2021 16:41:30 +0000 (UTC)
+        id S240774AbhIPQO1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:14:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CDCB861251;
+        Thu, 16 Sep 2021 16:10:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810490;
-        bh=Cf5iJfPCfnqcbMi2dOm33gudUTASml1cZBfmccBtGLM=;
+        s=korg; t=1631808628;
+        bh=HJZadhkc3lcjE7AapxAuKY6kRDDcL5N6KsyajWYJPs4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1RaeSkW3FP0HDnSPGumsR286qUFiRsfe2DdYMA70hk87uqsj7RF2dsECsPFnEQ8M/
-         /lnQHvkgIu3d0D+00aAjiTR+rW+6MkI1T3fUmUUM2zlWHouhZgbWiaHLobEjJ2hzHs
-         K1dkBxvR7679J5UP9/o3gC27A70BHpSK1yUx3FDQ=
+        b=AVpe0Ipk99EfZZiChYmiykqT/haUIG2Oux5Wp033Ll6S8q7Kjgd4PYrFoCKpT/7NC
+         +NJOin62nEXYmm1rkSHeeys8mrIQyftfGtLXLRN0Es8hXg1HRKq35hkvTbsnmHhair
+         zbQcL22MbX/hKgjfreYQ8lBTOW7bVG03C+DMIqHU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dom Cobley <popcornmix@gmail.com>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 159/432] drm/vc4: hdmi: Set HD_CTL_WHOLSMP and HD_CTL_CHALIGN_SET
+        stable@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Jiri Slaby <jslaby@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 163/306] hvsi: dont panic on tty_register_driver failure
 Date:   Thu, 16 Sep 2021 17:58:28 +0200
-Message-Id: <20210916155816.133235809@linuxfoundation.org>
+Message-Id: <20210916155759.643929193@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,53 +39,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dom Cobley <popcornmix@gmail.com>
+From: Jiri Slaby <jslaby@suse.cz>
 
-[ Upstream commit 1698ecb218eb82587dbfc71a2e26ded66e5ecf59 ]
+[ Upstream commit 7ccbdcc4d08a6d7041e4849219bbb12ffa45db4c ]
 
-Symptom is random switching of speakers when using multichannel.
+The alloc_tty_driver failure is handled gracefully in hvsi_init. But
+tty_register_driver is not. panic is called if that one fails.
 
-Repeatedly running speakertest -c8 occasionally starts with
-channels jumbled. This is fixed with HD_CTL_WHOLSMP.
+So handle the failure of tty_register_driver gracefully too. This will
+keep at least the console functional as it was enabled earlier by
+console_initcall in hvsi_console_init. Instead of shooting down the
+whole system.
 
-The other bit looks beneficial and apears harmless in testing so
-I'd suggest adding it too.
+This means, we disable interrupts and restore hvsi_wait back to
+poll_for_state().
 
-Documentation says: HD_CTL_WHILSMP_SET
-Wait for whole sample. When this bit is set MAI transmit will start
-only when there is at least one whole sample available in the fifo.
-
-Documentation says: HD_CTL_CHALIGN_SET
-Channel Align When Overflow. This bit is used to realign the audio
-channels in case of an overflow.
-If this bit is set, after the detection of an overflow, equal
-amount of dummy words to the missing words will be written to fifo,
-filling up the broken sample and maintaining alignment.
-
-Signed-off-by: Dom Cobley <popcornmix@gmail.com>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Reviewed-by: Nicolas Saenz Julienne <nsaenz@kernel.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210525132354.297468-7-maxime@cerno.tech
+Cc: linuxppc-dev@lists.ozlabs.org
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+Link: https://lore.kernel.org/r/20210723074317.32690-3-jslaby@suse.cz
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/vc4/vc4_hdmi.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/tty/hvc/hvsi.c | 19 ++++++++++++++++---
+ 1 file changed, 16 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
-index c2876731ee2d..ad92dbb128b3 100644
---- a/drivers/gpu/drm/vc4/vc4_hdmi.c
-+++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-@@ -1372,7 +1372,9 @@ static int vc4_hdmi_audio_trigger(struct snd_pcm_substream *substream, int cmd,
- 		HDMI_WRITE(HDMI_MAI_CTL,
- 			   VC4_SET_FIELD(vc4_hdmi->audio.channels,
- 					 VC4_HD_MAI_CTL_CHNUM) |
--			   VC4_HD_MAI_CTL_ENABLE);
-+					 VC4_HD_MAI_CTL_WHOLSMP |
-+					 VC4_HD_MAI_CTL_CHALIGN |
-+					 VC4_HD_MAI_CTL_ENABLE);
- 		break;
- 	case SNDRV_PCM_TRIGGER_STOP:
- 		HDMI_WRITE(HDMI_MAI_CTL,
+diff --git a/drivers/tty/hvc/hvsi.c b/drivers/tty/hvc/hvsi.c
+index e8c58f9bd263..d6afaae1729a 100644
+--- a/drivers/tty/hvc/hvsi.c
++++ b/drivers/tty/hvc/hvsi.c
+@@ -1038,7 +1038,7 @@ static const struct tty_operations hvsi_ops = {
+ 
+ static int __init hvsi_init(void)
+ {
+-	int i;
++	int i, ret;
+ 
+ 	hvsi_driver = alloc_tty_driver(hvsi_count);
+ 	if (!hvsi_driver)
+@@ -1069,12 +1069,25 @@ static int __init hvsi_init(void)
+ 	}
+ 	hvsi_wait = wait_for_state; /* irqs active now */
+ 
+-	if (tty_register_driver(hvsi_driver))
+-		panic("Couldn't register hvsi console driver\n");
++	ret = tty_register_driver(hvsi_driver);
++	if (ret) {
++		pr_err("Couldn't register hvsi console driver\n");
++		goto err_free_irq;
++	}
+ 
+ 	printk(KERN_DEBUG "HVSI: registered %i devices\n", hvsi_count);
+ 
+ 	return 0;
++err_free_irq:
++	hvsi_wait = poll_for_state;
++	for (i = 0; i < hvsi_count; i++) {
++		struct hvsi_struct *hp = &hvsi_ports[i];
++
++		free_irq(hp->virq, hp);
++	}
++	tty_driver_kref_put(hvsi_driver);
++
++	return ret;
+ }
+ device_initcall(hvsi_init);
+ 
 -- 
 2.30.2
 
