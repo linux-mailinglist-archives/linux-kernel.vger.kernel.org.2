@@ -2,154 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AB1140E280
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:16:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F61840E96D
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244509AbhIPQjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:39:13 -0400
-Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:51859 "EHLO
-        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243454AbhIPQba (ORCPT
+        id S1345733AbhIPRyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:54:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1358314AbhIPRwz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:31:30 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.west.internal (Postfix) with ESMTP id B62142B00B18;
-        Thu, 16 Sep 2021 12:30:07 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Thu, 16 Sep 2021 12:30:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=Lqt0we4A/T0SHYBhw0ZBiteVrFa
-        e9rbK0EPrRuFl3oY=; b=LnIWuareiS2jP4nnsunZoVLeH91/ijKlwjtNs0JMLTq
-        W5SkajmnGWk707CsLe1azxnZa8myH4n+bFwA8ckwnQjA8EphQZ0JCTbh4Y6K4n92
-        g2g1F/E53xOP06kQjsn+JOMXRyEu2S88ZzuGGJQxDVYZTatLErit5ewiKV6u2BdI
-        lsdp1cZ5a3HMBapmFj07mGRW4hl42aMEFuzE7fU2OxArRkU7uz0Iikxns502WK2A
-        VurLq8I/YfExtRjENhb9CeCKHxLmcZVIj9cZsKuRCnd2TZcIYlaMPv+7tJ16zeKO
-        lv+MK8f24hm/KgC6L9xe5JnBP56ZQ7rQAeA2NIPzziw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=Lqt0we
-        4A/T0SHYBhw0ZBiteVrFae9rbK0EPrRuFl3oY=; b=hzcmiTskzfJ0LpViQyTC36
-        ukeBnRV3kVOlWsu8LkC8k3TIb0V6CrrFJkdx5Op//6RBN8W6uLa83Op2gJZ5M6bA
-        5CKZYAMI8pT3jB91IQObI/Zwdf7H9RY3lcqQvuTZhmouwzJmpjnAINJFQk9RZqCP
-        oU/PuigbRr66lGhsqy7F+GrdxXBtRVpmg3VbU/sccLOyqg5GIWO6uiqOk+75rKvi
-        GRDXS8VgLCMv6LllYt39AjMMPv/a9ZRqCUaBNHwX4nrPHQB95LHjWGSY5fpeEy9C
-        I78PdIa9tVQJn/iwGijd8nj+guRXbXSpCIkz5ojHdqqkHjRo0hnQ5vsB7RyPdKEA
-        ==
-X-ME-Sender: <xms:DHFDYefc5hj8gi4dxWD0LPwIZ-7eCAuChRgl45hXKphK3maJmwnwXg>
-    <xme:DHFDYYO0rUPS9nmSFSqwpcxqfQ_pQUfnIXBaWh_gKPlov19Nv09H08sl9fMbW8jej
-    x4FLS8PBE-WDjuxu1Q>
-X-ME-Received: <xmr:DHFDYfjlR9vtTu4VW1DUC-1go9vAGAgiu4mdYnnLPoc-sg8jUE3667OYC6LwQ6eKgLK2bp65AsiHYahP4-YRGqqoixLRb-JI6Ggs>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudehgedgleeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
-    grgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:DHFDYb8mvUuKkKkddxegg6gItiZ5TjT8Cc64Qf7pAUHPtYmMU-xSjA>
-    <xmx:DHFDYavdsMaQrdk1zzZdfVtKrlwD3fDdTKdBvT-bzXktew1v5aVQpw>
-    <xmx:DHFDYSGgAKXuaQV93QNJ2A44fGIJFswzUnmo5pe6HbLIx8qSeTi1UA>
-    <xmx:D3FDYVkgEXJK3xiJFUwFzoVSyYi_MlOVvwBGpewYBcsbvogO0Rptf9nzLW8>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 16 Sep 2021 12:30:03 -0400 (EDT)
-Date:   Thu, 16 Sep 2021 18:30:00 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-staging@lists.linux.dev,
-        Yong Deng <yong.deng@magewell.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Helen Koike <helen.koike@collabora.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH 01/22] clk: sunxi-ng: v3s: Make the ISP PLL clock public
-Message-ID: <20210916163000.6ezo6muhq23bewyi@gilmour>
-References: <20210910184147.336618-1-paul.kocialkowski@bootlin.com>
- <20210910184147.336618-2-paul.kocialkowski@bootlin.com>
- <20210913075417.ampb2jt4quftpqzj@gilmour>
- <YT8RnzVqLebtPMD+@aptenodytes>
+        Thu, 16 Sep 2021 13:52:55 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E38D0C0613E6
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 09:33:51 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id c1so3496177pfp.10
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 09:33:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=tiqX7dnBSpraIxKgwlGElCJ7y3YLSYI9MnLnrLWRpJg=;
+        b=iNlOkaj31rhWycqF0fbB4UX7Nr3By3h2mdYTW1OCnx4iArZusdd3Dj4q57ZJaDUbY/
+         0ZLarEKWdS0JjcAIZBFSM8JH2VAybQolk28ufoXN/e24Azz/3Gz2yw0+MGqry6ZxjVZi
+         7xaJDfS9utb4FJgwLJkMqz6baFRdwHbC11oGKBJvH0Z7oe/3NsZAtZLAxpKorbDT+kUL
+         y4FELIhKoUd4Sqgie3qzEpfiNY3/KDxAXfphaoVl/YKDGxLHzIIJUtvNvXQWcycGip3E
+         +hWkYdXbqZoK1Wp9/+9VvpU9wDKCARsoRqA9h7/48EoLWSU6W61m11ZEviIAiur0nzI3
+         ssFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tiqX7dnBSpraIxKgwlGElCJ7y3YLSYI9MnLnrLWRpJg=;
+        b=R+OAaVMA7xMDCa50L2shZo2WonzCZpOVUeuMWf6g8HchANqZrH8kGIPqQy/GCu7FZM
+         mOU1O/mvfPiwtgwMMbgLZgpt6xXu9J4+Do28EgVcH5TCAzHpgSB33nwZ+MEe13epqDnH
+         M8GZh6HVIEO7G8W9zNMFYDT2bEo49J200GBeolyzJC492whixntAs8NuIvNj63V6aSoN
+         5R5gyiK3uYwIQnoXEJrAg40WHt0ZrO1WrVy66xGy20zxaBMr/wH1JE9Ii/MBO9cSe+5P
+         H2hTphAwS9G4QAhjrz7Z13zL4MJeU9jjr9aCSeOPF9QUl/hRrp/MMgTTyh3MYXqtutq8
+         1oVw==
+X-Gm-Message-State: AOAM532QPCYYKGOCE8sAVvT9ykhFsGHBPOUTWhNrzYimRYJLpeOAK/ly
+        mjzydwh34RNQxKhfqqlHRf3ENjabVoqC9w==
+X-Google-Smtp-Source: ABdhPJxtOORah2T5ITGMwmMG9Gl/LK+cVqNihUnXIOc6WfpasBFIXzv9W2gxguosKdSbRk8Rl3kcRg==
+X-Received: by 2002:a63:7e11:: with SMTP id z17mr5668827pgc.436.1631810031271;
+        Thu, 16 Sep 2021 09:33:51 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id z17sm3564469pfh.110.2021.09.16.09.33.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Sep 2021 09:33:50 -0700 (PDT)
+Date:   Thu, 16 Sep 2021 16:33:46 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     David Edmondson <dme@dme.org>
+Cc:     linux-kernel@vger.kernel.org, Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        David Matlack <dmatlack@google.com>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jim Mattson <jmattson@google.com>,
+        David Edmondson <david.edmondson@oracle.com>,
+        Joao Martins <joao.m.martins@oracle.com>
+Subject: Re: [PATCH v5 3/4] KVM: x86: On emulation failure, convey the exit
+ reason, etc. to userspace
+Message-ID: <YUNx6hC80pBKd6a4@google.com>
+References: <20210916083239.2168281-1-david.edmondson@oracle.com>
+ <20210916083239.2168281-4-david.edmondson@oracle.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="6h7nudibxh245pvl"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YT8RnzVqLebtPMD+@aptenodytes>
+In-Reply-To: <20210916083239.2168281-4-david.edmondson@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 16, 2021, David Edmondson wrote:
+> Should instruction emulation fail, include the VM exit reason, etc. in
+> the emulation_failure data passed to userspace, in order that the VMM
+> can report it as a debugging aid when describing the failure.
+> 
+> Suggested-by: Joao Martins <joao.m.martins@oracle.com>
+> Signed-off-by: David Edmondson <david.edmondson@oracle.com>
+> ---
 
---6h7nudibxh245pvl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Again with  the From: caveat,
 
-Salut Paul,
+Reviewed-by: Sean Christopherson <seanjc@google.com>
 
-On Mon, Sep 13, 2021 at 10:53:51AM +0200, Paul Kocialkowski wrote:
-> On Mon 13 Sep 21, 09:54, Maxime Ripard wrote:
-> > On Fri, Sep 10, 2021 at 08:41:26PM +0200, Paul Kocialkowski wrote:
-> > > In order to reparent the CSI module clock to the ISP PLL via
-> > > device-tree, export the ISP PLL clock declaration in the public
-> > > device-tree header.
-> >=20
-> > You use clk_set_rate_exclusive in the ISP driver on the module clock so
-> > it should prevent what you're mentioning from happening.
->=20
-> It does, but then it breaks display support entirely (because the DRM
-> driver doesn't use clk_set_rate_exclusive).
->=20
-> The bottomline is that using the same PLL for both display and camera
-> easily results in conflicts.
 
-The commit log should reflect that then
-
-> > If it doesn't, then clk_set_rate_exclusive has a bug and should be
-> > fixed.
-> >=20
-> > Either way, using assigned-clock-parents is not a good solution here
-> > either, it only makes sure that this is the case when probe is run.
->=20
-> I'm not sure what could provide better guarantees. There is a clock
-> parenting API (in the clock framework) which may, but this implies
-> providing the parent clock to the driver which seems way out of line
-> since this is a platform-specific matter that should certainly not
-> be handled by the driver.
->=20
-> I also tried hardcoding the reparenting bit in the CCU driver, but
-> this felt less clean than doing it in device-tree.
->=20
-> What do you think?
-
-This is essentially policy, and putting it in the DT fails for the
-reason we already discussed, but also if we ever want to change it for
-example to optimize it a bit. In this case, we would have to deal with
-the old and new DT, and the possible consequences.
-
-So yeah, hardcoding it in the clock driver seems like a more sensible
-choice.
-
-Maxime
-
---6h7nudibxh245pvl
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYUNxCAAKCRDj7w1vZxhR
-xTHSAP94s1QU8mIU0mn77banRpkH0ZGKIUjPYygrvhOgdlCSegD/UryBgzqTDNlY
-omqVVtLWlYLTj9NQE+yJaYV+lXE3oQo=
-=K8KU
------END PGP SIGNATURE-----
-
---6h7nudibxh245pvl--
+Thanks for doing this David!
