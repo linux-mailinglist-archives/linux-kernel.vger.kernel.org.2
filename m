@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81F8640E47A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:24:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29DB340E861
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348612AbhIPRDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:03:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52252 "EHLO mail.kernel.org"
+        id S1355090AbhIPRo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:44:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53746 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346545AbhIPQzA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:55:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A8EA613AB;
-        Thu, 16 Sep 2021 16:30:31 +0000 (UTC)
+        id S1353963AbhIPRh5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:37:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F0511615A2;
+        Thu, 16 Sep 2021 16:49:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809832;
-        bh=8LZEJQtrtWy5w2bYAQcyCjP4Njlb9gk133v3duhkGhM=;
+        s=korg; t=1631810984;
+        bh=NHcXO79jXv10lKu0O6cfzY4KRkcVlLCMuWwriAIMQc4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HThpL04eN2gf3PYLkl/lgCG+0P0pV2asXJbof7iDEvBP8NIo7lTavoF7wA7z1DxDo
-         4Wpb5M+GBxgFADhkZzHyCFFqm1rtXYBDcRq7/AHg4MZhhp1q0gRXn4U2/wpklJ1DZl
-         +q8mDEYIW4q92CBA0HdaRgyyRr5Qd5IdcWE5emYE=
+        b=T9MV15ub3jFzJK0gkLGVDjMoKUmCAD0om3AEaACW5ta8AIvjxJJqsGJ8Z+yJm2+nb
+         XsjnSSlsKE02LE/1ghBfsL1a/odSOuGrq1o2/4qq9Jr4LvW3gsY+7JaQQNm48Eo026
+         dW+Ap/Cd/sfLbyQBoiBeSs2UH9MHzgb/LrwlNDMk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Subbaraya Sundeep <sbhatta@marvell.com>,
-        Hariprasad Kelam <hkelam@marvell.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Kiran K <kiran.k@intel.com>,
+        Chethan T N <chethan.tumkur.narayan@intel.com>,
+        Srivatsa Ravishankar <ravishankar.srivatsa@intel.com>,
+        Manish Mandlik <mmandlik@google.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 299/380] octeontx2-pf: Fix NIX1_RX interface backpressure
-Date:   Thu, 16 Sep 2021 18:00:56 +0200
-Message-Id: <20210916155814.234325100@linuxfoundation.org>
+Subject: [PATCH 5.14 308/432] Bluetooth: Fix race condition in handling NOP command
+Date:   Thu, 16 Sep 2021 18:00:57 +0200
+Message-Id: <20210916155821.256941877@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,51 +43,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Subbaraya Sundeep <sbhatta@marvell.com>
+From: Kiran K <kiran.k@intel.com>
 
-[ Upstream commit e8fb4df1f5d84bc08dd4f4827821a851d2eab241 ]
+[ Upstream commit ecb71f2566673553bc067e5b0036756871d0b9d3 ]
 
-'bp_ena' in Aura context is NIX block index, setting it
-zero will always backpressure NIX0 block, even if NIXLF
-belongs to NIX1. Hence fix this by setting it appropriately
-based on NIX block address.
+For NOP command, need to cancel work scheduled on cmd_timer,
+on receiving command status or commmand complete event.
 
-Signed-off-by: Subbaraya Sundeep <sbhatta@marvell.com>
-Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
-Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Below use case might lead to race condition multiple when NOP
+commands are queued sequentially:
+
+hci_cmd_work() {
+   if (atomic_read(&hdev->cmd_cnt) {
+            .
+            .
+            .
+      atomic_dec(&hdev->cmd_cnt);
+      hci_send_frame(hdev,...);
+      schedule_delayed_work(&hdev->cmd_timer,...);
+   }
+}
+
+On receiving event for first NOP, the work scheduled on hdev->cmd_timer
+is not cancelled and second NOP is dequeued and sent to controller.
+
+While waiting for an event for second NOP command, work scheduled on
+cmd_timer for the first NOP can get scheduled, resulting in sending third
+NOP command (sending back to back NOP commands). This might
+cause issues at controller side (like memory overrun, controller going
+unresponsive) resulting in hci tx timeouts, hardware errors etc.
+
+The fix to this issue is to cancel the delayed work scheduled on
+cmd_timer on receiving command status or command complete event for
+NOP command (this patch handles NOP command same as any other SIG
+command).
+
+Signed-off-by: Kiran K <kiran.k@intel.com>
+Reviewed-by: Chethan T N <chethan.tumkur.narayan@intel.com>
+Reviewed-by: Srivatsa Ravishankar <ravishankar.srivatsa@intel.com>
+Acked-by: Manish Mandlik <mmandlik@google.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../ethernet/marvell/octeontx2/nic/otx2_common.c  | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ net/bluetooth/hci_event.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-index e0d1af9e7770..6c64fdbef0df 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-@@ -1201,7 +1201,22 @@ static int otx2_aura_init(struct otx2_nic *pfvf, int aura_id,
- 	/* Enable backpressure for RQ aura */
- 	if (aura_id < pfvf->hw.rqpool_cnt && !is_otx2_lbkvf(pfvf->pdev)) {
- 		aq->aura.bp_ena = 0;
-+		/* If NIX1 LF is attached then specify NIX1_RX.
-+		 *
-+		 * Below NPA_AURA_S[BP_ENA] is set according to the
-+		 * NPA_BPINTF_E enumeration given as:
-+		 * 0x0 + a*0x1 where 'a' is 0 for NIX0_RX and 1 for NIX1_RX so
-+		 * NIX0_RX is 0x0 + 0*0x1 = 0
-+		 * NIX1_RX is 0x0 + 1*0x1 = 1
-+		 * But in HRM it is given that
-+		 * "NPA_AURA_S[BP_ENA](w1[33:32]) - Enable aura backpressure to
-+		 * NIX-RX based on [BP] level. One bit per NIX-RX; index
-+		 * enumerated by NPA_BPINTF_E."
-+		 */
-+		if (pfvf->nix_blkaddr == BLKADDR_NIX1)
-+			aq->aura.bp_ena = 1;
- 		aq->aura.nix0_bpid = pfvf->bpid[0];
-+
- 		/* Set backpressure level for RQ's Aura */
- 		aq->aura.bp = RQ_BP_LVL_AURA;
+diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+index f41bd5dfc313..0d0b958b7fe7 100644
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -3282,11 +3282,9 @@ static void hci_remote_features_evt(struct hci_dev *hdev,
+ 	hci_dev_unlock(hdev);
+ }
+ 
+-static inline void handle_cmd_cnt_and_timer(struct hci_dev *hdev,
+-					    u16 opcode, u8 ncmd)
++static inline void handle_cmd_cnt_and_timer(struct hci_dev *hdev, u8 ncmd)
+ {
+-	if (opcode != HCI_OP_NOP)
+-		cancel_delayed_work(&hdev->cmd_timer);
++	cancel_delayed_work(&hdev->cmd_timer);
+ 
+ 	if (!test_bit(HCI_RESET, &hdev->flags)) {
+ 		if (ncmd) {
+@@ -3661,7 +3659,7 @@ static void hci_cmd_complete_evt(struct hci_dev *hdev, struct sk_buff *skb,
+ 		break;
  	}
+ 
+-	handle_cmd_cnt_and_timer(hdev, *opcode, ev->ncmd);
++	handle_cmd_cnt_and_timer(hdev, ev->ncmd);
+ 
+ 	hci_req_cmd_complete(hdev, *opcode, *status, req_complete,
+ 			     req_complete_skb);
+@@ -3762,7 +3760,7 @@ static void hci_cmd_status_evt(struct hci_dev *hdev, struct sk_buff *skb,
+ 		break;
+ 	}
+ 
+-	handle_cmd_cnt_and_timer(hdev, *opcode, ev->ncmd);
++	handle_cmd_cnt_and_timer(hdev, ev->ncmd);
+ 
+ 	/* Indicate request completion if the command failed. Also, if
+ 	 * we're not waiting for a special event and we get a success
 -- 
 2.30.2
 
