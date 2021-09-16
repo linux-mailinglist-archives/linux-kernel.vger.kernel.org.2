@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 744CC40E30E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:19:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39F9940E2F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:17:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344106AbhIPQod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:44:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51718 "EHLO mail.kernel.org"
+        id S244097AbhIPQnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:43:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242870AbhIPQh3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:37:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7327861439;
-        Thu, 16 Sep 2021 16:22:21 +0000 (UTC)
+        id S243277AbhIPQhs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:37:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 042C66140B;
+        Thu, 16 Sep 2021 16:22:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809342;
-        bh=quXyZ1nLaoVG94oIBq0it1F7qds3SnrQl+zd90DLktw=;
+        s=korg; t=1631809344;
+        bh=pAeQNPdjb3okbSJzeanpg3WlxyCln949BMGJMt/KhsA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xUy+DPFFFO4HUdbXyxQiZZVayl/tOHmAc+/bzzIvC79JZRKm6QJnaP7cQxWk00Mr2
-         7HuVKbMTqIdwAfhg5utaftcrFg97oosU22+cmlpHSOwDW4yyeLlfWNewMxWx+GgM1j
-         FS6Cr9/Ck48rgqMvrGkbPSnWMqaYsoBTmHwt8KDs=
+        b=RtlQAC5SgKhqiof16T2/nDZhdTqAmJBqOKHNr4A4/YPWKRwG1O7lV8BhKGQd+VNUm
+         wbNbS0+ztsX9dFHofdEHgwY4Z740w3UFJlV0BJLwTFNYWI+li+g03V9luFCYPrFrD6
+         2612Zaeq9ctTqRaSOacdKOtbdc37VTaIjjq363Ac=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -28,9 +28,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Wenpeng Liang <liangwenpeng@huawei.com>,
         Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 120/380] RDMA/hns: Bugfix for data type of dip_idx
-Date:   Thu, 16 Sep 2021 17:57:57 +0200
-Message-Id: <20210916155808.118474406@linuxfoundation.org>
+Subject: [PATCH 5.13 121/380] RDMA/hns: Bugfix for the missing assignment for dip_idx
+Date:   Thu, 16 Sep 2021 17:57:58 +0200
+Message-Id: <20210916155808.165146683@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
 References: <20210916155803.966362085@linuxfoundation.org>
@@ -44,35 +44,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Junxian Huang <huangjunxian4@hisilicon.com>
 
-[ Upstream commit 4303e61264c45cb535255c5b76400f5c4ab1305d ]
+[ Upstream commit 074f315fc54a9ce45559a44ca36d9fa1ee1ea2cd ]
 
-dip_idx is associated with qp_num whose data type is u32. However, dip_idx
-is incorrectly defined as u8 data in the hns_roce_dip struct, which leads
-to data truncation during value assignment.
+When the dgid-dip_idx mapping relationship exists, dip should be assigned.
 
 Fixes: f91696f2f053 ("RDMA/hns: Support congestion control type selection according to the FW")
-Link: https://lore.kernel.org/r/1629884592-23424-2-git-send-email-liangwenpeng@huawei.com
+Link: https://lore.kernel.org/r/1629884592-23424-3-git-send-email-liangwenpeng@huawei.com
 Signed-off-by: Junxian Huang <huangjunxian4@hisilicon.com>
 Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
 Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/hns/hns_roce_hw_v2.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-index 23cf2f6bc7a5..d4da840dbc2e 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-@@ -1784,7 +1784,7 @@ struct hns_roce_eq_context {
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index dcbe5e28a4f7..90945e664f5d 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -4735,8 +4735,10 @@ static int get_dip_ctx_idx(struct ib_qp *ibqp, const struct ib_qp_attr *attr,
+ 	spin_lock_irqsave(&hr_dev->dip_list_lock, flags);
  
- struct hns_roce_dip {
- 	u8 dgid[GID_LEN_V2];
--	u8 dip_idx;
-+	u32 dip_idx;
- 	struct list_head node;	/* all dips are on a list */
- };
+ 	list_for_each_entry(hr_dip, &hr_dev->dip_list, node) {
+-		if (!memcmp(grh->dgid.raw, hr_dip->dgid, 16))
++		if (!memcmp(grh->dgid.raw, hr_dip->dgid, 16)) {
++			*dip_idx = hr_dip->dip_idx;
+ 			goto out;
++		}
+ 	}
  
+ 	/* If no dgid is found, a new dip and a mapping between dgid and
 -- 
 2.30.2
 
