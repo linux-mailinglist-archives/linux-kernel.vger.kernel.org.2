@@ -2,164 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 707E140EAE4
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 21:35:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B39140EAEA
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 21:37:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233564AbhIPTgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 15:36:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232812AbhIPTgU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 15:36:20 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34B07C061574;
-        Thu, 16 Sep 2021 12:35:00 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id i8-20020a056830402800b0051afc3e373aso9751890ots.5;
-        Thu, 16 Sep 2021 12:35:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=s/5An8ZJhvhfRlZxTeIIggw/jOkq6WE1Xp3iVwLwkX0=;
-        b=GoI3555vu1+SkUsvIX0T8i1fySL0jZPBdfh2WGeXZ3sq4vVDs1rMGe3saO9LT9sOjk
-         +yVa9+5P7kabIW06OrQJzg6D+Drsv6oyAPioWrxD7Aov64cSHfOBlKH3AFjLUsRT67ip
-         XW+efkrtdL2YGHDuCIe8HpRDgFsU8+1lrLcGQ4SnEQj5lhcF+IwPstwHFZVRx8fCVNuR
-         BzpzQJdi8quku959XzfWO2d8z0zYqJj068ZvUS8w8CNDSc7Jve2SQSpeMk4ZC0a2ABcW
-         EVTt/xRwX57XjlA7TbPPG1fhDp9VI6Hw7VZRFa/T3TbjcaSZtp/I/keYvmORa9RkNoyS
-         8yKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=s/5An8ZJhvhfRlZxTeIIggw/jOkq6WE1Xp3iVwLwkX0=;
-        b=EzjWoE8HPL/uFDn3QhYC4+fBAHkKzf0wgZaKktLUqCt2+bZzVjD2dQuy9PApZ1Yqho
-         Lz8GPc/HDtA8nkPG6bJHbykHL5+S2yd8RHWL0LM4iSnhDpqQk+dLT9crZCXXz4Nn32JO
-         elyZQiQkem2v5LpEQbIHDwEW6o/T8KRvoSCL2fTzeI7am6GJrox4+zz1nRENxouGf9cl
-         Pdnwxow/nJKh/UeeRBrcDwa+G3ozYEAezD+00RprtUODQelBflhRCQ5wfQyCJBvKMBJX
-         oVpKIqlvEezundL41JmAkYTOzzQEFqoBWLW19ZR081FWyYrzqJHJ2Rps88aOQ27kOE1a
-         mgcw==
-X-Gm-Message-State: AOAM532WFObicfwiQ96QaYjGFe6kjsDSY7aap5CXhhHUOGYlZxiDzT8Q
-        GQuJ0ve+LXBL0y8t4XUbheY=
-X-Google-Smtp-Source: ABdhPJwQ39Meb8g3bD5LeTVGWQS66NTxcbxEnijMnzcz57csCZzYg4F9uVLdSV2Q/k6jC16/IG7+ag==
-X-Received: by 2002:a05:6830:88:: with SMTP id a8mr6128825oto.233.1631820899562;
-        Thu, 16 Sep 2021 12:34:59 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id x198sm878970ooa.43.2021.09.16.12.34.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Sep 2021 12:34:58 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH] dt-bindings: hwmon: Add nct7802 bindings
-To:     Oskar Senft <osk@google.com>
-Cc:     linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
-        Rob Herring <robh+dt@kernel.org>
-References: <20210910130337.2025426-1-osk@google.com>
- <71c17c47-ca9e-e9d2-7b89-cc25b512c06a@roeck-us.net>
- <CABoTLcRZ43EUVzbqWniu64PkB7Yx4RMYKjaBxaSihk+k0Ca-gA@mail.gmail.com>
- <722b27f6-4390-9b5b-f6f2-75ce9e967d12@roeck-us.net>
- <CABoTLcSdkmuBxd5Yh6z2Oqm1-_Vd4J5Ni1i1qq5s07mWu7Ndew@mail.gmail.com>
- <20210914150859.GB3457579@roeck-us.net>
- <CABoTLcQfS5-UL92NR9vbc2YrGJv3oQPYCqAm-diNoq-tkHP_hQ@mail.gmail.com>
- <c410eba9-f6cf-4dbf-797f-48afde9c1898@roeck-us.net>
- <CABoTLcQWXerMWPvWUqjykiNcx9oGoP8aEcuDwcQ36yu-CBc0pA@mail.gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <382858f5-e833-d4b9-f189-449671992ba5@roeck-us.net>
-Date:   Thu, 16 Sep 2021 12:34:57 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S233652AbhIPTik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 15:38:40 -0400
+Received: from mail-oln040093003003.outbound.protection.outlook.com ([40.93.3.3]:24549
+        "EHLO na01-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232543AbhIPTij (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 15:38:39 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JkpWkIuqyQKMj2p89O684hLbzftY6xXDpAV5308Shb3jUaVzQoJmNv+7jn7gvBthrtFb7m6rpWag0+5dBbIsvkZTeAkierSf2081rZbtgymgL31SpItuN26ia2Vn22/+60mtMzPS7nWHoH9OSzM5/6aDZmfYhfKVBv32VMJKRrYkrjQSYZMIPhLLDLwUxfWmskWY1a8RjOOnGDbTrNEGuFmV0y3XLTyt+yyHDEfEC9eIV4013P3+O0XGZVzaN12DDPShqzP74AmWqjB70V4TOSGQIqmUvaidqVDecjcSRYG+sW84E3gtoBpyugrkzV8aaD6fQjIzz3oCBfNi8HfvpA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=7AtpEKd6Wt6LO0XHPGBYnRut3zHKZHOuJonBbax0oEY=;
+ b=Myigs3Mey+0hMjtHZo4zLfEqwvW6f/uw8CjqzR9XXiKDTMXUr//QqGhI3PZ3bfYF56uhcKSpLAEmlWODj2OKd3UvtoP0HyOorCoXu2r7q1mNyxZoR1L/onZ7nbgy9emV8BMllJCPsdeyrGau72QbOiwWERGX8QiAEnjTkW20D2weXXwsO9AgSzCVPMOP2edIaK5si0AsodopntH26Al2iBMi7PEGjncYU1t3PDt/e4QlwLrwHWnDnswLtHXqX7hcs0Xe5YuKS6JFYHRerUHpN20suZLVCOopORWPiSA3xHD/7r/IH5VIwdsMWuZPiF037etAkGonRfvrqj8JxfkudQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7AtpEKd6Wt6LO0XHPGBYnRut3zHKZHOuJonBbax0oEY=;
+ b=F8tYuhKajRmQa/kHo9+F8mqOepVjpHuIUaeNZ5EdWPdGwIcq7qtoam8SR5OfRDXYPqUm9Tl6L/pT60JMzTmeAFfGUmG9I45xY1YFUeHrf+BAHzUMA52y6W8EQqztC5Lh9EOKYetmOkbBQk9/UOZJxfNm+Bq/7eTu3O25w4urmQI=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+Received: from BL0PR2101MB1092.namprd21.prod.outlook.com
+ (2603:10b6:207:37::26) by BL0PR2101MB0883.namprd21.prod.outlook.com
+ (2603:10b6:207:36::16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.7; Thu, 16 Sep
+ 2021 19:37:16 +0000
+Received: from BL0PR2101MB1092.namprd21.prod.outlook.com
+ ([fe80::35fa:e8c:d9:39c3]) by BL0PR2101MB1092.namprd21.prod.outlook.com
+ ([fe80::35fa:e8c:d9:39c3%7]) with mapi id 15.20.4544.004; Thu, 16 Sep 2021
+ 19:37:15 +0000
+From:   Dexuan Cui <decui@microsoft.com>
+To:     drawat.floss@gmail.com, haiyangz@microsoft.com, airlied@linux.ie,
+        daniel@ffwll.ch, tzimmermann@suse.de,
+        dri-devel@lists.freedesktop.org
+Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dexuan Cui <decui@microsoft.com>
+Subject: [PATCH v2] drm/hyperv: Fix double mouse pointers
+Date:   Thu, 16 Sep 2021 12:36:44 -0700
+Message-Id: <20210916193644.45650-1-decui@microsoft.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: CO2PR07CA0071.namprd07.prod.outlook.com (2603:10b6:100::39)
+ To BL0PR2101MB1092.namprd21.prod.outlook.com (2603:10b6:207:37::26)
 MIME-Version: 1.0
-In-Reply-To: <CABoTLcQWXerMWPvWUqjykiNcx9oGoP8aEcuDwcQ36yu-CBc0pA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from decui-u1804.corp.microsoft.com (2001:4898:80e8:a:822c:5dff:feb8:fa01) by CO2PR07CA0071.namprd07.prod.outlook.com (2603:10b6:100::39) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Thu, 16 Sep 2021 19:37:14 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 13798837-c475-4fea-9757-08d9794962f4
+X-MS-TrafficTypeDiagnostic: BL0PR2101MB0883:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL0PR2101MB088356953D431A128CE04E60BFDC9@BL0PR2101MB0883.namprd21.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2958;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: sAV7nKpQRJGBetKCMOx/5pTDxS1IplCLqK3tjkErejBHuRSQILuH+m48SX9hNi1rAPhUa9rgGyE2EajvuMWreSTTQaLARUOEf4nd4SXWTLBj8teu1bSzdZjOcm4uMg/SEGYmLCaDqCXtgQ2Lzz0On4SN0L9LNr9R6fkc6ycjyk19M2vWqzT8TDW1LM9k3HWHWEg1yQqHKdGkB61wT7UEvndTHKgTlYylRy/3SHQIV576z7BBN+yGDls2qnsDM5ZLPz1nUwBpMhvhquZxqVUeTZYupAGWQ6xAUQhPe7Scw8cbpovzke/jH9ZnRRKIWPKvxkjBbaY+FhPfACr0LDNDSV6jx+gCat+McJLMJemb4C77YZ9RryflgyASFJ03v5FklRbg8mjwvdrFhD3nl4qbk/V3ViLfYFMUWK43aL9SUtuFuim/GhkR+SVBOMzkVT3ER22VQWEX90RsNcE+BDV5kcoNPdi58/S32WFazJP2CglCtu57JNq9xggFah6eSaqRu/F0uYlrdyP6WNbK4ZCvLe83f7hLO3NHcUEexe7F1MCx896/52SdMVBAqmaaNR17UJViMFEskRpHVhrlmeH1xo/hRGisWjoVHd1W0ylq/BGwLvX0RmcdRLcCRBDXHEXO7GMqq+77zHBDWnl/+uexkw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR2101MB1092.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6486002)(10290500003)(8676002)(66476007)(8936002)(66946007)(508600001)(316002)(5660300002)(186003)(2906002)(6666004)(7696005)(52116002)(36756003)(86362001)(1076003)(83380400001)(66556008)(82960400001)(2616005)(107886003)(82950400001)(4326008)(38100700002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?+8X1pvVxOn7RYbuua96ijJY3UA8AFcu5R2K70QG4CJLwiwuoYk5LOYfwwdRH?=
+ =?us-ascii?Q?YXpAE6QLl1IEzS83CWbWYZP3Tnzeg0NAU91qK16v6f/qCVoWlPpdEwzazC/f?=
+ =?us-ascii?Q?/fiFqAGg0FoI6/s0CjprmyTnEg4BGY21/22ELWEjinnjJr3Qvb5abO1jkKmN?=
+ =?us-ascii?Q?taLBkKewuPBezwjEz5zSMgt2oyHE5kKQiBIdpInMMZPmo0WCwHtNYT1ogvkQ?=
+ =?us-ascii?Q?kdRjtPrmW4iRBUplxOm8MTX3RvxuLZpnKzU4sOrCJT4/eldhFWpR3yhwm3C9?=
+ =?us-ascii?Q?5TdSuo71waK+QKyWoRMDRkDb88hFPWPCnFYSE0KRPhoc348F0sdAw8KhmUaq?=
+ =?us-ascii?Q?KVpIRVXzt+RNjmcIsVAupaFx8lS858IENxPPqb/YkRCYj6UvsuDv5jZslQDY?=
+ =?us-ascii?Q?BxXAzkh2Vaz13Q2dc/iEYDd5U37TJLRyAd7+BBHL9cOTY4wZrbOPnlEwyR4r?=
+ =?us-ascii?Q?vvAgJO3G1Jnyax99+MzR6vV2STprPzIUCFGnIyZKZN3OgdVVisIRQFAZDMcL?=
+ =?us-ascii?Q?O3VjF1qgXvvvwT9gdpzBhXuNegVbTVZyaqZl/aBh8AIj2aZFPk99XW0dI/+Q?=
+ =?us-ascii?Q?IQqb7ZULKPxgRMTl6lK3anYtXBLpIRCYxdQdi9yxPFYJQl9VW2d4cK5cP5W3?=
+ =?us-ascii?Q?g3Y5JJ8bcwMKqmwF6wRxgmWwt6GehIES2+mqJtL2wsRdEIPgn60B5SP1mBSP?=
+ =?us-ascii?Q?sPF1Fk1fsJSWEeJjLbFcc4Fzs+wDirFPeMzURwOQgEYVcXmiYcg92W2b8qsc?=
+ =?us-ascii?Q?la5ztJ9bGoHwcWLsu5GEicMvPpBRDS5Bmctfwkn84OrbGe914FaLXNe5RvKF?=
+ =?us-ascii?Q?TC2j67WRyiTBjS5GUfJlvADVr5MTND5d5muelKIxRYnSSSg8f+ZbPg8qAUgK?=
+ =?us-ascii?Q?1OKDlZzC2OsFNEzWXS7b18zWB8W1ryP0BkbF8HHraLA4EklXJQQzhGRhc+7Y?=
+ =?us-ascii?Q?4K58NviAz6D57WJQOAfq8ygSBb9DAgjn0AEvs5a+liX9CP3DftZgd++uqTbk?=
+ =?us-ascii?Q?V1JO2fmZRBnmJDvROZg5mRxiwlhRjySAnMabp2YMOQJM7I8znpZHBjFW3Z4x?=
+ =?us-ascii?Q?0kJA5wvz/St7+psNy/wRn9wiiI8UZEHOLqXDbUdVjR7JoHe1uEYEzp5fNKNh?=
+ =?us-ascii?Q?/0BfXKrBf2DiTmPRYeN28nU1G4Q+pbiIhuWEJC2lAP3ng8CedkY5hky0uJ/r?=
+ =?us-ascii?Q?69OgqmoUcMNBvC8dNEdm5PBWT4SjIq8OttLbVaAItaw3RzH68hVEBcHSdwaq?=
+ =?us-ascii?Q?RBwwtZJDJvlW1uK1olrR82EVQkrtO9QkodSnSeRg8xvPSTqABwKhza3BJB40?=
+ =?us-ascii?Q?+1nVniyb8bV9JRK/+QPec/42GVOz977/FGL+pRJWTajoWDU+NQ3Su5iFyjsn?=
+ =?us-ascii?Q?5LkxEC2JZupTobUqe3KC4FPbJMxS?=
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 13798837-c475-4fea-9757-08d9794962f4
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR2101MB1092.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2021 19:37:15.8510
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: m8WShlWogxliSfGQxAElW8bLC3Rm05EEcfjv/G5ge7GgIRtDjmF1etBiLwakfNKsvx8ERnvvcSQNgc2TxO7w/w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR2101MB0883
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/16/21 12:19 PM, Oskar Senft wrote:
->      Hi Guenter
-> 
->>> Would it be acceptable to simply number the sensors and document which
->>> sensor has which number?
->>>
->>> Something like this:
->>> 0 = LTD
->>> 1 = RTD1
->>> ...
->>>
->> That might be a possibility, though it would have to be well defined
->> for each chip (nct7802 also has voltage sensors). We'll have to discuss
->> this with Rob.
->>
->> Personally I think I would prefer using a type qualifier - that seems
->> cleaner. But that is really a matter of opinion.
-> 
-> Another existing way I found is in ltc2978. Following that, we could
-> do it as follows:
-> 
-> i2c {
->      #address-cells = <1>;
->      #size-cells = <0>;
-> 
->      nct7802@28 {
->          compatible = "nuvoton,nct7802";
->          reg = <0x28>;
->          #address-cells = <1>;
->          #size-cells = <0>;
-> 
->          sensors {
->              ltd {
->                  status = "okay";
->                  label = "my local temperature";
->              };
-> 
->              rtd1 {
->                  status = "okay";
->                  mode = <0x2>; /* 3904 transistor */
->                  label = "other temperature";
->              };
-> 
->              rtd3 {
->                  status = "okay";
->                  mode = <0x3>; /* thermal diode */
->                  label = "3rd temperature";
->             };
->          };
->      };
-> };
-> 
+Hyper-V supports a hardware cursor feature. It is not used by Linux VM,
+but the Hyper-V host still draws a point as an extra mouse pointer,
+which is unwanted, especially when Xorg is running.
 
-Ah, using the node name as indication for both sensor type and
-index ? SGTM, though we'd really need input from Rob.
-I guess one could also consider something more generic like
-"temperature-sensor@0", "voltage-sensor@0", and so on (instead
-of [mis-]using reg and a sensor-type field).
+The hyperv_fb driver uses synthvid_send_ptr() to hide the unwanted pointer.
+When the hyperv_drm driver was developed, the function synthvid_send_ptr()
+was not copied from the hyperv_fb driver. Fix the issue by adding the
+function into hyperv_drm.
 
-Thanks,
-Guenter
+Fixes: 76c56a5affeb ("drm/hyperv: Add DRM driver for hyperv synthetic video device")
+Signed-off-by: Dexuan Cui <decui@microsoft.com>
+Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
+Reviewed-by: Deepak Rawat <drawat.floss@gmail.com>
+---
 
-> 
->>> The NCT7802Y can self-program from an EEPROM, so I assume we should
->>> honor the "power-up configuration" obtained from there? I.e. if no
->>> configuration is provided in the device tree, the driver should use
->>> whatever configuration the chip has when the driver is loaded.
->>>
->> Definitely yes. My question was more what to do if the information
->> in devicetree nodes is incomplete.
-> I think there are two cases:
-> 1) If the new "sensor" tree is missing, the driver should behave as it
-> does today to not break existing users.
-> 2) If the new "sensor" tree is present, then each of the sensors that
-> should be disabled needs to have "status = 'okay'" and have the mode
-> set (unless it's LTD). In the above example, rtd2 is missing and would
-> therefore be considered disabled.
-> 
-> Does that make sense? I still need to find out whether this is
-> actually valid DT and how to express that in the YAML, though ...
-> 
-> Thanks
-> Oskar.
-> 
+Changes in v2:
+	Renamed hyperv_send_ptr() to hyperv_hide_hw_ptr().
+	Improved the comments and the git commit message.
+	Added Reviewed-by's from Haiyang and Deepak.
+
+ drivers/gpu/drm/hyperv/hyperv_drm.h         |  1 +
+ drivers/gpu/drm/hyperv/hyperv_drm_modeset.c |  1 +
+ drivers/gpu/drm/hyperv/hyperv_drm_proto.c   | 54 ++++++++++++++++++++-
+ 3 files changed, 55 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/hyperv/hyperv_drm.h b/drivers/gpu/drm/hyperv/hyperv_drm.h
+index 886add4f9cd0..d2d8582b36df 100644
+--- a/drivers/gpu/drm/hyperv/hyperv_drm.h
++++ b/drivers/gpu/drm/hyperv/hyperv_drm.h
+@@ -46,6 +46,7 @@ int hyperv_mode_config_init(struct hyperv_drm_device *hv);
+ int hyperv_update_vram_location(struct hv_device *hdev, phys_addr_t vram_pp);
+ int hyperv_update_situation(struct hv_device *hdev, u8 active, u32 bpp,
+ 			    u32 w, u32 h, u32 pitch);
++int hyperv_hide_hw_ptr(struct hv_device *hdev);
+ int hyperv_update_dirt(struct hv_device *hdev, struct drm_rect *rect);
+ int hyperv_connect_vsp(struct hv_device *hdev);
+ 
+diff --git a/drivers/gpu/drm/hyperv/hyperv_drm_modeset.c b/drivers/gpu/drm/hyperv/hyperv_drm_modeset.c
+index 3aaee4730ec6..5f01ca817517 100644
+--- a/drivers/gpu/drm/hyperv/hyperv_drm_modeset.c
++++ b/drivers/gpu/drm/hyperv/hyperv_drm_modeset.c
+@@ -101,6 +101,7 @@ static void hyperv_pipe_enable(struct drm_simple_display_pipe *pipe,
+ 	struct hyperv_drm_device *hv = to_hv(pipe->crtc.dev);
+ 	struct drm_shadow_plane_state *shadow_plane_state = to_drm_shadow_plane_state(plane_state);
+ 
++	hyperv_hide_hw_ptr(hv->hdev);
+ 	hyperv_update_situation(hv->hdev, 1,  hv->screen_depth,
+ 				crtc_state->mode.hdisplay,
+ 				crtc_state->mode.vdisplay,
+diff --git a/drivers/gpu/drm/hyperv/hyperv_drm_proto.c b/drivers/gpu/drm/hyperv/hyperv_drm_proto.c
+index 6d4bdccfbd1a..c0155c6271bf 100644
+--- a/drivers/gpu/drm/hyperv/hyperv_drm_proto.c
++++ b/drivers/gpu/drm/hyperv/hyperv_drm_proto.c
+@@ -299,6 +299,55 @@ int hyperv_update_situation(struct hv_device *hdev, u8 active, u32 bpp,
+ 	return 0;
+ }
+ 
++/*
++ * Hyper-V supports a hardware cursor feature. It's not used by Linux VM,
++ * but the Hyper-V host still draws a point as an extra mouse pointer,
++ * which is unwanted, especially when Xorg is running.
++ *
++ * The hyperv_fb driver uses synthvid_send_ptr() to hide the unwanted
++ * pointer, by setting msg.ptr_pos.is_visible = 1 and setting the
++ * msg.ptr_shape.data. Note: setting msg.ptr_pos.is_visible to 0 doesn't
++ * work in tests.
++ *
++ * Copy synthvid_send_ptr() to hyperv_drm and rename it to
++ * hyperv_hide_hw_ptr(). Note: hyperv_hide_hw_ptr() is also called in the
++ * handler of the SYNTHVID_FEATURE_CHANGE event, otherwise the host still
++ * draws an extra unwanted mouse pointer after the VM Connection window is
++ * closed and reopened.
++ */
++int hyperv_hide_hw_ptr(struct hv_device *hdev)
++{
++	struct synthvid_msg msg;
++
++	memset(&msg, 0, sizeof(struct synthvid_msg));
++	msg.vid_hdr.type = SYNTHVID_POINTER_POSITION;
++	msg.vid_hdr.size = sizeof(struct synthvid_msg_hdr) +
++		sizeof(struct synthvid_pointer_position);
++	msg.ptr_pos.is_visible = 1;
++	msg.ptr_pos.video_output = 0;
++	msg.ptr_pos.image_x = 0;
++	msg.ptr_pos.image_y = 0;
++	hyperv_sendpacket(hdev, &msg);
++
++	memset(&msg, 0, sizeof(struct synthvid_msg));
++	msg.vid_hdr.type = SYNTHVID_POINTER_SHAPE;
++	msg.vid_hdr.size = sizeof(struct synthvid_msg_hdr) +
++		sizeof(struct synthvid_pointer_shape);
++	msg.ptr_shape.part_idx = SYNTHVID_CURSOR_COMPLETE;
++	msg.ptr_shape.is_argb = 1;
++	msg.ptr_shape.width = 1;
++	msg.ptr_shape.height = 1;
++	msg.ptr_shape.hot_x = 0;
++	msg.ptr_shape.hot_y = 0;
++	msg.ptr_shape.data[0] = 0;
++	msg.ptr_shape.data[1] = 1;
++	msg.ptr_shape.data[2] = 1;
++	msg.ptr_shape.data[3] = 1;
++	hyperv_sendpacket(hdev, &msg);
++
++	return 0;
++}
++
+ int hyperv_update_dirt(struct hv_device *hdev, struct drm_rect *rect)
+ {
+ 	struct hyperv_drm_device *hv = hv_get_drvdata(hdev);
+@@ -392,8 +441,11 @@ static void hyperv_receive_sub(struct hv_device *hdev)
+ 		return;
+ 	}
+ 
+-	if (msg->vid_hdr.type == SYNTHVID_FEATURE_CHANGE)
++	if (msg->vid_hdr.type == SYNTHVID_FEATURE_CHANGE) {
+ 		hv->dirt_needed = msg->feature_chg.is_dirt_needed;
++		if (hv->dirt_needed)
++			hyperv_hide_hw_ptr(hv->hdev);
++	}
+ }
+ 
+ static void hyperv_receive(void *ctx)
+-- 
+2.25.1
 
