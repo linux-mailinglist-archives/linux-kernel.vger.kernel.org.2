@@ -2,95 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6175E40D69D
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 11:50:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FC9F40D69F
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 11:52:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236186AbhIPJvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 05:51:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39562 "EHLO
+        id S235640AbhIPJx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 05:53:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235304AbhIPJvr (ORCPT
+        with ESMTP id S235539AbhIPJx5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 05:51:47 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F40E9C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 02:50:24 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id ay33so6654916qkb.10
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 02:50:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=/jfyDf2uGQ0G4PkhWSUViq4lngXtqzf19oHYgswwn6Y=;
-        b=gq55dhQnMhswhJBaOS8ZGCiuGn70mubVjueTou0f0ngi2bVB7Y+uxqLPuzKEux1hmg
-         N0XYZWyYIEtby2b+ItDm9qePV4nnp5TcHqVxFjY1IRo6UeGnwdaMPJolGS5/oe1xDBua
-         zTYGdRnvZ32io0vzlFBv0kttjNX+mqABacQp9Lh2TH+1JyW+FyCU/nQmbNw9CeO6UILF
-         ACFildmuR9/z7SDOHRnkzHqPCqBsS3iPay9ZKub0x2CKtkwgVbJQCGX9SR31dFiVmCTT
-         u8y8jEZjJDVLtS8E0OO5oaOj/aaVZEhGkeMA/lle0r4k4Kv3Ep2kwGBL7D+5BcXJ0COj
-         DmMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=/jfyDf2uGQ0G4PkhWSUViq4lngXtqzf19oHYgswwn6Y=;
-        b=7baA5W7gDDr1Oh6Uq4Onni9byTv757ws7KDcR5/bowk0SybSAteQrGqm/rVZZ+fnB9
-         ZaPP8SYqLm3fO/46OYIhleuRlEbPRCRdTjzmjfvM1hNHN3AXCyK3naRbmLkOu6aoG/gL
-         QQeRLMr5Sl5haXD9MrPMtboHD6Uh6AqF31taLOS2eRu0AfT/DP+UF0LGS+XLKZQhiEk7
-         879/UkqoquVg3fixRNxgEiBdMHEodu/VQ6Cs2o5nFkFst4diROcNUgc6vv0hiHUIVf7L
-         IzXIvQZbD9+f35YigcPsXEcuw0Mqgjcg/SZOV87IwYVjl+bhVghyB82d2/AB1xdOrh7S
-         PlWw==
-X-Gm-Message-State: AOAM533aYwiAmP+07teZQNiq3dCbjbYhMiJAoP3d8ns/yk4pMbeI1pp5
-        r5aNNSZTHWPKTxLN663VPjgs7mj0uXKtBraV/S4=
-X-Google-Smtp-Source: ABdhPJw5nagedGpjCIEw8wCPmlewzo9rLT0jMnSmoZuk0Kr8q56tA4Md3yXtKuojaw7rWSTLGgcUoZ4LOwOa2ckh9xQ=
-X-Received: by 2002:a37:aa8f:: with SMTP id t137mr4115276qke.30.1631785823945;
- Thu, 16 Sep 2021 02:50:23 -0700 (PDT)
+        Thu, 16 Sep 2021 05:53:57 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0630CC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 02:52:36 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mQo4I-0000tI-2F; Thu, 16 Sep 2021 11:52:34 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mQo4E-0003jX-2O; Thu, 16 Sep 2021 11:52:30 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mQo4E-00084Q-1D; Thu, 16 Sep 2021 11:52:30 +0200
+Date:   Thu, 16 Sep 2021 11:52:29 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: Improvement suggestion for creation of next [Was: linux-next:
+ manual merge of the dmaengine tree with the driver-core tree]
+Message-ID: <20210916095229.cvsjr4wbro26gev7@pengutronix.de>
+References: <20210723155354.082a62d8@canb.auug.org.au>
+ <20210728071014.dkdvqmiw2lma6ooa@pengutronix.de>
+ <20210916162740.3327df56@canb.auug.org.au>
 MIME-Version: 1.0
-Received: by 2002:ad4:438b:0:0:0:0:0 with HTTP; Thu, 16 Sep 2021 02:50:23
- -0700 (PDT)
-Reply-To: ahmadmustafa.7800@gmail.com
-From:   Ahmad Mustafa <florentmamadou1@gmail.com>
-Date:   Thu, 16 Sep 2021 10:50:23 +0100
-Message-ID: <CA+C5goU47UNsx0kKKDPxDt9f2oMCo3jso_xFJ-o-Zs3+a=z1gQ@mail.gmail.com>
-Subject: LOANS AND INVESTMENT
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="4q5izlngyi7lxack"
+Content-Disposition: inline
+In-Reply-To: <20210916162740.3327df56@canb.auug.org.au>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Sir,
 
-Aseel Islamic finance PJSC is private joint stock company that was
-established in 2006 and has built a leading market position for itself
-in the UAE's Islamic finance market which specializes in loan finance
-and investment activities in real estate, hospitality, industrial &
-sustainable technologies, strategic financial investments, specialized
-education, healthcare services, agriculture, manufacturing,
-mining,energy and additional environmentally sustainable projects.
+--4q5izlngyi7lxack
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-My name is Mr. Ibn Ahmad Mustafa . Do you have projects that require
-funding? We have finance available for your projects with over 2
-trillion private and corporate investment portfolios.  Aseel Islamic
-finance PJSC is looking for equity partners, entrepreneur, fund
-raisers and portfolio managers who will pay up to 4.5% interest and/or
-part equity position with a 5 to 10 year hold. In 2030, we plan on
-acquiring up to 2 trillion in high-quality, low risk assets and
-investments to capitalize on the current market cycle.
+Hello Stephen,
 
-Aseel Islamic finance PJSC is acting as a lender and the fund will be
-disbursed on a clear interest rate of 3.5% annually to the equity
-partners and entrepreneurs for their investment projects. We also give
-a 2% commission to brokers, who bring project owners for finance or
-other opportunities.
+On Thu, Sep 16, 2021 at 04:27:40PM +1000, Stephen Rothwell wrote:
+> [Sorry this took so long]
 
-For further details, kindly send us your business plans or project summary.
+No problem. Thanks for picking up my suggestion (and not loosing it in
+your mailbox).
 
-Regards,
+> I prefer to fetch all the trees (and run my checking scripts across
+> them independently of the merge/build cycle.  However, I have improved
+> the merge commit messages (I think).  Please check out today's
+> linux-next.
 
+Looks great. Thanks.
 
-Mr. Ibn Ahmad Mustafa
-International Business Coordinator
-Aseel Islamic Finance PJSC
-Al Mankhool, Dubai C2 Tower,
-Ground floor,P.O 94669 Dubai, UAE
-Abu Dhabi - United Arab Emirates
-Email : ahmadmustafa.7800@gmail.com
+> I have decided to remove the SHA1 from the message, as you
+> can see that from what is merged anyway.
+
+I understand that starting from tomorrow the short log will be shorter
+for the merge commits.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--4q5izlngyi7lxack
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmFDE9oACgkQwfwUeK3K
+7AkGiwgAg+Smsw36CajyKiZKN132GI4xDMz2/p6ea+vDvQ3fHYoTVOb0wVExpvul
+C/4YOlE4sW5aHPGCIghonEgNvZ+VLH6JmfdefhPFOLuMdz7JHRrqRKKBV2f8Nw2E
+2zcqQKt+mYx1yoIM+OkZZa3cykuB04RxbvYpFR8/eYpyinN5VheHfmnCLSl9TMm+
+OlvLvgU/9ymBkudsM7RRlVQxK3zAWY/ctCIxxoAJbhOdw4ZwfzyjydC2Lx+ksle9
+ZwLChRDoQcqbWg0Qwa8mzthce8v1Ut5zrefTfJSqHoZvu5f6IHNtpsm+yPnN2RCi
+iHUe9fhT5G09rY90Z2Hhocghk4Rw8A==
+=k/Mj
+-----END PGP SIGNATURE-----
+
+--4q5izlngyi7lxack--
