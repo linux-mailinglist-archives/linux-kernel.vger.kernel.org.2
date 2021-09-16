@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8667F40E24D
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:16:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB0E740E581
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:27:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243381AbhIPQgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:36:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37488 "EHLO mail.kernel.org"
+        id S1345929AbhIPRMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:12:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34040 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242011AbhIPQ3K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:29:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5500961374;
-        Thu, 16 Sep 2021 16:18:21 +0000 (UTC)
+        id S1349200AbhIPRDv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:03:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F8E7613DB;
+        Thu, 16 Sep 2021 16:34:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809101;
-        bh=jbOO3JcidD+lx7f+8W+lPisLandk7RIrf28oPf5Cp5M=;
+        s=korg; t=1631810087;
+        bh=JjgT/S3x2botWUAD3hrCiDHjvvAWeqNys+YLdP5R5mU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t/XLCGKJqAmPC6EzDYSNvdYHBAsA4JStBahcdpb+YhH1RX+dDE3xRt4HskVBtIInf
-         xaFzRqqX+Kx1kwJ0OC/Wf3IcR4b6yxkQkNHeiJHsg233dy5+KXxqvfkRdfG4QtQKRb
-         iu+uyNE10JlmYZ7nrSpRyiZPoiDoltVLKqGLEywE=
+        b=I0cAc3ysev826lxGAGSAd2duVUncET9n0JmiGNVO2/sCxsM/iafBQDHZ9hPrknLIn
+         VrTyax5Pg/juaYDzDI76YIEWG1aMsC5uY0W1p8fyL2UZsG99+jcSIOwR4g9vwCKx2D
+         DZRL5lX87EsKhxdaS2yoJmsXoam8rUwLTuRxnu0Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+        stable@vger.kernel.org, Naohiro Aota <naohiro.aota@wdc.com>,
         David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.13 004/380] btrfs: reduce the preemptive flushing threshold to 90%
-Date:   Thu, 16 Sep 2021 17:56:01 +0200
-Message-Id: <20210916155804.123739709@linuxfoundation.org>
+Subject: [PATCH 5.14 013/432] btrfs: zoned: fix block group alloc_offset calculation
+Date:   Thu, 16 Sep 2021 17:56:02 +0200
+Message-Id: <20210916155811.259322586@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,39 +39,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Naohiro Aota <naohiro.aota@wdc.com>
 
-commit 93c60b17f2b5fca2c5931d7944788d1ef5f25528 upstream.
+commit 0ae79c6fe70d5c5c645733b7ed39d5e6021d8c9a upstream.
 
-The preemptive flushing code was added in order to avoid needing to
-synchronously wait for ENOSPC flushing to recover space.  Once we're
-almost full however we can essentially flush constantly.  We were using
-98% as a threshold to determine if we were simply full, however in
-practice this is a really high bar to hit.  For example reports of
-systems running into this problem had around 94% usage and thus
-continued to flush.  Fix this by lowering the threshold to 90%, which is
-a more sane value, especially for smaller file systems.
+alloc_offset is offset from the start of a block group and @offset is
+actually an address in logical space. Thus, we need to consider
+block_group->start when calculating them.
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=212185
+Fixes: 011b41bffa3d ("btrfs: zoned: advance allocation pointer after tree log node")
 CC: stable@vger.kernel.org # 5.12+
-Fixes: 576fa34830af ("btrfs: improve preemptive background space flushing")
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/btrfs/space-info.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/free-space-cache.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
---- a/fs/btrfs/space-info.c
-+++ b/fs/btrfs/space-info.c
-@@ -833,7 +833,7 @@ static bool need_preemptive_reclaim(stru
- 				    struct btrfs_space_info *space_info)
- {
- 	u64 ordered, delalloc;
--	u64 thresh = div_factor_fine(space_info->total_bytes, 98);
-+	u64 thresh = div_factor_fine(space_info->total_bytes, 90);
- 	u64 used;
+--- a/fs/btrfs/free-space-cache.c
++++ b/fs/btrfs/free-space-cache.c
+@@ -2652,8 +2652,11 @@ int btrfs_remove_free_space(struct btrfs
+ 		 * btrfs_pin_extent_for_log_replay() when replaying the log.
+ 		 * Advance the pointer not to overwrite the tree-log nodes.
+ 		 */
+-		if (block_group->alloc_offset < offset + bytes)
+-			block_group->alloc_offset = offset + bytes;
++		if (block_group->start + block_group->alloc_offset <
++		    offset + bytes) {
++			block_group->alloc_offset =
++				offset + bytes - block_group->start;
++		}
+ 		return 0;
+ 	}
  
- 	/* If we're just plain full then async reclaim just slows us down. */
 
 
