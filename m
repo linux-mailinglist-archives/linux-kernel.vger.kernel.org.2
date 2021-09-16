@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CAF040DEEF
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:04:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C4AC40E5B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240566AbhIPQF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:05:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44394 "EHLO mail.kernel.org"
+        id S1350848AbhIPROH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:14:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240518AbhIPQFR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:05:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 179A060232;
-        Thu, 16 Sep 2021 16:03:55 +0000 (UTC)
+        id S1349470AbhIPRFw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:05:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 989B461B24;
+        Thu, 16 Sep 2021 16:35:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808236;
-        bh=ObqOYrgdwAJO8POxMzYgQTUoEN6o0v/uM2wFd+WSdug=;
+        s=korg; t=1631810129;
+        bh=CtG2OrMLQjUzJ8VV92iK2VkFg4YZTCFGCN8MGSJVDCQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bZmqZeauKUONLcc5o8X8xpj6bLqLJUMYJmA0HhanbFsYYjJMjzRmt1pH2cIjV2VwW
-         xJ6AjwbI4Ug7xg7ukTLDqpLZxegZOGpNBmkAW9/fvPk5dYXX9dd1DrSPmWsX4NI/AJ
-         vWyt/ScC+QEnGPEoYzTRIzge/un3cYIwad4foSm0=
+        b=IhMtfLT7oYZMqjGL+Lsynv0qxZg5/69iinI0g4hzzqTqQOw/jKrqTov+kWadolZhe
+         cOm1fx3szGq3frIz/D53iULqtyLZwTlmuGtU+6rdnt+fXl5lmiuvV45ELC2RvnTLvU
+         Do/mdkgz91UYXYJCMYUZv71mS5m3+UfMo5zKGQ4w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Nageswara R Sastry <rnsastry@linux.ibm.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.10 012/306] powerpc/perf/hv-gpci: Fix counter value parsing
-Date:   Thu, 16 Sep 2021 17:55:57 +0200
-Message-Id: <20210916155754.337715370@linuxfoundation.org>
+        stable@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 5.14 009/432] btrfs: wake up async_delalloc_pages waiters after submit
+Date:   Thu, 16 Sep 2021 17:55:58 +0200
+Message-Id: <20210916155811.128883735@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,67 +40,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kajol Jain <kjain@linux.ibm.com>
+From: Josef Bacik <josef@toxicpanda.com>
 
-commit f9addd85fbfacf0d155e83dbee8696d6df5ed0c7 upstream.
+commit ac98141d140444fe93e26471d3074c603b70e2ca upstream.
 
-H_GetPerformanceCounterInfo (0xF080) hcall returns the counter data in
-the result buffer. Result buffer has specific format defined in the PAPR
-specification. One of the fields is counter offset and width of the
-counter data returned.
+We use the async_delalloc_pages mechanism to make sure that we've
+completed our async work before trying to continue our delalloc
+flushing.  The reason for this is we need to see any ordered extents
+that were created by our delalloc flushing.  However we're waking up
+before we do the submit work, which is before we create the ordered
+extents.  This is a pretty wide race window where we could potentially
+think there are no ordered extents and thus exit shrink_delalloc
+prematurely.  Fix this by waking us up after we've done the work to
+create ordered extents.
 
-Counter data are returned in a unsigned char array in big endian byte
-order. To get the final counter data, the values must be left shifted
-byte at a time. But commit 220a0c609ad17 ("powerpc/perf: Add support for
-the hv gpci (get performance counter info) interface") made the shifting
-bitwise and also assumed little endian order. Because of that, hcall
-counters values are reported incorrectly.
-
-In particular this can lead to counters go backwards which messes up the
-counter prev vs now calculation and leads to huge counter value
-reporting:
-
-  #: perf stat -e hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
-           -C 0 -I 1000
-        time             counts unit events
-     1.000078854 18,446,744,073,709,535,232      hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
-     2.000213293                  0      hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
-     3.000320107                  0      hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
-     4.000428392                  0      hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
-     5.000537864                  0      hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
-     6.000649087                  0      hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
-     7.000760312                  0      hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
-     8.000865218             16,448      hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
-     9.000978985 18,446,744,073,709,535,232      hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
-    10.001088891             16,384      hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
-    11.001201435                  0      hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
-    12.001307937 18,446,744,073,709,535,232      hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
-
-Fix the shifting logic to correct match the format, ie. read bytes in
-big endian order.
-
-Fixes: e4f226b1580b ("powerpc/perf/hv-gpci: Increase request buffer size")
-Cc: stable@vger.kernel.org # v4.6+
-Reported-by: Nageswara R Sastry<rnsastry@linux.ibm.com>
-Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
-Tested-by: Nageswara R Sastry<rnsastry@linux.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210813082158.429023-1-kjain@linux.ibm.com
+CC: stable@vger.kernel.org # 5.4+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/perf/hv-gpci.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/inode.c |   10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
---- a/arch/powerpc/perf/hv-gpci.c
-+++ b/arch/powerpc/perf/hv-gpci.c
-@@ -175,7 +175,7 @@ static unsigned long single_gpci_request
- 	 */
- 	count = 0;
- 	for (i = offset; i < offset + length; i++)
--		count |= arg->bytes[i] << (i - offset);
-+		count |= (u64)(arg->bytes[i]) << ((length - 1 - (i - offset)) * 8);
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -1290,11 +1290,6 @@ static noinline void async_cow_submit(st
+ 	nr_pages = (async_chunk->end - async_chunk->start + PAGE_SIZE) >>
+ 		PAGE_SHIFT;
  
- 	*value = count;
- out:
+-	/* atomic_sub_return implies a barrier */
+-	if (atomic_sub_return(nr_pages, &fs_info->async_delalloc_pages) <
+-	    5 * SZ_1M)
+-		cond_wake_up_nomb(&fs_info->async_submit_wait);
+-
+ 	/*
+ 	 * ->inode could be NULL if async_chunk_start has failed to compress,
+ 	 * in which case we don't have anything to submit, yet we need to
+@@ -1303,6 +1298,11 @@ static noinline void async_cow_submit(st
+ 	 */
+ 	if (async_chunk->inode)
+ 		submit_compressed_extents(async_chunk);
++
++	/* atomic_sub_return implies a barrier */
++	if (atomic_sub_return(nr_pages, &fs_info->async_delalloc_pages) <
++	    5 * SZ_1M)
++		cond_wake_up_nomb(&fs_info->async_submit_wait);
+ }
+ 
+ static noinline void async_cow_free(struct btrfs_work *work)
 
 
