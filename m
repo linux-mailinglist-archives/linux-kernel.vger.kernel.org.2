@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 251A740E595
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:27:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5205840DEEE
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:04:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242010AbhIPRMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:12:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34162 "EHLO mail.kernel.org"
+        id S240540AbhIPQFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:05:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44356 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346583AbhIPRFT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:05:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 37EE861B27;
-        Thu, 16 Sep 2021 16:35:20 +0000 (UTC)
+        id S240506AbhIPQFO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:05:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 926A561246;
+        Thu, 16 Sep 2021 16:03:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810120;
-        bh=zO7qqT/ZKbK6ZhWwcN8iVmqa+M931cnf6yv2tC+WJQY=;
+        s=korg; t=1631808234;
+        bh=fdu0hx60UQdeTS0j4GfcToqzZZH8QfcTkT24Gi0DLb4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kCMoyvuPjWYit4hAhSr6Sd10vQ9RmlWZlMgG2XJdkJESZPBP6lpUY/NX54fAF/k/5
-         9oqY9M4WoDQo1DwbXX0QjnRrcXP6KdFk6R4hzgDKegeLeNt6qXaFM5QZPzU2yC8QDQ
-         ugt1l2Iqyo6Hq3X5ZyW7ap8BYw3HTB14gdTFMHK0=
+        b=KRdN3uxNRDFZeqP5aZY4DspJaFnwqoqveCEDqNVyhyfyv+QUoF9SE3nrNAEL0DfCF
+         eFgvio7qfd9waQCwMILg+mUTwZnuyr/ez3d04UiHxhIDE5I8kAxu4x+aewPmm7E3yr
+         ZcVFuShB8ugtcW8QrY8qTrrZTFd8pxURROvPFqIU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andres Freund <andres@anarazel.de>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.14 006/432] io-wq: fix wakeup race when adding new work
-Date:   Thu, 16 Sep 2021 17:55:55 +0200
-Message-Id: <20210916155811.031260657@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Marek=20Marczykowski-G=C3=B3recki?= 
+        <marmarek@invisiblethingslab.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: [PATCH 5.10 011/306] PCI/MSI: Skip masking MSI-X on Xen PV
+Date:   Thu, 16 Sep 2021 17:55:56 +0200
+Message-Id: <20210916155754.304225223@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,64 +42,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jens Axboe <axboe@kernel.dk>
+From: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
 
-commit 87df7fb922d18e96992aa5e824aa34b2065fef59 upstream.
+commit 1a519dc7a73c977547d8b5108d98c6e769c89f4b upstream.
 
-When new work is added, io_wqe_enqueue() checks if we need to wake or
-create a new worker. But that check is done outside the lock that
-otherwise synchronizes us with a worker going to sleep, so we can end
-up in the following situation:
+When running as Xen PV guest, masking MSI-X is a responsibility of the
+hypervisor. The guest has no write access to the relevant BAR at all - when
+it tries to, it results in a crash like this:
 
-CPU0				CPU1
-lock
-insert work
-unlock
-atomic_read(nr_running) != 0
-				lock
-				atomic_dec(nr_running)
-no wakeup needed
+    BUG: unable to handle page fault for address: ffffc9004069100c
+    #PF: supervisor write access in kernel mode
+    #PF: error_code(0x0003) - permissions violation
+    RIP: e030:__pci_enable_msix_range.part.0+0x26b/0x5f0
+     e1000e_set_interrupt_capability+0xbf/0xd0 [e1000e]
+     e1000_probe+0x41f/0xdb0 [e1000e]
+     local_pci_probe+0x42/0x80
+    (...)
 
-Hold the wqe lock around the "need to wakeup" check. Then we can also get
-rid of the temporary work_flags variable, as we know the work will remain
-valid as long as we hold the lock.
+The recently introduced function msix_mask_all() does not check the global
+variable pci_msi_ignore_mask which is set by XEN PV to bypass the masking
+of MSI[-X] interrupts.
 
+Add the check to make this function XEN PV compatible.
+
+Fixes: 7d5ec3d36123 ("PCI/MSI: Mask all unused MSI-X entries")
+Signed-off-by: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
 Cc: stable@vger.kernel.org
-Reported-by: Andres Freund <andres@anarazel.de>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Link: https://lore.kernel.org/r/20210826170342.135172-1-marmarek@invisiblethingslab.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/io-wq.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/pci/msi.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/fs/io-wq.c
-+++ b/fs/io-wq.c
-@@ -793,7 +793,7 @@ append:
- static void io_wqe_enqueue(struct io_wqe *wqe, struct io_wq_work *work)
- {
- 	struct io_wqe_acct *acct = io_work_get_acct(wqe, work);
--	int work_flags;
-+	bool do_wake;
- 	unsigned long flags;
+--- a/drivers/pci/msi.c
++++ b/drivers/pci/msi.c
+@@ -783,6 +783,9 @@ static void msix_mask_all(void __iomem *
+ 	u32 ctrl = PCI_MSIX_ENTRY_CTRL_MASKBIT;
+ 	int i;
  
- 	/*
-@@ -806,14 +806,14 @@ static void io_wqe_enqueue(struct io_wqe
- 		return;
- 	}
- 
--	work_flags = work->flags;
- 	raw_spin_lock_irqsave(&wqe->lock, flags);
- 	io_wqe_insert_work(wqe, work);
- 	wqe->flags &= ~IO_WQE_FLAG_STALLED;
-+	do_wake = (work->flags & IO_WQ_WORK_CONCURRENT) ||
-+			!atomic_read(&acct->nr_running);
- 	raw_spin_unlock_irqrestore(&wqe->lock, flags);
- 
--	if ((work_flags & IO_WQ_WORK_CONCURRENT) ||
--	    !atomic_read(&acct->nr_running))
-+	if (do_wake)
- 		io_wqe_wake_worker(wqe, acct);
++	if (pci_msi_ignore_mask)
++		return;
++
+ 	for (i = 0; i < tsize; i++, base += PCI_MSIX_ENTRY_SIZE)
+ 		writel(ctrl, base + PCI_MSIX_ENTRY_VECTOR_CTRL);
  }
- 
 
 
