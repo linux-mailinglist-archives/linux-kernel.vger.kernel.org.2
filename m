@@ -2,183 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0404240E96A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:02:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0959940E960
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:02:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345544AbhIPRyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:54:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36954 "EHLO
+        id S240791AbhIPRxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:53:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357668AbhIPRwH (ORCPT
+        with ESMTP id S1357669AbhIPRwH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 16 Sep 2021 13:52:07 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABD73C061158
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 09:28:35 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id b200so8599461iof.13
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 09:28:35 -0700 (PDT)
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 324D5C061159
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 09:28:53 -0700 (PDT)
+Received: by mail-qv1-xf33.google.com with SMTP id di6so4522443qvb.1
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 09:28:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IGawo7qHdYJ6pDlqSWrZJzU7pFqydq2lO0Epdt4VQzw=;
-        b=UdjgxAu0WzP8hlYxhK5Q5mSYYPA5I/3WpDrkEFnZYswXjZJw+MQ+U9sNTA5obFhKBM
-         GdkzA4dBTAVghkCuWqLbClYfMWZc7vRdsXCZP2fpok8YZkQleFpkdLpFvIqu25NY42p4
-         VvS9hzKv4Fmjb62G0WVhWWAE6AbYpalmX5n7g=
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Fdwa28QkrUk+ZMzYhJSldQN0VGRLNdcL9nebtWVtzLM=;
+        b=E8D9bW787M1G4AJpW8OuL+X3ihQtbTfv0+KAkq2GaHxXbm58syya4/spFNQre1Y+nO
+         Wd5iiVyl9haMfICfAqFi0lkL1HHDZ05Qz+MyRAL6IyNI05FjbltxRQsyXRLM0K2R43SK
+         gNCMqIqf8IxTStJ2owd7dWzkBEy4QHY5YCyAVCnT3QCZkkTmpHphZjO3jpE9apbYvFBM
+         RBXGBBQGCFnmc1y1YNwVOyPQFZSaEact8XLmstmR0q9obkRjeRKnzcCHCgc+29DlKv/H
+         R8/+slepQNIuFIQL/FkmaSjqRDeCeeF9EERoZlTJIXn//KBdq+2eew9qPrWB+NL4dpGZ
+         F1yQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IGawo7qHdYJ6pDlqSWrZJzU7pFqydq2lO0Epdt4VQzw=;
-        b=lhI4eOssM3RYlUrwCBWExDqbJA/T4AaGsuL9r66WKbKA5z8Dcf00I/7wogDA2tzb+Y
-         iOW3HK0gB7kklns4iSaWXL4L6M9V9XUflEkyidCdD/Jjy71YCnhSEAJEd0n9dBNYbz9k
-         b6mhj5ev3th0uQKm5gxuDgAahd7GhvTqprsodsUPTlXFB2hre/b+DG13oHktBEQpIv9A
-         f03gYHBV4Ea5Io1m3iEfsznplCkgMbnl9UVF12f0O1YQCDjk0KUcvu9+bnsJK+vLc79E
-         zXk0O2nBVTuMar3xdf0Y9+vUGq2j8VDXgo3wKFJGjXeBQaW5oREUJaF/utwhmUDP5GRI
-         nAIw==
-X-Gm-Message-State: AOAM532SoN4+1m6X0h9hHaCFvebg4xo+LKFAy14oZgMUBCcHpmTY08x9
-        zNLIHyqsZkq88rdifG3QKn+ksgpng6B7uw==
-X-Google-Smtp-Source: ABdhPJziLvyPzJ0GBHvgIA28lZhF1sVkDTbsv24389FWipSWH0kQo7dPztLoKPhzXbokmY+Tmdj0WA==
-X-Received: by 2002:a5d:851a:: with SMTP id q26mr5012871ion.163.1631809714965;
-        Thu, 16 Sep 2021 09:28:34 -0700 (PDT)
-Received: from mail-il1-f180.google.com (mail-il1-f180.google.com. [209.85.166.180])
-        by smtp.gmail.com with ESMTPSA id c23sm1982258ioi.31.2021.09.16.09.28.34
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Sep 2021 09:28:34 -0700 (PDT)
-Received: by mail-il1-f180.google.com with SMTP id v16so7241636ilg.3
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 09:28:34 -0700 (PDT)
-X-Received: by 2002:a05:6e02:1bad:: with SMTP id n13mr2439109ili.142.1631809714033;
- Thu, 16 Sep 2021 09:28:34 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Fdwa28QkrUk+ZMzYhJSldQN0VGRLNdcL9nebtWVtzLM=;
+        b=OyuFrEUuHsy368uKvLPLZwXz1Q3g61zxZy0lkAusywNdLmYnLDZfkR0PAUSZI7OFoo
+         /wvjHKlv8YIA9PIp8S1jzmYEEsaFWWlJxg7dRw6MnX10wnl+sgYlTuPW8BiBvMsKTFt/
+         mrGow+Q4UHPW02DJK28GXWCbIZk5542dY9MZQL8IlGIpc5i+nrjLgMN81Lg43hUQu4wN
+         15OhYqeTcDKjsXw2tvZAJ2TRB3KY0vky0eO3hXuioPz5C+eOknG3xPULI8d4nyDa0iiv
+         OxD4PCmClt1Yhpku6sUGA2LRRO4w0ipVnTS8v/6TdFfaTSMzpugqfwHJFWbsUTNxpsLu
+         g7Xw==
+X-Gm-Message-State: AOAM532r71USE2anZ3vWE+rVeK9QuRvR5uzNkXtdOup/c0hF7eQVjd4G
+        4GKvGbqzOlYEVRdLiS797J1NzoGoaXMBGg==
+X-Google-Smtp-Source: ABdhPJybK6E/HepS1UuLw+FCS5jvfsBeslO2m1O08/qfO7f1wUmVEzQQ0rRAEfwv0BFo/nLtA+YRkQ==
+X-Received: by 2002:a0c:f047:: with SMTP id b7mr6193496qvl.15.1631809732392;
+        Thu, 16 Sep 2021 09:28:52 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id g13sm2752589qkk.110.2021.09.16.09.28.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Sep 2021 09:28:51 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mQuFn-001niQ-06; Thu, 16 Sep 2021 13:28:51 -0300
+Date:   Thu, 16 Sep 2021 13:28:50 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     syzbot <syzbot+dc3dfba010d7671e05f5@syzkaller.appspotmail.com>,
+        dledford@redhat.com, leon@kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        Aleksandr Nogikh <nogikh@google.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in addr_handler (4)
+Message-ID: <20210916162850.GQ3544071@ziepe.ca>
+References: <000000000000ffdae005cc08037e@google.com>
+ <20210915193601.GI3544071@ziepe.ca>
+ <CACT4Y+bxDuLggCzkLAchrGkKQxC2v4bhc01ciBg+oc17q2=HHw@mail.gmail.com>
+ <20210916130459.GJ3544071@ziepe.ca>
+ <CACT4Y+aUFbj3_+iBpeP2qrQ=RbGrssr0-6EZv1nx73at7fdbfA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210916154253.2731609-1-daniel.thompson@linaro.org>
-In-Reply-To: <20210916154253.2731609-1-daniel.thompson@linaro.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 16 Sep 2021 09:28:22 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=Xri+J2=iQzCHLxB+ksT41V6Rexp+BXWi6Fe7=jq3oTFg@mail.gmail.com>
-Message-ID: <CAD=FV=Xri+J2=iQzCHLxB+ksT41V6Rexp+BXWi6Fe7=jq3oTFg@mail.gmail.com>
-Subject: Re: [PATCH] kdb: Adopt scheduler's task clasification
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-Cc:     Jason Wessel <jason.wessel@windriver.com>,
-        Xiang wangx <wangxiang@cdjrlc.com>,
-        jing yangyang <jing.yangyang@zte.com.cn>,
-        kgdb-bugreport@lists.sourceforge.net,
-        LKML <linux-kernel@vger.kernel.org>,
-        Patch Tracking <patches@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACT4Y+aUFbj3_+iBpeP2qrQ=RbGrssr0-6EZv1nx73at7fdbfA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Sep 16, 2021 at 04:45:27PM +0200, Dmitry Vyukov wrote:
 
-On Thu, Sep 16, 2021 at 8:43 AM Daniel Thompson
-<daniel.thompson@linaro.org> wrote:
->
-> Currently kdb contains some open-coded routines to generate a summary
-> character for each task. This code currently issues warnings, is
-> almost certainly broken and won't make any sense to any kernel dev who
-> has ever used /proc to examine tasks (D means uninterruptible?).
->
-> Fix both the warning and the potential for confusion but adopting the
-> scheduler's task clasification. Whilst doing this we also simplify the
+> Answering your question re what was running concurrently with what.
+> Each of the syscalls in these programs can run up to 2 times and
+> ultimately any of these calls can race with any. Potentially syzkaller
+> can predict values kernel will return (e.g. id's) before kernel
+> actually returned them. I guess this does not restrict search area for
+> the bug a lot...
 
-s/clasification/classification/
+I have a reasonable theory now..
 
+Based on the ops you provided this FSM sequence is possible
 
-> filtering by using mask strings directly (this means we don't have to
-> guess all the characters the scheduler might give us).
->
-> Unfortunately we can't quite adopt the scheudler classification it in
+RDMA_USER_CM_CMD_RESOLVE_IP
+  RDMA_CM_IDLE -> RDMA_CM_ADDR_QUERY
+  does rdma_resolve_ip(addr_handler)
 
-s/scheudler/scheduler/
+			  addr_handler
+			    RDMA_CM_ADDR_QUERY -> RDMA_CM_ADDR_BOUND
+			    [.. handler still running ..]
 
+RDMA_USER_CM_CMD_RESOLVE_IP
+  RDMA_CM_ADDR_BOUND -> RDMA_CM_ADDR_QUERY
+  does rdma_resolve_ip(addr_handler)
 
-> its entirity because, whilst we can tolerate some changes to the filter
+RDMA_DESTROY_ID
+  rdma_addr_cancel()
 
-s/entirity/entirety/
+Which, if it happens fast enough, could trigger a situation where the
+'&id_priv->id.route.addr.dev_addr' "handle" is in the req_list twice
+beacause the addr_handler work queue hasn't yet got to the point of
+deleting it from the req_list before the the 2nd one is added.
 
+The issue is rdma_addr_cancel() has to be called rdma_resolve_ip() can
+be called again.
 
-> characters, we need to keep I as a means to identify idle CPUs rather than
-> system daemons that don't contribute to the load average! Naturally there
-> is quite a large comment discussing this.
+Skipping it will cause 'req_list' to have two items in the internal
+linked list with the same key and it will not cancel the newest one
+with the active timer. This would cause the use after free syndrome
+like this trace is showing.
 
-I'm a bit curious why we're OK with changing other characters but not
-'I'. Even if the scheduler use of the character 'I' is a bit
-confusing, it still seems like it might be nice to match it just to
-avoid confusion. Couldn't we use lowercase 'i' for idle CPUs?
-Alternatively beef up the commit message justifying why exactly we
-need to keep 'I' as-is.
+I can make a patch, but have no way to know if it is any good :\
 
-
-> Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
-
-Worth having a "Fixes" for the patch that introduced the warning?
-
-
-> @@ -74,7 +74,7 @@ static void kdb_show_stack(struct task_struct *p, void *addr)
->   */
->
->  static int
-> -kdb_bt1(struct task_struct *p, unsigned long mask, bool btaprompt)
-> +kdb_bt1(struct task_struct *p, const char *mask, bool btaprompt)
-
-In the comment above this function there is still a reference to
-"DRSTCZEUIMA". Update that?
-
-
-> @@ -2300,7 +2298,7 @@ void kdb_ps_suppressed(void)
->  /*
->   * kdb_ps - This function implements the 'ps' command which shows a
->   *     list of the active processes.
-> - *             ps [DRSTCZEUIMA]   All processes, optionally filtered by state
-> + *             ps [RSDTtXZPIMA]   All processes, optionally filtered by state
-
-What about "U"? What about "E"?
-
-
-> @@ -2742,7 +2741,7 @@ static kdbtab_t maintab[] = {
->         },
->         {       .name = "bta",
->                 .func = kdb_bt,
-> -               .usage = "[D|R|S|T|C|Z|E|U|I|M|A]",
-> +               .usage = "[R|S|D|T|t|X|Z|P|I|M|A]",
-
-What about "U"? What about "E"?
-
-
-> @@ -559,7 +484,6 @@ unsigned long kdb_task_state_string(const char *s)
->   */
->  char kdb_task_state_char (const struct task_struct *p)
->  {
-> -       unsigned int p_state;
->         unsigned long tmp;
->         char state;
->         int cpu;
-> @@ -568,16 +492,20 @@ char kdb_task_state_char (const struct task_struct *p)
->             copy_from_kernel_nofault(&tmp, (char *)p, sizeof(unsigned long)))
->                 return 'E';
->
-> -       cpu = kdb_process_cpu(p);
-
-Don't you still need this? You still have the `cpu` variable and you
-still use it in the idle task case.
-
-
-> -       p_state = READ_ONCE(p->__state);
-> -       state = (p_state == 0) ? 'R' :
-> -               (p_state < 0) ? 'U' :
-> -               (p_state & TASK_UNINTERRUPTIBLE) ? 'D' :
-> -               (p_state & TASK_STOPPED) ? 'T' :
-> -               (p_state & TASK_TRACED) ? 'C' :
-> -               (p->exit_state & EXIT_ZOMBIE) ? 'Z' :
-> -               (p->exit_state & EXIT_DEAD) ? 'E' :
-> -               (p_state & TASK_INTERRUPTIBLE) ? 'S' : '?';
-> +       state = task_state_to_char((struct task_struct *) p);
-
-Casting away constness is fine for now and likely makes this easier to
-land, but maybe you can send a patch up to change the API to have
-"const" in it?
-
-
--Doug
+Jason
