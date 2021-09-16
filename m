@@ -2,127 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4850240EC4E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 23:17:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9308D40EC49
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 23:17:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236075AbhIPVSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 17:18:54 -0400
-Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:37287 "EHLO
-        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240270AbhIPVS0 (ORCPT
+        id S240323AbhIPVSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 17:18:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240269AbhIPVSZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 17:18:26 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.west.internal (Postfix) with ESMTP id 075AE2B011FE;
-        Thu, 16 Sep 2021 17:17:04 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Thu, 16 Sep 2021 17:17:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=u92.eu; h=from
-        :to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=iroseorgTS5+5
-        6n4OvAi9A0zE9zzgwEyhNq+UyaK88I=; b=JqB6MykZyikjd8FHQpkP2BVRiApCi
-        p97PKlwm5G0/L/4XVX3lqmTmwqebWnYTO76yp5b24TACA4mDucytOHtFwCKVR8pi
-        5Ut3HOIY7pMqcVlQPruSd3NBk1nqJmyk6Q8GmUt/PhC6uecC5BsJCQbe7izkUB1N
-        1oODFBA15PXUkwVN1edova19IWI1k7sl3D7GZlEfJxWteVbHVqnCXIiBON1YeF6Q
-        ke7f46GEo8x9M8/x8g/68cQq+/34OnakZm4nftR794yVgm7HS84DcfEz9/9Xquzn
-        NQIrRugchM7CwmINRox74fte0FisiWe+QHwoEe63kzk/D7XsFOC+W5/Hg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=iroseorgTS5+56n4OvAi9A0zE9zzgwEyhNq+UyaK88I=; b=KFmCLz46
-        1FPNUNZEQDILKwJHhkCM3LDNBWvz+Du0FfVwgzscjCIa1lfAFUMCnimOCnz+v2VN
-        OIGyPho+V34dOTg+c/liZ3nhJ8V7rjnRiHRq7+K4LuplvVdLlICSGB4EQRysKM3m
-        XsRnIfK3DrD1MuKduXDb3s4qXdjLNNXnWPtLpx+Svp+INZSW7vWv7S+5pgFBVO/7
-        YKtF8vjl/idG8MDmrMGP+k7KpEgPEie9FYkCHdSaT6Qs2myEMyviDTW4WP8Qkv3U
-        y+kmKM4SWxPDHOWwdVvrKTSZPvdibP0auTw41yvGQfEUDCrBhInYnVVyzHzf1P8w
-        /zDqSRxgO6ai9A==
-X-ME-Sender: <xms:ULRDYUreEiKr9-wfH7gjUQbDYKJlFusHfKWDogv7Ge602Ckdj2vj2g>
-    <xme:ULRDYao97dVnQm7nZvkBz6y2xX7-1i4D6m8xRuEBPuUiX83LHVnC-ALNHac7hyfxI
-    eqfXjkzgZz4MQdYaQ>
-X-ME-Received: <xmr:ULRDYZNVgneZAgEhKnokbUl8KnYcgUKXaZlcEOsOsRIX_j_8iuHMQKyHUnZMPLTcfbv1>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudehgedgudehfecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtke
-    ertdertddtnecuhfhrohhmpefhvghrnhgrnhguohcutfgrmhhoshcuoehgrhgvvghnfhho
-    ohesuhelvddrvghuqeenucggtffrrghtthgvrhhnpeekleekjedtheejheekfefggeevvd
-    fgueegffeuveduhfehueegkeeijedvvdejfeenucevlhhushhtvghrufhiiigvpeefnecu
-    rfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvvghnfhhoohesuhelvddrvghu
-X-ME-Proxy: <xmx:ULRDYb7tx52V7V4Uy3ZFmKN34pzWAWKKXV2pf9Luy9WJAsmvqBWktg>
-    <xmx:ULRDYT6yJPnE9_oDxHhEFQK0wZYXfux_ly9TKvbmMj96gpW4clHJnQ>
-    <xmx:ULRDYbg00qLPg30a5Fg6nDCEH4CMmlk7HY8xQlq1WDVb42fpgWPiGQ>
-    <xmx:ULRDYQH6y7bdl-ZVVuxrF3UsbDA2Ufy00zFfyaZw0zyk9jss2N3JQIvlack>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 16 Sep 2021 17:17:01 -0400 (EDT)
-From:   Fernando Ramos <greenfoo@u92.eu>
-To:     dri-devel@lists.freedesktop.org
-Cc:     linux-kernel@vger.kernel.org, sean@poorly.run,
-        linux-doc@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-renesas-soc@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: [PATCH 15/15] doc: drm: remove TODO entry regarding DRM_MODSET_LOCK_ALL cleanup
-Date:   Thu, 16 Sep 2021 23:15:52 +0200
-Message-Id: <20210916211552.33490-16-greenfoo@u92.eu>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916211552.33490-1-greenfoo@u92.eu>
-References: <20210916211552.33490-1-greenfoo@u92.eu>
+        Thu, 16 Sep 2021 17:18:25 -0400
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AB4CC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 14:17:04 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id h20so8005124ilj.13
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 14:17:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=cz0QmYX8hNrwopeVbJnfz1Qp5AgAwW9kHP7Z6OOnuIE=;
+        b=EDXTu4qPZcrVHNz6JDfm3x/Eab2RBJkrazYr2ywOuSvy387ZVTxCWGfSjkM3MeOiza
+         UlLbyJ5bsMHzPTNnROckxh/ZS5mks0FZAUdF6cXKTk0tJH01bpVRptLD+VqiX0X0pg8H
+         Qp6LMShbred8bIe9XTMqdUaKorjFEshNmqtmU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cz0QmYX8hNrwopeVbJnfz1Qp5AgAwW9kHP7Z6OOnuIE=;
+        b=oF/e/ANge0xLi2DCmrsjsVOIcmo2qN0JUaHE95TG/na14Ocbut/s++G8pMLsXSM2Ep
+         BqCNHPAru+pubcAbZvCbheNjslMQ1QaNv9XF8xX1h6WhT1iSrvBTPmi/tLz5ojPuF6HX
+         01gppCxSKBUpZkrq1zFROeHvCOwMNN35PvjYgN43JwuvGQVfTum37qxnu5WOnbzZStVO
+         5U3QaSFQ6IBdETHK2iY7BvmhqiUzxuw6GqzV7yvRer8VFhgFgxYdXOVRt6WRjb/5Zd2B
+         a06xLCriA1n/SGtt97MFt9MMP2Q859H9SGFAcLhiqKpQ03TN222Mf8VIAK+oO+rTukGl
+         N+cQ==
+X-Gm-Message-State: AOAM533ekOUBZKj1yDmaqgVdwbk0J3tG9C5wu+rik6hTr24X8saQfJYZ
+        LPcO9ZsS0V17AaCupi7oyHMUQg==
+X-Google-Smtp-Source: ABdhPJxIpzNnOXR+944y+Wwww7dsqT+PDKVArThJ1wrSdu13C6tZH35Loa8KrG3JdyIVKiOwj47/pA==
+X-Received: by 2002:a92:c145:: with SMTP id b5mr5250638ilh.203.1631827023466;
+        Thu, 16 Sep 2021 14:17:03 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id b3sm2383958ile.37.2021.09.16.14.17.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Sep 2021 14:17:03 -0700 (PDT)
+Subject: Re: [PATCH 5.14 000/432] 5.14.6-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <03818767-05f5-08b7-1abb-4c250459952f@linuxfoundation.org>
+Date:   Thu, 16 Sep 2021 15:17:02 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The previous commits do exactly what this entry in the TODO file asks
-for, thus we can remove it now as it is no longer applicable.
+On 9/16/21 9:55 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.14.6 release.
+> There are 432 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sat, 18 Sep 2021 15:57:06 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.6-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Signed-off-by: Fernando Ramos <greenfoo@u92.eu>
----
- Documentation/gpu/todo.rst                | 17 -----------------
- Documentation/locking/ww-mutex-design.rst |  2 +-
- 2 files changed, 1 insertion(+), 18 deletions(-)
+Compiled and booted on my test system. No dmesg regressions.
 
-diff --git a/Documentation/gpu/todo.rst b/Documentation/gpu/todo.rst
-index 12e61869939e..6613543955e9 100644
---- a/Documentation/gpu/todo.rst
-+++ b/Documentation/gpu/todo.rst
-@@ -353,23 +353,6 @@ converted, except for struct drm_driver.gem_prime_mmap.
- 
- Level: Intermediate
- 
--Use DRM_MODESET_LOCK_ALL_* helpers instead of boilerplate
-----------------------------------------------------------
--
--For cases where drivers are attempting to grab the modeset locks with a local
--acquire context. Replace the boilerplate code surrounding
--drm_modeset_lock_all_ctx() with DRM_MODESET_LOCK_ALL_BEGIN() and
--DRM_MODESET_LOCK_ALL_END() instead.
--
--This should also be done for all places where drm_modeset_lock_all() is still
--used.
--
--As a reference, take a look at the conversions already completed in drm core.
--
--Contact: Sean Paul, respective driver maintainers
--
--Level: Starter
--
- Rename CMA helpers to DMA helpers
- ---------------------------------
- 
-diff --git a/Documentation/locking/ww-mutex-design.rst b/Documentation/locking/ww-mutex-design.rst
-index 6a4d7319f8f0..6a8f8beb9ec4 100644
---- a/Documentation/locking/ww-mutex-design.rst
-+++ b/Documentation/locking/ww-mutex-design.rst
-@@ -60,7 +60,7 @@ Concepts
- Compared to normal mutexes two additional concepts/objects show up in the lock
- interface for w/w mutexes:
- 
--Acquire context: To ensure eventual forward progress it is important the a task
-+Acquire context: To ensure eventual forward progress it is important that a task
- trying to acquire locks doesn't grab a new reservation id, but keeps the one it
- acquired when starting the lock acquisition. This ticket is stored in the
- acquire context. Furthermore the acquire context keeps track of debugging state
--- 
-2.33.0
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
+thanks,
+-- Shuah
