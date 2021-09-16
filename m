@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4D6840E066
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:21:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C981340E2F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:17:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241026AbhIPQVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:21:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48012 "EHLO mail.kernel.org"
+        id S244175AbhIPQnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:43:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52364 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236512AbhIPQMO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:12:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 521176135D;
-        Thu, 16 Sep 2021 16:09:19 +0000 (UTC)
+        id S243167AbhIPQiF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:38:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 28938619EE;
+        Thu, 16 Sep 2021 16:22:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808559;
-        bh=wb0vY1I/LJsIEVsnaF93j3dbSb5rsRNBhEY+WdFPy2M=;
+        s=korg; t=1631809352;
+        bh=oDmVq/m/FO2d3NUR8EAoddW1ktVDSA17pYA8mnq7Me8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eQwU+kyqwaf7f8YdzCIgHGq06HaIwAFzt/ft0191sGC37Lv2he26N6zYDXFi7nYil
-         uI5szW2+nOk+axZvw5ShOVaEl/eAiJnh3pgvqeZuPx/bteml7F4YMgF2qKelq/RVC5
-         6bXZSs9WK6w62TMKIZ4a36Ed0fRkBhNE8cCNE6Is=
+        b=Rw29nJHzkJL9f5HlL0GLnbhETzEt6rEcnzs0dSQ7SEnuVIsBDEFC0ds7iVpKmwP5F
+         /n7Yz8k3h65beDuN9gpL0mNOidAAuy9Gog+CUMgIMYW2I4C7DLHPe/lM/PXIvMo2n2
+         +uhYxCvGKvzB2RpX4zngziQXoG3tR44UzqcFOorY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
-        Evgeny Novikov <novikov@ispras.ru>,
+        stable@vger.kernel.org,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 135/306] USB: EHCI: ehci-mv: improve error handling in mv_ehci_enable()
-Date:   Thu, 16 Sep 2021 17:58:00 +0200
-Message-Id: <20210916155758.648561205@linuxfoundation.org>
+Subject: [PATCH 5.13 124/380] powerpc/smp: Update cpu_core_map on all PowerPc systems
+Date:   Thu, 16 Sep 2021 17:58:01 +0200
+Message-Id: <20210916155808.261653450@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,69 +41,169 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Evgeny Novikov <novikov@ispras.ru>
+From: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
 
-[ Upstream commit 61136a12cbed234374ec6f588af57c580b20b772 ]
+[ Upstream commit b8b928030332a0ca16d42433eb2c3085600d8704 ]
 
-mv_ehci_enable() did not disable and unprepare clocks in case of
-failures of phy_init(). Besides, it did not take into account failures
-of ehci_clock_enable() (in effect, failures of clk_prepare_enable()).
-The patch fixes both issues and gets rid of redundant wrappers around
-clk_prepare_enable() and clk_disable_unprepare() to simplify this a bit.
+lscpu() uses core_siblings to list the number of sockets in the
+system. core_siblings is set using topology_core_cpumask.
 
-Found by Linux Driver Verification project (linuxtesting.org).
+While optimizing the powerpc bootup path, Commit 4ca234a9cbd7
+("powerpc/smp: Stop updating cpu_core_mask").  it was found that
+updating cpu_core_mask() ended up taking a lot of time. It was thought
+that on Powerpc, cpu_core_mask() would always be same as
+cpu_cpu_mask() i.e number of sockets will always be equal to number of
+nodes. As an optimization, cpu_core_mask() was made a snapshot of
+cpu_cpu_mask().
 
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
-Link: https://lore.kernel.org/r/20210708083056.21543-1-novikov@ispras.ru
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+However that was found to be false with PowerPc KVM guests, where each
+node could have more than one socket. So with Commit c47f892d7aa6
+("powerpc/smp: Reintroduce cpu_core_mask"), cpu_core_mask was updated
+based on chip_id but in an optimized way using some mask manipulations
+and chip_id caching.
+
+However on non-PowerNV and non-pseries KVM guests (i.e not
+implementing cpu_to_chip_id(), continued to use a copy of
+cpu_cpu_mask().
+
+There are two issues that were noticed on such systems
+1. lscpu would report one extra socket.
+On a IBM,9009-42A (aka zz system) which has only 2 chips/ sockets/
+nodes, lscpu would report
+Architecture:        ppc64le
+Byte Order:          Little Endian
+CPU(s):              160
+On-line CPU(s) list: 0-159
+Thread(s) per core:  8
+Core(s) per socket:  6
+Socket(s):           3                <--------------
+NUMA node(s):        2
+Model:               2.2 (pvr 004e 0202)
+Model name:          POWER9 (architected), altivec supported
+Hypervisor vendor:   pHyp
+Virtualization type: para
+L1d cache:           32K
+L1i cache:           32K
+L2 cache:            512K
+L3 cache:            10240K
+NUMA node0 CPU(s):   0-79
+NUMA node1 CPU(s):   80-159
+
+2. Currently cpu_cpu_mask is updated when a core is
+added/removed. However its not updated when smt mode switching or on
+CPUs are explicitly offlined. However all other percpu masks are
+updated to ensure only active/online CPUs are in the masks.
+This results in build_sched_domain traces since there will be CPUs in
+cpu_cpu_mask() but those CPUs are not present in SMT / CACHE / MC /
+NUMA domains. A loop of threads running smt mode switching and core
+add/remove will soon show this trace.
+Hence cpu_cpu_mask has to be update at smt mode switch.
+
+This will have impact on cpu_core_mask(). cpu_core_mask() is a
+snapshot of cpu_cpu_mask. Different CPUs within the same socket will
+end up having different cpu_core_masks since they are snapshots at
+different points of time. This means when lscpu will start reporting
+many more sockets than the actual number of sockets/ nodes / chips.
+
+Different ways to handle this problem:
+A. Update the snapshot aka cpu_core_mask for all CPUs whenever
+   cpu_cpu_mask is updated. This would a non-optimal solution.
+B. Instead of a cpumask_var_t, make cpu_core_map a cpumask pointer
+   pointing to cpu_cpu_mask. However percpu cpumask pointer is frowned
+   upon and we need a clean way to handle PowerPc KVM guest which is
+   not a snapshot.
+C. Update cpu_core_masks all PowerPc systems like in PowerPc KVM
+guests using mask manipulations. This approach is relatively simple
+and unifies with the existing code.
+D. On top of 3, we could also resurrect get_physical_package_id which
+   could return a nid for the said CPU. However this is not needed at this
+   time.
+
+Option C is the preferred approach for now.
+
+While this is somewhat a revert of Commit 4ca234a9cbd7 ("powerpc/smp:
+Stop updating cpu_core_mask").
+
+1. Plain revert has some conflicts
+2. For chip_id == -1, the cpu_core_mask is made identical to
+cpu_cpu_mask, unlike previously where cpu_core_mask was set to a core
+if chip_id doesn't exist.
+
+This goes by the principle that if chip_id is not exposed, then
+sockets / chip / node share the same set of CPUs.
+
+With the fix, lscpu o/p would be
+Architecture:        ppc64le
+Byte Order:          Little Endian
+CPU(s):              160
+On-line CPU(s) list: 0-159
+Thread(s) per core:  8
+Core(s) per socket:  6
+Socket(s):           2                     <--------------
+NUMA node(s):        2
+Model:               2.2 (pvr 004e 0202)
+Model name:          POWER9 (architected), altivec supported
+Hypervisor vendor:   pHyp
+Virtualization type: para
+L1d cache:           32K
+L1i cache:           32K
+L2 cache:            512K
+L3 cache:            10240K
+NUMA node0 CPU(s):   0-79
+NUMA node1 CPU(s):   80-159
+
+Fixes: 4ca234a9cbd7 ("powerpc/smp: Stop updating cpu_core_mask")
+Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20210826100401.412519-3-srikar@linux.vnet.ibm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/host/ehci-mv.c | 23 +++++++++++------------
- 1 file changed, 11 insertions(+), 12 deletions(-)
+ arch/powerpc/kernel/smp.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/usb/host/ehci-mv.c b/drivers/usb/host/ehci-mv.c
-index cffdc8d01b2a..8fd27249ad25 100644
---- a/drivers/usb/host/ehci-mv.c
-+++ b/drivers/usb/host/ehci-mv.c
-@@ -42,26 +42,25 @@ struct ehci_hcd_mv {
- 	int (*set_vbus)(unsigned int vbus);
- };
+diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
+index 7da1e01e2c7f..fe505d8ed55b 100644
+--- a/arch/powerpc/kernel/smp.c
++++ b/arch/powerpc/kernel/smp.c
+@@ -1503,6 +1503,7 @@ static void add_cpu_to_masks(int cpu)
+ 	 * add it to it's own thread sibling mask.
+ 	 */
+ 	cpumask_set_cpu(cpu, cpu_sibling_mask(cpu));
++	cpumask_set_cpu(cpu, cpu_core_mask(cpu));
  
--static void ehci_clock_enable(struct ehci_hcd_mv *ehci_mv)
-+static int mv_ehci_enable(struct ehci_hcd_mv *ehci_mv)
- {
--	clk_prepare_enable(ehci_mv->clk);
--}
-+	int retval;
+ 	for (i = first_thread; i < first_thread + threads_per_core; i++)
+ 		if (cpu_online(i))
+@@ -1520,11 +1521,6 @@ static void add_cpu_to_masks(int cpu)
+ 	if (chip_id_lookup_table && ret)
+ 		chip_id = cpu_to_chip_id(cpu);
  
--static void ehci_clock_disable(struct ehci_hcd_mv *ehci_mv)
--{
--	clk_disable_unprepare(ehci_mv->clk);
--}
-+	retval = clk_prepare_enable(ehci_mv->clk);
-+	if (retval)
-+		return retval;
+-	if (chip_id == -1) {
+-		cpumask_copy(per_cpu(cpu_core_map, cpu), cpu_cpu_mask(cpu));
+-		goto out;
+-	}
+-
+ 	if (shared_caches)
+ 		submask_fn = cpu_l2_cache_mask;
  
--static int mv_ehci_enable(struct ehci_hcd_mv *ehci_mv)
--{
--	ehci_clock_enable(ehci_mv);
--	return phy_init(ehci_mv->phy);
-+	retval = phy_init(ehci_mv->phy);
-+	if (retval)
-+		clk_disable_unprepare(ehci_mv->clk);
+@@ -1534,6 +1530,10 @@ static void add_cpu_to_masks(int cpu)
+ 	/* Skip all CPUs already part of current CPU core mask */
+ 	cpumask_andnot(mask, cpu_online_mask, cpu_core_mask(cpu));
+ 
++	/* If chip_id is -1; limit the cpu_core_mask to within DIE*/
++	if (chip_id == -1)
++		cpumask_and(mask, mask, cpu_cpu_mask(cpu));
 +
-+	return retval;
+ 	for_each_cpu(i, mask) {
+ 		if (chip_id == cpu_to_chip_id(i)) {
+ 			or_cpumasks_related(cpu, i, submask_fn, cpu_core_mask);
+@@ -1543,7 +1543,6 @@ static void add_cpu_to_masks(int cpu)
+ 		}
+ 	}
+ 
+-out:
+ 	free_cpumask_var(mask);
  }
  
- static void mv_ehci_disable(struct ehci_hcd_mv *ehci_mv)
- {
- 	phy_exit(ehci_mv->phy);
--	ehci_clock_disable(ehci_mv);
-+	clk_disable_unprepare(ehci_mv->clk);
- }
- 
- static int mv_ehci_reset(struct usb_hcd *hcd)
 -- 
 2.30.2
 
