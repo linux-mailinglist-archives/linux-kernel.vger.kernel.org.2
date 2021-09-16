@@ -2,90 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68F5040EA92
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 21:03:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8414F40EA07
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:38:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239962AbhIPTEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 15:04:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346329AbhIPTES (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 15:04:18 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6157BC0C6CA3
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 11:36:59 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id w19so6670540pfn.12
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 11:36:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=eF3yoGSWauBjlP/PEtThaGKhCaV9nfWn2WtwyHMH5NA=;
-        b=fQ61flgpbxr+3ScvmslX6Y6UYzBrHyw+jxLOpGznkQ26CXbogaME6z2xm8KhJSqTnn
-         77lgkkMT6qVpSVnIMa9CA4IUAN0kgb27nXujFw1dSciBp8EZicTCozWpovAxRZAevT+M
-         3PJgfF7BblG4eAokXOWjQ1ObtUEq1NA0DMPduSUtk/8Z6AptRA77vHC+lN+6CI0dZ7iS
-         TlrJPbz77xVRa9MxLxts1RuG0yon5hKXJbxU7TTYE0S0roeX8RCMGqTTcoRHQiEheJWR
-         ZtJBPpysHanNjaKBKtSZ1ZOhPjcngD+VZRRKp1jNeA1evJj3KV7+WwMeqZhIbT+A+5CN
-         d3Yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eF3yoGSWauBjlP/PEtThaGKhCaV9nfWn2WtwyHMH5NA=;
-        b=qUm8a8NVm/9v9P/b9M4vJhcNY+m5qf/gCAVtUaoppSFxAwMz0VWID3flM8Vqpi4cGO
-         i3P8CcH+6HGeWKfgSnQ/jEfhRAS5ShOOznEiW/Q7Vt10ebHBoF9D2ScSNQTQwoSe37Zm
-         4bqYb6ndO/pDQ8PFf08vnhWj5VtBLb8R0nRuvmHFI+LfC39t9y9zZ8hlGjKfrcQdlu7K
-         d7d/6VXX25RjpjvsHUGTGGBtcRkUs4ohBLXQqnIT10CeJ2QguKbft2E9s5xDcMz65acB
-         ICExduMow9fnIvI3CUQTyvuTpdLNx0bAVgdprPkBtW5QR2+LjeYpOqmNXxfPteLpkIzM
-         rB2g==
-X-Gm-Message-State: AOAM531cIMJn06SOENAtV6kjjeaYFK9MY1IZuSND60gNiCIN9PKofmC0
-        QNpFpSHYY0Vu0ULfNyHHi+f0yJRuvHEbOw==
-X-Google-Smtp-Source: ABdhPJwLJjgKEcXSC9TA+AobePDdZy/P1mekisB/+SUfd6z0VLYVgxBHgOvJIavtKHhdqdSbJdImwA==
-X-Received: by 2002:a65:5643:: with SMTP id m3mr6176916pgs.224.1631817418780;
-        Thu, 16 Sep 2021 11:36:58 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id t14sm3895421pga.62.2021.09.16.11.36.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 11:36:58 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mQwFk-001qrZ-OF; Thu, 16 Sep 2021 15:36:56 -0300
-Date:   Thu, 16 Sep 2021 15:36:56 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Hao Sun <sunhao.th@gmail.com>
-Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org, leon@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: INFO: task hung in _destroy_id
-Message-ID: <20210916183656.GS3544071@ziepe.ca>
-References: <CACkBjsYvt46E2WqeJwEuemUr7pST_uk3=wvEBmdtdiAPmG40vQ@mail.gmail.com>
+        id S241610AbhIPSjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 14:39:47 -0400
+Received: from mga04.intel.com ([192.55.52.120]:61035 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1344129AbhIPSje (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 14:39:34 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10109"; a="220749921"
+X-IronPort-AV: E=Sophos;i="5.85,299,1624345200"; 
+   d="scan'208";a="220749921"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2021 11:38:09 -0700
+X-IronPort-AV: E=Sophos;i="5.85,299,1624345200"; 
+   d="scan'208";a="516866664"
+Received: from yunyizha-mobl2.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.124.4])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2021 11:38:07 -0700
+Subject: Re: [PATCH v3 0/8] Implement generic cc_platform_has() helper
+ function
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-graphics-maintainer@vmware.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>, Baoquan He <bhe@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dave Young <dyoung@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Will Deacon <will@kernel.org>
+References: <cover.1631141919.git.thomas.lendacky@amd.com>
+ <YUIjS6lKEY5AadZx@zn.tnic>
+ <d48e6a17-d2b4-67da-56d1-fc9a61dfe2b8@linux.intel.com>
+ <YUNckGH0+KXdEmqu@zn.tnic>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <9fee1cec-fc91-f87d-d590-5e606211f1b7@linux.intel.com>
+Date:   Thu, 16 Sep 2021 11:38:04 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACkBjsYvt46E2WqeJwEuemUr7pST_uk3=wvEBmdtdiAPmG40vQ@mail.gmail.com>
+In-Reply-To: <YUNckGH0+KXdEmqu@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 03, 2021 at 03:44:54PM +0800, Hao Sun wrote:
-> Hello,
-> 
-> When using Healer to fuzz the latest Linux kernel, the following crash
-> was triggered.
-> 
-> HEAD commit: 9e9fb7655ed58-Merge tag 'net-next-5.15'
-> git tree: upstream
-> console output:
-> https://drive.google.com/file/d/19ZvzEBJnFYlQJIn-TklSjE9ZWsxoEF7X/view?usp=sharing
-> kernel config: https://drive.google.com/file/d/1zgxbwaYkrM26KEmJ-5sUZX57gfXtRrwA/view?usp=sharing
-> 
-> Sorry, I don't have a reproducer for this crash, hope the symbolized
-> report can help.
-> If you fix this issue, please add the following tag to the commit:
-> Reported-by: Hao Sun <sunhao.th@gmail.com>
 
-I think this is probably fixed by this:
 
-https://lore.kernel.org/r/20210913093344.17230-1-thomas.liu@ucloud.cn
+On 9/16/21 8:02 AM, Borislav Petkov wrote:
+> On Wed, Sep 15, 2021 at 10:26:06AM -0700, Kuppuswamy, Sathyanarayanan wrote:
+>> I have a Intel variant patch (please check following patch). But it includes
+>> TDX changes as well. Shall I move TDX changes to different patch and just
+>> create a separate patch for adding intel_cc_platform_has()?
+> 
+> Yes, please, so that I can expedite that stuff separately and so that it
+> can go in early in order for future work to be based ontop.
 
-Jason
+Sent it part of TDX patch series. Please check and cherry pick it.
+
+https://lore.kernel.org/lkml/20210916183550.15349-2-sathyanarayanan.kuppuswamy@linux.intel.com/
+
+> 
+> Thx.
+> 
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
