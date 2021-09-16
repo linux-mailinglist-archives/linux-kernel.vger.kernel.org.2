@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27FF640E158
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:29:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68CC840E3FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:22:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242834AbhIPQ3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:29:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59316 "EHLO mail.kernel.org"
+        id S1343642AbhIPQyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:54:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59202 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241744AbhIPQUE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:20:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EBF0D60698;
-        Thu, 16 Sep 2021 16:14:14 +0000 (UTC)
+        id S1344441AbhIPQqF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:46:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B2D7D61A61;
+        Thu, 16 Sep 2021 16:26:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808855;
-        bh=eH78ZO8br28WU6kJd750zNC7axdeaw4weOlZh2QrV2w=;
+        s=korg; t=1631809577;
+        bh=J7X6hQRAnpYD/YTkmdguiazpwXgrjhGuAbhrL0O6ZIo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RZaEOT38NVkpHLnI61tj9tP49gvAxHjFJaB+34Y/xmigC4JHPMGvLHFnB2CfDS2OI
-         IpxQgn3fo89VpRcGaxaz5DMK4wBRexhXqYwUmS9+eXk4Plqj0EwIaHsL5x7ofU0ZL6
-         MRkAkZCi/+RthkgnT9qCHSBx+dU7P/LMIhFlRRJI=
+        b=d+CHwulc1b9mwjjpb6Zl2UaFcFpj8+npxYBycmc6Gi3OcZCqMZ4P/nlnsgfgT0nEc
+         fQ1qKqTls+CBqworCSrO6IRyLlWlcbKxMyY6MX67L7Tcpvh7HxMt1wDxOwqQ3ApUTG
+         ukWEJiKFYHR/OfydNou+0tsykR7qoYxNywt1rfhc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andreas Obergschwandtner <andreas.obergschwandtner@gmail.com>,
-        Thierry Reding <treding@nvidia.com>,
+        stable@vger.kernel.org, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        linux-xtensa@linux-xtensa.org, Jiri Slaby <jslaby@suse.cz>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 215/306] ARM: tegra: tamonten: Fix UART pad setting
-Date:   Thu, 16 Sep 2021 17:59:20 +0200
-Message-Id: <20210916155801.381903160@linuxfoundation.org>
+Subject: [PATCH 5.13 204/380] xtensa: ISS: dont panic in rs_init
+Date:   Thu, 16 Sep 2021 17:59:21 +0200
+Message-Id: <20210916155811.009637789@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,59 +41,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andreas Obergschwandtner <andreas.obergschwandtner@gmail.com>
+From: Jiri Slaby <jslaby@suse.cz>
 
-[ Upstream commit 2270ad2f4e123336af685ecedd1618701cb4ca1e ]
+[ Upstream commit 23411c720052ad860b3e579ee4873511e367130a ]
 
-This patch fixes the tristate and pullup configuration for UART 1 to 3
-on the Tamonten SOM.
+While alloc_tty_driver failure in rs_init would mean we have much bigger
+problem, there is no reason to panic when tty_register_driver fails
+there. It can fail for various reasons.
 
-Signed-off-by: Andreas Obergschwandtner <andreas.obergschwandtner@gmail.com>
-Signed-off-by: Thierry Reding <treding@nvidia.com>
+So handle the failure gracefully. Actually handle them both while at it.
+This will make at least the console functional as it was enabled earlier
+by console_initcall in iss_console_init. Instead of shooting down the
+whole system.
+
+We move tty_port_init() after alloc_tty_driver(), so that we don't need
+to destroy the port in case the latter function fails.
+
+Cc: Chris Zankel <chris@zankel.net>
+Cc: Max Filippov <jcmvbkbc@gmail.com>
+Cc: linux-xtensa@linux-xtensa.org
+Acked-by: Max Filippov <jcmvbkbc@gmail.com>
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+Link: https://lore.kernel.org/r/20210723074317.32690-2-jslaby@suse.cz
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/tegra20-tamonten.dtsi | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ arch/xtensa/platforms/iss/console.c | 17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm/boot/dts/tegra20-tamonten.dtsi b/arch/arm/boot/dts/tegra20-tamonten.dtsi
-index 95e6bccdb4f6..dd4d506683de 100644
---- a/arch/arm/boot/dts/tegra20-tamonten.dtsi
-+++ b/arch/arm/boot/dts/tegra20-tamonten.dtsi
-@@ -185,8 +185,9 @@ conf_ata {
- 				nvidia,pins = "ata", "atb", "atc", "atd", "ate",
- 					"cdev1", "cdev2", "dap1", "dtb", "gma",
- 					"gmb", "gmc", "gmd", "gme", "gpu7",
--					"gpv", "i2cp", "pta", "rm", "slxa",
--					"slxk", "spia", "spib", "uac";
-+					"gpv", "i2cp", "irrx", "irtx", "pta",
-+					"rm", "slxa", "slxk", "spia", "spib",
-+					"uac";
- 				nvidia,pull = <TEGRA_PIN_PULL_NONE>;
- 				nvidia,tristate = <TEGRA_PIN_DISABLE>;
- 			};
-@@ -211,7 +212,7 @@ conf_crtp {
- 			conf_ddc {
- 				nvidia,pins = "ddc", "dta", "dtd", "kbca",
- 					"kbcb", "kbcc", "kbcd", "kbce", "kbcf",
--					"sdc";
-+					"sdc", "uad", "uca";
- 				nvidia,pull = <TEGRA_PIN_PULL_UP>;
- 				nvidia,tristate = <TEGRA_PIN_DISABLE>;
- 			};
-@@ -221,10 +222,9 @@ conf_hdint {
- 					"lvp0", "owc", "sdb";
- 				nvidia,tristate = <TEGRA_PIN_ENABLE>;
- 			};
--			conf_irrx {
--				nvidia,pins = "irrx", "irtx", "sdd", "spic",
--					"spie", "spih", "uaa", "uab", "uad",
--					"uca", "ucb";
-+			conf_sdd {
-+				nvidia,pins = "sdd", "spic", "spie", "spih",
-+					"uaa", "uab", "ucb";
- 				nvidia,pull = <TEGRA_PIN_PULL_UP>;
- 				nvidia,tristate = <TEGRA_PIN_ENABLE>;
- 			};
+diff --git a/arch/xtensa/platforms/iss/console.c b/arch/xtensa/platforms/iss/console.c
+index a3dda25a4e45..eed02cf3d6b0 100644
+--- a/arch/xtensa/platforms/iss/console.c
++++ b/arch/xtensa/platforms/iss/console.c
+@@ -143,9 +143,13 @@ static const struct tty_operations serial_ops = {
+ 
+ static int __init rs_init(void)
+ {
+-	tty_port_init(&serial_port);
++	int ret;
+ 
+ 	serial_driver = alloc_tty_driver(SERIAL_MAX_NUM_LINES);
++	if (!serial_driver)
++		return -ENOMEM;
++
++	tty_port_init(&serial_port);
+ 
+ 	/* Initialize the tty_driver structure */
+ 
+@@ -163,8 +167,15 @@ static int __init rs_init(void)
+ 	tty_set_operations(serial_driver, &serial_ops);
+ 	tty_port_link_device(&serial_port, serial_driver, 0);
+ 
+-	if (tty_register_driver(serial_driver))
+-		panic("Couldn't register serial driver\n");
++	ret = tty_register_driver(serial_driver);
++	if (ret) {
++		pr_err("Couldn't register serial driver\n");
++		tty_driver_kref_put(serial_driver);
++		tty_port_destroy(&serial_port);
++
++		return ret;
++	}
++
+ 	return 0;
+ }
+ 
 -- 
 2.30.2
 
