@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F227940E18A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:30:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CCBD40E7FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242419AbhIPQbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:31:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60152 "EHLO mail.kernel.org"
+        id S1349027AbhIPRgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:36:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46940 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241321AbhIPQWi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:22:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C2FED61411;
-        Thu, 16 Sep 2021 16:15:28 +0000 (UTC)
+        id S1348917AbhIPR1v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:27:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CEE4961A55;
+        Thu, 16 Sep 2021 16:45:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808929;
-        bh=Jmw/wUq4Cw8gVxsFJPO7nTs4LAwlEVqSdbTxeDI4KAU=;
+        s=korg; t=1631810718;
+        bh=CMqxuankr/nLAtF68BcOJcYLaZl/uFUfJwFMddfQBVE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NLQ+ETAa/+DG38lNH4J/TuzMsot98U6VtatKmU0urDePlGPcCL3LLsmsgkAVCQhOl
-         bEv3NxWX28X59F210389CNITVcaUK20KXlUtlSCjzzNwyGGsZtEPKuh5McOdHA4LSa
-         Ip+RK39Le2slQo1DDyZNTNJNnOwFQVFDSSw2bbYU=
+        b=oXmPRdRi86+Mmd/Cunxb1dCPXPrlpo5n81yibnF7Bplf8oGnlcw1UY58mfR5H5E+w
+         eZiXUEU751nTSLLPqk8fn1i702kvnWOjCr6qLKdUns6SAzgDtKn4nGhlfExH3YWslM
+         u5PoDYBYy6zYWiJASaaHf0OrKorRxOD72lQVgDeQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Manish Narani <manish.narani@xilinx.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
+        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Patrick Delaunay <patrick.delaunay@foss.st.com>,
+        kernel@dh-electronics.com,
+        linux-stm32@st-md-mailman.stormreply.com,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 247/306] mmc: sdhci-of-arasan: Modified SD default speed to 19MHz for ZynqMP
+Subject: [PATCH 5.14 243/432] ARM: dts: stm32: Set {bitclock,frame}-master phandles on DHCOM SoM
 Date:   Thu, 16 Sep 2021 17:59:52 +0200
-Message-Id: <20210916155802.487704609@linuxfoundation.org>
+Message-Id: <20210916155819.073365056@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,68 +44,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Manish Narani <manish.narani@xilinx.com>
+From: Marek Vasut <marex@denx.de>
 
-[ Upstream commit c0b4e411a9b09748466ee06d2ae6772effa64dfb ]
+[ Upstream commit a79e78c391dc074742c855dc0108a88f781d56a3 ]
 
-SD standard speed timing was met only at 19MHz and not 25 MHz, that's
-why changing driver to 19MHz. The reason for this is when a level shifter
-is used on the board, timing was met for standard speed only at 19MHz.
-Since this level shifter is commonly required for high speed modes,
-the driver is modified to use standard speed of 19Mhz.
+Fix the following dtbs_check warning:
+arch/arm/boot/dts/stm32mp157c-dhcom-pdk2.dt.yaml: codec@a: port:endpoint@0:frame-master: True is not of type 'array'
+arch/arm/boot/dts/stm32mp157c-dhcom-pdk2.dt.yaml: codec@a: port:endpoint@0:bitclock-master: True is not of type 'array'
 
-Signed-off-by: Manish Narani <manish.narani@xilinx.com>
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-Link: https://lore.kernel.org/r/1623753837-21035-2-git-send-email-manish.narani@xilinx.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Cc: Patrice Chotard <patrice.chotard@foss.st.com>
+Cc: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Cc: kernel@dh-electronics.com
+Cc: linux-stm32@st-md-mailman.stormreply.com
+To: linux-arm-kernel@lists.infradead.org
+Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/sdhci-of-arasan.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mmc/host/sdhci-of-arasan.c b/drivers/mmc/host/sdhci-of-arasan.c
-index 3b8d456e857d..0c5479a06e9e 100644
---- a/drivers/mmc/host/sdhci-of-arasan.c
-+++ b/drivers/mmc/host/sdhci-of-arasan.c
-@@ -159,6 +159,12 @@ struct sdhci_arasan_data {
- /* Controller immediately reports SDHCI_CLOCK_INT_STABLE after enabling the
-  * internal clock even when the clock isn't stable */
- #define SDHCI_ARASAN_QUIRK_CLOCK_UNSTABLE BIT(1)
-+/*
-+ * Some of the Arasan variations might not have timing requirements
-+ * met at 25MHz for Default Speed mode, those controllers work at
-+ * 19MHz instead
-+ */
-+#define SDHCI_ARASAN_QUIRK_CLOCK_25_BROKEN BIT(2)
- };
+diff --git a/arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi b/arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi
+index 6cf1c8b4c6e2..c9577ba2973d 100644
+--- a/arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi
++++ b/arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi
+@@ -172,15 +172,15 @@ sgtl5000_port: port {
+ 			sgtl5000_tx_endpoint: endpoint@0 {
+ 				reg = <0>;
+ 				remote-endpoint = <&sai2a_endpoint>;
+-				frame-master;
+-				bitclock-master;
++				frame-master = <&sgtl5000_tx_endpoint>;
++				bitclock-master = <&sgtl5000_tx_endpoint>;
+ 			};
  
- struct sdhci_arasan_of_data {
-@@ -290,6 +296,16 @@ static void sdhci_arasan_set_clock(struct sdhci_host *host, unsigned int clock)
- 		sdhci_arasan->is_phy_on = false;
- 	}
+ 			sgtl5000_rx_endpoint: endpoint@1 {
+ 				reg = <1>;
+ 				remote-endpoint = <&sai2b_endpoint>;
+-				frame-master;
+-				bitclock-master;
++				frame-master = <&sgtl5000_rx_endpoint>;
++				bitclock-master = <&sgtl5000_rx_endpoint>;
+ 			};
+ 		};
  
-+	if (sdhci_arasan->quirks & SDHCI_ARASAN_QUIRK_CLOCK_25_BROKEN) {
-+		/*
-+		 * Some of the Arasan variations might not have timing
-+		 * requirements met at 25MHz for Default Speed mode,
-+		 * those controllers work at 19MHz instead.
-+		 */
-+		if (clock == DEFAULT_SPEED_MAX_DTR)
-+			clock = (DEFAULT_SPEED_MAX_DTR * 19) / 25;
-+	}
-+
- 	/* Set the Input and Output Clock Phase Delays */
- 	if (clk_data->set_clk_delays)
- 		clk_data->set_clk_delays(host);
-@@ -1598,6 +1614,8 @@ static int sdhci_arasan_probe(struct platform_device *pdev)
- 	if (of_device_is_compatible(np, "xlnx,zynqmp-8.9a")) {
- 		host->mmc_host_ops.execute_tuning =
- 			arasan_zynqmp_execute_tuning;
-+
-+		sdhci_arasan->quirks |= SDHCI_ARASAN_QUIRK_CLOCK_25_BROKEN;
- 	}
- 
- 	arasan_dt_parse_clk_phases(&pdev->dev, &sdhci_arasan->clk_data);
 -- 
 2.30.2
 
