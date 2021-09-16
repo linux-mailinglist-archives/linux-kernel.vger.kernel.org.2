@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E8A440E2E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:17:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 550DA40E639
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:29:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243081AbhIPQmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:42:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50990 "EHLO mail.kernel.org"
+        id S1351709AbhIPRT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:19:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39806 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242640AbhIPQhA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:37:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B7DD16140A;
-        Thu, 16 Sep 2021 16:21:54 +0000 (UTC)
+        id S1350675AbhIPRLz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:11:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B395361361;
+        Thu, 16 Sep 2021 16:38:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809315;
+        s=korg; t=1631810287;
         bh=jf5hnD9Aa0dFqkGvSaS6zFiCsVobv+I5FvZzl0JpVDQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UC1+2oJn+mHe1KRY9qan6OgprgpDgVa6LamIjiALTa22HaeezT6joKeE+Nn6In0j/
-         AMYEr9Vryj8tpzrK4met9f4zXIrSwYhixhim+swwIcM6OmfyOBuyJ9b9utgOR8bcux
-         MwTibpk+bWNggTa7d1gv7QPa6GLsSRsUXB+YccpU=
+        b=w4yAfnM5ZIv1Oa/KbOuOv1G1YBFZk2iAnmmBehsRHc1eUkmlvoHo0M7rn+vpKDq42
+         YJIfExDQ0uGEemJbTyq2VU0GiiH3yMpymaRZ/6Uw+PF38mLbN8PCaPswDMpoZe0vRt
+         k/0qdEnXEsEdjYoY06AaWNr4d7fick6VHhcxvjFM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,12 +27,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Colin Ian King <colin.king@canonical.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 077/380] scsi: BusLogic: Use %X for u32 sized integer rather than %lX
+Subject: [PATCH 5.14 085/432] scsi: BusLogic: Use %X for u32 sized integer rather than %lX
 Date:   Thu, 16 Sep 2021 17:57:14 +0200
-Message-Id: <20210916155806.629421393@linuxfoundation.org>
+Message-Id: <20210916155813.668436065@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
