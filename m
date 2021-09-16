@@ -2,92 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83DFB40D126
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 03:17:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F8E240D0F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 02:36:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233730AbhIPBTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 21:19:12 -0400
-Received: from smtp-3.orcon.net.nz ([60.234.4.44]:35353 "EHLO
-        smtp-3.orcon.net.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233172AbhIPBTL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 21:19:11 -0400
-X-Greylist: delayed 2563 seconds by postgrey-1.27 at vger.kernel.org; Wed, 15 Sep 2021 21:19:10 EDT
-Received: from [121.99.228.40] (port=37816 helo=tower)
-        by smtp-3.orcon.net.nz with esmtpa (Exim 4.90_1)
-        (envelope-from <mcree@orcon.net.nz>)
-        id 1mQfMJ-0001rk-UM; Thu, 16 Sep 2021 12:34:36 +1200
-Date:   Thu, 16 Sep 2021 12:34:34 +1200
-From:   Michael Cree <mcree@orcon.net.nz>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
+        id S233463AbhIPAhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 20:37:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40850 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233237AbhIPAhu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 20:37:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 05CBC610A6;
+        Thu, 16 Sep 2021 00:36:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631752591;
+        bh=1AfdBcgWzbogf8HggZNDU4tJFfcbC5EYH6SpKNmqwFQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=q20NCwPembe62/tHsWPiOsDVsRICB1+8q4n7JLZ0sqKqZEBhl05vEVPPv7bxmcT4m
+         x3VN31kWGayqkEamDlwPMNAa+Sr1LWGI0teoJr1C0LS4hPGz4RXmPdHa2ib6hzGFLy
+         fXPDv4I5KRuckvqn5qtAiqXo++djfDIDMd87bbOd3WUzYcs2RXm9LzPhhbngHVB/YX
+         aXTShbIMHxwvOJbitMBeIl7zcAogfU+HYjAFAfkr7gACJmFPjnkvLd+aELMA6nc5Su
+         VElMcUFYZPl/kPDVJXM5n1n9/HBOVR42H1eqazltbh4bwapcZTcZ3lvELBPhmO5JFD
+         xrBWv3wbojbrg==
+Date:   Wed, 15 Sep 2021 20:36:30 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Ohhoon Kwon <ohoono.kwon@samsung.com>,
+        Ingo Molnar <mingo@kernel.org>,
         "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-parisc@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
-        Sparse Mailing-list <linux-sparse@vger.kernel.org>
-Subject: Re: [PATCH v2 0/4] Introduce and use absolute_pointer macro
-Message-ID: <20210916003434.GB7246@tower>
-Mail-Followup-To: Michael Cree <mcree@orcon.net.nz>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-parisc@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
-        Sparse Mailing-list <linux-sparse@vger.kernel.org>
-References: <20210915035227.630204-1-linux@roeck-us.net>
- <CAHk-=wjXr+NnNPTorhaW81eAbdF90foVo-5pQqRmXZi-ZGaX6Q@mail.gmail.com>
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 5.14 19/25] connector: send event on write to
+ /proc/[pid]/comm
+Message-ID: <YUKRju8/BayxKeC3@sashalap>
+References: <20210913223339.435347-1-sashal@kernel.org>
+ <20210913223339.435347-19-sashal@kernel.org>
+ <87v932ar5q.fsf@disp2133>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wjXr+NnNPTorhaW81eAbdF90foVo-5pQqRmXZi-ZGaX6Q@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-GeoIP: NZ
-X-Spam_score: -2.9
-X-Spam_score_int: -28
-X-Spam_bar: --
+In-Reply-To: <87v932ar5q.fsf@disp2133>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 12:18:58PM -0700, Linus Torvalds wrote:
-> On Tue, Sep 14, 2021 at 8:52 PM Guenter Roeck <linux@roeck-us.net> wrote:
-> >
-> > This patch series introduces absolute_pointer() to fix the problem.
-> > absolute_pointer() disassociates a pointer from its originating symbol
-> > type and context, and thus prevents gcc from making assumptions about
-> > pointers passed to memory operations.
-> 
-> Ok, I've applied this to my tree.
-> 
-> I note that the physical BOOT_PCB addresses in the alpha setup.h file
-> might be useful for things like MILO in user space, but since I
-> couldn't even find MILO sources any more, I couldn't really check.
-> 
-> I suspect alpha is basically on life support and presumably nobody
-> would ever compile a bootloader anyway, so it's unlikely to matter.
-> 
-> If somebody does find any issues, we'll know better and we can ask
-> where the user space sources are that might use that alpha setup.h
-> file.
+On Wed, Sep 15, 2021 at 08:45:37AM -0500, Eric W. Biederman wrote:
+>Sasha Levin <sashal@kernel.org> writes:
+>
+>> From: Ohhoon Kwon <ohoono.kwon@samsung.com>
+>>
+>> [ Upstream commit c2f273ebd89a79ed87ef1025753343e327b99ac9 ]
+>>
+>> While comm change event via prctl has been reported to proc connector by
+>> 'commit f786ecba4158 ("connector: add comm change event report to proc
+>> connector")', connector listeners were missing comm changes by explicit
+>> writes on /proc/[pid]/comm.
+>>
+>> Let explicit writes on /proc/[pid]/comm report to proc connector.
+>
+>This is a potential userspace ABI breakage?  Why backport it?
+>
+>Especially if there is no one asking for the behavior change in
+>userspace?
 
-I think everyone uses aboot now as the bootloader on Alpha.  So as
-long as we can still compile aboot everyone should be happy.
+This sounds like a concern with the patch going upstream rather than
+going to stable? stable has the same policy around ABI changes such as
+upstream.
 
-Cheers
-Michael.
+-- 
+Thanks,
+Sasha
