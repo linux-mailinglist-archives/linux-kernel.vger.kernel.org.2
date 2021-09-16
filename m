@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0B0240E24B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:16:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CEBC40DF60
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:09:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243435AbhIPQgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:36:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37482 "EHLO mail.kernel.org"
+        id S232929AbhIPQJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:09:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45330 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242055AbhIPQ3J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:29:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9803261360;
-        Thu, 16 Sep 2021 16:18:18 +0000 (UTC)
+        id S237228AbhIPQGc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:06:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 31D8861251;
+        Thu, 16 Sep 2021 16:05:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809099;
-        bh=foSDhwIrzkZlMBDyR4FVkWyGMHp6xfz85SD8oFVaNa8=;
+        s=korg; t=1631808311;
+        bh=ZcE/hCQAgfUgOAuFEZQBPgaiJw08zySPIZ7+L9pvtcU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Txq/WYGIS0CLU36NgY2d9ttPoI0F58KpsF0V5Qo7aZkizAjTMg7BuwhQ9w8CdKYrn
-         cl+VBMG7+YFe9MTCabW3uZkf5b75WD/Z1AXtMcDy7SPRYATHRCAO4QxlKEE5Ci5qAL
-         lg9XsXmGAKLz4eTJ4vTTr4yfmyO9ADo0YVgSo0VA=
+        b=R26fV/aGKEVO5IaS/3ZcNBc1BOT4FJSp5rfa0bPeebQyOOc8PegQubc0PSaaCqaTD
+         hoL6LD9CLE1M5vw+5hS2/SZldf63r1pm1GflRaJKz2C67zEcQX5ndIk9AedFsXZ0Pr
+         gCwAF9cn6J14uzSQSkNPnRlMabz7VSkIL1v1w0PY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>
-Subject: [PATCH 5.13 030/380] arm64: Move .hyp.rodata outside of the _sdata.._edata range
+        stable@vger.kernel.org, Robin Gong <yibin.gong@nxp.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Richard Leitner <richard.leitner@skidata.com>,
+        Shawn Guo <shawnguo@kernel.org>
+Subject: [PATCH 5.10 042/306] dmaengine: imx-sdma: remove duplicated sdma_load_context
 Date:   Thu, 16 Sep 2021 17:56:27 +0200
-Message-Id: <20210916155804.988033925@linuxfoundation.org>
+Message-Id: <20210916155755.379783081@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,47 +41,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Zyngier <maz@kernel.org>
+From: Robin Gong <yibin.gong@nxp.com>
 
-commit eb48d154cd0dade56a0e244f0cfa198ea2925ed3 upstream.
+commit e555a03b112838883fdd8185d613c35d043732f2 upstream.
 
-The HYP rodata section is currently lumped together with the BSS,
-which isn't exactly what is expected (it gets registered with
-kmemleak, for example).
+Since sdma_transfer_init() will do sdma_load_context before any
+sdma transfer, no need once more in sdma_config_channel().
 
-Move it away so that it is actually marked RO. As an added
-benefit, it isn't registered with kmemleak anymore.
-
-Fixes: 380e18ade4a5 ("KVM: arm64: Introduce a BSS section for use at Hyp")
-Suggested-by: Catalin Marinas <catalin.marinas@arm.com>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Cc: stable@vger.kernel.org #5.13
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-Link: https://lore.kernel.org/r/20210802123830.2195174-2-maz@kernel.org
+Fixes: ad0d92d7ba6a ("dmaengine: imx-sdma: refine to load context only once")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Robin Gong <yibin.gong@nxp.com>
+Acked-by: Vinod Koul <vkoul@kernel.org>
+Tested-by: Richard Leitner <richard.leitner@skidata.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm64/kernel/vmlinux.lds.S |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/dma/imx-sdma.c |    5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
---- a/arch/arm64/kernel/vmlinux.lds.S
-+++ b/arch/arm64/kernel/vmlinux.lds.S
-@@ -181,6 +181,8 @@ SECTIONS
- 	/* everything from this point to __init_begin will be marked RO NX */
- 	RO_DATA(PAGE_SIZE)
+--- a/drivers/dma/imx-sdma.c
++++ b/drivers/dma/imx-sdma.c
+@@ -1138,7 +1138,6 @@ static void sdma_set_watermarklevel_for_
+ static int sdma_config_channel(struct dma_chan *chan)
+ {
+ 	struct sdma_channel *sdmac = to_sdma_chan(chan);
+-	int ret;
  
-+	HYPERVISOR_DATA_SECTIONS
-+
- 	idmap_pg_dir = .;
- 	. += IDMAP_DIR_SIZE;
- 	idmap_pg_end = .;
-@@ -260,8 +262,6 @@ SECTIONS
- 	_sdata = .;
- 	RW_DATA(L1_CACHE_BYTES, PAGE_SIZE, THREAD_ALIGN)
+ 	sdma_disable_channel(chan);
  
--	HYPERVISOR_DATA_SECTIONS
+@@ -1178,9 +1177,7 @@ static int sdma_config_channel(struct dm
+ 		sdmac->watermark_level = 0; /* FIXME: M3_BASE_ADDRESS */
+ 	}
+ 
+-	ret = sdma_load_context(sdmac);
 -
- 	/*
- 	 * Data written with the MMU off but read with the MMU on requires
- 	 * cache lines to be invalidated, discarding up to a Cache Writeback
+-	return ret;
++	return 0;
+ }
+ 
+ static int sdma_set_channel_priority(struct sdma_channel *sdmac,
 
 
