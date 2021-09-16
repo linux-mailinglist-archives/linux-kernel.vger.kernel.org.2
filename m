@@ -2,133 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E37B840D1EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 05:07:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBCC440D1F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 05:13:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234053AbhIPDJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 23:09:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27683 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233982AbhIPDJC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 23:09:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631761661;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ewIrGyvVBlsUzMY/tfpMG8U9MTVOYjLYfX7pFihyo8M=;
-        b=iwrhf0PRvp93IBMV7kch35j84QetJTDrPrJxOXGgcOA3r0t/9c38tipttyuSCvWlJbOcMH
-        xUNhhlwBsKD/UiNNYVs+OqFGeFAN34QlsVob1rME+UhNfEdjtijaJGMTNCqhctsHCgV0P+
-        mqCaVEsXuMWrmYJ5PRRuoyWokGvabAc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-36-iIgzS-9gPpywYjaz4atWZQ-1; Wed, 15 Sep 2021 23:07:39 -0400
-X-MC-Unique: iIgzS-9gPpywYjaz4atWZQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S234027AbhIPDOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 23:14:43 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:16936 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234011AbhIPDOh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 23:14:37 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1631761997; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=L56PSK7UJgVh+fg1UMQNlQbJl4Gk/N51kf4QAV1HAdA=;
+ b=CwBpjJyH0kN+ebQZagIKjRFBU/pDpqlH7zfPcOHc2KsuMa9AJ7RNV+9pjmTBPumDPQXJlAyl
+ UCmJegJE8g94KAHmd4aIJhW9Gx0JnG31jJsMtbVAPR0tteupEixRD459JEz47MA/refR+Hkc
+ kTRbhPLD7tAi8ROjNWGWhndwczs=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 6142b64bbd6681d8ed883fdb (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 16 Sep 2021 03:13:15
+ GMT
+Sender: sibis=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 053EDC43460; Thu, 16 Sep 2021 03:13:15 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3719E362F8;
-        Thu, 16 Sep 2021 03:07:37 +0000 (UTC)
-Received: from piliu.users.ipa.redhat.com (ovpn-8-20.pek2.redhat.com [10.72.8.20])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id EA9CD60C81;
-        Thu, 16 Sep 2021 03:07:26 +0000 (UTC)
-Date:   Thu, 16 Sep 2021 11:07:22 +0800
-From:   Pingfan Liu <piliu@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Pingfan Liu <kernelfans@gmail.com>, linux-kernel@vger.kernel.org,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Julien Thierry <jthierry@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Wang Qing <wangqing@vivo.com>,
-        Santosh Sivaraj <santosh@fossix.org>
-Subject: Re: [PATCH 3/5] kernel/watchdog: adapt the watchdog_hld interface
- for async model
-Message-ID: <YUK06iqiCwiIvpRM@piliu.users.ipa.redhat.com>
-References: <20210915035103.15586-1-kernelfans@gmail.com>
- <20210915035103.15586-4-kernelfans@gmail.com>
- <YUH89GX1RB8fdcvh@hirez.programming.kicks-ass.net>
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 25E42C4338F;
+        Thu, 16 Sep 2021 03:13:13 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YUH89GX1RB8fdcvh@hirez.programming.kicks-ass.net>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 16 Sep 2021 08:43:13 +0530
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     mka@chromium.org, swboyd@chromium.org, bjorn.andersson@linaro.org,
+        ulf.hansson@linaro.org, rjw@rjwysocki.net, agross@kernel.org,
+        ohad@wizery.com, mathieu.poirier@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dianders@chromium.org, rishabhb@codeaurora.org,
+        sidgup@codeaurora.org
+Subject: Re: [PATCH v6 02/13] dt-bindings: remoteproc: qcom: pas: Add QMP
+ property
+In-Reply-To: <YTi/+VIOuja9eLbl@robh.at.kernel.org>
+References: <1630916637-4278-1-git-send-email-sibis@codeaurora.org>
+ <1630916637-4278-3-git-send-email-sibis@codeaurora.org>
+ <YTi/+VIOuja9eLbl@robh.at.kernel.org>
+Message-ID: <fbd2f3ee8b5fc8dd26011a85df9cb348@codeaurora.org>
+X-Sender: sibis@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 04:02:28PM +0200, Peter Zijlstra wrote:
-> On Wed, Sep 15, 2021 at 11:51:01AM +0800, Pingfan Liu wrote:
-> > When lockup_detector_init()->watchdog_nmi_probe(), PMU may be not ready
-> > yet. E.g. on arm64, PMU is not ready until
-> > device_initcall(armv8_pmu_driver_init).  And it is deeply integrated
-> > with the driver model and cpuhp. Hence it is hard to push this
-> > initialization before smp_init().
-> > 
-> > But it is easy to take an opposite approach by enabling watchdog_hld to
-> > get the capability of PMU async.
-> > 
-> > The async model is achieved by introducing an extra parameter notifier
-> > of watchdog_nmi_probe().
-> > 
-> > Note after this patch, the async model, which is utilized by the next
-> > patch, does not take effect yet.
-> 
-> I can't make any sense of what you're trying to do..
-> 
-Sorry for a bad expression. what I mean is: this patch [3/5] provides an
-framework for async model. But since watchdog_nmi_probe() still return 0 or
--ENODEV after this patch, the code's behavior is the same as original.
+Hey Rob,
 
-Does it make sense to you?
-> > +static void watchdog_nmi_report_capability(struct watchdog_nmi_status *data)
-> > +{
-> > +	/* Set status to 1 temporary to block any further access */
-> > +	if (atomic_cmpxchg((atomic_t *)&nmi_watchdog_status, -EBUSY, 1)
-> > +			== -EBUSY) {
+Thanks for taking time to review
+the series.
+
+On 2021-09-08 19:21, Rob Herring wrote:
+> On Mon, Sep 06, 2021 at 01:53:46PM +0530, Sibi Sankar wrote:
+>> The load state power-domain, used by the co-processors to notify the
+>> Always on Subsystem (AOSS) that a particular co-processor is up/down,
+>> suffers from the side-effect of changing states during suspend/resume.
+>> However the co-processors enter low-power modes independent to that of
+>> the application processor and their states are expected to remain
+>> unaltered across system suspend/resume cycles. To achieve this 
+>> behavior
+>> let's drop the load state power-domain and replace them with the qmp
+>> property for all SoCs supporting low power mode signalling.
+>> 
+>> Due to the current broken load state implementation, we can afford the
+>> binding breakage that ensues and the remoteproc functionality will 
+>> remain
+>> the same when using newer kernels with older dtbs.
+>> 
+>> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+>> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+>> ---
+>> 
+>> v6:
+>>  * Updated commit message to explain binding breakage. [Stephen]
+>> 
+>>  .../devicetree/bindings/remoteproc/qcom,adsp.yaml  | 61 
+>> +++++++++++-----------
+>>  1 file changed, 31 insertions(+), 30 deletions(-)
+>> 
+>> diff --git 
+>> a/Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml 
+>> b/Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml
+>> index 0c112f3264a9..0d2b5bd4907a 100644
+>> --- a/Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml
+>> +++ b/Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml
+>> @@ -93,6 +93,10 @@ properties:
+>>      maxItems: 1
+>>      description: Reference to the reserved-memory for the Hexagon 
+>> core
+>> 
+>> +  qcom,qmp:
+>> +    $ref: /schemas/types.yaml#/definitions/phandle
+>> +    description: Reference to the AOSS side-channel message RAM.
+>> +
 > 
-> But this..
+> [...]
 > 
-Oh, check other codes, for a wrapped condition, blanks should be better choice.
-> > +		if (!data->status) {
-> > +			nmi_watchdog_status = 0;
-> > +			lockup_detector_update_enable();
-> > +		} else {
-> > +			nmi_watchdog_status = -ENODEV;
-> > +			/* turn offf watchdog_enabled forever */
-> > +			lockup_detector_update_enable();
-> > +			pr_info("Perf NMI watchdog permanently disabled\n");
-> > +		}
-> > +	}
-> > +}
+>> @@ -511,6 +486,32 @@ allOf:
+>>              - const: mss_restart
+>>              - const: pdc_reset
+>> 
+>> +  - if:
+>> +      properties:
+>> +        compatible:
+>> +          contains:
+>> +            enum:
+>> +              - qcom,sc7180-mpss-pas
+>> +              - qcom,sc8180x-adsp-pas
+>> +              - qcom,sc8180x-cdsp-pas
+>> +              - qcom,sc8180x-mpss-pas
+>> +              - qcom,sm8150-adsp-pas
+>> +              - qcom,sm8150-cdsp-pas
+>> +              - qcom,sm8150-mpss-pas
+>> +              - qcom,sm8150-slpi-pas
+>> +              - qcom,sm8250-adsp-pas
+>> +              - qcom,sm8250-cdsp-pas
+>> +              - qcom,sm8250-slpi-pas
+>> +              - qcom,sm8350-adsp-pas
+>> +              - qcom,sm8350-cdsp-pas
+>> +              - qcom,sm8350-mpss-pas
+>> +              - qcom,sm8350-slpi-pas
+>> +    then:
+>> +      properties:
+>> +        qcom,qmp:
+>> +          items:
+>> +            - description: Reference to the AOSS side-channel message 
+>> RAM.
 > 
-> > @@ -467,7 +494,8 @@ static void watchdog_enable(unsigned int cpu)
-> >  	/* Initialize timestamp */
-> >  	update_touch_ts();
-> >  	/* Enable the perf event */
-> > -	if (watchdog_enabled & NMI_WATCHDOG_ENABLED)
-> > +	if (watchdog_enabled &
-> > +			(NMI_WATCHDOG_ENABLED | NMI_WATCHDOG_UNDETERMINED))
+> This doesn't do anything. The property is already allowed for all
+> compatibles. Perhaps you want to negate the if and put 'qcom,qmp: 
+> false'
+> here.
+
+sure will fix it in the next re-spin.
+
 > 
-> and this, are horrible indenting.
+> Rob
 
-Ditto.
-
-Thanks for your comment and review.
-
-Regards,
-
-	Pingfan
-
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project.
