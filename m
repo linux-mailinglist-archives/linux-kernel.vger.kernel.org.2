@@ -2,179 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4733D40D090
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 02:05:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 445FF40D093
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 02:06:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233271AbhIPAHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 20:07:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37962 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232465AbhIPAHN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 20:07:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E545461164;
-        Thu, 16 Sep 2021 00:05:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631750754;
-        bh=Uy0zID/jX88WBrciDPIHMPruWk4OtOhmOwUWZHhLBfQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XS0YoOnyKV12Gk3fKvZIRXhyI8o5iSx4vfwa1HgM1KZM0R4uz087LBBXeQo59K05g
-         hZdTM60bDub/QL28D5SAEBknTgSamysES46mMx1CjAmW9xfWv9Xk+3ZewKtvWVYojo
-         yV2Xj/74rK0rMHm4L2/Gq5k43PcQGAuLPQRAB+LXgf6zFmiC1srnA6VGuPALpk7a8D
-         9eIC4S9hu96ErVbiNOlac4qy6MXqkhwNVpYNtydcym/TAvxaIM7eDTAVJxUnhLgBrK
-         9u74hLT7wByTVEW3zTqvdwRR5oWWL5ACF5Chm71sFuAcMqhva0c+FI/hWoXiSa8MU/
-         QAk1pXvuK/MVA==
-Date:   Wed, 15 Sep 2021 17:05:53 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Jane Chu <jane.chu@oracle.com>,
-        Vishal L Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        "Weiny, Ira" <ira.weiny@intel.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Linux NVDIMM <nvdimm@lists.linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH 0/3] dax: clear poison on the fly along pwrite
-Message-ID: <20210916000553.GB34899@magnolia>
-References: <20210914233132.3680546-1-jane.chu@oracle.com>
- <CAPcyv4h3KpOKgy_Cwi5fNBZmR=n1hB33mVzA3fqOY7c3G+GrMA@mail.gmail.com>
- <516ecedc-38b9-1ae3-a784-289a30e5f6df@oracle.com>
- <20210915161510.GA34830@magnolia>
- <CAPcyv4jaCiSXU61gsQTaoN_cdDTDMvFSfMYfBz2yLKx11fdwOQ@mail.gmail.com>
+        id S233290AbhIPAHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 20:07:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233102AbhIPAHV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 20:07:21 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FE1CC061574;
+        Wed, 15 Sep 2021 17:06:02 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id b7so4191171pfo.11;
+        Wed, 15 Sep 2021 17:06:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=oVyiYM8UFoFaUWrfFN8pM33BOneT811ec06uhiJtXWU=;
+        b=N+qizs9+ibDsnowUPshEeM0Hb5SDsPaymkn574aYorj3YpGwt2w42A9H1hEtMz+NJY
+         ayTh4I5fLX14fZuJN+GCCk4TNEvy+RsrmquRe8R9nhsI8E307TpUWCC/IJJ2EkJqFiNm
+         QmZcG82rSYzNrL5Q647YoSHG53eXAn/M6raRxEkuopYQo4HMccVVCA9sw4jpiQhkWnTE
+         5odltj+2Wn2Qq5JYYkvB3wj/yy+T1s1Xq0EZzMkxibORiotU6DKYLywOu/7JV0c2UqRB
+         7MSaqDGYxX/sVnvWnGlwFBvxwepDBrBmZf7xsaCHB9lLYXof0eBF9HSFjES6IP0WCN8B
+         H9Kg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=oVyiYM8UFoFaUWrfFN8pM33BOneT811ec06uhiJtXWU=;
+        b=PNFjwc3Ra4VyvYNpLTdvWuqNS6zTUZbHIG9ubAvchmtx42dsNsIiBV2BaBM5RN8Qjv
+         zjB1B4//voDcUKYrm/aSY7vBVkZxpVyC4eliDuIlrtPhf+TJFiOpRM3j/uxwA3BiNO7f
+         8Yp7rYxsvKZnD2SSmDjXN+9CeXi57Dxh8ltIJKqCjkVHiYKqRwx5+mqpnFxC6Sm6SHM4
+         wj1yXom+8mnjvHGvFzGFNHCdYO9wgSjthMZNKmkb1c6BADOToAWI6P8tMEegLuOJyRN9
+         w++0qdDVFgMhydLi5TTx7mFhAp4US/yDaG+NfWqixO13eDgTeOEaoOgEd1dMBddz4q0A
+         ZsHA==
+X-Gm-Message-State: AOAM53099258h6xkrx9gpxWOuSVfD3eIBbHu254ZgPxBn/d0Su9YGqg/
+        sfPDNzcoGc8c+4tsnNcGllHpY2RXYvU=
+X-Google-Smtp-Source: ABdhPJxFhT4lroYq1bG1qdl5wlsvQ6BLo1tkCx7NL/E7uywREDmYhJULU9+VDwe4kytsESuXD1eNcw==
+X-Received: by 2002:a63:af4b:: with SMTP id s11mr2258974pgo.185.1631750761929;
+        Wed, 15 Sep 2021 17:06:01 -0700 (PDT)
+Received: from [192.168.1.121] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
+        by smtp.gmail.com with ESMTPSA id l185sm872179pfd.62.2021.09.15.17.06.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Sep 2021 17:06:01 -0700 (PDT)
+Message-ID: <933c889e-dee0-4fc3-bf1a-b3655cabbb28@gmail.com>
+Date:   Wed, 15 Sep 2021 17:05:59 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPcyv4jaCiSXU61gsQTaoN_cdDTDMvFSfMYfBz2yLKx11fdwOQ@mail.gmail.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH] thermal: brcmstb_thermal: Interrupt is optional
+Content-Language: en-US
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Markus Mayer <mmayer@broadcom.com>,
+        "maintainer:BROADCOM STB AVS TMON DRIVER" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        "open list:BROADCOM STB AVS TMON DRIVER" <linux-pm@vger.kernel.org>,
+        "moderated list:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>
+References: <20210426213647.704823-1-f.fainelli@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20210426213647.704823-1-f.fainelli@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 01:27:47PM -0700, Dan Williams wrote:
-> On Wed, Sep 15, 2021 at 9:15 AM Darrick J. Wong <djwong@kernel.org> wrote:
-> >
-> > On Wed, Sep 15, 2021 at 12:22:05AM -0700, Jane Chu wrote:
-> > > Hi, Dan,
-> > >
-> > > On 9/14/2021 9:44 PM, Dan Williams wrote:
-> > > > On Tue, Sep 14, 2021 at 4:32 PM Jane Chu <jane.chu@oracle.com> wrote:
-> > > > >
-> > > > > If pwrite(2) encounters poison in a pmem range, it fails with EIO.
-> > > > > This is unecessary if hardware is capable of clearing the poison.
-> > > > >
-> > > > > Though not all dax backend hardware has the capability of clearing
-> > > > > poison on the fly, but dax backed by Intel DCPMEM has such capability,
-> > > > > and it's desirable to, first, speed up repairing by means of it;
-> > > > > second, maintain backend continuity instead of fragmenting it in
-> > > > > search for clean blocks.
-> > > > >
-> > > > > Jane Chu (3):
-> > > > >    dax: introduce dax_operation dax_clear_poison
-> > > >
-> > > > The problem with new dax operations is that they need to be plumbed
-> > > > not only through fsdax and pmem, but also through device-mapper.
-> > > >
-> > > > In this case I think we're already covered by dax_zero_page_range().
-> > > > That will ultimately trigger pmem_clear_poison() and it is routed
-> > > > through device-mapper properly.
-> > > >
-> > > > Can you clarify why the existing dax_zero_page_range() is not sufficient?
-> > >
-> > > fallocate ZERO_RANGE is in itself a functionality that applied to dax
-> > > should lead to zero out the media range.  So one may argue it is part
-> > > of a block operations, and not something explicitly aimed at clearing
-> > > poison.
-> >
-> > Yeah, Christoph suggested that we make the clearing operation explicit
-> > in a related thread a few weeks ago:
-> > https://lore.kernel.org/linux-fsdevel/YRtnlPERHfMZ23Tr@infradead.org/
-> 
-> That seemed to be tied to a proposal to plumb it all the way out to an
-> explicit fallocate() mode, not make it a silent side effect of
-> pwrite(). That said pwrite() does clear errors in hard drives in
-> not-DAX mode, but I like the change in direction to make it explicit
-> going forward.
-> 
-> > I like Jane's patchset far better than the one that I sent, because it
-> > doesn't require a block device wrapper for the pmem, and it enables us
-> > to tell application writers that they can handle media errors by
-> > pwrite()ing the bad region, just like they do for nvme and spinners.
-> 
-> pwrite(), hmm, so you're not onboard with the explicit clearing API
-> proposal, or...?
 
-I don't really care either way.  I was going to send a reworked version
-of that earlier patchset which would add an explicit fallocate mode and
-make it work on regular block storage too, but then Jane sent this. :)
 
-Hmm, maybe I should rework my patchset to call dax_zero_page_range
-directly...?
-
-> > > I'm also thinking about the MOVEDIR64B instruction and how it
-> > > might be used to clear poison on the fly with a single 'store'.
-> > > Of course, that means we need to figure out how to narrow down the
-> > > error blast radius first.
+On 4/26/2021 2:36 PM, Florian Fainelli wrote:
+> Utilize platform_get_irq_optional() to silence these messages:
 > 
-> It turns out the MOVDIR64B error clearing idea runs into problem with
-> the device poison tracking. Without the explicit notification that
-> software wanted the error cleared the device may ghost report errors
-> that are not there anymore. I think we should continue explicit error
-> clearing and notification of the device that the error has been
-> cleared (by asking the device to clear it).
-
-If the poison clearing is entirely OOB (i.e. you have to call ACPI
-methods) and can't be made part of the memory controller, then I guess
-you can't use movdir64b at all, right?
-
-> > That was one of the advantages of Shiyang Ruan's NAKed patchset to
-> > enable byte-granularity media errors
+> brcmstb_thermal a581500.thermal: IRQ index 0 not found
 > 
-> ...the method of triggering reverse mapping had review feedback, I
-> apologize if that came across of a NAK of the whole proposal. As I
-> clarified to Eric this morning, I think the solution is iterating
-> towards upstream inclusion.
-> 
-> > to pass upwards through the stack
-> > back to the filesystem, which could then tell applications exactly what
-> > they lost.
-> >
-> > I want to get back to that, though if Dan won't withdraw the NAK then I
-> > don't know how to move forward...
-> 
-> No NAK in place. Let's go!
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 
-Ok, thanks.  I'll start looking through Shiyang's patches tomorrow.
+This patch was never picked up and still applies. Daniel, can you pick 
+it up?
 
+Thanks!
+
+> ---
+>   drivers/thermal/broadcom/brcmstb_thermal.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> >
-> > > With respect to plumbing through device-mapper, I thought about that,
-> > > and wasn't sure. I mean the clear-poison work will eventually fall on
-> > > the pmem driver, and thru the DM layers, how does that play out thru
-> > > DM?
-> >
-> > Each of the dm drivers has to add their own ->clear_poison operation
-> > that remaps the incoming (sector, len) parameters as appropriate for
-> > that device and then calls the lower device's ->clear_poison with the
-> > translated parameters.
-> >
-> > This (AFAICT) has already been done for dax_zero_page_range, so I sense
-> > that Dan is trying to save you a bunch of code plumbing work by nudging
-> > you towards doing s/dax_clear_poison/dax_zero_page_range/ to this series
-> > and then you only need patches 2-3.
+> diff --git a/drivers/thermal/broadcom/brcmstb_thermal.c b/drivers/thermal/broadcom/brcmstb_thermal.c
+> index 8df5edef1ded..0cedb8b4f00a 100644
+> --- a/drivers/thermal/broadcom/brcmstb_thermal.c
+> +++ b/drivers/thermal/broadcom/brcmstb_thermal.c
+> @@ -351,7 +351,7 @@ static int brcmstb_thermal_probe(struct platform_device *pdev)
+>   
+>   	priv->thermal = thermal;
+>   
+> -	irq = platform_get_irq(pdev, 0);
+> +	irq = platform_get_irq_optional(pdev, 0);
+>   	if (irq >= 0) {
+>   		ret = devm_request_threaded_irq(&pdev->dev, irq, NULL,
+>   						brcmstb_tmon_irq_thread,
 > 
-> Yes, but it sounds like Christoph was saying don't overload
-> dax_zero_page_range(). I'd be ok splitting the difference and having a
-> new fallocate clear poison mode map to dax_zero_page_range()
-> internally.
 
-Ok.
-
---D
-
-> >
-> > > BTW, our customer doesn't care about creating dax volume thru DM, so.
-> >
-> > They might not care, but anything going upstream should work in the
-> > general case.
-> 
-> Agree.
+-- 
+Florian
