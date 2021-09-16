@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A70740E087
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:21:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FE1C40E64A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:30:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241587AbhIPQVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:21:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48608 "EHLO mail.kernel.org"
+        id S1352228AbhIPRUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:20:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39808 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237082AbhIPQM7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:12:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7442161368;
-        Thu, 16 Sep 2021 16:09:36 +0000 (UTC)
+        id S1350246AbhIPRN4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:13:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 33E50613A8;
+        Thu, 16 Sep 2021 16:39:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808576;
-        bh=l6otXLWJKbzqWhRfS+K84WrcdbPANIzdtDGgV0fqRvo=;
+        s=korg; t=1631810341;
+        bh=qBZd2qfd0FZkQ9vTT+ukApEJxUsf/MSMV5Dy5aduhOI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MKjuXSZGXu40w65tjWpVu494O3eF6F+/p3ahzy2JZr240XJIUhRwyAoQVV2tTX6vd
-         jF8KgaZ0g355jyjGmuRrfcQO7pU5IFV8q3FRyXv3nbaomVE7BYccsY/aDlCrlnh+s2
-         3qRo2FNXgsHYUs3iSe6Px+e6SKXbaHhW33R5ki5Q=
+        b=Rl0sZbGXcVOZ0ooh8V2Ve3GvOOPfSBQkEX6tl6itBb+bLwBXcGVrW4NYFjF8jQLiS
+         3VZ7BwWo72RL/qRCqRhS1FO4Agk+FmQ6Wg7Ov7o8AXfqB54+QMl+kqww3ze3dslQP/
+         CDitk8JouZ9mjlW4kV4wRxPrQwek5Wn/DPujzubM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dom Cobley <popcornmix@gmail.com>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        stable@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <Anna.Schumaker@Netapp.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 110/306] drm/vc4: hdmi: Set HD_CTL_WHOLSMP and HD_CTL_CHALIGN_SET
+Subject: [PATCH 5.14 106/432] NFSv4/pnfs: The layout barrier indicate a minimal value for the seqid
 Date:   Thu, 16 Sep 2021 17:57:35 +0200
-Message-Id: <20210916155757.826598346@linuxfoundation.org>
+Message-Id: <20210916155814.361426159@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,53 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dom Cobley <popcornmix@gmail.com>
+From: Trond Myklebust <trond.myklebust@hammerspace.com>
 
-[ Upstream commit 1698ecb218eb82587dbfc71a2e26ded66e5ecf59 ]
+[ Upstream commit d6236a98b3bab07c0a1455fd1ab46f79c3978cdc ]
 
-Symptom is random switching of speakers when using multichannel.
+The intention of the layout barrier is to ensure that we do not update
+the layout to match an older value than the current expectation. Fix the
+test in pnfs_layout_stateid_blocked() to reflect that it is legal for
+the seqid of the stateid to match that of the barrier.
 
-Repeatedly running speakertest -c8 occasionally starts with
-channels jumbled. This is fixed with HD_CTL_WHOLSMP.
-
-The other bit looks beneficial and apears harmless in testing so
-I'd suggest adding it too.
-
-Documentation says: HD_CTL_WHILSMP_SET
-Wait for whole sample. When this bit is set MAI transmit will start
-only when there is at least one whole sample available in the fifo.
-
-Documentation says: HD_CTL_CHALIGN_SET
-Channel Align When Overflow. This bit is used to realign the audio
-channels in case of an overflow.
-If this bit is set, after the detection of an overflow, equal
-amount of dummy words to the missing words will be written to fifo,
-filling up the broken sample and maintaining alignment.
-
-Signed-off-by: Dom Cobley <popcornmix@gmail.com>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Reviewed-by: Nicolas Saenz Julienne <nsaenz@kernel.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210525132354.297468-7-maxime@cerno.tech
+Fixes: aa95edf309ef ("NFSv4/pnfs: Fix the layout barrier update")
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/vc4/vc4_hdmi.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ fs/nfs/pnfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
-index c58b8840090a..ee293f061f0a 100644
---- a/drivers/gpu/drm/vc4/vc4_hdmi.c
-+++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-@@ -1074,7 +1074,9 @@ static int vc4_hdmi_audio_trigger(struct snd_pcm_substream *substream, int cmd,
- 		HDMI_WRITE(HDMI_MAI_CTL,
- 			   VC4_SET_FIELD(vc4_hdmi->audio.channels,
- 					 VC4_HD_MAI_CTL_CHNUM) |
--			   VC4_HD_MAI_CTL_ENABLE);
-+					 VC4_HD_MAI_CTL_WHOLSMP |
-+					 VC4_HD_MAI_CTL_CHALIGN |
-+					 VC4_HD_MAI_CTL_ENABLE);
- 		break;
- 	case SNDRV_PCM_TRIGGER_STOP:
- 		HDMI_WRITE(HDMI_MAI_CTL,
+diff --git a/fs/nfs/pnfs.c b/fs/nfs/pnfs.c
+index 615ac993b9f9..51049499e98f 100644
+--- a/fs/nfs/pnfs.c
++++ b/fs/nfs/pnfs.c
+@@ -1004,7 +1004,7 @@ pnfs_layout_stateid_blocked(const struct pnfs_layout_hdr *lo,
+ {
+ 	u32 seqid = be32_to_cpu(stateid->seqid);
+ 
+-	return !pnfs_seqid_is_newer(seqid, lo->plh_barrier) && lo->plh_barrier;
++	return lo->plh_barrier && pnfs_seqid_is_newer(lo->plh_barrier, seqid);
+ }
+ 
+ /* lget is set to 1 if called from inside send_layoutget call chain */
 -- 
 2.30.2
 
