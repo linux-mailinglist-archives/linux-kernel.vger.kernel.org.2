@@ -2,36 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7178C40E622
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:29:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DB3340E617
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:29:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351544AbhIPRSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:18:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36118 "EHLO mail.kernel.org"
+        id S243813AbhIPRSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:18:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37568 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244384AbhIPRKC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:10:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BDE961B47;
-        Thu, 16 Sep 2021 16:37:37 +0000 (UTC)
+        id S245477AbhIPRKG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:10:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F4C4613E8;
+        Thu, 16 Sep 2021 16:37:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810257;
-        bh=XxTLvhR0643QwmWliVQPlTcQCaqUN3pE7YzM9cOqrmk=;
+        s=korg; t=1631810263;
+        bh=Ro5hnwtteUQgbUV0dW/07sQ67En5/vCj9MEXfNkuXoM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FWDiTzDDCQ7zFNFwTOzRs/tNri/X0//spvzZ7YLAVztV5EMzdfGaR/phfhJhwmIQ4
-         QMpugBWc+4KDqnyYzDuMElcjgoHsZIHZaGyeYIOub/yNxxxq6tKzvL6poDr0FGGSjb
-         YyEmo5xzykiVi5e8QaO6pdHTRZ/P6jRoasKWh1aw=
+        b=ZyN1NNbvICQn4zJT52aIKLeMi2tQLY2/qveJnVF59uQqpCdRWcgTD4Xs8xK5pkfnz
+         xu8p2MOGVYon1p+R4pQbZEahK5L7/R/z/hE0KrN9/ygoajwMMDIyEzOd8Pj+AlYwAH
+         pFVahtQFtuTXc9e2BDY50MjRznbgDieimvpjaAMo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jack Wang <jinpu.wang@ionos.com>,
-        Aleksei Marov <aleksei.marov@ionos.com>,
-        Gioh Kim <gi-oh.kim@ionos.com>,
-        Md Haris Iqbal <haris.iqbal@ionos.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 075/432] RDMA/rtrs: Move sq_wr_avail to rtrs_con
-Date:   Thu, 16 Sep 2021 17:57:04 +0200
-Message-Id: <20210916155813.331779880@linuxfoundation.org>
+        stable@vger.kernel.org, Kenneth Albanowski <kenalba@google.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 076/432] HID: input: do not report stylus battery state as "full"
+Date:   Thu, 16 Sep 2021 17:57:05 +0200
+Message-Id: <20210916155813.362278134@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
 References: <20210916155810.813340753@linuxfoundation.org>
@@ -43,116 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jack Wang <jinpu.wang@ionos.com>
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-[ Upstream commit cfcdbd9dd7632a9bb1e308a029f5fa65008333af ]
+[ Upstream commit f4abaa9eebde334045ed6ac4e564d050f1df3013 ]
 
-In order to account HB for sq_wr_avail properly, move sq_wr_avail from
-rtrs_srv_con to rtrs_con.
+The power supply states of discharging, charging, full, etc, represent
+state of charging, not the capacity level of the battery (for which
+we have a separate property). Current HID usage tables to not allow
+for expressing charging state of the batteries found in generic
+styli, so we should simply assume that the battery is discharging
+even if current capacity is at 100% when battery strength reporting
+is done via HID interface. In fact, we were doing just that before
+commit 581c4484769e.
 
-Although rtrs-clt do not care sq_wr_avail, but still init it to
-max_send_wr.
+This change helps UIs to not mis-represent fully charged batteries in
+styli as being charging/topping-off.
 
-Fixes: b38041d50add ("RDMA/rtrs: Do not signal for heatbeat")
-Link: https://lore.kernel.org/r/20210712060750.16494-7-jinpu.wang@ionos.com
-Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
-Reviewed-by: Aleksei Marov <aleksei.marov@ionos.com>
-Reviewed-by: Gioh Kim <gi-oh.kim@ionos.com>
-Reviewed-by: Md Haris Iqbal <haris.iqbal@ionos.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Fixes: 581c4484769e ("HID: input: map digitizer battery usage")
+Reported-by: Kenneth Albanowski <kenalba@google.com>
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-clt.c | 1 +
- drivers/infiniband/ulp/rtrs/rtrs-pri.h | 1 +
- drivers/infiniband/ulp/rtrs/rtrs-srv.c | 8 ++++----
- drivers/infiniband/ulp/rtrs/rtrs-srv.h | 1 -
- drivers/infiniband/ulp/rtrs/rtrs.c     | 1 +
- 5 files changed, 7 insertions(+), 5 deletions(-)
+ drivers/hid/hid-input.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-index f023676e05e4..ece3205531b8 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-@@ -1680,6 +1680,7 @@ static int create_con_cq_qp(struct rtrs_clt_con *con)
- 			      sess->queue_depth * 3 + 1);
- 		max_send_sge = 2;
- 	}
-+	atomic_set(&con->c.sq_wr_avail, max_send_wr);
- 	cq_num = max_send_wr + max_recv_wr;
- 	/* alloc iu to recv new rkey reply when server reports flags set */
- 	if (sess->flags & RTRS_MSG_NEW_RKEY_F || con->c.cid == 0) {
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-pri.h b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
-index b88a4944cb30..119aa3f7eafe 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-pri.h
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
-@@ -97,6 +97,7 @@ struct rtrs_con {
- 	unsigned int		cid;
- 	int                     nr_cqe;
- 	atomic_t		wr_cnt;
-+	atomic_t		sq_wr_avail;
- };
+diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
+index 4286a51f7f16..4b5ebeacd283 100644
+--- a/drivers/hid/hid-input.c
++++ b/drivers/hid/hid-input.c
+@@ -419,8 +419,6 @@ static int hidinput_get_battery_property(struct power_supply *psy,
  
- struct rtrs_sess {
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-index 44ed15f38896..cd9a4ccf4c28 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-@@ -507,11 +507,11 @@ bool rtrs_srv_resp_rdma(struct rtrs_srv_op *id, int status)
- 		ib_update_fast_reg_key(mr->mr, ib_inc_rkey(mr->mr->rkey));
- 	}
- 	if (unlikely(atomic_sub_return(1,
--				       &con->sq_wr_avail) < 0)) {
-+				       &con->c.sq_wr_avail) < 0)) {
- 		rtrs_err(s, "IB send queue full: sess=%s cid=%d\n",
- 			 kobject_name(&sess->kobj),
- 			 con->c.cid);
--		atomic_add(1, &con->sq_wr_avail);
-+		atomic_add(1, &con->c.sq_wr_avail);
- 		spin_lock(&con->rsp_wr_wait_lock);
- 		list_add_tail(&id->wait_list, &con->rsp_wr_wait_list);
- 		spin_unlock(&con->rsp_wr_wait_lock);
-@@ -1268,7 +1268,7 @@ static void rtrs_srv_rdma_done(struct ib_cq *cq, struct ib_wc *wc)
- 		 * post_send() RDMA write completions of IO reqs (read/write)
- 		 * and hb.
- 		 */
--		atomic_add(s->signal_interval, &con->sq_wr_avail);
-+		atomic_add(s->signal_interval, &con->c.sq_wr_avail);
- 
- 		if (unlikely(!list_empty_careful(&con->rsp_wr_wait_list)))
- 			rtrs_rdma_process_wr_wait_list(con);
-@@ -1680,7 +1680,7 @@ static int create_con(struct rtrs_srv_sess *sess,
- 		 */
- 	}
- 	cq_num = max_send_wr + max_recv_wr;
--	atomic_set(&con->sq_wr_avail, max_send_wr);
-+	atomic_set(&con->c.sq_wr_avail, max_send_wr);
- 	cq_vector = rtrs_srv_get_next_cq_vector(sess);
- 
- 	/* TODO: SOFTIRQ can be faster, but be careful with softirq context */
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.h b/drivers/infiniband/ulp/rtrs/rtrs-srv.h
-index 6785c3b6363e..e81774f5acd3 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-srv.h
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.h
-@@ -42,7 +42,6 @@ struct rtrs_srv_stats {
- 
- struct rtrs_srv_con {
- 	struct rtrs_con		c;
--	atomic_t		sq_wr_avail;
- 	struct list_head	rsp_wr_wait_list;
- 	spinlock_t		rsp_wr_wait_lock;
- };
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs.c b/drivers/infiniband/ulp/rtrs/rtrs.c
-index a8f8affc546a..0a4b4e1b5e5f 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs.c
-@@ -190,6 +190,7 @@ int rtrs_post_rdma_write_imm_empty(struct rtrs_con *con, struct ib_cqe *cqe,
- 	struct rtrs_sess *sess = con->sess;
- 	enum ib_send_flags sflags;
- 
-+	atomic_dec_if_positive(&con->sq_wr_avail);
- 	sflags = (atomic_inc_return(&con->wr_cnt) % sess->signal_interval) ?
- 		0 : IB_SEND_SIGNALED;
- 
+ 		if (dev->battery_status == HID_BATTERY_UNKNOWN)
+ 			val->intval = POWER_SUPPLY_STATUS_UNKNOWN;
+-		else if (dev->battery_capacity == 100)
+-			val->intval = POWER_SUPPLY_STATUS_FULL;
+ 		else
+ 			val->intval = POWER_SUPPLY_STATUS_DISCHARGING;
+ 		break;
 -- 
 2.30.2
 
