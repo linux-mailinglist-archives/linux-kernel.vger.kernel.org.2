@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B771540E11C
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:28:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E730E40E7B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:59:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238730AbhIPQ1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:27:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54974 "EHLO mail.kernel.org"
+        id S1353512AbhIPReN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:34:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241058AbhIPQTO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:19:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AC1AD613BD;
-        Thu, 16 Sep 2021 16:12:59 +0000 (UTC)
+        id S1352495AbhIPRYj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:24:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 921C161A52;
+        Thu, 16 Sep 2021 16:44:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808780;
-        bh=rXlLFN2W3/ibx/tfFV1MtqfrE46u2tbBH270PV+DI1g=;
+        s=korg; t=1631810644;
+        bh=muu/jGLTtttFmQjtnPa4AwWkhKRn8IA8zQIhSyPmmys=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KJzIKsuwAODgwFhk8GPKwOYr60mcwz89XBNGsYRR+uVtJnYbjFp6wslXdBeaO+a8S
-         quY1Qhu8g8iKjJNTLkCGMuIld9wWflNlmRUZJPgMuGCV5t3D3xdabgccfIGExXz/pD
-         ughhbQnMxxrP4HYCH8HKP4qzqNTCyEv3BTketZIg=
+        b=D6p/RNsVDYiw+d0BQTY+kIoy8t8A3wjolq9F7Y36zvgjmQ8qdSjOyHwL77JGucxta
+         qaSmLT7S3h7lWFjUHMBeWgSsxXYsIrmZ45vJyTlIeTyz07sEVfeqd1qBzYSQCgHNRp
+         1NvJ/3f7SgLxtlZVeeEr5pcJRCbH6H871sRKg3EM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 220/306] Bluetooth: Fix handling of LE Enhanced Connection Complete
+Subject: [PATCH 5.14 216/432] bpf/tests: Fix copy-and-paste error in double word test
 Date:   Thu, 16 Sep 2021 17:59:25 +0200
-Message-Id: <20210916155801.551007715@linuxfoundation.org>
+Message-Id: <20210916155818.170291119@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,167 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+From: Johan Almbladh <johan.almbladh@anyfinetworks.com>
 
-[ Upstream commit cafae4cd625502f65d1798659c1aa9b62d38cc56 ]
+[ Upstream commit ae7f47041d928b1a2f28717d095b4153c63cbf6a ]
 
-LE Enhanced Connection Complete contains the Local RPA used in the
-connection which must be used when set otherwise there could problems
-when pairing since the address used by the remote stack could be the
-Local RPA:
+This test now operates on DW as stated instead of W, which was
+already covered by another test.
 
-BLUETOOTH CORE SPECIFICATION Version 5.2 | Vol 4, Part E
-page 2396
-
-  'Resolvable Private Address being used by the local device for this
-  connection. This is only valid when the Own_Address_Type (from the
-  HCI_LE_Create_Connection, HCI_LE_Set_Advertising_Parameters,
-  HCI_LE_Set_Extended_Advertising_Parameters, or
-  HCI_LE_Extended_Create_Connection commands) is set to 0x02 or
-  0x03, and the Controller generated a resolvable private address for the
-  local device using a non-zero local IRK. For other Own_Address_Type
-  values, the Controller shall return all zeros.'
-
-Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/20210721104058.3755254-1-johan.almbladh@anyfinetworks.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/hci_event.c | 93 ++++++++++++++++++++++++++-------------
- 1 file changed, 62 insertions(+), 31 deletions(-)
+ lib/test_bpf.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-index 45de2d8b9a9d..9f52145bb7b7 100644
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -5070,9 +5070,64 @@ static void hci_disconn_phylink_complete_evt(struct hci_dev *hdev,
- }
- #endif
- 
-+static void le_conn_update_addr(struct hci_conn *conn, bdaddr_t *bdaddr,
-+				u8 bdaddr_type, bdaddr_t *local_rpa)
-+{
-+	if (conn->out) {
-+		conn->dst_type = bdaddr_type;
-+		conn->resp_addr_type = bdaddr_type;
-+		bacpy(&conn->resp_addr, bdaddr);
-+
-+		/* Check if the controller has set a Local RPA then it must be
-+		 * used instead or hdev->rpa.
-+		 */
-+		if (local_rpa && bacmp(local_rpa, BDADDR_ANY)) {
-+			conn->init_addr_type = ADDR_LE_DEV_RANDOM;
-+			bacpy(&conn->init_addr, local_rpa);
-+		} else if (hci_dev_test_flag(conn->hdev, HCI_PRIVACY)) {
-+			conn->init_addr_type = ADDR_LE_DEV_RANDOM;
-+			bacpy(&conn->init_addr, &conn->hdev->rpa);
-+		} else {
-+			hci_copy_identity_address(conn->hdev, &conn->init_addr,
-+						  &conn->init_addr_type);
-+		}
-+	} else {
-+		conn->resp_addr_type = conn->hdev->adv_addr_type;
-+		/* Check if the controller has set a Local RPA then it must be
-+		 * used instead or hdev->rpa.
-+		 */
-+		if (local_rpa && bacmp(local_rpa, BDADDR_ANY)) {
-+			conn->resp_addr_type = ADDR_LE_DEV_RANDOM;
-+			bacpy(&conn->resp_addr, local_rpa);
-+		} else if (conn->hdev->adv_addr_type == ADDR_LE_DEV_RANDOM) {
-+			/* In case of ext adv, resp_addr will be updated in
-+			 * Adv Terminated event.
-+			 */
-+			if (!ext_adv_capable(conn->hdev))
-+				bacpy(&conn->resp_addr,
-+				      &conn->hdev->random_addr);
-+		} else {
-+			bacpy(&conn->resp_addr, &conn->hdev->bdaddr);
-+		}
-+
-+		conn->init_addr_type = bdaddr_type;
-+		bacpy(&conn->init_addr, bdaddr);
-+
-+		/* For incoming connections, set the default minimum
-+		 * and maximum connection interval. They will be used
-+		 * to check if the parameters are in range and if not
-+		 * trigger the connection update procedure.
-+		 */
-+		conn->le_conn_min_interval = conn->hdev->le_conn_min_interval;
-+		conn->le_conn_max_interval = conn->hdev->le_conn_max_interval;
-+	}
-+}
-+
- static void le_conn_complete_evt(struct hci_dev *hdev, u8 status,
--			bdaddr_t *bdaddr, u8 bdaddr_type, u8 role, u16 handle,
--			u16 interval, u16 latency, u16 supervision_timeout)
-+				 bdaddr_t *bdaddr, u8 bdaddr_type,
-+				 bdaddr_t *local_rpa, u8 role, u16 handle,
-+				 u16 interval, u16 latency,
-+				 u16 supervision_timeout)
- {
- 	struct hci_conn_params *params;
- 	struct hci_conn *conn;
-@@ -5120,32 +5175,7 @@ static void le_conn_complete_evt(struct hci_dev *hdev, u8 status,
- 		cancel_delayed_work(&conn->le_conn_timeout);
- 	}
- 
--	if (!conn->out) {
--		/* Set the responder (our side) address type based on
--		 * the advertising address type.
--		 */
--		conn->resp_addr_type = hdev->adv_addr_type;
--		if (hdev->adv_addr_type == ADDR_LE_DEV_RANDOM) {
--			/* In case of ext adv, resp_addr will be updated in
--			 * Adv Terminated event.
--			 */
--			if (!ext_adv_capable(hdev))
--				bacpy(&conn->resp_addr, &hdev->random_addr);
--		} else {
--			bacpy(&conn->resp_addr, &hdev->bdaddr);
--		}
--
--		conn->init_addr_type = bdaddr_type;
--		bacpy(&conn->init_addr, bdaddr);
--
--		/* For incoming connections, set the default minimum
--		 * and maximum connection interval. They will be used
--		 * to check if the parameters are in range and if not
--		 * trigger the connection update procedure.
--		 */
--		conn->le_conn_min_interval = hdev->le_conn_min_interval;
--		conn->le_conn_max_interval = hdev->le_conn_max_interval;
--	}
-+	le_conn_update_addr(conn, bdaddr, bdaddr_type, local_rpa);
- 
- 	/* Lookup the identity address from the stored connection
- 	 * address and address type.
-@@ -5239,7 +5269,7 @@ static void hci_le_conn_complete_evt(struct hci_dev *hdev, struct sk_buff *skb)
- 	BT_DBG("%s status 0x%2.2x", hdev->name, ev->status);
- 
- 	le_conn_complete_evt(hdev, ev->status, &ev->bdaddr, ev->bdaddr_type,
--			     ev->role, le16_to_cpu(ev->handle),
-+			     NULL, ev->role, le16_to_cpu(ev->handle),
- 			     le16_to_cpu(ev->interval),
- 			     le16_to_cpu(ev->latency),
- 			     le16_to_cpu(ev->supervision_timeout));
-@@ -5253,7 +5283,7 @@ static void hci_le_enh_conn_complete_evt(struct hci_dev *hdev,
- 	BT_DBG("%s status 0x%2.2x", hdev->name, ev->status);
- 
- 	le_conn_complete_evt(hdev, ev->status, &ev->bdaddr, ev->bdaddr_type,
--			     ev->role, le16_to_cpu(ev->handle),
-+			     &ev->local_rpa, ev->role, le16_to_cpu(ev->handle),
- 			     le16_to_cpu(ev->interval),
- 			     le16_to_cpu(ev->latency),
- 			     le16_to_cpu(ev->supervision_timeout));
-@@ -5289,7 +5319,8 @@ static void hci_le_ext_adv_term_evt(struct hci_dev *hdev, struct sk_buff *skb)
- 	if (conn) {
- 		struct adv_info *adv_instance;
- 
--		if (hdev->adv_addr_type != ADDR_LE_DEV_RANDOM)
-+		if (hdev->adv_addr_type != ADDR_LE_DEV_RANDOM ||
-+		    bacmp(&conn->resp_addr, BDADDR_ANY))
- 			return;
- 
- 		if (!hdev->cur_adv_instance) {
+diff --git a/lib/test_bpf.c b/lib/test_bpf.c
+index d500320778c7..1c5299cb3f19 100644
+--- a/lib/test_bpf.c
++++ b/lib/test_bpf.c
+@@ -4286,8 +4286,8 @@ static struct bpf_test tests[] = {
+ 		.u.insns_int = {
+ 			BPF_LD_IMM64(R0, 0),
+ 			BPF_LD_IMM64(R1, 0xffffffffffffffffLL),
+-			BPF_STX_MEM(BPF_W, R10, R1, -40),
+-			BPF_LDX_MEM(BPF_W, R0, R10, -40),
++			BPF_STX_MEM(BPF_DW, R10, R1, -40),
++			BPF_LDX_MEM(BPF_DW, R0, R10, -40),
+ 			BPF_EXIT_INSN(),
+ 		},
+ 		INTERNAL,
 -- 
 2.30.2
 
