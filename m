@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB09F40E5BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:28:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A898A40E265
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:16:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351075AbhIPROs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:14:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37566 "EHLO mail.kernel.org"
+        id S243317AbhIPQhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:37:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349989AbhIPRIE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:08:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F30060F38;
-        Thu, 16 Sep 2021 16:36:45 +0000 (UTC)
+        id S243182AbhIPQaJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:30:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5785661381;
+        Thu, 16 Sep 2021 16:19:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810205;
-        bh=ke0zryOFbY9VnDCnVu4dALHrZgEv3Vwhl3ONBxNtgdE=;
+        s=korg; t=1631809140;
+        bh=mYdBCRdVHdijlfqercYxcBGop3pGY/1ztuhYi1yJIDA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eoBkMo97vJ4iYeqNNAdvbroHl7qbk4+ieoKOtoygjF6h2hkHXdSYO0ArG8a1Q66/9
-         ak6WCbiuadeYfiYesx7MlB0nX+oWvaq+YBmU9byBjHx6cVnD6cr8hjiGlH7e24FNYB
-         PGzdfQ84l8fLcMVUsV1yvSubM8t1Ij6kj6Fus8Vk=
+        b=sCTdgO2OktbzRtF1iEGcUeuy1ZOWg31nU61y1WzmyxxWkZPwtkdKTDP5ZXhUVDT32
+         T81r21ClqLzepRSZiyC8aDiXcljcfg//ydvKHO8yLGffqhs8WbwgNt8zU4XGrZJNTa
+         a49BpXnFi69DyXRlcRwKNX256J0CAVvgWVLB0gzs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Julian Wiedmann <jwi@linux.ibm.com>,
-        Benjamin Block <bblock@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>
-Subject: [PATCH 5.14 054/432] s390/qdio: fix roll-back after timeout on ESTABLISH ccw
+        stable@vger.kernel.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH 5.13 046/380] nvmem: core: fix error handling while validating keepout regions
 Date:   Thu, 16 Sep 2021 17:56:43 +0200
-Message-Id: <20210916155812.629973081@linuxfoundation.org>
+Message-Id: <20210916155805.547040114@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,110 +39,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Julian Wiedmann <jwi@linux.ibm.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-commit 2c197870e4701610ec3b1143808d4e31152caf30 upstream.
+commit de0534df93474f268486c486ea7e01b44a478026 upstream.
 
-When qdio_establish() times out while waiting for the ESTABLISH ccw to
-complete, it calls qdio_shutdown() to roll back all of its previous
-actions. But at this point the qdio_irq's state is still
-QDIO_IRQ_STATE_INACTIVE, so qdio_shutdown() will exit immediately
-without doing any actual work.
+Current error path on failure of validating keepout regions is calling
+put_device, eventhough the device is not even registered at that point.
 
-Which means that eg. the qdio_irq's thinint-indicator stays registered,
-and cdev->handler isn't restored to its old value. And since
-commit 954d6235be41 ("s390/qdio: make thinint registration symmetric")
-the qdio_irq also stays on the tiq_list, so on the next qdio_establish()
-we might get a helpful BUG from the list-debugging code:
+Fix this by adding proper error handling of freeing ida and nvmem.
 
-...
-[ 4633.512591] list_add double add: new=00000000005a4110, prev=00000001b357db78, next=00000000005a4110.
-[ 4633.512621] ------------[ cut here ]------------
-[ 4633.512623] kernel BUG at lib/list_debug.c:29!
-...
-[ 4633.512796]  [<00000001b2c6ee9a>] __list_add_valid+0x82/0xa0
-[ 4633.512798] ([<00000001b2c6ee96>] __list_add_valid+0x7e/0xa0)
-[ 4633.512800]  [<00000001b2fcecce>] qdio_establish_thinint+0x116/0x190
-[ 4633.512805]  [<00000001b2fcbe58>] qdio_establish+0x128/0x498
-...
-
-Fix this by extracting a goto-chain from the existing error exits in
-qdio_establish(), and check the return value of the wait_event_...()
-to detect the timeout condition.
-
-Fixes: 779e6e1c724d ("[S390] qdio: new qdio driver.")
-Root-caused-by: Benjamin Block <bblock@linux.ibm.com>
-Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
-Reviewed-by: Benjamin Block <bblock@linux.ibm.com>
-Cc: <stable@vger.kernel.org> # 2.6.27
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Fixes: fd3bb8f54a88 ("nvmem: core: Add support for keepout regions")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Link: https://lore.kernel.org/r/20210806085947.22682-5-srinivas.kandagatla@linaro.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/s390/cio/qdio_main.c |   31 +++++++++++++++++++------------
- 1 file changed, 19 insertions(+), 12 deletions(-)
+ drivers/nvmem/core.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
---- a/drivers/s390/cio/qdio_main.c
-+++ b/drivers/s390/cio/qdio_main.c
-@@ -1083,6 +1083,7 @@ int qdio_establish(struct ccw_device *cd
- {
- 	struct qdio_irq *irq_ptr = cdev->private->qdio_data;
- 	struct subchannel_id schid;
-+	long timeout;
- 	int rc;
+--- a/drivers/nvmem/core.c
++++ b/drivers/nvmem/core.c
+@@ -818,8 +818,11 @@ struct nvmem_device *nvmem_register(cons
  
- 	ccw_device_get_schid(cdev, &schid);
-@@ -1111,11 +1112,8 @@ int qdio_establish(struct ccw_device *cd
- 	qdio_setup_irq(irq_ptr, init_data);
- 
- 	rc = qdio_establish_thinint(irq_ptr);
--	if (rc) {
--		qdio_shutdown_irq(irq_ptr);
--		mutex_unlock(&irq_ptr->setup_mutex);
--		return rc;
--	}
-+	if (rc)
-+		goto err_thinint;
- 
- 	/* establish q */
- 	irq_ptr->ccw.cmd_code = irq_ptr->equeue.cmd;
-@@ -1131,15 +1129,16 @@ int qdio_establish(struct ccw_device *cd
- 	if (rc) {
- 		DBF_ERROR("%4x est IO ERR", irq_ptr->schid.sch_no);
- 		DBF_ERROR("rc:%4x", rc);
--		qdio_shutdown_thinint(irq_ptr);
--		qdio_shutdown_irq(irq_ptr);
--		mutex_unlock(&irq_ptr->setup_mutex);
--		return rc;
-+		goto err_ccw_start;
+ 	if (nvmem->nkeepout) {
+ 		rval = nvmem_validate_keepouts(nvmem);
+-		if (rval)
+-			goto err_put_device;
++		if (rval) {
++			ida_free(&nvmem_ida, nvmem->id);
++			kfree(nvmem);
++			return ERR_PTR(rval);
++		}
  	}
  
--	wait_event_interruptible_timeout(cdev->private->wait_q,
--		irq_ptr->state == QDIO_IRQ_STATE_ESTABLISHED ||
--		irq_ptr->state == QDIO_IRQ_STATE_ERR, HZ);
-+	timeout = wait_event_interruptible_timeout(cdev->private->wait_q,
-+						   irq_ptr->state == QDIO_IRQ_STATE_ESTABLISHED ||
-+						   irq_ptr->state == QDIO_IRQ_STATE_ERR, HZ);
-+	if (timeout <= 0) {
-+		rc = (timeout == -ERESTARTSYS) ? -EINTR : -ETIME;
-+		goto err_ccw_timeout;
-+	}
- 
- 	if (irq_ptr->state != QDIO_IRQ_STATE_ESTABLISHED) {
- 		mutex_unlock(&irq_ptr->setup_mutex);
-@@ -1156,6 +1155,14 @@ int qdio_establish(struct ccw_device *cd
- 	qdio_print_subchannel_info(irq_ptr);
- 	qdio_setup_debug_entries(irq_ptr);
- 	return 0;
-+
-+err_ccw_timeout:
-+err_ccw_start:
-+	qdio_shutdown_thinint(irq_ptr);
-+err_thinint:
-+	qdio_shutdown_irq(irq_ptr);
-+	mutex_unlock(&irq_ptr->setup_mutex);
-+	return rc;
- }
- EXPORT_SYMBOL_GPL(qdio_establish);
- 
+ 	dev_dbg(&nvmem->dev, "Registering nvmem device %s\n", config->name);
 
 
