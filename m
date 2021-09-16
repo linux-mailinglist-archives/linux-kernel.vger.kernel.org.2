@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6101E40E63E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:30:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E99B40DFA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:11:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351905AbhIPRT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:19:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39922 "EHLO mail.kernel.org"
+        id S235220AbhIPQMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:12:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47502 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350710AbhIPRMD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:12:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BBF46140A;
-        Thu, 16 Sep 2021 16:38:28 +0000 (UTC)
+        id S235072AbhIPQHf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:07:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 440A46127C;
+        Thu, 16 Sep 2021 16:06:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810309;
-        bh=ok+fuA4dato3FKC1J7L3luDz2EmLvG0cvX85bnbgvMw=;
+        s=korg; t=1631808373;
+        bh=YBCjnvBPJ660mg4CiNXoN5VQkn+Bj7j2lmfI8Xu6H5g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qypHYInt0Oj0TkuYu9x+I+x4M0DPp/beAmOb9ss80UDEGtdiVo7NNqWCLed6uQ8eY
-         4KFOkZjBHjwCbpaXUz1/1LMALvTMqgQK8JywNxVngZCpN0dJqxx5ol64x0E6Atd8B2
-         GkaWSJ2ydv5aM5lskgKfGEP6QcJFgfAJTpTssoao=
+        b=chCiXVzunX3I8YrR9MaT8zkrxUe9crTuVrXNtJPv+edbt8/i4x/kKw7uWNEfIpcIL
+         UHbQFXkOhyeLsKbwzNZTi67rKlfO/rXUcHXO0I99pAEn1uXfxVTEu3xAZBau+veomf
+         G1rMTDIVrxoWoARTd8wTBEFzPCLpTlp0bC4YU9cw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sebastian Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [PATCH 5.14 061/432] sched: Prevent balance_push() on remote runqueues
-Date:   Thu, 16 Sep 2021 17:56:50 +0200
-Message-Id: <20210916155812.853791406@linuxfoundation.org>
+        stable@vger.kernel.org, Avri Altman <avri.altman@wdc.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 066/306] scsi: ufs: Fix memory corruption by ufshcd_read_desc_param()
+Date:   Thu, 16 Sep 2021 17:56:51 +0200
+Message-Id: <20210916155756.311202825@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,56 +42,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Bart Van Assche <bvanassche@acm.org>
 
-commit 868ad33bfa3bf39960982682ad3a0f8ebda1656e upstream.
+[ Upstream commit d3d9c4570285090b533b00946b72647361f0345b ]
 
-sched_setscheduler() and rt_mutex_setprio() invoke the run-queue balance
-callback after changing priorities or the scheduling class of a task. The
-run-queue for which the callback is invoked can be local or remote.
+If param_offset > buff_len then the memcpy() statement in
+ufshcd_read_desc_param() corrupts memory since it copies 256 + buff_len -
+param_offset bytes into a buffer with size buff_len.  Since param_offset <
+256 this results in writing past the bound of the output buffer.
 
-That's not a problem for the regular rq::push_work which is serialized with
-a busy flag in the run-queue struct, but for the balance_push() work which
-is only valid to be invoked on the outgoing CPU that's wrong. It not only
-triggers the debug warning, but also leaves the per CPU variable push_work
-unprotected, which can result in double enqueues on the stop machine list.
-
-Remove the warning and validate that the function is invoked on the
-outgoing CPU.
-
-Fixes: ae7927023243 ("sched: Optimize finish_lock_switch()")
-Reported-by: Sebastian Siewior <bigeasy@linutronix.de>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/87zgt1hdw7.ffs@tglx
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20210722033439.26550-2-bvanassche@acm.org
+Fixes: cbe193f6f093 ("scsi: ufs: Fix potential NULL pointer access during memcpy")
+Reviewed-by: Avri Altman <avri.altman@wdc.com>
+Reviewed-by: Daejun Park <daejun7.park@samsung.com>
+Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/sched/core.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/scsi/ufs/ufshcd.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -8536,7 +8536,6 @@ static void balance_push(struct rq *rq)
- 	struct task_struct *push_task = rq->curr;
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 854c96e63007..4dabd09400c6 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -3249,9 +3249,11 @@ int ufshcd_read_desc_param(struct ufs_hba *hba,
  
- 	lockdep_assert_rq_held(rq);
--	SCHED_WARN_ON(rq->cpu != smp_processor_id());
- 
- 	/*
- 	 * Ensure the thing is persistent until balance_push_set(.on = false);
-@@ -8544,9 +8543,10 @@ static void balance_push(struct rq *rq)
- 	rq->balance_callback = &balance_push_callback;
- 
- 	/*
--	 * Only active while going offline.
-+	 * Only active while going offline and when invoked on the outgoing
-+	 * CPU.
- 	 */
--	if (!cpu_dying(rq->cpu))
-+	if (!cpu_dying(rq->cpu) || rq != this_rq())
- 		return;
- 
- 	/*
+ 	if (is_kmalloc) {
+ 		/* Make sure we don't copy more data than available */
+-		if (param_offset + param_size > buff_len)
+-			param_size = buff_len - param_offset;
+-		memcpy(param_read_buf, &desc_buf[param_offset], param_size);
++		if (param_offset >= buff_len)
++			ret = -EINVAL;
++		else
++			memcpy(param_read_buf, &desc_buf[param_offset],
++			       min_t(u32, param_size, buff_len - param_offset));
+ 	}
+ out:
+ 	if (is_kmalloc)
+-- 
+2.30.2
+
 
 
