@@ -2,148 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B835540D7C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 12:48:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BDDC40D7CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 12:49:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236611AbhIPKto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 06:49:44 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:41046
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235628AbhIPKtn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 06:49:43 -0400
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 94A983FDC7
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 10:48:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1631789302;
-        bh=kVs9piweAjfYKX1/D2zYPYLh8oMdXLORitDm0x3OItc=;
-        h=To:Cc:References:From:Subject:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=Z+L8RQG5ANhF34LExzxkQYwIdTOymYuyFGbAHKYFocaLCX0/e2gUFpLHUB9WHRMMs
-         7A2Y25zay3vg8bmSJm1K40XQMR2jhvOsRc4vZkPB27prf/XX70m7XzbDbKEzOrsDA5
-         4eN/c8CFj+3UMf/Id1ONvw7cbHle7KJshuKrLgiYqok8CT6sAc05yIyJCAraZx1k3b
-         N0/Nj9iN/a3to9lQ3xF20cC6lxLica/SZUGPtlS0AB1vyKuV8NEbijWM3BcMnrCN6Q
-         YunoCZdIEJnEx1excPiW39+kxfF95/AHsSnOkbL1sCOA6iNY/j3y4UVdrfkZDtEbs8
-         Q/5MwZYmU8B9w==
-Received: by mail-ed1-f71.google.com with SMTP id n5-20020a05640206c500b003cf53f7cef2so2230128edy.12
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 03:48:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kVs9piweAjfYKX1/D2zYPYLh8oMdXLORitDm0x3OItc=;
-        b=QrnWaLx98beYAcs8zn/kEfy45BNIU9jqYxNtIZc9T4RGCpHuBasrGJVfoqZw9JHHWS
-         ToznBCjYi76kDScxE0aRQwg3I/kaCiOhTxZTVwyLtyF+NR65uW+RB8b7g5SvRgjoWojB
-         nyR8sjqsNeVcVCrGBq7JwojbG1TrkwbjmzKtjhnHIU31vaBgU0DiQufNR3pXZQudbZ9G
-         yPmGfmV24Sav1mk/PEictoOORIU/CsZm2uyRfV7sVlefGnuDp7inOR550ZoJlIYC/Fbe
-         0kJNjky61g+u/y+pDKjQ3wQEtSJh/Dt9VpLnd6mbbYg7s6lLW7OM3WvwJHMhsvrf5288
-         F9XQ==
-X-Gm-Message-State: AOAM531G0alsXXzQko/2mU7rSVMuY5OX67MwnAczRMZGLzqAdITs3M8L
-        4oqX41g3pa5gBGsVgySHs5OqHz/dY3lYtZZRg61MYzpQetlB9KXLuGuUEBzZiopQ0ARropUoTZl
-        LMMOALcbyQ7yo12qJuBFuCK/sYmG2WY+3cmoydjJLgw==
-X-Received: by 2002:a17:906:d045:: with SMTP id bo5mr5518403ejb.461.1631789301890;
-        Thu, 16 Sep 2021 03:48:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJynS1M3E+u6uh9PExpnyfy/1dCw+s8TwhyM85ZmKchIA4QZXHFyZ+/z9Io2RWKgwjZkL25Tow==
-X-Received: by 2002:a17:906:d045:: with SMTP id bo5mr5518370ejb.461.1631789301532;
-        Thu, 16 Sep 2021 03:48:21 -0700 (PDT)
-Received: from [192.168.3.211] (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
-        by smtp.gmail.com with ESMTPSA id m10sm1007452ejx.76.2021.09.16.03.48.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Sep 2021 03:48:21 -0700 (PDT)
-To:     Roger Quadros <rogerq@kernel.org>, tony@atomide.com
-Cc:     robh+dt@kernel.org, grygorii.strashko@ti.com, nm@ti.com,
-        lokeshvutla@ti.com, nsekhar@ti.com, miquel.raynal@bootlin.com,
-        devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210907113226.31876-1-rogerq@kernel.org>
- <20210907113226.31876-9-rogerq@kernel.org>
- <aa465bd9-b3d5-8d75-3e59-e86c2cd093cd@canonical.com>
- <a881ac1f-2f00-e675-aea6-154b28ca6eff@kernel.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: Re: [PATCH v3 8/8] memory: gpmc-omap: "gpmc,device-width" DT property
- is optional
-Message-ID: <35643319-e3b0-bde1-c51b-57c3b5474146@canonical.com>
-Date:   Thu, 16 Sep 2021 12:48:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S237088AbhIPKu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 06:50:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38034 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235644AbhIPKu5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 06:50:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B08C461212;
+        Thu, 16 Sep 2021 10:49:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631789377;
+        bh=fp1TNMHOFsWq2J/VHlgIglOFHSB2pZWpIK3WKY20BB0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=JLBWL53G2batQtel8a586fQ7gSdE+AdJTh5qkJ7j9B1MTl3GkRcrJyjszQG1/PYzS
+         dfpeFx29TJZfq5rNLRu/8+/omTILNZe2pZ4D3h99zTnqwzPILu8LvtA6EY96z28cWR
+         KxHgbaZnB71knyCA2rQ+wK3XNAbDDFKlnwNyJuksfyGf5BgSGD67OWvqWq+zJghcGF
+         McFZ8aavNQq0Ul5HAjDlC0jLJDVtJq6iYq3zshXa0ErQmHn1jnAq44b53IpWC8C/66
+         vkplh0A3mOpQYrYTXyeLFrdyNeCMHXkpgmfzc1oxShgVo6RsjtMq18w98xGvby3sXx
+         tK7ipVa9SOzug==
+Date:   Thu, 16 Sep 2021 12:49:30 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Beckett <david.beckett@netronome.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH 08/24] tools: bpftool: update bpftool-prog.rst reference
+Message-ID: <20210916124930.7ae3b722@coco.lan>
+In-Reply-To: <eb80e8f5-b9d7-5031-8ebb-4595bb295dbf@isovalent.com>
+References: <cover.1631783482.git.mchehab+huawei@kernel.org>
+        <dc4bae7a14518fbfff20a0f539df06a5c19b09de.1631783482.git.mchehab+huawei@kernel.org>
+        <eb80e8f5-b9d7-5031-8ebb-4595bb295dbf@isovalent.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <a881ac1f-2f00-e675-aea6-154b28ca6eff@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/09/2021 11:11, Roger Quadros wrote:
-> Hi Krzysztof,
+Hi Quentin,
+
+Em Thu, 16 Sep 2021 10:43:45 +0100
+Quentin Monnet <quentin@isovalent.com> escreveu:
+
+> 2021-09-16 11:14 UTC+0200 ~ Mauro Carvalho Chehab
+> <mchehab+huawei@kernel.org>
+> > The file name: Documentation/bpftool-prog.rst
+> > should be, instead: tools/bpf/bpftool/Documentation/bpftool-prog.rst.
+> > 
+> > Update its cross-reference accordingly.
+> > 
+> > Fixes: a2b5944fb4e0 ("selftests/bpf: Check consistency between bpftool source, doc, completion")
+> > Fixes: ff69c21a85a4 ("tools: bpftool: add documentation")  
 > 
-> On 07/09/2021 15:36, Krzysztof Kozlowski wrote:
->> On 07/09/2021 13:32, Roger Quadros wrote:
->>> Check for valid gpmc,device-width, nand-bus-width and bank-width
->>> at one place. Default to 8-bit width if none present.
->>
->> I don't understand the message in the context of the patch. The title
->> says one property is optional - that's it. The message says you
->> consolidate checks. How is this related to the title?
->>
->> The patch itself moves around checking of properties and reads
->> nand-bus-width *always*. It does not "check at one place" but rather
->> "check always". In the same time, the patch does not remove
->> gpmc,device-width check in other place.
->>
->> All three elements - the title, message and patch - do different things.
->> What did you want to achieve here? Can you help in clarifying it?
->>
+> Hi,
+> How is this a fix for the commit that added the documentation in bpftool?
 > 
-> OK I will explain it better in commit log in next revision. Let me explain here a bit.
+> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > ---
+> >  tools/testing/selftests/bpf/test_bpftool_synctypes.py | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/tools/testing/selftests/bpf/test_bpftool_synctypes.py b/tools/testing/selftests/bpf/test_bpftool_synctypes.py
+> > index be54b7335a76..27a2c369a798 100755
+> > --- a/tools/testing/selftests/bpf/test_bpftool_synctypes.py
+> > +++ b/tools/testing/selftests/bpf/test_bpftool_synctypes.py
+> > @@ -374,7 +374,7 @@ class ManProgExtractor(ManPageExtractor):
+> >      """
+> >      An extractor for bpftool-prog.rst.
+> >      """
+> > -    filename = os.path.join(BPFTOOL_DIR, 'Documentation/bpftool-prog.rst')
+> > +    filename = os.path.join(BPFTOOL_DIR, 'tools/bpf/bpftool/Documentation/bpftool-prog.rst')
+> >  
+> >      def get_attach_types(self):
+> >          return self.get_rst_list('ATTACH_TYPE')
+> >   
 > 
-> Prior to this patch it was working like this
+> No I don't believe it should. BPFTOOL_DIR already contains
+> 'tools/bpf/bpftool' and the os.path.join() concatenates the two path
+> fragments.
 > 
-> 	/* in gpmc_read_settings_dt() */
-> 	s->device_width = 0;	/* invalid width, should be 1 for 8-bit, 2 for 16-bit */
-> 	of_property_read_u32(np, "gpmc,device-width", s->device_width);
-> 
-> 	/* in gpmc_probe_generic_child () */
-> 	if (of_device_is_compatible(child, "ti,omap2-nand")) {
-> 		/* check for nand-bus-width, if absent set s->device_width to 1 (i.e. 8-bit) */
-> 	} else {
-> 		/* check for bank-width, if absent and s->device_width not set, error out */
-> 	}
-> 
-> So that means if all three, "gpmc,device-width". "nand-bus-width" and "bank-width" are missing then
-> it would create an error situation.
-> 
-> The patch is doing 3 things.
-> 1) Make sure all DT checks related to bus width are being done at one place for better readability.
+> Where is this suggestion coming from? Did you face an issue with the script?
 
-Not entirely. The gpmc,device-width is still done in the other place
-because you did not remove it from the code. Unless you meant parsing of
-gpmc,device-width not reading from DT? But then another round of checks
-is in gpmc_cs_program_settings() so not in one place.
+No, I didn't face any issues with this script.
 
-If you consolidate the checks to one place, I would expect the code to
-be removed from other places, so from gpmc_cs_program_settings() and
-gpmc_read_settings_dt(). Since this is not happening, the message
-confuses me.
+The suggestion cames from the script at:
 
-> 2) even if all 3 width properties are absent, we will not treat it as error and default to 8-bit.
+	./scripts/documentation-file-ref-check
 
-This is not mentioned in commit msg.
+which is meant to discover broken doc references. 
 
-> 3) check for nand-bus-width regardless of whether compatible to "ti,omap2-nand" or not.
+Such script has already a rule to handle stuff under tools/:
 
-Also not mentioned in commit msg.
+		# Accept relative Documentation patches for tools/
+		if ($f =~ m/tools/) {
+			my $path = $f;
+			$path =~ s,(.*)/.*,$1,;
+			next if (grep -e, glob("$path/$ref $path/../$ref $path/$fulref"));
+		}
 
-Your commit reorganizes parsing and validating the child DT properties
-but it does not change from "multiple place" to "one place".
+but it seems it needs a fixup in order for it to stop reporting issues
+at test_bpftool_synctypes.py:
 
-At least I don't see it.
+	$ ./scripts/documentation-file-ref-check 
+	...
+	tools/testing/selftests/bpf/test_bpftool_synctypes.py: Documentation/bpftool-prog.rst
+	tools/testing/selftests/bpf/test_bpftool_synctypes.py: Documentation/bpftool-map.rst
+	tools/testing/selftests/bpf/test_bpftool_synctypes.py: Documentation/bpftool-cgroup.rst
 
-Best regards,
-Krzysztof
+I'll drop the patches touching it for a next version, probably
+adding a fix for such script.
+
+Thanks,
+Mauro
