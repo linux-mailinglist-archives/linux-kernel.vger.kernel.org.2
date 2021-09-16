@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 430E240DF86
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:10:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0458040DF88
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:10:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235852AbhIPQKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:10:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47058 "EHLO mail.kernel.org"
+        id S237885AbhIPQLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:11:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46774 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234166AbhIPQHQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:07:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E780061241;
-        Thu, 16 Sep 2021 16:05:54 +0000 (UTC)
+        id S234178AbhIPQHS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:07:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 316F661246;
+        Thu, 16 Sep 2021 16:05:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808355;
-        bh=rtOLzNItH6yW4WKLFulortgA2dK8mRuL7jlquMxKKyE=;
+        s=korg; t=1631808357;
+        bh=MYTX7ZWAhoBW3unKg0JSbOFyuECije2MweeOMD8x40g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tigFHyPriKwRrAMkta/RNPnYKbjwAon9LBHWcYyZdI771qT/OFrae+JMNbgW+f+Ka
-         w7RzcxbWTknQy1rJr4MpUlevPKrJ0RyVNhL+4wJw+P1GzBkRN7m6nI12x9dRNmp5zt
-         5OTtO/TKZBEZAPY0OIj1wuNMvEnV0SDeI7MCzn/Y=
+        b=t//CT+V8s3I7b+0HioGkVATt6de6mkfRZEFK5efGrDDQ80ENd11gsNJ87cLmXLbY8
+         pu9liCyPrVwONxenwz8XbH4S3ai6ZPrY+jkBpKqz1U2bnGWF2CMxrbqbSH7fzbAZz3
+         1rsH1i62gbf6DoIsk+IMIwey3x/iKpOqYjb5+DAU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>,
-        Peter Geis <pgwipeout@gmail.com>,
+        stable@vger.kernel.org, Josh Collier <josh.d.collier@intel.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 059/306] clk: rockchip: drop GRF dependency for rk3328/rk3036 pll types
-Date:   Thu, 16 Sep 2021 17:56:44 +0200
-Message-Id: <20210916155755.954618003@linuxfoundation.org>
+Subject: [PATCH 5.10 060/306] IB/hfi1: Adjust pkey entry in index 0
+Date:   Thu, 16 Sep 2021 17:56:45 +0200
+Message-Id: <20210916155755.987677504@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
 References: <20210916155753.903069397@linuxfoundation.org>
@@ -40,48 +42,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Geis <pgwipeout@gmail.com>
+From: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
 
-[ Upstream commit 6fffe52fb336ec2063270a7305652a93ea677ca1 ]
+[ Upstream commit 62004871e1fa7f9a60797595c03477af5b5ec36f ]
 
-The rk3036/rk3328 pll types were converted to checking the lock status
-via the internal register in january 2020, so don't need the grf
-reference since then.
+It is possible for the primary IPoIB network device associated with any
+RDMA device to fail to join certain multicast groups preventing IPv6
+neighbor discovery and possibly other network ULPs from working
+correctly. The IPv4 broadcast group is not affected as the IPoIB network
+device handles joining that multicast group directly.
 
-But it was forgotten to remove grf check when deciding between the
-pll rate ops (read-only vs. read-write), so a clock driver without
-the needed grf reference might've been put into the read-only mode
-just because the grf reference was missing.
+This is because the primary IPoIB network device uses the pkey at ndex 0
+in the associated RDMA device's pkey table. Anytime the pkey value of
+index 0 changes, the primary IPoIB network device automatically modifies
+it's broadcast address (i.e. /sys/class/net/[ib0]/broadcast), since the
+broadcast address includes the pkey value, and then bounces carrier. This
+includes initial pkey assignment, such as when the pkey at index 0
+transitions from the opa default of invalid (0x0000) to some value such as
+the OPA default pkey for Virtual Fabric 0: 0x8001 or when the fabric
+manager is restarted with a configuration change causing the pkey at index
+0 to change. Many network ULPs are not sensitive to the carrier bounce and
+are not expecting the broadcast address to change including the linux IPv6
+stack.  This problem does not affect IPoIB child network devices as their
+pkey value is constant for all time.
 
-This affected the rk356x that needs to reclock certain plls at boot.
+To mitigate this issue, change the default pkey in at index 0 to 0x8001 to
+cover the predominant case and avoid issues as ipoib comes up and the FM
+sweeps.
 
-Fix this by removing the check for the grf for selecting the utilized
-operations.
+At some point, ipoib multicast support should automatically fix
+non-broadcast addresses as it does with the primary broadcast address.
 
-Suggested-by: Heiko Stuebner <heiko@sntech.de>
-Fixes: 7f6ffbb885d1 ("clk: rockchip: convert rk3036 pll type to use internal lock status")
-Signed-off-by: Peter Geis <pgwipeout@gmail.com>
-[adjusted the commit message, adjusted the fixes tag]
-Link: https://lore.kernel.org/r/20210728180034.717953-3-pgwipeout@gmail.com
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Fixes: 7724105686e7 ("IB/hfi1: add driver files")
+Link: https://lore.kernel.org/r/20210715160445.142451.47651.stgit@awfm-01.cornelisnetworks.com
+Suggested-by: Josh Collier <josh.d.collier@intel.com>
+Signed-off-by: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+Signed-off-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/rockchip/clk-pll.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/hw/hfi1/init.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/drivers/clk/rockchip/clk-pll.c b/drivers/clk/rockchip/clk-pll.c
-index 4c6c9167ef50..bbbf9ce42867 100644
---- a/drivers/clk/rockchip/clk-pll.c
-+++ b/drivers/clk/rockchip/clk-pll.c
-@@ -940,7 +940,7 @@ struct clk *rockchip_clk_register_pll(struct rockchip_clk_provider *ctx,
- 	switch (pll_type) {
- 	case pll_rk3036:
- 	case pll_rk3328:
--		if (!pll->rate_table || IS_ERR(ctx->grf))
-+		if (!pll->rate_table)
- 			init.ops = &rockchip_rk3036_pll_clk_norate_ops;
- 		else
- 			init.ops = &rockchip_rk3036_pll_clk_ops;
+diff --git a/drivers/infiniband/hw/hfi1/init.c b/drivers/infiniband/hw/hfi1/init.c
+index 786c6316273f..b6e453e9ba23 100644
+--- a/drivers/infiniband/hw/hfi1/init.c
++++ b/drivers/infiniband/hw/hfi1/init.c
+@@ -650,12 +650,7 @@ void hfi1_init_pportdata(struct pci_dev *pdev, struct hfi1_pportdata *ppd,
+ 
+ 	ppd->pkeys[default_pkey_idx] = DEFAULT_P_KEY;
+ 	ppd->part_enforce |= HFI1_PART_ENFORCE_IN;
+-
+-	if (loopback) {
+-		dd_dev_err(dd, "Faking data partition 0x8001 in idx %u\n",
+-			   !default_pkey_idx);
+-		ppd->pkeys[!default_pkey_idx] = 0x8001;
+-	}
++	ppd->pkeys[0] = 0x8001;
+ 
+ 	INIT_WORK(&ppd->link_vc_work, handle_verify_cap);
+ 	INIT_WORK(&ppd->link_up_work, handle_link_up);
 -- 
 2.30.2
 
