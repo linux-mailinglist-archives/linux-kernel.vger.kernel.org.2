@@ -2,76 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58E0A40ED2B
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 00:13:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6CC440ED30
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 00:13:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240780AbhIPWOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 18:14:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58142 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240764AbhIPWOc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 18:14:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CB7AA6108F;
-        Thu, 16 Sep 2021 22:13:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631830390;
-        bh=dsOuovH9Kp0/Y7aVaHgWs9poFvSiJI5QPHtFbQ7UB+U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ECs+MA7oh2od9NNE8nBOlbqxT7yq7iR/f4JXp6nWXxahLC/Ka6ZW8xVLiWPxs0lIB
-         97SE/93aqf2sTmlDvu1ucW52PJX+HwFQGeNuZDyZyJL6IGcT50DHEm76EnEr9XDti8
-         KkihsjNQ9iUrNKemFIN+23f10GEYNXnnVwcoT1ZNURNsHwJkOFeUv5s1vLThEEIITq
-         g+TOOC6x3CWCewConmgDSqEcpuISMpmybj2KHUFvLZA+40SZYBo+cf63RLgSFewVor
-         Rn60/6jCHVP0dPNK8l+cN67igpGAoUwQrigOvak4QlnxISYzZSvLbWJRJO77OCSt0H
-         yvoqdWZhSDS9g==
-Date:   Thu, 16 Sep 2021 18:13:08 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH 5.13 345/380] KVM: arm64: vgic: move irq->get_input_level
- into an ops structure
-Message-ID: <YUPBdFVrQwUHAXzf@sashalap>
-References: <20210916155803.966362085@linuxfoundation.org>
- <20210916155815.779126002@linuxfoundation.org>
- <87r1dobco8.wl-maz@kernel.org>
+        id S240815AbhIPWOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 18:14:50 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:54872 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240764AbhIPWOs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 18:14:48 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id D597F22285;
+        Thu, 16 Sep 2021 22:13:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1631830405; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fUML7PP2cwKhFn9IzXhNLUrnTUVcJXoS96ewZU1uWd4=;
+        b=jXq3fACJglbXO8ZZxnEEMQ+MUPWIjZYeP9OWVMQcOLpTCitAL/GY0hB3ikpZqLry9QOXDj
+        ZRrPGSLgWi+Y6HeNGhcNrGJGBweWKtIOvbUo2E/PYEVdhNesAL6oSHskkTyze7963m/w7v
+        FapF8aEecdCetxL/vyAtSFplWCBT8aI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1631830405;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fUML7PP2cwKhFn9IzXhNLUrnTUVcJXoS96ewZU1uWd4=;
+        b=tYmy1+ayRfKGCMEtC5l9akiHOlDJJKFM6kSmG2YO8aDY/SdACek6JZkZDMbN7tSZ+4Wr23
+        jXJfi3+TQ02lBADg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 35C2013D6D;
+        Thu, 16 Sep 2021 22:13:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id uyMeOYHBQ2GwUwAAMHmgww
+        (envelope-from <neilb@suse.de>); Thu, 16 Sep 2021 22:13:21 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <87r1dobco8.wl-maz@kernel.org>
+From:   "NeilBrown" <neilb@suse.de>
+To:     "Michal Hocko" <mhocko@suse.com>
+Cc:     "Andrew Morton" <akpm@linux-foundation.org>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        "Andreas Dilger" <adilger.kernel@dilger.ca>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        "Matthew Wilcox" <willy@infradead.org>,
+        "Mel Gorman" <mgorman@suse.com>, linux-xfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/6] MM: annotate congestion_wait() and
+ wait_iff_congested() as ineffective.
+In-reply-to: <YUHfdtth69qKvk8r@dhcp22.suse.cz>
+References: <163157808321.13293.486682642188075090.stgit@noble.brown>,
+ <163157838437.13293.15392955714346973750.stgit@noble.brown>,
+ <YUHfdtth69qKvk8r@dhcp22.suse.cz>
+Date:   Fri, 17 Sep 2021 08:13:19 +1000
+Message-id: <163183039931.3992.6407941879351179168@noble.neil.brown.name>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 07:25:27PM +0100, Marc Zyngier wrote:
->On Thu, 16 Sep 2021 17:01:42 +0100,
->Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
->>
->> From: Marc Zyngier <maz@kernel.org>
->>
->> [ Upstream commit db75f1a33f82ad332b6e139c5960e01999969d2c ]
->>
->> We already have the option to attach a callback to an interrupt
->> to retrieve its pending state. As we are planning to expand this
->> facility, move this callback into its own data structure.
->>
->> This will limit the size of individual interrupts as the ops
->> structures can be shared across multiple interrupts.
->>
->> Signed-off-by: Marc Zyngier <maz@kernel.org>
->> Signed-off-by: Sasha Levin <sashal@kernel.org>
->> ---
->>  arch/arm64/kvm/arch_timer.c |  8 ++++++--
->>  arch/arm64/kvm/vgic/vgic.c  | 14 +++++++-------
->>  include/kvm/arm_vgic.h      | 28 +++++++++++++++++-----------
->>  3 files changed, 30 insertions(+), 20 deletions(-)
->
->As I replied to Sasha earlier, I don't see a good reason to backport
->this, as it doesn't improve anything on its own. Unless there is a
->compelling reason to get this backported, I'd rather see it dropped.
+On Wed, 15 Sep 2021, Michal Hocko wrote:
+> On Tue 14-09-21 10:13:04, Neil Brown wrote:
+> > Only 4 subsystems call set_bdi_congested() or clear_bdi_congested():
+> >  block/pktcdvd, fs/ceph fs/fuse fs/nfs
+> >=20
+> > It may make sense to use congestion_wait() or wait_iff_congested()
+> > within these subsystems, but they have no value outside of these.
+> >=20
+> > Add documentation comments to these functions to discourage further use.
+>=20
+> This is an unfortunate state. The MM layer still relies on the API.
+> While adding a documentation to clarify the current status can stop more
+> usage I am wondering what is a real alternative. My experience tells me
+> that a lack of real alternative will lead to new creative ways of doing
+> things instead.
 
-Yes, I'll drop it. I originally brought it as a dependency for a patch
-that ended up being dropped. Thanks for pointing it out!
+That is a valid concern.  Discouraging the use of an interface without
+providing a clear alternative risks people doing worse things.
 
--- 
+At lease if people continue to use congestion_wait(), then we will be
+able to find those uses when we are able to provide a better approach.
+
+I'll drop this patch.
+
 Thanks,
-Sasha
+NeilBrown
+
+
+> =20
+> > Signed-off-by: NeilBrown <neilb@suse.de>
+> > ---
+> >  include/linux/backing-dev.h |    7 +++++++
+> >  mm/backing-dev.c            |    9 +++++++++
+> >  2 files changed, 16 insertions(+)
+> >=20
+> > diff --git a/include/linux/backing-dev.h b/include/linux/backing-dev.h
+> > index ac7f231b8825..cc9513840351 100644
+> > --- a/include/linux/backing-dev.h
+> > +++ b/include/linux/backing-dev.h
+> > @@ -153,6 +153,13 @@ static inline int wb_congested(struct bdi_writeback =
+*wb, int cong_bits)
+> >  	return wb->congested & cong_bits;
+> >  }
+> > =20
+> > +/* NOTE congestion_wait() and wait_iff_congested() are
+> > + * largely useless except as documentation.
+> > + * congestion_wait() will (almost) always wait for the given timeout.
+> > + * wait_iff_congested() will (almost) never wait, but will call
+> > + * cond_resched().
+> > + * Were possible an alternative waiting strategy should be found.
+> > + */
+> >  long congestion_wait(int sync, long timeout);
+> >  long wait_iff_congested(int sync, long timeout);
+> > =20
+> > diff --git a/mm/backing-dev.c b/mm/backing-dev.c
+> > index 4a9d4e27d0d9..53472ab38796 100644
+> > --- a/mm/backing-dev.c
+> > +++ b/mm/backing-dev.c
+> > @@ -1023,6 +1023,11 @@ EXPORT_SYMBOL(set_bdi_congested);
+> >   * Waits for up to @timeout jiffies for a backing_dev (any backing_dev) =
+to exit
+> >   * write congestion.  If no backing_devs are congested then just wait fo=
+r the
+> >   * next write to be completed.
+> > + *
+> > + * NOTE: in the current implementation, hardly any backing_devs are ever
+> > + * marked as congested, and write-completion is rarely reported (see cal=
+ls
+> > + * to clear_bdi_congested).  So this should not be assumed to ever wake =
+before
+> > + * the timeout.
+> >   */
+> >  long congestion_wait(int sync, long timeout)
+> >  {
+> > @@ -1054,6 +1059,10 @@ EXPORT_SYMBOL(congestion_wait);
+> >   * The return value is 0 if the sleep is for the full timeout. Otherwise,
+> >   * it is the number of jiffies that were still remaining when the functi=
+on
+> >   * returned. return_value =3D=3D timeout implies the function did not sl=
+eep.
+> > + *
+> > + * NOTE: in the current implementation, hardly any backing_devs are ever
+> > + * marked as congested, and write-completion is rarely reported (see cal=
+ls
+> > + * to clear_bdi_congested).  So this should not be assumed to sleep at a=
+ll.
+> >   */
+> >  long wait_iff_congested(int sync, long timeout)
+> >  {
+> >=20
+>=20
+> --=20
+> Michal Hocko
+> SUSE Labs
+>=20
+>=20
