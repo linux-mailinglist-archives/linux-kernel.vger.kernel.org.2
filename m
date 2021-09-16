@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5486440E6AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:31:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 672EB40E03D
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:20:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352326AbhIPRYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:24:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39806 "EHLO mail.kernel.org"
+        id S240616AbhIPQUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:20:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243903AbhIPRP6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:15:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BDC8561B60;
-        Thu, 16 Sep 2021 16:39:52 +0000 (UTC)
+        id S234053AbhIPQLj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:11:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9745B61355;
+        Thu, 16 Sep 2021 16:08:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810393;
-        bh=C6i133r6PyKQNNwANIqIZ3IEpoxKmgURnPQvX53zx+o=;
+        s=korg; t=1631808536;
+        bh=TUaNbGijjf16dwoOSELXxmYWLOmllXRTFAu0Q8E1m3U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UjqtB+Ntx4g/TpYQqUk2VAGoM7dAIO3GhJUG93q/WyQhm+WzOjGgeE7LjoIaZn8oe
-         W0/ZDRTBRGf1mETzOt3FDO+E5y7Vv2vzygrtbuF9d120LTNLDWrRaNucw/aeclUjqy
-         wiX8FK+U3vZR8tHPmWHErM9KiouZp4lDu2t5Wo+U=
+        b=fp7RfQKA//T0CbjquNW3wrTsVPwU5JHZYU9SWqHQmPO3avEk44mI1vXEvma4xOz1P
+         I6gqkdadLlMwAfauCHogz+MSC0QAMXNlmadiiKjVaIqhNh1+gTkv8hS5JYcrZgUKkk
+         l0hz/UWCXvUTqUCciKe8JTmY8ZRR2zf9fble+CWo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lu Baolu <baolu.lu@linux.intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Sanjay Kumar <sanjay.k.kumar@intel.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Joerg Roedel <jroedel@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 123/432] iommu/vt-d: Update the virtual command related registers
+        stable@vger.kernel.org,
+        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 127/306] drm: avoid blocking in drm_clients_infos rcu section
 Date:   Thu, 16 Sep 2021 17:57:52 +0200
-Message-Id: <20210916155814.927942569@linuxfoundation.org>
+Message-Id: <20210916155758.397286104@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,69 +41,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lu Baolu <baolu.lu@linux.intel.com>
+From: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
 
-[ Upstream commit 4d99efb229e63928c6b03a756a2e38cd4777fbe8 ]
+[ Upstream commit 5eff9585de220cdd131237f5665db5e6c6bdf590 ]
 
-The VT-d spec Revision 3.3 updated the virtual command registers, virtual
-command opcode B register, virtual command response register and virtual
-command capability register (Section 10.4.43, 10.4.44, 10.4.45, 10.4.46).
-This updates the virtual command interface implementation in the Intel
-IOMMU driver accordingly.
+Inside drm_clients_info, the rcu_read_lock is held to lock
+pid_task()->comm. However, within this protected section, a call to
+drm_is_current_master is made, which involves a mutex lock in a future
+patch. However, this is illegal because the mutex lock might block
+while in the RCU read-side critical section.
 
-Fixes: 24f27d32ab6b7 ("iommu/vt-d: Enlightened PASID allocation")
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-Cc: Ashok Raj <ashok.raj@intel.com>
-Cc: Sanjay Kumar <sanjay.k.kumar@intel.com>
-Cc: Kevin Tian <kevin.tian@intel.com>
-Link: https://lore.kernel.org/r/20210713042649.3547403-1-baolu.lu@linux.intel.com
-Link: https://lore.kernel.org/r/20210818134852.1847070-2-baolu.lu@linux.intel.com
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Since drm_is_current_master isn't protected by rcu_read_lock, we avoid
+this by moving it out of the RCU critical section.
+
+The following report came from intel-gfx ci's
+igt@debugfs_test@read_all_entries testcase:
+
+=============================
+[ BUG: Invalid wait context ]
+5.13.0-CI-Patchwork_20515+ #1 Tainted: G        W
+-----------------------------
+debugfs_test/1101 is trying to lock:
+ffff888132d901a8 (&dev->master_mutex){+.+.}-{3:3}, at:
+drm_is_current_master+0x1e/0x50
+other info that might help us debug this:
+context-{4:4}
+3 locks held by debugfs_test/1101:
+ #0: ffff88810fdffc90 (&p->lock){+.+.}-{3:3}, at:
+ seq_read_iter+0x53/0x3b0
+ #1: ffff888132d90240 (&dev->filelist_mutex){+.+.}-{3:3}, at:
+ drm_clients_info+0x63/0x2a0
+ #2: ffffffff82734220 (rcu_read_lock){....}-{1:2}, at:
+ drm_clients_info+0x1b1/0x2a0
+stack backtrace:
+CPU: 8 PID: 1101 Comm: debugfs_test Tainted: G        W
+5.13.0-CI-Patchwork_20515+ #1
+Hardware name: Intel Corporation CometLake Client Platform/CometLake S
+UDIMM (ERB/CRB), BIOS CMLSFWR1.R00.1263.D00.1906260926 06/26/2019
+Call Trace:
+ dump_stack+0x7f/0xad
+ __lock_acquire.cold.78+0x2af/0x2ca
+ lock_acquire+0xd3/0x300
+ ? drm_is_current_master+0x1e/0x50
+ ? __mutex_lock+0x76/0x970
+ ? lockdep_hardirqs_on+0xbf/0x130
+ __mutex_lock+0xab/0x970
+ ? drm_is_current_master+0x1e/0x50
+ ? drm_is_current_master+0x1e/0x50
+ ? drm_is_current_master+0x1e/0x50
+ drm_is_current_master+0x1e/0x50
+ drm_clients_info+0x107/0x2a0
+ seq_read_iter+0x178/0x3b0
+ seq_read+0x104/0x150
+ full_proxy_read+0x4e/0x80
+ vfs_read+0xa5/0x1b0
+ ksys_read+0x5a/0xd0
+ do_syscall_64+0x39/0xb0
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210712043508.11584-3-desmondcheongzx@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iommu/intel/pasid.h | 10 +++++-----
- include/linux/intel-iommu.h |  6 +++---
- 2 files changed, 8 insertions(+), 8 deletions(-)
+ drivers/gpu/drm/drm_debugfs.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/iommu/intel/pasid.h b/drivers/iommu/intel/pasid.h
-index c11bc8b833b8..d5552e2c160d 100644
---- a/drivers/iommu/intel/pasid.h
-+++ b/drivers/iommu/intel/pasid.h
-@@ -28,12 +28,12 @@
- #define VCMD_CMD_ALLOC			0x1
- #define VCMD_CMD_FREE			0x2
- #define VCMD_VRSP_IP			0x1
--#define VCMD_VRSP_SC(e)			(((e) >> 1) & 0x3)
-+#define VCMD_VRSP_SC(e)			(((e) & 0xff) >> 1)
- #define VCMD_VRSP_SC_SUCCESS		0
--#define VCMD_VRSP_SC_NO_PASID_AVAIL	2
--#define VCMD_VRSP_SC_INVALID_PASID	2
--#define VCMD_VRSP_RESULT_PASID(e)	(((e) >> 8) & 0xfffff)
--#define VCMD_CMD_OPERAND(e)		((e) << 8)
-+#define VCMD_VRSP_SC_NO_PASID_AVAIL	16
-+#define VCMD_VRSP_SC_INVALID_PASID	16
-+#define VCMD_VRSP_RESULT_PASID(e)	(((e) >> 16) & 0xfffff)
-+#define VCMD_CMD_OPERAND(e)		((e) << 16)
- /*
-  * Domain ID reserved for pasid entries programmed for first-level
-  * only and pass-through transfer modes.
-diff --git a/include/linux/intel-iommu.h b/include/linux/intel-iommu.h
-index d0fa0b31994d..05a65eb155f7 100644
---- a/include/linux/intel-iommu.h
-+++ b/include/linux/intel-iommu.h
-@@ -124,9 +124,9 @@
- #define DMAR_MTRR_PHYSMASK8_REG 0x208
- #define DMAR_MTRR_PHYSBASE9_REG 0x210
- #define DMAR_MTRR_PHYSMASK9_REG 0x218
--#define DMAR_VCCAP_REG		0xe00 /* Virtual command capability register */
--#define DMAR_VCMD_REG		0xe10 /* Virtual command register */
--#define DMAR_VCRSP_REG		0xe20 /* Virtual command response register */
-+#define DMAR_VCCAP_REG		0xe30 /* Virtual command capability register */
-+#define DMAR_VCMD_REG		0xe00 /* Virtual command register */
-+#define DMAR_VCRSP_REG		0xe10 /* Virtual command response register */
+diff --git a/drivers/gpu/drm/drm_debugfs.c b/drivers/gpu/drm/drm_debugfs.c
+index 3d7182001004..b0a826489488 100644
+--- a/drivers/gpu/drm/drm_debugfs.c
++++ b/drivers/gpu/drm/drm_debugfs.c
+@@ -91,6 +91,7 @@ static int drm_clients_info(struct seq_file *m, void *data)
+ 	mutex_lock(&dev->filelist_mutex);
+ 	list_for_each_entry_reverse(priv, &dev->filelist, lhead) {
+ 		struct task_struct *task;
++		bool is_current_master = drm_is_current_master(priv);
  
- #define DMAR_IQER_REG_IQEI(reg)		FIELD_GET(GENMASK_ULL(3, 0), reg)
- #define DMAR_IQER_REG_ITESID(reg)	FIELD_GET(GENMASK_ULL(47, 32), reg)
+ 		rcu_read_lock(); /* locks pid_task()->comm */
+ 		task = pid_task(priv->pid, PIDTYPE_PID);
+@@ -99,7 +100,7 @@ static int drm_clients_info(struct seq_file *m, void *data)
+ 			   task ? task->comm : "<unknown>",
+ 			   pid_vnr(priv->pid),
+ 			   priv->minor->index,
+-			   drm_is_current_master(priv) ? 'y' : 'n',
++			   is_current_master ? 'y' : 'n',
+ 			   priv->authenticated ? 'y' : 'n',
+ 			   from_kuid_munged(seq_user_ns(m), uid),
+ 			   priv->magic);
 -- 
 2.30.2
 
