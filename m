@@ -2,89 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE72D40D47B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 10:29:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9487840D47C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 10:29:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235059AbhIPIa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 04:30:27 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:38816 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234309AbhIPIa0 (ORCPT
+        id S235087AbhIPIaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 04:30:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235062AbhIPIai (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 04:30:26 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 6041022343;
-        Thu, 16 Sep 2021 08:29:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631780945; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=G97GCwmyfCkI6JmtTd8q5za/edjByNEk6qqCT0LjfvM=;
-        b=WQJkUYQL5bmETUpztyvvPaesPsa53Cyg2kjkyAUTQXSyPKaq0AKL13x+xN6xmDu/cfDw8u
-        mr5lnV3+Ig5550wNV4DtqlRbTCfdGgeeOKSVFaowTv9WFbdsyHVHfpiMHTS9+0RTeyRAWT
-        s3o1XxXc3d81dWM+6loLOrHXSG3DFYE=
-Received: from suse.cz (unknown [10.100.216.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id F1D48A3B94;
-        Thu, 16 Sep 2021 08:29:04 +0000 (UTC)
-Date:   Thu, 16 Sep 2021 10:29:04 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Pingfan Liu <kernelfans@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, Sumit Garg <sumit.garg@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Julien Thierry <jthierry@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Wang Qing <wangqing@vivo.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Santosh Sivaraj <santosh@fossix.org>
-Subject: Re: [PATCH 3/5] kernel/watchdog: adapt the watchdog_hld interface
- for async model
-Message-ID: <YUMAUE5RFJAtAS/z@alley>
-References: <20210915035103.15586-1-kernelfans@gmail.com>
- <20210915035103.15586-4-kernelfans@gmail.com>
+        Thu, 16 Sep 2021 04:30:38 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E03E1C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 01:29:17 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id q26so8087481wrc.7
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 01:29:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZZccAzt1xxxXzq/Q0/mhYP15uyP5RiZKfB2//wDW8cY=;
+        b=mvWbX36gCST29e6vttj8Wd+a+X4DEEn1xewKjXhYnUCJeLVVDjJyOP3CdJOBhfgT9g
+         EUN3xwFbxtQ7C58cH9EwYNuKdQRaChmlhUZLYOHkMUL2/RDvZ5/qKe51CxRPJ5YqV/AV
+         A6RgQKoFX5fQE2POGIkopqyiG4RCiOJEEIwSOVZEnCh0gQ0WYyvnQM+WJxgZw/S+gXDT
+         1tXebLWkyQxx3kgKOHfQlYIUYnR3r0lDlK6qZrMt+zwOGoUzj+bl2LyrJylCNPxjt7Tb
+         tPwXhFfjUFGbUkpKLoMxYIZKUXk/eZuNGuNxYtglpGeHuEo2NUsc5BdcYvWMEG4ZbhMx
+         lYXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZZccAzt1xxxXzq/Q0/mhYP15uyP5RiZKfB2//wDW8cY=;
+        b=N1EzLgFvELmNQyg16hfdVrGFJWSXaEYq1VjErFTH4KAGDYJFYoO6a7SwSVrxgZCCBM
+         kwt829VeNV9wK5kOrds5h1gIsEWP/cmUNDUXVLEKlnskiTxWuKevkNQXTpnIoLnBHfrQ
+         UUpWPFu7kpsa+BE8uWSGArxJYFOvLLw1V7SgadcPMOrl+xo8K79kVUb1jQzz1Rw56Hir
+         BM+Ww/9qo3VvW1+a33lmax11thiL57vyeR697UvCaKU+QwHX6L69/Zyh+JLEDTwk927h
+         KUr2GgELmaYQIMfowvydiuaTFtofvsCGbVLDr6KaZZ/vg9/TqeE5Iq5J3mECa/O6qE7K
+         i2lQ==
+X-Gm-Message-State: AOAM5316UCPiweL9Dba3gVLeEE/TDTA5gfCZ55mPeKcMmTrQYOVoFUXl
+        PXoGS+EbzdRC9ud2aqG0n+4=
+X-Google-Smtp-Source: ABdhPJyR2DRZ7H5uDZ7Bb89R90sHWZlhRwRAKCyUa7W2osBroCZ8dH10oEGaFUlrNPyw2c5pbBq5Vw==
+X-Received: by 2002:adf:816f:: with SMTP id 102mr4571518wrm.368.1631780955905;
+        Thu, 16 Sep 2021 01:29:15 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:8108:96c0:3b88::ae40])
+        by smtp.gmail.com with ESMTPSA id d129sm7458079wmd.23.2021.09.16.01.29.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Sep 2021 01:29:15 -0700 (PDT)
+From:   Michael Straube <straube.linux@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
+        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Michael Straube <straube.linux@gmail.com>
+Subject: [PATCH 1/2] staging: r8188eu: remove unused ODM_RASupport_Init()
+Date:   Thu, 16 Sep 2021 10:29:05 +0200
+Message-Id: <20210916082906.25294-1-straube.linux@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210915035103.15586-4-kernelfans@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2021-09-15 11:51:01, Pingfan Liu wrote:
-> When lockup_detector_init()->watchdog_nmi_probe(), PMU may be not ready
-> yet. E.g. on arm64, PMU is not ready until
-> device_initcall(armv8_pmu_driver_init).  And it is deeply integrated
-> with the driver model and cpuhp. Hence it is hard to push this
-> initialization before smp_init().
-> 
-> But it is easy to take an opposite approach by enabling watchdog_hld to
-> get the capability of PMU async.
+Function ODM_RASupport_Init() is unused, remove it.
 
-This is another cryptic description. I have probably got it after
-looking at the 5th patch (was not Cc :-(
+Signed-off-by: Michael Straube <straube.linux@gmail.com>
+---
+ drivers/staging/r8188eu/hal/Hal8188ERateAdaptive.c     | 10 ----------
+ drivers/staging/r8188eu/include/Hal8188ERateAdaptive.h |  2 --
+ 2 files changed, 12 deletions(-)
 
-> The async model is achieved by introducing an extra parameter notifier
-> of watchdog_nmi_probe().
+diff --git a/drivers/staging/r8188eu/hal/Hal8188ERateAdaptive.c b/drivers/staging/r8188eu/hal/Hal8188ERateAdaptive.c
+index d873672feb27..8a6cb18b0f29 100644
+--- a/drivers/staging/r8188eu/hal/Hal8188ERateAdaptive.c
++++ b/drivers/staging/r8188eu/hal/Hal8188ERateAdaptive.c
+@@ -471,16 +471,6 @@ odm_RATxRPTTimerSetting(
+ 	}
+ }
+ 
+-void
+-ODM_RASupport_Init(
+-		struct odm_dm_struct *dm_odm
+-	)
+-{
+-	/*  2012/02/14 MH Be noticed, the init must be after IC type is recognized!!!!! */
+-	if (dm_odm->SupportICType == ODM_RTL8188E)
+-		dm_odm->RaSupport88E = true;
+-}
+-
+ int ODM_RAInfo_Init(struct odm_dm_struct *dm_odm, u8 macid)
+ {
+ 	struct odm_ra_info *pRaInfo = &dm_odm->RAInfo[macid];
+diff --git a/drivers/staging/r8188eu/include/Hal8188ERateAdaptive.h b/drivers/staging/r8188eu/include/Hal8188ERateAdaptive.h
+index d5ced507a648..20d73ca781e8 100644
+--- a/drivers/staging/r8188eu/include/Hal8188ERateAdaptive.h
++++ b/drivers/staging/r8188eu/include/Hal8188ERateAdaptive.h
+@@ -37,8 +37,6 @@
+ 	LE_BITS_TO_1BYTE(__paddr + 6, 0, 8)
+ /*  End rate adaptive define */
+ 
+-void ODM_RASupport_Init(struct odm_dm_struct *dm_odm);
+-
+ int ODM_RAInfo_Init_all(struct odm_dm_struct *dm_odm);
+ 
+ int ODM_RAInfo_Init(struct odm_dm_struct *dm_odm, u8 MacID);
+-- 
+2.33.0
 
-I would say that the code is horrible and looks too complex.
-
-What about simply calling watchdog_nmi_probe() and
-lockup_detector_setup() once again when watchdog_nmi_probe()
-failed in lockup_detector_init()?
-
-Or do not call lockup_detector_init() at all in
-kernel_init_freeable() when PMU is not ready yet.
-
-Best Regards,
-Petr
