@@ -2,181 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A4D740D1E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 04:59:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E37B840D1EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 05:07:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234051AbhIPDBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 23:01:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234061AbhIPDA5 (ORCPT
+        id S234053AbhIPDJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 23:09:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27683 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233982AbhIPDJC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 23:00:57 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E88E1C0613C1
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 19:59:36 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id v22so6928099edd.11
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 19:59:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bK17SO3X70z4YqfpudbGkJpUfQn3wXsVxii6aCrF/hI=;
-        b=EyxUWdCtuNTuayC9lkcXPgWleZ8bHcRF7PdMazQqlX+DjN9DeK/P5kGPXL3QuXc4XW
-         kCgGjVmBNRQnk+BE9t74LsnVFUsl79l/tR744ZWrHrY1q1f8UXZIfqGeNr9nIVh/Q8XZ
-         dWMhuOOQvK/PO5kIKb7pDZQmaBTkjQ3/i/zTAK5Zm+2YJjLZG5lfLuc2ORkyvnY34dye
-         Xj+oZOtcMXWk5RLjnJN9KnknPwThumRU8WZHr0gufgDmlXKMMBoCNzRhyy4O28ek49cR
-         P8hMd3liqmlSRporSijNz40h8Nv8X4Chbv8pQaKssVolCWCDl8dX0L29zoZoTm+1Zjjd
-         Qr2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bK17SO3X70z4YqfpudbGkJpUfQn3wXsVxii6aCrF/hI=;
-        b=KHbmf+aiCRKHGmI6z6wwbTsg3wnwxyGU0hLDYg2fsjcube9Kg/saoOsYxubCCbhw+8
-         aEkR7+AkqVn8CsfCsMKL5KzzhN8XCNFn7jwuX4OisWFUXAk5zNrTg7j1FvhXrZyiInz1
-         i3n6qsBtJgR6/yT3Y4d4cllZ2PssYcawk6G3039lghM0j663d4uYHHguDjVjXQ/HhWrP
-         7Kdv0DZWsSS7Hmyj31Sd6pXpvQvjevCM1FoO5Y78DkSQ2+WwXcc7plfGLN7Z5QOOZoyf
-         NV4S10/wt+Vl6vjMEw1IaWJ3VxMu60PTxQVGH7Km5NrLX71DlF1BGPUTMAMl0oAjj43c
-         Aitw==
-X-Gm-Message-State: AOAM531H2lTrxSz7YhNxpmw0ZdQAaONt4NkBPFVguGhWZgcOD6mNYB2z
-        0eqRSfizIh7bS67v3Tw+6I48yrfjubNjkSaCMyzW
-X-Google-Smtp-Source: ABdhPJxYzI63Wh7B932JufxmCVl5MRmcZoWxKUOX5ts9dsculQ1nMB73xM3IEM0/sD5sdM0oPHDUFMQFvAvBgYyICR4=
-X-Received: by 2002:a17:907:76e7:: with SMTP id kg7mr3719013ejc.344.1631761175250;
- Wed, 15 Sep 2021 19:59:35 -0700 (PDT)
+        Wed, 15 Sep 2021 23:09:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631761661;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ewIrGyvVBlsUzMY/tfpMG8U9MTVOYjLYfX7pFihyo8M=;
+        b=iwrhf0PRvp93IBMV7kch35j84QetJTDrPrJxOXGgcOA3r0t/9c38tipttyuSCvWlJbOcMH
+        xUNhhlwBsKD/UiNNYVs+OqFGeFAN34QlsVob1rME+UhNfEdjtijaJGMTNCqhctsHCgV0P+
+        mqCaVEsXuMWrmYJ5PRRuoyWokGvabAc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-36-iIgzS-9gPpywYjaz4atWZQ-1; Wed, 15 Sep 2021 23:07:39 -0400
+X-MC-Unique: iIgzS-9gPpywYjaz4atWZQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3719E362F8;
+        Thu, 16 Sep 2021 03:07:37 +0000 (UTC)
+Received: from piliu.users.ipa.redhat.com (ovpn-8-20.pek2.redhat.com [10.72.8.20])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id EA9CD60C81;
+        Thu, 16 Sep 2021 03:07:26 +0000 (UTC)
+Date:   Thu, 16 Sep 2021 11:07:22 +0800
+From:   Pingfan Liu <piliu@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Pingfan Liu <kernelfans@gmail.com>, linux-kernel@vger.kernel.org,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Julien Thierry <jthierry@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Wang Qing <wangqing@vivo.com>,
+        Santosh Sivaraj <santosh@fossix.org>
+Subject: Re: [PATCH 3/5] kernel/watchdog: adapt the watchdog_hld interface
+ for async model
+Message-ID: <YUK06iqiCwiIvpRM@piliu.users.ipa.redhat.com>
+References: <20210915035103.15586-1-kernelfans@gmail.com>
+ <20210915035103.15586-4-kernelfans@gmail.com>
+ <YUH89GX1RB8fdcvh@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20210913140229.24797-1-omosnace@redhat.com> <CAHC9VhRw-S+zZUFz5QFFLMBATjo+YbPAiR21jX6p7cT0T+MVLA@mail.gmail.com>
-In-Reply-To: <CAHC9VhRw-S+zZUFz5QFFLMBATjo+YbPAiR21jX6p7cT0T+MVLA@mail.gmail.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Wed, 15 Sep 2021 22:59:23 -0400
-Message-ID: <CAHC9VhQyejnmLn0NHQiWzikHs8ZdzAUdZ2WqNxgGM6xhJ4mvMQ@mail.gmail.com>
-Subject: Re: [PATCH v4] lockdown,selinux: fix wrong subject in some SELinux
- lockdown checks
-To:     Ondrej Mosnacek <omosnace@redhat.com>
-Cc:     linux-security-module@vger.kernel.org,
-        James Morris <jmorris@namei.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        selinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        x86@kernel.org, linux-acpi@vger.kernel.org,
-        linux-cxl@vger.kernel.org, linux-efi@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-serial@vger.kernel.org,
-        bpf@vger.kernel.org, netdev@vger.kernel.org,
-        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YUH89GX1RB8fdcvh@hirez.programming.kicks-ass.net>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 5:05 PM Paul Moore <paul@paul-moore.com> wrote:
->
-> On Mon, Sep 13, 2021 at 10:02 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
-> >
-> > Commit 59438b46471a ("security,lockdown,selinux: implement SELinux
-> > lockdown") added an implementation of the locked_down LSM hook to
-> > SELinux, with the aim to restrict which domains are allowed to perform
-> > operations that would breach lockdown.
-> >
-> > However, in several places the security_locked_down() hook is called in
-> > situations where the current task isn't doing any action that would
-> > directly breach lockdown, leading to SELinux checks that are basically
-> > bogus.
-> >
-> > To fix this, add an explicit struct cred pointer argument to
-> > security_lockdown() and define NULL as a special value to pass instead
-> > of current_cred() in such situations. LSMs that take the subject
-> > credentials into account can then fall back to some default or ignore
-> > such calls altogether. In the SELinux lockdown hook implementation, use
-> > SECINITSID_KERNEL in case the cred argument is NULL.
-> >
-> > Most of the callers are updated to pass current_cred() as the cred
-> > pointer, thus maintaining the same behavior. The following callers are
-> > modified to pass NULL as the cred pointer instead:
-> > 1. arch/powerpc/xmon/xmon.c
-> >      Seems to be some interactive debugging facility. It appears that
-> >      the lockdown hook is called from interrupt context here, so it
-> >      should be more appropriate to request a global lockdown decision.
-> > 2. fs/tracefs/inode.c:tracefs_create_file()
-> >      Here the call is used to prevent creating new tracefs entries when
-> >      the kernel is locked down. Assumes that locking down is one-way -
-> >      i.e. if the hook returns non-zero once, it will never return zero
-> >      again, thus no point in creating these files. Also, the hook is
-> >      often called by a module's init function when it is loaded by
-> >      userspace, where it doesn't make much sense to do a check against
-> >      the current task's creds, since the task itself doesn't actually
-> >      use the tracing functionality (i.e. doesn't breach lockdown), just
-> >      indirectly makes some new tracepoints available to whoever is
-> >      authorized to use them.
-> > 3. net/xfrm/xfrm_user.c:copy_to_user_*()
-> >      Here a cryptographic secret is redacted based on the value returned
-> >      from the hook. There are two possible actions that may lead here:
-> >      a) A netlink message XFRM_MSG_GETSA with NLM_F_DUMP set - here the
-> >         task context is relevant, since the dumped data is sent back to
-> >         the current task.
-> >      b) When adding/deleting/updating an SA via XFRM_MSG_xxxSA, the
-> >         dumped SA is broadcasted to tasks subscribed to XFRM events -
-> >         here the current task context is not relevant as it doesn't
-> >         represent the tasks that could potentially see the secret.
-> >      It doesn't seem worth it to try to keep using the current task's
-> >      context in the a) case, since the eventual data leak can be
-> >      circumvented anyway via b), plus there is no way for the task to
-> >      indicate that it doesn't care about the actual key value, so the
-> >      check could generate a lot of "false alert" denials with SELinux.
-> >      Thus, let's pass NULL instead of current_cred() here faute de
-> >      mieux.
-> >
-> > Improvements-suggested-by: Casey Schaufler <casey@schaufler-ca.com>
-> > Improvements-suggested-by: Paul Moore <paul@paul-moore.com>
-> > Fixes: 59438b46471a ("security,lockdown,selinux: implement SELinux lockdown")
-> > Acked-by: Dan Williams <dan.j.williams@intel.com>         [cxl]
-> > Acked-by: Steffen Klassert <steffen.klassert@secunet.com> [xfrm]
-> > Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
-> > ---
-> >
-> > v4:
-> > - rebase on top of TODO
-> > - fix rebase conflicts:
-> >   * drivers/cxl/pci.c
-> >     - trivial: the lockdown reason was corrected in mainline
-> >   * kernel/bpf/helpers.c, kernel/trace/bpf_trace.c
-> >     - trivial: LOCKDOWN_BPF_READ was renamed to LOCKDOWN_BPF_READ_KERNEL
-> >       in mainline
-> >   * kernel/power/hibernate.c
-> >     - trivial: !secretmem_active() was added to the condition in
-> >       hibernation_available()
-> > - cover new security_locked_down() call in kernel/bpf/helpers.c
-> >   (LOCKDOWN_BPF_WRITE_USER in BPF_FUNC_probe_write_user case)
-> >
-> > v3: https://lore.kernel.org/lkml/20210616085118.1141101-1-omosnace@redhat.com/
-> > - add the cred argument to security_locked_down() and adapt all callers
-> > - keep using current_cred() in BPF, as the hook calls have been shifted
-> >   to program load time (commit ff40e51043af ("bpf, lockdown, audit: Fix
-> >   buggy SELinux lockdown permission checks"))
-> > - in SELinux, don't ignore hook calls where cred == NULL, but use
-> >   SECINITSID_KERNEL as the subject instead
-> > - update explanations in the commit message
-> >
-> > v2: https://lore.kernel.org/lkml/20210517092006.803332-1-omosnace@redhat.com/
-> > - change to a single hook based on suggestions by Casey Schaufler
-> >
-> > v1: https://lore.kernel.org/lkml/20210507114048.138933-1-omosnace@redhat.com/
->
-> The changes between v3 and v4 all seem sane to me, but I'm going to
-> let this sit for a few days in hopes that we can collect a few more
-> Reviewed-bys and ACKs.  If I don't see any objections I'll merge it
-> mid-week(ish) into selinux/stable-5.15 and plan on sending it to Linus
-> after it goes through a build/test cycle.
+On Wed, Sep 15, 2021 at 04:02:28PM +0200, Peter Zijlstra wrote:
+> On Wed, Sep 15, 2021 at 11:51:01AM +0800, Pingfan Liu wrote:
+> > When lockup_detector_init()->watchdog_nmi_probe(), PMU may be not ready
+> > yet. E.g. on arm64, PMU is not ready until
+> > device_initcall(armv8_pmu_driver_init).  And it is deeply integrated
+> > with the driver model and cpuhp. Hence it is hard to push this
+> > initialization before smp_init().
+> > 
+> > But it is easy to take an opposite approach by enabling watchdog_hld to
+> > get the capability of PMU async.
+> > 
+> > The async model is achieved by introducing an extra parameter notifier
+> > of watchdog_nmi_probe().
+> > 
+> > Note after this patch, the async model, which is utilized by the next
+> > patch, does not take effect yet.
+> 
+> I can't make any sense of what you're trying to do..
+> 
+Sorry for a bad expression. what I mean is: this patch [3/5] provides an
+framework for async model. But since watchdog_nmi_probe() still return 0 or
+-ENODEV after this patch, the code's behavior is the same as original.
 
-Time's up, I just merged this into selinux/stable-5.15 and I'll send
-this to Linus once it passes testing.
+Does it make sense to you?
+> > +static void watchdog_nmi_report_capability(struct watchdog_nmi_status *data)
+> > +{
+> > +	/* Set status to 1 temporary to block any further access */
+> > +	if (atomic_cmpxchg((atomic_t *)&nmi_watchdog_status, -EBUSY, 1)
+> > +			== -EBUSY) {
+> 
+> But this..
+> 
+Oh, check other codes, for a wrapped condition, blanks should be better choice.
+> > +		if (!data->status) {
+> > +			nmi_watchdog_status = 0;
+> > +			lockup_detector_update_enable();
+> > +		} else {
+> > +			nmi_watchdog_status = -ENODEV;
+> > +			/* turn offf watchdog_enabled forever */
+> > +			lockup_detector_update_enable();
+> > +			pr_info("Perf NMI watchdog permanently disabled\n");
+> > +		}
+> > +	}
+> > +}
+> 
+> > @@ -467,7 +494,8 @@ static void watchdog_enable(unsigned int cpu)
+> >  	/* Initialize timestamp */
+> >  	update_touch_ts();
+> >  	/* Enable the perf event */
+> > -	if (watchdog_enabled & NMI_WATCHDOG_ENABLED)
+> > +	if (watchdog_enabled &
+> > +			(NMI_WATCHDOG_ENABLED | NMI_WATCHDOG_UNDETERMINED))
+> 
+> and this, are horrible indenting.
 
--- 
-paul moore
-www.paul-moore.com
+Ditto.
+
+Thanks for your comment and review.
+
+Regards,
+
+	Pingfan
+
