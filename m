@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 883FD40E68F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7732D40E2D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:17:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347454AbhIPRW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:22:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39806 "EHLO mail.kernel.org"
+        id S242570AbhIPQmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:42:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44968 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350318AbhIPRN4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:13:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B6C161B5E;
-        Thu, 16 Sep 2021 16:39:06 +0000 (UTC)
+        id S237633AbhIPQfp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:35:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A42C5619EC;
+        Thu, 16 Sep 2021 16:21:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810347;
-        bh=6ed0M8Qv7TyQiv70xGGs3LM9tc4vfK35qFJzMqQ/o+c=;
+        s=korg; t=1631809293;
+        bh=O+LQ4DDfiI2Si5+OUE/qGGfq3U5Ne/55Ci9eA1GnmQc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MxkN1VkxAlhQ8RoeVqFqcJYmEm6ZXymekQoY3x+y7W+Kd9pHB8JOsnEaheXJhwHD/
-         xngznHu3wljX66iDWV1UqKET45kfBZRtYYGBkDBDRgkOF9mC49ojJnIN/g5m3GH9eB
-         dV0NmR+y/Lmb7ov5HEIPiKh7oIcrA7ojF/9JHS+Q=
+        b=oeAHUlFFLlHuaFdWWhRoIpg1tV6VmVWlRcqvusSS1XtjLui2U852i/jq2m6QcMCI4
+         Tem5OCxqA1VAXPMFOYBR2YGc9hmdJkAz8CuPGNtRwNG+Z1gdVBzc0gqcezEDTJebsa
+         0UTcCXfM9tkxgIjRcVCbEH7PCfG4zu70Nkcmf2ro=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <Anna.Schumaker@Netapp.com>,
+        stable@vger.kernel.org, Anna Schumaker <Anna.Schumaker@Netapp.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 108/432] SUNRPC/xprtrdma: Fix reconnection locking
+Subject: [PATCH 5.13 100/380] sunrpc: Fix return value of get_srcport()
 Date:   Thu, 16 Sep 2021 17:57:37 +0200
-Message-Id: <20210916155814.427055057@linuxfoundation.org>
+Message-Id: <20210916155807.434276921@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,77 +39,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Anna Schumaker <Anna.Schumaker@Netapp.com>
 
-[ Upstream commit f99fa50880f5300fbbb3c0754ddc7f8738d24fe7 ]
+[ Upstream commit 5d46dd04cb68771f77ba66dbf6fd323a4a2ce00d ]
 
-The xprtrdma client code currently relies on the task that initiated the
-connect to hold the XPRT_LOCK for the duration of the connection
-attempt. If the task is woken early, due to some other event, then that
-lock could get released early.
-Avoid races by using the same mechanism that the socket code uses of
-transferring lock ownership to the RDMA connect worker itself. That
-frees us to call rpcrdma_xprt_disconnect() directly since we're now
-guaranteed exclusion w.r.t. other callers.
+Since bc1c56e9bbe9 transport->srcport may by unset, causing
+get_srcport() to return 0 when called. Fix this by querying the port
+from the underlying socket instead of the transport.
 
-Fixes: 4cf44be6f1e8 ("xprtrdma: Fix recursion into rpcrdma_xprt_disconnect()")
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Fixes: bc1c56e9bbe9 (SUNRPC: prevent port reuse on transports which don't request it)
 Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sunrpc/xprt.c               |  2 ++
- net/sunrpc/xprtrdma/transport.c | 11 +++++------
- 2 files changed, 7 insertions(+), 6 deletions(-)
+ net/sunrpc/xprtsock.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/sunrpc/xprt.c b/net/sunrpc/xprt.c
-index bddd354a0076..d55e980521da 100644
---- a/net/sunrpc/xprt.c
-+++ b/net/sunrpc/xprt.c
-@@ -873,6 +873,7 @@ bool xprt_lock_connect(struct rpc_xprt *xprt,
- 	spin_unlock(&xprt->transport_lock);
- 	return ret;
- }
-+EXPORT_SYMBOL_GPL(xprt_lock_connect);
- 
- void xprt_unlock_connect(struct rpc_xprt *xprt, void *cookie)
+diff --git a/net/sunrpc/xprtsock.c b/net/sunrpc/xprtsock.c
+index 3bbf47046e8a..b836b4c322fc 100644
+--- a/net/sunrpc/xprtsock.c
++++ b/net/sunrpc/xprtsock.c
+@@ -1651,7 +1651,7 @@ static int xs_get_srcport(struct sock_xprt *transport)
+ unsigned short get_srcport(struct rpc_xprt *xprt)
  {
-@@ -889,6 +890,7 @@ void xprt_unlock_connect(struct rpc_xprt *xprt, void *cookie)
- 	spin_unlock(&xprt->transport_lock);
- 	wake_up_bit(&xprt->state, XPRT_LOCKED);
+ 	struct sock_xprt *sock = container_of(xprt, struct sock_xprt, xprt);
+-	return sock->srcport;
++	return xs_sock_getport(sock->sock);
  }
-+EXPORT_SYMBOL_GPL(xprt_unlock_connect);
+ EXPORT_SYMBOL(get_srcport);
  
- /**
-  * xprt_connect - schedule a transport connect operation
-diff --git a/net/sunrpc/xprtrdma/transport.c b/net/sunrpc/xprtrdma/transport.c
-index 9c2ffc67c0fd..975aef16ad34 100644
---- a/net/sunrpc/xprtrdma/transport.c
-+++ b/net/sunrpc/xprtrdma/transport.c
-@@ -250,12 +250,9 @@ xprt_rdma_connect_worker(struct work_struct *work)
- 					   xprt->stat.connect_start;
- 		xprt_set_connected(xprt);
- 		rc = -EAGAIN;
--	} else {
--		/* Force a call to xprt_rdma_close to clean up */
--		spin_lock(&xprt->transport_lock);
--		set_bit(XPRT_CLOSE_WAIT, &xprt->state);
--		spin_unlock(&xprt->transport_lock);
--	}
-+	} else
-+		rpcrdma_xprt_disconnect(r_xprt);
-+	xprt_unlock_connect(xprt, r_xprt);
- 	xprt_wake_pending_tasks(xprt, rc);
- }
- 
-@@ -489,6 +486,8 @@ xprt_rdma_connect(struct rpc_xprt *xprt, struct rpc_task *task)
- 	struct rpcrdma_ep *ep = r_xprt->rx_ep;
- 	unsigned long delay;
- 
-+	WARN_ON_ONCE(!xprt_lock_connect(xprt, task, r_xprt));
-+
- 	delay = 0;
- 	if (ep && ep->re_connect_status != 0) {
- 		delay = xprt_reconnect_delay(xprt);
 -- 
 2.30.2
 
