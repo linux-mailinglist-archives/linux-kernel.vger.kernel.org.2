@@ -2,138 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEF9640D98C
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 14:13:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ECD640D98F
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 14:14:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239420AbhIPMOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 08:14:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44356 "EHLO
+        id S239341AbhIPMPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 08:15:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239393AbhIPMOU (ORCPT
+        with ESMTP id S239269AbhIPMPk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 08:14:20 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75D40C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 05:13:00 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id g16so9134837wrb.3
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 05:13:00 -0700 (PDT)
+        Thu, 16 Sep 2021 08:15:40 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05E36C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 05:14:20 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id j13so15958614edv.13
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 05:14:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=nAa7hcN3ascpVQvM2OTeR2k2GxYPakXsr5xj8Xor+Lw=;
-        b=WmD/Z3+ncYgIZPTkselMJKRJwFC5I8QlynB+q8Lx4A4w+1BwjPde8V+HFZ6T61d3Z0
-         WKVnlly6gf/xyNqeuOpkTGnrKuo3Nxcf/0+NI5UBolir1q1MWuUtuIz/RXfmU9IeW4lo
-         Wn1ilNGM56xVE7XDbRQu4sBu+57OlID40Z97fV41DuOiSZVTetL3kTj2ZwthotdFdH/Q
-         SXUKvUGfvyzlorYs+n55BkMW476UbDatDv318GaIiqZLzQesajEooYAG0rOQ92vePetd
-         EhyWlX87ZPx152HdnX8/byXkwQz6eKseOdCyzYZYo0y2pwUyJfEPx4ro/AcoWJzqDAQt
-         ERWA==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=dceZ5uiDy0+Um3nYa2DJqEKVOq4Y9eg0YaVZ8ELhM+o=;
+        b=ITKmohoFX118+vkERG1GZWtf0ZHVsD6dL+I+loxNI89ZaS8sQGmfM62KdbUBpGqvTB
+         rM85K7KFQHHjby/u+cHQSrzMBkPTdTKIY8zWkcDzP2QEqktty9S+XVQBC5T1vtEoV4Db
+         V0ow4DcMeTHCMs+k+nyJx0/RUeLhuQgT79ZO5KKt6zXHeBDL58+BAqKH1nOGQNQyzJ73
+         i7YC/GI1xyNVM77N8/NV56BsZnrLz2rKhX7TioLMKJPViWDRYChGJ2VGjAJtYEVetrqE
+         Np2Z5zDW1W8wGYCeGu5cQeHFtzDlO1DXnHez9zCfoVLa8HbVeI+tvNGbAE0Sn3o45wRv
+         /PXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nAa7hcN3ascpVQvM2OTeR2k2GxYPakXsr5xj8Xor+Lw=;
-        b=wS88V46c/wvL9yZW5/GjBVjwL/aRk3ji7Jk5/9Z0J2QEYoiOjU/O9jsnfLEtIJ+aJq
-         m/8rSguGJToKdXiiU0SwcYmYQuux9oCBZ4MCFnvEwMONm+zounEjrehRVveHVy6p+SQU
-         8S9YaZY8b/P+kXRAqtx0VPRNkjdlHW5QVeOFsoPBHs7zHh6n8XWZfRcgWgCtpcM+rTry
-         Xhlnm1Ut11qqNLt8K02qXJ+lefTLrEPW/xrjA43/25Zsg8f3yhH8SqX0swsrCZcva6vS
-         RcxFM3I7uXR7pmOXVgE1xkOphmpt9W1nJfWRq+BX/74p8EFRYzuoDiWYF1BN9+HFsNKf
-         EuJA==
-X-Gm-Message-State: AOAM533fvEFGFusBPqm23cNAfIVDpgqZVzxMXaJCJVLg+G4ILqgMxEAi
-        C2xeUbn5gyGa/J1bxfocIe8kIA==
-X-Google-Smtp-Source: ABdhPJzjhJgO8cFIT2GipL1pyLBESTYNhG5MXheT1l5nRxXPi6XFjSoeUvTa4kKMZP8Y/iAwUO0X0A==
-X-Received: by 2002:a5d:64ea:: with SMTP id g10mr2658238wri.274.1631794379049;
-        Thu, 16 Sep 2021 05:12:59 -0700 (PDT)
-Received: from [192.168.1.8] ([149.86.87.95])
-        by smtp.gmail.com with ESMTPSA id m29sm3450939wrb.89.2021.09.16.05.12.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Sep 2021 05:12:58 -0700 (PDT)
-Subject: Re: [PATCH 08/24] tools: bpftool: update bpftool-prog.rst reference
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Beckett <david.beckett@netronome.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org
-References: <cover.1631783482.git.mchehab+huawei@kernel.org>
- <dc4bae7a14518fbfff20a0f539df06a5c19b09de.1631783482.git.mchehab+huawei@kernel.org>
- <eb80e8f5-b9d7-5031-8ebb-4595bb295dbf@isovalent.com>
- <20210916124930.7ae3b722@coco.lan>
- <33d66a49-2fc0-57a1-c1e5-34e932bcc237@isovalent.com>
- <20210916133036.37c50383@coco.lan>
-From:   Quentin Monnet <quentin@isovalent.com>
-Message-ID: <8d5eaebb-29ac-5ee6-20ec-09d30d33dd73@isovalent.com>
-Date:   Thu, 16 Sep 2021 13:12:57 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=dceZ5uiDy0+Um3nYa2DJqEKVOq4Y9eg0YaVZ8ELhM+o=;
+        b=WcgXtkGjrqZWKad+ptVDdN7gqVWXZomgIIPP1+PlXwKkaocWZKBYNoh5EoSZyuuKOr
+         +MW5UvW3A54FOeGzDrejgz9FS9rVI//DzfovfST6b+hWqzswemFuA+1ezqF8gL3wsxmG
+         +Q2ZD+hjmIj9sX2fEJaXCSVAJvxqDMqYqWfLyhYKujzcdVge14aLlrTXT0M8PyGJXNOt
+         CYVQkjO39EVCp8CPyJnt0MoO6/atiHRaWktmICFXbFPLyiKnlk6g3t/buA2vCxMIOrs0
+         XsAACs3I5bjrnP9W05z5qoGJCNoFezjaMDozZnOLGlJsXT12stVkHn2cmgEj7nzTeqM0
+         FWrg==
+X-Gm-Message-State: AOAM530w2WoDtH5ieJ4Pwcj05U+MEa/Ybgyp242XHSsb4WqxChZGq+7b
+        m6bZXyAQcg7AMYQPS9pUjqE=
+X-Google-Smtp-Source: ABdhPJyiCIJyLzFmU30/g1amsyFm/bu8BYO30s73qIG7d6Jul+70WYEzQS4YU90FawDjX4s8N6lr3A==
+X-Received: by 2002:a17:906:4a0b:: with SMTP id w11mr6134745eju.265.1631794458498;
+        Thu, 16 Sep 2021 05:14:18 -0700 (PDT)
+Received: from localhost.localdomain (host-79-47-104-104.retail.telecomitalia.it. [79.47.104.104])
+        by smtp.gmail.com with ESMTPSA id gl2sm1102155ejb.110.2021.09.16.05.14.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Sep 2021 05:14:18 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        David Laight <david.Laight@aculab.com>
+Subject: Re: [PATCH v6 16/19] staging: r8188eu: Clean up rtw_read*() and rtw_write*()
+Date:   Thu, 16 Sep 2021 14:14:14 +0200
+Message-ID: <1797501.xtDa3BoUpI@localhost.localdomain>
+In-Reply-To: <20210916113606.GJ2116@kadam>
+References: <20210915211103.18001-1-fmdefrancesco@gmail.com> <20210915211103.18001-17-fmdefrancesco@gmail.com> <20210916113606.GJ2116@kadam>
 MIME-Version: 1.0
-In-Reply-To: <20210916133036.37c50383@coco.lan>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2021-09-16 13:30 UTC+0200 ~ Mauro Carvalho Chehab
-<mchehab+huawei@kernel.org>
+On Thursday, September 16, 2021 1:36:06 PM CEST Dan Carpenter wrote:
+> On Wed, Sep 15, 2021 at 11:11:00PM +0200, Fabio M. De Francesco wrote:
+> > Clean up rtw_read{8,16,32}() and rtw_write{8,16,32,N}() in 
+usb_ops_linux.c.
+> > 
+> 
+> It would be good to know what you did more specifically.
+> 
+> 1) Rename variables:
+> 	pio_priv => io_priv
+> 	pintfhdl => intfhdl
+> 	wvalue => address.
+> 2) Remove unnecessary casts.
+> 3) Fix types.  Use __le16 instead of __le32.
 
-> [PATCH] scripts: documentation-file-ref-check: fix bpf selftests path
+Dear Dan,
+
+I'm sorry for missing that. :( 
+
+Now I remember that you asked for this specifications at least once (if not 
+twice). I'll redo the commit message and add the list above in v7. I guess 
+that I have to do the same in 15/19.
+
+> The last one is a small KASan bug fix.  So good job on that.
+
+Thanks (even if I don't yet know anything about KASan).
+
+> > Co-developed-by: Pavel Skripkin <paskripkin@gmail.com>
+> > Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+> > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> > ---
+> >  drivers/staging/r8188eu/hal/usb_ops_linux.c | 68 ++++++++++-----------
+> >  1 file changed, 34 insertions(+), 34 deletions(-)
+> > 
+> > diff --git a/drivers/staging/r8188eu/hal/usb_ops_linux.c b/drivers/
+staging/r8188eu/hal/usb_ops_linux.c
+> > index 2098ce935dc0..d87da84eca07 100644
+> > --- a/drivers/staging/r8188eu/hal/usb_ops_linux.c
+> > +++ b/drivers/staging/r8188eu/hal/usb_ops_linux.c
+> > @@ -91,91 +91,91 @@ static int usbctrl_vendorreq(struct intf_hdl 
+*intfhdl, u16 value, void *data, u1
+> >  
+> >  u8 rtw_read8(struct adapter *adapter, u32 addr)
+> >  {
+> > -	struct io_priv *pio_priv = &adapter->iopriv;
+> > -	struct intf_hdl *pintfhdl = &pio_priv->intf;
+> > -	u16 wvalue = (u16)(addr & 0x0000ffff);
+> > +	struct io_priv *io_priv = &adapter->iopriv;
+> > +	struct intf_hdl *intfhdl = &io_priv->intf;
+> > +	u16 address = addr & 0xffff;
+> >  	u8 data;
+> > -
 > 
-> tools/testing/selftests/bpf/test_bpftool_synctypes.py use
-> relative patches on the top of BPFTOOL_DIR:
+> Deleting this line introduces a checkpatch warning.
+
+I didn't notice the warning. This too will be fixed in v7.
+
+> > -	usbctrl_vendorreq(pintfhdl, wvalue, &data, 1, 
+REALTEK_USB_VENQT_READ);
+> > +	usbctrl_vendorreq(intfhdl, address, &data, 1, 
+REALTEK_USB_VENQT_READ);
+> >  
+> >  	return data;
+> >  }
+> >  
+> >  u16 rtw_read16(struct adapter *adapter, u32 addr)
+> >  {
+> > -	struct io_priv *pio_priv = &adapter->iopriv;
+> > -	struct intf_hdl *pintfhdl = &pio_priv->intf;
+> > -	u16 wvalue = (u16)(addr & 0x0000ffff);
+> > -	__le32 data;
+> > +	struct io_priv *io_priv = &adapter->iopriv;
+> > +	struct intf_hdl *intfhdl = &io_priv->intf;
+> > +	u16 address = addr & 0xffff;
+> > +	__le16 data;
+> >  
+> > -	usbctrl_vendorreq(pintfhdl, wvalue, &data, 2, 
+REALTEK_USB_VENQT_READ);
+> > +	usbctrl_vendorreq(intfhdl, address, &data, 2, 
+REALTEK_USB_VENQT_READ);
+> >  
+> > -	return (u16)(le32_to_cpu(data) & 0xffff);
+> > +	return le16_to_cpu(data);
 > 
-> 	BPFTOOL_DIR = os.path.join(LINUX_ROOT, 'tools/bpf/bpftool')
+> The last two bytes of "data" are not initialized.  I do not think that
+> will cause a bug on either endian type of system during runtime but I
+> this that KASan will catch it and complain.
+
+I don't want to add mistakes on mistakes. I guess that you are talking of the 
+same fix you wrote above and that "return le16_to_cpu(data);" is correct.
+Am I interpreting your words in the correct way?
+ 
+> >  }
+> >  
+> >  u32 rtw_read32(struct adapter *adapter, u32 addr)
+> >  {
+> > -	struct io_priv *pio_priv = &adapter->iopriv;
+> > -	struct intf_hdl *pintfhdl = &pio_priv->intf;
+> > -	u16 wvalue = (u16)(addr & 0x0000ffff);
+> > +	struct io_priv *io_priv = &adapter->iopriv;
+> > +	struct intf_hdl *intfhdl = &io_priv->intf;
+> > +	u16 address = addr & 0xffff;
+> >  	__le32 data;
+> >  
+> > -	usbctrl_vendorreq(pintfhdl, wvalue, &data, 4, 
+REALTEK_USB_VENQT_READ);
+> > +	usbctrl_vendorreq(intfhdl, address, &data, 4, 
+REALTEK_USB_VENQT_READ);
+> >  
+> >  	return le32_to_cpu(data);
+> >  }
+> >  
+> >  int rtw_write8(struct adapter *adapter, u32 addr, u8 val)
+> >  {
+> > -	struct io_priv *pio_priv = &adapter->iopriv;
+> > -	struct intf_hdl *pintfhdl = &pio_priv->intf;
+> > -	u16 wvalue = (u16)(addr & 0x0000ffff);
+> > +	struct io_priv *io_priv = &adapter->iopriv;
+> > +	struct intf_hdl *intfhdl = &io_priv->intf;
+> > +	u16 address = addr & 0xffff;
+> >  	int ret;
+> >  
+> > -	ret = usbctrl_vendorreq(pintfhdl, wvalue, &val, 1, 
+REALTEK_USB_VENQT_WRITE);
+> > +	ret = usbctrl_vendorreq(intfhdl, address, &val, 1, 
+REALTEK_USB_VENQT_WRITE);
+> >  
+> >  	return RTW_STATUS_CODE(ret);
+> >  }
+> >  
+> >  int rtw_write16(struct adapter *adapter, u32 addr, u16 val)
+> >  {
+> > -	struct io_priv *pio_priv = &adapter->iopriv;
+> > -	struct intf_hdl *pintfhdl = &pio_priv->intf;
+> > -	u16 wvalue = (u16)(addr & 0x0000ffff);
+> > -	__le32 data = cpu_to_le32(val & 0x0000ffff);
+> > +	struct io_priv *io_priv = &adapter->iopriv;
+> > +	struct intf_hdl *intfhdl = &io_priv->intf;
+> > +	__le16 data = cpu_to_le16(val);
 > 
-> Change the script to automatically convert:
+> This is the other interesting change.  I think the original code works
+> though.
+
+Here too, I'm a bit confused... Do yo prefer the original code or you're 
+saying that, although the original code works fine, I made the correct choice 
+in changing it? Can you please confirm?
+
 > 
-> 	testing/selftests/bpf -> bpf/bpftool
+> > +	u16 address = addr & 0xffff;
+> >  	int ret;
+> >  
+> > -	ret = usbctrl_vendorreq(pintfhdl, wvalue, &data, 2, 
+REALTEK_USB_VENQT_WRITE);
+> > +	ret = usbctrl_vendorreq(intfhdl, address, &data, 2, 
+REALTEK_USB_VENQT_WRITE);
+> >  
+> >  	return RTW_STATUS_CODE(ret);
+> >  }
 > 
-> In order to properly check the files used by such script.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> 
-> diff --git a/scripts/documentation-file-ref-check b/scripts/documentation-file-ref-check
-> index 7187ea5e5149..2d91cfe11cd2 100755
-> --- a/scripts/documentation-file-ref-check
-> +++ b/scripts/documentation-file-ref-check
-> @@ -144,6 +144,7 @@ while (<IN>) {
->  		if ($f =~ m/tools/) {
->  			my $path = $f;
->  			$path =~ s,(.*)/.*,$1,;
-> +			$path =~ s,testing/selftests/bpf,bpf/bpftool,;
->  			next if (grep -e, glob("$path/$ref $path/../$ref $path/$fulref"));
->  		}
->  
-> 
+> regards,
+> dan carpenter
 > 
 > 
 
-I tested the patch and it works well on my side.
+Regards,
 
-However, this looks a bit fragile to me. There is no particular reason
-to have testing/selftests/bpf point to bpf/bpftool other than to
-accommodate the current case, we could imagine other selftest files
-pointing to other parts of the documentation in the future. I would
-instead make an exception for test_bpftool_synctypes.py specifically
-(other selftest files don't usually parse documentation anyway).
-Alternatively, I would look at excluding lines where the path is used in
-code (tricky to detect), maybe at least when used with os.path.join():
+Fabio
 
-    next if ($ln =~ m,os\.path\.join\([^\,]*\,\s*['"]$fulref,);
 
-But I'm not familiar with documentation-file-ref-check in the first
-place, so these are just my two cents.
-
-Thanks,
-Quentin
