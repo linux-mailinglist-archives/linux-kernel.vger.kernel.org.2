@@ -2,102 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D724940E113
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:28:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF5F740E775
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:33:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241255AbhIPQ1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:27:13 -0400
-Received: from mout.kundenserver.de ([212.227.17.13]:59825 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241389AbhIPQTc (ORCPT
+        id S1348826AbhIPRcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:32:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348394AbhIPRXQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:19:32 -0400
-Received: from mail-wr1-f45.google.com ([209.85.221.45]) by
- mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1Mw8gc-1mjfQT1YHc-00s4TK; Thu, 16 Sep 2021 18:18:09 +0200
-Received: by mail-wr1-f45.google.com with SMTP id q26so10379083wrc.7;
-        Thu, 16 Sep 2021 09:18:09 -0700 (PDT)
-X-Gm-Message-State: AOAM5304KOgiYNYvlrcn8rVLWycv2HyX8RwLiVaBuCf1Oavf8Gqzr3nj
-        ADVxaZYjCB0VaWClh7bACArYleuTqY8KhxhUYkk=
-X-Google-Smtp-Source: ABdhPJyTxi6NI7qAeKdWzxen8DQyGQiIKJB4lMQ3kU9u+D/WgX0QYuP+ldR8vqVUYM1ImqavHjZk4F75SjcrZmpYlt8=
-X-Received: by 2002:a5d:4b50:: with SMTP id w16mr7032427wrs.71.1631809088892;
- Thu, 16 Sep 2021 09:18:08 -0700 (PDT)
+        Thu, 16 Sep 2021 13:23:16 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 256EFC08EA79
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 09:20:47 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id m21-20020a17090a859500b00197688449c4so5189674pjn.0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 09:20:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=pPI/VFw1zzsayAVnvWLbDx7Hpbl9/4fZcCkZww1rQGI=;
+        b=U5tiGDAAZOHXxrls9q5Eta2fq2CUA7BHgHHf3T5jpCvkx/QPHyRPhBPfweZG0EMPtM
+         /hlDJCtbiPTvlayHon3zcnd9yz7sqPJ5lHP5Z8Pbkh1PbB3UqMcdw2sKBS3NPmvwKQhn
+         Ucpy6KMSK1/HxW/9YJBDM1TK4/IJvjzEajlNl5gRxAAB4IUDKR/QTRpPK+BokmdnQUFb
+         y6I2Jh720jk1mUDT6GaH6lBgO6Y3F4P5tEomc6Ik8jIVNQpMKX3n/+XkOxEDMFtpYKng
+         1XrZKUDHT5h/Mhc78bF1oTYRWj5BBrB4vHRsb/ajjorHArSS1sNlRWp45oEUmsp9X+z/
+         gAXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pPI/VFw1zzsayAVnvWLbDx7Hpbl9/4fZcCkZww1rQGI=;
+        b=pfl9SxuBwNKA5Rb4dk0A/Khu2Ty3JmYQP/4C4BmtE6vdeDD51QVurNWWoitfdnigTJ
+         8DC/rVT0n9kjeamENPcLHlTM4sQf+ehoDdmamcjrbyuIFMaBNM7Tx3fZVihJrQzBG2yO
+         YBKHDMln9MmTniuLjV7XZzyMYroEI6LpC3Eq6X3EBNxjb4HOQIyYZGmChYXtkIvmsxca
+         5whqld5qtZOMO/i7XL+wh1OuYODKZfrPQKF3oxn2g3rMVCBYUV5c4ZlhFP7BE9+z9sh4
+         uTu5nwuZWgQP0XXJQVPryppeEAasmn/rpwtBhScFEcNtRJV2v5YINDievHC9mZk0O+/X
+         4zWA==
+X-Gm-Message-State: AOAM5325Vi0fz0mNLPF/V8RyAV7hXWG3qfAIyaoa3whoMFmpgvedCGUl
+        IFnvCMzZz0fKoFIKEZE8v0jvQg==
+X-Google-Smtp-Source: ABdhPJwOi/rPghzGiGvxWRxUWAxSCfJoIvU2qR/dq192mzrvuKW2ywbsmxspallCqVizxJKSmmm1ww==
+X-Received: by 2002:a17:902:82c2:b0:13c:916b:96a with SMTP id u2-20020a17090282c200b0013c916b096amr5611228plz.61.1631809246433;
+        Thu, 16 Sep 2021 09:20:46 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id d4sm8224656pjo.12.2021.09.16.09.20.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Sep 2021 09:20:45 -0700 (PDT)
+Date:   Thu, 16 Sep 2021 16:20:42 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     David Edmondson <dme@dme.org>
+Cc:     linux-kernel@vger.kernel.org, Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        David Matlack <dmatlack@google.com>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jim Mattson <jmattson@google.com>,
+        David Edmondson <david.edmondson@oracle.com>
+Subject: Re: [PATCH v5 1/4] KVM: x86: Clarify the kvm_run.emulation_failure
+ structure layout
+Message-ID: <YUNu2npJv2LPBRop@google.com>
+References: <20210916083239.2168281-1-david.edmondson@oracle.com>
+ <20210916083239.2168281-2-david.edmondson@oracle.com>
 MIME-Version: 1.0
-References: <20210916131816.8841-1-will@kernel.org> <CAK8P3a0jQXiYg9u=o2LzqNSdiqMC=4=6o_NttPk_Wx4C3Gx98A@mail.gmail.com>
- <20210916151330.GA9000@willie-the-truck>
-In-Reply-To: <20210916151330.GA9000@willie-the-truck>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 16 Sep 2021 18:17:52 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0wqJX08+tHFXoZbYn3i64K94KKV9jOcRpP09WyBdG0ww@mail.gmail.com>
-Message-ID: <CAK8P3a0wqJX08+tHFXoZbYn3i64K94KKV9jOcRpP09WyBdG0ww@mail.gmail.com>
-Subject: Re: [RFC PATCH] fs/compat_binfmt_elf: Introduce sysctl to disable
- compat ELF loader
-To:     Will Deacon <will@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:rROeNIkGF+6/4yGDjMmjNNmy4ngPK9NDbYBZTHhcGtZS7VGK7yB
- GldI9UyH7mCvD/qOoQ2RCH9F4e/mjk2EZyOoNy/eDaXWCsuH2jhivtk3UYgPXnaH8Kmr3Eo
- SBQzCzcuU80idY4/tPxL8rpt6z9sO57Li33ySkUt0yTQ6QgUy053i+icrYTjuoWLiTEJgMO
- bo/dfzG369OFjYZyiSr6w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:QlYBEE6U+U4=:WD0OaqvSrhYsZQTOhgEzkc
- OleLFZp/7N924cRpBcdj97iSadx0oE7sCl6QUxyH0URzB8Z6waRz96h2avsSanVDnKvLUCEnL
- vaEoIn7eAzbJseNTwNucRhBuZR7RGjLBEa9O+uGuDesybkHFKos1w7hulu67DHsrCXu69R/zA
- Vm5IQVNjgRTkNLlZAq0TjncuObcdfjo4X/c1Y87nGTeHvBkbRYdUXf+DtyuHogQgaIfetWlsQ
- fsYrlT7mZrUFxvcQ09SGhlVUDvOJIS8Zechm72hm6moUcK0GFj5uMs3k4k0KLWHSjbFUY3PDL
- ln+AbHgI3kn98wI+CdrYzmNkbqJRC0HqNKN+C7XfnRJATB8Huu1YyalUkUhS04C4u+lvDMze1
- nPHrNwsp3+Qm1pVrvMlp7PF1hnjl5AdTGnL2pFSbU9FS128DpbqWMm6Ys/nQxOaDxNqTgTfVq
- +QsgPUeQd54cCTqzqMIeWrZ01qnhSLOPJB1WJXFPCNFmpNWLmh6xItroqe0V20iUVBVwrjLoh
- C8DhFFC/kbrEDpcnGN5IeIAUx7ksR/KOG0DgPrpQgmcnlF1zCQOdXMDBpmFkhRm1OWRTmgNE8
- e6ckNllHOnPKdmkIQiEYKf0XZMtiAGdIHxCGZUWAxewkJRC33MjpOtjzZJd7MP9HrYJozIbgT
- JOIItI5PAIt/HrzwMD5WlBbLG5e95QhKSIhIyRXlP0ZxxltO+fy1qwblL3ylpwKKREJiU4Maf
- I316BbqO+tqgfuZb1P5H+Yz2+FF5uQihWjpOQQ==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210916083239.2168281-2-david.edmondson@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 5:13 PM Will Deacon <will@kernel.org> wrote:
-> On Thu, Sep 16, 2021 at 04:46:15PM +0200, Arnd Bergmann wrote:
-> > On Thu, Sep 16, 2021 at 3:18 PM Will Deacon <will@kernel.org> wrote:
-> > In the first case, having the kernel make the decision based on CPU
-> > feature flags would be easier. In the second case, I would expect this
-> > to be a per-process setting similar to prctl, capability or seccomp.
-> > This would make it possible to do it for separately per container
-> > and avoid ambiguity about what happens to already-running 32-bit
-> > tasks.
->
-> I'm not sure I follow the per-process aspect of your suggestion -- we want
-> to prevent 32-bit tasks from existing at all. If it wasn't for GKI, we'd
-> just disable CONFIG_COMPAT altogether, but while there is a need for 32-bit
-> support on some devices then we're not able to do that.
->
-> Does that make more sense now?
+On Thu, Sep 16, 2021, David Edmondson wrote:
 
-That sounds rather specific to your use case, but others may have similar
-requirements that are better served with a per-container or per-process
-flag. If your init process sets the process specific flag to prevent compat
-mode and non-root tasks are unable to set it back, the effect for you
-should be the same, but others may also be able to use the feature.
+For all these patches, assuming you want the Author credit to go to your @oracle.com
+email, they need an explicit
 
-Another option would be to make the binfmt helper a device specific
-module, in that case you wouldn't need to use a runtime feature at all,
-you just prevent the module from getting loaded. ;-)
+  From: David Edmondson <david.edmondson@oracle.com>
 
-On a somewhat related note, a topic that has come up in the past
-is to make the syscall ABI user selectable across all architectures, and
-allow e.g. an arm64 task to call normal syscalls using the arm32
-compat calling conventions, in order to simplify user space ISA emulation.
-This could even be done in a way to allow using foreign architecture
-syscall semantics for things like fex that emulates x86 on arm.
-If this gets added, having the conditional in the binfmt loader is
-a bit pointless.
+otherwise git will default to the "From" email header and make the Author
+"David Edmondson <dme@dme.org>".  And then checkpatch will rightly complain that
+the SOB does not match the Author.
 
-      Arnd
+Adding From: can be handled automatically by "git format-patch" via "--from", e.g.
+
+  git format-patch --from="David Edmondson <dme@dme.org>" ...
+
+> Until more flags for kvm_run.emulation_failure flags are defined, it
+> is undetermined whether new payload elements corresponding to those
+> flags will be additive or alternative. As a hint to userspace that an
+> alternative is possible, wrap the current payload elements in a union.
+> 
+> Suggested-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: David Edmondson <david.edmondson@oracle.com>
+> ---
+>  include/uapi/linux/kvm.h | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+> index a067410ebea5..8618fe973215 100644
+> --- a/include/uapi/linux/kvm.h
+> +++ b/include/uapi/linux/kvm.h
+> @@ -402,8 +402,12 @@ struct kvm_run {
+>  			__u32 suberror;
+>  			__u32 ndata;
+>  			__u64 flags;
+> -			__u8  insn_size;
+> -			__u8  insn_bytes[15];
+> +			union {
+> +				struct {
+> +					__u8  insn_size;
+> +					__u8  insn_bytes[15];
+> +				};
+> +			};
+>  		} emulation_failure;
+>  		/* KVM_EXIT_OSI */
+>  		struct {
+> -- 
+> 2.33.0
+> 
