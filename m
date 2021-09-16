@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 808AC40E646
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:30:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5412140E272
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:16:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352114AbhIPRUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:20:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40896 "EHLO mail.kernel.org"
+        id S241940AbhIPQiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:38:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43910 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244120AbhIPRNO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:13:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 21FEB619EE;
-        Thu, 16 Sep 2021 16:38:41 +0000 (UTC)
+        id S242245AbhIPQav (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:30:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E33D613D0;
+        Thu, 16 Sep 2021 16:19:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810322;
-        bh=7IKxQif8u3AyVsV6EqfXAMHmliAOQErBW2eda/5VC70=;
+        s=korg; t=1631809149;
+        bh=aUngSMjGOB+B3VdCFVb48b4pek9UL7AhWzxqXJ9ePfM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RUTQyCcRILs0RwLjsVIGysCaEVypu+TRazOlY1Zp/KiIrF585wWWgVvbeqX7KmlZb
-         1OxGVkA1H1r0tUy6mq46xNVverBvdRNnqhRH/IB/8Ra0I46gBDClcOExhaNwcewYAk
-         4HlnUhA+hJVfmVtSXFZSeb5eNXIGmWDCLwn8qy+A=
+        b=UYnWoUeRHmbnwPWzoxI3INukB1Q4Nv+bsZx9l2q+OPcV3eET6khhRaC9netkvyckT
+         5B9F5fG541WRo9uXK5lkdXL3BvXjtpX2014716xiHmYtXBlHkDPuadeYEMdyL12Y1a
+         9SvXYtDow7nj9CzjBu2xj8Uf/rwU5gTw69dyo9dw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,12 +27,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Sascha Hauer <s.hauer@pengutronix.de>,
         Richard Leitner <richard.leitner@skidata.com>,
         Shawn Guo <shawnguo@kernel.org>
-Subject: [PATCH 5.14 056/432] Revert "dmaengine: imx-sdma: refine to load context only once"
-Date:   Thu, 16 Sep 2021 17:56:45 +0200
-Message-Id: <20210916155812.694943734@linuxfoundation.org>
+Subject: [PATCH 5.13 049/380] Revert "dmaengine: imx-sdma: refine to load context only once"
+Date:   Thu, 16 Sep 2021 17:56:46 +0200
+Message-Id: <20210916155805.653195739@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -61,7 +61,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/drivers/dma/imx-sdma.c
 +++ b/drivers/dma/imx-sdma.c
-@@ -433,7 +433,6 @@ struct sdma_channel {
+@@ -379,7 +379,6 @@ struct sdma_channel {
  	unsigned long			watermark_level;
  	u32				shp_addr, per_addr;
  	enum dma_status			status;
@@ -69,7 +69,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  	struct imx_dma_data		data;
  	struct work_struct		terminate_worker;
  };
-@@ -1008,9 +1007,6 @@ static int sdma_load_context(struct sdma
+@@ -954,9 +953,6 @@ static int sdma_load_context(struct sdma
  	int ret;
  	unsigned long flags;
  
@@ -79,7 +79,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  	if (sdmac->direction == DMA_DEV_TO_MEM)
  		load_address = sdmac->pc_from_device;
  	else if (sdmac->direction == DMA_DEV_TO_DEV)
-@@ -1053,8 +1049,6 @@ static int sdma_load_context(struct sdma
+@@ -999,8 +995,6 @@ static int sdma_load_context(struct sdma
  
  	spin_unlock_irqrestore(&sdma->channel_0_lock, flags);
  
@@ -88,7 +88,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  	return ret;
  }
  
-@@ -1093,7 +1087,6 @@ static void sdma_channel_terminate_work(
+@@ -1039,7 +1033,6 @@ static void sdma_channel_terminate_work(
  	vchan_get_all_descriptors(&sdmac->vc, &head);
  	spin_unlock_irqrestore(&sdmac->vc.lock, flags);
  	vchan_dma_desc_free_list(&sdmac->vc, &head);
@@ -96,7 +96,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  }
  
  static int sdma_terminate_all(struct dma_chan *chan)
-@@ -1361,7 +1354,6 @@ static void sdma_free_chan_resources(str
+@@ -1307,7 +1300,6 @@ static void sdma_free_chan_resources(str
  
  	sdmac->event_id0 = 0;
  	sdmac->event_id1 = 0;
