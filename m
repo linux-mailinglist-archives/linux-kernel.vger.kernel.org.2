@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B805740E42F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:22:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3C3E40E430
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:22:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244267AbhIPQ4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:56:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38630 "EHLO mail.kernel.org"
+        id S1346827AbhIPQ4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:56:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345915AbhIPQvB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1345917AbhIPQvB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 16 Sep 2021 12:51:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DF2D361A82;
-        Thu, 16 Sep 2021 16:28:40 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 592FF61A86;
+        Thu, 16 Sep 2021 16:28:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809721;
-        bh=JcKEbqG4ljzAwAQ/lX3iUIJsq4CBhbZUDu34o5T0zxY=;
+        s=korg; t=1631809724;
+        bh=6A4UFO566NlxIX7SmKjrKxVeE046rp/rzND0uhqcNcc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z3LZk/jYVxThpsTDHAWoKgJ8CWHS5YrO92HDUO+owKfdqx5czVGtxnuXt9xxiAA8H
-         pQpPwx+XcBXn1VwlXJrJH+Nv6LPsd9chPRLnTWboA0RDcO2YDowF+EUG3WykTO9wmU
-         HW3m0UjylF0bI3GO8yHNHFhjPGjIihFRcroV8a00=
+        b=wwkuANL0sXDMobL6TaLXW/DC4pl0J4tUFyPON1/ziNRBixIXdvO3rP3ZZ8b6LuA8q
+         586QDRhiyReTNfQJVs7N8qODU67O1Ve/TSqWysURwWrvk6Qxdm20JNWgKkFc4zb9T4
+         Dh9awGcrDmhuBsNuL/D1nBtunrbVAqb50xwTaoNY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Stephen Boyd <swboyd@chromium.org>,
         Rob Clark <robdclark@chromium.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 259/380] drm/msm/dp: return correct edid checksum after corrupted edid checksum read
-Date:   Thu, 16 Sep 2021 18:00:16 +0200
-Message-Id: <20210916155812.891561348@linuxfoundation.org>
+Subject: [PATCH 5.13 260/380] drm/msm/dp: do not end dp link training until video is ready
+Date:   Thu, 16 Sep 2021 18:00:17 +0200
+Message-Id: <20210916155812.925244855@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
 References: <20210916155803.966362085@linuxfoundation.org>
@@ -43,47 +43,144 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kuogee Hsieh <khsieh@codeaurora.org>
 
-[ Upstream commit 7948fe12d47a946fb8025a0534c900e3dd4b5839 ]
+[ Upstream commit 2e0adc765d884cc080baa501e250bfad97035b09 ]
 
-Response with correct edid checksum saved at connector after corrupted edid
-checksum read. This fixes Link Layer CTS cases 4.2.2.3, 4.2.2.6.
+Initialize both pre-emphasis and voltage swing level to 0 before
+start link training and do not end link training until video is
+ready to reduce the period between end of link training and video
+start to meet Link Layer CTS requirement.  Some dongle main link
+symbol may become unlocked again if host did not end link training
+soon enough after completion of link training 2. Host have to re
+train main link if loss of symbol locked detected before end link
+training so that the coming video stream can be transmitted to sink
+properly. This fixes Link Layer CTS cases 4.3.2.1, 4.3.2.2, 4.3.2.3
+and 4.3.2.4.
+
+Changes in v3:
+-- merge retrain link if loss of symbol locked happen into this patch
+-- replace dp_ctrl_loss_symbol_lock() with dp_ctrl_channel_eq_ok()
 
 Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
 Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-Link: https://lore.kernel.org/r/1628196295-7382-6-git-send-email-khsieh@codeaurora.org
+Link: https://lore.kernel.org/r/1628196295-7382-7-git-send-email-khsieh@codeaurora.org
 Signed-off-by: Rob Clark <robdclark@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/dp/dp_panel.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/msm/dp/dp_ctrl.c | 56 +++++++++++++++++++++++---------
+ 1 file changed, 41 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_panel.c b/drivers/gpu/drm/msm/dp/dp_panel.c
-index 9cc816663668..6eeb9a14b584 100644
---- a/drivers/gpu/drm/msm/dp/dp_panel.c
-+++ b/drivers/gpu/drm/msm/dp/dp_panel.c
-@@ -272,7 +272,7 @@ static u8 dp_panel_get_edid_checksum(struct edid *edid)
- {
- 	struct edid *last_block;
- 	u8 *raw_edid;
--	bool is_edid_corrupt;
-+	bool is_edid_corrupt = false;
+diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+index eb63920b36e8..c1514f2cb409 100644
+--- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
++++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+@@ -1482,6 +1482,9 @@ static int dp_ctrl_link_maintenance(struct dp_ctrl_private *ctrl)
  
- 	if (!edid) {
- 		DRM_ERROR("invalid edid input\n");
-@@ -304,7 +304,12 @@ void dp_panel_handle_sink_request(struct dp_panel *dp_panel)
- 	panel = container_of(dp_panel, struct dp_panel_private, dp_panel);
+ 	dp_ctrl_push_idle(&ctrl->dp_ctrl);
  
- 	if (panel->link->sink_request & DP_TEST_LINK_EDID_READ) {
--		u8 checksum = dp_panel_get_edid_checksum(dp_panel->edid);
-+		u8 checksum;
++	ctrl->link->phy_params.p_level = 0;
++	ctrl->link->phy_params.v_level = 0;
 +
-+		if (dp_panel->edid)
-+			checksum = dp_panel_get_edid_checksum(dp_panel->edid);
-+		else
-+			checksum = dp_panel->connector->real_edid_checksum;
+ 	ctrl->dp_ctrl.pixel_rate = ctrl->panel->dp_mode.drm_mode.clock;
  
- 		dp_link_send_edid_checksum(panel->link, checksum);
- 		dp_link_send_test_response(panel->link);
+ 	ret = dp_ctrl_setup_main_link(ctrl, &training_step);
+@@ -1634,6 +1637,16 @@ static bool dp_ctrl_clock_recovery_any_ok(
+ 	return drm_dp_clock_recovery_ok(link_status, reduced_cnt);
+ }
+ 
++static bool dp_ctrl_channel_eq_ok(struct dp_ctrl_private *ctrl)
++{
++	u8 link_status[DP_LINK_STATUS_SIZE];
++	int num_lanes = ctrl->link->link_params.num_lanes;
++
++	dp_ctrl_read_link_status(ctrl, link_status);
++
++	return drm_dp_channel_eq_ok(link_status, num_lanes);
++}
++
+ int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl)
+ {
+ 	int rc = 0;
+@@ -1668,6 +1681,9 @@ int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl)
+ 		ctrl->link->link_params.rate,
+ 		ctrl->link->link_params.num_lanes, ctrl->dp_ctrl.pixel_rate);
+ 
++	ctrl->link->phy_params.p_level = 0;
++	ctrl->link->phy_params.v_level = 0;
++
+ 	rc = dp_ctrl_enable_mainlink_clocks(ctrl);
+ 	if (rc)
+ 		return rc;
+@@ -1733,17 +1749,19 @@ int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl)
+ 	if (ctrl->link->sink_request & DP_TEST_LINK_PHY_TEST_PATTERN)
+ 		return rc;
+ 
+-	/* stop txing train pattern */
+-	dp_ctrl_clear_training_pattern(ctrl);
++	if (rc == 0) {  /* link train successfully */
++		/*
++		 * do not stop train pattern here
++		 * stop link training at on_stream
++		 * to pass compliance test
++		 */
++	} else  {
++		/*
++		 * link training failed
++		 * end txing train pattern here
++		 */
++		dp_ctrl_clear_training_pattern(ctrl);
+ 
+-	/*
+-	 * keep transmitting idle pattern until video ready
+-	 * to avoid main link from loss of sync
+-	 */
+-	if (rc == 0)  /* link train successfully */
+-		dp_ctrl_push_idle(dp_ctrl);
+-	else  {
+-		/* link training failed */
+ 		dp_ctrl_deinitialize_mainlink(ctrl);
+ 		rc = -ECONNRESET;
+ 	}
+@@ -1751,9 +1769,15 @@ int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl)
+ 	return rc;
+ }
+ 
++static int dp_ctrl_link_retrain(struct dp_ctrl_private *ctrl)
++{
++	int training_step = DP_TRAINING_NONE;
++
++	return dp_ctrl_setup_main_link(ctrl, &training_step);
++}
++
+ int dp_ctrl_on_stream(struct dp_ctrl *dp_ctrl)
+ {
+-	u32 rate = 0;
+ 	int ret = 0;
+ 	bool mainlink_ready = false;
+ 	struct dp_ctrl_private *ctrl;
+@@ -1763,10 +1787,6 @@ int dp_ctrl_on_stream(struct dp_ctrl *dp_ctrl)
+ 
+ 	ctrl = container_of(dp_ctrl, struct dp_ctrl_private, dp_ctrl);
+ 
+-	rate = ctrl->panel->link_info.rate;
+-
+-	ctrl->link->link_params.rate = rate;
+-	ctrl->link->link_params.num_lanes = ctrl->panel->link_info.num_lanes;
+ 	ctrl->dp_ctrl.pixel_rate = ctrl->panel->dp_mode.drm_mode.clock;
+ 
+ 	DRM_DEBUG_DP("rate=%d, num_lanes=%d, pixel_rate=%d\n",
+@@ -1781,6 +1801,12 @@ int dp_ctrl_on_stream(struct dp_ctrl *dp_ctrl)
+ 		}
+ 	}
+ 
++	if (!dp_ctrl_channel_eq_ok(ctrl))
++		dp_ctrl_link_retrain(ctrl);
++
++	/* stop txing train pattern to end link training */
++	dp_ctrl_clear_training_pattern(ctrl);
++
+ 	ret = dp_ctrl_enable_stream_clocks(ctrl);
+ 	if (ret) {
+ 		DRM_ERROR("Failed to start pixel clocks. ret=%d\n", ret);
 -- 
 2.30.2
 
