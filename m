@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBF6740D0EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 02:32:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EF7940D0F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 02:32:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233892AbhIPAdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 20:33:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35428 "EHLO mail.kernel.org"
+        id S233933AbhIPAdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 20:33:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35430 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233592AbhIPAdJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233615AbhIPAdJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 15 Sep 2021 20:33:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2188E6120E;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2195B6120F;
         Thu, 16 Sep 2021 00:31:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1631752308;
-        bh=lbZh6wT0Y4xOOzCKb35GZNRZtlMAm95k2sJ54b7w2/E=;
+        bh=xyJ8smTbjvLz5M6HxqmvgiD2/tzoJpgT9PfZl8DdLmQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P2EtT6TzHxasO8ctFVLWk+7dUU1JV+VqRA/Z61AwieFRT1EJgV/w5tGEUQznbmBt/
-         SrTpf0wm3yNC4lw6iajjJgcXgjl2Mi0mHES0xuTDFX/ij1S+fVs+os8p030TnOBjab
-         4iqx/qOS4nPe+4CWoJHcPF5s0Tl1Ewrr9lYMS2T8MCUFsAYbTo+tYY859xKDOJkU2k
-         rVUAUJcunBiufyRTO3ipT7dsJUm/Eqt0j+/JaeJX3TZp8a/C0fQ3VG3qt/qKipSO10
-         LCc3hlKA9F6jdndimLihu5iWHry8ANzOV5JwvBYtxZRCabGa7Ev88/1yFjq/6s5miI
-         G0LT2WYYcnKWw==
+        b=ri/yOdIvWHkmTImHUzlltyXINeplUiYT/OIByFlzFx7C5k8yS2pda14YZEH9QoSE8
+         zeC8+HiAOm4KdVNspIs1HIwUcNj2Phpq4PKH0iANjeAs0WCZV02OQYrDOmwA6256Hp
+         kerDZ2eWCdwuy05b4oZcwV6/8IOuXremldxqntvJ4IH3xEHv0NiwTGMfMBzsE3f4yp
+         SS9hacxSb05he4Tkwr2JagAZYp1+zfwN88KNLZlrRGrheIOSmai5hExZCnqFiJFDuT
+         Yk3yNEsovbO/mtnqjXiOMn1rSzNs541ba+q81J08f6WGm2/mTl3yzqMRS2aepPaZIl
+         z1zDgnV3P1BEw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id B9B785C0AD4; Wed, 15 Sep 2021 17:31:47 -0700 (PDT)
+        id BBBB55C0B1B; Wed, 15 Sep 2021 17:31:47 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
         kernel-team@fb.com, mingo@kernel.org
 Cc:     elver@google.com, andreyknvl@google.com, glider@google.com,
         dvyukov@google.com, cai@lca.pw, boqun.feng@gmail.com,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH kcsan 8/9] kcsan: Move ctx to start of argument list
-Date:   Wed, 15 Sep 2021 17:31:45 -0700
-Message-Id: <20210916003146.3910358-8-paulmck@kernel.org>
+Subject: [PATCH kcsan 9/9] kcsan: selftest: Cleanup and add missing __init
+Date:   Wed, 15 Sep 2021 17:31:46 -0700
+Message-Id: <20210916003146.3910358-9-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210916003126.GA3910257@paulmck-ThinkPad-P17-Gen-1>
 References: <20210916003126.GA3910257@paulmck-ThinkPad-P17-Gen-1>
@@ -45,58 +45,125 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Marco Elver <elver@google.com>
 
-It is clearer if ctx is at the start of the function argument list;
-it'll be more consistent when adding functions with varying arguments
-but all requiring ctx.
-
-No functional change intended.
+Make test_encode_decode() more readable and add missing __init.
 
 Signed-off-by: Marco Elver <elver@google.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/kcsan/core.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ kernel/kcsan/selftest.c | 72 +++++++++++++++++------------------------
+ 1 file changed, 30 insertions(+), 42 deletions(-)
 
-diff --git a/kernel/kcsan/core.c b/kernel/kcsan/core.c
-index 8b20af541776..4b84c8e7884b 100644
---- a/kernel/kcsan/core.c
-+++ b/kernel/kcsan/core.c
-@@ -222,7 +222,7 @@ static noinline void kcsan_check_scoped_accesses(void)
+diff --git a/kernel/kcsan/selftest.c b/kernel/kcsan/selftest.c
+index 7f29cb0f5e63..b4295a3892b7 100644
+--- a/kernel/kcsan/selftest.c
++++ b/kernel/kcsan/selftest.c
+@@ -18,7 +18,7 @@
+ #define ITERS_PER_TEST 2000
  
- /* Rules for generic atomic accesses. Called from fast-path. */
- static __always_inline bool
--is_atomic(const volatile void *ptr, size_t size, int type, struct kcsan_ctx *ctx)
-+is_atomic(struct kcsan_ctx *ctx, const volatile void *ptr, size_t size, int type)
+ /* Test requirements. */
+-static bool test_requires(void)
++static bool __init test_requires(void)
  {
- 	if (type & KCSAN_ACCESS_ATOMIC)
- 		return true;
-@@ -259,7 +259,7 @@ is_atomic(const volatile void *ptr, size_t size, int type, struct kcsan_ctx *ctx
+ 	/* random should be initialized for the below tests */
+ 	return prandom_u32() + prandom_u32() != 0;
+@@ -28,14 +28,18 @@ static bool test_requires(void)
+  * Test watchpoint encode and decode: check that encoding some access's info,
+  * and then subsequent decode preserves the access's info.
+  */
+-static bool test_encode_decode(void)
++static bool __init test_encode_decode(void)
+ {
+ 	int i;
+ 
+ 	for (i = 0; i < ITERS_PER_TEST; ++i) {
+ 		size_t size = prandom_u32_max(MAX_ENCODABLE_SIZE) + 1;
+ 		bool is_write = !!prandom_u32_max(2);
++		unsigned long verif_masked_addr;
++		long encoded_watchpoint;
++		bool verif_is_write;
+ 		unsigned long addr;
++		size_t verif_size;
+ 
+ 		prandom_bytes(&addr, sizeof(addr));
+ 		if (addr < PAGE_SIZE)
+@@ -44,53 +48,37 @@ static bool test_encode_decode(void)
+ 		if (WARN_ON(!check_encodable(addr, size)))
+ 			return false;
+ 
+-		/* Encode and decode */
+-		{
+-			const long encoded_watchpoint =
+-				encode_watchpoint(addr, size, is_write);
+-			unsigned long verif_masked_addr;
+-			size_t verif_size;
+-			bool verif_is_write;
+-
+-			/* Check special watchpoints */
+-			if (WARN_ON(decode_watchpoint(
+-				    INVALID_WATCHPOINT, &verif_masked_addr,
+-				    &verif_size, &verif_is_write)))
+-				return false;
+-			if (WARN_ON(decode_watchpoint(
+-				    CONSUMED_WATCHPOINT, &verif_masked_addr,
+-				    &verif_size, &verif_is_write)))
+-				return false;
+-
+-			/* Check decoding watchpoint returns same data */
+-			if (WARN_ON(!decode_watchpoint(
+-				    encoded_watchpoint, &verif_masked_addr,
+-				    &verif_size, &verif_is_write)))
+-				return false;
+-			if (WARN_ON(verif_masked_addr !=
+-				    (addr & WATCHPOINT_ADDR_MASK)))
+-				goto fail;
+-			if (WARN_ON(verif_size != size))
+-				goto fail;
+-			if (WARN_ON(is_write != verif_is_write))
+-				goto fail;
+-
+-			continue;
+-fail:
+-			pr_err("%s fail: %s %zu bytes @ %lx -> encoded: %lx -> %s %zu bytes @ %lx\n",
+-			       __func__, is_write ? "write" : "read", size,
+-			       addr, encoded_watchpoint,
+-			       verif_is_write ? "write" : "read", verif_size,
+-			       verif_masked_addr);
++		encoded_watchpoint = encode_watchpoint(addr, size, is_write);
++
++		/* Check special watchpoints */
++		if (WARN_ON(decode_watchpoint(INVALID_WATCHPOINT, &verif_masked_addr, &verif_size, &verif_is_write)))
+ 			return false;
+-		}
++		if (WARN_ON(decode_watchpoint(CONSUMED_WATCHPOINT, &verif_masked_addr, &verif_size, &verif_is_write)))
++			return false;
++
++		/* Check decoding watchpoint returns same data */
++		if (WARN_ON(!decode_watchpoint(encoded_watchpoint, &verif_masked_addr, &verif_size, &verif_is_write)))
++			return false;
++		if (WARN_ON(verif_masked_addr != (addr & WATCHPOINT_ADDR_MASK)))
++			goto fail;
++		if (WARN_ON(verif_size != size))
++			goto fail;
++		if (WARN_ON(is_write != verif_is_write))
++			goto fail;
++
++		continue;
++fail:
++		pr_err("%s fail: %s %zu bytes @ %lx -> encoded: %lx -> %s %zu bytes @ %lx\n",
++		       __func__, is_write ? "write" : "read", size, addr, encoded_watchpoint,
++		       verif_is_write ? "write" : "read", verif_size, verif_masked_addr);
++		return false;
+ 	}
+ 
+ 	return true;
  }
  
- static __always_inline bool
--should_watch(const volatile void *ptr, size_t size, int type, struct kcsan_ctx *ctx)
-+should_watch(struct kcsan_ctx *ctx, const volatile void *ptr, size_t size, int type)
+ /* Test access matching function. */
+-static bool test_matching_access(void)
++static bool __init test_matching_access(void)
  {
- 	/*
- 	 * Never set up watchpoints when memory operations are atomic.
-@@ -268,7 +268,7 @@ should_watch(const volatile void *ptr, size_t size, int type, struct kcsan_ctx *
- 	 * should not count towards skipped instructions, and (2) to actually
- 	 * decrement kcsan_atomic_next for consecutive instruction stream.
- 	 */
--	if (is_atomic(ptr, size, type, ctx))
-+	if (is_atomic(ctx, ptr, size, type))
+ 	if (WARN_ON(!matching_access(10, 1, 10, 1)))
  		return false;
- 
- 	if (this_cpu_dec_return(kcsan_skip) >= 0)
-@@ -637,7 +637,7 @@ check_access(const volatile void *ptr, size_t size, int type, unsigned long ip)
- 	else {
- 		struct kcsan_ctx *ctx = get_ctx(); /* Call only once in fast-path. */
- 
--		if (unlikely(should_watch(ptr, size, type, ctx)))
-+		if (unlikely(should_watch(ctx, ptr, size, type)))
- 			kcsan_setup_watchpoint(ptr, size, type, ip);
- 		else if (unlikely(ctx->scoped_accesses.prev))
- 			kcsan_check_scoped_accesses();
 -- 
 2.31.1.189.g2e36527f23
 
