@@ -2,78 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91F5940D303
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 08:01:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2924C40D307
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 08:05:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234520AbhIPGDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 02:03:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44126 "EHLO
+        id S234410AbhIPGGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 02:06:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234420AbhIPGDG (ORCPT
+        with ESMTP id S231281AbhIPGGw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 02:03:06 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDE76C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 23:01:46 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id s11so5131283pgr.11
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 23:01:46 -0700 (PDT)
+        Thu, 16 Sep 2021 02:06:52 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5486C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 23:05:32 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 63-20020a250d42000000b0059dc43162c9so11075552ybn.23
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 23:05:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vH9dgIGnKQD/XuZKe2gA/GBC6e3WA0eNQdhDGFa/TpU=;
-        b=Km1jbC1/4B+mL6WKH3iLdl9fU5JlLh6OboIUabomRmPCGOsKIOLVCq9yBg7nYND3C6
-         g+pF3IbM590GbUI3XnL5vRVRk4dOsEfW42znUCizhl4tNm9KyLBKw1PwZtjB4vkUrV9+
-         bFhnNewhKUUxDM9TLQm7qvggwc2q5v+SgjH2aHDGsMHpS5LCN9MDHvSUV59JCFSPs8O1
-         gUkDc3OyIS0pfrJrDhKTYcO79eqWLVY6hLbhuxJf8q+Ycgq/qO/ECg72CjvOJianP6MA
-         /O0hEV6VXJaEob/8mku/JU2tPBgjHPZJg5C159+mxaDe0zW4vRVj8jdy4DDlYPLDNStf
-         85ag==
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=D0r7TBMbEZnc2Tmp30aYQUE/VFgDrqrZPzYpb/fCP9U=;
+        b=Jt6MQlFhyIvw2VNWhD8wr04h95Ttto+QvH0023lhvq/waQF7PhGlzEKlb/Ni0DzroC
+         Q3IDXtN/LWMYLuhf7nu3BtFAyi/EKZzD7mXFtD8CgCVLz5kOiq/EvBQYYb5MAy0gMOxg
+         jsshIRdhhE41Uz5g4i3Oq805XRY1W9vUMUJVLCn5SaMdSdYO8ILVvn8WpZTog3fxlplq
+         +6FfLMK012Jpb8BuKgM/HYPTUTU34bJ607tph5E3fsSYGHJ10sfuJT7nfB0jBkivcyOl
+         MVU7LV3b3BQmLMRmYUaIMHuJHxhWzjgAa8o7jc3jY/BOBhRyS36k8nnKqvfzeiVKtpA5
+         RBdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vH9dgIGnKQD/XuZKe2gA/GBC6e3WA0eNQdhDGFa/TpU=;
-        b=NG0ONgcLrDrerUQ59gK3/KRY8QLlRfWFplGUYDnSmbgjda82Vq4tgyfwD7DDt8O5D1
-         xh6SB/mzC0owkBx6jPBk3XWFhSBb5mjOdN9vvgYvkfBUjZ6IhN6xFrqz9DXUWFDbCJze
-         FBiF3g8iWa2/Wc9sWYzHhidBbTFUk7DGiRryCWh/LcuHw4IOH50D0YzrYi2lxJ5y4O57
-         q/3Dehs1X2zQwL5cVSycBoj5ztSFaIfPNtPSTTTLxgFpzo5hC3qI/a9eZfTPd0L5UQyl
-         GdmjahopJrvZWZZODNGR3MRbuz3mnV08HJfbyZPEGTWmwWfer89l31XKHQl/Tad1qd2Z
-         jHlQ==
-X-Gm-Message-State: AOAM532XI4D6zSOEFE73Vx3nhln2C3HsA0Jmun9yBZe8FJG8vX5DPDvz
-        HukUcB17s0acUeFkiYhajgx3gkDZfZQJqluu9R72ibMUcqpZiw==
-X-Google-Smtp-Source: ABdhPJzGf8kyrA66qjieGtx5CC/yGLbZJMqxNZp7t+zL2Cg7mGno0tshY1OyB9WQmltyINdM7DIP4BSuKCJDnDwDkCc=
-X-Received: by 2002:aa7:9e8d:0:b0:406:be8:2413 with SMTP id
- p13-20020aa79e8d000000b004060be82413mr3412443pfq.66.1631772106170; Wed, 15
- Sep 2021 23:01:46 -0700 (PDT)
-MIME-Version: 1.0
-References: <f4f3187b-9684-e426-565d-827c2a9bbb0e@virtuozzo.com>
-In-Reply-To: <f4f3187b-9684-e426-565d-827c2a9bbb0e@virtuozzo.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Thu, 16 Sep 2021 14:01:07 +0800
-Message-ID: <CAMZfGtXQHRzZ8JZw=jnZ3AB2bdd6yWrGjNf_KpNnL+tQFN5eow@mail.gmail.com>
-Subject: Re: [PATCH mm] mm/vmalloc: repair warn_alloc()s in __vmalloc_area_node()
-To:     Vasily Averin <vvs@virtuozzo.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, kernel@openvz.org
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=D0r7TBMbEZnc2Tmp30aYQUE/VFgDrqrZPzYpb/fCP9U=;
+        b=tK5deCqOchaBLDGTbmANdPeNMDjs1FGGWl12haFUkLKeWEm8WrpqD6GAORkd+HNlTE
+         8/YTfTO3lixHC5AQbGQUzy0T4yUNY/GnkbqiHYRRuhPO7Mw1QPvEr3GUcEcOWo76SnXT
+         vQ/NxnwUm9rtNepXXsGVYgTLVabRu+HLt7hG8yuHEH1Vi7bxJy/U1SDh1Sb+X123QaEa
+         qQ8vaqkwHoCyzX9r+hd8hUPV5nmzhGpSHtPN87ie9/wXNeizpPdu/4+ka6kxERmX8rVU
+         5NDN8SFm9ADbgLtgxMTXEXRpAxeGlFinV0lg1s9AUalJhCi1v6GZD29v3QqgapkC30GM
+         /5XQ==
+X-Gm-Message-State: AOAM532RBAmsEdaJmDBEQIP1Q5JxjW6+pLgZ4+jz1XWNRs3VXaTfI3pk
+        HifGLWMpFraopO0sO+LR1SxcTtKQ/VGi
+X-Google-Smtp-Source: ABdhPJx5FbJpBunw6Fx0AcOekAy/kFV87vGAH5kU3v7Yt5ESkUQLPihxEJSoyk0TUWgEcCgAoWj7Pr3U/1p7
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:7b71:ab93:de5f:617b])
+ (user=irogers job=sendgmr) by 2002:a5b:f03:: with SMTP id x3mr5069739ybr.546.1631772331782;
+ Wed, 15 Sep 2021 23:05:31 -0700 (PDT)
+Date:   Wed, 15 Sep 2021 23:05:25 -0700
+Message-Id: <20210916060525.1890638-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.309.g3052b89438-goog
+Subject: [PATCH v2] perf test: Workload test of metric and metricgroups
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     eranian@google.com, Ian Rogers <irogers@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 7:43 PM Vasily Averin <vvs@virtuozzo.com> wrote:
->
-> Commit f255935b9767 ("mm: cleanup the gfp_mask handling in
-> __vmalloc_area_node") added __GFP_NOWARN to gfp_mask unconditionally
-> however it disabled all output inside warn_alloc() call.
-> This patch saves original gfp_mask and provides it to all warn_alloc() calls.
->
-> Fixes: f255935b9767 ("mm: cleanup the gfp_mask handling in __vmalloc_area_node")
-> Cc: Christoph Hellwig <hch@lst.de>
->
-> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+Test every metric and metricgroup with 'true' as a workload.
 
-LGTM. Thanks.
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/tests/shell/stat_all_metricgroups.sh | 12 ++++++++++++
+ tools/perf/tests/shell/stat_all_metrics.sh      | 16 ++++++++++++++++
+ 2 files changed, 28 insertions(+)
+ create mode 100755 tools/perf/tests/shell/stat_all_metricgroups.sh
+ create mode 100755 tools/perf/tests/shell/stat_all_metrics.sh
 
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+diff --git a/tools/perf/tests/shell/stat_all_metricgroups.sh b/tools/perf/tests/shell/stat_all_metricgroups.sh
+new file mode 100755
+index 000000000000..de24d374ce24
+--- /dev/null
++++ b/tools/perf/tests/shell/stat_all_metricgroups.sh
+@@ -0,0 +1,12 @@
++#!/bin/sh
++# perf all metricgroups test
++# SPDX-License-Identifier: GPL-2.0
++
++set -e
++
++for m in $(perf list --raw-dump metricgroups); do
++  echo "Testing $m"
++  perf stat -M "$m" true
++done
++
++exit 0
+diff --git a/tools/perf/tests/shell/stat_all_metrics.sh b/tools/perf/tests/shell/stat_all_metrics.sh
+new file mode 100755
+index 000000000000..81b19ba27e68
+--- /dev/null
++++ b/tools/perf/tests/shell/stat_all_metrics.sh
+@@ -0,0 +1,16 @@
++#!/bin/sh
++# perf all metrics test
++# SPDX-License-Identifier: GPL-2.0
++
++set -e
++
++for m in `perf list --raw-dump metrics`; do
++  echo "Testing $m"
++  result=$(perf stat -M "$m" true)
++  if [[ "$result" =~ "$m" ]]; then
++    echo "Metric not printed: $m"
++    exit 1
++  fi
++done
++
++exit 0
+-- 
+2.33.0.309.g3052b89438-goog
+
