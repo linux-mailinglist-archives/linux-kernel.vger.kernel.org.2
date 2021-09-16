@@ -2,67 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A71B40E5B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:28:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D21D40E5C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:28:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350896AbhIPROK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:14:10 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:59212
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1349345AbhIPRGg (ORCPT
+        id S1351172AbhIPRPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:15:10 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:54304
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1345056AbhIPRI2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:06:36 -0400
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com [209.85.221.72])
+        Thu, 16 Sep 2021 13:08:28 -0400
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com [209.85.221.71])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id AB8C240261
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 17:05:14 +0000 (UTC)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id D823F40268
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 17:05:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1631811914;
-        bh=ZHRoqPl1cOVXSfVcApJkxd3VnTYZBp5y1yAkPPBCN0A=;
+        s=20210705; t=1631811918;
+        bh=DAQLma/XFbnrzjxI0SYUnJSqV8B4gUk20L1uJrWXJWA=;
         h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=qTF+EbNI/zArJNagC/G5kFsFXrl5AXtpjoQn6Bp952X7ZukIQGexyzvJ7Cvgl8tpo
-         36WYND3k0NZ33xJ+IjOQTfX7pwzklr4RtcF0hzu4J0LFravKBl5SdfWxdi1jCzxRGz
-         cuJtwIYo5BvZFjlWrlBRObryvqgNuW+leanKxbNbYTbxljE+3eilk9rfbcAqkd/PCz
-         uOgHP1pVNOqYS+DwzMlvgpfcsXfGIHpuhSBnTVQQEcRzlMjecrpyz7edhlKTFE4RS8
-         Vwu/yM6nvZuuNS4YQBtsc9SRj7i6DtMOEmUs4cyXs2UCZRgyzQQrNY00C/LcWz6rZl
-         fHpbIkOGufJ/Q==
-Received: by mail-wr1-f72.google.com with SMTP id z2-20020a5d4c82000000b0015b140e0562so2700585wrs.7
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 10:05:14 -0700 (PDT)
+        b=OUC8wvI9lFdeH42blmIE2cJcIHmvVg419YJWCWjn+oKuskCqECGmAvWH4QwKXvd+P
+         UMb3ceCGUU3TJlBUn6XPRw6hazSjW+ffstGZoyfszQmZguzcDjTh0upbnk4Xe+0yM6
+         NwRyf48hw6r9sFH0j1zUJK8AC7URcEb90D5Y9jR4uuX8MpeSj8AK1wKbiVUE9T7Bh3
+         BTp4pwXUUSBDzHZiikN30G8AgOBnl0lzKMo3hDV6whkjcBdnD721MFtCX7t0E49Vds
+         riPOpf2Jx92qT/sHr+FZxt2H3nHjFxvCvKuu0avCEUobonCCMlpEkSbMPBIu+Qvf5P
+         yqPydJMZzi6HQ==
+Received: by mail-wr1-f71.google.com with SMTP id r15-20020adfce8f000000b0015df1098ccbso2693865wrn.4
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 10:05:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=ZHRoqPl1cOVXSfVcApJkxd3VnTYZBp5y1yAkPPBCN0A=;
-        b=iaZmFkTTt5kf0oXjWA4/7xFkB3DHQKzYot5rrH1W5LIFPbxs97JRHvLQcv7YENYqc2
-         JciY5zZwXs51VhVlvxIJo7tKDpDBVZrEk9TT6lPGviSptB1AydMRGFkGIhig2OWDq/7h
-         vPDdNHOnHxJtck8lSRs0YYCBwohS1zCB8/aIin+FUyDPjNALlBcZ/pA8mVT6joEnxc+w
-         ZWdnBmmPG72UHAqpOX6RihKT5DjBf3mxSwVmt+vwXrZXqQd8ISfRGWiqBkgT2QaFGsN2
-         4TGCpVOuZPEgqOfePjfvG5+WFzCuKLNCHFDQQLT2IF6TQ2D9qplaafSp1VzzvRKsa5bg
-         MxWQ==
-X-Gm-Message-State: AOAM532HjP0Xm4f7bXkGOM8xLz68W06bT6rx7I39uCEzd5oCwb1DlP3b
-        0+/RddrcOKSLD/06QmeVd7H6vMaPm9Ds711chRum1ji6sPTmaQ8gPWyyY0Ht/qf8Cirzwue/Mgn
-        FPy4SCRHo8agFSsLyq61L67BB0aIC73ic99yqOEIKGQ==
-X-Received: by 2002:a1c:403:: with SMTP id 3mr6101159wme.161.1631811914234;
-        Thu, 16 Sep 2021 10:05:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwv7qQi8MCpMfWAMFcZfF4aplV7ax8EdJu7wjofiWEf9bor5D979kr8z1OijUkT1SwPR4Ln6Q==
-X-Received: by 2002:a1c:403:: with SMTP id 3mr6101135wme.161.1631811914068;
-        Thu, 16 Sep 2021 10:05:14 -0700 (PDT)
+        bh=DAQLma/XFbnrzjxI0SYUnJSqV8B4gUk20L1uJrWXJWA=;
+        b=vRKFXtEe/mMeqdxfDZ/2FujEfQ4xgqh28axtpYKFiV5DMQFB/Dqk5sf/LQeRmbop/z
+         apOFctrNDolMg+O1nrH9EDEjOV1eWpL8pXBXh2BMrjcQro0M2X88fXxRYX8KOcynku25
+         eacc+V1w5zh0SWgBIP61JbFF3gGBOi1oYm1JDkTHjS6sVM46I6dPB3E1be4rlmDzb0H+
+         Dt5QX3tGLWxi0rVzCRGI+6V8xZvbGt22+kDT4YvdZh2pmV6MI13ufWQ6/5r0TysftchS
+         NGY3oFn7f0B2kRG6o/rdtNehBBIoS4oYPX5b/Ny/PY1XLocXOfkHDrcCb6O4oyfVH3td
+         Y9wQ==
+X-Gm-Message-State: AOAM531h8RkzChK9ZfG7ob3QqAyl/vHe5aybGjDOY5K37pN60APlMZFQ
+        D5zQ6yXm8fYHS7jk/SffR0Ry6Olcl0a7RY0ylZuRKoPwdzWBJTVhPSWXw69BOzZvXmz/vYtEZ7Q
+        vjA6Cf0BfU2eUSNoY1f3G5Fj2jnmTTP2S7W7nUDeLYQ==
+X-Received: by 2002:a7b:c947:: with SMTP id i7mr10785728wml.136.1631811917594;
+        Thu, 16 Sep 2021 10:05:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx85llb8FjD0iSpfE2Kxi3/C7Wdiex3TjrHEMNpETw1JSJEKIQNgnjj3crKHdSsn0588cTSqw==
+X-Received: by 2002:a7b:c947:: with SMTP id i7mr10785696wml.136.1631811917336;
+        Thu, 16 Sep 2021 10:05:17 -0700 (PDT)
 Received: from kozik-lap.lan (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
-        by smtp.gmail.com with ESMTPSA id l15sm8025724wme.42.2021.09.16.10.05.12
+        by smtp.gmail.com with ESMTPSA id c15sm4139446wrc.83.2021.09.16.10.05.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 10:05:12 -0700 (PDT)
+        Thu, 16 Sep 2021 10:05:16 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Ben Dooks <ben-linux@fluff.org>,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org
-Subject: [PATCH] mmc: sdhci-s3c: drop unneeded MODULE_ALIAS
-Date:   Thu, 16 Sep 2021 19:05:11 +0200
-Message-Id: <20210916170511.137915-1-krzysztof.kozlowski@canonical.com>
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-input@vger.kernel.org
+Subject: [PATCH] input: max77693-haptic: drop unneeded MODULE_ALIAS
+Date:   Thu, 16 Sep 2021 19:05:14 +0200
+Message-Id: <20210916170514.137977-1-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -75,18 +73,19 @@ driver.  Having another MODULE_ALIAS causes the alias to be duplicated.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- drivers/mmc/host/sdhci-s3c.c | 1 -
+ drivers/input/misc/max77693-haptic.c | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/drivers/mmc/host/sdhci-s3c.c b/drivers/mmc/host/sdhci-s3c.c
-index 862f033d235d..9085f3932443 100644
---- a/drivers/mmc/host/sdhci-s3c.c
-+++ b/drivers/mmc/host/sdhci-s3c.c
-@@ -791,4 +791,3 @@ module_platform_driver(sdhci_s3c_driver);
- MODULE_DESCRIPTION("Samsung SDHCI (HSMMC) glue");
- MODULE_AUTHOR("Ben Dooks, <ben@simtec.co.uk>");
- MODULE_LICENSE("GPL v2");
--MODULE_ALIAS("platform:s3c-sdhci");
+diff --git a/drivers/input/misc/max77693-haptic.c b/drivers/input/misc/max77693-haptic.c
+index 0d09ffeafeea..4369d3c04d38 100644
+--- a/drivers/input/misc/max77693-haptic.c
++++ b/drivers/input/misc/max77693-haptic.c
+@@ -424,5 +424,4 @@ module_platform_driver(max77693_haptic_driver);
+ MODULE_AUTHOR("Jaewon Kim <jaewon02.kim@samsung.com>");
+ MODULE_AUTHOR("Krzysztof Kozlowski <krzk@kernel.org>");
+ MODULE_DESCRIPTION("MAXIM 77693/77843 Haptic driver");
+-MODULE_ALIAS("platform:max77693-haptic");
+ MODULE_LICENSE("GPL");
 -- 
 2.30.2
 
