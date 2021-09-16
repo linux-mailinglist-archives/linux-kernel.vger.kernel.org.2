@@ -2,100 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F266240EAD1
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 21:30:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 792B140EAD4
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 21:30:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232273AbhIPTbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 15:31:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53562 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231220AbhIPTbk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 15:31:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631820619;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=5D5yhincqgbc1iu/FJNR6o/naKwsnQ2+Q1T7O43eoLs=;
-        b=QS+4yrLA/FfLz1HwuovM07Dbb5uscNuZf4k96XKZ2sajrje0b1L51KzjAMwNvmoNhDqrqS
-        mF14+Vinnn5J1exVTCAir9uuEmLin7mqAf/lIqXdoQ1/Iae1FS2QPDVxmg29UUAVrIHqh7
-        6morrVi3/9vgSFsIGR5okdM2A6YrEEE=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-202-osJFb6evMxi80noo0saNYg-1; Thu, 16 Sep 2021 15:30:18 -0400
-X-MC-Unique: osJFb6evMxi80noo0saNYg-1
-Received: by mail-qk1-f199.google.com with SMTP id w2-20020a3794020000b02903b54f40b442so46690518qkd.0
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 12:30:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5D5yhincqgbc1iu/FJNR6o/naKwsnQ2+Q1T7O43eoLs=;
-        b=ZmMLGZ095fPm/3BZZs5rb8syyI6a9mrWeJpG5NCQ337nQXNKlVY1A09s6qZVu9TCX4
-         5LE69PmxWSvqVGXgFLaTLqVhXzZLOrlMiCvdYeSt+z0Ab8RHhoF5G7FarMcs23ucCErW
-         aPX2w/XsmHNkbLZSeWp1yfplPexiPJi9Lj3FEKnAZnjliaja0G6LCpdJThqIM0UFfrXj
-         4o9K8WmzCtvbIBTpVUdyaCnvnoHoDAkLFN98oJBBrWo6zngCO+Hl+cvSYCaXdmGh+MRF
-         dJjYTMYQ0A2HtzzKGQ69/YS9NGAoHYrPFEz6yKCifFIjVGMaKKFmR6SgwLERT7xJBg8B
-         UMbw==
-X-Gm-Message-State: AOAM533XBaaI3PGClDPoLQ9vStb/JNuNHOXukcG17Ajv6A/yTm4drndn
-        w6j6zIwMBNY4YEUHxPl/zVcgDYNqxvEHuP5dvNuq3Nw6A9yp2ruhij7jkimlSc2nKBUWoN7fFwu
-        uAyEOxk0nutGKRSJA2Zr96BYAuctmiVc3IXOfoEk8hYbXK04rUw9glUrKrThhX3cQoIWXEmIAtQ
-        ==
-X-Received: by 2002:a0c:b293:: with SMTP id r19mr6970246qve.19.1631820617017;
-        Thu, 16 Sep 2021 12:30:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzqeLKuf5ivkxMjhQDe53fj1yQG4lPZk//lUhSnJ6TsUY8EFOsN6hwpooVF5qeMEMdERo/8Ew==
-X-Received: by 2002:a0c:b293:: with SMTP id r19mr6970214qve.19.1631820616746;
-        Thu, 16 Sep 2021 12:30:16 -0700 (PDT)
-Received: from t490s.redhat.com ([2607:fea8:56a2:9100::d35a])
-        by smtp.gmail.com with ESMTPSA id 90sm2731123qte.89.2021.09.16.12.30.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 12:30:16 -0700 (PDT)
-From:   Peter Xu <peterx@redhat.com>
-To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>, peterx@redhat.com,
-        Matthew Wilcox <willy@infradead.org>
-Subject: [PATCH] mm/memcg: Drop swp_entry_t* in mc_handle_file_pte()
-Date:   Thu, 16 Sep 2021 15:30:14 -0400
-Message-Id: <20210916193014.80129-1-peterx@redhat.com>
-X-Mailer: git-send-email 2.31.1
+        id S232523AbhIPTbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 15:31:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54640 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232339AbhIPTbr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 15:31:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AA59A610E9;
+        Thu, 16 Sep 2021 19:30:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631820626;
+        bh=9qRDdP6gfHQc9hhGvzgphNmJhjP4BYaLxJ8+rvQ48Do=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=uYjB8O3mGxxihk4B4upmCralEF5o6Aoz9riIrmdtdO8Ciu6UJQUPaoda0fGm5XXvF
+         8J6liGirTA0NHuA729Qkcn2PHbFREpQuRi2xsArseqmIhTQ45yYkgZ7eQQMFHGP4Vz
+         z/+K8cx09aX/EqngLRQJwt/0+WbLQiYgS4hFW4RWi+ZcYYI6m0taqoJ6Y/wIE/mUrT
+         lHtn3agVbAjeJahDgCzKck7rMcREPeh4l0AbXIyprKusSltWiIz6c7+27zbBsh79qG
+         B8wi0Lk5g2PWP91osENruUUM7PHq8yjWVwmnTNjhLsHKnomArUPrbUeQCqhu1OMpED
+         eORkXY4KvoYQA==
+Received: by mail-pj1-f45.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so8311095pjr.1;
+        Thu, 16 Sep 2021 12:30:26 -0700 (PDT)
+X-Gm-Message-State: AOAM533EQzIqpO5BSX1XV7MoNAfS/CIjywmD8ACVHcjRVInRLEEIzQuW
+        iWD5krjL+dmsE45XOBBZ0u3jbPqcfikuGNPH8SE=
+X-Google-Smtp-Source: ABdhPJz9aQpTWcQ7/SiKiJtQrXmzD46+b88wZ/HHYHJ3KKzj4pO51H7Ki1wGQBosVOgPTh5jjsbJPw0Sax5iMLwba7E=
+X-Received: by 2002:a17:90b:4c52:: with SMTP id np18mr16157304pjb.157.1631820626338;
+ Thu, 16 Sep 2021 12:30:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210916153056.13674-1-caihuoqing@baidu.com>
+In-Reply-To: <20210916153056.13674-1-caihuoqing@baidu.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Thu, 16 Sep 2021 21:30:14 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPc9FtV6Pe55mk-HBS77vYo=rWauPOF_LJw3RuTyKC+XyQ@mail.gmail.com>
+Message-ID: <CAJKOXPc9FtV6Pe55mk-HBS77vYo=rWauPOF_LJw3RuTyKC+XyQ@mail.gmail.com>
+Subject: Re: [PATCH] Input: ad7879 - Make use of the helper function dev_err_probe()
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     Michael Hennerich <michael.hennerich@analog.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-input@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After the rework of f5df8635c5a3 ("mm: use find_get_incore_page in memcontrol",
-2020-10-13) it's unused.
+On Thu, 16 Sept 2021 at 17:47, Cai Huoqing <caihuoqing@baidu.com> wrote:
+>
+> When possible use dev_err_probe help to properly deal with the
+> PROBE_DEFER error, the benefit is that DEFER issue will be logged
+> in the devices_deferred debugfs file.
+> Using dev_err_probe() can reduce code size, and the error value
+> gets printed.
+>
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+> ---
+>  drivers/input/touchscreen/ad7879.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
 
-Cc: Matthew Wilcox <willy@infradead.org>
-Signed-off-by: Peter Xu <peterx@redhat.com>
----
- mm/memcontrol.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index b762215d73eb..12fa08e216a6 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -5555,7 +5555,7 @@ static struct page *mc_handle_swap_pte(struct vm_area_struct *vma,
- #endif
- 
- static struct page *mc_handle_file_pte(struct vm_area_struct *vma,
--			unsigned long addr, pte_t ptent, swp_entry_t *entry)
-+			unsigned long addr, pte_t ptent)
- {
- 	if (!vma->vm_file) /* anonymous vma */
- 		return NULL;
-@@ -5728,7 +5728,7 @@ static enum mc_target_type get_mctgt_type(struct vm_area_struct *vma,
- 	else if (is_swap_pte(ptent))
- 		page = mc_handle_swap_pte(vma, ptent, &ent);
- 	else if (pte_none(ptent))
--		page = mc_handle_file_pte(vma, addr, ptent, &ent);
-+		page = mc_handle_file_pte(vma, addr, ptent);
- 
- 	if (!page && !ent.val)
- 		return ret;
--- 
-2.31.1
+Please do not send patches one by one but group them in a series.
 
+The patches you sent were already sent before:
+https://lore.kernel.org/lkml/20200827185829.30096-1-krzk@kernel.org/
+
+If such conversion is still applicable (although I have doubts -
+preferred is to remove dev_err entirely), then I can rebase my older
+series.
+
+Best regards,
+Krzysztof
