@@ -2,162 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 034A640D220
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 05:45:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF43F40D221
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 05:46:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234221AbhIPDqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 23:46:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233856AbhIPDqr (ORCPT
+        id S233897AbhIPDrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 23:47:46 -0400
+Received: from smtprelay0162.hostedemail.com ([216.40.44.162]:33996 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232541AbhIPDrp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 23:46:47 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBC82C061574;
-        Wed, 15 Sep 2021 20:45:27 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id a22so6207730iok.12;
-        Wed, 15 Sep 2021 20:45:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=PandIsADvqsUupHjnSGXxhHD/qBHusaqiIcrYmYtH/4=;
-        b=P1vsn6ifdxH7RpFXkSK6CUHK9RFHfhmfm8/RZLjtc+Cw+iI5Dff46aXEZHD+9GHIXA
-         ipNW+YJpUBOPigSQ+OaWKyAPkt3aPZOex41CPL0d7rxDT0WvniHD5Qg+O20p+lh3fJOf
-         o0pXeDQXY+cdJlaKrBltTP/A1vWgqaKjufmaxZxk0rLrNNwJErwETImQ+1m9ulWbU00Q
-         je2oWDAHAY327lq6MhnqyrJ+33jwwDLX/RFxMvBjppyzDKuV/i//5+ahXtSMJsVHgB03
-         4eFyfpwMADNu8lgK8lpm9yKnDUz60aaZY2qiPfXX9O2tM3qXq7KDkhibBJ35ht/eiath
-         QSBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=PandIsADvqsUupHjnSGXxhHD/qBHusaqiIcrYmYtH/4=;
-        b=4Mrok4obJHWLpP7YCKdoUPgY7VWiwtBX43dBqGvioQTsOm8tK6VtjxceiPvnHehSrG
-         O2tJKM1bbEs8Xq4Rhl5u8N8IWBMnnaLgXMUhKk6sDxqFB7/SSWTv+XTWPzsPskNit2yD
-         EIqdlxr1ocGp0kbkgOY3PHqlraQbjJgDXr9ylMYln3cDKt9eFxsLD+sP5zVqwYjUblDi
-         TMxaAQoszzaHzSdPEMG6rx1V0G87P6s0NsLlWp8BAK/vYuEk0ceAt4XlYwTgAPWTncju
-         6wiADFsfPY85crjve3xdsA/FrOEKhKRgKHw+/daqBb/nRdM6/skNIAknfZ7f16T0o5D5
-         NqjQ==
-X-Gm-Message-State: AOAM532TanGwIuIiMBn3C/PtEjG9PcdNpgR5dW3YDNfiyccP3W+4slbu
-        niyN0ZHR2ZKuQD7E97lxPf/x74yEoCMggRWUcZI=
-X-Google-Smtp-Source: ABdhPJxAz0aGqVeUQgpt7k92eRjZYuoYezk42H4eflVKJFVEcmoA9ZlyR4NdfsWpPrEJAOruBNvy1QASlPCZuN53qEo=
-X-Received: by 2002:a5e:d70a:: with SMTP id v10mr2750143iom.10.1631763927102;
- Wed, 15 Sep 2021 20:45:27 -0700 (PDT)
+        Wed, 15 Sep 2021 23:47:45 -0400
+Received: from omf18.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id ADEF0837F24A;
+        Thu, 16 Sep 2021 03:46:24 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf18.hostedemail.com (Postfix) with ESMTPA id F3A462EBF98;
+        Thu, 16 Sep 2021 03:46:23 +0000 (UTC)
+Message-ID: <faefcecf38e0c108be86f05f79f290e918016c13.camel@perches.com>
+Subject: Re: False positive for 'Possible unnecessary KERN_ERR' warning in
+ checkpatch
+From:   Joe Perches <joe@perches.com>
+To:     Niklas =?ISO-8859-1?Q?S=F6derlund?= 
+        <niklas.soderlund@corigine.com>
+Cc:     Andy Whitcroft <apw@canonical.com>, linux-kernel@vger.kernel.org
+Date:   Wed, 15 Sep 2021 20:46:22 -0700
+In-Reply-To: <YUDIOLTCe0/kzVSW@bismarck.dyn.berto.se>
+References: <YUDIOLTCe0/kzVSW@bismarck.dyn.berto.se>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-References: <20210906012559.8605-1-baptiste.lepers@gmail.com>
- <20210906122747.GG3379@suse.cz> <CABdVr8Rfd3jXvaa_GYzSqpqUs3Fy7AVHou5z8vHXBhn-YenZfg@mail.gmail.com>
- <CABdVr8SfdsxmfgBPBbt70Ci8C=a+8__2f5AeZ7KnpQ6-X6dg7w@mail.gmail.com>
-In-Reply-To: <CABdVr8SfdsxmfgBPBbt70Ci8C=a+8__2f5AeZ7KnpQ6-X6dg7w@mail.gmail.com>
-From:   Baptiste Lepers <baptiste.lepers@gmail.com>
-Date:   Thu, 16 Sep 2021 13:45:16 +1000
-Message-ID: <CABdVr8QLZ7vHh=Prt_W0LLOLMMJQJySyjZ3cw04HR7O4nfq1_Q@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: transaction: Fix misplaced barrier in btrfs_record_root_in_trans
-To:     dsterba@suse.cz, Baptiste Lepers <baptiste.lepers@gmail.com>,
-        "Paul E . McKenney" <paulmck@linux.ibm.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.08
+X-Stat-Signature: fwkk6k51xd967gxqym9431ci19hbt9hy
+X-Rspamd-Server: rspamout02
+X-Rspamd-Queue-Id: F3A462EBF98
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/JyTvglfxhNjZM4VK80aLGqvyIKxzQ31Q=
+X-HE-Tag: 1631763983-93307
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just curious about the status of this patch. :) Let me know if you
-need further information.
+On Tue, 2021-09-14 at 18:05 +0200, Niklas Söderlund wrote:
+> Hi Joe,
+> 
+> Maybe you are already aware of this, but in case you are not.
+> 
+> The issue is the checkpatch check for unnecessary KERN_<LEVEL> for log 
+> functions. If a single line contains a statement that match a log 
+> function name from $logFunctions, such as foo_err() and the same line 
+> contains a KERN_<LEVEL> statement the 'WARNING: Possible unnecessary 
+> KERN_ERR' is triggered. This is true even if the KERN_<LEVEL> statement 
+> is not part of the arguments to the foo_err() definition that triggers 
+> the first part of the check.
+> 
+> This can be demonstrated by,
+> 
+>     ./scripts/checkpatch.pl --mailback --git c821e617896e99b8
+> 
+> Where we get (among others) the warning,
+> 
+>     WARNING: Possible unnecessary KERN_ERR
+>     #38: FILE: drivers/net/ethernet/netronome/nfp/nfp_net.h:63:
+>     +#define nn_err(nn, fmt, args...)	nn_pr(nn, KERN_ERR, fmt, ## args)
+> 
+> Looking at the code in checkpatch.pl we have,
+> 
+> our $logFunctions = qr{(?x:
+>         printk(?:_ratelimited|_once|_deferred_once|_deferred|)|
+>         (?:[a-z0-9]+_){1,2}(?:printk|emerg|alert|crit|err|warning|warn|notice|info|debug|dbg|vdbg|devel|cont|WARN)(?:_ratelimited|_once|)|
+>         TP_printk|
+>         WARN(?:_RATELIMIT|_ONCE|)|
+>         panic|
+>         MODULE_[A-Z_]+|
+>         seq_vprintf|seq_printf|seq_puts
+> )};
+> 
+> ...
+> 
+> # check for logging functions with KERN_<LEVEL>
+>                 if ($line !~ /printk(?:_ratelimited|_once)?\s*\(/ &&
+>                     $line =~ /\b$logFunctions\s*\(.*\b(KERN_[A-Z]+)\b/) {
+>                         my $level = $1;
+>                         if (WARN("UNNECESSARY_KERN_LEVEL",
+>                                  "Possible unnecessary $level\n" . $herecurr) &&
+>                             $fix) {
+>                                 $fixed[$fixlinenr] =~ s/\s*$level\s*//;
+>                         }
+>                 }
+> 
+> Looking at the line from above that triggers the warning,
+> 
+> 	#define nn_err(nn, fmt, args...)   nn_pr(nn, KERN_ERR, fmt, ## args)
+> 
+> We see that the warning is triggers by the regexp but that it matches 
+> the first part on nn_err( and then the second part of on the second 
+> argument to nn_pr, KERN_ERR. I believe this to be a false positive.
+> 
+> Unfortunately my Perl skills are not good enough to fix the check to only 
+> look for KERN_[A-Z]+ inside the argument list to the log function name 
+> that matches the first part of the regexp.
+> 
 
-Thanks!
+I would have avoided it and gotten dynamic debug support at the
+same time with:
+---
+ drivers/net/ethernet/netronome/nfp/nfp_net.h | 48 ++++++++++++++--------------
+ 1 file changed, 24 insertions(+), 24 deletions(-)
 
-On Tue, Sep 7, 2021 at 10:44 AM Baptiste Lepers
-<baptiste.lepers@gmail.com> wrote:
->
-> No, they need to be between the reads to have an effect. See
-> https://www.kernel.org/doc/Documentation/memory-barriers.txt =C2=A7SMP
-> BARRIER PAIRING ("When dealing with CPU-CPU interactions..."). You
-> will see that the barriers are always between the ordered reads and
-> not before.
->
-> I think that Paul, the barrier guru, can confirm that the barrier was
-> misplaced in the original code? :)
->
->
-> On Tue, Sep 7, 2021 at 10:43 AM Baptiste Lepers
-> <baptiste.lepers@gmail.com> wrote:
-> >
-> >
-> >
-> > On Mon, Sep 6, 2021 at 10:27 PM David Sterba <dsterba@suse.cz> wrote:
-> >>
-> >> On Mon, Sep 06, 2021 at 11:25:59AM +1000, Baptiste Lepers wrote:
-> >> > Per comment, record_root_in_trans orders the writes of the root->sta=
-te
-> >> > and root->last_trans:
-> >> >       set_bit(BTRFS_ROOT_IN_TRANS_SETUP, &root->state);
-> >> >       smp_wmb();
-> >> >       root->last_trans =3D trans->transid;
-> >> >
-> >> > But the barrier that enforces the order on the read side is misplace=
-d:
-> >> >      smp_rmb(); <-- misplaced
-> >> >      if (root->last_trans =3D=3D trans->transid &&
-> >> >     <-- missing barrier here -->
-> >> >             !test_bit(BTRFS_ROOT_IN_TRANS_SETUP, &root->state))
-> >> >
-> >> > This patches fixes the ordering and wraps the racy accesses with
-> >> > READ_ONCE and WRITE_ONCE calls to avoid load/store tearing.
-> >> >
-> >> > Fixes: 7585717f304f5 ("Btrfs: fix relocation races")
-> >> > Signed-off-by: Baptiste Lepers <baptiste.lepers@gmail.com>
-> >> > ---
-> >> >  fs/btrfs/transaction.c | 7 ++++---
-> >> >  1 file changed, 4 insertions(+), 3 deletions(-)
-> >> >
-> >> > diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-> >> > index 14b9fdc8aaa9..a609222e6704 100644
-> >> > --- a/fs/btrfs/transaction.c
-> >> > +++ b/fs/btrfs/transaction.c
-> >> > @@ -437,7 +437,7 @@ static int record_root_in_trans(struct btrfs_tra=
-ns_handle *trans,
-> >> >                                  (unsigned long)root->root_key.objec=
-tid,
-> >> >                                  BTRFS_ROOT_TRANS_TAG);
-> >> >               spin_unlock(&fs_info->fs_roots_radix_lock);
-> >> > -             root->last_trans =3D trans->transid;
-> >> > +             WRITE_ONCE(root->last_trans, trans->transid);
-> >> >
-> >> >               /* this is pretty tricky.  We don't want to
-> >> >                * take the relocation lock in btrfs_record_root_in_tr=
-ans
-> >> > @@ -489,7 +489,7 @@ int btrfs_record_root_in_trans(struct btrfs_tran=
-s_handle *trans,
-> >> >                              struct btrfs_root *root)
-> >> >  {
-> >> >       struct btrfs_fs_info *fs_info =3D root->fs_info;
-> >> > -     int ret;
-> >> > +     int ret, last_trans;
-> >> >
-> >> >       if (!test_bit(BTRFS_ROOT_SHAREABLE, &root->state))
-> >> >               return 0;
-> >> > @@ -498,8 +498,9 @@ int btrfs_record_root_in_trans(struct btrfs_tran=
-s_handle *trans,
-> >> >        * see record_root_in_trans for comments about IN_TRANS_SETUP =
-usage
-> >> >        * and barriers
-> >> >        */
-> >> > +     last_trans =3D READ_ONCE(root->last_trans);
-> >> >       smp_rmb();
-> >> > -     if (root->last_trans =3D=3D trans->transid &&
-> >> > +     if (last_trans =3D=3D trans->transid &&
-> >> >           !test_bit(BTRFS_ROOT_IN_TRANS_SETUP, &root->state))
-> >>
-> >> Aren't the smp_rmb barriers supposed to be used before the condition?
-> >
-> >
-> > No, they need to be between the reads to have an effect. See  https://w=
-ww.kernel.org/doc/Documentation/memory-barriers.txt =C2=A7SMP BARRIER PAIRI=
-NG ("When dealing with CPU-CPU interactions..."). You will see that the bar=
-riers are always between the ordered reads and not before.
-> >
-> > I think that Paul, the barrier guru, can confirm that the barrier was m=
-isplaced in the original code? :)
+diff --git a/drivers/net/ethernet/netronome/nfp/nfp_net.h b/drivers/net/ethernet/netronome/nfp/nfp_net.h
+index df203738511bf..46178a7244ad8 100644
+--- a/drivers/net/ethernet/netronome/nfp/nfp_net.h
++++ b/drivers/net/ethernet/netronome/nfp/nfp_net.h
+@@ -25,32 +25,32 @@
+ 
+ #include "nfp_net_ctrl.h"
+ 
+-#define nn_pr(nn, lvl, fmt, args...)					\
+-	({								\
+-		struct nfp_net *__nn = (nn);				\
++#define nn_pr(nn, lvl, fmt, ...)					\
++({									\
++	struct nfp_net *__nn = (nn);					\
+ 									\
+-		if (__nn->dp.netdev)					\
+-			netdev_printk(lvl, __nn->dp.netdev, fmt, ## args); \
+-		else							\
+-			dev_printk(lvl, __nn->dp.dev, "ctrl: " fmt, ## args); \
+-	})
+-
+-#define nn_err(nn, fmt, args...)	nn_pr(nn, KERN_ERR, fmt, ## args)
+-#define nn_warn(nn, fmt, args...)	nn_pr(nn, KERN_WARNING, fmt, ## args)
+-#define nn_info(nn, fmt, args...)	nn_pr(nn, KERN_INFO, fmt, ## args)
+-#define nn_dbg(nn, fmt, args...)	nn_pr(nn, KERN_DEBUG, fmt, ## args)
+-
+-#define nn_dp_warn(dp, fmt, args...)					\
+-	({								\
+-		struct nfp_net_dp *__dp = (dp);				\
++	if (__nn->dp.netdev)						\
++		netdev_##lvl(__nn->dp.netdev, fmt, ##__VA_ARGS__);	\
++	else								\
++		dev_##lvl(__nn->dp.dev, "ctrl: " fmt, ##__VA_ARGS__);	\
++})
++
++#define nn_err(nn, fmt, ...)	nn_pr(nn, err, fmt, ##__VA_ARGS__)
++#define nn_warn(nn, fmt, ...)	nn_pr(nn, warn, fmt, ##__VA_ARGS__)
++#define nn_info(nn, fmt, ...)	nn_pr(nn, info, fmt, ##__VA_ARGS__)
++#define nn_dbg(nn, fmt, ...)	nn_pr(nn, dbg, fmt, ##__VA_ARGS__)
++
++#define nn_dp_warn(dp, fmt, ...)					\
++({									\
++	struct nfp_net_dp *__dp = (dp);					\
+ 									\
+-		if (unlikely(net_ratelimit())) {			\
+-			if (__dp->netdev)				\
+-				netdev_warn(__dp->netdev, fmt, ## args); \
+-			else						\
+-				dev_warn(__dp->dev, fmt, ## args);	\
+-		}							\
+-	})
++	if (unlikely(net_ratelimit())) {				\
++		if (__dp->netdev)					\
++			netdev_warn(__dp->netdev, fmt, ##__VA_ARGS__);	\
++		else							\
++			dev_warn(__dp->dev, fmt, ##__VA_ARGS__);	\
++	}								\
++})
+ 
+ /* Max time to wait for NFP to respond on updates (in seconds) */
+ #define NFP_NET_POLL_TIMEOUT	5
+
+
