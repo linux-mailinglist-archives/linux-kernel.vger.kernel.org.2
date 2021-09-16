@@ -2,147 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D30740DBDA
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 15:54:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B345340DBDF
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 15:55:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236178AbhIPN4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 09:56:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236844AbhIPNz6 (ORCPT
+        id S236801AbhIPN4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 09:56:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42509 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235959AbhIPN4Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 09:55:58 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96B50C0613E0
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 06:54:24 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id j6so5985668pfa.4
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 06:54:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RBxaFu3pY1XGgJ+O5Jy/ycVlHu3l8KkYJ5CJh2tLDGE=;
-        b=zycJseAEgDTdHciu+zr6qozTIWy9Um9QTI433DBMma7E9/71DKRz83ov5jyljAUFHf
-         JVmwZX8C77ymWd1xmUAiHTQOFq4BCwnFLMyU2aQmskWTfeDJSCz0UDcUMk85IZ35FEdC
-         O1DMlfAnpOIZZpPIlkcAj8dUQhZWiDvz/khCQUp/HwwsuMPhG0e4Xdcc9mTpeKUKzune
-         Jdwa+CeOfdzO9PbVAHck/8IDY9yK8wQpdkC+9R1AVZZuWwiuzfaHIuC24dYKxpOx5T1y
-         WDFIV/KL37K0mP7LrINbOKFe8NAKRSeTqaIOTRFGfr0/GobB0i50/97QiV6CymKt1o1z
-         UnmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RBxaFu3pY1XGgJ+O5Jy/ycVlHu3l8KkYJ5CJh2tLDGE=;
-        b=YKe6dzgLP7ktRZgSs0VE/rBO1p8quT5qEZh2HoZip2dS76c5paR7T0k6k7CqfQZA6f
-         g+O+DNl1lfJn+6SI27zEPhG682axAQi39A826Judn/xMdTojHStOSiXP0t1v8E7YMQQq
-         mA4AAxVMAFe4sZbwYkYzzWGaOXPAVXBVwt4hly3dQD6pHUxrniq46tbty4tdfDyiuNtJ
-         uVScCg+N7NyFrTcTaMWyzRWK0si8Bs770NDD3/RIS9J+YbyyuYYqWZxpU0RG5J+3sGYj
-         GLZbOz8wwAjFncdtdAwS3MoIsbePvSZkJl9qGNTSyuN0MK02/fFGGcuELmBvWZTeJ8WN
-         U0bQ==
-X-Gm-Message-State: AOAM532Q+tcxhOd6RNg1CqKWBxlL9TXqMNNgdHDS3ND7iKCQYN8mcAFs
-        JLHAyZiYCmSVJ+1wQgKdUdU6Zw==
-X-Google-Smtp-Source: ABdhPJyHcd9SoDVspAfCj4bePj6K8NMYfKUSSnWreCaAC3Q/YuNKN+3yErhgRupe1mYJH1TjXR5Y2Q==
-X-Received: by 2002:aa7:9115:0:b029:359:69db:bc89 with SMTP id 21-20020aa791150000b029035969dbbc89mr5436462pfh.32.1631800463937;
-        Thu, 16 Sep 2021 06:54:23 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([213.173.35.225])
-        by smtp.gmail.com with ESMTPSA id e5sm7887253pjv.44.2021.09.16.06.54.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 06:54:23 -0700 (PDT)
-Date:   Thu, 16 Sep 2021 21:54:18 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        James Clark <james.clark@arm.com>,
-        Tan Xiaojun <tanxiaojun@huawei.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [RFC] perf arm-spe: Track task context switch for cpu-mode events
-Message-ID: <20210916135418.GA383600@leoy-ThinkPad-X240s>
-References: <20210916001748.1525291-1-namhyung@kernel.org>
+        Thu, 16 Sep 2021 09:56:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631800504;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=O5MT7htep4lfFb5DF7TWazpr34VmiixYifF4+r3+XCo=;
+        b=ZRxSC7AFRVQ67AEcvr6SooSqRv/bQgT0e2dpx2xz9fvz311OlFVVbp196J8Q/xvK04Avvs
+        wfMVNT8Gd/LfVLNeowV+ls/T/OfNnNA0EkkwrVKnkZxqkOWTgstXmdq/Uay8q3s3+/I434
+        eKhTJoGlHcXv/SGGwvAsq3VURgfiXJg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-368-iEVy8uiXOMe8szfMmGzbTA-1; Thu, 16 Sep 2021 09:55:01 -0400
+X-MC-Unique: iEVy8uiXOMe8szfMmGzbTA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EF79C802947;
+        Thu, 16 Sep 2021 13:54:59 +0000 (UTC)
+Received: from T590 (ovpn-12-89.pek2.redhat.com [10.72.12.89])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 77A675C1D5;
+        Thu, 16 Sep 2021 13:54:49 +0000 (UTC)
+Date:   Thu, 16 Sep 2021 21:55:01 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     "yukuai (C)" <yukuai3@huawei.com>
+Cc:     josef@toxicpanda.com, axboe@kernel.dk, hch@infradead.org,
+        linux-block@vger.kernel.org, nbd@other.debian.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
+Subject: Re: [patch v8 7/7] nbd: fix uaf in nbd_handle_reply()
+Message-ID: <YUNMtcDYG+Uk/gzO@T590>
+References: <20210916093350.1410403-1-yukuai3@huawei.com>
+ <20210916093350.1410403-8-yukuai3@huawei.com>
+ <YUM/cNzr6PTXFVAX@T590>
+ <f0a72b72-19c9-f01d-806d-d27f854dea8f@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210916001748.1525291-1-namhyung@kernel.org>
+In-Reply-To: <f0a72b72-19c9-f01d-806d-d27f854dea8f@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Namhyung,
-
-On Wed, Sep 15, 2021 at 05:17:48PM -0700, Namhyung Kim wrote:
-> When perf report synthesize events from ARM SPE data, it refers to
-> current cpu, pid and tid in the machine.  But there's no place to set
-> them in the ARM SPE decoder.  I'm seeing all pid/tid is set to -1 and
-> user symbols are not resolved in the output.
+On Thu, Sep 16, 2021 at 09:10:37PM +0800, yukuai (C) wrote:
+> On 2021/09/16 20:58, Ming Lei wrote:
+> > On Thu, Sep 16, 2021 at 05:33:50PM +0800, Yu Kuai wrote:
+> > > There is a problem that nbd_handle_reply() might access freed request:
+> > > 
+> > > 1) At first, a normal io is submitted and completed with scheduler:
+> > > 
+> > > internel_tag = blk_mq_get_tag -> get tag from sched_tags
+> > >   blk_mq_rq_ctx_init
+> > >    sched_tags->rq[internel_tag] = sched_tag->static_rq[internel_tag]
+> > > ...
+> > > blk_mq_get_driver_tag
+> > >   __blk_mq_get_driver_tag -> get tag from tags
+> > >   tags->rq[tag] = sched_tag->static_rq[internel_tag]
+> > > 
+> > > So, both tags->rq[tag] and sched_tags->rq[internel_tag] are pointing
+> > > to the request: sched_tags->static_rq[internal_tag]. Even if the
+> > > io is finished.
+> > > 
+> > > 2) nbd server send a reply with random tag directly:
+> > > 
+> > > recv_work
+> > >   nbd_handle_reply
+> > >    blk_mq_tag_to_rq(tags, tag)
+> > >     rq = tags->rq[tag]
+> > > 
+> > > 3) if the sched_tags->static_rq is freed:
+> > > 
+> > > blk_mq_sched_free_requests
+> > >   blk_mq_free_rqs(q->tag_set, hctx->sched_tags, i)
+> > >    -> step 2) access rq before clearing rq mapping
+> > >    blk_mq_clear_rq_mapping(set, tags, hctx_idx);
+> > >    __free_pages() -> rq is freed here
+> > > 
+> > > 4) Then, nbd continue to use the freed request in nbd_handle_reply
+> > > 
+> > > Fix the problem by get 'q_usage_counter' before blk_mq_tag_to_rq(),
+> > > thus request is ensured not to be freed because 'q_usage_counter' is
+> > > not zero.
+> > > 
+> > > Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> > > ---
+> > >   drivers/block/nbd.c | 14 ++++++++++++++
+> > >   1 file changed, 14 insertions(+)
+> > > 
+> > > diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+> > > index 69dc5eac9ad3..b3a47fc6237f 100644
+> > > --- a/drivers/block/nbd.c
+> > > +++ b/drivers/block/nbd.c
+> > > @@ -825,6 +825,7 @@ static void recv_work(struct work_struct *work)
+> > >   						     work);
+> > >   	struct nbd_device *nbd = args->nbd;
+> > >   	struct nbd_config *config = nbd->config;
+> > > +	struct request_queue *q = nbd->disk->queue;
+> > >   	struct nbd_sock *nsock;
+> > >   	struct nbd_cmd *cmd;
+> > >   	struct request *rq;
+> > > @@ -835,7 +836,20 @@ static void recv_work(struct work_struct *work)
+> > >   		if (nbd_read_reply(nbd, args->index, &reply))
+> > >   			break;
+> > > +		/*
+> > > +		 * Grab .q_usage_counter so request pool won't go away, then no
+> > > +		 * request use-after-free is possible during nbd_handle_reply().
+> > > +		 * If queue is frozen, there won't be any inflight requests, we
+> > > +		 * needn't to handle the incoming garbage message.
+> > > +		 */
+> > > +		if (!percpu_ref_tryget(&q->q_usage_counter)) {
+> > > +			dev_err(disk_to_dev(nbd->disk), "%s: no io inflight\n",
+> > > +				__func__);
+> > > +			break;
+> > > +		}
+> > > +
+> > >   		cmd = nbd_handle_reply(nbd, args->index, &reply);
+> > > +		percpu_ref_put(&q->q_usage_counter);
+> > >   		if (IS_ERR(cmd))
+> > >   			break;
+> > 
+> > The refcount needs to be grabbed when completing the request because
+> > the request may be completed from other code path, then the request pool
+> > will be freed from that code path when the request is referred.
 > 
->   # perf record -a -e arm_spe_0/ts_enable=1/ sleep 1
+> Hi,
 > 
->   # perf report -q | head
->      8.77%     8.77%  :-1      [kernel.kallsyms]  [k] format_decode
->      7.02%     7.02%  :-1      [kernel.kallsyms]  [k] seq_printf
->      7.02%     7.02%  :-1      [unknown]          [.] 0x0000ffff9f687c34
->      5.26%     5.26%  :-1      [kernel.kallsyms]  [k] vsnprintf
->      3.51%     3.51%  :-1      [kernel.kallsyms]  [k] string
->      3.51%     3.51%  :-1      [unknown]          [.] 0x0000ffff9f66ae20
->      3.51%     3.51%  :-1      [unknown]          [.] 0x0000ffff9f670b3c
->      3.51%     3.51%  :-1      [unknown]          [.] 0x0000ffff9f67c040
->      1.75%     1.75%  :-1      [kernel.kallsyms]  [k] ___cache_free
->      1.75%     1.75%  :-1      [kernel.kallsyms]  [k] __count_memcg_events
+> The request can't complete concurrently, thus put ref here is safe.
 > 
-> Like Intel PT, add context switch records to track task info.  As ARM
-> SPE support was added later than PERF_RECORD_SWITCH_CPU_WIDE, I think
-> we can safely set the attr.context_switch bit and use it.
+> There used to be a commet here that I tried to explain it... It's fine
+> to me to move it behind anyway.
 
-Thanks for the patch.
+Never see such comment. cmd->lock isn't held here, so I believe
+concurrent completion is possible here.
 
-Before we had discussion for enabling PID/TID for SPE samples; in the patch
-set [1], patches 07, 08 set sample's pid/tid based on the Arm SPE context
-packets.  To enable hardware tracing context ID, you also needs to enable
-kernel config CONFIG_PID_IN_CONTEXTIDR.
-
-At that time, there have a concern is the hardware context ID might
-introduce confusion for non-root namespace.
-
-We also considered to use PERF_RECORD_SWITCH_CPU_WIDE event for setting
-pid/tid, the Intel PT implementation uses two things to set sample's
-pid/tid: one is PERF_RECORD_SWITCH_CPU_WIDE event and another is to detect
-the branch instruction is the symbol "__switch_to".  Since the trace
-event PERF_RECORD_SWITCH_CPU_WIDE is coarse, so it only uses the new
-pid/tid after the branch instruction for "__switch_to".  Arm SPE is
-'statistical', thus it cannot promise the trace data must contain the
-branch instruction for "__switch_to", please see details [2].
-
-I think the feasible way is to use CONTEXTIDR to trace PID/TID _only_
-for root namespace, and the perf tool uses context packet to set
-pid/tid for samples.  So except we need patches 07 and 08, we also
-need a change in Arm SPE driver as below:
-
-diff --git a/drivers/perf/arm_spe_pmu.c b/drivers/perf/arm_spe_pmu.c
-index d44bcc29d99c..2553d53d3772 100644
---- a/drivers/perf/arm_spe_pmu.c
-+++ b/drivers/perf/arm_spe_pmu.c
-@@ -272,7 +272,9 @@ static u64 arm_spe_event_to_pmscr(struct perf_event *event)
-        if (!attr->exclude_kernel)
-                reg |= BIT(SYS_PMSCR_EL1_E1SPE_SHIFT);
- 
--       if (IS_ENABLED(CONFIG_PID_IN_CONTEXTIDR) && perfmon_capable())
-+       /* Only enable context ID tracing for root namespace */
-+       if (IS_ENABLED(CONFIG_PID_IN_CONTEXTIDR) && perfmon_capable() &&
-+           (task_active_pid_ns(current) == &init_pid_ns))
-                reg |= BIT(SYS_PMSCR_EL1_CX_SHIFT);
- 
-        return reg;
-
-Could you confirm if this works for you?  If it's okay for you, I will
-sync with James for upstreaming the changes.
 
 Thanks,
-Leo
+Ming
 
-[1] https://lore.kernel.org/lkml/20210119144658.793-8-james.clark@arm.com/
-[2] https://lore.kernel.org/lkml/20210204102734.GA4737@leoy-ThinkPad-X240s/
