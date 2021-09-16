@@ -2,64 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C171240D0F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 02:32:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83DFB40D126
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 03:17:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233639AbhIPAdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 20:33:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36580 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233592AbhIPAdx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 20:33:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id BA58C60F6D;
-        Thu, 16 Sep 2021 00:32:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631752353;
-        bh=a/XA1zZYARdyrZOimECF0MuxSN3+rgrHB9VZsxkkrlc=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=Ry7vJl60/w6ciji50W8a8aWBbNPFSqrfShDLMw3byNRqf2Hf12wVt4Qq2MiQ4ovHj
-         4O8Ka6IFmklYrUuDtBYzU6xu0015nENtHK5JdMmwmdoBmQdazEQpyzarbkCaUqTl3i
-         25TRAvWTJzTJA/IQr8H/CQao4LHvY/CuNzqwVJBd2rEXzSWxPCzENo/XAO70FGJy+t
-         OaO+d4f8xgE0hU7W5Y89axhVCpxsNOmbJ5Rqc5j4cLxziz+48R7YPwhNyHKXBwihm2
-         oQmIPnJmRCnAAMwDgZ27atU/N2kjQnbeSGN73Nz6ZyTnvQAVjREX80tqZ/p7heC78+
-         l37hagVq2IZwQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B2B9E60A22;
-        Thu, 16 Sep 2021 00:32:33 +0000 (UTC)
-Subject: Re: [GIT PULL] Hyper-V fixes for 5.15-rc2
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210915125506.4zra6p2b7qu7fz4d@liuwe-devbox-debian-v2>
-References: <20210915125506.4zra6p2b7qu7fz4d@liuwe-devbox-debian-v2>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210915125506.4zra6p2b7qu7fz4d@liuwe-devbox-debian-v2>
-X-PR-Tracked-Remote: ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-fixes-signed-20210915
-X-PR-Tracked-Commit-Id: dfb5c1e12c28e35e4d4e5bc8022b0e9d585b89a7
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: ff1ffd71d5f0612cf194f5705c671d6b64bf5f91
-Message-Id: <163175235372.18536.9635229087559879261.pr-tracker-bot@kernel.org>
-Date:   Thu, 16 Sep 2021 00:32:33 +0000
-To:     Wei Liu <wei.liu@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        kys@microsoft.com, haiyangz@microsoft.com, decui@microsoft.com,
-        sthemmin@microsoft.com
+        id S233730AbhIPBTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 21:19:12 -0400
+Received: from smtp-3.orcon.net.nz ([60.234.4.44]:35353 "EHLO
+        smtp-3.orcon.net.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233172AbhIPBTL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 21:19:11 -0400
+X-Greylist: delayed 2563 seconds by postgrey-1.27 at vger.kernel.org; Wed, 15 Sep 2021 21:19:10 EDT
+Received: from [121.99.228.40] (port=37816 helo=tower)
+        by smtp-3.orcon.net.nz with esmtpa (Exim 4.90_1)
+        (envelope-from <mcree@orcon.net.nz>)
+        id 1mQfMJ-0001rk-UM; Thu, 16 Sep 2021 12:34:36 +1200
+Date:   Thu, 16 Sep 2021 12:34:34 +1200
+From:   Michael Cree <mcree@orcon.net.nz>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-parisc@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
+        Sparse Mailing-list <linux-sparse@vger.kernel.org>
+Subject: Re: [PATCH v2 0/4] Introduce and use absolute_pointer macro
+Message-ID: <20210916003434.GB7246@tower>
+Mail-Followup-To: Michael Cree <mcree@orcon.net.nz>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-parisc@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
+        Sparse Mailing-list <linux-sparse@vger.kernel.org>
+References: <20210915035227.630204-1-linux@roeck-us.net>
+ <CAHk-=wjXr+NnNPTorhaW81eAbdF90foVo-5pQqRmXZi-ZGaX6Q@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjXr+NnNPTorhaW81eAbdF90foVo-5pQqRmXZi-ZGaX6Q@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-GeoIP: NZ
+X-Spam_score: -2.9
+X-Spam_score_int: -28
+X-Spam_bar: --
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 15 Sep 2021 12:55:06 +0000:
+On Wed, Sep 15, 2021 at 12:18:58PM -0700, Linus Torvalds wrote:
+> On Tue, Sep 14, 2021 at 8:52 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> >
+> > This patch series introduces absolute_pointer() to fix the problem.
+> > absolute_pointer() disassociates a pointer from its originating symbol
+> > type and context, and thus prevents gcc from making assumptions about
+> > pointers passed to memory operations.
+> 
+> Ok, I've applied this to my tree.
+> 
+> I note that the physical BOOT_PCB addresses in the alpha setup.h file
+> might be useful for things like MILO in user space, but since I
+> couldn't even find MILO sources any more, I couldn't really check.
+> 
+> I suspect alpha is basically on life support and presumably nobody
+> would ever compile a bootloader anyway, so it's unlikely to matter.
+> 
+> If somebody does find any issues, we'll know better and we can ask
+> where the user space sources are that might use that alpha setup.h
+> file.
 
-> ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-fixes-signed-20210915
+I think everyone uses aboot now as the bootloader on Alpha.  So as
+long as we can still compile aboot everyone should be happy.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/ff1ffd71d5f0612cf194f5705c671d6b64bf5f91
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Cheers
+Michael.
