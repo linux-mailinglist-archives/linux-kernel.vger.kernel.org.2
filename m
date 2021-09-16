@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04EE140E358
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:20:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C66D140E783
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:33:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242727AbhIPQrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:47:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51974 "EHLO mail.kernel.org"
+        id S1349182AbhIPRdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:33:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46924 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242128AbhIPQlv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:41:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CFF6561440;
-        Thu, 16 Sep 2021 16:24:19 +0000 (UTC)
+        id S232572AbhIPRX4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:23:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A59A61A3F;
+        Thu, 16 Sep 2021 16:43:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809460;
-        bh=hJq9Ki+WluUwy6uIyZphLMXchIWvjp7UattgDb7WsT8=;
+        s=korg; t=1631810605;
+        bh=7FvsFiEPAIWP317qoqfXay4JMpQCL7PcuvxmqY13QkY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HBEYRY3nmLzdVV8Tskpv2lP9YLPL8wTu3SPHkDVmqjtjp229ZvE0xh6s6IALWABHi
-         I5DRQZRQplZ8vNGh+o2O6s9PEXRv21HveQaTaedwATXxVlBuBL26a1ZD877VwkuNC6
-         KVjs4XqGK05mhD9roEQH1Br7Ghb5LWGEkl/gdNos=
+        b=IN4KhtL5GHz3qyp0TUlY7A52yQTSnGDmfvbKvCCUdqTNehswEATo/GezY2LitY4F1
+         t+ZY0TfwBtJLaxTCPFuMNAkrFqnuSJIZVvaYkdmzgSKfWvz5rjU2rDkGBDJ4Q7xOax
+         0m91KO88GnJC44kokzbXqjNF+ACI/crcpXp7XNrI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yonghong Song <yhs@fb.com>,
-        Yajun Deng <yajun.deng@linux.dev>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 162/380] netlink: Deal with ESRCH error in nlmsg_notify()
+Subject: [PATCH 5.14 170/432] media: ti-vpe: cal: fix error handling in cal_camerarx_create
 Date:   Thu, 16 Sep 2021 17:58:39 +0200
-Message-Id: <20210916155809.600104023@linuxfoundation.org>
+Message-Id: <20210916155816.499672264@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,67 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yajun Deng <yajun.deng@linux.dev>
+From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 
-[ Upstream commit fef773fc8110d8124c73a5e6610f89e52814637d ]
+[ Upstream commit 918d6d120a60c2640263396308eeb2b6afeb0cd6 ]
 
-Yonghong Song report:
-The bpf selftest tc_bpf failed with latest bpf-next.
-The following is the command to run and the result:
-$ ./test_progs -n 132
-[   40.947571] bpf_testmod: loading out-of-tree module taints kernel.
-test_tc_bpf:PASS:test_tc_bpf__open_and_load 0 nsec
-test_tc_bpf:PASS:bpf_tc_hook_create(BPF_TC_INGRESS) 0 nsec
-test_tc_bpf:PASS:bpf_tc_hook_create invalid hook.attach_point 0 nsec
-test_tc_bpf_basic:PASS:bpf_obj_get_info_by_fd 0 nsec
-test_tc_bpf_basic:PASS:bpf_tc_attach 0 nsec
-test_tc_bpf_basic:PASS:handle set 0 nsec
-test_tc_bpf_basic:PASS:priority set 0 nsec
-test_tc_bpf_basic:PASS:prog_id set 0 nsec
-test_tc_bpf_basic:PASS:bpf_tc_attach replace mode 0 nsec
-test_tc_bpf_basic:PASS:bpf_tc_query 0 nsec
-test_tc_bpf_basic:PASS:handle set 0 nsec
-test_tc_bpf_basic:PASS:priority set 0 nsec
-test_tc_bpf_basic:PASS:prog_id set 0 nsec
-libbpf: Kernel error message: Failed to send filter delete notification
-test_tc_bpf_basic:FAIL:bpf_tc_detach unexpected error: -3 (errno 3)
-test_tc_bpf:FAIL:test_tc_internal ingress unexpected error: -3 (errno 3)
+cal_camerarx_create() doesn't handle error returned from
+cal_camerarx_sd_init_cfg(). Fix this.
 
-The failure seems due to the commit
-    cfdf0d9ae75b ("rtnetlink: use nlmsg_notify() in rtnetlink_send()")
-
-Deal with ESRCH error in nlmsg_notify() even the report variable is zero.
-
-Reported-by: Yonghong Song <yhs@fb.com>
-Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
-Link: https://lore.kernel.org/r/20210719051816.11762-1-yajun.deng@linux.dev
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netlink/af_netlink.c | 4 +++-
+ drivers/media/platform/ti-vpe/cal-camerarx.c | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/net/netlink/af_netlink.c b/net/netlink/af_netlink.c
-index 6133e412b948..b9ed16ff09c1 100644
---- a/net/netlink/af_netlink.c
-+++ b/net/netlink/af_netlink.c
-@@ -2545,13 +2545,15 @@ int nlmsg_notify(struct sock *sk, struct sk_buff *skb, u32 portid,
- 		/* errors reported via destination sk->sk_err, but propagate
- 		 * delivery errors if NETLINK_BROADCAST_ERROR flag is set */
- 		err = nlmsg_multicast(sk, skb, exclude_portid, group, flags);
-+		if (err == -ESRCH)
-+			err = 0;
- 	}
+diff --git a/drivers/media/platform/ti-vpe/cal-camerarx.c b/drivers/media/platform/ti-vpe/cal-camerarx.c
+index 124a4e2bdefe..e2e384a887ac 100644
+--- a/drivers/media/platform/ti-vpe/cal-camerarx.c
++++ b/drivers/media/platform/ti-vpe/cal-camerarx.c
+@@ -845,7 +845,9 @@ struct cal_camerarx *cal_camerarx_create(struct cal_dev *cal,
+ 	if (ret)
+ 		goto error;
  
- 	if (report) {
- 		int err2;
+-	cal_camerarx_sd_init_cfg(sd, NULL);
++	ret = cal_camerarx_sd_init_cfg(sd, NULL);
++	if (ret)
++		goto error;
  
- 		err2 = nlmsg_unicast(sk, skb, portid);
--		if (!err || err == -ESRCH)
-+		if (!err)
- 			err = err2;
- 	}
- 
+ 	ret = v4l2_device_register_subdev(&cal->v4l2_dev, sd);
+ 	if (ret)
 -- 
 2.30.2
 
