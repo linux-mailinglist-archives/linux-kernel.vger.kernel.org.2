@@ -2,30 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAD7540D0AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 02:13:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38C6940D0B2
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 02:14:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233242AbhIPAOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 20:14:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46902 "EHLO mail.kernel.org"
+        id S233329AbhIPAPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 20:15:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47442 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233070AbhIPAOt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 20:14:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A9F06103B;
-        Thu, 16 Sep 2021 00:13:29 +0000 (UTC)
+        id S233260AbhIPAPP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 20:15:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 79DE361157;
+        Thu, 16 Sep 2021 00:13:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631751209;
-        bh=hQK4msfiZojf9oM8LRX9HGFatwI6x3wUm7fjS6j8IN8=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=j7aYbPd2QC5o5qcfv7rS9Y8V7OnLzpgitAlpLPjZlgq2+MPSCDMOx0NPp5rBn4y7X
-         B1dYv+75lIVWCA/Tx5bTxNCN9LCyW+84lP/m2oib/WrN8Ayfyq94LI8qoJpr5hyJbg
-         pT/cw7Mz0bNYYBiklN2xXUg/+BbUk4pYvEEdrQm2gC5dNEzg+cEc4tzvkwpY85zln+
-         yocV93ztFWAeoGvcQQ9YbjBwtGas0mwrhLJp9zsGWrSHSpxn9hBnJ+YTqd0tLpyKqz
-         GW1g5b/g0YcJpkHrzSRFP2ES5jiIWY2hYjHWrgs6lEB/xiUmLTxogx1jWPWseOTawZ
-         MV6Maz0DwAWiw==
+        s=k20201202; t=1631751235;
+        bh=09MBHLt60NaLtJCEGTeLNCt2/ijecFVBX99V0FudLJ8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=mFvDEEuyrmMPQ81P3yWfQ+1xgK6g1ezF4ovkdr674Zb26Q/5hMxCOT6QP9MG4QUut
+         om0Z6Rb2opUcL5bwmoKn9zwHPHhVwVOgELRq1iuUrXJhREzUAND2Q9u7KktV23vgvk
+         yXT8RI+rh9RyIACVn7wuedeseedpNThfWDszMePJj7JTI0Xz5YHGpcSsGWi46GFORs
+         ZlGEceqNKuapzQFXqsr0bCjFXWhXMjT1h/VWs1v9HFCvB6XekYmGJrh/mhT4dtzHWb
+         3UkQf5founJ4v3amr6WxvYevn5bIJNpc6DN5Fz+ql7pHIWuciOfLVNBdfYb2g3dWm3
+         RqMEni3IltP9g==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 635295C054E; Wed, 15 Sep 2021 17:13:29 -0700 (PDT)
-Date:   Wed, 15 Sep 2021 17:13:29 -0700
+        id 3B43F5C054E; Wed, 15 Sep 2021 17:13:55 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -33,45 +32,44 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org
-Subject: [PATCH rcu 0/7] In-kernel torture-test updates for v5.16
-Message-ID: <20210916001329.GA3909068@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        oleg@redhat.com, joel@joelfernandes.org,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 1/7] rcutorture: Suppressing read-exit testing is not an error
+Date:   Wed, 15 Sep 2021 17:13:46 -0700
+Message-Id: <20210916001352.3909170-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.31.1.189.g2e36527f23
+In-Reply-To: <20210916001329.GA3909068@paulmck-ThinkPad-P17-Gen-1>
+References: <20210916001329.GA3909068@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+Currently, specifying the rcutorture.read_exit_burst=0 kernel boot
+parameter will result in a -EINVAL exit code that will stop the rcutorture
+test run before it has fully initialized.  This commit therefore uses a
+zero exit code in that case, thus allowing rcutorture.read_exit_burst=0
+to complete normally.
 
-This series contains in-kernel torture-test updates (excluding scftorture,
-which has its own branch this time).
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ kernel/rcu/rcutorture.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-1.	Suppressing read-exit testing is not an error.
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index ab4215266ebe..59254fa15cc6 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -2741,7 +2741,7 @@ static int rcu_torture_read_exit(void *unused)
+ static int rcu_torture_read_exit_init(void)
+ {
+ 	if (read_exit_burst <= 0)
+-		return -EINVAL;
++		return 0;
+ 	init_waitqueue_head(&read_exit_wq);
+ 	read_exit_child_stop = false;
+ 	read_exit_child_stopped = false;
+-- 
+2.31.1.189.g2e36527f23
 
-2.	Warn on individual rcu_torture_init() error conditions.
-
-3.	Warn on individual lock_torture_init() error conditions.
-
-4.	Warn on individual ref_scale_init() error conditions.
-
-5.	Warn on individual rcu_scale_init() error conditions.
-
-6.	Don't cpuhp_remove_state() if cpuhp_setup_state() failed.
-
-7.	Avoid problematic critical section nesting on PREEMPT_RT,
-	courtesy of Scott Wood.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- b/include/linux/torture.h      |    8 ++++
- b/kernel/locking/locktorture.c |   14 +++----
- b/kernel/rcu/rcuscale.c        |   10 ++---
- b/kernel/rcu/rcutorture.c      |    2 -
- b/kernel/rcu/refscale.c        |    6 +--
- kernel/rcu/rcutorture.c        |   82 ++++++++++++++++++++++++++---------------
- 6 files changed, 77 insertions(+), 45 deletions(-)
