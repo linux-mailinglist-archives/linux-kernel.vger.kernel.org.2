@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2A0540E814
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12D4040E166
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:29:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349620AbhIPRhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:37:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47062 "EHLO mail.kernel.org"
+        id S243197AbhIPQaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:30:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59256 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352807AbhIPR2k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:28:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 735B4613C8;
-        Thu, 16 Sep 2021 16:45:54 +0000 (UTC)
+        id S241152AbhIPQVU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:21:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 11CC8613A4;
+        Thu, 16 Sep 2021 16:14:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810755;
-        bh=TnE9Wlka/HbaP3UhSIR4v05u7JFUS6ZvZ5/7L0O4TAM=;
+        s=korg; t=1631808885;
+        bh=UsaLy+VS9uGznDshld/1XfrmZjQm8g1fmvtDiPhgZ/Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U+gECLyuT+Z8JlPEjM/IDmNzoJonDBSDvmB0uXV6Cr6N5wtP6r+pHsUDWf6F5vSrE
-         kBbTVVhJx++u/CsLVRufolqoyAy9zb2x/2qW4fwau2r/mfB+IRRAKh4YhQ+UZtlHPX
-         USmXcvnIC38jSdjKYE6QCEQCAjjc0qSE3UlqkplU=
+        b=Fw9B5Mlqpr3EYOe5W6NZ/L9W8DEYv0KWV2uVHW9F3pwlaPSt4N9nhKLS8BGDGe9d7
+         lLpUGLtnUt4zgZue5+JKVu2/6DcYdf4Ob7s/gA88k5PhTURrY8YvQ3ebbpgCEyCb1H
+         QNlkt4mQU/PioHeqmXMX2MgIe1upF6Lw054Al5Jk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Umang Jain <umang.jain@ideasonboard.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Sean Keely <Sean.Keely@amd.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 255/432] media: imx258: Rectify mismatch of VTS value
+Subject: [PATCH 5.10 259/306] drm/amdkfd: Account for SH/SE count when setting up cu masks.
 Date:   Thu, 16 Sep 2021 18:00:04 +0200
-Message-Id: <20210916155819.468844818@linuxfoundation.org>
+Message-Id: <20210916155802.899597547@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,57 +41,148 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+From: Sean Keely <Sean.Keely@amd.com>
 
-[ Upstream commit 51f93add3669f1b1f540de1cf397815afbd4c756 ]
+[ Upstream commit 1ec06c2dee679e9f089e78ed20cb74ee90155f61 ]
 
-The frame_length_lines (0x0340) registers are hard-coded as follows:
+On systems with multiple SH per SE compute_static_thread_mgmt_se#
+is split into independent masks, one for each SH, in the upper and
+lower 16 bits.  We need to detect this and apply cu masking to each
+SH.  The cu mask bits are assigned first to each SE, then to
+alternate SHs, then finally to higher CU id.  This ensures that
+the maximum number of SPIs are engaged as early as possible while
+balancing CU assignment to each SH.
 
-- 4208x3118
-  frame_length_lines = 0x0c50
+v2: Use max SH/SE rather than max SH in cu_per_sh.
 
-- 2104x1560
-  frame_length_lines = 0x0638
+v3: Fix comment blocks, ensure se_mask is initially zero filled,
+    and correctly assign se.sh.cu positions to unset bits in cu_mask.
 
-- 1048x780
-  frame_length_lines = 0x034c
-
-The driver exposes the V4L2_CID_VBLANK control in read-only mode and
-sets its value to vts_def - height, where vts_def is a mode-dependent
-value coming from the supported_modes array. It is set using one of
-the following macros defined in the driver:
-
-  #define IMX258_VTS_30FPS                0x0c98
-  #define IMX258_VTS_30FPS_2K             0x0638
-  #define IMX258_VTS_30FPS_VGA            0x034c
-
-There's a clear mismatch in the value for the full resolution mode i.e.
-IMX258_VTS_30FPS. Fix it by rectifying the macro with the value set for
-the frame_length_lines register as stated above.
-
-Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Signed-off-by: Umang Jain <umang.jain@ideasonboard.com>
-Reviewed-by: Bingbu Cao <bingbu.cao@intel.com>
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Sean Keely <Sean.Keely@amd.com>
+Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/i2c/imx258.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager.c | 84 +++++++++++++++-----
+ drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager.h |  1 +
+ 2 files changed, 64 insertions(+), 21 deletions(-)
 
-diff --git a/drivers/media/i2c/imx258.c b/drivers/media/i2c/imx258.c
-index 7ab9e5f9f267..4e695096e5d0 100644
---- a/drivers/media/i2c/imx258.c
-+++ b/drivers/media/i2c/imx258.c
-@@ -23,7 +23,7 @@
- #define IMX258_CHIP_ID			0x0258
+diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager.c b/drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager.c
+index 88813dad731f..c021519af810 100644
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager.c
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager.c
+@@ -98,36 +98,78 @@ void mqd_symmetrically_map_cu_mask(struct mqd_manager *mm,
+ 		uint32_t *se_mask)
+ {
+ 	struct kfd_cu_info cu_info;
+-	uint32_t cu_per_se[KFD_MAX_NUM_SE] = {0};
+-	int i, se, sh, cu = 0;
+-
++	uint32_t cu_per_sh[KFD_MAX_NUM_SE][KFD_MAX_NUM_SH_PER_SE] = {0};
++	int i, se, sh, cu;
+ 	amdgpu_amdkfd_get_cu_info(mm->dev->kgd, &cu_info);
  
- /* V_TIMING internal */
--#define IMX258_VTS_30FPS		0x0c98
-+#define IMX258_VTS_30FPS		0x0c50
- #define IMX258_VTS_30FPS_2K		0x0638
- #define IMX258_VTS_30FPS_VGA		0x034c
- #define IMX258_VTS_MAX			0xffff
+ 	if (cu_mask_count > cu_info.cu_active_number)
+ 		cu_mask_count = cu_info.cu_active_number;
+ 
++	/* Exceeding these bounds corrupts the stack and indicates a coding error.
++	 * Returning with no CU's enabled will hang the queue, which should be
++	 * attention grabbing.
++	 */
++	if (cu_info.num_shader_engines > KFD_MAX_NUM_SE) {
++		pr_err("Exceeded KFD_MAX_NUM_SE, chip reports %d\n", cu_info.num_shader_engines);
++		return;
++	}
++	if (cu_info.num_shader_arrays_per_engine > KFD_MAX_NUM_SH_PER_SE) {
++		pr_err("Exceeded KFD_MAX_NUM_SH, chip reports %d\n",
++			cu_info.num_shader_arrays_per_engine * cu_info.num_shader_engines);
++		return;
++	}
++	/* Count active CUs per SH.
++	 *
++	 * Some CUs in an SH may be disabled.	HW expects disabled CUs to be
++	 * represented in the high bits of each SH's enable mask (the upper and lower
++	 * 16 bits of se_mask) and will take care of the actual distribution of
++	 * disabled CUs within each SH automatically.
++	 * Each half of se_mask must be filled only on bits 0-cu_per_sh[se][sh]-1.
++	 *
++	 * See note on Arcturus cu_bitmap layout in gfx_v9_0_get_cu_info.
++	 */
+ 	for (se = 0; se < cu_info.num_shader_engines; se++)
+ 		for (sh = 0; sh < cu_info.num_shader_arrays_per_engine; sh++)
+-			cu_per_se[se] += hweight32(cu_info.cu_bitmap[se % 4][sh + (se / 4)]);
+-
+-	/* Symmetrically map cu_mask to all SEs:
+-	 * cu_mask[0] bit0 -> se_mask[0] bit0;
+-	 * cu_mask[0] bit1 -> se_mask[1] bit0;
+-	 * ... (if # SE is 4)
+-	 * cu_mask[0] bit4 -> se_mask[0] bit1;
++			cu_per_sh[se][sh] = hweight32(cu_info.cu_bitmap[se % 4][sh + (se / 4)]);
++
++	/* Symmetrically map cu_mask to all SEs & SHs:
++	 * se_mask programs up to 2 SH in the upper and lower 16 bits.
++	 *
++	 * Examples
++	 * Assuming 1 SH/SE, 4 SEs:
++	 * cu_mask[0] bit0 -> se_mask[0] bit0
++	 * cu_mask[0] bit1 -> se_mask[1] bit0
++	 * ...
++	 * cu_mask[0] bit4 -> se_mask[0] bit1
++	 * ...
++	 *
++	 * Assuming 2 SH/SE, 4 SEs
++	 * cu_mask[0] bit0 -> se_mask[0] bit0 (SE0,SH0,CU0)
++	 * cu_mask[0] bit1 -> se_mask[1] bit0 (SE1,SH0,CU0)
++	 * ...
++	 * cu_mask[0] bit4 -> se_mask[0] bit16 (SE0,SH1,CU0)
++	 * cu_mask[0] bit5 -> se_mask[1] bit16 (SE1,SH1,CU0)
++	 * ...
++	 * cu_mask[0] bit8 -> se_mask[0] bit1 (SE0,SH0,CU1)
+ 	 * ...
++	 *
++	 * First ensure all CUs are disabled, then enable user specified CUs.
+ 	 */
+-	se = 0;
+-	for (i = 0; i < cu_mask_count; i++) {
+-		if (cu_mask[i / 32] & (1 << (i % 32)))
+-			se_mask[se] |= 1 << cu;
+-
+-		do {
+-			se++;
+-			if (se == cu_info.num_shader_engines) {
+-				se = 0;
+-				cu++;
++	for (i = 0; i < cu_info.num_shader_engines; i++)
++		se_mask[i] = 0;
++
++	i = 0;
++	for (cu = 0; cu < 16; cu++) {
++		for (sh = 0; sh < cu_info.num_shader_arrays_per_engine; sh++) {
++			for (se = 0; se < cu_info.num_shader_engines; se++) {
++				if (cu_per_sh[se][sh] > cu) {
++					if (cu_mask[i / 32] & (1 << (i % 32)))
++						se_mask[se] |= 1 << (cu + sh * 16);
++					i++;
++					if (i == cu_mask_count)
++						return;
++				}
+ 			}
+-		} while (cu >= cu_per_se[se] && cu < 32);
++		}
+ 	}
+ }
+diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager.h b/drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager.h
+index fbdb16418847..4edc012e3138 100644
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager.h
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager.h
+@@ -27,6 +27,7 @@
+ #include "kfd_priv.h"
+ 
+ #define KFD_MAX_NUM_SE 8
++#define KFD_MAX_NUM_SH_PER_SE 2
+ 
+ /**
+  * struct mqd_manager
 -- 
 2.30.2
 
