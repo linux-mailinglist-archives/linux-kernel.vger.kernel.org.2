@@ -2,196 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7941C40D2D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 07:16:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D093240D2D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 07:24:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234300AbhIPFRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 01:17:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45248 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234292AbhIPFR1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 01:17:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631769367;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/KaFR0tN7fnlxcmr5XgEGx0dxN0WywjqCKHOBH6+mas=;
-        b=friyk0AObk6l2gpK1OUXYq0tLSeiOKA09Xfd/I0MJTtkMx3pPZwI6g+aN93W41L+nxH5f2
-        iz0ZvG3v+dnXwdU3ARpv681RBVUec308TaIMHMd4T/TLOxYjtNNdVzjBkBVEA3v1OqzJ/9
-        kIWh9LAUX4eNbrPyc8CNUarcCaz1QP4=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-580-Ndiz-fqvOlqs7eiHm8ABFA-1; Thu, 16 Sep 2021 01:16:05 -0400
-X-MC-Unique: Ndiz-fqvOlqs7eiHm8ABFA-1
-Received: by mail-wr1-f71.google.com with SMTP id c15-20020a5d4ccf000000b0015dff622f39so1930566wrt.21
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 22:16:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:references:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/KaFR0tN7fnlxcmr5XgEGx0dxN0WywjqCKHOBH6+mas=;
-        b=COw5SibOPZz1xfEhf3j7ZA7//gdInuhlEqH1CfzMSjpi8a/yzSarJgUszhQBB5XCPd
-         Wj4Uag+/AqlICAC7wRkeZ4ONxucmtAnXoA9Gelv7Mfe7DmhLUJQ/cPbJN/w3r7dFbOyf
-         1QCOJr5gEOPcj9hPc/LFil3YW4LZr77U1MzxfBNpAIhVkfyVKtY1lmErjfJryvZ+YspW
-         GDUn8d/g4i1+t7BFaQ9EEA0VDEMoaYy19RwFHXZlgpiQFf96V84W4u7646diXQ1cVzB+
-         pbctT+1vhojo1ad915RpRlpANnNbOaDl83I9JzFhvL9UwWxZOjK3/XVJzzchmys+KDbU
-         NKtw==
-X-Gm-Message-State: AOAM530nxqDvErfNRACKF5AZEq3gG/BSznkaZsHSakGYGLDecFDD2Vl+
-        iZropWB1UwGls+WEGL2geSlRRpb73iVN+Y2lrrYRZvQH7UgXJTNjBxrj6NTTFmnUQ07AoEIng6d
-        xNWTmhrgt93Q9DnEA0Km5pTRO
-X-Received: by 2002:a05:600c:4f13:: with SMTP id l19mr3071060wmq.39.1631769364711;
-        Wed, 15 Sep 2021 22:16:04 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz7wr3csCaThBnqZG+k1sReSQw2OECASRVpR3W9+CFv3sVgqMd0KKm8+wwp7iqsCYc3nWGJbg==
-X-Received: by 2002:a05:600c:4f13:: with SMTP id l19mr3071033wmq.39.1631769364503;
-        Wed, 15 Sep 2021 22:16:04 -0700 (PDT)
-Received: from thuth.remote.csb (dynamic-046-114-144-075.46.114.pool.telefonica.de. [46.114.144.75])
-        by smtp.gmail.com with ESMTPSA id z13sm2315375wrs.90.2021.09.15.22.16.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Sep 2021 22:16:03 -0700 (PDT)
-From:   Thomas Huth <thuth@redhat.com>
-To:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>
-Cc:     "J. Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        linux-s390@vger.kernel.org, Jia He <hejianet@gmail.com>
-References: <20210803105937.52052-1-thuth@redhat.com>
- <20210803105937.52052-2-thuth@redhat.com>
- <5e359b28-6233-a97e-a30f-0a30fa516833@redhat.com>
-Subject: Re: [PATCH 1/2] sysctl: introduce new proc handler proc_dobool
-Message-ID: <4772120f-7bf5-336c-06ef-620b9953f591@redhat.com>
-Date:   Thu, 16 Sep 2021 07:16:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S234334AbhIPFZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 01:25:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54780 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233914AbhIPFZb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 01:25:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 003E661130;
+        Thu, 16 Sep 2021 05:24:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1631769850;
+        bh=51gGk7MhHQvQamAED401HmrrplIw3FKz2qx4WKc0qSo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0Zl8Jq6ZWOdUyLQ/anmXWzyxmKqQFBoZG7eYTMBPLG3IXWKQlmb/MLAS6EiBed4g2
+         lrDelvqxb+unI2V/rWA/hB8JfXYy6MH4j2dLGX4tO+6Nk7E+tOTUZOZirDCjHzb3ky
+         Csz2/bXTaXzsoMx0MHyslXn7m8gCTcq6eCW/P8MM=
+Date:   Thu, 16 Sep 2021 07:23:50 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     min.li.xe@renesas.com
+Cc:     arnd@arndb.de, derek.kiernan@xilinx.com, dragan.cvetic@xilinx.com,
+        linux-kernel@vger.kernel.org, lee.jones@linaro.or
+Subject: Re: [PATCH misc v2 1/2] mfd: rsmu: Resolve naming conflict between
+ idt8a340_reg.h and idt82p33_reg.h
+Message-ID: <YULU5g358pqWpqOV@kroah.com>
+References: <1631731629-20862-1-git-send-email-min.li.xe@renesas.com>
 MIME-Version: 1.0
-In-Reply-To: <5e359b28-6233-a97e-a30f-0a30fa516833@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1631731629-20862-1-git-send-email-min.li.xe@renesas.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/08/2021 11.38, Thomas Huth wrote:
-> On 03/08/2021 12.59, Thomas Huth wrote:
->> From: Jia He <hejianet@gmail.com>
->>
->> This is to let bool variable could be correctly displayed in
->> big/little endian sysctl procfs. sizeof(bool) is arch dependent,
->> proc_dobool should work in all arches.
->>
->> Suggested-by: Pan Xinhui <xinhui@linux.vnet.ibm.com>
->> Signed-off-by: Jia He <hejianet@gmail.com>
->> [thuth: rebased the patch to the current kernel version]
->> Signed-off-by: Thomas Huth <thuth@redhat.com>
->> ---
->>   include/linux/sysctl.h |  2 ++
->>   kernel/sysctl.c        | 42 ++++++++++++++++++++++++++++++++++++++++++
->>   2 files changed, 44 insertions(+)
->>
->> diff --git a/include/linux/sysctl.h b/include/linux/sysctl.h
->> index d99ca99837de..1fa2b69c6fc3 100644
->> --- a/include/linux/sysctl.h
->> +++ b/include/linux/sysctl.h
->> @@ -48,6 +48,8 @@ typedef int proc_handler(struct ctl_table *ctl, int 
->> write, void *buffer,
->>           size_t *lenp, loff_t *ppos);
->>   int proc_dostring(struct ctl_table *, int, void *, size_t *, loff_t *);
->> +int proc_dobool(struct ctl_table *table, int write, void *buffer,
->> +        size_t *lenp, loff_t *ppos);
->>   int proc_dointvec(struct ctl_table *, int, void *, size_t *, loff_t *);
->>   int proc_douintvec(struct ctl_table *, int, void *, size_t *, loff_t *);
->>   int proc_dointvec_minmax(struct ctl_table *, int, void *, size_t *, 
->> loff_t *);
->> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
->> index 272f4a272f8c..25e49b4d8049 100644
->> --- a/kernel/sysctl.c
->> +++ b/kernel/sysctl.c
->> @@ -536,6 +536,21 @@ static void proc_put_char(void **buf, size_t *size, 
->> char c)
->>       }
->>   }
->> +static int do_proc_dobool_conv(bool *negp, unsigned long *lvalp,
->> +                int *valp,
->> +                int write, void *data)
->> +{
->> +    if (write) {
->> +        *(bool *)valp = *lvalp;
->> +    } else {
->> +        int val = *(bool *)valp;
->> +
->> +        *lvalp = (unsigned long)val;
->> +        *negp = false;
->> +    }
->> +    return 0;
->> +}
->> +
->>   static int do_proc_dointvec_conv(bool *negp, unsigned long *lvalp,
->>                    int *valp,
->>                    int write, void *data)
->> @@ -798,6 +813,26 @@ static int do_proc_douintvec(struct ctl_table *table, 
->> int write,
->>                      buffer, lenp, ppos, conv, data);
->>   }
->> +/**
->> + * proc_dobool - read/write a bool
->> + * @table: the sysctl table
->> + * @write: %TRUE if this is a write to the sysctl file
->> + * @buffer: the user buffer
->> + * @lenp: the size of the user buffer
->> + * @ppos: file position
->> + *
->> + * Reads/writes up to table->maxlen/sizeof(unsigned int) integer
->> + * values from/to the user buffer, treated as an ASCII string.
->> + *
->> + * Returns 0 on success.
->> + */
->> +int proc_dobool(struct ctl_table *table, int write, void *buffer,
->> +        size_t *lenp, loff_t *ppos)
->> +{
->> +    return do_proc_dointvec(table, write, buffer, lenp, ppos,
->> +                do_proc_dobool_conv, NULL);
->> +}
->> +
->>   /**
->>    * proc_dointvec - read a vector of integers
->>    * @table: the sysctl table
->> @@ -1630,6 +1665,12 @@ int proc_dostring(struct ctl_table *table, int write,
->>       return -ENOSYS;
->>   }
->> +int proc_dobool(struct ctl_table *table, int write,
->> +        void *buffer, size_t *lenp, loff_t *ppos)
->> +{
->> +    return -ENOSYS;
->> +}
->> +
->>   int proc_dointvec(struct ctl_table *table, int write,
->>             void *buffer, size_t *lenp, loff_t *ppos)
->>   {
->> @@ -3425,6 +3466,7 @@ int __init sysctl_init(void)
->>    * No sense putting this after each symbol definition, twice,
->>    * exception granted :-)
->>    */
->> +EXPORT_SYMBOL(proc_dobool);
->>   EXPORT_SYMBOL(proc_dointvec);
->>   EXPORT_SYMBOL(proc_douintvec);
->>   EXPORT_SYMBOL(proc_dointvec_jiffies);
->>
+On Wed, Sep 15, 2021 at 02:47:08PM -0400, min.li.xe@renesas.com wrote:
+> From: Min Li <min.li.xe@renesas.com>
 > 
-> Friendly ping!
-> 
-> Luis, Kees, Iurii, could you please have a look and provide an Ack if this 
-> looks ok to you?
+> Signed-off-by: Min Li <min.li.xe@renesas.com>
 
-Ping again!
-
-Could anybody please provide an Ack?
-
-Thanks,
-  Thomas
-
+As I said before, I can not take patches without any changelog text :(
