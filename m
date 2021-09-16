@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C68D40E648
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:30:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9E2340E2C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:17:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352181AbhIPRUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:20:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41022 "EHLO mail.kernel.org"
+        id S244152AbhIPQl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:41:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44660 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344405AbhIPRNX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:13:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 83AF861A3B;
-        Thu, 16 Sep 2021 16:38:47 +0000 (UTC)
+        id S244371AbhIPQfI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:35:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 954C861994;
+        Thu, 16 Sep 2021 16:21:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810328;
-        bh=lImvXFqv8F4CpYEnM2+99TdewWuYd0/Ydfc+dsWapjY=;
+        s=korg; t=1631809271;
+        bh=5BK9XdaeTZ82lpNiUBDQYwONct9Gtl02nQ2vZYZaTXE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pnkgQxNEdjW6ABNJrlhARGr3DRB6SATV+r2cEwXIMQEqaVRvFtIWaamuCVibqiErA
-         WAmDnGi6TYe0Br3H16rg0CrRaiuxl1rvwHOuy6nQae3XiKpPFPKKlGvPyxXNLFy62M
-         CnTwK86CWvkaHBNk0hdmtBw7gxvZ3dEPfVFvCRcw=
+        b=0tWB/CZOqq9mN0FUghJ56FiiM5HPskn/WcNYxQMh60X9BcSwlT2cj4moWP1MpIvjG
+         wCZBJklK44mr+7G9CMyk9uIpowM/Wd2LY+vmw2VNLIx7G3YPey45WBfuSuUCxa2rnP
+         Rbu0Ep3GIBxg/ng6Hs6vLmIptQJIeC0jG+K4AcUM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>,
-        openrisc@lists.librecores.org, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 101/432] openrisc: dont printk() unconditionally
+        stable@vger.kernel.org, Chuck Lever <chuck.lever@oracle.com>,
+        Anna Schumaker <Anna.Schumaker@Netapp.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 093/380] xprtrdma: Put rpcrdma_reps before waking the tear-down completion
 Date:   Thu, 16 Sep 2021 17:57:30 +0200
-Message-Id: <20210916155814.205641252@linuxfoundation.org>
+Message-Id: <20210916155807.198677255@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,50 +40,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Chuck Lever <chuck.lever@oracle.com>
 
-[ Upstream commit 946e1052cdcc7e585ee5d1e72528ca49fb295243 ]
+[ Upstream commit 97480cae13ca3a9c1de3eb6fd66cf9650a60db42 ]
 
-Don't call printk() when CONFIG_PRINTK is not set.
-Fixes the following build errors:
+Ensure the tear-down completion is awoken only /after/ we've stopped
+fiddling with rpcrdma_rep objects in rpcrdma_post_recvs().
 
-or1k-linux-ld: arch/openrisc/kernel/entry.o: in function `_external_irq_handler':
-(.text+0x804): undefined reference to `printk'
-(.text+0x804): relocation truncated to fit: R_OR1K_INSN_REL_26 against undefined symbol `printk'
-
-Fixes: 9d02a4283e9c ("OpenRISC: Boot code")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Jonas Bonn <jonas@southpole.se>
-Cc: Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
-Cc: Stafford Horne <shorne@gmail.com>
-Cc: openrisc@lists.librecores.org
-Signed-off-by: Stafford Horne <shorne@gmail.com>
+Fixes: 15788d1d1077 ("xprtrdma: Do not refresh Receive Queue while it is draining")
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/openrisc/kernel/entry.S | 2 ++
- 1 file changed, 2 insertions(+)
+ net/sunrpc/xprtrdma/verbs.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/arch/openrisc/kernel/entry.S b/arch/openrisc/kernel/entry.S
-index bc657e55c15f..98e4f97db515 100644
---- a/arch/openrisc/kernel/entry.S
-+++ b/arch/openrisc/kernel/entry.S
-@@ -547,6 +547,7 @@ EXCEPTION_ENTRY(_external_irq_handler)
- 	l.bnf	1f			// ext irq enabled, all ok.
- 	l.nop
+diff --git a/net/sunrpc/xprtrdma/verbs.c b/net/sunrpc/xprtrdma/verbs.c
+index 649c23518ec0..5a11e318a0d9 100644
+--- a/net/sunrpc/xprtrdma/verbs.c
++++ b/net/sunrpc/xprtrdma/verbs.c
+@@ -1416,11 +1416,6 @@ void rpcrdma_post_recvs(struct rpcrdma_xprt *r_xprt, int needed, bool temp)
  
-+#ifdef CONFIG_PRINTK
- 	l.addi  r1,r1,-0x8
- 	l.movhi r3,hi(42f)
- 	l.ori	r3,r3,lo(42f)
-@@ -560,6 +561,7 @@ EXCEPTION_ENTRY(_external_irq_handler)
- 		.string "\n\rESR interrupt bug: in _external_irq_handler (ESR %x)\n\r"
- 		.align 4
- 	.previous
-+#endif
- 
- 	l.ori	r4,r4,SPR_SR_IEE	// fix the bug
- //	l.sw	PT_SR(r1),r4
+ 	rc = ib_post_recv(ep->re_id->qp, wr,
+ 			  (const struct ib_recv_wr **)&bad_wr);
+-	if (atomic_dec_return(&ep->re_receiving) > 0)
+-		complete(&ep->re_done);
+-
+-out:
+-	trace_xprtrdma_post_recvs(r_xprt, count, rc);
+ 	if (rc) {
+ 		for (wr = bad_wr; wr;) {
+ 			struct rpcrdma_rep *rep;
+@@ -1431,6 +1426,11 @@ void rpcrdma_post_recvs(struct rpcrdma_xprt *r_xprt, int needed, bool temp)
+ 			--count;
+ 		}
+ 	}
++	if (atomic_dec_return(&ep->re_receiving) > 0)
++		complete(&ep->re_done);
++
++out:
++	trace_xprtrdma_post_recvs(r_xprt, count, rc);
+ 	ep->re_receive_count += count;
+ 	return;
+ }
 -- 
 2.30.2
 
