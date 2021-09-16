@@ -2,64 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF20540D9C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 14:22:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5034A40D9D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 14:22:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239303AbhIPMXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 08:23:21 -0400
-Received: from mail-io1-f44.google.com ([209.85.166.44]:37692 "EHLO
-        mail-io1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238923AbhIPMXT (ORCPT
+        id S239505AbhIPMXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 08:23:33 -0400
+Received: from mail-il1-f178.google.com ([209.85.166.178]:44636 "EHLO
+        mail-il1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239479AbhIPMXb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 08:23:19 -0400
-Received: by mail-io1-f44.google.com with SMTP id b7so7655634iob.4;
-        Thu, 16 Sep 2021 05:21:59 -0700 (PDT)
+        Thu, 16 Sep 2021 08:23:31 -0400
+Received: by mail-il1-f178.google.com with SMTP id x2so6354521ila.11;
+        Thu, 16 Sep 2021 05:22:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=r2Gi7GVurxdnZa4aokRrldHw3a9bYWUhzacjzfNJQfs=;
-        b=WrUFGkG4nhXG5WJAdTAlIq0ODEzlLgsR+OJvrdS6ZoDoCnuQtG7KTZzDw7fcGFRWxg
-         fOtq50SjTmxdh/ikqPdhKtFWLnMEirsbVw6JdavqrY7XJriFt/nkSEj8H34Yc3JVPR7R
-         btDJiKMDG9/UH2P8QX/sYZZZqVZfYVhao48JSQx+JH2TqNW6f6CcU5ejz2o9LipgWS7m
-         +xxn2IzW3y0BGTGRT9j/Lrd71dFVk5LwFguRvJiDDcq6pBmEZNcMhx00HAFszb5+Pf6o
-         +YzLCLd/o5UaWTATyQEdHe7cSipz1Pg4l36ZynyboW4Lc17AJbToURhO+u0NW1I67Zq6
-         sT+w==
-X-Gm-Message-State: AOAM53105j9oHVM7qp3iDpCJL6NtUlKU+xNI6kjcLG65oaFb7LlrKsg8
-        Y6/LT1r55FrN4/vs9a8quA==
-X-Google-Smtp-Source: ABdhPJxgFASZVMub/cVWsMUumpBXd4GRs+TYka+iRFr4JhlOCSqa9qL0+QfDTzzVEQ7tUCjAvJCkTA==
-X-Received: by 2002:a02:cc21:: with SMTP id o1mr1131382jap.110.1631794918864;
-        Thu, 16 Sep 2021 05:21:58 -0700 (PDT)
+        bh=IFftwoDUAHs9Nz4h9MoROct44Y+LsTp6P6HEC2g+7PI=;
+        b=KQw0ou/RCLOyURHpSJzxKWGZ8+Se1gLOa6Jhsj96RLHeaeK8BCp1RGZUWS/U+UTgPl
+         xRa/Bk/LcEnGiElly0qs5XAkyTW2iVGPESObHZx0H9Ci+8K7pmYfH2VfOYS4/kkJWatW
+         xz9mWztp8Rghrb0TyPe9/1NZ8f//hhnG+sWWUG4NBodv0PpyXtYZdKaWg7rufaKnJj4W
+         7QVKkVRQmU4dKfNo7EaRAqFmY7EAQxqfPaeVR7PnqZK0NRXp31/+izn2vbYc5Q1xfHtW
+         xc3bPtn6NnjqH9ZPRKefXl2bQDbPWOsUwR9KvIDiDzWaDjE+ql2jyb3hVXlBq6+pa+n7
+         eZZA==
+X-Gm-Message-State: AOAM5339Wd3dJAfV0JJ6tYnA9DoPM0oOu5pSwyQ6fchJVS5xurwIY98l
+        9E0VcJzhcdsMyk2vMwtbuA==
+X-Google-Smtp-Source: ABdhPJyM21Lfun7gEMOg6IfXLhT7D1Exg4DZsflUvLg259E9u2BpDENkfoIlSfCgxYHOA6gj7Pq+6g==
+X-Received: by 2002:a05:6e02:1a0e:: with SMTP id s14mr3658426ild.47.1631794930759;
+        Thu, 16 Sep 2021 05:22:10 -0700 (PDT)
 Received: from robh.at.kernel.org (96-84-70-89-static.hfc.comcastbusiness.net. [96.84.70.89])
-        by smtp.gmail.com with ESMTPSA id c11sm1653985ilq.26.2021.09.16.05.21.56
+        by smtp.gmail.com with ESMTPSA id g19sm1799388ilb.84.2021.09.16.05.22.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 05:21:57 -0700 (PDT)
-Received: (nullmailer pid 1119415 invoked by uid 1000);
+        Thu, 16 Sep 2021 05:22:10 -0700 (PDT)
+Received: (nullmailer pid 1119422 invoked by uid 1000);
         Thu, 16 Sep 2021 12:21:53 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Nishanth Menon <nm@ti.com>
-Cc:     linux-kernel@vger.kernel.org, Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        devicetree@vger.kernel.org
-In-Reply-To: <20210915121937.27702-2-nm@ti.com>
-References: <20210915121937.27702-1-nm@ti.com> <20210915121937.27702-2-nm@ti.com>
-Subject: Re: [PATCH 1/3] dt-bindings: arm: ti: Add missing compatibles for j721e/j7200 evms
+To:     Chunyan Zhang <zhang.lyra@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-clk@vger.kernel.org, Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        Stephen Boyd <sboyd@kernel.org>
+In-Reply-To: <20210916084714.311048-3-zhang.lyra@gmail.com>
+References: <20210916084714.311048-1-zhang.lyra@gmail.com> <20210916084714.311048-3-zhang.lyra@gmail.com>
+Subject: Re: [PATCH v2 2/4] dt-bindings: clk: sprd: Add bindings for ums512 clock controller
 Date:   Thu, 16 Sep 2021 07:21:53 -0500
-Message-Id: <1631794913.472895.1119414.nullmailer@robh.at.kernel.org>
+Message-Id: <1631794913.511855.1119421.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Sep 2021 07:19:35 -0500, Nishanth Menon wrote:
-> Add compatibles for j721e and j7200 evms to allow for newer platforms
-> to distinguish themselves.
+On Thu, 16 Sep 2021 16:47:12 +0800, Chunyan Zhang wrote:
+> From: Chunyan Zhang <chunyan.zhang@unisoc.com>
 > 
-> Signed-off-by: Nishanth Menon <nm@ti.com>
+> Add a new bindings to describe ums512 clock compatible strings.
+> 
+> Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
 > ---
->  Documentation/devicetree/bindings/arm/ti/k3.yaml | 4 ++++
->  1 file changed, 4 insertions(+)
+>  .../bindings/clock/sprd,ums512-clk.yaml       | 106 ++++++++++++++++++
+>  1 file changed, 106 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/clock/sprd,ums512-clk.yaml
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
@@ -68,17 +71,11 @@ on your patch (DT_CHECKER_FLAGS is new in v5.13):
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rproc.example.dt.yaml: /: compatible: 'oneOf' conditional failed, one must be fixed:
-	['ti,j721e'] is too short
-	'ti,j721e' is not one of ['ti,am654-evm', 'siemens,iot2050-basic', 'siemens,iot2050-advanced']
-	'ti,j721e' is not one of ['ti,j721e-evm']
-	'ti,j721e' is not one of ['ti,j7200-evm']
-	'ti,j721e' is not one of ['ti,am642-evm', 'ti,am642-sk']
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/arm/ti/k3.yaml
+Documentation/devicetree/bindings/clock/sprd,ums512-clk.example.dt.yaml:0:0: /example-1/syscon@71000000: failed to match any schema with compatible: ['sprd,ums512-glbregs', 'syscon', 'simple-mfd']
 
 doc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/patch/1528330
+See https://patchwork.ozlabs.org/patch/1528692
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
