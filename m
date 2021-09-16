@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78E7840E8D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:01:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE2B240E8D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:01:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355528AbhIPRlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:41:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53756 "EHLO mail.kernel.org"
+        id S1347171AbhIPRmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:42:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344612AbhIPRf5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1344614AbhIPRf5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 16 Sep 2021 13:35:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 92D3363232;
-        Thu, 16 Sep 2021 16:49:05 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C5D26152B;
+        Thu, 16 Sep 2021 16:49:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810946;
-        bh=aaidjrucUKnmG5VQ3F5mQ4dXhXB0XltpnQ3cCWjebso=;
+        s=korg; t=1631810948;
+        bh=EFk7taVLDDEyryR2UN+6vNU2VWI9oVuX3ynm0n8vEZM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WvKLGDaNlS3A57gt9rtIehhDFjSjVMyCgbgknjPm1omaSshgDctkr/+Tk4imUGOGQ
-         VwClkwoaDwho0NOeXOv4aAPX875oFzbViK9ZatRqRA2g3b86CPYkrLL9HmDmRSEsX0
-         dzt1xGRFo/qEubA497ZOLiVRv8SeAg03AfbZ9spk=
+        b=VAE/FHmDNea4ikGTlT96mbpYSlCypgu8ChjaQRKpkytcZ3WPW4T0MFZYb7l8/UIyE
+         V2nq5BM49kA/5KEWCjj2MQi2XkDfDwNqdhKJ2A1SuKOhQYuRiCvtOTCM7chSWrd/ey
+         vjNXueskL76PAeGsTKRj4/N5meHJswVE+Xu9Wq1U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
+        stable@vger.kernel.org, Zhipeng Wang <zhipeng.wang_1@nxp.com>,
+        Li Jun <jun.li@nxp.com>, Peter Chen <peter.chen@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 326/432] gfs2: Dont call dlm after protocol is unmounted
-Date:   Thu, 16 Sep 2021 18:01:15 +0200
-Message-Id: <20210916155821.892028212@linuxfoundation.org>
+Subject: [PATCH 5.14 327/432] usb: chipidea: host: fix port index underflow and UBSAN complains
+Date:   Thu, 16 Sep 2021 18:01:16 +0200
+Message-Id: <20210916155821.928749993@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
 References: <20210916155810.813340753@linuxfoundation.org>
@@ -39,52 +40,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bob Peterson <rpeterso@redhat.com>
+From: Li Jun <jun.li@nxp.com>
 
-[ Upstream commit d1340f80f0b8066321b499a376780da00560e857 ]
+[ Upstream commit e5d6a7c6cfae9e714a0e8ff64facd1ac68a784c6 ]
 
-In the gfs2 withdraw sequence, the dlm protocol is unmounted with a call
-to lm_unmount. After a withdraw, users are allowed to unmount the
-withdrawn file system. But at that point we may still have glocks left
-over that we need to free via unmount's call to gfs2_gl_hash_clear.
-These glocks may have never been completed because of whatever problem
-caused the withdraw (IO errors or whatever).
+If wIndex is 0 (and it often is), these calculations underflow and
+UBSAN complains, here resolve this by not decrementing the index when
+it is equal to 0, this copies the solution from commit 85e3990bea49
+("USB: EHCI: avoid undefined pointer arithmetic and placate UBSAN")
 
-Before this patch, function gdlm_put_lock would still try to call into
-dlm to unlock these leftover glocks, which resulted in dlm returning
--EINVAL because the lock space was abandoned. These glocks were never
-freed because there was no mechanism after that to free them.
-
-This patch adds a check to gdlm_put_lock to see if the locking protocol
-was inactive (DFL_UNMOUNT flag) and if so, free the glock and not
-make the invalid call into dlm.
-
-I could have combined this "if" with the one that follows, related to
-leftover glock LVBs, but I felt the code was more readable with its own
-if clause.
-
-Signed-off-by: Bob Peterson <rpeterso@redhat.com>
+Reported-by: Zhipeng Wang <zhipeng.wang_1@nxp.com>
+Signed-off-by: Li Jun <jun.li@nxp.com>
+Link: https://lore.kernel.org/r/1624004938-2399-1-git-send-email-jun.li@nxp.com
+Signed-off-by: Peter Chen <peter.chen@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/gfs2/lock_dlm.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/usb/chipidea/host.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-diff --git a/fs/gfs2/lock_dlm.c b/fs/gfs2/lock_dlm.c
-index dac040162ecc..50578f881e6d 100644
---- a/fs/gfs2/lock_dlm.c
-+++ b/fs/gfs2/lock_dlm.c
-@@ -299,6 +299,11 @@ static void gdlm_put_lock(struct gfs2_glock *gl)
- 	gfs2_sbstats_inc(gl, GFS2_LKS_DCOUNT);
- 	gfs2_update_request_times(gl);
+diff --git a/drivers/usb/chipidea/host.c b/drivers/usb/chipidea/host.c
+index e86d13c04bdb..bdc3885c0d49 100644
+--- a/drivers/usb/chipidea/host.c
++++ b/drivers/usb/chipidea/host.c
+@@ -240,15 +240,18 @@ static int ci_ehci_hub_control(
+ )
+ {
+ 	struct ehci_hcd	*ehci = hcd_to_ehci(hcd);
++	unsigned int	ports = HCS_N_PORTS(ehci->hcs_params);
+ 	u32 __iomem	*status_reg;
+-	u32		temp;
++	u32		temp, port_index;
+ 	unsigned long	flags;
+ 	int		retval = 0;
+ 	bool		done = false;
+ 	struct device *dev = hcd->self.controller;
+ 	struct ci_hdrc *ci = dev_get_drvdata(dev);
  
-+	/* don't want to call dlm if we've unmounted the lock protocol */
-+	if (test_bit(DFL_UNMOUNT, &ls->ls_recover_flags)) {
-+		gfs2_glock_free(gl);
-+		return;
-+	}
- 	/* don't want to skip dlm_unlock writing the lvb when lock has one */
+-	status_reg = &ehci->regs->port_status[(wIndex & 0xff) - 1];
++	port_index = wIndex & 0xff;
++	port_index -= (port_index > 0);
++	status_reg = &ehci->regs->port_status[port_index];
  
- 	if (test_bit(SDF_SKIP_DLM_UNLOCK, &sdp->sd_flags) &&
+ 	spin_lock_irqsave(&ehci->lock, flags);
+ 
+@@ -260,6 +263,11 @@ static int ci_ehci_hub_control(
+ 	}
+ 
+ 	if (typeReq == SetPortFeature && wValue == USB_PORT_FEAT_SUSPEND) {
++		if (!wIndex || wIndex > ports) {
++			retval = -EPIPE;
++			goto done;
++		}
++
+ 		temp = ehci_readl(ehci, status_reg);
+ 		if ((temp & PORT_PE) == 0 || (temp & PORT_RESET) != 0) {
+ 			retval = -EPIPE;
+@@ -288,7 +296,7 @@ static int ci_ehci_hub_control(
+ 			ehci_writel(ehci, temp, status_reg);
+ 		}
+ 
+-		set_bit((wIndex & 0xff) - 1, &ehci->suspended_ports);
++		set_bit(port_index, &ehci->suspended_ports);
+ 		goto done;
+ 	}
+ 
 -- 
 2.30.2
 
