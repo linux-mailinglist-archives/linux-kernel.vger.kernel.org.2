@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9091B40E625
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:29:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEF6140DFD9
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:15:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345691AbhIPRSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:18:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36054 "EHLO mail.kernel.org"
+        id S241110AbhIPQPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:15:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47416 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243475AbhIPRKC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:10:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DFFBA61206;
-        Thu, 16 Sep 2021 16:37:31 +0000 (UTC)
+        id S234413AbhIPQIA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:08:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 600EE611F2;
+        Thu, 16 Sep 2021 16:06:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810252;
-        bh=WXZRCbe7f1m3JIgFc3j4lOWqgP5sUSAyB7Wh3Xz7Tsc=;
+        s=korg; t=1631808400;
+        bh=w40nHKlwfktxdo7bfB8EF2NShgTfGDqxiqB+0MZR0iQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=itVyycvfwT4bgxC6taanlw4vcJems5txSYnLktoAQOGFcbpdMwSbEPWNfTreUOb7S
-         BwzXch/mciHCEI5W9eWpUES8bmOFtUBO91LDtJI4yPjAtPyoiEGG989E8HOBV/uIA/
-         zEGQJ0gn5PFAuH9x6dygbi6jRKDFWtPEnw0BPo0M=
+        b=ONuCK0ZMn2HuoztCchtSTdoVYcbV786UAXdXIz9B0v8bzkRAgJCNXt7mbUFe5p4Zq
+         2B2gfbbTzjKXZEqqjKl7MFxzsPnGlVeQ7HG0+W2FgJdKev0QNV4ASRmyCfDciiRXD2
+         8bmjkdCugpKye+Vv4YEiA0cIgWDUHIl2wB5I3yS8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jack Wang <jinpu.wang@ionos.com>,
-        Aleksei Marov <aleksei.marov@ionos.com>,
-        Gioh Kim <gi-oh.kim@ionos.com>,
-        Md Haris Iqbal <haris.iqbal@ionos.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <Anna.Schumaker@Netapp.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 073/432] RDMA/rtrs: move wr_cnt from rtrs_srv_con to rtrs_con
-Date:   Thu, 16 Sep 2021 17:57:02 +0200
-Message-Id: <20210916155813.262533044@linuxfoundation.org>
+Subject: [PATCH 5.10 078/306] SUNRPC: Fix potential memory corruption
+Date:   Thu, 16 Sep 2021 17:57:03 +0200
+Message-Id: <20210916155756.716861334@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,129 +41,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jack Wang <jinpu.wang@ionos.com>
+From: Trond Myklebust <trond.myklebust@hammerspace.com>
 
-[ Upstream commit a10431eff136ef15e1f9955efe369744b1294db1 ]
+[ Upstream commit c2dc3e5fad13aca5d7bdf4bcb52b1a1d707c8555 ]
 
-We need to track also the wr used for heatbeat. This is a preparation for
-that, will be used in later patch.
+We really should not call rpc_wake_up_queued_task_set_status() with
+xprt->snd_task as an argument unless we are certain that is actually an
+rpc_task.
 
-The io_cnt in rtrs_clt is removed, use wr_cnt instead.
-
-Link: https://lore.kernel.org/r/20210712060750.16494-3-jinpu.wang@ionos.com
-Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
-Reviewed-by: Aleksei Marov <aleksei.marov@ionos.com>
-Reviewed-by: Gioh Kim <gi-oh.kim@ionos.com>
-Reviewed-by: Md Haris Iqbal <haris.iqbal@ionos.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Fixes: 0445f92c5d53 ("SUNRPC: Fix disconnection races")
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-clt.c | 7 ++++---
- drivers/infiniband/ulp/rtrs/rtrs-clt.h | 1 -
- drivers/infiniband/ulp/rtrs/rtrs-pri.h | 1 +
- drivers/infiniband/ulp/rtrs/rtrs-srv.c | 6 +++---
- drivers/infiniband/ulp/rtrs/rtrs-srv.h | 1 -
- 5 files changed, 8 insertions(+), 8 deletions(-)
+ include/linux/sunrpc/xprt.h | 1 +
+ net/sunrpc/xprt.c           | 6 ++++--
+ 2 files changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-index f2c40e50f25e..5cb00ea08919 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-@@ -478,7 +478,7 @@ static int rtrs_post_send_rdma(struct rtrs_clt_con *con,
- 	 * From time to time we have to post signalled sends,
- 	 * or send queue will fill up and only QP reset can help.
- 	 */
--	flags = atomic_inc_return(&con->io_cnt) % sess->queue_depth ?
-+	flags = atomic_inc_return(&con->c.wr_cnt) % sess->queue_depth ?
- 			0 : IB_SEND_SIGNALED;
+diff --git a/include/linux/sunrpc/xprt.h b/include/linux/sunrpc/xprt.h
+index cad1fa2b6baa..e7b997d6f031 100644
+--- a/include/linux/sunrpc/xprt.h
++++ b/include/linux/sunrpc/xprt.h
+@@ -421,6 +421,7 @@ void			xprt_unlock_connect(struct rpc_xprt *, void *);
+ #define XPRT_CONGESTED		(9)
+ #define XPRT_CWND_WAIT		(10)
+ #define XPRT_WRITE_SPACE	(11)
++#define XPRT_SND_IS_COOKIE	(12)
  
- 	ib_dma_sync_single_for_device(sess->s.dev->ib_dev, req->iu->dma_addr,
-@@ -1043,7 +1043,7 @@ static int rtrs_post_rdma_write_sg(struct rtrs_clt_con *con,
- 	 * From time to time we have to post signalled sends,
- 	 * or send queue will fill up and only QP reset can help.
- 	 */
--	flags = atomic_inc_return(&con->io_cnt) % sess->queue_depth ?
-+	flags = atomic_inc_return(&con->c.wr_cnt) % sess->queue_depth ?
- 			0 : IB_SEND_SIGNALED;
- 
- 	ib_dma_sync_single_for_device(sess->s.dev->ib_dev, req->iu->dma_addr,
-@@ -1601,7 +1601,8 @@ static int create_con(struct rtrs_clt_sess *sess, unsigned int cid)
- 	con->cpu  = (cid ? cid - 1 : 0) % nr_cpu_ids;
- 	con->c.cid = cid;
- 	con->c.sess = &sess->s;
--	atomic_set(&con->io_cnt, 0);
-+	/* Align with srv, init as 1 */
-+	atomic_set(&con->c.wr_cnt, 1);
- 	mutex_init(&con->con_mutex);
- 
- 	sess->s.con[cid] = &con->c;
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.h b/drivers/infiniband/ulp/rtrs/rtrs-clt.h
-index e276a2dfcf7c..3c3ff094588c 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt.h
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.h
-@@ -74,7 +74,6 @@ struct rtrs_clt_con {
- 	u32			queue_num;
- 	unsigned int		cpu;
- 	struct mutex		con_mutex;
--	atomic_t		io_cnt;
- 	int			cm_err;
- };
- 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-pri.h b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
-index 36f184a3b676..a44a4fb1b515 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-pri.h
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
-@@ -96,6 +96,7 @@ struct rtrs_con {
- 	struct rdma_cm_id	*cm_id;
- 	unsigned int		cid;
- 	int                     nr_cqe;
-+	atomic_t		wr_cnt;
- };
- 
- struct rtrs_sess {
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-index 3df290086169..31b846ca0c5e 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-@@ -269,7 +269,7 @@ static int rdma_write_sg(struct rtrs_srv_op *id)
- 	 * From time to time we have to post signaled sends,
- 	 * or send queue will fill up and only QP reset can help.
- 	 */
--	flags = (atomic_inc_return(&id->con->wr_cnt) % srv->queue_depth) ?
-+	flags = (atomic_inc_return(&id->con->c.wr_cnt) % srv->queue_depth) ?
- 		0 : IB_SEND_SIGNALED;
- 
- 	if (need_inval) {
-@@ -396,7 +396,7 @@ static int send_io_resp_imm(struct rtrs_srv_con *con, struct rtrs_srv_op *id,
- 	 * From time to time we have to post signalled sends,
- 	 * or send queue will fill up and only QP reset can help.
- 	 */
--	flags = (atomic_inc_return(&con->wr_cnt) % srv->queue_depth) ?
-+	flags = (atomic_inc_return(&con->c.wr_cnt) % srv->queue_depth) ?
- 		0 : IB_SEND_SIGNALED;
- 	imm = rtrs_to_io_rsp_imm(id->msg_id, errno, need_inval);
- 	imm_wr.wr.next = NULL;
-@@ -1648,7 +1648,7 @@ static int create_con(struct rtrs_srv_sess *sess,
- 	con->c.cm_id = cm_id;
- 	con->c.sess = &sess->s;
- 	con->c.cid = cid;
--	atomic_set(&con->wr_cnt, 1);
-+	atomic_set(&con->c.wr_cnt, 1);
- 	wr_limit = sess->s.dev->ib_dev->attrs.max_qp_wr;
- 
- 	if (con->c.cid == 0) {
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.h b/drivers/infiniband/ulp/rtrs/rtrs-srv.h
-index f8da2e3f0bda..6785c3b6363e 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-srv.h
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.h
-@@ -42,7 +42,6 @@ struct rtrs_srv_stats {
- 
- struct rtrs_srv_con {
- 	struct rtrs_con		c;
--	atomic_t		wr_cnt;
- 	atomic_t		sq_wr_avail;
- 	struct list_head	rsp_wr_wait_list;
- 	spinlock_t		rsp_wr_wait_lock;
+ static inline void xprt_set_connected(struct rpc_xprt *xprt)
+ {
+diff --git a/net/sunrpc/xprt.c b/net/sunrpc/xprt.c
+index 9a50764be916..ccfa85e995fd 100644
+--- a/net/sunrpc/xprt.c
++++ b/net/sunrpc/xprt.c
+@@ -746,9 +746,9 @@ void xprt_force_disconnect(struct rpc_xprt *xprt)
+ 	/* Try to schedule an autoclose RPC call */
+ 	if (test_and_set_bit(XPRT_LOCKED, &xprt->state) == 0)
+ 		queue_work(xprtiod_workqueue, &xprt->task_cleanup);
+-	else if (xprt->snd_task)
++	else if (xprt->snd_task && !test_bit(XPRT_SND_IS_COOKIE, &xprt->state))
+ 		rpc_wake_up_queued_task_set_status(&xprt->pending,
+-				xprt->snd_task, -ENOTCONN);
++						   xprt->snd_task, -ENOTCONN);
+ 	spin_unlock(&xprt->transport_lock);
+ }
+ EXPORT_SYMBOL_GPL(xprt_force_disconnect);
+@@ -837,6 +837,7 @@ bool xprt_lock_connect(struct rpc_xprt *xprt,
+ 		goto out;
+ 	if (xprt->snd_task != task)
+ 		goto out;
++	set_bit(XPRT_SND_IS_COOKIE, &xprt->state);
+ 	xprt->snd_task = cookie;
+ 	ret = true;
+ out:
+@@ -852,6 +853,7 @@ void xprt_unlock_connect(struct rpc_xprt *xprt, void *cookie)
+ 	if (!test_bit(XPRT_LOCKED, &xprt->state))
+ 		goto out;
+ 	xprt->snd_task =NULL;
++	clear_bit(XPRT_SND_IS_COOKIE, &xprt->state);
+ 	xprt->ops->release_xprt(xprt, NULL);
+ 	xprt_schedule_autodisconnect(xprt);
+ out:
 -- 
 2.30.2
 
