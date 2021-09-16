@@ -2,223 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FFDF40D0DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 02:30:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0372B40D0DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 02:31:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233696AbhIPAbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 20:31:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33426 "EHLO mail.kernel.org"
+        id S233485AbhIPAcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 20:32:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233521AbhIPAb3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 20:31:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 491556108F;
-        Thu, 16 Sep 2021 00:30:09 +0000 (UTC)
+        id S233317AbhIPAcq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 20:32:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 90D70610A6;
+        Thu, 16 Sep 2021 00:31:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631752209;
-        bh=RTxTQggqSxSYdn2y3gMxq6FoxSHAqy63/h21L2l9IRg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=d+iusVMvz3jRSfTsKEk2750zrmp+bxGU83YcFVS3zgJJY5KNuTGrUus6hqAv7NRus
-         xZfemHe3GZfd+wXGEqUFpr93ea9KMDDhMKnxH9pTnv0pFol/ghTqhYfDzKPcFsSf45
-         3IOB1ZGILT3odwkmYwsPu3Krw8H9nLaz7iWSQ/Vw/dgyK260mVocdG1x0f9b+YYbNB
-         k5qPED0BYUc+bh98JIkb9OUgZUpJzqi01zisxEbENjTEaPzz/LrDz0rgteAzBNlVLX
-         HtAAk57VS16JzM2BI/vl7SSWEaaH6y1EPxPP2KqqEzfOif1kxTsbWo2AyHcAPEwR9s
-         otHt644RlBSDQ==
-Date:   Wed, 15 Sep 2021 17:30:08 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Cc:     hch@lst.de, linux-xfs@vger.kernel.org, dan.j.williams@intel.com,
-        david@fromorbit.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev,
-        rgoldwyn@suse.de, viro@zeniv.linux.org.uk, willy@infradead.org
-Subject: Re: [PATCH v9 8/8] xfs: Add dax dedupe support
-Message-ID: <20210916003008.GE34830@magnolia>
-References: <20210915104501.4146910-1-ruansy.fnst@fujitsu.com>
- <20210915104501.4146910-9-ruansy.fnst@fujitsu.com>
+        s=k20201202; t=1631752286;
+        bh=4ON6gyVcGSyrQgrpSEGDCD192PiA2ByJhyQhpyyA36o=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=hghhs7SMSs85lF+dhEHSLxNeFP/mA49FHmT0l8gmx2ly3tTM7VWBQtK/g/zzcxprd
+         kJoDZFE3ZTw0GjMzblxe8TEIMMDdClah80QXgEs+RjF+18uzEq8TXyuM354n8sRcaf
+         0poYJVH+FcRmzTXutMzLx3ip3uwqwuVdOU8Ic01OWd30wNpbdj3Y0iid9u/nZwklr2
+         +fvJbFfbxkjlhMnKjsapd6mXlOXnZ9xKHGWP8UCSEzPSlAqFytR+SyyHwm6B/lErkn
+         SSjE7aJuffOnXu6LSGO+roPlA91Vw/5pAwJe7vb/oZ0BbC+OL9OoDs0HDu5x7/SI8A
+         vQINQYCExV+cA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 6325F5C054E; Wed, 15 Sep 2021 17:31:26 -0700 (PDT)
+Date:   Wed, 15 Sep 2021 17:31:26 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        kernel-team@fb.com, mingo@kernel.org
+Cc:     elver@google.com, andreyknvl@google.com, glider@google.com,
+        dvyukov@google.com, cai@lca.pw, boqun.feng@gmail.com
+Subject: [PATCH kcsan 0/9] Kernel Concurrency Sanitizer (KCSAN) updates for
+ v5.16
+Message-ID: <20210916003126.GA3910257@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210915104501.4146910-9-ruansy.fnst@fujitsu.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 06:45:01PM +0800, Shiyang Ruan wrote:
-> Introduce xfs_mmaplock_two_inodes_and_break_dax_layout() for dax files
-> who are going to be deduped.  After that, call compare range function
-> only when files are both DAX or not.
-> 
-> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
-> Reviewed-by: Darrick J. Wong <djwong@kernel.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> ---
->  fs/xfs/xfs_file.c    |  2 +-
->  fs/xfs/xfs_inode.c   | 80 +++++++++++++++++++++++++++++++++++++++++---
->  fs/xfs/xfs_inode.h   |  1 +
->  fs/xfs/xfs_reflink.c |  4 +--
->  4 files changed, 80 insertions(+), 7 deletions(-)
-> 
-> diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
-> index 2ef1930374d2..c3061723613c 100644
-> --- a/fs/xfs/xfs_file.c
-> +++ b/fs/xfs/xfs_file.c
-> @@ -846,7 +846,7 @@ xfs_wait_dax_page(
->  	xfs_ilock(ip, XFS_MMAPLOCK_EXCL);
->  }
->  
-> -static int
-> +int
->  xfs_break_dax_layouts(
->  	struct inode		*inode,
->  	bool			*retry)
-> diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
-> index a4f6f034fb81..bdc084cdbf46 100644
-> --- a/fs/xfs/xfs_inode.c
-> +++ b/fs/xfs/xfs_inode.c
-> @@ -3790,6 +3790,61 @@ xfs_iolock_two_inodes_and_break_layout(
->  	return 0;
->  }
->  
-> +static int
-> +xfs_mmaplock_two_inodes_and_break_dax_layout(
-> +	struct xfs_inode	*ip1,
-> +	struct xfs_inode	*ip2)
-> +{
-> +	int			error, attempts = 0;
-> +	bool			retry;
-> +	struct page		*page;
-> +	struct xfs_log_item	*lp;
-> +
-> +	if (ip1->i_ino > ip2->i_ino)
-> +		swap(ip1, ip2);
-> +
-> +again:
-> +	retry = false;
-> +	/* Lock the first inode */
-> +	xfs_ilock(ip1, XFS_MMAPLOCK_EXCL);
-> +	error = xfs_break_dax_layouts(VFS_I(ip1), &retry);
-> +	if (error || retry) {
-> +		xfs_iunlock(ip1, XFS_MMAPLOCK_EXCL);
-> +		if (error == 0 && retry)
-> +			goto again;
-> +		return error;
-> +	}
-> +
-> +	if (ip1 == ip2)
-> +		return 0;
-> +
-> +	/* Nested lock the second inode */
-> +	lp = &ip1->i_itemp->ili_item;
-> +	if (lp && test_bit(XFS_LI_IN_AIL, &lp->li_flags)) {
-> +		if (!xfs_ilock_nowait(ip2,
-> +		    xfs_lock_inumorder(XFS_MMAPLOCK_EXCL, 1))) {
-> +			xfs_iunlock(ip1, XFS_MMAPLOCK_EXCL);
-> +			if ((++attempts % 5) == 0)
-> +				delay(1); /* Don't just spin the CPU */
-> +			goto again;
-> +		}
+Hello!
 
-I suspect we don't need this part for grabbing the MMAPLOCK^W pagecache
-invalidatelock.  The AIL only grabs the ILOCK, never the IOLOCK or the
-MMAPLOCK.
+This series provides KCSAN updates, all courtesy of Marco Elver:
 
-> +	} else
-> +		xfs_ilock(ip2, xfs_lock_inumorder(XFS_MMAPLOCK_EXCL, 1));
-> +	/*
-> +	 * We cannot use xfs_break_dax_layouts() directly here because it may
-> +	 * need to unlock & lock the XFS_MMAPLOCK_EXCL which is not suitable
-> +	 * for this nested lock case.
-> +	 */
-> +	page = dax_layout_busy_page(VFS_I(ip2)->i_mapping);
-> +	if (page && page_ref_count(page) != 1) {
+1.	test: Defer kcsan_test_init() after kunit initialization.
 
-Do you think the patch "ext4/xfs: add page refcount helper" would be a
-good cleanup to head this series?
+2.	test: Use kunit_skip() to skip tests.
 
-https://lore.kernel.org/linux-xfs/20210913161604.31981-1-alex.sierra@amd.com/T/#m59cf7cd5c0d521ad487fa3a15d31c3865db88bdf
+3.	test: Fix flaky test case.
 
-The rest of the logic looks ok.
+4.	Add ability to pass instruction pointer of access to reporting.
 
---D
+5.	Save instruction pointer for scoped accesses.
 
-> +		xfs_iunlock(ip2, XFS_MMAPLOCK_EXCL);
-> +		xfs_iunlock(ip1, XFS_MMAPLOCK_EXCL);
-> +		goto again;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  /*
->   * Lock two inodes so that userspace cannot initiate I/O via file syscalls or
->   * mmap activity.
-> @@ -3804,8 +3859,19 @@ xfs_ilock2_io_mmap(
->  	ret = xfs_iolock_two_inodes_and_break_layout(VFS_I(ip1), VFS_I(ip2));
->  	if (ret)
->  		return ret;
-> -	filemap_invalidate_lock_two(VFS_I(ip1)->i_mapping,
-> -				    VFS_I(ip2)->i_mapping);
-> +
-> +	if (IS_DAX(VFS_I(ip1)) && IS_DAX(VFS_I(ip2))) {
-> +		ret = xfs_mmaplock_two_inodes_and_break_dax_layout(ip1, ip2);
-> +		if (ret) {
-> +			inode_unlock(VFS_I(ip2));
-> +			if (ip1 != ip2)
-> +				inode_unlock(VFS_I(ip1));
-> +			return ret;
-> +		}
-> +	} else
-> +		filemap_invalidate_lock_two(VFS_I(ip1)->i_mapping,
-> +					    VFS_I(ip2)->i_mapping);
-> +
->  	return 0;
->  }
->  
-> @@ -3815,8 +3881,14 @@ xfs_iunlock2_io_mmap(
->  	struct xfs_inode	*ip1,
->  	struct xfs_inode	*ip2)
->  {
-> -	filemap_invalidate_unlock_two(VFS_I(ip1)->i_mapping,
-> -				      VFS_I(ip2)->i_mapping);
-> +	if (IS_DAX(VFS_I(ip1)) && IS_DAX(VFS_I(ip2))) {
-> +		xfs_iunlock(ip2, XFS_MMAPLOCK_EXCL);
-> +		if (ip1 != ip2)
-> +			xfs_iunlock(ip1, XFS_MMAPLOCK_EXCL);
-> +	} else
-> +		filemap_invalidate_unlock_two(VFS_I(ip1)->i_mapping,
-> +					      VFS_I(ip2)->i_mapping);
-> +
->  	inode_unlock(VFS_I(ip2));
->  	if (ip1 != ip2)
->  		inode_unlock(VFS_I(ip1));
-> diff --git a/fs/xfs/xfs_inode.h b/fs/xfs/xfs_inode.h
-> index b21b177832d1..f7e26fe31a26 100644
-> --- a/fs/xfs/xfs_inode.h
-> +++ b/fs/xfs/xfs_inode.h
-> @@ -472,6 +472,7 @@ enum xfs_prealloc_flags {
->  
->  int	xfs_update_prealloc_flags(struct xfs_inode *ip,
->  				  enum xfs_prealloc_flags flags);
-> +int	xfs_break_dax_layouts(struct inode *inode, bool *retry);
->  int	xfs_break_layouts(struct inode *inode, uint *iolock,
->  		enum layout_break_reason reason);
->  
-> diff --git a/fs/xfs/xfs_reflink.c b/fs/xfs/xfs_reflink.c
-> index 9d876e268734..3b99c9dfcf0d 100644
-> --- a/fs/xfs/xfs_reflink.c
-> +++ b/fs/xfs/xfs_reflink.c
-> @@ -1327,8 +1327,8 @@ xfs_reflink_remap_prep(
->  	if (XFS_IS_REALTIME_INODE(src) || XFS_IS_REALTIME_INODE(dest))
->  		goto out_unlock;
->  
-> -	/* Don't share DAX file data for now. */
-> -	if (IS_DAX(inode_in) || IS_DAX(inode_out))
-> +	/* Don't share DAX file data with non-DAX file. */
-> +	if (IS_DAX(inode_in) != IS_DAX(inode_out))
->  		goto out_unlock;
->  
->  	if (!IS_DAX(inode_in))
-> -- 
-> 2.33.0
-> 
-> 
-> 
+6.	Start stack trace with explicit location if provided.
+
+7.	Support reporting scoped read-write access type.
+
+8.	Move ctx to start of argument list.
+
+9.	selftest: Cleanup and add missing __init.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ b/include/linux/kcsan-checks.h |    3 +
+ b/kernel/kcsan/core.c          |   55 +++++++++++++++++--------------
+ b/kernel/kcsan/kcsan.h         |    8 ++--
+ b/kernel/kcsan/kcsan_test.c    |    2 -
+ b/kernel/kcsan/report.c        |   20 ++++++-----
+ b/kernel/kcsan/selftest.c      |   72 +++++++++++++++++------------------------
+ kernel/kcsan/core.c            |   20 +++++++----
+ kernel/kcsan/kcsan_test.c      |   60 +++++++++++++++++++++++-----------
+ kernel/kcsan/report.c          |   59 ++++++++++++++++++++++++++++++---
+ 9 files changed, 187 insertions(+), 112 deletions(-)
