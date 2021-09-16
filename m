@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 045A940E6EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:31:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C43A840E6F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:32:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349177AbhIPR0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:26:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43648 "EHLO mail.kernel.org"
+        id S1352640AbhIPR05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:26:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43646 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346365AbhIPRSH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1346367AbhIPRSH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 16 Sep 2021 13:18:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 98FC461B94;
-        Thu, 16 Sep 2021 16:41:05 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 31E8361B93;
+        Thu, 16 Sep 2021 16:41:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810466;
-        bh=tBFjU4rwxlyvopeAxHdcfhn5BIs67VvAJydquwe6SRw=;
+        s=korg; t=1631810468;
+        bh=TD+BqpQc9GtFzId14Bx/2YU+1CKC56nOUGWnhYF2vws=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ityCdwEIYDq+v+X3KLdvuFI6owqaTuLBZC4ElAJfsS7EoiIDuB40SSEyvloMLHWTm
-         pVz39sBOz9txqlWjuskKm/Ku4/RBq0bOW5JoSuhmuwT66LVydQdCQujBnoyZv+av9R
-         7kdGFSYTQW6SqKeYEnqMplm29OPFRENSlC/W1vrM=
+        b=IPsG85v5k8jaJ+ukfozn+VPMp1PE7h5FV0zlgi8kCHy8jv++A/jWfvKVcVOpiYcF2
+         o3/CDbwlj2amykVi3qsvQ0Kb5PJOZuXYMKH/kTWVGhmV7Q4/icP2YzILUpso/R0h8p
+         4Ob7eCQ5e52c9dESBQh2Y/8rzOX+f1lNqqJB7YA4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Chao Yu <chao@kernel.org>,
         Jaegeuk Kim <jaegeuk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 151/432] f2fs: fix to unmap pages from userspace process in punch_hole()
-Date:   Thu, 16 Sep 2021 17:58:20 +0200
-Message-Id: <20210916155815.864720550@linuxfoundation.org>
+Subject: [PATCH 5.14 152/432] f2fs: deallocate compressed pages when error happens
+Date:   Thu, 16 Sep 2021 17:58:21 +0200
+Message-Id: <20210916155815.895756640@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
 References: <20210916155810.813340753@linuxfoundation.org>
@@ -40,46 +40,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chao Yu <chao@kernel.org>
+From: Jaegeuk Kim <jaegeuk@kernel.org>
 
-[ Upstream commit c8dc3047c48540183744f959412d44b08c5435e1 ]
+[ Upstream commit 827f02842e40ea2e00f401e8f4cb1bccf3b8cd86 ]
 
-We need to unmap pages from userspace process before removing pagecache
-in punch_hole() like we did in f2fs_setattr().
+In f2fs_write_multi_pages(), f2fs_compress_pages() allocates pages for
+compression work in cc->cpages[]. Then, f2fs_write_compressed_pages() initiates
+bio submission. But, if there's any error before submitting the IOs like early
+f2fs_cp_error(), previously it didn't free cpages by f2fs_compress_free_page().
+Let's fix memory leak by putting that just before deallocating cc->cpages.
 
-Similar change:
-commit 5e44f8c374dc ("ext4: hole-punch use truncate_pagecache_range")
-
-Fixes: fbfa2cc58d53 ("f2fs: add file operations")
-Signed-off-by: Chao Yu <chao@kernel.org>
+Fixes: 4c8ff7095bef ("f2fs: support data compression")
+Reviewed-by: Chao Yu <chao@kernel.org>
 Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/f2fs/file.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ fs/f2fs/compress.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index 97d48c5bdebc..74f934da825f 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -1084,7 +1084,6 @@ static int punch_hole(struct inode *inode, loff_t offset, loff_t len)
- 		}
+diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+index 455561826c7d..b8b3f1160afa 100644
+--- a/fs/f2fs/compress.c
++++ b/fs/f2fs/compress.c
+@@ -1340,12 +1340,6 @@ static int f2fs_write_compressed_pages(struct compress_ctx *cc,
  
- 		if (pg_start < pg_end) {
--			struct address_space *mapping = inode->i_mapping;
- 			loff_t blk_start, blk_end;
- 			struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
- 
-@@ -1096,8 +1095,7 @@ static int punch_hole(struct inode *inode, loff_t offset, loff_t len)
- 			down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
- 			down_write(&F2FS_I(inode)->i_mmap_sem);
- 
--			truncate_inode_pages_range(mapping, blk_start,
--					blk_end - 1);
-+			truncate_pagecache_range(inode, blk_start, blk_end - 1);
- 
- 			f2fs_lock_op(sbi);
- 			ret = f2fs_truncate_hole(inode, pg_start, pg_end);
+ 	for (--i; i >= 0; i--)
+ 		fscrypt_finalize_bounce_page(&cc->cpages[i]);
+-	for (i = 0; i < cc->nr_cpages; i++) {
+-		if (!cc->cpages[i])
+-			continue;
+-		f2fs_compress_free_page(cc->cpages[i]);
+-		cc->cpages[i] = NULL;
+-	}
+ out_put_cic:
+ 	kmem_cache_free(cic_entry_slab, cic);
+ out_put_dnode:
+@@ -1356,6 +1350,12 @@ static int f2fs_write_compressed_pages(struct compress_ctx *cc,
+ 	else
+ 		f2fs_unlock_op(sbi);
+ out_free:
++	for (i = 0; i < cc->nr_cpages; i++) {
++		if (!cc->cpages[i])
++			continue;
++		f2fs_compress_free_page(cc->cpages[i]);
++		cc->cpages[i] = NULL;
++	}
+ 	page_array_free(cc->inode, cc->cpages, cc->nr_cpages);
+ 	cc->cpages = NULL;
+ 	return -EAGAIN;
 -- 
 2.30.2
 
