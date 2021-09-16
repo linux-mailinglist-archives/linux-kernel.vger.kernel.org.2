@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C8D440E27E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:16:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C1BB40DFA6
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:11:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243731AbhIPQjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:39:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44660 "EHLO mail.kernel.org"
+        id S234132AbhIPQMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:12:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47552 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243386AbhIPQbY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:31:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 118C16138E;
-        Thu, 16 Sep 2021 16:19:21 +0000 (UTC)
+        id S231882AbhIPQHh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:07:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 90C1C6128C;
+        Thu, 16 Sep 2021 16:06:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809162;
-        bh=t36PD241Vt04inE54Cxt7bIoDCPhYYCSm2Egul+soOs=;
+        s=korg; t=1631808376;
+        bh=VMxKDaM3SrW+qUbRpV5JvN7HFM5PZKPdR0iiyeMpvyE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aKlhDTt1O3/23o2YJ0GxrVXMZgxpsSdu5jGcCJvjxnWoCH/VaPJ/mQFVBTtjBjnYG
-         Ugce8qoypS6rFoLFyVxLMdYhgvi3i2+INSgCjng4kubgSN23k7kNoTTe+Wfi1WSXWx
-         W4Y5lnDUU1/fMyLmV3NFk9JIGMAyCZO7dFXcNMbU=
+        b=zG8HIWcXYJ4XnZSZdYgMKXCVNusHX9scwG6LDaU63MZgNE2+t1sUyewSiKJDOAHC9
+         rZVG3pRCxDq+3Wk47uPQTleD3FmybkHqJiI7wZ2WBjCEqUfHQOfXzkfPK+qTh3D3BL
+         ca60D3bAvDVy/S/r3+001I4+PdXUzsoM3qKp/3lo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andres Freund <andres@anarazel.de>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.13 054/380] io-wq: fix wakeup race when adding new work
-Date:   Thu, 16 Sep 2021 17:56:51 +0200
-Message-Id: <20210916155805.820023413@linuxfoundation.org>
+        stable@vger.kernel.org, Enrico Joedecke <joedecke@de.ibm.com>,
+        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 067/306] cpuidle: pseries: Fixup CEDE0 latency only for POWER10 onwards
+Date:   Thu, 16 Sep 2021 17:56:52 +0200
+Message-Id: <20210916155756.344198137@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,64 +41,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jens Axboe <axboe@kernel.dk>
+From: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
 
-commit 87df7fb922d18e96992aa5e824aa34b2065fef59 upstream.
+[ Upstream commit 50741b70b0cbbafbd9199f5180e66c0c53783a4a ]
 
-When new work is added, io_wqe_enqueue() checks if we need to wake or
-create a new worker. But that check is done outside the lock that
-otherwise synchronizes us with a worker going to sleep, so we can end
-up in the following situation:
+Commit d947fb4c965c ("cpuidle: pseries: Fixup exit latency for
+CEDE(0)") sets the exit latency of CEDE(0) based on the latency values
+of the Extended CEDE states advertised by the platform
 
-CPU0				CPU1
-lock
-insert work
-unlock
-atomic_read(nr_running) != 0
-				lock
-				atomic_dec(nr_running)
-no wakeup needed
+On POWER9 LPARs, the firmwares advertise a very low value of 2us for
+CEDE1 exit latency on a Dedicated LPAR. The latency advertized by the
+PHYP hypervisor corresponds to the latency required to wakeup from the
+underlying hardware idle state. However the wakeup latency from the
+LPAR perspective should include
 
-Hold the wqe lock around the "need to wakeup" check. Then we can also get
-rid of the temporary work_flags variable, as we know the work will remain
-valid as long as we hold the lock.
+1. The time taken to transition the CPU from the Hypervisor into the
+   LPAR post wakeup from platform idle state
 
-Cc: stable@vger.kernel.org
-Reported-by: Andres Freund <andres@anarazel.de>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+2. Time taken to send the IPI from the source CPU (waker) to the idle
+   target CPU (wakee).
+
+1. can be measured via timer idle test, where we queue a timer, say
+for 1ms, and enter the CEDE state. When the timer fires, in the timer
+handler we compute how much extra timer over the expected 1ms have we
+consumed. On a a POWER9 LPAR the numbers are
+
+CEDE latency measured using a timer (numbers in ns)
+N       Min      Median   Avg       90%ile  99%ile    Max    Stddev
+400     2601     5677     5668.74    5917    6413     9299   455.01
+
+1. and 2. combined can be determined by an IPI latency test where we
+send an IPI to an idle CPU and in the handler compute the time
+difference between when the IPI was sent and when the handler ran. We
+see the following numbers on POWER9 LPAR.
+
+CEDE latency measured using an IPI (numbers in ns)
+N       Min      Median   Avg       90%ile  99%ile    Max    Stddev
+400     711      7564     7369.43   8559    9514      9698   1200.01
+
+Suppose, we consider the 99th percentile latency value measured using
+the IPI to be the wakeup latency, the value would be 9.5us This is in
+the ballpark of the default value of 10us.
+
+Hence, use the exit latency of CEDE(0) based on the latency values
+advertized by platform only from POWER10 onwards. The values
+advertized on POWER10 platforms is more realistic and informed by the
+latency measurements. For earlier platforms stick to the default value
+of 10us. The fix was suggested by Michael Ellerman.
+
+Fixes: d947fb4c965c ("cpuidle: pseries: Fixup exit latency for CEDE(0)")
+Reported-by: Enrico Joedecke <joedecke@de.ibm.com>
+Signed-off-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/1626676399-15975-2-git-send-email-ego@linux.vnet.ibm.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/io-wq.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/cpuidle/cpuidle-pseries.c | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
 
---- a/fs/io-wq.c
-+++ b/fs/io-wq.c
-@@ -798,7 +798,7 @@ append:
- static void io_wqe_enqueue(struct io_wqe *wqe, struct io_wq_work *work)
- {
- 	struct io_wqe_acct *acct = io_work_get_acct(wqe, work);
--	int work_flags;
-+	bool do_wake;
- 	unsigned long flags;
- 
- 	/*
-@@ -811,14 +811,14 @@ static void io_wqe_enqueue(struct io_wqe
- 		return;
- 	}
- 
--	work_flags = work->flags;
- 	raw_spin_lock_irqsave(&wqe->lock, flags);
- 	io_wqe_insert_work(wqe, work);
- 	wqe->flags &= ~IO_WQE_FLAG_STALLED;
-+	do_wake = (work->flags & IO_WQ_WORK_CONCURRENT) ||
-+			!atomic_read(&acct->nr_running);
- 	raw_spin_unlock_irqrestore(&wqe->lock, flags);
- 
--	if ((work_flags & IO_WQ_WORK_CONCURRENT) ||
--	    !atomic_read(&acct->nr_running))
-+	if (do_wake)
- 		io_wqe_wake_worker(wqe, acct);
- }
- 
+diff --git a/drivers/cpuidle/cpuidle-pseries.c b/drivers/cpuidle/cpuidle-pseries.c
+index a2b5c6f60cf0..e592280d8acf 100644
+--- a/drivers/cpuidle/cpuidle-pseries.c
++++ b/drivers/cpuidle/cpuidle-pseries.c
+@@ -419,7 +419,21 @@ static int pseries_idle_probe(void)
+ 			cpuidle_state_table = shared_states;
+ 			max_idle_state = ARRAY_SIZE(shared_states);
+ 		} else {
+-			fixup_cede0_latency();
++			/*
++			 * Use firmware provided latency values
++			 * starting with POWER10 platforms. In the
++			 * case that we are running on a POWER10
++			 * platform but in an earlier compat mode, we
++			 * can still use the firmware provided values.
++			 *
++			 * However, on platforms prior to POWER10, we
++			 * cannot rely on the accuracy of the firmware
++			 * provided latency values. On such platforms,
++			 * go with the conservative default estimate
++			 * of 10us.
++			 */
++			if (cpu_has_feature(CPU_FTR_ARCH_31) || pvr_version_is(PVR_POWER10))
++				fixup_cede0_latency();
+ 			cpuidle_state_table = dedicated_states;
+ 			max_idle_state = NR_DEDICATED_STATES;
+ 		}
+-- 
+2.30.2
+
 
 
