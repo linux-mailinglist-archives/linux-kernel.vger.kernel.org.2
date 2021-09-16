@@ -2,92 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B29440DD73
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 17:02:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 124DC40DD80
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 17:03:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238369AbhIPPDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 11:03:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56138 "EHLO
+        id S239015AbhIPPET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 11:04:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235474AbhIPPDW (ORCPT
+        with ESMTP id S238971AbhIPPEO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 11:03:22 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C79C9C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 08:02:01 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id g13-20020a17090a3c8d00b00196286963b9so7735550pjc.3
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 08:02:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=M5gCAPaE/nHrIFIMvVnMeDjexAdTXhnPwO4CaUldM2U=;
-        b=AXPEzyMsoeKkXnIeuO3aKLdV380ynzj0wjkkBcMKa64PWMTFGgcd4SAuB4RindvZef
-         gWMqJKMhSivUCnLc/SliE8Cgmk5gga5ZBQX7XyhbhJXgXhlbqZH2f6jjOfjP9SFsxrrH
-         GBlVMUuAKUUmtMvc9MUtcYb2zvS6lHpK3TFwMXgc0N9bqlcYEGqVwmHdmC7N+CBCpTUw
-         GxPK4P4Ex0CLNokyvtPtjSZ/iddeXO1QfMTfdKOSEtIVu4VXBHP2VlKZNbAVpxu093a2
-         MnkGfiezqroQGVmGQEBRokgaFHmw+hcjbnMvbMtPi2ZtjzZYC99Vrj0aaYm5Dp7w/zyj
-         Lyxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=M5gCAPaE/nHrIFIMvVnMeDjexAdTXhnPwO4CaUldM2U=;
-        b=5n/oTu2eW4H/KI8/DAHFcC8nvalX/GHuY4TniLTNHc4u6CdaChVBcNCn2Uc3TgaQoJ
-         wRLb+3zwSsj9d2zNUzhz6dT/SjH6xVdd6tnl/GiPGrtuvn/UhSpPY6RIYz1I+90DmyQx
-         UU5k/OhIqUKn23SlVh6JeYJHPg+tNG7LmMs+FKzFU0N6ehZnipNV2pUFHN4j3NsJCQRX
-         A0zCl1mIp5uG+zyT28Xmy6tsn/ET70dcpXdwyZW5QDLhMFTLEFUNYSCBRMj3cojsNwUJ
-         8BnwXfbHTwdoywEqIW3QsWy80RXv1SFmSFFZJmtJ4EMC2FjNpDKN2amDW07d7IafoDCk
-         simQ==
-X-Gm-Message-State: AOAM531aW1ovG8rvTK3fxatvC/L8XSEVsQpFeHLWegak4UUR8lgQie12
-        PSwz7eNSc8riDYnvhPn8JofAdg==
-X-Google-Smtp-Source: ABdhPJzuO8ZoSlxjBw3iUE+pOwMT7sUg3TGSN+4o07O+LFuejXU6WahFODS1gxWoLYIMPP/5Byevrg==
-X-Received: by 2002:a17:902:6848:b0:13a:4ffd:202e with SMTP id f8-20020a170902684800b0013a4ffd202emr5105920pln.79.1631804521218;
-        Thu, 16 Sep 2021 08:02:01 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id p4sm3286640pjb.11.2021.09.16.08.02.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 08:02:00 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mQsti-001mPG-QU; Thu, 16 Sep 2021 12:01:58 -0300
-Date:   Thu, 16 Sep 2021 12:01:58 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Wenpeng Liang <liangwenpeng@huawei.com>,
-        Weihang Li <liweihang@huawei.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>
-Subject: Re: Build regressions/improvements in v5.15-rc1
-Message-ID: <20210916150158.GM3544071@ziepe.ca>
-References: <20210913070906.1941147-1-geert@linux-m68k.org>
- <CAMuHMdWHDOC2WedHfgYh2nwijEsqnb3+LXgHwST29TaLugiTdA@mail.gmail.com>
+        Thu, 16 Sep 2021 11:04:14 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60AE0C061574;
+        Thu, 16 Sep 2021 08:02:52 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f11c600e73b4cdd38695acb.dip0.t-ipconnect.de [IPv6:2003:ec:2f11:c600:e73b:4cdd:3869:5acb])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 56F431EC0136;
+        Thu, 16 Sep 2021 17:02:46 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1631804566;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Ry9NO0W0dY1PlRpeMUb1ltduv1HjeDhspaE6VFY8fE0=;
+        b=dzihOSpZSIsZh7rL/9DrKrEUKj+fwC3WBoadhJkTSM7ks3hY+DLbUVbUxsNt3sZ013SNbv
+        1uoFXr/UPHLRN/IWfbqSc9ua9o0PdzpF9X5dQXtDeWZUajOJiu0Yx7FrtLENXoeeq5i90A
+        kjm7WIQn/Y72ZtAGCfVPiXsaokbbn6M=
+Date:   Thu, 16 Sep 2021 17:02:40 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-graphics-maintainer@vmware.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>, Baoquan He <bhe@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dave Young <dyoung@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH v3 0/8] Implement generic cc_platform_has() helper
+ function
+Message-ID: <YUNckGH0+KXdEmqu@zn.tnic>
+References: <cover.1631141919.git.thomas.lendacky@amd.com>
+ <YUIjS6lKEY5AadZx@zn.tnic>
+ <d48e6a17-d2b4-67da-56d1-fc9a61dfe2b8@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAMuHMdWHDOC2WedHfgYh2nwijEsqnb3+LXgHwST29TaLugiTdA@mail.gmail.com>
+In-Reply-To: <d48e6a17-d2b4-67da-56d1-fc9a61dfe2b8@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 09:20:44AM +0200, Geert Uytterhoeven wrote:
-> On Mon, Sep 13, 2021 at 9:10 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > Below is the list of build error/warning regressions/improvements in
-> > v5.15-rc1[1] compared to v5.14[2].
-> >
-> > Summarized:
-> >   - build errors: +62/-12
-> 
-> >   + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_1859' declared with attribute error: FIELD_PREP: value too large for the field:  => 322:38
-> >   + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_1866' declared with attribute error: FIELD_PREP: value too large for the field:  => 322:38
-> 
-> Actual error in drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-> 
-> arm64-gcc5.4/arm64-allmodconfig
-> arm64-gcc8/arm64-allmodconfig
+On Wed, Sep 15, 2021 at 10:26:06AM -0700, Kuppuswamy, Sathyanarayanan wrote:
+> I have a Intel variant patch (please check following patch). But it includes
+> TDX changes as well. Shall I move TDX changes to different patch and just
+> create a separate patch for adding intel_cc_platform_has()?
 
-This happens with v5.14 too, so it isn't a new error..
+Yes, please, so that I can expedite that stuff separately and so that it
+can go in early in order for future work to be based ontop.
 
-I've got a patch
+Thx.
 
-Jason
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
