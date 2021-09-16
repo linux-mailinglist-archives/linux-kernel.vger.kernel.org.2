@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5E7F40E433
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:22:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97F1D40E89C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346927AbhIPQ4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:56:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39422 "EHLO mail.kernel.org"
+        id S1354849AbhIPRkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:40:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50256 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240651AbhIPQvn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:51:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9712961279;
-        Thu, 16 Sep 2021 16:28:51 +0000 (UTC)
+        id S1349183AbhIPRdw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:33:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 750956321E;
+        Thu, 16 Sep 2021 16:48:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809732;
-        bh=lOgdxNF0FXJUom5Aw1wbYJCzE2eRXwY51fXUVtgzgBg=;
+        s=korg; t=1631810882;
+        bh=e4TbRqrlT9HprV2lUzQMVPH5udOoHeA2y0wRp2sP4t4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HO7LEJj9mO+Iljbk56yleNU+2KzjPm+pvE2GrtUOmG494aPvvLo8uwc0ZetJ/1acj
-         EP1lGRBwnmvPTUi0J66gHuZzl7jPgIbctDR6C5VywaJxe5+Yj9ylbETfer3e08gIg/
-         tdj3v863Dw7Uf+Qg8tT/xPehNTi7YUg/1d+gLBOk=
+        b=yX7wzXui8mBiqcUrqNgqkuQC15DBW63DJa7nvVLLtB545EzWhu4lvvUZhrJqFkivg
+         Yfl01/w3ZhNdHR4UIkBiVwRUZ3+1NNDiMT+Uhbb4QVDGDTGF44VaS3Dl6LqeH1S0E9
+         m/hITHVLwdSTIatHg8p4R1oLKLb2B9KZf2zC/QEY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, TOTE Robot <oslab@tsinghua.edu.cn>,
-        Tuo Li <islituo@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 263/380] drm/display: fix possible null-pointer dereference in dcn10_set_clock()
+Subject: [PATCH 5.14 271/432] arm64: dts: qcom: sdm630: dont use underscore in node name
 Date:   Thu, 16 Sep 2021 18:00:20 +0200
-Message-Id: <20210916155813.026817359@linuxfoundation.org>
+Message-Id: <20210916155820.001418744@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,60 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tuo Li <islituo@gmail.com>
+From: Vinod Koul <vkoul@kernel.org>
 
-[ Upstream commit 554594567b1fa3da74f88ec7b2dc83d000c58e98 ]
+[ Upstream commit 639dfdbecd88ec05bda87b1d5d419afad50af21c ]
 
-The variable dc->clk_mgr is checked in:
-  if (dc->clk_mgr && dc->clk_mgr->funcs->get_clock)
+We have underscore (_) in node name so fix that up as well.
 
-This indicates dc->clk_mgr can be NULL.
-However, it is dereferenced in:
-    if (!dc->clk_mgr->funcs->get_clock)
+Fix this by changing node name to use dash (-)
 
-To fix this null-pointer dereference, check dc->clk_mgr and the function
-pointer dc->clk_mgr->funcs->get_clock earlier, and return if one of them
-is NULL.
-
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Tuo Li <islituo@gmail.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Link: https://lore.kernel.org/r/20210308060826.3074234-11-vkoul@kernel.org
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ arch/arm64/boot/dts/qcom/sdm630.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
-index 7c939c0a977b..29f61a8d3e29 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
-@@ -3938,13 +3938,12 @@ enum dc_status dcn10_set_clock(struct dc *dc,
- 	struct dc_clock_config clock_cfg = {0};
- 	struct dc_clocks *current_clocks = &context->bw_ctx.bw.dcn.clk;
+diff --git a/arch/arm64/boot/dts/qcom/sdm630.dtsi b/arch/arm64/boot/dts/qcom/sdm630.dtsi
+index 5b73659f2a75..06a0ae773ad5 100644
+--- a/arch/arm64/boot/dts/qcom/sdm630.dtsi
++++ b/arch/arm64/boot/dts/qcom/sdm630.dtsi
+@@ -17,14 +17,14 @@ / {
+ 	chosen { };
  
--	if (dc->clk_mgr && dc->clk_mgr->funcs->get_clock)
--				dc->clk_mgr->funcs->get_clock(dc->clk_mgr,
--						context, clock_type, &clock_cfg);
--
--	if (!dc->clk_mgr->funcs->get_clock)
-+	if (!dc->clk_mgr || !dc->clk_mgr->funcs->get_clock)
- 		return DC_FAIL_UNSUPPORTED_1;
+ 	clocks {
+-		xo_board: xo_board {
++		xo_board: xo-board {
+ 			compatible = "fixed-clock";
+ 			#clock-cells = <0>;
+ 			clock-frequency = <19200000>;
+ 			clock-output-names = "xo_board";
+ 		};
  
-+	dc->clk_mgr->funcs->get_clock(dc->clk_mgr,
-+		context, clock_type, &clock_cfg);
-+
- 	if (clk_khz > clock_cfg.max_clock_khz)
- 		return DC_FAIL_CLK_EXCEED_MAX;
- 
-@@ -3962,7 +3961,7 @@ enum dc_status dcn10_set_clock(struct dc *dc,
- 	else
- 		return DC_ERROR_UNEXPECTED;
- 
--	if (dc->clk_mgr && dc->clk_mgr->funcs->update_clocks)
-+	if (dc->clk_mgr->funcs->update_clocks)
- 				dc->clk_mgr->funcs->update_clocks(dc->clk_mgr,
- 				context, true);
- 	return DC_OK;
+-		sleep_clk: sleep_clk {
++		sleep_clk: sleep-clk {
+ 			compatible = "fixed-clock";
+ 			#clock-cells = <0>;
+ 			clock-frequency = <32764>;
 -- 
 2.30.2
 
