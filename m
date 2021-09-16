@@ -2,70 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC47940E95F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:02:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 916F540E8FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:01:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345818AbhIPRxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:53:08 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:36968 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245293AbhIPRtG (ORCPT
+        id S1346630AbhIPSBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 14:01:13 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:19990 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349562AbhIPSAF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:49:06 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id A0EDC1FF07;
-        Thu, 16 Sep 2021 17:47:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631814456; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=92sbNZ4wtt7HJbLDVek/qCHTZYn/db8qMt1chWEKSus=;
-        b=QxXUahxQZ+eYlKdrdkwUUz1H1yNVburuoAS/zqp9XPPRLN8gqTzaSP8TKq+nMOUsv1RPtE
-        CJgaLN5eFXNtCcIu37SJ0qE2IbJMb5GHevpOLPbv9JbhgHPte9kJjt7El4FT0VEvPH76HM
-        DPuNlKRa8XTHg9F4I6QYYbHFDgj+iFo=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8383F13D5A;
-        Thu, 16 Sep 2021 17:47:36 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 2TSRHjiDQ2H1bQAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Thu, 16 Sep 2021 17:47:36 +0000
-Date:   Thu, 16 Sep 2021 19:47:35 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     brookxu <brookxu.cn@gmail.com>
-Cc:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        vipinsh@google.com, corbet@lwn.net, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] docs/cgroup: add entry for misc.events
-Message-ID: <20210916174735.GA12271@blackbody.suse.cz>
-References: <3834f917d50a6f19402e179e917ef6a9dde5f64a.1631671936.git.brookxu@tencent.com>
- <7cb32b92b77188f50b46bb47eb728bcacf18c17f.1631671936.git.brookxu@tencent.com>
+        Thu, 16 Sep 2021 14:00:05 -0400
+Received: from dggeme765-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4H9PqH1PsQzbmX1;
+        Fri, 17 Sep 2021 01:54:35 +0800 (CST)
+Received: from DESKTOP-R64PNO0.china.huawei.com (10.67.102.35) by
+ dggeme765-chm.china.huawei.com (10.3.19.111) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Fri, 17 Sep 2021 01:58:41 +0800
+From:   Jinhui Guo <guojinhui@huawei.com>
+To:     <akpm@linux-foundation.org>, <pmladek@suse.com>,
+        <peterz@infradead.org>, <valentin.schneider@arm.com>
+CC:     <linux-kernel@vger.kernel.org>, <guojinhui@huawei.com>
+Subject: [PATCH] [RFC] watchdog/softlockup: Fix softlockup_stop_all() hungtask bug
+Date:   Fri, 17 Sep 2021 01:56:50 +0800
+Message-ID: <20210916175650.1380-1-guojinhui@huawei.com>
+X-Mailer: git-send-email 2.32.0.windows.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7cb32b92b77188f50b46bb47eb728bcacf18c17f.1631671936.git.brookxu@tencent.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.102.35]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggeme765-chm.china.huawei.com (10.3.19.111)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 10:18:51AM +0800, brookxu <brookxu.cn@gmail.com> wrote:
-> From: Chunguang Xu <brookxu@tencent.com>
-> 
-> Added descriptions of misc.events.
-> 
-> Signed-off-by: Chunguang Xu <brookxu@tencent.com>
-> ---
->  Documentation/admin-guide/cgroup-v2.rst | 10 ++++++++++
->  1 file changed, 10 insertions(+)
+If NR_CPUS equal to 1, it would trigger hungtask, it can be
+triggered by follow command:
+	echo 0 > /proc/sys/kernel/watchdog
+	echo 1 > /proc/sys/kernel/watchdog
+The hungtask stack:
+	__schedule
+	schedule
+	schedule_timeout
+	__wait_for_common
+	softlockup_stop_fn
+	lockup_detector_reconfigure
+	proc_watchdog_common
+	proc_watchdog
+	proc_sys_call_handler
+	vfs_write
+	ksys_write
+The watchdog_allowed_mask is completely cleared when the
+watchdog is disabled. But the macro for_each_cpu() assume
+all masks are "1" when macro NR_CPUS equal to 1. It makes
+watchdog_allowed_mask not work at all.
 
-Reviewed-by: Michal Koutný <mkoutny@suse.com>
+Fixes: be45bf5395e0 ("watchdog/softlockup: Fix cpu_stop_queue_work() double-queue bug")
+
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Petr Mladek <pmladek@suse.com>
+Signed-off-by: Jinhui Guo <guojinhui@huawei.com>
+---
+ include/linux/cpumask.h | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
+index 5d4d07a9e1ed..1a35dbcc397d 100644
+--- a/include/linux/cpumask.h
++++ b/include/linux/cpumask.h
+@@ -175,10 +175,11 @@ static inline int cpumask_any_distribute(const struct cpumask *srcp)
+ 	return cpumask_first(srcp);
+ }
+ 
++/* It should check cpumask in some special case, such as watchdog */
+ #define for_each_cpu(cpu, mask)			\
+-	for ((cpu) = 0; (cpu) < 1; (cpu)++, (void)mask)
++	for ((cpu) = 0; (cpu) < 1 && test_bit(0, cpumask_bits(mask)); (cpu)++)
+ #define for_each_cpu_not(cpu, mask)		\
+-	for ((cpu) = 0; (cpu) < 1; (cpu)++, (void)mask)
++	for ((cpu) = 0; (cpu) < 1 && !test_bit(0, cpumask_bits(mask)); (cpu)++)
+ #define for_each_cpu_wrap(cpu, mask, start)	\
+ 	for ((cpu) = 0; (cpu) < 1; (cpu)++, (void)mask, (void)(start))
+ #define for_each_cpu_and(cpu, mask1, mask2)	\
+-- 
+2.12.3
 
