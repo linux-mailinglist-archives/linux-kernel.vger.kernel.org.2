@@ -2,154 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EC0C40D618
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 11:24:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0A8B40D61A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 11:25:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236061AbhIPJZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 05:25:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41143 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235566AbhIPJZb (ORCPT
+        id S236574AbhIPJ0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 05:26:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236214AbhIPJZj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 05:25:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631784250;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0dHlztnaiRHcaPy45MsGDKnkv/q5nQ+if9oZqgd4ekg=;
-        b=RlRtXQeKTQUM7vXPSng8fIHR/ERLFa9WEoiCay4mfWAWcfrjUFeNjxFt2mjL6iZRGn96Ee
-        SkTwyf/rlVVQ8IXvxj+YIvMDeCbQweRy426jAD+aaEKRZ3JlyVvslOMe4z7X+V2pY9p7dl
-        pTlWiKkxg+Q+iFgcC9LEBNpVqLUYy0o=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-564-16jcP80JMn6jnuj0tYYfAw-1; Thu, 16 Sep 2021 05:24:09 -0400
-X-MC-Unique: 16jcP80JMn6jnuj0tYYfAw-1
-Received: by mail-ed1-f70.google.com with SMTP id m20-20020aa7c2d4000000b003d1add00b8aso4769637edp.0
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 02:24:09 -0700 (PDT)
+        Thu, 16 Sep 2021 05:25:39 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 134E1C0613E5
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 02:24:18 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id bq5so15908644lfb.9
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 02:24:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version;
+        bh=quKEGUskroMnOu7oGIk1sVTPT2DFxBdoMb1glSkwvKk=;
+        b=DdQLuXNLstvEe8u7lBnJSUCrEFrVhP9ZTkNPdZXzkB0z8bZMJYjYTuvm6JuTF5aTJg
+         y96QGvmOh47F16/RLbTdE9xp1iFKGIGi2zY1hnBO2vfpTXII8KqilUWFxUzkw4GOfIVl
+         H9RwsIO8VP0+XaOFcK159kZqic9/RSwctibopJ0qSdxvR2nCdnYl5CettDYCGaQZ10XX
+         44oPPG2/eI3r+72VPDQ8mMuMjC9i87fKbfRDB3fx1+4+aiN+vZzyNZpvj4KDWuEr25ek
+         j7zswXTbnFaKnQq1MXjxJWlJ7XCJTe3iio0G5JPwz99UIfdJZ6t6UHtpK/K0M/2m32vh
+         0oxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0dHlztnaiRHcaPy45MsGDKnkv/q5nQ+if9oZqgd4ekg=;
-        b=Sxb4hDdDK8rA2er/3Gju4AwXCI02Em+YS7A0Jrp3hiFmqRhR0KdSM0PB8iZcUA2qLv
-         2KMHuK5AsdfIr6fMxEbuOdQlO7tgOU3kGlyWcS3gy27zdumz3ZKAATdmOwLMBhmkf+Pg
-         dRTyOL2+rjBpygAmjhIUEb1rDEu62ENHldGiqjU5gYCt0UWTEIAlPylwXlP8rvFno9ZS
-         1PKHdJ3NCYXePW2sF2Ge16b80IyvRUQKHn/WheZkOaKg01RlOCH1DsBhmkXmBKDytsY/
-         qQyanJ7N6I7drK0W+IprbOilMoxBZ6XoGaK1gRj+qFoWYY79P0BTU4nfjlT2Fn3nKncO
-         +sFg==
-X-Gm-Message-State: AOAM530Toe2tTKPBKvWq5nifQdxybwNJ07NTQLMINqB+Q71V/pTmvjYQ
-        zofEF3AWJiV0GQ2dUSGg1FpV5AhQGwtFBYjFXjR36C1mX0kf1tM8HMsY0z9d3Ar9C507ABr4RE0
-        +D5nEvt0lEU6GSsQ9PnXhY/qS
-X-Received: by 2002:a17:907:2653:: with SMTP id ar19mr5092609ejc.431.1631784248169;
-        Thu, 16 Sep 2021 02:24:08 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzxSCHk9AOfST+otT+0wr2XQnUZQCly3Lf1LowqYXIayIW1WAv+zy/RvKF5ZgnYhDlPWePO4Q==
-X-Received: by 2002:a17:907:2653:: with SMTP id ar19mr5092579ejc.431.1631784247943;
-        Thu, 16 Sep 2021 02:24:07 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id n10sm954257ejk.86.2021.09.16.02.24.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Sep 2021 02:24:07 -0700 (PDT)
-To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>
-Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Andy Lutomirski <luto@kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Andi Kleen <ak@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Varad Gautam <varad.gautam@suse.com>,
-        Dario Faggioli <dfaggioli@suse.com>, x86@kernel.org,
-        linux-mm@kvack.org, linux-coco@lists.linux.dev,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>
-References: <20210824005248.200037-1-seanjc@google.com>
- <20210902184711.7v65p5lwhpr2pvk7@box.shutemov.name>
- <YTE1GzPimvUB1FOF@google.com>
- <20210903191414.g7tfzsbzc7tpkx37@box.shutemov.name>
- <02806f62-8820-d5f9-779c-15c0e9cd0e85@kernel.org>
- <20210910171811.xl3lms6xoj3kx223@box.shutemov.name>
- <20210915195857.GA52522@chaop.bj.intel.com>
- <20210915141147.s4mgtcfv3ber5fnt@black.fi.intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [RFC] KVM: mm: fd-based approach for supporting KVM guest private
- memory
-Message-ID: <179fdb45-d8a4-9567-edfe-2168794f599e@redhat.com>
-Date:   Thu, 16 Sep 2021 11:24:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version;
+        bh=quKEGUskroMnOu7oGIk1sVTPT2DFxBdoMb1glSkwvKk=;
+        b=oPnzVwlz6N5OK/dnQg9Nh+NxNgkbht88wIIfSWVYqAy12CEhzH7HnVdwCoUDV3HXWE
+         neGcatizc7xPlk/zZ5v+bnAz+4V1fLTZyK2Kwf9PjRJfa8RaxVCnjE/LmiUtGsp+QnGJ
+         hnXWfu9tMeljOalLa2sDZ51erwCnuJGzCDEU6AP8qNxgYgOTjyH4cBnHIG66gc2nL0zS
+         Lv63MqXU2EYOnNnOA9mAfqqWLUPKwmVpi9WyrPDk8y0SkNG/sop/+Eld46wMMWnCZrPH
+         4L0VQhTQQBh7nNowH9rjLGPi9J856yhqqrYc0WuZ3PQLcCoMFYDvkYABhLDhhaPjsf0V
+         yz+A==
+X-Gm-Message-State: AOAM530TXdbjAzFKxncvuqSAUuFtnu/eqvBIop8c3HyjqSs+zPwn8Xbm
+        1bVNyeQleoimdlE7owc3BGc=
+X-Google-Smtp-Source: ABdhPJx7oiGjzyPB9hDEeGi4byj39x2w7a3HRBMjJSsUr6nbOhQ1AtS2VDobNE3lWLsxKi/MttEx6Q==
+X-Received: by 2002:a05:6512:39d6:: with SMTP id k22mr3452313lfu.258.1631784256272;
+        Thu, 16 Sep 2021 02:24:16 -0700 (PDT)
+Received: from eldfell ([194.136.85.206])
+        by smtp.gmail.com with ESMTPSA id l11sm209652lfg.39.2021.09.16.02.24.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Sep 2021 02:24:15 -0700 (PDT)
+Date:   Thu, 16 Sep 2021 12:24:06 +0300
+From:   Pekka Paalanen <ppaalanen@gmail.com>
+To:     Werner Sembach <wse@tuxedocomputers.com>
+Cc:     "Deucher, Alexander" <alexander.deucher@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Ville =?UTF-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>, sebastian@sebastianwick.net
+Subject: Re: New uAPI for color management proposal and feedback request v2
+Message-ID: <20210916122406.7c132525@eldfell>
+In-Reply-To: <e452775c-5b95-bbfd-e818-f1480f556336@tuxedocomputers.com>
+References: <e452775c-5b95-bbfd-e818-f1480f556336@tuxedocomputers.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210915141147.s4mgtcfv3ber5fnt@black.fi.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/m2oIbyLut0gDnAcjrS61zLj";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/09/21 16:11, Kirill A. Shutemov wrote:
->> Would introducing memfd_unregister_guest() fix this?
-> I considered this, but it get complex quickly.
-> 
-> At what point it gets called? On KVM memslot destroy?
-> 
-> What if multiple KVM slot share the same memfd? Add refcount into memfd on
-> how many times the owner registered the memfd?
+--Sig_/m2oIbyLut0gDnAcjrS61zLj
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-You will always have multiple KVM slots sharing the same memfd, because 
-memslots are SRCU-protected.  So there will be multiple generations of 
-memslots around and unregistering must be delayed to after 
-synchronize_srcu (around the call to kvm_arch_commit_memory_region).
+On Tue, 3 Aug 2021 11:38:19 +0200
+Werner Sembach <wse@tuxedocomputers.com> wrote:
 
-So KVM could just call memfd_{,un}register_guest as many times as it 
-calls fdget/fput.  Looking at your test device, it would be like the 
-following pseudo-patch:
+> Greetings,
+>=20
+> Original proposal: https://www.mail-archive.com/amd-gfx@lists.freedesktop=
+.org/msg62387.html
+>=20
+> Abstract: Add "preferred color format", "active color format", "active bp=
+c", and "active Broadcast RGB" drm properties,
+> to control color information send to the monitor.
+>=20
+> It seems that the "preferred-" properties is not what is actually the mos=
+t useful for the userspace devs.
+>=20
+> Preferable (Note: with only a sample size of 2 people) would be a "force =
+color format" property. If the color format is
+> not available for the current Monitor and GPU combo. the TEST_ONLY check =
+should fail and the property should not be setable.
+>=20
+> This however opens another problem: When a Monitor is disconnected and a =
+new one is connected, the drm properties do not
+> get resetted. So if the old monitor did allow to set for example ycbcr420=
+, but the new monitor does not support this
+> color format at all, it will stay permanently black until the drm propert=
+y is set to a correct value by hand. This is
+> not an expected behavior imho.
+>=20
+> So a discussion questions: Does it make sense that connector properties a=
+re keep for different Monitors?
+>=20
+> If no: On connecting a new Monitor all atomic drm properties should be re=
+set to a default value.
+>=20
+> I have an idea how this could be implemented (correct me if i'm wrong): W=
+hen an atomic property is attached it get
+> assigned an inital value. But if I understood the docu correctly, this va=
+lue is ignored because atomic properties use
+> the getter and setter methods when their values are read or written. My i=
+mplementation suggestion would be to iterate
+> over all attached atomic properties once a new monitor is connected and r=
+eset them to this initial value, which should
+> be unchanged since initialization? This assumes that besides the initial =
+value being unused it's still a sane default
+> for all drivers.
+>=20
+> Kind Regards,
+>=20
+> Werner Sembach
+>=20
 
-	case GUEST_MEM_REGISTER: {
-		struct fd memfd = fdget(arg);
-		memfd_file = memfd.file;
-		return memfd_register_guest(memfd_file->f_inode, file,
-					    &guest_ops, &guest_mem_ops);
-	}
-	case GUEST_MEM_UNREGISTER: {
-		if (!memfd_file)
-			return -EINVAL;
+Hi Werner,
 
-+		memfd_unregister_guest(memfd_file->f_inode, file);
-		fput(memfd_file);
-		memfd_file = NULL;
-		guest_mem_ops = NULL;
-		return 0;
+I just wanted to say that I appreciate the effort and something like
+these are things I would likely want to use some day in Weston, but
+currently I can't spend time on this since it's still so far in the
+future for me. I also feel that I've said what I can without spending a
+significant amount of time thinking how it should actually work.
 
-and shmem_unregister_guest would be something like
+The same goes with the thing pointed out by Sebastian, the KMS property
+reset idea. Since I can't really work on it now, I'll stop shouting
+about it and wait for problems to arise in the wild and see where that
+leads. (Probably just patching the KMS client of the day to set a
+couple more KMS properties.)
 
-	struct shmem_inode_info *info = SHMEM_I(inode);
 
-	if (WARN_ON_ONCE(info->guest_owner != owner))
-		return;
-	if (--info->guest_usage_count)
-		return;
-	info->guest_owner = NULL;
-	info->guest_ops = NULL;
+Thanks,
+pq
 
-Paolo
+--Sig_/m2oIbyLut0gDnAcjrS61zLj
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-> It would leave us in strange state: memfd refcount owners (struct KVM) and
-> KVM memslot pins the struct file. Weird refcount exchnage program.
+-----BEGIN PGP SIGNATURE-----
 
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmFDDTYACgkQI1/ltBGq
+qqfxZg//bxjNceiMruwsAHhjW56idiGLy07lSyp5IItUXdTQHZer4dERd/jmd5ee
+4ln2oszEfUjJDOc+MgtyuarG/5XwD6riUu353cvGAO+Ugd66yRxuDT4sGe2ZcZOs
+hhkH6AT/qKJioQ3CWPLpXX5oK9i/wrzSx55TIZyPvhDkaGIpEwFbJ843evdmURGZ
+vclCG0f4y5Uk976QUttDRl+llhPK8vWbMwNWzchNWroyTuaYeLU7fWM9jrycO3wo
+44hNJatGdW+gqZBM98VaL5p7OAw0VMo9S/hDAOnXCXp79U+fUWWI5bArcjEsbhA/
+vD4oCte3YfQ51l3Ihv3NLUkiMKmwrpQ9xiQp+pNqj2lAu/AzpsC1HAyLBEZaxA6U
+YzvW55ONMvVgVy1TMPp4BatC+WP/XyFZrKzsG4gNzyDpc64Az9HmXRoeF241Obmr
+/LxbJ7f9uihfLlwguwliyAaoMaZNzMYpKXE153KDbRCv0JwYNG5i0rU5Bywx+CNW
+r/1eMvelNkxvKzbEtpY5Wl0vjvZllq8HE1dZ5/+EOUV35lnh/XEq9j0lr8d/BHsw
+3DPqCwrNVxqvgvv4yutr4QeCFjbfs+hx98/KI4pX0imxbGCG/lPhK4i8a7P1LVK5
+dd2zzBPmB4evvh7DTEiq1V7M5VQgJHmHUXdv+BoTEcCBOJN+K/E=
+=Ldod
+-----END PGP SIGNATURE-----
+
+--Sig_/m2oIbyLut0gDnAcjrS61zLj--
