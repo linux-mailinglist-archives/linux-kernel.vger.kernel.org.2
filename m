@@ -2,80 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 371A840D3B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 09:22:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDA8640D3AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 09:19:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234758AbhIPHXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 03:23:21 -0400
-Received: from gate.crashing.org ([63.228.1.57]:33905 "EHLO gate.crashing.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232254AbhIPHXU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 03:23:20 -0400
-Received: from ip6-localhost (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 18G7GUXH031599;
-        Thu, 16 Sep 2021 02:16:36 -0500
-Message-ID: <eb1a39368401bf46e805ca64256604cc649f771e.camel@kernel.crashing.org>
-Subject: Re: [PATCH] powerpc: warn on emulation of dcbz instruction
-From:   Benjamin Herrenschmidt <benh@kernel.crashing.org>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Stan Johnson <userm57@yahoo.com>,
-        Finn Thain <fthain@linux-m68k.org>
-Date:   Thu, 16 Sep 2021 17:16:30 +1000
-In-Reply-To: <2c0fd775625c76c4dd09b3e923da4405a003f3bd.camel@kernel.crashing.org>
-References: <62b33ca839f3d1d7d4b64b6f56af0bbe4d2c9057.1631716292.git.christophe.leroy@csgroup.eu>
-         <2c0fd775625c76c4dd09b3e923da4405a003f3bd.camel@kernel.crashing.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        id S234718AbhIPHUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 03:20:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36340 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234568AbhIPHUh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 03:20:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631776757;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LGfg0GcIluFSJ92DGpwm8iHnNl5dpXDbW0fpaZHOCJ0=;
+        b=E/v2+Q+OUs6oQClmwbXvw+3pqXNnXz5RuDOIipBbCaGF51k63Nx0ngn8CO8K3ak6cgUWcD
+        lgSxOrP4mC5ItItoeoyfSypbop6AyVkQvP3SUvAzXUOqPwtX8h+2k8ssEleM6hZTZyH2+k
+        W/rBXMpNHwVh+mltupAjpvdTg1SQe+A=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-480-bD1OoDRWMxy8C080uVRguQ-1; Thu, 16 Sep 2021 03:19:15 -0400
+X-MC-Unique: bD1OoDRWMxy8C080uVRguQ-1
+Received: by mail-ed1-f71.google.com with SMTP id j6-20020aa7de86000000b003d4ddaf2bf9so4377260edv.7
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 00:19:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=LGfg0GcIluFSJ92DGpwm8iHnNl5dpXDbW0fpaZHOCJ0=;
+        b=p95SWllsl5OKcSlnfuEfbhvom1WauN694uX0+9S3XDppjqJd/LWOyKNGDgiKO3Chwp
+         VCjzXpJWLjx4x6oNU5hj2f9JWY0y6Nr+IRv9DC9Tj6o+xsuyffsZa+/jSDDPQxxbH4Zp
+         vcx+DA1bK4/+tJUlkwzc1HAm+KjLSIAbQxIcOfFt57+vt4pqfML1YNuXYGYaQS/l1GTY
+         1ZRuko0bQjjMuoxuclhMJ5qNV9P9JwbhoG/Ir3Y4zY7JPgF+F0LZMx6yS/Bz1QqUQQHG
+         qC5ZckjYrzq/04nVfltnqm6rB7hsguvAkBezUnu7tAKQkN6qN/0EVV2lSHP59JgFuFgY
+         VwVA==
+X-Gm-Message-State: AOAM530J7FvrvFmoeR2SODgbyrfc++zkJdMsBDDbP/yNVhaD6RsmscRL
+        8JMw7g1zrUCSNkF0MnXCP845KHwOD7jEduFWimvKW48wkO3/f8zzjqG3uLz/2BOyzcu9mJcx747
+        oWtaR22imwfR1T0Rx39EkpcN0
+X-Received: by 2002:a17:907:75da:: with SMTP id jl26mr4735655ejc.300.1631776754167;
+        Thu, 16 Sep 2021 00:19:14 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzM8a8cQ5bqm/0JB8lYSrx8o4brn0zc/3kIz05qhtVinvsJWf+IE2TSrwxq+ncm0peCSQxHeA==
+X-Received: by 2002:a17:907:75da:: with SMTP id jl26mr4735635ejc.300.1631776753873;
+        Thu, 16 Sep 2021 00:19:13 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id la1sm851403ejc.48.2021.09.16.00.19.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Sep 2021 00:19:13 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Reiji Watanabe <reijiw@google.com>
+Subject: Re: [PATCH 2/3] KVM: VMX: Move RESET emulation to vmx_vcpu_reset()
+In-Reply-To: <YUIunxwjea/wq3gd@google.com>
+References: <20210914230840.3030620-1-seanjc@google.com>
+ <20210914230840.3030620-3-seanjc@google.com>
+ <875yv2167g.fsf@vitty.brq.redhat.com> <YUIunxwjea/wq3gd@google.com>
+Date:   Thu, 16 Sep 2021 09:19:12 +0200
+Message-ID: <87wnnhyolr.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-09-16 at 17:15 +1000, Benjamin Herrenschmidt wrote:
-> On Wed, 2021-09-15 at 16:31 +0200, Christophe Leroy wrote:
-> > dcbz instruction shouldn't be used on non-cached memory. Using
-> > it on non-cached memory can result in alignment exception and
-> > implies a heavy handling.
-> > 
-> > Instead of silentely emulating the instruction and resulting in
-> > high
-> > performance degradation, warn whenever an alignment exception is
-> > taken due to dcbz, so that the user is made aware that dcbz
-> > instruction has been used unexpectedly.
-> > 
-> > Reported-by: Stan Johnson <userm57@yahoo.com>
-> > Cc: Finn Thain <fthain@linux-m68k.org>
-> > Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> > ---
-> >  arch/powerpc/kernel/align.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/arch/powerpc/kernel/align.c
-> > b/arch/powerpc/kernel/align.c
-> > index bbb4181621dd..adc3a4a9c6e4 100644
-> > --- a/arch/powerpc/kernel/align.c
-> > +++ b/arch/powerpc/kernel/align.c
-> > @@ -349,6 +349,7 @@ int fix_alignment(struct pt_regs *regs)
-> >  		if (op.type != CACHEOP + DCBZ)
-> >  			return -EINVAL;
-> >  		PPC_WARN_ALIGNMENT(dcbz, regs);
-> > +		WARN_ON_ONCE(1);
-> 
-> This is heavy handed ... It will be treated as an oops by various
-> things uselessly spit out a kernel backtrace. Isn't
-> PPC_WARN_ALIGNMENT
-> enough ?
+Sean Christopherson <seanjc@google.com> writes:
 
-Ah I saw your other one about fbdev...  Ok what about you do that in a
-if (!user_mode(regs)) ?
+> On Wed, Sep 15, 2021, Vitaly Kuznetsov wrote:
+>> Sean Christopherson <seanjc@google.com> writes:
+>> > +static void __vmx_vcpu_reset(struct kvm_vcpu *vcpu)
+>> > +{
+>> > +	struct vcpu_vmx *vmx = to_vmx(vcpu);
+>> > +
+>> > +	init_vmcs(vmx);
+>> > +
+>> > +	if (nested)
+>> > +		memcpy(&vmx->nested.msrs, &vmcs_config.nested, sizeof(vmx->nested.msrs));
+>> > +
+>> > +	vcpu_setup_sgx_lepubkeyhash(vcpu);
+>> > +
+>> > +	vmx->nested.posted_intr_nv = -1;
+>> > +	vmx->nested.current_vmptr = -1ull;
+>> > +	vmx->nested.hv_evmcs_vmptr = EVMPTR_INVALID;
+>> 
+>> What would happen in (hypothetical) case when enlightened VMCS is
+>> currently in use? If we zap 'hv_evmcs_vmptr' here, the consequent
+>> nested_release_evmcs() (called from
+>> nested_vmx_handle_enlightened_vmptrld(), for example) will not do 
+>> kvm_vcpu_unmap() while it should.
+>
+> The short answer is that there's a lot of stuff that needs to be addressed before
+> KVM can expose a RESET ioctl().  My goal with these patches is to carve out the
+> stubs and move the few bits of RESET emulation into the "stubs".  This is the same
+> answer for the MSR question/comment at the end.
+>
+>> This, however, got me thinking: should we free all-things-nested with
+>> free_nested()/nested_vmx_free_vcpu() upon vcpu reset? I can't seem to
+>> find us doing that... (I do remember that INIT is blocked in VMX-root
+>> mode and nobody else besides kvm_arch_vcpu_create()/
+>> kvm_apic_accept_events() seems to call kvm_vcpu_reset()) but maybe we
+>> should at least add a WARN_ON() guardian here?
+>
+> I think that makes sense.  Maybe use CR0 as a sentinel since it has a non-zero
+> RESET value?  E.g. WARN if CR0 is non-zero at RESET.
+>
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 86539c1686fa..3ac074376821 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -10813,6 +10813,11 @@ void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
+>         unsigned long new_cr0;
+>         u32 eax, dummy;
+>
+> +       /*
+> +        * <comment about KVM not supporting arbitrary RESET>
+> +        */
+> +       WARN_ON_ONCE(!init_event && old_cr0);
+> +
+>         kvm_lapic_reset(vcpu, init_event);
+>
+>         vcpu->arch.hflags = 0;
+>
 
-Indeed the kernel should not do that.
+Should work (assuming nothing in VMX would want to call vmx_vcpu_reset()/
+__vmx_vcpu_reset() directly).
 
-Cheers,
-Ben.
+> Huh, typing that out made me realize commit 0aa1837533e5 ("KVM: x86: Properly
+> reset MMU context at vCPU RESET/INIT") technically introduced a bug.  kvm_vcpu_reset()
+> does kvm_read_cr0() and thus reads vmcs.GUEST_CR0 because vcpu->arch.regs_avail is
+> (correctly) not stuffed to ALL_ONES until later in kvm_vcpu_reset().  init_vmcs()
+> doesn't explicitly zero vmcs.GUEST_CR0 (along with many other guest fields), and
+> so VMREAD(GUEST_CR0) is technically consuming garbage.  In practice, it's consuming
+> '0' because no known CPU or VMM inverts values in the VMCS, i.e. zero allocating
+> the VMCS is functionally equivalent to writing '0' to all fields via VMWRITE.
+>
+> And staring more at kvm_vcpu_reset(), this code is terrifying for INIT
+>
+> 	memset(vcpu->arch.regs, 0, sizeof(vcpu->arch.regs));
+> 	vcpu->arch.regs_avail = ~0;
+> 	vcpu->arch.regs_dirty = ~0;
+>
+> because it means cr0 and cr4 are marked available+dirty without immediately writing
+> vcpu->arch.cr0/cr4.  And VMX subtly relies on that, as vmx_set_cr0() grabs CR0.PG
+> via kvm_read_cr0_bits(), i.e. zeroing vcpu->arch.cr0 would "break" the INIT flow.
+> Ignoring for the moment that CR0.PG is never guest-owned and thus never stale in
+> vcpu->arch.cr0, KVM is also technically relying on the earlier kvm_read_cr0() in
+> kvm_vcpu_reset() to ensure vcpu->arch.cr0 is fresh.
+>
+> Stuffing regs_avail technically means vmx_set_rflags() -> vmx_get_rflags() is
+> consuming stale data.  It doesn't matter in practice because the old value is
+> only used to re-evaluate vmx->emulation_required, which is guaranteed to be up
+> refreshed by vmx_set_cr0() and friends.  PDPTRs and EXIT_INFO are in a similar
+> boat; KVM shouldn't be reading those fields (CR0.PG=0, not an exit path), but
+> marking them dirty without actually updating the cached values is wrong.
+>
+> There's also one concrete bug: KVM doesn't set vcpu->arch.cr3=0 on RESET/INIT.
+> That bug has gone unnoticed because no real word BIOS/kernel is going to rely on
+> INIT to set CR3=0.  
+>
+> I'm strongly leaning towards stuffing regs_avail/dirty in kvm_arch_vcpu_create(),
+> and relying on explicit kvm_register_mark_dirty() calls for the 3 or so cases where
+> x86 code writes a vcpu->arch register directly.  That would fix the CR0 read bug
+> and also prevent subtle bugs from sneaking in.  Adding new EXREGS would be slightly
+> more costly, but IMO that's a good thing as would force us to actually think about
+> how to handle each register.
+>
+> E.g. implement this over 2-3 patches:
+>
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 114847253e0a..743146ac8307 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -4385,6 +4385,7 @@ static void vmx_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
+>         kvm_set_cr8(vcpu, 0);
+>
+>         vmx_segment_cache_clear(vmx);
+> +       kvm_register_mark_available(vcpu, VCPU_EXREG_SEGMENTS);
+>
+>         seg_setup(VCPU_SREG_CS);
+>         vmcs_write16(GUEST_CS_SELECTOR, 0xf000);
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 86539c1686fa..ab907a0b9eeb 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -10656,6 +10656,8 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
+>         int r;
+>
+>         vcpu->arch.last_vmentry_cpu = -1;
+> +       vcpu->arch.regs_avail = ~0;
+> +       vcpu->arch.regs_dirty = ~0;
+>
+>         if (!irqchip_in_kernel(vcpu->kvm) || kvm_vcpu_is_reset_bsp(vcpu))
+>                 vcpu->arch.mp_state = KVM_MP_STATE_RUNNABLE;
+> @@ -10874,9 +10876,9 @@ void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
+>                 vcpu->arch.xcr0 = XFEATURE_MASK_FP;
+>         }
+>
+> +       /* All GPRs except RDX (handled below) are zeroed on RESET/INIT. */
+>         memset(vcpu->arch.regs, 0, sizeof(vcpu->arch.regs));
+> -       vcpu->arch.regs_avail = ~0;
+> -       vcpu->arch.regs_dirty = ~0;
+> +       kvm_register_mark_dirty(vcpu, VCPU_REGS_RSP);
+>
+>         /*
+>          * Fall back to KVM's default Family/Model/Stepping of 0x600 (P6/Athlon)
+> @@ -10897,6 +10899,9 @@ void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
+>         kvm_set_rflags(vcpu, X86_EFLAGS_FIXED);
+>         kvm_rip_write(vcpu, 0xfff0);
+>
+> +       vcpu->arch.cr3 = 0;
+> +       kvm_register_mark_dirty(vcpu, VCPU_EXREG_CR3);
+> +
+>         /*
+>          * CR0.CD/NW are set on RESET, preserved on INIT.  Note, some versions
+>          * of Intel's SDM list CD/NW as being set on INIT, but they contradict
+>
 
+A selftest for vCPU create/reset would be really helpful. I can even
+volunteer to [eventually] write one :-)
+
+-- 
+Vitaly
 
