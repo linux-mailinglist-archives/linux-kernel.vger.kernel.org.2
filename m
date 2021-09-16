@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E99B40DFA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:11:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73B4F40E640
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:30:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235220AbhIPQMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:12:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47502 "EHLO mail.kernel.org"
+        id S1351966AbhIPRUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:20:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37566 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235072AbhIPQHf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:07:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 440A46127C;
-        Thu, 16 Sep 2021 16:06:13 +0000 (UTC)
+        id S1350742AbhIPRMG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:12:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 64B606140B;
+        Thu, 16 Sep 2021 16:38:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808373;
-        bh=YBCjnvBPJ660mg4CiNXoN5VQkn+Bj7j2lmfI8Xu6H5g=;
+        s=korg; t=1631810311;
+        bh=nddOb52Hhn8RUwoUAbILSuwemUiC19xRPuibnjId1js=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=chCiXVzunX3I8YrR9MaT8zkrxUe9crTuVrXNtJPv+edbt8/i4x/kKw7uWNEfIpcIL
-         UHbQFXkOhyeLsKbwzNZTi67rKlfO/rXUcHXO0I99pAEn1uXfxVTEu3xAZBau+veomf
-         G1rMTDIVrxoWoARTd8wTBEFzPCLpTlp0bC4YU9cw=
+        b=fcZOiHLxRbmLqwtWFcHeQ03Y1pbsWEid7OWjmCl95eqdwAwaiM/Py8HdnSwZoVyMm
+         AX8bxsJcJ8x3/ZF8qTqZhIe9+PFeD/fcMgbDDDAtdAGKTHIVccS67oqUHNna2eO3II
+         R0v+xRhoCThvv2hsfn5inI9WNP4+D+sgXtGUAml8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Avri Altman <avri.altman@wdc.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 066/306] scsi: ufs: Fix memory corruption by ufshcd_read_desc_param()
+        stable@vger.kernel.org, Chao Yu <chao@kernel.org>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, stable@kernel.org
+Subject: [PATCH 5.14 062/432] f2fs: lets keep writing IOs on SBI_NEED_FSCK
 Date:   Thu, 16 Sep 2021 17:56:51 +0200
-Message-Id: <20210916155756.311202825@linuxfoundation.org>
+Message-Id: <20210916155812.887988478@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,47 +39,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bart Van Assche <bvanassche@acm.org>
+From: Jaegeuk Kim <jaegeuk@kernel.org>
 
-[ Upstream commit d3d9c4570285090b533b00946b72647361f0345b ]
+commit 1ffc8f5f7751f91fe6af527d426a723231b741a6 upstream.
 
-If param_offset > buff_len then the memcpy() statement in
-ufshcd_read_desc_param() corrupts memory since it copies 256 + buff_len -
-param_offset bytes into a buffer with size buff_len.  Since param_offset <
-256 this results in writing past the bound of the output buffer.
+SBI_NEED_FSCK is an indicator that fsck.f2fs needs to be triggered, so it
+is not fully critical to stop any IO writes. So, let's allow to write data
+instead of reporting EIO forever given SBI_NEED_FSCK, but do keep OPU.
 
-Link: https://lore.kernel.org/r/20210722033439.26550-2-bvanassche@acm.org
-Fixes: cbe193f6f093 ("scsi: ufs: Fix potential NULL pointer access during memcpy")
-Reviewed-by: Avri Altman <avri.altman@wdc.com>
-Reviewed-by: Daejun Park <daejun7.park@samsung.com>
-Signed-off-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 955772787667 ("f2fs: drop inplace IO if fs status is abnormal")
+Cc: <stable@kernel.org> # v5.13+
+Reviewed-by: Chao Yu <chao@kernel.org>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/scsi/ufs/ufshcd.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ fs/f2fs/data.c    |    2 ++
+ fs/f2fs/segment.c |    2 +-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 854c96e63007..4dabd09400c6 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -3249,9 +3249,11 @@ int ufshcd_read_desc_param(struct ufs_hba *hba,
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -2498,6 +2498,8 @@ bool f2fs_should_update_outplace(struct
+ 		return true;
+ 	if (f2fs_is_atomic_file(inode))
+ 		return true;
++	if (is_sbi_flag_set(sbi, SBI_NEED_FSCK))
++		return true;
  
- 	if (is_kmalloc) {
- 		/* Make sure we don't copy more data than available */
--		if (param_offset + param_size > buff_len)
--			param_size = buff_len - param_offset;
--		memcpy(param_read_buf, &desc_buf[param_offset], param_size);
-+		if (param_offset >= buff_len)
-+			ret = -EINVAL;
-+		else
-+			memcpy(param_read_buf, &desc_buf[param_offset],
-+			       min_t(u32, param_size, buff_len - param_offset));
+ 	/* swap file is migrating in aligned write mode */
+ 	if (is_inode_flag_set(inode, FI_ALIGNED_WRITE))
+--- a/fs/f2fs/segment.c
++++ b/fs/f2fs/segment.c
+@@ -3563,7 +3563,7 @@ int f2fs_inplace_write_data(struct f2fs_
+ 		goto drop_bio;
  	}
- out:
- 	if (is_kmalloc)
--- 
-2.30.2
-
+ 
+-	if (is_sbi_flag_set(sbi, SBI_NEED_FSCK) || f2fs_cp_error(sbi)) {
++	if (f2fs_cp_error(sbi)) {
+ 		err = -EIO;
+ 		goto drop_bio;
+ 	}
 
 
