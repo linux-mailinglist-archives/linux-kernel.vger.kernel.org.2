@@ -2,98 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E85740D65A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 11:37:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59A7140D664
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 11:40:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235492AbhIPJjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 05:39:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50850 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235524AbhIPJjH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 05:39:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 334ED60F4A;
-        Thu, 16 Sep 2021 09:37:43 +0000 (UTC)
-Date:   Thu, 16 Sep 2021 10:37:40 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc:     James Morris <jmorris@namei.org>, Sasha Levin <sashal@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        kexec mailing list <kexec@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Vladimir Murzin <vladimir.murzin@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-mm <linux-mm@kvack.org>,
-        Mark Rutland <mark.rutland@arm.com>, steve.capper@arm.com,
-        rfontana@redhat.com, Thomas Gleixner <tglx@linutronix.de>,
-        Selin Dag <selindag@gmail.com>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Pingfan Liu <kernelfans@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        madvenka@linux.microsoft.com
-Subject: Re: [PATCH v16 00/15] arm64: MMU enabled kexec relocation
-Message-ID: <YUMQZGLQl+82fL6G@arm.com>
-References: <20210802215408.804942-1-pasha.tatashin@soleen.com>
- <20210824180555.GD623@arm.com>
- <CA+CK2bCakwsqS1RqXPJr+ewe=gsO98cOxhXye8-AcRLwtqhZ+g@mail.gmail.com>
+        id S235964AbhIPJmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 05:42:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229494AbhIPJmB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 05:42:01 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D01AC061574;
+        Thu, 16 Sep 2021 02:40:41 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id h16so16049160lfk.10;
+        Thu, 16 Sep 2021 02:40:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=f4r5L82T8lVgmjDxktA/sisuupFmx7x30+6IlhMnYag=;
+        b=jPcF0P+cHfyIuFllT9s+XQDbpTKL/DP/WZ12xBmDnC0LZJsbJeGpydQ+nj1jG3vyhQ
+         MXkF+s9f9DZe82C3OUmuCqssXSW6Xy1D8PFT7XMOVkyU74aEXJL7HBQJL//WLAcHnHlT
+         6JAWY0XBjZ7XwV9xpdiHpNmVxyHHj5cWcQPRN6QHBZx1dqJ5C5ttXeA+io6IcnyWEI1q
+         dTKH6A8fDq2gQ2GNoUTTZGZkVAhST9ZUJ+pdKy05GPpnzXG3EkGwi93ZGAuCS4fkFkql
+         PEeqVQZUULvnCU7rK1P4+9aDwbpW2w/MkOtNecCIBYtcqqkOy4RB/4LhCrlLfobSeeON
+         wc2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=f4r5L82T8lVgmjDxktA/sisuupFmx7x30+6IlhMnYag=;
+        b=d04CrElN+9LPFiaWg1zURVABzwjkEb76HQgpIWxTIjVr4nosqwCnbKO1ax7BMFt4Xz
+         VC1trQ0VRjoJiEYb4kD5JVaREOQtjVzJdyglz87/vZGbZR90Jb/zYHWXdSlZQcgjbK48
+         diS3URh+bIfi9ERq957JnZuox8NDamdyU5trBs9+p4ApfJz2dPxo0fNuxUb/VpBT9Bzn
+         AhPbuyDtRyTvTx8HY4YM1C7+RMnjRlmUi6KHnxHZDOzQxoDs5I5hEO7xZutprJKJnj0F
+         QYLM2JnUM/g4WTM/ofUJPYttHzggw9olPcW0QEHt9L1dZl8L8s7jWk2L6018V6u6OaMO
+         NYzA==
+X-Gm-Message-State: AOAM5333fyZugtkXw++Qe9/ZSHnRPIuZnJhWWDKTTJ/5yGEFvM7RO7wa
+        EJjeSxj62CZK5zr2dqWOkL2z9W9yOEa2yVL1cEg=
+X-Google-Smtp-Source: ABdhPJyIIyf4A7fhfDx7l6dTfpk1Ec/zzEqy4u9mdnznrZCiaqfyA9V5XQj08EEuePeq9U7P318zvMYzkOuwjxToNGM=
+X-Received: by 2002:a2e:1508:: with SMTP id s8mr3587923ljd.240.1631785239506;
+ Thu, 16 Sep 2021 02:40:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+CK2bCakwsqS1RqXPJr+ewe=gsO98cOxhXye8-AcRLwtqhZ+g@mail.gmail.com>
+References: <20210914151016.3174924-1-Roman_Skakun@epam.com>
+ <7c04db79-7de1-93ff-0908-9bad60a287b9@suse.com> <20210914153046.GB815@lst.de> <alpine.DEB.2.21.2109141838290.21985@sstabellini-ThinkPad-T480s>
+In-Reply-To: <alpine.DEB.2.21.2109141838290.21985@sstabellini-ThinkPad-T480s>
+From:   Roman Skakun <rm.skakun@gmail.com>
+Date:   Thu, 16 Sep 2021 12:40:28 +0300
+Message-ID: <CADu_u-OjpYB0-B=tLKYsZH=auvQF-o7PJb-11W=1emY8jaA-mg@mail.gmail.com>
+Subject: Re: [PATCH] swiotlb: set IO TLB segment size via cmdline
+To:     Stefano Stabellini <sstabellini@kernel.org>
+Cc:     Jan Beulich <jbeulich@suse.com>,
+        Andrii Anisov <andrii_anisov@epam.com>,
+        Roman Skakun <roman_skakun@epam.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Mike Rapoport <rppt@kernel.org>, Will Deacon <will@kernel.org>,
+        xen-devel@lists.xenproject.org, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-doc@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        iommu <iommu@lists.linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 11:03:21AM -0400, Pavel Tatashin wrote:
-> On Tue, Aug 24, 2021 at 2:06 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
-> > > Enable MMU during kexec relocation in order to improve reboot performance.
-> > >
-> > > If kexec functionality is used for a fast system update, with a minimal
-> > > downtime, the relocation of kernel + initramfs takes a significant portion
-> > > of reboot.
-> > >
-> > > The reason for slow relocation is because it is done without MMU, and thus
-> > > not benefiting from D-Cache.
+Hi Stefano,
+
+> Also, Option 1 listed in the webpage seems to be a lot better. Any
+> reason you can't do that? Because that option both solves the problem
+> and increases performance.
+
+Yes, Option 1 is probably more efficient.
+But I use another platform under Xen without DMA adjustment functionality.
+I pinned this webpage only for example to describe the similar problem I ha=
+d.
+
+Cheers,
+Roman
+
+=D1=81=D1=80, 15 =D1=81=D0=B5=D0=BD=D1=82. 2021 =D0=B3. =D0=B2 04:51, Stefa=
+no Stabellini <sstabellini@kernel.org>:
+
+>
+> On Tue, 14 Sep 2021, Christoph Hellwig wrote:
+> > On Tue, Sep 14, 2021 at 05:29:07PM +0200, Jan Beulich wrote:
+> > > I'm not convinced the swiotlb use describe there falls under "intende=
+d
+> > > use" - mapping a 1280x720 framebuffer in a single chunk? (As an aside=
+,
+> > > the bottom of this page is also confusing, as following "Then we can
+> > > confirm the modified swiotlb size in the boot log:" there is a log
+> > > fragment showing the same original size of 64Mb.
 > >
-> > The performance improvements are indeed significant on some platforms
-> > (going from 7s to ~40ms), so I think the merging the series is worth it.
-> > Some general questions so I better understand the impact:
-> >
-> > - Is the kdump path affected in any way? IIUC that doesn't need any
-> >   relocation but we should also make sure we don't create the additional
-> >   page table unnecessarily (should keep as much memory intact as
-> >   possible). Maybe that's already handled.
-> 
-> Because kdump does not need relocation, we do not reserve pages for
-> the page table in the kdump reboot case. In fact, with this series,
-> kdump reboot becomes more straightforward as we skip the relocation
-> function entirely, and jump directly into the crash kernel (or
-> purgatory if kexec tools loaded them).
-> 
-> > - What happens if trans_pgd_create_copy() fails to allocate memory. Does
-> >   it fall back to an MMU-off relocation?
-> 
-> In case we are so low on memory that trans_pgd_create_copy() fails to
-> allocate the linear map that uses the large pages (the size of the
-> page table is tiny) the kexec fails during kexec load time (not during
-> reboot time), as out of memory. The MMU enabled kexec reboot is always
-> on, and we should not have several ways to do kexec reboot as it makes
-> the kexec reboot unpredictable in terms of performance, and also prone
-> to bugs by having a common MMU enabled path and less common path when
-> we are low on memory which is never tested.
+> > It doesn't.  We also do not add hacks to the kernel for whacky out
+> > of tree modules.
+>
+> Also, Option 1 listed in the webpage seems to be a lot better. Any
+> reason you can't do that? Because that option both solves the problem
+> and increases performance.
 
-I think this makes sense, especially since it will fail during the kexec
-load time rather than reboot.
 
-I'm ok in principle with this series but I'd need to convince James
-Morse to have a another look since he followed it more closely than me.
-Could you please rebase it against 5.15-rc1?
 
-Thanks.
-
--- 
-Catalin
+--
+Best Regards, Roman.
