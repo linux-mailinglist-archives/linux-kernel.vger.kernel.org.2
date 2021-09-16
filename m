@@ -2,180 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7A7840DA38
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 14:43:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE3AA40DA3C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 14:44:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239611AbhIPMor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 08:44:47 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:22776 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230299AbhIPMop (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 08:44:45 -0400
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18GBPGIc008843;
-        Thu, 16 Sep 2021 12:43:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2021-07-09;
- bh=dhn0Uw0w0HV6PJI36254IMXgmAEW+LOMq72zWblNCV0=;
- b=E11GR3OBstaIMc2vAvp93hZDcYM4GeKufI4wBki1KwiSlvKMdvWrvaXAEeTu7Stu02SN
- K41PcSAybvrF7OZIHKR7XKDxGcBa+Y8lqmhWBCSJXAVgWLvnvXn5GV7hEHmK7+g9gzU2
- OZ3XRP7bNpy/9K6IqVIHYNsCwynLmqAFQ+sqcMO6ejeyjRYZbo/Hutfsx4v+2+2lN1VR
- aj1PaZcFo4tJ1x9zXtQEcaJY2Bg3xj54XVT1Kg7VVydyiMsD3xRUN715Evd3ZAQm3dmU
- /yByb6k7t9BROf6ebkjsCb/KPxvNElphJx+pz0FnHL+/LjcOLzighXM+E+Mzy+nZA5OM nA== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2020-01-29;
- bh=dhn0Uw0w0HV6PJI36254IMXgmAEW+LOMq72zWblNCV0=;
- b=c/1mqV9RC1wkUuVQy8a8qRwf2LFb5EcaxGsbbtDxXi/r7eoCc1oPy+IxA/x+gVkrkg38
- w8QfNO/Ed9CJBR2WytfDivDbK6UTlqQJ+Ni+Dvr2rszWkOWJEiQQrF+UDgjqXaq5Tcvb
- miKB6BuPi+2sOsyZQYVZTpeXmOv7ftlXYICWfrWPgNwBpGe+mttLTVHIwkIJSPP1hevx
- 8YogHHSRaxihLGnX9dkJS1YgHm/KVMzNkTi/19Bp+yL0s8Iqm1uzS6UrHzxt95h0YgZD
- epMplusY98lgmvVcg0SM5ihp6a6WJW2kqBS5j+lMM+G1ty3yCIHqKAzPLMCvgl4MrVus Dw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3b3vj11p8j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 16 Sep 2021 12:43:11 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18GCfhrH012184;
-        Thu, 16 Sep 2021 12:43:10 GMT
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2174.outbound.protection.outlook.com [104.47.56.174])
-        by userp3020.oracle.com with ESMTP id 3b167v5b70-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 16 Sep 2021 12:43:10 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SC45FD0TlKjb/J4rtAY4LySxeqAhd5m1ogzqn2kxjFSxrDtBnXV35nbKyZ2AaM+sN7SRYpU+a7u6ATQlk+Yqfh7GqqXfGgttx5DU4aUYgaCrFC4iSiXOD64RW+5egIDRTFjGcN4TN72h8ybeXi1BOWl7f/BXUrtGtzjqteXacl1LPpGM1Ti6TsP1use/Ugw87vo56HTVD8GJEXPDY/x7L79xRFoRWB03/q2V1olJ2Zgbs2/CalI5UJW7ueZgpmQ9fd/LZXNVR0MXb+hdkBjwlRkX3eYAhX5oGByyxknMseUbmj0JxKQTqECVLu+PqL2mmi9wd0ZmgFk7rZhBxNjgLg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=dhn0Uw0w0HV6PJI36254IMXgmAEW+LOMq72zWblNCV0=;
- b=e/TgC0uLMS//i1NOtw3qjIhsNi1s4jVQDbBWjw1UVQ3hT2Gdzv/fW3l8PNdp74MAZ4jh6c59okP+6xq6WgkP3GcQyPPOwUUtgPGLg3zVkYCePHkzyNzvOYej7I77BoDWGdMdMMt2GBgjseoxK3EhGxt1NojAzeW/0lHFWKM28Vs2Zv6vQ3rBa2OruFDAGoWvFVEkS2aeH4znQx8rTRlv5yvaEEzp0iU1jTF/lvmaAczYnhW9NdoR/F1SdodZuoa6Fy65mafT7HxekeVWuwue/j6iKModU3b/3NsC7xSkWgWc5FI+Rh3pU/sVHONUjiRAR1v+2uOkPbguw+9fFEp/1g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dhn0Uw0w0HV6PJI36254IMXgmAEW+LOMq72zWblNCV0=;
- b=aJp6O88W/CLf6106mbo7MjOZULMN2Su5UJ0qv953PA4ucYAu82JIKGm8z6HbMJG48VwM7pUFiz+Ox4tltxv7IznNCQJpmdrNr2FADkUNOSFk3yQcaUm8o2p5tL2zYqiI2zlXbE5BI7MCNnxU3TewKA+GJyLOWdGYIXcLkJVuZrk=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28) by CO1PR10MB4513.namprd10.prod.outlook.com
- (2603:10b6:303:93::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Thu, 16 Sep
- 2021 12:43:07 +0000
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::d409:11b5:5eb2:6be9]) by MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::d409:11b5:5eb2:6be9%5]) with mapi id 15.20.4523.016; Thu, 16 Sep 2021
- 12:43:07 +0000
-Date:   Thu, 16 Sep 2021 15:42:48 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     CGEL <cgel.zte@gmail.com>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Straube <straube.linux@gmail.com>,
-        Martin Kaiser <martin@kaiser.cx>,
-        Nathan Chancellor <nathan@kernel.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Changcheng Deng <deng.changcheng@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: Re: [PATCH linux-next] staging: r8188eu: use ARRAY_SIZE
-Message-ID: <20210916124248.GI2088@kadam>
-References: <20210916015936.180990-1-deng.changcheng@zte.com.cn>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210916015936.180990-1-deng.changcheng@zte.com.cn>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: JNAP275CA0023.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4d::16)
- To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
+        id S239624AbhIPMqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 08:46:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47234 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230299AbhIPMqN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 08:46:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EBF4761108;
+        Thu, 16 Sep 2021 12:44:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631796293;
+        bh=KLzBiW3VVJ+O27eDAUHuH818CfcF0FIggjnNJ955TqI=;
+        h=References:In-Reply-To:From:Date:Subject:To:From;
+        b=Ufylq44NB1rynFax2+iP0pEyc1lFGZxtmemt4XTmxqqQXVkOF9rYMFRXt5I6zC1jY
+         2eYV6JOxKPkcQUuAeumz6QOIM6NJBa8ziT9lFeDqMlyL1Ycvtyb3U9GmCbHBkhpZMx
+         EXB5Eq7occlceD/WiPQ2kPhoTBl7twxT+nFovEAE9QE4/pAtCmwA33rUowdoPMCI+F
+         ZeVevgvTXw21w3Eo3TslI1jqLMAoybOMV2ihcZGyKgbOimzwSYxuy+4RYMOTE5g/t2
+         c/Tx7icnJShaG/sQHI8DazpmhP0/GIoOMYQSGAkyVNOLb7f7f/iu9071Hqjmd5RpK6
+         so0eXkmFZge8w==
+Received: by mail-ot1-f54.google.com with SMTP id 97-20020a9d006a000000b00545420bff9eso1217864ota.8;
+        Thu, 16 Sep 2021 05:44:52 -0700 (PDT)
+X-Gm-Message-State: AOAM530x00I2kdKGpggE8AKliBULgRyIwUrGvMep5brVQmFssuqzsBW9
+        eLgvZa5WIBBF+xv8hSw8aDP9uk/PnTl6JPpcUlo=
+X-Google-Smtp-Source: ABdhPJzYLUSJZsh0jo8CcdLUrWa60FoaIm/wgPz4w5rfGXbsO/CMqYBIPFe4um0VFr4rFpmdHQF7TW4xUd8HJFD8LqY=
+X-Received: by 2002:a05:6830:12d7:: with SMTP id a23mr4519312otq.102.1631796292308;
+ Thu, 16 Sep 2021 05:44:52 -0700 (PDT)
 MIME-Version: 1.0
-Received: from kadam (62.8.83.99) by JNAP275CA0023.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4d::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Thu, 16 Sep 2021 12:43:01 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ecf43ff3-f39f-4a51-10f4-08d9790f886a
-X-MS-TrafficTypeDiagnostic: CO1PR10MB4513:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CO1PR10MB4513793CBD72F071D961FCD78EDC9@CO1PR10MB4513.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:324;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ZGI3fKWgmi0XBiqeXdxwzBGgxYYBEPp/2bE3OdJ4EwhAp1UHNqet4n/gdOiJG6bkwMXs3iV1w+FovIxMLUKjrFJOVtKhHygVSshKxKc2Mh8vD3HpnG+Y4QEuv9/F5KAaGf2hWBaaig6lVfzBHhSgC6zX4k664utt5XNA8gnPVU882TJ04+ZBV21e77X1XX0DVz09FduFWfZk3sdtxgcBEMOwyixZ+6+u7jrHX7H49akmzlz4+3dcJoDQ+xDwQJSqCu8YtrZzX1L5xCKF5ZaVSJrQnGC+8INjxhiRU5QX0TX38zvJhTsXq3oeM9b/mbC421QzBCOkA78Vx3FiNjTGeRXZo1OEf0wsC65KhFwhPTKYQNXkyaozEkF2yCtJv7rQ4iFhCX6AGczg6Q/VTlIopr+ZyMmEMmt2iTQhck6AKC74TvSBjrwsN3Jy9ETxwZvZolVjbu2Vp9/yx/oh9gX31rt80kah8nJhQj97QofV+iXxY887mHYO7VPzskLXEJrJuEpbn6zStpbSREtDWBdnw7qVLT9K+OPjpFSorB5tYbXqbHf0T3ak4U0tndS96MrZ/cbbHk2X4kJfp+82WmzQRyzVrILNQYOChq2eeT/y+YQYH11FjaJ6+sBJnzw74CvqbM4t5wMi6/JULlR8bUnflrc+lstek6PKVip6PtrLUtdFu5OLYlHU3xn2b8/iqj1EENbwnfFA6FyCgKXOpAseXA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(136003)(346002)(366004)(396003)(39860400002)(186003)(8676002)(38100700002)(38350700002)(33656002)(44832011)(9686003)(1076003)(6666004)(6496006)(66476007)(2906002)(6916009)(52116002)(316002)(83380400001)(5660300002)(4326008)(86362001)(478600001)(8936002)(33716001)(55016002)(7416002)(54906003)(26005)(66946007)(956004)(9576002)(66556008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?6V+5ahQlEPjjXyyz+nsY9Vi98bTz52Yg49on4DQ1klg3ZDto6Vk7iueBXK4C?=
- =?us-ascii?Q?YlKcXqmKyHwwZOgXLyt2PrNNIgn+ikbyyVCEEvJvGGzof+7xia3fOJ3wd07o?=
- =?us-ascii?Q?qZj3oOaWc7XxbnaVsSMG5HeoOXjdXa7nQbc43YbaxAWJwTcKp3yrE6U71wwd?=
- =?us-ascii?Q?suAb1XmKxrNPNOrZVjJLgfNZpkluG4VP2hTK9ccqwyYo/86D6YvaR8Oosfay?=
- =?us-ascii?Q?vt9FACYLALZDShqpp8m7kpIo7xELku2EDyVd57IGDJBYEgpnPqRedKy2wxNh?=
- =?us-ascii?Q?6fzH+f/BGv1yV+q6D8/ACuI/g7DtirT1Myar9VszSTWCRtPMmY8ogGf10Ov6?=
- =?us-ascii?Q?G3Oh1jII8B3k6lnH0k8StgNGtIBWwAq9g8Tehju5jEOKVrBsyEaGFA2Gg9V6?=
- =?us-ascii?Q?TETb4LMpG/8/MojZG5AkdZVNdCWQ/keLTns8zj4O3l/RmdYZZpujUmJNv2sV?=
- =?us-ascii?Q?jRc8aZom7UfXDPoEcNKW7oROHl5C2RYvqnLXXNRywkOOEVgYky+kDu+0RL59?=
- =?us-ascii?Q?aVUNsJg71ijSPKn5/oCR6a00MDek6LJS/MKOQ+mLiALOFckXelt3HIIjbdoa?=
- =?us-ascii?Q?ogVEDVr88insndJJuoFNWjFoEmvflZmYtNtncbt8ItaGnaziT5xKVj9pxJw6?=
- =?us-ascii?Q?WctKl8qC60ut9IwBcqExA8Ya06PgAubkrcpamiI+eQm5AB8iv6bdXHKz0afB?=
- =?us-ascii?Q?BU0IC/imhAbJ6RYZVM4mD7pDQpsiM2duyq66Ccabbq4WGfgN4toI1uV4uEjt?=
- =?us-ascii?Q?b7o1SrtzoYrSWMmkToxdHIerxS1128qwfLjgbyYT2bhWA7zWGSZ2hStGEgKS?=
- =?us-ascii?Q?vxmYb6ASMgzU86RDfvLBoV0L7C19i4En1l4xz0xL+nSFTXxm7jQ/gjVVBJZd?=
- =?us-ascii?Q?gtwhZpzXh/GgMU0LL2LO+c0oJ5lCSDXw/wLLR7tss/DQNVEp6FD3bUL8ZsNf?=
- =?us-ascii?Q?gE5N96ut3M053LtMN56bUt5lEBxflLq5jDK8AvyY6QV/XpPN88D+F1AXRWjS?=
- =?us-ascii?Q?6omrMaxpGKUdeY+fOiBsPGvYsyExKjbnflwfePvwEL03dNx4Ci8ugdEo9bCg?=
- =?us-ascii?Q?RKJlH1x5jfPTnvM/2BKsD41ZSTIW0E4ZX/OeFxEtC0B+9uFKBNoHie1UxOz8?=
- =?us-ascii?Q?+xzxQlKXFHkm9yymempQcI+VBhM/qacRavlLfgRsKWY2xc/h2qOwAn31AxKN?=
- =?us-ascii?Q?e2gl2FqkpIbIcZz9nZHhG7KUm+zVBKyxN6TeQfw1FhQNQg2MJzhuepayEGnz?=
- =?us-ascii?Q?s1v4LlMm6EfjdGTrlOPVjAB9v9ZzKsc1u9wGx+YyF5zBeNzQ3qwoYLbZoQ2K?=
- =?us-ascii?Q?q7BEhhytljeW74nLTX6lQzlG?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ecf43ff3-f39f-4a51-10f4-08d9790f886a
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2021 12:43:07.5655
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8N7hOCwWh9828WihBUslaIBphv64vMldCeqYcSsLSvI4AgMH6g8ZYXTHr/KvrjY2o4m9IeqJAYgSmfRY6QhOnM6QcRj6YVe42mJ7LpM3sac=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4513
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10108 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 suspectscore=0
- phishscore=0 mlxlogscore=999 malwarescore=0 mlxscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109030001
- definitions=main-2109160081
-X-Proofpoint-ORIG-GUID: DpoRIKsF55mggsxzC6oBN7Uo9KHbD5H2
-X-Proofpoint-GUID: DpoRIKsF55mggsxzC6oBN7Uo9KHbD5H2
+References: <20210912165309.98695-1-ogabbay@kernel.org> <YUCvNzpyC091KeaJ@phenom.ffwll.local>
+ <20210914161218.GF3544071@ziepe.ca> <CAFCwf13322953Txr3Afa_MomuD148vnfpEog0xzW7FPWH9=6fg@mail.gmail.com>
+ <YUM5JoMMK7gceuKZ@phenom.ffwll.local>
+In-Reply-To: <YUM5JoMMK7gceuKZ@phenom.ffwll.local>
+From:   Oded Gabbay <ogabbay@kernel.org>
+Date:   Thu, 16 Sep 2021 15:44:25 +0300
+X-Gmail-Original-Message-ID: <CAFCwf10MnK5KPBaeWar4tALGz9n8+-B8toXnqurcebZ8Y_Jjpw@mail.gmail.com>
+Message-ID: <CAFCwf10MnK5KPBaeWar4tALGz9n8+-B8toXnqurcebZ8Y_Jjpw@mail.gmail.com>
+Subject: Re: [PATCH v6 0/2] Add p2p via dmabuf to habanalabs
+To:     Oded Gabbay <ogabbay@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Yossi Leybovich <sleybo@amazon.com>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Dave Airlie <airlied@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 01:59:36AM +0000, CGEL wrote:
-> From: Changcheng Deng <deng.changcheng@zte.com.cn>
-> 
-> Use ARRAY_SIZE instead of dividing sizeof array with sizeof an element
-> 
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
-> ---
->  drivers/staging/r8188eu/os_dep/usb_intf.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/staging/r8188eu/os_dep/usb_intf.c b/drivers/staging/r8188eu/os_dep/usb_intf.c
-> index 78c857d..c7de8ee 100644
-> --- a/drivers/staging/r8188eu/os_dep/usb_intf.c
-> +++ b/drivers/staging/r8188eu/os_dep/usb_intf.c
-> @@ -261,8 +261,7 @@ static void process_spec_devid(const struct usb_device_id *pdid)
->  	u16 vid, pid;
->  	u32 flags;
->  	int i;
-> -	int num = sizeof(specific_device_id_tbl) /
-> -		  sizeof(struct specific_device_id);
-> +	int num = ARRAY_SIZE(specific_device_id_tbl);
->  
->  	for (i = 0; i < num; i++) {
+On Thu, Sep 16, 2021 at 3:31 PM Daniel Vetter <daniel@ffwll.ch> wrote:
+>
+> On Wed, Sep 15, 2021 at 10:45:36AM +0300, Oded Gabbay wrote:
+> > On Tue, Sep 14, 2021 at 7:12 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > >
+> > > On Tue, Sep 14, 2021 at 04:18:31PM +0200, Daniel Vetter wrote:
+> > > > On Sun, Sep 12, 2021 at 07:53:07PM +0300, Oded Gabbay wrote:
+> > > > > Hi,
+> > > > > Re-sending this patch-set following the release of our user-space TPC
+> > > > > compiler and runtime library.
+> > > > >
+> > > > > I would appreciate a review on this.
+> > > >
+> > > > I think the big open we have is the entire revoke discussions. Having the
+> > > > option to let dma-buf hang around which map to random local memory ranges,
+> > > > without clear ownership link and a way to kill it sounds bad to me.
+> > > >
+> > > > I think there's a few options:
+> > > > - We require revoke support. But I've heard rdma really doesn't like that,
+> > > >   I guess because taking out an MR while holding the dma_resv_lock would
+> > > >   be an inversion, so can't be done. Jason, can you recap what exactly the
+> > > >   hold-up was again that makes this a no-go?
+> > >
+> > > RDMA HW can't do revoke.
+>
+> Like why? I'm assuming when the final open handle or whatever for that MR
+> is closed, you do clean up everything? Or does that MR still stick around
+> forever too?
+>
+> > > So we have to exclude almost all the HW and several interesting use
+> > > cases to enable a revoke operation.
+> > >
+> > > >   - For non-revokable things like these dma-buf we'd keep a drm_master
+> > > >     reference around. This would prevent the next open to acquire
+> > > >     ownership rights, which at least prevents all the nasty potential
+> > > >     problems.
+> > >
+> > > This is what I generally would expect, the DMABUF FD and its DMA
+> > > memory just floats about until the unrevokable user releases it, which
+> > > happens when the FD that is driving the import eventually gets closed.
+> > This is exactly what we are doing in the driver. We make sure
+> > everything is valid until the unrevokable user releases it and that
+> > happens only when the dmabuf fd gets closed.
+> > And the user can't close it's fd of the device until he performs the
+> > above, so there is no leakage between users.
+>
+> Maybe I got the device security model all wrong, but I thought Guadi is
+> single user, and the only thing it protects is the system against the
+> Gaudi device trhough iommu/device gart. So roughly the following can
+> happen:
+>
+> 1. User A opens gaudi device, sets up dma-buf export
+>
+> 2. User A registers that with RDMA, or anything else that doesn't support
+> revoke.
+>
+> 3. User A closes gaudi device
+This can not happen without User A closing the FD of the dma-buf it exported.
+We prevent User A from closing the device because when it exported the
+dma-buf, the driver's code took a refcnt of the user's private
+structure. You can see that in export_dmabuf_common() in the 2nd
+patch. There is a call there to hl_ctx_get.
+So even if User A calls close(device_fd), the driver won't let any
+other user open the device until User A closes the fd of the dma-buf
+object.
 
-Get rid of the "num" variable and use ARRAY_SIZE() directly.
+Moreover, once User A will close the dma-buf fd and the device is
+released, the driver will scrub the device memory (this is optional
+for systems who care about security).
 
-regards,
-dan carpenter
+And AFAIK, User A can't close the dma-buf fd once it registered it
+with RDMA, without doing unregister.
+This can be seen in ib_umem_dmabuf_get() which calls dma_buf_get()
+which does fget(fd)
 
+
+>
+> 4. User B opens gaudi device, assumes that it has full control over the
+> device and uploads some secrets, which happen to end up in the dma-buf
+> region user A set up
+>
+> 5. User B extracts secrets.
+>
+> > > I still don't think any of the complexity is needed, pinnable memory
+> > > is a thing in Linux, just account for it in mlocked and that is
+> > > enough.
+>
+> It's not mlocked memory, it's mlocked memory and I can exfiltrate it.
+> Mlock is fine, exfiltration not so much. It's mlock, but a global pool and
+> if you didn't munlock then the next mlock from a completely different user
+> will alias with your stuff.
+>
+> Or is there something that prevents that? Oded at least explain that gaudi
+> works like a gpu from 20 years ago, single user, no security at all within
+> the device.
+> -Daniel
+> --
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
