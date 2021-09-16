@@ -2,97 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8414F40EA07
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:38:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 546B540EA19
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:42:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241610AbhIPSjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 14:39:47 -0400
-Received: from mga04.intel.com ([192.55.52.120]:61035 "EHLO mga04.intel.com"
+        id S1348732AbhIPSnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 14:43:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44496 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344129AbhIPSje (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 14:39:34 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10109"; a="220749921"
-X-IronPort-AV: E=Sophos;i="5.85,299,1624345200"; 
-   d="scan'208";a="220749921"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2021 11:38:09 -0700
-X-IronPort-AV: E=Sophos;i="5.85,299,1624345200"; 
-   d="scan'208";a="516866664"
-Received: from yunyizha-mobl2.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.124.4])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2021 11:38:07 -0700
-Subject: Re: [PATCH v3 0/8] Implement generic cc_platform_has() helper
- function
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-graphics-maintainer@vmware.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>, Baoquan He <bhe@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Dave Young <dyoung@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Will Deacon <will@kernel.org>
-References: <cover.1631141919.git.thomas.lendacky@amd.com>
- <YUIjS6lKEY5AadZx@zn.tnic>
- <d48e6a17-d2b4-67da-56d1-fc9a61dfe2b8@linux.intel.com>
- <YUNckGH0+KXdEmqu@zn.tnic>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <9fee1cec-fc91-f87d-d590-5e606211f1b7@linux.intel.com>
-Date:   Thu, 16 Sep 2021 11:38:04 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+        id S1348572AbhIPSnP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 14:43:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E1616103B;
+        Thu, 16 Sep 2021 18:41:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631817714;
+        bh=ulH418QMyTT2TWux7NsxncGiqxQYNH9YKErMukAqgrY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=rULuUj0Cw0g5HwsjNQYePQw0z/0inRYajo6N7aFmixqexRwKn+otJiOrczm6+ieD2
+         UohJYs+rk0xmvnI5MWsucNBLrlAndRfBrpW/sWj1QL7ihamHFsdM31Wfv/K7veGuWw
+         C17A/aU0S0nKhIxXjYJqszDb+Tye9nqCossveREXI7CSrVGxqd9YLdinzLe9XzN1A1
+         X0oPjLu6ZnC8aQd+xnVTPQ+OP0WsR8qYB4V1It6AskNUunlx3HqEH0i1bGHYiKz69D
+         eOcSvtjhlHtoWMgjhylPyOjanLQJ47JjixMHHzIFFdWijzV5C7JoLigscNcyKj8b0G
+         RS3NUPSTzvU8Q==
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        llvm@lists.linux.dev, Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH v2 0/2] Harden clang against unknown flag options
+Date:   Thu, 16 Sep 2021 11:40:15 -0700
+Message-Id: <20210916184017.1881473-1-nathan@kernel.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <YUNckGH0+KXdEmqu@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi all,
+
+This series cleans up an issue that was noticed by the kernel test robot
+where flags that clang does not implement support for are
+unconditionally added to the command line, which causes all subsequent
+calls to cc-{disable-warning,option} to fail, meaning developers are
+flooded with unnecessary and pointless warnings.
+
+The first patch handles the problematic flags with cc-option for clang
+and the second patch ensures we catch new additions of unknown flags so
+that they can be handled properly.
+
+I intend for this to be merged via the kbuild tree but it can go via
+-tip if there is any objection to that.
+
+Cheers,
+Nathan
+
+v1 -> v2: https://lore.kernel.org/r/20210824022640.2170859-1-nathan@kernel.org/
+
+* Patch 1: Change prefix to "x86/build" (Borislav).
+
+* Patch 1: Add link to v1 thread for more context (Borislav).
+
+* Patch 1: Add Borislav's ack.
+
+* Patch 2: Expand comment in source to make it clear that clang only
+  warns on certain unimplemented optimization flags.
+
+* Series: Add Nick's review.
+
+Nathan Chancellor (2):
+  x86/build: Do not add -falign flags unconditionally for clang
+  kbuild: Add -Werror=ignored-optimization-argument to CLANG_FLAGS
+
+ arch/x86/Makefile_32.cpu | 12 +++++++++---
+ scripts/Makefile.clang   |  5 +++++
+ 2 files changed, 14 insertions(+), 3 deletions(-)
 
 
-On 9/16/21 8:02 AM, Borislav Petkov wrote:
-> On Wed, Sep 15, 2021 at 10:26:06AM -0700, Kuppuswamy, Sathyanarayanan wrote:
->> I have a Intel variant patch (please check following patch). But it includes
->> TDX changes as well. Shall I move TDX changes to different patch and just
->> create a separate patch for adding intel_cc_platform_has()?
-> 
-> Yes, please, so that I can expedite that stuff separately and so that it
-> can go in early in order for future work to be based ontop.
-
-Sent it part of TDX patch series. Please check and cherry pick it.
-
-https://lore.kernel.org/lkml/20210916183550.15349-2-sathyanarayanan.kuppuswamy@linux.intel.com/
-
-> 
-> Thx.
-> 
-
+base-commit: a9086b878b7fd65894eb8cb1fa395dd469970566
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+2.33.0
+
