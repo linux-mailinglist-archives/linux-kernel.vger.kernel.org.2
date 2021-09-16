@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B01840E241
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:16:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBD3240DFA2
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:11:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243267AbhIPQgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:36:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38910 "EHLO mail.kernel.org"
+        id S233819AbhIPQM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:12:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47588 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241310AbhIPQ2Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:28:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D87261279;
-        Thu, 16 Sep 2021 16:18:00 +0000 (UTC)
+        id S232392AbhIPQHn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:07:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EC86661351;
+        Thu, 16 Sep 2021 16:06:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809080;
-        bh=niG2Lt1Ingh5RIC5tdVdvtYyFU2QIjLuQ49vE2s/LNg=;
+        s=korg; t=1631808378;
+        bh=QlJJ9g6oDafpKf1UXnmxpl/ubm3+gpg3qtxl0d4dDoY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WOx65U+Z2iM2a5Leye75BMgVpkhNg+vDJc8DrftXP5oT0scIg3Fv/BwV1UG3zNbm2
-         gHK2KNtXje9gUVMEBU7Hr4ubv2eB8tApfUPMtakjpc4DyYStKMVudP4G0RVujKMST9
-         ZeCH8MyFR3z8Cfl4Dw0yUTecQlVckEZY/dkOlnwc=
+        b=Ah9FwbcPhEusaHGByZoAOr3q1ccd2bVuQ0zNRYbnCfkDeBcmyPcV43fqle6CW/JTb
+         4FWyKunft784OnMxeEpUbz9I9LeUOozQ4R+Xl2J18+eHgVc7d6IncDZt3K0Yk4psth
+         x8IGKfPdidFMTKaYxtFOrK4YUDqK1i4NeRDsY8k8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        Amelie Delaunay <amelie.delaunay@foss.st.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-Subject: [PATCH 5.13 023/380] pinctrl: stmfx: Fix hazardous u8[] to unsigned long cast
-Date:   Thu, 16 Sep 2021 17:56:20 +0200
-Message-Id: <20210916155804.763432408@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Wang Hai <wanghai38@huawei.com>
+Subject: [PATCH 5.10 036/306] VMCI: fix NULL pointer dereference when unmapping queue pair
+Date:   Thu, 16 Sep 2021 17:56:21 +0200
+Message-Id: <20210916155755.178000563@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,57 +40,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Zyngier <maz@kernel.org>
+From: Wang Hai <wanghai38@huawei.com>
 
-commit 1b73e588f47397dee6e4bdfd953e0306c60b5fe5 upstream.
+commit a30dc6cf0dc51419021550152e435736aaef8799 upstream.
 
-Casting a small array of u8 to an unsigned long is *never* OK:
+I got a NULL pointer dereference report when doing fuzz test:
 
-- it does funny thing when the array size is less than that of a long,
-  as it accesses random places in the stack
-- it makes everything even more fun with a BE kernel
+Call Trace:
+  qp_release_pages+0xae/0x130
+  qp_host_unregister_user_memory.isra.25+0x2d/0x80
+  vmci_qp_broker_unmap+0x191/0x320
+  ? vmci_host_do_alloc_queuepair.isra.9+0x1c0/0x1c0
+  vmci_host_unlocked_ioctl+0x59f/0xd50
+  ? do_vfs_ioctl+0x14b/0xa10
+  ? tomoyo_file_ioctl+0x28/0x30
+  ? vmci_host_do_alloc_queuepair.isra.9+0x1c0/0x1c0
+  __x64_sys_ioctl+0xea/0x120
+  do_syscall_64+0x34/0xb0
+  entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Fix this by building the unsigned long used as a bitmap byte by byte,
-in a way that works across endianess and has no undefined behaviours.
+When a queue pair is created by the following call, it will not
+register the user memory if the page_store is NULL, and the
+entry->state will be set to VMCIQPB_CREATED_NO_MEM.
 
-An extra BUILD_BUG_ON() catches the unlikely case where the array
-would be larger than a single unsigned long.
+vmci_host_unlocked_ioctl
+  vmci_host_do_alloc_queuepair
+    vmci_qp_broker_alloc
+      qp_broker_alloc
+        qp_broker_create // set entry->state = VMCIQPB_CREATED_NO_MEM;
 
-Fixes: 1490d9f841b1 ("pinctrl: Add STMFX GPIO expander Pinctrl/GPIO driver")
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Cc: stable@vger.kernel.org
-Cc: Amelie Delaunay <amelie.delaunay@foss.st.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
-Link: https://lore.kernel.org/r/20210725180830.250218-1-maz@kernel.org
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+When unmapping this queue pair, qp_host_unregister_user_memory() will
+be called to unregister the non-existent user memory, which will
+result in a null pointer reference. It will also change
+VMCIQPB_CREATED_NO_MEM to VMCIQPB_CREATED_MEM, which should not be
+present in this operation.
+
+Only when the qp broker has mem, it can unregister the user
+memory when unmapping the qp broker.
+
+Only when the qp broker has no mem, it can register the user
+memory when mapping the qp broker.
+
+Fixes: 06164d2b72aa ("VMCI: queue pairs implementation.")
+Cc: stable <stable@vger.kernel.org>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Reviewed-by: Jorgen Hansen <jhansen@vmware.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Link: https://lore.kernel.org/r/20210818124845.488312-1-wanghai38@huawei.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pinctrl/pinctrl-stmfx.c |    6 ++++--
+ drivers/misc/vmw_vmci/vmci_queue_pair.c |    6 ++++--
  1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/drivers/pinctrl/pinctrl-stmfx.c
-+++ b/drivers/pinctrl/pinctrl-stmfx.c
-@@ -566,7 +566,7 @@ static irqreturn_t stmfx_pinctrl_irq_thr
- 	u8 pending[NR_GPIO_REGS];
- 	u8 src[NR_GPIO_REGS] = {0, 0, 0};
- 	unsigned long n, status;
--	int ret;
-+	int i, ret;
+--- a/drivers/misc/vmw_vmci/vmci_queue_pair.c
++++ b/drivers/misc/vmw_vmci/vmci_queue_pair.c
+@@ -2238,7 +2238,8 @@ int vmci_qp_broker_map(struct vmci_handl
  
- 	ret = regmap_bulk_read(pctl->stmfx->map, STMFX_REG_IRQ_GPI_PENDING,
- 			       &pending, NR_GPIO_REGS);
-@@ -576,7 +576,9 @@ static irqreturn_t stmfx_pinctrl_irq_thr
- 	regmap_bulk_write(pctl->stmfx->map, STMFX_REG_IRQ_GPI_SRC,
- 			  src, NR_GPIO_REGS);
+ 	result = VMCI_SUCCESS;
  
--	status = *(unsigned long *)pending;
-+	BUILD_BUG_ON(NR_GPIO_REGS > sizeof(status));
-+	for (i = 0, status = 0; i < NR_GPIO_REGS; i++)
-+		status |= (unsigned long)pending[i] << (i * 8);
- 	for_each_set_bit(n, &status, gc->ngpio) {
- 		handle_nested_irq(irq_find_mapping(gc->irq.domain, n));
- 		stmfx_pinctrl_irq_toggle_trigger(pctl, n);
+-	if (context_id != VMCI_HOST_CONTEXT_ID) {
++	if (context_id != VMCI_HOST_CONTEXT_ID &&
++	    !QPBROKERSTATE_HAS_MEM(entry)) {
+ 		struct vmci_qp_page_store page_store;
+ 
+ 		page_store.pages = guest_mem;
+@@ -2345,7 +2346,8 @@ int vmci_qp_broker_unmap(struct vmci_han
+ 		goto out;
+ 	}
+ 
+-	if (context_id != VMCI_HOST_CONTEXT_ID) {
++	if (context_id != VMCI_HOST_CONTEXT_ID &&
++	    QPBROKERSTATE_HAS_MEM(entry)) {
+ 		qp_acquire_queue_mutex(entry->produce_q);
+ 		result = qp_save_headers(entry);
+ 		if (result < VMCI_SUCCESS)
 
 
