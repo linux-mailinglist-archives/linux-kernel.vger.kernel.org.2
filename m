@@ -2,63 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A4AF40DB69
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 15:37:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB18D40DB7B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 15:40:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240253AbhIPNiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 09:38:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37318 "EHLO mail.kernel.org"
+        id S240298AbhIPNlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 09:41:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37886 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240091AbhIPNio (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 09:38:44 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 957D26120F;
-        Thu, 16 Sep 2021 13:37:22 +0000 (UTC)
-Date:   Thu, 16 Sep 2021 09:37:21 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        =?UTF-8?B?QW5kcsOp?= Almeida <andrealmeid@collabora.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Collabora kernel ML <kernel@collabora.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        GNU C Library <libc-alpha@sourceware.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Davidlohr Bueso <dave@stgolabs.net>
-Subject: Re: [PATCH v3 2/6] futex2: Implement vectorized wait
-Message-ID: <20210916093721.4508a5b3@gandalf.local.home>
-In-Reply-To: <CAK8P3a3Bka5R4dmHE_+xuKTCtMaSZEYvT9jAz7QbgnF_CkeoNQ@mail.gmail.com>
-References: <20210913175249.81074-1-andrealmeid@collabora.com>
-        <20210913175249.81074-3-andrealmeid@collabora.com>
-        <875yv4ge83.fsf@collabora.com>
-        <58536544-e032-1954-ce30-d131869dc95e@collabora.com>
-        <8735q5dutq.fsf@collabora.com>
-        <YUMofqnG6zE4BrnR@hirez.programming.kicks-ass.net>
-        <CAK8P3a3Bka5R4dmHE_+xuKTCtMaSZEYvT9jAz7QbgnF_CkeoNQ@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S240260AbhIPNl2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 09:41:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 6B5CD61260;
+        Thu, 16 Sep 2021 13:40:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631799608;
+        bh=Hjx0c8lg9dMGRA6F8WMlYVGhCIGaUfqHQ6mBeueCLH0=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=uxTIRTq46purS7okSlW2xY5he2axiOTeXCvjmztrfCfsWyYWZI1q/LP6AJzv84V4z
+         G9JZFHayyC2KxiJmFSrrnY/Tn8Ia9Nios1Lg8NB8RXntLeeEzdIRPu1sXRdQwn45wV
+         Ju/PDdpYkM639WjHBg7MZCJIxh1SNG3VvXX0fiSwTxPVhc9FUbHNQlSojj+v5rVO6T
+         BNXIuowFTF1A5Z4zUOlQ3IKDVc5L0Rwg5osjn4Ue2ysIUwFpui7qK0HBtPXZgB3UkP
+         EqvHC9Dj2x9Z2tLT8QYLKX7qZxzi/rTJvW7lQAEwQBfFpCpy1s+W3jMH3YmIk2D7qE
+         MK4LoQvpd8imQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 613D360BCF;
+        Thu, 16 Sep 2021 13:40:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2] net/tls: support SM4 GCM/CCM algorithm
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163179960839.17264.853854954765919907.git-patchwork-notify@kernel.org>
+Date:   Thu, 16 Sep 2021 13:40:08 +0000
+References: <20210916033738.11971-1-tianjia.zhang@linux.alibaba.com>
+In-Reply-To: <20210916033738.11971-1-tianjia.zhang@linux.alibaba.com>
+To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Cc:     borisp@nvidia.com, john.fastabend@gmail.com, daniel@iogearbox.net,
+        kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kaishen.yy@antfin.com,
+        zhang.jia@linux.alibaba.com, YiLin.Li@linux.alibaba.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Sep 2021 13:50:14 +0200
-Arnd Bergmann <arnd@arndb.de> wrote:
+Hello:
 
-> Similar logic applies to cloud instances or containers. Running a 32-bit
-> Alpine Linux in a container means you can often go to a lower memory
-> instance on the host compared to a full 64-bit distro.
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-I also found that running a 32 bit version of Chrome or FireFox keeps them
-from taking up all the memory in your system ;-)  The most they can use is
-4 gigs.
+On Thu, 16 Sep 2021 11:37:38 +0800 you wrote:
+> The RFC8998 specification defines the use of the ShangMi algorithm
+> cipher suites in TLS 1.3, and also supports the GCM/CCM mode using
+> the SM4 algorithm.
+> 
+> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+> Acked-by: Jakub Kicinski <kuba@kernel.org>
+> 
+> [...]
 
--- Steve
+Here is the summary with links:
+  - [v2] net/tls: support SM4 GCM/CCM algorithm
+    https://git.kernel.org/netdev/net-next/c/227b9644ab16
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
