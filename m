@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B803B40E836
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 043D840E828
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350287AbhIPRoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:44:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54410 "EHLO mail.kernel.org"
+        id S1349578AbhIPRn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:43:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54412 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348570AbhIPRgc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1348567AbhIPRgc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 16 Sep 2021 13:36:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CD2D61A79;
-        Thu, 16 Sep 2021 16:49:32 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C67B61A80;
+        Thu, 16 Sep 2021 16:49:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810973;
-        bh=aqB/eixK9h34x4z7TYFN5+h1bz4ed0d3NHrCqDZ7MxE=;
+        s=korg; t=1631810975;
+        bh=hNkQdjx+D0Gc136GIXM7EfcSfLGXIz7OcWNb45YZdYk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dlZn4/G6hYdtWozVxpMTwiEpqfUJc7eDmOcqO8XFvWjRnbawlkcMysv7zIGp0+Gg2
-         Pl/bbzH5OrrfPi0Huw5Ex1VUSY3w5ieWpjWPCDAnt2d3U4UXUJuq1GCxt7Q8wFIw0e
-         Xix//55t9dF4gkE0PVqZ06qilQYgliE2ZZhmHzho=
+        b=XZ03eoiUZph7svboDSdezlgaGkEx/uA52byD2F1lMeKtEaHNq1XAqsLkPCKz4QVYb
+         HnAZGyOkkl1LKOeWTp4agSRVQXAJL3nQ6UaIX8nZAKRck/wE9hUcwIkfXs0JrgceUD
+         PN2pVrMTleoxxMpqdvSeLCVT5Z55cyKVVWcQ+Ekw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Raag Jadav <raagjadav@gmail.com>,
-        Li Yang <leoyang.li@nxp.com>, Shawn Guo <shawnguo@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 304/432] arm64: dts: ls1046a: fix eeprom entries
-Date:   Thu, 16 Sep 2021 18:00:53 +0200
-Message-Id: <20210916155821.127124269@linuxfoundation.org>
+        stable@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Daniel Wagner <dwagner@suse.de>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 305/432] nvme-tcp: dont check blk_mq_tag_to_rq when receiving pdu data
+Date:   Thu, 16 Sep 2021 18:00:54 +0200
+Message-Id: <20210916155821.158403957@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
 References: <20210916155810.813340753@linuxfoundation.org>
@@ -40,69 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Raag Jadav <raagjadav@gmail.com>
+From: Sagi Grimberg <sagi@grimberg.me>
 
-[ Upstream commit c1a6018d1839c9cb8f807dc863a50102a1a5c412 ]
+[ Upstream commit 3b01a9d0caa8276d9ce314e09610f7fb70f49a00 ]
 
-ls1046afrwy and ls1046ardb boards have CAT24C04[1] and CAT24C05[2]
-eeproms respectively. Both are 4Kb (512 bytes) in size,
-and compatible with AT24C04[3].
-Remove multi-address entries, as both the boards have a single chip each.
+We already validate it when receiving the c2hdata pdu header
+and this is not changing so this is a redundant check.
 
-[1] https://www.onsemi.com/pdf/datasheet/cat24c01-d.pdf
-[2] https://www.onsemi.com/pdf/datasheet/cat24c03-d.pdf
-[3] https://ww1.microchip.com/downloads/en/DeviceDoc/doc0180.pdf
-
-Signed-off-by: Raag Jadav <raagjadav@gmail.com>
-Acked-by: Li Yang <leoyang.li@nxp.com>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Reviewed-by: Hannes Reinecke <hare@suse.de>
+Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
+Reviewed-by: Daniel Wagner <dwagner@suse.de>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/freescale/fsl-ls1046a-frwy.dts | 8 +-------
- arch/arm64/boot/dts/freescale/fsl-ls1046a-rdb.dts  | 7 +------
- 2 files changed, 2 insertions(+), 13 deletions(-)
+ drivers/nvme/host/tcp.c | 14 +++-----------
+ 1 file changed, 3 insertions(+), 11 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1046a-frwy.dts b/arch/arm64/boot/dts/freescale/fsl-ls1046a-frwy.dts
-index db3d303093f6..6d22efbd645c 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1046a-frwy.dts
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1046a-frwy.dts
-@@ -83,15 +83,9 @@ rtc@51 {
- 			};
- 
- 			eeprom@52 {
--				compatible = "atmel,24c512";
-+				compatible = "onnn,cat24c04", "atmel,24c04";
- 				reg = <0x52>;
- 			};
+diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c
+index 18bd68b82d78..f05892e2e6c4 100644
+--- a/drivers/nvme/host/tcp.c
++++ b/drivers/nvme/host/tcp.c
+@@ -702,17 +702,9 @@ static int nvme_tcp_recv_data(struct nvme_tcp_queue *queue, struct sk_buff *skb,
+ 			      unsigned int *offset, size_t *len)
+ {
+ 	struct nvme_tcp_data_pdu *pdu = (void *)queue->pdu;
+-	struct nvme_tcp_request *req;
+-	struct request *rq;
 -
--			eeprom@53 {
--				compatible = "atmel,24c512";
--				reg = <0x53>;
--			};
--
- 		};
- 	};
- };
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1046a-rdb.dts b/arch/arm64/boot/dts/freescale/fsl-ls1046a-rdb.dts
-index 60acdf0b689e..7025aad8ae89 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1046a-rdb.dts
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1046a-rdb.dts
-@@ -59,14 +59,9 @@ temp-sensor@4c {
- 	};
+-	rq = blk_mq_tag_to_rq(nvme_tcp_tagset(queue), pdu->command_id);
+-	if (!rq) {
+-		dev_err(queue->ctrl->ctrl.device,
+-			"queue %d tag %#x not found\n",
+-			nvme_tcp_queue_id(queue), pdu->command_id);
+-		return -ENOENT;
+-	}
+-	req = blk_mq_rq_to_pdu(rq);
++	struct request *rq =
++		blk_mq_tag_to_rq(nvme_tcp_tagset(queue), pdu->command_id);
++	struct nvme_tcp_request *req = blk_mq_rq_to_pdu(rq);
  
- 	eeprom@52 {
--		compatible = "atmel,24c512";
-+		compatible = "onnn,cat24c05", "atmel,24c04";
- 		reg = <0x52>;
- 	};
--
--	eeprom@53 {
--		compatible = "atmel,24c512";
--		reg = <0x53>;
--	};
- };
- 
- &i2c3 {
+ 	while (true) {
+ 		int recv_len, ret;
 -- 
 2.30.2
 
