@@ -2,230 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAD7440D831
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 13:13:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A42C640D832
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 13:13:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237308AbhIPLOT convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 16 Sep 2021 07:14:19 -0400
-Received: from mout.kundenserver.de ([217.72.192.73]:43773 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237251AbhIPLOQ (ORCPT
+        id S237475AbhIPLOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 07:14:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51185 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236992AbhIPLOR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 07:14:16 -0400
-Received: from [192.168.1.107] ([37.4.249.93]) by mrelayeu.kundenserver.de
- (mreue108 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1MRTIx-1mEXFt1Tan-00NPjF; Thu, 16 Sep 2021 13:12:24 +0200
-Subject: Re: [PATCH RFC 3/3] net: vertexcom: Add MSE102x SPI support
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Heimpold <michael.heimpold@in-tech.com>,
-        jimmy.shen@vertexcom.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20210914151717.12232-1-stefan.wahren@i2se.com>
- <20210914151717.12232-4-stefan.wahren@i2se.com> <YUJi0cVawjyiteEx@lunn.ch>
-From:   Stefan Wahren <stefan.wahren@i2se.com>
-Autocrypt: addr=stefan.wahren@i2se.com; keydata=
- LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tClZlcnNpb246IEdudVBHIHYy
- CgptUUlOQkZ0NmdCTUJFQUN1Yi9wQmV2SHhidkplZnlaRzMySklObW4yYnNFUFgyNVY2ZmVq
- bXlZd21DR0tqRnRMCi9Eb1VNRVZIRHhDSjQ3Qk1YbzM0NGZIVjFDM0FudWRnTjFCZWhMb0J0
- TEh4bW5lQ3pnSDNLY1B0V1c3cHRqNEcKdEp2OUNRRFp5MjdTS29FUHh5YUk4Q0YweWdSeEpj
- NzJNOUk5d21zUFo1YlVIc0x1WVdNcVE3SmNSbVBzNkQ4ZwpCa2srOC95bmdFeU5FeHd4SnBS
- MXlsajVianhXREh5WVF2dUo1THpaS3VPOUxCM2xYVnNjNGJxWEVqYzZWRnVaCkZDQ2svc3lp
- by9ZaHNlOE4rUXN4N01RYWd6NHdLVWtRUWJmWGcxVnFrVG5BaXZYczQyVm5Ja211NWd6SXcv
- MHQKUkp2NTBGUmhIaHhweUtBSThCOG5oTjhRdng3TVZrUGM1dkRmZDN1R1lXNDdKUGhWUUJj
- VXdKd05rLzQ5RjllQQp2ZzJtdE1QRm5GT1JrV1VSdlArRzZGSmZtNitDdk92N1lmUDF1ZXdB
- aTRsbitKTzFnK2dqVklXbC9XSnB5MG5UCmlwZGZlSDlkSGtnU2lmUXVuWWN1Y2lzTXlvUmJG
- OTU1dENna0VZOUVNRWRZMXQ4aUdEaUNnWDZzNTBMSGJpM2sKNDUzdWFjcHhmUVhTYUF3UGtz
- bDhNa0NPc3YyZUVyNElOQ0hZUUR5WmljbEJ1dUNnOEVOYlI2QUdWdFpTUGNRYgplbnpTektS
- Wm9POUNhcUlEK2ZhdkxpQi9kaHptSEErOWJnSWhtWGZ2WFJMRFp6ZThwbzFkeXQzRTFzaFhp
- ZGRaClBBOE51SlZ6RUl0MmxtSTZWOHBaRHBuMjIxcmZLaml2UlFpYW9zNTRUZ1pqak1ZSTdu
- bko3ZTZ4endBUkFRQUIKdENCVGRHVm1ZVzRnVjJGb2NtVnVJRHgzWVdoeVpXNXpkRUJuYlhn
- dWJtVjBQb2tDTndRVEFRZ0FJUVVDWElkYwo0Z0liQXdVTENRZ0hBZ1lWQ0FrS0N3SUVGZ0lE
- QVFJZUFRSVhnQUFLQ1JDVWdld1BFWkR5MjFPVEQvOUdpWkxkCnRSWWNteVJKZ2x0aVFRekFp
- UWRjSUQ3OGxHb1dwL3grci92Y1U2YjZqdVl1ZVR3Z1Iwclc3djdsMklSQnlEN24KSEp4YSt0
- SVNvUVpCZ2hvbE1JZmI5TXRoR09KTENZNzdrL1FoQWhuMzJOR1prZWp3OXR6a3MvNDBtclpT
- VVQ4NApaeWJzUVhyTE0vSFI2VElJL0RlUEIwbktEM0ppcHBzMlVIUUQ5cUQySWpFd1NRUGxI
- akNPckVaaDQ1UFo3bTkrClo5M0x6aVRlc1dabFlRdUxpSndzNHJLcHRIVzFkL3dSZWxzaG1t
- NlFxY0wybDRDL2U0MGVEQjlncTRkU1poOVgKUEVZbGxpeU5RaDdhMkxTZHVtRTFyK2NTd0lq
- RS91ZHRSdmRPOWFLb0psT2JVSzVkTmpTUEg3d0tUYndkWGRZRApHUHdEaFhkNThOQXdyK1BY
- QmxQajB0STFMQ3ErTEJ4ZUt6aFdYK0dWcTlEb2pWanlVREV4Rk5Ga1h1b0M3ZzhtClY5VDB0
- ZUJpdVpSbm91WEt3VjJGcHRaT0hIN0JVRVd0a0t0aGgxZXRmT1dwaWdCemtVN2JQc2ZJWVQr
- cnk5dGIKMW9KK3Y0MVBOYXFaRW1QVXBKeHZmek5UN3Ayd01lRDdaajlmMHJ1YlJQdExBSjJR
- R2pyRkhzdVh3QU9xcHl6ZQoxOEVidHNZazBOMHp1SEVoY2orUEJJQmZoMFlJWWQ1MW9mNkdJ
- aU95UjlxMFhYdHBsVUo3VDIvSDF1UXFrWGxwCitnVzRWa2lmc2NJckl1eWZueFpXMTJlSXZq
- NnlicVdMN2FZS0dZbVQ2aUxDUGJIWXlZY2F5bDRFa0ZjckNGN0UKZTBXVC9zY1ZNaE8vNVgv
- SGFOQTVIQngvcjUycGdMY3Y0aTlNeExRbVUzUmxabUZ1SUZkaGFISmxiaUE4YzNSbApabUZ1
- TG5kaGFISmxia0JwTW5ObExtTnZiVDZKQWpnRUV3RUNBQ0lGQWx0NmdCTUNHd01HQ3drSUJ3
- TUNCaFVJCkFna0tDd1FXQWdNQkFoNEJBaGVBQUFvSkVKU0I3QThSa1BMYmpic1AvamdqYVNz
- NUh0bGtBSXZXUytGcm15N2MKaG5jT0F4TFRWL0Q2UkV3SU95R0poRkt3d29pck55UTJnOXZV
- YTNZQ1lDZjFmSjh3RWhhS09COWQwTHBNUm5MNApkRVQ4ZDgyMzhFL3BLK0hxTktpSXNKaHM2
- SnNLOFpnalZRR3JtbWZua0dyWisxdjBIQnV4ZGljZ0duUC9XdHVBClVsOGw2Mi9BTGJheXlq
- KzYxQ2xyc0V0UklhcU82N0xJWXdQaVBEUkkrWGlNek5pR3pIRi8xUTZHUjAyUkg2YTMKRjg5
- ejhhUHhjSGkxWnZDdDJ5a3o2VUVjaHpQMHI1Z3FGSisvTC9VcHU4ME1YaVk0djVlSWFCNTJn
- VlBnaXlNQQpsTDJkRHMxbUladm5yUkxSWTJ0YjNtQVlOa1Y1QjVJRFQzcGtXeTZrS281T0Nn
- SytZZFlPUjhGTloyb04ydDhPCnJLK1ZudGFLN01NU0tIbG1ZL3NPd3RSbEVoMU9CbXJjQ3dH
- d21wLzA1R2tSNDZmL0lzaFJWZUZPUmF3K0dBcXQKUDIrQ0ZhMkNOQS9JSG5aTm95aWtsRHpQ
- UUhVVUdzck5wcERyaFg5Sm1oQm1nMXYyeXdIMU5YdTFpRGZQMUJBdwpLZ29rdDVmNVVhUkY5
- c0FBNTN2V0V2YlVVTjllZXNGR0x6UFdkSkdRNWhwZC9WSDVJUXk5U0JyaC93SWNla3E1Cm4w
- a042cGJUSHhHRTUyU2kvTVZJa05UdURaM2FwbjJqbERaNHBPdHBCWEkydlAzYlBPK05pcUJa
- anNVM3R4TGkKV2R2MkZqeXp6NlhMUndlV1JZVkw1SGE2TER0eG9yMnZ1NlVQMDdwOXh6MXhS
- WmFPRFczb1lsSEZ6WXBhNFc1ZwpMSGIybEVrSXVVZlNjaWNHYmpqQXRDbFRkR1ZtWVc0Z1Yy
- Rm9jbVZ1SUR4emRHVm1ZVzR1ZDJGb2NtVnVRR2x1CkxYUmxZMmd1WTI5dFBva0NOd1FUQVFn
- QUlRVUNYSWRlaHdJYkF3VUxDUWdIQWdZVkNBa0tDd0lFRmdJREFRSWUKQVFJWGdBQUtDUkNV
- Z2V3UEVaRHkyeUhURC85VUY3UWxEa0d4elE3QWFDSTZOOTVpUWY4LzFvU1VhRE51Mlk2SQpL
- K0R6UXBiMVRiVE9yM1ZKd3dZOGEzT1d6NU5MU09MTVdlVnh0K29zTW1sUUlHdWJEM09EWko4
- aXpQbEcvSnJOCnQ1elNkbU41SUE1ZjNlc1dXUVZLdmdoWkFnVERxZHB2K1pIVzJFbXhuQUox
- dUxGWFhlUWQzVVpjQzVyMy9nL3YKU2FNbzl4ZWszSjVtTnVEbTcxbEVXc0FzL0JBY0ZjK3lu
- TGh4d0JXQld3c3Z3UjhiSHRKNURPTVd2YUt1RHNrcApJR0ZVZS9LYjJCK2pyYXZRM1RuNnMv
- SHFKTTBjZXhTSHo1cGUrMHNHdlArdDlKNzIzNEJGUXdlRkV4cmlleThVCkl4T3I0WEFiYWFi
- U3J5WW5VL3pWSDlVMWkyQUlRWk1XSkFldkN2VmdRL1UrTmVSaFh1ZGU5WVVtRE1EbzJzQjIK
- VkFGRUFxaUYyUVVIUEEybThhN0VPM3lmTDRyTWswaUh6TElLdmg2L3JIOFFDWThpM1h4VE5M
- OWlDTHpCV3UvTgpPbkNBYlMremx2TFphaVNNaDVFZnV4VHR2NFBsVmRFamY2MlArWkhJRDE2
- Z1VEd0VtYXpMQU1yeDY2NmpINWt1ClVDVFZ5bWJMMFR2Qis2TDZBUmw4QU55TTRBRG1rV2tw
- eU0yMmtDdUlTWUFFZlFSM3VXWFo5WWd4YVBNcWJWK3cKQnJoSmc0SGFONkM2eFRxR3YzcjRC
- MmFxYjc3L0NWb1JKMVo5Y3BIQ3dpT3pJYUFtdnl6UFU2TXhDRFhaOEZnWQpsVDR2MjNHNWlt
- SlAyemdYNXMrRjZBQ1VKOVVRUEQwdVRmK0o5RGEycitza2gvc1dPbloreWNvSE5CUXZvY1pF
- Ck5BSFFmN2tDRFFSYmVvQVRBUkFBMkhkMGZzRFZLNzJSTFNESGJ5ME9oZ0RjRGxWQk0yTSto
- WVlwTzNmWDFyKysKc2hpcVBLQ0hWQXNRNWJ4ZTdIbUppbUhhNEtLWXMya3YvbWx0L0NhdUNK
- Ly9wbWN5Y0JNN0d2d25Lem11WHp1QQpHbVZUWkM2V1I1TGtha0ZydEhPelZtc0VHcE52NVJj
- OWw2SFlGcExrYlNrVmk1U1BRWkp5K0VNZ01DRmdqclpmClZGNnlvdHdFMWFmN0hOdE1oTlBh
- TEROMW9VS0Y1aitSeVJnNWl3SnVDRGtuSGp3QlFWNHBndzIvNXZTOEE3WlEKdjJNYlcvVExF
- eXBLWGlmNzhJaGdBelh0RTJYck0xbi9vNlpINzFvUkZGS096NDJsRmR6ZHJTWDBZc3FYZ0hD
- WAo1Z0l0TGZxemoxcHNNYTlvMWVpTlRFbTFkVlFyVHFueXMwbDE4b2FsUk5zd1lsUW1uWUJ3
- cHdDa2FUSExNSHdLCmZHQmJvNWRMUEVzaHRWb3dJNm5zZ3FMVHlRSG1xSFlxVVpZSXBpZ21t
- QzNTd0JXWTFWNmZmVUVta3FwQUFDRW4KTDQvZ1Vnbjd5US81ZDBzZXFuQXEycFNCSE1VVW9D
- Y1R6RVFVV1ZraUR2M1JrN2hURm1oVHNNcTc4eHYyWFJzWApNUjZ5UWhTVFBGWkNZRFVFeEVs
- RXNTbzlGV0hXcjZ6SHlZY2M4cURMRnZHOUZQaG1RdVQyczlCbHg2Z0kzMjNHCm5FcTFsd1dQ
- SlZ6UDRqUWtKS0lBWHdGcHYrVzhDV0xxekRXT3ZkbHJEYVRhVk1zY0ZUZUg1VzZVcHJsNjVq
- cUYKUUdNcGNSR0NzOEdDVVcxM0gwSXlPdFF0d1dYQTRueStTTDgxcHZpQW1hU1hVOGxhS2FS
- dTkxVk9WYUY5ZjRzQQpFUUVBQVlrQ0h3UVlBUUlBQ1FVQ1czcUFFd0liREFBS0NSQ1VnZXdQ
- RVpEeTIrb1hELzljSEhSa0JaT2ZrbVNxCjE0U3Z4MDYyUHRVMEtWNDcwVFNucC9qV29ZSm5L
- SXczRzBtWElSZ3J0SDJkUHdwSWdWanNZeVJTVk1LbVNwdDUKWnJEZjlOdFRiTldnazhWb0xl
- WnpZRW8rSjNvUHFGclRNczNhWVl2N2U0K0pLNjk1WW5tUSttT0Q5bmlhOTE1dApyNUFaajk1
- VWZTVGx5VW15aWMxZDhvdnNmMWZQN1hDVVZSRmNSamZOZkRGMW9ML3BEZ01QNUdaMk93YVRl
- am15CkN1SGpNOElSMUNpYXZCcFlEbUJuVFlrN1B0aHk2YXRXdllsMGZ5L0NxYWpUS3N4Nytw
- OXh6aXU4WmZWWCtpS0IKQ2MrSGUrRURFZEdJRGh2TlovSVFIZk9CMlBVWFdHUytzOUZOVHhy
- L0E2bkxHWG5BOVk2dzkzaVBkWUl3eFM3SwpYTG9LSmVlMTBEamx6c1lzUmZsRk9XMFpPaVNp
- aElDWGlRVjF1cU02dHpGRzlndFJjaXVzNVVBdGhXYU8xT3dVClNDUW1mQ09tNGZ2TUlKSUE5
- cnh0b1M2T3FSUWNpRjNjcm1vMHJKQ3ROMmF3WmZnaThYRWlmN2Q2aGp2MEVLTTkKWFpvaUFa
- WVpEKy9pTG01VGFLV042b0dJdGkwVmpKdjhaWk9aT2ZDYjZ2cUZJa0pXK2FPdTRvclRMRk16
- MjhhbwpVM1F5V3BOQzhGRm1kWXNWdWE4czZnTjFOSWE2eTNxYS9aQjhiQS9pa3k1OUFFejRp
- RElScmdVek1FZzhBazdUCmZtMUtpWWVpVHRCRENvMjVCdlhqYnFzeXhrUUQxbmtSbTZGQVZ6
- RXVPUEllOEp1cVcyeEQ5aXhHWXZqVTVoa1IKZ0pwM2dQNWIrY25HM0xQcXF1UTJFNmdvS1VN
- TEFia0NEUVJiZmw5REFSQUFzRExjYStMbFAydm5mdEVHaHBjQQpCR1ZOUUVGbkdQckNhdVU2
- SGhOODA1V3RQVHRtc1JPdUp6cWdVVDBtcHFXSWZacTZzTXd5dkhLOVRzL0tIM0paClVWYlJD
- M3oyaDNLZmhIL0RhZjk1cGQ2bVBjL2g5dkYvT3kzK2VUV2hnR25QNmNBNWtsUitmTzFXaEc4
- VnJpWHYKck5lUkcyMHN6emplSG9jblNJY1Q1WHVaUjB1REhPaUd4T2l6MXNNUkZUR3h6R095
- MTlSOXJ2dTYzdGlJM2Q3dgpnYzc1T0NBZGtlQi9TZUNFbGFSdzBUZjdMWmJQampzRjI2M0JZ
- bk1mNGtrTkVLdnFXY1UyaWNNcCtxZXpqeW5CCnB2ZXVlMHJDVFFCWUFRbG9GQ1ZUR0hyV1dB
- NkQ0VzVPMkFmSWRJYzF1MUpDWnAyZjVMV1ZvVUZUVklyUW5RUVUKU0hDaWZyOU1aeExUdFBK
- ZFU1Mm9TUHczZGs0aExQOGlKSUx1dnYvYXZhakNzUVlIRXR3WXNiZUZaeGl1TGdscApBN1lj
- Sk5ObXBnQ3BNRDR3VWh2bEN0QUtOQlFXeXIyOTc2OThFUVRuNDZlQmVVNkttMkNpaFhrZ3dD
- eWY4ZXlLCkxFM3NYZXdhcTVrZ1pXdk5xNml1NXFZSVJCOXl3K2NYYzYwZE9aRE9scTkzWDVT
- QVJZemFvZXBrSHo0cmtMa1AKUG8rdENIeUhRUHNHblBYYzlXVDgwREM5Tm5KR2R2VWx5NXJk
- TUk0eHBaeWdlb2tqd293VlFsUFV1Y1M2TXluNwpmOHc4Y2dmQjdDMklBSWNEeDJwUC9IendY
- dmtDT1FOQTdtVjFsTTA4bitnVmtUcnpweGlwNURicTRDSW9ZeDJNCkpaVDhiR1JINlhqY1VE
- S2EwOVFoeVpzQUVRRUFBWWtFUkFRWUFRZ0FEd1VDVzM1ZlF3SWJBZ1VKQThKbkFBSXAKQ1JD
- VWdld1BFWkR5MjhGZElBUVpBUWdBQmdVQ1czNWZRd0FLQ1JCVnhETFBjVk1NamNkc0QvMFJo
- QXN1UVlPeQpyMTNCbDNOaFhrWUFaR3AyWkZER3VrZTdPU2tWOG9qT09UZFR5ei9jT1JHQ2J5
- ZEQrRGd2cUZ5VmRuT1hLZ08wCmxKbUd3ckdlTGRnZ0F2aDBpaHJwNU8wWVVKOWJCU1htR01t
- UVRZSC9BbUxUR2FkYnVqQ1dqNWZGVWtDeXd4aW0KSHV5MFBiMjRwelR2UzUwR1k1WStxSDBG
- SE5haWdka2tpV04zcnVnN0haRXUvQ3lsUFpqT1h6K0QxUVBNckV4dwo3ZC9NS2FiVis5YU5i
- UVlabGRJajk4UXd2VUYxS1N6YThqbFVJdnBoUnEyN0FUOGZER1lHUGZERU1nMmNCT2FlCkty
- N29uUXM0YjdhV082aWZEbHhRVHB6c3pvK0FuODA3Tk1TdFZFRmYrczNBaFZEM2U3bmY4SkJh
- dmJWckFlMGsKb20yNm96elBubnh6K2xxVlZ0dzZVazRYTUl6dGl4L0h3SFl3dUNuY1VYWndL
- MEkzeUFKd2pZd29vck9DaEozUwpFVWJKUVB0R3NneFJERXhWQkZlNk5MUC82MnhQOU82dGFj
- d09kYjBNbVAxYjM5cFJBVEM3YmdkMWxkVUxpNzVaCmxKckowL1NpVkVyb3FOWXk3OXRmbWdB
- WjJVeFptczlTckV5Nm85UVNmc24xYVh2K01QTDlKYUNHbWtQNnpiTFEKTm5kajBKY2FRbmtD
- MHZneWRPMUJtNk11OTZQOXVmbEtaY0FTNndtTE01SWRIT3lqTDg4d0h3anVjakFPQnRjdwpw
- MG9HVG5WT25Sc05ZU084VzhZWi9LZGJ1Nzg1ZGF6TXFKMmlOakFEdUJiZG02TjRqNUVkTW5r
- TG4wQklmUEpwCmRnbTR2bDJVcExqd1JHci9NM3dtbTVwdnMrNnVCN2hrL0ZKaUQvNGxsRU5Q
- NGVNMWg3U200aitWcTZOMSt6VEIKSVhKQWViSXFhc0RwNXlaUzdYcnk0STM2bjg1WEVZZkcw
- MWx0QXlob05WMkRPOFNJUlFwdWkydHErOVJQM1JLMQpKREJ4eEVKWTJFTzVKWjhNeGFQSFEw
- RFQwNWxSRmpLMkFsaGRFSXRqTGpwSjNmVW05c3FMeE1XeHpQNlV6M2lpCjJ1YTR1bnJ0Nk9D
- VHFRd2lqRi8zYlRXaXd2VkFBSG5NRlVpb1hzaEhhb2hWRGNWZm5lSU1mVjBiUUNYWWkzTnAK
- WTB2MFp3Y2lGSCtnU0M3cUQ2WE51aHBWR1NMNElpbGlGeS9TemNhSkV6QUhlTERTaFpQMkNX
- ZG5DNHZnbDM3dApocHg4aDU1WWhKbjZIU3VVelBnaGFLdFZCMmsrajdaZXlaK1NGeHA3SXVi
- SEN3TEhsUWhUNzVSd1EzaUF4S242CjBxajUxY1lUbnF4ZFpYVzZmSDNQa3VNellVNUdwcVIv
- MU9sNWMvd2ZJNmc2QW04eUtXLzBFVUx0K0tuNExGc1MKbTdZM201SDV2MTJVNkpCWXZWK3Ix
- M2paaW9zNEVFREU5M0Q1c05IMk1JeVJ6Q0RxMXpkZHQ0WHV5S0ZqUEtXMQo5aWJaRGZGVjdL
- dUNzdnVMMjNzQmMxc0NNb3ArRTFtVC9ReE9JQTZvRFQxTVFzdHdPVnVReURDdi9PdktTZ2Z6
- CjhGWEdMNkFQY2xqQ3FqOEFKaHhReXN4ZG9pUVA4bS92dStialdHR3Z4dzVzMWxncGlSRFRS
- VVBnY0pKTmFHWTIKVklEclpRaTROU2lOUTBOSWkrZGp1NGZOTW1DcFFxZzh0YkMzY0FhNnl3
- bTZvUUIxU0JobURYMmUxMWdSbGx1SQpPblRHUEUwSFRvM2w3MmxoYmc9PQo9cVpNVgotLS0t
- LUVORCBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tCg==
-Message-ID: <bfbbf816-f467-7e2e-12ca-fb2172ce93f9@i2se.com>
-Date:   Thu, 16 Sep 2021 13:12:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 16 Sep 2021 07:14:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631790776;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=w9verg55oAC3y7r31Y35Yfl0rK4slWxClxNt2hQjqRY=;
+        b=B+prDMnDBUXSN+36M60YIEyXHEuvVFohKSaYJhdlBkPftWJOLOTa8xScLplrqAx/a6Fzk/
+        znEiE4xPNJ8+DXqg8wefuZA1T9hj9O7vtgR4y8k+35karfylsSB2BsMplov0R99QjOA6Fv
+        XK3k9o1J9Pv2h6C1y2EEnSNxkSboOrY=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-407-eupZtqv9PLu0cz7txf0pGA-1; Thu, 16 Sep 2021 07:12:55 -0400
+X-MC-Unique: eupZtqv9PLu0cz7txf0pGA-1
+Received: by mail-ed1-f70.google.com with SMTP id y17-20020a50e611000000b003d051004603so5045058edm.8
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 04:12:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=w9verg55oAC3y7r31Y35Yfl0rK4slWxClxNt2hQjqRY=;
+        b=Eu7k1mYY0Q99PNEaWraakCZ+QIyWyOiMofv1k+6sGus3zAMFk6YfssUnXOOhzmUHS5
+         C8wB3HXTXrBjxP66aqgy2y3JgdpM/Xp6TMT0H3/zdUbvqkg0SZS8E32kNqiRPMA2eO7b
+         idNztZhRTonwRps8rgh9PeXGbfPRFjHW+6RxlCVZjSZcCdcaRt2oueWtsz4wUHnipziC
+         bCxJV7lxeP5od3WilLPruyhfF4ryBQ1kbGgfrTPCowc75sXIJ91DFg05XSQsOJvbRwGN
+         ANiBs2+xMSzBPGW6IwOL651km7iYdgMvPM9ix2z3PF/PQD/Grs8Zay5m7Zx4zdRoKFUR
+         yUvg==
+X-Gm-Message-State: AOAM530GFBYQwf2yiRNZtaTW4yzO5brM7laMEMAuBFi9CP5/njGPMpbo
+        ZYJWQ2mkTerM3NxcIO6Q+PHY7tH2ZVInj00xb6vc0NNRihvNnmZNbvObpnMrsAvEKkGHWOskHhG
+        KmjZO//NEMP4bKf/1bM8ZbaoXKX4FX2Q2kJkaHJytEWuMoEINR+AKWrP4O5LJoWfWfEfsbIQsyJ
+        wq
+X-Received: by 2002:a17:906:718e:: with SMTP id h14mr5329001ejk.365.1631790774416;
+        Thu, 16 Sep 2021 04:12:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwFYgK2rw1N5sAsJjFxSYA480E3iMJhVsVfPPAvZk9SMmCTXmWTID+fLAzawJKylnEQAzLiLQ==
+X-Received: by 2002:a17:906:718e:: with SMTP id h14mr5328975ejk.365.1631790774136;
+        Thu, 16 Sep 2021 04:12:54 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id l11sm1233323edv.67.2021.09.16.04.12.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Sep 2021 04:12:53 -0700 (PDT)
+Subject: Re: [PATCH v2] extcon: extcon-axp288: use P-Unit semaphore lock for
+ register accesses
+To:     Fabio Aiuto <fabioaiuto83@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>
+Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
+        linux-kernel@vger.kernel.org
+References: <20210916071255.2572-1-fabioaiuto83@gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <a755b46a-5561-0fae-b7b3-d0bc1906f79e@redhat.com>
+Date:   Thu, 16 Sep 2021 13:12:53 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <YUJi0cVawjyiteEx@lunn.ch>
+In-Reply-To: <20210916071255.2572-1-fabioaiuto83@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
 Content-Language: en-US
-X-Provags-ID: V03:K1:ZFfDLH+RJMOUQAXUr7mz+RAjra9lQMCy/tg2MPYIwjlQvpdMpCJ
- L5w4x5/sAU28ZpTGQAwGa6oTnVKlecs+gv/VCgsiq9kixSIY29/ZJb5XUBsBGq1Uo1qo2DH
- Lq1odqprO5FXS+uOWmShz0GTW1KWIyZYkYMiTHzs6ro69NIeB1/sJRLoXTVA4Ejn8/+PDsk
- cIhcMtqPg8mMn0Q4XclmQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:EkBazkaaY88=:sKWyz6EjKkxE7+mm8eB9Mn
- SqtXaRbkgD7g+0FHkJ6HpznBDKyEgmh5DcsaV1oWqbKTyeN+Ote07oDXCQMAltdCRAv51WaF5
- 3FxacGQl05B8ty48H0rMFcXts10UUU8oWVvyeuD18dm6Smbn7O0gjg2sDv+KSdJkGuMNhrSDU
- z0VNTo5AeRrYZiRHeqafI0CcsfxsF275fbS8U4Vh+oG7ZB3Bdg2sQNmUCh3geirTZ5zVEagEp
- T+eHrNE9/wO3bTQyhXDzOK2udbm/+A8oiBzHuMY+ehdsWyFihPy6hqBWyTFnTrIwTtYPZjG58
- dM/7Ywc0H4WcrJ08Nk6nuytYUbkXtazuw4KYSM6QD1zMbgx9rRxdutTXYfnqACgP4Fyi1w/Uq
- RU6s+iPiRkkDnTMnvRZ9fuTHqnd9QNou7msotfUwHM9ok9MsJAlorA7oOwK1LBx8VLjBltXfq
- 33mP8pfKN0PPfouHbAdS+LunPrsLrUeBDI6hfxKwciH0rf/RxmIPpkRDsOsVfBNjTcZQjpTl5
- eIZinBhJINPq1OrsF2WRnqRwLgaXn5/KCL7fzIDTPnhemoqumA0LOSq6WeyjCEygVGUXAKDn1
- F7vjIT1mwpwfnxrQSN4yfDZI+NyBJpojA0ebg98DKpvbLY8c7V3fZ7niQbPRbPWFkTAXRudF/
- VR+o2R7puV2YYbF4CXHHqqPfgbl2d8sIO6kDu/Ir36Oh0qRxL7EI5X4O1Am0zESTHjYXAfHK0
- PDIEFu34HBJjk028yBKoADvVwQlYzR4OHqi7kbifc6RR/Qpvws7LLqKYYdw=
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
+Hi,
 
-thanks for your review.
+On 9/16/21 9:12 AM, Fabio Aiuto wrote:
+> use low level P-Unit semaphore lock for axp288 register
+> accesses directly and for more than one access a time,
+> to reduce the number of times this semaphore is locked
+> and released which is an expensive operation.
+> 
+> i2c-bus to the XPower is shared between the kernel and the
+> SoCs P-Unit. The P-Unit has a semaphore wich the kernel must
+> lock for axp288 register accesses. When the P-Unit semaphore
+> is locked CPU and GPU power states cannot change or the system
+> will freeze.
+> 
+> The P-Unit semaphore lock is already managed inside the regmap
+> access logic, but for each access the semaphore is locked and
+> released. So use directly iosf_mbi_(un)block_punit_i2c_access(),
+> we are safe in doing so because nested calls to the same
+> semaphore are turned to nops.
+> 
+> Suggested-by: Hans de Goede <hdegoede@redhat.com>
+> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+> Tested-by: Hans de Goede <hdegoede@redhat.com>
+> Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+> ---
+> Changes in v2:
+> 	- shortened patch title within 75 char
+> 	- added return value check in function
+> 	  iosf_mbi_lock_punit_i2c_access() calls
 
-Am 15.09.21 um 23:17 schrieb Andrew Lunn:
->> +static void mse102x_init_mac(struct mse102x_net *mse, struct device_node *np)
->> +{
->> +	struct net_device *ndev = mse->ndev;
->> +	int ret = of_get_mac_address(np, ndev->dev_addr);
->> +
->> +	if (ret) {
->> +		eth_hw_addr_random(ndev);
->> +		netdev_err(ndev, "Using random MAC address: %pM\n",
->> +			   ndev->dev_addr);
->> +	}
->> +}
-> No need to tell the hardware? Does it work in promiscuous mode by
-> default?
-Yes and yes
->
->> +	netif_carrier_off(mse->ndev);
->> +	ndev->if_port = IF_PORT_10BASET;
-> That is not correct. Maybe you should add a IF_PORT_HOMEPLUG ?
-There is already a driver (qca_spi, qcauart) for a similiar Homeplug
-device (QCA7000), which also uses IF_PORT_10BASET. Should i change this
-too or leave it because of resulting changes to userspace?
->
->> +static const struct of_device_id mse102x_match_table[] = {
->> +	{ .compatible = "vertexcom,mse1021" },
->> +	{ .compatible = "vertexcom,mse1022" },
-> Is there an ID register you can read to determine what device you
-> actually have? If so, i suggest you verify the correct compatible is
-> used.
 
-AFAIK the device doesn't have any kind of ID register.
+Actually your last version was v2, so this one should have
+been v3 (no need to resend it just for that).
 
-@Jimmy Please correct me, if i'm wrong.
+Other then that remark this looks good, thank you.
 
-Best regards
+Regards,
 
->
-> 	Andrew
+Hans
+
+
+> 
+>  drivers/extcon/Kconfig         |  2 +-
+>  drivers/extcon/extcon-axp288.c | 31 +++++++++++++++++++++++++++++--
+>  2 files changed, 30 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/extcon/Kconfig b/drivers/extcon/Kconfig
+> index c69d40ae5619..aab87c9b35c8 100644
+> --- a/drivers/extcon/Kconfig
+> +++ b/drivers/extcon/Kconfig
+> @@ -23,7 +23,7 @@ config EXTCON_ADC_JACK
+>  
+>  config EXTCON_AXP288
+>  	tristate "X-Power AXP288 EXTCON support"
+> -	depends on MFD_AXP20X && USB_SUPPORT && X86 && ACPI
+> +	depends on MFD_AXP20X && USB_SUPPORT && X86 && ACPI && IOSF_MBI
+>  	select USB_ROLE_SWITCH
+>  	help
+>  	  Say Y here to enable support for USB peripheral detection
+> diff --git a/drivers/extcon/extcon-axp288.c b/drivers/extcon/extcon-axp288.c
+> index fdb31954cf2b..7c6d5857ff25 100644
+> --- a/drivers/extcon/extcon-axp288.c
+> +++ b/drivers/extcon/extcon-axp288.c
+> @@ -24,6 +24,7 @@
+>  
+>  #include <asm/cpu_device_id.h>
+>  #include <asm/intel-family.h>
+> +#include <asm/iosf_mbi.h>
+>  
+>  /* Power source status register */
+>  #define PS_STAT_VBUS_TRIGGER		BIT(0)
+> @@ -215,6 +216,10 @@ static int axp288_handle_chrg_det_event(struct axp288_extcon_info *info)
+>  	unsigned int cable = info->previous_cable;
+>  	bool vbus_attach = false;
+>  
+> +	ret = iosf_mbi_block_punit_i2c_access();
+> +	if (ret < 0)
+> +		return ret;
+> +
+>  	vbus_attach = axp288_get_vbus_attach(info);
+>  	if (!vbus_attach)
+>  		goto no_vbus;
+> @@ -253,6 +258,8 @@ static int axp288_handle_chrg_det_event(struct axp288_extcon_info *info)
+>  	}
+>  
+>  no_vbus:
+> +	iosf_mbi_unblock_punit_i2c_access();
+> +
+>  	extcon_set_state_sync(info->edev, info->previous_cable, false);
+>  	if (info->previous_cable == EXTCON_CHG_USB_SDP)
+>  		extcon_set_state_sync(info->edev, EXTCON_USB, false);
+> @@ -275,6 +282,8 @@ static int axp288_handle_chrg_det_event(struct axp288_extcon_info *info)
+>  	return 0;
+>  
+>  dev_det_ret:
+> +	iosf_mbi_unblock_punit_i2c_access();
+> +
+>  	if (ret < 0)
+>  		dev_err(info->dev, "failed to detect BC Mod\n");
+>  
+> @@ -305,13 +314,23 @@ static irqreturn_t axp288_extcon_isr(int irq, void *data)
+>  	return IRQ_HANDLED;
+>  }
+>  
+> -static void axp288_extcon_enable(struct axp288_extcon_info *info)
+> +static int axp288_extcon_enable(struct axp288_extcon_info *info)
+>  {
+> +	int ret = 0;
+> +
+> +	ret = iosf_mbi_block_punit_i2c_access();
+> +	if (ret < 0)
+> +		return ret;
+> +
+>  	regmap_update_bits(info->regmap, AXP288_BC_GLOBAL_REG,
+>  						BC_GLOBAL_RUN, 0);
+>  	/* Enable the charger detection logic */
+>  	regmap_update_bits(info->regmap, AXP288_BC_GLOBAL_REG,
+>  					BC_GLOBAL_RUN, BC_GLOBAL_RUN);
+> +
+> +	iosf_mbi_unblock_punit_i2c_access();
+> +
+> +	return ret;
+>  }
+>  
+>  static void axp288_put_role_sw(void *data)
+> @@ -384,10 +403,16 @@ static int axp288_extcon_probe(struct platform_device *pdev)
+>  		}
+>  	}
+>  
+> +	ret = iosf_mbi_block_punit_i2c_access();
+> +	if (ret < 0)
+> +		return ret;
+> +
+>  	info->vbus_attach = axp288_get_vbus_attach(info);
+>  
+>  	axp288_extcon_log_rsi(info);
+>  
+> +	iosf_mbi_unblock_punit_i2c_access();
+> +
+>  	/* Initialize extcon device */
+>  	info->edev = devm_extcon_dev_allocate(&pdev->dev,
+>  					      axp288_extcon_cables);
+> @@ -441,7 +466,9 @@ static int axp288_extcon_probe(struct platform_device *pdev)
+>  	}
+>  
+>  	/* Start charger cable type detection */
+> -	axp288_extcon_enable(info);
+> +	ret = axp288_extcon_enable(info);
+> +	if (ret < 0)
+> +		return ret;
+>  
+>  	device_init_wakeup(dev, true);
+>  	platform_set_drvdata(pdev, info);
+> 
 
