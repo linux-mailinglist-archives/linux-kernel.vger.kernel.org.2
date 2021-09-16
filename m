@@ -2,173 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF43F40D221
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 05:46:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9F2B40D223
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 05:47:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233897AbhIPDrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 23:47:46 -0400
-Received: from smtprelay0162.hostedemail.com ([216.40.44.162]:33996 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232541AbhIPDrp (ORCPT
+        id S234246AbhIPDsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 23:48:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34935 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232541AbhIPDsk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 23:47:45 -0400
-Received: from omf18.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id ADEF0837F24A;
-        Thu, 16 Sep 2021 03:46:24 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf18.hostedemail.com (Postfix) with ESMTPA id F3A462EBF98;
-        Thu, 16 Sep 2021 03:46:23 +0000 (UTC)
-Message-ID: <faefcecf38e0c108be86f05f79f290e918016c13.camel@perches.com>
-Subject: Re: False positive for 'Possible unnecessary KERN_ERR' warning in
- checkpatch
-From:   Joe Perches <joe@perches.com>
-To:     Niklas =?ISO-8859-1?Q?S=F6derlund?= 
-        <niklas.soderlund@corigine.com>
-Cc:     Andy Whitcroft <apw@canonical.com>, linux-kernel@vger.kernel.org
-Date:   Wed, 15 Sep 2021 20:46:22 -0700
-In-Reply-To: <YUDIOLTCe0/kzVSW@bismarck.dyn.berto.se>
-References: <YUDIOLTCe0/kzVSW@bismarck.dyn.berto.se>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        Wed, 15 Sep 2021 23:48:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631764040;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=y+JIT4AJ69wrTaVMTCPeIuiXXsajLMxUyTsNs8z9LR4=;
+        b=iOgPIAOU5vqNbiIBeVXzrQEqCQKfzIiAzJDyavSwZwYf2YptW1P82a94dHKCItJUJQbKOv
+        KZ9Bo3PlZrvGnEN64MZFZWS/OD4SWA2LqQWP4R3U6y+4qkenjOPhJK6KegIhAFHjzgHZ8X
+        pzjlWFu/9Psg0u6HVm2FtePZJgFU12U=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-341-8JTwBmQoNWWTwAVrxpwsPQ-1; Wed, 15 Sep 2021 23:47:18 -0400
+X-MC-Unique: 8JTwBmQoNWWTwAVrxpwsPQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EE0151084686;
+        Thu, 16 Sep 2021 03:47:16 +0000 (UTC)
+Received: from piliu.users.ipa.redhat.com (ovpn-8-20.pek2.redhat.com [10.72.8.20])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id BB8D25D9CA;
+        Thu, 16 Sep 2021 03:47:11 +0000 (UTC)
+Date:   Thu, 16 Sep 2021 11:47:07 +0800
+From:   Pingfan Liu <piliu@redhat.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Pingfan Liu <kernelfans@gmail.com>, linux-kernel@vger.kernel.org,
+        Petr Mladek <pmladek@suse.com>, Wang Qing <wangqing@vivo.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Santosh Sivaraj <santosh@fossix.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH 2/5] kernel/watchdog_hld: clarify the condition in
+ hardlockup_detector_event_create()
+Message-ID: <YUK+O0QI4o0CoVeT@piliu.users.ipa.redhat.com>
+References: <20210915035103.15586-1-kernelfans@gmail.com>
+ <20210915035103.15586-3-kernelfans@gmail.com>
+ <20210914210627.c92374b3726a22014b359dbd@linux-foundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.08
-X-Stat-Signature: fwkk6k51xd967gxqym9431ci19hbt9hy
-X-Rspamd-Server: rspamout02
-X-Rspamd-Queue-Id: F3A462EBF98
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1/JyTvglfxhNjZM4VK80aLGqvyIKxzQ31Q=
-X-HE-Tag: 1631763983-93307
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210914210627.c92374b3726a22014b359dbd@linux-foundation.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-09-14 at 18:05 +0200, Niklas Söderlund wrote:
-> Hi Joe,
+On Tue, Sep 14, 2021 at 09:06:27PM -0700, Andrew Morton wrote:
+> On Wed, 15 Sep 2021 11:51:00 +0800 Pingfan Liu <kernelfans@gmail.com> wrote:
 > 
-> Maybe you are already aware of this, but in case you are not.
+> > hardlockup_detector_event_create() indirectly calls
+> > kmem_cache_alloc_node(), which is blockable.
+> > 
+> > So here, the really planned context is is_percpu_thread().
+> > 
+> > ...
+> >
+> > --- a/kernel/watchdog_hld.c
+> > +++ b/kernel/watchdog_hld.c
+> > @@ -165,10 +165,13 @@ static void watchdog_overflow_callback(struct perf_event *event,
+> >  
+> >  static int hardlockup_detector_event_create(void)
+> >  {
+> > -	unsigned int cpu = smp_processor_id();
+> > +	unsigned int cpu;
+> >  	struct perf_event_attr *wd_attr;
+> >  	struct perf_event *evt;
+> >  
+> > +	/* This function plans to execute in cpu bound kthread */
+> > +	BUG_ON(!is_percpu_thread());
 > 
-> The issue is the checkpatch check for unnecessary KERN_<LEVEL> for log 
-> functions. If a single line contains a statement that match a log 
-> function name from $logFunctions, such as foo_err() and the same line 
-> contains a KERN_<LEVEL> statement the 'WARNING: Possible unnecessary 
-> KERN_ERR' is triggered. This is true even if the KERN_<LEVEL> statement 
-> is not part of the arguments to the foo_err() definition that triggers 
-> the first part of the check.
+> Can we avoid adding the BUG()?  Find a way to emit a WARNing and then
+> permit the kernel to continue?
 > 
-> This can be demonstrated by,
-> 
->     ./scripts/checkpatch.pl --mailback --git c821e617896e99b8
-> 
-> Where we get (among others) the warning,
-> 
->     WARNING: Possible unnecessary KERN_ERR
->     #38: FILE: drivers/net/ethernet/netronome/nfp/nfp_net.h:63:
->     +#define nn_err(nn, fmt, args...)	nn_pr(nn, KERN_ERR, fmt, ## args)
-> 
-> Looking at the code in checkpatch.pl we have,
-> 
-> our $logFunctions = qr{(?x:
->         printk(?:_ratelimited|_once|_deferred_once|_deferred|)|
->         (?:[a-z0-9]+_){1,2}(?:printk|emerg|alert|crit|err|warning|warn|notice|info|debug|dbg|vdbg|devel|cont|WARN)(?:_ratelimited|_once|)|
->         TP_printk|
->         WARN(?:_RATELIMIT|_ONCE|)|
->         panic|
->         MODULE_[A-Z_]+|
->         seq_vprintf|seq_printf|seq_puts
-> )};
-> 
-> ...
-> 
-> # check for logging functions with KERN_<LEVEL>
->                 if ($line !~ /printk(?:_ratelimited|_once)?\s*\(/ &&
->                     $line =~ /\b$logFunctions\s*\(.*\b(KERN_[A-Z]+)\b/) {
->                         my $level = $1;
->                         if (WARN("UNNECESSARY_KERN_LEVEL",
->                                  "Possible unnecessary $level\n" . $herecurr) &&
->                             $fix) {
->                                 $fixed[$fixlinenr] =~ s/\s*$level\s*//;
->                         }
->                 }
-> 
-> Looking at the line from above that triggers the warning,
-> 
-> 	#define nn_err(nn, fmt, args...)   nn_pr(nn, KERN_ERR, fmt, ## args)
-> 
-> We see that the warning is triggers by the regexp but that it matches 
-> the first part on nn_err( and then the second part of on the second 
-> argument to nn_pr, KERN_ERR. I believe this to be a false positive.
-> 
-> Unfortunately my Perl skills are not good enough to fix the check to only 
-> look for KERN_[A-Z]+ inside the argument list to the log function name 
-> that matches the first part of the regexp.
-> 
+Yes, WARN_ON() can work in this case.
 
-I would have avoided it and gotten dynamic debug support at the
-same time with:
----
- drivers/net/ethernet/netronome/nfp/nfp_net.h | 48 ++++++++++++++--------------
- 1 file changed, 24 insertions(+), 24 deletions(-)
+Thanks,
 
-diff --git a/drivers/net/ethernet/netronome/nfp/nfp_net.h b/drivers/net/ethernet/netronome/nfp/nfp_net.h
-index df203738511bf..46178a7244ad8 100644
---- a/drivers/net/ethernet/netronome/nfp/nfp_net.h
-+++ b/drivers/net/ethernet/netronome/nfp/nfp_net.h
-@@ -25,32 +25,32 @@
- 
- #include "nfp_net_ctrl.h"
- 
--#define nn_pr(nn, lvl, fmt, args...)					\
--	({								\
--		struct nfp_net *__nn = (nn);				\
-+#define nn_pr(nn, lvl, fmt, ...)					\
-+({									\
-+	struct nfp_net *__nn = (nn);					\
- 									\
--		if (__nn->dp.netdev)					\
--			netdev_printk(lvl, __nn->dp.netdev, fmt, ## args); \
--		else							\
--			dev_printk(lvl, __nn->dp.dev, "ctrl: " fmt, ## args); \
--	})
--
--#define nn_err(nn, fmt, args...)	nn_pr(nn, KERN_ERR, fmt, ## args)
--#define nn_warn(nn, fmt, args...)	nn_pr(nn, KERN_WARNING, fmt, ## args)
--#define nn_info(nn, fmt, args...)	nn_pr(nn, KERN_INFO, fmt, ## args)
--#define nn_dbg(nn, fmt, args...)	nn_pr(nn, KERN_DEBUG, fmt, ## args)
--
--#define nn_dp_warn(dp, fmt, args...)					\
--	({								\
--		struct nfp_net_dp *__dp = (dp);				\
-+	if (__nn->dp.netdev)						\
-+		netdev_##lvl(__nn->dp.netdev, fmt, ##__VA_ARGS__);	\
-+	else								\
-+		dev_##lvl(__nn->dp.dev, "ctrl: " fmt, ##__VA_ARGS__);	\
-+})
-+
-+#define nn_err(nn, fmt, ...)	nn_pr(nn, err, fmt, ##__VA_ARGS__)
-+#define nn_warn(nn, fmt, ...)	nn_pr(nn, warn, fmt, ##__VA_ARGS__)
-+#define nn_info(nn, fmt, ...)	nn_pr(nn, info, fmt, ##__VA_ARGS__)
-+#define nn_dbg(nn, fmt, ...)	nn_pr(nn, dbg, fmt, ##__VA_ARGS__)
-+
-+#define nn_dp_warn(dp, fmt, ...)					\
-+({									\
-+	struct nfp_net_dp *__dp = (dp);					\
- 									\
--		if (unlikely(net_ratelimit())) {			\
--			if (__dp->netdev)				\
--				netdev_warn(__dp->netdev, fmt, ## args); \
--			else						\
--				dev_warn(__dp->dev, fmt, ## args);	\
--		}							\
--	})
-+	if (unlikely(net_ratelimit())) {				\
-+		if (__dp->netdev)					\
-+			netdev_warn(__dp->netdev, fmt, ##__VA_ARGS__);	\
-+		else							\
-+			dev_warn(__dp->dev, fmt, ##__VA_ARGS__);	\
-+	}								\
-+})
- 
- /* Max time to wait for NFP to respond on updates (in seconds) */
- #define NFP_NET_POLL_TIMEOUT	5
-
+	Pingfan
 
