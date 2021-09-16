@@ -2,135 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7577D40E6B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:31:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41CC040E95C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:02:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352564AbhIPRY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:24:56 -0400
-Received: from mail-oln040093003012.outbound.protection.outlook.com ([40.93.3.12]:58429
-        "EHLO na01-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S244078AbhIPRQ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:16:26 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mAbDFyUdvlGPu2qOy0nCRtAZWWkUejAlUUjgFcI9CBfZO1nzS/wWo0B+ouJHfyGsNsmLNf1vovztch9lIRYavjSV5+zk5VRVpuIn4obo3e4ZSpcm2aGQb4jgyJqmPNISNKXuTh/RbcFjIE97vn3kU61Ke6wlTzByQe7fK481CJoS5JCemUcmh0w6eXz6jWxtGN3woao6Lh10SFxQNw2H6lhb8y+LtPlc47pq0tKBPS622umuHxp4cf9TTMsYXkW5NLX/ryR7x9NtNBJt8NWEg2/TCgpr6JgWlJUPSrmTOSmITSez1/OF/OwwUVaxDdWLgEAsRxf8GeU7SLDkAVw0PQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=V9/0ht69rSgHA4RWeq8iM0wgw9sbIqL8c7I7quy/ZzU=;
- b=PijiFFcB/rarZfDponz+pWsdx45fBuc18u5mtcPix+f4+6MEDamu0+D9P4jLP3tvAxsR+iEqN4aBDGEkeAR6c3WJISnIFmEYvRrRnMyAjLcIAg1DCrUuWxuBd2bv+5NNFyKZ+Lw7lXVwVjfpCJFtZi/Uh7U8sS7Suxr7zhygyqQX8ZX6xnM9Q91XaIdzjdHrecgAiYfuhfF7ttqiDIpU7nyvdDECfLxa5FUTYjHKJwoOZP+0Jjp7UqIEm5WsSKdA5X+YKan19OMpccr6vJDVIAThzZZA7uMF1ZAyR2LXvrhVFF5DOVDR41cBhPdkXied0xbpJm3zM/KjFNytWTt4MQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=V9/0ht69rSgHA4RWeq8iM0wgw9sbIqL8c7I7quy/ZzU=;
- b=RxOjrZREf6ZDnd9jLH/TxCt+FK6RZgpXnTeHfHmYEeYrKEhNK6wzMNR3Pd95e9yorFl6GvPcSnzv9s/zZPbJhMrzViG35oHBrmlKTgpOxSORTnp5NUebcbBrEIP794jaiX2JqT4AJINfcczyLxKH+MzngOqNSlwJZJKJQEMhpGw=
-Received: from BYAPR21MB1270.namprd21.prod.outlook.com (2603:10b6:a03:105::15)
- by BYAPR21MB1176.namprd21.prod.outlook.com (2603:10b6:a03:104::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.3; Thu, 16 Sep
- 2021 17:15:02 +0000
-Received: from BYAPR21MB1270.namprd21.prod.outlook.com
- ([fe80::e56b:9b01:9633:78c0]) by BYAPR21MB1270.namprd21.prod.outlook.com
- ([fe80::e56b:9b01:9633:78c0%7]) with mapi id 15.20.4544.002; Thu, 16 Sep 2021
- 17:15:02 +0000
-From:   Dexuan Cui <decui@microsoft.com>
-To:     Deepak Rawat <drawat.floss@gmail.com>
-CC:     Haiyang Zhang <haiyangz@microsoft.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] drm/hyperv: Fix double mouse pointers
-Thread-Topic: [PATCH] drm/hyperv: Fix double mouse pointers
-Thread-Index: AQHXqYGDSoFNik8c8kWZU0a77zui5aukpo7QgAIzCwCAAA9bQA==
-Date:   Thu, 16 Sep 2021 17:15:02 +0000
-Message-ID: <BYAPR21MB1270E92AFA833942EB6B75C8BFDC9@BYAPR21MB1270.namprd21.prod.outlook.com>
-References: <20210913182645.17075-1-decui@microsoft.com>
- <CAHFnvW0iX1FMTcJzQQtjHGosavSJ6-9wkRb7C0Ljv3c+BBUEXQ@mail.gmail.com>
- <BYAPR21MB1270C4427C264D14F151A0CCBFDB9@BYAPR21MB1270.namprd21.prod.outlook.com>
- <CAHFnvW3J-9LGCUSP_5mvYFyiUMCy63=egu1X3Uv9GrecfOJvRQ@mail.gmail.com>
-In-Reply-To: <CAHFnvW3J-9LGCUSP_5mvYFyiUMCy63=egu1X3Uv9GrecfOJvRQ@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=20d8c9ba-e140-4051-a0c6-422e94604b97;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-09-16T17:12:09Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: fa0bef30-1f83-4c5f-60ea-08d97935852d
-x-ms-traffictypediagnostic: BYAPR21MB1176:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR21MB11762F484EC1C5F3F795F64ABFDC9@BYAPR21MB1176.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6430;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 9WZgm6BFrf4Z0l6nqrLgNR7LJ8mpycC4NKtrLKuA3wR6bkocptv1vxLvJB0sQzVjIjAuxfk18NeljXKCIk95ucTQJLvfSWlyl42AB76ycVH1N01yetBmvKl0PUifKO9VolZkCcbGp2vmmcj29pOxg/2PYuMsbj/+wAU43qhVzzNL+qRzIdOeDF04RbTG7jpIILpM6iZ9PRwio3LFluco6enFzNhkvcGINgNVKnDSxA6DB3jeDvzvU8gNfmPbhsKzTLjlDHsZFfl99UbokrtFca9ZlA7Y3YiLNJwnhHfisZ1cXMFtLmFElHk9FniTHnvLkL0jp3CbIcmzojA2EUiMrATjHCVJNyUBGF79eZgtQ2JJxK+Zvws2d0nlSaj/kJHyKDu7oyjX+v8Nl9m88VSSAw284iXqkck8xtk+O4K4IFISfMGZqpqHoi0rZpcQmINxXmvkou7n5uRvRtcMHITN1q22J7Vu/YK8rDdwosOkD1Oafk0tbZkp4W+p1JHfaMFZyLwh7tk69X0teeYJyRi7wJXKmnsUdmtw5SMLdF9Ljr4ON3X8eclF9pcx8UeepIbn1q4RLiQjOVSxeKl4heSSFglCzmGH+xGjVyY4yR8TWsHBCK72Z7CBj/arwgMQIiw5Z4M3to+V+fUIIF2BVsqTyBA0qgsOEW6gc/bT/tq0OMQ8MTPWpx7bKVfW+DHhibC6d/7aYYhyqNM0cvSGiQmdGw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR21MB1270.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(7696005)(52536014)(82960400001)(82950400001)(38070700005)(4744005)(4326008)(38100700002)(186003)(8676002)(8990500004)(122000001)(33656002)(9686003)(54906003)(55016002)(2906002)(10290500003)(66446008)(64756008)(53546011)(66556008)(316002)(6916009)(26005)(86362001)(71200400001)(76116006)(83380400001)(5660300002)(66946007)(6506007)(66476007)(8936002)(508600001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?ekV5NmFzQWRNUld2SWEydGpURk5QVWNudzcxZ3JpMmJDa0RodkhnbnFkWEpR?=
- =?utf-8?B?d1hhV1cvKy96ajVYVk9vbVhZZDQ0Z1VUUllnUTBpWHE1cG4ra1c5Q09DZTNU?=
- =?utf-8?B?VThhYTd5b3NDazR1TGMwS2ttd2kyQkE2bFkvUHk2Sy9hVWw5Z0JlNDJCZFlF?=
- =?utf-8?B?V2tKcVVBMys2OTkrclZoVkgwSE5QeTRrdGk4Ry9wak1ndDNEZy9JM3Faa0Ns?=
- =?utf-8?B?MDNPR05ZR2FCNTV3cUw0OFBtYTQxWWRhUDMyWFBWYVJVd0I0ZjFLNTNLam9G?=
- =?utf-8?B?ZEZ0R2c0b0NwMzYxNGlMRFdiSUZXK00yYmE3RzZJWTBIbVNoMldwWmZ6Y05W?=
- =?utf-8?B?TUpDVjQxdVpUaXQxQ2I3SnRHa0Jnd056Wm1OcjkyaGlwR2tvYWhKeFJ4ZDBn?=
- =?utf-8?B?dXJ3L0JxNUltbXhQMFFjMjhkSTMrTjhQY2tsQjNPRHJBbWVXUHV1YjZSOWNT?=
- =?utf-8?B?WkZXUDN4VVE3Snl6Qks0Z0NzQ0tZblA3K29QQmMxUnE3cXN5M1BKVHpXN3FB?=
- =?utf-8?B?cjdYblZwd1NWbWVicU1iYTZsWkJmNkJ2dU5xM0xWb0FRWE5uWTNNZTVpblRa?=
- =?utf-8?B?blBSZEFiUmhzMDJYRmZSZmh0VDhnT25jMDd5Q05NUGlLNW5LM1dMaTkvb3Ru?=
- =?utf-8?B?Q2VEZjcrV2tIalFyWGpJN3dROUJiaTlnQnBhMTNoV0M3eHhHb1psZFZIRVdh?=
- =?utf-8?B?R2hkOGxDeXUzK1FlQThzSGV2TGxaQ3lvQnNaa29EbFQ1VFdtb1NpbkxnbFhD?=
- =?utf-8?B?SVVnM0Y4d2ZLNlRkV2RkT2toNnp0RFpMVHVCMVBVN3RTWlpLT1F1S2JXT3V4?=
- =?utf-8?B?K0Z6MzBFOUdJYlNMcjVkZVJ5ZUFVSkdHekNGZXZwSnZkS25NR0ZBeS9KSkpX?=
- =?utf-8?B?Z0pIeWYxemV3UjNOU3c1QlBiY1BFQlJYL2NvcFE3SlNrVGo1Y3NwejBmSS9H?=
- =?utf-8?B?alpvaUtCdjdjV0NYM0dVUWwrdHBuUCtia0Fkdnc4Tk9UUGFBU3FPZWJ1K3hW?=
- =?utf-8?B?ZlFYL2pTM2tpaGlVZERQNlZiRGp3dnJIU05rY0dldytSN2FNMzREVmdyY2hO?=
- =?utf-8?B?L3E1bS84bHVLSDZkYUNzRzVjeG1FdkkwZURvTXFINUhWK0pCcUo1QlNsUUlu?=
- =?utf-8?B?M2xLd2hoTUh2Mi9OdUVmNkhDMndpc3lqSUlFTEhKT0w5UWpuZ3lyd1RRUDQ0?=
- =?utf-8?B?M2x0YUEyWFVvTDZUQUtyWE1NTHpyNkNyZjgwRnB6TFUyYkFPazhvSUc3K0t2?=
- =?utf-8?B?WFBVcVdJV3NKWit6OGlQeS8wb1VubG40Tk5Td0V6K2hkb2RHREQ3MFJyTTc2?=
- =?utf-8?B?bWRCNFNRYyt1bHErK3Bmd3JlcEFJbnp0SzNCS3ZUWGpUbGVCNUszd3ZSZm9m?=
- =?utf-8?B?L2hZWjBhd2trR2F5LzZEL1VlZXdaT1M1UHhEaU5vcnp3WXhGeU82b0dqdWFF?=
- =?utf-8?B?NEpsQzVHMUQ3Sm1UbzNuc3RBSjkyc1F5SGhpVThEdUp5VEdkVVJ3c3VHYzhU?=
- =?utf-8?B?aG5abndHSjh1RTF3Vjlla3RjNndkSTl4b096cDkrTEFsTTJEOXp3c1h6cnZy?=
- =?utf-8?B?alRDVlk5N04yaGVYajJNL002VDAzNDBpU1BBVHR5MWJrejA3K1hpbkVvOThj?=
- =?utf-8?B?Qm0yRHhPaVVOMTRWZUFJcmtkSmZkaysrMndaR2YzZkFLd3B2Vys3Wk83NDhO?=
- =?utf-8?B?QlJIUi94TUxtZFNuNU4rWTdIbi80Wk5JM3I4eFpCRzB2R29YM1h1WVBTSlZz?=
- =?utf-8?Q?KCwZ8tI1rK8VQcsPq6jl4BBvZoroGoZCT7k6b7g?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1357769AbhIPRwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:52:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55272 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1355831AbhIPRmK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:42:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8AF3960EC0;
+        Thu, 16 Sep 2021 17:20:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1631812856;
+        bh=/2OE7GuOk7Wp8jezh4ElvTnW3GCdmC0TAePYA0/aalY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=xwO0Pwck/FerbdXxd2VoLAzMGdfJzxRjqc4oyH89q+2RTCc9WjY7R1lGLlQWm46Uf
+         OqIJB6kUTU2ifsJ/HTn8jWbQWVSatL5Y4YSEPTAwk+rk7/Qt3W6hFhdkMzFP2hy9K8
+         OBGZK1VTVtXruyvUyLyLXXazcrfN6xIQjyDXe2VU=
+Date:   Thu, 16 Sep 2021 19:20:53 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Kevin Hao <haokexin@gmail.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Subject: Re: [PATCH 5.10 033/306] cpufreq: schedutil: Use kobject release()
+ method to free sugov_tunables
+Message-ID: <YUN89bXPrsLsTAYB@kroah.com>
+References: <20210916155753.903069397@linuxfoundation.org>
+ <20210916155755.075805845@linuxfoundation.org>
+ <bb93bcd1-b9b3-fc11-0321-7be6eee5beb0@intel.com>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR21MB1270.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fa0bef30-1f83-4c5f-60ea-08d97935852d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Sep 2021 17:15:02.2797
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: hkAl/BJqc35HMaiTKcktJFlmLOyq5ds47c14SmpzR6+5et//QVRdh8v1G0gIslxJ6fNJWfhmzMAH6pAhgHcorg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR21MB1176
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bb93bcd1-b9b3-fc11-0321-7be6eee5beb0@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBGcm9tOiBEZWVwYWsgUmF3YXQgPGRyYXdhdC5mbG9zc0BnbWFpbC5jb20+DQo+IFNlbnQ6IFRo
-dXJzZGF5LCBTZXB0ZW1iZXIgMTYsIDIwMjEgOToxNyBBTQ0KPiBUbzogRGV4dWFuIEN1aSA8ZGVj
-dWlAbWljcm9zb2Z0LmNvbT4NCj4gQ2M6IEhhaXlhbmcgWmhhbmcgPGhhaXlhbmd6QG1pY3Jvc29m
-dC5jb20+OyBEYXZpZCBBaXJsaWUgPGFpcmxpZWRAbGludXguaWU+Ow0KPiBEYW5pZWwgVmV0dGVy
-IDxkYW5pZWxAZmZ3bGwuY2g+OyBUaG9tYXMgWmltbWVybWFubg0KPiA8dHppbW1lcm1hbm5Ac3Vz
-ZS5kZT47IGRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmc7DQo+IGxpbnV4LWh5cGVydkB2
-Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNCj4gU3ViamVjdDog
-UmU6IFtQQVRDSF0gZHJtL2h5cGVydjogRml4IGRvdWJsZSBtb3VzZSBwb2ludGVycw0KPiANCj4g
-SEkgRGV4dWFuLCB0aGFua3MgZm9yIGNvbmZpcm1pbmcuIENvdWxkIHlvdSBwbGVhc2UgYWRkIHRo
-aXMgYXMgYQ0KPiBjb21tZW50IHRvIHRoZSBmdW5jdGlvbi4NCj4gDQo+IFJldmlld2VkLWJ5OiBE
-ZWVwYWsgUmF3YXQgPGRyYXdhdC5mbG9zc0BnbWFpbC5jb20+DQoNClRoYW5rcywgRGVlcGFrISAN
-CldpbGwgZG8sIGFuZCBJJ2xsIHJlbmFtZSB0aGUgZnVuY3Rpb24gdG8gaHlwZXJ2X2hpZGVfaHdf
-cHRyKCkgdG8NCmJldHRlciBleHByZXNzIHRoZSBpbnRlbnQgb2YgdGhlIGZ1bmN0aW9uLg0K
+On Thu, Sep 16, 2021 at 06:12:44PM +0200, Rafael J. Wysocki wrote:
+> On 9/16/2021 5:56 PM, Greg Kroah-Hartman wrote:
+> > From: Kevin Hao <haokexin@gmail.com>
+> > 
+> > commit e5c6b312ce3cc97e90ea159446e6bfa06645364d upstream.
+> > 
+> > The struct sugov_tunables is protected by the kobject, so we can't free
+> > it directly. Otherwise we would get a call trace like this:
+> >    ODEBUG: free active (active state 0) object type: timer_list hint: delayed_work_timer_fn+0x0/0x30
+> >    WARNING: CPU: 3 PID: 720 at lib/debugobjects.c:505 debug_print_object+0xb8/0x100
+> >    Modules linked in:
+> >    CPU: 3 PID: 720 Comm: a.sh Tainted: G        W         5.14.0-rc1-next-20210715-yocto-standard+ #507
+> >    Hardware name: Marvell OcteonTX CN96XX board (DT)
+> >    pstate: 40400009 (nZcv daif +PAN -UAO -TCO BTYPE=--)
+> >    pc : debug_print_object+0xb8/0x100
+> >    lr : debug_print_object+0xb8/0x100
+> >    sp : ffff80001ecaf910
+> >    x29: ffff80001ecaf910 x28: ffff00011b10b8d0 x27: ffff800011043d80
+> >    x26: ffff00011a8f0000 x25: ffff800013cb3ff0 x24: 0000000000000000
+> >    x23: ffff80001142aa68 x22: ffff800011043d80 x21: ffff00010de46f20
+> >    x20: ffff800013c0c520 x19: ffff800011d8f5b0 x18: 0000000000000010
+> >    x17: 6e6968207473696c x16: 5f72656d6974203a x15: 6570797420746365
+> >    x14: 6a626f2029302065 x13: 303378302f307830 x12: 2b6e665f72656d69
+> >    x11: ffff8000124b1560 x10: ffff800012331520 x9 : ffff8000100ca6b0
+> >    x8 : 000000000017ffe8 x7 : c0000000fffeffff x6 : 0000000000000001
+> >    x5 : ffff800011d8c000 x4 : ffff800011d8c740 x3 : 0000000000000000
+> >    x2 : ffff0001108301c0 x1 : ab3c90eedf9c0f00 x0 : 0000000000000000
+> >    Call trace:
+> >     debug_print_object+0xb8/0x100
+> >     __debug_check_no_obj_freed+0x1c0/0x230
+> >     debug_check_no_obj_freed+0x20/0x88
+> >     slab_free_freelist_hook+0x154/0x1c8
+> >     kfree+0x114/0x5d0
+> >     sugov_exit+0xbc/0xc0
+> >     cpufreq_exit_governor+0x44/0x90
+> >     cpufreq_set_policy+0x268/0x4a8
+> >     store_scaling_governor+0xe0/0x128
+> >     store+0xc0/0xf0
+> >     sysfs_kf_write+0x54/0x80
+> >     kernfs_fop_write_iter+0x128/0x1c0
+> >     new_sync_write+0xf0/0x190
+> >     vfs_write+0x2d4/0x478
+> >     ksys_write+0x74/0x100
+> >     __arm64_sys_write+0x24/0x30
+> >     invoke_syscall.constprop.0+0x54/0xe0
+> >     do_el0_svc+0x64/0x158
+> >     el0_svc+0x2c/0xb0
+> >     el0t_64_sync_handler+0xb0/0xb8
+> >     el0t_64_sync+0x198/0x19c
+> >    irq event stamp: 5518
+> >    hardirqs last  enabled at (5517): [<ffff8000100cbd7c>] console_unlock+0x554/0x6c8
+> >    hardirqs last disabled at (5518): [<ffff800010fc0638>] el1_dbg+0x28/0xa0
+> >    softirqs last  enabled at (5504): [<ffff8000100106e0>] __do_softirq+0x4d0/0x6c0
+> >    softirqs last disabled at (5483): [<ffff800010049548>] irq_exit+0x1b0/0x1b8
+> > 
+> > So split the original sugov_tunables_free() into two functions,
+> > sugov_clear_global_tunables() is just used to clear the global_tunables
+> > and the new sugov_tunables_free() is used as kobj_type::release to
+> > release the sugov_tunables safely.
+> > 
+> > Fixes: 9bdcb44e391d ("cpufreq: schedutil: New governor based on scheduler utilization data")
+> > Cc: 4.7+ <stable@vger.kernel.org> # 4.7+
+> > Signed-off-by: Kevin Hao <haokexin@gmail.com>
+> > Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > ---
+> >   kernel/sched/cpufreq_schedutil.c |   16 +++++++++++-----
+> >   1 file changed, 11 insertions(+), 5 deletions(-)
+> > 
+> > --- a/kernel/sched/cpufreq_schedutil.c
+> > +++ b/kernel/sched/cpufreq_schedutil.c
+> > @@ -610,9 +610,17 @@ static struct attribute *sugov_attrs[] =
+> >   };
+> >   ATTRIBUTE_GROUPS(sugov);
+> > +static void sugov_tunables_free(struct kobject *kobj)
+> > +{
+> > +	struct gov_attr_set *attr_set = container_of(kobj, struct gov_attr_set, kobj);
+> > +
+> > +	kfree(to_sugov_tunables(attr_set));
+> > +}
+> > +
+> >   static struct kobj_type sugov_tunables_ktype = {
+> >   	.default_groups = sugov_groups,
+> >   	.sysfs_ops = &governor_sysfs_ops,
+> > +	.release = &sugov_tunables_free,
+> >   };
+> >   /********************** cpufreq governor interface *********************/
+> > @@ -712,12 +720,10 @@ static struct sugov_tunables *sugov_tuna
+> >   	return tunables;
+> >   }
+> > -static void sugov_tunables_free(struct sugov_tunables *tunables)
+> > +static void sugov_clear_global_tunables(void)
+> >   {
+> >   	if (!have_governor_per_policy())
+> >   		global_tunables = NULL;
+> > -
+> > -	kfree(tunables);
+> >   }
+> >   static int sugov_init(struct cpufreq_policy *policy)
+> > @@ -780,7 +786,7 @@ out:
+> >   fail:
+> >   	kobject_put(&tunables->attr_set.kobj);
+> >   	policy->governor_data = NULL;
+> > -	sugov_tunables_free(tunables);
+> > +	sugov_clear_global_tunables();
+> >   stop_kthread:
+> >   	sugov_kthread_stop(sg_policy);
+> > @@ -807,7 +813,7 @@ static void sugov_exit(struct cpufreq_po
+> >   	count = gov_attr_set_put(&tunables->attr_set, &sg_policy->tunables_hook);
+> >   	policy->governor_data = NULL;
+> >   	if (!count)
+> > -		sugov_tunables_free(tunables);
+> > +		sugov_clear_global_tunables();
+> >   	mutex_unlock(&global_tunables_lock);
+> > 
+> > 
+> Please defer this one.
+> 
+> It uncovers a bug in cpufreq that needs to be fixed separately.
+
+Now dropped from all queues, thanks!
+
+greg k-h
