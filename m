@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A37340E401
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:22:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 169ED40E84B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345989AbhIPQyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:54:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59206 "EHLO mail.kernel.org"
+        id S1354050AbhIPRi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:38:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50252 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245082AbhIPQsF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:48:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BEFE56124B;
-        Thu, 16 Sep 2021 16:27:11 +0000 (UTC)
+        id S1353029AbhIPR3v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:29:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2943E61C32;
+        Thu, 16 Sep 2021 16:46:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809632;
-        bh=DLsL0fEIJu4CmK1/of73Xd2UD5LwRFimUx9537icPPA=;
+        s=korg; t=1631810770;
+        bh=sEkLBe290KaPKtHxIDfF8Sql3ipPQQpbu8xLZAvL+0U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Hmbg9c8Ku0WxSDZhbyypLX8Nc3qSTH4qxMRLfLSlZ9vEP4fUrKKbrCaJZ5hnB1+V3
-         5DTJ9figYp7CFWt5sHtjuG+ihwNY/A7ISLNQI43QEnVgRGdYPdJ86Zx6liMKOJ6/27
-         6vDLy1yeuR6aCyNa5JVfrHBM6/yH3HsFewXGZp8U=
+        b=2nEBZlvSUnIFbhRHXXaJ1mKMBiIBqcsQr22wzJ9VJbaa0cUrAJGBmMyS89Vf0JJiC
+         RzKQjCueVD2NIJYDr26eOuom6izpPQjpw3UcUW+p/Ri6bjAYmIVbUv973e0QI3IX1c
+         9Ncf6pdbSf9TT2vkDULsNB4l6Ejt0sUkce0d2fR8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Umang Jain <umang.jain@ideasonboard.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jordy Zomer <jordy@pwning.systems>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 226/380] media: imx258: Limit the max analogue gain to 480
+Subject: [PATCH 5.14 234/432] vt: keyboard.c: make console an unsigned int
 Date:   Thu, 16 Sep 2021 17:59:43 +0200
-Message-Id: <20210916155811.774299909@linuxfoundation.org>
+Message-Id: <20210916155818.776317618@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,45 +41,211 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Umang Jain <umang.jain@ideasonboard.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-[ Upstream commit f809665ee75fff3f4ea8907f406a66d380aeb184 ]
+[ Upstream commit 3df15d6f37246d2f12f53d915c41d806289d3d46 ]
 
-The range for analog gain mentioned in the datasheet is [0, 480].
-The real gain formula mentioned in the datasheet is:
+The console variable is used everywhere in some fun pointer path and
+array indexes and for some reason isn't always declared as unsigned.
+This plays havoc with some static analysis tools so mark the variable as
+unsigned so we "know" we can not wrap the arrays backwards here.
 
-	Gain = 512 / (512 – X)
-
-Hence, values larger than 511 clearly makes no sense. The gain
-register field is also documented to be of 9-bits in the datasheet.
-
-Certainly, it is enough to infer that, the kernel driver currently
-advertises an arbitrary analog gain max. Fix it by rectifying the
-value as per the data sheet i.e. 480.
-
-Signed-off-by: Umang Jain <umang.jain@ideasonboard.com>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc: Jiri Slaby <jirislaby@kernel.org>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Reported-by: Jordy Zomer <jordy@pwning.systems>
+Link: https://lore.kernel.org/r/20210726134322.2274919-2-gregkh@linuxfoundation.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/i2c/imx258.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/tty/vt/keyboard.c | 30 +++++++++++++++---------------
+ include/linux/vt_kern.h   | 30 +++++++++++++++---------------
+ 2 files changed, 30 insertions(+), 30 deletions(-)
 
-diff --git a/drivers/media/i2c/imx258.c b/drivers/media/i2c/imx258.c
-index b3fa28d05fa6..cdeaaec31879 100644
---- a/drivers/media/i2c/imx258.c
-+++ b/drivers/media/i2c/imx258.c
-@@ -47,7 +47,7 @@
- /* Analog gain control */
- #define IMX258_REG_ANALOG_GAIN		0x0204
- #define IMX258_ANA_GAIN_MIN		0
--#define IMX258_ANA_GAIN_MAX		0x1fff
-+#define IMX258_ANA_GAIN_MAX		480
- #define IMX258_ANA_GAIN_STEP		1
- #define IMX258_ANA_GAIN_DEFAULT		0x0
+diff --git a/drivers/tty/vt/keyboard.c b/drivers/tty/vt/keyboard.c
+index 4b0d69042ceb..bf6efebeb4bd 100644
+--- a/drivers/tty/vt/keyboard.c
++++ b/drivers/tty/vt/keyboard.c
+@@ -1171,7 +1171,7 @@ static inline unsigned char getleds(void)
+  *
+  *	Check the status of a keyboard led flag and report it back
+  */
+-int vt_get_leds(int console, int flag)
++int vt_get_leds(unsigned int console, int flag)
+ {
+ 	struct kbd_struct *kb = kbd_table + console;
+ 	int ret;
+@@ -1193,7 +1193,7 @@ EXPORT_SYMBOL_GPL(vt_get_leds);
+  *	Set the LEDs on a console. This is a wrapper for the VT layer
+  *	so that we can keep kbd knowledge internal
+  */
+-void vt_set_led_state(int console, int leds)
++void vt_set_led_state(unsigned int console, int leds)
+ {
+ 	struct kbd_struct *kb = kbd_table + console;
+ 	setledstate(kb, leds);
+@@ -1212,7 +1212,7 @@ void vt_set_led_state(int console, int leds)
+  *	don't hold the lock. We probably need to split out an LED lock
+  *	but not during an -rc release!
+  */
+-void vt_kbd_con_start(int console)
++void vt_kbd_con_start(unsigned int console)
+ {
+ 	struct kbd_struct *kb = kbd_table + console;
+ 	unsigned long flags;
+@@ -1229,7 +1229,7 @@ void vt_kbd_con_start(int console)
+  *	Handle console stop. This is a wrapper for the VT layer
+  *	so that we can keep kbd knowledge internal
+  */
+-void vt_kbd_con_stop(int console)
++void vt_kbd_con_stop(unsigned int console)
+ {
+ 	struct kbd_struct *kb = kbd_table + console;
+ 	unsigned long flags;
+@@ -1825,7 +1825,7 @@ int vt_do_diacrit(unsigned int cmd, void __user *udp, int perm)
+  *	Update the keyboard mode bits while holding the correct locks.
+  *	Return 0 for success or an error code.
+  */
+-int vt_do_kdskbmode(int console, unsigned int arg)
++int vt_do_kdskbmode(unsigned int console, unsigned int arg)
+ {
+ 	struct kbd_struct *kb = kbd_table + console;
+ 	int ret = 0;
+@@ -1865,7 +1865,7 @@ int vt_do_kdskbmode(int console, unsigned int arg)
+  *	Update the keyboard meta bits while holding the correct locks.
+  *	Return 0 for success or an error code.
+  */
+-int vt_do_kdskbmeta(int console, unsigned int arg)
++int vt_do_kdskbmeta(unsigned int console, unsigned int arg)
+ {
+ 	struct kbd_struct *kb = kbd_table + console;
+ 	int ret = 0;
+@@ -2008,7 +2008,7 @@ static int vt_kdskbent(unsigned char kbdmode, unsigned char idx,
+ }
  
+ int vt_do_kdsk_ioctl(int cmd, struct kbentry __user *user_kbe, int perm,
+-						int console)
++						unsigned int console)
+ {
+ 	struct kbd_struct *kb = kbd_table + console;
+ 	struct kbentry kbe;
+@@ -2097,7 +2097,7 @@ int vt_do_kdgkb_ioctl(int cmd, struct kbsentry __user *user_kdgkb, int perm)
+ 	return ret;
+ }
+ 
+-int vt_do_kdskled(int console, int cmd, unsigned long arg, int perm)
++int vt_do_kdskled(unsigned int console, int cmd, unsigned long arg, int perm)
+ {
+ 	struct kbd_struct *kb = kbd_table + console;
+         unsigned long flags;
+@@ -2139,7 +2139,7 @@ int vt_do_kdskled(int console, int cmd, unsigned long arg, int perm)
+         return -ENOIOCTLCMD;
+ }
+ 
+-int vt_do_kdgkbmode(int console)
++int vt_do_kdgkbmode(unsigned int console)
+ {
+ 	struct kbd_struct *kb = kbd_table + console;
+ 	/* This is a spot read so needs no locking */
+@@ -2163,7 +2163,7 @@ int vt_do_kdgkbmode(int console)
+  *
+  *	Report the meta flag status of this console
+  */
+-int vt_do_kdgkbmeta(int console)
++int vt_do_kdgkbmeta(unsigned int console)
+ {
+ 	struct kbd_struct *kb = kbd_table + console;
+         /* Again a spot read so no locking */
+@@ -2176,7 +2176,7 @@ int vt_do_kdgkbmeta(int console)
+  *
+  *	Restore the unicode console state to its default
+  */
+-void vt_reset_unicode(int console)
++void vt_reset_unicode(unsigned int console)
+ {
+ 	unsigned long flags;
+ 
+@@ -2204,7 +2204,7 @@ int vt_get_shift_state(void)
+  *	Reset the keyboard bits for a console as part of a general console
+  *	reset event
+  */
+-void vt_reset_keyboard(int console)
++void vt_reset_keyboard(unsigned int console)
+ {
+ 	struct kbd_struct *kb = kbd_table + console;
+ 	unsigned long flags;
+@@ -2234,7 +2234,7 @@ void vt_reset_keyboard(int console)
+  *	caller must be sure that there are no synchronization needs
+  */
+ 
+-int vt_get_kbd_mode_bit(int console, int bit)
++int vt_get_kbd_mode_bit(unsigned int console, int bit)
+ {
+ 	struct kbd_struct *kb = kbd_table + console;
+ 	return vc_kbd_mode(kb, bit);
+@@ -2249,7 +2249,7 @@ int vt_get_kbd_mode_bit(int console, int bit)
+  *	caller must be sure that there are no synchronization needs
+  */
+ 
+-void vt_set_kbd_mode_bit(int console, int bit)
++void vt_set_kbd_mode_bit(unsigned int console, int bit)
+ {
+ 	struct kbd_struct *kb = kbd_table + console;
+ 	unsigned long flags;
+@@ -2268,7 +2268,7 @@ void vt_set_kbd_mode_bit(int console, int bit)
+  *	caller must be sure that there are no synchronization needs
+  */
+ 
+-void vt_clr_kbd_mode_bit(int console, int bit)
++void vt_clr_kbd_mode_bit(unsigned int console, int bit)
+ {
+ 	struct kbd_struct *kb = kbd_table + console;
+ 	unsigned long flags;
+diff --git a/include/linux/vt_kern.h b/include/linux/vt_kern.h
+index 0da94a6dee15..b5ab452fca5b 100644
+--- a/include/linux/vt_kern.h
++++ b/include/linux/vt_kern.h
+@@ -148,26 +148,26 @@ void hide_boot_cursor(bool hide);
+ 
+ /* keyboard  provided interfaces */
+ int vt_do_diacrit(unsigned int cmd, void __user *up, int eperm);
+-int vt_do_kdskbmode(int console, unsigned int arg);
+-int vt_do_kdskbmeta(int console, unsigned int arg);
++int vt_do_kdskbmode(unsigned int console, unsigned int arg);
++int vt_do_kdskbmeta(unsigned int console, unsigned int arg);
+ int vt_do_kbkeycode_ioctl(int cmd, struct kbkeycode __user *user_kbkc,
+ 			  int perm);
+ int vt_do_kdsk_ioctl(int cmd, struct kbentry __user *user_kbe, int perm,
+-		     int console);
++		     unsigned int console);
+ int vt_do_kdgkb_ioctl(int cmd, struct kbsentry __user *user_kdgkb, int perm);
+-int vt_do_kdskled(int console, int cmd, unsigned long arg, int perm);
+-int vt_do_kdgkbmode(int console);
+-int vt_do_kdgkbmeta(int console);
+-void vt_reset_unicode(int console);
++int vt_do_kdskled(unsigned int console, int cmd, unsigned long arg, int perm);
++int vt_do_kdgkbmode(unsigned int console);
++int vt_do_kdgkbmeta(unsigned int console);
++void vt_reset_unicode(unsigned int console);
+ int vt_get_shift_state(void);
+-void vt_reset_keyboard(int console);
+-int vt_get_leds(int console, int flag);
+-int vt_get_kbd_mode_bit(int console, int bit);
+-void vt_set_kbd_mode_bit(int console, int bit);
+-void vt_clr_kbd_mode_bit(int console, int bit);
+-void vt_set_led_state(int console, int leds);
+-void vt_kbd_con_start(int console);
+-void vt_kbd_con_stop(int console);
++void vt_reset_keyboard(unsigned int console);
++int vt_get_leds(unsigned int console, int flag);
++int vt_get_kbd_mode_bit(unsigned int console, int bit);
++void vt_set_kbd_mode_bit(unsigned int console, int bit);
++void vt_clr_kbd_mode_bit(unsigned int console, int bit);
++void vt_set_led_state(unsigned int console, int leds);
++void vt_kbd_con_start(unsigned int console);
++void vt_kbd_con_stop(unsigned int console);
+ 
+ void vc_scrolldelta_helper(struct vc_data *c, int lines,
+ 		unsigned int rolled_over, void *_base, unsigned int size);
 -- 
 2.30.2
 
