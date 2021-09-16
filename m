@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8520940E308
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:19:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDE1840E0D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:28:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343834AbhIPQoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:44:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51236 "EHLO mail.kernel.org"
+        id S241369AbhIPQY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:24:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244489AbhIPQjL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:39:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 71591619F5;
-        Thu, 16 Sep 2021 16:22:59 +0000 (UTC)
+        id S241155AbhIPQPR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:15:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 65E21613B1;
+        Thu, 16 Sep 2021 16:11:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809380;
-        bh=oSF4S3CTDgEgFEs4mTPb5cHmLiOozTKjmUXB/FL2zEQ=;
+        s=korg; t=1631808669;
+        bh=HbKdG9aytO0ioDG/KY7sAZQbkCDdECINTMrITFOu0ZE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RXFWhdA+u85quEjc5M7O/b9o30HVzynFZjgBysipkpwgYAgIr19CGK6uwtM/QBgYo
-         vH8icoy3ryrPX33Q39hA9wwGb54JY26JfNlfJBaY448mNyGOg35tMW/KLgEY43ukEj
-         3e2eFue5E9EIcvE/PnB6O1c3tPJ6JoPjvT6M+z0w=
+        b=DcrWTHugXaIN3EaCYnqtEVn3dGwIRJXTas0g9PZr8VUPIImMr9bOXuTlMqnh65bQn
+         oq9W3L5x73GKPuX6xXWczumOE5yfquInfnOrP4u72u/v6DozfKUbE7iKbGRPWpWkFv
+         D4RBlz9ogucxFiuQ2qSbqJcFPJW7Tboo0IkKaDcI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chao Yu <chao@kernel.org>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Niklas=20S=C3=B6derlund?= <niklas.soderlund@corigine.com>,
+        Louis Peens <louis.peens@corigine.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 133/380] f2fs: fix to unmap pages from userspace process in punch_hole()
-Date:   Thu, 16 Sep 2021 17:58:10 +0200
-Message-Id: <20210916155808.561604472@linuxfoundation.org>
+Subject: [PATCH 5.10 146/306] nfp: fix return statement in nfp_net_parse_meta()
+Date:   Thu, 16 Sep 2021 17:58:11 +0200
+Message-Id: <20210916155759.031428896@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,46 +43,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chao Yu <chao@kernel.org>
+From: Niklas Söderlund <niklas.soderlund@corigine.com>
 
-[ Upstream commit c8dc3047c48540183744f959412d44b08c5435e1 ]
+[ Upstream commit 4431531c482a2c05126caaa9fcc5053a4a5c495b ]
 
-We need to unmap pages from userspace process before removing pagecache
-in punch_hole() like we did in f2fs_setattr().
+The return type of the function is bool and while NULL do evaluate to
+false it's not very nice, fix this by explicitly returning false. There
+is no functional change.
 
-Similar change:
-commit 5e44f8c374dc ("ext4: hole-punch use truncate_pagecache_range")
-
-Fixes: fbfa2cc58d53 ("f2fs: add file operations")
-Signed-off-by: Chao Yu <chao@kernel.org>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Signed-off-by: Niklas Söderlund <niklas.soderlund@corigine.com>
+Signed-off-by: Louis Peens <louis.peens@corigine.com>
+Signed-off-by: Simon Horman <simon.horman@corigine.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/f2fs/file.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/net/ethernet/netronome/nfp/nfp_net_common.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index fb27d49e4da7..3a11e81fdf65 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -1086,7 +1086,6 @@ static int punch_hole(struct inode *inode, loff_t offset, loff_t len)
- 		}
- 
- 		if (pg_start < pg_end) {
--			struct address_space *mapping = inode->i_mapping;
- 			loff_t blk_start, blk_end;
- 			struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
- 
-@@ -1098,8 +1097,7 @@ static int punch_hole(struct inode *inode, loff_t offset, loff_t len)
- 			down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
- 			down_write(&F2FS_I(inode)->i_mmap_sem);
- 
--			truncate_inode_pages_range(mapping, blk_start,
--					blk_end - 1);
-+			truncate_pagecache_range(inode, blk_start, blk_end - 1);
- 
- 			f2fs_lock_op(sbi);
- 			ret = f2fs_truncate_hole(inode, pg_start, pg_end);
+diff --git a/drivers/net/ethernet/netronome/nfp/nfp_net_common.c b/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
+index 437226866ce8..dfc1f32cda2b 100644
+--- a/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
++++ b/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
+@@ -1697,7 +1697,7 @@ nfp_net_parse_meta(struct net_device *netdev, struct nfp_meta_parsed *meta,
+ 		case NFP_NET_META_RESYNC_INFO:
+ 			if (nfp_net_tls_rx_resync_req(netdev, data, pkt,
+ 						      pkt_len))
+-				return NULL;
++				return false;
+ 			data += sizeof(struct nfp_net_tls_resync_req);
+ 			break;
+ 		default:
 -- 
 2.30.2
 
