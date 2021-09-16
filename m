@@ -2,97 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D8FF40D9AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 14:18:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEF9640D98C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 14:13:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235905AbhIPMTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 08:19:33 -0400
-Received: from 82-65-109-163.subs.proxad.net ([82.65.109.163]:49298 "EHLO
-        luna.linkmauve.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235737AbhIPMTd (ORCPT
+        id S239420AbhIPMOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 08:14:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239393AbhIPMOU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 08:19:33 -0400
-X-Greylist: delayed 327 seconds by postgrey-1.27 at vger.kernel.org; Thu, 16 Sep 2021 08:19:32 EDT
-Received: by luna.linkmauve.fr (Postfix, from userid 1000)
-        id 256ABF40B33; Thu, 16 Sep 2021 14:12:41 +0200 (CEST)
-Date:   Thu, 16 Sep 2021 14:12:40 +0200
-From:   Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] nvmem: NVMEM_NINTENDO_OTP should depend on WII
-Message-ID: <20210916121240.okknaglns4bjmczp@luna>
-Jabber-ID: linkmauve@linkmauve.fr
-References: <01318920709dddc4d85fe895e2083ca0eee234d8.1631611652.git.geert+renesas@glider.be>
+        Thu, 16 Sep 2021 08:14:20 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75D40C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 05:13:00 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id g16so9134837wrb.3
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 05:13:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=nAa7hcN3ascpVQvM2OTeR2k2GxYPakXsr5xj8Xor+Lw=;
+        b=WmD/Z3+ncYgIZPTkselMJKRJwFC5I8QlynB+q8Lx4A4w+1BwjPde8V+HFZ6T61d3Z0
+         WKVnlly6gf/xyNqeuOpkTGnrKuo3Nxcf/0+NI5UBolir1q1MWuUtuIz/RXfmU9IeW4lo
+         Wn1ilNGM56xVE7XDbRQu4sBu+57OlID40Z97fV41DuOiSZVTetL3kTj2ZwthotdFdH/Q
+         SXUKvUGfvyzlorYs+n55BkMW476UbDatDv318GaIiqZLzQesajEooYAG0rOQ92vePetd
+         EhyWlX87ZPx152HdnX8/byXkwQz6eKseOdCyzYZYo0y2pwUyJfEPx4ro/AcoWJzqDAQt
+         ERWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=nAa7hcN3ascpVQvM2OTeR2k2GxYPakXsr5xj8Xor+Lw=;
+        b=wS88V46c/wvL9yZW5/GjBVjwL/aRk3ji7Jk5/9Z0J2QEYoiOjU/O9jsnfLEtIJ+aJq
+         m/8rSguGJToKdXiiU0SwcYmYQuux9oCBZ4MCFnvEwMONm+zounEjrehRVveHVy6p+SQU
+         8S9YaZY8b/P+kXRAqtx0VPRNkjdlHW5QVeOFsoPBHs7zHh6n8XWZfRcgWgCtpcM+rTry
+         Xhlnm1Ut11qqNLt8K02qXJ+lefTLrEPW/xrjA43/25Zsg8f3yhH8SqX0swsrCZcva6vS
+         RcxFM3I7uXR7pmOXVgE1xkOphmpt9W1nJfWRq+BX/74p8EFRYzuoDiWYF1BN9+HFsNKf
+         EuJA==
+X-Gm-Message-State: AOAM533fvEFGFusBPqm23cNAfIVDpgqZVzxMXaJCJVLg+G4ILqgMxEAi
+        C2xeUbn5gyGa/J1bxfocIe8kIA==
+X-Google-Smtp-Source: ABdhPJzjhJgO8cFIT2GipL1pyLBESTYNhG5MXheT1l5nRxXPi6XFjSoeUvTa4kKMZP8Y/iAwUO0X0A==
+X-Received: by 2002:a5d:64ea:: with SMTP id g10mr2658238wri.274.1631794379049;
+        Thu, 16 Sep 2021 05:12:59 -0700 (PDT)
+Received: from [192.168.1.8] ([149.86.87.95])
+        by smtp.gmail.com with ESMTPSA id m29sm3450939wrb.89.2021.09.16.05.12.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Sep 2021 05:12:58 -0700 (PDT)
+Subject: Re: [PATCH 08/24] tools: bpftool: update bpftool-prog.rst reference
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Beckett <david.beckett@netronome.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org
+References: <cover.1631783482.git.mchehab+huawei@kernel.org>
+ <dc4bae7a14518fbfff20a0f539df06a5c19b09de.1631783482.git.mchehab+huawei@kernel.org>
+ <eb80e8f5-b9d7-5031-8ebb-4595bb295dbf@isovalent.com>
+ <20210916124930.7ae3b722@coco.lan>
+ <33d66a49-2fc0-57a1-c1e5-34e932bcc237@isovalent.com>
+ <20210916133036.37c50383@coco.lan>
+From:   Quentin Monnet <quentin@isovalent.com>
+Message-ID: <8d5eaebb-29ac-5ee6-20ec-09d30d33dd73@isovalent.com>
+Date:   Thu, 16 Sep 2021 13:12:57 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="4qla4vdo44bvrd6u"
-Content-Disposition: inline
-In-Reply-To: <01318920709dddc4d85fe895e2083ca0eee234d8.1631611652.git.geert+renesas@glider.be>
+In-Reply-To: <20210916133036.37c50383@coco.lan>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+2021-09-16 13:30 UTC+0200 ~ Mauro Carvalho Chehab
+<mchehab+huawei@kernel.org>
 
---4qla4vdo44bvrd6u
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> [PATCH] scripts: documentation-file-ref-check: fix bpf selftests path
+> 
+> tools/testing/selftests/bpf/test_bpftool_synctypes.py use
+> relative patches on the top of BPFTOOL_DIR:
+> 
+> 	BPFTOOL_DIR = os.path.join(LINUX_ROOT, 'tools/bpf/bpftool')
+> 
+> Change the script to automatically convert:
+> 
+> 	testing/selftests/bpf -> bpf/bpftool
+> 
+> In order to properly check the files used by such script.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> 
+> diff --git a/scripts/documentation-file-ref-check b/scripts/documentation-file-ref-check
+> index 7187ea5e5149..2d91cfe11cd2 100755
+> --- a/scripts/documentation-file-ref-check
+> +++ b/scripts/documentation-file-ref-check
+> @@ -144,6 +144,7 @@ while (<IN>) {
+>  		if ($f =~ m/tools/) {
+>  			my $path = $f;
+>  			$path =~ s,(.*)/.*,$1,;
+> +			$path =~ s,testing/selftests/bpf,bpf/bpftool,;
+>  			next if (grep -e, glob("$path/$ref $path/../$ref $path/$fulref"));
+>  		}
+>  
+> 
+> 
+> 
 
-Hi, thanks for this patch, once the Wii=A0U platform will be added it will
-need an additional test for WIIU, but for now this is:
+I tested the patch and it works well on my side.
 
-Reviewed-by: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
+However, this looks a bit fragile to me. There is no particular reason
+to have testing/selftests/bpf point to bpf/bpftool other than to
+accommodate the current case, we could imagine other selftest files
+pointing to other parts of the documentation in the future. I would
+instead make an exception for test_bpftool_synctypes.py specifically
+(other selftest files don't usually parse documentation anyway).
+Alternatively, I would look at excluding lines where the path is used in
+code (tricky to detect), maybe at least when used with os.path.join():
 
-On Tue, Sep 14, 2021 at 11:29:49AM +0200, Geert Uytterhoeven wrote:
-> The Nintendo Wii and Wii U OTP is only present on Nintendo Wii and Wii U
-> consoles.  Hence add a dependency on WII, to prevent asking the user
-> about this driver when configuring a kernel without Nintendo Wii and Wii
-> U console support.
->=20
-> Fixes: 3683b761fe3a10ad ("nvmem: nintendo-otp: Add new driver for the Wii=
- and Wii U OTP")
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
->  drivers/nvmem/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/drivers/nvmem/Kconfig b/drivers/nvmem/Kconfig
-> index 39854d43758be3fb..da414617a54d4b99 100644
-> --- a/drivers/nvmem/Kconfig
-> +++ b/drivers/nvmem/Kconfig
-> @@ -109,6 +109,7 @@ config MTK_EFUSE
-> =20
->  config NVMEM_NINTENDO_OTP
->  	tristate "Nintendo Wii and Wii U OTP Support"
-> +	depends on WII || COMPILE_TEST
->  	help
->  	  This is a driver exposing the OTP of a Nintendo Wii or Wii U console.
-> =20
-> --=20
-> 2.25.1
+    next if ($ln =~ m,os\.path\.join\([^\,]*\,\s*['"]$fulref,);
 
---=20
-Emmanuel Gil Peyrot
+But I'm not familiar with documentation-file-ref-check in the first
+place, so these are just my two cents.
 
---4qla4vdo44bvrd6u
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEjrVT1SzTln43kCLJOWgfYkb2LpAFAmFDNLQACgkQOWgfYkb2
-LpA6OQgAqnp5vZBBdcMfXSA8IEnqzcZRa0PHdW/d3FK7bczJocUPNc4mvQFexP0t
-7AuWaXNMOEWq2xOd05eggwhSQgB2OMZ/wtA63fKOrP5gq1QdzSN5hDzM2ew1MnyR
-x8x/CoMc4JOk/mmbZFSTiYx8wC3M37uCkfugZdS0actXv/2kuiWfPhUIvvlrZG92
-ebYlFUQMhQX43c62Au0DUCwRy0VQJW2+lRVlIHghtrSUfey1m79qfICnt5+g5Llv
-DA0kchTFuBpyO2s3pGAmKnd3fCOQ8jBtqLgg3ZJNrqbfwnl3ezoS7f0tw8qQeBQy
-4VVzKdfPm7I3b9Od3GDm8Suv9HIvtg==
-=6DDx
------END PGP SIGNATURE-----
-
---4qla4vdo44bvrd6u--
+Thanks,
+Quentin
