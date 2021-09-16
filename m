@@ -2,272 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAF1440D40E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 09:48:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B7E840D419
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 09:51:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234879AbhIPHuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 03:50:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234799AbhIPHt6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 03:49:58 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22AF2C061764
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 00:48:38 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id z184-20020a1c7ec1000000b003065f0bc631so6705447wmc.0
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 00:48:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=836pQNEOAKs5EjUipaYr5iTmWSGcl9uSpxBTxlPDNwg=;
-        b=Vc4NxgDeb0/J8lHl8oOnMqlN5Jy1ogBUkUF54zM6lb5a7hvUtkGJEmc+HeNZLIjEri
-         IJrMYLP7RuOAYLgsCGhcG/gl5mGL6JJ/VqdMCFomG73uCCLVaFZyhOTzk20t3WqQWIGi
-         PgcQMwSKmUwIRd0RXchHMHAqL2GL7EPpfOdtFYKcrcXQiLHyn2A1BnnnWJRrGVTHBTPC
-         Mgx2ZzcHcYBH4z2IAue2Zwzsrk1/3km74E6dNEnfdYH6wMLI5EgGeS7eSVC+PE+pHPwJ
-         dKpwLquo+/CPwel76EsFxgERIXW6m+qvJF5bnbUT8oq6CjlaW/1fGLwXB+u6gNkUoMBQ
-         JJBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=836pQNEOAKs5EjUipaYr5iTmWSGcl9uSpxBTxlPDNwg=;
-        b=5eQHHEHCQfmgxCeeTSgWTx7/OosRe78tm8YD8jAqnC2iUFGTz0h5inv4lqJIXmw4sF
-         MDv32QpR7TNU++GYUTkq/zEptf/KV1qsZXKdoH01DcH81ltLSWWP9VjbTxrNxSmS8dUV
-         OSRJPLVazi+Gg5/uBl+eMyeJQ8GQylMFgR2IwRSno9PLQbPMVPsV+Nmr8Fv7/q5esvHv
-         wLnkgs9MNXgqZsDyPcMSUkQmN+vix71fjL7C97o8HSkEQPR7vsa7Zr8MeoaZSCHWpopV
-         k2Ltj9ZvPuH01kyojY1x1/RqB7FCHD/FKAumYhyPlhT+1Ioc4Gby1uTrelLa/7+2rgSa
-         oI6g==
-X-Gm-Message-State: AOAM53155W4Wk9+0t9jXJSVFG7XgWY6tnYr60ey1eHUQW14YKCsKh7sh
-        YJ0vlQ1LQJQzhtg4nCfz269vMg==
-X-Google-Smtp-Source: ABdhPJw2KytWoJGk8kUldFaBNIU3o57ulqI57sR8NeimQGmqAg+hDLglDQ/tA3JvLXNoX5X131ax4Q==
-X-Received: by 2002:a1c:9a12:: with SMTP id c18mr8649130wme.51.1631778516430;
-        Thu, 16 Sep 2021 00:48:36 -0700 (PDT)
-Received: from [10.1.3.24] (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.gmail.com with ESMTPSA id h18sm2375509wrb.33.2021.09.16.00.48.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Sep 2021 00:48:35 -0700 (PDT)
-Subject: Re: [PATCH 08/16] tty: drivers/tty/serial/, stop using
- tty_flip_buffer_push
-To:     Jiri Slaby <jslaby@suse.cz>, gregkh@linuxfoundation.org
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Al Cooper <alcooperx@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tobias Klauser <tklauser@distanz.ch>,
-        Russell King <linux@armlinux.org.uk>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Richard Genoud <richard.genoud@gmail.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Alexander Shiyan <shc_work@mail.ru>,
-        Baruch Siach <baruch@tkos.co.il>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Karol Gugala <kgugala@antmicro.com>,
-        Mateusz Holenko <mholenko@antmicro.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Liviu Dudau <liviu.dudau@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Kevin Cernekee <cernekee@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Peter Korsgaard <jacmet@sunsite.dk>,
-        Timur Tabi <timur@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>
-References: <20210914091134.17426-1-jslaby@suse.cz>
- <20210914091415.17918-1-jslaby@suse.cz>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Organization: Baylibre
-Message-ID: <ba18bc51-6d4a-bc3b-5e4b-55a7315a2ed2@baylibre.com>
-Date:   Thu, 16 Sep 2021 09:48:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210914091415.17918-1-jslaby@suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S231305AbhIPHw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 03:52:27 -0400
+Received: from smtp23.cstnet.cn ([159.226.251.23]:33238 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234791AbhIPHwZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 03:52:25 -0400
+Received: from localhost.localdomain (unknown [124.16.141.243])
+        by APP-03 (Coremail) with SMTP id rQCowAC3v3tP90JhWN6aAA--.476S2;
+        Thu, 16 Sep 2021 15:50:40 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     axboe@kernel.dk, rostedt@goodmis.org, mingo@redhat.com
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] block: Remove needless request_queue NULL pointer checks
+Date:   Thu, 16 Sep 2021 07:50:36 +0000
+Message-Id: <20210916075036.61159-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: rQCowAC3v3tP90JhWN6aAA--.476S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxAr4kWryrXr43Wry3WF1rZwb_yoWrAry3pF
+        W3JFyfA3y8KF4kXaykArnrWF9a934akry7Ja9xW3sYkrW8tr4qgFn5Zry0qrWFyrWkGFWU
+        JF4xXFZ09r129FDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvjb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4
+        vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ec7CjxVAajcxG14v26r
+        1j6r4UMcIj6I8E87Iv67AKxVW8Jr0_Cr1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY
+        0x0EwIxGrwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
+        0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1l
+        IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
+        AFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_
+        Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUyb
+        yZUUUUU
+X-Originating-IP: [124.16.141.243]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiBgcGA10TflKa6AAAsU
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/09/2021 11:14, Jiri Slaby wrote:
-> Since commit a9c3f68f3cd8d (tty: Fix low_latency BUG) in 2014,
-> tty_flip_buffer_push() is only a wrapper to tty_schedule_flip(). We are
-> going to remove the former, so call the latter directly in
-> drivers/tty/serial/.
-> 
-> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-> Cc: Joel Stanley <joel@jms.id.au>
-> Cc: Andrew Jeffery <andrew@aj.id.au>
-> Cc: Al Cooper <alcooperx@gmail.com>
-> Cc: Matthias Brugger <matthias.bgg@gmail.com>
-> Cc: Tobias Klauser <tklauser@distanz.ch>
-> Cc: Russell King <linux@armlinux.org.uk>
-> Cc: Vineet Gupta <vgupta@kernel.org>
-> Cc: Richard Genoud <richard.genoud@gmail.com>
-> Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
-> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
-> Cc: Florian Fainelli <f.fainelli@gmail.com>
-> Cc: bcm-kernel-feedback-list@broadcom.com
-> Cc: Alexander Shiyan <shc_work@mail.ru>
-> Cc: Baruch Siach <baruch@tkos.co.il>
-> Cc: "Maciej W. Rozycki" <macro@orcam.me.uk>
-> Cc: Shawn Guo <shawnguo@kernel.org>
-> Cc: Sascha Hauer <s.hauer@pengutronix.de>
-> Cc: Pengutronix Kernel Team <kernel@pengutronix.de>
-> Cc: Fabio Estevam <festevam@gmail.com>
-> Cc: NXP Linux Team <linux-imx@nxp.com>
-> Cc: Karol Gugala <kgugala@antmicro.com>
-> Cc: Mateusz Holenko <mholenko@antmicro.com>
-> Cc: Vladimir Zapolskiy <vz@mleia.com>
-> Cc: Neil Armstrong <narmstrong@baylibre.com>
-> Cc: Kevin Hilman <khilman@baylibre.com>
-> Cc: Jerome Brunet <jbrunet@baylibre.com>
-> Cc: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> Cc: Liviu Dudau <liviu.dudau@arm.com>
-> Cc: Sudeep Holla <sudeep.holla@arm.com>
-> Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-> Cc: Andy Gross <agross@kernel.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: "Andreas Färber" <afaerber@suse.de>
-> Cc: Manivannan Sadhasivam <mani@kernel.org>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> Cc: Paul Mackerras <paulus@samba.org>
-> Cc: Kevin Cernekee <cernekee@gmail.com>
-> Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> Cc: Laxman Dewangan <ldewangan@nvidia.com>
-> Cc: Thierry Reding <thierry.reding@gmail.com>
-> Cc: Jonathan Hunter <jonathanh@nvidia.com>
-> Cc: Palmer Dabbelt <palmer@dabbelt.com>
-> Cc: Paul Walmsley <paul.walmsley@sifive.com>
-> Cc: Orson Zhai <orsonzhai@gmail.com>
-> Cc: Baolin Wang <baolin.wang7@gmail.com>
-> Cc: Chunyan Zhang <zhang.lyra@gmail.com>
-> Cc: Patrice Chotard <patrice.chotard@foss.st.com>
-> Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
-> Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Peter Korsgaard <jacmet@sunsite.dk>
-> Cc: Timur Tabi <timur@kernel.org>
-> Cc: Michal Simek <michal.simek@xilinx.com>
-> ---
->  drivers/tty/serial/21285.c                  |  2 +-
->  drivers/tty/serial/8250/8250_aspeed_vuart.c |  2 +-
->  drivers/tty/serial/8250/8250_bcm7271.c      |  2 +-
->  drivers/tty/serial/8250/8250_dma.c          |  2 +-
->  drivers/tty/serial/8250/8250_mtk.c          |  2 +-
->  drivers/tty/serial/8250/8250_omap.c         |  2 +-
->  drivers/tty/serial/8250/8250_port.c         |  2 +-
->  drivers/tty/serial/altera_jtaguart.c        |  2 +-
->  drivers/tty/serial/altera_uart.c            |  2 +-
->  drivers/tty/serial/amba-pl010.c             |  2 +-
->  drivers/tty/serial/amba-pl011.c             |  6 +++---
->  drivers/tty/serial/apbuart.c                |  2 +-
->  drivers/tty/serial/ar933x_uart.c            |  2 +-
->  drivers/tty/serial/arc_uart.c               |  2 +-
->  drivers/tty/serial/atmel_serial.c           |  6 +++---
->  drivers/tty/serial/bcm63xx_uart.c           |  2 +-
->  drivers/tty/serial/clps711x.c               |  2 +-
->  drivers/tty/serial/cpm_uart/cpm_uart_core.c |  2 +-
->  drivers/tty/serial/digicolor-usart.c        |  2 +-
->  drivers/tty/serial/dz.c                     |  2 +-
->  drivers/tty/serial/fsl_linflexuart.c        |  2 +-
->  drivers/tty/serial/fsl_lpuart.c             |  6 +++---
->  drivers/tty/serial/icom.c                   |  2 +-
->  drivers/tty/serial/imx.c                    |  6 +++---
->  drivers/tty/serial/ip22zilog.c              |  4 ++--
->  drivers/tty/serial/jsm/jsm_tty.c            |  2 +-
->  drivers/tty/serial/kgdb_nmi.c               |  2 +-
->  drivers/tty/serial/lantiq.c                 |  4 ++--
->  drivers/tty/serial/liteuart.c               |  2 +-
->  drivers/tty/serial/lpc32xx_hs.c             |  2 +-
->  drivers/tty/serial/max3100.c                |  4 ++--
->  drivers/tty/serial/max310x.c                |  2 +-
->  drivers/tty/serial/mcf.c                    |  2 +-
->  drivers/tty/serial/men_z135_uart.c          |  2 +-
->  drivers/tty/serial/meson_uart.c             |  2 +-
->  drivers/tty/serial/milbeaut_usio.c          |  2 +-
->  drivers/tty/serial/mpc52xx_uart.c           |  2 +-
->  drivers/tty/serial/mps2-uart.c              |  4 ++--
->  drivers/tty/serial/msm_serial.c             |  6 +++---
->  drivers/tty/serial/mux.c                    |  2 +-
->  drivers/tty/serial/mvebu-uart.c             |  2 +-
->  drivers/tty/serial/mxs-auart.c              |  4 ++--
->  drivers/tty/serial/omap-serial.c            |  2 +-
->  drivers/tty/serial/owl-uart.c               |  2 +-
->  drivers/tty/serial/pch_uart.c               |  4 ++--
->  drivers/tty/serial/pic32_uart.c             |  2 +-
->  drivers/tty/serial/pmac_zilog.c             |  4 ++--
->  drivers/tty/serial/pxa.c                    |  2 +-
->  drivers/tty/serial/qcom_geni_serial.c       |  4 ++--
->  drivers/tty/serial/rda-uart.c               |  2 +-
->  drivers/tty/serial/rp2.c                    |  2 +-
->  drivers/tty/serial/sa1100.c                 |  2 +-
->  drivers/tty/serial/samsung_tty.c            |  6 +++---
->  drivers/tty/serial/sb1250-duart.c           |  2 +-
->  drivers/tty/serial/sc16is7xx.c              |  2 +-
->  drivers/tty/serial/sccnxp.c                 |  2 +-
->  drivers/tty/serial/serial-tegra.c           |  2 +-
->  drivers/tty/serial/serial_core.c            |  2 +-
->  drivers/tty/serial/serial_txx9.c            |  2 +-
->  drivers/tty/serial/sh-sci.c                 | 12 ++++++------
->  drivers/tty/serial/sifive.c                 |  2 +-
->  drivers/tty/serial/sprd_serial.c            |  4 ++--
->  drivers/tty/serial/st-asc.c                 |  2 +-
->  drivers/tty/serial/stm32-usart.c            |  2 +-
->  drivers/tty/serial/sunhv.c                  |  2 +-
->  drivers/tty/serial/sunsab.c                 |  2 +-
->  drivers/tty/serial/sunsu.c                  |  2 +-
->  drivers/tty/serial/sunzilog.c               |  4 ++--
->  drivers/tty/serial/tegra-tcu.c              |  2 +-
->  drivers/tty/serial/timbuart.c               |  2 +-
->  drivers/tty/serial/uartlite.c               |  2 +-
->  drivers/tty/serial/ucc_uart.c               |  2 +-
->  drivers/tty/serial/vr41xx_siu.c             |  2 +-
->  drivers/tty/serial/vt8500_serial.c          |  2 +-
->  drivers/tty/serial/xilinx_uartps.c          |  2 +-
->  drivers/tty/serial/zs.c                     |  2 +-
->  76 files changed, 103 insertions(+), 103 deletions(-)
+The request_queue pointer returned from bdev_get_queue() shall
+never be NULL, so the NULL checks are unnecessary, just remove them.
 
-For meson_uart:
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+---
+ block/blk-lib.c         | 14 --------------
+ include/linux/blkdev.h  | 32 +++++++-------------------------
+ kernel/trace/blktrace.c |  6 +-----
+ 3 files changed, 8 insertions(+), 44 deletions(-)
 
-Acked-by: Neil Armstrong <narmstrong@baylibre.com>
+diff --git a/block/blk-lib.c b/block/blk-lib.c
+index 9f09beadcbe3..e6e854936ef6 100644
+--- a/block/blk-lib.c
++++ b/block/blk-lib.c
+@@ -32,9 +32,6 @@ int __blkdev_issue_discard(struct block_device *bdev, sector_t sector,
+ 	unsigned int op;
+ 	sector_t bs_mask, part_offset = 0;
+ 
+-	if (!q)
+-		return -ENXIO;
+-
+ 	if (bdev_read_only(bdev))
+ 		return -EPERM;
+ 
+@@ -172,9 +169,6 @@ static int __blkdev_issue_write_same(struct block_device *bdev, sector_t sector,
+ 	struct bio *bio = *biop;
+ 	sector_t bs_mask;
+ 
+-	if (!q)
+-		return -ENXIO;
+-
+ 	if (bdev_read_only(bdev))
+ 		return -EPERM;
+ 
+@@ -250,10 +244,6 @@ static int __blkdev_issue_write_zeroes(struct block_device *bdev,
+ {
+ 	struct bio *bio = *biop;
+ 	unsigned int max_write_zeroes_sectors;
+-	struct request_queue *q = bdev_get_queue(bdev);
+-
+-	if (!q)
+-		return -ENXIO;
+ 
+ 	if (bdev_read_only(bdev))
+ 		return -EPERM;
+@@ -304,14 +294,10 @@ static int __blkdev_issue_zero_pages(struct block_device *bdev,
+ 		sector_t sector, sector_t nr_sects, gfp_t gfp_mask,
+ 		struct bio **biop)
+ {
+-	struct request_queue *q = bdev_get_queue(bdev);
+ 	struct bio *bio = *biop;
+ 	int bi_size = 0;
+ 	unsigned int sz;
+ 
+-	if (!q)
+-		return -ENXIO;
+-
+ 	if (bdev_read_only(bdev))
+ 		return -EPERM;
+ 
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index 12b9dbcc980e..9ab84ba1d7da 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -1529,67 +1529,49 @@ static inline unsigned int bdev_write_same(struct block_device *bdev)
+ {
+ 	struct request_queue *q = bdev_get_queue(bdev);
+ 
+-	if (q)
+-		return q->limits.max_write_same_sectors;
+-
+-	return 0;
++	return q->limits.max_write_same_sectors;
+ }
+ 
+ static inline unsigned int bdev_write_zeroes_sectors(struct block_device *bdev)
+ {
+ 	struct request_queue *q = bdev_get_queue(bdev);
+ 
+-	if (q)
+-		return q->limits.max_write_zeroes_sectors;
+-
+-	return 0;
++	return q->limits.max_write_zeroes_sectors;
+ }
+ 
+ static inline enum blk_zoned_model bdev_zoned_model(struct block_device *bdev)
+ {
+ 	struct request_queue *q = bdev_get_queue(bdev);
+ 
+-	if (q)
+-		return blk_queue_zoned_model(q);
+-
+-	return BLK_ZONED_NONE;
++	return blk_queue_zoned_model(q);
+ }
+ 
+ static inline bool bdev_is_zoned(struct block_device *bdev)
+ {
+ 	struct request_queue *q = bdev_get_queue(bdev);
+ 
+-	if (q)
+-		return blk_queue_is_zoned(q);
+-
+-	return false;
++	return blk_queue_is_zoned(q);
+ }
+ 
+ static inline sector_t bdev_zone_sectors(struct block_device *bdev)
+ {
+ 	struct request_queue *q = bdev_get_queue(bdev);
+ 
+-	if (q)
+-		return blk_queue_zone_sectors(q);
+-	return 0;
++	return blk_queue_zone_sectors(q);
+ }
+ 
+ static inline unsigned int bdev_max_open_zones(struct block_device *bdev)
+ {
+ 	struct request_queue *q = bdev_get_queue(bdev);
+ 
+-	if (q)
+-		return queue_max_open_zones(q);
+-	return 0;
++	return queue_max_open_zones(q);
+ }
+ 
+ static inline unsigned int bdev_max_active_zones(struct block_device *bdev)
+ {
+ 	struct request_queue *q = bdev_get_queue(bdev);
+ 
+-	if (q)
+-		return queue_max_active_zones(q);
+-	return 0;
++	return queue_max_active_zones(q);
+ }
+ 
+ static inline int queue_dma_alignment(const struct request_queue *q)
+diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
+index c221e4c3f625..2fe970d896b3 100644
+--- a/kernel/trace/blktrace.c
++++ b/kernel/trace/blktrace.c
+@@ -714,14 +714,10 @@ EXPORT_SYMBOL_GPL(blk_trace_startstop);
+  **/
+ int blk_trace_ioctl(struct block_device *bdev, unsigned cmd, char __user *arg)
+ {
+-	struct request_queue *q;
++	struct request_queue *q = bdev_get_queue(bdev);
+ 	int ret, start = 0;
+ 	char b[BDEVNAME_SIZE];
+ 
+-	q = bdev_get_queue(bdev);
+-	if (!q)
+-		return -ENXIO;
+-
+ 	mutex_lock(&q->debugfs_mutex);
+ 
+ 	switch (cmd) {
+-- 
+2.17.1
 
-Neil
