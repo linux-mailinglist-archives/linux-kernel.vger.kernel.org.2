@@ -2,84 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A88B840D474
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 10:26:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE72D40D47B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 10:29:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235005AbhIPI1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 04:27:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48116 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234904AbhIPI1q (ORCPT
+        id S235059AbhIPIa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 04:30:27 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:38816 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234309AbhIPIa0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 04:27:46 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C38C8C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 01:26:26 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id a10so6478686qka.12
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 01:26:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=7Rct0wxwR3oFXMND7vzY4QU1vkyKpfX925qIsFciJhk=;
-        b=NOqInXBtppRbkqGyfjRBKjoqezYMjP9oqBCi2yd+xyxGpF0uPJR94CDRl+r/6Z9XkZ
-         790DURD8mThd8ldC3RUYbWpAPSi1Au2a5ko6mg9YGo4AdF2yKsa1MQzu8te48acVNkjB
-         VeR2nG3ecgbSgW5Y23lEW7N68l5PKr47ZmnXM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=7Rct0wxwR3oFXMND7vzY4QU1vkyKpfX925qIsFciJhk=;
-        b=f1P6WlTlg8HzSQmbwFCsWhKc/siy3BlsSps6fPe1a2lAiA8PsQqNBaGF/uN3WpMBWq
-         kgzK8b2gbWa2vAoSdVZFX2zbpI5PQ4yrRd1gRILaaoPmZJ/NvujenBNGZGoxxgpWzhgI
-         YKdL9Ks/b/lkKrGItPjHVMmVMHJ7HvdlfeAywcHIVLeoSWrbhof8+cZ014HmlyuJTEaN
-         WAd5OfDrZ3y9K5+H07LZg7ZjMlfLM0Y6OilyGxWsccoYmK3gbD3/UFe8bNGD4jJDfg9D
-         29f/IrkHfliNUk4TE6mu5dXNQWCN871237e//ezTbYvkQ4hnWRp3SkyrcATdsm11miJI
-         BT3Q==
-X-Gm-Message-State: AOAM531ktok8libXsHiEM497sjEcxzHOHEOP/986uPHfg/fkjOb9PUOk
-        sdGrcMF9kDMZavkL/i/SL5OJcrfAWobX4iKMTm+/aPFf29kbUw==
-X-Google-Smtp-Source: ABdhPJxPp/BaYSMVCvnILhfHvZwrIcNJiTkW9EBfdo6RciEiPrlfODO+6UtmOaj/AMnqFq6VSVTBUTJhu9Q9007ySb4=
-X-Received: by 2002:a05:620a:149c:: with SMTP id w28mr3970119qkj.292.1631780785804;
- Thu, 16 Sep 2021 01:26:25 -0700 (PDT)
+        Thu, 16 Sep 2021 04:30:26 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 6041022343;
+        Thu, 16 Sep 2021 08:29:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1631780945; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=G97GCwmyfCkI6JmtTd8q5za/edjByNEk6qqCT0LjfvM=;
+        b=WQJkUYQL5bmETUpztyvvPaesPsa53Cyg2kjkyAUTQXSyPKaq0AKL13x+xN6xmDu/cfDw8u
+        mr5lnV3+Ig5550wNV4DtqlRbTCfdGgeeOKSVFaowTv9WFbdsyHVHfpiMHTS9+0RTeyRAWT
+        s3o1XxXc3d81dWM+6loLOrHXSG3DFYE=
+Received: from suse.cz (unknown [10.100.216.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id F1D48A3B94;
+        Thu, 16 Sep 2021 08:29:04 +0000 (UTC)
+Date:   Thu, 16 Sep 2021 10:29:04 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Pingfan Liu <kernelfans@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Sumit Garg <sumit.garg@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Julien Thierry <jthierry@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Wang Qing <wangqing@vivo.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Santosh Sivaraj <santosh@fossix.org>
+Subject: Re: [PATCH 3/5] kernel/watchdog: adapt the watchdog_hld interface
+ for async model
+Message-ID: <YUMAUE5RFJAtAS/z@alley>
+References: <20210915035103.15586-1-kernelfans@gmail.com>
+ <20210915035103.15586-4-kernelfans@gmail.com>
 MIME-Version: 1.0
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Thu, 16 Sep 2021 08:26:14 +0000
-Message-ID: <CACPK8XfTHOOksA8q7MeHW=7ijP_49iOyq1pDj2SQnqSBTDUoaA@mail.gmail.com>
-Subject: [GIT PULL] ARM: config: multi v7 defconfig cleanups
-To:     SoC Team <soc@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210915035103.15586-4-kernelfans@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello soc maintainers,
+On Wed 2021-09-15 11:51:01, Pingfan Liu wrote:
+> When lockup_detector_init()->watchdog_nmi_probe(), PMU may be not ready
+> yet. E.g. on arm64, PMU is not ready until
+> device_initcall(armv8_pmu_driver_init).  And it is deeply integrated
+> with the driver model and cpuhp. Hence it is hard to push this
+> initialization before smp_init().
+> 
+> But it is easy to take an opposite approach by enabling watchdog_hld to
+> get the capability of PMU async.
 
-Arnd has taken a few of the series through the fixes tree. The rest
-can probably wait for v5.16.
+This is another cryptic description. I have probably got it after
+looking at the 5th patch (was not Cc :-(
 
-The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
+> The async model is achieved by introducing an extra parameter notifier
+> of watchdog_nmi_probe().
 
-  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
+I would say that the code is horrible and looks too complex.
 
-are available in the Git repository at:
+What about simply calling watchdog_nmi_probe() and
+lockup_detector_setup() once again when watchdog_nmi_probe()
+failed in lockup_detector_init()?
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/joel/bmc.git
-tags/multiv7-defconfig-5.16
+Or do not call lockup_detector_init() at all in
+kernel_init_freeable() when PMU is not ready yet.
 
-for you to fetch changes up to 6c5faa6e07d3d42c5e6dd5a19ea1e1d9d097cf0f:
-
-  ARM: config: multi v7: Regenerate defconifg (2021-09-16 17:06:38 +0930)
-
-----------------------------------------------------------------
-ARMv7 multiplatform defconfig updates
-
-A cleanup of the mutliplatform defconfig to make it easier to maintian.
-
-----------------------------------------------------------------
-Joel Stanley (4):
-      ARM: config: multi v7: Drop unavailable options
-      ARM: config: multi v7: Clean up enabled by default options
-      ARM: config: multi v7: Add renamed symbols
-      ARM: config: multi v7: Regenerate defconifg
-
- arch/arm/configs/multi_v7_defconfig | 87 +++++++++++++------------------------
- 1 file changed, 30 insertions(+), 57 deletions(-)
+Best Regards,
+Petr
