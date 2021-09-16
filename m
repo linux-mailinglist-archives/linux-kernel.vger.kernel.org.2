@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C43A840E6F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:32:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F069F40E0AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:27:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352640AbhIPR05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:26:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43646 "EHLO mail.kernel.org"
+        id S241733AbhIPQXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:23:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49186 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346367AbhIPRSH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:18:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 31E8361B93;
-        Thu, 16 Sep 2021 16:41:08 +0000 (UTC)
+        id S235527AbhIPQNp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:13:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4AAE4613A2;
+        Thu, 16 Sep 2021 16:10:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810468;
-        bh=TD+BqpQc9GtFzId14Bx/2YU+1CKC56nOUGWnhYF2vws=;
+        s=korg; t=1631808606;
+        bh=6Kf2fT33VSvHv+eQRO4BHv76VEVqVr3MVAltcQ0IzkM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IPsG85v5k8jaJ+ukfozn+VPMp1PE7h5FV0zlgi8kCHy8jv++A/jWfvKVcVOpiYcF2
-         o3/CDbwlj2amykVi3qsvQ0Kb5PJOZuXYMKH/kTWVGhmV7Q4/icP2YzILUpso/R0h8p
-         4Ob7eCQ5e52c9dESBQh2Y/8rzOX+f1lNqqJB7YA4=
+        b=ffB8uJqCep01s2hICwY8GniyHU2g68/UqhbLXA2bEG3zvT8WGzZH4/GHlaYZ+8yNl
+         7BOT7y/LNtyCGm6S5WW1qpu9kJdDRMxZZuduueDDdEOLcwCamSCQJi1I+v8+7uvqh7
+         s9/L+GX/2Fr2KJbNVdApbivzA9hA7LdxbtBqv4Uc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chao Yu <chao@kernel.org>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
+        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 152/432] f2fs: deallocate compressed pages when error happens
+Subject: [PATCH 5.10 156/306] video: fbdev: riva: Error out if pixclock equals zero
 Date:   Thu, 16 Sep 2021 17:58:21 +0200
-Message-Id: <20210916155815.895756640@linuxfoundation.org>
+Message-Id: <20210916155759.401832273@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,54 +40,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jaegeuk Kim <jaegeuk@kernel.org>
+From: Zheyu Ma <zheyuma97@gmail.com>
 
-[ Upstream commit 827f02842e40ea2e00f401e8f4cb1bccf3b8cd86 ]
+[ Upstream commit f92763cb0feba247e0939ed137b495601fd072a5 ]
 
-In f2fs_write_multi_pages(), f2fs_compress_pages() allocates pages for
-compression work in cc->cpages[]. Then, f2fs_write_compressed_pages() initiates
-bio submission. But, if there's any error before submitting the IOs like early
-f2fs_cp_error(), previously it didn't free cpages by f2fs_compress_free_page().
-Let's fix memory leak by putting that just before deallocating cc->cpages.
+The userspace program could pass any values to the driver through
+ioctl() interface. If the driver doesn't check the value of 'pixclock',
+it may cause divide error.
 
-Fixes: 4c8ff7095bef ("f2fs: support data compression")
-Reviewed-by: Chao Yu <chao@kernel.org>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Fix this by checking whether 'pixclock' is zero first.
+
+The following log reveals it:
+
+[   33.396850] divide error: 0000 [#1] PREEMPT SMP KASAN PTI
+[   33.396864] CPU: 5 PID: 11754 Comm: i740 Not tainted 5.14.0-rc2-00513-gac532c9bbcfb-dirty #222
+[   33.396883] RIP: 0010:riva_load_video_mode+0x417/0xf70
+[   33.396969] Call Trace:
+[   33.396973]  ? debug_smp_processor_id+0x1c/0x20
+[   33.396984]  ? tick_nohz_tick_stopped+0x1a/0x90
+[   33.396996]  ? rivafb_copyarea+0x3c0/0x3c0
+[   33.397003]  ? wake_up_klogd.part.0+0x99/0xd0
+[   33.397014]  ? vprintk_emit+0x110/0x4b0
+[   33.397024]  ? vprintk_default+0x26/0x30
+[   33.397033]  ? vprintk+0x9c/0x1f0
+[   33.397041]  ? printk+0xba/0xed
+[   33.397054]  ? record_print_text.cold+0x16/0x16
+[   33.397063]  ? __kasan_check_read+0x11/0x20
+[   33.397074]  ? profile_tick+0xc0/0x100
+[   33.397084]  ? __sanitizer_cov_trace_const_cmp4+0x24/0x80
+[   33.397094]  ? riva_set_rop_solid+0x2a0/0x2a0
+[   33.397102]  rivafb_set_par+0xbe/0x610
+[   33.397111]  ? riva_set_rop_solid+0x2a0/0x2a0
+[   33.397119]  fb_set_var+0x5bf/0xeb0
+[   33.397127]  ? fb_blank+0x1a0/0x1a0
+[   33.397134]  ? lock_acquire+0x1ef/0x530
+[   33.397143]  ? lock_release+0x810/0x810
+[   33.397151]  ? lock_is_held_type+0x100/0x140
+[   33.397159]  ? ___might_sleep+0x1ee/0x2d0
+[   33.397170]  ? __mutex_lock+0x620/0x1190
+[   33.397180]  ? trace_hardirqs_on+0x6a/0x1c0
+[   33.397190]  do_fb_ioctl+0x31e/0x700
+
+Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/1627293835-17441-4-git-send-email-zheyuma97@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/f2fs/compress.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/video/fbdev/riva/fbdev.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-index 455561826c7d..b8b3f1160afa 100644
---- a/fs/f2fs/compress.c
-+++ b/fs/f2fs/compress.c
-@@ -1340,12 +1340,6 @@ static int f2fs_write_compressed_pages(struct compress_ctx *cc,
- 
- 	for (--i; i >= 0; i--)
- 		fscrypt_finalize_bounce_page(&cc->cpages[i]);
--	for (i = 0; i < cc->nr_cpages; i++) {
--		if (!cc->cpages[i])
--			continue;
--		f2fs_compress_free_page(cc->cpages[i]);
--		cc->cpages[i] = NULL;
--	}
- out_put_cic:
- 	kmem_cache_free(cic_entry_slab, cic);
- out_put_dnode:
-@@ -1356,6 +1350,12 @@ static int f2fs_write_compressed_pages(struct compress_ctx *cc,
- 	else
- 		f2fs_unlock_op(sbi);
- out_free:
-+	for (i = 0; i < cc->nr_cpages; i++) {
-+		if (!cc->cpages[i])
-+			continue;
-+		f2fs_compress_free_page(cc->cpages[i]);
-+		cc->cpages[i] = NULL;
-+	}
- 	page_array_free(cc->inode, cc->cpages, cc->nr_cpages);
- 	cc->cpages = NULL;
- 	return -EAGAIN;
+diff --git a/drivers/video/fbdev/riva/fbdev.c b/drivers/video/fbdev/riva/fbdev.c
+index ce55b9d2e862..7dd621c7afe4 100644
+--- a/drivers/video/fbdev/riva/fbdev.c
++++ b/drivers/video/fbdev/riva/fbdev.c
+@@ -1084,6 +1084,9 @@ static int rivafb_check_var(struct fb_var_screeninfo *var, struct fb_info *info)
+ 	int mode_valid = 0;
+ 	
+ 	NVTRACE_ENTER();
++	if (!var->pixclock)
++		return -EINVAL;
++
+ 	switch (var->bits_per_pixel) {
+ 	case 1 ... 8:
+ 		var->red.offset = var->green.offset = var->blue.offset = 0;
 -- 
 2.30.2
 
