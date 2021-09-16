@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FD7140E156
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:29:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5653440E310
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:19:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242761AbhIPQ3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:29:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54972 "EHLO mail.kernel.org"
+        id S1344172AbhIPQoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:44:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50780 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241186AbhIPQPT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:15:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 95210613C8;
-        Thu, 16 Sep 2021 16:11:17 +0000 (UTC)
+        id S244351AbhIPQiz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:38:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CBE5619F6;
+        Thu, 16 Sep 2021 16:22:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808678;
-        bh=CprO/CsqZviOI+h8Tjvfuxh1ImMiZiWVKrMB/8yCSUg=;
+        s=korg; t=1631809366;
+        bh=oWRUCAFDJYgHIjgHuS3unULmVDpG7sU3d4EIncw7RW8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EvKRhd3aU5Iz0iZlD3olrf+v50X/MmzVY1edDoSFOJUYb+C69K2UDz/CT8i94Fy1M
-         PfB+ZtJKnUPwauLgDfOK9JUMKJRzeqcnvdEq/L0iqUAAQM3dvXkAZ58JS6YmGVtU9q
-         BCBZ4ymW2OP17G3Kly5W/b6R6qP73utmnnxTb5nE=
+        b=GavS5cPbWDN/A7PI0eRR6TYM7ehfcYito2CtxPERv8KAbJinDJhJwDxlVSCZYNfH0
+         T5OHi3J7tzUEKGMZ1QiXb7YWD77hjIZcWq0s4w10Yd9bb6ME1WAGmm3j7isW5FMoCd
+         +uShgh1Hbh2Fz/rvbK3I3WZWpgZj8vcM8jBINszg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        stable@vger.kernel.org,
+        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 139/306] bus: fsl-mc: fix mmio base address for child DPRCs
-Date:   Thu, 16 Sep 2021 17:58:04 +0200
-Message-Id: <20210916155758.780448513@linuxfoundation.org>
+Subject: [PATCH 5.13 128/380] clk: at91: clk-generated: Limit the requested rate to our range
+Date:   Thu, 16 Sep 2021 17:58:05 +0200
+Message-Id: <20210916155808.389495052@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,81 +42,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Laurentiu Tudor <laurentiu.tudor@nxp.com>
+From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 
-[ Upstream commit 8990f96a012f42543005b07d9e482694192e9309 ]
+[ Upstream commit af7651e67b9d5f7e63ea23b118e3672ac662244a ]
 
-Some versions of the MC firmware wrongly report 0 for register base
-address of the DPMCP associated with child DPRC objects thus rendering
-them unusable. This is particularly troublesome in ACPI boot scenarios
-where the legacy way of extracting this base address from the device
-tree does not apply.
-Given that DPMCPs share the same base address, workaround this by using
-the base address extracted from the root DPRC container.
+On clk_generated_determine_rate(), the requested rate could be outside
+of clk's range. Limit the rate to the clock's range to not return an
+error.
 
-Signed-off-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
-Link: https://lore.kernel.org/r/20210715140718.8513-8-laurentiu.tudor@nxp.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: df70aeef6083 ("clk: at91: add generated clock driver")
+Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Link: https://lore.kernel.org/r/20210707131213.3283509-1-codrin.ciubotariu@microchip.com
+Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/bus/fsl-mc/fsl-mc-bus.c | 24 ++++++++++++++++++++++--
- 1 file changed, 22 insertions(+), 2 deletions(-)
+ drivers/clk/at91/clk-generated.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/bus/fsl-mc/fsl-mc-bus.c b/drivers/bus/fsl-mc/fsl-mc-bus.c
-index 806766b1b45f..e329cdd7156c 100644
---- a/drivers/bus/fsl-mc/fsl-mc-bus.c
-+++ b/drivers/bus/fsl-mc/fsl-mc-bus.c
-@@ -64,6 +64,8 @@ struct fsl_mc_addr_translation_range {
- #define MC_FAPR_PL	BIT(18)
- #define MC_FAPR_BMT	BIT(17)
+diff --git a/drivers/clk/at91/clk-generated.c b/drivers/clk/at91/clk-generated.c
+index b4fc8d71daf2..b656d25a9767 100644
+--- a/drivers/clk/at91/clk-generated.c
++++ b/drivers/clk/at91/clk-generated.c
+@@ -128,6 +128,12 @@ static int clk_generated_determine_rate(struct clk_hw *hw,
+ 	int i;
+ 	u32 div;
  
-+static phys_addr_t mc_portal_base_phys_addr;
++	/* do not look for a rate that is outside of our range */
++	if (gck->range.max && req->rate > gck->range.max)
++		req->rate = gck->range.max;
++	if (gck->range.min && req->rate < gck->range.min)
++		req->rate = gck->range.min;
 +
- /**
-  * fsl_mc_bus_match - device to driver matching callback
-  * @dev: the fsl-mc device to match against
-@@ -597,14 +599,30 @@ static int fsl_mc_device_get_mmio_regions(struct fsl_mc_device *mc_dev,
- 		 * If base address is in the region_desc use it otherwise
- 		 * revert to old mechanism
- 		 */
--		if (region_desc.base_address)
-+		if (region_desc.base_address) {
- 			regions[i].start = region_desc.base_address +
- 						region_desc.base_offset;
--		else
-+		} else {
- 			error = translate_mc_addr(mc_dev, mc_region_type,
- 					  region_desc.base_offset,
- 					  &regions[i].start);
- 
-+			/*
-+			 * Some versions of the MC firmware wrongly report
-+			 * 0 for register base address of the DPMCP associated
-+			 * with child DPRC objects thus rendering them unusable.
-+			 * This is particularly troublesome in ACPI boot
-+			 * scenarios where the legacy way of extracting this
-+			 * base address from the device tree does not apply.
-+			 * Given that DPMCPs share the same base address,
-+			 * workaround this by using the base address extracted
-+			 * from the root DPRC container.
-+			 */
-+			if (is_fsl_mc_bus_dprc(mc_dev) &&
-+			    regions[i].start == region_desc.base_offset)
-+				regions[i].start += mc_portal_base_phys_addr;
-+		}
-+
- 		if (error < 0) {
- 			dev_err(parent_dev,
- 				"Invalid MC offset: %#x (for %s.%d\'s region %d)\n",
-@@ -996,6 +1014,8 @@ static int fsl_mc_bus_probe(struct platform_device *pdev)
- 	plat_res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	mc_portal_phys_addr = plat_res->start;
- 	mc_portal_size = resource_size(plat_res);
-+	mc_portal_base_phys_addr = mc_portal_phys_addr & ~0x3ffffff;
-+
- 	error = fsl_create_mc_io(&pdev->dev, mc_portal_phys_addr,
- 				 mc_portal_size, NULL,
- 				 FSL_MC_IO_ATOMIC_CONTEXT_PORTAL, &mc_io);
+ 	for (i = 0; i < clk_hw_get_num_parents(hw); i++) {
+ 		if (gck->chg_pid == i)
+ 			continue;
 -- 
 2.30.2
 
