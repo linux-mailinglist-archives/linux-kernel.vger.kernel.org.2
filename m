@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9053F40E148
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:29:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E4CF40E3B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:21:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242042AbhIPQ3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:29:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55040 "EHLO mail.kernel.org"
+        id S239392AbhIPQvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:51:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57770 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241252AbhIPQPX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:15:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ABCEA61350;
-        Thu, 16 Sep 2021 16:11:25 +0000 (UTC)
+        id S243006AbhIPQqv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:46:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 149F061250;
+        Thu, 16 Sep 2021 16:26:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808686;
-        bh=uvcOn9u3AjrNTH6GU4l9aWzCKroJegd43P3y47cF5OE=;
+        s=korg; t=1631809607;
+        bh=9dp2HsjXh0v3QGCZzbXCEO3dbuO7d+bUPgzfJXClYpg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T0rGEWdJL5z1Kyb1qOR8mtSFF1Kns7yDcfTGcZdSXInAC6oJaqrv4HjzF2oX6ZwkE
-         apHJ4VmAG9XSI7JCDhuueE5yatv/6IHp6xYnQZLFwxlrUbH3rPMEN1sjFm5Q2eFmKK
-         cIvYHVT9ocVLNIqs0xpRTfh2thALSwe2ruHDLgHk=
+        b=eeL0mS9Gt7FRhfUyhr2aRlg3NlMoWwkm46BDalaqib1h73vw7T8EFox8iRwswcA8j
+         l96dK4jR59Cdjflk7vpMyM7fZDLJSnjFk01KdBVGVVACRnlv4wrhLNWKe/utO+6ymI
+         FlSMgLOn4Qpsgkv9OyX/QeAZuKYBDmuhZx+fLlXI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
+        Ronak Vijay Raheja <rraheja@codeaurora.org>,
+        Jack Pham <jackp@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 185/306] arm64: dts: qcom: sdm630: Rewrite memory map
-Date:   Thu, 16 Sep 2021 17:58:50 +0200
-Message-Id: <20210916155800.392790379@linuxfoundation.org>
+Subject: [PATCH 5.13 174/380] usb: gadget: composite: Allow bMaxPower=0 if self-powered
+Date:   Thu, 16 Sep 2021 17:58:51 +0200
+Message-Id: <20210916155809.996418044@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,113 +41,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+From: Jack Pham <jackp@codeaurora.org>
 
-[ Upstream commit 26e02c98a9ad63eb21b9be4ac92002f555130d3b ]
+[ Upstream commit bcacbf06c891374e7fdd7b72d11cda03b0269b43 ]
 
-The memory map was wrong. Fix it.
+Currently the composite driver encodes the MaxPower field of
+the configuration descriptor by reading the c->MaxPower of the
+usb_configuration only if it is non-zero, otherwise it falls back
+to using the value hard-coded in CONFIG_USB_GADGET_VBUS_DRAW.
+However, there are cases when a configuration must explicitly set
+bMaxPower to 0, particularly if its bmAttributes also has the
+Self-Powered bit set, which is a valid combination.
 
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
-Link: https://lore.kernel.org/r/20210728222542.54269-2-konrad.dybcio@somainline.org
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+This is specifically called out in the USB PD specification section
+9.1, in which a PDUSB device "shall report zero in the bMaxPower
+field after negotiating a mutually agreeable Contract", and also
+verified by the USB Type-C Functional Test TD.4.10.2 Sink Power
+Precedence Test.
+
+The fix allows the c->MaxPower to be used for encoding the bMaxPower
+even if it is 0, if the self-powered bit is also set.  An example
+usage of this would be for a ConfigFS gadget to be dynamically
+updated by userspace when the Type-C connection is determined to be
+operating in Power Delivery mode.
+
+Co-developed-by: Ronak Vijay Raheja <rraheja@codeaurora.org>
+Acked-by: Felipe Balbi <balbi@kernel.org>
+Signed-off-by: Ronak Vijay Raheja <rraheja@codeaurora.org>
+Signed-off-by: Jack Pham <jackp@codeaurora.org>
+Link: https://lore.kernel.org/r/20210720080907.30292-1-jackp@codeaurora.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/sdm630.dtsi | 41 ++++++++++++----------------
- 1 file changed, 18 insertions(+), 23 deletions(-)
+ drivers/usb/gadget/composite.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm630.dtsi b/arch/arm64/boot/dts/qcom/sdm630.dtsi
-index deb928d303c2..7da420cd21ba 100644
---- a/arch/arm64/boot/dts/qcom/sdm630.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm630.dtsi
-@@ -343,10 +343,19 @@ wlan_msa_mem: wlan-msa-mem@85700000 {
- 		};
+diff --git a/drivers/usb/gadget/composite.c b/drivers/usb/gadget/composite.c
+index 72a9797dbbae..504c1cbc255d 100644
+--- a/drivers/usb/gadget/composite.c
++++ b/drivers/usb/gadget/composite.c
+@@ -482,7 +482,7 @@ static u8 encode_bMaxPower(enum usb_device_speed speed,
+ {
+ 	unsigned val;
  
- 		qhee_code: qhee-code@85800000 {
--			reg = <0x0 0x85800000 0x0 0x3700000>;
-+			reg = <0x0 0x85800000 0x0 0x600000>;
- 			no-map;
- 		};
+-	if (c->MaxPower)
++	if (c->MaxPower || (c->bmAttributes & USB_CONFIG_ATT_SELFPOWER))
+ 		val = c->MaxPower;
+ 	else
+ 		val = CONFIG_USB_GADGET_VBUS_DRAW;
+@@ -936,7 +936,11 @@ static int set_config(struct usb_composite_dev *cdev,
+ 	}
  
-+		rmtfs_mem: memory@85e00000 {
-+			compatible = "qcom,rmtfs-mem";
-+			reg = <0x0 0x85e00000 0x0 0x200000>;
-+			no-map;
+ 	/* when we return, be sure our power usage is valid */
+-	power = c->MaxPower ? c->MaxPower : CONFIG_USB_GADGET_VBUS_DRAW;
++	if (c->MaxPower || (c->bmAttributes & USB_CONFIG_ATT_SELFPOWER))
++		power = c->MaxPower;
++	else
++		power = CONFIG_USB_GADGET_VBUS_DRAW;
 +
-+			qcom,client-id = <1>;
-+			qcom,vmid = <15>;
-+		};
-+
- 		smem_region: smem-mem@86000000 {
- 			reg = <0 0x86000000 0 0x200000>;
- 			no-map;
-@@ -357,58 +366,44 @@ tz_mem: memory@86200000 {
- 			no-map;
- 		};
- 
--		modem_fw_mem: modem-fw-region@8ac00000 {
-+		mpss_region: mpss@8ac00000 {
- 			reg = <0x0 0x8ac00000 0x0 0x7e00000>;
- 			no-map;
- 		};
- 
--		adsp_fw_mem: adsp-fw-region@92a00000 {
-+		adsp_region: adsp@92a00000 {
- 			reg = <0x0 0x92a00000 0x0 0x1e00000>;
- 			no-map;
- 		};
- 
--		pil_mba_mem: pil-mba-region@94800000 {
-+		mba_region: mba@94800000 {
- 			reg = <0x0 0x94800000 0x0 0x200000>;
- 			no-map;
- 		};
- 
--		buffer_mem: buffer-region@94a00000 {
-+		buffer_mem: tzbuffer@94a00000 {
- 			reg = <0x0 0x94a00000 0x0 0x100000>;
- 			no-map;
- 		};
- 
--		venus_fw_mem: venus-fw-region@9f800000 {
-+		venus_region: venus@9f800000 {
- 			reg = <0x0 0x9f800000 0x0 0x800000>;
- 			no-map;
- 		};
- 
--		secure_region2: secure-region2@f7c00000 {
--			reg = <0x0 0xf7c00000 0x0 0x5c00000>;
--			no-map;
--		};
--
- 		adsp_mem: adsp-region@f6000000 {
- 			reg = <0x0 0xf6000000 0x0 0x800000>;
- 			no-map;
- 		};
- 
--		qseecom_ta_mem: qseecom-ta-region@fec00000 {
--			reg = <0x0 0xfec00000 0x0 0x1000000>;
--			no-map;
--		};
--
- 		qseecom_mem: qseecom-region@f6800000 {
- 			reg = <0x0 0xf6800000 0x0 0x1400000>;
- 			no-map;
- 		};
- 
--		secure_display_memory: secure-region@f5c00000 {
--			reg = <0x0 0xf5c00000 0x0 0x5c00000>;
--			no-map;
--		};
--
--		cont_splash_mem: cont-splash-region@9d400000 {
--			reg = <0x0 0x9d400000 0x0 0x23ff000>;
-+		zap_shader_region: gpu@fed00000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0x0 0xfed00000 0x0 0xa00000>;
- 			no-map;
- 		};
- 	};
+ 	if (gadget->speed < USB_SPEED_SUPER)
+ 		power = min(power, 500U);
+ 	else
 -- 
 2.30.2
 
