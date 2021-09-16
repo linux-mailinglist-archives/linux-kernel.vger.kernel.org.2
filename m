@@ -2,152 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AA3440ECB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 23:38:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BB8D40ECBC
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 23:39:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233886AbhIPVjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 17:39:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33478 "EHLO
+        id S233725AbhIPVku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 17:40:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231351AbhIPVjJ (ORCPT
+        with ESMTP id S231255AbhIPVkt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 17:39:09 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B95AC061764
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 14:37:49 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id m21-20020a17090a859500b00197688449c4so5842646pjn.0
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 14:37:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=HRmclIUd+IXQYZmIP/8HeB41v2sSRX/lMU3hqPZHzVc=;
-        b=Y5uK5usJpzBqYTtETIZzqzrlpEcCGhV1j72nBokzqPxRHfzfqcv9p8/VHqtByMLMa0
-         7qnKk2mXRWZ/QVGLWlLUF5fmAtrANk6SVsEq1yvp8Onbj0l+EW2VdhbQ4ssaqq3XvXG+
-         UIKM1VSQcdm2YELLCqHTNz0YRbJwYR+FmuDGCbuEaAumq4dsS2jCwrqpahV4jYDPFBXn
-         +EFOprbkB9HNvtLDp/UkAPEYfLhp0RIxcvNz5Sev+mrGTECnwFfzaEXBv/uyDuKWSXl9
-         MKEl69zQIthFjeiLPFYtD50iSHjTDfTtVEJ8PfVuNwd6e3VXHqiBdyMOjirUU+xrvFcM
-         TwGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HRmclIUd+IXQYZmIP/8HeB41v2sSRX/lMU3hqPZHzVc=;
-        b=k9DK0x/58tN1phffcu3EJdN5Rheoaeg2y7NAbHKvzbDoJINjSP5VI7KIiAIA8pFsOY
-         IzlFoa3mKMqO6SZhawikp8ZzJuMiPCTVr8QLj4U2glnqwM9Z4K/ujnqlyRnBmATCqEag
-         FC8rsK83jJmqPde2bOwENMJik1Z1IgPnWa6ZZzN6ytYVVPKOz3smqY4aAL4McR+qjVFg
-         8wxmVIpTqUEY+EYvQWoTn5QK5ZSZp83qatciz4ZdZynhIa3kCZj3UEGpj6UkRBp8PbF4
-         ejLX/VEjpJOPJSi88C/Ktu4UvmFC7UydRQeXy9LGlNPYuRkKPj7tv5DeMW5PwxRSDU8R
-         lERQ==
-X-Gm-Message-State: AOAM53163gf4b+ZQlMG7/HYvo/nDCvwqQFaU9PcSFGqGbpAjU92BvKT7
-        yhc9b/elwtTr5nKm/5yuh6dVow==
-X-Google-Smtp-Source: ABdhPJxrNs7jIZy34jmkRTyON4Y+9pNnsbkx7GECTLo7e1rXLwAWohi0Xxo5Jb11PEVRFoL9wO4HSQ==
-X-Received: by 2002:a17:90b:1291:: with SMTP id fw17mr6609537pjb.135.1631828268138;
-        Thu, 16 Sep 2021 14:37:48 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id t15sm4013977pgk.13.2021.09.16.14.37.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 14:37:47 -0700 (PDT)
-Date:   Thu, 16 Sep 2021 21:37:43 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
-        Artem Kashkanov <artem.kashkanov@intel.com>,
-        Like Xu <like.xu.linux@gmail.com>,
-        Zhu Lingshan <lingshan.zhu@intel.com>
-Subject: Re: [PATCH v2 00/13] perf: KVM: Fix, optimize, and clean up callbacks
-Message-ID: <YUO5J/jTMa2KGbsq@google.com>
-References: <20210828003558.713983-1-seanjc@google.com>
- <20210828201336.GD4353@worktop.programming.kicks-ass.net>
+        Thu, 16 Sep 2021 17:40:49 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FF0CC061574;
+        Thu, 16 Sep 2021 14:39:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1631828360;
+        bh=k+p/4hGDgm5K+z7CnvZZURub58LrzLwa4ARYzEzDcMI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=XyepaZxRZpJ5o03i+IcP2iMIOzpCFgcYUDrFCUY6p/3NjwRfxJbVulBcCNCENGgjk
+         pjwuj1CUTY/jQdlO0TSYwyXlVb7QD/vT2Wrq4Tq5KKOvgYYtaQJlSdwPkMGf4M1gcG
+         CGPM52IEJosxbBaOE0qrIO52sO9YtTc3V3d+CAerlPULWF0l5vCr72nr5dyBnm1LeF
+         biCAlG4JD58P7ryCcrU8OS82PPM6oM/d4uf+gJ7+RIOQ+mMj1d7pjRE/RcaryF83Zm
+         TZcoimO0ZXqxXPfI7H8h0DBTTwTjgsuMfmGVRAU8LcoE7ONVtov29GWx105UcZDfbz
+         3CFOcIP75ziPQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H9Vpc027jz9sVw;
+        Fri, 17 Sep 2021 07:39:19 +1000 (AEST)
+Date:   Fri, 17 Sep 2021 07:39:18 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Vadim Pasternak <vadimp@nvidia.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the hwmon-fixes tree
+Message-ID: <20210917073918.1213288f@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210828201336.GD4353@worktop.programming.kicks-ass.net>
+Content-Type: multipart/signed; boundary="Sig_/NpIlKwZMMj11h83EYNrAJAH";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 28, 2021, Peter Zijlstra wrote:
-> On Fri, Aug 27, 2021 at 05:35:45PM -0700, Sean Christopherson wrote:
-> > Like Xu (2):
-> >   perf/core: Rework guest callbacks to prepare for static_call support
-> >   perf/core: Use static_call to optimize perf_guest_info_callbacks
-> > 
-> > Sean Christopherson (11):
-> >   perf: Ensure perf_guest_cbs aren't reloaded between !NULL check and
-> >     deref
-> >   KVM: x86: Register perf callbacks after calling vendor's
-> >     hardware_setup()
-> >   KVM: x86: Register Processor Trace interrupt hook iff PT enabled in
-> >     guest
-> >   perf: Stop pretending that perf can handle multiple guest callbacks
-> >   perf: Force architectures to opt-in to guest callbacks
-> >   KVM: x86: Drop current_vcpu for kvm_running_vcpu + kvm_arch_vcpu
-> >     variable
-> >   KVM: x86: More precisely identify NMI from guest when handling PMI
-> >   KVM: Move x86's perf guest info callbacks to generic KVM
-> >   KVM: x86: Move Intel Processor Trace interrupt handler to vmx.c
-> >   KVM: arm64: Convert to the generic perf callbacks
-> >   KVM: arm64: Drop perf.c and fold its tiny bits of code into arm.c /
-> >     pmu.c
+--Sig_/NpIlKwZMMj11h83EYNrAJAH
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Argh, sorry, I somehow managed to miss all of your replies.  I'll get back to
-this series next week.  Thanks for the quick response!
+Hi all,
 
-> Lets keep the whole intel_pt crud inside x86...
+In commit
 
-In theory, I like the idea of burying intel_pt inside x86 (and even in Intel+VMX code
-for the most part), but the actual implementation is a bit gross.  Because of the
-whole "KVM can be a module" thing, either the static call and __static_call_return0
-would need to be exported, or a new register/unregister pair would have to be exported.
+  d74057b1a5bc ("hwmon: (mlxreg-fan) Return non-zero value when fan current=
+ state is enforced from sysfs")
 
-The unregister path would also need its own synchronize_rcu().  In general, I
-don't love duplicating the logic, but it's not the end of the world.
+Fixes tag
 
-Either way works for me.  Paolo or Peter, do either of you have a preference?
+  Fixes: 65afb4c8e7e4: (hwmon: (mlxreg-fan) Add support for Mellanox FAN dr=
+iver)
 
-> ---
-> Index: linux-2.6/arch/x86/events/core.c
-> ===================================================================
-> --- linux-2.6.orig/arch/x86/events/core.c
-> +++ linux-2.6/arch/x86/events/core.c
-> @@ -92,7 +92,7 @@ DEFINE_STATIC_CALL_RET0(x86_pmu_guest_ge
->  
->  DEFINE_STATIC_CALL_RET0(x86_guest_state, *(perf_guest_cbs->state));
->  DEFINE_STATIC_CALL_RET0(x86_guest_get_ip, *(perf_guest_cbs->get_ip));
-> -DEFINE_STATIC_CALL_RET0(x86_guest_handle_intel_pt_intr, *(perf_guest_cbs->handle_intel_pt_intr));
-> +DEFINE_STATIC_CALL_RET0(x86_guest_handle_intel_pt_intr, unsigned int (*)(void));
+has these problem(s):
 
-FWIW, the param needs to be a raw function, not a function pointer. 
+  - missing space between the SHA1 and the subject
+  - Subject does not match target commit subject
+    Just use
+	git log -1 --format=3D'Fixes: %h ("%s")'
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/NpIlKwZMMj11h83EYNrAJAH
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFDuYYACgkQAVBC80lX
+0GxiQwgAkUDYaOj060f2OYCh9LvirPz/abuc6KA4JqcIxCEfe2/wHw652vNWUdN3
+qi4EK8+D9I8Eq2bl4IBfgk6Ia0q54LpeM5u6cePZQP/IqjtFwLUHCpwy/VwbuhTk
+tCAHrvMN9/xJLBNR/hkUWkHAJAdNQC2jCdlmwWgiInBt7RE42A0ZbsCX3XPTetMT
+DAW97zk6O0j3nktYWK+KwhatPWtdSgo8WOgy1HZsM+aSIErrmOoEwzg8wWsqg6Wb
+2deELvKZwMsg+RXyusGo0zOXSvsUwxTy5wkYYsXS/bx3gWwoFzId7A/8zRmkmcE8
+72fgSXClAziMevlz4RWMUvdoQKQkgg==
+=vq1M
+-----END PGP SIGNATURE-----
+
+--Sig_/NpIlKwZMMj11h83EYNrAJAH--
