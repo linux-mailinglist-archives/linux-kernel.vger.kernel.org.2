@@ -2,69 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D32240DA57
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 14:51:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ABD240D973
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 14:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239781AbhIPMwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 08:52:22 -0400
-Received: from zimbra-mta.lsd.ufcg.edu.br ([150.165.15.74]:49542 "EHLO
-        zimbra-mta.lsd.ufcg.edu.br" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230299AbhIPMwU (ORCPT
+        id S239016AbhIPMGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 08:06:18 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:32444 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S238974AbhIPMGQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 08:52:20 -0400
-X-Greylist: delayed 13155 seconds by postgrey-1.27 at vger.kernel.org; Thu, 16 Sep 2021 08:52:20 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by zimbra-mta.lsd.ufcg.edu.br (Postfix) with ESMTP id 84B401CE84A;
-        Thu, 16 Sep 2021 04:29:25 -0300 (-03)
-Received: from zimbra-mta.lsd.ufcg.edu.br ([127.0.0.1])
-        by localhost (zimbra-mta.lsd.ufcg.edu.br [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id tLAlWy-I6v75; Thu, 16 Sep 2021 04:29:25 -0300 (-03)
-Received: from localhost (localhost [127.0.0.1])
-        by zimbra-mta.lsd.ufcg.edu.br (Postfix) with ESMTP id 37F791CE629;
-        Thu, 16 Sep 2021 04:25:57 -0300 (-03)
-DKIM-Filter: OpenDKIM Filter v2.10.3 zimbra-mta.lsd.ufcg.edu.br 37F791CE629
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lsd.ufcg.edu.br;
-        s=3E82003E-F604-11EB-A491-7C6DDB2713F3; t=1631777157;
-        bh=wM9aGZhlvcNHZeIcDIZ9o/jldE1rU6dCr79BTrGFl3Q=;
-        h=MIME-Version:To:From:Date:Message-Id;
-        b=MoClDNnPF5mGFgn7CNziz+rj+8/+rK09IRokNmnOVW4+x00ZuMp63jY5IhaQ3PjsG
-         7A8t6MpkML1ytMh7rFasyQq0ewor5n8N72VD+0ac4RMjvBLKL6142tpinh4n5zQuC7
-         m8Dz7Fei4vEAUhgb/Ev+MMKVl6jZpCAbirC8SQdUog4MePb8S2+AaVpjWx6oeMYp81
-         gPcxTDPeFuVGlB7LbdOV6yrFcO2IjOlhcyPOQgIPDcQCmBGNoM3/5ZG/5dbUwTDgsK
-         m0WeP4nLQGfX54hHzwABlg+e1Ltho3+QowkqJNqES0/VypfMVCccIquO9d4cN/kmcA
-         bJU5rFVyNQ/Ew==
-X-Virus-Scanned: amavisd-new at lsd.ufcg.edu.br
-Received: from zimbra-mta.lsd.ufcg.edu.br ([127.0.0.1])
-        by localhost (zimbra-mta.lsd.ufcg.edu.br [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id F6OLvuWkc5ub; Thu, 16 Sep 2021 04:25:57 -0300 (-03)
-Received: from [10.0.0.2] (unknown [213.156.145.159])
-        by zimbra-mta.lsd.ufcg.edu.br (Postfix) with ESMTPSA id F1E5F1CE5A0;
-        Thu, 16 Sep 2021 04:20:05 -0300 (-03)
-Content-Type: text/plain; charset="iso-8859-1"
+        Thu, 16 Sep 2021 08:06:16 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 18GBokCc011984;
+        Thu, 16 Sep 2021 08:04:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=5RhjU+LEmgORcq/vv2e0IOKZ6jh2ZKtBlLhFlAHPRHg=;
+ b=GHxjWi0AyL+1vvNb7be9plmfgeSx9iPty/SNXCP7Ah0PYh/MLaKRxVTdnkZDvwVOmfcj
+ 5/AqtcO2CkGgLKgRoqEJahbXoF6E5qsi0dPTaM+QI5l70nV4Lo8jXvuGh+/nzsBpiKyI
+ ujvdhfsUk+PtkhwJQql888ydK7g8/Tn9CbVeb07nm3yORXGAzwD3UMkBXeuk/oTIMQrG
+ sLY0Vfrt8ILxhtsCWG/JHQ9Mf16fdElDAC4/0zTPMiUc1ug5DHe28gStaOhBpBPf0EVd
+ YkFo/8iWBRq1QP+WSF3ANxv+Voa1oZA2+94018gYlpNRdrFxl4dO3gA5+wsFt054xReg Aw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3b44r3hb65-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 16 Sep 2021 08:04:39 -0400
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18GBpAOe018953;
+        Thu, 16 Sep 2021 08:04:39 -0400
+Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3b44r3hb5m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 16 Sep 2021 08:04:39 -0400
+Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
+        by ppma02wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18GBuu0s027838;
+        Thu, 16 Sep 2021 12:04:38 GMT
+Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
+        by ppma02wdc.us.ibm.com with ESMTP id 3b0m3cgswa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 16 Sep 2021 12:04:38 +0000
+Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
+        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18GC4cSH22086012
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 16 Sep 2021 12:04:38 GMT
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E032528067;
+        Thu, 16 Sep 2021 12:04:37 +0000 (GMT)
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F378A2805C;
+        Thu, 16 Sep 2021 12:04:35 +0000 (GMT)
+Received: from li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com (unknown [9.160.174.53])
+        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTPS;
+        Thu, 16 Sep 2021 12:04:35 +0000 (GMT)
+Date:   Thu, 16 Sep 2021 07:04:34 -0500
+From:   "Paul A. Clarke" <pc@us.ibm.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        eranian@google.com
+Subject: Re: [PATCH v2] perf test: Workload test of metric and metricgroups
+Message-ID: <20210916120434.GA4498@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
+References: <20210916060525.1890638-1-irogers@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: Your $ 3,350,000.00 USD
-To:     Recipients <benardi@lsd.ufcg.edu.br>
-From:   "Leonardo Del" <benardi@lsd.ufcg.edu.br>
-Date:   Thu, 16 Sep 2021 08:19:44 +0100
-Reply-To: leonardodelve20@gmail.com
-Message-Id: <20210916072005.F1E5F1CE5A0@zimbra-mta.lsd.ufcg.edu.br>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210916060525.1890638-1-irogers@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: QZlgmHlhqgc6bOwf_oeWkoIU_-VfjeQS
+X-Proofpoint-ORIG-GUID: WhGUe7YqOAMBCriT8Gea9tpvtlqe3mrk
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.687,Hydra:6.0.235,FMLib:17.0.607.475
+ definitions=2020-10-13_15,2020-10-13_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
+ priorityscore=1501 bulkscore=0 adultscore=0 lowpriorityscore=0
+ clxscore=1011 phishscore=0 mlxscore=0 mlxlogscore=999 suspectscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109160068
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'm Leonardo Del Vecchio, an Italian business, investor, Founder and chairm=
-an of Luxottica, Which is now the world's largest producer and retailer of =
-glasses and lenses. I gave away 25 percent of my personal wealth to charity=
-. And I also pledged to give away the rest of 25% this year 2021 to Individ=
-uals. I have decided to donate (Three Million, Three Hundred and Fifty Thou=
-sand Dollars)to you. If you are interested in my donation,
+On Wed, Sep 15, 2021 at 11:05:25PM -0700, Ian Rogers wrote:
+> Test every metric and metricgroup with 'true' as a workload.
 
+Good idea!  (However...)
 
-Do contact me: leonardodelve20@gmail.com
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/tests/shell/stat_all_metricgroups.sh | 12 ++++++++++++
+>  tools/perf/tests/shell/stat_all_metrics.sh      | 16 ++++++++++++++++
+>  2 files changed, 28 insertions(+)
+>  create mode 100755 tools/perf/tests/shell/stat_all_metricgroups.sh
+>  create mode 100755 tools/perf/tests/shell/stat_all_metrics.sh
+> 
+> diff --git a/tools/perf/tests/shell/stat_all_metricgroups.sh b/tools/perf/tests/shell/stat_all_metricgroups.sh
+> new file mode 100755
+> index 000000000000..de24d374ce24
+> --- /dev/null
+> +++ b/tools/perf/tests/shell/stat_all_metricgroups.sh
+> @@ -0,0 +1,12 @@
+> +#!/bin/sh
+> +# perf all metricgroups test
+> +# SPDX-License-Identifier: GPL-2.0
+> +
+> +set -e
+> +
+> +for m in $(perf list --raw-dump metricgroups); do
+> +  echo "Testing $m"
+> +  perf stat -M "$m" true
+> +done
+> +
+> +exit 0
 
+This always succeeds. Is that what you want?
+Maybe check the return code from "perf", at least?
 
-Warm Regard
-Founder and chairman of Luxottica
-Leonardo Del Vecchio
+> diff --git a/tools/perf/tests/shell/stat_all_metrics.sh b/tools/perf/tests/shell/stat_all_metrics.sh
+> new file mode 100755
+> index 000000000000..81b19ba27e68
+> --- /dev/null
+> +++ b/tools/perf/tests/shell/stat_all_metrics.sh
+> @@ -0,0 +1,16 @@
+> +#!/bin/sh
+> +# perf all metrics test
+> +# SPDX-License-Identifier: GPL-2.0
+> +
+> +set -e
+> +
+> +for m in `perf list --raw-dump metrics`; do
+> +  echo "Testing $m"
+> +  result=$(perf stat -M "$m" true)
+
+I don't think this is doing what you want it to do, as it just captures the
+output of "true", which is always empty.
+
+> +  if [[ "$result" =~ "$m" ]]; then
+
+So this always fails to match, and you'll never fail here, either. :-)
+
+> +    echo "Metric not printed: $m"
+> +    exit 1
+> +  fi
+> +done
+> +
+> +exit 0
+
+You may want to redirect the output of the "perf" command to a temporary file,
+then grep within that.  And, you'll need to remove the file before running the
+perf command, because if it fails, it will leave any existing file untouched.
+
+Thanks! :-)
+
+PC
