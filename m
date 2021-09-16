@@ -2,84 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5378640D18D
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 04:06:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 314B240D18E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 04:07:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233885AbhIPCHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 22:07:51 -0400
-Received: from mx24.baidu.com ([111.206.215.185]:49932 "EHLO baidu.com"
+        id S233924AbhIPCI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 22:08:58 -0400
+Received: from smtp23.cstnet.cn ([159.226.251.23]:48582 "EHLO cstnet.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233809AbhIPCHu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 22:07:50 -0400
-X-Greylist: delayed 368 seconds by postgrey-1.27 at vger.kernel.org; Wed, 15 Sep 2021 22:07:50 EDT
-Received: from Bc-Mail-Ex13.internal.baidu.com (unknown [172.31.51.53])
-        by Forcepoint Email with ESMTPS id 2B74F308AEF8BAE180B3;
-        Thu, 16 Sep 2021 10:06:29 +0800 (CST)
-Received: from BJHW-MAIL-EX28.internal.baidu.com (10.127.64.43) by
- Bc-Mail-Ex13.internal.baidu.com (172.31.51.53) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.12; Thu, 16 Sep 2021 10:06:28 +0800
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BJHW-MAIL-EX28.internal.baidu.com (10.127.64.43) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Thu, 16 Sep 2021 10:06:28 +0800
-Received: from BJHW-MAIL-EX27.internal.baidu.com ([169.254.58.247]) by
- BJHW-MAIL-EX27.internal.baidu.com ([169.254.58.247]) with mapi id
- 15.01.2308.014; Thu, 16 Sep 2021 10:06:28 +0800
-From:   "Cai,Huoqing" <caihuoqing@baidu.com>
-To:     Sean Young <sean@mess.org>
-CC:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2] media: b2c2: flexcop: Convert to SPDX identifier
-Thread-Topic: [PATCH v2] media: b2c2: flexcop: Convert to SPDX identifier
-Thread-Index: AQHXqp6YKLlLTRa+3UOAGkVQbN03Vaul6XWg
-Date:   Thu, 16 Sep 2021 02:06:28 +0000
-Message-ID: <de095ae62b4a4e3196ccd96857049870@baidu.com>
-References: <20210916020006.8497-1-caihuoqing@baidu.com>
-In-Reply-To: <20210916020006.8497-1-caihuoqing@baidu.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.12.45.132]
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+        id S233745AbhIPCIz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 22:08:55 -0400
+Received: from localhost.localdomain (unknown [124.16.138.128])
+        by APP-03 (Coremail) with SMTP id rQCowADX3XnOpkJhmWOVAA--.28482S2;
+        Thu, 16 Sep 2021 10:07:10 +0800 (CST)
+From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Subject: [PATCH] netlink: Remove extra brackets of nla_for_each_attr()
+Date:   Thu, 16 Sep 2021 02:07:08 +0000
+Message-Id: <1631758028-3805500-1-git-send-email-jiasheng@iscas.ac.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: rQCowADX3XnOpkJhmWOVAA--.28482S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7JrWDXFyfXw18uF1UZFW7CFg_yoWxtrbEyw
+        s7ZrWvg3yrAFyakr18JFWkWF1Fkwn5JFyS9Fn3tw4fX348Jr13X395GrZxtFyfC397AFy3
+        J3WIqry7J3y3ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb4kFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
+        Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr
+        1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
+        7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r
+        1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_
+        Gr1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxV
+        WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI
+        7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r
+        1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8
+        JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfU5vtCUU
+        UUU
+X-Originating-IP: [124.16.138.128]
+X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGVsbG8sDQorQ2MgU2VhbiBZb3VuZyA8c2VhbkBtZXNzLm9yZz4NCg0KPiAtLS0tLU9yaWdpbmFs
-IE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBDYWksSHVvcWluZyA8Y2FpaHVvcWluZ0BiYWlkdS5jb20+
-DQo+IFNlbnQ6IDIwMjHE6jnUwjE2yNUgMTA6MDANCj4gVG86IENhaSxIdW9xaW5nDQo+IENjOiBN
-YXVybyBDYXJ2YWxobyBDaGVoYWI7IGxpbnV4LW1lZGlhQHZnZXIua2VybmVsLm9yZzsgbGludXgt
-DQo+IGtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNCj4gU3ViamVjdDogW1BBVENIIHYyXSBtZWRpYTog
-YjJjMjogZmxleGNvcDogQ29udmVydCB0byBTUERYIGlkZW50aWZpZXINCj4gDQo+IHVzZSBTUERY
-LUxpY2Vuc2UtSWRlbnRpZmllciBpbnN0ZWFkIG9mIGEgdmVyYm9zZSBsaWNlbnNlIHRleHQNCj4g
-DQo+IFNpZ25lZC1vZmYtYnk6IENhaSBIdW9xaW5nIDxjYWlodW9xaW5nQGJhaWR1LmNvbT4NCj4g
-LS0tDQo+IHYxLT52MjogQ2hhbmdlIGxpY2Vuc2UgZnJvbSBHUEwtMi4wKyB0byBMR1BMLTIuMS1v
-ci1sYXRlcg0KPiANCj4gIGRyaXZlcnMvbWVkaWEvY29tbW9uL2IyYzIvZmxleGNvcC5jIHwgMTEg
-Ky0tLS0tLS0tLS0NCj4gIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMTAgZGVsZXRp
-b25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tZWRpYS9jb21tb24vYjJjMi9mbGV4
-Y29wLmMNCj4gYi9kcml2ZXJzL21lZGlhL2NvbW1vbi9iMmMyL2ZsZXhjb3AuYw0KPiBpbmRleCBj
-YmFhNjFmMTBkNWYuLjJlYWZmMTMxNjk1MiAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9tZWRpYS9j
-b21tb24vYjJjMi9mbGV4Y29wLmMNCj4gKysrIGIvZHJpdmVycy9tZWRpYS9jb21tb24vYjJjMi9m
-bGV4Y29wLmMNCj4gQEAgLTEsMyArMSw0IEBADQo+ICsvLyBTUERYLUxpY2Vuc2UtSWRlbnRpZmll
-cjogTEdQTC0yLjEtb3ItbGF0ZXINCj4gIC8qDQo+ICAgKiBMaW51eCBkcml2ZXIgZm9yIGRpZ2l0
-YWwgVFYgZGV2aWNlcyBlcXVpcHBlZCB3aXRoIEIyQzIgRmxleGNvcElJKGIpL0lJSQ0KPiAgICog
-ZmxleGNvcC5jIC0gbWFpbiBtb2R1bGUgcGFydA0KPiBAQCAtMTUsMTYgKzE2LDYgQEANCj4gICAq
-ICAgVXdlIEJ1Z2xhLCB1d2UuYnVnbGEgYXQgZ214LmRlIChkb2luZyB0ZXN0cywgcmVzdHlsaW5n
-IGNvZGUsIHdyaXRpbmcgZG9jdSkNCj4gICAqICAgTmlrbGFzIFBlaW5lY2tlLCBwZWluZWNrZSBh
-dCBnZHYudW5pLWhhbm5vdmVyLmRlIChoYXJkd2FyZSBwaWQvbWFjDQo+ICAgKiAgICAgICAgICAg
-ICAgIGZpbHRlcmluZykNCj4gLSAqDQo+IC0gKiBUaGlzIHByb2dyYW0gaXMgZnJlZSBzb2Z0d2Fy
-ZTsgeW91IGNhbiByZWRpc3RyaWJ1dGUgaXQgYW5kL29yDQo+IC0gKiBtb2RpZnkgaXQgdW5kZXIg
-dGhlIHRlcm1zIG9mIHRoZSBHTlUgTGVzc2VyIEdlbmVyYWwgUHVibGljIExpY2Vuc2UNCj4gLSAq
-IGFzIHB1Ymxpc2hlZCBieSB0aGUgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9uOyBlaXRoZXIgdmVy
-c2lvbiAyLjENCj4gLSAqIG9mIHRoZSBMaWNlbnNlLCBvciAoYXQgeW91ciBvcHRpb24pIGFueSBs
-YXRlciB2ZXJzaW9uLg0KPiAtICoNCj4gLSAqIFRoaXMgcHJvZ3JhbSBpcyBkaXN0cmlidXRlZCBp
-biB0aGUgaG9wZSB0aGF0IGl0IHdpbGwgYmUgdXNlZnVsLA0KPiAtICogYnV0IFdJVEhPVVQgQU5Z
-IFdBUlJBTlRZOyB3aXRob3V0IGV2ZW4gdGhlIGltcGxpZWQgd2FycmFudHkgb2YNCj4gLSAqIE1F
-UkNIQU5UQUJJTElUWSBvciBGSVRORVNTIEZPUiBBIFBBUlRJQ1VMQVIgUFVSUE9TRS4gIFNlZSB0
-aGUNCj4gLSAqIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGZvciBtb3JlIGRldGFpbHMuDQo+
-ICAgKi8NCj4gDQo+ICAjaW5jbHVkZSAiZmxleGNvcC5oIg0KPiAtLQ0KPiAyLjI1LjENCg0K
+It's obvious that '&(rem)' has unneeded brackets.
+Therefore it's better to remove them.
+
+Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
+---
+ include/net/netlink.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/net/netlink.h b/include/net/netlink.h
+index 1ceec51..5822e0d 100644
+--- a/include/net/netlink.h
++++ b/include/net/netlink.h
+@@ -1920,7 +1920,7 @@ static inline int nla_total_size_64bit(int payload)
+ #define nla_for_each_attr(pos, head, len, rem) \
+ 	for (pos = head, rem = len; \
+ 	     nla_ok(pos, rem); \
+-	     pos = nla_next(pos, &(rem)))
++	     pos = nla_next(pos, &rem))
+ 
+ /**
+  * nla_for_each_nested - iterate over nested attributes
+-- 
+2.7.4
+
