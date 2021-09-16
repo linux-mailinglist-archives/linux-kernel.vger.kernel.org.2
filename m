@@ -2,199 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3610D40D444
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 10:05:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C693D40D44E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 10:11:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235009AbhIPIGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 04:06:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50838 "EHLO mail.kernel.org"
+        id S234972AbhIPIMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 04:12:47 -0400
+Received: from mga09.intel.com ([134.134.136.24]:57558 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234878AbhIPIGl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 04:06:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 477186112E;
-        Thu, 16 Sep 2021 08:05:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631779521;
-        bh=J7eYvvZW4hfUTsIO3JbkvWBWcb1H+sTTJemQsKl98bY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=F5mcBb02/LDuLER7yksFmDaEAEqhHBsHKeRtiXSQ08VbDkVV0WyiLQCK75ZefcJ7Z
-         2BvPkOhNUmXcvm7kcswZu9NPn6pb2KPrC/4dJbdfVGx7FuwSGqNaHxWI+UE2pUA3NE
-         1V+YhS9O3vMg7vvxLN2yKK7hynJxTOgziMIFk6is=
-Date:   Thu, 16 Sep 2021 10:05:19 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Joel Stanley <joel@jms.id.au>
-Cc:     Pavel Skripkin <paskripkin@gmail.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Hillf Danton <hdanton@sina.com>,
-        syzbot <syzbot+9937dc42271cd87d4b98@syzkaller.appspotmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs@googlegroups.com, Eric Sandeen <sandeen@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Luis Chamberlain <mcgrof@kernel.org>
-Subject: Re: [syzbot] WARNING in internal_create_group
-Message-ID: <YUL6vx5w5kHZM9t1@kroah.com>
-References: <000000000000bd7c8a05c719ecf2@google.com>
- <20210721033703.949-1-hdanton@sina.com>
- <20210721043034.GB7444@lst.de>
- <39ac87a8-42ac-acf7-11eb-ba0b6a9f4a95@gmail.com>
- <CACPK8XfUWoOHr-0RwRoYoskia4fbAbZ7DYf5wWBnv6qUnGq18w@mail.gmail.com>
+        id S229908AbhIPIMq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 04:12:46 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10108"; a="222551855"
+X-IronPort-AV: E=Sophos;i="5.85,297,1624345200"; 
+   d="scan'208";a="222551855"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2021 01:11:15 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,297,1624345200"; 
+   d="scan'208";a="698775843"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.151])
+  by fmsmga006.fm.intel.com with ESMTP; 16 Sep 2021 01:11:12 -0700
+Date:   Thu, 16 Sep 2021 16:11:12 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     David Rientjes <rientjes@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] mm/page_alloc: detect allocation forbidden by cpuset
+ and bail out early
+Message-ID: <20210916081112.GA41645@shbuild999.sh.intel.com>
+References: <1631590828-25565-1-git-send-email-feng.tang@intel.com>
+ <3bd87d8a-d09e-ac7-1d1d-25ad1b9d5ed9@google.com>
+ <20210915053247.GG56674@shbuild999.sh.intel.com>
+ <YUHZU4OHaJy3WtRk@dhcp22.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACPK8XfUWoOHr-0RwRoYoskia4fbAbZ7DYf5wWBnv6qUnGq18w@mail.gmail.com>
+In-Reply-To: <YUHZU4OHaJy3WtRk@dhcp22.suse.cz>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 06:55:13AM +0000, Joel Stanley wrote:
-> On Wed, 11 Aug 2021 at 21:39, Pavel Skripkin <paskripkin@gmail.com> wrote:
-> >
-> > On 7/21/21 7:30 AM, Christoph Hellwig wrote:
-> > > On Wed, Jul 21, 2021 at 11:37:03AM +0800, Hillf Danton wrote:
-> > >> On Tue, 20 Jul 2021 11:53:27 -0700
-> > >> >syzbot has found a reproducer for the following issue on:
-> > >> >
-> > >> >HEAD commit:    8cae8cd89f05 seq_file: disallow extremely large seq buffer..
-> > >> >git tree:       upstream
-> > >> >console output: https://syzkaller.appspot.com/x/log.txt?x=116f92ec300000
-> > >> >kernel config:  https://syzkaller.appspot.com/x/.config?x=7273c75708b55890
-> > >> >dashboard link: https://syzkaller.appspot.com/bug?extid=9937dc42271cd87d4b98
-> > >> >syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15fc287c300000
-> > >> >C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=178cbf6a300000
-> > >
-> > > <snip>
-> > >
-> > >> >WARNING: CPU: 0 PID: 8435 at fs/sysfs/group.c:116 internal_create_group+0x911/0xb20 fs/sysfs/group.c:116
-> > >
-> > > <snip>
-> > >
-> > >> The device_add(ddev) in register_disk() may fail but it proceeds to register
-> > >> block queue even at the failure ... this falls in the class of known issue
-> > >> given the comment line.
-> > >>
-> > >>  * FIXME: error handling
-> > >>  */
-> > >> static void __device_add_disk(struct device *parent, struct gendisk *disk,
-> > >
-> > > Yes, Luis is working on actually fixing this - but it requires changes
-> > > to every single block driver.  How does a cap on the seq_buf size
-> > > propagate here, though?
-> > >
-> >
-> > Hi!
-> >
-> > I've looked into this, and, I think, we can add sanity check for
-> > first_minor. If user will pass too big index (syzbot's repro passes
-> > 1048576) this value will be shifted to part_shift and then truncated to
-> > byte in __device_add_disk() and assigned to dev->devt. User may be
-> > confused about why he passed 1048576, but sysfs warns about duplicate
-> > creation of /dev/block/43:0
-> >
-> > So, these type of errors can be handled before passing wrong values to
-> > sysfs API like this:
-> >
-> > diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-> > index c38317979f74..600e9bab5d43 100644
-> > --- a/drivers/block/nbd.c
-> > +++ b/drivers/block/nbd.c
-> > @@ -1725,7 +1725,17 @@ static int nbd_dev_add(int index)
-> >         refcount_set(&nbd->refs, 1);
-> >         INIT_LIST_HEAD(&nbd->list);
-> >         disk->major = NBD_MAJOR;
-> > +
-> > +       /* Too big first_minor can cause duplicate creation of
-> > +        * sysfs files/links, since first_minor will be truncated to
-> > +        * byte in __device_add_disk().
-> > +        */
-> >         disk->first_minor = index << part_shift;
-> > +       if (disk->first_minor > 0xff) {
-> > +               err = -EINVAL;
-> > +               goto out_free_idr;
-> > +       }
-> > +
-> >         disk->minors = 1 << part_shift;
-> >         disk->fops = &nbd_fops;
-> >         disk->private_data = nbd;
-> >
+On Wed, Sep 15, 2021 at 01:30:27PM +0200, Michal Hocko wrote:
+> On Wed 15-09-21 13:32:47, Feng Tang wrote:
+> > On Tue, Sep 14, 2021 at 05:30:03PM -0700, David Rientjes wrote:
+> [...]
+> > > I'm wondering about a single node nodemask, for example, where all 
+> > > ZONE_NORMAL memory is hot-removed.
 > 
-> This one got backported to v5.10.65, and causes a warning on boot:
+> While this is theoretically possible it is highly unlikely to happen.
+> Non movable memory just takes one kernel allocation to prevent any
+> hotremove operation to finish. I have to say I was not aware of the
+> hotplug callback. It all seems rather suspicious. I will have a look.
 > 
-> [    7.114976] ------------[ cut here ]------------
-> [    7.116811] WARNING: CPU: 0 PID: 1 at block/blk-mq.c:3045
-> blk_mq_release+0x84/0x114
-> [    7.117510] Modules linked in:
-> [    7.118593] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.65 #196
-> [    7.118691] Hardware name: Generic DT based system
-> [    7.119088] Backtrace:
-> [    7.119675] [<8093aff0>] (dump_backtrace) from [<8093b294>]
-> (show_stack+0x20/0x24)
-> [    7.120052]  r7:00000009 r6:60000153 r5:00000000 r4:80e75938
-> [    7.120223] [<8093b274>] (show_stack) from [<80940938>]
-> (dump_stack+0xc8/0xe4)
-> [    7.120298] [<80940870>] (dump_stack) from [<80123174>] (__warn+0xe8/0x154)
-> [    7.120355]  r7:00000009 r6:00000be5 r5:804bc594 r4:80b53c80
-> [    7.120415] [<8012308c>] (__warn) from [<8093b9b4>]
-> (warn_slowpath_fmt+0x6c/0xe4)
-> [    7.120465]  r7:00000009 r6:00000be5 r5:80b53c80 r4:00000000
-> [    7.120537] [<8093b94c>] (warn_slowpath_fmt) from [<804bc594>]
-> (blk_mq_release+0x84/0x114)
-> [    7.120594]  r8:80b53c80 r7:857b7390 r6:00000001 r5:80ea6efd r4:00000000
-> [    7.120656] [<804bc510>] (blk_mq_release) from [<804ad65c>]
-> (blk_release_queue+0xb8/0x128)
-> [    7.120756]  r9:00000001 r8:80eee400 r7:00000000 r6:857b7390
-> r5:00000001 r4:857b73d8
-> [    7.120836] [<804ad5a4>] (blk_release_queue) from [<8052f87c>]
-> (kobject_put+0xc8/0x210)
-> [    7.120891]  r7:00000000 r6:00000000 r5:80e751bc r4:857b73d8
-> [    7.120948] [<8052f7b4>] (kobject_put) from [<804a9b00>]
-> (blk_put_queue+0x1c/0x20)
-> [    7.120998]  r7:00000000 r6:857b3800 r5:00000000 r4:857b3860
-> [    7.121055] [<804a9ae4>] (blk_put_queue) from [<804c2784>]
-> (disk_release+0xb0/0x118)
-> [    7.121118] [<804c26d4>] (disk_release) from [<805f717c>]
-> (device_release+0x40/0xb4)
-> [    7.121168]  r7:00000000 r6:00000000 r5:00000000 r4:857b3860
-> [    7.121224] [<805f713c>] (device_release) from [<8052f87c>]
-> (kobject_put+0xc8/0x210)
-> [    7.121265]  r5:80e81154 r4:857b3860
-> [    7.121318] [<8052f7b4>] (kobject_put) from [<804c1c74>] (put_disk+0x24/0x28)
-> [    7.121368]  r7:ffffffea r6:00000008 r5:857b3800 r4:857bca00
-> [    7.121440] [<804c1c50>] (put_disk) from [<806286f4>]
-> (nbd_dev_add+0x214/0x27c)
-> [    7.121670] [<806284e0>] (nbd_dev_add) from [<80d22f80>]
-> (nbd_init+0xec/0x120)
-> [    7.121740]  r10:80ec7000 r9:80c06b34 r8:80d39834 r7:00000000
-> r6:80e82aa8 r5:00000009
-> [    7.121777]  r4:00000000
-> [    7.121842] [<80d22e94>] (nbd_init) from [<80102364>]
-> (do_one_initcall+0x50/0x274)
-> [    7.121893]  r7:00000000 r6:00000007 r5:8116d180 r4:80d22e94
-> [    7.121956] [<80102314>] (do_one_initcall) from [<80d012e8>]
-> (kernel_init_freeable+0x1b8/0x240)
-> [    7.122005]  r7:80d39854 r6:00000007 r5:8116d180 r4:80d5e788
-> [    7.122067] [<80d01130>] (kernel_init_freeable) from [<80947bac>]
-> (kernel_init+0x18/0x130)
-> [    7.122126]  r10:00000000 r9:00000000 r8:00000000 r7:00000000
-> r6:00000000 r5:80947b94
-> [    7.122161]  r4:00000000
-> [    7.122218] [<80947b94>] (kernel_init) from [<80100168>]
-> (ret_from_fork+0x14/0x2c)
-> [    7.122413] Exception stack(0x810b7fb0 to 0x810b7ff8)
-> [    7.122936] 7fa0:                                     00000000
-> 00000000 00000000 00000000
-> [    7.123287] 7fc0: 00000000 00000000 00000000 00000000 00000000
-> 00000000 00000000 00000000
-> [    7.123545] 7fe0: 00000000 00000000 00000000 00000000 00000013 00000000
-> [    7.123728]  r5:80947b94 r4:00000000
-> [    7.124011] ---[ end trace d69e5842dc8c9352 ]---
+> Anyway something worth having covered "just in case". Thanks for
+> pointing it out.
+>  
+> > Thanks for the reminding! Yes, memory hot remove can change the
+> > cpuset's effective nodemask, we may need to add similar check inside
+> > cpuset_hotplug_update_tasks() which is called by cpuset_hotplug_workfn(), 
+> > something like below?
+> > 
+> > diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> > index 7fa633e..d5f6776 100644
+> > --- a/kernel/cgroup/cpuset.c
+> > +++ b/kernel/cgroup/cpuset.c
+> > @@ -3186,6 +3186,14 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
+> >  	cpus_updated = !cpumask_equal(&new_cpus, cs->effective_cpus);
+> >  	mems_updated = !nodes_equal(new_mems, cs->effective_mems);
+> >  
+> > +	if (mems_updated && !cpusets_insane_config() &&
+> > +		movable_only_nodes(new_mems)) {
+> > +		static_branch_enable(&cpusets_insane_config_key);
+> > +		pr_info("Unsupported (movable nodes only) cpuset configuration detected (nmask=%*pbl) after memory hotplug."
+> > +			"Cpuset allocations might fail even with a lot of memory available.\n",
+> > +			nodemask_pr_args(new_mems);
+> > +	}
 > 
-> There's been a bit going on in this driver since v5.10, so I assume
-> it's missing some dependent changes.
+> Please create a helper rather than two copies of the same. Thanks!
 
-Ugh, ok, I'll just go revert this for now in here, and in 5.4.y to be
-safe.
+Sure. Some draft add-on patch below.
 
-thanks,
+Thanks,
+Feng
 
-greg k-h
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 7fa633e..3bb9f4ea 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -391,6 +391,18 @@ static inline bool is_in_v2_mode(void)
+ 	      (cpuset_cgrp_subsys.root->flags & CGRP_ROOT_CPUSET_V2_MODE);
+ }
+ 
++static inline void check_insane_mems_config(nodemask_t *nodes)
++{
++	if (!cpusets_insane_config() &&
++		movable_only_nodes(nodes)) {
++		static_branch_enable(&cpusets_insane_config_key);
++		pr_info("Unsupported (movable nodes only) cpuset configuration detected (nmask=%*pbl)! "
++			"Cpuset allocations might fail even with a lot of memory available.\n",
++			nodemask_pr_args(nodes));
++	}
++}
++
+ /*
+  * Return in pmask the portion of a task's cpusets's cpus_allowed that
+  * are online and are capable of running the task.  If none are found,
+@@ -1875,13 +1887,7 @@ static int update_nodemask(struct cpuset *cs, struct cpuset *trialcs,
+ 	if (retval < 0)
+ 		goto done;
+ 
+-	if (!cpusets_insane_config() &&
+-		movable_only_nodes(&trialcs->mems_allowed)) {
+-		static_branch_enable(&cpusets_insane_config_key);
+-		pr_info("Unsupported (movable nodes only) cpuset configuration detected (nmask=%*pbl)! "
+-			"Cpuset allocations might fail even with a lot of memory available.\n",
+-			nodemask_pr_args(&trialcs->mems_allowed));
+-	}
++	check_insane_mems_config(&trialcs->mems_allowed);
+ 
+ 	spin_lock_irq(&callback_lock);
+ 	cs->mems_allowed = trialcs->mems_allowed;
+@@ -3186,6 +3192,9 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
+ 	cpus_updated = !cpumask_equal(&new_cpus, cs->effective_cpus);
+ 	mems_updated = !nodes_equal(new_mems, cs->effective_mems);
+ 
++	if (mems_updated)
++		check_insane_mems_config(&new_mems);
++
+ 	if (is_in_v2_mode())
+ 		hotplug_update_tasks(cs, &new_cpus, &new_mems,
+ 				     cpus_updated, mems_updated);
+
