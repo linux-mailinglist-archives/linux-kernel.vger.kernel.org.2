@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F086740D0AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 02:13:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11F0040D0B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 02:14:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233345AbhIPAPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 20:15:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47418 "EHLO mail.kernel.org"
+        id S233526AbhIPAPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 20:15:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47482 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233073AbhIPAPP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233284AbhIPAPP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 15 Sep 2021 20:15:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 70069611C4;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B1CE761209;
         Thu, 16 Sep 2021 00:13:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1631751235;
-        bh=xQikrOVczBlHti67jFTnzWecDajquNYAn0jlFoj7aBU=;
+        bh=E3i0Wp/NI7GLbCY2ElztfyiA75zrtSW/HRh66Q1bQgg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q2aY24JCL2sQ8WbprCLTOdWcztz+/+oeS2X/8U0iBiyeOFXGchF0Uq+bbfay/PZfe
-         NPscxdZ1CRvmjpMGr3zskS2U0tIjFGkeQUyJigHPIyNLsFn/RwHG3aNsxYBByLBRPY
-         yiDXtKRoa5dr6CocGS82thGZJu82iUb2tGFkrqBtG5NcqIXAeCCPBYxs+/MffP99+D
-         KEb/+Hq3aIIpBTb8TIu1ONEzsII2Ci8AcE/Rdfq0UxZ9ZwhAue999uetDGX6g+ucXf
-         pYwMDM9dowfwzQe2OAouLEl/mWxOnz9bAXBL8MD5kXSXNOv1/LdloHtaXVnG/d+J0I
-         yyOPQP/rtTU7g==
+        b=oj4qDDierWbH4Z9zNA4N/ViPSfo5Cwvwdo7erfA2ax2Ww0Jighn9DQpJC84IAp7xY
+         Xoj7IytNhFknXY+6MP32evYAL97sC4ybsjZa9tq0SAAYsQWDK+CJSu1ko+4JHu+xgX
+         l1qV8+hQOm9peMi6I0drpycEykgjgUiT9bY77tcTCOTfi0XfVj5f/dqoZm2xA0AOrH
+         BePWQsB2Xv+7O5wdNqCX0hb3GhHAHmp0h6gr/Ov/A61mnFSCIBXuA+z5hMTgSptzy/
+         2kwvfhZ4UFiF2qHXpUar1S8bBEPXcaRERIcifbXuwyaUfwFznu3W6jFi8zsQMEBnKW
+         sEDV2KKE1Pucw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 4577D5C0926; Wed, 15 Sep 2021 17:13:55 -0700 (PDT)
+        id 4796D5C0954; Wed, 15 Sep 2021 17:13:55 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -34,9 +34,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 5/7] rcuscale: Warn on individual rcu_scale_init() error conditions
-Date:   Wed, 15 Sep 2021 17:13:50 -0700
-Message-Id: <20210916001352.3909170-5-paulmck@kernel.org>
+Subject: [PATCH rcu 6/7] rcutorture: Don't cpuhp_remove_state() if cpuhp_setup_state() failed
+Date:   Wed, 15 Sep 2021 17:13:51 -0700
+Message-Id: <20210916001352.3909170-6-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210916001329.GA3909068@paulmck-ThinkPad-P17-Gen-1>
 References: <20210916001329.GA3909068@paulmck-ThinkPad-P17-Gen-1>
@@ -46,67 +46,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When running rcuscale as a module, any rcu_scale_init() issues will be
-reflected in the error code from modprobe or insmod, as the case may be.
-However, these error codes are not available when running rcuscale
-built-in, for example, when using the kvm.sh script.  This commit
-therefore adds WARN_ON_ONCE() to allow distinguishing rcu_scale_init()
-errors when running rcuscale built-in.
+Currently, in CONFIG_RCU_BOOST kernels, if the rcu_torture_init()
+function's call to cpuhp_setup_state() fails, rcu_torture_cleanup()
+gamely passes nonsense to cpuhp_remove_state().  This results in
+strange and misleading splats.  This commit therefore ensures that if
+the rcu_torture_init() function's call to cpuhp_setup_state() fails,
+rcu_torture_cleanup() avoids invoking cpuhp_remove_state().
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/rcuscale.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ kernel/rcu/rcutorture.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
-index 2cc34a22a506..228f143bf935 100644
---- a/kernel/rcu/rcuscale.c
-+++ b/kernel/rcu/rcuscale.c
-@@ -758,7 +758,7 @@ kfree_scale_init(void)
- 		init_waitqueue_head(&shutdown_wq);
- 		firsterr = torture_create_kthread(kfree_scale_shutdown, NULL,
- 						  shutdown_task);
--		if (firsterr)
-+		if (torture_init_error(firsterr))
- 			goto unwind;
- 		schedule_timeout_uninterruptible(1);
- 	}
-@@ -775,7 +775,7 @@ kfree_scale_init(void)
- 	for (i = 0; i < kfree_nrealthreads; i++) {
- 		firsterr = torture_create_kthread(kfree_scale_thread, (void *)i,
- 						  kfree_reader_tasks[i]);
--		if (firsterr)
-+		if (torture_init_error(firsterr))
- 			goto unwind;
- 	}
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index b90cd4d98a20..424184764ef0 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -2819,7 +2819,7 @@ rcu_torture_cleanup(void)
+ 		 rcutorture_seq_diff(gp_seq, start_gp_seq));
+ 	torture_stop_kthread(rcu_torture_stats, stats_task);
+ 	torture_stop_kthread(rcu_torture_fqs, fqs_task);
+-	if (rcu_torture_can_boost())
++	if (rcu_torture_can_boost() && rcutor_hp >= 0)
+ 		cpuhp_remove_state(rcutor_hp);
  
-@@ -838,7 +838,7 @@ rcu_scale_init(void)
- 		init_waitqueue_head(&shutdown_wq);
- 		firsterr = torture_create_kthread(rcu_scale_shutdown, NULL,
- 						  shutdown_task);
--		if (firsterr)
-+		if (torture_init_error(firsterr))
+ 	/*
+@@ -3132,9 +3132,9 @@ rcu_torture_init(void)
+ 		firsterr = cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "RCU_TORTURE",
+ 					     rcutorture_booster_init,
+ 					     rcutorture_booster_cleanup);
++		rcutor_hp = firsterr;
+ 		if (torture_init_error(firsterr))
  			goto unwind;
- 		schedule_timeout_uninterruptible(1);
- 	}
-@@ -852,7 +852,7 @@ rcu_scale_init(void)
- 	for (i = 0; i < nrealreaders; i++) {
- 		firsterr = torture_create_kthread(rcu_scale_reader, (void *)i,
- 						  reader_tasks[i]);
--		if (firsterr)
-+		if (torture_init_error(firsterr))
- 			goto unwind;
- 	}
- 	while (atomic_read(&n_rcu_scale_reader_started) < nrealreaders)
-@@ -879,7 +879,7 @@ rcu_scale_init(void)
- 		}
- 		firsterr = torture_create_kthread(rcu_scale_writer, (void *)i,
- 						  writer_tasks[i]);
--		if (firsterr)
-+		if (torture_init_error(firsterr))
- 			goto unwind;
- 	}
- 	torture_init_end();
+-		rcutor_hp = firsterr;
+ 
+ 		// Testing RCU priority boosting requires rcutorture do
+ 		// some serious abuse.  Counter this by running ksoftirqd
 -- 
 2.31.1.189.g2e36527f23
 
