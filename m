@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F234D40E90E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:01:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF1F140E54B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:26:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344076AbhIPRrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:47:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53762 "EHLO mail.kernel.org"
+        id S1344780AbhIPRKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:10:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354953AbhIPRkw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:40:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F40C8611C8;
-        Thu, 16 Sep 2021 16:51:39 +0000 (UTC)
+        id S1348558AbhIPRDB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:03:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A73961246;
+        Thu, 16 Sep 2021 16:34:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631811100;
-        bh=k7GlPxKjxxPV1E0dBBXMjRRHeWhi0zDdQc+CVA8fLYg=;
+        s=korg; t=1631810044;
+        bh=xE+/88MThaiYcrNdODqf4LqOpUydzK6zL+2gdM84GW4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FCXiZd2K5sZRwjUqSrg0SmC5vhXM4j9BAmPw+cmwlZBPctpFLvL1ZHI3ngfZMT99g
-         tlxiSg5zbwI38K1FP71l3hjOnjYje3LY8qNG2NNxh3cZkldkV7I8A1C/p78WGd7Od8
-         B/vqnte06edNyxnCn7Glg/8glyUR2GvKzOCu5aRA=
+        b=T02h9dY7f5HQLZdLeQQdSsa4CSUfBr9t0gsuKT4QSHdGc5ZdNxk/f8FC/p03i+pqR
+         tyccFZqxy/RjAVQwsJdy3tqjnVI+tM+HEr1VwICAo82ia3P8FmQaskVOFEo0JdiO1n
+         +Krlde8dEOWIQvUv2xIaFaYg7oVo7GiQPrrw7BK0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Loic Poulain <loic.poulain@linaro.org>,
-        Bryan ODonoghue <bryan.odonoghue@linaro.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 384/432] wcn36xx: Fix missing frame timestamp for beacon/probe-resp
-Date:   Thu, 16 Sep 2021 18:02:13 +0200
-Message-Id: <20210916155823.823416268@linuxfoundation.org>
+        stable@vger.kernel.org, Kalyan Thota <kalyan_t@codeaurora.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Subject: [PATCH 5.13 377/380] drm/msm/disp/dpu1: add safe lut config in dpu driver
+Date:   Thu, 16 Sep 2021 18:02:14 +0200
+Message-Id: <20210916155816.871353095@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,44 +41,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Loic Poulain <loic.poulain@linaro.org>
+From: Kalyan Thota <kalyan_t@codeaurora.org>
 
-[ Upstream commit 8678fd31f2d3eb14f2b8b39c9bc266f16fa24b22 ]
+commit 5bccb945f38b2aff334619b23b50bb0a6a9995a5 upstream.
 
-When receiving a beacon or probe response, we should update the
-boottime_ns field which is the timestamp the frame was received at.
-(cf mac80211.h)
+Add safe lut configuration for all the targets in dpu
+driver as per QOS recommendation.
 
-This fixes a scanning issue with Android since it relies on this
-timestamp to determine when the AP has been seen for the last time
-(via the nl80211 BSS_LAST_SEEN_BOOTTIME parameter).
+Issue reported on SC7280:
 
-Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
-Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/1629992768-23785-1-git-send-email-loic.poulain@linaro.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+With wait-for-safe feature in smmu enabled, RT client
+buffer levels are checked to be safe before smmu invalidation.
+Since display was always set to unsafe it was delaying the
+invalidaiton process thus impacting the performance on NRT clients
+such as eMMC and NVMe.
+
+Validated this change on SC7280, With this change eMMC performance
+has improved significantly.
+
+Changes in v2:
+- Add fixes tag (Sai)
+- CC stable kernel (Dimtry)
+
+Changes in v3:
+- Correct fixes tag with appropriate hash (stephen)
+- Resend patch adding reviewed by tag
+- Resend patch adding correct format for pushing into stable tree (Greg)
+
+Fixes: 591e34a091d1 ("drm/msm/disp/dpu1: add support for display for SC7280 target")
+Cc: stable@vger.kernel.org
+Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Tested-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org> (sc7280, sc7180)
+Link: https://lore.kernel.org/r/1628070028-2616-1-git-send-email-kalyan_t@codeaurora.org
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/wireless/ath/wcn36xx/txrx.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/wcn36xx/txrx.c b/drivers/net/wireless/ath/wcn36xx/txrx.c
-index 1b831157ede1..cab196bb38cd 100644
---- a/drivers/net/wireless/ath/wcn36xx/txrx.c
-+++ b/drivers/net/wireless/ath/wcn36xx/txrx.c
-@@ -287,6 +287,10 @@ int wcn36xx_rx_skb(struct wcn36xx *wcn, struct sk_buff *skb)
- 		status.rate_idx = 0;
- 	}
- 
-+	if (ieee80211_is_beacon(hdr->frame_control) ||
-+	    ieee80211_is_probe_resp(hdr->frame_control))
-+		status.boottime_ns = ktime_get_boottime_ns();
-+
- 	memcpy(IEEE80211_SKB_RXCB(skb), &status, sizeof(status));
- 
- 	if (ieee80211_is_beacon(hdr->frame_control)) {
--- 
-2.30.2
-
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+@@ -902,6 +902,7 @@ static const struct dpu_perf_cfg sdm845_
+ 	.amortizable_threshold = 25,
+ 	.min_prefill_lines = 24,
+ 	.danger_lut_tbl = {0xf, 0xffff, 0x0},
++	.safe_lut_tbl = {0xfff0, 0xf000, 0xffff},
+ 	.qos_lut_tbl = {
+ 		{.nentry = ARRAY_SIZE(sdm845_qos_linear),
+ 		.entries = sdm845_qos_linear
+@@ -929,6 +930,7 @@ static const struct dpu_perf_cfg sc7180_
+ 	.min_dram_ib = 1600000,
+ 	.min_prefill_lines = 24,
+ 	.danger_lut_tbl = {0xff, 0xffff, 0x0},
++	.safe_lut_tbl = {0xfff0, 0xff00, 0xffff},
+ 	.qos_lut_tbl = {
+ 		{.nentry = ARRAY_SIZE(sc7180_qos_linear),
+ 		.entries = sc7180_qos_linear
+@@ -956,6 +958,7 @@ static const struct dpu_perf_cfg sm8150_
+ 	.min_dram_ib = 800000,
+ 	.min_prefill_lines = 24,
+ 	.danger_lut_tbl = {0xf, 0xffff, 0x0},
++	.safe_lut_tbl = {0xfff8, 0xf000, 0xffff},
+ 	.qos_lut_tbl = {
+ 		{.nentry = ARRAY_SIZE(sm8150_qos_linear),
+ 		.entries = sm8150_qos_linear
+@@ -984,6 +987,7 @@ static const struct dpu_perf_cfg sm8250_
+ 	.min_dram_ib = 800000,
+ 	.min_prefill_lines = 35,
+ 	.danger_lut_tbl = {0xf, 0xffff, 0x0},
++	.safe_lut_tbl = {0xfff0, 0xff00, 0xffff},
+ 	.qos_lut_tbl = {
+ 		{.nentry = ARRAY_SIZE(sc7180_qos_linear),
+ 		.entries = sc7180_qos_linear
+@@ -1012,6 +1016,7 @@ static const struct dpu_perf_cfg sc7280_
+ 	.min_dram_ib = 1600000,
+ 	.min_prefill_lines = 24,
+ 	.danger_lut_tbl = {0xffff, 0xffff, 0x0},
++	.safe_lut_tbl = {0xff00, 0xff00, 0xffff},
+ 	.qos_lut_tbl = {
+ 		{.nentry = ARRAY_SIZE(sc7180_qos_macrotile),
+ 		.entries = sc7180_qos_macrotile
 
 
