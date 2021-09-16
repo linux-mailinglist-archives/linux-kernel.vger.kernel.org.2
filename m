@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E54340E16A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:29:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB10640E856
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240714AbhIPQa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:30:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59314 "EHLO mail.kernel.org"
+        id S241192AbhIPRiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:38:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241604AbhIPQVu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:21:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8575F61452;
-        Thu, 16 Sep 2021 16:15:09 +0000 (UTC)
+        id S1353036AbhIPR3x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:29:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0656563156;
+        Thu, 16 Sep 2021 16:46:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808910;
-        bh=AzYyWIvTFUu7ICwG/e78kzaZiT+m17+3Ake8DT55j8s=;
+        s=korg; t=1631810781;
+        bh=uLZ/voZxpdGW5MEY6zifV7PeAzyie8gXGgGTSK/r0Kw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MR86ZyDHxmD+t8z54MYPSymFw6QjcIZCi/jsw4Ipomr2YPwiZfd2/ULTwBwl7wIhs
-         LxRLKeJ+CaO0jBPbQheujU7GF6WlFmDiv+AtJUCL+REbbIY1FwbOwy6wJYnBaEKZpD
-         LAS5vaH3E3xMBk2t/iDwNi3aEzgWNjCF5n22H6R8=
+        b=DO9UZILpQ0nFUIu0KG3qlsH5Td6k13OCUaZ7FXwNTV+V3kLq83tG7gnUsNxRAQi/k
+         kzGwEY1oT4RE+9p1gOh8xJSXpG7o6weRIZxdNqf3Taogm5h8iaBuQLHCJy9zS7KftY
+         nZpPbxT63moVVX6L0Y25DnquHEXyl0pUsBykQL3c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wentao_Liang <Wentao_Liang_g@163.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
+        stable@vger.kernel.org, Alex Elder <elder@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 267/306] net/mlx5: DR, fix a potential use-after-free bug
-Date:   Thu, 16 Sep 2021 18:00:12 +0200
-Message-Id: <20210916155803.177798682@linuxfoundation.org>
+Subject: [PATCH 5.14 264/432] net: ipa: fix IPA v4.9 interconnects
+Date:   Thu, 16 Sep 2021 18:00:13 +0200
+Message-Id: <20210916155819.772539221@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wentao_Liang <Wentao_Liang_g@163.com>
+From: Alex Elder <elder@linaro.org>
 
-[ Upstream commit 6cc64770fb386b10a64a1fe09328396de7bb5262 ]
+[ Upstream commit 0fd75f5760b6a7a7f35dff46a6cdc4f6d1a86ee8 ]
 
-In line 849 (#1), "mlx5dr_htbl_put(cur_htbl);" drops the reference to
-cur_htbl and may cause cur_htbl to be freed.
+Three interconnects are defined for IPA version 4.9, but there
+should only be two.  They should also use names that match what's
+used for other platforms (and specified in the Device Tree binding).
 
-However, cur_htbl is subsequently used in the next line, which may result
-in an use-after-free bug.
-
-Fix this by calling mlx5dr_err() before the cur_htbl is put.
-
-Signed-off-by: Wentao_Liang <Wentao_Liang_g@163.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Signed-off-by: Alex Elder <elder@linaro.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/steering/dr_rule.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ipa/ipa_data-v4.9.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_rule.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_rule.c
-index b3c9dc032026..478de5ded7c2 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_rule.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_rule.c
-@@ -824,9 +824,9 @@ dr_rule_handle_ste_branch(struct mlx5dr_rule *rule,
- 			new_htbl = dr_rule_rehash(rule, nic_rule, cur_htbl,
- 						  ste_location, send_ste_list);
- 			if (!new_htbl) {
--				mlx5dr_htbl_put(cur_htbl);
- 				mlx5dr_err(dmn, "Failed creating rehash table, htbl-log_size: %d\n",
- 					   cur_htbl->chunk_size);
-+				mlx5dr_htbl_put(cur_htbl);
- 			} else {
- 				cur_htbl = new_htbl;
- 			}
+diff --git a/drivers/net/ipa/ipa_data-v4.9.c b/drivers/net/ipa/ipa_data-v4.9.c
+index 798d43e1eb13..4cce5dce9215 100644
+--- a/drivers/net/ipa/ipa_data-v4.9.c
++++ b/drivers/net/ipa/ipa_data-v4.9.c
+@@ -416,18 +416,13 @@ static const struct ipa_mem_data ipa_mem_data = {
+ /* Interconnect rates are in 1000 byte/second units */
+ static const struct ipa_interconnect_data ipa_interconnect_data[] = {
+ 	{
+-		.name			= "ipa_to_llcc",
++		.name			= "memory",
+ 		.peak_bandwidth		= 600000,	/* 600 MBps */
+ 		.average_bandwidth	= 150000,	/* 150 MBps */
+ 	},
+-	{
+-		.name			= "llcc_to_ebi1",
+-		.peak_bandwidth		= 1804000,	/* 1.804 GBps */
+-		.average_bandwidth	= 150000,	/* 150 MBps */
+-	},
+ 	/* Average rate is unused for the next interconnect */
+ 	{
+-		.name			= "appss_to_ipa",
++		.name			= "config",
+ 		.peak_bandwidth		= 74000,	/* 74 MBps */
+ 		.average_bandwidth	= 0,		/* unused */
+ 	},
 -- 
 2.30.2
 
