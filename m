@@ -2,152 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FDB940D856
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 13:20:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F45340D861
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 13:20:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236774AbhIPLUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 07:20:52 -0400
-Received: from relay2.mymailcheap.com ([217.182.66.162]:50443 "EHLO
-        relay2.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237459AbhIPLUr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 07:20:47 -0400
-Received: from filter2.mymailcheap.com (filter2.mymailcheap.com [91.134.140.82])
-        by relay2.mymailcheap.com (Postfix) with ESMTPS id AD5F73EDFC;
-        Thu, 16 Sep 2021 13:19:24 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by filter2.mymailcheap.com (Postfix) with ESMTP id 8B6C32A514;
-        Thu, 16 Sep 2021 13:19:24 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1631791164;
-        bh=c0cxHUOunQ7UqVHmtLLuSnBhU/nmnvkIbtapLtavi7I=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=HDs3113Q4GwcksJ4lqz8Px1YGq5AfrSfZEQGGLma0lro+GyNFiJ7udH2XZ1y7q8M6
-         ht0PWQsx1nbhg7YjXxlW6R6ATzdr/hMdJK9JieBUDPhXD1CAn26ajpCSSo/omzbDOs
-         NlWLEMoECCBunaucYvq11GOkNMl9z0+07G66NySg=
-X-Virus-Scanned: Debian amavisd-new at filter2.mymailcheap.com
-Received: from filter2.mymailcheap.com ([127.0.0.1])
-        by localhost (filter2.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 1J677zBbw3Oy; Thu, 16 Sep 2021 13:19:23 +0200 (CEST)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by filter2.mymailcheap.com (Postfix) with ESMTPS;
-        Thu, 16 Sep 2021 13:19:23 +0200 (CEST)
-Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id 9096440496;
-        Thu, 16 Sep 2021 11:19:22 +0000 (UTC)
-Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="LUbFn9PH";
-        dkim-atps=neutral
-AI-Spam-Status: Not processed
-Received: from ice-e5v2.lan (unknown [59.41.163.223])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id CC86E41A61;
-        Thu, 16 Sep 2021 11:18:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
-        t=1631791134; bh=c0cxHUOunQ7UqVHmtLLuSnBhU/nmnvkIbtapLtavi7I=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=LUbFn9PHSPjdS3qoTcbqHBsUTuajtu+RJph7RHT0ajGsIHXFKcJCCzsRJ5WrIcFLC
-         /lzDNaP9zWgzh4G58vzxj4y0lX/hv2uVOtqcWJfTd0yyJ+k4xjIg8aNuqz77zz39SV
-         uHjoE4VqXQX2567yPDjslIAvUGrntMtnXgyUrdzc=
-Message-ID: <21f916800a8852d4e7fd60480403270e146f065e.camel@aosc.io>
-Subject: Re: [PATCH] drm/panel: k101-im2ba02: Make use of the helper
- function dev_err_probe()
-From:   Icenowy Zheng <icenowy@aosc.io>
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Date:   Thu, 16 Sep 2021 19:18:43 +0800
-In-Reply-To: <20210916104247.11270-1-caihuoqing@baidu.com>
-References: <20210916104247.11270-1-caihuoqing@baidu.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 
+        id S238000AbhIPLVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 07:21:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56674 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238088AbhIPLVS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 07:21:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B8C761279;
+        Thu, 16 Sep 2021 11:19:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631791197;
+        bh=hkZogoYNPdYEtUjvYmWScZnXUuf2kqU4pXAbkQUNBO0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XG8Tfc7onQvd2XyZMTAZ/HhFjxz7fUBZIWzDGZeDEFEQ+JBkULgs90G2RkcqhYhdT
+         FGUhY7ievLcyjv0rrS5mjFT0Fe+rSMK8Y2bJlU+j27Z8dULF0qG2ViDgYlQxdJQoPd
+         ZzeVR60GzeTeRKolRbZYgifIexM4zRzGSLmhsWDuMeMRCyQ9MHw8z4po6yF+8Zn18W
+         XOS/i5a/mH+pzQ2xtKFiI0zldFGcj2gN5yZJWyxR4v7VR2PjKxM3VbD2oRnZzG5E6J
+         JgmBxQWmzxAdqz/ulkHXFIoMmqqqt8/yvPxvjQPDts4ZndELMsn+Eja18gJQpjeL+I
+         FhfeBMTtzpohg==
+Date:   Thu, 16 Sep 2021 12:19:16 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+Cc:     James Schulman <james.schulman@cirrus.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 0/1] ASoC: cs42l42: Implement Manual Type detection as
+ fallback
+Message-ID: <20210916111916.GA5048@sirena.org.uk>
+References: <20210916102750.9212-1-vitalyr@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 9096440496
-X-Rspamd-Server: mail20.mymailcheap.com
-X-Spamd-Result: default: False [1.40 / 10.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         ARC_NA(0.00)[];
-         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
-         MID_RHS_MATCH_FROM(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         DMARC_NA(0.00)[aosc.io];
-         R_SPF_SOFTFAIL(0.00)[~all];
-         HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1];
-         ML_SERVERS(-3.10)[213.133.102.83];
-         DKIM_TRACE(0.00)[aosc.io:+];
-         RCPT_COUNT_SEVEN(0.00)[7];
-         RECEIVED_SPAMHAUS_PBL(0.00)[59.41.163.223:received];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
-         FREEMAIL_CC(0.00)[gmail.com,ravnborg.org,linux.ie,ffwll.ch,lists.freedesktop.org,vger.kernel.org];
-         SUSPICIOUS_RECIPS(1.50)[];
-         RCVD_COUNT_TWO(0.00)[2]
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="huq684BweRXVnRxX"
+Content-Disposition: inline
+In-Reply-To: <20210916102750.9212-1-vitalyr@opensource.cirrus.com>
+X-Cookie: We've upped our standards, so up yours!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2021-09-16星期四的 18:42 +0800，Cai Huoqing写道：
-> When possible use dev_err_probe help to properly deal with the
-> PROBE_DEFER error, the benefit is that DEFER issue will be logged
-> in the devices_deferred debugfs file.
-> And using dev_err_probe() can reduce code size, and the error value
-> gets printed.
-> 
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
 
-Looks good to me, and thanks for pointing out this helper.
+--huq684BweRXVnRxX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Acked-by: Icenowy Zheng <icenowy@aosc.io>
+On Thu, Sep 16, 2021 at 11:27:49AM +0100, Vitaly Rodionov wrote:
+> For some headsets CS42L42 autodetect mode is not working correctly.=20
+> They will be detected as unknown types or as headphones. According=20
+> to the CS42L42 datasheet, if the headset autodetect failed,
+> then the driver should switch to manual mode and perform a manual steps s=
+equence.
 
-> ---
->  drivers/gpu/drm/panel/panel-feixin-k101-im2ba02.c | 13 +++++--------
->  1 file changed, 5 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/panel/panel-feixin-k101-im2ba02.c
-> b/drivers/gpu/drm/panel/panel-feixin-k101-im2ba02.c
-> index 2a602aee61c3..cb0bb3076099 100644
-> --- a/drivers/gpu/drm/panel/panel-feixin-k101-im2ba02.c
-> +++ b/drivers/gpu/drm/panel/panel-feixin-k101-im2ba02.c
-> @@ -456,16 +456,13 @@ static int k101_im2ba02_dsi_probe(struct
-> mipi_dsi_device *dsi)
->  
->         ret = devm_regulator_bulk_get(&dsi->dev, ARRAY_SIZE(ctx-
-> >supplies),
->                                       ctx->supplies);
-> -       if (ret < 0) {
-> -               dev_err(&dsi->dev, "Couldn't get regulators\n");
-> -               return ret;
-> -       }
-> +       if (ret < 0)
-> +               return dev_err_probe(&dsi->dev, ret, "Couldn't get
-> regulators\n");
->  
->         ctx->reset = devm_gpiod_get(&dsi->dev, "reset",
-> GPIOD_OUT_LOW);
-> -       if (IS_ERR(ctx->reset)) {
-> -               dev_err(&dsi->dev, "Couldn't get our reset GPIO\n");
-> -               return PTR_ERR(ctx->reset);
-> -       }
-> +       if (IS_ERR(ctx->reset))
-> +               return dev_err_probe(&dsi->dev, PTR_ERR(ctx->reset),
-> +                                    "Couldn't get our reset
-> GPIO\n");
->  
->         drm_panel_init(&ctx->panel, &dsi->dev, &k101_im2ba02_funcs,
->                        DRM_MODE_CONNECTOR_DSI);
+Please don't send cover letters for single patches, if there is anything
+that needs saying put it in the changelog of the patch or after the ---
+if it's administrative stuff.  This reduces mail volume and ensures that=20
+any important information is recorded in the changelog rather than being
+lost.=20
 
+--huq684BweRXVnRxX
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFDKDMACgkQJNaLcl1U
+h9Cg0wf/ZsdUfPPGnZrzV/JsuLORkQwmvOzzohe6dj+8bh0wk8j8oRhC7yzFw/mU
+a9qvBLRTH1/8MFoEKfkb+kcHVYxscEyKhtNATEafbmJLznUziZmHPYTokvdhROSK
+ZzGbDi+bF+NoyMTWoYwEdvze9PVBDLqb4cEZGC8EUHC9TiS/oLN1rPtPWP8lReuR
+Q3E9jHfURI8F6rbIaJxRiSckYnSWR5X/0BlTeW/rckVq1kQY7Ng/ym/dbLdsr9s4
+LaIQ8ibQ2kBUV5xynK2fhnvO/uLk9b2ydBniwd5jgcu/g9wtljPwAkTs/aNmOLu2
+9C+YyScgVKLycZHwu1cfT+y4cfpOyA==
+=IgJP
+-----END PGP SIGNATURE-----
+
+--huq684BweRXVnRxX--
