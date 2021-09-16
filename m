@@ -2,178 +2,303 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A581540DEA3
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 17:50:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAFED40DEAB
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 17:51:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240301AbhIPPvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 11:51:52 -0400
-Received: from mga07.intel.com ([134.134.136.100]:36812 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240371AbhIPPvj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 11:51:39 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10109"; a="286281224"
-X-IronPort-AV: E=Sophos;i="5.85,298,1624345200"; 
-   d="scan'208";a="286281224"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2021 08:50:12 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,298,1624345200"; 
-   d="scan'208";a="482756783"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by orsmga008.jf.intel.com with ESMTP; 16 Sep 2021 08:50:11 -0700
-Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Thu, 16 Sep 2021 08:50:11 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12 via Frontend Transport; Thu, 16 Sep 2021 08:50:11 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.168)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.12; Thu, 16 Sep 2021 08:50:11 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Igt9MPROZOzJ/oF1xuvZ5TYSvga8NiJcS0UZHFw3nHkXSMiCLs68jawpz4d3079dpWNPI+H8jzDfqhmo+0F5shHZT4otSpb5bWpKqU+vv+1XYnpL/5c80h5k6rZCmWjWbmOwY8YHVcpYQWWjyYcq9Y7ajRH79Ao20mdOvLTXw3Jp5QbR8UvQ8haWEssc5Rl8nf6XeQAmzJHISTPqjQW7ovWn8Wmw2DM7qINGEa1YTDMjyj3OOwdANeW3N1bNMQB+wq05vyHozub/tDozJpQBBs+Zw6w6LNk1M2YYgUqC+qHGihrAmCn/D3NOm3IXILUhZxdMeWM+IR7aq/BBGbYvgQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=0hm/+9710DHp+YP1mYm1hfRFtXKNaZklMEN0IBf4XSM=;
- b=K2EJSooVpZ30acRlZH5Bc+tcrGgp5spvEx0HdbAyhGWogaHd/figCehVxhE+DtfiNEhxrKIakxc0cJAmQ2a0jBDunvMLDyuBFV47+o3/Qpez9cxyWCqK3/CkH4ZQT9kLs88Sa5FqwK4AOMIaGsIHhNZ2A9qRYmllPynjx3fBrlmD6/fp5JlXq+u+LwaPwgltZaQFGZqmfcWHqZx5oxVT9pyIcdjvT5f7zbJqYpN+Y0/Z0ACMaAoqoSSbBn3ZuOML8X8JLTbKmWYxSykQ5HBLUkXkSSPGudhTRizG3WFuXQDFjnAXoEj6WaXjOyhL6m3gjDvnzyNZ0zNr/2uQz1eTPg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0hm/+9710DHp+YP1mYm1hfRFtXKNaZklMEN0IBf4XSM=;
- b=A9IUvz16yrkYJgG996WkRYHCs/bXajx6EiFasdji7zO8FJ+wzvU3fi65FgsAXQn75iyvuoUZr26flBD4vQNgm/Q67wsBry7Sz/SpbAbmU6xizAvWGJsHOkQaTpPXw4SXrPcZPm3AOuYS5bSDsL7zyWS8yma3R1QeLnim2emN8Aw=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=intel.com;
-Received: from BN0PR11MB5744.namprd11.prod.outlook.com (2603:10b6:408:166::16)
- by BN6PR11MB1668.namprd11.prod.outlook.com (2603:10b6:405:10::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.18; Thu, 16 Sep
- 2021 15:50:07 +0000
-Received: from BN0PR11MB5744.namprd11.prod.outlook.com
- ([fe80::d47c:525:2aef:f6a]) by BN0PR11MB5744.namprd11.prod.outlook.com
- ([fe80::d47c:525:2aef:f6a%3]) with mapi id 15.20.4523.016; Thu, 16 Sep 2021
- 15:50:07 +0000
-Subject: Re: [PATCH 12/14] selftests/sgx: Add page permission and exception
- test
-To:     Dave Hansen <dave.hansen@intel.com>, <linux-sgx@vger.kernel.org>,
-        <jarkko@kernel.org>, <shuah@kernel.org>
-CC:     <seanjc@google.com>, <bp@alien8.de>, <dave.hansen@linux.intel.com>,
-        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <cover.1631731214.git.reinette.chatre@intel.com>
- <a6e69ea22a2694d252302af283ee3e3f023d3577.1631731214.git.reinette.chatre@intel.com>
- <9990d737-9b9c-911f-3850-c9f3bc43c29b@intel.com>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-Message-ID: <839c8954-8b95-1dc9-944c-eda4c95abc5a@intel.com>
-Date:   Thu, 16 Sep 2021 08:50:03 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.14.0
-In-Reply-To: <9990d737-9b9c-911f-3850-c9f3bc43c29b@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW2PR16CA0069.namprd16.prod.outlook.com
- (2603:10b6:907:1::46) To BN0PR11MB5744.namprd11.prod.outlook.com
- (2603:10b6:408:166::16)
+        id S240347AbhIPPwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 11:52:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239207AbhIPPv6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 11:51:58 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36AE4C061767
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 08:50:37 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id m3so18528709lfu.2
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 08:50:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Zwk6zmApajzib1boNWKTOMdLLReNFGQ/0MpvWS/8P0U=;
+        b=cTjicLSfanCEgGBzAqfvA/IELb8oEJirAV59YnwHnZCeYJhbOCFFWh9vxveldvud4O
+         6I2rLHDC5tXbidvXXSg+vQaOsM7AkJGuJiTe8p6kqdrGfva1CsKkRxCQTK4T3K43hKwR
+         FpW39PhdklEotFvDMpjitCbQiFNYGGDx42EuUjFobfkiEDSsKuhDHIrfXBhFZrQ7URfe
+         dp7KAr8pJHUr5iPQZHREmOTy1NE4VAH28bDxHhiSwGccFyyh1VIVEsFqrupQxwIJU2Z1
+         KZuIUxKiu/hDL1wPVNMeKTRmS9vY1qbs6pI9wq3hpGSwxOWEhW3bpX9qVtv/AFd+gSfe
+         dPxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Zwk6zmApajzib1boNWKTOMdLLReNFGQ/0MpvWS/8P0U=;
+        b=0sbfqzlxODjLmZ6JRit9qHK/w3/KPImmVxSsEYgsrWzWPZkFrgnVQnVEQfxlH48rDd
+         TDruHzP4bBIZB2jKx2EbOwN3hORGXPRbjUDycoCh+Uw/GA+NRac3CMI6a98BX/awsrE7
+         OrgrndNGu3YQ+lQjFTjZ3egAN+5kBAqL+Z38kme73Va2dfhhLrfROKaaanuTIOzGjDma
+         bbKjfm2BPHFkBv8GlPxQdeuWjecGhIt6u0G1xth8QpRCOh2+2yy4QYFYD4RrGOmTlB9b
+         5m1Y3fraIyJyNLQZgvBDItywsjo7gzmV20DzYX3zoyIL8k1IRCP08esFVlD4A2OfpI9b
+         eFVg==
+X-Gm-Message-State: AOAM533lNZ0PMBetaqxxy14rPP+HemNXr0JKUGZ5EaJfOli9OAyUYA48
+        JMPqO7ETOxy+2kEN8SbW8NzUPj/yT8fQU51wQ9fH9Q==
+X-Google-Smtp-Source: ABdhPJwkbKSDYLlCX5fkswyKiFZ7bhPlQkzAo8N8dvnrUnSaMNDOKLzUs9c5Fa7H/0tIyMwOD2cTouwiJn3exX/9JP8=
+X-Received: by 2002:a2e:2f02:: with SMTP id v2mr4500745ljv.132.1631807435179;
+ Thu, 16 Sep 2021 08:50:35 -0700 (PDT)
 MIME-Version: 1.0
-Received: from [192.168.1.221] (71.238.111.198) by MW2PR16CA0069.namprd16.prod.outlook.com (2603:10b6:907:1::46) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Thu, 16 Sep 2021 15:50:06 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 63c614c0-82a7-4dff-fda1-08d97929a850
-X-MS-TrafficTypeDiagnostic: BN6PR11MB1668:
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BN6PR11MB1668D675259B8348BE6AF4F0F8DC9@BN6PR11MB1668.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: nkWQJ/4qgf3wkS02Jef+eHe9M7v59HScJ9tMK+jp4jm7CYTyN8c0El/eOUp+EwFl2FVBbiHcTTtqJxCA86qa/RMug9a9njIrao2vv3fwJIrzMy12XTgNbxNRy/BkkMjjR5X0CnDFT7OEGsErE78oNvcGg2qqjQilQMuYEMKUzRsiNZr0gVo2Wu8iPnLm88VtqKq3BxHZ91BIua2laAk0TvLky90JSemAJG02fpN2sd5nBDFOTOLusREfhTQwezZruKhFRdzxU6S6h54GZh0wSxxLAffUcDMDTUQblv9qQ6GVnnQrI9hqJnV9Jqz2jZNoRu5+2+B96SE5fMEPGS31B4WuxlFF2JQ90/fdaB6amhNlQ5hKnjRlg7SJHIGDrkyYHSvOzYV3onNHpmTRhG0ALrK0PwzliCKDZRHCyZlxguUyA2jUoYUdPDIBSWwpaPHomMe3AvbUjwKInKrrTIbL82g5PqOJXaphyewJKgD3CoetcDqMUIbDsGk+5p9IcvFqu7Qbv1ia0Xviyi2n03XyZW2Bh0u6JcGooyiR7gGJcW1sfIt48FtAMpF7xjhf5YOpsLoOv4ua4ug3zNxBliRjlyIoFkpim0prGDeAku21wosfR4cxp/FTK8GFnNF+IY3RV1QvQ17pF9ZumobzG3XwPY9abGLb7fjCkzHm0MlAoHNxqzsj8C1Fe7Do8/H4YBn7QQZ4pvJEvrV/wF175NeLL20JfbuIKSjE5bGJiFmDhWE=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN0PR11MB5744.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(376002)(366004)(136003)(396003)(6666004)(4326008)(38100700002)(44832011)(956004)(186003)(66946007)(66476007)(66556008)(8936002)(83380400001)(53546011)(6486002)(5660300002)(31686004)(26005)(478600001)(8676002)(31696002)(316002)(2616005)(16576012)(86362001)(2906002)(36756003)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VjNhNUEzSnZwM2FMeTY5bktZcUdER0lNNzMwR1FvNkUrc1doUjc2U1VjMmtk?=
- =?utf-8?B?NFZhTXZpc2UrWHhHeU1KSk5UdDNseDNWTlFVbUFRNW53MEZVR3VPQWJ2OVlm?=
- =?utf-8?B?Zis4ckdqWXM2bXI1NVFyclZnUGhtZGtNVDZPY0lrc2R5V21VLzh1MkI4eGpk?=
- =?utf-8?B?SmJoRFVHN0N6V25RMFlmbXhBZVdkY2xqZHpTa29qVTBFRW5yWjFLekZQVC9F?=
- =?utf-8?B?WDA2QjZaRDBKVS9xbmx4M2xtRWljRGpHTnZGSHBYaFRxTnZHdERPMUtJWmVr?=
- =?utf-8?B?bjFnbER1Y1pGRlhFODEvQ1pBeGdmaktOcXJRRTBON2xYYS91YnExN2xaZ240?=
- =?utf-8?B?WlBHczdPZWJjVDNTeTdIRWFVRTdpZmNzRTNzZkVNZm56WkNOOWc1OVJjZnVG?=
- =?utf-8?B?STU0RkVtYWZhOFJqR3owbkI3WEM3L2ZYUFp5YUIyRWViY0U4WXVjQWhuU2NS?=
- =?utf-8?B?ZzVXbFVIalFrV2xnSlJxK2pQRE8xbDNjQTZIQzhzZ01oRmlsS294SjZuNGJX?=
- =?utf-8?B?VlUzMHdCZHVHcTdsNzAwZ1hVRk12LzRwdk5NelpoVlJPZHQwRm50QXZTOTVm?=
- =?utf-8?B?TE1ELzIxTjcxMnhoOVZ3am9zVlN5dm5tTU1oc21JZHlQWGFobWliQ3QvRGJ6?=
- =?utf-8?B?SUJhTEFka1NaYWZ5VTNvb3ZlTkxTcnhkQXlYaUxob1RaUGhXU1MxR21wYmsy?=
- =?utf-8?B?N24zVnlUcll1d0ZheHJ5TXkrUjUzQURneGZOcHNhM0xHYkd5cE5sOWtwWmh3?=
- =?utf-8?B?U0hyb0NpZTJNM3VTTlVxWWNVWUR3QUc3NTRXSTg5MXJpazUyaTBIL2FOZzBO?=
- =?utf-8?B?R3RKc3lqVm5VL2NIc2xoRnVGYkxpMGdsLzhuaGUvNWExcDliYmtpVCtlcHBG?=
- =?utf-8?B?QXFDZTZ4NUE4UDc4enk3K3FkZkVzRndaQzk4VXhtbFlhMDlBS0c2bWRtUDVz?=
- =?utf-8?B?akxhcU9yNDNna1dyOTd4OW1rRjY1cExiUHUxRk9RTkJDL2ZwRzBVQS8zZHRL?=
- =?utf-8?B?ZmdMQ1FYNlhNZkdPa0g3V2ZpaGk1L2ZIVmRWdXJsM05Lcm9UK0xYS0kva0gr?=
- =?utf-8?B?VVpqMG4rM1Z5ay9iT1dXcVhIKzVFZ1p2dFpBeWxhVEV4ZHJxd0RDUExncmM5?=
- =?utf-8?B?ZmU3VkR3d2hWN2t4UnhqbFpqSWEvUHQxMy85RFJZTE9yZWNpYVpPeW1oZkJ1?=
- =?utf-8?B?RDZXblI4OEpNeWNtaXUyKzhPREdnanQwQ3BEVmllOE82RjRZam5BUjljRlZQ?=
- =?utf-8?B?bVhONWFUZjU5RGF1MFZZenB1eVRRRkQ1T0MrWEdKdkx5TGI0TUR2aWJINy9Z?=
- =?utf-8?B?cm9TQ0Q2dStXTjg5c0VraDZoS1hLU2x5VFp6emJDOEZiOXVTazhjamhVNEha?=
- =?utf-8?B?SnNod3BGSU5iVyt5eWpUZ2lvVlZ6bURBWEMwRXVVUU9ISHVNNmVWU2oyRjVM?=
- =?utf-8?B?eDU3ZTFXcXc0bjRjVTgwZ2w0Y2lhRi84U1dPMGdjTmJHMm5WVW8rRWZGKzEr?=
- =?utf-8?B?UTBtUkFIaW5XOVM4QkxrYVRRUzJkNmVrNkJUUnFJQ0tNK2VvQWdiNFZlcGt0?=
- =?utf-8?B?MjFsQVZHb3FIYXJoTWhWS0JVWGdjVlNWRno0RURHUzN4NEdud3VXY21YVXMw?=
- =?utf-8?B?VDNPUVJ2Q3VMV2t0am9Ib2J3cjNrbitiUzBNaXhSaUVUMFhlTkYzU0srQ3RU?=
- =?utf-8?B?NWVuSk9MZlNWSFJ4anRyUWsvZGdyK2ZsenVyQUNSdGNSa3ZCVGtpM1ZzU3JT?=
- =?utf-8?Q?WodJHX3zIggg1Di2Iy8YQd82XWHRkXiLlr5itG1?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 63c614c0-82a7-4dff-fda1-08d97929a850
-X-MS-Exchange-CrossTenant-AuthSource: BN0PR11MB5744.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2021 15:50:07.5131
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0iZ+iyxpUkB5eIm1riZlBnH1wq1yrLNXA4WIggoDkn+9jl7FuxijfWmbiucnyGVNvN+B1G+zmSpKHx2UW8ZgIQsFNFvf5Jf6ZYmGk7v1oeA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR11MB1668
-X-OriginatorOrg: intel.com
+References: <20210820155918.7518-1-brijesh.singh@amd.com> <20210820155918.7518-24-brijesh.singh@amd.com>
+In-Reply-To: <20210820155918.7518-24-brijesh.singh@amd.com>
+From:   Peter Gonda <pgonda@google.com>
+Date:   Thu, 16 Sep 2021 09:50:23 -0600
+Message-ID: <CAMkAt6q9izy0kObMjjHiKuOVR5OXrdFFaeVQiArm0mMA4w8uXw@mail.gmail.com>
+Subject: Re: [PATCH Part2 v5 23/45] KVM: SVM: Add KVM_SNP_INIT command
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        kvm list <kvm@vger.kernel.org>, linux-coco@lists.linux.dev,
+        linux-mm@kvack.org, linux-crypto@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        Marc Orr <marcorr@google.com>,
+        sathyanarayanan.kuppuswamy@linux.intel.com,
+        Pavan Kumar Paluri <papaluri@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dave,
+On Fri, Aug 20, 2021 at 10:00 AM Brijesh Singh <brijesh.singh@amd.com> wrote:
+>
+> The KVM_SNP_INIT command is used by the hypervisor to initialize the
+> SEV-SNP platform context. In a typical workflow, this command should be the
+> first command issued. When creating SEV-SNP guest, the VMM must use this
+> command instead of the KVM_SEV_INIT or KVM_SEV_ES_INIT.
+>
+> The flags value must be zero, it will be extended in future SNP support to
+> communicate the optional features (such as restricted INT injection etc).
+>
+> Co-developed-by: Pavan Kumar Paluri <papaluri@amd.com>
+> Signed-off-by: Pavan Kumar Paluri <papaluri@amd.com>
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> ---
+>  .../virt/kvm/amd-memory-encryption.rst        | 27 ++++++++++++
+>  arch/x86/include/asm/svm.h                    |  2 +
+>  arch/x86/kvm/svm/sev.c                        | 44 ++++++++++++++++++-
+>  arch/x86/kvm/svm/svm.h                        |  4 ++
+>  include/uapi/linux/kvm.h                      | 13 ++++++
+>  5 files changed, 88 insertions(+), 2 deletions(-)
+>
+> diff --git a/Documentation/virt/kvm/amd-memory-encryption.rst b/Documentation/virt/kvm/amd-memory-encryption.rst
+> index 5c081c8c7164..7b1d32fb99a8 100644
+> --- a/Documentation/virt/kvm/amd-memory-encryption.rst
+> +++ b/Documentation/virt/kvm/amd-memory-encryption.rst
+> @@ -427,6 +427,33 @@ issued by the hypervisor to make the guest ready for execution.
+>
+>  Returns: 0 on success, -negative on error
+>
+> +18. KVM_SNP_INIT
+> +----------------
+> +
+> +The KVM_SNP_INIT command can be used by the hypervisor to initialize SEV-SNP
+> +context. In a typical workflow, this command should be the first command issued.
+> +
+> +Parameters (in/out): struct kvm_snp_init
+> +
+> +Returns: 0 on success, -negative on error
+> +
+> +::
+> +
+> +        struct kvm_snp_init {
+> +                __u64 flags;
+> +        };
+> +
+> +The flags bitmap is defined as::
+> +
+> +   /* enable the restricted injection */
+> +   #define KVM_SEV_SNP_RESTRICTED_INJET   (1<<0)
+> +
+> +   /* enable the restricted injection timer */
+> +   #define KVM_SEV_SNP_RESTRICTED_TIMER_INJET   (1<<1)
+> +
+> +If the specified flags is not supported then return -EOPNOTSUPP, and the supported
+> +flags are returned.
+> +
+>  References
+>  ==========
+>
+> diff --git a/arch/x86/include/asm/svm.h b/arch/x86/include/asm/svm.h
+> index 44a3f920f886..a39e31845a33 100644
+> --- a/arch/x86/include/asm/svm.h
+> +++ b/arch/x86/include/asm/svm.h
+> @@ -218,6 +218,8 @@ struct __attribute__ ((__packed__)) vmcb_control_area {
+>  #define SVM_NESTED_CTL_SEV_ENABLE      BIT(1)
+>  #define SVM_NESTED_CTL_SEV_ES_ENABLE   BIT(2)
+>
+> +#define SVM_SEV_FEAT_SNP_ACTIVE                BIT(0)
+> +
+>  struct vmcb_seg {
+>         u16 selector;
+>         u16 attrib;
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index 50fddbe56981..93da463545ef 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -235,10 +235,30 @@ static void sev_unbind_asid(struct kvm *kvm, unsigned int handle)
+>         sev_decommission(handle);
+>  }
+>
+> +static int verify_snp_init_flags(struct kvm *kvm, struct kvm_sev_cmd *argp)
+> +{
+> +       struct kvm_snp_init params;
+> +       int ret = 0;
+> +
+> +       if (copy_from_user(&params, (void __user *)(uintptr_t)argp->data, sizeof(params)))
+> +               return -EFAULT;
+> +
+> +       if (params.flags & ~SEV_SNP_SUPPORTED_FLAGS)
+> +               ret = -EOPNOTSUPP;
+> +
+> +       params.flags = SEV_SNP_SUPPORTED_FLAGS;
+> +
+> +       if (copy_to_user((void __user *)(uintptr_t)argp->data, &params, sizeof(params)))
+> +               ret = -EFAULT;
+> +
+> +       return ret;
+> +}
+> +
+>  static int sev_guest_init(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>  {
+> +       bool es_active = (argp->id == KVM_SEV_ES_INIT || argp->id == KVM_SEV_SNP_INIT);
+>         struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+> -       bool es_active = argp->id == KVM_SEV_ES_INIT;
+> +       bool snp_active = argp->id == KVM_SEV_SNP_INIT;
+>         int asid, ret;
 
-On 9/16/2021 8:30 AM, Dave Hansen wrote:
-> On 9/15/21 1:31 PM, Reinette Chatre wrote:
->> Add a test to ensure that (1) PTE permissions can be changed as long as
->> they do not exceed EPCM permissions, and (2) even if EPCM permissions
->> allow a page to be written to, if the PTE permissions do not then a #PF
->> should be generated when attempting to write to a (from PTE perspective)
->> read-only page.
-> 
-> It took me a minute to figure out what this was trying to say.
+Not sure if this is the patch place for this but I think you want to
+disallow svm_vm_copy_asid_from() if snp_active == true.
 
-The goal was to describe what features/functionalities are being tested. 
-You accurately point out that it is not clear how the test implemented 
-in the patch matches with these test goals.
-
->  Maybe
-> breaking it down into these three steps would help:
-> 
-> Add a test that:
->   (1) Creates an SGX enclave page with writable EPCM permission
->   (2) Changes the PTE permission on the page to read-only.  This should
->       be permitted because the permission does not exceed the EPCM
->       permission.
->   (3) Attempts a write to the page and generate a page fault (#PF)
->       because of the read-only PTE.
-
-Thank you for the suggestion. What I understand from your feedback is 
-that I should mix the description of the actual test with what 
-features/functionalities are being tested. You do so in your suggestion 
-for (2) and to do the same for (3) I now plan to expand it to:
-
-    (3) Attempts a write to the page. This should generate a page fault
-        (#PF) because of the read-only PTE even though the EPCM
-        permissions allow the page to be written to.
-
-Reinette
-
+>
+>         if (kvm->created_vcpus)
+> @@ -249,12 +269,22 @@ static int sev_guest_init(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>                 return ret;
+>
+>         sev->es_active = es_active;
+> +       sev->snp_active = snp_active;
+>         asid = sev_asid_new(sev);
+>         if (asid < 0)
+>                 goto e_no_asid;
+>         sev->asid = asid;
+>
+> -       ret = sev_platform_init(&argp->error);
+> +       if (snp_active) {
+> +               ret = verify_snp_init_flags(kvm, argp);
+> +               if (ret)
+> +                       goto e_free;
+> +
+> +               ret = sev_snp_init(&argp->error);
+> +       } else {
+> +               ret = sev_platform_init(&argp->error);
+> +       }
+> +
+>         if (ret)
+>                 goto e_free;
+>
+> @@ -600,6 +630,10 @@ static int sev_es_sync_vmsa(struct vcpu_svm *svm)
+>         save->pkru = svm->vcpu.arch.pkru;
+>         save->xss  = svm->vcpu.arch.ia32_xss;
+>
+> +       /* Enable the SEV-SNP feature */
+> +       if (sev_snp_guest(svm->vcpu.kvm))
+> +               save->sev_features |= SVM_SEV_FEAT_SNP_ACTIVE;
+> +
+>         return 0;
+>  }
+>
+> @@ -1532,6 +1566,12 @@ int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
+>         }
+>
+>         switch (sev_cmd.id) {
+> +       case KVM_SEV_SNP_INIT:
+> +               if (!sev_snp_enabled) {
+> +                       r = -ENOTTY;
+> +                       goto out;
+> +               }
+> +               fallthrough;
+>         case KVM_SEV_ES_INIT:
+>                 if (!sev_es_enabled) {
+>                         r = -ENOTTY;
+> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+> index 01953522097d..57c3c404b0b3 100644
+> --- a/arch/x86/kvm/svm/svm.h
+> +++ b/arch/x86/kvm/svm/svm.h
+> @@ -69,6 +69,9 @@ enum {
+>  /* TPR and CR2 are always written before VMRUN */
+>  #define VMCB_ALWAYS_DIRTY_MASK ((1U << VMCB_INTR) | (1U << VMCB_CR2))
+>
+> +/* Supported init feature flags */
+> +#define SEV_SNP_SUPPORTED_FLAGS                0x0
+> +
+>  struct kvm_sev_info {
+>         bool active;            /* SEV enabled guest */
+>         bool es_active;         /* SEV-ES enabled guest */
+> @@ -81,6 +84,7 @@ struct kvm_sev_info {
+>         u64 ap_jump_table;      /* SEV-ES AP Jump Table address */
+>         struct kvm *enc_context_owner; /* Owner of copied encryption context */
+>         struct misc_cg *misc_cg; /* For misc cgroup accounting */
+> +       u64 snp_init_flags;
+>  };
+>
+>  struct kvm_svm {
+> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+> index d9e4aabcb31a..944e2bf601fe 100644
+> --- a/include/uapi/linux/kvm.h
+> +++ b/include/uapi/linux/kvm.h
+> @@ -1712,6 +1712,9 @@ enum sev_cmd_id {
+>         /* Guest Migration Extension */
+>         KVM_SEV_SEND_CANCEL,
+>
+> +       /* SNP specific commands */
+> +       KVM_SEV_SNP_INIT,
+> +
+>         KVM_SEV_NR_MAX,
+>  };
+>
+> @@ -1808,6 +1811,16 @@ struct kvm_sev_receive_update_data {
+>         __u32 trans_len;
+>  };
+>
+> +/* enable the restricted injection */
+> +#define KVM_SEV_SNP_RESTRICTED_INJET   (1 << 0)
+> +
+> +/* enable the restricted injection timer */
+> +#define KVM_SEV_SNP_RESTRICTED_TIMER_INJET   (1 << 1)
+> +
+> +struct kvm_snp_init {
+> +       __u64 flags;
+> +};
+> +
+>  #define KVM_DEV_ASSIGN_ENABLE_IOMMU    (1 << 0)
+>  #define KVM_DEV_ASSIGN_PCI_2_3         (1 << 1)
+>  #define KVM_DEV_ASSIGN_MASK_INTX       (1 << 2)
+> --
+> 2.17.1
+>
+>
