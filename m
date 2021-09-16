@@ -2,169 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06B9C40D0BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 02:17:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 136FD40D0C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 02:19:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233405AbhIPATN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 20:19:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53400 "EHLO
+        id S233444AbhIPAUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 20:20:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233336AbhIPATK (ORCPT
+        with ESMTP id S233390AbhIPAUg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 20:19:10 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89BC9C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 17:17:51 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id 5so2692970plo.5
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 17:17:51 -0700 (PDT)
+        Wed, 15 Sep 2021 20:20:36 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F3DCC061764
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 17:19:16 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id z94so10020310ede.8
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 17:19:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/hvxbROddFiGxemHQk/+w2AlHAFOeCsIO60McMDpLD4=;
-        b=C5ilt55y4ASNlvyL/LjXz72JqJIJkq1XuAQ3yyTOyH9yggN93fhqOU7xtYImNrkpLB
-         fXBga8iX9ZRW+RaeKakS119TZlXcPPWzBkv9FN1FEFpyEOZMtsSUmM3fFNFMnAqB21pz
-         +IdjDpsjJMCpMIym6IH2rw+RujYLzUb0GfcsZFbi1lhHkHpZqzideUxht1HIvBHx3AmH
-         ksWMv2z9U5x00qrt23yzOGjjn128ksAfJaT2BrfnMLMu1TXHg8jNmQAoINSM/HqoXSKk
-         0cUH8UQHzXTMgXyioIHKvOVa3gQEGTbkhRY3ZsJqOjmbNxOzC/XM7reU26Y3xCRGVZEw
-         caRw==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=G0mVJdgPVSe+iYPghtsbmJkGCwsDgWSqxjc6SHi85z0=;
+        b=HiYNra6eaBy+1vINAszO+g/UE/KGjSFMmqrp49MVWg08qLyrrYpwCvIa7Wjbs/jTa8
+         UIiYhwzlX8VRfgwPbz4TDGhtHgXsHrdTq6lLDehHs7EU83vIX15/gyMviejP9fRkG6tI
+         pOx6IJsarjpSrXDbVk8B0Yj2piASOsBm+KXSZNodL2RYEaV3/IGtd1yzElQ0ZrS0jIgx
+         jvHEPBNQ6JpNwGyk7UMRoK0nBdvX3LIyScwg/pjjtYc5zrcpxO/4fN9F7Xiwq06VdMXO
+         BKdU/gbpXSPyG1AyU9LDqMmSzrmmnB3tNqigXBWW/MPpTyYfPCIMCMy22ta0N8p8GBWJ
+         YIxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=/hvxbROddFiGxemHQk/+w2AlHAFOeCsIO60McMDpLD4=;
-        b=Y/jqR0XwHTusmhdhiIVuE9on9qur0k0BJ7sMA+oSqcMqJ8vvu2tf2YK0jsKu4EuyOs
-         1ek7UjFJ+1nLh8iUkdQv6HMvH0ffHnEciixMsXvRLMRbld3ecJrsoYV1daYpi8netf8t
-         zWF3choBa0+ASObA4TBeQZyrHawkmJc0TmKLIKZqhRFj00padkjJ5mPfE0A29bl9QEzX
-         uPBt2UKONScb8crYl1cCPhBNCDXO0i7CB4vpPAYHz/q53AvL9hJJE7TJCd6LAafUfeDa
-         A7TNxJ1kxDly5whZ2bioc6lxDp+rYqPB0nO2orQAnwMqjNzxsp0Ow/VQ5tT33x6WPjfX
-         FBGA==
-X-Gm-Message-State: AOAM531ZpdhoYqBUKSuIc9lMTfSD9mw8g0R+zItM2lns6dlxeCGW1Bl4
-        oJQi15X9nnlnXE1jSf/xnS0=
-X-Google-Smtp-Source: ABdhPJzz0WZddWbOVQoCFHjeUa+TD6FE+2sYGX6ppdSwzaorufDlHJ5GW6p7SfcOjk7gV+sUjf2PuQ==
-X-Received: by 2002:a17:90b:3ec5:: with SMTP id rm5mr6275222pjb.225.1631751471098;
-        Wed, 15 Sep 2021 17:17:51 -0700 (PDT)
-Received: from balhae.hsd1.ca.comcast.net ([2601:647:4800:8150:82a5:eb2c:c97d:8de7])
-        by smtp.gmail.com with ESMTPSA id y4sm639227pjw.57.2021.09.15.17.17.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Sep 2021 17:17:50 -0700 (PDT)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        James Clark <james.clark@arm.com>,
-        Tan Xiaojun <tanxiaojun@huawei.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: [RFC] perf arm-spe: Track task context switch for cpu-mode events
-Date:   Wed, 15 Sep 2021 17:17:48 -0700
-Message-Id: <20210916001748.1525291-1-namhyung@kernel.org>
-X-Mailer: git-send-email 2.33.0.464.g1972c5931b-goog
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=G0mVJdgPVSe+iYPghtsbmJkGCwsDgWSqxjc6SHi85z0=;
+        b=ltA/U4uuonESd0jM4ZqOu9LoLEoKMs/VDJThz+iAglqgcLLXz8V3yuMMV8wQ7WgrFM
+         Qxlhj2RFd4OIqVWLWDHqi9QtJe0ohYlsIKD1JcA/1mIh7P6GNvkQ4Jjz3/a17pmyx2Rb
+         Wco3ErDi5shfFJnhfeeQyRZxR1gqqduWfc2Gsy+o2X7Cm8SEO19ggTzoxG+n2Q7XmzWW
+         bhYDrMzKFHQnhS+D4CMs+mhAvS9PiTcbOF0YoiBIGtNSQ5+pt9EAGkQQmhwN2DNMFEQN
+         Vo2iouOYJ/Zf+3MnlnKA5qBnSPpDx5AMIX+hLf2IMTG9E8W1YGK8BCZiSV35A2QlYG2H
+         m0Yw==
+X-Gm-Message-State: AOAM532Dml8ARD/18mqz/FBP+0ZGY+G6CIE9gzjhNgVuT6ytyxFqGh69
+        gAEAe0MwfmABagep4JEmpEAH5Dzlv/Tw8J0GVedBkA==
+X-Google-Smtp-Source: ABdhPJz5p8eEDM1jXV8oIdEr+s1DrUFc7KSRytGqD9y8Sksy+yYySiwmyuTAjzZ0AfF4bUZhiQFlrBxwkjE7v0d1Ml8=
+X-Received: by 2002:a05:6402:3459:: with SMTP id l25mr3086422edc.55.1631751554949;
+ Wed, 15 Sep 2021 17:19:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210915213550.3696532-1-guro@fb.com>
+In-Reply-To: <20210915213550.3696532-1-guro@fb.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Wed, 15 Sep 2021 17:19:03 -0700
+Message-ID: <CA+khW7i460ey-UFzpMSJ8AP9QeD8ufa4FzLA4PQckNP00ShQSw@mail.gmail.com>
+Subject: Re: [PATCH rfc 0/6] Scheduler BPF
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Rik van Riel <riel@surriel.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Valentin Schneider <Valentin.Schneider@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Barret Rhoden <brho@google.com>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When perf report synthesize events from ARM SPE data, it refers to
-current cpu, pid and tid in the machine.  But there's no place to set
-them in the ARM SPE decoder.  I'm seeing all pid/tid is set to -1 and
-user symbols are not resolved in the output.
+Hi Roman,
 
-  # perf record -a -e arm_spe_0/ts_enable=1/ sleep 1
+On Wed, Sep 15, 2021 at 3:04 PM Roman Gushchin <guro@fb.com> wrote:
+>
+> There is a long history of distro people, system administrators, and
+> application owners tuning the CFS settings in /proc/sys, which are now
+> in debugfs. Looking at what these settings actually did, it ended up
+> boiling down to changing the likelihood of task preemption, or
+> disabling it by setting the wakeup_granularity_ns to more than half of
+> the latency_ns. The other settings didn't really do much for
+> performance.
+>
+> In other words, some our workloads benefit by having long running tasks
+> preempted by tasks handling short running requests, and some workloads
+> that run only short term requests which benefit from never being preempted.
+>
+> This leads to a few observations and ideas:
+> - Different workloads want different policies. Being able to configure
+>   the policy per workload could be useful.
+> - A workload that benefits from not being preempted itself could still
+>   benefit from preempting (low priority) background system tasks.
+> - It would be useful to quickly (and safely) experiment with different
+>   policies in production, without having to shut down applications or reboot
+>   systems, to determine what the policies for different workloads should be.
+> - Only a few workloads are large and sensitive enough to merit their own
+>   policy tweaks. CFS by itself should be good enough for everything else,
+>   and we probably do not want policy tweaks to be a replacement for anything
+>   CFS does.
+>
+> This leads to BPF hooks, which have been successfully used in various
+> kernel subsystems to provide a way for external code to (safely)
+> change a few kernel decisions. BPF tooling makes this pretty easy to do,
+> and the people deploying BPF scripts are already quite used to updating them
+> for new kernel versions.
+>
+> This patchset aims to start a discussion about potential applications of BPF
+> to the scheduler. It also aims to land some very basic BPF infrastructure
+> necessary to add new BPF hooks to the scheduler, a minimal set of useful
+> helpers, corresponding libbpf changes, etc.
+>
 
-  # perf report -q | head
-     8.77%     8.77%  :-1      [kernel.kallsyms]  [k] format_decode
-     7.02%     7.02%  :-1      [kernel.kallsyms]  [k] seq_printf
-     7.02%     7.02%  :-1      [unknown]          [.] 0x0000ffff9f687c34
-     5.26%     5.26%  :-1      [kernel.kallsyms]  [k] vsnprintf
-     3.51%     3.51%  :-1      [kernel.kallsyms]  [k] string
-     3.51%     3.51%  :-1      [unknown]          [.] 0x0000ffff9f66ae20
-     3.51%     3.51%  :-1      [unknown]          [.] 0x0000ffff9f670b3c
-     3.51%     3.51%  :-1      [unknown]          [.] 0x0000ffff9f67c040
-     1.75%     1.75%  :-1      [kernel.kallsyms]  [k] ___cache_free
-     1.75%     1.75%  :-1      [kernel.kallsyms]  [k] __count_memcg_events
+Thanks for initiating the effort of bringing BPF to sched. I've been
+looking at the potential applications of BPF in sched for some time
+and I'm very excited about this work!
 
-Like Intel PT, add context switch records to track task info.  As ARM
-SPE support was added later than PERF_RECORD_SWITCH_CPU_WIDE, I think
-we can safely set the attr.context_switch bit and use it.
+My current focus has been using BPF for profiling performance and
+exporting sched related stats. I think BPF can provide a great help
+there. We have many users in Google that want the kernel to export
+various scheduling metrics to userspace. I think BPF is a good fit for
+such a task. So one of my recent attempts is to use BPF to account for
+the forced idle time caused by core scheduling [1]. This is one of the
+topics I want to discuss in my upcoming LPC BPF talk [2].
 
-Cc: Leo Yan <leo.yan@linaro.org>
-Cc: James Clark <james.clark@arm.com>
-Cc: Tan Xiaojun <tanxiaojun@huawei.com>
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/arch/arm64/util/arm-spe.c |  6 +++++-
- tools/perf/util/arm-spe.c            | 24 ++++++++++++++++++++++++
- 2 files changed, 29 insertions(+), 1 deletion(-)
+Looking forward, I agree that BPF has a great potential in customizing
+policies in the scheduler. It has the advantage of quick
+experimentation and deployment. One of the use cases I'm thinking of
+is to customize load balancing policies. For example, allow using BPF
+to influence whether a task can migrate (can_migrate_task). This is
+currently only an idea.
 
-diff --git a/tools/perf/arch/arm64/util/arm-spe.c b/tools/perf/arch/arm64/util/arm-spe.c
-index a4420d4df503..58ba8d15c573 100644
---- a/tools/perf/arch/arm64/util/arm-spe.c
-+++ b/tools/perf/arch/arm64/util/arm-spe.c
-@@ -166,8 +166,12 @@ static int arm_spe_recording_options(struct auxtrace_record *itr,
- 	tracking_evsel->core.attr.sample_period = 1;
- 
- 	/* In per-cpu case, always need the time of mmap events etc */
--	if (!perf_cpu_map__empty(cpus))
-+	if (!perf_cpu_map__empty(cpus)) {
- 		evsel__set_sample_bit(tracking_evsel, TIME);
-+		evsel__set_sample_bit(tracking_evsel, CPU);
-+		/* also track task context switch */
-+		tracking_evsel->core.attr.context_switch = 1;
-+	}
- 
- 	return 0;
- }
-diff --git a/tools/perf/util/arm-spe.c b/tools/perf/util/arm-spe.c
-index 58b7069c5a5f..0acac0431c48 100644
---- a/tools/perf/util/arm-spe.c
-+++ b/tools/perf/util/arm-spe.c
-@@ -681,6 +681,25 @@ static int arm_spe_process_timeless_queues(struct arm_spe *spe, pid_t tid,
- 	return 0;
- }
- 
-+static int arm_spe_context_switch(struct arm_spe *spe, union perf_event *event,
-+				  struct perf_sample *sample)
-+{
-+	pid_t pid, tid;
-+	int cpu;
-+
-+	if (!(event->header.misc & PERF_RECORD_MISC_SWITCH_OUT))
-+		return 0;
-+
-+	pid = event->context_switch.next_prev_pid;
-+	tid = event->context_switch.next_prev_tid;
-+	cpu = sample->cpu;
-+
-+	if (tid == -1)
-+		pr_warn("context_switch event has no tid\n");
-+
-+	return machine__set_current_tid(spe->machine, cpu, pid, tid);
-+}
-+
- static int arm_spe_process_event(struct perf_session *session,
- 				 union perf_event *event,
- 				 struct perf_sample *sample,
-@@ -718,6 +737,11 @@ static int arm_spe_process_event(struct perf_session *session,
- 		}
- 	} else if (timestamp) {
- 		err = arm_spe_process_queues(spe, timestamp);
-+		if (err)
-+			return err;
-+
-+		if (event->header.type == PERF_RECORD_SWITCH_CPU_WIDE)
-+			err = arm_spe_context_switch(spe, event, sample);
- 	}
- 
- 	return err;
--- 
-2.33.0.464.g1972c5931b-goog
+> Our very first experiments with using BPF in CFS look very promising. We're
+> at a very early stage, however already have seen a nice latency and ~1% RPS
+> wins for our (Facebook's) main web workload.
+>
+> As I know, Google is working on a more radical approach [2]: they aim to move
+> the scheduling code into userspace. It seems that their core motivation is
+> somewhat similar: to make the scheduler changes easier to develop, validate
+> and deploy. Even though their approach is different, they also use BPF for
+> speeding up some hot paths. I think the suggested infrastructure can serve
+> their purpose too.
 
+Yes. Barret can talk more about this, but I think it summarized the
+work of ghOSt [3] and the use of BPF in ghOSt well.
+
+Hao
+
+>
+> An example of an userspace part, which loads some simple hooks is available
+> here [3]. It's very simple, provided only to simplify playing with the provided
+> kernel patches.
+>
+>
+> [1] c722f35b513f ("sched/fair: Bring back select_idle_smt(), but differently")
+> [2] Google's ghOSt: https://linuxplumbersconf.org/event/11/contributions/954/
+> [3] https://github.com/rgushchin/atc
+>
+>
+> Roman Gushchin (6):
+>   bpf: sched: basic infrastructure for scheduler bpf
+>   bpf: sched: add convenient helpers to identify sched entities
+>   bpf: sched: introduce bpf_sched_enable()
+>   sched: cfs: add bpf hooks to control wakeup and tick preemption
+>   libbpf: add support for scheduler bpf programs
+>   bpftool: recognize scheduler programs
+>
+>  include/linux/bpf_sched.h       |  53 ++++++++++++
+>  include/linux/bpf_types.h       |   3 +
+>  include/linux/sched_hook_defs.h |   4 +
+>  include/uapi/linux/bpf.h        |  25 ++++++
+>  kernel/bpf/btf.c                |   1 +
+>  kernel/bpf/syscall.c            |  21 ++++-
+>  kernel/bpf/trampoline.c         |   1 +
+>  kernel/bpf/verifier.c           |   9 ++-
+>  kernel/sched/Makefile           |   1 +
+>  kernel/sched/bpf_sched.c        | 138 ++++++++++++++++++++++++++++++++
+>  kernel/sched/fair.c             |  27 +++++++
+>  scripts/bpf_doc.py              |   2 +
+>  tools/bpf/bpftool/common.c      |   1 +
+>  tools/bpf/bpftool/prog.c        |   1 +
+>  tools/include/uapi/linux/bpf.h  |  25 ++++++
+>  tools/lib/bpf/libbpf.c          |  27 ++++++-
+>  tools/lib/bpf/libbpf.h          |   4 +
+>  tools/lib/bpf/libbpf.map        |   3 +
+>  18 files changed, 341 insertions(+), 5 deletions(-)
+>  create mode 100644 include/linux/bpf_sched.h
+>  create mode 100644 include/linux/sched_hook_defs.h
+>  create mode 100644 kernel/sched/bpf_sched.c
+>
+> --
+> 2.31.1
+>
+
+[1] core scheduling and forced idle: https://lwn.net/Articles/799454/
+[2] BPF talk: https://linuxplumbersconf.org/event/11/contributions/954/
+[3] ghOSt: https://github.com/google/ghost-kernel
