@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB89440E6FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:32:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD0DE40E343
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:20:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348651AbhIPR1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:27:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44344 "EHLO mail.kernel.org"
+        id S1344695AbhIPQqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:46:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51038 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351714AbhIPRT1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:19:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 11E7960D07;
-        Thu, 16 Sep 2021 16:41:32 +0000 (UTC)
+        id S245450AbhIPQk3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:40:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7BF9C6147F;
+        Thu, 16 Sep 2021 16:23:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810493;
-        bh=G8dpfV2PElFHwAWhg2+m5dwGxUJR7xrvlAx2BMa7kq0=;
+        s=korg; t=1631809433;
+        bh=KpKH8o4i6PIgSJ1r6pt29OkXPG0DEy42939Vk8js6VY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bkp+yiYtcnZJKrbVghDu0UCghkuQhVoegOy+jel8oqk0pfFn0j43AHk+EoSPHeKxy
-         r+I8hOLHichUjr6zTG3XM0YBXCmZyK3Qio3ckBQwkHRNHEO8G4wnB1Qp31CbXA79kd
-         NAFMMyrV4/X7bYXNXfPud/Em9mp1gaZz/oJYWoYs=
+        b=IlSYDH/9DYSKL/H3DhXHHjkIAefa+LUCY3AC7KyNeULoaW3vpy/mVeJyG2Z/CuLLk
+         BtsF8vzfvPr7EvA7gp+64/POBmXF69vUyBmOUzpFYMtwr3d33j2eHqkgwqgFgp2i6q
+         v3yT0rsv2X16PtECGWXdHxcjd6CeZMaBZR96fLro=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        stable@vger.kernel.org, Maximilian Luz <luzmaximilian@gmail.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 160/432] drm/ttm: Fix multihop assert on eviction.
-Date:   Thu, 16 Sep 2021 17:58:29 +0200
-Message-Id: <20210916155816.166139983@linuxfoundation.org>
+Subject: [PATCH 5.13 153/380] PCI: Use pci_update_current_state() in pci_enable_device_flags()
+Date:   Thu, 16 Sep 2021 17:58:30 +0200
+Message-Id: <20210916155809.264420011@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,116 +40,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrey Grodzovsky <andrey.grodzovsky@amd.com>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-[ Upstream commit 403797925768d9fa870f5b1ebcd20016b397083b ]
+[ Upstream commit 14858dcc3b3587f4bb5c48e130ee7d68fc2b0a29 ]
 
-Problem:
-Under memory pressure when GTT domain is almost full multihop assert
-will come up when trying to evict LRU BO from VRAM to SYSTEM.
+Updating the current_state field of struct pci_dev the way it is done
+in pci_enable_device_flags() before calling do_pci_enable_device() may
+not work.  For example, if the given PCI device depends on an ACPI
+power resource whose _STA method initially returns 0 ("off"), but the
+config space of the PCI device is accessible and the power state
+retrieved from the PCI_PM_CTRL register is D0, the current_state
+field in the struct pci_dev representing that device will get out of
+sync with the power.state of its ACPI companion object and that will
+lead to power management issues going forward.
 
-Fix:
-Don't assert on multihop error in evict code but rather do a retry
-as we do in ttm_bo_move_buffer
+To avoid such issues, make pci_enable_device_flags() call
+pci_update_current_state() which takes ACPI device power management
+into account, if present, to retrieve the current power state of the
+device.
 
-Signed-off-by: Andrey Grodzovsky <andrey.grodzovsky@amd.com>
-Reviewed-by: Christian König <christian.koenig@amd.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210622162339.761651-6-andrey.grodzovsky@amd.com
+Link: https://lore.kernel.org/lkml/20210314000439.3138941-1-luzmaximilian@gmail.com/
+Reported-by: Maximilian Luz <luzmaximilian@gmail.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Tested-by: Maximilian Luz <luzmaximilian@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/ttm/ttm_bo.c | 63 +++++++++++++++++++-----------------
- 1 file changed, 34 insertions(+), 29 deletions(-)
+ drivers/pci/pci.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/drivers/gpu/drm/ttm/ttm_bo.c b/drivers/gpu/drm/ttm/ttm_bo.c
-index 8d7fd65ccced..32202385073a 100644
---- a/drivers/gpu/drm/ttm/ttm_bo.c
-+++ b/drivers/gpu/drm/ttm/ttm_bo.c
-@@ -488,6 +488,31 @@ void ttm_bo_unlock_delayed_workqueue(struct ttm_device *bdev, int resched)
- }
- EXPORT_SYMBOL(ttm_bo_unlock_delayed_workqueue);
- 
-+static int ttm_bo_bounce_temp_buffer(struct ttm_buffer_object *bo,
-+				     struct ttm_resource **mem,
-+				     struct ttm_operation_ctx *ctx,
-+				     struct ttm_place *hop)
-+{
-+	struct ttm_placement hop_placement;
-+	struct ttm_resource *hop_mem;
-+	int ret;
-+
-+	hop_placement.num_placement = hop_placement.num_busy_placement = 1;
-+	hop_placement.placement = hop_placement.busy_placement = hop;
-+
-+	/* find space in the bounce domain */
-+	ret = ttm_bo_mem_space(bo, &hop_placement, &hop_mem, ctx);
-+	if (ret)
-+		return ret;
-+	/* move to the bounce domain */
-+	ret = ttm_bo_handle_move_mem(bo, hop_mem, false, ctx, NULL);
-+	if (ret) {
-+		ttm_resource_free(bo, &hop_mem);
-+		return ret;
-+	}
-+	return 0;
-+}
-+
- static int ttm_bo_evict(struct ttm_buffer_object *bo,
- 			struct ttm_operation_ctx *ctx)
- {
-@@ -527,12 +552,17 @@ static int ttm_bo_evict(struct ttm_buffer_object *bo,
- 		goto out;
- 	}
- 
-+bounce:
- 	ret = ttm_bo_handle_move_mem(bo, evict_mem, true, ctx, &hop);
--	if (unlikely(ret)) {
--		WARN(ret == -EMULTIHOP, "Unexpected multihop in eviction - likely driver bug\n");
--		if (ret != -ERESTARTSYS)
-+	if (ret == -EMULTIHOP) {
-+		ret = ttm_bo_bounce_temp_buffer(bo, &evict_mem, ctx, &hop);
-+		if (ret) {
- 			pr_err("Buffer eviction failed\n");
--		ttm_resource_free(bo, &evict_mem);
-+			ttm_resource_free(bo, &evict_mem);
-+			goto out;
-+		}
-+		/* try and move to final place now. */
-+		goto bounce;
- 	}
- out:
- 	return ret;
-@@ -847,31 +877,6 @@ int ttm_bo_mem_space(struct ttm_buffer_object *bo,
- }
- EXPORT_SYMBOL(ttm_bo_mem_space);
- 
--static int ttm_bo_bounce_temp_buffer(struct ttm_buffer_object *bo,
--				     struct ttm_resource **mem,
--				     struct ttm_operation_ctx *ctx,
--				     struct ttm_place *hop)
--{
--	struct ttm_placement hop_placement;
--	struct ttm_resource *hop_mem;
--	int ret;
--
--	hop_placement.num_placement = hop_placement.num_busy_placement = 1;
--	hop_placement.placement = hop_placement.busy_placement = hop;
--
--	/* find space in the bounce domain */
--	ret = ttm_bo_mem_space(bo, &hop_placement, &hop_mem, ctx);
--	if (ret)
--		return ret;
--	/* move to the bounce domain */
--	ret = ttm_bo_handle_move_mem(bo, hop_mem, false, ctx, NULL);
--	if (ret) {
--		ttm_resource_free(bo, &hop_mem);
--		return ret;
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index a9d0530b7846..8b3cb62c63cc 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -1906,11 +1906,7 @@ static int pci_enable_device_flags(struct pci_dev *dev, unsigned long flags)
+ 	 * so that things like MSI message writing will behave as expected
+ 	 * (e.g. if the device really is in D0 at enable time).
+ 	 */
+-	if (dev->pm_cap) {
+-		u16 pmcsr;
+-		pci_read_config_word(dev, dev->pm_cap + PCI_PM_CTRL, &pmcsr);
+-		dev->current_state = (pmcsr & PCI_PM_CTRL_STATE_MASK);
 -	}
--	return 0;
--}
--
- static int ttm_bo_move_buffer(struct ttm_buffer_object *bo,
- 			      struct ttm_placement *placement,
- 			      struct ttm_operation_ctx *ctx)
++	pci_update_current_state(dev, dev->current_state);
+ 
+ 	if (atomic_inc_return(&dev->enable_cnt) > 1)
+ 		return 0;		/* already enabled */
 -- 
 2.30.2
 
