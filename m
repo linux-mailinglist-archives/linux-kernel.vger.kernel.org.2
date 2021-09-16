@@ -2,112 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D097E40D2BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 07:04:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24A2640D2C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 07:04:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234265AbhIPFFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 01:05:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59634 "EHLO
+        id S234289AbhIPFGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 01:06:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234176AbhIPFF3 (ORCPT
+        with ESMTP id S233549AbhIPFFw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 01:05:29 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E38AC061764
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 22:04:09 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id on12-20020a17090b1d0c00b001997c60aa29so5432118pjb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 22:04:09 -0700 (PDT)
+        Thu, 16 Sep 2021 01:05:52 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91A9BC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 22:04:31 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id w19so4717103pfn.12
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 22:04:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:references:cc:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=bNiWf9Qx2imX/YcNH8RlmyCW0vUQMoavZKqD+Jf5RmY=;
-        b=GDVTW6CsD48MbgHnM3bpwPe+iOpZM1SWdd3GYBRRL4mAplEpWcA4JVZ2oCfY1r4sCH
-         8sCe/fdEiVzz7SCKtZ1PJGq3DW4O8suiVbPc05v0CdOZhx7Blq+mJaRGaN8OrjDVhwWA
-         XuBQU0kRgBMhurRdEAwTqXrJ+dWKIJ1fKeSU/S7gAFpL/IGCQYuuImy/g3W8W/dAxT/9
-         yU6c82787OZYlp6b7eDdVQTO2lABAg+r3Q4KDsXxGd142ZW37FkJS/HO7WRcD3z6uEWb
-         mxduj+AqOHIolzyOJ/NGYJRmUKxUvnZ7f6yVTpNmJn3cHSDOMWNu63DUUK9QvWC37S+M
-         tLSg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=m8pZguFuGhNfWPMK3DmEgTUY5gKWHuK0UZr8qzbuIE8=;
+        b=B+TGQJxmKEGSc6t2j6mF/MTC9uF/Pt3UZv+uKFZCWgbwxD1YxsKnbgyHRwSbpUach5
+         pu/GkPk4PdJzibuK3pQ7TDNeOdyfU6wzNrJ8vn5kpPVOBk6dhlxVl2mV2S8FJKYdUsoz
+         n1KG/CinnA/0MLc9ZcnNY7Xo1ce52YE+01PYSeQyFeHMoOdC9LKy/bFKMm1yLeI7Ce5A
+         nLFhM08VvvPf7HkfzQFIiKPKKvAqTOGxPS+y2eV350lMKLII2AwBebdrYy8PFP2420XI
+         alBvBbQvfAgu8hMp1NSfsIuBc427UgJnfOPL8SkwLA1bD3WrdpFmzVqKPy+5RW5UJNs9
+         F1nA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=bNiWf9Qx2imX/YcNH8RlmyCW0vUQMoavZKqD+Jf5RmY=;
-        b=xrAWhKYfaDW1xO49nqGhlFGyA9YbJ+bajKmSbc0oGF5+2t+0y8QDxg2Gs4UpUFYLTQ
-         ZfZxP1YQJQdn+0LKxiYEcAMLCGqmaJzGlUC7Y4kp1HDVaYJlN577ci5IAi1uo/g7BwG/
-         c2a//yKwolxExWPIyz1sZBMTLRrzbbAvVwZWyqy5JbE7Grl5DSPlmVyVCNg7xo88jeXY
-         C6X3mEDDc+c51SdOvyRF/HXcCZG3PQYF5kyVPla4m6X/ZtKYyXfjTwA3Ny+jCyOcFDY+
-         7bxKmgAT8dZYR5MNKTCkx6/5Ht8o+RBtZFSvXagkal3m6rp/KTECd7XqrJCkL5qtwCoB
-         5pUA==
-X-Gm-Message-State: AOAM531N4x5yb+fvUESTOoyThPS1hTXPlq4ljidADIO8P/TIpktH2c+4
-        EUDGzhllhMcNotFCSAs3AxyFQKYEER4=
-X-Google-Smtp-Source: ABdhPJxWGczot1vRtTzuXPUQ78kg7N51wpA0Jm8gGIRGNjgfbIyKgaWNPFrBiG8LwIwPIQXiXFCjUw==
-X-Received: by 2002:a17:902:ab0a:b0:13c:9801:a33b with SMTP id ik10-20020a170902ab0a00b0013c9801a33bmr2929998plb.54.1631768648261;
-        Wed, 15 Sep 2021 22:04:08 -0700 (PDT)
-Received: from [10.1.1.26] (222-155-4-20-adsl.sparkbb.co.nz. [222.155.4.20])
-        by smtp.gmail.com with ESMTPSA id n41sm1476030pfv.108.2021.09.15.22.04.04
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 15 Sep 2021 22:04:07 -0700 (PDT)
-Subject: Re: [PATCH 3/3] m68k: leave stack mangling to asm wrapper of
- sigreturn()
-To:     Al Viro <viro@zeniv.linux.org.uk>
-References: <YP2c1xk9LJ0zE3KW@zeniv-ca.linux.org.uk>
- <YP2dTQPm1wGPWFgD@zeniv-ca.linux.org.uk>
- <08183665-f846-0c5e-a8c7-d0a65e78a3da@gmail.com>
- <YUKNn3erTbH+ytpM@zeniv-ca.linux.org.uk>
- <48dafad1-4f0c-4ab7-792c-b34a81d26799@gmail.com>
- <YUK4MWzI73lwRq0W@zeniv-ca.linux.org.uk>
-Cc:     linux-m68k@lists.linux-m68k.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-kernel@vger.kernel.org
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <59a44e17-bff8-041e-b704-2b1d97601ce7@gmail.com>
-Date:   Thu, 16 Sep 2021 17:02:22 +1200
-User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:45.0) Gecko/20100101
- Thunderbird/45.8.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=m8pZguFuGhNfWPMK3DmEgTUY5gKWHuK0UZr8qzbuIE8=;
+        b=BaPOH3AwFaNvnNIDGvWU0y1Yv/JacO+LcGgTpc+F0JCHetCR2YQ+f6Aa2UHNyzI8GW
+         /JMct+IdTxSl4AHKOKJzKdX003mEO0UiwAJ/GWVxwexdjxOfOKhXXW1G5eLeJWWZK1Nq
+         cBcorXK/DsyDr4OtgMylWP3V28z7Z+lveobHGd2kmu76CWF3Aq70UUFkv7WoxdLs3b4x
+         iBSPp2jkxBU3cXMeMfgAxAL3j5bGZnsnGka7AH/jWR+2XyR/kWToJYcNzMDNWEl9zA8u
+         YTL1ojI/HcAw1C6ulGnVu3jXMhjs9xsywo/lZEo8QnkgfATdfhjkpqSnxFGm3FTq1A6E
+         UqdQ==
+X-Gm-Message-State: AOAM531RlVxhuyc1Sii5s2ZzhQs0XNA6VHxp/FmQZRj7IqqNZhz8Tdjt
+        MrSoOWpGmsDuIi1e1FLnTf5Rww==
+X-Google-Smtp-Source: ABdhPJyZ3lZHJLjMxaOxtl//zK+Bx2+Knn0ildGND0zESTIraqGjWOSxIEkQV9lV/6Ws71LrCdJJLA==
+X-Received: by 2002:a05:6a00:22d5:b0:440:3750:f5f4 with SMTP id f21-20020a056a0022d500b004403750f5f4mr3579272pfj.64.1631768670992;
+        Wed, 15 Sep 2021 22:04:30 -0700 (PDT)
+Received: from dragon (80.251.214.228.16clouds.com. [80.251.214.228])
+        by smtp.gmail.com with ESMTPSA id g13sm1440188pfi.176.2021.09.15.22.04.28
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 15 Sep 2021 22:04:30 -0700 (PDT)
+Date:   Thu, 16 Sep 2021 13:04:24 +0800
+From:   Shawn Guo <shawn.guo@linaro.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] clk: qcom: smd-rpm: Add rate hooks for
+ clk_smd_rpm_branch_ops
+Message-ID: <20210916050423.GG25255@dragon>
+References: <20210914025554.5686-1-shawn.guo@linaro.org>
+ <20210914025554.5686-2-shawn.guo@linaro.org>
+ <163165658855.763609.14080313241484048687@swboyd.mtv.corp.google.com>
+ <20210915150526.GE25255@dragon>
+ <YUIr/002dfXxDWDY@ripper>
 MIME-Version: 1.0
-In-Reply-To: <YUK4MWzI73lwRq0W@zeniv-ca.linux.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YUIr/002dfXxDWDY@ripper>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Al,
+On Wed, Sep 15, 2021 at 10:23:11AM -0700, Bjorn Andersson wrote:
+> On Wed 15 Sep 08:05 PDT 2021, Shawn Guo wrote:
+> 
+> > On Tue, Sep 14, 2021 at 02:56:28PM -0700, Stephen Boyd wrote:
+> > > Quoting Shawn Guo (2021-09-13 19:55:52)
+> > > > On QCM2290 platform, the clock xo_board runs at 38400000, while the
+> > > > child clock bi_tcxo needs to run at 19200000.  That said,
+> > > > clk_smd_rpm_branch_ops needs the capability of setting rate. Add rate
+> > > > hooks into clk_smd_rpm_branch_ops to make it possible.
+> > > 
+> > > This doesn't sound right. The branch is a simple on/off. If xo_board is
+> > > 38.4MHz, then there is an internal divider in the SoC that makes bi_tcxo
+> > > (i.e. the root of the entire clk tree) be 19.2MHz. We don't model the
+> > > divider, I guess because it isn't very important to. Instead, we tack on
+> > > a divider field and implement recalc_rate op. See clk-rpmh.c in the qcom
+> > > directory for this.
+> > 
+> > Thanks for the comment, Stephen!  To be honest, I copied the
+> > implementation from vendor kernel, and wasn't really sure if it's
+> > correct or the best.
+> > 
+> > So here is what I get based on your suggestion.  Let's me know if
+> > it's how you wanted it to be.  Thanks!
+> > 
+> > Shawn
+> > 
+> > ----8<---------
+> > 
+> > From 23dda79fee412738f046b89bdd20ef95a24c35cc Mon Sep 17 00:00:00 2001
+> > From: Shawn Guo <shawn.guo@linaro.org>
+> > Date: Wed, 15 Sep 2021 22:00:32 +0800
+> > Subject: [PATCH] clk: qcom: smd-rpm: Add a divider field for branch clock
+> > 
+> > Similar to clk-rpmh, clk-smd-rpm has the same need to handle the case
+> > where an internal divider is there between xo_board and bi_tcxo.  The
+> > change is made in the a back compatible way below.
+> > 
+> >  - Add div field to struct clk_smd_rpm, and have
+> >    __DEFINE_CLK_SMD_RPM_BRANCH() assign it.
+> > 
+> >  - Update all existing __DEFINE_CLK_SMD_RPM_BRANCH() wrappers to pass a
+> >    zero div.
+> > 
+> >  - Add DEFINE_CLK_SMD_RPM_BRANCH_DIV() which doesn't take rate argument
+> >    but div.
+> > 
+> >  - Update clk_smd_rpm_recalc_rate() to handle div and add it as
+> >    .recalc_rate of clk_smd_rpm_branch_ops.
+> > 
+> 
+> This looks good to me.
+> 
+> And the confirmed that the xo_board in sdm630.dtsi (and hence SDM660) is
+> wrong, it should be 38.4MHz as well.
 
-On 16/09/21 15:21, Al Viro wrote:
-> On Thu, Sep 16, 2021 at 12:53:53PM +1200, Michael Schmitz wrote:
->>> IOW, what would be the benefit of trying to avoid unconditional gap there?
->>
->> Avoiding a kernel stack overflow - there are comments in the code that warn
->> against that, but those may be largely historic...
->
-> This is syscall entry; moreover, it critically relies upon the fixed stack
-> layout - type 0 exception frame + pt_regs + switch_stack + (now) gap.
+Hmm, I see CAF kernel has 19.2MHz for SDM630/660 xo_board clock.  Or am
+I looking at the wrong place?
 
-AFAIR, the concerns in the comments I saw were about interrupts - come 
-to think of it, back in the early days, we used to have 'fast' and 
-'slow' interrupt handlers, with much of the heavy lifting done in the 
-handler, and slow interrupts allowed to lower the IPL. Probably no 
-longer relevant.
+Shawn
 
-> Followed by fairly shallow C call chain.  I suspect that the deepest you
-> can get there is when you get an unmapped page when reading the sigframe
-> and go into page fault handling, with call chain going into some filesystem's
-> ->readpage().  If it was that close to stack overflow, we'd see them all
-> the time in e.g. random net ioctl doing copy_from_user() - that's going
-> to be deeper.  Or in stat(2), for that matter.
-
-Your points are well taken - I can see now that my concerns are without 
-merit.
-
-The only question that remains is whether the third patch can also go to 
--stable. Most of my testing was with all three patches applied, I can 
-drop the third one and retest if you're worries the third one is not 
-appropriate for -stable.
-
-Cheers,
-
-	Michael
-
+> Unfortunately adding the appropriate divider to the sdm660 bcxo would
+> break existing .dtsi (but we can probably convince the community that it
+> would be ok, if we do it now).
