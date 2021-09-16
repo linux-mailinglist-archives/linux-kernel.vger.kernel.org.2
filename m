@@ -2,177 +2,368 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D624C40DCB8
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 16:31:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA69440DCBB
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 16:32:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238358AbhIPOct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 10:32:49 -0400
-Received: from mail-mw2nam12on2052.outbound.protection.outlook.com ([40.107.244.52]:42145
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234701AbhIPOcr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 10:32:47 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Wn8xgHpWe2fkS6K8lvtZTvJFpiK5mA7zw3N6V4Mc5eZFCxfxHYhjjXOLaixxSJpcqSdmEezr672QfaDPCgHAstL6HZO6Wmqs2tULfA64r6Fo1TGUdBfaQPYNB5zBWrxX0POlLqUqaSR3SXsn64BnqEKI2bJmGbyFex7OFHprFNXvqSB74nLpQMOZ51LNnzUqStUGdpeLPKn67gGl+qa4b20owIDLtjWiqRN8q2TY6bAPw6IpiCYymIVrSWm3L6/E/CSL+v2fOT4uqol7mQLxDNGamU79LV2laas22mFvtKsZslURky1tTI6NFs7s2ZylpBr/wkNQcnftlfmlmBH1sg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=9lC98kgXAnMHWK/7KlYghYv4Ptq/fhmd+Sfhj9VgDtw=;
- b=Kfu/2/Z/Qsq3FiW3mEihhCi8nJdGb4BpMV0+WPRZ+qYUDH7lFPsRdacr1EcFTBA5gNID6l9FKseE6KEoD9kA3XpPvIIWFnVcbtvaeUCTMqrgqW7RIs30hvfwgNXaOjqs4u8KEtYR3vvH9Bv3cBWYPj2amPXY87FyBSy9VNiUgBOE1Cxl6kPqZeOvJUpThLIdqHnmV03DD3wxGZZvDLC2nnerpx3ZVgEpdyBOIQDddPu74f0C5P1yscthimOAr4kKExrgypfcuxecHkAi6XmiWvwqBCg6vxfMfwzMUjQ0TqRwvvDd+oaQbylRayfMpjTeixHAlCA+lVtbA3ZJX7c1ow==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.36) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9lC98kgXAnMHWK/7KlYghYv4Ptq/fhmd+Sfhj9VgDtw=;
- b=fxEVEYTpI77NaiQ/h1C82mwJSVi07sTn2vmUhvXiYo7rPrZxxIGNnZghg442D0K9EvesktOFfChBrBSN+DttuD9xjawkT9+1p0pdmc8W4Q3dQpbZs7dVttK0ShCQeDcUW7V3X6TVvybGlTd61gjSRB4Fr0MlTmC0ZFgzO1yqqzjtjVUUyv0DzAm6++n2WxGKaBN/0ySxxHjXH9AD8dJKduDdEc9NrUj3qdCg97egt6hM8QcKRuW63c2/0CPm0t+qkzzqHwD8wESKOdVvoBEsvjt9kttRHXkLAyumlIbP7X0fd7ZxWCaKHTAZ9AjATIOpmabMk3858c0rrCLGIVDKjw==
-Received: from BN9PR03CA0372.namprd03.prod.outlook.com (2603:10b6:408:f7::17)
- by BL1PR12MB5047.namprd12.prod.outlook.com (2603:10b6:208:31a::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Thu, 16 Sep
- 2021 14:31:25 +0000
-Received: from BN8NAM11FT060.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:f7:cafe::2) by BN9PR03CA0372.outlook.office365.com
- (2603:10b6:408:f7::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend
- Transport; Thu, 16 Sep 2021 14:31:25 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.36)
- smtp.mailfrom=nvidia.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.36 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.36; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.36) by
- BN8NAM11FT060.mail.protection.outlook.com (10.13.177.211) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4523.14 via Frontend Transport; Thu, 16 Sep 2021 14:31:25 +0000
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 16 Sep
- 2021 14:30:54 +0000
-Received: from [10.26.49.12] (172.20.187.5) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 16 Sep
- 2021 14:30:51 +0000
-Subject: Re: [PATCH v5 1/4] dt-bindings: dmaengine: Add doc for tegra gpcdma
-To:     Akhil R <akhilrajeev@nvidia.com>
-CC:     <dan.j.williams@intel.com>, <dmaengine@vger.kernel.org>,
-        <kyarlagadda@nvidia.com>, <ldewangan@nvidia.com>,
-        <linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <p.zabel@pengutronix.de>, <rgumasta@nvidia.com>,
-        <thierry.reding@gmail.com>, <vkoul@kernel.org>
-References: <1631111538-31467-1-git-send-email-akhilrajeev@nvidia.com>
- <1631794731-15226-1-git-send-email-akhilrajeev@nvidia.com>
- <1631794731-15226-2-git-send-email-akhilrajeev@nvidia.com>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <8bedb0a5-8d2d-a2fd-a816-9c19becdcf70@nvidia.com>
-Date:   Thu, 16 Sep 2021 15:30:49 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S235911AbhIPOdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 10:33:16 -0400
+Received: from mail-il1-f171.google.com ([209.85.166.171]:33527 "EHLO
+        mail-il1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238387AbhIPOdH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 10:33:07 -0400
+Received: by mail-il1-f171.google.com with SMTP id b6so6882867ilv.0;
+        Thu, 16 Sep 2021 07:31:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fAacrA6W73TmTJowVU/M8C9ofZVBuSlLkQTY41xYT6U=;
+        b=vkDXaRzERSridGyLUKwL6+ELHLjhiZiVFyDERzMg6HsUJxwi9w4E8tlXQrzycvjTQL
+         hPpxZa+5lkqEutW9403IhGAZHxxyT71M2JniXVX6GlCCpxujJ7vRgg5+aiD6AKQhgQU5
+         X1H9yQ0GtNUunSVXP4Vy5wx2jw3OYF6mNnCKV2inIyvkzje1TMMcPiaIDWSFoq4uwCmC
+         q/aZXFMgYgaZnB58+LmeRuV9eIj0jPlo6RTFNPvbreaT4DbfLkZrSKsIodO5+Ia0U8rf
+         PMf5Jdui0HkUckXaUqLAirUcqjAT4yoyVjviFF0Jo808ERzkED1MiZhMWITlqhUzNWP9
+         Ai3Q==
+X-Gm-Message-State: AOAM532ZMvYGbKe1OtBpC2OHD3s9emOHizzZbr4+9rSpBzOVfX8t6BDE
+        boVeNELtyqotjLSn2VkFKQ==
+X-Google-Smtp-Source: ABdhPJxv+5expow/nn+OkFIv10yDu52fxIFCNm7rj0izG4tFaocYL3e71M8U5rP0NItOjB9IH3YDcA==
+X-Received: by 2002:a05:6e02:1d8b:: with SMTP id h11mr3938952ila.94.1631802706225;
+        Thu, 16 Sep 2021 07:31:46 -0700 (PDT)
+Received: from robh.at.kernel.org (96-84-70-89-static.hfc.comcastbusiness.net. [96.84.70.89])
+        by smtp.gmail.com with ESMTPSA id e10sm1735496ili.53.2021.09.16.07.31.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Sep 2021 07:31:45 -0700 (PDT)
+Received: (nullmailer pid 1307845 invoked by uid 1000);
+        Thu, 16 Sep 2021 14:31:44 -0000
+Date:   Thu, 16 Sep 2021 09:31:44 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Chia-Wei Wang <chiawei_wang@aspeedtech.com>
+Cc:     joel@jms.id.au, andrew@aj.id.au,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, openbmc@lists.ozlabs.org,
+        osk@google.com, yulei.sh@bytedance.com
+Subject: Re: [PATCH v5 1/4] dt-bindings: mfd: aspeed-lpc: Convert to YAML
+ schema
+Message-ID: <YUNVUAF4Keij2OUA@robh.at.kernel.org>
+References: <20210916092515.10553-1-chiawei_wang@aspeedtech.com>
+ <20210916092515.10553-2-chiawei_wang@aspeedtech.com>
 MIME-Version: 1.0
-In-Reply-To: <1631794731-15226-2-git-send-email-akhilrajeev@nvidia.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.187.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d22cd0c3-3770-4d35-91c6-08d9791ea9fc
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5047:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5047F9178CDF2F941A53CD01D9DC9@BL1PR12MB5047.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: tQmV68vtauPMfw9E6RSFnPOYp38UJtz8y7x5W2y39Nw66IOz29ZML5HZWAiZ5Y3J99NHCTBnjsjUtc72SLPBIdomDo+IPso5ggbLRwUnLkFZ2pOKwgv0zjS9iaZhgPsgTPVPFl8LUuquWAihQ++yiEQYwM/kEp8nTja/rCPu+szs6cAgKCG6mnf1x1mImRKocdI4NAdzYS8NIzpFZ0k6dvmrz9g9Ll+K+D4gefabGn2oWtzOmhk1b9fSAAMpu/iNUOD0clnYIJzk7iXy2iNQhfUVPBmIBE/X2bcvZFhoXajx8zLMvD2sT2gSW0URNTBCFDliHmiKNPX/gxLWlo2NVvHuJiAqkGgK9SRyl95PO9JPQiVY7Cro9HbPu9ZDHEa7tgCYR5cJo/g8skdMu++/wdLNTMTRm4Z5jWT8LmUTg8WB0UjGoK2lJGWnDYdvQyUMaCXedZP4JZifvs+cFq/VpHnlkpquCTj08bPbeWgLsIgxLKD14rynFvcwwEP93EuviyTLwqfFAKU2gmjTSQO6Cf64fC34hPddlTUsFl+x4MvxPLsakeXoQBtHMfzUGbp9N9pSaLh0/CvtM24HEm/p6h319EFoIcIdzCKdSGC/GSbMbB6dwyd/lEP2Z0DomVVYI7woPU5ddWahz9n1lZInq59tFeIEsAFFs663eOxreYG8rH01a3LfSs6UmZDVRu8B5SeRKDRUt5JFk7cllTmLXycO2zBVEAkzIO0Qg2MoRAM1uYOuDZw6dXJLtnP2BT1KBIc1vXdSVaPhUJS2uzgaXQT2UKuwQtMDr6P046V/t5YOMFHzde6rW0Zd2DLWJqr4M4oyyDsjsY+3mSreIx3+Nql0E0aRqCC5JsJVMsX3E1s=
-X-Forefront-Antispam-Report: CIP:216.228.112.36;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid05.nvidia.com;CAT:NONE;SFS:(4636009)(136003)(346002)(396003)(376002)(39860400002)(36840700001)(46966006)(37006003)(53546011)(16576012)(54906003)(36756003)(36906005)(316002)(70586007)(70206006)(7636003)(2616005)(86362001)(6636002)(82740400003)(31696002)(336012)(31686004)(966005)(2906002)(426003)(47076005)(186003)(82310400003)(478600001)(5660300002)(356005)(16526019)(6862004)(8936002)(26005)(36860700001)(4326008)(8676002)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2021 14:31:25.5748
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: d22cd0c3-3770-4d35-91c6-08d9791ea9fc
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.36];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT060.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5047
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210916092515.10553-2-chiawei_wang@aspeedtech.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 16/09/2021 13:18, Akhil R wrote:
-> Add DT binding document for Nvidia Tegra GPCDMA controller.
+On Thu, Sep 16, 2021 at 05:25:12PM +0800, Chia-Wei Wang wrote:
+> Convert the bindings of Aspeed LPC from text file into YAML schema.
 > 
-> Signed-off-by: Rajesh Gumasta <rgumasta@nvidia.com>
-> Signed-off-by: Akhil R <akhilrajeev@nvidia.com>
+> Signed-off-by: Chia-Wei Wang <chiawei_wang@aspeedtech.com>
 > ---
->   .../bindings/dma/nvidia,tegra186-gpc-dma.yaml      | 107 +++++++++++++++++++++
->   1 file changed, 107 insertions(+)
->   create mode 100644 Documentation/devicetree/bindings/dma/nvidia,tegra186-gpc-dma.yaml
+>  .../devicetree/bindings/mfd/aspeed-lpc.txt    | 157 ---------------
+>  .../devicetree/bindings/mfd/aspeed-lpc.yaml   | 187 ++++++++++++++++++
+>  2 files changed, 187 insertions(+), 157 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/mfd/aspeed-lpc.txt
+>  create mode 100644 Documentation/devicetree/bindings/mfd/aspeed-lpc.yaml
 > 
-> diff --git a/Documentation/devicetree/bindings/dma/nvidia,tegra186-gpc-dma.yaml b/Documentation/devicetree/bindings/dma/nvidia,tegra186-gpc-dma.yaml
+> diff --git a/Documentation/devicetree/bindings/mfd/aspeed-lpc.txt b/Documentation/devicetree/bindings/mfd/aspeed-lpc.txt
+> deleted file mode 100644
+> index 936aa108eab4..000000000000
+> --- a/Documentation/devicetree/bindings/mfd/aspeed-lpc.txt
+> +++ /dev/null
+> @@ -1,157 +0,0 @@
+> -======================================================================
+> -Device tree bindings for the Aspeed Low Pin Count (LPC) Bus Controller
+> -======================================================================
+> -
+> -The LPC bus is a means to bridge a host CPU to a number of low-bandwidth
+> -peripheral devices, replacing the use of the ISA bus in the age of PCI[0]. The
+> -primary use case of the Aspeed LPC controller is as a slave on the bus
+> -(typically in a Baseboard Management Controller SoC), but under certain
+> -conditions it can also take the role of bus master.
+> -
+> -The LPC controller is represented as a multi-function device to account for the
+> -mix of functionality, which includes, but is not limited to:
+> -
+> -* An IPMI Block Transfer[2] Controller
+> -
+> -* An LPC Host Controller: Manages LPC functions such as host vs slave mode, the
+> -  physical properties of some LPC pins, configuration of serial IRQs, and
+> -  APB-to-LPC bridging amonst other functions.
+> -
+> -* An LPC Host Interface Controller: Manages functions exposed to the host such
+> -  as LPC firmware hub cycles, configuration of the LPC-to-AHB mapping, UART
+> -  management and bus snoop configuration.
+> -
+> -* A set of SuperIO[3] scratch registers: Enables implementation of e.g. custom
+> -  hardware management protocols for handover between the host and baseboard
+> -  management controller.
+> -
+> -Additionally the state of the LPC controller influences the pinmux
+> -configuration, therefore the host portion of the controller is exposed as a
+> -syscon as a means to arbitrate access.
+> -
+> -[0] http://www.intel.com/design/chipsets/industry/25128901.pdf
+> -[1] https://www.renesas.com/en-sg/doc/products/mpumcu/001/rej09b0078_h8s2168.pdf?key=7c88837454702128622bee53acbda8f4
+> -[2] https://www.intel.com/content/dam/www/public/us/en/documents/product-briefs/ipmi-second-gen-interface-spec-v2-rev1-1.pdf
+> -[3] https://en.wikipedia.org/wiki/Super_I/O
+> -
+> -Required properties
+> -===================
+> -
+> -- compatible:	One of:
+> -		"aspeed,ast2400-lpc-v2", "simple-mfd", "syscon"
+> -		"aspeed,ast2500-lpc-v2", "simple-mfd", "syscon"
+> -		"aspeed,ast2600-lpc-v2", "simple-mfd", "syscon"
+> -
+> -- reg:		contains the physical address and length values of the Aspeed
+> -                LPC memory region.
+> -
+> -- #address-cells: <1>
+> -- #size-cells:	<1>
+> -- ranges:	Maps 0 to the physical address and length of the LPC memory
+> -                region
+> -
+> -Example:
+> -
+> -lpc: lpc@1e789000 {
+> -	compatible = "aspeed,ast2500-lpc-v2", "simple-mfd", "syscon";
+> -	reg = <0x1e789000 0x1000>;
+> -
+> -	#address-cells = <1>;
+> -	#size-cells = <1>;
+> -	ranges = <0x0 0x1e789000 0x1000>;
+> -
+> -	lpc_snoop: lpc-snoop@0 {
+> -		compatible = "aspeed,ast2600-lpc-snoop";
+> -		reg = <0x0 0x80>;
+> -		interrupts = <GIC_SPI 144 IRQ_TYPE_LEVEL_HIGH>;
+> -		snoop-ports = <0x80>;
+> -	};
+> -};
+> -
+> -
+> -LPC Host Interface Controller
+> --------------------
+> -
+> -The LPC Host Interface Controller manages functions exposed to the host such as
+> -LPC firmware hub cycles, configuration of the LPC-to-AHB mapping, UART
+> -management and bus snoop configuration.
+> -
+> -Required properties:
+> -
+> -- compatible:	One of:
+> -		"aspeed,ast2400-lpc-ctrl";
+> -		"aspeed,ast2500-lpc-ctrl";
+> -		"aspeed,ast2600-lpc-ctrl";
+> -
+> -- reg:		contains offset/length values of the host interface controller
+> -		memory regions
+> -
+> -- clocks:	contains a phandle to the syscon node describing the clocks.
+> -		There should then be one cell representing the clock to use
+> -
+> -Optional properties:
+> -
+> -- memory-region: A phandle to a reserved_memory region to be used for the LPC
+> -		to AHB mapping
+> -
+> -- flash:	A phandle to the SPI flash controller containing the flash to
+> -		be exposed over the LPC to AHB mapping
+> -
+> -Example:
+> -
+> -lpc_ctrl: lpc-ctrl@80 {
+> -	compatible = "aspeed,ast2500-lpc-ctrl";
+> -	reg = <0x80 0x80>;
+> -	clocks = <&syscon ASPEED_CLK_GATE_LCLK>;
+> -	memory-region = <&flash_memory>;
+> -	flash = <&spi>;
+> -};
+> -
+> -LPC Host Controller
+> --------------------
+> -
+> -The Aspeed LPC Host Controller configures the Low Pin Count (LPC) bus behaviour
+> -between the host and the baseboard management controller. The registers exist
+> -in the "host" portion of the Aspeed LPC controller, which must be the parent of
+> -the LPC host controller node.
+> -
+> -Required properties:
+> -
+> -- compatible:	One of:
+> -		"aspeed,ast2400-lhc";
+> -		"aspeed,ast2500-lhc";
+> -		"aspeed,ast2600-lhc";
+> -
+> -- reg:		contains offset/length values of the LHC memory regions. In the
+> -		AST2400 and AST2500 there are two regions.
+> -
+> -Example:
+> -
+> -lhc: lhc@a0 {
+> -	compatible = "aspeed,ast2500-lhc";
+> -	reg = <0xa0 0x24 0xc8 0x8>;
+> -};
+> -
+> -LPC reset control
+> ------------------
+> -
+> -The UARTs present in the ASPEED SoC can have their resets tied to the reset
+> -state of the LPC bus. Some systems may chose to modify this configuration.
+> -
+> -Required properties:
+> -
+> - - compatible:		One of:
+> -			"aspeed,ast2600-lpc-reset";
+> -			"aspeed,ast2500-lpc-reset";
+> -			"aspeed,ast2400-lpc-reset";
+> -
+> - - reg:			offset and length of the IP in the LHC memory region
+> - - #reset-controller	indicates the number of reset cells expected
+> -
+> -Example:
+> -
+> -lpc_reset: reset-controller@98 {
+> -        compatible = "aspeed,ast2500-lpc-reset";
+> -        reg = <0x98 0x4>;
+> -        #reset-cells = <1>;
+> -};
+> diff --git a/Documentation/devicetree/bindings/mfd/aspeed-lpc.yaml b/Documentation/devicetree/bindings/mfd/aspeed-lpc.yaml
 > new file mode 100644
-> index 0000000..cf76afb
+> index 000000000000..54f080df5e2f
 > --- /dev/null
-> +++ b/Documentation/devicetree/bindings/dma/nvidia,tegra186-gpc-dma.yaml
-> @@ -0,0 +1,107 @@
+> +++ b/Documentation/devicetree/bindings/mfd/aspeed-lpc.yaml
+> @@ -0,0 +1,187 @@
 > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +# # Copyright (c) 2021 Aspeed Tehchnology Inc.
 > +%YAML 1.2
 > +---
-> +$id: http://devicetree.org/schemas/dma/nvidia,tegra186-gpc-dma.yaml#
+> +$id: http://devicetree.org/schemas/mfd/aspeed-lpc.yaml#
 > +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +title: Nvidia Tegra GPC DMA Controller Device Tree Bindings
-> +
-> +description: |
-> +  The Tegra Genernal Purpose Central (GPC) DMA controller is used for faster
-> +  data transfers between memory to memory, memory to device and device to
-> +  memory.
+> +title: Aspeed Low Pin Count (LPC) Bus Controller
 > +
 > +maintainers:
-> +  - Jon Hunter <jonathanh@nvidia.com>
-> +  - Rajesh Gumasta <rgumasta@nvidia.com>
+> +  - Andrew Jeffery <andrew@aj.id.au>
+> +  - Chia-Wei Wang <chiawei_wang@aspeedtech.com>
 > +
-> +allOf:
-> +  - $ref: "dma-controller.yaml#"
+> +description:
+> +  The LPC bus is a means to bridge a host CPU to a number of low-bandwidth
+> +  peripheral devices, replacing the use of the ISA bus in the age of PCI[0]. The
+> +  primary use case of the Aspeed LPC controller is as a slave on the bus
+> +  (typically in a Baseboard Management Controller SoC), but under certain
+> +  conditions it can also take the role of bus master.
+> +
+> +  The LPC controller is represented as a multi-function device to account for the
+> +  mix of functionality, which includes, but is not limited to
+> +
+> +  * An IPMI Block Transfer[2] Controller
+> +
+> +  * An LPC Host Interface Controller manages functions exposed to the host such
+> +    as LPC firmware hub cycles, configuration of the LPC-to-AHB mapping, UART
+> +    management and bus snoop configuration.
+> +
+> +  * A set of SuperIO[3] scratch registers enableing implementation of e.g. custom
+> +    hardware management protocols for handover between the host and baseboard
+> +    management controller.
+> +
+> +  Additionally the state of the LPC controller influences the pinmux
+> +  configuration, therefore the host portion of the controller is exposed as a
+> +  syscon as a means to arbitrate access.
 > +
 > +properties:
-> +  "#dma-cells":
-> +    const: 1
-> +
 > +  compatible:
-> +    - enum:
-> +      - nvidia,tegra186-gpcdma
-> +      - nvidia,tegra194-gpcdma
+> +    items:
+> +      - enum:
+> +          - aspeed,ast2400-lpc-v2
+> +          - aspeed,ast2500-lpc-v2
+> +          - aspeed,ast2600-lpc-v2
+> +      - const: simple-mfd
+> +      - const: syscon
 > +
 > +  reg:
 > +    maxItems: 1
 > +
-> +  interrupts:
-> +    minItems: 1
-> +    maxItems: 32
+> +  "#address-cells":
+> +    const: 1
 > +
-> +  resets:
-> +    maxItems: 1
+> +  "#size-cells":
+> +    const: 1
 > +
-> +  reset-names:
-> +    const: gpcdma
+> +  ranges: true
 > +
-> +  iommus:
-> +    maxItems: 1
+> +patternProperties:
+> +  "^lpc-ctrl@[0-9a-f]+$":
+> +    type: object
 > +
-> +  nvidia,stream-id:
-> +    description: |
-> +      stream-id corresponding to GPC DMA clients.
-> +      Defaults to TEGRA186_SID_GPCDMA_0 if not given
+> +    description:
+> +      The LPC Host Interface Controller manages functions exposed to the host such as
+> +      LPC firmware hub cycles, configuration of the LPC-to-AHB mapping, UART management
+> +      and bus snoop configuration.
+> +
+> +    properties:
+> +      compatible:
+> +        items:
+> +          - enum:
+> +              - aspeed,ast2400-lpc-ctrl
+> +              - aspeed,ast2500-lpc-ctrl
+> +              - aspeed,ast2600-lpc-ctrl
+> +
+> +      reg:
+> +        maxItems: 1
+> +
+> +      clocks:
+> +        maxItems: 1
+> +
+> +      memory-region:
+> +        $ref: /schemas/types.yaml#/definitions/phandle
+> +        description: A reserved_memory region to be used for the LPC to AHB mapping
+> +
+> +      flash:
+> +        $ref: /schemas/types.yaml#/definitions/phandle
+> +        description: The SPI flash controller containing the flash to be exposed over the LPC to AHB mapping
+> +
+> +    required:
+> +      - compatible
+> +      - clocks
+> +
+> +  "^reset-controller@[0-9a-f]+$":
+> +    type: object
+> +
+> +    description:
+> +      The UARTs present in the ASPEED SoC can have their resets tied to the reset
+> +      state of the LPC bus. Some systems may chose to modify this configuration
+> +
+> +    properties:
+> +      compatible:
+> +        items:
+> +          - enum:
+> +              - aspeed,ast2400-lpc-reset
+> +              - aspeed,ast2500-lpc-reset
+> +              - aspeed,ast2600-lpc-reset
+> +
+> +      reg:
+> +        maxItems: 1
+> +
+> +    required:
+> +      - compatible
+> +
+> +  "^lpc-snoop@[0-9a-f]+$":
+> +    type: object
+> +
+> +    description:
+> +      The LPC snoop interface allows the BMC to listen on and record the data
+> +      bytes written by the Host to the targeted LPC I/O pots.
+> +
+> +    properties:
+> +      comptabile:
 
+I guess I have to point out *every* instance of your typo?
 
-Does the value programmed here always match that, that is specified in 
-the iommus property? If so we should not need this property.
+Run 'make dt_binding_check' and find these problems before you send this 
+out.
 
-Jon
-
--- 
-nvpublic
+Rob
