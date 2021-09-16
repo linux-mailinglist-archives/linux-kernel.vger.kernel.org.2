@@ -2,209 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 537ED40D3B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 09:23:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 591BA40D3BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 09:24:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234769AbhIPHY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 03:24:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234718AbhIPHYX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 03:24:23 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C02AAC061764
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 00:23:03 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id n18so5282026pgm.12
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 00:23:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=h9+JjymWywjibzYahIE08Q7Lk+YbzJ8GWAwAgGuQw44=;
-        b=CAU4jQUppKg76S8sxSwN4FATl9tAoUi0pf7tVytHg2CWKGP6dmI4UmJ4aS6EeI3u4b
-         H5+6lrvJ+E6PWvkj22Of5x3zQcPjQaxWGMUShPwQm4Nzak1xjQfDZ4AOASyHjSpwpaHU
-         w8ZFS65wuMpJAqgLD3DS+RzAhWZvZ0N/wHT2VuvgUO2SrS55yuwsKGugQeUF6Ol2v2xM
-         mzFZJOQI1XxmTDcinj85Qj+GooSieocbQvWUvaH5nT6AUoIFSI10E5Uz+lHug7yGybOf
-         sullI8IOsVNPMSAWJIZToPeMcUz8ufMbAEQYiHJmBHGDHhNqP507mZ8X6rxecFZtHIhE
-         HoWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=h9+JjymWywjibzYahIE08Q7Lk+YbzJ8GWAwAgGuQw44=;
-        b=GYQijJSpIsMT2xA/lkiaD/2sp8Mq8LpnLSZLGiwDRrppvMInVWH0oIFQugPUeg2cjI
-         F2vV6TJ8Tn6nSbypNpH8B25KWpIodVYrKQNbOlz6xyMkJ33pxE8X4XjcDDfszHxpafJa
-         dHcRLQrjKu2n1ad+mpOC4imcmH0z2TWu/44zppp1+9ntKhDzV0TVfesxPCzhmf12bdSz
-         BdDW65Fjes/SS8YbI4cXHifjCYzag+ATc9GzAwsSnPWpsvv3kT4kGBdSLr0TL8AE9VtB
-         ybhz5OTnuMth6wvVul23AHL1h9gZH+gQMP0pztZ8etTrNmaNK+77V4dd89Rxv0qYOYIw
-         KnZw==
-X-Gm-Message-State: AOAM533jXF549WoM/qHJM2gd59KvCx7Fi7zUNHbNM3LGQuHQcqLBxhHc
-        3Ir1bjkzp8wyhjKtsSrSRpjgt6PUPi//uA==
-X-Google-Smtp-Source: ABdhPJxrw/i8/N4QcV/OPohGevkmBciVqntAoM3lzV9qrc0fJyPndAZSM9qimFhphx8j3XIivyK8ew==
-X-Received: by 2002:a65:6251:: with SMTP id q17mr3761839pgv.416.1631776982664;
-        Thu, 16 Sep 2021 00:23:02 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:ab:1cc3:dd84:94f3])
-        by smtp.gmail.com with ESMTPSA id c15sm1102192pfn.105.2021.09.16.00.23.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 00:23:01 -0700 (PDT)
-Date:   Thu, 16 Sep 2021 00:22:55 -0700
-From:   Benson Leung <bleung@google.com>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Adam Thomson <Adam.Thomson.Opensource@diasemi.com>,
-        Prashant Malani <pmalani@chromium.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "bleung@chromium.org" <bleung@chromium.org>,
-        "badhri@google.com" <badhri@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [RFC PATCH 2/3] power: supply: Add support for PDOs props
-Message-ID: <YULwz8NsoA3+vrhA@google.com>
-References: <20210902213500.3795948-1-pmalani@chromium.org>
- <20210902213500.3795948-3-pmalani@chromium.org>
- <YT9SYMAnOCTWGi5P@kuha.fi.intel.com>
- <DB9PR10MB4652B4A6A2A2157018307AE380D99@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
- <YUB16up3JDwi3HfI@kuha.fi.intel.com>
+        id S234777AbhIPHZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 03:25:27 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:46403 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234671AbhIPHZW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 03:25:22 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4H97qh40qXz9sVF;
+        Thu, 16 Sep 2021 09:24:00 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id wKKfxh6TCdGx; Thu, 16 Sep 2021 09:24:00 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4H97qf313Xz9sVD;
+        Thu, 16 Sep 2021 09:23:58 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 521AF8B763;
+        Thu, 16 Sep 2021 09:23:58 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id pa4JKxB2Kswe; Thu, 16 Sep 2021 09:23:58 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.202.5])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id A6F368B77E;
+        Thu, 16 Sep 2021 09:23:57 +0200 (CEST)
+Subject: Re: [PATCH] powerpc: warn on emulation of dcbz instruction
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Stan Johnson <userm57@yahoo.com>,
+        Finn Thain <fthain@linux-m68k.org>
+References: <62b33ca839f3d1d7d4b64b6f56af0bbe4d2c9057.1631716292.git.christophe.leroy@csgroup.eu>
+ <2c0fd775625c76c4dd09b3e923da4405a003f3bd.camel@kernel.crashing.org>
+ <eb1a39368401bf46e805ca64256604cc649f771e.camel@kernel.crashing.org>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <43f736d4-8625-2848-786f-79b902d5c753@csgroup.eu>
+Date:   Thu, 16 Sep 2021 09:23:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="xat0VWzVRBLGhR0l"
-Content-Disposition: inline
-In-Reply-To: <YUB16up3JDwi3HfI@kuha.fi.intel.com>
+In-Reply-To: <eb1a39368401bf46e805ca64256604cc649f771e.camel@kernel.crashing.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr-FR
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---xat0VWzVRBLGhR0l
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi Heikki,
+Le 16/09/2021 à 09:16, Benjamin Herrenschmidt a écrit :
+> On Thu, 2021-09-16 at 17:15 +1000, Benjamin Herrenschmidt wrote:
+>> On Wed, 2021-09-15 at 16:31 +0200, Christophe Leroy wrote:
+>>> dcbz instruction shouldn't be used on non-cached memory. Using
+>>> it on non-cached memory can result in alignment exception and
+>>> implies a heavy handling.
+>>>
+>>> Instead of silentely emulating the instruction and resulting in
+>>> high
+>>> performance degradation, warn whenever an alignment exception is
+>>> taken due to dcbz, so that the user is made aware that dcbz
+>>> instruction has been used unexpectedly.
+>>>
+>>> Reported-by: Stan Johnson <userm57@yahoo.com>
+>>> Cc: Finn Thain <fthain@linux-m68k.org>
+>>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>>> ---
+>>>   arch/powerpc/kernel/align.c | 1 +
+>>>   1 file changed, 1 insertion(+)
+>>>
+>>> diff --git a/arch/powerpc/kernel/align.c
+>>> b/arch/powerpc/kernel/align.c
+>>> index bbb4181621dd..adc3a4a9c6e4 100644
+>>> --- a/arch/powerpc/kernel/align.c
+>>> +++ b/arch/powerpc/kernel/align.c
+>>> @@ -349,6 +349,7 @@ int fix_alignment(struct pt_regs *regs)
+>>>   		if (op.type != CACHEOP + DCBZ)
+>>>   			return -EINVAL;
+>>>   		PPC_WARN_ALIGNMENT(dcbz, regs);
+>>> +		WARN_ON_ONCE(1);
+>>
+>> This is heavy handed ... It will be treated as an oops by various
+>> things uselessly spit out a kernel backtrace. Isn't
+>> PPC_WARN_ALIGNMENT
+>> enough ?
 
-On Tue, Sep 14, 2021 at 01:14:02PM +0300, Heikki Krogerus wrote:
-> Mon, Sep 13, 2021 at 03:15:46PM +0000, Adam Thomson kirjoitti:
-> >=20
-> > Hi Heikki,
-> >=20
-> > Thanks for CCing me. My two pence worth is that I always envisaged the =
-PSY
-> > representation as being 1 PSY for 1 power source. I consider this in a
-> > similar manner to the Regulator framework, where 1 regulator can suppor=
-t a range
-> > of voltages and currents, but this is covered by 1 regulator instance a=
-s it's
-> > just a single output. For USB-PD we have a number of options for voltag=
-e/current
-> > combos, including PPS which is even lower granularity, but it's still o=
-nly one
-> > port. I get the feeling that having PSY instances for each and every PD=
-O might
-> > be a little confusing and these will never be concurrent.
-> >=20
-> > However, I'd be keen to understand further and see what restrictions/is=
-sues are
-> > currently present as I probably don't have a complete view of this righ=
-t now. I
-> > wouldn't want to dismiss something out of turn, especially when you obv=
-iously
-> > have good reason to suggest such an approach.
->=20
-> I'm not proposing that we drop the port-psys. I'm sorry if I've been
-> unclear about that. The port-psy we can not drop because of several
-> reasons. For starters, we still can not assume that USB PD is always
-> supported.
->=20
-> What I'm trying to propose is that we take advantage of the
-> power-supply framework by building a "dynamic" hierarchy of power
-> supplies that supply each other in order to represent the actual
-> situation as closely as possible. For example, a port-psy that is
-> supplied by port-Fixed-sink-psy that is supplied by
-> port-partner-Fixed-source (that is supplied by port-partner-psy).
-> Something like that. The only "static" part in the hierarchy is the
-> port-psy, as everything else about it can change, even without
-> disconnection.
->=20
-> So the port-psy always either supplies another psy or is supplied by
-> another psy in this hierarchy, depending on the role of the port. But
-> most importantly, the properties of the port-psy itself are _newer_
-> adjustable - they are read-only. The psy that supplies the port-psy
-> can be adjustable, if it's for example PPS, but not the port-psy
-> itself.
->=20
-> The problem with having only a single psy per port (and possibly
-> partners) is that it does not work well enough when the capabilities
-> change, and the capabilities can really change at any moment, we don't
-> need to disconnect for that to happen - simply by plugging another
-> device to another port can change the power budget for your port and
-> change your capabilities. The biggest problem is when we loose the
-> ability to adjust the values if we for example loose the PPS that we
-> were using in the middle of operation. The single psy has to attempt
-> to handle the situation by adjusting something like the ranges of the
-> properties, because it can't change the actual property set itself.
-> That is hacky, and to be honest, a little bit risky, because it leaves
-> us at the mercy of programmers completely unnecessarily.
->=20
-> With my proposal, if the capabilities change, it only means we rebuild
-> the psy hierarchy, and that's it. Nothing else needs to be done in
-> kernel, and all changes are super visible and clear in user space.
->=20
 
-Thanks for providing the clarification. So you're proposing a port-psy and a
-port-partner-psy that are connected to each other (one supplying the other).
-If PD is not present, those two will exist per port and partner, and there
-will be information about Type-C current (and possibly BC 1.2 and other
-methods?)
+PPC_WARN_ALIGNMENT() only warns if explicitely activated, I want to 
+catch uses on 'dcbz' on non-cached memory all the time as they are most 
+often the result of using memset() instead of memset_io().
 
-Do you have an example hierarchy you could share that explains what it would
-look like in /sys/class/power_supply with PD with Source Caps and Sink Caps=
- on
-both sides?
+> 
+> Ah I saw your other one about fbdev...  Ok what about you do that in a
+> if (!user_mode(regs)) ?
 
-I think this all makes sense if the connector class is a read interface
-for this info. Have you considered how the type-c connector class and this =
-pd
-psy support will handle dynamic PDO changes for advertisement FROM the port=
-s?
+Yes I can do WARN_ON_ONCE(!user_mode(regs)); instead.
 
-For example, let's say you wanted the kernel and user to manage two USB-C p=
-orts
-with higher power support (meaning, 5V, 9V, 15V, 20V capable), but then your
-kernel and user needs to edit the Source Caps on the fly based on load
-balancing.
+> 
+> Indeed the kernel should not do that.
 
-If caps are represented as a group of psys together, how do you as a kernel
-and user create an modify the set of Source_Caps you put out on a port?
 
-Thanks,
-Benson
+Does userspace accesses non-cached memory directly ?
 
-> thanks,
->=20
-> --=20
-> heikki
-
---=20
-Benson Leung
-Staff Software Engineer
-Chrome OS Kernel
-Google Inc.
-bleung@google.com
-Chromium OS Project
-bleung@chromium.org
-
---xat0VWzVRBLGhR0l
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQQCtZK6p/AktxXfkOlzbaomhzOwwgUCYULwzwAKCRBzbaomhzOw
-wom1AQCNZ/hwtQBhee1O29UF9wqYqjzyNI6WzWJuXmz4sjeWhAEA74S5yLRF7Vq0
-kvMtyRkRQ+IMZkUJK8w4DM9wIFGXvA4=
-=qhlX
------END PGP SIGNATURE-----
-
---xat0VWzVRBLGhR0l--
+Christophe
