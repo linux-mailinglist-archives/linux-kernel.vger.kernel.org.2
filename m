@@ -2,193 +2,317 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFF0040EB7B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 22:15:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E482740EB7D
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 22:15:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238100AbhIPUQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 16:16:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42966 "EHLO
+        id S238187AbhIPURR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 16:17:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbhIPUQy (ORCPT
+        with ESMTP id S229456AbhIPURQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 16:16:54 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49512C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 13:15:32 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id 97-20020a9d006a000000b00545420bff9eso2958207ota.8
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 13:15:32 -0700 (PDT)
+        Thu, 16 Sep 2021 16:17:16 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 146C1C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 13:15:55 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id v5so20941495edc.2
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 13:15:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=ojoWMvWYiGgf8hZbpbLo/au+nVIOyXutlWB62AfZAFw=;
-        b=GfloMrd2w/KYv4zk0CGJz9edZXIutQAmTBaa5aaDUIGci3XF1xOKwOwFF7KDN4gWK6
-         Chvmx9+KqA0rt4GCN4G1on/YjJGR/eWtdpkfVxXdeuaCcsY7f3fMsgDg4g0cTYb4oKcX
-         VB+7JGwkeN/g2GcdMVaHm9g6URAoilmovScgo=
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=6AWUDPsWwtrqPx9907EkcEI/G/RnCXM0GxmUPoB46Lg=;
+        b=Gn+AVCdJalYkHFqAtLhvtm2/Kdq8CYY9J6scElVKCWtYJrStog34taNEUtxI4KAnxb
+         t8OdluDIwe2fJlXrLbOvcMWm7qIEOgKrWCx8ht6+Vku34Jabfu677gYC2K0mbcmz1XoR
+         r2PDOZJSangszGu4uaSWLhWHY4ddRYYc+PBp8ZrW8NNoQMWd/SoZ7fcyuhjOamr6rOFL
+         eZIYWoFx7ljzqr0y0+imIiwDjU9UY6WrWegNI+0HzT0avLJEz9T7Bufmqxsi3vZrPJ4u
+         PzTC4nSeBTBB7HZnzx1PCJf+ws+mZr560V3wFTkuR45nOf3GL3ONevrg8R6kRbjJYTZ6
+         X2zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=ojoWMvWYiGgf8hZbpbLo/au+nVIOyXutlWB62AfZAFw=;
-        b=SNh0MWCBxDzb5oA07fYDLw3Felkv53kOfF1mAjtuESDhcVYZFR0NekrcWAFdlROW11
-         RLL36kmsZk2HrnpuypEyAI/XIRmXcRVyUBZDQCg0928PzTsO8pNFG7Tt9BFGy6Cy9PfP
-         /r1AxC/zIXsQN5esQjUNYlicHacpIt9XslsyIWOQas3iKHyc1coISEFrEiIC/Lv/jxNI
-         I/kd9kAnHfJ+VSqPvD/pRFcVTzWCHnsz7QfqSuyphfgiGKVrdoKdwXgCuJj6z/TPzsMK
-         /KHuvVjaN6FxC0nd/ZRMWLyhmQwuKWHOFTozFs0RUSu2Xf4Lq1dNQMi2vgyAJkwb40Wg
-         cXLA==
-X-Gm-Message-State: AOAM531NCuPNyo9103cQ/5ZzR+9lDolE6TYf2swnr6dNiVAcRkd/SpmX
-        9R/yF4pbKVMamB74alF9n+KqeAznFVj8gQiLLaXzrA==
-X-Google-Smtp-Source: ABdhPJw7pGqvIB2k2CpkvI7RssSaZPxmsZiSwx0HbdCnkzcDAjZu5wVjSAIrBe9RIjq2GBNHiYywWy/MzGu/BaeTbxU=
-X-Received: by 2002:a05:6830:18c7:: with SMTP id v7mr6307269ote.126.1631823331648;
- Thu, 16 Sep 2021 13:15:31 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 16 Sep 2021 13:15:31 -0700
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=6AWUDPsWwtrqPx9907EkcEI/G/RnCXM0GxmUPoB46Lg=;
+        b=rXP9hK7hY8ZQeH/soFtPTLx4Y58x37SdPZkNcK7k7MDVBRsism5mXw35pZuOvj05K3
+         OLZDEWQUwQA3N/UICx6glPieCvX4MOLI+AuJXPPzKQBkhpFC71TkJ9JXUC2BZQk586Tm
+         flTMpI3dPXBRifCMcJZ4J0b3vNnI6rYDtl6lKEZXiprruX6ibdgS706YUVDR2y7ymbWe
+         f60Oh6tlIJmpywurh7xHY2V/UajJVfq1D80EBDLKtp/7rWxOIWsYTeAxzj8azbVR+2sm
+         q1CoyA9JljmBQroFIHJUcW1PltNGAIs2xAKuVftpmszw+Zy8TAF2q0y/jA39uz8/tn8f
+         uelg==
+X-Gm-Message-State: AOAM533LsKIZNLLX3/MWzlCEzP8HxGiAApaWPswroUymSn+8kRM6Oblp
+        a18rfkPkMzWpOO3+XxsfEl3EiXQPC19DYbneFQY=
+X-Google-Smtp-Source: ABdhPJx8abzzjv+Z2jF4KSdHidfC3idcealLXNUC+JPAsHwy7fJU7GoAYf6T3CLj5OVa1h86r92Ko2rT+aCP7UngHNM=
+X-Received: by 2002:a17:906:31d7:: with SMTP id f23mr7901661ejf.190.1631823353421;
+ Thu, 16 Sep 2021 13:15:53 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAD=FV=WtC3AQr44idgzVe9RCjb9i=+ekJ_wKKnKMcHRSQX7dfQ@mail.gmail.com>
-References: <20210914162825.v3.1.I85e46da154e3fa570442b496a0363250fff0e44e@changeid>
- <20210914162825.v3.3.Ibf9b125434e3806b35f9079f6d8125578d76f138@changeid>
- <CAE-0n51JFM_yYdOsCQyvdMw5xXJ7REcbOJC6qi=6nfiNcdvnWw@mail.gmail.com> <CAD=FV=WtC3AQr44idgzVe9RCjb9i=+ekJ_wKKnKMcHRSQX7dfQ@mail.gmail.com>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Thu, 16 Sep 2021 13:15:31 -0700
-Message-ID: <CAE-0n51AAXbDGH-V6527nT1Fp1BU8oWKEYmHnL6FkYs=P9OPOw@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] drm/bridge: parade-ps8640: Add support for AUX channel
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Philip Chen <philipchen@chromium.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
+From:   Dave Airlie <airlied@gmail.com>
+Date:   Fri, 17 Sep 2021 06:15:42 +1000
+Message-ID: <CAPM=9tyrmDa4qCvu0pf0JHU1DmDnq5H=1uE1JaGjLs6E6dPZNQ@mail.gmail.com>
+Subject: [git pull] drm fixes for 5.15-rc2
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Doug Anderson (2021-09-15 14:27:40)
-> Hi,
->
-> On Tue, Sep 14, 2021 at 5:57 PM Stephen Boyd <swboyd@chromium.org> wrote:
-> >
-> > Quoting Philip Chen (2021-09-14 16:28:45)
-> > > diff --git a/drivers/gpu/drm/bridge/parade-ps8640.c b/drivers/gpu/drm/bridge/parade-ps8640.c
-> > > index 8d3e7a147170..dc349d729f5a 100644
-> > > --- a/drivers/gpu/drm/bridge/parade-ps8640.c
-> > > +++ b/drivers/gpu/drm/bridge/parade-ps8640.c
-> > > @@ -117,6 +144,129 @@ static inline struct ps8640 *bridge_to_ps8640(struct drm_bridge *e)
-> > [...]
-> > > +       case DP_AUX_I2C_WRITE:
-> > > +       case DP_AUX_I2C_READ:
-> > > +               break;
-> > > +       default:
-> > > +               return -EINVAL;
-> > > +       }
-> > > +
-> > > +       ret = regmap_write(map, PAGE0_AUXCH_CFG3, AUXCH_CFG3_RESET);
-> > > +       if (ret) {
-> > > +               dev_err(dev, "failed to write PAGE0_AUXCH_CFG3: %d\n", ret);
-> >
-> > Can we use DRM_DEV_ERROR()?
->
-> I've never gotten clear guidance here. For instance, in some other
-> review I suggested using the DRM wrapper and got told "no" [1]. ;-)
-> The driver landed without the DRM_ERROR versions. I don't really care
-> lots so it's fine with me to use use DRM_DEV_ERROR, I just wish I
-> understood the rules...
->
-> [1] https://lore.kernel.org/all/49db7ef3-fa53-a274-7c69-c2d840b13058@denx.de/
+Hi Linus,
 
-I think the rule is that the DRM specific printk stuff should be used so
-that they can be stuck into the drm logs. On chromeOS we also have a
-record of the drm logs that we can use to debug things, split away from
-the general kernel printk logs. So using DRM prints when there's a DRM
-device around is a good thing to do.
+Slightly busier than usual rc2, but mostly scattered amdgpu fixes,
+some i915 and etnaviv resolves an MMU/runtime PM blowup, otherwise I'm
+offline for next few days, but back early next week.
 
->
->
-> > > +               return ret;
-> > > +       }
-> > > +
-> > > +       /* Assume it's good */
-> > > +       msg->reply = 0;
-> > > +
-> > > +       addr_len[0] = msg->address & 0xff;
-> > > +       addr_len[1] = (msg->address >> 8) & 0xff;
-> > > +       addr_len[2] = ((msg->request << 4) & SWAUX_CMD_MASK) |
-> > > +               ((msg->address >> 16) & SWAUX_ADDR_19_16_MASK);
-> >
-> > It really feels like this out to be possible with some sort of
-> > cpu_to_le32() API. We're shoving msg->address into 3 bytes and then
-> > adding in the request and some length. So we could do something like:
-> >
-> >         u32 addr_len;
-> >
-> >         addr_len = FIELD_PREP(SWAUX_ADDR_MASK, msg->address);
-> >         addr_len |= FIELD_PREP(SWAUX_CMD_MASK, msg->request);
-> >         if (len)
-> >                 addr_len |= FIELD_PREP(LEN_MASK, len - 1);
-> >         else
-> >                 addr_len |= FIELD_PREP(LEN_MASK, SWAUX_NO_PAYLOAD );
-> >
-> >         cpu_to_le32s(&addr_len);
-> >
-> >         regmap_bulk_write(map, PAGE0_SWAUX_ADDR_7_0, &addr_len, sizeof(addr_len));
->
-> You're arguing that your version of the code is more efficient? Easier
-> to understand? Something else? To me, Philip's initial version is
-> crystal clear and easy to map to the bridge datasheet but I need to
-> think more to confirm that your version is right. Thinking is hard and
-> I like to avoid it when possible.
->
-> In any case, it's definitely bikeshedding and I'll yield if everyone
-> likes the other version better. ;-)
+drm-fixes-2021-09-17:
+drm fixes for 5.15-rc2
 
-Yeah it's bikeshedding. I don't really care about this either but I find
-it easier to read when the assignment isn't wrapped across multiple
-lines. If the buffer approach is preferable then maybe use the address
-macros to clarify which register is being set?
+amdgpu:
+- UBSAN fix
+- Powerplay table update fix
+- Fix use after free in BO moves
+- Debugfs init fixes
+- vblank workqueue fixes for headless devices
+- FPU fixes
+- sysfs_emit fixes
+- SMU updates for cyan skillfish
+- Backlight fixes when DMCU is not initialized
+- DP MST fixes
+- HDCP compliance fix
+- Link training fix
+- Runtime pm fix
+- Panel orientation fixes
+- Display GPUVM fix for yellow carp
+- Add missing license
 
-	unsigned int base = PAGE0_SWAUX_ADDR_7_0;
+amdkfd:
+- Drop PCI atomics requirement if proper firmware is available
+- Suspend/resume fixes for IOMMUv2 cases
 
-	addr_len[PAGE0_SWAUX_ADDR_7_0 - base] = msg->address;
-	addr_len[PAGE0_SWAUX_ADDR_15_8 - base] = msg->address >> 8;
-	addr_len[PAGE0_SWAUX_ADDR_23_16 - base] = msg->address >> 16;
-	addr_len[PAGE0_SWAUX_ADDR_23_16 - base] |= msg->request << 4;
-	...
+radeon:
+- AGP fix
 
->
->
-> > > +               return ret;
-> > > +       }
-> > > +
-> > > +       switch (data & SWAUX_STATUS_MASK) {
-> > > +       /* Ignore the DEFER cases as they are already handled in hardware */
-> > > +       case SWAUX_STATUS_NACK:
-> > > +       case SWAUX_STATUS_I2C_NACK:
-> > > +               /*
-> > > +                * The programming guide is not clear about whether a I2C NACK
-> > > +                * would trigger SWAUX_STATUS_NACK or SWAUX_STATUS_I2C_NACK. So
-> > > +                * we handle both cases together.
-> > > +                */
-> > > +               if (is_native_aux)
-> > > +                       msg->reply |= DP_AUX_NATIVE_REPLY_NACK;
-> > > +               else
-> > > +                       msg->reply |= DP_AUX_I2C_REPLY_NACK;
-> > > +
-> > > +               len = data & SWAUX_M_MASK;
-> > > +               return len;
-> >
-> > Why no 'return data & SWAUX_M_MASK;' and skip the assignment?
->
-> Actually, I think it's the "return" that's a bug, isn't it? If we're
-> doing a "read" and we're returning a positive number of bytes then we
-> need to actually _read_ them. Reading happens below, doesn't it?
->
+i915:
+- Propagate DP link training error returns
+- Use max link params for eDP 1.3 and earlier
+- Build warning fixes
+- Gem selftest fixes
+- Ensure wakeref is held before hardware access
 
-Oh I missed that. We're still supposed to return data to upper
-layers on a NACKed read?
+etnaviv:
+- MMU context vs runtime PM fix
+The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f=
+:
+
+  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
+
+are available in the Git repository at:
+
+  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-09-17
+
+for you to fetch changes up to 109f7ea9aedce437b4b7737ab60bfea65d9dbdd3:
+
+  Merge tag 'amd-drm-fixes-5.15-2021-09-16' of
+https://gitlab.freedesktop.org/agd5f/linux into drm-fixes (2021-09-17
+05:58:55 +1000)
+
+----------------------------------------------------------------
+drm fixes for 5.15-rc2
+
+amdgpu:
+- UBSAN fix
+- Powerplay table update fix
+- Fix use after free in BO moves
+- Debugfs init fixes
+- vblank workqueue fixes for headless devices
+- FPU fixes
+- sysfs_emit fixes
+- SMU updates for cyan skillfish
+- Backlight fixes when DMCU is not initialized
+- DP MST fixes
+- HDCP compliance fix
+- Link training fix
+- Runtime pm fix
+- Panel orientation fixes
+- Display GPUVM fix for yellow carp
+- Add missing license
+
+amdkfd:
+- Drop PCI atomics requirement if proper firmware is available
+- Suspend/resume fixes for IOMMUv2 cases
+
+radeon:
+- AGP fix
+
+i915:
+- Propagate DP link training error returns
+- Use max link params for eDP 1.3 and earlier
+- Build warning fixes
+- Gem selftest fixes
+- Ensure wakeref is held before hardware access
+
+etnaviv:
+- MMU context vs runtime PM fix
+
+----------------------------------------------------------------
+Alex Deucher (1):
+      drm/amdgpu/display: add a proper license to dc_link_dp.c
+
+Anson Jacob (1):
+      drm/amd/display: dc_assert_fp_enabled assert only if FPU is not enabl=
+ed
+
+Christian K=C3=B6nig (1):
+      drm/amdgpu: fix use after free during BO move
+
+Daniel Vetter (1):
+      drm/i915: Release ctx->syncobj on final put, not on ctx close
+
+Daniele Ceraolo Spurio (1):
+      drm/i915/guc: drop guc_communication_enabled
+
+Dave Airlie (3):
+      Merge branch 'etnaviv/fixes' of
+https://git.pengutronix.de/git/lst/linux into drm-fixes
+      Merge tag 'drm-intel-fixes-2021-09-16' of
+ssh://git.freedesktop.org/git/drm/drm-intel into drm-fixes
+      Merge tag 'amd-drm-fixes-5.15-2021-09-16' of
+https://gitlab.freedesktop.org/agd5f/linux into drm-fixes
+
+Ernst Sj=C3=B6strand (1):
+      drm/amd/amdgpu: Increase HWIP_MAX_INSTANCE to 10
+
+Evan Quan (1):
+      drm/amd/pm: fix runpm hang when amdgpu loaded prior to sound driver
+
+Felix Kuehling (1):
+      drm/amdkfd: make needs_pcie_atomics FW-version dependent
+
+Harry Wentland (1):
+      drm/amd/display: Get backlight from PWM if DMCU is not initialized
+
+Hersen Wu (1):
+      drm/amd/display: dsc mst 2 4K displays go dark with 2 lane HBR3
+
+James Zhu (3):
+      drm/amdkfd: separate kfd_iommu_resume from kfd_resume
+      drm/amdgpu: add amdgpu_amdkfd_resume_iommu
+      drm/amdgpu: move iommu_resume before ip init/resume
+
+Kai-Heng Feng (1):
+      drm/i915/dp: Use max params for panels < eDP 1.4
+
+Kenneth Feng (1):
+      drm/amd/pm: fix the issue of uploading powerplay table
+
+Lang Yu (5):
+      drm/amdgpu: fix sysfs_emit/sysfs_emit_at warnings(v2)
+      drm/amdgpu: update SMU PPSMC for cyan skilfish
+      drm/amdgpu: update SMU driver interface for cyan skilfish(v3)
+      drm/amdgpu: add some pptable funcs for cyan skilfish(v3)
+      drm/amdgpu: add manual sclk/vddc setting support for cyan skilfish(v3=
+)
+
+Lee Shawn C (1):
+      drm/i915/dp: return proper DPRX link training result
+
+Lucas Stach (8):
+      drm/etnaviv: return context from etnaviv_iommu_context_get
+      drm/etnaviv: put submit prev MMU context when it exists
+      drm/etnaviv: stop abusing mmu_context as FE running marker
+      drm/etnaviv: keep MMU context across runtime suspend/resume
+      drm/etnaviv: exec and MMU state is lost when resetting the GPU
+      drm/etnaviv: fix MMU context leak on GPU reset
+      drm/etnaviv: reference MMU context when setting up hardware state
+      drm/etnaviv: add missing MMU context put when reaping MMU mapping
+
+Meenakshikumar Somasundaram (1):
+      drm/amd/display: Link training retry fix for abort case
+
+Michel D=C3=A4nzer (1):
+      drm/amdgpu: Drop inline from amdgpu_ras_eeprom_max_record_count
+
+Nathan Chancellor (3):
+      drm/i915/selftests: Do not use import_obj uninitialized
+      drm/i915/selftests: Always initialize err in
+igt_dmabuf_import_same_driver_lmem()
+      drm/i915: Enable -Wsometimes-uninitialized
+
+Nicholas Kazlauskas (2):
+      drm/amd/display: Add NULL checks for vblank workqueue
+      drm/amd/display: Fix white screen page fault for gpuvm
+
+Nirmoy Das (2):
+      drm/amdgpu: use IS_ERR for debugfs APIs
+      drm/radeon: pass drm dev radeon_agp_head_init directly
+
+Paul Menzel (1):
+      drm/amdgpu: Demote TMZ unsupported log message from warning to info
+
+Qingqing Zhuo (1):
+      drm/amd/display: Fix unstable HPCP compliance on Chrome Barcelo
+
+Simon Ser (2):
+      amd/display: downgrade validation failure log level
+      amd/display: enable panel orientation quirks
+
+Thomas Hellstr=C3=B6m (1):
+      drm/i915/gem: Fix the mman selftest
+
+Vinay Belgaumkar (1):
+      drm/i915: Get PM ref before accessing HW register
+
+ drivers/gpu/drm/amd/amdgpu/amdgpu.h                |   2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd.c         |  10 +
+ drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd.h         |   7 +
+ drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c        |  10 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c         |  12 +
+ drivers/gpu/drm/amd/amdgpu/amdgpu_gmc.c            |   2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ras_eeprom.c     |   2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ras_eeprom.h     |   2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c           |   4 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c            |  18 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_device.c            |  56 ++-
+ drivers/gpu/drm/amd/amdkfd/kfd_priv.h              |   1 +
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c  | 109 ++++-
+ .../amd/display/amdgpu_dm/amdgpu_dm_mst_types.c    |  18 +-
+ .../amd/display/amdgpu_dm/amdgpu_dm_mst_types.h    |  11 +-
+ drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c     |   2 +-
+ drivers/gpu/drm/amd/display/dc/core/dc_link.c      |  16 +-
+ drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c   |  34 +-
+ .../gpu/drm/amd/display/dc/dce/dce_panel_cntl.c    |  10 -
+ .../amd/pm/inc/smu11_driver_if_cyan_skillfish.h    |  86 ++--
+ drivers/gpu/drm/amd/pm/inc/smu_types.h             |   5 +-
+ drivers/gpu/drm/amd/pm/inc/smu_v11_8_ppsmc.h       |   9 +-
+ drivers/gpu/drm/amd/pm/swsmu/amdgpu_smu.c          |   2 +-
+ drivers/gpu/drm/amd/pm/swsmu/smu11/arcturus_ppt.c  |   8 +-
+ .../drm/amd/pm/swsmu/smu11/cyan_skillfish_ppt.c    | 481 +++++++++++++++++=
+++++
+ drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c    |  28 +-
+ .../drm/amd/pm/swsmu/smu11/sienna_cichlid_ppt.c    |   8 +-
+ drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c   |  16 +-
+ drivers/gpu/drm/amd/pm/swsmu/smu12/renoir_ppt.c    |   2 +
+ drivers/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c |  12 +-
+ .../gpu/drm/amd/pm/swsmu/smu13/yellow_carp_ppt.c   |   6 +-
+ drivers/gpu/drm/amd/pm/swsmu/smu_cmn.c             |  21 +
+ drivers/gpu/drm/amd/pm/swsmu/smu_cmn.h             |  15 +
+ drivers/gpu/drm/etnaviv/etnaviv_buffer.c           |   3 +-
+ drivers/gpu/drm/etnaviv/etnaviv_gem.c              |   3 +-
+ drivers/gpu/drm/etnaviv/etnaviv_gem_submit.c       |   3 +-
+ drivers/gpu/drm/etnaviv/etnaviv_gpu.c              |  43 +-
+ drivers/gpu/drm/etnaviv/etnaviv_gpu.h              |   1 +
+ drivers/gpu/drm/etnaviv/etnaviv_iommu.c            |   4 +
+ drivers/gpu/drm/etnaviv/etnaviv_iommu_v2.c         |   8 +
+ drivers/gpu/drm/etnaviv/etnaviv_mmu.c              |   1 +
+ drivers/gpu/drm/etnaviv/etnaviv_mmu.h              |   4 +-
+ drivers/gpu/drm/i915/Makefile                      |   1 -
+ drivers/gpu/drm/i915/display/intel_dp.c            |   5 +-
+ .../gpu/drm/i915/display/intel_dp_link_training.c  |   2 +-
+ drivers/gpu/drm/i915/gem/i915_gem_context.c        |   6 +-
+ .../gpu/drm/i915/gem/selftests/i915_gem_dmabuf.c   |   7 +-
+ drivers/gpu/drm/i915/gem/selftests/i915_gem_mman.c |  26 +-
+ drivers/gpu/drm/i915/gt/intel_rps.c                |   8 +-
+ drivers/gpu/drm/i915/gt/uc/intel_uc.c              |  11 +-
+ drivers/gpu/drm/radeon/radeon_kms.c                |   2 +-
+ 51 files changed, 945 insertions(+), 218 deletions(-)
