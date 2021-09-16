@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2C5140E72F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:32:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 280FA40E044
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:20:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352894AbhIPR3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:29:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43520 "EHLO mail.kernel.org"
+        id S234938AbhIPQUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:20:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47920 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351940AbhIPRUA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:20:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8190D61139;
-        Thu, 16 Sep 2021 16:41:52 +0000 (UTC)
+        id S238868AbhIPQLm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:11:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE2416137A;
+        Thu, 16 Sep 2021 16:09:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810513;
-        bh=W5i60Y4QgjuME9OVVg9F7XwbHir4B+GwL357gXa7670=;
+        s=korg; t=1631808544;
+        bh=+fLK7laVA3H5s1F118MwcV8hwLjCEOdsVd9d0wNqu4Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E8B1OWRSBX0lsJb+HUx8KwT4AxL1dI9HPW9EQxacvRPI8NCEOtn3uEX1aOL8IMLn/
-         tpQEdKdqZ00Kl9U7XqZlAa5nLaLxCfemjirvBX6KfPQq30G3b6W2vycF8pF7UByZvV
-         /d3HRUxHhtLOstzg+WkwGvH3FhH5CdutA9TU5+7o=
+        b=E0uQiXA4fdHPQy3icHaoDdksqrxlV4MRtyNeWf2LwnUaFAlUA08tEsez1vZS8jNBv
+         iLucDyMYYHDIlh/Ryms8AifbBDfbvqpAASpmtZ9FdTtCqwlxCLxcWZ/DlDbVh7Cbv4
+         SSaYJkv32HI2bJJ53Y2Z0WUPQlhB393OrzbL9rwc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jim Broadus <jbroadus@gmail.com>,
-        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 126/432] HID: i2c-hid: Fix Elan touchpad regression
+        stable@vger.kernel.org, Zhouyi Zhou <zhouzhouyi@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 130/306] rcu: Fix macro name CONFIG_TASKS_RCU_TRACE
 Date:   Thu, 16 Sep 2021 17:57:55 +0200
-Message-Id: <20210916155815.026708907@linuxfoundation.org>
+Message-Id: <20210916155758.491314821@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,49 +40,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jim Broadus <jbroadus@gmail.com>
+From: Zhouyi Zhou <zhouzhouyi@gmail.com>
 
-[ Upstream commit 786537063bbfb3a7ebc6fc21b2baf37fb91df401 ]
+[ Upstream commit fed31a4dd3adb5455df7c704de2abb639a1dc1c0 ]
 
-A quirk was recently added for Elan devices that has same device match
-as an entry earlier in the list. The i2c_hid_lookup_quirk function will
-always return the last match in the list, so the new entry shadows the
-old entry. The quirk in the previous entry, I2C_HID_QUIRK_BOGUS_IRQ,
-silenced a flood of messages which have reappeared in the 5.13 kernel.
+This commit fixes several typos where CONFIG_TASKS_RCU_TRACE should
+instead be CONFIG_TASKS_TRACE_RCU.  Among other things, these typos
+could cause CONFIG_TASKS_TRACE_RCU_READ_MB=y kernels to suffer from
+memory-ordering bugs that could result in false-positive quiescent
+states and too-short grace periods.
 
-This change moves the two quirk flags into the same entry.
-
-Fixes: ca66a6770bd9 (HID: i2c-hid: Skip ELAN power-on command after reset)
-Signed-off-by: Jim Broadus <jbroadus@gmail.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/i2c-hid/i2c-hid-core.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ include/linux/rcupdate.h | 2 +-
+ kernel/rcu/tree_plugin.h | 8 ++++----
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
-index 46474612e73c..517141138b00 100644
---- a/drivers/hid/i2c-hid/i2c-hid-core.c
-+++ b/drivers/hid/i2c-hid/i2c-hid-core.c
-@@ -171,8 +171,6 @@ static const struct i2c_hid_quirks {
- 		I2C_HID_QUIRK_NO_IRQ_AFTER_RESET },
- 	{ I2C_VENDOR_ID_RAYDIUM, I2C_PRODUCT_ID_RAYDIUM_3118,
- 		I2C_HID_QUIRK_NO_IRQ_AFTER_RESET },
--	{ USB_VENDOR_ID_ELAN, HID_ANY_ID,
--		 I2C_HID_QUIRK_BOGUS_IRQ },
- 	{ USB_VENDOR_ID_ALPS_JP, HID_ANY_ID,
- 		 I2C_HID_QUIRK_RESET_ON_RESUME },
- 	{ I2C_VENDOR_ID_SYNAPTICS, I2C_PRODUCT_ID_SYNAPTICS_SYNA2393,
-@@ -183,7 +181,8 @@ static const struct i2c_hid_quirks {
- 	 * Sending the wakeup after reset actually break ELAN touchscreen controller
- 	 */
- 	{ USB_VENDOR_ID_ELAN, HID_ANY_ID,
--		 I2C_HID_QUIRK_NO_WAKEUP_AFTER_RESET },
-+		 I2C_HID_QUIRK_NO_WAKEUP_AFTER_RESET |
-+		 I2C_HID_QUIRK_BOGUS_IRQ },
- 	{ 0, 0 }
- };
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index 0d7013da818c..095b3b39bd03 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -163,7 +163,7 @@ void synchronize_rcu_tasks(void);
+ # define synchronize_rcu_tasks synchronize_rcu
+ # endif
  
+-# ifdef CONFIG_TASKS_RCU_TRACE
++# ifdef CONFIG_TASKS_TRACE_RCU
+ # define rcu_tasks_trace_qs(t)						\
+ 	do {								\
+ 		if (!likely(READ_ONCE((t)->trc_reader_checked)) &&	\
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index 574aeaac9272..c5091aeaa37b 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -2591,17 +2591,17 @@ static void noinstr rcu_dynticks_task_exit(void)
+ /* Turn on heavyweight RCU tasks trace readers on idle/user entry. */
+ static void rcu_dynticks_task_trace_enter(void)
+ {
+-#ifdef CONFIG_TASKS_RCU_TRACE
++#ifdef CONFIG_TASKS_TRACE_RCU
+ 	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB))
+ 		current->trc_reader_special.b.need_mb = true;
+-#endif /* #ifdef CONFIG_TASKS_RCU_TRACE */
++#endif /* #ifdef CONFIG_TASKS_TRACE_RCU */
+ }
+ 
+ /* Turn off heavyweight RCU tasks trace readers on idle/user exit. */
+ static void rcu_dynticks_task_trace_exit(void)
+ {
+-#ifdef CONFIG_TASKS_RCU_TRACE
++#ifdef CONFIG_TASKS_TRACE_RCU
+ 	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB))
+ 		current->trc_reader_special.b.need_mb = false;
+-#endif /* #ifdef CONFIG_TASKS_RCU_TRACE */
++#endif /* #ifdef CONFIG_TASKS_TRACE_RCU */
+ }
 -- 
 2.30.2
 
