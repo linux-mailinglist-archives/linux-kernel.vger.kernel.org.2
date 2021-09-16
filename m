@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9CF140E209
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:15:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 261E240E475
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:24:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239295AbhIPQeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:34:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38206 "EHLO mail.kernel.org"
+        id S1348306AbhIPRC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:02:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241696AbhIPQZo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:25:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A76A61504;
-        Thu, 16 Sep 2021 16:16:49 +0000 (UTC)
+        id S1346320AbhIPQyo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:54:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 650836136A;
+        Thu, 16 Sep 2021 16:30:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809010;
-        bh=LCat9Mk5HO2lAs3ESj+TNKkPWvP3d1nWE8Pr9v+E410=;
+        s=korg; t=1631809813;
+        bh=6LOksXce/k5HvDLNXSjLG9Te585jaGoi0SD0jX9pYW4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ux7qvW1/wpg8GupcMaPMHWo6p5M/4NrrCx/TvBSMPZvShDLFjJlc0UflaUCZkrfGg
-         B+F0kTEnlsAPDav6VW+ZdeA6f8JMcFPIFWEV4oc0YGT9OX8IhdDANRvpEn4W3yLhaM
-         B84pp4lUNo+BbmwMDB4qlcwCvx3IsT9zQ+10nOdI=
+        b=WOWoczvcB7KKu9ze60HB52ClLm8Gwfv92hxJdPVbxkVD8fBvvld2RJIm55TZcy/9o
+         v1ij9XFoTLtFGtdJutoSzeLyiuwmrtRYdAefxhe+hY3eMOBSuk8HxTTIy5wiGuRMBm
+         Jr9za8K3NW+5N3DEHgmqa3LjhJE/KuGQoYkvGNdM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        Rob Herring <robh@kernel.org>,
-        Chris Morgan <macromorgan@hotmail.com>,
-        Steven Price <steven.price@arm.com>
-Subject: [PATCH 5.10 304/306] drm/panfrost: Use u64 for size in lock_region
-Date:   Thu, 16 Sep 2021 18:00:49 +0200
-Message-Id: <20210916155804.450789353@linuxfoundation.org>
+        stable@vger.kernel.org, Daire Byrne <daire@dneg.com>,
+        "J. Bruce Fields" <bfields@redhat.com>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 293/380] lockd: lockd server-side shouldnt set fl_ops
+Date:   Thu, 16 Sep 2021 18:00:50 +0200
+Message-Id: <20210916155814.030965232@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,85 +41,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
+From: J. Bruce Fields <bfields@redhat.com>
 
-commit a77b58825d7221d4a45c47881c35a47ba003aa73 upstream.
+[ Upstream commit 7de875b231edb807387a81cde288aa9e1015ef9e ]
 
-Mali virtual addresses are 48-bit. Use a u64 instead of size_t to ensure
-we can express the "lock everything" condition as ~0ULL without
-overflow. This code was silently broken on any platform where a size_t
-is less than 48-bits; in particular, it was broken on 32-bit armv7
-platforms which remain in use with panfrost. (Mainly RK3288)
+Locks have two sets of op arrays, fl_lmops for the lock manager (lockd
+or nfsd), fl_ops for the filesystem.  The server-side lockd code has
+been setting its own fl_ops, which leads to confusion (and crashes) in
+the reexport case, where the filesystem expects to be the only one
+setting fl_ops.
 
-Signed-off-by: Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
-Suggested-by: Rob Herring <robh@kernel.org>
-Tested-by: Chris Morgan <macromorgan@hotmail.com>
-Reviewed-by: Steven Price <steven.price@arm.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Fixes: f3ba91228e8e ("drm/panfrost: Add initial panfrost driver")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Steven Price <steven.price@arm.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210824173028.7528-3-alyssa.rosenzweig@collabora.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+And there's no reason for it that I can see-the lm_get/put_owner ops do
+the same job.
+
+Reported-by: Daire Byrne <daire@dneg.com>
+Tested-by: Daire Byrne <daire@dneg.com>
+Signed-off-by: J. Bruce Fields <bfields@redhat.com>
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/panfrost/panfrost_mmu.c |   12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ fs/lockd/svclock.c | 30 ++++++++++++------------------
+ 1 file changed, 12 insertions(+), 18 deletions(-)
 
---- a/drivers/gpu/drm/panfrost/panfrost_mmu.c
-+++ b/drivers/gpu/drm/panfrost/panfrost_mmu.c
-@@ -55,7 +55,7 @@ static int write_cmd(struct panfrost_dev
+diff --git a/fs/lockd/svclock.c b/fs/lockd/svclock.c
+index 498cb70c2c0d..273a81971ed5 100644
+--- a/fs/lockd/svclock.c
++++ b/fs/lockd/svclock.c
+@@ -395,28 +395,10 @@ nlmsvc_release_lockowner(struct nlm_lock *lock)
+ 		nlmsvc_put_lockowner(lock->fl.fl_owner);
  }
  
- static void lock_region(struct panfrost_device *pfdev, u32 as_nr,
--			u64 iova, size_t size)
-+			u64 iova, u64 size)
+-static void nlmsvc_locks_copy_lock(struct file_lock *new, struct file_lock *fl)
+-{
+-	struct nlm_lockowner *nlm_lo = (struct nlm_lockowner *)fl->fl_owner;
+-	new->fl_owner = nlmsvc_get_lockowner(nlm_lo);
+-}
+-
+-static void nlmsvc_locks_release_private(struct file_lock *fl)
+-{
+-	nlmsvc_put_lockowner((struct nlm_lockowner *)fl->fl_owner);
+-}
+-
+-static const struct file_lock_operations nlmsvc_lock_ops = {
+-	.fl_copy_lock = nlmsvc_locks_copy_lock,
+-	.fl_release_private = nlmsvc_locks_release_private,
+-};
+-
+ void nlmsvc_locks_init_private(struct file_lock *fl, struct nlm_host *host,
+ 						pid_t pid)
  {
- 	u8 region_width;
- 	u64 region = iova & PAGE_MASK;
-@@ -75,7 +75,7 @@ static void lock_region(struct panfrost_
+ 	fl->fl_owner = nlmsvc_find_lockowner(host, pid);
+-	if (fl->fl_owner != NULL)
+-		fl->fl_ops = &nlmsvc_lock_ops;
+ }
  
+ /*
+@@ -788,9 +770,21 @@ nlmsvc_notify_blocked(struct file_lock *fl)
+ 	printk(KERN_WARNING "lockd: notification for unknown block!\n");
+ }
  
- static int mmu_hw_do_operation_locked(struct panfrost_device *pfdev, int as_nr,
--				      u64 iova, size_t size, u32 op)
-+				      u64 iova, u64 size, u32 op)
- {
- 	if (as_nr < 0)
- 		return 0;
-@@ -92,7 +92,7 @@ static int mmu_hw_do_operation_locked(st
++static fl_owner_t nlmsvc_get_owner(fl_owner_t owner)
++{
++	return nlmsvc_get_lockowner(owner);
++}
++
++static void nlmsvc_put_owner(fl_owner_t owner)
++{
++	nlmsvc_put_lockowner(owner);
++}
++
+ const struct lock_manager_operations nlmsvc_lock_operations = {
+ 	.lm_notify = nlmsvc_notify_blocked,
+ 	.lm_grant = nlmsvc_grant_deferred,
++	.lm_get_owner = nlmsvc_get_owner,
++	.lm_put_owner = nlmsvc_put_owner,
+ };
  
- static int mmu_hw_do_operation(struct panfrost_device *pfdev,
- 			       struct panfrost_mmu *mmu,
--			       u64 iova, size_t size, u32 op)
-+			       u64 iova, u64 size, u32 op)
- {
- 	int ret;
- 
-@@ -109,7 +109,7 @@ static void panfrost_mmu_enable(struct p
- 	u64 transtab = cfg->arm_mali_lpae_cfg.transtab;
- 	u64 memattr = cfg->arm_mali_lpae_cfg.memattr;
- 
--	mmu_hw_do_operation_locked(pfdev, as_nr, 0, ~0UL, AS_COMMAND_FLUSH_MEM);
-+	mmu_hw_do_operation_locked(pfdev, as_nr, 0, ~0ULL, AS_COMMAND_FLUSH_MEM);
- 
- 	mmu_write(pfdev, AS_TRANSTAB_LO(as_nr), transtab & 0xffffffffUL);
- 	mmu_write(pfdev, AS_TRANSTAB_HI(as_nr), transtab >> 32);
-@@ -125,7 +125,7 @@ static void panfrost_mmu_enable(struct p
- 
- static void panfrost_mmu_disable(struct panfrost_device *pfdev, u32 as_nr)
- {
--	mmu_hw_do_operation_locked(pfdev, as_nr, 0, ~0UL, AS_COMMAND_FLUSH_MEM);
-+	mmu_hw_do_operation_locked(pfdev, as_nr, 0, ~0ULL, AS_COMMAND_FLUSH_MEM);
- 
- 	mmu_write(pfdev, AS_TRANSTAB_LO(as_nr), 0);
- 	mmu_write(pfdev, AS_TRANSTAB_HI(as_nr), 0);
-@@ -225,7 +225,7 @@ static size_t get_pgsize(u64 addr, size_
- 
- static void panfrost_mmu_flush_range(struct panfrost_device *pfdev,
- 				     struct panfrost_mmu *mmu,
--				     u64 iova, size_t size)
-+				     u64 iova, u64 size)
- {
- 	if (mmu->as < 0)
- 		return;
+ /*
+-- 
+2.30.2
+
 
 
