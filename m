@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D79C040E841
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83D7E40E46C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354018AbhIPRiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:38:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47064 "EHLO mail.kernel.org"
+        id S1344478AbhIPQ6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:58:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36928 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352806AbhIPR2k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:28:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F0B0161C57;
-        Thu, 16 Sep 2021 16:45:51 +0000 (UTC)
+        id S245743AbhIPQwk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:52:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E903361A8A;
+        Thu, 16 Sep 2021 16:29:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810752;
-        bh=HJfAW2t0hTonjZ5FlDW4q1tk06LyhkwoiHH4zkem0bc=;
+        s=korg; t=1631809763;
+        bh=ulygN54DIgMwclPTclf9FlS0lmHQWf9LgYJJ/C3EWVI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mb5PXnovNRMzjD/+Eyc1CpWn8NDJjuSY86XdOrY7gtD/O4cYZNJ2ZCFlND3V8Gh5K
-         jRO7EYAU3D9a+JjgxmkrcipKU3gKNZ0uP+Z/TNkkUK9MxUGYSyAyfgnvH/yeEo8d4n
-         PJ381i1338qlvfWN2bpPhccqj83ncXS8ao9ib5EI=
+        b=iT/N+lQ9Q3fAfnQyNOHBeBHHmwmnRJwGh60FD/Y3HHcAt1TV2ruWLHeIe/ZugQXEw
+         yCoQ4ss5a/Z7wwZ0OuT0z3L2TUwxCQ0Sp6YfjK1AsBm6mg6qSAsy3LiuxDN+0IyRoi
+         SJ6QzJfi5PExC1A/sPmUObu6WVvFILCAeeJczNxc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ioana Ciornei <ioana.ciornei@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Rob Clark <robdclark@chromium.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 254/432] dpaa2-switch: do not enable the DPSW at probe time
-Date:   Thu, 16 Sep 2021 18:00:03 +0200
-Message-Id: <20210916155819.435159181@linuxfoundation.org>
+Subject: [PATCH 5.13 247/380] drm/msm/dsi: Fix DSI and DSI PHY regulator config from SDM660
+Date:   Thu, 16 Sep 2021 18:00:04 +0200
+Message-Id: <20210916155812.485995074@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,38 +42,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ioana Ciornei <ioana.ciornei@nxp.com>
+From: Konrad Dybcio <konrad.dybcio@somainline.org>
 
-[ Upstream commit 042ad90ca7ce70f35dc5efd5b2043d2f8aceb12a ]
+[ Upstream commit 462f7017a6918d152870bfb8852f3c70fd74b296 ]
 
-We should not enable the switch interfaces at probe time since this is
-trigged by the open callback. Remove the call dpsw_enable() which does
-exactly this.
+VDDA is not present and the specified load value is wrong. Fix it.
 
-Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+Link: https://lore.kernel.org/r/20210728222057.52641-1-konrad.dybcio@somainline.org
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Signed-off-by: Rob Clark <robdclark@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/freescale/dpaa2/dpaa2-switch.c | 6 ------
- 1 file changed, 6 deletions(-)
+ drivers/gpu/drm/msm/dsi/dsi_cfg.c          | 1 -
+ drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c | 2 +-
+ 2 files changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/freescale/dpaa2/dpaa2-switch.c b/drivers/net/ethernet/freescale/dpaa2/dpaa2-switch.c
-index 98cc0133c343..5ad5419e8be3 100644
---- a/drivers/net/ethernet/freescale/dpaa2/dpaa2-switch.c
-+++ b/drivers/net/ethernet/freescale/dpaa2/dpaa2-switch.c
-@@ -3231,12 +3231,6 @@ static int dpaa2_switch_probe(struct fsl_mc_device *sw_dev)
- 			       &ethsw->fq[i].napi, dpaa2_switch_poll,
- 			       NAPI_POLL_WEIGHT);
- 
--	err = dpsw_enable(ethsw->mc_io, 0, ethsw->dpsw_handle);
--	if (err) {
--		dev_err(ethsw->dev, "dpsw_enable err %d\n", err);
--		goto err_free_netdev;
--	}
--
- 	/* Setup IRQs */
- 	err = dpaa2_switch_setup_irqs(sw_dev);
- 	if (err)
+diff --git a/drivers/gpu/drm/msm/dsi/dsi_cfg.c b/drivers/gpu/drm/msm/dsi/dsi_cfg.c
+index f3f1c03c7db9..763f127e4621 100644
+--- a/drivers/gpu/drm/msm/dsi/dsi_cfg.c
++++ b/drivers/gpu/drm/msm/dsi/dsi_cfg.c
+@@ -154,7 +154,6 @@ static const struct msm_dsi_config sdm660_dsi_cfg = {
+ 	.reg_cfg = {
+ 		.num = 2,
+ 		.regs = {
+-			{"vdd", 73400, 32 },	/* 0.9 V */
+ 			{"vdda", 12560, 4 },	/* 1.2 V */
+ 		},
+ 	},
+diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c
+index 65d68eb9e3cb..c96fd752fa1d 100644
+--- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c
++++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c
+@@ -1049,7 +1049,7 @@ const struct msm_dsi_phy_cfg dsi_phy_14nm_660_cfgs = {
+ 	.reg_cfg = {
+ 		.num = 1,
+ 		.regs = {
+-			{"vcca", 17000, 32},
++			{"vcca", 73400, 32},
+ 		},
+ 	},
+ 	.ops = {
 -- 
 2.30.2
 
