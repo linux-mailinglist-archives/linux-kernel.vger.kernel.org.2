@@ -2,88 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FCE040D581
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 11:03:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB56940D585
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 11:04:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236314AbhIPJFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 05:05:06 -0400
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:59897 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236186AbhIPJEw (ORCPT
+        id S235372AbhIPJFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 05:05:55 -0400
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:18443 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233839AbhIPJFy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 05:04:52 -0400
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id CBDB55C0213;
-        Thu, 16 Sep 2021 05:03:31 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Thu, 16 Sep 2021 05:03:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=GZkDga
-        6ssumhZQoFHGM4sdNqFoaPvBwApjIOon26ucg=; b=n0yZM/AuhRj4N4gfKHS277
-        m7MmBUKdaLG9mTTqPr5Sg8ZFTOudNnok9diINmwxEmpCiLv+Pj4yXWcz7vVSEeRF
-        +MmxddbSIeYVAtDbf3aVo8gukiOKKPQfW8te9RZ+FRbYRGGDu7C7pkbScGLR6ua/
-        MNDlgwRx/R0UOytYssml/0iEqGN3mew3BUxKcn88hZra1JqoJQvS6HLopyIrHrsA
-        GA7WK0zrdKjGY3ANcgGexqo6ARTFXtQmDY7PtkB6fc3uZLu7Pik8Nqz+RWVo8gUf
-        MSt8S06BW+Q5h/wTcQyZbHAqsCs5PHMXdN7gypEZV9EnklBshh7d+KFXusbLIzBw
-        ==
-X-ME-Sender: <xms:YwhDYeEzimVZiUvFIDK9E5S9gy_SCBU-Vq9E2lBGtCxb9OKDBvAXZQ>
-    <xme:YwhDYfVY1p-44RXqHAK6fQcurC5X2uF0afcjOZ0ilHy7I6k3-ULd4oQ3n6S1zixfE
-    -gE9l8Ay90dD7I04GM>
-X-ME-Received: <xmr:YwhDYYJWbBF9liW3vo0-HX5QfwSOzjE4W8GhKz6b-lsxlXtka1BdHqF97LSuRqxZRoMIGHYxBNGgFzAnJOjKUNMsWnfH5tSy0CFkOw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudehgedgtdeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfv
-    hhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrth
-    htvghrnhepveefvddvhfeuvdeigfffteehvdeiheegjeeuheekudegjeefffeludekffei
-    gedvnecuffhomhgrihhnpehngihprdgtohhmnecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepfhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhr
-    gh
-X-ME-Proxy: <xmx:YwhDYYENlYGMOGt38szYt3YFpFjsUakOzpdVJuEK-t1DrcRTxFoHew>
-    <xmx:YwhDYUVqyKPd7HEbMrpyGY_PMDNL91jbMJeocH3t2mvqmaNdfZRwNw>
-    <xmx:YwhDYbPZURpdWG6aWm0vp-U6qlSJR2Wv3NWKuoDghDRQEpzK44Vb4A>
-    <xmx:YwhDYRibmooYf897Fz1Czz5bYS7HisqnXPuU9Fyg43aSfZyAGS90cw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 16 Sep 2021 05:03:28 -0400 (EDT)
-Date:   Thu, 16 Sep 2021 19:03:15 +1000 (AEST)
-From:   Finn Thain <fthain@linux-m68k.org>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-cc:     linux-m68k@lists.linux-m68k.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC][CFT] signal handling fixes
-In-Reply-To: <YP2c1xk9LJ0zE3KW@zeniv-ca.linux.org.uk>
-Message-ID: <89b7f0e5-21a5-5828-1eb8-5119fb8e2d58@linux-m68k.org>
-References: <YP2c1xk9LJ0zE3KW@zeniv-ca.linux.org.uk>
+        Thu, 16 Sep 2021 05:05:54 -0400
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 18G943If031888;
+        Thu, 16 Sep 2021 18:04:04 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 18G943If031888
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1631783044;
+        bh=/Me94CHI6D7Grr/8zySCJznRVytvYJSDU0FIaolkDBw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=fVl8pB5YtiFRnT0CZxZbTo+FfRuYBSqrQgg1faX3k5qXdY/eT1ZTr2uc+vJVu/wIc
+         yl85E+hBYJN5tLSdYBauy+5PIF1Ip044qrNNkW7QMiiqPDxO3gDgbc3HyKrt/+wFAA
+         m65HJ72UWerudX+gQT2IDU0Gad9hyfqDq8F5ja4yK3RyE4vhucQ+IWVaH9f1J+N+jk
+         EJfa6FkcNLhiIgXj7ncf4wlL6oVIZoD/qG9bO1WiuGbaw2+tPUoDscCm472NOSDN7a
+         +BKR0FnOqx/k4bd+SF+G6xz/pycaPdoYsBCorOBmd8cwE+lg7QKhcrWtfDqNfIS6S+
+         HTNwe502FDWKw==
+X-Nifty-SrcIP: [209.85.214.174]
+Received: by mail-pl1-f174.google.com with SMTP id v2so3372604plp.8;
+        Thu, 16 Sep 2021 02:04:03 -0700 (PDT)
+X-Gm-Message-State: AOAM533p76oBGSRxjymM71Sk39JfgHi3OZy+Zg8TgGimsTjlrBuje+TX
+        fEcFjAHP/erYEn8f5TO42wtqBxKQ8LTUtnCTSU0=
+X-Google-Smtp-Source: ABdhPJxEnFljfssNoXutqySyeUzI+AmBXxzdw4JCokqyxa1jombHYCaZ+PLCvcYjvH94X4x99MQ7AZPxoetqYajKAS0=
+X-Received: by 2002:a17:90a:192:: with SMTP id 18mr13726656pjc.119.1631783043186;
+ Thu, 16 Sep 2021 02:04:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20210914121550.39cfd366@canb.auug.org.au>
+In-Reply-To: <20210914121550.39cfd366@canb.auug.org.au>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 16 Sep 2021 18:03:26 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASCbVJ0EYoGN8iz+yskpHUuR_PZnePUUtgJu9UZqGW2cg@mail.gmail.com>
+Message-ID: <CAK7LNASCbVJ0EYoGN8iz+yskpHUuR_PZnePUUtgJu9UZqGW2cg@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the net-next tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        M Chetan Kumar <m.chetan.kumar@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 25 Jul 2021, Al Viro wrote:
+On Tue, Sep 14, 2021 at 11:15 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> After merging the net-next tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
+>
+> In file included from drivers/net/wwan/iosm/iosm_ipc_task_queue.c:6:
+> drivers/net/wwan/iosm/iosm_ipc_imem.h:10:10: fatal error: stdbool.h: No such file or directory
+>    10 | #include <stdbool.h>
+>       |          ^~~~~~~~~~~
+> In file included from drivers/net/wwan/iosm/iosm_ipc_protocol.h:9,
+>                  from drivers/net/wwan/iosm/iosm_ipc_mux.h:9,
+>                  from drivers/net/wwan/iosm/iosm_ipc_chnl_cfg.h:9,
+>                  from drivers/net/wwan/iosm/iosm_ipc_imem_ops.c:8:
+> drivers/net/wwan/iosm/iosm_ipc_imem.h:10:10: fatal error: stdbool.h: No such file or directory
+>    10 | #include <stdbool.h>
+>       |          ^~~~~~~~~~~
+> In file included from drivers/net/wwan/iosm/iosm_ipc_protocol.h:9,
+>                  from drivers/net/wwan/iosm/iosm_ipc_mux.h:9,
+>                  from drivers/net/wwan/iosm/iosm_ipc_chnl_cfg.h:9,
+>                  from drivers/net/wwan/iosm/iosm_ipc_imem.c:8:
+> drivers/net/wwan/iosm/iosm_ipc_imem.h:10:10: fatal error: stdbool.h: No such file or directory
+>    10 | #include <stdbool.h>
+>       |          ^~~~~~~~~~~
+>
+> Caused by commit
+>
+>   13bb8429ca98 ("net: wwan: iosm: firmware flashing and coredump collection")
+>
+> interacting with commit
+>
+>   0666a64a1f48 ("isystem: delete global -isystem compile option")
+>
+> from the kbuild tree.
+>
+> I have reverted the kbuild tree commit for today.  Please provide a
+> merge resolution patch.
 
-> ...
-> 
-> PS:  FWIW, ifdefs in arch/m68k/kernel/signal.c are wrong - it's not !MMU 
-> vs. coldfire/MMU vs. classic/MMU.  It's actually 68000 vs. coldfire vs. 
-> everything else.  These days it's nearly correct, but only because on 
-> MMU variants of coldfire we never see exception stack frames with type 
-> other than 4 - it's controlled by alignment of kernel stack pointer on 
-> those, and it's under the kernel control, so it's always 32bit-aligned.  
-> It used to be more serious back when we had 68360 support - that's !MMU 
-> and exception stack frames are like those on 68020, unless I'm 
-> misreading their manual...
-> 
+I am sad to see the kbuild change reverted, not the net one.
 
-I don't claim to understand this code but CPU32 cores appear to be 
-unsupported on either #ifdef branch: the MMU branch due to CACR and CAAR 
-used in push_cache(), and the !MMU branch due to frame format $4 used in 
-adjust_format().
+13bb8429ca98 is apparently doing wrong.
 
-The CPU32 Reference Manual appendix says these chips only supports control 
-registers SFC, DFC, VBR and stack frame formats $0, $2, $C. 
-https://www.nxp.com/files-static/microcontrollers/doc/ref_manual/CPU32RM.pdf
+Including <linux/types.h> should be fine.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+> --
+> Cheers,
+> Stephen Rothwell
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
