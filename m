@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F39540E469
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:24:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F24D140E214
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:15:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241183AbhIPQ6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:58:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36668 "EHLO mail.kernel.org"
+        id S243792AbhIPQeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:34:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38910 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240891AbhIPQwl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:52:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7933561A89;
-        Thu, 16 Sep 2021 16:29:17 +0000 (UTC)
+        id S241885AbhIPQ0Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:26:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7161461526;
+        Thu, 16 Sep 2021 16:17:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809758;
-        bh=smrg7xdiaHk44GbPsjmDFBSTWmaqt+YyDAr2cps7BDs=;
+        s=korg; t=1631809026;
+        bh=+bY31dPJFtqpT+8jYpHZApMb6m8ON71lfddpGc5hhac=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EDDqsgydUhJYbnsudoCg8KpnPY5Y/uHO3lE4MV0ccEFW0vtr/KFN0apzhLWx/ZGMG
-         hJicabRD2bUwQ7rnAd0h2Zezse51X1oxyZ6GWxtuApy6ejDrbTd6tR1qFijlKznCTL
-         EYVA5mJSuJX+uXOIuq91WFSEfNLmIFKoPSLTJ5gw=
+        b=uovTOALOatsbOUMA8n/klkHp7h1HNiTVdXvO/mjK2ch188lePibmuXpDs86iCwzSi
+         9GET00AaLtfC1GP5JHuyADdN7X1nbtWNT5nAjPkavH29Ws5IIiUIhV1yJ/uYQEfwRF
+         3cIkcmr+VVFhLy/YZj6E0JRY++mK0vXe56UD+1EI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Daniel Wagner <dwagner@suse.de>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 272/380] nvme-tcp: dont check blk_mq_tag_to_rq when receiving pdu data
-Date:   Thu, 16 Sep 2021 18:00:29 +0200
-Message-Id: <20210916155813.324701191@linuxfoundation.org>
+        stable@vger.kernel.org, Shirisha Ganta <shirisha.ganta1@ibm.com>,
+        "Pratik R. Sampat" <psampat@linux.ibm.com>,
+        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.10 285/306] cpufreq: powernv: Fix init_chip_info initialization in numa=off
+Date:   Thu, 16 Sep 2021 18:00:30 +0200
+Message-Id: <20210916155803.812810929@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,49 +41,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sagi Grimberg <sagi@grimberg.me>
+From: Pratik R. Sampat <psampat@linux.ibm.com>
 
-[ Upstream commit 3b01a9d0caa8276d9ce314e09610f7fb70f49a00 ]
+commit f34ee9cb2c5ac5af426fee6fa4591a34d187e696 upstream.
 
-We already validate it when receiving the c2hdata pdu header
-and this is not changing so this is a redundant check.
+In the numa=off kernel command-line configuration init_chip_info() loops
+around the number of chips and attempts to copy the cpumask of that node
+which is NULL for all iterations after the first chip.
 
-Reviewed-by: Hannes Reinecke <hare@suse.de>
-Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
-Reviewed-by: Daniel Wagner <dwagner@suse.de>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Hence, store the cpu mask for each chip instead of derving cpumask from
+node while populating the "chips" struct array and copy that to the
+chips[i].mask
+
+Fixes: 053819e0bf84 ("cpufreq: powernv: Handle throttling due to Pmax capping at chip level")
+Cc: stable@vger.kernel.org # v4.3+
+Reported-by: Shirisha Ganta <shirisha.ganta1@ibm.com>
+Signed-off-by: Pratik R. Sampat <psampat@linux.ibm.com>
+Reviewed-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
+[mpe: Rename goto label to out_free_chip_cpu_mask]
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20210728120500.87549-2-psampat@linux.ibm.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/nvme/host/tcp.c | 14 +++-----------
- 1 file changed, 3 insertions(+), 11 deletions(-)
+ drivers/cpufreq/powernv-cpufreq.c |   16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c
-index ab1ea5b0888e..da289b8f8a27 100644
---- a/drivers/nvme/host/tcp.c
-+++ b/drivers/nvme/host/tcp.c
-@@ -702,17 +702,9 @@ static int nvme_tcp_recv_data(struct nvme_tcp_queue *queue, struct sk_buff *skb,
- 			      unsigned int *offset, size_t *len)
- {
- 	struct nvme_tcp_data_pdu *pdu = (void *)queue->pdu;
--	struct nvme_tcp_request *req;
--	struct request *rq;
--
--	rq = blk_mq_tag_to_rq(nvme_tcp_tagset(queue), pdu->command_id);
--	if (!rq) {
--		dev_err(queue->ctrl->ctrl.device,
--			"queue %d tag %#x not found\n",
--			nvme_tcp_queue_id(queue), pdu->command_id);
--		return -ENOENT;
--	}
--	req = blk_mq_rq_to_pdu(rq);
-+	struct request *rq =
-+		blk_mq_tag_to_rq(nvme_tcp_tagset(queue), pdu->command_id);
-+	struct nvme_tcp_request *req = blk_mq_rq_to_pdu(rq);
+--- a/drivers/cpufreq/powernv-cpufreq.c
++++ b/drivers/cpufreq/powernv-cpufreq.c
+@@ -36,6 +36,7 @@
+ #define MAX_PSTATE_SHIFT	32
+ #define LPSTATE_SHIFT		48
+ #define GPSTATE_SHIFT		56
++#define MAX_NR_CHIPS		32
  
- 	while (true) {
- 		int recv_len, ret;
--- 
-2.30.2
-
+ #define MAX_RAMP_DOWN_TIME				5120
+ /*
+@@ -1051,12 +1052,20 @@ static int init_chip_info(void)
+ 	unsigned int *chip;
+ 	unsigned int cpu, i;
+ 	unsigned int prev_chip_id = UINT_MAX;
++	cpumask_t *chip_cpu_mask;
+ 	int ret = 0;
+ 
+ 	chip = kcalloc(num_possible_cpus(), sizeof(*chip), GFP_KERNEL);
+ 	if (!chip)
+ 		return -ENOMEM;
+ 
++	/* Allocate a chip cpu mask large enough to fit mask for all chips */
++	chip_cpu_mask = kcalloc(MAX_NR_CHIPS, sizeof(cpumask_t), GFP_KERNEL);
++	if (!chip_cpu_mask) {
++		ret = -ENOMEM;
++		goto free_and_return;
++	}
++
+ 	for_each_possible_cpu(cpu) {
+ 		unsigned int id = cpu_to_chip_id(cpu);
+ 
+@@ -1064,22 +1073,25 @@ static int init_chip_info(void)
+ 			prev_chip_id = id;
+ 			chip[nr_chips++] = id;
+ 		}
++		cpumask_set_cpu(cpu, &chip_cpu_mask[nr_chips-1]);
+ 	}
+ 
+ 	chips = kcalloc(nr_chips, sizeof(struct chip), GFP_KERNEL);
+ 	if (!chips) {
+ 		ret = -ENOMEM;
+-		goto free_and_return;
++		goto out_free_chip_cpu_mask;
+ 	}
+ 
+ 	for (i = 0; i < nr_chips; i++) {
+ 		chips[i].id = chip[i];
+-		cpumask_copy(&chips[i].mask, cpumask_of_node(chip[i]));
++		cpumask_copy(&chips[i].mask, &chip_cpu_mask[i]);
+ 		INIT_WORK(&chips[i].throttle, powernv_cpufreq_work_fn);
+ 		for_each_cpu(cpu, &chips[i].mask)
+ 			per_cpu(chip_info, cpu) =  &chips[i];
+ 	}
+ 
++out_free_chip_cpu_mask:
++	kfree(chip_cpu_mask);
+ free_and_return:
+ 	kfree(chip);
+ 	return ret;
 
 
