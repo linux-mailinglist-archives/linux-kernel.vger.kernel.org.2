@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 180D340E61C
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:29:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0A9D40DF99
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:11:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346364AbhIPRSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:18:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37566 "EHLO mail.kernel.org"
+        id S234616AbhIPQMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:12:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47370 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245472AbhIPRKG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:10:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 01FC761B49;
-        Thu, 16 Sep 2021 16:37:39 +0000 (UTC)
+        id S234850AbhIPQH1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:07:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A5B861268;
+        Thu, 16 Sep 2021 16:06:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810260;
-        bh=nd89eXtBFKueYaWwtvBp619RU0dRzWtOpxQO35ufTUg=;
+        s=korg; t=1631808367;
+        bh=QV/0Ednd9+WnkJtTfYQvY7pchYoSJHgnRzMOvgk9Wag=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vVXTP84u48O+r6VNgjXBfO5kMHKd3jImbxdf1/410U3ooXFtMjbHHc/WS7pgOmm7i
-         /vg3yXhDQxLCfz5MOWUVn5Fkz6L4xnN6h1uxLii5MqPAXswrgs/JgQazopdzQQVctq
-         q9AVURf3WyiLd3MueDJhPhXZHuUJA0jA6YIhVIkQ=
+        b=T7qEE7AgKcq6BiiJUa3LNz9Nhj/G4ME4UE9D60siOF1yXsB4ZKiIZ96EjbRg1U2/3
+         HagIp7lfUhk7/Pcjy8qEDIh1Aj0illkt+4+NyfeU+wvBdHYfBrHvtPKHm41ue/8TEy
+         WujarxmROxkX4hcO021SgTL6/DBMPza+dgyAF4RI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Mantas=20Mikul=C4=97nas?= <grawity@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>
-Subject: [PATCH 5.14 058/432] watchdog: iTCO_wdt: Fix detection of SMI-off case
-Date:   Thu, 16 Sep 2021 17:56:47 +0200
-Message-Id: <20210916155812.757434358@linuxfoundation.org>
+        stable@vger.kernel.org, Khalid Aziz <khalid@gonehiking.org>,
+        Colin Ian King <colin.king@canonical.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 063/306] scsi: BusLogic: Use %X for u32 sized integer rather than %lX
+Date:   Thu, 16 Sep 2021 17:56:48 +0200
+Message-Id: <20210916155756.093520871@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,38 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kiszka <jan.kiszka@siemens.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-commit aec42642d91fc86ddc03e97f0139c6c34ee6b6b1 upstream.
+[ Upstream commit 2127cd21fb78c6e22d92944253afd967b0ff774d ]
 
-Obviously, the test needs to run against the register content, not its
-address.
+An earlier fix changed the print format specifier for adapter->bios_addr to
+use %lX. However, the integer is a u32 so the fix was wrong. Fix this by
+using the correct %X format specifier.
 
-Fixes: cb011044e34c ("watchdog: iTCO_wdt: Account for rebooting on second timeout")
-Cc: stable@vger.kernel.org
-Reported-by: Mantas Mikulėnas <grawity@gmail.com>
-Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
-Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Tested-by: Mantas Mikulėnas <grawity@gmail.com>
-Link: https://lore.kernel.org/r/d84f8e06-f646-8b43-d063-fb11f4827044@siemens.com
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20210730095031.26981-1-colin.king@canonical.com
+Fixes: 43622697117c ("scsi: BusLogic: use %lX for unsigned long rather than %X")
+Acked-by: Khalid Aziz <khalid@gonehiking.org>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Addresses-Coverity: ("Invalid type in argument")
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/watchdog/iTCO_wdt.c |    2 +-
+ drivers/scsi/BusLogic.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/watchdog/iTCO_wdt.c
-+++ b/drivers/watchdog/iTCO_wdt.c
-@@ -362,7 +362,7 @@ static int iTCO_wdt_set_timeout(struct w
- 	 * Otherwise, the BIOS generally reboots when the SMI triggers.
- 	 */
- 	if (p->smi_res &&
--	    (SMI_EN(p) & (TCO_EN | GBL_SMI_EN)) != (TCO_EN | GBL_SMI_EN))
-+	    (inl(SMI_EN(p)) & (TCO_EN | GBL_SMI_EN)) != (TCO_EN | GBL_SMI_EN))
- 		tmrval /= 2;
- 
- 	/* from the specs: */
+diff --git a/drivers/scsi/BusLogic.c b/drivers/scsi/BusLogic.c
+index 7231de2767a9..86d9d804dea7 100644
+--- a/drivers/scsi/BusLogic.c
++++ b/drivers/scsi/BusLogic.c
+@@ -1845,7 +1845,7 @@ static bool __init blogic_reportconfig(struct blogic_adapter *adapter)
+ 		else
+ 			blogic_info("None, ", adapter);
+ 		if (adapter->bios_addr > 0)
+-			blogic_info("BIOS Address: 0x%lX, ", adapter,
++			blogic_info("BIOS Address: 0x%X, ", adapter,
+ 					adapter->bios_addr);
+ 		else
+ 			blogic_info("BIOS Address: None, ", adapter);
+-- 
+2.30.2
+
 
 
