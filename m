@@ -2,335 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B42FD40D52B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 10:54:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A084F40D52E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 10:56:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235251AbhIPI4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 04:56:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234462AbhIPI4H (ORCPT
+        id S235367AbhIPI50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 04:57:26 -0400
+Received: from mail-vs1-f41.google.com ([209.85.217.41]:33502 "EHLO
+        mail-vs1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235160AbhIPI5W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 04:56:07 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF7CFC061574;
-        Thu, 16 Sep 2021 01:54:47 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id g184so5504114pgc.6;
-        Thu, 16 Sep 2021 01:54:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=LWUCp8cVagg5kfmeD8CZNpFMqbHS2lYZAfYA2ed5ufE=;
-        b=V6o5ku9+FcuUTQr1WxlsPtOthDzv3oQz4sYjnsMaiBuL+5Y9WEPP5uX0tNvwxrugyl
-         hz8fHuB32FNJ74R8A4HcTIkbcCZg5qqQAulINpm4NhcV/lkGklYUhGy+pL8qOYkpJ1tn
-         suelvT04EjesUllZWQx9pTMqYOIiwHCvmxCgedvDHG/U/kmPJ85RnD6vJAxSvTgEXbVR
-         dIP8cDJ0dwmzg9FJVe4VtXgfq0OEX4DDuNFAhPrwvawpMeAZvMR6y2DHQigDoLePG57u
-         +h26UaTrlSADP5wqa+sGhfjBXyaId5TTUU7oQ9aQrWtxBMjknQqHZu1rKl7GiW0RULR6
-         S2Fg==
+        Thu, 16 Sep 2021 04:57:22 -0400
+Received: by mail-vs1-f41.google.com with SMTP id p24so5490629vsg.0;
+        Thu, 16 Sep 2021 01:56:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=LWUCp8cVagg5kfmeD8CZNpFMqbHS2lYZAfYA2ed5ufE=;
-        b=xyy6wtcGou2/SDthv7KPKfQDWPaYasOg1tVZMlnd1zr4ESOhG3bfp43FX/3nshAKdQ
-         hXQ2sW6EfwY4ZqYzWXeOUNQ5mw5pvIaRJQa1U1g0gIbCf8doJ9nlOab/jygZtk37kMuP
-         88fQWHoQI7Zs+LtLXFcNy6dkn0SqK0tpA6OPUiTds7+mFusajUOHGwG1opf/GP3TqxeG
-         VIebDgM/BIGSHpCfMa9i3NX4p8+fAWhooRtjdKrPOyCelSZlreIwI20r1BnPzN7g9Iqc
-         RhLw1+s5nJwY/qomvlMbM6RXsHpzQ5OuGyr72kf2RWndLdLJsqtrXDZHtVqgYuVRotxO
-         m27w==
-X-Gm-Message-State: AOAM530AHGzTCVgxMXgtr/WxpeVbYOHOSZMrIOYracDYqcuqB3CGtKL2
-        T0/K3qU9jyOIphDl4Nb4xi4=
-X-Google-Smtp-Source: ABdhPJyRQLWjNzqvkwFhusMaVJgK/4uYyAEiGfg7JdP7OotAtrXncI7frQGGoSFagHH6D7x9HsadAw==
-X-Received: by 2002:a62:7d0f:0:b0:43e:11e2:d490 with SMTP id y15-20020a627d0f000000b0043e11e2d490mr4390191pfc.56.1631782487065;
-        Thu, 16 Sep 2021 01:54:47 -0700 (PDT)
-Received: from ?IPV6:2403:6200:8976:5c0d::d3d? ([2403:6200:8976:5c0d::d3d])
-        by smtp.gmail.com with ESMTPSA id h10sm6704902pjs.51.2021.09.16.01.54.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Sep 2021 01:54:46 -0700 (PDT)
-Message-ID: <07fc9510-148a-4ae9-e240-7d5402e0e2d7@gmail.com>
-Date:   Thu, 16 Sep 2021 15:54:40 +0700
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+EQOzi6GoX/Ngw6/fSChQOM/x46HyAvx0gYxin2/a30=;
+        b=IWOQAGjOqs4NAyVK8KpBI8yo8azPUub8f4mRBsZZRHxfiS5AVSFRVsdVmJBTaG2/ac
+         nlpIdz+uOrrlZtn+WczOwkeQaNnCQQI+ZQGZvxaTygJ7/jMlOuUB3nGfR59vrl+QafCM
+         kbkplTzgJqkc84iCiV/HZN8KY886Kr2yQhMLkNKdjwhMpy9YuJsgKrImGCg0D99y/TRw
+         XP4KUzHK0UoG/vK6l/DhXlEGBcs4fRVwlylljlMBQOoOB7gv+EGEuEGvamVmXHBZ4/Cx
+         avtRysraAC758MEjPngNcPzYxc2bM5yKxMcPvmVlgYrMz9iLeDppoVTSqNYa0I3LvsPv
+         zHXg==
+X-Gm-Message-State: AOAM530Oj0+9NfrqY15v6mQypf7yRrByrVGyWqFFj4YXe1OoBPNd64Fb
+        XwRidD3Cdmfx2Bqs2Y8FRmxAtOJkx1kG6PWsOaw=
+X-Google-Smtp-Source: ABdhPJyvOyxa/pmzGY2Bx+ipIQAdYpVoYfpJmNto/Se29JgkEW5BfsmTxPaq1OwYBhfxiruK4W7wSZsYRWnpM3+5lho=
+X-Received: by 2002:a67:cb0a:: with SMTP id b10mr3281079vsl.9.1631782561209;
+ Thu, 16 Sep 2021 01:56:01 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH v3] MIPS: add support for buggy MT7621S core detection
-Content-Language: en-US
-To:     Greg Ungerer <gerg@kernel.org>, ilya.lipnitskiy@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        liwei391@huawei.com, macro@orcam.me.uk, nbd@nbd.name,
-        tsbogend@alpha.franken.de, yangtiezhu@loongson.cn
-References: <4d9e3b39-7caa-d372-5d7b-42dcec36fec7@kernel.org>
-From:   Strontium <strntydog@gmail.com>
-In-Reply-To: <4d9e3b39-7caa-d372-5d7b-42dcec36fec7@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <c5f8aa5c081755f3c960b86fc61c2baaa33edcd9.1631710216.git.geert+renesas@glider.be>
+ <YUMESxr907YHM3ZT@hovoldconsulting.com>
+In-Reply-To: <YUMESxr907YHM3ZT@hovoldconsulting.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 16 Sep 2021 10:55:49 +0200
+Message-ID: <CAMuHMdX7_AOuGEjvTHpQ-4KHMH+m800KTu7wads6UTfMZiu9BQ@mail.gmail.com>
+Subject: Re: [PATCH] serial: 8250: SERIAL_8250_FSL should not default to y
+ when compile-testing
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        Scott Wood <oss@buserror.net>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+Hi Johan,
 
-I had trouble with this as well.  This line from the patch:
+On Thu, Sep 16, 2021 at 10:46 AM Johan Hovold <johan@kernel.org> wrote:
+> On Wed, Sep 15, 2021 at 02:56:52PM +0200, Geert Uytterhoeven wrote:
+> > Commit b1442c55ce8977aa ("serial: 8250: extend compile-test coverage")
+> > added compile-test support to the Freescale 16550 driver.  However, as
+> > SERIAL_8250_FSL is an invisible symbol, merely enabling COMPILE_TEST now
+> > enables this driver.
+> >
+> > Fix this by making SERIAL_8250_FSL visible.  Tighten the dependencies to
+> > prevent asking the user about this driver when configuring a kernel
+> > without appropriate Freescale SoC or ACPI support.
+>
+> This tightening is arguable a separate change which risk introducing
+> regressions if you get it wrong and should go in a separate patch at
+> least.
 
-> if (!(launch->flags & LAUNCH_FREADY))
+Getting it wrong would indeed be a regression, but not tightening
+that at the same time would mean I have to send a separate patch with
+a Fixes tag referring to this fix, following this template:
 
-is checking ram which I believe is supposed to be set by the bootloader.
-On my platform it looked like the preloaded uboot wasn't setting that as
-expected.
-If you have control over your bootloader you can force this ram address
-to be what the kernel wants, or you can do what i did, because i didn't
-have that targets uboot src, and wedge before the kernel starts to force
-the ram to the required state, like so:
+    foo should depend on bar
 
-#define CORE0_INITIAL_CPU_STATE (0xf00)
-#define CORE_FL_OFFSET (0x1C)
-#define FLAG_LAUNCH_FREADY (1)
+    The foo hardware is only present on bar SoCs.  Hence add a
+    dependency on bar, to prevent asking the user about this driver
+    when configuring a kernel without bar support.
 
-#define WRITEREG(r, v) *(volatile uint32_t *)(r) = v
-#define KSEG1ADDR(_x) (((_x)&0x1fffffff) | 0xa0000000)
+> > Fixes: b1442c55ce8977aa ("serial: 8250: extend compile-test coverage")
+> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > ---
+> > Yes, it's ugly, but I see no better solution. Do you?
+> >
+> >  drivers/tty/serial/8250/Kconfig | 8 ++++++--
+> >  1 file changed, 6 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/tty/serial/8250/Kconfig b/drivers/tty/serial/8250/Kconfig
+> > index 808268edd2e82a45..a2978b31144e94f2 100644
+> > --- a/drivers/tty/serial/8250/Kconfig
+> > +++ b/drivers/tty/serial/8250/Kconfig
+> > @@ -361,9 +361,13 @@ config SERIAL_8250_BCM2835AUX
+> >         If unsure, say N.
+> >
+> >  config SERIAL_8250_FSL
+> > -     bool
+> > +     bool "Freescale 16550-style UART support (8250 based driver)"
+> >       depends on SERIAL_8250_CONSOLE
+> > -     default PPC || ARM || ARM64 || COMPILE_TEST
+> > +     depends on FSL_SOC || ARCH_LAYERSCAPE || SOC_LS1021A || (ARM64 && ACPI) || COMPILE_TEST
+> > +     default FSL_SOC || ARCH_LAYERSCAPE || SOC_LS1021A || (ARM64 && ACPI)
+>
+> I'd suggest just doing
+>
+>         bool "Freescale 16550-style UART support (8250 based driver)"
+>         depends on SERIAL_8250_CONSOLE
+>         default PPC || ARM || ARM64
+>
+> Since neither of the symbols you add to that "depends on" line is an
+> actual build or runtime dependency.
 
-void set_core(uint32_t core)
-{
-    uint32_t start = CORE0_INITIAL_CPU_STATE + (0x40 * core);
-    WRITEREG(KSEG1ADDR(start + CORE_FL_OFFSET), FLAG_LAUNCH_FREADY);
-}
+They are.
 
-void fix_cores(void) {
-    // Fixes the flags for each core, just before running the kernel.
-    // Means we don't have to patch the kernel check for valid CPU's.
-    for (int i = 0; i < 4; i++) {
-        set_core(i);
-    }
-}
+> Then you can refine the "default" line in a follow up (or argue why you
+> think there should be a "depends on FSL_SOC || ...").
+>
+> > +     help
+> > +       Selecting this option will add support for the 16550-style serial
+> > +       port hardware found on Freescale SoCs.
+> >
+> >  config SERIAL_8250_DW
+> >       tristate "Support for Synopsys DesignWare 8250 quirks"
 
-It seems that memory section is supposed to set all the cores registers
-before the kernel runs, but i never found it did anything except that 1
-flag.
+Gr{oetje,eeting}s,
 
-Obviously a better way would be to properly detect the number of cores
-and not rely on the boot loader to set a flag in ram, I don't know if
-that's even possible.
+                        Geert
 
-Steven Johnson
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-On 16/9/21 09:56, Greg Ungerer wrote:
-> Hi Ilya,
->
->> Most MT7621 SoCs have 2 cores, which is detected and supported properly
->> by CPS.
->>
->> Unfortunately, MT7621 SoC has a less common S variant with only one
->> core.
->> On MT7621S, GCR_CONFIG still reports 2 cores, which leads to hangs when
->> starting SMP. CPULAUNCH registers can be used in that case to detect the
->> absence of the second core and override the GCR_CONFIG PCORES field.
->>
->> Rework a long-standing OpenWrt patch to override the value of
->> mips_cps_numcores on single-core MT7621 systems.
->>
->> Tested on a dual-core MT7621 device (Ubiquiti ER-X) and a single-core
->> MT7621 device (Netgear R6220).
->
-> This is breaking core detection on my MT7621 based platforms.
-> I only get 2 cores detected now running 5.13. Reverting this change gives
-> me 4 cores back.
->
-> From a fully working (pre-change) system I get:
->
-> # cat /proc/cpuinfo
-> system type        : MediaTek MT7621 ver:1 eco:3
-> machine            : Digi EX15
-> processor        : 0
-> cpu model        : MIPS 1004Kc V2.15
-> BogoMIPS        : 586.13
-> wait instruction    : yes
-> microsecond timers    : yes
-> tlb_entries        : 32
-> extra interrupt vector    : yes
-> hardware watchpoint    : yes, count: 4, address/irw mask: [0x0ffc,
-> 0x0ffc, 0x0ffb, 0x0ffb]
-> isa            : mips1 mips2 mips32r1 mips32r2
-> ASEs implemented    : mips16 dsp mt
-> shadow register sets    : 1
-> kscratch registers    : 0
-> package            : 0
-> core            : 0
-> VPE            : 0
-> VCED exceptions        : not available
-> VCEI exceptions        : not available
->
-> processor        : 1
-> cpu model        : MIPS 1004Kc V2.15
-> BogoMIPS        : 586.13
-> wait instruction    : yes
-> microsecond timers    : yes
-> tlb_entries        : 32
-> extra interrupt vector    : yes
-> hardware watchpoint    : yes, count: 4, address/irw mask: [0x0ffc,
-> 0x0ffc, 0x0ffb, 0x0ffb]
-> isa            : mips1 mips2 mips32r1 mips32r2
-> ASEs implemented    : mips16 dsp mt
-> shadow register sets    : 1
-> kscratch registers    : 0
-> package            : 0
-> core            : 0
-> VPE            : 1
-> VCED exceptions        : not available
-> VCEI exceptions        : not available
->
-> processor        : 2
-> cpu model        : MIPS 1004Kc V2.15
-> BogoMIPS        : 586.13
-> wait instruction    : yes
-> microsecond timers    : yes
-> tlb_entries        : 32
-> extra interrupt vector    : yes
-> hardware watchpoint    : yes, count: 4, address/irw mask: [0x0ffc,
-> 0x0ffc, 0x0ffb, 0x0ffb]
-> isa            : mips1 mips2 mips32r1 mips32r2
-> ASEs implemented    : mips16 dsp mt
-> shadow register sets    : 1
-> kscratch registers    : 0
-> package            : 0
-> core            : 1
-> VPE            : 0
-> VCED exceptions        : not available
-> VCEI exceptions        : not available
->
-> processor        : 3
-> cpu model        : MIPS 1004Kc V2.15
-> BogoMIPS        : 586.13
-> wait instruction    : yes
-> microsecond timers    : yes
-> tlb_entries        : 32
-> extra interrupt vector    : yes
-> hardware watchpoint    : yes, count: 4, address/irw mask: [0x0ffc,
-> 0x0ffc, 0x0ffb, 0x0ffb]
-> isa            : mips1 mips2 mips32r1 mips32r2
-> ASEs implemented    : mips16 dsp mt
-> shadow register sets    : 1
-> kscratch registers    : 0
-> package            : 0
-> core            : 1
-> VPE            : 1
-> VCED exceptions        : not available
-> VCEI exceptions        : not available
->
->
-> After this patch is applied:
->
-> # cat /proc/cpuinfo
-> system type        : MediaTek MT7621 ver:1 eco:3
-> machine            : Digi EX15
-> processor        : 0
-> cpu model        : MIPS 1004Kc V2.15
-> BogoMIPS        : 586.13
-> wait instruction    : yes
-> microsecond timers    : yes
-> tlb_entries        : 32
-> extra interrupt vector    : yes
-> hardware watchpoint    : yes, count: 4, address/irw mask: [0x0ffc,
-> 0x0ffc, 0x0ffb, 0x0ffb]
-> isa            : mips1 mips2 mips32r1 mips32r2
-> ASEs implemented    : mips16 dsp mt
-> shadow register sets    : 1
-> kscratch registers    : 0
-> package            : 0
-> core            : 0
-> VPE            : 0
-> VCED exceptions        : not available
-> VCEI exceptions        : not available
->
-> processor        : 1
-> cpu model        : MIPS 1004Kc V2.15
-> BogoMIPS        : 586.13
-> wait instruction    : yes
-> microsecond timers    : yes
-> tlb_entries        : 32
-> extra interrupt vector    : yes
-> hardware watchpoint    : yes, count: 4, address/irw mask: [0x0ffc,
-> 0x0ffc, 0x0ffb, 0x0ffb]
-> isa            : mips1 mips2 mips32r1 mips32r2
-> ASEs implemented    : mips16 dsp mt
-> shadow register sets    : 1
-> kscratch registers    : 0
-> package            : 0
-> core            : 0
-> VPE            : 1
-> VCED exceptions        : not available
-> VCEI exceptions        : not available
->
-> Any ideas?
->
-> Regards
-> Greg
->
->
->> Original 4.14 OpenWrt patch:
->> Link:
->> https://git.openwrt.org/?p=openwrt/openwrt.git;a=commitdiff;h=4cdbc90a376dd0555201c1434a2081e055e9ceb7
->> Current 5.10 OpenWrt patch:
->> Link:
->> https://git.openwrt.org/?p=openwrt/openwrt.git;a=blob;f=target/linux/ramips/patches-5.10/320-mt7621-core-detect-hack.patch;h=c63f0f4c1ec742e24d8480e80553863744b58f6a;hb=10267e17299806f9885d086147878f6c492cb904
->>
->> Suggested-by: Felix Fietkau <nbd@nbd.name>
->> Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
->> ---
->>  arch/mips/include/asm/mips-cps.h | 23 ++++++++++++++++++++++-
->>  1 file changed, 22 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/mips/include/asm/mips-cps.h
->> b/arch/mips/include/asm/mips-cps.h
->> index fd43d876892e..35fb8ee6dd33 100644
->> --- a/arch/mips/include/asm/mips-cps.h
->> +++ b/arch/mips/include/asm/mips-cps.h
->> @@ -10,6 +10,8 @@
->>  #include <linux/io.h>
->>  #include <linux/types.h>
->>  
->> +#include <asm/mips-boards/launch.h>
->> +
->>  extern unsigned long __cps_access_bad_size(void)
->>      __compiletime_error("Bad size for CPS accessor");
->>  
->> @@ -165,11 +167,30 @@ static inline uint64_t
->> mips_cps_cluster_config(unsigned int cluster)
->>   */
->>  static inline unsigned int mips_cps_numcores(unsigned int cluster)
->>  {
->> +    unsigned int ncores;
->> +
->>      if (!mips_cm_present())
->>          return 0;
->>  
->>      /* Add one before masking to handle 0xff indicating no cores */
->> -    return (mips_cps_cluster_config(cluster) + 1) &
->> CM_GCR_CONFIG_PCORES;
->> +    ncores = (mips_cps_cluster_config(cluster) + 1) &
->> CM_GCR_CONFIG_PCORES;
->> +
->> +    if (IS_ENABLED(CONFIG_SOC_MT7621)) {
->> +        struct cpulaunch *launch;
->> +
->> +        /*
->> +         * Ralink MT7621S SoC is single core, but the GCR_CONFIG method
->> +         * always reports 2 cores. Check the second core's
->> LAUNCH_FREADY
->> +         * flag to detect if the second core is missing. This method
->> +         * only works before the core has been started.
->> +         */
->> +        launch = (struct cpulaunch *)CKSEG0ADDR(CPULAUNCH);
->> +        launch += 2; /* MT7621 has 2 VPEs per core */
->> +        if (!(launch->flags & LAUNCH_FREADY))
->> +            ncores = 1;
->> +    }
->> +
->> +    return ncores;
->>  }
->>  
->>  /**
->> -- 
->> 2.31.1
->
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
