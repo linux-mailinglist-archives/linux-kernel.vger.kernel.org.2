@@ -2,119 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08DBE40D299
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 06:37:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35C0640D29B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 06:39:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234176AbhIPEjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 00:39:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53808 "EHLO
+        id S234246AbhIPEkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 00:40:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbhIPEiz (ORCPT
+        with ESMTP id S229521AbhIPEkv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 00:38:55 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB730C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 21:37:34 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id w17so4465657qta.9
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 21:37:34 -0700 (PDT)
+        Thu, 16 Sep 2021 00:40:51 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D38BC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 21:39:31 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id m70so10399863ybm.5
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 21:39:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version;
-        bh=46Znz0XYZqV75w6izLj//kO1BgimfrMuJbKT3BGaj6M=;
-        b=lKin/00yJ3QV0ZPXNwy0wElLK3yLuJpYoEjOujEyU1KsneBgGbJgJzYHLQKXrB0r+n
-         lz5ZTJlLijJTcFcmv+RCY7Q2WsNE5GTqSXqyOmp7HrAvulxf8PYU+caay/tqSAZZ60yY
-         uCzsbTna3kBhInt8rFGS8lyZszClChtuCbFb1nUJg7FF175gvBRTv+w0jTQNeQ7goPLo
-         wrQNWGYkogttGJWZqQ1q+mIXbxhT368OWYYpqfOFMKfD/Thz2kNU9PulOdYNyLNLHBnj
-         FGc2wJDMnMk4D7XsJS7E71l42Cr9Qen/URnvSYbKqWyhaLqzdfpG5u5KI3N2EsmDdVHk
-         TrCQ==
+        d=atishpatra.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ObPDTmZPpxAdnjCpIiAd46RqCXfB5lsbopxNimw2AIA=;
+        b=N5t7V90qffEF/ZhejZl+iBxrOA9sHwERjgwzmWS5h7qdVdKU0pCnOwskRNvjv5IsAW
+         t82nIlvBzHnlUO8WxoEYOy3aLivxLUC4VdaYWOQgbsfLaC9+idrFwDycT8PQHGfm4kYD
+         baFSptL9j5MNf9Plt3p8I/WmjueldYPgLYwrA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version;
-        bh=46Znz0XYZqV75w6izLj//kO1BgimfrMuJbKT3BGaj6M=;
-        b=42LbOJ8C2S+OD5xR9RVE1nAQme9o6mJO1C0j4xpZvqCb4Wt9yK/I/PiE2s73LxyylM
-         VbteaAILs1QDgEbJSshwy21RTI0I+HH4jwbRyz255zHiwTBubNUd6Qs/2JiGJqUtHXXq
-         RdoK3boX1M9E48EDFXlMPDrd9GjUrJi8E6GAhOAxkdfZZjVhT4sV+MP2XJPGJaFRpdtc
-         x1F18B0UHDVHFd671cT1o2O4+swey+M9atR/vFCT/UtcBkhv9wXw1WDLpzg45q/8QHwI
-         ZxkPdl7OxTTI+J+xLIZ9B2RTvjnz6xlVBtljQs1dtATdF2RjdMVkZAEaDHu0E4LfP0SZ
-         b8lA==
-X-Gm-Message-State: AOAM530GbY5PdCIPmYPnx0aBhf379D/woi4Kln/Gh7kdVNbigvmQ+uen
-        txY5mqTDtCkU8QVJxqzQZAtOrg==
-X-Google-Smtp-Source: ABdhPJwCnZ9kYelEcmVP7g0WbPZijLkhPLxFnVmVGe0ZF9gGUSDFygD14I26aGzJXJMekr5ZI3r7Dg==
-X-Received: by 2002:a05:622a:c1:: with SMTP id p1mr3268033qtw.365.1631767053681;
-        Wed, 15 Sep 2021 21:37:33 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id w19sm1622926qki.21.2021.09.15.21.37.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Sep 2021 21:37:33 -0700 (PDT)
-Date:   Wed, 15 Sep 2021 21:37:08 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.anvils
-To:     intel-gfx@lists.freedesktop.org
-cc:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Vinay Belgaumkar <vinay.belgaumkar@intel.com>,
-        Michal Wajdeczko <michal.wajdeczko@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        Sujaritha Sundaresan <sujaritha.sundaresan@intel.com>,
-        John Harrison <John.C.Harrison@Intel.com>,
-        Daniele Ceraolo Spurio <daniele.ceraolospurio@intel.com>,
-        Matt Roper <matthew.d.roper@intel.com>,
-        Lucas De Marchi <lucas.demarchi@intel.com>,
-        Matthew Brost <matthew.brost@intel.com>,
-        Dave Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Pavel Machek <pavel@denx.de>, Hugh Dickins <hughd@google.com>,
-        linux-kernel@vger.kernel.org
-Subject: 5.15-rc1 i915 blank screen booting on ThinkPads
-Message-ID: <9e1a6f3b-5e64-be91-ba54-9b5d135ef638@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ObPDTmZPpxAdnjCpIiAd46RqCXfB5lsbopxNimw2AIA=;
+        b=fHyEfTUDM1TYPk3gENYCJJkPmXjzOWfEMMVweDOxNJRWhzjgyv2lWBiJ3rpUiTib+7
+         rpR6i6MgRcIIpjNWTBC4NGcj2dTkoC+RnKgXeiV/dUK9HYP2735RK8UsQCn+wvzQ08+y
+         YZ2TuvrIwsw+eVjQXA8Sm4OM5JFfEIHqmGF60i4OI8MQ5yk69RWS2PzHXPTVzpDbEg2p
+         PgNeBhU3/s3fD4/kxc4889Kxw5jNtm4MxsttwDb0GRgmuI96VLclQBW+pkpuxuZZ9nsS
+         PiuBOsJD2EtYx+L0YmxELQlE1u/9jZa3BIofWlKMP0fITr7pvNp9L2BOpz1ithFro881
+         RcxQ==
+X-Gm-Message-State: AOAM530Wj+rspqSLUYKc+6qC5vS4VmatNpBgIodl+bHErBI2sCKtbK14
+        n509zvoOsFpejTJEoD7NImokIWRhHz/oMCIlzowM
+X-Google-Smtp-Source: ABdhPJz4i/E3+irjPi8Qhf59eg0o6TGq7n/Xy5hYwtrOOAatLAjPQqo3wDS945cVo/kelPy4rK20NZ9Vtvtmun2MIfE=
+X-Received: by 2002:a25:1683:: with SMTP id 125mr4347701ybw.164.1631767170718;
+ Wed, 15 Sep 2021 21:39:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20210911092139.79607-1-guoren@kernel.org> <20210911092139.79607-4-guoren@kernel.org>
+ <20210915074827.GC20024@lst.de> <CAJF2gTSZLieg1kYA6a0CPajPukHzwN0wvPuh4RQ-t45fciFOYA@mail.gmail.com>
+In-Reply-To: <CAJF2gTSZLieg1kYA6a0CPajPukHzwN0wvPuh4RQ-t45fciFOYA@mail.gmail.com>
+From:   Atish Patra <atishp@atishpatra.org>
+Date:   Wed, 15 Sep 2021 21:39:19 -0700
+Message-ID: <CAOnJCULyEHdyr9=Ez-NxRGKow3_RbNym_wg9RcZGWv-vJ-0B9Q@mail.gmail.com>
+Subject: Re: [RFC PATCH V4 3/6] RISC-V: Support a new config option for
+ non-coherent DMA
+To:     Guo Ren <guoren@kernel.org>
+Cc:     Christoph Hellwig <hch@lst.de>, Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        =?UTF-8?Q?Christoph_M=C3=BCllner?= <christoph.muellner@vrull.eu>,
+        Philipp Tomsich <philipp.tomsich@vrull.eu>,
+        liush <liush@allwinnertech.com>, wefu@redhat.com,
+        =?UTF-8?B?V2VpIFd1ICjlkLTkvJ8p?= <lazyparser@gmail.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        taiten.peng@canonical.com, aniket.ponkshe@canonical.com,
+        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
+        gordan.markus@canonical.com, Guo Ren <guoren@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Two Lenovo ThinkPads, old T420s (2011), newer X1 Carbon 5th gen (2017):
-i915 working fine on both up to 5.14, but blank screens booting 5.15-rc1,
-kernel crashed in some way.
+On Wed, Sep 15, 2021 at 6:21 PM Guo Ren <guoren@kernel.org> wrote:
+>
+> On Wed, Sep 15, 2021 at 3:48 PM Christoph Hellwig <hch@lst.de> wrote:
+> >
+> > On Sat, Sep 11, 2021 at 05:21:36PM +0800, guoren@kernel.org wrote:
+> > > +     select DMA_GLOBAL_POOL
+> > > +     select DMA_DIRECT_REMAP
+> >
+> > No need to select DMA_GLOBAL_POOL when DMA_DIRECT_REMAP is select.
+> If we want to support PBMT & global_dma_pool both in riscv. Could they
+> work together in arch/riscv with [1]?
 
-I wanted to say what i915 generations these are, but don't know where
-to look - I don't see it in dmesg, even when DRM_I915_DEBUG enabled.
+We don't have to worry about it as the next version of my series will
+use the simpler
+dma_uncached functionality to support uncached window approach taken
+by starlight socs.
 
-Possibly relevant: builtin kernels, CONFIG_MODULES off, no initrd.
+I was supposed to send it sooner but got busy with PMU stuff and a bad flu :(.
 
-On the older laptop:
+>
+> [1]: https://lore.kernel.org/lkml/20210818142715.GA10755@lst.de/T/
+>
+> >
+> > Also a patch just to add a option that is not selected and won't build
+> > if selected does not make sense.
+> I just want to rebase on Atish's patch and append DMA_DIRECT_REMAP.
+> Okay, DMA_DIRECT_REMAP & DMA_GLOBAL_POOL should be separated from the
+> patch.
+>
+>
+>
+> --- a/kernel/dma/direct.c
+> +++ b/kernel/dma/direct.c
+> @@ -156,9 +156,14 @@ void *dma_direct_alloc(struct device *dev, size_t size,
+>
+>   if (!IS_ENABLED(CONFIG_ARCH_HAS_DMA_SET_UNCACHED) &&
+>      !IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) &&
+> +    !IS_ENABLED(CONFIG_DMA_GLOBAL_POOL) &&
+>      !dev_is_dma_coherent(dev))
+>   return arch_dma_alloc(dev, size, dma_handle, gfp, attrs);
+>
+> + if (IS_ENABLED(CONFIG_DMA_GLOBAL_POOL) &&
+> +    !dev_is_dma_coherent(dev))
+> + return dma_alloc_from_global_coherent(dev, size, dma_handle);
+> +
+>   /*
+>   * Remapping or decrypting memory may block. If either is required and
+>   * we can't block, allocate the memory from the atomic pools.
+> @@ -255,11 +260,19 @@ void dma_direct_free(struct device *dev, size_t size,
+>
+>   if (!IS_ENABLED(CONFIG_ARCH_HAS_DMA_SET_UNCACHED) &&
+>      !IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) &&
+> +    !IS_ENABLED(CONFIG_DMA_GLOBAL_POOL) &&
+>      !dev_is_dma_coherent(dev)) {
+>   arch_dma_free(dev, size, cpu_addr, dma_addr, attrs);
+>   return;
+>   }
+>
+> + if (IS_ENABLED(CONFIG_DMA_GLOBAL_POOL) &&
+> +    !dev_is_dma_coherent(dev)) {
+> + if (!dma_release_from_global_coherent(page_order, cpu_addr))
+> + WARN_ON_ONCE(1);
+> + return;
+> + }
+> +
+> Here CONFIG_DMA_GLOBAL_POOL is independent from CONFIG_DMA_DIRECT_REMAP.
+>
+>   /* If cpu_addr is not from an atomic pool, dma_free_from_pool() fails */
+>   if (IS_ENABLED(CONFIG_DMA_COHERENT_POOL) &&
+>      dma_free_from_pool(dev, cpu_addr, PAGE_ALIGN(size)))
+>
+> --
+> Best Regards
+>  Guo Ren
+>
+> ML: https://lore.kernel.org/linux-csky/
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
-First bisection showed first bad commit
-41e5c17ebfc2 "drm/i915/guc/slpc: Sysfs hooks for SLPC"
 
-But reverting that still crashed boot with blank screen (and
-reverting the two related commits after it made no difference).
 
-Second bisection, starting from 5.15-rc1 bad and 41e5c17ebfc2 "good",
-but patching it out each time before building, showed first bad commit
-3ffe82d701a4 "drm/i915/xehp: handle new steering options"
-
-That one did not revert cleanly from 5.15-rc1, but reverting
-927dfdd09d8c "drm/i915/dg2: Add SQIDI steering" then
-1705f22c86fb "drm/i915/dg2: Update steering tables" then
-768fe28dd3dc "drm/i915/xehpsdv: Define steering tables" then
-3ffe82d701a4 "drm/i915/xehp: handle new steering options"
-worked (there was one very easy fixup needed somewhere).
-
-And 5.15-rc1 with those five reversions boots and runs fine...
-on that older laptop.  But reverting those from the kernel on the
-newer laptop did not help at all, still booting with blank screen
-(or no more lines shown after the switch from VGA).  Put them back.
-
-On the newer laptop, bisection showed first bad commit
-62eaf0ae217d "drm/i915/guc: Support request cancellation"
-
-And 5.15-rc1 with that reverted boots and runs fine on the newer.
-
-I am hoping that there will be some i915 fixups to come in a later rc!
-May be nothing more than uninitialized variables or NULL pointers.
-You'll probably want more info from me: please ask, but I'm slow.
-
-Thanks,
-Hugh
+-- 
+Regards,
+Atish
