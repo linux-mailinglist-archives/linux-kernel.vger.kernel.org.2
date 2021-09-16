@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FE4540E026
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:20:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 617A140E28B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:16:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241087AbhIPQTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:19:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48902 "EHLO mail.kernel.org"
+        id S244866AbhIPQjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:39:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44760 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234513AbhIPQJl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:09:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DDA46124D;
-        Thu, 16 Sep 2021 16:08:09 +0000 (UTC)
+        id S243445AbhIPQba (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:31:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 28095613CF;
+        Thu, 16 Sep 2021 16:19:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808490;
-        bh=Y8qnr/pXbBwIp7Qc9BW2t+XD/83l1eW/qiigdu7es3M=;
+        s=korg; t=1631809170;
+        bh=d0fHBIfx08XKWD8DTM9jPJ7oQy9BeJaZM42sdC6BiCM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J9gR9q6Mspr3npvSjO00DIqVxJOGFlpoN3VXWGBII+saG26oMh6MkOO4ZoIIZyceg
-         l0g7PptHLESb6BsDvpltWC0naXOehlVpSNVizXYPzoApUYWomliRY9A8iOsxCW42n1
-         U/ut1DXeKf8VRlXsKUdX3aW00Wii0AGtBGq1I/0Q=
+        b=ZvAT4VMXb02HDnTu6K9ZnGCix3Arhmg+gJOhSz7CmV6SDWZB9KTzhYXM3c+zNWmoJ
+         B4eMFgZDJ14PMT8HLBevkrJ7DLPIW0EjflKqsRPRflLcSFZKnJlGgv1YBdhC7lprdt
+         iqJQEzPPAdiMFQ195vSY3S56YMysu8BQ2ozvaENs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michal Suchanek <msuchanek@suse.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 068/306] powerpc/stacktrace: Include linux/delay.h
+        stable@vger.kernel.org, Pavel Begunkov <asml.silence@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.13 056/380] io_uring: fail links of cancelled timeouts
 Date:   Thu, 16 Sep 2021 17:56:53 +0200
-Message-Id: <20210916155756.376221967@linuxfoundation.org>
+Message-Id: <20210916155805.890592498@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,38 +39,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michal Suchanek <msuchanek@suse.de>
+From: Pavel Begunkov <asml.silence@gmail.com>
 
-[ Upstream commit a6cae77f1bc89368a4e2822afcddc45c3062d499 ]
+commit 2ae2eb9dde18979b40629dd413b9adbd6c894cdf upstream.
 
-commit 7c6986ade69e ("powerpc/stacktrace: Fix spurious "stale" traces in raise_backtrace_ipi()")
-introduces udelay() call without including the linux/delay.h header.
-This may happen to work on master but the header that declares the
-functionshould be included nonetheless.
+When we cancel a timeout we should mark it with REQ_F_FAIL, so
+linked requests are cancelled as well, but not queued for further
+execution.
 
-Fixes: 7c6986ade69e ("powerpc/stacktrace: Fix spurious "stale" traces in raise_backtrace_ipi()")
-Signed-off-by: Michal Suchanek <msuchanek@suse.de>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210729180103.15578-1-msuchanek@suse.de
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+Link: https://lore.kernel.org/r/fff625b44eeced3a5cae79f60e6acf3fbdf8f990.1631192135.git.asml.silence@gmail.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/kernel/stacktrace.c | 1 +
- 1 file changed, 1 insertion(+)
+ fs/io_uring.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/powerpc/kernel/stacktrace.c b/arch/powerpc/kernel/stacktrace.c
-index 2f926ea9b7b9..d4a66ce93f52 100644
---- a/arch/powerpc/kernel/stacktrace.c
-+++ b/arch/powerpc/kernel/stacktrace.c
-@@ -8,6 +8,7 @@
-  * Copyright 2018 Nick Piggin, Michael Ellerman, IBM Corp.
-  */
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -1307,6 +1307,8 @@ static void io_kill_timeout(struct io_ki
+ 	struct io_timeout_data *io = req->async_data;
  
-+#include <linux/delay.h>
- #include <linux/export.h>
- #include <linux/kallsyms.h>
- #include <linux/module.h>
--- 
-2.30.2
-
+ 	if (hrtimer_try_to_cancel(&io->timer) != -1) {
++		if (status)
++			req_set_fail_links(req);
+ 		atomic_set(&req->ctx->cq_timeouts,
+ 			atomic_read(&req->ctx->cq_timeouts) + 1);
+ 		list_del_init(&req->timeout.list);
 
 
