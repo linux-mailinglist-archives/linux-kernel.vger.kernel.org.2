@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D0C240DBC5
+	by mail.lfdr.de (Postfix) with ESMTP id 7987640DBC6
 	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 15:52:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237383AbhIPNxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 09:53:55 -0400
+        id S237217AbhIPNx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 09:53:59 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236682AbhIPNxl (ORCPT
+        with ESMTP id S237149AbhIPNxr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 09:53:41 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46E7EC061766
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 06:52:21 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id k23-20020a17090a591700b001976d2db364so4810829pji.2
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 06:52:21 -0700 (PDT)
+        Thu, 16 Sep 2021 09:53:47 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DE4FC061766
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 06:52:27 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id c4so3891459pls.6
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 06:52:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=O+lhnVk7PNaw87qVUGvTWZVe5ibvmpQFNKH+BgTcKz8=;
-        b=EJQB64IheoOUUYV8uBbFxOrZQ0bA2eBWzQUajrW7B2SAQfbPETCpLBQ5pbZRarUg3M
-         MjcRE0VGVU0WyDLRzmsfEdddTI/z+UmqlKicA8hjHRukMTXT/Vu5SB22Z+K2nxQiXZxA
-         ZiREktdWOYMLZ5sPgiFOyQamMRfzA8TiZa14MFdJyfvS4EaDWw0iaEy2pHqaXPbLByYq
-         qLBSJPJHtzxpu00LjkV0zzeOShA6D1GnWTjRW4FyeRO9sI6TEIASEIrSqwLTSjEt4drA
-         g8uTivFdOYSLKF4y26Ek3y0GUnynx6DNGDv6DvTw8uXOirqiTNoKJlA70sMAew+DYaP+
-         icNw==
+        bh=os6W81L8Jp53y3z498y4ntoeCrrr5kt+lNChMkb1a3E=;
+        b=cFoQbgMUuO71GUUl31WSwW9Dbd6Ng9hWx2q8bhXjtr2f6iVWCmSB4vMoHCnSRtKcgL
+         w0T97hle6ch5Nk6/EEndFfacy14u+8F/bJCRXxT3WNWbZn4LjKOhnUBqV6YFkwwpYppD
+         BwltsgwY0L6sqKNzKVT1mwVq7Ft69f1x1Pw5HxaopGobPq+AVEF4WzSOEF8cA9bYtD34
+         KOmMg+k9cvV1uDnKDWLdvHTqVliBAOjPC5XeiNFTYO/tB8SZIsfwQldVc7iX5e1F1RuH
+         LxJot3R06na+lEc/QyRd75fmonwEGERx+Jj1AIpHsbWDBDR126XpyfTziZSuAQwSxnXF
+         3zvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=O+lhnVk7PNaw87qVUGvTWZVe5ibvmpQFNKH+BgTcKz8=;
-        b=Lo1iPvTa3c1ull3T41e7scHDrRjlegEaUNu5cava3URyMEWkT637CxA1lVL06fB+RW
-         QlZpm4jD+Raw6hkCg2bhk7+kdCA7me1jX4jd8nCOlZhGzuwzyPUMECKdbczZ0EdTjEm3
-         ux1cWstNqscmK7x1SxIwulhaFN3XVsJxO0M3wPqEABhoJLczXKfnmICXoupjvn0RzjWp
-         fBuTgWDgp4xQWJMnMFQraVt7UE7xxuw5j4sJlvNZ9YSRNuh/bZH/xcuz2N8JTUSzGGOe
-         kBi+zwIcgNC4djZBbT+BW+V3XkACUK3iCKI3Q3uSXFH+Y8zoinAvEX8VLLJt1m/Q8E77
-         TMsw==
-X-Gm-Message-State: AOAM5334+4bGm+FuLuf7fRAftU3LZ0Kw47yHPZdJg9wBd8KKueisI+rK
-        CaSmUmAkZFkyT4jKvqR92L8pgg==
-X-Google-Smtp-Source: ABdhPJwlkh8gx/1dLOzmmevDx4a2iG3zshcF6PRapEicFD7Mg4VLMeRDP4oy9Fq9DNOGgCMG97VDqw==
-X-Received: by 2002:a17:902:9895:b0:13c:94f8:d74b with SMTP id s21-20020a170902989500b0013c94f8d74bmr4935296plp.20.1631800340774;
-        Thu, 16 Sep 2021 06:52:20 -0700 (PDT)
+        bh=os6W81L8Jp53y3z498y4ntoeCrrr5kt+lNChMkb1a3E=;
+        b=w7s+ueX2CFBiWBuCg5jotT8RJfW1oCPN8+ZnCwy1H8mchd6OZ7PiwPSetnQG1ynCIQ
+         LqoRgnshgTnFCZtWRJsyeHN8yMF2U8XbSDdWPVZT3nCVBsTxUTHLijALliDP5CfP+ZSy
+         3ENr+mNhJJ1NdmAjvFexslI+qpxWHUOZ9TiIIJ0Xq1BOD97gnJTSODMM4q3PtGhxZOzy
+         N056jSOcEU7OLYZ7m5kY8F8u+mWTMFJ26hiEXVOEDntzENKZ8KZnjNkyYwaP2Q4cZJ3n
+         PYdEYjjIivhGHFTVsY5UzyVXPFYRdNjgaDjH4PdgGKvWF8sXFuYLelZzZ8QXQgEZZJhG
+         y20Q==
+X-Gm-Message-State: AOAM5338ZK35tKizHd1BR6dekU4ZuDPEletau3eJos2l2vKojObjSmx9
+        AVjfUTvPs5kM7GhUUGQM9JpQOQ==
+X-Google-Smtp-Source: ABdhPJy9fa7IUXtp12uZvQnAxns54IHKulitYG16Aq9stdgfxKixbhCQfcEEbJ0+OtWXqL8ifok1yQ==
+X-Received: by 2002:a17:90a:5513:: with SMTP id b19mr15279213pji.16.1631800346633;
+        Thu, 16 Sep 2021 06:52:26 -0700 (PDT)
 Received: from localhost.localdomain ([139.177.225.226])
-        by smtp.gmail.com with ESMTPSA id o9sm3617443pfh.217.2021.09.16.06.52.14
+        by smtp.gmail.com with ESMTPSA id o9sm3617443pfh.217.2021.09.16.06.52.21
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 16 Sep 2021 06:52:20 -0700 (PDT)
+        Thu, 16 Sep 2021 06:52:26 -0700 (PDT)
 From:   Muchun Song <songmuchun@bytedance.com>
 To:     guro@fb.com, hannes@cmpxchg.org, mhocko@kernel.org,
         akpm@linux-foundation.org, shakeelb@google.com,
@@ -57,9 +57,9 @@ Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         bsingharora@gmail.com, shy828301@gmail.com, alexs@kernel.org,
         smuchun@gmail.com, zhengqi.arch@bytedance.com,
         Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v2 02/13] mm: memcontrol: prepare objcg API for non-kmem usage
-Date:   Thu, 16 Sep 2021 21:47:37 +0800
-Message-Id: <20210916134748.67712-3-songmuchun@bytedance.com>
+Subject: [PATCH v2 03/13] mm: memcontrol: introduce compact_lock_page_irqsave
+Date:   Thu, 16 Sep 2021 21:47:38 +0800
+Message-Id: <20210916134748.67712-4-songmuchun@bytedance.com>
 X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 In-Reply-To: <20210916134748.67712-1-songmuchun@bytedance.com>
 References: <20210916134748.67712-1-songmuchun@bytedance.com>
@@ -69,221 +69,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pagecache pages are charged at the allocation time and holding a
-reference to the original memory cgroup until being reclaimed.
-Depending on the memory pressure, specific patterns of the page
-sharing between different cgroups and the cgroup creation and
-destruction rates, a large number of dying memory cgroups can be
-pinned by pagecache pages. It makes the page reclaim less efficient
-and wastes memory.
+If we reuse the objcg APIs to charge LRU pages, the page_memcg()
+can be changed when the LRU pages reparented. In this case, we need
+to acquire the new lruvec lock.
 
-We can convert LRU pages and most other raw memcg pins to the objcg
-direction to fix this problem, and then the page->memcg will always
-point to an object cgroup pointer.
+    lruvec = mem_cgroup_page_lruvec(page);
 
-Therefore, the infrastructure of objcg no longer only serves
-CONFIG_MEMCG_KMEM. In this patch, we move the infrastructure of the
-objcg out of the scope of the CONFIG_MEMCG_KMEM so that the LRU pages
-can reuse it to charge pages.
+    // The page is reparented.
 
-We know that the LRU pages are not accounted at the root level. But
-the page->memcg_data points to the root_mem_cgroup. So the
-page->memcg_data of the LRU pages always points to a valid pointer.
-But the root_mem_cgroup dose not have an object cgroup. If we use
-obj_cgroup APIs to charge the LRU pages, we should set the
-page->memcg_data to a root object cgroup. So we also allocate an
-object cgroup for the root_mem_cgroup.
+    compact_lock_irqsave(&lruvec->lru_lock, &flags, cc);
 
-As roman said "we might wanna to eliminate CONFIG_MEMCG_KMEM
-completely", so we do not add new dependencies.
+    // Acquired the wrong lruvec lock and need to retry.
+
+But compact_lock_irqsave() only take lruvec lock as the parameter,
+we cannot aware this change. If it can take the page as parameter
+to acquire the lruvec lock. When the page memcg is changed, we can
+use the page_memcg() detect whether we need to reacquire the new
+lruvec lock. So compact_lock_irqsave() is not suitable for us.
+Similar to lock_page_lruvec_irqsave(), introduce
+compact_lock_page_irqsave() to acquire the lruvec lock in
+the compaction routine.
 
 Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Acked-by: Roman Gushchin <guro@fb.com>
 ---
- include/linux/memcontrol.h |  2 +-
- mm/memcontrol.c            | 60 +++++++++++++++++++++++++++-------------------
- 2 files changed, 37 insertions(+), 25 deletions(-)
+ mm/compaction.c | 27 ++++++++++++++++++++++++---
+ 1 file changed, 24 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index e194d90aff56..490d4849a05a 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -319,9 +319,9 @@ struct mem_cgroup {
- #ifdef CONFIG_MEMCG_KMEM
- 	int kmemcg_id;
- 	enum memcg_kmem_state kmem_state;
-+#endif
- 	struct obj_cgroup __rcu *objcg;
- 	struct list_head objcg_list; /* list of inherited objcgs */
--#endif
- 
- 	MEMCG_PADDING(_pad2_);
- 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 528b134ca50c..f58010cd8414 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -261,18 +261,15 @@ struct mem_cgroup *vmpressure_to_memcg(struct vmpressure *vmpr)
- 	return container_of(vmpr, struct mem_cgroup, vmpressure);
+diff --git a/mm/compaction.c b/mm/compaction.c
+index bfc93da1c2c7..bf1a6048b5a3 100644
+--- a/mm/compaction.c
++++ b/mm/compaction.c
+@@ -509,6 +509,29 @@ static bool compact_lock_irqsave(spinlock_t *lock, unsigned long *flags,
+ 	return true;
  }
  
--#ifdef CONFIG_MEMCG_KMEM
- extern spinlock_t css_set_lock;
- 
- static void obj_cgroup_uncharge_pages(struct obj_cgroup *objcg,
- 				      unsigned int nr_pages);
- 
--static void obj_cgroup_release(struct percpu_ref *ref)
-+static void obj_cgroup_release_bytes(struct obj_cgroup *objcg)
- {
--	struct obj_cgroup *objcg = container_of(ref, struct obj_cgroup, refcnt);
- 	unsigned int nr_bytes;
- 	unsigned int nr_pages;
--	unsigned long flags;
- 
- 	/*
- 	 * At this point all allocated objects are freed, and
-@@ -286,9 +283,9 @@ static void obj_cgroup_release(struct percpu_ref *ref)
- 	 * 3) CPU1: a process from another memcg is allocating something,
- 	 *          the stock if flushed,
- 	 *          objcg->nr_charged_bytes = PAGE_SIZE - 92
--	 * 5) CPU0: we do release this object,
-+	 * 4) CPU0: we do release this object,
- 	 *          92 bytes are added to stock->nr_bytes
--	 * 6) CPU0: stock is flushed,
-+	 * 5) CPU0: stock is flushed,
- 	 *          92 bytes are added to objcg->nr_charged_bytes
- 	 *
- 	 * In the result, nr_charged_bytes == PAGE_SIZE.
-@@ -300,6 +297,14 @@ static void obj_cgroup_release(struct percpu_ref *ref)
- 
- 	if (nr_pages)
- 		obj_cgroup_uncharge_pages(objcg, nr_pages);
++static struct lruvec *compact_lock_page_irqsave(struct page *page,
++						unsigned long *flags,
++						struct compact_control *cc)
++{
++	struct lruvec *lruvec;
++
++	lruvec = mem_cgroup_page_lruvec(page);
++
++	/* Track if the lock is contended in async mode */
++	if (cc->mode == MIGRATE_ASYNC && !cc->contended) {
++		if (spin_trylock_irqsave(&lruvec->lru_lock, *flags))
++			goto out;
++
++		cc->contended = true;
++	}
++
++	spin_lock_irqsave(&lruvec->lru_lock, *flags);
++out:
++	lruvec_memcg_debug(lruvec, page);
++
++	return lruvec;
 +}
 +
-+static void obj_cgroup_release(struct percpu_ref *ref)
-+{
-+	struct obj_cgroup *objcg = container_of(ref, struct obj_cgroup, refcnt);
-+	unsigned long flags;
-+
-+	obj_cgroup_release_bytes(objcg);
- 
- 	spin_lock_irqsave(&css_set_lock, flags);
- 	list_del(&objcg->list);
-@@ -328,10 +333,14 @@ static struct obj_cgroup *obj_cgroup_alloc(void)
- 	return objcg;
- }
- 
--static void memcg_reparent_objcgs(struct mem_cgroup *memcg,
--				  struct mem_cgroup *parent)
-+static void memcg_reparent_objcgs(struct mem_cgroup *memcg)
- {
- 	struct obj_cgroup *objcg, *iter;
-+	struct mem_cgroup *parent;
-+
-+	parent = parent_mem_cgroup(memcg);
-+	if (!parent)
-+		parent = root_mem_cgroup;
- 
- 	objcg = rcu_replace_pointer(memcg->objcg, NULL, true);
- 
-@@ -350,6 +359,7 @@ static void memcg_reparent_objcgs(struct mem_cgroup *memcg,
- 	percpu_ref_kill(&objcg->refcnt);
- }
- 
-+#ifdef CONFIG_MEMCG_KMEM
  /*
-  * This will be used as a shrinker list's index.
-  * The main reason for not using cgroup id for this:
-@@ -3587,7 +3597,6 @@ static u64 mem_cgroup_read_u64(struct cgroup_subsys_state *css,
- #ifdef CONFIG_MEMCG_KMEM
- static int memcg_online_kmem(struct mem_cgroup *memcg)
- {
--	struct obj_cgroup *objcg;
- 	int memcg_id;
+  * Compaction requires the taking of some coarse locks that are potentially
+  * very heavily contended. The lock should be periodically unlocked to avoid
+@@ -1029,11 +1052,9 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
+ 			if (locked)
+ 				unlock_page_lruvec_irqrestore(locked, flags);
  
- 	if (cgroup_memory_nokmem)
-@@ -3600,14 +3609,6 @@ static int memcg_online_kmem(struct mem_cgroup *memcg)
- 	if (memcg_id < 0)
- 		return memcg_id;
+-			compact_lock_irqsave(&lruvec->lru_lock, &flags, cc);
++			lruvec = compact_lock_page_irqsave(page, &flags, cc);
+ 			locked = lruvec;
  
--	objcg = obj_cgroup_alloc();
--	if (!objcg) {
--		memcg_free_cache_id(memcg_id);
--		return -ENOMEM;
--	}
--	objcg->memcg = memcg;
--	rcu_assign_pointer(memcg->objcg, objcg);
+-			lruvec_memcg_debug(lruvec, page);
 -
- 	static_branch_enable(&memcg_kmem_enabled_key);
- 
- 	memcg->kmemcg_id = memcg_id;
-@@ -3631,8 +3632,6 @@ static void memcg_offline_kmem(struct mem_cgroup *memcg)
- 	if (!parent)
- 		parent = root_mem_cgroup;
- 
--	memcg_reparent_objcgs(memcg, parent);
--
- 	kmemcg_id = memcg->kmemcg_id;
- 	BUG_ON(kmemcg_id < 0);
- 
-@@ -5159,8 +5158,8 @@ static struct mem_cgroup *mem_cgroup_alloc(void)
- 	memcg->socket_pressure = jiffies;
- #ifdef CONFIG_MEMCG_KMEM
- 	memcg->kmemcg_id = -1;
--	INIT_LIST_HEAD(&memcg->objcg_list);
- #endif
-+	INIT_LIST_HEAD(&memcg->objcg_list);
- #ifdef CONFIG_CGROUP_WRITEBACK
- 	INIT_LIST_HEAD(&memcg->cgwb_list);
- 	for (i = 0; i < MEMCG_CGWB_FRN_CNT; i++)
-@@ -5232,16 +5231,22 @@ mem_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
- static int mem_cgroup_css_online(struct cgroup_subsys_state *css)
- {
- 	struct mem_cgroup *memcg = mem_cgroup_from_css(css);
-+	struct obj_cgroup *objcg;
- 
- 	/*
- 	 * A memcg must be visible for expand_shrinker_info()
- 	 * by the time the maps are allocated. So, we allocate maps
- 	 * here, when for_each_mem_cgroup() can't skip it.
- 	 */
--	if (alloc_shrinker_info(memcg)) {
--		mem_cgroup_id_remove(memcg);
--		return -ENOMEM;
--	}
-+	if (alloc_shrinker_info(memcg))
-+		goto remove_id;
-+
-+	objcg = obj_cgroup_alloc();
-+	if (!objcg)
-+		goto free_shrinker;
-+
-+	objcg->memcg = memcg;
-+	rcu_assign_pointer(memcg->objcg, objcg);
- 
- 	/* Online state pins memcg ID, memcg ID pins CSS */
- 	refcount_set(&memcg->id.ref, 1);
-@@ -5251,6 +5256,12 @@ static int mem_cgroup_css_online(struct cgroup_subsys_state *css)
- 		queue_delayed_work(system_unbound_wq, &stats_flush_dwork,
- 				   2UL*HZ);
- 	return 0;
-+
-+free_shrinker:
-+	free_shrinker_info(memcg);
-+remove_id:
-+	mem_cgroup_id_remove(memcg);
-+	return -ENOMEM;
- }
- 
- static void mem_cgroup_css_offline(struct cgroup_subsys_state *css)
-@@ -5274,6 +5285,7 @@ static void mem_cgroup_css_offline(struct cgroup_subsys_state *css)
- 	page_counter_set_low(&memcg->memory, 0);
- 
- 	memcg_offline_kmem(memcg);
-+	memcg_reparent_objcgs(memcg);
- 	reparent_shrinker_deferred(memcg);
- 	wb_memcg_offline(memcg);
- 
+ 			/* Try get exclusive access under lock */
+ 			if (!skip_updated) {
+ 				skip_updated = true;
 -- 
 2.11.0
 
