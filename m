@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E56F140DF81
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:09:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08F9C40E23C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235570AbhIPQKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:10:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45294 "EHLO mail.kernel.org"
+        id S242648AbhIPQfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:35:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38434 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231868AbhIPQG3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:06:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D337061246;
-        Thu, 16 Sep 2021 16:05:08 +0000 (UTC)
+        id S239405AbhIPQ15 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:27:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E1A3F61353;
+        Thu, 16 Sep 2021 16:17:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808309;
-        bh=bBowjqX/qLyotTa5ZzNpO+8cTdqoN2SBnyfxm0ITq34=;
+        s=korg; t=1631809075;
+        bh=szLksIY6Ch1woieb4w6JYLrB6BgT+cHFbmRaknwToZQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vfa9qdYbmyaQ3yXKWi4TtxWd3l2Q4YAMgOn9oqYqQiUHvwAyI8SHuy8A0NanORThf
-         +L/Kc7SqCHnCwWgrTRN6xorp0aOKBoKxN+IMvTw5UzOEY2KQD4/w2BMoKr1LWY3bAU
-         6Cz5k09jmGDY1hMsNgX+W3BtqHjJ1vK3/53f4PYs=
+        b=qxOk2sU2qtrCCD9phZEdmUe+KJCY/mh6lQ9D5KJ92e25Z8DlrmnmXbo6scydG++xC
+         QYIPKYfWr8042FdvNnzDU+VNVkXJCnvF6swSD/4n31FCJlcK0MeJT6xZ94y4G6QDdI
+         G4jBgzHReORpZBs5RlWCQ51PmVaafw7aHdtFRfDU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kevin Hao <haokexin@gmail.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 5.10 033/306] cpufreq: schedutil: Use kobject release() method to free sugov_tunables
+        stable@vger.kernel.org, Kris Chaplin <kris.chaplin@intel.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>
+Subject: [PATCH 5.13 021/380] clk: socfpga: agilex: fix up s2f_user0_clk representation
 Date:   Thu, 16 Sep 2021 17:56:18 +0200
-Message-Id: <20210916155755.075805845@linuxfoundation.org>
+Message-Id: <20210916155804.693326418@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,125 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kevin Hao <haokexin@gmail.com>
+From: Dinh Nguyen <dinguyen@kernel.org>
 
-commit e5c6b312ce3cc97e90ea159446e6bfa06645364d upstream.
+commit f817c132db679d492d96c60993fa2f2c67ab18d0 upstream.
 
-The struct sugov_tunables is protected by the kobject, so we can't free
-it directly. Otherwise we would get a call trace like this:
-  ODEBUG: free active (active state 0) object type: timer_list hint: delayed_work_timer_fn+0x0/0x30
-  WARNING: CPU: 3 PID: 720 at lib/debugobjects.c:505 debug_print_object+0xb8/0x100
-  Modules linked in:
-  CPU: 3 PID: 720 Comm: a.sh Tainted: G        W         5.14.0-rc1-next-20210715-yocto-standard+ #507
-  Hardware name: Marvell OcteonTX CN96XX board (DT)
-  pstate: 40400009 (nZcv daif +PAN -UAO -TCO BTYPE=--)
-  pc : debug_print_object+0xb8/0x100
-  lr : debug_print_object+0xb8/0x100
-  sp : ffff80001ecaf910
-  x29: ffff80001ecaf910 x28: ffff00011b10b8d0 x27: ffff800011043d80
-  x26: ffff00011a8f0000 x25: ffff800013cb3ff0 x24: 0000000000000000
-  x23: ffff80001142aa68 x22: ffff800011043d80 x21: ffff00010de46f20
-  x20: ffff800013c0c520 x19: ffff800011d8f5b0 x18: 0000000000000010
-  x17: 6e6968207473696c x16: 5f72656d6974203a x15: 6570797420746365
-  x14: 6a626f2029302065 x13: 303378302f307830 x12: 2b6e665f72656d69
-  x11: ffff8000124b1560 x10: ffff800012331520 x9 : ffff8000100ca6b0
-  x8 : 000000000017ffe8 x7 : c0000000fffeffff x6 : 0000000000000001
-  x5 : ffff800011d8c000 x4 : ffff800011d8c740 x3 : 0000000000000000
-  x2 : ffff0001108301c0 x1 : ab3c90eedf9c0f00 x0 : 0000000000000000
-  Call trace:
-   debug_print_object+0xb8/0x100
-   __debug_check_no_obj_freed+0x1c0/0x230
-   debug_check_no_obj_freed+0x20/0x88
-   slab_free_freelist_hook+0x154/0x1c8
-   kfree+0x114/0x5d0
-   sugov_exit+0xbc/0xc0
-   cpufreq_exit_governor+0x44/0x90
-   cpufreq_set_policy+0x268/0x4a8
-   store_scaling_governor+0xe0/0x128
-   store+0xc0/0xf0
-   sysfs_kf_write+0x54/0x80
-   kernfs_fop_write_iter+0x128/0x1c0
-   new_sync_write+0xf0/0x190
-   vfs_write+0x2d4/0x478
-   ksys_write+0x74/0x100
-   __arm64_sys_write+0x24/0x30
-   invoke_syscall.constprop.0+0x54/0xe0
-   do_el0_svc+0x64/0x158
-   el0_svc+0x2c/0xb0
-   el0t_64_sync_handler+0xb0/0xb8
-   el0t_64_sync+0x198/0x19c
-  irq event stamp: 5518
-  hardirqs last  enabled at (5517): [<ffff8000100cbd7c>] console_unlock+0x554/0x6c8
-  hardirqs last disabled at (5518): [<ffff800010fc0638>] el1_dbg+0x28/0xa0
-  softirqs last  enabled at (5504): [<ffff8000100106e0>] __do_softirq+0x4d0/0x6c0
-  softirqs last disabled at (5483): [<ffff800010049548>] irq_exit+0x1b0/0x1b8
+Correct the s2f_user0_mux clock representation.
 
-So split the original sugov_tunables_free() into two functions,
-sugov_clear_global_tunables() is just used to clear the global_tunables
-and the new sugov_tunables_free() is used as kobj_type::release to
-release the sugov_tunables safely.
-
-Fixes: 9bdcb44e391d ("cpufreq: schedutil: New governor based on scheduler utilization data")
-Cc: 4.7+ <stable@vger.kernel.org> # 4.7+
-Signed-off-by: Kevin Hao <haokexin@gmail.com>
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Fixes: 80c6b7a0894f ("clk: socfpga: agilex: add clock driver for the Agilex platform")
+Cc: stable@vger.kernel.org
+Signed-off-by: Kris Chaplin <kris.chaplin@intel.com>
+Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
+Link: https://lore.kernel.org/r/20210713144621.605140-2-dinguyen@kernel.org
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/sched/cpufreq_schedutil.c |   16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+ drivers/clk/socfpga/clk-agilex.c |    9 +++++++++
+ 1 file changed, 9 insertions(+)
 
---- a/kernel/sched/cpufreq_schedutil.c
-+++ b/kernel/sched/cpufreq_schedutil.c
-@@ -610,9 +610,17 @@ static struct attribute *sugov_attrs[] =
- };
- ATTRIBUTE_GROUPS(sugov);
- 
-+static void sugov_tunables_free(struct kobject *kobj)
-+{
-+	struct gov_attr_set *attr_set = container_of(kobj, struct gov_attr_set, kobj);
-+
-+	kfree(to_sugov_tunables(attr_set));
-+}
-+
- static struct kobj_type sugov_tunables_ktype = {
- 	.default_groups = sugov_groups,
- 	.sysfs_ops = &governor_sysfs_ops,
-+	.release = &sugov_tunables_free,
+--- a/drivers/clk/socfpga/clk-agilex.c
++++ b/drivers/clk/socfpga/clk-agilex.c
+@@ -195,6 +195,13 @@ static const struct clk_parent_data sdmm
+ 	  .name = "boot_clk", },
  };
  
- /********************** cpufreq governor interface *********************/
-@@ -712,12 +720,10 @@ static struct sugov_tunables *sugov_tuna
- 	return tunables;
- }
- 
--static void sugov_tunables_free(struct sugov_tunables *tunables)
-+static void sugov_clear_global_tunables(void)
- {
- 	if (!have_governor_per_policy())
- 		global_tunables = NULL;
--
--	kfree(tunables);
- }
- 
- static int sugov_init(struct cpufreq_policy *policy)
-@@ -780,7 +786,7 @@ out:
- fail:
- 	kobject_put(&tunables->attr_set.kobj);
- 	policy->governor_data = NULL;
--	sugov_tunables_free(tunables);
-+	sugov_clear_global_tunables();
- 
- stop_kthread:
- 	sugov_kthread_stop(sg_policy);
-@@ -807,7 +813,7 @@ static void sugov_exit(struct cpufreq_po
- 	count = gov_attr_set_put(&tunables->attr_set, &sg_policy->tunables_hook);
- 	policy->governor_data = NULL;
- 	if (!count)
--		sugov_tunables_free(tunables);
-+		sugov_clear_global_tunables();
- 
- 	mutex_unlock(&global_tunables_lock);
- 
++static const struct clk_parent_data s2f_user0_mux[] = {
++	{ .fw_name = "s2f_user0_free_clk",
++	  .name = "s2f_user0_free_clk", },
++	{ .fw_name = "boot_clk",
++	  .name = "boot_clk", },
++};
++
+ static const struct clk_parent_data s2f_user1_mux[] = {
+ 	{ .fw_name = "s2f_user1_free_clk",
+ 	  .name = "s2f_user1_free_clk", },
+@@ -319,6 +326,8 @@ static const struct stratix10_gate_clock
+ 	  4, 0x98, 0, 16, 0x88, 3, 0},
+ 	{ AGILEX_SDMMC_CLK, "sdmmc_clk", NULL, sdmmc_mux, ARRAY_SIZE(sdmmc_mux), 0, 0x7C,
+ 	  5, 0, 0, 0, 0x88, 4, 4},
++	{ AGILEX_S2F_USER0_CLK, "s2f_user0_clk", NULL, s2f_user0_mux, ARRAY_SIZE(s2f_user0_mux), 0, 0x24,
++	  6, 0, 0, 0, 0x30, 2, 0},
+ 	{ AGILEX_S2F_USER1_CLK, "s2f_user1_clk", NULL, s2f_user1_mux, ARRAY_SIZE(s2f_user1_mux), 0, 0x7C,
+ 	  6, 0, 0, 0, 0x88, 5, 0},
+ 	{ AGILEX_PSI_REF_CLK, "psi_ref_clk", NULL, psi_mux, ARRAY_SIZE(psi_mux), 0, 0x7C,
 
 
