@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9BDD40D5E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 11:15:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9F7540D5E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 11:15:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236774AbhIPJRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 05:17:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40934 "EHLO mail.kernel.org"
+        id S236064AbhIPJQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 05:16:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41044 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235561AbhIPJPm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S235607AbhIPJPm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 16 Sep 2021 05:15:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AAE716135E;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B7ED56137C;
         Thu, 16 Sep 2021 09:14:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1631783661;
-        bh=lHn4637B5e/jFaJBDdCh8aiW0KLG7lqukybu/aoHo3g=;
+        bh=QX/TeP1Up2fv1mURikMxAXqlLxKM5NI4Xwq7REw08Q0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VjjyUBCrpIjn5fDIINOoa4XFYgQ6sVCz4F2T+nE5SyeIqVuUvIAcywtV7FBzI1yOO
-         0HYyqKE0MJkw49oC4LXPGraUYPj2JvKd7Vu/DXAWl0+Wn/1I1iZtw8ORQJzz/9WxP9
-         abC+1EjAVa6X9D4H/41lzd5RtdgVx9W3fUaPXclzT/ciXoF5Kzhjo63SEmVEMiJ4Eh
-         tddyDGeFii5H5s97vWE23yVTsmdvhn1MDMRezZ6+8X4mP3/tbH9rzqBYVsBW/asMfW
-         Zq7T5Pzz+FRQLuwGoaZ98V/5NAd4U6DMgKcISU6vRm9HlpeGvQ9cJLLkiE8euqDLsQ
-         +2oTa8LpvWubQ==
+        b=A2Sctvuu11a6dCuVcnGVsCzQL/1WWj1LJh5vJbdi7UBypPWP0DKIsWot9KXsxphdm
+         aFktjaUJtSe43KQnJk8J0VECcjRNgX004XWLxfWeG6EBZ1/y9zRzvDPIjP4wnxWB97
+         v01wY8g8y5S/sfoD/ecXcrtWXtkyHyMbnoiax7aj0t2QOcI4qR9JLlrGSVzlw88NSJ
+         Rz4750HEEnfdLCNBJQDG61xTVUotPE3REEah+aDTRJ8eNNGVklxpN35CmihNHrpW1I
+         ho2J/cEGEmf8LZ5k4AG7scWSaeWpNZD6329ubJVINXA+gOQpesvs5BjaWqa48AsSkQ
+         dc8qrQec4y8qQ==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1mQnTI-001sM1-0j; Thu, 16 Sep 2021 11:14:20 +0200
+        id 1mQnTI-001sM5-1h; Thu, 16 Sep 2021 11:14:20 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Jonathan Corbet <corbet@lwn.net>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mirela Rabulea <mirela.rabulea@nxp.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
         Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH 20/24] MAINTAINERS: update nxp,imx8-jpeg.yaml reference
-Date:   Thu, 16 Sep 2021 11:14:13 +0200
-Message-Id: <6504efb2d4eb3a89e4b77fca741a6cb143af0b95.1631783482.git.mchehab+huawei@kernel.org>
+Subject: [PATCH 21/24] MAINTAINERS: update gemini.yaml reference
+Date:   Thu, 16 Sep 2021 11:14:14 +0200
+Message-Id: <fa3ae6ac15fc49ac63360d00f041deee5983b4fe.1631783482.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1631783482.git.mchehab+huawei@kernel.org>
 References: <cover.1631783482.git.mchehab+huawei@kernel.org>
@@ -46,31 +45,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The file name: Documentation/devicetree/bindings/media/imx8-jpeg.yaml
-should be, instead: Documentation/devicetree/bindings/media/nxp,imx8-jpeg.yaml.
+Changeset 7da6ebf5f5a5 ("dt-bindings: arm: Convert Gemini boards to YAML")
+renamed: Documentation/devicetree/bindings/arm/gemini.txt
+to: Documentation/devicetree/bindings/arm/gemini.yaml.
 
 Update its cross-reference accordingly.
 
-Fixes: be157db0a3d8 ("media: Add maintainer for IMX jpeg v4l2 driver")
-Fixes: b16ed1e66008 ("media: dt-bindings: Add bindings for i.MX8QXP/QM JPEG driver")
+Fixes: 7da6ebf5f5a5 ("dt-bindings: arm: Convert Gemini boards to YAML")
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
  MAINTAINERS | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index da9658e24496..9f1d2b8a769e 100644
+index 9f1d2b8a769e..de18144b8c52 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -13545,7 +13545,7 @@ M:	Mirela Rabulea <mirela.rabulea@nxp.com>
- R:	NXP Linux Team <linux-imx@nxp.com>
- L:	linux-media@vger.kernel.org
+@@ -1872,7 +1872,7 @@ M:	Linus Walleij <linus.walleij@linaro.org>
+ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
  S:	Maintained
--F:	Documentation/devicetree/bindings/media/imx8-jpeg.yaml
-+F:	Documentation/devicetree/bindings/media/nxp,imx8-jpeg.yaml
- F:	drivers/media/platform/imx-jpeg
- 
- NZXT-KRAKEN2 HARDWARE MONITORING DRIVER
+ T:	git git://github.com/ulli-kroll/linux.git
+-F:	Documentation/devicetree/bindings/arm/gemini.txt
++F:	Documentation/devicetree/bindings/arm/gemini.yaml
+ F:	Documentation/devicetree/bindings/net/cortina,gemini-ethernet.txt
+ F:	Documentation/devicetree/bindings/pinctrl/cortina,gemini-pinctrl.txt
+ F:	Documentation/devicetree/bindings/rtc/faraday,ftrtc010.yaml
 -- 
 2.31.1
 
