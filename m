@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63DE440E392
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:20:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E43A140E780
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:33:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345273AbhIPQuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:50:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57856 "EHLO mail.kernel.org"
+        id S1353118AbhIPRd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:33:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344227AbhIPQox (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:44:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 90F1A6103B;
-        Thu, 16 Sep 2021 16:25:55 +0000 (UTC)
+        id S1348101AbhIPRX6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:23:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 60DA261BBD;
+        Thu, 16 Sep 2021 16:43:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809556;
-        bh=L6dGz8/J8+Yzbn3xmkmqNCDjXg+BWLDTee5jp1EzVqE=;
+        s=korg; t=1631810614;
+        bh=fQ418/f7pqUObBNI+0drbdk82ICbaLCrqZ5MotFMp5w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BL07/P+OOc/7/RLHlS+A7FMYJOUiG9uoKbwQhX9cIrV/z/3Ah26tohZzp6tXOUmA2
-         7B31PLrdRoZonHvc+Yzwt7gifsCr+Sft64rMuxGz689qSW6KF/nCAHwtClifbkpQGZ
-         +MAJiPR26qaqA81ZT06fQPpNOJHXK/i2gVsJcEZE=
+        b=2MHXAlhjbNWa2xkZSFVmIQ2CBUZ81WzSh/Uz/JJMaAvRc1IK0L1Nc/H/8Q2UBHlLI
+         zsKH9j4sVRD3BpOZl5aJxVbkEzKwOX4gTzxwn5aKsltS7vJYhmp9QZVbRwJRg4F0j8
+         m0YpS++qGonEBrLo7gBEiUf7b3qY1KE16Bdiryug=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
+        stable@vger.kernel.org,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Oliver Logush <oliver.logush@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 197/380] video: fbdev: riva: Error out if pixclock equals zero
-Date:   Thu, 16 Sep 2021 17:59:14 +0200
-Message-Id: <20210916155810.778735305@linuxfoundation.org>
+Subject: [PATCH 5.14 206/432] drm/amd/display: Fix timer_per_pixel unit error
+Date:   Thu, 16 Sep 2021 17:59:15 +0200
+Message-Id: <20210916155817.804261680@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,69 +42,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zheyu Ma <zheyuma97@gmail.com>
+From: Oliver Logush <oliver.logush@amd.com>
 
-[ Upstream commit f92763cb0feba247e0939ed137b495601fd072a5 ]
+[ Upstream commit 23e55639b87fb16a9f0f66032ecb57060df6c46c ]
 
-The userspace program could pass any values to the driver through
-ioctl() interface. If the driver doesn't check the value of 'pixclock',
-it may cause divide error.
+[why]
+The units of the time_per_pixel variable were incorrect, this had to be
+changed for the code to properly function.
 
-Fix this by checking whether 'pixclock' is zero first.
+[how]
+The change was very straightforward, only required one line of code to
+be changed where the calculation was done.
 
-The following log reveals it:
-
-[   33.396850] divide error: 0000 [#1] PREEMPT SMP KASAN PTI
-[   33.396864] CPU: 5 PID: 11754 Comm: i740 Not tainted 5.14.0-rc2-00513-gac532c9bbcfb-dirty #222
-[   33.396883] RIP: 0010:riva_load_video_mode+0x417/0xf70
-[   33.396969] Call Trace:
-[   33.396973]  ? debug_smp_processor_id+0x1c/0x20
-[   33.396984]  ? tick_nohz_tick_stopped+0x1a/0x90
-[   33.396996]  ? rivafb_copyarea+0x3c0/0x3c0
-[   33.397003]  ? wake_up_klogd.part.0+0x99/0xd0
-[   33.397014]  ? vprintk_emit+0x110/0x4b0
-[   33.397024]  ? vprintk_default+0x26/0x30
-[   33.397033]  ? vprintk+0x9c/0x1f0
-[   33.397041]  ? printk+0xba/0xed
-[   33.397054]  ? record_print_text.cold+0x16/0x16
-[   33.397063]  ? __kasan_check_read+0x11/0x20
-[   33.397074]  ? profile_tick+0xc0/0x100
-[   33.397084]  ? __sanitizer_cov_trace_const_cmp4+0x24/0x80
-[   33.397094]  ? riva_set_rop_solid+0x2a0/0x2a0
-[   33.397102]  rivafb_set_par+0xbe/0x610
-[   33.397111]  ? riva_set_rop_solid+0x2a0/0x2a0
-[   33.397119]  fb_set_var+0x5bf/0xeb0
-[   33.397127]  ? fb_blank+0x1a0/0x1a0
-[   33.397134]  ? lock_acquire+0x1ef/0x530
-[   33.397143]  ? lock_release+0x810/0x810
-[   33.397151]  ? lock_is_held_type+0x100/0x140
-[   33.397159]  ? ___might_sleep+0x1ee/0x2d0
-[   33.397170]  ? __mutex_lock+0x620/0x1190
-[   33.397180]  ? trace_hardirqs_on+0x6a/0x1c0
-[   33.397190]  do_fb_ioctl+0x31e/0x700
-
-Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
-Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/1627293835-17441-4-git-send-email-zheyuma97@gmail.com
+Acked-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+Signed-off-by: Oliver Logush <oliver.logush@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/fbdev/riva/fbdev.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/video/fbdev/riva/fbdev.c b/drivers/video/fbdev/riva/fbdev.c
-index 55554b0433cb..84d5e23ad7d3 100644
---- a/drivers/video/fbdev/riva/fbdev.c
-+++ b/drivers/video/fbdev/riva/fbdev.c
-@@ -1084,6 +1084,9 @@ static int rivafb_check_var(struct fb_var_screeninfo *var, struct fb_info *info)
- 	int mode_valid = 0;
- 	
- 	NVTRACE_ENTER();
-+	if (!var->pixclock)
-+		return -EINVAL;
-+
- 	switch (var->bits_per_pixel) {
- 	case 1 ... 8:
- 		var->red.offset = var->green.offset = var->blue.offset = 0;
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
+index b173fa3653b5..c78933a9d31c 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
+@@ -2462,7 +2462,7 @@ void dcn20_set_mcif_arb_params(
+ 				wb_arb_params->cli_watermark[k] = get_wm_writeback_urgent(&context->bw_ctx.dml, pipes, pipe_cnt) * 1000;
+ 				wb_arb_params->pstate_watermark[k] = get_wm_writeback_dram_clock_change(&context->bw_ctx.dml, pipes, pipe_cnt) * 1000;
+ 			}
+-			wb_arb_params->time_per_pixel = 16.0 / context->res_ctx.pipe_ctx[i].stream->phy_pix_clk; /* 4 bit fraction, ms */
++			wb_arb_params->time_per_pixel = 16.0 * 1000 / (context->res_ctx.pipe_ctx[i].stream->phy_pix_clk / 1000); /* 4 bit fraction, ms */
+ 			wb_arb_params->slice_lines = 32;
+ 			wb_arb_params->arbitration_slice = 2;
+ 			wb_arb_params->max_scaled_time = dcn20_calc_max_scaled_time(wb_arb_params->time_per_pixel,
 -- 
 2.30.2
 
