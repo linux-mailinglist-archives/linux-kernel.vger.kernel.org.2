@@ -2,284 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C13240EB03
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 21:45:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93D2440EB08
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 21:47:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232467AbhIPTqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 15:46:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20382 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230267AbhIPTqq (ORCPT
+        id S234515AbhIPTsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 15:48:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234461AbhIPTsm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 15:46:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631821525;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8EIXj1eTdFllKG2x0MKyDoudkx15dHgU5ERjZMzPtZk=;
-        b=De+tDiYE69H3NvgFmpiesAjHpToxiu22omXMpsO7/jcGh4AJdhW4TpjbaKYaN/EBRMvpqa
-        6W2VYgEZ1qFPCMEbMI5/edJS0M23YRfSVr5P54y/dNumGXBhvl298zYedrcNlVT3XWcNnQ
-        CkQVJNTbPzBPfoSYKQY5DqgjQQ4aP24=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-74-vtVibAsUMZCRgl6Zr6n1gw-1; Thu, 16 Sep 2021 15:45:24 -0400
-X-MC-Unique: vtVibAsUMZCRgl6Zr6n1gw-1
-Received: by mail-wm1-f71.google.com with SMTP id c187-20020a1c35c4000000b00304b489f2d8so3552516wma.6
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 12:45:23 -0700 (PDT)
+        Thu, 16 Sep 2021 15:48:42 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3F61C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 12:47:21 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id g1so23050732lfj.12
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 12:47:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oRD/cMRbGRL8eW9YNojc5SAnY20xvnXQSyOWFqi/OgQ=;
+        b=VVedPAhhXvqQiPi13tSyQOLX8u5tNTR/9Sk0cDvJUoqRmAyM4xwFgAcTzMuUX3x8Qm
+         ZQSuXCv1rMT2Y3TZ2fWhNMyoutGjZ6WJE5Xps077l5ng1SPHi96pbXaQZWkufjbUsJ8E
+         SwaYeBwWS7O0ujHzV9O6zJeM0kMWN0lvLs7ok=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8EIXj1eTdFllKG2x0MKyDoudkx15dHgU5ERjZMzPtZk=;
-        b=3Hcte2eqUAxJbrb/fHbFdJUXo844y08QReEsREMyTbx6/PCjZiPlxFMdyrrZaF6ClY
-         y2EvKzagmgQ7ewfvJQjuHjRh8EzBflnNrdppq+BtgEz2n6hCbJNRNsvC30u48oaUGBem
-         xzodMSHKCSP2JGdDD+YnGRynQkGKNkS4Oe6+Nk2aGzHN0oIs9DcGLo5rKNEh0BrNTsHG
-         8VHilibB/JFQklAajzIfj4Elwzs+uKgKYbXG/zZh0AOtV4MYgTGQcezZB33SevHT/oSL
-         UiF3QRvxzgcp4KzqC6AFYVhdZki6TB5tOnHrYNf0W11oESzhZxuFlJYR17f/6q+1kifq
-         +f0A==
-X-Gm-Message-State: AOAM530QfWbJyQJpoa+0+AIP3xpkKR31zwlCam4aXI1F7QbyCDQDofG4
-        cE/9KWMdSRLCE0EnZYeDsy54ATyudVf6IcMsIoCsde5fYYi172PjfQ0W+En2m5nOuPglG4OH31u
-        8CbGhMsGuPzG7cCZXJOthYM1C
-X-Received: by 2002:a05:6000:46:: with SMTP id k6mr8058623wrx.104.1631821522767;
-        Thu, 16 Sep 2021 12:45:22 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxnLJMUGMm7CW5qCBSs4rHGG2l/xsXrV2lGc9VELDH3HdkmfPm05RNHVGdfGH+zYIHqpHHkkg==
-X-Received: by 2002:a05:6000:46:: with SMTP id k6mr8058610wrx.104.1631821522513;
-        Thu, 16 Sep 2021 12:45:22 -0700 (PDT)
-Received: from krava ([83.240.63.48])
-        by smtp.gmail.com with ESMTPSA id g9sm9062070wmg.21.2021.09.16.12.45.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 12:45:22 -0700 (PDT)
-Date:   Thu, 16 Sep 2021 21:45:20 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>
-Subject: Re: [PATCH 6/8] ftrace: Add multi direct register/unregister
- interface
-Message-ID: <YUOe0Pl8Rmu4lU4X@krava>
-References: <20210831095017.412311-1-jolsa@kernel.org>
- <20210831095017.412311-7-jolsa@kernel.org>
- <20210914173555.056cd20c@oasis.local.home>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oRD/cMRbGRL8eW9YNojc5SAnY20xvnXQSyOWFqi/OgQ=;
+        b=CiAagdNqaRSAmGHWaNy/k/teMrZP6vJ5VGVIy7P0jduPXP4bJD9+M7w5R36NlwHYva
+         PcVfeg2klPqkDWH08fuh1plJxugs1nGi2xrfnbkvYHpv1OrFG/wneTjiWYc9MPexmMri
+         eeqo/9vIP1F02cu9If3ZL9Jxm+/V1BNnisexsjyp7bQYxDIarMn6xo197PeUH2VC8XjL
+         /cSbF9iv9NdACVzoxhSDdrKsizaxgQwqbpK0gXMp+Qkc04IVowk6TyJpOavBB4v7iu6e
+         7huneAfTLjYge8CQtrjF5aAZQ0T/kd8FW+sSvx7fT/eMTdP9cVEXmNon825lp4yuSPyZ
+         SlVQ==
+X-Gm-Message-State: AOAM533t+ZDrMDniE1pcbNAabq5V0lxa4Hcz3DX4ebKislt7QnMzEoGQ
+        lRZC+8+ZKppBF0wtb+2l6siWeAepf3VjGqgb/Jc=
+X-Google-Smtp-Source: ABdhPJzGtEimNv1CWGKOSLjXWmaz78oByhzDzyqZyt0wb2y9nnxvvpUIfZ3isapG4bXQquhVVkjtjA==
+X-Received: by 2002:a19:6510:: with SMTP id z16mr5056907lfb.566.1631821639454;
+        Thu, 16 Sep 2021 12:47:19 -0700 (PDT)
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com. [209.85.167.50])
+        by smtp.gmail.com with ESMTPSA id j12sm444513ljc.121.2021.09.16.12.47.17
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Sep 2021 12:47:17 -0700 (PDT)
+Received: by mail-lf1-f50.google.com with SMTP id d42so1437657lfv.10
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 12:47:17 -0700 (PDT)
+X-Received: by 2002:a05:6512:94e:: with SMTP id u14mr5248863lft.173.1631821637208;
+ Thu, 16 Sep 2021 12:47:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210914173555.056cd20c@oasis.local.home>
+References: <20210915035227.630204-1-linux@roeck-us.net> <CAHk-=wjXr+NnNPTorhaW81eAbdF90foVo-5pQqRmXZi-ZGaX6Q@mail.gmail.com>
+ <47fcc9cc-7d2e-bc79-122b-8eccfe00d8f3@roeck-us.net> <CAHk-=wgdEHPm6vGcJ_Zr-Q_p=Muv1Oby5H2+6QyPGxiZ7_Wv+w@mail.gmail.com>
+ <20210915223342.GA1556394@roeck-us.net>
+In-Reply-To: <20210915223342.GA1556394@roeck-us.net>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 16 Sep 2021 12:47:01 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiQPjD_XKhVLyB4w2O6Rsi8mq256qVuhR8jMTSwrMPDqg@mail.gmail.com>
+Message-ID: <CAHk-=wiQPjD_XKhVLyB4w2O6Rsi8mq256qVuhR8jMTSwrMPDqg@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] Introduce and use absolute_pointer macro
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Andreas Koensgen <ajk@comnets.uni-bremen.de>
+Cc:     Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-parisc@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
+        Sparse Mailing-list <linux-sparse@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 05:35:55PM -0400, Steven Rostedt wrote:
-> On Tue, 31 Aug 2021 11:50:15 +0200
-> Jiri Olsa <jolsa@redhat.com> wrote:
-> 
-> > Adding interface to register multiple direct functions
-> > within single call. Adding following functions:
-> > 
-> >   register_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
-> >   unregister_ftrace_direct_multi(struct ftrace_ops *ops)
-> > 
-> > The register_ftrace_direct_multi registers direct function (addr)
-> > with all functions in ops filter. The ops filter can be updated
-> > before with ftrace_set_filter_ip calls.
-> > 
-> > All requested functions must not have direct function currently
-> > registered, otherwise register_ftrace_direct_multi will fail.
-> > 
-> > The unregister_ftrace_direct_multi unregisters ops related direct
-> > functions.
-> > 
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  include/linux/ftrace.h |  11 ++++
-> >  kernel/trace/ftrace.c  | 111 +++++++++++++++++++++++++++++++++++++++++
-> >  2 files changed, 122 insertions(+)
-> > 
-> > diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-> > index d399621a67ee..e40b5201c16e 100644
-> > --- a/include/linux/ftrace.h
-> > +++ b/include/linux/ftrace.h
-> > @@ -316,7 +316,10 @@ int ftrace_modify_direct_caller(struct ftrace_func_entry *entry,
-> >  				unsigned long old_addr,
-> >  				unsigned long new_addr);
-> >  unsigned long ftrace_find_rec_direct(unsigned long ip);
-> > +int register_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr);
-> > +int unregister_ftrace_direct_multi(struct ftrace_ops *ops);
-> >  #else
-> > +struct ftrace_ops;
-> >  # define ftrace_direct_func_count 0
-> >  static inline int register_ftrace_direct(unsigned long ip, unsigned long addr)
-> >  {
-> > @@ -346,6 +349,14 @@ static inline unsigned long ftrace_find_rec_direct(unsigned long ip)
-> >  {
-> >  	return 0;
-> >  }
-> > +static inline int register_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
-> > +{
-> > +	return -ENODEV;
-> > +}
-> > +static inline int unregister_ftrace_direct_multi(struct ftrace_ops *ops)
-> > +{
-> > +	return -ENODEV;
-> > +}
-> >  #endif /* CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS */
-> >  
-> >  #ifndef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
-> > diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-> > index c60217d81040..7243769493c9 100644
-> > --- a/kernel/trace/ftrace.c
-> > +++ b/kernel/trace/ftrace.c
-> > @@ -5407,6 +5407,117 @@ int modify_ftrace_direct(unsigned long ip,
-> >  	return ret;
-> >  }
-> >  EXPORT_SYMBOL_GPL(modify_ftrace_direct);
-> > +
-> > +#define MULTI_FLAGS (FTRACE_OPS_FL_IPMODIFY | FTRACE_OPS_FL_DIRECT | \
-> > +		     FTRACE_OPS_FL_SAVE_REGS)
-> > +
-> > +static int check_direct_multi(struct ftrace_ops *ops)
-> > +{
-> > +	if (!(ops->flags & FTRACE_OPS_FL_INITIALIZED))
-> > +		return -EINVAL;
-> > +	if ((ops->flags & MULTI_FLAGS) != MULTI_FLAGS)
-> > +		return -EINVAL;
-> > +	return 0;
-> > +}
-> > +
-> 
-> Needs kernel doc comments as this is an interface outside this file.
+On Wed, Sep 15, 2021 at 3:33 PM Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> drivers/net/hamradio/6pack.c: In function 'sixpack_open':
+> drivers/net/hamradio/6pack.c:71:41: error:
+>         unsigned conversion from 'int' to 'unsigned char' changes value from '256' to '0'
+>
+> patch:
+>         https://lore.kernel.org/lkml/20210909035743.1247042-1-linux@roeck-us.net/
+> David says it is wrong, and I don't know the code well enough
+> to feel comfortable touching that code. That may be a lost cause.
+> "depends on BROKEN if ALPHA" may be appropriate here.
 
-right, will add
+David is wrong.
 
-> 
-> > +int register_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
-> > +{
-> > +	struct ftrace_hash *hash, *free_hash = NULL;
-> > +	struct ftrace_func_entry *entry, *new;
-> > +	int err = -EBUSY, size, i;
-> > +
-> > +	if (ops->func || ops->trampoline)
-> > +		return -EINVAL;
-> > +	if (!(ops->flags & FTRACE_OPS_FL_INITIALIZED))
-> > +		return -EINVAL;
-> > +	if (ops->flags & FTRACE_OPS_FL_ENABLED)
-> > +		return -EINVAL;
-> > +
-> > +	hash = ops->func_hash->filter_hash;
-> > +	if (ftrace_hash_empty(hash))
-> > +		return -EINVAL;
-> > +
-> > +	mutex_lock(&direct_mutex);
-> > +
-> > +	/* Make sure requested entries are not already registered.. */
-> > +	size = 1 << hash->size_bits;
-> > +	for (i = 0; i < size; i++) {
-> > +		hlist_for_each_entry(entry, &hash->buckets[i], hlist) {
-> > +			if (ftrace_find_rec_direct(entry->ip))
-> > +				goto out_unlock;
-> > +		}
-> > +	}
-> > +
-> > +	/* ... and insert them to direct_functions hash. */
-> > +	err = -ENOMEM;
-> > +	for (i = 0; i < size; i++) {
-> > +		hlist_for_each_entry(entry, &hash->buckets[i], hlist) {
-> > +			new = ftrace_add_rec_direct(entry->ip, addr, &free_hash);
-> > +			if (!new)
-> > +				goto out_remove;
-> > +			entry->direct = addr;
-> > +		}
-> > +	}
-> > +
-> > +	ops->func = call_direct_funcs;
-> > +	ops->flags = MULTI_FLAGS;
-> > +	ops->trampoline = FTRACE_REGS_ADDR;
-> > +
-> > +	err = register_ftrace_function(ops);
-> > +
-> > + out_remove:
-> > +	if (err) {
-> 
-> The below code:
-> 
-> > +		for (i = 0; i < size; i++) {
-> > +			hlist_for_each_entry(entry, &hash->buckets[i], hlist) {
-> > +				new = __ftrace_lookup_ip(direct_functions, entry->ip);
-> > +				if (new) {
-> > +					remove_hash_entry(direct_functions, new);
-> > +					kfree(new);
-> > +				}
-> > +			}
-> > +		}
-> 
-> is identical to code below.
-> 
-> > +	}
-> > +
-> > + out_unlock:
-> > +	mutex_unlock(&direct_mutex);
-> > +
-> > +	if (free_hash) {
-> > +		synchronize_rcu_tasks();
-> > +		free_ftrace_hash(free_hash);
-> > +	}
-> > +	return err;
-> > +}
-> > +EXPORT_SYMBOL_GPL(register_ftrace_direct_multi);
-> > +
-> 
-> Should have kernel doc as well.
+The code here is bogus, and the docs clearly state that the transmit
+data is in units of "10ms":
 
-ok
+    https://www.linux-ax25.org/wiki/6PACK
 
-> 
-> > +int unregister_ftrace_direct_multi(struct ftrace_ops *ops)
-> > +{
-> > +	struct ftrace_hash *hash = ops->func_hash->filter_hash;
-> > +	struct ftrace_func_entry *entry, *new;
-> > +	int err, size, i;
-> > +
-> > +	if (check_direct_multi(ops))
-> > +		return -EINVAL;
-> > +	if (!(ops->flags & FTRACE_OPS_FL_ENABLED))
-> > +		return -EINVAL;
-> > +
-> > +	mutex_lock(&direct_mutex);
-> > +	err = unregister_ftrace_function(ops);
-> > +
-> > +	size = 1 << hash->size_bits;
-> 
-> 
-> > +	for (i = 0; i < size; i++) {
-> > +		hlist_for_each_entry(entry, &hash->buckets[i], hlist) {
-> > +			new = __ftrace_lookup_ip(direct_functions, entry->ip);
-> > +			if (new) {
-> > +				remove_hash_entry(direct_functions, new);
-> > +				kfree(new);
-> > +			}
-> > +		}
-> > +	}
-> 
-> Would probably make sense to turn this into a static inline helper.
+and that
 
-ok
+    #define SIXP_TXDELAY                    (HZ/4)  /* in 1 s */
 
-thanks,
-jirka
+is just wrong, and the actual *uses* of that TX timeout seems correct
+for that 10ms value:
 
-> 
-> -- Steve
-> 
-> 
-> > +
-> > +	mutex_unlock(&direct_mutex);
-> > +	return err;
-> > +}
-> > +EXPORT_SYMBOL_GPL(unregister_ftrace_direct_multi);
-> >  #endif /* CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS */
-> >  
-> >  /**
-> 
+        mod_timer(&sp->tx_t, jiffies + ((when + 1) * HZ) / 100);
 
+ie that "when" is clearly given in 100ths of a second, aka 10ms (ok,
+that's mainly SIXP_SLOTTIME, with SIXP_TXDELAY being used mainly to
+transfer the data to the other side).
+
+So from everything I can see, your patch is correct.
+
+Of course, to make things more confusing, the RESYNC_TIMEOUTs are
+indeed given in ticks.
+
+I spent too much time looking at this, but I'm going to apply that
+patch. I suspect either nobody uses that driver any more, or the
+TXDELAY values don't actually much matter, since they have clearly
+been wrong and depended on random kernel configs for a long long time.
+
+I think the most common HZ value on x86 tends to be the modern default
+of 250Hz, so the old "HZ/4" means that most people got a TXDELAY of
+620ms, rather than the traditional expected 250ms.
+
+The fact that this shows up as an actual compile error on alpha is
+just random luck, since alpha uses a 1024Hz clock. CONFIG_HZ_1000
+isn't impossible on other platforms either, which happens to compile
+cleanly, but causes that TXDELAY byte to sent out as 250, for a 2.5Hz
+TX delay.
+
+Of course, it is possible that it's the documentation that is wrong,
+but considering that the documentation matches the code (see above on
+that "((when + 1) * HZ)/100"), and matches the "it doesn't cause
+compiler warnings", I think it's pretty clear that your patch is the
+correct fix.
+
+           Linus
