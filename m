@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CA0040E452
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:23:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39E0D40E811
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344081AbhIPQ51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:57:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38644 "EHLO mail.kernel.org"
+        id S1353931AbhIPRhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:37:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345944AbhIPQxB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:53:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E0C561A8D;
-        Thu, 16 Sep 2021 16:29:36 +0000 (UTC)
+        id S1352809AbhIPR2l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:28:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 27DCD61C48;
+        Thu, 16 Sep 2021 16:45:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809777;
-        bh=6XPkMybdNHKrHU4KwX8+K12QhA29HKIgLYqu2LzrJgw=;
+        s=korg; t=1631810757;
+        bh=FkXCrBHyxq0hGuRyOSF1iQfp1/fAS0OjE1l6GxYEsVo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Y/Av5GyfVXpwD/KefIjLwhNLi4iQJhEco8Sp3eWR9Gtn70ATRGnqJQ/JEwAfVbEMg
-         Tr8u4ULuWv9XckiPgB+QVGhQIQU1cgYQyQX+Vfpiciqth7DdNNsI2l+B0C2eQh1IlY
-         axPh0Mul7c017Sh1yM72U58nTihdGFRTA1aM8F+4=
+        b=crJaHvOVp+3nfmjU7lejX+P0NaoyOjgQe0V3jVg3GNsR64fzl9G6/L42RHi6PwvM4
+         Y6/9hdK4+KNTleQiJgGMYGL0faIC/7fP2+yIPWqbEUmthNb9ocDU1trvOBpiKUtpf6
+         bilVDBU7C/PvOyk0XnuIH8Kpe4OLHaIozOujzWmE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Quanyang Wang <quanyang.wang@windriver.com>,
+        stable@vger.kernel.org, Umang Jain <umang.jain@ideasonboard.com>,
         Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 248/380] drm: xlnx: zynqmp_dpsub: Call pm_runtime_get_sync before setting pixel clock
+Subject: [PATCH 5.14 256/432] media: imx258: Limit the max analogue gain to 480
 Date:   Thu, 16 Sep 2021 18:00:05 +0200
-Message-Id: <20210916155812.519013106@linuxfoundation.org>
+Message-Id: <20210916155819.500380422@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,54 +43,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Quanyang Wang <quanyang.wang@windriver.com>
+From: Umang Jain <umang.jain@ideasonboard.com>
 
-[ Upstream commit a19effb6dbe5bd1be77a6d68eba04dba8993ffeb ]
+[ Upstream commit f809665ee75fff3f4ea8907f406a66d380aeb184 ]
 
-The Runtime PM subsystem will force the device "fd4a0000.zynqmp-display"
-to enter suspend state while booting if the following conditions are met:
-- the usage counter is zero (pm_runtime_get_sync hasn't been called yet)
-- no 'active' children (no zynqmp-dp-snd-xx node under dpsub node)
-- no other device in the same power domain (dpdma node has no
-		"power-domains = <&zynqmp_firmware PD_DP>" property)
+The range for analog gain mentioned in the datasheet is [0, 480].
+The real gain formula mentioned in the datasheet is:
 
-So there is a scenario as below:
-1) DP device enters suspend state   <- call zynqmp_gpd_power_off
-2) zynqmp_disp_crtc_setup_clock	    <- configurate register VPLL_FRAC_CFG
-3) pm_runtime_get_sync		    <- call zynqmp_gpd_power_on and clear previous
-				       VPLL_FRAC_CFG configuration
-4) clk_prepare_enable(disp->pclk)   <- enable failed since VPLL_FRAC_CFG
-				       configuration is corrupted
+	Gain = 512 / (512 – X)
 
->From above, we can see that pm_runtime_get_sync may clear register
-VPLL_FRAC_CFG configuration and result the failure of clk enabling.
-Putting pm_runtime_get_sync at the very beginning of the function
-zynqmp_disp_crtc_atomic_enable can resolve this issue.
+Hence, values larger than 511 clearly makes no sense. The gain
+register field is also documented to be of 9-bits in the datasheet.
 
-Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
+Certainly, it is enough to infer that, the kernel driver currently
+advertises an arbitrary analog gain max. Fix it by rectifying the
+value as per the data sheet i.e. 480.
+
+Signed-off-by: Umang Jain <umang.jain@ideasonboard.com>
 Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/xlnx/zynqmp_disp.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/media/i2c/imx258.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/xlnx/zynqmp_disp.c b/drivers/gpu/drm/xlnx/zynqmp_disp.c
-index 109d627968ac..01c6ce7784dd 100644
---- a/drivers/gpu/drm/xlnx/zynqmp_disp.c
-+++ b/drivers/gpu/drm/xlnx/zynqmp_disp.c
-@@ -1452,9 +1452,10 @@ zynqmp_disp_crtc_atomic_enable(struct drm_crtc *crtc,
- 	struct drm_display_mode *adjusted_mode = &crtc->state->adjusted_mode;
- 	int ret, vrefresh;
+diff --git a/drivers/media/i2c/imx258.c b/drivers/media/i2c/imx258.c
+index 4e695096e5d0..81cdf37216ca 100644
+--- a/drivers/media/i2c/imx258.c
++++ b/drivers/media/i2c/imx258.c
+@@ -47,7 +47,7 @@
+ /* Analog gain control */
+ #define IMX258_REG_ANALOG_GAIN		0x0204
+ #define IMX258_ANA_GAIN_MIN		0
+-#define IMX258_ANA_GAIN_MAX		0x1fff
++#define IMX258_ANA_GAIN_MAX		480
+ #define IMX258_ANA_GAIN_STEP		1
+ #define IMX258_ANA_GAIN_DEFAULT		0x0
  
-+	pm_runtime_get_sync(disp->dev);
-+
- 	zynqmp_disp_crtc_setup_clock(crtc, adjusted_mode);
- 
--	pm_runtime_get_sync(disp->dev);
- 	ret = clk_prepare_enable(disp->pclk);
- 	if (ret) {
- 		dev_err(disp->dev, "failed to enable a pixel clock\n");
 -- 
 2.30.2
 
