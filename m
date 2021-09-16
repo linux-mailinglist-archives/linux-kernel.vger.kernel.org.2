@@ -2,97 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 378CC40D75E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 12:26:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DB9C40D761
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 12:28:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236458AbhIPK2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 06:28:01 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:40316
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233913AbhIPK17 (ORCPT
+        id S236403AbhIPKaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 06:30:15 -0400
+Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:45526 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233913AbhIPKaO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 06:27:59 -0400
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id D2D293F077
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 10:26:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1631787998;
-        bh=6S5AMhCNVrlspN/3bjYdeLfuwtE9nTG661txhmEAamc=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=jdVf2kKPfNvog9XGy1qS+JnSgmqepI47liE/8I+qzTOd4pbJwI0PRtRrH+Q7IcEl3
-         Q1bqkfMczZEXxPVfRHEjk6zcbSM2vW0qDFQ++rhNjJNPrOimCGlaDct8VnAPK2HyO8
-         PhXEaBy0THc/U+8jnNyHTyjFYtoLOfKjqnTYRc4Mu4+vSXYVJAlT3W+a+hVOAYnYRL
-         5vea2+BCPfVUVnnmiZYGIarqVk2HoAjJIOXZzhkuqoCiPC7NHBhqAh7nw0M0XCb0/r
-         PoZL9aLzOA+7anVGhL4U6Oq1wus0vDXEhNyWuXn9DMByq6TAEw+x1foHAJsDRonJxa
-         ChGFRYD70TItw==
-Received: by mail-ed1-f71.google.com with SMTP id m30-20020a50999e000000b003cdd7680c8cso4898656edb.11
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 03:26:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6S5AMhCNVrlspN/3bjYdeLfuwtE9nTG661txhmEAamc=;
-        b=O/BismoWToOCQAM7BB6GY/iNkhU+T9fZTPu+9NggsTUFvKzQ/5LVedsZ7XWPuK8UyV
-         SQmNLgP7HwJI97LRPi53iLNpMRLrs8CFXU8iubXXKB4fLiJ262zR4b3IgoRAnOuNGxkE
-         CnOaKaWZrOxgGoIC9Ga2mjzNRigz+NYwl/6AOBkwObN8DHxCw2z1Aso1Z63U+/3bgtYo
-         9XeCGEHzY+IU3zzYBS3b74mPdj25LS6F/NWA0zIzMCxse5+ImQ/191jINdp+wBlIIaDD
-         jfFm3+D6eA02+I1rEDn1Y/9WF8VuCj/D8xCI0rJwNFzipKOFFAdI0eqDGnoNQ2VCabwD
-         n84A==
-X-Gm-Message-State: AOAM530+fIaodIu7RTkdOyJzio4xkxCtQlHkBsB7nuGo1HZ9A3Wmmzw7
-        lDgFnFMEjrKmKTLeDhkImq+ZTvR3SmgAya3GY90YHnugMdmhse/dEK82LGk9kbpy754XcgfOCK8
-        ulr4/KfjYBavTXjtotI4Cxvizg20AbwJEEmK6w2NnHg==
-X-Received: by 2002:a05:6402:4cd:: with SMTP id n13mr5650688edw.215.1631787998091;
-        Thu, 16 Sep 2021 03:26:38 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyfSeMhkwPLYCWP2Bv59mSbK2nZi0Xj85qeOtzME5EdliawbHvYnmlDnqnvoh8tL8BfQ4m2Bw==
-X-Received: by 2002:a05:6402:4cd:: with SMTP id n13mr5650680edw.215.1631787997971;
-        Thu, 16 Sep 2021 03:26:37 -0700 (PDT)
-Received: from [192.168.3.211] (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
-        by smtp.gmail.com with ESMTPSA id v12sm1224424ede.16.2021.09.16.03.26.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Sep 2021 03:26:36 -0700 (PDT)
-Subject: Re: [PATCH v2 2/2] power: supply: max17042_battery: Prevent int
- underflow in set_soc_threshold
-To:     Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>,
-        Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Dirk Brandewie <dirk.brandewie@gmail.com>, kernel@puri.sm,
-        stable@vger.kernel.org
-References: <20210914121806.1301131-1-sebastian.krzyszkowiak@puri.sm>
- <20210914121806.1301131-2-sebastian.krzyszkowiak@puri.sm>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <eb0d1829-2379-c0ee-4043-70c86203286d@canonical.com>
-Date:   Thu, 16 Sep 2021 12:26:35 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Thu, 16 Sep 2021 06:30:14 -0400
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18G8MpJn022854;
+        Thu, 16 Sep 2021 05:28:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=C9A0iT3x1O9FcRBYE0k54iM+JulnJCyWxdI2m6U4loQ=;
+ b=lcA7VzGV5JMrDRn4qYA6PHVCJDJpcC1E7uF1aBAy0ti1zbH0O28Wg9xnUXkTect+Kujy
+ aNq9ZNKgXqi6d9jN6AV44rnjvdsg8lSZLEXn52k1svqUOuh3xIqYnkPoHAo6d7dFslPV
+ Nxo9Ffn/MEBOd/xfXKVJemRdafLwL7dMe9U/vTLps8aR5m5AA3vUYG1nzVlgi/KIeKIp
+ 7dw/i3Mvm7rFkFyoDPvxYtcVsQLJJI3/b8rUAJy7KZQY1iykes5Tgqw0Gvhxm0M049FQ
+ D/I2GpKmBT9jlh3qQOSiGuFL2eW02g8wwmk8Zzj6JU5vGqQdrRSiSEU7NipS6nbabeGM 1g== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+        by mx0a-001ae601.pphosted.com with ESMTP id 3b42c3g3vy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 16 Sep 2021 05:28:06 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Thu, 16 Sep
+ 2021 11:28:04 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via Frontend
+ Transport; Thu, 16 Sep 2021 11:28:04 +0100
+Received: from vitaly-Inspiron-5415.ad.cirrus.com (unknown [198.90.238.230])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 4BB3EB15;
+        Thu, 16 Sep 2021 10:28:04 +0000 (UTC)
+From:   Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+To:     James Schulman <james.schulman@cirrus.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+CC:     <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v1 0/1] ASoC: cs42l42: Implement Manual Type detection as fallback
+Date:   Thu, 16 Sep 2021 11:27:49 +0100
+Message-ID: <20210916102750.9212-1-vitalyr@opensource.cirrus.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210914121806.1301131-2-sebastian.krzyszkowiak@puri.sm>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: 9dcbysC11U7uOwQSL2L90KysPekjKq3m
+X-Proofpoint-ORIG-GUID: 9dcbysC11U7uOwQSL2L90KysPekjKq3m
+X-Proofpoint-Spam-Reason: safe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/09/2021 14:18, Sebastian Krzyszkowiak wrote:
-> max17042_set_soc_threshold gets called with offset set to 1, which means
-> that minimum threshold value would underflow once SOC got down to 0,
-> causing invalid alerts from the gauge.
-> 
-> Fixes: e5f3872d2044 ("max17042: Add support for signalling change in SOC")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>
-> ---
-> v2: added commit description
-> ---
+For some headsets CS42L42 autodetect mode is not working correctly. 
+They will be detected as unknown types or as headphones. According 
+to the CS42L42 datasheet, if the headset autodetect failed,
+then the driver should switch to manual mode and perform a manual steps sequence.
+These steps were missing in the current driver code. This patch will add manual
+mode fallback steps in case autodetect failed. The default behavior is not affected,
+manual mode runs only when autodetect failed.
+
+Tested for regression with autodetect with all known headsets - no regression.
+Tested with all headsets customers reported as false detected:
+Gumdrop DropTech B1 - detected as headset OK
+HUAWEI AM115 - detected as headset OK
+UGREEN EP103 - detected as headset OK
+HONOR AM116 - detected as headset OK
 
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Stefan Binding (1):
+  ASoC: cs42l42: Implement Manual Type detection as fallback
 
+ sound/soc/codecs/cs42l42.c | 104 ++++++++++++++++++++++++++++++++-----
+ sound/soc/codecs/cs42l42.h |  54 +++++++++++++++++++
+ 2 files changed, 146 insertions(+), 12 deletions(-)
 
-Best regards,
-Krzysztof
+-- 
+2.25.1
+
