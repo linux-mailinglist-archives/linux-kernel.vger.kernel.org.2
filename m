@@ -2,40 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5308840D6B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 11:55:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66E2840D6DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 11:56:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236731AbhIPJ5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 05:57:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57868 "EHLO mail.kernel.org"
+        id S237499AbhIPJ5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 05:57:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57890 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235852AbhIPJ4q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S236019AbhIPJ4q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 16 Sep 2021 05:56:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B17661241;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 378ED61216;
         Thu, 16 Sep 2021 09:55:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1631786126;
-        bh=xnms5GC6lit9dJFNzsnKKlI7NiqUMzdVKR1SbnEpHVY=;
+        bh=JwWCjmG96CZuiWgSlG9dyPmxEM9GvaJcEKBMYRMsB90=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZE4SdN/Wq8w8MDP5zXUFSV0+dtYBPT06y5/UbOPr8qSWLUrAQBZdQDXaFGdxyfQqL
-         8PHFvWu8aWPxjW3NC5u9BGb9pgGWx0EGRZ3jJFwVwnxz305T4EfZaUJgOiHlruws9+
-         pVUYRs9NoVxntYLQznRiKMLVcgUEIyGCTVjJjHTLLJe5HbZM1bzSVVXmhwprnfIt3v
-         cwj+ArZxjRvh4rRYgmVEbn1Pe5uMh7B9zmUBYlbMWNViA9h5hBbMiw3j9uz7/f4xzP
-         KovCvIJdpgfzRXpBOLK+8+w6ne9JOZUSL04ylTfUtw+KHIhkvbdfyf4+41S3f2BM3P
-         rHhpfcv9RG8yg==
+        b=MKTqSxcIt9p5H4pJmyp/Oz2PN3adV7AHogAAT8d74S4+05T1Hv1sedSSPJm4eh3ze
+         qQJ2sNzbydSsI52T7JA1TjEvaEeePhI4fOBziTnEtac7yJhfMH6YMVmAbwdqm/32GI
+         Ua2OxhexmmefTGPcIxMu1VZjG+3RGNw1uIAP9JT+Q2F0EmtpcriB7ahpjv4TzfoMIL
+         IybzAi+bhHHP9aCVb8CKx9Iu9/Ky+HCtmhmo05rn2Huery+53QC4518C7ygCLxnto3
+         i921Ceq5frvN9c3tyCE6HcpCu4Svjlmy3ydv1n9R6w+shpEkKW7ulm944yyeUhLE8B
+         vCMRgQeslZMYA==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1mQo72-001vTX-8N; Thu, 16 Sep 2021 11:55:24 +0200
+        id 1mQo72-001vTb-9T; Thu, 16 Sep 2021 11:55:24 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Jonathan Corbet <corbet@lwn.net>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Evgeniy Polyakov <zbr@ioremap.net>,
+        Cai Huoqing <caihuoqing@baidu.com>,
         Maxime Ripard <maxime@cerno.tech>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 04/23] dt-bindings: w1: update w1-gpio.yaml reference
-Date:   Thu, 16 Sep 2021 11:55:03 +0200
-Message-Id: <0b415b5e05bcf9d593cb421c96996d914528e732.1631785820.git.mchehab+huawei@kernel.org>
+        Rob Herring <robh@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Yang Li <abaci-bugfix@linux.alibaba.com>,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-omap@vger.kernel.org
+Subject: [PATCH v2 05/23] dt-bindings: mmc: update mmc-card.yaml reference
+Date:   Thu, 16 Sep 2021 11:55:04 +0200
+Message-Id: <820bb7a1d7e0e51cbea72c9bee6bce806427d1f3.1631785820.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1631785820.git.mchehab+huawei@kernel.org>
 References: <cover.1631785820.git.mchehab+huawei@kernel.org>
@@ -46,31 +50,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changeset dd2c898bc20b ("dt-bindings: w1: Convert 1-Wire GPIO binding to a schema")
-renamed: Documentation/devicetree/bindings/w1/w1-gpio.txt
-to: Documentation/devicetree/bindings/w1/w1-gpio.yaml.
+Changeset 922eefdafc80 ("dt-bindings: mmc: Convert MMC Card binding to a schema")
+renamed: Documentation/devicetree/bindings/mmc/mmc-card.txt
+to: Documentation/devicetree/bindings/mmc/mmc-card.yaml.
 
 Update its cross-reference accordingly.
 
-Fixes: dd2c898bc20b ("dt-bindings: w1: Convert 1-Wire GPIO binding to a schema")
+Fixes: 922eefdafc80 ("dt-bindings: mmc: Convert MMC Card binding to a schema")
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/w1/masters/w1-gpio.rst | 2 +-
+ drivers/mmc/host/omap_hsmmc.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/w1/masters/w1-gpio.rst b/Documentation/w1/masters/w1-gpio.rst
-index 18fdb7366372..15236605503b 100644
---- a/Documentation/w1/masters/w1-gpio.rst
-+++ b/Documentation/w1/masters/w1-gpio.rst
-@@ -11,7 +11,7 @@ Description
- GPIO 1-wire bus master driver. The driver uses the GPIO API to control the
- wire and the GPIO pin can be specified using GPIO machine descriptor tables.
- It is also possible to define the master using device tree, see
--Documentation/devicetree/bindings/w1/w1-gpio.txt
-+Documentation/devicetree/bindings/w1/w1-gpio.yaml
+diff --git a/drivers/mmc/host/omap_hsmmc.c b/drivers/mmc/host/omap_hsmmc.c
+index 7a29ad542e4a..9dafcbf969d9 100644
+--- a/drivers/mmc/host/omap_hsmmc.c
++++ b/drivers/mmc/host/omap_hsmmc.c
+@@ -1510,7 +1510,7 @@ static void omap_hsmmc_init_card(struct mmc_host *mmc, struct mmc_card *card)
+ 		 * REVISIT: should be moved to sdio core and made more
+ 		 * general e.g. by expanding the DT bindings of child nodes
+ 		 * to provide a mechanism to provide this information:
+-		 * Documentation/devicetree/bindings/mmc/mmc-card.txt
++		 * Documentation/devicetree/bindings/mmc/mmc-card.yaml
+ 		 */
  
- 
- Example (mach-at91)
+ 		np = of_get_compatible_child(np, "ti,wl1251");
 -- 
 2.31.1
 
