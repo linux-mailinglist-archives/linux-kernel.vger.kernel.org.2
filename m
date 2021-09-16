@@ -2,207 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB56B40EA27
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:43:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27A1640EA2C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:45:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245756AbhIPSpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 14:45:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49398 "EHLO
+        id S244566AbhIPSqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 14:46:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239295AbhIPSpD (ORCPT
+        with ESMTP id S243072AbhIPSq1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 14:45:03 -0400
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 477F5C0F9C91;
-        Thu, 16 Sep 2021 10:15:19 -0700 (PDT)
-Received: by mail-qv1-xf2d.google.com with SMTP id g11so4631049qvd.2;
-        Thu, 16 Sep 2021 10:15:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=F1dJN61v4a5HavamkHN7ACFSKiKkM/zUmpKZlIwuGio=;
-        b=HdcVwodHBTqTcKj9a4KQNQ9TZ9py7/8rywZo2MLdkVpA5JTYsTHiPcov76FAibXmEV
-         rItqYaYOlklvI4WrzkJOFWUMWZVbk/ripAAflVeHPjQaiHdKWrV0vhGs6qQmpYbwcssd
-         E8GfTlwjmytE8+mgKgiAbxc8uOUDKowD6lbt7jBtxFOTm30nn8VT+9mvWWeKdGJ6hV2/
-         z0NbQOvWY8H/etz8+xSrEhmqdBhzTL8CZqftMTMpielYegSMCKCw1fzBEKDGODEfEQcf
-         HmGek3GjnTiRZQJHqMPWL6aBy5vb0tmX+xXzOH2zNmVt1Lna5U23cdrXWox9t6OzGvi0
-         hFWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=F1dJN61v4a5HavamkHN7ACFSKiKkM/zUmpKZlIwuGio=;
-        b=YP0d2rMEDYwtNjOf+zVM4mdZk53WLgnNyrOBVGNcbtpIZxkGhsN6aPO3LLzRekL3Yu
-         3/pfWg7EQITmTALv2q0yJGj06FFiq/uneLijCNRn1KMHNeHO+w8aaWCkQ8kkVpVhvnXb
-         0GAHl4XDIdz6YThgBCcJlHL1HAlfjvG8ul5CksKZYHOrVLmCnP6EprDsmVnLtDbZH4Eg
-         4JqbjEz6kEuNg77KokzjfoVH0tvR6IyEy00Qf6nL+fNWElD9dFk8VuO0bXsHE1UVEytO
-         C28CM4yl78oGiZm0dl1uWba6vDIOWv9rqkSMlT+vj31sMs7oNNmi9/PjDGpSSjMych4Q
-         FpBg==
-X-Gm-Message-State: AOAM533w4wGchsLs3uGXQMmqzyqoKd/dpATY4Zie7SkxZhqocWOqulWn
-        XgHzxY9MnVZg3PkV0Cbalg==
-X-Google-Smtp-Source: ABdhPJxPfI06sAVkGTy6viKv9UCBKipVm8L7Phjt+5w05y5+F9R58r0HFB7zZMJz+R9x59xlOaqZCw==
-X-Received: by 2002:ad4:4a21:: with SMTP id n1mr6387082qvz.22.1631812517789;
-        Thu, 16 Sep 2021 10:15:17 -0700 (PDT)
-Received: from moria.home.lan (c-73-219-103-14.hsd1.vt.comcast.net. [73.219.103.14])
-        by smtp.gmail.com with ESMTPSA id i14sm2632326qka.66.2021.09.16.10.15.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 10:15:16 -0700 (PDT)
-Date:   Thu, 16 Sep 2021 13:15:14 -0400
-From:   Kent Overstreet <kent.overstreet@gmail.com>
-To:     Chris Mason <clm@fb.com>
-Cc:     James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Howells <dhowells@redhat.com>,
-        "ksummit@lists.linux.dev" <ksummit@lists.linux.dev>
-Subject: Re: [MAINTAINER SUMMIT] Folios as a potential Kernel/Maintainers
- Summit topic?
-Message-ID: <YUN7oiFs5JHgQNop@moria.home.lan>
-References: <YUIwgGzBqX6ZiGgk@mit.edu>
- <f7b70227bac9a684320068b362d28fcade6b65b9.camel@HansenPartnership.com>
- <YUI5bk/94yHPZIqJ@mit.edu>
- <17242A0C-3613-41BB-84E4-2617A182216E@fb.com>
- <f066615c0e2c6fe990fa5c19dd1c17d649bcb03a.camel@HansenPartnership.com>
- <E655F510-14EB-4F40-BCF8-C5266C07443F@fb.com>
+        Thu, 16 Sep 2021 14:46:27 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D27D8C08E816;
+        Thu, 16 Sep 2021 10:18:54 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f11c6001e49ea6afe1054f5.dip0.t-ipconnect.de [IPv6:2003:ec:2f11:c600:1e49:ea6a:fe10:54f5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A90881EC01A9;
+        Thu, 16 Sep 2021 19:18:48 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1631812728;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=WGTaW9wzVo3mRbffUBHb/Jh9Yaw6al5FEDE3OWWucQM=;
+        b=TnBBOysnTsIzYE72gUTor3/nH+wDVKctXHOhtc/8tJvJ/j4eB02Ry7TqHKbpKUvOhck0jO
+        LUYPHx+QKc4wmuqnumvPn0qgaPqqDIo1/fPS99C0176oEdidy4Pb1TTVl3PKukfvPLakHP
+        +F87tFSB+VUB5+uOz23N1vbudCUuSck=
+Date:   Thu, 16 Sep 2021 19:18:42 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        clang-built-linux@googlegroups.com, llvm@lists.linux.dev,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH 1/2] x86: Do not add -falign flags unconditionally for
+ clang
+Message-ID: <YUN8coiEx3JZQytc@zn.tnic>
+References: <20210824022640.2170859-1-nathan@kernel.org>
+ <20210824022640.2170859-2-nathan@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <E655F510-14EB-4F40-BCF8-C5266C07443F@fb.com>
+In-Reply-To: <20210824022640.2170859-2-nathan@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 04:46:25PM +0000, Chris Mason wrote:
-> It feels like these patches are moving forward, but with a pretty heavy
-> emotional cost for the people involved.  I'll definitely agree this has been
-> our process for a long time, but I'm struggling to understand why we'd call it
-> working.
+On Mon, Aug 23, 2021 at 07:26:39PM -0700, Nathan Chancellor wrote:
+
+A couple of nitpicks:
+
+> Subject: [PATCH 1/2] x86: Do not add -falign flags unconditionally for clang
+
+Make that prefix into "x86/build: " 
+
+> clang does not support -falign-jumps and only recently gained support
+> for -falign-loops. When one of the configuration options that adds these
+> flags is enabled, clang warns and all cc-{disable-warning,option} that
+> follow fail because -Werror gets added to test for the presence of this
+> warning:
 > 
-> In general, we've all come to terms with huge changes being a slog through
-> consensus building, design compromise, the actual technical work, and the
-> rebase/test/fix iteration cycle.  It's stressful, both because of technical
-> difficulty and because the whole process is filled with uncertainty.
+> clang-14: warning: optimization flag '-falign-jumps=0' is not supported
+> [-Wignored-optimization-argument]
 > 
-> With folios, we don't have general consensus on:
+> To resolve this, add a couple of cc-option calls when building with
+> clang; gcc has supported these options since 3.2 so there is no point in
+> testing for their support. -falign-functions was implemented in clang-7,
+> -falign-loops was implemented in clang-14, and -falign-jumps has not
+> been implemented yet.
 > 
-> * Which problems are being solved?  Kent's writeup makes it pretty clear
-> filesystems and memory management developers have diverging opinions on this.
-> Our process in general is to put this into patch 0.  It mostly works, but
-> there's an intermediate step between patch 0 and the full lwn article that
-> would be really nice to have.
-> 
-> * Who is responsible for accepting the design, and which acks must be obtained
-> before it goes upstream?  Our process here is pretty similar to waiting for
-> answers to messages in bottles.  We consistently leave it implicit and poorly
-> defined.
-> 
-> * What work is left before it can go upstream?  Our process could be
-> effectively modeled by postit notes on one person's monitor, which they may or
-> may not share with the group.  Also, since we don't have agreement on which
-> acks are required, there's no way to have any certainty about what work is
-> left.  It leaves authors feeling derailed when discussion shifts and reviewers
-> feeling frustrated and ignored.
-> 
-> * How do we divide up the long term future direction into individual steps
-> that we can merge?  This also goes back to consensus on the design.  We can't
-> decide which parts are going to get layered in future merge windows until we
-> know if we're building a car or a banana stand.
-> 
-> * What tests will we use to validate it all?  Work this spread out is too big
-> for one developer to test alone.  We need ways for people sign up and agree on
-> which tests/benchmarks provide meaningful results.
-> 
-> The end result of all of this is that missing a merge window isn't just about
-> a time delay.  You add N months of total uncertainty, where every new email
-> could result in having to start over from scratch.  Willy's
-> do-whatever-the-fuck-you-want-I'm-going-on-vacation email is probably the
-> least surprising part of the whole thread.
-> 
-> Internally, we tend to use a simple shared document to nail all of this down.
-> A two page google doc for folios could probably have avoided a lot of pain
-> here, especially if we’re able to agree on stakeholders.
-> 
-> -chris
+> Link: https://lore.kernel.org/r/YSQE2f5teuvKLkON@Ryzen-9-3900X.localdomain/
 
-Agreed on all points. We don't have a culture of talking about design changes
-before doing them, and maybe we should - the Rust RFC process is another
-alternate model.
+Also, there should be a second Link: tag which points to this mail
+thread so that we can find it later, when we dig for the "why we did
+that" question :)
 
-That isn't always a bad thing: I have often found that my best improvements to
-my own code have come from doing a lot of exploratory refactoring, keeping what
-works and discarding what doesn't, trusting my intuiting and then then looking
-afterwards at what got better, and asking myself what that tells me about what
-the design wants to be.
+I.e.,
 
-In hindsight I feel like Willy must have been doing the same thing; I think the
-folio work is opening up _really_ interesting new avenues to explore - I was one
-of the people talking about compound pages in the page cache early on, yet I did
-not and would not have guessed where the work was actually going to lead, and I
-find myself _really_ liking it.
+Link: 20210824022640.2170859-2-nathan@kernel.org
 
-But more than the question of whether we write design docs up front, I frankly
-think we have a _broken_ culture with respect to supporting and enabling cross
-subsystem refactorings and improvements. Instead of collectively coming up with
-ideas for improvements, a lot of the discussions I see end up feeling like turf
-wars and bikeshedding where everyone has their pet idea they want the thing to
-be and no one is taking a step back and saying "look at this mess we created,
-how are we going to simplify and clean it up."
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> ---
+>  arch/x86/Makefile_32.cpu | 12 +++++++++---
+>  1 file changed, 9 insertions(+), 3 deletions(-)
 
-And we have created some unholy messes, especially in MM land. I've been digging
-into the rmap code and trying to figure out what the _inherent, fundamental_
-differences between file and anonymous pages are - I think folios should also
-include anonymous pages, but not yet - and I keep finding stuff that's just
-gross. Endless if (old thing) if (new thing) where literally no effort has ever
-been made to figure out if these things maybe should be the same thing.
+with that:
 
-It's like - seriously people, it's ok to create messes when we're doing new
-things and figuring them out for the first time, but we have to go back and
-clean up our messes or we end up with an unmaintainable Cthulian horror no one
-can untangle, and a lot of the MM code is just about that point.
+Acked-by: Borislav Petkov <bp@suse.de>
 
-And if you look at our culture for how these kinds of deep invasive new features
-gets developed and reviewed and added, is it really any surprise? We bikeshed
-things to death, which scares people off and means they make the minimal changes
-they need to core code - which means not touching the existing paths any more
-than necessary, and people don't want to come back when they're done. Our
-process is not encouraging good work!
+Thx.
 
-And when Willy comes along with folios - which by introducing a new data type
-for our main subtype of pages, are a starting point to taming this insanity - he
-gets hit with the most ridiculous objections, like whether folios are a
-replacement for compound pages (answer: no, compound pages belong to the other
-side of the allocator/allocatee divide). It's like no one has ever heard of
-separation of concerns.
+-- 
+Regards/Gruss,
+    Boris.
 
-To everyone involved: if you want to do competent design work you have to be
-able to separate yourself from the specific problems you've been staring at and
-look at the wider picture, and ask yourself if this thing you want is a good
-idea for the wider ecosystem, or whether your specific problem _matters_ in this
-instance.
-
-MM people: I know you care about fragmentation, and that a lot of your work days
-is spent dealing with it. But it's not a concern for folios, because we can
-always _fail the allocation and allocate a smaller one_. And I have specifically
-pushed back when filesystem people wanted fixed size folios because they thought
-it would make their lives easier: to restate my answer to that publically,
-folios are basically extents, and part of being a filesystem developer and
-dealing with extents is that you have to get used to dealing with arbitrary
-sized extents - i.e. processing them incrementally, you have to be more flexible
-in your thinking then when you were writing code that was working with fixed
-size blocks or pages. But you'll deal.
-
-/end rant
-
-I apologize in advance if anyone feels I've been unfair to them; we are all,
-after all, figuring this out as we go along. But we've got room for improvement!
+https://people.kernel.org/tglx/notes-about-netiquette
