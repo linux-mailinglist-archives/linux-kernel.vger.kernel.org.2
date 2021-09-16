@@ -2,275 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB37A40D0A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 02:09:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B2AA40D0A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 02:09:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233351AbhIPAKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 20:10:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51432 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232465AbhIPAKg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 20:10:36 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA811C061574;
-        Wed, 15 Sep 2021 17:09:16 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id c13-20020a17090a558d00b00198e6497a4fso6210443pji.4;
-        Wed, 15 Sep 2021 17:09:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=POz7B/cNCWIJvz8pVnhM5ZDIV6/Scz9emQ4JSgg4ILI=;
-        b=fTdc1tNHYuqoyOyLsrut+wrdO/M+1BBDNn97zAt21oLznqomAgqniyXRwpHNaG+H/h
-         BX8yoGBBn2ngujdkL/G0PkabMfUoHlLhr3OE2VjfygPvaTXvMnBFnqyivIeIt+pwIK6m
-         I5OH4rHD5hFt4em2BlawW6yj+oXkbLSefK0YD3xuFk+kt1IUrtQahxSUmQ3Pr87t5pGb
-         97q7yLBDAFPNexhxZAHj7SH1953Neit3GQ/g+KJS2daeGwJrgSqJvIfIErVz1OOeCRp4
-         rFOAl7b90UgUyeEcaiDI4hZy4X/Gi4VUl2EqBaH+IlBc6Dosca9X5Hg7wN4yrh014fJx
-         iJUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=POz7B/cNCWIJvz8pVnhM5ZDIV6/Scz9emQ4JSgg4ILI=;
-        b=Iu5zek2zhyuI7i5WP/17vtDlgNWAaW41KpDBLoW9PvJ/1GhxIB5M565cZcNN/Ec7bn
-         w99hSYK1iXR8D9ovDAdWNY8+pm5HtyaBCi6Zhb9jJbV5MYwYWhdKYmj/BZoxjIIGKDJ1
-         7c6PFZV2ZDFPYviTsngJR3DK/nL8Gb84QtQgFfwbDDpcPR4+owfRhmVWF7F4GkUGU2qV
-         WVIFdJ+tkkc/ui9CP+PWLqS11baW1olpmk/IzqU1/KEJ+LjeOl8d2jXBj5KxqChnkCnz
-         YqL9awS9cimpfHU/QH+2l4PySkOl0Jb1gmqPHH/CsJus3gAAav3DlQdwP+TMnVUhXMkr
-         281A==
-X-Gm-Message-State: AOAM533j8jHJNdKIkSIqUfu92pVYD/NVs58ZKDKUOGGkfUqzEYfzTYkV
-        1yu+GPWgJwdRMZa6EOX4x4QAVJ1WBpE=
-X-Google-Smtp-Source: ABdhPJxor5xhIiir+rlfX4NN3Tltf+5WOYXkICH5V/MRfR2mEDMyoGuvsepaqlCaCVE4zQo+b6cTwA==
-X-Received: by 2002:a17:90a:b78d:: with SMTP id m13mr11362403pjr.17.1631750956120;
-        Wed, 15 Sep 2021 17:09:16 -0700 (PDT)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id v3sm860833pfc.193.2021.09.15.17.09.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Sep 2021 17:09:15 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com (open list:BROADCOM ETHERNET PHY
-        DRIVERS), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net-next] net: phy: broadcom: Enable 10BaseT DAC early wake
-Date:   Wed, 15 Sep 2021 17:09:03 -0700
-Message-Id: <20210916000904.193343-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S233260AbhIPAKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 20:10:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41852 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232465AbhIPAKe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 20:10:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6010761164;
+        Thu, 16 Sep 2021 00:09:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631750954;
+        bh=1GLkZYrQ9JcJycVqwmmU7hYi0ILuTB1I20PfYrCv3mk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dQukCslu83VpTBuY/KDFf7r9dFwP7LFhqIc7lNwB0bm1GI592vfpCG3CGS/Sty24Y
+         TzcOzv2y5oF69EWmDf3pMRAEmvyIrEIH8lrRpjAt731/uN8G9/fJc8JaKmpL6QVz5h
+         17JI7ys+E+dHFfcVki2he1O+72ph0uWYlbex8QtHqC+6WdhFFV8D/y/lbIz49V1QSR
+         /HltPfN0o9uyLh7BqtYDCJ5FTqgIdiNDpBT/aiYrSq60aEiEMNC1bAreAxG8hWnqys
+         onc0S04hoh537z5lGyscDCL4W6tNyJEnHKZ6mhpqvWB7nDNsL64R0xwx0VM129ROPh
+         nkxENJMDmteMg==
+Date:   Wed, 15 Sep 2021 17:09:14 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
+Cc:     hch@lst.de, linux-xfs@vger.kernel.org, dan.j.williams@intel.com,
+        david@fromorbit.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev,
+        rgoldwyn@suse.de, viro@zeniv.linux.org.uk, willy@infradead.org,
+        Ritesh Harjani <riteshh@linux.ibm.com>
+Subject: Re: [PATCH v9 1/8] fsdax: Output address in dax_iomap_pfn() and
+ rename it
+Message-ID: <20210916000914.GB34830@magnolia>
+References: <20210915104501.4146910-1-ruansy.fnst@fujitsu.com>
+ <20210915104501.4146910-2-ruansy.fnst@fujitsu.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210915104501.4146910-2-ruansy.fnst@fujitsu.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable the DAC early wake when then link operates at 10BaseT allows
-power savings in the hundreds of milli Watts by shutting down the
-transmitter. A number of errata have been issued for various Gigabit
-PHYs and the recommendation is to enable both the early and forced DAC
-wake to be on the safe side. This needs to be done dynamically based
-upon the link state, which is why a link_change_notify callback is
-utilized.
+On Wed, Sep 15, 2021 at 06:44:54PM +0800, Shiyang Ruan wrote:
+> Add address output in dax_iomap_pfn() in order to perform a memcpy() in
+> CoW case.  Since this function both output address and pfn, rename it to
+> dax_iomap_direct_access().
+> 
+> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
+> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
 
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- drivers/net/phy/broadcom.c | 47 ++++++++++++++++++++++++++++++++++++++
- include/linux/brcmphy.h    |  1 +
- 2 files changed, 48 insertions(+)
+Could've sworn I reviewed this a few revisions ago...
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 
-diff --git a/drivers/net/phy/broadcom.c b/drivers/net/phy/broadcom.c
-index 83aea5c5cd03..f8df692fc3ee 100644
---- a/drivers/net/phy/broadcom.c
-+++ b/drivers/net/phy/broadcom.c
-@@ -702,6 +702,36 @@ static void bcm54xx_get_stats(struct phy_device *phydev,
- 	bcm_phy_get_stats(phydev, priv->stats, stats, data);
- }
- 
-+static void bcm54xx_link_change_notify(struct phy_device *phydev)
-+{
-+	u16 mask = MII_BCM54XX_EXP_EXP08_EARLY_DAC_WAKE |
-+		   MII_BCM54XX_EXP_EXP08_FORCE_DAC_WAKE;
-+	int ret;
-+
-+	if (phydev->state != PHY_RUNNING)
-+	       return;
-+
-+	/* Don't change the DAC wake settings if auto power down
-+	 * is not requested.
-+	 */
-+	if (!(phydev->dev_flags & PHY_BRCM_AUTO_PWRDWN_ENABLE))
-+		return;
-+
-+	ret = bcm_phy_read_exp(phydev, MII_BCM54XX_EXP_EXP08);
-+	if (ret < 0)
-+		return;
-+
-+	/* Enable/disable 10BaseT auto and forced early DAC wake depending
-+	 * on the negotiated speed, those settings should only be done
-+	 * for 10Mbits/sec.
-+	 */
-+	if (phydev->speed == SPEED_10)
-+		ret |= mask;
-+	else
-+		ret &= ~mask;
-+	bcm_phy_write_exp(phydev, MII_BCM54XX_EXP_EXP08, ret);
-+}
-+
- static struct phy_driver broadcom_drivers[] = {
- {
- 	.phy_id		= PHY_ID_BCM5411,
-@@ -715,6 +745,7 @@ static struct phy_driver broadcom_drivers[] = {
- 	.config_init	= bcm54xx_config_init,
- 	.config_intr	= bcm_phy_config_intr,
- 	.handle_interrupt = bcm_phy_handle_interrupt,
-+	.link_change_notify	= bcm54xx_link_change_notify,
- }, {
- 	.phy_id		= PHY_ID_BCM5421,
- 	.phy_id_mask	= 0xfffffff0,
-@@ -727,6 +758,7 @@ static struct phy_driver broadcom_drivers[] = {
- 	.config_init	= bcm54xx_config_init,
- 	.config_intr	= bcm_phy_config_intr,
- 	.handle_interrupt = bcm_phy_handle_interrupt,
-+	.link_change_notify	= bcm54xx_link_change_notify,
- }, {
- 	.phy_id		= PHY_ID_BCM54210E,
- 	.phy_id_mask	= 0xfffffff0,
-@@ -739,6 +771,7 @@ static struct phy_driver broadcom_drivers[] = {
- 	.config_init	= bcm54xx_config_init,
- 	.config_intr	= bcm_phy_config_intr,
- 	.handle_interrupt = bcm_phy_handle_interrupt,
-+	.link_change_notify	= bcm54xx_link_change_notify,
- }, {
- 	.phy_id		= PHY_ID_BCM5461,
- 	.phy_id_mask	= 0xfffffff0,
-@@ -751,6 +784,7 @@ static struct phy_driver broadcom_drivers[] = {
- 	.config_init	= bcm54xx_config_init,
- 	.config_intr	= bcm_phy_config_intr,
- 	.handle_interrupt = bcm_phy_handle_interrupt,
-+	.link_change_notify	= bcm54xx_link_change_notify,
- }, {
- 	.phy_id		= PHY_ID_BCM54612E,
- 	.phy_id_mask	= 0xfffffff0,
-@@ -763,6 +797,7 @@ static struct phy_driver broadcom_drivers[] = {
- 	.config_init	= bcm54xx_config_init,
- 	.config_intr	= bcm_phy_config_intr,
- 	.handle_interrupt = bcm_phy_handle_interrupt,
-+	.link_change_notify	= bcm54xx_link_change_notify,
- }, {
- 	.phy_id		= PHY_ID_BCM54616S,
- 	.phy_id_mask	= 0xfffffff0,
-@@ -774,6 +809,7 @@ static struct phy_driver broadcom_drivers[] = {
- 	.handle_interrupt = bcm_phy_handle_interrupt,
- 	.read_status	= bcm54616s_read_status,
- 	.probe		= bcm54616s_probe,
-+	.link_change_notify	= bcm54xx_link_change_notify,
- }, {
- 	.phy_id		= PHY_ID_BCM5464,
- 	.phy_id_mask	= 0xfffffff0,
-@@ -788,6 +824,7 @@ static struct phy_driver broadcom_drivers[] = {
- 	.handle_interrupt = bcm_phy_handle_interrupt,
- 	.suspend	= genphy_suspend,
- 	.resume		= genphy_resume,
-+	.link_change_notify	= bcm54xx_link_change_notify,
- }, {
- 	.phy_id		= PHY_ID_BCM5481,
- 	.phy_id_mask	= 0xfffffff0,
-@@ -801,6 +838,7 @@ static struct phy_driver broadcom_drivers[] = {
- 	.config_aneg	= bcm5481_config_aneg,
- 	.config_intr	= bcm_phy_config_intr,
- 	.handle_interrupt = bcm_phy_handle_interrupt,
-+	.link_change_notify	= bcm54xx_link_change_notify,
- }, {
- 	.phy_id         = PHY_ID_BCM54810,
- 	.phy_id_mask    = 0xfffffff0,
-@@ -816,6 +854,7 @@ static struct phy_driver broadcom_drivers[] = {
- 	.handle_interrupt = bcm_phy_handle_interrupt,
- 	.suspend	= genphy_suspend,
- 	.resume		= bcm54xx_resume,
-+	.link_change_notify	= bcm54xx_link_change_notify,
- }, {
- 	.phy_id         = PHY_ID_BCM54811,
- 	.phy_id_mask    = 0xfffffff0,
-@@ -831,6 +870,7 @@ static struct phy_driver broadcom_drivers[] = {
- 	.handle_interrupt = bcm_phy_handle_interrupt,
- 	.suspend	= genphy_suspend,
- 	.resume		= bcm54xx_resume,
-+	.link_change_notify	= bcm54xx_link_change_notify,
- }, {
- 	.phy_id		= PHY_ID_BCM5482,
- 	.phy_id_mask	= 0xfffffff0,
-@@ -843,6 +883,7 @@ static struct phy_driver broadcom_drivers[] = {
- 	.config_init	= bcm54xx_config_init,
- 	.config_intr	= bcm_phy_config_intr,
- 	.handle_interrupt = bcm_phy_handle_interrupt,
-+	.link_change_notify	= bcm54xx_link_change_notify,
- }, {
- 	.phy_id		= PHY_ID_BCM50610,
- 	.phy_id_mask	= 0xfffffff0,
-@@ -855,6 +896,7 @@ static struct phy_driver broadcom_drivers[] = {
- 	.config_init	= bcm54xx_config_init,
- 	.config_intr	= bcm_phy_config_intr,
- 	.handle_interrupt = bcm_phy_handle_interrupt,
-+	.link_change_notify	= bcm54xx_link_change_notify,
- }, {
- 	.phy_id		= PHY_ID_BCM50610M,
- 	.phy_id_mask	= 0xfffffff0,
-@@ -867,6 +909,7 @@ static struct phy_driver broadcom_drivers[] = {
- 	.config_init	= bcm54xx_config_init,
- 	.config_intr	= bcm_phy_config_intr,
- 	.handle_interrupt = bcm_phy_handle_interrupt,
-+	.link_change_notify	= bcm54xx_link_change_notify,
- }, {
- 	.phy_id		= PHY_ID_BCM57780,
- 	.phy_id_mask	= 0xfffffff0,
-@@ -879,6 +922,7 @@ static struct phy_driver broadcom_drivers[] = {
- 	.config_init	= bcm54xx_config_init,
- 	.config_intr	= bcm_phy_config_intr,
- 	.handle_interrupt = bcm_phy_handle_interrupt,
-+	.link_change_notify	= bcm54xx_link_change_notify,
- }, {
- 	.phy_id		= PHY_ID_BCMAC131,
- 	.phy_id_mask	= 0xfffffff0,
-@@ -905,6 +949,7 @@ static struct phy_driver broadcom_drivers[] = {
- 	.get_strings	= bcm_phy_get_strings,
- 	.get_stats	= bcm54xx_get_stats,
- 	.probe		= bcm54xx_phy_probe,
-+	.link_change_notify	= bcm54xx_link_change_notify,
- }, {
- 	.phy_id		= PHY_ID_BCM53125,
- 	.phy_id_mask	= 0xfffffff0,
-@@ -918,6 +963,7 @@ static struct phy_driver broadcom_drivers[] = {
- 	.config_init	= bcm54xx_config_init,
- 	.config_intr	= bcm_phy_config_intr,
- 	.handle_interrupt = bcm_phy_handle_interrupt,
-+	.link_change_notify	= bcm54xx_link_change_notify,
- }, {
- 	.phy_id         = PHY_ID_BCM89610,
- 	.phy_id_mask    = 0xfffffff0,
-@@ -930,6 +976,7 @@ static struct phy_driver broadcom_drivers[] = {
- 	.config_init    = bcm54xx_config_init,
- 	.config_intr    = bcm_phy_config_intr,
- 	.handle_interrupt = bcm_phy_handle_interrupt,
-+	.link_change_notify	= bcm54xx_link_change_notify,
- } };
- 
- module_phy_driver(broadcom_drivers);
-diff --git a/include/linux/brcmphy.h b/include/linux/brcmphy.h
-index c2c2147dfeb8..3308cebe1c19 100644
---- a/include/linux/brcmphy.h
-+++ b/include/linux/brcmphy.h
-@@ -233,6 +233,7 @@
- #define MII_BCM54XX_EXP_EXP08			0x0F08
- #define  MII_BCM54XX_EXP_EXP08_RJCT_2MHZ	0x0001
- #define  MII_BCM54XX_EXP_EXP08_EARLY_DAC_WAKE	0x0200
-+#define  MII_BCM54XX_EXP_EXP08_FORCE_DAC_WAKE	0x0100
- #define MII_BCM54XX_EXP_EXP75			0x0f75
- #define  MII_BCM54XX_EXP_EXP75_VDACCTRL		0x003c
- #define  MII_BCM54XX_EXP_EXP75_CM_OSC		0x0001
--- 
-2.25.1
+--D
 
+> ---
+>  fs/dax.c | 16 ++++++++++++----
+>  1 file changed, 12 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/dax.c b/fs/dax.c
+> index 4e3e5a283a91..8b482a58acae 100644
+> --- a/fs/dax.c
+> +++ b/fs/dax.c
+> @@ -1010,8 +1010,8 @@ static sector_t dax_iomap_sector(const struct iomap *iomap, loff_t pos)
+>  	return (iomap->addr + (pos & PAGE_MASK) - iomap->offset) >> 9;
+>  }
+>  
+> -static int dax_iomap_pfn(const struct iomap *iomap, loff_t pos, size_t size,
+> -			 pfn_t *pfnp)
+> +static int dax_iomap_direct_access(const struct iomap *iomap, loff_t pos,
+> +		size_t size, void **kaddr, pfn_t *pfnp)
+>  {
+>  	const sector_t sector = dax_iomap_sector(iomap, pos);
+>  	pgoff_t pgoff;
+> @@ -1023,11 +1023,13 @@ static int dax_iomap_pfn(const struct iomap *iomap, loff_t pos, size_t size,
+>  		return rc;
+>  	id = dax_read_lock();
+>  	length = dax_direct_access(iomap->dax_dev, pgoff, PHYS_PFN(size),
+> -				   NULL, pfnp);
+> +				   kaddr, pfnp);
+>  	if (length < 0) {
+>  		rc = length;
+>  		goto out;
+>  	}
+> +	if (!pfnp)
+> +		goto out_check_addr;
+>  	rc = -EINVAL;
+>  	if (PFN_PHYS(length) < size)
+>  		goto out;
+> @@ -1037,6 +1039,12 @@ static int dax_iomap_pfn(const struct iomap *iomap, loff_t pos, size_t size,
+>  	if (length > 1 && !pfn_t_devmap(*pfnp))
+>  		goto out;
+>  	rc = 0;
+> +
+> +out_check_addr:
+> +	if (!kaddr)
+> +		goto out;
+> +	if (!*kaddr)
+> +		rc = -EFAULT;
+>  out:
+>  	dax_read_unlock(id);
+>  	return rc;
+> @@ -1401,7 +1409,7 @@ static vm_fault_t dax_fault_iter(struct vm_fault *vmf,
+>  		return pmd ? VM_FAULT_FALLBACK : VM_FAULT_SIGBUS;
+>  	}
+>  
+> -	err = dax_iomap_pfn(&iter->iomap, pos, size, &pfn);
+> +	err = dax_iomap_direct_access(&iter->iomap, pos, size, NULL, &pfn);
+>  	if (err)
+>  		return pmd ? VM_FAULT_FALLBACK : dax_fault_return(err);
+>  
+> -- 
+> 2.33.0
+> 
+> 
+> 
