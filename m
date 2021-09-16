@@ -2,125 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4497F40EBF5
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 23:06:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E30340EBF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 23:05:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239988AbhIPVIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 17:08:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232910AbhIPVIP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 17:08:15 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D703FC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 14:06:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=N43Uhgo0DQNKmivJ+AXtrxW74Hb4By7l9dPAXojWeVc=; b=XrcTetY4cT0UHFn/qggyPEfWyM
-        z3LnQwp1BkT1Y6330gBshWLxNOHkuXhvn5OHbYDdj1catBmE2Tf3h2QtwVY/dTyTDVYq+9N9F1ndL
-        FsJJJPHZh/HyU1eMv3YQ0y44bKD/Ap8RyWoYn5sDu0cEv6AA3sYJN5PAzZjOWLOuaIRGk9mLahi0L
-        tspgbyyehsvMljrPKevszqAfI8SOUC+iE6evVDOVo3wWkF5AtzDwUCM/46cdRWdd+9Ae4WBVCcr0S
-        1kxYBomck1PsaWpbAK3nm4JrDvZpdckkG2j/g1+i5eyblI0JNJAVtB5P8arDLN7D9FvTM7nHlxsZr
-        vtgAJaFg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mQyZC-00HFYv-H3; Thu, 16 Sep 2021 21:05:22 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id B61DA98625E; Thu, 16 Sep 2021 23:05:09 +0200 (CEST)
-Date:   Thu, 16 Sep 2021 23:05:09 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Ondrej Zary <linux@zary.sk>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: IOPL emulation breaks hpasmd (hp-health) needed by HP DL380 G4
- servers
-Message-ID: <20210916210509.GG4323@worktop.programming.kicks-ass.net>
-References: <202109151423.43604.linux@zary.sk>
- <87pmt8a1mc.ffs@tglx>
- <202109162227.17415.linux@zary.sk>
+        id S239927AbhIPVGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 17:06:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34348 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232910AbhIPVGh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 17:06:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 337B5601FA;
+        Thu, 16 Sep 2021 21:05:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631826316;
+        bh=AkobYtN5HIa1iJgs8s8u+AClEI8eA7MfgsSb9e1n0GE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iRSAWRr5ktz/JjoOw0rhwb5BapT7Zt3xSn/ZrVYDKHRTLGZhaR64aivdcs/ud1Rju
+         nv0LnAcKDdY3UMbScSbm6NAR6ORNQNeqBP682bWcMGPmtJtOBIl9KVb+L6XIT5MTj0
+         R56blhbj5ixFmFMHokwrE4BOp15k1buB/lE6zN4tEe0m3QT7pTYm/otagAW6leh7/q
+         gnQVvhPKefHRqAF7gNGzCcO/cE/39ydM9vFB+I97qC/doxmhO84V66gXXrfNfB4FVC
+         xR+ii5gkbKej6MzFTtm1JkfK6+rWSDriBRj6WGq0XAjcnh5MpPrOfsGr5p8SVuj5aS
+         rdvOJbovur3cQ==
+Date:   Thu, 16 Sep 2021 23:05:14 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
+        urezki@gmail.com, boqun.feng@gmail.com,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        joel@joelfernandes.org
+Subject: Re: [PATCH 2/4] rcu: Remove useless WRITE_ONCE() on
+ rcu_data.exp_deferred_qs
+Message-ID: <20210916210514.GA40064@lothringen>
+References: <20210916121048.36623-1-frederic@kernel.org>
+ <20210916121048.36623-3-frederic@kernel.org>
+ <20210916164340.GF4156@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202109162227.17415.linux@zary.sk>
+In-Reply-To: <20210916164340.GF4156@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 10:27:17PM +0200, Ondrej Zary wrote:
-> (gdb) run
-> Starting program: /opt/hp/hp-health/bin/IrqRouteTbl
+On Thu, Sep 16, 2021 at 09:43:40AM -0700, Paul E. McKenney wrote:
+> On Thu, Sep 16, 2021 at 02:10:46PM +0200, Frederic Weisbecker wrote:
+> > This variable is never written nor read remotely. Remove this confusion.
+> > 
+> > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> > ---
+> >  kernel/rcu/tree_exp.h | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+> > index f3947c49eee7..4266610b4587 100644
+> > --- a/kernel/rcu/tree_exp.h
+> > +++ b/kernel/rcu/tree_exp.h
+> > @@ -255,7 +255,7 @@ static void rcu_report_exp_cpu_mult(struct rcu_node *rnp,
+> >   */
+> >  static void rcu_report_exp_rdp(struct rcu_data *rdp)
+> >  {
+> > -	WRITE_ONCE(rdp->exp_deferred_qs, false);
+> > +	rdp->exp_deferred_qs = false;
 > 
-> Program received signal SIGSEGV, Segmentation fault.
-> 0xf7fc509b in ?? ()
-> (gdb) bt
-> #0  0xf7fc509b in ?? ()
-> #1  0x08048848 in ?? ()
-> #2  0x08048aa1 in ?? ()
-> #3  0x08048e05 in ?? ()
-> #4  0xf7df9e46 in __libc_start_main () from /lib32/libc.so.6
-> #5  0xf7ffd000 in ?? () from /lib/ld-linux.so.2
-> Backtrace stopped: previous frame inner to this frame (corrupt stack?)
-> (gdb) x/3i $pc
-> => 0xf7fc509b:  cli
->    0xf7fc509c:  push   %ebp
->    0xf7fc509d:  mov    %esp,%ebp
+> Are you sure that this can never be invoked from an interrupt handler?
+> And that rdp->exp_deferred_qs is never read from an interrupt handler?
+> If either can happen, then the WRITE_ONCE() does play a role, right?
+
+Well, the only effect I can imagine is that it can partly prevent from an
+interrupt to report concurrently the quiescent state during the few
+instructions before we mask interrupts and lock the node.
+
+That's a micro performance benefit that avoid a second call to
+rcu_report_exp_cpu_mult() with the extra locking and early exit.
+
+But then that racy interrupt can still happen before we clear exp_deferred_qs.
+In this case __this_cpu_cmpxchg() would have been more efficient.
+
+Thanks.
+
+> 							Thanx, Paul
 > 
-> OMG, maybe is it calling into the mmapped BIOS area?
-
-Lol... does something like the below (which *really* wants to be behind
-something like sysctl.iopl_fake_if) work for you?
-
----
-
-diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-index a58800973aed..55c3904e656d 100644
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -528,6 +528,34 @@ static enum kernel_gp_hint get_kernel_gp_address(struct pt_regs *regs,
- 
- #define GPFSTR "general protection fault"
- 
-+bool fixup_iopl_exception(struct pt_regs *regs)
-+{
-+	struct thread_struct *t = &current->thread;
-+	unsigned char buf[MAX_INSN_SIZE];
-+	struct insn insn;
-+	int nr_copied;
-+
-+	if (!IS_ENABLED(CONFIG_X86_IOPL_IOPERM) || t->iopl_emul != 3 || !regs)
-+		return false;
-+
-+	nr_copied = insn_fetch_from_user(regs, buf);
-+	if (nr_copied <= 0)
-+		return false;
-+
-+	if (!insn_decode_from_regs(&insn, regs, buf, nr_copied))
-+		return false;
-+
-+	if (insn.length != 1)
-+		return false;
-+
-+	if (insn.opcode.bytes[0] != 0xfa &&
-+	    insn.opcode.bytes[0] != 0xfb)
-+		return false;
-+
-+	regs->ip += 1;
-+	return true;
-+}
-+
- DEFINE_IDTENTRY_ERRORCODE(exc_general_protection)
- {
- 	char desc[sizeof(GPFSTR) + 50 + 2*sizeof(unsigned long) + 1] = GPFSTR;
-@@ -553,6 +581,9 @@ DEFINE_IDTENTRY_ERRORCODE(exc_general_protection)
- 	tsk = current;
- 
- 	if (user_mode(regs)) {
-+		if (fixup_iopl_exception(regs))
-+			goto exit;
-+
- 		tsk->thread.error_code = error_code;
- 		tsk->thread.trap_nr = X86_TRAP_GP;
- 
+> >  	rcu_report_exp_cpu_mult(rdp->mynode, rdp->grpmask, true);
+> >  }
+> >  
+> > -- 
+> > 2.25.1
+> > 
