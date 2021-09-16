@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC49240E157
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:29:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A2AA40E77A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:33:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242802AbhIPQ3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:29:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58934 "EHLO mail.kernel.org"
+        id S242260AbhIPRc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:32:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46958 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241743AbhIPQUE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:20:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3958D613DB;
-        Thu, 16 Sep 2021 16:14:12 +0000 (UTC)
+        id S1348159AbhIPRYF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:24:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7138761BD0;
+        Thu, 16 Sep 2021 16:43:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808852;
-        bh=SwozLfpYiQLE0tIiO65mXXvojnIJlmmHkdaJkfgdxgg=;
+        s=korg; t=1631810625;
+        bh=gt5BgoMf7PUKbuUKs8Clt7Gaku57zTSihOUxXKz1r40=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gCBHf4DVnypjL5FEAxMV2SOmnd08ApT6WXNlYDVQRXe0IlmlGUIGG9nLClfpRSZTU
-         Yb3LHEuxcADeSv5ls6CCWR8rjjrl7Z0I15uPVZ1BixMsTdrgJVVzv+MfHno9Y3fsOs
-         Te5pB3ybaZHzwOkDmzaDF93WCDPapbABz0zCirKQ=
+        b=dJzXnLrbMXTpgadgefIcBkxsIEff0YLEbe0lEC4RoLLBGLhUzVEIBZnZCdX8FZcBw
+         cPnxGnKl1YbD1nSTsjShytl8Wk5agOIgU/B1wSqDm9emEzxItdJ+5ZjPQYcENonGxn
+         8q0nWD4Qx3jBOOTWK99b915rSSrn8bpclQktefYg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <treding@nvidia.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 214/306] ARM: tegra: acer-a500: Remove bogus USB VBUS regulators
+Subject: [PATCH 5.14 210/432] media: atomisp: pci: fix error return code in atomisp_pci_probe()
 Date:   Thu, 16 Sep 2021 17:59:19 +0200
-Message-Id: <20210916155801.333549648@linuxfoundation.org>
+Message-Id: <20210916155817.951214524@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,74 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Osipenko <digetx@gmail.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit 70e740ad55e5f93a19493720f4105555fade4a73 ]
+[ Upstream commit d14e272958bdfdc40dcafb827d24ba6fdafa9d52 ]
 
-The configuration of USB VBUS regulators was borrowed from downstream
-kernel, which is incorrect because the corresponding GPIOs are connected
-to PROX_EN (A501 3G model) and LED_EN pins in accordance to the board
-schematics. USB works fine with both GPIOs being disabled, so remove the
-bogus USB VBUS regulators. The USB VBUS of USB3 is supplied from the fixed
-5v system regulator and device-mode USB1 doesn't have VBUS switches.
+If init_atomisp_wdts() fails, atomisp_pci_probe() need return
+error code.
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-Signed-off-by: Thierry Reding <treding@nvidia.com>
+Link: https://lore.kernel.org/linux-media/20210617072329.1233662-1-yangyingliang@huawei.com
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../boot/dts/tegra20-acer-a500-picasso.dts    | 25 +------------------
- 1 file changed, 1 insertion(+), 24 deletions(-)
+ drivers/staging/media/atomisp/pci/atomisp_v4l2.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts b/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
-index 5d0f0fbba1d2..5dbfb83c1b06 100644
---- a/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
-+++ b/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
-@@ -704,7 +704,6 @@ usb-phy@c5000000 {
- 		nvidia,xcvr-setup-use-fuses;
- 		nvidia,xcvr-lsfslew = <2>;
- 		nvidia,xcvr-lsrslew = <2>;
--		vbus-supply = <&vdd_vbus1>;
- 	};
+diff --git a/drivers/staging/media/atomisp/pci/atomisp_v4l2.c b/drivers/staging/media/atomisp/pci/atomisp_v4l2.c
+index af0d83eaa68c..1e324f1f656e 100644
+--- a/drivers/staging/media/atomisp/pci/atomisp_v4l2.c
++++ b/drivers/staging/media/atomisp/pci/atomisp_v4l2.c
+@@ -1763,7 +1763,8 @@ static int atomisp_pci_probe(struct pci_dev *pdev, const struct pci_device_id *i
+ 	if (err < 0)
+ 		goto register_entities_fail;
+ 	/* init atomisp wdts */
+-	if (init_atomisp_wdts(isp) != 0)
++	err = init_atomisp_wdts(isp);
++	if (err != 0)
+ 		goto wdt_work_queue_fail;
  
- 	usb@c5008000 {
-@@ -716,7 +715,7 @@ usb-phy@c5008000 {
- 		nvidia,xcvr-setup-use-fuses;
- 		nvidia,xcvr-lsfslew = <2>;
- 		nvidia,xcvr-lsrslew = <2>;
--		vbus-supply = <&vdd_vbus3>;
-+		vbus-supply = <&vdd_5v0_sys>;
- 	};
- 
- 	brcm_wifi_pwrseq: wifi-pwrseq {
-@@ -967,28 +966,6 @@ vdd_pnl: regulator@3 {
- 		vin-supply = <&vdd_5v0_sys>;
- 	};
- 
--	vdd_vbus1: regulator@4 {
--		compatible = "regulator-fixed";
--		regulator-name = "vdd_usb1_vbus";
--		regulator-min-microvolt = <5000000>;
--		regulator-max-microvolt = <5000000>;
--		regulator-always-on;
--		gpio = <&gpio TEGRA_GPIO(D, 0) GPIO_ACTIVE_HIGH>;
--		enable-active-high;
--		vin-supply = <&vdd_5v0_sys>;
--	};
--
--	vdd_vbus3: regulator@5 {
--		compatible = "regulator-fixed";
--		regulator-name = "vdd_usb3_vbus";
--		regulator-min-microvolt = <5000000>;
--		regulator-max-microvolt = <5000000>;
--		regulator-always-on;
--		gpio = <&gpio TEGRA_GPIO(D, 3) GPIO_ACTIVE_HIGH>;
--		enable-active-high;
--		vin-supply = <&vdd_5v0_sys>;
--	};
--
- 	sound {
- 		compatible = "nvidia,tegra-audio-wm8903-picasso",
- 			     "nvidia,tegra-audio-wm8903";
+ 	/* save the iunit context only once after all the values are init'ed. */
 -- 
 2.30.2
 
