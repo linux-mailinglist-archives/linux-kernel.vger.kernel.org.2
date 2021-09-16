@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB05940E632
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:29:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3FE640E2DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:17:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351104AbhIPRTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:19:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37132 "EHLO mail.kernel.org"
+        id S242536AbhIPQma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:42:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45402 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345613AbhIPRLW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:11:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D43361B4D;
-        Thu, 16 Sep 2021 16:37:58 +0000 (UTC)
+        id S243416AbhIPQgJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:36:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FC08619E1;
+        Thu, 16 Sep 2021 16:21:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810279;
-        bh=ulmAM55wXhZj7soyYFLaFrX/4daEo900H4xVXYv0dVg=;
+        s=korg; t=1631809307;
+        bh=t4n26Y1K3/SNvUAHV343Kcz3CavNNWuHO99XDkSQo/M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=coHKUaJSXmXAkZ9eLJfIwrbYx1H5jKGcqvv6nmzEc5S/bRmoeyPXn0zaCGgZAD7dm
-         uuHYSXAJ/FLtx3Fh3MkcoWl9CE4fIZBJdyJNHNr0Jp9CTTZ74FYudV5VkgtXrA5qS3
-         nVQYJjgA784gFzN7qF9YHflXFlmhud1easgyzXrs=
+        b=Cv+VTpI1VqO3ZSLFcoL98f8Nv6WUBclNDe4E+5lgfkqFPylkO9U5W52yovB3ObN8T
+         We+bVqG+MDC8E0T+oMulDc/g+0lGKDLg1pm6X9De4f/JJPOYejyF5LuBXLw7E717U8
+         CMB9yPP0+3uU5Zv8TplU28RNskRFh0+7zEJqrx68=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -28,12 +28,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
         Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 082/432] IB/hfi1: Adjust pkey entry in index 0
+Subject: [PATCH 5.13 074/380] IB/hfi1: Adjust pkey entry in index 0
 Date:   Thu, 16 Sep 2021 17:57:11 +0200
-Message-Id: <20210916155813.565915889@linuxfoundation.org>
+Message-Id: <20210916155806.525546437@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -85,7 +85,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 6 deletions(-)
 
 diff --git a/drivers/infiniband/hw/hfi1/init.c b/drivers/infiniband/hw/hfi1/init.c
-index 0986aa065418..34106e5be679 100644
+index e3a8a420c045..c076eed9c3b7 100644
 --- a/drivers/infiniband/hw/hfi1/init.c
 +++ b/drivers/infiniband/hw/hfi1/init.c
 @@ -650,12 +650,7 @@ void hfi1_init_pportdata(struct pci_dev *pdev, struct hfi1_pportdata *ppd,
