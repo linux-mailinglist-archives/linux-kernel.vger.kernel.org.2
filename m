@@ -2,146 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE9D940E9A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:16:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DC8940E9E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:30:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237179AbhIPSNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 14:13:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41146 "EHLO
+        id S1345741AbhIPScI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 14:32:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347846AbhIPSLN (ORCPT
+        with ESMTP id S1345780AbhIPSbk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 14:11:13 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E252C0470ED
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 09:39:49 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id bi4so9815504oib.9
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 09:39:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:reply-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Qy3pOAsrra7KT/ngtb/QFh7afi84SrbV2cOHQJxGstg=;
-        b=h/Wj+RXf+luqlt8A5CP0bsUtHT8NqxT8VRlOcVq2tdjCMr//bVYG9NOA6uTE31YvMC
-         zoWi3PWFnfgwnzpUo0BzuU1DK45wZIOd/RCxSfOKeGMD8N8zMAWhns0zeb3QZL6RKoK9
-         maRg9jM+f+Dil7H/ctPWb9jixsB8SFilbC+sNZBZ04J+z1R6jc3YGyET/sTSWvIye9RW
-         7cgyhLeiCxJhI0dl5CLxCNeXLJjBdSppPHSnvc9+AQIpTUur+6C5AOngB392efXib13S
-         IqxAb/GFwW1vBxRCtozEmtcqPhuSrJkKl1U1D3m7IzItHroVQ4dS4DZlPOwprnhhTGd+
-         M5HA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :reply-to:references:mime-version:content-disposition:in-reply-to;
-        bh=Qy3pOAsrra7KT/ngtb/QFh7afi84SrbV2cOHQJxGstg=;
-        b=Nl6FZ6eoO5TUWDB6zYzwN+oI20zsWZylGCbf0av/TpAi4jntat79K+n2kVyyDPUyVf
-         My6zICaePywGfB4wpIG5jz9JMXSwgp3p3ipR38eEPCOG4irwHkKUcL6s216Izs8VIyy/
-         sEpLmWq0Qg4lnnEciwH0kkFYxEeHzKCtxCxvGqD4w1k+/3TfUQ6G7TRcYLVEEFR4eYHN
-         5Lk44wtEj0k5t9i/aPdaH3qoXejDrBX1WGkm4OxLTt8oDQl87LcOeqRSpW6ac5LXcBUB
-         1Y0ba4BMXNqkgEz6W+WEXLgMo7xGZO1HRHDx/kjXBn11Pb0C8itVpJyCrgB1Bg/AYOEi
-         Tfxg==
-X-Gm-Message-State: AOAM531PZu1opKTpVPKowYh6wiMzr9WtbuGNaFgSV4OGWVy/gl+HzDTp
-        JzHq7IbXpzpSQnr9puN7ag==
-X-Google-Smtp-Source: ABdhPJzwncS5iHvX5bxcRrpNe4012zEgfmItpvnAJ4Oo6PfiPrtFGz2pH3WTJzW1phlYCbyJq+Nghg==
-X-Received: by 2002:aca:2b05:: with SMTP id i5mr552713oik.55.1631810388587;
-        Thu, 16 Sep 2021 09:39:48 -0700 (PDT)
-Received: from serve.minyard.net ([47.184.156.158])
-        by smtp.gmail.com with ESMTPSA id a11sm803798oiw.36.2021.09.16.09.39.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 09:39:47 -0700 (PDT)
-Sender: Corey Minyard <tcminyard@gmail.com>
-Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:1df5:faca:2d59:6c4c])
-        by serve.minyard.net (Postfix) with ESMTPSA id 496E918000C;
-        Thu, 16 Sep 2021 16:39:46 +0000 (UTC)
-Date:   Thu, 16 Sep 2021 11:39:45 -0500
-From:   Corey Minyard <minyard@acm.org>
-To:     Anton Lundin <glance@acc.umu.se>
-Cc:     openipmi-developer@lists.sourceforge.net,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: Issue with panic handling and ipmi
-Message-ID: <20210916163945.GY545073@minyard.net>
-Reply-To: minyard@acm.org
-References: <20210916145300.GD108031@montezuma.acc.umu.se>
+        Thu, 16 Sep 2021 14:31:40 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C34EC0A236B
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 09:47:55 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mQuY8-0007kn-MO; Thu, 16 Sep 2021 18:47:48 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mQuY6-0004hO-Ic; Thu, 16 Sep 2021 18:47:46 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mQuY6-0001PV-HJ; Thu, 16 Sep 2021 18:47:46 +0200
+Date:   Thu, 16 Sep 2021 18:47:46 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     linux-pwm@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Duc Nguyen <duc.nguyen.ub@renesas.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] pwm: renesas-tpu: don't allow no duty if duty_ns is
+ given
+Message-ID: <20210916164746.rujqwpnrm4i6lf7z@pengutronix.de>
+References: <20210915065542.1897-1-wsa+renesas@sang-engineering.com>
+ <20210915065542.1897-3-wsa+renesas@sang-engineering.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="rc23usyhskkfrhzk"
 Content-Disposition: inline
-In-Reply-To: <20210916145300.GD108031@montezuma.acc.umu.se>
+In-Reply-To: <20210915065542.1897-3-wsa+renesas@sang-engineering.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 04:53:00PM +0200, Anton Lundin wrote:
-> Hi.
-> 
-> I've just done a upgrade of the kernel we're using in a product from
-> 4.19 to 5.10 and I noted a issue.
-> 
-> It started that with that we didn't get panic and oops dumps in our erst
-> backed pstore, and when debugging that I noted that the reboot on panic
-> timer didn't work either.
-> 
-> I've bisected it down to 2033f6858970 ("ipmi: Free receive messages when
-> in an oops").
 
-Hmm.  Unfortunately removing that will break other things.  Can you try
-the following patch?  It's a good idea, in general, to do as little as
-possible in the panic path, this should cover a multitude of issues.
+--rc23usyhskkfrhzk
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for the report.
+On Wed, Sep 15, 2021 at 08:55:41AM +0200, Wolfram Sang wrote:
+> From: Duc Nguyen <duc.nguyen.ub@renesas.com>
+>=20
+> We have special code if duty_ns is 0. But if non-zero is given, then the
+> calculation should not result in zero duty.
 
--corey
+Why not? Assuming a PWM that supports multiples of say 100 ns for
+duty_cycle, rounding a request for 550 ns down to 500 ns isn't worse
+than rounding down a request for 50 ns to 0 ns is it?
+=20
+> Signed-off-by: Duc Nguyen <duc.nguyen.ub@renesas.com>
+> [wsa: split and reworded commit message]
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> ---
+>  drivers/pwm/pwm-renesas-tpu.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/pwm/pwm-renesas-tpu.c b/drivers/pwm/pwm-renesas-tpu.c
+> index 754440194650..bb51156e4bda 100644
+> --- a/drivers/pwm/pwm-renesas-tpu.c
+> +++ b/drivers/pwm/pwm-renesas-tpu.c
+> @@ -275,7 +275,7 @@ static int tpu_pwm_config(struct pwm_chip *chip, stru=
+ct pwm_device *_pwm,
+>  	if (duty_ns) {
+>  		duty =3D clk_rate / prescalers[prescaler]
+>  		     / (NSEC_PER_SEC / duty_ns);
 
-> 
-> I tested just reverting that and both dumps to pstore and the panic
-> reboot timer started working again.
-> 
-> 
-> //Anton
+Unrelated to the change under discussion here: Dividing by the result of
+a division is bad.=20
 
-commit e28aa211190b7d3a1135f051f0c30b0195016489
-Author: Corey Minyard <cminyard@mvista.com>
-Date:   Thu Sep 16 11:36:20 2021 -0500
+Consider:
+	clk_rate =3D 1333333333
+	prescalers[prescaler] =3D 43
+	duty_ns =3D 500000001
 
-    ipmi: Disable some operations during a panic
+The exact result is 15503875.996124031, with the above formula you get
+31007751 which is off by nearly a factor of two.
 
-    Don't do kfree or other risky things when oops_in_progress is set.
+These numbers are probably not relevant, but they show the problem.
 
-    Reported-by: Anton Lundin <glance@acc.umu.se>
-    Fixes: 2033f6858970 ("ipmi: Free receive messages when > in an oops")
-    Signed-off-by: Corey Minyard <cminyard@mvista.com>
+Best regards
+Uwe
 
-diff --git a/drivers/char/ipmi/ipmi_msghandler.c b/drivers/char/ipmi/ipmi_msghandler.c
-index e96cb5c4f97a..a08f53f208bf 100644
---- a/drivers/char/ipmi/ipmi_msghandler.c
-+++ b/drivers/char/ipmi/ipmi_msghandler.c
-@@ -4789,7 +4789,9 @@ static atomic_t recv_msg_inuse_count = ATOMIC_INIT(0);
- static void free_smi_msg(struct ipmi_smi_msg *msg)
- {
- 	atomic_dec(&smi_msg_inuse_count);
--	kfree(msg);
-+	/* Try to keep as much stuff out of the panic path as possible. */
-+	if (!oops_in_progress)
-+		kfree(msg);
- }
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
- struct ipmi_smi_msg *ipmi_alloc_smi_msg(void)
-@@ -4808,7 +4810,9 @@ EXPORT_SYMBOL(ipmi_alloc_smi_msg);
- static void free_recv_msg(struct ipmi_recv_msg *msg)
- {
- 	atomic_dec(&recv_msg_inuse_count);
--	kfree(msg);
-+	/* Try to keep as much stuff out of the panic path as possible. */
-+	if (!oops_in_progress)
-+		kfree(msg);
- }
+--rc23usyhskkfrhzk
+Content-Type: application/pgp-signature; name="signature.asc"
 
- static struct ipmi_recv_msg *ipmi_alloc_recv_msg(void)
-@@ -4826,7 +4830,7 @@ static struct ipmi_recv_msg *ipmi_alloc_recv_msg(void)
+-----BEGIN PGP SIGNATURE-----
 
- void ipmi_free_recv_msg(struct ipmi_recv_msg *msg)
- {
--	if (msg->user)
-+	if (msg->user && !oops_in_progress)
- 		kref_put(&msg->user->refcount, free_user);
- 	msg->done(msg);
- }
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmFDdS4ACgkQwfwUeK3K
+7AnUQAgAmjJkLhnY8ifBEORHpJuO7fpbsjyT8WptyK9dTJgqg0jPJEwCgl/eCi2Y
+ZNLZ986jXRsiQerhDIofYYaSQhoCDG8YN29BCp3Gbl/TSe37Isg5kwSX9RYC2c7n
+Hiy3vGPwmNzYshtE8HjLKHWCNZqUy85sUmDN6auecy9SIWG5YLvEDlF5Wnku28x6
+qG4OpOuIM3aSRh6NbpDwqQGvgHXoZl7AdeCJjUD9C+oehyNAZ9WOh7E8FSkO7ofq
+/JGg1vHJLFiMeh1WVKIuJFkIA/mGsQKzYHnk/h8dvbD0eIFfHYYFSSCGfb3OSSPd
+2pVWCqEQ9MSIYgX13cINC7O8z12RlA==
+=7YDn
+-----END PGP SIGNATURE-----
 
+--rc23usyhskkfrhzk--
