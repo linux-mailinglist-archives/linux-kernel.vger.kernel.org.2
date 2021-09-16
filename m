@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A0BA40E240
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:16:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 088E240DFAE
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:11:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242854AbhIPQgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:36:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38936 "EHLO mail.kernel.org"
+        id S235796AbhIPQM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:12:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47658 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241654AbhIPQ21 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:28:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5AFA861351;
-        Thu, 16 Sep 2021 16:18:05 +0000 (UTC)
+        id S231830AbhIPQHo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:07:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 249DF60232;
+        Thu, 16 Sep 2021 16:06:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809085;
-        bh=pTIOSYSSrv+8dmgfomR8eI6/xfAstEHMdPBwJYumySc=;
+        s=korg; t=1631808383;
+        bh=JFIwOmiBvrlHVlUc/agg+VHNpbDgXFBJyCKiIIAbcSc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qsh2ygwP687QYzUd1p6P2h1OW8n/MwbC0fpf4aFFZ3aDnBbq8OqDpIYpN46EasEQ7
-         Cf0NWCNhuYhqi11kwMGn67go4cb39hLx5M6CA6GZGOim8Ba8AFWuBtEB9F3GRb4Oar
-         +4tnll2za0olxrBn/49cgbJ2HybLiraYSEKQn14M=
+        b=pO2KGHHBKr7JoLBImGzVKX03yMMgdNMiTp58m+12vP9gnVwhl1csQz09eqr8NH0uM
+         /72QlQTWF+oLdM37m0BRL4dk9SWZWgCbEPHNvvVPfHj6BuEtQRztlinwp2+dwlqHS5
+         sLJHL/AfY4MVi3kqZzhU0WC+CJkh2POxOnegpKsk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
-        =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20 ?= 
-        <zhouyanjie@wanyeetech.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 5.13 025/380] pinctrl: ingenic: Fix bias config for X2000(E)
-Date:   Thu, 16 Sep 2021 17:56:22 +0200
-Message-Id: <20210916155804.826272348@linuxfoundation.org>
+        stable@vger.kernel.org, Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: [PATCH 5.10 038/306] media: rc-loopback: return number of emitters rather than error
+Date:   Thu, 16 Sep 2021 17:56:23 +0200
+Message-Id: <20210916155755.248499619@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,49 +39,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Cercueil <paul@crapouillou.net>
+From: Sean Young <sean@mess.org>
 
-commit 7261851e938f4b0fe8c0f5a8e627ae90e1ba9875 upstream.
+commit 6b7f554be8c92319d7e6df92fd247ebb9beb4a45 upstream.
 
-The ingenic_set_bias() function's "bias" argument is not a
-"enum pin_config_param", so its value should not be compared against
-values of that enum.
+The LIRC_SET_TRANSMITTER_MASK ioctl should return the number of emitters
+if an invalid list was set.
 
-This should fix the bias config not working on the X2000(E) SoCs.
-
-Fixes: 943e0da15370 ("pinctrl: Ingenic: Add pinctrl driver for X2000.")
-Cc: <stable@vger.kernel.org> # v5.12
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-Tested-by: 周琰杰 (Zhou Yanjie)<zhouyanjie@wanyeetech.com>
-Link: https://lore.kernel.org/r/20210717174836.14776-2-paul@crapouillou.net
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Sean Young <sean@mess.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pinctrl/pinctrl-ingenic.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/media/rc/rc-loopback.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/pinctrl/pinctrl-ingenic.c
-+++ b/drivers/pinctrl/pinctrl-ingenic.c
-@@ -3441,17 +3441,17 @@ static void ingenic_set_bias(struct inge
- {
- 	if (jzpc->info->version >= ID_X2000) {
- 		switch (bias) {
--		case PIN_CONFIG_BIAS_PULL_UP:
-+		case GPIO_PULL_UP:
- 			ingenic_config_pin(jzpc, pin, X2000_GPIO_PEPD, false);
- 			ingenic_config_pin(jzpc, pin, X2000_GPIO_PEPU, true);
- 			break;
+--- a/drivers/media/rc/rc-loopback.c
++++ b/drivers/media/rc/rc-loopback.c
+@@ -42,7 +42,7 @@ static int loop_set_tx_mask(struct rc_de
  
--		case PIN_CONFIG_BIAS_PULL_DOWN:
-+		case GPIO_PULL_DOWN:
- 			ingenic_config_pin(jzpc, pin, X2000_GPIO_PEPU, false);
- 			ingenic_config_pin(jzpc, pin, X2000_GPIO_PEPD, true);
- 			break;
+ 	if ((mask & (RXMASK_REGULAR | RXMASK_LEARNING)) != mask) {
+ 		dprintk("invalid tx mask: %u\n", mask);
+-		return -EINVAL;
++		return 2;
+ 	}
  
--		case PIN_CONFIG_BIAS_DISABLE:
-+		case GPIO_PULL_DIS:
- 		default:
- 			ingenic_config_pin(jzpc, pin, X2000_GPIO_PEPU, false);
- 			ingenic_config_pin(jzpc, pin, X2000_GPIO_PEPD, false);
+ 	dprintk("setting tx mask: %u\n", mask);
 
 
