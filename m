@@ -2,37 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 152F740E405
+	by mail.lfdr.de (Postfix) with ESMTP id 65EFD40E406
 	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:22:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346185AbhIPQy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:54:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37422 "EHLO mail.kernel.org"
+        id S1346242AbhIPQyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:54:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244507AbhIPQsv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:48:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CB4361A7A;
-        Thu, 16 Sep 2021 16:27:38 +0000 (UTC)
+        id S243406AbhIPQsw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:48:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D4AA61A80;
+        Thu, 16 Sep 2021 16:27:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809659;
-        bh=Bssx5ZbEaCre/TweHxP/RvtlxoCykNbf0SQAZ4MT+ac=;
+        s=korg; t=1631809662;
+        bh=YidPh0dsvvqF8/hcwH7YvKJVmMCN5KdNaXu+d8o9+hY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B8TR5E/SRisckRLRU+Jog/loxdy+sbI3tPdzeF6T4CFtmxOjX+yFkVeL9EU8Q5OkQ
-         /TqDPsLzmnWewX+u67ZNtB6iwOJ2xfvZubqIZTeF2A2MNHLDS35rPvGPVeKFgCCl5C
-         1xKSj8T9CEM844zso7fQyCxpu5ZIDLwnK1dxkRpk=
+        b=ES1HrbTJghyet27af4RWf/gkexNHNLJmHZk4B/z+EbyHhMNCpNM+9B3J2BWIWbgFl
+         T+9/36gNqHfI8EpYHZXSQHCDN6Yxb7cvjpjRPR+fan8qpHmpLRDKlawMD6Q1oTwXdA
+         fjWjrfXwQ8XSbm3+Mg8ySoAGCNgHMUdNmbUYm7bo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Carl Philipp Klemm <philipp@uvos.xyz>,
-        Merlijn Wajer <merlijn@wizzup.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Sebastian Reichel <sre@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tony Lindgren <tony@atomide.com>,
+        stable@vger.kernel.org,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 235/380] serial: 8250_omap: Handle optional overrun-throttle-ms property
-Date:   Thu, 16 Sep 2021 17:59:52 +0200
-Message-Id: <20210916155812.077221127@linuxfoundation.org>
+Subject: [PATCH 5.13 236/380] ARM: dts: imx53-ppd: Fix ACHC entry
+Date:   Thu, 16 Sep 2021 17:59:53 +0200
+Message-Id: <20210916155812.110257118@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
 References: <20210916155803.966362085@linuxfoundation.org>
@@ -44,95 +40,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Lindgren <tony@atomide.com>
+From: Sebastian Reichel <sebastian.reichel@collabora.com>
 
-[ Upstream commit 1fe0e1fa3209ad8e9124147775bd27b1d9f04bd4 ]
+[ Upstream commit cd7cd5b716d594e27a933c12f026d4f2426d7bf4 ]
 
-Handle optional overrun-throttle-ms property as done for 8250_fsl in commit
-6d7f677a2afa ("serial: 8250: Rate limit serial port rx interrupts during
-input overruns"). This can be used to rate limit the UART interrupts on
-noisy lines that end up producing messages like the following:
+PPD has only one ACHC device, which effectively is a Kinetis
+microcontroller. It has one SPI interface used for normal
+communication. Additionally it's possible to flash the device
+firmware using NXP's EzPort protocol by correctly driving a
+second chip select pin and the device reset pin.
 
-ttyS ttyS2: 4 input overrun(s)
-
-At least on droid4, the multiplexed USB and UART port is left to UART mode
-by the bootloader for a debug console, and if a USB charger is connected
-on boot, we get noise on the UART until the PMIC related drivers for PHY
-and charger are loaded.
-
-With this patch and overrun-throttle-ms = <500> we avoid the extra rx
-interrupts.
-
-Cc: Carl Philipp Klemm <philipp@uvos.xyz>
-Cc: Merlijn Wajer <merlijn@wizzup.org>
-Cc: Pavel Machek <pavel@ucw.cz>
-Cc: Sebastian Reichel <sre@kernel.org>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
-Link: https://lore.kernel.org/r/20210727103533.51547-2-tony@atomide.com
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Link: https://lore.kernel.org/r/20210802172309.164365-3-sebastian.reichel@collabora.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/8250/8250_omap.c | 25 ++++++++++++++++++++++++-
- 1 file changed, 24 insertions(+), 1 deletion(-)
+ arch/arm/boot/dts/imx53-ppd.dts | 23 +++++++++++++----------
+ 1 file changed, 13 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/tty/serial/8250/8250_omap.c b/drivers/tty/serial/8250/8250_omap.c
-index 79418d4beb48..b6c731a267d2 100644
---- a/drivers/tty/serial/8250/8250_omap.c
-+++ b/drivers/tty/serial/8250/8250_omap.c
-@@ -617,7 +617,7 @@ static irqreturn_t omap8250_irq(int irq, void *dev_id)
- 	struct uart_port *port = dev_id;
- 	struct omap8250_priv *priv = port->private_data;
- 	struct uart_8250_port *up = up_to_u8250p(port);
--	unsigned int iir;
-+	unsigned int iir, lsr;
- 	int ret;
+diff --git a/arch/arm/boot/dts/imx53-ppd.dts b/arch/arm/boot/dts/imx53-ppd.dts
+index be040b6a02fa..1f3ee60fb102 100644
+--- a/arch/arm/boot/dts/imx53-ppd.dts
++++ b/arch/arm/boot/dts/imx53-ppd.dts
+@@ -70,6 +70,12 @@ cko2_11M: sgtl-clock-cko2 {
+ 		clock-frequency = <11289600>;
+ 	};
  
- #ifdef CONFIG_SERIAL_8250_DMA
-@@ -628,6 +628,7 @@ static irqreturn_t omap8250_irq(int irq, void *dev_id)
- #endif
- 
- 	serial8250_rpm_get(up);
-+	lsr = serial_port_in(port, UART_LSR);
- 	iir = serial_port_in(port, UART_IIR);
- 	ret = serial8250_handle_irq(port, iir);
- 
-@@ -642,6 +643,24 @@ static irqreturn_t omap8250_irq(int irq, void *dev_id)
- 		serial_port_in(port, UART_RX);
- 	}
- 
-+	/* Stop processing interrupts on input overrun */
-+	if ((lsr & UART_LSR_OE) && up->overrun_backoff_time_ms > 0) {
-+		unsigned long delay;
++	achc_24M: achc-clock {
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		clock-frequency = <24000000>;
++	};
 +
-+		up->ier = port->serial_in(port, UART_IER);
-+		if (up->ier & (UART_IER_RLSI | UART_IER_RDI)) {
-+			port->ops->stop_rx(port);
-+		} else {
-+			/* Keep restarting the timer until
-+			 * the input overrun subsides.
-+			 */
-+			cancel_delayed_work(&up->overrun_backoff);
-+		}
-+
-+		delay = msecs_to_jiffies(up->overrun_backoff_time_ms);
-+		schedule_delayed_work(&up->overrun_backoff, delay);
-+	}
-+
- 	serial8250_rpm_put(up);
+ 	sgtlsound: sound {
+ 		compatible = "fsl,imx53-cpuvo-sgtl5000",
+ 			     "fsl,imx-audio-sgtl5000";
+@@ -314,16 +320,13 @@ &gpio4 11 GPIO_ACTIVE_LOW
+ 		    &gpio4 12 GPIO_ACTIVE_LOW>;
+ 	status = "okay";
  
- 	return IRQ_RETVAL(ret);
-@@ -1353,6 +1372,10 @@ static int omap8250_probe(struct platform_device *pdev)
- 		}
- 	}
+-	spidev0: spi@0 {
+-		compatible = "ge,achc";
+-		reg = <0>;
+-		spi-max-frequency = <1000000>;
+-	};
+-
+-	spidev1: spi@1 {
+-		compatible = "ge,achc";
+-		reg = <1>;
+-		spi-max-frequency = <1000000>;
++	spidev0: spi@1 {
++		compatible = "ge,achc", "nxp,kinetis-k20";
++		reg = <1>, <0>;
++		vdd-supply = <&reg_3v3>;
++		vdda-supply = <&reg_3v3>;
++		clocks = <&achc_24M>;
++		reset-gpios = <&gpio3 6 GPIO_ACTIVE_LOW>;
+ 	};
  
-+	if (of_property_read_u32(np, "overrun-throttle-ms",
-+				 &up.overrun_backoff_time_ms) != 0)
-+		up.overrun_backoff_time_ms = 0;
-+
- 	priv->wakeirq = irq_of_parse_and_map(np, 1);
- 
- 	pdata = of_device_get_match_data(&pdev->dev);
+ 	gpioxra0: gpio@2 {
 -- 
 2.30.2
 
