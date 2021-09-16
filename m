@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66C3340E289
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C97A40E5D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:28:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244799AbhIPQju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:39:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45402 "EHLO mail.kernel.org"
+        id S242918AbhIPRPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:15:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242594AbhIPQcF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:32:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9DF46615E4;
-        Thu, 16 Sep 2021 16:19:57 +0000 (UTC)
+        id S1349868AbhIPRHy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:07:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BC6C1619EC;
+        Thu, 16 Sep 2021 16:36:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809198;
-        bh=OHERr3ZhdAhIA9oMiS4cpS6pWJVWr7Z7glyeL/ocY/Q=;
+        s=korg; t=1631810186;
+        bh=y5zwYu7lDFof+ZiAvj92o91Nt3I/SpT/ccGWX4iNuB8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nYwFYT5OfWtg5Ilz+JADLlFnaHO8355Z1k8IPtjl7gEYAjA0enhxnJWwI6RQJnCVX
-         UDeUk1rS6ZclwgP4cDd5tv5vzdIx7i949XDTjgMG5N0crtrVNZGMbOu41bo2fcFs+w
-         VN6fHg+wzNUprbCtuwQ/OtE9hN6Oefaxw4l/W/9U=
+        b=DVEKLLhgjsBHdSaROrxY6hcnjQ/K0OMknfnT39zNECkvJCAEXDHzYosspQ1SxEFwQ
+         9aV4/Mw9Lcy/v9vQi3SWPsCkj3UXSvXJ9zmh3WGZjIQw/R5zIeDrYjQ+gjm2RoHaaW
+         c6Jyd4DKJ5GpiidMFB2N+lEGebi+iq44XF4nzC7g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kevin Hao <haokexin@gmail.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 5.13 039/380] cpufreq: schedutil: Use kobject release() method to free sugov_tunables
-Date:   Thu, 16 Sep 2021 17:56:36 +0200
-Message-Id: <20210916155805.299153663@linuxfoundation.org>
+        stable@vger.kernel.org, Lucas Nussbaum <lucas.nussbaum@inria.fr>,
+        stable@kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        David Rientjes <rientjes@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@gmail.com>
+Subject: [PATCH 5.14 048/432] crypto: ccp - shutdown SEV firmware on kexec
+Date:   Thu, 16 Sep 2021 17:56:37 +0200
+Message-Id: <20210916155812.437583361@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,125 +44,151 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kevin Hao <haokexin@gmail.com>
+From: Brijesh Singh <brijesh.singh@amd.com>
 
-commit e5c6b312ce3cc97e90ea159446e6bfa06645364d upstream.
+commit 5441a07a127f106c9936e4f9fa1a8a93e3f31828 upstream.
 
-The struct sugov_tunables is protected by the kobject, so we can't free
-it directly. Otherwise we would get a call trace like this:
-  ODEBUG: free active (active state 0) object type: timer_list hint: delayed_work_timer_fn+0x0/0x30
-  WARNING: CPU: 3 PID: 720 at lib/debugobjects.c:505 debug_print_object+0xb8/0x100
-  Modules linked in:
-  CPU: 3 PID: 720 Comm: a.sh Tainted: G        W         5.14.0-rc1-next-20210715-yocto-standard+ #507
-  Hardware name: Marvell OcteonTX CN96XX board (DT)
-  pstate: 40400009 (nZcv daif +PAN -UAO -TCO BTYPE=--)
-  pc : debug_print_object+0xb8/0x100
-  lr : debug_print_object+0xb8/0x100
-  sp : ffff80001ecaf910
-  x29: ffff80001ecaf910 x28: ffff00011b10b8d0 x27: ffff800011043d80
-  x26: ffff00011a8f0000 x25: ffff800013cb3ff0 x24: 0000000000000000
-  x23: ffff80001142aa68 x22: ffff800011043d80 x21: ffff00010de46f20
-  x20: ffff800013c0c520 x19: ffff800011d8f5b0 x18: 0000000000000010
-  x17: 6e6968207473696c x16: 5f72656d6974203a x15: 6570797420746365
-  x14: 6a626f2029302065 x13: 303378302f307830 x12: 2b6e665f72656d69
-  x11: ffff8000124b1560 x10: ffff800012331520 x9 : ffff8000100ca6b0
-  x8 : 000000000017ffe8 x7 : c0000000fffeffff x6 : 0000000000000001
-  x5 : ffff800011d8c000 x4 : ffff800011d8c740 x3 : 0000000000000000
-  x2 : ffff0001108301c0 x1 : ab3c90eedf9c0f00 x0 : 0000000000000000
-  Call trace:
-   debug_print_object+0xb8/0x100
-   __debug_check_no_obj_freed+0x1c0/0x230
-   debug_check_no_obj_freed+0x20/0x88
-   slab_free_freelist_hook+0x154/0x1c8
-   kfree+0x114/0x5d0
-   sugov_exit+0xbc/0xc0
-   cpufreq_exit_governor+0x44/0x90
-   cpufreq_set_policy+0x268/0x4a8
-   store_scaling_governor+0xe0/0x128
-   store+0xc0/0xf0
-   sysfs_kf_write+0x54/0x80
-   kernfs_fop_write_iter+0x128/0x1c0
-   new_sync_write+0xf0/0x190
-   vfs_write+0x2d4/0x478
-   ksys_write+0x74/0x100
-   __arm64_sys_write+0x24/0x30
-   invoke_syscall.constprop.0+0x54/0xe0
-   do_el0_svc+0x64/0x158
-   el0_svc+0x2c/0xb0
-   el0t_64_sync_handler+0xb0/0xb8
-   el0t_64_sync+0x198/0x19c
-  irq event stamp: 5518
-  hardirqs last  enabled at (5517): [<ffff8000100cbd7c>] console_unlock+0x554/0x6c8
-  hardirqs last disabled at (5518): [<ffff800010fc0638>] el1_dbg+0x28/0xa0
-  softirqs last  enabled at (5504): [<ffff8000100106e0>] __do_softirq+0x4d0/0x6c0
-  softirqs last disabled at (5483): [<ffff800010049548>] irq_exit+0x1b0/0x1b8
+The commit 97f9ac3db6612 ("crypto: ccp - Add support for SEV-ES to the
+PSP driver") added support to allocate Trusted Memory Region (TMR)
+used during the SEV-ES firmware initialization. The TMR gets locked
+during the firmware initialization and unlocked during the shutdown.
+While the TMR is locked, access to it is disallowed.
 
-So split the original sugov_tunables_free() into two functions,
-sugov_clear_global_tunables() is just used to clear the global_tunables
-and the new sugov_tunables_free() is used as kobj_type::release to
-release the sugov_tunables safely.
+Currently, the CCP driver does not shutdown the firmware during the
+kexec reboot, leaving the TMR memory locked.
 
-Fixes: 9bdcb44e391d ("cpufreq: schedutil: New governor based on scheduler utilization data")
-Cc: 4.7+ <stable@vger.kernel.org> # 4.7+
-Signed-off-by: Kevin Hao <haokexin@gmail.com>
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Register a callback to shutdown the SEV firmware on the kexec boot.
+
+Fixes: 97f9ac3db6612 ("crypto: ccp - Add support for SEV-ES to the PSP driver")
+Reported-by: Lucas Nussbaum <lucas.nussbaum@inria.fr>
+Tested-by: Lucas Nussbaum <lucas.nussbaum@inria.fr>
+Cc: <stable@kernel.org>
+Cc: Tom Lendacky <thomas.lendacky@amd.com>
+Cc: Joerg Roedel <jroedel@suse.de>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: David Rientjes <rientjes@google.com>
+Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+Acked-by: Tom Lendacky <thomas.lendacky@gmail.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/sched/cpufreq_schedutil.c |   16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+ drivers/crypto/ccp/sev-dev.c |   49 ++++++++++++++++++++-----------------------
+ drivers/crypto/ccp/sp-pci.c  |   12 ++++++++++
+ 2 files changed, 35 insertions(+), 26 deletions(-)
 
---- a/kernel/sched/cpufreq_schedutil.c
-+++ b/kernel/sched/cpufreq_schedutil.c
-@@ -536,9 +536,17 @@ static struct attribute *sugov_attrs[] =
- };
- ATTRIBUTE_GROUPS(sugov);
+--- a/drivers/crypto/ccp/sev-dev.c
++++ b/drivers/crypto/ccp/sev-dev.c
+@@ -300,6 +300,9 @@ static int __sev_platform_shutdown_locke
+ 	struct sev_device *sev = psp_master->sev_data;
+ 	int ret;
  
-+static void sugov_tunables_free(struct kobject *kobj)
-+{
-+	struct gov_attr_set *attr_set = container_of(kobj, struct gov_attr_set, kobj);
++	if (sev->state == SEV_STATE_UNINIT)
++		return 0;
 +
-+	kfree(to_sugov_tunables(attr_set));
+ 	ret = __sev_do_cmd_locked(SEV_CMD_SHUTDOWN, NULL, error);
+ 	if (ret)
+ 		return ret;
+@@ -1019,6 +1022,20 @@ e_err:
+ 	return ret;
+ }
+ 
++static void sev_firmware_shutdown(struct sev_device *sev)
++{
++	sev_platform_shutdown(NULL);
++
++	if (sev_es_tmr) {
++		/* The TMR area was encrypted, flush it from the cache */
++		wbinvd_on_all_cpus();
++
++		free_pages((unsigned long)sev_es_tmr,
++			   get_order(SEV_ES_TMR_SIZE));
++		sev_es_tmr = NULL;
++	}
 +}
 +
- static struct kobj_type sugov_tunables_ktype = {
- 	.default_groups = sugov_groups,
- 	.sysfs_ops = &governor_sysfs_ops,
-+	.release = &sugov_tunables_free,
- };
- 
- /********************** cpufreq governor interface *********************/
-@@ -638,12 +646,10 @@ static struct sugov_tunables *sugov_tuna
- 	return tunables;
- }
- 
--static void sugov_tunables_free(struct sugov_tunables *tunables)
-+static void sugov_clear_global_tunables(void)
+ void sev_dev_destroy(struct psp_device *psp)
  {
- 	if (!have_governor_per_policy())
- 		global_tunables = NULL;
+ 	struct sev_device *sev = psp->sev_data;
+@@ -1026,6 +1043,8 @@ void sev_dev_destroy(struct psp_device *
+ 	if (!sev)
+ 		return;
+ 
++	sev_firmware_shutdown(sev);
++
+ 	if (sev->misc)
+ 		kref_put(&misc_dev->refcount, sev_exit);
+ 
+@@ -1056,21 +1075,6 @@ void sev_pci_init(void)
+ 	if (sev_get_api_version())
+ 		goto err;
+ 
+-	/*
+-	 * If platform is not in UNINIT state then firmware upgrade and/or
+-	 * platform INIT command will fail. These command require UNINIT state.
+-	 *
+-	 * In a normal boot we should never run into case where the firmware
+-	 * is not in UNINIT state on boot. But in case of kexec boot, a reboot
+-	 * may not go through a typical shutdown sequence and may leave the
+-	 * firmware in INIT or WORKING state.
+-	 */
 -
--	kfree(tunables);
+-	if (sev->state != SEV_STATE_UNINIT) {
+-		sev_platform_shutdown(NULL);
+-		sev->state = SEV_STATE_UNINIT;
+-	}
+-
+ 	if (sev_version_greater_or_equal(0, 15) &&
+ 	    sev_update_firmware(sev->dev) == 0)
+ 		sev_get_api_version();
+@@ -1115,17 +1119,10 @@ err:
+ 
+ void sev_pci_exit(void)
+ {
+-	if (!psp_master->sev_data)
+-		return;
+-
+-	sev_platform_shutdown(NULL);
++	struct sev_device *sev = psp_master->sev_data;
+ 
+-	if (sev_es_tmr) {
+-		/* The TMR area was encrypted, flush it from the cache */
+-		wbinvd_on_all_cpus();
++	if (!sev)
++		return;
+ 
+-		free_pages((unsigned long)sev_es_tmr,
+-			   get_order(SEV_ES_TMR_SIZE));
+-		sev_es_tmr = NULL;
+-	}
++	sev_firmware_shutdown(sev);
+ }
+--- a/drivers/crypto/ccp/sp-pci.c
++++ b/drivers/crypto/ccp/sp-pci.c
+@@ -241,6 +241,17 @@ e_err:
+ 	return ret;
  }
  
- static int sugov_init(struct cpufreq_policy *policy)
-@@ -706,7 +712,7 @@ out:
- fail:
- 	kobject_put(&tunables->attr_set.kobj);
- 	policy->governor_data = NULL;
--	sugov_tunables_free(tunables);
-+	sugov_clear_global_tunables();
- 
- stop_kthread:
- 	sugov_kthread_stop(sg_policy);
-@@ -733,7 +739,7 @@ static void sugov_exit(struct cpufreq_po
- 	count = gov_attr_set_put(&tunables->attr_set, &sg_policy->tunables_hook);
- 	policy->governor_data = NULL;
- 	if (!count)
--		sugov_tunables_free(tunables);
-+		sugov_clear_global_tunables();
- 
- 	mutex_unlock(&global_tunables_lock);
++static void sp_pci_shutdown(struct pci_dev *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct sp_device *sp = dev_get_drvdata(dev);
++
++	if (!sp)
++		return;
++
++	sp_destroy(sp);
++}
++
+ static void sp_pci_remove(struct pci_dev *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+@@ -371,6 +382,7 @@ static struct pci_driver sp_pci_driver =
+ 	.id_table = sp_pci_table,
+ 	.probe = sp_pci_probe,
+ 	.remove = sp_pci_remove,
++	.shutdown = sp_pci_shutdown,
+ 	.driver.pm = &sp_pci_pm_ops,
+ };
  
 
 
