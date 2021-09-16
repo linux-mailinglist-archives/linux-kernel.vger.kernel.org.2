@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7AE040E8DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:01:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 401FF40E8D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:01:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348405AbhIPRml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:42:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53752 "EHLO mail.kernel.org"
+        id S245329AbhIPRmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:42:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53762 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344611AbhIPRf5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1344625AbhIPRf5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 16 Sep 2021 13:35:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BBE761875;
-        Thu, 16 Sep 2021 16:49:10 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A377F61A63;
+        Thu, 16 Sep 2021 16:49:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810951;
-        bh=6LOksXce/k5HvDLNXSjLG9Te585jaGoi0SD0jX9pYW4=;
+        s=korg; t=1631810954;
+        bh=76pG/1mTrO5PLLh788TwM7n8iSFCwidakWpyicrLVjc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OJE49u289G3j+DMIvzNpMK4VRW7gD1OI0Y+lB+LePime2cY2ZlkBFK0ciQQ69kUNE
-         3UWfOpG58FgKnr9zBUvxgYn5Hgmk1wlP3MgvCBb1HmJsT9C3uA/LxbtnmperpbKaKz
-         f8Nqw63FMxvuiid1SLPUJkffVBTv7WRll7t0sV4c=
+        b=Hey269Irviw/bSNLjOQULPtreo8hL89H4XTWc2TorNMSfC9g4o6jiVLAZUKH474XJ
+         anVLVhvGYDNDYfnS2GM+HM48zn6avnZSw4yBt6ezcAxaYwCldTZ5B58J95aKpRF7wt
+         M4zzch/Rwnud+ALQKJ4PzQLo17Ba5wb/CFsTOz98=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daire Byrne <daire@dneg.com>,
-        "J. Bruce Fields" <bfields@redhat.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Inki Dae <inki.dae@samsung.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 328/432] lockd: lockd server-side shouldnt set fl_ops
-Date:   Thu, 16 Sep 2021 18:01:17 +0200
-Message-Id: <20210916155821.960706094@linuxfoundation.org>
+Subject: [PATCH 5.14 329/432] drm/exynos: Always initialize mapping in exynos_drm_register_dma()
+Date:   Thu, 16 Sep 2021 18:01:18 +0200
+Message-Id: <20210916155821.994005503@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
 References: <20210916155810.813340753@linuxfoundation.org>
@@ -41,83 +41,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: J. Bruce Fields <bfields@redhat.com>
+From: Nathan Chancellor <nathan@kernel.org>
 
-[ Upstream commit 7de875b231edb807387a81cde288aa9e1015ef9e ]
+[ Upstream commit c626f3864bbbb28bbe06476b0b497c1330aa4463 ]
 
-Locks have two sets of op arrays, fl_lmops for the lock manager (lockd
-or nfsd), fl_ops for the filesystem.  The server-side lockd code has
-been setting its own fl_ops, which leads to confusion (and crashes) in
-the reexport case, where the filesystem expects to be the only one
-setting fl_ops.
+In certain randconfigs, clang warns:
 
-And there's no reason for it that I can see-the lm_get/put_owner ops do
-the same job.
+drivers/gpu/drm/exynos/exynos_drm_dma.c:121:19: warning: variable
+'mapping' is uninitialized when used here [-Wuninitialized]
+                priv->mapping = mapping;
+                                ^~~~~~~
+drivers/gpu/drm/exynos/exynos_drm_dma.c:111:16: note: initialize the
+variable 'mapping' to silence this warning
+                void *mapping;
+                             ^
+                              = NULL
+1 warning generated.
 
-Reported-by: Daire Byrne <daire@dneg.com>
-Tested-by: Daire Byrne <daire@dneg.com>
-Signed-off-by: J. Bruce Fields <bfields@redhat.com>
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+This occurs when CONFIG_EXYNOS_IOMMU is enabled and both
+CONFIG_ARM_DMA_USE_IOMMU and CONFIG_IOMMU_DMA are disabled, which makes
+the code look like
+
+  void *mapping;
+
+  if (0)
+    mapping = arm_iommu_create_mapping()
+  else if (0)
+    mapping = iommu_get_domain_for_dev()
+
+  ...
+  priv->mapping = mapping;
+
+Add an else branch that initializes mapping to the -ENODEV error pointer
+so that there is no more warning and the driver does not change during
+runtime.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Inki Dae <inki.dae@samsung.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/lockd/svclock.c | 30 ++++++++++++------------------
- 1 file changed, 12 insertions(+), 18 deletions(-)
+ drivers/gpu/drm/exynos/exynos_drm_dma.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/lockd/svclock.c b/fs/lockd/svclock.c
-index 498cb70c2c0d..273a81971ed5 100644
---- a/fs/lockd/svclock.c
-+++ b/fs/lockd/svclock.c
-@@ -395,28 +395,10 @@ nlmsvc_release_lockowner(struct nlm_lock *lock)
- 		nlmsvc_put_lockowner(lock->fl.fl_owner);
- }
+diff --git a/drivers/gpu/drm/exynos/exynos_drm_dma.c b/drivers/gpu/drm/exynos/exynos_drm_dma.c
+index 0644936afee2..bf33c3084cb4 100644
+--- a/drivers/gpu/drm/exynos/exynos_drm_dma.c
++++ b/drivers/gpu/drm/exynos/exynos_drm_dma.c
+@@ -115,6 +115,8 @@ int exynos_drm_register_dma(struct drm_device *drm, struct device *dev,
+ 				EXYNOS_DEV_ADDR_START, EXYNOS_DEV_ADDR_SIZE);
+ 		else if (IS_ENABLED(CONFIG_IOMMU_DMA))
+ 			mapping = iommu_get_domain_for_dev(priv->dma_dev);
++		else
++			mapping = ERR_PTR(-ENODEV);
  
--static void nlmsvc_locks_copy_lock(struct file_lock *new, struct file_lock *fl)
--{
--	struct nlm_lockowner *nlm_lo = (struct nlm_lockowner *)fl->fl_owner;
--	new->fl_owner = nlmsvc_get_lockowner(nlm_lo);
--}
--
--static void nlmsvc_locks_release_private(struct file_lock *fl)
--{
--	nlmsvc_put_lockowner((struct nlm_lockowner *)fl->fl_owner);
--}
--
--static const struct file_lock_operations nlmsvc_lock_ops = {
--	.fl_copy_lock = nlmsvc_locks_copy_lock,
--	.fl_release_private = nlmsvc_locks_release_private,
--};
--
- void nlmsvc_locks_init_private(struct file_lock *fl, struct nlm_host *host,
- 						pid_t pid)
- {
- 	fl->fl_owner = nlmsvc_find_lockowner(host, pid);
--	if (fl->fl_owner != NULL)
--		fl->fl_ops = &nlmsvc_lock_ops;
- }
- 
- /*
-@@ -788,9 +770,21 @@ nlmsvc_notify_blocked(struct file_lock *fl)
- 	printk(KERN_WARNING "lockd: notification for unknown block!\n");
- }
- 
-+static fl_owner_t nlmsvc_get_owner(fl_owner_t owner)
-+{
-+	return nlmsvc_get_lockowner(owner);
-+}
-+
-+static void nlmsvc_put_owner(fl_owner_t owner)
-+{
-+	nlmsvc_put_lockowner(owner);
-+}
-+
- const struct lock_manager_operations nlmsvc_lock_operations = {
- 	.lm_notify = nlmsvc_notify_blocked,
- 	.lm_grant = nlmsvc_grant_deferred,
-+	.lm_get_owner = nlmsvc_get_owner,
-+	.lm_put_owner = nlmsvc_put_owner,
- };
- 
- /*
+ 		if (IS_ERR(mapping))
+ 			return PTR_ERR(mapping);
 -- 
 2.30.2
 
