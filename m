@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85CCE40DFB2
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:11:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E26740E5A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:28:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232173AbhIPQNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:13:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47724 "EHLO mail.kernel.org"
+        id S1344790AbhIPRNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:13:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233356AbhIPQHr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:07:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ADBBE6128B;
-        Thu, 16 Sep 2021 16:06:25 +0000 (UTC)
+        id S1349562AbhIPRGC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:06:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9125D61994;
+        Thu, 16 Sep 2021 16:35:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808386;
-        bh=Provur/kTKor3eJ8ubsXl60qaewRSFXzCPYiNMZd6NU=;
+        s=korg; t=1631810151;
+        bh=9ys4q/Cq6uxiYo0LVkXwRkBOrR9jLBigOEKO29P6kHo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kU9IF+8ttm5PMK+QTkHXlYwpGuzswAP9jn/Bu5x407+U2lHcTz2KOKABQJH1PZcKG
-         Q+f5ZVeb6Y4MGBz1E1JQPu9zy1eJqHkQAavjkJ22l1lNYhSf7WoJ9UQSLuiQOJxmG2
-         JjgRrpEIULKO8FlDRUy/cIXOmwcYI+tdHkXVe1TY=
+        b=zewKGH/G7byP4RwyurZIf7rOEnoKkSMLvNFsgQAwlcM5OtBs376yDgSNOEuoYL8Xu
+         6hiAv0bB4Y4faCY2fU1a4S6ZUuv7kNa2N49iYQMhcgr8AHDtkl3cGRbnOkFSqzhvxh
+         raf7kCZiP3vwHTLEdZnDaDjtPoZOR9VMGD7B8AFo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Julian Wiedmann <jwi@linux.ibm.com>,
-        Benjamin Block <bblock@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>
-Subject: [PATCH 5.10 039/306] s390/qdio: fix roll-back after timeout on ESTABLISH ccw
-Date:   Thu, 16 Sep 2021 17:56:24 +0200
-Message-Id: <20210916155755.281231312@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Iwona Winiarska <iwona.winiarska@intel.com>,
+        Andrew Jeffery <andrew@aj.id.au>, Joel Stanley <joel@aj.id.au>,
+        Joel Stanley <joel@jms.id.au>
+Subject: [PATCH 5.14 036/432] soc: aspeed: p2a-ctrl: Fix boundary check for mmap
+Date:   Thu, 16 Sep 2021 17:56:25 +0200
+Message-Id: <20210916155812.039268767@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,110 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Julian Wiedmann <jwi@linux.ibm.com>
+From: Iwona Winiarska <iwona.winiarska@intel.com>
 
-commit 2c197870e4701610ec3b1143808d4e31152caf30 upstream.
+commit 8b07e990fb254fcbaa919616ac77f981cb48c73d upstream.
 
-When qdio_establish() times out while waiting for the ESTABLISH ccw to
-complete, it calls qdio_shutdown() to roll back all of its previous
-actions. But at this point the qdio_irq's state is still
-QDIO_IRQ_STATE_INACTIVE, so qdio_shutdown() will exit immediately
-without doing any actual work.
+The check mixes pages (vm_pgoff) with bytes (vm_start, vm_end) on one
+side of the comparison, and uses resource address (rather than just the
+resource size) on the other side of the comparison.
+This can allow malicious userspace to easily bypass the boundary check and
+map pages that are located outside memory-region reserved by the driver.
 
-Which means that eg. the qdio_irq's thinint-indicator stays registered,
-and cdev->handler isn't restored to its old value. And since
-commit 954d6235be41 ("s390/qdio: make thinint registration symmetric")
-the qdio_irq also stays on the tiq_list, so on the next qdio_establish()
-we might get a helpful BUG from the list-debugging code:
-
-...
-[ 4633.512591] list_add double add: new=00000000005a4110, prev=00000001b357db78, next=00000000005a4110.
-[ 4633.512621] ------------[ cut here ]------------
-[ 4633.512623] kernel BUG at lib/list_debug.c:29!
-...
-[ 4633.512796]  [<00000001b2c6ee9a>] __list_add_valid+0x82/0xa0
-[ 4633.512798] ([<00000001b2c6ee96>] __list_add_valid+0x7e/0xa0)
-[ 4633.512800]  [<00000001b2fcecce>] qdio_establish_thinint+0x116/0x190
-[ 4633.512805]  [<00000001b2fcbe58>] qdio_establish+0x128/0x498
-...
-
-Fix this by extracting a goto-chain from the existing error exits in
-qdio_establish(), and check the return value of the wait_event_...()
-to detect the timeout condition.
-
-Fixes: 779e6e1c724d ("[S390] qdio: new qdio driver.")
-Root-caused-by: Benjamin Block <bblock@linux.ibm.com>
-Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
-Reviewed-by: Benjamin Block <bblock@linux.ibm.com>
-Cc: <stable@vger.kernel.org> # 2.6.27
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Fixes: 01c60dcea9f7 ("drivers/misc: Add Aspeed P2A control driver")
+Cc: stable@vger.kernel.org
+Signed-off-by: Iwona Winiarska <iwona.winiarska@intel.com>
+Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
+Tested-by: Andrew Jeffery <andrew@aj.id.au>
+Reviewed-by: Joel Stanley <joel@aj.id.au>
+Signed-off-by: Joel Stanley <joel@jms.id.au>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/s390/cio/qdio_main.c |   31 +++++++++++++++++++------------
- 1 file changed, 19 insertions(+), 12 deletions(-)
+ drivers/soc/aspeed/aspeed-p2a-ctrl.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/s390/cio/qdio_main.c
-+++ b/drivers/s390/cio/qdio_main.c
-@@ -1243,6 +1243,7 @@ int qdio_establish(struct ccw_device *cd
- {
- 	struct qdio_irq *irq_ptr = cdev->private->qdio_data;
- 	struct subchannel_id schid;
-+	long timeout;
- 	int rc;
+--- a/drivers/soc/aspeed/aspeed-p2a-ctrl.c
++++ b/drivers/soc/aspeed/aspeed-p2a-ctrl.c
+@@ -110,7 +110,7 @@ static int aspeed_p2a_mmap(struct file *
+ 	vsize = vma->vm_end - vma->vm_start;
+ 	prot = vma->vm_page_prot;
  
- 	ccw_device_get_schid(cdev, &schid);
-@@ -1268,11 +1269,8 @@ int qdio_establish(struct ccw_device *cd
- 	qdio_setup_irq(irq_ptr, init_data);
+-	if (vma->vm_pgoff + vsize > ctrl->mem_base + ctrl->mem_size)
++	if (vma->vm_pgoff + vma_pages(vma) > ctrl->mem_size >> PAGE_SHIFT)
+ 		return -EINVAL;
  
- 	rc = qdio_establish_thinint(irq_ptr);
--	if (rc) {
--		qdio_shutdown_irq(irq_ptr);
--		mutex_unlock(&irq_ptr->setup_mutex);
--		return rc;
--	}
-+	if (rc)
-+		goto err_thinint;
- 
- 	/* establish q */
- 	irq_ptr->ccw.cmd_code = irq_ptr->equeue.cmd;
-@@ -1288,15 +1286,16 @@ int qdio_establish(struct ccw_device *cd
- 	if (rc) {
- 		DBF_ERROR("%4x est IO ERR", irq_ptr->schid.sch_no);
- 		DBF_ERROR("rc:%4x", rc);
--		qdio_shutdown_thinint(irq_ptr);
--		qdio_shutdown_irq(irq_ptr);
--		mutex_unlock(&irq_ptr->setup_mutex);
--		return rc;
-+		goto err_ccw_start;
- 	}
- 
--	wait_event_interruptible_timeout(cdev->private->wait_q,
--		irq_ptr->state == QDIO_IRQ_STATE_ESTABLISHED ||
--		irq_ptr->state == QDIO_IRQ_STATE_ERR, HZ);
-+	timeout = wait_event_interruptible_timeout(cdev->private->wait_q,
-+						   irq_ptr->state == QDIO_IRQ_STATE_ESTABLISHED ||
-+						   irq_ptr->state == QDIO_IRQ_STATE_ERR, HZ);
-+	if (timeout <= 0) {
-+		rc = (timeout == -ERESTARTSYS) ? -EINTR : -ETIME;
-+		goto err_ccw_timeout;
-+	}
- 
- 	if (irq_ptr->state != QDIO_IRQ_STATE_ESTABLISHED) {
- 		mutex_unlock(&irq_ptr->setup_mutex);
-@@ -1315,6 +1314,14 @@ int qdio_establish(struct ccw_device *cd
- 	qdio_print_subchannel_info(irq_ptr);
- 	qdio_setup_debug_entries(irq_ptr);
- 	return 0;
-+
-+err_ccw_timeout:
-+err_ccw_start:
-+	qdio_shutdown_thinint(irq_ptr);
-+err_thinint:
-+	qdio_shutdown_irq(irq_ptr);
-+	mutex_unlock(&irq_ptr->setup_mutex);
-+	return rc;
- }
- EXPORT_SYMBOL_GPL(qdio_establish);
- 
+ 	/* ast2400/2500 AHB accesses are not cache coherent */
 
 
