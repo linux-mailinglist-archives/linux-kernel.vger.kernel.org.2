@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 929C740E244
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:16:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45DF040E24A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:16:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242860AbhIPQgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:36:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37000 "EHLO mail.kernel.org"
+        id S243606AbhIPQg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:36:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37484 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240930AbhIPQ2s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:28:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4026961354;
-        Thu, 16 Sep 2021 16:18:13 +0000 (UTC)
+        id S242035AbhIPQ3I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:29:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C79526135D;
+        Thu, 16 Sep 2021 16:18:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809093;
-        bh=d6LoCSuTnfwIgOGiuZ/lv40mgJX33fKMA5AkF0j1eIE=;
+        s=korg; t=1631809096;
+        bh=9ys4q/Cq6uxiYo0LVkXwRkBOrR9jLBigOEKO29P6kHo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I39rhNeP30TeoItn7jjmTonbgcUgfqfdYzEePv7WIsKCB277+olgi9BnRW2vwSYrw
-         4GZmDwiv6A+gf4uhW9QJXQKA8gpm8+YdWQHxsVWWR3xJkAY6ueI8DOHfPino4Yac5U
-         ma5skcRqTvm61UmMQoxyjniZr5JgE/NPrZpxS51o=
+        b=GVvFP9SzO5N0zAznFv/2vW6B7DhrlPQOXs0LfieTaJSc/rgyZlD2W0YqHrK6lP7p/
+         1aIF5mEtTSKlmR0jNqIAbTPcdw+Mp0iZtaJ/PeDx8uaGzIS2Bl9VwDkX4edw3DcMH3
+         Hx0fBJ2BRWKbk6hv+P3rIzQXWwQ1Mop5BWHEkX4Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Iwona Winiarska <iwona.winiarska@intel.com>,
         Andrew Jeffery <andrew@aj.id.au>, Joel Stanley <joel@aj.id.au>,
         Joel Stanley <joel@jms.id.au>
-Subject: [PATCH 5.13 028/380] soc: aspeed: lpc-ctrl: Fix boundary check for mmap
-Date:   Thu, 16 Sep 2021 17:56:25 +0200
-Message-Id: <20210916155804.922880193@linuxfoundation.org>
+Subject: [PATCH 5.13 029/380] soc: aspeed: p2a-ctrl: Fix boundary check for mmap
+Date:   Thu, 16 Sep 2021 17:56:26 +0200
+Message-Id: <20210916155804.954500417@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
 References: <20210916155803.966362085@linuxfoundation.org>
@@ -43,7 +43,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Iwona Winiarska <iwona.winiarska@intel.com>
 
-commit b49a0e69a7b1a68c8d3f64097d06dabb770fec96 upstream.
+commit 8b07e990fb254fcbaa919616ac77f981cb48c73d upstream.
 
 The check mixes pages (vm_pgoff) with bytes (vm_start, vm_end) on one
 side of the comparison, and uses resource address (rather than just the
@@ -51,7 +51,7 @@ resource size) on the other side of the comparison.
 This can allow malicious userspace to easily bypass the boundary check and
 map pages that are located outside memory-region reserved by the driver.
 
-Fixes: 6c4e97678501 ("drivers/misc: Add Aspeed LPC control driver")
+Fixes: 01c60dcea9f7 ("drivers/misc: Add Aspeed P2A control driver")
 Cc: stable@vger.kernel.org
 Signed-off-by: Iwona Winiarska <iwona.winiarska@intel.com>
 Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
@@ -60,17 +60,17 @@ Reviewed-by: Joel Stanley <joel@aj.id.au>
 Signed-off-by: Joel Stanley <joel@jms.id.au>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/soc/aspeed/aspeed-lpc-ctrl.c |    2 +-
+ drivers/soc/aspeed/aspeed-p2a-ctrl.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/soc/aspeed/aspeed-lpc-ctrl.c
-+++ b/drivers/soc/aspeed/aspeed-lpc-ctrl.c
-@@ -51,7 +51,7 @@ static int aspeed_lpc_ctrl_mmap(struct f
- 	unsigned long vsize = vma->vm_end - vma->vm_start;
- 	pgprot_t prot = vma->vm_page_prot;
+--- a/drivers/soc/aspeed/aspeed-p2a-ctrl.c
++++ b/drivers/soc/aspeed/aspeed-p2a-ctrl.c
+@@ -110,7 +110,7 @@ static int aspeed_p2a_mmap(struct file *
+ 	vsize = vma->vm_end - vma->vm_start;
+ 	prot = vma->vm_page_prot;
  
--	if (vma->vm_pgoff + vsize > lpc_ctrl->mem_base + lpc_ctrl->mem_size)
-+	if (vma->vm_pgoff + vma_pages(vma) > lpc_ctrl->mem_size >> PAGE_SHIFT)
+-	if (vma->vm_pgoff + vsize > ctrl->mem_base + ctrl->mem_size)
++	if (vma->vm_pgoff + vma_pages(vma) > ctrl->mem_size >> PAGE_SHIFT)
  		return -EINVAL;
  
  	/* ast2400/2500 AHB accesses are not cache coherent */
