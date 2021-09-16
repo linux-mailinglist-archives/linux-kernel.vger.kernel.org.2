@@ -2,92 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A0B040ECFF
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 23:58:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FDEA40ED05
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 00:00:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240537AbhIPWAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 18:00:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54417 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240605AbhIPWAF (ORCPT
+        id S240613AbhIPWBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 18:01:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240317AbhIPWBX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 18:00:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631829523;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=p2nOnT/BtxTSAXpnqdHXN1Y4k+CMsYKb4beYByvY8jY=;
-        b=U6It/A7BNEusyPYpDXthF+zuLDirNPXfOKDoPeZFnnBXLv6HaY27ggRK++tXvG6mFlA/3g
-        q3p2UgdPPOfhtxkk+qTAqv4e3RGbHFy8SKat0P0xE3gjWlQ9H9nkN2aJ0pkfbSi5o/O1m2
-        cAjw3BTLnyB451gl8oXAKBJ0JVr7LMY=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-301-KwprJ7veOJeqSyA8ZaOYaA-1; Thu, 16 Sep 2021 17:58:42 -0400
-X-MC-Unique: KwprJ7veOJeqSyA8ZaOYaA-1
-Received: by mail-qt1-f198.google.com with SMTP id z16-20020ac86b90000000b0029eec160182so73633889qts.9
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 14:58:42 -0700 (PDT)
+        Thu, 16 Sep 2021 18:01:23 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E508C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 15:00:02 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id mv7-20020a17090b198700b0019c843e7233so2096254pjb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 15:00:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QgZT1XC7G7Q8x79HhR59+Cupimv0CKdkeGrNL4A8Xx8=;
+        b=BoNo1Cg4OlDT1EgGfZBU15ouPLGhO1LNII4sl9+rYyYBUZdEgFHJ57ISSXckZaIAAB
+         hFhtcyZ79TTWcF1c7MpDMCnNp+TVYJZGtjjKNQgOMpVKpchZ+jfoOQLe/C63IDidXrNC
+         cQzgxNnpao++bNXKLqRe6+0x0MVyapQgokn94=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=p2nOnT/BtxTSAXpnqdHXN1Y4k+CMsYKb4beYByvY8jY=;
-        b=Tr91M7OiAoasnw9J7ipSItzR002XHXKl3WDBqly88W1lTvcbi0rgVjLDfLJNx4aof3
-         9O5jFqH8ibLHT+FSc8q67M6zV7TUWCxwsRKnr0xUX3gPhQYJvEFox5h3g0+NI0K7Y2yz
-         G1ASUJMnVH+RXgavoHnsRoI1olZeh8FgT/IH8zWFhhlUYtkr/GTZ1mhltHkEkESsLRSx
-         TMT/9ZH/2JHmyzkRRWWqY6XSg4lG9UgZ/MJlMcvsSRRDQgIVQ+QFG1oJRi/KaLjZrrd2
-         vKh0o1xHm8e4HVmFrf5NwzhwCRI9gmlLFtOMf1n17fWWiby9haNLDbwigi8LYj2ngiQA
-         /mxw==
-X-Gm-Message-State: AOAM530i/TjyODQJ6i9Q2gALa+LriKTISAA0rkfp3xG43E79smcQmCdA
-        fDdoL7TBOiVBO8OnprnhvZ5C+lWYsplVDeOKT68RVSrAJv2tC3A89xy43W6FdSIU7A0enY8/Fvi
-        YTSyYEgw5s9sO7oev5MRC332H
-X-Received: by 2002:a37:e409:: with SMTP id y9mr5981398qkf.441.1631829521883;
-        Thu, 16 Sep 2021 14:58:41 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwhfdGFXrqy/ukybe2LuApn40ildbDdIpxxhJNlm1xp8LfoJMi0CKvrlurNql13VHOqdn1FaQ==
-X-Received: by 2002:a37:e409:: with SMTP id y9mr5981383qkf.441.1631829521661;
-        Thu, 16 Sep 2021 14:58:41 -0700 (PDT)
-Received: from t490s.redhat.com ([2607:fea8:56a2:9100::d35a])
-        by smtp.gmail.com with ESMTPSA id c7sm2990832qtv.9.2021.09.16.14.58.40
+        bh=QgZT1XC7G7Q8x79HhR59+Cupimv0CKdkeGrNL4A8Xx8=;
+        b=Q932epdo1WJpKFqqmrX8lh90WCt22iwDbee3H1Rn7ccpEefRATLVyLDheuHlNyWko7
+         MaVpV1YVmIWm8OkxynpQ6m46nB7du/KmbcQX33gJECmNOB8GdMRCivHcgxf8THFM3tZ0
+         8O1DZ3ImiMVL8ldgNolYbPTGLBchNM3wpoCkKKFDUCLMji7PxnE7c4IEAKnsLt11xyAT
+         rTlqpNsMpusUBJVSBEdcyqep+drhsdV7zazve7FCYxTgVrGLk3/6ARN70mQh7mPY3zGU
+         q130Js7xG3hbcxvb87lCd9JHib+koBnHvYY40CGuBUHFN+dtW11j7lQZuHE72ZyvyeWv
+         jxig==
+X-Gm-Message-State: AOAM530qv8xIDQ+wIubEThARArb8dh82Iv8DVhbn0Bx0wauTVBuDFz/R
+        QgTHjx+HdQCTunzpA4gKSnmkyw==
+X-Google-Smtp-Source: ABdhPJxYFlKyO0l7iPw8xR3e4r2q9UdfQZbC0fk2CIcbgICOD0EEbtfK6agibZbD4Pve2h7X45IRDg==
+X-Received: by 2002:a17:90a:f190:: with SMTP id bv16mr17196129pjb.76.1631829601959;
+        Thu, 16 Sep 2021 15:00:01 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id o9sm4318030pfh.217.2021.09.16.15.00.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 14:58:41 -0700 (PDT)
-From:   Peter Xu <peterx@redhat.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     peterx@redhat.com, Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>
-Subject: [PATCH] mm/smaps: Use vma->vm_pgoff directly when counting partial swap
-Date:   Thu, 16 Sep 2021 17:58:39 -0400
-Message-Id: <20210916215839.95177-1-peterx@redhat.com>
-X-Mailer: git-send-email 2.31.1
+        Thu, 16 Sep 2021 15:00:01 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Michal Hocko <mhocko@suse.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Anthony Yznaga <anthony.yznaga@oracle.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH v2] binfmt_elf: Reintroduce using MAP_FIXED_NOREPLACE
+Date:   Thu, 16 Sep 2021 14:59:47 -0700
+Message-Id: <20210916215947.3993776-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5456; h=from:subject; bh=l1xfacQIzr280Zi74kwdiG88aSQKHLZ+n9yn8gc4K2E=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhQ75ThNHIlbCr7ypZpgj0HN0mhaDLJiYk3btIZhdc mDznu3eJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYUO+UwAKCRCJcvTf3G3AJoBKD/ 9iJ0dh+HoluBp67x4y32KvdaxOvHZP+QF4qv+HoThabTE8ek02bTa70vV0eOV1Dp8VJn7r2NhZMXOI Ki24arJ3Ad+/RbR1rvrCsmLJ5Nevz+/bIvc2YMwWLsbYAPza5BwUYpJ3L0arF7sBnca86bYlYEV23B IWFRp8MHDYsWzxAyxGyhsxXXFOe7dd7j9kM7gIoFcwVUNTKC9Znrq+qLx8+Jqlfm3mJIY2LZqyRtvB 6gWGiM+pvtOd3lXTiM9WMK3v4KYGGxa0qD9RCu67sBUcXbDfM589DitRI/wH5b5xH1+Fk4U6q+vNbr 5oooeyYu1k1+fhjrW2K8xdm3hhiTQ0GuqM711bQTNpuDB/UCEJDetGsYZmcUWFo0I4Y4MzoYAsaRCd hX6X11G174WGklsLawns6d/lFvjR5yuXroyX9hZOUZGfxKs+G5gFqcq+HyCbuIaOHcIaaH8LEXYZJE 9nVMSDcFpZXYi4pDMKnrRu5sib/ITSQVZuWraXY7i4jdgvmQSMt9L2LaQFar5xewWY2DjfWygD1Dqk MRdawMaLEhYn679RqKhu4CSYChFYhk89LU8QALVIMlj7gteQ7IJEIGJJ2D9LOv0BcD4dhZNgsNVHP0 v2W/j5nmnD56X+0Dnhxn1zia6sJ4IfdBW22CgDygxPSs6QbPRGqFuentU8ig==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-linear_page_index(vma, vma->vm_start) of a shmem vma is exactly vm_pgoff.
+Commit b212921b13bd ("elf: don't use MAP_FIXED_NOREPLACE for elf
+executable mappings") reverted back to using MAP_FIXED to map ELF
+LOAD segments because it was found that the segments in some binaries
+overlap and can cause MAP_FIXED_NOREPLACE to fail.
 
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Cc: Hugh Dickins <hughd@google.com>
-Signed-off-by: Peter Xu <peterx@redhat.com>
+The original intent of MAP_FIXED_NOREPLACE in the ELF loader was to
+prevent the silent clobbering of an existing mapping (e.g. stack)
+by the ELF image, which could lead to exploitable conditions. Quoting
+commit 4ed28639519c ("fs, elf: drop MAP_FIXED usage from elf_map"),
+which originally introduced the use of MAP_FIXED_NOREPLACE in the
+loader:
+
+    Both load_elf_interp and load_elf_binary rely on elf_map to map
+    segments [to a specific] address and they use MAP_FIXED to enforce
+    that. This is however [a] dangerous thing prone to silent data
+    corruption which can be even exploitable.
+    ...
+    Let's take CVE-2017-1000253 as an example ... we could end up mapping
+    [the executable] over the existing stack ... The [stack layout] issue
+    has been fixed since then ... So we should be safe and any [similar]
+    attack should be impractical. On the other hand this is just too
+    subtle [an] assumption ... it can break quite easily and [be] hard to
+    spot.
+    ...
+    Address this [weakness] by changing MAP_FIXED to the newly added
+    MAP_FIXED_NOREPLACE. This will mean that mmap will fail if there is
+    an existing mapping clashing with the requested one [instead of
+    silently] clobbering it.
+
+Then processing ET_DYN binaries the loader already calculates a total
+size for the image when the first segment is mapped, maps the entire
+image, and then unmaps the remainder before the remaining segments are
+then individually mapped. To avoid the earlier problems (legitimate
+overlapping LOAD segments specified in the ELF), apply the same
+logic to ET_EXEC binaries as well. For both ET_EXEC and ET_DYN+INTERP
+use MAP_FIXED_NOREPLACE for the initial total size mapping and then
+use MAP_FIXED to build the final (possibly legitimately overlapping)
+mappings. For ET_DYN w/out INTERP, continue to map at a system-selected
+address in the mmap region.
+
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Eric Biederman <ebiederm@xmission.com>
+Co-developed-by: Anthony Yznaga <anthony.yznaga@oracle.com>
+Signed-off-by: Anthony Yznaga <anthony.yznaga@oracle.com>
+Link: https://lore.kernel.org/lkml/1595869887-23307-2-git-send-email-anthony.yznaga@oracle.com
+Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- mm/shmem.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ fs/binfmt_elf.c | 31 ++++++++++++++++++++++---------
+ 1 file changed, 22 insertions(+), 9 deletions(-)
 
-diff --git a/mm/shmem.c b/mm/shmem.c
-index 96ccf6e941aa..2aef5b8e17c9 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -856,8 +856,7 @@ unsigned long shmem_swap_usage(struct vm_area_struct *vma)
- 		return swapped << PAGE_SHIFT;
+diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+index 69d900a8473d..f3523807dbca 100644
+--- a/fs/binfmt_elf.c
++++ b/fs/binfmt_elf.c
+@@ -1074,20 +1074,26 @@ static int load_elf_binary(struct linux_binprm *bprm)
  
- 	/* Here comes the more involved part */
--	return shmem_partial_swap_usage(mapping,
--			linear_page_index(vma, vma->vm_start),
-+	return shmem_partial_swap_usage(mapping, vma->vm_pgoff,
- 			linear_page_index(vma, vma->vm_end));
- }
+ 		vaddr = elf_ppnt->p_vaddr;
+ 		/*
+-		 * If we are loading ET_EXEC or we have already performed
+-		 * the ET_DYN load_addr calculations, proceed normally.
++		 * The first time through the loop, load_addr_set is false:
++		 * layout will be calculated. Once set, use MAP_FIXED since
++		 * we know we've already safely mapped the entire region with
++		 * MAP_FIXED_NOREPLACE in the once-per-binary logic following.
+ 		 */
+-		if (elf_ex->e_type == ET_EXEC || load_addr_set) {
++		if (load_addr_set) {
+ 			elf_flags |= MAP_FIXED;
++		} else if (elf_ex->e_type == ET_EXEC) {
++			/*
++			 * This logic is run once for the first LOAD Program
++			 * Header for ET_EXEC binaries. No special handling
++			 * is needed.
++			 */
++			elf_flags |= MAP_FIXED_NOREPLACE;
+ 		} else if (elf_ex->e_type == ET_DYN) {
+ 			/*
+ 			 * This logic is run once for the first LOAD Program
+ 			 * Header for ET_DYN binaries to calculate the
+ 			 * randomization (load_bias) for all the LOAD
+-			 * Program Headers, and to calculate the entire
+-			 * size of the ELF mapping (total_size). (Note that
+-			 * load_addr_set is set to true later once the
+-			 * initial mapping is performed.)
++			 * Program Headers.
+ 			 *
+ 			 * There are effectively two types of ET_DYN
+ 			 * binaries: programs (i.e. PIE: ET_DYN with INTERP)
+@@ -1108,7 +1114,7 @@ static int load_elf_binary(struct linux_binprm *bprm)
+ 			 * Therefore, programs are loaded offset from
+ 			 * ELF_ET_DYN_BASE and loaders are loaded into the
+ 			 * independently randomized mmap region (0 load_bias
+-			 * without MAP_FIXED).
++			 * without MAP_FIXED nor MAP_FIXED_NOREPLACE).
+ 			 */
+ 			if (interpreter) {
+ 				load_bias = ELF_ET_DYN_BASE;
+@@ -1117,7 +1123,7 @@ static int load_elf_binary(struct linux_binprm *bprm)
+ 				alignment = maximum_alignment(elf_phdata, elf_ex->e_phnum);
+ 				if (alignment)
+ 					load_bias &= ~(alignment - 1);
+-				elf_flags |= MAP_FIXED;
++				elf_flags |= MAP_FIXED_NOREPLACE;
+ 			} else
+ 				load_bias = 0;
  
+@@ -1129,7 +1135,14 @@ static int load_elf_binary(struct linux_binprm *bprm)
+ 			 * is then page aligned.
+ 			 */
+ 			load_bias = ELF_PAGESTART(load_bias - vaddr);
++		}
+ 
++		/*
++		 * Calculate the entire size of the ELF mapping (total_size).
++		 * (Note that load_addr_set is set to true later once the
++		 * initial mapping is performed.)
++		 */
++		if (!load_addr_set) {
+ 			total_size = total_mapping_size(elf_phdata,
+ 							elf_ex->e_phnum);
+ 			if (!total_size) {
 -- 
-2.31.1
+2.30.2
 
