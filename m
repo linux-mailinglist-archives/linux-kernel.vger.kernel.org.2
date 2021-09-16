@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D599140E515
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:26:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1394E40E4CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:25:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349846AbhIPRHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:07:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34164 "EHLO mail.kernel.org"
+        id S244870AbhIPRFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:05:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34160 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348211AbhIPRCQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1348208AbhIPRCQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 16 Sep 2021 13:02:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 73BC861AFF;
-        Thu, 16 Sep 2021 16:33:22 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 51A3061B00;
+        Thu, 16 Sep 2021 16:33:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810003;
-        bh=62okn562g9fz7aSO/nIT4SP19FQ7BSiz1dymBpvUuTI=;
+        s=korg; t=1631810005;
+        bh=DPwHQ/O2t7CmzyS/XLygN1/o/YYDUSrXHbgLso137Ik=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AOKHr2JCNJ+fL4MTHqmRSCTxpiYdDI08LlCBJHqjv1k+nnrpmbdby8kXeRK5/1+i4
-         nppUMX4OCtk9spHOGfp+ZaKbFEgyxjeRjPWRyxHOvgUycxGpxzAOok+5qIZ1rxcAPl
-         rka2ftWwMq9AkAWyK68J4BuCVvQG0JlEyGROiLP8=
+        b=oeOO8JgpkHiy4glg7TuiZNPevuVl8O+qB397x7pdgqgglehKSHIP4uML3VfLFuUdN
+         0jWnC4pF4ZDZeVYToVs0gI9E/S2WKw0MCQmeaxeasDD4aMQ/gcRiRWZxynSiOFpWBp
+         U/N86+dfQutYD3NmqovwmqsbROM6NGyie+PNbH2s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, sumiyawang <sumiyawang@tencent.com>,
-        yongduan <yongduan@tencent.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Subject: [PATCH 5.13 363/380] libnvdimm/pmem: Fix crash triggered when I/O in-flight during unbind
-Date:   Thu, 16 Sep 2021 18:02:00 +0200
-Message-Id: <20210916155816.405824765@linuxfoundation.org>
+        stable@vger.kernel.org, Patryk Duda <pdk@semihalf.com>,
+        Benson Leung <bleung@chromium.org>
+Subject: [PATCH 5.13 364/380] platform/chrome: cros_ec_proto: Send command again when timeout occurs
+Date:   Thu, 16 Sep 2021 18:02:01 +0200
+Message-Id: <20210916155816.436388797@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
 References: <20210916155803.966362085@linuxfoundation.org>
@@ -40,75 +39,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: sumiyawang <sumiyawang@tencent.com>
+From: Patryk Duda <pdk@semihalf.com>
 
-commit 32b2397c1e56f33b0b1881def965bb89bd12f448 upstream.
+commit 3abc16af57c9939724df92fcbda296b25cc95168 upstream.
 
-There is a use after free crash when the pmem driver tears down its
-mapping while I/O is still inbound.
+Sometimes kernel is trying to probe Fingerprint MCU (FPMCU) when it
+hasn't initialized SPI yet. This can happen because FPMCU is restarted
+during system boot and kernel can send message in short window
+eg. between sysjump to RW and SPI initialization.
 
-This is triggered by driver unbind, "ndctl destroy-namespace", while I/O
-is in flight.
-
-Fix the sequence of blk_cleanup_queue() vs memunmap().
-
-The crash signature is of the form:
-
- BUG: unable to handle page fault for address: ffffc90080200000
- CPU: 36 PID: 9606 Comm: systemd-udevd
- Call Trace:
-  ? pmem_do_bvec+0xf9/0x3a0
-  ? xas_alloc+0x55/0xd0
-  pmem_rw_page+0x4b/0x80
-  bdev_read_page+0x86/0xb0
-  do_mpage_readpage+0x5d4/0x7a0
-  ? lru_cache_add+0xe/0x10
-  mpage_readpages+0xf9/0x1c0
-  ? bd_link_disk_holder+0x1a0/0x1a0
-  blkdev_readpages+0x1d/0x20
-  read_pages+0x67/0x1a0
-
-  ndctl Call Trace in vmcore:
-  PID: 23473  TASK: ffff88c4fbbe8000  CPU: 1   COMMAND: "ndctl"
-  __schedule
-  schedule
-  blk_mq_freeze_queue_wait
-  blk_freeze_queue
-  blk_cleanup_queue
-  pmem_release_queue
-  devm_action_release
-  release_nodes
-  devres_release_all
-  device_release_driver_internal
-  device_driver_detach
-  unbind_store
-
-Cc: <stable@vger.kernel.org>
-Signed-off-by: sumiyawang <sumiyawang@tencent.com>
-Reviewed-by: yongduan <yongduan@tencent.com>
-Link: https://lore.kernel.org/r/1629632949-14749-1-git-send-email-sumiyawang@tencent.com
-Fixes: 50f44ee7248a ("mm/devm_memremap_pages: fix final page put race")
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+Cc: <stable@vger.kernel.org> # 4.4+
+Signed-off-by: Patryk Duda <pdk@semihalf.com>
+Link: https://lore.kernel.org/r/20210518140758.29318-1-pdk@semihalf.com
+Signed-off-by: Benson Leung <bleung@chromium.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/nvdimm/pmem.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/platform/chrome/cros_ec_proto.c |    9 +++++++++
+ 1 file changed, 9 insertions(+)
 
---- a/drivers/nvdimm/pmem.c
-+++ b/drivers/nvdimm/pmem.c
-@@ -449,11 +449,11 @@ static int pmem_attach_disk(struct devic
- 		pmem->pfn_flags |= PFN_MAP;
- 		bb_range = pmem->pgmap.range;
- 	} else {
-+		addr = devm_memremap(dev, pmem->phys_addr,
-+				pmem->size, ARCH_MEMREMAP_PMEM);
- 		if (devm_add_action_or_reset(dev, pmem_release_queue,
- 					&pmem->pgmap))
- 			return -ENOMEM;
--		addr = devm_memremap(dev, pmem->phys_addr,
--				pmem->size, ARCH_MEMREMAP_PMEM);
- 		bb_range.start =  res->start;
- 		bb_range.end = res->end;
- 	}
+--- a/drivers/platform/chrome/cros_ec_proto.c
++++ b/drivers/platform/chrome/cros_ec_proto.c
+@@ -279,6 +279,15 @@ static int cros_ec_host_command_proto_qu
+ 	msg->insize = sizeof(struct ec_response_get_protocol_info);
+ 
+ 	ret = send_command(ec_dev, msg);
++	/*
++	 * Send command once again when timeout occurred.
++	 * Fingerprint MCU (FPMCU) is restarted during system boot which
++	 * introduces small window in which FPMCU won't respond for any
++	 * messages sent by kernel. There is no need to wait before next
++	 * attempt because we waited at least EC_MSG_DEADLINE_MS.
++	 */
++	if (ret == -ETIMEDOUT)
++		ret = send_command(ec_dev, msg);
+ 
+ 	if (ret < 0) {
+ 		dev_dbg(ec_dev->dev,
 
 
