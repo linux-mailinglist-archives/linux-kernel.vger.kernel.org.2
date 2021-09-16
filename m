@@ -2,90 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9D7640E2F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:17:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3335E40E387
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:20:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244447AbhIPQnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:43:24 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:56038 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242979AbhIPQhu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:37:50 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id 70F0D1F440DA
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        =?utf-8?Q?Andr=C3=A9?= Almeida <andrealmeid@collabora.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Collabora kernel ML <kernel@collabora.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        GNU C Library <libc-alpha@sourceware.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Davidlohr Bueso <dave@stgolabs.net>
-Subject: Re: [PATCH v3 2/6] futex2: Implement vectorized wait
-Organization: Collabora
-References: <20210913175249.81074-1-andrealmeid@collabora.com>
-        <20210913175249.81074-3-andrealmeid@collabora.com>
-        <875yv4ge83.fsf@collabora.com>
-        <58536544-e032-1954-ce30-d131869dc95e@collabora.com>
-        <8735q5dutq.fsf@collabora.com>
-        <YUMofqnG6zE4BrnR@hirez.programming.kicks-ass.net>
-        <CAK8P3a3Bka5R4dmHE_+xuKTCtMaSZEYvT9jAz7QbgnF_CkeoNQ@mail.gmail.com>
-Date:   Thu, 16 Sep 2021 12:36:21 -0400
-In-Reply-To: <CAK8P3a3Bka5R4dmHE_+xuKTCtMaSZEYvT9jAz7QbgnF_CkeoNQ@mail.gmail.com>
-        (Arnd Bergmann's message of "Thu, 16 Sep 2021 13:50:14 +0200")
-Message-ID: <874kak8ol6.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S1344860AbhIPQtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:49:19 -0400
+Received: from mga14.intel.com ([192.55.52.115]:11538 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244356AbhIPQmq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:42:46 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10109"; a="222263863"
+X-IronPort-AV: E=Sophos;i="5.85,298,1624345200"; 
+   d="scan'208";a="222263863"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2021 09:36:36 -0700
+X-IronPort-AV: E=Sophos;i="5.85,298,1624345200"; 
+   d="scan'208";a="554156676"
+Received: from xuanguan-mobl.amr.corp.intel.com (HELO [10.213.180.84]) ([10.213.180.84])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2021 09:36:35 -0700
+Subject: Re: [PATCH v3 16/30] ABI: sysfs-bus-soundwire-slave: use wildcards on
+ What definitions
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>, Vinod Koul <vkoul@kernel.org>,
+        linux-kernel@vger.kernel.org
+References: <cover.1631782432.git.mchehab+huawei@kernel.org>
+ <416f4a746c116147abb08fb0155a6a4ed065dfd7.1631782432.git.mchehab+huawei@kernel.org>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <9a379f0a-e076-844c-fb5d-130359e36754@linux.intel.com>
+Date:   Thu, 16 Sep 2021 11:36:33 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <416f4a746c116147abb08fb0155a6a4ed065dfd7.1631782432.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arnd Bergmann <arnd@arndb.de> writes:
 
-> On Thu, Sep 16, 2021 at 1:22 PM Peter Zijlstra <peterz@infradead.org> wrote:
->>
->> On Thu, Sep 16, 2021 at 12:10:25AM -0400, Gabriel Krisman Bertazi wrote:
->>
->> > I find this weird.  I'm not even juts talking about compat, but even on
->> > native 32-bit. But also, 32 applications on 64, which is a big use
->> > case for games.
->>
->> Seriously, people still make 32bit applications today? And for legacy
->> games, I would think the speed increase of modern CPUs would far offset
->> this little inefficiency.
->
-> There are 32-bit Windows games apparently, because it's easier to build it
-> that way than having both 32-bit and 64-bit versions.
 
-Yes, many modern, recently released, tiple-A Windows games running over
-Proton/Wine are published only in 32-bit.  We also keep a 32-bit Proton
-for that reason.
+On 9/16/21 3:59 AM, Mauro Carvalho Chehab wrote:
+> An "N" upper letter is not a wildcard, nor can easily be identified
+> by script, specially since the USB sysfs define things like.
+> bNumInterfaces. Use, instead, <N>, in order to let script/get_abi.pl
+> to convert it into a Regex.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-> There may be native 32-bit games built for Linux from the same sources when
-> that is not written portably, not sure if that's a thing.
->
-> One important reason to use compat mode is for cost savings when you can
-> ship an embedded system with slightly less RAM by running 32-bit user space
-> on it. We even still see people running 32-bit kernels on Arm boxes that have
-> entry-level 64-bit chips, though I hope that those will migrate the
-> kernel to arm64
-> even when they ship 32-bit user space.
->
-> Similar logic applies to cloud instances or containers. Running a 32-bit
-> Alpine Linux in a container means you can often go to a lower memory
-> instance on the host compared to a full 64-bit distro.
->
->         Arnd
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
--- 
-Gabriel Krisman Bertazi
+I also realized that we have a similar with the 'master' case
+
+more sysfs-bus-soundwire-master
+What:		/sys/bus/soundwire/devices/sdw-master-N/revision
+		/sys/bus/soundwire/devices/sdw-master-N/clk_stop_modes
+		/sys/bus/soundwire/devices/sdw-master-N/clk_freq
+		/sys/bus/soundwire/devices/sdw-master-N/clk_gears
+		/sys/bus/soundwire/devices/sdw-master-N/default_col
+		/sys/bus/soundwire/devices/sdw-master-N/default_frame_rate
+		/sys/bus/soundwire/devices/sdw-master-N/default_row
+		/sys/bus/soundwire/devices/sdw-master-N/dynamic_shape
+		/sys/bus/soundwire/devices/sdw-master-N/err_threshold
+		/sys/bus/soundwire/devices/sdw-master-N/max_clk_freq
+
+If there is an update we should modify this as well for consistency with
+sdw-master-<N>?
+
+> ---
+>  .../ABI/testing/sysfs-bus-soundwire-slave     | 60 +++++++++----------
+>  1 file changed, 30 insertions(+), 30 deletions(-)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-bus-soundwire-slave b/Documentation/ABI/testing/sysfs-bus-soundwire-slave
+> index d324aa0b678f..fbf55834dfee 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-soundwire-slave
+> +++ b/Documentation/ABI/testing/sysfs-bus-soundwire-slave
+> @@ -64,37 +64,37 @@ Description:	SoundWire Slave Data Port-0 DisCo properties.
+>  		Data port 0 are used by the bus to configure the Data Port 0.
+>  
+>  
+> -What:		/sys/bus/soundwire/devices/sdw:.../dpN_src/max_word
+> -		/sys/bus/soundwire/devices/sdw:.../dpN_src/min_word
+> -		/sys/bus/soundwire/devices/sdw:.../dpN_src/words
+> -		/sys/bus/soundwire/devices/sdw:.../dpN_src/type
+> -		/sys/bus/soundwire/devices/sdw:.../dpN_src/max_grouping
+> -		/sys/bus/soundwire/devices/sdw:.../dpN_src/simple_ch_prep_sm
+> -		/sys/bus/soundwire/devices/sdw:.../dpN_src/ch_prep_timeout
+> -		/sys/bus/soundwire/devices/sdw:.../dpN_src/imp_def_interrupts
+> -		/sys/bus/soundwire/devices/sdw:.../dpN_src/min_ch
+> -		/sys/bus/soundwire/devices/sdw:.../dpN_src/max_ch
+> -		/sys/bus/soundwire/devices/sdw:.../dpN_src/channels
+> -		/sys/bus/soundwire/devices/sdw:.../dpN_src/ch_combinations
+> -		/sys/bus/soundwire/devices/sdw:.../dpN_src/max_async_buffer
+> -		/sys/bus/soundwire/devices/sdw:.../dpN_src/block_pack_mode
+> -		/sys/bus/soundwire/devices/sdw:.../dpN_src/port_encoding
+> +What:		/sys/bus/soundwire/devices/sdw:.../dp<N>_src/max_word
+> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_src/min_word
+> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_src/words
+> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_src/type
+> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_src/max_grouping
+> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_src/simple_ch_prep_sm
+> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_src/ch_prep_timeout
+> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_src/imp_def_interrupts
+> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_src/min_ch
+> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_src/max_ch
+> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_src/channels
+> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_src/ch_combinations
+> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_src/max_async_buffer
+> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_src/block_pack_mode
+> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_src/port_encoding
+>  
+> -		/sys/bus/soundwire/devices/sdw:.../dpN_sink/max_word
+> -		/sys/bus/soundwire/devices/sdw:.../dpN_sink/min_word
+> -		/sys/bus/soundwire/devices/sdw:.../dpN_sink/words
+> -		/sys/bus/soundwire/devices/sdw:.../dpN_sink/type
+> -		/sys/bus/soundwire/devices/sdw:.../dpN_sink/max_grouping
+> -		/sys/bus/soundwire/devices/sdw:.../dpN_sink/simple_ch_prep_sm
+> -		/sys/bus/soundwire/devices/sdw:.../dpN_sink/ch_prep_timeout
+> -		/sys/bus/soundwire/devices/sdw:.../dpN_sink/imp_def_interrupts
+> -		/sys/bus/soundwire/devices/sdw:.../dpN_sink/min_ch
+> -		/sys/bus/soundwire/devices/sdw:.../dpN_sink/max_ch
+> -		/sys/bus/soundwire/devices/sdw:.../dpN_sink/channels
+> -		/sys/bus/soundwire/devices/sdw:.../dpN_sink/ch_combinations
+> -		/sys/bus/soundwire/devices/sdw:.../dpN_sink/max_async_buffer
+> -		/sys/bus/soundwire/devices/sdw:.../dpN_sink/block_pack_mode
+> -		/sys/bus/soundwire/devices/sdw:.../dpN_sink/port_encoding
+> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_sink/max_word
+> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_sink/min_word
+> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_sink/words
+> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_sink/type
+> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_sink/max_grouping
+> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_sink/simple_ch_prep_sm
+> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_sink/ch_prep_timeout
+> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_sink/imp_def_interrupts
+> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_sink/min_ch
+> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_sink/max_ch
+> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_sink/channels
+> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_sink/ch_combinations
+> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_sink/max_async_buffer
+> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_sink/block_pack_mode
+> +		/sys/bus/soundwire/devices/sdw:.../dp<N>_sink/port_encoding
+>  
+>  Date:		May 2020
+>  
+> 
