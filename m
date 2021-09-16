@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E56640E661
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:30:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DF5040E339
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:20:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245711AbhIPRVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:21:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39922 "EHLO mail.kernel.org"
+        id S244086AbhIPQqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:46:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50780 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349473AbhIPROE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:14:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CC1261414;
-        Thu, 16 Sep 2021 16:39:19 +0000 (UTC)
+        id S245356AbhIPQkU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:40:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C84261A0B;
+        Thu, 16 Sep 2021 16:23:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810360;
-        bh=7jspRymjruWv8ZVQQoIyyjjJyKqgfsOq/RILWjA1krM=;
+        s=korg; t=1631809418;
+        bh=3U+Q2ExehCpShUzp7qfyAw0zZCRiu3dm9wxhWnkUSOE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v3qkpy/JU8QwUNVqZ+2+cr4j0nHpRhoRWY2GwdHvhbyWfL/YLHhIKjE4addEX17LZ
-         JPwp5spJ8Gwuw1PMeeeLKpAATNLjtDk8dw3l3MmdquofhIYIxFEOnQDxEiup+jtAaP
-         2MC54qXc9DhN8krDNSNqXYliKOA97J7Jb3ckisFc=
+        b=KighQ/pUt7d80AZIYZWwiejw99hkIe7BeIrX9l+FFJBUWlro8+U3kJXLhqcaivdsU
+         d+UEPsLARfAMlP9EipoZa19Defdl7AAZp10R2CFWysmIFRabJaZWkj24ptrY1Y2taB
+         Xfz/gm9G/nglW1yVG5FEdrbVaLDhMVIBe8oI+qbA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Wei Li <liwei391@huawei.com>,
+        stable@vger.kernel.org, Manish Rangankar <mrangankar@marvell.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 112/432] scsi: fdomain: Fix error return code in fdomain_probe()
-Date:   Thu, 16 Sep 2021 17:57:41 +0200
-Message-Id: <20210916155814.567145547@linuxfoundation.org>
+Subject: [PATCH 5.13 105/380] scsi: qedi: Fix error codes in qedi_alloc_global_queues()
+Date:   Thu, 16 Sep 2021 17:57:42 +0200
+Message-Id: <20210916155807.615511554@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,39 +41,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wei Li <liwei391@huawei.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 632c4ae6da1d629eddf9da1e692d7617c568c256 ]
+[ Upstream commit 4dbe57d46d54a847875fa33e7d05877bb341585e ]
 
-If request_region() fails the return value is not set. Return -EBUSY on
-error.
+This function had some left over code that returned 1 on error instead
+negative error codes.  Convert everything to use negative error codes.  The
+caller treats all non-zero returns the same so this does not affect run
+time.
 
-Link: https://lore.kernel.org/r/20210715032625.1395495-1-liwei391@huawei.com
-Fixes: 8674a8aa2c39 ("scsi: fdomain: Add PCMCIA support")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wei Li <liwei391@huawei.com>
+A couple places set "rc" instead of "status" so those error paths ended up
+returning success by mistake.  Get rid of the "rc" variable and use
+"status" everywhere.
+
+Remove the bogus "status = 0" initialization, as a future proofing measure
+so the compiler will warn about uninitialized error codes.
+
+Link: https://lore.kernel.org/r/20210810084753.GD23810@kili
+Fixes: ace7f46ba5fd ("scsi: qedi: Add QLogic FastLinQ offload iSCSI driver framework.")
+Acked-by: Manish Rangankar <mrangankar@marvell.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/pcmcia/fdomain_cs.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/scsi/qedi/qedi_main.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/scsi/pcmcia/fdomain_cs.c b/drivers/scsi/pcmcia/fdomain_cs.c
-index e42acf314d06..33df6a9ba9b5 100644
---- a/drivers/scsi/pcmcia/fdomain_cs.c
-+++ b/drivers/scsi/pcmcia/fdomain_cs.c
-@@ -45,8 +45,10 @@ static int fdomain_probe(struct pcmcia_device *link)
- 		goto fail_disable;
+diff --git a/drivers/scsi/qedi/qedi_main.c b/drivers/scsi/qedi/qedi_main.c
+index edf915432704..99e1a323807d 100644
+--- a/drivers/scsi/qedi/qedi_main.c
++++ b/drivers/scsi/qedi/qedi_main.c
+@@ -1621,7 +1621,7 @@ static int qedi_alloc_global_queues(struct qedi_ctx *qedi)
+ {
+ 	u32 *list;
+ 	int i;
+-	int status = 0, rc;
++	int status;
+ 	u32 *pbl;
+ 	dma_addr_t page;
+ 	int num_pages;
+@@ -1632,14 +1632,14 @@ static int qedi_alloc_global_queues(struct qedi_ctx *qedi)
+ 	 */
+ 	if (!qedi->num_queues) {
+ 		QEDI_ERR(&qedi->dbg_ctx, "No MSI-X vectors available!\n");
+-		return 1;
++		return -ENOMEM;
+ 	}
  
- 	if (!request_region(link->resource[0]->start, FDOMAIN_REGION_SIZE,
--			    "fdomain_cs"))
-+			    "fdomain_cs")) {
-+		ret = -EBUSY;
- 		goto fail_disable;
-+	}
+ 	/* Make sure we allocated the PBL that will contain the physical
+ 	 * addresses of our queues
+ 	 */
+ 	if (!qedi->p_cpuq) {
+-		status = 1;
++		status = -EINVAL;
+ 		goto mem_alloc_failure;
+ 	}
  
- 	sh = fdomain_create(link->resource[0]->start, link->irq, 7, &link->dev);
- 	if (!sh) {
+@@ -1654,13 +1654,13 @@ static int qedi_alloc_global_queues(struct qedi_ctx *qedi)
+ 		  "qedi->global_queues=%p.\n", qedi->global_queues);
+ 
+ 	/* Allocate DMA coherent buffers for BDQ */
+-	rc = qedi_alloc_bdq(qedi);
+-	if (rc)
++	status = qedi_alloc_bdq(qedi);
++	if (status)
+ 		goto mem_alloc_failure;
+ 
+ 	/* Allocate DMA coherent buffers for NVM_ISCSI_CFG */
+-	rc = qedi_alloc_nvm_iscsi_cfg(qedi);
+-	if (rc)
++	status = qedi_alloc_nvm_iscsi_cfg(qedi);
++	if (status)
+ 		goto mem_alloc_failure;
+ 
+ 	/* Allocate a CQ and an associated PBL for each MSI-X
 -- 
 2.30.2
 
