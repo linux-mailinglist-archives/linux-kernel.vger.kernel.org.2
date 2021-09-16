@@ -2,169 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6CC440ED30
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 00:13:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9507B40ED37
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 00:14:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240815AbhIPWOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 18:14:50 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:54872 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240764AbhIPWOs (ORCPT
+        id S240842AbhIPWPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 18:15:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22118 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240827AbhIPWPt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 18:14:48 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id D597F22285;
-        Thu, 16 Sep 2021 22:13:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1631830405; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        Thu, 16 Sep 2021 18:15:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631830468;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=fUML7PP2cwKhFn9IzXhNLUrnTUVcJXoS96ewZU1uWd4=;
-        b=jXq3fACJglbXO8ZZxnEEMQ+MUPWIjZYeP9OWVMQcOLpTCitAL/GY0hB3ikpZqLry9QOXDj
-        ZRrPGSLgWi+Y6HeNGhcNrGJGBweWKtIOvbUo2E/PYEVdhNesAL6oSHskkTyze7963m/w7v
-        FapF8aEecdCetxL/vyAtSFplWCBT8aI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1631830405;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fUML7PP2cwKhFn9IzXhNLUrnTUVcJXoS96ewZU1uWd4=;
-        b=tYmy1+ayRfKGCMEtC5l9akiHOlDJJKFM6kSmG2YO8aDY/SdACek6JZkZDMbN7tSZ+4Wr23
-        jXJfi3+TQ02lBADg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        bh=E0CG1ZeRgflAc20F7zcmBoOrMfwo5YGuJv5LLNqTMkY=;
+        b=RUkrjnlNB71Q7S8ZyMixsP02D72FR71S/AnPvwoQMjMlwCV2uh42pp2FwmeTshsDSiFxKH
+        tFKJIS/QwXIr8lK6GJf4gt+oxdVS8D5zCQ6M2tYbeUC/SObqdeWyPP7+2gzlQkvNZzOQCW
+        cmwWy5NgQEkEjtOomN57/JbROwHCwj0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-162-Yjm4HXchPxOivu-FlClMIQ-1; Thu, 16 Sep 2021 18:14:25 -0400
+X-MC-Unique: Yjm4HXchPxOivu-FlClMIQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 35C2013D6D;
-        Thu, 16 Sep 2021 22:13:21 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id uyMeOYHBQ2GwUwAAMHmgww
-        (envelope-from <neilb@suse.de>); Thu, 16 Sep 2021 22:13:21 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B08541084681;
+        Thu, 16 Sep 2021 22:14:21 +0000 (UTC)
+Received: from redhat.com (ovpn-112-133.phx2.redhat.com [10.3.112.133])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8637F7A5CF;
+        Thu, 16 Sep 2021 22:14:18 +0000 (UTC)
+Date:   Thu, 16 Sep 2021 18:14:16 -0400
+From:   Peter Jones <pjones@redhat.com>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Eric Snowberg <eric.snowberg@oracle.com>, keyrings@vger.kernel.org,
+        linux-integrity@vger.kernel.org, zohar@linux.ibm.com,
+        dhowells@redhat.com, dwmw2@infradead.org,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        jmorris@namei.org, serge@hallyn.com, keescook@chromium.org,
+        gregkh@linuxfoundation.org, torvalds@linux-foundation.org,
+        scott.branden@broadcom.com, weiyongjun1@huawei.com,
+        nayna@linux.ibm.com, ebiggers@google.com, ardb@kernel.org,
+        nramas@linux.microsoft.com, lszubowi@redhat.com,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        James.Bottomley@HansenPartnership.com,
+        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>
+Subject: Re: [PATCH v6 00/13] Enroll kernel keys thru MOK
+Message-ID: <20210916221416.onvqgz5iij3c7e6j@redhat.com>
+References: <20210914211416.34096-1-eric.snowberg@oracle.com>
+ <bee0ebc354a651ea5b263897f9b155dc604fa7c5.camel@kernel.org>
+ <A02EE1DA-12BE-4998-ACE6-2D74FF380297@oracle.com>
+ <f6e2e17cc6c8a3056cc066a7baa4d943eeb47c84.camel@kernel.org>
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "Michal Hocko" <mhocko@suse.com>
-Cc:     "Andrew Morton" <akpm@linux-foundation.org>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        "Andreas Dilger" <adilger.kernel@dilger.ca>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        "Matthew Wilcox" <willy@infradead.org>,
-        "Mel Gorman" <mgorman@suse.com>, linux-xfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/6] MM: annotate congestion_wait() and
- wait_iff_congested() as ineffective.
-In-reply-to: <YUHfdtth69qKvk8r@dhcp22.suse.cz>
-References: <163157808321.13293.486682642188075090.stgit@noble.brown>,
- <163157838437.13293.15392955714346973750.stgit@noble.brown>,
- <YUHfdtth69qKvk8r@dhcp22.suse.cz>
-Date:   Fri, 17 Sep 2021 08:13:19 +1000
-Message-id: <163183039931.3992.6407941879351179168@noble.neil.brown.name>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <f6e2e17cc6c8a3056cc066a7baa4d943eeb47c84.camel@kernel.org>
+User-Agent: NeoMutt/20180716
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Sep 2021, Michal Hocko wrote:
-> On Tue 14-09-21 10:13:04, Neil Brown wrote:
-> > Only 4 subsystems call set_bdi_congested() or clear_bdi_congested():
-> >  block/pktcdvd, fs/ceph fs/fuse fs/nfs
-> >=20
-> > It may make sense to use congestion_wait() or wait_iff_congested()
-> > within these subsystems, but they have no value outside of these.
-> >=20
-> > Add documentation comments to these functions to discourage further use.
->=20
-> This is an unfortunate state. The MM layer still relies on the API.
-> While adding a documentation to clarify the current status can stop more
-> usage I am wondering what is a real alternative. My experience tells me
-> that a lack of real alternative will lead to new creative ways of doing
-> things instead.
+On Thu, Sep 16, 2021 at 06:15:50PM +0300, Jarkko Sakkinen wrote:
+> On Wed, 2021-09-15 at 15:28 -0600, Eric Snowberg wrote:
+> > > On Sep 15, 2021, at 11:57 AM, Jarkko Sakkinen <jarkko@kernel.org> wrote:
+> > > 
+> > > On Tue, 2021-09-14 at 17:14 -0400, Eric Snowberg wrote:
+> > > > Back in 2013 Linus requested a feature to allow end-users to have the 
+> > > > ability "to add their own keys and sign modules they trust". This was
+> > > > his *second* order outlined here [1]. There have been many attempts 
+> > > > over the years to solve this problem, all have been rejected.  Many 
+> > > > of the failed attempts loaded all preboot firmware keys into the kernel,
+> > > > including the Secure Boot keys. Many distributions carry one of these 
+> > > > rejected attempts [2], [3], [4]. This series tries to solve this problem 
+> > > > with a solution that takes into account all the problems brought up in 
+> > > > the previous attempts.
+> > > > 
+> > > > On UEFI based systems, this series introduces a new Linux kernel keyring 
+> > > > containing the Machine Owner Keys (MOK) called machine. It also defines
+> > > > a new MOK variable in shim. This variable allows the end-user to decide 
+> > > > if they want to load MOK keys into the machine keyring. Mimi has suggested 
+> > > > that only CA keys contained within the MOK be loaded into the machine 
+> > > > keyring. All other certs will load into the platform keyring instead.
+> > > > 
+> > > > By default, nothing changes; MOK keys are not loaded into the machine
+> > > > keyring.  They are only loaded after the end-user makes the decision 
+> > > > themselves.  The end-user would set this through mokutil using a new 
+> > > > --trust-mok option [5]. This would work similar to how the kernel uses 
+> > > > MOK variables to enable/disable signature validation as well as use/ignore 
+> > > > the db. Any kernel operation that uses either the builtin or secondary 
+> > > > trusted keys as a trust source shall also reference the new machine 
+> > > > keyring as a trust source.
+> > > > 
+> > > > Secure Boot keys will never be loaded into the machine keyring.  They
+> > > > will always be loaded into the platform keyring.  If an end-user wanted 
+> > > > to load one, they would need to enroll it into the MOK.
+> > > > 
+> > > > Steps required by the end user:
+> > > > 
+> > > > Sign kernel module with user created key:
+> > > > $ /usr/src/kernels/$(uname -r)/scripts/sign-file sha512 \
+> > > >   machine_signing_key.priv machine_signing_key.x509 my_module.ko
+> > > > 
+> > > > Import the key into the MOK
+> > > > $ mokutil --import machine_signing_key.x509
+> > > > 
+> > > > Setup the kernel to load MOK keys into the .machine keyring
+> > > > $ mokutil --trust-mok
+> > > > 
+> > > > Then reboot, the MokManager will load and ask if you want to trust the
+> > > > MOK key and enroll the MOK into the MOKList.  Afterwards the signed kernel
+> > > > module will load.
+> > > > 
+> > > > I have included links to both the mokutil [5] and shim [6] changes I
+> > > > have made to support this new functionality.
+> > > 
+> > > How hard it is to self-compile shim and boot it with QEMU (I
+> > > do not know even the GIT location of Shim)?
+> > 
+> > It is not hard, that is the setup I use for my testing.  Upstream shim 
+> > is located here [1].  Or you can use my repo which contains the necessary
+> > changes [2].
+> > 
+> > [1] https://github.com/rhboot/shim
+> > [2] https://github.com/esnowberg/shim/tree/mokvars-v2
+> > 
+> 
+> So, my 2nd Q would be: which order these should be upstreamed?
+> 
+> Linux patch set cannot depend on "yet to be upstreamed" things.
+> 
+> Code changes look good enough to me.
 
-That is a valid concern.  Discouraging the use of an interface without
-providing a clear alternative risks people doing worse things.
+We can carry this support in shim before it's in kernel.  Eric's current
+patch for shim and mokutil looks mostly reasonable, though I see a few
+minor nits we'll have to sort out.
 
-At lease if people continue to use congestion_wait(), then we will be
-able to find those uses when we are able to provide a better approach.
+-- 
+        Peter
 
-I'll drop this patch.
-
-Thanks,
-NeilBrown
-
-
-> =20
-> > Signed-off-by: NeilBrown <neilb@suse.de>
-> > ---
-> >  include/linux/backing-dev.h |    7 +++++++
-> >  mm/backing-dev.c            |    9 +++++++++
-> >  2 files changed, 16 insertions(+)
-> >=20
-> > diff --git a/include/linux/backing-dev.h b/include/linux/backing-dev.h
-> > index ac7f231b8825..cc9513840351 100644
-> > --- a/include/linux/backing-dev.h
-> > +++ b/include/linux/backing-dev.h
-> > @@ -153,6 +153,13 @@ static inline int wb_congested(struct bdi_writeback =
-*wb, int cong_bits)
-> >  	return wb->congested & cong_bits;
-> >  }
-> > =20
-> > +/* NOTE congestion_wait() and wait_iff_congested() are
-> > + * largely useless except as documentation.
-> > + * congestion_wait() will (almost) always wait for the given timeout.
-> > + * wait_iff_congested() will (almost) never wait, but will call
-> > + * cond_resched().
-> > + * Were possible an alternative waiting strategy should be found.
-> > + */
-> >  long congestion_wait(int sync, long timeout);
-> >  long wait_iff_congested(int sync, long timeout);
-> > =20
-> > diff --git a/mm/backing-dev.c b/mm/backing-dev.c
-> > index 4a9d4e27d0d9..53472ab38796 100644
-> > --- a/mm/backing-dev.c
-> > +++ b/mm/backing-dev.c
-> > @@ -1023,6 +1023,11 @@ EXPORT_SYMBOL(set_bdi_congested);
-> >   * Waits for up to @timeout jiffies for a backing_dev (any backing_dev) =
-to exit
-> >   * write congestion.  If no backing_devs are congested then just wait fo=
-r the
-> >   * next write to be completed.
-> > + *
-> > + * NOTE: in the current implementation, hardly any backing_devs are ever
-> > + * marked as congested, and write-completion is rarely reported (see cal=
-ls
-> > + * to clear_bdi_congested).  So this should not be assumed to ever wake =
-before
-> > + * the timeout.
-> >   */
-> >  long congestion_wait(int sync, long timeout)
-> >  {
-> > @@ -1054,6 +1059,10 @@ EXPORT_SYMBOL(congestion_wait);
-> >   * The return value is 0 if the sleep is for the full timeout. Otherwise,
-> >   * it is the number of jiffies that were still remaining when the functi=
-on
-> >   * returned. return_value =3D=3D timeout implies the function did not sl=
-eep.
-> > + *
-> > + * NOTE: in the current implementation, hardly any backing_devs are ever
-> > + * marked as congested, and write-completion is rarely reported (see cal=
-ls
-> > + * to clear_bdi_congested).  So this should not be assumed to sleep at a=
-ll.
-> >   */
-> >  long wait_iff_congested(int sync, long timeout)
-> >  {
-> >=20
->=20
-> --=20
-> Michal Hocko
-> SUSE Labs
->=20
->=20
