@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD86040E592
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:27:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 517F940E94E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:02:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233582AbhIPRMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:12:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34160 "EHLO mail.kernel.org"
+        id S1357323AbhIPRvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:51:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53744 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348874AbhIPRDS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:03:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DF2DC617E6;
-        Thu, 16 Sep 2021 16:34:19 +0000 (UTC)
+        id S1354331AbhIPRjn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:39:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BF66063253;
+        Thu, 16 Sep 2021 16:50:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810060;
-        bh=d2zN46M7dViF3bSk5TZ29MJ30B7PIC5iRpNK9pXKP0Q=;
+        s=korg; t=1631811043;
+        bh=6+MONF8EmtdpRsVvsw+V+vRmiKz8kfaaA31jO5pe8sg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lcAiLaGnTcqXhuL8MzBr9ke2okF6wKbQHWUGUBUcAQ7oiog6e1VVpoYahUMKH5rNw
-         IMkCheS83Uv3khpKa7CDEag/5UNvcf/2EqQuMnCQMxOx5Zobr5yss7sxWFr8OBwKrH
-         fgKX8HUMhN8qC1LDtBKln7xw4sMhr4oNOzYvgM1E=
+        b=2n967IMJzmwkIrPoBq24VdhAVXkvtk4+uA4pHHSFfqiryfQ3FhosN75QrcfNifszz
+         FwYt3J/tEnZ/i4UJafvBYd008WreRtiJx+abqx2gGZ3aU8GZW+is8hkDmXCiPP7zAm
+         sRYxzSTOUMNAchpipFswwEw8MGVzCUtN5PQX4RlE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Evgeny Novikov <novikov@ispras.ru>,
-        Kirill Shilimanov <kirill.shilimanov@huawei.com>,
-        Anton Vasilyev <vasilyev@ispras.ru>,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 5.13 353/380] mtd: rawnand: intel: Fix error handling in probe
-Date:   Thu, 16 Sep 2021 18:01:50 +0200
-Message-Id: <20210916155816.065496090@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 362/432] ASoC: soc-pcm: protect BE dailink state changes in trigger
+Date:   Thu, 16 Sep 2021 18:01:51 +0200
+Message-Id: <20210916155823.081267083@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,84 +41,207 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Evgeny Novikov <novikov@ispras.ru>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-commit 0792ec82175ec45a0f45af6e0f2d3cb49c527cd4 upstream.
+[ Upstream commit 0c75fc7193387776c10f7c7b440d93496e3d5e21 ]
 
-ebu_nand_probe() did not invoke ebu_dma_cleanup() and
-clk_disable_unprepare() on some error handling paths. The patch fixes
-that.
+When more than one FE is connected to a BE, e.g. in a mixing use case,
+the BE can be triggered multiple times when the FE are opened/started
+concurrently. This race condition is problematic in the case of
+SoundWire BE dailinks, and this is not desirable in a general
+case. The code carefully checks when the BE can be stopped or
+hw_free'ed, but the trigger code does not use any mutual exclusion.
 
-Found by Linux Driver Verification project (linuxtesting.org).
+Fix by using the same spinlock already used to check FE states, and
+set the state before the trigger. In case of errors,  the initial
+state will be restored.
 
-Fixes: 0b1039f016e8 ("mtd: rawnand: Add NAND controller support on Intel LGM SoC")
-Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
-Co-developed-by: Kirill Shilimanov <kirill.shilimanov@huawei.com>
-Signed-off-by: Kirill Shilimanov <kirill.shilimanov@huawei.com>
-Co-developed-by: Anton Vasilyev <vasilyev@ispras.ru>
-Signed-off-by: Anton Vasilyev <vasilyev@ispras.ru>
-Cc: stable@vger.kernel.org
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20210817092930.23040-1-novikov@ispras.ru
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This patch does not change how the triggers are handled, it only makes
+sure the states are handled in critical sections.
+
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-Id: <20210817164054.250028-2-pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/nand/raw/intel-nand-controller.c |   27 ++++++++++++++++++---------
- 1 file changed, 18 insertions(+), 9 deletions(-)
+ sound/soc/soc-pcm.c | 103 ++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 85 insertions(+), 18 deletions(-)
 
---- a/drivers/mtd/nand/raw/intel-nand-controller.c
-+++ b/drivers/mtd/nand/raw/intel-nand-controller.c
-@@ -631,19 +631,26 @@ static int ebu_nand_probe(struct platfor
- 	ebu_host->clk_rate = clk_get_rate(ebu_host->clk);
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index d1c570ca21ea..b944f56a469a 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -2001,6 +2001,8 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+ 	struct snd_soc_pcm_runtime *be;
+ 	struct snd_soc_dpcm *dpcm;
+ 	int ret = 0;
++	unsigned long flags;
++	enum snd_soc_dpcm_state state;
  
- 	ebu_host->dma_tx = dma_request_chan(dev, "tx");
--	if (IS_ERR(ebu_host->dma_tx))
--		return dev_err_probe(dev, PTR_ERR(ebu_host->dma_tx),
--				     "failed to request DMA tx chan!.\n");
-+	if (IS_ERR(ebu_host->dma_tx)) {
-+		ret = dev_err_probe(dev, PTR_ERR(ebu_host->dma_tx),
-+				    "failed to request DMA tx chan!.\n");
-+		goto err_disable_unprepare_clk;
-+	}
+ 	for_each_dpcm_be(fe, stream, dpcm) {
+ 		struct snd_pcm_substream *be_substream;
+@@ -2017,76 +2019,141 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
  
- 	ebu_host->dma_rx = dma_request_chan(dev, "rx");
--	if (IS_ERR(ebu_host->dma_rx))
--		return dev_err_probe(dev, PTR_ERR(ebu_host->dma_rx),
--				     "failed to request DMA rx chan!.\n");
-+	if (IS_ERR(ebu_host->dma_rx)) {
-+		ret = dev_err_probe(dev, PTR_ERR(ebu_host->dma_rx),
-+				    "failed to request DMA rx chan!.\n");
-+		ebu_host->dma_rx = NULL;
-+		goto err_cleanup_dma;
-+	}
+ 		switch (cmd) {
+ 		case SNDRV_PCM_TRIGGER_START:
++			spin_lock_irqsave(&fe->card->dpcm_lock, flags);
+ 			if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_PREPARE) &&
+ 			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_STOP) &&
+-			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED))
++			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED)) {
++				spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 				continue;
++			}
++			state = be->dpcm[stream].state;
++			be->dpcm[stream].state = SND_SOC_DPCM_STATE_START;
++			spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
  
- 	resname = devm_kasprintf(dev, GFP_KERNEL, "addr_sel%d", cs);
- 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, resname);
--	if (!res)
--		return -EINVAL;
-+	if (!res) {
-+		ret = -EINVAL;
-+		goto err_cleanup_dma;
-+	}
- 	ebu_host->cs[cs].addr_sel = res->start;
- 	writel(ebu_host->cs[cs].addr_sel | EBU_ADDR_MASK(5) | EBU_ADDR_SEL_REGEN,
- 	       ebu_host->ebu + EBU_ADDR_SEL(cs));
-@@ -653,7 +660,8 @@ static int ebu_nand_probe(struct platfor
- 	mtd = nand_to_mtd(&ebu_host->chip);
- 	if (!mtd->name) {
- 		dev_err(ebu_host->dev, "NAND label property is mandatory\n");
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto err_cleanup_dma;
+ 			ret = soc_pcm_trigger(be_substream, cmd);
+-			if (ret)
++			if (ret) {
++				spin_lock_irqsave(&fe->card->dpcm_lock, flags);
++				be->dpcm[stream].state = state;
++				spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 				goto end;
++			}
+ 
+-			be->dpcm[stream].state = SND_SOC_DPCM_STATE_START;
+ 			break;
+ 		case SNDRV_PCM_TRIGGER_RESUME:
+-			if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_SUSPEND))
++			spin_lock_irqsave(&fe->card->dpcm_lock, flags);
++			if (be->dpcm[stream].state != SND_SOC_DPCM_STATE_SUSPEND) {
++				spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 				continue;
++			}
++
++			state = be->dpcm[stream].state;
++			be->dpcm[stream].state = SND_SOC_DPCM_STATE_START;
++			spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 
+ 			ret = soc_pcm_trigger(be_substream, cmd);
+-			if (ret)
++			if (ret) {
++				spin_lock_irqsave(&fe->card->dpcm_lock, flags);
++				be->dpcm[stream].state = state;
++				spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 				goto end;
++			}
+ 
+-			be->dpcm[stream].state = SND_SOC_DPCM_STATE_START;
+ 			break;
+ 		case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+-			if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED))
++			spin_lock_irqsave(&fe->card->dpcm_lock, flags);
++			if (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED) {
++				spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 				continue;
++			}
++
++			state = be->dpcm[stream].state;
++			be->dpcm[stream].state = SND_SOC_DPCM_STATE_START;
++			spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 
+ 			ret = soc_pcm_trigger(be_substream, cmd);
+-			if (ret)
++			if (ret) {
++				spin_lock_irqsave(&fe->card->dpcm_lock, flags);
++				be->dpcm[stream].state = state;
++				spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 				goto end;
++			}
+ 
+-			be->dpcm[stream].state = SND_SOC_DPCM_STATE_START;
+ 			break;
+ 		case SNDRV_PCM_TRIGGER_STOP:
++			spin_lock_irqsave(&fe->card->dpcm_lock, flags);
+ 			if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_START) &&
+-			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED))
++			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED)) {
++				spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 				continue;
++			}
++			spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 
+ 			if (!snd_soc_dpcm_can_be_free_stop(fe, be, stream))
+ 				continue;
+ 
++			spin_lock_irqsave(&fe->card->dpcm_lock, flags);
++			state = be->dpcm[stream].state;
++			be->dpcm[stream].state = SND_SOC_DPCM_STATE_STOP;
++			spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
++
+ 			ret = soc_pcm_trigger(be_substream, cmd);
+-			if (ret)
++			if (ret) {
++				spin_lock_irqsave(&fe->card->dpcm_lock, flags);
++				be->dpcm[stream].state = state;
++				spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 				goto end;
++			}
+ 
+-			be->dpcm[stream].state = SND_SOC_DPCM_STATE_STOP;
+ 			break;
+ 		case SNDRV_PCM_TRIGGER_SUSPEND:
+-			if (be->dpcm[stream].state != SND_SOC_DPCM_STATE_START)
++			spin_lock_irqsave(&fe->card->dpcm_lock, flags);
++			if (be->dpcm[stream].state != SND_SOC_DPCM_STATE_START) {
++				spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 				continue;
++			}
++			spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 
+ 			if (!snd_soc_dpcm_can_be_free_stop(fe, be, stream))
+ 				continue;
+ 
++			spin_lock_irqsave(&fe->card->dpcm_lock, flags);
++			state = be->dpcm[stream].state;
++			be->dpcm[stream].state = SND_SOC_DPCM_STATE_STOP;
++			spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
++
+ 			ret = soc_pcm_trigger(be_substream, cmd);
+-			if (ret)
++			if (ret) {
++				spin_lock_irqsave(&fe->card->dpcm_lock, flags);
++				be->dpcm[stream].state = state;
++				spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 				goto end;
++			}
+ 
+-			be->dpcm[stream].state = SND_SOC_DPCM_STATE_SUSPEND;
+ 			break;
+ 		case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+-			if (be->dpcm[stream].state != SND_SOC_DPCM_STATE_START)
++			spin_lock_irqsave(&fe->card->dpcm_lock, flags);
++			if (be->dpcm[stream].state != SND_SOC_DPCM_STATE_START) {
++				spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 				continue;
++			}
++			spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 
+ 			if (!snd_soc_dpcm_can_be_free_stop(fe, be, stream))
+ 				continue;
+ 
++			spin_lock_irqsave(&fe->card->dpcm_lock, flags);
++			state = be->dpcm[stream].state;
++			be->dpcm[stream].state = SND_SOC_DPCM_STATE_PAUSED;
++			spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
++
+ 			ret = soc_pcm_trigger(be_substream, cmd);
+-			if (ret)
++			if (ret) {
++				spin_lock_irqsave(&fe->card->dpcm_lock, flags);
++				be->dpcm[stream].state = state;
++				spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 				goto end;
++			}
+ 
+-			be->dpcm[stream].state = SND_SOC_DPCM_STATE_PAUSED;
+ 			break;
+ 		}
  	}
- 
- 	mtd->dev.parent = dev;
-@@ -681,6 +689,7 @@ err_clean_nand:
- 	nand_cleanup(&ebu_host->chip);
- err_cleanup_dma:
- 	ebu_dma_cleanup(ebu_host);
-+err_disable_unprepare_clk:
- 	clk_disable_unprepare(ebu_host->clk);
- 
- 	return ret;
+-- 
+2.30.2
+
 
 
