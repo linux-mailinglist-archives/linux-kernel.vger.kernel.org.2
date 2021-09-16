@@ -2,173 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7939E40D121
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 03:16:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2688C40D129
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 03:20:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233621AbhIPBRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 21:17:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38128 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233602AbhIPBRi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 21:17:38 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB7F1C061764
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 18:16:18 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id d11so1075980ilc.8
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 18:16:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BLpPuYBBwu6jhlHfdJjEr/EV1Gc0Mpugp36hBO202rY=;
-        b=hOuiFgqepHLEJU0JVNWirieRfpQ++zd4t85VqYPfUx6Vnfd8eG6BIvaRIHMfh4cRuS
-         6itBrYCbYj7kKtG1+MkAD1fmWvhgcWj+c9t1JxJOTW4PqP/93PWMv8Dz8xzVD35N9y7k
-         k+ls3nh9hyYP0Wgzi47E2sw9/xreDIDXXH7F1EGCqmm05ZiRtrx2a4lrqo5fCSnwC0f2
-         0q/swfScp5mHRxvC29Po/62pYPtnO54M+mQSfzpaIYznRe89+CLhXmSlEI5t4SRRrS/F
-         xZvS57Yh5vsWj3Ie3DLwUPRzbyAnpR8sAzvbJS5+t4JHyQe7FP7KlB9O5fotGMYUnyiE
-         LG5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BLpPuYBBwu6jhlHfdJjEr/EV1Gc0Mpugp36hBO202rY=;
-        b=SSzTcAHIL0xq6CVrdJxiZl0QBp1iR9Row+MSBB1WcvF0GZxMreRPIlfwgnclH3a6Eu
-         eAogHhVa24nNNcPWnyfOHs+ULq6imhwO0Mt6AXlWwsT9SfGchoMxgugJjqhvS8vsSxKh
-         4lkJ3o4pvMZ4hxLOkLJYje4Wq+wIKwwsjzC8adBz8n7oTk/LbKDbtv3fP3DSJd+QnRHH
-         ED/r+VBXL44E0K+vbjvdtHEYif6XY6nepYbHffOCjH0p2YRS7VUZXPn2eDOh6eP2inBk
-         qSDI2Fq4h/ax6bazSj40xi1zBJJRuxG1jBA+KpYr0qfDQzaIH/61+STmmgf3u7GvR72Y
-         BQSg==
-X-Gm-Message-State: AOAM5324de+AAbLFXND2TOv4Tx+o0FFtFXa1J7HtEKN50zH2DJZdqQ1R
-        RtpjTFNrzBtpL6AWNKcyOcAOjLAv0cCbyl/+O7PCEsL1Y2j5uw==
-X-Google-Smtp-Source: ABdhPJwtEj56I6eqqZdp7QARgE4ulencEwVudq7Qz+Pk/x4XkBXCfojyXtUnz182/auTlKOb6M+d1/WiyTs1dTJoMxk=
-X-Received: by 2002:a92:a307:: with SMTP id a7mr2109622ili.308.1631754977880;
- Wed, 15 Sep 2021 18:16:17 -0700 (PDT)
+        id S232171AbhIPBWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 21:22:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39932 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229816AbhIPBWF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 21:22:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F3F060F93
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 01:20:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631755245;
+        bh=N8vdbjyf2kqAOWnVrEA55RFKSMKRgVPo8mZ596qmFTs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=aCA9nZNVQ69O0f+yv/wo3D1I0gnuAseS7SrmlT9uFmDp4Vas95th0CZqUCQCAYsoE
+         CTd8jk1mSUAARkLeGoMMgxyqSN4DA8ebpmteW2PCI4pP6tdzd+V9YOgT4gaMl5Se1w
+         /bKTV5NcKG2KpZfaAhHXJFTOtRBXSp/b7l1+ex6yQx2o3pRZwoasJEoNUxQuWUszIG
+         mD5fJXz/5k+d/4OBT3u4VtlURFEm9AyBHo62jCl1MmR//eLZ1BMAAw/mF0aMF6V2AJ
+         m56ZvQQ56apZjYrr9k0frhQpss7qtRIJp+2wGN19n/Ntr2hMkR5v+cipoJLJT0rUBF
+         WMRkU+MT1czyw==
+Received: by mail-lf1-f43.google.com with SMTP id y28so11874617lfb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 18:20:45 -0700 (PDT)
+X-Gm-Message-State: AOAM533nf6PqwqdjbskEBLQJWIarMynMtOp32PjAC/81XPiCCPkqcZkx
+        uzc1vJe/grm9E5nWoInHZkv3jbYk6aBsoI5/yFo=
+X-Google-Smtp-Source: ABdhPJz+GXHr4HX2v0FUy9aKwpP8QUXw8A79CVUhuNj8Hy1BRETa0saqeya2VTa2CI7/Bd1Vfz9vb5u3+LerP+oeraU=
+X-Received: by 2002:a05:651c:1548:: with SMTP id y8mr2571362ljp.507.1631755243805;
+ Wed, 15 Sep 2021 18:20:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1629726117.git.ashish.kalra@amd.com> <6fd25c749205dd0b1eb492c60d41b124760cc6ae.1629726117.git.ashish.kalra@amd.com>
-In-Reply-To: <6fd25c749205dd0b1eb492c60d41b124760cc6ae.1629726117.git.ashish.kalra@amd.com>
-From:   Steve Rutherford <srutherford@google.com>
-Date:   Wed, 15 Sep 2021 18:15:41 -0700
-Message-ID: <CABayD+fnZ+Ho4qoUjB6YfWW+tFGUuftpsVBF3d=-kcU0-CEu0g@mail.gmail.com>
-Subject: Re: [PATCH v6 1/5] x86/kvm: Add AMD SEV specific Hypercall3
-To:     Ashish Kalra <Ashish.Kalra@amd.com>, seanjc@google.com
-Cc:     pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
-        hpa@zytor.com, joro@8bytes.org, bp@alien8.de,
-        thomas.lendacky@amd.com, x86@kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, brijesh.singh@amd.com,
-        dovmurik@linux.ibm.com, tobin@linux.ibm.com, jejb@linux.ibm.com,
-        dgilbert@redhat.com
+References: <20210911092139.79607-1-guoren@kernel.org> <20210911092139.79607-4-guoren@kernel.org>
+ <20210915074827.GC20024@lst.de>
+In-Reply-To: <20210915074827.GC20024@lst.de>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Thu, 16 Sep 2021 09:20:32 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTSZLieg1kYA6a0CPajPukHzwN0wvPuh4RQ-t45fciFOYA@mail.gmail.com>
+Message-ID: <CAJF2gTSZLieg1kYA6a0CPajPukHzwN0wvPuh4RQ-t45fciFOYA@mail.gmail.com>
+Subject: Re: [RFC PATCH V4 3/6] RISC-V: Support a new config option for
+ non-coherent DMA
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Anup Patel <anup.patel@wdc.com>, Atish Patra <atish.patra@wdc.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        =?UTF-8?Q?Christoph_M=C3=BCllner?= <christoph.muellner@vrull.eu>,
+        Philipp Tomsich <philipp.tomsich@vrull.eu>,
+        liush <liush@allwinnertech.com>, wefu@redhat.com,
+        =?UTF-8?B?V2VpIFd1ICjlkLTkvJ8p?= <lazyparser@gmail.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        taiten.peng@canonical.com, aniket.ponkshe@canonical.com,
+        heinrich.schuchardt@canonical.com, gordan.markus@canonical.com,
+        Guo Ren <guoren@linux.alibaba.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 4:04 AM Ashish Kalra <Ashish.Kalra@amd.com> wrote:
+On Wed, Sep 15, 2021 at 3:48 PM Christoph Hellwig <hch@lst.de> wrote:
 >
-> From: Brijesh Singh <brijesh.singh@amd.com>
+> On Sat, Sep 11, 2021 at 05:21:36PM +0800, guoren@kernel.org wrote:
+> > +     select DMA_GLOBAL_POOL
+> > +     select DMA_DIRECT_REMAP
 >
-> KVM hypercall framework relies on alternative framework to patch the
-> VMCALL -> VMMCALL on AMD platform. If a hypercall is made before
-> apply_alternative() is called then it defaults to VMCALL. The approach
-> works fine on non SEV guest. A VMCALL would causes #UD, and hypervisor
-> will be able to decode the instruction and do the right things. But
-> when SEV is active, guest memory is encrypted with guest key and
-> hypervisor will not be able to decode the instruction bytes.
->
-> To highlight the need to provide this interface, capturing the
-> flow of apply_alternatives() :
-> setup_arch() call init_hypervisor_platform() which detects
-> the hypervisor platform the kernel is running under and then the
-> hypervisor specific initialization code can make early hypercalls.
-> For example, KVM specific initialization in case of SEV will try
-> to mark the "__bss_decrypted" section's encryption state via early
-> page encryption status hypercalls.
->
-> Now, apply_alternatives() is called much later when setup_arch()
-> calls check_bugs(), so we do need some kind of an early,
-> pre-alternatives hypercall interface. Other cases of pre-alternatives
-> hypercalls include marking per-cpu GHCB pages as decrypted on SEV-ES
-> and per-cpu apf_reason, steal_time and kvm_apic_eoi as decrypted for
-> SEV generally.
->
-> Add SEV specific hypercall3, it unconditionally uses VMMCALL. The hypercall
-> will be used by the SEV guest to notify encrypted pages to the hypervisor.
->
-> This kvm_sev_hypercall3() function is abstracted and used as follows :
-> All these early hypercalls are made through early_set_memory_XX() interfaces,
-> which in turn invoke pv_ops (paravirt_ops).
->
-> This early_set_memory_XX() -> pv_ops.mmu.notify_page_enc_status_changed()
-> is a generic interface and can easily have SEV, TDX and any other
-> future platform specific abstractions added to it.
->
-> Currently, pv_ops.mmu.notify_page_enc_status_changed() callback is setup to
-> invoke kvm_sev_hypercall3() in case of SEV.
->
-> Similarly, in case of TDX, pv_ops.mmu.notify_page_enc_status_changed()
-> can be setup to a TDX specific callback.
->
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Cc: Paolo Bonzini <pbonzini@redhat.com>
-> Cc: Joerg Roedel <joro@8bytes.org>
-> Cc: Borislav Petkov <bp@suse.de>
-> Cc: Tom Lendacky <thomas.lendacky@amd.com>
-> Cc: x86@kernel.org
-> Cc: kvm@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Reviewed-by: Steve Rutherford <srutherford@google.com>
-> Reviewed-by: Venu Busireddy <venu.busireddy@oracle.com>
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
-> ---
->  arch/x86/include/asm/kvm_para.h | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
->
-> diff --git a/arch/x86/include/asm/kvm_para.h b/arch/x86/include/asm/kvm_para.h
-> index 69299878b200..56935ebb1dfe 100644
-> --- a/arch/x86/include/asm/kvm_para.h
-> +++ b/arch/x86/include/asm/kvm_para.h
-> @@ -83,6 +83,18 @@ static inline long kvm_hypercall4(unsigned int nr, unsigned long p1,
->         return ret;
->  }
->
-> +static inline long kvm_sev_hypercall3(unsigned int nr, unsigned long p1,
-> +                                     unsigned long p2, unsigned long p3)
-> +{
-> +       long ret;
-> +
-> +       asm volatile("vmmcall"
-> +                    : "=a"(ret)
-> +                    : "a"(nr), "b"(p1), "c"(p2), "d"(p3)
-> +                    : "memory");
-> +       return ret;
-> +}
-> +
->  #ifdef CONFIG_KVM_GUEST
->  void kvmclock_init(void);
->  void kvmclock_disable(void);
-> --
-> 2.17.1
->
+> No need to select DMA_GLOBAL_POOL when DMA_DIRECT_REMAP is select.
+If we want to support PBMT & global_dma_pool both in riscv. Could they
+work together in arch/riscv with [1]?
 
-Looking at these threads, this patch either:
-1) Needs review/approval from a maintainer that is interested or
-2) Should flip back to using alternative (as suggested by Sean). In
-particular: `ALTERNATIVE("vmmcall", "vmcall",
-ALT_NOT(X86_FEATURE_VMMCALL))`. My understanding is that the advantage
-of this is that (after calling apply alternatives) you get exactly the
-same behavior as before. But before apply alternatives, you get the
-desired flipped behavior. The previous patch changed the behavior
-after apply alternatives in a very slight manner (if feature flags
-were not set, you'd get a different instruction).
+[1]: https://lore.kernel.org/lkml/20210818142715.GA10755@lst.de/T/
 
-I personally don't have strong feelings on this decision, but this
-decision does need to be made for this patch series to move forward.
+>
+> Also a patch just to add a option that is not selected and won't build
+> if selected does not make sense.
+I just want to rebase on Atish's patch and append DMA_DIRECT_REMAP.
+Okay, DMA_DIRECT_REMAP & DMA_GLOBAL_POOL should be separated from the
+patch.
 
-I'd also be curious to hear Sean's opinion on this since he was vocal
-about this previously.
 
-Thanks,
-Steve
+
+--- a/kernel/dma/direct.c
++++ b/kernel/dma/direct.c
+@@ -156,9 +156,14 @@ void *dma_direct_alloc(struct device *dev, size_t size,
+
+  if (!IS_ENABLED(CONFIG_ARCH_HAS_DMA_SET_UNCACHED) &&
+     !IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) &&
++    !IS_ENABLED(CONFIG_DMA_GLOBAL_POOL) &&
+     !dev_is_dma_coherent(dev))
+  return arch_dma_alloc(dev, size, dma_handle, gfp, attrs);
+
++ if (IS_ENABLED(CONFIG_DMA_GLOBAL_POOL) &&
++    !dev_is_dma_coherent(dev))
++ return dma_alloc_from_global_coherent(dev, size, dma_handle);
++
+  /*
+  * Remapping or decrypting memory may block. If either is required and
+  * we can't block, allocate the memory from the atomic pools.
+@@ -255,11 +260,19 @@ void dma_direct_free(struct device *dev, size_t size,
+
+  if (!IS_ENABLED(CONFIG_ARCH_HAS_DMA_SET_UNCACHED) &&
+     !IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) &&
++    !IS_ENABLED(CONFIG_DMA_GLOBAL_POOL) &&
+     !dev_is_dma_coherent(dev)) {
+  arch_dma_free(dev, size, cpu_addr, dma_addr, attrs);
+  return;
+  }
+
++ if (IS_ENABLED(CONFIG_DMA_GLOBAL_POOL) &&
++    !dev_is_dma_coherent(dev)) {
++ if (!dma_release_from_global_coherent(page_order, cpu_addr))
++ WARN_ON_ONCE(1);
++ return;
++ }
++
+Here CONFIG_DMA_GLOBAL_POOL is independent from CONFIG_DMA_DIRECT_REMAP.
+
+  /* If cpu_addr is not from an atomic pool, dma_free_from_pool() fails */
+  if (IS_ENABLED(CONFIG_DMA_COHERENT_POOL) &&
+     dma_free_from_pool(dev, cpu_addr, PAGE_ALIGN(size)))
+
+-- 
+Best Regards
+ Guo Ren
+
+ML: https://lore.kernel.org/linux-csky/
