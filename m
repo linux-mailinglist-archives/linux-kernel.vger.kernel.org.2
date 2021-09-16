@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E39C840D7B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 12:46:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C888440D7B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 12:46:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236611AbhIPKrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 06:47:42 -0400
-Received: from mx22.baidu.com ([220.181.50.185]:54334 "EHLO baidu.com"
+        id S236827AbhIPKrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 06:47:55 -0400
+Received: from mx22.baidu.com ([220.181.50.185]:54452 "EHLO baidu.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235570AbhIPKrj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 06:47:39 -0400
-Received: from BC-Mail-Ex17.internal.baidu.com (unknown [172.31.51.11])
-        by Forcepoint Email with ESMTPS id 507C2D9F7E29BEF0739F;
-        Thu, 16 Sep 2021 18:46:18 +0800 (CST)
+        id S236705AbhIPKrt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 06:47:49 -0400
+Received: from BJHW-Mail-Ex03.internal.baidu.com (unknown [10.127.64.13])
+        by Forcepoint Email with ESMTPS id DF88F788B45F7BD24C3C;
+        Thu, 16 Sep 2021 18:46:25 +0800 (CST)
 Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BC-Mail-Ex17.internal.baidu.com (172.31.51.11) with Microsoft SMTP Server
+ BJHW-Mail-Ex03.internal.baidu.com (10.127.64.13) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.12; Thu, 16 Sep 2021 18:46:18 +0800
+ 15.1.2308.14; Thu, 16 Sep 2021 18:46:25 +0800
 Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
  BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Thu, 16 Sep 2021 18:46:17 +0800
+ 15.1.2308.14; Thu, 16 Sep 2021 18:46:25 +0800
 From:   Cai Huoqing <caihuoqing@baidu.com>
 To:     <caihuoqing@baidu.com>
 CC:     Thierry Reding <thierry.reding@gmail.com>,
@@ -29,9 +29,9 @@ CC:     Thierry Reding <thierry.reding@gmail.com>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
         <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] drm/panel: ls037v7dw01: Make use of the helper function dev_err_probe()
-Date:   Thu, 16 Sep 2021 18:46:11 +0800
-Message-ID: <20210916104612.11516-1-caihuoqing@baidu.com>
+Subject: [PATCH] drm/panel: nt39016: Make use of the helper function dev_err_probe()
+Date:   Thu, 16 Sep 2021 18:46:19 +0800
+Message-ID: <20210916104620.11569-1-caihuoqing@baidu.com>
 X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
 Content-Type: text/plain
@@ -50,45 +50,49 @@ gets printed.
 
 Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
 ---
- .../gpu/drm/panel/panel-sharp-ls037v7dw01.c   | 21 ++++++++-----------
- 1 file changed, 9 insertions(+), 12 deletions(-)
+ drivers/gpu/drm/panel/panel-novatek-nt39016.c | 20 +++++++------------
+ 1 file changed, 7 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/gpu/drm/panel/panel-sharp-ls037v7dw01.c b/drivers/gpu/drm/panel/panel-sharp-ls037v7dw01.c
-index 94992f45113a..a07d0f6c3e69 100644
---- a/drivers/gpu/drm/panel/panel-sharp-ls037v7dw01.c
-+++ b/drivers/gpu/drm/panel/panel-sharp-ls037v7dw01.c
-@@ -146,22 +146,19 @@ static int ls037v7dw01_probe(struct platform_device *pdev)
- 	lcd->pdev = pdev;
+diff --git a/drivers/gpu/drm/panel/panel-novatek-nt39016.c b/drivers/gpu/drm/panel/panel-novatek-nt39016.c
+index f8151fe3ac9a..d036853db865 100644
+--- a/drivers/gpu/drm/panel/panel-novatek-nt39016.c
++++ b/drivers/gpu/drm/panel/panel-novatek-nt39016.c
+@@ -258,16 +258,13 @@ static int nt39016_probe(struct spi_device *spi)
+ 		return -EINVAL;
  
- 	lcd->vdd = devm_regulator_get(&pdev->dev, "envdd");
--	if (IS_ERR(lcd->vdd)) {
--		dev_err(&pdev->dev, "failed to get regulator\n");
--		return PTR_ERR(lcd->vdd);
+ 	panel->supply = devm_regulator_get(dev, "power");
+-	if (IS_ERR(panel->supply)) {
+-		dev_err(dev, "Failed to get power supply\n");
+-		return PTR_ERR(panel->supply);
 -	}
-+	if (IS_ERR(lcd->vdd))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(lcd->vdd),
-+				     "failed to get regulator\n");
++	if (IS_ERR(panel->supply))
++		return dev_err_probe(dev, PTR_ERR(panel->supply),
++				     "Failed to get power supply\n");
  
- 	lcd->ini_gpio = devm_gpiod_get(&pdev->dev, "enable", GPIOD_OUT_LOW);
--	if (IS_ERR(lcd->ini_gpio)) {
--		dev_err(&pdev->dev, "failed to get enable gpio\n");
--		return PTR_ERR(lcd->ini_gpio);
+ 	panel->reset_gpio = devm_gpiod_get(dev, "reset", GPIOD_OUT_HIGH);
+-	if (IS_ERR(panel->reset_gpio)) {
+-		dev_err(dev, "Failed to get reset GPIO\n");
+-		return PTR_ERR(panel->reset_gpio);
 -	}
-+	if (IS_ERR(lcd->ini_gpio))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(lcd->ini_gpio),
-+				     "failed to get enable gpio\n");
++	if (IS_ERR(panel->reset_gpio))
++		return dev_err_probe(dev, PTR_ERR(panel->reset_gpio), "Failed to get reset GPIO\n");
  
- 	lcd->resb_gpio = devm_gpiod_get(&pdev->dev, "reset", GPIOD_OUT_LOW);
--	if (IS_ERR(lcd->resb_gpio)) {
--		dev_err(&pdev->dev, "failed to get reset gpio\n");
--		return PTR_ERR(lcd->resb_gpio);
+ 	spi->bits_per_word = 8;
+ 	spi->mode = SPI_MODE_3 | SPI_3WIRE;
+@@ -287,11 +284,8 @@ static int nt39016_probe(struct spi_device *spi)
+ 		       DRM_MODE_CONNECTOR_DPI);
+ 
+ 	err = drm_panel_of_backlight(&panel->drm_panel);
+-	if (err) {
+-		if (err != -EPROBE_DEFER)
+-			dev_err(dev, "Failed to get backlight handle\n");
+-		return err;
 -	}
-+	if (IS_ERR(lcd->resb_gpio))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(lcd->resb_gpio),
-+				     "failed to get reset gpio\n");
++	if (err)
++		return dev_err_probe(dev, err, "Failed to get backlight handle\n");
  
- 	lcd->mo_gpio = devm_gpiod_get_index(&pdev->dev, "mode", 0,
- 					    GPIOD_OUT_LOW);
+ 	drm_panel_add(&panel->drm_panel);
+ 
 -- 
 2.25.1
 
