@@ -2,106 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4594D40EA9F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 21:06:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C22E40EAA1
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 21:06:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242484AbhIPTHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 15:07:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54306 "EHLO
+        id S1347057AbhIPTIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 15:08:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231225AbhIPTHl (ORCPT
+        with ESMTP id S244282AbhIPTHy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 15:07:41 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF0CCC05BD33
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 12:00:47 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id c13-20020a17090a558d00b00198e6497a4fso8226935pji.4
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 12:00:47 -0700 (PDT)
+        Thu, 16 Sep 2021 15:07:54 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0BB0C0698D1
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 12:01:33 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id t1so7116973pgv.3
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 12:01:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gDle1D5qDlY1io3U/w9WI6fFvLYZB9m9Ur/yNTQt+70=;
-        b=TFNc7J9JfrTCpgW2/kVBoKubQATYoDQyXmnnonwqB0SL39hFsbmZWswQP7EKvMDlPX
-         5iAgDjJnygqRUFZtz0fqAL6m8npECs+T23ZVcfcfmyi/Wn7n4E2qxw3gTTXUL/3Orp6o
-         94F2sN6KGdNXJkU4VMBtt0PhALBOuVuX2sjWOF6lfijdwXciVka45bYf4WU/Gz9C8I02
-         du7Z1IGIspXAx6pIsF55QHi4U3exAVgbp6CXq5MBmEvToDAhLqVh+HmR0AHR8gRld25o
-         QdiloMIxTcdQKnbT9w3x9wpgXD484NeLHlI8mCa3SZcfU8VgtYrRfufYdimsS05TyE8Q
-         Pieg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LWGKCuQIs1J+mHjjQn6Kx7XI5kMAoj6YxGUaQJDbGFk=;
+        b=MBRkHKjm9buVZ2i0rRj8IkbkJrsV/vqBiMGVV7iiQvRhzq2pDAWDoSKl6vKZpqOoTv
+         GE6v5ljOJw3UCUdVlSwLLeN+QZTiq3eJFhRLx4stblW2Ji7suhDN3xmLLdVJPYABmpWs
+         8JIhWsB8S9Z6S5lJjTSu96z9Tng83WUYSZW+/8ULKPPGwGqzB+G9g5DtC20TNxdOwZSC
+         Wrs6SaaBBviwofJu2Slia3KQZM/V56B+tKIm9ATrULYxTSC2K55tBOQ0KRmTVbib4eWK
+         5VLygWRjMqPL35hSBp/YukyOGIxNMLr356QgmmuVBbhDpfIOV3ja4hLI918NMzkFQUlt
+         FSNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gDle1D5qDlY1io3U/w9WI6fFvLYZB9m9Ur/yNTQt+70=;
-        b=PtQOlSFb9dcRqqXyBJbQrbiR4qxCKF4YcKe9zGBCNIgV825UdnT1/+22PG3hBJL/8l
-         inmH6o6+d+Igh6EGeHJnFqgE+Gf61FwbsdlP3Fcn01grmC9SFCP1KHsKKol2wYaUVF2r
-         oJxpzTo+vmGFokAF3oqcg63UtsO/1P2C9roaA9/O4q4G1UvDkYOzCugfBEWHD9/n0p3y
-         /t0rx0afj8H3qFav39zmRFkDEGgHmvRezW7YbiNUreKENKp141WZOaxa+tYC1ueLLlm9
-         uN89XT3gaZNM3RV+uTrW5tEfbAlr1eCDrMs1raGv/CNLEHKVS5+GH2NF5gnQKGDKl+yS
-         sdkA==
-X-Gm-Message-State: AOAM531c3ROuXa4ja0BhpPEEaGhIC4QILfoz2UU5mjQNlJWKacBsojyp
-        B6aUt4Owyrt+tHg7aExfzRSeboQ12ECWpEw4hKE4zA==
-X-Google-Smtp-Source: ABdhPJz8WFd7q3yrrn0b7IjuukIdRWzTN5grfcCF/fTtPqjRPmRKQuLgjQPFWOeKIThctEUUyqq7563jAfuUsiswctA=
-X-Received: by 2002:a17:90a:4894:: with SMTP id b20mr7617153pjh.13.1631818847166;
- Thu, 16 Sep 2021 12:00:47 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LWGKCuQIs1J+mHjjQn6Kx7XI5kMAoj6YxGUaQJDbGFk=;
+        b=4/QhScVSk6H0LoZqe5srhTsuv04n1G5a/+5WkSQnPamQayQJww1+VTfX2EuVP0NN+b
+         K750fb8c2Q8WsW2BoG6HJVNZrbbjm/tnAr8fwAdtm8pgLuWfeo3PV69tP/w3xVJMm3i8
+         PvJ4+YpU3FFCjjyyKjcv5A88r6Y/qTZYk+gyeqBVwk+DJbbdZzVreL6MIeDmSfvZRhqS
+         QZ2rDynKjBfcGB2zDnhR4t1Xj1bEp84LSGkwXj6bfX2ATUHiSXAaY/b05Ikpalc2U0xz
+         p+hdfqiWSZkXinSQJ4KB2oQj67/m2khQ7Ts1Jn6o2a9po0rLlhHTd9HVWiR9PijDufaT
+         2bqw==
+X-Gm-Message-State: AOAM530K45WkbD/lsW7y7g6UpqAVJrr0V0W2MH2Ao9DLQhFvSELUd6ne
+        IpGllfReHfzTPqZC5CGLqTRfxg==
+X-Google-Smtp-Source: ABdhPJxdM+f5k++5dg9ZQ1aaLsllg+p45QsdJwHHJX3JOrhFr2rnv/z1wzRu03c/kyjxU9eCr3MDOg==
+X-Received: by 2002:a63:b218:: with SMTP id x24mr6260838pge.335.1631818892985;
+        Thu, 16 Sep 2021 12:01:32 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id g4sm3511388pjt.56.2021.09.16.12.01.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Sep 2021 12:01:32 -0700 (PDT)
+Date:   Thu, 16 Sep 2021 19:01:28 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Reiji Watanabe <reijiw@google.com>
+Subject: Re: [PATCH 2/3] KVM: VMX: Move RESET emulation to vmx_vcpu_reset()
+Message-ID: <YUOUiD0J5Qihao+4@google.com>
+References: <20210914230840.3030620-1-seanjc@google.com>
+ <20210914230840.3030620-3-seanjc@google.com>
+ <875yv2167g.fsf@vitty.brq.redhat.com>
+ <YUIunxwjea/wq3gd@google.com>
+ <87wnnhyolr.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-References: <20210914171551.3223715-1-pgonda@google.com> <YUDcvRB3/QOXSi8H@google.com>
- <CAMkAt6opZoFfW_DiyJUREBAtd8503C6j+ZbjS9YL3z+bhqHR8Q@mail.gmail.com>
- <YUDsy4W0/FeIEJDr@google.com> <CAMkAt6r9W=bTzLkojjAuc5VpwJnSzg7+JUp=rnK-jO88hSKmxw@mail.gmail.com>
- <YUDuv1aTauPz9aqo@google.com> <8d58d4cb-bc0b-30a9-6218-323c9ffd1037@redhat.com>
- <CAMkAt6oPijfkPjT4ARpVmXfdczChf2k3ACBwK0YZeuGOxMAE8Q@mail.gmail.com>
- <9feed4e4-937e-2f11-bb56-0da5959c7dbd@redhat.com> <CAKiEG5oirC30Ga=mrzKq24mkwSYvbzMw9AVfL6epVG4O0EZE7A@mail.gmail.com>
-In-Reply-To: <CAKiEG5oirC30Ga=mrzKq24mkwSYvbzMw9AVfL6epVG4O0EZE7A@mail.gmail.com>
-From:   Nathan Tempelman <natet@google.com>
-Date:   Thu, 16 Sep 2021 12:00:36 -0700
-Message-ID: <CAKiEG5qJZ0kk-dZLLp853K634+hTFUEGDtzpQiGxqgoYqP+QAw@mail.gmail.com>
-Subject: Re: [PATCH] KVM: SEV: Disable KVM_CAP_VM_COPY_ENC_CONTEXT_FROM for SEV-ES
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Peter Gonda <pgonda@google.com>,
-        Sean Christopherson <seanjc@google.com>,
-        kvm list <kvm@vger.kernel.org>, Marc Orr <marcorr@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        linux-kernel@vger.kernel.org,
-        Steve Rutherford <srutherford@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87wnnhyolr.fsf@vitty.brq.redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 11:08 AM Nathan Tempelman <natet@google.com> wrote:
->
-> On Wed, Sep 15, 2021 at 3:33 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
+On Thu, Sep 16, 2021, Vitaly Kuznetsov wrote:
+> Sean Christopherson <seanjc@google.com> writes:
+> > @@ -10897,6 +10899,9 @@ void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
+> >         kvm_set_rflags(vcpu, X86_EFLAGS_FIXED);
+> >         kvm_rip_write(vcpu, 0xfff0);
 > >
-> > On 15/09/21 18:10, Peter Gonda wrote:
-> > > svm_vm_copy_asid_from() {
-> > >
-> > >     asid = to_kvm_svm(source_kvm)->sev_info.asid;
-> > > + handle = to_kvm_svm(source_kvm)->sev_info.handle;
-> > > + fd = to_kvm_svm(source_kvm)->sev_info.fd;
-> > > + es_active = to_kvm_svm(source_kvm)->sev_info.es_active;
-> > >
-> > > ...
-> > >
-> > >      /* Set enc_context_owner and copy its encryption context over */
-> > >      mirror_sev = &to_kvm_svm(kvm)->sev_info;
-> > >      mirror_sev->enc_context_owner = source_kvm;
-> > >      mirror_sev->asid = asid;
-> > >      mirror_sev->active = true;
-> > > +  mirror_sev->handle = handle;
-> > > +  mirror_sev->fd = fd;
-> > > + mirror_sev->es_active = es_active;
-> > >
-> > > Paolo would you prefer a patch to enable ES mirroring or continue with
-> > > this patch to disable it for now?
+> > +       vcpu->arch.cr3 = 0;
+> > +       kvm_register_mark_dirty(vcpu, VCPU_EXREG_CR3);
+> > +
+> >         /*
+> >          * CR0.CD/NW are set on RESET, preserved on INIT.  Note, some versions
+> >          * of Intel's SDM list CD/NW as being set on INIT, but they contradict
 > >
-> > If it's possible to enable it, it would be better.  The above would be a
-> > reasonable patch for 5.15-rc.
-> >
-> > Paolo
-> >
->
-> +1. We don't have any immediate plans for sev-es, but it would be nice
-> to have while we're here. But if you want to make the trivial fix I
-> can come along and do it later.
+> 
+> A selftest for vCPU create/reset would be really helpful. I can even
+> volunteer to [eventually] write one :-)
 
-+Steve Rutherford
+Hmm, I wonder if it would be possible to share code/infrastructure with Erdem's
+in-progress TDX selftest framework[*].  TDX forces vCPUs to start at the legacy
+reset vector with paging disabled, so it needs a lot of the same glue code as a
+from-RESET test would need.  TDX forces 32-bit PM instead of RM, but it should
+be easy enough to allow an optional opening sequence to get into 32-bit PM.
+
+We could also test INIT without much trouble since INIT to the BSP will send it
+back to the reset vector, e.g. set a flag somewhere to avoid an infinite loop and
+INIT self.
+
+Let me work with Erdem to see if we can concoct something that will work for
+both TDX and tests that want to take control at RESET.
+
+[*] https://lkml.kernel.org/r/20210726183816.1343022-3-erdemaktas@google.com
