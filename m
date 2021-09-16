@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A36740E29F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:17:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3946640E6A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:31:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245533AbhIPQkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:40:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45398 "EHLO mail.kernel.org"
+        id S1351996AbhIPRXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:23:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41022 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243153AbhIPQeF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:34:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0171B6187F;
-        Thu, 16 Sep 2021 16:20:48 +0000 (UTC)
+        id S1351290AbhIPRPY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:15:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8AD7B61B7F;
+        Thu, 16 Sep 2021 16:39:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809249;
-        bh=SvThv6Ic1kBDhHSW5deA6QNCHFG6QM5UYjmEz9UfrY0=;
+        s=korg; t=1631810385;
+        bh=VMxKDaM3SrW+qUbRpV5JvN7HFM5PZKPdR0iiyeMpvyE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X4hpkMjGfjfxigseLCER1FH8N2jPD6QsTW7gqjo6Fbq6VMTyMa5bGA2Ezr58cfHSx
-         RX+mJWPe3PpLZMU231CXJx+CtdneCdKzyF7a6EpowJgsR2QbRS7W2/hZAcfFCM7Ce6
-         AddsVV+xegfCdAQXXSwOxORpnae2nwaMVMcqStdk=
+        b=cY2zTE+Mgq7TgYMp76x7LfnoGM+98DU8GhpXOh/mpMoAnTs4oz+0blPri2taK/PKL
+         71vqeMiZ2oQaBJhWbuDOMtxUAOWnFmqZ3H0Gi2GiLXYHbSewvpS+JsooUu/KBuM858
+         wUO+KMjt/xwDQmOmom2eTKSxlYdVRWKP5BHx8W54=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Enrico Joedecke <joedecke@de.ibm.com>,
+        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 086/380] RDMA/hns: Dont overwrite supplied QP attributes
+Subject: [PATCH 5.14 094/432] cpuidle: pseries: Fixup CEDE0 latency only for POWER10 onwards
 Date:   Thu, 16 Sep 2021 17:57:23 +0200
-Message-Id: <20210916155806.974254908@linuxfoundation.org>
+Message-Id: <20210916155813.968979874@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,43 +41,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+From: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
 
-[ Upstream commit e66e49592b690d6abd537cc207b07a3db2f413d0 ]
+[ Upstream commit 50741b70b0cbbafbd9199f5180e66c0c53783a4a ]
 
-QP attributes that were supplied by IB/core already have all parameters
-set when they are passed to the driver. The drivers are not supposed to
-change anything in struct ib_qp_init_attr.
+Commit d947fb4c965c ("cpuidle: pseries: Fixup exit latency for
+CEDE(0)") sets the exit latency of CEDE(0) based on the latency values
+of the Extended CEDE states advertised by the platform
 
-Fixes: 66d86e529dd5 ("RDMA/hns: Add UD support for HIP09")
-Link: https://lore.kernel.org/r/5987138875e8ade9aa339d4db6e1bd9694ed4591.1627040189.git.leonro@nvidia.com
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+On POWER9 LPARs, the firmwares advertise a very low value of 2us for
+CEDE1 exit latency on a Dedicated LPAR. The latency advertized by the
+PHYP hypervisor corresponds to the latency required to wakeup from the
+underlying hardware idle state. However the wakeup latency from the
+LPAR perspective should include
+
+1. The time taken to transition the CPU from the Hypervisor into the
+   LPAR post wakeup from platform idle state
+
+2. Time taken to send the IPI from the source CPU (waker) to the idle
+   target CPU (wakee).
+
+1. can be measured via timer idle test, where we queue a timer, say
+for 1ms, and enter the CEDE state. When the timer fires, in the timer
+handler we compute how much extra timer over the expected 1ms have we
+consumed. On a a POWER9 LPAR the numbers are
+
+CEDE latency measured using a timer (numbers in ns)
+N       Min      Median   Avg       90%ile  99%ile    Max    Stddev
+400     2601     5677     5668.74    5917    6413     9299   455.01
+
+1. and 2. combined can be determined by an IPI latency test where we
+send an IPI to an idle CPU and in the handler compute the time
+difference between when the IPI was sent and when the handler ran. We
+see the following numbers on POWER9 LPAR.
+
+CEDE latency measured using an IPI (numbers in ns)
+N       Min      Median   Avg       90%ile  99%ile    Max    Stddev
+400     711      7564     7369.43   8559    9514      9698   1200.01
+
+Suppose, we consider the 99th percentile latency value measured using
+the IPI to be the wakeup latency, the value would be 9.5us This is in
+the ballpark of the default value of 10us.
+
+Hence, use the exit latency of CEDE(0) based on the latency values
+advertized by platform only from POWER10 onwards. The values
+advertized on POWER10 platforms is more realistic and informed by the
+latency measurements. For earlier platforms stick to the default value
+of 10us. The fix was suggested by Michael Ellerman.
+
+Fixes: d947fb4c965c ("cpuidle: pseries: Fixup exit latency for CEDE(0)")
+Reported-by: Enrico Joedecke <joedecke@de.ibm.com>
+Signed-off-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/1626676399-15975-2-git-send-email-ego@linux.vnet.ibm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/hns/hns_roce_qp.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+ drivers/cpuidle/cpuidle-pseries.c | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-index 230a909ba9bc..80661d368860 100644
---- a/drivers/infiniband/hw/hns/hns_roce_qp.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-@@ -1158,14 +1158,8 @@ struct ib_qp *hns_roce_create_qp(struct ib_pd *pd,
- 	if (!hr_qp)
- 		return ERR_PTR(-ENOMEM);
- 
--	if (init_attr->qp_type == IB_QPT_XRC_INI)
--		init_attr->recv_cq = NULL;
--
--	if (init_attr->qp_type == IB_QPT_XRC_TGT) {
-+	if (init_attr->qp_type == IB_QPT_XRC_TGT)
- 		hr_qp->xrcdn = to_hr_xrcd(init_attr->xrcd)->xrcdn;
--		init_attr->recv_cq = NULL;
--		init_attr->send_cq = NULL;
--	}
- 
- 	if (init_attr->qp_type == IB_QPT_GSI) {
- 		hr_qp->port = init_attr->port_num - 1;
+diff --git a/drivers/cpuidle/cpuidle-pseries.c b/drivers/cpuidle/cpuidle-pseries.c
+index a2b5c6f60cf0..e592280d8acf 100644
+--- a/drivers/cpuidle/cpuidle-pseries.c
++++ b/drivers/cpuidle/cpuidle-pseries.c
+@@ -419,7 +419,21 @@ static int pseries_idle_probe(void)
+ 			cpuidle_state_table = shared_states;
+ 			max_idle_state = ARRAY_SIZE(shared_states);
+ 		} else {
+-			fixup_cede0_latency();
++			/*
++			 * Use firmware provided latency values
++			 * starting with POWER10 platforms. In the
++			 * case that we are running on a POWER10
++			 * platform but in an earlier compat mode, we
++			 * can still use the firmware provided values.
++			 *
++			 * However, on platforms prior to POWER10, we
++			 * cannot rely on the accuracy of the firmware
++			 * provided latency values. On such platforms,
++			 * go with the conservative default estimate
++			 * of 10us.
++			 */
++			if (cpu_has_feature(CPU_FTR_ARCH_31) || pvr_version_is(PVR_POWER10))
++				fixup_cede0_latency();
+ 			cpuidle_state_table = dedicated_states;
+ 			max_idle_state = NR_DEDICATED_STATES;
+ 		}
 -- 
 2.30.2
 
