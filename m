@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9114E40E849
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EED440E163
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:29:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354044AbhIPRiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:38:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47078 "EHLO mail.kernel.org"
+        id S243287AbhIPQaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:30:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59302 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352832AbhIPR25 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:28:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 61E3961CF1;
-        Thu, 16 Sep 2021 16:46:07 +0000 (UTC)
+        id S232046AbhIPQVh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:21:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A1A946140B;
+        Thu, 16 Sep 2021 16:15:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810767;
-        bh=Mgk6zcJV3cp/1FnKDc4HTUGsqHEyT0cD/bodCBNyz7k=;
+        s=korg; t=1631808902;
+        bh=Bxemffs1luq8b35EOX38WdqC11UYKbiJRwusEb19A48=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NZzVEtp3zxV9HF37hYZ3icSweVdfIzZvjdhuRc2d0MG3tet2fNDz7qcOkzjcyAYTq
-         sPddF7DOQSWxBjd/alsx04e/R3hStLo1TeRYOIItSy60HZtx43+xhDyRTHYZjcCMIh
-         CkRA4TnHzJzZ9HR3k8uCKzt/Rb44G3qe6Grjgzrs=
+        b=ISKcKcAkf793Y4VtyvykM4eJhHlyowRyhIc6Gvq5za/X+FNhKTXS3u8s/ffOinrrB
+         euH2HzmQNFhulFW18gvh+Sm7S1hLt/sFkrcSlfDHnZT6OC22uDJs9IVHC6lxb0q9hi
+         Zo/Z/4X5n3NHnGDHwFH0itnvIMZrz7mbaCXahFuo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Evgeny Novikov <novikov@ispras.ru>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 260/432] media: tegra-cec: Handle errors of clk_prepare_enable()
+Subject: [PATCH 5.10 264/306] iwlwifi: mvm: fix access to BSS elements
 Date:   Thu, 16 Sep 2021 18:00:09 +0200
-Message-Id: <20210916155819.636415957@linuxfoundation.org>
+Message-Id: <20210916155803.074173155@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,51 +40,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Evgeny Novikov <novikov@ispras.ru>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit 38367073c796a37a61549b1f66a71b3adb03802d ]
+[ Upstream commit 6c608cd6962ebdf84fd3de6d42f88ed64d2f4e1b ]
 
-tegra_cec_probe() and tegra_cec_resume() ignored possible errors of
-clk_prepare_enable(). The patch fixes this.
+BSS elements are protected using RCU, so we need to use
+RCU properly to access them, fix that.
 
-Found by Linux Driver Verification project (linuxtesting.org).
-
-Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Link: https://lore.kernel.org/r/iwlwifi.20210805130823.fd8b5791ab44.Iba26800a6301078d3782fb249c476dd8ac2bf3c6@changeid
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/cec/platform/tegra/tegra_cec.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/cec/platform/tegra/tegra_cec.c b/drivers/media/cec/platform/tegra/tegra_cec.c
-index 1ac0c70a5981..5e907395ca2e 100644
---- a/drivers/media/cec/platform/tegra/tegra_cec.c
-+++ b/drivers/media/cec/platform/tegra/tegra_cec.c
-@@ -366,7 +366,11 @@ static int tegra_cec_probe(struct platform_device *pdev)
- 		return -ENOENT;
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c b/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c
+index 9caff70cbd27..6f301ac8cce2 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c
+@@ -3029,16 +3029,20 @@ static void iwl_mvm_check_he_obss_narrow_bw_ru_iter(struct wiphy *wiphy,
+ 						    void *_data)
+ {
+ 	struct iwl_mvm_he_obss_narrow_bw_ru_data *data = _data;
++	const struct cfg80211_bss_ies *ies;
+ 	const struct element *elem;
+ 
+-	elem = cfg80211_find_elem(WLAN_EID_EXT_CAPABILITY, bss->ies->data,
+-				  bss->ies->len);
++	rcu_read_lock();
++	ies = rcu_dereference(bss->ies);
++	elem = cfg80211_find_elem(WLAN_EID_EXT_CAPABILITY, ies->data,
++				  ies->len);
+ 
+ 	if (!elem || elem->datalen < 10 ||
+ 	    !(elem->data[10] &
+ 	      WLAN_EXT_CAPA10_OBSS_NARROW_BW_RU_TOLERANCE_SUPPORT)) {
+ 		data->tolerated = false;
  	}
- 
--	clk_prepare_enable(cec->clk);
-+	ret = clk_prepare_enable(cec->clk);
-+	if (ret) {
-+		dev_err(&pdev->dev, "Unable to prepare clock for CEC\n");
-+		return ret;
-+	}
- 
- 	/* set context info. */
- 	cec->dev = &pdev->dev;
-@@ -446,9 +450,7 @@ static int tegra_cec_resume(struct platform_device *pdev)
- 
- 	dev_notice(&pdev->dev, "Resuming\n");
- 
--	clk_prepare_enable(cec->clk);
--
--	return 0;
-+	return clk_prepare_enable(cec->clk);
++	rcu_read_unlock();
  }
- #endif
  
+ static void iwl_mvm_check_he_obss_narrow_bw_ru(struct ieee80211_hw *hw,
 -- 
 2.30.2
 
