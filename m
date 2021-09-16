@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34B8F40E843
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DEB540E817
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353443AbhIPRoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:44:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54414 "EHLO mail.kernel.org"
+        id S1350036AbhIPRns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:43:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54416 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348582AbhIPRgc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S242151AbhIPRgc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 16 Sep 2021 13:36:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2411063233;
-        Thu, 16 Sep 2021 16:49:37 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BEAE61A7A;
+        Thu, 16 Sep 2021 16:49:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810978;
-        bh=xNiP5LUet9FzFL26t126NxFdP7ULzNp+PHtiLsjkjxs=;
+        s=korg; t=1631810981;
+        bh=jlRv8kDAL7oOh3uib7Np0PoxEOF5cyMjdJSYkpy+7lc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NMyZVOf0reTAEJ/lIkXM8YWuiMUrxNB7+c19hBcqpUSbLwrM4gY3ScmLYNdaCzgQw
-         zzjYEIUyOEuNwC2yZ2ess+XX50ZfpZPNGIrLSmUrcEtsS0cCk+4aDCqlCnfo+ZRJom
-         OswDUXp44RjqiI/+lZjVsq9cCYuUjwwmk3CpDz7o=
+        b=Zu1NYLdNd69Rv0MwN+1thIoYNCYxqD2GyNU+/L7pNrK3p0IbEDs9cQqycSnZJBODu
+         /WA+UuXRYD8oTpX/qOLhl6rBFZYKFQT38gtYiPQ2F+CrvSTPmrX+64sR7LsFpU46l5
+         O1TCf/GrBFk8HfRGIf1PyFL/LyX6b2pIdRrZoy0Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Keith Busch <kbusch@kernel.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Hannes Reinecke <hare@suse.de>,
-        Daniel Wagner <dwagner@suse.de>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 306/432] nvme: code command_id with a genctr for use-after-free validation
-Date:   Thu, 16 Sep 2021 18:00:55 +0200
-Message-Id: <20210916155821.191507147@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 307/432] Bluetooth: Fix handling of LE Enhanced Connection Complete
+Date:   Thu, 16 Sep 2021 18:00:56 +0200
+Message-Id: <20210916155821.221775853@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
 References: <20210916155810.813340753@linuxfoundation.org>
@@ -42,255 +41,167 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sagi Grimberg <sagi@grimberg.me>
+From: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
 
-[ Upstream commit e7006de6c23803799be000a5dcce4d916a36541a ]
+[ Upstream commit cafae4cd625502f65d1798659c1aa9b62d38cc56 ]
 
-We cannot detect a (perhaps buggy) controller that is sending us
-a completion for a request that was already completed (for example
-sending a completion twice), this phenomenon was seen in the wild
-a few times.
+LE Enhanced Connection Complete contains the Local RPA used in the
+connection which must be used when set otherwise there could problems
+when pairing since the address used by the remote stack could be the
+Local RPA:
 
-So to protect against this, we use the upper 4 msbits of the nvme sqe
-command_id to use as a 4-bit generation counter and verify it matches
-the existing request generation that is incrementing on every execution.
+BLUETOOTH CORE SPECIFICATION Version 5.2 | Vol 4, Part E
+page 2396
 
-The 16-bit command_id structure now is constructed by:
-| xxxx | xxxxxxxxxxxx |
-  gen    request tag
+  'Resolvable Private Address being used by the local device for this
+  connection. This is only valid when the Own_Address_Type (from the
+  HCI_LE_Create_Connection, HCI_LE_Set_Advertising_Parameters,
+  HCI_LE_Set_Extended_Advertising_Parameters, or
+  HCI_LE_Extended_Create_Connection commands) is set to 0x02 or
+  0x03, and the Controller generated a resolvable private address for the
+  local device using a non-zero local IRK. For other Own_Address_Type
+  values, the Controller shall return all zeros.'
 
-This means that we are giving up some possible queue depth as 12 bits
-allow for a maximum queue depth of 4095 instead of 65536, however we
-never create such long queues anyways so no real harm done.
-
-Suggested-by: Keith Busch <kbusch@kernel.org>
-Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
-Acked-by: Keith Busch <kbusch@kernel.org>
-Reviewed-by: Hannes Reinecke <hare@suse.de>
-Reviewed-by: Daniel Wagner <dwagner@suse.de>
-Tested-by: Daniel Wagner <dwagner@suse.de>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/core.c   |  3 ++-
- drivers/nvme/host/nvme.h   | 47 +++++++++++++++++++++++++++++++++++++-
- drivers/nvme/host/pci.c    |  2 +-
- drivers/nvme/host/rdma.c   |  4 ++--
- drivers/nvme/host/tcp.c    | 26 ++++++++++-----------
- drivers/nvme/target/loop.c |  4 ++--
- 6 files changed, 66 insertions(+), 20 deletions(-)
+ net/bluetooth/hci_event.c | 93 ++++++++++++++++++++++++++-------------
+ 1 file changed, 62 insertions(+), 31 deletions(-)
 
-diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index dfd9dec0c1f6..2f0cbaba12ac 100644
---- a/drivers/nvme/host/core.c
-+++ b/drivers/nvme/host/core.c
-@@ -1029,7 +1029,8 @@ blk_status_t nvme_setup_cmd(struct nvme_ns *ns, struct request *req)
- 		return BLK_STS_IOERR;
- 	}
- 
--	cmd->common.command_id = req->tag;
-+	nvme_req(req)->genctr++;
-+	cmd->common.command_id = nvme_cid(req);
- 	trace_nvme_setup_cmd(req, cmd);
- 	return ret;
+diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+index 78032f1d8838..f41bd5dfc313 100644
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -5133,9 +5133,64 @@ static void hci_disconn_phylink_complete_evt(struct hci_dev *hdev,
  }
-diff --git a/drivers/nvme/host/nvme.h b/drivers/nvme/host/nvme.h
-index 5cd1fa3b8464..26511794629b 100644
---- a/drivers/nvme/host/nvme.h
-+++ b/drivers/nvme/host/nvme.h
-@@ -158,6 +158,7 @@ enum nvme_quirks {
- struct nvme_request {
- 	struct nvme_command	*cmd;
- 	union nvme_result	result;
-+	u8			genctr;
- 	u8			retries;
- 	u8			flags;
- 	u16			status;
-@@ -497,6 +498,49 @@ struct nvme_ctrl_ops {
- 	int (*get_address)(struct nvme_ctrl *ctrl, char *buf, int size);
- };
+ #endif
  
-+/*
-+ * nvme command_id is constructed as such:
-+ * | xxxx | xxxxxxxxxxxx |
-+ *   gen    request tag
-+ */
-+#define nvme_genctr_mask(gen)			(gen & 0xf)
-+#define nvme_cid_install_genctr(gen)		(nvme_genctr_mask(gen) << 12)
-+#define nvme_genctr_from_cid(cid)		((cid & 0xf000) >> 12)
-+#define nvme_tag_from_cid(cid)			(cid & 0xfff)
-+
-+static inline u16 nvme_cid(struct request *rq)
++static void le_conn_update_addr(struct hci_conn *conn, bdaddr_t *bdaddr,
++				u8 bdaddr_type, bdaddr_t *local_rpa)
 +{
-+	return nvme_cid_install_genctr(nvme_req(rq)->genctr) | rq->tag;
-+}
++	if (conn->out) {
++		conn->dst_type = bdaddr_type;
++		conn->resp_addr_type = bdaddr_type;
++		bacpy(&conn->resp_addr, bdaddr);
 +
-+static inline struct request *nvme_find_rq(struct blk_mq_tags *tags,
-+		u16 command_id)
-+{
-+	u8 genctr = nvme_genctr_from_cid(command_id);
-+	u16 tag = nvme_tag_from_cid(command_id);
-+	struct request *rq;
++		/* Check if the controller has set a Local RPA then it must be
++		 * used instead or hdev->rpa.
++		 */
++		if (local_rpa && bacmp(local_rpa, BDADDR_ANY)) {
++			conn->init_addr_type = ADDR_LE_DEV_RANDOM;
++			bacpy(&conn->init_addr, local_rpa);
++		} else if (hci_dev_test_flag(conn->hdev, HCI_PRIVACY)) {
++			conn->init_addr_type = ADDR_LE_DEV_RANDOM;
++			bacpy(&conn->init_addr, &conn->hdev->rpa);
++		} else {
++			hci_copy_identity_address(conn->hdev, &conn->init_addr,
++						  &conn->init_addr_type);
++		}
++	} else {
++		conn->resp_addr_type = conn->hdev->adv_addr_type;
++		/* Check if the controller has set a Local RPA then it must be
++		 * used instead or hdev->rpa.
++		 */
++		if (local_rpa && bacmp(local_rpa, BDADDR_ANY)) {
++			conn->resp_addr_type = ADDR_LE_DEV_RANDOM;
++			bacpy(&conn->resp_addr, local_rpa);
++		} else if (conn->hdev->adv_addr_type == ADDR_LE_DEV_RANDOM) {
++			/* In case of ext adv, resp_addr will be updated in
++			 * Adv Terminated event.
++			 */
++			if (!ext_adv_capable(conn->hdev))
++				bacpy(&conn->resp_addr,
++				      &conn->hdev->random_addr);
++		} else {
++			bacpy(&conn->resp_addr, &conn->hdev->bdaddr);
++		}
 +
-+	rq = blk_mq_tag_to_rq(tags, tag);
-+	if (unlikely(!rq)) {
-+		pr_err("could not locate request for tag %#x\n",
-+			tag);
-+		return NULL;
++		conn->init_addr_type = bdaddr_type;
++		bacpy(&conn->init_addr, bdaddr);
++
++		/* For incoming connections, set the default minimum
++		 * and maximum connection interval. They will be used
++		 * to check if the parameters are in range and if not
++		 * trigger the connection update procedure.
++		 */
++		conn->le_conn_min_interval = conn->hdev->le_conn_min_interval;
++		conn->le_conn_max_interval = conn->hdev->le_conn_max_interval;
 +	}
-+	if (unlikely(nvme_genctr_mask(nvme_req(rq)->genctr) != genctr)) {
-+		dev_err(nvme_req(rq)->ctrl->device,
-+			"request %#x genctr mismatch (got %#x expected %#x)\n",
-+			tag, genctr, nvme_genctr_mask(nvme_req(rq)->genctr));
-+		return NULL;
-+	}
-+	return rq;
 +}
 +
-+static inline struct request *nvme_cid_to_rq(struct blk_mq_tags *tags,
-+                u16 command_id)
-+{
-+	return blk_mq_tag_to_rq(tags, nvme_tag_from_cid(command_id));
-+}
-+
- #ifdef CONFIG_FAULT_INJECTION_DEBUG_FS
- void nvme_fault_inject_init(struct nvme_fault_inject *fault_inj,
- 			    const char *dev_name);
-@@ -594,7 +638,8 @@ static inline void nvme_put_ctrl(struct nvme_ctrl *ctrl)
- 
- static inline bool nvme_is_aen_req(u16 qid, __u16 command_id)
+ static void le_conn_complete_evt(struct hci_dev *hdev, u8 status,
+-			bdaddr_t *bdaddr, u8 bdaddr_type, u8 role, u16 handle,
+-			u16 interval, u16 latency, u16 supervision_timeout)
++				 bdaddr_t *bdaddr, u8 bdaddr_type,
++				 bdaddr_t *local_rpa, u8 role, u16 handle,
++				 u16 interval, u16 latency,
++				 u16 supervision_timeout)
  {
--	return !qid && command_id >= NVME_AQ_BLK_MQ_DEPTH;
-+	return !qid &&
-+		nvme_tag_from_cid(command_id) >= NVME_AQ_BLK_MQ_DEPTH;
- }
- 
- void nvme_complete_rq(struct request *req);
-diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-index 51852085239e..c246fdacba2e 100644
---- a/drivers/nvme/host/pci.c
-+++ b/drivers/nvme/host/pci.c
-@@ -1014,7 +1014,7 @@ static inline void nvme_handle_cqe(struct nvme_queue *nvmeq, u16 idx)
- 		return;
+ 	struct hci_conn_params *params;
+ 	struct hci_conn *conn;
+@@ -5183,32 +5238,7 @@ static void le_conn_complete_evt(struct hci_dev *hdev, u8 status,
+ 		cancel_delayed_work(&conn->le_conn_timeout);
  	}
  
--	req = blk_mq_tag_to_rq(nvme_queue_tagset(nvmeq), command_id);
-+	req = nvme_find_rq(nvme_queue_tagset(nvmeq), command_id);
- 	if (unlikely(!req)) {
- 		dev_warn(nvmeq->dev->ctrl.device,
- 			"invalid id %d completed on queue %d\n",
-diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
-index 3bd9cbc80246..a68704e39084 100644
---- a/drivers/nvme/host/rdma.c
-+++ b/drivers/nvme/host/rdma.c
-@@ -1730,10 +1730,10 @@ static void nvme_rdma_process_nvme_rsp(struct nvme_rdma_queue *queue,
- 	struct request *rq;
- 	struct nvme_rdma_request *req;
+-	if (!conn->out) {
+-		/* Set the responder (our side) address type based on
+-		 * the advertising address type.
+-		 */
+-		conn->resp_addr_type = hdev->adv_addr_type;
+-		if (hdev->adv_addr_type == ADDR_LE_DEV_RANDOM) {
+-			/* In case of ext adv, resp_addr will be updated in
+-			 * Adv Terminated event.
+-			 */
+-			if (!ext_adv_capable(hdev))
+-				bacpy(&conn->resp_addr, &hdev->random_addr);
+-		} else {
+-			bacpy(&conn->resp_addr, &hdev->bdaddr);
+-		}
+-
+-		conn->init_addr_type = bdaddr_type;
+-		bacpy(&conn->init_addr, bdaddr);
+-
+-		/* For incoming connections, set the default minimum
+-		 * and maximum connection interval. They will be used
+-		 * to check if the parameters are in range and if not
+-		 * trigger the connection update procedure.
+-		 */
+-		conn->le_conn_min_interval = hdev->le_conn_min_interval;
+-		conn->le_conn_max_interval = hdev->le_conn_max_interval;
+-	}
++	le_conn_update_addr(conn, bdaddr, bdaddr_type, local_rpa);
  
--	rq = blk_mq_tag_to_rq(nvme_rdma_tagset(queue), cqe->command_id);
-+	rq = nvme_find_rq(nvme_rdma_tagset(queue), cqe->command_id);
- 	if (!rq) {
- 		dev_err(queue->ctrl->ctrl.device,
--			"tag 0x%x on QP %#x not found\n",
-+			"got bad command_id %#x on QP %#x\n",
- 			cqe->command_id, queue->qp->qp_num);
- 		nvme_rdma_error_recovery(queue->ctrl);
- 		return;
-diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c
-index f05892e2e6c4..48b70e5235a3 100644
---- a/drivers/nvme/host/tcp.c
-+++ b/drivers/nvme/host/tcp.c
-@@ -487,11 +487,11 @@ static int nvme_tcp_process_nvme_cqe(struct nvme_tcp_queue *queue,
- {
- 	struct request *rq;
+ 	/* Lookup the identity address from the stored connection
+ 	 * address and address type.
+@@ -5319,7 +5349,7 @@ static void hci_le_conn_complete_evt(struct hci_dev *hdev, struct sk_buff *skb)
+ 	BT_DBG("%s status 0x%2.2x", hdev->name, ev->status);
  
--	rq = blk_mq_tag_to_rq(nvme_tcp_tagset(queue), cqe->command_id);
-+	rq = nvme_find_rq(nvme_tcp_tagset(queue), cqe->command_id);
- 	if (!rq) {
- 		dev_err(queue->ctrl->ctrl.device,
--			"queue %d tag 0x%x not found\n",
--			nvme_tcp_queue_id(queue), cqe->command_id);
-+			"got bad cqe.command_id %#x on queue %d\n",
-+			cqe->command_id, nvme_tcp_queue_id(queue));
- 		nvme_tcp_error_recovery(&queue->ctrl->ctrl);
- 		return -EINVAL;
- 	}
-@@ -508,11 +508,11 @@ static int nvme_tcp_handle_c2h_data(struct nvme_tcp_queue *queue,
- {
- 	struct request *rq;
+ 	le_conn_complete_evt(hdev, ev->status, &ev->bdaddr, ev->bdaddr_type,
+-			     ev->role, le16_to_cpu(ev->handle),
++			     NULL, ev->role, le16_to_cpu(ev->handle),
+ 			     le16_to_cpu(ev->interval),
+ 			     le16_to_cpu(ev->latency),
+ 			     le16_to_cpu(ev->supervision_timeout));
+@@ -5333,7 +5363,7 @@ static void hci_le_enh_conn_complete_evt(struct hci_dev *hdev,
+ 	BT_DBG("%s status 0x%2.2x", hdev->name, ev->status);
  
--	rq = blk_mq_tag_to_rq(nvme_tcp_tagset(queue), pdu->command_id);
-+	rq = nvme_find_rq(nvme_tcp_tagset(queue), pdu->command_id);
- 	if (!rq) {
- 		dev_err(queue->ctrl->ctrl.device,
--			"queue %d tag %#x not found\n",
--			nvme_tcp_queue_id(queue), pdu->command_id);
-+			"got bad c2hdata.command_id %#x on queue %d\n",
-+			pdu->command_id, nvme_tcp_queue_id(queue));
- 		return -ENOENT;
- 	}
+ 	le_conn_complete_evt(hdev, ev->status, &ev->bdaddr, ev->bdaddr_type,
+-			     ev->role, le16_to_cpu(ev->handle),
++			     &ev->local_rpa, ev->role, le16_to_cpu(ev->handle),
+ 			     le16_to_cpu(ev->interval),
+ 			     le16_to_cpu(ev->latency),
+ 			     le16_to_cpu(ev->supervision_timeout));
+@@ -5369,7 +5399,8 @@ static void hci_le_ext_adv_term_evt(struct hci_dev *hdev, struct sk_buff *skb)
+ 	if (conn) {
+ 		struct adv_info *adv_instance;
  
-@@ -606,7 +606,7 @@ static int nvme_tcp_setup_h2c_data_pdu(struct nvme_tcp_request *req,
- 	data->hdr.plen =
- 		cpu_to_le32(data->hdr.hlen + hdgst + req->pdu_len + ddgst);
- 	data->ttag = pdu->ttag;
--	data->command_id = rq->tag;
-+	data->command_id = nvme_cid(rq);
- 	data->data_offset = cpu_to_le32(req->data_sent);
- 	data->data_length = cpu_to_le32(req->pdu_len);
- 	return 0;
-@@ -619,11 +619,11 @@ static int nvme_tcp_handle_r2t(struct nvme_tcp_queue *queue,
- 	struct request *rq;
- 	int ret;
- 
--	rq = blk_mq_tag_to_rq(nvme_tcp_tagset(queue), pdu->command_id);
-+	rq = nvme_find_rq(nvme_tcp_tagset(queue), pdu->command_id);
- 	if (!rq) {
- 		dev_err(queue->ctrl->ctrl.device,
--			"queue %d tag %#x not found\n",
--			nvme_tcp_queue_id(queue), pdu->command_id);
-+			"got bad r2t.command_id %#x on queue %d\n",
-+			pdu->command_id, nvme_tcp_queue_id(queue));
- 		return -ENOENT;
- 	}
- 	req = blk_mq_rq_to_pdu(rq);
-@@ -703,7 +703,7 @@ static int nvme_tcp_recv_data(struct nvme_tcp_queue *queue, struct sk_buff *skb,
- {
- 	struct nvme_tcp_data_pdu *pdu = (void *)queue->pdu;
- 	struct request *rq =
--		blk_mq_tag_to_rq(nvme_tcp_tagset(queue), pdu->command_id);
-+		nvme_cid_to_rq(nvme_tcp_tagset(queue), pdu->command_id);
- 	struct nvme_tcp_request *req = blk_mq_rq_to_pdu(rq);
- 
- 	while (true) {
-@@ -796,8 +796,8 @@ static int nvme_tcp_recv_ddgst(struct nvme_tcp_queue *queue,
- 	}
- 
- 	if (pdu->hdr.flags & NVME_TCP_F_DATA_SUCCESS) {
--		struct request *rq = blk_mq_tag_to_rq(nvme_tcp_tagset(queue),
--						pdu->command_id);
-+		struct request *rq = nvme_cid_to_rq(nvme_tcp_tagset(queue),
-+					pdu->command_id);
- 
- 		nvme_tcp_end_request(rq, NVME_SC_SUCCESS);
- 		queue->nr_cqe++;
-diff --git a/drivers/nvme/target/loop.c b/drivers/nvme/target/loop.c
-index 3a17a7e26bbf..0285ccc7541f 100644
---- a/drivers/nvme/target/loop.c
-+++ b/drivers/nvme/target/loop.c
-@@ -107,10 +107,10 @@ static void nvme_loop_queue_response(struct nvmet_req *req)
- 	} else {
- 		struct request *rq;
- 
--		rq = blk_mq_tag_to_rq(nvme_loop_tagset(queue), cqe->command_id);
-+		rq = nvme_find_rq(nvme_loop_tagset(queue), cqe->command_id);
- 		if (!rq) {
- 			dev_err(queue->ctrl->ctrl.device,
--				"tag 0x%x on queue %d not found\n",
-+				"got bad command_id %#x on queue %d\n",
- 				cqe->command_id, nvme_loop_queue_idx(queue));
+-		if (hdev->adv_addr_type != ADDR_LE_DEV_RANDOM)
++		if (hdev->adv_addr_type != ADDR_LE_DEV_RANDOM ||
++		    bacmp(&conn->resp_addr, BDADDR_ANY))
  			return;
- 		}
+ 
+ 		if (!ev->handle) {
 -- 
 2.30.2
 
