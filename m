@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2DBB40E130
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:29:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D891340E3BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:21:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242372AbhIPQ2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:28:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54068 "EHLO mail.kernel.org"
+        id S241448AbhIPQvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:51:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57408 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241309AbhIPQP1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:15:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EFD5960F8F;
-        Thu, 16 Sep 2021 16:11:41 +0000 (UTC)
+        id S1344669AbhIPQqb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:46:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 09C156112E;
+        Thu, 16 Sep 2021 16:26:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808702;
-        bh=s44E5qAOsqWbcPp4zaQ2/YUdsSc6gezMCDsyo3w5oro=;
+        s=korg; t=1631809596;
+        bh=hXTmkclbLkPq43POKeL3I734PIXlNy0QX0S35lmmUX0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NlinAfhr/V2WqrSvwpo3N2UXtlLU9tHS/U2I8MNHG99BFd7wB0ptG+sVSzfu2HibD
-         g0iVvlODtHuhhXsOK+0M6URpBoyBJlEO18XdhdgVZ53inCm2RQcO2xXAZRAmJUqPRj
-         9VFx2WKC6muAmQks9Ks4WFf4OSIT3kPfHbqKQb2E=
+        b=u3DzDkplFog+Vimu6LUZbZ+CvbkhA1iPbhk6CyVOe6ODrVFl2HQ/AoYENFghpu/1S
+         xgv9ReRDMS3peD9P9wGXIVP1yQq1fIr5s2dQJSMNAaKxUQWRHUglwhTPT9SDQoSl6z
+         vPhnXVV8h4TAYiWh8JJbs5oyYJtw1WAOVppHqvao=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        stable@vger.kernel.org, Eric Auger <eric.auger@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 191/306] arm64: dts: qcom: ipq6018: drop 0x from unit address
-Date:   Thu, 16 Sep 2021 17:58:56 +0200
-Message-Id: <20210916155800.587423208@linuxfoundation.org>
+Subject: [PATCH 5.13 180/380] misc/pvpanic-pci: Allow automatic loading
+Date:   Thu, 16 Sep 2021 17:58:57 +0200
+Message-Id: <20210916155810.194741203@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +39,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vinod Koul <vkoul@kernel.org>
+From: Eric Auger <eric.auger@redhat.com>
 
-[ Upstream commit 1b91b8ef60e9a67141e66af3cca532c00f4605fe ]
+[ Upstream commit 28b6a003bcdfa1fc4603b9185b247ecca7af9bef ]
 
-Nodes need not contain '0x' for the unit address. Drop it to fix the
-below warning:
+The virtual machine monitor (QEMU) exposes the pvpanic-pci
+device to the guest. On guest side the module exists but
+currently isn't loaded automatically. So the driver fails
+to be probed and does not its job of handling guest panic
+events.
 
-arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dt.yaml: reserved-memory:
-'memory@0x60000' does not match any of the regexes
+Instead of requiring manual modprobe, let's include a device
+database using the MODULE_DEVICE_TABLE macro and let the
+module auto-load when the guest gets exposed with such a
+pvpanic-pci device.
 
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Link: https://lore.kernel.org/r/20210308060826.3074234-19-vkoul@kernel.org
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Eric Auger <eric.auger@redhat.com>
+Link: https://lore.kernel.org/r/20210629072214.901004-1-eric.auger@redhat.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/ipq6018.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/misc/pvpanic/pvpanic-pci.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/ipq6018.dtsi b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-index cdc1e3d60c58..3ceb36cac512 100644
---- a/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-@@ -151,7 +151,7 @@ reserved-memory {
- 		#size-cells = <2>;
- 		ranges;
+diff --git a/drivers/misc/pvpanic/pvpanic-pci.c b/drivers/misc/pvpanic/pvpanic-pci.c
+index 046ce4ecc195..4a3250564442 100644
+--- a/drivers/misc/pvpanic/pvpanic-pci.c
++++ b/drivers/misc/pvpanic/pvpanic-pci.c
+@@ -119,4 +119,6 @@ static struct pci_driver pvpanic_pci_driver = {
+ 	},
+ };
  
--		rpm_msg_ram: memory@0x60000 {
-+		rpm_msg_ram: memory@60000 {
- 			reg = <0x0 0x60000 0x0 0x6000>;
- 			no-map;
- 		};
++MODULE_DEVICE_TABLE(pci, pvpanic_pci_id_tbl);
++
+ module_pci_driver(pvpanic_pci_driver);
 -- 
 2.30.2
 
