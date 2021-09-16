@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EC9740E10D
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:28:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BB5A40E79C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:34:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241397AbhIPQ1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:27:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55014 "EHLO mail.kernel.org"
+        id S1353770AbhIPRfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:35:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46940 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241103AbhIPQTQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:19:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9853661368;
-        Thu, 16 Sep 2021 16:13:10 +0000 (UTC)
+        id S1348331AbhIPRZz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:25:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 28DA261BFE;
+        Thu, 16 Sep 2021 16:44:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808791;
-        bh=yqZajeSzuZRjAZq/e6DFxJmN7kiugX54XlOTrOdtcWY=;
+        s=korg; t=1631810657;
+        bh=M/TrmTe3ciJOP0PBC3RLTmAUzusLs0iiYOrZz9bKWK0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R1Fw5Tzy5/IPusGFS9xe6bkVYKSqmJ4l2nMJ+dWcSJJXA7Pzy4uStcFRIOPFijym1
-         SImJyIaEAR47efPiGwvgsG9jfRZkxYkfV/CXDF/I0erjEoqtiznoa85x55acX/X4v6
-         U9bUk5fIPnKaLl2g1y0Cjqo2mh+TWCOyBRdYcyME=
+        b=lRp06/s+ASJF2cX0XY6yd6uvhMeHCGqsmMV0ec+NOlQDLpm9if1Tw4gFtcyRSKKtA
+         Tu2sUcGSFuciBNMGPBEBrDjrd98Sdcnxim3NXYagwYWDledjnpbk66qmwJTWtwdq2V
+         K5sMc1EVtrrDqdVONLpiAyaerH7cc9w/9rx9gdiw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Luke Hsiao <lukehsiao@google.com>,
-        Neal Cardwell <ncardwell@google.com>,
-        Yuchung Cheng <ycheng@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 224/306] tcp: enable data-less, empty-cookie SYN with TFO_SERVER_COOKIE_NOT_REQD
-Date:   Thu, 16 Sep 2021 17:59:29 +0200
-Message-Id: <20210916155801.685937657@linuxfoundation.org>
+Subject: [PATCH 5.14 221/432] video: fbdev: kyro: Error out if pixclock equals zero
+Date:   Thu, 16 Sep 2021 17:59:30 +0200
+Message-Id: <20210916155818.336914837@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,56 +40,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luke Hsiao <lukehsiao@google.com>
+From: Zheyu Ma <zheyuma97@gmail.com>
 
-[ Upstream commit e3faa49bcecdfcc80e94dd75709d6acb1a5d89f6 ]
+[ Upstream commit 1520b4b7ba964f8eec2e7dd14c571d50de3e5191 ]
 
-Since the original TFO server code was implemented in commit
-168a8f58059a22feb9e9a2dcc1b8053dbbbc12ef ("tcp: TCP Fast Open Server -
-main code path") the TFO server code has supported the sysctl bit flag
-TFO_SERVER_COOKIE_NOT_REQD. Currently, when the TFO_SERVER_ENABLE and
-TFO_SERVER_COOKIE_NOT_REQD sysctl bit flags are set, a server connection
-will accept a SYN with N bytes of data (N > 0) that has no TFO cookie,
-create a new fast open connection, process the incoming data in the SYN,
-and make the connection ready for accepting. After accepting, the
-connection is ready for read()/recvmsg() to read the N bytes of data in
-the SYN, ready for write()/sendmsg() calls and data transmissions to
-transmit data.
+The userspace program could pass any values to the driver through
+ioctl() interface. if the driver doesn't check the value of 'pixclock',
+it may cause divide error because the value of 'lineclock' and
+'frameclock' will be zero.
 
-This commit changes an edge case in this feature by changing this
-behavior to apply to (N >= 0) bytes of data in the SYN rather than only
-(N > 0) bytes of data in the SYN. Now, a server will accept a data-less
-SYN without a TFO cookie if TFO_SERVER_COOKIE_NOT_REQD is set.
+Fix this by checking whether 'pixclock' is zero in kyrofb_check_var().
 
-Caveat! While this enables a new kind of TFO (data-less empty-cookie
-SYN), some firewall rules setup may not work if they assume such packets
-are not legit TFOs and will filter them.
+The following log reveals it:
 
-Signed-off-by: Luke Hsiao <lukehsiao@google.com>
-Acked-by: Neal Cardwell <ncardwell@google.com>
-Acked-by: Yuchung Cheng <ycheng@google.com>
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Link: https://lore.kernel.org/r/20210816205105.2533289-1-luke.w.hsiao@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+[  103.073930] divide error: 0000 [#1] PREEMPT SMP KASAN PTI
+[  103.073942] CPU: 4 PID: 12483 Comm: syz-executor Not tainted 5.14.0-rc2-00478-g2734d6c1b1a0-dirty #118
+[  103.073959] RIP: 0010:kyrofb_set_par+0x316/0xc80
+[  103.074045] Call Trace:
+[  103.074048]  ? ___might_sleep+0x1ee/0x2d0
+[  103.074060]  ? kyrofb_ioctl+0x330/0x330
+[  103.074069]  fb_set_var+0x5bf/0xeb0
+[  103.074078]  ? fb_blank+0x1a0/0x1a0
+[  103.074085]  ? lock_acquire+0x3bd/0x530
+[  103.074094]  ? lock_release+0x810/0x810
+[  103.074103]  ? ___might_sleep+0x1ee/0x2d0
+[  103.074114]  ? __mutex_lock+0x620/0x1190
+[  103.074126]  ? trace_hardirqs_on+0x6a/0x1c0
+[  103.074137]  do_fb_ioctl+0x31e/0x700
+[  103.074144]  ? fb_getput_cmap+0x280/0x280
+[  103.074152]  ? rcu_read_lock_sched_held+0x11/0x80
+[  103.074162]  ? rcu_read_lock_sched_held+0x11/0x80
+[  103.074171]  ? __sanitizer_cov_trace_switch+0x67/0xf0
+[  103.074181]  ? __sanitizer_cov_trace_const_cmp2+0x20/0x80
+[  103.074191]  ? do_vfs_ioctl+0x14b/0x16c0
+[  103.074199]  ? vfs_fileattr_set+0xb60/0xb60
+[  103.074207]  ? rcu_read_lock_sched_held+0x11/0x80
+[  103.074216]  ? lock_release+0x483/0x810
+[  103.074224]  ? __fget_files+0x217/0x3d0
+[  103.074234]  ? __fget_files+0x239/0x3d0
+[  103.074243]  ? do_fb_ioctl+0x700/0x700
+[  103.074250]  fb_ioctl+0xe6/0x130
+
+Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/1627293835-17441-3-git-send-email-zheyuma97@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/tcp_fastopen.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/video/fbdev/kyro/fbdev.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/net/ipv4/tcp_fastopen.c b/net/ipv4/tcp_fastopen.c
-index d49709ba8e16..107111984384 100644
---- a/net/ipv4/tcp_fastopen.c
-+++ b/net/ipv4/tcp_fastopen.c
-@@ -379,8 +379,7 @@ struct sock *tcp_try_fastopen(struct sock *sk, struct sk_buff *skb,
- 		return NULL;
- 	}
+diff --git a/drivers/video/fbdev/kyro/fbdev.c b/drivers/video/fbdev/kyro/fbdev.c
+index 4b8c7c16b1df..25801e8e3f74 100644
+--- a/drivers/video/fbdev/kyro/fbdev.c
++++ b/drivers/video/fbdev/kyro/fbdev.c
+@@ -399,6 +399,9 @@ static int kyrofb_check_var(struct fb_var_screeninfo *var, struct fb_info *info)
+ {
+ 	struct kyrofb_info *par = info->par;
  
--	if (syn_data &&
--	    tcp_fastopen_no_cookie(sk, dst, TFO_SERVER_COOKIE_NOT_REQD))
-+	if (tcp_fastopen_no_cookie(sk, dst, TFO_SERVER_COOKIE_NOT_REQD))
- 		goto fastopen;
- 
- 	if (foc->len == 0) {
++	if (!var->pixclock)
++		return -EINVAL;
++
+ 	if (var->bits_per_pixel != 16 && var->bits_per_pixel != 32) {
+ 		printk(KERN_WARNING "kyrofb: depth not supported: %u\n", var->bits_per_pixel);
+ 		return -EINVAL;
 -- 
 2.30.2
 
