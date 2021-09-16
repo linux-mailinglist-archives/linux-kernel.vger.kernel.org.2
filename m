@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A07840E15D
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:29:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 040B840E413
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:22:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243045AbhIPQ34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:29:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59974 "EHLO mail.kernel.org"
+        id S236996AbhIPQzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:55:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40182 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240700AbhIPQUb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:20:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CC2E613A1;
-        Thu, 16 Sep 2021 16:14:31 +0000 (UTC)
+        id S1345304AbhIPQuF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:50:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C210B615A3;
+        Thu, 16 Sep 2021 16:28:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808871;
-        bh=L+Zrw3R7HuZQRklNozrduxknMAPTxCggBqZfIcjfZ9Q=;
+        s=korg; t=1631809683;
+        bh=EoVBRezxiudV/exghT9iiYnKT72jZ6yFDZw05w4XH+M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iQ5K9q3M/5H0KsBeOVQEFD8K/oahGvfNVWZiRdFm9vheLGszL4N1LSP5WJrDVNMUL
-         L4nQa94OFj0QKbFwAw5UObBmwwzH039VFxXiU8aNvEwUx6yOqm+0DaQxgsDmtfATmw
-         KuA2mRCS/gCEQckVbEn2Z8vVLPlXSgJWZDoQK+q4=
+        b=aX9UGx5HSZEH8GM0zmVgnYikSisfbvtaQwb8X2Vs+Z0JXHp7B3VesVG8lSDSIsMWa
+         f0De1LvhKoi5c5dXqEJL+DhX4fsxQNx+FGdjUKxMGM0JX+LO87AhlYLTK+LrUkxoCg
+         rMNbtSm4vLxoERKs5c0DQYtdw+gcCWWgS1unHMsI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nadezda Lutovinova <lutovinova@ispras.ru>,
+        stable@vger.kernel.org, Georgi Djakov <georgi.djakov@linaro.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 254/306] usb: musb: musb_dsps: request_irq() after initializing musb
-Date:   Thu, 16 Sep 2021 17:59:59 +0200
-Message-Id: <20210916155802.728071332@linuxfoundation.org>
+Subject: [PATCH 5.13 243/380] arm64: dts: qcom: sm8250: Fix epss_l3 unit address
+Date:   Thu, 16 Sep 2021 18:00:00 +0200
+Message-Id: <20210916155812.339930084@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,61 +42,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nadezda Lutovinova <lutovinova@ispras.ru>
+From: Georgi Djakov <georgi.djakov@linaro.org>
 
-[ Upstream commit 7c75bde329d7e2a93cf86a5c15c61f96f1446cdc ]
+[ Upstream commit 77b53d65dc1e54321ec841912f06bcb558a079c0 ]
 
-If IRQ occurs between calling  dsps_setup_optional_vbus_irq()
-and  dsps_create_musb_pdev(), then null pointer dereference occurs
-since glue->musb wasn't initialized yet.
+The unit address of the epss_l3 node is incorrect and does not match
+the address of its "reg" property. Let's fix it.
 
-The patch puts initializing of neccesery data before registration
-of the interrupt handler.
-
-Found by Linux Driver Verification project (linuxtesting.org).
-
-Signed-off-by: Nadezda Lutovinova <lutovinova@ispras.ru>
-Link: https://lore.kernel.org/r/20210819163323.17714-1-lutovinova@ispras.ru
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Reviewed-by: Sibi Sankar <sibis@codeaurora.org>
+Link: https://lore.kernel.org/r/20210211193637.9737-1-georgi.djakov@linaro.org
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/musb/musb_dsps.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+ arch/arm64/boot/dts/qcom/sm8250.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/musb/musb_dsps.c b/drivers/usb/musb/musb_dsps.c
-index 5892f3ce0cdc..ce9fc46c9266 100644
---- a/drivers/usb/musb/musb_dsps.c
-+++ b/drivers/usb/musb/musb_dsps.c
-@@ -890,23 +890,22 @@ static int dsps_probe(struct platform_device *pdev)
- 	if (!glue->usbss_base)
- 		return -ENXIO;
+diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+index 1316bea3eab5..6d28bfd9a8f5 100644
+--- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+@@ -3773,7 +3773,7 @@ apps_bcm_voter: bcm_voter {
+ 			};
+ 		};
  
--	if (usb_get_dr_mode(&pdev->dev) == USB_DR_MODE_PERIPHERAL) {
--		ret = dsps_setup_optional_vbus_irq(pdev, glue);
--		if (ret)
--			goto err_iounmap;
--	}
--
- 	platform_set_drvdata(pdev, glue);
- 	pm_runtime_enable(&pdev->dev);
- 	ret = dsps_create_musb_pdev(glue, pdev);
- 	if (ret)
- 		goto err;
+-		epss_l3: interconnect@18591000 {
++		epss_l3: interconnect@18590000 {
+ 			compatible = "qcom,sm8250-epss-l3";
+ 			reg = <0 0x18590000 0 0x1000>;
  
-+	if (usb_get_dr_mode(&pdev->dev) == USB_DR_MODE_PERIPHERAL) {
-+		ret = dsps_setup_optional_vbus_irq(pdev, glue);
-+		if (ret)
-+			goto err;
-+	}
-+
- 	return 0;
- 
- err:
- 	pm_runtime_disable(&pdev->dev);
--err_iounmap:
- 	iounmap(glue->usbss_base);
- 	return ret;
- }
 -- 
 2.30.2
 
