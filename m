@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D228140E012
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:16:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81B0C40E2BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:17:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236128AbhIPQRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:17:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49032 "EHLO mail.kernel.org"
+        id S244054AbhIPQlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:41:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233599AbhIPQJm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:09:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D74B861361;
-        Thu, 16 Sep 2021 16:08:12 +0000 (UTC)
+        id S244224AbhIPQfB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:35:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CA7561989;
+        Thu, 16 Sep 2021 16:21:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808493;
-        bh=1wQoxymKe5+8ox3pj2UmRtrzTKZejCj9yDewLMQIuQ4=;
+        s=korg; t=1631809268;
+        bh=G1ZlR/KPppvgOA8cyS27zxnrqtMOzXMJDSDxRLDiTBE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NaObthDb1W7FwnD4qh1oIsemr+7PG1xxXle8Anet7wFiPWhO/fTikJw/SU9ZeCB7R
-         9hAogblfug3cWPWyiIUhh4sMewn7/kj9o3CKmB7bZ5QqCvhD25a6SvJySn0VcvwNXf
-         ffujFngifxbNEZqN/OCsx3VwvnnYFDxiK3AczK00=
+        b=0roHYB2rM4T8+37zdLvYouqQOQbnTYv3CWmIK8+N/A26tDU+oCyPm5Erpy4BVaNEX
+         /VVIq1hB/4CqSGTf0hptivH5tLA4p4zd8nNiPKRvudSV414cC7wu76/+qA8jlKrpBr
+         Xxrf/6/93iM4VHGfkTAYTkMwxPSRO2q3K39ogBAw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chao Yu <chao@kernel.org>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 104/306] f2fs: fix to unmap pages from userspace process in punch_hole()
+        stable@vger.kernel.org, Anthony Iliopoulos <ailiop@suse.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 092/380] dma-debug: fix debugfs initialization order
 Date:   Thu, 16 Sep 2021 17:57:29 +0200
-Message-Id: <20210916155757.616265230@linuxfoundation.org>
+Message-Id: <20210916155807.168210663@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,46 +39,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chao Yu <chao@kernel.org>
+From: Anthony Iliopoulos <ailiop@suse.com>
 
-[ Upstream commit c8dc3047c48540183744f959412d44b08c5435e1 ]
+[ Upstream commit 173735c346c412d9f084825ecb04f24ada0e2986 ]
 
-We need to unmap pages from userspace process before removing pagecache
-in punch_hole() like we did in f2fs_setattr().
+Due to link order, dma_debug_init is called before debugfs has a chance
+to initialize (via debugfs_init which also happens in the core initcall
+stage), so the directories for dma-debug are never created.
 
-Similar change:
-commit 5e44f8c374dc ("ext4: hole-punch use truncate_pagecache_range")
+Decouple dma_debug_fs_init from dma_debug_init and defer its init until
+core_initcall_sync (after debugfs has been initialized) while letting
+dma-debug initialization occur as soon as possible to catch any early
+mappings, as suggested in [1].
 
-Fixes: fbfa2cc58d53 ("f2fs: add file operations")
-Signed-off-by: Chao Yu <chao@kernel.org>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+[1] https://lore.kernel.org/linux-iommu/YIgGa6yF%2Fadg8OSN@kroah.com/
+
+Fixes: 15b28bbcd567 ("dma-debug: move initialization to common code")
+Signed-off-by: Anthony Iliopoulos <ailiop@suse.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/f2fs/file.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ kernel/dma/debug.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index 6ee8b1e0e174..1fbaab1f7aba 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -1080,7 +1080,6 @@ static int punch_hole(struct inode *inode, loff_t offset, loff_t len)
- 		}
+diff --git a/kernel/dma/debug.c b/kernel/dma/debug.c
+index 14de1271463f..445754529917 100644
+--- a/kernel/dma/debug.c
++++ b/kernel/dma/debug.c
+@@ -794,7 +794,7 @@ static int dump_show(struct seq_file *seq, void *v)
+ }
+ DEFINE_SHOW_ATTRIBUTE(dump);
  
- 		if (pg_start < pg_end) {
--			struct address_space *mapping = inode->i_mapping;
- 			loff_t blk_start, blk_end;
- 			struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+-static void dma_debug_fs_init(void)
++static int __init dma_debug_fs_init(void)
+ {
+ 	struct dentry *dentry = debugfs_create_dir("dma-api", NULL);
  
-@@ -1092,8 +1091,7 @@ static int punch_hole(struct inode *inode, loff_t offset, loff_t len)
- 			down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
- 			down_write(&F2FS_I(inode)->i_mmap_sem);
+@@ -807,7 +807,10 @@ static void dma_debug_fs_init(void)
+ 	debugfs_create_u32("nr_total_entries", 0444, dentry, &nr_total_entries);
+ 	debugfs_create_file("driver_filter", 0644, dentry, NULL, &filter_fops);
+ 	debugfs_create_file("dump", 0444, dentry, NULL, &dump_fops);
++
++	return 0;
+ }
++core_initcall_sync(dma_debug_fs_init);
  
--			truncate_inode_pages_range(mapping, blk_start,
--					blk_end - 1);
-+			truncate_pagecache_range(inode, blk_start, blk_end - 1);
+ static int device_dma_allocations(struct device *dev, struct dma_debug_entry **out_entry)
+ {
+@@ -892,8 +895,6 @@ static int dma_debug_init(void)
+ 		spin_lock_init(&dma_entry_hash[i].lock);
+ 	}
  
- 			f2fs_lock_op(sbi);
- 			ret = f2fs_truncate_hole(inode, pg_start, pg_end);
+-	dma_debug_fs_init();
+-
+ 	nr_pages = DIV_ROUND_UP(nr_prealloc_entries, DMA_DEBUG_DYNAMIC_ENTRIES);
+ 	for (i = 0; i < nr_pages; ++i)
+ 		dma_debug_create_entries(GFP_KERNEL);
 -- 
 2.30.2
 
