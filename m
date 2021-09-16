@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 903B940E770
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:33:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08C1940E0CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:28:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348557AbhIPRc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:32:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44338 "EHLO mail.kernel.org"
+        id S241997AbhIPQYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:24:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55230 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348029AbhIPRWu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:22:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9252361A3D;
-        Thu, 16 Sep 2021 16:43:19 +0000 (UTC)
+        id S240998AbhIPQO6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:14:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6946E61361;
+        Thu, 16 Sep 2021 16:10:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810600;
-        bh=e0YyQ89vhZJrfRip3kDvSsTUPtWMNrFtRZ/S2IQUvJ0=;
+        s=korg; t=1631808655;
+        bh=S3vf4fgyn1Pcg9CxCH1WT8AUrlqkl6LHtgFXFUhTzII=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LTG2jqNZmGOUtclwg9gDVwqFT78oaIILLQu6WJerQlGyrTZdd89wR5kW9C9XrIMAR
-         oSWRAw59sD5H5VCjVDVn4sRzNnujHXJvd5PUEFWrO46NY8+6NQtZsulgnVd1mV5C74
-         5qL7/Etp9Jl741Loflzq30hbn/+IeVaDc9jCS8Bc=
+        b=F969lAeRoRzLVs6zdhtuZyDMbT4Fyn/dm39vkVhTv2KVlBLTrdP7Sq9BlOPrHQssi
+         YDiKre0luf4XXAtSJbVqb3QN6dO9dJwdi3k16+SOb33YwQz1iWjKQV2azHhYWDAqRx
+         eQ6yOUaww609jPJ2yTcdNj5l4Q+W8BNogVK+qiAI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Patrick Delaunay <patrick.delaunay@foss.st.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 168/432] ASoC: atmel: ATMEL drivers dont need HAS_DMA
+Subject: [PATCH 5.10 172/306] ARM: dts: stm32: Set {bitclock,frame}-master phandles on ST DKx
 Date:   Thu, 16 Sep 2021 17:58:37 +0200
-Message-Id: <20210916155816.434498603@linuxfoundation.org>
+Message-Id: <20210916155759.947110806@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,62 +43,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Marek Vasut <marex@denx.de>
 
-[ Upstream commit 6c5c659dfe3f02e08054a6c20019e3886618b512 ]
+[ Upstream commit 8aec45d7884f16cc21d668693c5b88bff8df0f02 ]
 
-On a config (such as arch/sh/) which does not set HAS_DMA when MMU
-is not set, several ATMEL ASoC drivers select symbols that cause
-kconfig warnings. There is one "depends on HAS_DMA" which is no longer
-needed. Dropping it eliminates the kconfig warnings and still builds
-with no problems reported.
+Fix the following dtbs_check warning:
+cs42l51@4a: port:endpoint@0:frame-master: True is not of type 'array'
+cs42l51@4a: port:endpoint@0:bitclock-master: True is not of type 'array'
 
-Fix the following kconfig warnings:
-
-WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_PDC
-  Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && HAS_DMA [=n]
-  Selected by [m]:
-  - SND_ATMEL_SOC_SSC [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m]
-  - SND_ATMEL_SOC_SSC_PDC [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m]
-
-WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC_PDC
-  Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m] && HAS_DMA [=n]
-  Selected by [m]:
-  - SND_AT91_SOC_SAM9G20_WM8731 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && SND_SOC_I2C_AND_SPI [=m]
-
-WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC
-  Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && HAS_DMA [=n]
-  Selected by [m]:
-  - SND_ATMEL_SOC_SSC_DMA [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m]
-
-WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC_DMA
-  Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m] && HAS_DMA [=n]
-  Selected by [m]:
-  - SND_ATMEL_SOC_WM8904 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && I2C [=m]
-  - SND_AT91_SOC_SAM9X5_WM8731 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && SND_SOC_I2C_AND_SPI [=m]
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reviewed-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Link: https://lore.kernel.org/r/20210707214752.3831-1-rdunlap@infradead.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Cc: Patrice Chotard <patrice.chotard@foss.st.com>
+Cc: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Cc: linux-stm32@st-md-mailman.stormreply.com
+To: linux-arm-kernel@lists.infradead.org
+Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/atmel/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
+ arch/arm/boot/dts/stm32mp15xx-dkx.dtsi | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
-index ec04e3386bc0..8617793ed955 100644
---- a/sound/soc/atmel/Kconfig
-+++ b/sound/soc/atmel/Kconfig
-@@ -11,7 +11,6 @@ if SND_ATMEL_SOC
+diff --git a/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi b/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
+index 93398cfae97e..47df8ac67cf1 100644
+--- a/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
++++ b/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
+@@ -212,15 +212,15 @@ cs42l51_port: port {
+ 			cs42l51_tx_endpoint: endpoint@0 {
+ 				reg = <0>;
+ 				remote-endpoint = <&sai2a_endpoint>;
+-				frame-master;
+-				bitclock-master;
++				frame-master = <&cs42l51_tx_endpoint>;
++				bitclock-master = <&cs42l51_tx_endpoint>;
+ 			};
  
- config SND_ATMEL_SOC_PDC
- 	bool
--	depends on HAS_DMA
- 
- config SND_ATMEL_SOC_DMA
- 	bool
+ 			cs42l51_rx_endpoint: endpoint@1 {
+ 				reg = <1>;
+ 				remote-endpoint = <&sai2b_endpoint>;
+-				frame-master;
+-				bitclock-master;
++				frame-master = <&cs42l51_rx_endpoint>;
++				bitclock-master = <&cs42l51_rx_endpoint>;
+ 			};
+ 		};
+ 	};
 -- 
 2.30.2
 
