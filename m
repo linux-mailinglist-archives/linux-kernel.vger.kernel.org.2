@@ -2,188 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7348740EA0C
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:39:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2650940EA0D
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:39:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241508AbhIPSku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 14:40:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47858 "EHLO
+        id S244094AbhIPSkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 14:40:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348090AbhIPSkn (ORCPT
+        with ESMTP id S1348015AbhIPSko (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 14:40:43 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70EE9C06178A
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 10:00:01 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id mv7-20020a17090b198700b0019c843e7233so1494656pjb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 10:00:01 -0700 (PDT)
+        Thu, 16 Sep 2021 14:40:44 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C566DC061793
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 10:02:36 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id g13-20020a17090a3c8d00b00196286963b9so7987087pjc.3
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 10:02:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DnCi064unWOqrg6AqoEPCgOiFEifTwoQ1hTWjh2ahNc=;
-        b=fjvR7zuO7Qwrh4Tjuo3II0Dper4eSgVuDNHmEHzB39NI5Rx3I3rEo2ydF8No6BWlLP
-         NZseveCXuZJN6lJRAfYdYtXEIeQ9ARiIH0O6jWequicz709VCf0A2djxnCxKaJs2Nksz
-         aLvtfCO5Am1ts1K11SDheSJGatjTcUUQqe8ZGRRbVTk0xEqZeZkOyTdx3Xa4/UtkAT+N
-         SMDOy7kKhnOc6RWpOGRXwKZLlXgE9O3ruEqJS/Ky55HEj5Tc+0aLIswCEWFBtH5gKAuq
-         BCvoNMuv8aMCt9cPEzW6zbpUgj/ZjxkppEL+kkauC/i2vnpv9bkJ8qkF0rmiyCadSmf3
-         Oc8w==
+        d=broadcom.com; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to;
+        bh=sKduzVjyrn2BQVASLMLkNxsB0t8IA6QyLF9USpOoZdU=;
+        b=Fe1FN7IOSSupDapW/0oWGSZEvyUQsMODSPe0VTPN8AVvQIzepyKUKO+5Y4zKt5lS/8
+         ZtFqUy60yMTBvuikMwcpVU37Y8gypVEaT7pJpjMcv6niYuNSrBIYTI/KlGUQ/74g6zS8
+         +9CkPblkDplZ69bv/8LPJQ5wCXPQ9CJ4TtNbA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DnCi064unWOqrg6AqoEPCgOiFEifTwoQ1hTWjh2ahNc=;
-        b=TJAP4h3F1og05Qerzvdrd5msr2Nok1Fk+Po68WyF0iybDKDcsaLXHS6cQ4rFODwvKo
-         uaPCQZsc+zKa8cK0O5Co5q6p8aa5LUSns02H6/a+Czv7Pc3trZ2RlMW0boBQqyxGBdUA
-         mBZw8Z+TMB3Sigxgh9znPib1SxpbkLuS2VVk0TIeuHS1OOMTz/S3a9dSRM9xGtQ1eFf5
-         KBCjZK6p9NdKc9JzGdm1RFIneDKFz8yk5W1vXyaChIJre9yXXGi9cK6x9HxrzoMvejEl
-         xXURHUT3tNkNcpmB6+Q33+oRAwX6OsRiLOi4pu0dCe7bjIS/nVM0F2cqmN280OEfwNQh
-         jISA==
-X-Gm-Message-State: AOAM532CUUw/YsJGvnLgoIoFCwgkaMYuFP1pZpyvvwkoQOYcQRVhF3ps
-        4Sd+yNCgL38FnexYzI4uT7OkBA==
-X-Google-Smtp-Source: ABdhPJygVESxOg1NzhOIxcgODu9z0ujnuZx5AxebTB90pJz/tL2iARjKAPvPkE8tUXGK7uvcly8awQ==
-X-Received: by 2002:a17:902:c443:b0:13c:a5e1:caf5 with SMTP id m3-20020a170902c44300b0013ca5e1caf5mr2693674plm.11.1631811600672;
-        Thu, 16 Sep 2021 10:00:00 -0700 (PDT)
-Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id g13sm3790185pfi.176.2021.09.16.09.59.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 09:59:59 -0700 (PDT)
-Date:   Thu, 16 Sep 2021 10:59:57 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Shengjiu Wang <shengjiu.wang@gmail.com>
-Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
-        Ohad Ben Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" 
-        <linux-remoteproc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 3/4] remoteproc: imx_dsp_rproc: Add remoteproc driver
- for DSP on i.MX
-Message-ID: <20210916165957.GA1825273@p14s>
-References: <1631092255-25150-1-git-send-email-shengjiu.wang@nxp.com>
- <1631092255-25150-4-git-send-email-shengjiu.wang@nxp.com>
- <20210915161624.GA1770838@p14s>
- <CAA+D8AO0c+jk_k7j=ZvNFsVvC-p_zMLPJDS3qmLjNbJ+U0E9Cg@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to;
+        bh=sKduzVjyrn2BQVASLMLkNxsB0t8IA6QyLF9USpOoZdU=;
+        b=iscgQ5zZ4gqVXjcj5V38dNpBcGn5QcOkFGZ3RcNopdtlmEDTk7jcj7TLRYYRWLK4fz
+         X+bjaI5D/NPLTmN3VzeW82xKwgOxy3EzYskQ5Vdw7j9Sk5kDMmHX3s+dx5BEcK8dcyaV
+         /itHvOVowVaXvIg96UZBNt1nGSkrI+qVdvm2Ip6lx6fPh9SMu9bKF/aq27L8MWDWlPtp
+         OPChrdvSSRSNhOmKfeO+CgmGVlRu/FGrMj9Gp9Anq/X0U81YAnxS+IepajxT3XMJ4Y80
+         dMAjk7E1H5REbV5M+tqYDiQCed7UszOhIo9YbjIexRZ5tl54WAAorwtG/U7mDg/8DktX
+         nZcg==
+X-Gm-Message-State: AOAM532bz1+ltLW3dRbzkDT6Bwbt2L0mx3EP1S8YOiLqT/0HaORBQ56q
+        SdPJV58R3LkCPhUD+ThdlR7CjwblRdve5LJPnqBULCWcXB/qnOtqER4QOpMonF0Pn0vaTig5/2A
+        5KMIUZcR6mMC0wMrsL63YqO95uLSEh0VBLkYlLPESCNXFpvnZkJZ7mpsezqy4cuVcKIucWPw2yI
+        abQa8=
+X-Google-Smtp-Source: ABdhPJzvg/4e0/k0VldfQrbN8zwR2vpmk/7a/caYkUkeOTgmK7maHDlYK2Ytn1PLUJVfkvmpzh6Srg==
+X-Received: by 2002:a17:90a:4d4e:: with SMTP id l14mr7221373pjh.4.1631811754997;
+        Thu, 16 Sep 2021 10:02:34 -0700 (PDT)
+Received: from [10.136.8.237] ([192.19.228.250])
+        by smtp.gmail.com with ESMTPSA id x128sm2297332pfd.203.2021.09.16.10.02.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Sep 2021 10:02:34 -0700 (PDT)
+Subject: Re: [PATCH] Input: bcm_iproc_tsc - Make use of the helper function
+ dev_err_probe()
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com, linux-input@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210916153126.13886-1-caihuoqing@baidu.com>
+From:   Ray Jui <ray.jui@broadcom.com>
+Message-ID: <17b3aba7-4093-3ce1-de16-5cecb29391cd@broadcom.com>
+Date:   Thu, 16 Sep 2021 10:02:31 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAA+D8AO0c+jk_k7j=ZvNFsVvC-p_zMLPJDS3qmLjNbJ+U0E9Cg@mail.gmail.com>
+In-Reply-To: <20210916153126.13886-1-caihuoqing@baidu.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="0000000000000e9b5f05cc1fc8b6"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[...]
+--0000000000000e9b5f05cc1fc8b6
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 
-> > > +
-> > > +/**
-> > > + * imx_dsp_rproc_elf_load_segments() - load firmware segments to memory
-> > > + * @rproc: remote processor which will be booted using these fw segments
-> > > + * @fw: the ELF firmware image
-> > > + *
-> > > + * This function specially checks if memsz is zero or not, otherwise it
-> > > + * is mostly same as rproc_elf_load_segments().
-> > > + */
-> > > +static int imx_dsp_rproc_elf_load_segments(struct rproc *rproc,
-> > > +                                        const struct firmware *fw)
-> > > +{
-> > > +     struct device *dev = &rproc->dev;
-> > > +     u8 class = fw_elf_get_class(fw);
-> > > +     u32 elf_phdr_get_size = elf_size_of_phdr(class);
-> > > +     const u8 *elf_data = fw->data;
-> > > +     const void *ehdr, *phdr;
-> > > +     int i, ret = 0;
-> > > +     u16 phnum;
-> > > +
-> > > +     ehdr = elf_data;
-> > > +     phnum = elf_hdr_get_e_phnum(class, ehdr);
-> > > +     phdr = elf_data + elf_hdr_get_e_phoff(class, ehdr);
-> > > +
-> > > +     /* go through the available ELF segments */
-> > > +     for (i = 0; i < phnum; i++, phdr += elf_phdr_get_size) {
-> > > +             u64 da = elf_phdr_get_p_paddr(class, phdr);
-> > > +             u64 memsz = elf_phdr_get_p_memsz(class, phdr);
-> > > +             u64 filesz = elf_phdr_get_p_filesz(class, phdr);
-> > > +             u64 offset = elf_phdr_get_p_offset(class, phdr);
-> > > +             u32 type = elf_phdr_get_p_type(class, phdr);
-> > > +             void *ptr;
-> > > +             bool is_iomem;
-> > > +
-> > > +             if (type != PT_LOAD || !memsz)
-> >
-> > You did a really good job with adding comments but this part is undocumented...
-> > If I read this correctly you need to check for !memsz because some part of
-> > the program segment may have a header but its memsz is zero, in which case it can
-> > be safely skipped.  So why is that segment in the image to start with, and why
-> > is it marked PT_LOAD if it is not needed?  This is very puzzling...
-> 
-> Actually I have added comments in the header of this function.
 
-Indeed there is a mention of memsz in the function's header but it doesn't
-mention _why_ this is needed, and that is what I'm looking for.
 
+On 9/16/2021 8:31 AM, Cai Huoqing wrote:
+> When possible use dev_err_probe help to properly deal with the
+> PROBE_DEFER error, the benefit is that DEFER issue will be logged
+> in the devices_deferred debugfs file.
+> Using dev_err_probe() can reduce code size, and the error value
+> gets printed.
 > 
-> memsz= 0 with PT_LOAD issue, I have asked the toolchain's vendor,
-> they said that this case is allowed by elf spec...
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+> ---
+>  drivers/input/touchscreen/bcm_iproc_tsc.c | 9 +++------
+>  1 file changed, 3 insertions(+), 6 deletions(-)
 > 
-> And in the "pru_rproc.c" and "mtk_scp.c", seems they met same problem
-> they also check the filesz in their internal xxx_elf_load_segments() function.
+> diff --git a/drivers/input/touchscreen/bcm_iproc_tsc.c b/drivers/input/touchscreen/bcm_iproc_tsc.c
+> index 7de1fd24ce36..c6aaeaee1d12 100644
+> --- a/drivers/input/touchscreen/bcm_iproc_tsc.c
+> +++ b/drivers/input/touchscreen/bcm_iproc_tsc.c
+> @@ -441,12 +441,9 @@ static int iproc_ts_probe(struct platform_device *pdev)
+>  	}
+>  
+>  	priv->tsc_clk = devm_clk_get(&pdev->dev, "tsc_clk");
+> -	if (IS_ERR(priv->tsc_clk)) {
+> -		error = PTR_ERR(priv->tsc_clk);
+> -		dev_err(&pdev->dev,
+> -			"failed getting clock tsc_clk: %d\n", error);
+> -		return error;
+> -	}
+> +	if (IS_ERR(priv->tsc_clk))
+> +		return dev_err_probe(&pdev->dev, PTR_ERR(priv->tsc_clk),
+> +				     "failed getting clock tsc_clk\n");
+>  
+>  	priv->pdev = pdev;
+>  	error = iproc_get_tsc_config(&pdev->dev, priv);
+> 
 
-In both cases they are skipping PT_LOAD sections where "filesz" is '0', which
-makes sense because we don't know how many bytes to copy.  But here you are
-skipping over a PT_LOAD section with a potentially valid filesz, and that is the
-part I don't understand.
+Improvement looks good to me. Thanks.
 
-> 
-> >
-> >
-> > > +                     continue;
-> > > +
-> > > +             dev_dbg(dev, "phdr: type %d da 0x%llx memsz 0x%llx filesz 0x%llx\n",
-> > > +                     type, da, memsz, filesz);
-> > > +
-> > > +             if (filesz > memsz) {
-> > > +                     dev_err(dev, "bad phdr filesz 0x%llx memsz 0x%llx\n",
-> > > +                             filesz, memsz);
-> > > +                     ret = -EINVAL;
-> > > +                     break;
-> > > +             }
-> > > +
-> > > +             if (offset + filesz > fw->size) {
-> > > +                     dev_err(dev, "truncated fw: need 0x%llx avail 0x%zx\n",
-> > > +                             offset + filesz, fw->size);
-> > > +                     ret = -EINVAL;
-> > > +                     break;
-> > > +             }
-> > > +
-> > > +             if (!rproc_u64_fit_in_size_t(memsz)) {
-> > > +                     dev_err(dev, "size (%llx) does not fit in size_t type\n",
-> > > +                             memsz);
-> > > +                     ret = -EOVERFLOW;
-> > > +                     break;
-> > > +             }
-> > > +
-> > > +             /* grab the kernel address for this device address */
-> > > +             ptr = rproc_da_to_va(rproc, da, memsz, &is_iomem);
-> >
-> >                 rproc_da_to_va(rproc, da, memsz, NULL);
-> 
-> yes, will update it.
-> 
-> >
-> > More comments to follow later today or tomorrow.
-> 
-> Thanks.
-> 
-> Best regards
-> Wang Shengjiu
+Acked-by: Ray Jui <ray.jui@broadcom.com>
+
+--0000000000000e9b5f05cc1fc8b6
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+Pi3DQoJNNR5cV1dw3cNMKQyHRziEjFTVmILshClu9AljdXzCUoHXDUbge8TIJ/fK36qTGCYWwA01
+rTB3drVX3FZq/Uqo0JnVcyP1dtYVzQIDAQABo4IB1TCCAdEwDgYDVR0PAQH/BAQDAgWgMIGjBggr
+BgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9j
+YWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUFBzABhjVodHRwOi8v
+b2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMDBNBgNVHSAERjBE
+MEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20v
+cmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRwOi8vY3JsLmdsb2Jh
+bHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAfBgNVHREEGDAWgRRyYXku
+anVpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdb
+NHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU5E1VdIocTRYIpXh6e6OnGvwfrEgwDQYJKoZIhvcNAQEL
+BQADggEBADcZteuA4mZVmXNzp/tJky+9TS87L/xAogg4z+0bFDomA2JdNGKjraV7jE3LKHUyCQzU
+Bvp8xXjxCndLBgltr+2Fn/Dna/f29iAs4mPBxgPKhqnqpQuTo2DLID2LWU1SLI9ewIlROY57UCvO
+B6ni+9NcOot0MbKF2A1TnzJjWyd127CVyU5vL3un1/tbtmjiT4Ku8ZDoBEViuuWyhdB6TTEQiwDo
+2NxZdezRkkkq+RoNek6gmtl8IKmXsmr1dKIsRBtLQ0xu+kdX+zYJbAQymI1mkq8qCmFAe5aJkrNM
+NbsYBZGZlcox4dHWayCpn4sK+41xyJsmGrygY3zghqBuHPUxggJtMIICaQIBATBrMFsxCzAJBgNV
+BAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdD
+QyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgxnTAexrtwIst251kUwDQYJYIZIAWUDBAIBBQCg
+gdQwLwYJKoZIhvcNAQkEMSIEIO9OD/U4UwOs98kDziQIyNDnOsIbgmOOgLsCo98QePxXMBgGCSqG
+SIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIxMDkxNjE3MDIzNlowaQYJKoZI
+hvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG
+9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEF
+AASCAQBEk/t8rbd5HxtrMMiAgsJ6AHn1tBSqcCfv+rrxSZlKjlrt2gLoF9yHLk2J9YNpXJOtyNw4
+rha3Id8i6ZXyxoontzw6F1wVPZRIixFYG79GYLOoCCs/HkB5E6eDP/Rhjev1ylQrjRrd6X0ZJEyL
+a4nSv0+D71JZVwKZ/bW52KpmJ00ude3HTu4t9+3FdQCuoBxl81r+kfTy7Tveb0OWRxS0W/hDN0B0
+ACrtVKq+eGWqmsclRWYQ7AACaHcbKTj0RUhltgTPMTW6VKOUPx5+VgYiI+SriErJbbH4RLMXzyBP
+r4nLQOm7w91+1JckMiTCFYKjrGYLIB7M0SaiSAs2qVPD
+--0000000000000e9b5f05cc1fc8b6--
