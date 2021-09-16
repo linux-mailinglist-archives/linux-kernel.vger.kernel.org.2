@@ -2,143 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06FC640DC56
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 16:06:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8FA040DC64
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 16:07:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238348AbhIPOHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 10:07:13 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:44234 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235474AbhIPOHM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 10:07:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=8q+3bGjP97pZnvJgbNzp1eoHg35qG/qJ8mr6nBvLOCg=; b=WmZUuNz/HYoiHOxGlBT2eeFxl5
-        /a3TLcTIn0tMRszOVMoNN/NK9cugmc2x96ntVDd8dBVdlm5fbIk+odJpGjex4WYGxyk5uiu7bHY8g
-        2oFXBxLMtISOdsyh5tTnEaOX7KqpUya2gdbXElEi/1dnT+AeyiE9e9gp58SeyLleffzs=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mQs1L-006uuE-Gu; Thu, 16 Sep 2021 16:05:47 +0200
-Date:   Thu, 16 Sep 2021 16:05:47 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Asmaa Mnebhi <asmaa@nvidia.com>
-Cc:     andy.shevchenko@gmail.com, linux-gpio@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, kuba@kernel.org,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        davem@davemloft.net, rjw@rjwysocki.net, davthompson@nvidia.com
-Subject: Re: [PATCH v1 1/2] gpio: mlxbf2: Introduce IRQ support
-Message-ID: <YUNPO9/YacBNr/yQ@lunn.ch>
-References: <20210915222847.10239-1-asmaa@nvidia.com>
- <20210915222847.10239-2-asmaa@nvidia.com>
+        id S238329AbhIPOIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 10:08:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238001AbhIPOIr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 10:08:47 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F37FC061766
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 07:07:26 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id h17so17280799edj.6
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 07:07:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HqKjw9wQXgOAIHdR23lI/gjq+FKkcG9gMYu8YLG7JPo=;
+        b=X8R38bilPb9UJMFbGupYovxfZQ59V7GYJYem0Rm6E/MC31/9X4JSXIwW02Q4QoWM2H
+         MobuveVE9qxcHXBwN+rPoBw5XFOTHaJqgBUuIVd2688tRzORtfvxkgcg1Hd4tdc67D28
+         BWNNtdjt8iUdyzjZbBEHuX6/tSyVvmDWUS3UQnRu7RBLXl29TcMjlilVpy2bfE5mktEG
+         gtO4YPJGdhnN+69LC3SVeW7WAK2wrsdzGWKM8SIrfUzozPW706CaS3HwTmj0t7nSU4QT
+         /0d31cj79ttgUkDTMf6oTeNwfFbNTzuj6/6PFSv9CzPY0mDJnuKxNlGxnvhulkFObS5H
+         tD/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HqKjw9wQXgOAIHdR23lI/gjq+FKkcG9gMYu8YLG7JPo=;
+        b=FLikS9MnrxE/IvaD4dWgH2ViNe4nAjl7gDI/cALcrL2bfPSFSzaCEPaNymHPWnCWqG
+         U+zZDTc/PkQWDwTuGZduYoN9lgBe8FmAsgVH4Hcv/7XZJSpiA8+lPUuEjyWXMSgOgB4l
+         FvFWQS9BuhOxgVDeSrIs+9Jook+MuDbc6HWVIfnyjhxagunJUsxTnAMgLU7VCi77eD7j
+         p0WVRMSSerHmODvlozbfND3LnvX4XYLuy91lycB14wDv/KetXDlwNcxhTwMcQSEKGsNO
+         cAzcTRhYgZKCZ7Cog1odIRKr9A+Qrwjol5dI98WpYw77DDyDtTNAhWX1lG3srj5YKuqw
+         GLag==
+X-Gm-Message-State: AOAM530keOGsbTXRlLIHocjnQBNPPhjxpQRYKRnUAExOUG1uGySB+DAN
+        aeygI2QJYjUNDUnxKgMDLkmEOxFNSVIuC6B00Okj
+X-Google-Smtp-Source: ABdhPJzMVBexbRBg40V8GTmT/lN49AtdZX2PykTy5ob+r1wEDKnMJiRjhvAPFEUDdw7k+IRm3iy8H44n+qJYCFCPpcY=
+X-Received: by 2002:a17:907:16ab:: with SMTP id hc43mr6454575ejc.195.1631801243482;
+ Thu, 16 Sep 2021 07:07:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210915222847.10239-2-asmaa@nvidia.com>
+References: <202109162036.zghQuRrY-lkp@intel.com> <CAFqZXNuv-d4WFvaVVa1WqzkrP6Wepu6QEKcUH=VejnP2OZz66A@mail.gmail.com>
+In-Reply-To: <CAFqZXNuv-d4WFvaVVa1WqzkrP6Wepu6QEKcUH=VejnP2OZz66A@mail.gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Thu, 16 Sep 2021 10:07:12 -0400
+Message-ID: <CAHC9VhQUBPVhzEUZCO2jTZWcB1bxdoY8xTs99vRdfzqTx3u5Rw@mail.gmail.com>
+Subject: Re: [selinuxproject-selinux:stable-5.15 1/1] include/linux/rcupdate.h:395:2:
+ warning: passing argument 1 of 'security_locked_down' discards 'const'
+ qualifier from pointer target type
+To:     Ondrej Mosnacek <omosnace@redhat.com>
+Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +static void mlxbf2_gpio_irq_enable(struct irq_data *irqd)
-> +{
-> +	struct gpio_chip *gc = irq_data_get_irq_chip_data(irqd);
-> +	struct mlxbf2_gpio_context *gs = gpiochip_get_data(gc);
-> +	int offset = irqd_to_hwirq(irqd);
-> +	unsigned long flags;
-> +	u32 val;
-> +
-> +	spin_lock_irqsave(&gs->gc.bgpio_lock, flags);
-> +	val = readl(gs->gpio_io + YU_GPIO_CAUSE_OR_CLRCAUSE);
-> +	val |= BIT(offset);
-> +	writel(val, gs->gpio_io + YU_GPIO_CAUSE_OR_CLRCAUSE);
-> +
-> +	/* Enable PHY interrupt by setting the priority level */
+On Thu, Sep 16, 2021 at 8:22 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
+> On Thu, Sep 16, 2021 at 2:08 PM kernel test robot <lkp@intel.com> wrote:
+> > tree:   https://github.com/SELinuxProject/selinux-kernel stable-5.15
+> > head:   c491f0a471580712a4254adece400c3ebb3d8e44
+> > commit: c491f0a471580712a4254adece400c3ebb3d8e44 [1/1] lockdown,selinux: fix wrong subject in some SELinux lockdown checks
+> > config: um-x86_64_defconfig (attached as .config)
+> > compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+> > reproduce (this is a W=1 build):
+> >         # https://github.com/SELinuxProject/selinux-kernel/commit/c491f0a471580712a4254adece400c3ebb3d8e44
+> >         git remote add selinuxproject-selinux https://github.com/SELinuxProject/selinux-kernel
+> >         git fetch --no-tags selinuxproject-selinux stable-5.15
+> >         git checkout c491f0a471580712a4254adece400c3ebb3d8e44
+> >         # save the attached .config to linux build tree
+> >         make W=1 ARCH=um SUBARCH=x86_64
+> >
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> >
+> > All warnings (new ones prefixed by >>):
+> >
+> >    In file included from include/linux/rbtree.h:24,
+> >                     from include/linux/mm_types.h:10,
+> >                     from include/linux/mmzone.h:21,
+> >                     from include/linux/gfp.h:6,
+> >                     from include/linux/mm.h:10,
+> >                     from drivers/char/mem.c:12:
+> >    drivers/char/mem.c: In function 'open_port':
+> > >> include/linux/rcupdate.h:395:2: warning: passing argument 1 of 'security_locked_down' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+> >      395 | ({ \
+> >          | ~^~~
+> >      396 |  RCU_LOCKDEP_WARN(!(c), "suspicious rcu_dereference_protected() usage"); \
+> >          |  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >      397 |  rcu_check_sparse(p, space); \
+> >          |  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >      398 |  ((typeof(*p) __force __kernel *)(p)); \
+> >          |  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >      399 | })
+> >          | ~~
+> >    include/linux/rcupdate.h:587:2: note: in expansion of macro '__rcu_dereference_protected'
+> >      587 |  __rcu_dereference_protected((p), (c), __rcu)
+> >          |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >    include/linux/cred.h:299:2: note: in expansion of macro 'rcu_dereference_protected'
+> >      299 |  rcu_dereference_protected(current->cred, 1)
+> >          |  ^~~~~~~~~~~~~~~~~~~~~~~~~
+> >    drivers/char/mem.c:620:28: note: in expansion of macro 'current_cred'
+> >      620 |  rc = security_locked_down(current_cred(), LOCKDOWN_DEV_MEM);
+> >          |                            ^~~~~~~~~~~~
+> >    In file included from include/linux/fs_context.h:14,
+> >                     from include/linux/fs_parser.h:11,
+> >                     from include/linux/shmem_fs.h:11,
+> >                     from drivers/char/mem.c:25:
+> >    include/linux/security.h:1347:53: note: expected 'struct cred *' but argument is of type 'const struct cred *'
+> >     1347 | static inline int security_locked_down(struct cred *cred, enum lockdown_reason what)
+> >          |                                        ~~~~~~~~~~~~~^~~~
+>
+> Ah, I forgot to add the const qualifier to the function definition in
+> the CONFIG_SECURITY=n branch... Paul, will you amend the commit or
+> should I send an updated patch?
 
-This should be an abstract driver for a collection of GPIO lines.
-Yes, one of these GPIOs is used for the PHY, but the GPIO driver does
-not care. So please remove this comment.
+This patch is cursed.  I had to hack up a fixup patch to test this in
+my Rawhide test automation last night too; evidently Rawhide carries
+an out-of-tree lockdown patch which results in some merge rejects.
 
-> +	val = readl(gs->gpio_io + YU_GPIO_CAUSE_OR_EVTEN0);
-> +	val |= BIT(offset);
-> +	writel(val, gs->gpio_io + YU_GPIO_CAUSE_OR_EVTEN0);
+Sigh.
 
-What exactly does this do? It appears to clear the interrupt, if i
-understand mlxbf2_gpio_irq_handler(). I don't know the GPIO framework
-well enough to know if this is correct. It does mean if the interrupt
-signal is active but masked, and you enable it, you appear to loose
-the interrupt? Maybe you want the interrupt to fire as soon as it is
-enabled?
+Yes, the quickest path is for me to just fix up the dummy function and
+do a force-push (grrrrrr) back on top of selinux/stable-5.15.
 
-> +static irqreturn_t mlxbf2_gpio_irq_handler(int irq, void *ptr)
-> +{
-> +	struct mlxbf2_gpio_context *gs = ptr;
-> +	struct gpio_chip *gc = &gs->gc;
-> +	unsigned long pending;
-> +	u32 level;
-> +
-> +	pending = readl(gs->gpio_io + YU_GPIO_CAUSE_OR_CAUSE_EVTEN0);
-> +	writel(pending, gs->gpio_io + YU_GPIO_CAUSE_OR_CLRCAUSE);
-> +
-> +	for_each_set_bit(level, &pending, gc->ngpio) {
-> +		int gpio_irq = irq_find_mapping(gc->irq.domain, level);
-> +		generic_handle_irq(gpio_irq);
-> +	}
-> +
-> +	return IRQ_RETVAL(pending);
-> +}
-> +
-> +static void mlxbf2_gpio_irq_mask(struct irq_data *irqd) {
-> +	mlxbf2_gpio_irq_disable(irqd);
-> +}
-> +
-> +static void mlxbf2_gpio_irq_unmask(struct irq_data *irqd) {
-> +	mlxbf2_gpio_irq_enable(irqd);
-> +}
-
-Do these two functions have any value?
-
-> +static int
-> +mlxbf2_gpio_irq_set_type(struct irq_data *irqd, unsigned int type)
-> +{
-> +	struct gpio_chip *gc = irq_data_get_irq_chip_data(irqd);
-> +	struct mlxbf2_gpio_context *gs = gpiochip_get_data(gc);
-> +	int offset = irqd_to_hwirq(irqd);
-> +	unsigned long flags;
-> +	bool fall = false;
-> +	bool rise = false;
-> +	u32 val;
-> +
-> +	switch (type & IRQ_TYPE_SENSE_MASK) {
-> +	case IRQ_TYPE_EDGE_BOTH:
-> +	case IRQ_TYPE_LEVEL_MASK:
-> +		fall = true;
-> +		rise = true;
-> +		break;
-> +	case IRQ_TYPE_EDGE_RISING:
-> +	case IRQ_TYPE_LEVEL_HIGH:
-> +		rise = true;
-> +		break;
-> +	case IRQ_TYPE_EDGE_FALLING:
-> +	case IRQ_TYPE_LEVEL_LOW:
-> +		fall = true;
-> +		break;
-
-This looks wrong. You cannot map a level interrupt into an edge. It
-looks like your hardware only supports edges. If asked to do level,
-return -EINVAL.
-
-> +	default:
-> +		break;
-> +	}
-> +
-> +	/* The INT_N interrupt level is active low.
-> +	 * So enable cause fall bit to detect when GPIO
-> +	 * state goes low.
-> +	 */
-
-I don't understand this comment.
-
-  Andrew
+-- 
+paul moore
+www.paul-moore.com
