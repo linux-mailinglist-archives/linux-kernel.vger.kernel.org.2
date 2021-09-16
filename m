@@ -2,87 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1793640ED8D
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 00:53:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D340740ED8F
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 00:53:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241312AbhIPWyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 18:54:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241276AbhIPWyY (ORCPT
+        id S241336AbhIPWzE convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 16 Sep 2021 18:55:04 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:16223 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237274AbhIPWzD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 18:54:24 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A965C061574;
-        Thu, 16 Sep 2021 15:53:02 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1631832780;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+uoRd7sICB9PTbOq5EWEwT9s8dxxMBDK5Hxzn1p0B2M=;
-        b=1EHh+jTMSzgz8I5umosdei/hjB4deVd+HjIXpER0jj3a9UJvUTmYCG3sktt+mmgogjx4i5
-        5D+TvgjsSbkOi2gRWJ9m/L2PsSXPUDA0fNBCaeyAQa5oIj2aZ0g7IpYrWYv2xoW3jpCr8W
-        aEJLiY9J4es14JJ3Fuu2PLS1+FTJ0bE2cZpBoUg9o8Wfp16oVUcyT6k2JW56IzITAd1Qss
-        dQHpUZYX/miD+m+QAFEvKHKOuPh3ii1buJhETb4Jo0E4cAcKIm9FXERVj2dXTWlNHeyUHk
-        iAw/eFYYzJOa1pzYeAEHGABTxJs2LapYK4cztyOfWpa2A2nA74K18B2uCKyc+Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1631832780;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+uoRd7sICB9PTbOq5EWEwT9s8dxxMBDK5Hxzn1p0B2M=;
-        b=vtwgGlcj3bLHRjLYNI/SunfOnn6jEEhRquuMedQEImsrPfPUPG9QhrJlsPjoht0r0FiHu4
-        T9zSULifH9VCAfCg==
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "# 3.4.x" <stable@vger.kernel.org>,
-        Lukas Hannen <lukas.hannen@opensource.tttech-industrial.com>
-Subject: Re: [PATCH 5.14 298/334] time: Handle negative seconds correctly in
- timespec64_to_ns()
-In-Reply-To: <874kak9moe.ffs@tglx>
-References: <20210913131113.390368911@linuxfoundation.org>
- <20210913131123.500712780@linuxfoundation.org>
- <CAK8P3a0z5jE=Z3Ps5bFTCFT7CHZR1JQ8VhdntDJAfsUxSPCcEw@mail.gmail.com>
- <874kak9moe.ffs@tglx>
-Date:   Fri, 17 Sep 2021 00:53:00 +0200
-Message-ID: <87y27w875f.ffs@tglx>
+        Thu, 16 Sep 2021 18:55:03 -0400
+Received: from dggeme760-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4H9XR95pHVz1DH1P;
+        Fri, 17 Sep 2021 06:52:37 +0800 (CST)
+Received: from kwepemm600014.china.huawei.com (7.193.23.54) by
+ dggeme760-chm.china.huawei.com (10.3.19.106) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Fri, 17 Sep 2021 06:53:40 +0800
+Received: from kwepemm600014.china.huawei.com ([7.193.23.54]) by
+ kwepemm600014.china.huawei.com ([7.193.23.54]) with mapi id 15.01.2308.008;
+ Fri, 17 Sep 2021 06:53:39 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Tobias Klauser <tklauser@distanz.ch>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        "tiantao (H)" <tiantao6@hisilicon.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Yury Norov <yury.norov@gmail.com>,
+        "Peter Zijlstra" <peterz@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] cpumask: Omit terminating null byte in
+ cpumap_print_{list,bitmask}_to_buf
+Thread-Topic: [PATCH] cpumask: Omit terminating null byte in
+ cpumap_print_{list,bitmask}_to_buf
+Thread-Index: AQHXq0oRxLFeYESCB0yrTStibF+ox6unQ3Ew
+Date:   Thu, 16 Sep 2021 22:53:39 +0000
+Message-ID: <aa4bc59c44b345ae814c61f6593a7178@hisilicon.com>
+References: <20210916222705.13554-1-tklauser@distanz.ch>
+In-Reply-To: <20210916222705.13554-1-tklauser@distanz.ch>
+Accept-Language: en-GB, zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.203.138]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17 2021 at 00:32, Thomas Gleixner wrote:
-> I usually spend quite some time on tagging patches for stable and it's
-> annoying me that this patch got reverted while stuff which I explicitely
-> did not tag for stable got backported for whatever reason and completely
-> against the stable rules:
->
->   627ef5ae2df8 ("hrtimer: Avoid double reprogramming in __hrtimer_start_range_ns()")
->
-> What the heck qualifies this to be backported?
->
->  1) It's hot of the press and just got merged in the 5.15-rc1 merge
->     window and is not tagged for stable
->
->  2) https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
->
->     clearly states the rules but obviously our new fangled "AI" driven
->     approach to select patches for stable is blissfully ignorant of
->     these rules. I assume that AI stands for "Artifical Ignorance' here.
->
-> I already got a private bug report vs. that on 5.10.65. Annoyingly
-> 5.10.5 does not have the issue despite the fact that the resulting diff
 
-5.14.5 obviously...
 
-> between those two versions in hrtimer.c is just in comments.
->
-> Bah!
->
-> Thanks,
->
->         tglx
+> -----Original Message-----
+> From: Tobias Klauser [mailto:tklauser@distanz.ch]
+> Sent: Friday, September 17, 2021 10:27 AM
+> To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>; Jonathan Cameron
+> <jonathan.cameron@huawei.com>; tiantao (H) <tiantao6@hisilicon.com>; Song Bao
+> Hua (Barry Song) <song.bao.hua@hisilicon.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>; Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com>; Yury Norov <yury.norov@gmail.com>; Peter
+> Zijlstra <peterz@infradead.org>; linux-kernel@vger.kernel.org
+> Subject: [PATCH] cpumask: Omit terminating null byte in
+> cpumap_print_{list,bitmask}_to_buf
+> 
+> The changes in the patch series [1] introduced a terminating null byte
+> when reading from cpulist or cpumap sysfs files, for example:
+> 
+>   $ xxd /sys/devices/system/node/node0/cpulist
+>   00000000: 302d 310a 00                             0-1..
+> 
+> Before this change, the output looked as follows:
+> 
+>   $ xxd /sys/devices/system/node/node0/cpulist
+>   00000000: 302d 310a                                0-1.
+
+If we don't use xxd, I don't see any actual harm of this NULL byte
+by cat, lscpu, numactl etc. this doesn't break them at all.
+
+if we only want to make sure the output is exactly same with before
+for every single character, this patch is right.
+
+> 
+> Fix this regression by excluding the terminating null byte from the
+> returned length in cpumap_print_list_to_buf and
+> cpumap_print_bitmask_to_buf.
+> 
+> [1]
+> https://lore.kernel.org/all/20210806110251.560-1-song.bao.hua@hisilicon.co
+> m/
+> 
+> Fixes: 1fae562983ca ("cpumask: introduce cpumap_print_list/bitmask_to_buf to
+> support large bitmask and list")
+> Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
+> ---
+>  include/linux/cpumask.h | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
+> index 5d4d07a9e1ed..1e7399fc69c0 100644
+> --- a/include/linux/cpumask.h
+> +++ b/include/linux/cpumask.h
+> @@ -996,14 +996,15 @@ cpumap_print_to_pagebuf(bool list, char *buf, const struct
+> cpumask *mask)
+>   * cpumask; Typically used by bin_attribute to export cpumask bitmask
+>   * ABI.
+>   *
+> - * Returns the length of how many bytes have been copied.
+> + * Returns the length of how many bytes have been copied, excluding
+> + * terminating '\0'.
+>   */
+>  static inline ssize_t
+>  cpumap_print_bitmask_to_buf(char *buf, const struct cpumask *mask,
+>  		loff_t off, size_t count)
+>  {
+>  	return bitmap_print_bitmask_to_buf(buf, cpumask_bits(mask),
+> -				   nr_cpu_ids, off, count);
+> +				   nr_cpu_ids, off, count) - 1;
+>  }
+> 
+>  /**
+> @@ -1018,7 +1019,7 @@ cpumap_print_list_to_buf(char *buf, const struct cpumask
+> *mask,
+>  		loff_t off, size_t count)
+>  {
+>  	return bitmap_print_list_to_buf(buf, cpumask_bits(mask),
+> -				   nr_cpu_ids, off, count);
+> +				   nr_cpu_ids, off, count) - 1;
+>  }
+> 
+>  #if NR_CPUS <= BITS_PER_LONG
+> --
+> 2.33.0
+
+Thanks
+Barry
+
