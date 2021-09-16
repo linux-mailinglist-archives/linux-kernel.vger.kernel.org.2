@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A6F340E40A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:22:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA05740E80F
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346420AbhIPQyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:54:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39422 "EHLO mail.kernel.org"
+        id S1353625AbhIPRh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:37:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46950 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345155AbhIPQtl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:49:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A05FE61A85;
-        Thu, 16 Sep 2021 16:27:57 +0000 (UTC)
+        id S1347794AbhIPR14 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:27:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CCC5761BFC;
+        Thu, 16 Sep 2021 16:45:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809678;
-        bh=JSuMEoCZLHXcZw9K4iVZHo9WxIsZ7wd55+BApHU8Nvg=;
+        s=korg; t=1631810735;
+        bh=o7gyH5Uz+ypBBqv8CcUZcrma9fUYs0sYBx4Lf2zN7+0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OZlEppOcIZ7q5xi3rChy60+rnObR60Wb21yozr/GzmH5FzKk7RfQ9Ag41t/50fUEM
-         iaE6JRPIXzYewEE3Y8y0zkgrHSJbrQbrDEGq7IqpHwsawNueO7qLLcS63at81xQLWa
-         5aLIDZbWvWxr5qyzIYIUYNA1PY3HocmO+lmWVddo=
+        b=fzH0RazNje48QQxMCUOCGO4BHcmZFBILKe6dkZYkS8a6Fq4Vj+bjRypTh4qac6Ac0
+         chD36HNhGIxng/lCmn3ON23NObriScOKwBJeEg84NQT+NhGfsnDxkqDHb4K6XjzAUj
+         KztSvjYaN9zrTKMiJEkQYclJh3gQ9zLrcXUMmT60=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        stable@vger.kernel.org,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <clement.leger@bootlin.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 241/380] arm64: dts: qcom: msm8994: dont use underscore in node name
+Subject: [PATCH 5.14 249/432] ARM: dts: at91: use the right property for shutdown controller
 Date:   Thu, 16 Sep 2021 17:59:58 +0200
-Message-Id: <20210916155812.275837794@linuxfoundation.org>
+Message-Id: <20210916155819.270314079@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,50 +42,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vinod Koul <vkoul@kernel.org>
+From: Nicolas Ferre <nicolas.ferre@microchip.com>
 
-[ Upstream commit 8c678beca7ed3fa8a2c6d86f6603bc23400f9ad8 ]
+[ Upstream commit 818c4593434e81c9971b8fc278215121622c755e ]
 
-We have underscore (_) in node name leading to warning:
-arch/arm64/boot/dts/qcom/msm8994-msft-lumia-octagon-cityman.dt.yaml: clocks: xo_board: {'type': 'object'} is not allowed for {'compatible': ['fixed-clock'], '#clock-cells': [[0]], 'clock-frequency': [[19200000]], 'phandle': [[26]]}
-arch/arm64/boot/dts/qcom/msm8994-msft-lumia-octagon-cityman.dt.yaml: clocks: sleep_clk: {'type': 'object'} is not allowed for {'compatible': ['fixed-clock'], '#clock-cells': [[0]], 'clock-frequency': [[32768]]}
+The wrong property "atmel,shdwc-debouncer" was used to specify the
+debounce delay for the shutdown controler. Replace it with the
+documented and implemented property "debounce-delay-us", as mentioned
+in v4 driver submission. See:
+https://lore.kernel.org/r/1458134390-23847-3-git-send-email-nicolas.ferre@atmel.com/
 
-Fix this by changing node name to use dash (-)
-
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Link: https://lore.kernel.org/r/20210308060826.3074234-9-vkoul@kernel.org
-[bjorn: Added clock-output-names to satisfy parent_names]
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+Reported-by: Clément Léger <clement.leger@bootlin.com>
+Reviewed-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+Link: https://lore.kernel.org/r/20210730172729.28093-1-nicolas.ferre@microchip.com/
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/msm8994.dtsi | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/at91-kizbox3_common.dtsi    | 2 +-
+ arch/arm/boot/dts/at91-sam9x60ek.dts          | 2 +-
+ arch/arm/boot/dts/at91-sama5d27_som1_ek.dts   | 2 +-
+ arch/arm/boot/dts/at91-sama5d27_wlsom1_ek.dts | 2 +-
+ arch/arm/boot/dts/at91-sama5d2_icp.dts        | 2 +-
+ arch/arm/boot/dts/at91-sama5d2_ptc_ek.dts     | 2 +-
+ arch/arm/boot/dts/at91-sama5d2_xplained.dts   | 2 +-
+ 7 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8994.dtsi b/arch/arm64/boot/dts/qcom/msm8994.dtsi
-index f9f0b5aa6a26..87a3217e88ef 100644
---- a/arch/arm64/boot/dts/qcom/msm8994.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8994.dtsi
-@@ -15,16 +15,18 @@ / {
- 	chosen { };
+diff --git a/arch/arm/boot/dts/at91-kizbox3_common.dtsi b/arch/arm/boot/dts/at91-kizbox3_common.dtsi
+index c4b3750495da..abe27adfa4d6 100644
+--- a/arch/arm/boot/dts/at91-kizbox3_common.dtsi
++++ b/arch/arm/boot/dts/at91-kizbox3_common.dtsi
+@@ -336,7 +336,7 @@ &pwm0 {
+ };
  
- 	clocks {
--		xo_board: xo_board {
-+		xo_board: xo-board {
- 			compatible = "fixed-clock";
- 			#clock-cells = <0>;
- 			clock-frequency = <19200000>;
-+			clock-output-names = "xo_board";
- 		};
+ &shutdown_controller {
+-	atmel,shdwc-debouncer = <976>;
++	debounce-delay-us = <976>;
+ 	atmel,wakeup-rtc-timer;
  
--		sleep_clk: sleep_clk {
-+		sleep_clk: sleep-clk {
- 			compatible = "fixed-clock";
- 			#clock-cells = <0>;
- 			clock-frequency = <32768>;
-+			clock-output-names = "sleep_clk";
- 		};
- 	};
+ 	input@0 {
+diff --git a/arch/arm/boot/dts/at91-sam9x60ek.dts b/arch/arm/boot/dts/at91-sam9x60ek.dts
+index ebbc9b23aef1..b1068cca4228 100644
+--- a/arch/arm/boot/dts/at91-sam9x60ek.dts
++++ b/arch/arm/boot/dts/at91-sam9x60ek.dts
+@@ -662,7 +662,7 @@ &rtt {
+ };
  
+ &shutdown_controller {
+-	atmel,shdwc-debouncer = <976>;
++	debounce-delay-us = <976>;
+ 	status = "okay";
+ 
+ 	input@0 {
+diff --git a/arch/arm/boot/dts/at91-sama5d27_som1_ek.dts b/arch/arm/boot/dts/at91-sama5d27_som1_ek.dts
+index a9e6fee55a2a..8034e5dacc80 100644
+--- a/arch/arm/boot/dts/at91-sama5d27_som1_ek.dts
++++ b/arch/arm/boot/dts/at91-sama5d27_som1_ek.dts
+@@ -138,7 +138,7 @@ i2c3: i2c@600 {
+ 			};
+ 
+ 			shdwc@f8048010 {
+-				atmel,shdwc-debouncer = <976>;
++				debounce-delay-us = <976>;
+ 				atmel,wakeup-rtc-timer;
+ 
+ 				input@0 {
+diff --git a/arch/arm/boot/dts/at91-sama5d27_wlsom1_ek.dts b/arch/arm/boot/dts/at91-sama5d27_wlsom1_ek.dts
+index ff83967fd008..c145c4e5ef58 100644
+--- a/arch/arm/boot/dts/at91-sama5d27_wlsom1_ek.dts
++++ b/arch/arm/boot/dts/at91-sama5d27_wlsom1_ek.dts
+@@ -205,7 +205,7 @@ &sdmmc0 {
+ };
+ 
+ &shutdown_controller {
+-	atmel,shdwc-debouncer = <976>;
++	debounce-delay-us = <976>;
+ 	atmel,wakeup-rtc-timer;
+ 
+ 	input@0 {
+diff --git a/arch/arm/boot/dts/at91-sama5d2_icp.dts b/arch/arm/boot/dts/at91-sama5d2_icp.dts
+index bd64721fa23c..34faca597c35 100644
+--- a/arch/arm/boot/dts/at91-sama5d2_icp.dts
++++ b/arch/arm/boot/dts/at91-sama5d2_icp.dts
+@@ -693,7 +693,7 @@ &sdmmc0 {
+ };
+ 
+ &shutdown_controller {
+-	atmel,shdwc-debouncer = <976>;
++	debounce-delay-us = <976>;
+ 	atmel,wakeup-rtc-timer;
+ 
+ 	input@0 {
+diff --git a/arch/arm/boot/dts/at91-sama5d2_ptc_ek.dts b/arch/arm/boot/dts/at91-sama5d2_ptc_ek.dts
+index dfd150eb0fd8..3f972a4086c3 100644
+--- a/arch/arm/boot/dts/at91-sama5d2_ptc_ek.dts
++++ b/arch/arm/boot/dts/at91-sama5d2_ptc_ek.dts
+@@ -203,7 +203,7 @@ i2c2: i2c@600 {
+ 			};
+ 
+ 			shdwc@f8048010 {
+-				atmel,shdwc-debouncer = <976>;
++				debounce-delay-us = <976>;
+ 
+ 				input@0 {
+ 					reg = <0>;
+diff --git a/arch/arm/boot/dts/at91-sama5d2_xplained.dts b/arch/arm/boot/dts/at91-sama5d2_xplained.dts
+index 509c732a0d8b..627b7bf88d83 100644
+--- a/arch/arm/boot/dts/at91-sama5d2_xplained.dts
++++ b/arch/arm/boot/dts/at91-sama5d2_xplained.dts
+@@ -347,7 +347,7 @@ i2c2: i2c@600 {
+ 			};
+ 
+ 			shdwc@f8048010 {
+-				atmel,shdwc-debouncer = <976>;
++				debounce-delay-us = <976>;
+ 				atmel,wakeup-rtc-timer;
+ 
+ 				input@0 {
 -- 
 2.30.2
 
