@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5EA940E925
+	by mail.lfdr.de (Postfix) with ESMTP id 9D2C340E924
 	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:01:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356385AbhIPRtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:49:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57074 "EHLO mail.kernel.org"
+        id S1356346AbhIPRtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:49:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57082 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355381AbhIPRlY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:41:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 91A8C6325E;
-        Thu, 16 Sep 2021 16:52:43 +0000 (UTC)
+        id S1355391AbhIPRlZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:41:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D315C6325B;
+        Thu, 16 Sep 2021 16:52:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631811164;
-        bh=l9rOwkaQPVdUHctKptlYsaYIX4ILx55+do2qGABPiMM=;
+        s=korg; t=1631811167;
+        bh=KQitGf8LgkA60yKy0J2jv/cD9eB25l1vJw9SYw5CHR4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h5EQf3wj6Ih49M1u5PWOfPN6y1w7DDKaQQRilfF/fRfbjoredjjmkuIMFctrjIo9G
-         9SxgCO/7I3jUis5k6/SmutgIINZ6Gtj8uLOXh2E1NcFdDlBTmn9LFMuyEAerq0gh48
-         kMyHVj7o3gzri8TaENVrRcSSonM/fN/xgWKqajHg=
+        b=UgENbITdihsNu7m0HNNLgsCLdXYKzTttMCfEIHPz2erBtHiJJAcBuz7wkcRngvlLP
+         VeXBqNbv/KBJw6hQWAKDnyzJ1t3gONLdq7iyN8j/4G1X7GksZ5g1SE0HJYmqObmgCU
+         jSa10z20QB5+dzMCyULoUeSqC9AKC2Rcijzny7ho=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ilan Peer <ilan.peer@intel.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
+        stable@vger.kernel.org, Wentao_Liang <Wentao_Liang_g@163.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 374/432] iwlwifi: mvm: Fix scan channel flags settings
-Date:   Thu, 16 Sep 2021 18:02:03 +0200
-Message-Id: <20210916155823.483931945@linuxfoundation.org>
+Subject: [PATCH 5.14 375/432] net/mlx5: DR, fix a potential use-after-free bug
+Date:   Thu, 16 Sep 2021 18:02:04 +0200
+Message-Id: <20210916155823.524306805@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
 References: <20210916155810.813340753@linuxfoundation.org>
@@ -40,35 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ilan Peer <ilan.peer@intel.com>
+From: Wentao_Liang <Wentao_Liang_g@163.com>
 
-[ Upstream commit 090f1be3abf3069ef856b29761f181808bf55917 ]
+[ Upstream commit 6cc64770fb386b10a64a1fe09328396de7bb5262 ]
 
-The iwl_mvm_scan_ch_n_aps_flag() is called with a variable
-before the value of the variable is set. Fix it.
+In line 849 (#1), "mlx5dr_htbl_put(cur_htbl);" drops the reference to
+cur_htbl and may cause cur_htbl to be freed.
 
-Signed-off-by: Ilan Peer <ilan.peer@intel.com>
-Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
-Link: https://lore.kernel.org/r/iwlwifi.20210826224715.f6f188980a5e.Ie7331a8b94004d308f6cbde44e519155a5be91dd@changeid
-Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+However, cur_htbl is subsequently used in the next line, which may result
+in an use-after-free bug.
+
+Fix this by calling mlx5dr_err() before the cur_htbl is put.
+
+Signed-off-by: Wentao_Liang <Wentao_Liang_g@163.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/intel/iwlwifi/mvm/scan.c | 2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/steering/dr_rule.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/scan.c b/drivers/net/wireless/intel/iwlwifi/mvm/scan.c
-index 4899d8f90bab..2d600a8b20ed 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/scan.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/scan.c
-@@ -1648,7 +1648,7 @@ iwl_mvm_umac_scan_cfg_channels_v6(struct iwl_mvm *mvm,
- 		struct iwl_scan_channel_cfg_umac *cfg = &cp->channel_config[i];
- 		u32 n_aps_flag =
- 			iwl_mvm_scan_ch_n_aps_flag(vif_type,
--						   cfg->v2.channel_num);
-+						   channels[i]->hw_value);
- 
- 		cfg->flags = cpu_to_le32(flags | n_aps_flag);
- 		cfg->v2.channel_num = channels[i]->hw_value;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_rule.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_rule.c
+index 43356fad53de..ffdfb5a94b14 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_rule.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_rule.c
+@@ -846,9 +846,9 @@ dr_rule_handle_ste_branch(struct mlx5dr_rule *rule,
+ 			new_htbl = dr_rule_rehash(rule, nic_rule, cur_htbl,
+ 						  ste_location, send_ste_list);
+ 			if (!new_htbl) {
+-				mlx5dr_htbl_put(cur_htbl);
+ 				mlx5dr_err(dmn, "Failed creating rehash table, htbl-log_size: %d\n",
+ 					   cur_htbl->chunk_size);
++				mlx5dr_htbl_put(cur_htbl);
+ 			} else {
+ 				cur_htbl = new_htbl;
+ 			}
 -- 
 2.30.2
 
