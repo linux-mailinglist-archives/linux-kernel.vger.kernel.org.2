@@ -2,142 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AD3C40DEBD
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 17:54:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D70E40DEDB
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:00:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240123AbhIPPzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 11:55:52 -0400
-Received: from mga05.intel.com ([192.55.52.43]:25691 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231702AbhIPPzv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 11:55:51 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10109"; a="308140566"
-X-IronPort-AV: E=Sophos;i="5.85,298,1624345200"; 
-   d="scan'208";a="308140566"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2021 08:54:28 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,298,1624345200"; 
-   d="scan'208";a="472823204"
-Received: from chenyu-desktop.sh.intel.com ([10.239.158.176])
-  by orsmga007.jf.intel.com with ESMTP; 16 Sep 2021 08:54:24 -0700
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     linux-acpi@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <len.brown@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Aubrey Li <aubrey.li@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>, Chen Yu <yu.c.chen@intel.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>, linux-efi@vger.kernel.org
-Subject: [PATCH v3 2/5] efi: Introduce EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER and corresponding structures
-Date:   Fri, 17 Sep 2021 00:00:10 +0800
-Message-Id: <afe88d0bbab0fbed289cceceec009be99120effa.1631802163.git.yu.c.chen@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1631802162.git.yu.c.chen@intel.com>
-References: <cover.1631802162.git.yu.c.chen@intel.com>
+        id S240437AbhIPQBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:01:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41820 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240186AbhIPQBn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:01:43 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2B36C061764
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 09:00:22 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id c13-20020a17090a558d00b00198e6497a4fso7861545pji.4
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 09:00:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qY0iS8u2LJMGt4Ov6dPslL6Xeqan2bC0+CFm4DC6DyA=;
+        b=EGnLDp6iMIbuxmJgrxlgyPdXStg4wUvMU3ujBKbXuvsAXhESpChnmL4Vw/TN4vovg3
+         lvGPL5avgzs9VcIFNCzyeY2mCMmw+QWuOvH8kslY0VD5n3RA18dtoh6GQaiwb+Ludaet
+         0FS/eQAWNY4+YXz+tThYq/Nz5SLkazkelI2GgqxfpRKkSw1h/JC/S/PUdACom7DaMNvG
+         aooa3JQHpsz9s4G2hyFeF9RGVTJFlELpoZRWZCAtJjjykoEh9RUIUg2723L9EWW5uY8r
+         GIAl0Ww03i6bf7Rc2Dq58t/td641ijBX5kK9/jY9Z32cE0MoDt99mMmGwY+YqtvQODys
+         SPLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qY0iS8u2LJMGt4Ov6dPslL6Xeqan2bC0+CFm4DC6DyA=;
+        b=fbKyrKfVWWPfZn8nPZeY0xB9ETSwwNp8Zdya0rPWZIs/pG/sdZ+vI4Qz7jEJblOHYJ
+         NG5o/dprdexBy1EY0dJwmHH5uhcPIsZZT8NJftqrZgepDaEDKgx0pvfQ+VaAxsX9UP3W
+         mOPovDtkFqwX8YjPwxmtTSAqegwxjtPF9m7yZWZo5vKHLzXMPEZdUDpviiXhxLdTCshv
+         7jKQndOQbGgHc5NB2hbMMipIMWiZEeSDfm3W9GG0mm6ZcRpwJ52nu74CSw1unUXWcjmQ
+         GiE4fikFhuZMp6buMRRMPF8yZYfwdkOMgPgIWncnk6DkBC5WKpTMGULmqc8itr9k24g3
+         vEdw==
+X-Gm-Message-State: AOAM532c05RZ2lZZuHuvj+ao3W/JD20xVEgssoiJ10iGNQajqCHROjyg
+        vBIkkLBwrqdNvEaGXD16BYn+MA==
+X-Google-Smtp-Source: ABdhPJxjGy69LL16KLFnGDrccmNfv4kC6HTE9iSk9xrylNW7kFwzlsT1dNtB1k1IoUtYhI0fUFKcNQ==
+X-Received: by 2002:a17:903:1104:b0:13a:41f1:6dd5 with SMTP id n4-20020a170903110400b0013a41f16dd5mr5268285plh.48.1631808022058;
+        Thu, 16 Sep 2021 09:00:22 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id cl16sm3300728pjb.23.2021.09.16.09.00.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Sep 2021 09:00:21 -0700 (PDT)
+Date:   Thu, 16 Sep 2021 16:00:17 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Hou Wenlong <houwenlong93@linux.alibaba.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 3/3] kvm: x86: Emulate hypercall instead of fixing
+ hypercall instruction
+Message-ID: <YUNqEeWg32kNwfO8@google.com>
+References: <cover.1631188011.git.houwenlong93@linux.alibaba.com>
+ <7893d13e11648be0326834248fcb943088fb0b76.1631188011.git.houwenlong93@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7893d13e11648be0326834248fcb943088fb0b76.1631188011.git.houwenlong93@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Platform Firmware Runtime Update image starts with UEFI headers, and the
-headers are defined in UEFI specification, but some of them have not been
-defined in the kernel yet.
+On Thu, Sep 09, 2021, Hou Wenlong wrote:
+> It is guest's resposibility to use right instruction for hypercall,
+> hypervisor could emulate wrong instruction instead of modifying
+> guest's instruction.
+> 
+> Signed-off-by: Hou Wenlong <houwenlong93@linux.alibaba.com>
+> ---
+> @@ -8747,16 +8747,15 @@ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
+>  }
+>  EXPORT_SYMBOL_GPL(kvm_emulate_hypercall);
+>  
+> -static int emulator_fix_hypercall(struct x86_emulate_ctxt *ctxt)
+> +static int emulator_hypercall(struct x86_emulate_ctxt *ctxt)
+>  {
+> +	int ret;
+>  	struct kvm_vcpu *vcpu = emul_to_vcpu(ctxt);
+> -	char instruction[3];
+> -	unsigned long rip = kvm_rip_read(vcpu);
+> -
+> -	static_call(kvm_x86_patch_hypercall)(vcpu, instruction);
+>  
+> -	return emulator_write_emulated(ctxt, rip, instruction, 3,
+> -		&ctxt->exception);
+> +	ret = kvm_emulate_hypercall_noskip(vcpu);
 
-For example, the header layout of a capsule file looks like this:
+I have mixed feelings on calling out of the emulator to do all this work.  One on
+hand, I think it's a somewhat silly, arbitrary boundary.  On the other hand, reading
+and writing GPRs directly means the emulation context holds stale data, especially
+in the case where the hypercall triggers an exit to userspace.
 
-EFI_CAPSULE_HEADER
-EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER
-EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER
-EFI_FIRMWARE_IMAGE_AUTHENTICATION
+> +	if (ret)
+> +		return X86EMUL_CONTINUE;
+> +	return X86EMUL_IO_NEEDED;
 
-These structures would be used by the Platform Firmware Runtime Update
-driver to parse the format of capsule file to verify if the corresponding
-version number is valid. The EFI_CAPSULE_HEADER has been defined in the
-kernel, however the rest are not, thus introduce corresponding UEFI
-structures accordingly.
+Unfortunately, simply returning X86EMUL_IO_NEEDED is not sufficient to handle the
+KVM_HC_MAP_GPA_RANGE case.  x86_emulate_instruction() doesn't directly act on
+X86EMUL_IO_NEEDED, because x86_emulate_insn() doesn't return X86EMUL_*, it returns
+EMULATION_FAILED, EMULATION_OK, etc...  x86_emulate_instruction() instead looks
+for other signals to differentiate between exception injection, PIO, MMIO, etc...
 
-The reason why efi_manage_capsule_header_t and
-efi_manage_capsule_image_header_t are packedi might be that:
-According to the uefi spec,
-[Figure 23-6 Firmware Management and Firmware Image Management headers]
-EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER is located at the lowest offset
-within the body of the capsule. And this structure is designed to be
-unaligned to save space, because in this way the adjacent drivers and
-binary payload elements could start on byte boundary with no padding.
-And the EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER is at the head of
-each payload, so packing this structure also makes room for more data.
+The IO_NEEDED path would also need to provide an alternative complete_userspace_io
+callback, otherwise complete_hypercall_exit() will attempt to skip the instruction
+using e.g. vmcs.VM_EXIT_INSTRUCTION_LEN and likely send the guest into the weeds.
 
-Signed-off-by: Chen Yu <yu.c.chen@intel.com>
----
- include/linux/efi.h | 50 +++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 50 insertions(+)
+In the prior patch, having kvm_emulate_hypercall_noskip() skip the CPL check is
+definitely wrong, and skipping Xen/Hyper-V hypercall support is odd, though arguably
+correct since Xen/Hyper-V hypercalls should never hit this path.
 
-diff --git a/include/linux/efi.h b/include/linux/efi.h
-index 6b5d36babfcc..19ff834e1388 100644
---- a/include/linux/efi.h
-+++ b/include/linux/efi.h
-@@ -148,6 +148,56 @@ typedef struct {
- 	u32 imagesize;
- } efi_capsule_header_t;
+All of the above are solvable problems, but there is a non-trivial cost in doing
+so, especially looking ahead to TDX support, which also needs/wants to split
+kvm_emulate_hypercall() but in slightly different ways[*].
+
+I 100% agree that patching the hypercall instruction is awful.  There are myriad
+fatal issues with the current approach:
+
+  1. Patches using an emulated guest write, which will fail if RIP is not mapped
+     writable, and even injects a #PF into the guest on failure.
+
+  2. Doesn't ensure the write is "atomic", e.g. a hypercall that splits a page
+     boundary will be handled as two separate writes, which means that a partial,
+     corrupted instruction can be observed by a separate vCPU.
  
-+#pragma pack(1)
-+
-+/* EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER */
-+typedef struct {
-+	u32	ver;
-+	u16	emb_drv_cnt;
-+	u16	payload_cnt;
-+	/*
-+	 * Variable array indicated by number of
-+	 * (emb_drv_cnt + payload_cnt)
-+	 */
-+	u64	offset_list[];
-+} efi_manage_capsule_header_t;
-+
-+/* EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER */
-+typedef struct {
-+	u32	ver;
-+	guid_t	image_type_id;
-+	u8	image_index;
-+	u8	reserved_bytes[3];
-+	u32	image_size;
-+	u32	vendor_code_size;
-+	/* ver = 2. */
-+	u64	hw_ins;
-+	/* ver = v3. */
-+	u64	capsule_support;
-+} efi_manage_capsule_image_header_t;
-+
-+#pragma pack()
-+
-+/* WIN_CERTIFICATE */
-+typedef struct {
-+	u32	len;
-+	u16	rev;
-+	u16	cert_type;
-+} win_cert_t;
-+
-+/* WIN_CERTIFICATE_UEFI_GUID */
-+typedef struct {
-+	win_cert_t	hdr;
-+	guid_t		cert_type;
-+	u8		cert_data[];
-+} win_cert_uefi_guid_t;
-+
-+/* EFI_FIRMWARE_IMAGE_AUTHENTICATIO */
-+typedef struct {
-+	u64				mon_count;
-+	win_cert_uefi_guid_t		auth_info;
-+} efi_image_auth_t;
-+
- /*
-  * EFI capsule flags
-  */
--- 
-2.25.1
+  3. Doesn't serialize other CPU cores after updating the code stream.
 
+  4. Completely fails to account for the case where KVM is emulating due to invalid
+     guest state with unrestricted_guest=0.  Patching and retrying the instruction
+     will result in vCPU getting stuck in an infinite loop.
+
+But, the "support" _so_ awful, especially #1, that there's practically zero chance
+that a modern guest kernel can rely on KVM to patch the guest.  E.g. patching fails
+on modern Linux due to kernel code being mapped NX (barring admin override).  This
+was addressed in the Linux guest back in 2014 by commit c1118b3602c2 ("x86: kvm: use
+alternatives for VMCALL vs. VMMCALL if kernel text is read-only").
+
+In other words, odds are very good that only old Linux guest kernels rely on KVM's
+patching.  Because of that, my preference is to keep the patching, do our best to
+make it suck a little less, and aim to completely remove the patching entirely at
+some point in the future.
+
+For #1, inject a #UD instead of #PF if the write fails.  The guest will still likely
+die, but the failure signature is much friendlier to debuggers.
+
+For #2 and #3, do nothing as fixing those is non-trivial.
+
+For #4, inject a #UD if the hypercall instruction is already the "right" instruction.
+I.e. retroactively define KVM's ABI to be that KVM hypercalls have undefined behavior
+in Big Real Mode and other modes that trigger invalid guest state (since the hypercalls
+will still work if unrestricted_guest=1).  This can't be an ABI breakage since it does
+not work today and can't possibly have ever worked in the past.
+
+I have mostly-complete to do the above (I ran afoul of the NX thing), I'll hopefully get
+them out next week.
+
+[*] https://lkml.kernel.org/r/9e1e66787c50232391e20cb4b3d1c5b249e3f910.1625186503.git.isaku.yamahata@intel.com
