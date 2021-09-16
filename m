@@ -2,120 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 230F540EB33
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 21:57:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39CFF40EB37
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 21:59:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235405AbhIPT6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 15:58:53 -0400
-Received: from mga17.intel.com ([192.55.52.151]:29512 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232637AbhIPT6v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 15:58:51 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10109"; a="202807907"
-X-IronPort-AV: E=Sophos;i="5.85,299,1624345200"; 
-   d="scan'208";a="202807907"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2021 12:57:29 -0700
-X-IronPort-AV: E=Sophos;i="5.85,299,1624345200"; 
-   d="scan'208";a="482830748"
-Received: from mpbarre-mobl1.amr.corp.intel.com (HELO [10.212.167.35]) ([10.212.167.35])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2021 12:57:29 -0700
-Subject: Re: [PATCH v7 01/12] x86/tdx: Add Intel ARCH support to
- cc_platform_has()
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        VMware Inc <pv-drivers@vmware.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20210916183550.15349-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210916183550.15349-2-sathyanarayanan.kuppuswamy@linux.intel.com>
- <645f6e73-1211-5ee2-07f7-cf4023358706@intel.com> <YUOVzLh4V+ZVB+k/@zn.tnic>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <8b9f6f88-83b8-1e52-6d56-8dd7a4cbfabb@intel.com>
-Date:   Thu, 16 Sep 2021 12:57:26 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S236066AbhIPUBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 16:01:04 -0400
+Received: from mail-ot1-f53.google.com ([209.85.210.53]:34511 "EHLO
+        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231969AbhIPUBD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 16:01:03 -0400
+Received: by mail-ot1-f53.google.com with SMTP id k12-20020a056830150c00b0051abe7f680bso9845093otp.1;
+        Thu, 16 Sep 2021 12:59:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7rOX6kbLjzifF8fmG0W4Hht/o/tUMqstktKDKeNik2c=;
+        b=xInAZIYNPqGIr2l7P7iXEIzx9E/UekVnK2vcRbmJz95EOLerTKHEiHinZM5gVvNFdL
+         8SUleiO6rmSRIkepjWYaXioun20ajt1wZYZ3Jpn1TinsZQY/x8Lh6uLt7vBxAXTbFGVe
+         kKEJIn00bveYSG9fdIHjM5tTVBIo3sJaE9UHQxCmeSI/VZePte/V5fjAX8PmjTTuDweo
+         0BOiP4uN/aeKAT16hHATzCvG8k8R4nDzdythegqJvdBjktnVajs0rYmzkaal/9uvUiiL
+         N+9kMmEjMh1P0Jcoo6IjkPYKy/VACUBmv7DoxAB7wmrl4q3N+B9WWY63OgZCf9xW02OR
+         wfNw==
+X-Gm-Message-State: AOAM53353FJ7Rf0ZkbYRdMaTHXYPOixNqPmn607xqb6W5Q4gD0flYKI1
+        O4HeFIQRQRhZmZLZQETNOg==
+X-Google-Smtp-Source: ABdhPJxBUjv2Ck7nzKtYMlCC/wcuDi+QeT0j/OPBANjGEMlubGOy99/RS5/JFk2KYuWUHNvFuH3hbQ==
+X-Received: by 2002:a05:6830:3144:: with SMTP id c4mr6168508ots.153.1631822381944;
+        Thu, 16 Sep 2021 12:59:41 -0700 (PDT)
+Received: from robh.at.kernel.org (107-211-252-53.lightspeed.cicril.sbcglobal.net. [107.211.252.53])
+        by smtp.gmail.com with ESMTPSA id w1sm988290ott.21.2021.09.16.12.59.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Sep 2021 12:59:41 -0700 (PDT)
+Received: (nullmailer pid 1395242 invoked by uid 1000);
+        Thu, 16 Sep 2021 19:59:38 -0000
+Date:   Thu, 16 Sep 2021 14:59:38 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     shruthi.sanil@intel.com
+Cc:     daniel.lezcano@linaro.org, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        andriy.shevchenko@linux.intel.com, kris.pan@linux.intel.com,
+        mgross@linux.intel.com, srikanth.thokala@intel.com,
+        lakshmi.bai.raja.subramanian@intel.com,
+        mallikarjunappa.sangannavar@intel.com
+Subject: Re: [PATCH v7 1/2] dt-bindings: timer: Add bindings for Intel Keem
+ Bay SoC Timer
+Message-ID: <YUOiKjfSLm7DHoXG@robh.at.kernel.org>
+References: <20210913174955.32330-1-shruthi.sanil@intel.com>
+ <20210913174955.32330-2-shruthi.sanil@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <YUOVzLh4V+ZVB+k/@zn.tnic>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210913174955.32330-2-shruthi.sanil@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/16/21 12:06 PM, Borislav Petkov wrote:
-> On Thu, Sep 16, 2021 at 11:44:48AM -0700, Dave Hansen wrote:
->> How did this end up out of line?  This means that if you compile-time
->> enable support for even *one* "cc" platform, you can't optimize the
->> calls away.  This ends up being at *LEAST* two calls, just to get an
->> unconditional "false".  That just seems silly.
->>
->> I know this is a comment more about the cc_platform_has() series that
->> this one, but this compounds the problem.
-> Posting here too for the wider audience - follow this thread pls:
+On Mon, Sep 13, 2021 at 11:19:54PM +0530, shruthi.sanil@intel.com wrote:
+> From: Shruthi Sanil <shruthi.sanil@intel.com>
 > 
-> https://lkml.kernel.org/r/9d4fc3f8ea7b325aaa1879beab1286876f45d450.1631141919.git.thomas.lendacky@amd.com
+> Add Device Tree bindings for the Timer IP, which can be used as
+> clocksource and clockevent device in the Intel Keem Bay SoC.
+> 
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
+> Signed-off-by: Shruthi Sanil <shruthi.sanil@intel.com>
+> ---
+>  .../bindings/timer/intel,keembay-timer.yaml   | 172 ++++++++++++++++++
+>  1 file changed, 172 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/timer/intel,keembay-timer.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/timer/intel,keembay-timer.yaml b/Documentation/devicetree/bindings/timer/intel,keembay-timer.yaml
+> new file mode 100644
+> index 000000000000..80e7785845ac
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/timer/intel,keembay-timer.yaml
+> @@ -0,0 +1,172 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/timer/intel,keembay-timer.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Intel Keem Bay SoC Timers
+> +
+> +maintainers:
+> +  - Shruthi Sanil <shruthi.sanil@intel.com>
+> +
+> +description: |
+> +  The Intel Keem Bay timer driver supports 1 free running counter and 8 timers.
+> +  Each timer is capable of generating inividual interrupt.
+> +  Both the features are enabled through the timer general config register.
+> +
+> +  The parent node represents the common general configuration details and
+> +  the child nodes represents the counter and timers.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - simple-mfd
 
-It sounds like the argument boils down to: out-of-line is cleaner,
-especially considering the cross-arch implementation.  Inlines can turn
-into a mess, so make it out-of-line unless an *actual* real-world
-benefit emerges.
+Removing is not the right solution. What you need is:
 
+items:
+  - const: intel,keembay-gpt-creg
+  - const: simple-mfd
+
+> +
+> +  reg:
+> +    description: General configuration register address and length.
+> +    maxItems: 1
+> +
+> +  ranges: true
+> +
+> +  "#address-cells":
+> +    const: 1
+> +
+> +  "#size-cells":
+> +    const: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - ranges
+> +  - "#address-cells"
+> +  - "#size-cells"
+> +
+> +patternProperties:
+> +  "^counter@[0-9a-f]+$":
+> +    type: object
+> +    description: Properties for Intel Keem Bay counter
+> +
+> +    properties:
+> +      compatible:
+> +        enum:
+> +          - intel,keembay-counter
+> +
+> +      reg:
+> +        maxItems: 1
+> +
+> +      clocks:
+> +        maxItems: 1
+> +
+> +    required:
+> +      - compatible
+> +      - reg
+> +      - clocks
+> +
+> +  "^timer@[0-9a-f]+$":
+> +    type: object
+> +    description: Properties for Intel Keem Bay timer
+> +
+> +    properties:
+> +      compatible:
+> +        enum:
+> +          - intel,keembay-timer
+> +
+> +      reg:
+> +        maxItems: 1
+> +
+> +      interrupts:
+> +        maxItems: 1
+> +
+> +      clocks:
+> +        maxItems: 1
+> +
+> +    required:
+> +      - compatible
+> +      - reg
+> +      - interrupts
+> +      - clocks
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    #define KEEM_BAY_A53_TIM
+> +
+> +    soc {
+> +        #address-cells = <0x2>;
+> +        #size-cells = <0x2>;
+> +
+> +        gpt@20331000 {
+> +            compatible = "simple-mfd";
+> +            reg = <0x0 0x20331000 0x0 0xc>;
+> +            ranges = <0x0 0x0 0x20330000 0xF0>;
+> +            #address-cells = <0x1>;
+> +            #size-cells = <0x1>;
+> +
+> +            counter@e8 {
+> +                compatible = "intel,keembay-counter";
+> +                reg = <0xe8 0x8>;
+> +                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
+> +            };
+> +
+> +            timer@10 {
+> +                compatible = "intel,keembay-timer";
+> +                reg = <0x10 0xc>;
+> +                interrupts = <GIC_SPI 0x3 IRQ_TYPE_LEVEL_HIGH>;
+> +                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
+> +            };
+> +
+> +            timer@20 {
+> +                compatible = "intel,keembay-timer";
+> +                reg = <0x20 0xc>;
+> +                interrupts = <GIC_SPI 0x4 IRQ_TYPE_LEVEL_HIGH>;
+> +                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
+> +            };
+> +
+> +            timer@30 {
+> +                compatible = "intel,keembay-timer";
+> +                reg = <0x30 0xc>;
+> +                interrupts = <GIC_SPI 0x5 IRQ_TYPE_LEVEL_HIGH>;
+> +                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
+> +            };
+> +
+> +            timer@40 {
+> +                compatible = "intel,keembay-timer";
+> +                reg = <0x40 0xc>;
+> +                interrupts = <GIC_SPI 0x6 IRQ_TYPE_LEVEL_HIGH>;
+> +                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
+> +            };
+> +
+> +            timer@50 {
+> +                compatible = "intel,keembay-timer";
+> +                reg = <0x50 0xc>;
+> +                interrupts = <GIC_SPI 0x7 IRQ_TYPE_LEVEL_HIGH>;
+> +                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
+> +            };
+> +
+> +            timer@60 {
+> +                compatible = "intel,keembay-timer";
+> +                reg = <0x60 0xc>;
+> +                interrupts = <GIC_SPI 0x8 IRQ_TYPE_LEVEL_HIGH>;
+> +                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
+> +            };
+> +
+> +            timer@70 {
+> +                compatible = "intel,keembay-timer";
+> +                reg = <0x70 0xc>;
+> +                interrupts = <GIC_SPI 0x9 IRQ_TYPE_LEVEL_HIGH>;
+> +                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
+> +            };
+> +
+> +            timer@80 {
+> +                compatible = "intel,keembay-timer";
+> +                reg = <0x80 0xc>;
+> +                interrupts = <GIC_SPI 0xa IRQ_TYPE_LEVEL_HIGH>;
+> +                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
+> +            };
+> +        };
+> +    };
+> +
+> +...
+> -- 
+> 2.17.1
+> 
+> 
