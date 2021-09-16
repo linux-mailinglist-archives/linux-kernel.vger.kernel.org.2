@@ -2,83 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FC3D40D202
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 05:26:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2E3D40D20B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 05:34:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234154AbhIPD1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 23:27:51 -0400
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:42657 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234037AbhIPD1u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 23:27:50 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R491e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UoXMJXX_1631762787;
-Received: from B-455UMD6M-2027.local(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UoXMJXX_1631762787)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 16 Sep 2021 11:26:28 +0800
-Subject: Re: [PATCH] net/tls: support SM4 GCM/CCM algorithm
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Boris Pismenny <borisp@nvidia.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jia Zhang <zhang.jia@linux.alibaba.com>,
-        "YiLin . Li" <YiLin.Li@linux.alibaba.com>
-References: <20210915111242.32413-1-tianjia.zhang@linux.alibaba.com>
- <20210915130600.66ce8b26@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Message-ID: <ed58d8aa-c21d-9ae5-3a29-2683d39d2a35@linux.alibaba.com>
-Date:   Thu, 16 Sep 2021 11:26:26 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        id S234154AbhIPDgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 23:36:04 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:58163 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233856AbhIPDgB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 23:36:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1631763279;
+        bh=eBov+n1/uBoCRnrzk4x06tNIZBMArXXVDMb1h7AYBzg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=an8H6VqJ/mp9oCMEQ7NvXR4UsUmD3MDvIKpFJBMfjFWV73nyZga4/t7D2tleBePvg
+         YMVeoFNtCZ6fINu8JQWdaH/Pu48V922Pjb9rRqOH8BM0lHF6TpyvZXGRFF5VL8m/ZW
+         mqUmCOi8TEiuZfYDZoFoiDq5popl7JUQARnK4keMpslZDFcMcsLsVwKrRj/Y5GugJu
+         XQHrK5/UK1cgvS3PIMpcfZAb3bfBcw+2fHd5yHb2tFMmeHAy0x+p0ECRPrQOjnbgje
+         MZgPw8AvVzPSdza7M6VYA/AGq/2WDi4ajGr0xt5o3yK6dXS1OmFc38N3PaE1tIz+WY
+         CKI+zbvGKWvyA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H92l33TyZz9sXS;
+        Thu, 16 Sep 2021 13:34:39 +1000 (AEST)
+Date:   Thu, 16 Sep 2021 13:34:33 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the kspp tree
+Message-ID: <20210916133433.3b309895@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20210915130600.66ce8b26@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/gYi9_JKCDiHfUoDq+qkGbmf";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jakub,
+--Sig_/gYi9_JKCDiHfUoDq+qkGbmf
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 9/16/21 4:06 AM, Jakub Kicinski wrote:
-> On Wed, 15 Sep 2021 19:12:42 +0800 Tianjia Zhang wrote:
->> +		memcpy(sm4_gcm_info->iv,
->> +		       cctx->iv + TLS_CIPHER_AES_GCM_128_SALT_SIZE,
->> +		       TLS_CIPHER_AES_GCM_128_IV_SIZE);
->> +		memcpy(sm4_gcm_info->rec_seq, cctx->rec_seq,
->> +		       TLS_CIPHER_AES_GCM_128_REC_SEQ_SIZE);
->> +		release_sock(sk);
->> +		if (copy_to_user(optval, sm4_gcm_info, sizeof(*sm4_gcm_info)))
->> +			rc = -EFAULT;
->> +		break;
->> +	}
->> +	case TLS_CIPHER_SM4_CCM: {
->> +		struct tls12_crypto_info_sm4_ccm *sm4_ccm_info =
->> +			container_of(crypto_info,
->> +				struct tls12_crypto_info_sm4_ccm, info);
->> +
->> +		if (len != sizeof(*sm4_ccm_info)) {
->> +			rc = -EINVAL;
->> +			goto out;
->> +		}
->> +		lock_sock(sk);
->> +		memcpy(sm4_ccm_info->iv,
->> +		       cctx->iv + TLS_CIPHER_AES_GCM_128_SALT_SIZE,
->> +		       TLS_CIPHER_AES_GCM_128_IV_SIZE);
->> +		memcpy(sm4_ccm_info->rec_seq, cctx->rec_seq,
->> +		       TLS_CIPHER_AES_GCM_128_REC_SEQ_SIZE);
-> 
-> Doesn't matter from the functional perspective but perhaps use the SM4
-> defines rather than the AES ones, since they exist, anyway?
-> 
-> With that fixed feel free to add my ack.
-> 
+Hi all,
 
-Thanks for pointing it out, I forgot to modify the macro name, this is 
-not my intention, I was careless. will fix it in v2.
+After merging the kspp tree, today's linux-next build (powerpc
+ppc64_defconfig) failed like this:
 
-Best regards,
-Tianjia
+In file included from include/linux/compiler_types.h:85,
+                 from <command-line>:
+include/linux/compiler-gcc.h:44: warning: "__compiletime_warning" redefined
+   44 | #define __compiletime_warning(message) __attribute__((__warning__(m=
+essage)))
+      |=20
+
+And many more.
+
+Caused by commit
+
+  0fc9374deb67 ("compiler_types.h: Remove __compiletime_object_size()")
+
+Something went badly wrong in the rebase :-(
+
+I have used the kspp tree from next-20210916 for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/gYi9_JKCDiHfUoDq+qkGbmf
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFCu0kACgkQAVBC80lX
+0GyrWAf9G3i/+RuHjeyYfltlZRhJZhs33M2hGRuYcSm2zIdX7qmN7PQfjVnhMygE
+6Fj9+skbeHJJVChelTnw0wyskRsazIqlxjWnO6NLJMoRV/kv6jhZme1/nKfuSB2C
+47SXEsAiuWsKNW2gk5YeQkVWJOP7fkI6LJ/pdhge4iGtqNVcW0UpOP1iTKxf1EOy
+4X7MPjm1maB9KWyaywHWdab9T7gFT7mFvpc7lwz1R0iCNUIP7azr5BHEQODRh3Ov
+o5wUPEjAcjeToiVRw91Jlc/wA0pCBtgMLFSdwndQEjRqOvPUILAuOM1DJzCLr/al
+xmDfS0TZsVM0qA+ZhKIVWAnBVUurBg==
+=1CSg
+-----END PGP SIGNATURE-----
+
+--Sig_/gYi9_JKCDiHfUoDq+qkGbmf--
