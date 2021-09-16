@@ -2,233 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23ADE40D9EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 14:30:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8637F40D9F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 14:32:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239499AbhIPMb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 08:31:27 -0400
-Received: from out2.migadu.com ([188.165.223.204]:18001 "EHLO out2.migadu.com"
+        id S239539AbhIPMeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 08:34:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38678 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235767AbhIPMb0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 08:31:26 -0400
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1631795403;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=WiOqDYtkI9QfC+0Q/1OUY8VFFwUScpv3DTzHFGB/Hnw=;
-        b=SYWZS2B3+Aq/W9xjYHTQKR9cuGaLaYUWxZ8DtliaqxngGoulnm7TZv/hyh1vT92AgGD47f
-        Zx1lYENQhKSjq0fnJ9pm1STNiyngQT+WkbBvWUGsww8QHrqpf7zZlrWfReHSPWxseVUO4H
-        X2g5zQch+ay/u/0+pj14WOlkpZvJfh4=
-From:   Yajun Deng <yajun.deng@linux.dev>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yajun Deng <yajun.deng@linux.dev>
-Subject: [PATCH net-next] net: socket: add the case sock_no_xxx support
-Date:   Thu, 16 Sep 2021 20:29:43 +0800
-Message-Id: <20210916122943.19849-1-yajun.deng@linux.dev>
+        id S239370AbhIPMeB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 08:34:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 753E360231;
+        Thu, 16 Sep 2021 12:32:39 +0000 (UTC)
+From:   Huacai Chen <chenhuacai@loongson.cn>
+To:     Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier <maz@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
+        Huacai Chen <chenhuacai@gmail.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Huacai Chen <chenhuacai@loongson.cn>
+Subject: [PATCH V5 00/10] irqchip: Add LoongArch-related irqchip drivers
+Date:   Thu, 16 Sep 2021 20:31:28 +0800
+Message-Id: <20210916123138.3490474-1-chenhuacai@loongson.cn>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: yajun.deng@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Those sock_no_{mmap, socketpair, listen, accept, connect, shutdown,
-sendpage} functions are used many times in struct proto_ops, but they are
-meaningless. So we can add them support in socket and delete them in struct
-proto_ops.
+LoongArch is a new RISC ISA, which is a bit like MIPS or RISC-V.
+LoongArch includes a reduced 32-bit version (LA32R), a standard 32-bit
+version (LA32S) and a 64-bit version (LA64). LoongArch use ACPI as its
+boot protocol LoongArch-specific interrupt controllers (similar to APIC)
+are already added in the next revision of ACPI Specification (current
+revision is 6.4).
 
-Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+Currently, LoongArch based processors (e.g. Loongson-3A5000) can only
+work together with LS7A chipsets. The irq chips in LoongArch computers
+include CPUINTC (CPU Core Interrupt Controller), LIOINTC (Legacy I/O
+Interrupt Controller), EIOINTC (Extended I/O Interrupt Controller),
+HTVECINTC (Hyper-Transport Vector Interrupt Controller), PCH-PIC (Main
+Interrupt Controller in LS7A chipset), PCH-LPC (LPC Interrupt Controller
+in LS7A chipset) and PCH-MSI (MSI Interrupt Controller).
+
+CPUINTC is a per-core controller (in CPU), LIOINTC/EIOINTC/HTVECINTC are
+per-package controllers (in CPU), while PCH-PIC/PCH-LPC/PCH-MSI are all
+controllers out of CPU (i.e., in chipsets). These controllers (in other
+words, irqchips) are linked in a hierarchy, and there are two models of
+hierarchy (legacy model and extended model).
+
+Legacy IRQ model:
+
+In this model, the IPI (Inter-Processor Interrupt) and CPU Local Timer
+interrupt go to CPUINTC directly, CPU UARTS interrupts go to LIOINTC,
+while all other devices interrupts go to PCH-PIC/PCH-LPC/PCH-MSI and
+gathered by HTVECINTC, and then go to LIOINTC, and then CPUINTC.
+
+ +---------------------------------------------+
+ |                                             |
+ |    +-----+     +---------+     +-------+    |
+ |    | IPI | --> | CPUINTC | <-- | Timer |    |
+ |    +-----+     +---------+     +-------+    |
+ |                     ^                       |
+ |                     |                       |
+ |                +---------+     +-------+    |
+ |                | LIOINTC | <-- | UARTs |    |
+ |                +---------+     +-------+    |
+ |                     ^                       |
+ |                     |                       |
+ |               +-----------+                 |
+ |               | HTVECINTC |                 |
+ |               +-----------+                 |
+ |                ^         ^                  |
+ |                |         |                  |
+ |          +---------+ +---------+            |
+ |          | PCH-PIC | | PCH-MSI |            |
+ |          +---------+ +---------+            |
+ |            ^     ^           ^              |
+ |            |     |           |              |
+ |    +---------+ +---------+ +---------+      |
+ |    | PCH-LPC | | Devices | | Devices |      |
+ |    +---------+ +---------+ +---------+      |
+ |         ^                                   |
+ |         |                                   |
+ |    +---------+                              |
+ |    | Devices |                              |
+ |    +---------+                              |
+ |                                             |
+ |                                             |
+ +---------------------------------------------+
+
+Extended IRQ model:
+
+In this model, the IPI (Inter-Processor Interrupt) and CPU Local Timer
+interrupt go to CPUINTC directly, CPU UARTS interrupts go to LIOINTC,
+while all other devices interrupts go to PCH-PIC/PCH-LPC/PCH-MSI and
+gathered by EIOINTC, and then go to to CPUINTC directly.
+
+ +--------------------------------------------------------+
+ |                                                        |
+ |         +-----+     +---------+     +-------+          |
+ |         | IPI | --> | CPUINTC | <-- | Timer |          |
+ |         +-----+     +---------+     +-------+          |
+ |                      ^       ^                         |
+ |                      |       |                         |
+ |               +---------+ +---------+     +-------+    |
+ |               | EIOINTC | | LIOINTC | <-- | UARTs |    |
+ |               +---------+ +---------+     +-------+    |
+ |                ^       ^                               |
+ |                |       |                               |
+ |         +---------+ +---------+                        |
+ |         | PCH-PIC | | PCH-MSI |                        |
+ |         +---------+ +---------+                        |
+ |           ^     ^           ^                          |
+ |           |     |           |                          |
+ |   +---------+ +---------+ +---------+                  |
+ |   | PCH-LPC | | Devices | | Devices |                  |
+ |   +---------+ +---------+ +---------+                  |
+ |        ^                                               |
+ |        |                                               |
+ |   +---------+                                          |
+ |   | Devices |                                          |
+ |   +---------+                                          |
+ |                                                        |
+ |                                                        |
+ +--------------------------------------------------------+
+
+This patchset adds some irqchip drivers for LoongArch, it is preparing
+to add LoongArch support in mainline kernel, we can see a snapshot here:
+https://github.com/loongson/linux/tree/loongarch-next
+
+Cross-compile tool chain to build kernel:
+https://github.com/loongson/build-tools/releases
+
+Loongson and LoongArch documentations:
+https://github.com/loongson/LoongArch-Documentation
+
+LoongArch-specific interrupt controllers:
+https://mantis.uefi.org/mantis/view.php?id=2203
+
+V1 -> V2:
+1, Remove queued patches;
+2, Move common logic of DT/ACPI probing to common functions;
+3, Split .suspend()/.resume() functions to separate patches.
+
+V2 -> V3:
+1, Fix a bug for loongson-pch-pic probe;
+2, Some minor improvements for LPC controller.
+
+V3 -> V4:
+1, Rework the CPU interrupt controller driver;
+2, Some minor improvements for other controllers.
+
+V4 -> V5:
+1, Add a description of LoonArch's IRQ model;
+2, Support multiple EIOINTCs in one system;
+3, Some minor improvements for other controllers.
+
+Huacai Chen:
+ irqchip: Adjust Kconfig for Loongson.
+ irqchip/loongson-pch-pic: Add ACPI init support.
+ irqchip/loongson-pch-pic: Add suspend/resume support.
+ irqchip/loongson-pch-msi: Add ACPI init support.
+ irqchip/loongson-htvec: Add ACPI init support.
+ irqchip/loongson-htvec: Add suspend/resume support.
+ irqchip/loongson-liointc: Add ACPI init support. 
+ irqchip: Add LoongArch CPU interrupt controller support.
+ irqchip: Add Loongson Extended I/O interrupt controller.
+ irqchip: Add Loongson PCH LPC controller support.
+
+Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
 ---
- net/socket.c | 71 ++++++++++++++++++++++++++++++++++++++++++----------
- 1 file changed, 58 insertions(+), 13 deletions(-)
-
-diff --git a/net/socket.c b/net/socket.c
-index 7f64a6eccf63..4d0e1a2970fb 100644
---- a/net/socket.c
-+++ b/net/socket.c
-@@ -1306,6 +1306,9 @@ static int sock_mmap(struct file *file, struct vm_area_struct *vma)
- {
- 	struct socket *sock = file->private_data;
- 
-+	if (likely(!sock->ops->mmap))
-+		return -ENODEV;
-+
- 	return sock->ops->mmap(file, sock, vma);
- }
- 
-@@ -1629,11 +1632,19 @@ int __sys_socketpair(int family, int type, int protocol, int __user *usockvec)
- 		goto out;
- 	}
- 
--	err = sock1->ops->socketpair(sock1, sock2);
--	if (unlikely(err < 0)) {
-+	if (likely(!sock1->ops->socketpair)) {
-+		err = -EOPNOTSUPP;
- 		sock_release(sock2);
- 		sock_release(sock1);
- 		goto out;
-+
-+	} else {
-+		err = sock1->ops->socketpair(sock1, sock2);
-+		if (unlikely(err < 0)) {
-+			sock_release(sock2);
-+			sock_release(sock1);
-+			goto out;
-+		}
- 	}
- 
- 	newfile1 = sock_alloc_file(sock1, flags, NULL);
-@@ -1704,6 +1715,14 @@ SYSCALL_DEFINE3(bind, int, fd, struct sockaddr __user *, umyaddr, int, addrlen)
- 	return __sys_bind(fd, umyaddr, addrlen);
- }
- 
-+static int __sock_listen(struct socket *sock, int backlog)
-+{
-+	if (likely(!sock->ops->listen))
-+		return -EOPNOTSUPP;
-+
-+	return sock->ops->listen(sock, backlog);
-+}
-+
- /*
-  *	Perform a listen. Basically, we allow the protocol to do anything
-  *	necessary for a listen, and if that works, we mark the socket as
-@@ -1724,7 +1743,7 @@ int __sys_listen(int fd, int backlog)
- 
- 		err = security_socket_listen(sock, backlog);
- 		if (!err)
--			err = sock->ops->listen(sock, backlog);
-+			err = __sock_listen(sock, backlog);
- 
- 		fput_light(sock->file, fput_needed);
- 	}
-@@ -1736,6 +1755,15 @@ SYSCALL_DEFINE2(listen, int, fd, int, backlog)
- 	return __sys_listen(fd, backlog);
- }
- 
-+static int __sock_accept(struct socket *sock, struct socket *newsock,
-+			 int flags, bool kern)
-+{
-+	if (likely(!sock->ops->accept))
-+		return -EOPNOTSUPP;
-+
-+	return sock->ops->accept(sock, newsock, flags, kern);
-+}
-+
- struct file *do_accept(struct file *file, unsigned file_flags,
- 		       struct sockaddr __user *upeer_sockaddr,
- 		       int __user *upeer_addrlen, int flags)
-@@ -1770,8 +1798,8 @@ struct file *do_accept(struct file *file, unsigned file_flags,
- 	if (err)
- 		goto out_fd;
- 
--	err = sock->ops->accept(sock, newsock, sock->file->f_flags | file_flags,
--					false);
-+	err = __sock_accept(sock, newsock, sock->file->f_flags | file_flags,
-+			    false);
- 	if (err < 0)
- 		goto out_fd;
- 
-@@ -1864,6 +1892,15 @@ SYSCALL_DEFINE3(accept, int, fd, struct sockaddr __user *, upeer_sockaddr,
- 	return __sys_accept4(fd, upeer_sockaddr, upeer_addrlen, 0);
- }
- 
-+static int __sock_connect(struct socket *sock, struct sockaddr *saddr,
-+			  int len, int flags)
-+{
-+	if (likely(!sock->ops->connect))
-+		return -EOPNOTSUPP;
-+
-+	return sock->ops->connect(sock, saddr, len, flags);
-+}
-+
- /*
-  *	Attempt to connect to a socket with the server address.  The address
-  *	is in user space so we verify it is OK and move it to kernel space.
-@@ -1893,8 +1930,8 @@ int __sys_connect_file(struct file *file, struct sockaddr_storage *address,
- 	if (err)
- 		goto out;
- 
--	err = sock->ops->connect(sock, (struct sockaddr *)address, addrlen,
--				 sock->file->f_flags | file_flags);
-+	err = __sock_connect(sock, (struct sockaddr *)address, addrlen,
-+			     sock->file->f_flags | file_flags);
- out:
- 	return err;
- }
-@@ -2235,6 +2272,14 @@ SYSCALL_DEFINE5(getsockopt, int, fd, int, level, int, optname,
- 	return __sys_getsockopt(fd, level, optname, optval, optlen);
- }
- 
-+static int __sock_shutdown(struct socket *sock, int how)
-+{
-+	if (likely(!sock->ops->shutdown))
-+		return -EOPNOTSUPP;
-+
-+	return sock->ops->shutdown(sock, how);
-+}
-+
- /*
-  *	Shutdown a socket.
-  */
-@@ -2245,7 +2290,7 @@ int __sys_shutdown_sock(struct socket *sock, int how)
- 
- 	err = security_socket_shutdown(sock, how);
- 	if (!err)
--		err = sock->ops->shutdown(sock, how);
-+		err = __sock_shutdown(sock, how);
- 
- 	return err;
- }
-@@ -3394,7 +3439,7 @@ EXPORT_SYMBOL(kernel_bind);
- 
- int kernel_listen(struct socket *sock, int backlog)
- {
--	return sock->ops->listen(sock, backlog);
-+	return __sock_listen(sock, backlog);
- }
- EXPORT_SYMBOL(kernel_listen);
- 
-@@ -3419,7 +3464,7 @@ int kernel_accept(struct socket *sock, struct socket **newsock, int flags)
- 	if (err < 0)
- 		goto done;
- 
--	err = sock->ops->accept(sock, *newsock, flags, true);
-+	err = __sock_accept(sock, *newsock, flags, true);
- 	if (err < 0) {
- 		sock_release(*newsock);
- 		*newsock = NULL;
-@@ -3450,7 +3495,7 @@ EXPORT_SYMBOL(kernel_accept);
- int kernel_connect(struct socket *sock, struct sockaddr *addr, int addrlen,
- 		   int flags)
- {
--	return sock->ops->connect(sock, addr, addrlen, flags);
-+	return __sock_connect(sock, addr, addrlen, flags);
- }
- EXPORT_SYMBOL(kernel_connect);
- 
-@@ -3498,7 +3543,7 @@ EXPORT_SYMBOL(kernel_getpeername);
- int kernel_sendpage(struct socket *sock, struct page *page, int offset,
- 		    size_t size, int flags)
- {
--	if (sock->ops->sendpage) {
-+	if (unlikely(sock->ops->sendpage)) {
- 		/* Warn in case the improper page to zero-copy send */
- 		WARN_ONCE(!sendpage_ok(page), "improper page for zero-copy send");
- 		return sock->ops->sendpage(sock, page, offset, size, flags);
-@@ -3542,7 +3587,7 @@ EXPORT_SYMBOL(kernel_sendpage_locked);
- 
- int kernel_sock_shutdown(struct socket *sock, enum sock_shutdown_cmd how)
- {
--	return sock->ops->shutdown(sock, how);
-+	return __sock_shutdown(sock, how);
- }
- EXPORT_SYMBOL(kernel_sock_shutdown);
- 
--- 
-2.32.0
+ drivers/irqchip/Kconfig                |  37 +++-
+ drivers/irqchip/Makefile               |   3 +
+ drivers/irqchip/irq-loongarch-cpu.c    |  89 +++++++++
+ drivers/irqchip/irq-loongson-eiointc.c | 331 +++++++++++++++++++++++++++++++++
+ drivers/irqchip/irq-loongson-htvec.c   | 142 ++++++++++----
+ drivers/irqchip/irq-loongson-liointc.c | 198 ++++++++++++--------
+ drivers/irqchip/irq-loongson-pch-lpc.c | 203 ++++++++++++++++++++
+ drivers/irqchip/irq-loongson-pch-msi.c | 119 +++++++-----
+ drivers/irqchip/irq-loongson-pch-pic.c | 152 ++++++++++++---
+ include/linux/cpuhotplug.h             |   1 +
+ 10 files changed, 1087 insertions(+), 188 deletions(-)
+ create mode 100644 drivers/irqchip/irq-loongarch-cpu.c
+ create mode 100644 drivers/irqchip/irq-loongson-eiointc.c
+ create mode 100644 drivers/irqchip/irq-loongson-pch-lpc.c
+--
+2.27.0
 
