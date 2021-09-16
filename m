@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D4C440E614
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:29:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A91D40E00E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:15:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351524AbhIPRSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:18:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35940 "EHLO mail.kernel.org"
+        id S234568AbhIPQRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:17:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350464AbhIPRJy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:09:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7861D61B44;
-        Thu, 16 Sep 2021 16:37:26 +0000 (UTC)
+        id S233875AbhIPQJg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:09:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 001866121F;
+        Thu, 16 Sep 2021 16:08:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810247;
-        bh=PigDoh3hyPXh6lz7HeYb2Ci/XfGGvqQFWZpJhMgen44=;
+        s=korg; t=1631808482;
+        bh=xSsEDJEwwJBjoM4dE0gI3zg3DShnLOHtZluEATll+rc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zdTWgH8bPF4niM4pXxZyrHqX0Km0+bjKWm4mxUbwGet3oXEEUryJSf8XmOf2aL5qH
-         hXvrvo55QNbkhR2BfZZiz4Jygu1LDgQ7WKkDrjH3zn66yzOSytZpN9rlTwmRsGEADS
-         gfyuCJsxXyl6NiyBYWdxN2EfLuHNjOhT1Zs5NHY4=
+        b=FzMLl3uUocE8DqpXhsuzmeBfbOCym+1XFPHmL25i812YmpwdhfTL7YSuk4yZmrkCu
+         g7VOz6mPziSx0ILX5qdRclqNmyb2GETOl4nKD0Vi++bGXAJI5B+1jfT9KUSEHUjW1Z
+         bLOOV2hSn/6zHm50+MkPcVtgGrwPmWUI7HdwlIMQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Subject: [PATCH 5.14 071/432] PCI: aardvark: Fix masking and unmasking legacy INTx interrupts
+        stable@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <Anna.Schumaker@Netapp.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 075/306] NFSv4/pNFS: Fix a layoutget livelock loop
 Date:   Thu, 16 Sep 2021 17:57:00 +0200
-Message-Id: <20210916155813.193730834@linuxfoundation.org>
+Message-Id: <20210916155756.616367382@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,72 +41,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: Trond Myklebust <trond.myklebust@hammerspace.com>
 
-commit d212dcee27c1f89517181047e5485fcbba4a25c2 upstream.
+[ Upstream commit e20772cbdf463c12088837e5a08bde1b876bfd25 ]
 
-irq_mask and irq_unmask callbacks need to be properly guarded by raw spin
-locks as masking/unmasking procedure needs atomic read-modify-write
-operation on hardware register.
+If NFS_LAYOUT_RETURN_REQUESTED is set, but there is no value set for
+the layout plh_return_seq, we can end up in a livelock loop in which
+every layout segment retrieved by a new call to layoutget is immediately
+invalidated by pnfs_layout_need_return().
+To get around this, we should just set plh_return_seq to the current
+value of the layout stateid's seqid.
 
-Link: https://lore.kernel.org/r/20210820155020.3000-1-pali@kernel.org
-Reported-by: Marc Zyngier <maz@kernel.org>
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Acked-by: Marc Zyngier <maz@kernel.org>
-Cc: stable@vger.kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: d474f96104bd ("NFS: Don't return layout segments that are in use")
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/pci-aardvark.c |    9 +++++++++
- 1 file changed, 9 insertions(+)
+ fs/nfs/pnfs.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
---- a/drivers/pci/controller/pci-aardvark.c
-+++ b/drivers/pci/controller/pci-aardvark.c
-@@ -230,6 +230,7 @@ struct advk_pcie {
- 	u8 wins_count;
- 	struct irq_domain *irq_domain;
- 	struct irq_chip irq_chip;
-+	raw_spinlock_t irq_lock;
- 	struct irq_domain *msi_domain;
- 	struct irq_domain *msi_inner_domain;
- 	struct irq_chip msi_bottom_irq_chip;
-@@ -1045,22 +1046,28 @@ static void advk_pcie_irq_mask(struct ir
- {
- 	struct advk_pcie *pcie = d->domain->host_data;
- 	irq_hw_number_t hwirq = irqd_to_hwirq(d);
-+	unsigned long flags;
- 	u32 mask;
- 
-+	raw_spin_lock_irqsave(&pcie->irq_lock, flags);
- 	mask = advk_readl(pcie, PCIE_ISR1_MASK_REG);
- 	mask |= PCIE_ISR1_INTX_ASSERT(hwirq);
- 	advk_writel(pcie, mask, PCIE_ISR1_MASK_REG);
-+	raw_spin_unlock_irqrestore(&pcie->irq_lock, flags);
+diff --git a/fs/nfs/pnfs.c b/fs/nfs/pnfs.c
+index 371665e0c154..fef0537d15b0 100644
+--- a/fs/nfs/pnfs.c
++++ b/fs/nfs/pnfs.c
+@@ -347,11 +347,15 @@ pnfs_set_plh_return_info(struct pnfs_layout_hdr *lo, enum pnfs_iomode iomode,
+ 		iomode = IOMODE_ANY;
+ 	lo->plh_return_iomode = iomode;
+ 	set_bit(NFS_LAYOUT_RETURN_REQUESTED, &lo->plh_flags);
+-	if (seq != 0) {
+-		WARN_ON_ONCE(lo->plh_return_seq != 0 && lo->plh_return_seq != seq);
++	/*
++	 * We must set lo->plh_return_seq to avoid livelocks with
++	 * pnfs_layout_need_return()
++	 */
++	if (seq == 0)
++		seq = be32_to_cpu(lo->plh_stateid.seqid);
++	if (!lo->plh_return_seq || pnfs_seqid_is_newer(seq, lo->plh_return_seq))
+ 		lo->plh_return_seq = seq;
+-		pnfs_barrier_update(lo, seq);
+-	}
++	pnfs_barrier_update(lo, seq);
  }
  
- static void advk_pcie_irq_unmask(struct irq_data *d)
- {
- 	struct advk_pcie *pcie = d->domain->host_data;
- 	irq_hw_number_t hwirq = irqd_to_hwirq(d);
-+	unsigned long flags;
- 	u32 mask;
- 
-+	raw_spin_lock_irqsave(&pcie->irq_lock, flags);
- 	mask = advk_readl(pcie, PCIE_ISR1_MASK_REG);
- 	mask &= ~PCIE_ISR1_INTX_ASSERT(hwirq);
- 	advk_writel(pcie, mask, PCIE_ISR1_MASK_REG);
-+	raw_spin_unlock_irqrestore(&pcie->irq_lock, flags);
- }
- 
- static int advk_pcie_irq_map(struct irq_domain *h,
-@@ -1144,6 +1151,8 @@ static int advk_pcie_init_irq_domain(str
- 	struct irq_chip *irq_chip;
- 	int ret = 0;
- 
-+	raw_spin_lock_init(&pcie->irq_lock);
-+
- 	pcie_intc_node =  of_get_next_child(node, NULL);
- 	if (!pcie_intc_node) {
- 		dev_err(dev, "No PCIe Intc node found\n");
+ static void
+-- 
+2.30.2
+
 
 
