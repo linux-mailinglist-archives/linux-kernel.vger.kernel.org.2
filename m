@@ -2,201 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6241D40EC6A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 23:21:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7050640EC6D
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 23:22:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240589AbhIPVXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 17:23:04 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:59042 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240214AbhIPVWk (ORCPT
+        id S240567AbhIPVX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 17:23:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240561AbhIPVXQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 17:22:40 -0400
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18GJxiiZ019726;
-        Thu, 16 Sep 2021 21:21:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references :
- content-transfer-encoding : content-type : mime-version;
- s=corp-2021-07-09; bh=dEKbVwcYKEj6PtXOfVUbjWSi2YavsG6EPXSMPVWDcE0=;
- b=lLHnqz85dFBn22dtv8CXQO9ZJLgx0bTaydJKu/V7udgZPCudzAqZeEA6bEYtK3vToq4Y
- /HvQrSrB5419iwSY/ic4JYG4QUyNli3a7ukNIWqCTYitxLwe8dc5CRz1/bq2Bdj8KnJ9
- rTCGQLEixq1EcOiBqRCP5IUkJTPONOcP9f+uthg6zvTkyqs1WZ4l6I7vlzlJgIabXIIc
- 6f5G/otFP/AhKM/BTvjhUHVRLS0h6lH3MY4bRRrcFkVGG2JkTGgKpGZfwhws048a6sIz
- ZOzsAUv5CAB/carJkH5VLIlZ963Xfbuyn1aRVG5NvGC/l9ncGTkgCAAD7CmE+Izr5GWi nA== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references :
- content-transfer-encoding : content-type : mime-version;
- s=corp-2020-01-29; bh=dEKbVwcYKEj6PtXOfVUbjWSi2YavsG6EPXSMPVWDcE0=;
- b=wB6fwUT0yzKBNFqd4ds8YE1jgOnYWiMpZ5iFJO33zkftS++gi1Ytfknvl4jGfACOqR0z
- k4smN06WJyQN+ZXT9A4Ga3DkITDpxCMrQKukAUe/lkcs7fNzOc1qkhsykf60faVyoL2u
- mpq/cVh0UsWV5FVigXW++IP6Ju3OnEMW4vmerZizV+9duyoPsEwiBQS0nYk/DOhhoey3
- 37HM7GOiIhVv8NeQj+JDsSQovpQSyvF9kaKJJQqEeFQaLBSgQzFfbpwmLHaoJMthOug0
- ZY2a5VphjtubDnWqB0xVf/HWbRL1mbOVHDTjEoJ0ZzgZu1GLKdykbq9VIM+KulGU8LfK uA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3b3t92m6qr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 16 Sep 2021 21:21:13 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18GL5Y3v011322;
-        Thu, 16 Sep 2021 21:21:12 GMT
-Received: from nam02-bn1-obe.outbound.protection.outlook.com (mail-bn1nam07lp2040.outbound.protection.outlook.com [104.47.51.40])
-        by userp3030.oracle.com with ESMTP id 3b0hjyuvwg-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 16 Sep 2021 21:21:12 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=naX/87BKvpD5bVa9vy+dw1H4uhCW58PHGHiBsZuStWqh6wiv40U07XZPsJhQsHhrghmFtBaIGMYu8fazR9cvNOwfIKCafpLRgyYnnc0jB8JNanUwJvY5CFQUVXBEKMUcWgRkOsXihLxRRrHR5nlLSZS7DPFsX3+M0NwGUZNzgdurSLUMZVGlOw5BLIbxopCMIrB2FT2ghtUftMRG40fvamMmzAIKBskvXfU8m6frwKxiGpn1HXVq2D5f+zbCZrQo4Hb0jRqWYudLUW2byoZlF8yjncnH3707eQ00RHMY0WiSVg16adHHF4Tb8I256VmWu2qRqfFXLnqSAUl7/d0HmQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=dEKbVwcYKEj6PtXOfVUbjWSi2YavsG6EPXSMPVWDcE0=;
- b=IqpYsD6sLKVHffEfYGxa9kMZW5gO2RWRz02/mkDeSAHdfLIYH6rdHtDph51z1MzeqPrRfVePKelBhgQNpQZGStPgyemSafK+++xwFbv8Z6z/DFnMqQOpnpiYH0BSlNYE1l197K7347VrmpdqWKjnhL8FzqQaEpqjS+FR/H4lMrR1nq7qX6XyIiYjJZkBprVfT2piS7yEd4yOJUHUiNkyrljtBrSYZ1wKwZx4yRDNo5/0IJyw/OOPuZa0M/M4aXrjVaNX0Ug3/cOf32s/vEMBB9pUfpGcvwu1kogBZBz9SHS1UQUe4e6DgBCUuLIA4mJPU4N6ZCQ/MSBHt6MPrkg5gw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Thu, 16 Sep 2021 17:23:16 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F178C0613F0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 14:21:47 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id i7so23809995lfr.13
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 14:21:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dEKbVwcYKEj6PtXOfVUbjWSi2YavsG6EPXSMPVWDcE0=;
- b=pthlpSgmscv/OGJ8CyxFwJ3YR8rN/Maw/1NmIckgWXzJCwzJcleShs1ES6pzBjDjzDwu+VW0wEohdalG0NpwJqcFT94BmkNq37JU5HA2S/BH7ItHd/Sd1FPaXoL4hDMnYIXMY4HtbXr4HOq19C0wKBtmHVaWXhQtoUW4jomRyww=
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=oracle.com;
-Received: from BYAPR10MB3573.namprd10.prod.outlook.com (2603:10b6:a03:11e::32)
- by BYAPR10MB2935.namprd10.prod.outlook.com (2603:10b6:a03:8e::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.18; Thu, 16 Sep
- 2021 21:21:11 +0000
-Received: from BYAPR10MB3573.namprd10.prod.outlook.com
- ([fe80::5881:380c:7098:5701]) by BYAPR10MB3573.namprd10.prod.outlook.com
- ([fe80::5881:380c:7098:5701%6]) with mapi id 15.20.4523.014; Thu, 16 Sep 2021
- 21:21:11 +0000
-From:   Mike Christie <michael.christie@oracle.com>
-To:     stefanha@redhat.com, jasowang@redhat.com, mst@redhat.com,
-        sgarzare@redhat.com, virtualization@lists.linux-foundation.org,
-        christian.brauner@ubuntu.com, axboe@kernel.dk,
-        linux-kernel@vger.kernel.org
-Cc:     Mike Christie <michael.christie@oracle.com>
-Subject: [PATCH 8/8] vhost: remove cgroup code
-Date:   Thu, 16 Sep 2021 16:20:51 -0500
-Message-Id: <20210916212051.6918-9-michael.christie@oracle.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210916212051.6918-1-michael.christie@oracle.com>
-References: <20210916212051.6918-1-michael.christie@oracle.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: DM5PR04CA0027.namprd04.prod.outlook.com
- (2603:10b6:3:12b::13) To BYAPR10MB3573.namprd10.prod.outlook.com
- (2603:10b6:a03:11e::32)
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VCWdjNx1tyfTuOxA33WFnltsnI9BaPgD2xX9ANb6iQM=;
+        b=LLERr/poYuP2KNkCGTHCHiW3TE1k9xFlvEYL7Or6w1srOrRqfDR0FoVqCcMKPhbPQ+
+         qoNntOPIZBLCpVuwkZh/S0fFCwvGbTaiXaBzi+I+iqAMEn3+fqx/CaoHF0madtuZQMC6
+         XzCoqEMM5K1/hhbxxwhADguA/rZUU1Dr7OTeCU6KSpIljuvTVwaVuZJoCl6nkc0gs2qN
+         jlCo2+mqIxe+ZUPKzGkNC/6B4QQq+rvB/QwMxoZrqGFMuTPDd22kT0tVWK6vOSqJUEXA
+         oRn5nkMH6++jWrV6tk7tM8E9jBfmxXLvTXKVR6V1XrPlGh4gZc3DCUpL7rtMgKuIwrjS
+         C2JQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VCWdjNx1tyfTuOxA33WFnltsnI9BaPgD2xX9ANb6iQM=;
+        b=0JoaKcJJhWQbQjZLG5h2MIwojFAMV66A+lKwLIwxY4TAgBG+MJwRQZbBwyq3Wr7a0C
+         z40hSTHeNxqf7cyr+AGsWxxjOXlNMG1Otn+yQjCjBcbMyCmOUJEtDAQu1H/yutAJqWst
+         +LZC/uSeN5GsFRkKTA16gHztbIfsshAKeMXdhakd3F2APF1cqw5Nj+JarbzF8GvCWVMi
+         q/OY5sGf6SpCDdQubLFzK1NrgqRjRPwlGKo06T6zkkI8tHLRoahrQrn4GGQrTP+OaI2k
+         rJVcHR4Kh4o+CwEq5CliQeX4HKjhwiMt+DgeRAVZjjsx6FsKawCWFO0IuR7TyjevCZQd
+         DUig==
+X-Gm-Message-State: AOAM531xKhOqDsjYr9ufPq+hO0GYBzbGcBjjbxPXCxkPJpvvwRNJ7UUf
+        3d3VxL2RYTZSzEWA32zedH5zfq6U7jS1yY/LNAZexByQAd2Sfw==
+X-Google-Smtp-Source: ABdhPJybM19mqelDkBkwzCpVjUJCAtNVJyiwg59S/uwAdiyxpocBhlzf9ak+4D5WkA/BKBW89Bqlqahg4SzJM2/87CM=
+X-Received: by 2002:a05:6512:132a:: with SMTP id x42mr5561031lfu.291.1631827305443;
+ Thu, 16 Sep 2021 14:21:45 -0700 (PDT)
 MIME-Version: 1.0
-Received: from localhost.localdomain (73.88.28.6) by DM5PR04CA0027.namprd04.prod.outlook.com (2603:10b6:3:12b::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Thu, 16 Sep 2021 21:21:09 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: da181553-3758-4baf-f98d-08d97957e7b7
-X-MS-TrafficTypeDiagnostic: BYAPR10MB2935:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR10MB2935CBB7687715ECA16F2EB2F1DC9@BYAPR10MB2935.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:175;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ol63cmSBpT/HTF+qaTFMV9yMkyMdiqUQKePvdhLu75o2wTiHQO/wfu1wjso/sTtBgPFOGb9fpkbd5JOeRxMQeYEN3LUswPHKj9VZzcnu3Uu0kjdeb1CrOnMPmo/QJ6o3VHtpw4meD4I8ozT+sIi94DB7Kn2HbkAZBAZGYQm6KXtT5gGpI2A3wiSHIDLYmVn524jK0akKzUyTjx1y9J3DUr6AYYSG+F7DwoDMHWCnvTxlul4z3XS5XMlRXTh27PXy7CAoy0IcDsrdB42sla1NbcccIF1YGq2hX2Zu/G3UHicdIqENbR1H9jJie8j0IW8vOm3rgs9Qnvbyya5TGVKITHA8nWFxGUuSnNS9fNmFXm5LU2bye+FZ4tEfuHLs3Xr/C1nRr+SX16Qj0QyiR9hO7QawpuZ5lte7USq/CgKEsm/oQVcU8vUYkfK9fsiOnMbPMlJdpq165RtX7Ndx1lFwW/tAOOULY/1DXZXkgh1K9Y4aLsyKvfPwv3XiZmKtqTmCaokxMsuL2r8IF0i4XOHEY3OFCklKUL7djyq8ao+OmUR1BIYLVE+5old59wRUIO/t69OoaWM9UBshc4DY6rdqE5mbNySQVdIWSOWqixT1aGBs9cSkGpjxT1QM1Xbg5yQuTWnv83nba/3BNvEHp+3KNhmoZf9bZYkc2+37a1bOQ9OrmqOewF1S4rsBTNfD43Ku2/EozA8vQ369htsEQ639hg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB3573.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(316002)(86362001)(36756003)(26005)(107886003)(508600001)(8676002)(8936002)(66556008)(83380400001)(66946007)(5660300002)(6506007)(66476007)(4326008)(6486002)(2906002)(38100700002)(38350700002)(1076003)(52116002)(2616005)(6512007)(956004)(6666004)(186003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?WZRRXeZsg+FDLdGZw1DdHBgne/mfiHpv9vzGnNqUk78IH0ouFEIMIYkeWNpd?=
- =?us-ascii?Q?mKlBrmTxLEsCXpVgUYGr2uYQab9dU4jkZDO0cdsWbyQ0F6K91wvZKiRuvQlL?=
- =?us-ascii?Q?zQwPrPajsXmwnZtUl7BK7ET5u3RONhNtaRKwsUt7X2YrjLSkpeDtTqj9Qx9d?=
- =?us-ascii?Q?PU+oaTgAMbVvSDK9W34WLj2OMfPyom74buj306tuBb+jllsG83D8YcQTLP0k?=
- =?us-ascii?Q?YWQFdmr20MICzd2q1WPerzVjzY8qTSBNCwNIdDs0PnMbV089NZ1u6dQntFIa?=
- =?us-ascii?Q?/HSeoa1DbpOWPFnxHzhUnk6VI35sF39Mwc1JZBeUik3V8jXzk+Yryl90bBUc?=
- =?us-ascii?Q?JACVpd5YIZrbVkAVAw9Z3A5ns/9BSwoYAyZhGkSsCgx7fEam0fTvKiUshPsB?=
- =?us-ascii?Q?9JBufV1o9fxLi8cdd8PgP1xpM1Jd/fByXysOmgd8ryLUb0KkwOw2D9u0dvA6?=
- =?us-ascii?Q?12xq3sCZg5CtRjqOekKQEBYo14uy7ZDBVuqxu9IPqPZApk/duOePywf1rhMN?=
- =?us-ascii?Q?X0sFmAxnmHmNZskTv1RZTM4dKs0cGckRNgIAkRgojm+B2my6R0sUhUo7ZuXj?=
- =?us-ascii?Q?DuWmqmMPaAhgv/CxytQxTvrE31Qxo55vse9e3hgoa/3EbxTfTl7yt3sMKsLI?=
- =?us-ascii?Q?itgMDhWTikpuQecUFF5W9Q/dSduqi9TSsXvmcZ4hsEbVm2MXRQ9zA/sxfjJj?=
- =?us-ascii?Q?641LcTkDY3CC/pCXMhbMCKaOKFQXaXrEVpG3Snj24b1+BGe87jdxB7QynMvF?=
- =?us-ascii?Q?3acTjvflmlNdOb/KAT8ePpWcdnhvtVyWUSOmUvSUgjq/18PqcQq99ZOPxlko?=
- =?us-ascii?Q?TsUN3t2EvuFlcSMpS9bDWKCB3jWqgpoigrfJf9Gw8EsCRjlQ+KEk7KiuDXjk?=
- =?us-ascii?Q?uYhqQkqGh/dVWuzde6RKKYPOh17FLtp9cl80ewJBgMZS0MVUtgZIdL2LHtXE?=
- =?us-ascii?Q?Bn4zaNeeUB4M2mJBzUd8sQg8iNTn5z2whrvc5wGWz/FXnK5SMqJL+abWISUa?=
- =?us-ascii?Q?OxFV5GyzPAroOFa+om0sDwTDbZMcDacgTYKVKk/pM7Oh2cI5lGkdf2ci6tLf?=
- =?us-ascii?Q?By1aZPelRQ4tjMX54CvseKXPxUternnyDMvb2NbG8LmaC5EiYyas/uty1ntJ?=
- =?us-ascii?Q?qPf/qbCjMLjMtuZlxxbUG5+Ul5GpJ04NQzpiGVmXJX8JvZwl3P9VBXSBMLns?=
- =?us-ascii?Q?/i9X37FM9Giq7zRK6kLy1oR0fIrUqc5Go4Nnx2etpEljXCPXtVvc8RB5fdEZ?=
- =?us-ascii?Q?KYBUfB4s2iUnyMk5KYm0jkbD+4nUUG+VlOfPU7XLInCNOuU4movQBruPOvHj?=
- =?us-ascii?Q?KL1jS9tN5sVenDXwiK0UTmrj?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: da181553-3758-4baf-f98d-08d97957e7b7
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB3573.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2021 21:21:11.3791
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qsnxQxi3YUJQQk2d1KqZrfopn3SJ8oSKxVhv6BusuXNO8iOMPmz4Psq3bmT4f2EFJeJwdCo3FvoZFEZRz7PbeVKxnF7QsHtGNyzjChAzTiI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB2935
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10109 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 adultscore=0 phishscore=0
- mlxlogscore=999 suspectscore=0 spamscore=0 bulkscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109030001
- definitions=main-2109160122
-X-Proofpoint-ORIG-GUID: 0OkHgCRhnlJ7p1RVM3OFV_jyOb93E7ms
-X-Proofpoint-GUID: 0OkHgCRhnlJ7p1RVM3OFV_jyOb93E7ms
+References: <20210824164801.28896-1-lakshmi.sowjanya.d@intel.com>
+In-Reply-To: <20210824164801.28896-1-lakshmi.sowjanya.d@intel.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 16 Sep 2021 23:21:34 +0200
+Message-ID: <CACRpkdZEp0FZOefBPP_sR4g6rKzeKQhpdL-XHYO+CRt5MfTrYg@mail.gmail.com>
+Subject: Re: [RFC PATCH v1 00/20] Review Request: Add support for Intel PMC
+To:     "D, Lakshmi Sowjanya" <lakshmi.sowjanya.d@intel.com>,
+        Dipen Patel <dipenp@nvidia.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Saha, Tamal" <tamal.saha@intel.com>, bala.senthil@intel.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We inherit v1 and v2 cgroups from copy_process now, so we can drop the v1
-only code.
+Hi Sowjanya,
 
-Signed-off-by: Mike Christie <michael.christie@oracle.com>
----
- drivers/vhost/vhost.c | 26 --------------------------
- 1 file changed, 26 deletions(-)
+thanks for your patches!
 
-diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
-index 6e58417b13fc..b561c5ea00fc 100644
---- a/drivers/vhost/vhost.c
-+++ b/drivers/vhost/vhost.c
-@@ -22,7 +22,6 @@
- #include <linux/slab.h>
- #include <linux/vmalloc.h>
- #include <linux/kthread.h>
--#include <linux/cgroup.h>
- #include <linux/module.h>
- #include <linux/sort.h>
- #include <linux/sched/mm.h>
-@@ -515,31 +514,6 @@ long vhost_dev_check_owner(struct vhost_dev *dev)
- }
- EXPORT_SYMBOL_GPL(vhost_dev_check_owner);
- 
--struct vhost_attach_cgroups_struct {
--	struct vhost_work work;
--	struct task_struct *owner;
--	int ret;
--};
--
--static void vhost_attach_cgroups_work(struct vhost_work *work)
--{
--	struct vhost_attach_cgroups_struct *s;
--
--	s = container_of(work, struct vhost_attach_cgroups_struct, work);
--	s->ret = cgroup_attach_task_all(s->owner, current);
--}
--
--static int vhost_attach_cgroups(struct vhost_dev *dev)
--{
--	struct vhost_attach_cgroups_struct attach;
--
--	attach.owner = current;
--	vhost_work_init(&attach.work, vhost_attach_cgroups_work);
--	vhost_work_queue(dev, &attach.work);
--	vhost_work_dev_flush(dev);
--	return attach.ret;
--}
--
- /* Caller should have device mutex */
- bool vhost_dev_has_owner(struct vhost_dev *dev)
- {
--- 
-2.25.1
+On Tue, Aug 24, 2021 at 6:48 PM <lakshmi.sowjanya.d@intel.com> wrote:
 
+> From: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
+>
+> Starting with Intel(R) Tiger Lake and Elkhart Lake platforms the PMC
+> hardware adds the Timed I/O hardware interface.
+>
+> The Timed I/O hardware implements some functionality similar to GPIO
+> with added timing logic that is driven by the Always Running Timer
+> (ART).
+>
+> The Timed I/O Hardware implement 3 basic functions:
+>   * Input Timestamping
+>   * Single Shot Timed Output
+>   * Periodic Timed Output
+>
+>  Please help to review the changes.
+
+This looks very similar to the usecase proposed for the HTE
+Hardware Timestamping Engine, proposed by Dipen Patel
+for the nVidia 194 and which is currently in RFC:
+https://lore.kernel.org/linux-gpio/20210625235532.19575-1-dipenp@nvidia.com/
+
+Please review this new subsystem and see if you can just
+make a slot-in driver using Dipen's patches instead.
+
+Dipen: please have a look at Sowjanya's patches to see
+if this hardware is similar to yours.
+
+Sometimes several vendors come up with similar hardware
+around the same time, because of industry trends, so I would
+not be surprised if these two hardwares address the very
+same usecase.
+
+Yours,
+Linus Walleij
