@@ -2,125 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30E9040D46A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 10:23:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEE8940D46E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 10:23:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235062AbhIPIYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 04:24:50 -0400
-Received: from mga01.intel.com ([192.55.52.88]:11423 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234904AbhIPIYt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 04:24:49 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10108"; a="244889786"
-X-IronPort-AV: E=Sophos;i="5.85,297,1624345200"; 
-   d="scan'208";a="244889786"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2021 01:23:25 -0700
-X-IronPort-AV: E=Sophos;i="5.85,297,1624345200"; 
-   d="scan'208";a="516695771"
-Received: from ipoconno-mobl3.ger.corp.intel.com (HELO [10.213.234.111]) ([10.213.234.111])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2021 01:23:22 -0700
-Subject: Re: [Intel-gfx] [PATCH] drm/i915: zero fill vma name buffer
-To:     Tim Gardner <tim.gardner@canonical.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-References: <20210915192318.2061-1-tim.gardner@canonical.com>
-From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-Organization: Intel Corporation UK Plc
-Message-ID: <7a653532-046d-c68a-3dc9-ef2deaf455f9@linux.intel.com>
-Date:   Thu, 16 Sep 2021 09:23:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S235087AbhIPIZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 04:25:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24973 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234998AbhIPIZB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 04:25:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631780621;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2gYTVUstSGum8vCgM4ToltbBv2THH4KeZDSf5iCyLvY=;
+        b=JUxM/kBoAJCalOozO5d+OAnytsfe71chzX7PRZxE+dJE5a+Nqj9j9bKRPGMxEeIWzdTvBL
+        PrCY8Ef+Nx6V4Ohrw62jofe67OI6tqcF/R/QeBPim3pJkTaz34mE1cWq88ryauBfveZFqR
+        0KD0jTajXCHI6iJFkRAqSzZhDtY9HwI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-538-TUBi5zIKMy-P7na6kgC6Ug-1; Thu, 16 Sep 2021 04:23:40 -0400
+X-MC-Unique: TUBi5zIKMy-P7na6kgC6Ug-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 08DCF835DE2;
+        Thu, 16 Sep 2021 08:23:39 +0000 (UTC)
+Received: from T590 (ovpn-12-89.pek2.redhat.com [10.72.12.89])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0635C6D982;
+        Thu, 16 Sep 2021 08:23:28 +0000 (UTC)
+Date:   Thu, 16 Sep 2021 16:23:40 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     pkalever@redhat.com
+Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        nbd@other.debian.org, josef@toxicpanda.com, axboe@kernel.dk,
+        idryomov@redhat.com, xiubli@redhat.com,
+        Prasanna Kumar Kalever <prasanna.kalever@redhat.com>
+Subject: Re: [PATCH v1 2/2] nbd: reset the queue/io_timeout to default on
+ disconnect
+Message-ID: <YUL/DGZiUnQQGHVX@T590>
+References: <20210806142914.70556-1-pkalever@redhat.com>
+ <20210806142914.70556-3-pkalever@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210915192318.2061-1-tim.gardner@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210806142914.70556-3-pkalever@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 15/09/2021 20:23, Tim Gardner wrote:
-> In capture_vma() Coverity complains of a possible buffer overrun. Even
-> though this is a static function where all call sites can be checked,
-> limiting the copy length could save some future grief.
+On Fri, Aug 06, 2021 at 07:59:14PM +0530, pkalever@redhat.com wrote:
+> From: Prasanna Kumar Kalever <prasanna.kalever@redhat.com>
 > 
-> CID 93300 (#1 of 1): Copy into fixed size buffer (STRING_OVERFLOW)
-> 4. fixed_size_dest: You might overrun the 16-character fixed-size string c->name
->     by copying name without checking the length.
-> 5. parameter_as_source: Note: This defect has an elevated risk because the
->     source argument is a parameter of the current function.
-> 1326        strcpy(c->name, name);
+> Without any changes to NBD_ATTR_TIMEOUT (default is 30 secs),
+> $ rbd-nbd map rbd-pool/image0 --try-netlink
+> /dev/nbd0
+> $ cat /sys/block/nbd0/queue/io_timeout
+> 30000
+> $ rbd-nbd unmap /dev/nbd0
+> $ cat /sys/block/nbd0/queue/io_timeout
+> 30000
 > 
-> Fix any possible overflows by using strncpy(). Zero fill the name buffer to
-> guarantee ASCII string NULL termination.
+> Now user sets NBD_ATTR_TIMEOUT to 60,
+> $ rbd-nbd map rbd-pool/image0 --try-netlink --io-timeout 60
+> /dev/nbd0
+> $ cat /sys/block/nbd0/queue/io_timeout
+> 60000
+> $ rbd-nbd unmap /dev/nbd0
+> $ cat /sys/block/nbd0/queue/io_timeout
+> 60000
 > 
-> Cc: Jani Nikula <jani.nikula@linux.intel.com>
-> Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-> Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: intel-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
+> Now user doesn't alter NBD_ATTR_TIMEOUT, but sysfs still shows it as 60,
+> $ rbd-nbd map rbd-pool/image0 --try-netlink
+> /dev/nbd0
+> $ cat /sys/block/nbd0/queue/io_timeout
+> 60000
+> $ rbd-nbd unmap /dev/nbd0
+> $ cat /sys/block/nbd0/queue/io_timeout
+> 60000
+> 
+> The problem exists with ioctl interface too.
+> 
+> Signed-off-by: Prasanna Kumar Kalever <prasanna.kalever@redhat.com>
 > ---
->   drivers/gpu/drm/i915/i915_gpu_error.c | 7 ++++---
->   1 file changed, 4 insertions(+), 3 deletions(-)
+>  drivers/block/nbd.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/gpu/drm/i915/i915_gpu_error.c b/drivers/gpu/drm/i915/i915_gpu_error.c
-> index 9cf6ac575de1..154df174e2d7 100644
-> --- a/drivers/gpu/drm/i915/i915_gpu_error.c
-> +++ b/drivers/gpu/drm/i915/i915_gpu_error.c
-> @@ -1297,10 +1297,11 @@ static bool record_context(struct i915_gem_context_coredump *e,
->   	return simulated;
->   }
->   
-> +#define VMA_NAME_LEN 16
->   struct intel_engine_capture_vma {
->   	struct intel_engine_capture_vma *next;
->   	struct i915_vma *vma;
-> -	char name[16];
-> +	char name[VMA_NAME_LEN];
->   };
->   
->   static struct intel_engine_capture_vma *
-> @@ -1314,7 +1315,7 @@ capture_vma(struct intel_engine_capture_vma *next,
->   	if (!vma)
->   		return next;
->   
-> -	c = kmalloc(sizeof(*c), gfp);
-> +	c = kzalloc(sizeof(*c), gfp);
->   	if (!c)
->   		return next;
->   
-> @@ -1323,7 +1324,7 @@ capture_vma(struct intel_engine_capture_vma *next,
->   		return next;
->   	}
->   
-> -	strcpy(c->name, name);
-> +	strncpy(c->name, name, VMA_NAME_LEN-1);
-
-GCC is supposed to catch any problems here as you say in the commit message.
-
-But to fix I suggest a single line change to strlcpy(c->name, name, 
-sizeof(c->name)) which always null terminates as bonus.
-
-Probably same in i915_vma_coredump_create() which with strncpy would 
-have a theoretical chance of attempting to copy over a 
-non-null-terminated string.
-
-Regards,
-
-Tvrtko
-
->   	c->vma = vma; /* reference held while active */
->   
->   	c->next = next;
+> diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+> index 16a1a14b1fd1..a45aabc4914b 100644
+> --- a/drivers/block/nbd.c
+> +++ b/drivers/block/nbd.c
+> @@ -158,6 +158,7 @@ static void nbd_connect_reply(struct genl_info *info, int index);
+>  static int nbd_genl_status(struct sk_buff *skb, struct genl_info *info);
+>  static void nbd_dead_link_work(struct work_struct *work);
+>  static void nbd_disconnect_and_put(struct nbd_device *nbd);
+> +static void nbd_set_cmd_timeout(struct nbd_device *nbd, u64 timeout);
+>  
+>  static inline struct device *nbd_to_dev(struct nbd_device *nbd)
+>  {
+> @@ -1250,7 +1251,7 @@ static void nbd_config_put(struct nbd_device *nbd)
+>  			destroy_workqueue(nbd->recv_workq);
+>  		nbd->recv_workq = NULL;
+>  
+> -		nbd->tag_set.timeout = 0;
+> +		nbd_set_cmd_timeout(nbd, 0);
+>  		nbd->disk->queue->limits.discard_granularity = 0;
+>  		nbd->disk->queue->limits.discard_alignment = 0;
+>  		blk_queue_max_discard_sectors(nbd->disk->queue, UINT_MAX);
+> @@ -2124,6 +2125,10 @@ static int nbd_genl_reconfigure(struct sk_buff *skb, struct genl_info *info)
+>  	if (ret)
+>  		goto out;
+>  
+> +	/*
+> +	 * On reconfigure, if NBD_ATTR_TIMEOUT is not provided, we will
+> +	 * continue to use the cmd timeout provided with connect initially.
+> +	 */
+>  	if (info->attrs[NBD_ATTR_TIMEOUT])
+>  		nbd_set_cmd_timeout(nbd,
+>  				    nla_get_u64(info->attrs[NBD_ATTR_TIMEOUT]));
+> -- 
+> 2.31.1
 > 
+
+Looks fine:
+
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
+
+-- 
+Ming
+
