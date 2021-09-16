@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAF7340E923
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:01:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A3A240E539
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:26:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356328AbhIPRtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:49:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57084 "EHLO mail.kernel.org"
+        id S1345416AbhIPRJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:09:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34040 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355394AbhIPRl0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:41:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE94B63260;
-        Thu, 16 Sep 2021 16:52:49 +0000 (UTC)
+        id S1348404AbhIPRCq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:02:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF8C2613BD;
+        Thu, 16 Sep 2021 16:33:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631811170;
-        bh=20N7xoLr4PRRg/0ghZb/xVzS0Tot4rz49UzpNxcUcFM=;
+        s=korg; t=1631810022;
+        bh=iXJafTiwm+F/PRnWqxas69L3sKLJAcb7LldHNIyBmJQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NLkwgZDFiOpTpoUQ+I0z7hSz7NXo6Bkzt9TiZMBQo/3jJ16hEGZMWvmVwZyFa25NK
-         ZouXuVk4AWhyZwqoyQJWZRG/oM47oWuo0QEopwI2da8VJbZMB7nvh2nBvKyIBAErcX
-         RFiGojqea9zFifSm6Rhu3wMdCVCM4ODm2kindu1w=
+        b=l7aUNigA7DvcUj8kn6LwPLw+b4d2eSvztMMFID8tXf1vDMQT9nd7n9OA1qEp016/+
+         ZFU5Z6DOIpwNS7H+TaOtY/DwMF6blEqday0BhcuSjqHbgZIpGcDWoZUyys2mAf3eFa
+         2yptTqy5ofvDPBuDT4vppExBiA7qoVmoL50Vg1FQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yevgeny Kliteynik <kliteyn@nvidia.com>,
-        Alex Vesker <valex@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 376/432] net/mlx5: DR, Enable QP retransmission
-Date:   Thu, 16 Sep 2021 18:02:05 +0200
-Message-Id: <20210916155823.554406532@linuxfoundation.org>
+        stable@vger.kernel.org, David Heidelberg <david@ixit.cz>,
+        Rob Clark <robdclark@chromium.org>
+Subject: [PATCH 5.13 369/380] drm/msi/mdp4: populate priv->kms in mdp4_kms_init
+Date:   Thu, 16 Sep 2021 18:02:06 +0200
+Message-Id: <20210916155816.607628876@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +39,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yevgeny Kliteynik <kliteyn@nvidia.com>
+From: David Heidelberg <david@ixit.cz>
 
-[ Upstream commit ec449ed8230cd30769de3cb70ee0fce293047372 ]
+commit cb0927ab80d224c9074f53d1a55b087d12ec5a85 upstream.
 
-Under high stress, SW steering might get stuck on polling for completion
-that never comes.
-For such cases QP needs to have protocol retransmission mechanism enabled.
-Currently the retransmission timeout is defined as 0 (unlimited). Fix this
-by defining a real timeout.
+Without this fix boot throws NULL ptr exception at msm_dsi_manager_setup_encoder
+on devices like Nexus 7 2013 (MDP4 v4.4).
 
-Signed-off-by: Yevgeny Kliteynik <kliteyn@nvidia.com>
-Reviewed-by: Alex Vesker <valex@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 03436e3ec69c ("drm/msm/dsi: Move setup_encoder to modeset_init")
+
+Cc: <stable@vger.kernel.org>
+Signed-off-by: David Heidelberg <david@ixit.cz>
+Link: https://lore.kernel.org/r/20210811170631.39296-1-david@ixit.cz
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/steering/dr_send.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_send.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_send.c
-index 9df0e73d1c35..69b49deb66b2 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_send.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_send.c
-@@ -620,6 +620,7 @@ static int dr_cmd_modify_qp_rtr2rts(struct mlx5_core_dev *mdev,
+--- a/drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c
++++ b/drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c
+@@ -399,6 +399,7 @@ struct msm_kms *mdp4_kms_init(struct drm
+ {
+ 	struct platform_device *pdev = to_platform_device(dev->dev);
+ 	struct mdp4_platform_config *config = mdp4_get_config(pdev);
++	struct msm_drm_private *priv = dev->dev_private;
+ 	struct mdp4_kms *mdp4_kms;
+ 	struct msm_kms *kms = NULL;
+ 	struct msm_gem_address_space *aspace;
+@@ -418,7 +419,8 @@ struct msm_kms *mdp4_kms_init(struct drm
+ 		goto fail;
+ 	}
  
- 	MLX5_SET(qpc, qpc, retry_count, attr->retry_cnt);
- 	MLX5_SET(qpc, qpc, rnr_retry, attr->rnr_retry);
-+	MLX5_SET(qpc, qpc, primary_address_path.ack_timeout, 0x8); /* ~1ms */
+-	kms = &mdp4_kms->base.base;
++	priv->kms = &mdp4_kms->base.base;
++	kms = priv->kms;
  
- 	MLX5_SET(rtr2rts_qp_in, in, opcode, MLX5_CMD_OP_RTR2RTS_QP);
- 	MLX5_SET(rtr2rts_qp_in, in, qpn, dr_qp->qpn);
--- 
-2.30.2
-
+ 	mdp4_kms->dev = dev;
+ 
 
 
