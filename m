@@ -2,88 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29A6D40EB04
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 21:46:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81A0A40EAF1
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 21:41:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234265AbhIPTsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 15:48:12 -0400
-Received: from srv4.3e8.eu ([193.25.101.238]:34172 "EHLO srv4.3e8.eu"
+        id S233725AbhIPTm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 15:42:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56382 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230152AbhIPTsL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 15:48:11 -0400
-X-Greylist: delayed 499 seconds by postgrey-1.27 at vger.kernel.org; Thu, 16 Sep 2021 15:48:11 EDT
-Received: from [IPv6:2003:c6:cf12:5a0:9abc:9583:6f0a:c734] (p200300c6cf1205a09abc95836f0ac734.dip0.t-ipconnect.de [IPv6:2003:c6:cf12:5a0:9abc:9583:6f0a:c734])
-        (using TLSv1.3 with cipher TLS_CHACHA20_POLY1305_SHA256 (256/256 bits))
-        (No client certificate requested)
-        by srv4.3e8.eu (Postfix) with ESMTPSA id 55F66600A9;
-        Thu, 16 Sep 2021 21:38:27 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=3e8.eu;
-        s=mail20170724; t=1631821108;
-        bh=a33GpWWnFT3v41eI/sIwgek55Y5I8bXRNKTeri1tpmE=;
-        h=To:Cc:References:From:Subject:Date:In-Reply-To:From;
-        b=pi9e29V+QW+sGLIt+qY+Buh/nSOq+Iz9Nx2eZ08Wi/YBSgkw9NqITMl8jZFRIDnJ3
-         +HtfAbhOxK6IAwBTdl1Xa9gO/Zdp6pmJsurSjkbMgOuSiXMUF6mvwj1Ukc7CuNMBSV
-         AHuo3JJsjqygK5LwgTmljN0GRnGk1YuHXOnvNgQBSHEmv8ziKqxgi5pOcYnLAyvruh
-         KY5cAEmY9o2a+duv70z0Lcs+jIijTM8PoUem8+hF8z5SMYjBTMQQEuffPp5xRNytID
-         +G0czFuVrEOpHGf5W2Kp5ps6UDG0wMxCiejUqa2bCjr9iQ0J9WAUjGB3rc10CMb4ik
-         PSD4LQukH/vYg==
-To:     Daniel Kestrel <kestrelseventyfour@gmail.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210808072643.GA5084@ubuntu>
-From:   Jan Hoffmann <jan@3e8.eu>
-Subject: Re: [PATCH v2] mtd: rawnand: xway: No hardcoded ECC engine, use
- device tree setting
-Message-ID: <51f2ebf4-6df1-eba5-99f1-1ec88e475d20@3e8.eu>
-Date:   Thu, 16 Sep 2021 21:38:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S230452AbhIPTmY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 15:42:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 93D3761164;
+        Thu, 16 Sep 2021 19:41:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631821263;
+        bh=soyfUqVQbP0TrX3MUGTCtp9M3EsGu8pssJ5XKcFWprU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=o8SNT7ENEBzSRvnpewmA/7iWvL7Q61LSeFRnC1pugyW7mzrVUOhghrYs8oNIZT0Qx
+         p5A1O3kkdDMILw8O/WnmxW1oZp/gbDrPdW8EDJh4cJL12MPdy2ToeHzZCpyfk2+qb4
+         eI0OkIjdk2oFUWVh1alOgqEr4UrS/UsG9JBbn3CrFA4qV9W+D5unbt+Yolxs2scAhQ
+         fBEfj3xUNXMiTabH8tLPkUQiPqWng8n2SYAnDmdIG7LGCul63BADhBSM74M46mBVdQ
+         VEPmAPpF0I+z7imdkfNmbyZMU7XD0VS2X4URA5Km6FqpqsB7gJUkugByScQxic1wvO
+         rv/jVZyice3zQ==
+Received: by mail-pf1-f180.google.com with SMTP id y4so5391367pfe.5;
+        Thu, 16 Sep 2021 12:41:03 -0700 (PDT)
+X-Gm-Message-State: AOAM533xiXUUGEUXNdPnEntZGyoORPmyKYZWARXw+NUfMa36ePmwEQU9
+        5dvfNLFTdJBVbEfQmUILd9wXqTu4yunPLlXJMEw=
+X-Google-Smtp-Source: ABdhPJxSK0Md4SdwZxQEm62tQpRGeq+lHK11/cMSAJz7jYpspL00UImVffNfMonjsjbKr0XkSgC4uIilxre0QhXL/ao=
+X-Received: by 2002:a63:841:: with SMTP id 62mr6376041pgi.354.1631821263269;
+ Thu, 16 Sep 2021 12:41:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210808072643.GA5084@ubuntu>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200827185829.30096-1-krzk@kernel.org> <20201002162353.GA5870@kozik-lap>
+In-Reply-To: <20201002162353.GA5870@kozik-lap>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Thu, 16 Sep 2021 21:40:51 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPdOvmuGJCF9Edw8zFfOY7r+QFc23OAgjoXtHxN65Ovh7A@mail.gmail.com>
+Message-ID: <CAJKOXPdOvmuGJCF9Edw8zFfOY7r+QFc23OAgjoXtHxN65Ovh7A@mail.gmail.com>
+Subject: Re: [PATCH v3 01/27] Input: Simplify with dev_err_probe()
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Bastien Nocera <hadess@hadess.net>,
+        Sangwon Jee <jeesw@melfas.com>,
+        Eugen Hristev <eugen.hristev@microchip.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-gpio@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-input@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, 2 Oct 2020 at 18:23, Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>
+> On Thu, Aug 27, 2020 at 08:58:02PM +0200, Krzysztof Kozlowski wrote:
+> > Hi,
+> >
+> > Changes since v2:
+> > 1. Add review tags,
+> > 2. Fixes after review (see individual patches).
+> > 3. Two new patches - 26 and 27.
+> >
+> >
+>
+> Hi Dmitry,
+>
+> Any comments here? Some of these nicely simplify the code or remove some
+> lines.
 
-Configuration of the ECC engine type using device tree has actually
-worked before. I am using OpenWrt on a Fritzbox 7362 SL, which has a
-Micron 29F1G08ABADA flash chip. The bootloader of the device uses on-die
-ECC, so that has to be used for Linux as well. It is configured in DTS
-using "nand-ecc-mode = "on-die";". This worked fine with kernel 5.4.
-However, after switching to kernel 5.10 it is ignored and software ECC
-is used instead.
+Hi Dmitry,
 
-If I understand this correctly, the situation is as follows:
+You never shared your thoughts about this simplification. Some of
+these could be redundant with Rob's work:
+https://lore.kernel.org/lkml/CAL_Jsq+ajm5aiAJfQdS2+2DO1ynBDHWha_7TsA4u-2qwd87y6g@mail.gmail.com/
+but I am not sure if it was merged.
 
-Originally, xway-nand did set defaults for ECC mode and algorithm, but
-different values could be configured using device tree.
+On the other hand there are here also few other changes like:
+>   gpio: Add devm_fwnode_gpiod_get_optional() helpers
+>   Input: gpio_keys - Simplify with dev_err_probe()
+which does:
+8 insertions(+), 17 deletions(-)
 
-Commit d7157ff49a5b ("mtd: rawnand: Use the ECC framework user input
-parsing bits") broke these default values, as the ECC algorithm is now
-unconditionally set from the user configuration in rawnand_dt_init.
-Previously, the default value was only overwritten if the device tree
-actually contained a value.
+and these:
+>   Input: bu21013_ts - Use local 'client->dev' variable in probe()
+>   Input: bu21029_ts - Use local 'client->dev' variable in probe()
 
-This is fixed in d525914b5bd8 ("mtd: rawnand: xway: Move the ECC
-initialization to ->attach_chip()"). However, this makes it impossible
-to configure the ECC engine type in the device tree, as it is now
-overwritten by the default value in xway_attach_chip.
+Any comments?
 
-I am not sure if this patch is the best approach for fixing this, as it
-would again cause breakage for anyone who relies on the existing
-default value. And this kind of breakage seems to have been the reason
-for moving the default values to attach_chip in the first place (see
-https://lore.kernel.org/lkml/20201105084939.72ea6bfd@xps13/ ).
+Best regards,
+Krzysztof
 
-As similar changes were applied to other NAND drivers, the same issue
-probably also exists there. Maybe it makes sense to add a proper fix
-for all of them?
 
-Thanks,
-Jan
+
+> > Krzysztof Kozlowski (27):
+> >   Input: gpio_keys_polled - Simplify with dev_err_probe()
+> >   Input: gpio-vibra - Simplify with dev_err_probe()
+> >   Input: pwm-beeper - Simplify with dev_err_probe()
+> >   Input: pwm-vibra - Simplify with dev_err_probe()
+> >   Input: rotary_encoder - Simplify with dev_err_probe()
+> >   Input: elan_i2c - Simplify with dev_err_probe()
+> >   Input: bu21013_ts - Simplify with dev_err_probe()
+> >   Input: bu21029_ts - Simplify with dev_err_probe()
+> >   Input: chipone_icn8318 - Simplify with dev_err_probe()
+> >   Input: cy8ctma140 - Simplify with dev_err_probe()
+> >   Input: edf-ft5x06 - Simplify with dev_err_probe()
+> >   Input: ektf2127 - Simplify with dev_err_probe()
+> >   Input: elants_i2c - Simplify with dev_err_probe()
+> >   Input: goodix - Simplify with dev_err_probe()
+> >   Input: melfas_mip4 - Simplify with dev_err_probe()
+> >   Input: pixcir_i2c_ts - Simplify with dev_err_probe()
+> >   Input: raydium_i2c_ts - Simplify with dev_err_probe()
+> >   Input: resistive-adc-touch - Simplify with dev_err_probe()
+> >   Input: silead - Simplify with dev_err_probe()
+> >   Input: sis_i2c - Simplify with dev_err_probe()
+> >   Input: surface3_spi - Simplify with dev_err_probe()
+> >   Input: sx8643 - Simplify with dev_err_probe()
+> >   Input: bcm-keypad - Simplify with dev_err_probe()
+> >   gpio: Add devm_fwnode_gpiod_get_optional() helpers
+> >   Input: gpio_keys - Simplify with dev_err_probe()
+> >   Input: bu21013_ts - Use local 'client->dev' variable in probe()
+> >   Input: bu21029_ts - Use local 'client->dev' variable in probe()
+> >
+> >  drivers/gpio/gpiolib-devres.c                 | 71 ++++++++++++++++++
+> >  drivers/input/keyboard/bcm-keypad.c           | 14 ++--
+> >  drivers/input/keyboard/gpio_keys.c            | 25 +++----
+> >  drivers/input/keyboard/gpio_keys_polled.c     |  8 +--
+> >  drivers/input/misc/gpio-vibra.c               | 20 ++----
+> >  drivers/input/misc/pwm-beeper.c               | 19 ++---
+> >  drivers/input/misc/pwm-vibra.c                | 20 ++----
+> >  drivers/input/misc/rotary_encoder.c           |  8 +--
+> >  drivers/input/mouse/elan_i2c_core.c           |  9 +--
+> >  drivers/input/touchscreen/bu21013_ts.c        | 72 ++++++++-----------
+> >  drivers/input/touchscreen/bu21029_ts.c        | 53 ++++++--------
+> >  drivers/input/touchscreen/chipone_icn8318.c   |  8 +--
+> >  drivers/input/touchscreen/cy8ctma140.c        |  8 +--
+> >  drivers/input/touchscreen/edt-ft5x06.c        | 10 +--
+> >  drivers/input/touchscreen/ektf2127.c          |  8 +--
+> >  drivers/input/touchscreen/elants_i2c.c        | 22 ++----
+> >  drivers/input/touchscreen/goodix.c            | 40 +++--------
+> >  drivers/input/touchscreen/melfas_mip4.c       |  9 +--
+> >  drivers/input/touchscreen/pixcir_i2c_ts.c     | 38 ++++------
+> >  drivers/input/touchscreen/raydium_i2c_ts.c    | 30 +++-----
+> >  .../input/touchscreen/resistive-adc-touch.c   |  8 +--
+> >  drivers/input/touchscreen/silead.c            |  8 +--
+> >  drivers/input/touchscreen/sis_i2c.c           | 20 ++----
+> >  drivers/input/touchscreen/surface3_spi.c      | 13 +---
+> >  drivers/input/touchscreen/sx8654.c            | 10 +--
+> >  include/linux/gpio/consumer.h                 | 30 ++++++++
+> >  26 files changed, 253 insertions(+), 328 deletions(-)
+> >
+> > --
+> > 2.17.1
+> >
