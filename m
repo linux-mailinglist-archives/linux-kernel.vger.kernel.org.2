@@ -2,109 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBC1440DDC6
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 17:17:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97FEC40DDCC
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 17:18:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236290AbhIPPTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 11:19:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235593AbhIPPTA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 11:19:00 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E36D2C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 08:17:39 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id m7-20020a9d4c87000000b0051875f56b95so8769651otf.6
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 08:17:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qBnm1KnUuxtdGKyRhrgjabbAZKUXf06dsPW76/EUyyY=;
-        b=ryTAILdz68SeBnV2MBGf+pL5CIn3Ex9mqX2WODAPIOkjrY/AWOOe+FhRrP52sZWquP
-         DhnrQl2k6vIeYtkHPfWgC8fe90GIpbwnBkXa6jbftxNW+UgmjwUmLY9TMJZjTYAvcWOt
-         WSP/RhKcDKvgorgUUKoLQU+8folRyPOyIUnuzrszKexzFU4CXKl6NP3bkyEu052Sjc1I
-         A5QMIZZdaldNo+j9smdX/wW+kzwwP1Z9nkFjZVGgFsd0wkuuegs4YdL98SHoSs8lCWu9
-         HGIlYkVz6+64QMXZx42H3oXJAdR1JK3UQ2XGOj6sSo1NnmuRNMRrV4R1drNzxCezO+6F
-         8h0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qBnm1KnUuxtdGKyRhrgjabbAZKUXf06dsPW76/EUyyY=;
-        b=yvqJ1qHXe+s6JvVW1CtphUSBCgf6tyu7FPtI3U4VumhfQy+aOxdbA7LwdgWWvk6EEP
-         +iymsX3f8+YjlTV5woi4Ux9eUuw+363KOrvKv25a6TlS049ih3vUHMQJ7stpYzLX/3RC
-         14F9UBb1vEsxdYkcFMRU+Efp3Jyj5jlkCZJZZ21dwa7D9vGVUvKeogawh5ttuUzYJnCr
-         mkWaGqkmEv4Y8HherbrMUYbaHFQLITaZplsynISjSNgdJvWcfJw31LUsMjL980exKgon
-         hQGJ2xXLVGy/VLmJJXX6jFMCiMm22auwO1QWhsXr9AUwrADH2k8ce6pX5C3vnJ5NjQCI
-         Qc2g==
-X-Gm-Message-State: AOAM533qNAoPL6QDXp+dBqmnph8lBl4NCL070fWx7nJ286lND68Ysxc3
-        sr1xZd+TxdBTndaQMDT9Pcfn55bFc1s3+1SAE48zKA==
-X-Google-Smtp-Source: ABdhPJyu2fcPZf9f1J1IWu4N2nRRbfaeE+o0ynvcode8xsPWpsEgNskqC469m+MUdhJG2CImcmWnipIkaw+N/APy5Qk=
-X-Received: by 2002:a05:6830:34b:: with SMTP id h11mr5211766ote.319.1631805459058;
- Thu, 16 Sep 2021 08:17:39 -0700 (PDT)
+        id S238634AbhIPPTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 11:19:20 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:47369 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236774AbhIPPTT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 11:19:19 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1631805479; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=W6szQ/LiyIiaf2JeeBlcAruOxPvIgc68+ew5H7jm+GE=; b=OP0KbVMtBWF/pk2auc0kk/As7qPgNn45+glDq/txAxx7W29yNDRwVI4nZERfKyao/zo8UXdm
+ +U3+vo62GzXWAiQVD5IKgi4moslUsinfu3BfW8FP9IponbYMcitOsDx/f4Ci8xz2ipLVrAur
+ AWfRibWZWb8PIQdVEYiyvzSN8Ak=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 6143601265c3cc8c6365f454 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 16 Sep 2021 15:17:38
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9E2EFC4361C; Thu, 16 Sep 2021 15:17:38 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9BCC1C4338F;
+        Thu, 16 Sep 2021 15:17:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 9BCC1C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Len Baker <len.baker@gmx.com>,
+        Arend van Spriel <aspriel@gmail.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
+        Wright Feng <wright.feng@infineon.com>,
+        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Kees Cook <keescook@chromium.org>,
+        Shawn Guo <shawn.guo@linaro.org>,
+        linux-wireless@vger.kernel.org,
+        brcm80211-dev-list.pdl@broadcom.com,
+        SHA-cyfmac-dev-list@infineon.com, netdev@vger.kernel.org,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] brcmfmac: Replace zero-length array with flexible array member
+References: <20210904092217.2848-1-len.baker@gmx.com>
+        <20210912191536.GB146608@embeddedor>
+Date:   Thu, 16 Sep 2021 18:17:31 +0300
+In-Reply-To: <20210912191536.GB146608@embeddedor> (Gustavo A. R. Silva's
+        message of "Sun, 12 Sep 2021 14:15:36 -0500")
+Message-ID: <87o88sy2gk.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <000000000000ffdae005cc08037e@google.com> <20210915193601.GI3544071@ziepe.ca>
- <CACT4Y+bxDuLggCzkLAchrGkKQxC2v4bhc01ciBg+oc17q2=HHw@mail.gmail.com>
- <20210916130459.GJ3544071@ziepe.ca> <CACT4Y+aUFbj3_+iBpeP2qrQ=RbGrssr0-6EZv1nx73at7fdbfA@mail.gmail.com>
- <CACT4Y+ZrQL3n=N2GOfJ6vLNW2_4MdiwywXvZpQ=as_NbJ8PXjw@mail.gmail.com>
- <CACT4Y+ZrXft1cMg0X48TrvbLj0moCb5nyWs1HG0WAZkpKmiBaA@mail.gmail.com> <20210916150850.GN3544071@ziepe.ca>
-In-Reply-To: <20210916150850.GN3544071@ziepe.ca>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Thu, 16 Sep 2021 17:17:27 +0200
-Message-ID: <CACT4Y+bSb8ck4C-Uc2E-2xP=W_r-2i3KUSnqfHr=Z7GB46+CAg@mail.gmail.com>
-Subject: Re: [syzbot] KASAN: use-after-free Read in addr_handler (4)
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     syzbot <syzbot+dc3dfba010d7671e05f5@syzkaller.appspotmail.com>,
-        dledford@redhat.com, leon@kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        Aleksandr Nogikh <nogikh@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Sept 2021 at 17:08, Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Thu, Sep 16, 2021 at 04:55:16PM +0200, Dmitry Vyukov wrote:
->
-> > > I noticed we also had 2 KCSAN reports that mention rdma_resolve_addr.
-> > >
-> > > On commit 1df0d896:
-> > > ==================================================================
-> > > BUG: KCSAN: data-race in addr_handler / cma_check_port
-> > >
-> > > write to 0xffff88809fa40a1c of 4 bytes by task 21 on cpu 1:
-> > >  cma_comp_exch drivers/infiniband/core/cma.c:426 [inline]
-> > >  addr_handler+0x9f/0x2b0 drivers/infiniband/core/cma.c:3141
-> > >  process_one_req+0x22f/0x300 drivers/infiniband/core/addr.c:645
-> > >  process_one_work+0x3e1/0x9a0 kernel/workqueue.c:2269
-> > >  worker_thread+0x665/0xbe0 kernel/workqueue.c:2415
-> > >  kthread+0x20d/0x230 kernel/kthread.c:291
-> > >  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
-> > >
-> > > read to 0xffff88809fa40a1c of 4 bytes by task 11997 on cpu 0:
-> > >  cma_check_port+0xbd/0x700 drivers/infiniband/core/cma.c:3506
->
-> This has since been fixed, cma_check_port() no longer reads state
->
-> > > and on commit 5863cc79:
->
-> I can't find this commit? Current rdma_resolve_addr should not trigger
-> this KCSAN.
->
-> > This does not immediately explain the use-after-free for me, but these
-> > races suggest that everything is not protected by a single mutex and
-> > that there may be some surprising interleavings.
-> > E.g. rdma_resolve_addr checks status, and then conditionally executes
-> > cma_bind_addr, but the status can change concurrently.
->
-> It is true, they weren't, however I've fixed them all. These hits look
-> like they all from before it got fixed up..
+"Gustavo A. R. Silva" <gustavoars@kernel.org> writes:
 
-Then sorry for false leads.
-The second commit was from https://github.com/google/ktsan.git kcsan
-branch. I am not sure if it's still present or was rebased. But either
-way it's even older than the first report on upstream (we used ktsan
-tree before switched to upstream).
+> On Sat, Sep 04, 2021 at 11:22:17AM +0200, Len Baker wrote:
+>> There is a regular need in the kernel to provide a way to declare
+>> having a dynamically sized set of trailing elements in a structure.
+>> Kernel code should always use "flexible array members"[1] for these
+>> cases. The older style of one-element or zero-length arrays should
+>> no longer be used[2].
+>> 
+>> Also, make use of the struct_size() helper in devm_kzalloc().
+>> 
+>> [1] https://en.wikipedia.org/wiki/Flexible_array_member
+>> [2] https://www.kernel.org/doc/html/v5.14/process/deprecated.html#zero-length-and-one-element-arrays
+>> 
+>> Signed-off-by: Len Baker <len.baker@gmx.com>
+>
+> Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>
+> I'll take this in my -next tree. :)
+
+Why? It should go to wireless-drivers-next.
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
