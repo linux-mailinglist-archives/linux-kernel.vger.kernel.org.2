@@ -2,180 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A91C040ED71
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 00:39:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91A0640ED75
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 00:40:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241163AbhIPWka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 18:40:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47538 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241152AbhIPWka (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 18:40:30 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 181DEC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 15:39:09 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id j4-20020ad454c4000000b0037a900dda7aso75892660qvx.14
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 15:39:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=EdHLsFLcwc3yqlVGHs+Fv4V3AJJwg9rmZTGpHSJ/dcQ=;
-        b=fKMDm4mfMdMQonLPVgx0CETjfgrQ2t/yvCNuS1UZSWK9cYO86A6JNCHa9B3+JhWLU9
-         Puhi17TKciloF/mCw+fnhIdCnYikypcy4zUToQEbVhQJUTOi3MndUy/rp3vOYCXS0Gjt
-         wqAQy/dVwvMneOWvFdfMF6U0+rvRRypQVTAMQEgcKKd3SdHm40VIqf0QcwfEZ6jUa+fl
-         zfckZVRHFzda2MhZ/gwVCPwmMw61wsQWDTfmlTJ+fmsRg7zgIzo6LvSu+KtXsbw4HW8h
-         Q266m3QV+H8Tqbjw0d8ibJUEalrRjcqH7K8tZMdu6BnFsixccFu9btCu/VwQ2y73Kfz9
-         8Osw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=EdHLsFLcwc3yqlVGHs+Fv4V3AJJwg9rmZTGpHSJ/dcQ=;
-        b=McwThwmmqmafhFlB5jgA0LP380Nh5yLP+vUrKPs8Q1EsS4La7mTTB9qRo4smgU1DW7
-         Ys3zJxi1v/GFXEWGUpBwmZ+Rkt6satUo0Aw87Iu/IziCv0+71mgSTxzQYafE+WRgCciL
-         ZZt6Ce4e1hMDo5/i4lW0XtNVIynP+HsZr+Yk3Ce006KZNF4SpuC45Lxrf3jJ/yu3q81x
-         YhFRYT/aHqkW4UNMezLrQipQYUAsygPxgK/YnCvS0dl/pN+3rtL0OUuoSw/nB7LgkIKF
-         xHmMEwDT0SWPkiM9U6sSaONIgFr7BURuvcgK8jDE+NgQuGf0ysQKymdf8Oao0qjMSdCy
-         +Dsw==
-X-Gm-Message-State: AOAM531rI8qYNey6eUk/OTjsBcR/3Xi5g80Pyjrn9qqvD6YfQpqBWkdY
-        6jI4uNw7kjgHpMtdyyj/DFkgdNlj40G3tQ==
-X-Google-Smtp-Source: ABdhPJwQUR5FF0JMgIrjHmd3U9D6zBGgXV0PSIguUKGVDxuXyMFE2eLv+YX8Cbxj2d+Wo2qtWTZ0jRXHhMNSHw==
-X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:84a4:4669:156a:f5fb])
- (user=dlatypov job=sendgmr) by 2002:a25:bfc8:: with SMTP id
- q8mr9612510ybm.473.1631831948194; Thu, 16 Sep 2021 15:39:08 -0700 (PDT)
-Date:   Thu, 16 Sep 2021 15:39:03 -0700
-Message-Id: <20210916223903.1592541-1-dlatypov@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.464.g1972c5931b-goog
-Subject: [PATCH] kunit: tool: make --raw_output only support showing kunit output
-From:   Daniel Latypov <dlatypov@google.com>
-To:     brendanhiggins@google.com, davidgow@google.com
-Cc:     linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
-        Daniel Latypov <dlatypov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S241184AbhIPWlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 18:41:20 -0400
+Received: from mga04.intel.com ([192.55.52.120]:13875 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240632AbhIPWlT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 18:41:19 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10109"; a="220793135"
+X-IronPort-AV: E=Sophos;i="5.85,299,1624345200"; 
+   d="scan'208";a="220793135"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2021 15:39:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,299,1624345200"; 
+   d="scan'208";a="700825774"
+Received: from lkp-server01.sh.intel.com (HELO 285e7b116627) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 16 Sep 2021 15:39:57 -0700
+Received: from kbuild by 285e7b116627 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mR02u-0001Tg-Ix; Thu, 16 Sep 2021 22:39:56 +0000
+Date:   Fri, 17 Sep 2021 06:39:25 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:locking/urgent] BUILD SUCCESS
+ 81121524f1c798c9481bd7900450b72ee7ac2eef
+Message-ID: <6143c79d.PpM1uKUcpSB5C8tk%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 6a499c9c42d0 ("kunit: tool: make --raw_output support only
-showing kunit output") made --raw_output a string-typed argument.
-Passing --raw_output=kunit would make it only show KUnit-related output
-and not everything.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git locking/urgent
+branch HEAD: 81121524f1c798c9481bd7900450b72ee7ac2eef  locking/rwbase: Take care of ordering guarantee for fastpath reader
 
-However, converting it to a string-typed argument had side effects.
+elapsed time: 1826m
 
-These calls used to work:
-$ kunit.py run --raw_output
-$ kunit.py run --raw_output suite_filter
-$ kunit.py run suite_filter --raw_output
+configs tested: 176
+configs skipped: 3
 
-But now the second is actually parsed as
-$ kunit.py run --raw_output=suite_filter
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-So the order you add in --raw_output now matters and command lines that
-used to work might not anymore.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20210916
+arm                        clps711x_defconfig
+powerpc                 mpc8313_rdb_defconfig
+arc                 nsimosci_hs_smp_defconfig
+powerpc                      cm5200_defconfig
+sh                        edosk7705_defconfig
+x86_64                           allyesconfig
+riscv                            alldefconfig
+mips                malta_qemu_32r6_defconfig
+arm                        mvebu_v5_defconfig
+arm                         vf610m4_defconfig
+powerpc                      ppc40x_defconfig
+sh                          rsk7201_defconfig
+sh                          polaris_defconfig
+powerpc                 mpc8560_ads_defconfig
+arm                         lubbock_defconfig
+arm                          ep93xx_defconfig
+arc                              alldefconfig
+powerpc                      ppc44x_defconfig
+sh                          landisk_defconfig
+um                           x86_64_defconfig
+powerpc                     ep8248e_defconfig
+arm                        mvebu_v7_defconfig
+arc                        nsimosci_defconfig
+s390                          debug_defconfig
+powerpc                 mpc8272_ads_defconfig
+mips                         db1xxx_defconfig
+sh                           se7712_defconfig
+powerpc                     tqm8555_defconfig
+arm                          pxa910_defconfig
+powerpc                    amigaone_defconfig
+powerpc                 mpc8540_ads_defconfig
+powerpc                 canyonlands_defconfig
+powerpc                     kmeter1_defconfig
+sh                     sh7710voipgw_defconfig
+s390                       zfcpdump_defconfig
+sh                           se7724_defconfig
+powerpc                     tqm5200_defconfig
+sh                   sh7770_generic_defconfig
+powerpc                      acadia_defconfig
+sh                          lboxre2_defconfig
+powerpc                  mpc885_ads_defconfig
+arm                         cm_x300_defconfig
+sh                               alldefconfig
+m68k                         amcore_defconfig
+arm                        oxnas_v6_defconfig
+sh                           se7206_defconfig
+arm                         lpc18xx_defconfig
+powerpc                    socrates_defconfig
+arm                       netwinder_defconfig
+arm                         bcm2835_defconfig
+sparc                       sparc32_defconfig
+m68k                           sun3_defconfig
+ia64                      gensparse_defconfig
+ia64                                defconfig
+nios2                            allyesconfig
+powerpc                    mvme5100_defconfig
+arm                       cns3420vb_defconfig
+mips                        nlm_xlr_defconfig
+powerpc                      tqm8xx_defconfig
+mips                      bmips_stb_defconfig
+arm                      pxa255-idp_defconfig
+sh                            hp6xx_defconfig
+mips                  cavium_octeon_defconfig
+nios2                         3c120_defconfig
+arm                             rpc_defconfig
+arm                        realview_defconfig
+arm                            hisi_defconfig
+sh                           se7722_defconfig
+arm                       versatile_defconfig
+sh                              ul2_defconfig
+sh                         ecovec24_defconfig
+sh                          sdk7780_defconfig
+arm                           u8500_defconfig
+powerpc                       holly_defconfig
+powerpc                   microwatt_defconfig
+h8300                               defconfig
+sh                          rsk7203_defconfig
+m68k                       m5249evb_defconfig
+powerpc                      bamboo_defconfig
+sparc64                          alldefconfig
+m68k                                defconfig
+powerpc                      chrp32_defconfig
+openrisc                         alldefconfig
+m68k                       m5475evb_defconfig
+powerpc                     pseries_defconfig
+mips                           ip27_defconfig
+arm                       imx_v6_v7_defconfig
+arm                     am200epdkit_defconfig
+m68k                            mac_defconfig
+sh                                  defconfig
+riscv                    nommu_virt_defconfig
+i386                                defconfig
+m68k                             alldefconfig
+sh                            shmin_defconfig
+sh                        dreamcast_defconfig
+x86_64               randconfig-c001-20210916
+arm                  randconfig-c002-20210916
+ia64                             allmodconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                                defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                             allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                           allnoconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+x86_64               randconfig-a016-20210916
+x86_64               randconfig-a013-20210916
+x86_64               randconfig-a012-20210916
+x86_64               randconfig-a011-20210916
+x86_64               randconfig-a014-20210916
+x86_64               randconfig-a015-20210916
+i386                 randconfig-a016-20210916
+i386                 randconfig-a015-20210916
+i386                 randconfig-a011-20210916
+i386                 randconfig-a012-20210916
+i386                 randconfig-a013-20210916
+i386                 randconfig-a014-20210916
+riscv                randconfig-r042-20210916
+s390                 randconfig-r044-20210916
+arc                  randconfig-r043-20210916
+riscv                    nommu_k210_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allyesconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                             i386_defconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-Change --raw_output back to a boolean flag, but change its behavior to
-match that of the former --raw_output=kunit.
-The assumption is that this is what most people wanted to see anyways.
+clang tested configs:
+riscv                randconfig-c006-20210916
+x86_64               randconfig-c007-20210916
+mips                 randconfig-c004-20210916
+powerpc              randconfig-c003-20210916
+arm                  randconfig-c002-20210916
+i386                 randconfig-c001-20210916
+s390                 randconfig-c005-20210916
+x86_64               randconfig-a002-20210916
+x86_64               randconfig-a003-20210916
+x86_64               randconfig-a006-20210916
+x86_64               randconfig-a004-20210916
+x86_64               randconfig-a005-20210916
+x86_64               randconfig-a001-20210916
+i386                 randconfig-a004-20210916
+i386                 randconfig-a005-20210916
+i386                 randconfig-a006-20210916
+i386                 randconfig-a002-20210916
+i386                 randconfig-a003-20210916
+i386                 randconfig-a001-20210916
+hexagon              randconfig-r045-20210916
+hexagon              randconfig-r041-20210916
 
-To get the old behavior, users can simply do:
-$ kunit.py run >/dev/null; cat .kunit/test.log
-They don't have any easy way of getting the --raw_output=kunit behavior.
-
-Signed-off-by: Daniel Latypov <dlatypov@google.com>
 ---
-
-Meta: this is an alternative to
-https://lore.kernel.org/linux-kselftest/20210903161405.1861312-1-dlatypov@google.com/
-
-I'd slightly prefer that approach, but if we're fine with giving up the
-old --raw_output semantics entirely, this would be cleaner.
-I'd also assume that most people would prefer the new semantics, but I'm
-not sure of that.
-
----
- Documentation/dev-tools/kunit/kunit-tool.rst |  7 -------
- tools/testing/kunit/kunit.py                 | 12 +++---------
- tools/testing/kunit/kunit_tool_test.py       | 13 ++++++-------
- 3 files changed, 9 insertions(+), 23 deletions(-)
-
-diff --git a/Documentation/dev-tools/kunit/kunit-tool.rst b/Documentation/dev-tools/kunit/kunit-tool.rst
-index ae52e0f489f9..03404746f1f6 100644
---- a/Documentation/dev-tools/kunit/kunit-tool.rst
-+++ b/Documentation/dev-tools/kunit/kunit-tool.rst
-@@ -114,13 +114,6 @@ results in TAP format, you can pass the ``--raw_output`` argument.
- 
- 	./tools/testing/kunit/kunit.py run --raw_output
- 
--The raw output from test runs may contain other, non-KUnit kernel log
--lines. You can see just KUnit output with ``--raw_output=kunit``:
--
--.. code-block:: bash
--
--	./tools/testing/kunit/kunit.py run --raw_output=kunit
--
- If you have KUnit results in their raw TAP format, you can parse them and print
- the human-readable summary with the ``parse`` command for kunit_tool. This
- accepts a filename for an argument, or will read from standard input.
-diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
-index 5a931456e718..3626a56472b5 100755
---- a/tools/testing/kunit/kunit.py
-+++ b/tools/testing/kunit/kunit.py
-@@ -115,13 +115,7 @@ def parse_tests(request: KunitParseRequest) -> KunitResult:
- 					      'Tests not Parsed.')
- 
- 	if request.raw_output:
--		output: Iterable[str] = request.input_data
--		if request.raw_output == 'all':
--			pass
--		elif request.raw_output == 'kunit':
--			output = kunit_parser.extract_tap_lines(output)
--		else:
--			print(f'Unknown --raw_output option "{request.raw_output}"', file=sys.stderr)
-+		output = kunit_parser.extract_tap_lines(request.input_data)
- 		for line in output:
- 			print(line.rstrip())
- 
-@@ -256,8 +250,8 @@ def add_exec_opts(parser) -> None:
- 
- def add_parse_opts(parser) -> None:
- 	parser.add_argument('--raw_output', help='If set don\'t format output from kernel. '
--			    'If set to --raw_output=kunit, filters to just KUnit output.',
--			    type=str, nargs='?', const='all', default=None)
-+			    'It will only show output from KUnit.',
-+			    action='store_true')
- 	parser.add_argument('--json',
- 			    nargs='?',
- 			    help='Stores test results in a JSON, and either '
-diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
-index 619c4554cbff..55ed3dac31ee 100755
---- a/tools/testing/kunit/kunit_tool_test.py
-+++ b/tools/testing/kunit/kunit_tool_test.py
-@@ -399,14 +399,13 @@ class KUnitMainTest(unittest.TestCase):
- 			self.assertNotEqual(call, mock.call(StrContains('Testing complete.')))
- 			self.assertNotEqual(call, mock.call(StrContains(' 0 tests run')))
- 
--	def test_run_raw_output_kunit(self):
-+	def test_run_raw_output_does_not_take_positional_args(self):
-+		# --raw_output might eventually support an argument, but we don't want it
-+		# to consume any positional arguments, only ones after an '='.
- 		self.linux_source_mock.run_kernel = mock.Mock(return_value=[])
--		kunit.main(['run', '--raw_output=kunit'], self.linux_source_mock)
--		self.assertEqual(self.linux_source_mock.build_reconfig.call_count, 1)
--		self.assertEqual(self.linux_source_mock.run_kernel.call_count, 1)
--		for call in self.print_mock.call_args_list:
--			self.assertNotEqual(call, mock.call(StrContains('Testing complete.')))
--			self.assertNotEqual(call, mock.call(StrContains(' 0 tests run')))
-+		kunit.main(['run', '--raw_output', 'filter_glob'], self.linux_source_mock)
-+		self.linux_source_mock.run_kernel.assert_called_once_with(
-+			args=None, build_dir='.kunit', filter_glob='filter_glob', timeout=300)
- 
- 	def test_exec_timeout(self):
- 		timeout = 3453
-
-base-commit: 316346243be6df12799c0b64b788e06bad97c30b
--- 
-2.33.0.464.g1972c5931b-goog
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
