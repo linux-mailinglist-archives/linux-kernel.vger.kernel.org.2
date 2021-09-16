@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7F5C40E453
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:23:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4894E40E872
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345993AbhIPQ5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:57:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36672 "EHLO mail.kernel.org"
+        id S1354320AbhIPRjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:39:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50292 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245722AbhIPQwk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:52:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A60861A8F;
-        Thu, 16 Sep 2021 16:29:12 +0000 (UTC)
+        id S1353298AbhIPRa3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:30:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C1E4661185;
+        Thu, 16 Sep 2021 16:46:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809752;
-        bh=ZvSQ1OUU86gLrsEgQH4jnCOte73nf4mNFHcHdG57YMY=;
+        s=korg; t=1631810814;
+        bh=Sbp8hkmrJH0wllDVah8IY9qF0XbUzi100p4DkLVpl9g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=e8gcyS59ZW1dSSNUHPnYwCPiTjbnqjvX8ZQ/s/4XLcFPgvpCzIoZkf9H3aIcB0XIZ
-         uyI1K+hw5sE4PtnLs5ioYLs/t55D3B1KXrqhZceHIA4SdaUMglOg76ioJkJUAus6PJ
-         QnntOs317yuv0X3/pAAEVshl6Qc24o/xE5c751+s=
+        b=uqXQy0VqGwJqXl8FUyhbgRUPwntTZaegq1Qvg+tiSBSCIwBV3XDQ8UeFJ2zjHTH8n
+         RLaF//eAgfCIitwnPPyvV/xbb5PH1ZFSYRABecZUpV/zdcbW56MX1OirUl2FGu7wlv
+         Y6iP6YLkMdYTHBoZ6h1foLF8Qt1yC9uIpk875t+A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tim Harvey <tharvey@gateworks.com>,
-        Shawn Guo <shawnguo@kernel.org>,
+        stable@vger.kernel.org,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Rob Clark <robdclark@chromium.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 270/380] arm64: dts: imx8mm-venice-gw71xx: fix USB OTG VBUS
+Subject: [PATCH 5.14 278/432] drm/msm/dsi: Fix DSI and DSI PHY regulator config from SDM660
 Date:   Thu, 16 Sep 2021 18:00:27 +0200
-Message-Id: <20210916155813.258207481@linuxfoundation.org>
+Message-Id: <20210916155820.235912400@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,50 +42,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tim Harvey <tharvey@gateworks.com>
+From: Konrad Dybcio <konrad.dybcio@somainline.org>
 
-[ Upstream commit bd306fdb4e60bcb1d7ea5431a74092803d3784a6 ]
+[ Upstream commit 462f7017a6918d152870bfb8852f3c70fd74b296 ]
 
-The GW71xx has a USB Type-C connector with USB 2.0 signaling. GPIO1_12
-is the power-enable to the TPS25821 Source controller and power switch
-responsible for monitoring the CC pins and enabling VBUS. Therefore
-GPIO1_12 must always be enabled and the vbus output enable from the
-IMX8MM can be ignored.
+VDDA is not present and the specified load value is wrong. Fix it.
 
-To fix USB OTG VBUS enable a pull-up on GPIO1_12 to always power the
-TPS25821 and change the regulator output to GPIO1_10 which is
-unconnected.
-
-Signed-off-by: Tim Harvey <tharvey@gateworks.com>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+Link: https://lore.kernel.org/r/20210728222057.52641-1-konrad.dybcio@somainline.org
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Signed-off-by: Rob Clark <robdclark@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/freescale/imx8mm-venice-gw71xx.dtsi | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/msm/dsi/dsi_cfg.c          | 1 -
+ drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c | 2 +-
+ 2 files changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw71xx.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw71xx.dtsi
-index 905b68a3daa5..8e4a0ce99790 100644
---- a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw71xx.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw71xx.dtsi
-@@ -46,7 +46,7 @@ reg_usb_otg1_vbus: regulator-usb-otg1 {
- 		pinctrl-0 = <&pinctrl_reg_usb1_en>;
- 		compatible = "regulator-fixed";
- 		regulator-name = "usb_otg1_vbus";
--		gpio = <&gpio1 12 GPIO_ACTIVE_HIGH>;
-+		gpio = <&gpio1 10 GPIO_ACTIVE_HIGH>;
- 		enable-active-high;
- 		regulator-min-microvolt = <5000000>;
- 		regulator-max-microvolt = <5000000>;
-@@ -156,7 +156,8 @@ MX8MM_IOMUXC_GPIO1_IO15_GPIO1_IO15	0x41
- 
- 	pinctrl_reg_usb1_en: regusb1grp {
- 		fsl,pins = <
--			MX8MM_IOMUXC_GPIO1_IO12_GPIO1_IO12	0x41
-+			MX8MM_IOMUXC_GPIO1_IO10_GPIO1_IO10	0x41
-+			MX8MM_IOMUXC_GPIO1_IO12_GPIO1_IO12	0x141
- 			MX8MM_IOMUXC_GPIO1_IO13_USB1_OTG_OC	0x41
- 		>;
- 	};
+diff --git a/drivers/gpu/drm/msm/dsi/dsi_cfg.c b/drivers/gpu/drm/msm/dsi/dsi_cfg.c
+index f3f1c03c7db9..763f127e4621 100644
+--- a/drivers/gpu/drm/msm/dsi/dsi_cfg.c
++++ b/drivers/gpu/drm/msm/dsi/dsi_cfg.c
+@@ -154,7 +154,6 @@ static const struct msm_dsi_config sdm660_dsi_cfg = {
+ 	.reg_cfg = {
+ 		.num = 2,
+ 		.regs = {
+-			{"vdd", 73400, 32 },	/* 0.9 V */
+ 			{"vdda", 12560, 4 },	/* 1.2 V */
+ 		},
+ 	},
+diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c
+index a34cf151c517..bb31230721bd 100644
+--- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c
++++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c
+@@ -1050,7 +1050,7 @@ const struct msm_dsi_phy_cfg dsi_phy_14nm_660_cfgs = {
+ 	.reg_cfg = {
+ 		.num = 1,
+ 		.regs = {
+-			{"vcca", 17000, 32},
++			{"vcca", 73400, 32},
+ 		},
+ 	},
+ 	.ops = {
 -- 
 2.30.2
 
