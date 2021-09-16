@@ -2,87 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D537C40ED0F
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 00:03:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DABF40ED14
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 00:04:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240632AbhIPWEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 18:04:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39326 "EHLO
+        id S240671AbhIPWGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 18:06:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231887AbhIPWEn (ORCPT
+        with ESMTP id S231515AbhIPWF5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 18:04:43 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D422C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 15:03:22 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id g184so7563272pgc.6
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 15:03:22 -0700 (PDT)
+        Thu, 16 Sep 2021 18:05:57 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3152C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 15:04:35 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id c8so24515663lfi.3
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 15:04:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4stWjV+988moSr8o995OIf8ggHEv0wfGWBUivSMtLdE=;
-        b=P4NV3mSxnseSsUwN1r4NRyp6pr/mGZacESSUAMJ4OA+ZSrKJezFJJLBTBqIGE5zj29
-         fGLa8Iljpr3nqHZTQFQp8l5bvDwsrhpN+vnIpX//X5XzvsLhDyiRXqjCRtt+6PGG5T2A
-         2/1o6jaBirRCA+eTm6GobnrXmpuh83bdlbabE=
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=i5Lmg3iciAlrjDC4HYZ2C7ch3bH7MUVQ8/StYpsobIE=;
+        b=uyRunCrojHHgndv9BlQ2m1MYLAdoTFpcREv/G0+LkWkQwMrb5TmbVV45+d6AARDajn
+         LHnK38ZNktHwjDAy96X175bBEs05CMkqLMNtsq0yXjGjZ3bT0jE8+pige7aOc8ZexADw
+         FZnYNMPC2WtHR2uqoAuWqZmg1gK5CXh6rrH6bPHEb14LxLDdSkypexUfSZYyR1fDjCAH
+         99W+0TKpY8lyQOx+RhgpCqjBRgJDZ12waxlU+XXJsbrJxqQQyqvczRqf/lN8epXDp3Yt
+         NvaOB8iQE3qtl1KFvL3zghOSiWK/HrhVgk923F2PHSzhnKHVtjUg3ep0fFDhDy9hf8h5
+         CRbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4stWjV+988moSr8o995OIf8ggHEv0wfGWBUivSMtLdE=;
-        b=uofJz+8i2Ot8LJv7iC1B0M7bGVqU6AqP9/pfwE6wm2olEc6wzI79Sf/rQXAR/u+bKr
-         dcyuZt7AIfIxjXsprtDcpt868lHvgBslwgd4gddKG8RP1I/znYtFNTgOm0vprtFnz7Vh
-         H8/dc9iY7OLBGT3joltvoQZBk+DJiPcWoyJCRuchsRswG5yEf9F7c3kx9Ju8qOqJVA+a
-         SIc7QXt5ots0SltNAlcFM+1iEm7TJOvEuaEK+IH9x0y7Uwu9cXnaiucoxpv8+1CedNVg
-         MRt1HihNCAtBSM5ThIdyE+08qrwCqLo0sOcs5J6qzlMCWGsR/hZ92rQ1zSKtMi541Qta
-         4NCg==
-X-Gm-Message-State: AOAM5339PWqkRMACXzhuDysPi2gMZosdLbIvkcptBNsGNfytbFONQF8/
-        v7TUX34u7KSyxVLl1JwXbXxZug==
-X-Google-Smtp-Source: ABdhPJzByTUQfNUTQXxfAdKQO1SbJaWR9nrJXL7Z5u9uxynbmpO0acSoreFm30VnzwHjGd5cvjNgCw==
-X-Received: by 2002:a63:5c1b:: with SMTP id q27mr6786249pgb.284.1631829801905;
-        Thu, 16 Sep 2021 15:03:21 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id z11sm4184633pff.144.2021.09.16.15.03.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 15:03:21 -0700 (PDT)
-Date:   Thu, 16 Sep 2021 15:03:20 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Thomas Huth <thuth@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-nfs@vger.kernel.org,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>, linux-s390@vger.kernel.org,
-        Jia He <hejianet@gmail.com>,
-        Pan Xinhui <xinhui.pan@linux.vnet.ibm.com>
-Subject: Re: [PATCH 1/2] sysctl: introduce new proc handler proc_dobool
-Message-ID: <202109161502.7B79ED57F@keescook>
-References: <20210803105937.52052-1-thuth@redhat.com>
- <20210803105937.52052-2-thuth@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=i5Lmg3iciAlrjDC4HYZ2C7ch3bH7MUVQ8/StYpsobIE=;
+        b=EUmHHOrdOCTLZq67xPx4+o5ELAXfqsmOYVTfw60zvWQlD1GTtz2AKTEU7GSJszh2lZ
+         TVAhsK0mXX8U7EpnEch2sWNnNhc+PINVamTle5HRDNb6hwRGP1+ztCTgmFrmh3BFxrju
+         WirlQHdttCJBUArFyBa+0u1t2xDduHepQhbse8vIpCX8we8EhN+h4bu45Dw827q82nfO
+         A+w4rVJK6n+xl6Wbo0LAQeqjH09QN2D31UYIN480sIueLHwZYA1gmDiSdyPtGLPLfw/R
+         iPZxZFvzG05VuixLWrO32oIkNjVfquqNy3HbRAf+4X3WtA7UyqbicFa6FRGyEhG3CCM/
+         CG0w==
+X-Gm-Message-State: AOAM5327Bcn6THAXTqFSTWfIafGA4GlW2S8kOtS7E/aTOC0t2Okd72aN
+        ySE3hFnC9mxUwggpSlmNjcTTuNtOtwUmF1lPX/mFlQ==
+X-Google-Smtp-Source: ABdhPJz+IOU7LRAUnUDDYa/u7Us4BS0iYQAVccCjV8lzjn3X2MhHKjEqsVxjTkjJaZ09pjLDZo5XcJYChjHD8k22cEQ=
+X-Received: by 2002:ac2:4d03:: with SMTP id r3mr5891598lfi.339.1631829874343;
+ Thu, 16 Sep 2021 15:04:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210803105937.52052-2-thuth@redhat.com>
+References: <8b75e5dfd9363f35ebdd7812e119757379678f97.1629877281.git.michal.simek@xilinx.com>
+In-Reply-To: <8b75e5dfd9363f35ebdd7812e119757379678f97.1629877281.git.michal.simek@xilinx.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 17 Sep 2021 00:04:23 +0200
+Message-ID: <CACRpkdZd6NfvVXGYsuqbOEYZ28brQbqNRXYWqCtg1Bei6w4jUA@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: core: Remove duplicated world from devm_pinctrl_unregister()
+To:     Michal Simek <michal.simek@xilinx.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Michal Simek <monstr@monstr.eu>, git <git@xilinx.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 12:59:36PM +0200, Thomas Huth wrote:
-> From: Jia He <hejianet@gmail.com>
-> 
-> This is to let bool variable could be correctly displayed in
-> big/little endian sysctl procfs. sizeof(bool) is arch dependent,
-> proc_dobool should work in all arches.
-> 
-> Suggested-by: Pan Xinhui <xinhui@linux.vnet.ibm.com>
-> Signed-off-by: Jia He <hejianet@gmail.com>
+On Wed, Aug 25, 2021 at 9:41 AM Michal Simek <michal.simek@xilinx.com> wrote:
 
-Hi! I apologize for the delay. Yes, this looks good to me; thanks!
+> Remove duplicated "which" from devm_pinctrl_unregister() kernel doc
+> description.
+>
+> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
 
-Acked-by: Kees Cook <keescook@chromium.org>
+Patch applied.
 
--- 
-Kees Cook
+Yours,
+Linus Walleij
