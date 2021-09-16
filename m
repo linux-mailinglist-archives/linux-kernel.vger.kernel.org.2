@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C59F40E2D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:17:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F56940E634
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:29:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245744AbhIPQmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:42:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44986 "EHLO mail.kernel.org"
+        id S1351639AbhIPRTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:19:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37128 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236689AbhIPQfn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:35:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 119A8619E7;
-        Thu, 16 Sep 2021 16:21:29 +0000 (UTC)
+        id S1350535AbhIPRLW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:11:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E87561407;
+        Thu, 16 Sep 2021 16:37:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809290;
+        s=korg; t=1631810276;
         bh=mB/oPdwl73KsxVExmbB8un8vw9SIZa/aoXml7Bf30Gk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mWDJt1eM97VWvjPLKn1qxMwBk8qo1L59gXIpPEk9hMRJIla+VVTKufwkICrWLwjo0
-         b2oVz6QuDsbT9MK0UorlyHfp0Ldr88yHwW4qfToJ+CAuUm/k6KnpFgqpfAcjXf6T6y
-         8lQ2SwRcfDn1R03MgzKAxz1iI6U8mIUdtWht5Gr0=
+        b=FdhMzW4cxrvb9Br5IcA5Vsv0RbReYuZqvP+t94iysM/6kNG0q2b8BkgwvUtfxC4t6
+         ID05LfeqF46AQL3t1iVqvfN/l7o0o/tSEMxZrkC+lRsFXiZkAghClLXwlnV0LNkN4C
+         pJH4j7CifTuEVeV9Mnx8dbBjy3CZh9M+qRvZ5J84=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>,
         Peter Geis <pgwipeout@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 073/380] clk: rockchip: drop GRF dependency for rk3328/rk3036 pll types
+Subject: [PATCH 5.14 081/432] clk: rockchip: drop GRF dependency for rk3328/rk3036 pll types
 Date:   Thu, 16 Sep 2021 17:57:10 +0200
-Message-Id: <20210916155806.493863145@linuxfoundation.org>
+Message-Id: <20210916155813.534869850@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
