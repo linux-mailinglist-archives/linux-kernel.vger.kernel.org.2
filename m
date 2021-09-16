@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBCA340E155
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:29:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4200D40E322
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:19:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242732AbhIPQ33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:29:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54974 "EHLO mail.kernel.org"
+        id S243329AbhIPQp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:45:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51674 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241183AbhIPQPT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:15:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F1162613AC;
-        Thu, 16 Sep 2021 16:11:14 +0000 (UTC)
+        id S244688AbhIPQj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:39:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BEAA261452;
+        Thu, 16 Sep 2021 16:23:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808675;
-        bh=QoClUXnsgUsdkKIUK3S7YihV40s5FkTGnHPGa3PGaME=;
+        s=korg; t=1631809394;
+        bh=7mFka9LzrtqigieZU60zukE5rqmPUDqyqXjmuylp0YU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bkaDilMsJ9f1doBP2lnXeoVAmjGR0KElIcSMnjy3GtLrzRk4xiaoekXiQFw1+u++b
-         GKiJMe5cHSh5k3db8dcsez8hTB67nQSD4wok7fndSuihh4mIFInP/xhR43YB+y43oc
-         H7fL7rvR/g2SvufnDcKbGrrQUfGvs0UY8pNPVUzU=
+        b=0zXy7FNQnuFmI3AT7SLhJUvpLg1JRau5eydz9GvhmsRnAbn9XcRJ868B9ml4AiFG5
+         dDDDCEnm98xBLOdSqFOGoR5/2jso+xAccKTmc81PBJZAn39qJqFg+cq7leRR/v4IKk
+         xuSU+Rue5kVT3vyrNNQDoPHBk+bcrS8hGTzykeZg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oak Zeng <Oak.Zeng@amd.com>,
-        Christian Konig <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 148/306] drm/amdgpu: Fix a printing message
-Date:   Thu, 16 Sep 2021 17:58:13 +0200
-Message-Id: <20210916155759.101621605@linuxfoundation.org>
+Subject: [PATCH 5.13 137/380] kbuild: Fix no symbols warning when CONFIG_TRIM_UNUSD_KSYMS=y
+Date:   Thu, 16 Sep 2021 17:58:14 +0200
+Message-Id: <20210916155808.698071142@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,79 +40,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oak Zeng <Oak.Zeng@amd.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
 
-[ Upstream commit 95f71f12aa45d65b7f2ccab95569795edffd379a ]
+[ Upstream commit 52d83df682c82055961531853c066f4f16e234ea ]
 
-The printing message "PSP loading VCN firmware" is mis-leading because
-people might think driver is loading VCN firmware. Actually when this
-message is printed, driver is just preparing some VCN ucode, not loading
-VCN firmware yet. The actual VCN firmware loading will be in the PSP block
-hw_init. Fix the printing message
+When CONFIG_TRIM_UNUSED_KSYMS is enabled, I see some warnings like this:
 
-Signed-off-by: Oak Zeng <Oak.Zeng@amd.com>
-Reviewed-by: Christian Konig <christian.koenig@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+  nm: arch/x86/entry/vdso/vdso32/note.o: no symbols
+
+$NM (both GNU nm and llvm-nm) warns when no symbol is found in the
+object. Suppress the stderr.
+
+Fangrui Song mentioned binutils>=2.37 `nm -q` can be used to suppress
+"no symbols" [1], and llvm-nm>=13.0.0 supports -q as well.
+
+We cannot use it for now, but note it as a TODO.
+
+[1]: https://sourceware.org/bugzilla/show_bug.cgi?id=27408
+
+Fixes: bbda5ec671d3 ("kbuild: simplify dependency generation for CONFIG_TRIM_UNUSED_KSYMS")
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c | 2 +-
- drivers/gpu/drm/amd/amdgpu/vcn_v2_0.c | 2 +-
- drivers/gpu/drm/amd/amdgpu/vcn_v2_5.c | 2 +-
- drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+ scripts/gen_ksymdeps.sh | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c b/drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c
-index aa8ae0ca62f9..e8737fa438f0 100644
---- a/drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c
-+++ b/drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c
-@@ -120,7 +120,7 @@ static int vcn_v1_0_sw_init(void *handle)
- 		adev->firmware.ucode[AMDGPU_UCODE_ID_VCN].fw = adev->vcn.fw;
- 		adev->firmware.fw_size +=
- 			ALIGN(le32_to_cpu(hdr->ucode_size_bytes), PAGE_SIZE);
--		DRM_INFO("PSP loading VCN firmware\n");
-+		dev_info(adev->dev, "Will use PSP to load VCN firmware\n");
- 	}
+diff --git a/scripts/gen_ksymdeps.sh b/scripts/gen_ksymdeps.sh
+index 1324986e1362..725e8c9c1b53 100755
+--- a/scripts/gen_ksymdeps.sh
++++ b/scripts/gen_ksymdeps.sh
+@@ -4,7 +4,13 @@
+ set -e
  
- 	r = amdgpu_vcn_resume(adev);
-diff --git a/drivers/gpu/drm/amd/amdgpu/vcn_v2_0.c b/drivers/gpu/drm/amd/amdgpu/vcn_v2_0.c
-index fc939d4f4841..f493b5c3d382 100644
---- a/drivers/gpu/drm/amd/amdgpu/vcn_v2_0.c
-+++ b/drivers/gpu/drm/amd/amdgpu/vcn_v2_0.c
-@@ -122,7 +122,7 @@ static int vcn_v2_0_sw_init(void *handle)
- 		adev->firmware.ucode[AMDGPU_UCODE_ID_VCN].fw = adev->vcn.fw;
- 		adev->firmware.fw_size +=
- 			ALIGN(le32_to_cpu(hdr->ucode_size_bytes), PAGE_SIZE);
--		DRM_INFO("PSP loading VCN firmware\n");
-+		dev_info(adev->dev, "Will use PSP to load VCN firmware\n");
- 	}
+ # List of exported symbols
+-ksyms=$($NM $1 | sed -n 's/.*__ksym_marker_\(.*\)/\1/p' | tr A-Z a-z)
++#
++# If the object has no symbol, $NM warns 'no symbols'.
++# Suppress the stderr.
++# TODO:
++#   Use -q instead of 2>/dev/null when we upgrade the minimum version of
++#   binutils to 2.37, llvm to 13.0.0.
++ksyms=$($NM $1 2>/dev/null | sed -n 's/.*__ksym_marker_\(.*\)/\1/p' | tr A-Z a-z)
  
- 	r = amdgpu_vcn_resume(adev);
-diff --git a/drivers/gpu/drm/amd/amdgpu/vcn_v2_5.c b/drivers/gpu/drm/amd/amdgpu/vcn_v2_5.c
-index 2c328362eee3..ce64d4016f90 100644
---- a/drivers/gpu/drm/amd/amdgpu/vcn_v2_5.c
-+++ b/drivers/gpu/drm/amd/amdgpu/vcn_v2_5.c
-@@ -152,7 +152,7 @@ static int vcn_v2_5_sw_init(void *handle)
- 			adev->firmware.fw_size +=
- 				ALIGN(le32_to_cpu(hdr->ucode_size_bytes), PAGE_SIZE);
- 		}
--		DRM_INFO("PSP loading VCN firmware\n");
-+		dev_info(adev->dev, "Will use PSP to load VCN firmware\n");
- 	}
- 
- 	r = amdgpu_vcn_resume(adev);
-diff --git a/drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c b/drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c
-index c9c888be1228..2099f6ebd833 100644
---- a/drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c
-+++ b/drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c
-@@ -148,7 +148,7 @@ static int vcn_v3_0_sw_init(void *handle)
- 			adev->firmware.fw_size +=
- 				ALIGN(le32_to_cpu(hdr->ucode_size_bytes), PAGE_SIZE);
- 		}
--		DRM_INFO("PSP loading VCN firmware\n");
-+		dev_info(adev->dev, "Will use PSP to load VCN firmware\n");
- 	}
- 
- 	r = amdgpu_vcn_resume(adev);
+ if [ -z "$ksyms" ]; then
+ 	exit 0
 -- 
 2.30.2
 
