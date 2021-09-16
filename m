@@ -2,89 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5034A40D9D5
+	by mail.lfdr.de (Postfix) with ESMTP id C649840D9D7
 	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 14:22:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239505AbhIPMXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 08:23:33 -0400
-Received: from mail-il1-f178.google.com ([209.85.166.178]:44636 "EHLO
-        mail-il1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239479AbhIPMXb (ORCPT
+        id S239514AbhIPMXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 08:23:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37700 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239479AbhIPMXh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 08:23:31 -0400
-Received: by mail-il1-f178.google.com with SMTP id x2so6354521ila.11;
-        Thu, 16 Sep 2021 05:22:11 -0700 (PDT)
+        Thu, 16 Sep 2021 08:23:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631794936;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ymv9li1CgJxh/GaLdasD/dWKyAKgiCu4B7/vDC8PJC4=;
+        b=UvlmQKgQR032KS+VY8Npuham+DVKqh3mWSR1EMltlZEBE8NLP/9WhElTv509rmUOb8KaZL
+        L32HYIf3YEAVCKGGSqvNMjJRwrjBtpvZBzCJjeG7GsQpoozcLlaqEWa8wDK1VILnsSImKj
+        +fIRMw36UtnCzohcvnKumOLGoQ/9yYw=
+Received: from mail-yb1-f198.google.com (mail-yb1-f198.google.com
+ [209.85.219.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-599-XUsYWJiHMaiRJ8XTSnSElQ-1; Thu, 16 Sep 2021 08:22:14 -0400
+X-MC-Unique: XUsYWJiHMaiRJ8XTSnSElQ-1
+Received: by mail-yb1-f198.google.com with SMTP id 124-20020a251182000000b005a027223ed9so15917997ybr.13
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 05:22:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=IFftwoDUAHs9Nz4h9MoROct44Y+LsTp6P6HEC2g+7PI=;
-        b=KQw0ou/RCLOyURHpSJzxKWGZ8+Se1gLOa6Jhsj96RLHeaeK8BCp1RGZUWS/U+UTgPl
-         xRa/Bk/LcEnGiElly0qs5XAkyTW2iVGPESObHZx0H9Ci+8K7pmYfH2VfOYS4/kkJWatW
-         xz9mWztp8Rghrb0TyPe9/1NZ8f//hhnG+sWWUG4NBodv0PpyXtYZdKaWg7rufaKnJj4W
-         7QVKkVRQmU4dKfNo7EaRAqFmY7EAQxqfPaeVR7PnqZK0NRXp31/+izn2vbYc5Q1xfHtW
-         xc3bPtn6NnjqH9ZPRKefXl2bQDbPWOsUwR9KvIDiDzWaDjE+ql2jyb3hVXlBq6+pa+n7
-         eZZA==
-X-Gm-Message-State: AOAM5339Wd3dJAfV0JJ6tYnA9DoPM0oOu5pSwyQ6fchJVS5xurwIY98l
-        9E0VcJzhcdsMyk2vMwtbuA==
-X-Google-Smtp-Source: ABdhPJyM21Lfun7gEMOg6IfXLhT7D1Exg4DZsflUvLg259E9u2BpDENkfoIlSfCgxYHOA6gj7Pq+6g==
-X-Received: by 2002:a05:6e02:1a0e:: with SMTP id s14mr3658426ild.47.1631794930759;
-        Thu, 16 Sep 2021 05:22:10 -0700 (PDT)
-Received: from robh.at.kernel.org (96-84-70-89-static.hfc.comcastbusiness.net. [96.84.70.89])
-        by smtp.gmail.com with ESMTPSA id g19sm1799388ilb.84.2021.09.16.05.22.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 05:22:10 -0700 (PDT)
-Received: (nullmailer pid 1119422 invoked by uid 1000);
-        Thu, 16 Sep 2021 12:21:53 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Chunyan Zhang <zhang.lyra@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux-clk@vger.kernel.org, Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        Stephen Boyd <sboyd@kernel.org>
-In-Reply-To: <20210916084714.311048-3-zhang.lyra@gmail.com>
-References: <20210916084714.311048-1-zhang.lyra@gmail.com> <20210916084714.311048-3-zhang.lyra@gmail.com>
-Subject: Re: [PATCH v2 2/4] dt-bindings: clk: sprd: Add bindings for ums512 clock controller
-Date:   Thu, 16 Sep 2021 07:21:53 -0500
-Message-Id: <1631794913.511855.1119421.nullmailer@robh.at.kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ymv9li1CgJxh/GaLdasD/dWKyAKgiCu4B7/vDC8PJC4=;
+        b=mFpfkNHLNi5p+LYT6p0CXmllLzj/mdjjT8W05GPRdED27ZO1dX06+DbvUJKW5b3El8
+         TqR59bG1vIcUd/zomrLGvmiPksj97LxqpzjDKTZLF62nk4p9kt1NR04VHwMwF8DdUIja
+         ehpEI7GXm1lyoNRuJMArsAWaMrp0TrB7tAdMcTXjHi8+WPblPfxB8voi3xbdLfcC75PV
+         7kgZumGzM3UBpisvrQV2rvE5N6xzvET7y41/HQug7BXG4vmvkEQKFFoHJNLDsHrDwk4Y
+         XxJ0voQoVYhQlz/np8YQZ0LUTSBb5Z4uKs1sZkeFiEINfugwcEDh4UjHhXXswXJTtNhw
+         e03Q==
+X-Gm-Message-State: AOAM531t8Mz3MCLhqpiekCGVbPXlHzn6Ujr/Rvd0vhPanyFmcrI/ps1f
+        X0to74U7+rAP2RCROrNz6T3p+5Neb6OOZxlJFShl1dGF5BdWm+zbC1UYlNe4zyDpiQ6N4k3RkOc
+        QX4uRcF+odphkysZ+U/xjotXTDTGRsj+XmQmp97rj
+X-Received: by 2002:a25:3ac1:: with SMTP id h184mr6878347yba.237.1631794933781;
+        Thu, 16 Sep 2021 05:22:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzc6RD5B2bxsTmt0DJCzp+W7Vw4ceUX+846y8Np6i2Sb32yns9SgU2rjyu5g/nA7Alg1QDxICAlXe9X7D3qjqw=
+X-Received: by 2002:a25:3ac1:: with SMTP id h184mr6878318yba.237.1631794933438;
+ Thu, 16 Sep 2021 05:22:13 -0700 (PDT)
+MIME-Version: 1.0
+References: <202109162036.zghQuRrY-lkp@intel.com>
+In-Reply-To: <202109162036.zghQuRrY-lkp@intel.com>
+From:   Ondrej Mosnacek <omosnace@redhat.com>
+Date:   Thu, 16 Sep 2021 14:22:01 +0200
+Message-ID: <CAFqZXNuv-d4WFvaVVa1WqzkrP6Wepu6QEKcUH=VejnP2OZz66A@mail.gmail.com>
+Subject: Re: [selinuxproject-selinux:stable-5.15 1/1] include/linux/rcupdate.h:395:2:
+ warning: passing argument 1 of 'security_locked_down' discards 'const'
+ qualifier from pointer target type
+To:     kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        Paul Moore <paul@paul-moore.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Sep 2021 16:47:12 +0800, Chunyan Zhang wrote:
-> From: Chunyan Zhang <chunyan.zhang@unisoc.com>
-> 
-> Add a new bindings to describe ums512 clock compatible strings.
-> 
-> Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+On Thu, Sep 16, 2021 at 2:08 PM kernel test robot <lkp@intel.com> wrote:
+> tree:   https://github.com/SELinuxProject/selinux-kernel stable-5.15
+> head:   c491f0a471580712a4254adece400c3ebb3d8e44
+> commit: c491f0a471580712a4254adece400c3ebb3d8e44 [1/1] lockdown,selinux: fix wrong subject in some SELinux lockdown checks
+> config: um-x86_64_defconfig (attached as .config)
+> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+> reproduce (this is a W=1 build):
+>         # https://github.com/SELinuxProject/selinux-kernel/commit/c491f0a471580712a4254adece400c3ebb3d8e44
+>         git remote add selinuxproject-selinux https://github.com/SELinuxProject/selinux-kernel
+>         git fetch --no-tags selinuxproject-selinux stable-5.15
+>         git checkout c491f0a471580712a4254adece400c3ebb3d8e44
+>         # save the attached .config to linux build tree
+>         make W=1 ARCH=um SUBARCH=x86_64
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All warnings (new ones prefixed by >>):
+>
+>    In file included from include/linux/rbtree.h:24,
+>                     from include/linux/mm_types.h:10,
+>                     from include/linux/mmzone.h:21,
+>                     from include/linux/gfp.h:6,
+>                     from include/linux/mm.h:10,
+>                     from drivers/char/mem.c:12:
+>    drivers/char/mem.c: In function 'open_port':
+> >> include/linux/rcupdate.h:395:2: warning: passing argument 1 of 'security_locked_down' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+>      395 | ({ \
+>          | ~^~~
+>      396 |  RCU_LOCKDEP_WARN(!(c), "suspicious rcu_dereference_protected() usage"); \
+>          |  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>      397 |  rcu_check_sparse(p, space); \
+>          |  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>      398 |  ((typeof(*p) __force __kernel *)(p)); \
+>          |  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>      399 | })
+>          | ~~
+>    include/linux/rcupdate.h:587:2: note: in expansion of macro '__rcu_dereference_protected'
+>      587 |  __rcu_dereference_protected((p), (c), __rcu)
+>          |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+>    include/linux/cred.h:299:2: note: in expansion of macro 'rcu_dereference_protected'
+>      299 |  rcu_dereference_protected(current->cred, 1)
+>          |  ^~~~~~~~~~~~~~~~~~~~~~~~~
+>    drivers/char/mem.c:620:28: note: in expansion of macro 'current_cred'
+>      620 |  rc = security_locked_down(current_cred(), LOCKDOWN_DEV_MEM);
+>          |                            ^~~~~~~~~~~~
+>    In file included from include/linux/fs_context.h:14,
+>                     from include/linux/fs_parser.h:11,
+>                     from include/linux/shmem_fs.h:11,
+>                     from drivers/char/mem.c:25:
+>    include/linux/security.h:1347:53: note: expected 'struct cred *' but argument is of type 'const struct cred *'
+>     1347 | static inline int security_locked_down(struct cred *cred, enum lockdown_reason what)
+>          |                                        ~~~~~~~~~~~~~^~~~
+
+Ah, I forgot to add the const qualifier to the function definition in
+the CONFIG_SECURITY=n branch... Paul, will you amend the commit or
+should I send an updated patch?
+
+>
+>
+> vim +395 include/linux/rcupdate.h
+>
+> 76c8eaafe4f061 Paul E. McKenney        2021-04-21  379
+> ca5ecddfa8fcbd Paul E. McKenney        2010-04-28  380  #define __rcu_access_pointer(p, space) \
+> ca5ecddfa8fcbd Paul E. McKenney        2010-04-28  381  ({ \
+> 7d0ae8086b8283 Paul E. McKenney        2015-03-03  382          typeof(*p) *_________p1 = (typeof(*p) *__force)READ_ONCE(p); \
+> 423a86a610cad1 Joel Fernandes (Google  2018-12-12  383)         rcu_check_sparse(p, space); \
+> ca5ecddfa8fcbd Paul E. McKenney        2010-04-28  384          ((typeof(*p) __force __kernel *)(_________p1)); \
+> ca5ecddfa8fcbd Paul E. McKenney        2010-04-28  385  })
+> ca5ecddfa8fcbd Paul E. McKenney        2010-04-28  386  #define __rcu_dereference_check(p, c, space) \
+> ca5ecddfa8fcbd Paul E. McKenney        2010-04-28  387  ({ \
+> ac59853c06993a Pranith Kumar           2014-11-13  388          /* Dependency order vs. p above. */ \
+> 506458efaf153c Will Deacon             2017-10-24  389          typeof(*p) *________p1 = (typeof(*p) *__force)READ_ONCE(p); \
+> f78f5b90c4ffa5 Paul E. McKenney        2015-06-18  390          RCU_LOCKDEP_WARN(!(c), "suspicious rcu_dereference_check() usage"); \
+> 423a86a610cad1 Joel Fernandes (Google  2018-12-12  391)         rcu_check_sparse(p, space); \
+> ac59853c06993a Pranith Kumar           2014-11-13  392          ((typeof(*p) __force __kernel *)(________p1)); \
+> ca5ecddfa8fcbd Paul E. McKenney        2010-04-28  393  })
+> ca5ecddfa8fcbd Paul E. McKenney        2010-04-28  394  #define __rcu_dereference_protected(p, c, space) \
+> ca5ecddfa8fcbd Paul E. McKenney        2010-04-28 @395  ({ \
+> f78f5b90c4ffa5 Paul E. McKenney        2015-06-18  396          RCU_LOCKDEP_WARN(!(c), "suspicious rcu_dereference_protected() usage"); \
+> 423a86a610cad1 Joel Fernandes (Google  2018-12-12  397)         rcu_check_sparse(p, space); \
+> ca5ecddfa8fcbd Paul E. McKenney        2010-04-28  398          ((typeof(*p) __force __kernel *)(p)); \
+> ca5ecddfa8fcbd Paul E. McKenney        2010-04-28  399  })
+> 995f1405610bd8 Paul E. McKenney        2016-07-01  400  #define rcu_dereference_raw(p) \
+> 995f1405610bd8 Paul E. McKenney        2016-07-01  401  ({ \
+> 995f1405610bd8 Paul E. McKenney        2016-07-01  402          /* Dependency order vs. p above. */ \
+> 506458efaf153c Will Deacon             2017-10-24  403          typeof(p) ________p1 = READ_ONCE(p); \
+> 995f1405610bd8 Paul E. McKenney        2016-07-01  404          ((typeof(*p) __force __kernel *)(________p1)); \
+> 995f1405610bd8 Paul E. McKenney        2016-07-01  405  })
+> ca5ecddfa8fcbd Paul E. McKenney        2010-04-28  406
+>
+> :::::: The code at line 395 was first introduced by commit
+> :::::: ca5ecddfa8fcbd948c95530e7e817cee9fb43a3d rcu: define __rcu address space modifier for sparse
+>
+> :::::: TO: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
+> :::::: CC: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
+>
 > ---
->  .../bindings/clock/sprd,ums512-clk.yaml       | 106 ++++++++++++++++++
->  1 file changed, 106 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/clock/sprd,ums512-clk.yaml
-> 
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
-
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/clock/sprd,ums512-clk.example.dt.yaml:0:0: /example-1/syscon@71000000: failed to match any schema with compatible: ['sprd,ums512-glbregs', 'syscon', 'simple-mfd']
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/patch/1528692
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
+-- 
+Ondrej Mosnacek
+Software Engineer, Linux Security - SELinux kernel
+Red Hat, Inc.
 
