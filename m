@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFD8B40E68B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:30:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44D7940E0CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:28:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347045AbhIPRWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:22:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39810 "EHLO mail.kernel.org"
+        id S241024AbhIPQYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:24:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48684 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350362AbhIPRN4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:13:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D59FC619F6;
-        Thu, 16 Sep 2021 16:39:03 +0000 (UTC)
+        id S237200AbhIPQNA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:13:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 576C461381;
+        Thu, 16 Sep 2021 16:09:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810344;
-        bh=/9ZeHPsAYaa/bfOWXBSn4lSroZxotpqoYmEanuFiTM8=;
+        s=korg; t=1631808581;
+        bh=9apz7idIxDy+44QrOdSGvr+lOz8rYBuGfzSTpeH8J1o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RTJg4aJY4JOIei+O5N2jXxsA0RROgrJbHgqpqLo8TchXtOvKmvZ2LuyXEnvE1p292
-         Osk/aYftrYidc2R9yZ6eFl5GqDSX9OwvOc6ysv0/W9pMD03ZjKscUoIvl/gkzboOf8
-         QsvgFsdIvtjaWhfze2lquOAMV5QCmwMkJCbG0pPI=
+        b=VHj2DHfXUU2IRvRBqA37w4/ltmWAevMnWTiXEngekEBb5rcsuWjES7kwKdJ2NnmnO
+         +OqF/1UfsBzMwjpPCOuMuBko8vo/sabLiPKwwExB/kBD+8N4feTdlFiS9rShyyj6gr
+         Ya7SIlqrXuK9BgCpoNefVGEnJO93YLT7qs73hZmk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <Anna.Schumaker@Netapp.com>,
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 107/432] SUNRPC: Fix potential memory corruption
-Date:   Thu, 16 Sep 2021 17:57:36 +0200
-Message-Id: <20210916155814.393357131@linuxfoundation.org>
+Subject: [PATCH 5.10 112/306] ASoC: atmel: ATMEL drivers dont need HAS_DMA
+Date:   Thu, 16 Sep 2021 17:57:37 +0200
+Message-Id: <20210916155757.895547495@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,67 +42,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit c2dc3e5fad13aca5d7bdf4bcb52b1a1d707c8555 ]
+[ Upstream commit 6c5c659dfe3f02e08054a6c20019e3886618b512 ]
 
-We really should not call rpc_wake_up_queued_task_set_status() with
-xprt->snd_task as an argument unless we are certain that is actually an
-rpc_task.
+On a config (such as arch/sh/) which does not set HAS_DMA when MMU
+is not set, several ATMEL ASoC drivers select symbols that cause
+kconfig warnings. There is one "depends on HAS_DMA" which is no longer
+needed. Dropping it eliminates the kconfig warnings and still builds
+with no problems reported.
 
-Fixes: 0445f92c5d53 ("SUNRPC: Fix disconnection races")
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
-Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
+Fix the following kconfig warnings:
+
+WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_PDC
+  Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && HAS_DMA [=n]
+  Selected by [m]:
+  - SND_ATMEL_SOC_SSC [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m]
+  - SND_ATMEL_SOC_SSC_PDC [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m]
+
+WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC_PDC
+  Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m] && HAS_DMA [=n]
+  Selected by [m]:
+  - SND_AT91_SOC_SAM9G20_WM8731 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && SND_SOC_I2C_AND_SPI [=m]
+
+WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC
+  Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && HAS_DMA [=n]
+  Selected by [m]:
+  - SND_ATMEL_SOC_SSC_DMA [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m]
+
+WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC_DMA
+  Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m] && HAS_DMA [=n]
+  Selected by [m]:
+  - SND_ATMEL_SOC_WM8904 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && I2C [=m]
+  - SND_AT91_SOC_SAM9X5_WM8731 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && SND_SOC_I2C_AND_SPI [=m]
+
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reviewed-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Link: https://lore.kernel.org/r/20210707214752.3831-1-rdunlap@infradead.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/sunrpc/xprt.h | 1 +
- net/sunrpc/xprt.c           | 6 ++++--
- 2 files changed, 5 insertions(+), 2 deletions(-)
+ sound/soc/atmel/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/include/linux/sunrpc/xprt.h b/include/linux/sunrpc/xprt.h
-index c8c39f22d3b1..59cd97da895b 100644
---- a/include/linux/sunrpc/xprt.h
-+++ b/include/linux/sunrpc/xprt.h
-@@ -432,6 +432,7 @@ void			xprt_release_write(struct rpc_xprt *, struct rpc_task *);
- #define XPRT_CONGESTED		(9)
- #define XPRT_CWND_WAIT		(10)
- #define XPRT_WRITE_SPACE	(11)
-+#define XPRT_SND_IS_COOKIE	(12)
+diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
+index 142373ec411a..89210048e6c2 100644
+--- a/sound/soc/atmel/Kconfig
++++ b/sound/soc/atmel/Kconfig
+@@ -11,7 +11,6 @@ if SND_ATMEL_SOC
  
- static inline void xprt_set_connected(struct rpc_xprt *xprt)
- {
-diff --git a/net/sunrpc/xprt.c b/net/sunrpc/xprt.c
-index fb6db09725c7..bddd354a0076 100644
---- a/net/sunrpc/xprt.c
-+++ b/net/sunrpc/xprt.c
-@@ -775,9 +775,9 @@ void xprt_force_disconnect(struct rpc_xprt *xprt)
- 	/* Try to schedule an autoclose RPC call */
- 	if (test_and_set_bit(XPRT_LOCKED, &xprt->state) == 0)
- 		queue_work(xprtiod_workqueue, &xprt->task_cleanup);
--	else if (xprt->snd_task)
-+	else if (xprt->snd_task && !test_bit(XPRT_SND_IS_COOKIE, &xprt->state))
- 		rpc_wake_up_queued_task_set_status(&xprt->pending,
--				xprt->snd_task, -ENOTCONN);
-+						   xprt->snd_task, -ENOTCONN);
- 	spin_unlock(&xprt->transport_lock);
- }
- EXPORT_SYMBOL_GPL(xprt_force_disconnect);
-@@ -866,6 +866,7 @@ bool xprt_lock_connect(struct rpc_xprt *xprt,
- 		goto out;
- 	if (xprt->snd_task != task)
- 		goto out;
-+	set_bit(XPRT_SND_IS_COOKIE, &xprt->state);
- 	xprt->snd_task = cookie;
- 	ret = true;
- out:
-@@ -881,6 +882,7 @@ void xprt_unlock_connect(struct rpc_xprt *xprt, void *cookie)
- 	if (!test_bit(XPRT_LOCKED, &xprt->state))
- 		goto out;
- 	xprt->snd_task =NULL;
-+	clear_bit(XPRT_SND_IS_COOKIE, &xprt->state);
- 	xprt->ops->release_xprt(xprt, NULL);
- 	xprt_schedule_autodisconnect(xprt);
- out:
+ config SND_ATMEL_SOC_PDC
+ 	bool
+-	depends on HAS_DMA
+ 
+ config SND_ATMEL_SOC_DMA
+ 	bool
 -- 
 2.30.2
 
