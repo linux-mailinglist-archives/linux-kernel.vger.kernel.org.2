@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DCD640E134
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:29:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E41BE40E864
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241853AbhIPQ2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:28:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59256 "EHLO mail.kernel.org"
+        id S1354169AbhIPRj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:39:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50270 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241654AbhIPQT5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:19:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E3A96139F;
-        Thu, 16 Sep 2021 16:13:50 +0000 (UTC)
+        id S1353040AbhIPR3x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:29:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 86F59630EB;
+        Thu, 16 Sep 2021 16:46:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808831;
-        bh=S/mYC2aZPFp2a9cuahC+9ncNQUxRy7at7ImfNz5LxPU=;
+        s=korg; t=1631810787;
+        bh=vZMjlN8+KlE6QllsSovulefHp3o4DnHg4Vgqw+JfgcI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yvODgczZxIG4KAWqsqW75GOoLcXBaGQE+WXP1x7ngOwADHsBSE2lJFC8/10u0uIFM
-         g28YBYA7OEw48pf/2CX3ij4ezLiPyiUPP4dxexNVY2jBr9CX+cXBrHM2X1dJCkQ2YF
-         Lsz0NgfsHU8G+dNw/imqS+PopEas+V8OKULM1WVs=
+        b=ZUg3jA1Z1ZNKFV+EdjIN3w/af60cwlxL/NwsLIXZvMUjdx3XVoot0rdFrMRNJrt0q
+         4YIFFT0Ld7aM5zUyCw/f/NQ2Y18P+8p9wMfSMNJwyfauZHDq46ULbFLD2UsS3dHswM
+         OkqSn8sqp0bNJCdydkLAPpT78UZmJI6y+9N7yyeU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Ping-Ke Shih <pkshih@realtek.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 238/306] rtw88: wow: build wow function only if CONFIG_PM is on
-Date:   Thu, 16 Sep 2021 17:59:43 +0200
-Message-Id: <20210916155802.169834628@linuxfoundation.org>
+Subject: [PATCH 5.14 235/432] staging: ks7010: Fix the initialization of the sleep_status structure
+Date:   Thu, 16 Sep 2021 17:59:44 +0200
+Message-Id: <20210916155818.808083330@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,44 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ping-Ke Shih <pkshih@realtek.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 05e45887382c4c0f9522515759b34991aa17e69d ]
+[ Upstream commit 56315e55119c0ea57e142b6efb7c31208628ad86 ]
 
-The kernel test robot reports undefined reference after we report wakeup
-reason to mac80211. This is because CONFIG_PM is not defined in the testing
-configuration file. In fact, functions within wow.c are used if CONFIG_PM
-is defined, so use CONFIG_PM to decide whether we build this file or not.
+'sleep_status' has 3 atomic_t members. Initialize the 3 of them instead of
+initializing only 2 of them and setting 0 twice to the same variable.
 
-The reported messages are:
-   hppa-linux-ld: drivers/net/wireless/realtek/rtw88/wow.o: in function `rtw_wow_show_wakeup_reason':
->> (.text+0x6c4): undefined reference to `ieee80211_report_wowlan_wakeup'
->> hppa-linux-ld: (.text+0x6e0): undefined reference to `ieee80211_report_wowlan_wakeup'
-
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Ping-Ke Shih <pkshih@realtek.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210728014335.8785-4-pkshih@realtek.com
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/d2e52a33a9beab41879551d0ae2fdfc99970adab.1626856991.git.christophe.jaillet@wanadoo.fr
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/realtek/rtw88/Makefile | 2 +-
+ drivers/staging/ks7010/ks7010_sdio.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/realtek/rtw88/Makefile b/drivers/net/wireless/realtek/rtw88/Makefile
-index c0e4b111c8b4..73d6807a8cdf 100644
---- a/drivers/net/wireless/realtek/rtw88/Makefile
-+++ b/drivers/net/wireless/realtek/rtw88/Makefile
-@@ -15,9 +15,9 @@ rtw88_core-y += main.o \
- 	   ps.o \
- 	   sec.o \
- 	   bf.o \
--	   wow.o \
- 	   regd.o
+diff --git a/drivers/staging/ks7010/ks7010_sdio.c b/drivers/staging/ks7010/ks7010_sdio.c
+index cbc0032c1604..98d759e7cc95 100644
+--- a/drivers/staging/ks7010/ks7010_sdio.c
++++ b/drivers/staging/ks7010/ks7010_sdio.c
+@@ -939,9 +939,9 @@ static void ks7010_private_init(struct ks_wlan_private *priv,
+ 	memset(&priv->wstats, 0, sizeof(priv->wstats));
  
-+rtw88_core-$(CONFIG_PM) += wow.o
+ 	/* sleep mode */
++	atomic_set(&priv->sleepstatus.status, 0);
+ 	atomic_set(&priv->sleepstatus.doze_request, 0);
+ 	atomic_set(&priv->sleepstatus.wakeup_request, 0);
+-	atomic_set(&priv->sleepstatus.wakeup_request, 0);
  
- obj-$(CONFIG_RTW88_8822B)	+= rtw88_8822b.o
- rtw88_8822b-objs		:= rtw8822b.o rtw8822b_table.o
+ 	trx_device_init(priv);
+ 	hostif_init(priv);
 -- 
 2.30.2
 
