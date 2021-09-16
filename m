@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E80B40E677
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:30:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACB8C40E01C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:17:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346820AbhIPRVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:21:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41429 "EHLO mail.kernel.org"
+        id S233554AbhIPQSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:18:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47416 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350864AbhIPROI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:14:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 74BBD6140D;
-        Thu, 16 Sep 2021 16:39:25 +0000 (UTC)
+        id S237066AbhIPQKc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:10:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6CE146126A;
+        Thu, 16 Sep 2021 16:08:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810365;
-        bh=+Ykzp3S/c4i5bfjmtv1I9kQLib6/o3VBcPl3qIbBJKM=;
+        s=korg; t=1631808508;
+        bh=oXQrmImgzspKLQctNWZ27J0bJXr2dNfubqFfMuqlvks=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s9LTyhozwjBBi0BniZ6wbFVpCB7wUazBPxBvoB8QiIViAVsqftX/jwMpQiXprG8Ha
-         c7hSJrco7ZzGo2OkdNUmB7xI0Om+2clSgHwnKTe55TPhugSAyldN/NIpFIULk2pBqI
-         QSIbICzQJCOcxYDqK+aoJEywQXURVYosAKGqKWyw=
+        b=uzBxdbTw3eNqk1/HuL3E1uuxn7aoa6cVBAB8plY51O2yQPyAECTc4zMeAQ/sunhEE
+         zueTedvESlW3UKJ7pW1QHr4WQ1TwO8snqZhzudVZFzge1E9ivLuwJuYoydjp6rw+UQ
+         pAk44hfNGi0WCm1h39XDraAIGTvClhyhygTiydi0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Laurent Dufour <ldufour@linux.ibm.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org, Xin Long <lucien.xin@gmail.com>,
+        Jon Maloy <jmaloy@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 114/432] powerpc/numa: Consider the max NUMA node for migratable LPAR
+Subject: [PATCH 5.10 118/306] tipc: keep the skb in rcv queue until the whole data is read
 Date:   Thu, 16 Sep 2021 17:57:43 +0200
-Message-Id: <20210916155814.627238021@linuxfoundation.org>
+Message-Id: <20210916155758.089107332@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,80 +41,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Laurent Dufour <ldufour@linux.ibm.com>
+From: Xin Long <lucien.xin@gmail.com>
 
-[ Upstream commit 9c7248bb8de31f51c693bfa6a6ea53b1c07e0fa8 ]
+[ Upstream commit f4919ff59c2828064b4156e3c3600a169909bcf4 ]
 
-When a LPAR is migratable, we should consider the maximum possible NUMA
-node instead of the number of NUMA nodes from the actual system.
+Currently, when userspace reads a datagram with a buffer that is
+smaller than this datagram, the data will be truncated and only
+part of it can be received by users. It doesn't seem right that
+users don't know the datagram size and have to use a huge buffer
+to read it to avoid the truncation.
 
-The DT property 'ibm,current-associativity-domains' defines the maximum
-number of nodes the LPAR can see when running on that box. But if the
-LPAR is being migrated on another box, it may see up to the nodes
-defined by 'ibm,max-associativity-domains'. So if a LPAR is migratable,
-that value should be used.
+This patch to fix it by keeping the skb in rcv queue until the
+whole data is read by users. Only the last msg of the datagram
+will be marked with MSG_EOR, just as TCP/SCTP does.
 
-Unfortunately, there is no easy way to know if an LPAR is migratable or
-not. The hypervisor exports the property 'ibm,migratable-partition' in
-the case it set to migrate partition, but that would not mean that the
-current partition is migratable.
+Note that this will work as above only when MSG_EOR is set in the
+flags parameter of recvmsg(), so that it won't break any old user
+applications.
 
-Without this patch, when a LPAR is started on a 2 node box and then
-migrated to a 3 node box, the hypervisor may spread the LPAR's CPUs on
-the 3rd node. In that case if a CPU from that 3rd node is added to the
-LPAR, it will be wrongly assigned to the node because the kernel has
-been set to use up to 2 nodes (the configuration of the departure node).
-With this patch applies, the CPU is correctly added to the 3rd node.
-
-Fixes: f9f130ff2ec9 ("powerpc/numa: Detect support for coregroup")
-Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
-Reviewed-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210511073136.17795-1-ldufour@linux.ibm.com
+Signed-off-by: Xin Long <lucien.xin@gmail.com>
+Acked-by: Jon Maloy <jmaloy@redhat.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/mm/numa.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ net/tipc/socket.c | 36 +++++++++++++++++++++++++++---------
+ 1 file changed, 27 insertions(+), 9 deletions(-)
 
-diff --git a/arch/powerpc/mm/numa.c b/arch/powerpc/mm/numa.c
-index f2bf98bdcea2..094a1076fd1f 100644
---- a/arch/powerpc/mm/numa.c
-+++ b/arch/powerpc/mm/numa.c
-@@ -893,7 +893,7 @@ static void __init setup_node_data(int nid, u64 start_pfn, u64 end_pfn)
- static void __init find_possible_nodes(void)
- {
- 	struct device_node *rtas;
--	const __be32 *domains;
-+	const __be32 *domains = NULL;
- 	int prop_length, max_nodes;
- 	u32 i;
+diff --git a/net/tipc/socket.c b/net/tipc/socket.c
+index 9bd72468bc68..963047c57c27 100644
+--- a/net/tipc/socket.c
++++ b/net/tipc/socket.c
+@@ -1887,6 +1887,7 @@ static int tipc_recvmsg(struct socket *sock, struct msghdr *m,
+ 	bool connected = !tipc_sk_type_connectionless(sk);
+ 	struct tipc_sock *tsk = tipc_sk(sk);
+ 	int rc, err, hlen, dlen, copy;
++	struct tipc_skb_cb *skb_cb;
+ 	struct sk_buff_head xmitq;
+ 	struct tipc_msg *hdr;
+ 	struct sk_buff *skb;
+@@ -1910,6 +1911,7 @@ static int tipc_recvmsg(struct socket *sock, struct msghdr *m,
+ 		if (unlikely(rc))
+ 			goto exit;
+ 		skb = skb_peek(&sk->sk_receive_queue);
++		skb_cb = TIPC_SKB_CB(skb);
+ 		hdr = buf_msg(skb);
+ 		dlen = msg_data_sz(hdr);
+ 		hlen = msg_hdr_sz(hdr);
+@@ -1929,18 +1931,33 @@ static int tipc_recvmsg(struct socket *sock, struct msghdr *m,
  
-@@ -909,9 +909,14 @@ static void __init find_possible_nodes(void)
- 	 * it doesn't exist, then fallback on ibm,max-associativity-domains.
- 	 * Current denotes what the platform can support compared to max
- 	 * which denotes what the Hypervisor can support.
-+	 *
-+	 * If the LPAR is migratable, new nodes might be activated after a LPM,
-+	 * so we should consider the max number in that case.
- 	 */
--	domains = of_get_property(rtas, "ibm,current-associativity-domains",
--					&prop_length);
-+	if (!of_get_property(of_root, "ibm,migratable-partition", NULL))
-+		domains = of_get_property(rtas,
-+					  "ibm,current-associativity-domains",
-+					  &prop_length);
- 	if (!domains) {
- 		domains = of_get_property(rtas, "ibm,max-associativity-domains",
- 					&prop_length);
-@@ -920,6 +925,8 @@ static void __init find_possible_nodes(void)
+ 	/* Capture data if non-error msg, otherwise just set return value */
+ 	if (likely(!err)) {
+-		copy = min_t(int, dlen, buflen);
+-		if (unlikely(copy != dlen))
+-			m->msg_flags |= MSG_TRUNC;
+-		rc = skb_copy_datagram_msg(skb, hlen, m, copy);
++		int offset = skb_cb->bytes_read;
++
++		copy = min_t(int, dlen - offset, buflen);
++		rc = skb_copy_datagram_msg(skb, hlen + offset, m, copy);
++		if (unlikely(rc))
++			goto exit;
++		if (unlikely(offset + copy < dlen)) {
++			if (flags & MSG_EOR) {
++				if (!(flags & MSG_PEEK))
++					skb_cb->bytes_read = offset + copy;
++			} else {
++				m->msg_flags |= MSG_TRUNC;
++				skb_cb->bytes_read = 0;
++			}
++		} else {
++			if (flags & MSG_EOR)
++				m->msg_flags |= MSG_EOR;
++			skb_cb->bytes_read = 0;
++		}
+ 	} else {
+ 		copy = 0;
+ 		rc = 0;
+-		if (err != TIPC_CONN_SHUTDOWN && connected && !m->msg_control)
++		if (err != TIPC_CONN_SHUTDOWN && connected && !m->msg_control) {
+ 			rc = -ECONNRESET;
++			goto exit;
++		}
+ 	}
+-	if (unlikely(rc))
+-		goto exit;
+ 
+ 	/* Mark message as group event if applicable */
+ 	if (unlikely(grp_evt)) {
+@@ -1963,9 +1980,10 @@ static int tipc_recvmsg(struct socket *sock, struct msghdr *m,
+ 		tipc_node_distr_xmit(sock_net(sk), &xmitq);
  	}
  
- 	max_nodes = of_read_number(&domains[min_common_depth], 1);
-+	pr_info("Partition configured for %d NUMA nodes.\n", max_nodes);
-+
- 	for (i = 0; i < max_nodes; i++) {
- 		if (!node_possible(i))
- 			node_set(i, node_possible_map);
+-	tsk_advance_rx_queue(sk);
++	if (!skb_cb->bytes_read)
++		tsk_advance_rx_queue(sk);
+ 
+-	if (likely(!connected))
++	if (likely(!connected) || skb_cb->bytes_read)
+ 		goto exit;
+ 
+ 	/* Send connection flow control advertisement when applicable */
 -- 
 2.30.2
 
