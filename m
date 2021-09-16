@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5DF840E8A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71B0F40E484
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:24:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354971AbhIPRkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:40:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50274 "EHLO mail.kernel.org"
+        id S1348978AbhIPRDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:03:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55316 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353449AbhIPRdy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:33:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D631061A71;
-        Thu, 16 Sep 2021 16:48:22 +0000 (UTC)
+        id S1346809AbhIPQ4M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:56:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 45B7A613AD;
+        Thu, 16 Sep 2021 16:30:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810903;
-        bh=57tZxUZd7v0GCY6kUSgZ3vGo5+VQ9Riqq6db6pSfRmA=;
+        s=korg; t=1631809845;
+        bh=KyrPSSFkkaFfgTa331w9So5Bp9nfhgXOj9h8Ox5YpWU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JIlXEm6xOVgRf5Bn8B9cWSod9zn3nqymJLxSc0i+QuTaRLtryfCMID+6m6LQnefGv
-         GcmckKhZbR+DsDR+leQsEwzIIj14xrq1Z3/KetanFZTO/ym8/TlW9tXQmoZ2ffE5gY
-         RoAvx3thcsUNldNnIhvgzIBVtJKUHPQgSpvI9ApY=
+        b=iD1PTHFshgJmI2Z+Tt2pGqEsjGcKBKeKafSbAfWKnjIPtRG6aHZotFzn9TKtskndG
+         F4hxBTikM1XIwTZYqbD1gt74xXhEWFNlkKyNFuMQUAOGbHIcOkja5pyHEcFJXsYK/X
+         RZaFTGUqz7BnpFZ+0ePokCI3NJWJpN4Vul4rpQd4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Darrick J. Wong" <djwong@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        stable@vger.kernel.org,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Lukasz Majczak <lma@semihalf.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 311/432] iomap: pass writeback errors to the mapping
-Date:   Thu, 16 Sep 2021 18:01:00 +0200
-Message-Id: <20210916155821.364409662@linuxfoundation.org>
+Subject: [PATCH 5.13 304/380] ASoC: Intel: Skylake: Fix module configuration for KPB and MIXER
+Date:   Thu, 16 Sep 2021 18:01:01 +0200
+Message-Id: <20210916155814.396725353@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +42,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Darrick J. Wong <djwong@kernel.org>
+From: Cezary Rojewski <cezary.rojewski@intel.com>
 
-[ Upstream commit b69eea82d37d9ee7cfb3bf05103549dd4ed5ffc3 ]
+[ Upstream commit e4e0633bcadc950b4b4af06c7f1bb7f7e3e86321 ]
 
-Modern-day mapping_set_error has the ability to squash the usual
-negative error code into something appropriate for long-term storage in
-a struct address_space -- ENOSPC becomes AS_ENOSPC, and everything else
-becomes EIO.  iomap squashes /everything/ to EIO, just as XFS did before
-that, but this doesn't make sense.
+KeyPhrasebuffer, Mixin and Mixout modules configuration is described by
+firmware's basic module configuration structure. There are no extended
+parameters required. Update functions taking part in building
+INIT_INSTANCE IPC payload to reflect that.
 
-Fix this by making it so that we can pass ENOSPC to userspace when
-writeback fails due to space problems.
-
-Signed-off-by: Darrick J. Wong <djwong@kernel.org>
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Tested-by: Lukasz Majczak <lma@semihalf.com>
+Link: https://lore.kernel.org/r/20210818075742.1515155-6-cezary.rojewski@intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/iomap/buffered-io.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/skylake/skl-messages.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-index 87ccb3438bec..b06138c6190b 100644
---- a/fs/iomap/buffered-io.c
-+++ b/fs/iomap/buffered-io.c
-@@ -1016,7 +1016,7 @@ iomap_finish_page_writeback(struct inode *inode, struct page *page,
+diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
+index 476ef1897961..79c6cf2c14bf 100644
+--- a/sound/soc/intel/skylake/skl-messages.c
++++ b/sound/soc/intel/skylake/skl-messages.c
+@@ -802,9 +802,12 @@ static u16 skl_get_module_param_size(struct skl_dev *skl,
  
- 	if (error) {
- 		SetPageError(page);
--		mapping_set_error(inode->i_mapping, -EIO);
-+		mapping_set_error(inode->i_mapping, error);
- 	}
+ 	case SKL_MODULE_TYPE_BASE_OUTFMT:
+ 	case SKL_MODULE_TYPE_MIC_SELECT:
+-	case SKL_MODULE_TYPE_KPB:
+ 		return sizeof(struct skl_base_outfmt_cfg);
  
- 	WARN_ON_ONCE(i_blocks_per_page(inode, page) > 1 && !iop);
++	case SKL_MODULE_TYPE_MIXER:
++	case SKL_MODULE_TYPE_KPB:
++		return sizeof(struct skl_base_cfg);
++
+ 	default:
+ 		/*
+ 		 * return only base cfg when no specific module type is
+@@ -857,10 +860,14 @@ static int skl_set_module_format(struct skl_dev *skl,
+ 
+ 	case SKL_MODULE_TYPE_BASE_OUTFMT:
+ 	case SKL_MODULE_TYPE_MIC_SELECT:
+-	case SKL_MODULE_TYPE_KPB:
+ 		skl_set_base_outfmt_format(skl, module_config, *param_data);
+ 		break;
+ 
++	case SKL_MODULE_TYPE_MIXER:
++	case SKL_MODULE_TYPE_KPB:
++		skl_set_base_module_format(skl, module_config, *param_data);
++		break;
++
+ 	default:
+ 		skl_set_base_module_format(skl, module_config, *param_data);
+ 		break;
 -- 
 2.30.2
 
