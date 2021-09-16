@@ -2,84 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3532F40EAA6
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 21:07:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E70E640EAAC
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 21:10:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347533AbhIPTI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 15:08:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347476AbhIPTIv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 15:08:51 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 408A6C0613A8
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 12:06:59 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f11c600a255bc81368aa6d8.dip0.t-ipconnect.de [IPv6:2003:ec:2f11:c600:a255:bc81:368a:a6d8])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C1F741EC02DD;
-        Thu, 16 Sep 2021 21:06:53 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1631819213;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=yQsb5zTzN7+q1JBlshNJrgHZ+s2ohsiGBIs1h0SMgGM=;
-        b=j7w6alr5afrOdWYg58+CHrtTsR58uWYjRXMn9Meyovca295E5b1Jkj9sEmZ89K5/tpA4/T
-        zNFGdF6fVmnkaSuQnF+UmesYXdEqBJP9SCGsqB0g2pfH+IK7bIeyvwqvBRkuqcSHa9gxrW
-        cITaaF8zNevtAxdoW7EPx1f9vyfSX+8=
-Date:   Thu, 16 Sep 2021 21:06:52 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        VMware Inc <pv-drivers@vmware.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 01/12] x86/tdx: Add Intel ARCH support to
- cc_platform_has()
-Message-ID: <YUOVzLh4V+ZVB+k/@zn.tnic>
-References: <20210916183550.15349-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210916183550.15349-2-sathyanarayanan.kuppuswamy@linux.intel.com>
- <645f6e73-1211-5ee2-07f7-cf4023358706@intel.com>
+        id S233886AbhIPTL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 15:11:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51368 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230515AbhIPTLZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 15:11:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D86C610D1;
+        Thu, 16 Sep 2021 19:10:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631819404;
+        bh=PruhD/CiX3pVkKMiYMDhzk1eXMTzNFcXO6jJzChzOq4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=HeCTJVPbknudWhgxD/PgXaahVdhB4H+SdBJLdpDjiSfPcBqQj8L760vQkwj+S+bDd
+         9iXViQ62hagzweBYQ7J2Dl7ljHWQooFCjk20ch6OrEGfsGRtO/4sp/boxWmdNgeJMv
+         /M5BzLXcFUYmGe5r9okmF8cgCrVW57UiDK4CrNHIwb8+PAfR1W58u5w0j2C9t0g5QW
+         S/+mih6Ev6V6duEC6HA9igEphYDPyRqDXWSNmqv8B+yiZK0YBPeHWWiiQaHX8aGl/6
+         mwJyfhBswhF7FPjQIxE77vKzJU0fTztxHsLmEDgPJEm7Wuii+rZhBmqTyLCQ1NROU1
+         ZwHqHPNKI8Q0A==
+Date:   Thu, 16 Sep 2021 12:10:03 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        bcm-kernel-feedback-list@broadcom.com (open list:BROADCOM ETHERNET PHY
+        DRIVERS), linux-kernel@vger.kernel.org (open list)
+Subject: Re: [PATCH net-next] net: phy: broadcom: Enable 10BaseT DAC early
+ wake
+Message-ID: <20210916121003.40327b5d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210916000904.193343-1-f.fainelli@gmail.com>
+References: <20210916000904.193343-1-f.fainelli@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <645f6e73-1211-5ee2-07f7-cf4023358706@intel.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 11:44:48AM -0700, Dave Hansen wrote:
-> How did this end up out of line?  This means that if you compile-time
-> enable support for even *one* "cc" platform, you can't optimize the
-> calls away.  This ends up being at *LEAST* two calls, just to get an
-> unconditional "false".  That just seems silly.
-> 
-> I know this is a comment more about the cc_platform_has() series that
-> this one, but this compounds the problem.
+On Wed, 15 Sep 2021 17:09:03 -0700 Florian Fainelli wrote:
+> +	if (phydev->state != PHY_RUNNING)
+> +	       return;
 
-Posting here too for the wider audience - follow this thread pls:
+checkpatch strikes again, sorry:
 
-https://lkml.kernel.org/r/9d4fc3f8ea7b325aaa1879beab1286876f45d450.1631141919.git.thomas.lendacky@amd.com
+WARNING: suspect code indent for conditional statements (8, 15)
+#35: FILE: drivers/net/phy/broadcom.c:711:
++	if (phydev->state != PHY_RUNNING)
++	       return;
 
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+WARNING: Statements should start on a tabstop
+#36: FILE: drivers/net/phy/broadcom.c:712:
++	       return;
