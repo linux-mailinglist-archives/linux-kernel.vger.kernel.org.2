@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E5D640E262
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:16:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 900B940DEF9
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:04:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242907AbhIPQhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:37:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38910 "EHLO mail.kernel.org"
+        id S240588AbhIPQFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:05:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44542 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243145AbhIPQaF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:30:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EE90A6137F;
-        Thu, 16 Sep 2021 16:18:54 +0000 (UTC)
+        id S240562AbhIPQFY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:05:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 47DFE6124E;
+        Thu, 16 Sep 2021 16:04:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809135;
-        bh=+2X2iAoLNXQFjHa5l4XXTd8Lrdlq0EJn6sJqpLLj5Ss=;
+        s=korg; t=1631808243;
+        bh=aQ3ss94Ysz8Z2rgJ7EBicK34Av2AyGubTaj1Y/1YGx4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gWGXk5SMGPFmhups16nxBRY8uV2D26ZEnANHUXFwRoza3EvtasNIrJPiESS0OOGwz
-         +ALzztlww5XtM5OXXEb5Q19E6HhP+aKzqWtdumBWEUvsOlhV4cEhtnhVLR0pAeMo4o
-         Oooa+tEWplOp5bD32dh38EhNrpyEJqPWnteQbNjU=
+        b=WelVSaQDiDZP85/wbY524Wl5BE6MC5ChX2rbi6SoM0dNRBpvqQ8m2T90LR2hWYjFm
+         LOmP+azd7N1h438cBww6b+Aetbl3BDuLvWhAFLlW+++JnAzkY19agh/eXIMPCpUU0v
+         vq3Mj4CuL+yRu8CZtv+pKcAL6wVkMLTXsYXHwHvk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anton Bambura <jenneron@protonmail.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: [PATCH 5.13 001/380] rtc: tps65910: Correct driver module alias
-Date:   Thu, 16 Sep 2021 17:55:58 +0200
-Message-Id: <20210916155804.021635569@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Harshvardhan Jha <harshvardhan.jha@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Dominique Martinet <asmadeus@codewreck.org>
+Subject: [PATCH 5.10 014/306] 9p/xen: Fix end of loop tests for list_for_each_entry
+Date:   Thu, 16 Sep 2021 17:55:59 +0200
+Message-Id: <20210916155754.407779859@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -42,33 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Osipenko <digetx@gmail.com>
+From: Harshvardhan Jha <harshvardhan.jha@oracle.com>
 
-commit 8d448fa0a8bb1c8d94eef7647edffe9ac81a281e upstream.
+commit 732b33d0dbf17e9483f0b50385bf606f724f50a2 upstream.
 
-The TPS65910 RTC driver module doesn't auto-load because of the wrong
-module alias that doesn't match the device name, fix it.
+This patch addresses the following problems:
+ - priv can never be NULL, so this part of the check is useless
+ - if the loop ran through the whole list, priv->client is invalid and
+it is more appropriate and sufficient to check for the end of
+list_for_each_entry loop condition.
 
-Cc: stable@vger.kernel.org
-Reported-by: Anton Bambura <jenneron@protonmail.com>
-Tested-by: Anton Bambura <jenneron@protonmail.com>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Link: https://lore.kernel.org/r/20210808160030.8556-1-digetx@gmail.com
+Link: http://lkml.kernel.org/r/20210727000709.225032-1-harshvardhan.jha@oracle.com
+Signed-off-by: Harshvardhan Jha <harshvardhan.jha@oracle.com>
+Reviewed-by: Stefano Stabellini <sstabellini@kernel.org>
+Tested-by: Stefano Stabellini <sstabellini@kernel.org>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Dominique Martinet <asmadeus@codewreck.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/rtc/rtc-tps65910.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/9p/trans_xen.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/rtc/rtc-tps65910.c
-+++ b/drivers/rtc/rtc-tps65910.c
-@@ -467,6 +467,6 @@ static struct platform_driver tps65910_r
- };
+--- a/net/9p/trans_xen.c
++++ b/net/9p/trans_xen.c
+@@ -138,7 +138,7 @@ static bool p9_xen_write_todo(struct xen
  
- module_platform_driver(tps65910_rtc_driver);
--MODULE_ALIAS("platform:rtc-tps65910");
-+MODULE_ALIAS("platform:tps65910-rtc");
- MODULE_AUTHOR("Venu Byravarasu <vbyravarasu@nvidia.com>");
- MODULE_LICENSE("GPL");
+ static int p9_xen_request(struct p9_client *client, struct p9_req_t *p9_req)
+ {
+-	struct xen_9pfs_front_priv *priv = NULL;
++	struct xen_9pfs_front_priv *priv;
+ 	RING_IDX cons, prod, masked_cons, masked_prod;
+ 	unsigned long flags;
+ 	u32 size = p9_req->tc.size;
+@@ -151,7 +151,7 @@ static int p9_xen_request(struct p9_clie
+ 			break;
+ 	}
+ 	read_unlock(&xen_9pfs_lock);
+-	if (!priv || priv->client != client)
++	if (list_entry_is_head(priv, &xen_9pfs_devs, list))
+ 		return -EINVAL;
+ 
+ 	num = p9_req->tc.tag % priv->num_rings;
 
 
