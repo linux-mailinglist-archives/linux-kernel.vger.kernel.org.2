@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 356C940E723
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:32:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 468E140E0C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:27:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352947AbhIPR32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:29:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43506 "EHLO mail.kernel.org"
+        id S240855AbhIPQX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:23:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351941AbhIPRUA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:20:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4766A61B7B;
-        Thu, 16 Sep 2021 16:41:55 +0000 (UTC)
+        id S240853AbhIPQOc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:14:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1664761390;
+        Thu, 16 Sep 2021 16:10:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810515;
-        bh=JMuvoOMn0WXbrk8IZIC+V8mXCbi5cEU69e4oQiPf2E0=;
+        s=korg; t=1631808637;
+        bh=h6FqXYCR30wR/rITiby2miwzaK5galCFD9iDPMZKP1M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fkrcOQwY3vGotA6ZY3CNfnV8Lh0mDXqKkZWNMmw1/3hskbnf+HqzyWWlWwnfmS8yV
-         0IV+zsf9Uqz4d/aBJyUoAQoezLX+Z20q57AZkSIDdzFwmH7dcXJUxGVerdgbMggSWj
-         lGle7gkXf3gW24QGFPyqgouHVAMyvLxbqEBYVkXk=
+        b=H6zLk3f88W6+DN1XHG8Rwf4pNQ+/Vn7pCv7CFxSvrW4FmMyOWxiVX9L9epTb7CUb1
+         HlM1o1mNW76+xyhErdcJK9V6M62cFYxPMp9+bC3gThzTA3kOR+gDH1W2WF4JEQ5YPb
+         PN0lwLJclBFT1s0FY7LWHz5xAPoCm296qNsQWQHY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Luben Tuikov <luben.tuikov@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 162/432] drm/amdgpu: Fix amdgpu_ras_eeprom_init()
+        stable@vger.kernel.org, Juhee Kang <claudiajkang@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 166/306] samples: bpf: Fix tracex7 error raised on the missing argument
 Date:   Thu, 16 Sep 2021 17:58:31 +0200
-Message-Id: <20210916155816.238341955@linuxfoundation.org>
+Message-Id: <20210916155759.741118762@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,37 +40,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luben Tuikov <luben.tuikov@amd.com>
+From: Juhee Kang <claudiajkang@gmail.com>
 
-[ Upstream commit dce4400e6516d18313d23de45b5be8a18980b00e ]
+[ Upstream commit 7d07006f05922b95518be403f08ef8437b67aa32 ]
 
-No need to account for the 2 bytes of EEPROM
-address--this is now well abstracted away by
-the fixes the the lower layers.
+The current behavior of 'tracex7' doesn't consist with other bpf samples
+tracex{1..6}. Other samples do not require any argument to run with, but
+tracex7 should be run with btrfs device argument. (it should be executed
+with test_override_return.sh)
 
-Cc: Andrey Grodzovsky <andrey.grodzovsky@amd.com>
-Cc: Alexander Deucher <Alexander.Deucher@amd.com>
-Signed-off-by: Luben Tuikov <luben.tuikov@amd.com>
-Acked-by: Alexander Deucher <Alexander.Deucher@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Currently, tracex7 doesn't have any description about how to run this
+program and raises an unexpected error. And this result might be
+confusing since users might not have a hunch about how to run this
+program.
+
+    // Current behavior
+    # ./tracex7
+    sh: 1: Syntax error: word unexpected (expecting ")")
+    // Fixed behavior
+    # ./tracex7
+    ERROR: Run with the btrfs device argument!
+
+In order to fix this error, this commit adds logic to report a message
+and exit when running this program with a missing argument.
+
+Additionally in test_override_return.sh, there is a problem with
+multiple directory(tmpmnt) creation. So in this commit adds a line with
+removing the directory with every execution.
+
+Signed-off-by: Juhee Kang <claudiajkang@gmail.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Acked-by: Yonghong Song <yhs@fb.com>
+Link: https://lore.kernel.org/bpf/20210727041056.23455-1-claudiajkang@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_ras_eeprom.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ samples/bpf/test_override_return.sh | 1 +
+ samples/bpf/tracex7_user.c          | 5 +++++
+ 2 files changed, 6 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ras_eeprom.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ras_eeprom.c
-index 38222de921d1..8dd151c9e459 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ras_eeprom.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ras_eeprom.c
-@@ -325,7 +325,7 @@ int amdgpu_ras_eeprom_init(struct amdgpu_ras_eeprom_control *control,
- 		return ret;
- 	}
+diff --git a/samples/bpf/test_override_return.sh b/samples/bpf/test_override_return.sh
+index e68b9ee6814b..35db26f736b9 100755
+--- a/samples/bpf/test_override_return.sh
++++ b/samples/bpf/test_override_return.sh
+@@ -1,5 +1,6 @@
+ #!/bin/bash
  
--	__decode_table_header_from_buff(hdr, &buff[2]);
-+	__decode_table_header_from_buff(hdr, buff);
++rm -r tmpmnt
+ rm -f testfile.img
+ dd if=/dev/zero of=testfile.img bs=1M seek=1000 count=1
+ DEVICE=$(losetup --show -f testfile.img)
+diff --git a/samples/bpf/tracex7_user.c b/samples/bpf/tracex7_user.c
+index fdcd6580dd73..8be7ce18d3ba 100644
+--- a/samples/bpf/tracex7_user.c
++++ b/samples/bpf/tracex7_user.c
+@@ -14,6 +14,11 @@ int main(int argc, char **argv)
+ 	int ret = 0;
+ 	FILE *f;
  
- 	if (hdr->header == EEPROM_TABLE_HDR_VAL) {
- 		control->num_recs = (hdr->tbl_size - EEPROM_TABLE_HEADER_SIZE) /
++	if (!argv[1]) {
++		fprintf(stderr, "ERROR: Run with the btrfs device argument!\n");
++		return 0;
++	}
++
+ 	snprintf(filename, sizeof(filename), "%s_kern.o", argv[0]);
+ 	obj = bpf_object__open_file(filename, NULL);
+ 	if (libbpf_get_error(obj)) {
 -- 
 2.30.2
 
