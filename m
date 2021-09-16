@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62F1A40E5F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:28:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0091740DFB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:12:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350744AbhIPRQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:16:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37016 "EHLO mail.kernel.org"
+        id S233601AbhIPQNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:13:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47920 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347561AbhIPRJL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:09:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 76B58619E0;
-        Thu, 16 Sep 2021 16:36:56 +0000 (UTC)
+        id S233807AbhIPQHy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:07:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 604E160698;
+        Thu, 16 Sep 2021 16:06:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810217;
-        bh=LDOCNYiRG8y48Kp3dDBTvpKz232yVRp7s0kGyjwtVgU=;
+        s=korg; t=1631808393;
+        bh=79xhAtAG4uraJRRzv9q5qPYfaK+BTkpQn7ioYrexVes=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eI5N4u079wuAADnLxA9GVdICLFEeevD0xD4uuu5xuUoRhwoy8XTVTkio4f6cq1HHw
-         g5E2y1rVzSOrZQhb9TEyu0bpAackt4YdhilaY6SWVFG0J4QJSmX2cPJSW+/zxfDQx4
-         5FvdB/ptWS70Uph5uZqdZRTnbdJznldzQ8Ziqabs=
+        b=qpoFifMHCTh4iGmxvhC1B1imOJ/kAH4Rp7dSG+4LG3X7xArIvFCEYRPME77pqTjJB
+         dHRPGagwGRCUDhIRpprkztPfFt8e/9VB9cWU1dAEXv7ITMzCA/Gin/9gFK7T596CHS
+         5OuFTcNloIpj10J6qqHYmei7nSW2UmCpH92qE+VQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kris Chaplin <kris.chaplin@intel.com>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>
-Subject: [PATCH 5.14 027/432] clk: socfpga: agilex: fix the parents of the psi_ref_clk
-Date:   Thu, 16 Sep 2021 17:56:16 +0200
-Message-Id: <20210916155811.738518870@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>
+Subject: [PATCH 5.10 032/306] power: supply: max17042: handle fails of reading status register
+Date:   Thu, 16 Sep 2021 17:56:17 +0200
+Message-Id: <20210916155755.035084928@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinh Nguyen <dinguyen@kernel.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-commit 9d563236cca43fc4fe190b3be173444bd48e2a3b upstream.
+commit 54784ffa5b267f57161eb8fbb811499f22a0a0bf upstream.
 
-The psi_ref_clk comes from the C2 node of the main_pll and periph_pll,
-not the C3.
+Reading status register can fail in the interrupt handler.  In such
+case, the regmap_read() will not store anything useful under passed
+'val' variable and random stack value will be used to determine type of
+interrupt.
 
-Fixes: 80c6b7a0894f ("clk: socfpga: agilex: add clock driver for the Agilex platform")
-Cc: stable@vger.kernel.org
-Signed-off-by: Kris Chaplin <kris.chaplin@intel.com>
-Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
-Link: https://lore.kernel.org/r/20210713144621.605140-1-dinguyen@kernel.org
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Handle the regmap_read() failure to avoid handling interrupt type and
+triggering changed power supply event based on random stack value.
+
+Fixes: 39e7213edc4f ("max17042_battery: Support regmap to access device's registers")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/clk/socfpga/clk-agilex.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/power/supply/max17042_battery.c |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
---- a/drivers/clk/socfpga/clk-agilex.c
-+++ b/drivers/clk/socfpga/clk-agilex.c
-@@ -107,10 +107,10 @@ static const struct clk_parent_data gpio
- };
+--- a/drivers/power/supply/max17042_battery.c
++++ b/drivers/power/supply/max17042_battery.c
+@@ -859,8 +859,12 @@ static irqreturn_t max17042_thread_handl
+ {
+ 	struct max17042_chip *chip = dev;
+ 	u32 val;
++	int ret;
++
++	ret = regmap_read(chip->regmap, MAX17042_STATUS, &val);
++	if (ret)
++		return IRQ_HANDLED;
  
- static const struct clk_parent_data psi_ref_free_mux[] = {
--	{ .fw_name = "main_pll_c3",
--	  .name = "main_pll_c3", },
--	{ .fw_name = "peri_pll_c3",
--	  .name = "peri_pll_c3", },
-+	{ .fw_name = "main_pll_c2",
-+	  .name = "main_pll_c2", },
-+	{ .fw_name = "peri_pll_c2",
-+	  .name = "peri_pll_c2", },
- 	{ .fw_name = "osc1",
- 	  .name = "osc1", },
- 	{ .fw_name = "cb-intosc-hs-div2-clk",
+-	regmap_read(chip->regmap, MAX17042_STATUS, &val);
+ 	if ((val & STATUS_INTR_SOCMIN_BIT) ||
+ 		(val & STATUS_INTR_SOCMAX_BIT)) {
+ 		dev_info(&chip->client->dev, "SOC threshold INTR\n");
 
 
