@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11AB040E6B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:31:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7626640E2B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:17:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352607AbhIPRZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:25:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39918 "EHLO mail.kernel.org"
+        id S239760AbhIPQlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:41:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44348 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343574AbhIPRQG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:16:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7035D61452;
-        Thu, 16 Sep 2021 16:40:11 +0000 (UTC)
+        id S244225AbhIPQfB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:35:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DCC061980;
+        Thu, 16 Sep 2021 16:21:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810412;
-        bh=4XLyxolhrMLjNIFlyN8qlI7yuJw7mrGBG65yOjX38Uo=;
+        s=korg; t=1631809265;
+        bh=lImvXFqv8F4CpYEnM2+99TdewWuYd0/Ydfc+dsWapjY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XO7ykQ+iYBGci6p/+KYGs1WWX/+m4q1PQwuXQO6sXOWFLwESis3tVZx1jG0kvXrZg
-         MdSDvAup47P3FfMC0NYeSGiK+DjMKp7vOqom5qloAcgMzdcRywfitx+xHrse+1VjvG
-         T/gbtqECQs/wQiW7iHDdpeSJ2fAjvhqJbPrBy7cI=
+        b=gOAiBfF137VJ4HBQvwHN7MSwjXlmGm8XNUXlCc8GdYA+i72NjqTCMzxns86R2qaA0
+         NwW9evKnYAGGx6HHcWQPeRgE0l7CfN1IJsD1EdkNSkqftNA4kV7rGYtr3XCGvjSZjK
+         Fz3E3S86dm3kG7KJmNoZf2EEDiayM0UaOpkxWY+g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 099/432] cpuidle: pseries: Mark pseries_idle_proble() as __init
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Stafford Horne <shorne@gmail.com>,
+        openrisc@lists.librecores.org, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 091/380] openrisc: dont printk() unconditionally
 Date:   Thu, 16 Sep 2021 17:57:28 +0200
-Message-Id: <20210916155814.133008143@linuxfoundation.org>
+Message-Id: <20210916155807.135482548@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,50 +43,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <nathan@kernel.org>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit d04691d373e75c83424b85c0e68e4a3f9370c10d ]
+[ Upstream commit 946e1052cdcc7e585ee5d1e72528ca49fb295243 ]
 
-After commit 7cbd631d4dec ("cpuidle: pseries: Fixup CEDE0 latency only
-for POWER10 onwards"), pseries_idle_probe() is no longer inlined when
-compiling with clang, which causes a modpost warning:
+Don't call printk() when CONFIG_PRINTK is not set.
+Fixes the following build errors:
 
-WARNING: modpost: vmlinux.o(.text+0xc86a54): Section mismatch in
-reference from the function pseries_idle_probe() to the function
-.init.text:fixup_cede0_latency()
-The function pseries_idle_probe() references
-the function __init fixup_cede0_latency().
-This is often because pseries_idle_probe lacks a __init
-annotation or the annotation of fixup_cede0_latency is wrong.
+or1k-linux-ld: arch/openrisc/kernel/entry.o: in function `_external_irq_handler':
+(.text+0x804): undefined reference to `printk'
+(.text+0x804): relocation truncated to fit: R_OR1K_INSN_REL_26 against undefined symbol `printk'
 
-pseries_idle_probe() is a non-init function, which calls
-fixup_cede0_latency(), which is an init function, explaining the
-mismatch. pseries_idle_probe() is only called from
-pseries_processor_idle_init(), which is an init function, so mark
-pseries_idle_probe() as __init so there is no more warning.
-
-Fixes: 054e44ba99ae ("cpuidle: pseries: Add function to parse extended CEDE records")
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210803211547.1093820-1-nathan@kernel.org
+Fixes: 9d02a4283e9c ("OpenRISC: Boot code")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Jonas Bonn <jonas@southpole.se>
+Cc: Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
+Cc: Stafford Horne <shorne@gmail.com>
+Cc: openrisc@lists.librecores.org
+Signed-off-by: Stafford Horne <shorne@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/cpuidle/cpuidle-pseries.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/openrisc/kernel/entry.S | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/cpuidle/cpuidle-pseries.c b/drivers/cpuidle/cpuidle-pseries.c
-index e592280d8acf..ff164dec8422 100644
---- a/drivers/cpuidle/cpuidle-pseries.c
-+++ b/drivers/cpuidle/cpuidle-pseries.c
-@@ -402,7 +402,7 @@ static void __init fixup_cede0_latency(void)
-  * pseries_idle_probe()
-  * Choose state table for shared versus dedicated partition
-  */
--static int pseries_idle_probe(void)
-+static int __init pseries_idle_probe(void)
- {
+diff --git a/arch/openrisc/kernel/entry.S b/arch/openrisc/kernel/entry.S
+index bc657e55c15f..98e4f97db515 100644
+--- a/arch/openrisc/kernel/entry.S
++++ b/arch/openrisc/kernel/entry.S
+@@ -547,6 +547,7 @@ EXCEPTION_ENTRY(_external_irq_handler)
+ 	l.bnf	1f			// ext irq enabled, all ok.
+ 	l.nop
  
- 	if (cpuidle_disable != IDLE_NO_OVERRIDE)
++#ifdef CONFIG_PRINTK
+ 	l.addi  r1,r1,-0x8
+ 	l.movhi r3,hi(42f)
+ 	l.ori	r3,r3,lo(42f)
+@@ -560,6 +561,7 @@ EXCEPTION_ENTRY(_external_irq_handler)
+ 		.string "\n\rESR interrupt bug: in _external_irq_handler (ESR %x)\n\r"
+ 		.align 4
+ 	.previous
++#endif
+ 
+ 	l.ori	r4,r4,SPR_SR_IEE	// fix the bug
+ //	l.sw	PT_SR(r1),r4
 -- 
 2.30.2
 
