@@ -2,159 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5933540D533
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 10:59:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7E1F40D54D
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 11:00:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235243AbhIPJAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 05:00:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27010 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233839AbhIPJAn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 05:00:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631782763;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=t2Z/Tfws0/ZPIkBTJwi6vBLPKuMktwH7w8C6L94eoVM=;
-        b=G37tWJXZgJiTawDu+EWUQkxqQIqtNGr2OS2sboJ68TjLxP1BJ2HCchOBNR1RUpPpyE36Ra
-        QFaEI7NxT9wzJIsXKdl/5Bfc+qjMBk/6JTZ0L6D9jxbVSYzK3SmwaWeAhouOhYyNzYymio
-        sr8our5csTOncndMxOOJ0q5V+Q6PMbU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-54-GlU6ZhEVPs-lOiN55UKk5A-1; Thu, 16 Sep 2021 04:59:19 -0400
-X-MC-Unique: GlU6ZhEVPs-lOiN55UKk5A-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 24861100CCC1;
-        Thu, 16 Sep 2021 08:59:18 +0000 (UTC)
-Received: from localhost (unknown [10.39.192.155])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B554960FDD;
-        Thu, 16 Sep 2021 08:59:17 +0000 (UTC)
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Halil Pasic <pasic@linux.ibm.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Pierre Morel <pmorel@linux.ibm.com>,
-        Michael Mueller <mimu@linux.ibm.com>,
-        linux-s390@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     bfu@redhat.com, Vineeth Vijayan <vneethv@linux.ibm.com>
-Subject: Re: [PATCH 1/1] virtio/s390: fix vritio-ccw device teardown
-In-Reply-To: <20210915215742.1793314-1-pasic@linux.ibm.com>
-Organization: Red Hat GmbH
-References: <20210915215742.1793314-1-pasic@linux.ibm.com>
-User-Agent: Notmuch/0.32.1 (https://notmuchmail.org)
-Date:   Thu, 16 Sep 2021 10:59:15 +0200
-Message-ID: <87pmt8hp5o.fsf@redhat.com>
+        id S235020AbhIPJBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 05:01:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36104 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235298AbhIPJBW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 05:01:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B4A561186;
+        Thu, 16 Sep 2021 09:00:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631782802;
+        bh=yv/P65NUKvPLn6I6fZBzrh0PDDXSPJiG66WIrAPEy9s=;
+        h=From:To:Cc:Subject:Date:From;
+        b=LLhS5oBLZruJX3JmpWVk5IJo2JNurjB95S2PHKc/CjWbGOnVz3yL0gyDWBmOqlW5U
+         mUrGY1dBe1BoEgWBrVxkc3HZgpj7iss+nGNQJGM1txpZL8ELg9bGll6NiJKG1u/zFO
+         iYCjhBrW4XyjR4/Z8CDOyxLtzEuGaqzUA2Wuv1+f8fvvFkseQEi+g3WZC5KIRaV/xM
+         8Cbck66UVwFx55O/f7tip/Txp0RtzTMqRjKrQ7pFcY2qI9nvSw0p5Bexf1yTv5f3lE
+         NCPvtJdfgA4M/FC8k95UL3I5p16D9dwqkNhsQwLi/b7s4FiEAMsdTwZXaeuw1KCCot
+         I7xNhLeMbVqjg==
+Received: by mail.kernel.org with local (Exim 4.94.2)
+        (envelope-from <mchehab@kernel.org>)
+        id 1mQnFQ-001qjS-5M; Thu, 16 Sep 2021 11:00:00 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Johan Hovold <johan@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Peter Rosin <peda@axentia.se>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Tony Luck <tony.luck@intel.com>, linux-usb@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org
+Subject: [PATCH v3 00/30]Change wildcards on ABI files
+Date:   Thu, 16 Sep 2021 10:59:27 +0200
+Message-Id: <cover.1631782432.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15 2021, Halil Pasic <pasic@linux.ibm.com> wrote:
+The ABI files are meant to be parsed via a script (scripts/get_abi.pl).
 
-> Since commit 48720ba56891 ("virtio/s390: use DMA memory for ccw I/O and
-> classic notifiers") we were supposed to make sure that
-> virtio_ccw_release_dev() completes before the ccw device, and the
-> attached dma pool are torn down, but unfortunately we did not.
-> Before that commit it used to be OK to delay cleaning up the memory
-> allocated by virtio-ccw indefinitely (which isn't really intuitive for
-> guys used to destruction happens in reverse construction order).
->
-> To accomplish this let us take a reference on the ccw device before we
-> allocate the dma_area and give it up after dma_area was freed.
->
-> Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
-> Fixes: 48720ba56891 ("virtio/s390: use DMA memory for ccw I/O and
-> classic notifiers")
-> Reported-by: bfu@redhat.com
-> ---
->
-> I'm not certain this is the only hot-unplug and teardonw related problem
-> with virtio-ccw.
->
-> Some things that are not perfectly clear to me:
-> * What would happen if we observed an hot-unplug while we are doing
->   wait_event() in ccw_io_helper()? Do we get stuck? I don't thin we
->   are guaranteed to receive an irq for a subchannel that is gone.
+A new improvement on it will allow it to help to detect if an ABI description
+is missing, or if the What: field won't match the actual location of the symbol.
 
-Hm. I think we may need to do a wake_up during remove handling.
+In order for get_abi.pl to convert What: into regex, changes are needed on
+existing ABI files, as the conversion should not be ambiguous.
 
-> * cdev->online seems to be manipulated under cdev->ccwlock, but
->   in virtio_ccw_remove() we look at it to decide should we clean up
->   or not. What is the idea there? I guess we want to avoid doing
->   if nothing is there or twice. But I don't understand how stuff
->   interlocks.
+One alternative would be to convert everything into regexes, but this
+would generate a huge amount of patches/changes. So, instead, let's
+touch only the ABI files that aren't following the de-facto wildcard 
+standards already found on most of the ABI files, e. g.:
 
-We only created the virtio device when we onlined the ccw device. Do you
-have a better idea how to check for that? (And yes, I'm not sure the
-locking is correct.)
+	/.../
+	*
+	<foo>
+	(option1|option2)
+	X
+	Y
+	Z
+	[0-9] (and variants)
 
-> * Can virtio_ccw_remove() get called while !cdev->online and 
->   virtio_ccw_online() is running on a different cpu? If yes, what would
->   happen then?
+---
 
-All of the remove/online/... etc. callbacks are invoked via the ccw bus
-code. We have to trust that it gets it correct :) (Or have the common
-I/O layer maintainers double-check it.)
+v3:
+   - Added a new patch for sysfs-class-rapidio;
+   - sysfs-class-typec had a typo, instead of a wildcard;
+   - sysfs-bus-soundwire-* had some additional What to be fixed;
+   - added some reviewed-by/acked-by tags.
 
->  
-> The main addresse of these questions is Conny ;).
->
-> An alternative to this approach would be to inc and dec the refcount
-> in ccw_device_dma_zalloc() and ccw_device_dma_free() respectively.
+v2:
+   - Added several patches to address uppercase "N" meaning
+     as a wildcard.
 
-Yeah, I also thought about that. This would give us more get/put
-operations, but might be the safer option.
+Mauro Carvalho Chehab (30):
+  ABI: sysfs-bus-usb: better document variable argument
+  ABI: sysfs-tty: better document module name parameter
+  ABI: sysfs-kernel-slab: use a wildcard for the cache name
+  ABI: security: fix location for evm and ima_policy
+  ABI: sysfs-class-tpm: use wildcards for pcr-* nodes
+  ABI: sysfs-bus-rapidio: use wildcards on What definitions
+  ABI: sysfs-class-cxl: place "not in a guest" at description
+  ABI: sysfs-class-devfreq-event: use the right wildcards on What
+  ABI: sysfs-class-mic: use the right wildcards on What definitions
+  ABI: pstore: Fix What field
+  ABI:  fix a typo on a What field
+  ABI: sysfs-ata: use a proper wildcard for ata_*
+  ABI: sysfs-class-infiniband: use wildcards on What definitions
+  ABI: sysfs-bus-pci: use wildcards on What definitions
+  ABI: -master: use wildcards on What definitions
+  ABI: sysfs-bus-soundwire-slave: use wildcards on What definitions
+  ABI: sysfs-class-gnss: use wildcards on What definitions
+  ABI: sysfs-class-mei: use wildcards on What definitions
+  ABI: sysfs-class-mux: use wildcards on What definitions
+  ABI: sysfs-class-pwm: use wildcards on What definitions
+  ABI: sysfs-class-rc: use wildcards on What definitions
+  ABI: sysfs-class-rc-nuvoton: use wildcards on What definitions
+  ABI: sysfs-class-uwb_rc: use wildcards on What definitions
+  ABI: sysfs-class-uwb_rc-wusbhc: use wildcards on What definitions
+  ABI: sysfs-devices-platform-dock: use wildcards on What definitions
+  ABI: sysfs-devices-system-cpu: use wildcards on What definitions
+  ABI: sysfs-firmware-efi-esrt: use wildcards on What definitions
+  ABI: sysfs-platform-sst-atom: use wildcards on What definitions
+  ABI: sysfs-ptp: use wildcards on What definitions
+  ABI: sysfs-class-rapidio: use wildcards on What definitions
 
->
-> ---
->  drivers/s390/virtio/virtio_ccw.c | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/drivers/s390/virtio/virtio_ccw.c b/drivers/s390/virtio/virtio_ccw.c
-> index d35e7a3f7067..99141df3259b 100644
-> --- a/drivers/s390/virtio/virtio_ccw.c
-> +++ b/drivers/s390/virtio/virtio_ccw.c
-> @@ -1006,10 +1006,12 @@ static void virtio_ccw_release_dev(struct device *_d)
->  {
->  	struct virtio_device *dev = dev_to_virtio(_d);
->  	struct virtio_ccw_device *vcdev = to_vc_device(dev);
-> +	struct ccw_device *cdev = READ_ONCE(vcdev->cdev);
->  
->  	ccw_device_dma_free(vcdev->cdev, vcdev->dma_area,
->  			    sizeof(*vcdev->dma_area));
->  	kfree(vcdev);
-> +	put_device(&cdev->dev);
->  }
->  
->  static int irb_is_error(struct irb *irb)
-> @@ -1262,6 +1264,7 @@ static int virtio_ccw_online(struct ccw_device *cdev)
->  	struct virtio_ccw_device *vcdev;
->  	unsigned long flags;
->  
-> +	get_device(&cdev->dev);
->  	vcdev = kzalloc(sizeof(*vcdev), GFP_KERNEL);
->  	if (!vcdev) {
->  		dev_warn(&cdev->dev, "Could not get memory for virtio\n");
-> @@ -1315,6 +1318,7 @@ static int virtio_ccw_online(struct ccw_device *cdev)
->  				    sizeof(*vcdev->dma_area));
->  	}
->  	kfree(vcdev);
-> +	put_device(&cdev->dev);
->  	return ret;
->  }
->  
->
-> base-commit: 3ca706c189db861b2ca2019a0901b94050ca49d8
-> -- 
-> 2.25.1
+ .../ABI/stable/sysfs-class-infiniband         | 64 ++++++-------
+ Documentation/ABI/stable/sysfs-class-tpm      |  2 +-
+ Documentation/ABI/testing/evm                 |  4 +-
+ Documentation/ABI/testing/ima_policy          |  2 +-
+ Documentation/ABI/testing/pstore              |  3 +-
+ Documentation/ABI/testing/sysfs-ata           |  2 +-
+ Documentation/ABI/testing/sysfs-bus-pci       |  2 +-
+ Documentation/ABI/testing/sysfs-bus-rapidio   | 32 +++----
+ .../ABI/testing/sysfs-bus-soundwire-master    | 20 ++--
+ .../ABI/testing/sysfs-bus-soundwire-slave     | 60 ++++++------
+ Documentation/ABI/testing/sysfs-bus-usb       | 16 ++--
+ Documentation/ABI/testing/sysfs-class-cxl     | 15 ++-
+ .../ABI/testing/sysfs-class-devfreq-event     | 12 +--
+ Documentation/ABI/testing/sysfs-class-gnss    |  2 +-
+ Documentation/ABI/testing/sysfs-class-mei     | 18 ++--
+ Documentation/ABI/testing/sysfs-class-mic     | 24 ++---
+ Documentation/ABI/testing/sysfs-class-mux     |  2 +-
+ Documentation/ABI/testing/sysfs-class-pwm     | 20 ++--
+ Documentation/ABI/testing/sysfs-class-rapidio |  4 +-
+ Documentation/ABI/testing/sysfs-class-rc      | 14 +--
+ .../ABI/testing/sysfs-class-rc-nuvoton        |  2 +-
+ Documentation/ABI/testing/sysfs-class-typec   |  2 +-
+ Documentation/ABI/testing/sysfs-class-uwb_rc  | 26 ++---
+ .../ABI/testing/sysfs-class-uwb_rc-wusbhc     | 10 +-
+ .../ABI/testing/sysfs-devices-platform-dock   | 10 +-
+ .../ABI/testing/sysfs-devices-system-cpu      | 16 ++--
+ .../ABI/testing/sysfs-firmware-efi-esrt       | 16 ++--
+ Documentation/ABI/testing/sysfs-kernel-slab   | 94 +++++++++----------
+ .../ABI/testing/sysfs-platform-sst-atom       |  2 +-
+ Documentation/ABI/testing/sysfs-ptp           | 30 +++---
+ Documentation/ABI/testing/sysfs-tty           | 32 +++----
+ 31 files changed, 282 insertions(+), 276 deletions(-)
+
+-- 
+2.31.1
+
 
