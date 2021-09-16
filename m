@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 496CF40E9F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:36:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63FE340E9F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:36:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343522AbhIPSha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 14:37:30 -0400
-Received: from mga07.intel.com ([134.134.136.100]:52266 "EHLO mga07.intel.com"
+        id S1349201AbhIPShk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 14:37:40 -0400
+Received: from mga07.intel.com ([134.134.136.100]:52269 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348118AbhIPShX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 14:37:23 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10109"; a="286319720"
+        id S1348301AbhIPShZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 14:37:25 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10109"; a="286319728"
 X-IronPort-AV: E=Sophos;i="5.85,299,1624345200"; 
-   d="scan'208";a="286319720"
+   d="scan'208";a="286319728"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2021 11:36:01 -0700
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2021 11:36:02 -0700
 X-IronPort-AV: E=Sophos;i="5.85,299,1624345200"; 
-   d="scan'208";a="545819388"
+   d="scan'208";a="545819403"
 Received: from rswart-mobl1.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.255.64.59])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2021 11:36:00 -0700
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2021 11:36:01 -0700
 From:   Kuppuswamy Sathyanarayanan 
         <sathyanarayanan.kuppuswamy@linux.intel.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
@@ -39,9 +39,9 @@ Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
         Sean Christopherson <seanjc@google.com>,
         Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v7 01/12] x86/tdx: Add Intel ARCH support to cc_platform_has()
-Date:   Thu, 16 Sep 2021 11:35:39 -0700
-Message-Id: <20210916183550.15349-2-sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: [PATCH v7 02/12] x86/paravirt: Move halt paravirt calls under CONFIG_PARAVIRT
+Date:   Thu, 16 Sep 2021 11:35:40 -0700
+Message-Id: <20210916183550.15349-3-sathyanarayanan.kuppuswamy@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210916183550.15349-1-sathyanarayanan.kuppuswamy@linux.intel.com>
 References: <20210916183550.15349-1-sathyanarayanan.kuppuswamy@linux.intel.com>
@@ -51,94 +51,174 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-cc_platform_has() can be used to check for specific active confidential
-computing attributes, like memory encryption. For Intel platform like
-Trusted Domain eXtensions (TDX) guest has need for using this function
-to protect the TDX specific changes made in generic drivers.
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 
-So, extend cc_platform_has() and add support for Intel architecture
-variant (intel_cc_platform_has())
+CONFIG_PARAVIRT_XXL is mainly defined/used by XEN PV guests. For
+other VM guest types, features supported under CONFIG_PARAVIRT
+are self sufficient. CONFIG_PARAVIRT mainly provides support for
+TLB flush operations and time related operations.
 
-This is a preparatory commit needed before adding TDX guest support
-to intel_cc_platform_has().
+For TDX guest as well, paravirt calls under CONFIG_PARVIRT meets
+most of its requirement except the need of HLT and SAFE_HLT
+paravirt calls, which is currently defined under
+COFNIG_PARAVIRT_XXL.
 
+Since enabling CONFIG_PARAVIRT_XXL is too bloated for TDX guest
+like platforms, move HLT and SAFE_HLT paravirt calls under
+CONFIG_PARAVIRT.
+
+Moving HLT and SAFE_HLT paravirt calls are not fatal and should not
+break any functionality for current users of CONFIG_PARAVIRT.
+
+Co-developed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
 ---
- arch/x86/include/asm/intel_cc_platform.h | 15 +++++++++++++++
- arch/x86/kernel/cc_platform.c            |  5 +++++
- arch/x86/kernel/cpu/intel.c              |  9 +++++++++
- 3 files changed, 29 insertions(+)
- create mode 100644 arch/x86/include/asm/intel_cc_platform.h
+ arch/x86/include/asm/irqflags.h       | 46 ++++++++++++++++-----------
+ arch/x86/include/asm/paravirt.h       | 20 ++++++------
+ arch/x86/include/asm/paravirt_types.h |  3 +-
+ arch/x86/kernel/paravirt.c            |  3 +-
+ 4 files changed, 41 insertions(+), 31 deletions(-)
 
-diff --git a/arch/x86/include/asm/intel_cc_platform.h b/arch/x86/include/asm/intel_cc_platform.h
-new file mode 100644
-index 000000000000..73da3dc934d1
---- /dev/null
-+++ b/arch/x86/include/asm/intel_cc_platform.h
-@@ -0,0 +1,15 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/* Copyright (C) 2021 Intel Corporation */
-+#ifndef _ASM_X86_INTEL_CC_PLATFORM_H
-+#define _ASM_X86_INTEL_CC_PLATFORM_H
-+
-+#include <linux/cc_platform.h>
-+
-+#if defined(CONFIG_CPU_SUP_INTEL) && defined(CONFIG_ARCH_HAS_CC_PLATFORM)
-+bool intel_cc_platform_has(enum cc_attr attr);
-+#else
-+static inline bool intel_cc_platform_has(enum cc_attr attr) { return false; }
-+#endif
-+
-+#endif /* _ASM_X86_INTEL_CC_PLATFORM_H */
-+
-diff --git a/arch/x86/kernel/cc_platform.c b/arch/x86/kernel/cc_platform.c
-index 3c9bacd3c3f3..e83bc2f48efe 100644
---- a/arch/x86/kernel/cc_platform.c
-+++ b/arch/x86/kernel/cc_platform.c
-@@ -10,11 +10,16 @@
- #include <linux/export.h>
- #include <linux/cc_platform.h>
- #include <linux/mem_encrypt.h>
-+#include <linux/processor.h>
-+
-+#include <asm/intel_cc_platform.h>
+diff --git a/arch/x86/include/asm/irqflags.h b/arch/x86/include/asm/irqflags.h
+index c5ce9845c999..2a2ebf9af43e 100644
+--- a/arch/x86/include/asm/irqflags.h
++++ b/arch/x86/include/asm/irqflags.h
+@@ -59,27 +59,15 @@ static inline __cpuidle void native_halt(void)
  
- bool cc_platform_has(enum cc_attr attr)
- {
- 	if (sme_me_mask)
- 		return amd_cc_platform_has(attr);
-+	else if (boot_cpu_data.x86_vendor == X86_VENDOR_INTEL)
-+		return intel_cc_platform_has(attr);
+ #endif
  
- 	return false;
- }
-diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
-index 8321c43554a1..5f45d51020b7 100644
---- a/arch/x86/kernel/cpu/intel.c
-+++ b/arch/x86/kernel/cpu/intel.c
-@@ -26,6 +26,7 @@
- #include <asm/resctrl.h>
- #include <asm/numa.h>
- #include <asm/thermal.h>
-+#include <asm/intel_cc_platform.h>
+-#ifdef CONFIG_PARAVIRT_XXL
+-#include <asm/paravirt.h>
+-#else
+-#ifndef __ASSEMBLY__
+-#include <linux/types.h>
++#ifdef CONFIG_PARAVIRT
  
- #ifdef CONFIG_X86_64
- #include <linux/topology.h>
-@@ -60,6 +61,14 @@ static u64 msr_test_ctrl_cache __ro_after_init;
-  */
- static bool cpu_model_supports_sld __ro_after_init;
+-static __always_inline unsigned long arch_local_save_flags(void)
+-{
+-	return native_save_fl();
+-}
+-
+-static __always_inline void arch_local_irq_disable(void)
+-{
+-	native_irq_disable();
+-}
++# ifndef __ASSEMBLY__
++# include <asm/paravirt.h>
++# endif /* __ASSEMBLY__ */
  
-+#ifdef CONFIG_ARCH_HAS_CC_PLATFORM
-+bool intel_cc_platform_has(enum cc_attr attr)
-+{
-+	return false;
-+}
-+EXPORT_SYMBOL_GPL(intel_cc_platform_has);
-+#endif
-+
+-static __always_inline void arch_local_irq_enable(void)
+-{
+-	native_irq_enable();
+-}
++#else /* ! CONFIG_PARAVIRT */
+ 
++# ifndef __ASSEMBLY__
  /*
-  * Processors which have self-snooping capability can handle conflicting
-  * memory type across CPUs by snooping its own cache. However, there exists
+  * Used in the idle loop; sti takes one instruction cycle
+  * to complete:
+@@ -97,6 +85,28 @@ static inline __cpuidle void halt(void)
+ {
+ 	native_halt();
+ }
++# endif /* __ASSEMBLY__ */
++
++#endif /* CONFIG_PARAVIRT */
++
++#ifndef CONFIG_PARAVIRT_XXL
++#ifndef __ASSEMBLY__
++#include <linux/types.h>
++
++static __always_inline unsigned long arch_local_save_flags(void)
++{
++	return native_save_fl();
++}
++
++static __always_inline void arch_local_irq_disable(void)
++{
++	native_irq_disable();
++}
++
++static __always_inline void arch_local_irq_enable(void)
++{
++	native_irq_enable();
++}
+ 
+ /*
+  * For spinlocks, etc:
+diff --git a/arch/x86/include/asm/paravirt.h b/arch/x86/include/asm/paravirt.h
+index da3a1ac82be5..d323a626c7a8 100644
+--- a/arch/x86/include/asm/paravirt.h
++++ b/arch/x86/include/asm/paravirt.h
+@@ -97,6 +97,16 @@ static inline void paravirt_arch_exit_mmap(struct mm_struct *mm)
+ 	PVOP_VCALL1(mmu.exit_mmap, mm);
+ }
+ 
++static inline void arch_safe_halt(void)
++{
++	PVOP_VCALL0(irq.safe_halt);
++}
++
++static inline void halt(void)
++{
++	PVOP_VCALL0(irq.halt);
++}
++
+ #ifdef CONFIG_PARAVIRT_XXL
+ static inline void load_sp0(unsigned long sp0)
+ {
+@@ -162,16 +172,6 @@ static inline void __write_cr4(unsigned long x)
+ 	PVOP_VCALL1(cpu.write_cr4, x);
+ }
+ 
+-static inline void arch_safe_halt(void)
+-{
+-	PVOP_VCALL0(irq.safe_halt);
+-}
+-
+-static inline void halt(void)
+-{
+-	PVOP_VCALL0(irq.halt);
+-}
+-
+ static inline void wbinvd(void)
+ {
+ 	PVOP_ALT_VCALL0(cpu.wbinvd, "wbinvd", ALT_NOT(X86_FEATURE_XENPV));
+diff --git a/arch/x86/include/asm/paravirt_types.h b/arch/x86/include/asm/paravirt_types.h
+index d9d6b0203ec4..40082847f314 100644
+--- a/arch/x86/include/asm/paravirt_types.h
++++ b/arch/x86/include/asm/paravirt_types.h
+@@ -150,10 +150,9 @@ struct pv_irq_ops {
+ 	struct paravirt_callee_save save_fl;
+ 	struct paravirt_callee_save irq_disable;
+ 	struct paravirt_callee_save irq_enable;
+-
++#endif
+ 	void (*safe_halt)(void);
+ 	void (*halt)(void);
+-#endif
+ } __no_randomize_layout;
+ 
+ struct pv_mmu_ops {
+diff --git a/arch/x86/kernel/paravirt.c b/arch/x86/kernel/paravirt.c
+index 04cafc057bed..8cea6e75ba29 100644
+--- a/arch/x86/kernel/paravirt.c
++++ b/arch/x86/kernel/paravirt.c
+@@ -283,9 +283,10 @@ struct paravirt_patch_template pv_ops = {
+ 	.irq.save_fl		= __PV_IS_CALLEE_SAVE(native_save_fl),
+ 	.irq.irq_disable	= __PV_IS_CALLEE_SAVE(native_irq_disable),
+ 	.irq.irq_enable		= __PV_IS_CALLEE_SAVE(native_irq_enable),
++#endif /* CONFIG_PARAVIRT_XXL */
++
+ 	.irq.safe_halt		= native_safe_halt,
+ 	.irq.halt		= native_halt,
+-#endif /* CONFIG_PARAVIRT_XXL */
+ 
+ 	/* Mmu ops. */
+ 	.mmu.flush_tlb_user	= native_flush_tlb_local,
 -- 
 2.25.1
 
