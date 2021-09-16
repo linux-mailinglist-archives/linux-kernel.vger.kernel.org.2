@@ -2,37 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92FE040E28D
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:16:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4966140E290
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:17:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244939AbhIPQj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:39:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44350 "EHLO mail.kernel.org"
+        id S245051AbhIPQkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:40:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44660 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241480AbhIPQdM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:33:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 10D59613BD;
-        Thu, 16 Sep 2021 16:20:12 +0000 (UTC)
+        id S242767AbhIPQd1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:33:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CB9C56121F;
+        Thu, 16 Sep 2021 16:20:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809213;
-        bh=y5zwYu7lDFof+ZiAvj92o91Nt3I/SpT/ccGWX4iNuB8=;
+        s=korg; t=1631809216;
+        bh=KUcW18RHSwP7hnNuxVfXQGgR8uP93GgXX7uI5TRwbUM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Rrh+YG4U1VHnRd01MrbZqYdtD2vm9R7+D4jpo5Eh66HeNHBhpJNg/drf/dG1QYQxm
-         LvlXwzt1v98mtwGRpJmdYPeweT2Wy2gvBBFIobLt4Uos56n5NgsGrGTxOvK1fbOnvi
-         vfNz6daNuqIojQxb5JjwGCX0DqsyriYHZxnAdPy8=
+        b=VGgmeQiyYdpxM+qh/jlvl0EBmlG11Key55aKVJyrqCs+TbfbBWG3MjVCZ+nrsbVmL
+         YLUaHu9UQ13nqTXVePvHxZBdbf+86B80xSV9ekumLmyfJhl+jPkDgl8YYdAdBSI+8+
+         WILZpALuT5qO5A9gYLVr4B84AqAoQWJ+anTjnquI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lucas Nussbaum <lucas.nussbaum@inria.fr>,
-        stable@kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        David Rientjes <rientjes@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@gmail.com>
-Subject: [PATCH 5.13 041/380] crypto: ccp - shutdown SEV firmware on kexec
-Date:   Thu, 16 Sep 2021 17:56:38 +0200
-Message-Id: <20210916155805.367705815@linuxfoundation.org>
+        stable@vger.kernel.org, Eddie James <eajames@linux.ibm.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.13 042/380] spi: fsi: Reduce max transfer size to 8 bytes
+Date:   Thu, 16 Sep 2021 17:56:39 +0200
+Message-Id: <20210916155805.409539693@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
 References: <20210916155803.966362085@linuxfoundation.org>
@@ -44,151 +39,255 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Brijesh Singh <brijesh.singh@amd.com>
+From: Eddie James <eajames@linux.ibm.com>
 
-commit 5441a07a127f106c9936e4f9fa1a8a93e3f31828 upstream.
+commit 34d34a56a5ea1e54a5af4f34c6ac9df724129351 upstream.
 
-The commit 97f9ac3db6612 ("crypto: ccp - Add support for SEV-ES to the
-PSP driver") added support to allocate Trusted Memory Region (TMR)
-used during the SEV-ES firmware initialization. The TMR gets locked
-during the firmware initialization and unlocked during the shutdown.
-While the TMR is locked, access to it is disallowed.
+Security changes have forced the SPI controllers to be limited to
+8 byte reads. Refactor the sequencing to just handle 8 bytes at a
+time.
 
-Currently, the CCP driver does not shutdown the firmware during the
-kexec reboot, leaving the TMR memory locked.
-
-Register a callback to shutdown the SEV firmware on the kexec boot.
-
-Fixes: 97f9ac3db6612 ("crypto: ccp - Add support for SEV-ES to the PSP driver")
-Reported-by: Lucas Nussbaum <lucas.nussbaum@inria.fr>
-Tested-by: Lucas Nussbaum <lucas.nussbaum@inria.fr>
-Cc: <stable@kernel.org>
-Cc: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: Joerg Roedel <jroedel@suse.de>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: David Rientjes <rientjes@google.com>
-Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-Acked-by: Tom Lendacky <thomas.lendacky@gmail.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Eddie James <eajames@linux.ibm.com>
+Link: https://lore.kernel.org/r/20210716133915.14697-2-eajames@linux.ibm.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/crypto/ccp/sev-dev.c |   49 ++++++++++++++++++++-----------------------
- drivers/crypto/ccp/sp-pci.c  |   12 ++++++++++
- 2 files changed, 35 insertions(+), 26 deletions(-)
+ drivers/spi/spi-fsi.c |  125 ++++++++------------------------------------------
+ 1 file changed, 22 insertions(+), 103 deletions(-)
 
---- a/drivers/crypto/ccp/sev-dev.c
-+++ b/drivers/crypto/ccp/sev-dev.c
-@@ -300,6 +300,9 @@ static int __sev_platform_shutdown_locke
- 	struct sev_device *sev = psp_master->sev_data;
- 	int ret;
+--- a/drivers/spi/spi-fsi.c
++++ b/drivers/spi/spi-fsi.c
+@@ -25,16 +25,11 @@
  
-+	if (sev->state == SEV_STATE_UNINIT)
-+		return 0;
-+
- 	ret = __sev_do_cmd_locked(SEV_CMD_SHUTDOWN, NULL, error);
- 	if (ret)
- 		return ret;
-@@ -1019,6 +1022,20 @@ e_err:
- 	return ret;
- }
+ #define SPI_FSI_BASE			0x70000
+ #define SPI_FSI_INIT_TIMEOUT_MS		1000
+-#define SPI_FSI_MAX_XFR_SIZE		2048
+-#define SPI_FSI_MAX_XFR_SIZE_RESTRICTED	8
++#define SPI_FSI_MAX_RX_SIZE		8
++#define SPI_FSI_MAX_TX_SIZE		40
  
-+static void sev_firmware_shutdown(struct sev_device *sev)
-+{
-+	sev_platform_shutdown(NULL);
-+
-+	if (sev_es_tmr) {
-+		/* The TMR area was encrypted, flush it from the cache */
-+		wbinvd_on_all_cpus();
-+
-+		free_pages((unsigned long)sev_es_tmr,
-+			   get_order(SEV_ES_TMR_SIZE));
-+		sev_es_tmr = NULL;
-+	}
-+}
-+
- void sev_dev_destroy(struct psp_device *psp)
- {
- 	struct sev_device *sev = psp->sev_data;
-@@ -1026,6 +1043,8 @@ void sev_dev_destroy(struct psp_device *
- 	if (!sev)
- 		return;
- 
-+	sev_firmware_shutdown(sev);
-+
- 	if (sev->misc)
- 		kref_put(&misc_dev->refcount, sev_exit);
- 
-@@ -1056,21 +1075,6 @@ void sev_pci_init(void)
- 	if (sev_get_api_version())
- 		goto err;
- 
--	/*
--	 * If platform is not in UNINIT state then firmware upgrade and/or
--	 * platform INIT command will fail. These command require UNINIT state.
--	 *
--	 * In a normal boot we should never run into case where the firmware
--	 * is not in UNINIT state on boot. But in case of kexec boot, a reboot
--	 * may not go through a typical shutdown sequence and may leave the
--	 * firmware in INIT or WORKING state.
--	 */
--
--	if (sev->state != SEV_STATE_UNINIT) {
--		sev_platform_shutdown(NULL);
--		sev->state = SEV_STATE_UNINIT;
--	}
--
- 	if (sev_version_greater_or_equal(0, 15) &&
- 	    sev_update_firmware(sev->dev) == 0)
- 		sev_get_api_version();
-@@ -1115,17 +1119,10 @@ err:
- 
- void sev_pci_exit(void)
- {
--	if (!psp_master->sev_data)
--		return;
--
--	sev_platform_shutdown(NULL);
-+	struct sev_device *sev = psp_master->sev_data;
- 
--	if (sev_es_tmr) {
--		/* The TMR area was encrypted, flush it from the cache */
--		wbinvd_on_all_cpus();
-+	if (!sev)
-+		return;
- 
--		free_pages((unsigned long)sev_es_tmr,
--			   get_order(SEV_ES_TMR_SIZE));
--		sev_es_tmr = NULL;
--	}
-+	sev_firmware_shutdown(sev);
- }
---- a/drivers/crypto/ccp/sp-pci.c
-+++ b/drivers/crypto/ccp/sp-pci.c
-@@ -241,6 +241,17 @@ e_err:
- 	return ret;
- }
- 
-+static void sp_pci_shutdown(struct pci_dev *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct sp_device *sp = dev_get_drvdata(dev);
-+
-+	if (!sp)
-+		return;
-+
-+	sp_destroy(sp);
-+}
-+
- static void sp_pci_remove(struct pci_dev *pdev)
- {
- 	struct device *dev = &pdev->dev;
-@@ -371,6 +382,7 @@ static struct pci_driver sp_pci_driver =
- 	.id_table = sp_pci_table,
- 	.probe = sp_pci_probe,
- 	.remove = sp_pci_remove,
-+	.shutdown = sp_pci_shutdown,
- 	.driver.pm = &sp_pci_pm_ops,
+ #define SPI_FSI_ERROR			0x0
+ #define SPI_FSI_COUNTER_CFG		0x1
+-#define  SPI_FSI_COUNTER_CFG_LOOPS(x)	 (((u64)(x) & 0xffULL) << 32)
+-#define  SPI_FSI_COUNTER_CFG_N2_RX	 BIT_ULL(8)
+-#define  SPI_FSI_COUNTER_CFG_N2_TX	 BIT_ULL(9)
+-#define  SPI_FSI_COUNTER_CFG_N2_IMPLICIT BIT_ULL(10)
+-#define  SPI_FSI_COUNTER_CFG_N2_RELOAD	 BIT_ULL(11)
+ #define SPI_FSI_CFG1			0x2
+ #define SPI_FSI_CLOCK_CFG		0x3
+ #define  SPI_FSI_CLOCK_CFG_MM_ENABLE	 BIT_ULL(32)
+@@ -76,8 +71,6 @@ struct fsi_spi {
+ 	struct device *dev;	/* SPI controller device */
+ 	struct fsi_device *fsi;	/* FSI2SPI CFAM engine device */
+ 	u32 base;
+-	size_t max_xfr_size;
+-	bool restricted;
  };
  
+ struct fsi_spi_sequence {
+@@ -241,7 +234,7 @@ static int fsi_spi_reset(struct fsi_spi
+ 	return fsi_spi_write_reg(ctx, SPI_FSI_STATUS, 0ULL);
+ }
+ 
+-static int fsi_spi_sequence_add(struct fsi_spi_sequence *seq, u8 val)
++static void fsi_spi_sequence_add(struct fsi_spi_sequence *seq, u8 val)
+ {
+ 	/*
+ 	 * Add the next byte of instruction to the 8-byte sequence register.
+@@ -251,8 +244,6 @@ static int fsi_spi_sequence_add(struct f
+ 	 */
+ 	seq->data |= (u64)val << seq->bit;
+ 	seq->bit -= 8;
+-
+-	return ((64 - seq->bit) / 8) - 2;
+ }
+ 
+ static void fsi_spi_sequence_init(struct fsi_spi_sequence *seq)
+@@ -261,71 +252,11 @@ static void fsi_spi_sequence_init(struct
+ 	seq->data = 0ULL;
+ }
+ 
+-static int fsi_spi_sequence_transfer(struct fsi_spi *ctx,
+-				     struct fsi_spi_sequence *seq,
+-				     struct spi_transfer *transfer)
+-{
+-	int loops;
+-	int idx;
+-	int rc;
+-	u8 val = 0;
+-	u8 len = min(transfer->len, 8U);
+-	u8 rem = transfer->len % len;
+-
+-	loops = transfer->len / len;
+-
+-	if (transfer->tx_buf) {
+-		val = SPI_FSI_SEQUENCE_SHIFT_OUT(len);
+-		idx = fsi_spi_sequence_add(seq, val);
+-
+-		if (rem)
+-			rem = SPI_FSI_SEQUENCE_SHIFT_OUT(rem);
+-	} else if (transfer->rx_buf) {
+-		val = SPI_FSI_SEQUENCE_SHIFT_IN(len);
+-		idx = fsi_spi_sequence_add(seq, val);
+-
+-		if (rem)
+-			rem = SPI_FSI_SEQUENCE_SHIFT_IN(rem);
+-	} else {
+-		return -EINVAL;
+-	}
+-
+-	if (ctx->restricted && loops > 1) {
+-		dev_warn(ctx->dev,
+-			 "Transfer too large; no branches permitted.\n");
+-		return -EINVAL;
+-	}
+-
+-	if (loops > 1) {
+-		u64 cfg = SPI_FSI_COUNTER_CFG_LOOPS(loops - 1);
+-
+-		fsi_spi_sequence_add(seq, SPI_FSI_SEQUENCE_BRANCH(idx));
+-
+-		if (transfer->rx_buf)
+-			cfg |= SPI_FSI_COUNTER_CFG_N2_RX |
+-				SPI_FSI_COUNTER_CFG_N2_TX |
+-				SPI_FSI_COUNTER_CFG_N2_IMPLICIT |
+-				SPI_FSI_COUNTER_CFG_N2_RELOAD;
+-
+-		rc = fsi_spi_write_reg(ctx, SPI_FSI_COUNTER_CFG, cfg);
+-		if (rc)
+-			return rc;
+-	} else {
+-		fsi_spi_write_reg(ctx, SPI_FSI_COUNTER_CFG, 0ULL);
+-	}
+-
+-	if (rem)
+-		fsi_spi_sequence_add(seq, rem);
+-
+-	return 0;
+-}
+-
+ static int fsi_spi_transfer_data(struct fsi_spi *ctx,
+ 				 struct spi_transfer *transfer)
+ {
+ 	int rc = 0;
+ 	u64 status = 0ULL;
+-	u64 cfg = 0ULL;
+ 
+ 	if (transfer->tx_buf) {
+ 		int nb;
+@@ -363,16 +294,6 @@ static int fsi_spi_transfer_data(struct
+ 		u64 in = 0ULL;
+ 		u8 *rx = transfer->rx_buf;
+ 
+-		rc = fsi_spi_read_reg(ctx, SPI_FSI_COUNTER_CFG, &cfg);
+-		if (rc)
+-			return rc;
+-
+-		if (cfg & SPI_FSI_COUNTER_CFG_N2_IMPLICIT) {
+-			rc = fsi_spi_write_reg(ctx, SPI_FSI_DATA_TX, 0);
+-			if (rc)
+-				return rc;
+-		}
+-
+ 		while (transfer->len > recv) {
+ 			do {
+ 				rc = fsi_spi_read_reg(ctx, SPI_FSI_STATUS,
+@@ -439,6 +360,10 @@ static int fsi_spi_transfer_init(struct
+ 		}
+ 	} while (seq_state && (seq_state != SPI_FSI_STATUS_SEQ_STATE_IDLE));
+ 
++	rc = fsi_spi_write_reg(ctx, SPI_FSI_COUNTER_CFG, 0ULL);
++	if (rc)
++		return rc;
++
+ 	rc = fsi_spi_read_reg(ctx, SPI_FSI_CLOCK_CFG, &clock_cfg);
+ 	if (rc)
+ 		return rc;
+@@ -459,6 +384,7 @@ static int fsi_spi_transfer_one_message(
+ {
+ 	int rc;
+ 	u8 seq_slave = SPI_FSI_SEQUENCE_SEL_SLAVE(mesg->spi->chip_select + 1);
++	unsigned int len;
+ 	struct spi_transfer *transfer;
+ 	struct fsi_spi *ctx = spi_controller_get_devdata(ctlr);
+ 
+@@ -471,8 +397,7 @@ static int fsi_spi_transfer_one_message(
+ 		struct spi_transfer *next = NULL;
+ 
+ 		/* Sequencer must do shift out (tx) first. */
+-		if (!transfer->tx_buf ||
+-		    transfer->len > (ctx->max_xfr_size + 8)) {
++		if (!transfer->tx_buf || transfer->len > SPI_FSI_MAX_TX_SIZE) {
+ 			rc = -EINVAL;
+ 			goto error;
+ 		}
+@@ -486,9 +411,13 @@ static int fsi_spi_transfer_one_message(
+ 		fsi_spi_sequence_init(&seq);
+ 		fsi_spi_sequence_add(&seq, seq_slave);
+ 
+-		rc = fsi_spi_sequence_transfer(ctx, &seq, transfer);
+-		if (rc)
+-			goto error;
++		len = transfer->len;
++		while (len > 8) {
++			fsi_spi_sequence_add(&seq,
++					     SPI_FSI_SEQUENCE_SHIFT_OUT(8));
++			len -= 8;
++		}
++		fsi_spi_sequence_add(&seq, SPI_FSI_SEQUENCE_SHIFT_OUT(len));
+ 
+ 		if (!list_is_last(&transfer->transfer_list,
+ 				  &mesg->transfers)) {
+@@ -496,7 +425,9 @@ static int fsi_spi_transfer_one_message(
+ 
+ 			/* Sequencer can only do shift in (rx) after tx. */
+ 			if (next->rx_buf) {
+-				if (next->len > ctx->max_xfr_size) {
++				u8 shift;
++
++				if (next->len > SPI_FSI_MAX_RX_SIZE) {
+ 					rc = -EINVAL;
+ 					goto error;
+ 				}
+@@ -504,10 +435,8 @@ static int fsi_spi_transfer_one_message(
+ 				dev_dbg(ctx->dev, "Sequence rx of %d bytes.\n",
+ 					next->len);
+ 
+-				rc = fsi_spi_sequence_transfer(ctx, &seq,
+-							       next);
+-				if (rc)
+-					goto error;
++				shift = SPI_FSI_SEQUENCE_SHIFT_IN(next->len);
++				fsi_spi_sequence_add(&seq, shift);
+ 			} else {
+ 				next = NULL;
+ 			}
+@@ -541,9 +470,7 @@ error:
+ 
+ static size_t fsi_spi_max_transfer_size(struct spi_device *spi)
+ {
+-	struct fsi_spi *ctx = spi_controller_get_devdata(spi->controller);
+-
+-	return ctx->max_xfr_size;
++	return SPI_FSI_MAX_RX_SIZE;
+ }
+ 
+ static int fsi_spi_probe(struct device *dev)
+@@ -582,14 +509,6 @@ static int fsi_spi_probe(struct device *
+ 		ctx->fsi = fsi;
+ 		ctx->base = base + SPI_FSI_BASE;
+ 
+-		if (of_device_is_compatible(np, "ibm,fsi2spi-restricted")) {
+-			ctx->restricted = true;
+-			ctx->max_xfr_size = SPI_FSI_MAX_XFR_SIZE_RESTRICTED;
+-		} else {
+-			ctx->restricted = false;
+-			ctx->max_xfr_size = SPI_FSI_MAX_XFR_SIZE;
+-		}
+-
+ 		rc = devm_spi_register_controller(dev, ctlr);
+ 		if (rc)
+ 			spi_controller_put(ctlr);
 
 
