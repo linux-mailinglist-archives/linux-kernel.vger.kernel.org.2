@@ -2,134 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8FA040DC64
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 16:07:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D44EA40DC69
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 16:07:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238329AbhIPOIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 10:08:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43486 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238001AbhIPOIr (ORCPT
+        id S238376AbhIPOJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 10:09:15 -0400
+Received: from relayfre-01.paragon-software.com ([176.12.100.13]:54216 "EHLO
+        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238088AbhIPOJG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 10:08:47 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F37FC061766
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 07:07:26 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id h17so17280799edj.6
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 07:07:26 -0700 (PDT)
+        Thu, 16 Sep 2021 10:09:06 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id 580181F89;
+        Thu, 16 Sep 2021 17:07:44 +0300 (MSK)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HqKjw9wQXgOAIHdR23lI/gjq+FKkcG9gMYu8YLG7JPo=;
-        b=X8R38bilPb9UJMFbGupYovxfZQ59V7GYJYem0Rm6E/MC31/9X4JSXIwW02Q4QoWM2H
-         MobuveVE9qxcHXBwN+rPoBw5XFOTHaJqgBUuIVd2688tRzORtfvxkgcg1Hd4tdc67D28
-         BWNNtdjt8iUdyzjZbBEHuX6/tSyVvmDWUS3UQnRu7RBLXl29TcMjlilVpy2bfE5mktEG
-         gtO4YPJGdhnN+69LC3SVeW7WAK2wrsdzGWKM8SIrfUzozPW706CaS3HwTmj0t7nSU4QT
-         /0d31cj79ttgUkDTMf6oTeNwfFbNTzuj6/6PFSv9CzPY0mDJnuKxNlGxnvhulkFObS5H
-         tD/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HqKjw9wQXgOAIHdR23lI/gjq+FKkcG9gMYu8YLG7JPo=;
-        b=FLikS9MnrxE/IvaD4dWgH2ViNe4nAjl7gDI/cALcrL2bfPSFSzaCEPaNymHPWnCWqG
-         U+zZDTc/PkQWDwTuGZduYoN9lgBe8FmAsgVH4Hcv/7XZJSpiA8+lPUuEjyWXMSgOgB4l
-         FvFWQS9BuhOxgVDeSrIs+9Jook+MuDbc6HWVIfnyjhxagunJUsxTnAMgLU7VCi77eD7j
-         p0WVRMSSerHmODvlozbfND3LnvX4XYLuy91lycB14wDv/KetXDlwNcxhTwMcQSEKGsNO
-         cAzcTRhYgZKCZ7Cog1odIRKr9A+Qrwjol5dI98WpYw77DDyDtTNAhWX1lG3srj5YKuqw
-         GLag==
-X-Gm-Message-State: AOAM530keOGsbTXRlLIHocjnQBNPPhjxpQRYKRnUAExOUG1uGySB+DAN
-        aeygI2QJYjUNDUnxKgMDLkmEOxFNSVIuC6B00Okj
-X-Google-Smtp-Source: ABdhPJzMVBexbRBg40V8GTmT/lN49AtdZX2PykTy5ob+r1wEDKnMJiRjhvAPFEUDdw7k+IRm3iy8H44n+qJYCFCPpcY=
-X-Received: by 2002:a17:907:16ab:: with SMTP id hc43mr6454575ejc.195.1631801243482;
- Thu, 16 Sep 2021 07:07:23 -0700 (PDT)
+        d=paragon-software.com; s=mail; t=1631801264;
+        bh=JJnlxypnVRgMT5SLAXWcsf8aaPGV2nStrpNiAr0sGkU=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=YLBmdcL1dV24tFVR8JXIbtc6mbkPoHVMFPDYbAI4GBVaLSa7gmqb00QkRFXEL7mzE
+         2Aj5dyfjnOXjbdTu4x9AIWFqejjPp5U0tya9En65upGnVTzq0LHilla4E/WG9kGTK6
+         ewmFbJ68JIsecIMDpxJl9MwTybp+vhCD5/13Lg7U=
+Received: from [192.168.211.100] (192.168.211.100) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 16 Sep 2021 17:07:43 +0300
+Message-ID: <dc3fab5b-c70e-bf8c-eabf-7da1ca24830c@paragon-software.com>
+Date:   Thu, 16 Sep 2021 17:07:43 +0300
 MIME-Version: 1.0
-References: <202109162036.zghQuRrY-lkp@intel.com> <CAFqZXNuv-d4WFvaVVa1WqzkrP6Wepu6QEKcUH=VejnP2OZz66A@mail.gmail.com>
-In-Reply-To: <CAFqZXNuv-d4WFvaVVa1WqzkrP6Wepu6QEKcUH=VejnP2OZz66A@mail.gmail.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Thu, 16 Sep 2021 10:07:12 -0400
-Message-ID: <CAHC9VhQUBPVhzEUZCO2jTZWcB1bxdoY8xTs99vRdfzqTx3u5Rw@mail.gmail.com>
-Subject: Re: [selinuxproject-selinux:stable-5.15 1/1] include/linux/rcupdate.h:395:2:
- warning: passing argument 1 of 'security_locked_down' discards 'const'
- qualifier from pointer target type
-To:     Ondrej Mosnacek <omosnace@redhat.com>
-Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH v2 0/4] fs/ntfs3: Fix various styling issues
+Content-Language: en-US
+To:     Kari Argillander <kari.argillander@gmail.com>,
+        <ntfs3@lists.linux.dev>
+CC:     <linux-kernel@vger.kernel.org>, Joe Perches <joe@perches.com>
+References: <20210907083441.3212-1-kari.argillander@gmail.com>
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+In-Reply-To: <20210907083441.3212-1-kari.argillander@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.168.211.100]
+X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
+ vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 8:22 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
-> On Thu, Sep 16, 2021 at 2:08 PM kernel test robot <lkp@intel.com> wrote:
-> > tree:   https://github.com/SELinuxProject/selinux-kernel stable-5.15
-> > head:   c491f0a471580712a4254adece400c3ebb3d8e44
-> > commit: c491f0a471580712a4254adece400c3ebb3d8e44 [1/1] lockdown,selinux: fix wrong subject in some SELinux lockdown checks
-> > config: um-x86_64_defconfig (attached as .config)
-> > compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-> > reproduce (this is a W=1 build):
-> >         # https://github.com/SELinuxProject/selinux-kernel/commit/c491f0a471580712a4254adece400c3ebb3d8e44
-> >         git remote add selinuxproject-selinux https://github.com/SELinuxProject/selinux-kernel
-> >         git fetch --no-tags selinuxproject-selinux stable-5.15
-> >         git checkout c491f0a471580712a4254adece400c3ebb3d8e44
-> >         # save the attached .config to linux build tree
-> >         make W=1 ARCH=um SUBARCH=x86_64
-> >
-> > If you fix the issue, kindly add following tag as appropriate
-> > Reported-by: kernel test robot <lkp@intel.com>
-> >
-> > All warnings (new ones prefixed by >>):
-> >
-> >    In file included from include/linux/rbtree.h:24,
-> >                     from include/linux/mm_types.h:10,
-> >                     from include/linux/mmzone.h:21,
-> >                     from include/linux/gfp.h:6,
-> >                     from include/linux/mm.h:10,
-> >                     from drivers/char/mem.c:12:
-> >    drivers/char/mem.c: In function 'open_port':
-> > >> include/linux/rcupdate.h:395:2: warning: passing argument 1 of 'security_locked_down' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
-> >      395 | ({ \
-> >          | ~^~~
-> >      396 |  RCU_LOCKDEP_WARN(!(c), "suspicious rcu_dereference_protected() usage"); \
-> >          |  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> >      397 |  rcu_check_sparse(p, space); \
-> >          |  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> >      398 |  ((typeof(*p) __force __kernel *)(p)); \
-> >          |  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> >      399 | })
-> >          | ~~
-> >    include/linux/rcupdate.h:587:2: note: in expansion of macro '__rcu_dereference_protected'
-> >      587 |  __rcu_dereference_protected((p), (c), __rcu)
-> >          |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-> >    include/linux/cred.h:299:2: note: in expansion of macro 'rcu_dereference_protected'
-> >      299 |  rcu_dereference_protected(current->cred, 1)
-> >          |  ^~~~~~~~~~~~~~~~~~~~~~~~~
-> >    drivers/char/mem.c:620:28: note: in expansion of macro 'current_cred'
-> >      620 |  rc = security_locked_down(current_cred(), LOCKDOWN_DEV_MEM);
-> >          |                            ^~~~~~~~~~~~
-> >    In file included from include/linux/fs_context.h:14,
-> >                     from include/linux/fs_parser.h:11,
-> >                     from include/linux/shmem_fs.h:11,
-> >                     from drivers/char/mem.c:25:
-> >    include/linux/security.h:1347:53: note: expected 'struct cred *' but argument is of type 'const struct cred *'
-> >     1347 | static inline int security_locked_down(struct cred *cred, enum lockdown_reason what)
-> >          |                                        ~~~~~~~~~~~~~^~~~
->
-> Ah, I forgot to add the const qualifier to the function definition in
-> the CONFIG_SECURITY=n branch... Paul, will you amend the commit or
-> should I send an updated patch?
 
-This patch is cursed.  I had to hack up a fixup patch to test this in
-my Rawhide test automation last night too; evidently Rawhide carries
-an out-of-tree lockdown patch which results in some merge rejects.
 
-Sigh.
+On 07.09.2021 11:34, Kari Argillander wrote:
+> Fix various checkpatch warnings. There will still be some but they
+> will be addressed in different patch sets.
+> 
+> v2:
+> 	- Remove + sign completly in 1/4 (Thanks Joe)
+> 	- I dropped one patch as it addressed else were [1]. (Thanks Joe)
+> 	- Drop newline in 3/4
+> 
+> [1]: lore.kernel.org/ntfs3/20210902154050.5075-1-kari.argillander@gmail.com
+> 
+> Kari Argillander (4):
+>   fs/ntfs3: Remove '+' before constant in ni_insert_resident()
+>   fs/ntfs3: Place Comparisons constant right side of the test
+>   fs/ntfs3: Remove braces from single statment block
+>   fs/ntfs3: Remove tabs before spaces from comment
+> 
+>  fs/ntfs3/frecord.c | 7 +++----
+>  fs/ntfs3/lznt.c    | 2 +-
+>  2 files changed, 4 insertions(+), 5 deletions(-)
+> 
+> 
+> base-commit: d3624466b56dd5b1886c1dff500525b544c19c83
+> 
 
-Yes, the quickest path is for me to just fix up the dummy function and
-do a force-push (grrrrrr) back on top of selinux/stable-5.15.
-
--- 
-paul moore
-www.paul-moore.com
+Hi, Kari, Joe!
+Applied, thanks!
