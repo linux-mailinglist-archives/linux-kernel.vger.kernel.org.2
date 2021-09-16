@@ -2,45 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C312D40E9B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:17:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70A9E40E9B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:18:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243841AbhIPSSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 14:18:41 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:54248 "EHLO
+        id S245318AbhIPSSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 14:18:47 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:54278 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236388AbhIPSR0 (ORCPT
+        with ESMTP id S242609AbhIPSR0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 16 Sep 2021 14:17:26 -0400
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id EDECF223E0;
-        Thu, 16 Sep 2021 18:16:03 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 36002223E4;
+        Thu, 16 Sep 2021 18:16:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1631816163; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=YVjbA3qw0sNlkujtQrRfEqRTdtm/0oEWmxsFhdHvpUE=;
-        b=xXPDs0LSCSAzVvEDSZ2qCsNPwaOMP2aVM5DvYN5TcJ7qrashsEklK2nR3IR65nuFh0Zz5S
-        x2KH3oGX9AL0I7zU6jpDlb7qragbtc139Oz4xYdzerH8aij/YKzgBSyOy+gyUlyMdK6KqF
-        XC0HBNbnSSwSzG56nkIxc6ne/jy1ixE=
+        t=1631816164; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dMdYSH8yHZ1KdMOhwOuuE+SL6YgkkXhlg3PLd/C/J7I=;
+        b=xiXdyMWyIZhzyai4Dle9GImcw6OLbUV9wcSdAhL9We20zQoEiE6aV7zY3aLtnvIDGckiFS
+        ndybaEFZLsucNIWdlfH8TfSeJKkZ0Ri7B2Tmh/ldrcCeo8EcFrd96nuwSGZKxNY3vwvcyd
+        UTQa9hwRxzMpw55XTCQ64lkR+ZDVE6o=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1631816163;
+        s=susede2_ed25519; t=1631816164;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=YVjbA3qw0sNlkujtQrRfEqRTdtm/0oEWmxsFhdHvpUE=;
-        b=2jH7bodZHVKT9iVQHzclDESXGiqKhaaTWM2n5bIEKJHEWTlYn8s8b5KqTfRcd9oHCJSg4D
-        5zYsOmzau3S7HnAg==
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dMdYSH8yHZ1KdMOhwOuuE+SL6YgkkXhlg3PLd/C/J7I=;
+        b=Y4XSCKyYoBbKGiL4dQ6LY5T/sKsvhySvG1O14vD2n8HEwCH5f3i890wBHUm6u/LhThd7j0
+        LDN0Ht9ZXQ79xWBg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A15F013D67;
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E9AE113F79;
         Thu, 16 Sep 2021 18:16:03 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id pXsIJuOJQ2FleQAAMHmgww
+        id 4HwaOOOJQ2FleQAAMHmgww
         (envelope-from <tzimmermann@suse.de>); Thu, 16 Sep 2021 18:16:03 +0000
 From:   Thomas Zimmermann <tzimmermann@suse.de>
 To:     airlied@redhat.com, airlied@linux.ie, daniel@ffwll.ch,
@@ -49,43 +53,85 @@ To:     airlied@redhat.com, airlied@linux.ie, daniel@ffwll.ch,
         thunder.leizhen@huawei.com, gregkh@linuxfoundation.org
 Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
         Thomas Zimmermann <tzimmermann@suse.de>
-Subject: [PATCH 0/5] lib: devres: Add managed helpers for write-combine setup
-Date:   Thu, 16 Sep 2021 20:15:56 +0200
-Message-Id: <20210916181601.9146-1-tzimmermann@suse.de>
+Subject: [PATCH 1/5] lib: devres: Add managed arch_phys_wc_add()
+Date:   Thu, 16 Sep 2021 20:15:57 +0200
+Message-Id: <20210916181601.9146-2-tzimmermann@suse.de>
 X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20210916181601.9146-1-tzimmermann@suse.de>
+References: <20210916181601.9146-1-tzimmermann@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add devm_arch_phys_wc_add() and devm_arch_io_reserve_memtype_wc() for
-automatic cleanup of writecombine setup.
+Add devm_arch_phys_wc_add() as managed wrapper around arch_phys_wc_add().
+Useful for several grahpics drivers that set framebuffer memory to write
+combining.
 
-Several DRM drivers use the non-managed functions for setting their
-framebuffer memory to write-combine access. Convert ast, mgag200 and
-vboxvideo. Remove rsp clean-up code form drivers.
+Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+---
+ include/linux/io.h |  2 ++
+ lib/devres.c       | 36 ++++++++++++++++++++++++++++++++++++
+ 2 files changed, 38 insertions(+)
 
-Tested on mgag200 hardware.
-
-Thomas Zimmermann (5):
-  lib: devres: Add managed arch_phys_wc_add()
-  lib: devres: Add managed arch_io_reserve_memtype_wc()
-  drm/ast: Use managed interfaces for framebuffer write combining
-  drm/mgag200: Use managed interfaces for framebuffer write combining
-  drm/vboxvideo: Use managed interfaces for framebuffer write combining
-
- drivers/gpu/drm/ast/ast_drv.h         |  2 -
- drivers/gpu/drm/ast/ast_mm.c          | 27 ++++-----
- drivers/gpu/drm/mgag200/mgag200_drv.h |  2 -
- drivers/gpu/drm/mgag200/mgag200_mm.c  | 35 +++---------
- drivers/gpu/drm/vboxvideo/vbox_drv.c  |  5 +-
- drivers/gpu/drm/vboxvideo/vbox_drv.h  |  1 -
- drivers/gpu/drm/vboxvideo/vbox_ttm.c  | 17 +++---
- include/linux/io.h                    |  5 ++
- lib/devres.c                          | 82 +++++++++++++++++++++++++++
- 9 files changed, 113 insertions(+), 63 deletions(-)
-
---
+diff --git a/include/linux/io.h b/include/linux/io.h
+index 9595151d800d..fcd8ea79c5df 100644
+--- a/include/linux/io.h
++++ b/include/linux/io.h
+@@ -132,6 +132,8 @@ static inline int arch_phys_wc_index(int handle)
+ #endif
+ #endif
+ 
++int devm_arch_phys_wc_add(struct device *dev, unsigned long base, unsigned long size);
++
+ enum {
+ 	/* See memremap() kernel-doc for usage description... */
+ 	MEMREMAP_WB = 1 << 0,
+diff --git a/lib/devres.c b/lib/devres.c
+index b0e1c6702c71..24d4d849ff67 100644
+--- a/lib/devres.c
++++ b/lib/devres.c
+@@ -528,3 +528,39 @@ void pcim_iounmap_regions(struct pci_dev *pdev, int mask)
+ }
+ EXPORT_SYMBOL(pcim_iounmap_regions);
+ #endif /* CONFIG_PCI */
++
++static void devm_arch_phys_ac_add_release(struct device *dev, void *res)
++{
++	arch_phys_wc_del(*((int *)res));
++}
++
++/**
++ * devm_arch_phys_wc_add - Managed arch_phys_wc_add()
++ * @dev: Managed device
++ * @base: Memory base address
++ * @size: Size of memory range
++ *
++ * Adds a WC MTRR using arch_phys_wc_add() and sets up a release callback.
++ * See arch_phys_wc_add() for more information.
++ */
++int devm_arch_phys_wc_add(struct device *dev, unsigned long base, unsigned long size)
++{
++	int *mtrr;
++	int ret;
++
++	mtrr = devres_alloc(devm_arch_phys_ac_add_release, sizeof(*mtrr), GFP_KERNEL);
++	if (!mtrr)
++		return -ENOMEM;
++
++	ret = arch_phys_wc_add(base, size);
++	if (ret < 0) {
++		devres_free(mtrr);
++		return ret;
++	}
++
++	*mtrr = ret;
++	devres_add(dev, mtrr);
++
++	return ret;
++}
++EXPORT_SYMBOL(devm_arch_phys_wc_add);
+-- 
 2.33.0
 
