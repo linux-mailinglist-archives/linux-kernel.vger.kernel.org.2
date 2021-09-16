@@ -2,169 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE31740ED39
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 00:14:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41C8B40ED3C
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 00:17:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240870AbhIPWQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 18:16:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58824 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240827AbhIPWQK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 18:16:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A5156108F;
-        Thu, 16 Sep 2021 22:14:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631830489;
-        bh=SfeUf1o1pmL3XHvIf2UQMyloUSRw60c7MbSYHN8KiiI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Lx6ixaedTikoy1s4K1GkBaooBmmmcv6F43EfgNT3UtcwOpT6vfEjiJ6QfbjacdeJV
-         qEI7MdLl5qfGD1dLfeBTUJ09Mv8tgyovmzXHq1kfSMuRK6pGidaSZeKQ6NAPgxlvkd
-         hyhAsTg5f/amtWu26NA7h5n1gOfGM1j8LPvsRuLslCbql7hplVVeZjPHgVGLKDeP1l
-         /CxlQZyXUMGwFg9CtamfAdfNeUfGYpZPcRPCRwE3iHT+o+rYQyuvULSQZjB2k9nuru
-         FC+CYKEAN5Km5cAKbsYOTUHDusLAPdERJ4EKcrSL8gjbeEiQVmt2OZWsz4BjAALIuh
-         83oNf1DyVTgDQ==
-Date:   Thu, 16 Sep 2021 18:14:48 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Kevin Hao <haokexin@gmail.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Subject: Re: [PATCH 5.13 039/380] cpufreq: schedutil: Use kobject release()
- method to free sugov_tunables
-Message-ID: <YUPB2HlDaoLfNrQ2@sashalap>
-References: <20210916155803.966362085@linuxfoundation.org>
- <20210916155805.299153663@linuxfoundation.org>
- <6592ddb7-3705-6eab-f54c-3f12dbd58a44@intel.com>
+        id S240902AbhIPWSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 18:18:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240827AbhIPWSo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 18:18:44 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91C05C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 15:17:23 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id j66so11101121oih.12
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 15:17:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=NABV4fHMBxJUTrqZIXzkAgkVRVadnQMuyMqiyd9rynU=;
+        b=ZKzDMR/rUYeeOtRAqfwNDuWGYsHfTuaUl0pVqjsCGV5T28gSYH9h8l8l2QtTT++11g
+         FxgSOCZ5DKvra4Ue9qkkUaHmKrZxg8Sf4gApN4DiDBGEDyZee9TgkQUEFj8ENM0TY7Ho
+         EEtw3UOFVFXhyE1HTzFwM6lMRF+Aqwb+ptF+g=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=NABV4fHMBxJUTrqZIXzkAgkVRVadnQMuyMqiyd9rynU=;
+        b=rb+UsxnaQHNhxNNyumjo1R4rcaBB7RC4f4muTnr7xlZV3KX8npfuAs/PJxXPAr7iLz
+         F81Nvo1aSQteRKfqzWEvf2J2oRl2N55vochDsDqpGTdsGnS7RRr1Cdnt9wp1gMSuweNm
+         mpeeUEHWX6RAURpWxoSMLWJ2MnK2gZ0rNotmm3KkYzxh8Vrh07vTk9xGPzlLpKv3Xwq+
+         /vRPZH6nGBko5AifabauUe3G2SW+uShvhuq5iOCsZ2msKySC5lNMv+QLXi70sHyKLK8e
+         If616h/OXxNuF2uyCd4oLoFEUgEnxn5JeTelmkjwhr+A+t1KDl82+RmaGyGs7rMBgSEK
+         QIDg==
+X-Gm-Message-State: AOAM533cLnmW+nHhJDm+6R5MDwA2AGfiZn5VwFm61bs+VVBnY9WGmZd4
+        vBiCfPX/xAoocaI3S6vLihGxdqlGtJyZzbTWWTwCjA==
+X-Google-Smtp-Source: ABdhPJyQF+PTRVoWIc/SP5R0oEryyaHt3YQRsckh4j3uAb8TnudazBX470Odlv+UtYX7ZHCNoq1VM/Mw4JTdSkgI2Fk=
+X-Received: by 2002:aca:2310:: with SMTP id e16mr1648828oie.64.1631830642861;
+ Thu, 16 Sep 2021 15:17:22 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Thu, 16 Sep 2021 15:17:22 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <6592ddb7-3705-6eab-f54c-3f12dbd58a44@intel.com>
+In-Reply-To: <CAD=FV=U_FX_Rg=h+w0yzpzi7fcUCg0Thn2_nXixsCRVsYFUGHQ@mail.gmail.com>
+References: <20210914162825.v3.1.I85e46da154e3fa570442b496a0363250fff0e44e@changeid>
+ <20210914162825.v3.2.Ib06997ddd73e2ac29e185f039d85cfa8e760d641@changeid>
+ <CAE-0n53BXh3_6jEW5oTbPA-V=MSaN=RvqaU8uoY9GNOm-0Pv_g@mail.gmail.com>
+ <CAD=FV=WKQg-fU1jaSOh3RTa5HpSAiTzt2-Sycwt59uv1WemYxg@mail.gmail.com>
+ <CAE-0n539tJLLWHdL65ZU_1qOzA-RsEqGqVi-19VLHz_W5dT6VA@mail.gmail.com> <CAD=FV=U_FX_Rg=h+w0yzpzi7fcUCg0Thn2_nXixsCRVsYFUGHQ@mail.gmail.com>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Thu, 16 Sep 2021 15:17:22 -0700
+Message-ID: <CAE-0n52F6j-qfA_h76BPyMRHi7hJzm6bX8eD5jS-C+ydz=vkBA@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] drm/bridge: parade-ps8640: Use regmap APIs
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Philip Chen <philipchen@chromium.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 06:55:49PM +0200, Rafael J. Wysocki wrote:
->On 9/16/2021 5:56 PM, Greg Kroah-Hartman wrote:
->>From: Kevin Hao <haokexin@gmail.com>
->>
->>commit e5c6b312ce3cc97e90ea159446e6bfa06645364d upstream.
->>
->>The struct sugov_tunables is protected by the kobject, so we can't free
->>it directly. Otherwise we would get a call trace like this:
->>   ODEBUG: free active (active state 0) object type: timer_list hint: delayed_work_timer_fn+0x0/0x30
->>   WARNING: CPU: 3 PID: 720 at lib/debugobjects.c:505 debug_print_object+0xb8/0x100
->>   Modules linked in:
->>   CPU: 3 PID: 720 Comm: a.sh Tainted: G        W         5.14.0-rc1-next-20210715-yocto-standard+ #507
->>   Hardware name: Marvell OcteonTX CN96XX board (DT)
->>   pstate: 40400009 (nZcv daif +PAN -UAO -TCO BTYPE=--)
->>   pc : debug_print_object+0xb8/0x100
->>   lr : debug_print_object+0xb8/0x100
->>   sp : ffff80001ecaf910
->>   x29: ffff80001ecaf910 x28: ffff00011b10b8d0 x27: ffff800011043d80
->>   x26: ffff00011a8f0000 x25: ffff800013cb3ff0 x24: 0000000000000000
->>   x23: ffff80001142aa68 x22: ffff800011043d80 x21: ffff00010de46f20
->>   x20: ffff800013c0c520 x19: ffff800011d8f5b0 x18: 0000000000000010
->>   x17: 6e6968207473696c x16: 5f72656d6974203a x15: 6570797420746365
->>   x14: 6a626f2029302065 x13: 303378302f307830 x12: 2b6e665f72656d69
->>   x11: ffff8000124b1560 x10: ffff800012331520 x9 : ffff8000100ca6b0
->>   x8 : 000000000017ffe8 x7 : c0000000fffeffff x6 : 0000000000000001
->>   x5 : ffff800011d8c000 x4 : ffff800011d8c740 x3 : 0000000000000000
->>   x2 : ffff0001108301c0 x1 : ab3c90eedf9c0f00 x0 : 0000000000000000
->>   Call trace:
->>    debug_print_object+0xb8/0x100
->>    __debug_check_no_obj_freed+0x1c0/0x230
->>    debug_check_no_obj_freed+0x20/0x88
->>    slab_free_freelist_hook+0x154/0x1c8
->>    kfree+0x114/0x5d0
->>    sugov_exit+0xbc/0xc0
->>    cpufreq_exit_governor+0x44/0x90
->>    cpufreq_set_policy+0x268/0x4a8
->>    store_scaling_governor+0xe0/0x128
->>    store+0xc0/0xf0
->>    sysfs_kf_write+0x54/0x80
->>    kernfs_fop_write_iter+0x128/0x1c0
->>    new_sync_write+0xf0/0x190
->>    vfs_write+0x2d4/0x478
->>    ksys_write+0x74/0x100
->>    __arm64_sys_write+0x24/0x30
->>    invoke_syscall.constprop.0+0x54/0xe0
->>    do_el0_svc+0x64/0x158
->>    el0_svc+0x2c/0xb0
->>    el0t_64_sync_handler+0xb0/0xb8
->>    el0t_64_sync+0x198/0x19c
->>   irq event stamp: 5518
->>   hardirqs last  enabled at (5517): [<ffff8000100cbd7c>] console_unlock+0x554/0x6c8
->>   hardirqs last disabled at (5518): [<ffff800010fc0638>] el1_dbg+0x28/0xa0
->>   softirqs last  enabled at (5504): [<ffff8000100106e0>] __do_softirq+0x4d0/0x6c0
->>   softirqs last disabled at (5483): [<ffff800010049548>] irq_exit+0x1b0/0x1b8
->>
->>So split the original sugov_tunables_free() into two functions,
->>sugov_clear_global_tunables() is just used to clear the global_tunables
->>and the new sugov_tunables_free() is used as kobj_type::release to
->>release the sugov_tunables safely.
->>
->>Fixes: 9bdcb44e391d ("cpufreq: schedutil: New governor based on scheduler utilization data")
->>Cc: 4.7+ <stable@vger.kernel.org> # 4.7+
->>Signed-off-by: Kevin Hao <haokexin@gmail.com>
->>Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
->>Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->>Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->>---
->>  kernel/sched/cpufreq_schedutil.c |   16 +++++++++++-----
->>  1 file changed, 11 insertions(+), 5 deletions(-)
->>
->>--- a/kernel/sched/cpufreq_schedutil.c
->>+++ b/kernel/sched/cpufreq_schedutil.c
->>@@ -536,9 +536,17 @@ static struct attribute *sugov_attrs[] =
->>  };
->>  ATTRIBUTE_GROUPS(sugov);
->>+static void sugov_tunables_free(struct kobject *kobj)
->>+{
->>+	struct gov_attr_set *attr_set = container_of(kobj, struct gov_attr_set, kobj);
->>+
->>+	kfree(to_sugov_tunables(attr_set));
->>+}
->>+
->>  static struct kobj_type sugov_tunables_ktype = {
->>  	.default_groups = sugov_groups,
->>  	.sysfs_ops = &governor_sysfs_ops,
->>+	.release = &sugov_tunables_free,
->>  };
->>  /********************** cpufreq governor interface *********************/
->>@@ -638,12 +646,10 @@ static struct sugov_tunables *sugov_tuna
->>  	return tunables;
->>  }
->>-static void sugov_tunables_free(struct sugov_tunables *tunables)
->>+static void sugov_clear_global_tunables(void)
->>  {
->>  	if (!have_governor_per_policy())
->>  		global_tunables = NULL;
->>-
->>-	kfree(tunables);
->>  }
->>  static int sugov_init(struct cpufreq_policy *policy)
->>@@ -706,7 +712,7 @@ out:
->>  fail:
->>  	kobject_put(&tunables->attr_set.kobj);
->>  	policy->governor_data = NULL;
->>-	sugov_tunables_free(tunables);
->>+	sugov_clear_global_tunables();
->>  stop_kthread:
->>  	sugov_kthread_stop(sg_policy);
->>@@ -733,7 +739,7 @@ static void sugov_exit(struct cpufreq_po
->>  	count = gov_attr_set_put(&tunables->attr_set, &sg_policy->tunables_hook);
->>  	policy->governor_data = NULL;
->>  	if (!count)
->>-		sugov_tunables_free(tunables);
->>+		sugov_clear_global_tunables();
->>  	mutex_unlock(&global_tunables_lock);
->>
->>
->Please defer adding this one.
+TL;DR: Please try to reduce these error messages in drivers and
+consolidate them into subsystems so that drivers stay simple.
 
-I'll drop, let us know when to bring it back.
+Quoting Doug Anderson (2021-09-15 09:41:39)
+> Hi,
+>
+> On Tue, Sep 14, 2021 at 7:50 PM Stephen Boyd <swboyd@chromium.org> wrote:
+> >
+> >
+> > I'd rather see any sort of error message in getter APIs be pushed into
+> > the callee so that we reduce the text size of the kernel by having one
+> > message instead of hundreds/thousands about "failure to get something".
+> > As far as I can tell this API is designed to skip printing anything when
+> > EPROBE_DEFER is returned, and only print something when it isn't that
+> > particular error code. The other benefit of this API is it sets the
+> > deferred reason in debugfs which is nice to know why some device failed
+> > to probe. Of course now with fw_devlink that almost never triggers so
+> > the feature is becoming useless.
+>
+> I guess we need to split this apart into two issues. One (1) is
+> whether we should be printing errors like this in probe() and the
+> other (2) is the use of dev_err_probe() for cases where err could
+> never be -EPROBE_DEFER.
+>
+> So the argument about reducing the text size for thousands of slightly
+> different errors is all about (1), right? In other words, you'd be
+> equally opposed to a change that added a normal error print with
+> dev_err(), right? IMO, this is a fair debate to have and it comes down
+> to a choice that has pros and cons. Yes the error messages are not
+> needed in the normal case and yes they bloat the kernel size, but when
+> something inevitably goes wrong then you have a way to track it down
+> instead of trying to guess or having to recompile the code to add
+> prints everywhere. Often this can give you a quick clue about a
+> missing Kconfig or a wrongly coded device tree file without tons of
+> time adding prints and recompiling code. That seems like it's worth
+> something...
 
--- 
-Thanks,
-Sasha
+Agreed. dev_err_probe() does that by putting that into the deferred
+reason debugfs file. I'm saying that drivers shouldn't really be using
+this API unless they're doing something exotic. The subsystems that are
+implementing the 'get' operation that may defer should use this function
+and then drivers should just return the error value to driver core so
+that we can consolidate error messages and shrink the kernel size.
+
+Maybe we can look for the defer reason in call_driver_probe() and print
+a warning message if the string is set. Right now -EPROBE_DEFER is
+handled but it's a dev_dbg() print that probably nobody enables and it
+doesn't print the reason string.
+
+Even better, we could make the defer reason the 'probe failed reason'
+instead, and then jam the dev_err_probe() string into there regardless
+of EPROBE_DEFER being returned or not. This would elevate this API to
+any sort of device probe error. One more crazy idea is that we could
+save the stack when the dev_err_probe() call is made and print out the
+stacktrace when the error string is printed in driver core. I'm not sure
+this is any better than making it a WARN_ON() though.
+
+>
+> One could also make the argument that if you don't care about all
+> these similar errors bloating the text segment that it would be pretty
+> easy to create a new Kconfig: "CONFIG_I_THINK_PROBE_ERRORS_ARE_BLOAT".
+> If that config is set then it could throw away the strings for every
+> dev_err_probe() that you compile in.
+
+I'll leave this little CONFIG_PRINTK=n sledgehammer here.
+
+>
+>
+> I'm not so convinced about the argument (2) that dev_err_probe()
+> should only be used if the error code could be -EPROBE_DEFER. Compare
+> these two:
+>
+> Old:
+>   ret = do_something_that_cant_defer();
+>   if (ret < 0) {
+>     dev_err(dev, "The foo failed to bar (%pe)\n", ERR_PTR(ret));
+>     return ret;
+>   }
+>
+> New:
+>   ret = do_something_that_cant_defer();
+>   if (ret < 0)
+>     return dev_err_probe(dev, ret, "The foo failed to bar\n");
+>
+> It seems clear to me that the "New" case is better. The error code is
+> printed in a consistent fashion compared to all other error prints and
+> the fact that it returns the error code makes it cleaner. It's fine
+> that the error could never be -EPROBE_DEFER. Certainly we could add a
+> new function called dev_err_with_code() that worked exactly like
+> dev_err_probe() except that it didn't have special logic for
+> -EPROBE_DEFER but why?
+>
+> Also note that the current function is dev_err_probe(), not
+> dev_err_might_defer(). By the name, it should be useful / OK to use
+> for any errors that come up in the probe path.
+
+I looked at the documentation for dev_err_probe()
+
+ * This helper implements common pattern present in probe functions for error
+ * checking: print debug or error message depending if the error value is
+ * -EPROBE_DEFER and propagate error upwards.
+ * In case of -EPROBE_DEFER it sets also defer probe reason, which can be
+ * checked later by reading devices_deferred debugfs attribute.
+
+This seems to imply that it's all about EPROBE_DEFER. I'm just
+reconstructing what I read from kernel-doc. If the intent is to use it
+outside of probe defer, then please update the documentation to
+alleviate confusion.
+
+>
+>
+> > > Is there some bad thing about dev_err_probe() that makes it
+> > > problematic to use? If not then the above advantages should be a net
+> > > win, right?
+> > >
+> >
+> > I view it as an anti-pattern. We should strive for driver probe to be
+> > fairly simple so that it's basically getting resources and registering
+> > with frameworks. The error messages in probe may help when you're trying
+> > to get the driver to work and the resource APIs don't make any sense but
+> > after that it's basically debug messages hiding as error messages.
+> > They're never supposed to happen in practice, because the code is
+> > tested, right?
+>
+> IMO they happen even after initial driver bringup. You can trip error
+> cases from device tree problems and config problems pretty easily. It
+> could also be that you're bringing up an old / tested / tried and true
+> driver but on new hardware where some other thing (clock, regulators,
+> etc) is returning an error. Being able to track these down easily can
+> justify the error messages long term.
+>
+> ...or maybe what you're saying is that if it's clear that the only
+> case that an error could be returned is due to a driver error then we
+> should skip the error message? I guess, so, but only if it's somehow
+> built-in to the concept of the function that the only error case is a
+> driver error. Otherwise the function may change to check for more
+> errors in the future and you're back to where you started with.
+
+I didn't really follow this paragraph, sorry.
+
+>
+> In the case of devm_regmap_init_i2c(), the driver could be fine but
+> you might be trying to instantiate it on a system whose i2c bus lacks
+> the needed functionality. That's not a bug in the bridge driver but an
+> error in system integration. Yeah, after bringup of the new system you
+> probably don't need the error, but it will be useful during people's
+> bringups year after year.
+>
+
+The point I'm trying to make is that these error messages in probe
+almost never get printed after the driver is brought up on the hardware
+that starts shipping out to non-kernel developers. Of course they happen
+when kernel devs are enabling new hardware year after year on the same
+tried and tested driver. They're worthwhile messages to have to make our
+lives easier at figuring out some misconfiguration, etc. The problem is
+they lead to bloat once the bringup/configuration phase is over.
+
+At one point we directed driver authors at dev_dbg() for these prints so
+that the strings would be removed from the kernel image if debugging
+wasn't enabled. It looks like dev_err_probe() goes in the opposite
+direction by printing an error message and passing the string to an
+exported function, so dev_dbg() won't reduce the image size. Ugh!
