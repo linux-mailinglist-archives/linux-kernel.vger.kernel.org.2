@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C50940E76E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:33:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2691A40E0D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:28:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348401AbhIPRcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:32:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44342 "EHLO mail.kernel.org"
+        id S233760AbhIPQYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:24:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55354 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350742AbhIPRWu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:22:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A9B760F8F;
-        Thu, 16 Sep 2021 16:43:22 +0000 (UTC)
+        id S241032AbhIPQPH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:15:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DF2D61263;
+        Thu, 16 Sep 2021 16:10:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810603;
-        bh=gB9z9wL68N4zA6j+tsmo/QkfIMZQNo6VHD+mttTBms0=;
+        s=korg; t=1631808658;
+        bh=WO6ADGGSO99avQrDWRk0pqj7iOZKqfl96hWXBYYzfcE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Plk1JKeKKCwrrV+lLzwneAxHOPPz/WHHj6L4jhzg3WoHqzlziuCq1Gwl3alZ4gE8+
-         La2KeySp5cP1nBaHMfK9y5T4vdsk51iCskc/mBX3f3WJGYHZmNsPI2YRolmbNTOQAf
-         wAEttnyJWMKhhEh6S5dI6qt5nsZUPGogCEhDzIzw=
+        b=tJVF1FwnJ4HOZh65zKX6tExyMcsA2DhhhVWbzactKNRXqsJO2xtuMDwg+hCG1IaYI
+         dR6Fen9wVepZcHEASABxx6V8Ux+woSy8hs0yG8n0QwpcwJz2zLT1ZWfWuNsfXuTuCz
+         6GTZTOBg8QCoM5GM35owRt5ovBF89MxTVbKDnkaM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Patrick Delaunay <patrick.delaunay@foss.st.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 169/432] media: dib8000: rewrite the init prbs logic
+Subject: [PATCH 5.10 173/306] ARM: dts: stm32: Update AV96 adv7513 node per dtbs_check
 Date:   Thu, 16 Sep 2021 17:58:38 +0200
-Message-Id: <20210916155816.466197666@linuxfoundation.org>
+Message-Id: <20210916155759.979655191@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,137 +43,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+From: Marek Vasut <marex@denx.de>
 
-[ Upstream commit 8db11aebdb8f93f46a8513c22c9bd52fa23263aa ]
+[ Upstream commit 1e6bc5987a5252948e3411e5a2dbb434fd1ea107 ]
 
-The logic at dib8000_get_init_prbs() has a few issues:
+Swap reg and reg-names order and drop adi,input-justification
+and adi,input-style to fix the following dtbs_check warnings:
+arch/arm/boot/dts/stm32mp157a-dhcor-avenger96.dt.yaml: hdmi-transmitter@3d: adi,input-justification: False schema does not allow ['evenly']
+arch/arm/boot/dts/stm32mp157a-dhcor-avenger96.dt.yaml: hdmi-transmitter@3d: adi,input-style: False schema does not allow [[1]]
+arch/arm/boot/dts/stm32mp157a-dhcor-avenger96.dt.yaml: hdmi-transmitter@3d: reg-names:1: 'edid' was expected
+arch/arm/boot/dts/stm32mp157a-dhcor-avenger96.dt.yaml: hdmi-transmitter@3d: reg-names:2: 'cec' was expected
 
-1. the tables used there has an extra unused value at the beginning;
-2. the dprintk() message doesn't write the right value when
-   transmission mode is not 8K;
-3. the array overflow validation is done by the callers.
-
-Rewrite the code to fix such issues.
-
-This should also shut up those smatch warnings:
-
-	drivers/media/dvb-frontends/dib8000.c:2125 dib8000_get_init_prbs() error: buffer overflow 'lut_prbs_8k' 14 <= 14
-	drivers/media/dvb-frontends/dib8000.c:2129 dib8000_get_init_prbs() error: buffer overflow 'lut_prbs_2k' 14 <= 14
-	drivers/media/dvb-frontends/dib8000.c:2131 dib8000_get_init_prbs() error: buffer overflow 'lut_prbs_4k' 14 <= 14
-	drivers/media/dvb-frontends/dib8000.c:2134 dib8000_get_init_prbs() error: buffer overflow 'lut_prbs_8k' 14 <= 14
-
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Cc: Patrice Chotard <patrice.chotard@foss.st.com>
+Cc: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Cc: linux-stm32@st-md-mailman.stormreply.com
+To: linux-arm-kernel@lists.infradead.org
+Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/dvb-frontends/dib8000.c | 58 +++++++++++++++++++--------
- 1 file changed, 41 insertions(+), 17 deletions(-)
+ arch/arm/boot/dts/stm32mp15xx-dhcor-avenger96.dtsi | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/media/dvb-frontends/dib8000.c b/drivers/media/dvb-frontends/dib8000.c
-index 082796534b0a..bb02354a48b8 100644
---- a/drivers/media/dvb-frontends/dib8000.c
-+++ b/drivers/media/dvb-frontends/dib8000.c
-@@ -2107,32 +2107,55 @@ static void dib8000_load_ana_fe_coefs(struct dib8000_state *state, const s16 *an
- 			dib8000_write_word(state, 117 + mode, ana_fe[mode]);
- }
+diff --git a/arch/arm/boot/dts/stm32mp15xx-dhcor-avenger96.dtsi b/arch/arm/boot/dts/stm32mp15xx-dhcor-avenger96.dtsi
+index ec02cee1dd9b..944d38b85eef 100644
+--- a/arch/arm/boot/dts/stm32mp15xx-dhcor-avenger96.dtsi
++++ b/arch/arm/boot/dts/stm32mp15xx-dhcor-avenger96.dtsi
+@@ -185,8 +185,8 @@ &i2c2 {	/* X6 I2C2 */
+ &i2c4 {
+ 	hdmi-transmitter@3d {
+ 		compatible = "adi,adv7513";
+-		reg = <0x3d>, <0x2d>, <0x4d>, <0x5d>;
+-		reg-names = "main", "cec", "edid", "packet";
++		reg = <0x3d>, <0x4d>, <0x2d>, <0x5d>;
++		reg-names = "main", "edid", "cec", "packet";
+ 		clocks = <&cec_clock>;
+ 		clock-names = "cec";
  
--static const u16 lut_prbs_2k[14] = {
--	0, 0x423, 0x009, 0x5C7, 0x7A6, 0x3D8, 0x527, 0x7FF, 0x79B, 0x3D6, 0x3A2, 0x53B, 0x2F4, 0x213
-+static const u16 lut_prbs_2k[13] = {
-+	0x423, 0x009, 0x5C7,
-+	0x7A6, 0x3D8, 0x527,
-+	0x7FF, 0x79B, 0x3D6,
-+	0x3A2, 0x53B, 0x2F4,
-+	0x213
- };
--static const u16 lut_prbs_4k[14] = {
--	0, 0x208, 0x0C3, 0x7B9, 0x423, 0x5C7, 0x3D8, 0x7FF, 0x3D6, 0x53B, 0x213, 0x029, 0x0D0, 0x48E
-+
-+static const u16 lut_prbs_4k[13] = {
-+	0x208, 0x0C3, 0x7B9,
-+	0x423, 0x5C7, 0x3D8,
-+	0x7FF, 0x3D6, 0x53B,
-+	0x213, 0x029, 0x0D0,
-+	0x48E
- };
--static const u16 lut_prbs_8k[14] = {
--	0, 0x740, 0x069, 0x7DD, 0x208, 0x7B9, 0x5C7, 0x7FF, 0x53B, 0x029, 0x48E, 0x4C4, 0x367, 0x684
-+
-+static const u16 lut_prbs_8k[13] = {
-+	0x740, 0x069, 0x7DD,
-+	0x208, 0x7B9, 0x5C7,
-+	0x7FF, 0x53B, 0x029,
-+	0x48E, 0x4C4, 0x367,
-+	0x684
- };
+@@ -204,8 +204,6 @@ hdmi-transmitter@3d {
+ 		adi,input-depth = <8>;
+ 		adi,input-colorspace = "rgb";
+ 		adi,input-clock = "1x";
+-		adi,input-style = <1>;
+-		adi,input-justification = "evenly";
  
- static u16 dib8000_get_init_prbs(struct dib8000_state *state, u16 subchannel)
- {
- 	int sub_channel_prbs_group = 0;
-+	int prbs_group;
- 
--	sub_channel_prbs_group = (subchannel / 3) + 1;
--	dprintk("sub_channel_prbs_group = %d , subchannel =%d prbs = 0x%04x\n", sub_channel_prbs_group, subchannel, lut_prbs_8k[sub_channel_prbs_group]);
-+	sub_channel_prbs_group = subchannel / 3;
-+	if (sub_channel_prbs_group >= ARRAY_SIZE(lut_prbs_2k))
-+		return 0;
- 
- 	switch (state->fe[0]->dtv_property_cache.transmission_mode) {
- 	case TRANSMISSION_MODE_2K:
--			return lut_prbs_2k[sub_channel_prbs_group];
-+		prbs_group = lut_prbs_2k[sub_channel_prbs_group];
-+		break;
- 	case TRANSMISSION_MODE_4K:
--			return lut_prbs_4k[sub_channel_prbs_group];
-+		prbs_group =  lut_prbs_4k[sub_channel_prbs_group];
-+		break;
- 	default:
- 	case TRANSMISSION_MODE_8K:
--			return lut_prbs_8k[sub_channel_prbs_group];
-+		prbs_group = lut_prbs_8k[sub_channel_prbs_group];
- 	}
-+
-+	dprintk("sub_channel_prbs_group = %d , subchannel =%d prbs = 0x%04x\n",
-+		sub_channel_prbs_group, subchannel, prbs_group);
-+
-+	return prbs_group;
- }
- 
- static void dib8000_set_13seg_channel(struct dib8000_state *state)
-@@ -2409,10 +2432,8 @@ static void dib8000_set_isdbt_common_channel(struct dib8000_state *state, u8 seq
- 	/* TSB or ISDBT ? apply it now */
- 	if (c->isdbt_sb_mode) {
- 		dib8000_set_sb_channel(state);
--		if (c->isdbt_sb_subchannel < 14)
--			init_prbs = dib8000_get_init_prbs(state, c->isdbt_sb_subchannel);
--		else
--			init_prbs = 0;
-+		init_prbs = dib8000_get_init_prbs(state,
-+						  c->isdbt_sb_subchannel);
- 	} else {
- 		dib8000_set_13seg_channel(state);
- 		init_prbs = 0xfff;
-@@ -3004,6 +3025,7 @@ static int dib8000_tune(struct dvb_frontend *fe)
- 
- 	unsigned long *timeout = &state->timeout;
- 	unsigned long now = jiffies;
-+	u16 init_prbs;
- #ifdef DIB8000_AGC_FREEZE
- 	u16 agc1, agc2;
- #endif
-@@ -3302,8 +3324,10 @@ static int dib8000_tune(struct dvb_frontend *fe)
- 		break;
- 
- 	case CT_DEMOD_STEP_11:  /* 41 : init prbs autosearch */
--		if (state->subchannel <= 41) {
--			dib8000_set_subchannel_prbs(state, dib8000_get_init_prbs(state, state->subchannel));
-+		init_prbs = dib8000_get_init_prbs(state, state->subchannel);
-+
-+		if (init_prbs) {
-+			dib8000_set_subchannel_prbs(state, init_prbs);
- 			*tune_state = CT_DEMOD_STEP_9;
- 		} else {
- 			*tune_state = CT_DEMOD_STOP;
+ 		ports {
+ 			#address-cells = <1>;
 -- 
 2.30.2
 
