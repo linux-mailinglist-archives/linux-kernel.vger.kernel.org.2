@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F296F40E6B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:31:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3133D40DFF0
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:15:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352372AbhIPRYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:24:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39800 "EHLO mail.kernel.org"
+        id S234496AbhIPQQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:16:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48542 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243966AbhIPRP6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:15:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0FC9361BA6;
-        Thu, 16 Sep 2021 16:40:02 +0000 (UTC)
+        id S230337AbhIPQJR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:09:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE4576135A;
+        Thu, 16 Sep 2021 16:07:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810403;
-        bh=DerjmtjVPV3EHwZB5MvO89BhWKQ7W0uW/gnQ1822Ago=;
+        s=korg; t=1631808469;
+        bh=wtgWkB59/aH0RLYlCMSJHaQwTUy6rp6/SEuuaohTqRA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LJKLaMi1it00GJ0PVJ8MJ4o6ty5STPwmOOJUSCJ6J6CgbxR1zU4lCoJkLCNDd8BhQ
-         RQ8VBuhxlZfyabJ+lcPNfmjkXjnEZNzr+tTCqzPE9BwiEpic+wMU6v3NMHq/q/QPc+
-         XcUGb/skqLMhbEyaA5GQHj2NsLk8NIbt21uZvKas=
+        b=0sZ7cn3gkcPWV4UITl6NH/FHr0E5AMdCUtEdMwH2PS13fQbpfUWVQa3MBfZxVhd8o
+         e0ED/9ad8+ZP4aXp1BWQR+TgE9CtWKXkP5mte2nfE4LwyDdCUXsWQUJLx68gO92bWU
+         dAAnJ1/3yA9i5e6EgJ8YVkiEXt4YbHSCCrdfQlHw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Jassi Brar <jaswinder.singh@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 096/432] RDMA/hns: Dont overwrite supplied QP attributes
-Date:   Thu, 16 Sep 2021 17:57:25 +0200
-Message-Id: <20210916155814.031972734@linuxfoundation.org>
+Subject: [PATCH 5.10 101/306] soc: mediatek: cmdq: add address shift in jump
+Date:   Thu, 16 Sep 2021 17:57:26 +0200
+Message-Id: <20210916155757.511779390@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,43 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+From: Yongqiang Niu <yongqiang.niu@mediatek.com>
 
-[ Upstream commit e66e49592b690d6abd537cc207b07a3db2f413d0 ]
+[ Upstream commit 8b60ed2b1674b78ebc433a11efa7d48821229037 ]
 
-QP attributes that were supplied by IB/core already have all parameters
-set when they are passed to the driver. The drivers are not supposed to
-change anything in struct ib_qp_init_attr.
+Add address shift when compose jump instruction
+to compatible with 35bit format.
 
-Fixes: 66d86e529dd5 ("RDMA/hns: Add UD support for HIP09")
-Link: https://lore.kernel.org/r/5987138875e8ade9aa339d4db6e1bd9694ed4591.1627040189.git.leonro@nvidia.com
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Fixes: 0858fde496f8 ("mailbox: cmdq: variablize address shift in platform")
+Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
+Reviewed-by: Nicolas Boichat <drinkcat@chromium.org>
+Signed-off-by: Jassi Brar <jaswinder.singh@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/hns/hns_roce_qp.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+ drivers/mailbox/mtk-cmdq-mailbox.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-index b101b7e578f2..c3e2fee16c0e 100644
---- a/drivers/infiniband/hw/hns/hns_roce_qp.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-@@ -1171,14 +1171,8 @@ struct ib_qp *hns_roce_create_qp(struct ib_pd *pd,
- 	if (!hr_qp)
- 		return ERR_PTR(-ENOMEM);
+diff --git a/drivers/mailbox/mtk-cmdq-mailbox.c b/drivers/mailbox/mtk-cmdq-mailbox.c
+index 5665b6ea8119..75378e35c3d6 100644
+--- a/drivers/mailbox/mtk-cmdq-mailbox.c
++++ b/drivers/mailbox/mtk-cmdq-mailbox.c
+@@ -168,7 +168,8 @@ static void cmdq_task_insert_into_thread(struct cmdq_task *task)
+ 	dma_sync_single_for_cpu(dev, prev_task->pa_base,
+ 				prev_task->pkt->cmd_buf_size, DMA_TO_DEVICE);
+ 	prev_task_base[CMDQ_NUM_CMD(prev_task->pkt) - 1] =
+-		(u64)CMDQ_JUMP_BY_PA << 32 | task->pa_base;
++		(u64)CMDQ_JUMP_BY_PA << 32 |
++		(task->pa_base >> task->cmdq->shift_pa);
+ 	dma_sync_single_for_device(dev, prev_task->pa_base,
+ 				   prev_task->pkt->cmd_buf_size, DMA_TO_DEVICE);
  
--	if (init_attr->qp_type == IB_QPT_XRC_INI)
--		init_attr->recv_cq = NULL;
--
--	if (init_attr->qp_type == IB_QPT_XRC_TGT) {
-+	if (init_attr->qp_type == IB_QPT_XRC_TGT)
- 		hr_qp->xrcdn = to_hr_xrcd(init_attr->xrcd)->xrcdn;
--		init_attr->recv_cq = NULL;
--		init_attr->send_cq = NULL;
--	}
- 
- 	if (init_attr->qp_type == IB_QPT_GSI) {
- 		hr_qp->port = init_attr->port_num - 1;
 -- 
 2.30.2
 
