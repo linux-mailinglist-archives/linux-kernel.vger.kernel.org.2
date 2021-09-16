@@ -2,37 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC1A940E72D
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:32:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A13440E789
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:33:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353269AbhIPRa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:30:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44342 "EHLO mail.kernel.org"
+        id S1353464AbhIPRd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:33:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43648 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352226AbhIPRUu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:20:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C9D5B61B9F;
-        Thu, 16 Sep 2021 16:42:24 +0000 (UTC)
+        id S1343975AbhIPRWE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:22:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F0A5961BB5;
+        Thu, 16 Sep 2021 16:42:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810545;
-        bh=qgrvvbgVxAgBnFAp5WVpU5JvVXZIGj1Kxl6i3UuX4rA=;
+        s=korg; t=1631810575;
+        bh=Ruc48eyXaD3uQ5drzDTKk8RQ+LthBucD3UIoQgJsNFs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jV1tACSBzIm2OGFCZv4H8TONJZhQ2a5C2MmVyooszBjJsUCwoSWCoZ00zYD/4m1tQ
-         yIZVxuIeUxo6+Dsfp+pnalUpkV/4v7XkzMD1yUUa34F0IKAACw4HtaVbQUvTvBNn2i
-         Ic4a+E2CFY0oZuvASbJvx6tpJvUPsfmR4wD6xe0U=
+        b=aqW9ITGymCf5XzxSXJ7BCnwuajxp70kKYe0RzgiyHv3TrY0JGTDxqJE/3hMnVXJeK
+         63TL7G/Mm2naImT5SjXcDKgvbnsbw2c63EVnbIwsjn7DDkNCPP5cuS5IUvDZJHScTC
+         Ofk/Rrlq+fv0dtUqPEffs4WEMDurVPe+R469SU/A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        John Clements <john.clements@amd.com>,
-        Hawking Zhang <Hawking.Zhang@amd.com>,
-        Luben Tuikov <luben.tuikov@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Tim Gover <tim.gover@raspberrypi.com>,
+        Maxime Ripard <maxime@cerno.tech>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 163/432] drm/amdgpu: Fix koops when accessing RAS EEPROM
-Date:   Thu, 16 Sep 2021 17:58:32 +0200
-Message-Id: <20210916155816.273246131@linuxfoundation.org>
+Subject: [PATCH 5.14 164/432] drm: vc4: Fix pixel-wrap issue with DVP teardown
+Date:   Thu, 16 Sep 2021 17:58:33 +0200
+Message-Id: <20210916155816.308185416@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
 References: <20210916155810.813340753@linuxfoundation.org>
@@ -44,69 +40,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luben Tuikov <luben.tuikov@amd.com>
+From: Tim Gover <tim.gover@raspberrypi.com>
 
-[ Upstream commit 1d9d2ca85b32605ac9c74c8fa42d0c1cfbe019d4 ]
+[ Upstream commit 0b066a6809d0f8fd9868e383add36aa5a2fa409d ]
 
-Debugfs RAS EEPROM files are available when
-the ASIC supports RAS, and when the debugfs is
-enabled, an also when "ras_enable" module
-parameter is set to 0. However in this case,
-we get a kernel oops when accessing some of
-the "ras_..." controls in debugfs. The reason
-for this is that struct amdgpu_ras::adev is
-unset. This commit sets it, thus enabling access
-to those facilities. Note that this facilitates
-EEPROM access and not necessarily RAS features or
-functionality.
+Adjust the DVP enable/disable sequence to avoid a pixel getting stuck
+in an internal, non resettable FIFO within PixelValve when changing
+HDMI resolution.
 
-Cc: Alexander Deucher <Alexander.Deucher@amd.com>
-Cc: John Clements <john.clements@amd.com>
-Cc: Hawking Zhang <Hawking.Zhang@amd.com>
-Signed-off-by: Luben Tuikov <luben.tuikov@amd.com>
-Acked-by: Alexander Deucher <Alexander.Deucher@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+The blank pixels features of the DVP can prevent signals back to
+pixelvalve causing it to not clear the FIFO. Adjust the ordering
+and timing of operations to ensure the clear signal makes it through to
+pixelvalve.
+
+Signed-off-by: Tim Gover <tim.gover@raspberrypi.com>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210628130533.144617-1-maxime@cerno.tech
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/vc4/vc4_hdmi.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
-index fc66aca28594..95d5842385b3 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
-@@ -1966,11 +1966,20 @@ int amdgpu_ras_recovery_init(struct amdgpu_device *adev)
- 	bool exc_err_limit = false;
+diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+index ad92dbb128b3..f91d37beb113 100644
+--- a/drivers/gpu/drm/vc4/vc4_hdmi.c
++++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+@@ -613,12 +613,12 @@ static void vc4_hdmi_encoder_post_crtc_disable(struct drm_encoder *encoder,
+ 
+ 	HDMI_WRITE(HDMI_RAM_PACKET_CONFIG, 0);
+ 
+-	HDMI_WRITE(HDMI_VID_CTL, HDMI_READ(HDMI_VID_CTL) |
+-		   VC4_HD_VID_CTL_CLRRGB | VC4_HD_VID_CTL_CLRSYNC);
++	HDMI_WRITE(HDMI_VID_CTL, HDMI_READ(HDMI_VID_CTL) | VC4_HD_VID_CTL_CLRRGB);
+ 
+-	HDMI_WRITE(HDMI_VID_CTL,
+-		   HDMI_READ(HDMI_VID_CTL) | VC4_HD_VID_CTL_BLANKPIX);
++	mdelay(1);
+ 
++	HDMI_WRITE(HDMI_VID_CTL,
++		   HDMI_READ(HDMI_VID_CTL) & ~VC4_HD_VID_CTL_ENABLE);
+ 	vc4_hdmi_disable_scrambling(encoder);
+ }
+ 
+@@ -628,12 +628,12 @@ static void vc4_hdmi_encoder_post_crtc_powerdown(struct drm_encoder *encoder,
+ 	struct vc4_hdmi *vc4_hdmi = encoder_to_vc4_hdmi(encoder);
  	int ret;
  
--	if (adev->ras_enabled && con)
--		data = &con->eh_data;
--	else
-+	if (!con)
-+		return 0;
++	HDMI_WRITE(HDMI_VID_CTL,
++		   HDMI_READ(HDMI_VID_CTL) | VC4_HD_VID_CTL_BLANKPIX);
 +
-+	/* Allow access to RAS EEPROM via debugfs, when the ASIC
-+	 * supports RAS and debugfs is enabled, but when
-+	 * adev->ras_enabled is unset, i.e. when "ras_enable"
-+	 * module parameter is set to 0.
-+	 */
-+	con->adev = adev;
-+
-+	if (!adev->ras_enabled)
- 		return 0;
+ 	if (vc4_hdmi->variant->phy_disable)
+ 		vc4_hdmi->variant->phy_disable(vc4_hdmi);
  
-+	data = &con->eh_data;
- 	*data = kmalloc(sizeof(**data), GFP_KERNEL | __GFP_ZERO);
- 	if (!*data) {
- 		ret = -ENOMEM;
-@@ -1980,7 +1989,6 @@ int amdgpu_ras_recovery_init(struct amdgpu_device *adev)
- 	mutex_init(&con->recovery_lock);
- 	INIT_WORK(&con->recovery_work, amdgpu_ras_do_recovery);
- 	atomic_set(&con->in_recovery, 0);
--	con->adev = adev;
+-	HDMI_WRITE(HDMI_VID_CTL,
+-		   HDMI_READ(HDMI_VID_CTL) & ~VC4_HD_VID_CTL_ENABLE);
+-
+ 	clk_disable_unprepare(vc4_hdmi->pixel_bvb_clock);
+ 	clk_disable_unprepare(vc4_hdmi->pixel_clock);
  
- 	max_eeprom_records_len = amdgpu_ras_eeprom_get_record_max_length();
- 	amdgpu_ras_validate_threshold(adev, max_eeprom_records_len);
+@@ -1015,6 +1015,7 @@ static void vc4_hdmi_encoder_post_crtc_enable(struct drm_encoder *encoder,
+ 
+ 	HDMI_WRITE(HDMI_VID_CTL,
+ 		   VC4_HD_VID_CTL_ENABLE |
++		   VC4_HD_VID_CTL_CLRRGB |
+ 		   VC4_HD_VID_CTL_UNDERFLOW_ENABLE |
+ 		   VC4_HD_VID_CTL_FRAME_COUNTER_RESET |
+ 		   (vsync_pos ? 0 : VC4_HD_VID_CTL_VSYNC_LOW) |
 -- 
 2.30.2
 
