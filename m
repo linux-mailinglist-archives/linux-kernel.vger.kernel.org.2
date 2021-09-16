@@ -2,81 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A54B940DED9
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:00:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AD3C40DEBD
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 17:54:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240445AbhIPQAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:00:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43428 "EHLO mail.kernel.org"
+        id S240123AbhIPPzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 11:55:52 -0400
+Received: from mga05.intel.com ([192.55.52.43]:25691 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240403AbhIPQAp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:00:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EA856124D;
-        Thu, 16 Sep 2021 15:59:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631807964;
-        bh=GaCTzSIAgugH052OtJe3MAsmhy3oRXntm2uoObsHuj4=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=O+8/2cDx2xu3lNUzz6omHISDHdjoc/4/7bnauMmWxidgOsjIYSDzMMvJJR7Iy2GEw
-         1VymODcs7VCF2IckRzuZoXW/5whog+h02cjjrPj8LLMfnOMhwrxAT0Zm5Y255jj2a5
-         NCJXMu3nX/TGfN8DvRxbxNhbjIusVOy+fuBFhFVeUlryClIvqk+nVLJfGZTub6S3Yn
-         fEm+E1VAEE7WI5uFCX9uokpqR/zl99RpjmLOoQImXntZpctVNXeS1azyHS5Rsl/uyF
-         ypT/yUJkQAVx27PlA22uAfRUf/JhPFLba3eqo48Crb2Jd/I+B0SlgzFazTclNHmxgX
-         ntYVIgLG9Pjlg==
-Message-ID: <26ba3d661d0c8a9e4a44be908dfc7cd2d89a2d43.camel@kernel.org>
-Subject: Re: [PATCH v3 05/30] ABI: sysfs-class-tpm: use wildcards for pcr-*
- nodes
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org
-Date:   Thu, 16 Sep 2021 18:59:22 +0300
-In-Reply-To: <4ab3fce91ea2bd7c36a07e6c646bf7bd6f4f8634.1631782432.git.mchehab+huawei@kernel.org>
-References: <cover.1631782432.git.mchehab+huawei@kernel.org>
-         <4ab3fce91ea2bd7c36a07e6c646bf7bd6f4f8634.1631782432.git.mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        id S231702AbhIPPzv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 11:55:51 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10109"; a="308140566"
+X-IronPort-AV: E=Sophos;i="5.85,298,1624345200"; 
+   d="scan'208";a="308140566"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2021 08:54:28 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,298,1624345200"; 
+   d="scan'208";a="472823204"
+Received: from chenyu-desktop.sh.intel.com ([10.239.158.176])
+  by orsmga007.jf.intel.com with ESMTP; 16 Sep 2021 08:54:24 -0700
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     linux-acpi@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <len.brown@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Aubrey Li <aubrey.li@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>, Chen Yu <yu.c.chen@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>, linux-efi@vger.kernel.org
+Subject: [PATCH v3 2/5] efi: Introduce EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER and corresponding structures
+Date:   Fri, 17 Sep 2021 00:00:10 +0800
+Message-Id: <afe88d0bbab0fbed289cceceec009be99120effa.1631802163.git.yu.c.chen@intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1631802162.git.yu.c.chen@intel.com>
+References: <cover.1631802162.git.yu.c.chen@intel.com>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-09-16 at 10:59 +0200, Mauro Carvalho Chehab wrote:
-> Change how this expression is defined:
->=20
-> 	/sys/class/tpm/tpmX/pcr-H/N
->=20
-> in order to allow get_abi.pl to convert it into this regex:
->=20
-> 	/sys/class/tpm/tpmX/pcr-.*/.*
->=20
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  Documentation/ABI/stable/sysfs-class-tpm | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/Documentation/ABI/stable/sysfs-class-tpm b/Documentation/ABI=
-/stable/sysfs-class-tpm
-> index d897ecb9615f..411d5895bed4 100644
-> --- a/Documentation/ABI/stable/sysfs-class-tpm
-> +++ b/Documentation/ABI/stable/sysfs-class-tpm
-> @@ -195,7 +195,7 @@ Description:	The "tpm_version_major" property shows t=
-he TCG spec major version
-> =20
->  		  2
-> =20
-> -What:		/sys/class/tpm/tpmX/pcr-H/N
-> +What:		/sys/class/tpm/tpmX/pcr-<H>/<N>
->  Date:		March 2021
->  KernelVersion:	5.12
->  Contact:	linux-integrity@vger.kernel.org
+Platform Firmware Runtime Update image starts with UEFI headers, and the
+headers are defined in UEFI specification, but some of them have not been
+defined in the kernel yet.
 
+For example, the header layout of a capsule file looks like this:
 
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+EFI_CAPSULE_HEADER
+EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER
+EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER
+EFI_FIRMWARE_IMAGE_AUTHENTICATION
 
-/Jarkko
+These structures would be used by the Platform Firmware Runtime Update
+driver to parse the format of capsule file to verify if the corresponding
+version number is valid. The EFI_CAPSULE_HEADER has been defined in the
+kernel, however the rest are not, thus introduce corresponding UEFI
+structures accordingly.
+
+The reason why efi_manage_capsule_header_t and
+efi_manage_capsule_image_header_t are packedi might be that:
+According to the uefi spec,
+[Figure 23-6 Firmware Management and Firmware Image Management headers]
+EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER is located at the lowest offset
+within the body of the capsule. And this structure is designed to be
+unaligned to save space, because in this way the adjacent drivers and
+binary payload elements could start on byte boundary with no padding.
+And the EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER is at the head of
+each payload, so packing this structure also makes room for more data.
+
+Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+---
+ include/linux/efi.h | 50 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 50 insertions(+)
+
+diff --git a/include/linux/efi.h b/include/linux/efi.h
+index 6b5d36babfcc..19ff834e1388 100644
+--- a/include/linux/efi.h
++++ b/include/linux/efi.h
+@@ -148,6 +148,56 @@ typedef struct {
+ 	u32 imagesize;
+ } efi_capsule_header_t;
+ 
++#pragma pack(1)
++
++/* EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER */
++typedef struct {
++	u32	ver;
++	u16	emb_drv_cnt;
++	u16	payload_cnt;
++	/*
++	 * Variable array indicated by number of
++	 * (emb_drv_cnt + payload_cnt)
++	 */
++	u64	offset_list[];
++} efi_manage_capsule_header_t;
++
++/* EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER */
++typedef struct {
++	u32	ver;
++	guid_t	image_type_id;
++	u8	image_index;
++	u8	reserved_bytes[3];
++	u32	image_size;
++	u32	vendor_code_size;
++	/* ver = 2. */
++	u64	hw_ins;
++	/* ver = v3. */
++	u64	capsule_support;
++} efi_manage_capsule_image_header_t;
++
++#pragma pack()
++
++/* WIN_CERTIFICATE */
++typedef struct {
++	u32	len;
++	u16	rev;
++	u16	cert_type;
++} win_cert_t;
++
++/* WIN_CERTIFICATE_UEFI_GUID */
++typedef struct {
++	win_cert_t	hdr;
++	guid_t		cert_type;
++	u8		cert_data[];
++} win_cert_uefi_guid_t;
++
++/* EFI_FIRMWARE_IMAGE_AUTHENTICATIO */
++typedef struct {
++	u64				mon_count;
++	win_cert_uefi_guid_t		auth_info;
++} efi_image_auth_t;
++
+ /*
+  * EFI capsule flags
+  */
+-- 
+2.25.1
 
