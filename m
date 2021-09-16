@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94F1940E337
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:19:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B92D840E355
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:20:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244407AbhIPQqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:46:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50778 "EHLO mail.kernel.org"
+        id S243389AbhIPQrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:47:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51718 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245369AbhIPQkU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:40:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B6B761465;
-        Thu, 16 Sep 2021 16:23:41 +0000 (UTC)
+        id S244185AbhIPQl2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:41:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 544AC6126A;
+        Thu, 16 Sep 2021 16:24:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809421;
-        bh=5ANBYZHGT6lDyKTeylFDsecgH0x2gUQwZcIgDogmUro=;
+        s=korg; t=1631809451;
+        bh=h7WoPbhk4P1tddmUKXsOWaZI7zGyW1QsZZxFbB4hm/E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kQMSxuKL916JyHJyKwCOOhXTy7+QUs3UX2kJjdCAItPMIZ8XLs/NoAuFTK2xVZsiG
-         97L07BBInEf32EVdUnEq51nZsQ+Vw+CGBz75/MlQuLgRVp240J40XRxnbs/2Ll6DTZ
-         T5JHAaUAsUpIK9SrNUuPXTS7cLGzC1uR9RYQ94fE=
+        b=HiypCQtxaLr1fDDG08M1yUj/Vc6lZXGH7bxdeEV5ivFj3kfz8890aFzuhbPJqIxna
+         OlvLrGo+BxHWkOZdhZmJ4P0HLEpIdf8h3hgxWLDqfF3SQhehhqkucvVAI+fYF8yjbQ
+         WYAHj/7Ih2sfA45/MymsKvr3P2o3knUef+ukc/sk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dom Cobley <popcornmix@gmail.com>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        stable@vger.kernel.org,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Tomi Valkeinen <tomba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 141/380] drm/vc4: hdmi: Set HD_CTL_WHOLSMP and HD_CTL_CHALIGN_SET
-Date:   Thu, 16 Sep 2021 17:58:18 +0200
-Message-Id: <20210916155808.846917899@linuxfoundation.org>
+Subject: [PATCH 5.13 142/380] drm/omap: Follow implicit fencing in prepare_fb
+Date:   Thu, 16 Sep 2021 17:58:19 +0200
+Message-Id: <20210916155808.885018227@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
 References: <20210916155803.966362085@linuxfoundation.org>
@@ -41,53 +42,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dom Cobley <popcornmix@gmail.com>
+From: Daniel Vetter <daniel.vetter@ffwll.ch>
 
-[ Upstream commit 1698ecb218eb82587dbfc71a2e26ded66e5ecf59 ]
+[ Upstream commit 942d8344d5f14b9ea2ae43756f319b9f44216ba4 ]
 
-Symptom is random switching of speakers when using multichannel.
+I guess no one ever tried running omap together with lima or panfrost,
+not even sure that's possible. Anyway for consistency, fix this.
 
-Repeatedly running speakertest -c8 occasionally starts with
-channels jumbled. This is fixed with HD_CTL_WHOLSMP.
-
-The other bit looks beneficial and apears harmless in testing so
-I'd suggest adding it too.
-
-Documentation says: HD_CTL_WHILSMP_SET
-Wait for whole sample. When this bit is set MAI transmit will start
-only when there is at least one whole sample available in the fifo.
-
-Documentation says: HD_CTL_CHALIGN_SET
-Channel Align When Overflow. This bit is used to realign the audio
-channels in case of an overflow.
-If this bit is set, after the detection of an overflow, equal
-amount of dummy words to the missing words will be written to fifo,
-filling up the broken sample and maintaining alignment.
-
-Signed-off-by: Dom Cobley <popcornmix@gmail.com>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Reviewed-by: Nicolas Saenz Julienne <nsaenz@kernel.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210525132354.297468-7-maxime@cerno.tech
+Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+Cc: Tomi Valkeinen <tomba@kernel.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210622165511.3169559-12-daniel.vetter@ffwll.ch
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/vc4/vc4_hdmi.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/omapdrm/omap_plane.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
-index edee565334d8..155f305e7c4e 100644
---- a/drivers/gpu/drm/vc4/vc4_hdmi.c
-+++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-@@ -1205,7 +1205,9 @@ static int vc4_hdmi_audio_trigger(struct snd_pcm_substream *substream, int cmd,
- 		HDMI_WRITE(HDMI_MAI_CTL,
- 			   VC4_SET_FIELD(vc4_hdmi->audio.channels,
- 					 VC4_HD_MAI_CTL_CHNUM) |
--			   VC4_HD_MAI_CTL_ENABLE);
-+					 VC4_HD_MAI_CTL_WHOLSMP |
-+					 VC4_HD_MAI_CTL_CHALIGN |
-+					 VC4_HD_MAI_CTL_ENABLE);
- 		break;
- 	case SNDRV_PCM_TRIGGER_STOP:
- 		HDMI_WRITE(HDMI_MAI_CTL,
+diff --git a/drivers/gpu/drm/omapdrm/omap_plane.c b/drivers/gpu/drm/omapdrm/omap_plane.c
+index 801da917507d..512af976b7e9 100644
+--- a/drivers/gpu/drm/omapdrm/omap_plane.c
++++ b/drivers/gpu/drm/omapdrm/omap_plane.c
+@@ -6,6 +6,7 @@
+ 
+ #include <drm/drm_atomic.h>
+ #include <drm/drm_atomic_helper.h>
++#include <drm/drm_gem_atomic_helper.h>
+ #include <drm/drm_plane_helper.h>
+ 
+ #include "omap_dmm_tiler.h"
+@@ -29,6 +30,8 @@ static int omap_plane_prepare_fb(struct drm_plane *plane,
+ 	if (!new_state->fb)
+ 		return 0;
+ 
++	drm_gem_plane_helper_prepare_fb(plane, new_state);
++
+ 	return omap_framebuffer_pin(new_state->fb);
+ }
+ 
 -- 
 2.30.2
 
