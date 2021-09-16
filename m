@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4542940DF1F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:06:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D40C40E59D
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:27:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232539AbhIPQHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:07:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45104 "EHLO mail.kernel.org"
+        id S244213AbhIPRNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:13:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35942 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240666AbhIPQFz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:05:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 24B416124B;
-        Thu, 16 Sep 2021 16:04:33 +0000 (UTC)
+        id S1349468AbhIPRFw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:05:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 89F9161881;
+        Thu, 16 Sep 2021 16:35:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808274;
-        bh=0ePl1E+3PuCV1SPXw9xIHOSJrgfL54JPk9ra8OAYrxg=;
+        s=korg; t=1631810135;
+        bh=aQ3ss94Ysz8Z2rgJ7EBicK34Av2AyGubTaj1Y/1YGx4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pajEWI+rYKN8gLLY9wEyvHKPSVVrzw4Lq+AY8ogSueAdT29DfqHNELj/cPJ/dhlQL
-         SFv2zMWLNtjPmUzVMY/HWvXriX9NfGtUISAxmm+dz+phLTpdr6HCtNu9NTAjK+O0g7
-         Z9IXLEUo6HHpuYsaYgOKI2Ht1NCFiqtLw5rJJH1c=
+        b=ICpdTwAMSY5MXZYYC2/D0qt0RNLoF3To0d30/WI7N7sELjrWGQCzZIz871OFlFshi
+         G7aVfjlylzxakucTNxF/Kx7ESXxnRGasGN/n5/LvLxIqWw9pbhQ8XPbZp+q+CatFzg
+         Xr4zBy8u3lPgnthU947CljhQHDoQ6IKAJ77TLA6M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        Jade Alglave <jade.alglave@arm.com>,
-        Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Subject: [PATCH 5.10 026/306] arm64: mm: Fix TLBI vs ASID rollover
+        stable@vger.kernel.org,
+        Harshvardhan Jha <harshvardhan.jha@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Dominique Martinet <asmadeus@codewreck.org>
+Subject: [PATCH 5.14 022/432] 9p/xen: Fix end of loop tests for list_for_each_entry
 Date:   Thu, 16 Sep 2021 17:56:11 +0200
-Message-Id: <20210916155754.836388244@linuxfoundation.org>
+Message-Id: <20210916155811.577357838@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,119 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Will Deacon <will@kernel.org>
+From: Harshvardhan Jha <harshvardhan.jha@oracle.com>
 
-commit 5e10f9887ed85d4f59266d5c60dd09be96b5dbd4 upstream.
+commit 732b33d0dbf17e9483f0b50385bf606f724f50a2 upstream.
 
-When switching to an 'mm_struct' for the first time following an ASID
-rollover, a new ASID may be allocated and assigned to 'mm->context.id'.
-This reassignment can happen concurrently with other operations on the
-mm, such as unmapping pages and subsequently issuing TLB invalidation.
+This patch addresses the following problems:
+ - priv can never be NULL, so this part of the check is useless
+ - if the loop ran through the whole list, priv->client is invalid and
+it is more appropriate and sufficient to check for the end of
+list_for_each_entry loop condition.
 
-Consequently, we need to ensure that (a) accesses to 'mm->context.id'
-are atomic and (b) all page-table updates made prior to a TLBI using the
-old ASID are guaranteed to be visible to CPUs running with the new ASID.
-
-This was found by inspection after reviewing the VMID changes from
-Shameer but it looks like a real (yet hard to hit) bug.
-
+Link: http://lkml.kernel.org/r/20210727000709.225032-1-harshvardhan.jha@oracle.com
+Signed-off-by: Harshvardhan Jha <harshvardhan.jha@oracle.com>
+Reviewed-by: Stefano Stabellini <sstabellini@kernel.org>
+Tested-by: Stefano Stabellini <sstabellini@kernel.org>
 Cc: <stable@vger.kernel.org>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Jade Alglave <jade.alglave@arm.com>
-Cc: Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
-Signed-off-by: Will Deacon <will@kernel.org>
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-Link: https://lore.kernel.org/r/20210806113109.2475-2-will@kernel.org
-Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+Signed-off-by: Dominique Martinet <asmadeus@codewreck.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm64/include/asm/mmu.h      |   29 +++++++++++++++++++++++++----
- arch/arm64/include/asm/tlbflush.h |   11 ++++++-----
- 2 files changed, 31 insertions(+), 9 deletions(-)
+ net/9p/trans_xen.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/arch/arm64/include/asm/mmu.h
-+++ b/arch/arm64/include/asm/mmu.h
-@@ -30,11 +30,32 @@ typedef struct {
- } mm_context_t;
+--- a/net/9p/trans_xen.c
++++ b/net/9p/trans_xen.c
+@@ -138,7 +138,7 @@ static bool p9_xen_write_todo(struct xen
  
- /*
-- * This macro is only used by the TLBI and low-level switch_mm() code,
-- * neither of which can race with an ASID change. We therefore don't
-- * need to reload the counter using atomic64_read().
-+ * We use atomic64_read() here because the ASID for an 'mm_struct' can
-+ * be reallocated when scheduling one of its threads following a
-+ * rollover event (see new_context() and flush_context()). In this case,
-+ * a concurrent TLBI (e.g. via try_to_unmap_one() and ptep_clear_flush())
-+ * may use a stale ASID. This is fine in principle as the new ASID is
-+ * guaranteed to be clean in the TLB, but the TLBI routines have to take
-+ * care to handle the following race:
-+ *
-+ *    CPU 0                    CPU 1                          CPU 2
-+ *
-+ *    // ptep_clear_flush(mm)
-+ *    xchg_relaxed(pte, 0)
-+ *    DSB ISHST
-+ *    old = ASID(mm)
-+ *         |                                                  <rollover>
-+ *         |                   new = new_context(mm)
-+ *         \-----------------> atomic_set(mm->context.id, new)
-+ *                             cpu_switch_mm(mm)
-+ *                             // Hardware walk of pte using new ASID
-+ *    TLBI(old)
-+ *
-+ * In this scenario, the barrier on CPU 0 and the dependency on CPU 1
-+ * ensure that the page-table walker on CPU 1 *must* see the invalid PTE
-+ * written by CPU 0.
-  */
--#define ASID(mm)	((mm)->context.id.counter & 0xffff)
-+#define ASID(mm)	(atomic64_read(&(mm)->context.id) & 0xffff)
- 
- static inline bool arm64_kernel_unmapped_at_el0(void)
+ static int p9_xen_request(struct p9_client *client, struct p9_req_t *p9_req)
  {
---- a/arch/arm64/include/asm/tlbflush.h
-+++ b/arch/arm64/include/asm/tlbflush.h
-@@ -245,9 +245,10 @@ static inline void flush_tlb_all(void)
- 
- static inline void flush_tlb_mm(struct mm_struct *mm)
- {
--	unsigned long asid = __TLBI_VADDR(0, ASID(mm));
-+	unsigned long asid;
- 
- 	dsb(ishst);
-+	asid = __TLBI_VADDR(0, ASID(mm));
- 	__tlbi(aside1is, asid);
- 	__tlbi_user(aside1is, asid);
- 	dsb(ish);
-@@ -256,9 +257,10 @@ static inline void flush_tlb_mm(struct m
- static inline void flush_tlb_page_nosync(struct vm_area_struct *vma,
- 					 unsigned long uaddr)
- {
--	unsigned long addr = __TLBI_VADDR(uaddr, ASID(vma->vm_mm));
-+	unsigned long addr;
- 
- 	dsb(ishst);
-+	addr = __TLBI_VADDR(uaddr, ASID(vma->vm_mm));
- 	__tlbi(vale1is, addr);
- 	__tlbi_user(vale1is, addr);
- }
-@@ -283,9 +285,7 @@ static inline void __flush_tlb_range(str
- {
- 	int num = 0;
- 	int scale = 0;
--	unsigned long asid = ASID(vma->vm_mm);
--	unsigned long addr;
--	unsigned long pages;
-+	unsigned long asid, addr, pages;
- 
- 	start = round_down(start, stride);
- 	end = round_up(end, stride);
-@@ -305,6 +305,7 @@ static inline void __flush_tlb_range(str
+-	struct xen_9pfs_front_priv *priv = NULL;
++	struct xen_9pfs_front_priv *priv;
+ 	RING_IDX cons, prod, masked_cons, masked_prod;
+ 	unsigned long flags;
+ 	u32 size = p9_req->tc.size;
+@@ -151,7 +151,7 @@ static int p9_xen_request(struct p9_clie
+ 			break;
  	}
+ 	read_unlock(&xen_9pfs_lock);
+-	if (!priv || priv->client != client)
++	if (list_entry_is_head(priv, &xen_9pfs_devs, list))
+ 		return -EINVAL;
  
- 	dsb(ishst);
-+	asid = ASID(vma->vm_mm);
- 
- 	/*
- 	 * When the CPU does not support TLB range operations, flush the TLB
+ 	num = p9_req->tc.tag % priv->num_rings;
 
 
