@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7F7C40DF36
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:07:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E19FC40E229
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:15:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232579AbhIPQHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:07:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45176 "EHLO mail.kernel.org"
+        id S237662AbhIPQfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:35:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240670AbhIPQGA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:06:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B29761241;
-        Thu, 16 Sep 2021 16:04:38 +0000 (UTC)
+        id S241579AbhIPQ1l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:27:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 195C0615E1;
+        Thu, 16 Sep 2021 16:17:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808279;
-        bh=rBUMzl3onosp598T5s5G9TA9eIJrYtyHlU6jND7CCzQ=;
+        s=korg; t=1631809061;
+        bh=kNuUBg/QNlWgTbs4CpCjDCNixvrovJ6aZHwZm0Jkq7I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0p8l5h1jEgQGUGH5HO5crTg8f7T4fCyQwU2fLlnA7CUDZRu475rtGKN6bhIMA40CH
-         rH1xaJczOzgtaaX+knRT3FEZRSBQja2KCe1P3PB4fWgYkjZjIxc9sZBrGRJTp6lvh1
-         1+Tm03rVwCOAu6hzhqjMyLkvRxR+540x0GEgXb+I=
+        b=1eO+zHvIuu+PaVdFwqF3BHQDQsSypAvmpBIB9xdEFbzgd3OBvLb3D1lQ457OBxkgx
+         bQ4Pu3t/Ay+UfZCk+5dvfkM7/mAb/xeFMdIVKcMWdhIBKjNtDyWh8L044C5cgDKt4H
+         EgNaKCPyTwgijL3CnEN4u4hM6UrnyphdMwlD9hlw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Drew Fustini <drew@pdp7.com>,
-        =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.10 028/306] iio: ltc2983: fix device probe
-Date:   Thu, 16 Sep 2021 17:56:13 +0200
-Message-Id: <20210916155754.901625624@linuxfoundation.org>
+        stable@vger.kernel.org, Jingle Wu <jingle.wu@emc.com.tw>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: [PATCH 5.13 017/380] Input: elan_i2c - reduce the resume time for controller in Whitebox
+Date:   Thu, 16 Sep 2021 17:56:14 +0200
+Message-Id: <20210916155804.557445533@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,95 +39,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nuno Sá <nuno.sa@analog.com>
+From: jingle.wu <jingle.wu@emc.com.tw>
 
-commit b76d26d69ecc97ebb24aaf40427a13c808a4f488 upstream.
+commit d198b8273e3006818ea287a93eb4d8fd2543e512 upstream.
 
-There is no reason to assume that the IRQ rising edge (indicating that
-the device start up phase is done) will happen after we request the IRQ.
-If the device is already up by the time we request it, the call to
-'wait_for_completion_timeout()' will timeout and we will fail the device
-probe even though there's nothing wrong.
+Similar to controllers found Voxel, Delbin, Magpie and Bobba, the one found
+in Whitebox does not need to be reset after issuing power-on command, and
+skipping reset saves resume time.
 
-Fix it by just polling the status register until we get the indication that
-the device is up and running. As a side effect of this fix, requesting the
-IRQ is also moved to after the setup function.
-
-Fixes: f110f3188e563 ("iio: temperature: Add support for LTC2983")
-Reported-and-tested-by: Drew Fustini <drew@pdp7.com>
-Reviewed-by: Drew Fustini <drew@pdp7.com>
-Signed-off-by: Nuno Sá <nuno.sa@analog.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: <Stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210811133220.190264-2-nuno.sa@analog.com
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Jingle Wu <jingle.wu@emc.com.tw>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20210907012924.11391-1-jingle.wu@emc.com.tw
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/temperature/ltc2983.c |   30 ++++++++++++++----------------
- 1 file changed, 14 insertions(+), 16 deletions(-)
+ drivers/input/mouse/elan_i2c.h      |    3 ++-
+ drivers/input/mouse/elan_i2c_core.c |    1 +
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/iio/temperature/ltc2983.c
-+++ b/drivers/iio/temperature/ltc2983.c
-@@ -89,6 +89,8 @@
+--- a/drivers/input/mouse/elan_i2c.h
++++ b/drivers/input/mouse/elan_i2c.h
+@@ -55,8 +55,9 @@
+ #define ETP_FW_PAGE_SIZE_512	512
+ #define ETP_FW_SIGNATURE_SIZE	6
  
- #define	LTC2983_STATUS_START_MASK	BIT(7)
- #define	LTC2983_STATUS_START(x)		FIELD_PREP(LTC2983_STATUS_START_MASK, x)
-+#define	LTC2983_STATUS_UP_MASK		GENMASK(7, 6)
-+#define	LTC2983_STATUS_UP(reg)		FIELD_GET(LTC2983_STATUS_UP_MASK, reg)
+-#define ETP_PRODUCT_ID_DELBIN	0x00C2
++#define ETP_PRODUCT_ID_WHITEBOX	0x00B8
+ #define ETP_PRODUCT_ID_VOXEL	0x00BF
++#define ETP_PRODUCT_ID_DELBIN	0x00C2
+ #define ETP_PRODUCT_ID_MAGPIE	0x0120
+ #define ETP_PRODUCT_ID_BOBBA	0x0121
  
- #define	LTC2983_STATUS_CHAN_SEL_MASK	GENMASK(4, 0)
- #define	LTC2983_STATUS_CHAN_SEL(x) \
-@@ -1362,17 +1364,16 @@ put_child:
- 
- static int ltc2983_setup(struct ltc2983_data *st, bool assign_iio)
- {
--	u32 iio_chan_t = 0, iio_chan_v = 0, chan, iio_idx = 0;
-+	u32 iio_chan_t = 0, iio_chan_v = 0, chan, iio_idx = 0, status;
- 	int ret;
--	unsigned long time;
--
--	/* make sure the device is up */
--	time = wait_for_completion_timeout(&st->completion,
--					    msecs_to_jiffies(250));
- 
--	if (!time) {
-+	/* make sure the device is up: start bit (7) is 0 and done bit (6) is 1 */
-+	ret = regmap_read_poll_timeout(st->regmap, LTC2983_STATUS_REG, status,
-+				       LTC2983_STATUS_UP(status) == 1, 25000,
-+				       25000 * 10);
-+	if (ret) {
- 		dev_err(&st->spi->dev, "Device startup timed out\n");
--		return -ETIMEDOUT;
-+		return ret;
- 	}
- 
- 	st->iio_chan = devm_kzalloc(&st->spi->dev,
-@@ -1492,10 +1493,11 @@ static int ltc2983_probe(struct spi_devi
- 	ret = ltc2983_parse_dt(st);
- 	if (ret)
- 		return ret;
--	/*
--	 * let's request the irq now so it is used to sync the device
--	 * startup in ltc2983_setup()
--	 */
-+
-+	ret = ltc2983_setup(st, true);
-+	if (ret)
-+		return ret;
-+
- 	ret = devm_request_irq(&spi->dev, spi->irq, ltc2983_irq_handler,
- 			       IRQF_TRIGGER_RISING, name, st);
- 	if (ret) {
-@@ -1503,10 +1505,6 @@ static int ltc2983_probe(struct spi_devi
- 		return ret;
- 	}
- 
--	ret = ltc2983_setup(st, true);
--	if (ret)
--		return ret;
--
- 	indio_dev->name = name;
- 	indio_dev->num_channels = st->iio_channels;
- 	indio_dev->channels = st->iio_chan;
+--- a/drivers/input/mouse/elan_i2c_core.c
++++ b/drivers/input/mouse/elan_i2c_core.c
+@@ -105,6 +105,7 @@ static u32 elan_i2c_lookup_quirks(u16 ic
+ 		u32 quirks;
+ 	} elan_i2c_quirks[] = {
+ 		{ 0x0D, ETP_PRODUCT_ID_DELBIN, ETP_QUIRK_QUICK_WAKEUP },
++		{ 0x0D, ETP_PRODUCT_ID_WHITEBOX, ETP_QUIRK_QUICK_WAKEUP },
+ 		{ 0x10, ETP_PRODUCT_ID_VOXEL, ETP_QUIRK_QUICK_WAKEUP },
+ 		{ 0x14, ETP_PRODUCT_ID_MAGPIE, ETP_QUIRK_QUICK_WAKEUP },
+ 		{ 0x14, ETP_PRODUCT_ID_BOBBA, ETP_QUIRK_QUICK_WAKEUP },
 
 
