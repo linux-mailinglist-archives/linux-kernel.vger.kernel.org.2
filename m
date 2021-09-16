@@ -2,175 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52F2340E52C
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:26:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FCE340E1F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:15:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345125AbhIPRIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:08:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347582AbhIPRAJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:00:09 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 147EBC0363C1
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 09:16:56 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id z94so18704203ede.8
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 09:16:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jHK/xqguCKv/MR4fwXjRmcM93cFgGl6Y32a4+3LOaBY=;
-        b=AEUDd7pV9a8fv9MoUDEB/1YV70rMjNiwVqjYNgqTmuPYQlb1B3XhWOa3d679adVJ1E
-         yucOpTQI81iMxVqcjE4I4GH8h1VX8cX9L+/GbDlsGNjaAVM+nDBZwolEYFKL46Asg7yf
-         aCV1dEkCnEnXFNAm1oYZ/DEX1e0ck8XCctPsdWmi/r2kKFhjLS04LvsSZDvd03uxy3Yi
-         MdVNYkbcdoL3QP80/FjoKc7utwQ48v5GgYsNiYjYmtHubR4bzdsBR9nMYbB9yjptvtWe
-         M09nZawvADViSrIUS5uN8IeAYk3n+awW2JwptYIlPhErLsMeiTVXUAtd+YBsP8EiEaef
-         qrgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jHK/xqguCKv/MR4fwXjRmcM93cFgGl6Y32a4+3LOaBY=;
-        b=GJwlP3y/O9qJ2eMNGaugfs7saYPAdN2qCQSig6ZqVZQx9MoUgQTHA3UC8dp5lZHhNX
-         cRxgT0gczGYYvTqMR1wPKriUikjWaSFj9g1sRtTUTo+3segfH4Q+/sPN3pPPFkbaJL2P
-         bq/Qro/NRaNCOS9siyqbw3Ux09PKHuIxUdXbl1etHEvOEzt6rP4vdE/n3KJios1K7sRx
-         smFCnf7X5T3YcacLyFaPxp1wFzlHkOWYRXK5jonbqil4JqIMDPeG9C+I9FibbRLl2/iI
-         ezbj0UaT4t/FnAyYm+GPcq02xWOt7RWgRcXBROPapDazZGVaaC4t/495kh95rHNpkgsA
-         7NIQ==
-X-Gm-Message-State: AOAM531pkFJ2tVrZWnSfr23zeHF9VfeHAbD/FU86/7/c0pB2HjAyYend
-        1qd1m20/uKJ2fCIoRPazgkfnIh8FvsNC709Lpp11qQ==
-X-Google-Smtp-Source: ABdhPJywm65+5K+5MtjZwOa+gT94NK9qMFMnMUQZ9zRxmdOUE7/YQqlEaOPAkgsSWxQBRmlekY5+t6DIIQjKQFelvXE=
-X-Received: by 2002:a17:906:5ac5:: with SMTP id x5mr7074596ejs.271.1631809014344;
- Thu, 16 Sep 2021 09:16:54 -0700 (PDT)
+        id S241939AbhIPQdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:33:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37484 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241228AbhIPQZL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:25:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7040F613C8;
+        Thu, 16 Sep 2021 16:16:32 +0000 (UTC)
+Date:   Thu, 16 Sep 2021 17:16:29 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, mark.rutland@arm.com,
+        suzuki.poulose@arm.com, Will Deacon <will@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64/mm: Add pud_sect_supported()
+Message-ID: <YUNt3btNlYVGDTkX@arm.com>
+References: <1631677459-28383-1-git-send-email-anshuman.khandual@arm.com>
 MIME-Version: 1.0
-References: <20210902213500.3795948-1-pmalani@chromium.org>
- <20210902213500.3795948-3-pmalani@chromium.org> <YT9SYMAnOCTWGi5P@kuha.fi.intel.com>
- <DB9PR10MB4652B4A6A2A2157018307AE380D99@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
- <YUB16up3JDwi3HfI@kuha.fi.intel.com> <YULwz8NsoA3+vrhA@google.com>
- <YUMbGp0aemx1HCHv@kuha.fi.intel.com> <DB9PR10MB46525E6CA4C6BB101059D93C80DC9@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
-In-Reply-To: <DB9PR10MB46525E6CA4C6BB101059D93C80DC9@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
-From:   Badhri Jagan Sridharan <badhri@google.com>
-Date:   Thu, 16 Sep 2021 09:16:17 -0700
-Message-ID: <CAPTae5Kxmp0L35KnkYaHARrBmysX9wkMYZhGhJsu6tX4bcHuAA@mail.gmail.com>
-Subject: Re: [RFC PATCH 2/3] power: supply: Add support for PDOs props
-To:     Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Benson Leung <bleung@google.com>,
-        Prashant Malani <pmalani@chromium.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "bleung@chromium.org" <bleung@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1631677459-28383-1-git-send-email-anshuman.khandual@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 7:12 AM Adam Thomson
-<Adam.Thomson.Opensource@diasemi.com> wrote:
->
-> On 16 September 2021 11:23, Heikki Krogerus wrote:
->
-> > > Thanks for providing the clarification. So you're proposing a port-psy and a
-> > > port-partner-psy that are connected to each other (one supplying the other).
-> > > If PD is not present, those two will exist per port and partner, and there
-> > > will be information about Type-C current (and possibly BC 1.2 and other
-> > > methods?)
-> >
-> > Yes, exactly.
-> >
-> > > Do you have an example hierarchy you could share that explains what it would
-> > > look like in /sys/class/power_supply with PD with Source Caps and Sink Caps on
-> > > both sides?
-> >
-> > I don't yet, but I'll prepare something. I did notice already that the
-> > power supply class does not seem to display the suppliers nor
-> > supplicants in sysfs. But we can always improve the class.
-> >
-> > I probable should not talk about "hierarchy". Maybe taking about
-> > simply "chain" of power supplies is more correct?
-> >
-> > > I think this all makes sense if the connector class is a read interface
-> > > for this info. Have you considered how the type-c connector class and this pd
-> > > psy support will handle dynamic PDO changes for advertisement FROM the
-> > ports?
-> > >
-> > > For example, let's say you wanted the kernel and user to manage two USB-C
-> > ports
-> > > with higher power support (meaning, 5V, 9V, 15V, 20V capable), but then your
-> > > kernel and user needs to edit the Source Caps on the fly based on load
-> > > balancing.
+On Wed, Sep 15, 2021 at 09:14:19AM +0530, Anshuman Khandual wrote:
+> diff --git a/arch/arm64/mm/hugetlbpage.c b/arch/arm64/mm/hugetlbpage.c
+> index 23505fc35324..641854f0e8ee 100644
+> --- a/arch/arm64/mm/hugetlbpage.c
+> +++ b/arch/arm64/mm/hugetlbpage.c
+> @@ -40,11 +40,10 @@ void __init arm64_hugetlb_cma_reserve(void)
+>  {
+>  	int order;
+>  
+> -#ifdef CONFIG_ARM64_4K_PAGES
+> -	order = PUD_SHIFT - PAGE_SHIFT;
+> -#else
+> -	order = CONT_PMD_SHIFT + PMD_SHIFT - PAGE_SHIFT;
+> -#endif
+> +	if (pud_sect_supported())
+> +		order = PUD_SHIFT - PAGE_SHIFT;
+> +	else
+> +		order = CONT_PMD_SHIFT + PMD_SHIFT - PAGE_SHIFT;
+>  	/*
+>  	 * HugeTLB CMA reservation is required for gigantic
+>  	 * huge pages which could not be allocated via the
+> @@ -62,8 +61,9 @@ bool arch_hugetlb_migration_supported(struct hstate *h)
+>  	size_t pagesize = huge_page_size(h);
+>  
+>  	switch (pagesize) {
+> -#ifdef CONFIG_ARM64_4K_PAGES
+> +#ifndef __PAGETABLE_PUD_FOLDED
+>  	case PUD_SIZE:
+> +		return pud_sect_supported();
+>  #endif
+>  	case PMD_SIZE:
+>  	case CONT_PMD_SIZE:
 
-Adding a few more instances.
+Is this the same thing? With 4K pages and 3-levels (39-bit VA), the PUD
+is folded but we do have a valid PUD_SIZE == PGDIR_SIZE and different
+from PMD_SIZE. Do we disallow section mappings at the top level in this
+case? If not, we should have check for __PAGETABLE_PMD_FOLDED instead.
 
-Editing Source Caps on the fly is also applicable for handheld devices
-with just  one port !
-For instance, the phone might want to conserve power and limit the
-power supplied to the port partner by adjusting the source caps to
-limit battery drain based on the system conditions.
+> @@ -126,8 +126,11 @@ static inline int num_contig_ptes(unsigned long size, size_t *pgsize)
+>  	*pgsize = size;
+>  
+>  	switch (size) {
+> -#ifdef CONFIG_ARM64_4K_PAGES
+> +#ifndef __PAGETABLE_PUD_FOLDED
+>  	case PUD_SIZE:
+> +		if (pud_sect_supported())
+> +			contig_ptes = 1;
+> +		break;
+>  #endif
+>  	case PMD_SIZE:
+>  		contig_ptes = 1;
 
-The sink caps can potentially change on the fly as well based on the
-charging phase the handheld device is in. For instance, in the last
-phase of charging (say when the battery is charged to greater than
-80%), it would not make much sense to step down voltage(power losses
-due to conversion) from greater than 5V to battery voltage(say ~4.4V).
+Same here.
 
-> > >
-> > > If caps are represented as a group of psys together, how do you as a kernel
-> > > and user create an modify the set of Source_Caps you put out on a port?
-> >
-> > My idea is to utilise the "present" property with the ports. You would
-> > always display all the possible supplies, but only the ones that you
-> > expose in your current capabilities will be present.
-> >
-> > The idea is also that the ports are always supplied by normal power
-> > supplies of type "battery", "AC" and what have you. Those you can use
-> > to see the maximum power your port can get, and to determine the
-> > currently available power by checking the other ports that consume the
-> > same supply.
-> >
-> > So if you need more power for one port, you most likely will need to
-> > attempt to adjust the power levels of the source PDO power supplies of
-> > the other ports that share the base supply (like battery), or possibly
-> > disable them, and that way enable (make present) more source supplies
-> > for your port. That is the idea, but I admit I have not thought of
-> > everything, so I'm not completely sure would it work exactly like
-> > that, but the power balancing should in any case be possible with the
-> > chain of power supplies one way or the other.
-> >
-> > I hope I understood your question correctly, and I hope I was able to
-> > give you an answer :-)
->
-> Thanks for the additional updates. So is the intention here to move control of
-> PDO selection away from TCPM, or add more flexibility to it? As I understand it
-> from previous efforts around all of this, the intention was that TCPM makes the
-> decision as to which PDO to select (and which APDO for PPS) based on the offered
-> capabilities of the source and the sink capabilities which are described in FW.
-> Am just trying to envisage the use-cases here and how the kernel/user is
-> involved in selecting PDOs/voltages/currents.
->
-> IIRC there used to be functions for updating source/sink capabilities but these
-> never had users and were subsequently removed. I guess this would be essentially
-> the functional replacement for those APIs?
->
-> Personally, I think the idea of source/sink PSY instances supplying each other
-> seems reasonable. Right now we represent the external PD/Type-C supply (partner)
-> through TCPM as a PSY instance which is always present for the associated port,
-> although obviously when no source partner exists we're marked as offline. For
-> the partner side I'm guessing the PSY instance will be dynamically
-> created/destroyed? From previous experience PSY classes have tended to be
-> statically included so would be interested in seeing what this looks like in
-> reality.
->
-> Am still unsure on using PSY to expose individual PDOs though and this still
-> feels quite heavyweight. I assume we're not wanting to expose everything in PDOs
-> really, just the voltage/current info? Feels like we should be able to do this
-> with individual properties which a user can be notified of changes to through
-> the normal prop notifier, rather than a collection of PSY class instances.
-> However, I'm happy to be convinced the other way so will await further
-> details. :)
+> @@ -489,9 +492,9 @@ void huge_ptep_clear_flush(struct vm_area_struct *vma,
+>  
+>  static int __init hugetlbpage_init(void)
+>  {
+> -#ifdef CONFIG_ARM64_4K_PAGES
+> -	hugetlb_add_hstate(PUD_SHIFT - PAGE_SHIFT);
+> -#endif
+> +	if (pud_sect_supported())
+> +		hugetlb_add_hstate(PUD_SHIFT - PAGE_SHIFT);
+> +
+>  	hugetlb_add_hstate(CONT_PMD_SHIFT - PAGE_SHIFT);
+>  	hugetlb_add_hstate(PMD_SHIFT - PAGE_SHIFT);
+>  	hugetlb_add_hstate(CONT_PTE_SHIFT - PAGE_SHIFT);
+> @@ -503,8 +506,9 @@ arch_initcall(hugetlbpage_init);
+>  bool __init arch_hugetlb_valid_size(unsigned long size)
+>  {
+>  	switch (size) {
+> -#ifdef CONFIG_ARM64_4K_PAGES
+> +#ifndef __PAGETABLE_PUD_FOLDED
+>  	case PUD_SIZE:
+> +		return pud_sect_supported();
+>  #endif
+>  	case CONT_PMD_SIZE:
+>  	case PMD_SIZE:
+
+And here.
+
+-- 
+Catalin
