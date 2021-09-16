@@ -2,135 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6A9440D339
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 08:27:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12B7E40D33E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 08:29:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234532AbhIPG3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 02:29:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231255AbhIPG3H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 02:29:07 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC7E9C061574;
-        Wed, 15 Sep 2021 23:27:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1631773663;
-        bh=bvom7APVYwgVJizV4SnppAwqleRnHlURWBJYrycELTY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=n7+IIrKLRoDTiSDwWZfoBE1DKz0rhNnGbtW8hb7UrXEGWIXyp3tmQBmR+Oc4zkfqZ
-         W4CUyvb5g9/uGJEfuRfCQMfbIp6Ep2FC5oiNwhZT/R8kjgRiqruEP89s9Y3pR0Q0Xo
-         clU0Uw7bbBSwCA3byRPgNFJynKn5Ns2BgFFRePY1+etixv/to3huaIGF45C43Uh0FA
-         JnRZugf+dphCH7EzAuRm9Wg6U7DjkgHdK+LmF4/+QvfknqMqiuT5FkTXOGcUV5xU6e
-         ix0EOJIXuU1PTkAlQLMzbSMUZc0q9ZxclqfIWow6pA1cA8r8JH+qm6jXEQL5kt/U6n
-         3LCnHK0vO/smg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S234569AbhIPGbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 02:31:00 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:42102 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231255AbhIPGa6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 02:30:58 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1631773778; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=14otI/FRn3T6TCrE2iGF/EbKmUQaHDuaRWzxyWGJRJI=;
+ b=JJcGsVLS57WfRuxOV5uOV+1pPCxhazNDrfIl5FGV0iWeUvALB3wYeBPMK5pKeDGJ7Cb52csv
+ rzadfxBAk9ZL1RgkOfSgvhBR66tmhuENtgfBq0IHIZ1aY8l6Jj0Jvi0JsFr7cYuPpwUQ7dAZ
+ pjPCgqLNWN1N9yVoU3UiOXnhafk=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 6142e451b585cc7d2466e0ac (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 16 Sep 2021 06:29:37
+ GMT
+Sender: dikshita=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B0627C43616; Thu, 16 Sep 2021 06:29:37 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H96Zk57d8z9sW8;
-        Thu, 16 Sep 2021 16:27:41 +1000 (AEST)
-Date:   Thu, 16 Sep 2021 16:27:40 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: Improvement suggestion for creation of next [Was: linux-next:
- manual merge of the dmaengine tree with the driver-core tree]
-Message-ID: <20210916162740.3327df56@canb.auug.org.au>
-In-Reply-To: <20210728071014.dkdvqmiw2lma6ooa@pengutronix.de>
-References: <20210723155354.082a62d8@canb.auug.org.au>
-        <20210728071014.dkdvqmiw2lma6ooa@pengutronix.de>
+        (Authenticated sender: dikshita)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D2D0AC4338F;
+        Thu, 16 Sep 2021 06:29:36 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Haa0oEpn914_9eS/W_KnBeE";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 16 Sep 2021 11:59:36 +0530
+From:   dikshita@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, jim.cromie@gmail.com,
+        Joe Perches <joe@perches.com>, Jason Baron <jbaron@akamai.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media-owner@vger.kernel.org,
+        Akinobu Mita <akinobu.mita@gmail.com>
+Subject: Re: [PATCH v5 2/3] venus: Add a debugfs file for SSR trigger
+In-Reply-To: <CAE-0n53T-RoOvR=s9nHiXAriMgKvBfDqfBfoGKX5Ju5YF3Tcqw@mail.gmail.com>
+References: <20200730095350.13925-1-stanimir.varbanov@linaro.org>
+ <20200730095350.13925-3-stanimir.varbanov@linaro.org>
+ <159718256557.1360974.458611240360821676@swboyd.mtv.corp.google.com>
+ <8c1fdf2d0807f07ec57b232497b405f1@codeaurora.org>
+ <CAE-0n53T-RoOvR=s9nHiXAriMgKvBfDqfBfoGKX5Ju5YF3Tcqw@mail.gmail.com>
+Message-ID: <53a38a24cca0b6f1c2a3120f14dfc865@codeaurora.org>
+X-Sender: dikshita@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Haa0oEpn914_9eS/W_KnBeE
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On 2021-09-16 01:09, Stephen Boyd wrote:
+> Quoting dikshita@codeaurora.org (2021-09-15 02:13:09)
+>> Hi Stephen,
+>> 
+>> Reviving the discussion on this change as we need to pull this in.
+>> 
+>> As per your suggestion, I explored the fault injection framework to
+>> implement this functionality.
+>> But I don't think that meets our requirements.
+>> 
+>> We need a way to trigger subsystem restart from the client-side, it's
+>> not derived from the driver.
+> 
+> Just to confirm, this is all for debugging purposes right?
+> 
+yes, correct. this is for debugging purposes. We need this to simulate 
+an error on FW side.
+In a normal scenario, when FW runs into error, sys error is triggered 
+from FW as result of which
+a sequence of commands are followed for restarting the system.
+using this feature, we are trying to simulate this error on FW i.e we 
+are forcing the FW to run into an error.
+>> 
+>> while fault injection framework enables the driver to trigger an
+>> injection
+>> when a specific event occurs for eg: page allocation failure or memory
+>> access failure.
+>> 
+>> So, IMO, we will have to use custom debugfs only.
+> 
+> Can you use DECLARE_FAULT_ATTR()? Or you need it to be active instead 
+> of
+> passive, i.e. it shouldn't wait for should_fail() to return true, but
+> actively trigger something on the remoteproc?
+> 
 
-Hi Uwe,
+yes, it doesn't need to wait for should_fail() to return true.
+the client/user should be able to trigger this subsystem restart(SSR) at 
+any point of time
+when a session is running. It's totally client-driven.
 
-[Sorry this took so long]
-
-On Wed, 28 Jul 2021 09:10:14 +0200 Uwe Kleine-K=C3=B6nig <u.kleine-koenig@p=
-engutronix.de> wrote:
->
-> I intended to take a look at the resolution that Vinod pushed in his
-> tree. To find his tree and the right branch my approach in such a
-> situation is usually:
->=20
-> 	uwe@taurus:~/gsrc/linux$ git name-rev d9e5481fca74
-> 	d9e5481fca74 tags/next-20210722~22^2~2
->=20
-> so it was merged in tags/next-20210722~22, looking at that I see:
->=20
-> 	uwe@taurus:~/gsrc/linux$ git show tags/next-20210722~22
-> 	commit 65da974af6a0d913cde0cf59f517322bceac24a7
-> 	...
-> 	    Merge remote-tracking branch 'dmaengine/next'
->=20
-> and then I have to lookup what dmaengine/next means in next-20210722:
->=20
-> 	uwe@taurus:~/gsrc/linux$ git show next-20210722 | grep dmaen
-> 	...
-> 	+dmaengine	git	git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaen=
-gine.git#next
-> 	...
->=20
-> You could save me the last step if you used
->=20
-> 	git pull dmaengine next
->=20
-> instead of
->=20
-> 	git merge dmaengine/next
->=20
-> because then the commit message of tags/next-20210722~22 would be:
->=20
-> 	Merge branch 'next' of git://git.kernel.org/pub/scm/linux/kernel/git/vko=
-ul/dmaengine.git
->=20
-> which is much more useful than
->=20
-> 	Merge remote-tracking branch 'dmaengine/next'
->=20
-> . Otherwise the result should be the same (apart from fetching the
-> changes a tad later maybe).
-
-Thanks for the feed back.
-
-I prefer to fetch all the trees (and run my checking scripts across
-them independently of the merge/build cycle.  However, I have improved
-the merge commit messages (I think).  Please check out today's
-linux-next.  I have decided to remove the SHA1 from the message, as you
-can see that from what is merged anyway.
-
-Let me know if this is better for you.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/Haa0oEpn914_9eS/W_KnBeE
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFC49wACgkQAVBC80lX
-0GxkzQf/dU7Qxk8D4z+zo10wKh5U4X9bxOWYRqTQQqavLKxDkGhAvfnIV1uzUwnx
-FvBjEmX+29b422pfB6LkQ8U5V9UhMHjIslfio5GO+Nta85nT1JQ7c8zdnxYYcBZq
-gE/eNABfNNf5hVILNY/YAwh3Ly7aoY6Kh77A6kbFtGobyxVD9pv/3rQxvcJSgP4Z
-H9hf6AZoIyq9jaAg7lp91zdXlVK578AQvvy0BQ8L4aRPbi+kxCclAhl7DL5ULt2M
-3RPpSj91HGitrE3G1SsyvQ587JV8Y5ALd04ysXmqlocHX01Ruey5NiB1+N2UaDSu
-7wvWfBR1EonpS3LtTikiugKurfshjQ==
-=c4n7
------END PGP SIGNATURE-----
-
---Sig_/Haa0oEpn914_9eS/W_KnBeE--
+>> 
+>> Please feel free to correct me in case my understanding of the 
+>> framework
+>> is wrong.
+>> 
+> 
+> I presume the fault injection framework could get a new feature that
+> lets the fault be injected immediately upon writing the debugfs file.
+> My goal is to consolidate this sort of logic into one place and then 
+> put
+> it behind some config option that distros can disable so the kernel
+> isn't bloated with debug features that end users will never care about.
