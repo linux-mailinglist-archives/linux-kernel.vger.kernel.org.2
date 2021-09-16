@@ -2,91 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E311040EAFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 21:44:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDA0940EB01
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 21:45:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234001AbhIPTph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 15:45:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57252 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233962AbhIPTpf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 15:45:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5337261212;
-        Thu, 16 Sep 2021 19:44:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1631821454;
-        bh=48MaZserzpuIZcXtFDW9D0xKDZ69TZAefHpwT3WYzsI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=bBXk+yeR3GPWNvj/FDJ4O+9Bcyy+ApJLHN6H3HGaRc2BL04tMp4+kas6XxpGMN9DR
-         IYILgJp9w0LeHsWqD0IzZTZKDBehsdAyRhTcoldfNLfaOFsHekJxy17c0lyTY2P+XZ
-         W5yWrMLcMGn2+EYe81stDOO1l1zGkHEDw1qaW0Ig=
-Date:   Thu, 16 Sep 2021 12:44:13 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Jinhui Guo <guojinhui@huawei.com>
-Cc:     <pmladek@suse.com>, <peterz@infradead.org>,
-        <valentin.schneider@arm.com>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] [RFC] watchdog/softlockup: Fix softlockup_stop_all()
- hungtask bug
-Message-Id: <20210916124413.89735fd447667b627552df55@linux-foundation.org>
-In-Reply-To: <20210916175650.1380-1-guojinhui@huawei.com>
-References: <20210916175650.1380-1-guojinhui@huawei.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S234095AbhIPTqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 15:46:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35620 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230267AbhIPTqf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 15:46:35 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7403CC061574;
+        Thu, 16 Sep 2021 12:45:14 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id c42-20020a05683034aa00b0051f4b99c40cso9821544otu.0;
+        Thu, 16 Sep 2021 12:45:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:to:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ZcmUx7XdmCPkdGO1AKL5I0Bz1i/a7ehtmDKaflW5syo=;
+        b=FxZ8LBsHGS4XO0UxnDWpTvBYx34qTRb0bDohqTQ4fuKF/u/ONUMbQWkOJ6YCgrOXSy
+         +1pFkWVySOog2jhqt3P3OMri+Jdnavo1gQcaJuHD5+k1vIPz3RW87Zir06V9DE7+f3LV
+         XYl03C0caEdUbu9u5D2Vpq+5U5J2d9QwDr8dhQyu9197Srph0iP/heUPwQ7bDsq3fkBC
+         IgrvesQlA/Lg41HvonGLGlm1Et12vhPCpnGmr8qnP+xcj3Ju2MLxtEUNP1ADwPqYcROA
+         SdmpvPT+BBYwaIhEp/upbCPeKYZ+KkqNzNUPrdpzZECrJ4bvCcshuJFh24O0V0u5Uy/f
+         Tqqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:to:references:from:subject:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZcmUx7XdmCPkdGO1AKL5I0Bz1i/a7ehtmDKaflW5syo=;
+        b=2TcqfeLiyr76pLw0PgbjfVwSczCAWvR/w3SdOkFsdWySNh/zA11xFsuFHOOp/1dTg6
+         +F5YRxXPCjdSBqlN1MXH2IQtlKnajBNUaTRVd5havGi+k1feOMoP53LDwT2ffim8Tkox
+         g45q8pPJ9Y7CeVTc/+WtENSDKj9ZqN8aVTCDcwpfYY7ut2vk58DIK54zIfveD4dwVVIv
+         78Mnbo4dl+Ujd+sQiFn8Cm7HTThiEvWzyA+k9+gzPpKlZ519wTkvAmVyZYaWljTHnZh/
+         StBnf2iSUZ7DrkTCKiQUOdxyAob/2TVnTzx7LVa20iDFP2Emj5JzDanlnE3KtUyxOmrl
+         SNqA==
+X-Gm-Message-State: AOAM533G5o6hgDUiA6YFLJuO/4qmz7f0/jPAW0e4rNXKcq2j5aLMO+mX
+        DtRgWps7OJZrz0jQEmaM9Wc=
+X-Google-Smtp-Source: ABdhPJwo6Ah9op2xylXAoj11A2Rwc8xJes3PJGxyPzCYCEL3ssafgCZQAggUTnI2kD/Q79FQ06Z5Vg==
+X-Received: by 2002:a05:6830:411d:: with SMTP id w29mr3005282ott.83.1631821513895;
+        Thu, 16 Sep 2021 12:45:13 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id v2sm888773ooh.28.2021.09.16.12.45.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Sep 2021 12:45:13 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+To:     Helge Deller <deller@gmx.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+References: <YUNi6hTcS8nUrrpF@ls3530>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [GIT PULL] parisc architecture warning fix for kernel v5.15-rc2
+Message-ID: <b3d13e4f-c9cd-495b-5df2-1080ca4d3aa3@roeck-us.net>
+Date:   Thu, 16 Sep 2021 12:45:11 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <YUNi6hTcS8nUrrpF@ls3530>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Sep 2021 01:56:50 +0800 Jinhui Guo <guojinhui@huawei.com> wrote:
-
-> If NR_CPUS equal to 1, it would trigger hungtask, it can be
-> triggered by follow command:
-> 	echo 0 > /proc/sys/kernel/watchdog
-> 	echo 1 > /proc/sys/kernel/watchdog
-> The hungtask stack:
-> 	__schedule
-> 	schedule
-> 	schedule_timeout
-> 	__wait_for_common
-> 	softlockup_stop_fn
-> 	lockup_detector_reconfigure
-> 	proc_watchdog_common
-> 	proc_watchdog
-> 	proc_sys_call_handler
-> 	vfs_write
-> 	ksys_write
-> The watchdog_allowed_mask is completely cleared when the
-> watchdog is disabled. But the macro for_each_cpu() assume
-> all masks are "1" when macro NR_CPUS equal to 1. It makes
-> watchdog_allowed_mask not work at all.
+On 9/16/21 8:29 AM, Helge Deller wrote:
+> Hi Linus,
 > 
-> ...
->
-> --- a/include/linux/cpumask.h
-> +++ b/include/linux/cpumask.h
-> @@ -175,10 +175,11 @@ static inline int cpumask_any_distribute(const struct cpumask *srcp)
->  	return cpumask_first(srcp);
->  }
->  
-> +/* It should check cpumask in some special case, such as watchdog */
->  #define for_each_cpu(cpu, mask)			\
-> -	for ((cpu) = 0; (cpu) < 1; (cpu)++, (void)mask)
-> +	for ((cpu) = 0; (cpu) < 1 && test_bit(0, cpumask_bits(mask)); (cpu)++)
->  #define for_each_cpu_not(cpu, mask)		\
-> -	for ((cpu) = 0; (cpu) < 1; (cpu)++, (void)mask)
-> +	for ((cpu) = 0; (cpu) < 1 && !test_bit(0, cpumask_bits(mask)); (cpu)++)
->  #define for_each_cpu_wrap(cpu, mask, start)	\
->  	for ((cpu) = 0; (cpu) < 1; (cpu)++, (void)mask, (void)(start))
->  #define for_each_cpu_and(cpu, mask1, mask2)	\
+> please pull one parisc architecture warning fix for kernel 5.15-rc2 from:
+> 
+>    http://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git tags/for-5.15/parisc-4
+> 
+> One patch which fixes a build warning when using the PAGE0 pointer.
+> 
 
-x86_64 allnoconfig:
+Grumble:
 
-ld: arch/x86/kernel/cpu/cacheinfo.o: in function `populate_cache_leaves':
-cacheinfo.c:(.text+0xa27): undefined reference to `cpu_llc_shared_map'
-ld: cacheinfo.c:(.text+0xa49): undefined reference to `cpu_llc_shared_map'
+Building parisc:allmodconfig ... failed
+--------------
+Error log:
+In file included from drivers/net/phy/dp83640.c:23:
+drivers/net/phy/dp83640_reg.h:8: error: "PAGE0" redefined [-Werror]
+     8 | #define PAGE0                     0x0000
 
-Because the new for_each_cpu() now references `mask' and some code isn't
-able to handle that change.  There are probably other instances of this
-across all our architectures and configs.
+No, I didn't see that coming either. It _was_ there before, I just didn't notice.
 
+Looks like that define isn't even used anywhere.
+I'll send a patch to remove it.
+
+Guenter
