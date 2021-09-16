@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC53140E7A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:34:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D79EF40E3DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:21:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243665AbhIPRff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:35:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46924 "EHLO mail.kernel.org"
+        id S245690AbhIPQwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:52:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59000 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348358AbhIPRZw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:25:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3FEE860F6C;
-        Thu, 16 Sep 2021 16:44:46 +0000 (UTC)
+        id S244868AbhIPQrw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:47:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B02BE61A71;
+        Thu, 16 Sep 2021 16:27:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810686;
-        bh=taLJ9PKWC7x9RU8xDW2ToEJ9OVv2CFyuQyAlImHraLQ=;
+        s=korg; t=1631809621;
+        bh=i06AM4DVmRVPJBNARjGrF5thGGhhF9wFivOaNz4+sWI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Oh51nb5hsl71fQXuFTtE5k8TUnvlOoW3/ZifjhEvz89rfym+WjcP9IT6NoT/hlD+b
-         4In8Qm8eezb/CSiUQUviekZP98s0kPJ2PGKfUlHEWVi435LCbcmRD4mAaemglR+nTP
-         SxA7k1JLWJAx43R0g1UKLK13fAIRFHguwyXxiCv4=
+        b=KDKee3/hl+8Zhxbhjjyea8tBy3fGD6rsfqzEcChh/QYzz7sqIN4J6H0JlRFGpCmNB
+         ABNtcvWaetLS8wR1iRHBkO9tbDMEreV2RdknK1VwH4K+tA6nHxZoxMXbI3xvgfV9NO
+         VTN7sYbzOwLy7lyB+jxaYWNDkS6wu+Q95Bra/4lg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Sasha Levin <sashal@kernel.org>, Dennis Giaya <dgiaya@whoi.edu>
-Subject: [PATCH 5.14 230/432] serial: max310x: Use clock-names property matching to recognize EXTCLK
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 222/380] ASoC: Intel: update sof_pcm512x quirks
 Date:   Thu, 16 Sep 2021 17:59:39 +0200
-Message-Id: <20210916155818.642037458@linuxfoundation.org>
+Message-Id: <20210916155811.640407286@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,53 +42,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-[ Upstream commit 3d1fa055ea7298345795b982de7a5b9ec6ae238d ]
+[ Upstream commit 22414cade8dfec25ab94df52b3a4f7aa8edb6120 ]
 
-Dennis reported that on ACPI-based systems the clock frequency
-isn't enough to configure device properly. We have to respect
-the clock source as well. To achieve this match the clock-names
-property against "osc" to recognize external clock connection.
-On DT-based system this doesn't change anything.
+The default SOF topology enables SSP capture and DMICs, even though
+both of these hardware capabilities are not always available in
+hardware (specific versions of HiFiberry and DMIC kit needed).
 
-Reported-and-tested-by: Dennis Giaya <dgiaya@whoi.edu>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Link: https://lore.kernel.org/r/20210723125943.22039-1-andriy.shevchenko@linux.intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+For the SSP capture, this leads to annoying "SP5-Codec: ASoC: no
+backend capture" and "streamSSP5-Codec: ASoC: no users capture at
+close - state 0" errors.
+
+Update the quirks to match what the topology needs, which also allows
+for the ability to remove SSP capture and DMIC support.
+
+BugLink: https://github.com/thesofproject/linux/issues/3061
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Link: https://lore.kernel.org/r/20210802152151.15832-4-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/max310x.c | 15 +++++----------
- 1 file changed, 5 insertions(+), 10 deletions(-)
+ sound/soc/intel/boards/sof_pcm512x.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/tty/serial/max310x.c b/drivers/tty/serial/max310x.c
-index ef11860cd69e..3df0788ddeb0 100644
---- a/drivers/tty/serial/max310x.c
-+++ b/drivers/tty/serial/max310x.c
-@@ -1271,18 +1271,13 @@ static int max310x_probe(struct device *dev, const struct max310x_devtype *devty
- 	/* Always ask for fixed clock rate from a property. */
- 	device_property_read_u32(dev, "clock-frequency", &uartclk);
+diff --git a/sound/soc/intel/boards/sof_pcm512x.c b/sound/soc/intel/boards/sof_pcm512x.c
+index 8620d4f38493..335c212c1961 100644
+--- a/sound/soc/intel/boards/sof_pcm512x.c
++++ b/sound/soc/intel/boards/sof_pcm512x.c
+@@ -26,11 +26,16 @@
  
--	s->clk = devm_clk_get_optional(dev, "osc");
-+	xtal = device_property_match_string(dev, "clock-names", "osc") < 0;
-+	if (xtal)
-+		s->clk = devm_clk_get_optional(dev, "xtal");
-+	else
-+		s->clk = devm_clk_get_optional(dev, "osc");
- 	if (IS_ERR(s->clk))
- 		return PTR_ERR(s->clk);
--	if (s->clk) {
--		xtal = false;
--	} else {
--		s->clk = devm_clk_get_optional(dev, "xtal");
--		if (IS_ERR(s->clk))
--			return PTR_ERR(s->clk);
--
--		xtal = true;
--	}
+ #define SOF_PCM512X_SSP_CODEC(quirk)		((quirk) & GENMASK(3, 0))
+ #define SOF_PCM512X_SSP_CODEC_MASK			(GENMASK(3, 0))
++#define SOF_PCM512X_ENABLE_SSP_CAPTURE		BIT(4)
++#define SOF_PCM512X_ENABLE_DMIC			BIT(5)
  
- 	ret = clk_prepare_enable(s->clk);
- 	if (ret)
+ #define IDISP_CODEC_MASK	0x4
+ 
+ /* Default: SSP5 */
+-static unsigned long sof_pcm512x_quirk = SOF_PCM512X_SSP_CODEC(5);
++static unsigned long sof_pcm512x_quirk =
++	SOF_PCM512X_SSP_CODEC(5) |
++	SOF_PCM512X_ENABLE_SSP_CAPTURE |
++	SOF_PCM512X_ENABLE_DMIC;
+ 
+ static bool is_legacy_cpu;
+ 
+@@ -245,8 +250,9 @@ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
+ 	links[id].dpcm_playback = 1;
+ 	/*
+ 	 * capture only supported with specific versions of the Hifiberry DAC+
+-	 * links[id].dpcm_capture = 1;
+ 	 */
++	if (sof_pcm512x_quirk & SOF_PCM512X_ENABLE_SSP_CAPTURE)
++		links[id].dpcm_capture = 1;
+ 	links[id].no_pcm = 1;
+ 	links[id].cpus = &cpus[id];
+ 	links[id].num_cpus = 1;
+@@ -381,6 +387,9 @@ static int sof_audio_probe(struct platform_device *pdev)
+ 
+ 	ssp_codec = sof_pcm512x_quirk & SOF_PCM512X_SSP_CODEC_MASK;
+ 
++	if (!(sof_pcm512x_quirk & SOF_PCM512X_ENABLE_DMIC))
++		dmic_be_num = 0;
++
+ 	/* compute number of dai links */
+ 	sof_audio_card_pcm512x.num_links = 1 + dmic_be_num + hdmi_num;
+ 
 -- 
 2.30.2
 
