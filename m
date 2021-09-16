@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB57240E0AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:27:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E604240E768
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:33:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241064AbhIPQXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:23:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54068 "EHLO mail.kernel.org"
+        id S1347137AbhIPRcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:32:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44128 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240907AbhIPQOh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:14:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 941DF613A3;
-        Thu, 16 Sep 2021 16:10:47 +0000 (UTC)
+        id S236705AbhIPRWi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:22:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DAD061356;
+        Thu, 16 Sep 2021 16:43:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808648;
-        bh=klejh/9wfTb9XMMgayDstx9flj94xl3OvGfJIaG0G7Y=;
+        s=korg; t=1631810592;
+        bh=sQlpCIQOIZc/1gWnMmczeaTUI9JHZ8cwU8Uv5hxetBk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cA5uts9dUq1RgMCIOqvWbFt/wnCnTyzvq6m1/WYJJ/ujMf7fMwGaMevDlPJ4gUmZU
-         Gvxt84SOTVciRhT0mDk2KghES0Ua6tBj4WcboE/FrfTHtlAKT1Zkp6C3DapBkx1HPH
-         8pd+iRpdYEMi2d98sqYt4v23/bGj2+KsvyTyO0I0=
+        b=mHd5qTGeBYBkkns/Va562UnUjR6u5gTECXP6PmbW3T2YiiMcjmSp3M8bgzv7I1FgI
+         rOdkzLUoWvwUEVoC1W3B984UcZhJICJZg/N7rTJyv5tL564ml+vurtFZpL7in0+99I
+         md7a9kj2uayQB+u1ktQ61juJl6xWEW5R191gZHgQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+66264bf2fd0476be7e6c@syzkaller.appspotmail.com,
-        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 169/306] Bluetooth: skip invalid hci_sync_conn_complete_evt
+Subject: [PATCH 5.14 165/432] dma-buf: fix dma_resv_test_signaled test_all handling v2
 Date:   Thu, 16 Sep 2021 17:58:34 +0200
-Message-Id: <20210916155759.844579681@linuxfoundation.org>
+Message-Id: <20210916155816.339127096@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,57 +41,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+From: Christian König <christian.koenig@amd.com>
 
-[ Upstream commit 92fe24a7db751b80925214ede43f8d2be792ea7b ]
+[ Upstream commit 9d38814d1e346ea37a51cbf31f4424c9d059459e ]
 
-Syzbot reported a corrupted list in kobject_add_internal [1]. This
-happens when multiple HCI_EV_SYNC_CONN_COMPLETE event packets with
-status 0 are sent for the same HCI connection. This causes us to
-register the device more than once which corrupts the kset list.
+As the name implies if testing all fences is requested we
+should indeed test all fences and not skip the exclusive
+one because we see shared ones.
 
-As this is forbidden behavior, we add a check for whether we're
-trying to process the same HCI_EV_SYNC_CONN_COMPLETE event multiple
-times for one connection. If that's the case, the event is invalid, so
-we report an error that the device is misbehaving, and ignore the
-packet.
+v2: fix logic once more
 
-Link: https://syzkaller.appspot.com/bug?extid=66264bf2fd0476be7e6c [1]
-Reported-by: syzbot+66264bf2fd0476be7e6c@syzkaller.appspotmail.com
-Tested-by: syzbot+66264bf2fd0476be7e6c@syzkaller.appspotmail.com
-Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Signed-off-by: Christian König <christian.koenig@amd.com>
+Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210702111642.17259-3-christian.koenig@amd.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/hci_event.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ drivers/dma-buf/dma-resv.c | 33 ++++++++++++---------------------
+ 1 file changed, 12 insertions(+), 21 deletions(-)
 
-diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-index e59ae24a8f17..45de2d8b9a9d 100644
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -4329,6 +4329,21 @@ static void hci_sync_conn_complete_evt(struct hci_dev *hdev,
+diff --git a/drivers/dma-buf/dma-resv.c b/drivers/dma-buf/dma-resv.c
+index f26c71747d43..e744fd87c63c 100644
+--- a/drivers/dma-buf/dma-resv.c
++++ b/drivers/dma-buf/dma-resv.c
+@@ -615,25 +615,21 @@ static inline int dma_resv_test_signaled_single(struct dma_fence *passed_fence)
+  */
+ bool dma_resv_test_signaled(struct dma_resv *obj, bool test_all)
+ {
+-	unsigned int seq, shared_count;
++	struct dma_fence *fence;
++	unsigned int seq;
+ 	int ret;
  
- 	switch (ev->status) {
- 	case 0x00:
-+		/* The synchronous connection complete event should only be
-+		 * sent once per new connection. Receiving a successful
-+		 * complete event when the connection status is already
-+		 * BT_CONNECTED means that the device is misbehaving and sent
-+		 * multiple complete event packets for the same new connection.
-+		 *
-+		 * Registering the device more than once can corrupt kernel
-+		 * memory, hence upon detecting this invalid event, we report
-+		 * an error and ignore the packet.
-+		 */
-+		if (conn->state == BT_CONNECTED) {
-+			bt_dev_err(hdev, "Ignoring connect complete event for existing connection");
-+			goto unlock;
-+		}
+ 	rcu_read_lock();
+ retry:
+ 	ret = true;
+-	shared_count = 0;
+ 	seq = read_seqcount_begin(&obj->seq);
+ 
+ 	if (test_all) {
+ 		struct dma_resv_list *fobj = dma_resv_shared_list(obj);
+-		unsigned int i;
+-
+-		if (fobj)
+-			shared_count = fobj->shared_count;
++		unsigned int i, shared_count;
+ 
++		shared_count = fobj ? fobj->shared_count : 0;
+ 		for (i = 0; i < shared_count; ++i) {
+-			struct dma_fence *fence;
+-
+ 			fence = rcu_dereference(fobj->shared[i]);
+ 			ret = dma_resv_test_signaled_single(fence);
+ 			if (ret < 0)
+@@ -641,24 +637,19 @@ bool dma_resv_test_signaled(struct dma_resv *obj, bool test_all)
+ 			else if (!ret)
+ 				break;
+ 		}
+-
+-		if (read_seqcount_retry(&obj->seq, seq))
+-			goto retry;
+ 	}
+ 
+-	if (!shared_count) {
+-		struct dma_fence *fence_excl = dma_resv_excl_fence(obj);
+-
+-		if (fence_excl) {
+-			ret = dma_resv_test_signaled_single(fence_excl);
+-			if (ret < 0)
+-				goto retry;
++	fence = dma_resv_excl_fence(obj);
++	if (ret && fence) {
++		ret = dma_resv_test_signaled_single(fence);
++		if (ret < 0)
++			goto retry;
+ 
+-			if (read_seqcount_retry(&obj->seq, seq))
+-				goto retry;
+-		}
+ 	}
+ 
++	if (read_seqcount_retry(&obj->seq, seq))
++		goto retry;
 +
- 		conn->handle = __le16_to_cpu(ev->handle);
- 		conn->state  = BT_CONNECTED;
- 		conn->type   = ev->link_type;
+ 	rcu_read_unlock();
+ 	return ret;
+ }
 -- 
 2.30.2
 
