@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0091740DFB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:12:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEFA340E5FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:29:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233601AbhIPQNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:13:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47920 "EHLO mail.kernel.org"
+        id S1351419AbhIPRRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:17:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233807AbhIPQHy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:07:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 604E160698;
-        Thu, 16 Sep 2021 16:06:33 +0000 (UTC)
+        id S1350154AbhIPRJV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:09:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 242C261B40;
+        Thu, 16 Sep 2021 16:36:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808393;
-        bh=79xhAtAG4uraJRRzv9q5qPYfaK+BTkpQn7ioYrexVes=;
+        s=korg; t=1631810219;
+        bh=szLksIY6Ch1woieb4w6JYLrB6BgT+cHFbmRaknwToZQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qpoFifMHCTh4iGmxvhC1B1imOJ/kAH4Rp7dSG+4LG3X7xArIvFCEYRPME77pqTjJB
-         dHRPGagwGRCUDhIRpprkztPfFt8e/9VB9cWU1dAEXv7ITMzCA/Gin/9gFK7T596CHS
-         5OuFTcNloIpj10J6qqHYmei7nSW2UmCpH92qE+VQ=
+        b=miE5pSre4NMgfRf1Yie1MBTzkjmR/9QeF3ac9g9TZkgAZrIZL/gl+n82WZbAf+Sqi
+         cmKI2d5ZVhEZj0PPU2Fr1PrbKO9J5Ri1lxzUCGAMWmbm5rQ2bentRCmWA7DJyAACxV
+         1Ds2DkMw3hpwwax2mII5A4XpFbj2ZW9tvdUmeQwo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>
-Subject: [PATCH 5.10 032/306] power: supply: max17042: handle fails of reading status register
+        stable@vger.kernel.org, Kris Chaplin <kris.chaplin@intel.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>
+Subject: [PATCH 5.14 028/432] clk: socfpga: agilex: fix up s2f_user0_clk representation
 Date:   Thu, 16 Sep 2021 17:56:17 +0200
-Message-Id: <20210916155755.035084928@linuxfoundation.org>
+Message-Id: <20210916155811.774578827@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,43 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+From: Dinh Nguyen <dinguyen@kernel.org>
 
-commit 54784ffa5b267f57161eb8fbb811499f22a0a0bf upstream.
+commit f817c132db679d492d96c60993fa2f2c67ab18d0 upstream.
 
-Reading status register can fail in the interrupt handler.  In such
-case, the regmap_read() will not store anything useful under passed
-'val' variable and random stack value will be used to determine type of
-interrupt.
+Correct the s2f_user0_mux clock representation.
 
-Handle the regmap_read() failure to avoid handling interrupt type and
-triggering changed power supply event based on random stack value.
-
-Fixes: 39e7213edc4f ("max17042_battery: Support regmap to access device's registers")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Fixes: 80c6b7a0894f ("clk: socfpga: agilex: add clock driver for the Agilex platform")
+Cc: stable@vger.kernel.org
+Signed-off-by: Kris Chaplin <kris.chaplin@intel.com>
+Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
+Link: https://lore.kernel.org/r/20210713144621.605140-2-dinguyen@kernel.org
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/power/supply/max17042_battery.c |    6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/clk/socfpga/clk-agilex.c |    9 +++++++++
+ 1 file changed, 9 insertions(+)
 
---- a/drivers/power/supply/max17042_battery.c
-+++ b/drivers/power/supply/max17042_battery.c
-@@ -859,8 +859,12 @@ static irqreturn_t max17042_thread_handl
- {
- 	struct max17042_chip *chip = dev;
- 	u32 val;
-+	int ret;
-+
-+	ret = regmap_read(chip->regmap, MAX17042_STATUS, &val);
-+	if (ret)
-+		return IRQ_HANDLED;
+--- a/drivers/clk/socfpga/clk-agilex.c
++++ b/drivers/clk/socfpga/clk-agilex.c
+@@ -195,6 +195,13 @@ static const struct clk_parent_data sdmm
+ 	  .name = "boot_clk", },
+ };
  
--	regmap_read(chip->regmap, MAX17042_STATUS, &val);
- 	if ((val & STATUS_INTR_SOCMIN_BIT) ||
- 		(val & STATUS_INTR_SOCMAX_BIT)) {
- 		dev_info(&chip->client->dev, "SOC threshold INTR\n");
++static const struct clk_parent_data s2f_user0_mux[] = {
++	{ .fw_name = "s2f_user0_free_clk",
++	  .name = "s2f_user0_free_clk", },
++	{ .fw_name = "boot_clk",
++	  .name = "boot_clk", },
++};
++
+ static const struct clk_parent_data s2f_user1_mux[] = {
+ 	{ .fw_name = "s2f_user1_free_clk",
+ 	  .name = "s2f_user1_free_clk", },
+@@ -319,6 +326,8 @@ static const struct stratix10_gate_clock
+ 	  4, 0x98, 0, 16, 0x88, 3, 0},
+ 	{ AGILEX_SDMMC_CLK, "sdmmc_clk", NULL, sdmmc_mux, ARRAY_SIZE(sdmmc_mux), 0, 0x7C,
+ 	  5, 0, 0, 0, 0x88, 4, 4},
++	{ AGILEX_S2F_USER0_CLK, "s2f_user0_clk", NULL, s2f_user0_mux, ARRAY_SIZE(s2f_user0_mux), 0, 0x24,
++	  6, 0, 0, 0, 0x30, 2, 0},
+ 	{ AGILEX_S2F_USER1_CLK, "s2f_user1_clk", NULL, s2f_user1_mux, ARRAY_SIZE(s2f_user1_mux), 0, 0x7C,
+ 	  6, 0, 0, 0, 0x88, 5, 0},
+ 	{ AGILEX_PSI_REF_CLK, "psi_ref_clk", NULL, psi_mux, ARRAY_SIZE(psi_mux), 0, 0x7C,
 
 
