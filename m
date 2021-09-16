@@ -2,418 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E49FE40EA28
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:44:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F12D40EA2A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:44:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345541AbhIPSp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 14:45:27 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:46729 "EHLO pegase2.c-s.fr"
+        id S1350825AbhIPSqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 14:46:15 -0400
+Received: from mga02.intel.com ([134.134.136.20]:4255 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243430AbhIPSpR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 14:45:17 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4H9QwB4WR5z9sV1;
-        Thu, 16 Sep 2021 20:43:54 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 7KfFyexZZXMX; Thu, 16 Sep 2021 20:43:54 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4H9QwB3Bbhz9sTc;
-        Thu, 16 Sep 2021 20:43:54 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4055C8B799;
-        Thu, 16 Sep 2021 20:43:54 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id OnhW1vc382Xz; Thu, 16 Sep 2021 20:43:54 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.202.29])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id DF6508B783;
-        Thu, 16 Sep 2021 20:43:53 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 18GIhdOP444146
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Thu, 16 Sep 2021 20:43:39 +0200
-Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 18GIhbil444145;
-        Thu, 16 Sep 2021 20:43:37 +0200
-X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Stan Johnson <userm57@yahoo.com>,
-        Finn Thain <fthain@linux-m68k.org>
-Subject: [PATCH] powerpc/lib/sstep: Don't use __{get/put}_user() on kernel addresses
-Date:   Thu, 16 Sep 2021 20:43:36 +0200
-Message-Id: <22831c9d17f948680a12c5292e7627288b15f713.1631817805.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.31.1
+        id S1348152AbhIPSqM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 14:46:12 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10109"; a="209867666"
+X-IronPort-AV: E=Sophos;i="5.85,299,1624345200"; 
+   d="scan'208";a="209867666"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2021 11:44:50 -0700
+X-IronPort-AV: E=Sophos;i="5.85,299,1624345200"; 
+   d="scan'208";a="482810972"
+Received: from mpbarre-mobl1.amr.corp.intel.com (HELO [10.212.167.35]) ([10.212.167.35])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2021 11:44:50 -0700
+Subject: Re: [PATCH v7 01/12] x86/tdx: Add Intel ARCH support to
+ cc_platform_has()
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        VMware Inc <pv-drivers@vmware.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Cc:     Peter H Anvin <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org
+References: <20210916183550.15349-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210916183550.15349-2-sathyanarayanan.kuppuswamy@linux.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <645f6e73-1211-5ee2-07f7-cf4023358706@intel.com>
+Date:   Thu, 16 Sep 2021 11:44:48 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20210916183550.15349-2-sathyanarayanan.kuppuswamy@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the old days, when we didn't have kernel userspace access
-protection and had set_fs(), it was wise to use __get_user()
-and friends to read kernel memory.
+On 9/16/21 11:35 AM, Kuppuswamy Sathyanarayanan wrote:
+> --- a/arch/x86/kernel/cc_platform.c
+> +++ b/arch/x86/kernel/cc_platform.c
+> @@ -10,11 +10,16 @@
+>  #include <linux/export.h>
+>  #include <linux/cc_platform.h>
+>  #include <linux/mem_encrypt.h>
+> +#include <linux/processor.h>
+> +
+> +#include <asm/intel_cc_platform.h>
+>  
+>  bool cc_platform_has(enum cc_attr attr)
+>  {
+>  	if (sme_me_mask)
+>  		return amd_cc_platform_has(attr);
+> +	else if (boot_cpu_data.x86_vendor == X86_VENDOR_INTEL)
+> +		return intel_cc_platform_has(attr);
+>  
+>  	return false;
+>  }
 
-Nowadays, get_user() and put_user() are granting userspace access and
-are exclusively for userspace access.
+How did this end up out of line?  This means that if you compile-time
+enable support for even *one* "cc" platform, you can't optimize the
+calls away.  This ends up being at *LEAST* two calls, just to get an
+unconditional "false".  That just seems silly.
 
-Convert single step emulation functions to user_access_begin() and
-friends and use unsafe_get_user() and unsafe_put_user().
-
-When addressing kernel addresses, there is no need to open userspace
-access. And for book3s/32 it is particularly important to no try and
-open userspace access on kernel address, because that would break the
-content of kernel space segment registers. No guard has been put
-against that risk in order to avoid degrading performance.
-
-copy_from_kernel_nofault() and copy_to_kernel_nofault() should
-be used but they are out-of-line functions which would degrade
-performance. Those two functions are making use of
-__get_kernel_nofault() and __put_kernel_nofault() macros.
-Those two macros are just wrappers behind __get_user_size_goto() and
-__put_user_size_goto().
-
-unsafe_get_user() and unsafe_put_user() are also wrappers of
-__get_user_size_goto() and __put_user_size_goto(). Use them to
-access kernel space. That allows refactoring userspace and
-kernelspace access.
-
-Reported-by: Stan Johnson <userm57@yahoo.com>
-Cc: Finn Thain <fthain@linux-m68k.org>
-Depends-on: 4fe5cda9f89d ("powerpc/uaccess: Implement user_read_access_begin and user_write_access_begin")
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/lib/sstep.c | 197 ++++++++++++++++++++++++++++-----------
- 1 file changed, 140 insertions(+), 57 deletions(-)
-
-diff --git a/arch/powerpc/lib/sstep.c b/arch/powerpc/lib/sstep.c
-index d8d5f901cee1..86f49e3e7cf5 100644
---- a/arch/powerpc/lib/sstep.c
-+++ b/arch/powerpc/lib/sstep.c
-@@ -302,33 +302,51 @@ static nokprobe_inline void do_byte_reverse(void *ptr, int nb)
- 	}
- }
- 
--static nokprobe_inline int read_mem_aligned(unsigned long *dest,
--					    unsigned long ea, int nb,
--					    struct pt_regs *regs)
-+static __always_inline int
-+__read_mem_aligned(unsigned long *dest, unsigned long ea, int nb, struct pt_regs *regs)
- {
--	int err = 0;
- 	unsigned long x = 0;
- 
- 	switch (nb) {
- 	case 1:
--		err = __get_user(x, (unsigned char __user *) ea);
-+		unsafe_get_user(x, (unsigned char __user *)ea, Efault);
- 		break;
- 	case 2:
--		err = __get_user(x, (unsigned short __user *) ea);
-+		unsafe_get_user(x, (unsigned short __user *)ea, Efault);
- 		break;
- 	case 4:
--		err = __get_user(x, (unsigned int __user *) ea);
-+		unsafe_get_user(x, (unsigned int __user *)ea, Efault);
- 		break;
- #ifdef __powerpc64__
- 	case 8:
--		err = __get_user(x, (unsigned long __user *) ea);
-+		unsafe_get_user(x, (unsigned long __user *)ea, Efault);
- 		break;
- #endif
- 	}
--	if (!err)
--		*dest = x;
--	else
-+	*dest = x;
-+	return 0;
-+
-+Efault:
-+	regs->dar = ea;
-+	return -EFAULT;
-+}
-+
-+static nokprobe_inline int
-+read_mem_aligned(unsigned long *dest, unsigned long ea, int nb, struct pt_regs *regs)
-+{
-+	int err;
-+
-+	if (is_kernel_addr(ea))
-+		return __read_mem_aligned(dest, ea, nb, regs);
-+
-+	if (user_read_access_begin((void __user *)ea, nb)) {
-+		err = __read_mem_aligned(dest, ea, nb, regs);
-+		user_read_access_end();
-+	} else {
-+		err = -EFAULT;
- 		regs->dar = ea;
-+	}
-+
- 	return err;
- }
- 
-@@ -336,10 +354,8 @@ static nokprobe_inline int read_mem_aligned(unsigned long *dest,
-  * Copy from userspace to a buffer, using the largest possible
-  * aligned accesses, up to sizeof(long).
-  */
--static nokprobe_inline int copy_mem_in(u8 *dest, unsigned long ea, int nb,
--				       struct pt_regs *regs)
-+static __always_inline int __copy_mem_in(u8 *dest, unsigned long ea, int nb, struct pt_regs *regs)
- {
--	int err = 0;
- 	int c;
- 
- 	for (; nb > 0; nb -= c) {
-@@ -348,31 +364,46 @@ static nokprobe_inline int copy_mem_in(u8 *dest, unsigned long ea, int nb,
- 			c = max_align(nb);
- 		switch (c) {
- 		case 1:
--			err = __get_user(*dest, (unsigned char __user *) ea);
-+			unsafe_get_user(*dest, (u8 __user *)ea, Efault);
- 			break;
- 		case 2:
--			err = __get_user(*(u16 *)dest,
--					 (unsigned short __user *) ea);
-+			unsafe_get_user(*(u16 *)dest, (u16 __user *)ea, Efault);
- 			break;
- 		case 4:
--			err = __get_user(*(u32 *)dest,
--					 (unsigned int __user *) ea);
-+			unsafe_get_user(*(u32 *)dest, (u32 __user *)ea, Efault);
- 			break;
- #ifdef __powerpc64__
- 		case 8:
--			err = __get_user(*(unsigned long *)dest,
--					 (unsigned long __user *) ea);
-+			unsafe_get_user(*(u64 *)dest, (u64 __user *)ea, Efault);
- 			break;
- #endif
- 		}
--		if (err) {
--			regs->dar = ea;
--			return err;
--		}
- 		dest += c;
- 		ea += c;
- 	}
- 	return 0;
-+
-+Efault:
-+	regs->dar = ea;
-+	return -EFAULT;
-+}
-+
-+static nokprobe_inline int copy_mem_in(u8 *dest, unsigned long ea, int nb, struct pt_regs *regs)
-+{
-+	int err;
-+
-+	if (is_kernel_addr(ea))
-+		return __copy_mem_in(dest, ea, nb, regs);
-+
-+	if (user_read_access_begin((void __user *)ea, nb)) {
-+		err = __copy_mem_in(dest, ea, nb, regs);
-+		user_read_access_end();
-+	} else {
-+		err = -EFAULT;
-+		regs->dar = ea;
-+	}
-+
-+	return err;
- }
- 
- static nokprobe_inline int read_mem_unaligned(unsigned long *dest,
-@@ -410,30 +441,48 @@ static int read_mem(unsigned long *dest, unsigned long ea, int nb,
- }
- NOKPROBE_SYMBOL(read_mem);
- 
--static nokprobe_inline int write_mem_aligned(unsigned long val,
--					     unsigned long ea, int nb,
--					     struct pt_regs *regs)
-+static __always_inline int
-+__write_mem_aligned(unsigned long val, unsigned long ea, int nb, struct pt_regs *regs)
- {
--	int err = 0;
--
- 	switch (nb) {
- 	case 1:
--		err = __put_user(val, (unsigned char __user *) ea);
-+		unsafe_put_user(val, (unsigned char __user *)ea, Efault);
- 		break;
- 	case 2:
--		err = __put_user(val, (unsigned short __user *) ea);
-+		unsafe_put_user(val, (unsigned short __user *)ea, Efault);
- 		break;
- 	case 4:
--		err = __put_user(val, (unsigned int __user *) ea);
-+		unsafe_put_user(val, (unsigned int __user *)ea, Efault);
- 		break;
- #ifdef __powerpc64__
- 	case 8:
--		err = __put_user(val, (unsigned long __user *) ea);
-+		unsafe_put_user(val, (unsigned long __user *)ea, Efault);
- 		break;
- #endif
- 	}
--	if (err)
-+	return 0;
-+
-+Efault:
-+	regs->dar = ea;
-+	return -EFAULT;
-+}
-+
-+static nokprobe_inline int
-+write_mem_aligned(unsigned long val, unsigned long ea, int nb, struct pt_regs *regs)
-+{
-+	int err;
-+
-+	if (is_kernel_addr(ea))
-+		return __write_mem_aligned(val, ea, nb, regs);
-+
-+	if (user_write_access_begin((void __user *)ea, nb)) {
-+		err = __write_mem_aligned(val, ea, nb, regs);
-+		user_write_access_end();
-+	} else {
-+		err = -EFAULT;
- 		regs->dar = ea;
-+	}
-+
- 	return err;
- }
- 
-@@ -441,10 +490,8 @@ static nokprobe_inline int write_mem_aligned(unsigned long val,
-  * Copy from a buffer to userspace, using the largest possible
-  * aligned accesses, up to sizeof(long).
-  */
--static nokprobe_inline int copy_mem_out(u8 *dest, unsigned long ea, int nb,
--					struct pt_regs *regs)
-+static nokprobe_inline int __copy_mem_out(u8 *dest, unsigned long ea, int nb, struct pt_regs *regs)
- {
--	int err = 0;
- 	int c;
- 
- 	for (; nb > 0; nb -= c) {
-@@ -453,31 +500,46 @@ static nokprobe_inline int copy_mem_out(u8 *dest, unsigned long ea, int nb,
- 			c = max_align(nb);
- 		switch (c) {
- 		case 1:
--			err = __put_user(*dest, (unsigned char __user *) ea);
-+			unsafe_put_user(*dest, (u8 __user *)ea, Efault);
- 			break;
- 		case 2:
--			err = __put_user(*(u16 *)dest,
--					 (unsigned short __user *) ea);
-+			unsafe_put_user(*(u16 *)dest, (u16 __user *)ea, Efault);
- 			break;
- 		case 4:
--			err = __put_user(*(u32 *)dest,
--					 (unsigned int __user *) ea);
-+			unsafe_put_user(*(u32 *)dest, (u32 __user *)ea, Efault);
- 			break;
- #ifdef __powerpc64__
- 		case 8:
--			err = __put_user(*(unsigned long *)dest,
--					 (unsigned long __user *) ea);
-+			unsafe_put_user(*(u64 *)dest, (u64 __user *)ea, Efault);
- 			break;
- #endif
- 		}
--		if (err) {
--			regs->dar = ea;
--			return err;
--		}
- 		dest += c;
- 		ea += c;
- 	}
- 	return 0;
-+
-+Efault:
-+	regs->dar = ea;
-+	return -EFAULT;
-+}
-+
-+static nokprobe_inline int copy_mem_out(u8 *dest, unsigned long ea, int nb, struct pt_regs *regs)
-+{
-+	int err;
-+
-+	if (is_kernel_addr(ea))
-+		return __copy_mem_out(dest, ea, nb, regs);
-+
-+	if (user_write_access_begin((void __user *)ea, nb)) {
-+		err = __copy_mem_out(dest, ea, nb, regs);
-+		user_write_access_end();
-+	} else {
-+		err = -EFAULT;
-+		regs->dar = ea;
-+	}
-+
-+	return err;
- }
- 
- static nokprobe_inline int write_mem_unaligned(unsigned long val,
-@@ -986,10 +1048,24 @@ static nokprobe_inline int do_vsx_store(struct instruction_op *op,
- }
- #endif /* CONFIG_VSX */
- 
-+static int __emulate_dcbz(unsigned long ea)
-+{
-+	unsigned long i;
-+	unsigned long size = l1_dcache_bytes();
-+
-+	for (i = 0; i < size; i += sizeof(long))
-+		unsafe_put_user(0, (unsigned long __user *)(ea + i), Efault);
-+
-+	return 0;
-+
-+Efault:
-+	return -EFAULT;
-+}
-+
- int emulate_dcbz(unsigned long ea, struct pt_regs *regs)
- {
- 	int err;
--	unsigned long i, size;
-+	unsigned long size;
- 
- #ifdef __powerpc64__
- 	size = ppc64_caches.l1d.block_size;
-@@ -1001,14 +1077,21 @@ int emulate_dcbz(unsigned long ea, struct pt_regs *regs)
- 	ea &= ~(size - 1);
- 	if (!address_ok(regs, ea, size))
- 		return -EFAULT;
--	for (i = 0; i < size; i += sizeof(long)) {
--		err = __put_user(0, (unsigned long __user *) (ea + i));
--		if (err) {
--			regs->dar = ea;
--			return err;
--		}
-+
-+	if (is_kernel_addr(ea)) {
-+		err = __emulate_dcbz(ea);
-+	} else if (user_write_access_begin((void __user *)ea, size)) {
-+		err = __emulate_dcbz(ea);
-+		user_write_access_end();
-+	} else {
-+		err = -EFAULT;
- 	}
--	return 0;
-+
-+	if (err)
-+		regs->dar = ea;
-+
-+
-+	return err;
- }
- NOKPROBE_SYMBOL(emulate_dcbz);
- 
--- 
-2.31.1
-
+I know this is a comment more about the cc_platform_has() series that
+this one, but this compounds the problem.
