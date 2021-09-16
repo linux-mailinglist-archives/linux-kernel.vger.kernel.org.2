@@ -2,109 +2,418 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 776E040EA21
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:42:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E49FE40EA28
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:44:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350411AbhIPSn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 14:43:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44938 "EHLO mail.kernel.org"
+        id S1345541AbhIPSp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 14:45:27 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:46729 "EHLO pegase2.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349179AbhIPSnn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 14:43:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E065610A6;
-        Thu, 16 Sep 2021 18:42:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631817742;
-        bh=W8lmbPG+Y7dzqY16kJIWhu7Hte7q4CpDtoM8X9UOKiM=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=naUyEq4E5gf3apJKSzndPpK7/aIAe+JSS11lI1ZBRDlVSeotuOczaxJ43zzK02LCa
-         rD3zGSc2Lt9KEmwk6RQu+UkOMlTQV3sRshuH5PhUWy/lrT2A2CpGegUCx7um3fzi38
-         RF9IbCMzODaL9mRzNiW3jG90gQL3l4SZqKVnvSR0weYqu50gEIHWshudMnbxMbpm8y
-         hiwGHnyfCFhuudQvDt5AxlfqDL4syXomLcCqritQb7WuhdDR/9rTsJwMC9D5jPaXsY
-         MmJOhQdSp3koJVBFRx6b4cgp3fbUnfXHUsvqtRXwk2HYpWwpMNt+8B9lW1qzbdXT2I
-         WDdzk2HDk0KVw==
-Subject: Re: [PATCH 1/2] x86: Do not add -falign flags unconditionally for
- clang
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        clang-built-linux@googlegroups.com, llvm@lists.linux.dev,
-        kernel test robot <lkp@intel.com>
-References: <20210824022640.2170859-1-nathan@kernel.org>
- <20210824022640.2170859-2-nathan@kernel.org> <YUN8coiEx3JZQytc@zn.tnic>
-From:   Nathan Chancellor <nathan@kernel.org>
-Message-ID: <4d88e0ed-422d-447a-ea8f-36e54b38fac1@kernel.org>
-Date:   Thu, 16 Sep 2021 11:42:19 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S243430AbhIPSpR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 14:45:17 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4H9QwB4WR5z9sV1;
+        Thu, 16 Sep 2021 20:43:54 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 7KfFyexZZXMX; Thu, 16 Sep 2021 20:43:54 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4H9QwB3Bbhz9sTc;
+        Thu, 16 Sep 2021 20:43:54 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4055C8B799;
+        Thu, 16 Sep 2021 20:43:54 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id OnhW1vc382Xz; Thu, 16 Sep 2021 20:43:54 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.202.29])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id DF6508B783;
+        Thu, 16 Sep 2021 20:43:53 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 18GIhdOP444146
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Thu, 16 Sep 2021 20:43:39 +0200
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 18GIhbil444145;
+        Thu, 16 Sep 2021 20:43:37 +0200
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Stan Johnson <userm57@yahoo.com>,
+        Finn Thain <fthain@linux-m68k.org>
+Subject: [PATCH] powerpc/lib/sstep: Don't use __{get/put}_user() on kernel addresses
+Date:   Thu, 16 Sep 2021 20:43:36 +0200
+Message-Id: <22831c9d17f948680a12c5292e7627288b15f713.1631817805.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <YUN8coiEx3JZQytc@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/16/2021 10:18 AM, Borislav Petkov wrote:
-> On Mon, Aug 23, 2021 at 07:26:39PM -0700, Nathan Chancellor wrote:
-> 
-> A couple of nitpicks:
-> 
->> Subject: [PATCH 1/2] x86: Do not add -falign flags unconditionally for clang
-> 
-> Make that prefix into "x86/build: "
+In the old days, when we didn't have kernel userspace access
+protection and had set_fs(), it was wise to use __get_user()
+and friends to read kernel memory.
 
-Done, I'll be sure to keep that prefix in mind for future flag-based 
-changes.
+Nowadays, get_user() and put_user() are granting userspace access and
+are exclusively for userspace access.
 
->> clang does not support -falign-jumps and only recently gained support
->> for -falign-loops. When one of the configuration options that adds these
->> flags is enabled, clang warns and all cc-{disable-warning,option} that
->> follow fail because -Werror gets added to test for the presence of this
->> warning:
->>
->> clang-14: warning: optimization flag '-falign-jumps=0' is not supported
->> [-Wignored-optimization-argument]
->>
->> To resolve this, add a couple of cc-option calls when building with
->> clang; gcc has supported these options since 3.2 so there is no point in
->> testing for their support. -falign-functions was implemented in clang-7,
->> -falign-loops was implemented in clang-14, and -falign-jumps has not
->> been implemented yet.
->>
->> Link: https://lore.kernel.org/r/YSQE2f5teuvKLkON@Ryzen-9-3900X.localdomain/
-> 
-> Also, there should be a second Link: tag which points to this mail
-> thread so that we can find it later, when we dig for the "why we did
-> that" question :)
-> 
-> I.e.,
-> 
-> Link: 20210824022640.2170859-2-nathan@kernel.org
+Convert single step emulation functions to user_access_begin() and
+friends and use unsafe_get_user() and unsafe_put_user().
 
-Sure thing, kind of hard to do that on the initial submission but I will 
-do it for the v2 shortly :)
+When addressing kernel addresses, there is no need to open userspace
+access. And for book3s/32 it is particularly important to no try and
+open userspace access on kernel address, because that would break the
+content of kernel space segment registers. No guard has been put
+against that risk in order to avoid degrading performance.
 
->> Reported-by: kernel test robot <lkp@intel.com>
->> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
->> ---
->>   arch/x86/Makefile_32.cpu | 12 +++++++++---
->>   1 file changed, 9 insertions(+), 3 deletions(-)
-> 
-> with that:
-> 
-> Acked-by: Borislav Petkov <bp@suse.de>
+copy_from_kernel_nofault() and copy_to_kernel_nofault() should
+be used but they are out-of-line functions which would degrade
+performance. Those two functions are making use of
+__get_kernel_nofault() and __put_kernel_nofault() macros.
+Those two macros are just wrappers behind __get_user_size_goto() and
+__put_user_size_goto().
 
-Thank you for the ack. The conflicting changes that I mentioned in the 
-cover letter have been merged in 5.15-rc1 so if you guys want to take 
-these changes via -tip, just holler for an ack from Masahiro on the 
-second patch on v2 (but I am going with the assumption this will be 
-merged via the kbuild tree).
+unsafe_get_user() and unsafe_put_user() are also wrappers of
+__get_user_size_goto() and __put_user_size_goto(). Use them to
+access kernel space. That allows refactoring userspace and
+kernelspace access.
 
-Cheers,
-Nathan
+Reported-by: Stan Johnson <userm57@yahoo.com>
+Cc: Finn Thain <fthain@linux-m68k.org>
+Depends-on: 4fe5cda9f89d ("powerpc/uaccess: Implement user_read_access_begin and user_write_access_begin")
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/lib/sstep.c | 197 ++++++++++++++++++++++++++++-----------
+ 1 file changed, 140 insertions(+), 57 deletions(-)
+
+diff --git a/arch/powerpc/lib/sstep.c b/arch/powerpc/lib/sstep.c
+index d8d5f901cee1..86f49e3e7cf5 100644
+--- a/arch/powerpc/lib/sstep.c
++++ b/arch/powerpc/lib/sstep.c
+@@ -302,33 +302,51 @@ static nokprobe_inline void do_byte_reverse(void *ptr, int nb)
+ 	}
+ }
+ 
+-static nokprobe_inline int read_mem_aligned(unsigned long *dest,
+-					    unsigned long ea, int nb,
+-					    struct pt_regs *regs)
++static __always_inline int
++__read_mem_aligned(unsigned long *dest, unsigned long ea, int nb, struct pt_regs *regs)
+ {
+-	int err = 0;
+ 	unsigned long x = 0;
+ 
+ 	switch (nb) {
+ 	case 1:
+-		err = __get_user(x, (unsigned char __user *) ea);
++		unsafe_get_user(x, (unsigned char __user *)ea, Efault);
+ 		break;
+ 	case 2:
+-		err = __get_user(x, (unsigned short __user *) ea);
++		unsafe_get_user(x, (unsigned short __user *)ea, Efault);
+ 		break;
+ 	case 4:
+-		err = __get_user(x, (unsigned int __user *) ea);
++		unsafe_get_user(x, (unsigned int __user *)ea, Efault);
+ 		break;
+ #ifdef __powerpc64__
+ 	case 8:
+-		err = __get_user(x, (unsigned long __user *) ea);
++		unsafe_get_user(x, (unsigned long __user *)ea, Efault);
+ 		break;
+ #endif
+ 	}
+-	if (!err)
+-		*dest = x;
+-	else
++	*dest = x;
++	return 0;
++
++Efault:
++	regs->dar = ea;
++	return -EFAULT;
++}
++
++static nokprobe_inline int
++read_mem_aligned(unsigned long *dest, unsigned long ea, int nb, struct pt_regs *regs)
++{
++	int err;
++
++	if (is_kernel_addr(ea))
++		return __read_mem_aligned(dest, ea, nb, regs);
++
++	if (user_read_access_begin((void __user *)ea, nb)) {
++		err = __read_mem_aligned(dest, ea, nb, regs);
++		user_read_access_end();
++	} else {
++		err = -EFAULT;
+ 		regs->dar = ea;
++	}
++
+ 	return err;
+ }
+ 
+@@ -336,10 +354,8 @@ static nokprobe_inline int read_mem_aligned(unsigned long *dest,
+  * Copy from userspace to a buffer, using the largest possible
+  * aligned accesses, up to sizeof(long).
+  */
+-static nokprobe_inline int copy_mem_in(u8 *dest, unsigned long ea, int nb,
+-				       struct pt_regs *regs)
++static __always_inline int __copy_mem_in(u8 *dest, unsigned long ea, int nb, struct pt_regs *regs)
+ {
+-	int err = 0;
+ 	int c;
+ 
+ 	for (; nb > 0; nb -= c) {
+@@ -348,31 +364,46 @@ static nokprobe_inline int copy_mem_in(u8 *dest, unsigned long ea, int nb,
+ 			c = max_align(nb);
+ 		switch (c) {
+ 		case 1:
+-			err = __get_user(*dest, (unsigned char __user *) ea);
++			unsafe_get_user(*dest, (u8 __user *)ea, Efault);
+ 			break;
+ 		case 2:
+-			err = __get_user(*(u16 *)dest,
+-					 (unsigned short __user *) ea);
++			unsafe_get_user(*(u16 *)dest, (u16 __user *)ea, Efault);
+ 			break;
+ 		case 4:
+-			err = __get_user(*(u32 *)dest,
+-					 (unsigned int __user *) ea);
++			unsafe_get_user(*(u32 *)dest, (u32 __user *)ea, Efault);
+ 			break;
+ #ifdef __powerpc64__
+ 		case 8:
+-			err = __get_user(*(unsigned long *)dest,
+-					 (unsigned long __user *) ea);
++			unsafe_get_user(*(u64 *)dest, (u64 __user *)ea, Efault);
+ 			break;
+ #endif
+ 		}
+-		if (err) {
+-			regs->dar = ea;
+-			return err;
+-		}
+ 		dest += c;
+ 		ea += c;
+ 	}
+ 	return 0;
++
++Efault:
++	regs->dar = ea;
++	return -EFAULT;
++}
++
++static nokprobe_inline int copy_mem_in(u8 *dest, unsigned long ea, int nb, struct pt_regs *regs)
++{
++	int err;
++
++	if (is_kernel_addr(ea))
++		return __copy_mem_in(dest, ea, nb, regs);
++
++	if (user_read_access_begin((void __user *)ea, nb)) {
++		err = __copy_mem_in(dest, ea, nb, regs);
++		user_read_access_end();
++	} else {
++		err = -EFAULT;
++		regs->dar = ea;
++	}
++
++	return err;
+ }
+ 
+ static nokprobe_inline int read_mem_unaligned(unsigned long *dest,
+@@ -410,30 +441,48 @@ static int read_mem(unsigned long *dest, unsigned long ea, int nb,
+ }
+ NOKPROBE_SYMBOL(read_mem);
+ 
+-static nokprobe_inline int write_mem_aligned(unsigned long val,
+-					     unsigned long ea, int nb,
+-					     struct pt_regs *regs)
++static __always_inline int
++__write_mem_aligned(unsigned long val, unsigned long ea, int nb, struct pt_regs *regs)
+ {
+-	int err = 0;
+-
+ 	switch (nb) {
+ 	case 1:
+-		err = __put_user(val, (unsigned char __user *) ea);
++		unsafe_put_user(val, (unsigned char __user *)ea, Efault);
+ 		break;
+ 	case 2:
+-		err = __put_user(val, (unsigned short __user *) ea);
++		unsafe_put_user(val, (unsigned short __user *)ea, Efault);
+ 		break;
+ 	case 4:
+-		err = __put_user(val, (unsigned int __user *) ea);
++		unsafe_put_user(val, (unsigned int __user *)ea, Efault);
+ 		break;
+ #ifdef __powerpc64__
+ 	case 8:
+-		err = __put_user(val, (unsigned long __user *) ea);
++		unsafe_put_user(val, (unsigned long __user *)ea, Efault);
+ 		break;
+ #endif
+ 	}
+-	if (err)
++	return 0;
++
++Efault:
++	regs->dar = ea;
++	return -EFAULT;
++}
++
++static nokprobe_inline int
++write_mem_aligned(unsigned long val, unsigned long ea, int nb, struct pt_regs *regs)
++{
++	int err;
++
++	if (is_kernel_addr(ea))
++		return __write_mem_aligned(val, ea, nb, regs);
++
++	if (user_write_access_begin((void __user *)ea, nb)) {
++		err = __write_mem_aligned(val, ea, nb, regs);
++		user_write_access_end();
++	} else {
++		err = -EFAULT;
+ 		regs->dar = ea;
++	}
++
+ 	return err;
+ }
+ 
+@@ -441,10 +490,8 @@ static nokprobe_inline int write_mem_aligned(unsigned long val,
+  * Copy from a buffer to userspace, using the largest possible
+  * aligned accesses, up to sizeof(long).
+  */
+-static nokprobe_inline int copy_mem_out(u8 *dest, unsigned long ea, int nb,
+-					struct pt_regs *regs)
++static nokprobe_inline int __copy_mem_out(u8 *dest, unsigned long ea, int nb, struct pt_regs *regs)
+ {
+-	int err = 0;
+ 	int c;
+ 
+ 	for (; nb > 0; nb -= c) {
+@@ -453,31 +500,46 @@ static nokprobe_inline int copy_mem_out(u8 *dest, unsigned long ea, int nb,
+ 			c = max_align(nb);
+ 		switch (c) {
+ 		case 1:
+-			err = __put_user(*dest, (unsigned char __user *) ea);
++			unsafe_put_user(*dest, (u8 __user *)ea, Efault);
+ 			break;
+ 		case 2:
+-			err = __put_user(*(u16 *)dest,
+-					 (unsigned short __user *) ea);
++			unsafe_put_user(*(u16 *)dest, (u16 __user *)ea, Efault);
+ 			break;
+ 		case 4:
+-			err = __put_user(*(u32 *)dest,
+-					 (unsigned int __user *) ea);
++			unsafe_put_user(*(u32 *)dest, (u32 __user *)ea, Efault);
+ 			break;
+ #ifdef __powerpc64__
+ 		case 8:
+-			err = __put_user(*(unsigned long *)dest,
+-					 (unsigned long __user *) ea);
++			unsafe_put_user(*(u64 *)dest, (u64 __user *)ea, Efault);
+ 			break;
+ #endif
+ 		}
+-		if (err) {
+-			regs->dar = ea;
+-			return err;
+-		}
+ 		dest += c;
+ 		ea += c;
+ 	}
+ 	return 0;
++
++Efault:
++	regs->dar = ea;
++	return -EFAULT;
++}
++
++static nokprobe_inline int copy_mem_out(u8 *dest, unsigned long ea, int nb, struct pt_regs *regs)
++{
++	int err;
++
++	if (is_kernel_addr(ea))
++		return __copy_mem_out(dest, ea, nb, regs);
++
++	if (user_write_access_begin((void __user *)ea, nb)) {
++		err = __copy_mem_out(dest, ea, nb, regs);
++		user_write_access_end();
++	} else {
++		err = -EFAULT;
++		regs->dar = ea;
++	}
++
++	return err;
+ }
+ 
+ static nokprobe_inline int write_mem_unaligned(unsigned long val,
+@@ -986,10 +1048,24 @@ static nokprobe_inline int do_vsx_store(struct instruction_op *op,
+ }
+ #endif /* CONFIG_VSX */
+ 
++static int __emulate_dcbz(unsigned long ea)
++{
++	unsigned long i;
++	unsigned long size = l1_dcache_bytes();
++
++	for (i = 0; i < size; i += sizeof(long))
++		unsafe_put_user(0, (unsigned long __user *)(ea + i), Efault);
++
++	return 0;
++
++Efault:
++	return -EFAULT;
++}
++
+ int emulate_dcbz(unsigned long ea, struct pt_regs *regs)
+ {
+ 	int err;
+-	unsigned long i, size;
++	unsigned long size;
+ 
+ #ifdef __powerpc64__
+ 	size = ppc64_caches.l1d.block_size;
+@@ -1001,14 +1077,21 @@ int emulate_dcbz(unsigned long ea, struct pt_regs *regs)
+ 	ea &= ~(size - 1);
+ 	if (!address_ok(regs, ea, size))
+ 		return -EFAULT;
+-	for (i = 0; i < size; i += sizeof(long)) {
+-		err = __put_user(0, (unsigned long __user *) (ea + i));
+-		if (err) {
+-			regs->dar = ea;
+-			return err;
+-		}
++
++	if (is_kernel_addr(ea)) {
++		err = __emulate_dcbz(ea);
++	} else if (user_write_access_begin((void __user *)ea, size)) {
++		err = __emulate_dcbz(ea);
++		user_write_access_end();
++	} else {
++		err = -EFAULT;
+ 	}
+-	return 0;
++
++	if (err)
++		regs->dar = ea;
++
++
++	return err;
+ }
+ NOKPROBE_SYMBOL(emulate_dcbz);
+ 
+-- 
+2.31.1
+
