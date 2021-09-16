@@ -2,57 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BABB040D0BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 02:17:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DE3840D0BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 02:17:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233238AbhIPASd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 20:18:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50660 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232465AbhIPASc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 20:18:32 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0D365610A2;
-        Thu, 16 Sep 2021 00:17:11 +0000 (UTC)
-Date:   Wed, 15 Sep 2021 20:17:09 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, Linux-MM <linux-mm@kvack.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH v3 3/3] bootconfig: Free xbc_data in xbc_destroy_all()
-Message-ID: <20210915201709.1406426a@oasis.local.home>
-In-Reply-To: <20210916090503.c9d8209e8c88e9c4c7d3072c@kernel.org>
-References: <163171196689.590070.15063104707696447188.stgit@devnote2>
-        <163171199244.590070.6356174550728998874.stgit@devnote2>
-        <20210915102354.2841798d@oasis.local.home>
-        <20210916090503.c9d8209e8c88e9c4c7d3072c@kernel.org>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S233329AbhIPATL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 20:19:11 -0400
+Received: from pi.codeconstruct.com.au ([203.29.241.158]:57538 "EHLO
+        codeconstruct.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233345AbhIPATI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 20:19:08 -0400
+Received: from pecola.lan (unknown [159.196.93.152])
+        by mail.codeconstruct.com.au (Postfix) with ESMTPSA id AAC722012D;
+        Thu, 16 Sep 2021 08:17:41 +0800 (AWST)
+Message-ID: <ad29d1d9743799ffd770330af6ad174bdfe7c3a0.camel@codeconstruct.com.au>
+Subject: Re: [PATCH 3/3] hwmon: (occ) Provide the SBEFIFO FFDC in binary
+ sysfs
+From:   Jeremy Kerr <jk@codeconstruct.com.au>
+To:     Eddie James <eajames@linux.ibm.com>, linux-fsi@lists.ozlabs.org
+Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        joel@jms.id.au, linux@roeck-us.net, jdelvare@suse.com,
+        alistair@popple.id.au
+Date:   Thu, 16 Sep 2021 08:17:41 +0800
+In-Reply-To: <20210914213543.73351-4-eajames@linux.ibm.com>
+References: <20210914213543.73351-1-eajames@linux.ibm.com>
+         <20210914213543.73351-4-eajames@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Sep 2021 09:05:03 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
+Hi Eddie,
 
-> Ah, it is my policy that the error or information message is shown
-> by caller (since caller can also ignore that, e.g. passing the
-> testing data), not from the library code.
-> I learned that from perf-probe and ftrace, sometimes the library
-> code reused in unexpected way. So I decided to decouple the
-> generating error message and showing it.
+> Save any FFDC provided by the OCC driver, and provide it to userspace
+> through a binary sysfs entry. Do some basic state management to
+> ensure that userspace can always collect the data if there was an
+> error. Notify polling userspace when there is an error too.
 
-OK, then we can just pass the number of nodes allocated via a pointer
-to an integer.
+Super! Some comments inline:
 
-Thanks!
+> +enum sbe_error_state {
+> +       SBE_ERROR_NONE = 0,
+> +       SBE_ERROR_PENDING,
+> +       SBE_ERROR_COLLECTED
+> +};
+> +
+>  struct p9_sbe_occ {
+>         struct occ occ;
+> +       int sbe_error;
 
--- Steve
+Use the enum here?
+
+> +       void *ffdc;
+> +       size_t ffdc_len;
+> +       size_t ffdc_size;
+> +       struct mutex sbe_error_lock;    /* lock access to ffdc data */
+> +       u32 no_ffdc_magic;
+>         struct device *sbe;
+>  };
+>  
+>  #define to_p9_sbe_occ(x)       container_of((x), struct p9_sbe_occ, occ)
+>  
+> +static ssize_t sbe_error_read(struct file *filp, struct kobject *kobj,
+> +                             struct bin_attribute *battr, char *buf,
+> +                             loff_t pos, size_t count)
+> +{
+> +       ssize_t rc = 0;
+> +       struct occ *occ = dev_get_drvdata(kobj_to_dev(kobj));
+> +       struct p9_sbe_occ *ctx = to_p9_sbe_occ(occ);
+> +
+> +       mutex_lock(&ctx->sbe_error_lock);
+> +       if (ctx->sbe_error == SBE_ERROR_PENDING) {
+> +               rc = memory_read_from_buffer(buf, count, &pos, ctx->ffdc,
+> +                                            ctx->ffdc_len);
+> +               ctx->sbe_error = SBE_ERROR_COLLECTED;
+> +       }
+> +       mutex_unlock(&ctx->sbe_error_lock);
+> +
+> +       return rc;
+> +}
+
+So any read from this file will clear out the FFDC data, making partial
+reads impossible. As a least-intrusive change, could we set
+SBE_ERROR_COLLECTED on write instead?
+
+Or is there a better interface (a pipe?) that allows multiple FFDC
+captures, destroyed on full consume, without odd read/write side
+effects?
+
+>         rc = fsi_occ_submit(ctx->sbe, cmd, len, resp, &resp_len);
+> -       if (rc < 0)
+> +       if (rc < 0) {
+> +               if (resp_len) {
+> +                       bool notify = false;
+> +
+> +                       mutex_lock(&ctx->sbe_error_lock);
+> +                       if (ctx->sbe_error != SBE_ERROR_PENDING)
+> +                               notify = true;
+> +                       ctx->sbe_error = SBE_ERROR_PENDING;
+
+                          [...]
+
+> +                       ctx->ffdc_len = resp_len;
+> +                       memcpy(ctx->ffdc, resp, resp_len);
+
+This will clear out the previous error it if hasn't been collected by
+userspace. Is that really what you want for *first* fail data capture?
+:)
+
+Cheers,
+
+
+Jeremy
+
