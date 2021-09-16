@@ -2,75 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2FED40D5CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 11:15:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A495240D5EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 11:16:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236676AbhIPJQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 05:16:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41084 "EHLO mail.kernel.org"
+        id S236387AbhIPJR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 05:17:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41760 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235633AbhIPJPn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 05:15:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD02961283;
-        Thu, 16 Sep 2021 09:14:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631783661;
-        bh=jZ+YuMwIRm8yO99k5rOkj2OohhYMN2RebEYpArnFa9s=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GWY1JiUUXVvuRZwJxo0HYxeOaDzpmRfvQSGmM0UTi2qzWhAJRGiHaBae69wGPB1cL
-         9J2VcoGZGXKilzInl3PSj7fipUi+8g7Cf9aNBfQ0/S2uZvPiezIg8JIsSHVq49Btem
-         aiiof4xR+8b56Zfyi63zdayjgomhvRHFP3CwGXa92NlteRxNzN+M5olcC6YEgfcZrh
-         cZq/fEm6hVqyuxkRSooDM2CFuPFpGvUcUClD+w8bjkFdTODecLs5JOFQCxT9iPGRXF
-         r2Hf7oxUJH6OpLNsFYF7uong91z9LU3rzts0lL7Qr74j1+7/b9i+lF4bJNZbNA8V51
-         Z6DQKgGQ70Mmw==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1mQnTI-001sMH-4c; Thu, 16 Sep 2021 11:14:20 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH 24/24] MAINTAINERS: update silergy,sy8106a.yaml reference
-Date:   Thu, 16 Sep 2021 11:14:17 +0200
-Message-Id: <eed037d15b9b919d6401898cd5cdeea0542a41d5.1631783482.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1631783482.git.mchehab+huawei@kernel.org>
-References: <cover.1631783482.git.mchehab+huawei@kernel.org>
+        id S236388AbhIPJQE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 05:16:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD47560F93;
+        Thu, 16 Sep 2021 09:14:42 +0000 (UTC)
+Date:   Thu, 16 Sep 2021 11:14:40 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Vivek Goyal <vgoyal@redhat.com>
+Cc:     viro@zeniv.linux.org.uk,
+        Linux fsdevel mailing list <linux-fsdevel@vger.kernel.org>,
+        linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>, xu.xin16@zte.com.cn,
+        Christoph Hellwig <hch@infradead.org>, zhang.yunkai@zte.com.cn
+Subject: Re: [PATCH] init/do_mounts.c: Harden split_fs_names() against buffer
+ overflow
+Message-ID: <20210916091440.zk2qvdmldo6wkryi@wittgenstein>
+References: <YUIPnPV2ttOHNIcX@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YUIPnPV2ttOHNIcX@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changeset b1c36aae51c9 ("regulator: Convert SY8106A binding to a schema")
-renamed: Documentation/devicetree/bindings/regulator/sy8106a-regulator.txt
-to: Documentation/devicetree/bindings/regulator/silergy,sy8106a.yaml.
+On Wed, Sep 15, 2021 at 11:22:04AM -0400, Vivek Goyal wrote:
+> split_fs_names() currently takes comma separated list of filesystems
+> and converts it into individual filesystem strings. Pleaces these
+> strings in the input buffer passed by caller and returns number of
+> strings.
+> 
+> If caller manages to pass input string bigger than buffer, then we
+> can write beyond the buffer. Or if string just fits buffer, we will
+> still write beyond the buffer as we append a '\0' byte at the end.
+> 
+> Will be nice to pass size of input buffer to split_fs_names() and
+> put enough checks in place so such buffer overrun possibilities
+> do not occur.
+> 
+> Hence this patch adds "size" parameter to split_fs_names() and makes
+> sure we do not access memory beyond size. If input string "names"
+> is larger than passed in buffer, input string will be truncated to
+> fit in buffer.
+> 
+> Reported-by: xu xin <xu.xin16@zte.com.cn>
+> Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
+> ---
 
-Update its cross-reference accordingly.
-
-Fixes: b1c36aae51c9 ("regulator: Convert SY8106A binding to a schema")
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 4bfa4d72589e..8fed382b1935 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -18021,7 +18021,7 @@ F:	net/switchdev/
- SY8106A REGULATOR DRIVER
- M:	Icenowy Zheng <icenowy@aosc.io>
- S:	Maintained
--F:	Documentation/devicetree/bindings/regulator/sy8106a-regulator.txt
-+F:	Documentation/devicetree/bindings/regulator/silergy,sy8106a.yaml
- F:	drivers/regulator/sy8106a-regulator.c
- 
- SYNC FILE FRAMEWORK
--- 
-2.31.1
-
+Strange but probably reasonable,
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
