@@ -2,135 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A084F40D52E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 10:56:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5933540D533
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 10:59:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235367AbhIPI50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 04:57:26 -0400
-Received: from mail-vs1-f41.google.com ([209.85.217.41]:33502 "EHLO
-        mail-vs1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235160AbhIPI5W (ORCPT
+        id S235243AbhIPJAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 05:00:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27010 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233839AbhIPJAn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 04:57:22 -0400
-Received: by mail-vs1-f41.google.com with SMTP id p24so5490629vsg.0;
-        Thu, 16 Sep 2021 01:56:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+EQOzi6GoX/Ngw6/fSChQOM/x46HyAvx0gYxin2/a30=;
-        b=IWOQAGjOqs4NAyVK8KpBI8yo8azPUub8f4mRBsZZRHxfiS5AVSFRVsdVmJBTaG2/ac
-         nlpIdz+uOrrlZtn+WczOwkeQaNnCQQI+ZQGZvxaTygJ7/jMlOuUB3nGfR59vrl+QafCM
-         kbkplTzgJqkc84iCiV/HZN8KY886Kr2yQhMLkNKdjwhMpy9YuJsgKrImGCg0D99y/TRw
-         XP4KUzHK0UoG/vK6l/DhXlEGBcs4fRVwlylljlMBQOoOB7gv+EGEuEGvamVmXHBZ4/Cx
-         avtRysraAC758MEjPngNcPzYxc2bM5yKxMcPvmVlgYrMz9iLeDppoVTSqNYa0I3LvsPv
-         zHXg==
-X-Gm-Message-State: AOAM530Oj0+9NfrqY15v6mQypf7yRrByrVGyWqFFj4YXe1OoBPNd64Fb
-        XwRidD3Cdmfx2Bqs2Y8FRmxAtOJkx1kG6PWsOaw=
-X-Google-Smtp-Source: ABdhPJyvOyxa/pmzGY2Bx+ipIQAdYpVoYfpJmNto/Se29JgkEW5BfsmTxPaq1OwYBhfxiruK4W7wSZsYRWnpM3+5lho=
-X-Received: by 2002:a67:cb0a:: with SMTP id b10mr3281079vsl.9.1631782561209;
- Thu, 16 Sep 2021 01:56:01 -0700 (PDT)
+        Thu, 16 Sep 2021 05:00:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631782763;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=t2Z/Tfws0/ZPIkBTJwi6vBLPKuMktwH7w8C6L94eoVM=;
+        b=G37tWJXZgJiTawDu+EWUQkxqQIqtNGr2OS2sboJ68TjLxP1BJ2HCchOBNR1RUpPpyE36Ra
+        QFaEI7NxT9wzJIsXKdl/5Bfc+qjMBk/6JTZ0L6D9jxbVSYzK3SmwaWeAhouOhYyNzYymio
+        sr8our5csTOncndMxOOJ0q5V+Q6PMbU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-54-GlU6ZhEVPs-lOiN55UKk5A-1; Thu, 16 Sep 2021 04:59:19 -0400
+X-MC-Unique: GlU6ZhEVPs-lOiN55UKk5A-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 24861100CCC1;
+        Thu, 16 Sep 2021 08:59:18 +0000 (UTC)
+Received: from localhost (unknown [10.39.192.155])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B554960FDD;
+        Thu, 16 Sep 2021 08:59:17 +0000 (UTC)
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Halil Pasic <pasic@linux.ibm.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Pierre Morel <pmorel@linux.ibm.com>,
+        Michael Mueller <mimu@linux.ibm.com>,
+        linux-s390@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     bfu@redhat.com, Vineeth Vijayan <vneethv@linux.ibm.com>
+Subject: Re: [PATCH 1/1] virtio/s390: fix vritio-ccw device teardown
+In-Reply-To: <20210915215742.1793314-1-pasic@linux.ibm.com>
+Organization: Red Hat GmbH
+References: <20210915215742.1793314-1-pasic@linux.ibm.com>
+User-Agent: Notmuch/0.32.1 (https://notmuchmail.org)
+Date:   Thu, 16 Sep 2021 10:59:15 +0200
+Message-ID: <87pmt8hp5o.fsf@redhat.com>
 MIME-Version: 1.0
-References: <c5f8aa5c081755f3c960b86fc61c2baaa33edcd9.1631710216.git.geert+renesas@glider.be>
- <YUMESxr907YHM3ZT@hovoldconsulting.com>
-In-Reply-To: <YUMESxr907YHM3ZT@hovoldconsulting.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 16 Sep 2021 10:55:49 +0200
-Message-ID: <CAMuHMdX7_AOuGEjvTHpQ-4KHMH+m800KTu7wads6UTfMZiu9BQ@mail.gmail.com>
-Subject: Re: [PATCH] serial: 8250: SERIAL_8250_FSL should not default to y
- when compile-testing
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Scott Wood <oss@buserror.net>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Johan,
+On Wed, Sep 15 2021, Halil Pasic <pasic@linux.ibm.com> wrote:
 
-On Thu, Sep 16, 2021 at 10:46 AM Johan Hovold <johan@kernel.org> wrote:
-> On Wed, Sep 15, 2021 at 02:56:52PM +0200, Geert Uytterhoeven wrote:
-> > Commit b1442c55ce8977aa ("serial: 8250: extend compile-test coverage")
-> > added compile-test support to the Freescale 16550 driver.  However, as
-> > SERIAL_8250_FSL is an invisible symbol, merely enabling COMPILE_TEST now
-> > enables this driver.
-> >
-> > Fix this by making SERIAL_8250_FSL visible.  Tighten the dependencies to
-> > prevent asking the user about this driver when configuring a kernel
-> > without appropriate Freescale SoC or ACPI support.
+> Since commit 48720ba56891 ("virtio/s390: use DMA memory for ccw I/O and
+> classic notifiers") we were supposed to make sure that
+> virtio_ccw_release_dev() completes before the ccw device, and the
+> attached dma pool are torn down, but unfortunately we did not.
+> Before that commit it used to be OK to delay cleaning up the memory
+> allocated by virtio-ccw indefinitely (which isn't really intuitive for
+> guys used to destruction happens in reverse construction order).
 >
-> This tightening is arguable a separate change which risk introducing
-> regressions if you get it wrong and should go in a separate patch at
-> least.
-
-Getting it wrong would indeed be a regression, but not tightening
-that at the same time would mean I have to send a separate patch with
-a Fixes tag referring to this fix, following this template:
-
-    foo should depend on bar
-
-    The foo hardware is only present on bar SoCs.  Hence add a
-    dependency on bar, to prevent asking the user about this driver
-    when configuring a kernel without bar support.
-
-> > Fixes: b1442c55ce8977aa ("serial: 8250: extend compile-test coverage")
-> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> > ---
-> > Yes, it's ugly, but I see no better solution. Do you?
-> >
-> >  drivers/tty/serial/8250/Kconfig | 8 ++++++--
-> >  1 file changed, 6 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/tty/serial/8250/Kconfig b/drivers/tty/serial/8250/Kconfig
-> > index 808268edd2e82a45..a2978b31144e94f2 100644
-> > --- a/drivers/tty/serial/8250/Kconfig
-> > +++ b/drivers/tty/serial/8250/Kconfig
-> > @@ -361,9 +361,13 @@ config SERIAL_8250_BCM2835AUX
-> >         If unsure, say N.
-> >
-> >  config SERIAL_8250_FSL
-> > -     bool
-> > +     bool "Freescale 16550-style UART support (8250 based driver)"
-> >       depends on SERIAL_8250_CONSOLE
-> > -     default PPC || ARM || ARM64 || COMPILE_TEST
-> > +     depends on FSL_SOC || ARCH_LAYERSCAPE || SOC_LS1021A || (ARM64 && ACPI) || COMPILE_TEST
-> > +     default FSL_SOC || ARCH_LAYERSCAPE || SOC_LS1021A || (ARM64 && ACPI)
+> To accomplish this let us take a reference on the ccw device before we
+> allocate the dma_area and give it up after dma_area was freed.
 >
-> I'd suggest just doing
+> Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
+> Fixes: 48720ba56891 ("virtio/s390: use DMA memory for ccw I/O and
+> classic notifiers")
+> Reported-by: bfu@redhat.com
+> ---
 >
->         bool "Freescale 16550-style UART support (8250 based driver)"
->         depends on SERIAL_8250_CONSOLE
->         default PPC || ARM || ARM64
+> I'm not certain this is the only hot-unplug and teardonw related problem
+> with virtio-ccw.
 >
-> Since neither of the symbols you add to that "depends on" line is an
-> actual build or runtime dependency.
+> Some things that are not perfectly clear to me:
+> * What would happen if we observed an hot-unplug while we are doing
+>   wait_event() in ccw_io_helper()? Do we get stuck? I don't thin we
+>   are guaranteed to receive an irq for a subchannel that is gone.
 
-They are.
+Hm. I think we may need to do a wake_up during remove handling.
 
-> Then you can refine the "default" line in a follow up (or argue why you
-> think there should be a "depends on FSL_SOC || ...").
+> * cdev->online seems to be manipulated under cdev->ccwlock, but
+>   in virtio_ccw_remove() we look at it to decide should we clean up
+>   or not. What is the idea there? I guess we want to avoid doing
+>   if nothing is there or twice. But I don't understand how stuff
+>   interlocks.
+
+We only created the virtio device when we onlined the ccw device. Do you
+have a better idea how to check for that? (And yes, I'm not sure the
+locking is correct.)
+
+> * Can virtio_ccw_remove() get called while !cdev->online and 
+>   virtio_ccw_online() is running on a different cpu? If yes, what would
+>   happen then?
+
+All of the remove/online/... etc. callbacks are invoked via the ccw bus
+code. We have to trust that it gets it correct :) (Or have the common
+I/O layer maintainers double-check it.)
+
+>  
+> The main addresse of these questions is Conny ;).
 >
-> > +     help
-> > +       Selecting this option will add support for the 16550-style serial
-> > +       port hardware found on Freescale SoCs.
-> >
-> >  config SERIAL_8250_DW
-> >       tristate "Support for Synopsys DesignWare 8250 quirks"
+> An alternative to this approach would be to inc and dec the refcount
+> in ccw_device_dma_zalloc() and ccw_device_dma_free() respectively.
 
-Gr{oetje,eeting}s,
+Yeah, I also thought about that. This would give us more get/put
+operations, but might be the safer option.
 
-                        Geert
+>
+> ---
+>  drivers/s390/virtio/virtio_ccw.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/drivers/s390/virtio/virtio_ccw.c b/drivers/s390/virtio/virtio_ccw.c
+> index d35e7a3f7067..99141df3259b 100644
+> --- a/drivers/s390/virtio/virtio_ccw.c
+> +++ b/drivers/s390/virtio/virtio_ccw.c
+> @@ -1006,10 +1006,12 @@ static void virtio_ccw_release_dev(struct device *_d)
+>  {
+>  	struct virtio_device *dev = dev_to_virtio(_d);
+>  	struct virtio_ccw_device *vcdev = to_vc_device(dev);
+> +	struct ccw_device *cdev = READ_ONCE(vcdev->cdev);
+>  
+>  	ccw_device_dma_free(vcdev->cdev, vcdev->dma_area,
+>  			    sizeof(*vcdev->dma_area));
+>  	kfree(vcdev);
+> +	put_device(&cdev->dev);
+>  }
+>  
+>  static int irb_is_error(struct irb *irb)
+> @@ -1262,6 +1264,7 @@ static int virtio_ccw_online(struct ccw_device *cdev)
+>  	struct virtio_ccw_device *vcdev;
+>  	unsigned long flags;
+>  
+> +	get_device(&cdev->dev);
+>  	vcdev = kzalloc(sizeof(*vcdev), GFP_KERNEL);
+>  	if (!vcdev) {
+>  		dev_warn(&cdev->dev, "Could not get memory for virtio\n");
+> @@ -1315,6 +1318,7 @@ static int virtio_ccw_online(struct ccw_device *cdev)
+>  				    sizeof(*vcdev->dma_area));
+>  	}
+>  	kfree(vcdev);
+> +	put_device(&cdev->dev);
+>  	return ret;
+>  }
+>  
+>
+> base-commit: 3ca706c189db861b2ca2019a0901b94050ca49d8
+> -- 
+> 2.25.1
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
