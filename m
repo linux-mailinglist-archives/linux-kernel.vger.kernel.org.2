@@ -2,217 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E14F640D1AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 04:29:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1B6F40D1B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 04:33:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233856AbhIPCay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 22:30:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34980 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233648AbhIPCaw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 22:30:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BA0526103E;
-        Thu, 16 Sep 2021 02:29:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631759372;
-        bh=48DF0F8uNbNUw2JxtDKBdvICbTSBgw4O7AbFPoPXEtU=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=X8VMkSoiPPbqQoHqAgy7QGYlGkzv7db267viCiJqjhsFU3dTF+/NpZ6N5Zs6klXrv
-         uE9xe/adEibw4dsGz/0fbGP8L3FX9jaU+h0SkD2NxL06LyuSMC4pf5B25vKpyfskmS
-         7y5YvsfNhS5By0lDrwq3VNaXxqgSP/2mm//REoysFOCoP/OjwVumTr86SmlSx5A0u2
-         fBiWD61DHQYQyYGI3EV771fxLV/bxYw01AArfxf0aSjS0Gp8pl3yMN14kWhRLig31q
-         R5N6pMx+26b5kPYA+5pVaRgirRqYFU6IO5H2auMwTwexZvCH4Dug0rT9OLnqRzgyvP
-         P26NM4izReMVw==
+        id S233872AbhIPCeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 22:34:25 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:19048 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229958AbhIPCeY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 22:34:24 -0400
+Received: from epcas3p1.samsung.com (unknown [182.195.41.19])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210916023303epoutp03f07a71bc4665c65138c3f317afda5e6b~lLLIimgOH1620316203epoutp03f
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 02:33:03 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210916023303epoutp03f07a71bc4665c65138c3f317afda5e6b~lLLIimgOH1620316203epoutp03f
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1631759583;
+        bh=ljGSippabUdmaUmpB0srgCUxBu6tUejORTZv7oYqZsU=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=khOqZ/Xutmt4a2Pwh699ITchjDNRJJoyvWWJDdwhCmGfeIrhcx1xBkWv3ds9crYFV
+         RUGihpkodryjim8z8cLbS+F0F4z/uajknRRUTdjN7VLHCovqf8jHkki90c+vuFBdWS
+         gzh92ZfcjUR9dDEpz5O9Mo6d5UEkZBq2Ay0/NSOY=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas3p1.samsung.com (KnoxPortal) with ESMTP id
+        20210916023303epcas3p1bf119ddce1332e3418b47406a0d113b5~lLLIIBUBG3166531665epcas3p1Y;
+        Thu, 16 Sep 2021 02:33:03 +0000 (GMT)
+Received: from epcpadp4 (unknown [182.195.40.18]) by epsnrtp2.localdomain
+        (Postfix) with ESMTP id 4H91Mz0gNpz4x9Q3; Thu, 16 Sep 2021 02:33:03 +0000
+        (GMT)
+Mime-Version: 1.0
+Subject: RE: [PATCH v7 1/2] scsi: ufs: Probe for temperature notification
+ support
+Reply-To: daejun7.park@samsung.com
+Sender: Daejun Park <daejun7.park@samsung.com>
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Avri Altman <avri.altman@wdc.com>,
+        "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Guenter Roeck <linux@roeck-us.net>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <20210915060407.40-2-avri.altman@wdc.com>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <1891546521.01631759583079.JavaMail.epsvc@epcpadp4>
+Date:   Thu, 16 Sep 2021 11:30:11 +0900
+X-CMS-MailID: 20210916023011epcms2p3f3dba820d03b315d0e0198394c8cb1ae
+Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210915161457.95ad5c9470efc70196d48410@linux-foundation.org>
-References: <000000000000423e0a05cc0ba2c4@google.com> <20210915161457.95ad5c9470efc70196d48410@linux-foundation.org>
-Subject: Re: [syzbot] WARNING in __init_work
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        syzkaller-bugs@googlegroups.com,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Waiman Long <llong@redhat.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        syzbot <syzbot+d6c75f383e01426a40b4@syzkaller.appspotmail.com>
-Date:   Wed, 15 Sep 2021 19:29:31 -0700
-Message-ID: <163175937144.763609.2073508754264771910@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20210915060437epcas2p1f8bcdda5911050391b82be6c9831e4c2
+References: <20210915060407.40-2-avri.altman@wdc.com>
+        <20210915060407.40-1-avri.altman@wdc.com>
+        <CGME20210915060437epcas2p1f8bcdda5911050391b82be6c9831e4c2@epcms2p3>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Andrew Morton (2021-09-15 16:14:57)
-> On Wed, 15 Sep 2021 10:00:22 -0700 syzbot <syzbot+d6c75f383e01426a40b4@sy=
-zkaller.appspotmail.com> wrote:
->=20
-> > Hello,
-> >=20
-> > syzbot found the following issue on:
-> >=20
-> > HEAD commit:    926de8c4326c Merge tag 'acpi-5.15-rc1-3' of git://git.k=
-ern..
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=3D17aa010d300=
-000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D1c3d15ee207=
-3a2a2
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=3Dd6c75f383e014=
-26a40b4
-> > compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binu=
-tils for Debian) 2.35.1
-> >=20
-> > Unfortunately, I don't have any reproducer for this issue yet.
-> >=20
-> > IMPORTANT: if you fix the issue, please add the following tag to the co=
-mmit:
-> > Reported-by: syzbot+d6c75f383e01426a40b4@syzkaller.appspotmail.com
-> >=20
-> > ODEBUG: object ffffc90000fd8bc8 is NOT on stack ffffc900022a0000, but a=
-nnotated.
+Hi Avri,
 
-This is saying that the object was supposed to be on the stack because
-debug objects was told that, but it isn't on the stack per the
-definition of object_is_on_stack().
+>+config SCSI_UFS_HWMON
+>+        bool "UFS  Temperature Notification"
+It has double space.
 
-> > ------------[ cut here ]------------
-> > WARNING: CPU: 1 PID: 2971 at lib/debugobjects.c:548 debug_object_is_on_=
-stack lib/debugobjects.c:545 [inline]
-> > WARNING: CPU: 1 PID: 2971 at lib/debugobjects.c:548 __debug_object_init=
-.cold+0x252/0x2e5 lib/debugobjects.c:607
-> > Modules linked in:
-> > CPU: 1 PID: 2971 Comm: systemd-udevd Not tainted 5.14.0-syzkaller #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS=
- Google 01/01/2011
-> > RIP: 0010:debug_object_is_on_stack lib/debugobjects.c:548 [inline]
-> > RIP: 0010:__debug_object_init.cold+0x252/0x2e5 lib/debugobjects.c:607
-> > Code: 00 48 8d 7b 20 48 89 fa 48 c1 ea 03 80 3c 02 00 74 05 e8 c0 3e bb=
- f8 48 8b 53 20 4c 89 e6 48 c7 c7 c0 a7 e3 89 e8 a1 34 f2 ff <0f> 0b e9 3f =
-9f dc fa 48 b8 00 01 00 00 00 00 ad de 48 89 ef 48 89
-> > RSP: 0018:ffffc90000fd89f8 EFLAGS: 00010286
-> > RAX: 0000000000000050 RBX: ffff88801f3f2180 RCX: 0000000000000000
-> > RDX: ffff88801f3f2180 RSI: ffffffff815cef88 RDI: fffff520001fb131
-> > RBP: ffff88801f3f2180 R08: 0000000000000050 R09: 0000000000000000
-> > R10: ffffffff815c8cfe R11: 0000000000000000 R12: ffffc90000fd8bc8
-> > R13: 1ffff920001fb14e R14: ffffffff9040c580 R15: ffffffff9040c578
-> > FS:  00007f35a6cd88c0(0000) GS:ffff8880b9d00000(0000) knlGS:00000000000=
-00000
-> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: 00000000014a53ad CR3: 000000001fc51000 CR4: 00000000001526e0
-> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > Call Trace:
-> >  <IRQ>
-> >  __init_work+0x2d/0x50 kernel/workqueue.c:519
-> >  synchronize_rcu_expedited+0x392/0x620 kernel/rcu/tree_exp.h:847
+>+        depends on SCSI_UFSHCD && HWMON
+>+        help
+>+          This provides support for UFS hardware monitoring. If enabled,
+>+          a hardware monitoring device will be created for the UFS device.
+>+
+>+          If unsure, say N.
 
-This line looks like
+Anyway,
+Reviewed-by: Daejun Park <daejun7.park@samsung.com>
 
-  INIT_WORK_ONSTACK(&rew.rew_work, wait_rcu_exp_gp);
-
-inside synchronize_rcu_expedited(). The rew structure is declared on the
-stack
-
-   struct rcu_exp_work rew;
-
-> >  bdi_remove_from_list mm/backing-dev.c:938 [inline]
-> >  bdi_unregister+0x177/0x5a0 mm/backing-dev.c:946
-> >  release_bdi+0xa1/0xc0 mm/backing-dev.c:968
-> >  kref_put include/linux/kref.h:65 [inline]
-> >  bdi_put+0x72/0xa0 mm/backing-dev.c:976
-> >  bdev_free_inode+0x116/0x220 fs/block_dev.c:819
-> >  i_callback+0x3f/0x70 fs/inode.c:224
-> >  rcu_do_batch kernel/rcu/tree.c:2508 [inline]
-> >  rcu_core+0x7ab/0x1470 kernel/rcu/tree.c:2743
-> >  __do_softirq+0x29b/0x9c2 kernel/softirq.c:558
-> >  invoke_softirq kernel/softirq.c:432 [inline]
-> >  __irq_exit_rcu+0x123/0x180 kernel/softirq.c:636
-> >  irq_exit_rcu+0x5/0x20 kernel/softirq.c:648
-> >  sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1097
-> >  </IRQ>
->=20
-> Seems that we have a debugobject in the incorrect state, but it doesn't
-> necessarily mean there's something wrong in the bdi code.  It's just
-> that the bdi code happened to be the place which called
-> synchronize_rcu_expedited().
-
-Is it possible that object_is_on_stack() doesn't work in IRQ context?
-I'm not really following along on x86 but I could see where
-task_stack_page() gets the wrong "stack" pointer because the task has one
-stack and the irq stack is some per-cpu dedicated allocation?
-
->=20
-> Thomas, is there a way in which the debugobject code can help us find
-> out where this object came from?
->=20
->=20
-> >  asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentr=
-y.h:638
-> > RIP: 0010:preempt_count arch/x86/include/asm/preempt.h:27 [inline]
-> > RIP: 0010:check_kcov_mode kernel/kcov.c:163 [inline]
-> > RIP: 0010:__sanitizer_cov_trace_pc+0x0/0x60 kernel/kcov.c:197
-> > Code: 01 f0 4d 89 03 e9 63 fd ff ff b9 ff ff ff ff ba 08 00 00 00 4d 8b=
- 03 48 0f bd ca 49 8b 45 00 48 63 c9 e9 64 ff ff ff 0f 1f 00 <65> 8b 05 c9 =
-ab 8c 7e 89 c1 48 8b 34 24 81 e1 00 01 00 00 65 48 8b
-> > RSP: 0018:ffffc900022a79d8 EFLAGS: 00000202
-> > RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000001
-> > RDX: 0000000000000000 RSI: ffff88801f3f2180 RDI: 0000000000000003
-> > RBP: ffffc900022a7b48 R08: 0000000000000000 R09: 0000000000000005
-> > R10: ffffffff83a87292 R11: 000000000000001f R12: ffff888020928180
-> > R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-> >  tomoyo_check_path_acl security/tomoyo/file.c:260 [inline]
-> >  tomoyo_check_path_acl+0xbe/0x210 security/tomoyo/file.c:252
-> >  tomoyo_check_acl+0x13c/0x450 security/tomoyo/domain.c:175
-> >  tomoyo_path_permission security/tomoyo/file.c:586 [inline]
-> >  tomoyo_path_permission+0x1ff/0x3a0 security/tomoyo/file.c:573
-> >  tomoyo_path_perm+0x2f0/0x400 security/tomoyo/file.c:838
-> >  security_inode_getattr+0xcf/0x140 security/security.c:1333
-> >  vfs_getattr fs/stat.c:157 [inline]
-> >  vfs_statx+0x164/0x390 fs/stat.c:225
-> >  vfs_fstatat fs/stat.c:243 [inline]
-> >  vfs_lstat include/linux/fs.h:3356 [inline]
-> >  __do_sys_newlstat+0x91/0x110 fs/stat.c:398
-> >  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-> >  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-> >  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> > RIP: 0033:0x7f35a5b4a335
-> > Code: 69 db 2b 00 64 c7 00 16 00 00 00 b8 ff ff ff ff c3 0f 1f 40 00 83=
- ff 01 48 89 f0 77 30 48 89 c7 48 89 d6 b8 06 00 00 00 0f 05 <48> 3d 00 f0 =
-ff ff 77 03 f3 c3 90 48 8b 15 31 db 2b 00 f7 d8 64 89
-> > RSP: 002b:00007ffd7b867ca8 EFLAGS: 00000246 ORIG_RAX: 0000000000000006
-> > RAX: ffffffffffffffda RBX: 0000563eb9e97120 RCX: 00007f35a5b4a335
-> > RDX: 00007ffd7b867ce0 RSI: 00007ffd7b867ce0 RDI: 0000563eb9e96120
-> > RBP: 00007ffd7b867da0 R08: 00007f35a5e092e8 R09: 0000000000001010
-> > R10: 00007f35a5e08b58 R11: 0000000000000246 R12: 0000563eb9e96120
-> > R13: 0000563eb9e9614a R14: 0000563eb9e8dce1 R15: 0000563eb9e8dcea
-> > ----------------
-> > Code disassembly (best guess):
-> >    0: 01 f0                   add    %esi,%eax
-> >    2: 4d 89 03                mov    %r8,(%r11)
-> >    5: e9 63 fd ff ff          jmpq   0xfffffd6d
-> >    a: b9 ff ff ff ff          mov    $0xffffffff,%ecx
-> >    f: ba 08 00 00 00          mov    $0x8,%edx
-> >   14: 4d 8b 03                mov    (%r11),%r8
-> >   17: 48 0f bd ca             bsr    %rdx,%rcx
-> >   1b: 49 8b 45 00             mov    0x0(%r13),%rax
-> >   1f: 48 63 c9                movslq %ecx,%rcx
-> >   22: e9 64 ff ff ff          jmpq   0xffffff8b
-> >   27: 0f 1f 00                nopl   (%rax)
-> > * 2a: 65 8b 05 c9 ab 8c 7e    mov    %gs:0x7e8cabc9(%rip),%eax        #=
- 0x7e8cabfa <-- trapping instruction
-> >   31: 89 c1                   mov    %eax,%ecx
-> >   33: 48 8b 34 24             mov    (%rsp),%rsi
-> >   37: 81 e1 00 01 00 00       and    $0x100,%ecx
-> >   3d: 65                      gs
-> >   3e: 48                      rex.W
-> >   3f: 8b                      .byte 0x8b
-> >=20
-> >=20
-> > ---
-> > This report is generated by a bot. It may contain errors.
-> > See https://goo.gl/tpsmEJ for more information about syzbot.
-> > syzbot engineers can be reached at syzkaller@googlegroups.com.
-> >=20
-> > syzbot will keep track of this issue. See:
-> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Thanks,
+Daejun
