@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0414140E7F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9835240E408
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:22:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348754AbhIPRgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:36:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46958 "EHLO mail.kernel.org"
+        id S1346296AbhIPQyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:54:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36928 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348929AbhIPR1v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:27:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 475B861A50;
-        Thu, 16 Sep 2021 16:45:15 +0000 (UTC)
+        id S1344711AbhIPQsi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:48:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 48DE461A78;
+        Thu, 16 Sep 2021 16:27:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810715;
-        bh=oltsHO7IqEbcDmVpHsfYgiUzO55j3987ysuyH8GOkfA=;
+        s=korg; t=1631809656;
+        bh=PrlHO9V//nsNUl1uc4NBsy5zgOjPEtrfBnv8qKKmAsU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PJUO41Z8tQlc35V5oAD39yxH5ggNARhE4nWaq8Wn25Mc6AkSKvBUJ9ZHJyuVeR9lU
-         gYpY2vlXXDfurZTcmaNkHzGDejjxvRm8APXZ3QeM0Okf/pF11ZqpxpvDC3AYNE6qHG
-         JiKuQeP8ZD0+n/+nH4wZBqDW/O3ijx1dj0kbMQn4=
+        b=Z6PUnu2mIdMsknjX0gHY1eAW7sAS+RQFeP61hE/hmCb92LG9Z00wDo+fPpbokRISt
+         W6jbFQttXPVmShA/PbFY0mILbeF6w8CRk/WiHju5vBNhBXUNam0PE3U8JvNSjtnxnK
+         8iAGAr5xXeoJddQLa/+2unRo767GV85LZE+xBISE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhen Lei <thunder.leizhen@huawei.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Tejun Heo <tj@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 242/432] workqueue: Fix possible memory leaks in wq_numa_init()
+        stable@vger.kernel.org, Alex Elder <elder@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 234/380] net: ipa: fix IPA v4.9 interconnects
 Date:   Thu, 16 Sep 2021 17:59:51 +0200
-Message-Id: <20210916155819.033271084@linuxfoundation.org>
+Message-Id: <20210916155812.038187946@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,55 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+From: Alex Elder <elder@linaro.org>
 
-[ Upstream commit f728c4a9e8405caae69d4bc1232c54ff57b5d20f ]
+[ Upstream commit 0fd75f5760b6a7a7f35dff46a6cdc4f6d1a86ee8 ]
 
-In error handling branch "if (WARN_ON(node == NUMA_NO_NODE))", the
-previously allocated memories are not released. Doing this before
-allocating memory eliminates memory leaks.
+Three interconnects are defined for IPA version 4.9, but there
+should only be two.  They should also use names that match what's
+used for other platforms (and specified in the Device Tree binding).
 
-tj: Note that the condition only occurs when the arch code is pretty broken
-and the WARN_ON might as well be BUG_ON().
-
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Reviewed-by: Lai Jiangshan <jiangshanlai@gmail.com>
-Signed-off-by: Tejun Heo <tj@kernel.org>
+Signed-off-by: Alex Elder <elder@linaro.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/workqueue.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ drivers/net/ipa/ipa_data-v4.9.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index f148eacda55a..542c2d03dab6 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -5902,6 +5902,13 @@ static void __init wq_numa_init(void)
- 		return;
- 	}
- 
-+	for_each_possible_cpu(cpu) {
-+		if (WARN_ON(cpu_to_node(cpu) == NUMA_NO_NODE)) {
-+			pr_warn("workqueue: NUMA node mapping not available for cpu%d, disabling NUMA support\n", cpu);
-+			return;
-+		}
-+	}
-+
- 	wq_update_unbound_numa_attrs_buf = alloc_workqueue_attrs();
- 	BUG_ON(!wq_update_unbound_numa_attrs_buf);
- 
-@@ -5919,11 +5926,6 @@ static void __init wq_numa_init(void)
- 
- 	for_each_possible_cpu(cpu) {
- 		node = cpu_to_node(cpu);
--		if (WARN_ON(node == NUMA_NO_NODE)) {
--			pr_warn("workqueue: NUMA node mapping not available for cpu%d, disabling NUMA support\n", cpu);
--			/* happens iff arch is bonkers, let's just proceed */
--			return;
--		}
- 		cpumask_set_cpu(cpu, tbl[node]);
- 	}
- 
+diff --git a/drivers/net/ipa/ipa_data-v4.9.c b/drivers/net/ipa/ipa_data-v4.9.c
+index e41be790f45e..75b50a50e348 100644
+--- a/drivers/net/ipa/ipa_data-v4.9.c
++++ b/drivers/net/ipa/ipa_data-v4.9.c
+@@ -392,18 +392,13 @@ static const struct ipa_mem_data ipa_mem_data = {
+ /* Interconnect rates are in 1000 byte/second units */
+ static const struct ipa_interconnect_data ipa_interconnect_data[] = {
+ 	{
+-		.name			= "ipa_to_llcc",
++		.name			= "memory",
+ 		.peak_bandwidth		= 600000,	/* 600 MBps */
+ 		.average_bandwidth	= 150000,	/* 150 MBps */
+ 	},
+-	{
+-		.name			= "llcc_to_ebi1",
+-		.peak_bandwidth		= 1804000,	/* 1.804 GBps */
+-		.average_bandwidth	= 150000,	/* 150 MBps */
+-	},
+ 	/* Average rate is unused for the next interconnect */
+ 	{
+-		.name			= "appss_to_ipa",
++		.name			= "config",
+ 		.peak_bandwidth		= 74000,	/* 74 MBps */
+ 		.average_bandwidth	= 0,		/* unused */
+ 	},
 -- 
 2.30.2
 
