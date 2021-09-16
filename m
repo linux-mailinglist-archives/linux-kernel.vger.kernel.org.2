@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F276240E362
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:20:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6734640E729
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:32:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244906AbhIPQry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:47:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57378 "EHLO mail.kernel.org"
+        id S1353172AbhIPRaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:30:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44128 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343554AbhIPQm3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:42:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6349160F58;
-        Thu, 16 Sep 2021 16:24:39 +0000 (UTC)
+        id S1352147AbhIPRUo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:20:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 078E66126A;
+        Thu, 16 Sep 2021 16:42:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809480;
-        bh=cVzuaQ2uqDC6xVYgHkhTzbNHaKughqasOwpslbxgqfQ=;
+        s=korg; t=1631810534;
+        bh=h/J+lRErKmMj5N1ByHUQ1j907SmpW/jRj4xMf1urAno=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XubL0OFKCqkC66uz+BIhdQx/Mg/nT/uaKsTCMBZCxjICgAxsQZfWbgG4L1M2T358z
-         Fx6bttf0zH3GzRByqw41NGRJDdyT4glH5cwuIE5SPNO9yOZwqZ3Km5qIoCRydVsYwI
-         MAgdtC0k9/ZdJEqqIqWsl3sTQPdlSEaY/qBDUDSA=
+        b=Qg5QJDSV4GfTXqR7WJIuuafYHgSj6djaMFbxNNtVeOe+klfQtOfaVed+ClBHt4qyY
+         1T+ScQw2rEty0GvTwGeDvasfwSx5Y0kPgfRtUKkZdYVeooIQILv6xpcl9/bjQGZ2c7
+         zi/rYq3XWyDbApxC98yJCPNmTnbW4i2o14iottGs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
-        Sasha Neftin <sasha.neftin@intel.com>,
-        Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Xin Long <lucien.xin@gmail.com>,
+        Jon Maloy <jmaloy@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 169/380] igc: Check if num of q_vectors is smaller than max before array access
+Subject: [PATCH 5.14 177/432] tipc: keep the skb in rcv queue until the whole data is read
 Date:   Thu, 16 Sep 2021 17:58:46 +0200
-Message-Id: <20210916155809.831596673@linuxfoundation.org>
+Message-Id: <20210916155816.740247969@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,51 +41,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sasha Neftin <sasha.neftin@intel.com>
+From: Xin Long <lucien.xin@gmail.com>
 
-[ Upstream commit 373e2829e7c2e1e606503cdb5c97749f512a4be9 ]
+[ Upstream commit f4919ff59c2828064b4156e3c3600a169909bcf4 ]
 
-Ensure that the adapter->q_vector[MAX_Q_VECTORS] array isn't accessed
-beyond its size. It was fixed by using a local variable num_q_vectors
-as a limit for loop index, and ensure that num_q_vectors is not bigger
-than MAX_Q_VECTORS.
+Currently, when userspace reads a datagram with a buffer that is
+smaller than this datagram, the data will be truncated and only
+part of it can be received by users. It doesn't seem right that
+users don't know the datagram size and have to use a huge buffer
+to read it to avoid the truncation.
 
-Suggested-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
-Signed-off-by: Sasha Neftin <sasha.neftin@intel.com>
-Tested-by: Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+This patch to fix it by keeping the skb in rcv queue until the
+whole data is read by users. Only the last msg of the datagram
+will be marked with MSG_EOR, just as TCP/SCTP does.
+
+Note that this will work as above only when MSG_EOR is set in the
+flags parameter of recvmsg(), so that it won't break any old user
+applications.
+
+Signed-off-by: Xin Long <lucien.xin@gmail.com>
+Acked-by: Jon Maloy <jmaloy@redhat.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/igc/igc_main.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ net/tipc/socket.c | 36 +++++++++++++++++++++++++++---------
+ 1 file changed, 27 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
-index 9b85fdf01297..3e301c5c5270 100644
---- a/drivers/net/ethernet/intel/igc/igc_main.c
-+++ b/drivers/net/ethernet/intel/igc/igc_main.c
-@@ -4402,6 +4402,7 @@ static irqreturn_t igc_msix_ring(int irq, void *data)
-  */
- static int igc_request_msix(struct igc_adapter *adapter)
- {
-+	unsigned int num_q_vectors = adapter->num_q_vectors;
- 	int i = 0, err = 0, vector = 0, free_vector = 0;
- 	struct net_device *netdev = adapter->netdev;
+diff --git a/net/tipc/socket.c b/net/tipc/socket.c
+index 8754bd885169..a155cfaf01f2 100644
+--- a/net/tipc/socket.c
++++ b/net/tipc/socket.c
+@@ -1886,6 +1886,7 @@ static int tipc_recvmsg(struct socket *sock, struct msghdr *m,
+ 	bool connected = !tipc_sk_type_connectionless(sk);
+ 	struct tipc_sock *tsk = tipc_sk(sk);
+ 	int rc, err, hlen, dlen, copy;
++	struct tipc_skb_cb *skb_cb;
+ 	struct sk_buff_head xmitq;
+ 	struct tipc_msg *hdr;
+ 	struct sk_buff *skb;
+@@ -1909,6 +1910,7 @@ static int tipc_recvmsg(struct socket *sock, struct msghdr *m,
+ 		if (unlikely(rc))
+ 			goto exit;
+ 		skb = skb_peek(&sk->sk_receive_queue);
++		skb_cb = TIPC_SKB_CB(skb);
+ 		hdr = buf_msg(skb);
+ 		dlen = msg_data_sz(hdr);
+ 		hlen = msg_hdr_sz(hdr);
+@@ -1928,18 +1930,33 @@ static int tipc_recvmsg(struct socket *sock, struct msghdr *m,
  
-@@ -4410,7 +4411,13 @@ static int igc_request_msix(struct igc_adapter *adapter)
- 	if (err)
- 		goto err_out;
+ 	/* Capture data if non-error msg, otherwise just set return value */
+ 	if (likely(!err)) {
+-		copy = min_t(int, dlen, buflen);
+-		if (unlikely(copy != dlen))
+-			m->msg_flags |= MSG_TRUNC;
+-		rc = skb_copy_datagram_msg(skb, hlen, m, copy);
++		int offset = skb_cb->bytes_read;
++
++		copy = min_t(int, dlen - offset, buflen);
++		rc = skb_copy_datagram_msg(skb, hlen + offset, m, copy);
++		if (unlikely(rc))
++			goto exit;
++		if (unlikely(offset + copy < dlen)) {
++			if (flags & MSG_EOR) {
++				if (!(flags & MSG_PEEK))
++					skb_cb->bytes_read = offset + copy;
++			} else {
++				m->msg_flags |= MSG_TRUNC;
++				skb_cb->bytes_read = 0;
++			}
++		} else {
++			if (flags & MSG_EOR)
++				m->msg_flags |= MSG_EOR;
++			skb_cb->bytes_read = 0;
++		}
+ 	} else {
+ 		copy = 0;
+ 		rc = 0;
+-		if (err != TIPC_CONN_SHUTDOWN && connected && !m->msg_control)
++		if (err != TIPC_CONN_SHUTDOWN && connected && !m->msg_control) {
+ 			rc = -ECONNRESET;
++			goto exit;
++		}
+ 	}
+-	if (unlikely(rc))
+-		goto exit;
  
--	for (i = 0; i < adapter->num_q_vectors; i++) {
-+	if (num_q_vectors > MAX_Q_VECTORS) {
-+		num_q_vectors = MAX_Q_VECTORS;
-+		dev_warn(&adapter->pdev->dev,
-+			 "The number of queue vectors (%d) is higher than max allowed (%d)\n",
-+			 adapter->num_q_vectors, MAX_Q_VECTORS);
-+	}
-+	for (i = 0; i < num_q_vectors; i++) {
- 		struct igc_q_vector *q_vector = adapter->q_vector[i];
+ 	/* Mark message as group event if applicable */
+ 	if (unlikely(grp_evt)) {
+@@ -1962,9 +1979,10 @@ static int tipc_recvmsg(struct socket *sock, struct msghdr *m,
+ 		tipc_node_distr_xmit(sock_net(sk), &xmitq);
+ 	}
  
- 		vector++;
+-	tsk_advance_rx_queue(sk);
++	if (!skb_cb->bytes_read)
++		tsk_advance_rx_queue(sk);
+ 
+-	if (likely(!connected))
++	if (likely(!connected) || skb_cb->bytes_read)
+ 		goto exit;
+ 
+ 	/* Send connection flow control advertisement when applicable */
 -- 
 2.30.2
 
