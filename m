@@ -2,200 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55A1C40EDE2
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 01:38:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0F1E40EDFE
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 01:41:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239276AbhIPXjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 19:39:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231638AbhIPXjY (ORCPT
+        id S241728AbhIPXmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 19:42:38 -0400
+Received: from ale.deltatee.com ([204.191.154.188]:40580 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238769AbhIPXmc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 19:39:24 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C27AC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 16:38:03 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id l6so177297plh.9
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 16:38:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:references:date:in-reply-to:message-id
-         :user-agent:mime-version;
-        bh=dsmpAEysummCR+0sKJW94drPPG6N4lgMtRNGAbPoMYM=;
-        b=R3QcpmAxoydu8UEqTsgiQDtldifUVex8DLdhfjcCkkDN4tESQTG+gPUZoh5PkTumk1
-         tdsNh405J1V5USAYKCG6IA5TShauMTwlqvkXD1Lah/K80tgCzPfH7LYtT781FT/eF7hK
-         roC8CSoyOjdrguPNtwyDlCUsxud4mo4eftpPsB3JVKfzergQmBuCHTW4wTsxEDundsKP
-         5AGJuq9QONvsF0IOZURgW/gTBWvu3cKCvzYa3wY8HflZj/GHg87H8NAprWyRGjCcHBTJ
-         dP/D+Nypft3eyemyk2jgjwwYybSu1KE6QGaaRSBTbWPpwB3ozTcIC/mQPEvrQ88Fil9P
-         Qccw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:references:date:in-reply-to
-         :message-id:user-agent:mime-version;
-        bh=dsmpAEysummCR+0sKJW94drPPG6N4lgMtRNGAbPoMYM=;
-        b=wpyg91iFqjydQ1sRoTYc5Bjp/uMMwl7kZ+Ta6Ayn71KeYy5noM6+XXp89cAJVRF/hI
-         42jPN6Bh3XiZ2vOgSFw0q+auRzdoJF3Co6n3YIZOdBF8zwBh33ovLHMXyioL+Ax0SQfc
-         vPCtw9AUpQhyh5qF4mUBt+sEZx4jX1aZHgXACt0Q9Jpo8eX0U5z9wukEXcKUHbo2MW/s
-         JLj/DFDMZcfANaCgddvrTuThS/PlXCXL7FSMTK+xXNBW9YyMMzoROrB+oTJitsMdANiJ
-         xL0m4oEoQ3Ct0Ujj1Et4lCQ1Q/NzBLRJu25226pMxgVSRpQHGTrLI/kjXWL1F4z+FP2y
-         qkUw==
-X-Gm-Message-State: AOAM530y6YIqlbxv68r8zut0XXf/YtrIng36Glv/J+layZ1bk+b1EFJy
-        MlOB4H21OKnOncOOe8EDfV8=
-X-Google-Smtp-Source: ABdhPJyCDk5ItHOE340GhRmuFVtp+aFArK4dQXh9Ewz/os6s+Gx9QFrxJMIkc5x/fx5wvwRY4yee1A==
-X-Received: by 2002:a17:902:b694:b0:138:a031:610d with SMTP id c20-20020a170902b69400b00138a031610dmr7127076pls.36.1631835482195;
-        Thu, 16 Sep 2021 16:38:02 -0700 (PDT)
-Received: from localhost (122x211x248x161.ap122.ftth.ucom.ne.jp. [122.211.248.161])
-        by smtp.gmail.com with ESMTPSA id h24sm4182036pfn.180.2021.09.16.16.38.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 16:38:01 -0700 (PDT)
-From:   Punit Agrawal <punitagrawal@gmail.com>
-To:     Ronak Jain <ronak.jain@xilinx.com>
-Cc:     <michal.simek@xilinx.com>, <linux-kernel@vger.kernel.org>,
-        <gregkh@linuxfoundation.org>, <rajan.vaja@xilinx.com>,
-        <corbet@lwn.net>, <linux-arm-kernel@lists.infradead.org>,
-        <arnd@arndb.de>, <lakshmi.sai.krishna.potthuri@xilinx.com>
-Subject: Re: [PATCH v2 2/3] firmware: zynqmp: Add sysfs entry for runtime
- features
-References: <20210913083955.27146-1-ronak.jain@xilinx.com>
-        <20210913083955.27146-3-ronak.jain@xilinx.com>
-Date:   Fri, 17 Sep 2021 08:37:58 +0900
-In-Reply-To: <20210913083955.27146-3-ronak.jain@xilinx.com> (Ronak Jain's
-        message of "Mon, 13 Sep 2021 01:39:54 -0700")
-Message-ID: <87ee9o6qi1.fsf@stealth>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        Thu, 16 Sep 2021 19:42:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:MIME-Version:Message-Id:Date:Cc:To:From
+        :references:content-disposition:in-reply-to;
+        bh=2hK6AsHc/ysDKmL7f6dXUZSSeE0kBcwrFrtpZ34IiEA=; b=dv9GSoU5q89O6QAjG6UUhsk3GS
+        +j/d9pDqmJ/2DTqV135u2egzDU+xfME9bSFt0gzd/BGOfamNWms6HmQznPJrqeDeQkwpLP0E2lxY/
+        q+z7pSlUuxGCM5Os4UOSwxQR918zGb3Ztoh71qOF8KH70g93rPysvHpD0pONYPjpFBEC7iyolydT7
+        AGMIsUK+1DL/9E5LAhIWj/PESbA3EtiPPUXe4b9zkfs8xM/0rmjpvYOvU6UGLijfJZ2BeiK4SCn5e
+        Fz0SFsYdzYgf5R6I/uMXAb59wVgnOsuKJogy5Em5DV33/17yyoPYbh6HaZGTxefqWcNRE08KJMGrd
+        sBI7uRAg==;
+Received: from cgy1-donard.priv.deltatee.com ([172.16.1.31])
+        by ale.deltatee.com with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <gunthorp@deltatee.com>)
+        id 1mR107-0008Hz-JR; Thu, 16 Sep 2021 17:41:09 -0600
+Received: from gunthorp by cgy1-donard.priv.deltatee.com with local (Exim 4.94.2)
+        (envelope-from <gunthorp@deltatee.com>)
+        id 1mR103-000Vqn-Ee; Thu, 16 Sep 2021 17:41:03 -0600
+From:   Logan Gunthorpe <logang@deltatee.com>
+To:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-mm@kvack.org, iommu@lists.linux-foundation.org
+Cc:     Stephen Bates <sbates@raithlin.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Don Dutile <ddutile@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jakowski Andrzej <andrzej.jakowski@intel.com>,
+        Minturn Dave B <dave.b.minturn@intel.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Xiong Jianxin <jianxin.xiong@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Martin Oliveira <martin.oliveira@eideticom.com>,
+        Chaitanya Kulkarni <ckulkarnilinux@gmail.com>,
+        Logan Gunthorpe <logang@deltatee.com>
+Date:   Thu, 16 Sep 2021 17:40:40 -0600
+Message-Id: <20210916234100.122368-1-logang@deltatee.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 172.16.1.31
+X-SA-Exim-Rcpt-To: linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, linux-block@vger.kernel.org, linux-pci@vger.kernel.org, linux-mm@kvack.org, iommu@lists.linux-foundation.org, sbates@raithlin.com, hch@lst.de, jgg@ziepe.ca, christian.koenig@amd.com, jhubbard@nvidia.com, ddutile@redhat.com, willy@infradead.org, daniel.vetter@ffwll.ch, jason@jlekstrand.net, dave.hansen@linux.intel.com, helgaas@kernel.org, dan.j.williams@intel.com, andrzej.jakowski@intel.com, dave.b.minturn@intel.com, jianxin.xiong@intel.com, ira.weiny@intel.com, robin.murphy@arm.com, martin.oliveira@eideticom.com, ckulkarnilinux@gmail.com, logang@deltatee.com
+X-SA-Exim-Mail-From: gunthorp@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-6.5 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        MYRULES_FREE,MYRULES_NO_TEXT autolearn=no autolearn_force=no
+        version=3.4.2
+Subject: [PATCH v3 00/20] Userspace P2PDMA with O_DIRECT NVMe devices
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ronak,
+Hi,
 
-Ronak Jain <ronak.jain@xilinx.com> writes:
+This patchset continues my work to add userspace P2PDMA access using
+O_DIRECT NVMe devices. My last posting[1] just included the first 13
+patches in this series, but the early P2PDMA cleanup and map_sg error
+changes from that series have been merged into v5.15-rc1. To address
+concerns that that series did not add any new functionality, I've added
+back the userspcae functionality from the original RFC[2] (but improved
+based on the original feedback).
 
-> Create sysfs entry for runtime feature configuration. The support
->  is added for an over temperature and external watchdog feature.
->
-> The below listed files are used for runtime features configuration:
-> /sys/devices/platform/firmware\:zynqmp-firmware/feature_config_id
-> /sys/devices/platform/firmware\:zynqmp-firmware/feature_config_value
->
-> In order to configure an over temperature or external watchdog
->  features, first the user need to select the valid config id and then
->  the user can configure the value for selected feature config id.
->
-> Signed-off-by: Ronak Jain <ronak.jain@xilinx.com>
-> ---
-> Changes in v2:
-> - Update commit message
-> ---
->  .../ABI/stable/sysfs-driver-firmware-zynqmp   | 84 +++++++++++++++++++
->  1 file changed, 84 insertions(+)
->
-> diff --git a/Documentation/ABI/stable/sysfs-driver-firmware-zynqmp b/Documentation/ABI/stable/sysfs-driver-firmware-zynqmp
-> index f5724bb5b462..2fde354715a5 100644
-> --- a/Documentation/ABI/stable/sysfs-driver-firmware-zynqmp
-> +++ b/Documentation/ABI/stable/sysfs-driver-firmware-zynqmp
-> @@ -113,3 +113,87 @@ Description:
->  		    # echo 0 > /sys/devices/platform/firmware\:zynqmp-firmware/health_status
->  
->  Users:		Xilinx
-> +
-> +What:		/sys/devices/platform/firmware\:zynqmp-firmware/feature_config_*
-> +Date:		Aug 2021
-> +KernelVersion:	5.14
-> +Contact:	"Ronak Jain" <ronak.jain@xilinx.com>
-> +Description:
-> +		This sysfs interface allows to configure features at runtime.
-> +		The user can enable or disable features running at firmware.
-> +		Also, the user can configure the parameters of the features
-> +		at runtime. The supported features are over temperature and
-> +		external watchdog. Here, the external watchdog is completely
-> +		different than the /dev/watchdog as the external watchdog is
-> +		running on the firmware and it is used to monitor the health
-> +		of firmware not APU(Linux). Also, the external watchdog is
-> +		interfaced outside of the zynqmp soc.
-> +
-> +		By default the features are disabled in the firmware. The user
-> +		can enable features by querying appropriate config id of the
-> +		features.
-> +
-> +		The default limit for the over temperature is 90 Degree Celsius.
-> +		The default timer interval for the external watchdog is 570ms.
-> +
-> +		The supported config ids are for the feature configuration is,
-> +		1. PM_FEATURE_OVERTEMP_STATUS = 1, the user can enable or
-> +		disable the over temperature feature.
-> +		2. PM_FEATURE_OVERTEMP_VALUE = 2, the user can configure the
-> +		over temperature limit in Degree Celsius.
-> +		3. PM_FEATURE_EXTWDT_STATUS = 3, the user can enable or disable
-> +		the external watchdog feature.
-> +		4. PM_FEATURE_EXTWDT_VALUE = 4, the user can configure the
-> +		external watchdog feature.
-> +
-> +		Usage:
-> +
-> +		Enable over temperature feature
-> +		# echo 1 > /sys/devices/platform/firmware\:zynqmp-firmware/feature_config_id
-> +		# echo 1 > /sys/devices/platform/firmware\:zynqmp-firmware/feature_config_value
-> +
-> +		Check whether the over temperature feature is enabled or not
-> +		# cat /sys/devices/platform/firmware\:zynqmp-firmware/feature_config_value
-> +		The expected result is 1.
-> +
-> +		Disable over temperature feature
-> +		# echo 1 > /sys/devices/platform/firmware\:zynqmp-firmware/feature_config_id
-> +		# echo 0 > /sys/devices/platform/firmware\:zynqmp-firmware/feature_config_value
-> +
-> +		Check whether the over temperature feature is disabled or not
-> +		# cat /sys/devices/platform/firmware\:zynqmp-firmware/feature_config_value
-> +		The expected result is 0.
-> +
-> +		Configure over temperature limit to 50 Degree Celsius
-> +		# echo 2 > /sys/devices/platform/firmware\:zynqmp-firmware/feature_config_id
-> +		# echo 50 > /sys/devices/platform/firmware\:zynqmp-firmware/feature_config_value
-> +
-> +		Check whether the over temperature limit is configured or not
-> +		# cat /sys/devices/platform/firmware\:zynqmp-firmware/feature_config_value
-> +		The expected result is 50.
+The patchset enables userspace P2PDMA by allowing userspace to mmap()
+allocated chunks of the CMB. The resulting VMA can be passed only
+to O_DIRECT IO on NVMe backed files or block devices. A flag is added
+to GUP() in Patch 14, then Patches 15 through 17 wire this flag up based
+on whether the block queue indicates P2PDMA support. Patches 18
+through 20 enable the CMB to be mapped into userspace by mmaping
+the nvme char device.
 
-Maybe I am missing something but I was wondering why these features are
-being exposed via custom sysfs nodes - can they be integrated into the
-respective subsystems?
+This is relatively straightforward, however the one significant
+problem is that, presently, pci_p2pdma_map_sg() requires a homogeneous
+SGL with all P2PDMA pages or all regular pages. Enhancing GUP to
+support enforcing this rule would require a huge hack that I don't
+expect would be all that pallatable. So the first 13 patches add
+support for P2PDMA pages to dma_map_sg[table]() to the dma-direct
+and dma-iommu implementations. Thus systems without an IOMMU plus
+Intel and AMD IOMMUs are supported. (Other IOMMU implementations would
+then be unsupported, notably ARM and PowerPC but support would be added
+when they convert to dma-iommu).
 
-e.g., Over temperature protection would fit in nicely with the thermal
-sub-system. Did you explore integrating the feature there?
+dma_map_sgtable() is preferred when dealing with P2PDMA memory as it
+will return -EREMOTEIO when the DMA device cannot map specific P2PDMA
+pages based on the existing rules in calc_map_type_and_dist().
 
-> +
-> +		Enable external watchdog feature
-> +		# echo 3 > /sys/devices/platform/firmware\:zynqmp-firmware/feature_config_id
-> +		# echo 1 > /sys/devices/platform/firmware\:zynqmp-firmware/feature_config_value
-> +
-> +		Check whether the external watchdog feature is enabled or not
-> +		# cat /sys/devices/platform/firmware\:zynqmp-firmware/feature_config_value
-> +		The expected result is 1.
-> +
-> +		Disable external watchdog feature
-> +		# echo 3 > /sys/devices/platform/firmware\:zynqmp-firmware/feature_config_id
-> +		# echo 0 > /sys/devices/platform/firmware\:zynqmp-firmware/feature_config_value
-> +
-> +		Check whether the external watchdog feature is disabled or not
-> +		# cat /sys/devices/platform/firmware\:zynqmp-firmware/feature_config_value
-> +		The expected result is 0.
-> +
-> +		Configure external watchdog timer interval to 500ms
-> +		# echo 4 > /sys/devices/platform/firmware\:zynqmp-firmware/feature_config_id
-> +		# echo 500 > /sys/devices/platform/firmware\:zynqmp-firmware/feature_config_value
-> +
-> +		Check whether the external watchdog timer interval is configured or not
-> +		# cat /sys/devices/platform/firmware\:zynqmp-firmware/feature_config_value
-> +		The expected result is 500.
+The other issue is dma_unmap_sg() needs a flag to determine whether a
+given dma_addr_t was mapped regularly or as a PCI bus address. To allow
+this, a third flag is added to the page_link field in struct
+scatterlist. This effectively means support for P2PDMA will now depend
+on CONFIG_64BIT.
 
-Similarly, this would make sense to go into the watchdog subsystem.
+Feedback welcome.
 
-Using sub-system interfaces would allow existing tools to just work
-without having to make zynqmp specific tools or find yet another way to
-interact with these features. 
+This series is based on v5.15-rc1. A git branch is available here:
+
+  https://github.com/sbates130272/linux-p2pmem/  p2pdma_user_cmb_v3
 
 Thanks,
-Punit
+
+Logan
+
+[1] https://lkml.kernel.org/r/20210513223203.5542-1-logang@deltatee.com
+[2] https://lkml.kernel.org/r/20201106170036.18713-1-logang@deltatee.com
+
+--
+
+Logan Gunthorpe (20):
+  lib/scatterlist: add flag for indicating P2PDMA segments in an SGL
+  PCI/P2PDMA: attempt to set map_type if it has not been set
+  PCI/P2PDMA: make pci_p2pdma_map_type() non-static
+  PCI/P2PDMA: introduce helpers for dma_map_sg implementations
+  dma-mapping: allow EREMOTEIO return code for P2PDMA transfers
+  dma-direct: support PCI P2PDMA pages in dma-direct map_sg
+  dma-mapping: add flags to dma_map_ops to indicate PCI P2PDMA support
+  iommu/dma: support PCI P2PDMA pages in dma-iommu map_sg
+  nvme-pci: check DMA ops when indicating support for PCI P2PDMA
+  nvme-pci: convert to using dma_map_sgtable()
+  RDMA/core: introduce ib_dma_pci_p2p_dma_supported()
+  RDMA/rw: use dma_map_sgtable()
+  PCI/P2PDMA: remove pci_p2pdma_[un]map_sg()
+  mm: introduce FOLL_PCI_P2PDMA to gate getting PCI P2PDMA pages
+  iov_iter: introduce iov_iter_get_pages_[alloc_]flags()
+  block: set FOLL_PCI_P2PDMA in __bio_iov_iter_get_pages()
+  block: set FOLL_PCI_P2PDMA in bio_map_user_iov()
+  mm: use custom page_free for P2PDMA pages
+  PCI/P2PDMA: introduce pci_mmap_p2pmem()
+  nvme-pci: allow mmaping the CMB in userspace
+
+ block/bio.c                  |   8 +-
+ block/blk-map.c              |   7 +-
+ drivers/dax/super.c          |   7 +-
+ drivers/infiniband/core/rw.c |  75 +++----
+ drivers/iommu/dma-iommu.c    |  68 +++++-
+ drivers/nvme/host/core.c     |  18 +-
+ drivers/nvme/host/nvme.h     |   4 +-
+ drivers/nvme/host/pci.c      |  98 +++++----
+ drivers/nvme/target/rdma.c   |   2 +-
+ drivers/pci/Kconfig          |   3 +-
+ drivers/pci/p2pdma.c         | 402 +++++++++++++++++++++++++++++------
+ include/linux/dma-map-ops.h  |  10 +
+ include/linux/dma-mapping.h  |   5 +
+ include/linux/memremap.h     |   4 +-
+ include/linux/mm.h           |   2 +
+ include/linux/pci-p2pdma.h   |  92 ++++++--
+ include/linux/scatterlist.h  |  50 ++++-
+ include/linux/uio.h          |  21 +-
+ include/rdma/ib_verbs.h      |  30 +++
+ include/uapi/linux/magic.h   |   1 +
+ kernel/dma/direct.c          |  44 +++-
+ kernel/dma/mapping.c         |  34 ++-
+ lib/iov_iter.c               |  28 +--
+ mm/gup.c                     |  28 ++-
+ mm/huge_memory.c             |   8 +-
+ mm/memory-failure.c          |   4 +-
+ mm/memory_hotplug.c          |   2 +-
+ mm/memremap.c                |  26 ++-
+ 28 files changed, 834 insertions(+), 247 deletions(-)
+
+
+base-commit: 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f
+--
+2.30.2
