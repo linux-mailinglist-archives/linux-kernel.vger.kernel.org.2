@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA98140E700
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:32:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AF1440E896
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242620AbhIPR1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:27:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51938 "EHLO mail.kernel.org"
+        id S1354756AbhIPRke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:40:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50286 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347032AbhIPQ4u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:56:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A5EF61381;
-        Thu, 16 Sep 2021 16:31:20 +0000 (UTC)
+        id S1348347AbhIPRcU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:32:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BBFDC61250;
+        Thu, 16 Sep 2021 16:47:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809880;
-        bh=wT3iu+1KsIblfmC2Xxu1rpoOWJc5iroPFIXC6zv3PRM=;
+        s=korg; t=1631810860;
+        bh=sYydYxRyDsnWxhv0ACQkOPeeGjMFpExS/qG7QDvFyBU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aTNqd+yZRFwBpPTxPDSv1YDluD3Ql2Ew0VlpZrI5rBCMNSnrYHS7wnoyAEdWthrcW
-         eEZcFrm/5ZeJyIZnkNJqhZckG7Hxr54c2wzmQR47CLO5ZNB4icApdN/8QF3xtbTqyF
-         Rihh+xeJNwOuLC/zRjKxaJyT4Y1YoVuDkjqGc1zA=
+        b=r8AYGHpRg3bV61d3hvipn6jfiyM46udVzn55GBcWdn2fbcpyRrcmIVZMKNvb/3ex7
+         Y7D7PF3N2Y4WR9dTD96d6gws/Jt9GFtr6+V9XfawZbH7ux4O0qfB5qC1KZaTe+dLgp
+         BBw8dcvVLxegilSpFz/2FzOblj8fMXXkgsvfYzvc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, linux-staging@lists.linux.dev,
-        Kees Cook <keescook@chromium.org>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Eran Ben Elisha <eranbe@nvidia.com>,
+        Moshe Shemesh <moshe@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 285/380] staging: rts5208: Fix get_ms_information() heap buffer size
-Date:   Thu, 16 Sep 2021 18:00:42 +0200
-Message-Id: <20210916155813.771281329@linuxfoundation.org>
+Subject: [PATCH 5.14 294/432] net/mlx5: Fix variable type to match 64bit
+Date:   Thu, 16 Sep 2021 18:00:43 +0200
+Message-Id: <20210916155820.799501097@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,82 +43,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+From: Eran Ben Elisha <eranbe@nvidia.com>
 
-[ Upstream commit cbe34165cc1b7d1110b268ba8b9f30843c941639 ]
+[ Upstream commit 979aa51967add26b37f9d77e01729d44a2da8e5f ]
 
-Fix buf allocation size (it needs to be 2 bytes larger). Found when
-__alloc_size() annotations were added to kmalloc() interfaces.
+Fix the following smatch warning:
+wait_func_handle_exec_timeout() warn: should '1 << ent->idx' be a 64 bit type?
 
-In file included from ./include/linux/string.h:253,
-                 from ./include/linux/bitmap.h:10,
-                 from ./include/linux/cpumask.h:12,
-                 from ./arch/x86/include/asm/paravirt.h:17,
-                 from ./arch/x86/include/asm/irqflags.h:63,
-                 from ./include/linux/irqflags.h:16,
-                 from ./include/linux/rcupdate.h:26,
-                 from ./include/linux/rculist.h:11,
-                 from ./include/linux/pid.h:5,
-                 from ./include/linux/sched.h:14,
-                 from ./include/linux/blkdev.h:5,
-                 from drivers/staging/rts5208/rtsx_scsi.c:12:
-In function 'get_ms_information',
-    inlined from 'ms_sp_cmnd' at drivers/staging/rts5208/rtsx_scsi.c:2877:12,
-    inlined from 'rtsx_scsi_handler' at drivers/staging/rts5208/rtsx_scsi.c:3247:12:
-./include/linux/fortify-string.h:54:29: warning: '__builtin_memcpy' forming offset [106, 107] is out
- of the bounds [0, 106] [-Warray-bounds]
-   54 | #define __underlying_memcpy __builtin_memcpy
-      |                             ^
-./include/linux/fortify-string.h:417:2: note: in expansion of macro '__underlying_memcpy'
-  417 |  __underlying_##op(p, q, __fortify_size);   \
-      |  ^~~~~~~~~~~~~
-./include/linux/fortify-string.h:463:26: note: in expansion of macro '__fortify_memcpy_chk'
-  463 | #define memcpy(p, q, s)  __fortify_memcpy_chk(p, q, s,   \
-      |                          ^~~~~~~~~~~~~~~~~~~~
-drivers/staging/rts5208/rtsx_scsi.c:2851:3: note: in expansion of macro 'memcpy'
- 2851 |   memcpy(buf + i, ms_card->raw_sys_info, 96);
-      |   ^~~~~~
+Use 1ULL, to have a 64 bit type variable.
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-staging@lists.linux.dev
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Link: https://lore.kernel.org/r/20210818044252.1533634-1-keescook@chromium.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Eran Ben Elisha <eranbe@nvidia.com>
+Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/rts5208/rtsx_scsi.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/cmd.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/staging/rts5208/rtsx_scsi.c b/drivers/staging/rts5208/rtsx_scsi.c
-index 1deb74112ad4..11d9d9155eef 100644
---- a/drivers/staging/rts5208/rtsx_scsi.c
-+++ b/drivers/staging/rts5208/rtsx_scsi.c
-@@ -2802,10 +2802,10 @@ static int get_ms_information(struct scsi_cmnd *srb, struct rtsx_chip *chip)
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
+index 9d79c5ec31e9..db5dfff585c9 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
+@@ -877,7 +877,7 @@ static void cb_timeout_handler(struct work_struct *work)
+ 	ent->ret = -ETIMEDOUT;
+ 	mlx5_core_warn(dev, "cmd[%d]: %s(0x%x) Async, timeout. Will cause a leak of a command resource\n",
+ 		       ent->idx, mlx5_command_str(msg_to_opcode(ent->in)), msg_to_opcode(ent->in));
+-	mlx5_cmd_comp_handler(dev, 1UL << ent->idx, true);
++	mlx5_cmd_comp_handler(dev, 1ULL << ent->idx, true);
+ 
+ out:
+ 	cmd_ent_put(ent); /* for the cmd_ent_get() took on schedule delayed work */
+@@ -994,7 +994,7 @@ static void cmd_work_handler(struct work_struct *work)
+ 		MLX5_SET(mbox_out, ent->out, status, status);
+ 		MLX5_SET(mbox_out, ent->out, syndrome, drv_synd);
+ 
+-		mlx5_cmd_comp_handler(dev, 1UL << ent->idx, true);
++		mlx5_cmd_comp_handler(dev, 1ULL << ent->idx, true);
+ 		return;
  	}
  
- 	if (dev_info_id == 0x15) {
--		buf_len = 0x3A;
-+		buf_len = 0x3C;
- 		data_len = 0x3A;
- 	} else {
--		buf_len = 0x6A;
-+		buf_len = 0x6C;
- 		data_len = 0x6A;
+@@ -1008,7 +1008,7 @@ static void cmd_work_handler(struct work_struct *work)
+ 		poll_timeout(ent);
+ 		/* make sure we read the descriptor after ownership is SW */
+ 		rmb();
+-		mlx5_cmd_comp_handler(dev, 1UL << ent->idx, (ent->ret == -ETIMEDOUT));
++		mlx5_cmd_comp_handler(dev, 1ULL << ent->idx, (ent->ret == -ETIMEDOUT));
  	}
+ }
  
-@@ -2855,11 +2855,7 @@ static int get_ms_information(struct scsi_cmnd *srb, struct rtsx_chip *chip)
- 	}
+@@ -1068,7 +1068,7 @@ static void wait_func_handle_exec_timeout(struct mlx5_core_dev *dev,
+ 		       mlx5_command_str(msg_to_opcode(ent->in)), msg_to_opcode(ent->in));
  
- 	rtsx_stor_set_xfer_buf(buf, buf_len, srb);
--
--	if (dev_info_id == 0x15)
--		scsi_set_resid(srb, scsi_bufflen(srb) - 0x3C);
--	else
--		scsi_set_resid(srb, scsi_bufflen(srb) - 0x6C);
-+	scsi_set_resid(srb, scsi_bufflen(srb) - buf_len);
+ 	ent->ret = -ETIMEDOUT;
+-	mlx5_cmd_comp_handler(dev, 1UL << ent->idx, true);
++	mlx5_cmd_comp_handler(dev, 1ULL << ent->idx, true);
+ }
  
- 	kfree(buf);
- 	return STATUS_SUCCESS;
+ static int wait_func(struct mlx5_core_dev *dev, struct mlx5_cmd_work_ent *ent)
 -- 
 2.30.2
 
