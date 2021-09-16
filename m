@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7987640DBC6
+	by mail.lfdr.de (Postfix) with ESMTP id F285940DBC7
 	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 15:52:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237217AbhIPNx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 09:53:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39598 "EHLO
+        id S237270AbhIPNyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 09:54:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237149AbhIPNxr (ORCPT
+        with ESMTP id S237342AbhIPNxx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 09:53:47 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DE4FC061766
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 06:52:27 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id c4so3891459pls.6
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 06:52:27 -0700 (PDT)
+        Thu, 16 Sep 2021 09:53:53 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC840C061764
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 06:52:32 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id f21so3903038plb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 06:52:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=os6W81L8Jp53y3z498y4ntoeCrrr5kt+lNChMkb1a3E=;
-        b=cFoQbgMUuO71GUUl31WSwW9Dbd6Ng9hWx2q8bhXjtr2f6iVWCmSB4vMoHCnSRtKcgL
-         w0T97hle6ch5Nk6/EEndFfacy14u+8F/bJCRXxT3WNWbZn4LjKOhnUBqV6YFkwwpYppD
-         BwltsgwY0L6sqKNzKVT1mwVq7Ft69f1x1Pw5HxaopGobPq+AVEF4WzSOEF8cA9bYtD34
-         KOmMg+k9cvV1uDnKDWLdvHTqVliBAOjPC5XeiNFTYO/tB8SZIsfwQldVc7iX5e1F1RuH
-         LxJot3R06na+lEc/QyRd75fmonwEGERx+Jj1AIpHsbWDBDR126XpyfTziZSuAQwSxnXF
-         3zvw==
+        bh=IjaeLDkNdZhTPTv/gmNAvH3aDq6cgB+MWQai9kSiTfY=;
+        b=20ulyW5hYFscFP3he09U5EbDzlS3DZ57PB4D34MDxEnYh/v3nq61tuhu9r9+JzjwBo
+         1QzZbxIgxk4v0xKqHFXLw6kKhcn+j68n5xb67OGAQ/DHDBZSY9dZdmIsgxRVRovFiIkO
+         7LFgP0Ios8fPmDKXNGHp5l+8PPgXqtg8/wF62qYDUa1sTQVnZZKZgV0WrGzb2RM6RSd6
+         0ofSp6KEdF4ie0GW0JwQlL0k2SB5baqSkL4o5vHnKAGNsfGGCekRDC/cG4xzI16LVPiy
+         2b0kcsC9Cj5LNP7AqDrv7KVpYdtBFOms3xjajWUaxR2uqQy23V1/iHgIrc9uqsMzynL9
+         Zshg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=os6W81L8Jp53y3z498y4ntoeCrrr5kt+lNChMkb1a3E=;
-        b=w7s+ueX2CFBiWBuCg5jotT8RJfW1oCPN8+ZnCwy1H8mchd6OZ7PiwPSetnQG1ynCIQ
-         LqoRgnshgTnFCZtWRJsyeHN8yMF2U8XbSDdWPVZT3nCVBsTxUTHLijALliDP5CfP+ZSy
-         3ENr+mNhJJ1NdmAjvFexslI+qpxWHUOZ9TiIIJ0Xq1BOD97gnJTSODMM4q3PtGhxZOzy
-         N056jSOcEU7OLYZ7m5kY8F8u+mWTMFJ26hiEXVOEDntzENKZ8KZnjNkyYwaP2Q4cZJ3n
-         PYdEYjjIivhGHFTVsY5UzyVXPFYRdNjgaDjH4PdgGKvWF8sXFuYLelZzZ8QXQgEZZJhG
-         y20Q==
-X-Gm-Message-State: AOAM5338ZK35tKizHd1BR6dekU4ZuDPEletau3eJos2l2vKojObjSmx9
-        AVjfUTvPs5kM7GhUUGQM9JpQOQ==
-X-Google-Smtp-Source: ABdhPJy9fa7IUXtp12uZvQnAxns54IHKulitYG16Aq9stdgfxKixbhCQfcEEbJ0+OtWXqL8ifok1yQ==
-X-Received: by 2002:a17:90a:5513:: with SMTP id b19mr15279213pji.16.1631800346633;
-        Thu, 16 Sep 2021 06:52:26 -0700 (PDT)
+        bh=IjaeLDkNdZhTPTv/gmNAvH3aDq6cgB+MWQai9kSiTfY=;
+        b=lsnJ2s71pH0VDUlF+K5NAnsDPxWoL2so8Ss17M503wd1lpdUPlQglLvebErE3+VAg5
+         +iB/zss8SSfgcsoy936+ysDhkRPcT/qJcMfx+w1pYnqdMlCA8xquQKOkZ64AmD+H5nYp
+         YARqew7vN6qrmurGoL3ZxnJHskrOkrzWQRhxidUheGA7AkFhZduhJNavILuyPs+XWeOj
+         7O0a0aX2JppewOv7tTx7oyZMrVT3eYqfcBH5JvGem9QfED1Buq9kbxo8VkyUWdD6lbRL
+         H0ZpTtpaX6hnKGyFC0EPTVpu0WtcjCvHdO13+8iNefQA2Q21u69Lm3s4nnYMpTXPSv3i
+         7gTA==
+X-Gm-Message-State: AOAM531gxy5eCapuGOD7ahJDGzq8FwkKkKQArfua0VHCxGx3DzoJEVg2
+        MjNALts8k4jgGmmE2XHc+DydHg==
+X-Google-Smtp-Source: ABdhPJybFFN5VDhv3mRTlB6DTZDsGPCl5X/CVrVIr+yT5LM/yviSYZF7nmYNrXJrLtBEb2Sn4DqYpA==
+X-Received: by 2002:a17:902:9a04:b0:13a:1b2d:8a5c with SMTP id v4-20020a1709029a0400b0013a1b2d8a5cmr4945875plp.47.1631800352300;
+        Thu, 16 Sep 2021 06:52:32 -0700 (PDT)
 Received: from localhost.localdomain ([139.177.225.226])
-        by smtp.gmail.com with ESMTPSA id o9sm3617443pfh.217.2021.09.16.06.52.21
+        by smtp.gmail.com with ESMTPSA id o9sm3617443pfh.217.2021.09.16.06.52.26
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 16 Sep 2021 06:52:26 -0700 (PDT)
+        Thu, 16 Sep 2021 06:52:32 -0700 (PDT)
 From:   Muchun Song <songmuchun@bytedance.com>
 To:     guro@fb.com, hannes@cmpxchg.org, mhocko@kernel.org,
         akpm@linux-foundation.org, shakeelb@google.com,
@@ -57,9 +57,9 @@ Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         bsingharora@gmail.com, shy828301@gmail.com, alexs@kernel.org,
         smuchun@gmail.com, zhengqi.arch@bytedance.com,
         Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v2 03/13] mm: memcontrol: introduce compact_lock_page_irqsave
-Date:   Thu, 16 Sep 2021 21:47:38 +0800
-Message-Id: <20210916134748.67712-4-songmuchun@bytedance.com>
+Subject: [PATCH v2 04/13] mm: memcontrol: make lruvec lock safe when the LRU pages reparented
+Date:   Thu, 16 Sep 2021 21:47:39 +0800
+Message-Id: <20210916134748.67712-5-songmuchun@bytedance.com>
 X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 In-Reply-To: <20210916134748.67712-1-songmuchun@bytedance.com>
 References: <20210916134748.67712-1-songmuchun@bytedance.com>
@@ -69,80 +69,230 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If we reuse the objcg APIs to charge LRU pages, the page_memcg()
-can be changed when the LRU pages reparented. In this case, we need
-to acquire the new lruvec lock.
+The diagram below shows how to make the page lruvec lock safe when the
+LRU pages reparented.
 
-    lruvec = mem_cgroup_page_lruvec(page);
+lock_page_lruvec(page)
+    retry:
+        lruvec = mem_cgroup_page_lruvec(page);
 
-    // The page is reparented.
+        // The page is reparented at this time.
+        spin_lock(&lruvec->lru_lock);
 
-    compact_lock_irqsave(&lruvec->lru_lock, &flags, cc);
+        if (unlikely(lruvec_memcg(lruvec) != page_memcg(page)))
+            // Acquired the wrong lruvec lock and need to retry.
+            // Because this page is on the parent memcg lruvec list.
+            goto retry;
 
-    // Acquired the wrong lruvec lock and need to retry.
+        // If we reach here, it means that page_memcg(page) is stable.
 
-But compact_lock_irqsave() only take lruvec lock as the parameter,
-we cannot aware this change. If it can take the page as parameter
-to acquire the lruvec lock. When the page memcg is changed, we can
-use the page_memcg() detect whether we need to reacquire the new
-lruvec lock. So compact_lock_irqsave() is not suitable for us.
-Similar to lock_page_lruvec_irqsave(), introduce
-compact_lock_page_irqsave() to acquire the lruvec lock in
-the compaction routine.
+memcg_reparent_objcgs(memcg)
+    // lruvec belongs to memcg and lruvec_parent belongs to parent memcg.
+    spin_lock(&lruvec->lru_lock);
+    spin_lock(&lruvec_parent->lru_lock);
+
+    // Move all the pages from the lruvec list to the parent lruvec list.
+
+    spin_unlock(&lruvec_parent->lru_lock);
+    spin_unlock(&lruvec->lru_lock);
+
+After we acquire the lruvec lock, we need to check whether the page is
+reparented. If so, we need to reacquire the new lruvec lock. On the
+routine of the LRU pages reparenting, we will also acquire the lruvec
+lock (Will be implemented in the later patch). So page_memcg() cannot
+be changed when we hold the lruvec lock.
+
+Since lruvec_memcg(lruvec) is always equal to page_memcg(page) after
+we hold the lruvec lock, lruvec_memcg_debug() check is pointless. So
+remove it.
+
+This is a preparation for reparenting the LRU pages.
 
 Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 Acked-by: Roman Gushchin <guro@fb.com>
 ---
- mm/compaction.c | 27 ++++++++++++++++++++++++---
- 1 file changed, 24 insertions(+), 3 deletions(-)
+ include/linux/memcontrol.h | 16 +++------------
+ mm/compaction.c            | 10 +++++++++-
+ mm/memcontrol.c            | 50 +++++++++++++++++++++++++++-------------------
+ mm/swap.c                  |  5 +++++
+ 4 files changed, 47 insertions(+), 34 deletions(-)
 
-diff --git a/mm/compaction.c b/mm/compaction.c
-index bfc93da1c2c7..bf1a6048b5a3 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -509,6 +509,29 @@ static bool compact_lock_irqsave(spinlock_t *lock, unsigned long *flags,
- 	return true;
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 490d4849a05a..6c2cb076c1a4 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -756,7 +756,9 @@ static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
+  * mem_cgroup_page_lruvec - return lruvec for isolating/putting an LRU page
+  * @page: the page
+  *
+- * This function relies on page->mem_cgroup being stable.
++ * The lruvec can be changed to its parent lruvec when the page reparented.
++ * The caller need to recheck if it cares about this change (just like
++ * lock_page_lruvec() does).
+  */
+ static inline struct lruvec *mem_cgroup_page_lruvec(struct page *page)
+ {
+@@ -776,14 +778,6 @@ struct lruvec *lock_page_lruvec_irq(struct page *page);
+ struct lruvec *lock_page_lruvec_irqsave(struct page *page,
+ 						unsigned long *flags);
+ 
+-#ifdef CONFIG_DEBUG_VM
+-void lruvec_memcg_debug(struct lruvec *lruvec, struct page *page);
+-#else
+-static inline void lruvec_memcg_debug(struct lruvec *lruvec, struct page *page)
+-{
+-}
+-#endif
+-
+ static inline
+ struct mem_cgroup *mem_cgroup_from_css(struct cgroup_subsys_state *css){
+ 	return css ? container_of(css, struct mem_cgroup, css) : NULL;
+@@ -1220,10 +1214,6 @@ static inline struct lruvec *mem_cgroup_page_lruvec(struct page *page)
+ 	return &pgdat->__lruvec;
  }
  
-+static struct lruvec *compact_lock_page_irqsave(struct page *page,
-+						unsigned long *flags,
-+						struct compact_control *cc)
-+{
-+	struct lruvec *lruvec;
-+
-+	lruvec = mem_cgroup_page_lruvec(page);
-+
-+	/* Track if the lock is contended in async mode */
-+	if (cc->mode == MIGRATE_ASYNC && !cc->contended) {
-+		if (spin_trylock_irqsave(&lruvec->lru_lock, *flags))
-+			goto out;
-+
-+		cc->contended = true;
+-static inline void lruvec_memcg_debug(struct lruvec *lruvec, struct page *page)
+-{
+-}
+-
+ static inline struct mem_cgroup *parent_mem_cgroup(struct mem_cgroup *memcg)
+ {
+ 	return NULL;
+diff --git a/mm/compaction.c b/mm/compaction.c
+index bf1a6048b5a3..c4ba41de8591 100644
+--- a/mm/compaction.c
++++ b/mm/compaction.c
+@@ -515,6 +515,8 @@ static struct lruvec *compact_lock_page_irqsave(struct page *page,
+ {
+ 	struct lruvec *lruvec;
+ 
++	rcu_read_lock();
++retry:
+ 	lruvec = mem_cgroup_page_lruvec(page);
+ 
+ 	/* Track if the lock is contended in async mode */
+@@ -527,7 +529,13 @@ static struct lruvec *compact_lock_page_irqsave(struct page *page,
+ 
+ 	spin_lock_irqsave(&lruvec->lru_lock, *flags);
+ out:
+-	lruvec_memcg_debug(lruvec, page);
++	if (unlikely(lruvec_memcg(lruvec) != page_memcg(page))) {
++		spin_unlock_irqrestore(&lruvec->lru_lock, *flags);
++		goto retry;
 +	}
 +
-+	spin_lock_irqsave(&lruvec->lru_lock, *flags);
-+out:
-+	lruvec_memcg_debug(lruvec, page);
-+
-+	return lruvec;
-+}
-+
- /*
-  * Compaction requires the taking of some coarse locks that are potentially
-  * very heavily contended. The lock should be periodically unlocked to avoid
-@@ -1029,11 +1052,9 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
- 			if (locked)
- 				unlock_page_lruvec_irqrestore(locked, flags);
++	/* See the comments in lock_page_lruvec(). */
++	rcu_read_unlock();
  
--			compact_lock_irqsave(&lruvec->lru_lock, &flags, cc);
-+			lruvec = compact_lock_page_irqsave(page, &flags, cc);
- 			locked = lruvec;
+ 	return lruvec;
+ }
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index f58010cd8414..a57cce0ea24b 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -1158,23 +1158,6 @@ int mem_cgroup_scan_tasks(struct mem_cgroup *memcg,
+ 	return ret;
+ }
  
--			lruvec_memcg_debug(lruvec, page);
+-#ifdef CONFIG_DEBUG_VM
+-void lruvec_memcg_debug(struct lruvec *lruvec, struct page *page)
+-{
+-	struct mem_cgroup *memcg;
 -
- 			/* Try get exclusive access under lock */
- 			if (!skip_updated) {
- 				skip_updated = true;
+-	if (mem_cgroup_disabled())
+-		return;
+-
+-	memcg = page_memcg(page);
+-
+-	if (!memcg)
+-		VM_BUG_ON_PAGE(lruvec_memcg(lruvec) != root_mem_cgroup, page);
+-	else
+-		VM_BUG_ON_PAGE(lruvec_memcg(lruvec) != memcg, page);
+-}
+-#endif
+-
+ /**
+  * lock_page_lruvec - lock and return lruvec for a given page.
+  * @page: the page
+@@ -1189,10 +1172,21 @@ struct lruvec *lock_page_lruvec(struct page *page)
+ {
+ 	struct lruvec *lruvec;
+ 
++	rcu_read_lock();
++retry:
+ 	lruvec = mem_cgroup_page_lruvec(page);
+ 	spin_lock(&lruvec->lru_lock);
+ 
+-	lruvec_memcg_debug(lruvec, page);
++	if (unlikely(lruvec_memcg(lruvec) != page_memcg(page))) {
++		spin_unlock(&lruvec->lru_lock);
++		goto retry;
++	}
++
++	/*
++	 * Preemption is disabled in the internal of spin_lock, which can serve
++	 * as RCU read-side critical sections.
++	 */
++	rcu_read_unlock();
+ 
+ 	return lruvec;
+ }
+@@ -1201,10 +1195,18 @@ struct lruvec *lock_page_lruvec_irq(struct page *page)
+ {
+ 	struct lruvec *lruvec;
+ 
++	rcu_read_lock();
++retry:
+ 	lruvec = mem_cgroup_page_lruvec(page);
+ 	spin_lock_irq(&lruvec->lru_lock);
+ 
+-	lruvec_memcg_debug(lruvec, page);
++	if (unlikely(lruvec_memcg(lruvec) != page_memcg(page))) {
++		spin_unlock_irq(&lruvec->lru_lock);
++		goto retry;
++	}
++
++	/* See the comments in lock_page_lruvec(). */
++	rcu_read_unlock();
+ 
+ 	return lruvec;
+ }
+@@ -1213,10 +1215,18 @@ struct lruvec *lock_page_lruvec_irqsave(struct page *page, unsigned long *flags)
+ {
+ 	struct lruvec *lruvec;
+ 
++	rcu_read_lock();
++retry:
+ 	lruvec = mem_cgroup_page_lruvec(page);
+ 	spin_lock_irqsave(&lruvec->lru_lock, *flags);
+ 
+-	lruvec_memcg_debug(lruvec, page);
++	if (unlikely(lruvec_memcg(lruvec) != page_memcg(page))) {
++		spin_unlock_irqrestore(&lruvec->lru_lock, *flags);
++		goto retry;
++	}
++
++	/* See the comments in lock_page_lruvec(). */
++	rcu_read_unlock();
+ 
+ 	return lruvec;
+ }
+diff --git a/mm/swap.c b/mm/swap.c
+index 897200d27dd0..18d44f978b2e 100644
+--- a/mm/swap.c
++++ b/mm/swap.c
+@@ -291,6 +291,11 @@ void lru_note_cost(struct lruvec *lruvec, bool file, unsigned int nr_pages)
+ 
+ void lru_note_cost_page(struct page *page)
+ {
++	/*
++	 * The rcu read lock is held by the caller, so we do not need to
++	 * care about the lruvec returned by mem_cgroup_page_lruvec() being
++	 * released.
++	 */
+ 	lru_note_cost(mem_cgroup_page_lruvec(page),
+ 		      page_is_file_lru(page), thp_nr_pages(page));
+ }
 -- 
 2.11.0
 
