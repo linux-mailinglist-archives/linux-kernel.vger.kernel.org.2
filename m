@@ -2,97 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 187C540D32E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 08:25:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6A9440D339
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 08:27:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234505AbhIPG0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 02:26:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47713 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234417AbhIPG0i (ORCPT
+        id S234532AbhIPG3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 02:29:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231255AbhIPG3H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 02:26:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631773517;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YDYMLRQB5NY9ENd9cvkxCO0IUruGgbCum6Qchd6u8hw=;
-        b=Id5g486MsCnvVU7sJSTazfMzzNfvxZHlLdiVgtdODCKHf0BA+6Pz4oE21eCnDUrErXRIjB
-        Z6/FekFNbs8DH+6IuVilVUTBmGdTijmDQalDGWwpzY3UPQvaVuJ24msTo0XiCwmTOFiqQF
-        INZCwY2bUzsPUqDkiEsP18HOiY5l6ag=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-419-E0BrZvqvPSijyRozPLyn7Q-1; Thu, 16 Sep 2021 02:25:16 -0400
-X-MC-Unique: E0BrZvqvPSijyRozPLyn7Q-1
-Received: by mail-wm1-f71.google.com with SMTP id c187-20020a1c35c4000000b00304b489f2d8so2672370wma.6
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 23:25:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YDYMLRQB5NY9ENd9cvkxCO0IUruGgbCum6Qchd6u8hw=;
-        b=NsXdwnRIT0v7XZtTNLMAOSnEoT+Kj9338WafvozJdvqE3s7bAu5qy+r7+ficxTJj5X
-         KvRdM+CIPmQ7e8NNo25WYaxMijomBbe7bGhtXPnTsC99s8o1XJAQXChz8fNUZqwCuS0K
-         CreBqgYm1fjxq/F1ZYpz+TjJLbdQJsocL3QkQjtttVJI9HbJM2bsIxuu4vpB8ED7mGFl
-         20pBczWqArfW0UNiWvqZEQbEGVqKy14ykZpMDi0BSGuRdyInUMUOJGscyELVpw3zoESC
-         Y0S9lzAukAkm49KvHj62xNjXRr8Y0tjZ98nsTPOqVfD2PFMQFCFtyHzcUMUKPw08MX03
-         6r+g==
-X-Gm-Message-State: AOAM5335jSiGuT6YjrpWvMhVKUleW9B+AnhJbOS3vxevdxdBgSIL98q+
-        JbXMVz/ORANC2u9bTNdNSIHHM5Vdz66iRJiTBCZpxEHIGQUckFPwxGNax/hOSKGv2am6un8KadY
-        WT6R5NHa16+gRFJaYND7NmKkCzbIz6b0PBjpuUFXr
-X-Received: by 2002:a05:6000:11d1:: with SMTP id i17mr4125594wrx.424.1631773515396;
-        Wed, 15 Sep 2021 23:25:15 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwqTzrhsF/h6jSo+GRqZ3bg71kapWMBfrCU4g/DI13eBzKbIvKPTkQ38efTQNFa3EWEajYZ6DIZ1odcXcag90U=
-X-Received: by 2002:a05:6000:11d1:: with SMTP id i17mr4125564wrx.424.1631773515148;
- Wed, 15 Sep 2021 23:25:15 -0700 (PDT)
+        Thu, 16 Sep 2021 02:29:07 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC7E9C061574;
+        Wed, 15 Sep 2021 23:27:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1631773663;
+        bh=bvom7APVYwgVJizV4SnppAwqleRnHlURWBJYrycELTY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=n7+IIrKLRoDTiSDwWZfoBE1DKz0rhNnGbtW8hb7UrXEGWIXyp3tmQBmR+Oc4zkfqZ
+         W4CUyvb5g9/uGJEfuRfCQMfbIp6Ep2FC5oiNwhZT/R8kjgRiqruEP89s9Y3pR0Q0Xo
+         clU0Uw7bbBSwCA3byRPgNFJynKn5Ns2BgFFRePY1+etixv/to3huaIGF45C43Uh0FA
+         JnRZugf+dphCH7EzAuRm9Wg6U7DjkgHdK+LmF4/+QvfknqMqiuT5FkTXOGcUV5xU6e
+         ix0EOJIXuU1PTkAlQLMzbSMUZc0q9ZxclqfIWow6pA1cA8r8JH+qm6jXEQL5kt/U6n
+         3LCnHK0vO/smg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H96Zk57d8z9sW8;
+        Thu, 16 Sep 2021 16:27:41 +1000 (AEST)
+Date:   Thu, 16 Sep 2021 16:27:40 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: Improvement suggestion for creation of next [Was: linux-next:
+ manual merge of the dmaengine tree with the driver-core tree]
+Message-ID: <20210916162740.3327df56@canb.auug.org.au>
+In-Reply-To: <20210728071014.dkdvqmiw2lma6ooa@pengutronix.de>
+References: <20210723155354.082a62d8@canb.auug.org.au>
+        <20210728071014.dkdvqmiw2lma6ooa@pengutronix.de>
 MIME-Version: 1.0
-References: <20210806142914.70556-1-pkalever@redhat.com>
-In-Reply-To: <20210806142914.70556-1-pkalever@redhat.com>
-From:   Prasanna Kalever <pkalever@redhat.com>
-Date:   Thu, 16 Sep 2021 11:55:04 +0530
-Message-ID: <CANwsLLGYoexzyMkK5_0jpTA+P=_FS_UyudZSeTS=EZPjakYDpQ@mail.gmail.com>
-Subject: Re: [PATCH v1 0/2] nbd: reset the queue/io_timeout to default on disconnect
-To:     linux-kernel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-        Jens Axboe <axboe@kernel.dk>, Ming Lei <ming.lei@redhat.com>
-Cc:     linux-block@vger.kernel.org, nbd@other.debian.org,
-        Ilya Dryomov <idryomov@redhat.com>,
-        Xiubo Li <xiubli@redhat.com>,
-        Prasanna Kumar Kalever <prasanna.kalever@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/Haa0oEpn914_9eS/W_KnBeE";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+--Sig_/Haa0oEpn914_9eS/W_KnBeE
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Just wanted to bring this up again and remind you about the pending review.
+Hi Uwe,
 
-Many Thanks,
---
-Prasanna
+[Sorry this took so long]
 
-On Fri, Aug 6, 2021 at 7:59 PM <pkalever@redhat.com> wrote:
+On Wed, 28 Jul 2021 09:10:14 +0200 Uwe Kleine-K=C3=B6nig <u.kleine-koenig@p=
+engutronix.de> wrote:
 >
-> From: Prasanna Kumar Kalever <prasanna.kalever@redhat.com>
->
-> Hi,
->
-> This series has changes to reset the queue/io_timeout for nbd devices and
-> a cleanup patch.
->
-> Thank you!
->
-> Prasanna Kumar Kalever (2):
->   block: cleanup: define default command timeout and use it
->   nbd: reset the queue/io_timeout to default on disconnect
->
->  block/blk-mq.c         | 2 +-
->  drivers/block/nbd.c    | 9 +++++++--
->  include/linux/blkdev.h | 2 ++
->  3 files changed, 10 insertions(+), 3 deletions(-)
->
-> --
-> 2.31.1
->
+> I intended to take a look at the resolution that Vinod pushed in his
+> tree. To find his tree and the right branch my approach in such a
+> situation is usually:
+>=20
+> 	uwe@taurus:~/gsrc/linux$ git name-rev d9e5481fca74
+> 	d9e5481fca74 tags/next-20210722~22^2~2
+>=20
+> so it was merged in tags/next-20210722~22, looking at that I see:
+>=20
+> 	uwe@taurus:~/gsrc/linux$ git show tags/next-20210722~22
+> 	commit 65da974af6a0d913cde0cf59f517322bceac24a7
+> 	...
+> 	    Merge remote-tracking branch 'dmaengine/next'
+>=20
+> and then I have to lookup what dmaengine/next means in next-20210722:
+>=20
+> 	uwe@taurus:~/gsrc/linux$ git show next-20210722 | grep dmaen
+> 	...
+> 	+dmaengine	git	git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaen=
+gine.git#next
+> 	...
+>=20
+> You could save me the last step if you used
+>=20
+> 	git pull dmaengine next
+>=20
+> instead of
+>=20
+> 	git merge dmaengine/next
+>=20
+> because then the commit message of tags/next-20210722~22 would be:
+>=20
+> 	Merge branch 'next' of git://git.kernel.org/pub/scm/linux/kernel/git/vko=
+ul/dmaengine.git
+>=20
+> which is much more useful than
+>=20
+> 	Merge remote-tracking branch 'dmaengine/next'
+>=20
+> . Otherwise the result should be the same (apart from fetching the
+> changes a tad later maybe).
 
+Thanks for the feed back.
+
+I prefer to fetch all the trees (and run my checking scripts across
+them independently of the merge/build cycle.  However, I have improved
+the merge commit messages (I think).  Please check out today's
+linux-next.  I have decided to remove the SHA1 from the message, as you
+can see that from what is merged anyway.
+
+Let me know if this is better for you.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/Haa0oEpn914_9eS/W_KnBeE
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFC49wACgkQAVBC80lX
+0GxkzQf/dU7Qxk8D4z+zo10wKh5U4X9bxOWYRqTQQqavLKxDkGhAvfnIV1uzUwnx
+FvBjEmX+29b422pfB6LkQ8U5V9UhMHjIslfio5GO+Nta85nT1JQ7c8zdnxYYcBZq
+gE/eNABfNNf5hVILNY/YAwh3Ly7aoY6Kh77A6kbFtGobyxVD9pv/3rQxvcJSgP4Z
+H9hf6AZoIyq9jaAg7lp91zdXlVK578AQvvy0BQ8L4aRPbi+kxCclAhl7DL5ULt2M
+3RPpSj91HGitrE3G1SsyvQ587JV8Y5ALd04ysXmqlocHX01Ruey5NiB1+N2UaDSu
+7wvWfBR1EonpS3LtTikiugKurfshjQ==
+=c4n7
+-----END PGP SIGNATURE-----
+
+--Sig_/Haa0oEpn914_9eS/W_KnBeE--
