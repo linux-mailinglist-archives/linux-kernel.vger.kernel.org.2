@@ -2,119 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3E2140ED86
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 00:49:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1793640ED8D
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 00:53:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241270AbhIPWuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 18:50:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49890 "EHLO
+        id S241312AbhIPWyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 18:54:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234289AbhIPWuj (ORCPT
+        with ESMTP id S241276AbhIPWyY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 18:50:39 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD10C061574;
-        Thu, 16 Sep 2021 15:49:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1631832554;
-        bh=gbzTlzy+kh13tU2NXnrBxnjdwYOUXWpbnyOVVsrF1DY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=MA3GIDcz74VshBBt8i/iFoR9Mt09VPcKwviKdsMvNegBxvqZ7Sn0HP7boG7VxM76l
-         pMv4feTMFVGuZa9T/860i+dxiAVmSVwc9vJsagQd5ym5iyHpdR17Zf0+TH07jKFo2n
-         oRrF7VpANHz9YxWpCdboIjZltfj4Bu2yh/tuPeWlX9zPMjjgdpYbwR5Awg4A2ZTBNz
-         NkR7lbIgo54wVlqLWXl2RKdXmdEBH2nlkGTbuk3JKTz1dt1io6r2PrY7pyiSxv5VHx
-         oVpn8drm/9yMrEi6NuOhyXncMLLHs4hXur64lmMuIRp+9HOKRAFhpxjo1TJnx+arRR
-         m+rlArpX2+DkA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H9XMF5hX1z9sSn;
-        Fri, 17 Sep 2021 08:49:13 +1000 (AEST)
-Date:   Fri, 17 Sep 2021 08:49:12 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: Tree for Sep 16
-Message-ID: <20210917084912.070e133f@canb.auug.org.au>
-In-Reply-To: <8850F8DA-5C73-4A2C-92C7-FE17ADCD2ADB@gmail.com>
-References: <20210916161111.7f44d2a3@canb.auug.org.au>
-        <CAADnVQJ+BnWKf61rfDhKsOv05yFRXeRrMs4d443dcSOycaTRcg@mail.gmail.com>
-        <8850F8DA-5C73-4A2C-92C7-FE17ADCD2ADB@gmail.com>
+        Thu, 16 Sep 2021 18:54:24 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A965C061574;
+        Thu, 16 Sep 2021 15:53:02 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1631832780;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+uoRd7sICB9PTbOq5EWEwT9s8dxxMBDK5Hxzn1p0B2M=;
+        b=1EHh+jTMSzgz8I5umosdei/hjB4deVd+HjIXpER0jj3a9UJvUTmYCG3sktt+mmgogjx4i5
+        5D+TvgjsSbkOi2gRWJ9m/L2PsSXPUDA0fNBCaeyAQa5oIj2aZ0g7IpYrWYv2xoW3jpCr8W
+        aEJLiY9J4es14JJ3Fuu2PLS1+FTJ0bE2cZpBoUg9o8Wfp16oVUcyT6k2JW56IzITAd1Qss
+        dQHpUZYX/miD+m+QAFEvKHKOuPh3ii1buJhETb4Jo0E4cAcKIm9FXERVj2dXTWlNHeyUHk
+        iAw/eFYYzJOa1pzYeAEHGABTxJs2LapYK4cztyOfWpa2A2nA74K18B2uCKyc+Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1631832780;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+uoRd7sICB9PTbOq5EWEwT9s8dxxMBDK5Hxzn1p0B2M=;
+        b=vtwgGlcj3bLHRjLYNI/SunfOnn6jEEhRquuMedQEImsrPfPUPG9QhrJlsPjoht0r0FiHu4
+        T9zSULifH9VCAfCg==
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "# 3.4.x" <stable@vger.kernel.org>,
+        Lukas Hannen <lukas.hannen@opensource.tttech-industrial.com>
+Subject: Re: [PATCH 5.14 298/334] time: Handle negative seconds correctly in
+ timespec64_to_ns()
+In-Reply-To: <874kak9moe.ffs@tglx>
+References: <20210913131113.390368911@linuxfoundation.org>
+ <20210913131123.500712780@linuxfoundation.org>
+ <CAK8P3a0z5jE=Z3Ps5bFTCFT7CHZR1JQ8VhdntDJAfsUxSPCcEw@mail.gmail.com>
+ <874kak9moe.ffs@tglx>
+Date:   Fri, 17 Sep 2021 00:53:00 +0200
+Message-ID: <87y27w875f.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ZlQrGkVaNPO3aN2nKwocy7i";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/ZlQrGkVaNPO3aN2nKwocy7i
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi all,
-
-On Thu, 16 Sep 2021 18:43:37 -0300 Arnaldo Carvalho de Melo <arnaldo.melo@g=
-mail.com> wrote:
+On Fri, Sep 17 2021 at 00:32, Thomas Gleixner wrote:
+> I usually spend quite some time on tagging patches for stable and it's
+> annoying me that this patch got reverted while stuff which I explicitely
+> did not tag for stable got backported for whatever reason and completely
+> against the stable rules:
 >
-> On September 16, 2021 2:30:04 PM GMT-03:00, Alexei Starovoitov <alexei.st=
-arovoitov@gmail.com> wrote:
-> >On Wed, Sep 15, 2021 at 11:11 PM Stephen Rothwell <sfr@canb.auug.org.au>=
- wrote: =20
-> >>
-> >> Changes since 20210915:
-> >>
-> >> The bpf-next tree still had its build failure so I used the version fr=
-om
-> >> next-20210913. =20
-> >
-> >Arnaldo,
-> >
-> >could you please push Andrii's fix into your tree asap
-> >and then cleanup/follow up with a better fix if  necessary? =20
->=20
-> It's there since yesterday:
->=20
-> https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/commit/?h=
-=3Dperf/core&id=3D00e0ca3721cf2ddcb38cf676a3de61933640d31d
->=20
-> Replying just now since it's a holiday here and I was AFK.
+>   627ef5ae2df8 ("hrtimer: Avoid double reprogramming in __hrtimer_start_range_ns()")
+>
+> What the heck qualifies this to be backported?
+>
+>  1) It's hot of the press and just got merged in the 5.15-rc1 merge
+>     window and is not tagged for stable
+>
+>  2) https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+>
+>     clearly states the rules but obviously our new fangled "AI" driven
+>     approach to select patches for stable is blissfully ignorant of
+>     these rules. I assume that AI stands for "Artifical Ignorance' here.
+>
+> I already got a private bug report vs. that on 5.10.65. Annoyingly
+> 5.10.5 does not have the issue despite the fact that the resulting diff
 
-But that is not in any tree that is included in linux-next (and when it
-does appear, it will be in the tip tree which gets merged well after
-the bpf-next tree).  I will include that patch as a merge fix up for
-the bpf-next tree until that patch has gone into Linus' tree ... so,
-someone has to ensure that this patch get into Linus tree *before* the
-bpf-next tree.
+5.14.5 obviously...
 
-So, do you see the problem?  Linus' tree is fine on its own.  The
-bpf-next tree has a patch that breaks Linus' tree, but the breakage is
-not seen in the bpf-next tree because it is base on v5.14 and the
-interacting patch is in v5.15-rc1.
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/ZlQrGkVaNPO3aN2nKwocy7i
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFDyegACgkQAVBC80lX
-0GzJxAf/ckrFHwcLgCpyvXXfCG4/68Uu9AxJzgLyghp810tYflPba9jn7n6f1vux
-IYuumNLkDs+IhjLLwcFL6HpivArdFMTNd/db4bMy3CU1ASfQcPCnvXUSxkkPbD/Q
-FhddF3BEY89TwxFVqi/1xxSiiIcGrwppgYY6KazIfYWrPNb2EsldB3uQZbiJFrDZ
-X4baEQl6paG5Uk2+C/fgdxUAp58Z8IzFO9BInve5uGHEvysH/D0TcxIYO9sXwl1P
-izpWjaYQ0B3aCTDV4FbPJKfchu0iOWnWgWsh31frLlyo6dWILgGM3vq6DaaN/6rl
-U3JInzGgqU8OEX+Hsyq9YYU6XRa6ww==
-=/Jn8
------END PGP SIGNATURE-----
-
---Sig_/ZlQrGkVaNPO3aN2nKwocy7i--
+> between those two versions in hrtimer.c is just in comments.
+>
+> Bah!
+>
+> Thanks,
+>
+>         tglx
