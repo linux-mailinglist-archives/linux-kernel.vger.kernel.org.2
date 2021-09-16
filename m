@@ -2,86 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48FF540E93C
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:01:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E42640E216
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:15:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356871AbhIPRvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:51:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355729AbhIPRmE (ORCPT
+        id S243858AbhIPQeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:34:25 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:63814 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241909AbhIPQ00 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:42:04 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1857C08ECAC
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 09:23:58 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id w7so6596878pgk.13
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 09:23:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=os8rPPCaF89PPiVrnE71sKF7gfEFVZ9yV2+yV9yUHR4=;
-        b=Qb7LcVXCEjjeuIheMzTtc2GBg9gKLbCPL2bZUc8zBpPNURrWsv9Dgnvee8UtwAWpM2
-         KqT/003vxruXr7KvESOWEYGCW8cDiHRUrvna29ezRiXEL0TG94mmXTtGX1qDpQheicNK
-         EJpOb2fAMBJcuXde7O4ul41Iesw4VTEKh6ryNr188Zt3lxJIhepqVgbGqltAtB8l7cJC
-         x+Lwo12+goZKaiUbtn4AKpOiy98M1xmhxYd9QVM7NtVIHyWIpiL2gX+CfyqquAh+t7D9
-         fYg7i6oEdhc/SOq5/aTlsBUyZuH+LbjSZnyz/W7186frV3GulKYIBjerp9S0M0sKpBB7
-         NMrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=os8rPPCaF89PPiVrnE71sKF7gfEFVZ9yV2+yV9yUHR4=;
-        b=YYSpTIcCXHNCnCz7GEs7G6skkuV+i0KCrg4XFFOfXnulNVfIBLyN4B0NJtM3LDeH1X
-         UC/c+N54LwWXhP9r2uqPH/UACq2qqE+eEXzoOA06qVjDnPeDd9y/u586fC8+RJh6KzX/
-         0aFgvlfSbYQrhetkswnbQAKvqIG7mFiccdLomR1VOgIfmmNhhcuwIbpylD2k0fuhvBwk
-         TeLQEE1gH7EmVWBsVp/1yMf8LoQa7o/O0P2NsJcmBr/ltlNKCJDxeUzt1T2RHV6p8yHR
-         IlSRI//pJLPRG+Xebeq8V1p29ZROVJc0QfsXVJDri9h6OPVm9TH1PLZYy5Tn6lgbcHov
-         L0lw==
-X-Gm-Message-State: AOAM5313XveJOmU2IPtPAy5ct77kHV+wqoxQ4NcukzTHORKGRYlO2O1O
-        gnuBfpMlx1mZW8+JXhE+P3CqpA==
-X-Google-Smtp-Source: ABdhPJwl7DlrIO8koo0hDyar+Y2gWKmCVex6gaphG2oB4GTxCDsWv80YTpH1lwK43hPlXQ/YtKlphw==
-X-Received: by 2002:a63:b349:: with SMTP id x9mr5643759pgt.139.1631809438005;
-        Thu, 16 Sep 2021 09:23:58 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id 19sm3761871pfh.12.2021.09.16.09.23.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 09:23:57 -0700 (PDT)
-Date:   Thu, 16 Sep 2021 16:23:53 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     David Edmondson <dme@dme.org>
-Cc:     linux-kernel@vger.kernel.org, Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        David Matlack <dmatlack@google.com>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jim Mattson <jmattson@google.com>,
-        David Edmondson <david.edmondson@oracle.com>
-Subject: Re: [PATCH v5 2/4] KVM: x86: Get exit_reason as part of
- kvm_x86_ops.get_exit_info
-Message-ID: <YUNvmbtmgRkhLguj@google.com>
-References: <20210916083239.2168281-1-david.edmondson@oracle.com>
- <20210916083239.2168281-3-david.edmondson@oracle.com>
+        Thu, 16 Sep 2021 12:26:26 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18GFguOk013873
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 09:25:05 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=2cu7M1XN333AkrNxBZ+o94KMysrS0P569VxSX016dYs=;
+ b=MmSzQSdYuaRZErA8QQfKCZ53aYn18ZMDL8gL52P/NhIrjfjtNqMwVirmE67jRFNTL9mm
+ MucMu6kpamO+SU8TJUBSLs5UAoyPOol6159hKnVHnqvh7LCGeQmoJ/vY89C/CL8RoeHw
+ 51zu/nFJvjeWwCIngsKYyrHW0Kui7SYlLSA= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3b47j40x4p-10
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 09:25:05 -0700
+Received: from intmgw001.46.prn1.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Thu, 16 Sep 2021 09:25:03 -0700
+Received: by devvm3388.prn0.facebook.com (Postfix, from userid 111017)
+        id 24B69BE68AA8; Thu, 16 Sep 2021 09:25:02 -0700 (PDT)
+From:   Roman Gushchin <guro@fb.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>
+CC:     Mel Gorman <mgorman@techsingularity.net>, <bpf@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Roman Gushchin <guro@fb.com>
+Subject: [PATCH rfc 0/6] Scheduler BPF
+Date:   Thu, 16 Sep 2021 09:24:45 -0700
+Message-ID: <20210916162451.709260-1-guro@fb.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210915213550.3696532-1-guro@fb.com>
+References: <20210915213550.3696532-1-guro@fb.com>
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-ORIG-GUID: 1Z1EGmQtRz4-LXc4DJZjeVaGqGXimcSm
+X-Proofpoint-GUID: 1Z1EGmQtRz4-LXc4DJZjeVaGqGXimcSm
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210916083239.2168281-3-david.edmondson@oracle.com>
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-16_04,2021-09-16_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 adultscore=0
+ mlxlogscore=846 bulkscore=0 malwarescore=0 suspectscore=0 mlxscore=0
+ spamscore=0 priorityscore=1501 clxscore=1015 lowpriorityscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109160098
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021, David Edmondson wrote:
-> Extend the get_exit_info static call to provide the reason for the VM
-> exit. Modify relevant trace points to use this rather than extracting
-> the reason in the caller.
-> 
-> Signed-off-by: David Edmondson <david.edmondson@oracle.com>
-> ---
+There is a long history of distro people, system administrators, and
+application owners tuning the CFS settings in /proc/sys, which are now
+in debugfs. Looking at what these settings actually did, it ended up
+boiling down to changing the likelihood of task preemption, or
+disabling it by setting the wakeup_granularity_ns to more than half of
+the latency_ns. The other settings didn't really do much for
+performance.
 
-With the From: / Author thing fixed,
+In other words, some our workloads benefit by having long running tasks
+preempted by tasks handling short running requests, and some workloads
+that run only short term requests which benefit from never being preempted.
 
-Reviewed-by: Sean Christopherson <seanjc@google.com>
+This leads to a few observations and ideas:
+- Different workloads want different policies. Being able to configure
+  the policy per workload could be useful.
+- A workload that benefits from not being preempted itself could still
+  benefit from preempting (low priority) background system tasks.
+- It would be useful to quickly (and safely) experiment with different
+  policies in production, without having to shut down applications or reboot
+  systems, to determine what the policies for different workloads should be.
+- Only a few workloads are large and sensitive enough to merit their own
+  policy tweaks. CFS by itself should be good enough for everything else,
+  and we probably do not want policy tweaks to be a replacement for anything
+  CFS does.
+
+This leads to BPF hooks, which have been successfully used in various
+kernel subsystems to provide a way for external code to (safely)
+change a few kernel decisions. BPF tooling makes this pretty easy to do,
+and the people deploying BPF scripts are already quite used to updating them
+for new kernel versions.
+
+This patchset aims to start a discussion about potential applications of BPF
+to the scheduler. It also aims to land some very basic BPF infrastructure
+necessary to add new BPF hooks to the scheduler, a minimal set of useful
+helpers, corresponding libbpf changes, etc.
+
+Our very first experiments with using BPF in CFS look very promising. We're
+at a very early stage, however already have seen a nice latency and ~1% RPS
+wins for our (Facebook's) main web workload.
+
+As I know, Google is working on a more radical approach [2]: they aim to mo=
+ve
+the scheduling code into userspace. It seems that their core motivation is
+somewhat similar: to make the scheduler changes easier to develop, validate
+and deploy. Even though their approach is different, they also use BPF for
+speeding up some hot paths. I think the suggested infrastructure can serve
+their purpose too.
+
+An example of an userspace part, which loads some simple hooks is available
+here [3]. It's very simple, provided only to simplify playing with the prov=
+ided
+kernel patches.
+
+
+[1] c722f35b513f ("sched/fair: Bring back select_idle_smt(), but differentl=
+y")
+[2] Google's ghOSt: https://linuxplumbersconf.org/event/11/contributions/95=
+4/
+[3] https://github.com/rgushchin/atc
+
+
+Roman Gushchin (6):
+  bpf: sched: basic infrastructure for scheduler bpf
+  bpf: sched: add convenient helpers to identify sched entities
+  bpf: sched: introduce bpf_sched_enable()
+  sched: cfs: add bpf hooks to control wakeup and tick preemption
+  libbpf: add support for scheduler bpf programs
+  bpftool: recognize scheduler programs
+
+ include/linux/bpf_sched.h       |  53 ++++++++++++
+ include/linux/bpf_types.h       |   3 +
+ include/linux/sched_hook_defs.h |   4 +
+ include/uapi/linux/bpf.h        |  25 ++++++
+ kernel/bpf/btf.c                |   1 +
+ kernel/bpf/syscall.c            |  21 ++++-
+ kernel/bpf/trampoline.c         |   1 +
+ kernel/bpf/verifier.c           |   9 ++-
+ kernel/sched/Makefile           |   1 +
+ kernel/sched/bpf_sched.c        | 138 ++++++++++++++++++++++++++++++++
+ kernel/sched/fair.c             |  27 +++++++
+ scripts/bpf_doc.py              |   2 +
+ tools/bpf/bpftool/common.c      |   1 +
+ tools/bpf/bpftool/prog.c        |   1 +
+ tools/include/uapi/linux/bpf.h  |  25 ++++++
+ tools/lib/bpf/libbpf.c          |  27 ++++++-
+ tools/lib/bpf/libbpf.h          |   4 +
+ tools/lib/bpf/libbpf.map        |   3 +
+ 18 files changed, 341 insertions(+), 5 deletions(-)
+ create mode 100644 include/linux/bpf_sched.h
+ create mode 100644 include/linux/sched_hook_defs.h
+ create mode 100644 kernel/sched/bpf_sched.c
+
+--=20
+2.31.1
+
