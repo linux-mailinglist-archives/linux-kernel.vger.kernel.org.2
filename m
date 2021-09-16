@@ -2,152 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3628640DE71
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 17:47:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0562640DE80
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 17:48:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240034AbhIPPsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 11:48:37 -0400
-Received: from foss.arm.com ([217.140.110.172]:39422 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240016AbhIPPsg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 11:48:36 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 87BA911D4;
-        Thu, 16 Sep 2021 08:47:15 -0700 (PDT)
-Received: from ubuntu-18-04-aarch64-spe-2.warwick.arm.com (ubuntu-18-04-aarch64-spe-2.warwick.arm.com [10.32.33.30])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 972383F5A1;
-        Thu, 16 Sep 2021 08:47:13 -0700 (PDT)
-From:   German Gomez <german.gomez@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-Cc:     German Gomez <german.gomez@arm.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
-Subject: [PATCH 5/5] perf arm-spe: Snapshot mode test
-Date:   Thu, 16 Sep 2021 16:46:35 +0100
-Message-Id: <20210916154635.1525-5-german.gomez@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210916154635.1525-1-german.gomez@arm.com>
-References: <20210916154635.1525-1-german.gomez@arm.com>
+        id S240099AbhIPPtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 11:49:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240113AbhIPPtr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 11:49:47 -0400
+Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE283C0613C1
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 08:48:26 -0700 (PDT)
+Received: by mail-oo1-xc2b.google.com with SMTP id v20-20020a4a2554000000b0028f8cc17378so2223915ooe.0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 08:48:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rD3TrezbVLYHxHI60H3QOHHxKkUHFG/XFIP2soX5eXI=;
+        b=r9/FKsGRZxXmFM5lvEMuZE+ffceWdPYMAOrxxA24P8B0Au4MU/ZZz3vUUCjFdXCi3k
+         42AQKWu7i3+zTGocdosajg4EwaklRHUAtK52+q6qA6w+YYC/9CYkAXMU/WO33AtKbpn4
+         kqRqHSKRvdswhjlGOanL5WS/j+cDY5FBbVqYeS3PIoPYmLA9B/6+dnoJjYnOGPS0JNW6
+         w6tOFJuju01axPG6Xbk079jVi15R9ckiG4+WDBelTKCKm2j+esuqtMEJRdhzseZsuwOv
+         x+dLefRbddFbaUuTZVxdFccm7D6MCagaygz6jFHAMpUCYnqWjZ7FJXXaJ8jbnlhia0l9
+         M0aA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rD3TrezbVLYHxHI60H3QOHHxKkUHFG/XFIP2soX5eXI=;
+        b=Nb9E/Pe0H4EMNvQMdyK3rRftuEjXWuxfy/KrZei0BSKWo8VHiczCldR/1f5AbKMKsh
+         PZsuRuM/Nux6xBJuO2zyMBOMnSw3l5sVo3fY3L4eP4G9esHIaf4BVN+VhOlIfJ++W/XO
+         1m3OAILEf4jRyFOjwABYXasu1rizHtR5sw6iZLMeZGBqOYSfUxmczMNC1TEt0BS+HOrt
+         cX5ciTmlYQMAHnTBujX1K1SJgGQ9IwbrU22GCeY8NMsDuY9hm1k08oPNdSJRc8SMpiyP
+         BzSb76RafFAF6BAHheQubni12gLLN7erPDI2XzIrSFyL3QYk3AfD7zgyl+VmWCZgjgBy
+         5xfg==
+X-Gm-Message-State: AOAM531O4JoF3p6+i1mMizMpC11BYp6VwTDwLNbnAh/70BfHsEUlg210
+        2WynFDPvUDdVWBT1CmkT/lincMDusaDbU1x8cs3xqQ==
+X-Google-Smtp-Source: ABdhPJyglXbT5duFWaAC2wJjOoTihuxBgokAfIkKTcyjjBv8P1RhULB7cFk7Y1AL7PUYSwq3MNi8/7nuKyLiaMWaWLI=
+X-Received: by 2002:a4a:4344:: with SMTP id l4mr4919522ooj.38.1631807305859;
+ Thu, 16 Sep 2021 08:48:25 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210421105132.3965998-1-elver@google.com> <20210421105132.3965998-3-elver@google.com>
+ <6c0d5f40-5067-3a59-65fa-6977b6f70219@huawei.com> <abd74d5a-1236-4f0e-c123-a41e56e22391@huawei.com>
+ <858909f98f33478891056a840ad68b9f@AcuMS.aculab.com>
+In-Reply-To: <858909f98f33478891056a840ad68b9f@AcuMS.aculab.com>
+From:   Marco Elver <elver@google.com>
+Date:   Thu, 16 Sep 2021 17:48:14 +0200
+Message-ID: <CANpmjNPXNM-di-XwW52Hh5kEv9BPSh_Aw75yFQpu81e1kUfGtA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] kfence: maximize allocation wait timeout duration
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Kefeng Wang <wangkefeng.wang@huawei.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "glider@google.com" <glider@google.com>,
+        "dvyukov@google.com" <dvyukov@google.com>,
+        "jannh@google.com" <jannh@google.com>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "kasan-dev@googlegroups.com" <kasan-dev@googlegroups.com>,
+        "hdanton@sina.com" <hdanton@sina.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Shell script test_arm_spe.sh has been added to test the recording of SPE
-tracing events in snapshot mode.
+On Thu, 16 Sept 2021 at 17:45, David Laight <David.Laight@aculab.com> wrote:
+>
+> From: Kefeng Wang
+> > Sent: 16 September 2021 02:21
+> >
+> > We found kfence_test will fails  on ARM64 with this patch with/without
+> > CONFIG_DETECT_HUNG_TASK,
+> >
+> > Any thought ?
+> >
+> ...
+> > >>       /* Enable static key, and await allocation to happen. */
+> > >>       static_branch_enable(&kfence_allocation_key);
+> > >>   -    wait_event_timeout(allocation_wait, atomic_read(&kfence_allocation_gate), HZ);
+> > >> +    if (sysctl_hung_task_timeout_secs) {
+> > >> +        /*
+> > >> +         * During low activity with no allocations we might wait a
+> > >> +         * while; let's avoid the hung task warning.
+> > >> +         */
+> > >> +        wait_event_timeout(allocation_wait, atomic_read(&kfence_allocation_gate),
+> > >> +                   sysctl_hung_task_timeout_secs * HZ / 2);
+> > >> +    } else {
+> > >> +        wait_event(allocation_wait, atomic_read(&kfence_allocation_gate));
+> > >> +    }
+> > >>         /* Disable static key and reset timer. */
+> > >>       static_branch_disable(&kfence_allocation_key);
+>
+> It has replaced a wait_event_timeout() with a wait_event().
+>
+> That probably isn't intended.
+> Although I'd expect their to be some test for the wait being
+> signalled or timing out.
 
-Reviewed-by: James Clark <james.clark@arm.com>
-Signed-off-by: German Gomez <german.gomez@arm.com>
----
- tools/perf/tests/shell/test_arm_spe.sh | 91 ++++++++++++++++++++++++++
- 1 file changed, 91 insertions(+)
- create mode 100755 tools/perf/tests/shell/test_arm_spe.sh
+It is intended -- there's a wake_up() for this. See the whole patch
+series for explanation.
 
-diff --git a/tools/perf/tests/shell/test_arm_spe.sh b/tools/perf/tests/shell/test_arm_spe.sh
-new file mode 100755
-index 000000000000..9ed817e76f95
---- /dev/null
-+++ b/tools/perf/tests/shell/test_arm_spe.sh
-@@ -0,0 +1,91 @@
-+#!/bin/sh
-+# Check Arm SPE trace data recording and synthesized samples
-+
-+# Uses the 'perf record' to record trace data of Arm SPE events;
-+# then verify if any SPE event samples are generated by SPE with
-+# 'perf script' and 'perf report' commands.
-+
-+# SPDX-License-Identifier: GPL-2.0
-+# German Gomez <german.gomez@arm.com>, 2021
-+
-+skip_if_no_arm_spe_event() {
-+	perf list | egrep -q 'arm_spe_[0-9]+//' && return 0
-+
-+	# arm_spe event doesn't exist
-+	return 2
-+}
-+
-+skip_if_no_arm_spe_event || exit 2
-+
-+perfdata=$(mktemp /tmp/__perf_test.perf.data.XXXXX)
-+glb_err=0
-+
-+cleanup_files()
-+{
-+	rm -f ${perfdata}
-+	trap - exit term int
-+	kill -2 $$ # Forward sigint to parent
-+	exit $glb_err
-+}
-+
-+trap cleanup_files exit term int
-+
-+arm_spe_report() {
-+	if [ $2 != 0 ]; then
-+		echo "$1: FAIL"
-+		glb_err=$2
-+	else
-+		echo "$1: PASS"
-+	fi
-+}
-+
-+perf_script_samples() {
-+	echo "Looking at perf.data file for dumping samples:"
-+
-+	# from arm-spe.c/arm_spe_synth_events()
-+	events="(ld1-miss|ld1-access|llc-miss|lld-access|tlb-miss|tlb-access|branch-miss|remote-access|memory)"
-+
-+	# Below is an example of the samples dumping:
-+	#	dd  3048 [002]          1    l1d-access:      ffffaa64999c __GI___libc_write+0x3c (/lib/aarch64-linux-gnu/libc-2.27.so)
-+	#	dd  3048 [002]          1    tlb-access:      ffffaa64999c __GI___libc_write+0x3c (/lib/aarch64-linux-gnu/libc-2.27.so)
-+	#	dd  3048 [002]          1        memory:      ffffaa64999c __GI___libc_write+0x3c (/lib/aarch64-linux-gnu/libc-2.27.so)
-+	perf script -F,-time -i ${perfdata} 2>&1 | \
-+		egrep " +$1 +[0-9]+ .* +${events}:(.*:)? +" > /dev/null 2>&1
-+}
-+
-+perf_report_samples() {
-+	echo "Looking at perf.data file for reporting samples:"
-+
-+	# Below is an example of the samples reporting:
-+	#   73.04%    73.04%  dd    libc-2.27.so      [.] _dl_addr
-+	#    7.71%     7.71%  dd    libc-2.27.so      [.] getenv
-+	#    2.59%     2.59%  dd    ld-2.27.so        [.] strcmp
-+	perf report --stdio -i ${perfdata} 2>&1 | \
-+		egrep " +[0-9]+\.[0-9]+% +[0-9]+\.[0-9]+% +$1 " > /dev/null 2>&1
-+}
-+
-+arm_spe_snapshot_test() {
-+	echo "Recording trace with snapshot mode $perfdata"
-+	perf record -o ${perfdata} -e arm_spe// -S \
-+		-- dd if=/dev/zero of=/dev/null > /dev/null 2>&1 &
-+	PERFPID=$!
-+
-+	# Wait for perf program
-+	sleep 1
-+
-+	# Send signal to snapshot trace data
-+	kill -USR2 $PERFPID
-+
-+	# Stop perf program
-+	kill $PERFPID
-+	wait $PERFPID
-+
-+	perf_script_samples dd &&
-+	perf_report_samples dd
-+
-+	err=$?
-+	arm_spe_report "SPE snapshot testing" $err
-+}
-+
-+arm_spe_snapshot_test
-+exit $glb_err
-\ No newline at end of file
--- 
-2.17.1
-
+The whole reason we had the timeout was to avoid the hung task
+warnings, but we can do better if there is no hung task warning
+enabled.
