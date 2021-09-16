@@ -2,140 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFA0A40ECC1
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 23:41:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D18740ECC5
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 23:42:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234847AbhIPVm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 17:42:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34252 "EHLO
+        id S236121AbhIPVnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 17:43:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231255AbhIPVm1 (ORCPT
+        with ESMTP id S235627AbhIPVni (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 17:42:27 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2354FC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 14:41:06 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id on12-20020a17090b1d0c00b001997c60aa29so6864464pjb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 14:41:06 -0700 (PDT)
+        Thu, 16 Sep 2021 17:43:38 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D041C061764
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 14:42:17 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id b15so5616144lfe.7
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 14:42:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=H6MB2ODxA8ncTb3aji91NU1uUQ9q1AebxOl6ENeKyck=;
-        b=MXQC+ZfLxlKAl3MhEJW1BaTu7x3eZBr25vDIOP4P1K/hKKNsBxR9bYAbQrcXeqx0IT
-         UwrZDJawrFH60RbkF94BswFhIwo0cou0aN+gLacubbeU6IcTTMJrkdfHEYWn3Q3CVBfY
-         FWOlqrCFMP2DA28EATBAk/sg6Cxl8pCwP9qJHgGrwzQTOnAwwW0mxDrD/8RBAtDi8Sen
-         7O4AbiMouCC1KnoWzOLrohcS9Vtb2Dd0sBl4eKlMlTi8+NrzRnGujJOfnGMsmwaTYUXB
-         tHZDCMU2HvcsbXJF8DOiqaPVnBEOB3kiFk+1tNf5dSr4/Tt9/mMCbKmuD1xBAf0iTv/g
-         rERQ==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ngsmooqXNsHgBKfkElGn8tQBGgJkqsh0GOhjTmfiKjs=;
+        b=Kj9Y8gcTt4TgGUzYJFJ2xQFSkgUMMob94bgC1CKrrISQc/ZSgNlmv+sU681xqDsY9r
+         Vwr2bEDqT4PrrP6NGXbI6Q6hxkGHLgXD+s5jnc8DEjWnPw9wsqsHMrCxxcYEKh8GzUJL
+         +DPg40KBstQlzyJnALmo5nNGSDc73CSMDqayIMQKLpz79awy/N2BZe7+6NM2rVYXH7nK
+         IX1v5ScwZvAdt0W6wT8BvHgVja6ZNrNpHFuEUy9w8PPKzRYMAYJuXznsbmI2uZUVfZkv
+         iq79DmuCJVmruIvZjE4/I++5RjQckQuo6GeO+jAit+ESWIQe8n7O5SzLuipGCAi1UM9E
+         ObSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=H6MB2ODxA8ncTb3aji91NU1uUQ9q1AebxOl6ENeKyck=;
-        b=NFXykzSC0OH9qyoFN8Lk8jYZcgcx8wAhfv2bDHA3LvP2iIkHi54Zzn+r/E5qVpNNIE
-         ykP7r3eeLrAg942O3XWe3Kq6h3lk6pjUQdob767nOSX6I1o7fLLZhc2Jngul3STYGQRt
-         OevlcisKAJ1kT/Zymd+ZvNLIFlW4ooJ9jAz1BZ1UM/Ee/JwAvA9z6G6P5MKLU8EF+hRD
-         kcJ3rttNwH8nhxmRuH+Symps7ehCAcmHLa6NOC7cZMoyEouW/n0hOouE0QdwBpTjDyOg
-         7eztt3jy9xINjtIp4UW+H+5aT2Y0bmdlPyQIyCAQoR6GAIW13xw/R+3eeydTnxycQBpV
-         3eFw==
-X-Gm-Message-State: AOAM531AX3Vd70l9QbxU75dURLKHItnQhAPn4DRQN/3sHBGn3y68lm+b
-        1Wsw+FPynuJ4TWOsf27gdF4sRw==
-X-Google-Smtp-Source: ABdhPJyEB8CLbdwiUNdfZdvrZtOKbQbkduopskaqSrtZd3BkA7cXNgyeY28844ULJzTSWyVMUXnICw==
-X-Received: by 2002:a17:903:244e:b0:13c:802d:92c with SMTP id l14-20020a170903244e00b0013c802d092cmr6486996pls.78.1631828465371;
-        Thu, 16 Sep 2021 14:41:05 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id z11sm4163558pff.144.2021.09.16.14.41.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 14:41:04 -0700 (PDT)
-Date:   Thu, 16 Sep 2021 21:41:01 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
-        Artem Kashkanov <artem.kashkanov@intel.com>,
-        Like Xu <like.xu.linux@gmail.com>,
-        Zhu Lingshan <lingshan.zhu@intel.com>
-Subject: Re: [PATCH v2 01/13] perf: Ensure perf_guest_cbs aren't reloaded
- between !NULL check and deref
-Message-ID: <YUO57TlEGlUk2Q03@google.com>
-References: <20210828003558.713983-1-seanjc@google.com>
- <20210828003558.713983-2-seanjc@google.com>
- <20210828194421.GB4353@worktop.programming.kicks-ass.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ngsmooqXNsHgBKfkElGn8tQBGgJkqsh0GOhjTmfiKjs=;
+        b=GgfVklfBl+oQUjhPjhfWRmr+vgPtiYdLdXA3qxBQ/nzT441P0/zxGEwb9+S0n9kUuu
+         oeSTkPwnaZ7TiOlKtr50f5kK6Tr9QrsLnrumbS7fdXk1TKDygG2A3yfY1VUW738Y8bOD
+         Glmkbh9G8euTfiLCYHTX0eWw3DkAcreSVGqhzoGVL6DcwRJUWjpZrA7IgVWCXh99DVV7
+         2KKmT3T6D509qMx/N+OZrNpp22d2/4JltmF27C/oC3w6cPPW9C+KsNCyRmZEnld0E3S7
+         trrEGuUrCT2p3+20WsElNxXvcSNph3eY/6rASFVY6E6XQJ3PtlvmTzwb5DuNx2u6Ibvi
+         gYxQ==
+X-Gm-Message-State: AOAM532wrVM+/WeAMy7VgNSb2TrnxL8s2Qn/kturi9kpPyzhqKttj/hq
+        T7uNuXyq2t44txzQMTB6doaWnqYcAEODN7j0eUof8Q==
+X-Google-Smtp-Source: ABdhPJx10db8eaZ+I8ehLsyREKhLW1AoewhBK0s2SWPdi0X7r9/ZilW0iCTr41ebckupWObS1/ifTUFd4TeyT/L6S/g=
+X-Received: by 2002:a05:6512:3c92:: with SMTP id h18mr5542169lfv.656.1631828535849;
+ Thu, 16 Sep 2021 14:42:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210828194421.GB4353@worktop.programming.kicks-ass.net>
+References: <20210824164801.28896-1-lakshmi.sowjanya.d@intel.com> <20210824164801.28896-8-lakshmi.sowjanya.d@intel.com>
+In-Reply-To: <20210824164801.28896-8-lakshmi.sowjanya.d@intel.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 16 Sep 2021 23:42:04 +0200
+Message-ID: <CACRpkdYJkPgaz-BvQ1X0PHRCCbn0hrMDabouDwHkn+pr9d-dSQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v1 07/20] gpio: Add output event generation method to
+ GPIOLIB and PMC Driver
+To:     "D, Lakshmi Sowjanya" <lakshmi.sowjanya.d@intel.com>,
+        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        "open list:PWM SUBSYSTEM" <linux-pwm@vger.kernel.org>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Saha, Tamal" <tamal.saha@intel.com>, bala.senthil@intel.com,
+        Dipen Patel <dipenp@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 28, 2021, Peter Zijlstra wrote:
-> On Fri, Aug 27, 2021 at 05:35:46PM -0700, Sean Christopherson wrote:
-> > diff --git a/kernel/events/core.c b/kernel/events/core.c
-> > index 464917096e73..2126f6327321 100644
-> > --- a/kernel/events/core.c
-> > +++ b/kernel/events/core.c
-> > @@ -6491,14 +6491,19 @@ struct perf_guest_info_callbacks *perf_guest_cbs;
-> >  
-> >  int perf_register_guest_info_callbacks(struct perf_guest_info_callbacks *cbs)
-> >  {
-> > -	perf_guest_cbs = cbs;
-> > +	if (WARN_ON_ONCE(perf_guest_cbs))
-> > +		return -EBUSY;
-> > +
-> > +	WRITE_ONCE(perf_guest_cbs, cbs);
-> > +	synchronize_rcu();
-> 
-> You're waiting for all NULL users to go away? :-) IOW, we can do without
-> this synchronize_rcu() call.
+Hi Lakshmi,
 
-Doh, right.  I was thinking KVM needed to wait for in-progress NMI to exit to
-ensure guest PT interrupts are handled correctly, but obviously the NMI handler
-needs to exit for that CPU to get into a guest...
+On Tue, Aug 24, 2021 at 6:48 PM <lakshmi.sowjanya.d@intel.com> wrote:
 
-> >  	return 0;
-> >  }
-> >  EXPORT_SYMBOL_GPL(perf_register_guest_info_callbacks);
-> >  
-> >  int perf_unregister_guest_info_callbacks(struct perf_guest_info_callbacks *cbs)
-> >  {
-> > -	perf_guest_cbs = NULL;
-> 
-> 	if (WARN_ON_ONCE(perf_guest_cbs != cbs))
-> 		return -EBUSY;
-> 
-> ?
+> From: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
+>
+> Intel Timed I/O hardware supports output scheduled in hardware. Enable
+> this functionality using GPIOlib
+>
+> Adds GPIOlib generate_output() hook into the driver. The driver is
+> supplied with a timestamp in terms of realtime system clock (the same
+> used for input timestamping). The driver must know how to translate this
+> into a timebase meaningful for the hardware.
+>
+> Adds userspace write() interface. Output can be selected using the line
+> event create ioctl. The write() interface takes a single timestamp
+> event request parameter. An output edge rising or falling is generated
+> for each event request.
+>
+> The user application supplies a trigger time in terms of the realtime
+> clock the driver converts this into the corresponding ART clock value
+> that is used to 'arm' the output.
+>
+> Work around device quirk that doesn't allow the output to be explicitly
+> set. Instead, count the output edges and insert an additional edge as
+> needed to reset the output to zero.
+>
+> Co-developed-by: Christopher Hall <christopher.s.hall@intel.com>
+> Signed-off-by: Christopher Hall <christopher.s.hall@intel.com>
+> Signed-off-by: Tamal Saha <tamal.saha@intel.com>
+> Signed-off-by: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
+> Reviewed-by: Mark Gross <mgross@linux.intel.com>
 
-Works for me.  I guess I'm more optimistic about people not being morons :-)
+So this is some street organ machine that generates sequences
+with determined timing between positive and negative edges
+right?
+
+I can't see how this hardware is different from a PWM, or well
+I do to some extent, you can control the period of several
+subsequent waves, but that is really just an elaborate version
+of PWM in my book.
+
+It seems to me that this part of the functionality belongs in the
+PWM subsystem which already has interfaces for similar
+things, and you should probably extend PWM to handle
+random waveforms rather than trying to shoehorn this
+into the GPIO subsystem.
+
+Yours,
+Linus Walleij
