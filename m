@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EBF740E114
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:28:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 711B740E40E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:22:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241493AbhIPQ1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:27:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58934 "EHLO mail.kernel.org"
+        id S1346558AbhIPQzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:55:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36428 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241199AbhIPQTT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:19:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8526C61130;
-        Thu, 16 Sep 2021 16:13:18 +0000 (UTC)
+        id S1345562AbhIPQu0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:50:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 69E82615A7;
+        Thu, 16 Sep 2021 16:28:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808799;
-        bh=tJx5Me14Up6H331wYl0tEsLU0NwA6R6MkytkCBcxx38=;
+        s=korg; t=1631809694;
+        bh=FT1WNIhf/t1k+WrTQhN5g0QjMZtSCFbXIR7DRyrzoX0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ahZIRuEDdhFVTLyVM6lpMn/zDK+LiQ2haHpqpkU7+/lL5tpfMPK6ANVN+Q1kvcafM
-         /jfv/1sVlkiIquafkM6Gk6QdDTO1hAMNkwdsrvYWf+/AQjrpdVdzEyGDmuoq78yR4O
-         oe9m7UD/h/eej0j1giI3EBdwZWMQx7xEpcaJ6JpY=
+        b=bD6rtncigJK7wrJLpNq3/uGK8CaFi1EadgFl+0N2b23sJo/CzIO70Q8HyfdY/gpZE
+         VruBRR5ik/CRg4xqdWKTxcOwnf8qqnemK5YA0CeHE3QkvKlqtgq7J8WYeyp3Y1/LnQ
+         I5cUkCQja6pjz/A0RunzOzpxIpp5h0e2gLWxHqvg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Brandon Wyman <bjwyman@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>,
+        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Patrick Delaunay <patrick.delaunay@foss.st.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 227/306] hwmon: (pmbus/ibm-cffps) Fix write bits for LED control
-Date:   Thu, 16 Sep 2021 17:59:32 +0200
-Message-Id: <20210916155801.797580566@linuxfoundation.org>
+Subject: [PATCH 5.13 216/380] ARM: dts: stm32: Update AV96 adv7513 node per dtbs_check
+Date:   Thu, 16 Sep 2021 17:59:33 +0200
+Message-Id: <20210916155811.425846194@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +43,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Brandon Wyman <bjwyman@gmail.com>
+From: Marek Vasut <marex@denx.de>
 
-[ Upstream commit 76b72736f574ec38b3e94603ea5f74b1853f26b0 ]
+[ Upstream commit 1e6bc5987a5252948e3411e5a2dbb434fd1ea107 ]
 
-When doing a PMBus write for the LED control on the IBM Common Form
-Factor Power Supplies (ibm-cffps), the DAh command requires that bit 7
-be low and bit 6 be high in order to indicate that you are truly
-attempting to do a write.
+Swap reg and reg-names order and drop adi,input-justification
+and adi,input-style to fix the following dtbs_check warnings:
+arch/arm/boot/dts/stm32mp157a-dhcor-avenger96.dt.yaml: hdmi-transmitter@3d: adi,input-justification: False schema does not allow ['evenly']
+arch/arm/boot/dts/stm32mp157a-dhcor-avenger96.dt.yaml: hdmi-transmitter@3d: adi,input-style: False schema does not allow [[1]]
+arch/arm/boot/dts/stm32mp157a-dhcor-avenger96.dt.yaml: hdmi-transmitter@3d: reg-names:1: 'edid' was expected
+arch/arm/boot/dts/stm32mp157a-dhcor-avenger96.dt.yaml: hdmi-transmitter@3d: reg-names:2: 'cec' was expected
 
-Signed-off-by: Brandon Wyman <bjwyman@gmail.com>
-Link: https://lore.kernel.org/r/20210806225131.1808759-1-bjwyman@gmail.com
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Cc: Patrice Chotard <patrice.chotard@foss.st.com>
+Cc: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Cc: linux-stm32@st-md-mailman.stormreply.com
+To: linux-arm-kernel@lists.infradead.org
+Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwmon/pmbus/ibm-cffps.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/arm/boot/dts/stm32mp15xx-dhcor-avenger96.dtsi | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/hwmon/pmbus/ibm-cffps.c b/drivers/hwmon/pmbus/ibm-cffps.c
-index 2fb7540ee952..79bc2032dcb2 100644
---- a/drivers/hwmon/pmbus/ibm-cffps.c
-+++ b/drivers/hwmon/pmbus/ibm-cffps.c
-@@ -50,9 +50,9 @@
- #define CFFPS_MFR_VAUX_FAULT			BIT(6)
- #define CFFPS_MFR_CURRENT_SHARE_WARNING		BIT(7)
+diff --git a/arch/arm/boot/dts/stm32mp15xx-dhcor-avenger96.dtsi b/arch/arm/boot/dts/stm32mp15xx-dhcor-avenger96.dtsi
+index 64dca5b7f748..6885948f3024 100644
+--- a/arch/arm/boot/dts/stm32mp15xx-dhcor-avenger96.dtsi
++++ b/arch/arm/boot/dts/stm32mp15xx-dhcor-avenger96.dtsi
+@@ -220,8 +220,8 @@ &i2c2 {	/* X6 I2C2 */
+ &i2c4 {
+ 	hdmi-transmitter@3d {
+ 		compatible = "adi,adv7513";
+-		reg = <0x3d>, <0x2d>, <0x4d>, <0x5d>;
+-		reg-names = "main", "cec", "edid", "packet";
++		reg = <0x3d>, <0x4d>, <0x2d>, <0x5d>;
++		reg-names = "main", "edid", "cec", "packet";
+ 		clocks = <&cec_clock>;
+ 		clock-names = "cec";
  
--#define CFFPS_LED_BLINK				BIT(0)
--#define CFFPS_LED_ON				BIT(1)
--#define CFFPS_LED_OFF				BIT(2)
-+#define CFFPS_LED_BLINK				(BIT(0) | BIT(6))
-+#define CFFPS_LED_ON				(BIT(1) | BIT(6))
-+#define CFFPS_LED_OFF				(BIT(2) | BIT(6))
- #define CFFPS_BLINK_RATE_MS			250
+@@ -239,8 +239,6 @@ hdmi-transmitter@3d {
+ 		adi,input-depth = <8>;
+ 		adi,input-colorspace = "rgb";
+ 		adi,input-clock = "1x";
+-		adi,input-style = <1>;
+-		adi,input-justification = "evenly";
  
- enum {
+ 		ports {
+ 			#address-cells = <1>;
 -- 
 2.30.2
 
