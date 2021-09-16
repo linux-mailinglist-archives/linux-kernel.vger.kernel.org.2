@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D891340E3BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:21:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5DF640E74F
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:32:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241448AbhIPQvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:51:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57408 "EHLO mail.kernel.org"
+        id S1347263AbhIPRbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:31:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43510 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344669AbhIPQqb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:46:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 09C156112E;
-        Thu, 16 Sep 2021 16:26:35 +0000 (UTC)
+        id S1344269AbhIPRV6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:21:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C2E56613B1;
+        Thu, 16 Sep 2021 16:42:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809596;
-        bh=hXTmkclbLkPq43POKeL3I734PIXlNy0QX0S35lmmUX0=;
+        s=korg; t=1631810567;
+        bh=KUOWcRDTPFwGpcqxKYX2cUxkMEjRKTcIlgr0tuZt45w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u3DzDkplFog+Vimu6LUZbZ+CvbkhA1iPbhk6CyVOe6ODrVFl2HQ/AoYENFghpu/1S
-         xgv9ReRDMS3peD9P9wGXIVP1yQq1fIr5s2dQJSMNAaKxUQWRHUglwhTPT9SDQoSl6z
-         vPhnXVV8h4TAYiWh8JJbs5oyYJtw1WAOVppHqvao=
+        b=0XFs7YIDscrMPfTUJEMu98IU2fboL3EU+K16kP378kXHF/4T84mAkZ8xWnLL/3DyM
+         GJWA7+2V3b/SfhFHYpQO6YNxsVxyFMLCT7Ujd6tOOWmet6RWYIjLIPz9VcZv5tIpFr
+         6+WgMdN5bgAWlOvpULkonLUHHOBC6TeiziZzaDYo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Auger <eric.auger@redhat.com>,
+        stable@vger.kernel.org,
+        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 180/380] misc/pvpanic-pci: Allow automatic loading
+Subject: [PATCH 5.14 188/432] Smack: Fix wrong semantics in smk_access_entry()
 Date:   Thu, 16 Sep 2021 17:58:57 +0200
-Message-Id: <20210916155810.194741203@linuxfoundation.org>
+Message-Id: <20210916155817.118004198@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,40 +41,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Auger <eric.auger@redhat.com>
+From: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 
-[ Upstream commit 28b6a003bcdfa1fc4603b9185b247ecca7af9bef ]
+[ Upstream commit 6d14f5c7028eea70760df284057fe198ce7778dd ]
 
-The virtual machine monitor (QEMU) exposes the pvpanic-pci
-device to the guest. On guest side the module exists but
-currently isn't loaded automatically. So the driver fails
-to be probed and does not its job of handling guest panic
-events.
+In the smk_access_entry() function, if no matching rule is found
+in the rust_list, a negative error code will be used to perform bit
+operations with the MAY_ enumeration value. This is semantically
+wrong. This patch fixes this issue.
 
-Instead of requiring manual modprobe, let's include a device
-database using the MODULE_DEVICE_TABLE macro and let the
-module auto-load when the guest gets exposed with such a
-pvpanic-pci device.
-
-Signed-off-by: Eric Auger <eric.auger@redhat.com>
-Link: https://lore.kernel.org/r/20210629072214.901004-1-eric.auger@redhat.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/pvpanic/pvpanic-pci.c | 2 ++
- 1 file changed, 2 insertions(+)
+ security/smack/smack_access.c | 17 ++++++++---------
+ 1 file changed, 8 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/misc/pvpanic/pvpanic-pci.c b/drivers/misc/pvpanic/pvpanic-pci.c
-index 046ce4ecc195..4a3250564442 100644
---- a/drivers/misc/pvpanic/pvpanic-pci.c
-+++ b/drivers/misc/pvpanic/pvpanic-pci.c
-@@ -119,4 +119,6 @@ static struct pci_driver pvpanic_pci_driver = {
- 	},
- };
+diff --git a/security/smack/smack_access.c b/security/smack/smack_access.c
+index 1f391f6a3d47..d2186e2757be 100644
+--- a/security/smack/smack_access.c
++++ b/security/smack/smack_access.c
+@@ -81,23 +81,22 @@ int log_policy = SMACK_AUDIT_DENIED;
+ int smk_access_entry(char *subject_label, char *object_label,
+ 			struct list_head *rule_list)
+ {
+-	int may = -ENOENT;
+ 	struct smack_rule *srp;
  
-+MODULE_DEVICE_TABLE(pci, pvpanic_pci_id_tbl);
-+
- module_pci_driver(pvpanic_pci_driver);
+ 	list_for_each_entry_rcu(srp, rule_list, list) {
+ 		if (srp->smk_object->smk_known == object_label &&
+ 		    srp->smk_subject->smk_known == subject_label) {
+-			may = srp->smk_access;
+-			break;
++			int may = srp->smk_access;
++			/*
++			 * MAY_WRITE implies MAY_LOCK.
++			 */
++			if ((may & MAY_WRITE) == MAY_WRITE)
++				may |= MAY_LOCK;
++			return may;
+ 		}
+ 	}
+ 
+-	/*
+-	 * MAY_WRITE implies MAY_LOCK.
+-	 */
+-	if ((may & MAY_WRITE) == MAY_WRITE)
+-		may |= MAY_LOCK;
+-	return may;
++	return -ENOENT;
+ }
+ 
+ /**
 -- 
 2.30.2
 
