@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15F8F40DC37
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 16:02:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9F8B40DC3F
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 16:02:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238366AbhIPODT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 10:03:19 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:23621 "EHLO m43-7.mailgun.net"
+        id S238306AbhIPODe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 10:03:34 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:61584 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238283AbhIPOCu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 10:02:50 -0400
+        id S238329AbhIPOD1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 10:03:27 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1631800890; h=References: In-Reply-To: Message-Id: Date:
+ s=smtp; t=1631800927; h=References: In-Reply-To: Message-Id: Date:
  Subject: Cc: To: From: Sender;
- bh=f5iIbuLPKvgeGVI683cGQ/hcCb7BByhH9/82WThKia4=; b=kKQk7TGc4LOJ3eReLdSxb23sQYkwFjdBITAwziUyE8I1bXM0Y7rAcFrh0zxa2KI/uS90Q6I3
- muxVADVCaA4nohx48J8k6I6FnjSHzg8lw3i6qhsKt5OSML6hC34/j6Ap7bZbFx302c+eECCE
- pqgFM5Xw3pmMlGHSJDaTVuZynpQ=
+ bh=d+nW5BoyI7Dy4vUSUAQ4mQrWIW8wnJz3wMLhl5Rvb5Y=; b=vOXmQtS8HHfLHQGltIIaeA/Js1p+k79iJHpJoXtSlY0lf5hcd3Xae04xAS608ZR0F+gy8YcF
+ ltMPccAWpppzC8Z93Sr/a9GBuU+QlLh1KNDkczt/ZnCKqDEvD7rZ/U/0IDKyIFkQqDUFIJl5
+ nynjg7NpgWCjfuLudiWtbKdHLp8=
 X-Mailgun-Sending-Ip: 69.72.43.7
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 61434df9bd6681d8eda61d44 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 16 Sep 2021 14:00:25
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 61434e04648642cc1c1f4ce6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 16 Sep 2021 14:00:36
  GMT
 Sender: sibis=codeaurora.org@mg.codeaurora.org
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3AC82C43637; Thu, 16 Sep 2021 14:00:24 +0000 (UTC)
+        id B8331C4314E; Thu, 16 Sep 2021 14:00:35 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
@@ -37,9 +37,9 @@ Received: from blr-ubuntu-87.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outs
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A3178C4361B;
-        Thu, 16 Sep 2021 14:00:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org A3178C4361B
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A5D8BC43618;
+        Thu, 16 Sep 2021 14:00:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org A5D8BC43618
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
 From:   Sibi Sankar <sibis@codeaurora.org>
@@ -51,9 +51,9 @@ Cc:     ulf.hansson@linaro.org, rjw@rjwysocki.net, agross@kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         dianders@chromium.org, rishabhb@codeaurora.org,
         sidgup@codeaurora.org, Sibi Sankar <sibis@codeaurora.org>
-Subject: [PATCH v7 07/13] arm64: dts: qcom: sdm845: Use QMP property to control load state
-Date:   Thu, 16 Sep 2021 19:29:24 +0530
-Message-Id: <1631800770-371-8-git-send-email-sibis@codeaurora.org>
+Subject: [PATCH v7 09/13] arm64: dts: qcom: sm8250: Use QMP property to control load state
+Date:   Thu, 16 Sep 2021 19:29:26 +0530
+Message-Id: <1631800770-371-10-git-send-email-sibis@codeaurora.org>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1631800770-371-1-git-send-email-sibis@codeaurora.org>
 References: <1631800770-371-1-git-send-email-sibis@codeaurora.org>
@@ -62,72 +62,87 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Use the Qualcomm Mailbox Protocol (QMP) property to control the load
-state resources on SDM845 SoCs and drop deprecated power-domains exposed
+state resources on SM8250 SoCs and drop deprecated power-domains exposed
 by AOSS QMP node.
 
 Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
 Reviewed-by: Stephen Boyd <swboyd@chromium.org>
 ---
+ arch/arm64/boot/dts/qcom/sm8250.dtsi | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-v7:
- * Let's not miss adding qcom,qmp to ADSP/CDSP on SDM845 SoC.
-
- arch/arm64/boot/dts/qcom/sdm845.dtsi | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-index d18f7b419d2e..39c136e25fb5 100644
---- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-@@ -763,6 +763,8 @@
+diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+index 8c15d9fed08f..2796b27f7c04 100644
+--- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+@@ -13,7 +13,6 @@
+ #include <dt-bindings/interconnect/qcom,osm-l3.h>
+ #include <dt-bindings/interconnect/qcom,sm8250.h>
+ #include <dt-bindings/mailbox/qcom-ipcc.h>
+-#include <dt-bindings/power/qcom-aoss-qmp.h>
+ #include <dt-bindings/power/qcom-rpmpd.h>
+ #include <dt-bindings/soc/qcom,apr.h>
+ #include <dt-bindings/soc/qcom,rpmh-rsc.h>
+@@ -2088,13 +2087,14 @@
+ 			clocks = <&rpmhcc RPMH_CXO_CLK>;
+ 			clock-names = "xo";
  
- 		memory-region = <&adsp_mem>;
+-			power-domains = <&aoss_qmp AOSS_QMP_LS_SLPI>,
+-					<&rpmhpd SM8250_LCX>,
++			power-domains = <&rpmhpd SM8250_LCX>,
+ 					<&rpmhpd SM8250_LMX>;
+-			power-domain-names = "load_state", "lcx", "lmx";
++			power-domain-names = "lcx", "lmx";
  
-+		qcom,qmp = <&aoss_qmp>;
-+
- 		qcom,smem-states = <&adsp_smp2p_out 0>;
- 		qcom,smem-state-names = "stop";
- 
-@@ -862,6 +864,8 @@
- 
- 		memory-region = <&cdsp_mem>;
- 
-+		qcom,qmp = <&aoss_qmp>;
-+
- 		qcom,smem-states = <&cdsp_smp2p_out 0>;
- 		qcom,smem-state-names = "stop";
- 
-@@ -2979,6 +2983,8 @@
- 			clock-names = "iface", "bus", "mem", "gpll0_mss",
- 				      "snoc_axi", "mnoc_axi", "prng", "xo";
+ 			memory-region = <&slpi_mem>;
  
 +			qcom,qmp = <&aoss_qmp>;
 +
- 			qcom,smem-states = <&modem_smp2p_out 0>;
+ 			qcom,smem-states = <&smp2p_slpi_out 0>;
  			qcom,smem-state-names = "stop";
  
-@@ -2988,11 +2994,10 @@
+@@ -2154,12 +2154,12 @@
+ 			clocks = <&rpmhcc RPMH_CXO_CLK>;
+ 			clock-names = "xo";
  
- 			qcom,halt-regs = <&tcsr_mutex_regs 0x23000 0x25000 0x24000>;
+-			power-domains = <&aoss_qmp AOSS_QMP_LS_CDSP>,
+-					<&rpmhpd SM8250_CX>;
+-			power-domain-names = "load_state", "cx";
++			power-domains = <&rpmhpd SM8250_CX>;
  
--			power-domains = <&aoss_qmp 2>,
--					<&rpmhpd SDM845_CX>,
-+			power-domains = <&rpmhpd SDM845_CX>,
- 					<&rpmhpd SDM845_MX>,
- 					<&rpmhpd SDM845_MSS>;
--			power-domain-names = "load_state", "cx", "mx", "mss";
-+			power-domain-names = "cx", "mx", "mss";
+ 			memory-region = <&cdsp_mem>;
  
- 			mba {
- 				memory-region = <&mba_region>;
-@@ -4607,7 +4612,6 @@
- 			mboxes = <&apss_shared 0>;
++			qcom,qmp = <&aoss_qmp>;
++
+ 			qcom,smem-states = <&smp2p_cdsp_out 0>;
+ 			qcom,smem-state-names = "stop";
+ 
+@@ -2907,7 +2907,6 @@
+ 					IPCC_MPROC_SIGNAL_GLINK_QMP>;
  
  			#clock-cells = <0>;
 -			#power-domain-cells = <1>;
+ 		};
  
- 			cx_cdev: cx {
- 				#cooling-cells = <2>;
+ 		spmi_bus: spmi@c440000 {
+@@ -3824,13 +3823,14 @@
+ 			clocks = <&rpmhcc RPMH_CXO_CLK>;
+ 			clock-names = "xo";
+ 
+-			power-domains = <&aoss_qmp AOSS_QMP_LS_LPASS>,
+-					<&rpmhpd SM8250_LCX>,
++			power-domains = <&rpmhpd SM8250_LCX>,
+ 					<&rpmhpd SM8250_LMX>;
+-			power-domain-names = "load_state", "lcx", "lmx";
++			power-domain-names = "lcx", "lmx";
+ 
+ 			memory-region = <&adsp_mem>;
+ 
++			qcom,qmp = <&aoss_qmp>;
++
+ 			qcom,smem-states = <&smp2p_adsp_out 0>;
+ 			qcom,smem-state-names = "stop";
+ 
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 a Linux Foundation Collaborative Project
