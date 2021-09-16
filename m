@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EED440E163
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:29:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DDEB40E47E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:24:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243287AbhIPQaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:30:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59302 "EHLO mail.kernel.org"
+        id S1348770AbhIPRDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:03:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40260 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232046AbhIPQVh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:21:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A1A946140B;
-        Thu, 16 Sep 2021 16:15:01 +0000 (UTC)
+        id S1344186AbhIPQyK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:54:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C4F56135D;
+        Thu, 16 Sep 2021 16:29:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808902;
-        bh=Bxemffs1luq8b35EOX38WdqC11UYKbiJRwusEb19A48=;
+        s=korg; t=1631809788;
+        bh=Ex0gHPSByP8khE8zUY284+5N1Sxj04zJgqDxhSWF0f8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ISKcKcAkf793Y4VtyvykM4eJhHlyowRyhIc6Gvq5za/X+FNhKTXS3u8s/ffOinrrB
-         euH2HzmQNFhulFW18gvh+Sm7S1hLt/sFkrcSlfDHnZT6OC22uDJs9IVHC6lxb0q9hi
-         Zo/Z/4X5n3NHnGDHwFH0itnvIMZrz7mbaCXahFuo=
+        b=R/pWDYhU+p0RY3qKeDP/7/qzAzOgRLkWCEpoEtlCsQj0OROajUIv+VhzsQSItews8
+         drthoONSULLKsk1GTBKoCo2QgM07fhcPPCVtswSzwT1BSQm8LwtR6WoZYkIoPOuncC
+         3XwGyj/0Brtghptsfe+iQ+qntnk9JbT3AvHbU8UM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
+        stable@vger.kernel.org, Anthony Koo <Anthony.Koo@amd.com>,
+        Anson Jacob <Anson.Jacob@amd.com>, Roy Chan <roy.chan@amd.com>,
+        Daniel Wheeler <daniel.wheeler@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 264/306] iwlwifi: mvm: fix access to BSS elements
+Subject: [PATCH 5.13 252/380] drm/amd/display: fix incorrect CM/TF programming sequence in dwb
 Date:   Thu, 16 Sep 2021 18:00:09 +0200
-Message-Id: <20210916155803.074173155@linuxfoundation.org>
+Message-Id: <20210916155812.659211025@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,49 +42,188 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Roy Chan <roy.chan@amd.com>
 
-[ Upstream commit 6c608cd6962ebdf84fd3de6d42f88ed64d2f4e1b ]
+[ Upstream commit 781e1e23131cce56fb557e6ec2260480a6bd08cc ]
 
-BSS elements are protected using RCU, so we need to use
-RCU properly to access them, fix that.
+[How]
+the programming sequeune was for old asic.
+the correct programming sequeunce should be similar to the one
+used in mpc. the fix is copied from the mpc programming sequeunce.
 
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
-Link: https://lore.kernel.org/r/iwlwifi.20210805130823.fd8b5791ab44.Iba26800a6301078d3782fb249c476dd8ac2bf3c6@changeid
-Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Reviewed-by: Anthony Koo <Anthony.Koo@amd.com>
+Acked-by: Anson Jacob <Anson.Jacob@amd.com>
+Signed-off-by: Roy Chan <roy.chan@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ .../drm/amd/display/dc/dcn30/dcn30_dwb_cm.c   | 90 +++++++++++++------
+ 1 file changed, 64 insertions(+), 26 deletions(-)
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c b/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c
-index 9caff70cbd27..6f301ac8cce2 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c
-@@ -3029,16 +3029,20 @@ static void iwl_mvm_check_he_obss_narrow_bw_ru_iter(struct wiphy *wiphy,
- 						    void *_data)
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dwb_cm.c b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dwb_cm.c
+index 3fe9e41e4dbd..6a3d3a0ec0a3 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dwb_cm.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dwb_cm.c
+@@ -49,6 +49,11 @@
+ static void dwb3_get_reg_field_ogam(struct dcn30_dwbc *dwbc30,
+ 	struct dcn3_xfer_func_reg *reg)
  {
- 	struct iwl_mvm_he_obss_narrow_bw_ru_data *data = _data;
-+	const struct cfg80211_bss_ies *ies;
- 	const struct element *elem;
++	reg->shifts.field_region_start_base = dwbc30->dwbc_shift->DWB_OGAM_RAMA_EXP_REGION_START_BASE_B;
++	reg->masks.field_region_start_base = dwbc30->dwbc_mask->DWB_OGAM_RAMA_EXP_REGION_START_BASE_B;
++	reg->shifts.field_offset = dwbc30->dwbc_shift->DWB_OGAM_RAMA_OFFSET_B;
++	reg->masks.field_offset = dwbc30->dwbc_mask->DWB_OGAM_RAMA_OFFSET_B;
++
+ 	reg->shifts.exp_region0_lut_offset = dwbc30->dwbc_shift->DWB_OGAM_RAMA_EXP_REGION0_LUT_OFFSET;
+ 	reg->masks.exp_region0_lut_offset = dwbc30->dwbc_mask->DWB_OGAM_RAMA_EXP_REGION0_LUT_OFFSET;
+ 	reg->shifts.exp_region0_num_segments = dwbc30->dwbc_shift->DWB_OGAM_RAMA_EXP_REGION0_NUM_SEGMENTS;
+@@ -66,8 +71,6 @@ static void dwb3_get_reg_field_ogam(struct dcn30_dwbc *dwbc30,
+ 	reg->masks.field_region_end_base = dwbc30->dwbc_mask->DWB_OGAM_RAMA_EXP_REGION_END_BASE_B;
+ 	reg->shifts.field_region_linear_slope = dwbc30->dwbc_shift->DWB_OGAM_RAMA_EXP_REGION_START_SLOPE_B;
+ 	reg->masks.field_region_linear_slope = dwbc30->dwbc_mask->DWB_OGAM_RAMA_EXP_REGION_START_SLOPE_B;
+-	reg->masks.field_offset = dwbc30->dwbc_mask->DWB_OGAM_RAMA_OFFSET_B;
+-	reg->shifts.field_offset = dwbc30->dwbc_shift->DWB_OGAM_RAMA_OFFSET_B;
+ 	reg->shifts.exp_region_start = dwbc30->dwbc_shift->DWB_OGAM_RAMA_EXP_REGION_START_B;
+ 	reg->masks.exp_region_start = dwbc30->dwbc_mask->DWB_OGAM_RAMA_EXP_REGION_START_B;
+ 	reg->shifts.exp_resion_start_segment = dwbc30->dwbc_shift->DWB_OGAM_RAMA_EXP_REGION_START_SEGMENT_B;
+@@ -147,18 +150,19 @@ static enum dc_lut_mode dwb3_get_ogam_current(
+ 	uint32_t state_mode;
+ 	uint32_t ram_select;
  
--	elem = cfg80211_find_elem(WLAN_EID_EXT_CAPABILITY, bss->ies->data,
--				  bss->ies->len);
-+	rcu_read_lock();
-+	ies = rcu_dereference(bss->ies);
-+	elem = cfg80211_find_elem(WLAN_EID_EXT_CAPABILITY, ies->data,
-+				  ies->len);
+-	REG_GET(DWB_OGAM_CONTROL,
+-		DWB_OGAM_MODE, &state_mode);
+-	REG_GET(DWB_OGAM_CONTROL,
+-		DWB_OGAM_SELECT, &ram_select);
++	REG_GET_2(DWB_OGAM_CONTROL,
++		DWB_OGAM_MODE_CURRENT, &state_mode,
++		DWB_OGAM_SELECT_CURRENT, &ram_select);
  
- 	if (!elem || elem->datalen < 10 ||
- 	    !(elem->data[10] &
- 	      WLAN_EXT_CAPA10_OBSS_NARROW_BW_RU_TOLERANCE_SUPPORT)) {
- 		data->tolerated = false;
- 	}
-+	rcu_read_unlock();
+ 	if (state_mode == 0) {
+ 		mode = LUT_BYPASS;
+ 	} else if (state_mode == 2) {
+ 		if (ram_select == 0)
+ 			mode = LUT_RAM_A;
+-		else
++		else if (ram_select == 1)
+ 			mode = LUT_RAM_B;
++		else
++			mode = LUT_BYPASS;
+ 	} else {
+ 		// Reserved value
+ 		mode = LUT_BYPASS;
+@@ -172,10 +176,10 @@ static void dwb3_configure_ogam_lut(
+ 	struct dcn30_dwbc *dwbc30,
+ 	bool is_ram_a)
+ {
+-	REG_UPDATE(DWB_OGAM_LUT_CONTROL,
+-		DWB_OGAM_LUT_READ_COLOR_SEL, 7);
+-	REG_UPDATE(DWB_OGAM_CONTROL,
+-		DWB_OGAM_SELECT, is_ram_a == true ? 0 : 1);
++	REG_UPDATE_2(DWB_OGAM_LUT_CONTROL,
++		DWB_OGAM_LUT_WRITE_COLOR_MASK, 7,
++		DWB_OGAM_LUT_HOST_SEL, (is_ram_a == true) ? 0 : 1);
++
+ 	REG_SET(DWB_OGAM_LUT_INDEX, 0, DWB_OGAM_LUT_INDEX, 0);
  }
  
- static void iwl_mvm_check_he_obss_narrow_bw_ru(struct ieee80211_hw *hw,
+@@ -185,17 +189,45 @@ static void dwb3_program_ogam_pwl(struct dcn30_dwbc *dwbc30,
+ {
+ 	uint32_t i;
+ 
+-    // triple base implementation
+-	for (i = 0; i < num/2; i++) {
+-		REG_SET(DWB_OGAM_LUT_DATA, 0, DWB_OGAM_LUT_DATA, rgb[2*i+0].red_reg);
+-		REG_SET(DWB_OGAM_LUT_DATA, 0, DWB_OGAM_LUT_DATA, rgb[2*i+0].green_reg);
+-		REG_SET(DWB_OGAM_LUT_DATA, 0, DWB_OGAM_LUT_DATA, rgb[2*i+0].blue_reg);
+-		REG_SET(DWB_OGAM_LUT_DATA, 0, DWB_OGAM_LUT_DATA, rgb[2*i+1].red_reg);
+-		REG_SET(DWB_OGAM_LUT_DATA, 0, DWB_OGAM_LUT_DATA, rgb[2*i+1].green_reg);
+-		REG_SET(DWB_OGAM_LUT_DATA, 0, DWB_OGAM_LUT_DATA, rgb[2*i+1].blue_reg);
+-		REG_SET(DWB_OGAM_LUT_DATA, 0, DWB_OGAM_LUT_DATA, rgb[2*i+2].red_reg);
+-		REG_SET(DWB_OGAM_LUT_DATA, 0, DWB_OGAM_LUT_DATA, rgb[2*i+2].green_reg);
+-		REG_SET(DWB_OGAM_LUT_DATA, 0, DWB_OGAM_LUT_DATA, rgb[2*i+2].blue_reg);
++	uint32_t last_base_value_red = rgb[num-1].red_reg + rgb[num-1].delta_red_reg;
++	uint32_t last_base_value_green = rgb[num-1].green_reg + rgb[num-1].delta_green_reg;
++	uint32_t last_base_value_blue = rgb[num-1].blue_reg + rgb[num-1].delta_blue_reg;
++
++	if (is_rgb_equal(rgb,  num)) {
++		for (i = 0 ; i < num; i++)
++			REG_SET(DWB_OGAM_LUT_DATA, 0, DWB_OGAM_LUT_DATA, rgb[i].red_reg);
++
++		REG_SET(DWB_OGAM_LUT_DATA, 0, DWB_OGAM_LUT_DATA, last_base_value_red);
++
++	} else {
++
++		REG_UPDATE(DWB_OGAM_LUT_CONTROL,
++				DWB_OGAM_LUT_WRITE_COLOR_MASK, 4);
++
++		for (i = 0 ; i < num; i++)
++			REG_SET(DWB_OGAM_LUT_DATA, 0, DWB_OGAM_LUT_DATA, rgb[i].red_reg);
++
++		REG_SET(DWB_OGAM_LUT_DATA, 0, DWB_OGAM_LUT_DATA, last_base_value_red);
++
++		REG_SET(DWB_OGAM_LUT_INDEX, 0, DWB_OGAM_LUT_INDEX, 0);
++
++		REG_UPDATE(DWB_OGAM_LUT_CONTROL,
++				DWB_OGAM_LUT_WRITE_COLOR_MASK, 2);
++
++		for (i = 0 ; i < num; i++)
++			REG_SET(DWB_OGAM_LUT_DATA, 0, DWB_OGAM_LUT_DATA, rgb[i].green_reg);
++
++		REG_SET(DWB_OGAM_LUT_DATA, 0, DWB_OGAM_LUT_DATA, last_base_value_green);
++
++		REG_SET(DWB_OGAM_LUT_INDEX, 0, DWB_OGAM_LUT_INDEX, 0);
++
++		REG_UPDATE(DWB_OGAM_LUT_CONTROL,
++				DWB_OGAM_LUT_WRITE_COLOR_MASK, 1);
++
++		for (i = 0 ; i < num; i++)
++			REG_SET(DWB_OGAM_LUT_DATA, 0, DWB_OGAM_LUT_DATA, rgb[i].blue_reg);
++
++		REG_SET(DWB_OGAM_LUT_DATA, 0, DWB_OGAM_LUT_DATA, last_base_value_blue);
+ 	}
+ }
+ 
+@@ -211,6 +243,8 @@ static bool dwb3_program_ogam_lut(
+ 		return false;
+ 	}
+ 
++	REG_SET(DWB_OGAM_CONTROL, 0, DWB_OGAM_MODE, 2);
++
+ 	current_mode = dwb3_get_ogam_current(dwbc30);
+ 	if (current_mode == LUT_BYPASS || current_mode == LUT_RAM_A)
+ 		next_mode = LUT_RAM_B;
+@@ -227,8 +261,7 @@ static bool dwb3_program_ogam_lut(
+ 	dwb3_program_ogam_pwl(
+ 		dwbc30, params->rgb_resulted, params->hw_points_num);
+ 
+-	REG_SET(DWB_OGAM_CONTROL, 0, DWB_OGAM_MODE, 2);
+-	REG_SET(DWB_OGAM_CONTROL, 0, DWB_OGAM_SELECT, next_mode == LUT_RAM_A ? 0 : 1);
++	REG_UPDATE(DWB_OGAM_CONTROL, DWB_OGAM_SELECT, next_mode == LUT_RAM_A ? 0 : 1);
+ 
+ 	return true;
+ }
+@@ -271,14 +304,19 @@ static void dwb3_program_gamut_remap(
+ 
+ 	struct color_matrices_reg gam_regs;
+ 
+-	REG_UPDATE(DWB_GAMUT_REMAP_COEF_FORMAT, DWB_GAMUT_REMAP_COEF_FORMAT, coef_format);
+-
+ 	if (regval == NULL || select == CM_GAMUT_REMAP_MODE_BYPASS) {
+ 		REG_SET(DWB_GAMUT_REMAP_MODE, 0,
+ 				DWB_GAMUT_REMAP_MODE, 0);
+ 		return;
+ 	}
+ 
++	REG_UPDATE(DWB_GAMUT_REMAP_COEF_FORMAT, DWB_GAMUT_REMAP_COEF_FORMAT, coef_format);
++
++	gam_regs.shifts.csc_c11 = dwbc30->dwbc_shift->DWB_GAMUT_REMAPA_C11;
++	gam_regs.masks.csc_c11  = dwbc30->dwbc_mask->DWB_GAMUT_REMAPA_C11;
++	gam_regs.shifts.csc_c12 = dwbc30->dwbc_shift->DWB_GAMUT_REMAPA_C12;
++	gam_regs.masks.csc_c12 = dwbc30->dwbc_mask->DWB_GAMUT_REMAPA_C12;
++
+ 	switch (select) {
+ 	case CM_GAMUT_REMAP_MODE_RAMA_COEFF:
+ 		gam_regs.csc_c11_c12 = REG(DWB_GAMUT_REMAPA_C11_C12);
 -- 
 2.30.2
 
