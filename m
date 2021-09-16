@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68AF340E2ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:17:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86E5940E62E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:29:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243430AbhIPQnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:43:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51058 "EHLO mail.kernel.org"
+        id S1351628AbhIPRSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:18:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37020 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244444AbhIPQhD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:37:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 73172613A9;
-        Thu, 16 Sep 2021 16:22:02 +0000 (UTC)
+        id S1348880AbhIPRLM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:11:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 303D261B53;
+        Thu, 16 Sep 2021 16:37:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809322;
-        bh=nBbiiUM8+A0aAI3/1cxfNapOK0o82GZqEzmHJ3JVPm4=;
+        s=korg; t=1631810268;
+        bh=6hVh6wmb5Ye8NKeqqH9LwvMWyEngSqWy6O8CNRzQmFw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h5BCCOMild6h6oD31mUAaDwkwQF+kdfR2wNXebToSNbZuvN5pPGuNjOUDy55GAGMs
-         hdM0QoPXWc4wm33GtUAcFJSxNJKBOusZFVgvwGrQOjIpm53ht325R8WkEgYoo38VMu
-         LpZFtv6Dhd7F1D7Vy+XERzLO25vcteOO/mv+sN4o=
+        b=XC8FW0w1Ma/E14qkpWDqIau4CiZVAQ7cGC8QY3HLXaYfIcnR/U1ETmhV1ZRHBZLzr
+         71qVaX26mMwJuiiSAgfNNGIne3q2Z8e7lP8/5xoGAFUD2Blxs6VO4UjLdoKRpP2lJH
+         IcihmshADdLPNo6Q4IVLLPx3RdgWUUdVMYlMugYA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Chao Yu <chao@kernel.org>,
         Jaegeuk Kim <jaegeuk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 070/380] f2fs: quota: fix potential deadlock
+Subject: [PATCH 5.14 078/432] f2fs: quota: fix potential deadlock
 Date:   Thu, 16 Sep 2021 17:57:07 +0200
-Message-Id: <20210916155806.384071210@linuxfoundation.org>
+Message-Id: <20210916155813.424236152@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -150,10 +150,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 48 insertions(+), 36 deletions(-)
 
 diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 716b4b8bb9a9..8b2b34500b2a 100644
+index 2f4e4bfb31d3..7cdccb79b378 100644
 --- a/fs/f2fs/super.c
 +++ b/fs/f2fs/super.c
-@@ -2399,6 +2399,33 @@ static int f2fs_enable_quotas(struct super_block *sb)
+@@ -2527,6 +2527,33 @@ static int f2fs_enable_quotas(struct super_block *sb)
  	return 0;
  }
  
@@ -187,7 +187,7 @@ index 716b4b8bb9a9..8b2b34500b2a 100644
  int f2fs_quota_sync(struct super_block *sb, int type)
  {
  	struct f2fs_sb_info *sbi = F2FS_SB(sb);
-@@ -2406,57 +2433,42 @@ int f2fs_quota_sync(struct super_block *sb, int type)
+@@ -2534,57 +2561,42 @@ int f2fs_quota_sync(struct super_block *sb, int type)
  	int cnt;
  	int ret;
  
