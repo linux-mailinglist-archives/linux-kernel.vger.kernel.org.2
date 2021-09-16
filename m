@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D828940E005
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:15:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4AB540E285
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:16:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239608AbhIPQQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:16:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48684 "EHLO mail.kernel.org"
+        id S244642AbhIPQjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:39:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44968 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233448AbhIPQJX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:09:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C3B0D61130;
-        Thu, 16 Sep 2021 16:07:56 +0000 (UTC)
+        id S242031AbhIPQbq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:31:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D699B617E1;
+        Thu, 16 Sep 2021 16:19:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808477;
-        bh=lImvXFqv8F4CpYEnM2+99TdewWuYd0/Ydfc+dsWapjY=;
+        s=korg; t=1631809184;
+        bh=2WoSXoG2EqbWWaKQO8rHAhKmc2XqnwYnzZvb8UsbPcw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zSPAMeslndbyL+wzy/G4H1HoTN5SQXLZ+Kq3/n9mQXvvc81N6l9mfS5L+KK4eQLot
-         VQWiN6GlcxSjcceih/+gthaQpqEQUSuymvtVkfesxknSfFoYa8HNOCF0wKjRLgclJY
-         JEO7R1j0tacZ6U0JeihGm8IU9P9WC0M0CiNJYmXU=
+        b=Olk5iC8gPjT4Nxe52OuGVgNXc3066K0bJVp3mTDI+6YiQ9LawdNmXFhreHhBAMjS6
+         zkFeJ7Bvu4j2jrnqgqDpHLSRX09FrP4Ovx+EtiWoVVaL+YGRccJkAVpOEKeTNRZREc
+         lyZ6QvoZaJXDB09hCZqbrIXsFidpiIHvhLKMnvHs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>,
-        openrisc@lists.librecores.org, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 073/306] openrisc: dont printk() unconditionally
+        stable@vger.kernel.org,
+        =?UTF-8?q?R=C3=B6tti?= 
+        <espressobinboardarmbiantempmailaddress@posteo.de>,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+Subject: [PATCH 5.13 061/380] PCI: Restrict ASMedia ASM1062 SATA Max Payload Size Supported
 Date:   Thu, 16 Sep 2021 17:56:58 +0200
-Message-Id: <20210916155756.548794542@linuxfoundation.org>
+Message-Id: <20210916155806.071153467@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,52 +44,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Marek Behún <kabel@kernel.org>
 
-[ Upstream commit 946e1052cdcc7e585ee5d1e72528ca49fb295243 ]
+commit b12d93e9958e028856cbcb061b6e64728ca07755 upstream.
 
-Don't call printk() when CONFIG_PRINTK is not set.
-Fixes the following build errors:
+The ASMedia ASM1062 SATA controller advertises Max_Payload_Size_Supported
+of 512, but in fact it cannot handle incoming TLPs with payload size of
+512.
 
-or1k-linux-ld: arch/openrisc/kernel/entry.o: in function `_external_irq_handler':
-(.text+0x804): undefined reference to `printk'
-(.text+0x804): relocation truncated to fit: R_OR1K_INSN_REL_26 against undefined symbol `printk'
+We discovered this issue on PCIe controllers capable of MPS = 512 (Aardvark
+and DesignWare), where the issue presents itself as an External Abort.
+Bjorn Helgaas says:
 
-Fixes: 9d02a4283e9c ("OpenRISC: Boot code")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Jonas Bonn <jonas@southpole.se>
-Cc: Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
-Cc: Stafford Horne <shorne@gmail.com>
-Cc: openrisc@lists.librecores.org
-Signed-off-by: Stafford Horne <shorne@gmail.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+  Probably ASM1062 reports a Malformed TLP error when it receives a data
+  payload of 512 bytes, and Aardvark, DesignWare, etc convert this to an
+  arm64 External Abort. [1]
+
+To avoid this problem, limit the ASM1062 Max Payload Size Supported to 256
+bytes, so we set the Max Payload Size of devices that may send TLPs to the
+ASM1062 to 256 or less.
+
+[1] https://lore.kernel.org/linux-pci/20210601170907.GA1949035@bjorn-Precision-5520/
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=212695
+Link: https://lore.kernel.org/r/20210624171418.27194-2-kabel@kernel.org
+Reported-by: Rötti <espressobinboardarmbiantempmailaddress@posteo.de>
+Signed-off-by: Marek Behún <kabel@kernel.org>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
+Reviewed-by: Pali Rohár <pali@kernel.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/openrisc/kernel/entry.S | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/pci/quirks.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/openrisc/kernel/entry.S b/arch/openrisc/kernel/entry.S
-index bc657e55c15f..98e4f97db515 100644
---- a/arch/openrisc/kernel/entry.S
-+++ b/arch/openrisc/kernel/entry.S
-@@ -547,6 +547,7 @@ EXCEPTION_ENTRY(_external_irq_handler)
- 	l.bnf	1f			// ext irq enabled, all ok.
- 	l.nop
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -3241,6 +3241,7 @@ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_SO
+ 			PCI_DEVICE_ID_SOLARFLARE_SFC4000A_1, fixup_mpss_256);
+ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_SOLARFLARE,
+ 			PCI_DEVICE_ID_SOLARFLARE_SFC4000B, fixup_mpss_256);
++DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_ASMEDIA, 0x0612, fixup_mpss_256);
  
-+#ifdef CONFIG_PRINTK
- 	l.addi  r1,r1,-0x8
- 	l.movhi r3,hi(42f)
- 	l.ori	r3,r3,lo(42f)
-@@ -560,6 +561,7 @@ EXCEPTION_ENTRY(_external_irq_handler)
- 		.string "\n\rESR interrupt bug: in _external_irq_handler (ESR %x)\n\r"
- 		.align 4
- 	.previous
-+#endif
- 
- 	l.ori	r4,r4,SPR_SR_IEE	// fix the bug
- //	l.sw	PT_SR(r1),r4
--- 
-2.30.2
-
+ /*
+  * Intel 5000 and 5100 Memory controllers have an erratum with read completion
 
 
