@@ -2,68 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99A9E40E39D
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:21:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6ED840E3A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:21:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345799AbhIPQuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:50:51 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:58250
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244370AbhIPQqQ (ORCPT
+        id S229925AbhIPQvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:51:21 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:53278
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244157AbhIPQql (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:46:16 -0400
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com [209.85.128.72])
+        Thu, 16 Sep 2021 12:46:41 -0400
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com [209.85.128.71])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 143DB40267
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 16:44:55 +0000 (UTC)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 4DDE43F4B9
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 16:45:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1631810695;
-        bh=Yhq1G2QXar0r4cFBybO4NSb08NdrU83GE13JnS/45A0=;
-        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-         MIME-Version;
-        b=QHdhHDshyXPoc4UWXDDNwjIG89n0WPstOlHIeDmhe/SyIAcWFK1fn/wXwUB9kSUzo
-         scu1nxq24HwlXWRaOmV20vGgO81k/hIY7wtzRazX+1ZGjFTLWaHJPv2kKdQRrBh3O3
-         TMRyJSAXezgbwthpxG5rmlBpGp+u1TvHo+JId5dEXIRFny4+1+vVbtpZohoX6nYifb
-         /EyMWsKb9ABnaaiVXs32J/k6ehjAQrXluIZVS3AjxWarXFnsATtM2ikZmjWX7VwHrI
-         F1c/CxIfElQ8ZiSfefJ8/NRS/AoJ0cw9ZoXfFdGvFYtCTuzr9FS6zAkVx26/i73zrv
-         TaVvvF2UlUJMQ==
-Received: by mail-wm1-f72.google.com with SMTP id q4-20020a1c4304000000b00306cd53b671so1028824wma.1
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 09:44:55 -0700 (PDT)
+        s=20210705; t=1631810719;
+        bh=Bsa8JOGGCKGqD18D4sehfiJwGit16PjwUVoBvcbwuaE=;
+        h=From:To:Subject:Date:Message-Id:MIME-Version;
+        b=FOFao9op70RKIETayHtyeTujsjwJlRD796Ak1KKguLOI6LnEXXtlK4Rfy6V333ys/
+         FK72QFGK7H/Iv8FjQbNCUiRiOPb+SWCLgHc/jSUtWmTM7TnhAupdGvaNLbOu28ZiG8
+         oImL7ezfjZCoEbv4eQlcHQ7X6p3VMiGj2PgrA6I8xvNWm/Hw0f+8EwuPQo9HJFQLMY
+         1BBDBj6hMulWHY3xiZLeGsWhAHBHU4iu5Mm0xDbsI8a6q9p3hUEMv1+m0XA62v6FsC
+         +9eTQR6dE23RrfNBbOx4eHZeiT5NmSL1D5b6idYA0sL/5EJ11fO9mMdnF81H+0/K3P
+         LYbQ+KYksu0Zg==
+Received: by mail-wm1-f71.google.com with SMTP id 5-20020a1c00050000b02902e67111d9f0so3378676wma.4
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 09:45:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Yhq1G2QXar0r4cFBybO4NSb08NdrU83GE13JnS/45A0=;
-        b=NY/nyasV3WYI070a6W57MOaN9VqSBtffsYauiy2dx6kestwuVe1ZOa4LOveIXum09T
-         M7KtmFGPWDTO9It+ynRNESaBF/xmKSjlGhGuq88NiNWSB3wpucm7JVa6nI1o5oRIs1mL
-         vN9Mg2kYACdHEk6Y06g61J/0yKJs3HOb4CJbS91bI0lGQUm/27oCltmDgmGk6+IInUNu
-         2/dO2kW+JH9g1rVc4n1+E3f6D0vJLg/sRR/PNHQO4SlUMf8vz96w+7n1uh1CJz4HYLqg
-         SA94gjXdQTZ3kQ1O44MNFFLB633eS83xD0vHhVwB9sOWuj6lmGsrhYgYF1OIGeNdnCbI
-         1GBQ==
-X-Gm-Message-State: AOAM5337wiN/SLeqR45NiUcvlNZfExARN0VPQZxA6dvfqT39oHOGVuIh
-        PV5j8B9VfXpAl5RAcaVvwQYRW9Ae5cYSC3V4U2S/oMOKT9NqYzA5lhegmuzirv7fzw7nXXqcMfD
-        81WdtDagMhazLibnHvrMPtIQXM0S9eLAcaRnA5oGaXg==
-X-Received: by 2002:a5d:6283:: with SMTP id k3mr7308613wru.324.1631810694784;
-        Thu, 16 Sep 2021 09:44:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyq1vH8eOT/ND9983ROgnkLW8+rrOrnWScKkcM9yJPGmqu5fYfpiRgvk8b/7xrBhLqmDA3GYA==
-X-Received: by 2002:a5d:6283:: with SMTP id k3mr7308582wru.324.1631810694438;
-        Thu, 16 Sep 2021 09:44:54 -0700 (PDT)
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Bsa8JOGGCKGqD18D4sehfiJwGit16PjwUVoBvcbwuaE=;
+        b=4e2wK/DQ1sobQgTq9/e/lLKKiBZ5pIqn0dIoK6lAue4a1YxDP8qrbRj5ovgFVo/Ool
+         66KJGul7gPQUb0jg31uFAI4mh+i4NQvns5wR4dSvUiqIpvdtApwcqytzFo2hEBNBCcuA
+         pqtJLX/8phIx+4e8t1tEr7CT3Km+fC5uiuht6d6h74whU74vF+rJPDg9Tr0+GP1rcZVZ
+         ZjhVt2H6bYXJdwSmVVL7Su6W18esg0JzykoUvl/dOe5iAsret5xfY84V8WyOqTTkKn3X
+         9wQuehA7hDK9infi2cpOBcnQGBU5rnY2OwGJDZn0wmrH0hU7ExuvEMGsyGur1x1us8QO
+         0s3A==
+X-Gm-Message-State: AOAM532c8iruULUH3dTelVwqQZ8pjbIB+rgyMnMMCU7//0oaSBruCcVN
+        j6h/lCrfT2Oe7+WYGadev79x7gsSxuK42mVqmy6PEcrq1NcBM069VvgVKCgJuyK69l0vE0V+lTW
+        KiQOZFcOZye8xwW45J6NQFpHqVVHFTYa5ptBNzn31NA==
+X-Received: by 2002:a7b:cd90:: with SMTP id y16mr10706132wmj.84.1631810718440;
+        Thu, 16 Sep 2021 09:45:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz2JuDX3DqgsifbIvvV1lhfVqk1firlNmZ4F0o08GsrlrdHsnMaJzFPqkY3TSk0PC9I7m7bQg==
+X-Received: by 2002:a7b:cd90:: with SMTP id y16mr10706126wmj.84.1631810718312;
+        Thu, 16 Sep 2021 09:45:18 -0700 (PDT)
 Received: from kozik-lap.lan (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
-        by smtp.gmail.com with ESMTPSA id 129sm3747538wmz.26.2021.09.16.09.44.52
+        by smtp.gmail.com with ESMTPSA id j27sm3388187wms.6.2021.09.16.09.45.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 09:44:53 -0700 (PDT)
+        Thu, 16 Sep 2021 09:45:17 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: [PATCH 2/2] spi: sh-msiof: drop unneeded MODULE_ALIAS
-Date:   Thu, 16 Sep 2021 18:44:23 +0200
-Message-Id: <20210916164423.134603-2-krzysztof.kozlowski@canonical.com>
+To:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org
+Subject: [PATCH 1/2] rtc: omap: drop unneeded MODULE_ALIAS
+Date:   Thu, 16 Sep 2021 18:45:12 +0200
+Message-Id: <20210916164513.134725-1-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210916164423.134603-1-krzysztof.kozlowski@canonical.com>
-References: <20210916164423.134603-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -75,18 +75,20 @@ driver.  Having another MODULE_ALIAS causes the alias to be duplicated.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- drivers/spi/spi-sh-msiof.c | 1 -
+ drivers/rtc/rtc-omap.c | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/drivers/spi/spi-sh-msiof.c b/drivers/spi/spi-sh-msiof.c
-index f88d9acd20d9..d0012b30410c 100644
---- a/drivers/spi/spi-sh-msiof.c
-+++ b/drivers/spi/spi-sh-msiof.c
-@@ -1426,4 +1426,3 @@ module_platform_driver(sh_msiof_spi_drv);
- MODULE_DESCRIPTION("SuperH MSIOF SPI Controller Interface Driver");
- MODULE_AUTHOR("Magnus Damm");
- MODULE_LICENSE("GPL v2");
--MODULE_ALIAS("platform:spi_sh_msiof");
+diff --git a/drivers/rtc/rtc-omap.c b/drivers/rtc/rtc-omap.c
+index d46e0f0cc502..4d4f3b1a7309 100644
+--- a/drivers/rtc/rtc-omap.c
++++ b/drivers/rtc/rtc-omap.c
+@@ -1029,6 +1029,5 @@ static struct platform_driver omap_rtc_driver = {
+ 
+ module_platform_driver(omap_rtc_driver);
+ 
+-MODULE_ALIAS("platform:omap_rtc");
+ MODULE_AUTHOR("George G. Davis (and others)");
+ MODULE_LICENSE("GPL");
 -- 
 2.30.2
 
