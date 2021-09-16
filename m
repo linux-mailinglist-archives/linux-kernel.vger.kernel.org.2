@@ -2,67 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71F8640D0C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 02:19:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48C1740D0C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 02:22:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233393AbhIPAVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 20:21:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232836AbhIPAVH (ORCPT
+        id S233317AbhIPAXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 20:23:42 -0400
+Received: from mail-lf1-f45.google.com ([209.85.167.45]:45938 "EHLO
+        mail-lf1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232465AbhIPAXl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 20:21:07 -0400
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07CBCC061574;
-        Wed, 15 Sep 2021 17:19:47 -0700 (PDT)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mQf7v-004Y0I-Rg; Thu, 16 Sep 2021 00:19:43 +0000
-Date:   Thu, 16 Sep 2021 00:19:43 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     linux-m68k@lists.linux-m68k.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] m68k: leave stack mangling to asm wrapper of
- sigreturn()
-Message-ID: <YUKNn3erTbH+ytpM@zeniv-ca.linux.org.uk>
-References: <YP2c1xk9LJ0zE3KW@zeniv-ca.linux.org.uk>
- <YP2dTQPm1wGPWFgD@zeniv-ca.linux.org.uk>
- <08183665-f846-0c5e-a8c7-d0a65e78a3da@gmail.com>
+        Wed, 15 Sep 2021 20:23:41 -0400
+Received: by mail-lf1-f45.google.com with SMTP id g1so11288900lfj.12
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 17:22:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qBgGHg/l8QaB9IPlY4W0UCEBHvw9BjW5zk1zFZIoOr4=;
+        b=rvWQwKfKnqlGySjZj578WhSBlEOkP+dKt3xEkFHvuq4VoB704AFvLLwW7dnhiSpxoZ
+         Wo44IB40jM9r0rHg86fP8sipTuopevMzKosxZepYALegQ5EFFsAw6oDHTz7hv1si4DMJ
+         3OuwJhgq9guXvi2YZqY1ugJzfzsuXrBg8L9ix6ygHKLb6KSVEh7ILw6j9x+9HfinELHh
+         jfCzqL1HBg+ywRbvyyc9OoaXTCq5d6yNAgbdYSXU2EgwB1HpNqB3OgWshKmxK/YNXVO4
+         7IIJXStQmMu0TKUqDVRtj/JzX5KvdTQXflV90+YKgTsnUmf9gIXdKkEAufI4gNLqT69e
+         hvUA==
+X-Gm-Message-State: AOAM530O5JYsKoBfZTqP+n8utp57vrU4+iO1n+zSN+41tUk6UCptDsss
+        674qSFlKmYoOug+ToDk8Uy2z0+Up9kPKFS1/xPw=
+X-Google-Smtp-Source: ABdhPJzMBOFkV2JZ6Xjt9mK2DcYx1lQAPiF54f35TygfBqwSOiMuiFoQRkDyiCodyOR6GqiuH94b9Rf3u8rOhWybpn0=
+X-Received: by 2002:a05:6512:1296:: with SMTP id u22mr1984370lfs.454.1631751740841;
+ Wed, 15 Sep 2021 17:22:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <08183665-f846-0c5e-a8c7-d0a65e78a3da@gmail.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+References: <20210811044658.1313391-1-namhyung@kernel.org> <YRTmshairdxxiFo2@krava>
+In-Reply-To: <YRTmshairdxxiFo2@krava>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Wed, 15 Sep 2021 17:22:09 -0700
+Message-ID: <CAM9d7ci-jbWCjud-tzk5A899iSfe1JmWmMCqi3XWNfCpeZ3F1Q@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] perf tools: Allow to control synthesize during record
+To:     Jiri Olsa <jolsa@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Stephane Eranian <eranian@google.com>,
+        Jin Yao <yao.jin@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 11:35:05AM +1200, Michael Schmitz wrote:
+Hi Arnaldo,
 
-> This one's a little harder - you use a 84 byte gap on each sigreturn, no
-> matter what the frame size we need to restore. The original
-> mangle_kernel_stack() only makes room on the stack when it has no other
-> option (using twice as much size - correct me if I'm wrong).
-> 
-> Ideally, we'd only leave a gap for mangle_kernel_stack() to use if the frame
-> size requires us to do so. Working that out in asm glue would be
-> sufficiently convoluted as to cancel out the benefits of cleaning up the C
-> sigreturn part. Probably not worth it.
+On Thu, Aug 12, 2021 at 2:15 AM Jiri Olsa <jolsa@redhat.com> wrote:
+>
+> On Tue, Aug 10, 2021 at 09:46:57PM -0700, Namhyung Kim wrote:
+> > Depending on the use case, it might require some kind of synthesize
+> > and some not.  Make it controllable to turn off heavy operations like
+> > MMAP for all tasks.
+> >
+> > Currently all users are converted to enable all the synthesis by
+> > default.  It'll be updated in the later patch.
+> >
+> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+>
+> for both patches
+>
+> Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-You'd need to
-	* load the frame type from sigcontext (and deal with EFAULT, etc.)
-	* make decision based on that
-	* pass the type down into sigreturn(), so we wouldn't run into
-mismatches.
+Could you please take these patches?
 
-And all that just to avoid a single "subtract a constant from stack pointer"
-insn.  We are on a very shallow kernel stack here - it's a syscall entry,
-after all.  And the stack footprint of do_sigreturn() is fairly small - e.g.
-stat(2) eats a lot more.
-
-We are not initializing the gap either - it's just reserved on stack; we only
-access it if we need to enlarge the stack frame.
-
-IOW, what would be the benefit of trying to avoid unconditional gap there?
+Thanks,
+Namhyung
