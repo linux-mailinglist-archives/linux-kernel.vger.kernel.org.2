@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C88D40E030
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:20:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 346D640E6B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:31:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230337AbhIPQUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:20:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46774 "EHLO mail.kernel.org"
+        id S1352426AbhIPRY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:24:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39808 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233745AbhIPQL3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:11:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A34D61353;
-        Thu, 16 Sep 2021 16:08:53 +0000 (UTC)
+        id S243467AbhIPRP6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:15:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E5AE61B97;
+        Thu, 16 Sep 2021 16:39:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808533;
-        bh=6mcHWBWcWXuC5Tmts2xdto8ZuoMFECF0/tuKk/l87Uw=;
+        s=korg; t=1631810390;
+        bh=fpu0kwbRNeA7FwCJ1kfquK8yT26beo2T44htSi7SdpI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xMdfXIdKj64pvWZvy4wNmzdTqW2xxgszSnVrWUe3V6V9qnGPFWC6Gad+PcLd5y0vb
-         FPsmx2ICeMwXQCUnMkevCCg1Fvp1r+k8W45sVsrrHSIo2mE7gK+Co826O6VKcrCWk2
-         RiOe8UHtJB3nZdISfsrgpStfIGwqengp+/vZFg7g=
+        b=o/sC2YJXJCuc+5h1iqfFpXP60MsLqQindvhFu+WKihdBc7dyCUvp+lkg0FjGTPkVi
+         fm+Bf3t7KR6s3J/hpNdQDHcdjvZoiP9wos/sQ+FEGKsdg3VBvB2QHz8YJFNhdngXD7
+         1aKDEeOiOLngX3xGBQRMBB9TH7CA9B4AbgMo+YGU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
+        stable@vger.kernel.org, Chao Yu <chao@kernel.org>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 126/306] Smack: Fix wrong semantics in smk_access_entry()
+Subject: [PATCH 5.14 122/432] f2fs: fix to keep compatibility of fault injection interface
 Date:   Thu, 16 Sep 2021 17:57:51 +0200
-Message-Id: <20210916155758.365223084@linuxfoundation.org>
+Message-Id: <20210916155814.895796699@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,58 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+From: Chao Yu <chao@kernel.org>
 
-[ Upstream commit 6d14f5c7028eea70760df284057fe198ce7778dd ]
+[ Upstream commit b96d9b3b09f0427b289332c6f6bfbf747a19b654 ]
 
-In the smk_access_entry() function, if no matching rule is found
-in the rust_list, a negative error code will be used to perform bit
-operations with the MAY_ enumeration value. This is semantically
-wrong. This patch fixes this issue.
+The value of FAULT_* macros and its description in f2fs.rst became
+inconsistent, fix this to keep compatibility of fault injection
+interface.
 
-Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+Fixes: 67883ade7a98 ("f2fs: remove FAULT_ALLOC_BIO")
+Signed-off-by: Chao Yu <chao@kernel.org>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- security/smack/smack_access.c | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+ Documentation/filesystems/f2fs.rst | 1 +
+ fs/f2fs/f2fs.h                     | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/security/smack/smack_access.c b/security/smack/smack_access.c
-index 7eabb448acab..169929c6c4eb 100644
---- a/security/smack/smack_access.c
-+++ b/security/smack/smack_access.c
-@@ -81,23 +81,22 @@ int log_policy = SMACK_AUDIT_DENIED;
- int smk_access_entry(char *subject_label, char *object_label,
- 			struct list_head *rule_list)
- {
--	int may = -ENOENT;
- 	struct smack_rule *srp;
- 
- 	list_for_each_entry_rcu(srp, rule_list, list) {
- 		if (srp->smk_object->smk_known == object_label &&
- 		    srp->smk_subject->smk_known == subject_label) {
--			may = srp->smk_access;
--			break;
-+			int may = srp->smk_access;
-+			/*
-+			 * MAY_WRITE implies MAY_LOCK.
-+			 */
-+			if ((may & MAY_WRITE) == MAY_WRITE)
-+				may |= MAY_LOCK;
-+			return may;
- 		}
- 	}
- 
--	/*
--	 * MAY_WRITE implies MAY_LOCK.
--	 */
--	if ((may & MAY_WRITE) == MAY_WRITE)
--		may |= MAY_LOCK;
--	return may;
-+	return -ENOENT;
- }
- 
- /**
+diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
+index ff9e7cc97c65..b5285599d972 100644
+--- a/Documentation/filesystems/f2fs.rst
++++ b/Documentation/filesystems/f2fs.rst
+@@ -185,6 +185,7 @@ fault_type=%d		 Support configuring fault injection type, should be
+ 			 FAULT_KVMALLOC		  0x000000002
+ 			 FAULT_PAGE_ALLOC	  0x000000004
+ 			 FAULT_PAGE_GET		  0x000000008
++			 FAULT_ALLOC_BIO	  0x000000010 (obsolete)
+ 			 FAULT_ALLOC_NID	  0x000000020
+ 			 FAULT_ORPHAN		  0x000000040
+ 			 FAULT_BLOCK		  0x000000080
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index bfcd5ef36907..db95829904e5 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -43,6 +43,7 @@ enum {
+ 	FAULT_KVMALLOC,
+ 	FAULT_PAGE_ALLOC,
+ 	FAULT_PAGE_GET,
++	FAULT_ALLOC_BIO,	/* it's obsolete due to bio_alloc() will never fail */
+ 	FAULT_ALLOC_NID,
+ 	FAULT_ORPHAN,
+ 	FAULT_BLOCK,
 -- 
 2.30.2
 
