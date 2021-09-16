@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A56B840E260
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:16:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E41740E574
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:27:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243200AbhIPQhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:37:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38430 "EHLO mail.kernel.org"
+        id S1350360AbhIPRLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:11:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34050 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242892AbhIPQ3q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:29:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0ABDA6128B;
-        Thu, 16 Sep 2021 16:18:46 +0000 (UTC)
+        id S1349316AbhIPRD6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:03:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 55B3F61B3B;
+        Thu, 16 Sep 2021 16:34:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809127;
+        s=korg; t=1631810095;
         bh=eZw1Wqw6VyQoWHMs3uyAQ7K7cS2UfO0u/boTmqTzgHg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F3ddJ+BE5A6oMz5K8KeGnQiTKa9W8U2USajPfIUa4gB79R9vuxoSOL7iPjSBMeLv0
-         qNLOXjIrW12Qqle2y/isKjSomINJ4YZkjXbUJ02MWYmPAIyW90XjFvDSmIqGgt4JUT
-         mwcXxhDaBOoC7yR/mA3mb+/WCmLj7TuFqn9O4Bp8=
+        b=12+6t9E195GhOKESzn2UjjrAhtG9lfmNPpiVVk3p/DRBu96Efnf1a7X/KLnJgB16e
+         sIDpLMlBQVFxFB70yr3ba8yfyN/iKdiHqXIblGIBTrefeMy+0ReV6YOqpOqPvz/klr
+         a+G8AEoSqAV6pIPhfzxe8gCzRDTbJEMyXlEyNSNc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, David Sterba <dsterba@suse.com>,
         Anand Jain <anand.jain@oracle.com>,
         Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Subject: [PATCH 5.13 008/380] btrfs: reset replace target device to allocation state on close
+Subject: [PATCH 5.14 016/432] btrfs: reset replace target device to allocation state on close
 Date:   Thu, 16 Sep 2021 17:56:05 +0200
-Message-Id: <20210916155804.259689523@linuxfoundation.org>
+Message-Id: <20210916155811.366998849@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
