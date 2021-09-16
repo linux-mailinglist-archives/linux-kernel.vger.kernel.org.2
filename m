@@ -2,40 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA30640E76A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:33:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F11C640E0AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:27:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343692AbhIPRcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:32:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44344 "EHLO mail.kernel.org"
+        id S240938AbhIPQXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:23:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55110 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347104AbhIPRWu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:22:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 08CEF61A2F;
-        Thu, 16 Sep 2021 16:43:13 +0000 (UTC)
+        id S240915AbhIPQOi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:14:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C67261268;
+        Thu, 16 Sep 2021 16:10:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810594;
-        bh=NU5ZOx0naDK85oG0/HUbMQFEYp7Zrotfi5JaGSGDnmc=;
+        s=korg; t=1631808650;
+        bh=ci/6sM5g9q+0mICJ5w1Xmts/Td0E5Z17TOwST3Pq3bo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PviFyakPMUB9lc9DShIgpQLRbk9e9GBiUqZR6dtiLrpIjHtWh+xClSTp8G/QKP31m
-         w82Zmz0x01FV8oe/22ESmTcSOT8ycMtj20i7jYzijK1FryybSAV47+iulTp7/Is+JT
-         fqttcTSGD2N6xVeyG7KgO3wsSDNXEcJL12DaCZwc=
+        b=W/fIMZ3Wd7z8uQwsskJzq9FIj3iDpHHk1nXtUUevvBl3iVKclSjb87h6NLZvsuNad
+         RGAddZgZw/VwuEkflXnyQxUBdVeEBbOE7+zR4oucQwOgdkm6nunCTO7S4UZHBiDDZv
+         +3VflxwseomEB+QNYw8DXgdxqTJCh4VpGlpMgihM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Noralf=20Tr=C3=B8nnes?= <noralf@tronnes.org>,
-        devicetree@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 166/432] drm/panel: Fix up DT bindings for Samsung lms397kf04
+        stable@vger.kernel.org, Zhen Lei <thunder.leizhen@huawei.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Tejun Heo <tj@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 170/306] workqueue: Fix possible memory leaks in wq_numa_init()
 Date:   Thu, 16 Sep 2021 17:58:35 +0200
-Message-Id: <20210916155816.371280765@linuxfoundation.org>
+Message-Id: <20210916155759.884954121@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,84 +40,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Walleij <linus.walleij@linaro.org>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit 710fa9aa16321f2ffdd8383f6f780c9cc1e5a197 ]
+[ Upstream commit f728c4a9e8405caae69d4bc1232c54ff57b5d20f ]
 
-Improve the bindings and make them more usable:
+In error handling branch "if (WARN_ON(node == NUMA_NO_NODE))", the
+previously allocated memories are not released. Doing this before
+allocating memory eliminates memory leaks.
 
-- Pick in spi-cpha and spi-cpol from the SPI node parent,
-  this will specify that we are "type 3" in the device tree
-  rather than hardcoding it in the operating system.
-- Drop the u32 ref from the SPI frequency: comes in from
-  the SPI host bindings.
-- Make spi-cpha, spi-cpol and port compulsory.
-- Update the example with a real-world SPI controller,
-  spi-gpio.
+tj: Note that the condition only occurs when the arch code is pretty broken
+and the WARN_ON might as well be BUG_ON().
 
-Cc: Noralf Trønnes <noralf@tronnes.org>
-Cc: devicetree@vger.kernel.org
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210701213618.3818821-1-linus.walleij@linaro.org
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Reviewed-by: Lai Jiangshan <jiangshanlai@gmail.com>
+Signed-off-by: Tejun Heo <tj@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../display/panel/samsung,lms397kf04.yaml      | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
+ kernel/workqueue.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/display/panel/samsung,lms397kf04.yaml b/Documentation/devicetree/bindings/display/panel/samsung,lms397kf04.yaml
-index 4cb75a5f2e3a..cd62968426fb 100644
---- a/Documentation/devicetree/bindings/display/panel/samsung,lms397kf04.yaml
-+++ b/Documentation/devicetree/bindings/display/panel/samsung,lms397kf04.yaml
-@@ -33,8 +33,11 @@ properties:
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index 51d19fc71e61..4cb622b2661b 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -5893,6 +5893,13 @@ static void __init wq_numa_init(void)
+ 		return;
+ 	}
  
-   backlight: true
- 
-+  spi-cpha: true
++	for_each_possible_cpu(cpu) {
++		if (WARN_ON(cpu_to_node(cpu) == NUMA_NO_NODE)) {
++			pr_warn("workqueue: NUMA node mapping not available for cpu%d, disabling NUMA support\n", cpu);
++			return;
++		}
++	}
 +
-+  spi-cpol: true
-+
-   spi-max-frequency:
--    $ref: /schemas/types.yaml#/definitions/uint32
-     description: inherited as a SPI client node, the datasheet specifies
-       maximum 300 ns minimum cycle which gives around 3 MHz max frequency
-     maximum: 3000000
-@@ -44,6 +47,9 @@ properties:
- required:
-   - compatible
-   - reg
-+  - spi-cpha
-+  - spi-cpol
-+  - port
+ 	wq_update_unbound_numa_attrs_buf = alloc_workqueue_attrs();
+ 	BUG_ON(!wq_update_unbound_numa_attrs_buf);
  
- additionalProperties: false
+@@ -5910,11 +5917,6 @@ static void __init wq_numa_init(void)
  
-@@ -52,15 +58,23 @@ examples:
-     #include <dt-bindings/gpio/gpio.h>
+ 	for_each_possible_cpu(cpu) {
+ 		node = cpu_to_node(cpu);
+-		if (WARN_ON(node == NUMA_NO_NODE)) {
+-			pr_warn("workqueue: NUMA node mapping not available for cpu%d, disabling NUMA support\n", cpu);
+-			/* happens iff arch is bonkers, let's just proceed */
+-			return;
+-		}
+ 		cpumask_set_cpu(cpu, tbl[node]);
+ 	}
  
-     spi {
-+      compatible = "spi-gpio";
-+      sck-gpios = <&gpio 0 GPIO_ACTIVE_HIGH>;
-+      miso-gpios = <&gpio 1 GPIO_ACTIVE_HIGH>;
-+      mosi-gpios = <&gpio 2 GPIO_ACTIVE_HIGH>;
-+      cs-gpios = <&gpio 3 GPIO_ACTIVE_HIGH>;
-+      num-chipselects = <1>;
-       #address-cells = <1>;
-       #size-cells = <0>;
-       panel@0 {
-         compatible = "samsung,lms397kf04";
-         spi-max-frequency = <3000000>;
-+        spi-cpha;
-+        spi-cpol;
-         reg = <0>;
-         vci-supply = <&lcd_3v0_reg>;
-         vccio-supply = <&lcd_1v8_reg>;
--        reset-gpios = <&gpio 1 GPIO_ACTIVE_LOW>;
-+        reset-gpios = <&gpio 4 GPIO_ACTIVE_LOW>;
-         backlight = <&ktd259>;
- 
-         port {
 -- 
 2.30.2
 
