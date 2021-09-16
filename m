@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45F9940E5BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:28:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C42A40DF80
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:09:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351116AbhIPROz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:14:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36120 "EHLO mail.kernel.org"
+        id S235423AbhIPQKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:10:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46666 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349946AbhIPRH7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 13:07:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7048C60E54;
-        Thu, 16 Sep 2021 16:36:42 +0000 (UTC)
+        id S234127AbhIPQHN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:07:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FCA861263;
+        Thu, 16 Sep 2021 16:05:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631810203;
-        bh=zbUiBWOE5ZgEzv+4F+zt20ryl/sw96hGxB3ORZm8ZJk=;
+        s=korg; t=1631808352;
+        bh=J9aWaZfBGx2uTbh0ZAICfl9+7pt3ZQkHDKnpzBfHsIk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zsjj3grEc6eiab5hx43aIpRzpKaVau89OCCARvMDgQEL08eTqdiLfleLymZAHcprn
-         K5CfhOEy2qF1uHpR8uTz4Du5viinkEX53pvkZcEogcXxNM1XU1Cw+FIPjH99iqgSZj
-         Q+iC9+lhwm9SRxIfE61XEAx7/MyLgcpdbY5+8WMY=
+        b=NgCosYzgXZ2KdBVDGR2Sh0YEOW0pJ6N3VPjV5fbRALfyG7NiUV0xyXGksOyECiDs/
+         6FaGvcTRFyi9TAR//bhLWU8BaTHtLEFdWjmwaZZYn90Hjl1THeDhrEBezb300goMPH
+         EGHOdwqwu0vvVHKqw9Vv44gQJ2Zl5/gD3HuAINcs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 5.14 053/432] nvmem: core: fix error handling while validating keepout regions
-Date:   Thu, 16 Sep 2021 17:56:42 +0200
-Message-Id: <20210916155812.597214198@linuxfoundation.org>
+        stable@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
+        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 058/306] scsi: bsg: Remove support for SCSI_IOCTL_SEND_COMMAND
+Date:   Thu, 16 Sep 2021 17:56:43 +0200
+Message-Id: <20210916155755.923264527@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
-References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,40 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Christoph Hellwig <hch@lst.de>
 
-commit de0534df93474f268486c486ea7e01b44a478026 upstream.
+[ Upstream commit beec64d0c9749afedf51c3c10cf52de1d9a89cc0 ]
 
-Current error path on failure of validating keepout regions is calling
-put_device, eventhough the device is not even registered at that point.
+SCSI_IOCTL_SEND_COMMAND has been deprecated longer than bsg exists and has
+been warning for just as long.  More importantly it harcodes SCSI CDBs and
+thus will do the wrong thing on non-SCSI bsg nodes.
 
-Fix this by adding proper error handling of freeing ida and nvmem.
-
-Fixes: fd3bb8f54a88 ("nvmem: core: Add support for keepout regions")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20210806085947.22682-5-srinivas.kandagatla@linaro.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20210724072033.1284840-2-hch@lst.de
+Fixes: aa387cc89567 ("block: add bsg helper library")
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Acked-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvmem/core.c |    7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ block/bsg.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -824,8 +824,11 @@ struct nvmem_device *nvmem_register(cons
- 
- 	if (nvmem->nkeepout) {
- 		rval = nvmem_validate_keepouts(nvmem);
--		if (rval)
--			goto err_put_device;
-+		if (rval) {
-+			ida_free(&nvmem_ida, nvmem->id);
-+			kfree(nvmem);
-+			return ERR_PTR(rval);
-+		}
+diff --git a/block/bsg.c b/block/bsg.c
+index 3d78e843a83f..2cbc1fcc8247 100644
+--- a/block/bsg.c
++++ b/block/bsg.c
+@@ -371,10 +371,13 @@ static long bsg_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 	case SG_GET_RESERVED_SIZE:
+ 	case SG_SET_RESERVED_SIZE:
+ 	case SG_EMULATED_HOST:
+-	case SCSI_IOCTL_SEND_COMMAND:
+ 		return scsi_cmd_ioctl(bd->queue, NULL, file->f_mode, cmd, uarg);
+ 	case SG_IO:
+ 		return bsg_sg_io(bd->queue, file->f_mode, uarg);
++	case SCSI_IOCTL_SEND_COMMAND:
++		pr_warn_ratelimited("%s: calling unsupported SCSI_IOCTL_SEND_COMMAND\n",
++				current->comm);
++		return -EINVAL;
+ 	default:
+ 		return -ENOTTY;
  	}
- 
- 	dev_dbg(&nvmem->dev, "Registering nvmem device %s\n", config->name);
+-- 
+2.30.2
+
 
 
