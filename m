@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35A6340E486
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:24:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D6CF40E8CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:01:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243708AbhIPREK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:04:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51240 "EHLO mail.kernel.org"
+        id S1355429AbhIPRl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:41:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50296 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346968AbhIPQ4d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:56:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C665E61368;
-        Thu, 16 Sep 2021 16:30:58 +0000 (UTC)
+        id S1353611AbhIPRea (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:34:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B874F63228;
+        Thu, 16 Sep 2021 16:48:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809859;
-        bh=tDBSWzYhCOTHYddrfn0XbNNvp/91KucQtUMSTSX2/sM=;
+        s=korg; t=1631810919;
+        bh=8c/eQqw1Q4DZpbkkKK58w3TPYSvDluXMkTalTg9CsI4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I/Pj8G2YIsotIJOipKPsPa3XwIejRz4yi2CfPw6wTkBXsRpOqZeGRgfcWA0rFXBje
-         ENfDtAY8NgF2xl4OASL+uoy6y47IzUKY+gjn/UVF68soBj8rVjUrBiUnLLs5pEGuu+
-         w4s3wFj2jEf/c3y8Qyudg1MoNQNVKjG7AcnOiCuE=
+        b=cCQ0zwvrTZLwsY1wp6bEEuu+2p/WsX40Pk07dltCC+74gz3dY2OKcASlH3fUYy1er
+         SGQ2OIVTI4ZHfs9MSzFAACnelliyoAIXdoftJcLtjx4wCZfoUImWXUP4bY218TUVY2
+         MzuZpho1xNXOGXdUoXabjRMi3uXbf8qMD1Rb5AAs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Manish Narani <manish.narani@xilinx.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
+        stable@vger.kernel.org, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 308/380] mmc: sdhci-of-arasan: Check return value of non-void funtions
-Date:   Thu, 16 Sep 2021 18:01:05 +0200
-Message-Id: <20210916155814.550420038@linuxfoundation.org>
+Subject: [PATCH 5.14 317/432] selftests/bpf: Fix flaky send_signal test
+Date:   Thu, 16 Sep 2021 18:01:06 +0200
+Message-Id: <20210916155821.569903973@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,67 +40,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Manish Narani <manish.narani@xilinx.com>
+From: Yonghong Song <yhs@fb.com>
 
-[ Upstream commit 66bad6ed2204fdb78a0a8fb89d824397106a5471 ]
+[ Upstream commit b16ac5bf732a5e23d164cf908ec7742d6a6120d3 ]
 
-At a couple of places, the return values of the non-void functions were
-not getting checked. This was reported by the coverity tool. Modify the
-code to check the return values of the same.
+libbpf CI has reported send_signal test is flaky although
+I am not able to reproduce it in my local environment.
+But I am able to reproduce with on-demand libbpf CI ([1]).
 
-Addresses-Coverity: ("check_return")
-Signed-off-by: Manish Narani <manish.narani@xilinx.com>
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-Link: https://lore.kernel.org/r/1623753837-21035-5-git-send-email-manish.narani@xilinx.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Through code analysis, the following is possible reason.
+The failed subtest runs bpf program in softirq environment.
+Since bpf_send_signal() only sends to a fork of "test_progs"
+process. If the underlying current task is
+not "test_progs", bpf_send_signal() will not be triggered
+and the subtest will fail.
+
+To reduce the chances where the underlying process is not
+the intended one, this patch boosted scheduling priority to
+-20 (highest allowed by setpriority() call). And I did
+10 runs with on-demand libbpf CI with this patch and I
+didn't observe any failures.
+
+ [1] https://github.com/libbpf/libbpf/actions/workflows/ondemand.yml
+
+Signed-off-by: Yonghong Song <yhs@fb.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/20210817190923.3186725-1-yhs@fb.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/sdhci-of-arasan.c | 18 +++++++++++++++---
- 1 file changed, 15 insertions(+), 3 deletions(-)
+ .../selftests/bpf/prog_tests/send_signal.c       | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-diff --git a/drivers/mmc/host/sdhci-of-arasan.c b/drivers/mmc/host/sdhci-of-arasan.c
-index fc3e41c76ab4..9a630ba37484 100644
---- a/drivers/mmc/host/sdhci-of-arasan.c
-+++ b/drivers/mmc/host/sdhci-of-arasan.c
-@@ -273,7 +273,12 @@ static void sdhci_arasan_set_clock(struct sdhci_host *host, unsigned int clock)
- 			 * through low speeds without power cycling.
- 			 */
- 			sdhci_set_clock(host, host->max_clk);
--			phy_power_on(sdhci_arasan->phy);
-+			if (phy_power_on(sdhci_arasan->phy)) {
-+				pr_err("%s: Cannot power on phy.\n",
-+				       mmc_hostname(host->mmc));
-+				return;
-+			}
-+
- 			sdhci_arasan->is_phy_on = true;
+diff --git a/tools/testing/selftests/bpf/prog_tests/send_signal.c b/tools/testing/selftests/bpf/prog_tests/send_signal.c
+index 023cc532992d..839f7ddaec16 100644
+--- a/tools/testing/selftests/bpf/prog_tests/send_signal.c
++++ b/tools/testing/selftests/bpf/prog_tests/send_signal.c
+@@ -1,5 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
+ #include <test_progs.h>
++#include <sys/time.h>
++#include <sys/resource.h>
+ #include "test_send_signal_kern.skel.h"
  
- 			/*
-@@ -323,7 +328,12 @@ static void sdhci_arasan_set_clock(struct sdhci_host *host, unsigned int clock)
- 		msleep(20);
- 
- 	if (ctrl_phy) {
--		phy_power_on(sdhci_arasan->phy);
-+		if (phy_power_on(sdhci_arasan->phy)) {
-+			pr_err("%s: Cannot power on phy.\n",
-+			       mmc_hostname(host->mmc));
-+			return;
-+		}
-+
- 		sdhci_arasan->is_phy_on = true;
+ int sigusr1_received = 0;
+@@ -41,12 +43,23 @@ static void test_send_signal_common(struct perf_event_attr *attr,
  	}
- }
-@@ -479,7 +489,9 @@ static int sdhci_arasan_suspend(struct device *dev)
- 		ret = phy_power_off(sdhci_arasan->phy);
- 		if (ret) {
- 			dev_err(dev, "Cannot power off phy.\n");
--			sdhci_resume_host(host);
-+			if (sdhci_resume_host(host))
-+				dev_err(dev, "Cannot resume host.\n");
+ 
+ 	if (pid == 0) {
++		int old_prio;
 +
- 			return ret;
- 		}
- 		sdhci_arasan->is_phy_on = false;
+ 		/* install signal handler and notify parent */
+ 		signal(SIGUSR1, sigusr1_handler);
+ 
+ 		close(pipe_c2p[0]); /* close read */
+ 		close(pipe_p2c[1]); /* close write */
+ 
++		/* boost with a high priority so we got a higher chance
++		 * that if an interrupt happens, the underlying task
++		 * is this process.
++		 */
++		errno = 0;
++		old_prio = getpriority(PRIO_PROCESS, 0);
++		ASSERT_OK(errno, "getpriority");
++		ASSERT_OK(setpriority(PRIO_PROCESS, 0, -20), "setpriority");
++
+ 		/* notify parent signal handler is installed */
+ 		CHECK(write(pipe_c2p[1], buf, 1) != 1, "pipe_write", "err %d\n", -errno);
+ 
+@@ -62,6 +75,9 @@ static void test_send_signal_common(struct perf_event_attr *attr,
+ 		/* wait for parent notification and exit */
+ 		CHECK(read(pipe_p2c[0], buf, 1) != 1, "pipe_read", "err %d\n", -errno);
+ 
++		/* restore the old priority */
++		ASSERT_OK(setpriority(PRIO_PROCESS, 0, old_prio), "setpriority");
++
+ 		close(pipe_c2p[1]);
+ 		close(pipe_p2c[0]);
+ 		exit(0);
 -- 
 2.30.2
 
