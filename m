@@ -2,163 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7747940DEB0
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 17:51:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0FDE40DE7F
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 17:48:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240420AbhIPPwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 11:52:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55266 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240434AbhIPPwX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 11:52:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631807463;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=ILE8AEREB8TZ6G58cEw5uMQNt+FdD69KNJ799+4U0ss=;
-        b=XyTmw2SO8l6vyUZdmwvziJuAAbJ5E0ceMVqybZdLixsdPiedr/aAKvwpFsQWxPpjy31mzB
-        672X2HxV42re0nme2C3wU3r+gg24sCf3aekEuLotjVZ1i8zyo7S7Rz7JluuZ3D51+O5uan
-        NW71p0GcjbS6mVHDaLI/K9yKTBki8Tk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-558-TVuuzRMsP0CvOiQEOWXN_Q-1; Thu, 16 Sep 2021 11:51:00 -0400
-X-MC-Unique: TVuuzRMsP0CvOiQEOWXN_Q-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0CBB2BAF85;
-        Thu, 16 Sep 2021 15:50:59 +0000 (UTC)
-Received: from horse.redhat.com (unknown [10.22.32.174])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A22ED6A902;
-        Thu, 16 Sep 2021 15:50:58 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id 3B581220C99; Thu, 16 Sep 2021 11:50:58 -0400 (EDT)
-Date:   Thu, 16 Sep 2021 11:50:58 -0400
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     Christoph Hellwig <hch@infradead.org>, Jan Kara <jack@suse.cz>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        viro@zeniv.linux.org.uk
-Cc:     Linux fsdevel mailing list <linux-fsdevel@vger.kernel.org>,
-        linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        xu.xin16@zte.com.cn
-Subject: [PATCH v2] init/do_mounts.c: Harden split_fs_names() against buffer
- overflow
-Message-ID: <YUNn4k1FCgQmOpuw@redhat.com>
+        id S240096AbhIPPtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 11:49:43 -0400
+Received: from mga17.intel.com ([192.55.52.151]:5843 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240042AbhIPPtl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 11:49:41 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10109"; a="202750825"
+X-IronPort-AV: E=Sophos;i="5.85,298,1624345200"; 
+   d="scan'208";a="202750825"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2021 08:48:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,298,1624345200"; 
+   d="scan'208";a="545758569"
+Received: from chenyu-desktop.sh.intel.com ([10.239.158.176])
+  by FMSMGA003.fm.intel.com with ESMTP; 16 Sep 2021 08:48:17 -0700
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     linux-acpi@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <len.brown@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Aubrey Li <aubrey.li@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>, Chen Yu <yu.c.chen@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: [PATCH v3 0/5] Introduce Platform Firmware Runtime Update and Telemetry drivers
+Date:   Thu, 16 Sep 2021 23:53:58 +0800
+Message-Id: <cover.1631802162.git.yu.c.chen@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-split_fs_names() currently takes comma separate list of filesystems
-and converts it into individual filesystem strings. Pleaces these
-strings in the input buffer passed by caller and returns number of
-strings.
+High Service Level Agreements (SLAs) requires that the system runs without
+service interruptions. Generally, system firmware provides runtime services
+such as RAS(Reliability, Availability and Serviceability) features, UEFI runtime
+services and ACPI services. Currently if there is any firmware code changes in
+these code area, the system firmware update and reboot is required. Example of
+bug fix could be wrong register size or location of the register. This means
+customer services are not available during the firmware upgrade, which could
+approach several minutes, resulting in not able to meet SLAs.
 
-If caller manages to pass input string bigger than buffer, then we
-can write beyond the buffer. Or if string just fits buffer, we will
-still write beyond the buffer as we append a '\0' byte at the end.
+Intel provides a mechanism named Management Mode Runtime Update to help the users
+update the firmware without having to reboot[1].
 
-Pass size of input buffer to split_fs_names() and put enough checks
-in place so such buffer overrun possibilities do not occur.
+This series provides the following facilities.
 
-This patch does few things.
+  1. Perform a runtime firmware driver update and activate.
+  2. Ability to inject firmware code at runtime, for dynamic instrumentation.
+  3. Facility to retrieve logs from runtime firmware update and activate telemetry.
+     (The telemetry is based on runtime firmware update: it records the logs during
+      runtime update(code injection and driver update).
 
-- Add a parameter "size" to split_fs_names(). This specifies size
-  of input buffer.
+The Management Mode Runtime Update OS Interface Specification[1] provides two ACPI
+device objects to interface with system firmware to perform these updates. This patch
+series introduces the drivers for those ACPI devices.
 
-- Use strlcpy() (instead of strcpy()) so that we can't go beyond
-  buffer size. If input string "names" is larger than passed in
-  buffer, input string will be truncated to fit in buffer.
+[1] https://uefi.org/sites/default/files/resources/Intel_MM_OS_Interface_Spec_Rev100.pdf
 
-- Stop appending extra '\0' character at the end and avoid one
-  possibility of going beyond the input buffer size.
+=============
+- Change from v2 to v3:
+  - Use valid types for structures that cross the user/kernel boundry
+    in the uapi header. (Greg Kroah-Hartman)
+  - Rename the structure in uapi to start with a prefix pfru so as
+    to avoid confusing in the global namespace. (Greg Kroah-Hartman)
+- Change from v1 to v2:
+  - Add a spot in index.rst so it becomes part of the docs build
+    (Jonathan Corbet).
+  - Sticking to the 80-column limit(Jonathan Corbet).
+  - Underline lengths should match the title text(Jonathan Corbet).
+  - Use literal blocks for the code samples(Jonathan Corbet).
+  - Add sanity check for duplicated instance of ACPI device.
+  - Update the driver to work with allocated pfru_device objects.
+    (Mike Rapoport)
+  - For each switch case pair, get rid of the magic case numbers
+    and add a default clause with the error handling.(Mike Rapoport)
+  - Move the obj->type checks outside the switch to reduce redundancy.
+    (Mike Rapoport)
+  - Parse the code_inj_id and drv_update_id at driver initialization time
+    to reduce the re-parsing at runtime. (Mike Rapoport)
+  - Explain in detail how the size needs to be adjusted when doing
+    version check. (Mike Rapoport)
+  - Rename parse_update_result() to dump_update_result()
+    (Mike Rapoport)
+  - Remove redundant return.(Mike Rapoport)
+  - Do not expose struct capsulate_buf_info to uapi, since it is
+    not needed in userspace. (Mike Rapoport)
+  - Do not allow non-root user to run this test.(Shuah Khan)
+  - Test runs on platform without pfru_telemetry should skip
+    instead of reporting failure/error.(Shuah Khan)
+  - Reuse uapi/linux/pfru.h instead of copying it into the test
+    directory. (Mike Rapoport)
 
-- Do not use extra loop to count number of strings.
+Chen Yu (5):
+  Documentation: Introduce Platform Firmware Runtime Update
+    documentation
+  efi: Introduce EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER and
+    corresponding structures
+  drivers/acpi: Introduce Platform Firmware Runtime Update device driver
+  drivers/acpi: Introduce Platform Firmware Runtime Update Telemetry
+  selftests/pfru: add test for Platform Firmware Runtime Update and
+    Telemetry
 
-- Previously if one passed "rootfstype=foo,,bar", split_fs_names()
-  will return only 1 string "foo" (and "bar" will be truncated
-  due to extra ,). After this patch, now split_fs_names() will
-  return 3 strings ("foo", zero-sized-string, and "bar").
+ .../userspace-api/ioctl/ioctl-number.rst      |   1 +
+ Documentation/x86/index.rst                   |   1 +
+ Documentation/x86/pfru.rst                    | 100 +++
+ drivers/acpi/Kconfig                          |   1 +
+ drivers/acpi/Makefile                         |   1 +
+ drivers/acpi/pfru/Kconfig                     |  29 +
+ drivers/acpi/pfru/Makefile                    |   3 +
+ drivers/acpi/pfru/pfru_telemetry.c            | 412 +++++++++++++
+ drivers/acpi/pfru/pfru_update.c               | 567 ++++++++++++++++++
+ include/linux/efi.h                           |  50 ++
+ include/uapi/linux/pfru.h                     | 149 +++++
+ tools/testing/selftests/Makefile              |   1 +
+ tools/testing/selftests/pfru/Makefile         |   7 +
+ tools/testing/selftests/pfru/config           |   2 +
+ tools/testing/selftests/pfru/pfru_test.c      | 328 ++++++++++
+ 15 files changed, 1652 insertions(+)
+ create mode 100644 Documentation/x86/pfru.rst
+ create mode 100644 drivers/acpi/pfru/Kconfig
+ create mode 100644 drivers/acpi/pfru/Makefile
+ create mode 100644 drivers/acpi/pfru/pfru_telemetry.c
+ create mode 100644 drivers/acpi/pfru/pfru_update.c
+ create mode 100644 include/uapi/linux/pfru.h
+ create mode 100644 tools/testing/selftests/pfru/Makefile
+ create mode 100644 tools/testing/selftests/pfru/config
+ create mode 100644 tools/testing/selftests/pfru/pfru_test.c
 
-  Callers of split_fs_names() have been modified to check for
-  zero sized string and skip to next one.
-
-Reported-by: xu xin <xu.xin16@zte.com.cn>
-Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
----
- init/do_mounts.c |   28 ++++++++++++++++++++--------
- 1 file changed, 20 insertions(+), 8 deletions(-)
-
-Index: redhat-linux/init/do_mounts.c
-===================================================================
---- redhat-linux.orig/init/do_mounts.c	2021-09-15 08:46:33.801689806 -0400
-+++ redhat-linux/init/do_mounts.c	2021-09-16 11:28:36.753625037 -0400
-@@ -338,19 +338,25 @@ __setup("rootflags=", root_data_setup);
- __setup("rootfstype=", fs_names_setup);
- __setup("rootdelay=", root_delay_setup);
- 
--static int __init split_fs_names(char *page, char *names)
-+static int __init split_fs_names(char *page, size_t size, char *names)
- {
- 	int count = 0;
- 	char *p = page;
-+	bool str_start = false;
- 
--	strcpy(p, root_fs_names);
-+	strlcpy(p, root_fs_names, size);
- 	while (*p++) {
--		if (p[-1] == ',')
-+		if (p[-1] == ',') {
- 			p[-1] = '\0';
-+			count++;
-+			str_start = false;
-+		} else {
-+			str_start = true;
-+		}
- 	}
--	*p = '\0';
- 
--	for (p = page; *p; p += strlen(p)+1)
-+	/* Last string which might not be comma terminated */
-+	if (str_start)
- 		count++;
- 
- 	return count;
-@@ -404,12 +410,16 @@ void __init mount_block_root(char *name,
- 	scnprintf(b, BDEVNAME_SIZE, "unknown-block(%u,%u)",
- 		  MAJOR(ROOT_DEV), MINOR(ROOT_DEV));
- 	if (root_fs_names)
--		num_fs = split_fs_names(fs_names, root_fs_names);
-+		num_fs = split_fs_names(fs_names, PAGE_SIZE, root_fs_names);
- 	else
- 		num_fs = list_bdev_fs_names(fs_names, PAGE_SIZE);
- retry:
- 	for (i = 0, p = fs_names; i < num_fs; i++, p += strlen(p)+1) {
--		int err = do_mount_root(name, p, flags, root_mount_data);
-+		int err;
-+
-+		if (!*p)
-+			continue;
-+		err = do_mount_root(name, p, flags, root_mount_data);
- 		switch (err) {
- 			case 0:
- 				goto out;
-@@ -543,10 +553,12 @@ static int __init mount_nodev_root(void)
- 	fs_names = (void *)__get_free_page(GFP_KERNEL);
- 	if (!fs_names)
- 		return -EINVAL;
--	num_fs = split_fs_names(fs_names, root_fs_names);
-+	num_fs = split_fs_names(fs_names, PAGE_SIZE, root_fs_names);
- 
- 	for (i = 0, fstype = fs_names; i < num_fs;
- 	     i++, fstype += strlen(fstype) + 1) {
-+		if (!*fstype)
-+			continue;
- 		if (!fs_is_nodev(fstype))
- 			continue;
- 		err = do_mount_root(root_device_name, fstype, root_mountflags,
+-- 
+2.25.1
 
