@@ -2,156 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6566840E9BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:18:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 363E440E9BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:19:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347242AbhIPSTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 14:19:04 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:42460 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243033AbhIPSR1 (ORCPT
+        id S1348381AbhIPSUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 14:20:36 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:37852 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348445AbhIPST2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 14:17:27 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 5416D1FF07;
-        Thu, 16 Sep 2021 18:16:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1631816165; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AZmcdpEyICX8T3xnNyzpUDIl3QY/10Xz2N01djy0zPs=;
-        b=NRIJuSyDB+28aolGyA8CMMtkq8FjUMnvjrlKr7Tx7Og9/4RJa0kRoqerlAOuwcDuozISaQ
-        tv0M9psIk4FgINmLBHaPk96Wkm2hTzRPYUDqZfr7BRCWkRcIRBIzdOgYtYsH0+MRcd/9w4
-        +JSjKweqa5OW6+AfiGpUfGUklTKIR20=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1631816165;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AZmcdpEyICX8T3xnNyzpUDIl3QY/10Xz2N01djy0zPs=;
-        b=+K8P0s4o2kEFkekV6SqS3I18TW1FI8zhlBz138EQ5H2GkUw4gmKanywjOxjfZoJke+PGI2
-        9JE1UxDjrAaDX/AQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1488313F79;
-        Thu, 16 Sep 2021 18:16:05 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 0L4IBOWJQ2FleQAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Thu, 16 Sep 2021 18:16:05 +0000
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-To:     airlied@redhat.com, airlied@linux.ie, daniel@ffwll.ch,
-        hdegoede@redhat.com, marcan@marcan.st, maz@kernel.org,
-        akpm@linux-foundation.org, npiggin@gmail.com,
-        thunder.leizhen@huawei.com, gregkh@linuxfoundation.org
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Subject: [PATCH 5/5] drm/vboxvideo: Use managed interfaces for framebuffer write combining
-Date:   Thu, 16 Sep 2021 20:16:01 +0200
-Message-Id: <20210916181601.9146-6-tzimmermann@suse.de>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916181601.9146-1-tzimmermann@suse.de>
-References: <20210916181601.9146-1-tzimmermann@suse.de>
+        Thu, 16 Sep 2021 14:19:28 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18GII26a072604;
+        Thu, 16 Sep 2021 13:18:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1631816282;
+        bh=pyw9qfNvaWdLSiz1gujXS6WUJuA+dp3Tth+WCvjmhP0=;
+        h=From:To:CC:Subject:Date;
+        b=gHttkm+7FmDOQZqeCnfvj5kj4FCHgXgVO/dkBoBfgohtSr44IHd4WXsO2naS86a6h
+         x7F5x9xHVTk1hC1NiopWOhXZMiwmrEZwbJRAgL0sP5EunIxhjJt+zy+I+AynE6SmO0
+         g8LEp/qiTiQch9h9p0/CcKJai5BLTmqEhB+WMI7Y=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18GII2oq112717
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 16 Sep 2021 13:18:02 -0500
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Thu, 16
+ Sep 2021 13:18:02 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Thu, 16 Sep 2021 13:18:02 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18GII10w082245;
+        Thu, 16 Sep 2021 13:18:01 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Rob Herring <robh+dt@kernel.org>, Tero Kristo <kristo@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, Nishanth Menon <nm@ti.com>,
+        Amit Kucheria <amit.kucheria@linaro.org>,
+        Keerthy <j-keerthy@ti.com>
+Subject: [PATCH] arm64: dts: ti: k3-am65: Relocate thermal-zones to SoC specific location
+Date:   Thu, 16 Sep 2021 13:18:01 -0500
+Message-ID: <20210916181801.32588-1-nm@ti.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace arch_phys_wc_add() with the rsp managed function. Allows for
-removing the cleanup code for memory management
+When commit 64f9147d914d ("arm64: dts: ti: am654: Add thermal
+zones") introduced thermal-zones for am654, it defined as under the
+common am65-wakeup bus segment, when it is am654 specific (other SoC
+spins can have slightly different thermal characteristics). Futher,
+thermal-zones is introduced under simple-bus node, when it has no
+actual register or base address.
 
-Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+So, move it to it's rightful place under am654 SoC dtsi under the base
+node.
+
+Signed-off-by: Nishanth Menon <nm@ti.com>
 ---
- drivers/gpu/drm/vboxvideo/vbox_drv.c |  5 +----
- drivers/gpu/drm/vboxvideo/vbox_drv.h |  1 -
- drivers/gpu/drm/vboxvideo/vbox_ttm.c | 17 ++++++++---------
- 3 files changed, 9 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/gpu/drm/vboxvideo/vbox_drv.c b/drivers/gpu/drm/vboxvideo/vbox_drv.c
-index 2b81cb259d23..a6c81af37345 100644
---- a/drivers/gpu/drm/vboxvideo/vbox_drv.c
-+++ b/drivers/gpu/drm/vboxvideo/vbox_drv.c
-@@ -69,7 +69,7 @@ static int vbox_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 
- 	ret = vbox_mode_init(vbox);
- 	if (ret)
--		goto err_mm_fini;
-+		goto err_hw_fini;
- 
- 	ret = vbox_irq_init(vbox);
- 	if (ret)
-@@ -87,8 +87,6 @@ static int vbox_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	vbox_irq_fini(vbox);
- err_mode_fini:
- 	vbox_mode_fini(vbox);
--err_mm_fini:
--	vbox_mm_fini(vbox);
- err_hw_fini:
- 	vbox_hw_fini(vbox);
- 	return ret;
-@@ -101,7 +99,6 @@ static void vbox_pci_remove(struct pci_dev *pdev)
- 	drm_dev_unregister(&vbox->ddev);
- 	vbox_irq_fini(vbox);
- 	vbox_mode_fini(vbox);
--	vbox_mm_fini(vbox);
- 	vbox_hw_fini(vbox);
- }
- 
-diff --git a/drivers/gpu/drm/vboxvideo/vbox_drv.h b/drivers/gpu/drm/vboxvideo/vbox_drv.h
-index 4903b91d7fe4..e77bd6512eb1 100644
---- a/drivers/gpu/drm/vboxvideo/vbox_drv.h
-+++ b/drivers/gpu/drm/vboxvideo/vbox_drv.h
-@@ -139,7 +139,6 @@ void vbox_mode_fini(struct vbox_private *vbox);
- void vbox_report_caps(struct vbox_private *vbox);
- 
- int vbox_mm_init(struct vbox_private *vbox);
--void vbox_mm_fini(struct vbox_private *vbox);
- 
- /* vbox_irq.c */
- int vbox_irq_init(struct vbox_private *vbox);
-diff --git a/drivers/gpu/drm/vboxvideo/vbox_ttm.c b/drivers/gpu/drm/vboxvideo/vbox_ttm.c
-index fd8a53a4d8d6..dc24c2172fd4 100644
---- a/drivers/gpu/drm/vboxvideo/vbox_ttm.c
-+++ b/drivers/gpu/drm/vboxvideo/vbox_ttm.c
-@@ -13,22 +13,21 @@
- int vbox_mm_init(struct vbox_private *vbox)
- {
- 	int ret;
-+	resource_size_t base, size;
- 	struct drm_device *dev = &vbox->ddev;
- 	struct pci_dev *pdev = to_pci_dev(dev->dev);
- 
--	ret = drmm_vram_helper_init(dev, pci_resource_start(pdev, 0),
--				       vbox->available_vram_size);
-+	base = pci_resource_start(pdev, 0);
-+	size = pci_resource_len(pdev, 0);
-+
-+	/* Don't fail on errors, but performance might be reduced. */
-+	devm_arch_phys_wc_add(&pdev->dev, base, size);
-+
-+	ret = drmm_vram_helper_init(dev, base, vbox->available_vram_size);
- 	if (ret) {
- 		DRM_ERROR("Error initializing VRAM MM; %d\n", ret);
- 		return ret;
- 	}
- 
--	vbox->fb_mtrr = arch_phys_wc_add(pci_resource_start(pdev, 0),
--					 pci_resource_len(pdev, 0));
- 	return 0;
- }
+NOTE:
+1. This is a cosmetic fixup, so skip the "Fixes" tag.
+2. This fixes up noisy dtbs_check warning around thermal.
+
+ arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi | 4 ----
+ arch/arm64/boot/dts/ti/k3-am654.dtsi       | 4 ++++
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi
+index 9d21cdf6fce8..9c69d0917f69 100644
+--- a/arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi
+@@ -100,8 +100,4 @@ wkup_vtm0: temperature-sensor@42050000 {
+ 		power-domains = <&k3_pds 80 TI_SCI_PD_EXCLUSIVE>;
+ 		#thermal-sensor-cells = <1>;
+ 	};
 -
--void vbox_mm_fini(struct vbox_private *vbox)
--{
--	arch_phys_wc_del(vbox->fb_mtrr);
--}
+-	thermal_zones: thermal-zones {
+-		#include "k3-am654-industrial-thermal.dtsi"
+-	};
+ };
+diff --git a/arch/arm64/boot/dts/ti/k3-am654.dtsi b/arch/arm64/boot/dts/ti/k3-am654.dtsi
+index f0a6541b8042..a89257900047 100644
+--- a/arch/arm64/boot/dts/ti/k3-am654.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am654.dtsi
+@@ -112,4 +112,8 @@ msmc_l3: l3-cache0 {
+ 		compatible = "cache";
+ 		cache-level = <3>;
+ 	};
++
++	thermal_zones: thermal-zones {
++		#include "k3-am654-industrial-thermal.dtsi"
++	};
+ };
 -- 
-2.33.0
+2.32.0
 
