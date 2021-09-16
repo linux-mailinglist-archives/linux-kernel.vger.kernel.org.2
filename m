@@ -2,819 +2,4330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDB9040D2AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 06:47:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F39B40D2B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 06:51:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231951AbhIPEtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 00:49:03 -0400
-Received: from mga01.intel.com ([192.55.52.88]:58033 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230081AbhIPEtA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 00:49:00 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10108"; a="244858692"
-X-IronPort-AV: E=Sophos;i="5.85,297,1624345200"; 
-   d="gz'50?scan'50,208,50";a="244858692"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2021 21:47:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,297,1624345200"; 
-   d="gz'50?scan'50,208,50";a="553688947"
-Received: from lkp-server01.sh.intel.com (HELO 285e7b116627) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 15 Sep 2021 21:47:32 -0700
-Received: from kbuild by 285e7b116627 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mQjJ5-0000kK-R4; Thu, 16 Sep 2021 04:47:31 +0000
-Date:   Thu, 16 Sep 2021 12:46:35 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-Subject: [peterz-queue:x86/core 2/2] arch/x86/kernel/traps.c:468:38: error:
- 'address' undeclared
-Message-ID: <202109161229.MaYmuTRD-lkp@intel.com>
+        id S234217AbhIPEw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 00:52:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230081AbhIPEwY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 00:52:24 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B7F8C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 21:51:03 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id h17so11856408edj.6
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 21:51:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vanguardiasur-com-ar.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=a+aGKkNiQIC8sXO/cigHYtB9uZgtl+OrxhubMnGTZsA=;
+        b=tYLZfVmck7e975KyqECCECl6YNDs2QcZ/fwtRet0adiXxQd4o21UPcBS3t/tPEw2Y+
+         xeCcyVQ2vaeQvOl4LPaprYfxD7V9oSd/1WPH4AQ3lSNgCIxIpXWC4yNprQ0zoLti+YLh
+         Vc5u3yn7VnffS0FtyXFX58vCAvwSoZYB9H3CNylrLH3t3lNQpkFpF2TdNF230R65wv+6
+         Ra4kPIt6sHWHZQME088YbWfIgQiDIYHerLp8McLogqLyJ/TBOaTGaIem8iPk8dmxbKR0
+         sQ3XIiixg3Jjk2iG6V016QXb3reWMcPJiuTUCF68cJpHh7BRUvwLQpkSI+Wjeb/LVQE8
+         GTcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=a+aGKkNiQIC8sXO/cigHYtB9uZgtl+OrxhubMnGTZsA=;
+        b=Hygx0pplhXHZWidM9T8rvDz9BAKeO7MMob/WtXgEiVEU73BYFe7hxfgNd5X+e3svfP
+         oFQLXZRJ4RaQsyJjcxr/o5MWD35zPcwBfpfKqhMX+fWNHnGZlr87AL/lt/CPmuqZoLE5
+         kvqL7dMwtqlYoLm6pQ9KUN0oPEjgRbnIXZwCiUz7bWtIfIEbBYluRMjo0nndaqerO1pJ
+         Ku/uUzMdC1ytUvbHmfKSnYzN4PB+02Os79iu+frHNFqA+IlhS5gvl9C29l1du4xzgoT9
+         3oWOJZArwFmx8Xp21Vgqj3VLjb8D97ekO5Dl0EuLgiB/ENyh/AzhUtBm4bE/cWo/OzFQ
+         /9Ww==
+X-Gm-Message-State: AOAM532umUaxxehepW8eGkdBCuOHhjjFbKNE70QQUgDjZNN+iin3pP59
+        piCu7z6s27NGyCmxkC6yHiKOlCeNT9U7DHiBvLYsXg==
+X-Google-Smtp-Source: ABdhPJy5FdGI6h+R15hNeodz/xcP68KYhWZ8yR64Umwy16314YnrtIE5LB14A0E40U/TeiGMcqZxJTDOpXkfX8C8EXk=
+X-Received: by 2002:a17:906:d057:: with SMTP id bo23mr4232683ejb.208.1631767861367;
+ Wed, 15 Sep 2021 21:51:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="VS++wcV0S1rZb1Fb"
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210915162324.25513-1-dafna.hirschfeld@collabora.com> <20210915162324.25513-4-dafna.hirschfeld@collabora.com>
+In-Reply-To: <20210915162324.25513-4-dafna.hirschfeld@collabora.com>
+From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Date:   Thu, 16 Sep 2021 01:50:48 -0300
+Message-ID: <CAAEAJfCJJworozpewu2gMTAuQ_6nejXtFEmWfvtV0dm80vV2nw@mail.gmail.com>
+Subject: Re: [PATCH 3/6] staging: media: wave5: Add the v4l2 layer
+To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Cc:     Robert Beckett <bob.beckett@collabora.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:MEDIA INPUT INFRASTRUCTURE (V4L/DVB)" 
+        <linux-media@vger.kernel.org>,
+        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
+        open list <linux-kernel@vger.kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Dafna Hirschfeld <dafna3@gmail.com>,
+        kiril.bicevski@collabora.com,
+        Nas Chung <nas.chung@chipsnmedia.com>,
+        lafley.kim@chipsnmedia.com, scott.woo@chipsnmedia.com,
+        olivier.crete@collabora.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Dafna, Nas and Robert:
 
---VS++wcV0S1rZb1Fb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I am quite happy to see a Chips and Media driver.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git x86/core
-head:   647d1adb49f099ced76b510d55365be7f3063341
-commit: 647d1adb49f099ced76b510d55365be7f3063341 [2/2] x86/dumpstack/64: Add guard pages to stack_info
-config: x86_64-randconfig-a011-20210916 (attached as .config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-reproduce (this is a W=1 build):
-        # https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git/commit/?id=647d1adb49f099ced76b510d55365be7f3063341
-        git remote add peterz-queue https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git
-        git fetch --no-tags peterz-queue x86/core
-        git checkout 647d1adb49f099ced76b510d55365be7f3063341
-        # save the attached .config to linux build tree
-        mkdir build_dir
-        make W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash
+However, given it was announced that BeagleV=E2=84=A2-Starlight prototype
+is not going to production [1], I'm curious about the plan for the driver.
+Is there an expectation to support silicon in the medium term (2021/2022)?
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+For instance, are you aware of any an effort to fix the cache coherency
+issues on the Starlight SoC?
 
-All errors (new ones prefixed by >>):
+In general, the driver is a good start, but it looks like it needs a
+big broom and a ton of cleanup work. See below for some comments,
+but keep in mind I may have missed more things.
 
-   arch/x86/kernel/traps.c: In function 'exc_double_fault':
->> arch/x86/kernel/traps.c:468:38: error: 'address' undeclared (first use in this function)
-     468 |   if (get_stack_info_noinstr((void *)address, current, &info) &&
-         |                                      ^~~~~~~
-   arch/x86/kernel/traps.c:468:38: note: each undeclared identifier is reported only once for each function it appears in
+[1] https://beaglev.org/blog/2021-07-30-the-future-of-beaglev-community
+
+On Wed, 15 Sept 2021 at 13:24, Dafna Hirschfeld
+<dafna.hirschfeld@collabora.com> wrote:
+>
+> Add the decoder and encoder implementing the v4l2
+> API. This patch also adds the Makefile and the VIDEO_WAVE_VPU config
+>
+> Signed-off-by: Robert Beckett <bob.beckett@collabora.com>
+> Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+> ---
+>  drivers/staging/media/Kconfig              |    2 +
+>  drivers/staging/media/Makefile             |    1 +
+>  drivers/staging/media/wave5/Kconfig        |   10 +
+>  drivers/staging/media/wave5/Makefile       |   10 +
+>  drivers/staging/media/wave5/v4l2/vpu.c     |  386 +++++
+>  drivers/staging/media/wave5/v4l2/vpu.h     |   76 +
+>  drivers/staging/media/wave5/v4l2/vpu_dec.c | 1393 +++++++++++++++++
+>  drivers/staging/media/wave5/v4l2/vpu_dec.h |   20 +
+>  drivers/staging/media/wave5/v4l2/vpu_enc.c | 1580 ++++++++++++++++++++
+>  drivers/staging/media/wave5/v4l2/vpu_enc.h |   18 +
+>  10 files changed, 3496 insertions(+)
+>  create mode 100644 drivers/staging/media/wave5/Kconfig
+>  create mode 100644 drivers/staging/media/wave5/Makefile
+>  create mode 100644 drivers/staging/media/wave5/v4l2/vpu.c
+>  create mode 100644 drivers/staging/media/wave5/v4l2/vpu.h
+>  create mode 100644 drivers/staging/media/wave5/v4l2/vpu_dec.c
+>  create mode 100644 drivers/staging/media/wave5/v4l2/vpu_dec.h
+>  create mode 100644 drivers/staging/media/wave5/v4l2/vpu_enc.c
+>  create mode 100644 drivers/staging/media/wave5/v4l2/vpu_enc.h
+>
+> diff --git a/drivers/staging/media/Kconfig b/drivers/staging/media/Kconfi=
+g
+> index e3aaae920847..25564dc46ca7 100644
+> --- a/drivers/staging/media/Kconfig
+> +++ b/drivers/staging/media/Kconfig
+> @@ -44,4 +44,6 @@ source "drivers/staging/media/ipu3/Kconfig"
+>
+>  source "drivers/staging/media/av7110/Kconfig"
+>
+> +source "drivers/staging/media/wave5/Kconfig"
+> +
+>  endif
+> diff --git a/drivers/staging/media/Makefile b/drivers/staging/media/Makef=
+ile
+> index 5b5afc5b03a0..4cc61f24f5fa 100644
+> --- a/drivers/staging/media/Makefile
+> +++ b/drivers/staging/media/Makefile
+> @@ -11,3 +11,4 @@ obj-$(CONFIG_VIDEO_HANTRO)    +=3D hantro/
+>  obj-$(CONFIG_VIDEO_IPU3_IMGU)  +=3D ipu3/
+>  obj-$(CONFIG_VIDEO_ZORAN)      +=3D zoran/
+>  obj-$(CONFIG_DVB_AV7110)       +=3D av7110/
+> +obj-$(CONFIG_VIDEO_WAVE_VPU)   +=3D wave5/
+> diff --git a/drivers/staging/media/wave5/Kconfig b/drivers/staging/media/=
+wave5/Kconfig
+> new file mode 100644
+> index 000000000000..ac37fc33fd08
+> --- /dev/null
+> +++ b/drivers/staging/media/wave5/Kconfig
+> @@ -0,0 +1,10 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +config VIDEO_WAVE_VPU
+> +        tristate "Chips&Media Wave Codec Driver"
+> +        depends on VIDEO_DEV && VIDEO_V4L2 && OF
+
+The driver has some ifdef CONFIG_OF. Either drop this or drop the ifdefs.
+
+> +        select VIDEOBUF2_DMA_CONTIG
+> +        select VIDEOBUF2_VMALLOC
+> +        select V4L2_MEM2MEM_DEV
+> +        select GENERIC_ALLOCATOR
+
+I can't see why this is GENERIC_ALLOCATOR is here. Where is the API used?
+
+> +        help
+> +          Chips&Media codec driver
+> diff --git a/drivers/staging/media/wave5/Makefile b/drivers/staging/media=
+/wave5/Makefile
+> new file mode 100644
+> index 000000000000..89d113a56bd5
+> --- /dev/null
+> +++ b/drivers/staging/media/wave5/Makefile
+> @@ -0,0 +1,10 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +
+> +obj-$(CONFIG_VIDEO_WAVE_VPU) +=3D wave5.o
+> +wave5-objs +=3D          vpuapi/wave/wave5.o \
+> +               vpuapi/vpuapi.o \
+> +               vdi/vdi.o \
+> +               v4l2/vpu_dec.o \
+> +               v4l2/vpu.o \
+> +               v4l2/vpu_enc.o
+> +
+
+It seems like an overkill to have a directory hierarchy for just these
+few files. How about you collapse them under a single wave5 directory?
+
+It will be easier to read and maintain.
+
+> diff --git a/drivers/staging/media/wave5/v4l2/vpu.c b/drivers/staging/med=
+ia/wave5/v4l2/vpu.c
+> new file mode 100644
+> index 000000000000..e17d31d565ff
+> --- /dev/null
+> +++ b/drivers/staging/media/wave5/v4l2/vpu.c
+> @@ -0,0 +1,386 @@
+> +// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+> +/*
+> + * Wave5 series multi-standard codec IP - platform driver
+> + *
+> + * Copyright (C) 2021 CHIPS&MEDIA INC
+> + */
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/clk.h>
+> +#include <linux/firmware.h>
+> +#include <linux/interrupt.h>
+> +#include "vpu.h"
+> +#include "vpu_dec.h"
+> +#include "vpu_enc.h"
+> +#include "../vpuapi/wave/wave5_regdefine.h"
+> +#include "../vpuapi/vpuconfig.h"
+> +#include "../vpuapi/wave/wave5.h"
+> +
+> +#define VPU_PLATFORM_DEVICE_NAME    "vdec"
+> +#define VPU_CLK_NAME                "vcodec"
+> +
+
+IIUC, given there's only just one clock, it's better
+to avoid requiring a name. Maybe you can double check that
+with some device tree experts.
+
+> +/* if the platform driver knows this driver */
+> +/* the definition of VPU_REG_BASE_ADDR and VPU_REG_SIZE are not meaningf=
+ul */
+> +#define VPU_REG_BASE_ADDR    0x75000000
+> +#define VPU_REG_SIZE         0x4000
+> +
+
+REG_ macros unused.
+
+> +struct wave5_match_data {
+> +       bool decoder;
+> +       bool encoder;
+
+Nitpick, maybe a bit mask for functions?
+
+> +       const char *fw_name;
+> +};
+> +
+> +const struct wave5_match_data default_match_data =3D {
+> +       .decoder =3D true,
+> +       .encoder =3D true,
+> +       .fw_name =3D "chagall.bin",
+> +};
+> +
+> +unsigned int vpu_debug =3D 1;
+> +module_param(vpu_debug, uint, 0644);
+> +
+
+I would rename this to just "debug".
+
+> +int vpu_wait_interrupt(struct vpu_instance *inst, unsigned int timeout)
+> +{
+> +       int ret;
+> +
+> +       ret =3D wait_for_completion_timeout(&inst->dev->irq_done,
+> +                                         msecs_to_jiffies(timeout));
+> +       if (!ret)
+> +               return -ETIMEDOUT;
+> +
+> +       reinit_completion(&inst->dev->irq_done);
+> +
+> +       return 0;
+> +}
+> +
+> +static irqreturn_t vpu_irq(int irq, void *dev_id)
+> +{
+> +       struct vpu_device   *dev =3D (struct vpu_device *)dev_id;
+> +       unsigned int irq_status;
+> +
+> +       if (vdi_read_register(dev, W5_VPU_VPU_INT_STS)) {
+> +               irq_status =3D vdi_read_register(dev, W5_VPU_VINT_REASON)=
+;
+> +               vdi_write_register(dev, W5_VPU_VINT_REASON_CLR, irq_statu=
+s);
+> +               vdi_write_register(dev, W5_VPU_VINT_CLEAR, 0x1);
+> +
+> +               kfifo_in(&dev->irq_status, &irq_status, sizeof(int));
+> +
+> +               return IRQ_WAKE_THREAD;
+> +       }
+> +
+> +       return IRQ_HANDLED;
+> +}
+> +
+> +static irqreturn_t vpu_irq_thread(int irq, void *dev_id)
+> +{
+> +       struct vpu_device   *dev =3D (struct vpu_device *)dev_id;
+> +       struct vpu_instance *inst;
+> +       unsigned int irq_status, val;
+> +       int ret;
+> +
+> +       while (kfifo_len(&dev->irq_status)) {
+> +               inst =3D v4l2_m2m_get_curr_priv(dev->v4l2_m2m_dev);
+> +               if (inst) {
+> +                       inst->ops->finish_process(inst);
+> +               } else {
+> +                       ret =3D kfifo_out(&dev->irq_status, &irq_status, =
+sizeof(int));
+> +                       if (!ret)
+> +                               break;
+> +                       DPRINTK(dev, 1, "irq_status: 0x%x\n", irq_status)=
+;
+
+If you explore other drivers you will see that it's preferred to use
+dprintk instead of DPRINTK. Or just use dev_dbg which is probably better?
+
+Also, the driver only seems to use debug level "1", so you can drop
+the parameter.
+
+Again, I believe dev_dbg may be more flexible and powerful.
+
+> +                       val =3D vdi_read_register(dev, W5_VPU_VINT_REASON=
+_USR);
+> +                       val &=3D ~irq_status;
+> +                       vdi_write_register(dev, W5_VPU_VINT_REASON_USR, v=
+al);
+> +                       complete(&dev->irq_done);
+> +               }
+> +       }
+> +
+> +       return IRQ_HANDLED;
+> +}
+> +
+> +static void vpu_device_run(void *priv)
+> +{
+> +       struct vpu_instance *inst =3D priv;
+> +
+> +       DPRINTK(inst->dev, 1, "inst type=3D%d state=3D%d\n",
+> +               inst->type, inst->state);
+> +
+> +       inst->ops->start_process(inst);
+> +}
+> +
+> +static int vpu_job_ready(void *priv)
+> +{
+> +       struct vpu_instance *inst =3D priv;
+> +
+> +       DPRINTK(inst->dev, 1, "inst type=3D%d state=3D%d\n",
+> +               inst->type, inst->state);
+> +
+> +       if (inst->state =3D=3D VPU_INST_STATE_STOP)
+> +               return 0;
+> +
+> +       return 1;
+> +}
+> +
+> +static void vpu_job_abort(void *priv)
+> +{
+> +       struct vpu_instance *inst =3D priv;
+> +
+> +       DPRINTK(inst->dev, 1, "inst type=3D%d state=3D%d\n",
+> +               inst->type, inst->state);
+> +
+> +       inst->ops->stop_process(inst);
+> +}
+> +
+> +static const struct v4l2_m2m_ops vpu_m2m_ops =3D {
+> +       .device_run =3D vpu_device_run,
+> +       .job_ready  =3D vpu_job_ready,
+> +       .job_abort  =3D vpu_job_abort,
+> +};
+> +
+> +static int vpu_load_firmware(struct device *dev, const char *fw_name)
+> +{
+> +       const struct firmware *fw;
+> +       enum ret_code ret =3D RETCODE_SUCCESS;
+> +       u32 version;
+> +       u32 revision;
+> +       u32 product_id;
+> +
+> +       if (request_firmware(&fw, fw_name, dev)) {
+> +               pr_err("request_firmware fail\n");
+> +               return -1;
+> +       }
+> +
+> +       ret =3D vpu_init_with_bitcode(dev, (unsigned short *)fw->data, fw=
+->size / 2);
+> +       if (ret !=3D RETCODE_SUCCESS) {
+
+Get rid of enum ret_code and instead use 0 or errno.
+
+> +               pr_err("vpu_init_with_bitcode fail\n");
+> +               return -1;
+
+Have you noticed this -1 is returned to the caller of vpu_probe?
+Just propagate the errno (after getting rid of enum ret_code).
+Same may apply to the rest of the driver.
+
+> +       }
+> +       release_firmware(fw);
+> +
+> +       ret =3D vpu_get_version_info(dev, &version, &revision, &product_i=
+d);
+> +       if (ret !=3D RETCODE_SUCCESS) {
+> +               pr_err("vpu_get_version_info fail\n");
+> +               return -1;
+> +       }
+> +
+> +       pr_err("enum product_id : %08x\n", product_id);
+> +       pr_err("fw_version : %08x(r%d)\n", version, revision);
+> +
+
+Avoid pr_{} and instead go with dev_{} / v4l2_{}.
+Same may apply to the rest of the driver.
+
+> +       return 0;
+> +}
+> +
+> +static int vpu_probe(struct platform_device *pdev)
+> +{
+> +       int err =3D 0;
+> +       struct vpu_device *dev;
+> +       struct resource *res =3D NULL;
+> +       const struct wave5_match_data *match_data;
+> +
+> +       match_data =3D device_get_match_data(&pdev->dev);
+> +       if (!match_data)
+> +               match_data =3D &default_match_data;
+> +
+> +       /* physical addresses limited to 32 bits */
+> +       dma_set_mask(&pdev->dev, DMA_BIT_MASK(32));
+> +       dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(32));
+> +
+> +       res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +       if (!res) {
+> +               dev_err(&pdev->dev, "unable to get mem resource\n");
+> +               return -EINVAL;
+> +       }
+> +       dev =3D devm_kzalloc(&pdev->dev, sizeof(*dev), GFP_KERNEL);
+> +       if (!dev)
+> +               return -ENOMEM;
+> +
+> +       dev->vdb_register.daddr =3D res->start;
+> +       dev->vdb_register.size  =3D resource_size(res);
+> +       dev->vdb_register.vaddr =3D devm_ioremap(&pdev->dev, dev->vdb_reg=
+ister.daddr, dev->vdb_register.size);
+> +       ida_init(&dev->inst_ida);
+> +
+> +       dev_dbg(&pdev->dev, "REGISTER BASE daddr=3D%pad vaddr=3D%p size=
+=3D%zu\n",
+> +               &dev->vdb_register.daddr, dev->vdb_register.vaddr, dev->v=
+db_register.size);
+> +
+
+This dev_dbg makes little sense.
+
+> +       mutex_init(&dev->dev_lock);
+> +       mutex_init(&dev->hw_lock);
+> +       init_completion(&dev->irq_done);
+> +       dev_set_drvdata(&pdev->dev, dev);
+> +       dev->dev =3D &pdev->dev;
+> +       dev->product_code =3D vdi_read_register(dev, VPU_PRODUCT_CODE_REG=
+ISTER);
+> +       err =3D vdi_init(&pdev->dev);
+> +       if (err < 0) {
+> +               dev_err(&pdev->dev, "failed to init vdi: %d\n", err);
+> +               return err;
+> +       }
+> +       dev->product =3D wave_vpu_get_product_id(dev);
+> +
+> +       err =3D v4l2_device_register(&pdev->dev, &dev->v4l2_dev);
+> +       if (err) {
+> +               dev_err(&pdev->dev, "v4l2_device_register fail: %d\n", er=
+r);
+> +               goto err_v4l2_dev_reg;
+> +       }
+> +
+> +       dev->v4l2_m2m_dev =3D v4l2_m2m_init(&vpu_m2m_ops);
+> +       if (IS_ERR(dev->v4l2_m2m_dev)) {
+> +               dev_err(&pdev->dev, "v4l2_m2m_init fail: %ld\n", PTR_ERR(=
+dev->v4l2_m2m_dev));
+> +               err =3D PTR_ERR(dev->v4l2_m2m_dev);
+> +               goto err_m2m_init;
+> +       }
+> +
+> +       if (match_data->decoder) {
+> +               err =3D vpu_dec_register_device(dev);
+> +               if (err) {
+> +                       dev_err(&pdev->dev, "vpu_dec_register_device fail=
+: %d\n", err);
+> +                       goto err_dec_reg;
+> +               }
+> +       }
+> +       if (match_data->encoder) {
+> +               err =3D vpu_enc_register_device(dev);
+> +               if (err) {
+> +                       dev_err(&pdev->dev, "vpu_enc_register_device fail=
+: %d\n", err);
+> +                       goto err_enc_reg;
+> +               }
+> +       }
+> +
+> +       dev->clk =3D devm_clk_get(&pdev->dev, VPU_CLK_NAME);
+> +       if (IS_ERR(dev->clk)) {
+> +               dev_warn(&pdev->dev, "unable to get clock: %ld\n", PTR_ER=
+R(dev->clk));
+> +               /* continue wihtout clock, assume externally managed */
+> +               dev->clk =3D NULL;
+> +       }
+> +
+> +       err =3D clk_prepare_enable(dev->clk);
+
+Are you sure you actually need to enable the clock in probe()?
+
+> +       if (err) {
+> +               dev_err(&pdev->dev, "failed to enable clock: %d\n", err);
+> +               goto err_clk_prep_en;
+> +       }
+> +
+> +       res =3D platform_get_resource(pdev, IORESOURCE_IRQ, 0);
+> +       if (!res) {
+> +               dev_err(&pdev->dev, "failed to get irq resource\n");
+> +               err =3D -ENXIO;
+> +               goto err_get_irq;
+> +       }
+> +       dev->irq =3D res->start;
+> +
+> +       if (kfifo_alloc(&dev->irq_status, 16 * sizeof(int), GFP_KERNEL)) =
+{
+> +               dev_err(&pdev->dev, "failed to allocate fifo\n");
+> +               goto err_kfifo_alloc;
+> +       }
+> +
+> +       err =3D devm_request_threaded_irq(&pdev->dev, dev->irq, vpu_irq, =
+vpu_irq_thread, 0, "vpu_irq", dev);
+> +       if (err) {
+> +               dev_err(&pdev->dev, "fail to register interrupt handler: =
+%d\n", err);
+> +               goto err_request_irq;
+> +       }
+> +
+> +       err =3D vpu_load_firmware(&pdev->dev, match_data->fw_name);
+> +       if (err) {
+> +               dev_err(&pdev->dev, "failed to vpu_load_firmware: %d\n", =
+err);
+> +               goto err_load_fw;
+> +       }
+> +
+> +       return 0;
+> +
+> +err_load_fw:
+> +err_request_irq:
+> +       kfifo_free(&dev->irq_status);
+> +err_kfifo_alloc:
+> +err_get_irq:
+> +       clk_disable_unprepare(dev->clk);
+> +err_clk_prep_en:
+> +       if (match_data->encoder)
+> +               vpu_enc_unregister_device(dev);
+> +err_enc_reg:
+> +       if (match_data->decoder)
+> +               vpu_dec_unregister_device(dev);
+> +err_dec_reg:
+> +       v4l2_m2m_release(dev->v4l2_m2m_dev);
+> +err_m2m_init:
+> +       v4l2_device_unregister(&dev->v4l2_dev);
+> +err_v4l2_dev_reg:
+> +       vdi_release(&pdev->dev);
+> +
+> +       return err;
+> +}
+> +
+> +static int vpu_remove(struct platform_device *pdev)
+> +{
+> +       struct vpu_device *dev =3D dev_get_drvdata(&pdev->dev);
+> +
+> +       clk_disable_unprepare(dev->clk);
+> +       vpu_enc_unregister_device(dev);
+> +       vpu_dec_unregister_device(dev);
+> +       v4l2_m2m_release(dev->v4l2_m2m_dev);
+> +       v4l2_device_unregister(&dev->v4l2_dev);
+> +       kfifo_free(&dev->irq_status);
+> +       vdi_release(&pdev->dev);
+> +
+> +       return 0;
+> +}
+> +
+> +#ifdef CONFIG_OF
+> +const struct wave5_match_data wave511_data =3D {
+> +       .decoder =3D true,
+> +       .encoder =3D false,
+> +       .fw_name =3D "wave511_dec_fw.bin",
+> +};
+> +
+> +const struct wave5_match_data wave521_data =3D {
+> +       .decoder =3D false,
+> +       .encoder =3D true,
+> +       .fw_name =3D "wave521_enc_fw.bin",
+> +};
+> +
+> +const struct wave5_match_data wave521c_data =3D {
+> +       .decoder =3D true,
+> +       .encoder =3D true,
+> +       .fw_name =3D "wave521c_codec_fw.bin",
+> +};
+
+Can you move default_match_data here?
+
+> +
+> +// TODO: move this file to wave5 layer and convert runtime paramer filli=
+ng to
+> +// predefined structure used as data here.
+> +static const struct of_device_id wave5_dt_ids[] =3D {
+> +       { .compatible =3D "cnm,cm511-vpu", .data =3D &wave511_data },
+> +       { .compatible =3D "cnm,cm517-vpu", .data =3D &default_match_data =
+},
+> +       { .compatible =3D "cnm,cm521-vpu", .data =3D &wave521_data },
+> +       { .compatible =3D "cnm,cm521c-vpu", .data =3D &wave521c_data },
+> +       { .compatible =3D "cnm,cm521c-dual-vpu", .data =3D &wave521c_data=
+ },
+> +       { .compatible =3D "cnm,cm521e1-vpu", .data =3D &default_match_dat=
+a },
+> +       { .compatible =3D "cnm,cm537-vpu", .data =3D &default_match_data =
+},
+> +       { /* sentinel */ }
+> +};
+> +MODULE_DEVICE_TABLE(of, wave5_dt_ids);
+> +#endif
+> +
+> +static struct platform_driver vpu_driver =3D {
+> +       .driver =3D {
+> +               .name =3D VPU_PLATFORM_DEVICE_NAME,
+> +               .of_match_table =3D of_match_ptr(wave5_dt_ids),
+> +               },
+> +       .probe =3D vpu_probe,
+> +       .remove =3D vpu_remove,
+> +       //.suspend =3D vpu_suspend,
+> +       //.resume =3D vpu_resume,
+> +};
+> +
+> +static int __init vpu_init(void)
+
+So through all these files, I'd like to see a wave5_ prefix
+for all the functions. This is important even for static functions.
+
+I'm aware it may seem not strongly enforced, but you can
+imagine how hard it would be for any code navigation tool to work
+if every driver would have functions named as vpu_probe, vpu_init,
+set_default_format, just to name a few.
+
+> +{
+> +       int ret;
+> +
+> +       ret =3D platform_driver_register(&vpu_driver);
+> +
+> +       return ret;
+> +}
+> +
+> +static void __exit vpu_exit(void)
+> +{
+> +       platform_driver_unregister(&vpu_driver);
+> +}
+> +
+> +MODULE_DESCRIPTION("chips&media VPU V4L2 driver");
+> +MODULE_LICENSE("GPL");
+
+This file says GPL-2 or BSD-3-Clause in the header. Is it OK to have "GPL" =
+here?
+
+> +
+> +module_init(vpu_init);
+> +module_exit(vpu_exit);
+
+Use module_platform_driver.
+
+> +
+> diff --git a/drivers/staging/media/wave5/v4l2/vpu.h b/drivers/staging/med=
+ia/wave5/v4l2/vpu.h
+> new file mode 100644
+> index 000000000000..402873eb0d2d
+> --- /dev/null
+> +++ b/drivers/staging/media/wave5/v4l2/vpu.h
+> @@ -0,0 +1,76 @@
+> +/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+> +/*
+> + * Wave5 series multi-standard codec IP - basic types
+> + *
+> + * Copyright (C) 2021 CHIPS&MEDIA INC
+> + */
+> +#ifndef __VPU_DRV_H__
+> +#define __VPU_DRV_H__
+> +
+> +#include <media/v4l2-ctrls.h>
+> +#include <media/v4l2-ioctl.h>
+> +#include <media/v4l2-event.h>
+> +#include <media/v4l2-fh.h>
+> +#include <media/videobuf2-v4l2.h>
+> +#include <media/videobuf2-dma-contig.h>
+> +#include <media/videobuf2-vmalloc.h>
+> +#include "../vpuapi/vpuconfig.h"
+> +#include "../vpuapi/vpuapi.h"
+> +
+> +#define DPRINTK(dev, level, fmt, args...) \
+> +       v4l2_dbg(level, vpu_debug, &(dev)->v4l2_dev, "[%s]" fmt, __func__=
+, ##args)
+> +
+> +#define VPU_BUF_SYNC_TO_DEVICE 0
+> +#define VPU_BUF_SYNC_FROM_DEVICE 1
+> +struct vpu_platform_data {
+> +       struct vb2_mem_ops *mem_ops;
+> +       int (*pre_fw_init)(struct device *dev, void __iomem *base);
+> +       uint32_t (*read_register)(struct device *dev, void __iomem *base,=
+ uint32_t reg);
+> +       void (*write_register)(struct device *dev, void __iomem *base, ui=
+nt32_t reg, uint32_t data);
+> +       int (*buffer_sync)(struct device *dev, void __iomem *base, struct=
+ vpu_buf *vb, size_t offset, uint32_t len, int dir);
+> +       int (*buffer_alloc)(struct device *dev, struct vpu_buf *vb);
+> +       void (*buffer_free)(struct device *dev, struct vpu_buf *vb);
+> +       int (*reset)(struct device *dev, void __iomem *base);
+> +       uint32_t (*get_hwoption)(struct device *dev);
+> +};
+> +
+> +struct vpu_buffer {
+> +       struct v4l2_m2m_buffer v4l2_m2m_buf;
+> +       bool                   consumed;
+> +};
+> +
+> +enum vpu_format_type {
+> +       VPU_FMT_TYPE_CODEC =3D 0,
+> +       VPU_FMT_TYPE_RAW   =3D 1
+> +};
+> +
+> +struct vpu_format {
+> +       unsigned int v4l2_pix_fmt;
+> +       unsigned int num_planes;
+> +       unsigned int max_width;
+> +       unsigned int min_width;
+> +       unsigned int max_height;
+> +       unsigned int min_height;
+> +};
+> +
+> +extern unsigned int vpu_debug;
+> +
+> +static inline struct vpu_instance *to_vpu_inst(struct v4l2_fh *vfh)
+> +{
+> +       return container_of(vfh, struct vpu_instance, v4l2_fh);
+> +}
+> +
+> +static inline struct vpu_instance *ctrl_to_vpu_inst(struct v4l2_ctrl *vc=
+trl)
+> +{
+> +       return container_of(vctrl->handler, struct vpu_instance, v4l2_ctr=
+l_hdl);
+> +}
+> +
+> +static inline struct vpu_buffer *to_vpu_buf(struct vb2_v4l2_buffer *vbuf=
+)
+> +{
+> +       return container_of(vbuf, struct vpu_buffer, v4l2_m2m_buf.vb);
+> +}
+> +
+> +int vpu_wait_interrupt(struct vpu_instance *inst, unsigned int timeout);
+> +
+> +#endif
+> +
+> diff --git a/drivers/staging/media/wave5/v4l2/vpu_dec.c b/drivers/staging=
+/media/wave5/v4l2/vpu_dec.c
+> new file mode 100644
+> index 000000000000..6cc00becb291
+> --- /dev/null
+> +++ b/drivers/staging/media/wave5/v4l2/vpu_dec.c
+> @@ -0,0 +1,1393 @@
+> +// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+> +/*
+> + * Wave5 series multi-standard codec IP - decoder interface
+> + *
+> + * Copyright (C) 2021 CHIPS&MEDIA INC
+> + */
+> +#include "vpu_dec.h"
+> +
+> +static const struct vpu_format vpu_dec_fmt_list[2][6] =3D {
+> +       [VPU_FMT_TYPE_CODEC] =3D {
+> +               {
+> +                       .v4l2_pix_fmt =3D V4L2_PIX_FMT_HEVC,
+> +                       .num_planes   =3D 1,
+> +                       .max_width    =3D 8192,
+> +                       .min_width    =3D 8,
+> +                       .max_height   =3D 8192,
+> +                       .min_height   =3D 8,
+> +               },
+> +               {
+> +                       .v4l2_pix_fmt =3D V4L2_PIX_FMT_H264,
+> +                       .num_planes   =3D 1,
+> +                       .max_width    =3D 8192,
+> +                       .min_width    =3D 32,
+> +                       .max_height   =3D 8192,
+> +                       .min_height   =3D 32,
+> +               },
+> +       },
+> +       [VPU_FMT_TYPE_RAW] =3D {
+> +               {
+> +                       .v4l2_pix_fmt =3D V4L2_PIX_FMT_YUV420,
+> +                       .num_planes   =3D 1,
+> +                       .max_width    =3D 8192,
+> +                       .min_width    =3D 8,
+> +                       .max_height   =3D 8192,
+> +                       .min_height   =3D 8,
+> +               },
+> +               {
+> +                       .v4l2_pix_fmt =3D V4L2_PIX_FMT_NV12,
+> +                       .num_planes   =3D 1,
 
 
-vim +/address +468 arch/x86/kernel/traps.c
+You shouldn't need num_planes here, you normally can
+get all that stuff using the v4l2_fill_pixfmt_ helpers.
 
-   463	
-   464	#ifdef CONFIG_X86_64
-   465		{
-   466			struct stack_info info;
-   467	
- > 468			if (get_stack_info_noinstr((void *)address, current, &info) &&
-   469			    info.type & STACK_TYPE_GUARD) {
-   470				const char *name = stack_type_name(info.type & ~STACK_TYPE_GUARD);
-   471				pr_emerg("BUG: %s stack guard hit at %p (stack is %p..%p)\n",
-   472					 name, (void *)address, info.begin, info.end);
-   473			}
-   474		}
-   475	#endif
-   476	
-   477		pr_emerg("PANIC: double fault, error_code: 0x%lx\n", error_code);
-   478		die("double fault", regs, error_code);
-   479		panic("Machine halted.");
-   480		instrumentation_end();
-   481	}
-   482	
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> +                       .max_width    =3D 8192,
+> +                       .min_width    =3D 8,
+> +                       .max_height   =3D 8192,
+> +                       .min_height   =3D 8,
+> +               },
+> +               {
+> +                       .v4l2_pix_fmt =3D V4L2_PIX_FMT_NV21,
+> +                       .num_planes   =3D 1,
+> +                       .max_width    =3D 8192,
+> +                       .min_width    =3D 8,
+> +                       .max_height   =3D 8192,
+> +                       .min_height   =3D 8,
+> +               },
+> +               {
+> +                       .v4l2_pix_fmt =3D V4L2_PIX_FMT_YUV420M,
+> +                       .num_planes   =3D 3,
+> +                       .max_width    =3D 8192,
+> +                       .min_width    =3D 8,
+> +                       .max_height   =3D 8192,
+> +                       .min_height   =3D 8,
+> +               },
+> +               {
+> +                       .v4l2_pix_fmt =3D V4L2_PIX_FMT_NV12M,
+> +                       .num_planes   =3D 2,
+> +                       .max_width    =3D 8192,
+> +                       .min_width    =3D 8,
+> +                       .max_height   =3D 8192,
+> +                       .min_height   =3D 8,
+> +               },
+> +               {
+> +                       .v4l2_pix_fmt =3D V4L2_PIX_FMT_NV21M,
+> +                       .num_planes   =3D 2,
+> +                       .max_width    =3D 8192,
+> +                       .min_width    =3D 8,
+> +                       .max_height   =3D 8192,
+> +                       .min_height   =3D 8,
+> +               },
+> +       }
+> +};
+> +
+> +static enum wave_std to_vpu_codstd(unsigned int v4l2_pix_fmt)
+> +{
+> +       switch (v4l2_pix_fmt) {
+> +       case V4L2_PIX_FMT_H264:
+> +               return W_AVC_DEC;
+> +       case V4L2_PIX_FMT_HEVC:
+> +               return W_HEVC_DEC;
+> +       default:
+> +               return STD_UNKNOWN;
+> +       }
+> +}
+> +
+> +static const struct vpu_format *find_vpu_format(unsigned int v4l2_pix_fm=
+t, enum vpu_format_type type)
+> +{
+> +       unsigned int index;
+> +
+> +       for (index =3D 0; index < ARRAY_SIZE(vpu_dec_fmt_list[type]); ind=
+ex++) {
+> +               if (vpu_dec_fmt_list[type][index].v4l2_pix_fmt =3D=3D v4l=
+2_pix_fmt)
+> +                       return &vpu_dec_fmt_list[type][index];
+> +       }
+> +
+> +       return NULL;
+> +}
+> +
+> +static const struct vpu_format *find_vpu_format_by_index(unsigned int in=
+dex, enum vpu_format_type type)
+> +{
+> +       if (index >=3D ARRAY_SIZE(vpu_dec_fmt_list[type]))
+> +               return NULL;
+> +
+> +       if (vpu_dec_fmt_list[type][index].v4l2_pix_fmt =3D=3D 0)
+> +               return NULL;
+> +
+> +       return &vpu_dec_fmt_list[type][index];
+> +}
+> +
+> +static void handle_bitstream_buffer(struct vpu_instance *inst)
+> +{
+> +       struct v4l2_m2m_buffer *v4l2_m2m_buf =3D NULL;
+> +
+> +       unsigned long flags;
+> +
+> +       spin_lock_irqsave(&inst->bitstream_lock, flags);
+> +
+> +       v4l2_m2m_for_each_src_buf(inst->v4l2_fh.m2m_ctx, v4l2_m2m_buf) {
+> +               enum ret_code                 ret_code =3D RETCODE_SUCCES=
+S;
+> +               struct vb2_v4l2_buffer *vbuf    =3D &v4l2_m2m_buf->vb;
+> +               struct vpu_buffer      *vpu_buf =3D to_vpu_buf(vbuf);
+> +               u32                  src_size =3D vb2_get_plane_payload(&=
+vbuf->vb2_buf, 0);
+> +               void                   *src_buf  =3D vb2_plane_vaddr(&vbu=
+f->vb2_buf, 0);
+> +               dma_addr_t         bs_rd_ptr =3D 0;
+> +               dma_addr_t         bs_wr_ptr =3D 0;
+> +               u32                  bs_remain_size =3D 0;
+> +               size_t offset;
 
---VS++wcV0S1rZb1Fb
-Content-Type: application/gzip
-Content-Disposition: attachment; filename=".config.gz"
-Content-Transfer-Encoding: base64
+Fix indentation.
 
-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
-+Cfsa/IXTy8FHCJgAgA=
+> +
+> +               if (vpu_buf->consumed) {
+> +                       DPRINTK(inst->dev, 1, "already consumed buffer\n"=
+);
+> +                       continue;
+> +               }
+> +
+> +               vpu_dec_get_bitstream_buffer(inst, &bs_rd_ptr, &bs_wr_ptr=
+, &bs_remain_size);
+> +
+> +               if (bs_remain_size < src_size) {
+> +                       DPRINTK(inst->dev, 1, "fill next time : remained =
+size < source size.\n");
+> +                       continue;
+> +               }
+> +
+> +               offset =3D bs_wr_ptr - inst->bitstream_vbuf.daddr;
+> +               if (bs_wr_ptr + src_size > inst->bitstream_vbuf.daddr + i=
+nst->bitstream_vbuf.size) {
+> +                       int temp_size;
+> +
+> +                       temp_size =3D inst->bitstream_vbuf.daddr + inst->=
+bitstream_vbuf.size - bs_wr_ptr;
+> +                       vdi_write_memory(inst->dev, &inst->bitstream_vbuf=
+, offset, src_buf,
+> +                                        temp_size, VDI_128BIT_LITTLE_END=
+IAN);
+> +                       vdi_write_memory(inst->dev, &inst->bitstream_vbuf=
+, 0,
+> +                                        src_buf + temp_size, src_size - =
+temp_size, VDI_128BIT_LITTLE_ENDIAN);
+> +               } else {
+> +                       vdi_write_memory(inst->dev, &inst->bitstream_vbuf=
+, offset, src_buf,
+> +                                        src_size, VDI_128BIT_LITTLE_ENDI=
+AN);
+> +               }
+> +
+> +               ret_code =3D vpu_dec_update_bitstream_buffer(inst, src_si=
+ze);
+> +               if (ret_code !=3D RETCODE_SUCCESS) {
+> +                       DPRINTK(inst->dev, 1, "failed to call vpu_dec_upd=
+ate_bitstream_buffer() : %d\n", ret_code);
+> +                       continue;
+> +               }
+> +
+> +               vpu_buf->consumed =3D TRUE;
+> +
+> +               if (inst->state =3D=3D VPU_INST_STATE_WAIT_BUF)
+> +                       inst->state =3D VPU_INST_STATE_PIC_RUN;
+> +       }
+> +
+> +       spin_unlock_irqrestore(&inst->bitstream_lock, flags);
+> +}
+> +
+> +static void handle_src_buffer(struct vpu_instance *inst)
+> +{
+> +       struct vb2_v4l2_buffer *src_buf;
+> +
+> +       unsigned long flags;
+> +
+> +       spin_lock_irqsave(&inst->bitstream_lock, flags);
+> +
+> +       src_buf =3D v4l2_m2m_next_src_buf(inst->v4l2_fh.m2m_ctx);
+> +       if (src_buf) {
+> +               struct vpu_buffer *vpu_buf =3D to_vpu_buf(src_buf);
+> +
+> +               if (vpu_buf->consumed) {
+> +                       u32 remain_num =3D 0;
+> +
+> +                       DPRINTK(inst->dev, 1, "already consumed buffer\n"=
+);
+> +                       remain_num =3D v4l2_m2m_num_src_bufs_ready(inst->=
+v4l2_fh.m2m_ctx);
+> +                       DPRINTK(inst->dev, 1, "remain buffer : %d\n", rem=
+ain_num);
+> +                       if (remain_num > 1) {
+> +                               src_buf =3D v4l2_m2m_src_buf_remove(inst-=
+>v4l2_fh.m2m_ctx);
+> +                               inst->timestamp =3D src_buf->vb2_buf.time=
+stamp;
+> +                               v4l2_m2m_buf_done(src_buf, VB2_BUF_STATE_=
+DONE);
+> +                       }
+> +               }
+> +       }
+> +       spin_unlock_irqrestore(&inst->bitstream_lock, flags);
+> +}
+> +
+> +static void update_resolution_info(struct v4l2_pix_format_mplane *pix_mp=
+, unsigned int width, unsigned int height)
+> +{
+> +       switch (pix_mp->pixelformat) {
+> +       case V4L2_PIX_FMT_YUV420:
+> +       case V4L2_PIX_FMT_NV12:
+> +       case V4L2_PIX_FMT_NV21:
+> +               pix_mp->width  =3D round_up(width, 32);
+> +               pix_mp->height =3D height;
+> +               pix_mp->plane_fmt[0].bytesperline =3D round_up(width, 32)=
+;
+> +               pix_mp->plane_fmt[0].sizeimage    =3D width * height * 3 =
+/ 2;
+> +               memset(&pix_mp->plane_fmt[0].reserved, 0, sizeof(pix_mp->=
+plane_fmt[0].reserved));
+> +               break;
+> +       case V4L2_PIX_FMT_YUV420M:
+> +               pix_mp->width  =3D round_up(width, 32);
+> +               pix_mp->height =3D height;
+> +               pix_mp->plane_fmt[0].bytesperline =3D round_up(width, 32)=
+;
+> +               pix_mp->plane_fmt[0].sizeimage    =3D width * height;
+> +               memset(&pix_mp->plane_fmt[0].reserved, 0, sizeof(pix_mp->=
+plane_fmt[0].reserved));
+> +               pix_mp->plane_fmt[1].bytesperline =3D round_up(width, 32)=
+ / 2;
+> +               pix_mp->plane_fmt[1].sizeimage    =3D width * height / 4;
+> +               memset(&pix_mp->plane_fmt[1].reserved, 0, sizeof(pix_mp->=
+plane_fmt[1].reserved));
+> +               pix_mp->plane_fmt[2].bytesperline =3D round_up(width, 32)=
+ / 2;
+> +               pix_mp->plane_fmt[2].sizeimage    =3D width * height / 4;
+> +               memset(&pix_mp->plane_fmt[2].reserved, 0, sizeof(pix_mp->=
+plane_fmt[2].reserved));
+> +               break;
+> +       case V4L2_PIX_FMT_NV12M:
+> +       case V4L2_PIX_FMT_NV21M:
+> +               pix_mp->width  =3D round_up(width, 32);
 
---VS++wcV0S1rZb1Fb--
+Yet more indentation issues.
+
+> +               pix_mp->height =3D height;
+> +               pix_mp->plane_fmt[0].bytesperline =3D round_up(width, 32)=
+;
+> +               pix_mp->plane_fmt[0].sizeimage    =3D width * height;
+> +               memset(&pix_mp->plane_fmt[0].reserved, 0, sizeof(pix_mp->=
+plane_fmt[0].reserved));
+> +               pix_mp->plane_fmt[1].bytesperline =3D round_up(width, 32)=
+;
+> +               pix_mp->plane_fmt[1].sizeimage    =3D width * height / 2;
+> +               memset(&pix_mp->plane_fmt[1].reserved, 0, sizeof(pix_mp->=
+plane_fmt[1].reserved));
+> +               break;
+> +       default:
+> +               pix_mp->width  =3D width;
+> +               pix_mp->height =3D height;
+> +               pix_mp->plane_fmt[0].bytesperline =3D 0;
+> +               pix_mp->plane_fmt[0].sizeimage    =3D width * height / 2;
+> +               memset(&pix_mp->plane_fmt[0].reserved, 0, sizeof(pix_mp->=
+plane_fmt[0].reserved));
+> +               break;
+> +       }
+> +}
+> +
+> +static void vpu_dec_start_decode(struct vpu_instance *inst)
+> +{
+> +       struct dec_param pic_param;
+> +       struct queue_status_info q_status;
+> +       u32 remain_cmd_q, max_cmd_q =3D 0;
+> +
+> +       memset(&pic_param, 0, sizeof(struct dec_param));
+> +
+> +       vpu_dec_give_command(inst, DEC_GET_QUEUE_STATUS, &q_status);
+> +       DPRINTK(inst->dev, 1, "min_src_buf_cnt : %d | default : %d | qcou=
+nt : %d | report_q : %d\n",
+> +               inst->min_src_frame_buf_count, COMMAND_QUEUE_DEPTH, q_sta=
+tus.instance_queue_count,
+> +               q_status.report_queue_count);
+> +
+> +       max_cmd_q    =3D (inst->min_src_frame_buf_count < COMMAND_QUEUE_D=
+EPTH) ?
+
+Indentation issues all over the place :-) Please fix.
+
+> +               inst->min_src_frame_buf_count : COMMAND_QUEUE_DEPTH;
+> +       remain_cmd_q =3D max_cmd_q - q_status.instance_queue_count;
+> +
+> +       while (remain_cmd_q) {
+> +               enum ret_code ret_code;
+> +
+> +               ret_code =3D vpu_dec_start_one_frame(inst, &pic_param);
+> +               if (ret_code !=3D RETCODE_SUCCESS) {
+> +                       if (ret_code !=3D RETCODE_QUEUEING_FAILURE) {
+> +                               struct vb2_v4l2_buffer *src_buf =3D
+> +                                       v4l2_m2m_src_buf_remove(inst->v4l=
+2_fh.m2m_ctx);
+> +
+> +                               inst->state =3D VPU_INST_STATE_STOP;
+> +                               v4l2_m2m_buf_done(src_buf, VB2_BUF_STATE_=
+ERROR);
+> +                               break;
+> +                       }
+> +               } else {
+> +                       DPRINTK(inst->dev, 1, "vpu_dec_start_one_frame su=
+ccess %d\n", ret_code);
+> +               }
+> +
+> +               remain_cmd_q--;
+> +       }
+> +}
+> +
+> +static void vpu_dec_stop_decode(struct vpu_instance *inst)
+> +{
+> +       u32 i;
+> +       unsigned long flags;
+> +
+> +       inst->state =3D VPU_INST_STATE_STOP;
+> +
+> +       spin_lock_irqsave(&inst->bitstream_lock, flags);
+> +       vpu_dec_update_bitstream_buffer(inst, 0);
+> +       spin_unlock_irqrestore(&inst->bitstream_lock, flags);
+> +
+> +       for (i =3D 0; i < inst->min_dst_frame_buf_count; i++) {
+> +               vpu_dec_clr_disp_flag(inst, i);
+> +               DPRINTK(inst->dev, 1, "clear display flag : %d\n", i);
+> +       }
+> +}
+> +
+> +static void vpu_dec_finish_decode(struct vpu_instance *inst)
+> +{
+> +       struct dec_output_info dec_output_info;
+> +       enum ret_code ret_code;
+> +       int irq_status;
+> +
+> +       if (kfifo_out(&inst->dev->irq_status, &irq_status, sizeof(int)))
+> +               vpu_clear_interrupt_ex(inst, irq_status);
+> +
+> +       if (irq_status & (1 << INT_WAVE5_BSBUF_EMPTY)) {
+> +               DPRINTK(inst->dev, 1, "bitstream EMPTY!!!!\n");
+> +               inst->state =3D VPU_INST_STATE_WAIT_BUF;
+> +               handle_src_buffer(inst);
+> +               handle_bitstream_buffer(inst);
+> +       }
+> +
+> +       if (irq_status & (1 << INT_WAVE5_DEC_PIC)) {
+> +               ret_code =3D vpu_dec_get_output_info(inst, &dec_output_in=
+fo);
+> +               if (ret_code !=3D RETCODE_SUCCESS) {
+> +                       v4l2_m2m_job_finish(inst->dev->v4l2_m2m_dev, inst=
+->v4l2_fh.m2m_ctx);
+> +               } else {
+> +                       if (inst->state =3D=3D VPU_INST_STATE_STOP) {
+> +                               struct queue_status_info q_status;
+> +
+> +                               if (dec_output_info.index_frame_display >=
+=3D 0)
+> +                                       vpu_dec_clr_disp_flag(inst, dec_o=
+utput_info.index_frame_display);
+> +
+> +                               vpu_dec_give_command(inst, DEC_GET_QUEUE_=
+STATUS, &q_status);
+> +
+> +                               if (q_status.report_queue_count + q_statu=
+s.instance_queue_count =3D=3D 0)
+> +                                       v4l2_m2m_job_finish(inst->dev->v4=
+l2_m2m_dev, inst->v4l2_fh.m2m_ctx);
+> +                       } else if (dec_output_info.index_frame_decoded =
+=3D=3D DECODED_IDX_FLAG_NO_FB &&
+> +                                       dec_output_info.index_frame_displ=
+ay =3D=3D DISPLAY_IDX_FLAG_NO_FB) {
+> +                               DPRINTK(inst->dev, 1, "no more frame buff=
+er\n");
+> +                               inst->state =3D VPU_INST_STATE_WAIT_BUF;
+> +                       } else {
+> +                               handle_src_buffer(inst);
+> +
+> +                               if (dec_output_info.index_frame_display >=
+=3D 0) {
+> +                                       struct vb2_v4l2_buffer *dst_buf =
+=3D
+> +                                               v4l2_m2m_dst_buf_remove_b=
+y_idx(inst->v4l2_fh.m2m_ctx,
+> +                                                                        =
+      dec_output_info.index_frame_display);
+> +                                       int stride =3D dec_output_info.di=
+sp_frame.stride;
+> +                                       int height =3D dec_output_info.di=
+sp_pic_height;
+> +
+> +                                       if (inst->dst_fmt.num_planes =3D=
+=3D 1) {
+> +                                               vb2_set_plane_payload(&ds=
+t_buf->vb2_buf, 0,
+> +                                                                     (st=
+ride * height * 3 / 2));
+> +                                       } else if (inst->dst_fmt.num_plan=
+es =3D=3D 2) {
+> +                                               vb2_set_plane_payload(&ds=
+t_buf->vb2_buf, 0,
+> +                                                                     (st=
+ride * height));
+> +                                               vb2_set_plane_payload(&ds=
+t_buf->vb2_buf, 1,
+> +                                                                     ((s=
+tride / 2) * height));
+> +                                       } else if (inst->dst_fmt.num_plan=
+es =3D=3D 3) {
+> +                                               vb2_set_plane_payload(&ds=
+t_buf->vb2_buf, 0,
+> +                                                                     (st=
+ride * height));
+> +                                               vb2_set_plane_payload(&ds=
+t_buf->vb2_buf, 1,
+> +                                                                     ((s=
+tride / 2) * (height / 2)));
+> +                                               vb2_set_plane_payload(&ds=
+t_buf->vb2_buf, 2,
+> +                                                                     ((s=
+tride / 2) * (height / 2)));
+> +                                       }
+> +
+> +                                       dst_buf->vb2_buf.timestamp =3D in=
+st->timestamp;
+> +                                       dst_buf->field =3D V4L2_FIELD_NON=
+E;
+> +                                       v4l2_m2m_buf_done(dst_buf, VB2_BU=
+F_STATE_DONE);
+> +                               } else if (dec_output_info.index_frame_di=
+splay =3D=3D DISPLAY_IDX_FLAG_SEQ_END) {
+> +                                       static const struct v4l2_event vp=
+u_event_eos =3D {
+> +                                               .type =3D V4L2_EVENT_EOS
+> +                                       };
+> +
+> +                                       DPRINTK(inst->dev, 1, "stream end=
+\n");
+> +                                       inst->state =3D VPU_INST_STATE_ST=
+OP;
+> +                                       v4l2_event_queue_fh(&inst->v4l2_f=
+h, &vpu_event_eos);
+> +                               }
+> +
+> +                               if (!kfifo_len(&inst->dev->irq_status))
+> +                                       v4l2_m2m_job_finish(inst->dev->v4=
+l2_m2m_dev,
+> +                                                           inst->v4l2_fh=
+.m2m_ctx);
+> +                       }
+> +               }
+> +       }
+> +}
+> +
+> +static int vpu_dec_querycap(struct file *file, void *fh, struct v4l2_cap=
+ability *cap)
+> +{
+> +       struct vpu_instance *inst =3D to_vpu_inst(fh);
+> +
+> +       DPRINTK(inst->dev, 1, "\n");
+> +
+> +       strscpy(cap->driver,   VPU_DEC_DRV_NAME,            sizeof(cap->d=
+river));
+> +       strscpy(cap->card,     VPU_DEC_DRV_NAME,            sizeof(cap->c=
+ard));
+> +       strscpy(cap->bus_info, "platform:" VPU_DEC_DRV_NAME, sizeof(cap->=
+bus_info));
+> +
+> +       return 0;
+> +}
+> +
+> +static int vpu_dec_enum_framesizes(struct file *file, void *fh, struct v=
+4l2_frmsizeenum *fsize)
+> +{
+> +       struct vpu_instance *inst =3D to_vpu_inst(fh);
+> +       const struct vpu_format *vpu_fmt;
+> +
+> +       DPRINTK(inst->dev, 1, "\n");
+> +
+> +       if (fsize->index)
+> +               return -EINVAL;
+> +
+> +       vpu_fmt =3D find_vpu_format(fsize->pixel_format, VPU_FMT_TYPE_COD=
+EC);
+> +       if (!vpu_fmt) {
+> +               vpu_fmt =3D find_vpu_format(fsize->pixel_format, VPU_FMT_=
+TYPE_RAW);
+> +               if (!vpu_fmt)
+> +                       return -EINVAL;
+> +       }
+> +
+> +       fsize->type                 =3D V4L2_FRMSIZE_TYPE_CONTINUOUS;
+> +       fsize->stepwise.min_width   =3D vpu_fmt->min_width;
+> +       fsize->stepwise.max_width   =3D vpu_fmt->max_width;
+> +       fsize->stepwise.step_width  =3D 1;
+> +       fsize->stepwise.min_height  =3D vpu_fmt->min_height;
+> +       fsize->stepwise.max_height  =3D vpu_fmt->max_height;
+> +       fsize->stepwise.step_height =3D 1;
+> +
+> +       return 0;
+> +}
+> +
+> +static int vpu_dec_enum_fmt_cap(struct file *file, void *fh, struct v4l2=
+_fmtdesc *f)
+> +{
+> +       struct vpu_instance *inst =3D to_vpu_inst(fh);
+> +       const struct vpu_format *vpu_fmt;
+> +
+> +       DPRINTK(inst->dev, 1, "index : %d\n", f->index);
+> +
+> +       vpu_fmt =3D find_vpu_format_by_index(f->index, VPU_FMT_TYPE_RAW);
+> +       if (!vpu_fmt)
+> +               return -EINVAL;
+> +
+> +       f->pixelformat =3D vpu_fmt->v4l2_pix_fmt;
+> +       f->flags       =3D 0;
+> +
+> +       return 0;
+> +}
+> +
+> +static int vpu_dec_try_fmt_cap(struct file *file, void *fh, struct v4l2_=
+format *f)
+> +{
+> +       struct vpu_instance     *inst =3D to_vpu_inst(fh);
+> +       const struct vpu_format *vpu_fmt;
+> +
+> +       DPRINTK(inst->dev, 1, "4cc %d width %d height %d num_planes %d co=
+lorspace %d field : %d\n",
+> +               f->fmt.pix_mp.pixelformat, f->fmt.pix_mp.width, f->fmt.pi=
+x_mp.height,
+> +               f->fmt.pix_mp.num_planes, f->fmt.pix_mp.colorspace, f->fm=
+t.pix_mp.field);
+> +
+> +       if (f->type !=3D V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE)
+> +               return -EINVAL;
+> +
+> +       vpu_fmt =3D find_vpu_format(f->fmt.pix_mp.pixelformat, VPU_FMT_TY=
+PE_RAW);
+> +       if (!vpu_fmt) {
+> +               f->fmt.pix_mp.pixelformat =3D inst->dst_fmt.pixelformat;
+> +               f->fmt.pix_mp.num_planes  =3D inst->dst_fmt.num_planes;
+> +               update_resolution_info(&f->fmt.pix_mp, inst->dst_fmt.widt=
+h, inst->dst_fmt.height);
+> +       } else {
+> +               f->fmt.pix_mp.pixelformat =3D vpu_fmt->v4l2_pix_fmt;
+> +               f->fmt.pix_mp.num_planes  =3D vpu_fmt->num_planes;
+> +               update_resolution_info(&f->fmt.pix_mp, clamp(f->fmt.pix_m=
+p.width,
+> +                                                            vpu_fmt->min=
+_width, vpu_fmt->max_width),
+> +                               clamp(f->fmt.pix_mp.height, vpu_fmt->min_=
+height,
+> +                                     vpu_fmt->max_height));
+> +       }
+> +
+> +       f->fmt.pix_mp.flags        =3D 0;
+> +       f->fmt.pix_mp.field        =3D V4L2_FIELD_NONE;
+> +       f->fmt.pix_mp.colorspace   =3D inst->colorspace;
+> +       f->fmt.pix_mp.ycbcr_enc    =3D inst->ycbcr_enc;
+> +       f->fmt.pix_mp.hsv_enc      =3D inst->hsv_enc;
+> +       f->fmt.pix_mp.quantization =3D inst->quantization;
+> +       f->fmt.pix_mp.xfer_func    =3D inst->xfer_func;
+> +       memset(&f->fmt.pix_mp.reserved, 0, sizeof(f->fmt.pix_mp.reserved)=
+);
+> +
+> +       return 0;
+> +}
+> +
+> +static int vpu_dec_s_fmt_cap(struct file *file, void *fh, struct v4l2_fo=
+rmat *f)
+> +{
+> +       struct vpu_instance *inst =3D to_vpu_inst(fh);
+> +       int i, ret;
+> +
+> +       DPRINTK(inst->dev, 1, "4cc %d width %d height %d num_planes %d co=
+lorspace %d field %d\n",
+> +               f->fmt.pix_mp.pixelformat, f->fmt.pix_mp.width, f->fmt.pi=
+x_mp.height,
+> +               f->fmt.pix_mp.num_planes, f->fmt.pix_mp.colorspace, f->fm=
+t.pix_mp.field);
+> +
+> +       ret =3D vpu_dec_try_fmt_cap(file, fh, f);
+> +       if (ret)
+> +               return ret;
+> +
+> +       inst->dst_fmt.width        =3D f->fmt.pix_mp.width;
+> +       inst->dst_fmt.height       =3D f->fmt.pix_mp.height;
+> +       inst->dst_fmt.pixelformat  =3D f->fmt.pix_mp.pixelformat;
+> +       inst->dst_fmt.field        =3D f->fmt.pix_mp.field;
+> +       inst->dst_fmt.flags        =3D f->fmt.pix_mp.flags;
+> +       inst->dst_fmt.num_planes   =3D f->fmt.pix_mp.num_planes;
+> +       for (i =3D 0; i < inst->dst_fmt.num_planes; i++) {
+> +               inst->dst_fmt.plane_fmt[i].bytesperline =3D f->fmt.pix_mp=
+.plane_fmt[i].bytesperline;
+> +               inst->dst_fmt.plane_fmt[i].sizeimage    =3D f->fmt.pix_mp=
+.plane_fmt[i].sizeimage;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static int vpu_dec_g_fmt_cap(struct file *file, void *fh, struct v4l2_fo=
+rmat *f)
+> +{
+> +       struct vpu_instance *inst =3D to_vpu_inst(fh);
+> +       int i;
+> +
+> +       DPRINTK(inst->dev, 1, "\n");
+> +
+> +       f->fmt.pix_mp.width        =3D inst->dst_fmt.width;
+> +       f->fmt.pix_mp.height       =3D inst->dst_fmt.height;
+> +       f->fmt.pix_mp.pixelformat  =3D inst->dst_fmt.pixelformat;
+> +       f->fmt.pix_mp.field        =3D inst->dst_fmt.field;
+> +       f->fmt.pix_mp.flags        =3D inst->dst_fmt.flags;
+> +       f->fmt.pix_mp.num_planes   =3D inst->dst_fmt.num_planes;
+> +       for (i =3D 0; i < f->fmt.pix_mp.num_planes; i++) {
+> +               f->fmt.pix_mp.plane_fmt[i].bytesperline =3D inst->dst_fmt=
+.plane_fmt[i].bytesperline;
+> +               f->fmt.pix_mp.plane_fmt[i].sizeimage    =3D inst->dst_fmt=
+.plane_fmt[i].sizeimage;
+> +       }
+> +
+> +       f->fmt.pix_mp.colorspace   =3D inst->colorspace;
+> +       f->fmt.pix_mp.ycbcr_enc    =3D inst->ycbcr_enc;
+> +       f->fmt.pix_mp.hsv_enc      =3D inst->hsv_enc;
+> +       f->fmt.pix_mp.quantization =3D inst->quantization;
+> +       f->fmt.pix_mp.xfer_func    =3D inst->xfer_func;
+> +
+> +       return 0;
+> +}
+> +
+> +static int vpu_dec_enum_fmt_out(struct file *file, void *fh, struct v4l2=
+_fmtdesc *f)
+> +{
+> +       struct vpu_instance *inst =3D to_vpu_inst(fh);
+> +       const struct vpu_format *vpu_fmt;
+> +
+> +       DPRINTK(inst->dev, 1, "index : %d\n", f->index);
+> +
+> +       vpu_fmt =3D find_vpu_format_by_index(f->index, VPU_FMT_TYPE_CODEC=
+);
+> +       if (!vpu_fmt)
+> +               return -EINVAL;
+> +
+> +       f->pixelformat =3D vpu_fmt->v4l2_pix_fmt;
+> +       f->flags       =3D 0;
+> +
+> +       return 0;
+> +}
+> +
+> +static int vpu_dec_try_fmt_out(struct file *file, void *fh, struct v4l2_=
+format *f)
+> +{
+> +       struct vpu_instance     *inst =3D to_vpu_inst(fh);
+> +       const struct vpu_format *vpu_fmt;
+> +
+> +       DPRINTK(inst->dev, 1, "4cc %d width %d height %d num_planes %d co=
+lorspace %d field %d\n",
+> +               f->fmt.pix_mp.pixelformat, f->fmt.pix_mp.width, f->fmt.pi=
+x_mp.height,
+> +               f->fmt.pix_mp.num_planes, f->fmt.pix_mp.colorspace, f->fm=
+t.pix_mp.field);
+> +
+> +       if (f->type !=3D V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE)
+> +               return -EINVAL;
+> +
+> +       vpu_fmt =3D find_vpu_format(f->fmt.pix_mp.pixelformat, VPU_FMT_TY=
+PE_CODEC);
+> +       if (!vpu_fmt) {
+> +               f->fmt.pix_mp.pixelformat =3D inst->src_fmt.pixelformat;
+> +               f->fmt.pix_mp.num_planes  =3D inst->src_fmt.num_planes;
+> +               update_resolution_info(&f->fmt.pix_mp, inst->src_fmt.widt=
+h, inst->src_fmt.height);
+> +       } else {
+> +               f->fmt.pix_mp.pixelformat =3D vpu_fmt->v4l2_pix_fmt;
+> +               f->fmt.pix_mp.num_planes  =3D vpu_fmt->num_planes;
+> +               update_resolution_info(&f->fmt.pix_mp, clamp(f->fmt.pix_m=
+p.width,
+> +                                                            vpu_fmt->min=
+_width, vpu_fmt->max_width),
+> +                               clamp(f->fmt.pix_mp.height, vpu_fmt->min_=
+height,
+> +                                     vpu_fmt->max_height));
+> +       }
+> +
+> +       f->fmt.pix_mp.flags =3D 0;
+> +       f->fmt.pix_mp.field =3D V4L2_FIELD_NONE;
+> +       memset(&f->fmt.pix_mp.reserved, 0, sizeof(f->fmt.pix_mp.reserved)=
+);
+> +
+> +       return 0;
+> +}
+> +
+> +static int vpu_dec_s_fmt_out(struct file *file, void *fh, struct v4l2_fo=
+rmat *f)
+> +{
+> +       struct vpu_instance *inst =3D to_vpu_inst(fh);
+> +       int i, ret;
+> +
+> +       DPRINTK(inst->dev, 1, "pixelformat %d width %d height %d num_plan=
+es %d  field : %d\n",
+> +               f->fmt.pix_mp.pixelformat, f->fmt.pix_mp.width, f->fmt.pi=
+x_mp.height,
+> +               f->fmt.pix_mp.num_planes, f->fmt.pix_mp.field);
+> +
+> +       ret =3D vpu_dec_try_fmt_out(file, fh, f);
+> +       if (ret)
+> +               return ret;
+> +
+> +       inst->src_fmt.width        =3D f->fmt.pix_mp.width;
+> +       inst->src_fmt.height       =3D f->fmt.pix_mp.height;
+> +       inst->src_fmt.pixelformat  =3D f->fmt.pix_mp.pixelformat;
+> +       inst->src_fmt.field        =3D f->fmt.pix_mp.field;
+> +       inst->src_fmt.flags        =3D f->fmt.pix_mp.flags;
+> +       inst->src_fmt.num_planes   =3D f->fmt.pix_mp.num_planes;
+> +       for (i =3D 0; i < inst->src_fmt.num_planes; i++) {
+> +               inst->src_fmt.plane_fmt[i].bytesperline =3D f->fmt.pix_mp=
+.plane_fmt[i].bytesperline;
+> +               inst->src_fmt.plane_fmt[i].sizeimage    =3D f->fmt.pix_mp=
+.plane_fmt[i].sizeimage;
+> +       }
+> +
+> +       inst->colorspace   =3D f->fmt.pix_mp.colorspace;
+> +       inst->ycbcr_enc    =3D f->fmt.pix_mp.ycbcr_enc;
+> +       inst->hsv_enc      =3D f->fmt.pix_mp.hsv_enc;
+> +       inst->quantization =3D f->fmt.pix_mp.quantization;
+> +       inst->xfer_func    =3D f->fmt.pix_mp.xfer_func;
+> +
+> +       update_resolution_info(&inst->dst_fmt, f->fmt.pix_mp.width, f->fm=
+t.pix_mp.height);
+> +
+> +       return 0;
+> +}
+> +
+> +static int vpu_dec_g_fmt_out(struct file *file, void *fh, struct v4l2_fo=
+rmat *f)
+> +{
+> +       struct vpu_instance *inst =3D to_vpu_inst(fh);
+> +       int i;
+> +
+> +       DPRINTK(inst->dev, 1, "\n");
+> +
+> +       f->fmt.pix_mp.width        =3D inst->src_fmt.width;
+> +       f->fmt.pix_mp.height       =3D inst->src_fmt.height;
+> +       f->fmt.pix_mp.pixelformat  =3D inst->src_fmt.pixelformat;
+> +       f->fmt.pix_mp.field        =3D inst->src_fmt.field;
+> +       f->fmt.pix_mp.flags        =3D inst->src_fmt.flags;
+> +       f->fmt.pix_mp.num_planes   =3D inst->src_fmt.num_planes;
+> +       for (i =3D 0; i < f->fmt.pix_mp.num_planes; i++) {
+> +               f->fmt.pix_mp.plane_fmt[i].bytesperline =3D inst->src_fmt=
+.plane_fmt[i].bytesperline;
+> +               f->fmt.pix_mp.plane_fmt[i].sizeimage    =3D inst->src_fmt=
+.plane_fmt[i].sizeimage;
+> +       }
+> +
+> +       f->fmt.pix_mp.colorspace   =3D inst->colorspace;
+> +       f->fmt.pix_mp.ycbcr_enc    =3D inst->ycbcr_enc;
+> +       f->fmt.pix_mp.hsv_enc      =3D inst->hsv_enc;
+> +       f->fmt.pix_mp.quantization =3D inst->quantization;
+> +       f->fmt.pix_mp.xfer_func    =3D inst->xfer_func;
+> +
+> +       return 0;
+> +}
+> +
+> +static int vpu_dec_g_selection(struct file *file, void *fh, struct v4l2_=
+selection *s)
+> +{
+> +       struct vpu_instance *inst =3D to_vpu_inst(fh);
+> +
+> +       DPRINTK(inst->dev, 1, "type : %d | target : %d\n", s->type, s->ta=
+rget);
+> +
+> +       if (s->type =3D=3D V4L2_BUF_TYPE_VIDEO_CAPTURE) {
+> +               switch (s->target) {
+> +               case V4L2_SEL_TGT_COMPOSE_BOUNDS:
+> +               case V4L2_SEL_TGT_COMPOSE_PADDED:
+> +                       s->r.left   =3D 0;
+> +                       s->r.top    =3D 0;
+> +                       s->r.width  =3D inst->dst_fmt.width;
+> +                       s->r.height =3D inst->dst_fmt.height;
+> +                       break;
+> +               case V4L2_SEL_TGT_COMPOSE:
+> +               case V4L2_SEL_TGT_COMPOSE_DEFAULT:
+> +                       s->r.left   =3D 0;
+> +                       s->r.top    =3D 0;
+> +                       s->r.width  =3D inst->src_fmt.width;
+> +                       s->r.height =3D inst->src_fmt.height;
+> +                       break;
+> +               default:
+> +                       return -EINVAL;
+> +               }
+> +       } else {
+> +               return -EINVAL;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static int vpu_dec_s_selection(struct file *file, void *fh, struct v4l2_=
+selection *s)
+> +{
+> +       struct vpu_instance *inst =3D to_vpu_inst(fh);
+> +
+> +       DPRINTK(inst->dev, 1, "type : %d | target : %d\n", s->type, s->ta=
+rget);
+> +
+> +       if (s->type =3D=3D V4L2_BUF_TYPE_VIDEO_CAPTURE) {
+> +               switch (s->target) {
+> +               case V4L2_SEL_TGT_COMPOSE:
+> +                       DPRINTK(inst->dev, 1, "V4L2_SEL_TGT_COMPOSE width=
+ : %d | height : %d\n",
+> +                               s->r.width, s->r.height);
+> +                       inst->dst_fmt.width  =3D s->r.width;
+> +                       inst->dst_fmt.height =3D s->r.height;
+> +                       break;
+> +               default:
+> +                       return -EINVAL;
+> +               }
+> +       } else {
+> +               return -EINVAL;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static int vpu_dec_try_decoder_cmd(struct file *file, void *fh, struct v=
+4l2_decoder_cmd *dc)
+> +{
+> +       struct vpu_instance *inst =3D to_vpu_inst(fh);
+> +
+> +       DPRINTK(inst->dev, 1, "decoder command : %d\n", dc->cmd);
+> +
+> +       if (dc->cmd !=3D V4L2_DEC_CMD_STOP && dc->cmd !=3D V4L2_DEC_CMD_S=
+TART)
+> +               return -EINVAL;
+> +
+> +       dc->flags =3D 0;
+> +
+> +       if (dc->cmd =3D=3D V4L2_DEC_CMD_STOP) {
+> +               dc->stop.pts =3D 0;
+> +       } else if (dc->cmd =3D=3D V4L2_DEC_CMD_START) {
+> +               dc->start.speed =3D 0;
+> +               dc->start.format =3D V4L2_DEC_START_FMT_NONE;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static int vpu_dec_decoder_cmd(struct file *file, void *fh, struct v4l2_=
+decoder_cmd *dc)
+> +{
+> +       struct vpu_instance *inst =3D to_vpu_inst(fh);
+> +       int ret;
+> +
+> +       DPRINTK(inst->dev, 1, "decoder command : %d\n", dc->cmd);
+> +
+> +       ret =3D vpu_dec_try_decoder_cmd(file, fh, dc);
+> +       if (ret < 0)
+> +               return ret;
+> +
+> +       if (!vb2_is_streaming(v4l2_m2m_get_vq(inst->v4l2_fh.m2m_ctx, V4L2=
+_BUF_TYPE_VIDEO_CAPTURE_MPLANE)) ||
+> +           !vb2_is_streaming(v4l2_m2m_get_vq(inst->v4l2_fh.m2m_ctx, V4L2=
+_BUF_TYPE_VIDEO_OUTPUT_MPLANE)))
+> +               return 0;
+> +
+> +       switch (dc->cmd) {
+> +       case V4L2_DEC_CMD_STOP:
+> +               vpu_dec_stop_decode(inst);
+> +               break;
+> +       case V4L2_DEC_CMD_START:
+> +               break;
+> +       default:
+> +               return -EINVAL;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static int vpu_dec_subscribe_event(struct v4l2_fh *fh, const struct v4l2=
+_event_subscription *sub)
+> +{
+> +       struct vpu_instance *inst =3D to_vpu_inst(fh);
+> +
+> +       DPRINTK(inst->dev, 1, "type : %d | id : %d | flags : %d\n", sub->=
+type, sub->id, sub->flags);
+> +
+> +       switch (sub->type) {
+> +       case V4L2_EVENT_EOS:
+> +               return v4l2_event_subscribe(fh, sub, 0, NULL);
+> +       case V4L2_EVENT_SOURCE_CHANGE:
+> +               return v4l2_src_change_event_subscribe(fh, sub);
+> +       case V4L2_EVENT_CTRL:
+> +               return v4l2_ctrl_subscribe_event(fh, sub);
+> +       default:
+> +               return -EINVAL;
+> +       }
+> +}
+> +
+> +static const struct v4l2_ioctl_ops vpu_dec_ioctl_ops =3D {
+> +       .vidioc_querycap                =3D vpu_dec_querycap,
+> +       .vidioc_enum_framesizes         =3D vpu_dec_enum_framesizes,
+> +
+> +       .vidioc_enum_fmt_vid_cap        =3D vpu_dec_enum_fmt_cap,
+> +       .vidioc_s_fmt_vid_cap_mplane    =3D vpu_dec_s_fmt_cap,
+> +       .vidioc_g_fmt_vid_cap_mplane    =3D vpu_dec_g_fmt_cap,
+> +       .vidioc_try_fmt_vid_cap_mplane  =3D vpu_dec_try_fmt_cap,
+> +
+> +       .vidioc_enum_fmt_vid_out        =3D vpu_dec_enum_fmt_out,
+> +       .vidioc_s_fmt_vid_out_mplane    =3D vpu_dec_s_fmt_out,
+> +       .vidioc_g_fmt_vid_out_mplane    =3D vpu_dec_g_fmt_out,
+> +       .vidioc_try_fmt_vid_out_mplane  =3D vpu_dec_try_fmt_out,
+> +
+> +       .vidioc_g_selection             =3D vpu_dec_g_selection,
+> +       .vidioc_s_selection             =3D vpu_dec_s_selection,
+> +
+> +       .vidioc_reqbufs                 =3D v4l2_m2m_ioctl_reqbufs,
+> +       .vidioc_querybuf                =3D v4l2_m2m_ioctl_querybuf,
+> +       .vidioc_create_bufs             =3D v4l2_m2m_ioctl_create_bufs,
+> +       .vidioc_prepare_buf             =3D v4l2_m2m_ioctl_prepare_buf,
+> +       .vidioc_qbuf                    =3D v4l2_m2m_ioctl_qbuf,
+> +       .vidioc_expbuf                  =3D v4l2_m2m_ioctl_expbuf,
+> +       .vidioc_dqbuf                   =3D v4l2_m2m_ioctl_dqbuf,
+> +       .vidioc_streamon                =3D v4l2_m2m_ioctl_streamon,
+> +       .vidioc_streamoff               =3D v4l2_m2m_ioctl_streamoff,
+> +
+> +       .vidioc_try_decoder_cmd         =3D vpu_dec_try_decoder_cmd,
+> +       .vidioc_decoder_cmd             =3D vpu_dec_decoder_cmd,
+> +
+> +       .vidioc_subscribe_event         =3D vpu_dec_subscribe_event,
+> +       .vidioc_unsubscribe_event       =3D v4l2_event_unsubscribe,
+> +};
+> +
+> +static int vpu_dec_g_volatile_ctrl(struct v4l2_ctrl *ctrl)
+> +{
+> +       struct vpu_instance *inst =3D ctrl_to_vpu_inst(ctrl);
+> +
+> +       DPRINTK(inst->dev, 1, "name : %s\n", ctrl->name);
+> +
+> +       switch (ctrl->id) {
+> +       case V4L2_CID_MIN_BUFFERS_FOR_CAPTURE:
+> +               if (inst->state !=3D VPU_INST_STATE_NONE && inst->state !=
+=3D VPU_INST_STATE_OPEN)
+> +                       ctrl->val =3D inst->min_dst_frame_buf_count;
+> +               break;
+> +       default:
+> +               return -EINVAL;
+> +       }
+> +
+> +       DPRINTK(inst->dev, 1, "value : %d\n", ctrl->val);
+> +
+> +       return 0;
+> +}
+> +
+> +static int vpu_dec_s_ctrl(struct v4l2_ctrl *ctrl)
+> +{
+> +       struct vpu_instance *inst =3D ctrl_to_vpu_inst(ctrl);
+> +
+> +       DPRINTK(inst->dev, 1, "name : %s | value : %d\n", ctrl->name, ctr=
+l->val);
+> +
+> +       switch (ctrl->id) {
+> +       case V4L2_CID_VPU_THUMBNAIL_MODE:
+> +               inst->thumbnail_mode =3D ctrl->val;
+> +               break;
+> +       default:
+> +               return -EINVAL;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static const struct v4l2_ctrl_ops vpu_dec_ctrl_ops =3D {
+> +       .g_volatile_ctrl =3D vpu_dec_g_volatile_ctrl,
+> +       .s_ctrl          =3D vpu_dec_s_ctrl,
+> +};
+> +
+> +static const struct v4l2_ctrl_config vpu_thumbnail_mode =3D {
+> +       .ops   =3D &vpu_dec_ctrl_ops,
+> +       .id    =3D V4L2_CID_VPU_THUMBNAIL_MODE,
+> +       .name  =3D "thumbnail mode",
+> +       .type  =3D V4L2_CTRL_TYPE_BOOLEAN,
+> +       .def   =3D 0,
+> +       .min   =3D 0,
+> +       .max   =3D 1,
+> +       .step  =3D 1,
+> +       .flags =3D V4L2_CTRL_FLAG_WRITE_ONLY,
+> +};
+> +
+> +static void set_default_dec_openparam(struct dec_open_param *open_param)
+> +{
+> +       open_param->bitstream_mode  =3D BS_MODE_INTERRUPT;
+> +       open_param->stream_endian   =3D VPU_STREAM_ENDIAN;
+> +       open_param->frame_endian    =3D VPU_FRAME_ENDIAN;
+> +       open_param->cbcr_interleave =3D FALSE;
+> +       open_param->nv21           =3D FALSE;
+> +}
+> +
+> +static int vpu_dec_queue_setup(struct vb2_queue *q, unsigned int *num_bu=
+ffers,
+> +                              unsigned int *num_planes, unsigned int siz=
+es[],
+> +                              struct device *alloc_devs[])
+> +{
+> +       struct vpu_instance *inst =3D vb2_get_drv_priv(q);
+> +       struct v4l2_pix_format_mplane inst_format =3D
+> +               (q->type =3D=3D V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE) ? inst=
+->src_fmt : inst->dst_fmt;
+> +       unsigned int i;
+> +
+> +       DPRINTK(inst->dev, 1, "num_buffers : %d | num_planes : %d | type =
+: %d\n", *num_buffers,
+> +               *num_planes, q->type);
+> +
+> +       if (*num_planes) {
+> +               if (inst_format.num_planes !=3D *num_planes)
+> +                       return -EINVAL;
+> +
+> +               for (i =3D 0; i < *num_planes; i++) {
+> +                       if (sizes[i] < inst_format.plane_fmt[i].sizeimage=
+)
+> +                               return -EINVAL;
+> +               }
+> +       } else {
+> +               *num_planes =3D inst_format.num_planes;
+> +
+> +               if (*num_planes =3D=3D 1) {
+> +                       sizes[0] =3D inst_format.width * inst_format.heig=
+ht * 3 / 2;
+> +                       if (q->type =3D=3D V4L2_BUF_TYPE_VIDEO_OUTPUT_MPL=
+ANE)
+> +                               sizes[0] =3D inst_format.plane_fmt[0].siz=
+eimage;
+> +                       DPRINTK(inst->dev, 1, "size[0] : %d\n", sizes[0])=
+;
+> +               } else if (*num_planes =3D=3D 2) {
+> +                       sizes[0] =3D inst_format.width * inst_format.heig=
+ht;
+> +                       sizes[1] =3D inst_format.width * inst_format.heig=
+ht / 2;
+> +                       DPRINTK(inst->dev, 1, "size[0] : %d | size[1] : %=
+d\n", sizes[0], sizes[1]);
+> +               } else if (*num_planes =3D=3D 3) {
+> +                       sizes[0] =3D inst_format.width * inst_format.heig=
+ht;
+> +                       sizes[1] =3D inst_format.width * inst_format.heig=
+ht / 4;
+> +                       sizes[2] =3D inst_format.width * inst_format.heig=
+ht / 4;
+> +                       DPRINTK(inst->dev, 1, "size[0] : %d | size[1] : %=
+d | size[2] : %d\n",
+> +                               sizes[0], sizes[1], sizes[2]);
+> +               }
+> +       }
+> +
+> +       if (inst->state =3D=3D VPU_INST_STATE_NONE && q->type =3D=3D V4L2=
+_BUF_TYPE_VIDEO_OUTPUT_MPLANE) {
+> +               enum ret_code ret_code;
+> +               struct dec_open_param open_param;
+> +
+> +               memset(&open_param, 0, sizeof(struct dec_open_param));
+> +               set_default_dec_openparam(&open_param);
+> +
+> +               inst->bitstream_vbuf.size =3D ALIGN(inst->src_fmt.plane_f=
+mt[0].sizeimage, 1024) * 4;
+> +               if (vdi_allocate_dma_memory(inst->dev, &inst->bitstream_v=
+buf) < 0)
+> +                       DPRINTK(inst->dev, 1, "alloc bitstream fail: %zu\=
+n", inst->bitstream_vbuf.size);
+> +
+> +               inst->std =3D to_vpu_codstd(inst->src_fmt.pixelformat);
+> +               if (inst->std =3D=3D STD_UNKNOWN) {
+> +                       dev_warn(inst->dev->dev, "unsupported pixelformat=
+: %.4s\n",
+> +                                (char *)&inst->src_fmt.pixelformat);
+> +                       return -EINVAL;
+> +               }
+> +               open_param.bitstream_buffer     =3D inst->bitstream_vbuf.=
+daddr;
+> +               open_param.bitstream_buffer_size =3D inst->bitstream_vbuf=
+.size;
+> +
+> +               ret_code =3D vpu_dec_open_api(inst, &open_param);
+> +               if (ret_code !=3D RETCODE_SUCCESS) {
+> +                       DPRINTK(inst->dev, 1, "failed to call vpu_dec_ope=
+n_api() : %d\n", ret_code);
+> +                       return -EINVAL;
+> +               }
+> +
+> +               inst->state =3D VPU_INST_STATE_OPEN;
+> +
+> +               //vpu_dec_give_command(inst, ENABLE_LOGGING, 0);
+> +
+> +               if (inst->thumbnail_mode)
+> +                       vpu_dec_give_command(inst, ENABLE_DEC_THUMBNAIL_M=
+ODE, 0);
+> +
+> +               inst->min_src_frame_buf_count =3D *num_buffers;
+> +       }
+> +
+> +       if (inst->state !=3D VPU_INST_STATE_NONE && inst->state !=3D VPU_=
+INST_STATE_OPEN && q->type =3D=3D
+> +                       V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE) {
+> +               *num_buffers =3D inst->min_dst_frame_buf_count;
+> +
+> +               if (inst->state =3D=3D VPU_INST_STATE_INIT_SEQ) {
+> +                       s32 non_linear_num =3D inst->min_dst_frame_buf_co=
+unt;
+> +                       s32 fb_stride, fb_height;
+> +                       s32 luma_size, chroma_size;
+> +
+> +                       for (i =3D 0; i < non_linear_num; i++) {
+> +                               fb_stride   =3D inst->dst_fmt.width;
+> +                               fb_height   =3D ALIGN(inst->dst_fmt.heigh=
+t, 32);
+> +                               luma_size   =3D fb_stride * fb_height;
+> +                               chroma_size =3D ALIGN(fb_stride / 2, 16) =
+* fb_height;
+> +
+> +                               inst->frame_vbuf[i].size =3D luma_size + =
+chroma_size;
+> +                               if (vdi_allocate_dma_memory(inst->dev, &i=
+nst->frame_vbuf[i]) < 0)
+> +                                       DPRINTK(inst->dev, 1, "failed to =
+alloc FBC buffer : %zu\n",
+> +                                               inst->frame_vbuf[i].size)=
+;
+> +
+> +                               inst->frame_buf[i].buf_y    =3D inst->fra=
+me_vbuf[i].daddr;
+> +                               inst->frame_buf[i].buf_cb   =3D inst->fra=
+me_vbuf[i].daddr + luma_size;
+> +                               inst->frame_buf[i].buf_cr   =3D (dma_addr=
+_t)-1;
+> +                               inst->frame_buf[i].size    =3D inst->fram=
+e_vbuf[i].size;
+> +                               inst->frame_buf[i].width   =3D inst->src_=
+fmt.width;
+> +                               inst->frame_buf[i].stride  =3D fb_stride;
+> +                               inst->frame_buf[i].map_type =3D COMPRESSE=
+D_FRAME_MAP;
+> +                               inst->frame_buf[i].update_fb_info =3D TRU=
+E;
+> +                       }
+> +               }
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static int vpu_dec_buf_init(struct vb2_buffer *vb)
+> +{
+> +       struct vpu_instance    *inst =3D vb2_get_drv_priv(vb->vb2_queue);
+> +       struct vb2_v4l2_buffer *vbuf =3D to_vb2_v4l2_buffer(vb);
+> +
+> +       DPRINTK(inst->dev, 1, "type : %4d  index %4d size[0] %4ld size[1]=
+ %4ld size[2] : %4ld\n",
+> +               vb->type, vb->index, vb2_plane_size(&vbuf->vb2_buf, 0),
+> +               vb2_plane_size(&vbuf->vb2_buf, 1), vb2_plane_size(&vbuf->=
+vb2_buf, 2));
+> +       return 0;
+> +}
+> +
+> +static int vpu_dec_buf_prepare(struct vb2_buffer *vb)
+> +{
+> +       struct vpu_instance    *inst =3D vb2_get_drv_priv(vb->vb2_queue);
+> +       struct vb2_v4l2_buffer *vbuf     =3D to_vb2_v4l2_buffer(vb);
+> +
+> +       DPRINTK(inst->dev, 1, "type : %4d index %4d size[0] %4ld size[1] =
+%4ld size[2] %4ld\n",
+> +               vb->type, vb->index, vb2_plane_size(&vbuf->vb2_buf, 0),
+> +               vb2_plane_size(&vbuf->vb2_buf, 1), vb2_plane_size(&vbuf->=
+vb2_buf, 2));
+> +
+> +       return 0;
+> +}
+> +
+> +static void vpu_dec_buf_queue(struct vb2_buffer *vb)
+> +{
+> +       struct vb2_v4l2_buffer *vbuf    =3D to_vb2_v4l2_buffer(vb);
+> +       struct vpu_instance    *inst    =3D vb2_get_drv_priv(vb->vb2_queu=
+e);
+> +       struct vpu_buffer      *vpu_buf =3D to_vpu_buf(vbuf);
+> +
+> +       DPRINTK(inst->dev, 1, "type %4d index %4d size[0] %4ld size[1] : =
+%4ld | size[2] : %4ld\n",
+> +               vb->type, vb->index, vb2_plane_size(&vbuf->vb2_buf, 0),
+> +               vb2_plane_size(&vbuf->vb2_buf, 1), vb2_plane_size(&vbuf->=
+vb2_buf, 2));
+> +
+> +       v4l2_m2m_buf_queue(inst->v4l2_fh.m2m_ctx, vbuf);
+> +
+> +       if (vb->type =3D=3D V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE) {
+> +               vpu_buf->consumed =3D FALSE;
+> +               handle_bitstream_buffer(inst);
+> +               vbuf->sequence =3D inst->queued_src_buf_num++;
+> +       }
+> +
+> +       if (vb->type =3D=3D V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE) {
+> +               if (inst->state =3D=3D VPU_INST_STATE_INIT_SEQ) {
+> +                       dma_addr_t buf_addr_y =3D 0, buf_addr_cb =3D 0, b=
+uf_addr_cr =3D 0;
+> +                       s32 buf_size     =3D 0;
+> +                       s32 non_linear_num =3D inst->min_dst_frame_buf_co=
+unt;
+> +                       s32 fb_stride     =3D inst->dst_fmt.width;
+> +                       s32 luma_size     =3D fb_stride * inst->dst_fmt.h=
+eight;
+> +                       s32 chroma_size   =3D (fb_stride / 2) * (inst->ds=
+t_fmt.height / 2);
+> +
+> +                       if (inst->dst_fmt.num_planes =3D=3D 1) {
+> +                               buf_size    =3D vb2_plane_size(&vbuf->vb2=
+_buf, 0);
+> +                               buf_addr_y  =3D vb2_dma_contig_plane_dma_=
+addr(&vbuf->vb2_buf, 0);
+> +                               buf_addr_cb =3D buf_addr_y + luma_size;
+> +                               buf_addr_cr =3D buf_addr_cb + chroma_size=
+;
+> +                       } else if (inst->dst_fmt.num_planes =3D=3D 2) {
+> +                               buf_size    =3D vb2_plane_size(&vbuf->vb2=
+_buf, 0) +
+> +                                       vb2_plane_size(&vbuf->vb2_buf, 1)=
+;
+> +                               buf_addr_y  =3D vb2_dma_contig_plane_dma_=
+addr(&vbuf->vb2_buf, 0);
+> +                               buf_addr_cb =3D vb2_dma_contig_plane_dma_=
+addr(&vbuf->vb2_buf, 1);
+> +                               buf_addr_cr =3D buf_addr_cb + chroma_size=
+;
+> +                       } else if (inst->dst_fmt.num_planes =3D=3D 3) {
+> +                               buf_size    =3D vb2_plane_size(&vbuf->vb2=
+_buf, 0) +
+> +                                       vb2_plane_size(&vbuf->vb2_buf, 1)=
+ +
+> +                                       vb2_plane_size(&vbuf->vb2_buf, 2)=
+;
+> +                               buf_addr_y  =3D vb2_dma_contig_plane_dma_=
+addr(&vbuf->vb2_buf, 0);
+> +                               buf_addr_cb =3D vb2_dma_contig_plane_dma_=
+addr(&vbuf->vb2_buf, 1);
+> +                               buf_addr_cr =3D vb2_dma_contig_plane_dma_=
+addr(&vbuf->vb2_buf, 2);
+> +                       }
+> +                       inst->frame_buf[vb->index + non_linear_num].buf_y=
+    =3D buf_addr_y;
+> +                       inst->frame_buf[vb->index + non_linear_num].buf_c=
+b   =3D buf_addr_cb;
+> +                       inst->frame_buf[vb->index + non_linear_num].buf_c=
+r   =3D buf_addr_cr;
+> +                       inst->frame_buf[vb->index + non_linear_num].size =
+   =3D buf_size;
+> +                       inst->frame_buf[vb->index + non_linear_num].width=
+   =3D inst->src_fmt.width;
+> +                       inst->frame_buf[vb->index + non_linear_num].strid=
+e  =3D fb_stride;
+> +                       inst->frame_buf[vb->index + non_linear_num].map_t=
+ype =3D LINEAR_FRAME_MAP;
+> +                       inst->frame_buf[vb->index + non_linear_num].updat=
+e_fb_info =3D TRUE;
+> +               }
+> +
+> +               if (inst->state =3D=3D VPU_INST_STATE_PIC_RUN || inst->st=
+ate =3D=3D VPU_INST_STATE_STOP ||
+> +                   inst->state =3D=3D VPU_INST_STATE_WAIT_BUF) {
+> +                       vpu_dec_clr_disp_flag(inst, vb->index);
+> +                       if (inst->state =3D=3D VPU_INST_STATE_WAIT_BUF)
+> +                               inst->state =3D VPU_INST_STATE_PIC_RUN;
+> +               }
+> +               vbuf->sequence =3D inst->queued_dst_buf_num++;
+> +       }
+> +}
+> +
+> +static void vpu_dec_buf_finish(struct vb2_buffer *vb)
+> +{
+> +       struct vpu_instance    *inst =3D vb2_get_drv_priv(vb->vb2_queue);
+> +       struct vb2_v4l2_buffer *vbuf =3D to_vb2_v4l2_buffer(vb);
+> +
+> +       DPRINTK(inst->dev, 1, "type %4d index : %4d size[0] %4ld size[1] =
+%4ld | size[2] : %4ld\n",
+> +               vb->type, vb->index, vb2_plane_size(&vbuf->vb2_buf, 0),
+> +               vb2_plane_size(&vbuf->vb2_buf, 1), vb2_plane_size(&vbuf->=
+vb2_buf, 2));
+> +}
+> +
+> +static void vpu_dec_buf_cleanup(struct vb2_buffer *vb)
+> +{
+> +       struct vpu_instance    *inst =3D vb2_get_drv_priv(vb->vb2_queue);
+> +       struct vb2_v4l2_buffer *vbuf =3D to_vb2_v4l2_buffer(vb);
+> +
+> +       DPRINTK(inst->dev, 1, "type %4d index %4d size[0] %4ld size[1] : =
+%4ld | size[2] : %4ld\n",
+> +               vb->type, vb->index, vb2_plane_size(&vbuf->vb2_buf, 0),
+> +               vb2_plane_size(&vbuf->vb2_buf, 1), vb2_plane_size(&vbuf->=
+vb2_buf, 2));
+> +}
+> +
+> +static int vpu_dec_start_streaming(struct vb2_queue *q, unsigned int cou=
+nt)
+> +{
+> +       struct vpu_instance *inst =3D vb2_get_drv_priv(q);
+> +
+> +       DPRINTK(inst->dev, 1, "type : %d\n", q->type);
+> +
+> +       if (inst->state =3D=3D VPU_INST_STATE_OPEN) {
+> +               struct dec_initial_info initial_info;
+> +               enum ret_code        ret_code;
+> +
+> +               ret_code =3D vpu_dec_issue_seq_init(inst);
+> +               if (ret_code !=3D RETCODE_SUCCESS)
+> +                       DPRINTK(inst->dev, 1, "failed vpu_dec_issue_seq_i=
+nit() : %d\n", ret_code);
+> +
+> +               if (vpu_wait_interrupt(inst, VPU_DEC_TIMEOUT) < 0)
+> +                       DPRINTK(inst->dev, 1, "failed to call vpu_wait_in=
+terrupt()\n");
+> +
+> +               ret_code =3D vpu_dec_complete_seq_init(inst, &initial_inf=
+o);
+> +               if (ret_code !=3D RETCODE_SUCCESS) {
+> +                       DPRINTK(inst->dev, 1, "vpu_dec_complete_seq_init:=
+ %d, reason : %d\n",
+> +                               ret_code, initial_info.seq_init_err_reaso=
+n);
+> +               } else {
+> +                       static const struct v4l2_event vpu_event_src_ch =
+=3D {
+> +                               .type =3D V4L2_EVENT_SOURCE_CHANGE,
+> +                               .u.src_change.changes =3D V4L2_EVENT_SRC_=
+CH_RESOLUTION,
+> +                       };
+> +
+> +                       DPRINTK(inst->dev, 1, "width %d height %d profile=
+ %d | minbuffer : %d\n",
+> +                               initial_info.pic_width, initial_info.pic_=
+height,
+> +                               initial_info.profile, initial_info.min_fr=
+ame_buffer_count);
+> +
+> +                       inst->state =3D VPU_INST_STATE_INIT_SEQ;
+> +                       inst->min_dst_frame_buf_count =3D initial_info.mi=
+n_frame_buffer_count + 1;
+> +
+> +                       if (initial_info.pic_width  !=3D inst->src_fmt.wi=
+dth ||
+> +                           initial_info.pic_height !=3D inst->src_fmt.he=
+ight) {
+> +                               update_resolution_info(&inst->src_fmt, in=
+itial_info.pic_width,
+> +                                                      initial_info.pic_h=
+eight);
+> +                               update_resolution_info(&inst->dst_fmt, in=
+itial_info.pic_width,
+> +                                                      initial_info.pic_h=
+eight);
+> +                       }
+> +
+> +                       v4l2_event_queue_fh(&inst->v4l2_fh, &vpu_event_sr=
+c_ch);
+> +               }
+> +       }
+> +
+> +       if (inst->state =3D=3D VPU_INST_STATE_INIT_SEQ && q->type =3D=3D =
+V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE) {
+> +               enum ret_code ret_code;
+> +               s32 non_linear_num =3D inst->min_dst_frame_buf_count;
+> +               s32 linear_num    =3D inst->min_dst_frame_buf_count;
+> +               s32 fb_stride     =3D inst->dst_fmt.width;
+> +
+> +               DPRINTK(inst->dev, 1, "fb_stride %d | inst->dst_fmt.heigh=
+t %d\n", fb_stride, inst->dst_fmt.height);
+> +               ret_code =3D vpu_dec_register_frame_buffer_ex(inst, non_l=
+inear_num, linear_num,
+> +                                                           fb_stride, in=
+st->dst_fmt.height, COMPRESSED_FRAME_MAP);
+> +               if (ret_code !=3D RETCODE_SUCCESS)
+> +                       DPRINTK(inst->dev, 1, "fail vpu_dec_register_fram=
+e_buffer_ex %d", ret_code);
+> +
+> +               inst->state =3D VPU_INST_STATE_PIC_RUN;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static void vpu_dec_stop_streaming(struct vb2_queue *q)
+> +{
+> +       struct vpu_instance *inst =3D vb2_get_drv_priv(q);
+> +       struct vb2_v4l2_buffer *buf;
+> +
+> +       DPRINTK(inst->dev, 1, "type : %d\n", q->type);
+> +
+> +       if (vb2_is_streaming(v4l2_m2m_get_vq(inst->v4l2_fh.m2m_ctx, V4L2_=
+BUF_TYPE_VIDEO_CAPTURE_MPLANE)) &&
+> +           vb2_is_streaming(v4l2_m2m_get_vq(inst->v4l2_fh.m2m_ctx, V4L2_=
+BUF_TYPE_VIDEO_OUTPUT_MPLANE)))
+> +               inst->state =3D VPU_INST_STATE_STOP;
+> +
+> +       if (q->type =3D=3D V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE) {
+> +               while ((buf =3D v4l2_m2m_src_buf_remove(inst->v4l2_fh.m2m=
+_ctx))) {
+> +                       DPRINTK(inst->dev, 1, "buf type : %4d | index : %=
+4d\n", buf->vb2_buf.type,
+> +                               buf->vb2_buf.index);
+> +                       v4l2_m2m_buf_done(buf, VB2_BUF_STATE_ERROR);
+> +               }
+> +       } else {
+> +               while ((buf =3D v4l2_m2m_dst_buf_remove(inst->v4l2_fh.m2m=
+_ctx))) {
+> +                       u32 plane =3D 0;
+> +
+> +                       DPRINTK(inst->dev, 1, "buf type : %4d | index : %=
+4d\n", buf->vb2_buf.type,
+> +                               buf->vb2_buf.index);
+> +
+> +                       for (plane =3D 0; plane < inst->dst_fmt.num_plane=
+s; plane++)
+> +                               vb2_set_plane_payload(&buf->vb2_buf, plan=
+e, 0);
+> +
+> +                       v4l2_m2m_buf_done(buf, VB2_BUF_STATE_ERROR);
+> +               }
+> +       }
+> +}
+> +
+> +static const struct vb2_ops vpu_dec_vb2_ops =3D {
+> +       .queue_setup     =3D vpu_dec_queue_setup,
+> +       .wait_prepare    =3D vb2_ops_wait_prepare,
+> +       .wait_finish     =3D vb2_ops_wait_finish,
+> +       .buf_init        =3D vpu_dec_buf_init,
+> +       .buf_prepare     =3D vpu_dec_buf_prepare,
+> +       .buf_queue       =3D vpu_dec_buf_queue,
+> +       .buf_finish      =3D vpu_dec_buf_finish,
+> +       .buf_cleanup     =3D vpu_dec_buf_cleanup,
+> +       .start_streaming =3D vpu_dec_start_streaming,
+> +       .stop_streaming  =3D vpu_dec_stop_streaming,
+> +};
+> +
+> +static void set_default_format(struct v4l2_pix_format_mplane *src_fmt,
+> +                              struct v4l2_pix_format_mplane *dst_fmt)
+> +{
+> +       src_fmt->pixelformat  =3D vpu_dec_fmt_list[VPU_FMT_TYPE_CODEC][0]=
+.v4l2_pix_fmt;
+> +       src_fmt->field        =3D V4L2_FIELD_NONE;
+> +       src_fmt->flags        =3D 0;
+> +       src_fmt->num_planes   =3D vpu_dec_fmt_list[VPU_FMT_TYPE_CODEC][0]=
+.num_planes;
+> +       update_resolution_info(src_fmt, 720, 480);
+> +
+> +       dst_fmt->pixelformat  =3D vpu_dec_fmt_list[VPU_FMT_TYPE_RAW][0].v=
+4l2_pix_fmt;
+> +       dst_fmt->field        =3D V4L2_FIELD_NONE;
+> +       dst_fmt->flags        =3D 0;
+> +       dst_fmt->num_planes   =3D vpu_dec_fmt_list[VPU_FMT_TYPE_RAW][0].n=
+um_planes;
+> +       update_resolution_info(dst_fmt, 736, 480);
+> +}
+> +
+> +static int vpu_dec_queue_init(void *priv, struct vb2_queue *src_vq, stru=
+ct vb2_queue *dst_vq)
+> +{
+> +       struct vpu_instance *inst =3D priv;
+> +       struct vpu_platform_data *pdata =3D dev_get_platdata(inst->dev->v=
+4l2_dev.dev);
+> +       int ret;
+> +
+> +       DPRINTK(inst->dev, 1, "\n");
+> +
+> +       src_vq->type =3D V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE;
+> +       src_vq->io_modes =3D VB2_MMAP | VB2_USERPTR | VB2_DMABUF;
+> +       if (pdata && pdata->mem_ops)
+> +               src_vq->mem_ops =3D pdata->mem_ops;
+> +       else
+> +               src_vq->mem_ops =3D &vb2_dma_contig_memops;
+> +       src_vq->ops =3D &vpu_dec_vb2_ops;
+> +       src_vq->timestamp_flags =3D V4L2_BUF_FLAG_TIMESTAMP_COPY;
+> +       src_vq->buf_struct_size =3D sizeof(struct vpu_buffer);
+> +       src_vq->allow_zero_bytesused =3D 1;
+> +       src_vq->min_buffers_needed =3D 0;
+> +       src_vq->drv_priv =3D inst;
+> +       src_vq->lock =3D &inst->dev->dev_lock;
+> +       src_vq->dev =3D inst->dev->v4l2_dev.dev;
+> +       ret =3D vb2_queue_init(src_vq);
+> +       if (ret)
+> +               return ret;
+> +
+> +       dst_vq->type =3D V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE;
+> +       dst_vq->io_modes =3D VB2_MMAP | VB2_USERPTR | VB2_DMABUF;
+> +       if (pdata && pdata->mem_ops)
+> +               dst_vq->mem_ops =3D pdata->mem_ops;
+> +       else
+> +               dst_vq->mem_ops =3D &vb2_dma_contig_memops;
+> +       dst_vq->ops =3D &vpu_dec_vb2_ops;
+> +       dst_vq->timestamp_flags =3D V4L2_BUF_FLAG_TIMESTAMP_COPY;
+> +       dst_vq->buf_struct_size =3D sizeof(struct vpu_buffer);
+> +       dst_vq->allow_zero_bytesused =3D 1;
+> +       dst_vq->min_buffers_needed =3D 0;
+> +       dst_vq->drv_priv =3D inst;
+> +       dst_vq->lock =3D &inst->dev->dev_lock;
+> +       dst_vq->dev =3D inst->dev->v4l2_dev.dev;
+> +       ret =3D vb2_queue_init(dst_vq);
+> +       if (ret)
+> +               return ret;
+> +
+> +       return 0;
+> +}
+> +
+> +static const struct vpu_instance_ops vpu_dec_inst_ops =3D {
+> +       .start_process  =3D vpu_dec_start_decode,
+> +       .stop_process   =3D vpu_dec_stop_decode,
+> +       .finish_process =3D vpu_dec_finish_decode,
+> +};
+> +
+> +static int vpu_dec_open(struct file *filp)
+> +{
+> +       struct video_device *vdev =3D video_devdata(filp);
+> +       struct vpu_device   *dev  =3D video_drvdata(filp);
+> +       struct vpu_instance *inst =3D NULL;
+> +       struct v4l2_ctrl    *ctrl;
+> +
+> +       inst =3D kzalloc(sizeof(*inst), GFP_KERNEL);
+> +       if (!inst)
+> +               return -ENOMEM;
+> +
+> +       inst->dev  =3D dev;
+> +       inst->type =3D VPU_INST_TYPE_DEC;
+> +       inst->ops  =3D &vpu_dec_inst_ops;
+> +
+> +       spin_lock_init(&inst->bitstream_lock);
+> +
+> +       v4l2_fh_init(&inst->v4l2_fh, vdev);
+> +       filp->private_data =3D &inst->v4l2_fh;
+> +       v4l2_fh_add(&inst->v4l2_fh);
+> +
+> +       inst->v4l2_fh.m2m_ctx =3D v4l2_m2m_ctx_init(dev->v4l2_m2m_dev, in=
+st, vpu_dec_queue_init);
+> +       if (IS_ERR(inst->v4l2_fh.m2m_ctx))
+> +               return -ENODEV;
+> +
+> +       v4l2_ctrl_handler_init(&inst->v4l2_ctrl_hdl, 10);
+> +       v4l2_ctrl_new_custom(&inst->v4l2_ctrl_hdl, &vpu_thumbnail_mode, N=
+ULL);
+> +       ctrl =3D v4l2_ctrl_new_std(&inst->v4l2_ctrl_hdl, &vpu_dec_ctrl_op=
+s,
+> +                                V4L2_CID_MIN_BUFFERS_FOR_CAPTURE, 1, 32,=
+ 1, 1);
+> +       if (ctrl)
+> +               ctrl->flags |=3D V4L2_CTRL_FLAG_VOLATILE;
+> +
+> +       if (inst->v4l2_ctrl_hdl.error)
+> +               return -ENODEV;
+> +
+> +       inst->v4l2_fh.ctrl_handler =3D &inst->v4l2_ctrl_hdl;
+> +       v4l2_ctrl_handler_setup(&inst->v4l2_ctrl_hdl);
+> +
+> +       set_default_format(&inst->src_fmt, &inst->dst_fmt);
+> +       inst->colorspace   =3D V4L2_COLORSPACE_REC709;
+> +       inst->ycbcr_enc    =3D V4L2_YCBCR_ENC_DEFAULT;
+> +       inst->hsv_enc      =3D 0;
+> +       inst->quantization =3D V4L2_QUANTIZATION_DEFAULT;
+> +       inst->xfer_func    =3D V4L2_XFER_FUNC_DEFAULT;
+> +
+> +       return 0;
+> +}
+> +
+> +static int vpu_dec_release(struct file *filp)
+> +{
+> +       int i;
+> +       struct vpu_instance *inst =3D to_vpu_inst(filp->private_data);
+> +       unsigned int loop_count =3D 0;
+> +
+> +       v4l2_m2m_ctx_release(inst->v4l2_fh.m2m_ctx);
+> +       if (inst->state !=3D VPU_INST_STATE_NONE) {
+> +               while (vpu_dec_close(inst) =3D=3D RETCODE_VPU_STILL_RUNNI=
+NG) {
+> +                       if (vpu_wait_interrupt(inst, VPU_DEC_TIMEOUT) < 0=
+) {
+> +                               DPRINTK(inst->dev, 1, "failed to call vpu=
+_wait_interrupt()\n");
+> +                               if (loop_count < 10) {
+> +                                       loop_count++;
+> +                                       continue;
+> +                               } else {
+> +                                       DPRINTK(inst->dev, 1, "failed to =
+call vpu_dec_close()\n");
+> +                                       break;
+> +                               }
+> +                       } else {
+> +                               break;
+> +                       }
+> +               }
+> +       }
+> +       for (i =3D 0; i < inst->min_dst_frame_buf_count; i++) {
+> +               if (inst->frame_vbuf[i].size !=3D 0)
+> +                       vdi_free_dma_memory(inst->dev, &inst->frame_vbuf[=
+i]);
+> +       }
+> +       if (inst->bitstream_vbuf.size !=3D 0)
+> +               vdi_free_dma_memory(inst->dev, &inst->bitstream_vbuf);
+> +       v4l2_ctrl_handler_free(&inst->v4l2_ctrl_hdl);
+> +       v4l2_fh_del(&inst->v4l2_fh);
+> +       v4l2_fh_exit(&inst->v4l2_fh);
+> +       kfree(inst);
+> +
+> +       return 0;
+> +}
+> +
+> +static const struct v4l2_file_operations vpu_dec_fops =3D {
+> +       .owner          =3D THIS_MODULE,
+> +       .open           =3D vpu_dec_open,
+> +       .release        =3D vpu_dec_release,
+> +       .unlocked_ioctl =3D video_ioctl2,
+> +       .poll           =3D v4l2_m2m_fop_poll,
+> +       .mmap           =3D v4l2_m2m_fop_mmap,
+> +};
+> +
+> +int vpu_dec_register_device(struct vpu_device *dev)
+> +{
+> +       struct video_device *vdev_dec;
+> +
+> +       vdev_dec =3D devm_kzalloc(dev->v4l2_dev.dev, sizeof(*vdev_dec), G=
+FP_KERNEL);
+> +       if (!vdev_dec)
+> +               return -ENOMEM;
+> +
+> +       dev->video_dev_dec =3D vdev_dec;
+> +
+> +       strscpy(vdev_dec->name, VPU_DEC_DEV_NAME, sizeof(vdev_dec->name))=
+;
+> +       vdev_dec->fops        =3D &vpu_dec_fops;
+> +       vdev_dec->ioctl_ops   =3D &vpu_dec_ioctl_ops;
+> +       vdev_dec->release     =3D video_device_release_empty;
+> +       vdev_dec->v4l2_dev    =3D &dev->v4l2_dev;
+> +       vdev_dec->vfl_dir     =3D VFL_DIR_M2M;
+> +       vdev_dec->device_caps =3D V4L2_CAP_VIDEO_M2M_MPLANE | V4L2_CAP_ST=
+REAMING;
+> +       vdev_dec->lock        =3D &dev->dev_lock;
+> +
+> +       if (video_register_device(vdev_dec, VFL_TYPE_VIDEO, -1))
+> +               return -1;
+> +
+> +       video_set_drvdata(vdev_dec, dev);
+> +
+> +       return 0;
+> +}
+> +
+> +void vpu_dec_unregister_device(struct vpu_device *dev)
+> +{
+> +       video_unregister_device(dev->video_dev_dec);
+> +}
+> +
+> diff --git a/drivers/staging/media/wave5/v4l2/vpu_dec.h b/drivers/staging=
+/media/wave5/v4l2/vpu_dec.h
+> new file mode 100644
+> index 000000000000..92744858ef64
+> --- /dev/null
+> +++ b/drivers/staging/media/wave5/v4l2/vpu_dec.h
+> @@ -0,0 +1,20 @@
+> +/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+> +/*
+> + * Wave5 series multi-standard codec IP - decoder interface
+> + *
+> + * Copyright (C) 2021 CHIPS&MEDIA INC
+> + */
+> +#ifndef __VPU_DEC_DRV_H__
+> +#define __VPU_DEC_DRV_H__
+> +
+> +#include "vpu.h"
+> +
+> +#define VPU_DEC_DEV_NAME "C&M VPU decoder"
+> +#define VPU_DEC_DRV_NAME "vpu-dec"
+> +
+> +#define V4L2_CID_VPU_THUMBNAIL_MODE (V4L2_CID_USER_BASE + 0x1001)
+> +
+> +int  vpu_dec_register_device(struct vpu_device *dev);
+> +void vpu_dec_unregister_device(struct vpu_device *dev);
+> +#endif
+> +
+> diff --git a/drivers/staging/media/wave5/v4l2/vpu_enc.c b/drivers/staging=
+/media/wave5/v4l2/vpu_enc.c
+> new file mode 100644
+> index 000000000000..e528b540ed2e
+> --- /dev/null
+> +++ b/drivers/staging/media/wave5/v4l2/vpu_enc.c
+> @@ -0,0 +1,1580 @@
+> +// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+> +/*
+> + * Wave5 series multi-standard codec IP - encoder interface
+> + *
+> + * Copyright (C) 2021 CHIPS&MEDIA INC
+> + */
+> +#include "vpu_enc.h"
+> +
+> +static const struct vpu_format vpu_enc_fmt_list[2][6] =3D {
+> +       [VPU_FMT_TYPE_CODEC] =3D {
+> +               {
+> +                       .v4l2_pix_fmt =3D V4L2_PIX_FMT_HEVC,
+> +                       .num_planes   =3D 1,
+> +                       .max_width    =3D 8192,
+> +                       .min_width    =3D 8,
+> +                       .max_height   =3D 8192,
+> +                       .min_height   =3D 8,
+> +               },
+> +               {
+> +                       .v4l2_pix_fmt =3D V4L2_PIX_FMT_H264,
+> +                       .num_planes   =3D 1,
+> +                       .max_width    =3D 8192,
+> +                       .min_width    =3D 32,
+> +                       .max_height   =3D 8192,
+> +                       .min_height   =3D 32,
+> +               },
+> +       },
+> +       [VPU_FMT_TYPE_RAW] =3D {
+> +               {
+> +                       .v4l2_pix_fmt =3D V4L2_PIX_FMT_YUV420,
+> +                       .num_planes   =3D 1,
+> +                       .max_width    =3D 8192,
+> +                       .min_width    =3D 8,
+> +                       .max_height   =3D 8192,
+> +                       .min_height   =3D 8,
+> +               },
+> +               {
+> +                       .v4l2_pix_fmt =3D V4L2_PIX_FMT_NV12,
+> +                       .num_planes   =3D 1,
+> +                       .max_width    =3D 8192,
+> +                       .min_width    =3D 8,
+> +                       .max_height   =3D 8192,
+> +                       .min_height   =3D 8,
+> +               },
+> +               {
+> +                       .v4l2_pix_fmt =3D V4L2_PIX_FMT_NV21,
+> +                       .num_planes   =3D 1,
+> +                       .max_width    =3D 8192,
+> +                       .min_width    =3D 8,
+> +                       .max_height   =3D 8192,
+> +                       .min_height   =3D 8,
+> +               },
+> +               {
+> +                       .v4l2_pix_fmt =3D V4L2_PIX_FMT_YUV420M,
+> +                       .num_planes   =3D 3,
+> +                       .max_width    =3D 8192,
+> +                       .min_width    =3D 8,
+> +                       .max_height   =3D 8192,
+> +                       .min_height   =3D 8,
+> +               },
+> +               {
+> +                       .v4l2_pix_fmt =3D V4L2_PIX_FMT_NV12M,
+> +                       .num_planes   =3D 2,
+> +                       .max_width    =3D 8192,
+> +                       .min_width    =3D 8,
+> +                       .max_height   =3D 8192,
+> +                       .min_height   =3D 8,
+> +               },
+> +               {
+> +                       .v4l2_pix_fmt =3D V4L2_PIX_FMT_NV21M,
+> +                       .num_planes   =3D 2,
+> +                       .max_width    =3D 8192,
+> +                       .min_width    =3D 8,
+> +                       .max_height   =3D 8192,
+> +                       .min_height   =3D 8,
+> +               },
+> +       }
+> +};
+> +
+> +static enum cod_std to_vpu_codstd(unsigned int v4l2_pix_fmt)
+> +{
+> +       switch (v4l2_pix_fmt) {
+> +       case V4L2_PIX_FMT_H264:
+> +               return W_AVC_ENC;
+> +       case V4L2_PIX_FMT_HEVC:
+> +               return W_HEVC_ENC;
+> +       default:
+> +               return STD_UNKNOWN;
+> +       }
+> +}
+> +
+> +static const struct vpu_format *find_vpu_format(unsigned int v4l2_pix_fm=
+t, enum vpu_format_type type)
+> +{
+> +       unsigned int index;
+> +
+> +       for (index =3D 0; index < ARRAY_SIZE(vpu_enc_fmt_list[type]); ind=
+ex++) {
+> +               if (vpu_enc_fmt_list[type][index].v4l2_pix_fmt =3D=3D v4l=
+2_pix_fmt)
+> +                       return &vpu_enc_fmt_list[type][index];
+> +       }
+> +
+> +       return NULL;
+> +}
+> +
+> +static const struct vpu_format *find_vpu_format_by_index(unsigned int in=
+dex, enum vpu_format_type type)
+> +{
+> +       if (index >=3D ARRAY_SIZE(vpu_enc_fmt_list[type]))
+> +               return NULL;
+> +
+> +       if (vpu_enc_fmt_list[type][index].v4l2_pix_fmt =3D=3D 0)
+> +               return NULL;
+> +
+> +       return &vpu_enc_fmt_list[type][index];
+> +}
+> +
+> +static struct vb2_v4l2_buffer *get_valid_src_buf(struct vpu_instance *in=
+st)
+> +{
+> +       struct vb2_v4l2_buffer *vb2_v4l2_buf =3D NULL;
+> +       struct v4l2_m2m_buffer *v4l2_m2m_buf =3D NULL;
+> +       struct vpu_buffer      *vpu_buf      =3D NULL;
+> +       bool   no_src_buf                    =3D TRUE;
+> +
+> +       v4l2_m2m_for_each_src_buf(inst->v4l2_fh.m2m_ctx, v4l2_m2m_buf) {
+> +               vb2_v4l2_buf =3D &v4l2_m2m_buf->vb;
+> +               vpu_buf      =3D to_vpu_buf(vb2_v4l2_buf);
+> +
+> +               if (!vpu_buf->consumed) {
+> +                       DPRINTK(inst->dev, 1, "no consumed src idx : %d\n=
+",
+> +                               vb2_v4l2_buf->vb2_buf.index);
+> +                       no_src_buf =3D FALSE;
+> +                       break;
+> +               }
+> +       }
+> +
+> +       if (no_src_buf)
+> +               vb2_v4l2_buf =3D NULL;
+> +
+> +       return vb2_v4l2_buf;
+> +}
+> +
+> +static struct vb2_v4l2_buffer *get_valid_dst_buf(struct vpu_instance *in=
+st)
+> +{
+> +       struct vb2_v4l2_buffer *vb2_v4l2_buf =3D NULL;
+> +       struct v4l2_m2m_buffer *v4l2_m2m_buf =3D NULL;
+> +       struct vpu_buffer      *vpu_buf      =3D NULL;
+> +       bool   no_dst_buf                    =3D TRUE;
+> +
+> +       v4l2_m2m_for_each_dst_buf(inst->v4l2_fh.m2m_ctx, v4l2_m2m_buf) {
+> +               vb2_v4l2_buf =3D &v4l2_m2m_buf->vb;
+> +               vpu_buf      =3D to_vpu_buf(vb2_v4l2_buf);
+> +
+> +               if (!vpu_buf->consumed) {
+> +                       DPRINTK(inst->dev, 1, "no consumed dst idx : %d\n=
+",
+> +                               vb2_v4l2_buf->vb2_buf.index);
+> +                       no_dst_buf =3D FALSE;
+> +                       break;
+> +               }
+> +       }
+> +
+> +       if (no_dst_buf)
+> +               vb2_v4l2_buf =3D NULL;
+> +
+> +       return vb2_v4l2_buf;
+> +}
+> +
+> +static void update_resolution_info(struct v4l2_pix_format_mplane *pix_mp=
+, unsigned int width,
+> +                                  unsigned int height)
+> +{
+> +       switch (pix_mp->pixelformat) {
+> +       case V4L2_PIX_FMT_YUV420:
+> +       case V4L2_PIX_FMT_NV12:
+> +       case V4L2_PIX_FMT_NV21:
+> +               pix_mp->width  =3D round_up(width, 32);
+> +               pix_mp->height =3D height;
+> +               pix_mp->plane_fmt[0].bytesperline =3D round_up(width, 32)=
+;
+> +               pix_mp->plane_fmt[0].sizeimage    =3D round_up(width, 32)=
+ * height * 3 / 2;
+> +               memset(&pix_mp->plane_fmt[0].reserved, 0, sizeof(pix_mp->=
+plane_fmt[0].reserved));
+> +               break;
+> +       case V4L2_PIX_FMT_YUV420M:
+> +               pix_mp->width  =3D round_up(width, 32);
+> +               pix_mp->height =3D height;
+> +               pix_mp->plane_fmt[0].bytesperline =3D round_up(width, 32)=
+;
+> +               pix_mp->plane_fmt[0].sizeimage    =3D round_up(width, 32)=
+ * height;
+> +               memset(&pix_mp->plane_fmt[0].reserved, 0, sizeof(pix_mp->=
+plane_fmt[0].reserved));
+> +               pix_mp->plane_fmt[1].bytesperline =3D round_up(width, 32)=
+ / 2;
+> +               pix_mp->plane_fmt[1].sizeimage    =3D round_up(width, 32)=
+ * height / 4;
+> +               memset(&pix_mp->plane_fmt[1].reserved, 0, sizeof(pix_mp->=
+plane_fmt[1].reserved));
+> +               pix_mp->plane_fmt[2].bytesperline =3D round_up(width, 32)=
+ / 2;
+> +               pix_mp->plane_fmt[2].sizeimage    =3D round_up(width, 32)=
+ * height / 4;
+> +               memset(&pix_mp->plane_fmt[2].reserved, 0, sizeof(pix_mp->=
+plane_fmt[2].reserved));
+> +               break;
+> +       case V4L2_PIX_FMT_NV12M:
+> +       case V4L2_PIX_FMT_NV21M:
+> +               pix_mp->width  =3D round_up(width, 32);
+> +               pix_mp->height =3D height;
+> +               pix_mp->plane_fmt[0].bytesperline =3D round_up(width, 32)=
+;
+> +               pix_mp->plane_fmt[0].sizeimage    =3D round_up(width, 32)=
+ * height;
+> +               memset(&pix_mp->plane_fmt[0].reserved, 0, sizeof(pix_mp->=
+plane_fmt[0].reserved));
+> +               pix_mp->plane_fmt[1].bytesperline =3D round_up(width, 32)=
+;
+> +               pix_mp->plane_fmt[1].sizeimage    =3D round_up(width, 32)=
+ * height / 2;
+> +               memset(&pix_mp->plane_fmt[1].reserved, 0, sizeof(pix_mp->=
+plane_fmt[1].reserved));
+> +               break;
+> +       default:
+> +               pix_mp->width  =3D round_up(width, 32);
+> +               pix_mp->height =3D height;
+> +               pix_mp->plane_fmt[0].bytesperline =3D 0;
+> +               pix_mp->plane_fmt[0].sizeimage    =3D round_up(width, 32)=
+ * height;
+> +               memset(&pix_mp->plane_fmt[0].reserved, 0, sizeof(pix_mp->=
+plane_fmt[0].reserved));
+> +               break;
+> +       }
+> +}
+> +
+> +static void vpu_enc_start_encode(struct vpu_instance *inst)
+> +{
+> +       enum ret_code ret_code;
+> +       struct queue_status_info q_status;
+> +       u32 remain_cmd_q, max_cmd_q =3D 0;
+> +
+> +       vpu_enc_give_command(inst, ENC_GET_QUEUE_STATUS, &q_status);
+> +       DPRINTK(inst->dev, 1, "min_src_buf_cnt : %d | default : %d | qcou=
+nt : %d | report_q : %d\n",
+> +               inst->min_src_frame_buf_count, COMMAND_QUEUE_DEPTH, q_sta=
+tus.instance_queue_count,
+> +               q_status.report_queue_count);
+> +
+> +       max_cmd_q    =3D (inst->min_src_frame_buf_count < COMMAND_QUEUE_D=
+EPTH) ?
+> +               inst->min_src_frame_buf_count : COMMAND_QUEUE_DEPTH;
+> +       remain_cmd_q =3D max_cmd_q - q_status.instance_queue_count;
+> +
+> +       while (remain_cmd_q) {
+> +               struct vb2_v4l2_buffer *src_buf;
+> +               struct vb2_v4l2_buffer *dst_buf;
+> +               struct vpu_buffer      *src_vbuf;
+> +               struct vpu_buffer      *dst_vbuf;
+> +               struct frame_buffer frame_buf;
+> +               struct enc_param    pic_param;
+> +               s32 luma_size   =3D (inst->dst_fmt.width * inst->dst_fmt.=
+height);
+> +               s32 chroma_size =3D ((inst->dst_fmt.width / 2) * (inst->d=
+st_fmt.height / 2));
+> +
+> +               memset(&pic_param, 0, sizeof(struct enc_param));
+> +
+> +               src_buf =3D get_valid_src_buf(inst);
+> +               dst_buf =3D get_valid_dst_buf(inst);
+> +
+> +               if (!src_buf || !dst_buf) {
+> +                       DPRINTK(inst->dev, 1, "no valid src/dst buf\n");
+> +                       break;
+> +               }
+> +
+> +               src_vbuf =3D to_vpu_buf(src_buf);
+> +               dst_vbuf =3D to_vpu_buf(dst_buf);
+> +
+> +               if (inst->src_fmt.num_planes =3D=3D 1) {
+> +                       frame_buf.buf_y  =3D vb2_dma_contig_plane_dma_add=
+r(&src_buf->vb2_buf, 0);
+> +                       frame_buf.buf_cb =3D frame_buf.buf_y + luma_size;
+> +                       frame_buf.buf_cr =3D frame_buf.buf_cb + chroma_si=
+ze;
+> +               } else if (inst->src_fmt.num_planes =3D=3D 2) {
+> +                       frame_buf.buf_y  =3D vb2_dma_contig_plane_dma_add=
+r(&src_buf->vb2_buf, 0);
+> +                       frame_buf.buf_cb =3D vb2_dma_contig_plane_dma_add=
+r(&src_buf->vb2_buf, 1);
+> +                       frame_buf.buf_cr =3D frame_buf.buf_cb + chroma_si=
+ze;
+> +               } else if (inst->src_fmt.num_planes =3D=3D 3) {
+> +                       frame_buf.buf_y  =3D vb2_dma_contig_plane_dma_add=
+r(&src_buf->vb2_buf, 0);
+> +                       frame_buf.buf_cb =3D vb2_dma_contig_plane_dma_add=
+r(&src_buf->vb2_buf, 1);
+> +                       frame_buf.buf_cr =3D vb2_dma_contig_plane_dma_add=
+r(&src_buf->vb2_buf, 2);
+> +               }
+> +               frame_buf.stride         =3D inst->dst_fmt.width;
+> +               frame_buf.cbcr_interleave =3D 0;
+> +
+> +               DPRINTK(inst->dev, 1, "encoding src sequence : %d | dst s=
+equence : %d\n",
+> +                       src_buf->sequence, dst_buf->sequence);
+> +
+> +               pic_param.src_idx      =3D src_buf->vb2_buf.index;
+> +               pic_param.source_frame =3D &frame_buf;
+> +               pic_param.pic_stream_buffer_addr =3D vb2_dma_contig_plane=
+_dma_addr(&dst_buf->vb2_buf, 0);
+> +               pic_param.pic_stream_buffer_size =3D vb2_plane_size(&dst_=
+buf->vb2_buf, 0);
+> +               pic_param.code_option.implicit_header_encode =3D 1;
+> +
+> +               ret_code =3D vpu_enc_start_one_frame(inst, &pic_param);
+> +               if (ret_code !=3D RETCODE_SUCCESS) {
+> +                       if (ret_code !=3D RETCODE_QUEUEING_FAILURE) {
+> +                               src_buf =3D v4l2_m2m_src_buf_remove(inst-=
+>v4l2_fh.m2m_ctx);
+> +                               dst_buf =3D v4l2_m2m_dst_buf_remove(inst-=
+>v4l2_fh.m2m_ctx);
+> +                               DPRINTK(inst->dev, 1, "fail to call vpu_e=
+nc_start_one_frame() %d\n",
+> +                                       ret_code);
+> +                               inst->state =3D VPU_INST_STATE_STOP;
+> +                               v4l2_m2m_buf_done(src_buf, VB2_BUF_STATE_=
+ERROR);
+> +                               v4l2_m2m_buf_done(dst_buf, VB2_BUF_STATE_=
+ERROR);
+> +                       }
+> +               } else {
+> +                       DPRINTK(inst->dev, 1, "success to call vpu_enc_st=
+art_one_frame() %d\n",
+> +                               ret_code);
+> +                       src_vbuf->consumed =3D TRUE;
+> +                       dst_vbuf->consumed =3D TRUE;
+> +               }
+> +
+> +               remain_cmd_q--;
+> +       }
+> +}
+> +
+> +static void vpu_enc_stop_encode(struct vpu_instance *inst)
+> +{
+> +       struct queue_status_info q_status;
+> +
+> +       inst->state =3D VPU_INST_STATE_STOP;
+> +
+> +       vpu_enc_give_command(inst, ENC_GET_QUEUE_STATUS, &q_status);
+> +
+> +       if (q_status.report_queue_count + q_status.instance_queue_count =
+=3D=3D 0)
+> +               v4l2_m2m_job_finish(inst->dev->v4l2_m2m_dev, inst->v4l2_f=
+h.m2m_ctx);
+> +}
+> +
+> +static void vpu_enc_finish_encode(struct vpu_instance *inst)
+> +{
+> +       enum ret_code ret_code;
+> +       struct enc_output_info enc_output_info;
+> +       int irq_status;
+> +
+> +       if (kfifo_out(&inst->dev->irq_status, &irq_status, sizeof(int)))
+> +               vpu_clear_interrupt_ex(inst, irq_status);
+> +
+> +       ret_code =3D vpu_enc_get_output_info(inst, &enc_output_info);
+> +       if (ret_code !=3D RETCODE_SUCCESS) {
+> +               DPRINTK(inst->dev, 1, "vpu_enc_get_output_info fail %d | =
+reason: %d | info : %d\n",
+> +                       ret_code, enc_output_info.error_reason, enc_outpu=
+t_info.warn_info);
+> +       } else {
+> +               struct vb2_v4l2_buffer *dst_buf =3D NULL;
+> +               struct v4l2_m2m_buffer *v4l2_m2m_buf =3D NULL;
+> +
+> +               v4l2_m2m_buf =3D NULL;
+> +               v4l2_m2m_for_each_dst_buf(inst->v4l2_fh.m2m_ctx, v4l2_m2m=
+_buf) {
+> +                       dst_buf =3D &v4l2_m2m_buf->vb;
+> +                       if (enc_output_info.bitstream_buffer =3D=3D vb2_d=
+ma_contig_plane_dma_addr(&dst_buf->vb2_buf, 0))
+> +                               break;
+> +               }
+> +
+> +               if (enc_output_info.enc_src_idx >=3D 0) {
+> +                       struct vb2_v4l2_buffer *src_buf =3D
+> +                               v4l2_m2m_src_buf_remove_by_idx(inst->v4l2=
+_fh.m2m_ctx,
+> +                                                              enc_output=
+_info.enc_src_idx);
+> +
+> +                       inst->timestamp =3D src_buf->vb2_buf.timestamp;
+> +                       v4l2_m2m_buf_done(src_buf, VB2_BUF_STATE_DONE);
+> +               }
+> +
+> +               if (enc_output_info.recon_frame_index =3D=3D RECON_IDX_FL=
+AG_ENC_END) {
+> +                       static const struct v4l2_event vpu_event_eos =3D =
+{
+> +                               .type =3D V4L2_EVENT_EOS
+> +                       };
+> +
+> +                       dst_buf->flags |=3D V4L2_BUF_FLAG_LAST;
+> +                       vb2_set_plane_payload(&dst_buf->vb2_buf, 0, 0);
+> +
+> +                       inst->state =3D VPU_INST_STATE_STOP;
+> +                       v4l2_event_queue_fh(&inst->v4l2_fh, &vpu_event_eo=
+s);
+> +               } else {
+> +                       vb2_set_plane_payload(&dst_buf->vb2_buf, 0, enc_o=
+utput_info.bitstream_size);
+> +
+> +                       dst_buf->vb2_buf.timestamp =3D inst->timestamp;
+> +                       dst_buf->field =3D V4L2_FIELD_NONE;
+> +                       if (enc_output_info.pic_type =3D=3D PIC_TYPE_I) {
+> +                               if (enc_output_info.enc_vcl_nut =3D=3D 19=
+ || enc_output_info.enc_vcl_nut =3D=3D 20)
+> +                                       dst_buf->flags |=3D V4L2_BUF_FLAG=
+_KEYFRAME;
+> +                               else
+> +                                       dst_buf->flags |=3D V4L2_BUF_FLAG=
+_PFRAME;
+> +                       } else if (enc_output_info.pic_type =3D=3D PIC_TY=
+PE_P) {
+> +                               dst_buf->flags |=3D V4L2_BUF_FLAG_PFRAME;
+> +                       } else if (enc_output_info.pic_type =3D=3D PIC_TY=
+PE_B) {
+> +                               dst_buf->flags |=3D V4L2_BUF_FLAG_BFRAME;
+> +                       }
+> +               }
+> +
+> +               v4l2_m2m_dst_buf_remove_by_buf(inst->v4l2_fh.m2m_ctx, dst=
+_buf);
+> +               v4l2_m2m_buf_done(dst_buf, VB2_BUF_STATE_DONE);
+> +       }
+> +
+> +       if (inst->state =3D=3D VPU_INST_STATE_STOP) {
+> +               struct queue_status_info q_status;
+> +
+> +               vpu_enc_give_command(inst, ENC_GET_QUEUE_STATUS, &q_statu=
+s);
+> +               DPRINTK(inst->dev, 1, "default : %d | qcount : %d | repor=
+t_q : %d\n",
+> +                       COMMAND_QUEUE_DEPTH, q_status.instance_queue_coun=
+t,
+> +                               q_status.report_queue_count);
+> +
+> +               if (q_status.report_queue_count + q_status.instance_queue=
+_count =3D=3D 0)
+> +                       v4l2_m2m_job_finish(inst->dev->v4l2_m2m_dev, inst=
+->v4l2_fh.m2m_ctx);
+> +       } else {
+> +               v4l2_m2m_job_finish(inst->dev->v4l2_m2m_dev, inst->v4l2_f=
+h.m2m_ctx);
+> +       }
+> +}
+> +
+> +static int vpu_enc_querycap(struct file *file, void *fh, struct v4l2_cap=
+ability *cap)
+> +{
+> +       struct vpu_instance *inst =3D to_vpu_inst(fh);
+> +
+> +       DPRINTK(inst->dev, 1, "\n");
+> +
+> +       strscpy(cap->driver,   VPU_ENC_DRV_NAME,            sizeof(cap->d=
+river));
+> +       strscpy(cap->card,     VPU_ENC_DRV_NAME,            sizeof(cap->c=
+ard));
+> +       strscpy(cap->bus_info, "platform:" VPU_ENC_DRV_NAME, sizeof(cap->=
+bus_info));
+> +
+> +       return 0;
+> +}
+> +
+> +static int vpu_enc_enum_framesizes(struct file *file, void *fh, struct v=
+4l2_frmsizeenum *fsize)
+> +{
+> +       struct vpu_instance *inst =3D to_vpu_inst(fh);
+> +       const struct vpu_format *vpu_fmt;
+> +
+> +       DPRINTK(inst->dev, 1, "\n");
+> +
+> +       if (fsize->index)
+> +               return -EINVAL;
+> +
+> +       vpu_fmt =3D find_vpu_format(fsize->pixel_format, VPU_FMT_TYPE_COD=
+EC);
+> +       if (!vpu_fmt) {
+> +               vpu_fmt =3D find_vpu_format(fsize->pixel_format, VPU_FMT_=
+TYPE_RAW);
+> +               if (!vpu_fmt)
+> +                       return -EINVAL;
+> +       }
+> +
+> +       fsize->type                 =3D V4L2_FRMSIZE_TYPE_CONTINUOUS;
+> +       fsize->stepwise.min_width   =3D vpu_fmt->min_width;
+> +       fsize->stepwise.max_width   =3D vpu_fmt->max_width;
+> +       fsize->stepwise.step_width  =3D 1;
+> +       fsize->stepwise.min_height  =3D vpu_fmt->min_height;
+> +       fsize->stepwise.max_height  =3D vpu_fmt->max_height;
+> +       fsize->stepwise.step_height =3D 1;
+> +
+> +       return 0;
+> +}
+> +
+> +static int vpu_enc_enum_fmt_cap(struct file *file, void *fh, struct v4l2=
+_fmtdesc *f)
+> +{
+> +       struct vpu_instance *inst =3D to_vpu_inst(fh);
+> +       const struct vpu_format *vpu_fmt;
+> +
+> +       DPRINTK(inst->dev, 1, "index : %d\n", f->index);
+> +
+> +       vpu_fmt =3D find_vpu_format_by_index(f->index, VPU_FMT_TYPE_CODEC=
+);
+> +       if (!vpu_fmt)
+> +               return -EINVAL;
+> +
+> +       f->pixelformat =3D vpu_fmt->v4l2_pix_fmt;
+> +       f->flags       =3D 0;
+> +
+> +       return 0;
+> +}
+> +
+> +static int vpu_enc_try_fmt_cap(struct file *file, void *fh, struct v4l2_=
+format *f)
+> +{
+> +       struct vpu_instance     *inst =3D to_vpu_inst(fh);
+> +       const struct vpu_format *vpu_fmt;
+> +
+> +       DPRINTK(inst->dev, 1, "fourcc: %d width %d height %d num_planes %=
+d field : %d\n",
+> +               f->fmt.pix_mp.pixelformat, f->fmt.pix_mp.width, f->fmt.pi=
+x_mp.height,
+> +               f->fmt.pix_mp.num_planes, f->fmt.pix_mp.field);
+> +
+> +       if (f->type !=3D V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE)
+> +               return -EINVAL;
+> +
+> +       vpu_fmt =3D find_vpu_format(f->fmt.pix_mp.pixelformat, VPU_FMT_TY=
+PE_CODEC);
+> +       if (!vpu_fmt) {
+> +               f->fmt.pix_mp.pixelformat =3D inst->dst_fmt.pixelformat;
+> +               f->fmt.pix_mp.num_planes  =3D inst->dst_fmt.num_planes;
+> +               update_resolution_info(&f->fmt.pix_mp, inst->dst_fmt.widt=
+h, inst->dst_fmt.height);
+> +       } else {
+> +               f->fmt.pix_mp.pixelformat =3D vpu_fmt->v4l2_pix_fmt;
+> +               f->fmt.pix_mp.num_planes  =3D vpu_fmt->num_planes;
+> +               update_resolution_info(&f->fmt.pix_mp, clamp(f->fmt.pix_m=
+p.width,
+> +                                                            vpu_fmt->min=
+_width, vpu_fmt->max_width),
+> +                               clamp(f->fmt.pix_mp.height, vpu_fmt->min_=
+height,
+> +                                     vpu_fmt->max_height));
+> +       }
+> +
+> +       f->fmt.pix_mp.flags        =3D 0;
+> +       f->fmt.pix_mp.field        =3D V4L2_FIELD_NONE;
+> +       f->fmt.pix_mp.colorspace   =3D inst->colorspace;
+> +       f->fmt.pix_mp.ycbcr_enc    =3D inst->ycbcr_enc;
+> +       f->fmt.pix_mp.hsv_enc      =3D inst->hsv_enc;
+> +       f->fmt.pix_mp.quantization =3D inst->quantization;
+> +       f->fmt.pix_mp.xfer_func    =3D inst->xfer_func;
+> +       memset(&f->fmt.pix_mp.reserved, 0, sizeof(f->fmt.pix_mp.reserved)=
+);
+> +
+> +       return 0;
+> +}
+> +
+> +static int vpu_enc_s_fmt_cap(struct file *file, void *fh, struct v4l2_fo=
+rmat *f)
+> +{
+> +       struct vpu_instance *inst =3D to_vpu_inst(fh);
+> +       int i, ret;
+> +
+> +       DPRINTK(inst->dev, 1, "4cc %d width %d height %d num_planes %d fi=
+eld %d\n",
+> +               f->fmt.pix_mp.pixelformat, f->fmt.pix_mp.width, f->fmt.pi=
+x_mp.height,
+> +               f->fmt.pix_mp.num_planes, f->fmt.pix_mp.field);
+> +
+> +       ret =3D vpu_enc_try_fmt_cap(file, fh, f);
+> +       if (ret)
+> +               return ret;
+> +
+> +       inst->dst_fmt.width        =3D f->fmt.pix_mp.width;
+> +       inst->dst_fmt.height       =3D f->fmt.pix_mp.height;
+> +       inst->dst_fmt.pixelformat  =3D f->fmt.pix_mp.pixelformat;
+> +       inst->dst_fmt.field        =3D f->fmt.pix_mp.field;
+> +       inst->dst_fmt.flags        =3D f->fmt.pix_mp.flags;
+> +       inst->dst_fmt.num_planes   =3D f->fmt.pix_mp.num_planes;
+> +       for (i =3D 0; i < inst->dst_fmt.num_planes; i++) {
+> +               inst->dst_fmt.plane_fmt[i].bytesperline =3D f->fmt.pix_mp=
+.plane_fmt[i].bytesperline;
+> +               inst->dst_fmt.plane_fmt[i].sizeimage    =3D f->fmt.pix_mp=
+.plane_fmt[i].sizeimage;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static int vpu_enc_g_fmt_cap(struct file *file, void *fh, struct v4l2_fo=
+rmat *f)
+> +{
+> +       struct vpu_instance *inst =3D to_vpu_inst(fh);
+> +       int i;
+> +
+> +       DPRINTK(inst->dev, 1, "\n");
+> +
+> +       f->fmt.pix_mp.width        =3D inst->dst_fmt.width;
+> +       f->fmt.pix_mp.height       =3D inst->dst_fmt.height;
+> +       f->fmt.pix_mp.pixelformat  =3D inst->dst_fmt.pixelformat;
+> +       f->fmt.pix_mp.field        =3D inst->dst_fmt.field;
+> +       f->fmt.pix_mp.flags        =3D inst->dst_fmt.flags;
+> +       f->fmt.pix_mp.num_planes   =3D inst->dst_fmt.num_planes;
+> +       for (i =3D 0; i < f->fmt.pix_mp.num_planes; i++) {
+> +               f->fmt.pix_mp.plane_fmt[i].bytesperline =3D inst->dst_fmt=
+.plane_fmt[i].bytesperline;
+> +               f->fmt.pix_mp.plane_fmt[i].sizeimage    =3D inst->dst_fmt=
+.plane_fmt[i].sizeimage;
+> +       }
+> +
+> +       f->fmt.pix_mp.colorspace   =3D inst->colorspace;
+> +       f->fmt.pix_mp.ycbcr_enc    =3D inst->ycbcr_enc;
+> +       f->fmt.pix_mp.hsv_enc      =3D inst->hsv_enc;
+> +       f->fmt.pix_mp.quantization =3D inst->quantization;
+> +       f->fmt.pix_mp.xfer_func    =3D inst->xfer_func;
+> +
+> +       return 0;
+> +}
+> +
+> +static int vpu_enc_enum_fmt_out(struct file *file, void *fh, struct v4l2=
+_fmtdesc *f)
+> +{
+> +       struct vpu_instance *inst =3D to_vpu_inst(fh);
+> +       const struct vpu_format *vpu_fmt;
+> +
+> +       DPRINTK(inst->dev, 1, "index : %d\n", f->index);
+> +
+> +       vpu_fmt =3D find_vpu_format_by_index(f->index, VPU_FMT_TYPE_RAW);
+> +       if (!vpu_fmt)
+> +               return -EINVAL;
+> +
+> +       f->pixelformat =3D vpu_fmt->v4l2_pix_fmt;
+> +       f->flags       =3D 0;
+> +
+> +       return 0;
+> +}
+> +
+> +static int vpu_enc_try_fmt_out(struct file *file, void *fh, struct v4l2_=
+format *f)
+> +{
+> +       struct vpu_instance     *inst =3D to_vpu_inst(fh);
+> +       const struct vpu_format *vpu_fmt;
+> +
+> +       DPRINTK(inst->dev, 1, "4cc %d width %d height %d num_planes %d  f=
+ield %d\n",
+> +               f->fmt.pix_mp.pixelformat, f->fmt.pix_mp.width, f->fmt.pi=
+x_mp.height,
+> +               f->fmt.pix_mp.num_planes,  f->fmt.pix_mp.field);
+> +
+> +       if (f->type !=3D V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE)
+> +               return -EINVAL;
+> +
+> +       vpu_fmt =3D find_vpu_format(f->fmt.pix_mp.pixelformat, VPU_FMT_TY=
+PE_RAW);
+> +       if (!vpu_fmt) {
+> +               f->fmt.pix_mp.pixelformat =3D inst->src_fmt.pixelformat;
+> +               f->fmt.pix_mp.num_planes  =3D inst->src_fmt.num_planes;
+> +               update_resolution_info(&f->fmt.pix_mp, inst->src_fmt.widt=
+h, inst->src_fmt.height);
+> +       } else {
+> +               f->fmt.pix_mp.pixelformat =3D vpu_fmt->v4l2_pix_fmt;
+> +               f->fmt.pix_mp.num_planes  =3D vpu_fmt->num_planes;
+> +               update_resolution_info(&f->fmt.pix_mp, clamp(f->fmt.pix_m=
+p.width,
+> +                                                            vpu_fmt->min=
+_width, vpu_fmt->max_width),
+> +                               clamp(f->fmt.pix_mp.height, vpu_fmt->min_=
+height,
+> +                                     vpu_fmt->max_height));
+> +       }
+> +
+> +       f->fmt.pix_mp.flags =3D 0;
+> +       f->fmt.pix_mp.field =3D V4L2_FIELD_NONE;
+> +       memset(&f->fmt.pix_mp.reserved, 0, sizeof(f->fmt.pix_mp.reserved)=
+);
+> +
+> +       return 0;
+> +}
+> +
+> +static int vpu_enc_s_fmt_out(struct file *file, void *fh, struct v4l2_fo=
+rmat *f)
+> +{
+> +       struct vpu_instance *inst =3D to_vpu_inst(fh);
+> +       int i, ret;
+> +
+> +       DPRINTK(inst->dev, 1, "4cc %d width %d height %d num_planes %d fi=
+eld : %d\n",
+> +               f->fmt.pix_mp.pixelformat, f->fmt.pix_mp.width, f->fmt.pi=
+x_mp.height,
+> +               f->fmt.pix_mp.num_planes,  f->fmt.pix_mp.field);
+> +
+> +       ret =3D vpu_enc_try_fmt_out(file, fh, f);
+> +       if (ret)
+> +               return ret;
+> +
+> +       inst->src_fmt.width        =3D f->fmt.pix_mp.width;
+> +       inst->src_fmt.height       =3D f->fmt.pix_mp.height;
+> +       inst->src_fmt.pixelformat  =3D f->fmt.pix_mp.pixelformat;
+> +       inst->src_fmt.field        =3D f->fmt.pix_mp.field;
+> +       inst->src_fmt.flags        =3D f->fmt.pix_mp.flags;
+> +       inst->src_fmt.num_planes   =3D f->fmt.pix_mp.num_planes;
+> +       for (i =3D 0; i < inst->src_fmt.num_planes; i++) {
+> +               inst->src_fmt.plane_fmt[i].bytesperline =3D f->fmt.pix_mp=
+.plane_fmt[i].bytesperline;
+> +               inst->src_fmt.plane_fmt[i].sizeimage    =3D f->fmt.pix_mp=
+.plane_fmt[i].sizeimage;
+> +       }
+> +
+> +       inst->colorspace   =3D f->fmt.pix_mp.colorspace;
+> +       inst->ycbcr_enc    =3D f->fmt.pix_mp.ycbcr_enc;
+> +       inst->hsv_enc      =3D f->fmt.pix_mp.hsv_enc;
+> +       inst->quantization =3D f->fmt.pix_mp.quantization;
+> +       inst->xfer_func    =3D f->fmt.pix_mp.xfer_func;
+> +
+> +       update_resolution_info(&inst->dst_fmt, f->fmt.pix_mp.width, f->fm=
+t.pix_mp.height);
+> +
+> +       return 0;
+> +}
+> +
+> +static int vpu_enc_g_fmt_out(struct file *file, void *fh, struct v4l2_fo=
+rmat *f)
+> +{
+> +       struct vpu_instance *inst =3D to_vpu_inst(fh);
+> +       int i;
+> +
+> +       DPRINTK(inst->dev, 1, "\n");
+> +
+> +       f->fmt.pix_mp.width        =3D inst->src_fmt.width;
+> +       f->fmt.pix_mp.height       =3D inst->src_fmt.height;
+> +       f->fmt.pix_mp.pixelformat  =3D inst->src_fmt.pixelformat;
+> +       f->fmt.pix_mp.field        =3D inst->src_fmt.field;
+> +       f->fmt.pix_mp.flags        =3D inst->src_fmt.flags;
+> +       f->fmt.pix_mp.num_planes   =3D inst->src_fmt.num_planes;
+> +       for (i =3D 0; i < f->fmt.pix_mp.num_planes; i++) {
+> +               f->fmt.pix_mp.plane_fmt[i].bytesperline =3D inst->src_fmt=
+.plane_fmt[i].bytesperline;
+> +               f->fmt.pix_mp.plane_fmt[i].sizeimage    =3D inst->src_fmt=
+.plane_fmt[i].sizeimage;
+> +       }
+> +
+> +       f->fmt.pix_mp.colorspace   =3D inst->colorspace;
+> +       f->fmt.pix_mp.ycbcr_enc    =3D inst->ycbcr_enc;
+> +       f->fmt.pix_mp.hsv_enc      =3D inst->hsv_enc;
+> +       f->fmt.pix_mp.quantization =3D inst->quantization;
+> +       f->fmt.pix_mp.xfer_func    =3D inst->xfer_func;
+> +
+> +       return 0;
+> +}
+> +
+> +static int vpu_enc_g_selection(struct file *file, void *fh, struct v4l2_=
+selection *s)
+> +{
+> +       struct vpu_instance *inst =3D to_vpu_inst(fh);
+> +
+> +       DPRINTK(inst->dev, 1, "type : %d | target : %d\n", s->type, s->ta=
+rget);
+> +
+> +       if (s->type =3D=3D V4L2_BUF_TYPE_VIDEO_OUTPUT) {
+> +               switch (s->target) {
+> +               case V4L2_SEL_TGT_CROP_DEFAULT:
+> +               case V4L2_SEL_TGT_CROP_BOUNDS:
+> +                       s->r.left   =3D 0;
+> +                       s->r.top    =3D 0;
+> +                       s->r.width  =3D inst->src_fmt.width;
+> +                       s->r.height =3D inst->src_fmt.height;
+> +                       break;
+> +               case V4L2_SEL_TGT_CROP:
+> +                       s->r.left   =3D 0;
+> +                       s->r.top    =3D 0;
+> +                       s->r.width  =3D inst->dst_fmt.width;
+> +                       s->r.height =3D inst->dst_fmt.height;
+> +                       DPRINTK(inst->dev, 1, "V4L2_SEL_TGT_CROP width : =
+%d | height : %d\n",
+> +                               s->r.width, s->r.height);
+> +                       break;
+> +               default:
+> +                       return -EINVAL;
+> +               }
+> +       } else {
+> +               return -EINVAL;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static int vpu_enc_s_selection(struct file *file, void *fh, struct v4l2_=
+selection *s)
+> +{
+> +       struct vpu_instance *inst =3D to_vpu_inst(fh);
+> +
+> +       DPRINTK(inst->dev, 1, "type : %d | target : %d\n", s->type, s->ta=
+rget);
+> +
+> +       if (s->type =3D=3D V4L2_BUF_TYPE_VIDEO_OUTPUT) {
+> +               switch (s->target) {
+> +               case V4L2_SEL_TGT_CROP:
+> +                       DPRINTK(inst->dev, 1, "V4L2_SEL_TGT_CROP width : =
+%d | height : %d\n",
+> +                               s->r.width, s->r.height);
+> +                       inst->dst_fmt.width  =3D s->r.width;
+> +                       inst->dst_fmt.height =3D s->r.height;
+> +                       break;
+> +               default:
+> +                       return -EINVAL;
+> +               }
+> +       } else {
+> +               return -EINVAL;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static int vpu_enc_try_encoder_cmd(struct file *file, void *fh, struct v=
+4l2_encoder_cmd *ec)
+> +{
+> +       struct vpu_instance *inst =3D to_vpu_inst(fh);
+> +
+> +       DPRINTK(inst->dev, 1, "\n");
+> +
+> +       if (ec->cmd !=3D V4L2_ENC_CMD_STOP && ec->cmd !=3D V4L2_ENC_CMD_S=
+TART)
+> +               return -EINVAL;
+> +
+> +       ec->flags =3D 0;
+> +       return 0;
+> +}
+> +
+> +static int vpu_enc_encoder_cmd(struct file *file, void *fh, struct v4l2_=
+encoder_cmd *ec)
+> +{
+> +       struct vpu_instance *inst =3D to_vpu_inst(fh);
+> +       int ret;
+> +
+> +       DPRINTK(inst->dev, 1, "\n");
+> +
+> +       ret =3D vpu_enc_try_encoder_cmd(file, fh, ec);
+> +       if (ret < 0)
+> +               return ret;
+> +
+> +       if (!vb2_is_streaming(v4l2_m2m_get_vq(inst->v4l2_fh.m2m_ctx, V4L2=
+_BUF_TYPE_VIDEO_CAPTURE_MPLANE)) ||
+> +           !vb2_is_streaming(v4l2_m2m_get_vq(inst->v4l2_fh.m2m_ctx, V4L2=
+_BUF_TYPE_VIDEO_OUTPUT_MPLANE)))
+> +               return 0;
+> +
+> +       switch (ec->cmd) {
+> +       case V4L2_ENC_CMD_STOP:
+> +               vpu_enc_stop_encode(inst);
+> +               break;
+> +       case V4L2_ENC_CMD_START:
+> +               break;
+> +       default:
+> +               return -EINVAL;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static int vpu_enc_subscribe_event(struct v4l2_fh *fh, const struct v4l2=
+_event_subscription *sub)
+> +{
+> +       struct vpu_instance *inst =3D to_vpu_inst(fh);
+> +
+> +       DPRINTK(inst->dev, 1, "type : %d | id : %d | flags : %d\n", sub->=
+type, sub->id, sub->flags);
+> +
+> +       switch (sub->type) {
+> +       case V4L2_EVENT_EOS:
+> +               return v4l2_event_subscribe(fh, sub, 0, NULL);
+> +       case V4L2_EVENT_CTRL:
+> +               return v4l2_ctrl_subscribe_event(fh, sub);
+> +       default:
+> +               return -EINVAL;
+> +       }
+> +}
+> +
+> +static int vpu_enc_g_parm(struct file *file, void *fh, struct v4l2_strea=
+mparm *a)
+> +{
+> +       struct vpu_instance *inst =3D to_vpu_inst(fh);
+> +
+> +       DPRINTK(inst->dev, 1, "type : %d\n", a->type);
+> +
+> +       if (a->type !=3D V4L2_BUF_TYPE_VIDEO_OUTPUT && a->type !=3D V4L2_=
+BUF_TYPE_VIDEO_OUTPUT_MPLANE)
+> +               return -EINVAL;
+> +
+> +       a->parm.output.capability               =3D V4L2_CAP_TIMEPERFRAME=
+;
+> +       a->parm.output.timeperframe.numerator   =3D 1;
+> +       a->parm.output.timeperframe.denominator =3D inst->frame_rate;
+> +
+> +       DPRINTK(inst->dev, 1, "numerator : %d | denominator : %d\n",
+> +               a->parm.output.timeperframe.numerator,
+> +                       a->parm.output.timeperframe.denominator);
+> +
+> +       return 0;
+> +}
+> +
+> +static int vpu_enc_s_parm(struct file *file, void *fh, struct v4l2_strea=
+mparm *a)
+> +{
+> +       struct vpu_instance *inst =3D to_vpu_inst(fh);
+> +
+> +       DPRINTK(inst->dev, 1, "type : %d\n", a->type);
+> +
+> +       if (a->type !=3D V4L2_BUF_TYPE_VIDEO_OUTPUT && a->type !=3D V4L2_=
+BUF_TYPE_VIDEO_OUTPUT_MPLANE)
+> +               return -EINVAL;
+> +
+> +       a->parm.output.capability =3D V4L2_CAP_TIMEPERFRAME;
+> +       if (a->parm.output.timeperframe.denominator !=3D 0 && a->parm.out=
+put.timeperframe.numerator !=3D 0) {
+> +               inst->frame_rate =3D a->parm.output.timeperframe.denomina=
+tor / a->parm.output.timeperframe.numerator;
+> +       } else {
+> +               a->parm.output.timeperframe.numerator   =3D 1;
+> +               a->parm.output.timeperframe.denominator =3D inst->frame_r=
+ate;
+> +       }
+> +
+> +       DPRINTK(inst->dev, 1, "numerator : %d | denominator : %d\n",
+> +               a->parm.output.timeperframe.numerator,
+> +                       a->parm.output.timeperframe.denominator);
+> +
+> +       return 0;
+> +}
+> +
+> +static const struct v4l2_ioctl_ops vpu_enc_ioctl_ops =3D {
+> +       .vidioc_querycap                =3D vpu_enc_querycap,
+> +       .vidioc_enum_framesizes         =3D vpu_enc_enum_framesizes,
+> +
+> +       .vidioc_enum_fmt_vid_cap        =3D vpu_enc_enum_fmt_cap,
+> +       .vidioc_s_fmt_vid_cap_mplane    =3D vpu_enc_s_fmt_cap,
+> +       .vidioc_g_fmt_vid_cap_mplane    =3D vpu_enc_g_fmt_cap,
+> +       .vidioc_try_fmt_vid_cap_mplane  =3D vpu_enc_try_fmt_cap,
+> +
+> +       .vidioc_enum_fmt_vid_out        =3D vpu_enc_enum_fmt_out,
+> +       .vidioc_s_fmt_vid_out_mplane    =3D vpu_enc_s_fmt_out,
+> +       .vidioc_g_fmt_vid_out_mplane    =3D vpu_enc_g_fmt_out,
+> +       .vidioc_try_fmt_vid_out_mplane  =3D vpu_enc_try_fmt_out,
+> +
+> +       .vidioc_g_selection             =3D vpu_enc_g_selection,
+> +       .vidioc_s_selection             =3D vpu_enc_s_selection,
+> +
+> +       .vidioc_g_parm                  =3D vpu_enc_g_parm,
+> +       .vidioc_s_parm                  =3D vpu_enc_s_parm,
+> +
+> +       .vidioc_reqbufs                 =3D v4l2_m2m_ioctl_reqbufs,
+> +       .vidioc_querybuf                =3D v4l2_m2m_ioctl_querybuf,
+> +       .vidioc_create_bufs             =3D v4l2_m2m_ioctl_create_bufs,
+> +       .vidioc_prepare_buf             =3D v4l2_m2m_ioctl_prepare_buf,
+> +       .vidioc_qbuf                    =3D v4l2_m2m_ioctl_qbuf,
+> +       .vidioc_expbuf                  =3D v4l2_m2m_ioctl_expbuf,
+> +       .vidioc_dqbuf                   =3D v4l2_m2m_ioctl_dqbuf,
+> +       .vidioc_streamon                =3D v4l2_m2m_ioctl_streamon,
+> +       .vidioc_streamoff               =3D v4l2_m2m_ioctl_streamoff,
+> +
+> +       .vidioc_try_encoder_cmd         =3D vpu_enc_try_encoder_cmd,
+> +       .vidioc_encoder_cmd             =3D vpu_enc_encoder_cmd,
+> +
+> +       .vidioc_subscribe_event         =3D vpu_enc_subscribe_event,
+> +       .vidioc_unsubscribe_event       =3D v4l2_event_unsubscribe,
+> +};
+> +
+> +static int vpu_enc_g_volatile_ctrl(struct v4l2_ctrl *ctrl)
+> +{
+> +       struct vpu_instance *inst =3D ctrl_to_vpu_inst(ctrl);
+> +
+> +       DPRINTK(inst->dev, 1, "name : %s\n", ctrl->name);
+> +
+> +       switch (ctrl->id) {
+> +       case V4L2_CID_MIN_BUFFERS_FOR_OUTPUT:
+> +               if (inst->state !=3D VPU_INST_STATE_NONE && inst->state !=
+=3D VPU_INST_STATE_OPEN)
+> +                       ctrl->val =3D inst->min_src_frame_buf_count;
+> +               break;
+> +       default:
+> +               return -EINVAL;
+> +       }
+> +
+> +       DPRINTK(inst->dev, 1, "value : %d\n", ctrl->val);
+> +
+> +       return 0;
+> +}
+> +
+> +static int vpu_enc_s_ctrl(struct v4l2_ctrl *ctrl)
+> +{
+> +       struct vpu_instance *inst =3D ctrl_to_vpu_inst(ctrl);
+> +
+> +       DPRINTK(inst->dev, 1, "name : %s | value : %d\n", ctrl->name, ctr=
+l->val);
+> +
+> +       switch (ctrl->id) {
+> +       case V4L2_CID_HFLIP:
+> +               inst->mirror_direction |=3D (ctrl->val << 1);
+> +               break;
+> +       case V4L2_CID_VFLIP:
+> +               inst->mirror_direction |=3D ctrl->val;
+> +               break;
+> +       case V4L2_CID_ROTATE:
+> +               inst->rot_angle =3D ctrl->val;
+> +               break;
+> +       case V4L2_CID_MPEG_VIDEO_VBV_SIZE:
+> +               inst->vbv_buf_size =3D ctrl->val;
+> +               break;
+> +       case V4L2_CID_MPEG_VIDEO_HEVC_PROFILE:
+> +               switch (ctrl->val) {
+> +               case V4L2_MPEG_VIDEO_HEVC_PROFILE_MAIN:
+> +                       inst->profile   =3D HEVC_PROFILE_MAIN;
+> +                       inst->bit_depth =3D 8;
+> +                       break;
+> +               case V4L2_MPEG_VIDEO_HEVC_PROFILE_MAIN_STILL_PICTURE:
+> +                       inst->profile   =3D HEVC_PROFILE_STILLPICTURE;
+> +                       inst->bit_depth =3D 8;
+> +                       break;
+> +               case V4L2_MPEG_VIDEO_HEVC_PROFILE_MAIN_10:
+> +                       inst->profile   =3D HEVC_PROFILE_MAIN10;
+> +                       inst->bit_depth =3D 10;
+> +                       break;
+> +               default:
+> +                       inst->profile   =3D 0;
+> +                       inst->bit_depth =3D 0;
+> +                       break;
+> +               }
+> +               break;
+> +       case V4L2_CID_MPEG_VIDEO_HEVC_LEVEL:
+> +               switch (ctrl->val) {
+> +               case V4L2_MPEG_VIDEO_HEVC_LEVEL_1:
+> +                       inst->level =3D 10 * 3;
+> +                       break;
+> +               case V4L2_MPEG_VIDEO_HEVC_LEVEL_2:
+> +                       inst->level =3D 20 * 3;
+> +                       break;
+> +               case V4L2_MPEG_VIDEO_HEVC_LEVEL_2_1:
+> +                       inst->level =3D 21 * 3;
+> +                       break;
+> +               case V4L2_MPEG_VIDEO_HEVC_LEVEL_3:
+> +                       inst->level =3D 30 * 3;
+> +                       break;
+> +               case V4L2_MPEG_VIDEO_HEVC_LEVEL_3_1:
+> +                       inst->level =3D 31 * 3;
+> +                       break;
+> +               case V4L2_MPEG_VIDEO_HEVC_LEVEL_4:
+> +                       inst->level =3D 40 * 3;
+> +                       break;
+> +               case V4L2_MPEG_VIDEO_HEVC_LEVEL_4_1:
+> +                       inst->level =3D 41 * 3;
+> +                       break;
+> +               case V4L2_MPEG_VIDEO_HEVC_LEVEL_5:
+> +                       inst->level =3D 50 * 3;
+> +                       break;
+> +               case V4L2_MPEG_VIDEO_HEVC_LEVEL_5_1:
+> +                       inst->level =3D 51 * 3;
+> +                       break;
+> +               case V4L2_MPEG_VIDEO_HEVC_LEVEL_5_2:
+> +                       inst->level =3D 52 * 3;
+> +                       break;
+> +               default:
+> +                       inst->level =3D 0;
+> +                       break;
+> +               }
+> +               break;
+> +       case V4L2_CID_MPEG_VIDEO_HEVC_MIN_QP:
+> +               inst->min_qp_i =3D ctrl->val;
+> +               inst->min_qp_p =3D ctrl->val;
+> +               inst->min_qp_b =3D ctrl->val;
+> +               break;
+> +       case V4L2_CID_MPEG_VIDEO_HEVC_MAX_QP:
+> +               inst->max_qp_i =3D ctrl->val;
+> +               inst->max_qp_p =3D ctrl->val;
+> +               inst->max_qp_b =3D ctrl->val;
+> +               break;
+> +       case V4L2_CID_MPEG_VIDEO_H264_PROFILE:
+> +               switch (ctrl->val) {
+> +               case V4L2_MPEG_VIDEO_H264_PROFILE_BASELINE:
+> +               case V4L2_MPEG_VIDEO_H264_PROFILE_CONSTRAINED_BASELINE:
+> +                       inst->profile   =3D H264_PROFILE_BP;
+> +                       inst->bit_depth =3D 8;
+> +                       break;
+> +               case V4L2_MPEG_VIDEO_H264_PROFILE_MAIN:
+> +                       inst->profile   =3D H264_PROFILE_MP;
+> +                       inst->bit_depth =3D 8;
+> +                       break;
+> +               case V4L2_MPEG_VIDEO_H264_PROFILE_EXTENDED:
+> +                       inst->profile   =3D H264_PROFILE_EXTENDED;
+> +                       inst->bit_depth =3D 8;
+> +                       break;
+> +               case V4L2_MPEG_VIDEO_H264_PROFILE_HIGH:
+> +                       inst->profile   =3D H264_PROFILE_HP;
+> +                       inst->bit_depth =3D 8;
+> +                       break;
+> +               case V4L2_MPEG_VIDEO_H264_PROFILE_HIGH_10:
+> +                       inst->profile   =3D H264_PROFILE_HIGH10;
+> +                       inst->bit_depth =3D 10;
+> +                       break;
+> +               case V4L2_MPEG_VIDEO_H264_PROFILE_HIGH_422:
+> +                       inst->profile   =3D H264_PROFILE_HIGH422;
+> +                       inst->bit_depth =3D 10;
+> +                       break;
+> +               case V4L2_MPEG_VIDEO_H264_PROFILE_HIGH_444_PREDICTIVE:
+> +                       inst->profile   =3D H264_PROFILE_HIGH444;
+> +                       inst->bit_depth =3D 10;
+> +                       break;
+> +               default:
+> +                       inst->profile   =3D 0;
+> +                       inst->bit_depth =3D 0;
+> +                       break;
+> +               }
+> +               break;
+> +       case V4L2_CID_MPEG_VIDEO_H264_LEVEL:
+> +               switch (ctrl->val) {
+> +               case V4L2_MPEG_VIDEO_H264_LEVEL_1_0:
+> +                       inst->level =3D 10;
+> +                       break;
+> +               case V4L2_MPEG_VIDEO_H264_LEVEL_1B:
+> +                       inst->level =3D 9;
+> +                       break;
+> +               case V4L2_MPEG_VIDEO_H264_LEVEL_1_1:
+> +                       inst->level =3D 11;
+> +                       break;
+> +               case V4L2_MPEG_VIDEO_H264_LEVEL_1_2:
+> +                       inst->level =3D 12;
+> +                       break;
+> +               case V4L2_MPEG_VIDEO_H264_LEVEL_1_3:
+> +                       inst->level =3D 13;
+> +                       break;
+> +               case V4L2_MPEG_VIDEO_H264_LEVEL_2_0:
+> +                       inst->level =3D 20;
+> +                       break;
+> +               case V4L2_MPEG_VIDEO_H264_LEVEL_2_1:
+> +                       inst->level =3D 21;
+> +                       break;
+> +               case V4L2_MPEG_VIDEO_H264_LEVEL_2_2:
+> +                       inst->level =3D 22;
+> +                       break;
+> +               case V4L2_MPEG_VIDEO_H264_LEVEL_3_0:
+> +                       inst->level =3D 30;
+> +                       break;
+> +               case V4L2_MPEG_VIDEO_H264_LEVEL_3_1:
+> +                       inst->level =3D 31;
+> +                       break;
+> +               case V4L2_MPEG_VIDEO_H264_LEVEL_3_2:
+> +                       inst->level =3D 32;
+> +                       break;
+> +               case V4L2_MPEG_VIDEO_H264_LEVEL_4_0:
+> +                       inst->level =3D 40;
+> +                       break;
+> +               case V4L2_MPEG_VIDEO_H264_LEVEL_4_1:
+> +                       inst->level =3D 41;
+> +                       break;
+> +               case V4L2_MPEG_VIDEO_H264_LEVEL_4_2:
+> +                       inst->level =3D 42;
+> +                       break;
+> +               case V4L2_MPEG_VIDEO_H264_LEVEL_5_0:
+> +                       inst->level =3D 50;
+> +                       break;
+> +               case V4L2_MPEG_VIDEO_H264_LEVEL_5_1:
+> +                       inst->level =3D 51;
+> +                       break;
+> +               default:
+> +                       inst->level =3D 0;
+> +                       break;
+> +               }
+> +               break;
+> +       case V4L2_CID_MPEG_VIDEO_H264_MIN_QP:
+> +               inst->min_qp_i =3D ctrl->val;
+> +               inst->min_qp_p =3D ctrl->val;
+> +               inst->min_qp_b =3D ctrl->val;
+> +               break;
+> +       case V4L2_CID_MPEG_VIDEO_H264_MAX_QP:
+> +               inst->max_qp_i =3D ctrl->val;
+> +               inst->max_qp_p =3D ctrl->val;
+> +               inst->max_qp_b =3D ctrl->val;
+> +               break;
+> +       default:
+> +               return -EINVAL;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static const struct v4l2_ctrl_ops vpu_enc_ctrl_ops =3D {
+> +       .g_volatile_ctrl =3D vpu_enc_g_volatile_ctrl,
+> +       .s_ctrl          =3D vpu_enc_s_ctrl,
+> +};
+> +
+> +static void set_default_enc_openparam(struct enc_open_param *open_param)
+> +{
+> +       unsigned int i;
+> +
+> +       open_param->stream_endian  =3D VPU_STREAM_ENDIAN;
+> +       open_param->source_endian  =3D VPU_SOURCE_ENDIAN;
+> +       open_param->line_buf_int_en  =3D TRUE;
+> +
+> +       open_param->wave_param.gop_preset_idx               =3D PRESET_ID=
+X_IPP_SINGLE;
+> +       open_param->wave_param.decoding_refresh_type        =3D 1;
+> +       open_param->wave_param.intra_qp                    =3D 30;
+> +       open_param->wave_param.tmvp_enable                 =3D 1;
+> +       open_param->wave_param.max_num_merge                =3D 2;
+> +       open_param->wave_param.lf_cross_slice_boundary_enable =3D 1;
+> +       open_param->wave_param.skip_intra_trans             =3D 1;
+> +       open_param->wave_param.sao_enable                  =3D 1;
+> +       open_param->wave_param.transform8x8_enable         =3D 1;
+> +       open_param->wave_param.intra_nx_n_enable             =3D 1;
+> +       for (i =3D 0; i < MAX_GOP_NUM; i++)
+> +               open_param->wave_param.fixed_bit_ratio[i]   =3D 1;
+> +       open_param->wave_param.cu_level_rc_enable            =3D 1;
+> +       open_param->wave_param.hvs_qp_enable                =3D 1;
+> +       open_param->wave_param.hvs_qp_scale                 =3D 2;
+> +       open_param->wave_param.hvs_max_delta_qp              =3D 10;
+> +       open_param->wave_param.gop_param.custom_gop_size     =3D 1;
+> +       open_param->wave_param.initial_rc_qp                =3D -1;
+> +       open_param->wave_param.nr_intra_weight_y             =3D 7;
+> +       open_param->wave_param.nr_intra_weight_cb            =3D 7;
+> +       open_param->wave_param.nr_intra_weight_cr            =3D 7;
+> +       open_param->wave_param.nr_inter_weight_y             =3D 4;
+> +       open_param->wave_param.nr_inter_weight_cb            =3D 4;
+> +       open_param->wave_param.nr_inter_weight_cr            =3D 4;
+> +       open_param->wave_param.strong_intra_smooth_enable    =3D 1;
+> +       open_param->wave_param.bg_thr_diff                  =3D 8;
+> +       open_param->wave_param.bg_thr_mean_diff              =3D 1;
+> +       open_param->wave_param.bg_lambda_qp                 =3D 32;
+> +       open_param->wave_param.bg_delta_qp                  =3D 3;
+> +       open_param->wave_param.rdo_skip                    =3D 1;
+> +       open_param->wave_param.intra_mb_refresh_arg          =3D 1;
+> +       open_param->wave_param.entropy_coding_mode          =3D 1;
+> +       open_param->wave_param.rc_weight_param              =3D 16;
+> +       open_param->wave_param.rc_weight_buf                =3D 128;
+> +       open_param->wave_param.lambda_scaling_enable        =3D 1;
+> +}
+> +
+> +static int vpu_enc_queue_setup(struct vb2_queue *q, unsigned int *num_bu=
+ffers,
+> +                              unsigned int *num_planes, unsigned int siz=
+es[], struct device *alloc_devs[])
+> +{
+> +       struct vpu_instance *inst =3D vb2_get_drv_priv(q);
+> +       struct v4l2_pix_format_mplane inst_format =3D
+> +               (q->type =3D=3D V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE) ? inst=
+->src_fmt : inst->dst_fmt;
+> +       unsigned int i;
+> +
+> +       DPRINTK(inst->dev, 1, "num_buffers : %d | num_planes : %d | type =
+: %d\n", *num_buffers,
+> +               *num_planes, q->type);
+> +
+> +       if (*num_planes) {
+> +               if (inst_format.num_planes !=3D *num_planes)
+> +                       return -EINVAL;
+> +
+> +               for (i =3D 0; i < *num_planes; i++) {
+> +                       if (sizes[i] < inst_format.plane_fmt[i].sizeimage=
+)
+> +                               return -EINVAL;
+> +               }
+> +       } else {
+> +               *num_planes =3D inst_format.num_planes;
+> +               for (i =3D 0; i < *num_planes; i++) {
+> +                       sizes[i] =3D inst_format.plane_fmt[i].sizeimage;
+> +                       DPRINTK(inst->dev, 1, "size[%d] : %d\n", i, sizes=
+[i]);
+> +               }
+> +       }
+> +
+> +       DPRINTK(inst->dev, 1, "size : %d\n", sizes[0]);
+> +
+> +       if (inst->state =3D=3D VPU_INST_STATE_NONE && q->type =3D=3D V4L2=
+_BUF_TYPE_VIDEO_OUTPUT_MPLANE) {
+> +               enum ret_code ret_code;
+> +               s32 non_linear_num  =3D 0;
+> +               s32 fb_stride =3D 0;
+> +               s32 fb_height =3D 0;
+> +               struct enc_open_param open_param;
+> +               struct enc_initial_info initial_info;
+> +
+> +               memset(&open_param, 0, sizeof(struct enc_open_param));
+> +               set_default_enc_openparam(&open_param);
+> +
+> +               inst->std =3D to_vpu_codstd(inst->dst_fmt.pixelformat);
+> +               if (inst->std =3D=3D STD_UNKNOWN) {
+> +                       dev_warn(inst->dev->dev, "unsupported pixelformat=
+: %.4s\n",
+> +                                (char *)&inst->dst_fmt.pixelformat);
+> +                       return -EINVAL;
+> +               }
+> +               open_param.pic_width                               =3D in=
+st->dst_fmt.width;
+> +               open_param.pic_height                              =3D in=
+st->dst_fmt.height;
+> +               open_param.frame_rate_info                          =3D i=
+nst->frame_rate;
+> +               open_param.vbv_buffer_size                          =3D i=
+nst->vbv_buf_size;
+> +               open_param.wave_param.profile          =3D inst->profile;
+> +               open_param.wave_param.level            =3D inst->level;
+> +               open_param.wave_param.internal_bit_depth =3D inst->bit_de=
+pth;
+> +               open_param.wave_param.min_qp_i           =3D inst->min_qp=
+_i;
+> +               open_param.wave_param.max_qp_i           =3D inst->max_qp=
+_i;
+> +               open_param.wave_param.min_qp_p           =3D inst->min_qp=
+_p;
+> +               open_param.wave_param.max_qp_p           =3D inst->max_qp=
+_p;
+> +               open_param.wave_param.min_qp_b           =3D inst->min_qp=
+_b;
+> +               open_param.wave_param.max_qp_b           =3D inst->max_qp=
+_b;
+> +
+> +               ret_code =3D vpu_enc_open_api(inst, &open_param);
+> +               if (ret_code !=3D RETCODE_SUCCESS) {
+> +                       DPRINTK(inst->dev, 1, "failed to call vpu_enc_ope=
+n_api() : %d\n", ret_code);
+> +                       return -EINVAL;
+> +               }
+> +
+> +               inst->state =3D VPU_INST_STATE_OPEN;
+> +
+> +               //vpu_enc_give_command(inst, ENABLE_LOGGING, 0);
+> +
+> +               if (inst->mirror_direction !=3D 0) {
+> +                       vpu_enc_give_command(inst, ENABLE_MIRRORING, 0);
+> +                       vpu_enc_give_command(inst, SET_MIRROR_DIRECTION, =
+&inst->mirror_direction);
+> +               }
+> +               if (inst->rot_angle !=3D 0) {
+> +                       vpu_enc_give_command(inst, ENABLE_ROTATION, 0);
+> +                       vpu_enc_give_command(inst, SET_ROTATION_ANGLE, &i=
+nst->rot_angle);
+> +               }
+> +
+> +               ret_code =3D vpu_enc_issue_seq_init(inst);
+> +               if (ret_code !=3D RETCODE_SUCCESS) {
+> +                       DPRINTK(inst->dev, 1, "failed to call vpu_enc_iss=
+ue_seq_init() : %d\n",
+> +                               ret_code);
+> +                       return -EINVAL;
+> +               }
+> +
+> +               if (vpu_wait_interrupt(inst, VPU_ENC_TIMEOUT) < 0) {
+> +                       DPRINTK(inst->dev, 1, "failed to call vpu_wait_in=
+terrupt()\n");
+> +                       return -EINVAL;
+> +               }
+> +
+> +               ret_code =3D vpu_enc_complete_seq_init(inst, &initial_inf=
+o);
+> +               if (ret_code !=3D RETCODE_SUCCESS)
+> +                       return -EINVAL;
+> +
+> +               DPRINTK(inst->dev, 1, "min_frame_buffer : %d | min_source=
+_buffer : %d\n",
+> +                       initial_info.min_frame_buffer_count, initial_info=
+.min_src_frame_count);
+> +               inst->state =3D VPU_INST_STATE_INIT_SEQ;
+> +               inst->min_src_frame_buf_count =3D initial_info.min_src_fr=
+ame_count + COMMAND_QUEUE_DEPTH;
+> +               inst->min_dst_frame_buf_count =3D initial_info.min_frame_=
+buffer_count;
+> +               *num_buffers =3D inst->min_src_frame_buf_count;
+> +               DPRINTK(inst->dev, 1, "source buffer num : %d", *num_buff=
+ers);
+> +
+> +               non_linear_num =3D inst->min_dst_frame_buf_count;
+> +
+> +               fb_stride =3D inst->dst_fmt.width;
+> +               fb_height =3D inst->dst_fmt.height;
+> +
+> +               for (i =3D 0; i < non_linear_num; i++) {
+> +                       s32 luma_size   =3D fb_stride * fb_height;
+> +                       s32 chroma_size =3D ALIGN(fb_stride / 2, 16) * fb=
+_height;
+> +
+> +                       inst->frame_vbuf[i].size =3D luma_size + chroma_s=
+ize;
+> +                       if (vdi_allocate_dma_memory(inst->dev, &inst->fra=
+me_vbuf[i]) < 0)
+> +                               DPRINTK(inst->dev, 1, "failed to allocate=
+ FBC buffer : %zu\n",
+> +                                       inst->frame_vbuf[i].size);
+> +
+> +                       inst->frame_buf[i].buf_y  =3D inst->frame_vbuf[i]=
+.daddr;
+> +                       inst->frame_buf[i].buf_cb =3D (dma_addr_t)-1;
+> +                       inst->frame_buf[i].buf_cr =3D (dma_addr_t)-1;
+> +                       inst->frame_buf[i].update_fb_info =3D TRUE;
+> +                       inst->frame_buf[i].size =3D inst->frame_vbuf[i].s=
+ize;
+> +               }
+> +
+> +               ret_code =3D vpu_enc_register_frame_buffer(inst, non_line=
+ar_num, fb_stride, fb_height,
+> +                                                        COMPRESSED_FRAME=
+_MAP);
+> +               if (ret_code !=3D RETCODE_SUCCESS) {
+> +                       DPRINTK(inst->dev, 1, "failed to call vpu_enc_reg=
+ister_frame_buffer() : %d\n",
+> +                               ret_code);
+> +                       return -EINVAL;
+> +               }
+> +
+> +               inst->state =3D VPU_INST_STATE_PIC_RUN;
+> +       }
+> +
+> +       if (inst->state !=3D VPU_INST_STATE_NONE && inst->state !=3D VPU_=
+INST_STATE_OPEN &&
+> +           q->type =3D=3D V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE) {
+> +               *num_buffers =3D inst->min_src_frame_buf_count;
+> +               DPRINTK(inst->dev, 1, "source buffer num : %d", *num_buff=
+ers);
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static int vpu_enc_buf_init(struct vb2_buffer *vb)
+> +{
+> +       struct vpu_instance    *inst =3D vb2_get_drv_priv(vb->vb2_queue);
+> +       struct vb2_v4l2_buffer *vbuf =3D to_vb2_v4l2_buffer(vb);
+> +
+> +       DPRINTK(inst->dev, 1, "type %4d index %4d size[0] %4ld size[1] %4=
+ld size[2] : %4ld\n",
+> +               vb->type, vb->index, vb2_plane_size(&vbuf->vb2_buf, 0),
+> +               vb2_plane_size(&vbuf->vb2_buf, 1), vb2_plane_size(&vbuf->=
+vb2_buf, 2));
+> +
+> +       return 0;
+> +}
+> +
+> +static int vpu_enc_buf_prepare(struct vb2_buffer *vb)
+> +{
+> +       struct vpu_instance    *inst =3D vb2_get_drv_priv(vb->vb2_queue);
+> +       struct vb2_v4l2_buffer *vbuf =3D to_vb2_v4l2_buffer(vb);
+> +
+> +       DPRINTK(inst->dev, 1, "type %4d  index %4d size[0] %4ld size[1] %=
+4ld | size[2] : %4ld\n",
+> +               vb->type, vb->index, vb2_plane_size(&vbuf->vb2_buf, 0),
+> +               vb2_plane_size(&vbuf->vb2_buf, 1), vb2_plane_size(&vbuf->=
+vb2_buf, 2));
+> +
+> +       return 0;
+> +}
+> +
+> +static void vpu_enc_buf_queue(struct vb2_buffer *vb)
+> +{
+> +       struct vb2_v4l2_buffer *vbuf    =3D to_vb2_v4l2_buffer(vb);
+> +       struct vpu_instance    *inst    =3D vb2_get_drv_priv(vb->vb2_queu=
+e);
+> +       struct vpu_buffer      *vpu_buf =3D to_vpu_buf(vbuf);
+> +
+> +       DPRINTK(inst->dev, 1, "type %4d index %4d size[0] %4ld size[1] : =
+%4ld | size[2] : %4ld\n",
+> +               vb->type, vb->index, vb2_plane_size(&vbuf->vb2_buf, 0),
+> +               vb2_plane_size(&vbuf->vb2_buf, 1), vb2_plane_size(&vbuf->=
+vb2_buf, 2));
+> +
+> +       if (vb->type =3D=3D V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE)
+> +               vbuf->sequence =3D inst->queued_src_buf_num++;
+> +       else
+> +               vbuf->sequence =3D inst->queued_dst_buf_num++;
+> +
+> +       vpu_buf->consumed =3D FALSE;
+> +       v4l2_m2m_buf_queue(inst->v4l2_fh.m2m_ctx, vbuf);
+> +}
+> +
+> +static void vpu_enc_buf_finish(struct vb2_buffer *vb)
+> +{
+> +       struct vpu_instance    *inst =3D vb2_get_drv_priv(vb->vb2_queue);
+> +       struct vb2_v4l2_buffer *vbuf     =3D to_vb2_v4l2_buffer(vb);
+> +
+> +       DPRINTK(inst->dev, 1, "type %4d index %4d size[0] %4ld size[1] : =
+%4ld | size[2] : %4ld\n",
+> +               vb->type, vb->index, vb2_plane_size(&vbuf->vb2_buf, 0),
+> +               vb2_plane_size(&vbuf->vb2_buf, 1), vb2_plane_size(&vbuf->=
+vb2_buf, 2));
+> +}
+> +
+> +static void vpu_enc_buf_cleanup(struct vb2_buffer *vb)
+> +{
+> +       struct vpu_instance    *inst =3D vb2_get_drv_priv(vb->vb2_queue);
+> +       struct vb2_v4l2_buffer *vbuf =3D to_vb2_v4l2_buffer(vb);
+> +
+> +       DPRINTK(inst->dev, 1, "type %4d index %4d size[0] %4ld size[1] : =
+%4ld | size[2] : %4ld\n",
+> +               vb->type, vb->index, vb2_plane_size(&vbuf->vb2_buf, 0),
+> +               vb2_plane_size(&vbuf->vb2_buf, 1), vb2_plane_size(&vbuf->=
+vb2_buf, 2));
+> +}
+> +
+> +static int vpu_enc_start_streaming(struct vb2_queue *q, unsigned int cou=
+nt)
+> +{
+> +       struct vpu_instance *inst =3D vb2_get_drv_priv(q);
+> +
+> +       DPRINTK(inst->dev, 1, "type : %d\n", q->type);
+> +       return 0;
+> +}
+> +
+> +static void vpu_enc_stop_streaming(struct vb2_queue *q)
+> +{
+> +       struct vpu_instance *inst =3D vb2_get_drv_priv(q);
+> +       struct vb2_v4l2_buffer *buf;
+> +
+> +       DPRINTK(inst->dev, 1, "type : %d\n", q->type);
+> +
+> +       if (vb2_is_streaming(v4l2_m2m_get_vq(inst->v4l2_fh.m2m_ctx, V4L2_=
+BUF_TYPE_VIDEO_CAPTURE_MPLANE)) &&
+> +           vb2_is_streaming(v4l2_m2m_get_vq(inst->v4l2_fh.m2m_ctx, V4L2_=
+BUF_TYPE_VIDEO_OUTPUT_MPLANE)))
+> +               inst->state =3D VPU_INST_STATE_STOP;
+> +
+> +       if (q->type =3D=3D V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE) {
+> +               while ((buf =3D v4l2_m2m_src_buf_remove(inst->v4l2_fh.m2m=
+_ctx))) {
+> +                       DPRINTK(inst->dev, 1, "buf type : %4d | index : %=
+4d\n",
+> +                               buf->vb2_buf.type, buf->vb2_buf.index);
+> +                       v4l2_m2m_buf_done(buf, VB2_BUF_STATE_ERROR);
+> +               }
+> +       } else {
+> +               while ((buf =3D v4l2_m2m_dst_buf_remove(inst->v4l2_fh.m2m=
+_ctx))) {
+> +                       DPRINTK(inst->dev, 1, "buf type : %4d | index : %=
+4d\n",
+> +                               buf->vb2_buf.type, buf->vb2_buf.index);
+> +                       vb2_set_plane_payload(&buf->vb2_buf, 0, 0);
+> +                       v4l2_m2m_buf_done(buf, VB2_BUF_STATE_ERROR);
+> +               }
+> +       }
+> +}
+> +
+> +static const struct vb2_ops vpu_enc_vb2_ops =3D {
+> +       .queue_setup     =3D vpu_enc_queue_setup,
+> +       .wait_prepare    =3D vb2_ops_wait_prepare,
+> +       .wait_finish     =3D vb2_ops_wait_finish,
+> +       .buf_init        =3D vpu_enc_buf_init,
+> +       .buf_prepare     =3D vpu_enc_buf_prepare,
+> +       .buf_queue       =3D vpu_enc_buf_queue,
+> +       .buf_finish      =3D vpu_enc_buf_finish,
+> +       .buf_cleanup     =3D vpu_enc_buf_cleanup,
+> +       .start_streaming =3D vpu_enc_start_streaming,
+> +       .stop_streaming  =3D vpu_enc_stop_streaming,
+> +};
+> +
+> +static void set_default_format(struct v4l2_pix_format_mplane *src_fmt,
+> +                              struct v4l2_pix_format_mplane *dst_fmt)
+> +{
+> +       src_fmt->pixelformat  =3D vpu_enc_fmt_list[VPU_FMT_TYPE_RAW][0].v=
+4l2_pix_fmt;
+> +       src_fmt->field        =3D V4L2_FIELD_NONE;
+> +       src_fmt->flags        =3D 0;
+> +       src_fmt->num_planes   =3D vpu_enc_fmt_list[VPU_FMT_TYPE_RAW][0].n=
+um_planes;
+> +       update_resolution_info(src_fmt, 416, 240);
+> +
+> +       dst_fmt->pixelformat  =3D vpu_enc_fmt_list[VPU_FMT_TYPE_CODEC][0]=
+.v4l2_pix_fmt;
+> +       dst_fmt->field        =3D V4L2_FIELD_NONE;
+> +       dst_fmt->flags        =3D 0;
+> +       dst_fmt->num_planes   =3D vpu_enc_fmt_list[VPU_FMT_TYPE_CODEC][0]=
+.num_planes;
+> +       update_resolution_info(dst_fmt, 416, 240);
+> +}
+> +
+> +static int vpu_enc_queue_init(void *priv, struct vb2_queue *src_vq, stru=
+ct vb2_queue *dst_vq)
+> +{
+> +       struct vpu_instance *inst =3D priv;
+> +       struct vpu_platform_data *pdata =3D dev_get_platdata(inst->dev->v=
+4l2_dev.dev);
+> +       int ret;
+> +
+> +       DPRINTK(inst->dev, 1, "\n");
+> +
+> +       src_vq->type =3D V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE;
+> +       src_vq->io_modes =3D VB2_MMAP | VB2_USERPTR | VB2_DMABUF;
+> +       if (pdata && pdata->mem_ops)
+> +               src_vq->mem_ops =3D pdata->mem_ops;
+> +       else
+> +               src_vq->mem_ops =3D &vb2_dma_contig_memops;
+> +       src_vq->ops =3D &vpu_enc_vb2_ops;
+> +       src_vq->timestamp_flags =3D V4L2_BUF_FLAG_TIMESTAMP_COPY;
+> +       src_vq->buf_struct_size =3D sizeof(struct vpu_buffer);
+> +       src_vq->allow_zero_bytesused =3D 1;
+> +       src_vq->min_buffers_needed =3D 0;
+> +       src_vq->drv_priv =3D inst;
+> +       src_vq->lock =3D &inst->dev->dev_lock;
+> +       src_vq->dev =3D inst->dev->v4l2_dev.dev;
+> +       ret =3D vb2_queue_init(src_vq);
+> +       if (ret)
+> +               return ret;
+> +
+> +       dst_vq->type =3D V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE;
+> +       dst_vq->io_modes =3D VB2_MMAP | VB2_USERPTR | VB2_DMABUF;
+> +       if (pdata && pdata->mem_ops)
+> +               dst_vq->mem_ops =3D pdata->mem_ops;
+> +       else
+> +               dst_vq->mem_ops =3D &vb2_dma_contig_memops;
+> +       dst_vq->ops =3D &vpu_enc_vb2_ops;
+> +       dst_vq->timestamp_flags =3D V4L2_BUF_FLAG_TIMESTAMP_COPY;
+> +       dst_vq->buf_struct_size =3D sizeof(struct vpu_buffer);
+> +       dst_vq->allow_zero_bytesused =3D 1;
+> +       dst_vq->min_buffers_needed =3D 0;
+> +       dst_vq->drv_priv =3D inst;
+> +       dst_vq->lock =3D &inst->dev->dev_lock;
+> +       dst_vq->dev =3D inst->dev->v4l2_dev.dev;
+> +       ret =3D vb2_queue_init(dst_vq);
+> +       if (ret)
+> +               return ret;
+> +
+> +       return 0;
+> +}
+> +
+> +static const struct vpu_instance_ops vpu_enc_inst_ops =3D {
+> +       .start_process  =3D vpu_enc_start_encode,
+> +       .stop_process   =3D vpu_enc_stop_encode,
+> +       .finish_process =3D vpu_enc_finish_encode,
+> +};
+> +
+> +static int vpu_enc_open(struct file *filp)
+> +{
+> +       struct video_device *vdev =3D video_devdata(filp);
+> +       struct vpu_device   *dev  =3D video_drvdata(filp);
+> +       struct vpu_instance *inst =3D NULL;
+> +       struct v4l2_ctrl    *ctrl;
+> +
+> +       inst =3D kzalloc(sizeof(*inst), GFP_KERNEL);
+> +       if (!inst)
+> +               return -ENOMEM;
+> +
+> +       inst->dev  =3D dev;
+> +       inst->type =3D VPU_INST_TYPE_ENC;
+> +       inst->ops  =3D &vpu_enc_inst_ops;
+> +
+> +       v4l2_fh_init(&inst->v4l2_fh, vdev);
+> +       filp->private_data =3D &inst->v4l2_fh;
+> +       v4l2_fh_add(&inst->v4l2_fh);
+> +
+> +       inst->v4l2_fh.m2m_ctx =3D v4l2_m2m_ctx_init(dev->v4l2_m2m_dev, in=
+st, vpu_enc_queue_init);
+> +       if (IS_ERR(inst->v4l2_fh.m2m_ctx))
+> +               return -ENODEV;
+> +
+> +       v4l2_ctrl_handler_init(&inst->v4l2_ctrl_hdl, 30);
+> +       v4l2_ctrl_new_std_menu(&inst->v4l2_ctrl_hdl, &vpu_enc_ctrl_ops,
+> +                              V4L2_CID_MPEG_VIDEO_HEVC_PROFILE,
+> +                              V4L2_MPEG_VIDEO_HEVC_PROFILE_MAIN_10, 0,
+> +                               V4L2_MPEG_VIDEO_HEVC_PROFILE_MAIN);
+> +       v4l2_ctrl_new_std_menu(&inst->v4l2_ctrl_hdl, &vpu_enc_ctrl_ops,
+> +                              V4L2_CID_MPEG_VIDEO_HEVC_LEVEL, V4L2_MPEG_=
+VIDEO_HEVC_LEVEL_5_1, 0,
+> +                               V4L2_MPEG_VIDEO_HEVC_LEVEL_1);
+> +       v4l2_ctrl_new_std(&inst->v4l2_ctrl_hdl, &vpu_enc_ctrl_ops, V4L2_C=
+ID_MPEG_VIDEO_HEVC_MIN_QP,
+> +                         0, 63, 1, 8);
+> +       v4l2_ctrl_new_std(&inst->v4l2_ctrl_hdl, &vpu_enc_ctrl_ops, V4L2_C=
+ID_MPEG_VIDEO_HEVC_MAX_QP,
+> +                         0, 63, 1, 51);
+> +       v4l2_ctrl_new_std_menu(&inst->v4l2_ctrl_hdl, &vpu_enc_ctrl_ops,
+> +                              V4L2_CID_MPEG_VIDEO_H264_PROFILE,
+> +                              V4L2_MPEG_VIDEO_H264_PROFILE_HIGH_444_PRED=
+ICTIVE, 0,
+> +                               V4L2_MPEG_VIDEO_H264_PROFILE_BASELINE);
+> +       v4l2_ctrl_new_std_menu(&inst->v4l2_ctrl_hdl, &vpu_enc_ctrl_ops,
+> +                              V4L2_CID_MPEG_VIDEO_H264_LEVEL, V4L2_MPEG_=
+VIDEO_H264_LEVEL_5_1, 0,
+> +                               V4L2_MPEG_VIDEO_H264_LEVEL_1_0);
+> +       v4l2_ctrl_new_std(&inst->v4l2_ctrl_hdl, &vpu_enc_ctrl_ops, V4L2_C=
+ID_MPEG_VIDEO_H264_MIN_QP,
+> +                         0, 63, 1, 8);
+> +       v4l2_ctrl_new_std(&inst->v4l2_ctrl_hdl, &vpu_enc_ctrl_ops, V4L2_C=
+ID_MPEG_VIDEO_H264_MAX_QP,
+> +                         0, 63, 1, 51);
+> +       v4l2_ctrl_new_std(&inst->v4l2_ctrl_hdl, &vpu_enc_ctrl_ops, V4L2_C=
+ID_HFLIP,  0,   1,  1, 0);
+> +       v4l2_ctrl_new_std(&inst->v4l2_ctrl_hdl, &vpu_enc_ctrl_ops, V4L2_C=
+ID_VFLIP,  0,   1,  1, 0);
+> +       v4l2_ctrl_new_std(&inst->v4l2_ctrl_hdl, &vpu_enc_ctrl_ops, V4L2_C=
+ID_ROTATE, 0, 270, 90, 0);
+> +       v4l2_ctrl_new_std(&inst->v4l2_ctrl_hdl, &vpu_enc_ctrl_ops, V4L2_C=
+ID_MPEG_VIDEO_VBV_SIZE, 10,
+> +                         3000, 1, 3000);
+> +       ctrl =3D v4l2_ctrl_new_std(&inst->v4l2_ctrl_hdl, &vpu_enc_ctrl_op=
+s,
+> +                                V4L2_CID_MIN_BUFFERS_FOR_OUTPUT, 1, 32, =
+1, 1);
+> +       if (ctrl)
+> +               ctrl->flags |=3D V4L2_CTRL_FLAG_VOLATILE;
+> +
+> +       if (inst->v4l2_ctrl_hdl.error)
+> +               return -ENODEV;
+> +
+> +       inst->v4l2_fh.ctrl_handler =3D &inst->v4l2_ctrl_hdl;
+> +       v4l2_ctrl_handler_setup(&inst->v4l2_ctrl_hdl);
+> +
+> +       set_default_format(&inst->src_fmt, &inst->dst_fmt);
+> +       inst->colorspace   =3D V4L2_COLORSPACE_REC709;
+> +       inst->ycbcr_enc    =3D V4L2_YCBCR_ENC_DEFAULT;
+> +       inst->hsv_enc      =3D 0;
+> +       inst->quantization =3D V4L2_QUANTIZATION_DEFAULT;
+> +       inst->xfer_func    =3D V4L2_XFER_FUNC_DEFAULT;
+> +       inst->frame_rate   =3D 30;
+> +
+> +       return 0;
+> +}
+> +
+> +static int vpu_enc_release(struct file *filp)
+> +{
+> +       int i;
+> +       struct vpu_instance *inst =3D to_vpu_inst(filp->private_data);
+> +       unsigned int loop_count =3D 0;
+> +
+> +       v4l2_m2m_ctx_release(inst->v4l2_fh.m2m_ctx);
+> +       if (inst->state !=3D VPU_INST_STATE_NONE) {
+> +               while (vpu_enc_close(inst) =3D=3D RETCODE_VPU_STILL_RUNNI=
+NG) {
+> +                       if (vpu_wait_interrupt(inst, VPU_ENC_TIMEOUT) < 0=
+) {
+> +                               DPRINTK(inst->dev, 1, "failed to call vpu=
+_wait_interrupt()\n");
+> +                               if (loop_count < 10) {
+> +                                       loop_count++;
+> +                                       continue;
+> +                               } else {
+> +                                       DPRINTK(inst->dev, 1, "failed to =
+call vpu_enc_close()\n");
+> +                                       break;
+> +                               }
+> +                       }
+> +               }
+> +       }
+> +       for (i =3D 0; i < inst->min_dst_frame_buf_count; i++) {
+> +               if (inst->frame_vbuf[i].size !=3D 0)
+> +                       vdi_free_dma_memory(inst->dev, &inst->frame_vbuf[=
+i]);
+> +       }
+> +       v4l2_ctrl_handler_free(&inst->v4l2_ctrl_hdl);
+> +       v4l2_fh_del(&inst->v4l2_fh);
+> +       v4l2_fh_exit(&inst->v4l2_fh);
+> +       kfree(inst);
+> +
+> +       return 0;
+> +}
+> +
+> +static const struct v4l2_file_operations vpu_enc_fops =3D {
+> +       .owner          =3D THIS_MODULE,
+> +       .open           =3D vpu_enc_open,
+> +       .release        =3D vpu_enc_release,
+> +       .unlocked_ioctl =3D video_ioctl2,
+> +       .poll           =3D v4l2_m2m_fop_poll,
+> +       .mmap           =3D v4l2_m2m_fop_mmap,
+> +};
+> +
+> +int vpu_enc_register_device(struct vpu_device *dev)
+> +{
+> +       struct video_device *vdev_enc;
+> +
+> +       vdev_enc =3D devm_kzalloc(dev->v4l2_dev.dev, sizeof(*vdev_enc), G=
+FP_KERNEL);
+> +       if (!vdev_enc)
+> +               return -ENOMEM;
+> +
+> +       dev->video_dev_enc =3D vdev_enc;
+> +
+> +       strscpy(vdev_enc->name, VPU_ENC_DEV_NAME, sizeof(vdev_enc->name))=
+;
+> +       vdev_enc->fops        =3D &vpu_enc_fops;
+> +       vdev_enc->ioctl_ops   =3D &vpu_enc_ioctl_ops;
+> +       vdev_enc->release     =3D video_device_release_empty;
+> +       vdev_enc->v4l2_dev    =3D &dev->v4l2_dev;
+> +       vdev_enc->vfl_dir     =3D VFL_DIR_M2M;
+> +       vdev_enc->device_caps =3D V4L2_CAP_VIDEO_M2M_MPLANE | V4L2_CAP_ST=
+REAMING;
+> +       vdev_enc->lock        =3D &dev->dev_lock;
+> +
+> +       if (video_register_device(vdev_enc, VFL_TYPE_VIDEO, -1))
+> +               return -1;
+
+Make sure you replace all of these with proper errnos.
+
+> +
+> +       video_set_drvdata(vdev_enc, dev);
+> +
+> +       return 0;
+> +}
+> +
+> +void vpu_enc_unregister_device(struct vpu_device *dev)
+> +{
+> +       video_unregister_device(dev->video_dev_enc);
+> +}
+> +
+> diff --git a/drivers/staging/media/wave5/v4l2/vpu_enc.h b/drivers/staging=
+/media/wave5/v4l2/vpu_enc.h
+> new file mode 100644
+> index 000000000000..17397d66ba06
+> --- /dev/null
+> +++ b/drivers/staging/media/wave5/v4l2/vpu_enc.h
+> @@ -0,0 +1,18 @@
+> +/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+> +/*
+> + * Wave5 series multi-standard codec IP - encoder interface
+> + *
+> + * Copyright (C) 2021 CHIPS&MEDIA INC
+> + */
+> +#ifndef __VPU_ENC_DRV_H__
+> +#define __VPU_ENC_DRV_H__
+> +
+> +#include "vpu.h"
+> +
+> +#define VPU_ENC_DEV_NAME "C&M VPU encoder"
+> +#define VPU_ENC_DRV_NAME "vpu-enc"
+> +
+> +int  vpu_enc_register_device(struct vpu_device *dev);
+> +void vpu_enc_unregister_device(struct vpu_device *dev);
+> +#endif
+> +
+> --
+> 2.17.1
+>
+
+Regards,
+Ezequiel
