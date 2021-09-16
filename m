@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37D9F40E6DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:31:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2589240E1F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:15:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348923AbhIPR0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 13:26:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51936 "EHLO mail.kernel.org"
+        id S241478AbhIPQdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:33:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37000 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347033AbhIPQ4u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:56:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 748BA61AD1;
-        Thu, 16 Sep 2021 16:31:17 +0000 (UTC)
+        id S241262AbhIPQYu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:24:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F1C17613D5;
+        Thu, 16 Sep 2021 16:16:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809878;
-        bh=ZMGrjSMZimhJuSbuiJ/hE2EWyRHaKnHeNyrA6L3KprY=;
+        s=korg; t=1631808988;
+        bh=lKfQLl80sJAtRksVLfOVG9Ax5WTP8K6CA8bju2R/rjI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YGtMWrqQt/FLziY3O4l5F59vFGq3mUBOnDfexE5FkmrvEev1+oB+OzdKd/nccehLv
-         5YD6P4mTpKzXmZ3gtZJMj4uy6z6djOKoa5QA2A4YlGCTL2+WFkqqtI3QgqLi4x0w8g
-         sHQu/XDxIrrsFQd+toG17M281G+YtiTecJVmSPP4=
+        b=d9BGWFrLqMNc+0+KSgj9gZ3jFjpk9IGkwkM0fsos0SU/Diwb/6go7uN/aityEARtZ
+         dcDXcitMyN1tyNetcn0BfHbwYIUmG/uyLWWxp/yeBp3aXN/+3AJOsHpI7ZXpNdxUtb
+         HzwuM5P6V2kx0y5ohVPnOt6dsBUuM34GVk4bj8hA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Brandon Wyman <bjwyman@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 284/380] hwmon: (pmbus/ibm-cffps) Fix write bits for LED control
-Date:   Thu, 16 Sep 2021 18:00:41 +0200
-Message-Id: <20210916155813.740760637@linuxfoundation.org>
+        stable@vger.kernel.org, David Heidelberg <david@ixit.cz>,
+        Rob Clark <robdclark@chromium.org>
+Subject: [PATCH 5.10 297/306] drm/msi/mdp4: populate priv->kms in mdp4_kms_init
+Date:   Thu, 16 Sep 2021 18:00:42 +0200
+Message-Id: <20210916155804.220512364@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,42 +39,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Brandon Wyman <bjwyman@gmail.com>
+From: David Heidelberg <david@ixit.cz>
 
-[ Upstream commit 76b72736f574ec38b3e94603ea5f74b1853f26b0 ]
+commit cb0927ab80d224c9074f53d1a55b087d12ec5a85 upstream.
 
-When doing a PMBus write for the LED control on the IBM Common Form
-Factor Power Supplies (ibm-cffps), the DAh command requires that bit 7
-be low and bit 6 be high in order to indicate that you are truly
-attempting to do a write.
+Without this fix boot throws NULL ptr exception at msm_dsi_manager_setup_encoder
+on devices like Nexus 7 2013 (MDP4 v4.4).
 
-Signed-off-by: Brandon Wyman <bjwyman@gmail.com>
-Link: https://lore.kernel.org/r/20210806225131.1808759-1-bjwyman@gmail.com
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 03436e3ec69c ("drm/msm/dsi: Move setup_encoder to modeset_init")
+
+Cc: <stable@vger.kernel.org>
+Signed-off-by: David Heidelberg <david@ixit.cz>
+Link: https://lore.kernel.org/r/20210811170631.39296-1-david@ixit.cz
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/hwmon/pmbus/ibm-cffps.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/hwmon/pmbus/ibm-cffps.c b/drivers/hwmon/pmbus/ibm-cffps.c
-index 5668d8305b78..df712ce4b164 100644
---- a/drivers/hwmon/pmbus/ibm-cffps.c
-+++ b/drivers/hwmon/pmbus/ibm-cffps.c
-@@ -50,9 +50,9 @@
- #define CFFPS_MFR_VAUX_FAULT			BIT(6)
- #define CFFPS_MFR_CURRENT_SHARE_WARNING		BIT(7)
+--- a/drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c
++++ b/drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c
+@@ -397,6 +397,7 @@ struct msm_kms *mdp4_kms_init(struct drm
+ {
+ 	struct platform_device *pdev = to_platform_device(dev->dev);
+ 	struct mdp4_platform_config *config = mdp4_get_config(pdev);
++	struct msm_drm_private *priv = dev->dev_private;
+ 	struct mdp4_kms *mdp4_kms;
+ 	struct msm_kms *kms = NULL;
+ 	struct msm_gem_address_space *aspace;
+@@ -412,7 +413,8 @@ struct msm_kms *mdp4_kms_init(struct drm
  
--#define CFFPS_LED_BLINK				BIT(0)
--#define CFFPS_LED_ON				BIT(1)
--#define CFFPS_LED_OFF				BIT(2)
-+#define CFFPS_LED_BLINK				(BIT(0) | BIT(6))
-+#define CFFPS_LED_ON				(BIT(1) | BIT(6))
-+#define CFFPS_LED_OFF				(BIT(2) | BIT(6))
- #define CFFPS_BLINK_RATE_MS			250
+ 	mdp_kms_init(&mdp4_kms->base, &kms_funcs);
  
- enum {
--- 
-2.30.2
-
+-	kms = &mdp4_kms->base.base;
++	priv->kms = &mdp4_kms->base.base;
++	kms = priv->kms;
+ 
+ 	mdp4_kms->dev = dev;
+ 
 
 
