@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F11C640E0AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:27:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2560D40E356
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:20:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240938AbhIPQXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:23:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55110 "EHLO mail.kernel.org"
+        id S235481AbhIPQrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:47:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51674 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240915AbhIPQOi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:14:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C67261268;
-        Thu, 16 Sep 2021 16:10:50 +0000 (UTC)
+        id S244179AbhIPQl1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:41:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D28261A64;
+        Thu, 16 Sep 2021 16:24:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808650;
-        bh=ci/6sM5g9q+0mICJ5w1Xmts/Td0E5Z17TOwST3Pq3bo=;
+        s=korg; t=1631809449;
+        bh=ul6PfnBjkugntozSWDHDKLQiBHMJHl1pcpXfnDvZA/Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W/fIMZ3Wd7z8uQwsskJzq9FIj3iDpHHk1nXtUUevvBl3iVKclSjb87h6NLZvsuNad
-         RGAddZgZw/VwuEkflXnyQxUBdVeEBbOE7+zR4oucQwOgdkm6nunCTO7S4UZHBiDDZv
-         +3VflxwseomEB+QNYw8DXgdxqTJCh4VpGlpMgihM=
+        b=RStNq5gcBwKQE811QiDDEfqyA8vaEfIjg2jPtFOqvnceamJxZMlyUreNpPtMNr6M4
+         fourmqxXmvbM0berdxqeRp1tSd0pK4YUxuqmLElzQs0oCdyebfswmlArr3z/HHejkO
+         I0bbw1fPgwJ/+5XIEQDXmGHXxsL1K+spPKbsazMw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhen Lei <thunder.leizhen@huawei.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Tejun Heo <tj@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 170/306] workqueue: Fix possible memory leaks in wq_numa_init()
-Date:   Thu, 16 Sep 2021 17:58:35 +0200
-Message-Id: <20210916155759.884954121@linuxfoundation.org>
+        stable@vger.kernel.org, Brian Masney <masneyb@onstation.org>,
+        David Heidelberg <david@ixit.cz>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 159/380] ARM: dts: qcom: apq8064: correct clock names
+Date:   Thu, 16 Sep 2021 17:58:36 +0200
+Message-Id: <20210916155809.495911581@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
+References: <20210916155803.966362085@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,55 +41,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+From: David Heidelberg <david@ixit.cz>
 
-[ Upstream commit f728c4a9e8405caae69d4bc1232c54ff57b5d20f ]
+[ Upstream commit 0dc6c59892ead17a9febd11202c9f6794aac1895 ]
 
-In error handling branch "if (WARN_ON(node == NUMA_NO_NODE))", the
-previously allocated memories are not released. Doing this before
-allocating memory eliminates memory leaks.
+Since new code doesn't take old clk names in account, it does fixes
+error:
 
-tj: Note that the condition only occurs when the arch code is pretty broken
-and the WARN_ON might as well be BUG_ON().
+msm_dsi 4700000.mdss_dsi: dev_pm_opp_set_clkname: Couldn't find clock: -2
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Reviewed-by: Lai Jiangshan <jiangshanlai@gmail.com>
-Signed-off-by: Tejun Heo <tj@kernel.org>
+and following kernel oops introduced by
+b0530eb1191 ("drm/msm/dpu: Use OPP API to set clk/perf state").
+
+Also removes warning about deprecated clock names.
+
+Tested against linux-5.10.y LTS on Nexus 7 2013.
+
+Reviewed-by: Brian Masney <masneyb@onstation.org>
+Signed-off-by: David Heidelberg <david@ixit.cz>
+Link: https://lore.kernel.org/r/20210707131453.24041-1-david@ixit.cz
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/workqueue.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ arch/arm/boot/dts/qcom-apq8064.dtsi | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 51d19fc71e61..4cb622b2661b 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -5893,6 +5893,13 @@ static void __init wq_numa_init(void)
- 		return;
- 	}
+diff --git a/arch/arm/boot/dts/qcom-apq8064.dtsi b/arch/arm/boot/dts/qcom-apq8064.dtsi
+index 2687c4e890ba..e36d590e8373 100644
+--- a/arch/arm/boot/dts/qcom-apq8064.dtsi
++++ b/arch/arm/boot/dts/qcom-apq8064.dtsi
+@@ -1262,9 +1262,9 @@ dsi0: mdss_dsi@4700000 {
+ 				<&mmcc DSI1_BYTE_CLK>,
+ 				<&mmcc DSI_PIXEL_CLK>,
+ 				<&mmcc DSI1_ESC_CLK>;
+-			clock-names = "iface_clk", "bus_clk", "core_mmss_clk",
+-					"src_clk", "byte_clk", "pixel_clk",
+-					"core_clk";
++			clock-names = "iface", "bus", "core_mmss",
++					"src", "byte", "pixel",
++					"core";
  
-+	for_each_possible_cpu(cpu) {
-+		if (WARN_ON(cpu_to_node(cpu) == NUMA_NO_NODE)) {
-+			pr_warn("workqueue: NUMA node mapping not available for cpu%d, disabling NUMA support\n", cpu);
-+			return;
-+		}
-+	}
-+
- 	wq_update_unbound_numa_attrs_buf = alloc_workqueue_attrs();
- 	BUG_ON(!wq_update_unbound_numa_attrs_buf);
- 
-@@ -5910,11 +5917,6 @@ static void __init wq_numa_init(void)
- 
- 	for_each_possible_cpu(cpu) {
- 		node = cpu_to_node(cpu);
--		if (WARN_ON(node == NUMA_NO_NODE)) {
--			pr_warn("workqueue: NUMA node mapping not available for cpu%d, disabling NUMA support\n", cpu);
--			/* happens iff arch is bonkers, let's just proceed */
--			return;
--		}
- 		cpumask_set_cpu(cpu, tbl[node]);
- 	}
- 
+ 			assigned-clocks = <&mmcc DSI1_BYTE_SRC>,
+ 					<&mmcc DSI1_ESC_SRC>,
 -- 
 2.30.2
 
