@@ -2,81 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16DD340D09C
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 02:07:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7676740D09D
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 02:07:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233156AbhIPAIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 20:08:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232936AbhIPAIw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 20:08:52 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3CDAC061764;
-        Wed, 15 Sep 2021 17:07:32 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id q22so4337671pfu.0;
-        Wed, 15 Sep 2021 17:07:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=RmhWoIkXVeTU2jlzt2l1GdQKwIjiEtSD+LUNRvAfz/s=;
-        b=eOwOZWVl2kvi//EaeCLHEILy1Nqsz26lJxrL3HflEeq5aZaZJaKV7RiJ6iC7oyGOVo
-         c1yKrBGAu5WL74WHvW8yuNGhyJ4fZL8FmWdlTPI/uHtBZAKJlY7QjodXTOE3z03rM6e0
-         fpnkHM5ZQl2xz5QTcGeV9nVWaI1xxRuHPLnrKaY4FnJkJlZdpELPB+bRIq3q5DnPQCbc
-         YTe9ygzTKM68jDoZMTzOOHanCkVADqwmRMnzGeVQgsIzBq46uYT+ZK4Sq3KojnOFMGO6
-         /y+IDlqm4Jlg1TDuxHEm4jomIb0+OeHl92mVMhQHu3Zm6IHEdJy3cYTIwaq9KDvQxEgU
-         Cm9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=RmhWoIkXVeTU2jlzt2l1GdQKwIjiEtSD+LUNRvAfz/s=;
-        b=G2bujnwmd9jnFafrLTlPaRFs4IeQsjX9epSerJHcWxoR7ipTVhqU4yVoEsxIL8mu2C
-         LJH4DtPm7mcYTYVF5zGNAQiiApNPjMQZQ/YIsU/xXx0YQIWRBMi5l+nXCsFDQSzExGDJ
-         AlU0bQ6P38GvxoNt9xeQ//HFwwu1DdzH7rut0sUpbhkALTCe0SMquSs6RGBQGdRHT9UO
-         5Ur/RIcoeEW48pkz87qPBPlSFzuEwWnamFGzIPLVpokCXO7lVvSm8HBu/dep5ze33S1v
-         JmojD/8GxmkoHVmCBBnK7RB/5XTP7oVIJ3YicO4fUHQgJw2n8JsvmZ/AkWsqOIhtNmqJ
-         7E+w==
-X-Gm-Message-State: AOAM531RY3Jy/UJKtsZYiwahz4Xi53N7FyNVE/k6AyAbez24q864gink
-        OuN6a2tj1oFlWbgE+wWP/bisuVPjuk0=
-X-Google-Smtp-Source: ABdhPJyQJ0UOR903QS5lkHOgD75zMUqrRgCBzEXf5IokGvO063np8mnXs4sCbUHFmAD87MPJkGoeUA==
-X-Received: by 2002:a63:4b5a:: with SMTP id k26mr2248112pgl.241.1631750852233;
-        Wed, 15 Sep 2021 17:07:32 -0700 (PDT)
-Received: from [192.168.1.121] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
-        by smtp.gmail.com with ESMTPSA id w2sm660321pjq.5.2021.09.15.17.07.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Sep 2021 17:07:31 -0700 (PDT)
-Message-ID: <160205db-a579-8d58-ea90-96d10577f7f2@gmail.com>
-Date:   Wed, 15 Sep 2021 17:07:29 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH] i2c: Fix return value of bcm_kona_i2c_probe()
-Content-Language: en-US
-To:     zhaoxiao <long870912@gmail.com>, f.fainelli@gmail.com,
-        rjui@broadcom.com, sbranden@broadcom.com,
-        bcm-kernel-feedback-list@broadcom.com
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210906052730.19644-1-long870912@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20210906052730.19644-1-long870912@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        id S233259AbhIPAJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 20:09:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40192 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233213AbhIPAJD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 20:09:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 670BA61165;
+        Thu, 16 Sep 2021 00:07:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631750863;
+        bh=1THsqh9OCYGVNJTkEDYNJGExl363eF6Fh2/9D/hg9U0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=JJCl2wkwWSjLKAAQ3vrnKJkRNSj1DTRM0YlQVkujVl7gtAXMeOUlVUcLnk7jnsNjS
+         dD2xXdoQIirFoE7urN9WfbF1o2+C1pL1hZYzNzywz4CfN0uZLSc250r27EmbYkQ0GC
+         pBrV2V0Vz7HantC3sTrddlRfmBYzSgcpbMPcKgmfqZlsaOcPdO+ewgn/QiKmNI0ZJ3
+         6TdAsYEBsC4hIBe3nnSO9gjO8m8GDgXi3Dm0bEeJBeLhSSA4JdrjAEnGrKZIxTJBfj
+         eWFGmNvZLmfdPfFVo378pOywjLLhzH8wWAGV46nblMMZ8RMJurqQx44J/QAvipW4Un
+         uwRlehHxvUL0g==
+Date:   Thu, 16 Sep 2021 09:07:40 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, Linux-MM <linux-mm@kvack.org>,
+        Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH v3 0/3] bootconfig: Fixes to bootconfig memory
+ management
+Message-Id: <20210916090740.eeea3a0d73ba659c9ea68df2@kernel.org>
+In-Reply-To: <CAHk-=win5Syn-=2viR6MHCBnhBNh=wj2c189pa_=-9g3OdMEuQ@mail.gmail.com>
+References: <163171196689.590070.15063104707696447188.stgit@devnote2>
+        <CAHk-=wjtP5U-jr7cpTS78iqyh6rys15-Gf0VwoqngNNH1AQH8Q@mail.gmail.com>
+        <CAHk-=win5Syn-=2viR6MHCBnhBNh=wj2c189pa_=-9g3OdMEuQ@mail.gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 15 Sep 2021 09:51:15 -0700
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
+> On Wed, Sep 15, 2021 at 9:47 AM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > IOW, I'll apply your trivial fixup for the bootconfig copy of
+> > memblock.h, and forget about it, and then if we end up having more
+> > problems with it later, we can look at a bigger fix.
 
-On 9/5/2021 10:27 PM, zhaoxiao wrote:
-> When call function devm_platform_ioremap_resource(), we should use IS_ERR()
-> to check the return value and return PTR_ERR() if failed.
+Thanks, and OK, I'll try to solve this issue.
+
 > 
-> Signed-off-by: zhaoxiao <long870912@gmail.com>
+> Just to clarify - I applied that build fix directly to my tree, but
+> this series of leak fixes I'll leave for the tracing tree.
 
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+OK, I got it.
+
+
+Thank you,
+
+> 
+>              Linus
+
+
 -- 
-Florian
+Masami Hiramatsu <mhiramat@kernel.org>
