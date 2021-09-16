@@ -2,87 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A876D40EDDE
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 01:33:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55A1C40EDE2
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 01:38:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234889AbhIPXeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 19:34:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59728 "EHLO
+        id S239276AbhIPXjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 19:39:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234396AbhIPXeY (ORCPT
+        with ESMTP id S231638AbhIPXjY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 19:34:24 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7D32C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 16:33:02 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id x27so25141684lfu.5
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 16:33:02 -0700 (PDT)
+        Thu, 16 Sep 2021 19:39:24 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C27AC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 16:38:03 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id l6so177297plh.9
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 16:38:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rjHqvEYv6+gMyg4Tq+Rh/G8JnWMIR7cUG1Fmcv07v/Y=;
-        b=mVwI96FJbGbROeb+waDs8Fr9jg58Ppg3G2f/qwPZr8axanVXE1bqdoj0ztls5rFeZs
-         7VP7jjoGJfuz3jYXmZXGUUni8EfJ0lHPi6gBIwHP/3X+JyNUfkM64ieQN7Eup9QB3k9+
-         vuJiV+V11n2Sz8DjTwNiUX7vhU6ELwHZd9a1rYo3jBA8DojYTwgzZN1KmzCSV73sP+lr
-         XQiXPoqQ9zuPRQKFU7kB7mBZs4lDHUt202CByLC5d9bKgKa3M18kMIbzFQ/7AvVQvp2f
-         Mv4pVqPYTnLLv3IYLLOI9QoERjjqo3vdcr/qYaQ/3TiL0X0yeZOBfspENrBEt6KUVBUs
-         6vIg==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:references:date:in-reply-to:message-id
+         :user-agent:mime-version;
+        bh=dsmpAEysummCR+0sKJW94drPPG6N4lgMtRNGAbPoMYM=;
+        b=R3QcpmAxoydu8UEqTsgiQDtldifUVex8DLdhfjcCkkDN4tESQTG+gPUZoh5PkTumk1
+         tdsNh405J1V5USAYKCG6IA5TShauMTwlqvkXD1Lah/K80tgCzPfH7LYtT781FT/eF7hK
+         roC8CSoyOjdrguPNtwyDlCUsxud4mo4eftpPsB3JVKfzergQmBuCHTW4wTsxEDundsKP
+         5AGJuq9QONvsF0IOZURgW/gTBWvu3cKCvzYa3wY8HflZj/GHg87H8NAprWyRGjCcHBTJ
+         dP/D+Nypft3eyemyk2jgjwwYybSu1KE6QGaaRSBTbWPpwB3ozTcIC/mQPEvrQ88Fil9P
+         Qccw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rjHqvEYv6+gMyg4Tq+Rh/G8JnWMIR7cUG1Fmcv07v/Y=;
-        b=QeUCFv68BLmg68Wks/7X3kklcl78QB0Qzi9NPyhvGIt0MHlDU+ah0LEXr8Uj+fTZe+
-         gO70gbDcY/6uXVhxctFU4u0gdPP2lPee883LT5K0pISAPs/501ciPiQZt7rTdfFRc3DO
-         OAbNSGEIi5JIYfj9D8WWjwnaozsA2AvgG06dBNDD7jhJT/b+KkgKb3h8PekjGm7f2hwX
-         j5XA3ToTbJfW5sKWt3MQBtKH5f6ivrOhuLECO8TWopl2j9bcy5bBcqUSoYn72/sn4V8d
-         f5wSjSHAezpIFyg+E3okuRT0u9NWF05W9frWWrB1dz8/YxDwJ5Gegqb8bmizcZF12W3T
-         EzTQ==
-X-Gm-Message-State: AOAM532TZrH7CDSuVuNkE7t1ah/7GjVbgPr7DkPhT2qPMKuDrXcj1jQe
-        3zAg8I5rEsPs/VqNG3tnbnXkTd46BqFLtwJJDso7zA==
-X-Google-Smtp-Source: ABdhPJx3qUqm8D+MvhzJv8yo3TmSo9hTYPFYIbXvo26tL6U4gur7fI6B/LsMvGG2bOFUWelJ1aarRW0hBAjmL6Wq+v0=
-X-Received: by 2002:a19:f249:: with SMTP id d9mr5952890lfk.229.1631835180984;
- Thu, 16 Sep 2021 16:33:00 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:references:date:in-reply-to
+         :message-id:user-agent:mime-version;
+        bh=dsmpAEysummCR+0sKJW94drPPG6N4lgMtRNGAbPoMYM=;
+        b=wpyg91iFqjydQ1sRoTYc5Bjp/uMMwl7kZ+Ta6Ayn71KeYy5noM6+XXp89cAJVRF/hI
+         42jPN6Bh3XiZ2vOgSFw0q+auRzdoJF3Co6n3YIZOdBF8zwBh33ovLHMXyioL+Ax0SQfc
+         vPCtw9AUpQhyh5qF4mUBt+sEZx4jX1aZHgXACt0Q9Jpo8eX0U5z9wukEXcKUHbo2MW/s
+         JLj/DFDMZcfANaCgddvrTuThS/PlXCXL7FSMTK+xXNBW9YyMMzoROrB+oTJitsMdANiJ
+         xL0m4oEoQ3Ct0Ujj1Et4lCQ1Q/NzBLRJu25226pMxgVSRpQHGTrLI/kjXWL1F4z+FP2y
+         qkUw==
+X-Gm-Message-State: AOAM530y6YIqlbxv68r8zut0XXf/YtrIng36Glv/J+layZ1bk+b1EFJy
+        MlOB4H21OKnOncOOe8EDfV8=
+X-Google-Smtp-Source: ABdhPJyCDk5ItHOE340GhRmuFVtp+aFArK4dQXh9Ewz/os6s+Gx9QFrxJMIkc5x/fx5wvwRY4yee1A==
+X-Received: by 2002:a17:902:b694:b0:138:a031:610d with SMTP id c20-20020a170902b69400b00138a031610dmr7127076pls.36.1631835482195;
+        Thu, 16 Sep 2021 16:38:02 -0700 (PDT)
+Received: from localhost (122x211x248x161.ap122.ftth.ucom.ne.jp. [122.211.248.161])
+        by smtp.gmail.com with ESMTPSA id h24sm4182036pfn.180.2021.09.16.16.38.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Sep 2021 16:38:01 -0700 (PDT)
+From:   Punit Agrawal <punitagrawal@gmail.com>
+To:     Ronak Jain <ronak.jain@xilinx.com>
+Cc:     <michal.simek@xilinx.com>, <linux-kernel@vger.kernel.org>,
+        <gregkh@linuxfoundation.org>, <rajan.vaja@xilinx.com>,
+        <corbet@lwn.net>, <linux-arm-kernel@lists.infradead.org>,
+        <arnd@arndb.de>, <lakshmi.sai.krishna.potthuri@xilinx.com>
+Subject: Re: [PATCH v2 2/3] firmware: zynqmp: Add sysfs entry for runtime
+ features
+References: <20210913083955.27146-1-ronak.jain@xilinx.com>
+        <20210913083955.27146-3-ronak.jain@xilinx.com>
+Date:   Fri, 17 Sep 2021 08:37:58 +0900
+In-Reply-To: <20210913083955.27146-3-ronak.jain@xilinx.com> (Ronak Jain's
+        message of "Mon, 13 Sep 2021 01:39:54 -0700")
+Message-ID: <87ee9o6qi1.fsf@stealth>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20210908013218.29702-1-wenbin.mei@mediatek.com> <20210908013218.29702-2-wenbin.mei@mediatek.com>
-In-Reply-To: <20210908013218.29702-2-wenbin.mei@mediatek.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 17 Sep 2021 01:32:50 +0200
-Message-ID: <CACRpkdYxSwr05eK1x+BAgHxgccQWGUxW-_q_xSGmfkTHEbs+5w@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] dt-bindings: mmc: mtk-sd: add hs400 dly3 setting
-To:     Wenbin Mei <wenbin.mei@mediatek.com>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Chaotian Jing <chaotian.jing@mediatek.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Yue Hu <huyue2@yulong.com>, Bean Huo <beanhuo@micron.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 8, 2021 at 3:32 AM Wenbin Mei <wenbin.mei@mediatek.com> wrote:
+Hi Ronak,
 
-> Add hs400 dly3 setting for mtk-sd yaml
+Ronak Jain <ronak.jain@xilinx.com> writes:
+
+> Create sysfs entry for runtime feature configuration. The support
+>  is added for an over temperature and external watchdog feature.
 >
-> Signed-off-by: Wenbin Mei <wenbin.mei@mediatek.com>
-> Acked-by: Rob Herring <robh@kernel.org>
+> The below listed files are used for runtime features configuration:
+> /sys/devices/platform/firmware\:zynqmp-firmware/feature_config_id
+> /sys/devices/platform/firmware\:zynqmp-firmware/feature_config_value
+>
+> In order to configure an over temperature or external watchdog
+>  features, first the user need to select the valid config id and then
+>  the user can configure the value for selected feature config id.
+>
+> Signed-off-by: Ronak Jain <ronak.jain@xilinx.com>
+> ---
+> Changes in v2:
+> - Update commit message
+> ---
+>  .../ABI/stable/sysfs-driver-firmware-zynqmp   | 84 +++++++++++++++++++
+>  1 file changed, 84 insertions(+)
+>
+> diff --git a/Documentation/ABI/stable/sysfs-driver-firmware-zynqmp b/Documentation/ABI/stable/sysfs-driver-firmware-zynqmp
+> index f5724bb5b462..2fde354715a5 100644
+> --- a/Documentation/ABI/stable/sysfs-driver-firmware-zynqmp
+> +++ b/Documentation/ABI/stable/sysfs-driver-firmware-zynqmp
+> @@ -113,3 +113,87 @@ Description:
+>  		    # echo 0 > /sys/devices/platform/firmware\:zynqmp-firmware/health_status
+>  
+>  Users:		Xilinx
+> +
+> +What:		/sys/devices/platform/firmware\:zynqmp-firmware/feature_config_*
+> +Date:		Aug 2021
+> +KernelVersion:	5.14
+> +Contact:	"Ronak Jain" <ronak.jain@xilinx.com>
+> +Description:
+> +		This sysfs interface allows to configure features at runtime.
+> +		The user can enable or disable features running at firmware.
+> +		Also, the user can configure the parameters of the features
+> +		at runtime. The supported features are over temperature and
+> +		external watchdog. Here, the external watchdog is completely
+> +		different than the /dev/watchdog as the external watchdog is
+> +		running on the firmware and it is used to monitor the health
+> +		of firmware not APU(Linux). Also, the external watchdog is
+> +		interfaced outside of the zynqmp soc.
+> +
+> +		By default the features are disabled in the firmware. The user
+> +		can enable features by querying appropriate config id of the
+> +		features.
+> +
+> +		The default limit for the over temperature is 90 Degree Celsius.
+> +		The default timer interval for the external watchdog is 570ms.
+> +
+> +		The supported config ids are for the feature configuration is,
+> +		1. PM_FEATURE_OVERTEMP_STATUS = 1, the user can enable or
+> +		disable the over temperature feature.
+> +		2. PM_FEATURE_OVERTEMP_VALUE = 2, the user can configure the
+> +		over temperature limit in Degree Celsius.
+> +		3. PM_FEATURE_EXTWDT_STATUS = 3, the user can enable or disable
+> +		the external watchdog feature.
+> +		4. PM_FEATURE_EXTWDT_VALUE = 4, the user can configure the
+> +		external watchdog feature.
+> +
+> +		Usage:
+> +
+> +		Enable over temperature feature
+> +		# echo 1 > /sys/devices/platform/firmware\:zynqmp-firmware/feature_config_id
+> +		# echo 1 > /sys/devices/platform/firmware\:zynqmp-firmware/feature_config_value
+> +
+> +		Check whether the over temperature feature is enabled or not
+> +		# cat /sys/devices/platform/firmware\:zynqmp-firmware/feature_config_value
+> +		The expected result is 1.
+> +
+> +		Disable over temperature feature
+> +		# echo 1 > /sys/devices/platform/firmware\:zynqmp-firmware/feature_config_id
+> +		# echo 0 > /sys/devices/platform/firmware\:zynqmp-firmware/feature_config_value
+> +
+> +		Check whether the over temperature feature is disabled or not
+> +		# cat /sys/devices/platform/firmware\:zynqmp-firmware/feature_config_value
+> +		The expected result is 0.
+> +
+> +		Configure over temperature limit to 50 Degree Celsius
+> +		# echo 2 > /sys/devices/platform/firmware\:zynqmp-firmware/feature_config_id
+> +		# echo 50 > /sys/devices/platform/firmware\:zynqmp-firmware/feature_config_value
+> +
+> +		Check whether the over temperature limit is configured or not
+> +		# cat /sys/devices/platform/firmware\:zynqmp-firmware/feature_config_value
+> +		The expected result is 50.
 
-Excellent doc!
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Maybe I am missing something but I was wondering why these features are
+being exposed via custom sysfs nodes - can they be integrated into the
+respective subsystems?
 
-Yours,
-Linus Walleij
+e.g., Over temperature protection would fit in nicely with the thermal
+sub-system. Did you explore integrating the feature there?
+
+> +
+> +		Enable external watchdog feature
+> +		# echo 3 > /sys/devices/platform/firmware\:zynqmp-firmware/feature_config_id
+> +		# echo 1 > /sys/devices/platform/firmware\:zynqmp-firmware/feature_config_value
+> +
+> +		Check whether the external watchdog feature is enabled or not
+> +		# cat /sys/devices/platform/firmware\:zynqmp-firmware/feature_config_value
+> +		The expected result is 1.
+> +
+> +		Disable external watchdog feature
+> +		# echo 3 > /sys/devices/platform/firmware\:zynqmp-firmware/feature_config_id
+> +		# echo 0 > /sys/devices/platform/firmware\:zynqmp-firmware/feature_config_value
+> +
+> +		Check whether the external watchdog feature is disabled or not
+> +		# cat /sys/devices/platform/firmware\:zynqmp-firmware/feature_config_value
+> +		The expected result is 0.
+> +
+> +		Configure external watchdog timer interval to 500ms
+> +		# echo 4 > /sys/devices/platform/firmware\:zynqmp-firmware/feature_config_id
+> +		# echo 500 > /sys/devices/platform/firmware\:zynqmp-firmware/feature_config_value
+> +
+> +		Check whether the external watchdog timer interval is configured or not
+> +		# cat /sys/devices/platform/firmware\:zynqmp-firmware/feature_config_value
+> +		The expected result is 500.
+
+Similarly, this would make sense to go into the watchdog subsystem.
+
+Using sub-system interfaces would allow existing tools to just work
+without having to make zynqmp specific tools or find yet another way to
+interact with these features. 
+
+Thanks,
+Punit
