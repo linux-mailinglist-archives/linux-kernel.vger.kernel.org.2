@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CAE540E44F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:23:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8664740E217
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:15:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343884AbhIPQ5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:57:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37600 "EHLO mail.kernel.org"
+        id S243891AbhIPQe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:34:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237688AbhIPQwx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:52:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C76E6135E;
-        Thu, 16 Sep 2021 16:29:31 +0000 (UTC)
+        id S241917AbhIPQ00 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:26:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 874016152B;
+        Thu, 16 Sep 2021 16:17:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809771;
-        bh=vltmrNgN+E0W7LKarKrqHmP9bA245YK9RPBi7h2Hvrs=;
+        s=korg; t=1631809034;
+        bh=IJKP0UOwGNAsWCUOhenYOs6dc+NNB1BXv5lIKAXqvbE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uIlGtmN957C3TL7s5d5GrxqK4DaLHGsoFI3tSZLX2MoqehxB7fk3d/NRz+Dg6oil8
-         Eu0GSp56oVqlBAEo+YHkDTx+qhjAm894IzjUsLuKrt8EvRG0mhGun/zKbUR8feN1UR
-         HtHsJMRJVXjR3r/leZSUGFztiV0Luh/9wuVi8Thw=
+        b=uUGjPpW8VCkEksRaNHh35ljkZqbPJUECCV8FffjYTbYxTvZaDoaiVPXcopHa+JOJs
+         p9Z+4aFuPzlwPKIaz9y17VPts16QM1mPMZQNbOAGlBpu9m+k1o1v3W8bLmzBjKrJJQ
+         9S7xhPotsbn6vrWzd//WCoeiX3qFwgrvVmJ5P3x8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ulrich Hecht <uli+renesas@fpond.eu>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 276/380] serial: sh-sci: fix break handling for sysrq
+        stable@vger.kernel.org, Li Zhijian <lizhijian@cn.fujitsu.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.10 288/306] mm/hmm: bypass devmap pte when all pfn requested flags are fulfilled
 Date:   Thu, 16 Sep 2021 18:00:33 +0200
-Message-Id: <20210916155813.468148963@linuxfoundation.org>
+Message-Id: <20210916155803.924560407@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,53 +42,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ulrich Hecht <uli+renesas@fpond.eu>
+From: Li Zhijian <lizhijian@cn.fujitsu.com>
 
-[ Upstream commit 87b8061bad9bd4b549b2daf36ffbaa57be2789a2 ]
+commit 4b42fb213678d2b6a9eeea92a9be200f23e49583 upstream.
 
-This fixes two issues that cause the sysrq sequence to be inadvertently
-aborted on SCIF serial consoles:
+Previously, we noticed the one rpma example was failed[1] since commit
+36f30e486dce ("IB/core: Improve ODP to use hmm_range_fault()"), where it
+will use ODP feature to do RDMA WRITE between fsdax files.
 
-- a NUL character remains in the RX queue after a break has been detected,
-  which is then passed on to uart_handle_sysrq_char()
-- the break interrupt is handled twice on controllers with multiplexed ERI
-  and BRI interrupts
+After digging into the code, we found hmm_vma_handle_pte() will still
+return EFAULT even though all the its requesting flags has been
+fulfilled.  That's because a DAX page will be marked as (_PAGE_SPECIAL |
+PAGE_DEVMAP) by pte_mkdevmap().
 
-Signed-off-by: Ulrich Hecht <uli+renesas@fpond.eu>
-Link: https://lore.kernel.org/r/20210816162201.28801-1-uli+renesas@fpond.eu
+Link: https://github.com/pmem/rpma/issues/1142 [1]
+Link: https://lkml.kernel.org/r/20210830094232.203029-1-lizhijian@cn.fujitsu.com
+Fixes: 405506274922 ("mm/hmm: add missing call to hmm_pte_need_fault in HMM_PFN_SPECIAL handling")
+Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/sh-sci.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ mm/hmm.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/tty/serial/sh-sci.c b/drivers/tty/serial/sh-sci.c
-index 2d5487bf6855..a2e62f372e10 100644
---- a/drivers/tty/serial/sh-sci.c
-+++ b/drivers/tty/serial/sh-sci.c
-@@ -1760,6 +1760,10 @@ static irqreturn_t sci_br_interrupt(int irq, void *ptr)
+--- a/mm/hmm.c
++++ b/mm/hmm.c
+@@ -291,10 +291,13 @@ static int hmm_vma_handle_pte(struct mm_
+ 		goto fault;
  
- 	/* Handle BREAKs */
- 	sci_handle_breaks(port);
-+
-+	/* drop invalid character received before break was detected */
-+	serial_port_in(port, SCxRDR);
-+
- 	sci_clear_SCxSR(port, SCxSR_BREAK_CLEAR(port));
- 
- 	return IRQ_HANDLED;
-@@ -1839,7 +1843,8 @@ static irqreturn_t sci_mpxed_interrupt(int irq, void *ptr)
- 		ret = sci_er_interrupt(irq, ptr);
- 
- 	/* Break Interrupt */
--	if ((ssr_status & SCxSR_BRK(port)) && err_enabled)
-+	if (s->irqs[SCIx_ERI_IRQ] != s->irqs[SCIx_BRI_IRQ] &&
-+	    (ssr_status & SCxSR_BRK(port)) && err_enabled)
- 		ret = sci_br_interrupt(irq, ptr);
- 
- 	/* Overrun Interrupt */
--- 
-2.30.2
-
+ 	/*
++	 * Bypass devmap pte such as DAX page when all pfn requested
++	 * flags(pfn_req_flags) are fulfilled.
+ 	 * Since each architecture defines a struct page for the zero page, just
+ 	 * fall through and treat it like a normal page.
+ 	 */
+-	if (pte_special(pte) && !is_zero_pfn(pte_pfn(pte))) {
++	if (pte_special(pte) && !pte_devmap(pte) &&
++	    !is_zero_pfn(pte_pfn(pte))) {
+ 		if (hmm_pte_need_fault(hmm_vma_walk, pfn_req_flags, 0)) {
+ 			pte_unmap(ptep);
+ 			return -EFAULT;
 
 
