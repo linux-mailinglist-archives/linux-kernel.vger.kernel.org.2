@@ -2,100 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 397F340ECDE
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 23:45:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D43B40ECE0
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 23:45:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238480AbhIPVq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 17:46:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35168 "EHLO
+        id S239295AbhIPVqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 17:46:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238288AbhIPVqX (ORCPT
+        with ESMTP id S234847AbhIPVqs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 17:46:23 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C99CC061574;
-        Thu, 16 Sep 2021 14:45:02 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id c10so11012842qko.11;
-        Thu, 16 Sep 2021 14:45:02 -0700 (PDT)
+        Thu, 16 Sep 2021 17:46:48 -0400
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EB3DC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 14:45:27 -0700 (PDT)
+Received: by mail-pj1-x104a.google.com with SMTP id k1-20020a17090a590100b001971da53970so5961250pji.4
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 14:45:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:user-agent:in-reply-to:references
-         :message-id:mime-version:content-transfer-encoding;
-        bh=+XTwNYBlgH4ZDIk567gesWNV1Jpu7Ybvxnvo/EIv1TE=;
-        b=nLBnaSttySntHNjgMyU11re/jdPNZRYbHQ+/DoDgfUYiTOcWDBgP76f6pxUNOo85LM
-         D5s8dcOrjnT1ObIA34myG2mMNC7I4O0uJ5aU5dgYVEoR8SmTPZ6fND/P7VSdqPownyQn
-         068WqGV2GRCixENH9ULS560g5u44Fxamqfe2oF5ZutZCmbsW/W9npLk7KokALEr6vNkP
-         oQTzM7x7OYqYVmH/E0ElbdKv7sVi6Zif889Sm6aYVHQKDVTQ5nf/fFldIH81UeFPhpCY
-         T1APqQUCrFMU2MTSeTB6vGXO5XW7oyZ3s6ljL+bMYmoKXC0j/pvH1Msz4zDXgfVa/0ZB
-         mwOQ==
+        d=google.com; s=20210112;
+        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=R5NhbA+pjUVPZNfNHPtaYNtNYTv1h+ja92HfpRStBqA=;
+        b=LlzVqBRk9HyqIgkEKwTRdfPTOIlc3qOVXfopYaEeFe9ZewruQYdODOZc8ASQp5OKCr
+         Fl7/fBaZ6EHFKNXJ+xM1+VbZvBIswyWIiv0TEV7LOY++QwJvEVoGtioABjNg40Qn3TMA
+         unYRCZZpwXzX+cv1A4dD/X6mHRxaNWtuNhCSi55oFbCJsobXuBQEfo5PI0WwyK3cL0a9
+         utyujJWR0SBfQ+Pg+0ED6h3oWQP7PTBC6Q/WhqqWFLJLRF+M+Eeqg2JkmSwEqDt9iPtb
+         ribrRQ8TyqBF/g79W4DNfjSteKGfhXaqLR/r0oqZsHexVUqAxtuwTNvMRN/a1XIYDPSl
+         9bug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:user-agent:in-reply-to
-         :references:message-id:mime-version:content-transfer-encoding;
-        bh=+XTwNYBlgH4ZDIk567gesWNV1Jpu7Ybvxnvo/EIv1TE=;
-        b=Kvzx2E1ph/2I4eADF/717Q6iHIJbhSWFUJLholdEz8PL8XDqWMGaqP1wUFBTuy+SHZ
-         tQjyyHGUwtLuK+8RmdG037NeIK3r8l1sI9+Xord3EZ5HMuYDNIkG2xBs3SobunMAc3r4
-         WNMvp7o3AeQTM7+8z1y87lvOjfUGuO8bu4V6rhitPKWCJUMRgKJevSSJq/l5pcoAGMnN
-         7noujegiFB7b3nO9WoutRzVnKQy6xIyr/E9gYLQjAmxZD7iXlFRfHAco5ToqUbGVpKPE
-         YvKh0FM5HIyN2H4WX/q0zSMyoIX7P0af7B/6TrwKaMKbGboD4y4lM61CeP9g99pEyGAC
-         IJNQ==
-X-Gm-Message-State: AOAM530z+Qpahl4i9icpRCy64SpWbM5N7xwI7VuiAkyc2ZqQVsrkAntg
-        05JkZSYbnQ9czxEHJLIE56U=
-X-Google-Smtp-Source: ABdhPJwESZt38woWx4EfA8NKgQpJyUDsBkKgXHEqQmg57TTBQfAMYIDkWce0QE9bWiOCk2nEksZ7tw==
-X-Received: by 2002:a37:a094:: with SMTP id j142mr7268153qke.465.1631828701736;
-        Thu, 16 Sep 2021 14:45:01 -0700 (PDT)
-Received: from [127.0.0.1] ([179.97.37.151])
-        by smtp.gmail.com with ESMTPSA id 19sm3322888qkf.127.2021.09.16.14.45.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Sep 2021 14:45:01 -0700 (PDT)
-Date:   Thu, 16 Sep 2021 18:43:37 -0300
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jiri Olsa <jolsa@kernel.org>
-CC:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: Tree for Sep 16
-User-Agent: K-9 Mail for Android
-In-Reply-To: <CAADnVQJ+BnWKf61rfDhKsOv05yFRXeRrMs4d443dcSOycaTRcg@mail.gmail.com>
-References: <20210916161111.7f44d2a3@canb.auug.org.au> <CAADnVQJ+BnWKf61rfDhKsOv05yFRXeRrMs4d443dcSOycaTRcg@mail.gmail.com>
-Message-ID: <8850F8DA-5C73-4A2C-92C7-FE17ADCD2ADB@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
+         :from:to:cc;
+        bh=R5NhbA+pjUVPZNfNHPtaYNtNYTv1h+ja92HfpRStBqA=;
+        b=MKYzyZBI2fskpKtdk6FsGR9OJMvIDfOO44zVIGVUz4w+wQQhj7eoE5nFuE6/K2M8gf
+         g7yjkbaAM0CeaLXZ18zLxSnVfaSozNEY9z3FlxvJZcpXtTIGmXK7IlPwI3d4vKzcW2Rv
+         W/FwlHPK6zit4tKzPAqVwHC8/9gdOKTHFO5lf8FuPJCxDu/YrPwddkLyJ0oRid27LwdT
+         3W74BkYFNiq+iXgyyOHPr9gTqZjocNlsuDVu+43VBXAsIWkPu+x/+fL9Qxa2t2op0Zc7
+         V2FWSBerO1j8JSACkuhBEmWldCC2WNvRGKVc1IspsCmiO2Ym+tP5k9J6Ivv5XyRGPinF
+         UTSw==
+X-Gm-Message-State: AOAM5324Go9v6KNc8jx7M0rvMuFNNjKr5oy0bLgU1XrXQCgCpb6TsOFT
+        LVVn0u0Zqyje5XCDrQ4q/4KMrp7JUnIw
+X-Google-Smtp-Source: ABdhPJyJ3GLd7Y4KTIshP0TGJLp8e0qxBx7aK4BWozn5MOmt0QCKuiQq7LSf2MbjftzPa+72dT3WDDKPV4P0
+X-Received: from mizhang-super.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:1071])
+ (user=mizhang job=sendgmr) by 2002:a17:90a:1a52:: with SMTP id
+ 18mr17365103pjl.43.1631828726904; Thu, 16 Sep 2021 14:45:26 -0700 (PDT)
+Reply-To: Mingwei Zhang <mizhang@google.com>
+Date:   Thu, 16 Sep 2021 21:45:22 +0000
+Message-Id: <20210916214522.1560893-1-mizhang@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.464.g1972c5931b-goog
+Subject: [PATCH v2] KVM: SVM: fix missing sev_decommission() in sev_receive_start()
+From:   Mingwei Zhang <mizhang@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Alper Gun <alpergun@google.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        David Rienjes <rientjes@google.com>,
+        Marc Orr <marcorr@google.com>, John Allen <john.allen@amd.com>,
+        Peter Gonda <pgonda@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Vipin Sharma <vipinsh@google.com>,
+        Mingwei Zhang <mizhang@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+DECOMMISSION the current SEV context if binding an ASID fails after
+RECEIVE_START. Per AMD's SEV API, RECEIVE_START generates a new guest
+context and thus needs to be paired with DECOMMISSION:
 
+AMD SEV API v0.24 Section 1.3.3
 
-On September 16, 2021 2:30:04 PM GMT-03:00, Alexei Starovoitov <alexei=2Es=
-tarovoitov@gmail=2Ecom> wrote:
->On Wed, Sep 15, 2021 at 11:11 PM Stephen Rothwell <sfr@canb=2Eauug=2Eorg=
-=2Eau> wrote:
->>
->> Hi all,
->>
->> Changes since 20210915:
->>
->> The bpf-next tree still had its build failure so I used the version fro=
-m
->> next-20210913=2E
->
->Arnaldo,
->
->could you please push Andrii's fix into your tree asap
->and then cleanup/follow up with a better fix if  necessary?
+  "The RECEIVE_START command is the only command other than the
+  LAUNCH_START command that generates a new guest context and guest
+  handle."
 
-It's there since yesterday:
+The missing DECOMMISSION can result in subsequent SEV launch failures due
+to insufficient resource. In particular, both LAUNCH_START and
+RECEIVE_START command will fail with SEV_RET_RESOURCE_LIMIT error.
 
-https://git=2Ekernel=2Eorg/pub/scm/linux/kernel/git/acme/linux=2Egit/commi=
-t/?h=3Dperf/core&id=3D00e0ca3721cf2ddcb38cf676a3de61933640d31d
+Note, LAUNCH_START suffered from the same bug, but was previously fixed by
+[1]. However, the same bug could come back to LAUNCH_START if RECEIVE_START
+part was not fixed.
 
-Replying just now since it's a holiday here and I was AFK=2E
+So add the sev_decommission() function in sev_receive_start.
 
-- Arnaldo
+[1] commit 934002cd660b ("KVM: SVM: Call SEV Guest Decommission if ASID
+			 binding fails").
+
+Cc: Alper Gun <alpergun@google.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Brijesh Singh <brijesh.singh@amd.com>
+Cc: David Rienjes <rientjes@google.com>
+Cc: Marc Orr <marcorr@google.com>
+Cc: John Allen <john.allen@amd.com>
+Cc: Peter Gonda <pgonda@google.com>
+Cc: Sean Christopherson <seanjc@google.com>
+Cc: Tom Lendacky <thomas.lendacky@amd.com>
+Cc: Vipin Sharma <vipinsh@google.com>
+
+Reviewed-by: Marc Orr <marcorr@google.com>
+Reviewed-by: Sean Christopherson <seanjc@google.com>
+Acked-by: Brijesh Singh <brijesh.singh@amd.com>
+Fixes: af43cbbf954b ("KVM: SVM: Add support for KVM_SEV_RECEIVE_START command")
+Signed-off-by: Mingwei Zhang <mizhang@google.com>
+---
+ arch/x86/kvm/svm/sev.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+index 75e0b21ad07c..55d8b9c933c3 100644
+--- a/arch/x86/kvm/svm/sev.c
++++ b/arch/x86/kvm/svm/sev.c
+@@ -1397,8 +1397,10 @@ static int sev_receive_start(struct kvm *kvm, struct kvm_sev_cmd *argp)
+ 
+ 	/* Bind ASID to this guest */
+ 	ret = sev_bind_asid(kvm, start.handle, error);
+-	if (ret)
++	if (ret) {
++		sev_decommission(start.handle);
+ 		goto e_free_session;
++	}
+ 
+ 	params.handle = start.handle;
+ 	if (copy_to_user((void __user *)(uintptr_t)argp->data,
+-- 
+2.33.0.464.g1972c5931b-goog
+
