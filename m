@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9DAD40E018
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:17:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E80B40E677
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:30:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235369AbhIPQSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:18:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48012 "EHLO mail.kernel.org"
+        id S1346820AbhIPRVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:21:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41429 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232867AbhIPQKb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:10:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EFB6F61263;
-        Thu, 16 Sep 2021 16:08:25 +0000 (UTC)
+        id S1350864AbhIPROI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:14:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 74BBD6140D;
+        Thu, 16 Sep 2021 16:39:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808506;
-        bh=nUWogYyAQnIGP9PhkABR991SIxEYKSuFnYvAG0oKips=;
+        s=korg; t=1631810365;
+        bh=+Ykzp3S/c4i5bfjmtv1I9kQLib6/o3VBcPl3qIbBJKM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1u31975SvNTOhZ1iHiMIMzuaVr1dBXFnYBPmLEJHvfUMoO8arRaKbxScnhoFM38D2
-         xo/4Vi00W73s28Ss/H9ZsbUkofQnKtC9VNCqg9tQoeETXwn83PGEv1e23Iui8ouBXN
-         x1TrA7OWGEOQn6MiWHnAT6GH/LanNjMY3CfQY2Bo=
+        b=s9LTyhozwjBBi0BniZ6wbFVpCB7wUazBPxBvoB8QiIViAVsqftX/jwMpQiXprG8Ha
+         c7hSJrco7ZzGo2OkdNUmB7xI0Om+2clSgHwnKTe55TPhugSAyldN/NIpFIULk2pBqI
+         QSIbICzQJCOcxYDqK+aoJEywQXURVYosAKGqKWyw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maximilian Luz <luzmaximilian@gmail.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        stable@vger.kernel.org, Laurent Dufour <ldufour@linux.ibm.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 117/306] PCI: Use pci_update_current_state() in pci_enable_device_flags()
-Date:   Thu, 16 Sep 2021 17:57:42 +0200
-Message-Id: <20210916155758.056539337@linuxfoundation.org>
+Subject: [PATCH 5.14 114/432] powerpc/numa: Consider the max NUMA node for migratable LPAR
+Date:   Thu, 16 Sep 2021 17:57:43 +0200
+Message-Id: <20210916155814.627238021@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,51 +41,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+From: Laurent Dufour <ldufour@linux.ibm.com>
 
-[ Upstream commit 14858dcc3b3587f4bb5c48e130ee7d68fc2b0a29 ]
+[ Upstream commit 9c7248bb8de31f51c693bfa6a6ea53b1c07e0fa8 ]
 
-Updating the current_state field of struct pci_dev the way it is done
-in pci_enable_device_flags() before calling do_pci_enable_device() may
-not work.  For example, if the given PCI device depends on an ACPI
-power resource whose _STA method initially returns 0 ("off"), but the
-config space of the PCI device is accessible and the power state
-retrieved from the PCI_PM_CTRL register is D0, the current_state
-field in the struct pci_dev representing that device will get out of
-sync with the power.state of its ACPI companion object and that will
-lead to power management issues going forward.
+When a LPAR is migratable, we should consider the maximum possible NUMA
+node instead of the number of NUMA nodes from the actual system.
 
-To avoid such issues, make pci_enable_device_flags() call
-pci_update_current_state() which takes ACPI device power management
-into account, if present, to retrieve the current power state of the
-device.
+The DT property 'ibm,current-associativity-domains' defines the maximum
+number of nodes the LPAR can see when running on that box. But if the
+LPAR is being migrated on another box, it may see up to the nodes
+defined by 'ibm,max-associativity-domains'. So if a LPAR is migratable,
+that value should be used.
 
-Link: https://lore.kernel.org/lkml/20210314000439.3138941-1-luzmaximilian@gmail.com/
-Reported-by: Maximilian Luz <luzmaximilian@gmail.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Tested-by: Maximilian Luz <luzmaximilian@gmail.com>
+Unfortunately, there is no easy way to know if an LPAR is migratable or
+not. The hypervisor exports the property 'ibm,migratable-partition' in
+the case it set to migrate partition, but that would not mean that the
+current partition is migratable.
+
+Without this patch, when a LPAR is started on a 2 node box and then
+migrated to a 3 node box, the hypervisor may spread the LPAR's CPUs on
+the 3rd node. In that case if a CPU from that 3rd node is added to the
+LPAR, it will be wrongly assigned to the node because the kernel has
+been set to use up to 2 nodes (the configuration of the departure node).
+With this patch applies, the CPU is correctly added to the 3rd node.
+
+Fixes: f9f130ff2ec9 ("powerpc/numa: Detect support for coregroup")
+Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
+Reviewed-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20210511073136.17795-1-ldufour@linux.ibm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/pci.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ arch/powerpc/mm/numa.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index 05a84f095fe7..eae6a9fdd33d 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -1880,11 +1880,7 @@ static int pci_enable_device_flags(struct pci_dev *dev, unsigned long flags)
- 	 * so that things like MSI message writing will behave as expected
- 	 * (e.g. if the device really is in D0 at enable time).
- 	 */
--	if (dev->pm_cap) {
--		u16 pmcsr;
--		pci_read_config_word(dev, dev->pm_cap + PCI_PM_CTRL, &pmcsr);
--		dev->current_state = (pmcsr & PCI_PM_CTRL_STATE_MASK);
--	}
-+	pci_update_current_state(dev, dev->current_state);
+diff --git a/arch/powerpc/mm/numa.c b/arch/powerpc/mm/numa.c
+index f2bf98bdcea2..094a1076fd1f 100644
+--- a/arch/powerpc/mm/numa.c
++++ b/arch/powerpc/mm/numa.c
+@@ -893,7 +893,7 @@ static void __init setup_node_data(int nid, u64 start_pfn, u64 end_pfn)
+ static void __init find_possible_nodes(void)
+ {
+ 	struct device_node *rtas;
+-	const __be32 *domains;
++	const __be32 *domains = NULL;
+ 	int prop_length, max_nodes;
+ 	u32 i;
  
- 	if (atomic_inc_return(&dev->enable_cnt) > 1)
- 		return 0;		/* already enabled */
+@@ -909,9 +909,14 @@ static void __init find_possible_nodes(void)
+ 	 * it doesn't exist, then fallback on ibm,max-associativity-domains.
+ 	 * Current denotes what the platform can support compared to max
+ 	 * which denotes what the Hypervisor can support.
++	 *
++	 * If the LPAR is migratable, new nodes might be activated after a LPM,
++	 * so we should consider the max number in that case.
+ 	 */
+-	domains = of_get_property(rtas, "ibm,current-associativity-domains",
+-					&prop_length);
++	if (!of_get_property(of_root, "ibm,migratable-partition", NULL))
++		domains = of_get_property(rtas,
++					  "ibm,current-associativity-domains",
++					  &prop_length);
+ 	if (!domains) {
+ 		domains = of_get_property(rtas, "ibm,max-associativity-domains",
+ 					&prop_length);
+@@ -920,6 +925,8 @@ static void __init find_possible_nodes(void)
+ 	}
+ 
+ 	max_nodes = of_read_number(&domains[min_common_depth], 1);
++	pr_info("Partition configured for %d NUMA nodes.\n", max_nodes);
++
+ 	for (i = 0; i < max_nodes; i++) {
+ 		if (!node_possible(i))
+ 			node_set(i, node_possible_map);
 -- 
 2.30.2
 
