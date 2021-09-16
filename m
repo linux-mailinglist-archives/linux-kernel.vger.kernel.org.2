@@ -2,128 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06B5440D439
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 10:03:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49C7340D44A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 10:09:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234896AbhIPIFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 04:05:15 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:55910 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235045AbhIPIDU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 04:03:20 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1631779265; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=tP+XNZ/9NH4K4GD+4JVcxuh8dLGXglkOiSbkpJxZE3s=;
- b=Hh8wMgLKR0Mbk0THwUrOOzcT5ZOFxchpA3hE4Qx4RE4oA/IY+r3Ks7IBY5nE68Tm+gqCvtSU
- rNvZbQYESmd4cs4fC3CuHcTAvTyYtb2FpundGOqtjGxoQ9KbNCpvOfAfCuE5JVdWtFgoDfC9
- WgJhA6nM/3fXPZzrHElrJe9wzWk=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 6142f9a4bd6681d8ed36759f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 16 Sep 2021 08:00:36
- GMT
-Sender: okukatla=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 92B98C43617; Thu, 16 Sep 2021 08:00:35 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        id S234972AbhIPIKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 04:10:53 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:36500 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229908AbhIPIKw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 04:10:52 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 1980B2232C;
+        Thu, 16 Sep 2021 08:02:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1631779348; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=k3UdE8OKRUWyRhg0kwtjoF0bATzYaRaijgzcmFzDwiY=;
+        b=IQZWZWVT1/cwYxYhSrRYozPyoS48UfDv/M3uUtwU9DNhbJqzcXj3lnYrgwQrsMtOSUPXP8
+        X1elXOCdCzD6yoZOMS77Ym+i9NRiZXTsZYthbqH65cry5LVbc0eJEYFNDChJb/j9mZj//f
+        +Q2NCEQsIOwJaRnL1SNDVHbIyHF5+bA=
+Received: from suse.cz (unknown [10.100.216.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: okukatla)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id BBFEBC4360D;
-        Thu, 16 Sep 2021 08:00:34 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTPS id CFC94A3B94;
+        Thu, 16 Sep 2021 08:02:27 +0000 (UTC)
+Date:   Thu, 16 Sep 2021 10:02:27 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Pingfan Liu <piliu@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Pingfan Liu <kernelfans@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Wang Qing <wangqing@vivo.com>,
+        Santosh Sivaraj <santosh@fossix.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH 2/5] kernel/watchdog_hld: clarify the condition in
+ hardlockup_detector_event_create()
+Message-ID: <YUL6E1Psg1xCrIxo@alley>
+References: <20210915035103.15586-1-kernelfans@gmail.com>
+ <20210915035103.15586-3-kernelfans@gmail.com>
+ <YUH44qrky9oM+3nU@hirez.programming.kicks-ass.net>
+ <YULAuEeSSeLTcBM9@piliu.users.ipa.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 16 Sep 2021 13:30:34 +0530
-From:   okukatla@codeaurora.org
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        bjorn.andersson@linaro.org, devicetree@vger.kernel.org,
-        evgreen@google.com, georgi.djakov@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mdtipton@codeaurora.org, sibis@codeaurora.org,
-        saravanak@google.com, seansw@qti.qualcomm.com, elder@linaro.org,
-        linux-pm@vger.kernel.org, linux-arm-msm-owner@vger.kernel.org,
-        okukatla=codeaurora.org@codeaurora.org
-Subject: Re: [v7 3/3] arm64: dts: qcom: sc7280: Add EPSS L3 interconnect
- provider
-In-Reply-To: <CAE-0n53g=qGoVAMh_me_W0ksp39WUm2CCwAttcAK+Do5nYXq5g@mail.gmail.com>
-References: <1629458622-4915-1-git-send-email-okukatla@codeaurora.org>
- <1629458622-4915-4-git-send-email-okukatla@codeaurora.org>
- <CAE-0n51WBdLoJRPs9tWZgdAukJMnkD3V00o7xNYVX77-eToKvw@mail.gmail.com>
- <749157bdb4613ae370adfb7ba055a2a9@codeaurora.org>
- <36fe241f845a27b52509274d007948b1@codeaurora.org>
- <CAE-0n53g=qGoVAMh_me_W0ksp39WUm2CCwAttcAK+Do5nYXq5g@mail.gmail.com>
-Message-ID: <49ba33707767f856ff2a868906387b16@codeaurora.org>
-X-Sender: okukatla@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YULAuEeSSeLTcBM9@piliu.users.ipa.redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-16 01:10, Stephen Boyd wrote:
-> Quoting okukatla@codeaurora.org (2021-09-14 23:26:19)
->> On 2021-09-15 10:35, okukatla@codeaurora.org wrote:
->> > On 2021-09-04 00:36, Stephen Boyd wrote:
->> >> Quoting Odelu Kukatla (2021-08-20 04:23:41)
->> >>> Add Epoch Subsystem (EPSS) L3 interconnect provider node on SC7280
->> >>> SoCs.
->> >>>
->> >>> Signed-off-by: Odelu Kukatla <okukatla@codeaurora.org>
->> >>> ---
->> >>>  arch/arm64/boot/dts/qcom/sc7280.dtsi | 11 +++++++++++
->> >>>  1 file changed, 11 insertions(+)
->> >>>
->> >>> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> >>> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> >>> index 53a21d0..cf59b47 100644
->> >>> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> >>> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> >>> @@ -1848,6 +1848,17 @@
->> >>>                         };
->> >>>                 };
->> >>>
->> >>> +               epss_l3: interconnect@18590000 {
->> >>> +                       compatible = "qcom,sc7280-epss-l3";
->> >>> +                       reg = <0 0x18590000 0 1000>,
->> >>
->> >> Is this supposed to be 0x1000?
->> >>
->> > No, This is 1000 or 0x3E8.
+On Thu 2021-09-16 11:57:44, Pingfan Liu wrote:
+> On Wed, Sep 15, 2021 at 03:45:06PM +0200, Peter Zijlstra wrote:
+> > On Wed, Sep 15, 2021 at 11:51:00AM +0800, Pingfan Liu wrote:
+> > > hardlockup_detector_event_create() indirectly calls
+> > > kmem_cache_alloc_node(), which is blockable.
+> > > 
+> > > So here, the really planned context is is_percpu_thread().
+> > > 
+> > > Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+> > > Cc: Petr Mladek <pmladek@suse.com>
+> > > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > > Cc: Wang Qing <wangqing@vivo.com>
+> > > Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
+> > > Cc: Santosh Sivaraj <santosh@fossix.org>
+> > > Cc: Sumit Garg <sumit.garg@linaro.org>
+> > > Cc: Will Deacon <will@kernel.org>
+> > > Cc: Mark Rutland <mark.rutland@arm.com>
+> > > To: linux-kernel@vger.kernel.org
+> > > ---
+> > >  kernel/watchdog_hld.c | 5 ++++-
+> > >  1 file changed, 4 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/kernel/watchdog_hld.c b/kernel/watchdog_hld.c
+> > > index 247bf0b1582c..6876e796dbf5 100644
+> > > --- a/kernel/watchdog_hld.c
+> > > +++ b/kernel/watchdog_hld.c
+> > > @@ -165,10 +165,13 @@ static void watchdog_overflow_callback(struct perf_event *event,
+> > >  
+> > >  static int hardlockup_detector_event_create(void)
+> > >  {
+> > > -	unsigned int cpu = smp_processor_id();
+> > > +	unsigned int cpu;
+> > >  	struct perf_event_attr *wd_attr;
+> > >  	struct perf_event *evt;
+> > >  
+> > > +	/* This function plans to execute in cpu bound kthread */
+> > > +	BUG_ON(!is_percpu_thread());
+> > > +	cpu = raw_smp_processor_id();
+> > >  	wd_attr = &wd_hw_attr;
+> > >  	wd_attr->sample_period = hw_nmi_get_sample_period(watchdog_thresh);
+> > 
+> > This patch makes no sense.
 > 
-> Wow ok. Why is it the only size that isn't in hex format? Please try to
-> be consistent and use hex throughout.
-> 
-Sure, will update it to hex format in new revision.
->> We have mapped only required registers for L3 scaling, 1000/0x3E8 is
->> suffice.
->> But i will update it to 0x1000 in next revision so that entire clock
->> domain region-0 is mapped.
-> 
-> Doesn't that conflict with the cpufreq-hw device?
-> 
-epss_l3 maps (0x18590000, size:0x1000) region which cpufreq-hw does not 
-need. I will update size to 0x1000 for this region only.
+> This patch aims to disable any attempt such as using get_cpu()/put_cpu() to
+> shut up the check_preemption_disabled().
 
->> >>> +                             <0 0x18591000 0 0x100>,
->> >>> +                             <0 0x18592000 0 0x100>,
->> >>> +                             <0 0x18593000 0 0x100>;
->> >>> +                       clocks = <&rpmhcc RPMH_CXO_CLK>, <&gcc
->> >>> GCC_GPLL0>;
->> >>> +                       clock-names = "xo", "alternate";
->> >>> +                       #interconnect-cells = <1>;
->> >>> +               };
->> >>> +
->> >>>                 cpufreq_hw: cpufreq@18591000 {
->> >>>                         compatible = "qcom,cpufreq-epss";
->> >>>                         reg = <0 0x18591100 0 0x900>,
+I have to say that the description of the problem is really cryptic.
+Please, provide more context, code paths, sample code, next time.
+
+Well, I probably got it. The code might sleep. But it should run on the
+same CPU even after waking up. You try to achieve this by running
+the code in a process that is bound to a single CPU.
+
+IMHO, this is not reliable. Anyone could change the affinity
+of the process in the meantime.
+
+I see two solutions. Either avoid the sleep or making sure
+that the code access per-CPU variables on the same CPU
+all the time.
+
+For example, you might use
+
+	*per_cpu_ptr(watchdog_ev, cpu) = evt;
+
+instead of
+
+	this_cpu_write(watchdog_ev, evt);
+
+Best Regards,
+Petr
