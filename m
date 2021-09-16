@@ -2,90 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81E0540ED50
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 00:27:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75E7240ED55
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 00:28:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240780AbhIPW2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 18:28:30 -0400
-Received: from sym2.noone.org ([178.63.92.236]:52064 "EHLO sym2.noone.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234573AbhIPW23 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 18:28:29 -0400
-X-Greylist: delayed 105990 seconds by postgrey-1.27 at vger.kernel.org; Thu, 16 Sep 2021 18:28:29 EDT
-Received: by sym2.noone.org (Postfix, from userid 1002)
-        id 4H9Wsj1sDTzvjfm; Fri, 17 Sep 2021 00:27:05 +0200 (CEST)
-From:   Tobias Klauser <tklauser@distanz.ch>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        Barry Song <song.bao.hua@hisilicon.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Yury Norov <yury.norov@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] cpumask: Omit terminating null byte in cpumap_print_{list,bitmask}_to_buf
-Date:   Fri, 17 Sep 2021 00:27:05 +0200
-Message-Id: <20210916222705.13554-1-tklauser@distanz.ch>
-X-Mailer: git-send-email 2.11.0
+        id S241030AbhIPW3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 18:29:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44904 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240826AbhIPW3P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 18:29:15 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 630BAC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 15:27:54 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id b18so22979806lfb.1
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 15:27:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XWXkBi7iY7atu68gT71ZZEaVf2W0kM1WsfKKAtmYUFA=;
+        b=AopwVjCCPIGZ1r8vZaX1wkBl4BenfCnJiGN3pnowbFamFiXCYBQiniP2FDA45DZXKK
+         e57L/a0KWLcKqPskoX13b8te/WxC60Ip8r7V6iF/tGE5T8ogbRE0q7+onwdx8yfdpz7k
+         Kjy1vWxiE8fvxFj5qWrfAJEX0M82XHIjXwFB1PLSlqr5CGbDqgtW67RaXoDo8O0PFzGo
+         18v3/cuMiBVZjpeohh07jQLJBhiaaFdogZWNb1Kpdkwh4pJQq+Ycyiyaw5viC5sHkkAo
+         JzD2PJAOS+nwpOFsmYCRNI9S0/iCXI6wgJ4+8cunq8JDU9D8Fy3AFscbM2g40LjryirL
+         l1xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XWXkBi7iY7atu68gT71ZZEaVf2W0kM1WsfKKAtmYUFA=;
+        b=LZE7ktsJSOJTikBbPt2ywtb/E/NfnwG9sJrptNTzHIhcbTyWJRrDmN3MIr0maW1mrd
+         iImjZktrbQCpkbx425xaplhRD8iqaOMPpHh5D612mxSr7hHF4xMQ+o/miSSeuk7iZ2ql
+         JUOOFn5OT3HGIl0SXGcY0vTY9ZRvGqRe1Yc2bfsbY1qTfApXRHpt592dtqQrzT4m+HnL
+         wcSOU0Of/3krYqjTGgrw06x+FEmUWzSWG7z72iCh4MSOLJi51EL5pwzH8wJXCNQZZclB
+         XnsH9CRsVdEgRbNpHdIx6NLKURZkfRef5VQQc2YF+W/qMVQwXsrOXN5uDLBvTHRz3rbn
+         VAsQ==
+X-Gm-Message-State: AOAM530wGKz7jjnFpgtkfJIR6UAM1axwYZLFWAfMz4dkPYyC33VyFZDf
+        Tqv9F6KkRg3SvXBUSq8c4oNbDI2c0tOEJPDL/WBF/A==
+X-Google-Smtp-Source: ABdhPJxKXtIOidEmaWHCX/zod07OcGynK0tXF1rBtyFqK0cUDFLBboUEyUTmFZnMcybZdcVgrn1MRaeuUS42qDdDBUQ=
+X-Received: by 2002:a05:6512:132a:: with SMTP id x42mr5728985lfu.291.1631831272820;
+ Thu, 16 Sep 2021 15:27:52 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210916170528.138275-1-krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20210916170528.138275-1-krzysztof.kozlowski@canonical.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 17 Sep 2021 00:27:41 +0200
+Message-ID: <CACRpkdbNfXGfK8Z0nhMjMfnp4UqJV2p=eVjNyH8VdguGu9Ea5w@mail.gmail.com>
+Subject: Re: [PATCH] Bluetooth: hci_bcm: remove duplicated brcm,bcm4330-bt compatible
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-bluetooth@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The changes in the patch series [1] introduced a terminating null byte
-when reading from cpulist or cpumap sysfs files, for example:
+On Thu, Sep 16, 2021 at 7:05 PM Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
 
-  $ xxd /sys/devices/system/node/node0/cpulist
-  00000000: 302d 310a 00                             0-1..
+> brcm,bcm4330-bt is already on the list.
+>
+> Fixes: 81534d4835de ("Bluetooth: btbcm: Add BCM4330 and BCM4334 compatibles")
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-Before this change, the output looked as follows:
+Ooops.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-  $ xxd /sys/devices/system/node/node0/cpulist
-  00000000: 302d 310a                                0-1.
-
-Fix this regression by excluding the terminating null byte from the
-returned length in cpumap_print_list_to_buf and
-cpumap_print_bitmask_to_buf.
-
-[1] https://lore.kernel.org/all/20210806110251.560-1-song.bao.hua@hisilicon.com/
-
-Fixes: 1fae562983ca ("cpumask: introduce cpumap_print_list/bitmask_to_buf to support large bitmask and list")
-Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
----
- include/linux/cpumask.h | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
-index 5d4d07a9e1ed..1e7399fc69c0 100644
---- a/include/linux/cpumask.h
-+++ b/include/linux/cpumask.h
-@@ -996,14 +996,15 @@ cpumap_print_to_pagebuf(bool list, char *buf, const struct cpumask *mask)
-  * cpumask; Typically used by bin_attribute to export cpumask bitmask
-  * ABI.
-  *
-- * Returns the length of how many bytes have been copied.
-+ * Returns the length of how many bytes have been copied, excluding
-+ * terminating '\0'.
-  */
- static inline ssize_t
- cpumap_print_bitmask_to_buf(char *buf, const struct cpumask *mask,
- 		loff_t off, size_t count)
- {
- 	return bitmap_print_bitmask_to_buf(buf, cpumask_bits(mask),
--				   nr_cpu_ids, off, count);
-+				   nr_cpu_ids, off, count) - 1;
- }
- 
- /**
-@@ -1018,7 +1019,7 @@ cpumap_print_list_to_buf(char *buf, const struct cpumask *mask,
- 		loff_t off, size_t count)
- {
- 	return bitmap_print_list_to_buf(buf, cpumask_bits(mask),
--				   nr_cpu_ids, off, count);
-+				   nr_cpu_ids, off, count) - 1;
- }
- 
- #if NR_CPUS <= BITS_PER_LONG
--- 
-2.33.0
-
+Yours,
+Linus Walleij
