@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62CC840E16D
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D00840E816
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 20:00:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240646AbhIPQae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:30:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59264 "EHLO mail.kernel.org"
+        id S1345333AbhIPRhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 13:37:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47084 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241232AbhIPQVV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:21:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 284766140F;
-        Thu, 16 Sep 2021 16:14:52 +0000 (UTC)
+        id S1352833AbhIPR25 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 13:28:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D6F361A62;
+        Thu, 16 Sep 2021 16:46:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631808893;
-        bh=arwvxEe1pbJ3OtQYHAw06QJ2AEQ6PjooBBC5KeMYr8M=;
+        s=korg; t=1631810762;
+        bh=kqaF2kdpyKuBuKaT20mI9yFo8DzOL4OTh5ZkI/2DHyc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vKeFJp5p5rGvGOF0LM4u69ItbqxsJ69fFmNoTfGLaVD6gUmubBzspGVadKnSMMH2+
-         JHmTq98rnAJuU1ZO7uUikVUdSfto2EZKMDriKwpRCdmqUz776XJwcef6ydBQiLREvA
-         e99mVWWaiel3qX+s35AC3jJJAcu7OxhEnqaKDhLY=
+        b=LoQa1uYLXkGHBl2C83zrrAOVJUWWChPoZpZCj3qvBIBeJ0eX0ZaLu6E0Am7c2lrmU
+         wBI2uouC3Ogl3eb7A8hbTNStnflEkcFwKM6eYMfMi7FsV+teQCKubeCfwQMJ43pzXu
+         Aysrchl/0Qbgz0A2x7lhANyVVwjeoNyxG5MiDTq8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
+        stable@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        =?UTF-8?q?Krzysztof=20Ha=C5=82asa?= <khalasa@piap.pl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 262/306] iwlwifi: mvm: fix a memory leak in iwl_mvm_mac_ctxt_beacon_changed
+Subject: [PATCH 5.14 258/432] media: v4l2-dv-timings.c: fix wrong condition in two for-loops
 Date:   Thu, 16 Sep 2021 18:00:07 +0200
-Message-Id: <20210916155803.008352451@linuxfoundation.org>
+Message-Id: <20210916155819.571560533@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+References: <20210916155810.813340753@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +41,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 
-[ Upstream commit 0f5d44ac6e55551798dd3da0ff847c8df5990822 ]
+[ Upstream commit 4108b3e6db31acc4c68133290bbcc87d4db905c9 ]
 
-If beacon_inject_active is true, we will return without freeing
-beacon.  Fid that by freeing it before returning.
+These for-loops should test against v4l2_dv_timings_presets[i].bt.width,
+not if i < v4l2_dv_timings_presets[i].bt.width. Luckily nothing ever broke,
+since the smallest width is still a lot higher than the total number of
+presets, but it is wrong.
 
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-[reworded the commit message]
-Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
-Link: https://lore.kernel.org/r/iwlwifi.20210802172232.d16206ca60fc.I9984a9b442c84814c307cee3213044e24d26f38a@changeid
-Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+The last item in the presets array is all 0, so the for-loop must stop
+when it reaches that sentinel.
+
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Reported-by: Krzysztof Hałasa <khalasa@piap.pl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/intel/iwlwifi/mvm/mac-ctxt.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/media/v4l2-core/v4l2-dv-timings.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/mac-ctxt.c b/drivers/net/wireless/intel/iwlwifi/mvm/mac-ctxt.c
-index 5243b84e653c..6a8bf9bb9c45 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/mac-ctxt.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/mac-ctxt.c
-@@ -1044,8 +1044,10 @@ int iwl_mvm_mac_ctxt_beacon_changed(struct iwl_mvm *mvm,
- 		return -ENOMEM;
+diff --git a/drivers/media/v4l2-core/v4l2-dv-timings.c b/drivers/media/v4l2-core/v4l2-dv-timings.c
+index 230d65a64217..af48705c704f 100644
+--- a/drivers/media/v4l2-core/v4l2-dv-timings.c
++++ b/drivers/media/v4l2-core/v4l2-dv-timings.c
+@@ -196,7 +196,7 @@ bool v4l2_find_dv_timings_cap(struct v4l2_dv_timings *t,
+ 	if (!v4l2_valid_dv_timings(t, cap, fnc, fnc_handle))
+ 		return false;
  
- #ifdef CONFIG_IWLWIFI_DEBUGFS
--	if (mvm->beacon_inject_active)
-+	if (mvm->beacon_inject_active) {
-+		dev_kfree_skb(beacon);
- 		return -EBUSY;
-+	}
- #endif
+-	for (i = 0; i < v4l2_dv_timings_presets[i].bt.width; i++) {
++	for (i = 0; v4l2_dv_timings_presets[i].bt.width; i++) {
+ 		if (v4l2_valid_dv_timings(v4l2_dv_timings_presets + i, cap,
+ 					  fnc, fnc_handle) &&
+ 		    v4l2_match_dv_timings(t, v4l2_dv_timings_presets + i,
+@@ -218,7 +218,7 @@ bool v4l2_find_dv_timings_cea861_vic(struct v4l2_dv_timings *t, u8 vic)
+ {
+ 	unsigned int i;
  
- 	ret = iwl_mvm_mac_ctxt_send_beacon(mvm, vif, beacon);
+-	for (i = 0; i < v4l2_dv_timings_presets[i].bt.width; i++) {
++	for (i = 0; v4l2_dv_timings_presets[i].bt.width; i++) {
+ 		const struct v4l2_bt_timings *bt =
+ 			&v4l2_dv_timings_presets[i].bt;
+ 
 -- 
 2.30.2
 
