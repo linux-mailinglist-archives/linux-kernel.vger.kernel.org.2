@@ -2,96 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34F6140EC54
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 23:19:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C659C40EC62
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 23:21:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240126AbhIPVUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 17:20:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57388 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238340AbhIPVUJ (ORCPT
+        id S240186AbhIPVWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 17:22:39 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:46164 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232785AbhIPVWd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 17:20:09 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38C64C061766
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 14:18:47 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id p80so3024679iod.10
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 14:18:47 -0700 (PDT)
+        Thu, 16 Sep 2021 17:22:33 -0400
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18GJu7YR019729;
+        Thu, 16 Sep 2021 21:21:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
+ date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2021-07-09;
+ bh=G4osKdktX/ZEqtQ4EpH1N9vM9fppqprnCvtuI1aUGoU=;
+ b=zBJqtzGnSWZs/QgbZn69ldsQu0X7Nk/xoxJwtVRjy6pPJkmHhohG15opt3hPoWoedyPp
+ ErupFlp4TZCZoswILGc5vxqGxMJaZc5V+I4x9PveR+o0b7WkFNCAmXiLDA4XckBWX/DJ
+ w4vQcZNfFR7G8h8hqN3TDoyabBeqPjB8iB6oHWuZcRYYE+j943JedwyY60lAa+Y6vug3
+ 0roskznRQU2r4+NVQ9iueyNDTY1RoWPAtKnp0PSnXusvc4NO+QTA8GpllLdJnSD3I2TY
+ CssAH2Iit9+gVEu5tUWLEQzF8xYq5lBdxbakXThnBDjqj8iC9NYp91t8qEqS9rJv8fGL Dw== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
+ date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=G4osKdktX/ZEqtQ4EpH1N9vM9fppqprnCvtuI1aUGoU=;
+ b=rqsTe+6zYp3q2Bj964XFlouVz0xfKbLeedoBatPwRVNFzWjwUbwpshVtZ52z+fAEws3C
+ R2VQIzdW1+72zWbniA1eAwf8w49vQb7MytYYZvADqme9GeldQa2vK0mHkYEWbX0rMUIR
+ kdWIZIhm17OEQO+Lg0jMHVil9KeCHvy9onFN9Ot4TLMvmayUHgSJBsOQuKufxgeFZYeP
+ 99QGN50vICRTwGkcLcJ+7vJKxYlpzkfaRHhEAd5RmYnO/J0JV9KmpjdIjkXuO4KzV7FM
+ zbarnXhhVhR8vM8MruAjKCs3hWxSqtV2EGM0WLpF1ccc9r8m5RzS3yj61yfkafGaZmKz 4w== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3b3t92m6q5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 16 Sep 2021 21:21:05 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18GL5XNn011268;
+        Thu, 16 Sep 2021 21:21:04 GMT
+Received: from nam02-bn1-obe.outbound.protection.outlook.com (mail-bn1nam07lp2046.outbound.protection.outlook.com [104.47.51.46])
+        by userp3030.oracle.com with ESMTP id 3b0hjyuvpe-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 16 Sep 2021 21:21:04 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZX7EFMKlm8EeSAZLILEPuUuCgonFDpLxYMIS8D05O61uUk2VHym3Mzm112ZVBFoTBlCGppsAqQTseX/pYU6TPSE3l9BYB2GTn5LBKtLjIs8b9Rr70Ul6PvY2PlRG1qWrS5RCiV2FjWtyQn3KQ/4EArbcNvTEfmDBnxIoX/1Un6zO83e3wZbuQ8NS3IBhF/dYMQK5jiyCTb6WdyUkskDFx4pTQiJ7+0SqoNXjeyWATXEAMIzfQV277mg131pAZEbJcV0gD5fQC4vSc1+MPIwcgL3+qopYdwFN7fQOPSD2coU9QtU/pGg8c0IoZgDIkVYA+xzMSWFj9d5GT1RIK6Ov1Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=G4osKdktX/ZEqtQ4EpH1N9vM9fppqprnCvtuI1aUGoU=;
+ b=O75lcEdUKFSv6AM4O+eHRADdawTqVQiJ2DrB/kxS67KyfzIm3LF848nUYbbrMNpgKLzzHSHLr5rqZ82J5Wz0aJrpOpCYtiwAnac5ZM6+zk9f4ewJX8DLkZRDZHesdyQGe3K22YSGWN1VudXGEQkxTOmKVMD9QD9xVN554SQAQR8YS8/3QD7W5uy8RGBKGjhtq/0cgssJ/Q+EU2xNwBdhGexKcAOnDEljLN4kszRb/ma5hY0ZZYZYP7d+m5BNiEP992kFK9f78XezgBTV2f+l1qHDVQrEHj8vuibY8AuJKjgvtrnzpMNMvemRc7nfhFJwPGuTcc9GYoexpuUCZv0SYA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=23av2RsDxVsTdcjbqWTIADtubLaRLLB9MuBeHkSa4CE=;
-        b=fHnlBv91dRfsxKIAZn94WkcufRAa5NVK6eHA8jUpLIGSWESrnjhDbT+cOa2C6GCgiU
-         GtYt50fUITCgP+6eqwAATxzx0HyhMjjS8+EXBmd5mEmLJDJSz91aVBqSiDPMO9Dsg4nA
-         0ZXDWc2WYWlZZ5CPNPl60TodF0oc9QeGymYho=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=23av2RsDxVsTdcjbqWTIADtubLaRLLB9MuBeHkSa4CE=;
-        b=D3C8WEFVPOLyhDL3VmBTxLanUm//quWyErEnsPNlcQl3rOo1vvlMYQMb48PzGj0OIE
-         z0ebg8qg/0fKE+enkRrCWs653eGsVdffwr/67wVs+FA8J3vwER9LptdX0r0NTne5/Unp
-         vVBJcw6QOkoIvvJfKPz789qZdWhM6oyvJk5P5R30bfpqYQV1+rf0tRY9JSfMSjvcJ1qJ
-         w00BT4k6niGafB1uGz4WCpAWLld+Fae6ooMK6E+nZrAbb6Zn2n5dGS2fFwbGZIl4WC0S
-         bp740LpALsCicZk1tWpRPD1S5v+t4JR4O7vHmQHfaBV4dgJ+qDrUUEG6MNt40jOvxLPj
-         6HCg==
-X-Gm-Message-State: AOAM533tMa9qPIduRq2xLUFahDVKR9zh6SR9yfJZCVXcfZ7FpnosAlu1
-        aLkZVk+EQL0GNb7Pcb7vgwhwjA==
-X-Google-Smtp-Source: ABdhPJyMCF4xAQqoJbazuBFjXrScpYBswluZ2KWgDqtovafbxDzWrvxyjPCaNsRiCXpK9Lyy89gT5w==
-X-Received: by 2002:a5d:8b59:: with SMTP id c25mr5931908iot.190.1631827126674;
-        Thu, 16 Sep 2021 14:18:46 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id f17sm2384953ilq.44.2021.09.16.14.18.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Sep 2021 14:18:45 -0700 (PDT)
-Subject: Re: [PATCH 5.10 000/306] 5.10.67-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G4osKdktX/ZEqtQ4EpH1N9vM9fppqprnCvtuI1aUGoU=;
+ b=rWdKwq4Ft9vilTRYKGiuLeHQN5gQd9HnyI7J4EKETCoDKFMo+fYMSBT4T7Wjz7ItY9VnoMh4OlWAi6Ges1PrWl4z9XdFNXyn5vAjK85i7riViq0YVdJ16s6Up07Obi6/2SYvWjXO6kFCnNd3t0uFxtAZMQtBxmhJP4LA5Z1ExCk=
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=oracle.com;
+Received: from BYAPR10MB3573.namprd10.prod.outlook.com (2603:10b6:a03:11e::32)
+ by BYAPR10MB2935.namprd10.prod.outlook.com (2603:10b6:a03:8e::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.18; Thu, 16 Sep
+ 2021 21:21:01 +0000
+Received: from BYAPR10MB3573.namprd10.prod.outlook.com
+ ([fe80::5881:380c:7098:5701]) by BYAPR10MB3573.namprd10.prod.outlook.com
+ ([fe80::5881:380c:7098:5701%6]) with mapi id 15.20.4523.014; Thu, 16 Sep 2021
+ 21:21:01 +0000
+From:   Mike Christie <michael.christie@oracle.com>
+To:     stefanha@redhat.com, jasowang@redhat.com, mst@redhat.com,
+        sgarzare@redhat.com, virtualization@lists.linux-foundation.org,
+        christian.brauner@ubuntu.com, axboe@kernel.dk,
         linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210916155753.903069397@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <4dd04f95-f383-e16c-e50f-f00a54649dc7@linuxfoundation.org>
-Date:   Thu, 16 Sep 2021 15:18:45 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+Subject: [PATCH 0/8] Use copy_process/create_io_thread in vhost layer
+Date:   Thu, 16 Sep 2021 16:20:43 -0500
+Message-Id: <20210916212051.6918-1-michael.christie@oracle.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: DM5PR04CA0027.namprd04.prod.outlook.com
+ (2603:10b6:3:12b::13) To BYAPR10MB3573.namprd10.prod.outlook.com
+ (2603:10b6:a03:11e::32)
 MIME-Version: 1.0
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: from localhost.localdomain (73.88.28.6) by DM5PR04CA0027.namprd04.prod.outlook.com (2603:10b6:3:12b::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Thu, 16 Sep 2021 21:21:00 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b0f7061b-fc5e-4c1b-e0d3-08d97957e1e5
+X-MS-TrafficTypeDiagnostic: BYAPR10MB2935:
+X-Microsoft-Antispam-PRVS: <BYAPR10MB293544560A6E3D694F72052DF1DC9@BYAPR10MB2935.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Szz0ScDlZ4mrxKgZpi07Dk/6kMmWbieKZ1sDmo0Fnp6D/s6Wz5kClkmqnvOAtvt53qerae7KRM8Li5i0jjFSDGZMwBl4jTjMJXJnyRndF5uKJYp8tXRWD+D6jw07cl6UMsP/AEFBhbki8U/BTbYqSop9bFu+sE5zh4rY3Z4EdBImvWAMsoLTgidvzzepYgn6Qde5uFO03mLOE2HBwrzl1gcOnrvD4IhWyejJVDKnTP8gwvFdI7yVdXMHTMev2NK4JHkLBVu913VEI4Tu9SnKDObenorBKWthVGv7/MEAh2AcQg6nH9qdCDVbkoQr/46ATn6Zhz1p953JnzMqwhxjuDAabDFHynDN/7brcuaciaAEObPg4oW9yoRS4817ehfS/x7A29FUHme/itwL3R1zN1pgHmh4gROThxgoQKHOGd57TM6/Gl1sPq1bQHsGZ8dVCpIYirX/UVz5u/vucskEvcyz+czgplsswMP5cH9fQsfE9/kKjGVNh5WZICieWpVaAePVsXusJv891tRsqUT0QFdMhap5cIukWaApeKY/fm43t9fKBuTMWMDFZ5Je7LnVYQ5KL4BL++iU5sbOMfPRcDLfaN8yOZqe/41N0xtDntA5ni49RIiRxhP1gnCvJuoWpBzmD9jW7Ryubt2t/JZkDFCdv8k2JFYStF4C2tOVxuobUhSzduodEUs0LDBrtLPH/BqIbDRsTOG/Vr7bIKqtfUSDe6CUdXwW6INRW3HeLlOFuE1nDlDUhFhoBU9wNwJDFRY8AKH9MRKqaVmJNEr7Jw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB3573.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(966005)(316002)(86362001)(36756003)(26005)(508600001)(8676002)(8936002)(66556008)(83380400001)(66946007)(5660300002)(6506007)(66476007)(6486002)(2906002)(38100700002)(38350700002)(1076003)(52116002)(2616005)(6512007)(956004)(6666004)(186003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?bzOTk/8/A+ZRPIKu/9aYfTrvoGLpVCl19XnZIHtGVfyDtto4AFcsTmwuHj7R?=
+ =?us-ascii?Q?ejaz72cgoidpu5ptfToMXPTXpUaW7c6mTkjCp4aiTqVAxgDxVs3CQVETaead?=
+ =?us-ascii?Q?o2eFaGJuvSTXhv5xj2d4QFk/MrAVuQtRQ4cpk/T06S1xt/l5EZ7vP+VOWWnp?=
+ =?us-ascii?Q?JHlJNRCUcPGxPzzq6qij2iOjuhTbH2TaFFmSF/dHo+d02tED/DPFfAgQH9A1?=
+ =?us-ascii?Q?FUwz6bXy5oUF6/D2Pz3rvk21pEzRdZ7jCdrI6MvxwsK/sz5xw2NpwNZoeskM?=
+ =?us-ascii?Q?e2bl8O/58vR6FYsxJC+5JJ2GUdI8OgxNM2JggVq6w+5xkEazJJreBM526ody?=
+ =?us-ascii?Q?qk2zlZ/d7JQEocrjeN2TcV2qkDTtywgCR92mZ7KeDLJg8zMZanlu5u6zBpy9?=
+ =?us-ascii?Q?P3PlioKDpVcgZKEWxQtnWLF8b7KvKiEhWgHIatx+dkQsFUxA4JHKx/czT7TC?=
+ =?us-ascii?Q?CIJBoU6envUuJ29t/LpIVM00sAMz3PjYVA2JhqRHDt7RV9QKH/XKDYvhLyiv?=
+ =?us-ascii?Q?nHtQMM2Y+KKlAZvO+qLyIW51zJgowYWBHzZ29aRxYfvrV+KI4BLZj8deUm0F?=
+ =?us-ascii?Q?Ep572vbipXu3uyvxVFZTEfL5IOB7rduGDpPAEGtV5vMqUmPb4stxFjXwPWqa?=
+ =?us-ascii?Q?1SIrtkmb9S+UE9FrWkhbVvpp5qbfIhfU4O1J58hzkoCQzIVQYbMTOsertTmP?=
+ =?us-ascii?Q?qB5eVj/umq2mQkQ7m5rnM/qmxEZJU8n6BtPcQKgyPubICT7M/bnIjC/cSRYF?=
+ =?us-ascii?Q?owegTi7v3A6aiX2D7vfz90UGFU43k9dK2E6aQop8xEDu2nKluG4X6/WAgsIz?=
+ =?us-ascii?Q?Kz271+Nx+BwtqdaFJjO7fcb4cAKV2WaQVZjQu0kngfRRUKHRzfYOt4HkDHvj?=
+ =?us-ascii?Q?DGTPkScIx45SA0TDyLyq+9repLFI/WWyHciE6e+xlrcSprvGoR/hL85pMiCN?=
+ =?us-ascii?Q?9DsU166WvtOhncuZPFeh5rbjOQ6S406XxXns7BX47jx7kQSBN+CCq+KUxri1?=
+ =?us-ascii?Q?iTDG+UFByYsB9msoofDMqRAcdmVsD1eCq9J7xKeL1RLMyKJhyWs2XtpHiRH3?=
+ =?us-ascii?Q?nOwCSxEpV4iU+qingzPumbZ3+siPyPm/hhqLHQtT/xyUJ7/dCq2CE7f3eE9b?=
+ =?us-ascii?Q?t5v+82Xa0l2Qq8UG7BYwvewEehxhHVwX56DjpWrUXM6aEztW930RNZvkWCfH?=
+ =?us-ascii?Q?OX5JZ1IREQEEpkqGxxT9fcVTpNlPSdIM9wI1BnfAAhTh4K2SudcGp2xAOPd0?=
+ =?us-ascii?Q?fbwYyULttUiyilAWHQ/uIboV1/jRAKNodzyWXO9SOTpbTSJzx6LcwDdOD3Kt?=
+ =?us-ascii?Q?6KNdiopJCkPF6QwTC1zsJCsL?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b0f7061b-fc5e-4c1b-e0d3-08d97957e1e5
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB3573.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2021 21:21:01.1119
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: eIbnsfIC2+xJppu44z8x28LgZdtp7PRDNfH6/crjAwPIEJEEO/Xqfh3BirhnvYUe5ZEE896BKCM4A8YRjD1qZedly7vseY0sBpxgMemFET8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB2935
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10109 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 adultscore=0 phishscore=0
+ mlxlogscore=621 suspectscore=0 spamscore=0 bulkscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109030001
+ definitions=main-2109160122
+X-Proofpoint-ORIG-GUID: W97TARUWu4r82xKml8FbYpYlmkvDzqKU
+X-Proofpoint-GUID: W97TARUWu4r82xKml8FbYpYlmkvDzqKU
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/16/21 9:55 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.67 release.
-> There are 306 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 18 Sep 2021 15:57:06 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.67-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+The following patches were made over linus's tree and also apply over
+Jens's 5.15 io_ring branch and Michael's vhost branch.
 
-Compiled and booted on my test system. No dmesg regressions.
+The patchset allows the vhost layer to do a copy_process on the thread
+that does the VHOST_SET_OWNER ioctl like how io_uring does a copy_process
+against its userspace app (Jens, the patches make create_io_thread more
+generic so that's why you are cc'd). This allows the vhost layer's worker
+threads to inherit cgroups, namespaces, address space, etc and this worker
+thread will also be accounted for against that owner/parent process's
+RLIMIT_NPROC limit.
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+Here is a more detailed problem description:
 
-thanks,
--- Shuah
+Qemu will create vhost devices in the kernel which perform network, SCSI,
+etc IO and management operations from worker threads created by the
+kthread API. Because the kthread API does a copy_process on the kthreadd
+thread, the vhost layer has to use kthread_use_mm to access the Qemu
+thread's memory and cgroup_attach_task_all to add itself to the Qemu
+thread's cgroups.
+
+The problem with this approach is that we then have to add new functions/
+args/functionality for every thing we want to inherit. I started doing
+that here:
+
+https://lkml.org/lkml/2021/6/23/1233
+
+for the RLIMIT_NPROC check, but it seems it might be easier to just
+inherit everything from the beginning, becuase I'd need to do something
+like that patch several times. For example, the current approach does not
+support cgroups v2 so commands like virsh emulatorpin do not work. The
+qemu process can go over its RLIMIT_NPROC. And for future vhost interfaces
+where we export the vhost thread pid we will want the namespace info.
+
+
+
