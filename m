@@ -2,113 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E79A40EABB
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 21:16:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6663840EAC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 21:20:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233193AbhIPTRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 15:17:22 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:53293 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230243AbhIPTRV (ORCPT
+        id S231255AbhIPTVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 15:21:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229955AbhIPTVW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 15:17:21 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 18GJFTw4011993
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 16 Sep 2021 15:15:31 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id CBBD115C0098; Thu, 16 Sep 2021 15:15:29 -0400 (EDT)
-Date:   Thu, 16 Sep 2021 15:15:29 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc:     Chris Mason <clm@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Howells <dhowells@redhat.com>,
-        "ksummit@lists.linux.dev" <ksummit@lists.linux.dev>
-Subject: Re: [MAINTAINER SUMMIT] Folios as a potential Kernel/Maintainers
- Summit topic?
-Message-ID: <YUOX0VxkO+/1kT7u@mit.edu>
-References: <YUIwgGzBqX6ZiGgk@mit.edu>
- <f7b70227bac9a684320068b362d28fcade6b65b9.camel@HansenPartnership.com>
- <YUI5bk/94yHPZIqJ@mit.edu>
- <17242A0C-3613-41BB-84E4-2617A182216E@fb.com>
- <f066615c0e2c6fe990fa5c19dd1c17d649bcb03a.camel@HansenPartnership.com>
- <E655F510-14EB-4F40-BCF8-C5266C07443F@fb.com>
- <33a2000f56d51284e2df0cfcd704e93977684b59.camel@HansenPartnership.com>
+        Thu, 16 Sep 2021 15:21:22 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECE66C061764
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 12:20:01 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id t10so16990244lfd.8
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 12:20:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PPtErykHffDTwWwkTPv05ujpl6rxPVv0ht1R2b6tSic=;
+        b=e0PC1GpB7ZJFgXRVvu3ZJnMbNXGWfdET3mocGGzH+6WVb9vKeNS3d8lNhcLhQduljR
+         sPJROxKxQMuFAvNIHrikUiUp1G/x3EUMYJ9v0pGCWsKvUIzdGx6EYh8WRyalywQM1Tip
+         6zbp5PTUekyq//jYZBaTQ7SZJstfBpCAQUAj3qJ+q1ra1I1vo8nqItuNWXgdmjTYtSle
+         dsC3MCx+Ls10DzQWh70iqoAiGEbWXv+thS6sbgRWV578KKD9whbEYpkf5OttIC89M1xL
+         wSCHOkSJRjL8MOO9ID2uHW3LW9RXxbZ1p7mhBDiBNIzJYXRM1Ik+lLV+XOioIbyrrwK0
+         iEiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PPtErykHffDTwWwkTPv05ujpl6rxPVv0ht1R2b6tSic=;
+        b=G6CSiF46a0NF4InfoKthI1Jxa+SyHDfVGVCqzcvPcR74nodGgzuXnEWfeQyL9fUoIl
+         A7+lRP2szJNvRGpQOT2I0vGVd26lYJlc/5Gj6BrMPAVDIgriS64cS0QTO3/fWyxBEltY
+         Z9JagzI1mLX4P9eKIy4K2Kt0cVbFfwn7B2LpubQIHRbW/iNlfC0dUfqPWx7ZhJsoLy02
+         F/LXu/lXH0yBN646pEZbYizkJm6Logg+tzT/E+8PmInrC2xuwRjSq5wcriEW1IYqh2ve
+         szhe5mo7nDkwqA+oalYOwQub/9XykUAI5vZytHhXOjaTmqHMKvzmtPZ1GBzu6QtAVdgq
+         esjw==
+X-Gm-Message-State: AOAM532xLnL/lCytZqGVnlaYtf+asObZMMmMUDOM2rNFn6hwTI8OBdog
+        SPGa1gGUrHaAJxPCVpVEWUtP8tUbFJKfAA001RT8Ag==
+X-Google-Smtp-Source: ABdhPJyqXxi8sTfia4C+SnKlFeZM97GP6T8DvwfvgC4OqIQLWfI9nLD5oL0an/dH+HuZ4zfTVtjjBkgiqIZULSRCNoo=
+X-Received: by 2002:a19:770d:: with SMTP id s13mr5391720lfc.243.1631819999752;
+ Thu, 16 Sep 2021 12:19:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <33a2000f56d51284e2df0cfcd704e93977684b59.camel@HansenPartnership.com>
+References: <20210910130337.2025426-1-osk@google.com> <71c17c47-ca9e-e9d2-7b89-cc25b512c06a@roeck-us.net>
+ <CABoTLcRZ43EUVzbqWniu64PkB7Yx4RMYKjaBxaSihk+k0Ca-gA@mail.gmail.com>
+ <722b27f6-4390-9b5b-f6f2-75ce9e967d12@roeck-us.net> <CABoTLcSdkmuBxd5Yh6z2Oqm1-_Vd4J5Ni1i1qq5s07mWu7Ndew@mail.gmail.com>
+ <20210914150859.GB3457579@roeck-us.net> <CABoTLcQfS5-UL92NR9vbc2YrGJv3oQPYCqAm-diNoq-tkHP_hQ@mail.gmail.com>
+ <c410eba9-f6cf-4dbf-797f-48afde9c1898@roeck-us.net>
+In-Reply-To: <c410eba9-f6cf-4dbf-797f-48afde9c1898@roeck-us.net>
+From:   Oskar Senft <osk@google.com>
+Date:   Thu, 16 Sep 2021 15:19:42 -0400
+Message-ID: <CABoTLcQWXerMWPvWUqjykiNcx9oGoP8aEcuDwcQ36yu-CBc0pA@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: hwmon: Add nct7802 bindings
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        Rob Herring <robh+dt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 01:11:21PM -0400, James Bottomley wrote:
-> 
-> Actually, I don't see who should ack being an unknown.  The MAINTAINERS
-> file covers most of the kernel and a set of scripts will tell you based
-> on your code who the maintainers are ... that would seem to be the
-> definitive ack list.
+    Hi Guenter
 
-It's *really* not that simple.  It is *not* the case that if a change
-touches a single line of fs/ext4 (as well as 60+ other filesystems),
-for example:
+> > Would it be acceptable to simply number the sensors and document which
+> > sensor has which number?
+> >
+> > Something like this:
+> > 0 = LTD
+> > 1 = RTD1
+> > ...
+> >
+> That might be a possibility, though it would have to be well defined
+> for each chip (nct7802 also has voltage sensors). We'll have to discuss
+> this with Rob.
+>
+> Personally I think I would prefer using a type qualifier - that seems
+> cleaner. But that is really a matter of opinion.
 
--       ei = kmem_cache_alloc(ext4_inode_cachep, GFP_NOFS);
-+       ei = alloc_inode_sb(sb, ext4_inode_cachep, GFP_NOFS);
+Another existing way I found is in ltc2978. Following that, we could
+do it as follows:
 
-that the submitter *must* get a ACK from me --- or that I am entitled
-to NACK the entire 79 patch series for any reason I feel like, or to
-withhold my ACK as hostage until the submitter does some development
-work that I want.
+i2c {
+    #address-cells = <1>;
+    #size-cells = <0>;
 
-What typically happens is if someone were to try to play games like
-this inside, say, the Networking subsystem, past a certain point,
-David Miller will just take the patch series, ignoring people who have
-NACK's down if they can't be justified.  The difference is that even
-though Andrew Morton (the titular maintainer for all of Memory
-Management, per the MAINTAINERS file), Andrew seems to have a much
-lighter touch on how the mm subsystem is run.
+    nct7802@28 {
+        compatible = "nuvoton,nct7802";
+        reg = <0x28>;
+        #address-cells = <1>;
+        #size-cells = <0>;
 
-> I think the problem is the ack list for features covering large areas
-> is large and the problems come when the acker's don't agree ... some
-> like it, some don't.  The only deadlock breaking mechanism we have for
-> this is either Linus yelling at everyone or something happening to get
-> everyone into alignment (like an MM summit meeting).  Our current model
-> seems to be every acker has a foot on the brake, which means a single
-> nack can derail the process.  It gets even worse if you get a couple of
-> nacks each requesting mutually conflicting things.
-> 
-> We also have this other problem of subsystems not being entirely
-> collaborative.  If one subsystem really likes it and another doesn't,
-> there's a fear in the maintainers of simply being overridden by the
-> pull request going through the liking subsystem's tree.  This could be
-> seen as a deadlock breaking mechanism, but fear of this happening
-> drives overreactions.
-> 
-> We could definitely do a clear definition of who is allowed to nack and
-> when can that be overridden.
+        sensors {
+            ltd {
+                status = "okay";
+                label = "my local temperature";
+            };
 
-Well, yes.  And this is why I think there is a process issue here that
-*is* within the MAINTAINERS SUMMIT purview, and if we need to
-technical BOF to settle the specific question of what needs to happen,
-whether it happens at LPC, or it needs to happen after LPC, then let's
-have it happen.
+            rtd1 {
+                status = "okay";
+                mode = <0x2>; /* 3904 transistor */
+                label = "other temperature";
+            };
 
-I'd be really disappointed if we have to wait until December 2022 for
-the next LSF/MM, and if we don't get consensus there, ala DAX, that we
-then have to wait until late 2023, etc.  As others have said, this is
-holding up some work that file system developers would really like to
-see.
+            rtd3 {
+                status = "okay";
+                mode = <0x3>; /* thermal diode */
+                label = "3rd temperature";
+           };
+        };
+    };
+};
 
-					- Ted
+
+> > The NCT7802Y can self-program from an EEPROM, so I assume we should
+> > honor the "power-up configuration" obtained from there? I.e. if no
+> > configuration is provided in the device tree, the driver should use
+> > whatever configuration the chip has when the driver is loaded.
+> >
+> Definitely yes. My question was more what to do if the information
+> in devicetree nodes is incomplete.
+I think there are two cases:
+1) If the new "sensor" tree is missing, the driver should behave as it
+does today to not break existing users.
+2) If the new "sensor" tree is present, then each of the sensors that
+should be disabled needs to have "status = 'okay'" and have the mode
+set (unless it's LTD). In the above example, rtd2 is missing and would
+therefore be considered disabled.
+
+Does that make sense? I still need to find out whether this is
+actually valid DT and how to express that in the YAML, though ...
+
+Thanks
+Oskar.
