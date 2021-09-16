@@ -2,317 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E482740EB7D
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 22:15:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61E1840EB81
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 22:16:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238187AbhIPURR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 16:17:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43066 "EHLO
+        id S238288AbhIPUSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 16:18:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbhIPURQ (ORCPT
+        with ESMTP id S229456AbhIPURw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 16:17:16 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 146C1C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 13:15:55 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id v5so20941495edc.2
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 13:15:55 -0700 (PDT)
+        Thu, 16 Sep 2021 16:17:52 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1904CC061574;
+        Thu, 16 Sep 2021 13:16:31 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id m21so10287792qkm.13;
+        Thu, 16 Sep 2021 13:16:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=6AWUDPsWwtrqPx9907EkcEI/G/RnCXM0GxmUPoB46Lg=;
-        b=Gn+AVCdJalYkHFqAtLhvtm2/Kdq8CYY9J6scElVKCWtYJrStog34taNEUtxI4KAnxb
-         t8OdluDIwe2fJlXrLbOvcMWm7qIEOgKrWCx8ht6+Vku34Jabfu677gYC2K0mbcmz1XoR
-         r2PDOZJSangszGu4uaSWLhWHY4ddRYYc+PBp8ZrW8NNoQMWd/SoZ7fcyuhjOamr6rOFL
-         eZIYWoFx7ljzqr0y0+imIiwDjU9UY6WrWegNI+0HzT0avLJEz9T7Bufmqxsi3vZrPJ4u
-         PzTC4nSeBTBB7HZnzx1PCJf+ws+mZr560V3wFTkuR45nOf3GL3ONevrg8R6kRbjJYTZ6
-         X2zg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=EnmtHDIgEU5AIyAVvTub3Y0dA33iDlqEv0u4PQic5Jo=;
+        b=lfBlWu94PetKCzbXPYqsSJAD5UXFZ1Cv6XGtXDueSN8sctCBHHvlYlG9e+djmQVo7V
+         vc7i00QAwoF2TifDGiYiNobLh2TMDxxXOS2g+8DRGt13tNv63/oWJtTU86bdur6/PrKk
+         sJ89Q3dx7FcmKBfAThlBwm3TeuyAk6EiNvv5qbso7GzrMpvlsu3ILKIqPRfEwe0wcg6v
+         4uAoQp3mAT/K+yMeEN7MFTQur02Sz0E5AITfflpWEnBdXfco1ukkMvNQYK3G4swXyUXR
+         VKThCIJ1yrBd6GEQNDqWX9Ibx3hVtX0tOvvoY8st7lqNLyTW0ITXj7lIdkQ+9T1t1L7/
+         ieeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=6AWUDPsWwtrqPx9907EkcEI/G/RnCXM0GxmUPoB46Lg=;
-        b=rXP9hK7hY8ZQeH/soFtPTLx4Y58x37SdPZkNcK7k7MDVBRsism5mXw35pZuOvj05K3
-         OLZDEWQUwQA3N/UICx6glPieCvX4MOLI+AuJXPPzKQBkhpFC71TkJ9JXUC2BZQk586Tm
-         flTMpI3dPXBRifCMcJZ4J0b3vNnI6rYDtl6lKEZXiprruX6ibdgS706YUVDR2y7ymbWe
-         f60Oh6tlIJmpywurh7xHY2V/UajJVfq1D80EBDLKtp/7rWxOIWsYTeAxzj8azbVR+2sm
-         q1CoyA9JljmBQroFIHJUcW1PltNGAIs2xAKuVftpmszw+Zy8TAF2q0y/jA39uz8/tn8f
-         uelg==
-X-Gm-Message-State: AOAM533LsKIZNLLX3/MWzlCEzP8HxGiAApaWPswroUymSn+8kRM6Oblp
-        a18rfkPkMzWpOO3+XxsfEl3EiXQPC19DYbneFQY=
-X-Google-Smtp-Source: ABdhPJx8abzzjv+Z2jF4KSdHidfC3idcealLXNUC+JPAsHwy7fJU7GoAYf6T3CLj5OVa1h86r92Ko2rT+aCP7UngHNM=
-X-Received: by 2002:a17:906:31d7:: with SMTP id f23mr7901661ejf.190.1631823353421;
- Thu, 16 Sep 2021 13:15:53 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EnmtHDIgEU5AIyAVvTub3Y0dA33iDlqEv0u4PQic5Jo=;
+        b=t3Kl64RNAZXwzv4QGKN/cvTYLu2yWVoMtYCpaSN5ZA4vuHYHnq0gzFqrvTdEwmbwcN
+         s5abGE/Q+AzCw45wo/xsgWptZTCn8+VygwDtnQtVgyMXeEt+HvobOoF7GlUx4M9yl5IL
+         g4Gjy5MLBA6RE7M9w/0xzvc2+jlhCesYI2Rcwo3IMs251Pho5p9DO9+wzLIGDpAaa9Qo
+         mOA/zwoFUhzyDn0L52YW2zxHcei2Z9X+nSBnHeN6W/1xIxSB73WZjbi5tAroaDAetfMz
+         NJBhLLS6/zkdUULVv+6R1wWSnWglKUKfhU4xW2OeL5u+SvVPGtqaB1lLXl340n/WG2AH
+         5O/A==
+X-Gm-Message-State: AOAM532QKxK6p5roy0kwVGqES3xrNY5XE3SwCsBobSPLLXENKd0iqXpb
+        WtJXOWwPT4XuqDu79QtrPg==
+X-Google-Smtp-Source: ABdhPJyxLMWlNQt4t1JYmMy92Wyl/4WjbhUidFiBXHL48J3CwY9R/9y1OYCe/YrWySQCmTa61dSkVw==
+X-Received: by 2002:a37:f610:: with SMTP id y16mr6780165qkj.518.1631823390127;
+        Thu, 16 Sep 2021 13:16:30 -0700 (PDT)
+Received: from moria.home.lan (c-73-219-103-14.hsd1.vt.comcast.net. [73.219.103.14])
+        by smtp.gmail.com with ESMTPSA id p22sm3125543qkj.16.2021.09.16.13.16.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Sep 2021 13:16:29 -0700 (PDT)
+Date:   Thu, 16 Sep 2021 16:16:27 -0400
+From:   Kent Overstreet <kent.overstreet@gmail.com>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Chris Mason <clm@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Howells <dhowells@redhat.com>,
+        "ksummit@lists.linux.dev" <ksummit@lists.linux.dev>
+Subject: Re: [MAINTAINER SUMMIT] Folios as a potential Kernel/Maintainers
+ Summit topic?
+Message-ID: <YUOmG+qNxAxI9Kyn@moria.home.lan>
+References: <YUIwgGzBqX6ZiGgk@mit.edu>
+ <f7b70227bac9a684320068b362d28fcade6b65b9.camel@HansenPartnership.com>
+ <YUI5bk/94yHPZIqJ@mit.edu>
+ <17242A0C-3613-41BB-84E4-2617A182216E@fb.com>
+ <f066615c0e2c6fe990fa5c19dd1c17d649bcb03a.camel@HansenPartnership.com>
+ <E655F510-14EB-4F40-BCF8-C5266C07443F@fb.com>
+ <33a2000f56d51284e2df0cfcd704e93977684b59.camel@HansenPartnership.com>
+ <YUOX0VxkO+/1kT7u@mit.edu>
 MIME-Version: 1.0
-From:   Dave Airlie <airlied@gmail.com>
-Date:   Fri, 17 Sep 2021 06:15:42 +1000
-Message-ID: <CAPM=9tyrmDa4qCvu0pf0JHU1DmDnq5H=1uE1JaGjLs6E6dPZNQ@mail.gmail.com>
-Subject: [git pull] drm fixes for 5.15-rc2
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YUOX0VxkO+/1kT7u@mit.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Thu, Sep 16, 2021 at 03:15:29PM -0400, Theodore Ts'o wrote:
+> On Thu, Sep 16, 2021 at 01:11:21PM -0400, James Bottomley wrote:
+> > 
+> > Actually, I don't see who should ack being an unknown.  The MAINTAINERS
+> > file covers most of the kernel and a set of scripts will tell you based
+> > on your code who the maintainers are ... that would seem to be the
+> > definitive ack list.
+> 
+> It's *really* not that simple.  It is *not* the case that if a change
+> touches a single line of fs/ext4 (as well as 60+ other filesystems),
+> for example:
+> 
+> -       ei = kmem_cache_alloc(ext4_inode_cachep, GFP_NOFS);
+> +       ei = alloc_inode_sb(sb, ext4_inode_cachep, GFP_NOFS);
+> 
+> that the submitter *must* get a ACK from me --- or that I am entitled
+> to NACK the entire 79 patch series for any reason I feel like, or to
+> withhold my ACK as hostage until the submitter does some development
+> work that I want.
+> 
+> What typically happens is if someone were to try to play games like
+> this inside, say, the Networking subsystem, past a certain point,
+> David Miller will just take the patch series, ignoring people who have
+> NACK's down if they can't be justified.  The difference is that even
+> though Andrew Morton (the titular maintainer for all of Memory
+> Management, per the MAINTAINERS file), Andrew seems to have a much
+> lighter touch on how the mm subsystem is run.
+> 
+> > I think the problem is the ack list for features covering large areas
+> > is large and the problems come when the acker's don't agree ... some
+> > like it, some don't.  The only deadlock breaking mechanism we have for
+> > this is either Linus yelling at everyone or something happening to get
+> > everyone into alignment (like an MM summit meeting).  Our current model
+> > seems to be every acker has a foot on the brake, which means a single
+> > nack can derail the process.  It gets even worse if you get a couple of
+> > nacks each requesting mutually conflicting things.
+> > 
+> > We also have this other problem of subsystems not being entirely
+> > collaborative.  If one subsystem really likes it and another doesn't,
+> > there's a fear in the maintainers of simply being overridden by the
+> > pull request going through the liking subsystem's tree.  This could be
+> > seen as a deadlock breaking mechanism, but fear of this happening
+> > drives overreactions.
+> > 
+> > We could definitely do a clear definition of who is allowed to nack and
+> > when can that be overridden.
+> 
+> Well, yes.  And this is why I think there is a process issue here that
+> *is* within the MAINTAINERS SUMMIT purview, and if we need to
+> technical BOF to settle the specific question of what needs to happen,
+> whether it happens at LPC, or it needs to happen after LPC, then let's
+> have it happen.
 
-Slightly busier than usual rc2, but mostly scattered amdgpu fixes,
-some i915 and etnaviv resolves an MMU/runtime PM blowup, otherwise I'm
-offline for next few days, but back early next week.
+I would love to see us putting our energy into trying to have more productive
+design discussions instead of getting more rules based. If someone feels
+strongly enough to NACK a patch series, usually that's an indication of a
+breakdown in communications and it means we need to put more effort into
+figuring out what the real disagreement is. It's not like people usually NACK
+things just to be petty - and if they are, that becomes apparent when we try to
+communicate them to find out what the disagreement is and they don't respond
+with the same effort.
 
-drm-fixes-2021-09-17:
-drm fixes for 5.15-rc2
+And if people aren't being petty and are making a genuine effort to communicate
+well and we're still not reaching a consensus - that does happen and there most
+definitely are times when we just have differences of opinion and technical
+judgement, and the maintainer will have to come to a decision. But before that
+happens, we should make sure we've actually had a productive effective
+discussion and figured out what those concerns and differences of opinion are,
+so that the maintainer can make an _informed_ decision.
 
-amdgpu:
-- UBSAN fix
-- Powerplay table update fix
-- Fix use after free in BO moves
-- Debugfs init fixes
-- vblank workqueue fixes for headless devices
-- FPU fixes
-- sysfs_emit fixes
-- SMU updates for cyan skillfish
-- Backlight fixes when DMCU is not initialized
-- DP MST fixes
-- HDCP compliance fix
-- Link training fix
-- Runtime pm fix
-- Panel orientation fixes
-- Display GPUVM fix for yellow carp
-- Add missing license
+> I'd be really disappointed if we have to wait until December 2022 for
+> the next LSF/MM, and if we don't get consensus there, ala DAX, that we
+> then have to wait until late 2023, etc.  As others have said, this is
+> holding up some work that file system developers would really like to
+> see.
 
-amdkfd:
-- Drop PCI atomics requirement if proper firmware is available
-- Suspend/resume fixes for IOMMUv2 cases
+So I think we're still trying to answer the "what exactly is a folio" question.
+As I see it, there's two potential approaches:
 
-radeon:
-- AGP fix
+ - The minimalist approach, where folios are just pagecache pages
 
-i915:
-- Propagate DP link training error returns
-- Use max link params for eDP 1.3 and earlier
-- Build warning fixes
-- Gem selftest fixes
-- Ensure wakeref is held before hardware access
+ - The maximalist approach, where folios are also anonymous pages. Potentially
+   all pages that could be mapped into userspace would be folios, possibly with
+   some work to unify weird driver things.
 
-etnaviv:
-- MMU context vs runtime PM fix
-The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f=
-:
+Network pages, slab pages aren't folios - they're their own thing. Folios are
+also not a replacement for compound pages. Whichever way we go, folios are for
+things that can be mapped into userspace.
 
-  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
+Also: folios are a start on cutting up the unholy mess that is struct page into
+separate data types. In struct page, we have a big nested union of structs, for
+different types of pages. As I understand it from perusing the code, Willy has
+been basically taking the approach of turning the first struct in the big
+union-of-structs and (mostly?) making everything that uses that a folio.
 
-are available in the Git repository at:
+I think that is reasonable, because it's basically adding types to describe the
+world as it is - I would say that if it leaves things looking like a mess with
+confused module boundaries between MM and FS, that's because the code was
+already a mess, and while we should certainly work on cleaning that up those
+cleanups shouldn't be done in _this_ giant patch series because that's how you
+end up with bugs that you can't bisect.
 
-  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-09-17
+However, Johannes has been pointing out that it's a real open question as to
+whether anonymous pages should be folios! Willy's current code seems to leave
+things in a somewhat intermediate state - some mm/ code treats anonymous pages
+as folios, but it's not clear to me how much. And I still see a lot of
+references to page->mapping; we should be clear on what's happening to those (if
+the page is a folio, we should definitely not be referencing page->mapping or
+page->index).
 
-for you to fetch changes up to 109f7ea9aedce437b4b7737ab60bfea65d9dbdd3:
-
-  Merge tag 'amd-drm-fixes-5.15-2021-09-16' of
-https://gitlab.freedesktop.org/agd5f/linux into drm-fixes (2021-09-17
-05:58:55 +1000)
-
-----------------------------------------------------------------
-drm fixes for 5.15-rc2
-
-amdgpu:
-- UBSAN fix
-- Powerplay table update fix
-- Fix use after free in BO moves
-- Debugfs init fixes
-- vblank workqueue fixes for headless devices
-- FPU fixes
-- sysfs_emit fixes
-- SMU updates for cyan skillfish
-- Backlight fixes when DMCU is not initialized
-- DP MST fixes
-- HDCP compliance fix
-- Link training fix
-- Runtime pm fix
-- Panel orientation fixes
-- Display GPUVM fix for yellow carp
-- Add missing license
-
-amdkfd:
-- Drop PCI atomics requirement if proper firmware is available
-- Suspend/resume fixes for IOMMUv2 cases
-
-radeon:
-- AGP fix
-
-i915:
-- Propagate DP link training error returns
-- Use max link params for eDP 1.3 and earlier
-- Build warning fixes
-- Gem selftest fixes
-- Ensure wakeref is held before hardware access
-
-etnaviv:
-- MMU context vs runtime PM fix
-
-----------------------------------------------------------------
-Alex Deucher (1):
-      drm/amdgpu/display: add a proper license to dc_link_dp.c
-
-Anson Jacob (1):
-      drm/amd/display: dc_assert_fp_enabled assert only if FPU is not enabl=
-ed
-
-Christian K=C3=B6nig (1):
-      drm/amdgpu: fix use after free during BO move
-
-Daniel Vetter (1):
-      drm/i915: Release ctx->syncobj on final put, not on ctx close
-
-Daniele Ceraolo Spurio (1):
-      drm/i915/guc: drop guc_communication_enabled
-
-Dave Airlie (3):
-      Merge branch 'etnaviv/fixes' of
-https://git.pengutronix.de/git/lst/linux into drm-fixes
-      Merge tag 'drm-intel-fixes-2021-09-16' of
-ssh://git.freedesktop.org/git/drm/drm-intel into drm-fixes
-      Merge tag 'amd-drm-fixes-5.15-2021-09-16' of
-https://gitlab.freedesktop.org/agd5f/linux into drm-fixes
-
-Ernst Sj=C3=B6strand (1):
-      drm/amd/amdgpu: Increase HWIP_MAX_INSTANCE to 10
-
-Evan Quan (1):
-      drm/amd/pm: fix runpm hang when amdgpu loaded prior to sound driver
-
-Felix Kuehling (1):
-      drm/amdkfd: make needs_pcie_atomics FW-version dependent
-
-Harry Wentland (1):
-      drm/amd/display: Get backlight from PWM if DMCU is not initialized
-
-Hersen Wu (1):
-      drm/amd/display: dsc mst 2 4K displays go dark with 2 lane HBR3
-
-James Zhu (3):
-      drm/amdkfd: separate kfd_iommu_resume from kfd_resume
-      drm/amdgpu: add amdgpu_amdkfd_resume_iommu
-      drm/amdgpu: move iommu_resume before ip init/resume
-
-Kai-Heng Feng (1):
-      drm/i915/dp: Use max params for panels < eDP 1.4
-
-Kenneth Feng (1):
-      drm/amd/pm: fix the issue of uploading powerplay table
-
-Lang Yu (5):
-      drm/amdgpu: fix sysfs_emit/sysfs_emit_at warnings(v2)
-      drm/amdgpu: update SMU PPSMC for cyan skilfish
-      drm/amdgpu: update SMU driver interface for cyan skilfish(v3)
-      drm/amdgpu: add some pptable funcs for cyan skilfish(v3)
-      drm/amdgpu: add manual sclk/vddc setting support for cyan skilfish(v3=
-)
-
-Lee Shawn C (1):
-      drm/i915/dp: return proper DPRX link training result
-
-Lucas Stach (8):
-      drm/etnaviv: return context from etnaviv_iommu_context_get
-      drm/etnaviv: put submit prev MMU context when it exists
-      drm/etnaviv: stop abusing mmu_context as FE running marker
-      drm/etnaviv: keep MMU context across runtime suspend/resume
-      drm/etnaviv: exec and MMU state is lost when resetting the GPU
-      drm/etnaviv: fix MMU context leak on GPU reset
-      drm/etnaviv: reference MMU context when setting up hardware state
-      drm/etnaviv: add missing MMU context put when reaping MMU mapping
-
-Meenakshikumar Somasundaram (1):
-      drm/amd/display: Link training retry fix for abort case
-
-Michel D=C3=A4nzer (1):
-      drm/amdgpu: Drop inline from amdgpu_ras_eeprom_max_record_count
-
-Nathan Chancellor (3):
-      drm/i915/selftests: Do not use import_obj uninitialized
-      drm/i915/selftests: Always initialize err in
-igt_dmabuf_import_same_driver_lmem()
-      drm/i915: Enable -Wsometimes-uninitialized
-
-Nicholas Kazlauskas (2):
-      drm/amd/display: Add NULL checks for vblank workqueue
-      drm/amd/display: Fix white screen page fault for gpuvm
-
-Nirmoy Das (2):
-      drm/amdgpu: use IS_ERR for debugfs APIs
-      drm/radeon: pass drm dev radeon_agp_head_init directly
-
-Paul Menzel (1):
-      drm/amdgpu: Demote TMZ unsupported log message from warning to info
-
-Qingqing Zhuo (1):
-      drm/amd/display: Fix unstable HPCP compliance on Chrome Barcelo
-
-Simon Ser (2):
-      amd/display: downgrade validation failure log level
-      amd/display: enable panel orientation quirks
-
-Thomas Hellstr=C3=B6m (1):
-      drm/i915/gem: Fix the mman selftest
-
-Vinay Belgaumkar (1):
-      drm/i915: Get PM ref before accessing HW register
-
- drivers/gpu/drm/amd/amdgpu/amdgpu.h                |   2 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd.c         |  10 +
- drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd.h         |   7 +
- drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c        |  10 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_device.c         |  12 +
- drivers/gpu/drm/amd/amdgpu/amdgpu_gmc.c            |   2 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_ras_eeprom.c     |   2 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_ras_eeprom.h     |   2 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c           |   4 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c            |  18 +-
- drivers/gpu/drm/amd/amdkfd/kfd_device.c            |  56 ++-
- drivers/gpu/drm/amd/amdkfd/kfd_priv.h              |   1 +
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c  | 109 ++++-
- .../amd/display/amdgpu_dm/amdgpu_dm_mst_types.c    |  18 +-
- .../amd/display/amdgpu_dm/amdgpu_dm_mst_types.h    |  11 +-
- drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c     |   2 +-
- drivers/gpu/drm/amd/display/dc/core/dc_link.c      |  16 +-
- drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c   |  34 +-
- .../gpu/drm/amd/display/dc/dce/dce_panel_cntl.c    |  10 -
- .../amd/pm/inc/smu11_driver_if_cyan_skillfish.h    |  86 ++--
- drivers/gpu/drm/amd/pm/inc/smu_types.h             |   5 +-
- drivers/gpu/drm/amd/pm/inc/smu_v11_8_ppsmc.h       |   9 +-
- drivers/gpu/drm/amd/pm/swsmu/amdgpu_smu.c          |   2 +-
- drivers/gpu/drm/amd/pm/swsmu/smu11/arcturus_ppt.c  |   8 +-
- .../drm/amd/pm/swsmu/smu11/cyan_skillfish_ppt.c    | 481 +++++++++++++++++=
-++++
- drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c    |  28 +-
- .../drm/amd/pm/swsmu/smu11/sienna_cichlid_ppt.c    |   8 +-
- drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c   |  16 +-
- drivers/gpu/drm/amd/pm/swsmu/smu12/renoir_ppt.c    |   2 +
- drivers/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c |  12 +-
- .../gpu/drm/amd/pm/swsmu/smu13/yellow_carp_ppt.c   |   6 +-
- drivers/gpu/drm/amd/pm/swsmu/smu_cmn.c             |  21 +
- drivers/gpu/drm/amd/pm/swsmu/smu_cmn.h             |  15 +
- drivers/gpu/drm/etnaviv/etnaviv_buffer.c           |   3 +-
- drivers/gpu/drm/etnaviv/etnaviv_gem.c              |   3 +-
- drivers/gpu/drm/etnaviv/etnaviv_gem_submit.c       |   3 +-
- drivers/gpu/drm/etnaviv/etnaviv_gpu.c              |  43 +-
- drivers/gpu/drm/etnaviv/etnaviv_gpu.h              |   1 +
- drivers/gpu/drm/etnaviv/etnaviv_iommu.c            |   4 +
- drivers/gpu/drm/etnaviv/etnaviv_iommu_v2.c         |   8 +
- drivers/gpu/drm/etnaviv/etnaviv_mmu.c              |   1 +
- drivers/gpu/drm/etnaviv/etnaviv_mmu.h              |   4 +-
- drivers/gpu/drm/i915/Makefile                      |   1 -
- drivers/gpu/drm/i915/display/intel_dp.c            |   5 +-
- .../gpu/drm/i915/display/intel_dp_link_training.c  |   2 +-
- drivers/gpu/drm/i915/gem/i915_gem_context.c        |   6 +-
- .../gpu/drm/i915/gem/selftests/i915_gem_dmabuf.c   |   7 +-
- drivers/gpu/drm/i915/gem/selftests/i915_gem_mman.c |  26 +-
- drivers/gpu/drm/i915/gt/intel_rps.c                |   8 +-
- drivers/gpu/drm/i915/gt/uc/intel_uc.c              |  11 +-
- drivers/gpu/drm/radeon/radeon_kms.c                |   2 +-
- 51 files changed, 945 insertions(+), 218 deletions(-)
+So: should anonymous pages be more like file pages? I think that's something
+worth exploring, and potentially a lot of code could be unified and deleted with
+that approach - a lot of the hugepage/transhuge code is doing similar stuff as
+folios, but folios look to be doing it much cleaner. There's also things like
+rmap.c, which is constantly asking is this page anonymous? is it file? and doing
+different things that look somewhat similar (also KSM, but that's a whole nother
+bag of crazy). Johannes things that anonymous pages differ too much from file
+pages and that trying to unify them would be a mistake - perhaps he's right.
+Perhaps we should create a new type analogous to folio for those pages - if all
+the current places in the code where we're asking "Is this file? Is this anon?"
+really do need to be doing that, then having our types match makes sense.
