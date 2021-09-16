@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9E2340E2C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 19:17:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 580D840E058
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 18:20:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244152AbhIPQl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 12:41:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44660 "EHLO mail.kernel.org"
+        id S240890AbhIPQUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 12:20:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49144 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244371AbhIPQfI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:35:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 954C861994;
-        Thu, 16 Sep 2021 16:21:10 +0000 (UTC)
+        id S233345AbhIPQL7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 12:11:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4527761373;
+        Thu, 16 Sep 2021 16:09:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631809271;
-        bh=5BK9XdaeTZ82lpNiUBDQYwONct9Gtl02nQ2vZYZaTXE=;
+        s=korg; t=1631808551;
+        bh=7O45PmtDzgXarqckKcXD4enRDDlBpI0TdfK3c+Xfdh0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0tWB/CZOqq9mN0FUghJ56FiiM5HPskn/WcNYxQMh60X9BcSwlT2cj4moWP1MpIvjG
-         wCZBJklK44mr+7G9CMyk9uIpowM/Wd2LY+vmw2VNLIx7G3YPey45WBfuSuUCxa2rnP
-         Rbu0Ep3GIBxg/ng6Hs6vLmIptQJIeC0jG+K4AcUM=
+        b=eTTxEmpxLbxtfCjcKQugx5ia2BQkrI4Y0GLouyeVGBLvK1SgR1FYKyetoiEFOiELw
+         XpaC3ND1v4Kmj5jlJiPbmwRJgHw0W+QLjRNSBuriNtDaFkT4BICYhO7JAbLqqYrjFb
+         5M+/UhPExw/diOOMBRVPkI9Zctb/ocEdpGKYOa/A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chuck Lever <chuck.lever@oracle.com>,
-        Anna Schumaker <Anna.Schumaker@Netapp.com>,
+        stable@vger.kernel.org, Chao Yu <chao@kernel.org>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 093/380] xprtrdma: Put rpcrdma_reps before waking the tear-down completion
-Date:   Thu, 16 Sep 2021 17:57:30 +0200
-Message-Id: <20210916155807.198677255@linuxfoundation.org>
+Subject: [PATCH 5.10 106/306] f2fs: should put a page beyond EOF when preparing a write
+Date:   Thu, 16 Sep 2021 17:57:31 +0200
+Message-Id: <20210916155757.688000875@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916155803.966362085@linuxfoundation.org>
-References: <20210916155803.966362085@linuxfoundation.org>
+In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+References: <20210916155753.903069397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,49 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chuck Lever <chuck.lever@oracle.com>
+From: Jaegeuk Kim <jaegeuk@kernel.org>
 
-[ Upstream commit 97480cae13ca3a9c1de3eb6fd66cf9650a60db42 ]
+[ Upstream commit 9605f75cf36e0bcc0f4ada07b5be712d30107607 ]
 
-Ensure the tear-down completion is awoken only /after/ we've stopped
-fiddling with rpcrdma_rep objects in rpcrdma_post_recvs().
+The prepare_compress_overwrite() gets/locks a page to prepare a read, and calls
+f2fs_read_multi_pages() which checks EOF first. If there's any page beyond EOF,
+we unlock the page and set cc->rpages[i] = NULL, which we can't put the page
+anymore. This makes page leak, so let's fix by putting that page.
 
-Fixes: 15788d1d1077 ("xprtrdma: Do not refresh Receive Queue while it is draining")
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
-Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
+Fixes: a949dc5f2c5c ("f2fs: compress: fix race condition of overwrite vs truncate")
+Reviewed-by: Chao Yu <chao@kernel.org>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sunrpc/xprtrdma/verbs.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ fs/f2fs/data.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/net/sunrpc/xprtrdma/verbs.c b/net/sunrpc/xprtrdma/verbs.c
-index 649c23518ec0..5a11e318a0d9 100644
---- a/net/sunrpc/xprtrdma/verbs.c
-+++ b/net/sunrpc/xprtrdma/verbs.c
-@@ -1416,11 +1416,6 @@ void rpcrdma_post_recvs(struct rpcrdma_xprt *r_xprt, int needed, bool temp)
- 
- 	rc = ib_post_recv(ep->re_id->qp, wr,
- 			  (const struct ib_recv_wr **)&bad_wr);
--	if (atomic_dec_return(&ep->re_receiving) > 0)
--		complete(&ep->re_done);
--
--out:
--	trace_xprtrdma_post_recvs(r_xprt, count, rc);
- 	if (rc) {
- 		for (wr = bad_wr; wr;) {
- 			struct rpcrdma_rep *rep;
-@@ -1431,6 +1426,11 @@ void rpcrdma_post_recvs(struct rpcrdma_xprt *r_xprt, int needed, bool temp)
- 			--count;
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index 70a91c47f72f..1b11a42847c4 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -2219,6 +2219,8 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
+ 			continue;
  		}
+ 		unlock_page(page);
++		if (for_write)
++			put_page(page);
+ 		cc->rpages[i] = NULL;
+ 		cc->nr_rpages--;
  	}
-+	if (atomic_dec_return(&ep->re_receiving) > 0)
-+		complete(&ep->re_done);
-+
-+out:
-+	trace_xprtrdma_post_recvs(r_xprt, count, rc);
- 	ep->re_receive_count += count;
- 	return;
- }
 -- 
 2.30.2
 
