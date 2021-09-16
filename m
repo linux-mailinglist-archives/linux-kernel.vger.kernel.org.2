@@ -2,118 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F34B140ED19
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 00:05:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 109BE40ED1D
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 00:07:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240710AbhIPWGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 18:06:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39792 "EHLO
+        id S240737AbhIPWJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 18:09:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231515AbhIPWGn (ORCPT
+        with ESMTP id S234157AbhIPWJG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 18:06:43 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 384CAC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 15:05:22 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d18so4791748pll.11
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 15:05:22 -0700 (PDT)
+        Thu, 16 Sep 2021 18:09:06 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 309A3C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 15:07:45 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id bq5so24498232lfb.9
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 15:07:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pc3VGvRcHS+5HOxv6BUlJ0pcBYgpx5RMDU9krFJbSFI=;
-        b=L9Q0s9st6IwFUEPzVmbOCNGgjCrmNDpcr28U9cZK4tTmz1j4mRtwNPsTNwmFxm9QPT
-         5KOLA+IeJ+ETgpRQNvpWWO6HQ3dzliERyKKbo9DNqWKooqXhaghSVvKfT6piuRrennIY
-         IVR802SufbqXdHydO7wRcXR8T/kfWIQ2WVoRI=
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LX/6UT+dJXRQHVIf1nMEFEDSPJwBk5BvPEZvykJ4WCA=;
+        b=tydJ+FLATXrTnw8dqjYnppGeXQ4oUSljbD9pKvbN3sINUGzSRKUuSD+sWemE7SM35X
+         D5fAq+WVW0PYSfQT2mS8wHBED/+myA4CKhRXNiX1fP050wFJlgwpIXdXsxziTGmsfpkZ
+         JDqe9/nH5OWfuVOItTTWOn0m9/gcTvElC1jWbJT0JP1GxHMGhXYsBR7AG+5baofjNq6B
+         sJZBgk4RH+XKOWMJDVxdJJLO9rNINj2EJXS3Dbo/DpIpycj+02DwMg37GvrO5X00xjNl
+         faJiDriA39b6fuJkYtCJQrpnaUn1PG/byQmQvvLKAX0OVDg1EkKixHCILbH9i4eLFZ3z
+         aCtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pc3VGvRcHS+5HOxv6BUlJ0pcBYgpx5RMDU9krFJbSFI=;
-        b=Wxa/CY+pp3lu4CuRNpw60QVDX+fbtrmmoXvAzjOtp7xgVJzfNHmhHsDaXMz2vV58Co
-         nKaK5BL2vWG1sEyvxRiTi8NqajzXlE7st064i+jwR9Lk0yeOQ3PWmPCxvib8w3ZAwoKe
-         u5ifc/B0rB99dBIwalOcec+R2r7irEKX5XsidUFGTsrO5Zt+P0YRwoZ1RAWa60qScQqb
-         AHRy6CWlLdQREBE2AkEUgs0ATyB0+L9NbksICO4Ny9dT6z6ovn6xTSJOPgJMVYzwR0Xt
-         hG063DWz3gqvvM/vJAhAVM5TkSXNQqrNPfmE00Wx7UwVommpq5bWTeztf4uYMe/eJCdG
-         nzww==
-X-Gm-Message-State: AOAM531Q8oQV15uL1j9gYiBoZanRtIORrbR8W1dSZUB6pqJ7pyo/hote
-        eT9zqaawAsYxmC6Ew19xjInXZQ==
-X-Google-Smtp-Source: ABdhPJzlx4QqzuYqWgTlMu8HdcAgL44WNF97KaSbw9uVDYW3Rvi+9yNLWyGiEwBOJot16CXQYA3dhA==
-X-Received: by 2002:a17:90b:1d8d:: with SMTP id pf13mr17425080pjb.130.1631829921820;
-        Thu, 16 Sep 2021 15:05:21 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id a11sm3858739pfo.31.2021.09.16.15.05.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 15:05:21 -0700 (PDT)
-Date:   Thu, 16 Sep 2021 15:05:20 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Thomas Huth <thuth@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-nfs@vger.kernel.org,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>, linux-s390@vger.kernel.org,
-        Jia He <hejianet@gmail.com>,
-        Pan Xinhui <xinhui.pan@linux.vnet.ibm.com>
-Subject: Re: [PATCH 2/2] lockd: change the proc_handler for nsm_use_hostnames
-Message-ID: <202109161503.07F872F6@keescook>
-References: <20210803105937.52052-1-thuth@redhat.com>
- <20210803105937.52052-3-thuth@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LX/6UT+dJXRQHVIf1nMEFEDSPJwBk5BvPEZvykJ4WCA=;
+        b=l7szwv3aCze3jllbMJjmynUUTRIY8pW4UG89WvoqViOzOwLRkOHu3GobeBi5xNyB1E
+         UsoAIj/NvYwrkPXpRS0mXR29tPML1iRdnKJNJfzdc3gZxPosDiegXjdKdtwMZUX0XIX7
+         5kmA11C8u8Ibt1sl9uXa1Aggxg9IhQJzCyJ5UbFGcBcjUxAkxFZCoVfFYu4AiOYnhKbd
+         UH/+OA1iEP+K1c2eLg9NmWRqOnsV5lQ9J4ClG/GKxGOvEpKwSZVcgscjT7m04Sd0PfiV
+         2x0xRLhxyEhOBiRQGg2AjvrYDiioke4kzt+5/v8JPHSx12HUgFMd3lf9Dx/Yqko77idv
+         1Tzg==
+X-Gm-Message-State: AOAM533ukTHoJhJSV8388VfjLgZXvtMM0Rerd5dEbnqVKDWhelpiRSuP
+        kDKIFx0wUDqRd9KwA6tu89W7Euu1kyFpc6kJCSoCPg==
+X-Google-Smtp-Source: ABdhPJyjIV8xyB9mwbXecJOK4a0zQXVDG1YRjztqIzLaavdMteKIYK4Iu4wrIxTByxRDFe0OmnkhrtUkb+rfnewTdhw=
+X-Received: by 2002:a2e:5758:: with SMTP id r24mr6787101ljd.432.1631830063490;
+ Thu, 16 Sep 2021 15:07:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210803105937.52052-3-thuth@redhat.com>
+References: <20210825082251.2484-1-caihuoqing@baidu.com>
+In-Reply-To: <20210825082251.2484-1-caihuoqing@baidu.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 17 Sep 2021 00:07:32 +0200
+Message-ID: <CACRpkdYekS+2WKoyT5ssSp28XR4pxb+4yMZnP9PPRXpG+UE-LA@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: freescale: Add helper dependency on COMPILE_TEST
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     Dong Aisheng <aisheng.dong@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Stefan Agner <stefan@agner.ch>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 12:59:37PM +0200, Thomas Huth wrote:
-> From: Jia He <hejianet@gmail.com>
-> 
-> nsm_use_hostnames is a module parameter and it will be exported to sysctl
-> procfs. This is to let user sometimes change it from userspace. But the
-> minimal unit for sysctl procfs read/write it sizeof(int).
-> In big endian system, the converting from/to  bool to/from int will cause
-> error for proc items.
-> 
-> This patch use a new proc_handler proc_dobool to fix it.
-> 
-> Signed-off-by: Jia He <hejianet@gmail.com>
-> Reviewed-by: Pan Xinhui <xinhui.pan@linux.vnet.ibm.com>
-> [thuth: Fix typo in commit message]
-> Signed-off-by: Thomas Huth <thuth@redhat.com>
-> ---
->  fs/lockd/svc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/lockd/svc.c b/fs/lockd/svc.c
-> index 2de048f80eb8..0ab9756ed235 100644
-> --- a/fs/lockd/svc.c
-> +++ b/fs/lockd/svc.c
-> @@ -584,7 +584,7 @@ static struct ctl_table nlm_sysctls[] = {
->  		.data		= &nsm_use_hostnames,
->  		.maxlen		= sizeof(int),
+On Wed, Aug 25, 2021 at 10:23 AM Cai Huoqing <caihuoqing@baidu.com> wrote:
 
-For robustness, maybe this should be:
+> it's helpful for complie test in other platform(e.g.X86)
+>
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
 
-		.maxlen		= sizeof(nsm_use_hostnames),
+It seems weird to only enable this on a few select subdrivers rather
+than all of the Freescale drivers?
 
->  		.mode		= 0644,
-> -		.proc_handler	= proc_dointvec,
-> +		.proc_handler	= proc_dobool,
->  	},
->  	{
->  		.procname	= "nsm_local_state",
-> -- 
-> 2.27.0
-> 
+(Also: the Freescale maintainers are very silent, some feedback
+would be helpful.)
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
-
-Also, I wonder what other BE-corrupted bools are out there?
-
--- 
-Kees Cook
+Yours,
+Linus Walleij
