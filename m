@@ -2,174 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D34F40DA9E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 15:04:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD91240DAA1
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 15:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239894AbhIPNFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 09:05:49 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:8712 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239809AbhIPNFr (ORCPT
+        id S239898AbhIPNGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 09:06:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239699AbhIPNGW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 09:05:47 -0400
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18GBEDWo028338;
-        Thu, 16 Sep 2021 13:04:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : content-type : mime-version; s=corp-2021-07-09;
- bh=tmHAENlpl5x2CprSCvB6Q4hzJRcyFl36lLDHVP96UV8=;
- b=Bja0OD65gjv6Jl1GqK3BR54tlCVrlwuMlnprUy4S7VvAgACmmiFwuKpYm48TnnnS292l
- 8e9QVY/Nxa23NUbdF/wXT1divTrSWQUc7eJQwJo0A0cboL0zlmtg2eMnaUZCAwlB22r/
- SfqZDOSG7Vk13dwiT8aUbwXayXX23mQTocL1Gfab5J/HzLVQ11KBF5wumWjIvbr1YWBn
- mvP2JZBi39WoMPGNeqJaQ4DusbT8OosL4QCtjhZubbPMdGFe+fxsGFiKamhAsYlFns8i
- cOX65BwEBQ04EfCv3EqwPlugStm2DO21Ns2oF9btwKy1HPC2o1LWDKAzmhseV45fi7ec 3A== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : content-type : mime-version; s=corp-2020-01-29;
- bh=tmHAENlpl5x2CprSCvB6Q4hzJRcyFl36lLDHVP96UV8=;
- b=yHO1ITBAB8I1DYCY9MsdsmxE8kN4tLAe0voV92nH6Xjqv4k70SbgwKL8jUYdjCl3iaLa
- pi5IXxNMd9Dy7yPPS1NBE+IHy5xywirNsJIKyMH9VC1Envagt6VAbDxXaSC5gHomGF9C
- shdwGrBiZKBX4vnizYKO34WML/gjJj5fUJaxbWUc27t0VKQlQKiBbSWVOOJatMlf7g8M
- i0IBXeQMQvb+f6Bjqr/fN7RUnpZ6fjd6wgGcmOglE7E5ariv0sxcE+RDwYbhbf8t6I7D
- clV8f/suAK0fYc24MpPHyqUGd9pTsNLBQNReZDOzmI4PQKFPvDSfnf7L7PcH9SmHDeru Mg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3b3t92j1y4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 16 Sep 2021 13:04:18 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18GD0lwU081422;
-        Thu, 16 Sep 2021 13:04:17 GMT
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2102.outbound.protection.outlook.com [104.47.70.102])
-        by aserp3030.oracle.com with ESMTP id 3b0jgg3p2j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 16 Sep 2021 13:04:17 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=c2cSfNkMTQZE7zubf4ApUe9amQ1FlYfX5l22g9NpX7XayTHjxqjUjrkwpDtGq6GzmqXqZYxZe2YY98vnWgB7uWYlEedntjE65H2IlKSKq/90mYx6ToOQjfl1T0uiDAH9Y8/+hhl//HI67aqpF/NOs4CappCjNt6GiqR1T1ioXf+6njAeZ0E7J7g6/CFlv3W6TXdAdNQxV5NNaDUYkkEKZZZtlWb2lf+Wh2egg02X0K0UEQB2tgFcQGVDxw7sP0ocAUqB+qYOpid4XMJUFnWFTNn2JMYGUB9f1FFL5KFTyL2AfS0li9OhE/mbtWXpBCAPwLSchjh2UH3UFH5ae1tRAg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=tmHAENlpl5x2CprSCvB6Q4hzJRcyFl36lLDHVP96UV8=;
- b=Cbn3BITRleDWmrqe12TJ15mSPeA5R7No5BxFLYpotKjdVUlPrywTHpONmKZwmqWp4a4WyZZNGR58JaCsCDYc5OkPipfCTyDYHuuoZxDNo3ATXHGWU463yTL2lt5tGOH5APpkvLwtz+bPtrKj1vcWI9UREvumEqbDt97d73j56aDrZe4yKSyKYuTyb1goRhN4uINv7k/kv16Pe9/OHV+nqf8AffXAiR6GnnmgEVntMYvvyDIvh+Xh1ggMCJaXznq3uzWg6F45zLXZ+lQbxQrppT4tV6RHPwHMnO3cpQfCC0wmMhdaiXUvRLS2Dlj9uthXAzWRVl9Fc22D7gqAEbv8Iw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Thu, 16 Sep 2021 09:06:22 -0400
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9503C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 06:05:01 -0700 (PDT)
+Received: by mail-qv1-xf34.google.com with SMTP id r18so4014656qvy.8
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 06:05:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tmHAENlpl5x2CprSCvB6Q4hzJRcyFl36lLDHVP96UV8=;
- b=sSw0rlhj9r2BeiNmSNCxeuOpmZDkJxsD3PVpWZ9xNlADPYMNWHAXo0U7hOPmqVEm1mVdW0YAvMnmAmGXcd3ahLXE4B9nMgr5QVatLGM4d4XaqP4PtxttaNhOtorvbudtqI5HDbmodbZLg4qwmzCddVvzkUU7TpGyBf6c3KGcXJs=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28) by MWHPR10MB1246.namprd10.prod.outlook.com
- (2603:10b6:301:5::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Thu, 16 Sep
- 2021 13:04:15 +0000
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::d409:11b5:5eb2:6be9]) by MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::d409:11b5:5eb2:6be9%5]) with mapi id 15.20.4523.016; Thu, 16 Sep 2021
- 13:04:15 +0000
-Date:   Thu, 16 Sep 2021 16:04:04 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Nitin Gupta <ngupta@vflare.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH] zram: off by one in read_block_state()
-Message-ID: <20210916130404.GA25094@kili>
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=acPxGanWudVp0KiXHdjtVTDLfzNEsbUYMSqmQk92sDI=;
+        b=BqSjPT7X1NzzdHsX8YIObaF7E3kv9ttGWXhE/fKF8+/SvXJmsRT3sVeBJ5loU/NEk5
+         tHTgHEFmuVAGxxQfkVXVbvvAgxxPDrtkPgdc/i1e871vE2JFhiY8AjQLUhlADU7zDY+l
+         AwneVt4STcQs7miWFgJ/7sZaylwFoRBKc0KCUzsp+wmGjk9ZfbF1iSFUaKYXAOao0/5o
+         qFtMNtOf1oH+ZBVuj2SlES7EEdBPFotKIJKkfK941TYw6ZuiCgPRJxdDFXOBpxWFgDHm
+         6k6Mq64k36gK/cuDtlhvLY7sz/29XDjRwhTVxlaaKYxU7poxfKeBNLB/1ra/SiW0RVMA
+         adhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=acPxGanWudVp0KiXHdjtVTDLfzNEsbUYMSqmQk92sDI=;
+        b=O03C8oZLxgoEYH6wO2rYriuisuUjAUcJ6VxOJDSJ4PjRJ9lVWV/Tzo5PPY4Yzg/kZb
+         MFszOT74AZPPP2+r3u7sQ7PvSANdpGZtc0iz4a/j6dPRitdKTMI5oaBbuBRw01QMKqkq
+         YGQPvItR6raUcCWsBh/EumWhaJUq0gRbTIqYz38kmcOzVVXeVG4p2GABTjaUd8DtGCM3
+         8GsNAGHW1hFJee9mB3mshDGzqNgU+EAhov11IUdWkIZTIaiMUXUwdhgBT62emWdwELks
+         l7QPLAG7ELXPX1wpyRGZgGcKx3fsYYrVGGZg/hyTQFWwuZtILIQ5ta84gVtbz1wDSFsx
+         Yqag==
+X-Gm-Message-State: AOAM533WPagSHAdmVJKUJMwYAc9TQN4243R+e0tsY23RRCOCbZAxE3Jq
+        S6zZcPsQqlFJOnsGVJ+blw8tXQ==
+X-Google-Smtp-Source: ABdhPJwGR/9rt1lMFSmo/fGCtn7y0alVkwxO63R7/ik+cH+HR/fyXg+bbMT6Ll22OSbvRsdIhIoowA==
+X-Received: by 2002:a0c:be85:: with SMTP id n5mr5081009qvi.59.1631797500834;
+        Thu, 16 Sep 2021 06:05:00 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id h17sm1964816qtu.68.2021.09.16.06.05.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Sep 2021 06:05:00 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mQr4V-001Me8-4O; Thu, 16 Sep 2021 10:04:59 -0300
+Date:   Thu, 16 Sep 2021 10:04:59 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     syzbot <syzbot+dc3dfba010d7671e05f5@syzkaller.appspotmail.com>,
+        dledford@redhat.com, leon@kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] KASAN: use-after-free Read in addr_handler (4)
+Message-ID: <20210916130459.GJ3544071@ziepe.ca>
+References: <000000000000ffdae005cc08037e@google.com>
+ <20210915193601.GI3544071@ziepe.ca>
+ <CACT4Y+bxDuLggCzkLAchrGkKQxC2v4bhc01ciBg+oc17q2=HHw@mail.gmail.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-ClientProxiedBy: ZR0P278CA0118.CHEP278.PROD.OUTLOOK.COM
- (2603:10a6:910:20::15) To MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28)
-MIME-Version: 1.0
-Received: from kili (62.8.83.99) by ZR0P278CA0118.CHEP278.PROD.OUTLOOK.COM (2603:10a6:910:20::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.16 via Frontend Transport; Thu, 16 Sep 2021 13:04:12 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3fadb398-5a8d-4c5d-fb07-08d979127c75
-X-MS-TrafficTypeDiagnostic: MWHPR10MB1246:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MWHPR10MB1246AF442FB7AFC11670689D8EDC9@MWHPR10MB1246.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 5AHUsEs5PkzK2/bmeP1zV7lXdjmvfT1YKYs3CCj2778LLEMpSyaxSSjQt+1PqYpBiz8YnorxB14DV4VTkRiKP59JyTkr2x/ruxxI7GCun5qPb87UVcPqhwTQrsk1BUn+sBxXeeFE0ASDtkJRQAWug2iv3ghW9BMHUYZ83RPp+LYIylZDwVCuPLH+RC/Gm72VoCnVGgHExtPr4ICn4D4LGitxvTYZ5jgEtANbuGbUBsXdDdPwxEZCdyIsaagqSRkYbpptJfkjCDJBnngWSdWeaGtpxjVr99NTLPYCeeSjEOQOHX/cd5lk+H+TFas0b83vHeZL4stT+lxMDg8W9ByrFec1INv182q8/h26JAl2WmfhqA3BRXU8E0YxSC0tkz2vgZDZl/7i8NxQPkKh2jzA68pJblPWmF4tcEJwG6B9HkaD6QqOLmHzK7eF6OWoIpgxRPRtVI/79GLruTo9cOvdxsSSjg+eTjLrW0o2urpnNLaflAoO4RorStE++y9mfhGj7GMOcug9WXpuDsTvrEwv0iTjXuRK4YHrVv1+04GFchTlUZrdRIq9p5YckNGMz9JSVX6FHVmLno2B5IkVSThS/wGSY970ajmHqw/gV750BHJQXsFVERepq8aKZ2f3nyhN50RHMUqFORJ7i1NAZ0kMpAhaL+2A3BsCZpP1SrevHr1lKcVyqz6u2LhLCfUhEG2vKs6tFw2uDCN7oYfN4fv1pw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(396003)(376002)(136003)(346002)(366004)(83380400001)(44832011)(4744005)(478600001)(9576002)(6666004)(33656002)(86362001)(2906002)(8936002)(4326008)(8676002)(33716001)(6496006)(6916009)(186003)(52116002)(9686003)(956004)(316002)(55016002)(54906003)(66946007)(66476007)(1076003)(38350700002)(66556008)(38100700002)(26005)(5660300002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/bHfSEQlA4zsWJ4HYPldAyIHSinlXq27NA4t501EFjwoEJwkS/NUvmA08BSI?=
- =?us-ascii?Q?jVjLUEhBAgrivqd7OP+6aZx1iDDbbqtlwVZlpOHVfLVFsHPUUmdqtOLkOu9+?=
- =?us-ascii?Q?4wFHPJTFacvZlMf5mU/1idiPKsNlNgFJJxPOyGo8ryf97dUhXEKUfalOZAxr?=
- =?us-ascii?Q?+qBiqmaD97Z7S5NplFQldRy4kp0sPlUzX+tNxTf3Z3BIPGCMegAW4cyEQbHU?=
- =?us-ascii?Q?PyyJAKl4TOPPRt1rauLxR3lGvkFPOF1O0VwuXRKs8OPnotEgTYU0nSM/GDk6?=
- =?us-ascii?Q?XwtDyHbtd6D7+WzhcXw0E0hQVTy5UyWqLZb6EJJkbqCB6yhRSxZsIPXmPuyO?=
- =?us-ascii?Q?QkMQq/0wPX7FqmIvFbWKqxhw3v+EfW+Cys0RruyB+5ozCjdjLggNvCJFiqff?=
- =?us-ascii?Q?5op7FUM4ArG0PsY1RSCYcUwPEIbJSuRuDGetPkXzIeNcAUPXWO0iBuSGtmkB?=
- =?us-ascii?Q?1QmLCZpbldVb+0w4E177ce66hfvZ3cAF7LzF+zYBIZX8k3mkn+r9FJztBF+a?=
- =?us-ascii?Q?+MKN6aZeurbC8U5gPLJsRBaPnYydoJi+AU4IsNB0gMDAChO+auwVVg9bgvRu?=
- =?us-ascii?Q?z9ZvMlagffyO7B6D0hnQ2wEApfYk7b7wH5QpgO0c7rWAeo5lXdxuVmrv3Dj9?=
- =?us-ascii?Q?UwBZotcCXjWJwccBargK6ryCE3Ul82iu2IoPbN4OkH2NOpOeD7AggOARMF+9?=
- =?us-ascii?Q?TtuZioen66LpVidzDzpX6/BW1b0XyOCwg46I05qgSxnqG68kzZJF0E4gKSJK?=
- =?us-ascii?Q?qdT+fs9cUEjLQeFEYx28bebe/pl1DWHMtJZ2OCOq/cfH/GHCxct9Lb4a1Deh?=
- =?us-ascii?Q?c9kt/jcI1ldZy53IdS4PMJjfNoqcHagLL4wi4uWf8Dm9D/Czg4+YKgIZSrFE?=
- =?us-ascii?Q?f3HzJRBwFWbPHclVT0TGDpXNUUFKlnRQ0OLtUQbvj7OWm07LidryMA/QVGVB?=
- =?us-ascii?Q?Uo3XaGfhM+zkx2Vyz5ga95Aw1dXbomGD8/Iu2dv6az0r0oNbgSY6Dnl1f80g?=
- =?us-ascii?Q?RzaU1LlmhDjHLYW0n+aOXK2JIAEmz2UAdjN/lu+4pvUKorTFfVwyaY18C7Ll?=
- =?us-ascii?Q?Kw1nKmBMF551Rqko5kR7k4cWLkz2zbWdVDjRpbOpPeNB8zINTPNsCkfbvM4H?=
- =?us-ascii?Q?tWQDrsrV6zRjRvMjOZ33+RQNZgrAV7PdjyvfV8E4g5BPdBUJGMkGXQVKFApd?=
- =?us-ascii?Q?2dahVzQy9I/20JJFXjZMSXuOBV7tM+eTFFrLo0GRfMssdO6DLUgDAgxQ2MwR?=
- =?us-ascii?Q?IJ+m6TbAGGHzULwOZPdBQcU9skDr/+PLgiBebRvCS2bZRtCLD9c/36PN2PJ/?=
- =?us-ascii?Q?lJpuGAI1jj7mTdL/B3hjUWjz?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3fadb398-5a8d-4c5d-fb07-08d979127c75
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2021 13:04:15.6943
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: LDmDF6r5Rs749zx1eJBCR+1Z0Cv38VmHa0e7aePBCdcz2f9IqvY2wW9pZD+3oBkK6L9aPn+OWB3wQNv6vU/0y2tXNcdFGGK65EMpjawTtWw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1246
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10108 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0
- mlxlogscore=999 adultscore=0 bulkscore=0 spamscore=0 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109030001 definitions=main-2109160084
-X-Proofpoint-ORIG-GUID: MLOMjTCwjYDAS4MRaUkh5yO4jt6NxT-J
-X-Proofpoint-GUID: MLOMjTCwjYDAS4MRaUkh5yO4jt6NxT-J
+In-Reply-To: <CACT4Y+bxDuLggCzkLAchrGkKQxC2v4bhc01ciBg+oc17q2=HHw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The snprintf() function returns the number of bytes it would have
-printed if there were space.  But it does not count the NUL terminator.
-So that means that if "count == copied" then this has already
-overflowed by one character.
+On Thu, Sep 16, 2021 at 09:43:19AM +0200, Dmitry Vyukov wrote:
+> On Wed, 15 Sept 2021 at 21:36, Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> >
+> > On Wed, Sep 15, 2021 at 05:41:22AM -0700, syzbot wrote:
+> > > Hello,
+> > >
+> > > syzbot found the following issue on:
+> > >
+> > > HEAD commit:    926de8c4326c Merge tag 'acpi-5.15-rc1-3' of git://git.kern..
+> > > git tree:       upstream
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=11fd67ed300000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=37df9ef5660a8387
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=dc3dfba010d7671e05f5
+> > > compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+> > >
+> > > Unfortunately, I don't have any reproducer for this issue yet.
+> > >
+> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > Reported-by: syzbot+dc3dfba010d7671e05f5@syzkaller.appspotmail.com
+> >
+> > #syz dup: KASAN: use-after-free Write in addr_resolve (2)
+> >
+> > Frankly, I still can't figure out how this is happening
+> >
+> > RDMA_USER_CM_CMD_RESOLVE_IP triggers a background work and
+> > RDMA_USER_CM_CMD_DESTROY_ID triggers destruction of the memory the
+> > work touches.
+> >
+> > rdma_addr_cancel() is supposed to ensure that the work isn't and won't
+> > run.
+> >
+> > So to hit this we have to either not call rdma_addr_cancel() when it
+> > is need, or rdma_addr_cancel() has to be broken and continue to allow
+> > the work.
+> >
+> > I could find nothing along either path, though rdma_addr_cancel()
+> > relies on some complicated properties of the workqueues I'm not
+> > entirely positive about.
+> 
+> I stared at the code, but it's too complex to grasp it all entirely.
+> There are definitely lots of tricky concurrent state transitions and
+> potential for unexpected interleavings. My bet would be on some tricky
+> hard-to-trigger thread interleaving.
 
-This bug likely isn't super harmful in real life.
+From a uapi perspective the entire thing is serialized with a mutex..
 
-Fixes: c0265342bff4 ("zram: introduce zram memory tracking")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- drivers/block/zram/zram_drv.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> The only thing I can think of is adding more WARNINGs to the code to
+> check more of these assumptions. But I don't know if there are any
+> useful testable assumptions...
 
-diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
-index fcaf2750f68f..6383c81ac5b3 100644
---- a/drivers/block/zram/zram_drv.c
-+++ b/drivers/block/zram/zram_drv.c
-@@ -910,7 +910,7 @@ static ssize_t read_block_state(struct file *file, char __user *buf,
- 			zram_test_flag(zram, index, ZRAM_HUGE) ? 'h' : '.',
- 			zram_test_flag(zram, index, ZRAM_IDLE) ? 'i' : '.');
- 
--		if (count < copied) {
-+		if (count <= copied) {
- 			zram_slot_unlock(zram, index);
- 			break;
- 		}
--- 
-2.20.1
+Do you have any idea why we can't get a reproduction out of syzkaller
+here? 
 
+I feel less comfortable with syzkaller's debug output, can you give
+some idea what it might be doing concurrently?
+
+Jason
