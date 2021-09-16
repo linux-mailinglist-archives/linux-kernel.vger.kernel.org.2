@@ -2,56 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E2A640D0F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 02:32:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C171240D0F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 02:32:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233905AbhIPAdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 20:33:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36306 "EHLO mail.kernel.org"
+        id S233639AbhIPAdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 20:33:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36580 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233569AbhIPAdl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 20:33:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 8F75E6108F;
-        Thu, 16 Sep 2021 00:32:21 +0000 (UTC)
+        id S233592AbhIPAdx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 20:33:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id BA58C60F6D;
+        Thu, 16 Sep 2021 00:32:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631752341;
-        bh=cm/iyTSXpnrPd4Q/E5nuA4SvSZt8gVYF2DIwrEIdTs0=;
+        s=k20201202; t=1631752353;
+        bh=a/XA1zZYARdyrZOimECF0MuxSN3+rgrHB9VZsxkkrlc=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=F0QSL4r2TAbdKduhgGb6tkP8B2F7FPy1Hjswdx4eogohyecBdkpLuFcRfdwmJp0a0
-         4Va39zYcfymduX1hiSlTTLImEDK2Ip3cl183WZe+0A49Lh4j/xD8rV8B6WI9VFj3FM
-         DwgAaFxFGrViOJmIOmIZpAlrSDxbvRMuGVLFLmhaw7j4UPHrS813DFTFWTPgmUKAdG
-         GiBxC9C59eZa7rrxtU0nDgLesv8IIOhSjdJGQ17mOckn0Shzg3r+0xeMq8TmHPw0XS
-         R/7Jgy3q1JuicCSQcNlaoU4xYjtVzSufMreOM5v2DPE+wd9C7XNd8CtVEBGezstGgk
-         TGXMnuoW75/EA==
+        b=Ry7vJl60/w6ciji50W8a8aWBbNPFSqrfShDLMw3byNRqf2Hf12wVt4Qq2MiQ4ovHj
+         4O8Ka6IFmklYrUuDtBYzU6xu0015nENtHK5JdMmwmdoBmQdazEQpyzarbkCaUqTl3i
+         25TRAvWTJzTJA/IQr8H/CQao4LHvY/CuNzqwVJBd2rEXzSWxPCzENo/XAO70FGJy+t
+         OaO+d4f8xgE0hU7W5Y89axhVCpxsNOmbJ5Rqc5j4cLxziz+48R7YPwhNyHKXBwihm2
+         oQmIPnJmRCnAAMwDgZ27atU/N2kjQnbeSGN73Nz6ZyTnvQAVjREX80tqZ/p7heC78+
+         l37hagVq2IZwQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7FDA460A22;
-        Thu, 16 Sep 2021 00:32:21 +0000 (UTC)
-Subject: Re: [GIT PULL] RTC fixes for 5.15
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B2B9E60A22;
+        Thu, 16 Sep 2021 00:32:33 +0000 (UTC)
+Subject: Re: [GIT PULL] Hyper-V fixes for 5.15-rc2
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YUEgl3kjnTSJhbCD@piout.net>
-References: <YUEgl3kjnTSJhbCD@piout.net>
-X-PR-Tracked-List-Id: <linux-rtc.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YUEgl3kjnTSJhbCD@piout.net>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/abelloni/linux.git tags/rtc-5.15-fixes
-X-PR-Tracked-Commit-Id: 13be2efc390acd2a46a69a359f6efc00ca434599
+In-Reply-To: <20210915125506.4zra6p2b7qu7fz4d@liuwe-devbox-debian-v2>
+References: <20210915125506.4zra6p2b7qu7fz4d@liuwe-devbox-debian-v2>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210915125506.4zra6p2b7qu7fz4d@liuwe-devbox-debian-v2>
+X-PR-Tracked-Remote: ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-fixes-signed-20210915
+X-PR-Tracked-Commit-Id: dfb5c1e12c28e35e4d4e5bc8022b0e9d585b89a7
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 453fa43cdb8e0f4231ab84755fd2fc562823541b
-Message-Id: <163175234146.18536.8415088467666068077.pr-tracker-bot@kernel.org>
-Date:   Thu, 16 Sep 2021 00:32:21 +0000
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+X-PR-Merge-Commit-Id: ff1ffd71d5f0612cf194f5705c671d6b64bf5f91
+Message-Id: <163175235372.18536.9635229087559879261.pr-tracker-bot@kernel.org>
+Date:   Thu, 16 Sep 2021 00:32:33 +0000
+To:     Wei Liu <wei.liu@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
+        Wei Liu <wei.liu@kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        kys@microsoft.com, haiyangz@microsoft.com, decui@microsoft.com,
+        sthemmin@microsoft.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 15 Sep 2021 00:22:15 +0200:
+The pull request you sent on Wed, 15 Sep 2021 12:55:06 +0000:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/abelloni/linux.git tags/rtc-5.15-fixes
+> ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-fixes-signed-20210915
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/453fa43cdb8e0f4231ab84755fd2fc562823541b
+https://git.kernel.org/torvalds/c/ff1ffd71d5f0612cf194f5705c671d6b64bf5f91
 
 Thank you!
 
