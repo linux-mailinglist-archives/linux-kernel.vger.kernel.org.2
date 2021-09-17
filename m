@@ -2,131 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DB3740F228
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 08:16:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F5D340F234
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 08:18:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240443AbhIQGRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 02:17:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36188 "EHLO
+        id S231793AbhIQGUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 02:20:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232091AbhIQGRi (ORCPT
+        with ESMTP id S229474AbhIQGUJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 02:17:38 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7BB9C061764
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 23:16:16 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id c13-20020a17090a558d00b00198e6497a4fso9277115pji.4
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 23:16:16 -0700 (PDT)
+        Fri, 17 Sep 2021 02:20:09 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B368C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 23:18:48 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id l16-20020a9d6a90000000b0053b71f7dc83so11528827otq.7
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 23:18:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=79Z9c6dI9E2uafzLue/bSOxRVu0ZiKuAgi/MUWbArdU=;
-        b=GSpHcovIBas53qSSHGPc/nfFYJXH0tpO4pIUIKhhFCQ+XUnveL1E/LLuAUF0rfunQA
-         Qu0Ph6+2OpABJjcCT+o4YjRoCrIIZpIXcVBNqB387JH+2bWPAjWr3m00A5i1b5FQx8Uc
-         3hWH3HoB1v+qBP3rByKBdmIt+w2Y7FIl/kBR2lHGSxCFFOjyHGWWg39LOzI4DQv6ebkB
-         Aj4x0a1KwBDQOF29Ij+L4Wt7xmEQwSGgqPPCDEsR6CEM85AiPxCSE3XDnYtqnMWIDCmm
-         ABTZreSFeGTZK42l++JlgzyoNwXJctsZzS4ggGM9JZnWP8Sp3lCLgRZzWiYOlOMckpeE
-         H3ew==
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=hzp3W57grtENZ1UMp0tOsXr8ZoYgbq44MmPXCel3Oa4=;
+        b=W6qfmBMKsTv98mLlYbwvasVyjfbNJpx35I87S9ODLKaOW8i/gNzfJE227YWEEgZ7wh
+         HcABjt4NZynd7MI2AHz3zEcEuPDkRMfAYmQzf1NnC+Z4nm0YsbTjP3xFj0y7TvJOBz/K
+         yBRt65DdAnOgAaUg6TeeXusYlDXyatoOmf07Y=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=79Z9c6dI9E2uafzLue/bSOxRVu0ZiKuAgi/MUWbArdU=;
-        b=0dUprBA/zCn5BeB5DK0cqbDZ5iu4LTJZWXWVK8tPcuiTHyBq2o+Qb/T80qJb/Dqpdh
-         +PZrv0SeRazYRVXbg4WSkZGVB98pGMzw/BZ3Oj0E+G4OcQHkCqTQDscxCnylP3o8p+3P
-         +VfogmNHYdjW4q9SGJgDakM1eUd04f6ExFtD9xiEfkh9s6kzEsOhFzaGJsm2fRP1ZCg5
-         Vy5qhFKGkqizjd9i38WPj9Gn3Kbs0YjnBRbNFcxWhz0CuOEbs8JJBaEX/blz2beyLym8
-         Dic3rHfcyKYTC1yaF85shrw99OzFWMJxDytrLyhcxftF2I30ERlsG8gpkgKD6glev5Wy
-         xF/Q==
-X-Gm-Message-State: AOAM533Ax1MnSU/pPuVRBTjqpfkLnFVI/vVG5YLAJS5ClPWtWeBXYTdL
-        zke0IodS7/0F295nXA1LINFKRD947rfyy1bJJyYgLg==
-X-Google-Smtp-Source: ABdhPJwqJYgEceRuQHWNSnG0pghvkpr4ogdDBkgZQI2sBLyILod6wmJXhw/QK328ogFOm/WnzPUzdUzp/8zNdYreqc4=
-X-Received: by 2002:a17:90b:4b47:: with SMTP id mi7mr19490735pjb.198.1631859375980;
- Thu, 16 Sep 2021 23:16:15 -0700 (PDT)
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=hzp3W57grtENZ1UMp0tOsXr8ZoYgbq44MmPXCel3Oa4=;
+        b=SC77TqDlVbiWE5eB5CtQRqpJRylX/vLmABIlJfRPLwg7NpQx3AllJwSP38qWjMSUIL
+         thGbwgEWIRsXiDcYNR4SYDfP4jAQcLAjZRB1u9q3gXUTC9FB3kopLkT9cih+zlYgfu/H
+         HHgqMplezHDHB1W5utAHavIfbQf4AMjAI+mteMYJ8ymBkf8qdj9Ez5ERtfbJrNLKC9d+
+         oyxOIYhGhcYu4B58EfPNCsVyFGEJifrvZWMhlSFThj/TrLwNPZj7RwQPmCTZYfXHG9LI
+         fcawteb+GkYyBXfv2nt5jac7LJkV8da/+aLFLETekI+VwnxmUCG3WLO3wNAvqMay5bLM
+         VoGA==
+X-Gm-Message-State: AOAM530EHZlQGHHJXx0LZJ8eVt7c9KRK4Bjm4i8jZqu7kpNvYoG1CaoL
+        kuA4GvHV8+ARnthCRxICphmQq6GJUvSKAcvK1cHLWw==
+X-Google-Smtp-Source: ABdhPJwnpapPZqGI9tLkWKhUef481j23KWl2vfNPI9pI3jrBmxG+IzpYd9/UGy7aQL1rw4TZIJqyFcky0nzdXD72gH4=
+X-Received: by 2002:a05:6830:719:: with SMTP id y25mr7931455ots.77.1631859527357;
+ Thu, 16 Sep 2021 23:18:47 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Thu, 16 Sep 2021 23:18:46 -0700
 MIME-Version: 1.0
-References: <CA+G9fYtFvJdtBknaDKR54HHMf4XsXKD4UD3qXkQ1KhgY19n3tw@mail.gmail.com>
- <CAHk-=wisUqoX5Njrnnpp0pDx+bxSAJdPxfgEUv82tZkvUqoN1w@mail.gmail.com>
- <CAHk-=whF9F89vsfH8E9TGc0tZA-yhzi2Di8wOtquNB5vRkFX5w@mail.gmail.com>
- <36aa5cb7-e3d6-33cb-9ac6-c9ff1169d711@linuxfoundation.org>
- <CAK8P3a1vNx1s-tcjtu6VDxak4NHyztF0XZGe3wOrNbigx1f4tw@mail.gmail.com>
- <120389b9-f90b-0fa3-21d5-1f789b4c984d@linuxfoundation.org>
- <CAFd5g47MgGCoenw08hehegstQSujT7AwksQkxA7mQgKhChimNw@mail.gmail.com>
- <3bad5d2f-8ce7-d0b9-19ad-def68d4193dd@linuxfoundation.org>
- <CAFd5g47bZbqGgMn8PVa=DaSFfjnJsLGVsLTYzmmCOpdv-TfUSQ@mail.gmail.com>
- <CAK8P3a0wQC+9_3wJEACgOLa9C5_zLSmDfU=_79h_KMSE_9JxRw@mail.gmail.com> <CAFd5g44udqkDiYBWh+VeDVJ=ELXeoXwunjv0f9frEN6HJODZng@mail.gmail.com>
-In-Reply-To: <CAFd5g44udqkDiYBWh+VeDVJ=ELXeoXwunjv0f9frEN6HJODZng@mail.gmail.com>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Thu, 16 Sep 2021 23:16:04 -0700
-Message-ID: <CAFd5g45=vkZL-H3EDrvYXvhMM2ekM_CBGN0ySyKitq=z+V+EwQ@mail.gmail.com>
-Subject: Re: ipv4/tcp.c:4234:1: error: the frame size of 1152 bytes is larger
- than 1024 bytes [-Werror=frame-larger-than=]
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Ariel Elior <aelior@marvell.com>,
-        GR-everest-linux-l2@marvell.com, Wei Liu <wei.liu@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>, lkft-triage@lists.linaro.org,
-        "David S. Miller" <davem@davemloft.net>,
+In-Reply-To: <53a38a24cca0b6f1c2a3120f14dfc865@codeaurora.org>
+References: <20200730095350.13925-1-stanimir.varbanov@linaro.org>
+ <20200730095350.13925-3-stanimir.varbanov@linaro.org> <159718256557.1360974.458611240360821676@swboyd.mtv.corp.google.com>
+ <8c1fdf2d0807f07ec57b232497b405f1@codeaurora.org> <CAE-0n53T-RoOvR=s9nHiXAriMgKvBfDqfBfoGKX5Ju5YF3Tcqw@mail.gmail.com>
+ <53a38a24cca0b6f1c2a3120f14dfc865@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Thu, 16 Sep 2021 23:18:46 -0700
+Message-ID: <CAE-0n51Pxs7stTdJ5AO3i+Xm=q1R_EUcueR2+_-gFAa7iqUypg@mail.gmail.com>
+Subject: Re: [PATCH v5 2/3] venus: Add a debugfs file for SSR trigger
+To:     dikshita@codeaurora.org
+Cc:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, jim.cromie@gmail.com,
+        Joe Perches <joe@perches.com>, Jason Baron <jbaron@akamai.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        KUnit Development <kunit-dev@googlegroups.com>
+        linux-media-owner@vger.kernel.org,
+        Akinobu Mita <akinobu.mita@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 10:39 PM Brendan Higgins
-<brendanhiggins@google.com> wrote:
->
-> On Tue, Sep 14, 2021 at 3:04 PM Arnd Bergmann <arnd@arndb.de> wrote:
+Quoting dikshita@codeaurora.org (2021-09-15 23:29:36)
+> On 2021-09-16 01:09, Stephen Boyd wrote:
+> > Quoting dikshita@codeaurora.org (2021-09-15 02:13:09)
+> >>
+> >> So, IMO, we will have to use custom debugfs only.
 > >
-> > On Tue, Sep 14, 2021 at 10:48 PM Brendan Higgins
-> > <brendanhiggins@google.com> wrote:
-> > >
-> > > On Mon, Sep 13, 2021 at 1:55 PM Shuah Khan <skhan@linuxfoundation.org> wrote:
-> > > >
-> > > > On 9/8/21 3:24 PM, Brendan Higgins wrote:
-[...]
-> Alright, I incorporated all the above into a patchset that I think is
-> ready to send out, but I had a couple of issues with the above
-> suggestions:
+> > Can you use DECLARE_FAULT_ATTR()? Or you need it to be active instead
+> > of
+> > passive, i.e. it shouldn't wait for should_fail() to return true, but
+> > actively trigger something on the remoteproc?
+> >
 >
-> - I could not find a config which causes a stacksize warning for
-> sdhci-of-aspeed.
-> - test_scanf is not a KUnit test.
-> - Linus already fixed the thunderbolt test by breaking up the test cases.
+> yes, it doesn't need to wait for should_fail() to return true.
+> the client/user should be able to trigger this subsystem restart(SSR) at
+> any point of time
+> when a session is running. It's totally client-driven.
 >
-> I am going to send out patches for the thunderbolt test and for the
-> sdhci-of-aspeed test for the sake of completeness, but I am not sure
-> if we should merge those two. I'll let y'all decide on the patch
-> review.
+> >>
+> >> Please feel free to correct me in case my understanding of the
+> >> framework
+> >> is wrong.
+> >>
+> >
+> > I presume the fault injection framework could get a new feature that
+> > lets the fault be injected immediately upon writing the debugfs file.
+> > My goal is to consolidate this sort of logic into one place and then
+> > put
+> > it behind some config option that distros can disable so the kernel
+> > isn't bloated with debug features that end users will never care about.
 
-Just in case I missed any interested parties on this thread, I posted
-my patches here:
-
-https://lore.kernel.org/linux-kselftest/20210917061104.2680133-1-brendanhiggins@google.com/T/#t
-
-> I only based the thunderbolt and bitfield test fixes on actual patches
-> from Arnd, but I think Arnd pretty much did all the work here so I am
-> crediting him with a Co-developed-by on all the other patches, so
-> Arnd: please follow up on the other patches with a signed-off-by,
-> unless you would rather me credit you in some other way.
->
-> > Sorry for failing to submit these as a proper patch. If you send a new version,
-> > I think you need to make sure you cover all of the above, using whichever
-> > change you like best.
->
-> I am still going to try to get Linus' suggestion working since it
-> actually solves the problem, but I would rather get the above
-> suggested fix out there since it is quick and I know it works.
+So you can modify fault injection framework to support direct injection
+instead of statistical failures?
