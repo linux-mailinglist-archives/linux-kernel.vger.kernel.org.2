@@ -2,117 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A99A40FA34
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 16:32:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F02440FA37
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 16:33:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242709AbhIQOdu convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 17 Sep 2021 10:33:50 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:32494 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241700AbhIQOdt (ORCPT
+        id S242810AbhIQOeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 10:34:31 -0400
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:39225 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241700AbhIQOea (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 10:33:49 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-62-I8DWIADxNXumcC2ZvYPdxg-1; Fri, 17 Sep 2021 15:32:25 +0100
-X-MC-Unique: I8DWIADxNXumcC2ZvYPdxg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.23; Fri, 17 Sep 2021 15:32:23 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.023; Fri, 17 Sep 2021 15:32:23 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Christophe Leroy' <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        "Michael Ellerman" <mpe@ellerman.id.au>
-CC:     "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2] powerpc/32: Don't use a struct based type for pte_t
-Thread-Topic: [PATCH v2] powerpc/32: Don't use a struct based type for pte_t
-Thread-Index: AQHXq8wPR5JW25uF60m9xktVKLekzquoSMug
-Date:   Fri, 17 Sep 2021 14:32:22 +0000
-Message-ID: <505920070e5f4bf8ad7ccaa12f346469@AcuMS.aculab.com>
-References: <c904599f33aaf6bb7ee2836a9ff8368509e0d78d.1631887042.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <c904599f33aaf6bb7ee2836a9ff8368509e0d78d.1631887042.git.christophe.leroy@csgroup.eu>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Fri, 17 Sep 2021 10:34:30 -0400
+Received: (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id F001F1C0002;
+        Fri, 17 Sep 2021 14:33:05 +0000 (UTC)
+Date:   Fri, 17 Sep 2021 16:33:05 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Nicolas Ferre <nicolas.ferre@microchip.com>
+Cc:     kavyasree.kotagiri@microchip.com, ludovic.desroches@microchip.com,
+        linux@armlinux.org.uk, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Manohar.Puri@microchip.com,
+        Madhuri.Sripada@microchip.com
+Subject: Re: [PATCH v2] ARM: at91: add basic support for new SoC lan966x
+Message-ID: <YUSnIfzWpQ+YGWkB@piout.net>
+References: <20210831102138.2476-1-kavyasree.kotagiri@microchip.com>
+ <8610dd7a-a6eb-0c65-f66e-b4f9fdbce854@microchip.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8610dd7a-a6eb-0c65-f66e-b4f9fdbce854@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy
-> Sent: 17 September 2021 14:58
+Hello,
+
+I wanted to reply earlier but I still have a few comments...
+
+On 17/09/2021 15:41:01+0200, Nicolas Ferre wrote:
+> On 31/08/2021 at 12:21, kavyasree.kotagiri@microchip.com wrote:
+> > From: Kavyasree Kotagiri <Kavyasree.Kotagiri@microchip.com>
+> > 
+> > This patch introduces Microchip LAN966X ARMv7 based SoC family
+> > of multiport gigabit AVB/TSN-capable ethernet switches.
+> > It supports two SKUs: 4-port LAN9662 with multiprotocol
+> > processing support and 8-port LAN9668 switch.
+> > 
+> > LAN966X includes copper and serial ethernet interfaces,
+> > peripheral interfaces such as PCIe, USB, TWI, SPI, UART, QSPI,
+> > SD/eMMC, Parallel Interface (PI) as well as synchronization
+> > and trigger inputs/outputs.
+> > 
+> > Signed-off-by: Kavya Sree Kotagiri <kavyasree.kotagiri@microchip.com>
 > 
-> Long time ago we had a config item called STRICT_MM_TYPECHECKS
-> to build the kernel with pte_t defined as a structure in order
-> to perform additional build checks or build it with pte_t
-> defined as a simple type in order to get simpler generated code.
+> Your name fixed with your permission and as Rob suggested in a previous
+> series.
 > 
-...
-> diff --git a/arch/powerpc/include/asm/pgtable-types.h b/arch/powerpc/include/asm/pgtable-types.h
-> index d11b4c61d686..c60199fc6fa6 100644
-> --- a/arch/powerpc/include/asm/pgtable-types.h
-> +++ b/arch/powerpc/include/asm/pgtable-types.h
-> @@ -5,14 +5,26 @@
->  /* PTE level */
->  #if defined(CONFIG_PPC_8xx) && defined(CONFIG_PPC_16K_PAGES)
->  typedef struct { pte_basic_t pte, pte1, pte2, pte3; } pte_t;
-> -#else
-> +#elif defined(__CHECKER__) || !defined(CONFIG_PPC32)
->  typedef struct { pte_basic_t pte; } pte_t;
-> +#else
-> +typedef pte_basic_t pte_t;
->  #endif
-> +
-> +#if defined(__CHECKER__) || !defined(CONFIG_PPC32) || \
-> +    (defined(CONFIG_PPC_8xx) && defined(CONFIG_PPC_16K_PAGES))
->  #define __pte(x)	((pte_t) { (x) })
->  static inline pte_basic_t pte_val(pte_t x)
->  {
->  	return x.pte;
->  }
-> +#else
-> +#define __pte(x)	((pte_t)(x))
-> +static inline pte_basic_t pte_val(pte_t x)
-> +{
-> +	return x;
-> +}
-> +#endif
+> > ---
+> > v1 -> v2:
+> > - Removed lan966x_dt_device_init().
+> >    System boots fine without this function.
+> > 
+> >   arch/arm/mach-at91/Kconfig   | 13 +++++++++++++
+> >   arch/arm/mach-at91/Makefile  |  1 +
+> 
+> Kconfig and Makefile files updated to avoid merge conflict with SAMA7G5 that
+> was integrated in 5.15-rc1.
+> 
+> >   arch/arm/mach-at91/lan966x.c | 25 +++++++++++++++++++++++++
+> 
+> 
+> >   3 files changed, 39 insertions(+)
+> >   create mode 100644 arch/arm/mach-at91/lan966x.c
+> > 
+> > diff --git a/arch/arm/mach-at91/Kconfig b/arch/arm/mach-at91/Kconfig
+> > index ccd7e80ce943..06cb425af761 100644
+> > --- a/arch/arm/mach-at91/Kconfig
+> > +++ b/arch/arm/mach-at91/Kconfig
+> > @@ -122,6 +122,14 @@ config SOC_SAM9X60
+> >   	help
+> >   	  Select this if you are using Microchip's SAM9X60 SoC
+> > +config SOC_LAN966X
+> > +	bool "ARMv7 based Microchip LAN966X SoC family"
+> > +	depends on ARCH_MULTI_V7
+> > +	select SOC_LAN966
+> > +	select DW_APB_TIMER_OF
+> > +	help
+> > +	  This enables support for ARMv7 based Microchip LAN966X SoC family.
+> > +
 
-Would it be better to define:
-static inline pte_basic_*pte_basic(pte_t *x)
-{
-#if xxx
-	return x;
-#else
-	return &x->pte;
-#endif
-}
+I don't think SOC_LAN966X is a good name or said differently as it is
+not part specific, I don't get why this isn't merged with SOC_LAN966. I
+would have one or the other.
 
-Then pte_val(x) is always *pt_basic(x)
-and the casts like:
+> >   comment "Clocksource driver selection"
+> >   config ATMEL_CLOCKSOURCE_PIT
+> > @@ -188,6 +196,11 @@ config SOC_SAMA5
+> >   	select SOC_SAM_V7
+> >   	select SRAM if PM
+> > +config SOC_LAN966
+> > +	bool
+> > +	select ARM_GIC
+> > +	select MEMORY
+> > +
+> >   config ATMEL_PM
+> >   	bool
+> > diff --git a/arch/arm/mach-at91/Makefile b/arch/arm/mach-at91/Makefile
+> > index f565490f1b70..93cfd5b4e6d4 100644
+> > --- a/arch/arm/mach-at91/Makefile
+> > +++ b/arch/arm/mach-at91/Makefile
+> > @@ -6,6 +6,7 @@
+> >   # CPU-specific support
+> >   obj-$(CONFIG_SOC_AT91RM9200)	+= at91rm9200.o
+> >   obj-$(CONFIG_SOC_AT91SAM9)	+= at91sam9.o
+> > +obj-$(CONFIG_SOC_LAN966X)	+= lan966x.o
+> >   obj-$(CONFIG_SOC_SAM9X60)	+= sam9x60.o
+> >   obj-$(CONFIG_SOC_SAMA5)		+= sama5.o
+> >   obj-$(CONFIG_SOC_SAMV7)		+= samv7.o
+> > diff --git a/arch/arm/mach-at91/lan966x.c b/arch/arm/mach-at91/lan966x.c
+> > new file mode 100644
+> > index 000000000000..154d616569ae
+> > --- /dev/null
+> > +++ b/arch/arm/mach-at91/lan966x.c
+> > @@ -0,0 +1,25 @@
+> > +// SPDX-License-Identifier: GPL-2.0-or-later
+> > +/*
+> > + * Setup code for LAN966X
+> > + *
+> > + * Copyright (C) 2021 Microchip Technology, Inc. and its subsidiaries
+> > + *
+> > + */
+> > +
+> > +#include <linux/of.h>
+> > +#include <linux/of_platform.h>
+> > +
+> > +#include <asm/mach/arch.h>
+> > +#include <asm/system_misc.h>
+> > +
 
-> -	pte_basic_t *entry = &ptep->pte;
-> +	pte_basic_t *entry = (pte_basic_t *)ptep;
+I'm not sure all those include are actually used.
 
-can go away.
+> > +#include "generic.h"
+> > +
+> > +static const char *const lan966x_dt_board_compat[] __initconst = {
+> > +	"microchip,lan966x",
+> 
+> This compatibility string will need to be documented in
+> Documentation/arm/microchip.rst
+> and
+> Documentation/devicetree/bindings/arm/atmel-at91.yaml (or a similar file, as
+> you wish).
+> 
+> You'll add it to your DT patches.
+> 
 
-	David
+Yes and you'll have to document lan9662 and lan9668. Really, wildcards
+in the compatible strings are usually not a good idea.
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+> > +	NULL
+> > +};
+> > +
+> > +DT_MACHINE_START(lan966x_dt, "Microchip LAN966X")
+> > +	/* Maintainer: Microchip */
+> > +	.dt_compat	= lan966x_dt_board_compat,
+> > +MACHINE_END
+> > 
+> 
+> All the rest looks good to me: no need to resend. It's queued in at91-soc
+> branch targeting 5.16.
+> You'll see it appearing in linux-next in the next few days.
+> 
 
+Well, I'm still wondering one thing, is arch/arm/mach-at91/lan966x.c
+necessary at all to boot the platform?
+
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
