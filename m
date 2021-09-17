@@ -2,160 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30F8F40FDF7
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 18:33:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C80CA40FE01
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 18:38:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236046AbhIQQev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 12:34:51 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:33442 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234729AbhIQQeu (ORCPT
+        id S234729AbhIQQjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 12:39:42 -0400
+Received: from mail-pj1-f46.google.com ([209.85.216.46]:38425 "EHLO
+        mail-pj1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229456AbhIQQjl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 12:34:50 -0400
-Received: by mail-io1-f69.google.com with SMTP id g2-20020a6b7602000000b005be59530196so20393068iom.0
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 09:33:28 -0700 (PDT)
+        Fri, 17 Sep 2021 12:39:41 -0400
+Received: by mail-pj1-f46.google.com with SMTP id g13-20020a17090a3c8d00b00196286963b9so10411511pjc.3;
+        Fri, 17 Sep 2021 09:38:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=U3Be+e1nEljiRDJy9JzHj+OzA2tVmF9w+AxnCUvsToY=;
-        b=hmq9HQlVnzsLqTvrKy5YttnA3MLcQhLMOzJtI0LYJAScdFFNYltE+gkGwjd4ggOhZ8
-         /3Y778AlB9NHtC1c2nhIErOVdjN8ynVi/vsk9wjXdNXcxLjVmtt/78UhTxlCzjL+L7aq
-         SzV6WW0NYyGF1n0UK6c8dNawIrd2ZgFKGrrU7BkAq9iSJ67BUMu4GRI993CtcgR02MvO
-         gsDqxiMGFbbXb4+S5M59o8XWm5rLASAjV38CnYr4iH5Fx6KC9JNxvI/eWp1SuHZaDRGh
-         sCmNfOUdN4W6sxUnPgs9nxEuMaZckOz2kJbdPMddo1dDi52Z8jsG8WNSib8aEOeIxo09
-         ketw==
-X-Gm-Message-State: AOAM531kXy5h0M7SwPD8PeyW3gznfnmx5m6608N3mmU8as4QlAaV7NOy
-        H4xSV1NhIl1nQH8mReWT/8F4JNBzYQo6Syww3F2nNBZn7V2C
-X-Google-Smtp-Source: ABdhPJy0+hTmnI9lyt8TPo+Jx+Jj9gRPhXMgEdLmdXGdRxFM+i1TGkH2PJ4mkR+tJa2wK6dpexntpiHqdmQJxemLoupvcVOIEQ+8
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SrqrNpWzeD/aTYmHufxXWMgS8DaaH14qLiFnZTS/9Sc=;
+        b=PJGmCvHV9svmH2swHnB3yo4AU+d75N3C28zalAflCTyyFUnkKUQAppO+CeAEyVHTT8
+         58IfmJXwcLY22IEts/e0dyBk7U0phqf0waREJDWQd1O1U6KThD9SnRTigulkxeU+rJt4
+         RAqtDaP9rTVPO2NEVz+rEiNsdTOZzape3s4y/3zjhqrtEYPzdfJyufFp6k9fZDzTxMJA
+         +DBorfrRUIrfUGxoY2w6TT8NnqGlcVnl3ky8CjcqUXvIplC0TAWukOqBIPCIxAPb0Fbb
+         jDF0oQh4o8ordxGcL2WzIbfbnS1MrhExqfenYPc8aLf3kWeO5v0tYbOJoxcmJcf1oJzi
+         2nqg==
+X-Gm-Message-State: AOAM530vmNrloge9UYohqYcWSVdE3vHitRQgk//bdoxPMLf3tbCxt6gU
+        wX6R2pCTjlwYAM8PfWfTi5E=
+X-Google-Smtp-Source: ABdhPJxvD7IjhTwrOLfwTM6GvRP8r4vHp3UhAxUaZUXdqsq53TID8n+JhVJsrJshf2gZ07js83SHdg==
+X-Received: by 2002:a17:90a:af8f:: with SMTP id w15mr21867581pjq.93.1631896698369;
+        Fri, 17 Sep 2021 09:38:18 -0700 (PDT)
+Received: from localhost ([2601:647:5b00:6f70:be34:681b:b1e9:776f])
+        by smtp.gmail.com with ESMTPSA id n205sm6336557pfd.38.2021.09.17.09.38.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Sep 2021 09:38:17 -0700 (PDT)
+Date:   Fri, 17 Sep 2021 09:38:16 -0700
+From:   Moritz Fischer <mdf@kernel.org>
+To:     Dave Airlie <airlied@gmail.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, Tom Rix <trix@redhat.com>,
+        Moritz Fischer <mdf@kernel.org>, hao.wu@intel.com,
+        LKML <linux-kernel@vger.kernel.org>, linux-fpga@vger.kernel.org
+Subject: Re: [PATCH] MAINTAINERS: Add Tom Rix as fpga maintainer
+Message-ID: <YUTEeCcCholiPLRO@epycbox.lan>
+References: <20210914182333.3903389-1-trix@redhat.com>
+ <YUDw0gvgdijpytfU@kroah.com>
+ <25d1dac2-4f9f-b5f0-8ce8-b88442deac9d@redhat.com>
+ <YUH9dg01Mtk+kO+C@kroah.com>
+ <c0630361-69cf-992a-78bf-a1c8335acd28@redhat.com>
+ <YUJdts/9kowAen+K@epycbox.lan>
+ <ad209636-a819-5bd5-b643-1cda12201a73@redhat.com>
+ <YUM9RMDb/uYESLaX@kroah.com>
+ <CAPM=9twrdRfRSsDaaGb7s-D4TZeLaScTkkpFN+1qfbvGwkgyeQ@mail.gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a92:c8c3:: with SMTP id c3mr8361494ilq.165.1631896408280;
- Fri, 17 Sep 2021 09:33:28 -0700 (PDT)
-Date:   Fri, 17 Sep 2021 09:33:28 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b9d40e05cc337db1@google.com>
-Subject: [syzbot] KASAN: use-after-free Read in copy_page_from_iter_atomic
-From:   syzbot <syzbot+ffc4eceb22dfcf9fd6a0@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPM=9twrdRfRSsDaaGb7s-D4TZeLaScTkkpFN+1qfbvGwkgyeQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Dave,
 
-syzbot found the following issue on:
+On Fri, Sep 17, 2021 at 10:21:27AM +1000, Dave Airlie wrote:
+> On Thu, 16 Sept 2021 at 22:50, Greg KH <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Thu, Sep 16, 2021 at 05:41:35AM -0700, Tom Rix wrote:
+> > >
+> > > On 9/15/21 1:55 PM, Moritz Fischer wrote:
+> > > > On Wed, Sep 15, 2021 at 09:12:51AM -0700, Tom Rix wrote:
+> > > > > On 9/15/21 7:04 AM, Greg KH wrote:
+> > > > > > On Wed, Sep 15, 2021 at 06:23:16AM -0700, Tom Rix wrote:
+> > > > > > > On 9/14/21 11:58 AM, Greg KH wrote:
+> > > > > > > > [note, you got the maintainer's email address wrong on your cc: line
+> > > > > > > >     I fixed it up...]
+> > > > > > > >
+> > > > > > > > On Tue, Sep 14, 2021 at 11:23:33AM -0700, trix@redhat.com wrote:
+> > > > > > > > > From: Tom Rix <trix@redhat.com>
+> > > > > > > > >
+> > > > > > > > > I am the maintainer of the fpga/ subsystem for both the kernel and
+> > > > > > > > > userspace for Red Hat.  I have been an active reviewer and contributor
+> > > > > > > > > on for public fpga/ subsystem for the last year.  I would like to
+> > > > > > > > > help out more.
+> > > > > > > > >
+> > > > > > > > > Since I am paid to do this work, change the status to Supported.
+> > > > > > > > >
+> > > > > > > > > Signed-off-by: Tom Rix <trix@redhat.com>
+> > > > > > > > > ---
+> > > > > > > > >     MAINTAINERS | 4 ++--
+> > > > > > > > >     1 file changed, 2 insertions(+), 2 deletions(-)
+> > > > > > > > >
+> > > > > > > > > diff --git a/MAINTAINERS b/MAINTAINERS
+> > > > > > > > > index 04fa4edf100b83..0443d7ab826659 100644
+> > > > > > > > > --- a/MAINTAINERS
+> > > > > > > > > +++ b/MAINTAINERS
+> > > > > > > > > @@ -7353,9 +7353,9 @@ F:  include/uapi/linux/fpga-dfl.h
+> > > > > > > > >     FPGA MANAGER FRAMEWORK
+> > > > > > > > >     M:    Moritz Fischer <mdf@kernel.org>
+> > > > > > > > > -R:       Tom Rix <trix@redhat.com>
+> > > > > > > > > +M:       Tom Rix <trix@redhat.com>
+> > > > > > > > >     L:    linux-fpga@vger.kernel.org
+> > > > > > > > > -S:       Maintained
+> > > > > > > > > +S:       Supported
+> > > > > > > > >     W:    http://www.rocketboards.org
+> > > > > > > > >     Q:    http://patchwork.kernel.org/project/linux-fpga/list/
+> > > > > > > > >     T:    git git://git.kernel.org/pub/scm/linux/kernel/git/mdf/linux-fpga.git
+> > > > > > > > > --
+> > > > > > > > > 2.26.3
+> > > > > > > > >
+> > > > > > > > Traditionally existing maintainers are the ones that add new
+> > > > > > > > maintainers, it's not something that you just submit a patch for hoping
+> > > > > > > > it will be accepted.
+> > > > > > > >
+> > > > > > > > What has changed since the last time you asked to do this?
+> > > > > > > Because public and private requests have gone unanswered for so long, it is
+> > > > > > > unclear if Moritz is still maintaining the subsystem.
+> > > > > > He is, as is evident by the patches I accept from him each merge.
+> > > > > >
+> > > > > > > The nearly year old xrt patchset has been pending for 6 weeks with minor
+> > > > > > > changes to one patch out of 14 needing reviews.
+> > > > > > Code quality is not the maintainer's job, it's the developer's, so the
+> > > > > > age and number of reviews is not any indication.
+> > > > > https://lore.kernel.org/linux-fpga/20210802160521.331031-1-lizhi.hou@xilinx.com/
+> > > > >
+> > > > > The review is needed because Moritz asked for the changes v8 here
+> > > > >
+> > > > > https://lore.kernel.org/linux-fpga/YP42zE2ljx4hHj40@epycbox.lan/
+> > > > >
+> > > > > When the maintainer asks for the changes, they are responsible for the
+> > > > > followup.
+> > > > >
+> > > > > > > The standard release patchset, which needs an opinion has on an api change,
+> > > > > > > has been outstanding for 8 weeks.
+> > > > > > Have a pointer to it?
+> > > > > This was a change you requested. the recent patchset is
+> > > > >
+> > > > > https://lore.kernel.org/linux-fpga/20210914214327.94048-4-russell.h.weight@intel.com/
+> > > > >
+> > > > > The discussion around the api change is
+> > > > >
+> > > > > https://lore.kernel.org/linux-fpga/661d53d0-0ba4-d344-8da0-995a9b612905@redhat.com/
+> > > > >
+> > > > > In these toss up's if the maintainer does not weigh in as the tie breaker,
+> > > > > the patch stalls.
+> > > > >
+> > > > > > > If maintainership depends on an approving maintainter, what happens when the
+> > > > > > > approving maintainer has left ?
+> > > > > > Vacations happen in the summer.  I've talked to Moritz many times, and
+> > > > > > all is well here.
+> > > > > Yes. in the xrt v9 patch Moritz announced late of a vacation with a return
+> > > > > of 9/4.
+> > > > >
+> > > > > It has been 11 days.
+> > > > I had a family issue that was unforseen combined with an unusual high
+> > > > post-vacation workload at $dayjob when I got back.
+> > > >
+> > > > I'm still catching up, and will get to it when I can.
+> > >
+> > > I almost never take vacation because of the post vacation workload.
+> >
+> > That is not sustainable, nor a requirement of a kernel maintainer.
+> >
+> > > You not having backup is a problem.
+> > >
+> > > Please consider taking the help I am offering.
+> >
+> > You can not force yourself on others.  Moritz is doing a fine job,
+> > please do not make it difficult.
+> 
+> I think it's probably up to Moritz to discuss this possibility with
+> Tom, but we should not be dismissing potential comaintainer roles
+> either, the bus factor is real, and being able to take time off
+> without things grinding to a halt is a welcome feature for everyone.
 
-HEAD commit:    7d2a07b76933 Linux 5.14
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12fe8af5300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=113c5df900d8cf12
-dashboard link: https://syzkaller.appspot.com/bug?extid=ffc4eceb22dfcf9fd6a0
-compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
+I'm not generally opposed to having another maintainer to take patches
+for the times I'm out or get hit by a bus. However, I don't feel like
+being bullied into this.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Between off-list emails, attempts to go behind my back emailing people
+complaining about me, declaring himself maintainer and pro-claiming
+there's a new repo for linux-fpga over the last year and some, I've just
+about had enough of this sh*t. This is not how this works.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ffc4eceb22dfcf9fd6a0@syzkaller.appspotmail.com
+There are plenty of folks around that also help out and that I'd much
+rather work with at this point -- if just to skip the drama.
 
-==================================================================
-BUG: KASAN: use-after-free in copy_page_from_iter_atomic+0x9c7/0x1520 lib/iov_iter.c:918
-Read of size 4096 at addr ffff8880298b0000 by task kworker/u4:8/11701
+So for now NAK on this patch from my end.
 
-CPU: 0 PID: 11701 Comm: kworker/u4:8 Not tainted 5.14.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: loop5 loop_rootcg_workfn
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1ae/0x29f lib/dump_stack.c:105
- print_address_description+0x66/0x3b0 mm/kasan/report.c:233
- __kasan_report mm/kasan/report.c:419 [inline]
- kasan_report+0x163/0x210 mm/kasan/report.c:436
- check_region_inline mm/kasan/generic.c:135 [inline]
- kasan_check_range+0x2b5/0x2f0 mm/kasan/generic.c:189
- memcpy+0x25/0x60 mm/kasan/shadow.c:65
- copy_page_from_iter_atomic+0x9c7/0x1520 lib/iov_iter.c:918
- generic_perform_write+0x2dd/0x580 mm/filemap.c:3664
- __generic_file_write_iter+0x225/0x5a0 mm/filemap.c:3783
- generic_file_write_iter+0xa7/0x1b0 mm/filemap.c:3815
- do_iter_readv_writev+0x566/0x770 include/linux/fs.h:2108
- do_iter_write+0x16c/0x5f0 fs/read_write.c:866
- lo_write_bvec+0x267/0x6f0 drivers/block/loop.c:328
- lo_write_simple drivers/block/loop.c:350 [inline]
- do_req_filebacked drivers/block/loop.c:668 [inline]
- loop_handle_cmd drivers/block/loop.c:2204 [inline]
- loop_process_work+0x21c2/0x2cc0 drivers/block/loop.c:2244
- process_one_work+0x833/0x10c0 kernel/workqueue.c:2276
- worker_thread+0xac1/0x1320 kernel/workqueue.c:2422
- kthread+0x453/0x480 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-
-The buggy address belongs to the page:
-page:ffffea0000a62c00 refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x298b0
-flags: 0xfff00000000000(node=0|zone=1|lastcpupid=0x7ff)
-raw: 00fff00000000000 ffffea0000bb3348 ffffea0000d492c8 0000000000000000
-raw: 0000000000000000 0000000000000000 00000000ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as freed
-page last allocated via order 0, migratetype Unmovable, gfp_mask 0xdc0(GFP_KERNEL|__GFP_ZERO), pid 20552, ts 462739681694, free_ts 462770335978
- prep_new_page mm/page_alloc.c:2436 [inline]
- get_page_from_freelist+0x779/0xa30 mm/page_alloc.c:4168
- __alloc_pages+0x26c/0x5f0 mm/page_alloc.c:5390
- lbmLogInit fs/jfs/jfs_logmgr.c:1824 [inline]
- lmLogInit+0x2fc/0x1e90 fs/jfs/jfs_logmgr.c:1278
- open_inline_log fs/jfs/jfs_logmgr.c:1183 [inline]
- lmLogOpen+0x505/0x1190 fs/jfs/jfs_logmgr.c:1077
- jfs_mount_rw+0xe7/0x710 fs/jfs/jfs_mount.c:260
- jfs_fill_super+0x64c/0xc20 fs/jfs/super.c:570
- mount_bdev+0x26c/0x3a0 fs/super.c:1368
- legacy_get_tree+0xea/0x180 fs/fs_context.c:610
- vfs_get_tree+0x86/0x270 fs/super.c:1498
- do_new_mount fs/namespace.c:2923 [inline]
- path_mount+0x1981/0x2c10 fs/namespace.c:3253
- do_mount fs/namespace.c:3266 [inline]
- __do_sys_mount fs/namespace.c:3474 [inline]
- __se_sys_mount+0x2f9/0x3b0 fs/namespace.c:3451
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1346 [inline]
- free_pcp_prepare+0xc29/0xd20 mm/page_alloc.c:1397
- free_unref_page_prepare mm/page_alloc.c:3332 [inline]
- free_unref_page+0x7e/0x550 mm/page_alloc.c:3411
- lbmLogShutdown fs/jfs/jfs_logmgr.c:1872 [inline]
- lmLogShutdown+0x4ad/0x920 fs/jfs/jfs_logmgr.c:1692
- lmLogClose+0x2c2/0x560 fs/jfs/jfs_logmgr.c:1468
- jfs_umount+0x297/0x370 fs/jfs/jfs_umount.c:116
- jfs_fill_super+0x8e5/0xc20 fs/jfs/super.c:605
- mount_bdev+0x26c/0x3a0 fs/super.c:1368
- legacy_get_tree+0xea/0x180 fs/fs_context.c:610
- vfs_get_tree+0x86/0x270 fs/super.c:1498
- do_new_mount fs/namespace.c:2923 [inline]
- path_mount+0x1981/0x2c10 fs/namespace.c:3253
- do_mount fs/namespace.c:3266 [inline]
- __do_sys_mount fs/namespace.c:3474 [inline]
- __se_sys_mount+0x2f9/0x3b0 fs/namespace.c:3451
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Memory state around the buggy address:
- ffff8880298aff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffff8880298aff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->ffff8880298b0000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-                   ^
- ffff8880298b0080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff8880298b0100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Cheers,
+Moritz
