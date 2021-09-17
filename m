@@ -2,205 +2,308 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6487940FB6B
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 17:11:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC61A40FB71
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 17:12:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239107AbhIQPNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 11:13:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46346 "EHLO
+        id S239948AbhIQPNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 11:13:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238936AbhIQPMx (ORCPT
+        with ESMTP id S238936AbhIQPN1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 11:12:53 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03E34C061574;
-        Fri, 17 Sep 2021 08:11:32 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id mv7-20020a17090b198700b0019c843e7233so3875925pjb.4;
-        Fri, 17 Sep 2021 08:11:31 -0700 (PDT)
+        Fri, 17 Sep 2021 11:13:27 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3E50C061768
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:12:05 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id eg28so8300446edb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:12:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:references:date:in-reply-to:message-id
-         :user-agent:mime-version;
-        bh=r2RrJiEEpsRgQCHuxCAXJ8mbd4K7vVzXiaC0Gr2CnAw=;
-        b=pWgcVNMhEZOA69aKFNWJwg3VmHa5LdQCEBJJZO1xH+PRmYT56z0jSKa+ggijbbaG+g
-         12kQ25dUH682gtDxa6vXF55uC/0/19zjH+j+0L36RS1J8JRgiE049uGkBIzP3HQPaI/r
-         Yhly8/8LGIqQkwqBV35mLBjYOu59M4hLRNOZ4MCClnRVEd3rPP2Z7E3cDaMENg9aCXjT
-         vk5kzkSFX2KbPvVtDbVIOgQElOyLo27baw3lkKP0oWqE4nJcpRR7tLKQenEE+etmdOYO
-         4GBXodOv3+WWTJhkjZA+XxZdicCjBUw6ekDnmevPQlOVqs6udae13ua6WsxCfbx0ti8X
-         NSqg==
+        d=gooddata.com; s=google;
+        h=mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=8t6EOdK7NPdMy+YK2ByhMHAlbs+MgoOQl6R4UStrWgw=;
+        b=jLwKgKRSCojssX3fFX/7GJlyjrMSQbDjPTFG8CGHDlFY7WePGVb4tONweRQqZCT5Ya
+         s6eimcZrDK99N0zJpCidH7g7wugc6lI4NZab5oixecVGESroNc1RqjHjRQKqwAYSLRbY
+         mTV6xqaFush4v6u8Eu9V3Ri0UKOPIHGUUVFzk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:references:date:in-reply-to
-         :message-id:user-agent:mime-version;
-        bh=r2RrJiEEpsRgQCHuxCAXJ8mbd4K7vVzXiaC0Gr2CnAw=;
-        b=gtrucg3rb0c9tvRyxCdNjY4lLsiZROzi/YFVgvVPyJwkLOXiO0eFTFflu2Ly4NDTo+
-         VYaxuqSqI9RDaAhalwoJRlJvMlbnpe7zKQAJEeCVt+/FZpGFgkR2otdVSXWDqo+Ud71d
-         jQPUJdB5upgr/mjRrdAljnA+oOTJZyR2C8Rdvnmr6wd+Wt7G9Ub+wztcROmzcT09KUs3
-         1UZbIReedM1yOJAn+suELMCHrwcavRGAde/YxHp0arDVOZyWX49jGHfVJ8FyZ1mJ5yuq
-         FSt1j0gtxuNwLdyvKuoJHPJKWrb7ihlBe/iy0KNfz+Em3BeG8qRmnysa1Q5cUlIbukVI
-         n5sw==
-X-Gm-Message-State: AOAM530NVEf3Xa71Rf0PYaXatofhD6f1lFgA6gmvcpj6MJP0C1x5bJJr
-        35eLKm9s/jHf/ekgeSn6FjY77hZb3olGtg==
-X-Google-Smtp-Source: ABdhPJxJ4+6F3QMapQMAbfBhQNz7vT4Jw2fiYFQYfg8YyrrllwIi2qtejMHSvQU8z3bC4P4bDpgqag==
-X-Received: by 2002:a17:90b:350d:: with SMTP id ls13mr21395876pjb.235.1631891491434;
-        Fri, 17 Sep 2021 08:11:31 -0700 (PDT)
-Received: from localhost (122x211x248x161.ap122.ftth.ucom.ne.jp. [122.211.248.161])
-        by smtp.gmail.com with ESMTPSA id b10sm6450960pfi.122.2021.09.17.08.11.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 08:11:30 -0700 (PDT)
-From:   Punit Agrawal <punitagrawal@gmail.com>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     Michael Riesch <michael.riesch@wolfvision.net>, wens@kernel.org,
-        netdev <netdev@vger.kernel.org>,
-        "moderated list:ARM/STM32 ARCHITECTURE" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>, sashal@kernel.org
-Subject: Re: [PATCH] net: stmmac: dwmac-rk: fix unbalanced pm_runtime_enable
- warnings
-References: <20210823143754.14294-1-michael.riesch@wolfvision.net>
-        <CAGb2v67Duk_56fOKVwZsYn2HKJ99o8WJ+d4jetD2UjDsAt9BcA@mail.gmail.com>
-        <568a0825-ed65-58d7-9c9c-cecb481cf9d9@wolfvision.net>
-        <87czpvcaab.fsf@stealth>
-        <aa905e4d-c5a7-e969-1171-3a90ecd9b9cc@wolfvision.net>
-        <2424d7da-7022-0b38-46ba-b48f43cda23d@suse.com>
-        <877dff7jq6.fsf@stealth>
-        <902ad36d-153c-857b-40a6-449f76aa17b0@suse.com>
-Date:   Sat, 18 Sep 2021 00:11:28 +0900
-In-Reply-To: <902ad36d-153c-857b-40a6-449f76aa17b0@suse.com> (Qu Wenruo's
-        message of "Fri, 17 Sep 2021 16:02:01 +0800")
-Message-ID: <87zgsb5ja7.fsf@stealth>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=8t6EOdK7NPdMy+YK2ByhMHAlbs+MgoOQl6R4UStrWgw=;
+        b=yIQkV/KeqqnzAUc5W+HP15yEgA7TjpI1/xl3Vno2W0HkCRh2fwuW3jdtjIFM8TBmND
+         53ImBqIvmqJOa/Dxr1PuXMk0H5DmeL6MV/yBspDWWoqiwddgQnY79J6eOH8AwkwZXqkp
+         ZJXcqUZyXQK1LPj0/aGBzTYWoaziTY/szFW1X+QXI5jiPsQpek8LrZ0GyovsUpFF+Row
+         fZ/1jM5xY9wJa/p8drG3DW2uNAKlRAmLWo+XwS/jynLQfxPqXBib0KpfkymZHlEFygKB
+         0vGP3IqcULQhUmTz3aP+eWUoKLP/VF+8/RMypt9z7lFuJ5p4644UhC/LP2OQjYTmJj1a
+         PVCw==
+X-Gm-Message-State: AOAM532n2U17uWeDkzQp05+MzJjvU3/PcMxjLlOAzpdDCkzH4bKwl0D4
+        PT8zNysqFF3PQ89oVgq0/VJEU2OFe+mVxo4IbI1pF1csdcdpLS7r
+X-Google-Smtp-Source: ABdhPJz0xKCryNKrH8zY5xCfK14hz5iZTPpyaK5s3JW897i/aq4ZkmlScMnG8r0xze5WK8nAteIGkKpRf/Ze96R2PRU=
+X-Received: by 2002:a17:906:3983:: with SMTP id h3mr12700603eje.249.1631891524017;
+ Fri, 17 Sep 2021 08:12:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+From:   Igor Raits <igor@gooddata.com>
+Date:   Fri, 17 Sep 2021 17:11:53 +0200
+Message-ID: <CA+9S74g1aHB1WUkzYRDXggs-QeHxKCTwwL=uh1UfJZ3yKd0BYQ@mail.gmail.com>
+Subject: [ cut here ] without any backtrace
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Qu Wenruo <wqu@suse.com> writes:
+Hello,
 
-> On 2021/9/17 15:18, Punit Agrawal wrote:
->> Hi Qu,
->> Qu Wenruo <wqu@suse.com> writes:
->> 
->>> On 2021/8/30 22:10, Michael Riesch wrote:
->>>> Hi Punit,
->>>> On 8/30/21 3:49 PM, Punit Agrawal wrote:
->>>>> Hi Michael,
->>>>>
->>>>> Michael Riesch <michael.riesch@wolfvision.net> writes:
->>>>>
->>>>>> Hi ChenYu,
->>>>>>
->>>>>> On 8/29/21 7:48 PM, Chen-Yu Tsai wrote:
->>>>>>> Hi,
->>>>>>>
->>>>>>> On Mon, Aug 23, 2021 at 10:39 PM Michael Riesch
->>>>>>> <michael.riesch@wolfvision.net> wrote:
->>>>>>>>
->>>>>>>> This reverts commit 2c896fb02e7f65299646f295a007bda043e0f382
->>>>>>>> "net: stmmac: dwmac-rk: add pd_gmac support for rk3399" and fixes
->>>>>>>> unbalanced pm_runtime_enable warnings.
->>>>>>>>
->>>>>>>> In the commit to be reverted, support for power management was
->>>>>>>> introduced to the Rockchip glue code. Later, power management support
->>>>>>>> was introduced to the stmmac core code, resulting in multiple
->>>>>>>> invocations of pm_runtime_{enable,disable,get_sync,put_sync}.
->>>>>>>>
->>>>>>>> The multiple invocations happen in rk_gmac_powerup and
->>>>>>>> stmmac_{dvr_probe, resume} as well as in rk_gmac_powerdown and
->>>>>>>> stmmac_{dvr_remove, suspend}, respectively, which are always called
->>>>>>>> in conjunction.
->>>>>>>>
->>>>>>>> Signed-off-by: Michael Riesch <michael.riesch@wolfvision.net>
->>>>>>>
->>>>>>> I just found that Ethernet stopped working on my RK3399 devices,
->>>>>>> and I bisected it down to this patch.
->>>>>>
->>>>>> Oh dear. First patch in a kernel release for a while and I already break
->>>>>> things.
->>>>>
->>>>> I am seeing the same failure symptoms reported by ChenYu on my RockPro64
->>>>> with v5.14. Reverting the revert i.e., 2d26f6e39afb ("net: stmmac:
->>>>> dwmac-rk: fix unbalanced pm_runtime_enable warnings") brings back the
->>>>> network.
->>>>>
->>>>>> Cc: Sasha as this patch has just been applied to 5.13-stable.
->>>>>>
->>>>>>> The symptom I see is no DHCP responses, either because the request
->>>>>>> isn't getting sent over the wire, or the response isn't getting
->>>>>>> received. The PHY seems to be working correctly.
->>>>>>
->>>>>> Unfortunately I don't have any RK3399 hardware. Is this a custom
->>>>>> board/special hardware or something that is readily available in the
->>>>>> shops? Maybe this is a good reason to buy a RK3399 based single-board
->>>>>> computer :-)
->>>>>
->>>>> Not sure about the other RK3399 boards but RockPro64 is easily
->>>>> available.
->>>> I was thinking to get one of those anyway ;-)
->>>>
->>>>>> I am working on the RK3568 EVB1 and have not encountered faulty
->>>>>> behavior. DHCP works fine and I can boot via NFS. Therefore, not sure
->>>>>> whether I can be much of help in this matter, but in case you want to
->>>>>> discuss this further please do not hesitate to contact me off-list.
->>>>>
->>>>> I tried to look for the differences between RK3568 and RK3399 but the
->>>>> upstream device tree doesn't seem to carry a gmac node in the device
->>>>> tree for EK3568 EVB1. Do you have a pointer for the dts you're using?
->>>> The gmac nodes have been added recently and should enter
->>>> 5.15-rc1. Until
->>>> then, you can check out the dts from linux-rockchip/for-next [0].
->>>
->>> Do you have the upstream commit?
->>>
->>> As I compiled v5.15-rc1 and still can't get the ethernet work.
->>>
->>> Not sure if it's my Uboot->systemd-boot->customer kernel setup not
->>> passing the device tree correctly or something else...
->> For the RK3568 device tree changes, I think the pull request got
->> delayed
->> to the next cycle. So likely to land in v5.16.
->> In case you're after ethernet on RK3399, there's no solution
->> yet. Reverting 2d26f6e39afb ("net: stmmac: dwmac-rk: fix unbalanced
->> pm_runtime_enable warnings") gets you there in the meanwhile.
->
-> Thanks, currently I have seen other distros like ManjaroARM is already
-> reverting that commit.
->
-> But even with that commit reverted, I still get some other strange
-> network behavior.
->
-> The most weird one is distcc, when the RK3399 board is the client and
-> x86_64 desktop acts as a volunteer, after compiling hundreds of files, 
-> it suddenly no longer work.
+We are experiencing some weird kernel panic both on CentOS 8 default
+kernel and also on 5.14.1 one (we are yet to test the latest 5.14.x
+but I have a feeling that it won't help).
 
-I haven't seen something like this - but then I am not a heavy user of
-the network on the board. 
+Our setup is quite simple: KVM on a x86_64 server - 5.14.1 kernel on both s=
+ides.
 
-Is it just the network that dies or the whole system freezes? Sometimes
-I've seen the board lock up if it's under heavy load.
+After some time, the VM stops responding and in the dmesg there is only:
+=E2=80=A6
+[14116.119527] weave: port 10(vethwepl8e0f203) entered disabled state
+[14116.123641] device vethwepl8e0f203 left promiscuous mode
+[14116.124509] weave: port 10(vethwepl8e0f203) entered disabled state
+[14134.462172] ------------[ cut here ]------------
 
-> All work can no longer be distributed to the same volunteer.
->
->
-> But on RPI CM4 board, the same kernel (both upstream 5.14.2, even the
-> binary is the same), the same distro (Manjaro ARM), the same distcc 
-> setup, the setup works flawless.
->
->
-> Not sure if this is related, but it looks like a network related
-> problem, and considering both boards are using the same kernel, just 
-> different ethernet driver, I guess there is something more problematic
-> here in recent RK3399 code.
+No backtrace, no other useful information. VM is inaccessible.
 
-If you are only seeing the problem with recent kernels, maybe a bisect
-might help narrow things down.
+I've dumped the VM's memory with "virsh dump" and was trying to check
+what's going on=E2=80=A6 However, it is not really useful as "crash" says t=
+hat
+"panic task not found".
 
-[...]
+      KERNEL: /usr/lib/debug/lib/modules/5.14.1-1.gdc.el8.x86_64/vmlinux
+    DUMPFILE: stg3-k8s-worker04_int_na_intgdc_com.dump
+        CPUS: 6
+        DATE: Thu Sep 16 21:51:35 CEST 2021
+      UPTIME: 03:55:46
+LOAD AVERAGE: 1.58, 1.47, 1.45
+       TASKS: 1277
+    NODENAME: stg3-k8s-worker04
+     RELEASE: 5.14.1-1.gdc.el8.x86_64
+     VERSION: #1 SMP Sat Sep 4 09:57:57 CEST 2021
+     MACHINE: x86_64  (2992 Mhz)
+      MEMORY: 60 GB
+       PANIC: ""
+         PID: 0
+     COMMAND: "swapper/0"
+        TASK: ffffffffb7018940  (1 of 6)  [THREAD_INFO: ffffffffb7018940]
+         CPU: 0
+       STATE: TASK_RUNNING (ACTIVE)
+     WARNING: panic task not found
+
+Below I'm pasting "bt -a" output from crash utility, in hope that
+somebody could help to figure out what's going on there=E2=80=A6 Sadly I ca=
+n't
+easily share dump with you as it is 60G big (17G compressed), so just
+let me know what other information would be useful for you. Thanks in
+advance!
+
+Also apologies for "randomly" choosing lists for this message as I
+have absolutely no clue what's going on here. Something about
+
+crash> bt -a
+PID: 0      TASK: ffffffffb7018940  CPU: 0   COMMAND: "swapper/0"
+    [exception RIP: __pv_queued_spin_lock_slowpath+109]
+    RIP: ffffffffb5b434dd  RSP: ffffaf2e00003da8  RFLAGS: 00000046
+    RAX: 0000000000000000  RBX: ffff9e5c43c2d0c0  RCX: 0000000000000001
+    RDX: 0000000000100003  RSI: 0000000000000000  RDI: 0000000000000000
+    RBP: ffff9e5c43cec380   R8: 0000000000000000   R9: 0000000000000000
+    R10: 0000000000000006  R11: 0000000000125c00  R12: ffffaf2e00003e80
+    R13: 0000000000000000  R14: 0000000000000216  R15: ffff9e4e00972000
+    CS: 0010  SS: 0018
+ #0 [ffffaf2e00003dc8] _raw_spin_lock at ffffffffb644f79a
+ #1 [ffffaf2e00003dd0] raw_spin_rq_lock_nested at ffffffffb5b0fdf2
+ #2 [ffffaf2e00003de8] load_balance at ffffffffb5b283d4
+ #3 [ffffaf2e00003ec8] rebalance_domains at ffffffffb5b29294
+ #4 [ffffaf2e00003f38] _nohz_idle_balance.constprop.0 at ffffffffb5b2959e
+ #5 [ffffaf2e00003f90] __softirqentry_text_start at ffffffffb68000c6
+ #6 [ffffaf2e00003fe0] __irq_exit_rcu at ffffffffb5ae1ff1
+ #7 [ffffaf2e00003ff0] sysvec_call_function_single at ffffffffb6441932
+--- <IRQ stack> ---
+ #8 [ffffffffb7003dd8] sysvec_call_function_single at ffffffffb6441932
+    RIP: 0000000000000000  RSP: 0000000000000000  RFLAGS: ffffffffb644f190
+    RAX: 0000000000000000  RBX: 0000000000000000  RCX: 0000000000000000
+    RDX: 0000000000000000  RSI: ffffffffb7018940  RDI: 0000000000125c00
+    RBP: ffffffffb64418cb   R8: 0000000000000000   R9: 0000000000000000
+    R10: ffffffffb6600d62  R11: 0000000000000000  R12: ffffffffb6442742
+    R13: 0000000000000000  R14: ffffffffb64424e5  R15: ffffffffb5b70ef5
+    ORIG_RAX: 0000000000000400  CS: cde18e44de2  SS: 1048b6f2
+bt: WARNING: possibly bogus exception frame
+
+PID: 618904  TASK: ffff9e577f7dbf00  CPU: 1   COMMAND: "java"
+    [exception RIP: __pv_queued_spin_lock_slowpath+112]
+    RIP: ffffffffb5b434e0  RSP: ffffaf2e0446f960  RFLAGS: 00000046
+    RAX: 0000000000000001  RBX: ffff9e5c43c6d0c0  RCX: 0000000000000001
+    RDX: 0000000000100003  RSI: 0000000000000000  RDI: 0000000000000000
+    RBP: ffff9e5c43cec380   R8: 0000000000000001   R9: 0000000000000000
+    R10: 0000000000000006  R11: 0000000000125c00  R12: ffffaf2e0446fa38
+    R13: 00000000ffffffff  R14: 0000000000000016  R15: 0000000000000000
+    CS: 0010  SS: 0018
+ #0 [ffffaf2e0446f980] _raw_spin_lock at ffffffffb644f79a
+ #1 [ffffaf2e0446f988] raw_spin_rq_lock_nested at ffffffffb5b0fdf2
+ #2 [ffffaf2e0446f9a0] load_balance at ffffffffb5b283d4
+ #3 [ffffaf2e0446fa80] newidle_balance at ffffffffb5b28aad
+ #4 [ffffaf2e0446fae0] pick_next_task_fair at ffffffffb5b28c69
+ #5 [ffffaf2e0446fb18] pick_next_task at ffffffffb5b12b0c
+ #6 [ffffaf2e0446fb90] __schedule at ffffffffb644a4e7
+ #7 [ffffaf2e0446fbe0] schedule at ffffffffb644a944
+ #8 [ffffaf2e0446fbf8] schedule_timeout at ffffffffb644e79c
+ #9 [ffffaf2e0446fc50] wait_woken at ffffffffb5b336cf
+#10 [ffffaf2e0446fc68] sk_wait_data at ffffffffb620791f
+#11 [ffffaf2e0446fcc0] tcp_recvmsg_locked at ffffffffb62deb31
+#12 [ffffaf2e0446fd50] tcp_recvmsg at ffffffffb62df912
+#13 [ffffaf2e0446fdc8] inet6_recvmsg at ffffffffb636918b
+#14 [ffffaf2e0446fe00] __sys_recvfrom at ffffffffb6200fe6
+#15 [ffffaf2e0446ff30] __x64_sys_recvfrom at ffffffffb6201025
+#16 [ffffaf2e0446ff38] do_syscall_64 at ffffffffb643f1b8
+#17 [ffffaf2e0446ff50] entry_SYSCALL_64_after_hwframe at ffffffffb660007c
+    RIP: 00007fba60377b66  RSP: 00007fba60797860  RFLAGS: 00000246
+    RAX: ffffffffffffffda  RBX: 000000000000005f  RCX: 00007fba60377b66
+    RDX: 0000000000000004  RSI: 00007fba60797950  RDI: 000000000000005f
+    RBP: 0000000000000000   R8: 0000000000000000   R9: 0000000000000000
+    R10: 0000000000000000  R11: 0000000000000246  R12: 00007fba60797950
+    R13: 0000000000000004  R14: 0000000000000000  R15: 00007fba607aa680
+    ORIG_RAX: 000000000000002d  CS: 0033  SS: 002b
+
+PID: 618921  TASK: ffff9e4f2cd00000  CPU: 2   COMMAND: "C2 CompilerThre"
+    [exception RIP: __pv_queued_spin_lock_slowpath+109]
+    RIP: ffffffffb5b434dd  RSP: ffffaf2e046bfad8  RFLAGS: 00000046
+    RAX: 0000000000000002  RBX: ffff9e5c43cad0c0  RCX: 0000000000000001
+    RDX: 0000000000100003  RSI: 0000000000000000  RDI: 0000000000000000
+    RBP: ffff9e5c43cec380   R8: 0000000000000002   R9: 0000000000000000
+    R10: 0000000000000006  R11: 0000000000060900  R12: ffffaf2e046bfbb0
+    R13: 00000000ffffffff  R14: 0000000000000016  R15: ffff9e5c43cac380
+    CS: 0010  SS: 0018
+ #0 [ffffaf2e046bfaf8] _raw_spin_lock at ffffffffb644f79a
+ #1 [ffffaf2e046bfb00] raw_spin_rq_lock_nested at ffffffffb5b0fdf2
+ #2 [ffffaf2e046bfb18] load_balance at ffffffffb5b283d4
+ #3 [ffffaf2e046bfbf8] newidle_balance at ffffffffb5b28aad
+ #4 [ffffaf2e046bfc58] pick_next_task_fair at ffffffffb5b28c69
+ #5 [ffffaf2e046bfc90] pick_next_task at ffffffffb5b12b0c
+ #6 [ffffaf2e046bfd08] __schedule at ffffffffb644a4e7
+ #7 [ffffaf2e046bfd58] schedule at ffffffffb644a944
+ #8 [ffffaf2e046bfd70] futex_wait_queue_me at ffffffffb5b82463
+ #9 [ffffaf2e046bfda0] futex_wait at ffffffffb5b825a9
+#10 [ffffaf2e046bfeb8] do_futex at ffffffffb5b853c4
+#11 [ffffaf2e046bfec8] __x64_sys_futex at ffffffffb5b85861
+#12 [ffffaf2e046bff38] do_syscall_64 at ffffffffb643f1b8
+#13 [ffffaf2e046bff50] entry_SYSCALL_64_after_hwframe at ffffffffb660007c
+    RIP: 00007fba603746e8  RSP: 00007fba48efda30  RFLAGS: 00000282
+    RAX: ffffffffffffffda  RBX: 00007fba5811bc50  RCX: 00007fba603746e8
+    RDX: 0000000000000000  RSI: 0000000000000080  RDI: 00007fba5811bc78
+    RBP: 0000000000000000   R8: 0000000000000000   R9: 0000000000000001
+    R10: 00007fba48efda80  R11: 0000000000000282  R12: 00007fba5811bc28
+    R13: 00007fba5811bc78  R14: 00007fba48efdb30  R15: 0000000000000002
+    ORIG_RAX: 00000000000000ca  CS: 0033  SS: 002b
+
+PID: 622305  TASK: ffff9e5a1576de80  CPU: 3   COMMAND: "C2 CompilerThre"
+    [exception RIP: kvm_wait+55]
+    RIP: ffffffffb5a6a927  RSP: ffffaf2e04287880  RFLAGS: 00000046
+    RAX: 0000000000000001  RBX: ffff9e5c43ced0c0  RCX: 0000000000000001
+    RDX: 0000000000000002  RSI: 0000000000000001  RDI: ffff9e5c43ced0d4
+    RBP: ffff9e5c43d2d0c0   R8: 0000000000000003   R9: ffff9e5c43cebd20
+    R10: 0000000000000000  R11: 0000000000000000  R12: ffff9e5c43ced0d4
+    R13: 0000000000000001  R14: 0000000000000000  R15: 0000000000000001
+    CS: 0010  SS: 0000
+ #0 [ffffaf2e04287880] pv_wait_node at ffffffffb5b4314d
+ #1 [ffffaf2e042878b8] __pv_queued_spin_lock_slowpath at ffffffffb5b435b5
+ #2 [ffffaf2e042878e0] _raw_spin_lock at ffffffffb644f79a
+ #3 [ffffaf2e042878e8] raw_spin_rq_lock_nested at ffffffffb5b0fdf2
+ #4 [ffffaf2e04287900] try_to_wake_up at ffffffffb5b1554d
+ #5 [ffffaf2e04287960] __queue_work at ffffffffb5afaad9
+ #6 [ffffaf2e042879a8] queue_work_on at ffffffffb5afac70
+ #7 [ffffaf2e042879b8] soft_cursor at ffffffffb5fa0874
+ #8 [ffffaf2e04287a10] bit_cursor at ffffffffb5fa0433
+ #9 [ffffaf2e04287ad8] hide_cursor at ffffffffb6045077
+#10 [ffffaf2e04287ae8] vt_console_print at ffffffffb6045eb6
+#11 [ffffaf2e04287b50] call_console_drivers.constprop.0 at ffffffffb5b46998
+#12 [ffffaf2e04287b78] console_unlock at ffffffffb5b46ff7
+#13 [ffffaf2e04287c28] vprintk_emit at ffffffffb5b489f1
+#14 [ffffaf2e04287c68] printk at ffffffffb63fe07f
+#15 [ffffaf2e04287cc8] __warn_printk at ffffffffb63fa612
+#16 [ffffaf2e04287d30] enqueue_task_fair at ffffffffb5b25968
+#17 [ffffaf2e04287d90] enqueue_task at ffffffffb5b10ef8
+#18 [ffffaf2e04287db8] ttwu_do_activate at ffffffffb5b13e6c
+#19 [ffffaf2e04287de0] try_to_wake_up at ffffffffb5b155aa
+#20 [ffffaf2e04287e40] hrtimer_wakeup at ffffffffb5b6d9be
+#21 [ffffaf2e04287e48] __run_hrtimer at ffffffffb5b6dd39
+#22 [ffffaf2e04287e80] __hrtimer_run_queues at ffffffffb5b6deed
+#23 [ffffaf2e04287ec0] hrtimer_interrupt at ffffffffb5b6e790
+#24 [ffffaf2e04287f20] __sysvec_apic_timer_interrupt at ffffffffb5a5a609
+#25 [ffffaf2e04287f38] sysvec_apic_timer_interrupt at ffffffffb6441987
+#26 [ffffaf2e04287f50] asm_sysvec_apic_timer_interrupt at ffffffffb6600cc2
+    RIP: 00007f0f8496f976  RSP: 00007f0f81aff120  RFLAGS: 00000246
+    RAX: 00007f0f5042d7b0  RBX: 0000000000000030  RCX: 0000000000000008
+    RDX: 0000000000000100  RSI: 00007f0f5c164f1c  RDI: 0000000032f275e0
+    RBP: 00007f0f81aff160   R8: 0000000000000000   R9: 00007f0f5c164ed0
+    R10: 0000000000000008  R11: 00007ffc748a4090  R12: 0000000000000000
+    R13: 00007f0f50504bd0  R14: 0000000000000040  R15: 00007f0f81aff330
+    ORIG_RAX: ffffffffffffffff  CS: 0033  SS: 002b
+
+PID: 49345  TASK: ffff9e505c323f00  CPU: 4   COMMAND: "minio"
+    [exception RIP: kvm_wait+55]
+    RIP: ffffffffb5a6a927  RSP: ffffaf2e0409baa0  RFLAGS: 00000046
+    RAX: 0000000000000003  RBX: 0000000000000001  RCX: 0000000000000008
+    RDX: 0000000000000000  RSI: 0000000000000003  RDI: ffff9e5c43cec380
+    RBP: ffff9e5c43cec380   R8: ffff9e5c7ffc1d00   R9: 0000000000000000
+    R10: ffff9e5c43d2d0c0  R11: 0000000000000001  R12: ffff9e5c43d2d0c0
+    R13: 0000000000000100  R14: ffff9e5c7ffc1d00  R15: 0000000000000000
+    CS: 0010  SS: 0018
+ #0 [ffffaf2e0409baa0] pv_wait_head_or_lock at ffffffffb5b43285
+ #1 [ffffaf2e0409bad0] __pv_queued_spin_lock_slowpath at ffffffffb5b43525
+ #2 [ffffaf2e0409baf8] _raw_spin_lock at ffffffffb644f79a
+ #3 [ffffaf2e0409bb00] raw_spin_rq_lock_nested at ffffffffb5b0fdf2
+ #4 [ffffaf2e0409bb18] load_balance at ffffffffb5b283d4
+ #5 [ffffaf2e0409bbf8] newidle_balance at ffffffffb5b28aad
+ #6 [ffffaf2e0409bc58] pick_next_task_fair at ffffffffb5b28c69
+ #7 [ffffaf2e0409bc90] pick_next_task at ffffffffb5b12b0c
+ #8 [ffffaf2e0409bd08] __schedule at ffffffffb644a4e7
+ #9 [ffffaf2e0409bd58] schedule at ffffffffb644a944
+#10 [ffffaf2e0409bd70] futex_wait_queue_me at ffffffffb5b82463
+#11 [ffffaf2e0409bda0] futex_wait at ffffffffb5b825a9
+#12 [ffffaf2e0409beb8] do_futex at ffffffffb5b853c4
+#13 [ffffaf2e0409bec8] __x64_sys_futex at ffffffffb5b85861
+#14 [ffffaf2e0409bf38] do_syscall_64 at ffffffffb643f1b8
+#15 [ffffaf2e0409bf50] entry_SYSCALL_64_after_hwframe at ffffffffb660007c
+    RIP: 00000000004725a3  RSP: 000000c000077e80  RFLAGS: 00000206
+    RAX: ffffffffffffffda  RBX: 000000c000068000  RCX: 00000000004725a3
+    RDX: 0000000000000000  RSI: 0000000000000080  RDI: 0000000003296bb8
+    RBP: 000000c000077ec8   R8: 0000000000000000   R9: 0000000000000000
+    R10: 000000c000077eb8  R11: 0000000000000206  R12: 000000000043cb20
+    R13: 0000000000000000  R14: 00000000020db914  R15: 0000000000000000
+    ORIG_RAX: 00000000000000ca  CS: 0033  SS: 002b
+
+PID: 106629  TASK: ffff9e5269f9bf00  CPU: 5   COMMAND: "reader#2"
+    [exception RIP: kvm_wait+55]
+    RIP: ffffffffb5a6a927  RSP: ffffaf2e05397ba8  RFLAGS: 00000046
+    RAX: 0000000000000003  RBX: 0000000000000001  RCX: 0000000000000008
+    RDX: 0000000000000000  RSI: 0000000000000003  RDI: ffff9e5c43cebd00
+    RBP: ffff9e5c43cebd00   R8: ffff9e5c7ffc13c0   R9: 0000000000000000
+    R10: ffff9e5c43d6d0c0  R11: 0000000000000001  R12: ffff9e5c43d6d0c0
+    R13: 0000000000000100  R14: ffff9e5c7ffc13c0  R15: 0000000000000002
+    CS: 0010  SS: 0018
+ #0 [ffffaf2e05397ba8] pv_wait_head_or_lock at ffffffffb5b43285
+ #1 [ffffaf2e05397bd8] __pv_queued_spin_lock_slowpath at ffffffffb5b43525
+ #2 [ffffaf2e05397c00] _raw_spin_lock_irq at ffffffffb644f77b
+ #3 [ffffaf2e05397c08] wq_worker_comm at ffffffffb5afd7c9
+ #4 [ffffaf2e05397c38] proc_task_name at ffffffffb5df6bc3
+ #5 [ffffaf2e05397cb0] do_task_stat at ffffffffb5df7137
+ #6 [ffffaf2e05397dc0] proc_single_show at ffffffffb5df07da
+ #7 [ffffaf2e05397df0] seq_read_iter at ffffffffb5d7b4ef
+ #8 [ffffaf2e05397e48] seq_read at ffffffffb5d7b983
+ #9 [ffffaf2e05397ec8] vfs_read at ffffffffb5d4dad5
+#10 [ffffaf2e05397f00] ksys_read at ffffffffb5d4e15f
+#11 [ffffaf2e05397f38] do_syscall_64 at ffffffffb643f1b8
+#12 [ffffaf2e05397f50] entry_SYSCALL_64_after_hwframe at ffffffffb660007c
+    RIP: 00007f3c178735d4  RSP: 00007f3c0a7f8b20  RFLAGS: 00000246
+    RAX: ffffffffffffffda  RBX: 0000000000000009  RCX: 00007f3c178735d4
+    RDX: 0000000000000400  RSI: 00007f3bd4002990  RDI: 0000000000000009
+    RBP: 00007f3bd4002990   R8: 0000000000000000   R9: 00007f3bd4011650
+    R10: 0000000000000000  R11: 0000000000000246  R12: 0000000000000400
+    R13: 00007f3c17b423c0  R14: 0000000000000d68  R15: 00007f3c17b41880
+    ORIG_RAX: 0000000000000000  CS: 0033  SS: 002b
