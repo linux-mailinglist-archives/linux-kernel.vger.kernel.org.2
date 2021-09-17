@@ -2,166 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E077D40FE39
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 18:57:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9F7D40FE3D
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 18:58:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244042AbhIQQ6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 12:58:44 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:54092 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243102AbhIQQ6n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 12:58:43 -0400
-Received: from zn.tnic (p200300ec2f127e00b6e1989e60a0b7d1.dip0.t-ipconnect.de [IPv6:2003:ec:2f12:7e00:b6e1:989e:60a0:b7d1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 157431EC04D1;
-        Fri, 17 Sep 2021 18:57:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1631897836;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=Ow8NfXsPV/RH/ABEITu6Xf5xUpJXfMJH3GB53aeuD34=;
-        b=QsiODdpWg8XaIayX6QGoSqspM/74jpKtY5PUZ0ZnQMi1b1sAxhugcMuAaYzDf0AsksOx/O
-        gsgoGH+iiyQ6cBV5h0DLUlIKZESC4nqJBRrJgFyYkzPfwFdADesKOZQ4HL2vD/MancmfNY
-        QxrqihlfC5aVPZTqCeqZCectQXkRReg=
-Date:   Fri, 17 Sep 2021 18:57:09 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        VMware Inc <pv-drivers@vmware.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 01/12] x86/tdx: Add Intel ARCH support to
- cc_platform_has()
-Message-ID: <YUTI5Vy/fLT/q/Lh@zn.tnic>
-References: <20210916183550.15349-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210916183550.15349-2-sathyanarayanan.kuppuswamy@linux.intel.com>
+        id S244956AbhIQQ71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 12:59:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43042 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244837AbhIQQ7N (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 12:59:13 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A091DC061764
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 09:57:50 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id z184-20020a1c7ec1000000b003065f0bc631so10509840wmc.0
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 09:57:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=posk.io; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ks7GRXH10LMoWisiAZleE5hGBUIZYE3yfvmoX1sU0ls=;
+        b=XBqbtrjt9UiF/is+v8yiaFwaobmMqeGNEUIbLGRqD/cCT3S7wbGUHGPhO22dGAgdSb
+         V1r563EI29nyagVm5akiPZPLMKj7rBNVKHxPbZ2RQUiWlyqSh47+MKF0gsJVJbW9AJBi
+         W+5kd9fvD+2ckpNexlSsZAv1fHoxMMDHXITgFRtLL+R6QgC9hEvdaS8BG2kuHB07lx3T
+         iej+UddW7EPYpbImMFrsdMMCvMC+Ov+G16rzXWXE1h9MJvLo8mzLBUVXMJkFQivOppqU
+         vkrMK5kroTg1P0GreOea1cUFNxuP783qGQhen0kBy8BVAaHAWSJPGCdP9tL+Kh6dBHt2
+         Zo7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ks7GRXH10LMoWisiAZleE5hGBUIZYE3yfvmoX1sU0ls=;
+        b=SGpz9dotCryuIPHDdRoifVyoYlMwjctcQyqyTK/7bqhyLOE7l8eTHQ0sv0pTAYrqVx
+         iv1GmhTVDjTbqEtObp2IZKXe0xij+tAVJE5A7QR5+4MZ+1K3qtSE8mGw/H0fpuRbYVR/
+         pYFFJ60N8djvrXATXOhIFRK8LF4VZPD5iSwIUNXW87oUYpUYrf5g1d0QjgWObVI9m9Pr
+         s7cjZE/c0ISoF4OoGxgMuPMVJDxf6IbuZOJeQApW0g2etENXn0Z4UMKU5fsaEgUoavrw
+         cHZu+ZB3jC62GcNT00UqkhGuAv0uVU18Vb4lqZj7J46Roog2Ke+7oHTI9IF5bRlvoFPY
+         Q9Nw==
+X-Gm-Message-State: AOAM532GmYHB7JltVv0BUs54Kt0+6JQ3zjhVHU5H9v+9ib0uQQEn28/g
+        uIJC8YOdr7CTZz5Vw8/95rN88dXUL0OdJRm3GfcUplOPnibBAA==
+X-Google-Smtp-Source: ABdhPJwjqpx4VqzYgQH8BEM50ODfJdJFLreTScAadEc8/uX1DoPpyNVBz4bHelwLnIFeiAK7imA6fDvyiJa/87TKN4Q=
+X-Received: by 2002:a1c:3845:: with SMTP id f66mr11279924wma.63.1631897868994;
+ Fri, 17 Sep 2021 09:57:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210916183550.15349-2-sathyanarayanan.kuppuswamy@linux.intel.com>
+References: <163179356649.25758.16036449513954806322.tip-bot2@tip-bot2>
+In-Reply-To: <163179356649.25758.16036449513954806322.tip-bot2@tip-bot2>
+From:   Peter Oskolkov <posk@posk.io>
+Date:   Fri, 17 Sep 2021 09:57:37 -0700
+Message-ID: <CAFTs51Weqaig2tk-vMrSCzaQUch2Zr_Us0SPGutJAjMoYBK94A@mail.gmail.com>
+Subject: Re: [tip: sched/core] sched: Fix -Wmissing-prototype
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     linux-tip-commits@vger.kernel.org,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 11:35:39AM -0700, Kuppuswamy Sathyanarayanan wrote:
-> cc_platform_has() can be used to check for specific active confidential
-> computing attributes, like memory encryption. For Intel platform like
-> Trusted Domain eXtensions (TDX) guest has need for using this function
-> to protect the TDX specific changes made in generic drivers.
-> 
-> So, extend cc_platform_has() and add support for Intel architecture
-> variant (intel_cc_platform_has())
-> 
-> This is a preparatory commit needed before adding TDX guest support
-> to intel_cc_platform_has().
-> 
-> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+On Thu, Sep 16, 2021 at 4:59 AM tip-bot2 for Peter Zijlstra
+<tip-bot2@linutronix.de> wrote:
+>
+> The following commit has been merged into the sched/core branch of tip:
+>
+> Commit-ID:     98a3270911f7abe2871a60799c20c95c9f991ddb
+
+$ make defconfig
+$ make -j16
+
+ld: kernel/sched/core.o: in function `sched_free_group':
+core.c:(.text+0x2cfd): undefined reference to `free_rt_sched_group'
+ld: kernel/sched/core.o: in function `sched_create_group':
+core.c:(.text+0xbdcb): undefined reference to `alloc_rt_sched_group'
+ld: kernel/sched/core.o: in function `sched_init':
+core.c:(.init.text+0x335): undefined reference to `init_cfs_bandwidth'
+ld: kernel/sched/fair.o: in function `alloc_fair_sched_group':
+fair.c:(.text+0x8427): undefined reference to `init_cfs_bandwidth'
+make: *** [Makefile:1196: vmlinux] Error 1
+
+Reverting this patch fixes the issue.
+
+> Gitweb:        https://git.kernel.org/tip/98a3270911f7abe2871a60799c20c95=
+c9f991ddb
+> Author:        Peter Zijlstra <peterz@infradead.org>
+> AuthorDate:    Mon, 13 Sep 2021 15:27:44 +02:00
+> Committer:     Peter Zijlstra <peterz@infradead.org>
+> CommitterDate: Wed, 15 Sep 2021 17:49:00 +02:00
+>
+> sched: Fix -Wmissing-prototype
+>
+>   kernel/sched/fair.c:5403:6: warning: no previous prototype for =E2=80=
+=98init_cfs_bandwidth=E2=80=99 [-Wmissing-prototypes]
+>   kernel/sched/fair.c:11525:6: warning: no previous prototype for =E2=80=
+=98free_fair_sched_group=E2=80=99 [-Wmissing-prototypes]
+>   kernel/sched/fair.c:11527:5: warning: no previous prototype for =E2=80=
+=98alloc_fair_sched_group=E2=80=99 [-Wmissing-prototypes]
+>   kernel/sched/fair.c:11532:6: warning: no previous prototype for =E2=80=
+=98online_fair_sched_group=E2=80=99 [-Wmissing-prototypes]
+>   kernel/sched/fair.c:11534:6: warning: no previous prototype for =E2=80=
+=98unregister_fair_sched_group=E2=80=99 [-Wmissing-prototypes]
+>
+>   kernel/sched/rt.c:253:6: warning: no previous prototype for =E2=80=98fr=
+ee_rt_sched_group=E2=80=99 [-Wmissing-prototypes]
+>   kernel/sched/rt.c:255:5: warning: no previous prototype for =E2=80=98al=
+loc_rt_sched_group=E2=80=99 [-Wmissing-prototypes]
+>   kernel/sched/rt.c:669:6: warning: no previous prototype for =E2=80=98sc=
+hed_rt_bandwidth_account=E2=80=99 [-Wmissing-prototypes]
+>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 > ---
->  arch/x86/include/asm/intel_cc_platform.h | 15 +++++++++++++++
->  arch/x86/kernel/cc_platform.c            |  5 +++++
->  arch/x86/kernel/cpu/intel.c              |  9 +++++++++
->  3 files changed, 29 insertions(+)
->  create mode 100644 arch/x86/include/asm/intel_cc_platform.h
-
-I did the below. Will queue the whole pile once -rc2 is out.
-
-Thx.
-
----
-From c2aa317bba1b4e623075139a19b35118de3234b7 Mon Sep 17 00:00:00 2001
-From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-Date: Fri, 17 Sep 2021 11:32:22 +0200
-Subject: [PATCH] x86/tdx: Add the Intel version for cc_platform_has()
-
-cc_platform_has() can be used to check for specific active confidential
-computing attributes, like memory encryption. For Intel platform like
-Trusted Domain eXtensions (TDX) the guest uses this function to protect
-the TDX-specific changes made in generic drivers.
-
-So, extend cc_platform_has() and add support for Intel architecture
-variant.
-
- [ bp: Rip out the separate header and the export. ]
-
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20210916183550.15349-2-sathyanarayanan.kuppuswamy@linux.intel.com
----
- arch/x86/include/asm/mem_encrypt.h | 6 ++++++
- arch/x86/kernel/cc_platform.c      | 2 ++
- arch/x86/kernel/cpu/intel.c        | 7 +++++++
- 3 files changed, 15 insertions(+)
-
-diff --git a/arch/x86/include/asm/mem_encrypt.h b/arch/x86/include/asm/mem_encrypt.h
-index ed954aa5c448..a73712b6ee0e 100644
---- a/arch/x86/include/asm/mem_encrypt.h
-+++ b/arch/x86/include/asm/mem_encrypt.h
-@@ -103,6 +103,12 @@ static inline u64 sme_get_me_mask(void)
- 	return sme_me_mask;
- }
- 
-+#if defined(CONFIG_CPU_SUP_INTEL) && defined(CONFIG_ARCH_HAS_CC_PLATFORM)
-+bool intel_cc_platform_has(enum cc_attr attr);
-+#else
-+static inline bool intel_cc_platform_has(enum cc_attr attr) { return false; }
-+#endif
-+
- #endif	/* __ASSEMBLY__ */
- 
- #endif	/* __X86_MEM_ENCRYPT_H__ */
-diff --git a/arch/x86/kernel/cc_platform.c b/arch/x86/kernel/cc_platform.c
-index b43bacdc40da..6037201c8437 100644
---- a/arch/x86/kernel/cc_platform.c
-+++ b/arch/x86/kernel/cc_platform.c
-@@ -18,6 +18,8 @@ bool cc_platform_has(enum cc_attr attr)
- 	if (boot_cpu_data.x86_vendor == X86_VENDOR_AMD ||
- 	    boot_cpu_data.x86_vendor == X86_VENDOR_HYGON)
- 		return amd_cc_platform_has(attr);
-+	else if (boot_cpu_data.x86_vendor == X86_VENDOR_INTEL)
-+		return intel_cc_platform_has(attr);
- 
- 	return false;
- }
-diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
-index 8321c43554a1..53756ff12295 100644
---- a/arch/x86/kernel/cpu/intel.c
-+++ b/arch/x86/kernel/cpu/intel.c
-@@ -60,6 +60,13 @@ static u64 msr_test_ctrl_cache __ro_after_init;
-  */
- static bool cpu_model_supports_sld __ro_after_init;
- 
-+#ifdef CONFIG_ARCH_HAS_CC_PLATFORM
-+bool intel_cc_platform_has(enum cc_attr attr)
-+{
-+	return false;
-+}
-+#endif
-+
- /*
-  * Processors which have self-snooping capability can handle conflicting
-  * memory type across CPUs by snooping its own cache. However, there exists
--- 
-2.29.2
-
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+>  kernel/sched/deadline.c |  2 --
+>  kernel/sched/fair.c     | 15 ---------------
+>  kernel/sched/rt.c       |  6 ------
+>  kernel/sched/sched.h    |  2 ++
+>  4 files changed, 2 insertions(+), 23 deletions(-)
+>
+> diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+> index d2c072b..29dd188 100644
+> --- a/kernel/sched/deadline.c
+> +++ b/kernel/sched/deadline.c
+> @@ -1191,8 +1191,6 @@ int dl_runtime_exceeded(struct sched_dl_entity *dl_=
+se)
+>         return (dl_se->runtime <=3D 0);
+>  }
+>
+> -extern bool sched_rt_bandwidth_account(struct rt_rq *rt_rq);
+> -
+>  /*
+>   * This function implements the GRUB accounting rule:
+>   * according to the GRUB reclaiming algorithm, the runtime is
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index e26d622..9571254 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -5408,8 +5408,6 @@ static inline int throttled_lb_pair(struct task_gro=
+up *tg,
+>         return 0;
+>  }
+>
+> -void init_cfs_bandwidth(struct cfs_bandwidth *cfs_b) {}
+> -
+>  #ifdef CONFIG_FAIR_GROUP_SCHED
+>  static void init_cfs_rq_runtime(struct cfs_rq *cfs_rq) {}
+>  #endif
+> @@ -11562,19 +11560,6 @@ next_cpu:
+>         return 0;
+>  }
+>
+> -#else /* CONFIG_FAIR_GROUP_SCHED */
+> -
+> -void free_fair_sched_group(struct task_group *tg) { }
+> -
+> -int alloc_fair_sched_group(struct task_group *tg, struct task_group *par=
+ent)
+> -{
+> -       return 1;
+> -}
+> -
+> -void online_fair_sched_group(struct task_group *tg) { }
+> -
+> -void unregister_fair_sched_group(struct task_group *tg) { }
+> -
+>  #endif /* CONFIG_FAIR_GROUP_SCHED */
+>
+>
+> diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
+> index bb945f8..929fb37 100644
+> --- a/kernel/sched/rt.c
+> +++ b/kernel/sched/rt.c
+> @@ -250,12 +250,6 @@ static inline struct rt_rq *rt_rq_of_se(struct sched=
+_rt_entity *rt_se)
+>         return &rq->rt;
+>  }
+>
+> -void free_rt_sched_group(struct task_group *tg) { }
+> -
+> -int alloc_rt_sched_group(struct task_group *tg, struct task_group *paren=
+t)
+> -{
+> -       return 1;
+> -}
+>  #endif /* CONFIG_RT_GROUP_SCHED */
+>
+>  #ifdef CONFIG_SMP
+> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> index 094ea86..1d8bc76 100644
+> --- a/kernel/sched/sched.h
+> +++ b/kernel/sched/sched.h
+> @@ -3065,3 +3065,5 @@ extern int sched_dynamic_mode(const char *str);
+>  extern void sched_dynamic_update(int mode);
+>  #endif
+>
+> +extern bool sched_rt_bandwidth_account(struct rt_rq *rt_rq);
+> +
