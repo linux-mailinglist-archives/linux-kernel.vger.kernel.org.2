@@ -2,177 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7EE8410115
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 00:07:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACC7741011E
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 00:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239448AbhIQWIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 18:08:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57750 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233843AbhIQWIX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 18:08:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 73851600AA;
-        Fri, 17 Sep 2021 22:07:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631916420;
-        bh=X6iYnKLi3ShBIYCyMnZmU3ebRd4W1sPA8+0YDmkF5c8=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=kTDvtRNikZ9TX/ElBQZazVXXc8wvvEo5bju7vkJOs7pD4A+emHGVJ9rk54Ah9cjqh
-         vK2MG9KNxAcfk7BR0tA7ebA1Ge+/0S1H3L/nOATXXcukSH4qU1J8BTsDGud3Fxj/xu
-         xrbkJmKQOKRqYKTzFk6ahI/rjipC9YujYIRIYmcgVcYDjNtrDTMxWUMssjBJW63Bao
-         4oCcyv5GSDfDJChhiagZk63+o3TswuapY6K774CY1cISgf4V119m1k+RNEc36dyj2R
-         I70jKzV2l50nJ/BtaBACswMcE8Ll1f4j3UVNF+yR6E/PbGQA7tMS9awXv0w2cE6SDy
-         fIH4J9DccQPIg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 557EF5C0892; Fri, 17 Sep 2021 15:07:00 -0700 (PDT)
-Date:   Fri, 17 Sep 2021 15:07:00 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     guillaume@morinfr.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: call_rcu data race patch
-Message-ID: <20210917220700.GV4156@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210917191555.GA2198@bender.morinfr.org>
- <20210917211148.GU4156@paulmck-ThinkPad-P17-Gen-1>
- <20210917213404.GA14271@bender.morinfr.org>
+        id S241373AbhIQWIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 18:08:36 -0400
+Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:36869 "EHLO
+        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244695AbhIQWId (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 18:08:33 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.west.internal (Postfix) with ESMTP id B227B2B00B9B;
+        Fri, 17 Sep 2021 18:07:09 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Fri, 17 Sep 2021 18:07:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=u92.eu; h=date
+        :from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=RZqwfni5G08cwy4bwCn0VZ2NfU9
+        CVpPHZawELnxT/nw=; b=CFEPoLG3r9CnA2l7rKfHIt4/NhNBzFl/tYNZjS8vfyy
+        /7sCYBUgPrRC6V28BYKuk9Bt2j1P+Iff3ZTYJf4cfr5F2EApL6nSPPeHbJno94Ql
+        0Mhe6eK4Hla69B75bTxb+z0TYEZ76Er4RbLdvE0OhGIO6nGSyfzFO1xh2UBwNaVM
+        g/kiCzmS0gRdD7Ws1BuT4FPalpabDVdL0cDH2HoLQ0l1WClEm8MdwoKvir9yF+KI
+        Mh9jLazd8l1xH2dhP9VnVnH0jZ6mP5ryxws3aKuICOK9b4psPogX/UxTPwuCe9WC
+        1mBj4y513FOjemXjVXaGVuBzIHYG3mfy3SV8tmRQPpA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=RZqwfn
+        i5G08cwy4bwCn0VZ2NfU9CVpPHZawELnxT/nw=; b=dUn7PmC0UMgypEUPLvpOHv
+        X2kr0eFnUfnvMEeRbdehbaGOancVzRwPT/g238ZzaSTphUNKKetqLzg9ET9o591s
+        846aL7F1yJ97PEV9sukaCt/59u/0UQEZyxt693FJCnGf9IgL4ZVBS8pI9y7XFX6R
+        b1vUC9gV4CgqBqvZrS478AfxsUpMSTnbaJLNqlTyfT//ffTxil5lyiN34OaOd3N2
+        fcsD+sZqIN6yGeKn6dtaQAGa/3Ix/Ltzmd0sIX1WufyMPD2yByw1I+6cRrLfY8a7
+        BB0lpl6jbeBHOdFRwXZX+b4l8n9B3i8taSi/p/v3fFbMQyHmap9vama1Mcgu+UsQ
+        ==
+X-ME-Sender: <xms:jBFFYfBzwibEOXj6hINpqax_AAqdbLES6-tiCke7xIA4dS-3fTR4JQ>
+    <xme:jBFFYVgZK34L1fEJ66pZVtre9X9hMnXDUFLuQVjAocnE6ZNbG6i2eJv1vJJpkM1Oa
+    _P56YQwY2SWdeCDkg>
+X-ME-Received: <xmr:jBFFYakynxWEBsySxAbMMwLqVYu2OBdDTO-q6DRNF_9Ue1MzP1ujx1ttDzjZBNsY8Jo2-akm>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudehjedgtdeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttdejnecuhfhrohhmpefhvghrnhgr
+    nhguohcutfgrmhhoshcuoehgrhgvvghnfhhoohesuhelvddrvghuqeenucggtffrrghtth
+    gvrhhnpedvjeeifeelhfetiefhhfdthfefkefhhfeutdetvdfgvefgveefheffgfekjeef
+    heenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrh
+    gvvghnfhhoohesuhelvddrvghu
+X-ME-Proxy: <xmx:jRFFYRzU-8KV-gZCQwXeqUpIlPRzLmk-EbmqztYBPFonEx2DOWGrow>
+    <xmx:jRFFYUQ83lMNgvGetRzh9HM3EMX9pXtzdV9P251l9BezZyOHtkKp9A>
+    <xmx:jRFFYUZdW2dQKZSQ9UaXNHTBCwz2mm_nlAa6Zfcd4Uh3Z4nw7i9uEQ>
+    <xmx:jRFFYd8zXjMhg1IYRUCPMcoz4UPUH--EMN53o4xKu55w2dfTb_HlGjBhGno>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 17 Sep 2021 18:07:05 -0400 (EDT)
+Date:   Sat, 18 Sep 2021 00:07:03 +0200
+From:   Fernando Ramos <greenfoo@u92.eu>
+To:     Sean Paul <sean@poorly.run>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-renesas-soc@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH 01/15] dmr: cleanup: drm_modeset_lock_all_ctx() -->
+ DRM_MODESET_LOCK_ALL_BEGIN()
+Message-ID: <YUURh/CDzCGdBLzj@zacax395.localdomain>
+References: <20210916211552.33490-1-greenfoo@u92.eu>
+ <20210916211552.33490-2-greenfoo@u92.eu>
+ <20210917152842.GA2515@art_vandelay>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210917213404.GA14271@bender.morinfr.org>
+In-Reply-To: <20210917152842.GA2515@art_vandelay>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 11:34:06PM +0200, Guillaume Morin wrote:
-> On 17 Sep 14:11, Paul E. McKenney wrote:
-> > On Fri, Sep 17, 2021 at 09:15:57PM +0200, Guillaume Morin wrote:
-> > > Hello Paul,
-> > > 
-> > > I've been researching some RCU warnings we see that lead to full lockups
-> > > with longterm 5.x kernels.
-> > > 
-> > > Basically the rcu_advance_cbs() == true warning in
-> > > rcu_advance_cbs_nowake() is firing then everything eventually gets
-> > > stuck on RCU synchronization because the GP thread stays asleep while
-> > > rcu_state.gp_flags & 1 == 1 (this is a bunch of nohz_full cpus)
-> > > 
-> > > During that search I found your patch from July 12th
-> > > https://www.spinics.net/lists/rcu/msg05731.html that seems related (all
-> > > warnings we've seen happened in the __fput call path). Is there a reason
-> > > this patch was not pushed? Is there an issue with this patch or did it
-> > > fall just through the cracks?
-> > 
-> > It is still in -rcu:
-> > 
-> > 2431774f04d1 ("rcu: Mark accesses to rcu_state.n_force_qs")
-> > 
-> > It is slated for the v5.16 merge window.  But does it really fix the
-> > problem that you are seeing?
 > 
-> I am going to try it soon. Since I could not see it in Linus' tree, I
-> wanted to make sure there was nothing wrong with the patch, hence my
-> email :-)
+> Could you please fix the subject, changing dmr to drm?
 > 
-> To my dismay, I can't reproduce this issue so this has made debugging
-> and testing very complicated.
 
-Welcome to my world!  ;-)
+Ups! Sure, I'll fix that. Thanks for noticing.
 
-> I have a few kdumps from 5.4 and 5.10 kernels (that's how I was able to
-> observe that the gp thread was sleeping for a long time) and that
-> rcu_state.gp_flags & 1 == 1.
+
+>
+> I think you can just reuse 'ret' instead of creating a new variable. That
+> ensures if the lock fails we return the error from the macros.
 > 
-> But this warning has happened a couple of dozen times on multiple
-> machines in the __fput path (different kind of HW as well). Removing
-> nohz_full from the command line makes the problem disappear.
-> 
-> Most machines have had fairly long uptime (30+ days) before showing the
-> warning, though it has happened on a couple occasions only after a few
-> hours.
-> 
-> That's pretty much all I have been able to gather so far, unfortunately.
 
-What are these systems doing?  Running mostly in nohz_full usermode?
-Mostly idle?  Something else?
+I didn't reuse "ret" because otherwise I would have had to change the prototype
+of the function (which currently returns a "bool" instead of an "int").
 
-If it happens again, could you please also capture the state of the
-various rcuo kthreads?  Of these, the rcuog kthreads start grace
-periods and the rcuoc kthreads invoke callbacks.
-
-> > > PS: FYI during my research, I've found another similar report in
-> > > bugzilla https://bugzilla.kernel.org/show_bug.cgi?id=208685
-> > 
-> > Huh.  First I have heard of it.  It looks like they hit this after about
-> > nine days of uptime.  I have run way more than nine days of testing of
-> > nohz_full RCU operation with rcutorture, and have never seen it myself.
-> > 
-> > Can you reproduce this?  If so, can you reproduce it on mainline kernels
-> > (as opposed to -stable kernels as in that bugzilla)?
-> 
-> I have at least one prod machine where the problem happens usually
-> within a couple of days. All my attempts to reproduce on any testing
-> environment have failed.
-
-Again, welcome to my world!
-
-> > The theory behind that WARN_ON_ONCE() is as follows:
-> > 
-> > o	The check of rcu_seq_state(rcu_seq_current(&rnp->gp_seq))
-> > 	says that there is a grace period either in effect or just
-> > 	now ending.
-> > 
-> > o	In the latter case, the grace-period cleanup has not yet
-> > 	reached the current rcu_node structure, which means that
-> > 	it has not yet checked to see if another grace period
-> > 	is needed.
-> > 
-> > o	Either way, the RCU_GP_FLAG_INIT will cause the next grace
-> > 	period to start.  (This flag is protected by the root
-> > 	rcu_node structure's ->lock.)
-> > 
-> > Again, can you reproduce this, especially in mainline?
-> 
-> I have not tried because running a mainline kernel in our prod
-> enviroment is quite difficult and requires lot of work for validation.
-> Though I could probably make it happen but it would take some time.
-> Patches that I can apply on a stable kernel are much easier for me to
-> try, as you probably have guessed.
-
-OK, please see below.  This is a complete shot in the dark, but could
-potentially prevent the problem.  Or make it worse, which would at the
-very least speed up debugging.  It might needs a bit of adjustment to
-apply to the -stable kernels, but at first glance should apply cleanly.
-
-Oh, and FYI I am having to manually paste your email address into the To:
-line in order to get this to go back to you.  Please check your email
-configuration.
-
-Which might mean that you need to pull this from my -rcu tree here:
-
-1a792b59071b ("EXP rcu: Tighten rcu_advance_cbs_nowake() checks")
-
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 6a1e9d3374db..6d692a591f66 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -1590,10 +1590,14 @@ static void __maybe_unused rcu_advance_cbs_nowake(struct rcu_node *rnp,
- 						  struct rcu_data *rdp)
- {
- 	rcu_lockdep_assert_cblist_protected(rdp);
--	if (!rcu_seq_state(rcu_seq_current(&rnp->gp_seq)) ||
-+	// Don't do anything unless the current grace period is guaranteed
-+	// not to end.  This means a grace period in progress and at least
-+	// one holdout CPU.
-+	if (!rcu_seq_state(rcu_seq_current(&rnp->gp_seq)) || !READ_ONCE(rnp->qsmask) ||
- 	    !raw_spin_trylock_rcu_node(rnp))
- 		return;
--	WARN_ON_ONCE(rcu_advance_cbs(rnp, rdp));
-+	if (rcu_seq_state(rcu_seq_current(&rnp->gp_seq)) && READ_ONCE(rnp->qsmask))
-+		WARN_ON_ONCE(rcu_advance_cbs(rnp, rdp));
- 	raw_spin_unlock_rcu_node(rnp);
- }
- 
+However I could, for example, check for any error and convert that into "false".
+Would that be ok?
