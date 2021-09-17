@@ -2,99 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64F9D40F503
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 11:43:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 607EE40F511
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 11:44:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245576AbhIQJo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 05:44:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55064 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231548AbhIQJou (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 05:44:50 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CC1EC061574;
-        Fri, 17 Sep 2021 02:43:28 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id d18so5793620pll.11;
-        Fri, 17 Sep 2021 02:43:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rjUsrgKAG842TTdbvaYfjn7xP48jRXz0AO+9is4lw+4=;
-        b=eshssGgeztlgeR06W0sS7LaYwmch7gTNshpRHn6lJDAs/tqnzRp/VHfCf0CbRdIOd+
-         ZOdw5CZ1Bc/qeGUvButzESvlt1M4NYiOtEHWsgOiS5mpjOMwbriGn8AbsgGcJfyIBtT0
-         /9SmqWSwxjgpLRySOMoB4aAmDDfXpuw7S9/M3rRo5UovQssSVtOdnvYGQaoR9EtefT0f
-         JYYp6notUeG0LBmLXyiMfkwtDNKUXavCLWt9F3bARIaGA/KQmvf2bIhDo+oCY4zA/1p6
-         o4iDL/Drk3NO9aZTW9SBaFOjiMD6UHfD4cbKzXfwv9WfalzTbiqpns3Tqbi86CFv6swi
-         Xx7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rjUsrgKAG842TTdbvaYfjn7xP48jRXz0AO+9is4lw+4=;
-        b=44+Sfmbtgc3ZxOxX+ltA355pyY/G1O4Pa9Y82twrZ46Wg51pcaP3RbSuGYYrBuxWuc
-         sw2cw/D0WK4q8+Zh/UX0G2lrOIcLPA0C3VpzUKPqSU3kpG4kO/x2JNhImJ2CV/IcYi5i
-         iGOWmzdk/h4jYoeU7l8f02AK7BiVB3Y2rJaESI3C9BuoXGLTuFPaZlQ24ZHvBG2y9NdP
-         Fh/jkzAeoJtfLSKr3eOrt+fO2kMpVu9NBjURE0FOCWbbXApCxYwe0JCeK8c/hucM05Bh
-         ZwBNfG2jvkcZ1SzlaWAlqfJ6DGUnYTPECg0p9s/nGp1di3AGI1vKtj04GOz8AZK1uLN+
-         U7NA==
-X-Gm-Message-State: AOAM531Q2Gp2pUOoYIv4druiFJybrTgLPtW9eD1TsUOl7xHSVbjXWfze
-        JQCybuRbzCYh1i2Eux/jVpc=
-X-Google-Smtp-Source: ABdhPJz7M8K2pr6rL0bZaDgbAka6otCz9P9JWfANr9cLlx5Gik3+t6bxDvJ4GTDuwYmfAp5DyMJYsg==
-X-Received: by 2002:a17:90a:53:: with SMTP id 19mr19608028pjb.159.1631871808183;
-        Fri, 17 Sep 2021 02:43:28 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id b17sm5871260pgl.61.2021.09.17.02.43.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 02:43:27 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: deng.changcheng@zte.com.cn
-To:     m.chetan.kumar@intel.com
-Cc:     linuxwwan@intel.com, loic.poulain@linaro.org,
-        ryazanov.s.a@gmail.com, johannes@sipsolutions.net,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Changcheng Deng <deng.changcheng@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] net: wwan: iosm: use kmemdup instead of kzalloc and memcpy
-Date:   Fri, 17 Sep 2021 09:42:41 +0000
-Message-Id: <20210917094241.232168-1-deng.changcheng@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        id S1343588AbhIQJqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 05:46:16 -0400
+Received: from foss.arm.com ([217.140.110.172]:50596 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S245742AbhIQJqC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 05:46:02 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4EFAC101E;
+        Fri, 17 Sep 2021 02:44:40 -0700 (PDT)
+Received: from [10.57.24.25] (unknown [10.57.24.25])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D29AC3F59C;
+        Fri, 17 Sep 2021 02:44:35 -0700 (PDT)
+Subject: Re: [PATCH] swiotlb: set IO TLB segment size via cmdline
+To:     Roman Skakun <rm.skakun@gmail.com>, Christoph Hellwig <hch@lst.de>
+Cc:     Jan Beulich <jbeulich@suse.com>,
+        Andrii Anisov <andrii_anisov@epam.com>,
+        Roman Skakun <roman_skakun@epam.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Mike Rapoport <rppt@kernel.org>, Will Deacon <will@kernel.org>,
+        xen-devel@lists.xenproject.org, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-doc@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        iommu <iommu@lists.linux-foundation.org>
+References: <20210914151016.3174924-1-Roman_Skakun@epam.com>
+ <7c04db79-7de1-93ff-0908-9bad60a287b9@suse.com>
+ <CADu_u-Ou08tMFm5xU871ae8ct+2YOuvn4rQ=83CMTbg2bx87Pg@mail.gmail.com>
+ <84ef7ff7-2c9c-113a-4a2c-cef54a6ded51@suse.com>
+ <20210915135321.GA15216@lst.de>
+ <CADu_u-OZzgVj+z=iD6kUQOZxUufF5QSMR6-MmpN_hLZ9PyQJhQ@mail.gmail.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <eb98aeac-af61-0dd6-2052-5b55921746c1@arm.com>
+Date:   Fri, 17 Sep 2021 10:44:30 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
+In-Reply-To: <CADu_u-OZzgVj+z=iD6kUQOZxUufF5QSMR6-MmpN_hLZ9PyQJhQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Changcheng Deng <deng.changcheng@zte.com.cn>
+On 2021-09-17 10:36, Roman Skakun wrote:
+> Hi, Christoph
+> 
+> I use Xen PV display. In my case, PV display backend(Dom0) allocates
+> contiguous buffer via DMA-API to
+> to implement zero-copy between Dom0 and DomU.
 
-Fixes coccicheck warning: WARNING opportunity for kmemdup
-in "./drivers/net/wwan/iosm/iosm_ipc_flash.c"
+Well, something's gone badly wrong there - if you have to shadow the 
+entire thing in a bounce buffer to import it then it's hardly zero-copy, 
+is it? If you want to do buffer sharing the buffer really needs to be 
+allocated appropriately to begin with, such that all relevant devices 
+can access it directly. That might be something which needs fixing in Xen.
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
----
- drivers/net/wwan/iosm/iosm_ipc_flash.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Robin.
 
-diff --git a/drivers/net/wwan/iosm/iosm_ipc_flash.c b/drivers/net/wwan/iosm/iosm_ipc_flash.c
-index a43aafc70168..3d2f1ec6da00 100644
---- a/drivers/net/wwan/iosm/iosm_ipc_flash.c
-+++ b/drivers/net/wwan/iosm/iosm_ipc_flash.c
-@@ -430,11 +430,10 @@ int ipc_flash_boot_psi(struct iosm_devlink *ipc_devlink,
- 	int ret;
- 
- 	dev_dbg(ipc_devlink->dev, "Boot transfer PSI");
--	psi_code = kzalloc(fw->size, GFP_KERNEL);
-+	psi_code = kmemdup(fw->data, fw->size, GFP_KERNEL);
- 	if (!psi_code)
- 		return -ENOMEM;
- 
--	memcpy(psi_code, fw->data, fw->size);
- 	ret = ipc_imem_sys_devlink_write(ipc_devlink, psi_code, fw->size);
- 	if (ret) {
- 		dev_err(ipc_devlink->dev, "RPSI Image write failed");
--- 
-2.25.1
-
+> When I start Weston under DomU, I got the next log in Dom0:
+> ```
+> [ 112.554471] CPU: 0 PID: 367 Comm: weston Tainted: G O
+> 5.10.0-yocto-standard+ #312
+> [ 112.575149] Call trace:
+> [ 112.577666] dump_backtrace+0x0/0x1b0
+> [ 112.581373] show_stack+0x18/0x70
+> [ 112.584746] dump_stack+0xd0/0x12c
+> [ 112.588200] swiotlb_tbl_map_single+0x234/0x360
+> [ 112.592781] xen_swiotlb_map_page+0xe4/0x4c0
+> [ 112.597095] xen_swiotlb_map_sg+0x84/0x12c
+> [ 112.601249] dma_map_sg_attrs+0x54/0x60
+> [ 112.605138] vsp1_du_map_sg+0x30/0x60
+> [ 112.608851] rcar_du_vsp_map_fb+0x134/0x170
+> [ 112.613082] rcar_du_vsp_plane_prepare_fb+0x44/0x64
+> [ 112.618007] drm_atomic_helper_prepare_planes+0xac/0x160
+> [ 112.623362] drm_atomic_helper_commit+0x88/0x390
+> [ 112.628029] drm_atomic_nonblocking_commit+0x4c/0x60
+> [ 112.633043] drm_mode_atomic_ioctl+0x9a8/0xb0c
+> [ 112.637532] drm_ioctl_kernel+0xc4/0x11c
+> [ 112.641506] drm_ioctl+0x21c/0x460
+> [ 112.644967] __arm64_sys_ioctl+0xa8/0xf0
+> [ 112.648939] el0_svc_common.constprop.0+0x78/0x1a0
+> [ 112.653775] do_el0_svc+0x24/0x90
+> [ 112.657148] el0_svc+0x14/0x20
+> [ 112.660254] el0_sync_handler+0x1a4/0x1b0
+> [ 112.664315] el0_sync+0x174/0x180
+> [ 112.668145] rcar-fcp fea2f000.fcp: swiotlb buffer is full (sz:
+> 3686400 bytes), total 65536 (slots), used 112 (slots)
+> ```
+> The problem is happened here:
+> https://elixir.bootlin.com/linux/v5.14.4/source/drivers/gpu/drm/rcar-du/rcar_du_vsp.c#L202
+> 
+> Sgt was created in dma_get_sgtable() by dma_common_get_sgtable() and
+> includes a single page chunk
+> as shown here:
+> https://elixir.bootlin.com/linux/v5.14.5/source/kernel/dma/ops_helpers.c#L18
+> 
+> After creating a new sgt, we tried to map this sgt through vsp1_du_map_sg().
+> Internally, vsp1_du_map_sg() using ops->map_sg (e.g
+> xen_swiotlb_map_sg) to perform
+> mapping.
+> 
+> I realized that required segment is too big to be fitted to default
+> swiotlb segment and condition
+> https://elixir.bootlin.com/linux/latest/source/kernel/dma/swiotlb.c#L474
+> is always false.
+> 
+> I know that I use a large buffer, but why can't I map this buffer in one chunk?
+> 
+> Thanks!
+> 
+> ср, 15 сент. 2021 г. в 16:53, Christoph Hellwig <hch@lst.de>:
+>>
+>> On Wed, Sep 15, 2021 at 03:49:52PM +0200, Jan Beulich wrote:
+>>> But the question remains: Why does the framebuffer need to be mapped
+>>> in a single giant chunk?
+>>
+>> More importantly: if you use dynamic dma mappings for your framebuffer
+>> you're doing something wrong.
+> 
+> 
+> 
