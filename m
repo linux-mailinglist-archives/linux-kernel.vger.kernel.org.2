@@ -2,110 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A20440F588
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 12:03:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F8CD40F581
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 12:02:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343858AbhIQKEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 06:04:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59714 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343829AbhIQKET (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 06:04:19 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FD46C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 03:02:56 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id h3so9141914pgb.7
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 03:02:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=px6g63+FWM02o2XFrJusr9ULh6BtbU2yNZkDpWVUktI=;
-        b=p+C+uIIDNT8ekPB5dFw1M0P59Zpt53V9WWsD0bc1xmbj/DkMCX2igZ0nH3pL2mWyZ9
-         R3YH9giXxQglXgwbrLOpkC6YuUnmPj52usd37gMguP0fvwjJrLxID/zJKfB1WGcVwveb
-         63pxgWUO+vhiHhG4DkJoAGYjr9xxoC/YPTEIdJvERftT0HdBKjG6cd7ZxW+cYMl58VCW
-         gD8z1hw5zs7b/qMAevWfbD7adSbgU9W0eAQegSr2zhdAXlPEIf414CcjYASu8x6FN0XW
-         /7O0eOMsAkQvN3Q39bGU3hQr49aIrYmXkJQvNEgLSswGRThiYYJmM+l+ijPHfzLQ0Zb9
-         YgLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=px6g63+FWM02o2XFrJusr9ULh6BtbU2yNZkDpWVUktI=;
-        b=06Lc9M1enNI4TWXzYFHy82GILxXVFCIqHRKKvxeAhPG2iM/pD7RR9Eb8hwugM3Av1+
-         0AS1/2dstFfPivdoUfHnmX00wkGas8BUq0AviXN/ujc/IRtPhNdfgGsGessR7plCV9QK
-         RDqtSld5hbNIR3W3n6jGrcoVCOpNooCqXV0srS2EvYPxv6MWlt0AwL18BbSdXtbEuesL
-         SmpOhAuFdmvV4oD52RxQs33JTRd3V4MZb2qtancu4gEEAr7yyqhukfs3JtiCxTqdL8N+
-         JavbdGQQ5dNun5ZUrwr2y0gkuPos6zvg05ItyjY2HGylzM8y9vVfboZC0fwobje1qJO9
-         JI9Q==
-X-Gm-Message-State: AOAM531RRyj2zcPxDHgq2ruxik/YgKqYP72r+clPIUqhrONDLYPwY9+G
-        hQiTxu11NezY6Y0opICtb+A=
-X-Google-Smtp-Source: ABdhPJxqNEeGPI37hs2MV6DCLYp6Mr/5jTrkhYpZoSGk6BwJA9S97cIWaF1tiRqb4xNme5BjdUWlRA==
-X-Received: by 2002:a63:6544:: with SMTP id z65mr9126289pgb.325.1631872976128;
-        Fri, 17 Sep 2021 03:02:56 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id h13sm6102604pgf.14.2021.09.17.03.02.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 03:02:55 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: deng.changcheng@zte.com.cn
-To:     Larry.Finger@lwfinger.net
-Cc:     phil@philpotter.co.uk, gregkh@linuxfoundation.org,
-        straube.linux@gmail.com, nathan@kernel.org,
-        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Changcheng Deng <deng.changcheng@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] staging: r8188eu: use swap()
-Date:   Fri, 17 Sep 2021 10:02:38 +0000
-Message-Id: <20210917100238.232576-1-deng.changcheng@zte.com.cn>
+        id S1343709AbhIQKEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 06:04:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40746 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1343671AbhIQKED (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 06:04:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9DCEA60FA0;
+        Fri, 17 Sep 2021 10:02:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631872961;
+        bh=96563LYZdN3pniAAZz5umNJfrud+6MaxbK8JxucxLpE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=KbkDlbKNPDxqTH7gWmsKJ3bXPYfZ1ZpMv8t24dxfDYiP892ywHNVrMX60fxR6CaA0
+         788UUPPNcxm3DG6d5TjpdbTbBlx/S5O0C1GdNEWjk6L/X/5BjLITW4mTj1qsdsI9rT
+         UZnP7klhf/w7+SD9NQaFdBpJD8e7MMQ+RIDcbcgeY3V/Ng4Isi0R8KjmvRDa8uZMVl
+         hZJbVxEjerYJ53hoIxkuRrT4MeoFKT4YotdTV3fbtDuC0wrRtPUsJ2cQVDaxxJGZ3/
+         vcr0PHJtZt2pKwteTEp7lq7vm0pInD2ciAVwrgTivWcusmZbGW0pkZes8dhxyiH06w
+         C+U1s2F9VNirA==
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: [PATCH 2/7] bootconfig: Rename xbc_destroy_all() to xbc_exit()
+Date:   Fri, 17 Sep 2021 19:02:39 +0900
+Message-Id: <163187295918.2366983.5231840238429996027.stgit@devnote2>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <163187294400.2366983.7393164788107844569.stgit@devnote2>
+References: <163187294400.2366983.7393164788107844569.stgit@devnote2>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Changcheng Deng <deng.changcheng@zte.com.cn>
+Avoid using this noisy name and use more calm one.
+This is just a name change. No functional change.
 
-Use swap() in order to make code cleaner. Issue found by coccinelle.
-
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
- drivers/staging/r8188eu/core/rtw_wlan_util.c | 11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
+  Changes in v5:
+   - Use _exit suffix instead of _fini.
+---
+ include/linux/bootconfig.h |    2 +-
+ init/main.c                |    2 +-
+ lib/bootconfig.c           |    8 ++++----
+ tools/bootconfig/main.c    |    2 +-
+ 4 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/staging/r8188eu/core/rtw_wlan_util.c b/drivers/staging/r8188eu/core/rtw_wlan_util.c
-index 26106dd06d56..3d1d8c198e53 100644
---- a/drivers/staging/r8188eu/core/rtw_wlan_util.c
-+++ b/drivers/staging/r8188eu/core/rtw_wlan_util.c
-@@ -584,7 +584,7 @@ void WMMOnAssocRsp(struct adapter *padapter)
- 	inx[0] = 0; inx[1] = 1; inx[2] = 2; inx[3] = 3;
+diff --git a/include/linux/bootconfig.h b/include/linux/bootconfig.h
+index f955bb7eabbb..7eb7a7f8ade7 100644
+--- a/include/linux/bootconfig.h
++++ b/include/linux/bootconfig.h
+@@ -277,7 +277,7 @@ int __init xbc_init(const char *buf, size_t size, const char **emsg, int *epos);
+ int __init xbc_get_info(int *node_size, size_t *data_size);
  
- 	if (pregpriv->wifi_spec == 1) {
--		u32	j, tmp, change_inx = false;
-+		u32 j, change_inx = false;
+ /* XBC cleanup data structures */
+-void __init xbc_destroy_all(void);
++void __init xbc_exit(void);
  
- 		/* entry indx: 0->vo, 1->vi, 2->be, 3->bk. */
- 		for (i = 0; i < 4; i++) {
-@@ -599,13 +599,8 @@ void WMMOnAssocRsp(struct adapter *padapter)
- 				}
+ /* Debug dump functions */
+ void __init xbc_debug_dump(void);
+diff --git a/init/main.c b/init/main.c
+index 747b4fd38a1a..e5464067ca7a 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -463,7 +463,7 @@ static void __init setup_boot_config(void)
  
- 				if (change_inx) {
--					tmp = edca[i];
--					edca[i] = edca[j];
--					edca[j] = tmp;
--
--					tmp = inx[i];
--					inx[i] = inx[j];
--					inx[j] = tmp;
-+					swap(edca[i], edca[j]);
-+					swap(inx[i], inx[j]);
+ static void __init exit_boot_config(void)
+ {
+-	xbc_destroy_all();
++	xbc_exit();
+ }
  
- 					change_inx = false;
- 				}
--- 
-2.25.1
+ #else	/* !CONFIG_BOOT_CONFIG */
+diff --git a/lib/bootconfig.c b/lib/bootconfig.c
+index b088fe5c0001..a3ce5a0c3ca4 100644
+--- a/lib/bootconfig.c
++++ b/lib/bootconfig.c
+@@ -802,13 +802,13 @@ static int __init xbc_verify_tree(void)
+ }
+ 
+ /**
+- * xbc_destroy_all() - Clean up all parsed bootconfig
++ * xbc_exit() - Clean up all parsed bootconfig
+  *
+  * This clears all data structures of parsed bootconfig on memory.
+  * If you need to reuse xbc_init() with new boot config, you can
+  * use this.
+  */
+-void __init xbc_destroy_all(void)
++void __init xbc_exit(void)
+ {
+ 	memblock_free_ptr(xbc_data, xbc_data_size);
+ 	xbc_data = NULL;
+@@ -869,7 +869,7 @@ int __init xbc_init(const char *data, size_t size, const char **emsg, int *epos)
+ 	if (!xbc_nodes) {
+ 		if (emsg)
+ 			*emsg = "Failed to allocate bootconfig nodes";
+-		xbc_destroy_all();
++		xbc_exit();
+ 		return -ENOMEM;
+ 	}
+ 	memset(xbc_nodes, 0, sizeof(struct xbc_node) * XBC_NODE_MAX);
+@@ -925,7 +925,7 @@ int __init xbc_init(const char *data, size_t size, const char **emsg, int *epos)
+ 			*epos = xbc_err_pos;
+ 		if (emsg)
+ 			*emsg = xbc_err_msg;
+-		xbc_destroy_all();
++		xbc_exit();
+ 	} else
+ 		ret = xbc_node_num;
+ 
+diff --git a/tools/bootconfig/main.c b/tools/bootconfig/main.c
+index 4f2a8d884745..4252c23bd35d 100644
+--- a/tools/bootconfig/main.c
++++ b/tools/bootconfig/main.c
+@@ -397,7 +397,7 @@ static int apply_xbc(const char *path, const char *xbc_path)
+ 	printf("\tChecksum: %d\n", (unsigned int)csum);
+ 
+ 	/* TODO: Check the options by schema */
+-	xbc_destroy_all();
++	xbc_exit();
+ 	free(buf);
+ 
+ 	/* Remove old boot config if exists */
 
