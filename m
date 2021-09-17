@@ -2,88 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 002D540F354
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 09:33:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3848F40F357
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 09:35:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240971AbhIQHew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 03:34:52 -0400
-Received: from mout.kundenserver.de ([212.227.17.10]:60185 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238827AbhIQHew (ORCPT
+        id S241084AbhIQHhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 03:37:13 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:60512 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238827AbhIQHhM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 03:34:52 -0400
-Received: from mail-wr1-f52.google.com ([209.85.221.52]) by
- mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MHFwM-1meNvl0hlY-00DI7N; Fri, 17 Sep 2021 09:33:29 +0200
-Received: by mail-wr1-f52.google.com with SMTP id g16so13587060wrb.3;
-        Fri, 17 Sep 2021 00:33:29 -0700 (PDT)
-X-Gm-Message-State: AOAM533+KkC9S8cHZhyyQr/Gcws3Pv+QbrR6nhr9ElMZ5xHXmGbUF81h
-        JdUrzaBkhYxpXPotrZF4WqH+Mo3QpMgV6vbUIAg=
-X-Google-Smtp-Source: ABdhPJyPtoZ/mG7bWsWHsydawMEYKJ4E3ECfqsk8lnBKNgqIVX5W2m+pElPlgj2gMjbI3079PSZ95Swtj4MIyk84lH8=
-X-Received: by 2002:adf:c10b:: with SMTP id r11mr10471636wre.336.1631864008841;
- Fri, 17 Sep 2021 00:33:28 -0700 (PDT)
+        Fri, 17 Sep 2021 03:37:12 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id ADB7D222B6;
+        Fri, 17 Sep 2021 07:35:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1631864149; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZKHhczD4ZPOnkjIr1F9uI5astUnlALC1U4GQ2QogJ4A=;
+        b=Hduyuvy/zqiHGyOIMu8VzzY/CaPM184syRBOs72yGbDPM1sUL/f7/NqXtk8f1LCSdG2VMC
+        X54UG3PvLZHpHA5vdPbDHSq41Tn3SxeQLsA5lv9+RimiNVcWBW0CWXBZUoCYgvIxhAmOgp
+        7gl1wpkoktmjOkauvsCGjHIfTR5F+b0=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 877BF13A78;
+        Fri, 17 Sep 2021 07:35:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id dEy6H1VFRGGBGgAAMHmgww
+        (envelope-from <jgross@suse.com>); Fri, 17 Sep 2021 07:35:49 +0000
+Subject: Re: [PATCH] Xen/gntdev: don't ignore kernel unmapping error
+To:     Jan Beulich <jbeulich@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
+References: <c2513395-74dc-aea3-9192-fd265aa44e35@suse.com>
+From:   Juergen Gross <jgross@suse.com>
+Message-ID: <6d5cc143-0436-a2da-c3f4-ee7a2cec840c@suse.com>
+Date:   Fri, 17 Sep 2021 09:35:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210917061040.2270822-1-alistair.francis@opensource.wdc.com> <20210917061040.2270822-2-alistair.francis@opensource.wdc.com>
-In-Reply-To: <20210917061040.2270822-2-alistair.francis@opensource.wdc.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 17 Sep 2021 09:33:12 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2kAvrKvCUOhVouHUmY661OZHVAm9sefgXuZpLHMQg7Ow@mail.gmail.com>
-Message-ID: <CAK8P3a2kAvrKvCUOhVouHUmY661OZHVAm9sefgXuZpLHMQg7Ow@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] perf bench: Add support for 32-bit systems with
- 64-bit time_t
-To:     Alistair Francis <alistair.francis@opensource.wdc.com>
-Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
-        linux-perf-users@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alistair Francis <alistair23@gmail.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Darren Hart <dvhart@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Atish Patra <atish.patra@wdc.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Alistair Francis <alistair.francis@wdc.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:i1tPDOPsEkIXWl6o8lvaOVSXFg/bAWXldhifz9hNemIOJCFTnx/
- zZVhz0YkzYzan4TSQY8NlIUxLVIZhqZ2Sx+jIItl5UTtY38hQ8g0UpoGXpsbG+PIIFLVE3A
- SKaYGAmda4GZvCHcy4UwYGUm9AcW/Fg2vZRCDrKeTOTj2tbKgMzSBS98PlVAwM4PL5PX7DU
- MrucBauAQlLixBt8ly4Fw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:FbgTo1ML4rc=:Fj5i0kgHwvY0JXikCXS7cJ
- PJ62OAK1WCPrbNjI278U8xy+5UY2i5p6jf7QnkrS7qzd6afnJA7d5GB+0cId+p5e7/4pogpIF
- bzZ5Fs99rB5nb6mlqa0/0/7ByEHwB4EiGtC5Juzj+ToM4/qUWwvuTRLFFFoFuRoaf2fRtF4Si
- oCY9NfprJjOeRJe+L3qWp+en4PW2pHlV8XLFStlfdUqbD0JXt0YGvOz7MrxCbbUQxiyBVAJSK
- fmiShXA4z+pU1JkF88/QqfypI69pid+yz8LtIxcpu170fdygCEXTwx/9C5l4xcoTXfBaNfh1/
- f8EDfhkvXu4U6eu2UABIa4aBYZDBJrMmG0TSgEcr4skqyIiWr6kqa3co4iC7ECG+BBexpLvyR
- QRJ4ICH5zFa1tGtERCmFUhySJrSNYlofkVkxLX/xzc47/SZ3wVLsOHJzBaUBhxuuS5EJajG1K
- CErqW3GjO5C7dhSzAtRnpzUUJ0M8ujL1D73o4lveVjA6LYWqe7leOwEkZNb1xIwWSvPSeftqH
- kzoVvsgRnUNt7GV1OCABGfM4BvB/DfyAgVFUhbjIUkVn0aGwWWOgv4l03WljeHpL1cIYjng/I
- ZWjAGlll0LPeaz23eG4iN1ui6GdFJ6v2HprjPE4AiAZXXOOkdui67gdE37yFuJmVRNk9YSQdx
- doDMaIqBi49FikX3S/9uDVLTW6ZK/0p3ELCdG/7f+RCviyMli6rCbSHFVUyHl3jZSNG+DqL0C
- ZhqZs/PybRWZ5AFl1sSJZeOag/Lxb4X/ly/Q7Spmaf/ZwZvCcUYatD2H7C/CMBCdDtamUaiDA
- 5qxYwrm0JGLqD8n5q/W2udrUuHm3gYoja0zDnmrqBGjbyX578ud5IGjVN7/zNHKmwFE8pJIGn
- Npk89ZGaXQeskJOR8uzg==
+In-Reply-To: <c2513395-74dc-aea3-9192-fd265aa44e35@suse.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="L2IepqGuXH9lYRXao45ZswOeYQCpW1c6r"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 8:10 AM Alistair Francis
-<alistair.francis@opensource.wdc.com> wrote:
->
-> From: Alistair Francis <alistair.francis@wdc.com>
->
-> Some 32-bit architectures (such are 32-bit RISC-V) only have a 64-bit
-> time_t and as such don't have the SYS_futex syscall. This patch will
-> allow us to use the SYS_futex_time64 syscall on those platforms.
->
-> Signed-off-by: Alistair Francis <alistair.francis@wdc.com>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--L2IepqGuXH9lYRXao45ZswOeYQCpW1c6r
+Content-Type: multipart/mixed; boundary="HSlCyNwh3btw6jZ5G6b21xIga5DV9TQlY";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Jan Beulich <jbeulich@suse.com>,
+ Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc: Stefano Stabellini <sstabellini@kernel.org>,
+ lkml <linux-kernel@vger.kernel.org>,
+ "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
+Message-ID: <6d5cc143-0436-a2da-c3f4-ee7a2cec840c@suse.com>
+Subject: Re: [PATCH] Xen/gntdev: don't ignore kernel unmapping error
+References: <c2513395-74dc-aea3-9192-fd265aa44e35@suse.com>
+In-Reply-To: <c2513395-74dc-aea3-9192-fd265aa44e35@suse.com>
 
-Thanks for the follow-up!
+--HSlCyNwh3btw6jZ5G6b21xIga5DV9TQlY
+Content-Type: multipart/mixed;
+ boundary="------------4F6AC4DCD1F519DE870AA7BC"
+Content-Language: en-US
 
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+This is a multi-part message in MIME format.
+--------------4F6AC4DCD1F519DE870AA7BC
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+
+On 17.09.21 08:13, Jan Beulich wrote:
+> While working on XSA-361 and its follow-ups, I failed to spot another
+> place where the kernel mapping part of an operation was not treated the=
+
+> same as the user space part. Detect and propagate errors and add a 2nd
+> pr_debug().
+>=20
+> Signed-off-by: Jan Beulich <jbeulich@suse.com>
+
+Reviewed-by: Juergen Gross <jgross@suse.com>
+
+
+Juergen
+
+
+--------------4F6AC4DCD1F519DE870AA7BC
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: OpenPGP public key
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------4F6AC4DCD1F519DE870AA7BC--
+
+--HSlCyNwh3btw6jZ5G6b21xIga5DV9TQlY--
+
+--L2IepqGuXH9lYRXao45ZswOeYQCpW1c6r
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmFERVQFAwAAAAAACgkQsN6d1ii/Ey8H
+Fwf+KrAQ9n9MPSoUb2ScP9E4CRU4amw9nl4bj1ssmF60xOsQOzr0rAwpkCDw3T2MToD4jkG8f798
+UPYPCV3p3GGOkh+xfDNT2d/zU/YTKRAM5Rq4oV1GM06p+pA6hrGqoAoCod4+eNh0GBxsjbP9Y9ak
+Rb60PTugVjx1DKhxNLj5kKA95phc61OswV65iD73tBb9KgBBrXGj3S+mcePxWqc4z4LNEV+LNzVj
+lCUt72zEcRvGIq2Sl6qDV3wwUcEb5GXyx36M2ka75wHpr+Vv0iwZVvLU1uMq9Mdgd2crzhgwyQca
+t3KwSQwFx4fJNiOYORov75GGLrxxjGbbWRmWCWQrYA==
+=0RKF
+-----END PGP SIGNATURE-----
+
+--L2IepqGuXH9lYRXao45ZswOeYQCpW1c6r--
