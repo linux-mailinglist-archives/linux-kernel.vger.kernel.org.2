@@ -2,122 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B1CC40F4CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 11:27:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B09E40F4D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 11:31:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240751AbhIQJ22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 05:28:28 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:39487 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245753AbhIQJXo (ORCPT
+        id S239492AbhIQJcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 05:32:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236075AbhIQJcZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 05:23:44 -0400
-Received: by mail-il1-f198.google.com with SMTP id x7-20020a920607000000b002302afca41bso20716083ilg.6
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 02:22:22 -0700 (PDT)
+        Fri, 17 Sep 2021 05:32:25 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C937BC061766
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 02:31:03 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id d21so14063874wra.12
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 02:31:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=QTIEOKxWLANQY5Sj91t8yOn88f8yDa6LMFP2RHaNCbU=;
+        b=GKjKa7mQ/CCe6yL2G2vt6fueccCqqIcdpTBpt403pgw36KTYxx/xRwKNVVCvnjlxnN
+         hFuNy8EHYO68vINTCh2lakvwsgY0MQRjluMi9brGpT4tkZe3xVdHrFuPgSUgicqF06Cg
+         FHuzn8TTmjiTEncwmE+0iZoOPizXLfGAAi9KDuSUQUSD5OrEORjMMNrIXy6A4HSRuUbZ
+         2RRQzQZzwdSLvUIpG78ztrfBQSlI2iZeojPpmfLp2QrcaZIxIgHk2P3rOTEvCybDQ+Qr
+         rqHgtpW5W3565sOjX0x0+W6l0LHBS/WFSMvchC5L31J7kVXq/W0k/EMOZOj+SnwOjqrQ
+         8jHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=+pjv963NVKwgxuXPNBd5iR2KeT18UVqlRyrWIcJtYTk=;
-        b=YLkpVrmy7e/21WcdIxw1+aCDtsK5Gx1/GssJm4F7dqkQMW/CaxHY10+90BNCC5aj29
-         6pPf22oNEZvVibzAAIgl9+kUu4K/aiWXhEWQklooY9/DLGC41slTPh9YWulK7ptr0JXN
-         2kS6CCFvHr1Pei7eqYIneSsPYH3T5yPwEMrJDmMank2EBwmHvzuNSvvafuR6MmOwx4LU
-         vdSN9CeTNv+ssPXkcpmIGLGHpY0sw6GLvspjfqBZa7x1mHb82lfErsodnnrjIYSOwSHE
-         e6OqSw/DLamy7IoQ2OQVIDTbRTjpM8x3a3vJh3qwSI3ZMae/OCm6DRZYac4VsMKxhyat
-         TEgQ==
-X-Gm-Message-State: AOAM530oUdgHlQhl7k2pjOL4IFnpa55R4NwUG2S/chCs0K1fgQzdRX1m
-        8BbJ6KBqfnOpfEcjsiq2iWOlr0gLvMOE8SLfQplULSxk1Qwi
-X-Google-Smtp-Source: ABdhPJwfwr742mMLZxlF5D2Wtjfg2jTaGV5+lNNfcpFM47G+lkIaDvAFLRJ9ZNvzghKwlWVdkQ25HzHXV7MBsZZN244VQMNHDiWb
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QTIEOKxWLANQY5Sj91t8yOn88f8yDa6LMFP2RHaNCbU=;
+        b=E59YgIYDvEeTScgfdjrlMInymGoPKPWkJ7j8ZBJISCuGcfxEG8q1ZMbR9ygB9omlMo
+         U/1JXrSsqQR2xKIYygM1KiYBrn7rQDA8+1Es78W/6XTyY6ymkrcaNMYTS4rGyz/wl3F+
+         clBxGN3NmeYR0XP39Rw5MuHa64EM1mqXc7S71Vm+bUJNONdFT58FQ0CIUEvF0JdzlYm3
+         lSLNw7oyNy3/9FP1myHUN9L4Awg2qyOBz2z5H7v9c5aueCggzvCarimDK9ejwF2iVaP8
+         bVjrYm04wQP1RRDq8p8SdKiJWEDWBVPicPxzx0wJlRzArgQDYYqhkvWxO/+tIXhcsJRn
+         a1zw==
+X-Gm-Message-State: AOAM533LNQjeflVQ+7jzbznuISfRiYsXYgASYn6vT2Rl+wuKYyULWKj2
+        uDbqxRGbvdipUKZh4c1BJmgOyQ==
+X-Google-Smtp-Source: ABdhPJwbOrjqjTlETXUGsgOiKGwf3FZ90pR2q9c3P3vpwSuX6hrzPFMg526xOQKJqu0xjArPDmTesQ==
+X-Received: by 2002:a5d:444a:: with SMTP id x10mr10915654wrr.360.1631871062127;
+        Fri, 17 Sep 2021 02:31:02 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:cf95:6508:8470:7171? ([2a01:e34:ed2f:f020:cf95:6508:8470:7171])
+        by smtp.googlemail.com with ESMTPSA id q19sm10215879wmq.29.2021.09.17.02.31.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Sep 2021 02:31:01 -0700 (PDT)
+Subject: Re: [PATCH v2] thermal: Fix a NULL pointer dereference
+To:     Subbaraman Narayanamurthy <quic_subbaram@quicinc.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        David Collins <quic_collinsd@quicinc.com>,
+        Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>,
+        Ram Chandrasekar <rkumbako@codeaurora.org>,
+        stable@vger.kernel.org
+References: <1631041289-11804-1-git-send-email-quic_subbaram@quicinc.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <55999619-22c7-63fd-7006-f91f144e4a60@linaro.org>
+Date:   Fri, 17 Sep 2021 11:31:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:372a:: with SMTP id k42mr7890370jav.71.1631870542312;
- Fri, 17 Sep 2021 02:22:22 -0700 (PDT)
-Date:   Fri, 17 Sep 2021 02:22:22 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000fe7dd005cc2d77c0@google.com>
-Subject: [syzbot] kernel BUG in vmf_insert_pfn_prot
-From:   syzbot <syzbot+2d4f8693f438d2bd4bdb@syzkaller.appspotmail.com>
-To:     airlied@linux.ie, christian.koenig@amd.com, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        sumit.semwal@linaro.org, syzkaller-bugs@googlegroups.com,
-        tzimmermann@suse.de
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1631041289-11804-1-git-send-email-quic_subbaram@quicinc.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 07/09/2021 21:01, Subbaraman Narayanamurthy wrote:
+> of_parse_thermal_zones() parses the thermal-zones node and registers a
+> thermal_zone device for each subnode. However, if a thermal zone is
+> consuming a thermal sensor and that thermal sensor device hasn't probed
+> yet, an attempt to set trip_point_*_temp for that thermal zone device
+> can cause a NULL pointer dereference. Fix it.
+> 
+>  console:/sys/class/thermal/thermal_zone87 # echo 120000 > trip_point_0_temp
+>  ...
+>  Unable to handle kernel NULL pointer dereference at virtual address 0000000000000020
+>  ...
+>  Call trace:
+>   of_thermal_set_trip_temp+0x40/0xc4
+>   trip_point_temp_store+0xc0/0x1dc
+>   dev_attr_store+0x38/0x88
+>   sysfs_kf_write+0x64/0xc0
+>   kernfs_fop_write_iter+0x108/0x1d0
+>   vfs_write+0x2f4/0x368
+>   ksys_write+0x7c/0xec
+>   __arm64_sys_write+0x20/0x30
+>   el0_svc_common.llvm.7279915941325364641+0xbc/0x1bc
+>   do_el0_svc+0x28/0xa0
+>   el0_svc+0x14/0x24
+>   el0_sync_handler+0x88/0xec
+>   el0_sync+0x1c0/0x200
+> 
+> While at it, fix the possible NULL pointer dereference in other
+> functions as well: of_thermal_get_temp(), of_thermal_set_emul_temp(),
+> of_thermal_get_trend().
+> 
+> Cc: stable@vger.kernel.org
+> Suggested-by: David Collins <quic_collinsd@quicinc.com>
+> Signed-off-by: Subbaraman Narayanamurthy <quic_subbaram@quicinc.com>
+> ---
+> Changes for v2:
+> - Added checks in of_thermal_get_temp(), of_thermal_set_emul_temp(), of_thermal_get_trend().
+> 
+>  drivers/thermal/thermal_of.c | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/thermal/thermal_of.c b/drivers/thermal/thermal_of.c
+> index 6379f26..9233f7e 100644
+> --- a/drivers/thermal/thermal_of.c
+> +++ b/drivers/thermal/thermal_of.c
+> @@ -89,7 +89,7 @@ static int of_thermal_get_temp(struct thermal_zone_device *tz,
+>  {
+>  	struct __thermal_zone *data = tz->devdata;
+>  
+> -	if (!data->ops->get_temp)
+> +	if (!data->ops || !data->ops->get_temp)
 
-syzbot found the following issue on:
+comment (1)
 
-HEAD commit:    9004fd387338 Add linux-next specific files for 20210917
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=17ecf0ad300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=45d5ac72f31f29f3
-dashboard link: https://syzkaller.appspot.com/bug?extid=2d4f8693f438d2bd4bdb
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+AFAICT, if data->ops != NULL then data->ops->get_temp is also != NULL
+because of the code allocating/freeing the ops structure.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+The tests can be replaced by (!data->ops), no ?
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+2d4f8693f438d2bd4bdb@syzkaller.appspotmail.com
+>  		return -EINVAL;
+>  
+>  	return data->ops->get_temp(data->sensor_data, temp);
+> @@ -186,6 +186,9 @@ static int of_thermal_set_emul_temp(struct thermal_zone_device *tz,
+>  {
+>  	struct __thermal_zone *data = tz->devdata;
+>  
+> +	if (!data->ops || !data->ops->set_emul_temp)
+> +		return -EINVAL;
+> +
 
-------------[ cut here ]------------
-kernel BUG at mm/memory.c:2103!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 8279 Comm: syz-executor.0 Not tainted 5.15.0-rc1-next-20210917-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:vmf_insert_pfn_prot+0x248/0x450 mm/memory.c:2103
-Code: 0f 0b e8 6b d0 ca ff 4d 89 f7 bf 20 00 00 00 41 83 e7 28 4c 89 fe e8 b7 d5 ca ff 49 83 ff 20 0f 85 a5 fe ff ff e8 48 d0 ca ff <0f> 0b 49 be ff ff ff ff ff ff 0f 00 e8 37 d0 ca ff 4d 21 ee 4c 89
-RSP: 0000:ffffc90005f47bd0 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 1ffff92000be8f7c RCX: 0000000000000000
-RDX: ffff888050adb900 RSI: ffffffff81ab3e18 RDI: 0000000000000003
-RBP: ffff88807e3bcc60 R08: 0000000000000020 R09: ffffc90005f47bb7
-R10: ffffffff81ab3e09 R11: 1ffffffff1ebb3fc R12: 000000002001d000
-R13: 0000000000145dc3 R14: 0000000008140476 R15: 0000000000000020
-FS:  0000555555f1e400(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00005608abbf4250 CR3: 000000006e072000 CR4: 00000000001506f0
-Call Trace:
- drm_gem_shmem_fault+0x1e3/0x290 drivers/gpu/drm/drm_gem_shmem_helper.c:564
- __do_fault+0x10d/0x4d0 mm/memory.c:3848
- do_cow_fault mm/memory.c:4184 [inline]
- do_fault mm/memory.c:4285 [inline]
- handle_pte_fault mm/memory.c:4541 [inline]
- __handle_mm_fault+0x370e/0x5120 mm/memory.c:4676
- handle_mm_fault+0x1c8/0x790 mm/memory.c:4774
- do_user_addr_fault+0x48b/0x11c0 arch/x86/mm/fault.c:1390
- handle_page_fault arch/x86/mm/fault.c:1475 [inline]
- exc_page_fault+0x9e/0x180 arch/x86/mm/fault.c:1531
- asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:568
-RIP: 0033:0x7f1096c04d5a
-Code: 30 48 8b 34 24 48 85 f6 74 17 8b 44 24 18 0f c8 89 c0 48 89 44 24 18 48 83 fe 01 0f 85 a1 01 00 00 48 8b 44 24 10 8b 74 24 18 <89> 30 e9 d2 fc ff ff 48 8b 44 24 10 8b 10 48 8b 04 24 48 85 c0 0f
-RSP: 002b:00007ffd0b939970 EFLAGS: 00010246
-RAX: 000000002001d000 RBX: 00007f109716c000 RCX: 0000000000000000
-RDX: 182c4ff2a4394aee RSI: 0000000000000001 RDI: 0000555555f1e2f0
-RBP: 00007ffd0b939a68 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000004 R11: 00000000e900f6d2 R12: 00000000001760c0
-R13: 00000000000003e8 R14: 00007f1096d67f80 R15: 0000000000176064
-Modules linked in:
----[ end trace 1a78047d43092735 ]---
-RIP: 0010:vmf_insert_pfn_prot+0x248/0x450 mm/memory.c:2103
-Code: 0f 0b e8 6b d0 ca ff 4d 89 f7 bf 20 00 00 00 41 83 e7 28 4c 89 fe e8 b7 d5 ca ff 49 83 ff 20 0f 85 a5 fe ff ff e8 48 d0 ca ff <0f> 0b 49 be ff ff ff ff ff ff 0f 00 e8 37 d0 ca ff 4d 21 ee 4c 89
-RSP: 0000:ffffc90005f47bd0 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 1ffff92000be8f7c RCX: 0000000000000000
-RDX: ffff888050adb900 RSI: ffffffff81ab3e18 RDI: 0000000000000003
-RBP: ffff88807e3bcc60 R08: 0000000000000020 R09: ffffc90005f47bb7
-R10: ffffffff81ab3e09 R11: 1ffffffff1ebb3fc R12: 000000002001d000
-R13: 0000000000145dc3 R14: 0000000008140476 R15: 0000000000000020
-FS:  0000555555f1e400(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffb730a0718 CR3: 000000006e072000 CR4: 00000000001506e0
+comment (2)
+
+The test looks pointless here (I mean both of them).
+
+If of_thermal_set_emul_temp() is called it is because the callback was
+set in thermal_zone_of_add_sensor().
+
+This one does:
+
+	tz->ops = ops;
+
+and
+	if (ops->set_emul_temp)
+                tzd->ops->set_emul_temp = of_thermal_set_emul_temp;
+
+If I'm not wrong if we are called, then data->ops &&
+data->ops->set_emul_temp is always true, right ?
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+>  	return data->ops->set_emul_temp(data->sensor_data, temp);
+>  }
+>  
+> @@ -194,7 +197,7 @@ static int of_thermal_get_trend(struct thermal_zone_device *tz, int trip,
+>  {
+>  	struct __thermal_zone *data = tz->devdata;
+>  
+> -	if (!data->ops->get_trend)
+> +	if (!data->ops || !data->ops->get_trend)
+>  		return -EINVAL;
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Same comment as (1)
+
+>  	return data->ops->get_trend(data->sensor_data, trip, trend);
+> @@ -301,7 +304,7 @@ static int of_thermal_set_trip_temp(struct thermal_zone_device *tz, int trip,
+>  	if (trip >= data->ntrips || trip < 0)
+>  		return -EDOM;
+>  
+> -	if (data->ops->set_trip_temp) {
+> +	if (data->ops && data->ops->set_trip_temp) {
+
+Same comment as (2)
+
+>  		int ret;
+>  
+>  		ret = data->ops->set_trip_temp(data->sensor_data, trip, temp);
+> 
+
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
