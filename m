@@ -2,100 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2146B410109
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 00:00:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 860C341010B
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 00:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344356AbhIQWBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 18:01:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55260 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229589AbhIQWBg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 18:01:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 475B661052;
-        Fri, 17 Sep 2021 22:00:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631916013;
-        bh=+TnN3rkhiKJL7FE663JtdQS0i9k7JNLeEkBjc2XurBA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cGoM7B/0gvT7Ldv7SGJa+EIIt3SzyBKqbHNemIc2aCLG5kR+Ze2fv1ZEJrHpWonYI
-         H6ks9lYl+sQfSXf5oLUl+DXiOVq1or/UeQjExWAjdTi50keWwxsQ0nKMqZNmSvMydz
-         3nRSQXadC7+Twt9WHU7oGmvd2PHRW7dCu7xO5zFpxzZGBW+UR5kTaJs8JHxZcA6s43
-         k1Jc+rrCeCv+Y/wgpHEn3glvS3+3m3AgW3/TR60UVOLtNNq8G0hGPmFMAAvQFQkNct
-         hKSjUrc9/jlxrvCmoBeU1PEysd9BAoS30NkRzT1xO40H42nakcMkeKKihh8BsURTEl
-         NkVCIid8eEG9Q==
-Date:   Sat, 18 Sep 2021 00:00:11 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
-        urezki@gmail.com, boqun.feng@gmail.com,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        joel@joelfernandes.org
-Subject: Re: [PATCH 2/4] rcu: Remove useless WRITE_ONCE() on
- rcu_data.exp_deferred_qs
-Message-ID: <20210917220011.GB48873@lothringen>
-References: <20210916121048.36623-1-frederic@kernel.org>
- <20210916121048.36623-3-frederic@kernel.org>
- <20210916164340.GF4156@paulmck-ThinkPad-P17-Gen-1>
- <20210916210514.GA40064@lothringen>
- <20210917181024.GS4156@paulmck-ThinkPad-P17-Gen-1>
+        id S1344639AbhIQWDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 18:03:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344401AbhIQWDg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 18:03:36 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84E90C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 15:02:13 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id c8so38432986lfi.3
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 15:02:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=znAe7ewx7rCSOAdsfm/NBUX+TUdTojIOSWYXmGT9kJY=;
+        b=BiV/2Re8gTOEq754wm9xZr5SQTOn6jjqymEgSYMv/GPL37PMahL91jKVHZGSuxMQ/Y
+         FpCVnXYOAefaT505OcZixPlQEyFF7emGaGoCcqyaa7u5+Haj7FlHN6KjNUY0O0iZ75zD
+         b6pwrA6rQhAZNxIRkuZCLwM+udhUX4qCzZ00urqfyItObHUfW5VYEi+UX7rtDt16Gi9C
+         XSRvBKiuo0aDlcRyteieFM2UYe3w4t4mNG3k1ZsqhLGVMEEND1U+m5WO5ZHUZYUyCmCx
+         YSS1VH09OP14J1ADc6/JQ5Wj3sk07N60cGmqYI5tnERyT5CoCVVD7Xe91gITm7SXbRrp
+         pReQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=znAe7ewx7rCSOAdsfm/NBUX+TUdTojIOSWYXmGT9kJY=;
+        b=NkTRXpD2kAqWCb4jZzmlPsrPYBWnGpy+rcE/TISioxIdH8H2Jerk9AEEx7Juz5RY7L
+         Xuefanvi/+QcibIdggXeuXVg5CjU6civQQJXbh15Xxi8hinM8AomnBe7Od0BfEpLA2e2
+         zdtgLvsKzaNEU5KAjBVjT7x5pVmEnHd81Gn/6lOsPCWjCUbuCb/tT24QBHpJ0dE15Akf
+         3JE905zpRCkCW/7ytzyj4QL45jM67k9fK3ZwbvkBEaxCpbQW0ZoWy93NtGbeRSV0a+uY
+         NYp00iyHaKtdKBlIXMmny2RuvEcqU6hAf95/u4A0epIuu/OGQjx3OjfDa6PAVdGBesPX
+         0HsA==
+X-Gm-Message-State: AOAM533S1xfnfSleDNFAkWyo0dxc7tcqCx4+HIlMoR38ep6UTiAKinJO
+        43cqxyaUCHXv5L3PcWe30qIjMQ==
+X-Google-Smtp-Source: ABdhPJyf4+itBme+L5CJNkEh3rv/yMj9GUuPX48RaK3E/af8ir/KWxFqHjLMEmbr1OBIHEQbNgBRKg==
+X-Received: by 2002:a05:6512:344f:: with SMTP id j15mr9427594lfr.56.1631916131856;
+        Fri, 17 Sep 2021 15:02:11 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id o21sm616352lfu.4.2021.09.17.15.02.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Sep 2021 15:02:11 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 52ECD103041; Sat, 18 Sep 2021 01:02:09 +0300 (+03)
+Date:   Sat, 18 Sep 2021 01:02:09 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Kent Overstreet <kent.overstreet@gmail.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Dave Chinner <david@fromorbit.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Howells <dhowells@redhat.com>
+Subject: Re: Folio discussion recap
+Message-ID: <20210917220209.zhac33jiqtxvdttk@box>
+References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
+ <YTu9HIu+wWWvZLxp@moria.home.lan>
+ <YUIT2/xXwvZ4IErc@cmpxchg.org>
+ <20210916025854.GE34899@magnolia>
+ <YUN2vokEM8wgASk8@cmpxchg.org>
+ <20210917052440.GJ1756565@dread.disaster.area>
+ <YUTC6O0w3j7i8iDm@cmpxchg.org>
+ <20210917205735.tistsacwwzkcdklx@box.shutemov.name>
+ <YUUF1WsAoWGmeAJ4@moria.home.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210917181024.GS4156@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <YUUF1WsAoWGmeAJ4@moria.home.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 11:10:24AM -0700, Paul E. McKenney wrote:
-> On Thu, Sep 16, 2021 at 11:05:14PM +0200, Frederic Weisbecker wrote:
-> > On Thu, Sep 16, 2021 at 09:43:40AM -0700, Paul E. McKenney wrote:
-> > > On Thu, Sep 16, 2021 at 02:10:46PM +0200, Frederic Weisbecker wrote:
-> > > > This variable is never written nor read remotely. Remove this confusion.
-> > > > 
-> > > > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> > > > ---
-> > > >  kernel/rcu/tree_exp.h | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > 
-> > > > diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-> > > > index f3947c49eee7..4266610b4587 100644
-> > > > --- a/kernel/rcu/tree_exp.h
-> > > > +++ b/kernel/rcu/tree_exp.h
-> > > > @@ -255,7 +255,7 @@ static void rcu_report_exp_cpu_mult(struct rcu_node *rnp,
-> > > >   */
-> > > >  static void rcu_report_exp_rdp(struct rcu_data *rdp)
-> > > >  {
-> > > > -	WRITE_ONCE(rdp->exp_deferred_qs, false);
-> > > > +	rdp->exp_deferred_qs = false;
-> > > 
-> > > Are you sure that this can never be invoked from an interrupt handler?
-> > > And that rdp->exp_deferred_qs is never read from an interrupt handler?
-> > > If either can happen, then the WRITE_ONCE() does play a role, right?
+On Fri, Sep 17, 2021 at 05:17:09PM -0400, Kent Overstreet wrote:
+> On Fri, Sep 17, 2021 at 11:57:35PM +0300, Kirill A. Shutemov wrote:
+> > On Fri, Sep 17, 2021 at 12:31:36PM -0400, Johannes Weiner wrote:
+> > > I didn't suggest to change what the folio currently already is for the
+> > > page cache. I asked to keep anon pages out of it (and in the future
+> > > potentially other random stuff that is using compound pages).
 > > 
-> > Well, the only effect I can imagine is that it can partly prevent from an
-> > interrupt to report concurrently the quiescent state during the few
-> > instructions before we mask interrupts and lock the node.
+> > It would mean that anon-THP cannot benefit from the work Willy did with
+> > folios. Anon-THP is the most active user of compound pages at the moment
+> > and it also suffers from the compound_head() plague. You ask to exclude
+> > anon-THP siting *possible* future benefits for pagecache.
 > > 
-> > That's a micro performance benefit that avoid a second call to
-> > rcu_report_exp_cpu_mult() with the extra locking and early exit.
+> > Sorry, but this doesn't sound fair to me.
 > 
-> I am not claiming that current compilers would mess this up, though I
-> have learned to have great respect for what future compilers might do...
-
-:)
-
+> I'm less concerned with what's fair than figuring out what the consensus is so
+> we can move forward. I agree that anonymous THPs could benefit greatly from
+> conversion to folios - but looking at the code it doesn't look like much of that
+> has been done yet.
 > 
-> > But then that racy interrupt can still happen before we clear exp_deferred_qs.
-> > In this case __this_cpu_cmpxchg() would have been more efficient.
-> 
-> Except that __this_cpu_cmpxchg() would have a possibility of failure,
-> and thus an extra branch not needed by WRITE_ONCE().  Or am I missing
-> your point here?
+> I understand you've had some input into the folio patches, so maybe you'd be
+> best able to answer while Matthew is away - would it be fair to say that, in the
+> interests of moving forward, anonymous pages could be split out for now? That
+> way the MM people gain time to come to their own consensus and we can still
+> unblock the FS work that's already been done on top of folios.
 
-Right, but an extra branch that could spare a call to rcu_report_exp_cpu_mult().
+I can't answer for Matthew.
 
-Anyway I don't mind the WRITE_ONCE(), but you know how ordering (whether
-compiler or CPU) makes me anxious when undocumented or not self-explanatory,
-(although arguably the latter can vary depending on the reviewer :)
+Anon conversion patchset doesn't exists yet (but it is in plans) so
+there's nothing to split out. Once someone will come up with such patchset
+he has to sell it upstream on its own merit.
 
-Thanks.
+Possible future efforts should not block code at hands. "Talk is cheap.
+Show me the code."
+
+-- 
+ Kirill A. Shutemov
