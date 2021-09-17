@@ -2,129 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E10A40FFE5
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 21:38:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 847C840FFEE
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 21:40:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241886AbhIQTj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 15:39:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236021AbhIQTjZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 15:39:25 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21A3AC061757
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 12:38:03 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id x7so10098005pfa.8
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 12:38:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=o2+Hh3F66cL6BpjONlixjboMa3d3Dr6Wccaac4ba0jE=;
-        b=vPVoybXUpHkOIx/4oBHOyHOxXIaG88Kxkxe2gf1MN6vplcSMHfkPomSPpz+YdV5+I2
-         m7oyFT5ixFaermZpqd88wRx43KQtE4XNw/VnDn7EfXhYdZgcFGaWdsuEznvwEOfYW8ab
-         n+YxXRB6lmhJ431BOxOoQE8wCsczglL1XfDT+XX1SbvMDI6omSXbO42R6BQNGkNNfY3w
-         0IjSq7dNz5H/nNJDKkROUb7wUrC9/QVcJ+KQCl+ZSQAJh2UUET/dM29VdewqTAoVSknq
-         b/ItlBAGc5tpvPvwEpRz4mlw9G1dZBf9962O/bicmwv3ZlANcXPeW1h6r2d/s9u8A4tw
-         N9Aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=o2+Hh3F66cL6BpjONlixjboMa3d3Dr6Wccaac4ba0jE=;
-        b=R/fHpDyzIRnV3uOWWL0clBBNBEJXB+wTTQUQsFuVniDssuTaLc6a+ucxde9pjFv1Cg
-         Pdizyep+cLzsOpucQCGLSEPNju2SP5Uio+58/hwJCE8l/+f2ikf+Osoih6Dvxc1NmqfZ
-         pIVdjqqKOZm1n2XcWL/I/yvyARYErXs7rZ+cuntiLXAWUi3TIs4yHHDTzQUroH/HaAdE
-         bYKHSX++XJgDqn/sarYMF7NeKTif5cY+HKy9e2N85Z48KSXWfTv15QNvplfTrGANxGJb
-         Z/+nk5oc+OhnIvG1o7e/8uSHw+XnT9CkLrYtj74dKrlL28NDNi9u9tp+m7gpI2vBV0Yn
-         gT8w==
-X-Gm-Message-State: AOAM532T0euQLNJW5S4VHCfF2IEUyDSKQsfqfXMAIWjb5FcbUcgScBXW
-        I0fBYmNDV9yPtEH3r9zdFM/LatOxHYCBuY9xtw8guA==
-X-Google-Smtp-Source: ABdhPJw9Rph55U9iCJhtxsNCpmwsnCdMb15i9Rn5WefNvzVO816JUbUXWBiompaDXIZ9AAqQQxd1N1iZLl7s73K/osU=
-X-Received: by 2002:a63:1262:: with SMTP id 34mr11217082pgs.356.1631907482638;
- Fri, 17 Sep 2021 12:38:02 -0700 (PDT)
+        id S242141AbhIQTla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 15:41:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60342 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235944AbhIQTl3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 15:41:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 6ED656124B;
+        Fri, 17 Sep 2021 19:40:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631907607;
+        bh=wzRHjxYCN/4GHZmAMgf78sjNXMOockw16gW2hTPTBJ8=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=ZS7yoS8bSyy7I0tVJDvx6dHZLZcKLavw8Y50Nm8l9H+dpZPzlueybWbeHtaI5Nrb2
+         cEqnqnM5yEkF5YO7rPd0XKub33l5AhT8R5h2fiUF+b9i6uU2hGpBr6jfpXdeEcvVVu
+         DiBqwe5pOvUg7GokfMnim6xUTWtPbZkxmAMgVEfCFylsBqmTJVHChMwppWhyKi5P0L
+         YD9Eg5jmRQwzGjoyzoizMzHvulF2QGV06X/h1zLPzFG01s/Zv96PmgO/jfmq3zmEUo
+         mouuLo5fFOkid9UiyYnO6o6AsOlYr7BoTNgVBiZLnBzzEgfS1/jmgRVwrn2/Fjq7lq
+         pMMabyVcEMJ8g==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5360D609AD;
+        Fri, 17 Sep 2021 19:40:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210914233132.3680546-1-jane.chu@oracle.com> <CAPcyv4h3KpOKgy_Cwi5fNBZmR=n1hB33mVzA3fqOY7c3G+GrMA@mail.gmail.com>
- <516ecedc-38b9-1ae3-a784-289a30e5f6df@oracle.com> <20210915161510.GA34830@magnolia>
- <CAPcyv4jaCiSXU61gsQTaoN_cdDTDMvFSfMYfBz2yLKx11fdwOQ@mail.gmail.com>
- <YULuMO86NrQAPcpf@infradead.org> <CAPcyv4g_qPBER2W+OhCf29kw-+tjs++TsTiRGWgX3trv11+28A@mail.gmail.com>
- <YUSPzVG0ulHdLWn7@infradead.org>
-In-Reply-To: <YUSPzVG0ulHdLWn7@infradead.org>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Fri, 17 Sep 2021 12:37:51 -0700
-Message-ID: <CAPcyv4hJZpoJPF5_6F+wUUjVY5fHXbVRsLfVNPSZxiS+7yzV0Q@mail.gmail.com>
-Subject: Re: [PATCH 0/3] dax: clear poison on the fly along pwrite
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        Jane Chu <jane.chu@oracle.com>,
-        Vishal L Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        "Weiny, Ira" <ira.weiny@intel.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Linux NVDIMM <nvdimm@lists.linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v2] net: phy: bcm7xxx: Add EPHY entry for 72165
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163190760733.22479.5241027515857294065.git-patchwork-notify@kernel.org>
+Date:   Fri, 17 Sep 2021 19:40:07 +0000
+References: <20210917181551.2836036-1-f.fainelli@gmail.com>
+In-Reply-To: <20210917181551.2836036-1-f.fainelli@gmail.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     netdev@vger.kernel.org, andrew@lunn.ch, hkallweit1@gmail.com,
+        linux@armlinux.org.uk, davem@davemloft.net, kuba@kernel.org,
+        bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 5:57 AM Christoph Hellwig <hch@infradead.org> wrote:
->
-> On Thu, Sep 16, 2021 at 11:40:28AM -0700, Dan Williams wrote:
-> > > That was my gut feeling.  If everyone feels 100% comfortable with
-> > > zeroingas the mechanism to clear poisoning I'll cave in.  The most
-> > > important bit is that we do that through a dedicated DAX path instead
-> > > of abusing the block layer even more.
-> >
-> > ...or just rename dax_zero_page_range() to dax_reset_page_range()?
-> > Where reset == "zero + clear-poison"?
->
-> I'd say that naming is more confusing than overloading zero.
+Hello:
 
-Ok, I see Darrick has a better suggestion for the shed color.
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
->
-> > > I'm really worried about both patartitions on DAX and DM passing through
-> > > DAX because they deeply bind DAX to the block layer, which is just a bad
-> > > idea.  I think we also need to sort that whole story out before removing
-> > > the EXPERIMENTAL tags.
-> >
-> > I do think it was a mistake to allow for DAX on partitions of a pmemX
-> > block-device.
-> >
-> > DAX-reflink support may be the opportunity to start deprecating that
-> > support. Only enable DAX-reflink for direct mounting on /dev/pmemX
-> > without partitions (later add dax-device direct mounting),
->
-> I think we need to fully or almost fully sort this out.
->
-> Here is my bold suggestions:
->
->  1) drop no drop the EXPERMINTAL on the current block layer overload
->     at all
+On Fri, 17 Sep 2021 11:15:50 -0700 you wrote:
+> 72165 is a 16nm process SoC with a 10/100 integrated Ethernet PHY,
+> create a new macro and set of functions for this different process type.
+> 
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> ---
+> Changes in v2:
+> 
+> [...]
 
-s/drop no drop/do not drop/?
+Here is the summary with links:
+  - [net-next,v2] net: phy: bcm7xxx: Add EPHY entry for 72165
+    https://git.kernel.org/netdev/net-next/c/f68d08c437f9
 
->  2) add direct mounting of the nvdimm namespaces ASAP.  Because all
->     the filesystem currently also need the /dev/pmem0 device add a way
->     to open the block device by the dax_device instead of our current
->     way of doing the reverse
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Oh, interesting. I can get on board with that. There's currently no
-/dev entry for namespaces. It's either /dev/pmemX, or /dev/daxX.Y as a
-child of /sys/bus/nd/devices/namespaceX.Y. However, I see nothing
-glaringly wrong with having /dev/daxX.Y always published regardless of
-whether /dev/pmemX is also present.
 
->  3) deprecate DAX support through block layer mounts with a say 2 year
->     deprecation period
->  4) add DAX remapping devices as needed
->
-> I'll volunteer to write the initial code for 2).  And I think we should
-> not allow DAX+reflink on the block device shim at all.
-
-Yeah, I think this can fly.
