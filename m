@@ -2,107 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 493BB40F3BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 10:08:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 918DB40F3BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 10:08:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245268AbhIQIJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 04:09:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244754AbhIQIFx (ORCPT
+        id S245295AbhIQIJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 04:09:33 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:54241 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244997AbhIQIHD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 04:05:53 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 885D6C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 01:04:31 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id i3so6612865wmq.3
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 01:04:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=soSRHLJ4vYwXFOO4+jsV9TMkGekbk7oJH9zPBeefEDE=;
-        b=TDgMOqGvelbXNxMU1Lp6U1v4oWz3ZhxO5HlKmjWPw/AVSkYvKkPe90rf4uNM2EsWET
-         larCKqhkfGUfbAt2YjubVdUO+8ojvFLr+gMpVi9gpOvYsxyrx/k1PMiA8BvAA3sV5I9J
-         37fPQjLe8y6RpoJ1rlxRaxHLmGJlLLGliOzyviVy8aAentA2m9/JJ3TQTPFthWUV83tm
-         Kym4wBvfGDqgYm+1e33UmyLTrnZuboN3sjj3KiCZ6J5tJwH0645PZsI+g6aBc0roT2N4
-         TAvEJMn/UOTX/cqToPs5dXiOsCKIMzz46sr2zWlzMnjVbUVSu10/j0oDnAhSSx6JvZoP
-         RGUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=soSRHLJ4vYwXFOO4+jsV9TMkGekbk7oJH9zPBeefEDE=;
-        b=AZPH7ON4NxKMMBchOyWkgPuVZuWUOY7Oap/SlT5hOuDMUpfD3IlftIYZPdidiMIdOx
-         7dzsv0sC6iy5lJUAtk4TMifovm6Ydg94EMeZKQQJmRdsJKH0uGfh8KPrk+N+WP76qF2O
-         KSXS9rEScALXHwDsjeZ1fG9G0AWP++8ycNjhv2zWqzp5iCuneb7jwEYj/eBJW21IfPx7
-         4YRAcMXLqsXp4gatqYuHTPrytL9JnBTIKzo9yPLwVPejzac6194HS5P8Ayd0AIKaBdFi
-         Z4XtJzwv1aSqqbDFlrt8eMm269f0C8o4zk8ZYm09BsU/SSd80BnDt9hbdckFemf2zRc9
-         j5PA==
-X-Gm-Message-State: AOAM532jyNap/kfag5k+CDNAmBtzKiwVi++XUABY9vJE1D7JqzbVXiIn
-        MiQ4FrE03quD8eIyw9hHQOzKZSx26iI=
-X-Google-Smtp-Source: ABdhPJzzEZ50TN0WBIL+U8Qe154RdG+5hg8gwnyYMv7bbwVKAZp2nmz87AIGBOsB6fTMA55zewzm3Q==
-X-Received: by 2002:a7b:cf18:: with SMTP id l24mr6190500wmg.17.1631865870187;
-        Fri, 17 Sep 2021 01:04:30 -0700 (PDT)
-Received: from agape.jhs ([5.171.72.212])
-        by smtp.gmail.com with ESMTPSA id a6sm9964160wmb.7.2021.09.17.01.04.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 01:04:30 -0700 (PDT)
-Date:   Fri, 17 Sep 2021 10:04:27 +0200
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Chanwoo Choi <cw00.choi@samsung.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] extcon: extcon-axp288: use P-Unit semaphore lock for
- register accesses
-Message-ID: <20210917080426.GA1410@agape.jhs>
-References: <20210916071255.2572-1-fabioaiuto83@gmail.com>
- <a755b46a-5561-0fae-b7b3-d0bc1906f79e@redhat.com>
+        Fri, 17 Sep 2021 04:07:03 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1631865889; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: Date: Subject: In-Reply-To: References: Cc:
+ To: From: Sender; bh=B5ORCBwgNQl5ow+QjWVTKGscJFpCMUohasS/OMFn1go=; b=Z6txW21Ymq6znFCbYBGjAfxdEZx7FmLWuWZEdNP3z0bLBMcsDHLLtsFQRi2xfPowAP+nzuMr
+ +q1MnFXjh1NMB9A1apvg8ItIcxOD3cexuUMEuiHwLS6ROy8VLecR/YZPz6GVexrtISeW+T9x
+ o+f7UEAC8kcl2DzXK/5O6dPeTzY=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 61444c1fb585cc7d240728d3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 17 Sep 2021 08:04:47
+ GMT
+Sender: pillair=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 4A340C43619; Fri, 17 Sep 2021 08:04:47 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from PILLAIR1 (unknown [103.149.158.99])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: pillair)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 906C7C4338F;
+        Fri, 17 Sep 2021 08:04:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 906C7C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   <pillair@codeaurora.org>
+To:     "'Stephen Boyd'" <swboyd@chromium.org>, <agross@kernel.org>,
+        <bjorn.andersson@linaro.org>, <robh+dt@kernel.org>
+Cc:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <sibis@codeaurora.org>,
+        <mpubbise@codeaurora.org>, <kuabhs@chromium.org>
+References: <1631811121-32662-1-git-send-email-pillair@codeaurora.org> <CAE-0n50Qmnxa8dz9pQbP408Y_vOu_8j1qeYFGo61W47WQkGunA@mail.gmail.com>
+In-Reply-To: <CAE-0n50Qmnxa8dz9pQbP408Y_vOu_8j1qeYFGo61W47WQkGunA@mail.gmail.com>
+Subject: RE: [PATCH v3] arm64: dts: qcom: sc7280: Add WPSS remoteproc node
+Date:   Fri, 17 Sep 2021 13:34:39 +0530
+Message-ID: <001001d7ab9a$ad6e9de0$084bd9a0$@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a755b46a-5561-0fae-b7b3-d0bc1906f79e@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQI9zuPItyMZ6cixTNcgXkzSDqOHZwIO8vddqssfoKA=
+Content-Language: en-us
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Hans,
 
-On Thu, Sep 16, 2021 at 01:12:53PM +0200, Hans de Goede wrote:
-> Hi,
-<snip>
-> > 
-> > Suggested-by: Hans de Goede <hdegoede@redhat.com>
-> > Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-> > Tested-by: Hans de Goede <hdegoede@redhat.com>
-> > Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
-> > ---
-> > Changes in v2:
-> > 	- shortened patch title within 75 char
-> > 	- added return value check in function
-> > 	  iosf_mbi_lock_punit_i2c_access() calls
-> 
-> 
-> Actually your last version was v2, so this one should have
-> been v3 (no need to resend it just for that).
 
-oh sorry for mistake
+> -----Original Message-----
+> From: Stephen Boyd <swboyd@chromium.org>
+> Sent: Friday, September 17, 2021 6:25 AM
+> To: Rakesh Pillai <pillair@codeaurora.org>; agross@kernel.org;
+> bjorn.andersson@linaro.org; robh+dt@kernel.org
+> Cc: linux-arm-msm@vger.kernel.org; devicetree@vger.kernel.org; linux-
+> kernel@vger.kernel.org; sibis@codeaurora.org; mpubbise@codeaurora.org;
+> kuabhs@chromium.org
+> Subject: Re: [PATCH v3] arm64: dts: qcom: sc7280: Add WPSS remoteproc
+> node
+>=20
+> Quoting Rakesh Pillai (2021-09-16 09:52:01)
+> > diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+> > b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+> > index 64fc22a..2b8bbcd 100644
+> > --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+> > +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+> > @@ -1423,6 +1433,59 @@
+> >                         #power-domain-cells =3D <1>;
+> >                 };
+> >
+> > +               remoteproc_wpss: remoteproc@8a00000 {
+> > +                       compatible =3D "qcom,sc7280-wpss-pil";
+> > +                       reg =3D <0 0x08a00000 0 0x10000>;
+> > +
+> > +                       interrupts-extended =3D <&intc GIC_SPI 587
+> IRQ_TYPE_EDGE_RISING>,
+> > +                                             <&wpss_smp2p_in 0 =
+IRQ_TYPE_EDGE_RISING>,
+> > +                                             <&wpss_smp2p_in 1 =
+IRQ_TYPE_EDGE_RISING>,
+> > +                                             <&wpss_smp2p_in 2 =
+IRQ_TYPE_EDGE_RISING>,
+> > +                                             <&wpss_smp2p_in 3 =
+IRQ_TYPE_EDGE_RISING>,
+> > +                                             <&wpss_smp2p_in 7 =
+IRQ_TYPE_EDGE_RISING>;
+> > +                       interrupt-names =3D "wdog", "fatal", =
+"ready", "handover",
+> > +                                         "stop-ack", =
+"shutdown-ack";
+> > +
+> > +                       clocks =3D <&gcc GCC_WPSS_AHB_BDG_MST_CLK>,
+> > +                                <&gcc GCC_WPSS_AHB_CLK>,
+> > +                                <&gcc GCC_WPSS_RSCP_CLK>,
+> > +                                <&rpmhcc RPMH_CXO_CLK>;
+> > +                       clock-names =3D "gcc_wpss_ahb_bdg_mst_clk",
+> > +                                     "gcc_wpss_ahb_clk",
+> > +                                     "gcc_wpss_rscp_clk",
+> > +                                     "xo";
+> > +
+> > +                       power-domains =3D <&rpmhpd SC7280_CX>,
+> > +                                       <&rpmhpd SC7280_MX>;
+> > +                       power-domain-names =3D "cx", "mx";
+> > +
+> > +                       memory-region =3D <&wpss_mem>;
+> > +
+> > +                       qcom,qmp =3D <&aoss_qmp>;
+> > +
+> > +                       qcom,smem-states =3D <&wpss_smp2p_out 0>;
+> > +                       qcom,smem-state-names =3D "stop";
+> > +
+> > +                       resets =3D <&aoss_reset =
+AOSS_CC_WCSS_RESTART>,
+> > +                                <&pdc_reset PDC_WPSS_SYNC_RESET>;
+> > +                       reset-names =3D "restart", "pdc_sync";
+> > +
+> > +                       qcom,halt-regs =3D <&tcsr_mutex_regs =
+0x37000>;
+>=20
+> Where is this node defined? I don't see it on the mailing list for =
+sc7280. Can
+> you indicate what patches this depends on, and use git format-patch =
+--base=3D
+> so we can try to find them ourselves.
 
-> 
-> Other then that remark this looks good, thank you.
+Hi Stephen,
+My bad, it shud be "tcsr_mutex" instead of "tcsr_mutex_regs".
+I will correct it and send v4.
 
-thank you for review
-
-> 
-> Regards,
-> 
-> Hans
-
-@Chanwoo, do you need for me to resend a v3 or
-you can take the patch as-is?
-
-thank you,
-
-fabio
