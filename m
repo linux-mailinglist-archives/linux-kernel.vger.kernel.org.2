@@ -2,337 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9974940F99E
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 15:53:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD1D440F98F
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 15:52:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241809AbhIQNyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 09:54:39 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:19137 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241864AbhIQNyg (ORCPT
+        id S241265AbhIQNxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 09:53:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229628AbhIQNxb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 09:54:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1631886795; x=1663422795;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=Uj3EXQbHVxHhrDy1uHdV6B3Gs2T7YnDlp0aK9o5Vvkk=;
-  b=XPl9MHUg/1wLvY+v4uAEZ/qSF2PMb6b6krykeYB2/vW+1ao0qrAkMoo3
-   foQv0OJZ9kpipDu41gb2QjEE62RaDfYR9BJvEr/aNC+xYXYFf3nuDeVIk
-   FmXHENoPHH1QvDe7UGzuN1dVybyQf0IrsoVl/GwMRtu5W4eFs2uBB0wZ6
-   LoAlUF/EtkqA7iN11MiuDa4rGiV+4XW/idXnBimN0uVCaBTmP745fxneW
-   Fxi29nwjmOylJcu5lKE4SmUDFigKrVcxFT9GsoGzRsTNtqTYcnbH/V47n
-   4NEIhUvdAaowFwUyr9MYLAv2hyl2CUJHTqC02chlXYWYWOyzesdEw2tXJ
-   g==;
-IronPort-SDR: zn5ayvSzQoQE67fpSvpjAg4RbicP8d1nRSEuwR6AjNjz79Zd5I/4bT3bT5Rkgc/NgupA8Nv6lQ
- FxrBfqDrRrw3WlXGzDiGf8j635RoAoHEn6YlP9TNHF15IqRIfM+vAZ6Jyu7R65nsLJAXj+xdnS
- CpTJmQ+h6qFUC3dxPsjAqEeMlRuYV5w1t3Kkx84lG8WwpuO7SUnkrAiOys4Dg1nNZ2+ynceJ0W
- jsoH5x6/nfUjcv0yl4R3c4x0sG044bS2w5jv71xuLirgmvttuq44HEZ9jYJA9aCNbC09crwpfH
- s2Lv5uHm0mWj385aqWh8GyjX
-X-IronPort-AV: E=Sophos;i="5.85,301,1624345200"; 
-   d="scan'208";a="132212987"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 17 Sep 2021 06:53:14 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Fri, 17 Sep 2021 06:53:14 -0700
-Received: from kavya-HP-Compaq-6000-Pro-SFF-PC.microchip.com (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Fri, 17 Sep 2021 06:53:10 -0700
-From:   Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>
-To:     <robh+dt@kernel.org>, <mturquette@baylibre.com>, <sboyd@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-clk@vger.kernel.org>, <UNGLinuxDriver@microchip.com>,
-        <Eugen.Hristev@microchip.com>, <Kavyasree.Kotagiri@microchip.com>,
-        <Manohar.Puri@microchip.com>
-Subject: [PATCH v5 3/3] clk: lan966x: Add lan966x SoC clock driver
-Date:   Fri, 17 Sep 2021 19:21:42 +0530
-Message-ID: <20210917135142.9689-4-kavyasree.kotagiri@microchip.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210917135142.9689-1-kavyasree.kotagiri@microchip.com>
-References: <20210917135142.9689-1-kavyasree.kotagiri@microchip.com>
+        Fri, 17 Sep 2021 09:53:31 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C67D7C061574;
+        Fri, 17 Sep 2021 06:52:08 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id g21so30386362edw.4;
+        Fri, 17 Sep 2021 06:52:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v1rZTCjKNkaAkGoNurrwA7Id4hvtXdsRm/dxQ92FX6Y=;
+        b=ReXFzh4Cwh1eq+CM8cb6vh2xI9EnodXB08FzGaf/SWIfleBnF9JKIYRYyX7+GwfFno
+         hcxqyMIAf7vJV9wFosIareu+gMUzgEOLBufGz/PNpatu1hyNqPA56A75O7LsmtfxFybC
+         ZCK+1SC4wVdkCUizMaMqZGTC25e5eIAX+NLyulybT8VDCaQNk8O1Zpu3XCJJsq9Fbqv+
+         fr7DPv06rnoYN876b2IqnrTW+c2p/bj8dqmugMeH0R6qkHgV1OusGsiRa4z6p4vzHQK6
+         vvOaXd5AMF9hiGgrOuF0ts8y1lfdE4aalWFW3ZMrgo7VtuYwj/w3Y23pDc2Inu7BtMDe
+         G38g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v1rZTCjKNkaAkGoNurrwA7Id4hvtXdsRm/dxQ92FX6Y=;
+        b=g+PnjlUC2Xpi5IQSjJjy5cW3lVPFyM6hJN4tSIE5DlPxF5lmG6cBSxjkQnrh751G+z
+         ski9EWJ7N4JYjeiPjIJOstci86PGx4g2AlLgcHEE2cE9K2l17MSovpHdvOd0RJHRBlt6
+         xF6kndj2/8A7nnpxjBE3Nr7/HEzh4dqTMmPm3IKTTPyLJG8Vs9ngrndVX9VfuW0Q1cYt
+         FtWaMcht3eSCbCGQjAvXClsjGDK9GtCQfZfTW5bYBOoi3NCFLH3XpUn1L8FgXuGQ6T3G
+         R97D9j+SbR/T+tIdPgtMmKUU1CkR+Ng6mMPPuXktw2aBoG0q/6sMNH0exP/6UCqbtBVh
+         Qpdw==
+X-Gm-Message-State: AOAM5328Xcui4bggTAXagkUpsvOTDUEjcZGEL0RxkETwf4DZlj20ltQD
+        Rmv11oa6ZTnVqQP9/06Upfi5ZU78igTOug==
+X-Google-Smtp-Source: ABdhPJx9+01uaaV1B7YKwL5gKrKy1F+Ph966cpPF37yQcaYoMnWJA+OYTsYh7JPosq2HjY4t/4e1JA==
+X-Received: by 2002:a17:906:2a0a:: with SMTP id j10mr12166713eje.103.1631886727062;
+        Fri, 17 Sep 2021 06:52:07 -0700 (PDT)
+Received: from localhost.localdomain (93-103-178-73.dynamic.t-2.net. [93.103.178.73])
+        by smtp.gmail.com with ESMTPSA id e7sm2903282edk.3.2021.09.17.06.52.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Sep 2021 06:52:06 -0700 (PDT)
+From:   Uros Bizjak <ubizjak@gmail.com>
+To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Uros Bizjak <ubizjak@gmail.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>
+Subject: [PATCH] KVM: x86: Improve exception safe wrappers in emulate.c
+Date:   Fri, 17 Sep 2021 15:51:52 +0200
+Message-Id: <20210917135152.5111-1-ubizjak@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds Generic Clock Controller driver for lan966x SoC.
+Improve exception safe wrappers in emulate.c by converting them to
+ASM GOTO (and ASM GOTO OUTPUT when supported) statements.  Also, convert
+wrappers to inline functions to avoid statement as expression
+GNU extension and to remove weird requirement where user must know
+where the asm argument is being expanded.
 
-Lan966x clock controller contains 3 PLLs - cpu_clk, ddr_clk
-and sys_clk. It generates and supplies clock to various
-peripherals within SoC.
-Register settings required to provide GCK clocking to a
-peripheral is as below:
-GCK_SRC_SEL     = Select clock source.
-GCK_PRESCALER   = Set divider value.
-GCK_ENA         = 1 - Enable GCK clock.
-
-Signed-off-by: Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>
-Co-developed-by: Horatiu Vultur <horatiu.vultur@microchip.com>
-Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Sean Christopherson  <seanjc@google.com>
+Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
 ---
-v4 -> v5:
-- Returning proper error - PTR_ERR.
-- Removed unused variable "ret" in probe function.
+ arch/x86/kvm/emulate.c | 80 ++++++++++++++++++++++++++++++------------
+ 1 file changed, 57 insertions(+), 23 deletions(-)
 
-v3 -> v4:
-- Used clk_parent_data instead of of_clk_get_parent_name().
-
-v2 -> v3:
-- No changes.
-
-v1 -> v2:
-- No changes.
-
- drivers/clk/clk-lan966x.c | 236 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 236 insertions(+)
- create mode 100644 drivers/clk/clk-lan966x.c
-
-diff --git a/drivers/clk/clk-lan966x.c b/drivers/clk/clk-lan966x.c
-new file mode 100644
-index 000000000000..0f24b95fd78f
---- /dev/null
-+++ b/drivers/clk/clk-lan966x.c
-@@ -0,0 +1,236 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Microchip LAN966x SoC Clock driver.
-+ *
-+ * Copyright (C) 2021 Microchip Technology, Inc. and its subsidiaries
-+ *
-+ * Author: Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>
-+ */
-+
-+#include <linux/bitfield.h>
-+#include <linux/clk-provider.h>
-+#include <linux/io.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+
-+#include <dt-bindings/clock/microchip,lan966x.h>
-+
-+#define GCK_ENA         BIT(0)
-+#define GCK_SRC_SEL     GENMASK(9, 8)
-+#define GCK_PRESCALER   GENMASK(23, 16)
-+
-+static const char *clk_names[N_CLOCKS] = {
-+	"qspi0", "qspi1", "qspi2", "sdmmc0",
-+	"pi", "mcan0", "mcan1", "flexcom0",
-+	"flexcom1", "flexcom2", "flexcom3",
-+	"flexcom4", "timer", "usb_refclk",
-+};
-+
-+struct lan966x_gck {
-+	struct clk_hw hw;
-+	void __iomem *reg;
-+};
-+#define to_lan966x_gck(hw) container_of(hw, struct lan966x_gck, hw)
-+
-+static const struct clk_parent_data lan966x_gck_pdata[] = {
-+	{ .fw_name = "cpu_clk", .name = "cpu_clk" },
-+	{ .fw_name = "ddr_clk", .name = "ddr_clk" },
-+	{ .fw_name = "sys_clk", .name = "sys_clk" },
-+};
-+
-+static struct clk_init_data init = {
-+	.parent_data = lan966x_gck_pdata,
-+	.num_parents = ARRAY_SIZE(lan966x_gck_pdata),
-+};
-+
-+static void __iomem *base;
-+
-+static int lan966x_gck_enable(struct clk_hw *hw)
+diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
+index 2837110e66ed..2197a3ecc55b 100644
+--- a/arch/x86/kvm/emulate.c
++++ b/arch/x86/kvm/emulate.c
+@@ -464,25 +464,59 @@ FOP_FUNC(salc)
+ FOP_RET(salc)
+ FOP_END;
+ 
+-/*
+- * XXX: inoutclob user must know where the argument is being expanded.
+- *      Relying on CONFIG_CC_HAS_ASM_GOTO would allow us to remove _fault.
+- */
+-#define asm_safe(insn, inoutclob...) \
+-({ \
+-	int _fault = 0; \
+- \
+-	asm volatile("1:" insn "\n" \
+-	             "2:\n" \
+-	             ".pushsection .fixup, \"ax\"\n" \
+-	             "3: movl $1, %[_fault]\n" \
+-	             "   jmp  2b\n" \
+-	             ".popsection\n" \
+-	             _ASM_EXTABLE(1b, 3b) \
+-	             : [_fault] "+qm"(_fault) inoutclob ); \
+- \
+-	_fault ? X86EMUL_UNHANDLEABLE : X86EMUL_CONTINUE; \
+-})
++static __always_inline int safe_fwait(void)
 +{
-+	struct lan966x_gck *gck = to_lan966x_gck(hw);
-+	u32 val = readl(gck->reg);
-+
-+	val |= GCK_ENA;
-+	writel(val, gck->reg);
-+
-+	return 0;
++	asm_volatile_goto("1: fwait\n\t"
++			  _ASM_EXTABLE(1b, %l[fault])
++			  : : : : fault);
++	return X86EMUL_CONTINUE;
++ fault:
++	return X86EMUL_UNHANDLEABLE;
 +}
 +
-+static void lan966x_gck_disable(struct clk_hw *hw)
++static __always_inline int safe_fxrstor(struct fxregs_state *fx_state)
 +{
-+	struct lan966x_gck *gck = to_lan966x_gck(hw);
-+	u32 val = readl(gck->reg);
-+
-+	val &= ~GCK_ENA;
-+	writel(val, gck->reg);
++	asm_volatile_goto("1: fxrstor %0\n\t"
++			  _ASM_EXTABLE(1b, %l[fault])
++			  : : "m" (*fx_state) : : fault);
++	return X86EMUL_CONTINUE;
++ fault:
++	return X86EMUL_UNHANDLEABLE;
 +}
 +
-+static int lan966x_gck_set_rate(struct clk_hw *hw,
-+				unsigned long rate,
-+				unsigned long parent_rate)
++#ifdef CONFIG_CC_HAS_ASM_GOTO_OUTPUT
++
++static __always_inline int safe_fxsave(struct fxregs_state *fx_state)
 +{
-+	struct lan966x_gck *gck = to_lan966x_gck(hw);
-+	u32 div, val = readl(gck->reg);
-+
-+	if (rate == 0 || parent_rate == 0)
-+		return -EINVAL;
-+
-+	/* Set Prescalar */
-+	div = parent_rate / rate;
-+	val &= ~GCK_PRESCALER;
-+	val |= FIELD_PREP(GCK_PRESCALER, (div - 1));
-+	writel(val, gck->reg);
-+
-+	return 0;
++	asm_volatile_goto("1: fxsave %0\n\t"
++			  _ASM_EXTABLE(1b, %l[fault])
++			  : "=m" (*fx_state) : : : fault);
++	return X86EMUL_CONTINUE;
++ fault:
++	return X86EMUL_UNHANDLEABLE;
 +}
 +
-+static long lan966x_gck_round_rate(struct clk_hw *hw, unsigned long rate,
-+				   unsigned long *parent_rate)
++#else // !CONFIG_CC_HAS_ASM_GOTO_OUTPUT
++
++static __always_inline int safe_fxsave(struct fxregs_state *fx_state)
 +{
-+	unsigned int div;
++	int rc;
 +
-+	if (rate == 0 || *parent_rate == 0)
-+		return -EINVAL;
-+
-+	if (rate >= *parent_rate)
-+		return *parent_rate;
-+
-+	div = DIV_ROUND_CLOSEST(*parent_rate, rate);
-+
-+	return *parent_rate / div;
++	asm volatile("1: fxsave %0\n\t"
++		     "movl %2, %1\n\t"
++		     "2:\n\t"
++	             ".pushsection .fixup, \"ax\"\n\t"
++	             "3: movl %3, %1\n\t"
++	             "jmp 2b\n\t"
++	             ".popsection\n\t"
++	             _ASM_EXTABLE(1b, 3b)
++	             : "=m" (*fx_state), "=rm" (rc)
++		     : "i" (X86EMUL_CONTINUE),
++		       "i" (X86EMUL_UNHANDLEABLE));
++	return rc;
 +}
 +
-+static unsigned long lan966x_gck_recalc_rate(struct clk_hw *hw,
-+					     unsigned long parent_rate)
-+{
-+	struct lan966x_gck *gck = to_lan966x_gck(hw);
-+	u32 div, val = readl(gck->reg);
-+
-+	div = FIELD_GET(GCK_PRESCALER, val);
-+
-+	return parent_rate / (div + 1);
-+}
-+
-+static int lan966x_gck_determine_rate(struct clk_hw *hw,
-+				      struct clk_rate_request *req)
-+{
-+	struct clk_hw *parent;
-+	int i;
-+
-+	for (i = 0; i < clk_hw_get_num_parents(hw); ++i) {
-+		parent = clk_hw_get_parent_by_index(hw, i);
-+		if (!parent)
-+			continue;
-+
-+		if (clk_hw_get_rate(parent) / req->rate < 254) {
-+			req->best_parent_hw = parent;
-+			req->best_parent_rate = clk_hw_get_rate(parent);
-+
-+			return 0;
-+		}
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+static u8 lan966x_gck_get_parent(struct clk_hw *hw)
-+{
-+	struct lan966x_gck *gck = to_lan966x_gck(hw);
-+	u32 val = readl(gck->reg);
-+
-+	return FIELD_GET(GCK_SRC_SEL, val);
-+}
-+
-+static int lan966x_gck_set_parent(struct clk_hw *hw, u8 index)
-+{
-+	struct lan966x_gck *gck = to_lan966x_gck(hw);
-+	u32 val = readl(gck->reg);
-+
-+	val &= ~GCK_SRC_SEL;
-+	val |= FIELD_PREP(GCK_SRC_SEL, index);
-+	writel(val, gck->reg);
-+
-+	return 0;
-+}
-+
-+static const struct clk_ops lan966x_gck_ops = {
-+	.enable         = lan966x_gck_enable,
-+	.disable        = lan966x_gck_disable,
-+	.set_rate       = lan966x_gck_set_rate,
-+	.round_rate     = lan966x_gck_round_rate,
-+	.recalc_rate    = lan966x_gck_recalc_rate,
-+	.determine_rate = lan966x_gck_determine_rate,
-+	.set_parent     = lan966x_gck_set_parent,
-+	.get_parent     = lan966x_gck_get_parent,
-+};
-+
-+static struct clk_hw *lan966x_gck_clk_register(struct device *dev, int i)
-+{
-+	struct lan966x_gck *priv;
-+	int ret;
-+
-+	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return ERR_PTR(-ENOMEM);
-+
-+	priv->reg = base + (i * 4);
-+	priv->hw.init = &init;
-+	ret = devm_clk_hw_register(dev, &priv->hw);
-+	if (ret)
-+		return ERR_PTR(ret);
-+
-+	return &priv->hw;
-+};
-+
-+static int lan966x_clk_probe(struct platform_device *pdev)
-+{
-+	struct clk_hw_onecell_data *hw_data;
-+	struct device *dev = &pdev->dev;
-+	int i;
-+
-+	hw_data = devm_kzalloc(dev, sizeof(*hw_data), GFP_KERNEL);
-+	if (!hw_data)
-+		return -ENOMEM;
-+
-+	base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(base))
-+		return PTR_ERR(base);
-+
-+	init.ops = &lan966x_gck_ops;
-+
-+	hw_data->num = N_CLOCKS;
-+
-+	for (i = 0; i < N_CLOCKS; i++) {
-+		init.name = clk_names[i];
-+		hw_data->hws[i] = lan966x_gck_clk_register(dev, i);
-+		if (IS_ERR(hw_data->hws[i])) {
-+			dev_err(dev, "failed to register %s clock\n",
-+				init.name);
-+			return PTR_ERR(hw_data->hws[i]);
-+		}
-+	}
-+
-+	return devm_of_clk_add_hw_provider(dev, of_clk_hw_onecell_get, hw_data);
-+}
-+
-+static const struct of_device_id lan966x_clk_dt_ids[] = {
-+	{ .compatible = "microchip,lan966x-gck", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, lan966x_clk_dt_ids);
-+
-+static struct platform_driver lan966x_clk_driver = {
-+	.probe  = lan966x_clk_probe,
-+	.driver = {
-+		.name = "lan966x-clk",
-+		.of_match_table = lan966x_clk_dt_ids,
-+	},
-+};
-+builtin_platform_driver(lan966x_clk_driver);
-+
-+MODULE_AUTHOR("Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>");
-+MODULE_DESCRIPTION("LAN966X clock driver");
-+MODULE_LICENSE("GPL v2");
++#endif // CONFIG_CC_ASM_GOTO_OUTPUT
+ 
+ static int emulator_check_intercept(struct x86_emulate_ctxt *ctxt,
+ 				    enum x86_intercept intercept,
+@@ -4030,7 +4064,7 @@ static int em_fxsave(struct x86_emulate_ctxt *ctxt)
+ 
+ 	kvm_fpu_get();
+ 
+-	rc = asm_safe("fxsave %[fx]", , [fx] "+m"(fx_state));
++	rc = safe_fxsave (&fx_state);
+ 
+ 	kvm_fpu_put();
+ 
+@@ -4054,7 +4088,7 @@ static noinline int fxregs_fixup(struct fxregs_state *fx_state,
+ 	struct fxregs_state fx_tmp;
+ 	int rc;
+ 
+-	rc = asm_safe("fxsave %[fx]", , [fx] "+m"(fx_tmp));
++	rc = safe_fxsave (&fx_tmp);
+ 	memcpy((void *)fx_state + used_size, (void *)&fx_tmp + used_size,
+ 	       __fxstate_size(16) - used_size);
+ 
+@@ -4090,7 +4124,7 @@ static int em_fxrstor(struct x86_emulate_ctxt *ctxt)
+ 	}
+ 
+ 	if (rc == X86EMUL_CONTINUE)
+-		rc = asm_safe("fxrstor %[fx]", : [fx] "m"(fx_state));
++		rc = safe_fxrstor (&fx_state);
+ 
+ out:
+ 	kvm_fpu_put();
+@@ -5342,7 +5376,7 @@ static int flush_pending_x87_faults(struct x86_emulate_ctxt *ctxt)
+ 	int rc;
+ 
+ 	kvm_fpu_get();
+-	rc = asm_safe("fwait");
++	rc = safe_fwait();
+ 	kvm_fpu_put();
+ 
+ 	if (unlikely(rc != X86EMUL_CONTINUE))
 -- 
-2.17.1
+2.31.1
 
