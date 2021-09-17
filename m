@@ -2,168 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 558EE40FC2B
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 17:24:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2608B40FC33
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 17:25:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230435AbhIQPZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 11:25:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49356 "EHLO
+        id S232257AbhIQP0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 11:26:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229986AbhIQPZy (ORCPT
+        with ESMTP id S229663AbhIQP0g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 11:25:54 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C321AC061768
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:24:31 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id g19-20020a1c9d13000000b003075062d4daso7192081wme.0
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:24:31 -0700 (PDT)
+        Fri, 17 Sep 2021 11:26:36 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFC00C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:25:13 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id bk29so18521786qkb.8
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:25:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UUmIc1Zm6f0TtwRpO+dF5pS2Y2cDE7pjg0cLbOF+M+E=;
-        b=Rzn08IPZenhQ6bvtAtCZFtUgcNOadCOdu78eHBCqYGv/hV+L9cluJaEyplz5gcBA7R
-         38wK30kV3P5we6pC4sOpGFJx71Gq1+1ryDNONUjrKLim7Yfc3dXqvMmu3/gJm1MKY0gs
-         TcW6XWN+ON+jrkBcBdm/eQYlZqOq4Sg4Mar8E=
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Th9Dectw0xwMPChqk9pLJzZcuXtG5lCvKTCrxYFTnPc=;
+        b=Zh3W3Da0kbNcul9/QjTY8/GOdUPlHVJfwPwUB1inXpRaRf2uVc8uJcpZ7xnSgztj+s
+         kcTxi0c+md7rzAoqgWmFCsaR/KQMsljf2yFeKfWLIAY7dxQmo4Nev5uc7/YbmTlsN7x0
+         oesDVqfNzM0vERyFjSwyxWaaiCnpb5ca3IOIvGp3ylUV79SflMZgIcvpEk8UCUTvI5HO
+         XkfN1812wdixqPtIrJ5d62Ha04GecIyaId6y5wBdb1sIe+Wx+zLYdWh37aFHbXkpqMhW
+         ADGYCo8r2JpmPWR9wFsP+dLU7KklHTbAyBYqKJxTI1QYKpsdA/R81nqIuApohRMTNrLa
+         Xttw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=UUmIc1Zm6f0TtwRpO+dF5pS2Y2cDE7pjg0cLbOF+M+E=;
-        b=D0lm0AsAbM8b5qWO5cXRarhLnQkETsa4QuD9uVpynwdixk4I1ZUzl/WS/vyphQJDbN
-         HMp2q2ihQ4aJ3szbujFBoaZIVI9VYcCLzMZphRsfkaMrlL9EYGqedrdXs1hAEOdkZgoN
-         Ejkhox8bKRCqLKAUcD420761ZCG7emRPOG0CXEwEuGrjY640j/DiE2TKDscei4jyby1s
-         p61TSXHfgDB8Km69YCVrkk5WH3mo5j8AoFrgYjjjcClUYg4ecAhoVDl7t3BOra/jLXCc
-         N7rQmq2yAMw/NshNAGy8wC9CZB6xmPsxkz42N9kJjBrnXGOnSq364mdu4Y4UprCopjx8
-         RTiw==
-X-Gm-Message-State: AOAM5335dKq64KibW7VYr7IzqPhQOHSHaDNwxPny6bRjYLlBYL1S/XBq
-        NaVRoV7Q/iXqE890sdw8R9cWpA==
-X-Google-Smtp-Source: ABdhPJy9S40vw/exT9dD330IOj7yv3V6vas+VLUTS5747KBqEVcQ3/55Lywp40+PNtXXNtDS+CHl4w==
-X-Received: by 2002:a1c:7e12:: with SMTP id z18mr16190125wmc.60.1631892270408;
-        Fri, 17 Sep 2021 08:24:30 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id r5sm6880779wrm.79.2021.09.17.08.24.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 08:24:29 -0700 (PDT)
-Date:   Fri, 17 Sep 2021 17:24:27 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Fernando Ramos <greenfoo@u92.eu>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        sean@poorly.run, linux-doc@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-Subject: Re: [PATCH 00/15] drm: cleanup: Use DRM_MODESET_LOCK_ALL_* helpers
- where possible
-Message-ID: <YUSzKxZwW8C29dLV@phenom.ffwll.local>
-Mail-Followup-To: Fernando Ramos <greenfoo@u92.eu>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        sean@poorly.run, linux-doc@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-References: <20210916211552.33490-1-greenfoo@u92.eu>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Th9Dectw0xwMPChqk9pLJzZcuXtG5lCvKTCrxYFTnPc=;
+        b=N4hRyJZHsi3DlootHZETqulh5efvnXtLk/sOYDcbe6zyUmtd7qKnhK+E8p8HqksmBS
+         hspI1qxeNM8UQj8MujuISFZkD4zgVavWqGlSk7c+GnmPSkO/G5UYY94wJWsZRTYOx/mF
+         hjCVnySZxKDk+icitQpcUCNw8NIaC0fPfKxt/KGSbTTsaKKUL1RUr1J51bjp0egWnJIq
+         vBqBpd/IF8GfE5FzFzUV0GGwBFiN8PcZBJK3itRhiNBeGV2OkAkyIi4XM2Cmu7UjwReg
+         s6B5tpuxqAzTBBFaC1LY5/Mm18ydOj+8ZZqgO9eIaOWxoTTnXMRRZX/0Wq6z4UnPuvAG
+         6LGg==
+X-Gm-Message-State: AOAM531MimQa7ypxLILBVuJdHDRigMtaMhblTRRg9g++mx4570nHxPgc
+        vcOeTwE343r3g/PX1EIzi0D9rqIdUf+VD4P1NEIb+Q==
+X-Google-Smtp-Source: ABdhPJzi+ecvVDZHy16eTUV4B931Trwh6EgK/voL8hMSSwIkuUjyW0X15/qP2d5cA0l+DPQ8R0OiJeElYN/SoNclYEU=
+X-Received: by 2002:a25:9001:: with SMTP id s1mr13884940ybl.191.1631892313004;
+ Fri, 17 Sep 2021 08:25:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210916211552.33490-1-greenfoo@u92.eu>
-X-Operating-System: Linux phenom 5.10.0-8-amd64 
+References: <20210911011819.12184-1-ricardo.neri-calderon@linux.intel.com>
+ <20210911011819.12184-7-ricardo.neri-calderon@linux.intel.com>
+ <CAKfTPtBcDP3Yp54sd4+1kP=o=4e_1HEmOf=eMXydag_J38CEng@mail.gmail.com> <20210917010044.GA23727@ranerica-svr.sc.intel.com>
+In-Reply-To: <20210917010044.GA23727@ranerica-svr.sc.intel.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Fri, 17 Sep 2021 17:25:02 +0200
+Message-ID: <CAKfTPtCh72m86pbT5vY_rWzU79Q9NP9t6mcrO8ewbZkBJdN03Q@mail.gmail.com>
+Subject: Re: [PATCH v5 6/6] sched/fair: Consider SMT in ASYM_PACKING load balance
+To:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Len Brown <len.brown@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Ricardo Neri <ricardo.neri@intel.com>,
+        Quentin Perret <qperret@google.com>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Aubrey Li <aubrey.li@intel.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 11:15:37PM +0200, Fernando Ramos wrote:
-> Hi all,
-> 
-> One of the things in the DRM TODO list ("Documentation/gpu/todo.rst") was to
-> "use DRM_MODESET_LOCAL_ALL_* helpers instead of boilerplate". That's what this
-> patch series is about.
-> 
-> You will find two types of changes here:
-> 
->   - Replacing "drm_modeset_lock_all_ctx()" (and surrounding boilerplate) with
->     "DRM_MODESET_LOCK_ALL_BEGIN()/END()" in the remaining places (as it has
->     already been done in previous commits such as b7ea04d2)
-> 
->   - Replacing "drm_modeset_lock_all()" with "DRM_MODESET_LOCK_ALL_BEGIN()/END()"
->     in the remaining places (as it has already been done in previous commits
->     such as 57037094)
->     
-> Most of the changes are straight forward, except for a few cases in the "amd"
-> and "i915" drivers where some extra dancing was needed to overcome the
-> limitation that the DRM_MODESET_LOCK_ALL_BEGIN()/END() macros can only be used
-> once inside the same function (the reason being that the macro expansion
-> includes *labels*, and you can not have two labels named the same inside one
-> function)
-> 
-> Notice that, even after this patch series, some places remain where
-> "drm_modeset_lock_all()" and "drm_modeset_lock_all_ctx()" are still present,
-> all inside drm core (which makes sense), except for two (in "amd" and "i915")
-> which cannot be replaced due to the way they are being used.
+On Fri, 17 Sept 2021 at 03:01, Ricardo Neri
+<ricardo.neri-calderon@linux.intel.com> wrote:
+>
+> On Wed, Sep 15, 2021 at 05:43:44PM +0200, Vincent Guittot wrote:
+> > On Sat, 11 Sept 2021 at 03:19, Ricardo Neri
+> > <ricardo.neri-calderon@linux.intel.com> wrote:
+> > >
+> > > When deciding to pull tasks in ASYM_PACKING, it is necessary not only to
+> > > check for the idle state of the destination CPU, dst_cpu, but also of
+> > > its SMT siblings.
+> > >
+> > > If dst_cpu is idle but its SMT siblings are busy, performance suffers
+> > > if it pulls tasks from a medium priority CPU that does not have SMT
+> > > siblings.
+> > >
+> > > Implement asym_smt_can_pull_tasks() to inspect the state of the SMT
+> > > siblings of both dst_cpu and the CPUs in the candidate busiest group.
+> > >
+> > > Cc: Aubrey Li <aubrey.li@intel.com>
+> > > Cc: Ben Segall <bsegall@google.com>
+> > > Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
+> > > Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> > > Cc: Mel Gorman <mgorman@suse.de>
+> > > Cc: Quentin Perret <qperret@google.com>
+> > > Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > > Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+> > > Cc: Steven Rostedt <rostedt@goodmis.org>
+> > > Cc: Tim Chen <tim.c.chen@linux.intel.com>
+> > > Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > > Reviewed-by: Len Brown <len.brown@intel.com>
+> > > Signed-off-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+> > > ---
+> > > Changes since v4:
+> > >   * Use sg_lb_stats::sum_nr_running the idle state of a scheduling group.
+> > >     (Vincent, Peter)
+> > >   * Do not even idle CPUs in asym_smt_can_pull_tasks(). (Vincent)
+> > >   * Updated function documentation and corrected a typo.
+> > >
+> > > Changes since v3:
+> > >   * Removed the arch_asym_check_smt_siblings() hook. Discussions with the
+> > >     powerpc folks showed that this patch should not impact them. Also, more
+> > >     recent powerpc processor no longer use asym_packing. (PeterZ)
+> > >   * Removed unnecessary local variable in asym_can_pull_tasks(). (Dietmar)
+> > >   * Removed unnecessary check for local CPUs when the local group has zero
+> > >     utilization. (Joel)
+> > >   * Renamed asym_can_pull_tasks() as asym_smt_can_pull_tasks() to reflect
+> > >     the fact that it deals with SMT cases.
+> > >   * Made asym_smt_can_pull_tasks() return false for !CONFIG_SCHED_SMT so
+> > >     that callers can deal with non-SMT cases.
+> > >
+> > > Changes since v2:
+> > >   * Reworded the commit message to reflect updates in code.
+> > >   * Corrected misrepresentation of dst_cpu as the CPU doing the load
+> > >     balancing. (PeterZ)
+> > >   * Removed call to arch_asym_check_smt_siblings() as it is now called in
+> > >     sched_asym().
+> > >
+> > > Changes since v1:
+> > >   * Don't bailout in update_sd_pick_busiest() if dst_cpu cannot pull
+> > >     tasks. Instead, reclassify the candidate busiest group, as it
+> > >     may still be selected. (PeterZ)
+> > >   * Avoid an expensive and unnecessary call to cpumask_weight() when
+> > >     determining if a sched_group is comprised of SMT siblings.
+> > >     (PeterZ).
+> > > ---
+> > >  kernel/sched/fair.c | 94 +++++++++++++++++++++++++++++++++++++++++++++
+> > >  1 file changed, 94 insertions(+)
+> > >
+> > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > > index 26db017c14a3..8d763dd0174b 100644
+> > > --- a/kernel/sched/fair.c
+> > > +++ b/kernel/sched/fair.c
+> > > @@ -8597,10 +8597,98 @@ group_type group_classify(unsigned int imbalance_pct,
+> > >         return group_has_spare;
+> > >  }
+> > >
+> > > +/**
+> > > + * asym_smt_can_pull_tasks - Check whether the load balancing CPU can pull tasks
+> > > + * @dst_cpu:   Destination CPU of the load balancing
+> > > + * @sds:       Load-balancing data with statistics of the local group
+> > > + * @sgs:       Load-balancing statistics of the candidate busiest group
+> > > + * @sg:                The candidate busiest group
+> > > + *
+> > > + * Check the state of the SMT siblings of both @sds::local and @sg and decide
+> > > + * if @dst_cpu can pull tasks.
+> > > + *
+> > > + * If @dst_cpu does not have SMT siblings, it can pull tasks if two or more of
+> > > + * the SMT siblings of @sg are busy. If only one CPU in @sg is busy, pull tasks
+> > > + * only if @dst_cpu has higher priority.
+> > > + *
+> > > + * If both @dst_cpu and @sg have SMT siblings, and @sg has exactly one more
+> > > + * busy CPU than @sds::local, let @dst_cpu pull tasks if it has higher priority.
+> > > + * Bigger imbalances in the number of busy CPUs will be dealt with in
+> > > + * update_sd_pick_busiest().
+> > > + *
+> > > + * If @sg does not have SMT siblings, only pull tasks if all of the SMT siblings
+> > > + * of @dst_cpu are idle and @sg has lower priority.
+> > > + */
+> > > +static bool asym_smt_can_pull_tasks(int dst_cpu, struct sd_lb_stats *sds,
+> > > +                                   struct sg_lb_stats *sgs,
+> > > +                                   struct sched_group *sg)
+> > > +{
+> > > +#ifdef CONFIG_SCHED_SMT
+> > > +       bool local_is_smt, sg_is_smt;
+> > > +       int sg_busy_cpus;
+> > > +
+> > > +       local_is_smt = sds->local->flags & SD_SHARE_CPUCAPACITY;
+> > > +       sg_is_smt = sg->flags & SD_SHARE_CPUCAPACITY;
+> > > +
+> > > +       sg_busy_cpus = sgs->group_weight - sgs->idle_cpus;
+> > > +
+> > > +       if (!local_is_smt) {
+> > > +               /*
+> > > +                * If we are here, @dst_cpu is idle and does not have SMT
+> > > +                * siblings. Pull tasks if candidate group has two or more
+> > > +                * busy CPUs.
+> > > +                */
+> > > +               if (sg_is_smt && sg_busy_cpus >= 2)
+> >
+> > Do you really need to test sg_is_smt ? if sg_busy_cpus >= 2 then
+> > sd_is_smt must be true ?
+>
+> Thank you very much for your feedback Vincent!
+>
+> Yes, it is true that sg_busy_cpus >=2 is only true if @sg is SMT. I will
+> remove this check.
+>
+> >
+> > Also, This is the default behavior where we want to even the number of
+> > busy cpu. Shouldn't you return false and fall back to the default
+> > behavior ?
+>
+> This is also true.
+>
+> >
+> > That being said, the default behavior tries to even the number of idle
+> > cpus which is easier to compute and is equal to even the number of
+> > busy cpus in "normal" system with the same number of cpus in groups
+> > but this is not the case here. It could be good to change the default
+> > behavior to even the number of busy cpus and that you use the default
+> > behavior here. Additional condition will be used to select the busiest
+> > group like more busy cpu or more number of running tasks
+>
+> That is a very good observation. Checking the number of idle CPUs
+> assumes that both groups have the same number of CPUs. I'll look into
+> modifying the default behavior.
 
-Can we at least replace those with drm_modeset_lock_all_ctx and delete
-drm_modeset_lock_all? That would be really nice goal to make sure these
-don't spread further.
+Because this change will impact default smt/smp system, we might
+prefer to do that in a separate step
 
-Otherwise great stuff, I'm trying to volunteer a few reviewers.
--Daniel
+With the removal of the condition !sds->local_stat.sum_nr_running
+which seems useless because dst_cpu is idle and not SMT, this patch
+looks good to me
 
-> 
-> Fernando Ramos (15):
->   dmr: cleanup: drm_modeset_lock_all_ctx() --> DRM_MODESET_LOCK_ALL_BEGIN()
->   dmr/i915: cleanup: drm_modeset_lock_all_ctx() --> DRM_MODESET_LOCK_ALL_BEGIN()
->   dmr/msm: cleanup: drm_modeset_lock_all_ctx() --> DRM_MODESET_LOCK_ALL_BEGIN()
->   drm: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN()
->   drm/vmwgfx: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN()
->   drm/tegra: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN()
->   drm/shmobile: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN()
->   drm/radeon: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN()
->   drm/omapdrm: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN()
->   drm/nouveau: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN()
->   drm/msm: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN()
->   drm/i915: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN()
->   drm/gma500: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN()
->   drm/amd: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN()
->   doc: drm: remove TODO entry regarding DRM_MODSET_LOCK_ALL cleanup
-> 
->  Documentation/gpu/todo.rst                    | 17 -------
->  Documentation/locking/ww-mutex-design.rst     |  2 +-
->  drivers/gpu/drm/amd/amdgpu/amdgpu_display.c   | 13 +++--
->  .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 50 +++++++++----------
->  .../amd/display/amdgpu_dm/amdgpu_dm_debugfs.c | 23 +++++----
->  drivers/gpu/drm/drm_client_modeset.c          | 14 +++---
->  drivers/gpu/drm/drm_crtc_helper.c             | 18 ++++---
->  drivers/gpu/drm/drm_fb_helper.c               | 10 ++--
->  drivers/gpu/drm/drm_framebuffer.c             |  6 ++-
->  drivers/gpu/drm/gma500/psb_device.c           | 14 ++++--
->  drivers/gpu/drm/i915/display/intel_audio.c    | 12 +++--
->  drivers/gpu/drm/i915/display/intel_display.c  | 22 +++-----
->  .../drm/i915/display/intel_display_debugfs.c  | 35 ++++++++-----
->  drivers/gpu/drm/i915/display/intel_overlay.c  | 45 ++++++++---------
->  drivers/gpu/drm/i915/display/intel_pipe_crc.c |  5 +-
->  drivers/gpu/drm/i915/i915_drv.c               | 12 +++--
->  drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c      |  6 ++-
->  .../gpu/drm/msm/disp/msm_disp_snapshot_util.c | 10 ++--
->  drivers/gpu/drm/nouveau/dispnv50/disp.c       | 12 +++--
->  drivers/gpu/drm/omapdrm/omap_fb.c             |  6 ++-
->  drivers/gpu/drm/radeon/radeon_device.c        | 13 +++--
->  drivers/gpu/drm/radeon/radeon_dp_mst.c        |  7 ++-
->  drivers/gpu/drm/shmobile/shmob_drm_drv.c      |  6 ++-
->  drivers/gpu/drm/tegra/dsi.c                   |  6 ++-
->  drivers/gpu/drm/tegra/hdmi.c                  |  5 +-
->  drivers/gpu/drm/tegra/sor.c                   | 10 ++--
->  drivers/gpu/drm/vmwgfx/vmwgfx_ioctl.c         | 11 ++--
->  drivers/gpu/drm/vmwgfx/vmwgfx_kms.c           | 12 +++--
->  28 files changed, 222 insertions(+), 180 deletions(-)
-> 
-> -- 
-> 2.33.0
-> 
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+>
+> >
+> > > +                       return true;
+> > > +
+> > > +               /*
+> > > +                * @dst_cpu does not have SMT siblings. @sg may have SMT
+> > > +                * siblings and only one is busy. In such case, @dst_cpu
+> > > +                * can help if it has higher priority and is idle (i.e.,
+> > > +                * it has no running tasks).
+> >
+> > The previous comment above assume that "@dst_cpu is idle" but now you
+> > need to check that sds->local_stat.sum_nr_running == 0
+>
+> But we already know that, right? We are here because in
+> update_sg_lb_stats() we determine that dst CPU is idle (env->idle !=
+> CPU_NOT_IDLE).
+>
+> Thanks and BR,
+> Ricardo
