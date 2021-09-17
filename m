@@ -2,128 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 446F8410196
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 01:14:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8BFA4101A2
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 01:17:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236471AbhIQXPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 19:15:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42516 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232079AbhIQXPH (ORCPT
+        id S1343539AbhIQXSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 19:18:32 -0400
+Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:45039 "EHLO
+        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232079AbhIQXSb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 19:15:07 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 521C7C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 16:13:44 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id o7so2306764qta.10
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 16:13:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WvStkWEONyoI89jczNA46zkJFi1B00WTIBUldmnucWA=;
-        b=GnxUObmKo72rWvaUEWgCN6A6rnlgat7y67MnCheWDPis6UcdBSkLUXjaFXw1NyK+gt
-         Cwq763rGlcAfuMnQzXbKWGixgHA4MkdM/IthGmiY03SEGC5nIStr9RTTHc1moqi3+l7u
-         JyU7XKBGN/1H//94k5aoydPNo8LafO9EeLSt/dWk+oNgTxTCpzD73a8ZWXSguLcSe4sK
-         KfZBvpX+MBdiSaOZifKJpXbbw/uqP+tna0RXwfwpLmtpl96CSC7P/HP+ychHew362jqM
-         E2hUVmnoBFSq3pyQrRmK4yVltMcESwiwhd4mKsLV7lJUemBvCJh7rL6whtGl51B3gT9e
-         HEtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WvStkWEONyoI89jczNA46zkJFi1B00WTIBUldmnucWA=;
-        b=c3HdOsNT51O6njK1W1JCZPDK0SdWzC499FKl0VhLZKw7RTzkuGBTjGfnOdn+Fz1v1f
-         VkwTWFOXHE8xnYnvYa2EJo16UUhXQZPX8FGq5m8WRTDWXmagJAh3fdMbYJpRlENBkkZm
-         BkOIJ4vjjibWsaMr8RMaW6q9qV4nxwpxieX7Z/Kjtuhv+jrAjr0WqLipg+pdilDX601o
-         Hey0OgaXDSswGbpeecBazxV5FJMKdWDuhi9Q1a1nTz/pnsDBwnAp3GBIDpLmWQ1g4muT
-         Gb434r6tBdBi7yUDQjcj3L2xI4c4dcbaahcYDOhRk33WJoQsRdosBClXNSLH6R6hlfiH
-         pfWw==
-X-Gm-Message-State: AOAM531I50ESbxX68+HCjIyZaOcmbki6/M1rAzB9LUqQYiIGnr9ZAIRO
-        UYl/Hctn8wCfBvTj8HoMOH375w==
-X-Google-Smtp-Source: ABdhPJyejXJYq9o/ujHepN1pUktkQ1bF6z16rKzRI+uE+VqOCntzSq9GIzsYhHgZk8O03odAUsg70g==
-X-Received: by 2002:a05:622a:190a:: with SMTP id w10mr4358606qtc.300.1631920423410;
-        Fri, 17 Sep 2021 16:13:43 -0700 (PDT)
-Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
-        by smtp.gmail.com with ESMTPSA id m6sm4907016qti.38.2021.09.17.16.13.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 16:13:42 -0700 (PDT)
-Date:   Fri, 17 Sep 2021 19:15:40 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Howells <dhowells@redhat.com>
-Subject: Re: Folio discussion recap
-Message-ID: <YUUhnHrWUeYebhPa@cmpxchg.org>
-References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
- <YTu9HIu+wWWvZLxp@moria.home.lan>
- <YUIT2/xXwvZ4IErc@cmpxchg.org>
- <20210916025854.GE34899@magnolia>
- <YUN2vokEM8wgASk8@cmpxchg.org>
- <20210917052440.GJ1756565@dread.disaster.area>
- <YUTC6O0w3j7i8iDm@cmpxchg.org>
- <20210917205735.tistsacwwzkcdklx@box.shutemov.name>
+        Fri, 17 Sep 2021 19:18:31 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id AAB5C2B00381;
+        Fri, 17 Sep 2021 19:17:07 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Fri, 17 Sep 2021 19:17:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=u92.eu; h=date
+        :from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=IGsVP4ZteAEr9xLEQV5uB/tVbZV
+        zzsq4OBU4Z1IsijE=; b=ahuPRI2ir8VYkdt2zhvFA698iOyahHGujH1qVcfUL79
+        NfbOKL4dS3mx19SjNEDdjbo2klBfT3hayxZNi1JK6LpronosHIzeJa8qmLHk35co
+        gE4my/8oWVUINa0e0/ThD6Y5zNLvXHPQnfzRWk4vvJinnDVgIbqE2FdAS+fbz38e
+        mad5TXe9hsJ7oiL9kwbC5CBGRML2QEtuM0kzZP33J/RW5RScmGkwjfuonLBAAwj7
+        hSplQ7ssXbbLd2QXqnHG3PKRF28u6wuE0tSxc2/F39Aa8JuaBWNclD8qG2o6kVgf
+        Rxbf09V9lVAa4kPzfQrgoMakMNhvCPDy43M2hWoadDw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=IGsVP4
+        ZteAEr9xLEQV5uB/tVbZVzzsq4OBU4Z1IsijE=; b=GvkSHwukXjsuSoWvpmRGh5
+        vEMdeV+XKA+/JTADNOsG07QqGwzCaP3aEQI9zrjtQT4WWbRnDmGgxT1KK7WOievF
+        DtXA6UHX/fq7cUcCNcCRcug1T/U0qYYbZ1iWVpiTJv5d1WTJlrhyAOTWCYO3Ag+z
+        oj9i9+h/piPoDlLkaWyNQF9uki6E154WhbWLA/f7omyi/mQ7tDOwvhTB4dfzl09j
+        uLXiEbJIcoDPcrYgPiDW2EirkOkaHsv+ss/yjxmObqOED3uLvUla+zfsNWKbb/gB
+        8ENC3a7sp7zbf09GA+0v7ebG9QRTcuUC+TqYS40serjzoUtTgxY2y6eNFLpWbVkw
+        ==
+X-ME-Sender: <xms:8iFFYXMO_zQQgD16oxbjbtShEjJAcDBAsKp_RAAWasAWT8nh6LvD0Q>
+    <xme:8iFFYR-VjguZB1XsDUXhLpDDFmzLrelFL2k7aTsB-OGNSO7JqnNvrq8QriO1E65kD
+    4XTEPR_XlUbHgw-BQ>
+X-ME-Received: <xmr:8iFFYWSwo1d-jxo902FJTfyoVe0MLl-AzQ_P0KIOgMplSv-Q3VQF0EmLw2VBYnaJMu2OQ2JX>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudehjedgudelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttdejnecuhfhrohhmpefhvghrnhgr
+    nhguohcutfgrmhhoshcuoehgrhgvvghnfhhoohesuhelvddrvghuqeenucggtffrrghtth
+    gvrhhnpedvjeeifeelhfetiefhhfdthfefkefhhfeutdetvdfgvefgveefheffgfekjeef
+    heenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrh
+    gvvghnfhhoohesuhelvddrvghu
+X-ME-Proxy: <xmx:8iFFYbteP_ogjih9hbd_SFpKp1y7PfGdW8xJuqpq1y4G9RNC6lmz8w>
+    <xmx:8iFFYfcbvzZqNZNeh73V4LyzP5tP0A_hIJF4U_SIA9_9eX9lAPpx6w>
+    <xmx:8iFFYX1uGX3jPoazsk8MtZMVTOO38tw4vuVepVmBdO0jj3BqRm_0Yg>
+    <xmx:8yFFYT6kpTIoEOo-IjQepYYNKWCqeFUVXaG9JDmibIlwyMxMnDMo76cB6Zs>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 17 Sep 2021 19:17:03 -0400 (EDT)
+Date:   Sat, 18 Sep 2021 01:17:01 +0200
+From:   Fernando Ramos <greenfoo@u92.eu>
+To:     Sean Paul <sean@poorly.run>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-renesas-soc@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH 14/15] drm/amd: cleanup: drm_modeset_lock_all() -->
+ DRM_MODESET_LOCK_ALL_BEGIN()
+Message-ID: <YUUh7X+Ft7vKHlcT@zacax395.localdomain>
+References: <20210916211552.33490-1-greenfoo@u92.eu>
+ <20210916211552.33490-15-greenfoo@u92.eu>
+ <20210917155548.GO2515@art_vandelay>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210917205735.tistsacwwzkcdklx@box.shutemov.name>
+In-Reply-To: <20210917155548.GO2515@art_vandelay>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 11:57:35PM +0300, Kirill A. Shutemov wrote:
-> On Fri, Sep 17, 2021 at 12:31:36PM -0400, Johannes Weiner wrote:
-> > I didn't suggest to change what the folio currently already is for the
-> > page cache. I asked to keep anon pages out of it (and in the future
-> > potentially other random stuff that is using compound pages).
+> > +	struct drm_modeset_acquire_ctx ctx;
+> >  	int r;
+> > +	int ret;
 > 
-> It would mean that anon-THP cannot benefit from the work Willy did with
-> folios. Anon-THP is the most active user of compound pages at the moment
-> and it also suffers from the compound_head() plague. You ask to exclude
-> anon-THP siting *possible* future benefits for pagecache.
+> Relocate ret with r please
+
+Done!
+
+> > -	drm_modeset_unlock_all(dev);
+> > +	DRM_MODESET_LOCK_ALL_END(dev, ctx, ret);
 > 
-> Sorry, but this doesn't sound fair to me.
+> You should check ret here
 
-Hold on Kirill. I'm not saying we shouldn't fix anonthp. But let's
-clarify the actual code in question in this specific patchset. You say
-anonthp cannot benefit from folio, but in the other email you say this
-patchset isn't doing the conversion yet.
+Done!
 
-The code I'm specifically referring to here is the conversion of some
-code that encounters both anon and file pages - swap.c, memcontrol.c,
-workingset.c, and a few other places. It's a small part of the folio
-patches, but it's a big deal for the MM code conceptually.
 
-I'm requesting to drop those and just keep the page cache bits. Not
-because I think anonthp shouldn't be fixed, but because I think we're
-not in agreement yet on how they should be fixed. And it's somewhat
-independent of fixing the page cache interface now that people are
-waiting on much more desparately and acutely than we inside MM wait
-for a struct page cleanup. It's not good to hold them while we argue.
+> >  	int r;
+> > +	int ret;
+> 
+> Relocate ret with r
 
-Dropping the anon bits isn't final. Depending on how our discussion
-turns out, we can still put them in later or we can put in something
-new. The important thing is that the uncontroversial page cache bits
-aren't held up any longer while we figure it out.
+Done!
 
-> If you want to limit usage of the new type to pagecache, the burden on you
-> to prove that it is useful and not just a dead weight.
 
-I'm not asking to add anything to the folio patches, just to remove
-some bits around the edges. And for the page cache bits: I think we
-have a rather large number of folks really wanting those. Now.
+> > -	drm_modeset_unlock_all(dev);
+> > +	DRM_MODESET_LOCK_ALL_END(dev, ctx, ret);
+> >  
+> >  	return 0;
+> 
+> Return ret
 
-Again, I think we should fix anonthp. But I also think we should
-really look at struct page more broadly. And I think we should have
-that discussion inside a forum of MM people that truly care.
+Done!
 
-I'm just trying to unblock the fs folks at this point and merge what
-we can now.
+
+> > diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> > index 9b1fc54555ee..5196c1d26f87 100644
+> > @@ -2661,13 +2657,18 @@ static void handle_hpd_irq(void *param)
+> >  
+> >  		amdgpu_dm_update_connector_after_detect(aconnector);
+> >  
+> > -		drm_modeset_lock_all(dev);
+> > -		dm_restore_drm_connector_state(dev, connector);
+> > -		drm_modeset_unlock_all(dev);
+> > -
+> > -		if (aconnector->base.force == DRM_FORCE_UNSPECIFIED)
+> > -			drm_kms_helper_hotplug_event(dev);
+> > +	} else {
+> > +		goto out;
+> >  	}
+> > +
+> > +	DRM_MODESET_LOCK_ALL_BEGIN(dev, ctx, 0, ret);
+> > +	dm_restore_drm_connector_state(dev, connector);
+> > +	DRM_MODESET_LOCK_ALL_END(dev, ctx, ret);
+> 
+> Check ret here please
+
+This function ("handle_hpd_irq") returns void. What would the appropriate way of
+checking the error be?
+
+
+> > @@ -2841,14 +2838,17 @@ static void handle_hpd_rx_irq(void *param)
+> >  
+> >  			amdgpu_dm_update_connector_after_detect(aconnector);
+> >  
+> > +		} else {
+> > +			goto finish;
+> 
+> You used 'out' above and 'finish' here. It would be nice to be consistent with
+> naming, I see 'out' a lot more than 'finish', so my vote would be to change this
+> label to 'out'.
+
+I originally used "out", but turns out there is already an "out" label in this
+function :)
+
+I then searched for other "go to end" labels and found "finish" being used in 
+this same file.
+
+But I can rename it to somehitng else ("out2" maybe?) to make it less confusing.
+
+ 
+> > +		}
+> >  
+> > -			drm_modeset_lock_all(dev);
+> > -			dm_restore_drm_connector_state(dev, connector);
+> > -			drm_modeset_unlock_all(dev);
+> > +		DRM_MODESET_LOCK_ALL_BEGIN(dev, ctx, 0, ret);
+> > +		dm_restore_drm_connector_state(dev, connector);
+> > +		DRM_MODESET_LOCK_ALL_END(dev, ctx, ret);
+> 
+> Check ret here?
+
+This is another irq-like function returning void.
+
+What can we do here after having checked the error?
+
+
+> > +#include <drm/drm_drv.h>
+> 
+> Top-level headers generally come above the driver headers. Also, now that I think
+> about this a bit more, all of the new includes in this set should probably be
+> for 'drm_modeset_lock.h' instead of 'drm_drv.h'.
+
+Ok. Let me try that.
+
+
+> > @@ -1259,13 +1257,16 @@ static ssize_t trigger_hotplug(struct file *f, const char __user *buf,
+> > +	DRM_MODESET_LOCK_ALL_BEGIN(dev, ctx, 0, ret);
+> > +	dm_restore_drm_connector_state(dev, connector);
+> > +	DRM_MODESET_LOCK_ALL_END(dev, ctx, ret);
+> 
+> Check ret here?
+
+This is a .write file_operations function expected to return a "size". Is it ok
+for it to return an error? I guess so, right?
+
