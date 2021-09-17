@@ -2,209 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2607C40F773
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 14:25:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C606140F778
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 14:28:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243679AbhIQM0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 08:26:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35742 "EHLO
+        id S243817AbhIQM3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 08:29:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235941AbhIQM0u (ORCPT
+        with ESMTP id S235941AbhIQM3M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 08:26:50 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19EE5C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 05:25:24 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id d21so14853523wra.12
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 05:25:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=B4xbw9gEcqky1hkIaKGJsZCnwDYURbkYMy8wOSBcFZM=;
-        b=DBbT+Z73wXFx7Ix5ddCqc9nQajcrsU49nmmjtksdzvj4VIUhu9a12X6mxydVGcyr31
-         hkbTnOZYoHZBblsPGhC4cqiN5vTy2EZ/ap7N566BgNdEzkAG+xpa6VwhSk6rstGS1sPD
-         4IZWgIghyDL60XFxmzUrIJNR7pW0cc0ak4VI0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=B4xbw9gEcqky1hkIaKGJsZCnwDYURbkYMy8wOSBcFZM=;
-        b=kuGFeWDkkLcCRP7BDNiYrBXJo1bD0eD+m+D2R7m3p3OjDWE7WjTBkO6VjUVJJ/swkS
-         WmfjLiOZoxMy98p7wNvIgACPwUNA7WSmC4cOPPubZVT66TXCDMFXYmlgnX7XeUCDgZFo
-         H0HPcAQqw0QR1wlU5G6TiwoTaDOXVe1O+l/QnzFdeiUxqWseSIQzyW5fI+jyPkKNu+2B
-         5Hc2L0tsmIErPxu4SXn5J0uMES110fC4CaqfZh0PG8ltNw12cVgbymY9x1H5cM1JvZlJ
-         7rUrqdpV+iECRathunqkuCmzg/yADpHXva4ll9d/B9RbpNtLdPkp/7OwQE3hCDWyjqyf
-         9U6g==
-X-Gm-Message-State: AOAM530/75p9tSlHKg+SEDV/Z4jDciMq83Rz3b12KSEq+2uyuXpIbnYa
-        qOSmIHMgMhq02N+ctKy1kOv0MQ==
-X-Google-Smtp-Source: ABdhPJyMTcWyIQ8nzIGUt+EPkzWzvWClhn2Q1W8KmqNiWLuXSRA7doL/03EbIbn3t2AAXB96e7Moyg==
-X-Received: by 2002:adf:f084:: with SMTP id n4mr12033899wro.362.1631881522631;
-        Fri, 17 Sep 2021 05:25:22 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id m18sm6529557wrn.85.2021.09.17.05.25.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 05:25:21 -0700 (PDT)
-Date:   Fri, 17 Sep 2021 14:25:19 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Oded Gabbay <ogabbay@kernel.org>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Gal Pressman <galpress@amazon.com>,
-        Yossi Leybovich <sleybo@amazon.com>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Dave Airlie <airlied@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>
-Subject: Re: [PATCH v6 0/2] Add p2p via dmabuf to habanalabs
-Message-ID: <YUSJL9ml1MljOwzB@phenom.ffwll.local>
-Mail-Followup-To: Oded Gabbay <ogabbay@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Gal Pressman <galpress@amazon.com>,
-        Yossi Leybovich <sleybo@amazon.com>,
-        Maling list - DRI developers <dri-devel@lists.freedesktop.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Doug Ledford <dledford@redhat.com>, Dave Airlie <airlied@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Leon Romanovsky <leonro@nvidia.com>, Christoph Hellwig <hch@lst.de>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" <linaro-mm-sig@lists.linaro.org>
-References: <20210912165309.98695-1-ogabbay@kernel.org>
- <YUCvNzpyC091KeaJ@phenom.ffwll.local>
- <20210914161218.GF3544071@ziepe.ca>
- <CAFCwf13322953Txr3Afa_MomuD148vnfpEog0xzW7FPWH9=6fg@mail.gmail.com>
- <YUM5JoMMK7gceuKZ@phenom.ffwll.local>
- <CAFCwf10MnK5KPBaeWar4tALGz9n8+-B8toXnqurcebZ8Y_Jjpw@mail.gmail.com>
+        Fri, 17 Sep 2021 08:29:12 -0400
+Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [IPv6:2001:67c:2050::465:102])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AF39C061574;
+        Fri, 17 Sep 2021 05:27:49 -0700 (PDT)
+Received: from smtp202.mailbox.org (smtp202.mailbox.org [IPv6:2001:67c:2050:105:465:1:4:0])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4H9tWd0rlbzQjgX;
+        Fri, 17 Sep 2021 14:27:41 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+From:   =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>
+To:     Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Cc:     =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        linux-wireless@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+Subject: [PATCH] Bluetooth: btusb: Lower passive lescan interval on Marvell 88W8897
+Date:   Fri, 17 Sep 2021 14:27:18 +0200
+Message-Id: <20210917122718.86776-1-verdre@v0yd.nl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFCwf10MnK5KPBaeWar4tALGz9n8+-B8toXnqurcebZ8Y_Jjpw@mail.gmail.com>
-X-Operating-System: Linux phenom 5.10.0-8-amd64 
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 9094037F
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 03:44:25PM +0300, Oded Gabbay wrote:
-> On Thu, Sep 16, 2021 at 3:31 PM Daniel Vetter <daniel@ffwll.ch> wrote:
-> >
-> > On Wed, Sep 15, 2021 at 10:45:36AM +0300, Oded Gabbay wrote:
-> > > On Tue, Sep 14, 2021 at 7:12 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> > > >
-> > > > On Tue, Sep 14, 2021 at 04:18:31PM +0200, Daniel Vetter wrote:
-> > > > > On Sun, Sep 12, 2021 at 07:53:07PM +0300, Oded Gabbay wrote:
-> > > > > > Hi,
-> > > > > > Re-sending this patch-set following the release of our user-space TPC
-> > > > > > compiler and runtime library.
-> > > > > >
-> > > > > > I would appreciate a review on this.
-> > > > >
-> > > > > I think the big open we have is the entire revoke discussions. Having the
-> > > > > option to let dma-buf hang around which map to random local memory ranges,
-> > > > > without clear ownership link and a way to kill it sounds bad to me.
-> > > > >
-> > > > > I think there's a few options:
-> > > > > - We require revoke support. But I've heard rdma really doesn't like that,
-> > > > >   I guess because taking out an MR while holding the dma_resv_lock would
-> > > > >   be an inversion, so can't be done. Jason, can you recap what exactly the
-> > > > >   hold-up was again that makes this a no-go?
-> > > >
-> > > > RDMA HW can't do revoke.
-> >
-> > Like why? I'm assuming when the final open handle or whatever for that MR
-> > is closed, you do clean up everything? Or does that MR still stick around
-> > forever too?
-> >
-> > > > So we have to exclude almost all the HW and several interesting use
-> > > > cases to enable a revoke operation.
-> > > >
-> > > > >   - For non-revokable things like these dma-buf we'd keep a drm_master
-> > > > >     reference around. This would prevent the next open to acquire
-> > > > >     ownership rights, which at least prevents all the nasty potential
-> > > > >     problems.
-> > > >
-> > > > This is what I generally would expect, the DMABUF FD and its DMA
-> > > > memory just floats about until the unrevokable user releases it, which
-> > > > happens when the FD that is driving the import eventually gets closed.
-> > > This is exactly what we are doing in the driver. We make sure
-> > > everything is valid until the unrevokable user releases it and that
-> > > happens only when the dmabuf fd gets closed.
-> > > And the user can't close it's fd of the device until he performs the
-> > > above, so there is no leakage between users.
-> >
-> > Maybe I got the device security model all wrong, but I thought Guadi is
-> > single user, and the only thing it protects is the system against the
-> > Gaudi device trhough iommu/device gart. So roughly the following can
-> > happen:
-> >
-> > 1. User A opens gaudi device, sets up dma-buf export
-> >
-> > 2. User A registers that with RDMA, or anything else that doesn't support
-> > revoke.
-> >
-> > 3. User A closes gaudi device
-> This can not happen without User A closing the FD of the dma-buf it exported.
-> We prevent User A from closing the device because when it exported the
-> dma-buf, the driver's code took a refcnt of the user's private
-> structure. You can see that in export_dmabuf_common() in the 2nd
-> patch. There is a call there to hl_ctx_get.
-> So even if User A calls close(device_fd), the driver won't let any
-> other user open the device until User A closes the fd of the dma-buf
-> object.
-> 
-> Moreover, once User A will close the dma-buf fd and the device is
-> released, the driver will scrub the device memory (this is optional
-> for systems who care about security).
-> 
-> And AFAIK, User A can't close the dma-buf fd once it registered it
-> with RDMA, without doing unregister.
-> This can be seen in ib_umem_dmabuf_get() which calls dma_buf_get()
-> which does fget(fd)
+The Marvell 88W8897 combined wifi and bluetooth card (pcie+usb version)
+is used in a lot of Microsoft Surface devices, and all those devices
+suffer from very low 2.4GHz wifi connection speeds while bluetooth is
+enabled. The reason for that is that the default passive scanning
+interval for Bluetooth Low Energy devices is quite high on Linux
+(interval of 60 msec and scan window of 30 msec, see le_scan_interval
+and le_scan_window in hci_core.c), and the Marvell chip is known for its
+bad bt+wifi coexisting performance.
 
-Yeah that's essentially what I was looking for. This is defacto
-hand-rolling the drm_master owner tracking stuff. As long as we have
-something like this in place it should be fine I think.
--Daniel
+So decrease that passive scan interval and make the scan window shorter
+on this particular device to allow for spending more time transmitting
+wifi signals: The new scan interval is 250 msec (0x190 * 0.625 msec) and
+the new scan window is 6.25 msec (0xa * 0.625 msec).
 
-> > 4. User B opens gaudi device, assumes that it has full control over the
-> > device and uploads some secrets, which happen to end up in the dma-buf
-> > region user A set up
-> >
-> > 5. User B extracts secrets.
-> >
-> > > > I still don't think any of the complexity is needed, pinnable memory
-> > > > is a thing in Linux, just account for it in mlocked and that is
-> > > > enough.
-> >
-> > It's not mlocked memory, it's mlocked memory and I can exfiltrate it.
-> > Mlock is fine, exfiltration not so much. It's mlock, but a global pool and
-> > if you didn't munlock then the next mlock from a completely different user
-> > will alias with your stuff.
-> >
-> > Or is there something that prevents that? Oded at least explain that gaudi
-> > works like a gpu from 20 years ago, single user, no security at all within
-> > the device.
-> > -Daniel
-> > --
-> > Daniel Vetter
-> > Software Engineer, Intel Corporation
-> > http://blog.ffwll.ch
+This change has a very large impact on the 2.4GHz wifi speeds and gets
+it up to performance comparable with the Windows driver, which seems to
+apply a similar quirk.
 
+The scan interval and scan window length were tested and found to work
+very well with a bunch of Bluetooth Low Energy devices, including the
+Surface Pen, a Bluetooth Speaker and two modern Bluetooth headphones.
+All devices were discovered immediately after turning them on. Even
+lower values were also tested, but these introduced longer delays until
+devices get discovered.
+
+Signed-off-by: Jonas Dreßler <verdre@v0yd.nl>
+---
+ drivers/bluetooth/btusb.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index 60d2fce59a71..05b11179c839 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -59,6 +59,7 @@ static struct usb_driver btusb_driver;
+ #define BTUSB_WIDEBAND_SPEECH	0x400000
+ #define BTUSB_VALID_LE_STATES   0x800000
+ #define BTUSB_QCA_WCN6855	0x1000000
++#define BTUSB_LOWER_LESCAN_INTERVAL	0x2000000
+ #define BTUSB_INTEL_BROKEN_INITIAL_NCMD 0x4000000
+ 
+ static const struct usb_device_id btusb_table[] = {
+@@ -356,6 +357,7 @@ static const struct usb_device_id blacklist_table[] = {
+ 	{ USB_DEVICE(0x1286, 0x2044), .driver_info = BTUSB_MARVELL },
+ 	{ USB_DEVICE(0x1286, 0x2046), .driver_info = BTUSB_MARVELL },
+ 	{ USB_DEVICE(0x1286, 0x204e), .driver_info = BTUSB_MARVELL },
++	{ USB_DEVICE(0x1286, 0x204c), .driver_info = BTUSB_LOWER_LESCAN_INTERVAL },
+ 
+ 	/* Intel Bluetooth devices */
+ 	{ USB_DEVICE(0x8087, 0x0025), .driver_info = BTUSB_INTEL_COMBINED },
+@@ -3813,6 +3815,19 @@ static int btusb_probe(struct usb_interface *intf,
+ 	if (id->driver_info & BTUSB_MARVELL)
+ 		hdev->set_bdaddr = btusb_set_bdaddr_marvell;
+ 
++	/* The Marvell 88W8897 combined wifi and bluetooth card is known for
++	 * very bad bt+wifi coexisting performance.
++	 *
++	 * Decrease the passive BT Low Energy scan interval a bit
++	 * (0x0190 * 0.625 msec = 250 msec) and make the scan window shorter
++	 * (0x000a * 0,625 msec = 6.25 msec). This allows for significantly
++	 * higher wifi throughput while passively scanning for BT LE devices.
++	 */
++	if (id->driver_info & BTUSB_LOWER_LESCAN_INTERVAL) {
++		hdev->le_scan_interval = 0x0190;
++		hdev->le_scan_window = 0x000a;
++	}
++
+ 	if (IS_ENABLED(CONFIG_BT_HCIBTUSB_MTK) &&
+ 	    (id->driver_info & BTUSB_MEDIATEK)) {
+ 		hdev->setup = btusb_mtk_setup;
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+2.31.1
+
