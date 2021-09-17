@@ -2,1267 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B91340F421
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 10:29:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7786F40F425
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 10:30:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245341AbhIQIaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 04:30:39 -0400
-Received: from mout.kundenserver.de ([212.227.126.133]:36755 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245282AbhIQIah (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 04:30:37 -0400
-Received: from mail-wm1-f43.google.com ([209.85.128.43]) by
- mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MgNlH-1n6nun1XTT-00hz8k; Fri, 17 Sep 2021 10:29:14 +0200
-Received: by mail-wm1-f43.google.com with SMTP id 196-20020a1c04cd000000b002fa489ffe1fso9304779wme.4;
-        Fri, 17 Sep 2021 01:29:14 -0700 (PDT)
-X-Gm-Message-State: AOAM533gUrT83if+0ZJ/ATj+J6j3rz2uLsV3e5nh+9dibpXS+Qx3caIX
-        NEadnukOggZu7UCpk2ksNhbjoBl2X8mwzP9tnhA=
-X-Google-Smtp-Source: ABdhPJwB9DugLgb8FRYpRGR2/Q/B49nmc31tQcXLeqHU5kUD5s+NNyyOr4pOyxcOZc6R7vAS5wQQn+sMiqbTwtp5d1w=
-X-Received: by 2002:a05:600c:190e:: with SMTP id j14mr5972950wmq.35.1631867353545;
- Fri, 17 Sep 2021 01:29:13 -0700 (PDT)
+        id S245368AbhIQIbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 04:31:32 -0400
+Received: from mail-co1nam11on2132.outbound.protection.outlook.com ([40.107.220.132]:55008
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S244170AbhIQIba (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 04:31:30 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XCQbppP0giKQbdCO3a+iB5NZoY1qgufl3zj5t8vtDVE2Fb650XCm9e7qqbAAAezYavYsVlWXDrl6nVOj7RuYHRgv0yuRT7yiuAzQBEZT2PYiP+RFV3A21wIS++mA9AO16Ef4PaeGonhz006gmUcYjC2Q67os87yYGRvhVALgaktL3eXhz/rdDZ8W3GnfWmqOMFHPkqMNLmC1kFTED9HZeWZZz9CgeTiipZnefaUk2LNtB9bzpubD2vgpYmZle2JWGeSutNDEbuZjKnxFXvGhJRbIYCLIylumV2rBzJFfH7nYLYIZjsZQodEhOnFnyWge81nocZu/UIhR+9TEc0VWoQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=xAIHhbmkdsXrC7RQqj3WKAa+pRSVG7holBeE9bDHoAc=;
+ b=BILPgHRSdzuedny6S+5NX7FJU3KbnO3qkGgoGsyYwHW5tKxMHTgZ3cxVztkdekZ48q6VcRK9xPy1pLu2cVIszo9TDFM9JPZDnv1q5zI72zv4M6ElWRgdY+udGxt/zh23+m7g5X4Ufy2zm185Uq4WnEMRB1NM92cGYixATBJ3BsA6km78G0DTwK/4RTD67oXEoIkFR1Eo9Ols7l2bxTGTk05XN/q1qCp8FvWN0wvmzX1CU+d9PfM3xXqDModGbwXEIHJuHyjJI3rD4bejEqjnLkR0+qcQ2I38ec23+fza0paj45qbjZ8BDGeIRxA5/NDlmZI8WkgZUuirlpTdP1iugA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=os.amperecomputing.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xAIHhbmkdsXrC7RQqj3WKAa+pRSVG7holBeE9bDHoAc=;
+ b=GHmN3KBb3K+Bfz/C4ghwhpJ9sqwm1mAYOiCaZ+JEIaD9k0X40lXS49rkJZUjptrnzG3SkyW16B2bPp05k1bUiHQLpCJgmMWqVX39C7+SajDjMm/CL190EXBvZC7NyvRGLQBMUxgb/URkOHdfY7Kdju0oocz3XghW2KYolehLUEM=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none
+ header.from=os.amperecomputing.com;
+Received: from MW2PR0102MB3482.prod.exchangelabs.com (2603:10b6:302:c::32) by
+ MW2PR0102MB3546.prod.exchangelabs.com (2603:10b6:302:2::30) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4523.16; Fri, 17 Sep 2021 08:30:05 +0000
+Received: from MW2PR0102MB3482.prod.exchangelabs.com
+ ([fe80::d9d6:d7bc:2f2e:932b]) by MW2PR0102MB3482.prod.exchangelabs.com
+ ([fe80::d9d6:d7bc:2f2e:932b%7]) with mapi id 15.20.4523.015; Fri, 17 Sep 2021
+ 08:30:05 +0000
+From:   Quan Nguyen <quan@os.amperecomputing.com>
+To:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc:     Open Source Submission <patches@amperecomputing.com>,
+        Phong Vo <phong@os.amperecomputing.com>,
+        "Thang Q . Nguyen" <thang@os.amperecomputing.com>
+Subject: [PATCH v1] ARM: dts: aspeed: mtjade: Add some gpios
+Date:   Fri, 17 Sep 2021 15:29:45 +0700
+Message-Id: <20210917082945.19111-1-quan@os.amperecomputing.com>
+X-Mailer: git-send-email 2.28.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SG2P153CA0052.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c6::21)
+ To MW2PR0102MB3482.prod.exchangelabs.com (2603:10b6:302:c::32)
 MIME-Version: 1.0
-References: <20210917035736.3934017-1-chenhuacai@loongson.cn> <20210917035736.3934017-16-chenhuacai@loongson.cn>
-In-Reply-To: <20210917035736.3934017-16-chenhuacai@loongson.cn>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 17 Sep 2021 10:28:57 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0p1rmVaQiNeOCfk6B5_EZ-8EmwfSmT-6A3zwOga2hX3A@mail.gmail.com>
-Message-ID: <CAK8P3a0p1rmVaQiNeOCfk6B5_EZ-8EmwfSmT-6A3zwOga2hX3A@mail.gmail.com>
-Subject: Re: [PATCH V3 15/22] LoongArch: Add elf and module support
-To:     Huacai Chen <chenhuacai@loongson.cn>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Airlie <airlied@linux.ie>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Huacai Chen <chenhuacai@gmail.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Jessica Yu <jeyu@kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:KShtLSy62103T2Fs8gLVQIqGvI6kohoOEgWsMBlgrP4UQ5fm8Ut
- gDgYN4fOC7inubwc149TN3TpJBOS8MYsl+OqhDMYLq2Va9PpiyPaimyiIYGH0K+tMULDI9a
- yosj4qy2HQ8ZekR9R8BehPWcchGiXkcUaS628g+KacjAWO1aLYJwhCxPYVMvyEGjSUwatHt
- X7l7o6ua8PaG0G8FnpRug==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:JRwTTjvP3JE=:aaoI4D17sNJGGPrSzJYFP6
- l13WHfqVjTNgHZbR6iXpA7sSTAUhBOGBlEUME2R2xwtrzNSakina1DN9pjtGQty3K47PBQgXY
- Dh2g7db6QL8YPBvS/nLHTBC+pTo1PN5a8eyvJ0q1XFyJNKgMPzC9hygWMZE2rgMvH2gFYiPUa
- D3/u4IfYWmbj4hCe09j2WHErQ18ZCIzPW/OvjsdFJsynnnPERiBYSiBOJLA2W3oJjzt/Fwe0W
- M1WZLIq0RvbmEhz4E6XtS2VHkq9K1Ie6wAqe3hJwvUneJWn/NhgWo9EARZN8wjLZbAAqSNNJr
- v1Ad3TdtNNzw3KWi41jQoFoP1ze3DbR3JfP6I7Eub6yRDFgYR7zjb+XbS0BAIDR6ZfHqANvVd
- fd44uHPCMNAZzK7xlQNiRXx8oobh1qIxkCF0WABjPW6MfJspm8E+U03TyJs6TsaQrZHva0bpU
- OHYd9aVFwKhc+mqC4sUb8DzaYfg/3x8TSi9bVlPKt4We9xeyc7nLSb1xCv/WoYmNKbFAEHsq0
- zfp1VE7HUqu6TwNt6Br6QbsMYoYmKQ44W0fbR3Z9iPF61OtkG3fAqNQxidkBVfrav9WPvvDXz
- EpRmWSTnF4fcMauihdj2jhuLz2N61Iaz0ofz65Rj0cBMmvStf+99TS3Ki/NgdGehyiSTm9cmq
- 8SjNvBgtlTJvztYCc68VJnBvo+l103Ts34TwfWvmgH49JGTmtuu2NtUONVRmFkVJe6lBOFT1P
- wz97fEGuJXukdLnLhwZQKrliHOwmujMZzy4EuLTe8Fb6u/nvmlrTLSpXsgi3fN36n+18dZV50
- vTM5GHRcpRutwiizwaEdtd2Svx51xB99KyCGcfu0LnGreaR8KKWk7XMH7aXyMfI10Ey6FeLPj
- EuWrKIL/++5DUZhnxMgQ==
+Received: from hcm-sw-17.amperecomputing.com (118.69.219.201) by SG2P153CA0052.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c6::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.8 via Frontend Transport; Fri, 17 Sep 2021 08:30:02 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e3f6eb6e-57a1-47c9-c02f-08d979b559e3
+X-MS-TrafficTypeDiagnostic: MW2PR0102MB3546:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MW2PR0102MB354665F68A519BDDF737C73FF2DD9@MW2PR0102MB3546.prod.exchangelabs.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:785;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: tpNyMqswhQSe11dcogxsJK/4p7a3xLmy7L+9wrtjDADlOhqvTi9EnQv73hGV0127pvIL3k/V2PQc+0BDS4WZxRhdAL59W2+CLEQD/gN/8SgDhARwpZdyWOT310H/b8m35XpC3cvoAHtB3G9kZ4n53foQ38YvrL+9CgQTBfJd9P6NpKK7pQzY05KXMvs3KjWEjmQ+KeNb7TVH3QksU4xPL7TN1mtM8SU/SD1U9R4kJzeazGJGjmhRLtynC4MrVt8u0Q1XpTqVQP1PJnwIV9Mk0DSxX4PJtUi8vOegClW7l7HNkFxuhRII7KuX9qhni4+tWq/kb9wB5iQW1YuJvWWDCZ8kog4tRuvJmStRekHI0Uk1gSkgVjdVHEvzF4fB8GVkTcL//XJuw3eV6kNQSNQvpR8UZQ9ozuAZWUvm1U60YwszatT+Y3YIGSdoszRurhK/RAjy/BtcjU/obn+SDIUDhVb0zER9IokPgZHFR/6HuinQmnQLakMne2mjCi0CHqlJEXVDgFSJ2B2ZuD/s6nrIdR0JMXkprkxyIY3IPbpwW9ai2gVGchtUcpws5tKOm1pVX0M1iwXz6qyfcGDouOhk0UzKQV1KL1juyS/MM0QNdTr0XPoz/YpRaH3MEW1m0SVeGAtXE8RR6RKr00dLqHHpaweQlRLYPe5CBYE8nvnRTPPoXoo0GPH/+SeATAI7TxbwoRNMCo6B2XvJIzYBg998EQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR0102MB3482.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(4326008)(316002)(110136005)(2616005)(26005)(107886003)(83380400001)(6666004)(8676002)(38350700002)(38100700002)(66946007)(8936002)(956004)(186003)(1076003)(5660300002)(86362001)(508600001)(54906003)(6512007)(66476007)(66556008)(2906002)(52116002)(6506007)(6486002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?YaLfV5FcZ63uB/BsVgwMkPFyGY6Ypfp78hwXdXRPubmGzQFlhQBXIvhRyLG6?=
+ =?us-ascii?Q?XKiQFE1jLktz7TWpDT6O4vFrlk2EUVVqUmkckFy/POC44XYKmbG67/clcH5X?=
+ =?us-ascii?Q?+SI/GTpTrttuRXQVwVWyh8EU3zKTvY7lRywNQfEdU//jOHpYBlkS9dn0/n2f?=
+ =?us-ascii?Q?7eWEcXcKqNULMdscjLn3VWA5lttmIfesUlD3TloZBUwXThytjC9U/wQR0S6m?=
+ =?us-ascii?Q?bPD33l9KwVGD7Fna7jzDOvvr46/2uPnByxR6k26r9IxsZvoj6NWrSujcldzi?=
+ =?us-ascii?Q?8AkWmjZDgcgD8/e4y4arQoPfEulx76Ap5RzeGrW1hn0dkzzjzFM2Jc/W+2Q8?=
+ =?us-ascii?Q?s8TKX1SBmPRlUF4hqE4z93iippKixLvO3ZZP4D5Qgi/iawPYQAH7Owv+81Ok?=
+ =?us-ascii?Q?deQFY2PrHh6lkkFBuoYnF4wc/kzkxdbIXcjtHwkl7ANHXvPXolDXwCNq0fSP?=
+ =?us-ascii?Q?yqM9MMa+ZvT8tPAtCcZPVwAUUrjvV7nP80id4I0Eos0zE0cN58Y0jTDvMQO8?=
+ =?us-ascii?Q?RSApP3l6MAFaXVTJ44D/mgvw6Og9nAlgTkHQJ691YpLmOf5WcgN36n6PaeRJ?=
+ =?us-ascii?Q?/lNUaXINR9Uvkvum3/xHseUxhOLGvKf3xgspFJOwGQdbZX/8JQe/RNjrtqGS?=
+ =?us-ascii?Q?pjEql6kzfN4CTc93YLNS4GOkxgvmScobgSRvXw8G94xpyd17Xek6btWQ08vi?=
+ =?us-ascii?Q?YAPoGpPjgw9r7rmLcI95R6auOsrHkR1As9kYPTSb/KE0S++wjDsHmNfIPimp?=
+ =?us-ascii?Q?+ywkR4FPLLe6Tj24G889uYUHCqEo4XJwBx9J2luzolS4PJqHny5t+/G8WcKp?=
+ =?us-ascii?Q?rJpWkAnsTfVv8n0T29gci7e7iKrVf0GX4iub1MpbKTfTjIBULw4YcqfLhgm1?=
+ =?us-ascii?Q?COuuZmzjnSQfjJrsq/g5OBLdDwQiEQGqhFdYfWwPDEYAG+b4or/IcRKOymU8?=
+ =?us-ascii?Q?6qxbW7oMakzNsCgi9p0BdQHFQZ/ta7Nxf6iRenY9poWcsujK/tclKqdQ/8EN?=
+ =?us-ascii?Q?bAfARAOijulWJ7y+1fOArkq3bLv9AwFzDBXkKHxRGYrRJ4TY1ptSyfzwM/qF?=
+ =?us-ascii?Q?v/lSP9151t3Yq+17jrJi8fWDWZO9ScOcIimByBGXL+56/z28SMqww+fyF+7H?=
+ =?us-ascii?Q?QnRmjSiVgMKchbfvhYRC6kGxR4lvlu8MkfwkmdoztBDBeBoGE5NvJGbjq+lg?=
+ =?us-ascii?Q?lBGLBE9Ga4ln6R8j3sdexaCryZqIJQxIwQTb8suXkJtYF8ndtZDydK2B35wD?=
+ =?us-ascii?Q?9lOYDZxQpEPW9hP50oZcaDo2p3+n+0BCLotlqv4nArOM8x5f7bijWBF8goEr?=
+ =?us-ascii?Q?ZKprl6QG0M5rSLJBI077EVdb?=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e3f6eb6e-57a1-47c9-c02f-08d979b559e3
+X-MS-Exchange-CrossTenant-AuthSource: MW2PR0102MB3482.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Sep 2021 08:30:05.7373
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7v2Xgv+xaMsgMCvLRf5TYLb93BQwXIDYxap3qS5qWmF5yHK41wxJrzcFYEXzshjxtyT/1y7RD6X1B5oPdmJwW7D/GL2PBeAfsha/TYYqjq4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR0102MB3546
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 5:57 AM Huacai Chen <chenhuacai@loongson.cn> wrote:
->
-> This patch adds elf definition and module relocate codes.
->
-> Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
-> ---
->  arch/loongarch/include/asm/cpufeature.h  |  24 +
->  arch/loongarch/include/asm/elf.h         | 308 +++++++++++
->  arch/loongarch/include/asm/exec.h        |  10 +
->  arch/loongarch/include/asm/module.h      |  15 +
->  arch/loongarch/include/asm/vermagic.h    |  19 +
->  arch/loongarch/include/uapi/asm/auxvec.h |  17 +
->  arch/loongarch/include/uapi/asm/hwcap.h  |  20 +
->  arch/loongarch/kernel/elf.c              |  41 ++
->  arch/loongarch/kernel/module.c           | 652 +++++++++++++++++++++++
->  9 files changed, 1106 insertions(+)
->  create mode 100644 arch/loongarch/include/asm/cpufeature.h
->  create mode 100644 arch/loongarch/include/asm/elf.h
->  create mode 100644 arch/loongarch/include/asm/exec.h
->  create mode 100644 arch/loongarch/include/asm/module.h
->  create mode 100644 arch/loongarch/include/asm/vermagic.h
->  create mode 100644 arch/loongarch/include/uapi/asm/auxvec.h
->  create mode 100644 arch/loongarch/include/uapi/asm/hwcap.h
->  create mode 100644 arch/loongarch/kernel/elf.c
->  create mode 100644 arch/loongarch/kernel/module.c
+Add S0_SCP_AUTH_FAIL, S1_SCP_AUTH_FAIL gpios to indicates firmware
+authentication fail on each socket.
 
-Please add Jessica Yu and  Luis Chamberlain as reviewers to Cc in the
-future. I have no further comments on this patch, fullquote below for them
-as reference.
+Add gpio RTC_BAT_SEN_EN to enable RTC battery adc sensor.
 
-        Arnd
+Add BMC_I2C4_O_EN gpio to go high at boot to enable access to I2C4 bus.
 
-> diff --git a/arch/loongarch/include/asm/cpufeature.h b/arch/loongarch/include/asm/cpufeature.h
-> new file mode 100644
-> index 000000000000..7e4c6a769830
-> --- /dev/null
-> +++ b/arch/loongarch/include/asm/cpufeature.h
-> @@ -0,0 +1,24 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * CPU feature definitions for module loading, used by
-> + * module_cpu_feature_match(), see uapi/asm/hwcap.h for LoongArch CPU features.
-> + *
-> + * Copyright (C) 2020-2021 Loongson Technology Corporation Limited
-> + */
-> +
-> +#ifndef __ASM_CPUFEATURE_H
-> +#define __ASM_CPUFEATURE_H
-> +
-> +#include <uapi/asm/hwcap.h>
-> +#include <asm/elf.h>
-> +
-> +#define MAX_CPU_FEATURES (8 * sizeof(elf_hwcap))
-> +
-> +#define cpu_feature(x)         ilog2(HWCAP_ ## x)
-> +
-> +static inline bool cpu_have_feature(unsigned int num)
-> +{
-> +       return elf_hwcap & (1UL << num);
-> +}
-> +
-> +#endif /* __ASM_CPUFEATURE_H */
-> diff --git a/arch/loongarch/include/asm/elf.h b/arch/loongarch/include/asm/elf.h
-> new file mode 100644
-> index 000000000000..9f8c2ab1a206
-> --- /dev/null
-> +++ b/arch/loongarch/include/asm/elf.h
-> @@ -0,0 +1,308 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright (C) 2020-2021 Loongson Technology Corporation Limited
-> + */
-> +#ifndef _ASM_ELF_H
-> +#define _ASM_ELF_H
-> +
-> +#include <linux/auxvec.h>
-> +#include <linux/fs.h>
-> +#include <linux/mm_types.h>
-> +
-> +#include <uapi/linux/elf.h>
-> +
-> +#include <asm/current.h>
-> +
-> +/* ELF header e_flags defines. */
-> +
-> +/* The ABI of a file. */
-> +#define EF_LARCH_ABI_LP32              0x00000001      /* LP32 ABI.  */
-> +#define EF_LARCH_ABI_LPX32             0x00000002      /* LPX32 ABI  */
-> +#define EF_LARCH_ABI_LP64              0x00000003      /* LP64 ABI  */
-> +#define EF_LARCH_ABI                   0x00000003
-> +
-> +/* LoongArch relocation types used by the dynamic linker */
-> +#define R_LARCH_NONE                           0
-> +#define R_LARCH_32                             1
-> +#define R_LARCH_64                             2
-> +#define R_LARCH_RELATIVE                       3
-> +#define R_LARCH_COPY                           4
-> +#define R_LARCH_JUMP_SLOT                      5
-> +#define R_LARCH_TLS_DTPMOD32                   6
-> +#define R_LARCH_TLS_DTPMOD64                   7
-> +#define R_LARCH_TLS_DTPREL32                   8
-> +#define R_LARCH_TLS_DTPREL64                   9
-> +#define R_LARCH_TLS_TPREL32                    10
-> +#define R_LARCH_TLS_TPREL64                    11
-> +#define R_LARCH_IRELATIVE                      12
-> +#define R_LARCH_MARK_LA                                20
-> +#define R_LARCH_MARK_PCREL                     21
-> +#define R_LARCH_SOP_PUSH_PCREL                 22
-> +#define R_LARCH_SOP_PUSH_ABSOLUTE              23
-> +#define R_LARCH_SOP_PUSH_DUP                   24
-> +#define R_LARCH_SOP_PUSH_GPREL                 25
-> +#define R_LARCH_SOP_PUSH_TLS_TPREL             26
-> +#define R_LARCH_SOP_PUSH_TLS_GOT               27
-> +#define R_LARCH_SOP_PUSH_TLS_GD                        28
-> +#define R_LARCH_SOP_PUSH_PLT_PCREL             29
-> +#define R_LARCH_SOP_ASSERT                     30
-> +#define R_LARCH_SOP_NOT                                31
-> +#define R_LARCH_SOP_SUB                                32
-> +#define R_LARCH_SOP_SL                         33
-> +#define R_LARCH_SOP_SR                         34
-> +#define R_LARCH_SOP_ADD                                35
-> +#define R_LARCH_SOP_AND                                36
-> +#define R_LARCH_SOP_IF_ELSE                    37
-> +#define R_LARCH_SOP_POP_32_S_10_5              38
-> +#define R_LARCH_SOP_POP_32_U_10_12             39
-> +#define R_LARCH_SOP_POP_32_S_10_12             40
-> +#define R_LARCH_SOP_POP_32_S_10_16             41
-> +#define R_LARCH_SOP_POP_32_S_10_16_S2          42
-> +#define R_LARCH_SOP_POP_32_S_5_20              43
-> +#define R_LARCH_SOP_POP_32_S_0_5_10_16_S2      44
-> +#define R_LARCH_SOP_POP_32_S_0_10_10_16_S2     45
-> +#define R_LARCH_SOP_POP_32_U                   46
-> +#define R_LARCH_ADD8                           47
-> +#define R_LARCH_ADD16                          48
-> +#define R_LARCH_ADD24                          49
-> +#define R_LARCH_ADD32                          50
-> +#define R_LARCH_ADD64                          51
-> +#define R_LARCH_SUB8                           52
-> +#define R_LARCH_SUB16                          53
-> +#define R_LARCH_SUB24                          54
-> +#define R_LARCH_SUB32                          55
-> +#define R_LARCH_SUB64                          56
-> +#define R_LARCH_GNU_VTINHERIT                  57
-> +#define R_LARCH_GNU_VTENTRY                    58
-> +
-> +#ifndef ELF_ARCH
-> +
-> +/* ELF register definitions */
-> +
-> +/*
-> + * General purpose have the following registers:
-> + *     Register        Number
-> + *     GPRs            32
-> + *     EPC             1
-> + *     BADVADDR        1
-> + *     CRMD            1
-> + *     PRMD            1
-> + *     EUEN            1
-> + *     ECFG            1
-> + *     ESTAT           1
-> + *     Reserved        6
-> + */
-> +#define ELF_NGREG      45
-> +
-> +/*
-> + * Floating point have the following registers:
-> + *     Register        Number
-> + *     FPR             32
-> + *     FCC             1
-> + *     FCSR            1
-> + */
-> +#define ELF_NFPREG     34
-> +
-> +typedef unsigned long elf_greg_t;
-> +typedef elf_greg_t elf_gregset_t[ELF_NGREG];
-> +
-> +typedef double elf_fpreg_t;
-> +typedef elf_fpreg_t elf_fpregset_t[ELF_NFPREG];
-> +
-> +void loongarch_dump_regs64(u64 *uregs, const struct pt_regs *regs);
-> +
-> +#ifdef CONFIG_32BIT
-> +/*
-> + * This is used to ensure we don't load something for the wrong architecture.
-> + */
-> +#define elf_check_arch elf32_check_arch
-> +
-> +/*
-> + * These are used to set parameters in the core dumps.
-> + */
-> +#define ELF_CLASS      ELFCLASS32
-> +
-> +#define ELF_CORE_COPY_REGS(dest, regs) \
-> +       loongarch_dump_regs32((u32 *)&(dest), (regs));
-> +
-> +#endif /* CONFIG_32BIT */
-> +
-> +#ifdef CONFIG_64BIT
-> +/*
-> + * This is used to ensure we don't load something for the wrong architecture.
-> + */
-> +#define elf_check_arch elf64_check_arch
-> +
-> +/*
-> + * These are used to set parameters in the core dumps.
-> + */
-> +#define ELF_CLASS      ELFCLASS64
-> +
-> +#define ELF_CORE_COPY_REGS(dest, regs) \
-> +       loongarch_dump_regs64((u64 *)&(dest), (regs));
-> +
-> +#endif /* CONFIG_64BIT */
-> +
-> +/*
-> + * These are used to set parameters in the core dumps.
-> + */
-> +#define ELF_DATA       ELFDATA2LSB
-> +#define ELF_ARCH       EM_LOONGARCH
-> +
-> +#endif /* !defined(ELF_ARCH) */
-> +
-> +#define loongarch_elf_check_machine(x) ((x)->e_machine == EM_LOONGARCH)
-> +
-> +#define vmcore_elf32_check_arch loongarch_elf_check_machine
-> +#define vmcore_elf64_check_arch loongarch_elf_check_machine
-> +
-> +/*
-> + * Return non-zero if HDR identifies an 32bit ELF binary.
-> + */
-> +#define elf32_check_arch(hdr)                                          \
-> +({                                                                     \
-> +       int __res = 1;                                                  \
-> +       struct elfhdr *__h = (hdr);                                     \
-> +                                                                       \
-> +       if (!loongarch_elf_check_machine(__h))                          \
-> +               __res = 0;                                              \
-> +       if (__h->e_ident[EI_CLASS] != ELFCLASS32)                       \
-> +               __res = 0;                                              \
-> +                                                                       \
-> +       __res;                                                          \
-> +})
-> +
-> +/*
-> + * Return non-zero if HDR identifies an 64bit ELF binary.
-> + */
-> +#define elf64_check_arch(hdr)                                          \
-> +({                                                                     \
-> +       int __res = 1;                                                  \
-> +       struct elfhdr *__h = (hdr);                                     \
-> +                                                                       \
-> +       if (!loongarch_elf_check_machine(__h))                          \
-> +               __res = 0;                                              \
-> +       if (__h->e_ident[EI_CLASS] != ELFCLASS64)                       \
-> +               __res = 0;                                              \
-> +                                                                       \
-> +       __res;                                                          \
-> +})
-> +
-> +struct loongarch_abi;
-> +extern struct loongarch_abi loongarch_abi;
-> +
-> +#ifdef CONFIG_32BIT
-> +
-> +#define SET_PERSONALITY2(ex, state)                                    \
-> +do {                                                                   \
-> +       current->thread.abi = &loongarch_abi;                           \
-> +                                                                       \
-> +       loongarch_set_personality_fcsr(state);                          \
-> +                                                                       \
-> +       if (personality(current->personality) != PER_LINUX)             \
-> +               set_personality(PER_LINUX);                             \
-> +} while (0)
-> +
-> +#endif /* CONFIG_32BIT */
-> +
-> +#ifdef CONFIG_64BIT
-> +
-> +#define SET_PERSONALITY2(ex, state)                                    \
-> +do {                                                                   \
-> +       unsigned int p;                                                 \
-> +                                                                       \
-> +       clear_thread_flag(TIF_32BIT_REGS);                              \
-> +       clear_thread_flag(TIF_32BIT_ADDR);                              \
-> +                                                                       \
-> +       current->thread.abi = &loongarch_abi;                   \
-> +       loongarch_set_personality_fcsr(state);                          \
-> +                                                                       \
-> +       p = personality(current->personality);                          \
-> +       if (p != PER_LINUX32 && p != PER_LINUX)                         \
-> +               set_personality(PER_LINUX);                             \
-> +} while (0)
-> +
-> +#endif /* CONFIG_64BIT */
-> +
-> +#define CORE_DUMP_USE_REGSET
-> +#define ELF_EXEC_PAGESIZE      PAGE_SIZE
-> +
-> +/*
-> + * This yields a mask that user programs can use to figure out what
-> + * instruction set this cpu supports. This could be done in userspace,
-> + * but it's not easy, and we've already done it here.
-> + */
-> +
-> +#define ELF_HWCAP      (elf_hwcap)
-> +extern unsigned int elf_hwcap;
-> +#include <asm/hwcap.h>
-> +
-> +/*
-> + * This yields a string that ld.so will use to load implementation
-> + * specific libraries for optimization.         This is more specific in
-> + * intent than poking at uname or /proc/cpuinfo.
-> + */
-> +
-> +#define ELF_PLATFORM  __elf_platform
-> +extern const char *__elf_platform;
-> +
-> +/* The regs[11] (a7) holds the syscall number and should not cleared */
-> +#define ELF_PLAT_INIT(_r, load_addr)   do { \
-> +       _r->regs[1] = _r->regs[2] = _r->regs[3] = _r->regs[4] = 0;      \
-> +       _r->regs[5] = _r->regs[6] = _r->regs[7] = _r->regs[8] = 0;      \
-> +       _r->regs[9] = _r->regs[10] = _r->regs[12] = _r->regs[13] = 0;   \
-> +       _r->regs[14] = _r->regs[15] = _r->regs[16] = _r->regs[17] = 0;  \
-> +       _r->regs[18] = _r->regs[19] = _r->regs[20] = _r->regs[21] = 0;  \
-> +       _r->regs[22] = _r->regs[23] = _r->regs[24] = _r->regs[25] = 0;  \
-> +       _r->regs[26] = _r->regs[27] = _r->regs[28] = _r->regs[29] = 0;  \
-> +       _r->regs[30] = _r->regs[31] = 0;                                \
-> +} while (0)
-> +
-> +/*
-> + * This is the location that an ET_DYN program is loaded if exec'ed. Typical
-> + * use of this is to invoke "./ld.so someprog" to test out a new version of
-> + * the loader. We need to make sure that it is out of the way of the program
-> + * that it will "exec", and that there is sufficient room for the brk.
-> + */
-> +
-> +#ifndef ELF_ET_DYN_BASE
-> +#define ELF_ET_DYN_BASE                (TASK_SIZE / 3 * 2)
-> +#endif
-> +
-> +/* update AT_VECTOR_SIZE_ARCH if the number of NEW_AUX_ENT entries changes */
-> +#define ARCH_DLINFO                                                    \
-> +do {                                                                   \
-> +       NEW_AUX_ENT(AT_SYSINFO_EHDR,                                    \
-> +                   (unsigned long)current->mm->context.vdso);          \
-> +} while (0)
-> +
-> +#define ARCH_HAS_SETUP_ADDITIONAL_PAGES 1
-> +struct linux_binprm;
-> +extern int arch_setup_additional_pages(struct linux_binprm *bprm,
-> +                                      int uses_interp);
-> +
-> +struct arch_elf_state {
-> +       int fp_abi;
-> +       int interp_fp_abi;
-> +};
-> +
-> +#define LOONGARCH_ABI_FP_ANY   (0)
-> +
-> +#define INIT_ARCH_ELF_STATE {                  \
-> +       .fp_abi = LOONGARCH_ABI_FP_ANY,         \
-> +       .interp_fp_abi = LOONGARCH_ABI_FP_ANY,  \
-> +}
-> +
-> +
-> +extern int arch_elf_pt_proc(void *ehdr, void *phdr, struct file *elf,
-> +                           bool is_interp, struct arch_elf_state *state);
-> +
-> +extern int arch_check_elf(void *ehdr, bool has_interpreter, void *interp_ehdr,
-> +                         struct arch_elf_state *state);
-> +
-> +extern void loongarch_set_personality_fcsr(struct arch_elf_state *state);
-> +
-> +#define elf_read_implies_exec(ex, stk) loongarch_elf_read_implies_exec(&(ex), stk)
-> +extern int loongarch_elf_read_implies_exec(void *elf_ex, int exstack);
-> +
-> +#endif /* _ASM_ELF_H */
-> diff --git a/arch/loongarch/include/asm/exec.h b/arch/loongarch/include/asm/exec.h
-> new file mode 100644
-> index 000000000000..00df07ce3529
-> --- /dev/null
-> +++ b/arch/loongarch/include/asm/exec.h
-> @@ -0,0 +1,10 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright (C) 2020-2021 Loongson Technology Corporation Limited
-> + */
-> +#ifndef _ASM_EXEC_H
-> +#define _ASM_EXEC_H
-> +
-> +extern unsigned long arch_align_stack(unsigned long sp);
-> +
-> +#endif /* _ASM_EXEC_H */
-> diff --git a/arch/loongarch/include/asm/module.h b/arch/loongarch/include/asm/module.h
-> new file mode 100644
-> index 000000000000..6df72c6228e0
-> --- /dev/null
-> +++ b/arch/loongarch/include/asm/module.h
-> @@ -0,0 +1,15 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright (C) 2020-2021 Loongson Technology Corporation Limited
-> + */
-> +#ifndef _ASM_MODULE_H
-> +#define _ASM_MODULE_H
-> +
-> +#include <asm-generic/module.h>
-> +
-> +#define RELA_STACK_DEPTH 16
-> +
-> +struct mod_arch_specific {
-> +};
-> +
-> +#endif /* _ASM_MODULE_H */
-> diff --git a/arch/loongarch/include/asm/vermagic.h b/arch/loongarch/include/asm/vermagic.h
-> new file mode 100644
-> index 000000000000..9882dfd4702a
-> --- /dev/null
-> +++ b/arch/loongarch/include/asm/vermagic.h
-> @@ -0,0 +1,19 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright (C) 2020-2021 Loongson Technology Corporation Limited
-> + */
-> +#ifndef _ASM_VERMAGIC_H
-> +#define _ASM_VERMAGIC_H
-> +
-> +#define MODULE_PROC_FAMILY "LOONGARCH "
-> +
-> +#ifdef CONFIG_32BIT
-> +#define MODULE_KERNEL_TYPE "32BIT "
-> +#elif defined CONFIG_64BIT
-> +#define MODULE_KERNEL_TYPE "64BIT "
-> +#endif
-> +
-> +#define MODULE_ARCH_VERMAGIC \
-> +       MODULE_PROC_FAMILY MODULE_KERNEL_TYPE
-> +
-> +#endif /* _ASM_VERMAGIC_H */
-> diff --git a/arch/loongarch/include/uapi/asm/auxvec.h b/arch/loongarch/include/uapi/asm/auxvec.h
-> new file mode 100644
-> index 000000000000..5a2200fd75bf
-> --- /dev/null
-> +++ b/arch/loongarch/include/uapi/asm/auxvec.h
-> @@ -0,0 +1,17 @@
-> +/* SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note */
-> +/*
-> + * Author: Hanlu Li <lihanlu@loongson.cn>
-> + *         Huacai Chen <chenhuacai@loongson.cn>
-> + *
-> + * Copyright (C) 2020-2021 Loongson Technology Corporation Limited
-> + */
-> +
-> +#ifndef __ASM_AUXVEC_H
-> +#define __ASM_AUXVEC_H
-> +
-> +/* Location of VDSO image. */
-> +#define AT_SYSINFO_EHDR                33
-> +
-> +#define AT_VECTOR_SIZE_ARCH 1 /* entries in ARCH_DLINFO */
-> +
-> +#endif /* __ASM_AUXVEC_H */
-> diff --git a/arch/loongarch/include/uapi/asm/hwcap.h b/arch/loongarch/include/uapi/asm/hwcap.h
-> new file mode 100644
-> index 000000000000..8840b72fa8e8
-> --- /dev/null
-> +++ b/arch/loongarch/include/uapi/asm/hwcap.h
-> @@ -0,0 +1,20 @@
-> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> +#ifndef _UAPI_ASM_HWCAP_H
-> +#define _UAPI_ASM_HWCAP_H
-> +
-> +/* HWCAP flags */
-> +#define HWCAP_LOONGARCH_CPUCFG         (1 << 0)
-> +#define HWCAP_LOONGARCH_LAM            (1 << 1)
-> +#define HWCAP_LOONGARCH_UAL            (1 << 2)
-> +#define HWCAP_LOONGARCH_FPU            (1 << 3)
-> +#define HWCAP_LOONGARCH_LSX            (1 << 4)
-> +#define HWCAP_LOONGARCH_LASX           (1 << 5)
-> +#define HWCAP_LOONGARCH_CRC32          (1 << 6)
-> +#define HWCAP_LOONGARCH_COMPLEX                (1 << 7)
-> +#define HWCAP_LOONGARCH_CRYPTO         (1 << 8)
-> +#define HWCAP_LOONGARCH_LVZ            (1 << 9)
-> +#define HWCAP_LOONGARCH_LBT_X86                (1 << 10)
-> +#define HWCAP_LOONGARCH_LBT_ARM                (1 << 11)
-> +#define HWCAP_LOONGARCH_LBT_MIPS       (1 << 12)
-> +
-> +#endif /* _UAPI_ASM_HWCAP_H */
-> diff --git a/arch/loongarch/kernel/elf.c b/arch/loongarch/kernel/elf.c
-> new file mode 100644
-> index 000000000000..072dfd40f0b5
-> --- /dev/null
-> +++ b/arch/loongarch/kernel/elf.c
-> @@ -0,0 +1,41 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Author: Huacai Chen <chenhuacai@loongson.cn>
-> + * Copyright (C) 2020-2021 Loongson Technology Corporation Limited
-> + */
-> +
-> +#include <linux/binfmts.h>
-> +#include <linux/elf.h>
-> +#include <linux/export.h>
-> +#include <linux/sched.h>
-> +
-> +#include <asm/cpu-features.h>
-> +#include <asm/cpu-info.h>
-> +
-> +int arch_elf_pt_proc(void *_ehdr, void *_phdr, struct file *elf,
-> +                    bool is_interp, struct arch_elf_state *state)
-> +{
-> +       return 0;
-> +}
-> +
-> +int arch_check_elf(void *_ehdr, bool has_interpreter, void *_interp_ehdr,
-> +                  struct arch_elf_state *state)
-> +{
-> +       return 0;
-> +}
-> +
-> +void loongarch_set_personality_fcsr(struct arch_elf_state *state)
-> +{
-> +       current->thread.fpu.fcsr = boot_cpu_data.fpu_csr0;
-> +}
-> +
-> +int loongarch_elf_read_implies_exec(void *elf_ex, int exstack)
-> +{
-> +       if (exstack != EXSTACK_DISABLE_X) {
-> +               /* The binary doesn't request a non-executable stack */
-> +               return 1;
-> +       }
-> +
-> +       return 0;
-> +}
-> +EXPORT_SYMBOL(loongarch_elf_read_implies_exec);
-> diff --git a/arch/loongarch/kernel/module.c b/arch/loongarch/kernel/module.c
-> new file mode 100644
-> index 000000000000..af7c403b032b
-> --- /dev/null
-> +++ b/arch/loongarch/kernel/module.c
-> @@ -0,0 +1,652 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * Author: Hanlu Li <lihanlu@loongson.cn>
-> + *         Huacai Chen <chenhuacai@loongson.cn>
-> + *
-> + * Copyright (C) 2020-2021 Loongson Technology Corporation Limited
-> + */
-> +
-> +#undef DEBUG
-> +
-> +#include <linux/moduleloader.h>
-> +#include <linux/elf.h>
-> +#include <linux/mm.h>
-> +#include <linux/vmalloc.h>
-> +#include <linux/slab.h>
-> +#include <linux/fs.h>
-> +#include <linux/string.h>
-> +#include <linux/kernel.h>
-> +
-> +static int rela_stack_push(s64 stack_value, s64 *rela_stack, size_t *rela_stack_top)
-> +{
-> +       if (*rela_stack_top >= RELA_STACK_DEPTH)
-> +               return -ENOEXEC;
-> +
-> +       rela_stack[(*rela_stack_top)++] = stack_value;
-> +       pr_debug("%s stack_value = 0x%llx\n", __func__, stack_value);
-> +
-> +       return 0;
-> +}
-> +
-> +static int rela_stack_pop(s64 *stack_value, s64 *rela_stack, size_t *rela_stack_top)
-> +{
-> +       if (*rela_stack_top == 0)
-> +               return -ENOEXEC;
-> +
-> +       *stack_value = rela_stack[--(*rela_stack_top)];
-> +       pr_debug("%s stack_value = 0x%llx\n", __func__, *stack_value);
-> +
-> +       return 0;
-> +}
-> +
-> +static int apply_r_larch_none(struct module *me, u32 *location, Elf_Addr v,
-> +                               s64 *rela_stack, size_t *rela_stack_top)
-> +{
-> +       return 0;
-> +}
-> +
-> +static int apply_r_larch_32(struct module *me, u32 *location, Elf_Addr v,
-> +                               s64 *rela_stack, size_t *rela_stack_top)
-> +{
-> +       *location = v;
-> +       return 0;
-> +}
-> +
-> +static int apply_r_larch_64(struct module *me, u32 *location, Elf_Addr v,
-> +                               s64 *rela_stack, size_t *rela_stack_top)
-> +{
-> +       *(Elf_Addr *)location = v;
-> +       return 0;
-> +}
-> +
-> +static int apply_r_larch_mark_la(struct module *me, u32 *location, Elf_Addr v,
-> +                                       s64 *rela_stack, size_t *rela_stack_top)
-> +{
-> +       return 0;
-> +}
-> +
-> +static int apply_r_larch_mark_pcrel(struct module *me, u32 *location, Elf_Addr v,
-> +                                       s64 *rela_stack, size_t *rela_stack_top)
-> +{
-> +       return 0;
-> +}
-> +
-> +static int apply_r_larch_sop_push_pcrel(struct module *me, u32 *location, Elf_Addr v,
-> +                                               s64 *rela_stack, size_t *rela_stack_top)
-> +{
-> +       return rela_stack_push(v - (u64)location, rela_stack, rela_stack_top);
-> +}
-> +
-> +static int apply_r_larch_sop_push_absolute(struct module *me, u32 *location, Elf_Addr v,
-> +                                               s64 *rela_stack, size_t *rela_stack_top)
-> +{
-> +       return rela_stack_push(v, rela_stack, rela_stack_top);
-> +}
-> +
-> +static int apply_r_larch_sop_push_dup(struct module *me, u32 *location, Elf_Addr v,
-> +                                               s64 *rela_stack, size_t *rela_stack_top)
-> +{
-> +       int err = 0;
-> +       s64 opr1;
-> +
-> +       err = rela_stack_pop(&opr1, rela_stack, rela_stack_top);
-> +       if (err)
-> +               return err;
-> +       err = rela_stack_push(opr1, rela_stack, rela_stack_top);
-> +       if (err)
-> +               return err;
-> +       err = rela_stack_push(opr1, rela_stack, rela_stack_top);
-> +       if (err)
-> +               return err;
-> +
-> +       return 0;
-> +}
-> +
-> +static int apply_r_larch_sop_push_plt_pcrel(struct module *me, u32 *location, Elf_Addr v,
-> +                                               s64 *rela_stack, size_t *rela_stack_top)
-> +{
-> +       return apply_r_larch_sop_push_pcrel(me, location, v, rela_stack, rela_stack_top);
-> +}
-> +
-> +static int apply_r_larch_sop_sub(struct module *me, u32 *location, Elf_Addr v,
-> +                                       s64 *rela_stack, size_t *rela_stack_top)
-> +{
-> +       int err = 0;
-> +       s64 opr1, opr2;
-> +
-> +       err = rela_stack_pop(&opr2, rela_stack, rela_stack_top);
-> +       if (err)
-> +               return err;
-> +       err = rela_stack_pop(&opr1, rela_stack, rela_stack_top);
-> +       if (err)
-> +               return err;
-> +       err = rela_stack_push(opr1 - opr2, rela_stack, rela_stack_top);
-> +       if (err)
-> +               return err;
-> +
-> +       return 0;
-> +}
-> +
-> +static int apply_r_larch_sop_sl(struct module *me, u32 *location, Elf_Addr v,
-> +                                       s64 *rela_stack, size_t *rela_stack_top)
-> +{
-> +       int err = 0;
-> +       s64 opr1, opr2;
-> +
-> +       err = rela_stack_pop(&opr2, rela_stack, rela_stack_top);
-> +       if (err)
-> +               return err;
-> +       err = rela_stack_pop(&opr1, rela_stack, rela_stack_top);
-> +       if (err)
-> +               return err;
-> +       err = rela_stack_push(opr1 << opr2, rela_stack, rela_stack_top);
-> +       if (err)
-> +               return err;
-> +
-> +       return 0;
-> +}
-> +
-> +static int apply_r_larch_sop_sr(struct module *me, u32 *location, Elf_Addr v,
-> +                                       s64 *rela_stack, size_t *rela_stack_top)
-> +{
-> +       int err = 0;
-> +       s64 opr1, opr2;
-> +
-> +       err = rela_stack_pop(&opr2, rela_stack, rela_stack_top);
-> +       if (err)
-> +               return err;
-> +       err = rela_stack_pop(&opr1, rela_stack, rela_stack_top);
-> +       if (err)
-> +               return err;
-> +       err = rela_stack_push(opr1 >> opr2, rela_stack, rela_stack_top);
-> +       if (err)
-> +               return err;
-> +
-> +       return 0;
-> +}
-> +
-> +static int apply_r_larch_sop_add(struct module *me, u32 *location, Elf_Addr v,
-> +                                       s64 *rela_stack, size_t *rela_stack_top)
-> +{
-> +       int err = 0;
-> +       s64 opr1, opr2;
-> +
-> +       err = rela_stack_pop(&opr2, rela_stack, rela_stack_top);
-> +       if (err)
-> +               return err;
-> +       err = rela_stack_pop(&opr1, rela_stack, rela_stack_top);
-> +       if (err)
-> +               return err;
-> +       err = rela_stack_push(opr1 + opr2, rela_stack, rela_stack_top);
-> +       if (err)
-> +               return err;
-> +
-> +       return 0;
-> +}
-> +static int apply_r_larch_sop_and(struct module *me, u32 *location, Elf_Addr v,
-> +                                       s64 *rela_stack, size_t *rela_stack_top)
-> +{
-> +       int err = 0;
-> +       s64 opr1, opr2;
-> +
-> +       err = rela_stack_pop(&opr2, rela_stack, rela_stack_top);
-> +       if (err)
-> +               return err;
-> +       err = rela_stack_pop(&opr1, rela_stack, rela_stack_top);
-> +       if (err)
-> +               return err;
-> +       err = rela_stack_push(opr1 & opr2, rela_stack, rela_stack_top);
-> +       if (err)
-> +               return err;
-> +
-> +       return 0;
-> +}
-> +
-> +static int apply_r_larch_sop_if_else(struct module *me, u32 *location, Elf_Addr v,
-> +                                       s64 *rela_stack, size_t *rela_stack_top)
-> +{
-> +       int err = 0;
-> +       s64 opr1, opr2, opr3;
-> +
-> +       err = rela_stack_pop(&opr3, rela_stack, rela_stack_top);
-> +       if (err)
-> +               return err;
-> +       err = rela_stack_pop(&opr2, rela_stack, rela_stack_top);
-> +       if (err)
-> +               return err;
-> +       err = rela_stack_pop(&opr1, rela_stack, rela_stack_top);
-> +       if (err)
-> +               return err;
-> +       err = rela_stack_push(opr1 ? opr2 : opr3, rela_stack, rela_stack_top);
-> +       if (err)
-> +               return err;
-> +
-> +       return 0;
-> +}
-> +
-> +static int apply_r_larch_sop_pop_32_s_10_5(struct module *me, u32 *location, Elf_Addr v,
-> +                                               s64 *rela_stack, size_t *rela_stack_top)
-> +{
-> +       int err = 0;
-> +       s64 opr1;
-> +
-> +       err = rela_stack_pop(&opr1, rela_stack, rela_stack_top);
-> +       if (err)
-> +               return err;
-> +
-> +       /* check 5-bit signed */
-> +       if ((opr1 & ~(u64)0xf) &&
-> +           (opr1 & ~(u64)0xf) != ~(u64)0xf) {
-> +               pr_err("module %s: opr1 = 0x%llx overflow! dangerous %s relocation\n",
-> +                       me->name, opr1, __func__);
-> +               return -ENOEXEC;
-> +       }
-> +
-> +       /* (*(uint32_t *) PC) [14 ... 10] = opr [4 ... 0] */
-> +       *location = (*location & (~(u32)0x7c00)) | ((opr1 & 0x1f) << 10);
-> +
-> +       return 0;
-> +}
-> +
-> +static int apply_r_larch_sop_pop_32_u_10_12(struct module *me, u32 *location, Elf_Addr v,
-> +                                               s64 *rela_stack, size_t *rela_stack_top)
-> +{
-> +       int err = 0;
-> +       s64 opr1;
-> +
-> +       err = rela_stack_pop(&opr1, rela_stack, rela_stack_top);
-> +       if (err)
-> +               return err;
-> +
-> +       /* check 12-bit unsigned */
-> +       if (opr1 & ~(u64)0xfff) {
-> +               pr_err("module %s: opr1 = 0x%llx overflow! dangerous %s relocation\n",
-> +                       me->name, opr1, __func__);
-> +               return -ENOEXEC;
-> +       }
-> +
-> +       /* (*(uint32_t *) PC) [21 ... 10] = opr [11 ... 0] */
-> +       *location = (*location & (~(u32)0x3ffc00)) | ((opr1 & 0xfff) << 10);
-> +
-> +       return 0;
-> +}
-> +
-> +static int apply_r_larch_sop_pop_32_s_10_12(struct module *me, u32 *location, Elf_Addr v,
-> +                                               s64 *rela_stack, size_t *rela_stack_top)
-> +{
-> +       int err = 0;
-> +       s64 opr1;
-> +
-> +       err = rela_stack_pop(&opr1, rela_stack, rela_stack_top);
-> +       if (err)
-> +               return err;
-> +
-> +       /* check 12-bit signed */
-> +       if ((opr1 & ~(u64)0x7ff) &&
-> +           (opr1 & ~(u64)0x7ff) != ~(u64)0x7ff) {
-> +               pr_err("module %s: opr1 = 0x%llx overflow! dangerous %s relocation\n",
-> +                       me->name, opr1, __func__);
-> +               return -ENOEXEC;
-> +       }
-> +
-> +       /* (*(uint32_t *) PC) [21 ... 10] = opr [11 ... 0] */
-> +       *location = (*location & (~(u32)0x3ffc00)) | ((opr1 & 0xfff) << 10);
-> +
-> +       return 0;
-> +}
-> +
-> +static int apply_r_larch_sop_pop_32_s_10_16(struct module *me, u32 *location, Elf_Addr v,
-> +                                               s64 *rela_stack, size_t *rela_stack_top)
-> +{
-> +       int err = 0;
-> +       s64 opr1;
-> +
-> +       err = rela_stack_pop(&opr1, rela_stack, rela_stack_top);
-> +       if (err)
-> +               return err;
-> +
-> +       /* check 16-bit signed */
-> +       if ((opr1 & ~(u64)0x7fff) &&
-> +           (opr1 & ~(u64)0x7fff) != ~(u64)0x7fff) {
-> +               pr_err("module %s: opr1 = 0x%llx overflow! dangerous %s relocation\n",
-> +                       me->name, opr1, __func__);
-> +               return -ENOEXEC;
-> +       }
-> +
-> +       /* (*(uint32_t *) PC) [25 ... 10] = opr [15 ... 0] */
-> +       *location = (*location & 0xfc0003ff) | ((opr1 & 0xffff) << 10);
-> +
-> +       return 0;
-> +}
-> +
-> +static int apply_r_larch_sop_pop_32_s_10_16_s2(struct module *me, u32 *location, Elf_Addr v,
-> +                                               s64 *rela_stack, size_t *rela_stack_top)
-> +{
-> +       int err = 0;
-> +       s64 opr1;
-> +
-> +       err = rela_stack_pop(&opr1, rela_stack, rela_stack_top);
-> +       if (err)
-> +               return err;
-> +
-> +       /* check 4-aligned */
-> +       if (opr1 % 4) {
-> +               pr_err("module %s: opr1 = 0x%llx unaligned! dangerous %s relocation\n",
-> +                       me->name, opr1, __func__);
-> +               return -ENOEXEC;
-> +       }
-> +
-> +       opr1 >>= 2;
-> +       /* check 18-bit signed */
-> +       if ((opr1 & ~(u64)0x7fff) &&
-> +           (opr1 & ~(u64)0x7fff) != ~(u64)0x7fff) {
-> +               pr_err("module %s: opr1 = 0x%llx overflow! dangerous %s relocation\n",
-> +                       me->name, opr1, __func__);
-> +               return -ENOEXEC;
-> +       }
-> +
-> +       /* (*(uint32_t *) PC) [25 ... 10] = opr [17 ... 2] */
-> +       *location = (*location & 0xfc0003ff) | ((opr1 & 0xffff) << 10);
-> +
-> +       return 0;
-> +}
-> +
-> +static int apply_r_larch_sop_pop_32_s_5_20(struct module *me, u32 *location, Elf_Addr v,
-> +                                               s64 *rela_stack, size_t *rela_stack_top)
-> +{
-> +       int err = 0;
-> +       s64 opr1;
-> +
-> +       err = rela_stack_pop(&opr1, rela_stack, rela_stack_top);
-> +       if (err)
-> +               return err;
-> +
-> +       /* check 20-bit signed */
-> +       if ((opr1 & ~(u64)0x7ffff) &&
-> +           (opr1 & ~(u64)0x7ffff) != ~(u64)0x7ffff) {
-> +               pr_err("module %s: opr1 = 0x%llx overflow! dangerous %s relocation\n",
-> +                       me->name, opr1, __func__);
-> +               return -ENOEXEC;
-> +       }
-> +
-> +       /* (*(uint32_t *) PC) [24 ... 5] = opr [19 ... 0] */
-> +       *location = (*location & (~(u32)0x1ffffe0)) | ((opr1 & 0xfffff) << 5);
-> +
-> +       return 0;
-> +}
-> +
-> +static int apply_r_larch_sop_pop_32_s_0_5_10_16_s2(struct module *me, u32 *location, Elf_Addr v,
-> +                                                       s64 *rela_stack, size_t *rela_stack_top)
-> +{
-> +       int err = 0;
-> +       s64 opr1;
-> +
-> +       err = rela_stack_pop(&opr1, rela_stack, rela_stack_top);
-> +       if (err)
-> +               return err;
-> +
-> +       /* check 4-aligned */
-> +       if (opr1 % 4) {
-> +               pr_err("module %s: opr1 = 0x%llx unaligned! dangerous %s relocation\n",
-> +                       me->name, opr1, __func__);
-> +               return -ENOEXEC;
-> +       }
-> +
-> +       opr1 >>= 2;
-> +       /* check 23-bit signed */
-> +       if ((opr1 & ~(u64)0xfffff) &&
-> +           (opr1 & ~(u64)0xfffff) != ~(u64)0xfffff) {
-> +               pr_err("module %s: opr1 = 0x%llx overflow! dangerous %s relocation\n",
-> +                       me->name, opr1, __func__);
-> +               return -ENOEXEC;
-> +       }
-> +
-> +       /*
-> +        * (*(uint32_t *) PC) [4 ... 0] = opr [22 ... 18]
-> +        * (*(uint32_t *) PC) [25 ... 10] = opr [17 ... 2]
-> +        */
-> +       *location = (*location & 0xfc0003e0)
-> +               | ((opr1 & 0x1f0000) >> 16) | ((opr1 & 0xffff) << 10);
-> +
-> +       return 0;
-> +}
-> +
-> +static int apply_r_larch_sop_pop_32_s_0_10_10_16_s2(struct module *me, u32 *location, Elf_Addr v,
-> +                                                       s64 *rela_stack, size_t *rela_stack_top)
-> +{
-> +       int err = 0;
-> +       s64 opr1;
-> +
-> +       err = rela_stack_pop(&opr1, rela_stack, rela_stack_top);
-> +       if (err)
-> +               return err;
-> +
-> +       /* check 4-aligned */
-> +       if (opr1 % 4) {
-> +               pr_err("module %s: opr1 = 0x%llx unaligned! dangerous %s relocation\n",
-> +                       me->name, opr1, __func__);
-> +               return -ENOEXEC;
-> +       }
-> +
-> +       opr1 >>= 2;
-> +       /* check 28-bit signed */
-> +       if ((opr1 & ~(u64)0x1ffffff) &&
-> +           (opr1 & ~(u64)0x1ffffff) != ~(u64)0x1ffffff) {
-> +               pr_err("module %s: opr1 = 0x%llx overflow! dangerous %s relocation\n",
-> +                       me->name, opr1, __func__);
-> +               return -ENOEXEC;
-> +       }
-> +
-> +       /*
-> +        * (*(uint32_t *) PC) [9 ... 0] = opr [27 ... 18]
-> +        * (*(uint32_t *) PC) [25 ... 10] = opr [17 ... 2]
-> +        */
-> +       *location = (*location & 0xfc000000)
-> +               | ((opr1 & 0x3ff0000) >> 16) | ((opr1 & 0xffff) << 10);
-> +
-> +       return 0;
-> +}
-> +
-> +static int apply_r_larch_sop_pop_32_u(struct module *me, u32 *location, Elf_Addr v,
-> +                                       s64 *rela_stack, size_t *rela_stack_top)
-> +{
-> +       int err = 0;
-> +       s64 opr1;
-> +
-> +       err = rela_stack_pop(&opr1, rela_stack, rela_stack_top);
-> +       if (err)
-> +               return err;
-> +
-> +       /* check 32-bit unsigned */
-> +       if (opr1 & ~(u64)0xffffffff) {
-> +               pr_err("module %s: opr1 = 0x%llx overflow! dangerous %s relocation\n",
-> +                       me->name, opr1, __func__);
-> +               return -ENOEXEC;
-> +       }
-> +
-> +       /* (*(uint32_t *) PC) = opr */
-> +       *location = (u32)opr1;
-> +
-> +       return 0;
-> +}
-> +
-> +static int apply_r_larch_add32(struct module *me, u32 *location, Elf_Addr v,
-> +                               s64 *rela_stack, size_t *rela_stack_top)
-> +{
-> +       *(s32 *)location += v;
-> +       return 0;
-> +}
-> +
-> +static int apply_r_larch_add64(struct module *me, u32 *location, Elf_Addr v,
-> +                               s64 *rela_stack, size_t *rela_stack_top)
-> +{
-> +       *(s64 *)location += v;
-> +       return 0;
-> +}
-> +
-> +static int apply_r_larch_sub32(struct module *me, u32 *location, Elf_Addr v,
-> +                               s64 *rela_stack, size_t *rela_stack_top)
-> +{
-> +       *(s32 *)location -= v;
-> +       return 0;
-> +}
-> +
-> +static int apply_r_larch_sub64(struct module *me, u32 *location, Elf_Addr v,
-> +                               s64 *rela_stack, size_t *rela_stack_top)
-> +{
-> +       *(s64 *)location -= v;
-> +       return 0;
-> +}
-> +
-> +/*
-> + * reloc_handlers_rela() - Apply a particular relocation to a module
-> + * @me: the module to apply the reloc to
-> + * @location: the address at which the reloc is to be applied
-> + * @v: the value of the reloc, with addend for RELA-style
-> + * @rela_stack: the stack used for store relocation info, LOCAL to THIS module
-> + * @rela_stac_top: where the stack operation(pop/push) applies to
-> + *
-> + * Return: 0 upon success, else -ERRNO
-> + */
-> +typedef int (*reloc_rela_handler)(struct module *me, u32 *location, Elf_Addr v,
-> +                               s64 *rela_stack, size_t *rela_stack_top);
-> +
-> +/* The handlers for known reloc types */
-> +static reloc_rela_handler reloc_rela_handlers[] = {
-> +       [R_LARCH_NONE]                          = apply_r_larch_none,
-> +       [R_LARCH_32]                            = apply_r_larch_32,
-> +       [R_LARCH_64]                            = apply_r_larch_64,
-> +       [R_LARCH_MARK_LA]                       = apply_r_larch_mark_la,
-> +       [R_LARCH_MARK_PCREL]                    = apply_r_larch_mark_pcrel,
-> +       [R_LARCH_SOP_PUSH_PCREL]                = apply_r_larch_sop_push_pcrel,
-> +       [R_LARCH_SOP_PUSH_ABSOLUTE]             = apply_r_larch_sop_push_absolute,
-> +       [R_LARCH_SOP_PUSH_DUP]                  = apply_r_larch_sop_push_dup,
-> +       [R_LARCH_SOP_PUSH_PLT_PCREL]            = apply_r_larch_sop_push_plt_pcrel,
-> +       [R_LARCH_SOP_SUB]                       = apply_r_larch_sop_sub,
-> +       [R_LARCH_SOP_SL]                        = apply_r_larch_sop_sl,
-> +       [R_LARCH_SOP_SR]                        = apply_r_larch_sop_sr,
-> +       [R_LARCH_SOP_ADD]                       = apply_r_larch_sop_add,
-> +       [R_LARCH_SOP_AND]                       = apply_r_larch_sop_and,
-> +       [R_LARCH_SOP_IF_ELSE]                   = apply_r_larch_sop_if_else,
-> +       [R_LARCH_SOP_POP_32_S_10_5]             = apply_r_larch_sop_pop_32_s_10_5,
-> +       [R_LARCH_SOP_POP_32_U_10_12]            = apply_r_larch_sop_pop_32_u_10_12,
-> +       [R_LARCH_SOP_POP_32_S_10_12]            = apply_r_larch_sop_pop_32_s_10_12,
-> +       [R_LARCH_SOP_POP_32_S_10_16]            = apply_r_larch_sop_pop_32_s_10_16,
-> +       [R_LARCH_SOP_POP_32_S_10_16_S2]         = apply_r_larch_sop_pop_32_s_10_16_s2,
-> +       [R_LARCH_SOP_POP_32_S_5_20]             = apply_r_larch_sop_pop_32_s_5_20,
-> +       [R_LARCH_SOP_POP_32_S_0_5_10_16_S2]     = apply_r_larch_sop_pop_32_s_0_5_10_16_s2,
-> +       [R_LARCH_SOP_POP_32_S_0_10_10_16_S2]    = apply_r_larch_sop_pop_32_s_0_10_10_16_s2,
-> +       [R_LARCH_SOP_POP_32_U]                  = apply_r_larch_sop_pop_32_u,
-> +       [R_LARCH_ADD32]                         = apply_r_larch_add32,
-> +       [R_LARCH_ADD64]                         = apply_r_larch_add64,
-> +       [R_LARCH_SUB32]                         = apply_r_larch_sub32,
-> +       [R_LARCH_SUB64]                         = apply_r_larch_sub64,
-> +};
-> +
-> +int apply_relocate(Elf_Shdr *sechdrs, const char *strtab,
-> +                  unsigned int symindex, unsigned int relsec,
-> +                  struct module *me)
-> +{
-> +       int i, err;
-> +       unsigned int type;
-> +       s64 rela_stack[RELA_STACK_DEPTH];
-> +       size_t rela_stack_top = 0;
-> +       reloc_rela_handler handler;
-> +       void *location;
-> +       Elf_Addr v;
-> +       Elf_Sym *sym;
-> +       Elf_Rel *rel = (void *) sechdrs[relsec].sh_addr;
-> +
-> +       pr_debug("%s: Applying relocate section %u to %u\n", __func__, relsec,
-> +              sechdrs[relsec].sh_info);
-> +
-> +       rela_stack_top = 0;
-> +       for (i = 0; i < sechdrs[relsec].sh_size / sizeof(*rel); i++) {
-> +               /* This is where to make the change */
-> +               location = (void *)sechdrs[sechdrs[relsec].sh_info].sh_addr + rel[i].r_offset;
-> +               /* This is the symbol it is referring to */
-> +               sym = (Elf_Sym *)sechdrs[symindex].sh_addr + ELF_R_SYM(rel[i].r_info);
-> +               if (IS_ERR_VALUE(sym->st_value)) {
-> +                       /* Ignore unresolved weak symbol */
-> +                       if (ELF_ST_BIND(sym->st_info) == STB_WEAK)
-> +                               continue;
-> +                       pr_warn("%s: Unknown symbol %s\n", me->name, strtab + sym->st_name);
-> +                       return -ENOENT;
-> +               }
-> +
-> +               type = ELF_R_TYPE(rel[i].r_info);
-> +
-> +               if (type < ARRAY_SIZE(reloc_rela_handlers))
-> +                       handler = reloc_rela_handlers[type];
-> +               else
-> +                       handler = NULL;
-> +
-> +               if (!handler) {
-> +                       pr_err("%s: Unknown relocation type %u\n", me->name, type);
-> +                       return -EINVAL;
-> +               }
-> +
-> +               v = sym->st_value;
-> +               err = handler(me, location, v, rela_stack, &rela_stack_top);
-> +               if (err)
-> +                       return err;
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
-> +                      unsigned int symindex, unsigned int relsec,
-> +                      struct module *me)
-> +{
-> +       int i, err;
-> +       unsigned int type;
-> +       s64 rela_stack[RELA_STACK_DEPTH];
-> +       size_t rela_stack_top = 0;
-> +       reloc_rela_handler handler;
-> +       void *location;
-> +       Elf_Addr v;
-> +       Elf_Sym *sym;
-> +       Elf_Rela *rel = (void *) sechdrs[relsec].sh_addr;
-> +
-> +       pr_debug("%s: Applying relocate section %u to %u\n", __func__, relsec,
-> +              sechdrs[relsec].sh_info);
-> +
-> +       rela_stack_top = 0;
-> +       for (i = 0; i < sechdrs[relsec].sh_size / sizeof(*rel); i++) {
-> +               /* This is where to make the change */
-> +               location = (void *)sechdrs[sechdrs[relsec].sh_info].sh_addr + rel[i].r_offset;
-> +               /* This is the symbol it is referring to */
-> +               sym = (Elf_Sym *)sechdrs[symindex].sh_addr + ELF_R_SYM(rel[i].r_info);
-> +               if (IS_ERR_VALUE(sym->st_value)) {
-> +                       /* Ignore unresolved weak symbol */
-> +                       if (ELF_ST_BIND(sym->st_info) == STB_WEAK)
-> +                               continue;
-> +                       pr_warn("%s: Unknown symbol %s\n", me->name, strtab + sym->st_name);
-> +                       return -ENOENT;
-> +               }
-> +
-> +               type = ELF_R_TYPE(rel[i].r_info);
-> +
-> +               if (type < ARRAY_SIZE(reloc_rela_handlers))
-> +                       handler = reloc_rela_handlers[type];
-> +               else
-> +                       handler = NULL;
-> +
-> +               if (!handler) {
-> +                       pr_err("%s: Unknown relocation type %u\n", me->name, type);
-> +                       return -EINVAL;
-> +               }
-> +
-> +               pr_debug("type %d st_value %llx r_addend %llx loc %llx\n",
-> +                      (int)ELF64_R_TYPE(rel[i].r_info),
-> +                      sym->st_value, rel[i].r_addend, (u64)location);
-> +
-> +               v = sym->st_value + rel[i].r_addend;
-> +               err = handler(me, location, v, rela_stack, &rela_stack_top);
-> +               if (err)
-> +                       return err;
-> +       }
-> +
-> +       return 0;
-> +}
-> --
-> 2.27.0
->
+Signed-off-by: Quan Nguyen <quan@os.amperecomputing.com>
+Signed-off-by: Thang Nguyen <thang@os.amperecomputing.com>
+---
+ .../arm/boot/dts/aspeed-bmc-ampere-mtjade.dts | 21 ++++++++++++++++++-
+ 1 file changed, 20 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm/boot/dts/aspeed-bmc-ampere-mtjade.dts b/arch/arm/boot/dts/aspeed-bmc-ampere-mtjade.dts
+index 57b0c45a2298..3515d55bd312 100644
+--- a/arch/arm/boot/dts/aspeed-bmc-ampere-mtjade.dts
++++ b/arch/arm/boot/dts/aspeed-bmc-ampere-mtjade.dts
+@@ -86,6 +86,18 @@ S0_cpu_fault {
+ 			linux,code = <ASPEED_GPIO(J, 1)>;
+ 		};
+ 
++		S0_scp_auth_fail {
++			label = "S0_SCP_AUTH_FAIL";
++			gpios = <&gpio ASPEED_GPIO(J, 2) GPIO_ACTIVE_LOW>;
++			linux,code = <ASPEED_GPIO(J, 2)>;
++		};
++
++		S1_scp_auth_fail {
++			label = "S1_SCP_AUTH_FAIL";
++			gpios = <&gpio ASPEED_GPIO(Z, 5) GPIO_ACTIVE_LOW>;
++			linux,code = <ASPEED_GPIO(Z, 5)>;
++		};
++
+ 		S1_overtemp {
+ 			label = "S1_OVERTEMP";
+ 			gpios = <&gpio ASPEED_GPIO(Z, 6) GPIO_ACTIVE_LOW>;
+@@ -590,7 +602,7 @@ &gpio {
+ 	/*Q0-Q7*/	"","","","","","UID_BUTTON","","",
+ 	/*R0-R7*/	"","","BMC_EXT_HIGHTEMP_L","OCP_AUX_PWREN",
+ 			"OCP_MAIN_PWREN","RESET_BUTTON","","",
+-	/*S0-S7*/	"","","","","","","","",
++	/*S0-S7*/	"","","","","RTC_BAT_SEN_EN","","","",
+ 	/*T0-T7*/	"","","","","","","","",
+ 	/*U0-U7*/	"","","","","","","","",
+ 	/*V0-V7*/	"","","","","","","","",
+@@ -604,4 +616,11 @@ &gpio {
+ 			"S1_BMC_DDR_ADR","","","","",
+ 	/*AC0-AC7*/	"SYS_PWR_GD","","","","","BMC_READY","SLAVE_PRESENT_L",
+ 			"BMC_OCP_PG";
++
++	i2c4_o_en {
++		gpio-hog;
++		gpios = <ASPEED_GPIO(Y, 2) GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "BMC_I2C4_O_EN";
++	};
+ };
+-- 
+2.28.0
+
