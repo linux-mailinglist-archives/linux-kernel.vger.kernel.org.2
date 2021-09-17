@@ -2,98 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A95F40F383
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 09:51:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00B9840F387
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 09:51:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232641AbhIQHwL convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 17 Sep 2021 03:52:11 -0400
-Received: from mail4.swissbit.com ([176.95.1.100]:39472 "EHLO
-        mail4.swissbit.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231268AbhIQHwJ (ORCPT
+        id S240285AbhIQHwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 03:52:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57978 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231268AbhIQHwe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 03:52:09 -0400
-Received: from mail4.swissbit.com (localhost [127.0.0.1])
-        by DDEI (Postfix) with ESMTP id B74541221B6;
-        Fri, 17 Sep 2021 09:50:45 +0200 (CEST)
-Received: from mail4.swissbit.com (localhost [127.0.0.1])
-        by DDEI (Postfix) with ESMTP id 9EB541221B3;
-        Fri, 17 Sep 2021 09:50:45 +0200 (CEST)
-X-TM-AS-ERS: 10.149.2.84-127.5.254.253
-X-TM-AS-SMTP: 1.0 ZXguc3dpc3NiaXQuY29t Y2xvZWhsZUBoeXBlcnN0b25lLmNvbQ==
-X-DDEI-TLS-USAGE: Used
-Received: from ex.swissbit.com (SBDEEX02.sbitdom.lan [10.149.2.84])
-        by mail4.swissbit.com (Postfix) with ESMTPS;
-        Fri, 17 Sep 2021 09:50:45 +0200 (CEST)
-Received: from sbdeex02.sbitdom.lan (10.149.2.84) by sbdeex02.sbitdom.lan
- (10.149.2.84) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.792.15; Fri, 17 Sep
- 2021 09:50:44 +0200
-Received: from sbdeex02.sbitdom.lan ([fe80::e0eb:ade8:2d90:1f74]) by
- sbdeex02.sbitdom.lan ([fe80::e0eb:ade8:2d90:1f74%8]) with mapi id
- 15.02.0792.015; Fri, 17 Sep 2021 09:50:44 +0200
-From:   =?iso-8859-1?Q?Christian_L=F6hle?= <CLoehle@hyperstone.com>
-To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
-CC:     "marten.lindahl@axis.com" <marten.lindahl@axis.com>,
-        "jh80.chung@samsung.com" <jh80.chung@samsung.com>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>
-Subject: [PATCH] mmc: dw_mmc: avoid long timeout if register invalid
-Thread-Topic: [PATCH] mmc: dw_mmc: avoid long timeout if register invalid
-Thread-Index: AQHXq5f2H1xcZooo4kGJdi3JsFt1Dw==
-Date:   Fri, 17 Sep 2021 07:50:44 +0000
-Message-ID: <bf19053cf6f547bcbb364975cda84c30@hyperstone.com>
-Accept-Language: en-US, de-DE
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.154.1.4]
-Content-Type: text/plain;
-        charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
+        Fri, 17 Sep 2021 03:52:34 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DB9EC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 00:51:12 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id v20-20020a1cf714000000b002e71f4d2026so7013015wmh.1
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 00:51:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=AkeG9+bCFIMeTbdQIw8gG7qxjkL1CtCRf0Fp7JdFLyI=;
+        b=g+hPMSPuni0MWMxtUBbtbcfSKQsF3Sm4o2r7+Vxgjfh7II58iuwsnczPNIXPU0I6r6
+         uJDBNLwpvsixrQJ7PhWq++Eedc4i9udYeannexLIw/dxlXe5Vd9J3/YsSOm8qng8DOY1
+         27fU/GKuyzwK1M7Y14fFlzdKFhBBTbdpzl+OSnH/aPsrLMTv8QKJRiVriJSpIo2latvy
+         DcsdVyVmmQA1P0UNeYWEYg2LLq6BGJpWNwUnXsB+Ca5ejP6+nvnYMHxxfGGTtFrEDcwu
+         eL9XHl1T8q7Ktj6d4zo/KtECtyr0I20bNXDN+PKa775wbHyL0UVwkOExcME3JLJ1FM0w
+         ioqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=AkeG9+bCFIMeTbdQIw8gG7qxjkL1CtCRf0Fp7JdFLyI=;
+        b=QzCvVTklVP33l0acPLrVP6SKT500VCl8xKbyCX5EVmrOu4fh0J+Ys4tiMfr/BR8DlS
+         UnDJ65nlvf+jcc2aiRcuFbPsk2F/aZIwLsB7LY2tvBlEu8W02K253evEgcST2VZTfhfp
+         S1aleXSmO4jRRP5Lqpso/fnvHETsoWkvUEqD9yY7zDed3wVHtr9oswpJo2zq30uV625w
+         UqsKVhaW2hFvsZYr07lZJJ8Qa8ltXU/OFciijFph5daeL+zBs5FNtfBbhfMnfindT3j0
+         sM6Ay3oeQELmYGGVupZvv9dHCOESKajHKCCfA/tRE1Qrq5kcF/mp59nkiIwbNvQoMVb/
+         YLug==
+X-Gm-Message-State: AOAM532OpW8xkdKteygu3dIElyaGkVQdNFYFO4iFatkKZluRG/HPCABc
+        CcUAfLBdF6yJjzljUXJBXx5c0Q==
+X-Google-Smtp-Source: ABdhPJyBUOQFNT82g8i7TvQn8r9hNwE4JkZuZyEV4XcSZASZzR/f6fstxZOAid9DKHryBgxvxtVyPQ==
+X-Received: by 2002:a7b:c014:: with SMTP id c20mr8800479wmb.81.1631865070670;
+        Fri, 17 Sep 2021 00:51:10 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:cf95:6508:8470:7171? ([2a01:e34:ed2f:f020:cf95:6508:8470:7171])
+        by smtp.googlemail.com with ESMTPSA id u29sm3199045wru.34.2021.09.17.00.51.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Sep 2021 00:51:10 -0700 (PDT)
+Subject: Re: [PATCH] thermal: brcmstb_thermal: Interrupt is optional
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Markus Mayer <mmayer@broadcom.com>,
+        "maintainer:BROADCOM STB AVS TMON DRIVER" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>,
+        "open list:BROADCOM STB AVS TMON DRIVER" <linux-pm@vger.kernel.org>,
+        "moderated list:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>
+References: <20210426213647.704823-1-f.fainelli@gmail.com>
+ <933c889e-dee0-4fc3-bf1a-b3655cabbb28@gmail.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <7359c3c1-8928-d448-e503-13f587cbb567@linaro.org>
+Date:   Fri, 17 Sep 2021 09:51:08 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-X-TMASE-Version: DDEI-5.1-8.6.1018-26412.006
-X-TMASE-Result: 10--3.581400-10.000000
-X-TMASE-MatchedRID: w2TFuZOvAteFZxY3FrzYQ5XIRfiL5JZTMI2NtA9qrmJjLp8Cm8vwF0Ac
-        6DyoS2rIj6kCfX0Edc76DhgT3dBZd1J0kimQOcFwOGTV4fFD6yB+kAcS0i53MMVsL38cyo+71c2
-        BC6YLibNlnUu9VvrsFbdPv7Ky46Z9vSIe1ujjRZpZlN4HS2qim30tCKdnhB58Caz7A70l7zb6C0
-        ePs7A07Y6HM5rqDwqtXomTel6u7G6hafoaHrRGKSrSwg0z4VM27/Sq3IZtUTzdnuG7sq6lkA==
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-12:0,22:0,33:0,34:0-0
-X-TMASE-INERTIA: 0-0;;;;
-X-TMASE-XGENCLOUD: 15e4f564-3b29-48d8-a01e-f8b6c63752c6-0-0-200-0
+In-Reply-To: <933c889e-dee0-4fc3-bf1a-b3655cabbb28@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Set the limit to 1s if the register is at reset value.
+Applied, thanks
 
-Signed-off-by: Christian Loehle <cloehle@hyperstone.com>
----
- drivers/mmc/host/dw_mmc.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+On 16/09/2021 02:05, Florian Fainelli wrote:
+> 
+> 
+> On 4/26/2021 2:36 PM, Florian Fainelli wrote:
+>> Utilize platform_get_irq_optional() to silence these messages:
+>>
+>> brcmstb_thermal a581500.thermal: IRQ index 0 not found
+>>
+>> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> 
+> This patch was never picked up and still applies. Daniel, can you pick
+> it up?
+> 
+> Thanks!
+> 
+>> ---
+>>   drivers/thermal/broadcom/brcmstb_thermal.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/thermal/broadcom/brcmstb_thermal.c
+>> b/drivers/thermal/broadcom/brcmstb_thermal.c
+>> index 8df5edef1ded..0cedb8b4f00a 100644
+>> --- a/drivers/thermal/broadcom/brcmstb_thermal.c
+>> +++ b/drivers/thermal/broadcom/brcmstb_thermal.c
+>> @@ -351,7 +351,7 @@ static int brcmstb_thermal_probe(struct
+>> platform_device *pdev)
+>>         priv->thermal = thermal;
+>>   -    irq = platform_get_irq(pdev, 0);
+>> +    irq = platform_get_irq_optional(pdev, 0);
+>>       if (irq >= 0) {
+>>           ret = devm_request_threaded_irq(&pdev->dev, irq, NULL,
+>>                           brcmstb_tmon_irq_thread,
+>>
+> 
 
-diff --git a/drivers/mmc/host/dw_mmc.c b/drivers/mmc/host/dw_mmc.c
-index 6578cc64ae9e..cd9a6e0a7449 100644
---- a/drivers/mmc/host/dw_mmc.c
-+++ b/drivers/mmc/host/dw_mmc.c
-@@ -1983,6 +1983,14 @@ static void dw_mci_set_drto(struct dw_mci *host)
- 	/* add a bit spare time */
- 	drto_ms += 10;
- 
-+	/*
-+	 * If TMOUT register still holds the reset value the above calculation
-+	 * would yield a timeout of over 167 seconds, limit it to 1000ms.
-+	 * Normal reads/writes should not take anywhere close to 120s.
-+	 */
-+	if (drto_ms > 120000)
-+		drto_ms = 1000;
-+
- 	spin_lock_irqsave(&host->irq_lock, irqflags);
- 	if (!test_bit(EVENT_DATA_COMPLETE, &host->pending_events))
- 		mod_timer(&host->dto_timer,
+
 -- 
-2.32.0
-Hyperstone GmbH | Line-Eid-Strasse 3 | 78467 Konstanz
-Managing Directors: Dr. Jan Peter Berns.
-Commercial register of local courts: Freiburg HRB381782
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
