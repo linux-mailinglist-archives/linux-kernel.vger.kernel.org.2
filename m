@@ -2,116 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCEDC40F52E
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 11:49:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D5C540F555
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 11:52:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241602AbhIQJub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 05:50:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232845AbhIQJuV (ORCPT
+        id S1343638AbhIQJxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 05:53:46 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.111.102]:29182 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245693AbhIQJxm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 05:50:21 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39E34C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 02:49:00 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id c13-20020a17090a558d00b00198e6497a4fso9629840pji.4
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 02:49:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=WqfCnFXW1pBqpEUkFm98tBUfFU7a1074L/dYXgavkKo=;
-        b=MJbLs4R0uSc49AGTR7ef3oagIGcP6rAtUCHkV85uhDqEzAupYjwTjVrWhu15Sew6ZT
-         2a+vvTp8E/KcbcCsxCyJ3kuS9gSZnZB1rttDEY6YRO51Fm2A6fJkrLOxGCo88ZU6NP9P
-         80ddzxv7DdXH/a7TCIRgYXrgDibJhS+K6cgoOzCfkTR7gCd11p6dmAsH7U1uZYuEqO7c
-         812TwiIi4OoPpOVvB99x7RWp+jatZM1vVWHQv/lFHvGqGPv9mt0SNZ51AR5CRrGTC+eg
-         zCJ4EKGspsUwaJwjjkwDQ6P8C3PnxnBFeOGFLTf45TWkwQz7TcjTugpAT+GHqm2aoPSq
-         kvhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=WqfCnFXW1pBqpEUkFm98tBUfFU7a1074L/dYXgavkKo=;
-        b=SJi0608HrDh6mHLbcelSCFgkgQmIA5OURoapH6QxmsYf4PGVj+WRtpaIncHF9b1SDD
-         AMWclzxu4fgCOdEFqKCds9k58wDVd2dR6+qVgwFAs1oZP+6mH/WAOtM7sX99Y49tDyH6
-         E/XDxBFkxqJLXhNl6zjvfEragSFWwrSG1pko8M+doPwjF5+9q4jzJKJrIKF2rjOvpaEY
-         uBFFrqjPEBP/5ExRv3EB7ls3u3ZMzMdr6VodaFFg0XI2Y3H3+GU/iMUUgVPmL12iE7Cl
-         xbPyP1Ih9q00Z/3Qg+w1bVqJyea5Z9MSEl7naOCnoNEQ+gCgF3bBkDpjk3XeAXh79gBr
-         WpHw==
-X-Gm-Message-State: AOAM532toySFzCnWMB+W8nzTDIRaTXVJNS2aK9D6Fmy3PIe68L0l3ulj
-        zq3DctAJpeixjy6pz+FgqxtIsRkBL5Z/Q/gs
-X-Google-Smtp-Source: ABdhPJzpRPcQIbkoO5TPWguJ0M0FqIx8ZkxnclzmicInsnZPZ+WqmRKOtT3KszUBqviNXdIuwvehTA==
-X-Received: by 2002:a17:902:680d:b0:13a:503f:f381 with SMTP id h13-20020a170902680d00b0013a503ff381mr8878825plk.30.1631872139307;
-        Fri, 17 Sep 2021 02:48:59 -0700 (PDT)
-Received: from [192.168.30.11] ([173.248.225.217])
-        by smtp.gmail.com with ESMTPSA id z11sm6020142pff.144.2021.09.17.02.48.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Sep 2021 02:48:58 -0700 (PDT)
-Subject: Re: [PATCH] mm/debug: sync up latest migrate_reason to
- migrate_reason_names
-To:     "Huang, Ying" <ying.huang@intel.com>,
-        John Hubbard <jhubbard@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210917061432.323777-1-o451686892@gmail.com>
- <871r5nptt7.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From:   Weizhao Ouyang <o451686892@gmail.com>
-Message-ID: <89a06743-b37a-b85a-1c04-5d863a1d2cb4@gmail.com>
-Date:   Fri, 17 Sep 2021 17:48:53 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <871r5nptt7.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        Fri, 17 Sep 2021 05:53:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1631872339;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GXHtNvXg31UQSdkLZPhgMtWUpYK/lfDRKw9DfFedgMc=;
+        b=OF54Xgu3bDNP+32BLf7zECCaYqPHoopDxPAbbHu/fg9DmGRWny3C39Tk+Jr5nFvy/cB4nH
+        7TcIdjKFdiMfkbcQbW7aJj+7cMLjpony6f22x4akX9exyCd456MkNaeDAfEI3vJ4NEkyQ/
+        QfNjpezBmiojI27JTuafz/vhirdnU9E=
+Received: from EUR02-AM5-obe.outbound.protection.outlook.com
+ (mail-am5eur02lp2052.outbound.protection.outlook.com [104.47.4.52]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ de-mta-16-NQXKte9aM7SPAoFTTsTJOg-2; Fri, 17 Sep 2021 11:52:17 +0200
+X-MC-Unique: NQXKte9aM7SPAoFTTsTJOg-2
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KUQsuEEnqhFH6XUniREkRWHldNtvBNSFqKWRJyjQ47DLH6REuqr55XETps2U7VE0eJa6iaSLrU5eR0JWtDh9ngNhOMmjsMpgF/714vi33IOFe1f4w7lnDzIznJa0HYICMcCCNTAGZ+74D4xNSiwSe/al1QkCgXgScJZFWUEKkyjXYrCXOb0Cs0xl7SPH2nYmJqfWvz7f/mis2/CyJ6rHWhDSIfNCnrV7z4wJqhRqnICc50eH9bq1+HL26hL+IIfeZCih3W2AhIFExaBKLTqq+1njywA1hACQ7Epf7Cc8HDrAe65zkhuTFy998jBhQiJrb9DVimV08kpn8tAJfiUAsw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=GXHtNvXg31UQSdkLZPhgMtWUpYK/lfDRKw9DfFedgMc=;
+ b=OLltJ3gskAm7qdPVBo7pvXAtBW/wT09MdgkntEQTZlOjl26TqZHoVL8MkCPx7/SivPold0Kdwi/2n1In4B2aJE5QDkGywwClTqpTgQPBMbhL86iTgkei6LOMrKIr5xEzPL1Y4V8zt3YsFePbCHP3E+dluRbDmS7Ildru0U6ghPUfhDpbj0e4e6HYxjdh12i2zTH5zHFpG6heZigZVgcHITqGU1mYgmsGTXmagDjiboEz90g5csC3AJMvyT/4qQJ3FA8XPciH9aCCA8ObLe3yTR7YtXoEoCFIGT6GMV86rxiYFqm9OLgj0su3jbQAEk6+7+koQ8uPPgqGIxOQdM2e7Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: lst.de; dkim=none (message not signed)
+ header.d=none;lst.de; dmarc=none action=none header.from=suse.com;
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
+ by VI1PR0402MB3936.eurprd04.prod.outlook.com (2603:10a6:803:23::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.16; Fri, 17 Sep
+ 2021 09:52:14 +0000
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::4d37:ec64:4e90:b16b]) by VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::4d37:ec64:4e90:b16b%7]) with mapi id 15.20.4523.016; Fri, 17 Sep 2021
+ 09:52:14 +0000
+Subject: Re: [PATCH] swiotlb: set IO TLB segment size via cmdline
+To:     Roman Skakun <rm.skakun@gmail.com>
+Cc:     Andrii Anisov <andrii_anisov@epam.com>,
+        Roman Skakun <roman_skakun@epam.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Mike Rapoport <rppt@kernel.org>, Will Deacon <will@kernel.org>,
+        xen-devel@lists.xenproject.org, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-doc@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        iommu <iommu@lists.linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>
+References: <20210914151016.3174924-1-Roman_Skakun@epam.com>
+ <7c04db79-7de1-93ff-0908-9bad60a287b9@suse.com>
+ <CADu_u-Ou08tMFm5xU871ae8ct+2YOuvn4rQ=83CMTbg2bx87Pg@mail.gmail.com>
+ <84ef7ff7-2c9c-113a-4a2c-cef54a6ded51@suse.com>
+ <20210915135321.GA15216@lst.de>
+ <CADu_u-OZzgVj+z=iD6kUQOZxUufF5QSMR6-MmpN_hLZ9PyQJhQ@mail.gmail.com>
+From:   Jan Beulich <jbeulich@suse.com>
+Message-ID: <ece0bbcf-2be8-e655-b164-b39b5d535c63@suse.com>
+Date:   Fri, 17 Sep 2021 11:52:10 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+In-Reply-To: <CADu_u-OZzgVj+z=iD6kUQOZxUufF5QSMR6-MmpN_hLZ9PyQJhQ@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PR0P264CA0178.FRAP264.PROD.OUTLOOK.COM
+ (2603:10a6:100:1c::22) To VI1PR04MB5600.eurprd04.prod.outlook.com
+ (2603:10a6:803:e7::16)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.156.60.236] (37.24.206.209) by PR0P264CA0178.FRAP264.PROD.OUTLOOK.COM (2603:10a6:100:1c::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Fri, 17 Sep 2021 09:52:12 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e7dda98c-565b-4ff6-e6d7-08d979c0d3bd
+X-MS-TrafficTypeDiagnostic: VI1PR0402MB3936:
+X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR0402MB393646432D8345BD571CFCD1B3DD9@VI1PR0402MB3936.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: VSBJD+Hpucunccno3ObKklm855Ig/SKMAaqRud98vyrGFLRBH+JYmoy/Hy7BzM1qlbD3Hw82yH38E+61gAQGQkTu3F6VBgOutaClbVpzKCSZT7y6lQp7q7B6CwECHBJo+XR4nWT0mxOjpDMXBIqyvkejLaeOLI3TETFOWy6F3goaEqIhYtE778B2kCIH00lndBwLcPzUgKajEsJDnwal0NGWAE1KFPVMg+5dNUZUCo+0Vcr9/UD8AkBN7S6sN74XoJF8PwAO2yFbIvQ0BZ4th5axLvdidJEAyRZ5c0GhOE3L1VznzmUJ0RS9ZBePAX/aPAePS70l9j+c8nmasK9eRkRpHpkdtBU6FCSbfX3wJmWaVG2vRG3FGknSs0iZM4IKkoTsaL+4g9k0MY+93hrFqGx3OkqPBy8WNxo4rSuaYj3O40wXvZ9oYfrmKukwIhNewJxnPlFi08lUXxPFEsvbmFAmgnwEUYqlJdSCsPdIidp9ccPzxVEJMz/KToZFdJZhI4IGT67JZ8rDuGSWvmxKhu0JIBWCDSDs1Q4TjWzRjKoRh/bqyPfqPzUI6N1Zxx+mDJbnyVhqhD6+BrwABQONjTBTHUTYQz7JK2fQmWoOlw1K11eh0RfGoWxrjSJGLif3XP800x6XbphXriKg+BTZwD1I1lZz5d5X4WmViz0NtAXGunYhWnrdPe8+pQb4DGg1vLxFT4C8SCOXez+T5yaQASbH6TzfiDtYiOqYfhG4tRs=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(6916009)(26005)(4326008)(53546011)(54906003)(7406005)(316002)(66946007)(36756003)(8936002)(5660300002)(2616005)(31686004)(956004)(66556008)(16576012)(83380400001)(66476007)(508600001)(7416002)(6486002)(86362001)(2906002)(4744005)(31696002)(186003)(8676002)(38100700002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aWh1Qk45cENNVHNnTGcrUnRkYXpQRllDQ0NJZmZvR3dzbGIzTmUzRkdkTmc1?=
+ =?utf-8?B?Y2lBck1PdjVNY3BGU24rVlJLSlEzNnNYd1Z1WHA3MUJ0RmoycTE2bVdPckZ2?=
+ =?utf-8?B?ZWFFZTBZL2pTdEJpRlNmZHluMEhURVB4dzA5UFVRTU14UURHeUgzWHBxUlRh?=
+ =?utf-8?B?b3R5cUgrM3NvWTVtcm5oQkpFelBKdUl0bkFQZldHNE1OczN4eEdLd0NNRS9K?=
+ =?utf-8?B?Vmx1WXJrelVQVHlDWndHbER3aWZhdmlkTlByN0I3anRaMFFHVTk5alJiTWU1?=
+ =?utf-8?B?SjhOUE9jN3owOVhQQTJUREtFQzdubENkRFpNYmxSa0Z0d3N4R0pWcy8rQW1C?=
+ =?utf-8?B?a1p5N3NDdXNRdXZ6OGVoSVZEcitFclJWUHIweU1JclVpOFdUbk12Wm1UMXd3?=
+ =?utf-8?B?cWtMZkpFcExIN0JNU0tEMHFlOHVTUTBHZ2lISEhEOTVHb3p5cmpzWm13OVhy?=
+ =?utf-8?B?Q3d3WGdnV0hhd2pualBSRm1pR0tzOGVWdnBmOHdsUldHaml0UHY3OHphbTU2?=
+ =?utf-8?B?Yk1jb29PQnpFRGFwS3VLTWM4c0VTR0o0Rnd3NEQveTluakpLTGovWkl5M3JN?=
+ =?utf-8?B?aWQwY0d2SXZGenFLL0F1c3ZndHJtZ2FFYkt3VjdJNmsxODJCTGxuTGQzWTY5?=
+ =?utf-8?B?RFE2ZWJEY0VyY1J0Tk9rV0pwd2JEbkp0ZzJJODJzNCtiRDJkV00rd2k4NnhH?=
+ =?utf-8?B?cjRGWWU5RXRsU3M2dkxualBqK09pNXlhUXFleGs3Uk54T2U3aFR5eldMR3Av?=
+ =?utf-8?B?ZUJkZ3dVTVZtTk5xZWNxSFQveVloZEFmUVFOemxwc3owSGxQVVhoRG9NM0I0?=
+ =?utf-8?B?Q1lXQlpTMk1hN1RUWW5JUnBMUDRjeDV5bWw2UmxZenJWT0R6SW5qN1pTWEs2?=
+ =?utf-8?B?TzhnUXIxMlU4MnVCNGxaNkdYcWQxN01TQ29hQUhuSFNxOGEzTm9ESGN3aWtk?=
+ =?utf-8?B?UFFtbEd5UWlmVExKcStvTytuOHpyY3RYTzJ3QkkzdVYvTHFwYjBLenZUc09x?=
+ =?utf-8?B?Unp1WXdJdTdiZEovdHlSdWs4QXo3VFM4UlRqWjMvWmZYRnNQUTBaUEd1Vm1Q?=
+ =?utf-8?B?aEorMjlGbFJZNWpmYlhmNEJhQ2VTbmR5ZXU5eENzV1JMcmVhNFlhb0Z3SUpp?=
+ =?utf-8?B?WnhraEcveVhKb2VFR0RDWHNwQXlJWFRIMDB1UFNuNjBMaEhiTGdURWNDTEVw?=
+ =?utf-8?B?MUpyajE5dkI4MmthcFRidmo0SmxpQUJVL3NXUFJQbTRpTGQza1NhRVZnNjBk?=
+ =?utf-8?B?VEhVblNUTnpDZ2pOaFlLdzNxQkFFbVpWZ0JvZWhtNGp0a1UvWHJLT3ZRWnhq?=
+ =?utf-8?B?cUYzU2pTQVlaUjhnWGo0a1dGaTh4SklTbS81WVAxVkZobkdqc1JmeGpQbVlh?=
+ =?utf-8?B?UTFxaXdjSTFwRnJCQ000N2RrTm83VGx6clczYkhFcWI3R3BEaVBJK3ZVQW50?=
+ =?utf-8?B?Zy9uNjNJNU9wNEFJbjZXcW5JK3RrQ3h6ZnhEY1F6VHl1MC9MVGpWN3I2WlVw?=
+ =?utf-8?B?UzBHVmlFaWt2UTlBRk1SV2pNVllBQmR3cTZvRUN6MzhDODFuUnJTVTQwSUZy?=
+ =?utf-8?B?QXluT1NTR1poU2hZMXJ6eDQ5UHVaOC93V2lqcDFzOU5HVk5oN1hxNXgyaVRi?=
+ =?utf-8?B?aGZkSkVkdHBsSXlvVDg5T2dBd25mWTV3bCtONTNaZnAxNzJNVFVtN0Qrd09M?=
+ =?utf-8?B?WWt0UjJoN2RmeW9ZOFZYckdiRWN4N1krb3BwbXROU3g1ZjZLYkpoY21qYkZl?=
+ =?utf-8?Q?tXdvUegyoB1lBi98nVCMJcsPYInAOshnLPJ5MAu?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e7dda98c-565b-4ff6-e6d7-08d979c0d3bd
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Sep 2021 09:52:14.4984
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: qdlybJsY7Wdjq7223mSN8+JLrLBqmHTX8mLHVQUV8SHHaEKtzY/812DucDUvDwsb/d20AautVG5LUT35fL2u1Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3936
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you both.
-On 2021/9/17 下午3:03, Huang, Ying wrote:
-> Weizhao Ouyang <o451686892@gmail.com> writes:
->
->> After related migrate page updates, sync up latest migrate_reason to
->> migrate_reason_names, page_owner use it to parse the page migrate
->> reason.
->>
->> Fixes: d1e153fea2a8 ("mm/gup: migrate pinned pages out of movable zone")
->> Fixes: 26aa2d199d6f ("mm/migrate: demote pages during reclaim")
->> Signed-off-by: Weizhao Ouyang <o451686892@gmail.com>
->> ---
->>  mm/debug.c | 2 ++
->>  1 file changed, 2 insertions(+)
->>
->> diff --git a/mm/debug.c b/mm/debug.c
->> index e73fe0a8ec3d..733770b0ed0c 100644
->> --- a/mm/debug.c
->> +++ b/mm/debug.c
->> @@ -25,6 +25,8 @@ const char *migrate_reason_names[MR_TYPES] = {
->>  	"mempolicy_mbind",
->>  	"numa_misplaced",
->>  	"cma",
->> +	"longterm_pin",
->> +	"demotion",
->>  };
->>  
->>  const struct trace_print_flags pageflag_names[] = {
-> Good catch!  Thanks!
->
-> Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
->
-> It may be better to use BUILD_BUG_ON() to capture similar issue earlier?
+On 17.09.2021 11:36, Roman Skakun wrote:
+> I use Xen PV display. In my case, PV display backend(Dom0) allocates
+> contiguous buffer via DMA-API to
+> to implement zero-copy between Dom0 and DomU.
 
-How about move migrate_reason_names into mm/page_owner.c and make it size uninitialized(get rid of MR_TYPES).
-Then use BUILD_BUG_ON(ARRAY_SIZE(migrate_reason_names != MR_TYPES)) to check it?
+Why does the buffer need to be allocated by Dom0? If it was allocated
+by DomU, it could use grants to give the backend direct (zero-copy)
+access.
 
->
-> Best Regards,
-> Huang, Ying
+Jan
+
