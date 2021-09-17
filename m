@@ -2,255 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E7D840EFDC
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 04:54:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D276540EF3D
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 04:32:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242961AbhIQCz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 22:55:58 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:47714 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242906AbhIQCzx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 22:55:53 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id AC5971A12B8;
-        Fri, 17 Sep 2021 04:54:30 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 3EEC21A0BBB;
-        Fri, 17 Sep 2021 04:54:30 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id A0423183AC4C;
-        Fri, 17 Sep 2021 10:54:28 +0800 (+08)
-From:   Richard Zhu <hongxing.zhu@nxp.com>
-To:     l.stach@pengutronix.de, kishon@ti.com, vkoul@kernel.org,
-        robh@kernel.org, galak@kernel.crashing.org, shawnguo@kernel.org
-Cc:     linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, linux-imx@nxp.com,
-        Richard Zhu <hongxing.zhu@nxp.com>
-Subject: [PATCH 4/4] phy: freescale: pcie: initialize the imx8 pcie standalone phy driver
-Date:   Fri, 17 Sep 2021 10:31:03 +0800
-Message-Id: <1631845863-24249-5-git-send-email-hongxing.zhu@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1631845863-24249-1-git-send-email-hongxing.zhu@nxp.com>
-References: <1631845863-24249-1-git-send-email-hongxing.zhu@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S242796AbhIQCdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 22:33:49 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:37362 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S235118AbhIQCdm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 22:33:42 -0400
+X-UUID: 49b5bf126a7246a88068a627cfd78c39-20210917
+X-UUID: 49b5bf126a7246a88068a627cfd78c39-20210917
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
+        (envelope-from <zhiyong.tao@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 2077872568; Fri, 17 Sep 2021 10:32:18 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 17 Sep 2021 10:32:17 +0800
+Received: from localhost.localdomain (10.17.3.154) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 17 Sep 2021 10:32:16 +0800
+From:   Zhiyong Tao <zhiyong.tao@mediatek.com>
+To:     <robh+dt@kernel.org>, <linus.walleij@linaro.org>,
+        <mark.rutland@arm.com>, <matthias.bgg@gmail.com>,
+        <sean.wang@kernel.org>
+CC:     <srv_heupstream@mediatek.com>, <zhiyong.tao@mediatek.com>,
+        <hui.liu@mediatek.com>, <light.hsieh@mediatek.com>,
+        <biao.huang@mediatek.com>, <hongzhou.yang@mediatek.com>,
+        <sean.wang@mediatek.com>, <seiya.wang@mediatek.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <linux-gpio@vger.kernel.org>
+Subject: [PATCH v12 0/5] Mediatek pinctrl patch on mt8195
+Date:   Fri, 17 Sep 2021 10:32:11 +0800
+Message-ID: <20210917023216.18384-1-zhiyong.tao@mediatek.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the standalone i.MX8 PCIe PHY driver.
-Some reset bits should be manipulated between PHY configurations and
-status check(internal PLL is locked or not).
-So, do the PHY configuration in the phy_calibrate().
-And check the PHY is ready or not in the phy_init().
+This series includes 5 patches:
+1.add rsel define.
+2.change pull up/down description
+3.fix coding style
+4.support rsel feature for common ICs
+5.add rsel setting on MT8195
 
-Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
----
- drivers/phy/freescale/Kconfig             |   9 ++
- drivers/phy/freescale/Makefile            |   1 +
- drivers/phy/freescale/phy-fsl-imx8-pcie.c | 167 ++++++++++++++++++++++
- 3 files changed, 177 insertions(+)
- create mode 100644 drivers/phy/freescale/phy-fsl-imx8-pcie.c
+Changes in patch v12:
+1)add "ack-by" on "rsel define" patch.
+2)add "change reason" in commit message and write a shema
+  on patch document patch 2/5.
+3)separate eint pm_ops fucntion support patch
+4)separate rsel patch, the common parts as patch 4/5 to support
+  common ICs. The mt8195 specific changes as patch 5/5.
+5)add fix coding style patch to fix Camel spelling to avoid checkpatch
+  warning in a following patch.
+6)remove unrelated changes in rsel patch.
+7)change ternary ops in resel patch
+8)add "rsel_is_unit" property on struct mtk_pinctrl, and itendify
+  "mediatek,rsel_resistance_in_si_unit" property in probe function.
+9)add explanation for "MTK_PULL_RSEL_TYPE" and "MTK_PULL_PU_PD_RSEL_TYPE".
+10) fix spell warning in rsel patch.
 
-diff --git a/drivers/phy/freescale/Kconfig b/drivers/phy/freescale/Kconfig
-index 320630ffe3cd..da078a676fbc 100644
---- a/drivers/phy/freescale/Kconfig
-+++ b/drivers/phy/freescale/Kconfig
-@@ -14,3 +14,12 @@ config PHY_MIXEL_MIPI_DPHY
- 	help
- 	  Enable this to add support for the Mixel DSI PHY as found
- 	  on NXP's i.MX8 family of SOCs.
-+
-+config PHY_FSL_IMX8_PCIE
-+	tristate "Freescale i.MX8 PCIE PHY"
-+	depends on OF && HAS_IOMEM
-+	select GENERIC_PHY
-+	default ARCH_MXC
-+	help
-+	  Enable this to add support for the PCIE PHY as found on i.MX8
-+	  family of SOCs.
-diff --git a/drivers/phy/freescale/Makefile b/drivers/phy/freescale/Makefile
-index 1d02e3869b45..9fd467b58621 100644
---- a/drivers/phy/freescale/Makefile
-+++ b/drivers/phy/freescale/Makefile
-@@ -1,3 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0-only
- obj-$(CONFIG_PHY_FSL_IMX8MQ_USB)	+= phy-fsl-imx8mq-usb.o
- obj-$(CONFIG_PHY_MIXEL_MIPI_DPHY)	+= phy-fsl-imx8-mipi-dphy.o
-+obj-$(CONFIG_PHY_FSL_IMX8_PCIE)		+= phy-fsl-imx8-pcie.o
-diff --git a/drivers/phy/freescale/phy-fsl-imx8-pcie.c b/drivers/phy/freescale/phy-fsl-imx8-pcie.c
-new file mode 100644
-index 000000000000..ff47d6b83686
---- /dev/null
-+++ b/drivers/phy/freescale/phy-fsl-imx8-pcie.c
-@@ -0,0 +1,167 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Copyright 2021 NXP
-+ */
-+
-+#include <linux/clk.h>
-+#include <linux/io.h>
-+#include <linux/iopoll.h>
-+#include <linux/delay.h>
-+#include <linux/module.h>
-+#include <linux/phy/phy.h>
-+#include <linux/platform_device.h>
-+#include <dt-binding/phy/phy-fsl-imx8-pcie.h>
-+
-+#define IMX8MM_PCIE_PHY_CMN_REG061	0x184
-+#define  ANA_PLL_CLK_OUT_TO_EXT_IO_EN	BIT(0)
-+#define IMX8MM_PCIE_PHY_CMN_REG062	0x188
-+#define  ANA_PLL_CLK_OUT_TO_EXT_IO_SEL	BIT(3)
-+#define IMX8MM_PCIE_PHY_CMN_REG063	0x18C
-+#define  AUX_PLL_REFCLK_SEL_SYS_PLL	GENMASK(7, 6)
-+#define IMX8MM_PCIE_PHY_CMN_REG064	0x190
-+#define  ANA_AUX_RX_TX_SEL_TX		BIT(7)
-+#define  ANA_AUX_RX_TERM_GND_EN		BIT(3)
-+#define  ANA_AUX_TX_TERM		BIT(2)
-+#define IMX8MM_PCIE_PHY_CMN_REG065	0x194
-+#define  ANA_AUX_RX_TERM		(BIT(7) | BIT(4))
-+#define  ANA_AUX_TX_LVL			GENMASK(3, 0)
-+#define IMX8MM_PCIE_PHY_CMN_REG75	0x1D4
-+#define  PCIE_PHY_CMN_REG75_PLL_DONE	0x3
-+#define PCIE_PHY_TRSV_REG5		0x414
-+#define  PCIE_PHY_TRSV_REG5_GEN1_DEEMP	0x2D
-+#define PCIE_PHY_TRSV_REG6		0x418
-+#define  PCIE_PHY_TRSV_REG6_GEN2_DEEMP	0xF
-+
-+struct imx8_pcie_phy {
-+	u32		refclk_pad_mode;
-+	void __iomem	*base;
-+	struct clk	*clk;
-+	struct phy	*phy;
-+};
-+
-+static int imx8_pcie_phy_init(struct phy *phy)
-+{
-+	int ret;
-+	u32 val;
-+	struct imx8_pcie_phy *imx8_phy = phy_get_drvdata(phy);
-+
-+	ret = readl_poll_timeout(imx8_phy->base + IMX8MM_PCIE_PHY_CMN_REG75,
-+				 val, val == PCIE_PHY_CMN_REG75_PLL_DONE,
-+				 10, 20000);
-+	return ret;
-+}
-+
-+static int imx8_pcie_phy_cal(struct phy *phy)
-+{
-+	u32 value, pad_mode;
-+	struct imx8_pcie_phy *imx8_phy = phy_get_drvdata(phy);
-+
-+	pad_mode = imx8_phy->refclk_pad_mode;
-+	if (pad_mode == IMX8_PCIE_REFCLK_PAD_INPUT) {
-+		/* Configure the pad as input */
-+		value = readl(imx8_phy->base + IMX8MM_PCIE_PHY_CMN_REG061);
-+		writel(value & ~ANA_PLL_CLK_OUT_TO_EXT_IO_EN,
-+		       imx8_phy->base + IMX8MM_PCIE_PHY_CMN_REG061);
-+	} else if (pad_mode == IMX8_PCIE_REFCLK_PAD_OUTPUT) {
-+		/* Configure the PHY to output the refclock via pad */
-+		writel(ANA_PLL_CLK_OUT_TO_EXT_IO_EN,
-+		       imx8_phy->base + IMX8MM_PCIE_PHY_CMN_REG061);
-+		writel(ANA_PLL_CLK_OUT_TO_EXT_IO_SEL,
-+		       imx8_phy->base + IMX8MM_PCIE_PHY_CMN_REG062);
-+		writel(AUX_PLL_REFCLK_SEL_SYS_PLL,
-+		       imx8_phy->base + IMX8MM_PCIE_PHY_CMN_REG063);
-+		value = ANA_AUX_RX_TX_SEL_TX | ANA_AUX_TX_TERM;
-+		writel(value | ANA_AUX_RX_TERM_GND_EN,
-+		       imx8_phy->base + IMX8MM_PCIE_PHY_CMN_REG064);
-+		writel(ANA_AUX_RX_TERM | ANA_AUX_TX_LVL,
-+		       imx8_phy->base + IMX8MM_PCIE_PHY_CMN_REG065);
-+	}
-+
-+	/* Tune PHY de-emphasis setting to pass PCIe compliance. */
-+	writel(PCIE_PHY_TRSV_REG5_GEN1_DEEMP,
-+	       imx8_phy->base + PCIE_PHY_TRSV_REG5);
-+	writel(PCIE_PHY_TRSV_REG6_GEN2_DEEMP,
-+	       imx8_phy->base + PCIE_PHY_TRSV_REG6);
-+
-+	return 0;
-+}
-+
-+static int imx8_pcie_phy_power_on(struct phy *phy)
-+{
-+	struct imx8_pcie_phy *imx8_phy = phy_get_drvdata(phy);
-+
-+	return clk_prepare_enable(imx8_phy->clk);
-+}
-+
-+static int imx8_pcie_phy_power_off(struct phy *phy)
-+{
-+	struct imx8_pcie_phy *imx8_phy = phy_get_drvdata(phy);
-+
-+	clk_disable_unprepare(imx8_phy->clk);
-+
-+	return 0;
-+}
-+
-+static const struct phy_ops imx8_pcie_phy_ops = {
-+	.init		= imx8_pcie_phy_init,
-+	.calibrate	= imx8_pcie_phy_cal,
-+	.power_on	= imx8_pcie_phy_power_on,
-+	.power_off	= imx8_pcie_phy_power_off,
-+	.owner		= THIS_MODULE,
-+};
-+
-+static int imx8_pcie_phy_probe(struct platform_device *pdev)
-+{
-+	struct phy_provider *phy_provider;
-+	struct device *dev = &pdev->dev;
-+	struct device_node *np = dev->of_node;
-+	struct imx8_pcie_phy *imx8_phy;
-+	struct resource *res;
-+
-+	imx8_phy = devm_kzalloc(dev, sizeof(*imx8_phy), GFP_KERNEL);
-+	if (!imx8_phy)
-+		return -ENOMEM;
-+
-+	/* get PHY refclk pad mode */
-+	of_property_read_u32(np, "fsl,refclk-pad-mode",
-+			     &imx8_phy->refclk_pad_mode);
-+
-+	imx8_phy->clk = devm_clk_get(dev, "phy");
-+	if (IS_ERR(imx8_phy->clk)) {
-+		dev_err(dev, "failed to get imx pcie phy clock\n");
-+		return PTR_ERR(imx8_phy->clk);
-+	}
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	imx8_phy->base = devm_ioremap_resource(dev, res);
-+	if (IS_ERR(imx8_phy->base))
-+		return PTR_ERR(imx8_phy->base);
-+
-+	imx8_phy->phy = devm_phy_create(dev, NULL, &imx8_pcie_phy_ops);
-+	if (IS_ERR(imx8_phy->phy))
-+		return PTR_ERR(imx8_phy->phy);
-+
-+	phy_set_drvdata(imx8_phy->phy, imx8_phy);
-+
-+	phy_provider = devm_of_phy_provider_register(dev, of_phy_simple_xlate);
-+
-+	return PTR_ERR_OR_ZERO(phy_provider);
-+}
-+
-+static const struct of_device_id imx8_pcie_phy_of_match[] = {
-+	{.compatible = "fsl,imx8mm-pcie-phy",},
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(of, imx8_pcie_phy_of_match);
-+
-+static struct platform_driver imx8_pcie_phy_driver = {
-+	.probe	= imx8_pcie_phy_probe,
-+	.driver = {
-+		.name	= "imx8-pcie-phy",
-+		.of_match_table	= imx8_pcie_phy_of_match,
-+	}
-+};
-+module_platform_driver(imx8_pcie_phy_driver);
-+
-+MODULE_DESCRIPTION("FSL IMX8 PCIE PHY driver");
-+MODULE_LICENSE("GPL");
--- 
-2.25.1
+Changes in patch v11:
+1)add pm_ops fucntion support
+2)change pull up/down description
+3)add resistance value feature support.
+
+Changes in patch v10:
+1)fix PARENTHESIS_ALIGNMENT of mtk_pinconf_bias_set_rsel
+2)fix LONG_LINE warning in 615 in pinctrl-paris.c.
+
+Changes in patch v9:
+1)fix "mtk_pinconf_bias_set_rsel" build warning.
+
+Changes in patch v8:
+1)add rsel define patch
+2)avoid  CamelCase
+3)add pinctrl rsel setting patch which is another resistance selection
+  solution for I2C on MT8195.
+
+Changes in patch v7:
+1)add version in patch and fix spelling mistakes.
+
+Changes in patch v6:
+1)add "pintcrl: mediatek" as prefix.
+
+Changes in patch v5:
+1)document and driver patch are apploed.
+2)change '-EOPNOTSUPP' to '-ENOTSUPP'
+
+Changes in patch v4:
+1)fix pinctrl-mt8195.yaml warning error.
+2)remove pinctrl device node patch which is based on "mt8195.dtsi".
+
+Changes in patch v3:
+1)change '^pins' to '-pins$'.
+2)change 'state_0_node_a' to 'gpio_pin' which is defined in dts.
+3)change 'state_0_node_b' to 'i2c0_pin' which is defined in dts.
+4)reorder this series patches. change pinctrl file and binding document
+together in one patch.
+
+There are no changes in v1 & v2.
+
+Zhiyong Tao (5):
+  dt-bindings: pinctrl: mt8195: add rsel define
+  dt-bindings: pinctrl: mt8195: change pull up/down description
+  pinctrl: mediatek: fix coding style
+  pinctrl: mediatek: support rsel feature
+  pinctrl: mediatek: add rsel setting on MT8195
+
+ .../bindings/pinctrl/pinctrl-mt8195.yaml      |  65 ++++-
+ drivers/pinctrl/mediatek/pinctrl-mt8195.c     | 133 ++++++++++
+ .../pinctrl/mediatek/pinctrl-mtk-common-v2.c  | 231 +++++++++++++++---
+ .../pinctrl/mediatek/pinctrl-mtk-common-v2.h  |  45 ++++
+ drivers/pinctrl/mediatek/pinctrl-paris.c      |  68 ++++--
+ include/dt-bindings/pinctrl/mt65xx.h          |   9 +
+ 6 files changed, 497 insertions(+), 54 deletions(-)
+
+--
+2.18.0
+
 
