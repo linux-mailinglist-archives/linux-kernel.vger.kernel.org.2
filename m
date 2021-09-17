@@ -2,113 +2,509 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 746AE40FD22
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 17:48:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9989F40FD28
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 17:48:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344345AbhIQPt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 11:49:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55320 "EHLO
+        id S1344413AbhIQPuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 11:50:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344226AbhIQPtx (ORCPT
+        with ESMTP id S1344321AbhIQPtz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 11:49:53 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F8BDC061767
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:48:31 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id 17so10010086pgp.4
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:48:31 -0700 (PDT)
+        Fri, 17 Sep 2021 11:49:55 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1002C0613D5
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:48:32 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id u4so6677126qvb.6
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:48:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=poorly.run; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=oU5/PdBksbt91dmMZ2AVGJIFzdhPLZCXzFzx+KRfDqk=;
-        b=KDzGJ0b9khD+pih/CbX22IId0YBoC/kJyqkzfoF/YleeZhZclne1J/L8CYza9hth1j
-         k0eN4rSOAq5jLCYYiXyLB+BiFSMlTE18J4j23xLqQ5cOJZDMocN7et1mYg4Ylouh4adS
-         7MMd1eKp8SzWcXGjhEgr5gwm/XDc/WeglPkC4=
+         :content-disposition:in-reply-to:user-agent;
+        bh=fFmHqRT30Ftkz5ueNOua6XBUxCpE36MdJOvmyZcvj1M=;
+        b=e029K0cJq+VUGl0oo533Vh3wYQ5RboKDSDsZYw5syhxipzE3cJO0gpw9BVvJZxGB5z
+         hEzdsRz3SWqet3478hB2mRVxjMvTFGjQrwrBgm4h17zfXNtxkDpIxyXz/sjUA3OIRvwn
+         GX9BVSg2GMDSk5rgYmriS9w2co2E0VER2S+P00NaSU8W2UA3E/bfMTkoDOcUyHWOuHGm
+         FSBp7jvGInB3gLE2lNeArRPhvu9TBuPAkh9/KntKMXH4StkWPD84c7fmmxTpzN+BfMwP
+         7EAkD6n8Szo6w61TcAW9Iiday4Wh2Jb5lZrCWvLEbGJy1QQmCVsK733NyUAg5ZSncfMv
+         cHPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oU5/PdBksbt91dmMZ2AVGJIFzdhPLZCXzFzx+KRfDqk=;
-        b=HZY/bJlXyjsO5106dUgH06ljLFmTHq1xbBZiVgUvu9I1UFU5g7DswYlbskUctRG8GK
-         M6BURtqG3KLegOdyJ9yNpE9Si5GV/DT6GBRqwdrpRkZVO1d19wd/oLPd/xu+46ITL07x
-         kcDAUSGt/EMF++MyiaNFVbzsDZ44esGE+z6Z7F6by/fhD8fWDImRj7ohiXXlGkdCApol
-         ++FoPaCBL3H9loIG5Z0K98+Oejkkd274GD5vwKulDjZeGkAVHa1IgKR4rRnReJVBlP9C
-         GRDtWiUX90nWGeNP6W1dBHGUnSoRM9z64fTo/X1Av0B8E/ydr5cVCzPjHhCQAJMj91g0
-         7WCw==
-X-Gm-Message-State: AOAM533+klc0a2zy68ZBGnavLycXvROXJ+wGORl/wK3pVoNwQHINT8cb
-        phOezbBxaBgfCkOOJpJIAYBWIA==
-X-Google-Smtp-Source: ABdhPJywPsJt5eForru+BeWv06Lmr+gWdQ+HZR8iE1hgtztL0deStFU6zzGj865eVc8KXipuQb3DZw==
-X-Received: by 2002:a63:da54:: with SMTP id l20mr10404254pgj.341.1631893710953;
-        Fri, 17 Sep 2021 08:48:30 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id t68sm6925395pgc.59.2021.09.17.08.48.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 08:48:30 -0700 (PDT)
-Date:   Fri, 17 Sep 2021 08:48:29 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Brendan Higgins <brendanhiggins@google.com>
-Cc:     shuah@kernel.org, davidgow@google.com, arnd@arndb.de,
-        rafael@kernel.org, jic23@kernel.org, lars@metafoo.de,
-        ulf.hansson@linaro.org, andreas.noever@gmail.com,
-        michael.jamet@intel.com, mika.westerberg@linux.intel.com,
-        YehezkelShB@gmail.com, masahiroy@kernel.org,
-        michal.lkml@markovi.net, ndesaulniers@google.com,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        gregkh@linuxfoundation.org, linux-iio@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-hardening@vger.kernel.org, linux-kbuild@vger.kernel.org
-Subject: Re: [PATCH v1 1/6] gcc-plugins/structleak: add makefile var for
- disabling structleak
-Message-ID: <202109170808.629688A460@keescook>
-References: <20210917061104.2680133-1-brendanhiggins@google.com>
- <20210917061104.2680133-2-brendanhiggins@google.com>
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=fFmHqRT30Ftkz5ueNOua6XBUxCpE36MdJOvmyZcvj1M=;
+        b=QzF2cJessctHt5M+KZtphNbVtyM9uhfpvVzxcE2c3sgbzI6c6opMuowgBaqo+7BZtz
+         sn46S6FXgtP9iELxjlR2brQhP15gcl2MGNDQH82KgT/25I1si6+dLJSATaVsQ+Y2NFwk
+         YZlEo6/nEBUNtEUtUHYj19JTQYwj7zXAbi5u2lEMoOhdGrJNVyejQr2vEHWa87Z9RmAB
+         Uub8G1XIsn7BqDNTwjis9/cGQtqX5fhzCwhjiiBJi45EC4SOaDefyjYH+fr+qOS/rIug
+         ubb2kE81iSLtS6FANFWu3om0KgfRR9fcqlgh3EJYU2GzCjVJUndUR7PpymyqviP81BBl
+         86pw==
+X-Gm-Message-State: AOAM530om8nkuyvu2RpN9E25eZ4jvlbHY+WaNz7bo5tVgQ8EIxhH/G7J
+        yelEH9fQNQmBE6Fnf5yvDoCr8Q==
+X-Google-Smtp-Source: ABdhPJy2S2Yhny4z8aJOIZz16XR6IIbnqcyQWAtiZRWSIqXBx6ZpN7JeKncqoz+aiUacV3+euzSuqA==
+X-Received: by 2002:a0c:f205:: with SMTP id h5mr11954734qvk.56.1631893712053;
+        Fri, 17 Sep 2021 08:48:32 -0700 (PDT)
+Received: from localhost ([167.100.64.199])
+        by smtp.gmail.com with ESMTPSA id u27sm5359132qku.9.2021.09.17.08.48.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 17 Sep 2021 08:48:31 -0700 (PDT)
+Date:   Fri, 17 Sep 2021 11:48:30 -0400
+From:   Sean Paul <sean@poorly.run>
+To:     Fernando Ramos <greenfoo@u92.eu>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        sean@poorly.run, linux-doc@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+Subject: Re: [PATCH 12/15] drm/i915: cleanup: drm_modeset_lock_all() -->
+ DRM_MODESET_LOCK_ALL_BEGIN()
+Message-ID: <20210917154830.GM2515@art_vandelay>
+References: <20210916211552.33490-1-greenfoo@u92.eu>
+ <20210916211552.33490-13-greenfoo@u92.eu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210917061104.2680133-2-brendanhiggins@google.com>
+In-Reply-To: <20210916211552.33490-13-greenfoo@u92.eu>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 11:10:59PM -0700, Brendan Higgins wrote:
-> KUnit and structleak don't play nice, so add a makefile variable for
-> enabling structleak when it complains.
+On Thu, Sep 16, 2021 at 11:15:49PM +0200, Fernando Ramos wrote:
+> As requested in Documentation/gpu/todo.rst, replace driver calls to
+> drm_modeset_lock_all() with DRM_MODESET_LOCK_ALL_BEGIN() and
+> DRM_MODESET_LOCK_ALL_END()
 > 
-> Co-developed-by: Kees Cook <keescook@chromium.org>
-
-For a C-d-b, also include a S-o-b:
-
-Signed-off-by: Kees Cook <keescook@chromium.org>
-
-But otherwise, yes, this is good. :)
-
--Kees
-
-> Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+> Signed-off-by: Fernando Ramos <greenfoo@u92.eu>
 > ---
->  scripts/Makefile.gcc-plugins | 4 ++++
->  1 file changed, 4 insertions(+)
+>  drivers/gpu/drm/i915/display/intel_audio.c    | 12 +++--
+>  drivers/gpu/drm/i915/display/intel_display.c  |  5 ++-
+>  .../drm/i915/display/intel_display_debugfs.c  | 35 ++++++++++-----
+>  drivers/gpu/drm/i915/display/intel_overlay.c  | 45 +++++++++----------
+>  drivers/gpu/drm/i915/display/intel_pipe_crc.c |  5 ++-
+>  drivers/gpu/drm/i915/i915_drv.c               | 12 +++--
+>  6 files changed, 67 insertions(+), 47 deletions(-)
 > 
-> diff --git a/scripts/Makefile.gcc-plugins b/scripts/Makefile.gcc-plugins
-> index 952e46876329a..4aad284800355 100644
-> --- a/scripts/Makefile.gcc-plugins
-> +++ b/scripts/Makefile.gcc-plugins
-> @@ -19,6 +19,10 @@ gcc-plugin-cflags-$(CONFIG_GCC_PLUGIN_STRUCTLEAK_BYREF)		\
->  		+= -fplugin-arg-structleak_plugin-byref
->  gcc-plugin-cflags-$(CONFIG_GCC_PLUGIN_STRUCTLEAK_BYREF_ALL)	\
->  		+= -fplugin-arg-structleak_plugin-byref-all
-> +ifdef CONFIG_GCC_PLUGIN_STRUCTLEAK
-> +    DISABLE_STRUCTLEAK_PLUGIN += -fplugin-arg-structleak_plugin-disable
-> +endif
-> +export DISABLE_STRUCTLEAK_PLUGIN
->  gcc-plugin-cflags-$(CONFIG_GCC_PLUGIN_STRUCTLEAK)		\
->  		+= -DSTRUCTLEAK_PLUGIN
+> diff --git a/drivers/gpu/drm/i915/display/intel_audio.c b/drivers/gpu/drm/i915/display/intel_audio.c
+> index 532237588511..ab6a5a734b95 100644
+> --- a/drivers/gpu/drm/i915/display/intel_audio.c
+> +++ b/drivers/gpu/drm/i915/display/intel_audio.c
+> @@ -1214,7 +1214,9 @@ static int i915_audio_component_bind(struct device *i915_kdev,
+>  {
+>  	struct i915_audio_component *acomp = data;
+>  	struct drm_i915_private *dev_priv = kdev_to_i915(i915_kdev);
+> +	struct drm_modeset_acquire_ctx ctx;
+>  	int i;
+> +	int ret;
+
+Please move up with i
+
 >  
+>  	if (drm_WARN_ON(&dev_priv->drm, acomp->base.ops || acomp->base.dev))
+>  		return -EEXIST;
+> @@ -1224,14 +1226,14 @@ static int i915_audio_component_bind(struct device *i915_kdev,
+>  					 DL_FLAG_STATELESS)))
+>  		return -ENOMEM;
+>  
+> -	drm_modeset_lock_all(&dev_priv->drm);
+> +	DRM_MODESET_LOCK_ALL_BEGIN((&dev_priv->drm), ctx, 0, ret);
+>  	acomp->base.ops = &i915_audio_component_ops;
+>  	acomp->base.dev = i915_kdev;
+>  	BUILD_BUG_ON(MAX_PORTS != I915_MAX_PORTS);
+>  	for (i = 0; i < ARRAY_SIZE(acomp->aud_sample_rate); i++)
+>  		acomp->aud_sample_rate[i] = 0;
+>  	dev_priv->audio_component = acomp;
+> -	drm_modeset_unlock_all(&dev_priv->drm);
+> +	DRM_MODESET_LOCK_ALL_END((&dev_priv->drm), ctx, ret);
+>  
+>  	return 0;
+
+Return ret here
+
+>  }
+> @@ -1241,12 +1243,14 @@ static void i915_audio_component_unbind(struct device *i915_kdev,
+>  {
+>  	struct i915_audio_component *acomp = data;
+>  	struct drm_i915_private *dev_priv = kdev_to_i915(i915_kdev);
+> +	struct drm_modeset_acquire_ctx ctx;
+> +	int ret;
+>  
+> -	drm_modeset_lock_all(&dev_priv->drm);
+> +	DRM_MODESET_LOCK_ALL_BEGIN((&dev_priv->drm), ctx, 0, ret);
+>  	acomp->base.ops = NULL;
+>  	acomp->base.dev = NULL;
+>  	dev_priv->audio_component = NULL;
+> -	drm_modeset_unlock_all(&dev_priv->drm);
+> +	DRM_MODESET_LOCK_ALL_END((&dev_priv->drm), ctx, ret);
+>  
+>  	device_link_remove(hda_kdev, i915_kdev);
+>  
+> diff --git a/drivers/gpu/drm/i915/display/intel_display.c b/drivers/gpu/drm/i915/display/intel_display.c
+> index 997a16e85c85..dc2e4d89e5aa 100644
+> --- a/drivers/gpu/drm/i915/display/intel_display.c
+> +++ b/drivers/gpu/drm/i915/display/intel_display.c
+> @@ -12511,6 +12511,7 @@ int intel_modeset_init_noirq(struct drm_i915_private *i915)
+>  int intel_modeset_init_nogem(struct drm_i915_private *i915)
+>  {
+>  	struct drm_device *dev = &i915->drm;
+> +	struct drm_modeset_acquire_ctx ctx;
+>  	enum pipe pipe;
+>  	struct intel_crtc *crtc;
+>  	int ret;
+> @@ -12562,9 +12563,9 @@ int intel_modeset_init_nogem(struct drm_i915_private *i915)
+>  	intel_vga_disable(i915);
+>  	intel_setup_outputs(i915);
+>  
+> -	drm_modeset_lock_all(dev);
+> +	DRM_MODESET_LOCK_ALL_BEGIN(dev, ctx, 0, ret);
+>  	intel_modeset_setup_hw_state(dev, dev->mode_config.acquire_ctx);
+> -	drm_modeset_unlock_all(dev);
+> +	DRM_MODESET_LOCK_ALL_END(dev, ctx, ret);
+>  
+>  	for_each_intel_crtc(dev, crtc) {
+>  		struct intel_initial_plane_config plane_config = {};
+> diff --git a/drivers/gpu/drm/i915/display/intel_display_debugfs.c b/drivers/gpu/drm/i915/display/intel_display_debugfs.c
+> index 8fdacb252bb1..d73af228862e 100644
+> --- a/drivers/gpu/drm/i915/display/intel_display_debugfs.c
+> +++ b/drivers/gpu/drm/i915/display/intel_display_debugfs.c
+> @@ -1057,11 +1057,13 @@ static int i915_display_info(struct seq_file *m, void *unused)
+>  	struct intel_crtc *crtc;
+>  	struct drm_connector *connector;
+>  	struct drm_connector_list_iter conn_iter;
+> +	struct drm_modeset_acquire_ctx ctx;
+>  	intel_wakeref_t wakeref;
+> +	int ret;
+>  
+>  	wakeref = intel_runtime_pm_get(&dev_priv->runtime_pm);
+>  
+> -	drm_modeset_lock_all(dev);
+> +	DRM_MODESET_LOCK_ALL_BEGIN(dev, ctx, 0, ret);
+>  
+>  	seq_printf(m, "CRTC info\n");
+>  	seq_printf(m, "---------\n");
+> @@ -1076,7 +1078,7 @@ static int i915_display_info(struct seq_file *m, void *unused)
+>  		intel_connector_info(m, connector);
+>  	drm_connector_list_iter_end(&conn_iter);
+>  
+> -	drm_modeset_unlock_all(dev);
+> +	DRM_MODESET_LOCK_ALL_END(dev, ctx, ret);
+>  
+>  	intel_runtime_pm_put(&dev_priv->runtime_pm, wakeref);
+>  
+> @@ -1087,9 +1089,11 @@ static int i915_shared_dplls_info(struct seq_file *m, void *unused)
+>  {
+>  	struct drm_i915_private *dev_priv = node_to_i915(m->private);
+>  	struct drm_device *dev = &dev_priv->drm;
+> +	struct drm_modeset_acquire_ctx ctx;
+>  	int i;
+> +	int ret;
+
+Please move up with i
+
+>  
+> -	drm_modeset_lock_all(dev);
+> +	DRM_MODESET_LOCK_ALL_BEGIN(dev, ctx, 0, ret);
+>  
+>  	seq_printf(m, "PLL refclks: non-SSC: %d kHz, SSC: %d kHz\n",
+>  		   dev_priv->dpll.ref_clks.nssc,
+> @@ -1132,7 +1136,7 @@ static int i915_shared_dplls_info(struct seq_file *m, void *unused)
+>  		seq_printf(m, " mg_pll_tdc_coldst_bias: 0x%08x\n",
+>  			   pll->state.hw_state.mg_pll_tdc_coldst_bias);
+>  	}
+> -	drm_modeset_unlock_all(dev);
+> +	DRM_MODESET_LOCK_ALL_END(dev, ctx, ret);
+>  
+>  	return 0;
+
+Return ret
+
+>  }
+> @@ -1193,13 +1197,15 @@ static int i915_ddb_info(struct seq_file *m, void *unused)
+>  {
+>  	struct drm_i915_private *dev_priv = node_to_i915(m->private);
+>  	struct drm_device *dev = &dev_priv->drm;
+> +	struct drm_modeset_acquire_ctx ctx;
+>  	struct skl_ddb_entry *entry;
+>  	struct intel_crtc *crtc;
+> +	int ret;
+>  
+>  	if (DISPLAY_VER(dev_priv) < 9)
+>  		return -ENODEV;
+>  
+> -	drm_modeset_lock_all(dev);
+> +	DRM_MODESET_LOCK_ALL_BEGIN(dev, ctx, 0, ret);
+>  
+>  	seq_printf(m, "%-15s%8s%8s%8s\n", "", "Start", "End", "Size");
+>  
+> @@ -1223,7 +1229,7 @@ static int i915_ddb_info(struct seq_file *m, void *unused)
+>  			   entry->end, skl_ddb_entry_size(entry));
+>  	}
+>  
+> -	drm_modeset_unlock_all(dev);
+> +	DRM_MODESET_LOCK_ALL_END(dev, ctx, ret);
+>  
+>  	return 0;
+
+Return ret
+
+>  }
+> @@ -1303,10 +1309,12 @@ static int i915_drrs_status(struct seq_file *m, void *unused)
+>  {
+>  	struct drm_i915_private *dev_priv = node_to_i915(m->private);
+>  	struct drm_device *dev = &dev_priv->drm;
+> +	struct drm_modeset_acquire_ctx ctx;
+>  	struct intel_crtc *crtc;
+>  	int active_crtc_cnt = 0;
+> +	int ret;
+>  
+> -	drm_modeset_lock_all(dev);
+> +	DRM_MODESET_LOCK_ALL_BEGIN(dev, ctx, 0, ret);
+>  	for_each_intel_crtc(dev, crtc) {
+>  		if (crtc->base.state->active) {
+>  			active_crtc_cnt++;
+> @@ -1315,7 +1323,7 @@ static int i915_drrs_status(struct seq_file *m, void *unused)
+>  			drrs_status_per_crtc(m, dev, crtc);
+>  		}
+>  	}
+> -	drm_modeset_unlock_all(dev);
+> +	DRM_MODESET_LOCK_ALL_END(dev, ctx, ret);
+>  
+>  	if (!active_crtc_cnt)
+>  		seq_puts(m, "No active crtc found\n");
+> @@ -1607,8 +1615,10 @@ static void wm_latency_show(struct seq_file *m, const u16 wm[8])
+>  {
+>  	struct drm_i915_private *dev_priv = m->private;
+>  	struct drm_device *dev = &dev_priv->drm;
+> +	struct drm_modeset_acquire_ctx ctx;
+>  	int level;
+>  	int num_levels;
+> +	int ret;
+>  
+>  	if (IS_CHERRYVIEW(dev_priv))
+>  		num_levels = 3;
+> @@ -1619,7 +1629,7 @@ static void wm_latency_show(struct seq_file *m, const u16 wm[8])
+>  	else
+>  		num_levels = ilk_wm_max_level(dev_priv) + 1;
+>  
+> -	drm_modeset_lock_all(dev);
+> +	DRM_MODESET_LOCK_ALL_BEGIN(dev, ctx, 0, ret);
+>  
+>  	for (level = 0; level < num_levels; level++) {
+>  		unsigned int latency = wm[level];
+> @@ -1640,7 +1650,7 @@ static void wm_latency_show(struct seq_file *m, const u16 wm[8])
+>  			   level, wm[level], latency / 10, latency % 10);
+>  	}
+>  
+> -	drm_modeset_unlock_all(dev);
+> +	DRM_MODESET_LOCK_ALL_END(dev, ctx, ret);
+>  }
+>  
+>  static int pri_wm_latency_show(struct seq_file *m, void *data)
+> @@ -1724,6 +1734,7 @@ static ssize_t wm_latency_write(struct file *file, const char __user *ubuf,
+>  	struct seq_file *m = file->private_data;
+>  	struct drm_i915_private *dev_priv = m->private;
+>  	struct drm_device *dev = &dev_priv->drm;
+> +	struct drm_modeset_acquire_ctx ctx;
+>  	u16 new[8] = { 0 };
+>  	int num_levels;
+>  	int level;
+> @@ -1753,12 +1764,12 @@ static ssize_t wm_latency_write(struct file *file, const char __user *ubuf,
+>  	if (ret != num_levels)
+>  		return -EINVAL;
+>  
+> -	drm_modeset_lock_all(dev);
+> +	DRM_MODESET_LOCK_ALL_BEGIN(dev, ctx, 0, ret);
+>  
+>  	for (level = 0; level < num_levels; level++)
+>  		wm[level] = new[level];
+>  
+> -	drm_modeset_unlock_all(dev);
+> +	DRM_MODESET_LOCK_ALL_END(dev, ctx, ret);
+>  
+
+Check ret here and return an error if it's != 0
+
+>  	return len;
+>  }
+> diff --git a/drivers/gpu/drm/i915/display/intel_overlay.c b/drivers/gpu/drm/i915/display/intel_overlay.c
+> index 7e3f5c6ca484..79c6940807a7 100644
+> --- a/drivers/gpu/drm/i915/display/intel_overlay.c
+> +++ b/drivers/gpu/drm/i915/display/intel_overlay.c
+> @@ -1104,6 +1104,7 @@ int intel_overlay_put_image_ioctl(struct drm_device *dev, void *data,
+>  	struct drm_crtc *drmmode_crtc;
+>  	struct intel_crtc *crtc;
+>  	struct drm_i915_gem_object *new_bo;
+> +	struct drm_modeset_acquire_ctx ctx;
+>  	int ret;
+>  
+>  	overlay = dev_priv->overlay;
+> @@ -1112,24 +1113,24 @@ int intel_overlay_put_image_ioctl(struct drm_device *dev, void *data,
+>  		return -ENODEV;
+>  	}
+>  
+> -	if (!(params->flags & I915_OVERLAY_ENABLE)) {
+> -		drm_modeset_lock_all(dev);
+> -		ret = intel_overlay_switch_off(overlay);
+> -		drm_modeset_unlock_all(dev);
+> +	if (params->flags & I915_OVERLAY_ENABLE) {
+>  
+> -		return ret;
+> -	}
+> +		drmmode_crtc = drm_crtc_find(dev, file_priv, params->crtc_id);
+> +		if (!drmmode_crtc)
+> +			return -ENOENT;
+> +		crtc = to_intel_crtc(drmmode_crtc);
+>  
+> -	drmmode_crtc = drm_crtc_find(dev, file_priv, params->crtc_id);
+> -	if (!drmmode_crtc)
+> -		return -ENOENT;
+> -	crtc = to_intel_crtc(drmmode_crtc);
+> +		new_bo = i915_gem_object_lookup(file_priv, params->bo_handle);
+> +		if (!new_bo)
+> +			return -ENOENT;
+> +	}
+>  
+> -	new_bo = i915_gem_object_lookup(file_priv, params->bo_handle);
+> -	if (!new_bo)
+> -		return -ENOENT;
+> +	DRM_MODESET_LOCK_ALL_BEGIN(dev, ctx, 0, ret);
+>  
+> -	drm_modeset_lock_all(dev);
+> +	if (!(params->flags & I915_OVERLAY_ENABLE)) {
+> +		ret = intel_overlay_switch_off(overlay);
+> +		goto out_unlock;
+> +	}
+>  
+>  	if (i915_gem_object_is_tiled(new_bo)) {
+>  		drm_dbg_kms(&dev_priv->drm,
+> @@ -1194,14 +1195,11 @@ int intel_overlay_put_image_ioctl(struct drm_device *dev, void *data,
+>  	if (ret != 0)
+>  		goto out_unlock;
+>  
+> -	drm_modeset_unlock_all(dev);
+> -	i915_gem_object_put(new_bo);
+> -
+> -	return 0;
+> -
+>  out_unlock:
+> -	drm_modeset_unlock_all(dev);
+> -	i915_gem_object_put(new_bo);
+> +	DRM_MODESET_LOCK_ALL_END(dev, ctx, ret);
+> +
+> +	if (params->flags & I915_OVERLAY_ENABLE)
+> +		i915_gem_object_put(new_bo);
+
+This function refactor is a bit more involved than the
+s/drm_modeset_lock_all/DRM_MODESET_LOCK_ALL_*/ changes in the rest of the patch.
+Could you split it out into a separate patch so it's not hidden away?
+
+>  
+>  	return ret;
+>  }
+> @@ -1263,6 +1261,7 @@ int intel_overlay_attrs_ioctl(struct drm_device *dev, void *data,
+>  {
+>  	struct drm_intel_overlay_attrs *attrs = data;
+>  	struct drm_i915_private *dev_priv = to_i915(dev);
+> +	struct drm_modeset_acquire_ctx ctx;
+>  	struct intel_overlay *overlay;
+>  	int ret;
+>  
+> @@ -1272,7 +1271,7 @@ int intel_overlay_attrs_ioctl(struct drm_device *dev, void *data,
+>  		return -ENODEV;
+>  	}
+>  
+> -	drm_modeset_lock_all(dev);
+> +	DRM_MODESET_LOCK_ALL_BEGIN(dev, ctx, 0, ret);
+>  
+>  	ret = -EINVAL;
+>  	if (!(attrs->flags & I915_OVERLAY_UPDATE_ATTRS)) {
+> @@ -1329,7 +1328,7 @@ int intel_overlay_attrs_ioctl(struct drm_device *dev, void *data,
+>  
+>  	ret = 0;
+>  out_unlock:
+> -	drm_modeset_unlock_all(dev);
+> +	DRM_MODESET_LOCK_ALL_END(dev, ctx, ret);
+>  
+>  	return ret;
+>  }
+> diff --git a/drivers/gpu/drm/i915/display/intel_pipe_crc.c b/drivers/gpu/drm/i915/display/intel_pipe_crc.c
+> index 8ac263f471be..e50e514e4897 100644
+> --- a/drivers/gpu/drm/i915/display/intel_pipe_crc.c
+> +++ b/drivers/gpu/drm/i915/display/intel_pipe_crc.c
+> @@ -76,6 +76,7 @@ static int i9xx_pipe_crc_auto_source(struct drm_i915_private *dev_priv,
+>  				     enum intel_pipe_crc_source *source)
+>  {
+>  	struct drm_device *dev = &dev_priv->drm;
+> +	struct drm_modeset_acquire_ctx ctx;
+>  	struct intel_encoder *encoder;
+>  	struct intel_crtc *crtc;
+>  	struct intel_digital_port *dig_port;
+> @@ -83,7 +84,7 @@ static int i9xx_pipe_crc_auto_source(struct drm_i915_private *dev_priv,
+>  
+>  	*source = INTEL_PIPE_CRC_SOURCE_PIPE;
+>  
+> -	drm_modeset_lock_all(dev);
+> +	DRM_MODESET_LOCK_ALL_BEGIN(dev, ctx, 0, ret);
+>  	for_each_intel_encoder(dev, encoder) {
+>  		if (!encoder->base.crtc)
+>  			continue;
+> @@ -120,7 +121,7 @@ static int i9xx_pipe_crc_auto_source(struct drm_i915_private *dev_priv,
+>  			break;
+>  		}
+>  	}
+> -	drm_modeset_unlock_all(dev);
+> +	DRM_MODESET_LOCK_ALL_END(dev, ctx, ret);
+>  
+>  	return ret;
+>  }
+> diff --git a/drivers/gpu/drm/i915/i915_drv.c b/drivers/gpu/drm/i915/i915_drv.c
+> index 59fb4c710c8c..7a30e2ff2fed 100644
+> --- a/drivers/gpu/drm/i915/i915_drv.c
+> +++ b/drivers/gpu/drm/i915/i915_drv.c
+> @@ -1009,31 +1009,35 @@ static void i915_driver_postclose(struct drm_device *dev, struct drm_file *file)
+>  static void intel_suspend_encoders(struct drm_i915_private *dev_priv)
+>  {
+>  	struct drm_device *dev = &dev_priv->drm;
+> +	struct drm_modeset_acquire_ctx ctx;
+>  	struct intel_encoder *encoder;
+> +	int ret;
+>  
+>  	if (!HAS_DISPLAY(dev_priv))
+>  		return;
+>  
+> -	drm_modeset_lock_all(dev);
+> +	DRM_MODESET_LOCK_ALL_BEGIN(dev, ctx, 0, ret);
+>  	for_each_intel_encoder(dev, encoder)
+>  		if (encoder->suspend)
+>  			encoder->suspend(encoder);
+> -	drm_modeset_unlock_all(dev);
+> +	DRM_MODESET_LOCK_ALL_END(dev, ctx, ret);
+>  }
+>  
+>  static void intel_shutdown_encoders(struct drm_i915_private *dev_priv)
+>  {
+>  	struct drm_device *dev = &dev_priv->drm;
+> +	struct drm_modeset_acquire_ctx ctx;
+>  	struct intel_encoder *encoder;
+> +	int ret;
+>  
+>  	if (!HAS_DISPLAY(dev_priv))
+>  		return;
+>  
+> -	drm_modeset_lock_all(dev);
+> +	DRM_MODESET_LOCK_ALL_BEGIN(dev, ctx, 0, ret);
+>  	for_each_intel_encoder(dev, encoder)
+>  		if (encoder->shutdown)
+>  			encoder->shutdown(encoder);
+> -	drm_modeset_unlock_all(dev);
+> +	DRM_MODESET_LOCK_ALL_END(dev, ctx, ret);
+>  }
+>  
+>  void i915_driver_shutdown(struct drm_i915_private *i915)
 > -- 
-> 2.33.0.464.g1972c5931b-goog
+> 2.33.0
 > 
 
 -- 
-Kees Cook
+Sean Paul, Software Engineer, Google / Chromium OS
