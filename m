@@ -2,77 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E888B40EEFB
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 03:56:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23F1F40EF00
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 03:58:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242509AbhIQB6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 21:58:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48756 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230135AbhIQB6P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 21:58:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 185B9610A6;
-        Fri, 17 Sep 2021 01:56:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631843814;
-        bh=K80xp7lJmNoCd5xe1Ifms/MzNcVhslWJWYDbBkFwr2o=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=jTyc7batlnavEEcvJXGxcuUp9iogsnH3kERaCQnMa2/zhBlobST4UbLdUkHo9LNq/
-         PRLs/YaXWv2JiTIZgLmQ3VftFNq/KfHkLtdXXC4i+IwKvUn6dTy7ddPxVmpYfAkYHW
-         sgFbcGZad8URFzQUBEM+reku4Dh1ngrf7tvKerFKN8lzqvArzv8DrA56Eo1xwGmL8l
-         tx4do8C5k3mt9qbw53PBLsuzoloZybV+ICmF2HW8n01Y8TI/uV07R+XSwHLHYNXIHh
-         KYP7w0fGNXGX6UUWbUHVx0N3A4+HlALGfBi8i9fAQAqlLuaYw1MHiZmfYQjlqTMETV
-         +KAIxTZWQ8RsA==
-Received: by mail-ed1-f49.google.com with SMTP id g8so23952695edt.7;
-        Thu, 16 Sep 2021 18:56:54 -0700 (PDT)
-X-Gm-Message-State: AOAM533r1DuJp99UeJwLwxHuUgO+7HvMhsoIbBOkAmUtD+GSG7PUw/Ll
-        pqvgGD4ipNE4BLKYAKOA6Sj/nw70BaeikIp7Jw==
-X-Google-Smtp-Source: ABdhPJy8QHoHZsuwob7Tv8fDh7AhsjMo6Uu0UldJ1bFt4f/ry9mRl4pv/jg1jgJa+kiVGAGl1Uq/ZawWqrKAdGbNU9k=
-X-Received: by 2002:a50:e004:: with SMTP id e4mr9939154edl.164.1631843812626;
- Thu, 16 Sep 2021 18:56:52 -0700 (PDT)
+        id S242534AbhIQB7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 21:59:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230135AbhIQB7m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 21:59:42 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D82CC061574;
+        Thu, 16 Sep 2021 18:58:21 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id g21so23971015edw.4;
+        Thu, 16 Sep 2021 18:58:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=avIIapDTLmGXo38SX42D/9erFS1h/0wzUYg4aqKVx1o=;
+        b=YpW7z7rQ/DbpMDxYo9EM+A8//B+X6d8czmk4TX8kr9QX2Gp9kPfhKYteuZZA+nqz0Z
+         YCBGINvXScYO7y4ePOzhPhHDVACGX5l4rIpPHpCjRlS/cMQtYNTgttK5SUWmY5dIDEsY
+         iKPAezp9D9b/Xmb3Pk9EBfES1+i9J7rUsMTsA/XBGW0dFhP0tM6oiK9AavuE8R/WyxPB
+         PWlkzUTzTcW9NgDnn6nf+7zcaPN8Tw1PQxmxe0wvmqQfEjIYN86lCpYx+YQJLuN25QNu
+         LbWg1Czf72rPLailtg5J2dMBW62TymX4oe/8ovTc4IdCC46wBk4a1Y1KvydmKBC9Gh9H
+         arvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=avIIapDTLmGXo38SX42D/9erFS1h/0wzUYg4aqKVx1o=;
+        b=FZJh+YMk17QeKuhm9iVQXH+BG4o9gVqvtPu2rGDMTOCwBD3ted0hDetzi20kSp3tvw
+         B5p+ZBKzGg3EVgjqp3L7xzo0msCwWjBQWuFM1Fpm25rIxaGe1SNs8qxaqQiVeNLbyO6E
+         OqvqcFXdcskv5nzHRSTSfK7abM+ELb7gJTzyFqK9D9VE9kgRbDxkEPSQ/iDdCqQskDus
+         jP1xEJZlTfWYoSiQ8sJzA36e+StwPRdnJKGH8eASTBAOu+fO1E+cFgTSDSw3+t56h9Hh
+         m7J7CWZe3+MO6a9uSIhqHOuaPVCLKa5ndgWqSXw88tpOcVgrjDCmJVpU//7UPodltBrI
+         WSTg==
+X-Gm-Message-State: AOAM530BgiqksEfx82K5dYeH+9ozQDK91rt4NNFE4Ytwdv/4MvLKxbID
+        RJ42ztB39G/1R2ViIzwCQOf7+0KYZpmdAWYguTs=
+X-Google-Smtp-Source: ABdhPJwyvpnmZ76jVQtEQvqR5BMtghiLRxO1SK+QRZzDt8m4ZnzDe4uwtAQq/2IpIWcOISNyQDmbXvuZ+5MUwQMxPn0=
+X-Received: by 2002:a17:906:3983:: with SMTP id h3mr9488725eje.249.1631843899899;
+ Thu, 16 Sep 2021 18:58:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1631785820.git.mchehab+huawei@kernel.org>
- <820bb7a1d7e0e51cbea72c9bee6bce806427d1f3.1631785820.git.mchehab+huawei@kernel.org>
- <YUP08Zw/Bgi+zoBK@robh.at.kernel.org>
-In-Reply-To: <YUP08Zw/Bgi+zoBK@robh.at.kernel.org>
-From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 16 Sep 2021 20:56:41 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqJv_=w7z911JSRg609HmGoXQbYK2GQ82xW77c5Jx2f-+A@mail.gmail.com>
-Message-ID: <CAL_JsqJv_=w7z911JSRg609HmGoXQbYK2GQ82xW77c5Jx2f-+A@mail.gmail.com>
-Subject: Re: [PATCH v2 05/23] dt-bindings: mmc: update mmc-card.yaml reference
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linux-omap <linux-omap@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Yang Li <abaci-bugfix@linux.alibaba.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Cai Huoqing <caihuoqing@baidu.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>
+References: <20210605034447.92917-1-dong.menglong@zte.com.cn>
+ <20210605034447.92917-3-dong.menglong@zte.com.cn> <20210605115019.umjumoasiwrclcks@wittgenstein>
+ <CADxym3bs1r_+aPk9Z_5Y7QBBV_RzUbW9PUqSLB7akbss_dJi_g@mail.gmail.com>
+ <20210607103147.yhniqeulw4pmvjdr@wittgenstein> <20210607121524.GB3896@www>
+ <20210617035756.GA228302@www> <20210617143834.ybxk6cxhpavlf4gg@wittgenstein>
+ <CADxym3aLQNJaWjdkMVAjuVk_btopv6jHrVjtP+cKwH8x6R7ojQ@mail.gmail.com> <20210727123701.zlcrrf4p2fsmeeas@wittgenstein>
+In-Reply-To: <20210727123701.zlcrrf4p2fsmeeas@wittgenstein>
+From:   Menglong Dong <menglong8.dong@gmail.com>
+Date:   Fri, 17 Sep 2021 09:58:04 +0800
+Message-ID: <CADxym3YxBAJmXr1qmJ+3ELrT6RKY-UoFmpaPH5iYmbEa1H+03Q@mail.gmail.com>
+Subject: Re: [PATCH v6 2/2] init/do_mounts.c: create second mount for initramfs
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>, johan@kernel.org,
+        ojeda@kernel.org, jeyu@kernel.org, masahiroy@kernel.org,
+        joe@perches.com, Jan Kara <jack@suse.cz>, hare@suse.de,
+        Jens Axboe <axboe@kernel.dk>, tj@kernel.org,
+        gregkh@linuxfoundation.org, song@kernel.org,
+        NeilBrown <neilb@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Barret Rhoden <brho@google.com>, f.fainelli@gmail.com,
+        palmerdabbelt@google.com, wangkefeng.wang@huawei.com,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>, vbabka@suse.cz,
+        Alexander Potapenko <glider@google.com>,
+        Petr Mladek <pmladek@suse.com>, johannes.berg@intel.com,
+        "Eric W. Biederman" <ebiederm@xmission.com>, jojing64@gmail.com,
+        terrelln@fb.com, geert@linux-m68k.org,
+        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>, arnd@arndb.de,
+        Chris Down <chris@chrisdown.name>, mingo@kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Josh Triplett <josh@joshtriplett.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 8:52 PM Rob Herring <robh@kernel.org> wrote:
->
-> On Thu, 16 Sep 2021 11:55:04 +0200, Mauro Carvalho Chehab wrote:
-> > Changeset 922eefdafc80 ("dt-bindings: mmc: Convert MMC Card binding to a schema")
-> > renamed: Documentation/devicetree/bindings/mmc/mmc-card.txt
-> > to: Documentation/devicetree/bindings/mmc/mmc-card.yaml.
-> >
-> > Update its cross-reference accordingly.
-> >
-> > Fixes: 922eefdafc80 ("dt-bindings: mmc: Convert MMC Card binding to a schema")
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > ---
-> >  drivers/mmc/host/omap_hsmmc.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
->
-> Applied, thanks!
+Hello,
 
-Now dropped. Not in my tree.
+On Tue, Jul 27, 2021 at 8:37 PM Christian Brauner
+<christian.brauner@ubuntu.com> wrote:
+[...]
+>
+> Yep, sorry.
+> When I tested this early during the merge window it regressed booting a
+> regular system for me meaning if I compiled a kernel with this feature
+> enabled it complained about not being being able to open an initial
+> console and it dropped me right into initramfs instead of successfully
+> booting. I haven't looked into what this is caused or how to fix it for
+> lack of time.
 
-Acked-by: Rob Herring <robh@kernel.org>
+Our team has fully tested this feature, and no abnormalities have been
+found yet.
+What's more, this feature has been used in the product of our company. So if
+there is any potential bug, as you mentioned above, I'd appreciate it if you can
+spend some time on looking into it.
+
+What's more, besides the problem that this feature solved, it has some more
+benefits: saving memory. The amount of 'mnt_cache' is up to 50k when 180 docker
+containers are created without this feature. However, only 15k 'mnt_cache' are
+used with this feature enabled. Each 'mnt_cache' eats 320 bytes, so about 11M
+memory is saved in this situation.
+
+Please let me know if this feature is illogical or if there is any
+better solution, thanks~
+
+Best Wishes!
+Menglong Dong
