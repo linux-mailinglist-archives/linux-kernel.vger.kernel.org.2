@@ -2,135 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10F1540F0E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 06:10:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F309740F0ED
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 06:11:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244687AbhIQEMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 00:12:01 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:52604 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244634AbhIQEJh (ORCPT
+        id S244307AbhIQEMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 00:12:32 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:41072
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244760AbhIQEKn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 00:09:37 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1631851695; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=YRrg8XUL8FJqo8KoauQn9l5TvQY7Cfbt6ieu0fU9ExE=;
- b=p/Zez2/y8crIl62n4a23k3+0hA4I1DoNF7TkhoRblGhihrQ3L4tWuYLXs4Oz/VT5l71A+pYR
- gJxmumVtzuxxm6xuAGA1TyNCjQJuNtCCSNcdHAWl+KC2FmVM9X8UIXz6dbGQfcuHliOLt6+u
- mfFZhW6A9p5G18ZJCx6qoKgxo1E=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 614414acb585cc7d2468e1dc (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 17 Sep 2021 04:08:12
- GMT
-Sender: skakit=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 5FBA1C4361A; Fri, 17 Sep 2021 04:08:12 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        Fri, 17 Sep 2021 00:10:43 -0400
+Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com [209.85.210.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: skakit)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 85DDBC4360C;
-        Fri, 17 Sep 2021 04:08:11 +0000 (UTC)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 268DA4029B
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 04:09:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1631851761;
+        bh=2kNbCKPeMI5ps1oSfYt0rhq/83SKx4ifSFqd7Ngd/x8=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=utUK6/oGCsIW/2fgDo7WEOqY+AR7tEsEZ802jPkfu7biiJRMGQOgIJJxDZ7NK/Ol5
+         1wgGbYLB79wrTp8G0dph1lahy1jkhyQxt6fgsw7Ty1F1lELT0R/d27MLegrXYTZu7+
+         Il3RHcCCjBeLVvFqPaLFbb4RCrGdmq7GJ8z3LQO/WN3EWYxV53dzkLuzfCaaSHvWdN
+         f4EmtfwjVC5Mv1vUJdHZPQpdwzpOGjTRFkqPjot8PVChBTDrB31E9gCj8uhtirVzEf
+         3DhizISlgBtM82ZdFglGLi2+GaCzYg4O69fPXVY12FN+lnYeTNdj0VEDZffKtJLmkR
+         nSVvC68i9NMdQ==
+Received: by mail-ot1-f69.google.com with SMTP id m12-20020a0568301e6c00b005469f1a7d70so1629209otr.15
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 21:09:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2kNbCKPeMI5ps1oSfYt0rhq/83SKx4ifSFqd7Ngd/x8=;
+        b=yEKBmdpn5fwNv0aHv2/6XHceGZV9HJo1nwK/imqZ9HXKOeigBY5f2HtA/5r5bF08i4
+         v9le+5+Rsw/sCVhX8XYl06fPLg484eud0fWflk68riAkBacvo27kEttzldgLl91GCjh9
+         pKRV2pEwJC7ZVEQYiFIbvH9OYcR9y0kSfUu02vcDYbEF6L7UUFfAfynTR7VNA8HfGM1v
+         PdY2FPeXdG9yJ8l/ji+Qv5rpJL1KtumzWFLpe+YVnKxNTMOE2y2wSJ3/IVSbQc4CFmOh
+         iocohceI5EvBtWniyelJJ/lc1C7BE6m95xEe3wDc/ukNXtj2kx2eckQzzU2O+RhI5VxI
+         lVPQ==
+X-Gm-Message-State: AOAM533R22V23lcS4rqalufHB4WkH/KJebJApY4E/B8eKdYAbU10OTA1
+        JzwUammxvNM55deRyVcNdws5hkSQpNyx9gEqbT4VX2nXXPkYL2iT40Dc3vNRIrfr4bWFn6WBYeH
+        IC4R/VlUkvFITnOrAN8qRPEUQ9gPtplv+YImb9WgYXdZ8n3nYQp4jl0I+ww==
+X-Received: by 2002:a05:6830:1355:: with SMTP id r21mr7577220otq.11.1631851759597;
+        Thu, 16 Sep 2021 21:09:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxMF308vBhb8hL4uK4kU9xdvxAyxq4JZckv5A+wbG2eFi1WlX0r+u8n875Mh+huTOVd1HQxckgRdKQLPj1/D5A=
+X-Received: by 2002:a05:6830:1355:: with SMTP id r21mr7577204otq.11.1631851759263;
+ Thu, 16 Sep 2021 21:09:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 17 Sep 2021 09:38:11 +0530
-From:   skakit@codeaurora.org
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        David Collins <collinsd@codeaurora.org>, kgunda@codeaurora.org,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH V5 2/2] arm64: dts: sc7280: Add volume up support for
- sc7280-idp
-In-Reply-To: <CAE-0n53i4pU==W-dc=md_x+0Tqbd1gtwkPBFode+rtupSFi0WQ@mail.gmail.com>
-References: <1631798498-10864-1-git-send-email-skakit@codeaurora.org>
- <1631798498-10864-3-git-send-email-skakit@codeaurora.org>
- <CAE-0n53i4pU==W-dc=md_x+0Tqbd1gtwkPBFode+rtupSFi0WQ@mail.gmail.com>
-Message-ID: <baa5c4b4dd19e0a24d28b8bff559b868@codeaurora.org>
-X-Sender: skakit@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20210916154417.664323-3-kai.heng.feng@canonical.com> <20210916170740.GA1624437@bjorn-Precision-5520>
+In-Reply-To: <20210916170740.GA1624437@bjorn-Precision-5520>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Fri, 17 Sep 2021 12:09:08 +0800
+Message-ID: <CAAd53p445rDeL1VFRYFA3QEbKZ6JtjzhCb9fxpR3eZ9E9NAETA@mail.gmail.com>
+Subject: Re: [RFC] [PATCH net-next v5 2/3] r8169: Use PCIe ASPM status for NIC
+ ASPM enablement
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        nic_swsd <nic_swsd@realtek.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Anthony Wong <anthony.wong@canonical.com>,
+        Linux Netdev List <netdev@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-17 00:32, Stephen Boyd wrote:
-> Quoting Satya Priya (2021-09-16 06:21:38)
->> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi 
->> b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
->> index 371a2a9..cbbb0ee 100644
->> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
->> @@ -12,6 +12,26 @@
->>  #include "pm8350c.dtsi"
->>  #include "pmk8350.dtsi"
->> 
->> +/ {
->> +       gpio-keys {
->> +               compatible = "gpio-keys";
->> +               label = "gpio-keys";
->> +
->> +               pinctrl-names = "default";
->> +               pinctrl-0 = <&key_vol_up_default>;
->> +
->> +               volume-up {
->> +                       label = "volume_up";
->> +                       gpios = <&pm7325_gpios 6 GPIO_ACTIVE_LOW>;
->> +                       linux,input-type = <1>;
->> +                       linux,code = <KEY_VOLUMEUP>;
-> 
-> Is there an include for this define? Looks like
-> <dt-bindings/input/input.h> should be added as well? Did you try
-> compiling?
-> 
+On Fri, Sep 17, 2021 at 1:07 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> On Thu, Sep 16, 2021 at 11:44:16PM +0800, Kai-Heng Feng wrote:
+> > Because ASPM control may not be granted by BIOS while ASPM is enabled,
+> > and ASPM can be enabled via sysfs, so use pcie_aspm_enabled() directly
+> > to check current ASPM enable status.
+> >
+> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> > ---
+> > v5:
+> >  - New patch.
+> >
+> >  drivers/net/ethernet/realtek/r8169_main.c | 13 ++++++++-----
+> >  1 file changed, 8 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
+> > index 0199914440abc..6f1a9bec40c05 100644
+> > --- a/drivers/net/ethernet/realtek/r8169_main.c
+> > +++ b/drivers/net/ethernet/realtek/r8169_main.c
+> > @@ -622,7 +622,6 @@ struct rtl8169_private {
+> >       } wk;
+> >
+> >       unsigned supports_gmii:1;
+> > -     unsigned aspm_manageable:1;
+> >       dma_addr_t counters_phys_addr;
+> >       struct rtl8169_counters *counters;
+> >       struct rtl8169_tc_offsets tc_offset;
+> > @@ -2664,8 +2663,13 @@ static void rtl_enable_exit_l1(struct rtl8169_private *tp)
+> >
+> >  static void rtl_hw_aspm_clkreq_enable(struct rtl8169_private *tp, bool enable)
+> >  {
+> > -     /* Don't enable ASPM in the chip if OS can't control ASPM */
+> > -     if (enable && tp->aspm_manageable) {
+> > +     struct pci_dev *pdev = tp->pci_dev;
+> > +
+> > +     /* Don't enable ASPM in the chip if PCIe ASPM isn't enabled */
+> > +     if (!pcie_aspm_enabled(pdev) && enable)
+> > +             return;
+>
+> What happens when the user enables or disables ASPM via sysfs (see
+> https://git.kernel.org/linus/72ea91afbfb0)?
+>
+> The driver is not going to know about that change.
 
-Yeah, it needs <dt-bindings/input/linux-event-codes.h> to be included. 
-This header was included in pmk8350.dtsi which is added in this file.
+So it's still better to fold this patch into next one? So the periodic
+delayed_work can toggle ASPM accordingly.
 
->> +                       gpio-key,wakeup;
->> +                       debounce-interval = <15>;
->> +                       linux,can-disable;
->> +               };
->> +       };
->> +};
->> +
->>  &apps_rsc {
->>         pm7325-regulators {
->>                 compatible = "qcom,pm7325-rpmh-regulators";
->> @@ -284,6 +304,17 @@
->> 
->>  /* PINCTRL - additions to nodes defined in sc7280.dtsi */
->> 
->> +&pm7325_gpios {
->> +       key_vol_up_default: key-vol-up-default {
->> +               pins = "gpio6";
->> +               function = "normal";
->> +               input-enable;
->> +               bias-pull-up;
->> +               power-source = <0>;
->> +               qcom,drive-strength = <3>;
->> +       };
->> +};
->> +
->>  &qup_uart5_default {
->>         tx {
->>                 pins = "gpio46";
->> --
->> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
->> member
->> of Code Aurora Forum, hosted by The Linux Foundation
->> 
+Kai-Heng
+
+>
+> > +     if (enable) {
+> >               RTL_W8(tp, Config5, RTL_R8(tp, Config5) | ASPM_en);
+> >               RTL_W8(tp, Config2, RTL_R8(tp, Config2) | ClkReqEn);
+> >       } else {
+> > @@ -5272,8 +5276,7 @@ static int rtl_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+> >       /* Disable ASPM L1 as that cause random device stop working
+> >        * problems as well as full system hangs for some PCIe devices users.
+> >        */
+> > -     rc = pci_disable_link_state(pdev, PCIE_LINK_STATE_L1);
+> > -     tp->aspm_manageable = !rc;
+> > +     pci_disable_link_state(pdev, PCIE_LINK_STATE_L1);
+> >
+> >       /* enable device (incl. PCI PM wakeup and hotplug setup) */
+> >       rc = pcim_enable_device(pdev);
+> > --
+> > 2.32.0
+> >
