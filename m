@@ -2,140 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0275040FAC1
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 16:50:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9781540FAC6
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 16:50:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234660AbhIQOvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 10:51:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52412 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231626AbhIQOve (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 10:51:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF81760F9C;
-        Fri, 17 Sep 2021 14:50:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631890212;
-        bh=zubLP971iOX8gWb78yB2Doy9I5T1kA3TTj/1cuEVvXA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RlfdwRXobGJ+BuW0K12yOOYHR9W/Y1s4t6j3vc4T42jO20PJw7GOQHNPvV2ncvvj+
-         8isMWbH3FTBDlq17bm/146GEV0VqZIFzxWCrZdUZwRKgBfUew96pNyOI6bGafbvHmq
-         VMnwsUgfbxld0yOk9bMefA6ZeVW6+T+Gko/68hSg=
-Date:   Fri, 17 Sep 2021 16:50:10 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        David Laight <david.Laight@aculab.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH v7 17/19] staging: r8188eu: shorten calls chain of
- rtw_read{8,16,32}()
-Message-ID: <YUSrIqW5WSYuoa14@kroah.com>
-References: <20210917071837.10926-1-fmdefrancesco@gmail.com>
- <20210917071837.10926-18-fmdefrancesco@gmail.com>
+        id S234559AbhIQOwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 10:52:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233806AbhIQOwL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 10:52:11 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AB7CC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 07:50:49 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id 97-20020a9d006a000000b00545420bff9eso6268216ota.8
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 07:50:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=A+8jh6PTO10F45HFFMFUU3EONxnA5C8W34XTxIGW9XU=;
+        b=HajIqhomOKwHHAnweJfpIkIH1K4ZokJNPuaOc08Z7E0+gBbVGpT7/XRWA60YGbTYHk
+         lf466UOo8M8KOAD9L2mUfNrDSCng4jEc0+ktZ8psLp6W77CvXExLPvu/QLQqSvU4LFXM
+         CQqgoR4hc/Q7WK49aevAkw2s2sVyN+TTkptp4T/4CPkOaw38dNiaLK8RyboO6+1WemP2
+         EWS4ljGoDwExPg5/CClL5Nul2S0i7GlZiptDKu64GJiXmgryEMFc18Ecw0+iG7Daxp9g
+         P7rJfSL8jQUfWvrcdFaDo0AyXQNTzkg0vphFOpyROmQ9EmLp6Z4EyFaJHMveKiTLQZsC
+         Ratg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=A+8jh6PTO10F45HFFMFUU3EONxnA5C8W34XTxIGW9XU=;
+        b=in/JN0BBzj2LNfkl/qnBmq8BQgPqw+fCs+O4YxeQZau2qOcqc6C65o+N1kciiglIAp
+         MQK0XjwNsga8iv4zhFvB4j2y5G/aozuNjhgTd/TXGUvL89ruaz21nhUvEmESvcFDP+YI
+         +/9YUxYBFyOirIzJOHZmrlmBg3ShrYK0J9PkxR3VptXVrTLf7iof+RzYJ458BMiEhc1j
+         cBaRPLPsB8fi//PwbHDr02aKCwXUkAbUz6ur6GOB1M8D1YJFS89JCrxbBTCocN8hEKUx
+         eLWjsCMhdOmhEYP+FVFuoiOPF/Bgw3vZR16AwDJAr7Tv3nJuUa3oFdpyXqIzX04XerCb
+         2KUQ==
+X-Gm-Message-State: AOAM532ZSjL2qJ9JHajeFzNZ1e2YCGU/hPMJhbqGgEyrGyO17aWCd6yk
+        LbAqIOj4zRyeBKM+UtEqlKe2nGW0g4ppU+oCkISkdL9wLZ9cyA==
+X-Google-Smtp-Source: ABdhPJzkfElp6YfA2gWVfQ3+Dxvs60qOg/aMoMcQP1SR4PcFNCaNYfNFmZiqaPi34NWoVOtSsT+sPEl8xkgtKpnnzg8=
+X-Received: by 2002:a05:6830:34b:: with SMTP id h11mr10005271ote.319.1631890248615;
+ Fri, 17 Sep 2021 07:50:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210917071837.10926-18-fmdefrancesco@gmail.com>
+References: <20210830172627.267989-1-bigeasy@linutronix.de> <20210830172627.267989-5-bigeasy@linutronix.de>
+In-Reply-To: <20210830172627.267989-5-bigeasy@linutronix.de>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Fri, 17 Sep 2021 16:50:37 +0200
+Message-ID: <CACT4Y+aCm60gfP9uyEdb-KKaikGGXkrcY8FXhESnPyO_cWBw4A@mail.gmail.com>
+Subject: Re: [PATCH 4/5] kcov: Avoid enable+disable interrupts if !in_task().
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Marco Elver <elver@google.com>,
+        Clark Williams <williams@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 09:18:35AM +0200, Fabio M. De Francesco wrote:
-> Shorten the calls chain of rtw_read8/16/32() down to the actual reads.
-> For this purpose unify the three usb_read8/16/32 into the new
-> usb_read(); make the latter parameterizable with 'size'; embed most of
-> the code of usbctrl_vendorreq() into usb_read() and use in it the new
-> usb_control_msg_recv() API of USB Core.
-> 
-> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Co-developed-by: Pavel Skripkin <paskripkin@gmail.com>
-> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+On Mon, 30 Aug 2021 at 19:26, Sebastian Andrzej Siewior
+<bigeasy@linutronix.de> wrote:
+>
+> kcov_remote_start() may need to allocate memory in the in_task() case
+> (otherwise per-CPU memory has been pre-allocated) and therefore requires
+> enabled interrupts.
+> The interrupts are enabled before checking if the allocation is required
+> so if no allocation is required then the interrupts are needlessly
+> enabled and disabled again.
+>
+> Enable interrupts only if memory allocation is performed.
+>
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+
+Acked-by: Dmitry Vyukov <dvyukov@google.com>
+
 > ---
->  drivers/staging/r8188eu/hal/usb_ops_linux.c | 59 +++++++++++++++++++--
->  1 file changed, 56 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/staging/r8188eu/hal/usb_ops_linux.c b/drivers/staging/r8188eu/hal/usb_ops_linux.c
-> index 2d5e9b3ba538..ef35358cf2d3 100644
-> --- a/drivers/staging/r8188eu/hal/usb_ops_linux.c
-> +++ b/drivers/staging/r8188eu/hal/usb_ops_linux.c
-> @@ -89,6 +89,59 @@ static int usbctrl_vendorreq(struct intf_hdl *intfhdl, u16 value, void *data, u1
->  	return status;
->  }
->  
-> +static int usb_read(struct intf_hdl *intfhdl, u16 addr, void *data, u8 size)
-> +{
-> +	struct adapter *adapt = intfhdl->padapter;
-> +	struct dvobj_priv *dvobjpriv = adapter_to_dvobj(adapt);
-> +	struct usb_device *udev = dvobjpriv->pusbdev;
-> +	int status;
-> +	u8 *io_buf; /* Pointer to I/O buffer */
-
-As you "know" size is not going to be larger than 4 (hint, you should
-prboably check it), just use bytes off of the stack here, and you can
-ignore this buffer entirely.  That will hopefully allow you in the
-future to get rid of that buffer as odds are it will not be needed
-anymore.
-
-> +
-> +	if (adapt->bSurpriseRemoved || adapt->pwrctrlpriv.pnp_bstop_trx)
-> +		return -EPERM;
-
-How is it ok to check this outside of the lock?  What happens if these
-values change right _after_ you check them?
-
-Why check them at all, is this something that we even care about?
-
-I know you are trying to make this just the same logic at is there
-today, but why not just do it right the first time?
-
-> +
-> +	mutex_lock(&dvobjpriv->usb_vendor_req_mutex);
-> +
-> +	io_buf = dvobjpriv->usb_vendor_req_buf;
-> +
-> +	status = usb_control_msg_recv(udev, 0, REALTEK_USB_VENQT_CMD_REQ,
-> +				      REALTEK_USB_VENQT_READ, addr,
-> +				      REALTEK_USB_VENQT_CMD_IDX, io_buf,
-> +				      size, RTW_USB_CONTROL_MSG_TIMEOUT,
-> +				      GFP_KERNEL);
-> +
-> +	if (status == -ESHUTDOWN ||
-> +	    status == -ENODEV ||
-> +	    status == -ENOENT) {
-> +		/*
-> +		 * device or controller has been disabled due to
-> +		 * some problem that could not be worked around,
-> +		 * device or bus doesn’t exist, endpoint does not
-> +		 * exist or is not enabled.
-> +		 */
-> +		adapt->bSurpriseRemoved = true;
-> +		goto mutex_unlock;
-> +	}
-> +
-> +	if (status < 0) {
-> +		GET_HAL_DATA(adapt)->srestpriv.wifi_error_status =
-> +			USB_VEN_REQ_CMD_FAIL;
-> +
-> +		if (rtw_inc_and_chk_continual_urb_error(dvobjpriv))
-> +			adapt->bSurpriseRemoved = true;
-> +
-> +		goto mutex_unlock;
-> +	}
-> +
-> +	rtw_reset_continual_urb_error(dvobjpriv);
-> +	memcpy(data, io_buf, size);
-> +
-> +mutex_unlock:
-> +	mutex_unlock(&dvobjpriv->usb_vendor_req_mutex);
-> +
-> +	return status;
-
-No one cares about this value, is that ok?
-
-thanks,
-
-greg k-h
+>  kernel/kcov.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/kernel/kcov.c b/kernel/kcov.c
+> index 4f910231d99a2..620dc4ffeb685 100644
+> --- a/kernel/kcov.c
+> +++ b/kernel/kcov.c
+> @@ -869,19 +869,19 @@ void kcov_remote_start(u64 handle)
+>                 size = CONFIG_KCOV_IRQ_AREA_SIZE;
+>                 area = this_cpu_ptr(&kcov_percpu_data)->irq_area;
+>         }
+> -       spin_unlock_irqrestore(&kcov_remote_lock, flags);
+> +       spin_unlock(&kcov_remote_lock);
+>
+>         /* Can only happen when in_task(). */
+>         if (!area) {
+> +               local_irqrestore(flags);
+>                 area = vmalloc(size * sizeof(unsigned long));
+>                 if (!area) {
+>                         kcov_put(kcov);
+>                         return;
+>                 }
+> +               local_irq_save(flags);
+>         }
+>
+> -       local_irq_save(flags);
+> -
+>         /* Reset coverage size. */
+>         *(u64 *)area = 0;
+>
+> --
+> 2.33.0
+>
