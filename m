@@ -2,263 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0EA240F38C
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 09:52:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D70340F38F
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 09:53:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241498AbhIQHxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 03:53:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44914 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232766AbhIQHxb (ORCPT
+        id S241682AbhIQHyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 03:54:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232766AbhIQHyf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 03:53:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631865126;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ig9xHMFTEexFHtf5heeUZKbb6+d2Kocqp2z8ZEGYRPA=;
-        b=SoTJtvTTHhYqGY2/DExsTcXYDp6YsXkGPGFg/4/nuheSezRbOoIBpcxu81w51WcjAGCSw7
-        XsVHLvTNTd9lYY7elUicd89WJMr7YvTD3s/DVuS3pCkSl8kAD3LuEedDZsDkweB4Qwzsyw
-        aachqcRC70PeumxpEih72pULSTsSGxY=
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
- [209.85.167.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-420-_LTm0FzlMoW4KU9KBzcy0w-1; Fri, 17 Sep 2021 03:52:05 -0400
-X-MC-Unique: _LTm0FzlMoW4KU9KBzcy0w-1
-Received: by mail-lf1-f69.google.com with SMTP id g9-20020a0565123b8900b003f33a027130so6065884lfv.18
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 00:52:05 -0700 (PDT)
+        Fri, 17 Sep 2021 03:54:35 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71393C061574;
+        Fri, 17 Sep 2021 00:53:14 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id il14-20020a17090b164e00b0019c7a7c362dso3037914pjb.0;
+        Fri, 17 Sep 2021 00:53:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gO1U8AUjgpmV1EYHhy2AO9VWPgj+9s9+ohJzBuwbZhg=;
+        b=Bb9Xm8hW0IiL+8Juw169c8cKnfNr1bI9EOi/6Xc6dMMPnHla4nldpz3WokTLGf5JJe
+         Q9Op+Wx5vUGh8VWOGbHpo06cYR5KRRPphkho/r4Uu8f6kwbewPrujRm4c29bw2/dEppO
+         8dIjfRl+HOBP6Khoie6Q8a3HtaYBZRQ3SWid6K3xT7Vvs5RCh38GZXvU0YG8wB8NBv0Y
+         yrjtOPcMC/x+TvzOXCkH2uHc0Q0OGO+3ntwGJsa8LCu9a7yvBbjJDUlpz7HDQ6yY92aE
+         +/PBIJd904mwbQ5FoZ1kL/DbsM9CggDkINFE/O/9lNOUYlVsd8CuqecD9XudaOciXAu6
+         8tAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Ig9xHMFTEexFHtf5heeUZKbb6+d2Kocqp2z8ZEGYRPA=;
-        b=U0uSWLQUomzlQj4bFaz4bQumuKQwAT8frHI7Nb6LkjxPRffZW/x7cJttINGk1lSLxN
-         S0ek5/jbYaZuOXmCbuLF3u1bmFnUqf21FlZZGzKYGVmZFuIkdPAb1OKiKl1OHKxarkMC
-         5J/gfEOUymBjYER1fLg7O0N1ZuHIz58uMyVZ2t0EqhoJdz7tCR1UcqNCu0p9q67Ldfe3
-         1mLjilLQLa8R/k4qQ7Ls51lFPGsybRktlRRzHqtWB98EpMTqYxMrTh55tVdMnulbvfuT
-         RE2BbRXPnhCH6hahkO0Cz/kNizzI4eVrUu6qHzz3Z3/PoQCV6VGtFhCcThQx7dTf7uva
-         vjMQ==
-X-Gm-Message-State: AOAM530wMgPU75QAnDQAqzoFym0t9rCIuNyQHb1IVVG95gN6jX3sGrrJ
-        mH2fLT+c7ZCXUCnieQ+k9GktkHn5Igmd2h/SvhXFnsHVO6I7RH+0o/v9bRuOhWfwxgygayvkaVJ
-        Q6sEPMaRs5Y3jOJ0do9i1/RFTXQ2PTDC+6N7Jywuc
-X-Received: by 2002:a2e:89c9:: with SMTP id c9mr8663661ljk.107.1631865123878;
-        Fri, 17 Sep 2021 00:52:03 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz25iogywOItEhZPEzJVaruboTkzhpqM8HfA6JZd6Gqcr0qBeyOdmGZHHpaqFEqEX3Uik/0IbFcZCFDXSPvLhU=
-X-Received: by 2002:a2e:89c9:: with SMTP id c9mr8663649ljk.107.1631865123578;
- Fri, 17 Sep 2021 00:52:03 -0700 (PDT)
+        bh=gO1U8AUjgpmV1EYHhy2AO9VWPgj+9s9+ohJzBuwbZhg=;
+        b=2UUbDJzQcuRcRgpfyvk5D8LCYtV+HyI3XtIp7yZXN8fdwo6wAiInQihanyDngkwQfS
+         UDYb2melfUs2ryy9BUvz7tPhK8x4STazPGaLbkRilQNKXm8b0qAHtZvOjr3i2hRDghKn
+         6jQYM+z6464gzwuUkYuT/+hEAgKxkc3lB7k1XCZQapZ2/PtVHMQS4pvtOj+qGjNTE0d4
+         WULXrmoYqcGH1OmevtjRUj6QzagY2ExkqFObbwzFdROrJ85iuyIQT9V7ookv2YkwvtLk
+         Pu1jw3AL3h/KjRJhDw4dgU1U4eToiRR1VQSDt/cNZi+v9hPkMtNrTpO3yvpbEqrJFLPB
+         jUjA==
+X-Gm-Message-State: AOAM533zmVdc2WZ6dgCT3O6BuB62JDm3tCEOz7dhMm4ehC+jMDQiIudZ
+        ISQg9HTphpWSI9/sLsegpg4gnQRl2jPbw0XMYvw=
+X-Google-Smtp-Source: ABdhPJxy7WBzPTwkG+2fxhkzEiNokggqo3ZApUQ/9ai1WZi7gHLtf1UZls2NOqnySpsTmlzKBNDzOO25bVGj7dXs3YE=
+X-Received: by 2002:a17:90a:7d11:: with SMTP id g17mr11077171pjl.150.1631865193933;
+ Fri, 17 Sep 2021 00:53:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1631101392.git.wuzongyong@linux.alibaba.com>
- <cover.1631621507.git.wuzongyong@linux.alibaba.com> <834528d24c839080215b2e077f100e9ed5073edc.1631621507.git.wuzongyong@linux.alibaba.com>
- <20210914085711-mutt-send-email-mst@kernel.org> <CACGkMEu3RUGpe74Vh-FAZD3MwOC3gqU0OEf8A1ULvq7GSMm6Jg@mail.gmail.com>
- <20210915033756-mutt-send-email-mst@kernel.org> <CACGkMEtN0Z=rgMhaWNO=6h-KXGdosBuOdqoWoND-=Tf+afyUYw@mail.gmail.com>
- <20210915070805-mutt-send-email-mst@kernel.org> <CACGkMEvqZqwRxjnBLpX+=MYbho0q8Hs7OZbsx4ATzhfwOkB73w@mail.gmail.com>
- <20210917023451.GA19669@L-PF27918B-1352.localdomain>
-In-Reply-To: <20210917023451.GA19669@L-PF27918B-1352.localdomain>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Fri, 17 Sep 2021 15:51:52 +0800
-Message-ID: <CACGkMEvzqYSNo4JGpqC5O-fkjOEPXNU0huRyufAOU5HxAXeoKg@mail.gmail.com>
-Subject: Re: [PATCH v2 4/5] vdpa: add new vdpa attribute VDPA_ATTR_DEV_F_VERSION_1
-To:     Wu Zongyong <wuzongyong@linux.alibaba.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        wei.yang1@linux.alibaba.com
+References: <20210916182914.1810-1-mihail.chindris@analog.com> <20210916182914.1810-6-mihail.chindris@analog.com>
+In-Reply-To: <20210916182914.1810-6-mihail.chindris@analog.com>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Fri, 17 Sep 2021 10:53:02 +0300
+Message-ID: <CA+U=Dsp+p+s9sv1jGh0QPMvoyGtqZn11p+Wtrm-NOKSFWt7AZg@mail.gmail.com>
+Subject: Re: [PATCH v5 5/6] Documentation:devicetree:bindings:iio:dac: Fix val
+To:     Mihail Chindris <mihail.chindris@analog.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>,
+        "Bogdan, Dragos" <dragos.bogdan@analog.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 10:35 AM Wu Zongyong
-<wuzongyong@linux.alibaba.com> wrote:
+On Fri, Sep 17, 2021 at 9:08 AM Mihail Chindris
+<mihail.chindris@analog.com> wrote:
 >
-> On Thu, Sep 16, 2021 at 09:05:58AM +0800, Jason Wang wrote:
-> > On Wed, Sep 15, 2021 at 7:09 PM Michael S. Tsirkin <mst@redhat.com> wrote:
-> > >
-> > > On Wed, Sep 15, 2021 at 04:06:57PM +0800, Jason Wang wrote:
-> > > > On Wed, Sep 15, 2021 at 3:38 PM Michael S. Tsirkin <mst@redhat.com> wrote:
-> > > > >
-> > > > > On Wed, Sep 15, 2021 at 11:18:06AM +0800, Jason Wang wrote:
-> > > > > > On Tue, Sep 14, 2021 at 8:58 PM Michael S. Tsirkin <mst@redhat.com> wrote:
-> > > > > > >
-> > > > > > > On Tue, Sep 14, 2021 at 08:24:51PM +0800, Wu Zongyong wrote:
-> > > > > > > > This new attribute advertises whether the vdpa device is legacy or not.
-> > > > > > > > Users can pick right virtqueue size if the vdpa device is legacy which
-> > > > > > > > doesn't support to change virtqueue size.
-> > > > > > > >
-> > > > > > > > Signed-off-by: Wu Zongyong <wuzongyong@linux.alibaba.com>
-> > > > > > >
-> > > > > > > So if we are bothering with legacy,
-> > > > > >
-> > > > > > I think we'd better not. I guess the following may work:
-> > > > > >
-> > > > > > 1) disable the driver on BE host
-> > > > > > 2) present VERSION_1 with ACCESS_PLATFORM in get_features()
-> > > > > > 3) extend the management to advertise max_queue_size and
-> > > > > > min_queue_size, for ENI they are the same so management layer knows it
-> > > > > > needs to set the queue_size correctly during launching qemu
-> > > > > >
-> > > > > > Thoughts?
-> > > > > >
-> > > > > > Thanks
-> > > > >
-> > > > > There are other subtle differences such as header size without
-> > > > > mergeable buffers for net.
-> > > >
-> > > > This can be solved by mandating the feature of a mergeable buffer?
-> > > >
-> > > > Thanks
-> > >
-> > > PXE and some dpdk versions are only some of the guests that
-> > > disable mergeable buffers feature.
-> >
-> > True, but consider
-> >
-> > 1) the legacy stuffs requires changes in several software layers
-> > 2) it is how virtio 1.0 works e.g device can fail the feature negotiation
-> > 3) it is not supported since day 0
-> > 4) management API can be extended to advertise the mandated features
->
-> So let me confirm what I should do in next revision:
-> 1) disable the driver on BE host like that:
->
->    #ifdef __LITTE_ENDIAN
->    int eni_vdpa_probe()
->    {
->        ...
->    }
->    #else
->    int eni_vdpa_probe()
->    {
->        return -ENODEV;
->    }
->    #endif
-
-This might work but I wonder if we can disable it via Kconfig.
-
->
-> 2) report F_VERSION_1 and F_ACCESS_PLATFORM in get_features()
-> 3) introduce a new cb get_vq_num_min in vdpa_config_ops
->
-> Does I miss something?
-
-And we need this as well.
-
-Fail the feature negotiation if mrg rxbuf is not negotiated. Otherwise
-we can meet the 1.0 requirement of header length. Or the hardware can
-still preset the mergeable header if the mrg rx buffer is not
-negotiated?
-
-Thanks
-
->
-> > It looks affordable.
-> >
-> > Thanks
-> >
-> > >
-> > > > >
-> > > > >
-> > > > > > > I think there are
-> > > > > > > several things to do when building the interface
-> > > > > > > - support transitional devices, that is allow userspace
-> > > > > > >   to tell device it's in legacy mode
-> > > > > > > - support reporting/setting supporting endian-ness
-> > > > > > >
-> > > > > > > > ---
-> > > > > > > >  drivers/vdpa/vdpa.c          | 6 ++++++
-> > > > > > > >  drivers/virtio/virtio_vdpa.c | 7 ++++++-
-> > > > > > > >  include/uapi/linux/vdpa.h    | 1 +
-> > > > > > > >  3 files changed, 13 insertions(+), 1 deletion(-)
-> > > > > > > >
-> > > > > > > > diff --git a/drivers/vdpa/vdpa.c b/drivers/vdpa/vdpa.c
-> > > > > > > > index 1dc121a07a93..533d7f589eee 100644
-> > > > > > > > --- a/drivers/vdpa/vdpa.c
-> > > > > > > > +++ b/drivers/vdpa/vdpa.c
-> > > > > > > > @@ -12,6 +12,7 @@
-> > > > > > > >  #include <linux/slab.h>
-> > > > > > > >  #include <linux/vdpa.h>
-> > > > > > > >  #include <uapi/linux/vdpa.h>
-> > > > > > > > +#include <uapi/linux/virtio_config.h>
-> > > > > > > >  #include <net/genetlink.h>
-> > > > > > > >  #include <linux/mod_devicetable.h>
-> > > > > > > >
-> > > > > > > > @@ -494,6 +495,7 @@ vdpa_dev_fill(struct vdpa_device *vdev, struct sk_buff *msg, u32 portid, u32 seq
-> > > > > > > >       u16 max_vq_size;
-> > > > > > > >       u32 device_id;
-> > > > > > > >       u32 vendor_id;
-> > > > > > > > +     u64 features;
-> > > > > > > >       void *hdr;
-> > > > > > > >       int err;
-> > > > > > > >
-> > > > > > > > @@ -508,6 +510,7 @@ vdpa_dev_fill(struct vdpa_device *vdev, struct sk_buff *msg, u32 portid, u32 seq
-> > > > > > > >       device_id = vdev->config->get_device_id(vdev);
-> > > > > > > >       vendor_id = vdev->config->get_vendor_id(vdev);
-> > > > > > > >       max_vq_size = vdev->config->get_vq_num_max(vdev);
-> > > > > > > > +     features = vdev->config->get_features(vdev);
-> > > > > > > >
-> > > > > > > >       err = -EMSGSIZE;
-> > > > > > > >       if (nla_put_string(msg, VDPA_ATTR_DEV_NAME, dev_name(&vdev->dev)))
-> > > > > > > > @@ -520,6 +523,9 @@ vdpa_dev_fill(struct vdpa_device *vdev, struct sk_buff *msg, u32 portid, u32 seq
-> > > > > > > >               goto msg_err;
-> > > > > > > >       if (nla_put_u16(msg, VDPA_ATTR_DEV_MAX_VQ_SIZE, max_vq_size))
-> > > > > > > >               goto msg_err;
-> > > > > > > > +     if (features & BIT_ULL(VIRTIO_F_VERSION_1) &&
-> > > > > > > > +         nla_put_flag(msg, VDPA_ATTR_DEV_VERSION_1))
-> > > > > > > > +             goto msg_err;
-> > > > > > > >
-> > > > > > > >       genlmsg_end(msg, hdr);
-> > > > > > > >       return 0;
-> > > > > > > > diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
-> > > > > > > > index 72eaef2caeb1..1cba957c4cdc 100644
-> > > > > > > > --- a/drivers/virtio/virtio_vdpa.c
-> > > > > > > > +++ b/drivers/virtio/virtio_vdpa.c
-> > > > > > > > @@ -7,6 +7,7 @@
-> > > > > > > >   *
-> > > > > > > >   */
-> > > > > > > >
-> > > > > > > > +#include "linux/virtio_config.h"
-> > > > > > > >  #include <linux/init.h>
-> > > > > > > >  #include <linux/module.h>
-> > > > > > > >  #include <linux/device.h>
-> > > > > > > > @@ -145,6 +146,7 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
-> > > > > > > >       /* Assume split virtqueue, switch to packed if necessary */
-> > > > > > > >       struct vdpa_vq_state state = {0};
-> > > > > > > >       unsigned long flags;
-> > > > > > > > +     bool may_reduce_num = false;
-> > > > > > > >       u32 align, num;
-> > > > > > > >       int err;
-> > > > > > > >
-> > > > > > > > @@ -169,10 +171,13 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
-> > > > > > > >               goto error_new_virtqueue;
-> > > > > > > >       }
-> > > > > > > >
-> > > > > > > > +     if (ops->get_features(vdpa) & BIT_ULL(VIRTIO_F_VERSION_1))
-> > > > > > > > +             may_reduce_num = true;
-> > > > > > > > +
-> > > > > > > >       /* Create the vring */
-> > > > > > > >       align = ops->get_vq_align(vdpa);
-> > > > > > > >       vq = vring_create_virtqueue(index, num, align, vdev,
-> > > > > > > > -                                 true, true, ctx,
-> > > > > > > > +                                 true, may_reduce_num, ctx,
-> > > > > > > >                                   virtio_vdpa_notify, callback, name);
-> > > > > > > >       if (!vq) {
-> > > > > > > >               err = -ENOMEM;
-> > > > > > > > diff --git a/include/uapi/linux/vdpa.h b/include/uapi/linux/vdpa.h
-> > > > > > > > index 66a41e4ec163..ce0b74276a5b 100644
-> > > > > > > > --- a/include/uapi/linux/vdpa.h
-> > > > > > > > +++ b/include/uapi/linux/vdpa.h
-> > > > > > > > @@ -32,6 +32,7 @@ enum vdpa_attr {
-> > > > > > > >       VDPA_ATTR_DEV_VENDOR_ID,                /* u32 */
-> > > > > > > >       VDPA_ATTR_DEV_MAX_VQS,                  /* u32 */
-> > > > > > > >       VDPA_ATTR_DEV_MAX_VQ_SIZE,              /* u16 */
-> > > > > > > > +     VDPA_ATTR_DEV_VERSION_1,                /* flag */
-> > > > > > > >
-> > > > > > > >       /* new attributes must be added above here */
-> > > > > > > >       VDPA_ATTR_MAX,
-> > > > > > > > --
-> > > > > > > > 2.31.1
-> > > > > > >
-> > > > >
-> > >
+> A correct value for output-range-microvolts is -5 to 5 Volts
+> not -5 to 5 milivolts
 >
 
+Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
+
+> Signed-off-by: Mihail Chindris <mihail.chindris@analog.com>
+> ---
+>  Documentation/devicetree/bindings/iio/dac/adi,ad5766.yaml | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/Documentation/devicetree/bindings/iio/dac/adi,ad5766.yaml b/Documentation/devicetree/bindings/iio/dac/adi,ad5766.yaml
+> index d5c54813ce87..a8f7720d1e3e 100644
+> --- a/Documentation/devicetree/bindings/iio/dac/adi,ad5766.yaml
+> +++ b/Documentation/devicetree/bindings/iio/dac/adi,ad5766.yaml
+> @@ -54,7 +54,7 @@ examples:
+>
+>            ad5766@0 {
+>                compatible = "adi,ad5766";
+> -              output-range-microvolts = <(-5000) 5000>;
+> +              output-range-microvolts = <(-5000000) 5000000>;
+>                reg = <0>;
+>                spi-cpol;
+>                spi-max-frequency = <1000000>;
+> --
+> 2.27.0
+>
