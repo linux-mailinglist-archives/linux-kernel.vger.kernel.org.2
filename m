@@ -2,90 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0AE640FC14
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 17:20:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26D8A40FC1E
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 17:21:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239164AbhIQPVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 11:21:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34832 "EHLO mail.kernel.org"
+        id S1343817AbhIQPWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 11:22:48 -0400
+Received: from mga05.intel.com ([192.55.52.43]:52251 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243002AbhIQPTi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 11:19:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CC5EC61164;
-        Fri, 17 Sep 2021 15:18:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631891895;
-        bh=96NVuakQJdmaO277CeGDiyCBNXhMgA/638vNRLesnyc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gYxvoiO1I1AqWfBxf49rIRQgHssvElBbASOYmcN03uAx8XkjMi30rkGKyC6p9X3aE
-         l1671X4Q95CkCh9/kN89XUfd3HU80h1TP0EsOLmAkm+GVVKx3yGNbuQZNM5R1GIJgY
-         jI61iXwzKsAQyc3QcFU7qeiDnWgGtNWrFJsZFmqY=
-Date:   Fri, 17 Sep 2021 17:18:13 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        David Laight <david.Laight@aculab.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: Re: [PATCH v7 19/19] staging: r8188eu: remove shared buffer for usb
- requests
-Message-ID: <YUSxtQ7D0w6QkB/N@kroah.com>
-References: <20210917071837.10926-1-fmdefrancesco@gmail.com>
- <20210917071837.10926-20-fmdefrancesco@gmail.com>
- <YUSsa+3NjQVGD9gb@kroah.com>
- <ef2a89f5-f68c-e7e2-9338-78e70dc41701@gmail.com>
+        id S241613AbhIQPWc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 11:22:32 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10110"; a="308361902"
+X-IronPort-AV: E=Sophos;i="5.85,301,1624345200"; 
+   d="scan'208";a="308361902"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2021 08:18:42 -0700
+X-IronPort-AV: E=Sophos;i="5.85,301,1624345200"; 
+   d="scan'208";a="509948699"
+Received: from mtkaczyk-devel.igk.intel.com ([10.102.102.23])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2021 08:18:41 -0700
+From:   Mariusz Tkaczyk <mariusz.tkaczyk@linux.intel.com>
+To:     song@kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] Use MD_BROKEN for redundant arrays
+Date:   Fri, 17 Sep 2021 17:18:29 +0200
+Message-Id: <20210917151831.3000-1-mariusz.tkaczyk@linux.intel.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ef2a89f5-f68c-e7e2-9338-78e70dc41701@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 06:03:52PM +0300, Pavel Skripkin wrote:
-> On 9/17/21 17:55, Greg Kroah-Hartman wrote:
-> > On Fri, Sep 17, 2021 at 09:18:37AM +0200, Fabio M. De Francesco wrote:
-> > > From: Pavel Skripkin <paskripkin@gmail.com>
-> > > 
-> > > This driver used shared buffer for usb requests. It led to using
-> > > mutexes, i.e no usb requests can be done in parallel.
-> > > 
-> > > USB requests can be fired in parallel since USB Core allows it. In
-> > > order to allow them, remove usb_vendor_req_buf from dvobj_priv (since
-> > > USB I/O is the only user of it) and remove also usb_vendor_req_mutex
-> > > (since there is nothing to protect).
-> > 
-> > Ah, you are removing this buffer, nice!
-> > 
-> > But, just because the USB core allows multiple messages to be sent to a
-> > device at the same time, does NOT mean that the device itself can handle
-> > that sort of a thing.
-> > 
-> > Keeping that lock might be a good idea, until you can prove otherwise.
-> > You never know, maybe there's never any contention at all for it because
-> > these accesses are all done in a serial fashion and the lock
-> > grab/release is instant.  But if that is not the case, you might really
-> > get a device confused here by throwing multiple control messages at it
-> > in ways that it is not set up to handle at all.
-> > 
-> > So please do not drop the lock.
-> > 
-> > More comments below.
-> > 
-> 
-> We have tested this change. I've tested it in qemu with TP-Link TL-WN722N v2
-> / v3 [Realtek RTL8188EUS], and Fabio has tested it on his host for like a
-> whole evening.
-> 
-> I agree, that our testing does not cover all possible cases and I can't say
-> it was "good stress testing", so, I think, we need some comments from
-> maintainers.
+Hi Song,
+This patchset adds usage of MD_BROKEN for each redundant level.
+This should simplify IO failure stack when md device is failed and
+fixes raid456 bug.
 
-Ok, then make it a single patch that does nothing but remove the lock so
-that we can revert it later when problems show up :)
+Mariusz Tkaczyk (2):
+  md: Set MD_BROKEN for RAID1 and RAID10
+  raid5: introduce MD_BROKEN
 
-thanks,
+ drivers/md/md.c     | 16 ++++++++++------
+ drivers/md/md.h     |  4 ++--
+ drivers/md/raid1.c  |  1 +
+ drivers/md/raid10.c |  1 +
+ drivers/md/raid5.c  | 34 ++++++++++++++++------------------
+ 5 files changed, 30 insertions(+), 26 deletions(-)
 
-greg k-h
+-- 
+2.26.2
+
