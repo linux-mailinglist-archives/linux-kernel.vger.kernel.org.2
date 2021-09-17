@@ -2,93 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F252540F24E
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 08:25:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AB7940F24F
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 08:26:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233669AbhIQG07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 02:26:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38326 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233070AbhIQG06 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 02:26:58 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ECFCC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 23:25:36 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id l16-20020a9d6a90000000b0053b71f7dc83so11547976otq.7
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 23:25:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=ICEs66mzOrWw5DoGNjzQDzMrnyfZ+Z+NkVU0FU1eIqM=;
-        b=ffB/SHZAlTYkRT/UiB9ZGJAejN4vLBrCabhGLPTmaUVzTGPciu7V/RhWZ2Ppcswr7L
-         EFLXxWZHPfm6dA0V6y1vovBZH/lwgO66e/TDYrfCFOi0lC0uLSPap141TNp0R5Jn4h9P
-         MnX7NdiUb/ajqWy+cZqQcA1GSznY+yOkhMW5g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=ICEs66mzOrWw5DoGNjzQDzMrnyfZ+Z+NkVU0FU1eIqM=;
-        b=S33ulmke0Ff3VFTxqYHT1d1qEcS5sS0MNqIFNCU6DvnnwnQEeQRAMEpPyar6pcFFHz
-         fzfxAJDDdFLJIj55lgytAX6KiEiOxtBZdHVN9bMTwmaoSVPWCANwiIutKgU4IzLJGMoP
-         da8ICM0YygNEKcXeMRYuasSgJfvT/mB5076DlsU91/+vgDW9VpFu0ghTH4z3yfKnypVB
-         rqC7lNUF/GqqxuH3ZUuhgmfZzS9a0TR8vRYgKltYfNdZXHR+XIFFvzn73faDAQKntel0
-         MLioB5q57ai+QhYIruwr+oEfZQVGqpkOAOkWDTt5IdvbYHU9U+RWHI0e6xYfwH4BFU85
-         ikIA==
-X-Gm-Message-State: AOAM532RASO97xOaCYwsZ4eAvjusELEUVxfxnWDJ8Wwtmwqe46tIkuVQ
-        sDosSNi+pW8Yh5rY6hkyTYfo1BJKXIXEyuF2DREi4Q==
-X-Google-Smtp-Source: ABdhPJyDW1VAO7a/TQ1CU2vowcY3A3hOPeoUkpVMQrtweBg2luyz25xyyE+y6zVDUbyY0eP6EHeblTMoRnpczu07QOc=
-X-Received: by 2002:a05:6830:719:: with SMTP id y25mr7949091ots.77.1631859936068;
- Thu, 16 Sep 2021 23:25:36 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 16 Sep 2021 23:25:35 -0700
+        id S233704AbhIQG2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 02:28:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39166 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233058AbhIQG2B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 02:28:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A22960FBF;
+        Fri, 17 Sep 2021 06:26:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1631860000;
+        bh=pMnwYHfKcuoWM8G/rwO1Komn0D0FA1nplQtWRf5fIM0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hG45CZUDBpGu6abOksFdgBBJ46DWd5v0kNg18ZH8M5UwRQlKtUbJhwL+/qenNCPTV
+         8c1etUcZ55pZjP+/V5kFARM6jVqtDEnIIiV7nlpjjFEysMdOsTtrfvBKeL0izTkzfW
+         x4vJnV6vOs6PgbKNqylWqQhzYJunAEnx3DpFkqd0=
+Date:   Fri, 17 Sep 2021 08:26:37 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     rafael@kernel.org, broonie@kernel.org, andy.shevchenko@gmail.com,
+        a.hajda@samsung.com, Stephen Boyd <swboyd@chromium.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] driver core: Clarify that dev_err_probe() is OK even
+ w/out -EPROBE_DEFER
+Message-ID: <YUQ1HW0P9e0ENGRE@kroah.com>
+References: <20210916161931.1.I32bea713bd6c6fb419a24da73686145742b6c117@changeid>
 MIME-Version: 1.0
-In-Reply-To: <1631811353-503-3-git-send-email-pillair@codeaurora.org>
-References: <1631811353-503-1-git-send-email-pillair@codeaurora.org> <1631811353-503-3-git-send-email-pillair@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Thu, 16 Sep 2021 23:25:35 -0700
-Message-ID: <CAE-0n51KBYjZvwGNy06_okmEWjEfRLQO54CYaY6-JnbBk6kOhA@mail.gmail.com>
-Subject: Re: [PATCH v3 2/3] dt-bindings: remoteproc: qcom: Add SC7280 WPSS support
-To:     Rakesh Pillai <pillair@codeaurora.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, mathieu.poirier@linaro.org,
-        ohad@wizery.com, p.zabel@pengutronix.de, robh+dt@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sibis@codeaurora.org,
-        mpubbise@codeaurora.org, kuabhs@chromium.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210916161931.1.I32bea713bd6c6fb419a24da73686145742b6c117@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Rakesh Pillai (2021-09-16 09:55:52)
-> @@ -78,6 +84,10 @@ properties:
->        Phandle reference to a syscon representing TCSR followed by the
->        three offsets within syscon for q6, modem and nc halt registers.
->
-> +  qcom,qmp:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description: Reference to the AOSS side-channel message RAM.
-> +
->    qcom,smem-states:
->      $ref: /schemas/types.yaml#/definitions/phandle-array
->      description: States used by the AP to signal the Hexagon core
-> @@ -117,6 +127,33 @@ allOf:
->          compatible:
->            contains:
->              enum:
-> +              - qcom,sc7280-wpss-pil
-> +    then:
+On Thu, Sep 16, 2021 at 04:19:40PM -0700, Douglas Anderson wrote:
+> There is some debate about whether it's deemed acceptable to call
+> dev_err_probe() if you know that the error code can never be
+> -EPROBE_DEFER. Clarify in the function comments that this is
+> OK. Specifically this makes us able to transform code like this:
+> 
+>   ret = do_something_that_cant_defer();
+>   if (ret < 0) {
+>     dev_err(dev, "The foo failed to bar (%pe)\n", ERR_PTR(ret));
+>     return ret;
+>   }
+> 
+> to code like this:
+>   ret = do_something_that_cant_defer();
+>   if (ret < 0)
+>     return dev_err_probe(dev, ret, "The foo failed to bar\n");
+> 
+> It is also possible that in the future folks might want a CONFIG
+> option to strip out all probe error strings to save space (keeping
+> non-probe errors) with the argument that probe errors rarely happen
+> after bringup. Having probe errors reported with a consistent function
+> would allow that.
+> 
+> Cc: Stephen Boyd <swboyd@chromium.org>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
+> 
+>  drivers/base/core.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/drivers/base/core.c b/drivers/base/core.c
+> index e65dd803a453..85b8955717fc 100644
+> --- a/drivers/base/core.c
+> +++ b/drivers/base/core.c
+> @@ -4653,6 +4653,11 @@ define_dev_printk_level(_dev_info, KERN_INFO);
+>   *
+>   * 	return dev_err_probe(dev, err, ...);
+>   *
+> + * Note that it is deemed acceptable to use this function for error
+> + * prints during probe even if the @err is known to never be -EPROBE_DEFER.
+> + * The benefit compared to a normal dev_err() is the standardized format
+> + * of the error code and the fact that the error code is returned.
+> + *
+>   * Returns @err.
+>   *
+>   */
+> -- 
+> 2.33.0.464.g1972c5931b-goog
+> 
 
-Honestly I find this if/else to be a huge tangle. Why not split the
-binding so that each compatible is a different file? Then it is easier
-to read and see what properties to set.
+Nice, no objection from me, I'll go queue this up.
 
-> +      properties:
-> +        interrupts-extended:
-> +          maxItems: 6
-> +          items:
-> +            - description: Watchdog interrupt
-> +            - description: Fatal interrupt
-> +            - description: Ready interrupt
+greg k-h
