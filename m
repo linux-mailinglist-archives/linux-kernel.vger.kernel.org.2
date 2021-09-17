@@ -2,107 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57DEB40F398
+	by mail.lfdr.de (Postfix) with ESMTP id A114740F399
 	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 09:54:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243421AbhIQHz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 03:55:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58670 "EHLO
+        id S243870AbhIQHzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 03:55:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232641AbhIQHz2 (ORCPT
+        with ESMTP id S243723AbhIQHzb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 03:55:28 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52C0AC061574;
-        Fri, 17 Sep 2021 00:54:07 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id nn5-20020a17090b38c500b0019af1c4b31fso6749915pjb.3;
-        Fri, 17 Sep 2021 00:54:07 -0700 (PDT)
+        Fri, 17 Sep 2021 03:55:31 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4921C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 00:54:09 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id w19so12871199oik.10
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 00:54:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=8fne5QRIvTCtWwjBc2H/rjO+kSdCKQZxO18C+flIqYI=;
-        b=dpxjO/PuhQItkgh27b9pR4UXt24P2WAekIO8WNpDwWbKKTvmObFTMtBrFN4jOAMuCw
-         M3bqG6zXEHgIdEE6DKBjHXiVpnZnkxjJUDBND3e6PLejj23F6yEdQEY6DqFpAX+7ERCd
-         /NCdAchTPw7gSmR3OsncOJYXxlx4rYp8sDPic6KHlal0OvelCdvsy5r1zOjDv/Nhwwjo
-         pZwrD6lmAiP9uyHGxWCA4pAF1Pgkna0zc02ROGPcWQmTx0D+hPwTpexuxiweMUMmIcXv
-         VfGnEKKYhbyfNGvdEX+2KckCNCU+ufdCT4M7j/oKLhQo0bznoXWFz2YQOGHRCAEG8HmS
-         kzgQ==
+        bh=pqF5ZNhWXHboCDI+DdhNiPlSQl2K5A1uMEdFDe7/7M4=;
+        b=fDGbOfuW2u/AmdcUA7VYG2oW3tXAMAXaTKD/T4pHiseKSg62WUx95HXeHyV4NJmQkd
+         XQ3w9AwaO86njJB5ABThQ2MyzFYupJGRS2gHA6o8jTbr7TKkCnKpe31umLqOsVq4trqy
+         KjkS1igb1yVMnQeVsaMSCPmPoT3wA/2O7dn1j+0+dQEx88KLyaph1dPT+YIYNwIrlWJe
+         UfOfkG9mnSZamCy14NZ/jOvZhpiOt/zz77s32L8HuF3u6l8eO6rO/BnG5EGvhUAdtCpI
+         g/OTFxuAtBfP5iJBZ6fzYf04txk7u90xOktLMcEZtb6Szvm81euBAVhGbMuF9RP30lFn
+         Rvsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=8fne5QRIvTCtWwjBc2H/rjO+kSdCKQZxO18C+flIqYI=;
-        b=Fz965ydtisZbTvSzAtO2z3iwouW+hjTgxZnFyhUH8oUWTCyukQO2q5XJjJF6GsHTbx
-         4m82hCn6N2A37Lh+ZhwI2Ck6rg1U2BiHXsg0KmrERi/49sxFMj1j/jCBt51kXdrPy5bK
-         RKLThwRKlvSHQT5FOCI2rL7dGYoZYxdZpehWRG1gjYjV9K8wX28h813GXMrlAFvvxGXX
-         9aQnthZPi7PhKaq9JUBMoZu5wN0VBDNGEmUUdyBXljJCvXJ/ZDYeJQCUBy+PIIHctWKy
-         n1IGcOOxCbhSssrfab2bd7flT/xXKlc7Fyf69Q2WyvvOoxnC9OWWsuR2l4/ZmeaxaTGw
-         X23g==
-X-Gm-Message-State: AOAM531bhcGj9D6tCV3Lq3aNnUpkNcl51dXNtU5G+1kY6G9XnSItGmlK
-        pt1oVRaMzhNRgup/WGTXxuM6s2rnCyStLpVpP7g=
-X-Google-Smtp-Source: ABdhPJxlsJC0TajM6PWfE+eIPszqDTK4CtDp2ZCZuGiZlknw2QAXIbjs6g+/OK7t7KU06IMFzQb5UaFyIVaVEi5iQNQ=
-X-Received: by 2002:a17:90b:3558:: with SMTP id lt24mr13096076pjb.98.1631865246830;
- Fri, 17 Sep 2021 00:54:06 -0700 (PDT)
+        bh=pqF5ZNhWXHboCDI+DdhNiPlSQl2K5A1uMEdFDe7/7M4=;
+        b=ZwqOobIChbTiLIIyHMNz/kNRnqLVHKrSSAwAArHphFNiuYSchgFuX6aaFHNerS/Gc1
+         ErCgN11uxbVR6TBIq9PP8acEyDhyu0RD4HT96SjwNfyJ+3k80Sj+t+TanKamnNFzglWp
+         +l2RVKKS4OUveg/Rrx8ZgfIh8JMsbuJwq6qvxdSTqrtPUkexOMcetcGuEVjzaWtTV2BO
+         gaVR9IfEFkHuafHbhgaM0yBIL5RslZ/W+AifaJLJ8EghuCAD0onOR8U8x8EIJLrlTfrT
+         9UBEjXw8NST9U7amV2vGkhBndK/EDt2Vx0TTHd52XrcuuFCf65i6+ayDKJYjRpsrFO5/
+         1iMg==
+X-Gm-Message-State: AOAM532/iuHvQ6k/ST91s6opz3WfJt8xO8ugUy8cUhTScjUcL9HhFsTf
+        y/DB4JZ55i8Wz5JC8WIW2WW/RqV0f/dCsQAsuvnr1FEjcp7yuA==
+X-Google-Smtp-Source: ABdhPJxBd8O+oRk4mXWceLP4oIaDyfaPchMClOKVxAMF9p4hAHT2sO8uXzHZcICi6ok2iWo85eJFF/MNc+U/eVN6KZg=
+X-Received: by 2002:aca:1109:: with SMTP id 9mr2925257oir.109.1631865248854;
+ Fri, 17 Sep 2021 00:54:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210916182914.1810-1-mihail.chindris@analog.com> <20210916182914.1810-5-mihail.chindris@analog.com>
-In-Reply-To: <20210916182914.1810-5-mihail.chindris@analog.com>
-From:   Alexandru Ardelean <ardeleanalex@gmail.com>
-Date:   Fri, 17 Sep 2021 10:53:54 +0300
-Message-ID: <CA+U=Dsrm8daPO+0gob1USqSSxrkpCwR=L-2zQrW=DNEDk9ZhLA@mail.gmail.com>
-Subject: Re: [PATCH v5 4/6] drivers: iio: dac: ad5766: Fix dt property name
-To:     Mihail Chindris <mihail.chindris@analog.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>,
-        "Bogdan, Dragos" <dragos.bogdan@analog.com>
+References: <000000000000bb5f8605c697fd87@google.com> <000000000000b1e03005cb6230b5@google.com>
+In-Reply-To: <000000000000b1e03005cb6230b5@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Fri, 17 Sep 2021 09:53:57 +0200
+Message-ID: <CACT4Y+b1YFQLeZkH8z_n_-x7s6jmY-p=07vJk89-KZgQXYs1sQ@mail.gmail.com>
+Subject: Re: [syzbot] KASAN: use-after-free Write in get_ucounts
+To:     syzbot <syzbot+8c3af233123df0578a5c@syzkaller.appspotmail.com>
+Cc:     ebiederm@xmission.com, legion@kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 9:11 AM Mihail Chindris
-<mihail.chindris@analog.com> wrote:
+On Tue, 7 Sept 2021 at 08:51, syzbot
+<syzbot+8c3af233123df0578a5c@syzkaller.appspotmail.com> wrote:
 >
-> In the documentation the name for the property is
-> output-range-microvolts which is a standard name, therefore this name
-> must be used.
+> syzbot suspects this issue was fixed by commit:
 >
+> commit 345daff2e994ee844d6a609c37f085695fbb4c4d
+> Author: Alexey Gladkov <legion@kernel.org>
+> Date:   Tue Jul 27 15:24:18 2021 +0000
+>
+>     ucounts: Fix race condition between alloc_ucounts and put_ucounts
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1378d0ed300000
+> start commit:   d5ad8ec3cfb5 Merge tag 'media/v5.14-2' of git://git.kernel..
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=702bfdfbf389c324
+> dashboard link: https://syzkaller.appspot.com/bug?extid=8c3af233123df0578a5c
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16fedec6300000
+>
+> If the result looks correct, please mark the issue as fixed by replying with:
+>
+> #syz fix: ucounts: Fix race condition between alloc_ucounts and put_ucounts
 
-This requires a Fixes tag.
-With that addressed:
+Looks legit:
 
-Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
-
-> Signed-off-by: Mihail Chindris <mihail.chindris@analog.com>
-> ---
->  drivers/iio/dac/ad5766.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/iio/dac/ad5766.c b/drivers/iio/dac/ad5766.c
-> index 3104ec32dfac..dafda84fdea3 100644
-> --- a/drivers/iio/dac/ad5766.c
-> +++ b/drivers/iio/dac/ad5766.c
-> @@ -503,13 +503,13 @@ static int ad5766_get_output_range(struct ad5766_state *st)
->         int i, ret, min, max, tmp[2];
->
->         ret = device_property_read_u32_array(&st->spi->dev,
-> -                                            "output-range-voltage",
-> +                                            "output-range-microvolts",
->                                              tmp, 2);
->         if (ret)
->                 return ret;
->
-> -       min = tmp[0] / 1000;
-> -       max = tmp[1] / 1000;
-> +       min = tmp[0] / 1000000;
-> +       max = tmp[1] / 1000000;
->         for (i = 0; i < ARRAY_SIZE(ad5766_span_tbl); i++) {
->                 if (ad5766_span_tbl[i].min != min ||
->                     ad5766_span_tbl[i].max != max)
-> --
-> 2.27.0
->
+#syz fix: ucounts: Fix race condition between alloc_ucounts and put_ucounts
