@@ -2,76 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B130A40F9EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 16:04:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2A1640F9E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 16:04:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242920AbhIQOGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 10:06:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40034 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233264AbhIQOGA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 10:06:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D8E26103B;
-        Fri, 17 Sep 2021 14:04:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631887478;
-        bh=CoUVYEo7fgOBwEFTIbSZgJaRRDgozeRszombXxCWMOc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gUc41prob34WTGXolgchVNz23eEN8sbz/GWDGzoVA6tKHXQNHFhWihNRYBwR9ooGB
-         /bHzwjgDJH/oNuBV2uCKzFVx6H9urHsFNYVrTm7d14lwsjYBH7uj1jPlKEau3B/5Fs
-         VIlKsHjhyYimb4qtTj27d7hFYGVQuLsOdE7oVpWu69xg0dPJyTps0g6AJMGGiUARt+
-         1wJYSj7jkLa7VqtZgK9TuqVNSFqcaNHn9DCxLLRSZ/ZuSNm1rdwl+vqjdqjCDjLKxa
-         5Se3NXvnRmKObKxZU4Xb9nsZXrBq+FU5Hu4lyX11cdOgJyezWIvBuFaOtuFBVxVj0F
-         IwkDX0bq6n4+g==
-From:   Mark Brown <broonie@kernel.org>
-To:     tiwai@suse.com, Trevor Wu <trevor.wu@mediatek.com>,
-        matthias.bgg@gmail.com
-Cc:     Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ASoC: mediatek: mt8195: remove wrong fixup assignment on HDMITX
-Date:   Fri, 17 Sep 2021 15:03:44 +0100
-Message-Id: <163188719815.50326.5771604177613195769.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210917082805.30898-1-trevor.wu@mediatek.com>
-References: <20210917082805.30898-1-trevor.wu@mediatek.com>
+        id S241480AbhIQOFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 10:05:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234531AbhIQOFl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 10:05:41 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 080F7C061574;
+        Fri, 17 Sep 2021 07:04:18 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1mRETI-0002CE-9i; Fri, 17 Sep 2021 16:04:08 +0200
+Date:   Fri, 17 Sep 2021 16:04:08 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>
+Cc:     "fw@strlen.de" <fw@strlen.de>,
+        "coreteam@netfilter.org" <coreteam@netfilter.org>,
+        "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "pablo@netfilter.org" <pablo@netfilter.org>,
+        Anthony Lineham <Anthony.Lineham@alliedtelesis.co.nz>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "kadlec@netfilter.org" <kadlec@netfilter.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Blair Steven <Blair.Steven@alliedtelesis.co.nz>,
+        Scott Parlane <Scott.Parlane@alliedtelesis.co.nz>
+Subject: Re: [PATCH net v4] net: netfilter: Fix port selection of FTP for
+ NF_NAT_RANGE_PROTO_SPECIFIED
+Message-ID: <20210917140408.GD15906@breakpoint.cc>
+References: <20210916041057.459-1-Cole.Dishington@alliedtelesis.co.nz>
+ <20210916112641.GC20414@breakpoint.cc>
+ <77b0addceb098af07f3bb20fbb708d190ae58b03.camel@alliedtelesis.co.nz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <77b0addceb098af07f3bb20fbb708d190ae58b03.camel@alliedtelesis.co.nz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Sep 2021 16:28:05 +0800, Trevor Wu wrote:
-> S24_LE params fixup is only required for DPTX.
-> Remove fixup ops assignment for HDMITX.
+Cole Dishington <Cole.Dishington@alliedtelesis.co.nz> wrote:
+> On Thu, 2021-09-16 at 13:26 +0200, Florian Westphal wrote:
+> > >range_info.max_proto.all) {
+> > 		min = 1;
+> > 		max = 65535;
+> > 		range_size = 65535;
+> > 	} else {
+> > 		min = ntohs(nat->range_info.min_proto.all);
+> > 		max = ntohs(nat->range_info.max_proto.all);
+> > 		range_size = max - min + 1;
+> > 	}
 > 
-> 
+> The original code defined the range as [ntohs(exp->saved_proto.tcp.port), 65535]. The above would
+> cause a change in behaviour, should we try to avoid it?
 
-Applied to
+Oh indeed, oversight on my part.  Good question, current loop
+is not good either as it might take too long to complete.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Maybe best to limit/cap the range to 128, e.g. try to use port
+as-is, then pick a random value between 1024 and 65535 - 128,
+make 128 tries and if all is taken, error out.
 
-Thanks!
+I will leave it up to you on how you'd like to handle this.
 
-[1/1] ASoC: mediatek: mt8195: remove wrong fixup assignment on HDMITX
-      commit: 3abe2eec87059260bf31033a8863c67c5d45b9d0
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+One way would be to make a small preparation patch and then
+built the range patch on top of it.
