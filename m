@@ -2,173 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CD8340EEB3
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 03:24:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA8D740EEB6
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 03:25:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242178AbhIQBZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 21:25:59 -0400
-Received: from mail-dm6nam12on2123.outbound.protection.outlook.com ([40.107.243.123]:17761
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        id S242196AbhIQB1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 21:27:13 -0400
+Received: from mail-eopbgr1300139.outbound.protection.outlook.com ([40.107.130.139]:26880
+        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232222AbhIQBZ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 21:25:58 -0400
+        id S232222AbhIQB1M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 21:27:12 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lj3igesvG087rVoCbXnTe4Dj7GG/x37RxGQceB4p1mK330Oca/9vR5YFFbMmE8JRHGbDifoQqKsFn/6YZLGOF3VPwF/XOwjsPyc/FjfNN84C6I0fZCx0Vp2i7uCOUNjHuvjyXHDl4D8NpoY1bCZspXycWdr3Vva6uSrYPq1t5+wkIqQS5qRAEYtzDBzurKCLicN0gF9gl8IBuznqVDZT7HL1yc+IiYmQlgRY9wi6z/7FZMrsorfLo7yQsqLnIZHSAYS/utDagbcA4EaVdIBEgp49SUrGHjo0zF24VHlwHy6guNdUlcvHFv+3SxoaEsVXaeV1G+ELoFf1PtZ4OO/ZiQ==
+ b=MCVBCtAT4e63nTZYF8PfdG5x0lYF//4Q6lP3PLJ5OXVUyiQ4HaNIrZDc2AuPavRAPZp99AtIlDesiqY76lFWl8ic/v26+CaxQUKYtf2vA7nkBVN5Xt79De+bdz4jlHhNfqFfIlZlLGNZAR593YHvaklxVbuzfJYRVvxa0kScm1FZfHiSzAcAsWWB4jm51mux3AtpRAxp7uWbsZs9k3WzLUg4Tr3AZ1Ufm6SZzA3TKVfgIb+DWMzOhZJlrln0vvoZG1lEjULA/199fkj4gQOcd2NecOFf/qF0T3aAoOsksw4WyTwhtzEeEP/QQM/eMCIllPKH4+lO5BbGgJNok+9+Kw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=pAylwhCLKQE6upkxOpTeuKjfnz6hUJrgci6PxFcqocw=;
- b=UjJKi7xGpFpys011twiMmTtsGEpwAIpXUz3NCB1O6XBZhip1Dd8Xma+WWQhLTKkVlFXDb0c6Oz/rdKXLz3KiFknghdfRFl0Xa/zrJS+WCFuwSBjCTrgBW+A6I0gxH7SHsa+runLUJmwaZEypOnSRSuIVkrLPBXD2pJR+Og9bORo9iobF8tTumS4jEkJ6cpHfwKbn6WAk89moomwAWvLooCxoOSgVnkfYQLWEqKXVsmckdPF3aLYsLtf6zyfRFT5RmdrPx2AofUY5+LIRoA1LPwufAc0+p5h1kisEb4/a+Xs073GPV9ERrb3NYK+IHZMby6kgVpvsC8tPamNRDPA53w==
+ bh=yj2FEsHV4XOpfKH2C5TL0/1DSyezYKrwKe7kbitn54U=;
+ b=lUp3iPZgCedCI6v4qrp8PvMEdT7xP0xDoeokZPgR2XBF/rJcE52cVITXh9SlcaNbP+ubV3r55UKN94m0bhogf0H/ZUu59X6Tp6eymQiM0D+A8Hxdeb0B3m7QvU86gdBHRxmG2kBp0E1f/q3pcZ+w8J38mm29GERURpBKK9q9BVw1KtVVs+t/ZKJAliFcQICmFwjODzv1V1fWvMleT3nKpCcjKtuRKl/j22mcA7ZoSPgJ5ehZqN6m0PPL7Sjt6JLxICjKqE66nANB4O8H7Oi04ald7Hu36SkwSnyxZxr7JEvSHP6UcoxdR9R8Kl3hVuaf/6U1G9VslC/KwXZ/xZOi7Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=in-advantage.com; dmarc=pass action=none
- header.from=in-advantage.com; dkim=pass header.d=in-advantage.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=inadvantage.onmicrosoft.com; s=selector2-inadvantage-onmicrosoft-com;
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
+ s=selector2-vivo0-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pAylwhCLKQE6upkxOpTeuKjfnz6hUJrgci6PxFcqocw=;
- b=W7h/YV50uxsGofv+orzM49GnAYW3677PeqbCUrvR5A0Knrq479Rzg4qC8gLCtjJ7TXrJ3B9b7Yxm3L1Tkqa0oFeQiQ0z/p5fl9NIC0nuYbx8T6jrh43Tibeb6nn3I3mNIXwCI0xxkuKYWZrlvBV1TRMGnAJC9HnUs6eMiHy45tk=
-Authentication-Results: nxp.com; dkim=none (message not signed)
- header.d=none;nxp.com; dmarc=none action=none header.from=in-advantage.com;
-Received: from MWHPR1001MB2351.namprd10.prod.outlook.com
- (2603:10b6:301:35::37) by CO1PR10MB4516.namprd10.prod.outlook.com
- (2603:10b6:303:6e::19) with Microsoft SMTP Server (version=TLS1_2,
+ bh=yj2FEsHV4XOpfKH2C5TL0/1DSyezYKrwKe7kbitn54U=;
+ b=C7NRioq2+MoBgot+tvYBVNkzvrGvrk5CWtPxl9YVF1vG0nTtEjfvMZPjK8HpwBDJhhnzRtgQYT7hwmVvUmk5vU/KJk2+0L9CHaPWJk1l3j/r6NP0MFUy+7xGCqF5uD7dqETpfmjJbh+ow5v523IVaKIv+tp3/DixBVdwAzjf1dQ=
+Authentication-Results: synopsys.com; dkim=none (message not signed)
+ header.d=none;synopsys.com; dmarc=none action=none header.from=vivo.com;
+Received: from SL2PR06MB3082.apcprd06.prod.outlook.com (2603:1096:100:37::17)
+ by SL2PR06MB3180.apcprd06.prod.outlook.com (2603:1096:100:34::14) with
+ Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Fri, 17 Sep
- 2021 01:24:34 +0000
-Received: from MWHPR1001MB2351.namprd10.prod.outlook.com
- ([fe80::bc3f:264a:a18d:cf93]) by MWHPR1001MB2351.namprd10.prod.outlook.com
- ([fe80::bc3f:264a:a18d:cf93%7]) with mapi id 15.20.4523.017; Fri, 17 Sep 2021
- 01:24:34 +0000
-Date:   Thu, 16 Sep 2021 18:24:29 -0700
-From:   Colin Foster <colin.foster@in-advantage.com>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 net] net: mscc: ocelot: remove buggy and useless write
- to ANA_PFC_PFC_CFG
-Message-ID: <20210917012429.GA647191@euler>
-References: <20210916010938.517698-1-colin.foster@in-advantage.com>
- <20210916114917.aielkefz5gg7flto@skbuf>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210916114917.aielkefz5gg7flto@skbuf>
-X-ClientProxiedBy: MWHPR17CA0087.namprd17.prod.outlook.com
- (2603:10b6:300:c2::25) To MWHPR1001MB2351.namprd10.prod.outlook.com
- (2603:10b6:301:35::37)
+ 2021 01:25:46 +0000
+Received: from SL2PR06MB3082.apcprd06.prod.outlook.com
+ ([fe80::4c9b:b71f:fb67:6414]) by SL2PR06MB3082.apcprd06.prod.outlook.com
+ ([fe80::4c9b:b71f:fb67:6414%6]) with mapi id 15.20.4523.016; Fri, 17 Sep 2021
+ 01:25:45 +0000
+From:   Qing Wang <wangqing@vivo.com>
+To:     Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Wang Qing <wangqing@vivo.com>
+Subject: [PATCH] dma: dw-edma-pcie: switch from 'pci_' to 'dma_' API
+Date:   Thu, 16 Sep 2021 18:24:56 -0700
+Message-Id: <1631841897-7506-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-ClientProxiedBy: HK2PR06CA0002.apcprd06.prod.outlook.com
+ (2603:1096:202:2e::14) To SL2PR06MB3082.apcprd06.prod.outlook.com
+ (2603:1096:100:37::17)
 MIME-Version: 1.0
-Received: from euler (67.185.175.147) by MWHPR17CA0087.namprd17.prod.outlook.com (2603:10b6:300:c2::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Fri, 17 Sep 2021 01:24:33 +0000
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ubuntu.localdomain (218.213.202.189) by HK2PR06CA0002.apcprd06.prod.outlook.com (2603:1096:202:2e::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.4523.14 via Frontend Transport; Fri, 17 Sep 2021 01:25:44 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6e439240-34a7-43df-53b6-08d97979e7e2
-X-MS-TrafficTypeDiagnostic: CO1PR10MB4516:
-X-Microsoft-Antispam-PRVS: <CO1PR10MB45160B52456C771CD034F5EEA4DD9@CO1PR10MB4516.namprd10.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: 3fccb49e-6a2c-48ad-7f8c-08d9797a1284
+X-MS-TrafficTypeDiagnostic: SL2PR06MB3180:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SL2PR06MB3180B19099B6B1823D70144CBDDD9@SL2PR06MB3180.apcprd06.prod.outlook.com>
 X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: uPgfvPxJTrt0tAtsc20uIRV1XOYS5t12udwX/g1nBUwIQdd1GIFTV1IQH46lNaywruwxNeR3vn0W/pGwIM7mb+qyV1/5Vwfs1EEVQNM6dFX7yT+ycY1l9FMIECZxfEepz3Bt9MY8tTE2thn/q+EqVu+nNL1LfDpdZ1ll9S9OEOHy2Hnz3Ny0L69xFdG7KPPJdGx1YHDokkSHViUeJa6iidr0HOUpLDEGuE3cTGPdrPaMWmudIEyOaGJ9K2f/DTr3asugQGujHTCERc+f3kL3y9JAqMTHsyRZJYJH0MOh5Al1otGLt7SbN+mzloiGbSGxRPgBxQDSZBKPTciXQYjcUtAdc9RqfiGbmm5C2nB1uAUU7f7zQtguxDp6w4epbbMluUeDUXFMvsxkV42JKrMSZUArtH1cNB9H0XWZo6ZI70dwbTnMVnvHuHh+zDtWkyw4neTJ3q00IVGt6Ak4XydEAuzsgfW0xGAVDjFVH0FLy8EodHbPbpVE0YU/0YaSVqgnZDTTB/5/Mdae9XoOC7014TDXqX8cSPgqN2Sm7DEfLV5c9zUGncp1kcv7KDfyNKZpVENigWE/csBOu+j78o5Sqsb8xlH3wUfYVDAzuEAOrUO6YhRnC6ECA79w1iuDfRQarR+8iWp4oZsbofdvUXXPfo+31IHLdMrHIIW3j5b7I1k1x0u/QNwmvPj1CwqAoB0oVryM/5yZHCVNUUzbLhBQ17ISodS77viRj7ZA52nhwUnKfsZDJwabghsCFleE5CpSCS9S4bFmQIFKbmTTZModBsqmoP/7AN8BBIOpPulNgEw=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2351.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(396003)(39830400003)(346002)(136003)(55016002)(52116002)(9686003)(9576002)(44832011)(33656002)(6666004)(6496006)(66946007)(478600001)(1076003)(66476007)(66556008)(86362001)(966005)(33716001)(6916009)(4326008)(38350700002)(186003)(5660300002)(26005)(38100700002)(956004)(83380400001)(2906002)(316002)(8676002)(54906003)(8936002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: 7nxI1VurFFw3wWUjg6m0cMxae71cpMSvppthb3n8c4fDQa7wHul5o35HFm+OqXaXwDcQsfF5cKf7+yDEd+Z4I53jLgIwPa9S/RTnJHAhVxOW6+3PqxU2mxgYN8fF77or9Ew18yDfoKhNvKwj73iWP/QOL/M0Ru3mwgtICNvEGpe9ucdvAFx8eO050Rg/ZgzZLPq2StgZRrVtAqXA0tlTZgRfHlfjrRsYXvP6ZbkSw3+sD/xJmar/qLM0edj5lgGgw31tKsoWI0VhJFGaNUB6pTZU1vq+GsUcahcA/J2CSQ/SE5gCpvUhzXdh11EY1r/Oyc5bm/UbEl2xqVQWZIBX+UJ9Pk2UhqrwZCn4vPshBDhLbIAiKRqVaowU1XPV9veLl4buavvyVFnO+WlXYyrzbnYPKdD8f0qcDYf22wViyXw4m+OU3j8XuNeks9VF8QYJwoSlFvSQZohYbfK6yJ5kLSVIsXbf9lDVyQmVJc6zOXviBfCvVw6UKLTsJh/UT3qaQ6d9rF0sGzLUwb+C8m4WrXlp0+rCzNpDiuHsMKrHMhTtw7Gz4IaFViA/x17mmVgZIdw6+IHymSMFThrf4xWrlafituAifjMcTdn8CnYyj9Nyf3Q3TYki6B9gp9ZOQLfdLfvhbU29Uq37ZVvy1nQqD/7/M+Y+o6qwUuSvtHx9W4IFqkamWrwL04n4rpMe3YyH2+r3zigQDRSq/4s2cPy13PVSB4Xje+k0by2xMpKmVuBKbnq2Tga6rWeHsObrHdniHKylYHDnExO840mR7xpjkA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SL2PR06MB3082.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(366004)(396003)(376002)(39860400002)(4326008)(107886003)(6512007)(36756003)(86362001)(38100700002)(66476007)(66556008)(66946007)(6666004)(6506007)(38350700002)(6486002)(83380400001)(2906002)(5660300002)(956004)(966005)(8936002)(186003)(2616005)(316002)(110136005)(26005)(478600001)(52116002)(8676002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?nvUJELUpz/0WeWpPRBlCKi1DEeomUzz12yTzs9yn35yZGwAgx7z0RDO3bY4L?=
- =?us-ascii?Q?FiQDyNbDgttaKpQWDPxEIlBw+0Pi+wsFBJ2vmg7YJ1Y6XDy0QXm9Dktk8Q3K?=
- =?us-ascii?Q?tSfTXCYfJqvfuswLHftnJPFnPiaG4v+/N8mZd4GIfLKY9R6PAKFn7l6tMH7a?=
- =?us-ascii?Q?DYU70QvQ6XdhGJD20wk125KU5Qe0bPOGJpjQp5gJQXWkMB0dy2F7R67FaclS?=
- =?us-ascii?Q?fMbGUcytmFFJy6UJ3vcf+3sVCPjLH/9MgOTw/7VCDdJzuXFw0iZUZ6WySBDt?=
- =?us-ascii?Q?xUouVbEMckoSZEPp/zu2gMhCMLMvmedIN+qNZ23t2WmP/iSsOgk6Ga7TqDVo?=
- =?us-ascii?Q?cGhX9cSa/4nnNKV3EoVm3aDJZFAGy1hlCjuba4+LOfrSP/rpwG+9KlZvPmsL?=
- =?us-ascii?Q?8ywxYNKQX+Ir9+IXEFyA15no86srCy4HahXwOTbzhx64qs0Q22+RH+OtVzk5?=
- =?us-ascii?Q?Ygg0EhFIaF8iQtVE9XSXepl55aWzpRkHb36e3rrCozl0fydvzzgZxIwbOi1P?=
- =?us-ascii?Q?5IOMu9NbbQi4zlvKLw5rWiNbdv+XNaNklbyk4OupG3+galOBQwy/qGljyu0N?=
- =?us-ascii?Q?U9g1EHVu9FYCB7sM7WPRqeeAKuhO90+bZdRlkJLEPIWXkQFBbMDnw2z/T8CY?=
- =?us-ascii?Q?itQ/i2ipS4c99Che7VMCSljS/D3dzpT1UEppFHe7GaLDbOgKymPQIaTG1cHX?=
- =?us-ascii?Q?aQV7WQAH4wwioR/uQ75yPTR63c6PTe0IiICUQCHjkpZWbDrBdx+ailCD0nMw?=
- =?us-ascii?Q?pzxwLIfqVhIpXNaP97GPXe9jsKRw8D+Fec24ESEiKJCiju4AlCVExVS3TrTg?=
- =?us-ascii?Q?OTcDslSJdExSYh4cH5+WG03WIGxOlj8722R2xUYYB/gA7gylUMfaOP5OIVuL?=
- =?us-ascii?Q?whKnsAi2DvLyi+DSL0YQePczC5M8WQoeBOwlx/Xp74eUyYOQoJpukfuL1YX+?=
- =?us-ascii?Q?1jKsf5317v6UbVTqwqb+4vdnZ4Wn/eJtjGORkmBrh4Ite+8xektS1iPxWnrH?=
- =?us-ascii?Q?CECpSsm1iTXLSHH6Fa26RwnATlQeUL/BDjc+Lu0GleEr5gSwT0CF7l1Z6RsN?=
- =?us-ascii?Q?JthJL0MnaSqw9udlj/12QoYvEcJPZPAismErIdZnScvEw+Ns//iKIAJ74W83?=
- =?us-ascii?Q?RbhvEi1EeQ/LPogvJ9KZ4HeC0Sqwpr822X5c8FRlXhkJZziFT64h1R9OkJIj?=
- =?us-ascii?Q?opuUkKHzUk6hrImHL4bheAL3tu1vzGWuYTovPJceaOpqixt7d4g36zExHAn4?=
- =?us-ascii?Q?AG5gdyLgTcQmaCdIJ7gjhRNzq8ucO5cUP/vyRWv2aRn0E/wBNVuWNyQzjThT?=
- =?us-ascii?Q?wURGMRP24iRrtl9WtQoCI5ek?=
-X-OriginatorOrg: in-advantage.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6e439240-34a7-43df-53b6-08d97979e7e2
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2351.namprd10.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?9XjDKrrlDfGXefrxKs05rmRZW5EvN44lybJdT9JV/3R2RJiIL6LTYGo0uVTZ?=
+ =?us-ascii?Q?LgyY2gpDGsSbsf0AxsRQoT2Wck3ZhXRmkOnVMqT0m5koeWqC+UDDUxtsrjaG?=
+ =?us-ascii?Q?21b/GQ9KXLF8VXhCvl8NX92EFzmdKSiMX/Q8NLUTMfFbLy7jmtkw27Xchi5C?=
+ =?us-ascii?Q?ePrIys2iFL7XrtKWWIwxFLFRFTUMXwWoT4vgja7eg4jzc5WRbgPmIqJKxZfH?=
+ =?us-ascii?Q?S5JJiX3iv0HlXsvNoAUEpvugvsuc2cpFmKn/BjOSHkXAmBkEIrgxinVakfiw?=
+ =?us-ascii?Q?cOYj2vZVRDNDT+7CGbeA39lS59Dp79cj/Sm3YXPjIJPb7UTMW8YS4H6a91bi?=
+ =?us-ascii?Q?N10afIAKFMB1B//VRDEAorHt6tijLSF01M18U3RaGcPxVkq+3LJIEM6njN0u?=
+ =?us-ascii?Q?RrqcPlVLNqXyLOpPP1wLeKSO+vPrD6cEVgrNH7OKK6bKEQq8TAzTW3Tw2pr1?=
+ =?us-ascii?Q?RJP57emb7OvicLhwRzZss4mKNocd/eb4me2/okQ0NrZtF4gycMcMF6PNE5Pt?=
+ =?us-ascii?Q?DMaZ1ApYeoKjCVv6/5mVFjhOumqECQeb2UgdLC3lrnrrJa5aPw2rzHK7nVD2?=
+ =?us-ascii?Q?ShjcPmZsl6Cj5UO8OysXGvSKlyOsYotLzV/BAFhJn+E/A7YnSCbF7j+sCOgg?=
+ =?us-ascii?Q?wNqNPi5psEGda5Xih8czbiWfKV3yNeo+kI1OBW6nUDOX+gor3hSbXY/0y53W?=
+ =?us-ascii?Q?cYY+ttilCdPYhtThqwoUAwHk4vmQ8KlBSZQ6+tTjElzmrfVT613Hyj7gkvmG?=
+ =?us-ascii?Q?0LAYJ8Ehi4DB5KTp/gBvBnaxDjtZ52GOlOAGLRazwHYcOtBfvROObuqw05h9?=
+ =?us-ascii?Q?Jqv9qkgPyjr+pHkDnH6s4PuZbk6tHieqj84MBWrjUhk1ykAZ6A+1r3gntU0L?=
+ =?us-ascii?Q?4yxu8/2jNfRXv7glSQJ++0qJGZeuJgNqDn39cRt3cRv8kv2KQHPorIDdlo0l?=
+ =?us-ascii?Q?71uqDdKjJH1NNPGrCQ8nUfbl0SVsz7Drg9jh8EC1KiuR8tZPv9ePIZLEq1Yu?=
+ =?us-ascii?Q?WtR+dNrFmxZfkpZB12exumgWW/3moavrqdE6nBM2ef2MVVSkdgdgHR4njQij?=
+ =?us-ascii?Q?O5i3tqaE/tU1I1Qp5nwKNrklJXMUjvoIZI5yR9d8Pw0u8z+EgRhZ2lnXLDz+?=
+ =?us-ascii?Q?MPcF2WQTFzBCn39agNh5JoH8Kac+Zg12hCVGmWJY7bQUasdHwFOgTa8Mw092?=
+ =?us-ascii?Q?pPvsmXDdAWS2zOQs7H+VTGWIxC5LNc//uMPxQOwpWYFQieald348pfU2d+++?=
+ =?us-ascii?Q?2XoDkIiSZngp6SYGPooJEmcDgNL6I5Nki6ImU+Mfi6k5xQuueyJsldx7BpSf?=
+ =?us-ascii?Q?lZVNWE2HuziRLt4czrRhhxbv?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3fccb49e-6a2c-48ad-7f8c-08d9797a1284
+X-MS-Exchange-CrossTenant-AuthSource: SL2PR06MB3082.apcprd06.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Sep 2021 01:24:33.9827
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Sep 2021 01:25:45.7967
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 48e842ca-fbd8-4633-a79d-0c955a7d3aae
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +Mjh/J8YEbxsYpOobLIgbC7CcuiMc+kwRVaKYIR3DXImmy0BiUCnQBh8jqu5ZUqs3imSf/T2T2rw/coMxKWdinRq9blZ7hpRqPuORy8gOI4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4516
+X-MS-Exchange-CrossTenant-UserPrincipalName: Ky4rMdSwdanDHCdrSGW/KnjyHLxkc+CTqefYik4nUWiFhl9uSpRDVt7yk3dZSTjxLkXJTsThU48t682LXilVdw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SL2PR06MB3180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 11:49:18AM +0000, Vladimir Oltean wrote:
-> This will conflict with the other patch.... why didn't you send both as
-> part of a series? By not doing that, you are telling patchwork to
-> build-test them in parallel, which of course does not work:
-> https://patchwork.kernel.org/project/netdevbpf/patch/20210916012341.518512-1-colin.foster@in-advantage.com/
-> 
-> Also, why didn't you bump the version counter of the patch, and we're
-> still at v1 despite the earlier attempt?
+From: Wang Qing <wangqing@vivo.com>
 
-I wasn't sure if changing the names of the patch and the intent is what 
-would constitute a new "patch series" so then restart the counter for 
-the counters or not. I had figured "two new patches, two new counters"
-which I understand now was incorrect.
+The wrappers in include/linux/pci-dma-compat.h should go away.
 
-In this particular case, should I have stuck with my first submission
-title:
-[PATCH v2 net] bug fix when writing MAC speed
-and submitted the two patches? 
+The patch has been generated with the coccinelle script below.
+expression e1, e2;
+@@
+-    pci_set_dma_mask(e1, e2)
++    dma_set_mask(&e1->dev, e2)
 
-I assume it would only cause headaches if I incremented the counter and
-changed the name to something like
-[PATCH v2 net] remove unnecessary register writes
-or something simliar? Although your example below suggests I should
-maybe submit the next set as
-[PATCH v3 net] ocelot phylink fixes
+@@
+expression e1, e2;
+@@
+-    pci_set_consistent_dma_mask(e1, e2)
++    dma_set_coherent_mask(&e1->dev, e2)
 
-> 
-> git format-patch -2 --cover-letter --subject-prefix="PATCH v3 net" -o /opt/patches/linux/ocelot-phylink-fixes/v3/
-> ./scripts/get_maintainer.pl /opt/patches/linux/ocelot-phylink-fixes/v3/*.patch
-> ./scripts/checkpatch.pl --strict /opt/patches/linux/ocelot-phylink-fixes/v3/*.patch
-> # Go through patches, write change log compared to v2 using vimdiff, meld, git range-diff, whatever
-> # Write cover letter summarizing what changes and why. If fixing bugs explain the impact.
-> git send-email \
-> 	--to='netdev@vger.kernel.org' \
-> 	--to='linux-kernel@vger.kernel.org' \
-> 	--cc='Vladimir Oltean <vladimir.oltean@nxp.com>' \
-> 	--cc='Claudiu Manoil <claudiu.manoil@nxp.com>' \
-> 	--cc='Alexandre Belloni <alexandre.belloni@bootlin.com>' \
-> 	--cc='UNGLinuxDriver@microchip.com' \
-> 	--cc='"David S. Miller" <davem@davemloft.net>' \
-> 	--cc='Jakub Kicinski <kuba@kernel.org>' \
-> 	/opt/patches/linux/ocelot-phylink-fixes/v3/*.patch
+While at it, some 'dma_set_mask()/dma_set_coherent_mask()' have been
+updated to a much less verbose 'dma_set_mask_and_coherent()'.
 
-I've been using --to-cmd and --cc-cmd with get_maintainer.pl. If this is
-ill-advised, I'll stop. I noticed it seemed to determine the list on a
-per-patch-file basis instead of generating one single list.
+This type of patches has been going on for a long time, I plan to 
+clean it up in the near future. If needed, see post from 
+Christoph Hellwig on the kernel-janitors ML:
+https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
 
-> 
-> Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> 
-> Please keep this tag but resend a new version. You can download the patch with the review tags automatically using:
-> git b4 20210916010938.517698-1-colin.foster@in-advantage.com
-> git b4 20210916012341.518512-1-colin.foster@in-advantage.com
-> 
-> where "git b4" is an alias configured like this in ~/.gitconfig:
-> 
-> [b4]
-> 	midmask = https://lore.kernel.org/r/%s
-> [alias]
-> 	b4 = "!f() { b4 am -t -o - $@ | git am -3; }; f"
+Signed-off-by: Wang Qing <wangqing@vivo.com>
+---
+ drivers/dma/dw-edma/dw-edma-pcie.c | 17 ++++-------------
+ 1 file changed, 4 insertions(+), 13 deletions(-)
+ mode change 100644 => 100755 drivers/dma/dw-edma/dw-edma-pcie.c
 
-Thank you for all this. I understand you have better things to do than
-to hold my hand through this process, so I greatly appreciate your help.
+diff --git a/drivers/dma/dw-edma/dw-edma-pcie.c b/drivers/dma/dw-edma/dw-edma-pcie.c
+index 44f6e09..198f6cd
+--- a/drivers/dma/dw-edma/dw-edma-pcie.c
++++ b/drivers/dma/dw-edma/dw-edma-pcie.c
+@@ -186,27 +186,18 @@ static int dw_edma_pcie_probe(struct pci_dev *pdev,
+ 	pci_set_master(pdev);
+ 
+ 	/* DMA configuration */
+-	err = pci_set_dma_mask(pdev, DMA_BIT_MASK(64));
++	err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
+ 	if (!err) {
+-		err = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64));
+-		if (err) {
+-			pci_err(pdev, "consistent DMA mask 64 set failed\n");
+-			return err;
+-		}
++		pci_err(pdev, "DMA mask 64 set failed\n");
++		return err;
+ 	} else {
+ 		pci_err(pdev, "DMA mask 64 set failed\n");
+ 
+-		err = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
++		err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
+ 		if (err) {
+ 			pci_err(pdev, "DMA mask 32 set failed\n");
+ 			return err;
+ 		}
+-
+-		err = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
+-		if (err) {
+-			pci_err(pdev, "consistent DMA mask 32 set failed\n");
+-			return err;
+-		}
+ 	}
+ 
+ 	/* Data structure allocation */
+-- 
+2.7.4
+
