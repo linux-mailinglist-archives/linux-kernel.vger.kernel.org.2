@@ -2,139 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9080740FD62
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 17:57:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB33040FD68
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 17:57:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242657AbhIQP6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 11:58:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57356 "EHLO
+        id S243084AbhIQP6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 11:58:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231556AbhIQP6Q (ORCPT
+        with ESMTP id S243002AbhIQP6U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 11:58:16 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E709C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:56:54 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id d11so9157719qtw.3
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:56:54 -0700 (PDT)
+        Fri, 17 Sep 2021 11:58:20 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D15B6C061768
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:56:58 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id f3-20020a17090a638300b00199097ddf1aso10375760pjj.0
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:56:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=poorly.run; s=google;
+        d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=0sCoJcMzph8m7gHdWZKN3dp454V4z1+jmuXCQGYY1eU=;
-        b=UX6GzuE3DTpJzHN/aIeG3aCWzhBV+fCkDtBgEsxVhOm3+8K8AyENBXdIjuOYPRQKxs
-         CTuel8m/m8KvyUEtzzp6eSepsKHiz/6oQvR50EcDMCZsQ3D7ykraTZ1895PCkIJHaqP5
-         sfVz/lJFm7SXIqu1gLW50masMo1/nUD/Q4NJaqleeYLk/IDnaaWJNf0YBugq8do4COrv
-         tgciBCa4sJznbQ680HUkBOi8azZ7pZjDQk932tTjNeS8fwuKs1XZMUEsUQPyod+7kBIn
-         PX4L5mBmBUGYZaIWPqPbQt+e/XskkfcMsuLlF5APW7WdqHZcqEAGziGAp2Q4K1+CChVa
-         kfMA==
+         :content-disposition:in-reply-to;
+        bh=PGP90rGrx9Q/B4QCSOjOFqunMnqzEXwIkqq9k8atHps=;
+        b=ndpEhuAFaSf+VKhSsdGkhk1t8wZvo2kOEpwhVl8Uc7QPrpRUJatzhcIoIXAvOodFiT
+         j9A6gHvoFP3+d0I70cP2Wm8/2tKrj9jOUZNQtV5e/dchiaFc1tluEFhx3BuEsgryQOCC
+         3bAzwxTYoFiNda41I8OWc1aYnHj1aRByiuC6c=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=0sCoJcMzph8m7gHdWZKN3dp454V4z1+jmuXCQGYY1eU=;
-        b=6Jd34uEp2j2xLw14UpNQO0qgfmvpVqz7/RCBbl6y/HI5EznCRBxm/QK5vAuVwKaD52
-         S9d9sh6ol729gW2ed6HSxsDueTDZngJlpaH06h35O1LC7LG7E3XJXHgBe+CZEv0xU9sf
-         nAddKyD1eLscQA05m7lqnFpfe8D+etMXVBuwqe1SSwsxQKtkZDbu7ktYQJ4SrYeZD9e1
-         is7AWaXeHtJg9aHQrkyqrQlyzFavK3F3i8a1pdVUoRj0eCoAbGFNGjhfXDtsGXqFzEBm
-         ElDvo0BSfrJJQnd9WxwocRy+VBsfr/SQBm27R5iSp6gf+A32CVHgKgRX3AYVjxECo6LR
-         UcMw==
-X-Gm-Message-State: AOAM5317npHcp4qRhTFoIrmL0kCQNvRreRPxhMkZ3uef7GGgRhtkc+a9
-        Z1NbpIiisoC1z0aPCk0i9GNyUd01pXUusg==
-X-Google-Smtp-Source: ABdhPJy2rUDs6BeN9kdSRBI5w9E4e4qiGJ6kgMTqOz5qaJIsLmkzMmZBlXt+Y/EFA7itiDo5nxOSnA==
-X-Received: by 2002:ac8:4a90:: with SMTP id l16mr5492592qtq.154.1631894213604;
-        Fri, 17 Sep 2021 08:56:53 -0700 (PDT)
-Received: from localhost ([167.100.64.199])
-        by smtp.gmail.com with ESMTPSA id a8sm4075889qtx.39.2021.09.17.08.56.53
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 17 Sep 2021 08:56:53 -0700 (PDT)
-Date:   Fri, 17 Sep 2021 11:56:52 -0400
-From:   Sean Paul <sean@poorly.run>
-To:     Fernando Ramos <greenfoo@u92.eu>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        sean@poorly.run, linux-doc@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-Subject: Re: [PATCH 15/15] doc: drm: remove TODO entry regarding
- DRM_MODSET_LOCK_ALL cleanup
-Message-ID: <20210917155652.GP2515@art_vandelay>
-References: <20210916211552.33490-1-greenfoo@u92.eu>
- <20210916211552.33490-16-greenfoo@u92.eu>
+         :mime-version:content-disposition:in-reply-to;
+        bh=PGP90rGrx9Q/B4QCSOjOFqunMnqzEXwIkqq9k8atHps=;
+        b=FoiRDUHswK4rFp9oC5QdiuWqk+omnKgZGKhlbuLIRZyLz+ZXtxC55Yd21wIxSboL+I
+         60y6NfZAiiper27X1Ois5pWcSImJ7IwzcJD5m/z66t9brYiIQxWfTe6wIjsporLJqG6m
+         pPiCZxqmHs8QRTvCDpMaOEpKzcTY4F7G9bbZCdFA+P/a5fr6Dl/mv67qlmLIwoUXAy9h
+         sklTD2CO11iQXrde/9eY59XIO8JeJFJbuku7/T7qDqeGoI7PDjP5PITt2/xxxG9rVKjk
+         +OQdsUKcO+r7zCJTsKpBkNh2bx/5x2QyaXUjBekPx00adVJhWqQJZyz27thntIkn9Y9v
+         qQCg==
+X-Gm-Message-State: AOAM533QWQu121T7810WZbqAEfr/XBKRK9lqKXfE6d6JC+qP6nJgY4oD
+        DCHNl14l2peuEecMDZLWXeLkvA==
+X-Google-Smtp-Source: ABdhPJxuE2pcxHAXT7E8aoPaByNbXnM5kqHn5Dpxd8dr/lCPpKeAjwJ+TGvxC9Ma0RX+KMf6E3BhXQ==
+X-Received: by 2002:a17:902:e54f:b0:13c:a004:bc86 with SMTP id n15-20020a170902e54f00b0013ca004bc86mr9475793plf.78.1631894218277;
+        Fri, 17 Sep 2021 08:56:58 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id y195sm6959896pfc.7.2021.09.17.08.56.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Sep 2021 08:56:57 -0700 (PDT)
+Date:   Fri, 17 Sep 2021 08:56:56 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Brendan Higgins <brendanhiggins@google.com>
+Cc:     shuah@kernel.org, davidgow@google.com, arnd@arndb.de,
+        rafael@kernel.org, jic23@kernel.org, lars@metafoo.de,
+        ulf.hansson@linaro.org, andreas.noever@gmail.com,
+        michael.jamet@intel.com, mika.westerberg@linux.intel.com,
+        YehezkelShB@gmail.com, masahiroy@kernel.org,
+        michal.lkml@markovi.net, ndesaulniers@google.com,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        gregkh@linuxfoundation.org, linux-iio@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-hardening@vger.kernel.org, linux-kbuild@vger.kernel.org
+Subject: Re: [PATCH v1 5/6] mmc: sdhci-of-aspeed: build kunit tests without
+ structleak plugin
+Message-ID: <202109170856.8DDB49112D@keescook>
+References: <20210917061104.2680133-1-brendanhiggins@google.com>
+ <20210917061104.2680133-6-brendanhiggins@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210916211552.33490-16-greenfoo@u92.eu>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210917061104.2680133-6-brendanhiggins@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 11:15:52PM +0200, Fernando Ramos wrote:
-> The previous commits do exactly what this entry in the TODO file asks
-> for, thus we can remove it now as it is no longer applicable.
-
-Thanks for doing this work!
-
-Can we remove drm_modeset_lock_all[_ctx] now? If so, let's queue that up as part
-of the set.
-
-
-Reviewed-by: Sean Paul <sean@poorly.run>
-
-
+On Thu, Sep 16, 2021 at 11:11:03PM -0700, Brendan Higgins wrote:
+> The structleak plugin causes the stack frame size to grow immensely when
+> used with KUnit.
 > 
-> Signed-off-by: Fernando Ramos <greenfoo@u92.eu>
+> Turn it off.
+> 
+> Co-developed-by: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
 > ---
->  Documentation/gpu/todo.rst                | 17 -----------------
->  Documentation/locking/ww-mutex-design.rst |  2 +-
->  2 files changed, 1 insertion(+), 18 deletions(-)
+>  drivers/mmc/host/Makefile | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/Documentation/gpu/todo.rst b/Documentation/gpu/todo.rst
-> index 12e61869939e..6613543955e9 100644
-> --- a/Documentation/gpu/todo.rst
-> +++ b/Documentation/gpu/todo.rst
-> @@ -353,23 +353,6 @@ converted, except for struct drm_driver.gem_prime_mmap.
->  
->  Level: Intermediate
->  
-> -Use DRM_MODESET_LOCK_ALL_* helpers instead of boilerplate
-> ----------------------------------------------------------
-> -
-> -For cases where drivers are attempting to grab the modeset locks with a local
-> -acquire context. Replace the boilerplate code surrounding
-> -drm_modeset_lock_all_ctx() with DRM_MODESET_LOCK_ALL_BEGIN() and
-> -DRM_MODESET_LOCK_ALL_END() instead.
-> -
-> -This should also be done for all places where drm_modeset_lock_all() is still
-> -used.
-> -
-> -As a reference, take a look at the conversions already completed in drm core.
-> -
-> -Contact: Sean Paul, respective driver maintainers
-> -
-> -Level: Starter
-> -
->  Rename CMA helpers to DMA helpers
->  ---------------------------------
->  
-> diff --git a/Documentation/locking/ww-mutex-design.rst b/Documentation/locking/ww-mutex-design.rst
-> index 6a4d7319f8f0..6a8f8beb9ec4 100644
-> --- a/Documentation/locking/ww-mutex-design.rst
-> +++ b/Documentation/locking/ww-mutex-design.rst
-> @@ -60,7 +60,7 @@ Concepts
->  Compared to normal mutexes two additional concepts/objects show up in the lock
->  interface for w/w mutexes:
->  
-> -Acquire context: To ensure eventual forward progress it is important the a task
-> +Acquire context: To ensure eventual forward progress it is important that a task
->  trying to acquire locks doesn't grab a new reservation id, but keeps the one it
->  acquired when starting the lock acquisition. This ticket is stored in the
->  acquire context. Furthermore the acquire context keeps track of debugging state
+> diff --git a/drivers/mmc/host/Makefile b/drivers/mmc/host/Makefile
+> index 14004cc09aaad..2ab083931f8fd 100644
+> --- a/drivers/mmc/host/Makefile
+> +++ b/drivers/mmc/host/Makefile
+> @@ -85,6 +85,7 @@ obj-$(CONFIG_MMC_SDHCI_DOVE)		+= sdhci-dove.o
+>  obj-$(CONFIG_MMC_SDHCI_TEGRA)		+= sdhci-tegra.o
+>  obj-$(CONFIG_MMC_SDHCI_OF_ARASAN)	+= sdhci-of-arasan.o
+>  obj-$(CONFIG_MMC_SDHCI_OF_ASPEED)	+= sdhci-of-aspeed.o
+> +CFLAGS_sdhci-of-aspeed.o		+= $(DISABLE_STRUCTLEAK_PLUGIN)
+
+This isn't a stand-alone test object, so I'm less excited about
+disabling STRUCTLEAK here.
+
+>  obj-$(CONFIG_MMC_SDHCI_OF_AT91)		+= sdhci-of-at91.o
+>  obj-$(CONFIG_MMC_SDHCI_OF_ESDHC)	+= sdhci-of-esdhc.o
+>  obj-$(CONFIG_MMC_SDHCI_OF_HLWD)		+= sdhci-of-hlwd.o
 > -- 
-> 2.33.0
+> 2.33.0.464.g1972c5931b-goog
 > 
 
 -- 
-Sean Paul, Software Engineer, Google / Chromium OS
+Kees Cook
