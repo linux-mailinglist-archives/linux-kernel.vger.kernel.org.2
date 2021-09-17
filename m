@@ -2,180 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8947441017D
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 00:49:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0223A410181
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 00:53:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344821AbhIQWuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 18:50:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37134 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236208AbhIQWui (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 18:50:38 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2151FC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 15:49:16 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id c10so22254237qko.11
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 15:49:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gD3D1HE4zYILu0+ZzkTQiVhB8QdO4UEirY2pAFsXAsg=;
-        b=DNI0JghGS/WxXoZfwSOl/X9w3UNCgpUUCeVhuj6wL4UmBoTqF0gmnpp44a7/HPq10w
-         HRI/x3+zg2doHDzTKrVweEnN1amNMoITseoC+BKj2ADxrlWrKcbVX+BVykGKpd3z+tVo
-         HWZ70ILMD4fKmMZjSXvOX1FRUirS4gZ7baPsU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gD3D1HE4zYILu0+ZzkTQiVhB8QdO4UEirY2pAFsXAsg=;
-        b=DyHl00N//AfBbEyE7l67+8bQOhNo44n4UbdNUnwgwcWUPt3XqvKgAfBexSlCJ9d96E
-         JldR8mMTFwiMDYOnoLq5+6DEcV/Uqrh8J/WEZvYSUF3e6GbJkYpQFgxys5JvzrELDyaY
-         rNnAdts47A5ugqJ5ovcbvijjlNU1N9BDB8xvuwh7+A8CwM6o7WeE1RCYeiZD+dK86Cn2
-         +j2KC8qQ0PapX/7TE3y3y41MsFLh5nvXOFnIttYh6fzPAA01jChZA+gGirTC0qBx1r24
-         3W/btVGKDHT1q559sBNSpQMCld7BjCoAD5yb+ZjPQxigG0QzYgbZquXlFlLoqwxVYPI2
-         WnPg==
-X-Gm-Message-State: AOAM531vzsMJIhgoE55rgVV4uqt3iWHza4WKvasPs8xkTscGvckA822f
-        gaqWr8ZvpOpdplo+149rhQrz/AHFBcM3oOkeTkiGjw==
-X-Google-Smtp-Source: ABdhPJwupEDp9zIQbb4xnXalet3Zjc0UBz5BI0iQ8rOV46nAslGCfwjYWs5+DQuj8YXFe9ziyqnHUW4xEWCQCk73Jgw=
-X-Received: by 2002:a25:6744:: with SMTP id b65mr1144453ybc.100.1631918955276;
- Fri, 17 Sep 2021 15:49:15 -0700 (PDT)
+        id S239861AbhIQWyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 18:54:22 -0400
+Received: from mga14.intel.com ([192.55.52.115]:64310 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232149AbhIQWyT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 18:54:19 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10110"; a="222545056"
+X-IronPort-AV: E=Sophos;i="5.85,302,1624345200"; 
+   d="scan'208";a="222545056"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2021 15:52:57 -0700
+X-IronPort-AV: E=Sophos;i="5.85,302,1624345200"; 
+   d="scan'208";a="546662097"
+Received: from unknown (HELO localhost) ([10.251.216.224])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2021 15:52:51 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Matthew Brost <matthew.brost@intel.com>,
+        Hugh Dickins <hughd@google.com>
+Cc:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        intel-gfx@lists.freedesktop.org,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Vinay Belgaumkar <vinay.belgaumkar@intel.com>,
+        Michal Wajdeczko <michal.wajdeczko@intel.com>,
+        Sujaritha Sundaresan <sujaritha.sundaresan@intel.com>,
+        John Harrison <John.C.Harrison@intel.com>,
+        Daniele Ceraolo Spurio <daniele.ceraolospurio@intel.com>,
+        Matt Roper <matthew.d.roper@intel.com>,
+        Lucas De Marchi <lucas.demarchi@intel.com>,
+        Dave Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Pavel Machek <pavel@denx.de>, linux-kernel@vger.kernel.org
+Subject: Re: 5.15-rc1 i915 blank screen booting on ThinkPads
+In-Reply-To: <20210917213032.GA34270@jons-linux-dev-box>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <9e1a6f3b-5e64-be91-ba54-9b5d135ef638@google.com> <9e4c1c68-8d1e-ee2c-99bf-320046130775@linux.intel.com> <87mtocx1rm.fsf@intel.com> <1f955bff-fd9e-d2ee-132a-f758add9e9cb@google.com> <20210917213032.GA34270@jons-linux-dev-box>
+Date:   Sat, 18 Sep 2021 01:52:48 +0300
+Message-ID: <87k0jevmpr.fsf@intel.com>
 MIME-Version: 1.0
-References: <20210914162825.v3.1.I85e46da154e3fa570442b496a0363250fff0e44e@changeid>
- <20210914162825.v3.2.Ib06997ddd73e2ac29e185f039d85cfa8e760d641@changeid>
- <CAE-0n53BXh3_6jEW5oTbPA-V=MSaN=RvqaU8uoY9GNOm-0Pv_g@mail.gmail.com>
- <CAD=FV=WKQg-fU1jaSOh3RTa5HpSAiTzt2-Sycwt59uv1WemYxg@mail.gmail.com>
- <CAE-0n539tJLLWHdL65ZU_1qOzA-RsEqGqVi-19VLHz_W5dT6VA@mail.gmail.com>
- <CAD=FV=U_FX_Rg=h+w0yzpzi7fcUCg0Thn2_nXixsCRVsYFUGHQ@mail.gmail.com>
- <CAE-0n52F6j-qfA_h76BPyMRHi7hJzm6bX8eD5jS-C+ydz=vkBA@mail.gmail.com>
- <CAD=FV=XdN6SLZQ=kAe4S7Z7CjSrqnAQsj2uRiePXKFp07chVBg@mail.gmail.com>
- <CAE-0n52vqjGgdNMFBjW=7vo5B3wZcbnggpzQS05vb7Rr3dO8Vw@mail.gmail.com> <CAD=FV=WPOvL5xK+nFtgcyH=99=pMFs2eogO0XTg=32Q4QOU+4g@mail.gmail.com>
-In-Reply-To: <CAD=FV=WPOvL5xK+nFtgcyH=99=pMFs2eogO0XTg=32Q4QOU+4g@mail.gmail.com>
-From:   Philip Chen <philipchen@chromium.org>
-Date:   Fri, 17 Sep 2021 15:49:04 -0700
-Message-ID: <CA+cxXhmOPUxe=GH7f-BMUVD=FF-0+18ThQc4EthwTY0+epr3Ug@mail.gmail.com>
-Subject: Re: [PATCH v3 2/3] drm/bridge: parade-ps8640: Use regmap APIs
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Stephen Boyd <swboyd@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Doug and Stephen,
+On Fri, 17 Sep 2021, Matthew Brost <matthew.brost@intel.com> wrote:
+> On Fri, Sep 17, 2021 at 02:26:48PM -0700, Hugh Dickins wrote:
+>> On Thu, 16 Sep 2021, Jani Nikula wrote:
+>> > On Thu, 16 Sep 2021, Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com> wrote:
+>> > > On 16/09/2021 05:37, Hugh Dickins wrote:
+>> > >> Two Lenovo ThinkPads, old T420s (2011), newer X1 Carbon 5th gen (2017):
+>> > >> i915 working fine on both up to 5.14, but blank screens booting 5.15-rc1,
+>> > >> kernel crashed in some way.
+>> ...
+>> > > Kernel logs with drm.debug=0xe, with the broken black screen state, 
+>> > > would probably answer a lot of questions if you could gather it from 
+>> > > both machines?
+>> > 
+>> > And for that, I think it's best to file separate bugs at [1] and attach
+>> > the logs there. It helps keep the info in one place. Thanks.
+>> > 
+>> > BR,
+>> > Jani.
+>> > 
+>> > [1] https://gitlab.freedesktop.org/drm/intel/issues/new
+>> 
+>> Thanks for the quick replies: but of course, getting kernel logs was
+>> the difficult part, this being bootup, with just a blank screen, and
+>> no logging to disk at this stage.  I've never needed it before, but
+>> netconsole to the rescue.
+>> 
+>> Problem then obvious, both machines now working,
+>> please let me skip the bug reports, here's a patch:
+>> 
+>
+> Thanks for finding / fixing this Hugh. I will post this patch in a way
+> our CI system can understand.
 
-Thanks for the review.
-Before we reach a consensus on the best logging option, I'll just
-remove the printouts from this patch and just return PTR_ERR.
-Once we reach a consensus, we can probably improve logging in a separate patch.
+Thanks indeed!
 
-On Fri, Sep 17, 2021 at 8:02 AM Doug Anderson <dianders@chromium.org> wrote:
+Matt, please get rid of the BUG_ON while at it, and make it a
+WARN. Oopsing doesn't do anyone any good.
+
+BR,
+Jani.
+
 >
-> Hi,
+> Matt 
 >
-> On Thu, Sep 16, 2021 at 11:12 PM Stephen Boyd <swboyd@chromium.org> wrote:
-> >
-> > > > > In the case of devm_regmap_init_i2c(), the driver could be fine but
-> > > > > you might be trying to instantiate it on a system whose i2c bus lacks
-> > > > > the needed functionality. That's not a bug in the bridge driver but an
-> > > > > error in system integration. Yeah, after bringup of the new system you
-> > > > > probably don't need the error, but it will be useful during people's
-> > > > > bringups year after year.
-> > > > >
-> > > >
-> > > > The point I'm trying to make is that these error messages in probe
-> > > > almost never get printed after the driver is brought up on the hardware
-> > > > that starts shipping out to non-kernel developers. Of course they happen
-> > > > when kernel devs are enabling new hardware year after year on the same
-> > > > tried and tested driver. They're worthwhile messages to have to make our
-> > > > lives easier at figuring out some misconfiguration, etc. The problem is
-> > > > they lead to bloat once the bringup/configuration phase is over.
-> > > >
-> > > > At one point we directed driver authors at dev_dbg() for these prints so
-> > > > that the strings would be removed from the kernel image if debugging
-> > > > wasn't enabled. It looks like dev_err_probe() goes in the opposite
-> > > > direction by printing an error message and passing the string to an
-> > > > exported function, so dev_dbg() won't reduce the image size. Ugh!
-> > >
-> > > So maybe the key here is that "CONFIG_PRINTK=n" is not the same as
-> > > "CONFIG_I_THINK_PROBE_ERRORS_ARE_BLOAT" and it's not just that one has
-> > > a more flippant name than the other. I think your argument about the
-> > > fact that these errors almost never come up in practice is actually
-> > > true for pretty much _all_ probe errors, isn't it? So if you wanted to
-> > > keep non-probe errors in your system (keep PRINTK=y) and just do away
-> > > with these bloat-y probe errors then dev_err_probe() could really be
-> > > the key and there'd be a big benefit for using for all these errors
-> > > during probe, not just ones that have a chance of deferring. ...and
-> > > yes, you could make this config do something fancy like do a stack
-> > > dump or print the return address if you actually hit one of these
-> > > errors once you've thrown away the string.
-> >
-> > Yes, but it's also just as important to push similar messages, i.e. "I
-> > failed to get some resource", into the API that hands resources out so
-> > that bloat is minimized further and drivers are kept simple.
->
-> Sure, but this is a slippery slope. If there's any chance that a
-> caller might want to know about the error but _not_ want the error
-> message printed then you can't push the error message into the API.
-> It's really hard to find error cases (even with "get resource" type
-> functions) where the caller _always_ wants the error reported. Even
-> kmalloc() has a nod to this with __GFP_NOWARN, though I'm not
-> advocating adding a "no warn" flag to all APIs. It's always possible
-> that the caller is expecting some types of errors and handles the case
-> elegantly.
->
-> Let's pop all the way back up to the original point here, which was
-> about devm_regmap_init_i2c(). What should happen with errors? Let's
-> look specifically at the errors that could be returned by
-> regmap_get_i2c_bus() which is the first thing devm_regmap_init_i2c()
-> tries to do. Those errors have to do with the i2c bus not supporting
-> the features needed by our regmap.
->
->
-> a) We could return the error without printing anything like the code does today.
->
-> No bloat, but during bringup of this bridge chip on a new i2c bus we'd
-> have to manually add printouts to the probe function to figure out
-> this error.
->
->
-> b) We could push error reporting into regmap_get_i2c_bus().
->
-> No per-driver bloat, but some drivers might have a legitimate reason
-> not to have an error print here. Perhaps they have a fallback `regmap`
-> config that they want to be able to use that works with different bus
-> capabilities. I don't think we can do this.
->
->
-> c) We could use dev_dbg() to print the error
->
-> Only bloat if dynamic debug or DEBUG is defined
->
->
-> d) We could use dev_err_probe() to print the error
->
-> Extra bloat, though it could be minimized (without sacrificing all
-> "printk") with a future patch to drop the string from dev_err_probe()
-> and perhaps replace it with a WARN_ON(). Also handles the fact that
-> perhaps someday someone might find a reason that regmap_get_i2c_bus()
-> and/or devm_regmap_init_i2c() should suddenly start returning
-> -EPROBE_DEFER.
->
->
-> I'm still advocating for "d)" above and I believe you originally
-> advocated for "a)" or "c)". It's really not such a huge deal, so if
-> you're adamant about "a)" then I'll shut up. I'm curious if I've
-> managed to convince you all about "d)" though.
->
-> -Doug
+>> [PATCH] drm/i915: fix blank screen booting crashes
+>> 
+>> 5.15-rc1 crashes with blank screen when booting up on two ThinkPads
+>> using i915.  Bisections converge convincingly, but arrive at different
+>> and surprising "culprits", none of them the actual culprit.
+>> 
+>> netconsole (with init_netconsole() hacked to call i915_init() when
+>> logging has started, instead of by module_init()) tells the story:
+>> 
+>> kernel BUG at drivers/gpu/drm/i915/i915_sw_fence.c:245!
+>> with RSI: ffffffff814d408b pointing to sw_fence_dummy_notify().
+>> I've been building with CONFIG_CC_OPTIMIZE_FOR_SIZE=y, and that
+>> function needs to be 4-byte aligned.
+>> 
+>> Fixes: 62eaf0ae217d ("drm/i915/guc: Support request cancellation")
+>> Signed-off-by: Hugh Dickins <hughd@google.com>
+>> ---
+>> 
+>>  drivers/gpu/drm/i915/gt/intel_context.c |    1 +
+>>  1 file changed, 1 insertion(+)
+>> 
+>> --- a/drivers/gpu/drm/i915/gt/intel_context.c
+>> +++ b/drivers/gpu/drm/i915/gt/intel_context.c
+>> @@ -362,6 +362,7 @@ static int __intel_context_active(struct
+>>  	return 0;
+>>  }
+>>  
+>> +__aligned(4)	/* Respect the I915_SW_FENCE_MASK */
+>>  static int sw_fence_dummy_notify(struct i915_sw_fence *sf,
+>>  				 enum i915_sw_fence_notify state)
+>>  {
+
+-- 
+Jani Nikula, Intel Open Source Graphics Center
