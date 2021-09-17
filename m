@@ -2,96 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7998F410166
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 00:39:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86644410169
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 00:39:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239115AbhIQWkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 18:40:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34818 "EHLO
+        id S1344802AbhIQWkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 18:40:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239611AbhIQWkL (ORCPT
+        with ESMTP id S238266AbhIQWkb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 18:40:11 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 238FEC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 15:38:47 -0700 (PDT)
-Date:   Sat, 18 Sep 2021 00:38:41 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1631918322;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=f17NSAv1jzczG2r+B4PpWFbaApmikOHTORAA+K+txX4=;
-        b=x/7gbyC6oUeXTigd+tJFoMB0+Mj38RCV52vHdSX8r5HjF4azalfbqA3tcAAGxApNXsiMTa
-        ELEsn7mPtpLXs4Al0+3f+RYuQlybHvj12H1b5raKzGVl10vNZdjjHel35xE3pM02BzorNC
-        Nyp5JpmUS9lY4n+nUvnUoDMkG0t/USAyJyxwgPBvtTDBT33PNgWHxXCgPZ0hGhr1XN6pJd
-        jsM942425jEGqIvPYgwPAsYfqiJofVyZ6ll/dDgw93kspPFMWEtG164aaMMYYfQAKG2SSv
-        GyeJepleT492sdR16eQly7h4DbJWJ5qlzaxVLUApweZHvWWK2TrZkorfUkDigQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1631918322;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=f17NSAv1jzczG2r+B4PpWFbaApmikOHTORAA+K+txX4=;
-        b=v7ndSLk3pxkM5G9YBigOxeigotgGGVj8rMxzpQyo+b/wVgSx1ZCfo05ITlhqF7NlZz6woy
-        vdl4dlWlwHYeYTAg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     linux-kernel@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: [PATCH] genirq: Disable irqpoll on PREEMPT_RT.
-Message-ID: <20210917223841.c6j6jcaffojrnot3@linutronix.de>
+        Fri, 17 Sep 2021 18:40:31 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59771C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 15:39:08 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id t1so10989919pgv.3
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 15:39:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2/rOcOavU9zDghgpvdrNudzstRLQ0FLsHzg1+2it0Wo=;
+        b=inFPbKtH0NMd2NABu2MN0k8Vu3eyFOIlzbmDDMX9+U6Hqf9pMnXAS99mzmqQvmlbL0
+         +vizYoGouznBfK7gfBgjkUg7fqbWQUdyEtlX1vrIFWYsJ8qXqdCNz3v6PlE9Y3hWzNSL
+         K3P8i0Z3xeQXcSr1HpacqIq26TnYKmmrYMVRw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2/rOcOavU9zDghgpvdrNudzstRLQ0FLsHzg1+2it0Wo=;
+        b=yalWq6LG8ZxQ8uj8dH/0Jyt0b7DqOKEjF3eY/fWhP4L1P2BqZrDgb6eR8B+jOhZ+M+
+         GGVpwI80NXSCWKl7CYcaKF2KIpZtCbONnw/WSJLLXsBiaMzYZnTHoNX+AOMuZw5KkM+m
+         dbE6XVnmJkS/EQ+JgsaR7Oz4GqCfvJC/SUEKg2fEYlnrtSvbvt1sRJpP7LOS/Co+eqav
+         OIBFZuo2MtJ4Y8sObbFoY9JBayVmiFhek1kXvzXJkL/6hJuBVxMUp+3YufTSpvEKoXw2
+         O8snhA57bSpV2Zy6E9Gmse925EFA+88EHkTV8H0uKOfs+BZdxg7YrW0anFpXeXEckzfd
+         cvRg==
+X-Gm-Message-State: AOAM532YITtfestnkCJ4fH23cdo8ISqsKbnntzazG0u/sVVHSlDD1o9J
+        x1K0FZ1+vV7tO9xnLpe4uFyXe3ezwV8Pmw==
+X-Google-Smtp-Source: ABdhPJz4i6+u2um1URE3VfLx/tZT1bEg/qe99Ds3AVSCeWJXbtB2DqqkFaNUPveb48pXZNpFICN+gg==
+X-Received: by 2002:a62:1702:0:b0:444:d085:6a61 with SMTP id 2-20020a621702000000b00444d0856a61mr5744369pfx.14.1631918347607;
+        Fri, 17 Sep 2021 15:39:07 -0700 (PDT)
+Received: from philipchen.mtv.corp.google.com ([2620:15c:202:201:487:ba41:bf2c:8c7e])
+        by smtp.gmail.com with ESMTPSA id y13sm6619486pjc.50.2021.09.17.15.39.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Sep 2021 15:39:06 -0700 (PDT)
+From:   Philip Chen <philipchen@chromium.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     dianders@chromium.org, swboyd@chromium.org,
+        Philip Chen <philipchen@chromium.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH v4 1/2] drm/bridge: parade-ps8640: Use regmap APIs
+Date:   Fri, 17 Sep 2021 15:39:01 -0700
+Message-Id: <20210917153835.v4.1.I2351df94f18d5d8debc22d4d100f36fac560409a@changeid>
+X-Mailer: git-send-email 2.33.0.464.g1972c5931b-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ingo Molnar <mingo@kernel.org>
-Date: Fri, 3 Jul 2009 08:29:57 -0500
+Replace the direct i2c access (i2c_smbus_* functions) with regmap APIs,
+which will simplify the future update on ps8640 driver.
 
-The support for misrouted IRQs is used on old / legacy systems and is
-not feasible on PREEMPT_RT.
-Polling for interrupts reduces the overall system performance.
-Additionally the interrupt latency depends on the polling frequency and
-delays are not desired for real time workload.
-
-Disable IRQ polling on PREEMPT_RT and let the user know that it is not
-enabled.
-
-[ bigeasy: changelog, IS_ENABLED ]
-
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Philip Chen <philipchen@chromium.org>
 ---
- kernel/irq/spurious.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
 
-diff --git a/kernel/irq/spurious.c b/kernel/irq/spurious.c
-index c481d84583257..02b2daf074414 100644
---- a/kernel/irq/spurious.c
-+++ b/kernel/irq/spurious.c
-@@ -447,6 +447,10 @@ MODULE_PARM_DESC(noirqdebug, "Disable irq lockup detection when true");
+Changes in v4:
+- Remove excessive error logging from the probe function
+
+Changes in v3:
+- Fix the nits from v2 review
+
+Changes in v2:
+- Add separate reg map config per page
+
+ drivers/gpu/drm/bridge/parade-ps8640.c | 94 ++++++++++++++++++--------
+ 1 file changed, 64 insertions(+), 30 deletions(-)
+
+diff --git a/drivers/gpu/drm/bridge/parade-ps8640.c b/drivers/gpu/drm/bridge/parade-ps8640.c
+index 685e9c38b2db..18328e75bf90 100644
+--- a/drivers/gpu/drm/bridge/parade-ps8640.c
++++ b/drivers/gpu/drm/bridge/parade-ps8640.c
+@@ -9,6 +9,7 @@
+ #include <linux/i2c.h>
+ #include <linux/module.h>
+ #include <linux/of_graph.h>
++#include <linux/regmap.h>
+ #include <linux/regulator/consumer.h>
  
- static int __init irqfixup_setup(char *str)
- {
-+	if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
-+		pr_warn("irqfixup boot option not supported with PREEMPT_RT\n");
-+		return 1;
-+	}
- 	irqfixup = 1;
- 	printk(KERN_WARNING "Misrouted IRQ fixup support enabled.\n");
- 	printk(KERN_WARNING "This may impact system performance.\n");
-@@ -459,6 +463,10 @@ module_param(irqfixup, int, 0644);
+ #include <drm/drm_bridge.h>
+@@ -31,6 +32,11 @@
  
- static int __init irqpoll_setup(char *str)
+ #define NUM_MIPI_LANES		4
+ 
++#define COMMON_PS8640_REGMAP_CONFIG \
++	.reg_bits = 8, \
++	.val_bits = 8, \
++	.cache_type = REGCACHE_NONE
++
+ /*
+  * PS8640 uses multiple addresses:
+  * page[0]: for DP control
+@@ -64,12 +70,48 @@ struct ps8640 {
+ 	struct drm_bridge *panel_bridge;
+ 	struct mipi_dsi_device *dsi;
+ 	struct i2c_client *page[MAX_DEVS];
++	struct regmap	*regmap[MAX_DEVS];
+ 	struct regulator_bulk_data supplies[2];
+ 	struct gpio_desc *gpio_reset;
+ 	struct gpio_desc *gpio_powerdown;
+ 	bool powered;
+ };
+ 
++static const struct regmap_config ps8640_regmap_config[] = {
++	[PAGE0_DP_CNTL] = {
++		COMMON_PS8640_REGMAP_CONFIG,
++		.max_register = 0xbf,
++	},
++	[PAGE1_VDO_BDG] = {
++		COMMON_PS8640_REGMAP_CONFIG,
++		.max_register = 0xff,
++	},
++	[PAGE2_TOP_CNTL] = {
++		COMMON_PS8640_REGMAP_CONFIG,
++		.max_register = 0xff,
++	},
++	[PAGE3_DSI_CNTL1] = {
++		COMMON_PS8640_REGMAP_CONFIG,
++		.max_register = 0xff,
++	},
++	[PAGE4_MIPI_PHY] = {
++		COMMON_PS8640_REGMAP_CONFIG,
++		.max_register = 0xff,
++	},
++	[PAGE5_VPLL] = {
++		COMMON_PS8640_REGMAP_CONFIG,
++		.max_register = 0x7f,
++	},
++	[PAGE6_DSI_CNTL2] = {
++		COMMON_PS8640_REGMAP_CONFIG,
++		.max_register = 0xff,
++	},
++	[PAGE7_SPI_CNTL] = {
++		COMMON_PS8640_REGMAP_CONFIG,
++		.max_register = 0xff,
++	},
++};
++
+ static inline struct ps8640 *bridge_to_ps8640(struct drm_bridge *e)
  {
-+	if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
-+		pr_warn("irqpoll boot option not supported with PREEMPT_RT\n");
-+		return 1;
-+	}
- 	irqfixup = 2;
- 	printk(KERN_WARNING "Misrouted IRQ fixup and polling support "
- 				"enabled\n");
+ 	return container_of(e, struct ps8640, bridge);
+@@ -78,13 +120,13 @@ static inline struct ps8640 *bridge_to_ps8640(struct drm_bridge *e)
+ static int ps8640_bridge_vdo_control(struct ps8640 *ps_bridge,
+ 				     const enum ps8640_vdo_control ctrl)
+ {
+-	struct i2c_client *client = ps_bridge->page[PAGE3_DSI_CNTL1];
++	struct regmap *map = ps_bridge->regmap[PAGE3_DSI_CNTL1];
+ 	u8 vdo_ctrl_buf[] = { VDO_CTL_ADD, ctrl };
+ 	int ret;
+ 
+-	ret = i2c_smbus_write_i2c_block_data(client, PAGE3_SET_ADD,
+-					     sizeof(vdo_ctrl_buf),
+-					     vdo_ctrl_buf);
++	ret = regmap_bulk_write(map, PAGE3_SET_ADD,
++				vdo_ctrl_buf, sizeof(vdo_ctrl_buf));
++
+ 	if (ret < 0) {
+ 		DRM_ERROR("failed to %sable VDO: %d\n",
+ 			  ctrl == ENABLE ? "en" : "dis", ret);
+@@ -96,8 +138,7 @@ static int ps8640_bridge_vdo_control(struct ps8640 *ps_bridge,
+ 
+ static void ps8640_bridge_poweron(struct ps8640 *ps_bridge)
+ {
+-	struct i2c_client *client = ps_bridge->page[PAGE2_TOP_CNTL];
+-	unsigned long timeout;
++	struct regmap *map = ps_bridge->regmap[PAGE2_TOP_CNTL];
+ 	int ret, status;
+ 
+ 	if (ps_bridge->powered)
+@@ -121,18 +162,12 @@ static void ps8640_bridge_poweron(struct ps8640 *ps_bridge)
+ 	 */
+ 	msleep(200);
+ 
+-	timeout = jiffies + msecs_to_jiffies(200) + 1;
+-
+-	while (time_is_after_jiffies(timeout)) {
+-		status = i2c_smbus_read_byte_data(client, PAGE2_GPIO_H);
+-		if (status < 0) {
+-			DRM_ERROR("failed read PAGE2_GPIO_H: %d\n", status);
+-			goto err_regulators_disable;
+-		}
+-		if ((status & PS_GPIO9) == PS_GPIO9)
+-			break;
++	ret = regmap_read_poll_timeout(map, PAGE2_GPIO_H, status,
++			status & PS_GPIO9, 20 * 1000, 200 * 1000);
+ 
+-		msleep(20);
++	if (ret < 0) {
++		DRM_ERROR("failed read PAGE2_GPIO_H: %d\n", ret);
++		goto err_regulators_disable;
+ 	}
+ 
+ 	msleep(50);
+@@ -144,22 +179,15 @@ static void ps8640_bridge_poweron(struct ps8640 *ps_bridge)
+ 	 * disabled by the manufacturer. Once disabled, all MCS commands are
+ 	 * ignored by the display interface.
+ 	 */
+-	status = i2c_smbus_read_byte_data(client, PAGE2_MCS_EN);
+-	if (status < 0) {
+-		DRM_ERROR("failed read PAGE2_MCS_EN: %d\n", status);
+-		goto err_regulators_disable;
+-	}
+ 
+-	ret = i2c_smbus_write_byte_data(client, PAGE2_MCS_EN,
+-					status & ~MCS_EN);
++	ret = regmap_update_bits(map, PAGE2_MCS_EN, MCS_EN, 0);
+ 	if (ret < 0) {
+ 		DRM_ERROR("failed write PAGE2_MCS_EN: %d\n", ret);
+ 		goto err_regulators_disable;
+ 	}
+ 
+ 	/* Switch access edp panel's edid through i2c */
+-	ret = i2c_smbus_write_byte_data(client, PAGE2_I2C_BYPASS,
+-					I2C_BYPASS_EN);
++	ret = regmap_write(map, PAGE2_I2C_BYPASS, I2C_BYPASS_EN);
+ 	if (ret < 0) {
+ 		DRM_ERROR("failed write PAGE2_I2C_BYPASS: %d\n", ret);
+ 		goto err_regulators_disable;
+@@ -362,15 +390,21 @@ static int ps8640_probe(struct i2c_client *client)
+ 
+ 	ps_bridge->page[PAGE0_DP_CNTL] = client;
+ 
++	ps_bridge->regmap[PAGE0_DP_CNTL] = devm_regmap_init_i2c(client, ps8640_regmap_config);
++	if (IS_ERR(ps_bridge->regmap[PAGE0_DP_CNTL]))
++		return PTR_ERR(ps_bridge->regmap[PAGE0_DP_CNTL]);
++
+ 	for (i = 1; i < ARRAY_SIZE(ps_bridge->page); i++) {
+ 		ps_bridge->page[i] = devm_i2c_new_dummy_device(&client->dev,
+ 							     client->adapter,
+ 							     client->addr + i);
+-		if (IS_ERR(ps_bridge->page[i])) {
+-			dev_err(dev, "failed i2c dummy device, address %02x\n",
+-				client->addr + i);
++		if (IS_ERR(ps_bridge->page[i]))
+ 			return PTR_ERR(ps_bridge->page[i]);
+-		}
++
++		ps_bridge->regmap[i] = devm_regmap_init_i2c(ps_bridge->page[i],
++						ps8640_regmap_config + i);
++		if (IS_ERR(ps_bridge->regmap[i]))
++			return PTR_ERR(ps_bridge->regmap[i]);
+ 	}
+ 
+ 	i2c_set_clientdata(client, ps_bridge);
 -- 
-2.33.0
+2.33.0.464.g1972c5931b-goog
 
