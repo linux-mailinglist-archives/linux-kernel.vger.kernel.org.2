@@ -2,187 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B773440F1F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 08:11:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44EFC40F1F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 08:11:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244994AbhIQGMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 02:12:42 -0400
-Received: from esa4.hgst.iphmx.com ([216.71.154.42]:25066 "EHLO
-        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242449AbhIQGMd (ORCPT
+        id S238174AbhIQGMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 02:12:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35002 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245036AbhIQGMs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 02:12:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1631859071; x=1663395071;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=2XzaRZS9DB+vo3EW82fkFoK8YHkr9HzLbMoUY86sntU=;
-  b=HMJX2mWXjojUzs9nI/VDn2VOfiYmfvzz1Z0jwFnM8APHMvKkPYnqYtN8
-   jWYQpOrHXfmfQp+uutfJLdi8gGFaTpiAVDkxdCIbKEu4cOpwMHmgBcpfZ
-   FZFQOpgxOXjdXk9c2GSuMR0DUqcWgwAMmF128CUFcQu5Gxzv6IKW5fw8g
-   RoMasKlE/AyaLe8dWqs2Ksa4yaUthNfh3pbktCQWjEsW48OnqTrK6/8LI
-   BP2N1zegyotOY1Du7wlUkiMc7lvXTujwTJdgsroRyzZLn8hwmFh4XpyKI
-   zmVNPftTj6+Eson/whjJ6zKJlQJpSYEk9IOG9Ktp+/a0wpLPoSL7dEPSC
-   Q==;
-X-IronPort-AV: E=Sophos;i="5.85,300,1624291200"; 
-   d="scan'208";a="179316005"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 17 Sep 2021 14:11:11 +0800
-IronPort-SDR: jbc3YIYhksgc4mMUFZGO6jksMhU6WamoVJPNHLZ3naD5cloOdG1T0mGzWW4aiF5ex88ag6gT7k
- 7m+ZZCEHQf/RcPNB8V1j6Ug2/407tKrVEdY38E5c4huwZ2W4Q7dyTJ03HUh3sV+xMmrb+WwAfT
- 7xFPlbifNezGVR3XqDjuAyPy3i0V81Ww+y8jv+LDNLfy9Z6TSZBc+IZ+4iMxyXXAW+99F24AhC
- c1JyMLRdtaakXgpI6RkiccpijQwm2U0mHW63KOfMDZWGLiVd+FkuI8n671TIMpMPd622OgnAft
- 7FUd25gn1RRLximOEFG92W7P
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2021 22:47:31 -0700
-IronPort-SDR: zy4AlFyAWutkvHWAfv4WjdZdDZYEq2joV8ZUcacSx2QERzSjICVk3yMUH8WX+iaZE8CW9y929u
- GnFco3eYClcD9EKoaBlEDqwBKiFcGIig8ORY55CYzdeg7BZkY+txWV2ureD8Qb+2OQ1hCcenCI
- 0SX/C/uSXHUrWgfTwbXZcnHVeix2fqUh0Shh/OaRfSoitPFIww04XUkp5hv7eZgxm+OkLCpxfw
- rAYOgZgavG5FqDiV0k/UhO5gQAwROFajm9KL0xGvmsqUYOgAgvxN+nwWwa/M3KrnQOQh3g66uS
- R5w=
-WDCIronportException: Internal
-Received: from usg-ed-osssrv.wdc.com ([10.3.10.180])
-  by uls-op-cesaip02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2021 23:11:12 -0700
-Received: from usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4H9k9C4NCDz1Rvlx
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 23:11:11 -0700 (PDT)
-Authentication-Results: usg-ed-osssrv.wdc.com (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)"
-        header.d=opensource.wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
-        opensource.wdc.com; h=content-transfer-encoding:mime-version
-        :references:in-reply-to:x-mailer:message-id:date:subject:to
-        :from; s=dkim; t=1631859070; x=1634451071; bh=2XzaRZS9DB+vo3EW82
-        fkFoK8YHkr9HzLbMoUY86sntU=; b=O+ZCjSVCArB8qXWbzuP3xwIcPXjm2N/jYl
-        /JCj9NfTbC6R7os0Aawxi+pihTWL8rxwAJH/+HOCJT25dD/vVs0AxrRUlG3nVyln
-        lY1xExn5R33tew9X+vv0KKmf1w5lsaqkildfSfHbom6d6VC/qWlaPphiVEtBTT7A
-        JWhbV/gMDFEF3n454dyUgWTAL40VZl7M4lDwHNmT8xLc4oEMcmTaC9hE8OC5OXod
-        Mf35S2zUzL4blkvyQzYxhjl0klkx1je2wMUMvQIbsbk26sHNibtY6hOnTvjknkoF
-        gCkTeVAr6u9oWmdSZ8a0w9ExFH8rE7BTBdLJTyZuzrpL71EhKgYA==
-X-Virus-Scanned: amavisd-new at usg-ed-osssrv.wdc.com
-Received: from usg-ed-osssrv.wdc.com ([127.0.0.1])
-        by usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id HrrXFJEsDymr for <linux-kernel@vger.kernel.org>;
-        Thu, 16 Sep 2021 23:11:10 -0700 (PDT)
-Received: from toolbox.alistair23.me (unknown [10.225.165.23])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTPSA id 4H9k912H01z1RvmH;
-        Thu, 16 Sep 2021 23:11:00 -0700 (PDT)
-From:   Alistair Francis <alistair.francis@opensource.wdc.com>
-To:     linux-riscv@lists.infradead.org, linux-perf-users@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, alistair23@gmail.com,
-        namhyung@kernel.org, jolsa@redhat.com,
-        alexander.shishkin@linux.intel.com, mark.rutland@arm.com,
-        acme@kernel.org, dave@stgolabs.net, dvhart@infradead.org,
-        peterz@infradead.org, mingo@redhat.com, tglx@linutronix.de,
-        atish.patra@wdc.com, arnd@arndb.de,
-        Alistair Francis <alistair.francis@wdc.com>
-Subject: [PATCH v3 2/2] perf bench: Add support for 32-bit systems with 64-bit time_t
-Date:   Fri, 17 Sep 2021 16:10:40 +1000
-Message-Id: <20210917061040.2270822-2-alistair.francis@opensource.wdc.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210917061040.2270822-1-alistair.francis@opensource.wdc.com>
-References: <20210917061040.2270822-1-alistair.francis@opensource.wdc.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+        Fri, 17 Sep 2021 02:12:48 -0400
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ADF7C061767
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 23:11:26 -0700 (PDT)
+Received: by mail-qt1-x84a.google.com with SMTP id z16-20020ac86b90000000b0029eec160182so86360727qts.9
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 23:11:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=3zrUVwbKEfBYS+g/qOMTeXZGXa+cM1Fx/id4TGcTnuY=;
+        b=aqjshXeHh7KYq65oIgapr0BQjil3sP1rDi7xaSzByT7HUdNhTaI1Ys3Wxlz/Z7g3Am
+         +hOjpH810t+0u4G9mpxQRBffRfJ62rH1ddXs4ULDpEQR6Ts6jBfJ0gjcpO4kVp8wCOHQ
+         Vl8iN8hld/46cAlQUMTAiAhB/6+eDCE1dhcnqKSrsGDeqrAxl6t2FhBn8Bsl4kzSxqNL
+         NAWZ+7xfiGeYj9Qd6nT39cNlAK7qfcwkxHdx1U+CIiom21GYWoJX+2VtAip3VlCuFz1w
+         jGyqNia1LYugFTCoMyC2dyRJTvbrZO/b7LutqymMpftkHK3U8/75gDv5A0e2jD9U6hVB
+         ilXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=3zrUVwbKEfBYS+g/qOMTeXZGXa+cM1Fx/id4TGcTnuY=;
+        b=SdhPWLWT+d9XYpaieNQuOqBHjOXuhGs6syvpr9ubj+3/RRjcrzmUuvxtrSIH9fmTWi
+         32K2f5APaxkI2FU9JGVj03zq9CBGt+KU3NP0sCfTRfSN1zu4JfvLCEw4GewYt4h/uZJ1
+         r3IPj9QOve+bQOaDOtQd767Hes7mTFycr7FhsCpxYaH0WJKDAQd6yZQ7ppEGpIsT7u+/
+         witP9s2jlcDRwbRy0helbgsVJi5qpFUaL9qxgAbnlmzsWNFqiWvH2LIIBsKvGMDFg+GV
+         cqWbemYqJQ41AUwDOJvTDkc7tLJjgIFMza0MiCZtpJMOGO0wQ5LcYAwg84NC53urVePh
+         cffA==
+X-Gm-Message-State: AOAM531VK7ZstDYCrblbxMRuEbVIuGNttwVcJHqwCgVlhD0GAq9k8CLA
+        InRvdcVQZzvOaChAA17+V3OKSl/rlGuncRJAnpz7zw==
+X-Google-Smtp-Source: ABdhPJycuTlpICuFt0WKNwqUbICZRKz0xI20vVDuhSpUpfdHDy2C99ZMkURQuV1YTT5+M888e29TyWCs6BP2z006i3tORQ==
+X-Received: from mactruck.svl.corp.google.com ([2620:15c:2cb:201:4845:43ba:3ff5:2de1])
+ (user=brendanhiggins job=sendgmr) by 2002:ad4:522c:: with SMTP id
+ r12mr9348777qvq.17.1631859085422; Thu, 16 Sep 2021 23:11:25 -0700 (PDT)
+Date:   Thu, 16 Sep 2021 23:10:58 -0700
+Message-Id: <20210917061104.2680133-1-brendanhiggins@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.464.g1972c5931b-goog
+Subject: [PATCH v1 0/6] kunit: build kunit tests without structleak plugin
+From:   Brendan Higgins <brendanhiggins@google.com>
+To:     shuah@kernel.org, davidgow@google.com, arnd@arndb.de,
+        keescook@chromium.org, rafael@kernel.org, jic23@kernel.org,
+        lars@metafoo.de, ulf.hansson@linaro.org, andreas.noever@gmail.com,
+        michael.jamet@intel.com, mika.westerberg@linux.intel.com,
+        YehezkelShB@gmail.com, masahiroy@kernel.org,
+        michal.lkml@markovi.net, ndesaulniers@google.com
+Cc:     linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        gregkh@linuxfoundation.org, linux-iio@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-hardening@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        Brendan Higgins <brendanhiggins@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alistair Francis <alistair.francis@wdc.com>
+The structleak plugin causes the stack frame size to grow immensely when
+used with KUnit; this is caused because KUnit allocates lots of
+moderately sized structs on the stack as part of its assertion macro
+implementation. For most tests with small to moderately sized tests
+cases there are never enough KUnit assertions to be an issue at all;
+even when a single test cases has many KUnit assertions, the compiler
+should never put all these struct allocations on the stack at the same
+time since the scope of the structs is so limited; however, the
+structleak plugin does not seem to respect the compiler doing the right
+thing and will still warn of excessive stack size in some cases.
 
-Some 32-bit architectures (such are 32-bit RISC-V) only have a 64-bit
-time_t and as such don't have the SYS_futex syscall. This patch will
-allow us to use the SYS_futex_time64 syscall on those platforms.
+These patches are not a permanent solution since new tests can be added
+with huge test cases, but this serves as a stop gap to stop structleak
+from being used on KUnit tests which will currently result in excessive
+stack size.
 
-Signed-off-by: Alistair Francis <alistair.francis@wdc.com>
----
- tools/perf/bench/futex.h | 42 +++++++++++++++++++++++++++++++++++++---
- 1 file changed, 39 insertions(+), 3 deletions(-)
+Of the following patches, I think the thunderbolt patch may be
+unnecessary since Linus already fixed that test. Additionally, I was not
+able to reproduce the error on the sdhci-of-aspeed test. Nevertheless, I
+included these tests cases for completeness. Please see my discussion
+with Arnd for more context[1].
 
-diff --git a/tools/perf/bench/futex.h b/tools/perf/bench/futex.h
-index f80a4759ee79b..e88b531bed855 100644
---- a/tools/perf/bench/futex.h
-+++ b/tools/perf/bench/futex.h
-@@ -12,6 +12,7 @@
- #include <sys/syscall.h>
- #include <sys/types.h>
- #include <linux/futex.h>
-+#include <linux/time_types.h>
-=20
- struct bench_futex_parameters {
- 	bool silent;
-@@ -28,7 +29,7 @@ struct bench_futex_parameters {
- };
-=20
- /**
-- * futex_syscall() - SYS_futex syscall wrapper
-+ * futex_syscall() - __NR_futex syscall wrapper
-  * @uaddr:	address of first futex
-  * @op:		futex op code
-  * @val:	typically expected value of uaddr, but varies by op
-@@ -49,14 +50,49 @@ static inline int
- futex_syscall(u_int32_t *uaddr, int op, u_int32_t val, struct timespec *=
-timeout,
- 	u_int32_t *uaddr2, int val3, int opflags)
- {
--	return syscall(SYS_futex, uaddr, op | opflags, val, ts32, uaddr2, val3)=
-;
-+#if defined(__NR_futex_time64)
-+	if (sizeof(*timeout) !=3D sizeof(struct __kernel_old_timespec)) {
-+		int ret =3D  syscall(__NR_futex_time64, uaddr, op | opflags, val, time=
-out,
-+				   uaddr2, val3);
-+	if (ret =3D=3D 0 || errno !=3D ENOSYS)
-+		return ret;
-+	}
-+#endif
-+
-+#if defined(__NR_futex)
-+	if (sizeof(*timeout) =3D=3D sizeof(struct __kernel_old_timespec))
-+		return syscall(__NR_futex, uaddr, op | opflags, val, timeout, uaddr2, =
-val3);
-+
-+	if (timeout && timeout->tv_sec =3D=3D (long)timeout->tv_sec) {
-+		struct __kernel_old_timespec ts32;
-+
-+		ts32.tv_sec =3D (__kernel_long_t) timeout->tv_sec;
-+		ts32.tv_nsec =3D (__kernel_long_t) timeout->tv_nsec;
-+
-+		return syscall(__NR_futex, uaddr, op | opflags, val, ts32, uaddr2, val=
-3);
-+	} else if (!timeout) {
-+		return syscall(__NR_futex, uaddr, op | opflags, val, NULL, uaddr2, val=
-3);
-+	}
-+#endif
-+
-+	errno =3D ENOSYS;
-+	return -1;
- }
-=20
- static inline int
- futex_syscall_nr_requeue(u_int32_t *uaddr, int op, u_int32_t val, int nr=
-_requeue,
- 	u_int32_t *uaddr2, int val3, int opflags)
- {
--	return syscall(SYS_futex, uaddr, op | opflags, val, nr_requeue, uaddr2,=
- val3);
-+#if defined(__NR_futex_time64)
-+	int ret =3D  syscall(__NR_futex_time64, uaddr, op | opflags, val, nr_re=
-queue,
-+			   uaddr2, val3);
-+	if (ret =3D=3D 0 || errno !=3D ENOSYS)
-+		return ret;
-+#endif
-+
-+#if defined(__NR_futex)
-+	return syscall(__NR_futex, uaddr, op | opflags, val, nr_requeue, uaddr2=
-, val3);
-+#endif
- }
-=20
- /**
---=20
-2.31.1
+NOTE: Arnd did the legwork for most of these patches, but did not
+actually share code for some of them, so I left his Signed-off-by off of
+those patches as I don't want to misrepresent him. Arnd, please sign off
+on those patches at your soonest convenience.
+
+[1] https://lore.kernel.org/linux-arm-kernel/CAFd5g44udqkDiYBWh+VeDVJ=ELXeoXwunjv0f9frEN6HJODZng@mail.gmail.com/
+
+Arnd Bergmann (1):
+  bitfield: build kunit tests without structleak plugin
+
+Brendan Higgins (5):
+  gcc-plugins/structleak: add makefile var for disabling structleak
+  iio/test-format: build kunit tests without structleak plugin
+  device property: build kunit tests without structleak plugin
+  thunderbolt: build kunit tests without structleak plugin
+  mmc: sdhci-of-aspeed: build kunit tests without structleak plugin
+
+ drivers/base/test/Makefile   | 2 +-
+ drivers/iio/test/Makefile    | 1 +
+ drivers/mmc/host/Makefile    | 1 +
+ drivers/thunderbolt/Makefile | 1 +
+ lib/Makefile                 | 2 +-
+ scripts/Makefile.gcc-plugins | 4 ++++
+ 6 files changed, 9 insertions(+), 2 deletions(-)
+
+
+base-commit: 316346243be6df12799c0b64b788e06bad97c30b
+-- 
+2.33.0.464.g1972c5931b-goog
 
