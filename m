@@ -2,146 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86E7F40F4C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 11:26:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AF3740F4CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 11:27:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343638AbhIQJ2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 05:28:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343549AbhIQJZg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 05:25:36 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED63FC0617AF
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 02:21:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=0dGXYmyzoIM5CMvgq2aoWe2tZhgpBR+TbRNYbbOH1so=; b=CQrfLhKZPcXzKUvzh8fzki6FKH
-        GrGS3ePvU1IBd+pGjm8MSDDDlx6ZnGeOdmtIbfO0S4TA+I3GpRCyWhnTqQzlPncmAVOHKG08H1jTC
-        dDlxkjdvtDPQviOfBuKwaA5rEQkH3K5FQF9ByEJFO+gMCCyMrnSEJeJcKMcHNHx4jNlxKGZeru6rQ
-        Owoy2Zz01k82/9iDURPq7PSNOWmGt25n5IjXMPpzNL4mF5+bQ0+wcD4bkNOeJB9AfYS7zk73g6EmA
-        AKFrjUXB1V2KuRMAfrEYrAVvRCxctOgXvzri6vtj+vPONGk0bo9plJTkJD1tFE7/5rYtA1IB0vrDC
-        zhrAUPjw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mRA2P-0006Jl-DA; Fri, 17 Sep 2021 09:20:39 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BD2C5300260;
-        Fri, 17 Sep 2021 11:20:04 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9DB3A2083B10F; Fri, 17 Sep 2021 11:20:04 +0200 (CEST)
-Date:   Fri, 17 Sep 2021 11:20:04 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Ondrej Zary <linux@zary.sk>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH] x86/iopl: Fake iopl(3) CLI/STI usage
-Message-ID: <YURdxNpH8YNQZQT7@hirez.programming.kicks-ass.net>
-References: <202109151423.43604.linux@zary.sk>
- <202109162227.17415.linux@zary.sk>
- <20210916210509.GG4323@worktop.programming.kicks-ass.net>
- <202109171011.31916.linux@zary.sk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202109171011.31916.linux@zary.sk>
+        id S245637AbhIQJ2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 05:28:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45976 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S245690AbhIQJVq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 05:21:46 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2AF8A611CA;
+        Fri, 17 Sep 2021 09:20:24 +0000 (UTC)
+Received: from [198.52.44.129] (helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mRA2g-00BKuT-9Q; Fri, 17 Sep 2021 10:20:22 +0100
+Date:   Fri, 17 Sep 2021 10:20:21 +0100
+Message-ID: <87lf3vblt6.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     "Sven Peter" <sven@svenpeter.dev>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, "Bjorn Helgaas" <bhelgaas@google.com>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Lorenzo Pieralisi" <lorenzo.pieralisi@arm.com>,
+        Krzysztof =?UTF-8?B?V2lsY3p5xYRza2k=?= <kw@linux.com>,
+        "Alyssa Rosenzweig" <alyssa@rosenzweig.io>,
+        "Stan Skowronek" <stan@corellium.com>,
+        "Mark Kettenis" <kettenis@openbsd.org>,
+        "Hector Martin" <marcan@marcan.st>,
+        "Robin Murphy" <Robin.Murphy@arm.com>, kernel-team@android.com
+Subject: Re: [PATCH v3 04/10] PCI: apple: Add initial hardware bring-up
+In-Reply-To: <6eb53661-e11e-4634-9fa5-5e7e62d57a15@www.fastmail.com>
+References: <20210913182550.264165-1-maz@kernel.org>
+        <20210913182550.264165-5-maz@kernel.org>
+        <6eb53661-e11e-4634-9fa5-5e7e62d57a15@www.fastmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 198.52.44.129
+X-SA-Exim-Rcpt-To: sven@svenpeter.dev, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org, bhelgaas@google.com, robh+dt@kernel.org, lorenzo.pieralisi@arm.com, kw@linux.com, alyssa@rosenzweig.io, stan@corellium.com, kettenis@openbsd.org, marcan@marcan.st, Robin.Murphy@arm.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 10:11:31AM +0200, Ondrej Zary wrote:
-> Yeah, it works!
+On Mon, 13 Sep 2021 21:48:47 +0100,
+"Sven Peter" <sven@svenpeter.dev> wrote:
+> 
+> 
+> 
+> On Mon, Sep 13, 2021, at 20:25, Marc Zyngier wrote:
+> > From: Alyssa Rosenzweig <alyssa@rosenzweig.io>
+> > 
+> > Add a minimal driver to bring up the PCIe bus on Apple system-on-chips,
+> > particularly the Apple M1. This driver exposes the internal bus used for
+> > the USB type-A ports, Ethernet, Wi-Fi, and Bluetooth. Bringing up the
+> > radios requires additional drivers beyond what's necessary for PCIe
+> > itself.
+> > 
+> > At this stage, nothing is functionnal.
+> > 
+> > Co-developed-by: Stan Skowronek <stan@corellium.com>
+> > Signed-off-by: Stan Skowronek <stan@corellium.com>
+> > Signed-off-by: Alyssa Rosenzweig <alyssa@rosenzweig.io>
+> > Signed-off-by: Marc Zyngier <maz@kernel.org>
+> > Link: https://lore.kernel.org/r/20210816031621.240268-3-alyssa@rosenzweig.io
+> > ---
+> >  MAINTAINERS                         |   7 +
+> >  drivers/pci/controller/Kconfig      |  12 ++
+> >  drivers/pci/controller/Makefile     |   1 +
+> >  drivers/pci/controller/pcie-apple.c | 243 ++++++++++++++++++++++++++++
+> >  4 files changed, 263 insertions(+)
+> >  create mode 100644 drivers/pci/controller/pcie-apple.c
+> > 
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index 813a847e2d64..9905cc48fed9 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -1280,6 +1280,13 @@ S:	Maintained
+> >  F:	Documentation/devicetree/bindings/iommu/apple,dart.yaml
+> >  F:	drivers/iommu/apple-dart.c
+> >  
+> > +APPLE PCIE CONTROLLER DRIVER
+> > +M:	Alyssa Rosenzweig <alyssa@rosenzweig.io>
+> > +M:	Marc Zyngier <maz@kernel.org>
+> > +L:	linux-pci@vger.kernel.org
+> > +S:	Maintained
+> > +F:	drivers/pci/controller/pcie-apple.c
+> > +
+> >  APPLE SMC DRIVER
+> >  M:	Henrik Rydberg <rydberg@bitmath.org>
+> >  L:	linux-hwmon@vger.kernel.org
+> > diff --git a/drivers/pci/controller/Kconfig b/drivers/pci/controller/Kconfig
+> > index 326f7d13024f..814833a8120d 100644
+> > --- a/drivers/pci/controller/Kconfig
+> > +++ b/drivers/pci/controller/Kconfig
+> > @@ -312,6 +312,18 @@ config PCIE_HISI_ERR
+> >  	  Say Y here if you want error handling support
+> >  	  for the PCIe controller's errors on HiSilicon HIP SoCs
+> >  
+> > +config PCIE_APPLE
+> > +	tristate "Apple PCIe controller"
+> > +	depends on ARCH_APPLE || COMPILE_TEST
+> > +	depends on OF
+> > +	depends on PCI_MSI_IRQ_DOMAIN
+> > +	help
+> > +	  Say Y here if you want to enable PCIe controller support on Apple
+> > +	  system-on-chips, like the Apple M1. This is required for the USB
+> > +	  type-A ports, Ethernet, Wi-Fi, and Bluetooth.
+> > +
+> > +	  If unsure, say Y if you have an Apple Silicon system.
+> > +
+> >  source "drivers/pci/controller/dwc/Kconfig"
+> >  source "drivers/pci/controller/mobiveil/Kconfig"
+> >  source "drivers/pci/controller/cadence/Kconfig"
+> > diff --git a/drivers/pci/controller/Makefile 
+> > b/drivers/pci/controller/Makefile
+> > index aaf30b3dcc14..f9d40bad932c 100644
+> > --- a/drivers/pci/controller/Makefile
+> > +++ b/drivers/pci/controller/Makefile
+> > @@ -37,6 +37,7 @@ obj-$(CONFIG_VMD) += vmd.o
+> >  obj-$(CONFIG_PCIE_BRCMSTB) += pcie-brcmstb.o
+> >  obj-$(CONFIG_PCI_LOONGSON) += pci-loongson.o
+> >  obj-$(CONFIG_PCIE_HISI_ERR) += pcie-hisi-error.o
+> > +obj-$(CONFIG_PCIE_APPLE) += pcie-apple.o
+> >  # pcie-hisi.o quirks are needed even without CONFIG_PCIE_DW
+> >  obj-y				+= dwc/
+> >  obj-y				+= mobiveil/
+> > diff --git a/drivers/pci/controller/pcie-apple.c 
+> > b/drivers/pci/controller/pcie-apple.c
+> > new file mode 100644
+> > index 000000000000..f3c414950a10
+> > --- /dev/null
+> > +++ b/drivers/pci/controller/pcie-apple.c
+> > @@ -0,0 +1,243 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * PCIe host bridge driver for Apple system-on-chips.
+> > + *
+> > + * The HW is ECAM compliant, so once the controller is initialized,
+> > + * the driver mostly deals MSI mapping and handling of per-port
+> > + * interrupts (INTx, management and error signals).
+> > + *
+> > + * Initialization requires enabling power and clocks, along with a
+> > + * number of register pokes.
+> > + *
+> > + * Copyright (C) 2021 Alyssa Rosenzweig <alyssa@rosenzweig.io>
+> > + * Copyright (C) 2021 Google LLC
+> > + * Copyright (C) 2021 Corellium LLC
+> > + * Copyright (C) 2021 Mark Kettenis <kettenis@openbsd.org>
+> > + *
+> > + * Author: Alyssa Rosenzweig <alyssa@rosenzweig.io>
+> > + * Author: Marc Zyngier <maz@kernel.org>
+> > + */
+> > +
+> > [...]
+> > +
+> > +static inline void rmwl(u32 clr, u32 set, void __iomem *addr)
+> > +{
+> > +	writel_relaxed((readl_relaxed(addr) & ~clr) | set, addr);
+> > +}
+> 
+> This helper is a bit strange, especially since it's always only used
+> with either clr != 0 or set != 0 but never (clr = 0 and set = 0) afaict.
+> Maybe create two instead for setting and clearing bits?
 
-w00t!! I've added a pr_err() to make sure people take note their
-'software' is doing dodgy things.
+That's indeed nicer, and it makes the code more readable.
 
----
-Subject: x86/iopl: Fake iopl(3) CLI/STI usage
-From: Peter Zijlstra <peterz@infradead.org>
-Date: Thu, 16 Sep 2021 23:05:09 +0200
+> 
+> > +
+> > +static int apple_pcie_setup_port(struct apple_pcie *pcie,
+> > +				 struct device_node *np)
+> > +{
+> > +	struct platform_device *platform = to_platform_device(pcie->dev);
+> > +	struct apple_pcie_port *port;
+> > +	struct gpio_desc *reset;
+> > +	u32 stat, idx;
+> > +	int ret;
+> > +
+> > +	reset = gpiod_get_from_of_node(np, "reset-gpios", 0,
+> > +				       GPIOD_OUT_LOW, "#PERST");
+> > +	if (IS_ERR(reset))
+> > +		return PTR_ERR(reset);
+> > +
+> > +	port = devm_kzalloc(pcie->dev, sizeof(*port), GFP_KERNEL);
+> > +	if (!port)
+> > +		return -ENOMEM;
+> > +
+> > +	ret = of_property_read_u32_index(np, "reg", 0, &idx);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	/* Use the first reg entry to work out the port index */
+> > +	port->idx = idx >> 11;
+> > +	port->pcie = pcie;
+> > +	port->np = np;
+> > +
+> > +	port->base = devm_platform_ioremap_resource(platform, port->idx + 2);
+> > +	if (IS_ERR(port->base))
+> > +		return -ENODEV;
+> > +
+> > +	rmwl(0, PORT_APPCLK_EN, port + PORT_APPCLK);
+> > +
+> > +	rmwl(0, PORT_PERST_OFF, port->base + PORT_PERST);
+> > +	gpiod_set_value(reset, 1);
+> > +
+> > +	ret = readl_relaxed_poll_timeout(port->base + PORT_STATUS, stat,
+> > +					 stat & PORT_STATUS_READY, 100, 250000);
+> > +	if (ret < 0) {
+> > +		dev_err(pcie->dev, "port %pOF ready wait timeout\n", np);
+> > +		return ret;
+> > +	}
+> > +
+> > +	/* Flush writes and enable the link */
+> > +	dma_wmb();
+> 
+> This is a DMA barrier but there's no DMA you need to order this against
+> here. I think you can just drop it.
 
-Since commit c8137ace5638 ("x86/iopl: Restrict iopl() permission
-scope") it's possible to emulate iopl(3) using ioperm(), except for
-the CLI/STI usage.
+Indeed, this is all MMIO based, and doesn't refer to anything in
+memory. Barrier gone.
 
-Userspace CLI/STI usage is very dubious (read broken), since any
-exception taken during that window can lead to rescheduling anyway (or
-worse). The IOPL(2) manpage even states that usage of CLI/STI is highly
-discouraged and might even crash the system.
+Thanks,
 
-Of course, that won't stop people and HP has the dubious honour of
-being the first vendor to be found using this in their hp-health
-package.
+	M.
 
-In order to enable this 'software' to still 'work', have the #GP treat
-the CLI/STI instructions as NOPs when iopl(3). Warn the user that
-their program is doing dubious things.
-
-Fixes: a24ca9976843 ("x86/iopl: Remove legacy IOPL option")
-Reported-by: Ondrej Zary <linux@zary.sk>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- arch/x86/kernel/traps.c |   38 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 38 insertions(+)
-
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -528,6 +528,41 @@ static enum kernel_gp_hint get_kernel_gp
- 
- #define GPFSTR "general protection fault"
- 
-+bool fixup_iopl_exception(struct pt_regs *regs)
-+{
-+	struct thread_struct *t = &current->thread;
-+	unsigned char buf[MAX_INSN_SIZE];
-+	struct insn insn;
-+	int nr_copied;
-+
-+	if (!IS_ENABLED(CONFIG_X86_IOPL_IOPERM) || t->iopl_emul != 3 || !regs)
-+		return false;
-+
-+	nr_copied = insn_fetch_from_user(regs, buf);
-+	if (nr_copied <= 0)
-+		return false;
-+
-+	if (!insn_decode_from_regs(&insn, regs, buf, nr_copied))
-+		return false;
-+
-+	if (insn.length != 1)
-+		return false;
-+
-+	if (insn.opcode.bytes[0] != 0xfa &&
-+	    insn.opcode.bytes[0] != 0xfb)
-+		return false;
-+
-+	if (printk_ratelimit()) {
-+		pr_err("%s[%d] attempts to use CLI/STI, pretending it's a NOP, ip:%lx",
-+		       current->comm, task_pid_nr(current), regs->ip);
-+		print_vma_addr(KERN_CONT " in ", regs->ip);
-+		pr_cont("\n");
-+	}
-+
-+	regs->ip += 1;
-+	return true;
-+}
-+
- DEFINE_IDTENTRY_ERRORCODE(exc_general_protection)
- {
- 	char desc[sizeof(GPFSTR) + 50 + 2*sizeof(unsigned long) + 1] = GPFSTR;
-@@ -553,6 +588,9 @@ DEFINE_IDTENTRY_ERRORCODE(exc_general_pr
- 	tsk = current;
- 
- 	if (user_mode(regs)) {
-+		if (fixup_iopl_exception(regs))
-+			goto exit;
-+
- 		tsk->thread.error_code = error_code;
- 		tsk->thread.trap_nr = X86_TRAP_GP;
- 
+-- 
+Without deviation from the norm, progress is not possible.
