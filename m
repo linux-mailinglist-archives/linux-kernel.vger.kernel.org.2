@@ -2,124 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C606140F778
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 14:28:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9885A40F77E
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 14:30:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243817AbhIQM3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 08:29:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36284 "EHLO
+        id S243276AbhIQMb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 08:31:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235941AbhIQM3M (ORCPT
+        with ESMTP id S232338AbhIQMb1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 08:29:12 -0400
-Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [IPv6:2001:67c:2050::465:102])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AF39C061574;
-        Fri, 17 Sep 2021 05:27:49 -0700 (PDT)
-Received: from smtp202.mailbox.org (smtp202.mailbox.org [IPv6:2001:67c:2050:105:465:1:4:0])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4H9tWd0rlbzQjgX;
-        Fri, 17 Sep 2021 14:27:41 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-From:   =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>
-To:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc:     =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        linux-wireless@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-Subject: [PATCH] Bluetooth: btusb: Lower passive lescan interval on Marvell 88W8897
-Date:   Fri, 17 Sep 2021 14:27:18 +0200
-Message-Id: <20210917122718.86776-1-verdre@v0yd.nl>
+        Fri, 17 Sep 2021 08:31:27 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 576A3C061764
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 05:30:04 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id d6so14842714wrc.11
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 05:30:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ohehD+AgX2cOYuT0Vdlc+XEexxlJP7h+rPjbbPGV0JI=;
+        b=R10SS4VV0BCpiZybmOMrjaWEfv3d2ZD+2k6TYKYqIZCusUIZXiqYs5rTuV6bruYLls
+         zYGmlZhSOPyZgErxGr8GftAAzypBiEQnXw94kdl46vb10zeP8O7zkrXWklJipXggLivr
+         Ihoa4mj+eAbhnzb6QO020N9VvyKryVDicfnPg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=ohehD+AgX2cOYuT0Vdlc+XEexxlJP7h+rPjbbPGV0JI=;
+        b=T3tzlPPWn4V8wTdvH0ax/J43kEsXoTPY+u0/TmbcJel2i3CrM/2Jg2/RwvlpuKGxdx
+         /X+h5Bz6LcSxw28jD+UhNHxzJ/UUJ3x0/vX/CsPPMtpeUkguiXVS5Zm9tJAiRgjMv61A
+         ovYa1iX7Rn8kPhmBSf8KxUCpafBVcVfik5nHmVwAq1+TP3M+4y8CegLPPQjc5xPZ3NC8
+         ng8vNHLmWpl6XlcBRW/1IVHkWI30dKyZHNYDe2byxJ1Hy3DTEidaQn2WQMjdfPHr/89v
+         Cr+ISbj2Sa9scpkz6wwHadGrAMzMIwjeTf8SR0tvVEXVQ4OF2jOKGSlqbE9yefLEcyK9
+         bGyQ==
+X-Gm-Message-State: AOAM5314yqZqOADUY16louN8hII7JH047SAXqMZ2GabSQz5I8BVuGLY9
+        SlB+dvCbkCJWJRkFhuRROwjA2Q==
+X-Google-Smtp-Source: ABdhPJxbi7SvIHU6eF4mLO2NNjFKYkKbUTWnBTtOPShG0ZBGp4wQE5JGTFm/UZzjlZerlKL7ilx7Kg==
+X-Received: by 2002:a05:6000:124b:: with SMTP id j11mr11906176wrx.147.1631881802837;
+        Fri, 17 Sep 2021 05:30:02 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id z6sm6483202wmp.1.2021.09.17.05.30.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Sep 2021 05:30:02 -0700 (PDT)
+Date:   Fri, 17 Sep 2021 14:30:00 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Oded Gabbay <ogabbay@kernel.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Yossi Leybovich <sleybo@amazon.com>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Dave Airlie <airlied@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>
+Subject: Re: [PATCH v6 0/2] Add p2p via dmabuf to habanalabs
+Message-ID: <YUSKSHBC9uI49wZZ@phenom.ffwll.local>
+Mail-Followup-To: Jason Gunthorpe <jgg@ziepe.ca>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Yossi Leybovich <sleybo@amazon.com>,
+        Maling list - DRI developers <dri-devel@lists.freedesktop.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Doug Ledford <dledford@redhat.com>, Dave Airlie <airlied@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Leon Romanovsky <leonro@nvidia.com>, Christoph Hellwig <hch@lst.de>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" <linaro-mm-sig@lists.linaro.org>
+References: <20210912165309.98695-1-ogabbay@kernel.org>
+ <YUCvNzpyC091KeaJ@phenom.ffwll.local>
+ <20210914161218.GF3544071@ziepe.ca>
+ <CAFCwf13322953Txr3Afa_MomuD148vnfpEog0xzW7FPWH9=6fg@mail.gmail.com>
+ <YUM5JoMMK7gceuKZ@phenom.ffwll.local>
+ <20210916131014.GK3544071@ziepe.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 9094037F
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210916131014.GK3544071@ziepe.ca>
+X-Operating-System: Linux phenom 5.10.0-8-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Marvell 88W8897 combined wifi and bluetooth card (pcie+usb version)
-is used in a lot of Microsoft Surface devices, and all those devices
-suffer from very low 2.4GHz wifi connection speeds while bluetooth is
-enabled. The reason for that is that the default passive scanning
-interval for Bluetooth Low Energy devices is quite high on Linux
-(interval of 60 msec and scan window of 30 msec, see le_scan_interval
-and le_scan_window in hci_core.c), and the Marvell chip is known for its
-bad bt+wifi coexisting performance.
+On Thu, Sep 16, 2021 at 10:10:14AM -0300, Jason Gunthorpe wrote:
+> On Thu, Sep 16, 2021 at 02:31:34PM +0200, Daniel Vetter wrote:
+> > On Wed, Sep 15, 2021 at 10:45:36AM +0300, Oded Gabbay wrote:
+> > > On Tue, Sep 14, 2021 at 7:12 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > > >
+> > > > On Tue, Sep 14, 2021 at 04:18:31PM +0200, Daniel Vetter wrote:
+> > > > > On Sun, Sep 12, 2021 at 07:53:07PM +0300, Oded Gabbay wrote:
+> > > > > > Hi,
+> > > > > > Re-sending this patch-set following the release of our user-space TPC
+> > > > > > compiler and runtime library.
+> > > > > >
+> > > > > > I would appreciate a review on this.
+> > > > >
+> > > > > I think the big open we have is the entire revoke discussions. Having the
+> > > > > option to let dma-buf hang around which map to random local memory ranges,
+> > > > > without clear ownership link and a way to kill it sounds bad to me.
+> > > > >
+> > > > > I think there's a few options:
+> > > > > - We require revoke support. But I've heard rdma really doesn't like that,
+> > > > >   I guess because taking out an MR while holding the dma_resv_lock would
+> > > > >   be an inversion, so can't be done. Jason, can you recap what exactly the
+> > > > >   hold-up was again that makes this a no-go?
+> > > >
+> > > > RDMA HW can't do revoke.
+> > 
+> > Like why? I'm assuming when the final open handle or whatever for that MR
+> > is closed, you do clean up everything? Or does that MR still stick around
+> > forever too?
+> 
+> It is a combination of uAPI and HW specification.
+> 
+> revoke here means you take a MR object and tell it to stop doing DMA
+> without causing the MR object to be destructed.
+> 
+> All the drivers can of course destruct the MR, but doing such a
+> destruction without explicit synchronization with user space opens
+> things up to a serious use-after potential that could be a security
+> issue.
+> 
+> When the open handle closes the userspace is synchronized with the
+> kernel and we can destruct the HW objects safely.
+> 
+> So, the special HW feature required is 'stop doing DMA but keep the
+> object in an error state' which isn't really implemented, and doesn't
+> extend very well to other object types beyond simple MRs.
 
-So decrease that passive scan interval and make the scan window shorter
-on this particular device to allow for spending more time transmitting
-wifi signals: The new scan interval is 250 msec (0x190 * 0.625 msec) and
-the new scan window is 6.25 msec (0xa * 0.625 msec).
+Yeah revoke without destroying the MR doesn't work, and it sounds like
+revoke by destroying the MR just moves the can of worms around to another
+place.
 
-This change has a very large impact on the 2.4GHz wifi speeds and gets
-it up to performance comparable with the Windows driver, which seems to
-apply a similar quirk.
+> > 1. User A opens gaudi device, sets up dma-buf export
+> > 
+> > 2. User A registers that with RDMA, or anything else that doesn't support
+> > revoke.
+> > 
+> > 3. User A closes gaudi device
+> > 
+> > 4. User B opens gaudi device, assumes that it has full control over the
+> > device and uploads some secrets, which happen to end up in the dma-buf
+> > region user A set up
+> 
+> I would expect this is blocked so long as the DMABUF exists - eg the
+> DMABUF will hold a fget on the FD of #1 until the DMABUF is closed, so
+> that #3 can't actually happen.
+> 
+> > It's not mlocked memory, it's mlocked memory and I can exfiltrate
+> > it.
+> 
+> That's just bug, don't make buggy drivers :)
 
-The scan interval and scan window length were tested and found to work
-very well with a bunch of Bluetooth Low Energy devices, including the
-Surface Pen, a Bluetooth Speaker and two modern Bluetooth headphones.
-All devices were discovered immediately after turning them on. Even
-lower values were also tested, but these introduced longer delays until
-devices get discovered.
+Well yeah, but given that habanalabs hand rolled this I can't just check
+for the usual things we have to enforce this in drm. And generally you can
+just open chardevs arbitrarily, and multiple users fighting over each
+another. The troubles only start when you have private state or memory
+allocations of some kind attached to the struct file (instead of the
+underlying device), or something else that requires device exclusivity.
+There's no standard way to do that.
 
-Signed-off-by: Jonas Dreßler <verdre@v0yd.nl>
----
- drivers/bluetooth/btusb.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+Plus in many cases you really want revoke on top (can't get that here
+unfortunately it seems), and the attempts to get towards a generic
+revoke() just never went anywhere. So again it's all hand-rolled
+per-subsystem. *insert lament about us not having done this through a
+proper subsystem*
 
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index 60d2fce59a71..05b11179c839 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -59,6 +59,7 @@ static struct usb_driver btusb_driver;
- #define BTUSB_WIDEBAND_SPEECH	0x400000
- #define BTUSB_VALID_LE_STATES   0x800000
- #define BTUSB_QCA_WCN6855	0x1000000
-+#define BTUSB_LOWER_LESCAN_INTERVAL	0x2000000
- #define BTUSB_INTEL_BROKEN_INITIAL_NCMD 0x4000000
- 
- static const struct usb_device_id btusb_table[] = {
-@@ -356,6 +357,7 @@ static const struct usb_device_id blacklist_table[] = {
- 	{ USB_DEVICE(0x1286, 0x2044), .driver_info = BTUSB_MARVELL },
- 	{ USB_DEVICE(0x1286, 0x2046), .driver_info = BTUSB_MARVELL },
- 	{ USB_DEVICE(0x1286, 0x204e), .driver_info = BTUSB_MARVELL },
-+	{ USB_DEVICE(0x1286, 0x204c), .driver_info = BTUSB_LOWER_LESCAN_INTERVAL },
- 
- 	/* Intel Bluetooth devices */
- 	{ USB_DEVICE(0x8087, 0x0025), .driver_info = BTUSB_INTEL_COMBINED },
-@@ -3813,6 +3815,19 @@ static int btusb_probe(struct usb_interface *intf,
- 	if (id->driver_info & BTUSB_MARVELL)
- 		hdev->set_bdaddr = btusb_set_bdaddr_marvell;
- 
-+	/* The Marvell 88W8897 combined wifi and bluetooth card is known for
-+	 * very bad bt+wifi coexisting performance.
-+	 *
-+	 * Decrease the passive BT Low Energy scan interval a bit
-+	 * (0x0190 * 0.625 msec = 250 msec) and make the scan window shorter
-+	 * (0x000a * 0,625 msec = 6.25 msec). This allows for significantly
-+	 * higher wifi throughput while passively scanning for BT LE devices.
-+	 */
-+	if (id->driver_info & BTUSB_LOWER_LESCAN_INTERVAL) {
-+		hdev->le_scan_interval = 0x0190;
-+		hdev->le_scan_window = 0x000a;
-+	}
-+
- 	if (IS_ENABLED(CONFIG_BT_HCIBTUSB_MTK) &&
- 	    (id->driver_info & BTUSB_MEDIATEK)) {
- 		hdev->setup = btusb_mtk_setup;
+Anyway it sounds like the code takes care of that.
+-Daniel
 -- 
-2.31.1
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
