@@ -2,109 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 347EC40FAAB
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 16:45:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE22C40FAA5
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 16:45:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233755AbhIQOrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 10:47:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41510 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229920AbhIQOpx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S232536AbhIQOq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 10:46:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50760 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229990AbhIQOpx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 17 Sep 2021 10:45:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631889867;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xzE/NLJgfwAVxkat0RFh+f6sNWwm03C3DeUhhSSlfLM=;
-        b=fhqMfGZambCsXrC0/+U0nzVEFz8r60bezasaLVZuc+pKvVDnRd1bDnFpUYUOuMm1NBhAAX
-        yWH32yS7bwRwaZ92Ks3KndYD+8d0RvhG6iVUgGXVjNr1GlNliyWF1h04Hc5YV/uYqj0Jhy
-        6YMdP8jd71eKYQiTwf1YS3d9f7JvcsU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-587-Is39RrGqPm-8BizvYNITvw-1; Fri, 17 Sep 2021 10:44:24 -0400
-X-MC-Unique: Is39RrGqPm-8BizvYNITvw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 996F010055B9;
-        Fri, 17 Sep 2021 14:44:21 +0000 (UTC)
-Received: from piliu.users.ipa.redhat.com (ovpn-8-17.pek2.redhat.com [10.72.8.17])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7692E5DEB8;
-        Fri, 17 Sep 2021 14:43:56 +0000 (UTC)
-Date:   Fri, 17 Sep 2021 22:43:52 +0800
-From:   Pingfan Liu <piliu@redhat.com>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Pingfan Liu <kernelfans@gmail.com>, linux-kernel@vger.kernel.org,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Julien Thierry <jthierry@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Wang Qing <wangqing@vivo.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Santosh Sivaraj <santosh@fossix.org>
-Subject: Re: [PATCH 3/5] kernel/watchdog: adapt the watchdog_hld interface
- for async model
-Message-ID: <YUSpqCqA4jLboCVP@piliu.users.ipa.redhat.com>
-References: <20210915035103.15586-1-kernelfans@gmail.com>
- <20210915035103.15586-4-kernelfans@gmail.com>
- <YUMAUE5RFJAtAS/z@alley>
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 64D9660F9C;
+        Fri, 17 Sep 2021 14:44:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1631889859;
+        bh=pUUgn5EpX2DVFZW5+R/+upMeQszcZdrUJ+S9rLWFIfo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BSe7UA7GNyc/RXQ2NxNZ+pNPO0Q+KnJocHbJSrowb8vte234uGtj+PKEePqr7gTdT
+         g78yUiurVBo+15eIFsss3JO9LgTMz+x5gvLk8Xrit5Q4NIRecW13+qf9xwoQsUO3ZJ
+         qo2j2St7YV7P1PR4C0jTwByS/TJ2tm4sU/slQ6cY=
+Date:   Fri, 17 Sep 2021 16:44:17 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        David Laight <david.Laight@aculab.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH v7 15/19] staging: r8188eu: clean up usbctrl_vendorreq()
+Message-ID: <YUSpwTneDgRtUBvM@kroah.com>
+References: <20210917071837.10926-1-fmdefrancesco@gmail.com>
+ <20210917071837.10926-16-fmdefrancesco@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YUMAUE5RFJAtAS/z@alley>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <20210917071837.10926-16-fmdefrancesco@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 10:29:04AM +0200, Petr Mladek wrote:
-> On Wed 2021-09-15 11:51:01, Pingfan Liu wrote:
-> > When lockup_detector_init()->watchdog_nmi_probe(), PMU may be not ready
-> > yet. E.g. on arm64, PMU is not ready until
-> > device_initcall(armv8_pmu_driver_init).  And it is deeply integrated
-> > with the driver model and cpuhp. Hence it is hard to push this
-> > initialization before smp_init().
-> > 
-> > But it is easy to take an opposite approach by enabling watchdog_hld to
-> > get the capability of PMU async.
+On Fri, Sep 17, 2021 at 09:18:33AM +0200, Fabio M. De Francesco wrote:
+> Clean up usbctrl_vendoreq() in usb_ops_linux.c.
 > 
-> This is another cryptic description. I have probably got it after
-> looking at the 5th patch (was not Cc :-(
+> List of changes:
 > 
-> > The async model is achieved by introducing an extra parameter notifier
-> > of watchdog_nmi_probe().
-> 
-> I would say that the code is horrible and looks too complex.
-> 
-> What about simply calling watchdog_nmi_probe() and
-> lockup_detector_setup() once again when watchdog_nmi_probe()
-> failed in lockup_detector_init()?
-> 
-It may work. But there is still a way to report the PMU NMI capability
-to watchdog layer accurately. And the API should be extened somehow.
+> 1) Rename variables:
+> 	pdata => data
+>         pio_priv => io_priv
+>         pintfhdl => intfhdl
+>         wvalue => address.
+> 2) Reorder variables declarations according to the "Reverse Xmas Tree"
+>    style.
+> 3) Remove unncecessary test for "!pIo_buf".
+> 4) Move comments one line below code.
+> 5) Remove unnecessary excess parentheses.
+> 6) Remove unnecessary extra spaces.
+> 7) Remove unnecessary comments.
+> 8) Fix grammar errors (checksumed => checksummed).
 
-I am thinking something, maybe I can model in another way.
-> Or do not call lockup_detector_init() at all in
-> kernel_init_freeable() when PMU is not ready yet.
-> 
+When you find yourself listing all of the different things you have done
+in a single commit, that is a HUGE hint that you need to break this up
+into smaller pieces.
 
-This may be not a good choice. Since lockup_detector_init() had better
-be ready as early as possible, especially before drivers.
+Please do so here, this should not be just one change, as it's almost
+impossible to look at this and "know" it's all still the same logic
+happening here.  But if you had broken this down into 8 different
+changes, then it would have been obvious and I could easily have applied
+the changes.
 
+I've taken the first 14 patches in this series, it's great work, thank
+you all for doing this.  But this, and the remaining patches in here
+need to be split up more to make it obvious that the changes are correct
+and should be accepted.  Please feel free to start the numbering of the
+patch series over now, given that the first 14 are now merged into my
+tree.
 
-Thanks,
+thanks,
 
-	Pingfan
-
+greg k-h
