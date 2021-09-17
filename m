@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A1BC4100CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 23:39:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14B154100D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 23:40:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344401AbhIQVkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 17:40:19 -0400
-Received: from mga07.intel.com ([134.134.136.100]:54592 "EHLO mga07.intel.com"
+        id S1344327AbhIQVk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 17:40:27 -0400
+Received: from mga07.intel.com ([134.134.136.100]:54587 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242100AbhIQVkN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S242243AbhIQVkN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 17 Sep 2021 17:40:13 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10110"; a="286563051"
+X-IronPort-AV: E=McAfee;i="6200,9189,10110"; a="286563052"
 X-IronPort-AV: E=Sophos;i="5.85,302,1624345200"; 
-   d="scan'208";a="286563051"
+   d="scan'208";a="286563052"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
   by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2021 14:38:50 -0700
 X-IronPort-AV: E=Sophos;i="5.85,302,1624345200"; 
-   d="scan'208";a="546646807"
+   d="scan'208";a="546646810"
 Received: from agluck-desk2.sc.intel.com ([10.3.52.146])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2021 14:38:49 -0700
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2021 14:38:50 -0700
 From:   Tony Luck <tony.luck@intel.com>
 To:     Sean Christopherson <seanjc@google.com>,
         Jarkko Sakkinen <jarkko@kernel.org>,
@@ -27,9 +27,9 @@ To:     Sean Christopherson <seanjc@google.com>,
 Cc:     Cathy Zhang <cathy.zhang@intel.com>, linux-sgx@vger.kernel.org,
         x86@kernel.org, linux-kernel@vger.kernel.org,
         Tony Luck <tony.luck@intel.com>
-Subject: [PATCH v5 4/7] x86/sgx: Add SGX infrastructure to recover from poison
-Date:   Fri, 17 Sep 2021 14:38:33 -0700
-Message-Id: <20210917213836.175138-5-tony.luck@intel.com>
+Subject: [PATCH v5 5/7] x86/sgx: Hook arch_memory_failure() into mainline code
+Date:   Fri, 17 Sep 2021 14:38:34 -0700
+Message-Id: <20210917213836.175138-6-tony.luck@intel.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210917213836.175138-1-tony.luck@intel.com>
 References: <20210827195543.1667168-1-tony.luck@intel.com>
@@ -40,109 +40,127 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Provide a recovery function arch_memory_failure(). If the poison was
-consumed synchronously then send a SIGBUS. Note that the virtual
-address of the access is not included with the SIGBUS as is the case
-for poison outside of SGX enclaves. This doesn't matter as addresses
-of code/data inside an enclave is of little to no use to code executing
-outside the (now dead) enclave.
+Add a call inside memory_failure() to check if the address is an SGX
+EPC page and handle it.
 
-Poison found in a free page results in the page being moved from the
-free list to the poison page list.
+Note the SGX EPC pages do not have a "struct page" entry, so the hook
+goes in at the same point as the device mapping hook.
+
+Pull the call to acquire the mutex earlier so the SGX errors are also
+protected.
+
+Make set_mce_nospec() skip SGX pages when trying to adjust
+the 1:1 map.
 
 Signed-off-by: Tony Luck <tony.luck@intel.com>
 ---
- arch/x86/kernel/cpu/sgx/main.c | 77 ++++++++++++++++++++++++++++++++++
- 1 file changed, 77 insertions(+)
+ arch/x86/include/asm/processor.h  |  8 ++++++++
+ arch/x86/include/asm/set_memory.h |  4 ++++
+ include/linux/mm.h                | 13 +++++++++++++
+ mm/memory-failure.c               | 19 +++++++++++++------
+ 4 files changed, 38 insertions(+), 6 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-index 7a53ff876059..8f23c8489cec 100644
---- a/arch/x86/kernel/cpu/sgx/main.c
-+++ b/arch/x86/kernel/cpu/sgx/main.c
-@@ -682,6 +682,83 @@ bool arch_is_platform_page(u64 paddr)
- }
- EXPORT_SYMBOL_GPL(arch_is_platform_page);
+diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
+index 9ad2acaaae9b..4865f2860a4f 100644
+--- a/arch/x86/include/asm/processor.h
++++ b/arch/x86/include/asm/processor.h
+@@ -853,4 +853,12 @@ enum mds_mitigations {
+ 	MDS_MITIGATION_VMWERV,
+ };
  
-+static struct sgx_epc_page *sgx_paddr_to_page(u64 paddr)
++#ifdef CONFIG_X86_SGX
++int arch_memory_failure(unsigned long pfn, int flags);
++#define arch_memory_failure arch_memory_failure
++
++bool arch_is_platform_page(u64 paddr);
++#define arch_is_platform_page arch_is_platform_page
++#endif
++
+ #endif /* _ASM_X86_PROCESSOR_H */
+diff --git a/arch/x86/include/asm/set_memory.h b/arch/x86/include/asm/set_memory.h
+index 43fa081a1adb..ce8dd215f5b3 100644
+--- a/arch/x86/include/asm/set_memory.h
++++ b/arch/x86/include/asm/set_memory.h
+@@ -2,6 +2,7 @@
+ #ifndef _ASM_X86_SET_MEMORY_H
+ #define _ASM_X86_SET_MEMORY_H
+ 
++#include <linux/mm.h>
+ #include <asm/page.h>
+ #include <asm-generic/set_memory.h>
+ 
+@@ -98,6 +99,9 @@ static inline int set_mce_nospec(unsigned long pfn, bool unmap)
+ 	unsigned long decoy_addr;
+ 	int rc;
+ 
++	/* SGX pages are not in the 1:1 map */
++	if (arch_is_platform_page(pfn << PAGE_SHIFT))
++		return 0;
+ 	/*
+ 	 * We would like to just call:
+ 	 *      set_memory_XX((unsigned long)pfn_to_kaddr(pfn), 1);
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 73a52aba448f..3cc63682fe47 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -3284,5 +3284,18 @@ static inline int seal_check_future_write(int seals, struct vm_area_struct *vma)
+ 	return 0;
+ }
+ 
++#ifndef arch_memory_failure
++static inline int arch_memory_failure(unsigned long pfn, int flags)
 +{
-+	struct sgx_epc_section *section;
-+
-+	section = xa_load(&epc_page_ranges, paddr);
-+	if (!section)
-+		return NULL;
-+
-+	return &section->pages[PFN_DOWN(paddr - section->phys_addr)];
++	return -ENXIO;
 +}
-+
-+/*
-+ * Called in process context to handle a hardware reported
-+ * error in an SGX EPC page.
-+ * If the MF_ACTION_REQUIRED bit is set in flags, then the
-+ * context is the task that consumed the poison data. Otherwise
-+ * this is called from a kernel thread unrelated to the page.
-+ */
-+int arch_memory_failure(unsigned long pfn, int flags)
++#endif
++#ifndef arch_is_platform_page
++static inline bool arch_is_platform_page(u64 paddr)
 +{
-+	struct sgx_epc_page *page = sgx_paddr_to_page(pfn << PAGE_SHIFT);
-+	struct sgx_epc_section *section;
-+	struct sgx_numa_node *node;
-+
-+	/*
-+	 * mm/memory-failure.c calls this routine for all errors
-+	 * where there isn't a "struct page" for the address. But that
-+	 * includes other address ranges besides SGX.
-+	 */
-+	if (!page)
-+		return -ENXIO;
-+
-+	/*
-+	 * If poison was consumed synchronously. Send a SIGBUS to
-+	 * the task. Hardware has already exited the SGX enclave and
-+	 * will not allow re-entry to an enclave that has a memory
-+	 * error. The signal may help the task understand why the
-+	 * enclave is broken.
-+	 */
-+	if (flags & MF_ACTION_REQUIRED)
-+		force_sig(SIGBUS);
-+
-+	section = &sgx_epc_sections[page->section];
-+	node = section->node;
-+
-+	spin_lock(&node->lock);
-+
-+	/* Already poisoned? Nothing more to do */
-+	if (page->poison)
-+		goto out;
-+
-+	page->poison = 1;
-+
-+	/*
-+	 * If there is no owner, then the page is on a free list.
-+	 * Move it to the poison page list.
-+	 */
-+	if (!page->private) {
-+		list_del(&page->list);
-+		list_add(&page->list, &sgx_poison_page_list);
-+		goto out;
-+	}
-+
-+	/*
-+	 * TBD: Add additional plumbing to enable pre-emptive
-+	 * action for asynchronous poison notification. Until
-+	 * then just hope that the poison:
-+	 * a) is not accessed - sgx_free_epc_page() will deal with it
-+	 *    when the user gives it back
-+	 * b) results in a recoverable machine check rather than
-+	 *    a fatal one
-+	 */
-+out:
-+	spin_unlock(&node->lock);
-+	return 0;
++	return false;
 +}
++#endif
 +
- /**
-  * A section metric is concatenated in a way that @low bits 12-31 define the
-  * bits 12-31 of the metric and @high bits 0-19 define the bits 32-51 of the
+ #endif /* __KERNEL__ */
+ #endif /* _LINUX_MM_H */
+diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+index 54879c339024..5693bac9509c 100644
+--- a/mm/memory-failure.c
++++ b/mm/memory-failure.c
+@@ -1632,21 +1632,28 @@ int memory_failure(unsigned long pfn, int flags)
+ 	if (!sysctl_memory_failure_recovery)
+ 		panic("Memory failure on page %lx", pfn);
+ 
++	mutex_lock(&mf_mutex);
++
+ 	p = pfn_to_online_page(pfn);
+ 	if (!p) {
++		res = arch_memory_failure(pfn, flags);
++		if (res == 0)
++			goto unlock_mutex;
++
+ 		if (pfn_valid(pfn)) {
+ 			pgmap = get_dev_pagemap(pfn, NULL);
+-			if (pgmap)
+-				return memory_failure_dev_pagemap(pfn, flags,
+-								  pgmap);
++			if (pgmap) {
++				res = memory_failure_dev_pagemap(pfn, flags,
++								 pgmap);
++				goto unlock_mutex;
++			}
+ 		}
+ 		pr_err("Memory failure: %#lx: memory outside kernel control\n",
+ 			pfn);
+-		return -ENXIO;
++		res = -ENXIO;
++		goto unlock_mutex;
+ 	}
+ 
+-	mutex_lock(&mf_mutex);
+-
+ try_again:
+ 	if (PageHuge(p)) {
+ 		res = memory_failure_hugetlb(pfn, flags);
 -- 
 2.31.1
 
