@@ -2,326 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 824A340F65E
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 12:58:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A64240F665
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 12:59:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234873AbhIQK7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 06:59:32 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:46684 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230105AbhIQK7b (ORCPT
+        id S240937AbhIQLAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 07:00:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230105AbhIQLAs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 06:59:31 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18HAw0eF096519;
-        Fri, 17 Sep 2021 05:58:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1631876280;
-        bh=L2EIE6OG7UXJtU/GpDpLYUz2yv9SDcMyMLeBwT0+9oc=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=jo1bBxvWjj3yKsmSu/4EYx/R5LDe0t/MJ1ELInou7zeuxVK4XusxEgegI8twoIoFp
-         ndcQDj4/9Nf6VGb6NtWstpaBy33hkscFlw6szXlN7O1Z7K/IitG2Upvny9fE6sDK0W
-         SjsIsPjJijpBj77Whu9fqy3OJhshmMYPj1puQawc=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18HAw0rA013379
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 17 Sep 2021 05:58:00 -0500
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Fri, 17
- Sep 2021 05:57:59 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Fri, 17 Sep 2021 05:57:59 -0500
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18HAvu9C116683;
-        Fri, 17 Sep 2021 05:57:57 -0500
-Subject: Re: beaglebone black boot failure Linux v5.15.rc1
-To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>,
-        Tony Lindgren <tony@atomide.com>
-CC:     "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-        Suman Anna <s-anna@ti.com>,
-        Paul Barker <paul.barker@sancloud.com>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        =?UTF-8?Q?Beno=c3=aet_Cousson?= <bcousson@baylibre.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <120a0ca4-28c7-5a7b-f1ab-2015c8817bda@fi.rohmeurope.com>
- <YUQyQgFAOFnBlcdP@atomide.com>
- <0679a5bb-88d1-077d-6107-d5f88ef60dbf@fi.rohmeurope.com>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <8f3963ca-ff09-b876-ae9e-433add242de2@ti.com>
-Date:   Fri, 17 Sep 2021 13:57:56 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Fri, 17 Sep 2021 07:00:48 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBD4CC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 03:59:26 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id v22so24224222edd.11
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 03:59:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=s//0d7Cj3OD9+gEt4FtNSO+EEyVbGsw9O64iurzqSXw=;
+        b=Y3KEkXsxwNqgNvWq/b/b0ARtJDK4LV/8UlbfmgGXY+xNMmz1gp5ObrC8CKGepJyn8W
+         WeTD37Op9TmZxeVkwniDVbFaJ2oXzSQ0FTL+ZJWlosZYzML9veTD5qmXKFolchF3Lufo
+         fJWSLyxJ+qukHRdvsHxbSUBR4HzOngjBV03RsZCSd7RYBmoSui4c9zP2lo0Ih5GgSA/T
+         yn6ZORgDNxBM3z3vzxcMMsgHfDAmOWLNOGpioodNd1zroiVGeXJAgD21Vzbv+5vOcS0N
+         qsLjbG+wBWOpO+fj0mkJq1YXNZ6QG3lbcIecN4mhuil9WxSIruOLqTRcL3aT75KBrsNx
+         LXEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=s//0d7Cj3OD9+gEt4FtNSO+EEyVbGsw9O64iurzqSXw=;
+        b=KjVcwDAbY0vdpM/Uh/NTPsd7Sa1e3FqRSCIjRaNJcCc5Wd9UI0acDJPMPfnhKOVgFY
+         0OWlWCEh9vuHQR868YSaf08W5xxAGh4sF3kFv9NOgutVcYrpu4aUqlgnl/80WFl+MrpT
+         BP23XO1sKt+vyuM2H0kcPiMfaXcS91hkBmAU5AHRv2smKR8PSSx9h/djXgVzk/YnH/7f
+         BLHyZIfRmQsEeDT8vQux3O+wrz1kI52+xJMCTSNkRr0x3ZW+ahR0Qx8f9CamPvhsL61K
+         0y+Q/0hUVtwwUxyGdQs+u2/srLJ1JUUqI5XMqIRS5OCthDrS1sbzLUR3GYQtPgrknJ5J
+         4U2w==
+X-Gm-Message-State: AOAM530s7jTOg3kC3/E616wJhOfRoaEWmmWuabCnmZvLyQWfOMVL1KAv
+        Ib63XpF95i+TYRLr0bYR8ZsfCB9sNZOhITeDVko=
+X-Google-Smtp-Source: ABdhPJzvw6Y93PzS7e2SCv+gvDMgpKLG4EoozZmxvXQX/x4V02hLL8XmAMZUEF/qGEeBaE3SVq20xiCVN5dq3HAs6gw=
+X-Received: by 2002:aa7:d0c9:: with SMTP id u9mr11587495edo.167.1631876365190;
+ Fri, 17 Sep 2021 03:59:25 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <0679a5bb-88d1-077d-6107-d5f88ef60dbf@fi.rohmeurope.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <ef3b3e55-8be9-595f-6d54-886d13a7e2fd@hisilicon.com>
+ <CAKfTPtDJip17rdZ0CMDwUztE7BGUF+J_O2Up=S5GLYrqtkA67A@mail.gmail.com>
+ <d9ada2d4-1967-7b80-68e0-ef7052c41e0f@hisilicon.com> <CAKfTPtBv3TAJvKayn73yenJGmqchObXDWMm2Kxj0ixL8E0GUGA@mail.gmail.com>
+In-Reply-To: <CAKfTPtBv3TAJvKayn73yenJGmqchObXDWMm2Kxj0ixL8E0GUGA@mail.gmail.com>
+From:   Barry Song <21cnbao@gmail.com>
+Date:   Fri, 17 Sep 2021 22:59:13 +1200
+Message-ID: <CAGsJ_4wnoUCbnWgJEMnZhsCx54aCN--r=hibaVFpMeW19nKe-w@mail.gmail.com>
+Subject: Re: [RFC] Perfomance varies according to sysctl_sched_migration_cost
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Yicong Yang <yangyicong@hisilicon.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        prime.zeng@huawei.com,
+        "guodong.xu@linaro.org" <guodong.xu@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 15, 2021 at 12:55 AM Vincent Guittot
+<vincent.guittot@linaro.org> wrote:
+>
+> On Tue, 14 Sept 2021 at 14:08, Yicong Yang <yangyicong@hisilicon.com> wrote:
+> >
+> > Hi Vincent,
+> >
+> > thanks for the reply!
+> >
+> > On 2021/9/14 17:04, Vincent Guittot wrote:
+> > > Hi Yicong,
+> > >
+> > > On Tue, 14 Sept 2021 at 09:27, Yicong Yang <yangyicong@hisilicon.com> wrote:
+> > >>
+> > >> Hi all,
+> > >>
+> > >> I noticed that some benchmark performance varies after tunning the sysctl_sched_migration_cost
+> > >> through /sys/kernel/debug/sched/migration_cost_ns on arm64. The default value is 500000, and
+> > >> I tried 10000, 100000, 1000000. Below are some results from mmtests, based on 5.14-release.
+> > >>
+> > >> On Kunpeng920 (128cores, 4numa, 2socket):
+> > >>
+> > >> pgbench (config-db-pgbench-timed-ro-medium)
+> > >>                      mig-cost-500000        mig-cost-100000         mig-cost-10000       mig-cost-1000000
+> > >> Hmean     1       9558.99 (   0.00%)     9735.31 *   1.84%*     9410.84 *  -1.55%*     9602.47 *   0.45%*
+> > >> Hmean     8      17615.90 (   0.00%)    17439.78 *  -1.00%*    18056.44 *   2.50%*    19222.18 *   9.12%*
+> > >> Hmean     12     25228.38 (   0.00%)    25592.69 *   1.44%*    26739.06 *   5.99%*    27575.48 *   9.30%*
+> > >> Hmean     24     46623.27 (   0.00%)    48853.30 *   4.78%*    47386.02 *   1.64%*    48542.94 *   4.12%*
+> > >> Hmean     32     60578.78 (   0.00%)    62116.81 *   2.54%*    59961.36 *  -1.02%*    58681.07 *  -3.13%*
+> > >> Hmean     48     68159.12 (   0.00%)    67867.90 (  -0.43%)    65631.79 *  -3.71%*    66487.16 *  -2.45%*
+> > >> Hmean     80     66894.87 (   0.00%)    73440.92 *   9.79%*    68751.63 *   2.78%*    67326.70 (   0.65%)
+> > >> Hmean     112    68582.27 (   0.00%)    65339.90 *  -4.73%*    68454.99 (  -0.19%)    67211.66 *  -2.00%*
+> > >> Hmean     144    76290.98 (   0.00%)    70455.65 *  -7.65%*    64851.23 * -14.99%*    64940.61 * -14.88%*
+> > >> Hmean     172    63245.68 (   0.00%)    68790.24 *   8.77%*    66246.46 *   4.74%*    69536.96 *   9.95%*
+> > >> Hmean     204    61793.47 (   0.00%)    63711.62 *   3.10%*    66055.64 *   6.90%*    58023.20 *  -6.10%*
+> > >> Hmean     236    61486.75 (   0.00%)    68404.44 *  11.25%*    70499.70 *  14.66%*    58285.67 *  -5.21%*
+> > >> Hmean     256    57476.13 (   0.00%)    65645.83 *  14.21%*    69437.05 *  20.81%*    60518.05 *   5.29%*
+> > >>
+> > >> tbench (config-network-tbench)
+> > >>                      mig-cost-500000        mig-cost-100000         mig-cost-10000       mig-cost-1000000
+> > >> Hmean     1        333.12 (   0.00%)      332.93 (  -0.06%)      335.34 *   0.67%*      334.36 *   0.37%*
+> > >> Hmean     2        665.88 (   0.00%)      667.19 *   0.20%*      666.47 *   0.09%*      667.02 *   0.17%*
+> > >> Hmean     4       1324.10 (   0.00%)     1312.23 *  -0.90%*     1313.07 *  -0.83%*     1315.13 *  -0.68%*
+> > >> Hmean     8       2618.85 (   0.00%)     2602.00 *  -0.64%*     2577.49 *  -1.58%*     2600.48 *  -0.70%*
+> > >> Hmean     16      5100.74 (   0.00%)     5068.80 *  -0.63%*     5041.34 *  -1.16%*     5069.78 *  -0.61%*
+> > >> Hmean     32      8157.22 (   0.00%)     8163.50 (   0.08%)     7936.25 *  -2.71%*     8329.18 *   2.11%*
+> > >> Hmean     64      4824.56 (   0.00%)     4890.81 *   1.37%*     5319.97 *  10.27%*     4830.68 *   0.13%*
+> > >> Hmean     128     4635.17 (   0.00%)     6810.90 *  46.94%*     5304.36 *  14.44%*     4516.06 *  -2.57%*
+> > >> Hmean     256     8816.62 (   0.00%)     8851.28 *   0.39%*     8448.76 *  -4.17%*     6840.12 * -22.42%*
+> > >> Hmean     512     7825.56 (   0.00%)     8538.04 *   9.10%*     8002.77 *   2.26%*     7946.54 *   1.55%*
+> > >>
+> > >> Also on Raspberrypi 4B:
+> > >>
+> > >> pgbench (config-db-pgbench-timed-ro-medium)
+> > >>                    mig-cost-500000        mig-cost-100000
+> > >> Hmean     1     1651.41 (   0.00%)     3444.27 * 108.56%*
+> > >> Hmean     4     4015.83 (   0.00%)     6883.21 *  71.40%*
+> > >> Hmean     7     4161.45 (   0.00%)     6646.18 *  59.71%*
+> > >> Hmean     8     4277.28 (   0.00%)     6764.60 *  58.15%*
+> > >>
+> > >> For tbench on Raspberrypi 4B and both pgbench and tbench on x86, tuning sysctl_sched_migration_cost
+> > >> doesn't have such huge difference and will have some degradations (max -8% on x86 for pgbench) in some cases.
+> > >>
+> > >> The sysctl_sched_migration_cost will affects the frequency of load balance. It will affect
+> > >
+> > > So it doesn't affect the periodic load but only the newly idle load balance
+> > >
+> >
+> > In load_balance(), it's used to judge whether a task is hot in task_hot(). so I think it
+> > participates in the periodic load balance.
+>
+> Not really. The periodic load balance always happens but task_hot is
+> used to skip task that have recently run on the cpu and select older
+> tasks instead
+> At the contrary, sysctl_sched_migration_cost is used to decide if we
+> should abort newly_idle_load_balance
+>
+> As a side point, would be good to know if the improvement and
+> regression seen in your tests are more linked to the task hotness or
+> for  skipping/aborting newly idle load balance
+>
+> >
+> > >> directly in task_hot() and newidle_balance() to decide whether we can do a migration or load
+> > >> balance. And affects other parameters like rq->avg_idle, rq->max_idle_balance_cost and
+> > >> sd->max_newidle_lb_cost to indirectly affect the load balance process. These parameters record
+> > >> the load_balance() cost and will be limited up to sysctl_sched_migration_cost, so I measure
+> > >> the average cost of load_balance() on Kunpeng920 with bcc tools(./funclantency load_balance -d 10):
+> > >>
+> > >> system status   idle   50%load  100%load
+> > >> avg cost      3160ns    4790ns    7563ns
+> > >
+> > > What is the setup of your test ? has this been measured during the
+> > > benchmarks above ?
+> > >
+> >
+> > I use stress-ng to generate the load. Since it's a 128core server, `stress-ng -c 64` for
+> > 50% load, and `stress-ng -c 128` for 100% load. This is not measured during the benchmarks'
+> > process.
+>
+> I don't think this is the best benchmark to evaluate the real cost of
+> load_balance because it create always running task and  you measure
+> only the periodic load balance and not the newly load balance which is
+> the one really impacted by sysctl_sched_migration_cost
+>
+> >
+> > > Also, do you have more details about  the topology and the number of
+> > > sched domain ?
+> > >
+> >
+> > sure. for `numactl -H`:
+> >
+> > available: 4 nodes (0-3)
+> > node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+> > node 0 size: 257149 MB
+> > node 0 free: 253518 MB
+> > node 1 cpus: 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63
+> > node 1 size: 193531 MB
+> > node 1 free: 192916 MB
+> > node 2 cpus: 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95
+> > node 2 size: 96763 MB
+> > node 2 free: 92654 MB
+> > node 3 cpus: 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120 121 122 123 124 125 126 127
+> > node 3 size: 127668 MB
+> > node 3 free: 125846 MB
+> > node distances:
+> > node   0   1   2   3
+> >   0:  10  12  20  22
+> >   1:  12  10  22  24
+> >   2:  20  22  10  12
+> >   3:  22  24  12  10
+> >
+> > Kunpeng 920 is non-smt. There're 4 level domains and below is part of the /proc/schedstat:
+> > [...]
+> > cpu0
+> > domain0 00000000,00000000,00000000,ffffffff
+> > domain1 00000000,00000000,ffffffff,ffffffff
+> > domain2 00000000,ffffffff,ffffffff,ffffffff
+> > domain3 ffffffff,ffffffff,ffffffff,ffffffff
+>
+> Because of the large difference between the number of cpus at 1st and
+> last level, an average duration of load_balance() is not really
+> meaningful and we can expect a factor of 4 between smallest and larger
+> one
 
+I also think measuring the funclatency of load_balance() might not be the
+proper way to estimate the cost of migration considering it might iterate
+over several levels of domains:
 
-On 17/09/2021 13:28, Vaittinen, Matti wrote:
-> Hi deeee Ho Tony & All,
-> 
-> On 9/17/21 09:14, Tony Lindgren wrote:
->> Hi,
->>
->> * Vaittinen, Matti <Matti.Vaittinen@fi.rohmeurope.com> [210916 09:15]:
-> 
->>> My beaglebone black (rev c) based test environment fails to boot with
->>> v5.15-rc1. Boot succeeds with the v5.14.
->>>
->>> Bisecting the Linus' tree pointed out the commit:
->>> [1c7ba565e70365763ea780666a3eee679344b962] ARM: dts: am335x-baltos:
->>> switch to new cpsw switch drv
->>>
->>> I don't see this exact commit touching the BBB device-tree. In Linus'
->>> tree it is a part of a merge commit. Reverting the whole merge on top of
->>> the v5.15-rc1
->>>
->>> This reverts commit 81b6a285737700c2e04ef0893617b80481b6b4b7, reversing
->>> changes made to f73979109bc11a0ed26b6deeb403fb5d05676ffc.
->>>
->>> makes my beaglebone black to boot again.
->>>
->>> Yesterday I tried adding this patch:
->>> https://lore.kernel.org/linux-omap/20210915065032.45013-1-tony@atomide.com/T/#u
->>> pointed by Tom on top of the v5.15-rc1 - no avail. I also did #define
->>> DEBUG at ti-sys.c as was suggested by Tom - but I don't see any more output.
->>
->> Correction, that was me, not Tom :)
-> 
-> Oh.. Sorry! I don't know where I picked Tom from... My bad!
-> 
->> For me, adding any kind of delay fixed the issue. Also adding some printk
->> statements fixed it for me.
->>
->>> Any suggestions what to check next?
->>
->> Maybe try the attached patch? If it helps, just try with the with the
->> ti,sysc-delay-us = <2> added as few modules need that after enable.
->>
->> It's also possible there is an issue with some other device that is now
->> getting enabled other than pruss. The last XXX printk output should show
->> the last device being probed.
->>
->> Looks like you need to also enable CONFIG_SERIAL_EARLYCON=y, and pass
->> console=ttyS0,115200 debug earlycon in the kernel command line.
-> 
-> Ah. Thanks again. I indeed lacked the "debug earlycon" parameters. Now
-> we're more likely to see what went wrong :) I pasted the serial log form
-> failing boot with v5.15-rc1 which has both the patch you linked me above
-> and the patch you suggested me to test in previous email.
-> 
+        for_each_domain(this_cpu, sd) {
+                int continue_balancing = 1;
+                u64 t0, domain_cost;
 
-[...]
+                if (this_rq->avg_idle < curr_cost + sd->max_newidle_lb_cost) {
+                        update_next_balance(sd, &next_balance);
+                        break;
+                }
 
-> [    2.786181] ti-sysc 48311fe0.target-module: XXX sysc_probe
-> [    2.791994] ti-sysc 48311fe0.target-module:
-> 48310000:2000:1fe0:1fe4:NA:00000020:rng
-> [    2.800820] omap_rng 48310000.rng: Random Number Generator ver. 20
-> [    2.807315] random: crng init done
-> [    2.814207] ti-sysc 4a101200.target-module: XXX sysc_probe
-> [    2.820080] ti-sysc 4a101200.target-module:
-> 4a100000:8000:1200:1208:1204:4edb0100:cpgmac
+                if (sd->flags & SD_BALANCE_NEWIDLE) {
+                        t0 = sched_clock_cpu(this_cpu);
 
-This one cpsw
+                        pulled_task = load_balance(this_cpu, this_rq,
+                                                   sd, CPU_NEWLY_IDLE,
+                                                   &continue_balancing);
 
-> [    2.830347] ti-sysc 4a326000.target-module: XXX sysc_probe
+                        domain_cost = sched_clock_cpu(this_cpu) - t0;
+                        if (domain_cost > sd->max_newidle_lb_cost)
+                                sd->max_newidle_lb_cost = domain_cost;
 
-This one pruss and it still shows sysc_probe
+                        curr_cost += domain_cost;
+                }
 
-Not sure what are the dependency here :( if any.
+                update_next_balance(sd, &next_balance);
 
-Additional option to try - cmdline param "initcall_debug" and maybe increase print level in really_probe_debug()
+                /*
+                 * Stop searching for tasks to pull if there are
+                 * now runnable tasks on this rq.
+                 */
+                if (pulled_task || this_rq->nr_running > 0 ||
+                    this_rq->ttwu_pending)
+                        break;
+        }
 
+maybe worth adding some tracepoints at the start and the end of the
+whole balance
+procedure.
 
-I see one possible diff if you could try:
+But even if we can get the avg, min and max figures afterwards, is it
+really reasonable
+to set the migration_cost according to the figure? migration cost
+isn't only moving a
+task, pulling a task from remote numa might mean huge cache coherence overhead.
 
-diff --git a/arch/arm/boot/dts/am33xx-l4.dtsi b/arch/arm/boot/dts/am33xx-l4.dtsi
-index c9629cb5ccd1..d62943ba3506 100644
---- a/arch/arm/boot/dts/am33xx-l4.dtsi
-+++ b/arch/arm/boot/dts/am33xx-l4.dtsi
-@@ -801,7 +801,7 @@
-  
-                                 davinci_mdio_sw: mdio@1000 {
-                                         compatible = "ti,cpsw-mdio","ti,davinci_mdio";
--                                       clocks = <&cpsw_125mhz_gclk>;
-+                                       clocks = <&cpsw_125mhz_clkctrl AM3_CPSW_125MHZ_CPGMAC0_CLKCTRL 0>;
-                                         clock-names = "fck";
-                                         #address-cells = <1>;
-                                         #size-cells = <0>;
+I feel a couple of factors will determine the best sched_migration_cost:
+1. hardware topology - how many sched levels, how many numas, how far
+numa nodes are
+2. cache coherence overhead between cpus in different topology
+3. how fast each cpu is
+4. if tasks are pinning numa, this might scale down/up the range LB
+needs to be done
+5. relax_domain_level bootargs
+...
 
-
-
-> [    2.836198] 8<--- cut here ---
-> [    2.839339] Unhandled fault: external abort on non-linefetch (0x1008)
-> at 0xe0266000
-> [    2.847215] pgd = 342d2420
-> [    2.850000] [e0266000] *pgd=81ec1811, *pte=4a326653, *ppte=4a326453
-> [    2.856467] Internal error: : 1008 [#1] THUMB2
-> [    2.861036] Modules linked in:
-> [    2.864176] CPU: 0 PID: 65 Comm: kworker/u2:2 Not tainted
-> 5.15.0-rc1-00002-g5285574596c0 #552
-> [    2.872946] Hardware name: Generic AM33XX (Flattened Device Tree)
-> [    2.879212] Workqueue: events_unbound deferred_probe_work_func
-> [    2.885231] PC is at sysc_probe+0xb30/0xf6c
-> [    2.889545] LR is at omap_reset_deassert+0x8d/0x164
-> [    2.894569] pc : [<c05afb40>]    lr : [<c0605e2d>]    psr: 40000033
-> [    2.901009] sp : c1bcb798  ip : 05355555  fp : c0a56460
-> [    2.906379] r10: 00000000  r9 : 00000001  r8 : 00000000
-> [    2.911746] r7 : c110be4c  r6 : c1f5ae10  r5 : c1f52240  r4 : c1105288
-> [    2.918457] r3 : e0266000  r2 : 00000001  r1 : 00026000  r0 : 00000000
-> [    2.925171] Flags: nZcv  IRQs on  FIQs on  Mode SVC_32  ISA Thumb
-> Segment none
-> [    2.932687] Control: 50c5387d  Table: 80004019  DAC: 00000051
-> [    2.938590] Register r0 information: NULL pointer
-> [    2.943430] Register r1 information: non-paged memory
-> [    2.948622] Register r2 information: non-paged memory
-> [    2.953813] Register r3 information: 0-page vmalloc region starting
-> at 0xe0240000 allocated at __devm_ioremap+0x6f/0x78
-> [    2.964915] Register r4 information: non-slab/vmalloc memory
-> [    2.970734] Register r5 information: slab kmalloc-256 start c1f52200
-> pointer offset 64 size 256
-> [    2.979701] Register r6 information: slab kmalloc-512 start c1f5ae00
-> pointer offset 16 size 512
-> [    2.988661] Register r7 information: non-slab/vmalloc memory
-> [    2.994481] Register r8 information: NULL pointer
-> [    2.999316] Register r9 information: non-paged memory
-> [    3.004508] Register r10 information: NULL pointer
-> [    3.009433] Register r11 information: non-slab/vmalloc memory
-> [    3.015343] Register r12 information: non-paged memory
-> [    3.020625] Process kworker/u2:2 (pid: 65, stack limit = 0xa1c5a543)
-> [    3.027159] Stack: (0xc1bcb798 to 0xc1bcc000)
-> [    3.031637] b780:
->      ???????? ????????
-> [    3.040045] b7a0: ???????? ???????? ???????? ???????? ????????
-> ???????? ???????? ????????
-
-what is these ?? :(
-
-> [    3.603378] [<c05afb40>] (sysc_probe) from [<c0695135>]
-> (platform_probe+0x5d/0x88)
-> [    3.611178] [<c0695135>] (platform_probe) from [<c069334b>]
-> (really_probe+0x12b/0x2c8)
-> [    3.619334] [<c069334b>] (really_probe) from [<c069356f>]
-> (__driver_probe_device+0x87/0x17c)
-> [    3.628019] [<c069356f>] (__driver_probe_device) from [<c0693699>]
-> (driver_probe_device+0x35/0xa4)
-> [    3.637244] [<c0693699>] (driver_probe_device) from [<c0693951>]
-> (__device_attach_driver+0x61/0xa8)
-> [    3.646560] [<c0693951>] (__device_attach_driver) from [<c0691c7b>]
-> (bus_for_each_drv+0x47/0x70)
-> [    3.655604] [<c0691c7b>] (bus_for_each_drv) from [<c06931b3>]
-> (__device_attach+0x8f/0xf0)
-> [    3.664023] [<c06931b3>] (__device_attach) from [<c06926f3>]
-> (bus_probe_device+0x5b/0x60)
-> [    3.672443] [<c06926f3>] (bus_probe_device) from [<c0690e19>]
-> (device_add+0x389/0x640)
-> [    3.680597] [<c0690e19>] (device_add) from [<c08064b5>]
-> (of_platform_device_create_pdata+0x71/0xa0)
-> [    3.689919] [<c08064b5>] (of_platform_device_create_pdata) from
-> [<c08065fd>] (of_platform_bus_create+0x10d/0x244)
-> [    3.700484] [<c08065fd>] (of_platform_bus_create) from [<c0806879>]
-> (of_platform_populate+0x5d/0xd8)
-> [    3.709886] [<c0806879>] (of_platform_populate) from [<c05add17>]
-> (simple_pm_bus_probe+0x2b/0x50)
-> [    3.719020] [<c05add17>] (simple_pm_bus_probe) from [<c0695135>]
-> (platform_probe+0x5d/0x88)
-> [    3.727617] [<c0695135>] (platform_probe) from [<c069334b>]
-> (really_probe+0x12b/0x2c8)
-> [    3.735766] [<c069334b>] (really_probe) from [<c069356f>]
-> (__driver_probe_device+0x87/0x17c)
-> [    3.744452] [<c069356f>] (__driver_probe_device) from [<c0693699>]
-> (driver_probe_device+0x35/0xa4)
-> [    3.753677] [<c0693699>] (driver_probe_device) from [<c0693951>]
-> (__device_attach_driver+0x61/0xa8)
-> [    3.762991] [<c0693951>] (__device_attach_driver) from [<c0691c7b>]
-> (bus_for_each_drv+0x47/0x70)
-> [    3.772037] [<c0691c7b>] (bus_for_each_drv) from [<c06931b3>]
-> (__device_attach+0x8f/0xf0)
-> [    3.780454] [<c06931b3>] (__device_attach) from [<c06926f3>]
-> (bus_probe_device+0x5b/0x60)
-> [    3.788873] [<c06926f3>] (bus_probe_device) from [<c0690e19>]
-> (device_add+0x389/0x640)
-> [    3.797023] [<c0690e19>] (device_add) from [<c08064b5>]
-> (of_platform_device_create_pdata+0x71/0xa0)
-> [    3.806336] [<c08064b5>] (of_platform_device_create_pdata) from
-> [<c08065fd>] (of_platform_bus_create+0x10d/0x244)
-> [    3.816899] [<c08065fd>] (of_platform_bus_create) from [<c0806879>]
-> (of_platform_populate+0x5d/0xd8)
-> [    3.826302] [<c0806879>] (of_platform_populate) from [<c05add17>]
-> (simple_pm_bus_probe+0x2b/0x50)
-> [    3.835434] [<c05add17>] (simple_pm_bus_probe) from [<c0695135>]
-> (platform_probe+0x5d/0x88)
-> [    3.844030] [<c0695135>] (platform_probe) from [<c069334b>]
-> (really_probe+0x12b/0x2c8)
-> [    3.852182] [<c069334b>] (really_probe) from [<c069356f>]
-> (__driver_probe_device+0x87/0x17c)
-> [    3.860871] [<c069356f>] (__driver_probe_device) from [<c0693699>]
-> (driver_probe_device+0x35/0xa4)
-> [    3.870095] [<c0693699>] (driver_probe_device) from [<c0693951>]
-> (__device_attach_driver+0x61/0xa8)
-> [    3.879409] [<c0693951>] (__device_attach_driver) from [<c0691c7b>]
-> (bus_for_each_drv+0x47/0x70)
-> [    3.888455] [<c0691c7b>] (bus_for_each_drv) from [<c06931b3>]
-> (__device_attach+0x8f/0xf0)
-> [    3.896874] [<c06931b3>] (__device_attach) from [<c06926f3>]
-> (bus_probe_device+0x5b/0x60)
-> [    3.905295] [<c06926f3>] (bus_probe_device) from [<c0690e19>]
-> (device_add+0x389/0x640)
-> [    3.913443] [<c0690e19>] (device_add) from [<c08064b5>]
-> (of_platform_device_create_pdata+0x71/0xa0)
-> [    3.922756] [<c08064b5>] (of_platform_device_create_pdata) from
-> [<c08065fd>] (of_platform_bus_create+0x10d/0x244)
-> [    3.933320] [<c08065fd>] (of_platform_bus_create) from [<c0806879>]
-> (of_platform_populate+0x5d/0xd8)
-> [    3.942722] [<c0806879>] (of_platform_populate) from [<c05add17>]
-> (simple_pm_bus_probe+0x2b/0x50)
-> [    3.951857] [<c05add17>] (simple_pm_bus_probe) from [<c0695135>]
-> (platform_probe+0x5d/0x88)
-> [    3.960452] [<c0695135>] (platform_probe) from [<c069334b>]
-> (really_probe+0x12b/0x2c8)
-> [    3.968600] [<c069334b>] (really_probe) from [<c069356f>]
-> (__driver_probe_device+0x87/0x17c)
-> [    3.977286] [<c069356f>] (__driver_probe_device) from [<c0693699>]
-> (driver_probe_device+0x35/0xa4)
-> [    3.986512] [<c0693699>] (driver_probe_device) from [<c0693951>]
-> (__device_attach_driver+0x61/0xa8)
-> [    3.995827] [<c0693951>] (__device_attach_driver) from [<c0691c7b>]
-> (bus_for_each_drv+0x47/0x70)
-> [    4.004871] [<c0691c7b>] (bus_for_each_drv) from [<c06931b3>]
-> (__device_attach+0x8f/0xf0)
-> [    4.013290] [<c06931b3>] (__device_attach) from [<c06926f3>]
-> (bus_probe_device+0x5b/0x60)
-> [    4.021710] [<c06926f3>] (bus_probe_device) from [<c0692a9b>]
-> (deferred_probe_work_func+0x77/0xa4)
-> [    4.030931] [<c0692a9b>] (deferred_probe_work_func) from [<c01343d5>]
-> (process_one_work+0x109/0x310)
-> [    4.040336] [<c01343d5>] (process_one_work) from [<c0134921>]
-> (worker_thread+0xe5/0x3a8)
-> [    4.048663] [<c0134921>] (worker_thread) from [<c01397a7>]
-> (kthread+0xe3/0x11c)
-> [    4.056194] [<c01397a7>] (kthread) from [<c0100139>]
-> (ret_from_fork+0x11/0x38)
-> [    4.063632] Exception stack(0xc1bcbfb0 to 0xc1bcbff8)
-> [    4.068824] bfa0:                                     ????????
-> ???????? ???????? ????????
-> [    4.077233] bfc0: ???????? ???????? ???????? ???????? ????????
-> ???????? ???????? ????????
-> [    4.085640] bfe0: ???????? ???????? ???????? ???????? ???????? ????????
-> [    4.092446] Code: f100 81cc 696b 440b (6818) 46cc
-> [    4.097375] ---[ end trace eba2b1d5f478df09 ]---
-> 
-> 
-
-
--- 
-Best regards,
-grygorii
+Thanks
+barry
