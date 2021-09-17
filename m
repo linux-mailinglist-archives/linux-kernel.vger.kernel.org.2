@@ -2,137 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2954340F226
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 08:14:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F96740F227
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 08:15:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242902AbhIQGPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 02:15:52 -0400
-Received: from muru.com ([72.249.23.125]:33802 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232039AbhIQGPu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 02:15:50 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id D4DC180FB;
-        Fri, 17 Sep 2021 06:14:54 +0000 (UTC)
-Date:   Fri, 17 Sep 2021 09:14:26 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
-Cc:     "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Suman Anna <s-anna@ti.com>, "Andrew F. Davis" <afd@ti.com>,
-        Paul Barker <paul.barker@sancloud.com>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        =?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: beaglebone black boot failure Linux v5.15.rc1
-Message-ID: <YUQyQgFAOFnBlcdP@atomide.com>
-References: <120a0ca4-28c7-5a7b-f1ab-2015c8817bda@fi.rohmeurope.com>
+        id S243221AbhIQGQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 02:16:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236332AbhIQGQ4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 02:16:56 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84800C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 23:15:35 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id q68so8612903pga.9
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 23:15:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QLxAgvPiwV4LgGOV9DMw00Rt94l7Vhe8/b9r97CCM90=;
+        b=kNHv+MrElC2vzdt/M+tEutVmMvcn4Y/4N67GSh8mSsmx0BDCp8lQBi7teNv/SjiMtP
+         pNhs+obL+RbCO9mFdmamid2DtQfqN+Em5ht7d8brGpRaWuZLsnCEC8gxdyx1MJLocthd
+         7sqMy2xrpH5xC/bGCiQFwS1a+182w9QrnMCk7LRQezO2Bjpl4psj5lvhILZWIpxexRM7
+         oY8dnvOSYhXGxD3P37IutXjAaV7VvKZuYZpDxTm6Sz8bCw4T2ELeWvThQN1zNZqEqVIi
+         Y8cR/QVx9XKxxGBg6LcxnAA9Sh8+3XjCUR9IFK6nxI+TasXbHBsbMOhFSuEdFkH+ZiI+
+         F9kA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QLxAgvPiwV4LgGOV9DMw00Rt94l7Vhe8/b9r97CCM90=;
+        b=6e658XoCRgSKc82uqnIZpZz7ZwO/abyVHGMTo+BocCQXXMcsuMXj1JvGHmblR5WOOQ
+         01SXFvp6LstO5yZtaCvJoj9oa+RXsfiMMQl9dH30HIkaPZzn7IaqXspeedgjIS4qxKeH
+         /KRUZHd7a+iv+TQzAhzSNmPwyPSxBGfQvwMU+Eoub8Ozy88wTYYC41d0Q178iasEcwx4
+         TIn7NbEEefPU0/VZ5+gg75/AzP+njxSvpLvnQApCu1FbmHU/7DtVze8zjuMpqimteg/m
+         TEShHrvjUKVfJtaySTIEFKpwMo6tdlsiaaxu/hWw0785ilJD08Hj69B+X+JUpow+HjgA
+         o8bQ==
+X-Gm-Message-State: AOAM531vsVnnpaF0L6+RJN+njQhrTKSvGHbjhqFz7/zI3LlUmA2OB6M9
+        qQu13WCurz9NVg3qA7EaOPE=
+X-Google-Smtp-Source: ABdhPJxAC3zURinRFHp2WXJpKcQ0on1CNnXu8SmOYf/foorYI5wHiUoA+xLAiUIkMkKNgBzUjyfwlg==
+X-Received: by 2002:a63:4f43:: with SMTP id p3mr8287107pgl.435.1631859333842;
+        Thu, 16 Sep 2021 23:15:33 -0700 (PDT)
+Received: from ownia.. ([173.248.225.217])
+        by smtp.gmail.com with ESMTPSA id h15sm4687274pfo.54.2021.09.16.23.15.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Sep 2021 23:15:33 -0700 (PDT)
+From:   Weizhao Ouyang <o451686892@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Weizhao Ouyang <o451686892@gmail.com>
+Subject: [PATCH] mm/debug: sync up latest migrate_reason to migrate_reason_names
+Date:   Fri, 17 Sep 2021 14:14:32 +0800
+Message-Id: <20210917061432.323777-1-o451686892@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="oRDPEQLgRneHPu9G"
-Content-Disposition: inline
-In-Reply-To: <120a0ca4-28c7-5a7b-f1ab-2015c8817bda@fi.rohmeurope.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+After related migrate page updates, sync up latest migrate_reason to
+migrate_reason_names, page_owner use it to parse the page migrate
+reason.
 
---oRDPEQLgRneHPu9G
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Fixes: d1e153fea2a8 ("mm/gup: migrate pinned pages out of movable zone")
+Fixes: 26aa2d199d6f ("mm/migrate: demote pages during reclaim")
+Signed-off-by: Weizhao Ouyang <o451686892@gmail.com>
+---
+ mm/debug.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Hi,
-
-* Vaittinen, Matti <Matti.Vaittinen@fi.rohmeurope.com> [210916 09:15]:
-> Yesterday I asked about this at #armlinux so if someone saw my message 
-> there - this is the same topic.
-> 
-> My beaglebone black (rev c) based test environment fails to boot with 
-> v5.15-rc1. Boot succeeds with the v5.14.
-> 
-> I use pretty old uBoot, TFTP to load kernel and device-tree, and have 
-> hosted the rootfs on NFS server.
-
-Using older u-boot versions should be just fine. Using bootz with zImage
-instead of uimage is a good reason to update for folks using a really
-old u-boot though.
-
-> The v5.15-rc1 fails to boot with no prints from kernel visible in serial 
-> console. Please see the serial log at the end of this message.
-> 
-> Bisecting the Linus' tree pointed out the commit:
-> [1c7ba565e70365763ea780666a3eee679344b962] ARM: dts: am335x-baltos: 
-> switch to new cpsw switch drv
-> 
-> I don't see this exact commit touching the BBB device-tree. In Linus' 
-> tree it is a part of a merge commit. Reverting the whole merge on top of 
-> the v5.15-rc1
-> 
-> This reverts commit 81b6a285737700c2e04ef0893617b80481b6b4b7, reversing
-> changes made to f73979109bc11a0ed26b6deeb403fb5d05676ffc.
-> 
-> makes my beaglebone black to boot again.
-> 
-> Yesterday I tried adding this patch:
-> https://lore.kernel.org/linux-omap/20210915065032.45013-1-tony@atomide.com/T/#u
-> pointed by Tom on top of the v5.15-rc1 - no avail. I also did #define 
-> DEBUG at ti-sys.c as was suggested by Tom - but I don't see any more output.
-
-Correction, that was me, not Tom :)
-
-For me, adding any kind of delay fixed the issue. Also adding some printk
-statements fixed it for me.
-
-> Any suggestions what to check next?
-
-Maybe try the attached patch? If it helps, just try with the with the
-ti,sysc-delay-us = <2> added as few modules need that after enable.
-
-It's also possible there is an issue with some other device that is now
-getting enabled other than pruss. The last XXX printk output should show
-the last device being probed.
-
-Looks like you need to also enable CONFIG_SERIAL_EARLYCON=y, and pass
-console=ttyS0,115200 debug earlycon in the kernel command line.
-
-Regards,
-
-Tony
-
---oRDPEQLgRneHPu9G
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline; filename="debug.patch"
-
-diff --git a/arch/arm/boot/dts/am33xx-l4.dtsi b/arch/arm/boot/dts/am33xx-l4.dtsi
---- a/arch/arm/boot/dts/am33xx-l4.dtsi
-+++ b/arch/arm/boot/dts/am33xx-l4.dtsi
-@@ -845,6 +845,7 @@ pruss_tm: target-module@300000 {	/* 0x4a300000, ap 9 04.0 */
- 			ti,sysc-sidle = <SYSC_IDLE_FORCE>,
- 					<SYSC_IDLE_NO>,
- 					<SYSC_IDLE_SMART>;
-+			ti,sysc-delay-us = <2>;
- 			clocks = <&pruss_ocp_clkctrl AM3_PRUSS_OCP_PRUSS_CLKCTRL 0>;
- 			clock-names = "fck";
- 			resets = <&prm_per 1>;
-diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
---- a/drivers/bus/ti-sysc.c
-+++ b/drivers/bus/ti-sysc.c
-@@ -2,7 +2,7 @@
- /*
-  * ti-sysc.c - Texas Instruments sysc interconnect target driver
-  */
--
-+#define DEBUG
- #include <linux/io.h>
- #include <linux/clk.h>
- #include <linux/clkdev.h>
-@@ -3051,6 +3051,8 @@ static int sysc_probe(struct platform_device *pdev)
- 	if (!ddata)
- 		return -ENOMEM;
+diff --git a/mm/debug.c b/mm/debug.c
+index e73fe0a8ec3d..733770b0ed0c 100644
+--- a/mm/debug.c
++++ b/mm/debug.c
+@@ -25,6 +25,8 @@ const char *migrate_reason_names[MR_TYPES] = {
+ 	"mempolicy_mbind",
+ 	"numa_misplaced",
+ 	"cma",
++	"longterm_pin",
++	"demotion",
+ };
  
-+	dev_info(&pdev->dev, "XXX %s\n", __func__);
-+
- 	ddata->offsets[SYSC_REVISION] = -ENODEV;
- 	ddata->offsets[SYSC_SYSCONFIG] = -ENODEV;
- 	ddata->offsets[SYSC_SYSSTATUS] = -ENODEV;
+ const struct trace_print_flags pageflag_names[] = {
+-- 
+2.30.2
 
---oRDPEQLgRneHPu9G--
