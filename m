@@ -2,136 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9840A40EE7C
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 02:49:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B0AB40EE82
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 02:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241980AbhIQAud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 20:50:33 -0400
-Received: from mail-io1-f45.google.com ([209.85.166.45]:42767 "EHLO
-        mail-io1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241940AbhIQAuc (ORCPT
+        id S242007AbhIQAyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 20:54:10 -0400
+Received: from mail-il1-f180.google.com ([209.85.166.180]:37863 "EHLO
+        mail-il1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241940AbhIQAyJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 20:50:32 -0400
-Received: by mail-io1-f45.google.com with SMTP id b10so10129448ioq.9;
-        Thu, 16 Sep 2021 17:49:11 -0700 (PDT)
+        Thu, 16 Sep 2021 20:54:09 -0400
+Received: by mail-il1-f180.google.com with SMTP id i13so8509061ilm.4;
+        Thu, 16 Sep 2021 17:52:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=O2spRFbCOUOnJB6jpuql0vC/edxjCzLdfxtqH2j6VJY=;
-        b=akoeOCAhxYyq/H1IFVgR7tbJQyPFPJil1DlSfIPvV4zWRkTXnGQrlttUdgj5MIRLyJ
-         x8an9OgrtqRX9a0/UoijksXVKbaSy4LsM5Lb9fSzm16R9WqtwjEbcI2LvJpwVFabPmeb
-         tDWXMINWskGMeMQeLfA/ILTUrooztAorVWMkQcCJ9mSa0DYCaFFwU0gp2J0oKgtFNna4
-         9icVz3G39/Gul0QgGSZUJJ3NPjRNtNXdXXKrwiJPYSf0N8BafF8V+sakYdADmUfSSvIh
-         jC5oJ/gezFy/cGoYPSvEoI2VoJXiYVXPC6ngSfTNZSiCpSrERhMfhP/s96Q9FI81OrVk
-         qTXQ==
-X-Gm-Message-State: AOAM533IM4lqsoeMPpdyMA/G5EZDLMixoiJx62SQ91AmP8fIKoIFj3QS
-        bLHH2GLk716IOAwRzUe75A==
-X-Google-Smtp-Source: ABdhPJzecYiE/DMtj7b8c+o0dRLsJAM1UEhGjCxttMsu3UhHMST0+ADy/DBp106ezADEWTugRBTCtw==
-X-Received: by 2002:a5d:8505:: with SMTP id q5mr6382635ion.53.1631839751026;
-        Thu, 16 Sep 2021 17:49:11 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=S3cU5uxz3uzsdIlLr3N5laAmW4fSJBM0Q+aFNdUViTY=;
+        b=L2QUeWHXaQk/6NFf2J861TSyoXr/XQTSUSXBQaq9bzqBRR9gwDQMRYyFcZTynvzcji
+         nfxb1tVJUfTZzSaFDmwN2z5XCNqBGRS/BYRtt4GyGw6huFpXiHl8KUe1AgO3KasCy0xz
+         uT6Gysd3boO/fl5L/1BrXlkeMi6z9Fxgb1RTNS6yyr6Hmd6d9Hr5La9oM+D5FDffgF20
+         EznxpDDEuW3HTrDoXCLvixoSvyN8qWwLAu8tqMXpWENeKMsjgIpdsPYpXk+e3P0LnCjx
+         Hv7u5kjQEPpdz9fk5v94Nr3k0R7PSDqkHn6s1crS9xG+06KHhqwfayeMaaDmo/+7qWAJ
+         QgQQ==
+X-Gm-Message-State: AOAM530XDapS3zNWCi9mJYMolFXTHkWE2lSyq71fz+NIS7luCqOc3FHt
+        cVych0yk72gwetNcq2RaoA==
+X-Google-Smtp-Source: ABdhPJx9BTlt781XK7+3a36jUhdAvLeH2BWzHVgq7vl/hew/ZE/3hpBom4b0wyXkDrhu+cIzJ1g03A==
+X-Received: by 2002:a05:6e02:1a6b:: with SMTP id w11mr6033812ilv.21.1631839968282;
+        Thu, 16 Sep 2021 17:52:48 -0700 (PDT)
 Received: from robh.at.kernel.org (96-84-70-89-static.hfc.comcastbusiness.net. [96.84.70.89])
-        by smtp.gmail.com with ESMTPSA id a16sm2663931ili.64.2021.09.16.17.49.09
+        by smtp.gmail.com with ESMTPSA id f5sm2764672ils.3.2021.09.16.17.52.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 17:49:10 -0700 (PDT)
-Received: (nullmailer pid 1484028 invoked by uid 1000);
-        Fri, 17 Sep 2021 00:49:06 -0000
+        Thu, 16 Sep 2021 17:52:47 -0700 (PDT)
+Received: (nullmailer pid 1489692 invoked by uid 1000);
+        Fri, 17 Sep 2021 00:52:45 -0000
+Date:   Thu, 16 Sep 2021 19:52:45 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Sean Anderson <sean.anderson@seco.com>
-Cc:     linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
-        Alvaro Gamez <alvaro.gamez@hazent.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Lee Jones <lee.jones@linaro.org>,
-        =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-kernel@vger.kernel.org, michal.simek@xilinx.com
-In-Reply-To: <20210916180544.2873770-1-sean.anderson@seco.com>
-References: <20210916180544.2873770-1-sean.anderson@seco.com>
-Subject: Re: [PATCH v7 1/3] dt-bindings: pwm: Add Xilinx AXI Timer
-Date:   Thu, 16 Sep 2021 19:49:06 -0500
-Message-Id: <1631839746.883519.1484027.nullmailer@robh.at.kernel.org>
+To:     Parshuram Thombare <pthombar@cadence.com>
+Cc:     broonie@kernel.org, lukas@wunner.de, p.yadav@ti.com,
+        linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jpawar@cadence.com,
+        mparab@cadence.com, Konrad Kociolek <konrad@cadence.com>
+Subject: Re: [PATCH v4 1/2] spi: cadence: add dt-bindings documentation for
+ Cadence XSPI controller
+Message-ID: <YUPm3RKGRb94Jh4G@robh.at.kernel.org>
+References: <1631534558-8102-1-git-send-email-pthombar@cadence.com>
+ <1631534684-8273-1-git-send-email-pthombar@cadence.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1631534684-8273-1-git-send-email-pthombar@cadence.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Sep 2021 14:05:41 -0400, Sean Anderson wrote:
-> This adds a binding for the Xilinx LogiCORE IP AXI Timer. This device is a
-> "soft" block, so it has some parameters which would not be configurable in
-> most hardware. This binding is usually automatically generated by Xilinx's
-> tools, so the names and values of some properties should be kept as they
-> are, if possible. In addition, this binding is already in the kernel at
-> arch/microblaze/boot/dts/system.dts, and in user software such as QEMU.
+On Mon, Sep 13, 2021 at 02:04:44PM +0200, Parshuram Thombare wrote:
+> Add DT binding for Cadence's XSPI controller driver.
 > 
-> The existing driver uses the clock-frequency property, or alternatively the
-> /cpus/timebase-frequency property as its frequency input. Because these
-> properties are deprecated, they have not been included with this schema.
-> All new bindings should use the clocks/clock-names properties to specify
-> the parent clock.
-> 
-> Because we need to init timer devices so early in boot, we determine if we
-> should use the PWM driver or the clocksource/clockevent driver by the
-> presence/absence, respectively, of #pwm-cells. Because both counters are
-> used by the PWM, there is no need for a separate property specifying which
-> counters are to be used for the PWM.
-> 
-> Signed-off-by: Sean Anderson <sean.anderson@seco.com>
+> Signed-off-by: Konrad Kociolek <konrad@cadence.com>
+> Signed-off-by: Jayshri Pawar <jpawar@cadence.com>
+> Signed-off-by: Parshuram Thombare <pthombar@cadence.com>
 > ---
+>  .../devicetree/bindings/spi/cdns,xspi.yaml         | 77 ++++++++++++++++++++++
+>  1 file changed, 77 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/spi/cdns,xspi.yaml
 > 
-> Changes in v7:
-> - Add #pwm-cells to properties
-> - Document why additionalProperties is true
+> diff --git a/Documentation/devicetree/bindings/spi/cdns,xspi.yaml b/Documentation/devicetree/bindings/spi/cdns,xspi.yaml
+> new file mode 100644
+> index 0000000..5ebede1
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/spi/cdns,xspi.yaml
+> @@ -0,0 +1,77 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +# Copyright 2020-21 Cadence
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/spi/cdns,xspi.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: Cadence XSPI Controller
+> +
+> +maintainers:
+> +  - Parshuram Thombare <pthombar@cadence.com>
+> +
+> +description: |
+> +  The XSPI controller allows SPI protocol communication in
+> +  single, dual, quad or octal wire transmission modes for
+> +  read/write access to slaves such as SPI-NOR flash.
+> +
+> +allOf:
+> +  - $ref: "spi-controller.yaml#"
+> +
+> +properties:
+> +  compatible:
+> +    const: cdns,xspi-nor
+> +
+> +  reg:
+> +    items:
+> +      - description: address and length of the controller register set
+> +      - description: address and length of the Slave DMA data port
+> +      - description: address and length of the auxiliary registers
+> +
+> +  reg-names:
+> +    items:
+> +      - const: xspi-iobase
+> +      - const: xspi-sdmabase
+> +      - const: xspi-auxbase
+
+'xspi' and 'base' are redundant. So just io, sdma, and aux.
+
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    bus {
+> +        #address-cells = <2>;
+> +        #size-cells = <2>;
+> +
+> +        xspi: spi@a0010000 {
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +            compatible = "cdns,xspi-nor";
+> +            reg = <0x0 0xa0010000 0x0 0x10000>,
+> +                  <0x0 0xb0000000 0x0 0x10000>,
+> +                  <0x0 0xa0020000 0x0 0x10000>;
+
+Unless you are really using 64KB of registers, that wastes a bunch of 
+virtual space which is limited on 32-bit platforms.
+
+> +            reg-names = "xspi-iobase", "xspi-sdmabase", "xspi-auxbase";
+> +            interrupts = <0 90 IRQ_TYPE_LEVEL_HIGH>;
+> +            interrupt-parent = <&gic>;
+> +
+> +            flash@0 {
+> +                compatible = "jedec,spi-nor";
+> +                spi-max-frequency = <75000000>;
+> +                reg = <0>;
+> +            };
+> +
+> +            flash@1 {
+> +                compatible = "jedec,spi-nor";
+> +                spi-max-frequency = <75000000>;
+> +                reg = <1>;
+> +            };
+> +        };
+> +    };
+> -- 
+> 2.7.4
 > 
-> Changes in v6:
-> - Enumerate possible counter widths
-> - Fix incorrect schema id
 > 
-> Changes in v5:
-> - Add example for timer binding
-> - Fix indentation lint
-> - Move schema into the timer directory
-> - Remove xlnx,axi-timer-2.0 compatible string
-> - Update commit message to reflect revisions
-> 
-> Changes in v4:
-> - Make some properties optional for clocksource drivers
-> - Predicate PWM driver on the presence of #pwm-cells
-> - Remove references to generate polarity so this can get merged
-> 
-> Changes in v3:
-> - Add an example with non-deprecated properties only.
-> - Add xlnx,pwm and xlnx,gen?-active-low properties.
-> - Make newer replacement properties mutually-exclusive with what they
->   replace
-> - Mark all boolean-as-int properties as deprecated
-> 
-> Changes in v2:
-> - Use 32-bit addresses for example binding
-> 
->  .../bindings/timer/xlnx,xps-timer.yaml        | 94 +++++++++++++++++++
->  1 file changed, 94 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/timer/xlnx,xps-timer.yaml
-> 
-
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
-
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/timer/xlnx,xps-timer.yaml:71:111: [warning] line too long (154 > 110 characters) (line-length)
-
-dtschema/dtc warnings/errors:
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/patch/1529007
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
