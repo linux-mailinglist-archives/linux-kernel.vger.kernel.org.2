@@ -2,96 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B966E40F698
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 13:14:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67A7D40F69B
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 13:16:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243549AbhIQLPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 07:15:37 -0400
-Received: from bedivere.hansenpartnership.com ([96.44.175.130]:46192 "EHLO
-        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243123AbhIQLPf (ORCPT
+        id S243609AbhIQLRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 07:17:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243123AbhIQLRS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 07:15:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1631877253;
-        bh=kOSJlytOKArtchcqsw0mkjWJteCtj8u7OX0jv2Vu1lU=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=ANH3VOqgwioVEKItkM+3IR7tNfwOi4OyeVJE+KryLKowID2uuEMtpCrB5Bv40xofo
-         XUZJsvKB3tfQ/9eMUGZB9xBYTd7rwAm2J6xl26qVcGUKQCtGl6dDMOr6XzYedr720I
-         0wOGpenriHMIOAlLuLID1mkEYl8Djp2xdRoMQoLU=
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id A7CC3128046C;
-        Fri, 17 Sep 2021 04:14:13 -0700 (PDT)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id WxlMDOf_mUhM; Fri, 17 Sep 2021 04:14:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1631877253;
-        bh=kOSJlytOKArtchcqsw0mkjWJteCtj8u7OX0jv2Vu1lU=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=ANH3VOqgwioVEKItkM+3IR7tNfwOi4OyeVJE+KryLKowID2uuEMtpCrB5Bv40xofo
-         XUZJsvKB3tfQ/9eMUGZB9xBYTd7rwAm2J6xl26qVcGUKQCtGl6dDMOr6XzYedr720I
-         0wOGpenriHMIOAlLuLID1mkEYl8Djp2xdRoMQoLU=
-Received: from jarvis.lan (c-67-166-170-96.hsd1.va.comcast.net [67.166.170.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 4EDF11280420;
-        Fri, 17 Sep 2021 04:14:12 -0700 (PDT)
-Message-ID: <f8561816ab06cedf86138a4ad64e7ff7b33e2c07.camel@HansenPartnership.com>
-Subject: Re: [MAINTAINER SUMMIT] Folios as a potential Kernel/Maintainers
- Summit topic?
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-        Chris Mason <clm@fb.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Howells <dhowells@redhat.com>,
-        "ksummit@lists.linux.dev" <ksummit@lists.linux.dev>
-Date:   Fri, 17 Sep 2021 07:14:11 -0400
-In-Reply-To: <20210916210046.ourwrk6uqeisi555@meerkat.local>
-References: <YUIwgGzBqX6ZiGgk@mit.edu>
-         <f7b70227bac9a684320068b362d28fcade6b65b9.camel@HansenPartnership.com>
-         <YUI5bk/94yHPZIqJ@mit.edu> <17242A0C-3613-41BB-84E4-2617A182216E@fb.com>
-         <f066615c0e2c6fe990fa5c19dd1c17d649bcb03a.camel@HansenPartnership.com>
-         <E655F510-14EB-4F40-BCF8-C5266C07443F@fb.com>
-         <33a2000f56d51284e2df0cfcd704e93977684b59.camel@HansenPartnership.com>
-         <261D65D8-7273-4884-BD01-2BF8331F4034@fb.com>
-         <20210916210046.ourwrk6uqeisi555@meerkat.local>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Fri, 17 Sep 2021 07:17:18 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B0F1C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 04:15:56 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id j13so28637208edv.13
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 04:15:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=dBeb22OnXynKgEpQb48BEmderySm2sos3qIILhuKWp0=;
+        b=ixAQ20jOIjJNAmr3Yliyy5xR9caKuy+uSHPCcOm0CvUGmWynhy7K52NHN86772riZu
+         tr064Lon8QLBGWXS/+urdcVU/UFwlCiFcHcCeCoe7PEqdNsa1xsFw1wzDMEEHbUhjjx+
+         13lsf3M1vkNB/B/dOCE926XXtKkgAP4OkCJz7EDIqWm0NLJtktwMrJ66F4GIeJD82khS
+         rApDIcuLUeN40mxyzZ6jfSY/UxVfHgisfDs9K9U8MIZQ9xfwaxcpzJNIrFK3izmf+c+/
+         VNF5wdPF+WjqVJf3mFzHOI3DnMZOjUCc7FreXZC10Yb+RQi8ZtLJT+SXcsMU6oCGfO5n
+         i+6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=dBeb22OnXynKgEpQb48BEmderySm2sos3qIILhuKWp0=;
+        b=vAxaH+31gNtobP7I4uvFAY9IAL6449lhhUiAyA1EcVPW5xvpkF/k1EMiPJUl+aBTE4
+         PcKc/VuO4v/PUeTLZ0LuNbEkPRb/rFaXQp4UZYkSz6aLfXjkW4Eqki6yDCCxxrpM0p+1
+         K2mf6DzmyOR9OVsZkHL+5EcfaWKV+ZpVTRQyqMLqJ73QowqCZLOdd6TUDTDOBikglxGv
+         xZ9+2uFAZ3tx9OGYCvHO3Ag+TCGaH2dVMwa8UbU3VWHVOL0OGiAW5ASnBEYkRfuFzEix
+         TXZbGdQ+ia7MBOUhdcXOKM36J2gIWcbxYqfrAj30qLP56vCGrva/fNToQn2yNc/cRbmk
+         /CuQ==
+X-Gm-Message-State: AOAM533T9a5+8MPPmMGdvpA4NLymPcRv7+1aCuJu04jI6ZK/ydQHfpH3
+        bKQW4uBcY74EfZod1sCbTYQvRX1713IFp4SYoYNdhw==
+X-Google-Smtp-Source: ABdhPJznavZmWnm5D8kEH3jtMhPIWPMDyFRjL32QAXQD7tgnv3hoaY9n8XHhgUk5qXZLYMxWuecxYmdJBTgm/Cg5Sro=
+X-Received: by 2002:a17:906:52c5:: with SMTP id w5mr11492218ejn.567.1631877354859;
+ Fri, 17 Sep 2021 04:15:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20210916155810.813340753@linuxfoundation.org>
+In-Reply-To: <20210916155810.813340753@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 17 Sep 2021 16:45:43 +0530
+Message-ID: <CA+G9fYvFcv76g39wBdbZMy-yPHGywFKXngC3AQwscE1G=FFA-w@mail.gmail.com>
+Subject: Re: [PATCH 5.14 000/432] 5.14.6-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-09-16 at 17:00 -0400, Konstantin Ryabitsev wrote:
-> On Thu, Sep 16, 2021 at 08:38:13PM +0000, Chris Mason wrote:
-> > Agree here.  Mailing lists make it really hard to figure out when
-> > these conflicts are resolved, which is why I love using google docs
-> > for that part.
-> 
-> I would caution that Google docs aren't universally accessible. China
-> blocks access to many Google resources, and now Russia purportedly
-> does the same. Perhaps a similar effect can be reached with a git
-> repository with limited commit access? At least then commits can be
-> attested to individual authors.
+On Thu, 16 Sept 2021 at 22:11, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.14.6 release.
+> There are 432 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sat, 18 Sep 2021 15:57:06 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.14.6-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.14.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-In days of old, when knights were bold and cloud silos weren't
-invented, we had an ancient magic handed down by the old gods who spoke
-non type safe languages.  They called it wiki and etherpad ... could we
-make use of such tools today without committing heresy against our
-cloud overlords?
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-James
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
+## Build
+* kernel: 5.14.6-rc1
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-5.14.y
+* git commit: e47ec8b38d19e947bd55388d7dbbf25e27475dac
+* git describe: v5.14.5-433-ge47ec8b38d19
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.14.y/build/v5.14=
+.5-433-ge47ec8b38d19
 
+## No regressions (compared to v5.14.4-74-g739800791564)
+
+## No fixes (compared to v5.14.4-74-g739800791564)
+
+## Test result summary
+total: 89977, pass: 75054, fail: 950, skip: 12920, xfail: 1053
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 289 total, 277 passed, 12 failed
+* arm64: 39 total, 39 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 38 total, 38 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 51 total, 51 passed, 0 failed
+* parisc: 12 total, 12 passed, 0 failed
+* powerpc: 36 total, 35 passed, 1 failed
+* riscv: 30 total, 30 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 24 total, 24 passed, 0 failed
+* sparc: 12 total, 12 passed, 0 failed
+* x15: 1 total, 0 passed, 1 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 39 total, 39 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-arm64
+* kselftest-arm64/arm64.btitest.bti_c_func
+* kselftest-arm64/arm64.btitest.bti_j_func
+* kselftest-arm64/arm64.btitest.bti_jc_func
+* kselftest-arm64/arm64.btitest.bti_none_func
+* kselftest-arm64/arm64.btitest.nohint_func
+* kselftest-arm64/arm64.btitest.paciasp_func
+* kselftest-arm64/arm64.nobtitest.bti_c_func
+* kselftest-arm64/arm64.nobtitest.bti_j_func
+* kselftest-arm64/arm64.nobtitest.bti_jc_func
+* kselftest-arm64/arm64.nobtitest.bti_none_func
+* kselftest-arm64/arm64.nobtitest.nohint_func
+* kselftest-arm64/arm64.nobtitest.paciasp_func
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
