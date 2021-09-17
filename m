@@ -2,426 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06EB941006A
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 22:50:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4C9C41006E
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 22:53:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236527AbhIQUwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 16:52:07 -0400
-Received: from pbmsgap02.intersil.com ([192.157.179.202]:41240 "EHLO
-        pbmsgap02.intersil.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233144AbhIQUv6 (ORCPT
+        id S234935AbhIQUzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 16:55:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41986 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232556AbhIQUzM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 16:51:58 -0400
-Received: from pps.filterd (pbmsgap02.intersil.com [127.0.0.1])
-        by pbmsgap02.intersil.com (8.16.0.42/8.16.0.42) with SMTP id 18HKoY6X007130;
-        Fri, 17 Sep 2021 16:50:34 -0400
-Received: from pbmxdp02.intersil.corp (pbmxdp02.pb.intersil.com [132.158.200.223])
-        by pbmsgap02.intersil.com with ESMTP id 3b4e7wrb0j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Fri, 17 Sep 2021 16:50:33 -0400
-Received: from pbmxdp01.intersil.corp (132.158.200.222) by
- pbmxdp02.intersil.corp (132.158.200.223) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
- 15.1.2242.4; Fri, 17 Sep 2021 16:50:32 -0400
-Received: from localhost (132.158.202.109) by pbmxdp01.intersil.corp
- (132.158.200.222) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Fri, 17 Sep 2021 16:50:32 -0400
-From:   <min.li.xe@renesas.com>
-To:     <richardcochran@gmail.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Min Li <min.li.xe@renesas.com>
-Subject: [PATCH net v2 2/2] ptp: idt82p33: implement double dco time correction
-Date:   Fri, 17 Sep 2021 16:50:21 -0400
-Message-ID: <1631911821-31142-2-git-send-email-min.li.xe@renesas.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1631911821-31142-1-git-send-email-min.li.xe@renesas.com>
-References: <1631911821-31142-1-git-send-email-min.li.xe@renesas.com>
-X-TM-AS-MML: disable
+        Fri, 17 Sep 2021 16:55:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631912029;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8EWbBFRzqn+CDnvlJz5qcZT7fMT6Nw9+JVYnR+B85b8=;
+        b=Qtazm53bD1rj62mLjNEyE5Uio6JW0c160v7EqbmBq2tXeIw3roLe9em7IJcogj3oVyvFGZ
+        dt6RwsAbJ1yoqY7jLDZN86m2yL3HUoWA2DX13PZklTKsWPT/BnBlh6ku4XGukRAH4Qp+fH
+        r7LXEn8QpByY3YRPjXE98NPeu1FVwaQ=
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com
+ [209.85.166.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-176-f6HfXWWtNpq_T1nFnPJ_ew-1; Fri, 17 Sep 2021 16:53:48 -0400
+X-MC-Unique: f6HfXWWtNpq_T1nFnPJ_ew-1
+Received: by mail-il1-f199.google.com with SMTP id f13-20020a056e02168d00b002244a6aa233so23734046ila.7
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 13:53:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8EWbBFRzqn+CDnvlJz5qcZT7fMT6Nw9+JVYnR+B85b8=;
+        b=xa1bDHht3rQFYrx0oM27sDScvTGtd9lo+enSBZuvlGk1IdKKdWU09dsgBOHi5Be+xg
+         4t2EcmHz9hYmstL5vIt8JnhwGROU/GjAtWQnsKJrJypoOQ+fP8S8ptR0lVXC/RTCampR
+         Yn0O/2aS/vyQ85ePhMbSF2UujdOweQtXo44V7J6v+l1m3kYwX3NENV+myM3eYdWc0hSS
+         02EK2ikVbBGK4QqOQLxBTV58ZkUhg4zRLsJvQ9/ko80QVKkc6jAc1UIIvZZQ2UlRYFgk
+         ae1CzgCUSFSvOCh80HzdSECsYGVIliGalcAzLMHNSaffoKgPA5aLeH2JmDJp2FgWIPC8
+         AnSQ==
+X-Gm-Message-State: AOAM532pq9Vqxvyqgw2QS3lJJiTewoi5OqVEGzHrHSqMdISVvhcdkTCx
+        MDOsel7z5syTdl4bLweVyCJ+midKm98FHs6i8pep55I4CKiQTgKPMhTVUv634HD9qqwdAlrqqFJ
+        +gnl+2VJ6IQqGDcp/FsHn5ErD
+X-Received: by 2002:a02:6043:: with SMTP id d3mr9052584jaf.127.1631912027040;
+        Fri, 17 Sep 2021 13:53:47 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw9q5X+AjYh1s/BEQkwddLJb9bdzZfTEh23K5SUpGpNdb4d0D6r/xx3i+FMB15F9hn+KggqPw==
+X-Received: by 2002:a02:6043:: with SMTP id d3mr9052574jaf.127.1631912026714;
+        Fri, 17 Sep 2021 13:53:46 -0700 (PDT)
+Received: from halaneylaptop (068-184-200-203.res.spectrum.com. [68.184.200.203])
+        by smtp.gmail.com with ESMTPSA id b1sm4165003ilf.43.2021.09.17.13.53.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Sep 2021 13:53:46 -0700 (PDT)
+Date:   Fri, 17 Sep 2021 15:53:41 -0500
+From:   Andrew Halaney <ahalaney@redhat.com>
+To:     jim.cromie@gmail.com
+Cc:     Jason Baron <jbaron@akamai.com>, Jonathan Corbet <corbet@lwn.net>,
+        Linux Documentation List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 3/3] Documentation: dyndbg: Improve cli param examples
+Message-ID: <20210917205341.5bayndskygan6qrd@halaneylaptop>
+References: <20210913222440.731329-1-ahalaney@redhat.com>
+ <20210913222440.731329-4-ahalaney@redhat.com>
+ <ff05cae4-8fa7-d1b6-795e-3bd85316774d@akamai.com>
+ <CAJfuBxzrJwr17-RWZzhw90pKXZ1hL5kepuzvt1Di=JyekMJf4A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-GUID: T6Dqxy6BBwL41Sl1mOCyopys7o34BzYP
-X-Proofpoint-ORIG-GUID: T6Dqxy6BBwL41Sl1mOCyopys7o34BzYP
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-09-17_08:2021-09-17,2021-09-17 signatures=0
-X-Proofpoint-Spam-Details: rule=junk_notspam policy=junk score=0 suspectscore=0 spamscore=0
- adultscore=0 phishscore=0 bulkscore=0 mlxscore=0 mlxlogscore=999
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109150000 definitions=main-2109170123
-X-Proofpoint-Spam-Reason: mlx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJfuBxzrJwr17-RWZzhw90pKXZ1hL5kepuzvt1Di=JyekMJf4A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Min Li <min.li.xe@renesas.com>
+On Fri, Sep 17, 2021 at 02:30:09PM -0600, jim.cromie@gmail.com wrote:
+> On Fri, Sep 17, 2021 at 1:50 PM Jason Baron <jbaron@akamai.com> wrote:
+> >
+> >
+> >
+> > On 9/13/21 6:24 PM, Andrew Halaney wrote:
+> > > Jim pointed out that using $module.dyndbg= is always a more flexible
+> > > choice for using dynamic debug on the command line. The $module.dyndbg
+> > > style is checked at boot and handles if $module is a builtin. If it is
+> > > actually a loadable module, it is handled again later when the module is
+> > > loaded.
+> > >
+> > > If you just use dyndbg="module $module +p" dynamic debug is only enabled
+> > > when $module is a builtin.
+> > >
+> > > It was recommended to illustrate wildcard usage as well.
+> > >
+> > > Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
+> > > Suggested-by: Jim Cromie <jim.cromie@gmail.com>
+> > > ---
+> > >   Documentation/admin-guide/dynamic-debug-howto.rst | 7 +++++--
+> > >   1 file changed, 5 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/Documentation/admin-guide/dynamic-debug-howto.rst b/Documentation/admin-guide/dynamic-debug-howto.rst
+> > > index d0911e7cc271..4bfb23ed64ec 100644
+> > > --- a/Documentation/admin-guide/dynamic-debug-howto.rst
+> > > +++ b/Documentation/admin-guide/dynamic-debug-howto.rst
+> > > @@ -357,7 +357,10 @@ Examples
+> > >     Kernel command line: ...
+> > >       // see whats going on in dyndbg=value processing
+> > >       dynamic_debug.verbose=1
+> > > -    // enable pr_debugs in 2 builtins, #cmt is stripped
+> > > -    dyndbg="module params +p #cmt ; module sys +p"
+> > > +    // Enable pr_debugs in the params builtin
+> > > +    params.dyndbg="+p"
+> >
+> > If we are going out of our way to change this to indicate that it works
+> > for builtin and modules, it seems like the comment above should reflect
+> > that? IE, something like this?
+> >
+> > '// Enable pr_debugs in the params module or if params is builtin.
+> >
+> 
+> I dont think params can be a loadable module, so its not a great
+> example of this.
+> it should be one that "everyone" knows is usually loaded.
+> 
+> conversely, bare dyndbg example should have only builtin modules,
+> then the contrast between 2 forms is most evident.
+> 
 
-Current adjtime is not accurate when delta is smaller than 10000ns. So
-for small time correction, we will switch to DCO mode to pull phase
-more precisely in one second duration.
+Thank you both for the feedback, good points.
 
-Signed-off-by: Min Li <min.li.xe@renesas.com>
----
-Change log
--create delayed_accurate_adjtime parameter to choose the optimized adjtime suggested by Richard
--fix checkpatch issues
+Does something like:
 
- drivers/ptp/ptp_idt82p33.c | 170 +++++++++++++++++++++++++++++++++------------
- drivers/ptp/ptp_idt82p33.h |   6 +-
- 2 files changed, 131 insertions(+), 45 deletions(-)
+    // Enable pr_debugs in the btrfs module (can be builtin or loadable)
+    btrfs.dyndbg="+p"
+    // enable pr_debugs in all files under init/
+    // and the function parse_one, #cmt is stripped
+    dyndbg="file init/* +p #cmt ; func parse_one +p"
 
-diff --git a/drivers/ptp/ptp_idt82p33.c b/drivers/ptp/ptp_idt82p33.c
-index abe628c..609b4da 100644
---- a/drivers/ptp/ptp_idt82p33.c
-+++ b/drivers/ptp/ptp_idt82p33.c
-@@ -29,6 +29,14 @@ module_param(phase_snap_threshold, uint, 0);
- MODULE_PARM_DESC(phase_snap_threshold,
- "threshold (1000ns by default) below which adjtime would ignore");
- 
-+static bool delayed_accurate_adjtime;
-+module_param(delayed_accurate_adjtime, bool, false);
-+MODULE_PARM_DESC(delayed_accurate_adjtime,
-+"set to true to use more accurate adjtime that is delayed to next 1PPS signal");
-+
-+static char *firmware;
-+module_param(firmware, charp, 0);
-+
- static void idt82p33_byte_array_to_timespec(struct timespec64 *ts,
- 					    u8 buf[TOD_BYTE_COUNT])
- {
-@@ -389,25 +397,22 @@ static int _idt82p33_adjfine(struct idt82p33_channel *channel, long scaled_ppm)
- 	int err, i;
- 	s64 fcw;
- 
--	if (scaled_ppm == channel->current_freq_ppb)
--		return 0;
--
- 	/*
--	 * Frequency Control Word unit is: 1.68 * 10^-10 ppm
-+	 * Frequency Control Word unit is: 1.6861512 * 10^-10 ppm
- 	 *
- 	 * adjfreq:
--	 *       ppb * 10^9
--	 * FCW = ----------
--	 *          168
-+	 *       ppb * 10^14
-+	 * FCW = -----------
-+	 *         16861512
- 	 *
- 	 * adjfine:
--	 *       scaled_ppm * 5^12
--	 * FCW = -------------
--	 *         168 * 2^4
-+	 *       scaled_ppm * 5^12 * 10^5
-+	 * FCW = ------------------------
-+	 *            16861512 * 2^4
- 	 */
- 
--	fcw = scaled_ppm * 244140625ULL;
--	fcw = div_s64(fcw, 2688);
-+	fcw = scaled_ppm * 762939453125ULL;
-+	fcw = div_s64(fcw, 8430756LL);
- 
- 	for (i = 0; i < 5; i++) {
- 		buf[i] = fcw & 0xff;
-@@ -422,26 +427,77 @@ static int _idt82p33_adjfine(struct idt82p33_channel *channel, long scaled_ppm)
- 	err = idt82p33_write(idt82p33, channel->dpll_freq_cnfg,
- 			     buf, sizeof(buf));
- 
--	if (err == 0)
--		channel->current_freq_ppb = scaled_ppm;
--
- 	return err;
- }
- 
-+/* ppb = scaled_ppm * 125 / 2^13 */
-+static s32 idt82p33_ddco_scaled_ppm(long current_ppm, s32 ddco_ppb)
-+{
-+	s64 scaled_ppm = (ddco_ppb << 13) / 125;
-+	s64 max_scaled_ppm = (DCO_MAX_PPB << 13) / 125;
-+
-+	current_ppm += scaled_ppm;
-+
-+	if (current_ppm > max_scaled_ppm)
-+		current_ppm = max_scaled_ppm;
-+	else if (current_ppm < -max_scaled_ppm)
-+		current_ppm = -max_scaled_ppm;
-+
-+	return (s32)current_ppm;
-+}
-+
-+static int idt82p33_stop_ddco(struct idt82p33_channel *channel)
-+{
-+	channel->ddco = false;
-+	return _idt82p33_adjfine(channel, channel->current_freq);
-+}
-+
-+static int idt82p33_start_ddco(struct idt82p33_channel *channel, s32 delta_ns)
-+{
-+	s32 current_ppm = channel->current_freq;
-+	u32 duration_ms = MSEC_PER_SEC;
-+	s32 ppb;
-+	int err;
-+
-+	/* If the ToD correction is less than 5 nanoseconds, then skip it.
-+	 * The error introduced by the ToD adjustment procedure would be bigger
-+	 * than the required ToD correction
-+	 */
-+	if (abs(delta_ns) < DDCO_THRESHOLD_NS)
-+		return 0;
-+
-+	/* For most cases, keep ddco duration 1 second */
-+	ppb = delta_ns;
-+	while (abs(ppb) > DCO_MAX_PPB) {
-+		duration_ms *= 2;
-+		ppb /= 2;
-+	}
-+
-+	err = _idt82p33_adjfine(channel,
-+				idt82p33_ddco_scaled_ppm(current_ppm, ppb));
-+	if (err)
-+		return err;
-+
-+	/* schedule the worker to cancel ddco */
-+	ptp_schedule_worker(channel->ptp_clock,
-+			    msecs_to_jiffies(duration_ms) - 1);
-+	channel->ddco = true;
-+
-+	return 0;
-+}
-+
- static int idt82p33_measure_one_byte_write_overhead(
- 		struct idt82p33_channel *channel, s64 *overhead_ns)
- {
- 	struct idt82p33 *idt82p33 = channel->idt82p33;
- 	ktime_t start, stop;
-+	u8 trigger = 0;
- 	s64 total_ns;
--	u8 trigger;
- 	int err;
- 	u8 i;
- 
- 	total_ns = 0;
- 	*overhead_ns = 0;
--	trigger = TOD_TRIGGER(HW_TOD_WR_TRIG_SEL_MSB_TOD_CNFG,
--			      HW_TOD_RD_TRIG_SEL_LSB_TOD_STS);
- 
- 	for (i = 0; i < MAX_MEASURMENT_COUNT; i++) {
- 
-@@ -658,6 +714,20 @@ static int idt82p33_sync_tod(struct idt82p33_channel *channel, bool enable)
- 			      &sync_cnfg, sizeof(sync_cnfg));
- }
- 
-+static long idt82p33_work_handler(struct ptp_clock_info *ptp)
-+{
-+	struct idt82p33_channel *channel =
-+			container_of(ptp, struct idt82p33_channel, caps);
-+	struct idt82p33 *idt82p33 = channel->idt82p33;
-+
-+	mutex_lock(&idt82p33->reg_lock);
-+	(void)idt82p33_stop_ddco(channel);
-+	mutex_unlock(&idt82p33->reg_lock);
-+
-+	/* Return a negative value here to not reschedule */
-+	return -1;
-+}
-+
- static int idt82p33_output_enable(struct idt82p33_channel *channel,
- 				  bool enable, unsigned int outn)
- {
-@@ -743,23 +813,20 @@ static void idt82p33_ptp_clock_unregister_all(struct idt82p33 *idt82p33)
- 
- 	for (i = 0; i < MAX_PHC_PLL; i++) {
- 		channel = &idt82p33->channel[i];
--
- 		if (channel->ptp_clock) {
--			channel = &idt82p33->channel[i];
-+			cancel_delayed_work_sync(&channel->adjtime_work);
- 			ptp_clock_unregister(channel->ptp_clock);
- 		}
- 	}
- }
- 
- static int idt82p33_enable(struct ptp_clock_info *ptp,
--			 struct ptp_clock_request *rq, int on)
-+			   struct ptp_clock_request *rq, int on)
- {
- 	struct idt82p33_channel *channel =
- 			container_of(ptp, struct idt82p33_channel, caps);
- 	struct idt82p33 *idt82p33 = channel->idt82p33;
--	int err;
--
--	err = -EOPNOTSUPP;
-+	int err = -EOPNOTSUPP;
- 
- 	mutex_lock(&idt82p33->reg_lock);
- 
-@@ -769,15 +836,18 @@ static int idt82p33_enable(struct ptp_clock_info *ptp,
- 						     &rq->perout);
- 		/* Only accept a 1-PPS aligned to the second. */
- 		else if (rq->perout.start.nsec || rq->perout.period.sec != 1 ||
--		    rq->perout.period.nsec) {
-+			 rq->perout.period.nsec)
- 			err = -ERANGE;
--		} else
-+		else
- 			err = idt82p33_perout_enable(channel, true,
- 						     &rq->perout);
- 	}
- 
- 	mutex_unlock(&idt82p33->reg_lock);
- 
-+	if (err)
-+		dev_err(&idt82p33->client->dev,
-+			"Failed in %s with err %d!\n", __func__, err);
- 	return err;
- }
- 
-@@ -830,14 +900,18 @@ static int idt82p33_adjfine(struct ptp_clock_info *ptp, long scaled_ppm)
- 	struct idt82p33 *idt82p33 = channel->idt82p33;
- 	int err;
- 
-+	if (channel->ddco == true || scaled_ppm == channel->current_freq)
-+		return 0;
-+
- 	mutex_lock(&idt82p33->reg_lock);
- 	err = _idt82p33_adjfine(channel, scaled_ppm);
-+	if (err == 0)
-+		channel->current_freq = scaled_ppm;
- 	mutex_unlock(&idt82p33->reg_lock);
- 
- 	if (err)
- 		dev_err(&idt82p33->client->dev,
- 			"Failed in %s with err %d!\n", __func__, err);
--
- 	return err;
- }
- 
-@@ -848,20 +922,29 @@ static int idt82p33_adjtime(struct ptp_clock_info *ptp, s64 delta_ns)
- 	struct idt82p33 *idt82p33 = channel->idt82p33;
- 	int err;
- 
-+	if (delayed_accurate_adjtime == false) {
-+		if (abs(delta_ns) < IMMEDIATE_SNAP_THRESHOLD_NS)
-+			return 0;
-+		mutex_lock(&idt82p33->reg_lock);
-+		err = _idt82p33_adjtime_immediate(channel, delta_ns);
-+		mutex_unlock(&idt82p33->reg_lock);
-+		goto exit;
-+	}
-+
-+	if (channel->ddco == true)
-+		return 0;
-+
- 	mutex_lock(&idt82p33->reg_lock);
- 
- 	if (abs(delta_ns) < phase_snap_threshold) {
-+		err = idt82p33_start_ddco(channel, delta_ns);
- 		mutex_unlock(&idt82p33->reg_lock);
--		return 0;
-+		return err;
- 	}
- 
--	/* Use more accurate internal 1pps triggered write first */
- 	err = _idt82p33_adjtime_internal_triggered(channel, delta_ns);
--	if (err && delta_ns > IMMEDIATE_SNAP_THRESHOLD_NS)
--		err = _idt82p33_adjtime_immediate(channel, delta_ns);
--
- 	mutex_unlock(&idt82p33->reg_lock);
--
-+exit:
- 	if (err)
- 		dev_err(&idt82p33->client->dev,
- 			"Adjtime failed in %s with err %d!\n", __func__, err);
-@@ -932,7 +1015,7 @@ static int idt82p33_channel_init(struct idt82p33_channel *channel, int index)
- 		return -EINVAL;
- 	}
- 
--	channel->current_freq_ppb = 0;
-+	channel->current_freq = 0;
- 
- 	return 0;
- }
-@@ -940,7 +1023,7 @@ static int idt82p33_channel_init(struct idt82p33_channel *channel, int index)
- static void idt82p33_caps_init(struct ptp_clock_info *caps)
- {
- 	caps->owner = THIS_MODULE;
--	caps->max_adj = 92000;
-+	caps->max_adj = DCO_MAX_PPB;
- 	caps->n_per_out = 11;
- 	caps->adjphase = idt82p33_adjwritephase;
- 	caps->adjfine = idt82p33_adjfine;
-@@ -948,6 +1031,7 @@ static void idt82p33_caps_init(struct ptp_clock_info *caps)
- 	caps->gettime64 = idt82p33_gettime;
- 	caps->settime64 = idt82p33_settime;
- 	caps->enable = idt82p33_enable;
-+	caps->do_aux_work = idt82p33_work_handler;
- }
- 
- static int idt82p33_enable_channel(struct idt82p33 *idt82p33, u32 index)
-@@ -1011,16 +1095,19 @@ static int idt82p33_enable_channel(struct idt82p33 *idt82p33, u32 index)
- 
- static int idt82p33_load_firmware(struct idt82p33 *idt82p33)
- {
-+	char fname[128] = FW_FILENAME;
- 	const struct firmware *fw;
- 	struct idt82p33_fwrc *rec;
- 	u8 loaddr, page, val;
- 	int err;
- 	s32 len;
- 
--	dev_dbg(&idt82p33->client->dev,
--		"requesting firmware '%s'\n", FW_FILENAME);
-+	if (firmware) /* module parameter */
-+		snprintf(fname, sizeof(fname), "%s", firmware);
-+
-+	dev_dbg(&idt82p33->client->dev, "requesting firmware '%s'\n", fname);
- 
--	err = request_firmware(&fw, FW_FILENAME, &idt82p33->client->dev);
-+	err = request_firmware(&fw, fname, &idt82p33->client->dev);
- 
- 	if (err) {
- 		dev_err(&idt82p33->client->dev,
-@@ -1050,13 +1137,8 @@ static int idt82p33_load_firmware(struct idt82p33 *idt82p33)
- 		}
- 
- 		if (err == 0) {
--			/* maximum 8 pages  */
--			if (page >= PAGE_NUM)
--				continue;
--
- 			/* Page size 128, last 4 bytes of page skipped */
--			if (((loaddr > 0x7b) && (loaddr <= 0x7f))
--			     || loaddr > 0xfb)
-+			if (loaddr > 0x7b)
- 				continue;
- 
- 			err = idt82p33_write(idt82p33, _ADDR(page, loaddr),
-diff --git a/drivers/ptp/ptp_idt82p33.h b/drivers/ptp/ptp_idt82p33.h
-index a8b0923..6564f1c 100644
---- a/drivers/ptp/ptp_idt82p33.h
-+++ b/drivers/ptp/ptp_idt82p33.h
-@@ -92,9 +92,11 @@ enum hw_tod_trig_sel {
- #define FW_FILENAME			"idt82p33xxx.bin"
- #define MAX_PHC_PLL			(2)
- #define TOD_BYTE_COUNT			(10)
-+#define DCO_MAX_PPB			(92000)
- #define MAX_MEASURMENT_COUNT		(5)
- #define SNAP_THRESHOLD_NS		(10000)
- #define IMMEDIATE_SNAP_THRESHOLD_NS	(50000)
-+#define DDCO_THRESHOLD_NS		(5)
- #define IDT82P33_MAX_WRITE_COUNT	(512)
- 
- #define PLLMASK_ADDR_HI	0xFF
-@@ -129,7 +131,9 @@ struct idt82p33_channel {
- 	struct idt82p33		*idt82p33;
- 	enum pll_mode		pll_mode;
- 	struct delayed_work	adjtime_work;
--	s32			current_freq_ppb;
-+	s32			current_freq;
-+	/* double dco mode */
-+	bool			ddco;
- 	u8			output_mask;
- 	u16			dpll_tod_cnfg;
- 	u16			dpll_tod_trigger;
--- 
-2.7.4
+Work for you both? I think that makes the advantages of $module.dyndbg=
+more clear and makes the usage of dyndbg= stick to strictly builtins.
+If so I'll respin this patch in v3 of the series.
+
+Thanks,
+Andrew
+
+> 
+> > The first two patches look fine to me, so if you agree maybe just
+> > re-spin this one?
+> >
+> > Thanks,
+> >
+> > -Jason
+> >
+> > > +    // enable pr_debugs in all files under init/
+> > > +    // and the function pc87360_init_device, #cmt is stripped
+> > > +    dyndbg="file init/* +p #cmt ; func pc87360_init_device +p"
+> > >       // enable pr_debugs in 2 functions in a module loaded later
+> > >       pc87360.dyndbg="func pc87360_init_device +p; func pc87360_find +p"
+> >
+> 
 
