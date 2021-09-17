@@ -2,230 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8E9940F297
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 08:47:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0598C40F299
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 08:48:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233999AbhIQGtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 02:49:00 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:53650 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbhIQGs7 (ORCPT
+        id S235431AbhIQGuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 02:50:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229456AbhIQGuE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 02:48:59 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 831D222308;
-        Fri, 17 Sep 2021 06:47:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631861256; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=T7qVzWrfbaR+Cg64eoCijjDHD1M0KvPoMaiopVbnFuU=;
-        b=Vhqe6a8nWSD3IgvToxpXIU6pRO+rtloeF1LMWpZ60SJy45ZMhxdCVPiY/WRZbQ3ihEtvFt
-        IB2UgDb8NGGq9bfqhDhoZ/WCLQ6d7b0J230Iz/AG+xD6OF18Pf5fNlnd0KKkuJnFN+nibV
-        M6sPXFC4jtt/GV2Z9NgsDD70vUdmRXM=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5F7EB13A79;
-        Fri, 17 Sep 2021 06:47:36 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 9lIYFgg6RGFIAwAAMHmgww
-        (envelope-from <jgross@suse.com>); Fri, 17 Sep 2021 06:47:36 +0000
-Subject: Re: [PATCH] xen/x86: fix PV trap handling on secondary processors
-To:     Jan Beulich <jbeulich@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc:     Stefano Stabellini <sstabellini@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
-References: <34898e9c-5883-a978-98ee-b81b22d8caed@suse.com>
- <823f4ef4-f9e5-68cb-d6e9-d079483c1e21@oracle.com>
- <0afce6e8-3c8a-e5ae-cd54-0fd598276506@suse.com>
-From:   Juergen Gross <jgross@suse.com>
-Message-ID: <62ccf5b7-b903-e604-d113-67c7633278cd@suse.com>
-Date:   Fri, 17 Sep 2021 08:47:35 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Fri, 17 Sep 2021 02:50:04 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38AB7C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 23:48:43 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id a15so10952766iot.2
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 23:48:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PppUlr8h+ZXNlOWBENSEgW/nbP2yttQFw9WG9SOkokQ=;
+        b=A2w59X5d0dE6gu5vUFB6tZSqhiuCBadBpx3b7RFL5CVBQRlIYmWvUWqDhnXy4n7UWn
+         WebccCzNaaKmxhvZUFNUlG/IYDHtTHh7uNXTh3HcYDuA0IXxJTA4aw+NqKidxnKNoGQi
+         BxQNqd0+epDOLM3V8WKnzizinO6TUkxWBfa6xCQNEzljnR9Ca3C8R4c5YNgys8Fz80mR
+         zOP08c5tbwoZMe22n9vtsDJ+J4mnxtaKgYbLIic5f4Oa+TFOOJhIffYR90lB2BQni4hh
+         tSp5ISPnmEmwM3Bs736LvC2ZAl/1ZyGIETsuN2ehDYAHghLkdaE4mIFzuNXs7Z/DdlHJ
+         PFug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PppUlr8h+ZXNlOWBENSEgW/nbP2yttQFw9WG9SOkokQ=;
+        b=v9a38r2YRyegM2mCuDkzoUrNxOFCohqNQqvGIflfoWuvzLoeMEoe8Yp639sLbKhfhp
+         6+bpWJCWoBIgwAhN02EDZrSV7oLtH1hL+NLolQQ64LrapeQHasdVO9zpZa9i776PSVAb
+         QnReCJIryKyLoMo82k6RhZM3XGuVqy8Co3jCpOb2880u6JqhkB1sAdD8k5y2qWvA8JKD
+         pALgZYP105JcyoaxhoOMFkTaNp2NQYUz7JoSZZ8NQyrq1HdBnP8psRc+09fX9DvsEvak
+         YrS/X5bw5u2MvWikAe9zdJxCfuWWuBLbsktuwTqSSTiOBqVJgA7yQlRYk8TuXWJFjxgH
+         ALtA==
+X-Gm-Message-State: AOAM533w62R/jQUD+r/AbNFIVw0NbheKKP342vZqwjlS7W43HameQok6
+        Kd7MQd9KHLx2cqwSQCE9u8CINLQ+l9TQWxWy0F3uww==
+X-Google-Smtp-Source: ABdhPJwmiKjCVAi1kY5Po93W/pMoGd6VrjyY0ftPgii59CveLgpUKyTJn6n8mJTDUwycemETvWDZ/hyexgOS8KBz5HQ=
+X-Received: by 2002:a05:6638:168a:: with SMTP id f10mr7512862jat.121.1631861322399;
+ Thu, 16 Sep 2021 23:48:42 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <0afce6e8-3c8a-e5ae-cd54-0fd598276506@suse.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="TfFI4OElXqzn9AyCgez8IR0kpl6ts1NgM"
+References: <20210909075700.4025355-1-eranian@google.com> <20210909075700.4025355-2-eranian@google.com>
+ <20210909190342.GE4323@worktop.programming.kicks-ass.net> <878s04my3b.fsf@mpe.ellerman.id.au>
+ <875yv8ms7f.fsf@mpe.ellerman.id.au> <CABPqkBQZ48b51vh1vqafOwVK2tBqYFNFGJT2x-a39Ma0TbS=tA@mail.gmail.com>
+ <b21bf42e-377d-36d0-49c3-af1e4edf5496@linux.ibm.com>
+In-Reply-To: <b21bf42e-377d-36d0-49c3-af1e4edf5496@linux.ibm.com>
+From:   Stephane Eranian <eranian@google.com>
+Date:   Thu, 16 Sep 2021 23:48:31 -0700
+Message-ID: <CABPqkBQvvNQa=hb4OnYqH-f=DJiRWE+bTmv4i+gNvEdoSEHM4w@mail.gmail.com>
+Subject: Re: [PATCH v1 01/13] perf/core: add union to struct perf_branch_entry
+To:     Madhavan Srinivasan <maddy@linux.ibm.com>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, acme@redhat.com, jolsa@redhat.com,
+        kim.phillips@amd.com, namhyung@kernel.org, irogers@google.com,
+        atrajeev@linux.vnet.ibm.com,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---TfFI4OElXqzn9AyCgez8IR0kpl6ts1NgM
-Content-Type: multipart/mixed; boundary="VyKTfuTUEuumpyk746zj4W8NilR2uKD3Y";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Jan Beulich <jbeulich@suse.com>,
- Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc: Stefano Stabellini <sstabellini@kernel.org>,
- lkml <linux-kernel@vger.kernel.org>,
- "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
-Message-ID: <62ccf5b7-b903-e604-d113-67c7633278cd@suse.com>
-Subject: Re: [PATCH] xen/x86: fix PV trap handling on secondary processors
-References: <34898e9c-5883-a978-98ee-b81b22d8caed@suse.com>
- <823f4ef4-f9e5-68cb-d6e9-d079483c1e21@oracle.com>
- <0afce6e8-3c8a-e5ae-cd54-0fd598276506@suse.com>
-In-Reply-To: <0afce6e8-3c8a-e5ae-cd54-0fd598276506@suse.com>
-
---VyKTfuTUEuumpyk746zj4W8NilR2uKD3Y
-Content-Type: multipart/mixed;
- boundary="------------279F817B8478DF0B10F430EA"
-Content-Language: en-US
-
-This is a multi-part message in MIME format.
---------------279F817B8478DF0B10F430EA
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-
-On 17.09.21 08:40, Jan Beulich wrote:
-> On 17.09.2021 03:34, Boris Ostrovsky wrote:
->>
->> On 9/16/21 11:04 AM, Jan Beulich wrote:
->>>   {
->>>   	const struct desc_ptr *desc =3D this_cpu_ptr(&idt_desc);
->>> +	unsigned i, count =3D (desc->size + 1) / sizeof(gate_desc);
->>>  =20
->>> -	xen_convert_trap_info(desc, traps);
->>
->>
->> Can you instead add a boolean parameter to xen_convert_trap_info() to =
-indicate whether to skip empty entries? That will avoid (almost) duplicat=
-ing the code.
->=20
-> I can, sure, but I specifically didn't, as the result is going to be le=
-ss
-> readable imo. Instead I was considering to fold xen_convert_trap_info()=
-
-> into its only remaining caller. Yet if you're convinced adding the
-> parameter is the way to do, I will go that route. But please confirm.
-
-I don't think the result will be very hard to read. All you need is the
-new parameter and extending the if statement in xen_convert_trap_info()
-to increment out always if no entry is to be skipped.
+Hi,
 
 
-Juergen
+Thanks for fixing this in the perf tool. But what about the struct
+branch_entry in the header?
 
 
---------------279F817B8478DF0B10F430EA
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Description: OpenPGP public key
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------279F817B8478DF0B10F430EA--
-
---VyKTfuTUEuumpyk746zj4W8NilR2uKD3Y--
-
---TfFI4OElXqzn9AyCgez8IR0kpl6ts1NgM
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmFEOgcFAwAAAAAACgkQsN6d1ii/Ey9s
-Swf/Wk16JCMb8ogQrim92gEAKYI2AW6QlgvCrEGd3sApOLn4HTxXnwYxrMx7wRG7O3HTRAiVIAQ7
-jY3wklehZDwGJdH8B2h5MzJHs8Y3M+Hnts1ik9QhOu0UGw01nIXSsm9gaMxmfBegNFBKhIlZE6zU
-eySBIglvguNlavrPPvWGY/xFTnBy8E0l71bjX8ScVYjwfakcAzkaUePf6JksR+/xXd/BcIa1bJHK
-dMBwvSW6wQ6h1N0YO4hDXXzn7iad0/mTpVIzc7rSRZIP3ROM0yaFL3UHI1cJvzapD4O1e/ewWMNZ
-IOltcX1UAhUOo43cTstKqo+mhxUEvQcA11hRbx0OMg==
-=zSeB
------END PGP SIGNATURE-----
-
---TfFI4OElXqzn9AyCgez8IR0kpl6ts1NgM--
+On Thu, Sep 16, 2021 at 11:38 PM Madhavan Srinivasan
+<maddy@linux.ibm.com> wrote:
+>
+>
+> On 9/15/21 11:33 AM, Stephane Eranian wrote:
+> > Michael,
+> >
+> >
+> > On Fri, Sep 10, 2021 at 7:16 AM Michael Ellerman <mpe@ellerman.id.au> wrote:
+> >> Michael Ellerman <mpe@ellerman.id.au> writes:
+> >>> Peter Zijlstra <peterz@infradead.org> writes:
+> >>>> On Thu, Sep 09, 2021 at 12:56:48AM -0700, Stephane Eranian wrote:
+> >>>>> diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
+> >>>>> index f92880a15645..eb11f383f4be 100644
+> >>>>> --- a/include/uapi/linux/perf_event.h
+> >>>>> +++ b/include/uapi/linux/perf_event.h
+> >>>>> @@ -1329,13 +1329,18 @@ union perf_mem_data_src {
+> >>>>>   struct perf_branch_entry {
+> >>>>>      __u64   from;
+> >>>>>      __u64   to;
+> >>>>> -   __u64   mispred:1,  /* target mispredicted */
+> >>>>> -           predicted:1,/* target predicted */
+> >>>>> -           in_tx:1,    /* in transaction */
+> >>>>> -           abort:1,    /* transaction abort */
+> >>>>> -           cycles:16,  /* cycle count to last branch */
+> >>>>> -           type:4,     /* branch type */
+> >>>>> -           reserved:40;
+> >>>>> +   union {
+> >>>>> +           __u64   val;        /* to make it easier to clear all fields */
+> >>>>> +           struct {
+> >>>>> +                   __u64   mispred:1,  /* target mispredicted */
+> >>>>> +                           predicted:1,/* target predicted */
+> >>>>> +                           in_tx:1,    /* in transaction */
+> >>>>> +                           abort:1,    /* transaction abort */
+> >>>>> +                           cycles:16,  /* cycle count to last branch */
+> >>>>> +                           type:4,     /* branch type */
+> >>>>> +                           reserved:40;
+> >>>>> +           };
+> >>>>> +   };
+> >>>>>   };
+> >>>>
+> >>>> Hurpmh... all other bitfields have ENDIAN_BITFIELD things except this
+> >>>> one. Power folks, could you please have a look?
+> >>> The bit number of each field changes between big and little endian, but
+> >>> as long as kernel and userspace are the same endian, and both only
+> >>> access values via the bitfields then it works.
+> >> ...
+> >>> It does look like we have a bug in perf tool though, if I take a
+> >>> perf.data from a big endian system to a little endian one I don't see
+> >>> any of the branch flags decoded. eg:
+> >>>
+> >>> BE:
+> >>>
+> >>> 2413132652524 0x1db8 [0x2d0]: PERF_RECORD_SAMPLE(IP, 0x1): 5279/5279: 0xc00000000045c028 period: 923003 addr: 0
+> >>> ... branch stack: nr:28
+> >>> .....  0: c00000000045c028 -> c00000000dce7604 0 cycles  P   0
+> >>>
+> >>> LE:
+> >>>
+> >>> 2413132652524 0x1db8 [0x2d0]: PERF_RECORD_SAMPLE(IP, 0x1): 5279/5279: 0xc00000000045c028 period: 923003 addr: 0
+> >>> ... branch stack: nr:28
+> >>> .....  0: c00000000045c028 -> c00000000dce7604 0 cycles      0
+> >>>                                                           ^
+> >>>                                                           missing P
+> >>>
+> >>> I guess we're missing a byte swap somewhere.
+> >> Ugh. We _do_ have a byte swap, but we also need a bit swap.
+> >>
+> >> That works for the single bit fields, not sure if it will for the
+> >> multi-bit fields.
+> >>
+> >> So that's a bit of a mess :/
+> >>
+> > Based on what I see in perf_event.h for other structures, I think I
+> > can make up what you would need for struct branch_entry. But Iit would
+> > be easier if you could send me a patch that you would have verified on
+> > your systems.
+> > Thanks.
+> Attached patch fixes the issue. Have tested both in both in BE and LE case.
+>
+> Maddy
+>
+>  From f816ba2e6ef8d5975f78442d7ecb50d66c3c4326 Mon Sep 17 00:00:00 2001
+> From: Madhavan Srinivasan <maddy@linux.ibm.com>
+> Date: Wed, 15 Sep 2021 22:29:09 +0530
+> Subject: [RFC PATCH] tools/perf: Add reverse_64b macro
+>
+> branch_stack struct has bit field definition
+> producing different bit ordering for big/little endian.
+> Because of this, when branch_stack sample collected
+> in a BE system viewed/reported in a LE system,
+> bit fields of the branch stack are not presented
+> properly. To address this issue, a reverse_64b
+> macro is defined and introduced in evsel__parse_sample.
+>
+> Signed-off-by: Madhavan Srinivasan <maddy@linux.ibm.com>
+> ---
+>   tools/perf/util/evsel.c | 35 +++++++++++++++++++++++++++++++++--
+>   1 file changed, 33 insertions(+), 2 deletions(-)
+>
+> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+> index dbfeceb2546c..3151606e516e 100644
+> --- a/tools/perf/util/evsel.c
+> +++ b/tools/perf/util/evsel.c
+> @@ -2221,6 +2221,9 @@ void __weak arch_perf_parse_sample_weight(struct
+> perf_sample *data,
+>       data->weight = *array;
+>   }
+>
+> +#define reverse_64b(src, pos, size)    \
+> +    (((src >> pos) & (( 1ull <<size) - 1)) << (63 - (pos + size - 1)))
+> +
+>   int evsel__parse_sample(struct evsel *evsel, union perf_event *event,
+>               struct perf_sample *data)
+>   {
+> @@ -2408,6 +2411,8 @@ int evsel__parse_sample(struct evsel *evsel, union
+> perf_event *event,
+>       if (type & PERF_SAMPLE_BRANCH_STACK) {
+>           const u64 max_branch_nr = UINT64_MAX /
+>                         sizeof(struct branch_entry);
+> +        struct branch_entry *e;
+> +        unsigned i;
+>
+>           OVERFLOW_CHECK_u64(array);
+>           data->branch_stack = (struct branch_stack *)array++;
+> @@ -2416,10 +2421,36 @@ int evsel__parse_sample(struct evsel *evsel,
+> union perf_event *event,
+>               return -EFAULT;
+>
+>           sz = data->branch_stack->nr * sizeof(struct branch_entry);
+> -        if (evsel__has_branch_hw_idx(evsel))
+> +        if (evsel__has_branch_hw_idx(evsel)) {
+>               sz += sizeof(u64);
+> -        else
+> +            e = &data->branch_stack->entries[0];
+> +        } else {
+>               data->no_hw_idx = true;
+> +            e = (struct branch_entry *)&data->branch_stack->hw_idx;
+> +        }
+> +
+> +        if (swapped) {
+> +            for (i = 0; i < data->branch_stack->nr; i++, e++) {
+> +                u64 new_val = 0;
+> +
+> +                /* mispred:1  target mispredicted */
+> +                new_val = reverse_64b(e->flags.value, 0, 1);
+> +                /* predicted:1  target predicted */
+> +                new_val |= reverse_64b(e->flags.value, 1, 1);
+> +                /* in_tx:1  in transaction */
+> +                new_val |= reverse_64b(e->flags.value, 2, 1);
+> +                /* abort:1  transaction abort */
+> +                new_val |= reverse_64b(e->flags.value, 3, 1);
+> +                /* cycles:16  cycle count to last branch */
+> +                new_val |= reverse_64b(e->flags.value, 4, 16);
+> +                /* type:4  branch type */
+> +                new_val |= reverse_64b(e->flags.value, 20, 4);
+> +                /* reserved:40 */
+> +                new_val |= reverse_64b(e->flags.value, 24, 40);
+> +                e->flags.value = new_val;
+> +            }
+> +        }
+> +
+>           OVERFLOW_CHECK(array, sz, max_size);
+>           array = (void *)array + sz;
+>       }
+> --
+> 2.31.1
+>
+>
