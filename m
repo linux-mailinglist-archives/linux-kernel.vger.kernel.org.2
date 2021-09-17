@@ -2,106 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FD9240F7EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 14:37:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C41840F7FA
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 14:38:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244418AbhIQMiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 08:38:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38432 "EHLO
+        id S234581AbhIQMkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 08:40:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244330AbhIQMiU (ORCPT
+        with ESMTP id S230152AbhIQMkK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 08:38:20 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12C15C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 05:36:58 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id p4so16912800qki.3
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 05:36:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BhAiNAxekh+7Mk4Iygi3KYU65IFuuL7Kb47IBfGnIfk=;
-        b=XYEKyeF3NBbv3oexjiDdpLa1UYdACvkjSdZjJtMcVA2hBLN84ycWkeniyFvaGUdODc
-         v93cZBGyQlIukacn7sdoEU6tbrSVnQAS0zzNAg7Vgg3WbgWjQ4x+5PelGf2mm7zAtwI4
-         1TPznxdBEAxL5LdBwJJLsCogwEgj8raQylqjk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BhAiNAxekh+7Mk4Iygi3KYU65IFuuL7Kb47IBfGnIfk=;
-        b=OmcmXqYh54JJtcACTZSXAOlru5e/h4PzM6iniAUIesQOt+wgMM0oAZlrjY2BECEg6l
-         hmXOv/aQ3g8TUvotG4BcFoaoFiOCTtp3Y9b07tn0scvoDwF7nM5ZRrGfE2E+UPQJ1CJC
-         RYYtcIRdAS0DKqLauN+XIYPOnz0bLb05CBO7RqHI4vi/IqxH1OBC5pkSIHKNYsZ5Y/7s
-         hAthjdVgKNhvgbe78zzm8fyCknPVh3sUx0HfEXzenNNiNq4UTv6+yJUqmAqjd4Kpim68
-         2YAB7QBLr3tazOiKY7os5wmvyf3REO5iPzuAJRG/5A1lCgENMimmU9xzefBn5g5jQ/Gf
-         yX+Q==
-X-Gm-Message-State: AOAM533NACl3ZQPAbaSZlV1eNDDh5kgUywjbMmTWA+nNrfIH075Yi9sl
-        Kx/Z0Gmgb/ZLQ2imsTg0vpQLCgMAGkvDKQ==
-X-Google-Smtp-Source: ABdhPJzZAaopSRBJzCpDjUAffjFDI4E1KmOJQ2MtKxVGVsqIikUweblxv4vWt7BBaPgSNtXZ5dlN8g==
-X-Received: by 2002:a05:620a:799:: with SMTP id 25mr10319005qka.119.1631882217154;
-        Fri, 17 Sep 2021 05:36:57 -0700 (PDT)
-Received: from meerkat.local (bras-base-mtrlpq5031w-grc-32-216-209-220-181.dsl.bell.ca. [216.209.220.181])
-        by smtp.gmail.com with ESMTPSA id d129sm4583358qkf.136.2021.09.17.05.36.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 05:36:56 -0700 (PDT)
-Date:   Fri, 17 Sep 2021 08:36:54 -0400
-From:   Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-To:     James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc:     Chris Mason <clm@fb.com>, Theodore Ts'o <tytso@mit.edu>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Howells <dhowells@redhat.com>,
-        "ksummit@lists.linux.dev" <ksummit@lists.linux.dev>
-Subject: Re: [MAINTAINER SUMMIT] Folios as a potential Kernel/Maintainers
- Summit topic?
-Message-ID: <20210917123654.73sz5p2yjtd3a2np@meerkat.local>
-References: <YUIwgGzBqX6ZiGgk@mit.edu>
- <f7b70227bac9a684320068b362d28fcade6b65b9.camel@HansenPartnership.com>
- <YUI5bk/94yHPZIqJ@mit.edu>
- <17242A0C-3613-41BB-84E4-2617A182216E@fb.com>
- <f066615c0e2c6fe990fa5c19dd1c17d649bcb03a.camel@HansenPartnership.com>
- <E655F510-14EB-4F40-BCF8-C5266C07443F@fb.com>
- <33a2000f56d51284e2df0cfcd704e93977684b59.camel@HansenPartnership.com>
- <261D65D8-7273-4884-BD01-2BF8331F4034@fb.com>
- <20210916210046.ourwrk6uqeisi555@meerkat.local>
- <f8561816ab06cedf86138a4ad64e7ff7b33e2c07.camel@HansenPartnership.com>
+        Fri, 17 Sep 2021 08:40:10 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0CEAC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 05:38:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1631882325;
+        bh=eWmB6F/1PF0qfeOP3nk4/FF4/t9SDxOg5YXFRproBQs=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=g0ymNDQKVCuyfu7GO2aaeD+CWnWV6Ul8aC3CC03oq+Gu4OnNLjrRFtiyDae05t9uf
+         +mRM3OKa4OZLTfRu/tCnvkkfZADYz6wYvAFSFVQWj2fb/I70WElf3fVf6kCB7RvCqv
+         my+oYXQDDISLtS0a6mPj0lN56wJm2hTX6zCha6TipdLSr5hNkox7Qgul1AdKb0BKk7
+         86rnpHASt3ApHDAeCPECXuReOupEki3o8WxTWI5d+k8M61QNctjcOA5YuXGEx2+0Mg
+         CXk9+/TzxC6t0obqRtS76yIYLfTQmNsETxDupyMiExvHwGtBRVKSruxvb+0Q3nBbU9
+         g7EKG+VuQPfGA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H9tmN3VmVz9sPf;
+        Fri, 17 Sep 2021 22:38:44 +1000 (AEST)
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Stephane Eranian <eranian@google.com>
+Cc:     Madhavan Srinivasan <maddy@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, acme@redhat.com, jolsa@redhat.com,
+        kim.phillips@amd.com, namhyung@kernel.org, irogers@google.com,
+        atrajeev@linux.vnet.ibm.com,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Subject: Re: [PATCH v1 01/13] perf/core: add union to struct perf_branch_entry
+In-Reply-To: <CABPqkBRrx5vnPqTEnuQOeoJxyjiszCG7EMdK35ES=rHKYUNBpQ@mail.gmail.com>
+References: <20210909075700.4025355-1-eranian@google.com>
+ <20210909075700.4025355-2-eranian@google.com>
+ <20210909190342.GE4323@worktop.programming.kicks-ass.net>
+ <878s04my3b.fsf@mpe.ellerman.id.au> <875yv8ms7f.fsf@mpe.ellerman.id.au>
+ <CABPqkBQZ48b51vh1vqafOwVK2tBqYFNFGJT2x-a39Ma0TbS=tA@mail.gmail.com>
+ <b21bf42e-377d-36d0-49c3-af1e4edf5496@linux.ibm.com>
+ <CABPqkBQvvNQa=hb4OnYqH-f=DJiRWE+bTmv4i+gNvEdoSEHM4w@mail.gmail.com>
+ <878rzvk7h0.fsf@mpe.ellerman.id.au>
+ <CABPqkBRrx5vnPqTEnuQOeoJxyjiszCG7EMdK35ES=rHKYUNBpQ@mail.gmail.com>
+Date:   Fri, 17 Sep 2021 22:38:37 +1000
+Message-ID: <874kajjs1e.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <f8561816ab06cedf86138a4ad64e7ff7b33e2c07.camel@HansenPartnership.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 07:14:11AM -0400, James Bottomley wrote:
-> > I would caution that Google docs aren't universally accessible. China
-> > blocks access to many Google resources, and now Russia purportedly
-> > does the same. Perhaps a similar effect can be reached with a git
-> > repository with limited commit access? At least then commits can be
-> > attested to individual authors.
-> 
-> In days of old, when knights were bold and cloud silos weren't
-> invented, we had an ancient magic handed down by the old gods who spoke
-> non type safe languages.  They called it wiki and etherpad ... could we
-> make use of such tools today without committing heresy against our
-> cloud overlords?
+Stephane Eranian <eranian@google.com> writes:
+> Hi,
+>
+> On Fri, Sep 17, 2021 at 12:05 AM Michael Ellerman <mpe@ellerman.id.au> wrote:
+>>
+>> Stephane Eranian <eranian@google.com> writes:
+>> > Hi,
+>> >
+>> > Thanks for fixing this in the perf tool. But what about the struct
+>> > branch_entry in the header?
+>>
+>> I'm not sure what you mean.
+>>
+>> We can't change the order of the fields in the header, without breaking
+>> existing userspace on BE systems.
+>>
+> Ok, I think I had missed that. You are saying that the
+> #ifdef (__BIG_ENDIAN_BITFIELD) vs __LITTLE_ENDIAN_BITFIELD
+>
+> is only added to kernel-only data structures?
 
-You mean, like https://pad.kernel.org ? :)
+No, we *should* have used __BIG/LITTLE_ENDIAN_BITFIELD for the uapi
+definition, but we forgot.
 
-However, a large part of why I was suggesting a git repo is because it is
-automatically redistributable, clonable, and verifiable using builtin git
-tools. We have end-to-end attestation with git, but we don't have it with
-etherpad or a wiki. If the goal is to use a document that solicits acks and
-other input across subsystems, then having a tamper-evident backend may be
-important.
+>> It's annoying that the bit numbers are different between LE & BE, but I
+>> think it's too late to change that.
+>>
+> I agree.
+>
+>> So nothing should change in the branch_entry definition in the header.
+>>
+>> My comment on your patch was that adding the union with val, makes it
+>> easier to misuse the bitfields, because now the values can be accessed
+>> via the bitfields and also via val, but when using val you have to know
+>> that the bit numbers differ between BE/LE.
+>>
+> Ok, I get it now. We do not need to expose val to user. This is added
+> for kernel code convenience only.
 
--K
+Yeah. Putting the union with val in the uapi encourages userspace to
+misuse val to bypass the bitfields, and that risks causing endian bugs.
+
+> But if we keep it in kernel, that may break some other rules about
+> uapi headers.
+
+I don't follow what you mean there.
+
+We could use #ifdef __KERNEL__ in the uapi header to make the union
+kernel-only, see below, but it's pretty gross.
+
+ struct perf_branch_entry {
+	__u64	from;
+	__u64	to;
+ #ifdef __KERNEL__
+	union {
+		__u64	val;	    /* to make it easier to clear all fields */
+		struct {
+ #endif
+			__u64	mispred:1,  /* target mispredicted */
+				predicted:1,/* target predicted */
+				in_tx:1,    /* in transaction */
+				abort:1,    /* transaction abort */
+				cycles:16,  /* cycle count to last branch */
+				type:4,     /* branch type */
+				reserved:40;
+ #ifdef __KERNEL__
+		};
+	};
+ #endif
+ };
+
+
+If we just do the inline I suggested we can clear the flags in a single
+source line, and the generated code seems fine too, eg:
+
+static inline void clear_perf_branch_entry_flags(struct perf_branch_entry *e)
+{
+	e->mispred = 0;
+	e->predicted = 0;
+	e->in_tx = 0;
+	e->abort = 0;
+	e->cycles = 0;
+	e->type = 0;
+	e->reserved = 0;
+}
+
+
+cheers
