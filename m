@@ -2,228 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93D3D40F1A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 07:31:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2231040F1B0
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 07:40:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244874AbhIQFc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 01:32:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54424 "EHLO
+        id S244897AbhIQFlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 01:41:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229704AbhIQFc5 (ORCPT
+        with ESMTP id S237123AbhIQFlV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 01:32:57 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D909C061574;
-        Thu, 16 Sep 2021 22:31:36 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id h3so8522706pgb.7;
-        Thu, 16 Sep 2021 22:31:36 -0700 (PDT)
+        Fri, 17 Sep 2021 01:41:21 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4E62C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 22:39:59 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id p12-20020a17090adf8c00b0019c959bc795so933102pjv.1
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 22:39:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=g95fLp68s8x8Ys7f0g+XIqQ9cJm5k9DeyZeKhVz150o=;
-        b=HZUjX6LgkfZ06wGInmB4LRqZWf9wd0ZNrAtabr4olEAXqFjF/UC1D1C0yi2AIgsiNm
-         TzLDW182t5LH1hz61a0EyQ9VlT4vez/sJVwJhTOXyvM1Fa77J03Kw5FGYcjDHSESE6vc
-         MTbJokeE8MPOEmqgQgvHrqIBeqrBC+95vBqCCZFhXp92jDQzX18wI7LKi3FHacu4gx+E
-         H6ZBZwY8EqlPGGDtkZjyGfKVBXgIlis6r5AazS7PQDvwR6HdIzbW1er+eOIrnY4fu5BL
-         OisfGbS8bmGSSM4S5ktZzXomf/YYGK9toTI8BO/OFe9BNoBhYto4n4kXpB2zpIcPv1am
-         9ngA==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tDmd8ycUb5A33cqxczJ56wHGFGeWT2rzATobJNiElZc=;
+        b=mjKLzQ4indMMpCe2+SSAdTsz4b8weE1gFwDDjCVqrp9B3pKj/bdL1dSfl3/8kMyDCa
+         OwNV8mBPxU0bohv0fNfCJuap5gQU8HNWcHGvgWIX9Lhe7vGcS0pmJGS5ohNAPqSW6y2b
+         HqPHz2ZXAbYY+37RrveljTcqnLFKRWJM074UPOg0nvYDWFIceiA6ATCiTK4fbdFOd+Vo
+         dqzJiLqCMHcx+FD5eJ2pRWB6exkXZDw4haYWbQNDsI6lawjDscBFXvjHFo6B0WPx7Aoy
+         3w8qeKXz5bhoAg7yncGtqLrlHT7BrfpztPQ9n7irXnqvU4hMwQ7+uzq+gLEMQP63o4JJ
+         +kHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=g95fLp68s8x8Ys7f0g+XIqQ9cJm5k9DeyZeKhVz150o=;
-        b=xQ+f7ccR64hrIJ02y95uxe1/K8cU1mKfJmGZLpK/h2T6bc8u+UWg7Qdo54jni9Dxqj
-         6O1z2o4uQjLpm/dXu9mgLq4cHNUcuN9zWe/E1whHHT/ZkuX92efW5Ftk3ZChq2N/+EaV
-         T53xoDh4C2eWmLzjDMswURqnODucJYJ2Ov81icWp1EQNWCU5LobQbBCbHD2nH05uzBZj
-         O6z7sOfNBDFxNNhNhm9gxBVPn9IBKmSRJ2id2yucfNBAsQg1XaD2xOub2BIObM6RkLYu
-         wguKxiIO+dSSIZk6s9m0uULVAlRUbDcYyAgqjfnhmrezYKeJ0RwFlkFzlHF6LQiuAnDk
-         H8Yg==
-X-Gm-Message-State: AOAM5334OKuiKlnVAISs3m9VM61gzgyr7VcEfrYb6sSEXcetsIROO7DA
-        0tThxBeBTrwfO9qR0ea2kJE=
-X-Google-Smtp-Source: ABdhPJyMOrWQpw6n8dyJuoPcJiv20B6YZcLwJ5JCq5YnQ+nlfkLdxP9ox07W7LP13vhd/1XjpD3dEg==
-X-Received: by 2002:a63:1e16:: with SMTP id e22mr8184125pge.153.1631856695448;
-        Thu, 16 Sep 2021 22:31:35 -0700 (PDT)
-Received: from localhost (193-116-82-172.tpgi.com.au. [193.116.82.172])
-        by smtp.gmail.com with ESMTPSA id e16sm4655325pfc.214.2021.09.16.22.31.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 22:31:34 -0700 (PDT)
-Date:   Fri, 17 Sep 2021 15:31:29 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [tip:locking/core] tools/memory-model: Add extra ordering for
- locks and remove it for ordinary release/acquire
-To:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Will Deacon <will@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        dlustig@nvidia.com, Stephane Eranian <eranian@google.com>,
-        Peter Anvin <hpa@zytor.com>, Jiri Olsa <jolsa@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tip-commits@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        mpe@ellerman.id.au, palmer@dabbelt.com,
-        Andrea Parri <parri.andrea@gmail.com>,
-        paul.walmsley@sifive.com, Peter Zijlstra <peterz@infradead.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Vince Weaver <vincent.weaver@maine.edu>
-References: <20180926182920.27644-2-paulmck@linux.ibm.com>
-        <tip-6e89e831a90172bc3d34ecbba52af5b9c4a447d1@git.kernel.org>
-        <YTiXyiA92dM9726M@hirez.programming.kicks-ass.net>
-        <YTiiC1mxzHyUJ47F@hirez.programming.kicks-ass.net>
-        <20210908144217.GA603644@rowland.harvard.edu>
-        <CAHk-=wiXJygbW+_1BdSX6M8j6z4w8gRSHVcaD5saihaNJApnoQ@mail.gmail.com>
-        <YTm26u9i3hpjrNpr@hirez.programming.kicks-ass.net>
-        <20210909133535.GA9722@willie-the-truck>
-        <20210909174635.GA2229215@paulmck-ThinkPad-P17-Gen-1>
-        <20210910110819.GA1027@willie-the-truck>
-        <1631847849.o57vj41jx3.astroid@bobo.none>
-In-Reply-To: <1631847849.o57vj41jx3.astroid@bobo.none>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tDmd8ycUb5A33cqxczJ56wHGFGeWT2rzATobJNiElZc=;
+        b=VDBRT3C7QDSaYdPcs96kFaOzX1ZkoqSa44AVoodG3/8W7hT91TGqKJr0INKNsKlP5x
+         R81GJ6xcdeOTWLpPxwMn7lVnty3ybalo0FsTuUhyPqtkw4DIZmN1epRjfdoabAEfAjdD
+         c3OJwKzLJkPme7XkuC0NbiQRTDvDO6iPJ/ubk4m05x1wcASraTE0daWe1kZiBCQz31X7
+         b8Br7u5KJq7dVcGjSqu5HNTWOBZLOWmpIvCdAODmYpA6q/cBgYYp4tbNsOtWhuoLvbKz
+         ObodKMRpZNoH7DEI2DwfuRCzXCV9XpAKLSrQkofr9jKTfbrHnaHBISAD3fKYS5SSEXVQ
+         9eIw==
+X-Gm-Message-State: AOAM532W0XYIrGTFQD/uvSyCS0svk8ajsGoPCP3O1nYV/0na5UwMNVyB
+        B3TSx0kPBkS39O+QwW8rmfn7u9S8f5pn6+wbhy0Dvw==
+X-Google-Smtp-Source: ABdhPJzZMkaEHIdpYul5buHW1Dv1P4OGtrg3QMqu5AMf+ifi+Fe4a5b98Wn+iDry0ryDPZOE6JwsAGuPU3s4o9OB4gc=
+X-Received: by 2002:a17:902:6f17:b0:139:eec4:867e with SMTP id
+ w23-20020a1709026f1700b00139eec4867emr8140416plk.77.1631857198933; Thu, 16
+ Sep 2021 22:39:58 -0700 (PDT)
 MIME-Version: 1.0
-Message-Id: <1631855601.07l1who4w0.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+References: <CA+G9fYtFvJdtBknaDKR54HHMf4XsXKD4UD3qXkQ1KhgY19n3tw@mail.gmail.com>
+ <CAHk-=wisUqoX5Njrnnpp0pDx+bxSAJdPxfgEUv82tZkvUqoN1w@mail.gmail.com>
+ <CAHk-=whF9F89vsfH8E9TGc0tZA-yhzi2Di8wOtquNB5vRkFX5w@mail.gmail.com>
+ <36aa5cb7-e3d6-33cb-9ac6-c9ff1169d711@linuxfoundation.org>
+ <CAK8P3a1vNx1s-tcjtu6VDxak4NHyztF0XZGe3wOrNbigx1f4tw@mail.gmail.com>
+ <120389b9-f90b-0fa3-21d5-1f789b4c984d@linuxfoundation.org>
+ <CAFd5g47MgGCoenw08hehegstQSujT7AwksQkxA7mQgKhChimNw@mail.gmail.com>
+ <3bad5d2f-8ce7-d0b9-19ad-def68d4193dd@linuxfoundation.org>
+ <CAFd5g47bZbqGgMn8PVa=DaSFfjnJsLGVsLTYzmmCOpdv-TfUSQ@mail.gmail.com> <CAK8P3a0wQC+9_3wJEACgOLa9C5_zLSmDfU=_79h_KMSE_9JxRw@mail.gmail.com>
+In-Reply-To: <CAK8P3a0wQC+9_3wJEACgOLa9C5_zLSmDfU=_79h_KMSE_9JxRw@mail.gmail.com>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Thu, 16 Sep 2021 22:39:47 -0700
+Message-ID: <CAFd5g44udqkDiYBWh+VeDVJ=ELXeoXwunjv0f9frEN6HJODZng@mail.gmail.com>
+Subject: Re: ipv4/tcp.c:4234:1: error: the frame size of 1152 bytes is larger
+ than 1024 bytes [-Werror=frame-larger-than=]
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Shuah Khan <skhan@linuxfoundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Ariel Elior <aelior@marvell.com>,
+        GR-everest-linux-l2@marvell.com, Wei Liu <wei.liu@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>, lkft-triage@lists.linaro.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        KUnit Development <kunit-dev@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Nicholas Piggin's message of September 17, 2021 1:21 pm:
-> Excerpts from Will Deacon's message of September 10, 2021 9:08 pm:
->> Hi Paul,
->>=20
->> On Thu, Sep 09, 2021 at 10:46:35AM -0700, Paul E. McKenney wrote:
->>> On Thu, Sep 09, 2021 at 02:35:36PM +0100, Will Deacon wrote:
->>> > On Thu, Sep 09, 2021 at 09:25:30AM +0200, Peter Zijlstra wrote:
->>> > > On Wed, Sep 08, 2021 at 09:08:33AM -0700, Linus Torvalds wrote:
->>> > > > then I think it's entirely reasonable to
->>> > > >=20
->>> > > >         spin_unlock(&r);
->>> > > >         spin_lock(&s);
->>> > > >=20
->>> > > > cannot be reordered.
->>> > >=20
->>> > > I'm obviously completely in favour of that :-)
->>> >=20
->>> > I don't think we should require the accesses to the actual lockwords =
-to
->>> > be ordered here, as it becomes pretty onerous for relaxed LL/SC
->>> > architectures where you'd end up with an extra barrier either after t=
-he
->>> > unlock() or before the lock() operation. However, I remain absolutely=
- in
->>> > favour of strengthening the ordering of the _critical sections_ guard=
-ed by
->>> > the locks to be RCsc.
->>>=20
->>> If by this you mean the critical sections when observed only by other
->>> critical sections for a given lock, then everyone is already there.
->>=20
->> No, I mean the case where somebody without the lock (but using memory
->> barriers) can observe the critical sections out of order (i.e. W -> R
->> order is not maintained).
->=20
-> This is a sincere question, why is this important? I mean _any_=20
-> restriction on reordering makes things easier by definition I can't=20
-> argue with that, but why is this one in particular seen as a problem?
-> It just seems disproportionate.
->=20
-> We naturally think of accesses within locks as atomic as a whole=20
-> (provided the other parties are doing the proper locking too). So like=20
-> atomic operations, aligned stores, etc can be reordered, I don't see why
-> these should have any particular ordering either, or why a unlock()=20
-> should pair with a later lock() of an unrelated lock to provide some
-> ordering.
->=20
-> It gives the idea that individual lock operations in isolation should be=20
-> or do something special, but I think that's the wrong way to think about=20
-> it, the lock and the unlock operate on a specific lock word and protect=20
-> specific data vs other processors that access the same data under the
-> same locks.
->=20
-> If you don't know what you're doing or don't want to think about=20
-> ordering, perform accesses under locks. If you don't lock, you get to
-> think about ordering. At which point sure two sets of operations from
-> different critical sections could go out of order, but so can any two
-> stores. Or two stores from inside the one critical section if you are
-> not holding the correct lock.
+On Tue, Sep 14, 2021 at 3:04 PM Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> On Tue, Sep 14, 2021 at 10:48 PM Brendan Higgins
+> <brendanhiggins@google.com> wrote:
+> >
+> > On Mon, Sep 13, 2021 at 1:55 PM Shuah Khan <skhan@linuxfoundation.org> wrote:
+> > >
+> > > On 9/8/21 3:24 PM, Brendan Higgins wrote:
+> > > Brendan,
+> > >
+> > > Would you like to send me the fix with Suggested-by for Arnd or Kees?
+> >
+> > So it looks like Arnd's fix was accepted (whether by him or someone
+> > else) for property-entry-test and Linus already fixed thunderbolt, so
+> > the only remaining of Arnd's patches is for the bitfield test, so I'll
+> > resend that one in a bit.
+> >
+> > Also, I haven't actually tried Linus' suggestion yet, but the logic is
+> > sound and the change *should* be fairly unintrusive - I am going to
+> > give that a try and report back (but I will get the bitfield
+> > structleak disable patch out first since I already got that applying).
+>
+> Looking at my randconfig tree, I find these six instances:
+>
+> $ git grep -w DISABLE_STRUCTLEAK_PLUGIN
+> drivers/base/test/Makefile:CFLAGS_property-entry-test.o +=
+> $(DISABLE_STRUCTLEAK_PLUGIN)
+> drivers/iio/test/Makefile:CFLAGS_iio-test-format.o +=
+> $(DISABLE_STRUCTLEAK_PLUGIN)
+> drivers/mmc/host/Makefile:CFLAGS_sdhci-of-aspeed.o              +=
+> $(DISABLE_STRUCTLEAK_PLUGIN)
+> drivers/thunderbolt/Makefile:CFLAGS_test.o += $(DISABLE_STRUCTLEAK_PLUGIN)
+> lib/Makefile:CFLAGS_test_scanf.o += $(DISABLE_STRUCTLEAK_PLUGIN)
+> lib/Makefile:CFLAGS_bitfield_kunit.o += $(DISABLE_STRUCTLEAK_PLUGIN)
+> scripts/Makefile.gcc-plugins:    DISABLE_STRUCTLEAK_PLUGIN +=
+> -fplugin-arg-structleak_plugin-disable
+> scripts/Makefile.gcc-plugins:export DISABLE_STRUCTLEAK_PLUGIN
 
-It doesn't actually really relieve the burden of thinking about barriers=20
-mcuh at all, come to think of it.
+Alright, I incorporated all the above into a patchset that I think is
+ready to send out, but I had a couple of issues with the above
+suggestions:
 
-spin_lock(&foo);
-x =3D 1;
-spin_unlock(&foo);
-spin_lock(&bar);
-y =3D 1;
-spin_unlock(&bar);
+- I could not find a config which causes a stacksize warning for
+sdhci-of-aspeed.
+- test_scanf is not a KUnit test.
+- Linus already fixed the thunderbolt test by breaking up the test cases.
 
-vs
+I am going to send out patches for the thunderbolt test and for the
+sdhci-of-aspeed test for the sake of completeness, but I am not sure
+if we should merge those two. I'll let y'all decide on the patch
+review.
 
-if (READ_ONCE(y) =3D=3D 1)
-    // spin_unlock(&foo)+spin_lock(&bar) provides store ordering
-    smp_rmb();
-    BUG_ON(READ_ONCE(x) =3D=3D 0);
+I only based the thunderbolt and bitfield test fixes on actual patches
+from Arnd, but I think Arnd pretty much did all the work here so I am
+crediting him with a Co-developed-by on all the other patches, so
+Arnd: please follow up on the other patches with a signed-off-by,
+unless you would rather me credit you in some other way.
 
-Then if you didn't comment the store ordering requirement in the first
-code, then you patch things to simplify or add functionality:
+> Sorry for failing to submit these as a proper patch. If you send a new version,
+> I think you need to make sure you cover all of the above, using whichever
+> change you like best.
 
-spin_lock(&foo);
-x =3D 1;
-spin_lock(&bar);
-y =3D 1;
-spin_unlock(&bar);
-z =3D 1;
-spin_unlock(&foo);
+I am still going to try to get Linus' suggestion working since it
+actually solves the problem, but I would rather get the above
+suggested fix out there since it is quick and I know it works.
 
-or
-
-spin_lock(&baz);
-x =3D 1;
-y =3D 1;
-spin_unlock(&baz);
-
-Then you broke it. Because you thought being clever and avoiding
-thinking about or talking about ordering in your code which performs=20
-memory accesses outside of locks was improving the situation.
-
-It's not good practice. If there is *any* unlocked memory access, you=20
-should always think about and comment *all* memory orderings. Locking
-should not ever be relied on to give you some kind of implicit semantics
-that you think should be obvious. All the accesses always need thought
-and they always need comments.
-
-spin_lock(&foo);
-// The spin_unlock+spin_lock orders this store before the store to y,=20
-// the corresponding smp_rmb is at function().
-x =3D 1;
-spin_unlock(&foo);
-spin_lock(&bar);
-// See x
-y =3D 1;
-spin_unlock(&bar);
-
-Once you do that, does it *really* break the bank to add a line of code?
-
-spin_lock(&foo);
-// See smp_unlock_lock_mb() below
-x =3D 1;
-spin_unlock(&foo);
-// This orders this store of x above before the
-// store to y below.=20
-smp_unlock_lock_mb();
-spin_lock(&bar);
-// See smp_unlock_lock_mb() above
-y =3D 1;
-spin_unlock(&bar);
-
-I can't see how that line of code created a fundamentally a bigger=20
-problem.
-
-If you don't need the performance and don't want to deal with ordering,=20
-*always use locks*. If you absolutely can't always use locks, *always=20
-document important memory accesses ordering that is or can affect=20
-unlocked memory accesses*. We are all agreed on this rule, right? So
-what am I missing?
-
-Thanks,
-Nick
+Cheers
