@@ -2,151 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C76A640F6E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 13:51:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7F6840F6D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 13:49:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344089AbhIQLvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 07:51:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34224 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242157AbhIQLv0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 07:51:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B9F461248;
-        Fri, 17 Sep 2021 11:50:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631879404;
-        bh=F+Bb0lcRPTSWghJbArRjnUckU6IKw5B96b0qVtK/W6A=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fRFlLvy083MBGkjWdsTKj2odXXRp41oCBam2JTASf7oUCwYx7ny7Pop7BNAHfhG8D
-         w8FpUrslDAl6DKEg3FGZ58zojg2+b54e+W2cg095bjOWa96bwtYY8Nhshj9Bkumu09
-         mKJqUsLoWLssRbft4Pen7PptMrKLeYBZfhPVEvF8t21gykCoFHwkDejI+Yl5sdNx+5
-         66N1qc8VhJGJVVXcBwU++eD1HiXrykyaF4HXJ+XON2HeQqe5J8XMwmut80EdC7FMnB
-         gx2Vb2Dzemv8u+gOuMMxNoRQW5LH1tGRUsqO0GOIRrAtITt+f7EFc5MKR99lZBQ2lr
-         ryVsI8D4VgrbQ==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1mRCNa-0001Rd-2e; Fri, 17 Sep 2021 13:50:06 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
-        Jens Taprogge <jens.taprogge@taprogge.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     industrypack-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Subject: [PATCH 6/6] ipack: ipoctal: rename tty-driver pointer
-Date:   Fri, 17 Sep 2021 13:46:22 +0200
-Message-Id: <20210917114622.5412-7-johan@kernel.org>
+        id S242098AbhIQLuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 07:50:55 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:48114
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240718AbhIQLuy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 07:50:54 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id E0DF13F234;
+        Fri, 17 Sep 2021 11:49:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1631879371;
+        bh=o1svmj9FW/O2TpubDpCCd4h+o8vOHM4Lf/k/ntltkBU=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=TSh3v888gsqV6LgYPkJE5Vaus/eAXBbSz7yjRySiVtJGM296jgVE1E+f/PtzRSd6B
+         nsMJ/0pedoPcNB8UIRHMImuR7EZwIpRLn0A4r1fODbMgRZjWI7xkd1ZOvt/hVld7uk
+         N9PZIo2Vt5ICKhaY0ZoQxQsp5vwbYFUAAo5IrdzdaDjkGGYdOMdsWgJikMGLqMl2SQ
+         lg9jPIFuuDUldswHMj3DtaWlspoBN18R8MRZAdqYj25f9lRSiOtKp5YjZWnPegdZrS
+         1TzvXKUdpuJJFWGbWos+L3ssb9MfAKr58l0jaIehyfms7rsHkXfRuFuRhqaAfrot3x
+         IOxt9JZNt6x4A==
+From:   Colin King <colin.king@canonical.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        linux-media@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] media: uvcvideo: Fix memory leak of object map on error exit path
+Date:   Fri, 17 Sep 2021 12:49:30 +0100
+Message-Id: <20210917114930.47261-1-colin.king@canonical.com>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210917114622.5412-1-johan@kernel.org>
-References: <20210917114622.5412-1-johan@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The name "tty" is typically used for pointers to struct tty_struct.
+From: Colin Ian King <colin.king@canonical.com>
 
-Rename the tty-driver pointer used during registration to something more
-apt to improve readability.
+Currently when the allocation of map->name fails the error exit path
+does not kfree the previously allocated object map. Fix this by
+setting ret to -ENOMEM and taking the free_map exit error path to
+ensure map is kfree'd.
 
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Addresses-Coverity: ("Resource leak")
+Fixes: 07adedb5c606 ("media: uvcvideo: Use control names from framework")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- drivers/ipack/devices/ipoctal.c | 48 ++++++++++++++++-----------------
- 1 file changed, 24 insertions(+), 24 deletions(-)
+ drivers/media/usb/uvc/uvc_v4l2.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/ipack/devices/ipoctal.c b/drivers/ipack/devices/ipoctal.c
-index c709861198e5..20d2b9ec1227 100644
---- a/drivers/ipack/devices/ipoctal.c
-+++ b/drivers/ipack/devices/ipoctal.c
-@@ -276,7 +276,7 @@ static int ipoctal_inst_slot(struct ipoctal *ipoctal, unsigned int bus_nr,
- {
- 	int res;
- 	int i;
--	struct tty_driver *tty;
-+	struct tty_driver *drv;
- 	struct ipoctal_channel *channel;
- 	struct ipack_region *region;
- 	void __iomem *addr;
-@@ -359,38 +359,38 @@ static int ipoctal_inst_slot(struct ipoctal *ipoctal, unsigned int bus_nr,
- 	/* Register the TTY device */
- 
- 	/* Each IP-OCTAL channel is a TTY port */
--	tty = tty_alloc_driver(NR_CHANNELS, TTY_DRIVER_REAL_RAW |
-+	drv = tty_alloc_driver(NR_CHANNELS, TTY_DRIVER_REAL_RAW |
- 			TTY_DRIVER_DYNAMIC_DEV);
--	if (IS_ERR(tty))
--		return PTR_ERR(tty);
-+	if (IS_ERR(drv))
-+		return PTR_ERR(drv);
- 
- 	/* Fill struct tty_driver with ipoctal data */
--	tty->owner = THIS_MODULE;
--	tty->driver_name = KBUILD_MODNAME;
--	tty->name = kasprintf(GFP_KERNEL, KBUILD_MODNAME ".%d.%d.", bus_nr, slot);
--	if (!tty->name) {
-+	drv->owner = THIS_MODULE;
-+	drv->driver_name = KBUILD_MODNAME;
-+	drv->name = kasprintf(GFP_KERNEL, KBUILD_MODNAME ".%d.%d.", bus_nr, slot);
-+	if (!drv->name) {
- 		res = -ENOMEM;
- 		goto err_put_driver;
+diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
+index f4e4aff8ddf7..711556d13d03 100644
+--- a/drivers/media/usb/uvc/uvc_v4l2.c
++++ b/drivers/media/usb/uvc/uvc_v4l2.c
+@@ -44,8 +44,10 @@ static int uvc_ioctl_ctrl_map(struct uvc_video_chain *chain,
+ 	if (v4l2_ctrl_get_name(map->id) == NULL) {
+ 		map->name = kmemdup(xmap->name, sizeof(xmap->name),
+ 				    GFP_KERNEL);
+-		if (!map->name)
+-			return -ENOMEM;
++		if (!map->name) {
++			ret = -ENOMEM;
++			goto free_map;
++		}
  	}
--	tty->major = 0;
--
--	tty->minor_start = 0;
--	tty->type = TTY_DRIVER_TYPE_SERIAL;
--	tty->subtype = SERIAL_TYPE_NORMAL;
--	tty->init_termios = tty_std_termios;
--	tty->init_termios.c_cflag = B9600 | CS8 | CREAD | HUPCL | CLOCAL;
--	tty->init_termios.c_ispeed = 9600;
--	tty->init_termios.c_ospeed = 9600;
--
--	tty_set_operations(tty, &ipoctal_fops);
--	res = tty_register_driver(tty);
-+	drv->major = 0;
-+
-+	drv->minor_start = 0;
-+	drv->type = TTY_DRIVER_TYPE_SERIAL;
-+	drv->subtype = SERIAL_TYPE_NORMAL;
-+	drv->init_termios = tty_std_termios;
-+	drv->init_termios.c_cflag = B9600 | CS8 | CREAD | HUPCL | CLOCAL;
-+	drv->init_termios.c_ispeed = 9600;
-+	drv->init_termios.c_ospeed = 9600;
-+
-+	tty_set_operations(drv, &ipoctal_fops);
-+	res = tty_register_driver(drv);
- 	if (res) {
- 		dev_err(&ipoctal->dev->dev, "Can't register tty driver.\n");
- 		goto err_free_name;
- 	}
- 
- 	/* Save struct tty_driver for use it when uninstalling the device */
--	ipoctal->tty_drv = tty;
-+	ipoctal->tty_drv = drv;
- 
- 	for (i = 0; i < NR_CHANNELS; i++) {
- 		struct device *tty_dev;
-@@ -407,7 +407,7 @@ static int ipoctal_inst_slot(struct ipoctal *ipoctal, unsigned int bus_nr,
- 		spin_lock_init(&channel->lock);
- 		channel->pointer_read = 0;
- 		channel->pointer_write = 0;
--		tty_dev = tty_port_register_device_attr(&channel->tty_port, tty,
-+		tty_dev = tty_port_register_device_attr(&channel->tty_port, drv,
- 							i, NULL, channel, NULL);
- 		if (IS_ERR(tty_dev)) {
- 			dev_err(&ipoctal->dev->dev, "Failed to register tty device.\n");
-@@ -429,9 +429,9 @@ static int ipoctal_inst_slot(struct ipoctal *ipoctal, unsigned int bus_nr,
- 	return 0;
- 
- err_free_name:
--	kfree(tty->name);
-+	kfree(drv->name);
- err_put_driver:
--	tty_driver_kref_put(tty);
-+	tty_driver_kref_put(drv);
- 
- 	return res;
- }
+ 	memcpy(map->entity, xmap->entity, sizeof(map->entity));
+ 	map->selector = xmap->selector;
 -- 
 2.32.0
 
