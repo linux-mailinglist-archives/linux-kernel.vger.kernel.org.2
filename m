@@ -2,96 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E87840F4E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 11:38:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64F9D40F503
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 11:43:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241198AbhIQJjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 05:39:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53622 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234265AbhIQJji (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 05:39:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 488CD60EB6;
-        Fri, 17 Sep 2021 09:38:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631871496;
-        bh=LcaAXhsUQp+yLFCh3WEuiolKi8ixI5lQSBUjEkFCBZc=;
-        h=References:From:To:Cc:Subject:Date:In-reply-to:From;
-        b=RYAlaM3sRsan4glS7tFrIMOkVlhVTzxYLp2FcP3LKubgwwyfKEXzsAelVt3QCpPkg
-         iXymoK+8LDjDE3QdUV/gkVVEK16KBki5XLgh7CZ3vAL/uuJjBO5kHcCK3x/aPZhN0P
-         RQyHa2QaBeBW3SiVctuL5+ooWxTa1b+OOebf8ncta3mNezscsBHvVvYEjPmlmo6FQe
-         WYXqJG2M8QzqRQItmWjLC9yR2yEfU+zgvZ3RofVzN1LuDJrtv0XUTb/0WqmAFYAat7
-         hj0bwM4B2mjxYAp2n7En+R/UOeo3h/f9nMv7Xy7YY8N4jIZZyRxdEf6apR1MkqTUJb
-         o1MQsorrXdI0Q==
-References: <20210917021852.2037-1-wcheng@codeaurora.org>
- <87y27vai3p.fsf@kernel.org>
- <474148e5-37e2-ea0c-7d78-9e71155314d9@codeaurora.org>
-User-agent: mu4e 1.6.5; emacs 27.2
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Wesley Cheng <wcheng@codeaurora.org>
-Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: dwc3: gadget: Avoid starting DWC3 gadget during
- UDC unbind
-Date:   Fri, 17 Sep 2021 12:37:55 +0300
-In-reply-to: <474148e5-37e2-ea0c-7d78-9e71155314d9@codeaurora.org>
-Message-ID: <87h7eja6ey.fsf@kernel.org>
+        id S245576AbhIQJo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 05:44:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231548AbhIQJou (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 05:44:50 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CC1EC061574;
+        Fri, 17 Sep 2021 02:43:28 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d18so5793620pll.11;
+        Fri, 17 Sep 2021 02:43:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rjUsrgKAG842TTdbvaYfjn7xP48jRXz0AO+9is4lw+4=;
+        b=eshssGgeztlgeR06W0sS7LaYwmch7gTNshpRHn6lJDAs/tqnzRp/VHfCf0CbRdIOd+
+         ZOdw5CZ1Bc/qeGUvButzESvlt1M4NYiOtEHWsgOiS5mpjOMwbriGn8AbsgGcJfyIBtT0
+         /9SmqWSwxjgpLRySOMoB4aAmDDfXpuw7S9/M3rRo5UovQssSVtOdnvYGQaoR9EtefT0f
+         JYYp6notUeG0LBmLXyiMfkwtDNKUXavCLWt9F3bARIaGA/KQmvf2bIhDo+oCY4zA/1p6
+         o4iDL/Drk3NO9aZTW9SBaFOjiMD6UHfD4cbKzXfwv9WfalzTbiqpns3Tqbi86CFv6swi
+         Xx7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rjUsrgKAG842TTdbvaYfjn7xP48jRXz0AO+9is4lw+4=;
+        b=44+Sfmbtgc3ZxOxX+ltA355pyY/G1O4Pa9Y82twrZ46Wg51pcaP3RbSuGYYrBuxWuc
+         sw2cw/D0WK4q8+Zh/UX0G2lrOIcLPA0C3VpzUKPqSU3kpG4kO/x2JNhImJ2CV/IcYi5i
+         iGOWmzdk/h4jYoeU7l8f02AK7BiVB3Y2rJaESI3C9BuoXGLTuFPaZlQ24ZHvBG2y9NdP
+         Fh/jkzAeoJtfLSKr3eOrt+fO2kMpVu9NBjURE0FOCWbbXApCxYwe0JCeK8c/hucM05Bh
+         ZwBNfG2jvkcZ1SzlaWAlqfJ6DGUnYTPECg0p9s/nGp1di3AGI1vKtj04GOz8AZK1uLN+
+         U7NA==
+X-Gm-Message-State: AOAM531Q2Gp2pUOoYIv4druiFJybrTgLPtW9eD1TsUOl7xHSVbjXWfze
+        JQCybuRbzCYh1i2Eux/jVpc=
+X-Google-Smtp-Source: ABdhPJz7M8K2pr6rL0bZaDgbAka6otCz9P9JWfANr9cLlx5Gik3+t6bxDvJ4GTDuwYmfAp5DyMJYsg==
+X-Received: by 2002:a17:90a:53:: with SMTP id 19mr19608028pjb.159.1631871808183;
+        Fri, 17 Sep 2021 02:43:28 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id b17sm5871260pgl.61.2021.09.17.02.43.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Sep 2021 02:43:27 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: deng.changcheng@zte.com.cn
+To:     m.chetan.kumar@intel.com
+Cc:     linuxwwan@intel.com, loic.poulain@linaro.org,
+        ryazanov.s.a@gmail.com, johannes@sipsolutions.net,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Changcheng Deng <deng.changcheng@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH linux-next] net: wwan: iosm: use kmemdup instead of kzalloc and memcpy
+Date:   Fri, 17 Sep 2021 09:42:41 +0000
+Message-Id: <20210917094241.232168-1-deng.changcheng@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Changcheng Deng <deng.changcheng@zte.com.cn>
 
-Wesley Cheng <wcheng@codeaurora.org> writes:
+Fixes coccicheck warning: WARNING opportunity for kmemdup
+in "./drivers/net/wwan/iosm/iosm_ipc_flash.c"
 
-> Hi,
->
-> On 9/16/2021 10:17 PM, Felipe Balbi wrote:
->> 
->> Hi,
->> 
->> Wesley Cheng <wcheng@codeaurora.org> writes:
->> 
->>> There is a race present where the DWC3 runtime resume runs in parallel
->>> to the UDC unbind sequence.  This will eventually lead to a possible
->>> scenario where we are enabling the run/stop bit, without a valid
->>> composition defined.
->>>
->>> Thread#1 (handling UDC unbind):
->>> usb_gadget_remove_driver()
->>> -->usb_gadget_disconnect()
->>>   -->dwc3_gadget_pullup(0)
->>> --> continue UDC unbind sequence
->>> -->Thread#2 is running in parallel here
->>>
->>> Thread#2 (handing next cable connect)
->>> __dwc3_set_mode()
->>>   -->pm_runtime_get_sync()
->>>     -->dwc3_gadget_resume()
->>>       -->dwc->gadget_driver is NOT NULL yet
->>>       -->dwc3_gadget_run_stop(1)
->>>       --> _dwc3gadget_start()
->>> ...
->>>
->>> Fix this by tracking the pullup disable routine, and avoiding resuming
->>> of the DWC3 gadget.  Once the UDC is re-binded, that will trigger the
->>> pullup enable routine, which would handle enabling the DWC3 gadget.
->>>
->>> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
->
-> Thanks, Felipe!
->
->> 
->> This looks okay to me, but needs to be tested by a few folks ;-)
->> 
->> Acked-by: Felipe Balbi <balbi@kernel.org>
->> 
-> Yes, would be good to get some functions using
-> usb_gadget_activate/deactivate().  It should be OK for those situations
-> as well, but just to make sure :)
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
+---
+ drivers/net/wwan/iosm/iosm_ipc_flash.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-IIRC, the UVC function relies on those. You could give it a shot ;-)
-
+diff --git a/drivers/net/wwan/iosm/iosm_ipc_flash.c b/drivers/net/wwan/iosm/iosm_ipc_flash.c
+index a43aafc70168..3d2f1ec6da00 100644
+--- a/drivers/net/wwan/iosm/iosm_ipc_flash.c
++++ b/drivers/net/wwan/iosm/iosm_ipc_flash.c
+@@ -430,11 +430,10 @@ int ipc_flash_boot_psi(struct iosm_devlink *ipc_devlink,
+ 	int ret;
+ 
+ 	dev_dbg(ipc_devlink->dev, "Boot transfer PSI");
+-	psi_code = kzalloc(fw->size, GFP_KERNEL);
++	psi_code = kmemdup(fw->data, fw->size, GFP_KERNEL);
+ 	if (!psi_code)
+ 		return -ENOMEM;
+ 
+-	memcpy(psi_code, fw->data, fw->size);
+ 	ret = ipc_imem_sys_devlink_write(ipc_devlink, psi_code, fw->size);
+ 	if (ret) {
+ 		dev_err(ipc_devlink->dev, "RPSI Image write failed");
 -- 
-balbi
+2.25.1
+
