@@ -2,74 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D766640EFAD
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 04:36:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3CDB40EFA9
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 04:36:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243783AbhIQCh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 22:37:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33930 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243260AbhIQCgS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 22:36:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0320261260;
-        Fri, 17 Sep 2021 02:34:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631846096;
-        bh=PaL2obuOxeOjy9Zxz/WgmfbDkT0BvVxEMnRbqCoV0bE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MZTBZZHllYtAbghhPcru2XJeDvwFTv7BGitSrP9AV7xFqB9xvEeG2jdccwA+h0Hyu
-         ZxlcQzVkWTEKIo5mJTV1J3XcjZXWyvpzJlK9vlhyU6sM1JLdgLS05R3lM0kXiBJuri
-         bqzZFvKCBJiBs7lZwlhxK84CZ8IXDnXhyDxwZe8+OZ+TX98KDh8JRNsj3IAyVS0DvW
-         CiPzHbFv95eqe4ZiVDawpEp/2kmj5EtkokPb04VdMofZz3uA0h149eQ963y4zlv1qj
-         MlNuVXNN4vj+qtZd8Azt2AIX9W+mFaCm8M/LRy6XnyzRZalx18+8Swj4qxcCVHSavJ
-         3GoBRWdd9qMSg==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Yu-Tung Chang <mtwget@gmail.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Sasha Levin <sashal@kernel.org>, a.zummo@towertech.it,
-        linux-rtc@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 5/5] rtc: rx8010: select REGMAP_I2C
-Date:   Thu, 16 Sep 2021 22:34:49 -0400
-Message-Id: <20210917023449.816713-5-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210917023449.816713-1-sashal@kernel.org>
-References: <20210917023449.816713-1-sashal@kernel.org>
+        id S243703AbhIQChN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 22:37:13 -0400
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:45888 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243233AbhIQCgP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 22:36:15 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=wuzongyong@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UodiQqo_1631846092;
+Received: from localhost(mailfrom:wuzongyong@linux.alibaba.com fp:SMTPD_---0UodiQqo_1631846092)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 17 Sep 2021 10:34:52 +0800
+Date:   Fri, 17 Sep 2021 10:34:51 +0800
+From:   Wu Zongyong <wuzongyong@linux.alibaba.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        wei.yang1@linux.alibaba.com
+Subject: Re: [PATCH v2 4/5] vdpa: add new vdpa attribute
+ VDPA_ATTR_DEV_F_VERSION_1
+Message-ID: <20210917023451.GA19669@L-PF27918B-1352.localdomain>
+Reply-To: Wu Zongyong <wuzongyong@linux.alibaba.com>
+References: <cover.1631101392.git.wuzongyong@linux.alibaba.com>
+ <cover.1631621507.git.wuzongyong@linux.alibaba.com>
+ <834528d24c839080215b2e077f100e9ed5073edc.1631621507.git.wuzongyong@linux.alibaba.com>
+ <20210914085711-mutt-send-email-mst@kernel.org>
+ <CACGkMEu3RUGpe74Vh-FAZD3MwOC3gqU0OEf8A1ULvq7GSMm6Jg@mail.gmail.com>
+ <20210915033756-mutt-send-email-mst@kernel.org>
+ <CACGkMEtN0Z=rgMhaWNO=6h-KXGdosBuOdqoWoND-=Tf+afyUYw@mail.gmail.com>
+ <20210915070805-mutt-send-email-mst@kernel.org>
+ <CACGkMEvqZqwRxjnBLpX+=MYbho0q8Hs7OZbsx4ATzhfwOkB73w@mail.gmail.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACGkMEvqZqwRxjnBLpX+=MYbho0q8Hs7OZbsx4ATzhfwOkB73w@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yu-Tung Chang <mtwget@gmail.com>
+On Thu, Sep 16, 2021 at 09:05:58AM +0800, Jason Wang wrote:
+> On Wed, Sep 15, 2021 at 7:09 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> >
+> > On Wed, Sep 15, 2021 at 04:06:57PM +0800, Jason Wang wrote:
+> > > On Wed, Sep 15, 2021 at 3:38 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> > > >
+> > > > On Wed, Sep 15, 2021 at 11:18:06AM +0800, Jason Wang wrote:
+> > > > > On Tue, Sep 14, 2021 at 8:58 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> > > > > >
+> > > > > > On Tue, Sep 14, 2021 at 08:24:51PM +0800, Wu Zongyong wrote:
+> > > > > > > This new attribute advertises whether the vdpa device is legacy or not.
+> > > > > > > Users can pick right virtqueue size if the vdpa device is legacy which
+> > > > > > > doesn't support to change virtqueue size.
+> > > > > > >
+> > > > > > > Signed-off-by: Wu Zongyong <wuzongyong@linux.alibaba.com>
+> > > > > >
+> > > > > > So if we are bothering with legacy,
+> > > > >
+> > > > > I think we'd better not. I guess the following may work:
+> > > > >
+> > > > > 1) disable the driver on BE host
+> > > > > 2) present VERSION_1 with ACCESS_PLATFORM in get_features()
+> > > > > 3) extend the management to advertise max_queue_size and
+> > > > > min_queue_size, for ENI they are the same so management layer knows it
+> > > > > needs to set the queue_size correctly during launching qemu
+> > > > >
+> > > > > Thoughts?
+> > > > >
+> > > > > Thanks
+> > > >
+> > > > There are other subtle differences such as header size without
+> > > > mergeable buffers for net.
+> > >
+> > > This can be solved by mandating the feature of a mergeable buffer?
+> > >
+> > > Thanks
+> >
+> > PXE and some dpdk versions are only some of the guests that
+> > disable mergeable buffers feature.
+> 
+> True, but consider
+> 
+> 1) the legacy stuffs requires changes in several software layers
+> 2) it is how virtio 1.0 works e.g device can fail the feature negotiation
+> 3) it is not supported since day 0
+> 4) management API can be extended to advertise the mandated features
 
-[ Upstream commit 0c45d3e24ef3d3d87c5e0077b8f38d1372af7176 ]
+So let me confirm what I should do in next revision:
+1) disable the driver on BE host like that:
 
-The rtc-rx8010 uses the I2C regmap but doesn't select it in Kconfig so
-depending on the configuration the build may fail. Fix it.
+   #ifdef __LITTE_ENDIAN
+   int eni_vdpa_probe()
+   {
+       ...
+   }
+   #else
+   int eni_vdpa_probe()
+   {
+       return -ENODEV;
+   }
+   #endif
 
-Signed-off-by: Yu-Tung Chang <mtwget@gmail.com>
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Link: https://lore.kernel.org/r/20210830052532.40356-1-mtwget@gmail.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/rtc/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+2) report F_VERSION_1 and F_ACCESS_PLATFORM in get_features()
+3) introduce a new cb get_vq_num_min in vdpa_config_ops
 
-diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
-index 9ae7ce3f5069..0ad8d84aeb33 100644
---- a/drivers/rtc/Kconfig
-+++ b/drivers/rtc/Kconfig
-@@ -625,6 +625,7 @@ config RTC_DRV_FM3130
- 
- config RTC_DRV_RX8010
- 	tristate "Epson RX8010SJ"
-+	select REGMAP_I2C
- 	help
- 	  If you say yes here you get support for the Epson RX8010SJ RTC
- 	  chip.
--- 
-2.30.2
+Does I miss something?
 
+> It looks affordable.
+> 
+> Thanks
+> 
+> >
+> > > >
+> > > >
+> > > > > > I think there are
+> > > > > > several things to do when building the interface
+> > > > > > - support transitional devices, that is allow userspace
+> > > > > >   to tell device it's in legacy mode
+> > > > > > - support reporting/setting supporting endian-ness
+> > > > > >
+> > > > > > > ---
+> > > > > > >  drivers/vdpa/vdpa.c          | 6 ++++++
+> > > > > > >  drivers/virtio/virtio_vdpa.c | 7 ++++++-
+> > > > > > >  include/uapi/linux/vdpa.h    | 1 +
+> > > > > > >  3 files changed, 13 insertions(+), 1 deletion(-)
+> > > > > > >
+> > > > > > > diff --git a/drivers/vdpa/vdpa.c b/drivers/vdpa/vdpa.c
+> > > > > > > index 1dc121a07a93..533d7f589eee 100644
+> > > > > > > --- a/drivers/vdpa/vdpa.c
+> > > > > > > +++ b/drivers/vdpa/vdpa.c
+> > > > > > > @@ -12,6 +12,7 @@
+> > > > > > >  #include <linux/slab.h>
+> > > > > > >  #include <linux/vdpa.h>
+> > > > > > >  #include <uapi/linux/vdpa.h>
+> > > > > > > +#include <uapi/linux/virtio_config.h>
+> > > > > > >  #include <net/genetlink.h>
+> > > > > > >  #include <linux/mod_devicetable.h>
+> > > > > > >
+> > > > > > > @@ -494,6 +495,7 @@ vdpa_dev_fill(struct vdpa_device *vdev, struct sk_buff *msg, u32 portid, u32 seq
+> > > > > > >       u16 max_vq_size;
+> > > > > > >       u32 device_id;
+> > > > > > >       u32 vendor_id;
+> > > > > > > +     u64 features;
+> > > > > > >       void *hdr;
+> > > > > > >       int err;
+> > > > > > >
+> > > > > > > @@ -508,6 +510,7 @@ vdpa_dev_fill(struct vdpa_device *vdev, struct sk_buff *msg, u32 portid, u32 seq
+> > > > > > >       device_id = vdev->config->get_device_id(vdev);
+> > > > > > >       vendor_id = vdev->config->get_vendor_id(vdev);
+> > > > > > >       max_vq_size = vdev->config->get_vq_num_max(vdev);
+> > > > > > > +     features = vdev->config->get_features(vdev);
+> > > > > > >
+> > > > > > >       err = -EMSGSIZE;
+> > > > > > >       if (nla_put_string(msg, VDPA_ATTR_DEV_NAME, dev_name(&vdev->dev)))
+> > > > > > > @@ -520,6 +523,9 @@ vdpa_dev_fill(struct vdpa_device *vdev, struct sk_buff *msg, u32 portid, u32 seq
+> > > > > > >               goto msg_err;
+> > > > > > >       if (nla_put_u16(msg, VDPA_ATTR_DEV_MAX_VQ_SIZE, max_vq_size))
+> > > > > > >               goto msg_err;
+> > > > > > > +     if (features & BIT_ULL(VIRTIO_F_VERSION_1) &&
+> > > > > > > +         nla_put_flag(msg, VDPA_ATTR_DEV_VERSION_1))
+> > > > > > > +             goto msg_err;
+> > > > > > >
+> > > > > > >       genlmsg_end(msg, hdr);
+> > > > > > >       return 0;
+> > > > > > > diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
+> > > > > > > index 72eaef2caeb1..1cba957c4cdc 100644
+> > > > > > > --- a/drivers/virtio/virtio_vdpa.c
+> > > > > > > +++ b/drivers/virtio/virtio_vdpa.c
+> > > > > > > @@ -7,6 +7,7 @@
+> > > > > > >   *
+> > > > > > >   */
+> > > > > > >
+> > > > > > > +#include "linux/virtio_config.h"
+> > > > > > >  #include <linux/init.h>
+> > > > > > >  #include <linux/module.h>
+> > > > > > >  #include <linux/device.h>
+> > > > > > > @@ -145,6 +146,7 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
+> > > > > > >       /* Assume split virtqueue, switch to packed if necessary */
+> > > > > > >       struct vdpa_vq_state state = {0};
+> > > > > > >       unsigned long flags;
+> > > > > > > +     bool may_reduce_num = false;
+> > > > > > >       u32 align, num;
+> > > > > > >       int err;
+> > > > > > >
+> > > > > > > @@ -169,10 +171,13 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
+> > > > > > >               goto error_new_virtqueue;
+> > > > > > >       }
+> > > > > > >
+> > > > > > > +     if (ops->get_features(vdpa) & BIT_ULL(VIRTIO_F_VERSION_1))
+> > > > > > > +             may_reduce_num = true;
+> > > > > > > +
+> > > > > > >       /* Create the vring */
+> > > > > > >       align = ops->get_vq_align(vdpa);
+> > > > > > >       vq = vring_create_virtqueue(index, num, align, vdev,
+> > > > > > > -                                 true, true, ctx,
+> > > > > > > +                                 true, may_reduce_num, ctx,
+> > > > > > >                                   virtio_vdpa_notify, callback, name);
+> > > > > > >       if (!vq) {
+> > > > > > >               err = -ENOMEM;
+> > > > > > > diff --git a/include/uapi/linux/vdpa.h b/include/uapi/linux/vdpa.h
+> > > > > > > index 66a41e4ec163..ce0b74276a5b 100644
+> > > > > > > --- a/include/uapi/linux/vdpa.h
+> > > > > > > +++ b/include/uapi/linux/vdpa.h
+> > > > > > > @@ -32,6 +32,7 @@ enum vdpa_attr {
+> > > > > > >       VDPA_ATTR_DEV_VENDOR_ID,                /* u32 */
+> > > > > > >       VDPA_ATTR_DEV_MAX_VQS,                  /* u32 */
+> > > > > > >       VDPA_ATTR_DEV_MAX_VQ_SIZE,              /* u16 */
+> > > > > > > +     VDPA_ATTR_DEV_VERSION_1,                /* flag */
+> > > > > > >
+> > > > > > >       /* new attributes must be added above here */
+> > > > > > >       VDPA_ATTR_MAX,
+> > > > > > > --
+> > > > > > > 2.31.1
+> > > > > >
+> > > >
+> >
