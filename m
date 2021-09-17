@@ -2,143 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F19FA40F89B
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 14:59:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69C7640F89C
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 14:59:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344389AbhIQNAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 09:00:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43630 "EHLO
+        id S234629AbhIQNAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 09:00:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344187AbhIQM7o (ORCPT
+        with ESMTP id S244946AbhIQNAd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 08:59:44 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87D31C0613E1;
-        Fri, 17 Sep 2021 05:58:11 -0700 (PDT)
-Date:   Fri, 17 Sep 2021 12:58:09 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1631883490;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YU7DhP0+gi95S4MQpl8y0dduxeX/SMa7+L3Ahh86INE=;
-        b=omisVUSZ+T1wBN3RAwyqXHpA1cgegbrYS+pEKiYp0VY14N8WrJIgDImWkQOXLmVSZxjul3
-        P/8gS4gdjXrqAlUjIk6WwDntvr56mGpGsZQuudT9nV5NazZzfRcDWc65E5iOOG6iGc1l/s
-        oHaFK2N+6Aq21S+qxywe6zuiO1wEw2ej7B9kTs4h5CjczOGb10qT4gKpRofyH97ochmJcO
-        Eyqo4Zzq/Y880p7EkfcHs466EVlFk8CfvI/1MqqeGcYwvFmTA5qJbZDelzECKic1g03DgE
-        MTQqPSlSpNnGPgOvAbWxPFb4NU6rJ+AHfjWP6cuAWpFKZzH4mEAPak4gf+lIGg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1631883490;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YU7DhP0+gi95S4MQpl8y0dduxeX/SMa7+L3Ahh86INE=;
-        b=yuGXEZzJvAgyvFZKnMLD/WyUMZ1DxoLNQx4EotC3OJSS4lSGQQiNDMNZzXj55VOqIb8coa
-        gIKhzb9N8PzmOnDQ==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: objtool/core] x86/xen: Make read_cr2() noinstr
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Juergen Gross <jgross@suse.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210624095148.500331616@infradead.org>
-References: <20210624095148.500331616@infradead.org>
+        Fri, 17 Sep 2021 09:00:33 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79652C0613DF
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 05:58:43 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id n27so13920171oij.0
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 05:58:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+0q9dMDiPL7l1Xvh/pCQyuBurf5KBV4txXHcebk3J7o=;
+        b=ohm9YZmHRMwJytXYWGsib848qv2LuXyfVNj9Rfnwh4O/AnsOZuhEpoKTBsRnAOSe27
+         rhuyFk06DuhpGHFvguVRPECEWimf0x1ipOriE1T6yIf+H2fOpigyuJFHWtQAapj06rFI
+         vBRWqICiQ9/HifxhnF1CAKmJbTo0Y+DddrHt36tVt1LOlreMPPXM5vwVBki0BoLSNkVz
+         GlxEWd04wa5ieQYw1IyJ0vUnYqcJNm8BZRF2PoPzeof0gkgJAd4qxR2Tp3mSc9IrHSvr
+         tYe66phQ6IA/lCym2y8btng9z4KycuKjxq8CmIg66NOksUmP5Jherl+in69QTI1d5UXp
+         YOjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+0q9dMDiPL7l1Xvh/pCQyuBurf5KBV4txXHcebk3J7o=;
+        b=4OQYq+KKp8a+L4x/9uiOq4afBllMque2l2xQLJagJbZ3sA7lZ3PuFSk9M+ZNAkcNdc
+         pw0rJ53vysS6LxmJTIH4+jodx2x0UMwUT35zH/QZKM6GEJrl5hiLqyhwwMXvYt1FRfZw
+         DbcM6KXYxsqH5mwOb7iFtDCNVc0519CahpmUw8VTOUXlVwFCdNjboSbEpJ6/4TdL6bw0
+         zyyqAKLwDc2RDAiGoS/V3SBsFgGqpjMYzU9TLe9V2s9nPS6PL/LTairydea4bKndONY7
+         udI+5kqvxXAo9nezck3HRlK9QkXfVvTSyNpYWiehlLtBWbEAB3tRss/iUDuBCoGmVOFe
+         P92g==
+X-Gm-Message-State: AOAM530Wta8AUT1xVaFAz0rauPPEpGnMamf9nT8BQXguhqi9weL3RI2a
+        9holzZMZB2C14cOIlWe4/6q8rTCfRFPsPu3CBk+D5g==
+X-Google-Smtp-Source: ABdhPJx6EkYfCT+AGBJzBynZrLClpn/6DUBafoMvuALv1yPubMRpPuqh+A8pH396wzHAoSzKRM7gxkBmSHJRKElQk+s=
+X-Received: by 2002:aca:1109:: with SMTP id 9mr3759856oir.109.1631883522559;
+ Fri, 17 Sep 2021 05:58:42 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <163188348940.25758.3277626795705340243.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20210917110756.1121272-1-elver@google.com>
+In-Reply-To: <20210917110756.1121272-1-elver@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Fri, 17 Sep 2021 14:58:30 +0200
+Message-ID: <CACT4Y+Zzxo19YH-tFOPHGJ25zP=pdjSSjzjQNZTG62bCjZgz3w@mail.gmail.com>
+Subject: Re: [PATCH 1/3] kfence: count unexpectedly skipped allocations
+To:     Marco Elver <elver@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Taras Madan <tarasmadan@google.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        kasan-dev@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the objtool/core branch of tip:
+On Fri, 17 Sept 2021 at 13:08, 'Marco Elver' via kasan-dev
+<kasan-dev@googlegroups.com> wrote:
+>
+> Maintain a counter to count allocations that are skipped due to being
+> incompatible (oversized, incompatible gfp flags) or no capacity.
+>
+> This is to compute the fraction of allocations that could not be
+> serviced by KFENCE, which we expect to be rare.
+>
+> Signed-off-by: Marco Elver <elver@google.com>
+> ---
+>  mm/kfence/core.c | 20 ++++++++++++++++----
+>  1 file changed, 16 insertions(+), 4 deletions(-)
+>
+> diff --git a/mm/kfence/core.c b/mm/kfence/core.c
+> index 7a97db8bc8e7..2755800f3e2a 100644
+> --- a/mm/kfence/core.c
+> +++ b/mm/kfence/core.c
+> @@ -112,6 +112,8 @@ enum kfence_counter_id {
+>         KFENCE_COUNTER_FREES,
+>         KFENCE_COUNTER_ZOMBIES,
+>         KFENCE_COUNTER_BUGS,
+> +       KFENCE_COUNTER_SKIP_INCOMPAT,
+> +       KFENCE_COUNTER_SKIP_CAPACITY,
+>         KFENCE_COUNTER_COUNT,
+>  };
+>  static atomic_long_t counters[KFENCE_COUNTER_COUNT];
+> @@ -121,6 +123,8 @@ static const char *const counter_names[] = {
+>         [KFENCE_COUNTER_FREES]          = "total frees",
+>         [KFENCE_COUNTER_ZOMBIES]        = "zombie allocations",
+>         [KFENCE_COUNTER_BUGS]           = "total bugs",
+> +       [KFENCE_COUNTER_SKIP_INCOMPAT]  = "skipped allocations (incompatible)",
+> +       [KFENCE_COUNTER_SKIP_CAPACITY]  = "skipped allocations (capacity)",
+>  };
+>  static_assert(ARRAY_SIZE(counter_names) == KFENCE_COUNTER_COUNT);
+>
+> @@ -272,7 +276,7 @@ static void *kfence_guarded_alloc(struct kmem_cache *cache, size_t size, gfp_t g
+>         }
+>         raw_spin_unlock_irqrestore(&kfence_freelist_lock, flags);
+>         if (!meta)
+> -               return NULL;
+> +               goto no_capacity;
+>
+>         if (unlikely(!raw_spin_trylock_irqsave(&meta->lock, flags))) {
+>                 /*
+> @@ -289,7 +293,7 @@ static void *kfence_guarded_alloc(struct kmem_cache *cache, size_t size, gfp_t g
+>                 list_add_tail(&meta->list, &kfence_freelist);
+>                 raw_spin_unlock_irqrestore(&kfence_freelist_lock, flags);
+>
+> -               return NULL;
+> +               goto no_capacity;
 
-Commit-ID:     0a53c9acf4da51a75392b0b543ce5eaae78a567f
-Gitweb:        https://git.kernel.org/tip/0a53c9acf4da51a75392b0b543ce5eaae78a567f
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Thu, 24 Jun 2021 11:41:13 +02:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Fri, 17 Sep 2021 13:11:50 +02:00
+Do we expect this case to be so rare that we don't care?
+Strictly speaking it's not no_capacity. So if I see large no_capacity
+numbers, the first question I will have is: is it really no_capacity,
+or some other case that we mixed together?
 
-x86/xen: Make read_cr2() noinstr
 
-vmlinux.o: warning: objtool: pv_ops[41]: native_read_cr2
-vmlinux.o: warning: objtool: pv_ops[41]: xen_read_cr2
-vmlinux.o: warning: objtool: pv_ops[41]: xen_read_cr2_direct
-vmlinux.o: warning: objtool: exc_double_fault()+0x15: call to pv_ops[41]() leaves .noinstr.text section
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Juergen Gross <jgross@suse.com>
-Link: https://lore.kernel.org/r/20210624095148.500331616@infradead.org
----
- arch/x86/include/asm/paravirt.h | 2 +-
- arch/x86/kernel/paravirt.c      | 7 ++++++-
- arch/x86/xen/xen-asm.S          | 2 ++
- 3 files changed, 9 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/include/asm/paravirt.h b/arch/x86/include/asm/paravirt.h
-index a13a9a3..8878065 100644
---- a/arch/x86/include/asm/paravirt.h
-+++ b/arch/x86/include/asm/paravirt.h
-@@ -133,7 +133,7 @@ static inline void write_cr0(unsigned long x)
- 	PVOP_VCALL1(cpu.write_cr0, x);
- }
- 
--static inline unsigned long read_cr2(void)
-+static __always_inline unsigned long read_cr2(void)
- {
- 	return PVOP_ALT_CALLEE0(unsigned long, mmu.read_cr2,
- 				"mov %%cr2, %%rax;",
-diff --git a/arch/x86/kernel/paravirt.c b/arch/x86/kernel/paravirt.c
-index 04cafc0..e351014 100644
---- a/arch/x86/kernel/paravirt.c
-+++ b/arch/x86/kernel/paravirt.c
-@@ -218,6 +218,11 @@ void paravirt_end_context_switch(struct task_struct *next)
- 	if (test_and_clear_ti_thread_flag(task_thread_info(next), TIF_LAZY_MMU_UPDATES))
- 		arch_enter_lazy_mmu_mode();
- }
-+
-+static noinstr unsigned long pv_native_read_cr2(void)
-+{
-+	return native_read_cr2();
-+}
- #endif
- 
- enum paravirt_lazy_mode paravirt_get_lazy_mode(void)
-@@ -298,7 +303,7 @@ struct paravirt_patch_template pv_ops = {
- 	.mmu.exit_mmap		= paravirt_nop,
- 
- #ifdef CONFIG_PARAVIRT_XXL
--	.mmu.read_cr2		= __PV_IS_CALLEE_SAVE(native_read_cr2),
-+	.mmu.read_cr2		= __PV_IS_CALLEE_SAVE(pv_native_read_cr2),
- 	.mmu.write_cr2		= native_write_cr2,
- 	.mmu.read_cr3		= __native_read_cr3,
- 	.mmu.write_cr3		= native_write_cr3,
-diff --git a/arch/x86/xen/xen-asm.S b/arch/x86/xen/xen-asm.S
-index 1e62644..aef4a1e 100644
---- a/arch/x86/xen/xen-asm.S
-+++ b/arch/x86/xen/xen-asm.S
-@@ -102,6 +102,7 @@ SYM_FUNC_START(check_events)
- 	ret
- SYM_FUNC_END(check_events)
- 
-+.pushsection .noinstr.text, "ax"
- SYM_FUNC_START(xen_read_cr2)
- 	FRAME_BEGIN
- 	_ASM_MOV PER_CPU_VAR(xen_vcpu), %_ASM_AX
-@@ -116,6 +117,7 @@ SYM_FUNC_START(xen_read_cr2_direct)
- 	FRAME_END
- 	ret
- SYM_FUNC_END(xen_read_cr2_direct);
-+.popsection
- 
- .macro xen_pv_trap name
- SYM_CODE_START(xen_\name)
+>         }
+>
+>         meta->addr = metadata_to_pageaddr(meta);
+> @@ -349,6 +353,10 @@ static void *kfence_guarded_alloc(struct kmem_cache *cache, size_t size, gfp_t g
+>         atomic_long_inc(&counters[KFENCE_COUNTER_ALLOCS]);
+>
+>         return addr;
+> +
+> +no_capacity:
+> +       atomic_long_inc(&counters[KFENCE_COUNTER_SKIP_CAPACITY]);
+> +       return NULL;
+>  }
+>
+>  static void kfence_guarded_free(void *addr, struct kfence_metadata *meta, bool zombie)
+> @@ -740,8 +748,10 @@ void *__kfence_alloc(struct kmem_cache *s, size_t size, gfp_t flags)
+>          * Perform size check before switching kfence_allocation_gate, so that
+>          * we don't disable KFENCE without making an allocation.
+>          */
+> -       if (size > PAGE_SIZE)
+> +       if (size > PAGE_SIZE) {
+> +               atomic_long_inc(&counters[KFENCE_COUNTER_SKIP_INCOMPAT]);
+>                 return NULL;
+> +       }
+>
+>         /*
+>          * Skip allocations from non-default zones, including DMA. We cannot
+> @@ -749,8 +759,10 @@ void *__kfence_alloc(struct kmem_cache *s, size_t size, gfp_t flags)
+>          * properties (e.g. reside in DMAable memory).
+>          */
+>         if ((flags & GFP_ZONEMASK) ||
+> -           (s->flags & (SLAB_CACHE_DMA | SLAB_CACHE_DMA32)))
+> +           (s->flags & (SLAB_CACHE_DMA | SLAB_CACHE_DMA32))) {
+> +               atomic_long_inc(&counters[KFENCE_COUNTER_SKIP_INCOMPAT]);
+>                 return NULL;
+> +       }
+>
+>         /*
+>          * allocation_gate only needs to become non-zero, so it doesn't make
+> --
+> 2.33.0.464.g1972c5931b-goog
+>
+> --
+> You received this message because you are subscribed to the Google Groups "kasan-dev" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/20210917110756.1121272-1-elver%40google.com.
