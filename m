@@ -2,76 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B16D640FEC0
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 19:41:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 320DC40FEC3
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 19:44:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238581AbhIQRmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 13:42:35 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:48676 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233099AbhIQRm1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 13:42:27 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 60A3021A8D;
-        Fri, 17 Sep 2021 17:41:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631900464; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yGdnRQChmmfug9TJwp/GqG9nQH+or3zg5tguY5oo+D4=;
-        b=cMHI6XJFM9M0KRsFulwCJSBaxKY+SGgZU1ShmWu4BBWJgJXWUslymcRIbNBgnGVyfc2xZF
-        I+qnQnhzLxFMwiYPjH9sGL51bd1pzspozV/uMy7gb8qemsd7KaVa5X8ON5xYzK50nwQLcg
-        jTtHsbjzv3skwLtVW2LjumGvwEwlHcY=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 44CF613B0C;
-        Fri, 17 Sep 2021 17:41:04 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id dVM0EDDTRGHBbwAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Fri, 17 Sep 2021 17:41:04 +0000
-Date:   Fri, 17 Sep 2021 19:41:03 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Yu Kuai <yukuai3@huawei.com>
-Cc:     tj@kernel.org, axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com
-Subject: Re: [RFC PATCH] blk-throttle: enable io throttle for root in cgroup
- v2
-Message-ID: <20210917174103.GC13346@blackbody.suse.cz>
-References: <20210909140815.2600858-1-yukuai3@huawei.com>
+        id S241020AbhIQRps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 13:45:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51844 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233991AbhIQRpo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 13:45:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DF7DB61212;
+        Fri, 17 Sep 2021 17:44:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631900662;
+        bh=QtoUP5Bx9ASIB8R9v5KDvqYWULYrTkUhG7TY5oFBo3Q=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=JzuZQ3CL5uGdHq/lvfqB/1WD/GbuMtgzjT75bBY1hQKH+YrLB8pkYC6gAIelOcTdp
+         mA6sxRki/ilzGOdyYA8R4q5vnG3fjf7ftG51FDgGqwgmnieIg3/Sgta8bT8q+AnOBJ
+         bRLt1KzgyCOGImMYPYaVgS4baNGN2v1xkxVXPXUfS25AK9dXxADrESzJa/6hxRPJGZ
+         166HA4UA2R1NZYaFh2Y3RBrtgNY9BKCHOJMnD9TbWt4eycpJptAfw8bE/oYKEcryIb
+         u9Uux3LfRFQZF6ZdPx9PrxfHcKcBd3L0yPb3AfqRtB1NNcGHgGiK6ezrtkn4jaZysk
+         gN+byKqsUuOdQ==
+Date:   Fri, 17 Sep 2021 10:44:20 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Cc:     pshelar@ovn.org, davem@davemloft.net, netdev@vger.kernel.org,
+        dev@openvswitch.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] openvswitch: Fix condition check in
+ do_execute_actions() by using nla_ok()
+Message-ID: <20210917104420.2d76b847@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1631866034-3869133-1-git-send-email-jiasheng@iscas.ac.cn>
+References: <1631866034-3869133-1-git-send-email-jiasheng@iscas.ac.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210909140815.2600858-1-yukuai3@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Yu.
+On Fri, 17 Sep 2021 08:07:14 +0000 Jiasheng Jiang wrote:
+> Just using 'rem > 0' might be unsafe, so it's better
+> to use the nla_ok() instead.
+> Because we can see from the nla_next() that
+> '*remaining' might be smaller than 'totlen'. And nla_ok()
+> will avoid it happening.
+> For example, ovs_dp_process_packet() -> ovs_execute_actions()
+> -> do_execute_actions(), and attr comes from OVS_CB(skb)->input_vport,  
+> which restores the received packet from the user space.
 
-On Thu, Sep 09, 2021 at 10:08:15PM +0800, Yu Kuai <yukuai3@huawei.com> wrote:
-> I'm not sure why this feature is disabled in the first place, is
-> there any problem or design constraint?
+Right but that's the call trace for where the actions are executed.
+Not where they are constructed.
 
-The idea for v2 is that in the root cgroup remain only kernel threads that
-provide "global" services and any user workload that should be
-constrained is put into non-root cgroups. Additionally, if kernel
-threads carry out work associated with a cgroup they can charge it to
-the respective cgroup.
+As far as I can tell the action list is constructed in the kernel 
+by __ovs_nla_copy_actions(). Since kernel does the formatting, it
+can trust the contents are correct. We normally require nla_ok()
+when handling input directly from user space, which is not the 
+case in do_execute_actions().
 
-[snip]
-> We want to limit the overall iops/bps of the device in cgroup v2,
+And since kernel is sure that the input is correct the extra checking
+just adds to the datapath overhead.
 
-Cui bono? (I mean what is the reason for throttling on the global level
-when there's no other entity utiliting the residual?
-<joke>Your drives are too fast?</joke>)
+Unless you can point out how exactly the input could be invalid 
+at this point I'd suggest we leave this code as is. Perhaps add
+a comment explaining why input is trusted.
 
-Michal
+Thanks!
+
+> Fixes: ccb1352e76cff0524e7ccb2074826a092dd13016
+> ('net: Add Open vSwitch kernel components.')
+
+FWIW the correct format would have been:
+
+Fixes: ccb1352e76cf ("net: Add Open vSwitch kernel components.")
+
+> Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
