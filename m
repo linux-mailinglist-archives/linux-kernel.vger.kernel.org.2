@@ -2,70 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCC3D40FFF8
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 21:50:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7B2640FFFC
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 21:50:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344595AbhIQTvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 15:51:18 -0400
-Received: from mail-oi1-f176.google.com ([209.85.167.176]:35505 "EHLO
-        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234785AbhIQTuV (ORCPT
+        id S1344794AbhIQTvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 15:51:33 -0400
+Received: from mail-ot1-f49.google.com ([209.85.210.49]:41881 "EHLO
+        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242890AbhIQTu3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 15:50:21 -0400
-Received: by mail-oi1-f176.google.com with SMTP id r26so15482064oij.2;
-        Fri, 17 Sep 2021 12:48:59 -0700 (PDT)
+        Fri, 17 Sep 2021 15:50:29 -0400
+Received: by mail-ot1-f49.google.com with SMTP id 97-20020a9d006a000000b00545420bff9eso7428659ota.8;
+        Fri, 17 Sep 2021 12:49:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=k73+20oMzuAw5PJdzXrVZQ8DNLKi5Ygwc7hTogsnp9k=;
-        b=RerxTSYNPhdbhFiYzE3HsnpiT+Mfig/YiWi8d0qEg/pKvj3mTZrkmLjipCVx3NLYNo
-         tUgnlgWBemp+2o8YG6uGcaClElyahN9VdQ71eNJr0v+0RTpfkru1jVNBSE1IZl8zQ8jN
-         fefj3wFRE/qzJadPveHz1II9mr1iMicaXeQeUxtW3MJaX9cIY4slsAL5Me8wxPYHnvkS
-         xksulL1oQ381Vek3X8NyuUOvYJvifRBWppThu7a+EEo5+qG0vHZjwh2glVwUSD+Uwd2P
-         2enmauiCC3wmgzU/jwmGrb6bhVgJuzAjan4W5uLAg/vaYH3UddjslQV8LLHKB02a+ZXa
-         r2CA==
-X-Gm-Message-State: AOAM530kVrGCjyHdjFA9s48F/cNJlVb8i4qq54aSau1SKTKjhye0/qBP
-        1xFZ+mKTK64xDv4gZQnT673WWUhGYQ==
-X-Google-Smtp-Source: ABdhPJyHkJprsjX0KNy6IqPp7iO8QrFdQymObPv0zprHFsIFbUJLu1hwZxjDZRpoBAGKg4nANmhoNQ==
-X-Received: by 2002:aca:3114:: with SMTP id x20mr1734704oix.174.1631908138523;
-        Fri, 17 Sep 2021 12:48:58 -0700 (PDT)
+        bh=KHJy0wyI5/PftepKbXIy/ND2txN1bzjwZ//2NkNF8as=;
+        b=Urb2zU+laX5MsL52B+5fybb1NCSnOQxN0zjVmUr0+4LtyVdIk15IA+Q7Fnz19ZHa8R
+         KcY1n8pMEP0Gu96QCq9czjpH3CDysMu+CLMCNR4EBsWTBbE4F49UCkB19VawUDcdcZ8n
+         /XI/+i7oYGNOS8n+JpsK8onkkanD1iIa5sFFECIufefpnHMGu76QBewQXdPiL7EC39/w
+         vIgJCATr8ZkrjqnZDScnK6WYswrytOm8Q0QrhHYx1h8tH8pmUcJ30CYhvfx3pdOwY6oB
+         2OkqqZgP9DrOG8GUsY7l7uQrLTLyq8lTKWsdBzw0U/gVB1jy8ZUGnHB5h9fvIgB+63li
+         VJsA==
+X-Gm-Message-State: AOAM533fK2yt0oriFm6rEQSIueJRjruqW6Z8OCYVOdXfC1rghz+n0kS5
+        N9EJ3vhgMqRiEuuj/UFOXw==
+X-Google-Smtp-Source: ABdhPJyDp8E5mLGTTfIiPrq9hWgLnaB2yZfLw8qh2u/XbNMZt+UkKdVsDZutihOWDACtese2v7ySQA==
+X-Received: by 2002:a9d:36d:: with SMTP id 100mr10941757otv.237.1631908146826;
+        Fri, 17 Sep 2021 12:49:06 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id o8sm1642429oiw.55.2021.09.17.12.48.56
+        by smtp.gmail.com with ESMTPSA id i1sm1759831oiy.25.2021.09.17.12.49.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 12:48:57 -0700 (PDT)
-Received: (nullmailer pid 2025331 invoked by uid 1000);
+        Fri, 17 Sep 2021 12:49:05 -0700 (PDT)
+Received: (nullmailer pid 2025333 invoked by uid 1000);
         Fri, 17 Sep 2021 19:48:54 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Cc:     perex@perex.cz, tiwai@suse.com, plai@codeaurora.org,
-        robh+dt@kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, swboyd@chromium.org,
-        broonie@kernel.org, lgirdwood@gmail.com, judyhsiao@chromium.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        bgoswami@codeaurora.org, agross@kernel.org,
-        srinivas.kandagatla@linaro.org, bjorn.andersson@linaro.org,
-        rohitkr@codeaurora.org
-In-Reply-To: <1631872892-1821-2-git-send-email-srivasam@codeaurora.org>
-References: <1631872892-1821-1-git-send-email-srivasam@codeaurora.org> <1631872892-1821-2-git-send-email-srivasam@codeaurora.org>
-Subject: Re: [PATCH v3 1/2] ASoC: google: dt-bindings: Add sc7280-herobrine machine bindings
+To:     Satya Priya <skakit@codeaurora.org>
+Cc:     swboyd@chromium.org, Andy Gross <agross@kernel.org>,
+        Das Srinagesh <gurus@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-kernel@vger.kernel.org, kgunda@codeaurora.org,
+        devicetree@vger.kernel.org, mka@chromium.org,
+        David Collins <collinsd@codeaurora.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-arm-msm@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
+In-Reply-To: <1631875538-22473-2-git-send-email-skakit@codeaurora.org>
+References: <1631875538-22473-1-git-send-email-skakit@codeaurora.org> <1631875538-22473-2-git-send-email-skakit@codeaurora.org>
+Subject: Re: [PATCH 1/4] dt-bindings: mfd: pm8008: Add pm8008 regulator node
 Date:   Fri, 17 Sep 2021 14:48:54 -0500
-Message-Id: <1631908134.321286.2025330.nullmailer@robh.at.kernel.org>
+Message-Id: <1631908134.331615.2025332.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Sep 2021 15:31:31 +0530, Srinivasa Rao Mandadapu wrote:
-> Add devicetree bindings documentation file for sc7280 sound card
-> registration.
+On Fri, 17 Sep 2021 16:15:35 +0530, Satya Priya wrote:
+> Add pm8008-regulator node and example.
 > 
-> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+> Signed-off-by: Satya Priya <skakit@codeaurora.org>
 > ---
-> This patch depends on the dt-bindings header patch
->   -- https://patchwork.kernel.org/project/alsa-devel/list/?series=543829
->  .../bindings/sound/google,sc7280-herobrine.yaml    | 170 +++++++++++++++++++++
->  1 file changed, 170 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
+>  .../devicetree/bindings/mfd/qcom,pm8008.yaml       | 24 ++++++++++++++++++++++
+>  1 file changed, 24 insertions(+)
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
@@ -74,15 +73,17 @@ on your patch (DT_CHECKER_FLAGS is new in v5.13):
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-Error: Documentation/devicetree/bindings/sound/google,sc7280-herobrine.example.dts:46.24-25 syntax error
-FATAL ERROR: Unable to parse input tree
-make[1]: *** [scripts/Makefile.lib:385: Documentation/devicetree/bindings/sound/google,sc7280-herobrine.example.dt.yaml] Error 1
+Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/regulator/qcom,pm8008-regulator.yaml'
+xargs: dt-doc-validate: exited with status 255; aborting
+make[1]: *** Deleting file 'Documentation/devicetree/bindings/mfd/qcom,pm8008.example.dt.yaml'
+Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/regulator/qcom,pm8008-regulator.yaml'
+make[1]: *** [scripts/Makefile.lib:385: Documentation/devicetree/bindings/mfd/qcom,pm8008.example.dt.yaml] Error 255
 make[1]: *** Waiting for unfinished jobs....
 make: *** [Makefile:1441: dt_binding_check] Error 2
 
 doc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/patch/1529313
+See https://patchwork.ozlabs.org/patch/1529335
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
