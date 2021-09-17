@@ -2,117 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4AD940F767
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 14:22:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2607C40F773
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 14:25:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243961AbhIQMX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 08:23:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54692 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243710AbhIQMXu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 08:23:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B8DD611C8;
-        Fri, 17 Sep 2021 12:22:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631881348;
-        bh=cpgmyBFI6GAlRzryA585L1WdlWTMOwIRy1Zsb+LlcJQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=uF9HGSzP0ij/EqnDpfpj2Ph5cPa3WB8SOx+9ZJSr9YY8X7qeeQ91GK3kwxHpkMQFO
-         VkxsDF2joaCqCxGBmpMmqL03GXLt0q70RvEasQRfxYcVWlIKkkaY4m2zKSmwNl6ltv
-         iZhEWKjIb8OllzycYqnRoMB/ZgEKxvxjNADkxW740+wvWD33k5j0pnrJEI/OKDyHmS
-         S7hjXbWuLqWG5f0bL8krDIAb5vWrt4l3LQnbF23DjUYNvAbquWU9I/JPphfuUoUak5
-         6DbgPfEf6z+ApFlbNRDlw/NwYJSawl5duDquzYhaDcFw7k0Rtk9JYAGby4XFpzM0UR
-         pp3MGjGrHH8xA==
-From:   SeongJae Park <sj@kernel.org>
-To:     corbet@lwn.net
-Cc:     SeongJae Park <sj@kernel.org>, roger.pau@citrix.com,
-        jgross@suse.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] Documentation: Update SeongJae's email address
-Date:   Fri, 17 Sep 2021 12:22:22 +0000
-Message-Id: <20210917122222.3109-1-sj@kernel.org>
-X-Mailer: git-send-email 2.17.1
+        id S243679AbhIQM0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 08:26:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235941AbhIQM0u (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 08:26:50 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19EE5C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 05:25:24 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id d21so14853523wra.12
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 05:25:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=B4xbw9gEcqky1hkIaKGJsZCnwDYURbkYMy8wOSBcFZM=;
+        b=DBbT+Z73wXFx7Ix5ddCqc9nQajcrsU49nmmjtksdzvj4VIUhu9a12X6mxydVGcyr31
+         hkbTnOZYoHZBblsPGhC4cqiN5vTy2EZ/ap7N566BgNdEzkAG+xpa6VwhSk6rstGS1sPD
+         4IZWgIghyDL60XFxmzUrIJNR7pW0cc0ak4VI0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=B4xbw9gEcqky1hkIaKGJsZCnwDYURbkYMy8wOSBcFZM=;
+        b=kuGFeWDkkLcCRP7BDNiYrBXJo1bD0eD+m+D2R7m3p3OjDWE7WjTBkO6VjUVJJ/swkS
+         WmfjLiOZoxMy98p7wNvIgACPwUNA7WSmC4cOPPubZVT66TXCDMFXYmlgnX7XeUCDgZFo
+         H0HPcAQqw0QR1wlU5G6TiwoTaDOXVe1O+l/QnzFdeiUxqWseSIQzyW5fI+jyPkKNu+2B
+         5Hc2L0tsmIErPxu4SXn5J0uMES110fC4CaqfZh0PG8ltNw12cVgbymY9x1H5cM1JvZlJ
+         7rUrqdpV+iECRathunqkuCmzg/yADpHXva4ll9d/B9RbpNtLdPkp/7OwQE3hCDWyjqyf
+         9U6g==
+X-Gm-Message-State: AOAM530/75p9tSlHKg+SEDV/Z4jDciMq83Rz3b12KSEq+2uyuXpIbnYa
+        qOSmIHMgMhq02N+ctKy1kOv0MQ==
+X-Google-Smtp-Source: ABdhPJyMTcWyIQ8nzIGUt+EPkzWzvWClhn2Q1W8KmqNiWLuXSRA7doL/03EbIbn3t2AAXB96e7Moyg==
+X-Received: by 2002:adf:f084:: with SMTP id n4mr12033899wro.362.1631881522631;
+        Fri, 17 Sep 2021 05:25:22 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id m18sm6529557wrn.85.2021.09.17.05.25.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Sep 2021 05:25:21 -0700 (PDT)
+Date:   Fri, 17 Sep 2021 14:25:19 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Oded Gabbay <ogabbay@kernel.org>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Yossi Leybovich <sleybo@amazon.com>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Dave Airlie <airlied@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>
+Subject: Re: [PATCH v6 0/2] Add p2p via dmabuf to habanalabs
+Message-ID: <YUSJL9ml1MljOwzB@phenom.ffwll.local>
+Mail-Followup-To: Oded Gabbay <ogabbay@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Yossi Leybovich <sleybo@amazon.com>,
+        Maling list - DRI developers <dri-devel@lists.freedesktop.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Doug Ledford <dledford@redhat.com>, Dave Airlie <airlied@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Leon Romanovsky <leonro@nvidia.com>, Christoph Hellwig <hch@lst.de>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" <linaro-mm-sig@lists.linaro.org>
+References: <20210912165309.98695-1-ogabbay@kernel.org>
+ <YUCvNzpyC091KeaJ@phenom.ffwll.local>
+ <20210914161218.GF3544071@ziepe.ca>
+ <CAFCwf13322953Txr3Afa_MomuD148vnfpEog0xzW7FPWH9=6fg@mail.gmail.com>
+ <YUM5JoMMK7gceuKZ@phenom.ffwll.local>
+ <CAFCwf10MnK5KPBaeWar4tALGz9n8+-B8toXnqurcebZ8Y_Jjpw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFCwf10MnK5KPBaeWar4tALGz9n8+-B8toXnqurcebZ8Y_Jjpw@mail.gmail.com>
+X-Operating-System: Linux phenom 5.10.0-8-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit updates SeongJae's email addresses in documents to his
-preferred one.
+On Thu, Sep 16, 2021 at 03:44:25PM +0300, Oded Gabbay wrote:
+> On Thu, Sep 16, 2021 at 3:31 PM Daniel Vetter <daniel@ffwll.ch> wrote:
+> >
+> > On Wed, Sep 15, 2021 at 10:45:36AM +0300, Oded Gabbay wrote:
+> > > On Tue, Sep 14, 2021 at 7:12 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > > >
+> > > > On Tue, Sep 14, 2021 at 04:18:31PM +0200, Daniel Vetter wrote:
+> > > > > On Sun, Sep 12, 2021 at 07:53:07PM +0300, Oded Gabbay wrote:
+> > > > > > Hi,
+> > > > > > Re-sending this patch-set following the release of our user-space TPC
+> > > > > > compiler and runtime library.
+> > > > > >
+> > > > > > I would appreciate a review on this.
+> > > > >
+> > > > > I think the big open we have is the entire revoke discussions. Having the
+> > > > > option to let dma-buf hang around which map to random local memory ranges,
+> > > > > without clear ownership link and a way to kill it sounds bad to me.
+> > > > >
+> > > > > I think there's a few options:
+> > > > > - We require revoke support. But I've heard rdma really doesn't like that,
+> > > > >   I guess because taking out an MR while holding the dma_resv_lock would
+> > > > >   be an inversion, so can't be done. Jason, can you recap what exactly the
+> > > > >   hold-up was again that makes this a no-go?
+> > > >
+> > > > RDMA HW can't do revoke.
+> >
+> > Like why? I'm assuming when the final open handle or whatever for that MR
+> > is closed, you do clean up everything? Or does that MR still stick around
+> > forever too?
+> >
+> > > > So we have to exclude almost all the HW and several interesting use
+> > > > cases to enable a revoke operation.
+> > > >
+> > > > >   - For non-revokable things like these dma-buf we'd keep a drm_master
+> > > > >     reference around. This would prevent the next open to acquire
+> > > > >     ownership rights, which at least prevents all the nasty potential
+> > > > >     problems.
+> > > >
+> > > > This is what I generally would expect, the DMABUF FD and its DMA
+> > > > memory just floats about until the unrevokable user releases it, which
+> > > > happens when the FD that is driving the import eventually gets closed.
+> > > This is exactly what we are doing in the driver. We make sure
+> > > everything is valid until the unrevokable user releases it and that
+> > > happens only when the dmabuf fd gets closed.
+> > > And the user can't close it's fd of the device until he performs the
+> > > above, so there is no leakage between users.
+> >
+> > Maybe I got the device security model all wrong, but I thought Guadi is
+> > single user, and the only thing it protects is the system against the
+> > Gaudi device trhough iommu/device gart. So roughly the following can
+> > happen:
+> >
+> > 1. User A opens gaudi device, sets up dma-buf export
+> >
+> > 2. User A registers that with RDMA, or anything else that doesn't support
+> > revoke.
+> >
+> > 3. User A closes gaudi device
+> This can not happen without User A closing the FD of the dma-buf it exported.
+> We prevent User A from closing the device because when it exported the
+> dma-buf, the driver's code took a refcnt of the user's private
+> structure. You can see that in export_dmabuf_common() in the 2nd
+> patch. There is a call there to hl_ctx_get.
+> So even if User A calls close(device_fd), the driver won't let any
+> other user open the device until User A closes the fd of the dma-buf
+> object.
+> 
+> Moreover, once User A will close the dma-buf fd and the device is
+> released, the driver will scrub the device memory (this is optional
+> for systems who care about security).
+> 
+> And AFAIK, User A can't close the dma-buf fd once it registered it
+> with RDMA, without doing unregister.
+> This can be seen in ib_umem_dmabuf_get() which calls dma_buf_get()
+> which does fget(fd)
 
-Signed-off-by: SeongJae Park <sj@kernel.org>
----
- Documentation/ABI/testing/sysfs-driver-xen-blkback   | 4 ++--
- Documentation/ABI/testing/sysfs-driver-xen-blkfront  | 2 +-
- Documentation/translations/ko_KR/memory-barriers.txt | 8 ++++----
- 3 files changed, 7 insertions(+), 7 deletions(-)
+Yeah that's essentially what I was looking for. This is defacto
+hand-rolling the drm_master owner tracking stuff. As long as we have
+something like this in place it should be fine I think.
+-Daniel
 
-diff --git a/Documentation/ABI/testing/sysfs-driver-xen-blkback b/Documentation/ABI/testing/sysfs-driver-xen-blkback
-index ac2947b98950..a74dfe52dd76 100644
---- a/Documentation/ABI/testing/sysfs-driver-xen-blkback
-+++ b/Documentation/ABI/testing/sysfs-driver-xen-blkback
-@@ -29,7 +29,7 @@ Description:
- What:           /sys/module/xen_blkback/parameters/buffer_squeeze_duration_ms
- Date:           December 2019
- KernelVersion:  5.6
--Contact:        SeongJae Park <sjpark@amazon.de>
-+Contact:        SeongJae Park <sj@kernel.org>
- Description:
-                 When memory pressure is reported to blkback this option
-                 controls the duration in milliseconds that blkback will not
-@@ -39,7 +39,7 @@ Description:
- What:           /sys/module/xen_blkback/parameters/feature_persistent
- Date:           September 2020
- KernelVersion:  5.10
--Contact:        SeongJae Park <sjpark@amazon.de>
-+Contact:        SeongJae Park <sj@kernel.org>
- Description:
-                 Whether to enable the persistent grants feature or not.  Note
-                 that this option only takes effect on newly created backends.
-diff --git a/Documentation/ABI/testing/sysfs-driver-xen-blkfront b/Documentation/ABI/testing/sysfs-driver-xen-blkfront
-index 28008905615f..61fd173fabfe 100644
---- a/Documentation/ABI/testing/sysfs-driver-xen-blkfront
-+++ b/Documentation/ABI/testing/sysfs-driver-xen-blkfront
-@@ -12,7 +12,7 @@ Description:
- What:           /sys/module/xen_blkfront/parameters/feature_persistent
- Date:           September 2020
- KernelVersion:  5.10
--Contact:        SeongJae Park <sjpark@amazon.de>
-+Contact:        SeongJae Park <sj@kernel.org>
- Description:
-                 Whether to enable the persistent grants feature or not.  Note
-                 that this option only takes effect on newly created frontends.
-diff --git a/Documentation/translations/ko_KR/memory-barriers.txt b/Documentation/translations/ko_KR/memory-barriers.txt
-index 64d932f5dc77..75aa5531cc7d 100644
---- a/Documentation/translations/ko_KR/memory-barriers.txt
-+++ b/Documentation/translations/ko_KR/memory-barriers.txt
-@@ -1,6 +1,6 @@
- NOTE:
- This is a version of Documentation/memory-barriers.txt translated into Korean.
--This document is maintained by SeongJae Park <sj38.park@gmail.com>.
-+This document is maintained by SeongJae Park <sj@kernel.org>.
- If you find any difference between this document and the original file or
- a problem with the translation, please contact the maintainer of this file.
- 
-@@ -10,13 +10,13 @@ a fork.  So if you have any comments or updates for this file please
- update the original English file first.  The English version is
- definitive, and readers should look there if they have any doubt.
- 
--===================================
-+=================================
- 이 문서는
- Documentation/memory-barriers.txt
- 의 한글 번역입니다.
- 
--역자： 박성재 <sj38.park@gmail.com>
--===================================
-+역자： 박성재 <sj@kernel.org>
-+=================================
- 
- 
- 			 =========================
+> > 4. User B opens gaudi device, assumes that it has full control over the
+> > device and uploads some secrets, which happen to end up in the dma-buf
+> > region user A set up
+> >
+> > 5. User B extracts secrets.
+> >
+> > > > I still don't think any of the complexity is needed, pinnable memory
+> > > > is a thing in Linux, just account for it in mlocked and that is
+> > > > enough.
+> >
+> > It's not mlocked memory, it's mlocked memory and I can exfiltrate it.
+> > Mlock is fine, exfiltration not so much. It's mlock, but a global pool and
+> > if you didn't munlock then the next mlock from a completely different user
+> > will alias with your stuff.
+> >
+> > Or is there something that prevents that? Oded at least explain that gaudi
+> > works like a gpu from 20 years ago, single user, no security at all within
+> > the device.
+> > -Daniel
+> > --
+> > Daniel Vetter
+> > Software Engineer, Intel Corporation
+> > http://blog.ffwll.ch
+
 -- 
-2.17.1
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
