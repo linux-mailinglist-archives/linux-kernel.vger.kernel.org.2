@@ -2,86 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 019B740FDE0
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 18:28:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5A0940FDE5
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 18:29:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243713AbhIQQaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 12:30:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56652 "EHLO mail.kernel.org"
+        id S243891AbhIQQa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 12:30:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56880 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229925AbhIQQaI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 12:30:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D155160555;
-        Fri, 17 Sep 2021 16:28:45 +0000 (UTC)
+        id S243762AbhIQQa5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 12:30:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 9126560F6D;
+        Fri, 17 Sep 2021 16:29:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631896126;
-        bh=RRE6NMda31/dIqqeP4g2Zg1MqUaKnLsM3Ro/I9LVt3w=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=IBbNMhquNK9liwy6lIWmdPIXzOZVsmIh3XmUdeu0OCTs9jMQRFZj4wNKUIerdiVKo
-         mBMDO993ITGHINd9RLo1DY66iD3VOGkNh0ua2l7uUucIPa9VgX2bJ3+P0Wr0K7/+HG
-         og0S6Mz5MOJn7XReD5EeUMdc7TA2gihk25XztwGh86GImWJqlCB0TDSX67KV04NaMv
-         p0osTnLc/lTsOfpedLQ+EjMmJ/gAqIX/e1CLxFaP52jp3kxgAwF0cddgUxqB22Gld3
-         JCAGcSeUs7Bd1NpgzoHU2PijOf49moRGDvKEylzevEZ2zsFtcDoaQ8cwiS5GKTUyN4
-         Jjblai00CbORg==
-Date:   Fri, 17 Sep 2021 11:28:44 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Jan Beulich <jbeulich@suse.com>
-Cc:     "bhelgaas@google.com" <bhelgaas@google.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        "hch@lst.de" <hch@lst.de>, Konrad Wilk <konrad.wilk@oracle.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>
-Subject: Re: [PATCH v2 2/4] PCI: only build xen-pcifront in PV-enabled
- environments
-Message-ID: <20210917162844.GA1722208@bjorn-Precision-5520>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3a7f6c9b-215d-b593-8056-b5fe605dafd7@suse.com>
+        s=k20201202; t=1631896175;
+        bh=97AS5qCl19Xfhr7IzJyjk9B54i+Z27BCRk3wXDXygdE=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=Zdrr66bn6yZapNHWZ4rabmj3U+9pIL9i3umKSAatdXTqn+pgSwN4D27oF3XrdruZu
+         vo95R3l+NMsTLF8hrk1YbMhwiDZUKWnNNMaILbHZ9qTMnvhbtAhaBjffGAyrviRg0E
+         mTWHx4Uy85hqfCTFQk/TtYJ2kt9CiYyjh1l1LM2cd7hFZ9aH+ayTIsDmJBXj4jRcR/
+         QhxzN76qv8ejEg1cvZEJrGjDaxqJuvwB8Xsm+qX4qeIyPT43tKSx0ZUOw74QsGhBRb
+         VQo42WrS3GCIebA3MFMIHqDghljpLUj1GxA1tbbBVIKDffAAi83YKVtoc0VMatafCr
+         u2oBiK6GGMFmQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8997F60726;
+        Fri, 17 Sep 2021 16:29:35 +0000 (UTC)
+Subject: Re: [GIT PULL] arm64 fixes for 5.15-rc2
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <YUS33qojC6HpxtFw@arm.com>
+References: <YUS33qojC6HpxtFw@arm.com>
+X-PR-Tracked-List-Id: <linux-arm-kernel.lists.infradead.org>
+X-PR-Tracked-Message-Id: <YUS33qojC6HpxtFw@arm.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux tags/arm64-fixes
+X-PR-Tracked-Commit-Id: 9fcb2e93f41c07a400885325e7dbdfceba6efaec
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 7f2cd14129f0272a3ae983625a1adf2545bdad52
+Message-Id: <163189617555.30150.10230862288673763319.pr-tracker-bot@kernel.org>
+Date:   Fri, 17 Sep 2021 16:29:35 +0000
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s/only/Only/ in subject
+The pull request you sent on Fri, 17 Sep 2021 16:44:30 +0100:
 
-On Fri, Sep 17, 2021 at 12:48:03PM +0200, Jan Beulich wrote:
-> The driver's module init function, pcifront_init(), invokes
-> xen_pv_domain() first thing. That construct produces constant "false"
-> when !CONFIG_XEN_PV. Hence there's no point building the driver in
-> non-PV configurations.
+> git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux tags/arm64-fixes
 
-Thanks for these bread crumbs.  xen_domain_type is set to
-XEN_PV_DOMAIN only by xen_start_kernel() in enlighten_pv.c, which is
-only built when CONFIG_XEN_PV=y, so even I can verify this :)
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/7f2cd14129f0272a3ae983625a1adf2545bdad52
 
-> Drop the (now implicit and generally wrong) X86 dependency: At present,
-> XEN_PV con only be set when X86 is also enabled. In general an
-> architecture supporting Xen PV (and PCI) would want to have this driver
-> built.
+Thank you!
 
-s/con only/can only/
-
-> Signed-off-by: Jan Beulich <jbeulich@suse.com>
-> Reviewed-by: Stefano Stabellini <sstabellini@kernel.org>
-
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-
-> ---
-> v2: Title and description redone.
-> 
-> --- a/drivers/pci/Kconfig
-> +++ b/drivers/pci/Kconfig
-> @@ -110,7 +110,7 @@ config PCI_PF_STUB
->  
->  config XEN_PCIDEV_FRONTEND
->  	tristate "Xen PCI Frontend"
-> -	depends on X86 && XEN
-> +	depends on XEN_PV
->  	select PCI_XEN
->  	select XEN_XENBUS_FRONTEND
->  	default y
-> 
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
