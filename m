@@ -2,134 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C83F340F8FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 15:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1FBD40F903
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 15:19:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239609AbhIQNTt convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 17 Sep 2021 09:19:49 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:38915 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235247AbhIQNTp (ORCPT
+        id S240381AbhIQNUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 09:20:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239293AbhIQNUm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 09:19:45 -0400
-Received: from smtpclient.apple (p5b3d2185.dip0.t-ipconnect.de [91.61.33.133])
-        by mail.holtmann.org (Postfix) with ESMTPSA id C98DECED2D;
-        Fri, 17 Sep 2021 15:18:19 +0200 (CEST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Subject: Re: [PATCH] Bluetooth: btusb: Lower passive lescan interval on
- Marvell 88W8897
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <3e5b7e27-e643-ae9b-db40-d885ca441385@v0yd.nl>
-Date:   Fri, 17 Sep 2021 15:18:19 +0200
-Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        linux-wireless@vger.kernel.org,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        =?utf-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <9D2F9512-0045-4464-AB1B-A1AA04E21F3D@holtmann.org>
-References: <20210917122718.86776-1-verdre@v0yd.nl>
- <B9F09991-0B67-4848-86DE-C13BF3850D15@holtmann.org>
- <3e5b7e27-e643-ae9b-db40-d885ca441385@v0yd.nl>
-To:     =?utf-8?Q?Jonas_Dre=C3=9Fler?= <verdre@v0yd.nl>
-X-Mailer: Apple Mail (2.3654.120.0.1.13)
+        Fri, 17 Sep 2021 09:20:42 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78775C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 06:19:20 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id w19so13906464oik.10
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 06:19:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:reply-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=irpWsGGMsGJ4DtpFXdv5OWCvYLCIS8iAXj1jsW9bhIw=;
+        b=HOEWU8hoOtlFTQ/p0WLcdyNuhPKn/eTLAE1+a06NQBp7Q8yCpS2JwNHYsHy3pyVk7F
+         4bNjsVx7/qfiszEFidmUBtJOXxfukA3yi9juAyBiNnWDFtdw7MW/yWHHaH4W1yJeM3Ys
+         BvLjprqxKIoUOeOOkVeFcingSXccWb9Z/nKHS7NoOQb/M8Vru8kSXjREhMLk/e4jtvn/
+         W1CSMVv7Rf2YnQ5b6vSSfXtLz5QcXuNjzSiqHIrhAyueRfz9W7cn80oEGjejw9YgxmZ9
+         8JsRjS0HZFx4pzw8OMGRuOBsXmRpxwfiZBZvhJ+lHdiGG3b4ewgFxlxhrok9vFOEkKip
+         yrkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :reply-to:references:mime-version:content-disposition:in-reply-to;
+        bh=irpWsGGMsGJ4DtpFXdv5OWCvYLCIS8iAXj1jsW9bhIw=;
+        b=TafqCh4Fx6H5HwccOhGbm0sMTyAcC9QCM+cnStjp1jUxk6fqRxzm0q5TtslukO27js
+         doVkmZshJlqGxATGOaK91SYVKgy9clYYblosRfkDbYVEwG9HO4T5bbhuLXO2tm1zIDAt
+         kE01AN3pNN+EB2R6qet5HDMvNJrVIl7lVMIxNNLmCspYb4DNDiF4XJDaaO6yiMAM4O5z
+         u32arAEvDChB4vc4EUO8zHolx5dDTy5pkYtMEKEuNbybFemjDMjXsBtMnGmFg0YTTran
+         OqWVMiwYWtyM0TbFrK8NaYOys0Lw+3xrssSIxFbFD2mv2ohS53nzx/hQbGkriBjSZabx
+         aUuA==
+X-Gm-Message-State: AOAM531g+rECy1xRLeV5m86Q1PWLBHeoM30Hf5inDhOomVj1ZynbnpUU
+        zf1vlDNG/cezc2sFXdf/XaEYhBqRNg==
+X-Google-Smtp-Source: ABdhPJwkobeH+ck5CNHupTxaPfqYHxRqiljqdH3EHSMFHWtP2kQvV2Ig0caKyxyBDALGjuiume/6sw==
+X-Received: by 2002:aca:da05:: with SMTP id r5mr12947235oig.30.1631884759752;
+        Fri, 17 Sep 2021 06:19:19 -0700 (PDT)
+Received: from serve.minyard.net (serve.minyard.net. [2001:470:b8f6:1b::1])
+        by smtp.gmail.com with ESMTPSA id y26sm1463153oih.2.2021.09.17.06.19.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Sep 2021 06:19:18 -0700 (PDT)
+Sender: Corey Minyard <tcminyard@gmail.com>
+Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:2dd4:10f2:4a03:3baa])
+        by serve.minyard.net (Postfix) with ESMTPSA id D217D18000C;
+        Fri, 17 Sep 2021 13:19:17 +0000 (UTC)
+Date:   Fri, 17 Sep 2021 08:19:16 -0500
+From:   Corey Minyard <minyard@acm.org>
+To:     Anton Lundin <glance@acc.umu.se>
+Cc:     openipmi-developer@lists.sourceforge.net,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [Openipmi-developer] Issue with panic handling and ipmi
+Message-ID: <20210917131916.GB545073@minyard.net>
+Reply-To: minyard@acm.org
+References: <20210916145300.GD108031@montezuma.acc.umu.se>
+ <20210916163945.GY545073@minyard.net>
+ <20210917101419.GE108031@montezuma.acc.umu.se>
+ <20210917120758.GA545073@minyard.net>
+ <20210917125525.GF108031@montezuma.acc.umu.se>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210917125525.GF108031@montezuma.acc.umu.se>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jonas,
-
->>> The Marvell 88W8897 combined wifi and bluetooth card (pcie+usb version)
->>> is used in a lot of Microsoft Surface devices, and all those devices
->>> suffer from very low 2.4GHz wifi connection speeds while bluetooth is
->>> enabled. The reason for that is that the default passive scanning
->>> interval for Bluetooth Low Energy devices is quite high on Linux
->>> (interval of 60 msec and scan window of 30 msec, see le_scan_interval
->>> and le_scan_window in hci_core.c), and the Marvell chip is known for its
->>> bad bt+wifi coexisting performance.
->>> 
->>> So decrease that passive scan interval and make the scan window shorter
->>> on this particular device to allow for spending more time transmitting
->>> wifi signals: The new scan interval is 250 msec (0x190 * 0.625 msec) and
->>> the new scan window is 6.25 msec (0xa * 0.625 msec).
->>> 
->>> This change has a very large impact on the 2.4GHz wifi speeds and gets
->>> it up to performance comparable with the Windows driver, which seems to
->>> apply a similar quirk.
->>> 
->>> The scan interval and scan window length were tested and found to work
->>> very well with a bunch of Bluetooth Low Energy devices, including the
->>> Surface Pen, a Bluetooth Speaker and two modern Bluetooth headphones.
->>> All devices were discovered immediately after turning them on. Even
->>> lower values were also tested, but these introduced longer delays until
->>> devices get discovered.
->>> 
->>> Signed-off-by: Jonas Dreßler <verdre@v0yd.nl>
->>> ---
->>> drivers/bluetooth/btusb.c | 15 +++++++++++++++
->>> 1 file changed, 15 insertions(+)
->>> 
->>> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
->>> index 60d2fce59a71..05b11179c839 100644
->>> --- a/drivers/bluetooth/btusb.c
->>> +++ b/drivers/bluetooth/btusb.c
->>> @@ -59,6 +59,7 @@ static struct usb_driver btusb_driver;
->>> #define BTUSB_WIDEBAND_SPEECH	0x400000
->>> #define BTUSB_VALID_LE_STATES   0x800000
->>> #define BTUSB_QCA_WCN6855	0x1000000
->>> +#define BTUSB_LOWER_LESCAN_INTERVAL	0x2000000
->>> #define BTUSB_INTEL_BROKEN_INITIAL_NCMD 0x4000000
->>> 
->>> static const struct usb_device_id btusb_table[] = {
->>> @@ -356,6 +357,7 @@ static const struct usb_device_id blacklist_table[] = {
->>> 	{ USB_DEVICE(0x1286, 0x2044), .driver_info = BTUSB_MARVELL },
->>> 	{ USB_DEVICE(0x1286, 0x2046), .driver_info = BTUSB_MARVELL },
->>> 	{ USB_DEVICE(0x1286, 0x204e), .driver_info = BTUSB_MARVELL },
->>> +	{ USB_DEVICE(0x1286, 0x204c), .driver_info = BTUSB_LOWER_LESCAN_INTERVAL },
->>> 
->>> 	/* Intel Bluetooth devices */
->>> 	{ USB_DEVICE(0x8087, 0x0025), .driver_info = BTUSB_INTEL_COMBINED },
->>> @@ -3813,6 +3815,19 @@ static int btusb_probe(struct usb_interface *intf,
->>> 	if (id->driver_info & BTUSB_MARVELL)
->>> 		hdev->set_bdaddr = btusb_set_bdaddr_marvell;
->>> 
->>> +	/* The Marvell 88W8897 combined wifi and bluetooth card is known for
->>> +	 * very bad bt+wifi coexisting performance.
->>> +	 *
->>> +	 * Decrease the passive BT Low Energy scan interval a bit
->>> +	 * (0x0190 * 0.625 msec = 250 msec) and make the scan window shorter
->>> +	 * (0x000a * 0,625 msec = 6.25 msec). This allows for significantly
->>> +	 * higher wifi throughput while passively scanning for BT LE devices.
->>> +	 */
->>> +	if (id->driver_info & BTUSB_LOWER_LESCAN_INTERVAL) {
->>> +		hdev->le_scan_interval = 0x0190;
->>> +		hdev->le_scan_window = 0x000a;
->>> +	}
->>> +
->> you can not do it this way. Modifying hci_dev internals from within the driver is not acceptable.
->> Regards
->> Marcel
+On Fri, Sep 17, 2021 at 02:55:25PM +0200, Anton Lundin wrote:
+> On 17 September, 2021 - Corey Minyard wrote:
+> 
+> > On Fri, Sep 17, 2021 at 12:14:19PM +0200, Anton Lundin wrote:
+> > > On 16 September, 2021 - Corey Minyard wrote:
+> > > 
+> > > > On Thu, Sep 16, 2021 at 04:53:00PM +0200, Anton Lundin wrote:
+> > > > > Hi.
+> > > > > 
+> > > > > I've just done a upgrade of the kernel we're using in a product from
+> > > > > 4.19 to 5.10 and I noted a issue.
+> > > > > 
+> > > > > It started that with that we didn't get panic and oops dumps in our erst
+> > > > > backed pstore, and when debugging that I noted that the reboot on panic
+> > > > > timer didn't work either.
+> > > > > 
+> > > > > I've bisected it down to 2033f6858970 ("ipmi: Free receive messages when
+> > > > > in an oops").
+> > > > 
+> > > > Hmm.  Unfortunately removing that will break other things.  Can you try
+> > > > the following patch?  It's a good idea, in general, to do as little as
+> > > > possible in the panic path, this should cover a multitude of issues.
+> > > > 
+> > > > Thanks for the report.
+> > > > 
+> > > 
+> > > I'm sorry to report that the patch didn't solve the issue, and the
+> > > machine locked up in the panic path as before.
+> > 
+> > I missed something.  Can you try the following?  If this doesn't work,
+> > I'm going to have to figure out how to reproduce this.
+> > 
+> 
+> Sorry, still no joy.
+> 
+> My guess is that there is something locking up due to these Supermicro
+> machines have their ERST memory backed by the BMC, and the same BMC is
+> is the other end of all the ipmi communications.
+> 
+> I've reproduced this on Server/X11SCZ-F and Server/H11SSL-i but I'm
+> guessing it can be reproduced on most, if not all, of their hardware
+> with the same setup.
+> 
+> We're using the ERST backend for pstore, because we're still
+> bios-booting them and don't have efi services available to use as pstore
+> backend.
 > 
 > 
-> hmm okay, it seems to me that the intention of your commit bef64738e3fb87eabc6fbeededad0c44ea173384 was to allow configuring it on a per controller basis, also btusb changes a bunch of other hci_dev properties? Given that we also have to match by usb-id, I don't think there's another place to do that other than the usb driver, or is there?
+> I've tested to just yank out the ipmi modules from the kernel and that
+> fixes the panic timer and we get crash dumps to pstore.
 
-you can change most defaults via mgmt commands.
+Dang.  I'm going to have to look deeper at what that could change to
+cause an issue like this.  Are you using the IPMI watchdog?  Do you have
+CONFIG_IPMI_PANIC_EVENT=y set in the config?
 
-The things the a driver should set in hci_dev is really limited and it only affects its ability to run as a transport driver. It shouldn’t deal with anything that is actually HCI upper layer operation.
+Thanks,
 
-Regards
+-corey
 
-Marcel
-
+> 
+> //Anton
+> 
+> 
+> _______________________________________________
+> Openipmi-developer mailing list
+> Openipmi-developer@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/openipmi-developer
