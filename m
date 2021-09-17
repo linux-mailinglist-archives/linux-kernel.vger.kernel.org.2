@@ -2,145 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5299840F2CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 08:59:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87A3440F2CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 08:59:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237253AbhIQHAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 03:00:36 -0400
-Received: from mx1.emlix.com ([136.243.223.33]:39260 "EHLO mx1.emlix.com"
+        id S236432AbhIQHBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 03:01:10 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:45689 "EHLO pegase2.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229456AbhIQHAe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 03:00:34 -0400
-Received: from mailer.emlix.com (p5098be52.dip0.t-ipconnect.de [80.152.190.82])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.emlix.com (Postfix) with ESMTPS id BBEB1602F4;
-        Fri, 17 Sep 2021 08:59:11 +0200 (CEST)
-From:   Rolf Eike Beer <eb@emlix.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Junio C Hamano <gitster@pobox.com>
-Cc:     Git List Mailing <git@vger.kernel.org>,
-        Tobias Ulmer <tu@emlix.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: data loss when doing ls-remote and piped to command
-Date:   Fri, 17 Sep 2021 08:59:07 +0200
-Message-ID: <2722184.bRktqFsmb4@devpool47>
-Organization: emlix GmbH
-In-Reply-To: <xmqq7dfgtfpt.fsf@gitster.g>
-References: <6786526.72e2EbofS7@devpool47> <CAHk-=wgyk0mwYcMRC8HakzoAKL2Y3gwzD433tqKYYhV+r1PLnA@mail.gmail.com> <xmqq7dfgtfpt.fsf@gitster.g>
+        id S229456AbhIQHBJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 03:01:09 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4H9lFG2lDYz9sVG;
+        Fri, 17 Sep 2021 08:59:46 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id ZW0VHS5x67_e; Fri, 17 Sep 2021 08:59:46 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4H9lFG1tTlz9sTr;
+        Fri, 17 Sep 2021 08:59:46 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 2C1848B79F;
+        Fri, 17 Sep 2021 08:59:46 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id ODy-1x7yO5Ev; Fri, 17 Sep 2021 08:59:46 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.202.36])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id C596F8B79C;
+        Fri, 17 Sep 2021 08:59:45 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 18H6xZ4d464189
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Fri, 17 Sep 2021 08:59:35 +0200
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 18H6xXwO464187;
+        Fri, 17 Sep 2021 08:59:33 +0200
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, ebiederm@xmission.com,
+        hch@infradead.org
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH v5 1/5] powerpc/signal64: Access function descriptor with user access block
+Date:   Fri, 17 Sep 2021 08:59:16 +0200
+Message-Id: <1718f38859d5366f82d5bef531f255cedf537b5d.1631861883.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart2006021.n4l1ccZoEF"; micalg="pgp-sha256"; protocol="application/pgp-signature"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---nextPart2006021.n4l1ccZoEF
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"; protected-headers="v1"
-From: Rolf Eike Beer <eb@emlix.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>, Junio C Hamano <gitster@pobox.com>
-Cc: Git List Mailing <git@vger.kernel.org>, Tobias Ulmer <tu@emlix.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: data loss when doing ls-remote and piped to command
-Date: Fri, 17 Sep 2021 08:59:07 +0200
-Message-ID: <2722184.bRktqFsmb4@devpool47>
-Organization: emlix GmbH
-In-Reply-To: <xmqq7dfgtfpt.fsf@gitster.g>
-References: <6786526.72e2EbofS7@devpool47> <CAHk-=wgyk0mwYcMRC8HakzoAKL2Y3gwzD433tqKYYhV+r1PLnA@mail.gmail.com> <xmqq7dfgtfpt.fsf@gitster.g>
+Access the function descriptor of the handler within a
+user access block.
 
-Am Donnerstag, 16. September 2021, 22:42:22 CEST schrieb Junio C Hamano:
-> Linus Torvalds <torvalds@linux-foundation.org> writes:
-> > On Thu, Sep 16, 2021 at 5:17 AM Rolf Eike Beer <eb@emlix.com> wrote:
-> >> Am Donnerstag, 16. September 2021, 12:12:48 CEST schrieb Tobias Ulmer:
-> >> > > The redirection seems to be an important part of it. I now did:
-> >> > >=20
-> >> > > git ... 2>&1 | sha256sum
-> >> >=20
-> >> > I've tried to reproduce this since yesterday, but couldn't until now:
-> >> >=20
-> >> > 2>&1 made all the difference, took less than a minute.
-> >=20
-> > So if that redirection is what matters, and what causes problems, I
-> > can almost guarantee that the reason is very simple:
-> > ...
-> > Anyway. That was a long email just to tell people it's almost
-> > certainly user error, not the kernel.
->=20
-> Yes, 2>&1 will mix messages from the standard error stream at random
-> places in the output, which explains the checksum quite well.
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+v3: Flatten the change to avoid nested gotos.
+---
+ arch/powerpc/kernel/signal_64.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-If there would be any errors. The point is: if I run the command with ">/de=
-v/
-null" just to the terminals a hundred times there is never any output on=20
-stderr at all. If I pipe stderr into a file it's empty after all of this (y=
-es,=20
-I did append, not overwrite).
-
-That the particular construct in this case is sort of nonsense is granted, =
-I=20
-just hit it because some tool here used some very similar construct and=20
-suddenly started failing. "less" isn't the original reproducer, it was just=
-=20
-something I started testing with to be able to easily visually inspect the=
-=20
-output.
-
-What you need is a _fast_ git server. kernel.org or github.com seem to be t=
-oo=20
-slow for this if you don't sit somewhere in their datacenter. Use something=
- in=20
-your local network, a Xeon E5 with lot's of RAM and connected with 1GBit/s=
-=20
-Ethernet in my case.
-
-And the reader must be "somewhat" slow. Using sha256sum works reliably for =
-me.=20
-Using "wc -l" does not, also md5sum and sha1sum are too fast as it seems.
-
-When I run the whole thing with strace I can't see the effect, which isn't=
-=20
-really surprising. But there is a difference between the cases where I run=
-=20
-with redirection "2>&1":
-
-ioctl(2, TCGETS, 0x7ffd6f119b10)        =3D -1 ENOTTY (Inappropriate ioctl =
-for=20
-device)
-
-and without:
-
-ioctl(2, TCGETS, {B38400 opost isig icanon echo ...}) =3D 0
-
-AFAICT this is the only place where fd 2 is used at all during the whole ti=
-me.
-
-Regards,
-
-Eike
-=2D-=20
-Rolf Eike Beer, emlix GmbH, http://www.emlix.com
-=46on +49 551 30664-0, Fax +49 551 30664-11
-Gothaer Platz 3, 37083 G=C3=B6ttingen, Germany
-Sitz der Gesellschaft: G=C3=B6ttingen, Amtsgericht G=C3=B6ttingen HR B 3160
-Gesch=C3=A4ftsf=C3=BChrung: Heike Jordan, Dr. Uwe Kracke =E2=80=93 Ust-IdNr=
-=2E: DE 205 198 055
-
-emlix - smart embedded open source
-
---nextPart2006021.n4l1ccZoEF
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iLMEAAEIAB0WIQQ/Uctzh31xzAxFCLur5FH7Xu2t/AUCYUQ8uwAKCRCr5FH7Xu2t
-/KThA/9zN5ZH7uCU9KHb023JfZyJHjaIOTfX6AOuP4ecKP3cSR6mp9S6lO6VhRYS
-ThJUwL7ELGvYoRofPlUEkKnG3pJuSIa+213DULXZpZvUg+pircpU8cOJsol7lmZi
-WKL0aAKXmlG/myebGu3Qx4zJ7Njv/KUTYOeigMQs8vsgAqnkng==
-=7Tka
------END PGP SIGNATURE-----
-
---nextPart2006021.n4l1ccZoEF--
-
-
+diff --git a/arch/powerpc/kernel/signal_64.c b/arch/powerpc/kernel/signal_64.c
+index 1831bba0582e..7b1cd50bc4fb 100644
+--- a/arch/powerpc/kernel/signal_64.c
++++ b/arch/powerpc/kernel/signal_64.c
+@@ -936,8 +936,13 @@ int handle_rt_signal64(struct ksignal *ksig, sigset_t *set,
+ 		func_descr_t __user *funct_desc_ptr =
+ 			(func_descr_t __user *) ksig->ka.sa.sa_handler;
+ 
+-		err |= get_user(regs->ctr, &funct_desc_ptr->entry);
+-		err |= get_user(regs->gpr[2], &funct_desc_ptr->toc);
++		if (!user_read_access_begin(funct_desc_ptr, sizeof(func_descr_t)))
++			goto badfunc;
++
++		unsafe_get_user(regs->ctr, &funct_desc_ptr->entry, badfunc_block);
++		unsafe_get_user(regs->gpr[2], &funct_desc_ptr->toc, badfunc_block);
++
++		user_read_access_end();
+ 	}
+ 
+ 	/* enter the signal handler in native-endian mode */
+@@ -962,5 +967,12 @@ int handle_rt_signal64(struct ksignal *ksig, sigset_t *set,
+ badframe:
+ 	signal_fault(current, regs, "handle_rt_signal64", frame);
+ 
++	return 1;
++
++badfunc_block:
++	user_read_access_end();
++badfunc:
++	signal_fault(current, regs, __func__, (void __user *)ksig->ka.sa.sa_handler);
++
+ 	return 1;
+ }
+-- 
+2.31.1
 
