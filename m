@@ -2,165 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C1B54101B1
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 01:22:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AF254101AA
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 01:21:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344904AbhIQXXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 19:23:44 -0400
-Received: from mga09.intel.com ([134.134.136.24]:41660 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232079AbhIQXXn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 19:23:43 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10110"; a="222927543"
-X-IronPort-AV: E=Sophos;i="5.85,302,1624345200"; 
-   d="scan'208";a="222927543"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2021 16:22:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,302,1624345200"; 
-   d="scan'208";a="546668982"
-Received: from lkp-server01.sh.intel.com (HELO 285e7b116627) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 17 Sep 2021 16:22:19 -0700
-Received: from kbuild by 285e7b116627 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mRNBS-0004Su-JB; Fri, 17 Sep 2021 23:22:18 +0000
-Date:   Sat, 18 Sep 2021 07:21:42 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [paulmck-rcu:rcu/next] BUILD SUCCESS
- 9c2eed2c4c24c95d53f68aa55e7eceb3935aac4c
-Message-ID: <61452306.irBqizMLBpWLdGob%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1344821AbhIQXXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 19:23:18 -0400
+Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:56721 "EHLO
+        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232079AbhIQXXR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 19:23:17 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id 863CF2B00971;
+        Fri, 17 Sep 2021 19:21:53 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Fri, 17 Sep 2021 19:21:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=u92.eu; h=date
+        :from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=9D1TvVjqqwgGetcBxSubPdthhs2
+        qP2/L39fbHUN1dhg=; b=icvXUUhsZiTbYQL+UTHGxJkFbsfkRzRd9zXqXNqF0Pq
+        Yyft55LMFcsAjXmAMRyF1A6r97yyo/ATgGnQ59ZOA56zNetCyoSLOWWsV1X+v6K9
+        qnPiyKZ6sscWFQI7BDKzyd07QA3Gbj6ALlxL5osSZp3P1EdTw7N+zQkSfRAu2rn3
+        GlZ0uhOh4KveCTJRPk+LpWSfgQ1Xy+tmDq4u4ZwRd/lTvV9RMDAs/pvnJQc0SQZE
+        42JeBDnQeeSYQnKLBBUbr3wasz+N6txMrAsilyaLR7hdYtgup5LC8n77giNJFKM/
+        7DkW0bManZUgEdGpTxv4iU4+ZXBnnIXgR3bdpbSrMAQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=9D1TvV
+        jqqwgGetcBxSubPdthhs2qP2/L39fbHUN1dhg=; b=LLSUGVTj888HafrCp5tZJ4
+        OjpyCTAHfGymnGaJ95AGUkK9Vsn+Y44XkW1cDGf9h9YE+tCX5ePjPp++CVIXrlJv
+        OtWIf2wbSVDdxr24UPC3fnxs0AKUtK9GAY+MTIrRglK+TlvByFXYYA8cFsXcLP0l
+        Zs46gC19S75xYiRiondJMTMklM3GHx2FcvFcsggljO7cEdHzyaM57vbRys7CoYQt
+        IYNsZyH9BgSgzyKA2NiIQHNeETN7+jNJAU994bUe6UzpTCxjAAKzSFlRJxUKpZjd
+        XGfTNFRTkFBbro4lsZBRfMfOVlUemK86Hh1xgpEojdvTfAQMosFceT9UNGM3HwBw
+        ==
+X-ME-Sender: <xms:ECNFYf2AeexzJ6ACMFSdIfbY5eEbF_Cc2EBmJioiwerfS3sbWHbBzQ>
+    <xme:ECNFYeFV0XB_kyVZuIL3gDCkHlJKA9oliZNRs61PT1ws_tH5DWJZAun9WeeTqNuin
+    AJeRfpLH24gVdio9w>
+X-ME-Received: <xmr:ECNFYf4OFl0ohAw5b9lAH_NTdUEi83EiO-abc1np6ih4MqktclUsqhSqo-HsvHvmK8tY7E-n>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudehjedgvdduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttdejnecuhfhrohhmpefhvghrnhgr
+    nhguohcutfgrmhhoshcuoehgrhgvvghnfhhoohesuhelvddrvghuqeenucggtffrrghtth
+    gvrhhnpedvjeeifeelhfetiefhhfdthfefkefhhfeutdetvdfgvefgveefheffgfekjeef
+    heenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrh
+    gvvghnfhhoohesuhelvddrvghu
+X-ME-Proxy: <xmx:ECNFYU0C6M7ROTHINOrKLFicmRrOc54MXpjbCNB8W9v1C-Y_mHtUCg>
+    <xmx:ECNFYSHtGazCRU7_Mh9D32hqGosKvR1D0_Kf7ZhDAscX5QIleiVMTg>
+    <xmx:ECNFYV85aEvgfkcDgBu137LQFDm1UK7ytQb-FPgMLALM_VFKarLYJQ>
+    <xmx:ESNFYVBQ5mCdH7PoNQ4187ntV2s52SA_JVha30z4b_KwS6hENpVY6pR7JZ8>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 17 Sep 2021 19:21:49 -0400 (EDT)
+Date:   Sat, 18 Sep 2021 01:21:47 +0200
+From:   Fernando Ramos <greenfoo@u92.eu>
+To:     Sean Paul <sean@poorly.run>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-renesas-soc@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH 15/15] doc: drm: remove TODO entry regarding
+ DRM_MODSET_LOCK_ALL cleanup
+Message-ID: <YUUjC5MhADgMs3aw@zacax395.localdomain>
+References: <20210916211552.33490-1-greenfoo@u92.eu>
+ <20210916211552.33490-16-greenfoo@u92.eu>
+ <20210917155652.GP2515@art_vandelay>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210917155652.GP2515@art_vandelay>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
-branch HEAD: 9c2eed2c4c24c95d53f68aa55e7eceb3935aac4c  rcu: Replace ________p1 and _________p1 with __UNIQUE_ID(rcu)
+> Can we remove drm_modeset_lock_all[_ctx] now? If so, let's queue that up as part
+> of the set.
+> 
 
-elapsed time: 1536m
+drm_modeset_lock_all() and drm_modeset_unlock_all() can be removed (I'll do that
+on v2 of this patch series).
 
-configs tested: 105
-configs skipped: 3
+drm_modset_lock_all_ctx() is a different story and there are still two places
+(one in the i915 driver and another one in the amd driver) where they are
+needed.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                                 defconfig
-i386                 randconfig-c001-20210916
-sh                          rsk7269_defconfig
-powerpc                     ep8248e_defconfig
-riscv                    nommu_virt_defconfig
-sh                          landisk_defconfig
-arm                        mvebu_v7_defconfig
-arc                        nsimosci_defconfig
-i386                             allyesconfig
-arc                     haps_hs_smp_defconfig
-powerpc                        cell_defconfig
-powerpc                      chrp32_defconfig
-openrisc                         alldefconfig
-m68k                       m5475evb_defconfig
-powerpc                     pseries_defconfig
-x86_64               randconfig-c001-20210916
-arm                  randconfig-c002-20210916
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a016-20210916
-x86_64               randconfig-a013-20210916
-x86_64               randconfig-a012-20210916
-x86_64               randconfig-a011-20210916
-x86_64               randconfig-a014-20210916
-x86_64               randconfig-a015-20210916
-i386                 randconfig-a016-20210916
-i386                 randconfig-a015-20210916
-i386                 randconfig-a011-20210916
-i386                 randconfig-a012-20210916
-i386                 randconfig-a013-20210916
-i386                 randconfig-a014-20210916
-riscv                randconfig-r042-20210916
-s390                 randconfig-r044-20210916
-arc                  randconfig-r043-20210916
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-riscv                randconfig-c006-20210916
-x86_64               randconfig-c007-20210916
-mips                 randconfig-c004-20210916
-powerpc              randconfig-c003-20210916
-arm                  randconfig-c002-20210916
-i386                 randconfig-c001-20210916
-s390                 randconfig-c005-20210916
-i386                 randconfig-a004-20210916
-i386                 randconfig-a005-20210916
-i386                 randconfig-a006-20210916
-i386                 randconfig-a002-20210916
-i386                 randconfig-a003-20210916
-i386                 randconfig-a001-20210916
-x86_64               randconfig-a016-20210917
-x86_64               randconfig-a013-20210917
-x86_64               randconfig-a012-20210917
-x86_64               randconfig-a011-20210917
-x86_64               randconfig-a014-20210917
-x86_64               randconfig-a015-20210917
-x86_64               randconfig-a002-20210916
-x86_64               randconfig-a003-20210916
-x86_64               randconfig-a006-20210916
-x86_64               randconfig-a004-20210916
-x86_64               randconfig-a005-20210916
-x86_64               randconfig-a001-20210916
-hexagon              randconfig-r045-20210916
-hexagon              randconfig-r041-20210916
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+I would need to understand the code better before trying to remove those :)
