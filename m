@@ -2,69 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C2F24100D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 23:40:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AB354100DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 23:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344795AbhIQVkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 17:40:31 -0400
-Received: from mga07.intel.com ([134.134.136.100]:54592 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242430AbhIQVkO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 17:40:14 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10110"; a="286563054"
-X-IronPort-AV: E=Sophos;i="5.85,302,1624345200"; 
-   d="scan'208";a="286563054"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2021 14:38:50 -0700
-X-IronPort-AV: E=Sophos;i="5.85,302,1624345200"; 
-   d="scan'208";a="546646816"
-Received: from agluck-desk2.sc.intel.com ([10.3.52.146])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2021 14:38:50 -0700
-From:   Tony Luck <tony.luck@intel.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>
-Cc:     Cathy Zhang <cathy.zhang@intel.com>, linux-sgx@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        Tony Luck <tony.luck@intel.com>
-Subject: [PATCH v5 7/7] x86/sgx: Add check for SGX pages to ghes_do_memory_failure()
-Date:   Fri, 17 Sep 2021 14:38:36 -0700
-Message-Id: <20210917213836.175138-8-tony.luck@intel.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210917213836.175138-1-tony.luck@intel.com>
-References: <20210827195543.1667168-1-tony.luck@intel.com>
- <20210917213836.175138-1-tony.luck@intel.com>
+        id S241480AbhIQVmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 17:42:37 -0400
+Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:34663 "EHLO
+        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233664AbhIQVme (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 17:42:34 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id 6F5EA2B00902;
+        Fri, 17 Sep 2021 17:41:10 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Fri, 17 Sep 2021 17:41:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=u92.eu; h=date
+        :from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=bo5do1/2uMxfSsRyPzIa31G3tU+
+        VXBJq0VxVweJMjNw=; b=lx2x0Jisdd2o9GUHAoLcO7aZNpLHdrPfa7v+3CbHaiR
+        1M7WQ51iFfY9qQzEvo85CsAhISodR2g1V4hPuk1RgX7j2rMrUz9Q5yuRqavVHCIQ
+        /LVPTyEFjI+qDIpG99C2mAXra9mj8z4LPs3Gqi1Vnpx6gUv1axTysv/OcXVzC9Yj
+        8q9xDY7mQQ7POP5KYcLazECYJtC3G/NqeQp+MHyci+UeT4SH+c3uomhGMxPxIc+5
+        +RyIf5WC/T+NQgLisCIlXXcvvQ8QbuX3ErwRXpsACht9OBKx7LTHQ7NQyuJnNlQw
+        i8ctXOoi6jk9qq6ptbYc1HB267/KQLPs/LjqoDgYOzw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=bo5do1
+        /2uMxfSsRyPzIa31G3tU+VXBJq0VxVweJMjNw=; b=Z5DVGbfyPXqul6bnNVQN3+
+        51BL4yVViShm82Jlg2MDeHZOi8YlO8g4DTDddGKR6Yqz+yEPRYpiA9O1NAheI8Mj
+        qfY+4MMrES5Qgcf70UVmEVpYA5Zf3MkId4upz8dtEiGVdD5ju/+Jj9MdZhy0C1lj
+        xMobgxPk8Jb2lvSHc2TQ1UAfJABzS6V+jVefwKZbvwxAB2awio5FQtUZcEPHjHIn
+        PZZBfTEuq1EH82J2tANVbF/4nMck7ofN6LBZ8z5xreZ5ULWyhFFDkYKeTgxgCpey
+        dlvtf35ATwYtChTM84B8IJLD8P5LZw9x76nKD+/mfdALgr2zvUPkH8O7tRO/gixQ
+        ==
+X-ME-Sender: <xms:dQtFYVOhclBMKX3Mcwz-1lbdVKEQy7TPLNBMmoZnTr4oYeyDzU5_fQ>
+    <xme:dQtFYX9eOThRqFuwMFmdFDfSnKLW--Zu8reg_CGY4WaANvYzAOkgmH3kLt2YzGw6D
+    dyuGyrUpzkgOR_Pnw>
+X-ME-Received: <xmr:dQtFYUSux7FMhpk9fvWiDAx3COeucoGTnWN0VO-E2Sq7y1iFg5UMXo6kmRqqCvFElNhzAFV->
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudehjedgtdduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttdejnecuhfhrohhmpefhvghrnhgr
+    nhguohcutfgrmhhoshcuoehgrhgvvghnfhhoohesuhelvddrvghuqeenucggtffrrghtth
+    gvrhhnpedvjeeifeelhfetiefhhfdthfefkefhhfeutdetvdfgvefgveefheffgfekjeef
+    heenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrh
+    gvvghnfhhoohesuhelvddrvghu
+X-ME-Proxy: <xmx:dQtFYRu3KfwHa-WMGiBn4OINuhHAy-twtNlDdRJYh1MOToE3aIEYyg>
+    <xmx:dQtFYdf8bEudJQdBEQL0MyRHYHA5u8SSkW5ADDEeCYdmf4moDrPosg>
+    <xmx:dQtFYd1tqxED0N8SmbmgWlJvaXHbIXT47ztcUOBe2pnUc6WsJ_fRNw>
+    <xmx:dgtFYeVyeMILMbNbOTk6dKqn5cN6B4ugjQ1e_YoJSKUYtobCKnkzpzKg12I>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 17 Sep 2021 17:41:06 -0400 (EDT)
+Date:   Fri, 17 Sep 2021 23:41:03 +0200
+From:   Fernando Ramos <greenfoo@u92.eu>
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        sean@poorly.run, linux-doc@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+Subject: Re: [PATCH 00/15] drm: cleanup: Use DRM_MODESET_LOCK_ALL_* helpers
+ where possible
+Message-ID: <YUULb61dISOCiYHw@zacax395.localdomain>
+References: <20210916211552.33490-1-greenfoo@u92.eu>
+ <YUSzKxZwW8C29dLV@phenom.ffwll.local>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YUSzKxZwW8C29dLV@phenom.ffwll.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGX EPC pages do not have a "struct page" associated with them so the
-pfn_valid() sanity check fails and results in a warning message to
-the console.
+On 21/09/17 05:24PM, Daniel Vetter wrote:
+>
+> Can we at least replace those with drm_modeset_lock_all_ctx and delete
+> drm_modeset_lock_all? That would be really nice goal to make sure these
+> don't spread further.
 
-Add an additonal check to skip the warning if the address of the error
-is in an SGX EPC page.
+I just checked and turns out no one else is using "drm_modeset_lock_all()"
+anymore.
 
-Signed-off-by: Tony Luck <tony.luck@intel.com>
----
- drivers/acpi/apei/ghes.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The only reference is the definition of the function itself, which I did not
+remove because it was being EXPORT_SYMBOL'ed and I was not sure whether it could
+be removed or not (to prevent breaking third party modules maybe?)
 
-diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
-index 0c8330ed1ffd..0c5c9acc6254 100644
---- a/drivers/acpi/apei/ghes.c
-+++ b/drivers/acpi/apei/ghes.c
-@@ -449,7 +449,7 @@ static bool ghes_do_memory_failure(u64 physical_addr, int flags)
- 		return false;
- 
- 	pfn = PHYS_PFN(physical_addr);
--	if (!pfn_valid(pfn)) {
-+	if (!pfn_valid(pfn) && !arch_is_platform_page(physical_addr)) {
- 		pr_warn_ratelimited(FW_WARN GHES_PFX
- 		"Invalid address in generic error data: %#llx\n",
- 		physical_addr);
--- 
-2.31.1
+The same goes true for its sibling "dmr_modeset_unlock_all()".
+
+But if you give me the green light I'll remove both of them right away :)
 
