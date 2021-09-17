@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DDD340F760
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 14:22:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71C9440F763
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 14:22:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235448AbhIQMXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 08:23:45 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:58765 "EHLO
+        id S243784AbhIQMX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 08:23:56 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:26758 "EHLO
         esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243284AbhIQMXn (ORCPT
+        with ESMTP id S243679AbhIQMXt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 08:23:43 -0400
+        Fri, 17 Sep 2021 08:23:49 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1631881342; x=1663417342;
+  t=1631881347; x=1663417347;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version;
-  bh=xSKrC88R5/jeN/2FQuG3GYWUYfzwKjTcGRbrTAAnq5w=;
-  b=X8d3jr4dFSsHkXwpNLr3506qJMkBmBAScWCn8U4CkkKa1BP5dYZpAbg2
-   bU+VwVkeiVuBz4mptsaFwskKn9MUDzIrhhGVaUEPQnEIFDn9nDRGn1ZC/
-   NfuRd7d+dLr2y8DWHgAEH8RAYTqWAxAC98SM3bPW3jII8D3pWoLndkYQt
-   ubRptjuKd2AituiA0wijIAi7QlDV3jcPQ6eIbJ5LeUt+IVD+2d1VOvHhu
-   MzLUS21j4SOnUdfJWNCwX5g0rkZZw1ATic6AxhHGS5cCPBPp7QbMQVI2Z
-   AsaQnzXIAdag0luOoQesd5Us+klMuxR4pGddGXDop/eYIBA4BTFgqO6Wv
-   g==;
-IronPort-SDR: ZPlJ7YluEH/6tBnlge9BEzoLmohweGB4iY/8UpBHQSv01muRoKPOVWI2TYu6wsNIy7oYSl3v74
- l2zY2zcA4N98FYhPZKkk2VWEW7JUKOzwROlpm1jCEmOBP9dRVvLEWX/GWpcvXFShBEyOW3TXPA
- Hvo2xZYCV+o0sPqQ88O0xYHgm6kjmafVt22wmLPnCTLtIuX7yYuoc0hh/nxvENIW8hFGaUBCKe
- K5PeB5ZBLDh5EtYZFQbYE5Vi6TUxHnQTSP9nfk7FdsM+AqMJmPvVEi8mW1ghY/a2PA6qtX5pTd
- RLP9LheosmgSeTlK7ewLVJTk
+  bh=QaeyoBiXXMSjWzTQIcjpjaH9meMo8WgiifrLMl2FpHY=;
+  b=KNTCcoflPn2hHyfxhsQ5xRr+oLzO+Ku17ghA6Jf13pmKg5bXSTeB9SG9
+   HcjHtry/fJomMIW5XlCfgqdwNAXFTto42AT5dgnqQEWbFaA3snQu1GJqO
+   D2HRneLCmZTt+yP71NZEd8IobvucFuxYGMTebzoFvUAM5HDxhY2Z4E7CM
+   R4hLARfOr2/O00gAcrsk7cdQXFmWokLMuMNxP8UkLUGjG8hfBvXVExzHa
+   GZGvggfubB1bGajh3yDE7lfELahE/4bKibNeOck6CIvn3agp0sj2f4zDW
+   iflkTScZAoItjNaTAlyjvpbKIy6vOhEsZtYIcw+xP9NalVUe5NI03/b1P
+   w==;
+IronPort-SDR: Q45hX1ez+G8hjmLfKB2fBWCfOzJlZlRcXF5AB8UaPYJ4T99S1X8ZsIDkZ3+wepK0sKje1c/ruJ
+ egU/hcKnGgSiLCQCQw22KZkTR75SrYRNCQiI0Dya7KCJJJxpN5JtVFVdfIi5PrYRqyx/GAaGz3
+ jevHS0f2vnv+1KV/q/vWSXZjK6pTc7D1/4iRjbBtPr6yfl+pKTg3jQyrInzAU27k3PI/w84La4
+ rdmlZd1kasDAf1usMm4IV4s20xa0Bu9EPVbh4JyC0nbgYo9fHJswEF2eXlfQ9BclyUnY5NFWkN
+ vP8RL+LODPmiI/EPQc9pmhak
 X-IronPort-AV: E=Sophos;i="5.85,301,1624345200"; 
-   d="scan'208";a="132202608"
+   d="scan'208";a="69666030"
 Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 17 Sep 2021 05:22:21 -0700
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 17 Sep 2021 05:22:26 -0700
 Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
  chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Fri, 17 Sep 2021 05:22:21 -0700
+ 15.1.2176.14; Fri, 17 Sep 2021 05:22:26 -0700
 Received: from kavya-HP-Compaq-6000-Pro-SFF-PC.microchip.com (10.10.115.15) by
  chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Fri, 17 Sep 2021 05:22:17 -0700
+ 15.1.2176.14 via Frontend Transport; Fri, 17 Sep 2021 05:22:22 -0700
 From:   Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>
 To:     <robh+dt@kernel.org>, <mturquette@baylibre.com>, <sboyd@kernel.org>
 CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-clk@vger.kernel.org>, <UNGLinuxDriver@microchip.com>,
         <Eugen.Hristev@microchip.com>, <Kavyasree.Kotagiri@microchip.com>,
         <Manohar.Puri@microchip.com>
-Subject: [PATCH v4 1/3] dt-bindings: clock: lan966x: Add binding includes for lan966x SoC clock IDs
-Date:   Fri, 17 Sep 2021 17:51:55 +0530
-Message-ID: <20210917122157.557-2-kavyasree.kotagiri@microchip.com>
+Subject: [PATCH v4 2/3] dt-bindings: clock: lan966x: Add LAN966X Clock Controller
+Date:   Fri, 17 Sep 2021 17:51:56 +0530
+Message-ID: <20210917122157.557-3-kavyasree.kotagiri@microchip.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210917122157.557-1-kavyasree.kotagiri@microchip.com>
 References: <20210917122157.557-1-kavyasree.kotagiri@microchip.com>
@@ -59,58 +59,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LAN966X supports 14 clock outputs for its peripherals.
-This include file is introduced to use identifiers for clocks.
+This adds the DT bindings documentation for lan966x SoC
+generic clock controller.
 
 Signed-off-by: Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>
 ---
 v3 -> v4:
-- No changes.
+- Updated "clocks" description.
+- Added "clock-names".
 
 v2 -> v3:
-- No changes.
+- Fixed dt_binding_check errors.
 
 v1 -> v2:
-- Updated license.
+- Updated example provided for clk controller DT node.
 
- include/dt-bindings/clock/microchip,lan966x.h | 28 +++++++++++++++++++
- 1 file changed, 28 insertions(+)
- create mode 100644 include/dt-bindings/clock/microchip,lan966x.h
+ .../bindings/clock/microchip,lan966x-gck.yaml | 55 +++++++++++++++++++
+ 1 file changed, 55 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/microchip,lan966x-gck.yaml
 
-diff --git a/include/dt-bindings/clock/microchip,lan966x.h b/include/dt-bindings/clock/microchip,lan966x.h
+diff --git a/Documentation/devicetree/bindings/clock/microchip,lan966x-gck.yaml b/Documentation/devicetree/bindings/clock/microchip,lan966x-gck.yaml
 new file mode 100644
-index 000000000000..fe36ed6d8b5f
+index 000000000000..214a2bea35cb
 --- /dev/null
-+++ b/include/dt-bindings/clock/microchip,lan966x.h
-@@ -0,0 +1,28 @@
-+/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
-+/*
-+ * Copyright (c) 2021 Microchip Inc.
-+ *
-+ * Author: Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>
-+ */
++++ b/Documentation/devicetree/bindings/clock/microchip,lan966x-gck.yaml
+@@ -0,0 +1,55 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/clock/microchip,lan966x-gck.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+#ifndef _DT_BINDINGS_CLK_LAN966X_H
-+#define _DT_BINDINGS_CLK_LAN966X_H
++title: Microchip LAN966X Generic Clock Controller
 +
-+#define GCK_ID_QSPI0		0
-+#define GCK_ID_QSPI1		1
-+#define GCK_ID_QSPI2		2
-+#define GCK_ID_SDMMC0		3
-+#define GCK_ID_PI		4
-+#define GCK_ID_MCAN0		5
-+#define GCK_ID_MCAN1		6
-+#define GCK_ID_FLEXCOM0		7
-+#define GCK_ID_FLEXCOM1		8
-+#define GCK_ID_FLEXCOM2		9
-+#define GCK_ID_FLEXCOM3		10
-+#define GCK_ID_FLEXCOM4		11
-+#define GCK_ID_TIMER		12
-+#define GCK_ID_USB_REFCLK	13
++maintainers:
++  - Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>
 +
-+#define N_CLOCKS		14
++description: |
++  The LAN966X Generic clock controller contains 3 PLLs - cpu_clk,
++  ddr_clk and sys_clk. This clock controller generates and supplies
++  clock to various peripherals within the SoC.
 +
-+#endif
++properties:
++  compatible:
++    const: microchip,lan966x-gck
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    items:
++      - description: CPU clock source
++      - description: DDR clock source
++      - description: System clock source
++
++  clock-names:
++    items:
++      - const: cpu_clk
++      - const: ddr_clk
++      - const: sys_clk
++
++  '#clock-cells':
++    const: 1
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - '#clock-cells'
++
++additionalProperties: false
++
++examples:
++  - |
++    clks: clock-controller@e00c00a8 {
++        compatible = "microchip,lan966x-gck";
++        #clock-cells = <1>;
++        clocks = <&cpu_clk>, <&ddr_clk>, <&sys_clk>;
++        reg = <0xe00c00a8 0x38>;
++    };
++...
 -- 
 2.17.1
 
