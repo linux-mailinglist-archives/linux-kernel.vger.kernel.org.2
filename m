@@ -2,162 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B0AB40EE82
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 02:52:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B44E40EE85
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 02:55:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242007AbhIQAyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 20:54:10 -0400
-Received: from mail-il1-f180.google.com ([209.85.166.180]:37863 "EHLO
-        mail-il1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241940AbhIQAyJ (ORCPT
+        id S242028AbhIQA42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 20:56:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242019AbhIQA40 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 20:54:09 -0400
-Received: by mail-il1-f180.google.com with SMTP id i13so8509061ilm.4;
-        Thu, 16 Sep 2021 17:52:48 -0700 (PDT)
+        Thu, 16 Sep 2021 20:56:26 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C64EC061764
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 17:55:05 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id n27so11701191oij.0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 17:55:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=2yH0Zt0O7gBl56UZTi2Aqh4YymYqkgwf1TTMl7F/bXo=;
+        b=H0lHLP20LFpppz68jylyF0kBm32s2ENHdXDuWHo/9BSJo6Ho2Vtfxl1ggpn/h7bH+k
+         vSPnQipeBqdE5Hh+ZYlRSgoQ8m+RpFXy//acsVdWCX+fdhrjSIhU3IWPPTccx/AWdHI8
+         iKniZ6s07bSukhxBoUXbQPXUAFa+KHqd/MIGc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=S3cU5uxz3uzsdIlLr3N5laAmW4fSJBM0Q+aFNdUViTY=;
-        b=L2QUeWHXaQk/6NFf2J861TSyoXr/XQTSUSXBQaq9bzqBRR9gwDQMRYyFcZTynvzcji
-         nfxb1tVJUfTZzSaFDmwN2z5XCNqBGRS/BYRtt4GyGw6huFpXiHl8KUe1AgO3KasCy0xz
-         uT6Gysd3boO/fl5L/1BrXlkeMi6z9Fxgb1RTNS6yyr6Hmd6d9Hr5La9oM+D5FDffgF20
-         EznxpDDEuW3HTrDoXCLvixoSvyN8qWwLAu8tqMXpWENeKMsjgIpdsPYpXk+e3P0LnCjx
-         Hv7u5kjQEPpdz9fk5v94Nr3k0R7PSDqkHn6s1crS9xG+06KHhqwfayeMaaDmo/+7qWAJ
-         QgQQ==
-X-Gm-Message-State: AOAM530XDapS3zNWCi9mJYMolFXTHkWE2lSyq71fz+NIS7luCqOc3FHt
-        cVych0yk72gwetNcq2RaoA==
-X-Google-Smtp-Source: ABdhPJx9BTlt781XK7+3a36jUhdAvLeH2BWzHVgq7vl/hew/ZE/3hpBom4b0wyXkDrhu+cIzJ1g03A==
-X-Received: by 2002:a05:6e02:1a6b:: with SMTP id w11mr6033812ilv.21.1631839968282;
-        Thu, 16 Sep 2021 17:52:48 -0700 (PDT)
-Received: from robh.at.kernel.org (96-84-70-89-static.hfc.comcastbusiness.net. [96.84.70.89])
-        by smtp.gmail.com with ESMTPSA id f5sm2764672ils.3.2021.09.16.17.52.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 17:52:47 -0700 (PDT)
-Received: (nullmailer pid 1489692 invoked by uid 1000);
-        Fri, 17 Sep 2021 00:52:45 -0000
-Date:   Thu, 16 Sep 2021 19:52:45 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Parshuram Thombare <pthombar@cadence.com>
-Cc:     broonie@kernel.org, lukas@wunner.de, p.yadav@ti.com,
-        linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jpawar@cadence.com,
-        mparab@cadence.com, Konrad Kociolek <konrad@cadence.com>
-Subject: Re: [PATCH v4 1/2] spi: cadence: add dt-bindings documentation for
- Cadence XSPI controller
-Message-ID: <YUPm3RKGRb94Jh4G@robh.at.kernel.org>
-References: <1631534558-8102-1-git-send-email-pthombar@cadence.com>
- <1631534684-8273-1-git-send-email-pthombar@cadence.com>
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=2yH0Zt0O7gBl56UZTi2Aqh4YymYqkgwf1TTMl7F/bXo=;
+        b=jjo5t4SZqVxcCu36I6L9j4DwpdBwJp3ZTHtuiIp9ukLTMS43ziQklENHWO9MXA1f8W
+         ZNtaBlWsMv8XvznjA8yY978cxbaMbvKHRdf8GUf7946OX/9bNKaD+WSwE4FnSDdvfC/K
+         zraL7cbME0w5q+025LuDeACXoa1z6LhNhU5XCTEb9XTYXI0nli7EeqsyXX1VEmHoEEPy
+         oO4yLyEkwCtXkpYAeHUQ8QN4DddzY0qQO5YeOS2DJyCIu66ZLuQSFVlbaUc/aNi5OZC5
+         fA1PIoauGzyfEagBBXXBbhw4VGf7fkQjHYMFb0aJlQm0Q2A9fs4t5ipfm1VX3nNMhBf/
+         0POg==
+X-Gm-Message-State: AOAM532J3sXUWfFF+MjkcQ35r+xoliQNYQQj7V4PyNzpGUhuU0Rp8XS8
+        bu3Lhf3z02/9mndb2gG4+0s/wlT0ebviU6UZwCA1Bg==
+X-Google-Smtp-Source: ABdhPJyILhYG1yeMRXTOEinJ2nWQ5k/Wdk5oKtI6BocyrPxqkMfj6StMQ/RoL3uGpsxH8+vdgbsJTpfVXCkhobcsh24=
+X-Received: by 2002:aca:2310:: with SMTP id e16mr2036358oie.64.1631840104499;
+ Thu, 16 Sep 2021 17:55:04 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Thu, 16 Sep 2021 17:55:04 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1631534684-8273-1-git-send-email-pthombar@cadence.com>
+In-Reply-To: <1631811121-32662-1-git-send-email-pillair@codeaurora.org>
+References: <1631811121-32662-1-git-send-email-pillair@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Thu, 16 Sep 2021 17:55:04 -0700
+Message-ID: <CAE-0n50Qmnxa8dz9pQbP408Y_vOu_8j1qeYFGo61W47WQkGunA@mail.gmail.com>
+Subject: Re: [PATCH v3] arm64: dts: qcom: sc7280: Add WPSS remoteproc node
+To:     Rakesh Pillai <pillair@codeaurora.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, robh+dt@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sibis@codeaurora.org,
+        mpubbise@codeaurora.org, kuabhs@chromium.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 02:04:44PM +0200, Parshuram Thombare wrote:
-> Add DT binding for Cadence's XSPI controller driver.
-> 
-> Signed-off-by: Konrad Kociolek <konrad@cadence.com>
-> Signed-off-by: Jayshri Pawar <jpawar@cadence.com>
-> Signed-off-by: Parshuram Thombare <pthombar@cadence.com>
-> ---
->  .../devicetree/bindings/spi/cdns,xspi.yaml         | 77 ++++++++++++++++++++++
->  1 file changed, 77 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/spi/cdns,xspi.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/spi/cdns,xspi.yaml b/Documentation/devicetree/bindings/spi/cdns,xspi.yaml
-> new file mode 100644
-> index 0000000..5ebede1
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/spi/cdns,xspi.yaml
-> @@ -0,0 +1,77 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +# Copyright 2020-21 Cadence
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/spi/cdns,xspi.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+Quoting Rakesh Pillai (2021-09-16 09:52:01)
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+> index 64fc22a..2b8bbcd 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+> @@ -1423,6 +1433,59 @@
+>                         #power-domain-cells = <1>;
+>                 };
+>
+> +               remoteproc_wpss: remoteproc@8a00000 {
+> +                       compatible = "qcom,sc7280-wpss-pil";
+> +                       reg = <0 0x08a00000 0 0x10000>;
 > +
-> +title: Cadence XSPI Controller
+> +                       interrupts-extended = <&intc GIC_SPI 587 IRQ_TYPE_EDGE_RISING>,
+> +                                             <&wpss_smp2p_in 0 IRQ_TYPE_EDGE_RISING>,
+> +                                             <&wpss_smp2p_in 1 IRQ_TYPE_EDGE_RISING>,
+> +                                             <&wpss_smp2p_in 2 IRQ_TYPE_EDGE_RISING>,
+> +                                             <&wpss_smp2p_in 3 IRQ_TYPE_EDGE_RISING>,
+> +                                             <&wpss_smp2p_in 7 IRQ_TYPE_EDGE_RISING>;
+> +                       interrupt-names = "wdog", "fatal", "ready", "handover",
+> +                                         "stop-ack", "shutdown-ack";
 > +
-> +maintainers:
-> +  - Parshuram Thombare <pthombar@cadence.com>
+> +                       clocks = <&gcc GCC_WPSS_AHB_BDG_MST_CLK>,
+> +                                <&gcc GCC_WPSS_AHB_CLK>,
+> +                                <&gcc GCC_WPSS_RSCP_CLK>,
+> +                                <&rpmhcc RPMH_CXO_CLK>;
+> +                       clock-names = "gcc_wpss_ahb_bdg_mst_clk",
+> +                                     "gcc_wpss_ahb_clk",
+> +                                     "gcc_wpss_rscp_clk",
+> +                                     "xo";
 > +
-> +description: |
-> +  The XSPI controller allows SPI protocol communication in
-> +  single, dual, quad or octal wire transmission modes for
-> +  read/write access to slaves such as SPI-NOR flash.
+> +                       power-domains = <&rpmhpd SC7280_CX>,
+> +                                       <&rpmhpd SC7280_MX>;
+> +                       power-domain-names = "cx", "mx";
 > +
-> +allOf:
-> +  - $ref: "spi-controller.yaml#"
+> +                       memory-region = <&wpss_mem>;
 > +
-> +properties:
-> +  compatible:
-> +    const: cdns,xspi-nor
+> +                       qcom,qmp = <&aoss_qmp>;
 > +
-> +  reg:
-> +    items:
-> +      - description: address and length of the controller register set
-> +      - description: address and length of the Slave DMA data port
-> +      - description: address and length of the auxiliary registers
+> +                       qcom,smem-states = <&wpss_smp2p_out 0>;
+> +                       qcom,smem-state-names = "stop";
 > +
-> +  reg-names:
-> +    items:
-> +      - const: xspi-iobase
-> +      - const: xspi-sdmabase
-> +      - const: xspi-auxbase
+> +                       resets = <&aoss_reset AOSS_CC_WCSS_RESTART>,
+> +                                <&pdc_reset PDC_WPSS_SYNC_RESET>;
+> +                       reset-names = "restart", "pdc_sync";
+> +
+> +                       qcom,halt-regs = <&tcsr_mutex_regs 0x37000>;
 
-'xspi' and 'base' are redundant. So just io, sdma, and aux.
-
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +    bus {
-> +        #address-cells = <2>;
-> +        #size-cells = <2>;
-> +
-> +        xspi: spi@a0010000 {
-> +            #address-cells = <1>;
-> +            #size-cells = <0>;
-> +            compatible = "cdns,xspi-nor";
-> +            reg = <0x0 0xa0010000 0x0 0x10000>,
-> +                  <0x0 0xb0000000 0x0 0x10000>,
-> +                  <0x0 0xa0020000 0x0 0x10000>;
-
-Unless you are really using 64KB of registers, that wastes a bunch of 
-virtual space which is limited on 32-bit platforms.
-
-> +            reg-names = "xspi-iobase", "xspi-sdmabase", "xspi-auxbase";
-> +            interrupts = <0 90 IRQ_TYPE_LEVEL_HIGH>;
-> +            interrupt-parent = <&gic>;
-> +
-> +            flash@0 {
-> +                compatible = "jedec,spi-nor";
-> +                spi-max-frequency = <75000000>;
-> +                reg = <0>;
-> +            };
-> +
-> +            flash@1 {
-> +                compatible = "jedec,spi-nor";
-> +                spi-max-frequency = <75000000>;
-> +                reg = <1>;
-> +            };
-> +        };
-> +    };
-> -- 
-> 2.7.4
-> 
-> 
+Where is this node defined? I don't see it on the mailing list for
+sc7280. Can you indicate what patches this depends on, and use git
+format-patch --base= so we can try to find them ourselves.
