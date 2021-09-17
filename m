@@ -2,128 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1317840FD73
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 17:58:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C253140FD71
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 17:58:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243095AbhIQQAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 12:00:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243144AbhIQP7N (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 11:59:13 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8352BC061766
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:57:51 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id v2so6459642plp.8
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:57:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=r6MdFPfPUAZH3+HZlPktkkcgyhh/J6s1d9EKnLc8sLI=;
-        b=cVRmNTsiGusduzzBZ0I0VDwRsgxPiX0DIHlnWw6Se7sfNbDpGRiSTLvTlZtIThSTQO
-         8Iq2NwZoaHIDpechq2RhvvyJvdrbKPHw1+n+7wPIlBMrVoDW3PXN++ki6UAMxgRCzQMe
-         1l//5Z7Px9GtWSlr/+iGzFDVVYKKNPnCzniEM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=r6MdFPfPUAZH3+HZlPktkkcgyhh/J6s1d9EKnLc8sLI=;
-        b=o1Th2Au0+CK92ttkCf2vOBOqc335LIJE1fk5SugLG77hA0x6YK1ICbUk8i885bVujs
-         DeOt6paMiW5beAx/eTl0aelqPcqMFSN/c9ozsUFFIoIteToGKoE0oEcaDCXcK7DLoQiK
-         +qELkla/V8bFwk7HDBJhmnbn4i4nPdcHcOvjSsUKvbISQ2GOU7LHzqBSmkQjwb3rvpvL
-         lXw1r6h5JWBC9V0zSjQGVn/iv5mIyVuhX5DhmtkRwQgzevjMByl5DTKz5qAGwXETzRIq
-         dG+/l+338uqmNk/xACKK6CWeuExj8gAyAW3Bq8AMIQsGwM82iL4zRjr280eNgN6v6hJR
-         zqTQ==
-X-Gm-Message-State: AOAM530laG7NtxPg18oRQG00siKkU1Bt/zXg6IVI0rjpNrYPMZgFyYyz
-        CSTs/aAmAKLZ7HcccLPKlh0nJA==
-X-Google-Smtp-Source: ABdhPJz9vij1VDEQP6wMABN1KinAsDThb7qqcjn08XngLn0itqVa2eHpdQK0v808VVyWyogNtOKZyw==
-X-Received: by 2002:a17:902:c411:b0:13c:9748:badf with SMTP id k17-20020a170902c41100b0013c9748badfmr10322686plk.18.1631894271017;
-        Fri, 17 Sep 2021 08:57:51 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id k3sm10981540pjg.43.2021.09.17.08.57.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 08:57:50 -0700 (PDT)
-Date:   Fri, 17 Sep 2021 08:57:49 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Shuah Khan <shuah@kernel.org>, David Gow <davidgow@google.com>,
-        Rafael Wysocki <rafael@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>, andreas.noever@gmail.com,
-        michael.jamet@intel.com,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        YehezkelShB@gmail.com, Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
+        id S243020AbhIQP7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 11:59:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51514 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235210AbhIQP7i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 11:59:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6830160F43;
+        Fri, 17 Sep 2021 15:58:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631894296;
+        bh=zj2UyYcZHE6q9CXjCUeRJJBOd9INUaRewZnkKDtoHdM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=ZWoQ9kOBAq1+o9tlNANN2K8IDDenNx4UTW13b8VNEAXLV+7VSQZYQQ47gpBdOcuOu
+         rkAFwGRI7HJ7hAgZeRU0oy28PxSv2bvHZ5CrMMy+rD7pvGOco1gmfqtEnRsj+ZC2tk
+         BmPF8IauHHRlDFZ8/lJwHZzsrtIrJ+20m4s3lqq0pr/JOcqdSX62V7n4YcKHdeLA9k
+         YZYa9HgHspXWg8qJhGSKjOpGYZJj2nNQL2DCBg+3BKl2Tyhq+jaEVWhIumZE5U10EY
+         Hf3g8hKIttTrlpxfV5ly3kAuUgxd5QmiwMmZ8GoNX6nx+MQOwqDI5B3uNJ6MyYGmkp
+         OQsZa4lS8MzOw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 3B4AF5C04F3; Fri, 17 Sep 2021 08:58:16 -0700 (PDT)
+Date:   Fri, 17 Sep 2021 08:58:16 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        gregkh <gregkh@linuxfoundation.org>, linux-iio@vger.kernel.org,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        linux-hardening@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Subject: Re: [PATCH v1 6/6] bitfield: build kunit tests without structleak
- plugin
-Message-ID: <202109170857.80F9B319@keescook>
-References: <20210917061104.2680133-1-brendanhiggins@google.com>
- <20210917061104.2680133-7-brendanhiggins@google.com>
- <CAK8P3a21j9yJe_X=kU6v2YgOnrhunRbPv+O6STSH71qTb7xnfg@mail.gmail.com>
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the tip tree
+Message-ID: <20210917155816.GQ4156@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210917115859.6cfc64a5@canb.auug.org.au>
+ <YURQlNtL00f1HWVe@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAK8P3a21j9yJe_X=kU6v2YgOnrhunRbPv+O6STSH71qTb7xnfg@mail.gmail.com>
+In-Reply-To: <YURQlNtL00f1HWVe@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 09:22:08AM +0200, Arnd Bergmann wrote:
-> On Fri, Sep 17, 2021 at 8:11 AM Brendan Higgins
-> <brendanhiggins@google.com> wrote:
-> >
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > The structleak plugin causes the stack frame size to grow immensely:
-> >
-> > lib/bitfield_kunit.c: In function 'test_bitfields_constants':
-> > lib/bitfield_kunit.c:93:1: error: the frame size of 7440 bytes is larger than 2048 bytes [-Werror=frame-larger-than=]
-> >
-> > Turn it off in this file.
-> >
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> > Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-> > ---
-> >  lib/Makefile | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/lib/Makefile b/lib/Makefile
-> > index 5efd1b435a37c..c93c4b59af969 100644
-> > --- a/lib/Makefile
-> > +++ b/lib/Makefile
-> > @@ -351,7 +351,7 @@ obj-$(CONFIG_OBJAGG) += objagg.o
-> >  obj-$(CONFIG_PLDMFW) += pldmfw/
-> >
-> >  # KUnit tests
-> > -CFLAGS_bitfield_kunit.o := $(call cc-option,-Wframe-larger-than=10240)
-> > +CFLAGS_bitfield_kunit.o := $(call cc-option,-Wframe-larger-than=10240) $(DISABLE_STRUCTLEAK_PLUGIN)
+On Fri, Sep 17, 2021 at 10:23:48AM +0200, Peter Zijlstra wrote:
+> On Fri, Sep 17, 2021 at 11:58:59AM +1000, Stephen Rothwell wrote:
+> > Hi all,
+> > 
+> > After merging the tip tree, today's linux-next build (x86_64 allmodconfig)
+> > produced this warning:
+> > 
+> > vmlinux.o: warning: objtool: mce_setup()+0x22: call to memset() leaves .noinstr.text section
+> > vmlinux.o: warning: objtool: do_machine_check()+0x51: call to mce_gather_info() leaves .noinstr.text section
 > 
-> I think the  $(call cc-option,-Wframe-larger-than=10240) needs to be dropped
-> here. This was not in my original patch and it is definitely broken on
-> all architectures
-> with 8KB stack size or less if the function needs that much. What is the amount
-> of actual stack usage you observe without this? If we still get a warning, then
-> I think this needs to be fixed in the code.
+> Those are pre-existing and Boris is lokoing into them, these however,
+> are new:
+> 
+> > vmlinux.o: warning: objtool: rcu_dynticks_eqs_enter()+0x0: call to rcu_dynticks_task_trace_enter() leaves .noinstr.text section
+> > vmlinux.o: warning: objtool: rcu_dynticks_eqs_exit()+0xe: call to rcu_dynticks_task_trace_exit() leaves .noinstr.text section
+> 
+> These are from 7d0c9c50c5a1 ("rcu-tasks: Avoid IPIing userspace/idle
+> tasks if kernel is so built").
+> 
+> The below seems to help.
+> 
+> > vmlinux.o: warning: objtool: rcu_nmi_enter()+0x36: call to __kasan_check_read() leaves .noinstr.text section
+> 
+> That's 2be57f732889 ("rcu: Weaken ->dynticks accesses and updates"),
+> doing:
+> 
+> -       return !(arch_atomic_read(&this_cpu_ptr(&rcu_data)->dynticks) & 0x1);
+> +       return !(atomic_read(this_cpu_ptr(&rcu_data.dynticks)) & 0x1);
+> 
+> and causing instrumentation to be inserted where none is acceptable.
+> Flipping that back to arch_atomic_read() makes it go away as expected.
 
-With the frame-larger-than dropped:
+The 2be57f732889 commit went in during the v5.15 merge window and the
+7d0c9c50c5a1 went into v5.8, but perhaps Linus won't be averse to taking
+a fix for an older bug along with the regression.  ;-)
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Given no Signed-off-by, I am guessing that you would like to push
+this separately.  If so:
 
+Tested-by: Paul E. McKenney <paulmck@kernel.org>
 
--- 
-Kees Cook
+> ---
+> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> index 1a6fdb03d0a5..5199559fbbf0 100644
+> --- a/kernel/rcu/tree_plugin.h
+> +++ b/kernel/rcu/tree_plugin.h
+> @@ -1479,7 +1479,7 @@ static void rcu_bind_gp_kthread(void)
+>  }
+>  
+>  /* Record the current task on dyntick-idle entry. */
+> -static void noinstr rcu_dynticks_task_enter(void)
+> +static __always_inline void rcu_dynticks_task_enter(void)
+>  {
+>  #if defined(CONFIG_TASKS_RCU) && defined(CONFIG_NO_HZ_FULL)
+>  	WRITE_ONCE(current->rcu_tasks_idle_cpu, smp_processor_id());
+> @@ -1487,7 +1487,7 @@ static void noinstr rcu_dynticks_task_enter(void)
+>  }
+>  
+>  /* Record no current task on dyntick-idle exit. */
+> -static void noinstr rcu_dynticks_task_exit(void)
+> +static __always_inline void rcu_dynticks_task_exit(void)
+>  {
+>  #if defined(CONFIG_TASKS_RCU) && defined(CONFIG_NO_HZ_FULL)
+>  	WRITE_ONCE(current->rcu_tasks_idle_cpu, -1);
+> @@ -1495,7 +1495,7 @@ static void noinstr rcu_dynticks_task_exit(void)
+>  }
+>  
+>  /* Turn on heavyweight RCU tasks trace readers on idle/user entry. */
+> -static void rcu_dynticks_task_trace_enter(void)
+> +static __always_inline void rcu_dynticks_task_trace_enter(void)
+>  {
+>  #ifdef CONFIG_TASKS_TRACE_RCU
+>  	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB))
+> @@ -1504,7 +1504,7 @@ static void rcu_dynticks_task_trace_enter(void)
+>  }
+>  
+>  /* Turn off heavyweight RCU tasks trace readers on idle/user exit. */
+> -static void rcu_dynticks_task_trace_exit(void)
+> +static __always_inline void rcu_dynticks_task_trace_exit(void)
+>  {
+>  #ifdef CONFIG_TASKS_TRACE_RCU
+>  	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB))
+> 
