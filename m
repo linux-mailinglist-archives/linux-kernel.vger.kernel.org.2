@@ -2,125 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 162AD40FC3A
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 17:26:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83A7740FC3B
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 17:26:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235210AbhIQP1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 11:27:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40716 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230429AbhIQP1g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 11:27:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8EFCE60E08;
-        Fri, 17 Sep 2021 15:26:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631892373;
-        bh=UZqfTYO7RI9M+7Vxrv3DWw7RCxWe7AbDW1byXQjcEYY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=jjqePD6AzWn+Hen3UKqGFgCjQuKC561K7fvobsKR6kTj9I03GXn0dhABnk0/Dbj6m
-         Di870ru5X8c8V3GEdHcXzBjzq60KuxU/LMXL5jHJ/RFyaJQCOLh4dcitg2KsHmk2ID
-         yskcHVUTdnu8lJE//948lBkRGt9RdfX4lo/Ufx9hgnlz9R+LXS4SR+XqIcoAP2i+1c
-         bqkitcYuQgzKVqdNKiwXZY02UiSRw/MwY9q9MQFSblEowBf1lQJgvhqsXsEawDzg/Y
-         VMbMzjRSCvblIyse53ZzBViADeqllirMQwD87etmwyJakdSBbRNLGlcV3qbg8qpQ6A
-         HKy5tGL5v/Pkw==
-Date:   Fri, 17 Sep 2021 10:26:12 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        nic_swsd <nic_swsd@realtek.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Anthony Wong <anthony.wong@canonical.com>,
-        Linux Netdev List <netdev@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC] [PATCH net-next v5 2/3] r8169: Use PCIe ASPM status for
- NIC ASPM enablement
-Message-ID: <20210917152612.GA1717817@bjorn-Precision-5520>
+        id S237009AbhIQP2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 11:28:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236570AbhIQP2A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 11:28:00 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AF28C061764
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:26:38 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id a10so18540935qka.12
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:26:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OkLjxJhItoHaIYoOhvnxYFt8zLgNaAeBdV6KcTjLYo4=;
+        b=AwWr8OFEIKyWg7y6uBsmAyUxp9xN+wU3egAnMtw5fIkFwTnqoZwnFz+PcctOq9PwMh
+         ObXr2b9H8tEqYYj/AABbV4Lk8Ihg05gZRc3VeqFAUSXOGJcy+2ioi//icUkZovHc4QLM
+         OfIso7ExhrDKTdW9+ekt67y734hHN5qNeE0gcOaomu1+UKVahkpswWD+6ZoXjTZV6p99
+         PMQs9cIUCpAgJSveenfvQhSEj8RYAO9AX7jC6tJ0t2KtD7kQnfrnma0W7wskP07POu2w
+         tJA9uKkj1OpPnWJ9QzwLXHUZq9dE2wYL1FgsF7WppSDariEtHI3f+qUde6jNmiFbnzDJ
+         hduQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OkLjxJhItoHaIYoOhvnxYFt8zLgNaAeBdV6KcTjLYo4=;
+        b=6V5qRtpylD00km9yqcKGrSoD7BdwedTgCs5OQZDyA5KriB1iG1oXxbZAmzKJ+F4oEI
+         qVsq1iNYFGR6ORwogr4Jqv6cHWRyKNu42JMYeTnIVfYDCi9J3xwr3BcvAuGaRei7w7vi
+         QjULxnDy1SENwY5jRhUcx83PE0ZN4kvzOmY36oEVOseh/jYqTb3AtPUbLxNhUW+i2p/B
+         2FnhX3yfUDWWoznL2JA5DImGMS7Ar7WrpMUWPb6+0KP4S8vYW/xARfxQaTGEfzi73R90
+         bj+Egmull5nnptzI9F5U7ym1qpSNa/FTwd2yy7m4qAsIiRBK4yDncTr4n8KSAo+Be+aQ
+         breQ==
+X-Gm-Message-State: AOAM533H05LJ1KLDKBjRTeaBgAdUdworIFk4TrnnEWvs2EhVFNBag5O/
+        HJ0NvlAfJrsX5p7uVBfY4bIBDb2REBt/eEVtEgUrpg==
+X-Google-Smtp-Source: ABdhPJySCDrecUuxQqs+LaFuiOoTAxgl0MMZVhJ9pHxOJEU/z8m6WJf075iL3pZcPj3q785nIddKc6ubc/8WROvPGI0=
+X-Received: by 2002:a25:9001:: with SMTP id s1mr13892523ybl.191.1631892397154;
+ Fri, 17 Sep 2021 08:26:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAd53p445rDeL1VFRYFA3QEbKZ6JtjzhCb9fxpR3eZ9E9NAETA@mail.gmail.com>
+References: <20210911011819.12184-1-ricardo.neri-calderon@linux.intel.com> <20210911011819.12184-4-ricardo.neri-calderon@linux.intel.com>
+In-Reply-To: <20210911011819.12184-4-ricardo.neri-calderon@linux.intel.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Fri, 17 Sep 2021 17:26:26 +0200
+Message-ID: <CAKfTPtCHFgaWWdxSuRKPrp4cSLA+pTzXAmsGn9N3LrFn0x4B1w@mail.gmail.com>
+Subject: Re: [PATCH v5 3/6] sched/fair: Optimize checking for group_asym_packing
+To:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Len Brown <len.brown@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Ricardo Neri <ricardo.neri@intel.com>,
+        Quentin Perret <qperret@google.com>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Aubrey Li <aubrey.li@intel.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 12:09:08PM +0800, Kai-Heng Feng wrote:
-> On Fri, Sep 17, 2021 at 1:07 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > On Thu, Sep 16, 2021 at 11:44:16PM +0800, Kai-Heng Feng wrote:
-> > > Because ASPM control may not be granted by BIOS while ASPM is enabled,
-> > > and ASPM can be enabled via sysfs, so use pcie_aspm_enabled() directly
-> > > to check current ASPM enable status.
-> > >
-> > > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> > > ---
-> > > v5:
-> > >  - New patch.
-> > >
-> > >  drivers/net/ethernet/realtek/r8169_main.c | 13 ++++++++-----
-> > >  1 file changed, 8 insertions(+), 5 deletions(-)
-> > >
-> > > diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
-> > > index 0199914440abc..6f1a9bec40c05 100644
-> > > --- a/drivers/net/ethernet/realtek/r8169_main.c
-> > > +++ b/drivers/net/ethernet/realtek/r8169_main.c
-> > > @@ -622,7 +622,6 @@ struct rtl8169_private {
-> > >       } wk;
-> > >
-> > >       unsigned supports_gmii:1;
-> > > -     unsigned aspm_manageable:1;
-> > >       dma_addr_t counters_phys_addr;
-> > >       struct rtl8169_counters *counters;
-> > >       struct rtl8169_tc_offsets tc_offset;
-> > > @@ -2664,8 +2663,13 @@ static void rtl_enable_exit_l1(struct rtl8169_private *tp)
-> > >
-> > >  static void rtl_hw_aspm_clkreq_enable(struct rtl8169_private *tp, bool enable)
-> > >  {
-> > > -     /* Don't enable ASPM in the chip if OS can't control ASPM */
-> > > -     if (enable && tp->aspm_manageable) {
-> > > +     struct pci_dev *pdev = tp->pci_dev;
-> > > +
-> > > +     /* Don't enable ASPM in the chip if PCIe ASPM isn't enabled */
-> > > +     if (!pcie_aspm_enabled(pdev) && enable)
-> > > +             return;
-> >
-> > What happens when the user enables or disables ASPM via sysfs (see
-> > https://git.kernel.org/linus/72ea91afbfb0)?
-> >
-> > The driver is not going to know about that change.
-> 
-> So it's still better to fold this patch into next one? So the periodic
-> delayed_work can toggle ASPM accordingly.
+On Sat, 11 Sept 2021 at 03:19, Ricardo Neri
+<ricardo.neri-calderon@linux.intel.com> wrote:
+>
+> sched_asmy_prefer() always returns false when called on the local group. By
+> checking local_group, we can avoid additional checks and invoking
+> sched_asmy_prefer() when it is not needed. No functional changes are
+> introduced.
+>
+> Cc: Aubrey Li <aubrey.li@intel.com>
+> Cc: Ben Segall <bsegall@google.com>
+> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
+> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> Cc: Mel Gorman <mgorman@suse.de>
+> Cc: Quentin Perret <qperret@google.com>
+> Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Tim Chen <tim.c.chen@linux.intel.com>
+> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> Reviewed-by: Len Brown <len.brown@intel.com>
+> Signed-off-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
 
-No, my point is that the user can enable/disable ASPM via sysfs, and
-the driver will not know anything about it.  There's no callback that
-tells the driver when this happens.
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
 
-My question is whether this code works when that happens.  I doubt it
-works, because if ASPM is not enabled at this moment, you return
-without doing enabling ASPM in the chip below.
-
-If the user subsequently enables ASPM via sysfs, the chip setup below
-will not be done.
-
-If there's chip-specific setup to make ASPM work, I think the
-chip-specific part needs to be done unconditionally.
-
-> > > +     if (enable) {
-> > >               RTL_W8(tp, Config5, RTL_R8(tp, Config5) | ASPM_en);
-> > >               RTL_W8(tp, Config2, RTL_R8(tp, Config2) | ClkReqEn);
-> > >       } else {
-> > > @@ -5272,8 +5276,7 @@ static int rtl_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
-> > >       /* Disable ASPM L1 as that cause random device stop working
-> > >        * problems as well as full system hangs for some PCIe devices users.
-> > >        */
-> > > -     rc = pci_disable_link_state(pdev, PCIE_LINK_STATE_L1);
-> > > -     tp->aspm_manageable = !rc;
-> > > +     pci_disable_link_state(pdev, PCIE_LINK_STATE_L1);
-> > >
-> > >       /* enable device (incl. PCI PM wakeup and hotplug setup) */
-> > >       rc = pcim_enable_device(pdev);
-> > > --
-> > > 2.32.0
-> > >
+> ---
+> Changes since v4:
+>   * None
+>
+> Changes since v3:
+>   * Further rewording of the commit message. (Len)
+>
+> Changes since v2:
+>   * Reworded the commit message for clarity. (Peter Z)
+>
+> Changes since v1:
+>   * None
+> ---
+>  kernel/sched/fair.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index ff69f245b939..7a054f528bcc 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -8657,7 +8657,7 @@ static inline void update_sg_lb_stats(struct lb_env *env,
+>         }
+>
+>         /* Check if dst CPU is idle and preferred to this group */
+> -       if (env->sd->flags & SD_ASYM_PACKING &&
+> +       if (!local_group && env->sd->flags & SD_ASYM_PACKING &&
+>             env->idle != CPU_NOT_IDLE &&
+>             sgs->sum_h_nr_running &&
+>             sched_asym_prefer(env->dst_cpu, group->asym_prefer_cpu)) {
+> --
+> 2.17.1
+>
