@@ -2,46 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C2EC40F8DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 15:10:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54C6E40F8D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 15:10:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240066AbhIQNLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 09:11:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52068 "EHLO mail.kernel.org"
+        id S239762AbhIQNLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 09:11:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52042 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235265AbhIQNL3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231996AbhIQNL3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 17 Sep 2021 09:11:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 98F39611C4;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 85C5F611C3;
         Fri, 17 Sep 2021 13:10:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1631884207;
-        bh=nO1/aVBlG82KIoJKcsFqGqOzauFVzjv1LobclgXvjTQ=;
+        bh=rDTFn2UKx0UnyZmbSFXPTqMv4y3lllgPganfYTecDtc=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=KvIywNfGDvZqpVzng3hIxCh79JaiLLt0Elx1W6BoHzYFgYpZiCVZvctc7ZuPTWMCr
-         invnPoVund2Vf5ocbaN+z8ludE2PkIGxzpyIUz7WXocI9SN8bg+L/dtrptBeI+BAaB
-         a/SbuBTQ1FcVXVzmxZu8XwRzHmUgP0EHSOUovHhCe3PZ5HssoVhqmFoTXYW8iaDRai
-         2U89M1E9tQ6GzbkrN9owhEeNjoMFytLQJsbd09io4IuezYpI/kFfgQwH3X9q76QTf7
-         CyPtw8uP4lt4GEckwNFoJ3ytTlTYohg2N8FN0vhAaoC+o3wejhf3iru8Wk3pE8XG6f
-         x0XDwsHdtuuDg==
+        b=ECT5r+g2vy8ryi7OX7EIY2jzHzRwairDR7G65ptIUk0n2vYgzIOF+8mGmaV80j3sT
+         b5PV/tYYMizowx/6VSpiZJkLnD8nDo6eptRw8dpm70w3SoChBDlFRHL32DUT0i/YUW
+         tTha+6X4jruOyOiJKSKF7+iBstzP6xRn05bZ2fqt0x7LyGCtkB2kRNxDOLG9CxuKfj
+         ulZtCVVSsSRcE2/eMi0YCOyua43ppcCMqPP/lNla2OQi7r1ZFuxPhxvdRMFi29gIAc
+         b/Fl62TJMYe9fBJfGJK66gUWLDWomkZqbaujGPhph1cH6625njH7hbi+m4QxR479MD
+         da+6U8tD8KNUQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 876E1609B4;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 743F260965;
         Fri, 17 Sep 2021 13:10:07 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: stmmac: dwmac-visconti: Make use of the helper function
- dev_err_probe()
+Subject: Re: [PATCH][next] octeontx2-af: Remove redundant initialization of
+ variable blkaddr
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163188420754.25822.8146846295180412777.git-patchwork-notify@kernel.org>
+Message-Id: <163188420747.25822.3507781673338733348.git-patchwork-notify@kernel.org>
 Date:   Fri, 17 Sep 2021 13:10:07 +0000
-References: <20210916073737.9216-1-caihuoqing@baidu.com>
-In-Reply-To: <20210916073737.9216-1-caihuoqing@baidu.com>
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
-        joabreu@synopsys.com, davem@davemloft.net, kuba@kernel.org,
-        mcoquelin.stm32@gmail.com, nobuhiro1.iwamatsu@toshiba.co.jp,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210917120333.48074-1-colin.king@canonical.com>
+In-Reply-To: <20210917120333.48074-1-colin.king@canonical.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     sgoutham@marvell.com, lcherian@marvell.com, gakula@marvell.com,
+        jerinj@marvell.com, hkelam@marvell.com, sbhatta@marvell.com,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -50,20 +49,21 @@ Hello:
 
 This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Thu, 16 Sep 2021 15:37:36 +0800 you wrote:
-> When possible use dev_err_probe help to properly deal with the
-> PROBE_DEFER error, the benefit is that DEFER issue will be logged
-> in the devices_deferred debugfs file.
-> And using dev_err_probe() can reduce code size, and the error value
-> gets printed.
+On Fri, 17 Sep 2021 13:03:33 +0100 you wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+> The variable blkaddr is being initialized with a value that is never
+> read, it is being updated later on in a for-loop. The assignment is
+> redundant and can be removed.
+> 
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 > 
 > [...]
 
 Here is the summary with links:
-  - net: stmmac: dwmac-visconti: Make use of the helper function dev_err_probe()
-    https://git.kernel.org/netdev/net-next/c/b20b54fb00a8
+  - [next] octeontx2-af: Remove redundant initialization of variable blkaddr
+    https://git.kernel.org/netdev/net-next/c/3503e673db23
 
 You are awesome, thank you!
 --
