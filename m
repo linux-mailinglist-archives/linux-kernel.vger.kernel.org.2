@@ -2,106 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0235D40F33D
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 09:28:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1655040F340
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 09:28:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240157AbhIQH3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 03:29:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52608 "EHLO
+        id S240159AbhIQH31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 03:29:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240975AbhIQH3S (ORCPT
+        with ESMTP id S240113AbhIQH3Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 03:29:18 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA1ABC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 00:27:56 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id u18so11818070wrg.5
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 00:27:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=yxTXBHJqU7RR9a49yqQjWpbG2NbNPVK/5PjCc/Yjeb8=;
-        b=Qbk2KEturmAbJqgDKUYYrlSgYiyY3lGDetYhmrEK+NGbKMuJIuxfGqmYBW4w/YT/88
-         ZtDCrIjDIIWXG3RoM7CBo0OB49876VpHXTTA6Ty12wDY/OhuHyLHU1lI8uvIpVLKJ06Y
-         BjATW35xbrTCwHQ3ZKSyoLB/9DwY/5R0vIYYRFGw+LTTQNl3VWmP0uTxUsX6xxt2Zqp2
-         DFflrYRBGLQ4GPP+ldEB+Hv5TAs9Uj7jvLMJ3zBvvO3g0eZiba48c/oMaK2h9OE5eixx
-         awZhmfRJC6Mi16EWsNltIFhfsd4eOcfP1KMiB+WJ/WR5mPloUeDDcA03lDDhveExjnH2
-         ZKjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=yxTXBHJqU7RR9a49yqQjWpbG2NbNPVK/5PjCc/Yjeb8=;
-        b=ykGfVJoZWqnTCs4rXhg8ugoGIaCSvyZ7gZBB3Ytv8r0OktJBiGH5gO5maUMJxLLrjU
-         7/xV8XctNvJUoeMMQhiiLRsHK4ojCknm8eA9zYQglEE+Fi22eUxqFOIi64mbrgxRJAH5
-         x92Pj3mWlZIquygdo99jTHaKMFGaL9RTHxbaJr145UH+vu6am8axFR8OVpzIuAP3ddyQ
-         oUfT/F9S9suuZk6XtjI5nYBY7Ge99RHJr2ShpwPpmNZfWZ1lf+6scE7kZHu1USB07BsB
-         OoceUD/bFiXOxenRnTvq2/PQNp5tY8QtHED0E6Fgxabg2yK2bODHbSDLjmjLqNtXcmd0
-         ONIQ==
-X-Gm-Message-State: AOAM533ibt3W68wkUvJGPuD6+XA/PTvPQn8Rp2Z8YJqoJ/WDuEoBbsZc
-        yKdF0Mdd201NuFpel4ZqVWduFg==
-X-Google-Smtp-Source: ABdhPJxkIQE8ZUfNFBVHAIoWL72FYkFUxDDXpV2GYzAp6lpUk9xvBeKN6+Jp9yTAX7/9u+HFkXAqqA==
-X-Received: by 2002:adf:fd12:: with SMTP id e18mr10449923wrr.275.1631863675219;
-        Fri, 17 Sep 2021 00:27:55 -0700 (PDT)
-Received: from localhost.localdomain ([2001:861:44c0:66c0:7c8c:5a9b:1b6e:1623])
-        by smtp.gmail.com with ESMTPSA id o2sm6500714wrh.13.2021.09.17.00.27.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 00:27:54 -0700 (PDT)
-From:   Neil Armstrong <narmstrong@baylibre.com>
-To:     Vyacheslav Bocharov <adeep@lexina.in>,
-        Kevin Hilman <khilman@baylibre.com>
-Cc:     Neil Armstrong <narmstrong@baylibre.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v5 0/4] arm64: meson: add support for JetHub D1/H1
-Date:   Fri, 17 Sep 2021 09:27:52 +0200
-Message-Id: <163186366690.1044811.10268335087144036716.b4-ty@baylibre.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210915085715.1134940-1-adeep@lexina.in>
-References: <20210915085715.1134940-1-adeep@lexina.in>
+        Fri, 17 Sep 2021 03:29:25 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AE14C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 00:28:03 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mR8Ht-0006D4-G5; Fri, 17 Sep 2021 09:27:57 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mR8Hr-0006Xr-8F; Fri, 17 Sep 2021 09:27:55 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mR8Hr-0004PR-6m; Fri, 17 Sep 2021 09:27:55 +0200
+Date:   Fri, 17 Sep 2021 09:27:55 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     "D, Lakshmi Sowjanya" <lakshmi.sowjanya.d@intel.com>,
+        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        "open list:PWM SUBSYSTEM" <linux-pwm@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Saha, Tamal" <tamal.saha@intel.com>, bala.senthil@intel.com,
+        Dipen Patel <dipenp@nvidia.com>
+Subject: Re: [RFC PATCH v1 07/20] gpio: Add output event generation method to
+ GPIOLIB and PMC Driver
+Message-ID: <20210917072755.d4ynxkp4scxrk6rq@pengutronix.de>
+References: <20210824164801.28896-1-lakshmi.sowjanya.d@intel.com>
+ <20210824164801.28896-8-lakshmi.sowjanya.d@intel.com>
+ <CACRpkdYJkPgaz-BvQ1X0PHRCCbn0hrMDabouDwHkn+pr9d-dSQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="riqk2pxwp7ut5zxn"
+Content-Disposition: inline
+In-Reply-To: <CACRpkdYJkPgaz-BvQ1X0PHRCCbn0hrMDabouDwHkn+pr9d-dSQ@mail.gmail.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On Wed, 15 Sep 2021 11:57:11 +0300, Vyacheslav Bocharov wrote:
-> Add support for new home automation devices.
-> 
-> JetHome Jethub D1 (http://jethome.ru/jethub-d1) is a home automation controller with the following features:
-> - DIN Rail Mounting
-> - Amlogic A113X (ARM Cortex-A53) quad-core up to 1.5GHz
-> - no video out
-> - 512Mb/1GB LPDDR4
-> - 8/16GB eMMC flash
-> - 1 x USB 2.0
-> - 1 x 10/100Mbps ethernet
-> - WiFi / Bluetooth AMPAK AP6255 (Broadcom BCM43455) IEEE 802.11a/b/g/n/ac, Bluetooth 4.2.
-> - TI CC2538 + CC2592 Zigbee Wireless Module with up to 20dBm output power and Zigbee 3.0 support.
-> - 2 x gpio LEDS
-> - GPIO user Button
-> - 1 x 1-Wire
-> - 2 x RS-485
-> - 4 x dry contact digital GPIO inputs
-> - 3 x relay GPIO outputs
-> - DC source with a voltage of 9 to 56 V / Passive POE
-> 
-> [...]
+--riqk2pxwp7ut5zxn
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks, Applied to https://git.kernel.org/pub/scm/linux/kernel/git/amlogic/linux.git (v5.16/dt64)
+Hello,
 
-[1/4] dt-bindings: arm: amlogic: add bindings for Jethub D1/H1
-      https://git.kernel.org/amlogic/c/c649e25c0fcd53e0f1e83f710fefbda9d2809c32
-[2/4] dt-bindings: vendor-prefixes: add jethome prefix
-      https://git.kernel.org/amlogic/c/a1732cca0ed3d1ac2a256d16302c93443d636146
-[3/4] arm64: dts: meson-gxl: add support for JetHub H1
-      https://git.kernel.org/amlogic/c/abfaae24ecf3e7f00508b60fa05e2b6789b8f607
-[4/4] arm64: dts: meson-axg: add support for JetHub D1
-      https://git.kernel.org/amlogic/c/8e279fb2903990cc6296ec56b3b80b2f854b6c79
+On Thu, Sep 16, 2021 at 11:42:04PM +0200, Linus Walleij wrote:
+> Hi Lakshmi,
+>=20
+> On Tue, Aug 24, 2021 at 6:48 PM <lakshmi.sowjanya.d@intel.com> wrote:
+>=20
+> > From: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
+> >
+> > Intel Timed I/O hardware supports output scheduled in hardware. Enable
+> > this functionality using GPIOlib
+> >
+> > Adds GPIOlib generate_output() hook into the driver. The driver is
+> > supplied with a timestamp in terms of realtime system clock (the same
+> > used for input timestamping). The driver must know how to translate this
+> > into a timebase meaningful for the hardware.
+> >
+> > Adds userspace write() interface. Output can be selected using the line
+> > event create ioctl. The write() interface takes a single timestamp
+> > event request parameter. An output edge rising or falling is generated
+> > for each event request.
+> >
+> > The user application supplies a trigger time in terms of the realtime
+> > clock the driver converts this into the corresponding ART clock value
+> > that is used to 'arm' the output.
+> >
+> > Work around device quirk that doesn't allow the output to be explicitly
+> > set. Instead, count the output edges and insert an additional edge as
+> > needed to reset the output to zero.
+> >
+> > Co-developed-by: Christopher Hall <christopher.s.hall@intel.com>
+> > Signed-off-by: Christopher Hall <christopher.s.hall@intel.com>
+> > Signed-off-by: Tamal Saha <tamal.saha@intel.com>
+> > Signed-off-by: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
+> > Reviewed-by: Mark Gross <mgross@linux.intel.com>
+>=20
+> So this is some street organ machine that generates sequences
+> with determined timing between positive and negative edges
+> right?
+>=20
+> I can't see how this hardware is different from a PWM, or well
+> I do to some extent, you can control the period of several
+> subsequent waves, but that is really just an elaborate version
+> of PWM in my book.
 
--- 
-Neil
+=46rom looking in the patch I think this is more versatile than the PWM
+framework abstracts. I wonder if there is a usecase for the
+functionality that cannot be expressed using pwm_apply_state?!
+
+I remember we had approaches before that implemented repeating patterns
+(something like: active for 5ms, inactive for 10 ms, active for 30 ms,
+inactive for 10 ms, repeat) and limiting the number of periods
+(something like: .duty_cycle =3D 5ms, .period =3D 20ms, after 5 periods go
+into inactive state). These were considered to be too special to be
+abstracted in drivers/pwm.
+
+> It seems to me that this part of the functionality belongs in the
+> PWM subsystem which already has interfaces for similar
+> things, and you should probably extend PWM to handle
+> random waveforms rather than trying to shoehorn this
+> into the GPIO subsystem.
+
+I agree that GPIO is a worse candidate than PWM to abstract that. But
+I'm not convinced (yet?) that it's a good idea to extend PWM
+accordingly.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--riqk2pxwp7ut5zxn
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmFEQ3cACgkQwfwUeK3K
+7AnLYQf9GjzSXlKt9YzS04WE2zmEQ28c5pFcvP2AuC1KNzcI+jIIAdp5e4IUltNL
+U9n1Ghs7cUbiHNelhrSfCD3RYZU2uDJ8zyFa5gbQU2CYnNbDzQghefSWphfepB3s
+XABiqd7KSB8nV7ozZJjnA0Df8XDmPvZ7hJ7nOU3Fp19wW0qm28KJ+Dmof+8EzRf2
+kd3QMMdzFZaHvMt14T5uYr205VdwYhZBVntnqNHoXBVMFGkwPhCx18fzZ+5LXBTW
+KcpveBgQPV7U2y9oXpGH7gsi85SfmpBQ+BCaDmSvfNQ6CXfBmClBFV1fUKfHxKsi
+AqZ/iyU9HybkRXEYZfJM6NnL4iE3Vw==
+=s0o9
+-----END PGP SIGNATURE-----
+
+--riqk2pxwp7ut5zxn--
