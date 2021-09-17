@@ -2,75 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E0E8410026
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 22:01:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57485410040
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 22:14:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243766AbhIQUDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 16:03:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56346 "EHLO
+        id S244479AbhIQUPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 16:15:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234785AbhIQUDM (ORCPT
+        with ESMTP id S1343892AbhIQUPc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 16:03:12 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0072CC061757
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 13:01:48 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id v5so33681175edc.2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 13:01:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=f0WUj3xBYR+uX+2jNeN4KyEY/0RQ4nNwx9xsOHR2UkA=;
-        b=C4EqI7CD/cpIxF6cDLEVXb8YGBozN7ru2ezQW+wMquy7ZZE1Dmi93s5czrwJV9D3tj
-         80DFiMmHt41cPKaHy9GdVA1bS9kpzEEtbPY6SMg0C22Tr5vSFNKHag8Mj3lKZgSN7Ihr
-         c7Lx+zSsjgbURg7BRkL5Jueu0CpC1VTu3ui2dnADkuGJqKcZkhzSIAfPYCPYeNr3RHqe
-         cOvNKp5qiUtjswCdD/ZxIrFaCuk3V7Ju48sIcvzTt4QTuyG0LL53RnSwMQMohC1TDZSl
-         sSZnjf7hYXsCZzccg8dexNmULPeLqOTCe/Lrswt4XafutTGZpuWjhngur1rPi9tE1nZ5
-         n6mA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=f0WUj3xBYR+uX+2jNeN4KyEY/0RQ4nNwx9xsOHR2UkA=;
-        b=AuNlBlkfwr4iIzpcUpmykqN6sccKT7q1G6CgYSj1RZIaK5/FMMRI+2ij6XJdGUl7IE
-         orYt3RiSfHbHyKcEZQWhOn0NAXZy9iPwFWZOPPCQqbmV/nUC7S9kLrEyrmkmrHLEdAV2
-         QWNL0t2GAAxUAPRzBVzUBVr9NbS+QypvOo0G7MKuTKhwZswtMf+KMBz2K7/CiM6rgUo/
-         MRynZNOqCpjTT2XlA+M+JWfrLPgXSZDeJGZllfx5utokphqq9u1Nr8MqC9ZAauhpaDT/
-         u+8jY0LPxMb5DX0sXiYevi5u4lRDDjq3mPB1KdYMB3wJNLZp/XVl2nRyQT1ys+UsVlRO
-         7lFg==
-X-Gm-Message-State: AOAM5339eDzO0KzFiJWqxB3z7eMI17DnH0soaxC77/ZsDezePRjHwr6p
-        nvBzhNF89qn+yLQrpMrNDuO2zyrW1Qr/wDinCiM=
-X-Google-Smtp-Source: ABdhPJxytWzL8e3YK+FE1ONbAfBjbl+xmARiCIdxOlCU6tMy+H41AOW2LsVqZlMjHz5unu3r4j+N3FTYLV0ay/82F70=
-X-Received: by 2002:a50:ee83:: with SMTP id f3mr14315181edr.263.1631908907447;
- Fri, 17 Sep 2021 13:01:47 -0700 (PDT)
+        Fri, 17 Sep 2021 16:15:32 -0400
+X-Greylist: delayed 1401 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 17 Sep 2021 13:14:09 PDT
+Received: from mx0a-00190b01.pphosted.com (mx0a-00190b01.pphosted.com [IPv6:2620:100:9001:583::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8CCEC061574;
+        Fri, 17 Sep 2021 13:14:03 -0700 (PDT)
+Received: from pps.filterd (m0122332.ppops.net [127.0.0.1])
+        by mx0a-00190b01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18HIUNZM019594;
+        Fri, 17 Sep 2021 20:50:37 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=jan2016.eng;
+ bh=t/UzDs41fhr/3WPUQPzQWLJyBc+toDLsiW1RT3rjUQY=;
+ b=b4V3xSa5nkxkYKYs73IUMzAqAbUbLkBs5rL+628BoNrfIj7Gb0KJWfp3kxrQ/2sm0YGB
+ azyUt5EXvci2Q/VmdPVZfcmK38suFrmxp3juY2H3Bj/+cK5RxejZ6zJnsHkILwv8MP4E
+ wI42Bt3g+YyWCxP4gqtKvgOoydBnPnGHz2XtlmtAtnLBYG+6pDJJGy5ExWdJWRhmiJDa
+ oqfMHWVtxRBKRMAtXM2p0mo1iHvaOYpXA1VYWuKlOoD4fBrWShH1Bh1v+cq/DvK93+QO
+ W2/HCK3oOths5YtVmXwOQ64JKe3Xi2UIQmaSLGk34/5AX93M03TctLdzzmM+EP5/fITC 4g== 
+Received: from prod-mail-ppoint3 (a72-247-45-31.deploy.static.akamaitechnologies.com [72.247.45.31] (may be forged))
+        by mx0a-00190b01.pphosted.com with ESMTP id 3b4hdecu3x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Sep 2021 20:50:37 +0100
+Received: from pps.filterd (prod-mail-ppoint3.akamai.com [127.0.0.1])
+        by prod-mail-ppoint3.akamai.com (8.16.1.2/8.16.1.2) with SMTP id 18HJnYcx030675;
+        Fri, 17 Sep 2021 15:50:36 -0400
+Received: from prod-mail-relay18.dfw02.corp.akamai.com ([172.27.165.172])
+        by prod-mail-ppoint3.akamai.com with ESMTP id 3b3n2v6dcu-1;
+        Fri, 17 Sep 2021 15:50:36 -0400
+Received: from [0.0.0.0] (unknown [172.27.119.138])
+        by prod-mail-relay18.dfw02.corp.akamai.com (Postfix) with ESMTP id A6A9111D;
+        Fri, 17 Sep 2021 19:50:35 +0000 (GMT)
+Subject: Re: [PATCH v2 3/3] Documentation: dyndbg: Improve cli param examples
+To:     Andrew Halaney <ahalaney@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jim Cromie <jim.cromie@gmail.com>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210913222440.731329-1-ahalaney@redhat.com>
+ <20210913222440.731329-4-ahalaney@redhat.com>
+From:   Jason Baron <jbaron@akamai.com>
+Message-ID: <ff05cae4-8fa7-d1b6-795e-3bd85316774d@akamai.com>
+Date:   Fri, 17 Sep 2021 15:50:35 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Received: by 2002:a17:906:f11:0:0:0:0 with HTTP; Fri, 17 Sep 2021 13:01:47
- -0700 (PDT)
-Reply-To: fatimakhaledconfirm@gmail.com
-From:   "Mrs. Fatima Khaled" <ulstercu52@gmail.com>
-Date:   Fri, 17 Sep 2021 13:01:47 -0700
-Message-ID: <CALXgh32gQgqJCHM_qQymcPfQbUnzXHYb4dhcoe0hJgW+T63rUQ@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210913222440.731329-4-ahalaney@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-09-17_08:2021-09-17,2021-09-17 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
+ bulkscore=0 suspectscore=0 mlxscore=0 spamscore=0 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109170118
+X-Proofpoint-ORIG-GUID: fOdtlFq1dLt6ug-7p1TkzhtqvLDHUtPg
+X-Proofpoint-GUID: fOdtlFq1dLt6ug-7p1TkzhtqvLDHUtPg
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-17_08,2021-09-17_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0
+ clxscore=1011 priorityscore=1501 impostorscore=0 mlxscore=0 suspectscore=0
+ bulkscore=0 adultscore=0 lowpriorityscore=0 phishscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109030001
+ definitions=main-2109170118
+X-Agari-Authentication-Results: mx.akamai.com; spf=${SPFResult} (sender IP is 72.247.45.31)
+ smtp.mailfrom=jbaron@akamai.com smtp.helo=prod-mail-ppoint3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-Hello everyone, are you looking for a financial source without any
-upfront fees for a new apartment, construction, refinancing, debt
-consolidation, personal or business purpose? Small or large scale?
-Here is an open opportunity. We offer investment opportunities for
-each eligible person (s). * Borrow from  $5,000 dollars to  $
-80,000,000.00 Dollars, * Interest rate 0.2% Reply with the following
-information. Name: Amount Required: Loan Duration: Purpose, Reason:
-Location:Monthly income:Telephone number:, Yours sincerely. Interested
-parties should contact us at : fatimakhaledconfirm@gmail.com
 
 
-Yours faithfully
-contact Mrs.  Fatima Khaled
-Finance Director
-call phone +1 (204) 410 4624
-WhatsApp: +1 (204) 410 4624
+On 9/13/21 6:24 PM, Andrew Halaney wrote:
+> Jim pointed out that using $module.dyndbg= is always a more flexible
+> choice for using dynamic debug on the command line. The $module.dyndbg
+> style is checked at boot and handles if $module is a builtin. If it is
+> actually a loadable module, it is handled again later when the module is
+> loaded.
+>
+> If you just use dyndbg="module $module +p" dynamic debug is only enabled
+> when $module is a builtin.
+>
+> It was recommended to illustrate wildcard usage as well.
+>
+> Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
+> Suggested-by: Jim Cromie <jim.cromie@gmail.com>
+> ---
+>   Documentation/admin-guide/dynamic-debug-howto.rst | 7 +++++--
+>   1 file changed, 5 insertions(+), 2 deletions(-)
+>
+> diff --git a/Documentation/admin-guide/dynamic-debug-howto.rst b/Documentation/admin-guide/dynamic-debug-howto.rst
+> index d0911e7cc271..4bfb23ed64ec 100644
+> --- a/Documentation/admin-guide/dynamic-debug-howto.rst
+> +++ b/Documentation/admin-guide/dynamic-debug-howto.rst
+> @@ -357,7 +357,10 @@ Examples
+>     Kernel command line: ...
+>       // see whats going on in dyndbg=value processing
+>       dynamic_debug.verbose=1
+> -    // enable pr_debugs in 2 builtins, #cmt is stripped
+> -    dyndbg="module params +p #cmt ; module sys +p"
+> +    // Enable pr_debugs in the params builtin
+> +    params.dyndbg="+p"
+
+If we are going out of our way to change this to indicate that it works 
+for builtin and modules, it seems like the comment above should reflect 
+that? IE, something like this?
+
+'// Enable pr_debugs in the params module or if params is builtin.
+
+The first two patches look fine to me, so if you agree maybe just 
+re-spin this one?
+
+Thanks,
+
+-Jason
+
+> +    // enable pr_debugs in all files under init/
+> +    // and the function pc87360_init_device, #cmt is stripped
+> +    dyndbg="file init/* +p #cmt ; func pc87360_init_device +p"
+>       // enable pr_debugs in 2 functions in a module loaded later
+>       pc87360.dyndbg="func pc87360_init_device +p; func pc87360_find +p"
+
