@@ -2,183 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 675CF40FD1C
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 17:48:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 746AE40FD22
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 17:48:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344201AbhIQPtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 11:49:52 -0400
-Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:55785 "EHLO
-        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1343971AbhIQPtt (ORCPT
+        id S1344345AbhIQPt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 11:49:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55320 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344226AbhIQPtx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 11:49:49 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.west.internal (Postfix) with ESMTP id E4D873200914;
-        Fri, 17 Sep 2021 11:48:25 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Fri, 17 Sep 2021 11:48:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=fDrqAiKkTh/di0wnBvNl4ElHMUw
-        aF9hP7mXIhAjdorE=; b=MhRTZhbCxUctdBSDpy3/ySDBIhavriObviDI5cc396u
-        LzbAWDjCHxY12wkF+bCRRL0PImB/QHWM/5obURepNARozx2MsRhUXUeDYe+xoBxK
-        FrxPOLAb9VXeLZ7i8C0bXPUCQ+1gX4NKQeAqLS2pjeSLZvWoXWk3z/RIRF5M7AiM
-        DWkc8Uam/Htnd4ODYD9D1qJOmf2VsgSWsuhRix0u24LyP+vK76Fsvcpk0fKPU4kg
-        uSX69cUM0/lx5wRF1rPu2ThMCZHsHMC7qfNliIPq/zjmTlFn4Sv+LFqYlMnH1bVB
-        ZbmMl0xzxlRErFmCcKzr4EAtzjOPoG9dJTKBkYKMQCg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=fDrqAi
-        KkTh/di0wnBvNl4ElHMUwaF9hP7mXIhAjdorE=; b=rxyve818Zslr7fTyiVUggq
-        +MgKdbnkmbS5YM3kQHdZJzO5YmR0lSCsJJRdcb2gS6qSEMHTdW3lmCO9qXLUh/++
-        sJbGTsmogOkAam8V7xk695CTDKwiH4MCspUyI2EsTDWOA+ZUBjY/JzddPprcvyQt
-        xOu6XewErG8FhDycYhr73pVrrbQuQT+Fm2KxWJ4woM2ucUfzQMq4yz2wc//HCeVx
-        n4oPBblslp/ijnvRWbttehcVUFdHdVUuzIMtVO/O0oJAfGaeIFZPsvW9e/vB+EQG
-        +3dP3f8uLQlrvMAfckD/d10ECax1h8PLHRyNUYKroH34WI3IrIgaCAYOSjB1PwlA
-        ==
-X-ME-Sender: <xms:ybhEYXGrVxF61T9s3Hplmdh92hN1ZHf1uMt5qzPQ-Kj4UtQRnHSs4Q>
-    <xme:ybhEYUWhfXjZoNCyA7N7PTSMna-2mVJGnD-W9EgNerKd2dnDMPZqHAOxv_L6NjOcM
-    BGL6jjp-tg8g-Pfutk>
-X-ME-Received: <xmr:ybhEYZIAXqX5ejj6_vJsTX1ivDYAeyl_YVi6mqg9Uu6RfiKZj6rLCmBVjWHtEfe00BrICQ3nOJr8So9oTe4GhS0fWD1M4ItezZgB>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudehiedgkeekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    goufhushhpvggtthffohhmrghinhculdegledmnecujfgurhepfffhvffukfhfgggtuggj
-    sehgtderredttdejnecuhfhrohhmpeforgigihhmvgcutfhiphgrrhguuceomhgrgihimh
-    gvsegtvghrnhhordhtvggthheqnecuggftrfgrthhtvghrnheplefgkeffudffleeijeef
-    gffgtdegvdeuieetkedvueejfeegudehueehkedtleeknecuffhomhgrihhnpegsohhoth
-    hlihhnrdgtohhmpdhigidrihhonecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghm
-    pehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:ybhEYVHWBEU4h0MD14EeJQOCavksI1B_RbyNczXgBuVQ5gVO4wTAbg>
-    <xmx:ybhEYdXKi8hYHL5am4JJSz1n37gOkmI3eTacCl8aWJwf0ZD2uxeTWQ>
-    <xmx:ybhEYQNXAy-ES9xZbABa8KXcayRPiwOOaPoEEW5hcS7S--XSb3KRRw>
-    <xmx:ybhEYQR6kHiWmp3kJ6fFPYWEw1ZHP_wdRjThnb1JGpu15VVcZ1KWOQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 17 Sep 2021 11:48:24 -0400 (EDT)
-Date:   Fri, 17 Sep 2021 17:48:23 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@gmail.com>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        linux-sunxi@lists.linux.dev,
-        Android Kernel Team <kernel-team@android.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: Issue with fw_devlink=on on 5.14
-Message-ID: <20210917154823.jly4hsbe73bathce@gilmour>
-References: <5570111.f9yF5Hohu3@kista>
- <33995494.1UIDBzYVPQ@kista>
- <CAGETcx-_sNJ1Z-8Bmqh+awi-2xnQQLjnJf+Zncj23ByDmJYDJQ@mail.gmail.com>
- <1757257.sNEdEUkno9@jernej-laptop>
+        Fri, 17 Sep 2021 11:49:53 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F8BDC061767
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:48:31 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id 17so10010086pgp.4
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:48:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=oU5/PdBksbt91dmMZ2AVGJIFzdhPLZCXzFzx+KRfDqk=;
+        b=KDzGJ0b9khD+pih/CbX22IId0YBoC/kJyqkzfoF/YleeZhZclne1J/L8CYza9hth1j
+         k0eN4rSOAq5jLCYYiXyLB+BiFSMlTE18J4j23xLqQ5cOJZDMocN7et1mYg4Ylouh4adS
+         7MMd1eKp8SzWcXGjhEgr5gwm/XDc/WeglPkC4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oU5/PdBksbt91dmMZ2AVGJIFzdhPLZCXzFzx+KRfDqk=;
+        b=HZY/bJlXyjsO5106dUgH06ljLFmTHq1xbBZiVgUvu9I1UFU5g7DswYlbskUctRG8GK
+         M6BURtqG3KLegOdyJ9yNpE9Si5GV/DT6GBRqwdrpRkZVO1d19wd/oLPd/xu+46ITL07x
+         kcDAUSGt/EMF++MyiaNFVbzsDZ44esGE+z6Z7F6by/fhD8fWDImRj7ohiXXlGkdCApol
+         ++FoPaCBL3H9loIG5Z0K98+Oejkkd274GD5vwKulDjZeGkAVHa1IgKR4rRnReJVBlP9C
+         GRDtWiUX90nWGeNP6W1dBHGUnSoRM9z64fTo/X1Av0B8E/ydr5cVCzPjHhCQAJMj91g0
+         7WCw==
+X-Gm-Message-State: AOAM533+klc0a2zy68ZBGnavLycXvROXJ+wGORl/wK3pVoNwQHINT8cb
+        phOezbBxaBgfCkOOJpJIAYBWIA==
+X-Google-Smtp-Source: ABdhPJywPsJt5eForru+BeWv06Lmr+gWdQ+HZR8iE1hgtztL0deStFU6zzGj865eVc8KXipuQb3DZw==
+X-Received: by 2002:a63:da54:: with SMTP id l20mr10404254pgj.341.1631893710953;
+        Fri, 17 Sep 2021 08:48:30 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id t68sm6925395pgc.59.2021.09.17.08.48.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Sep 2021 08:48:30 -0700 (PDT)
+Date:   Fri, 17 Sep 2021 08:48:29 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Brendan Higgins <brendanhiggins@google.com>
+Cc:     shuah@kernel.org, davidgow@google.com, arnd@arndb.de,
+        rafael@kernel.org, jic23@kernel.org, lars@metafoo.de,
+        ulf.hansson@linaro.org, andreas.noever@gmail.com,
+        michael.jamet@intel.com, mika.westerberg@linux.intel.com,
+        YehezkelShB@gmail.com, masahiroy@kernel.org,
+        michal.lkml@markovi.net, ndesaulniers@google.com,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        gregkh@linuxfoundation.org, linux-iio@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-hardening@vger.kernel.org, linux-kbuild@vger.kernel.org
+Subject: Re: [PATCH v1 1/6] gcc-plugins/structleak: add makefile var for
+ disabling structleak
+Message-ID: <202109170808.629688A460@keescook>
+References: <20210917061104.2680133-1-brendanhiggins@google.com>
+ <20210917061104.2680133-2-brendanhiggins@google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="cyyux7n7aa3lplag"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1757257.sNEdEUkno9@jernej-laptop>
+In-Reply-To: <20210917061104.2680133-2-brendanhiggins@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 16, 2021 at 11:10:59PM -0700, Brendan Higgins wrote:
+> KUnit and structleak don't play nice, so add a makefile variable for
+> enabling structleak when it complains.
+> 
+> Co-developed-by: Kees Cook <keescook@chromium.org>
 
---cyyux7n7aa3lplag
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+For a C-d-b, also include a S-o-b:
 
-On Fri, Sep 17, 2021 at 06:32:45AM +0200, Jernej =C5=A0krabec wrote:
-> Dne petek, 17. september 2021 ob 04:55:22 CEST je Saravana Kannan napisal=
-(a):
-> > On Wed, Sep 15, 2021 at 11:59 AM Jernej =C5=A0krabec
-> >=20
-> > <jernej.skrabec@gmail.com> wrote:
-> > > /cc linux-kernel@vger.kernel.org
-> > >=20
-> > > Dne sreda, 15. september 2021 ob 20:36:11 CEST je Saravana Kannan=20
-> napisal(a):
-> > > > On Wed, Sep 15, 2021 at 11:23 AM Saravana Kannan <saravanak@google.=
-com>
-> > >=20
-> > > wrote:
-> > > > > On Wed, Sep 15, 2021 at 11:07 AM Jernej =C5=A0krabec
-> > > > >=20
-> > > > > <jernej.skrabec@gmail.com> wrote:
-> > > > > > Hi Saravana!
-> > > > > >=20
-> > > > > > I noticed that in kernel 5.14, at least on Allwinner H3, deinte=
-rlace
-> > >=20
-> > > driver
-> > >=20
-> > > > > > doesn't load anymore if fw_devlink is set to on. If I set it to=
- off,
-> > >=20
-> > > driver
-> > >=20
-> > > > > > loads and works without problems. If I remove interconnects pro=
-perty
-> > > > > > in
-> > >=20
-> > > DT
-> > >=20
-> > > > > > node and use driver hack instead, it also loads and work ok.
-> > > > > >=20
-> > > > > > For reference, I speak about this node:
-> > > > > > https://elixir.bootlin.com/linux/v5.14/source/arch/arm/boot/dts=
-/sun8
-> > > > > > i-h3.dtsi#L153> >=20
-> > > > Oh the dts file please. Not dtsi. I need the full picture of
-> > > > dependencies.
-> > >=20
-> > > I just dumped DTB from the board I use for testing this:
-> > > http://ix.io/3yZB
-> >=20
-> > I was basically asking for this:
-> > arch/arm/boot/dts/sun8i-h3-orangepi-plus2e.dts
-> >=20
-> > > > -Saravana
-> > > >=20
-> > > > > > Do you have any clue why it doesn't work?
-> > > > >=20
-> > > > > Kinda busy today and I'll take a close look later, but if you del=
-ete
-> > > > > "interconnect" but it works, then it seems like you have no drive=
-r for
-> > > > > your "mbus" interconnect? Is that expected?
-> > >=20
-> > > Ah, you're completely right. There is no MBUS driver (yet), since cur=
-rent
-> > > purpose of that node is to determine DMA memory offsets and for that =
-you
-> > > don't need a driver.
-> >=20
-> > Can you explain more how you get the DMA memory offsets in the code
-> > from this node?
->=20
-> Maxime, can you help with this?
+Signed-off-by: Kees Cook <keescook@chromium.org>
 
-Sure, Jernej is right, the interconnects binding with the dma-mem name
-is here to describe the path DMA accesses take between devices.
+But otherwise, yes, this is good. :)
 
-In our case, the registers accesses go through the usual busses, but the
-DMA accesses go through a separate one controlled by the mbus controller
-Jernej was talking about.
+-Kees
 
-The driver core will then take this into account and apply any DMA
-mapping the mbus controller has:
-https://elixir.bootlin.com/linux/latest/source/drivers/of/address.c#L582
+> Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+> ---
+>  scripts/Makefile.gcc-plugins | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/scripts/Makefile.gcc-plugins b/scripts/Makefile.gcc-plugins
+> index 952e46876329a..4aad284800355 100644
+> --- a/scripts/Makefile.gcc-plugins
+> +++ b/scripts/Makefile.gcc-plugins
+> @@ -19,6 +19,10 @@ gcc-plugin-cflags-$(CONFIG_GCC_PLUGIN_STRUCTLEAK_BYREF)		\
+>  		+= -fplugin-arg-structleak_plugin-byref
+>  gcc-plugin-cflags-$(CONFIG_GCC_PLUGIN_STRUCTLEAK_BYREF_ALL)	\
+>  		+= -fplugin-arg-structleak_plugin-byref-all
+> +ifdef CONFIG_GCC_PLUGIN_STRUCTLEAK
+> +    DISABLE_STRUCTLEAK_PLUGIN += -fplugin-arg-structleak_plugin-disable
+> +endif
+> +export DISABLE_STRUCTLEAK_PLUGIN
+>  gcc-plugin-cflags-$(CONFIG_GCC_PLUGIN_STRUCTLEAK)		\
+>  		+= -DSTRUCTLEAK_PLUGIN
+>  
+> -- 
+> 2.33.0.464.g1972c5931b-goog
+> 
 
-So it's entirely transparent to the consumer driver.
-
-Maxime
-
---cyyux7n7aa3lplag
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYUS4xwAKCRDj7w1vZxhR
-xdh2AP46XGze/rsedwcLNrSmU/Q4Mz2R/XKJSzttmt1e5kR9bwEA/U/Kh4kQYt3d
-qKJI6rkrJdzYM8NxQn8D7sGbq2JwdQA=
-=IjO6
------END PGP SIGNATURE-----
-
---cyyux7n7aa3lplag--
+-- 
+Kees Cook
