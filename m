@@ -2,162 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8487D40F92B
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 15:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67B3D40F932
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 15:32:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243735AbhIQNcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 09:32:12 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:57311 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243646AbhIQNcJ (ORCPT
+        id S239350AbhIQNeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 09:34:08 -0400
+Received: from mout-p-101.mailbox.org ([80.241.56.151]:27724 "EHLO
+        mout-p-101.mailbox.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231887AbhIQNeE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 09:32:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1631885447; x=1663421447;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=kWh8bgRtxHUljLy/4pkpehjqp++AHwv1DpdDm3WVZa8=;
-  b=YQEzGL0FbJ9SqQTo+wJUh23k6JeA8Igsatrk1hlpRNIjILnJSHh5tVcf
-   EGCDm6Y6rBEy3AZlgkDjMftR3nmMXRIWWc3b5LTM9cSaRnqoYQ0STB7x4
-   dAwaafoURp2i35XiRi21qo1gjFcDjyZQwZ3E9qcaktIpyC5+QmbfFPeyc
-   OuxV/aCJhq227I15McKHqQ0N5+f1D5K+mLHZViX+56xdVNyL80lKTGspq
-   YFORxO6HAI/lV8r6HiQv1sLUi2WbtzQ+HPZb2h48iIxJfyeDgR8KJ5QYh
-   3SA0SCVxDL0K2yiBISTxDKOdQlKCuRLM0PBIafU5WkPU4LbP06LGTW2zB
-   Q==;
-IronPort-SDR: gwduTEkFFMoh5J9hNLg258yV8RGjsbLEYohl7GPHSGutCbca4vszDiCNCN7ueV8z7XMnxcgoUl
- Ugijt0c2Q5YO9flOE+80RPOjHqnDWahMbMhz3Z7jjgqzaqJ3lHRw/P7mjndB50dRYEYI1b0JqA
- VKtjjCi15sBRb10lFa6yExRMzPleaDt35cxTgMibaLFnT4rBV22A9ghzDzUsI8n50Ewb5Jpo8E
- wUJdsPfnrB9dpE3Q9v4J/qRh9utMMkWDWKQO1+9t1c/1jn2SEIYyOd9PFF5A0qYLdAbrZ+PQab
- HtFXbMmy0EF8WvFnN298hL/u
-X-IronPort-AV: E=Sophos;i="5.85,301,1624345200"; 
-   d="scan'208";a="136950711"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 17 Sep 2021 06:30:47 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Fri, 17 Sep 2021 06:30:46 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.72) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.14 via Frontend
- Transport; Fri, 17 Sep 2021 06:30:46 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hKI7lOcGOGEMM/2e8n28WScoe1j08dTxhS3+j5pOrABtTN7CZDy8ciSi9YXfX/aqSnYB6T/gtjdA1HAwu6Ki9L/FClADEVaG5QWPHbtR9dIA430lTt6M6VkFr/QEuFZIYFsoZScCN5tDtsA+82tSERSIhdwDMq+ndc8V9/tloqaZKWfaAvjS+11u8ZDVE5xVBloJqWF5XxgIORHIH6MXFpv3FxM8YGWWbhH/A0MJpK13JtxigxDg51TSbx5Tf2VZGtNgfpTGkpWgk9a/ifVuS51/laxNBflv2MqMd9MrNOEuNLThw3B2NJr29SIgRY8oO6nu5B8azcmga8xSzA57dg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=kWh8bgRtxHUljLy/4pkpehjqp++AHwv1DpdDm3WVZa8=;
- b=eVpwA4lA3ZzpKRds6l8cEnKzMP1DxRmW1c4sac2bicMpa84cJokpaxY6FEi0y6ynVz/syKaWIpY6Y2rfCKWatFzSSygQzP+l/n/UVphz/fGw9D0gB5f9Ktli4WwWPF5gMrxYJox+zbyCaDjdZ8GH7v1qS/ATBSZy0w14hM+i9NBFmprXyEydhjcXih7qLLVEd1Nh1Iz//eOs4mgqKaqp4/xHHNiwb2sLoj0LPNDnK1CtsJLEKl+2KYNznV3BdzTn8gSUi+PLuLTAMHNuAl2xF8jObFltk+KLvaCNrmREdYJP51bYcV/206Jk6Ya7u1d8IaZK/1kpUwcEuhLQOZnFhA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kWh8bgRtxHUljLy/4pkpehjqp++AHwv1DpdDm3WVZa8=;
- b=objt+r782YwjBWv9l04GkBzSKCtzNeRanye9VDLLY1Xm4si8Ef0+Qs/qOWPZwivQo8calVHv1+SR+ameX94g3NR+ezwuJ/ImyMc0/dxMMSlLxzRzV9rXi7F5MIuObbgtVGrHjqvda38qsQwFe8ksGbDAimEmjB86KO+wnX8Vrno=
-Received: from SN6PR11MB3422.namprd11.prod.outlook.com (2603:10b6:805:da::18)
- by SA2PR11MB5179.namprd11.prod.outlook.com (2603:10b6:806:112::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Fri, 17 Sep
- 2021 13:30:44 +0000
-Received: from SN6PR11MB3422.namprd11.prod.outlook.com
- ([fe80::e139:9d6a:71c3:99c8]) by SN6PR11MB3422.namprd11.prod.outlook.com
- ([fe80::e139:9d6a:71c3:99c8%6]) with mapi id 15.20.4523.016; Fri, 17 Sep 2021
- 13:30:44 +0000
-From:   <Claudiu.Beznea@microchip.com>
-To:     <Nicolas.Ferre@microchip.com>, <davem@davemloft.net>,
-        <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 0/4] net: macb: add support for MII on RGMII interface
-Thread-Topic: [PATCH v2 0/4] net: macb: add support for MII on RGMII interface
-Thread-Index: AQHXq8g3uWhmL8/CpUmD0Bh+5jeONg==
-Date:   Fri, 17 Sep 2021 13:30:44 +0000
-Message-ID: <984bcf20-60b8-fc86-b6ee-fd3f4bbb0624@microchip.com>
-References: <20210917132615.16183-1-claudiu.beznea@microchip.com>
-In-Reply-To: <20210917132615.16183-1-claudiu.beznea@microchip.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-authentication-results: microchip.com; dkim=none (message not signed)
- header.d=none;microchip.com; dmarc=none action=none
- header.from=microchip.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: fb8f5e38-40eb-4ac7-7f41-08d979df5a0b
-x-ms-traffictypediagnostic: SA2PR11MB5179:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SA2PR11MB5179D127B83B7E22EEF630F287DD9@SA2PR11MB5179.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: qd/Pfja0b7qEz3qo2keU4te5YWMFDvFIesba7K8t5o39VhOoKQPz+PqWLWwEKj6CIVyWgDTI44hOkFMmF3inWQdFUMSLhz3HNu04tZYiOwyGLzjy1Jz7byUlgp+Rpv1dILkIRD4O7ULb0Hv5hNQaYvaml+K+N+xBWYvehPO/y/4fBGa1VWFesLFaJPOFcBXvDYbjFQziSMUHIlZs4fAPbSX4Pvbf+cjZMPRX8Xki9okZIdsglf4TJTTNom7fECj4Ws6DCOOPG3k5AlQ6DsBA0Vda5MeMjyQq0OnygPBLGmZSWfvW5U0T1c1B+wqKhYqDr9kOwVGB9q2ZS2zLM+2jtcoFRys7KSbg9s+qp3Brpa7hJuCBVZogOFyNWUnEE39g5qqKmQni0f8n/+crD0IEnJU5SGngFfpD0RMMXELR1DU3AmBJ6QI5m/dwAaMh+WVBATQUTqnGrW2D54IUPnX9rtV5k/pm9wxq/lL+UyeDaKLZpuCR302HXgfyPPPIsOXP/3z1T+mZgP9aZb/6suurtLfxStjTKEQX7Sm1cVs2T4jRdLLUTIo0MyYlTpv8svvj1cpvEepS3/yAuzIdOmdFOqX2SQ9a7zLYB0d2gD/GGOyT8oLkwBsQWWbPQ37CPoZNC8qVli2MtbvPKLKv6HSHQi1S1xE9pp6LAoPdBGw+NTwQOFHosEvtLgSK2/QoM/jmH+MYLJEYb7cgJEzokXItuerRxYMoc+yLBCSmNU5aFasp9Sv5oANWVJpkPWppBgZlA+cJjNfRVo4LNSAjbGs9dw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB3422.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(346002)(366004)(376002)(39860400002)(396003)(66946007)(64756008)(66446008)(66476007)(31686004)(38100700002)(66556008)(54906003)(110136005)(91956017)(76116006)(2906002)(31696002)(86362001)(2616005)(8676002)(5660300002)(6486002)(8936002)(4744005)(83380400001)(316002)(38070700005)(4326008)(53546011)(6506007)(71200400001)(122000001)(186003)(36756003)(26005)(478600001)(6512007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?THROQkQ1ZUJwaE1OcXNlbGhrNGRSSXhDLzBnUzBUWkVEcjRma3pTaTdFSTA5?=
- =?utf-8?B?dW9vaDA1R1lRZmgzQWowdVh4RlBNbUVXNEx2bC8rOVN6eENEODNNRncyQ0c0?=
- =?utf-8?B?dWs0ZERDWU1IdnlPNUgrQW15M2diRXVSU0N5RUxMUENnNldwUWovNVhUUUtQ?=
- =?utf-8?B?bjQyajFtNEJkSEdEaEtpN0tSYTROWkV2YkN4alVXK2gwZUdVY05XZmVzZEM1?=
- =?utf-8?B?eElHTjVtNGFRd1ZJZ0JINnB0S0ttd3VRQkYvNHpYcUpTOHpoWWtIcTBnNmtu?=
- =?utf-8?B?cE5ueWpwdU16dzBOSHBlWVgxY0c5TlpGa0RUOTJGUDFSSkYyR0xFanRHdFd6?=
- =?utf-8?B?MDVRY1RXek9oekZKcXdVK0JaVW42cjhxckhENW9PU1BxRU1wYmxHdHBTK25u?=
- =?utf-8?B?TmQ2NUM3bmJUdzNKYitjL2Vvd0tPN0hxZGgvVUE5ZEZiOEJuOFE1UWp4ajM0?=
- =?utf-8?B?VHI0Mks1UVhDMEl3L1Mzd3VYalZPa1pxZGY4TEhoc3J1bTZuenphTDd1VW5S?=
- =?utf-8?B?RTA5Q0d0MGJBRGdiTHhqMjVteGVJSm4vbDNBOTZiSmNNK21TLzJXQUFsQU9t?=
- =?utf-8?B?S0tsTlNueTJsSFNqRWErOFFlSlBDMEhhbFVaNlBWRXdXZ2JmQmpZN1M4VEpQ?=
- =?utf-8?B?L04zRTI2aWF0bUlaOGc4YUYweHBmRjVHMEdqSzk5YjlWa294UUdBM0ZwQzJT?=
- =?utf-8?B?M3RheFpDVXc0NE91d2VHaW9UdS9yWnM0bDQ1bkpRWWlvQ3F3WmZmTlQ4TEVm?=
- =?utf-8?B?VFdGWE9ab2lpMEdURnhUVm44bEp2Tk8yeVJMNDFiRzF0aDN3alRwMHVPQkVU?=
- =?utf-8?B?ZEQzMUdma3cyOFR2eXRoQVBnNU1iQzB1MHpkZkJxK3g2eUZmd0hGRnB5clh5?=
- =?utf-8?B?NzUvZ2lMT2RYbjRBSVBHdG1MOStGM0JJem9IdlVDbHhBbnU4MlRQRUFYTXd0?=
- =?utf-8?B?MlhaNXNpRWplb3oyMm1DdGQ2SHNCS1llNjQ5dTFydnViSXBXM0xQeEJYV0dz?=
- =?utf-8?B?Qmw4djk3VWVlb2YvV1ZDZFlsaUd2VkZSTWxvMmNxdTYxWTF2MmpSNXFpTExn?=
- =?utf-8?B?MjRmMUFaT0FROE5tMVNKVHBJUlBnQWR6QjdJVVBrdTF1VVJ1ajF0cEhYQm0z?=
- =?utf-8?B?Tkx5Ynk2Z1hzTW9GMitqY1lRZE9GQjNvbWVvVEJEaUJEYm91THZETVcyU2tM?=
- =?utf-8?B?NTRsME9Fa1BiNVpLN2xIWGg3d001emorVm9BektQNGVEQTFHWlpQc0JHREdL?=
- =?utf-8?B?U1BvbG40bzlTeFJURW5PTktqQUkvUCtCZ0RjQlZIL3BqbHNnbzd0SzdMcVdO?=
- =?utf-8?B?cHVmb2doRnV1Z3VnK1J1QWFBRVg3b1FtZnVmbG5WUXNtUldhK0RwZFBZTm5E?=
- =?utf-8?B?bi91emxyUU1JQlo2RThuWlFKenBiZzllN2duV1IrMDJWQWM5Wmk0SExvUGNB?=
- =?utf-8?B?Mi9JcVdHMGhUSVRXcXZ2UW9HTkxSREtNMkUrRUdpSEQ1S2FaVG13Qk1TdVJ1?=
- =?utf-8?B?QjRZaml5L2I5clFPWmM3czJWMkpHYndCNk55c1hNM3NxVE95b2pRTk9FYWdy?=
- =?utf-8?B?NHhnMzFFa1VPWmpNc2RVMVRTNC9zaG9uV2R4M3p3TDZJeXM4ZmJ6cytOTW9Z?=
- =?utf-8?B?cy9OK3JETHdQbDNoNlBjRWpFemxVUnpDRXFKVE5QYmJVakJaMDJKck8yRVRM?=
- =?utf-8?B?OFgwRmZyMG51bkwvdUExd3U3QXd0S0RneVRxbU1rLzMwNFJpdEVkRW9UVlJl?=
- =?utf-8?Q?cdVdmt3iJ24UISRExQ=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <25633BDF20AEC4498B6BE9DF8E97C939@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Fri, 17 Sep 2021 09:34:04 -0400
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [80.241.60.240])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4H9vyc3DlTzQk9P;
+        Fri, 17 Sep 2021 15:32:40 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Subject: Re: [PATCH] Bluetooth: btusb: Lower passive lescan interval on
+ Marvell 88W8897
+To:     Marcel Holtmann <marcel@holtmann.org>
+Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        linux-wireless@vger.kernel.org,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>
+References: <20210917122718.86776-1-verdre@v0yd.nl>
+ <B9F09991-0B67-4848-86DE-C13BF3850D15@holtmann.org>
+ <3e5b7e27-e643-ae9b-db40-d885ca441385@v0yd.nl>
+ <9D2F9512-0045-4464-AB1B-A1AA04E21F3D@holtmann.org>
+From:   =?UTF-8?Q?Jonas_Dre=c3=9fler?= <verdre@v0yd.nl>
+Message-ID: <2000816e-c478-274c-76e1-31e71ae0c77d@v0yd.nl>
+Date:   Fri, 17 Sep 2021 15:32:32 +0200
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR11MB3422.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fb8f5e38-40eb-4ac7-7f41-08d979df5a0b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Sep 2021 13:30:44.3517
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: /k3d7tzW0hAc3kXxyEYhLW4VIvjCyskeZpb+bXsOw8HKJHZzkmzN93SSm3sMCpm9LRgEIfqxtzfds4aJzHqE4bpH762WPVGvSlsS3HhkyXU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB5179
+In-Reply-To: <9D2F9512-0045-4464-AB1B-A1AA04E21F3D@holtmann.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 04A21188C
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gMTcuMDkuMjAyMSAxNjoyNiwgQ2xhdWRpdSBCZXpuZWEgd3JvdGU6DQo+IEhpLA0KPiANCj4g
-VGhpcyBzZXJpZXMgYWRkcyBzdXBwb3J0IGZvciBNSUkgbW9kZSBvbiBSR01JSSBpbnRlcmZhY2Ug
-KHBhdGNoZXMgMy80LA0KPiA0LzQpLiBBbG9uZyB3aXRoIHRoaXMgdGhlIHNlcmllcyBhbHNvIGNv
-bnRhaW5zIG1pbm9yIGNsZWFudXBzIChwYXRjaGVzIDEvMywNCj4gMi8zKSBvbiBtYWNiLmguDQo+
-IA0KPiBUaGFuayB5b3UsDQo+IENsYXVkaXUgQmV6bmVhDQo+IA0KPiBDaGFuZ2VzIGluIHYyOg0K
-PiAtIGFkZGVkIHBhdGNoIDQvNCB0byBlbmFibGUgTUlJIG9uIFJHTUlJIHN1cHBvcnQgZm9yIFNB
-TUE3RzUgTUFDIElQcw0KDQphbmQgY29sbGVjdGVkIHRhZ3MNCg0KPiANCj4gQ2xhdWRpdSBCZXpu
-ZWEgKDQpOg0KPiAgIG5ldDogbWFjYjogYWRkIGRlc2NyaXB0aW9uIGZvciBTUlRTTQ0KPiAgIG5l
-dDogbWFjYjogYWxpZ24gZm9yIE9TU01PREUgb2Zmc2V0DQo+ICAgbmV0OiBtYWNiOiBhZGQgc3Vw
-cG9ydCBmb3IgbWlpIG9uIHJnbWlpDQo+ICAgbmV0OiBtYWNiOiBlbmFibGUgbWlpIG9uIHJnbWlp
-IGZvciBzYW1hN2c1DQo+IA0KPiAgZHJpdmVycy9uZXQvZXRoZXJuZXQvY2FkZW5jZS9tYWNiLmgg
-ICAgICB8IDcgKysrKystLQ0KPiAgZHJpdmVycy9uZXQvZXRoZXJuZXQvY2FkZW5jZS9tYWNiX21h
-aW4uYyB8IDkgKysrKysrKy0tDQo+ICAyIGZpbGVzIGNoYW5nZWQsIDEyIGluc2VydGlvbnMoKyks
-IDQgZGVsZXRpb25zKC0pDQo+IA0KDQo=
+On 9/17/21 3:18 PM, Marcel Holtmann wrote:
+> Hi Jonas,
+> 
+>>>> The Marvell 88W8897 combined wifi and bluetooth card (pcie+usb version)
+>>>> is used in a lot of Microsoft Surface devices, and all those devices
+>>>> suffer from very low 2.4GHz wifi connection speeds while bluetooth is
+>>>> enabled. The reason for that is that the default passive scanning
+>>>> interval for Bluetooth Low Energy devices is quite high on Linux
+>>>> (interval of 60 msec and scan window of 30 msec, see le_scan_interval
+>>>> and le_scan_window in hci_core.c), and the Marvell chip is known for its
+>>>> bad bt+wifi coexisting performance.
+>>>>
+>>>> So decrease that passive scan interval and make the scan window shorter
+>>>> on this particular device to allow for spending more time transmitting
+>>>> wifi signals: The new scan interval is 250 msec (0x190 * 0.625 msec) and
+>>>> the new scan window is 6.25 msec (0xa * 0.625 msec).
+>>>>
+>>>> This change has a very large impact on the 2.4GHz wifi speeds and gets
+>>>> it up to performance comparable with the Windows driver, which seems to
+>>>> apply a similar quirk.
+>>>>
+>>>> The scan interval and scan window length were tested and found to work
+>>>> very well with a bunch of Bluetooth Low Energy devices, including the
+>>>> Surface Pen, a Bluetooth Speaker and two modern Bluetooth headphones.
+>>>> All devices were discovered immediately after turning them on. Even
+>>>> lower values were also tested, but these introduced longer delays until
+>>>> devices get discovered.
+>>>>
+>>>> Signed-off-by: Jonas Dreßler <verdre@v0yd.nl>
+>>>> ---
+>>>> drivers/bluetooth/btusb.c | 15 +++++++++++++++
+>>>> 1 file changed, 15 insertions(+)
+>>>>
+>>>> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+>>>> index 60d2fce59a71..05b11179c839 100644
+>>>> --- a/drivers/bluetooth/btusb.c
+>>>> +++ b/drivers/bluetooth/btusb.c
+>>>> @@ -59,6 +59,7 @@ static struct usb_driver btusb_driver;
+>>>> #define BTUSB_WIDEBAND_SPEECH	0x400000
+>>>> #define BTUSB_VALID_LE_STATES   0x800000
+>>>> #define BTUSB_QCA_WCN6855	0x1000000
+>>>> +#define BTUSB_LOWER_LESCAN_INTERVAL	0x2000000
+>>>> #define BTUSB_INTEL_BROKEN_INITIAL_NCMD 0x4000000
+>>>>
+>>>> static const struct usb_device_id btusb_table[] = {
+>>>> @@ -356,6 +357,7 @@ static const struct usb_device_id blacklist_table[] = {
+>>>> 	{ USB_DEVICE(0x1286, 0x2044), .driver_info = BTUSB_MARVELL },
+>>>> 	{ USB_DEVICE(0x1286, 0x2046), .driver_info = BTUSB_MARVELL },
+>>>> 	{ USB_DEVICE(0x1286, 0x204e), .driver_info = BTUSB_MARVELL },
+>>>> +	{ USB_DEVICE(0x1286, 0x204c), .driver_info = BTUSB_LOWER_LESCAN_INTERVAL },
+>>>>
+>>>> 	/* Intel Bluetooth devices */
+>>>> 	{ USB_DEVICE(0x8087, 0x0025), .driver_info = BTUSB_INTEL_COMBINED },
+>>>> @@ -3813,6 +3815,19 @@ static int btusb_probe(struct usb_interface *intf,
+>>>> 	if (id->driver_info & BTUSB_MARVELL)
+>>>> 		hdev->set_bdaddr = btusb_set_bdaddr_marvell;
+>>>>
+>>>> +	/* The Marvell 88W8897 combined wifi and bluetooth card is known for
+>>>> +	 * very bad bt+wifi coexisting performance.
+>>>> +	 *
+>>>> +	 * Decrease the passive BT Low Energy scan interval a bit
+>>>> +	 * (0x0190 * 0.625 msec = 250 msec) and make the scan window shorter
+>>>> +	 * (0x000a * 0,625 msec = 6.25 msec). This allows for significantly
+>>>> +	 * higher wifi throughput while passively scanning for BT LE devices.
+>>>> +	 */
+>>>> +	if (id->driver_info & BTUSB_LOWER_LESCAN_INTERVAL) {
+>>>> +		hdev->le_scan_interval = 0x0190;
+>>>> +		hdev->le_scan_window = 0x000a;
+>>>> +	}
+>>>> +
+>>> you can not do it this way. Modifying hci_dev internals from within the driver is not acceptable.
+>>> Regards
+>>> Marcel
+>>
+>>
+>> hmm okay, it seems to me that the intention of your commit bef64738e3fb87eabc6fbeededad0c44ea173384 was to allow configuring it on a per controller basis, also btusb changes a bunch of other hci_dev properties? Given that we also have to match by usb-id, I don't think there's another place to do that other than the usb driver, or is there?
+> 
+> you can change most defaults via mgmt commands.
+> 
+> The things the a driver should set in hci_dev is really limited and it only affects its ability to run as a transport driver. It shouldn’t deal with anything that is actually HCI upper layer operation.
+> 
+> Regards
+> 
+> Marcel
+> 
+
+Hmm, having users of this wifi chip run a script at boot doesn't sound 
+great to me, or can you point me to somewhere in bluez where I could put 
+a device-specific quirk for this? IMHO this is a real bug with the 
+hardware that needs to be quirked somewhere, note that this is not a 
+minor performance improvement, this bumps wifi 2.4ghz speeds up from 800 
+KB/s to >5 MB/s.
+
+Other than that, there's also the possibility of changing the 
+kernel-wide defaults, but as mentioned in my other answer, I don't have 
+enough hardware laying around to test that at all.
+
+Jonas
