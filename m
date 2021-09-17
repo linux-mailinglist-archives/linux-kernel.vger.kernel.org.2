@@ -2,119 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D39040F34B
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 09:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 827A740F34C
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 09:30:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240507AbhIQHbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 03:31:45 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:33756 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230393AbhIQHbn (ORCPT
+        id S240567AbhIQHcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 03:32:00 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:64783 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230393AbhIQHb7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 03:31:43 -0400
-Received: by mail-io1-f71.google.com with SMTP id g2-20020a6b7602000000b005be59530196so18898361iom.0
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 00:30:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=m3nRbhKCaWxS8OkQmfuFA20q5t1TuojdS6u2lz7XyIg=;
-        b=agzkLKla5Ei1sneQPKGzcXjm3tnsLTIdtTi0mJBeVqWc5EkOkXHYZur+454Z6V2zQF
-         BVczltIrjAkqx8UDUSKxaatCCdcQOq/H6z5Mu8pEp4vawiztIzhGW1/fNHlGU42y2R7J
-         gPAuofk4+Zn0nz+26K84hTcYL3m8QEJadBQlKRYqXYFRgC0J8nLJl2sGcXgDe/jsrqAw
-         GyyyBsJcJtjxfGXPOMQJBdKUX34MiaN6TOtsfodD86slN1pyO/+SbMMBKivYD4j/aRbE
-         Ew5Zjur7yOEEleIJNlDeY7f6ebBRKRx/EszbfOxitpbbNZQfrHpy8biquhvUQxNSyM/6
-         VQiA==
-X-Gm-Message-State: AOAM533MgK4NTY2lb8qeuHwIhjF93dOrnR58UcTL5tAiHQxGrJgipSoP
-        OpnJgOU+CXQpJ89zQxy4jzqFb2XUlVwalEk+wihPLIdADewk
-X-Google-Smtp-Source: ABdhPJyeZuMqnpDFXxjm6O9W9SV4ZGifaV5hgG26+z2XjKRZ6Y6MYgNglhtAC3RvKn9D6zriNGPo/kRc5mu8i4LhGAboVLFM3xQN
+        Fri, 17 Sep 2021 03:31:59 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20210917073035euoutp022d04be6443e042f52a44410c9c08900b~li4NHqDrS0467804678euoutp02k
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 07:30:35 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20210917073035euoutp022d04be6443e042f52a44410c9c08900b~li4NHqDrS0467804678euoutp02k
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1631863835;
+        bh=S3B13fJvkOkVAxyfRZy6T0sfndyEKU3zYMGDDwM6qqo=;
+        h=Subject:To:From:Date:In-Reply-To:References:From;
+        b=armKWk47ALt8IanGFxEM50d7S6w8u8GX0W2z8YjaN29DHhifJNn7cSF3H50Bhn4Vw
+         yA7SBDWFCsfyC64m0TUH2v62ily7Y1Bk+p1SQ9TIoXhGLfdqaJzQEBUjQytTymAwPO
+         oyt2pEtdhRAB5swtwPwHqWiXkskuaqACe9Ni55vI=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20210917073035eucas1p205ee849bd820419864d1ec31255156fc~li4MyyW8y1496014960eucas1p2q;
+        Fri, 17 Sep 2021 07:30:35 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 58.B5.42068.B1444416; Fri, 17
+        Sep 2021 08:30:35 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210917073034eucas1p1d80385c5327a757b26f8a7bdefa3b077~li4MMwn0H2824928249eucas1p1Q;
+        Fri, 17 Sep 2021 07:30:34 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210917073034eusmtrp2910272e1b5782616f58ed1a509b395e9~li4MMBEKV2227722277eusmtrp2r;
+        Fri, 17 Sep 2021 07:30:34 +0000 (GMT)
+X-AuditID: cbfec7f4-c89ff7000002a454-35-6144441b8bbf
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 01.BF.20981.A1444416; Fri, 17
+        Sep 2021 08:30:34 +0100 (BST)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210917073034eusmtip2726435c268c221293660fc612263b7cb~li4LrkXtm0124201242eusmtip2A;
+        Fri, 17 Sep 2021 07:30:34 +0000 (GMT)
+Subject: Re: [RFT][PATCH] regulator: max14577: Revert
+ "regulator: max14577: Add proper module aliases strings"
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <acb72aa2-4211-4c2f-1176-82d533ddf8b5@samsung.com>
+Date:   Fri, 17 Sep 2021 09:30:34 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
+        Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:1909:: with SMTP id p9mr7767060jal.108.1631863822026;
- Fri, 17 Sep 2021 00:30:22 -0700 (PDT)
-Date:   Fri, 17 Sep 2021 00:30:22 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006f0bec05cc2be7dc@google.com>
-Subject: [syzbot] BUG: soft lockup in call_usermodehelper_exec_async
-From:   syzbot <syzbot+c3963f4f025fa5dfb78b@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210916144102.120980-1-krzysztof.kozlowski@canonical.com>
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprJKsWRmVeSWpSXmKPExsWy7djP87rSLi6JBme+yVtsnLGe1WLqwyds
+        Fte/PGe12Pj2B5PFtysdTBaXd81hc2DzmNXQy+axc9Zddo9NqzrZPPq2rGL0+LxJLoA1issm
+        JTUnsyy1SN8ugSvj0Ze3TAUb+StuXpnO0sB4k6eLkZNDQsBE4uu1SSxdjFwcQgIrGCU+3b/F
+        COF8YZSY1rGUDcL5zChx4eIyVpiWdYumQbUsZ5TY1XUUquojo8S1tXOZQKqEBQoknt+ezQZi
+        iwg0MknMWOcGYrMJGEp0ve0Ci/MK2ElsPDQDzGYRUJX42g5hiwokS0z728QMUSMocXLmExYQ
+        m1PAQ2LfnZNgcWYBeYntb+dA2eISt57MZ4K47gSHxLI3ZRC2i8Sp6ZtYIGxhiVfHt7BD2DIS
+        /3eC1HMB2c2MEg/PrWWHcHoYJS43zWCEqLKWuHPuF9BFHEAbNCXW79KHCDtK/Ly7gRkkLCHA
+        J3HjrSDEDXwSk7ZNhwrzSnS0CUFUq0nMOr4Obu3BC5eYIWwPifu7rjNOYFScheTLWUg+m4Xk
+        s1kINyxgZFnFKJ5aWpybnlpslJdarlecmFtcmpeul5yfu4kRmHpO/zv+ZQfj8lcf9Q4xMnEw
+        HmKU4GBWEuG9UOOYKMSbklhZlVqUH19UmpNafIhRmoNFSZw3acuaeCGB9MSS1OzU1ILUIpgs
+        EwenVANTiA17r0p1fRxrthyDpndVj2iXbUtFTMQx2WePknaa8GuUupac2WLqdG+9bL/Xy2fJ
+        5st+tNyqSpjzML6pzLX3zDf2mpkh/RP/xJVFL4qQ+nPq+3zX5zcDL/Iuakw7G37l20Ez8f0T
+        DtX0Pj4gc+Lgqjl1H1/9Vmip8k+1DmLkucpmUXdXeuvBl3eP6f2tMsy8vPlWiX9yX+4i24gt
+        W+4IpJ47qecTVr1yxsG1O6P6J8grrt/aI7jvjhF/Su7UplULqudYRy8oSnwkveas/K/srxdl
+        F3N8FT0SnrFnofnVrL7ZLrHZ/V57gr1KvtXZlnVMkjLkiPm/NH5XXcPfr/Eb1FZoqh2r3mqr
+        N+VnhIwSS3FGoqEWc1FxIgC5k3SMrAMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrIIsWRmVeSWpSXmKPExsVy+t/xe7pSLi6JBu23TC02zljPajH14RM2
+        i+tfnrNabHz7g8ni25UOJovLu+awObB5zGroZfPYOesuu8emVZ1sHn1bVjF6fN4kF8AapWdT
+        lF9akqqQkV9cYqsUbWhhpGdoaaFnZGKpZ2hsHmtlZKqkb2eTkpqTWZZapG+XoJfx6MtbpoKN
+        /BU3r0xnaWC8ydPFyMkhIWAisW7RNJYuRi4OIYGljBJ7r85ggkjISJyc1sAKYQtL/LnWxQZR
+        9J5RYtHGmewgCWGBAomz06czgiREBJqZJObOOcwKUTWbUaL7Sx9YFZuAoUTXW5B2Tg5eATuJ
+        jYdmgNksAqoSX9shbFGBZIm3r78zQdQISpyc+YQFxOYU8JDYd+ckM4jNLGAmMW/zQyhbXmL7
+        2zlQtrjErSfzmSYwCs5C0j4LScssJC2zkLQsYGRZxSiSWlqcm55bbKRXnJhbXJqXrpecn7uJ
+        ERhX24793LKDceWrj3qHGJk4GA8xSnAwK4nwXqhxTBTiTUmsrEotyo8vKs1JLT7EaAr0z0Rm
+        KdHkfGBk55XEG5oZmBqamFkamFqaGSuJ85ocWRMvJJCeWJKanZpakFoE08fEwSnVwLTi93VH
+        hyau3yIrRdP2VnqXfr/oVL7rKQej6d0VUs4B8xIDF5ixSHn7uyYuzPFO/MUlbslxuG+iPs9G
+        i7jwP68vl4pddLbcePfIjY/v7tyU8vS6fiStfufJZfe23PzQxCOT/F70IOeE5wdkdyrHyair
+        ySxtfRh7fbFNvoXIT/e7fDLiPJPXPfmnoHnSZfeBe9v0t6sXL2fIeC41u52Nd+9XQRbWCI9l
+        yZGSzQUvmpKDlXZ3HE55+kBtqvy3FZ+C777+u/1tajVvjYXHW+VtFydIai7aZ/qx17jYtXSr
+        AefcNrXJsvNSTy/Jf7amVmj9teMOfYtvuKrcnPWt7MvMHMfnomf5gs1f6X1gUWLZWafEUpyR
+        aKjFXFScCAAFgJ97NAMAAA==
+X-CMS-MailID: 20210917073034eucas1p1d80385c5327a757b26f8a7bdefa3b077
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20210916144119eucas1p1ef79e9742c3d37d0d896f152b4252a0b
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20210916144119eucas1p1ef79e9742c3d37d0d896f152b4252a0b
+References: <CGME20210916144119eucas1p1ef79e9742c3d37d0d896f152b4252a0b@eucas1p1.samsung.com>
+        <20210916144102.120980-1-krzysztof.kozlowski@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Krzysztof,
 
-syzbot found the following issue on:
+On 16.09.2021 16:41, Krzysztof Kozlowski wrote:
+> This reverts commit 0da6736ecd10b45e535b100acd58df2db4c099d8.
+>
+> The MODULE_DEVICE_TABLE already creates proper alias.  Having another
+> MODULE_ALIAS causes the alias to be duplicated:
+>
+>    $ modinfo max14577-regulator.ko
+>
+>    alias:          platform:max77836-regulator
+>    alias:          platform:max14577-regulator
+>    description:    Maxim 14577/77836 regulator driver
+>    alias:          platform:max77836-regulator
+>    alias:          platform:max14577-regulator
+>
+> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+> Fixes: 0da6736ecd10 ("regulator: max14577: Add proper module aliases strings")
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+>
+> ---
+>
+> Not tested. Please test/comment.  This is an RFT also because reverted
+> commit said to fix autoloading issue which I even reviewed... but really
+> it should not be needed - alias gets duplicated.
+> ---
 
-HEAD commit:    8cae8cd89f05 seq_file: disallow extremely large seq buffer..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=135dbd12300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=548fbb1e84c1808e
-dashboard link: https://syzkaller.appspot.com/bug?extid=c3963f4f025fa5dfb78b
-compiler:       aarch64-linux-gnu-gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-userspace arch: arm
+Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Indeed, that patch was useless and excessive. It must be some leftover 
+from my initial modules tests, which for good reasons was not submitted 
+in the initial series in Feb 2020. Sorry for the noise.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c3963f4f025fa5dfb78b@syzkaller.appspotmail.com
+>   drivers/regulator/max14577-regulator.c | 2 --
+>   1 file changed, 2 deletions(-)
+>
+> diff --git a/drivers/regulator/max14577-regulator.c b/drivers/regulator/max14577-regulator.c
+> index 1d78b455cc48..e34face736f4 100644
+> --- a/drivers/regulator/max14577-regulator.c
+> +++ b/drivers/regulator/max14577-regulator.c
+> @@ -269,5 +269,3 @@ module_exit(max14577_regulator_exit);
+>   MODULE_AUTHOR("Krzysztof Kozlowski <krzk@kernel.org>");
+>   MODULE_DESCRIPTION("Maxim 14577/77836 regulator driver");
+>   MODULE_LICENSE("GPL");
+> -MODULE_ALIAS("platform:max14577-regulator");
+> -MODULE_ALIAS("platform:max77836-regulator");
 
-watchdog: BUG: soft lockup - CPU#1 stuck for 22s! [kworker/u4:5:21352]
-Modules linked in:
-irq event stamp: 196
-hardirqs last  enabled at (195): [<ffff80001457eb88>] exit_to_kernel_mode+0x38/0x230 arch/arm64/kernel/entry-common.c:71
-hardirqs last disabled at (196): [<ffff80001457eb40>] enter_el1_irq_or_nmi+0x10/0x20 arch/arm64/kernel/entry-common.c:113
-softirqs last  enabled at (116): [<ffff8000100109a4>] _stext+0x9a4/0x1050
-softirqs last disabled at (51): [<ffff800010161d30>] do_softirq_own_stack include/asm-generic/softirq_stack.h:10 [inline]
-softirqs last disabled at (51): [<ffff800010161d30>] invoke_softirq kernel/softirq.c:439 [inline]
-softirqs last disabled at (51): [<ffff800010161d30>] __irq_exit_rcu+0x470/0x520 kernel/softirq.c:636
-CPU: 1 PID: 21352 Comm: kworker/u4:5 Not tainted 5.14.0-rc2-syzkaller-00001-g8cae8cd89f05 #0
-Hardware name: linux,dummy-virt (DT)
-pstate: 00000005 (nzcv daif -PAN -UAO -TCO BTYPE=--)
-pc : clear_page+0x14/0x28 arch/arm64/lib/clear_page.S:23
-lr : clear_highpage include/linux/highmem.h:184 [inline]
-lr : kernel_init_free_pages.part.0+0x6c/0x17c mm/page_alloc.c:1283
-sp : ffff800018c67380
-x29: ffff800018c67380 x28: 0000000000000000 x27: ffff00007fc11ec0
-x26: ffff00000fe7aef8 x25: ffff600001fcf5df x24: 00000000000014b8
-x23: ffff00000fe79a40 x22: fffffc0000171340 x21: ffff800015706c40
-x20: dfff800000000000 x19: fffffc0000171300 x18: ffff00006aa70bc8
-x17: ffff800055045000 x16: ffff800018598000 x15: ffff000010dd0600
-x14: 1ffff0000318ce3a x13: 0000000000000014 x12: ffff7f800002e267
-x11: 1fffff800002e266 x10: ffff7f800002e266 x9 : 0000000000000000
-x8 : ffff600000b89a00 x7 : 0000000000000000 x6 : 000000000000003f
-x5 : 0000000000000040 x4 : 1ffff0000304db70 x3 : 1fffe00001fcf349
-x2 : 0000000000000004 x1 : 0000000000000040 x0 : ffff000005c4ca40
-Call trace:
- clear_page+0x14/0x28 arch/arm64/lib/clear_page.S:21
- kernel_init_free_pages mm/page_alloc.c:1280 [inline]
- post_alloc_hook+0x1ac/0x25c mm/page_alloc.c:2423
- prep_new_page mm/page_alloc.c:2433 [inline]
- get_page_from_freelist+0x1840/0x2310 mm/page_alloc.c:4166
- __alloc_pages+0x1a8/0x2234 mm/page_alloc.c:5388
- alloc_pages_vma+0xb4/0x4dc mm/mempolicy.c:2208
- alloc_zeroed_user_highpage_movable+0x9c/0xd0 arch/arm64/mm/fault.c:939
- do_anonymous_page mm/memory.c:3767 [inline]
- handle_pte_fault mm/memory.c:4547 [inline]
- __handle_mm_fault+0xcbc/0x25e4 mm/memory.c:4684
- handle_mm_fault+0x1dc/0x4ec mm/memory.c:4782
- faultin_page mm/gup.c:951 [inline]
- __get_user_pages+0x3e4/0x744 mm/gup.c:1173
- __get_user_pages_locked mm/gup.c:1359 [inline]
- __get_user_pages_remote+0x10c/0x500 mm/gup.c:1865
- get_user_pages_remote+0x28/0x40 mm/gup.c:1938
- get_arg_page+0x9c/0x1bc fs/exec.c:220
- copy_string_kernel+0x170/0x294 fs/exec.c:631
- kernel_execve+0x1ac/0x380 fs/exec.c:1961
- call_usermodehelper_exec_async+0x260/0x460 kernel/umh.c:112
- ret_from_fork+0x10/0x18 arch/arm64/kernel/entry.S:782
+Best regards
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
