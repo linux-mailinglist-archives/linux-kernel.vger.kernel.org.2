@@ -2,93 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BABC40F6EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 13:53:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AA5840F6ED
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 13:55:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242690AbhIQLwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 07:52:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56022 "EHLO
+        id S238527AbhIQL44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 07:56:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242098AbhIQLwc (ORCPT
+        with ESMTP id S229680AbhIQL4u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 07:52:32 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34D16C061574;
-        Fri, 17 Sep 2021 04:51:10 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id p29so31606349lfa.11;
-        Fri, 17 Sep 2021 04:51:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=e2DNnwzlvtG/HPrhpkKUSv+yJrAjP70ES9zuh8E5fTw=;
-        b=FXm3rmMC3CIybxIvOxqusIn8oQ3om07WPtq7VLKNs0eccPwkl2KPXH9mtGKWs0rNZg
-         9bGQT4pShYQHC6reWntgirW/Ew6ZTOw78cuP8AvwV5yWk5bcgv5GxQoUJ/7JkWZgZpg5
-         oRWBP6WIw3yk/Q0samRU6NnVQ7BGgd4ELUSlS1BjiPjveFzt0+wUc7Ei+dnepg5+gs6A
-         mgSwN7hYUDp0AsY+cMc3m+8ems2UPssoX8KS1Qg/6pMv4z2RIgvLJy1oNf3bMRo76f0v
-         9C6gCrV0OLVe1AvAtNg0qnXOfvIBVEehGTZIeh+rCnJ9+tQzTK80n12PEZuM+HnKzs6R
-         TO8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=e2DNnwzlvtG/HPrhpkKUSv+yJrAjP70ES9zuh8E5fTw=;
-        b=ikDKUKuwHqzMdv2JjkMCwdZ3Udv7Yr2xppFNa6H2DBRfWk/+f4egkBOO1Kmvfib4cA
-         +g+QFTR/rAVcXjyADsopkzyonAZ/JUFoTBlDUzIfs0thbbcMBivHqJOrT6OoJmJ7rTcK
-         K+F769iLI7gh6SXHObecuPdIkY7M3PPuqyxNoA0aQoi5NN0MaYguYOdNQaZkSCsFmq1f
-         7S6cwLJ5YX2hePcDz1dPnY80jRq/UPx/2s1yeRzeebcFf0RIjZyIjkRZZx4XCAp0SCHP
-         y3COky/EYB0cgxo9Fq7IFmjgq0kpKnzZNp3J2wK6rskosIH0peaWpJ2HTkDiXLQf4blP
-         UvdQ==
-X-Gm-Message-State: AOAM531ZLbTTqvpH+rKu53rTgogDz7QBERNxc8rzkbrXFUT3OvZwnhi1
-        xWEot7mLi2kIBlb4mLf81JcMLIKws8HY2/Am2P4=
-X-Google-Smtp-Source: ABdhPJyUxXbVy8zR9c8DoyTCEhHYI5jfyQjw8fgc+MBtICE5o2dF83lXCyh+0xLbW4yjD+mFZoAC2K8OE6GU0DR2BU8=
-X-Received: by 2002:ac2:4bc1:: with SMTP id o1mr7777620lfq.113.1631879466248;
- Fri, 17 Sep 2021 04:51:06 -0700 (PDT)
+        Fri, 17 Sep 2021 07:56:50 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3391AC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 04:55:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=EcLd2iiHo7XudB25BJo8MRT/PevxtqJt5Y440jTBX94=; b=fINZgDyslz6SRWvM7hOOF1NRsU
+        CFyLRVSSEuylutA1qZwIdm4mWqtAGwMUGsIHCiCntikgU2tWtwDVnEIlVgX6FJOIfhJ8yzrFg2oIJ
+        aRpQ8n2A3LWfcvi7BxDLD7HyDZOwyiscqLtHlabLAPdIqwmIyVbJth0UJy5bfjkqe5pyn6YP+iZrO
+        8bwJj0pUWR0YzaoiUTrkUDv7/4msR6C52QBPuSnF1rtBGUQBll59Ius7zowyuiZEe7LreHHCnmLFG
+        We58LT35JBybc06k2yfVChB4pI6/X7ZMAwVVNFWoN33JPl1v2d9S7I2t19CRhB2jlmtBmXGg9xuUV
+        NImJepxg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mRCSE-000D27-9q; Fri, 17 Sep 2021 11:55:00 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 70D9230031A;
+        Fri, 17 Sep 2021 13:54:53 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 55D312D80FB23; Fri, 17 Sep 2021 13:54:53 +0200 (CEST)
+Date:   Fri, 17 Sep 2021 13:54:53 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ondrej Zary <linux@zary.sk>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH] x86/iopl: Fake iopl(3) CLI/STI usage
+Message-ID: <YUSCDX5QwzTcCPFa@hirez.programming.kicks-ass.net>
+References: <202109151423.43604.linux@zary.sk>
+ <202109171011.31916.linux@zary.sk>
+ <YURdxNpH8YNQZQT7@hirez.programming.kicks-ass.net>
+ <202109171229.19289.linux@zary.sk>
 MIME-Version: 1.0
-References: <20210825082251.2484-1-caihuoqing@baidu.com>
-In-Reply-To: <20210825082251.2484-1-caihuoqing@baidu.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Fri, 17 Sep 2021 08:50:55 -0300
-Message-ID: <CAOMZO5DKGv1GQBpwr0ff0YC1yDmCH2A5Xpq7jzUA2h75bmN6eQ@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: freescale: Add helper dependency on COMPILE_TEST
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     Dong Aisheng <aisheng.dong@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Stefan Agner <stefan@agner.ch>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202109171229.19289.linux@zary.sk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Cai,
+On Fri, Sep 17, 2021 at 12:29:18PM +0200, Ondrej Zary wrote:
+> On Friday 17 September 2021, Peter Zijlstra wrote:
+> > On Fri, Sep 17, 2021 at 10:11:31AM +0200, Ondrej Zary wrote:
+> > > Yeah, it works!
+> > 
+> > w00t!! I've added a pr_err() to make sure people take note their
+> > 'software' is doing dodgy things.
+> 
+> It's a bit noisy:
+> [    9.668952] process 'hp/hp-health/bin/hpasmd' started with executable stack
+> [    9.741338] floppy0: no floppy controllers found
+> [    9.866354] traps: hpasmd[360] attempts to use CLI/STI, pretending it's a NOP, ip:f7d9109b in mem[f7d91000+3000]
+> [    9.866500] traps: hpasmd[360] attempts to use CLI/STI, pretending it's a NOP, ip:f7d921a2 in mem[f7d91000+3000]
+> [   10.141846] traps: hpasmd[360] attempts to use CLI/STI, pretending it's a NOP, ip:80a5356
+> [   10.142157] traps: hpasmd[360] attempts to use CLI/STI, pretending it's a NOP, ip:80a5356
+> [   10.269408] traps: hpasmd[360] attempts to use CLI/STI, pretending it's a NOP, ip:80a538f
+> [   10.269521] traps: hpasmd[360] attempts to use CLI/STI, pretending it's a NOP, ip:80a5356
+> [   10.269754] traps: hpasmd[360] attempts to use CLI/STI, pretending it's a NOP, ip:80a5356
+> [   10.273606] traps: hpasmd[360] attempts to use CLI/STI, pretending it's a NOP, ip:80a5356
+> [   10.287503] traps: hpasmd[360] attempts to use CLI/STI, pretending it's a NOP, ip:80a5356
+> [   10.301421] traps: hpasmd[360] attempts to use CLI/STI, pretending it's a NOP, ip:80a5356
+> [   14.876824] fixup_iopl_exception: 333 callbacks suppressed
+> [   14.876832] traps: hpasmd[360] attempts to use CLI/STI, pretending it's a NOP, ip:80a5356
 
-On Wed, Aug 25, 2021 at 5:23 AM Cai Huoqing <caihuoqing@baidu.com> wrote:
->
-> it's helpful for complie test in other platform(e.g.X86)
->
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
-> ---
->  drivers/pinctrl/freescale/Kconfig | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/pinctrl/freescale/Kconfig b/drivers/pinctrl/freescale/Kconfig
-> index 21fa21c6547b..defc1f38efc7 100644
-> --- a/drivers/pinctrl/freescale/Kconfig
-> +++ b/drivers/pinctrl/freescale/Kconfig
-> @@ -119,28 +119,28 @@ config PINCTRL_IMX7ULP
->
->  config PINCTRL_IMX8MM
->         tristate "IMX8MM pinctrl driver"
-> -       depends on ARCH_MXC
-> +       depends on ARCH_MXC || (COMPILE_TEST && OF)
->         select PINCTRL_IMX
+I'd say...
 
-I am not sure why you need the && OF, as we have a "select PINCTRL_IMX",
-that already depends on OF.
+Not sure it's really worth it, but something like the below might help.
 
-Also, why was PINCTRL_IMX8DXL not updated?
-
-Thanks
+--- a/arch/x86/include/asm/processor.h
++++ b/arch/x86/include/asm/processor.h
+@@ -518,6 +518,7 @@ struct thread_struct {
+ 	 */
+ 	unsigned long		iopl_emul;
+ 
++	unsigned int		iopl_warn:1;
+ 	unsigned int		sig_on_uaccess_err:1;
+ 
+ 	/*
+--- a/arch/x86/kernel/process.c
++++ b/arch/x86/kernel/process.c
+@@ -132,6 +132,7 @@ int copy_thread(unsigned long clone_flag
+ 	frame->ret_addr = (unsigned long) ret_from_fork;
+ 	p->thread.sp = (unsigned long) fork_frame;
+ 	p->thread.io_bitmap = NULL;
++	p->thread.iopl_warn = 0;
+ 	memset(p->thread.ptrace_bps, 0, sizeof(p->thread.ptrace_bps));
+ 
+ #ifdef CONFIG_X86_64
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -552,11 +552,12 @@ bool fixup_iopl_exception(struct pt_regs
+ 	    insn.opcode.bytes[0] != 0xfb)
+ 		return false;
+ 
+-	if (printk_ratelimit()) {
++	if (!t->iopl_warn && printk_ratelimit()) {
+ 		pr_err("%s[%d] attempts to use CLI/STI, pretending it's a NOP, ip:%lx",
+ 		       current->comm, task_pid_nr(current), regs->ip);
+ 		print_vma_addr(KERN_CONT " in ", regs->ip);
+ 		pr_cont("\n");
++		t->iopl_warn = 1;
+ 	}
+ 
+ 	regs->ip += 1;
