@@ -2,106 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F70D40F1E2
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 08:07:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AE8940F221
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 08:12:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244961AbhIQGI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 02:08:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34026 "EHLO
+        id S245082AbhIQGOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 02:14:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232726AbhIQGI1 (ORCPT
+        with ESMTP id S245097AbhIQGOH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 02:08:27 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E854C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 23:07:06 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id i3-20020a056830210300b0051af5666070so11528490otc.4
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 23:07:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=uFxktZTFTvrgPpVfXvx5wJ9NT0aZLesc6X5ChP1iv7A=;
-        b=i/ncKKPIpr+3o9b6pA0DCzCBl8WUKX1Ag2tuxiTlv5DFjg2x0hUOLgQi34zNW/rawU
-         vC6nF7DwJ49OTMrhSPq1WDne735OUV/Q9jbN/spxDPPRnkqpOh/AHISPiJjUeoj/vdLZ
-         y4j4lxX/R/X0aM40ICqquVM9oB2b3UQr+OXIk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=uFxktZTFTvrgPpVfXvx5wJ9NT0aZLesc6X5ChP1iv7A=;
-        b=vhQ/Ur1olKJL7Y75VljhRsnvtDgyO4dpsKRomtZvp7GYxWAOh1Y+jN2arAxyFjNeez
-         gfBZnag8D18srU6wJtemZoJ5sCL9vK/1TRvFbG7ZnnxBf5cSmz4qj3dt3XHEDxLzBlti
-         pBs3f8UUaDHsOnNV5MEqPi/VXnxx8almbjC6mGHFE/mVjFFACTB35lzitkWApwpUhpR+
-         NKoksFfXDyYcsdwUeDgs+rnTDzBxTVgKb3iDh2KadMsXTcIjADmviT1VPQFi9ZNb65AH
-         thWlROr3bUUd7mFgll90tjlfCOvB+6rHlvU+smeLMg9P+AnstU5h1sp3JKkBUVIUpWls
-         h+8Q==
-X-Gm-Message-State: AOAM530pKwDD/FTmwLLzamQgJ7R79X0AA1mwIa+U+YWZe+jvM0+8hddx
-        mrJqsyNlSoAhsCHufuLmnKlnDMmICFuWhgLknZ3Y7+pkSgM=
-X-Google-Smtp-Source: ABdhPJxQEesmDcj/3cYONDWgEpdGmnZZmuk8Te4FWZg9ahd8D1bR5hpR8n7vTHM4r69wQilPoaiFgB2r7HIGEK65gJE=
-X-Received: by 2002:a05:6830:719:: with SMTP id y25mr7898467ots.77.1631858825850;
- Thu, 16 Sep 2021 23:07:05 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 16 Sep 2021 23:07:05 -0700
+        Fri, 17 Sep 2021 02:14:07 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89F54C0613CF;
+        Thu, 16 Sep 2021 23:12:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=tJXV477/RaeB+r2pgRpn5QCN1Mb0VeVLQoEkCebZFIs=; b=DiqL+SSZxX+4TLGuTRM0jgVY9k
+        9ewuEb/+GHADKBklbWk7ZdWWXaX428g4BBuyWnKx869p0VLs1wqOetaOb9s9RdWNhYxNu5/iJaCJz
+        Rt5DzCJnOXPHGAxrPE/evxlKlFm6J8w1DWp1Ua4UkdiJSD+leDBS08NgEGPpV5OexjT2/eym72KJQ
+        134AU9YdyVQqXaWzjJ5tsd5QmOmeZXXF1Np1gvnjpFIeZ9pUjkT6FQ3HPiKoHuEG9Ucy3HsrxRqXu
+        CPWerdbqfKoxYpeQAhYSDVJkZAy/daQrVH0N7SxqYZwbAUPcnY2Vs5oGH86R59vm4pmcuSvKKyeEe
+        2P3Dvt6g==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mR74s-00HYfJ-U6; Fri, 17 Sep 2021 06:10:34 +0000
+Date:   Fri, 17 Sep 2021 07:10:26 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Huacai Chen <chenhuacai@loongson.cn>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Airlie <airlied@linux.ie>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        Huacai Chen <chenhuacai@gmail.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Subject: Re: [PATCH V3 16/22] LoongArch: Add misc common routines
+Message-ID: <YUQxUgN5AseF7k8F@infradead.org>
+References: <20210917035736.3934017-1-chenhuacai@loongson.cn>
+ <20210917035736.3934017-17-chenhuacai@loongson.cn>
 MIME-Version: 1.0
-In-Reply-To: <baa5c4b4dd19e0a24d28b8bff559b868@codeaurora.org>
-References: <1631798498-10864-1-git-send-email-skakit@codeaurora.org>
- <1631798498-10864-3-git-send-email-skakit@codeaurora.org> <CAE-0n53i4pU==W-dc=md_x+0Tqbd1gtwkPBFode+rtupSFi0WQ@mail.gmail.com>
- <baa5c4b4dd19e0a24d28b8bff559b868@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Thu, 16 Sep 2021 23:07:05 -0700
-Message-ID: <CAE-0n53x6oB+Rj1_1QDNMVJowyCUeXgGBMmZ1SW1rTMmcEwD4A@mail.gmail.com>
-Subject: Re: [PATCH V5 2/2] arm64: dts: sc7280: Add volume up support for sc7280-idp
-To:     skakit@codeaurora.org
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        David Collins <collinsd@codeaurora.org>, kgunda@codeaurora.org,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210917035736.3934017-17-chenhuacai@loongson.cn>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting skakit@codeaurora.org (2021-09-16 21:08:11)
-> On 2021-09-17 00:32, Stephen Boyd wrote:
-> > Quoting Satya Priya (2021-09-16 06:21:38)
-> >> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
-> >> b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
-> >> index 371a2a9..cbbb0ee 100644
-> >> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
-> >> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
-> >> @@ -12,6 +12,26 @@
-> >>  #include "pm8350c.dtsi"
-> >>  #include "pmk8350.dtsi"
-> >>
-> >> +/ {
-> >> +       gpio-keys {
-> >> +               compatible = "gpio-keys";
-> >> +               label = "gpio-keys";
-> >> +
-> >> +               pinctrl-names = "default";
-> >> +               pinctrl-0 = <&key_vol_up_default>;
-> >> +
-> >> +               volume-up {
-> >> +                       label = "volume_up";
-> >> +                       gpios = <&pm7325_gpios 6 GPIO_ACTIVE_LOW>;
-> >> +                       linux,input-type = <1>;
-> >> +                       linux,code = <KEY_VOLUMEUP>;
-> >
-> > Is there an include for this define? Looks like
-> > <dt-bindings/input/input.h> should be added as well? Did you try
-> > compiling?
-> >
->
-> Yeah, it needs <dt-bindings/input/linux-event-codes.h> to be included.
-> This header was included in pmk8350.dtsi which is added in this file.
+> +
+> +/*
+> + * Change "struct page" to physical address.
+> + */
+> +#define page_to_phys(page)	((dma_addr_t)page_to_pfn(page) << PAGE_SHIFT)
 
-Alright, got it. If you can include this header in this dts file it
-would be better so we don't rely on implicit includes from other files
-to get macros. With that change you can add my
+Why is this using a dma_addr_t?  phys_addr_t would be the right type
+here.
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+> +
+> +extern void __init __iomem *early_ioremap(u64 phys_addr, unsigned long size);
+> +extern void __init early_iounmap(void __iomem *addr, unsigned long size);
+> +
+> +#define early_memremap early_ioremap
+> +#define early_memunmap early_iounmap
+> +
+> +static inline void __iomem *ioremap_prot(phys_addr_t offset, unsigned long size,
+> +					 unsigned long prot_val)
+> +{
+> +	if (prot_val == _CACHE_CC)
+> +		return (void __iomem *)(unsigned long)(CAC_BASE + offset);
+> +	else
+> +		return (void __iomem *)(unsigned long)(UNCAC_BASE + offset);
+> +}
+
+There is no real need for this ioremap_prot multiplexer
+
+> +/*
+> + * ioremap_cache -  map bus memory into CPU space
+> + * @offset:	    bus address of the memory
+> + * @size:	    size of the resource to map
+> + *
+> + * ioremap_cache performs a platform specific sequence of operations to
+> + * make bus memory CPU accessible via the readb/readw/readl/writeb/
+> + * writew/writel functions and the other mmio helpers. The returned
+> + * address is not guaranteed to be usable directly as a virtual
+> + * address.
+> + *
+> + * This version of ioremap ensures that the memory is marked cachable by
+> + * the CPU.  Also enables full write-combining.	 Useful for some
+> + * memory-like regions on I/O busses.
+> + */
+> +#define ioremap_cache(offset, size)				\
+> +	ioremap_prot((offset), (size), _CACHE_CC)
+
+Please don't add ioremap_cache to new ports.
