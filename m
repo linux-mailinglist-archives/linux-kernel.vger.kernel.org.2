@@ -2,243 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9D1C40F070
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 05:38:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8FB740F076
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 05:42:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244060AbhIQDjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 23:39:39 -0400
-Received: from mail-bn8nam12on2111.outbound.protection.outlook.com ([40.107.237.111]:30816
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        id S244073AbhIQDnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 23:43:24 -0400
+Received: from mail-mw2nam12on2074.outbound.protection.outlook.com ([40.107.244.74]:51936
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S242037AbhIQDji (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 23:39:38 -0400
+        id S242037AbhIQDnX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 23:43:23 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Fp/AlGhe8OyIBuSds69bbQQpw+4FjZ6kLfcM0v/bCIjQcpQVpAa7SOgQHnw+bep6IAKeNcIQJXj1bZMSzeNVshCVae5v7DdFIvpELLaf9ZNm6S7IQ86SEFT+UqrqvYYvnpG7OXDJs7ZKfsOMEAa64jzanmpStAVFlO7clhdfgicHXH67IBhBDoi8oz6Ppq0CgBhVhyQ9CDoaUjH5vUeAXTPEgfZ84Jab0ynJVpnG2932iP9av9SpboAzRYrF/IQs8KTtkM42SEjC+nsrkQM9eVqOg37KjNVRH/sJdfZ/9IVbgThYbG5TWrEnhfpYmv6kh/3UkeSxECxQFaPKXYVaNQ==
+ b=Z/DoKatKQdHTeBcVltkT72H6vq87Wg8W2qmv3lyqw4epGF/MZJ8dKeMwQanEWZaRPNBz0neeBfYy/lrO38wndaEuxhg+MeyCEw1leZnCo92IA6ruh8RKdXLePYpN0k+Hko1yDhBamxfvifswVPwitNrd8w2sPm5agEvfUVTSccok6kuTjPhmvDNqJ2wUcHB/zW5vpWxV1G+awT+xAQwrt1YjnGhkagvynYVl/PDaaVE9iss5+md8XlGK0hDvB+pNxNbyWT4c7Dd6g7VrbeDhEHgGkVwX5MnwpIdsbbhw7/5TFPDLTz4GUHVZVcSSACd3sSepLjmCMnb2ybdsfqHlPA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=PD0nfMj4Gl7WdVKXtUWIufmgHaBAPlOrc6QxMnzNKIg=;
- b=Pfug6MPGq/Y/LJ5dhgYHOVrI9nn7pZHZk4o/Li0d9c5n10BTBpxMGxeJVDMbVhgdMM9JyYNI7b5M7UjHJLNQ7KFDpeRdsloFcxYu1nmBSjxVJDvJkf8Ayj3SlOLoOKrs1qTbxE8er3gg1jAY9bm+0ngGNNGHFFSlpJr8ss4rgyXWsR760lxqC1j4EhZqj6r6IJD+9gQrnPYt0A7jQJCEck2NgMfO7t62Z/B5cVGwqggkL6hjMoumyaTkRyaWXR/HSj4IWQN6jWAqE/+ct1xTzD+YZskcEsEsjQKH/RIElKxer2k8FSwpN0mqpiabfyuzJb8mBqHRgZcG8aNkrYZ0EA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=in-advantage.com; dmarc=pass action=none
- header.from=in-advantage.com; dkim=pass header.d=in-advantage.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=inadvantage.onmicrosoft.com; s=selector2-inadvantage-onmicrosoft-com;
+ bh=ef2HpOQGN36RdNGIe6R2QcvfM0Nw6t+3nv5hRlSnue8=;
+ b=b+srmmbMZVbp7mljbiRnVm6zUHLS2M19ld7TgzDdiKhm5G8XYc7A8yEAf8C+IpcBX2HFMGnVAmSeIgdVf98rmQoI+mMyyktVIDehuVvx9MRgaBH3s3e9IfwvBIrIHgLfRdKNTDWV7iyJmxCY8DsSieMUkcMBoNxLyk37mvFlMHkG6mdFs/eLAD00HtRD658LlAZFDN5M5GXj/35m5N1IICNa/bejlAEcg7StPcqYghu7t62IQmCto9IMH5UgpbeJj5af4/JCU/ZeqFINCRxwf6mjaD0yNcyBhtPsEObPmQrV/OfeJ1R+Yx4+kIOtv4RztvSYIlElxczCRc6gHcIEyQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PD0nfMj4Gl7WdVKXtUWIufmgHaBAPlOrc6QxMnzNKIg=;
- b=Eg68DNRgpA6/vBd3q58M7KLt5Cbd0wAoEq2TdnDtAZssIUznFV8qvQtFgmesLSEc9yjp8dTRMlS+RkXikXPZ5AybkHQ67wHsUbe9OtF9/+pNGg2jdsAfNVVG94z7iwVuLn2dEGHLxz/fG+RKeXtW2Sq3oDSywQiD0IyjMtSXOxY=
-Authentication-Results: nxp.com; dkim=none (message not signed)
- header.d=none;nxp.com; dmarc=none action=none header.from=in-advantage.com;
-Received: from MWHPR1001MB2351.namprd10.prod.outlook.com
- (2603:10b6:301:35::37) by MWHPR10MB1342.namprd10.prod.outlook.com
- (2603:10b6:300:1f::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14; Fri, 17 Sep
- 2021 03:38:13 +0000
-Received: from MWHPR1001MB2351.namprd10.prod.outlook.com
- ([fe80::bc3f:264a:a18d:cf93]) by MWHPR1001MB2351.namprd10.prod.outlook.com
- ([fe80::bc3f:264a:a18d:cf93%7]) with mapi id 15.20.4523.017; Fri, 17 Sep 2021
- 03:38:13 +0000
-Date:   Thu, 16 Sep 2021 20:38:02 -0700
-From:   Colin Foster <colin.foster@in-advantage.com>
-To:     Joakim Zhang <qiangqing.zhang@nxp.com>
-Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 net] net: mscc: ocelot: remove buggy and useless write
- to ANA_PFC_PFC_CFG
-Message-ID: <20210917033802.GA681448@euler>
-References: <20210916010938.517698-1-colin.foster@in-advantage.com>
- <20210916114917.aielkefz5gg7flto@skbuf>
- <DB8PR04MB67954EE02059714DD9A72435E6DD9@DB8PR04MB6795.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <DB8PR04MB67954EE02059714DD9A72435E6DD9@DB8PR04MB6795.eurprd04.prod.outlook.com>
-X-ClientProxiedBy: BYAPR04CA0030.namprd04.prod.outlook.com
- (2603:10b6:a03:40::43) To MWHPR1001MB2351.namprd10.prod.outlook.com
- (2603:10b6:301:35::37)
+ bh=ef2HpOQGN36RdNGIe6R2QcvfM0Nw6t+3nv5hRlSnue8=;
+ b=2HYIyUKiV3q3+dYHgXK13Vn5GmOWKIR/ELCZ7c8EJkWR+v1y+uqm84o4EfW7WMBaqAqELGUFn7/PaTinTZBCtnOEi81YTk5pEwwB5WyxCUMpE95tY40bhrrtMO+yI1WRn37MTJf6urDW2mfHjbDQsHYb47TDz9Rl0oxzR3qD4/8=
+Received: from BN9PR03CA0185.namprd03.prod.outlook.com (2603:10b6:408:f9::10)
+ by MN2PR12MB2909.namprd12.prod.outlook.com (2603:10b6:208:103::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Fri, 17 Sep
+ 2021 03:41:58 +0000
+Received: from BN8NAM11FT024.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:f9:cafe::8e) by BN9PR03CA0185.outlook.office365.com
+ (2603:10b6:408:f9::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend
+ Transport; Fri, 17 Sep 2021 03:41:58 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB03.amd.com;
+Received: from SATLEXMB03.amd.com (165.204.84.17) by
+ BN8NAM11FT024.mail.protection.outlook.com (10.13.177.38) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4523.14 via Frontend Transport; Fri, 17 Sep 2021 03:41:58 +0000
+Received: from hr-amd (10.180.168.240) by SATLEXMB03.amd.com (10.181.40.144)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Thu, 16 Sep
+ 2021 22:41:54 -0500
+Date:   Fri, 17 Sep 2021 11:41:56 +0800
+From:   Huang Rui <ray.huang@amd.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+CC:     Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        "Shuah Khan" <skhan@linuxfoundation.org>,
+        Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@kernel.org>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "Sharma, Deepak" <Deepak.Sharma@amd.com>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Limonciello, Mario" <Mario.Limonciello@amd.com>,
+        "Fontenot, Nathan" <Nathan.Fontenot@amd.com>,
+        "Su, Jinzhou (Joe)" <Jinzhou.Su@amd.com>,
+        "Du, Xiaojian" <Xiaojian.Du@amd.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>
+Subject: Re: [PATCH 04/19] cpufreq: amd: introduce a new amd pstate driver to
+ support future processors
+Message-ID: <20210917034156.GA3761456@hr-amd>
+References: <20210908150001.3702552-1-ray.huang@amd.com>
+ <20210908150001.3702552-5-ray.huang@amd.com>
+ <YToh1Vhei2PyhlW+@hirez.programming.kicks-ass.net>
+ <20210913081134.GA3731830@hr-amd>
+ <YT8SOMBDpB0HWm0d@hirez.programming.kicks-ass.net>
+ <20210913105458.GC3731830@hr-amd>
+ <YT88cJCetaGHUItH@hirez.programming.kicks-ass.net>
+ <20210916100947.GE3755511@hr-amd>
+ <CAJZ5v0i7OHBmQL-WdaiBsYaO2J6kCqW=YzA8jU6nQBJ2nw0JQQ@mail.gmail.com>
 MIME-Version: 1.0
-Received: from euler (67.185.175.147) by BYAPR04CA0030.namprd04.prod.outlook.com (2603:10b6:a03:40::43) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Fri, 17 Sep 2021 03:38:12 +0000
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0i7OHBmQL-WdaiBsYaO2J6kCqW=YzA8jU6nQBJ2nw0JQQ@mail.gmail.com>
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB03.amd.com
+ (10.181.40.144)
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 494754cd-7582-4b4c-5fc1-08d9798c9375
-X-MS-TrafficTypeDiagnostic: MWHPR10MB1342:
-X-Microsoft-Antispam-PRVS: <MWHPR10MB1342A7F2066F489BDE6913A6A4DD9@MWHPR10MB1342.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Office365-Filtering-Correlation-Id: ab6f745c-1a96-4270-d464-08d9798d1a44
+X-MS-TrafficTypeDiagnostic: MN2PR12MB2909:
+X-Microsoft-Antispam-PRVS: <MN2PR12MB2909890F53C2E60C5DFE8765ECDD9@MN2PR12MB2909.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: +XIX69lgP9jxCBkugjfNr5CFbisvTeYKnygBij72jdLzfzbeFeHa3W6AVNHHc4HUu1S2qgR1A1lIc49RQAG2pypqQhmz8tSUttYT+n2yiIqF7a5OWLW36AjzgXuXMLzTpMqSffcjndz1YQ1sOj0uJRfJS2xDAUH/dpuO8H6AKqHxTEz0shnjLOEl7wKE6564xwYLWqR1f6dzVwq2xptgzUqz2azxmU1ggPpQB8V+ShpY/HWTaMtZ6OeiJXNJ3lkWv8TR0XDrmrOUf7Q3pzPKXlkEmtnDAZPPzQmToeFQn3u/hEC9E4y1SclmBppgIe4AYR4KDJ6r92ZJjhQV6bo9PZPqXLTcn6PabH20VASH7NV0fyvaiH2LyVsnX3QCJ1UzvGcZqkEGsaC9LAGI9lo06zWlAtMNThSx+YqYsEDEgNIWgZ7HasUiIWv7bb8YeIYOdVwPX2/iPYxpY2eT2VZaf4Z0RoeEBbDJ4083TncSphAXX9feynot/1Un53HsF1PmiQby7DcvgJkoo9g8jnKGUuPma16ioeVCBd2BaqWrzfp53lG0PEQiJq0iBj8V5x4u2U0w3KSzea+hmgg21nGQDiUO4jdSnsPmPyfkfDAtgYIwcohlCwzqBYXldRZPOmCrvQwo0CqDoQRn6WTL3WFTxQhY1zDNyXTyV7IfOguCzWuH6kf1GMoSUpvdAhqY0tOHYklUqkv2FYEwdp8qC/6IzbXTbyeNiAlN7DP1uiIsmx9r4dxH/xfHst5pevN4kP7ZVwjyRU1s7rY6uT+T4UzAN0VUvsx+ui6x3N9yt+X8pEs=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2351.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(376002)(346002)(39830400003)(136003)(4326008)(44832011)(54906003)(956004)(5660300002)(2906002)(478600001)(52116002)(8676002)(38350700002)(186003)(1076003)(83380400001)(55016002)(66556008)(9576002)(26005)(6666004)(38100700002)(316002)(53546011)(33716001)(66946007)(45080400002)(6916009)(8936002)(9686003)(86362001)(66476007)(33656002)(6496006)(966005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aTZ5TDdLc0JMa2hqQXhXVmtIQjA5cXVKVXMxKzRhVk16WUZDRVBVMWo1NWRh?=
- =?utf-8?B?NmhyVDZrYkdTWG1Pb0w2RGZ0cU83bytKL2xNR1JOb2Z0aTR4Q25UY3dnanhM?=
- =?utf-8?B?cEQvaWdXQXlvSDNVVFE5Qm5WNW95ZEFCUWs4U1RKRTdSZkllVWlZdHZSM2li?=
- =?utf-8?B?ZDRVWTRtcFJwblpHYUd3c3hJNHowK2poeTNldjBBVmVNdlFwK1VkQ0NPd0hz?=
- =?utf-8?B?YnFRNTNsZS93SDFoUktyYThlclVsdlE3Z3E3WG1BeERGN0dBS2h3aWxIb3B2?=
- =?utf-8?B?empYTWF5K1FTR1NyaXF0bUZWcjFzdWpPWG01dXlERDQxK2ttN1ZTOWlVbHda?=
- =?utf-8?B?WkJQMnhBMm1DVlZZbkx2cHFJeXRzTzA3Q0NCc0hKeC9YWkN0a01VOXpzRHQ1?=
- =?utf-8?B?SDhSUTVEWG5PejFidnZZTmtKaUZmY29BeUFZcXBBNzRCbFA0VDVjbEJoQnJM?=
- =?utf-8?B?UGM0YWgwM0lWR0VadU1CYTJibjRUWUo5bkZWaHduSFhyWldCMDh5VWhYUWp2?=
- =?utf-8?B?OHBYTEtodlQyUTlXZ2lrM1l5MENoTUJ4bDlmbWZBVllqK0xpNStLWjgzY0dm?=
- =?utf-8?B?MUg3VTJvUExEQzRwWFp6WEYrRmY3dXNDdk5IQW1ITTBrekk4bzB3cVAyOHVP?=
- =?utf-8?B?Z2lBQUlheWZRSDVxTU9acVVFcEFkZ3dJOGVneUh0T0lTMHNrMi81K1dqRUV4?=
- =?utf-8?B?TEw5Qk00M09mVTc4RlBuZmRNbHZ6Qm1WeTZIVEVHQmpYa1Q4MC9uaXBnUkRM?=
- =?utf-8?B?ZUg1ditMdUtHNFdKMkZNOGk5MFBYQjBqRGxlV3JScXNSOFlxaTc3MDVKU3B4?=
- =?utf-8?B?d1Q0MHJPVk5aVjlEKzV6VmxZd2tkbUc0aUhkUGZWeVgxOW1TT25nd09HdHBu?=
- =?utf-8?B?NjdVajdXSmdub1ZVaEhJcHdSMVBBM1UrVk1OZ2J2ckJlTklsVUx4dmNyREZC?=
- =?utf-8?B?U2U3ajJkcDRSQ1J3Y1k3SWs4WWdVc2RxdU9pRE5Rb1k2WUVpMHBBMGtwTWd2?=
- =?utf-8?B?VjJUM1pLOWtvYWwyZnAvaXFLS3lOY3dHMGRsM01tQXphTFVMSTZ1NlhvQjQ3?=
- =?utf-8?B?cUV1SlRjMHVuYnp1QXlZcVlFczVNUGw0OVd0WVYvdWMyTWYvcXQ5QjczYUMy?=
- =?utf-8?B?ZGdsQmRzKzEzdGQ1VFNxM3ZhbUVjTkRBUnNZanhDVFROSEdQQjVtUCtEeFVk?=
- =?utf-8?B?MU5uSThibDZjSDVlUUtLQXUwMEtjL2l5MGRIeUJnWFRuMmhXaHZwVkthOEhP?=
- =?utf-8?B?YktiQ1loUWlRaVdCYXF1NzRJMU5UMjQxeEVRdzJrWGpaNXlPZjRZWlRqd2Zu?=
- =?utf-8?B?MmFZUkQ4aTNLdlk5SVhhM09HUzRSTVdrQmhJdVJzeGRtenZsN29Pcmh5cjRO?=
- =?utf-8?B?SW4ycU1teEhVZysrU1FvV1FsNmZnc0lsUDZkV0xLdlNNRUYwK3R6SzNXeFRJ?=
- =?utf-8?B?eUEwUUwzdE1jcXRRanY3ckg4RHRDYzFSZUlqNHJqK3J6ZHNjN2lRMUQ3c1hL?=
- =?utf-8?B?azhSbU9zZU0vczZCMUlTTkxqTWovdC9lZ2ErYUhtbncwNldQU0VtNzFuVi91?=
- =?utf-8?B?SXArSmV0NzNlU0MyU09NUGdIZ2Mzb2RlSXo4YTNicmdmcXd6Q29Vc2UwdStK?=
- =?utf-8?B?eURNRGY2SDNZVkVwQXYvSWRDWjFxREZOUmR4ZS9QYnlOSWFiUnUvdEVGdGtj?=
- =?utf-8?B?dzJENFhVZWlEMVhpQXU5NUcvR0kxM0kvREJRRzdudTBTcUQzYStiVmNiYkxE?=
- =?utf-8?Q?+0RFmAVN4RTacuaaFuhQ1Hsz5j909Xec8mja7Kp?=
-X-OriginatorOrg: in-advantage.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 494754cd-7582-4b4c-5fc1-08d9798c9375
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2351.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Sep 2021 03:38:12.9439
+X-Microsoft-Antispam-Message-Info: mu1xqBhRMXkt1RjJcO6TofN0EbtKbHQlscYoL2dLG8NJNY+1Aj/FjDsEVd5ZxtQTK5ta/xzH+fxMrtbkIYm6h8S7/cXHUy3HZ5nDr2fXiKpCSIutoAF7knSpn+bHWNNmCBTFJwFShh1nqdTbAVUA03P3cJ5/P+jcsczSftMKD0n0QRn3vx5O5IM4F80FFqJw6JR/HGZySaKhL7vDSCEWpWsnppV8N8pHSRGaiMVCzPzcaSGIt8uvVyrkHcocTrGq+VDMeH/0G4nZoHDEg+36yJgbplfg6R7wASqOTt99fyoeDIrKXIjiBRWeiwZEI+VXlkZHf13N2pyRweLYrK7t3GNW6K79GUfe4EZ3x3Qht2ukb2fR2tP0HWtZcw0llEFEIrP/X1MPD0sgulGSeyLJv0RWkYhzS7DhqqN2wpt//WPgDAxRwCNljGXxs7fChHXLuzm/uqXzhpzsnQAvXFDcdzKtj64E2cBp0yBxWapqE8VsWH75I9Jhn1slwZlXQ5c17vVsoJ/X+2LyVMDl4l+FSd8KHmHypmlkY8nMmR6oITnZNoDKDpOOYR5q2wrr27BDVw4HqwrIJ3A7NjzYIzhaNb2+PHZA2vCcjkRPNX2xcaCKgHXrpjnEvbwpM5S4y86HqTmitW6FuE5a+Cp8OtsNbedXPmIqCJdrobGZ+DWmxi/18pXT/AECf1FeQlxJbO8xV/gcgVejZPOUn8uhAgvydX/WgUKN+zi32jFWuXBWOg8=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(136003)(39860400002)(346002)(376002)(396003)(46966006)(36840700001)(36860700001)(47076005)(8676002)(336012)(356005)(81166007)(9686003)(7416002)(6916009)(83380400001)(16526019)(2906002)(54906003)(8936002)(1076003)(26005)(5660300002)(33716001)(82310400003)(426003)(70206006)(70586007)(82740400003)(86362001)(478600001)(33656002)(316002)(55016002)(53546011)(186003)(4326008)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Sep 2021 03:41:58.7274
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 48e842ca-fbd8-4633-a79d-0c955a7d3aae
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: GDXNmN+Zi+G8+bJS326je6296dgt+S+epvhjbuNsyJCKbDc/2Rr3wwpw5XxvUGHJaAwBGVzghu0E/TWQGVHbF6GIGCyA+cNOVpovG4WbJVI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1342
+X-MS-Exchange-CrossTenant-Network-Message-Id: ab6f745c-1a96-4270-d464-08d9798d1a44
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT024.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB2909
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 02:34:37AM +0000, Joakim Zhang wrote:
+On Thu, Sep 16, 2021 at 07:19:21PM +0800, Rafael J. Wysocki wrote:
+> On Thu, Sep 16, 2021 at 12:09 PM Huang Rui <ray.huang@amd.com> wrote:
+> >
+> > On Mon, Sep 13, 2021 at 07:56:32PM +0800, Peter Zijlstra wrote:
+> > > On Mon, Sep 13, 2021 at 06:54:58PM +0800, Huang Rui wrote:
+> > > > On Mon, Sep 13, 2021 at 04:56:24PM +0800, Peter Zijlstra wrote:
+> > >
+> > > > > > 1) Full MSR Support
+> > > > > > If current hardware has the full MSR support, we register "pstate_funcs"
+> > > > > > callback functions to implement the MSR operations to control the clocks.
+> > > > >
+> > > > > What's the WRMSR cost for those? I've not really kept track of the MSR
+> > > > > costs on AMD platforms, but on Intel it has (luckily) been coming down
+> > > > > quite a bit.
+> > > >
+> > > > Good to know this, I didn't have a chance to give a check. May I know how
+> > > > did you test this latency? But MSR is new hardware design for this
+> > > > solution, as designer mentioned, the WRMSR is low-latency register model is
+> > > > faster than ACPI AML code interpreter.
+> > > >
+> > > > >
+> > > > > > 2) Shared Memory Support
+> > > > > > If current hardware doesn't have the full MSR support, that means it only
+> > > > > > provides share memory support. We will leverage APIs in cppc_acpi libs with
+> > > > > > "cppc_funcs" to implement the target function for the frequency control.
+> > > > >
+> > > > > Right, the mailbox thing. How is the performance of this vs MSR accesses?
+> > > >
+> > > > I will give a check. If you have a existing test method that can be used, I
+> > > > can check it quickly.
+> > >
+> > > Oh, I was mostly wondering if using the mailbox as MMIO would be faster
+> > > than an MSR, but you've already answered that above. Also:
+> > >
+> > > > > > 1. As mentioned above, amd-pstate driver can implement
+> > > > > > fast_switch/adjust_perf function with full MSR operations that have better
+> > > > > > performance for schedutil and other governors.
+> > > > >
+> > > > > Why couldn't the existing cppc-cpufreq grow this?
+> > > >
+> > > > Because fast_switch can adjust the frequency directly in the interrupt
+> > > > context, if we use the acpi cppc handling with shared memory solution, it
+> > > > will have a deadlock. So fast switch needs the control with registers
+> > > > directly like acpi-cpufreq and intel-pstate.
+> > >
+> > > Aah, I see, you're only doing fast_switch support when you have MSRs.
+> > > That was totally non-obvious.. :/
+> >
+> > Yes, I should have written a comment to there. :-)
+> > Will update this in V2.
+> >
+> > >
+> > > But then amd_pstate_adjust_perf() could just direct call the pstate
+> > > methods and we don't need that indirection *at*all*, right?
+> >
+> > Hmm, yes, if we use amd_pstate_adjust_perf here, we won't need to call
+> > amd_pstate_fast_switch. I saw intel_pstate had adjust_perf and fast_switch
+> > at the same time, would you mind to let me know how to distinguish these
+> > two use scenario on intel processors?
 > 
-> Hi Vladimir,
-> 
-> > -----Original Message-----
-> > From: Vladimir Oltean <vladimir.oltean@nxp.com>
-> > Sent: 2021年9月16日 19:49
-> > To: Colin Foster <colin.foster@in-advantage.com>
-> > Cc: Claudiu Manoil <claudiu.manoil@nxp.com>; Alexandre Belloni
-> > <alexandre.belloni@bootlin.com>; UNGLinuxDriver@microchip.com; David S.
-> > Miller <davem@davemloft.net>; Jakub Kicinski <kuba@kernel.org>;
-> > netdev@vger.kernel.org; linux-kernel@vger.kernel.org
-> > Subject: Re: [PATCH v1 net] net: mscc: ocelot: remove buggy and useless write
-> > to ANA_PFC_PFC_CFG
-> > 
-> > On Wed, Sep 15, 2021 at 06:09:37PM -0700, Colin Foster wrote:
-> > > A useless write to ANA_PFC_PFC_CFG was left in while refactoring
-> > > ocelot to phylink. Since priority flow control is disabled, writing
-> > > the speed has no effect.
-> > >
-> > > Further, it was using ethtool.h SPEED_ instead of OCELOT_SPEED_
-> > > macros, which are incorrectly offset for GENMASK.
-> > >
-> > > Lastly, for priority flow control to properly function, some scenarios
-> > > would rely on the rate adaptation from the PCS while the MAC speed
-> > > would be fixed. So it isn't used, and even if it was, neither "speed"
-> > > nor "mac_speed" are necessarily the correct values to be used.
-> > >
-> > > Fixes: e6e12df625f2 ("net: mscc: ocelot: convert to phylink")
-> > > Signed-off-by: Colin Foster <colin.foster@in-advantage.com>
-> > > ---
-> > >  drivers/net/ethernet/mscc/ocelot.c | 4 ----
-> > >  1 file changed, 4 deletions(-)
-> > >
-> > > diff --git a/drivers/net/ethernet/mscc/ocelot.c
-> > > b/drivers/net/ethernet/mscc/ocelot.c
-> > > index c581b955efb3..08be0440af28 100644
-> > > --- a/drivers/net/ethernet/mscc/ocelot.c
-> > > +++ b/drivers/net/ethernet/mscc/ocelot.c
-> > > @@ -569,10 +569,6 @@ void ocelot_phylink_mac_link_up(struct ocelot
-> > *ocelot, int port,
-> > >  	ocelot_port_writel(ocelot_port, DEV_CLOCK_CFG_LINK_SPEED(speed),
-> > >  			   DEV_CLOCK_CFG);
-> > >
-> > > -	/* No PFC */
-> > > -	ocelot_write_gix(ocelot, ANA_PFC_PFC_CFG_FC_LINK_SPEED(speed),
-> > > -			 ANA_PFC_PFC_CFG, port);
-> > > -
-> > 
-> > This will conflict with the other patch.... why didn't you send both as part of a
-> > series? By not doing that, you are telling patchwork to build-test them in
-> > parallel, which of course does not work:
-> > https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fpatchw
-> > ork.kernel.org%2Fproject%2Fnetdevbpf%2Fpatch%2F20210916012341.518512-
-> > 1-colin.foster%40in-advantage.com%2F&amp;data=04%7C01%7Cqiangqing.zh
-> > ang%40nxp.com%7C546aa03ab17b45f0891a08d97908095f%7C686ea1d3bc2b
-> > 4c6fa92cd99c5c301635%7C0%7C0%7C637673897688805938%7CUnknown%7
-> > CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiL
-> > CJXVCI6Mn0%3D%7C1000&amp;sdata=fmGI6K2dS36tm5xuuKLKdVF1pEj9umv
-> > FLA8kyfXWD3A%3D&amp;reserved=0
-> > 
-> > Also, why didn't you bump the version counter of the patch, and we're still at v1
-> > despite the earlier attempt?
-> > 
-> > git format-patch -2 --cover-letter --subject-prefix="PATCH v3 net" -o
-> > /opt/patches/linux/ocelot-phylink-fixes/v3/
-> > ./scripts/get_maintainer.pl /opt/patches/linux/ocelot-phylink-fixes/v3/*.patch
-> > ./scripts/checkpatch.pl --strict
-> > /opt/patches/linux/ocelot-phylink-fixes/v3/*.patch
-> > # Go through patches, write change log compared to v2 using vimdiff, meld, git
-> > range-diff, whatever # Write cover letter summarizing what changes and why.
-> > If fixing bugs explain the impact.
-> > git send-email \
-> > 	--to='netdev@vger.kernel.org' \
-> > 	--to='linux-kernel@vger.kernel.org' \
-> > 	--cc='Vladimir Oltean <vladimir.oltean@nxp.com>' \
-> > 	--cc='Claudiu Manoil <claudiu.manoil@nxp.com>' \
-> > 	--cc='Alexandre Belloni <alexandre.belloni@bootlin.com>' \
-> > 	--cc='UNGLinuxDriver@microchip.com' \
-> > 	--cc='"David S. Miller" <davem@davemloft.net>' \
-> > 	--cc='Jakub Kicinski <kuba@kernel.org>' \
-> > 	/opt/patches/linux/ocelot-phylink-fixes/v3/*.patch
-> > 
-> > Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> > 
-> > Please keep this tag but resend a new version. You can download the patch
-> > with the review tags automatically using:
-> > git b4 20210916010938.517698-1-colin.foster@in-advantage.com
-> > git b4 20210916012341.518512-1-colin.foster@in-advantage.com
-> > 
-> > where "git b4" is an alias configured like this in ~/.gitconfig:
-> > 
-> > [b4]
-> > 	midmask =
-> > https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.ker
-> > nel.org%2Fr%2F%2525s&amp;data=04%7C01%7Cqiangqing.zhang%40nxp.co
-> > m%7C546aa03ab17b45f0891a08d97908095f%7C686ea1d3bc2b4c6fa92cd99c5
-> > c301635%7C0%7C0%7C637673897688815892%7CUnknown%7CTWFpbGZsb3d
-> > 8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3
-> > D%7C1000&amp;sdata=t8N%2F%2FAnLVLtoMDzNDL%2Fv7ixEkBeiIqB6Go%2F
-> > zD19gisE%3D&amp;reserved=0
-> > [alias]
-> > 	b4 = "!f() { b4 am -t -o - $@ | git am -3; }; f"
-> 
-> I came across this detailed suggestions, sometime we need download the patch from the patchwork,
-> so I have a try with above method(adding these two symbol in my .gitconfig), but I met below error,
-> could you please tell me what I am missing? Thanks.
+> The ->fast_switch() callback is for the use cases in which
+> ->adjust_perf() cannot be installed, that is basically systems without
+> HWP enabled.
 
-One that I can answer.
+OK, I see. Thanks to clarify this.
 
-b4 is a Python command.
-"pip install b4" should install it, then export
-/home/username/.local/bin into PATH
-"export PATH=/home/colin/.local/bin:$PATH"
-
-You can add this path to ~/.profile if you want it to persist.
-
-> 
-> $ git b4 20210916010938.517698-1-colin.foster@in-advantage.com
-> f() { b4 am -t -o - $@ | git am -3; }; f: 1: f() { b4 am -t -o - $@ | git am -3; }; f: b4: not found
-> 
-> Best Regards,
-> Joakim Zhang
+Thanks,
+Ray
