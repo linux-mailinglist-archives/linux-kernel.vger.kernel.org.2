@@ -2,145 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 607EE40F511
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 11:44:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F44640F517
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 11:45:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343588AbhIQJqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 05:46:16 -0400
-Received: from foss.arm.com ([217.140.110.172]:50596 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245742AbhIQJqC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 05:46:02 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4EFAC101E;
-        Fri, 17 Sep 2021 02:44:40 -0700 (PDT)
-Received: from [10.57.24.25] (unknown [10.57.24.25])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D29AC3F59C;
-        Fri, 17 Sep 2021 02:44:35 -0700 (PDT)
-Subject: Re: [PATCH] swiotlb: set IO TLB segment size via cmdline
-To:     Roman Skakun <rm.skakun@gmail.com>, Christoph Hellwig <hch@lst.de>
-Cc:     Jan Beulich <jbeulich@suse.com>,
-        Andrii Anisov <andrii_anisov@epam.com>,
-        Roman Skakun <roman_skakun@epam.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Mike Rapoport <rppt@kernel.org>, Will Deacon <will@kernel.org>,
-        xen-devel@lists.xenproject.org, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-doc@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        iommu <iommu@lists.linux-foundation.org>
-References: <20210914151016.3174924-1-Roman_Skakun@epam.com>
- <7c04db79-7de1-93ff-0908-9bad60a287b9@suse.com>
- <CADu_u-Ou08tMFm5xU871ae8ct+2YOuvn4rQ=83CMTbg2bx87Pg@mail.gmail.com>
- <84ef7ff7-2c9c-113a-4a2c-cef54a6ded51@suse.com>
- <20210915135321.GA15216@lst.de>
- <CADu_u-OZzgVj+z=iD6kUQOZxUufF5QSMR6-MmpN_hLZ9PyQJhQ@mail.gmail.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <eb98aeac-af61-0dd6-2052-5b55921746c1@arm.com>
-Date:   Fri, 17 Sep 2021 10:44:30 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S1343629AbhIQJqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 05:46:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245748AbhIQJqR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 05:46:17 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECDC7C061764;
+        Fri, 17 Sep 2021 02:44:55 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id u4so8245050qta.2;
+        Fri, 17 Sep 2021 02:44:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ilmdDUD6qsXcaiPoHf3s6YHGPq9ZLgh8ShhzVJlWhq4=;
+        b=L5N5pLsyDpOW+k7EHOX1yiZRWFugStu3kxDpMgeDUiWViGc53vmBALJZTInp386PeU
+         Vmn80DkA9ZMBXk33Bg8uAnXDO5EqpcUMoN576VkymOONriE0nwS+fL87alc+NcpSskcH
+         HMoamoFB+gr4OVB838sNcziIzYhG/5Idn2mGOYzrEHe3E4D+A0qSStestChxN2O+sw+6
+         OT2ToUEoIq2UFe6RWygTN3p3HiQX7voiLll0gAfq57froxpug9/nP234brSeE2oCMp2J
+         UbiFoHVjAMpa6e04M42+UHbIkCV/GV0EaW07877Br8SQ1xXnacTFW0Flau7FLFyew8s+
+         XVUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ilmdDUD6qsXcaiPoHf3s6YHGPq9ZLgh8ShhzVJlWhq4=;
+        b=l/3ZcHJUxho8tliqXcM3vIeS3FVQ85l3S50t3vmHwfXk9yNocN0SuTLtuKIGh5knax
+         M2ivFQ8a/ab2v8QvAjzNpsK1AFfouxwfZPLNZYTcGGsL3IaOIKZItgXob61yG3yQx8VB
+         9iAQb26a5FvPktgzvigwb+vWPPPzS8jczjR4m3uGDkHqYlXJPWW86O6yKaMuncjs7VSK
+         N5/Aj3rhm+/6COgQ4BtXTMT8Lfg6leb44otW06dVmKddFy9x0Kdg+y5wwZZuxtw8tzTg
+         MIFC1q5f61d0z7lU94/41AdT6Uoo8nPOBhsCc+SJAiikHE7D8MxStJu6DPX8RzRm7MZ5
+         hxDg==
+X-Gm-Message-State: AOAM530ic/2cyl+5rQ+/VOuV90PLVel/wvNEDYTMPvoUfxG1bViKAyEn
+        9u2I1K2X0XGpFN3s3tEoqB1F+AeruSc1uskxo+8=
+X-Google-Smtp-Source: ABdhPJwEiRh+GLx7Th9VUzOwaHsPoSRRypEdlyRR4aj9JcaPlmaT4s2CaPzaW2R3mlBJvkKH8YXq3P1xU+KgGyOLNXo=
+X-Received: by 2002:ac8:5316:: with SMTP id t22mr1124648qtn.176.1631871895128;
+ Fri, 17 Sep 2021 02:44:55 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CADu_u-OZzgVj+z=iD6kUQOZxUufF5QSMR6-MmpN_hLZ9PyQJhQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+References: <1631092255-25150-1-git-send-email-shengjiu.wang@nxp.com>
+ <1631092255-25150-4-git-send-email-shengjiu.wang@nxp.com> <20210915161624.GA1770838@p14s>
+ <CAA+D8AO0c+jk_k7j=ZvNFsVvC-p_zMLPJDS3qmLjNbJ+U0E9Cg@mail.gmail.com>
+ <20210916165957.GA1825273@p14s> <CAA+D8AN_ni_XmEFNfY0Z0qLAJX00XFSUP1RkJdNQd-MVY6pd4g@mail.gmail.com>
+In-Reply-To: <CAA+D8AN_ni_XmEFNfY0Z0qLAJX00XFSUP1RkJdNQd-MVY6pd4g@mail.gmail.com>
+From:   Shengjiu Wang <shengjiu.wang@gmail.com>
+Date:   Fri, 17 Sep 2021 17:44:44 +0800
+Message-ID: <CAA+D8AMaszzT5q8oGhXOtE3W5Ue9S3r=es2sTp2uJ7RwjX8Bzg@mail.gmail.com>
+Subject: Re: [PATCH v4 3/4] remoteproc: imx_dsp_rproc: Add remoteproc driver
+ for DSP on i.MX
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Ohad Ben Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" 
+        <linux-remoteproc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-17 10:36, Roman Skakun wrote:
-> Hi, Christoph
-> 
-> I use Xen PV display. In my case, PV display backend(Dom0) allocates
-> contiguous buffer via DMA-API to
-> to implement zero-copy between Dom0 and DomU.
+On Fri, Sep 17, 2021 at 1:20 PM Shengjiu Wang <shengjiu.wang@gmail.com> wrote:
+>
+> On Fri, Sep 17, 2021 at 1:00 AM Mathieu Poirier
+> <mathieu.poirier@linaro.org> wrote:
+> >
+> > [...]
+> >
+> > > > > +
+> > > > > +/**
+> > > > > + * imx_dsp_rproc_elf_load_segments() - load firmware segments to memory
+> > > > > + * @rproc: remote processor which will be booted using these fw segments
+> > > > > + * @fw: the ELF firmware image
+> > > > > + *
+> > > > > + * This function specially checks if memsz is zero or not, otherwise it
+> > > > > + * is mostly same as rproc_elf_load_segments().
+> > > > > + */
+> > > > > +static int imx_dsp_rproc_elf_load_segments(struct rproc *rproc,
+> > > > > +                                        const struct firmware *fw)
+> > > > > +{
+> > > > > +     struct device *dev = &rproc->dev;
+> > > > > +     u8 class = fw_elf_get_class(fw);
+> > > > > +     u32 elf_phdr_get_size = elf_size_of_phdr(class);
+> > > > > +     const u8 *elf_data = fw->data;
+> > > > > +     const void *ehdr, *phdr;
+> > > > > +     int i, ret = 0;
+> > > > > +     u16 phnum;
+> > > > > +
+> > > > > +     ehdr = elf_data;
+> > > > > +     phnum = elf_hdr_get_e_phnum(class, ehdr);
+> > > > > +     phdr = elf_data + elf_hdr_get_e_phoff(class, ehdr);
+> > > > > +
+> > > > > +     /* go through the available ELF segments */
+> > > > > +     for (i = 0; i < phnum; i++, phdr += elf_phdr_get_size) {
+> > > > > +             u64 da = elf_phdr_get_p_paddr(class, phdr);
+> > > > > +             u64 memsz = elf_phdr_get_p_memsz(class, phdr);
+> > > > > +             u64 filesz = elf_phdr_get_p_filesz(class, phdr);
+> > > > > +             u64 offset = elf_phdr_get_p_offset(class, phdr);
+> > > > > +             u32 type = elf_phdr_get_p_type(class, phdr);
+> > > > > +             void *ptr;
+> > > > > +             bool is_iomem;
+> > > > > +
+> > > > > +             if (type != PT_LOAD || !memsz)
+> > > >
+> > > > You did a really good job with adding comments but this part is undocumented...
+> > > > If I read this correctly you need to check for !memsz because some part of
+> > > > the program segment may have a header but its memsz is zero, in which case it can
+> > > > be safely skipped.  So why is that segment in the image to start with, and why
+> > > > is it marked PT_LOAD if it is not needed?  This is very puzzling...
+> > >
+> > > Actually I have added comments in the header of this function.
+> >
+> > Indeed there is a mention of memsz in the function's header but it doesn't
+> > mention _why_ this is needed, and that is what I'm looking for.
+> >
+> > >
+> > > memsz= 0 with PT_LOAD issue, I have asked the toolchain's vendor,
+> > > they said that this case is allowed by elf spec...
+> > >
+> > > And in the "pru_rproc.c" and "mtk_scp.c", seems they met same problem
+> > > they also check the filesz in their internal xxx_elf_load_segments() function.
+> >
+> > In both cases they are skipping PT_LOAD sections where "filesz" is '0', which
+> > makes sense because we don't know how many bytes to copy.  But here you are
+> > skipping over a PT_LOAD section with a potentially valid filesz, and that is the
+> > part I don't understand.
+>
+> Ok, I can use filesz instead. For my case, filesz = memsz = 0,
+> it is the same result I want.
+>
+> The reason why I use "memsz '' is because there is  "if (filesz > memsz) "
+> check after this,  if memsz is zero, then "filesz" should be zero too, other
+> values are not allowed.
 
-Well, something's gone badly wrong there - if you have to shadow the 
-entire thing in a bounce buffer to import it then it's hardly zero-copy, 
-is it? If you want to do buffer sharing the buffer really needs to be 
-allocated appropriately to begin with, such that all relevant devices 
-can access it directly. That might be something which needs fixing in Xen.
+But I still think checking "!memsz" is better than filesz,  because
+memsz > filesz is allowed (filesz = 0),  the code below can be executed.
+filesz > memsz is not allowed.
 
-Robin.
+What do you think?
 
-> When I start Weston under DomU, I got the next log in Dom0:
-> ```
-> [ 112.554471] CPU: 0 PID: 367 Comm: weston Tainted: G O
-> 5.10.0-yocto-standard+ #312
-> [ 112.575149] Call trace:
-> [ 112.577666] dump_backtrace+0x0/0x1b0
-> [ 112.581373] show_stack+0x18/0x70
-> [ 112.584746] dump_stack+0xd0/0x12c
-> [ 112.588200] swiotlb_tbl_map_single+0x234/0x360
-> [ 112.592781] xen_swiotlb_map_page+0xe4/0x4c0
-> [ 112.597095] xen_swiotlb_map_sg+0x84/0x12c
-> [ 112.601249] dma_map_sg_attrs+0x54/0x60
-> [ 112.605138] vsp1_du_map_sg+0x30/0x60
-> [ 112.608851] rcar_du_vsp_map_fb+0x134/0x170
-> [ 112.613082] rcar_du_vsp_plane_prepare_fb+0x44/0x64
-> [ 112.618007] drm_atomic_helper_prepare_planes+0xac/0x160
-> [ 112.623362] drm_atomic_helper_commit+0x88/0x390
-> [ 112.628029] drm_atomic_nonblocking_commit+0x4c/0x60
-> [ 112.633043] drm_mode_atomic_ioctl+0x9a8/0xb0c
-> [ 112.637532] drm_ioctl_kernel+0xc4/0x11c
-> [ 112.641506] drm_ioctl+0x21c/0x460
-> [ 112.644967] __arm64_sys_ioctl+0xa8/0xf0
-> [ 112.648939] el0_svc_common.constprop.0+0x78/0x1a0
-> [ 112.653775] do_el0_svc+0x24/0x90
-> [ 112.657148] el0_svc+0x14/0x20
-> [ 112.660254] el0_sync_handler+0x1a4/0x1b0
-> [ 112.664315] el0_sync+0x174/0x180
-> [ 112.668145] rcar-fcp fea2f000.fcp: swiotlb buffer is full (sz:
-> 3686400 bytes), total 65536 (slots), used 112 (slots)
-> ```
-> The problem is happened here:
-> https://elixir.bootlin.com/linux/v5.14.4/source/drivers/gpu/drm/rcar-du/rcar_du_vsp.c#L202
-> 
-> Sgt was created in dma_get_sgtable() by dma_common_get_sgtable() and
-> includes a single page chunk
-> as shown here:
-> https://elixir.bootlin.com/linux/v5.14.5/source/kernel/dma/ops_helpers.c#L18
-> 
-> After creating a new sgt, we tried to map this sgt through vsp1_du_map_sg().
-> Internally, vsp1_du_map_sg() using ops->map_sg (e.g
-> xen_swiotlb_map_sg) to perform
-> mapping.
-> 
-> I realized that required segment is too big to be fitted to default
-> swiotlb segment and condition
-> https://elixir.bootlin.com/linux/latest/source/kernel/dma/swiotlb.c#L474
-> is always false.
-> 
-> I know that I use a large buffer, but why can't I map this buffer in one chunk?
-> 
-> Thanks!
-> 
-> ср, 15 сент. 2021 г. в 16:53, Christoph Hellwig <hch@lst.de>:
->>
->> On Wed, Sep 15, 2021 at 03:49:52PM +0200, Jan Beulich wrote:
->>> But the question remains: Why does the framebuffer need to be mapped
->>> in a single giant chunk?
->>
->> More importantly: if you use dynamic dma mappings for your framebuffer
->> you're doing something wrong.
-> 
-> 
-> 
+Best regards
+Wang shengjiu
+>
+> >
+> > >
+> > > >
+> > > >
+> > > > > +                     continue;
+> > > > > +
+> > > > > +             dev_dbg(dev, "phdr: type %d da 0x%llx memsz 0x%llx filesz 0x%llx\n",
+> > > > > +                     type, da, memsz, filesz);
+> > > > > +
+> > > > > +             if (filesz > memsz) {
+> > > > > +                     dev_err(dev, "bad phdr filesz 0x%llx memsz 0x%llx\n",
+> > > > > +                             filesz, memsz);
+> > > > > +                     ret = -EINVAL;
+> > > > > +                     break;
+> > > > > +             }
+> > > > > +
+> > > > > +             if (offset + filesz > fw->size) {
+> > > > > +                     dev_err(dev, "truncated fw: need 0x%llx avail 0x%zx\n",
+> > > > > +                             offset + filesz, fw->size);
+> > > > > +                     ret = -EINVAL;
+> > > > > +                     break;
+> > > > > +             }
+> > > > > +
+> > > > > +             if (!rproc_u64_fit_in_size_t(memsz)) {
+> > > > > +                     dev_err(dev, "size (%llx) does not fit in size_t type\n",
+> > > > > +                             memsz);
+> > > > > +                     ret = -EOVERFLOW;
+> > > > > +                     break;
+> > > > > +             }
+> > > > > +
+> > > > > +             /* grab the kernel address for this device address */
+> > > > > +             ptr = rproc_da_to_va(rproc, da, memsz, &is_iomem);
+> > > >
+> > > >                 rproc_da_to_va(rproc, da, memsz, NULL);
+> > >
+> > > yes, will update it.
+> > >
+> > > >
+> > > > More comments to follow later today or tomorrow.
+> > >
+> > > Thanks.
+> > >
+> > > Best regards
+> > > Wang Shengjiu
