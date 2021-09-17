@@ -2,107 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B99F41012F
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 00:12:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24342410135
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 00:22:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344333AbhIQWOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 18:14:01 -0400
-Received: from mail-ot1-f52.google.com ([209.85.210.52]:43579 "EHLO
-        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241373AbhIQWOA (ORCPT
+        id S239654AbhIQWXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 18:23:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232719AbhIQWXg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 18:14:00 -0400
-Received: by mail-ot1-f52.google.com with SMTP id x10-20020a056830408a00b004f26cead745so14818329ott.10;
-        Fri, 17 Sep 2021 15:12:37 -0700 (PDT)
+        Fri, 17 Sep 2021 18:23:36 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08702C061574;
+        Fri, 17 Sep 2021 15:22:14 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id p4so22133160qki.3;
+        Fri, 17 Sep 2021 15:22:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/jPNdMJve/KWd/Y4SRkm6hTGIPVm3MyGY8DljibbqNI=;
+        b=QqwLP3Us4ZVFTMjMgU5AFjn7iMsGnla2SZJ+LzOe8OdaUpcAAMFwrGir9T6ArgEGB7
+         XCo2T64pSyhIwcval7f5pntFIBGxO7rHMYUYdF0clkWtKnQ+qKTKs7RVGxNLz6Jgg2WM
+         wwQjnj+cGuVIUBATRj7IuU/XRYCY/I2YxjMf96jN6IT6I48/MzyJ7pmbw9JA+nRSmTzN
+         M8GGPZceVzyHgJO4yzQPSSa2ewC8d96mTcZcOeeXqhDMDNkwSqE+g6bzT1iAKMSqNAXb
+         tds16cEaXrrcCHZM6D2SqQ8uwqLWDZ934hEcpU2MmdlTWcR1naWFA5WhyzV2TRQKMsmy
+         eWjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=1EE2HlUhECKdKkP5H4s8WdajxpVUY+2B3d9WLcyaqUg=;
-        b=jgWcSlXZZs114pWf1qx1vumxN1f4cxawbWXKQhfISBk7IeZIbPGBTXoyqEL2VEDW8a
-         Tr9MSn67mF6u1j8jig0gW73FMEnoygX8e4SndiTZ+l6E77QqQkV7qmf8RpERgqJCMpHB
-         AENjFexpQsAKy2dVFBx9gkAd9M8a5EO0WdSnv7FXmbMyVLnYGDSgG31jU7oSslfyxohV
-         6uGDFDfI9l4SGOHg/Kww6kkoTl5BxuTaumdFSyrod6SOqT25NJvg206iYaIUrJKMcwKE
-         ftd8tphUQLGCchvxvYLoo7z3UD4BnASID9Cwbg6lOjLgyRkck2OH8tqBF8rtBbzBQhr2
-         8D2A==
-X-Gm-Message-State: AOAM531nfoTnt9eDEu1L7ymqou605dniREkIzOGJ9q0hgdMyQrqSktAP
-        cN9rNAKE1lgz38RvqR2RJEfgxYne2A==
-X-Google-Smtp-Source: ABdhPJyHDd8H36KkWw65JfXmj4m4bq006ZoE9aRmaPgRgL4E8AsH3cqc4MhFTTLHCKVFqixedrSIMg==
-X-Received: by 2002:a9d:4e06:: with SMTP id p6mr11359810otf.261.1631916757514;
-        Fri, 17 Sep 2021 15:12:37 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id s8sm1873470otd.76.2021.09.17.15.12.36
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/jPNdMJve/KWd/Y4SRkm6hTGIPVm3MyGY8DljibbqNI=;
+        b=UMzFw2/9Y5IFo+LZBYGEX19MTyEz+yy7j7RLuswp+wZp1RsI1aQmfZxM8dVWO4MJK+
+         BM1cd2kZ/xEfu9VqCiER5vN65YfNsCRhcCfkK3FW8kSzs7nMEgG5vvJbyjK1E2WB29lv
+         0t0AwZCQZTdL44FlwoGqJAV2N9/60uwGg9uWMpCNMtTwadw85cOkl2xBEKlBnu+7Sh8z
+         fAtALS2VYAGyjFfku1/GjgT4+8rNIkj/OFKrPi7t9e31gB2jZr5N102GKdgA9ksaezqm
+         K1E484qqitgCCb3CKLjV/36LiHT9BB0ggG9L0yRO5WKK2Pav/e998r95hZHErgpKqJox
+         i3Mw==
+X-Gm-Message-State: AOAM532WVBgXAinAbv8zbmXm0470Bzp+nVRgv2UQ/EfYyQ/JmztLgl6t
+        b8wXNz7IxD0UOJfJP2p9gsCkjy80r247
+X-Google-Smtp-Source: ABdhPJyhxqWgAMwUMkp3GuqQcsFSxs2VvVCVehg+0V9IrYi7ta6rckoWQWSUGG2MuudeEO2p0knrHw==
+X-Received: by 2002:a37:aa8f:: with SMTP id t137mr12790727qke.30.1631917322001;
+        Fri, 17 Sep 2021 15:22:02 -0700 (PDT)
+Received: from moria.home.lan (c-73-219-103-14.hsd1.vt.comcast.net. [73.219.103.14])
+        by smtp.gmail.com with ESMTPSA id a24sm3520757qtp.90.2021.09.17.15.22.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 15:12:36 -0700 (PDT)
-Received: (nullmailer pid 2305030 invoked by uid 1000);
-        Fri, 17 Sep 2021 22:12:35 -0000
-Date:   Fri, 17 Sep 2021 17:12:35 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Frank Rowand <frowand.list@gmail.com>
-Subject: [GIT PULL] Devicetree fixes for v5.15, take 2
-Message-ID: <YUUS0/i5AqSmmbGA@robh.at.kernel.org>
+        Fri, 17 Sep 2021 15:22:01 -0700 (PDT)
+Date:   Fri, 17 Sep 2021 18:21:59 -0400
+From:   Kent Overstreet <kent.overstreet@gmail.com>
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Dave Chinner <david@fromorbit.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Howells <dhowells@redhat.com>
+Subject: Re: Folio discussion recap
+Message-ID: <YUUVB4hDI+7z1Raz@moria.home.lan>
+References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
+ <YTu9HIu+wWWvZLxp@moria.home.lan>
+ <YUIT2/xXwvZ4IErc@cmpxchg.org>
+ <20210916025854.GE34899@magnolia>
+ <YUN2vokEM8wgASk8@cmpxchg.org>
+ <20210917052440.GJ1756565@dread.disaster.area>
+ <YUTC6O0w3j7i8iDm@cmpxchg.org>
+ <20210917205735.tistsacwwzkcdklx@box.shutemov.name>
+ <YUUF1WsAoWGmeAJ4@moria.home.lan>
+ <20210917220209.zhac33jiqtxvdttk@box>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20210917220209.zhac33jiqtxvdttk@box>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On Sat, Sep 18, 2021 at 01:02:09AM +0300, Kirill A. Shutemov wrote:
+> I can't answer for Matthew.
+> 
+> Anon conversion patchset doesn't exists yet (but it is in plans) so
+> there's nothing to split out. Once someone will come up with such patchset
+> he has to sell it upstream on its own merit.
 
-Please pull another set of DT fixes.
-
-Rob
-
-
-The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
-
-  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git tags/devicetree-fixes-for-5.15-2
-
-for you to fetch changes up to 55c21d57eafb7b379bb7b3e93baf9ca2695895b0:
-
-  dt-bindings: arm: Fix Toradex compatible typo (2021-09-17 16:02:41 -0500)
-
-----------------------------------------------------------------
-Devicetree fixes for v5.15, take 2:
-
-- Revert fw_devlink tracking 'phy-handle' links. This broke at least a
-  few platforms. A better solution is being worked on.
-
-- Add Samsung UFS binding which fell thru the cracks
-
-- Doc reference fixes from Mauro
-
-- Fix for restricted DMA error handling
-
-----------------------------------------------------------------
-Alim Akhtar (1):
-      dt-bindings: ufs: Add bindings for Samsung ufs host
-
-David Brazdil (1):
-      of: restricted dma: Fix condition for rmem init
-
-David Heidelberg (1):
-      dt-bindings: arm: Fix Toradex compatible typo
-
-Mauro Carvalho Chehab (2):
-      dt-bindings: net: dsa: sja1105: update nxp,sja1105.yaml reference
-      dt-bindings: arm: mediatek: mmsys: update mediatek,mmsys.yaml reference
-
-Saravana Kannan (1):
-      Revert "of: property: fw_devlink: Add support for "phy-handle" property"
-
- Documentation/devicetree/bindings/arm/tegra.yaml   |  2 +-
- .../bindings/display/mediatek/mediatek,disp.txt    |  2 +-
- .../bindings/ufs/samsung,exynos-ufs.yaml           | 89 ++++++++++++++++++++++
- Documentation/networking/dsa/sja1105.rst           |  2 +-
- drivers/of/device.c                                |  6 +-
- drivers/of/property.c                              |  2 -
- 6 files changed, 97 insertions(+), 6 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/ufs/samsung,exynos-ufs.yaml
+Perhaps we've been operating under some incorrect assumptions then. If the
+current patch series doesn't actually touch anonymous pages - the patch series
+does touch code in e.g. mm/swap.c, but looking closer it might just be due to
+the (mis)organization of the current code - maybe there aren't any real
+objections left?
