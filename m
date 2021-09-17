@@ -2,129 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C4EA40EE74
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 02:47:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CE5940EE75
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 02:48:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241940AbhIQAtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 20:49:02 -0400
-Received: from mail-eopbgr130087.outbound.protection.outlook.com ([40.107.13.87]:62134
-        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232111AbhIQAtB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 20:49:01 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eJg3MOSLsuX6xzIdzBLEfaJp3XCuYSmpaIV2P91phERmbUePKo/F4bY2Fguxumf6eSVl50uENpF7SBW/3Fl9oH7XjnGOGR6IqL1SC1gC4cXM6xa4JahqURk8iscqLCJYNXyhTLpELVnujKjPrGTUkzMOOI4vJhJA9DOz7bF5weH6qN9i4rlVf38AFedEJX5ZZkwp7HvF27QaYqf6Gjw2hBs0W+t40Br7jX/wwFj7BrFvHwEyUyDzhuLTuk5+QfGJP1QYLyohEMwWWY4aWab5T0gkwn1h9Nq3l7fO+fX4o7eYa27huQAhmD5eOgR2i3rNuWzmtslXvZX1dWmX1QQULQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=+Jvy8gD6a2cwcLb3yMsSpR+Jej4ZBnvxyMnSN8Du3Q4=;
- b=K90rc0pZpWQ910wP8iRuyGBWj4j8ZlUTsbxqK+Cqbnyji9FudZHoRhRuf4OHL+Jbj1R4200idErxcwZZaPmPFMXkRlWUPj+OAtpmX9zO/B+56waBvz7fJ2+g+6NEUJSAnnEEcnUO1amm5toCy68owLoEh9XT3t0/a0Icn0Xwr2LZFTovuEUDvNl0AZDH6oYDssZGLHyp3WFfGJzv5IKZdim9qIScq/VXrNRcITvGp51RGPN0pvkDm5m7k2aYBRkxkIF2liLa3Wgjo7ZFsEIeHBH/FXYt+6p6KAJtTXBy5RKhibAm+7vrpbdxO4MjYuQvUmB2inMCBBRrI5MAhl87LA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+Jvy8gD6a2cwcLb3yMsSpR+Jej4ZBnvxyMnSN8Du3Q4=;
- b=N0f2eSsixtZ7YT50Ic+RsyK3ipcFC474Mul/qgD61qyOMWPTPB0qAg612CrkWB32T4OTHdaaBZxRIjNh1GfA2hh64JV3gJaqtN4kTX9tyR+LMzM9L5BNHfaoLH1zjjCsuYpv/G2qCVWNhklHd0Bp47MuANxzHWDpFIveq4UP+yk=
-Received: from DBBPR04MB7930.eurprd04.prod.outlook.com (2603:10a6:10:1ea::12)
- by DB6PR04MB3128.eurprd04.prod.outlook.com (2603:10a6:6:10::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.18; Fri, 17 Sep
- 2021 00:47:37 +0000
-Received: from DBBPR04MB7930.eurprd04.prod.outlook.com
- ([fe80::55b5:93f6:50b1:a49e]) by DBBPR04MB7930.eurprd04.prod.outlook.com
- ([fe80::55b5:93f6:50b1:a49e%3]) with mapi id 15.20.4500.018; Fri, 17 Sep 2021
- 00:47:37 +0000
-From:   Jacky Bai <ping.bai@nxp.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Abel Vesa <abel.vesa@nxp.com>
-CC:     Peng Fan <peng.fan@nxp.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: RE: linux-next: build failure after merge of the clk-imx tree
-Thread-Topic: linux-next: build failure after merge of the clk-imx tree
-Thread-Index: AQHXq095iiDR9+5sPkeMkDYfOYzeWaunXSkQ
-Date:   Fri, 17 Sep 2021 00:47:36 +0000
-Message-ID: <DBBPR04MB79301D1C70ED0E6FB04151DA87DD9@DBBPR04MB7930.eurprd04.prod.outlook.com>
-References: <20210917090618.3a7ac4be@canb.auug.org.au>
-In-Reply-To: <20210917090618.3a7ac4be@canb.auug.org.au>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: canb.auug.org.au; dkim=none (message not signed)
- header.d=none;canb.auug.org.au; dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: f4adbebd-8317-4c54-b469-08d97974be94
-x-ms-traffictypediagnostic: DB6PR04MB3128:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DB6PR04MB31284A7595999A62227C968E87DD9@DB6PR04MB3128.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1169;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: J5uFPRSrB4Huw4tzzVozZaJjbTGqcn1bFPQWJ2pzRosT1m+w0y/jIPycUcugAWGiZHahKxwDeJJvnS8MilZXC9o9FGsLGmU1lFDw9xgFmspSY2fm8deqdLeHe/L25RqIJVzDzxJBxgwaA3O6EYjuX4Aed1VHBfOlNfuOL5t63B+CozFdBN06sUOEkI/SNyKS/wBBxtlV1OigZDYe3r0smZdHCjZevCImsEjIUN6TD01mJ7E3MKkPj/TqwVW8WbX/wEXAlCiQpChClzoRUtjyoh4+o6SRXEX7OZHmDucbmgJpi8aNqiUkwypjpJ+iOk5+7JyXqgyGdyFxDCdrQ7unIP5aZyv+z5GOszuZD8tSWVoiQeQyW+Elsf7RddggD5OHY//DkYEGJ0YNinl6XGKG4tkqs3gbsabxAfXJxPsbfuGLSvEHxFVve1XI+gPXdWvjpgQBkhJ/dKshxlRqs+lE0FOTDhLeh1bTlNsWlu72L0AaAX+ugREtjTru8fl8SD7P39sTDI7BULHv3CERTbmgFSubIc4QwBmsuJA/hsxIpanEAgBABS+LUWQG2mfSoNuvPGtzJjqH9l4asLeUyIAolu/HMw266P/1Y3iS1Pu9HIRzjIGmM7nRgQhA+28s8hjbichpozAjcAbrrcbB82VbD78143nRJTfDt5envtrhdzM8eypewtnb0vFxwJFA5J4Fd7usPM099IVpJkdMscV3qQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DBBPR04MB7930.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(52536014)(83380400001)(316002)(86362001)(4326008)(6506007)(26005)(186003)(55016002)(2906002)(9686003)(71200400001)(122000001)(33656002)(64756008)(66476007)(7696005)(5660300002)(66556008)(66946007)(66446008)(4744005)(110136005)(6636002)(8936002)(54906003)(76116006)(38070700005)(8676002)(38100700002)(508600001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Q3FYd2g1blBrV3crQmtBWjg2eXo4SzJsSFhQSkJBUWo5NEhjeG1NSnlGZzI5?=
- =?utf-8?B?V01xd3NibmYwdVBnbGNJbkZGS29UZWxTWHUvcHVvMnV3VUpNTmYvbXFzRm5U?=
- =?utf-8?B?K2kveVBrcno1WnR0VWlHVkh1bVYrTjMwMzZSK2RaTUlBcVRXTGRlTndIWE5M?=
- =?utf-8?B?bXlOdUNrQUtjd0NoVXJWL1B3dnlyS0RSK1Z5WGdGK2VSZnJiaUo3aUZEdjBa?=
- =?utf-8?B?WTY0V21IQTBJUHJhbGNmdzJraW5nc0dSOVNQcGtVOWVzRFdmNjJvMkkwWit4?=
- =?utf-8?B?TzRuYmtTT2cvbUJJSG11aGZnRWZnTVpzVVV4UitYaDlKVG5EQTRyWm9DUFFY?=
- =?utf-8?B?am1CZVFwcFpXRUgxR1FOeERVVmthVng3S1hoZHBjVHZzRWd0Z3I3MFhqbm9R?=
- =?utf-8?B?OE1jZk1sVDhOSWtIYW9VamFoZmZUNDVXK3JWUytwOGlzWnErMHF0c29NRmVw?=
- =?utf-8?B?dnR4NDZEQWJ1ZzI0MGtVWUZHQy9tdHh1V3ZxWXIxQ0lnMTlaU0lpd0IvZWJS?=
- =?utf-8?B?Ui84Si9RbUtSeW0vODd1OHc2UklTaGI0OWcyY1Fyb01tMWNyUnBhMmZWdnM5?=
- =?utf-8?B?MEJLaFF0d3pGMGhkSklQODU0YWQvWG0ralZsM0FaQXJWUk9aMHhCNTBHUVd6?=
- =?utf-8?B?d1lFem4yeXVFMVU2Z2VHcVZ3cnp2ZVJLWVpJNFd6cysveVljRHBESjJCU1hP?=
- =?utf-8?B?SXBwOE5KK0ZxcUl1dS9CQk11a08wL0RPZ0puMVNuSW1BNTlDNFgrb2RmUGRF?=
- =?utf-8?B?ekZZMzIxNk1uMkJJeGx5aXdFeVIyZjl5RFEyYWJrM0MzaCtTNzZPT1Z6bmFG?=
- =?utf-8?B?cUtYUDlPbUhhOWJVTUtwd2ZkWXdHcUpsMmkwL0VwZmtsL2RTMXJzTWJJS1Yr?=
- =?utf-8?B?U2x6QjVCSERtL3RDOGNEMTBLVGhYTktsUDM0OFJxZGtONHIyZ08ybmUydC9R?=
- =?utf-8?B?TkpBcE9IQjVHSldveDdTbEtLc3IvS053b3FybWd6a05OUE0xR2drZDRXYW1t?=
- =?utf-8?B?ejJrZkZoYys3ZzJXRDR0VFYvZzFXdjdnRkFUZDdTM2xPZWxMdmpSTi9SY1Bn?=
- =?utf-8?B?ckdaOVhSQWpJYzVqbW5tbGd1Z3MrNjlXdTNTRFVndmVETDZDSlRVenhpeERP?=
- =?utf-8?B?elovVmFlMnNobndMK1ZNb0J5WTFYdC91eFhkSEU5bEJCZjRIRzljdHFxbFNK?=
- =?utf-8?B?djRvN1RmeVBTSTN2bXBXTmYzUjVmUmdkMjZBSjdkSlhvTlFjK3d4dHREVklM?=
- =?utf-8?B?ZEt2RUl2TXNBSWlIR3VnQ2NUNHp3TFoxaHdRS0ZyNWw1dUtIaFNrOXE4cHUw?=
- =?utf-8?B?RGhjS2tiWFE5WnRQdUdRTjJXeHFaOVJFNk1qZzB1SHV6czJUa2pSOGYrbUp6?=
- =?utf-8?B?d3dMSHBlTVE4SU10STNiNG5VN0xqYUZSU3FrOTZzQ3NIdjRJL0pjeGxNYW9Y?=
- =?utf-8?B?U0JDUnB5R1ZKVEdjRHdSUjVGeVRQNDVhUjA1bWVGSHY0c0tQMTBYemt1Nk80?=
- =?utf-8?B?TFoyZk1EV0lqaVdRMDI3ZFRwVGFtNzNyRlVZQko1eXlmOTk4QXgwUWtmTHhN?=
- =?utf-8?B?TFo5R0wzMHRXd3dZQTFJODMyVDVIaDl0Sk55a2crUjNMUURoOVVEM1puQUFk?=
- =?utf-8?B?VjlWWnIzU0VSVEg2b3NSSld1bzZWTnM4N1pyclExK0tQNUZ0aTB3bDVJV1Jt?=
- =?utf-8?B?MXQwSzFyQTRTdDhUS1NJTUJCOWNxaUU4d1JBMzltMDJhTlI2eXdEYk9weWdx?=
- =?utf-8?Q?DKkQe67js3PzHBcym2lXeVGyFW0H4Jnzt4FiUOL?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S241946AbhIQAta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 20:49:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232111AbhIQAt2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 20:49:28 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7019CC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 17:48:06 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id c21so23206906edj.0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 17:48:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NpzT3fgbL3NrbU5ItkkZ9aOfo9ffuVM3LtA5XE7/Ves=;
+        b=be76PH15gofA7Ctau9Z4+/xqQIL4CJJEtI0PxZrlDSxJhtmrBaBbXf55+4obvF8GJq
+         mxWljkgy50vaUeMy5/fShmmkL7VVIooiTiF9bNIko1TPtUv7NPNSCpMiZeiWRtayDVpl
+         LIYMyhbwFirpAcviKs64crg58pXsp6GkFmvzJbX+c1Ss7c/j79TQkE8SWwmb+fS1L7Bf
+         91AXY2Vwci6HK/FMG1v8C/e4klhRkHqTYQ81Hv87PorUCmouIe2YEHFG6ca25KNRxlg8
+         b/rVY7RfpylcVohjLFp351OJKmR75gPhAJHEFPn08TR/x9ecr2MSwtHmcHwwO/nU4k5a
+         38cQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NpzT3fgbL3NrbU5ItkkZ9aOfo9ffuVM3LtA5XE7/Ves=;
+        b=EgnrjD8z3B8xl9eQw1V2PzlIQMNZbPeU9RowIIEkUH2V3+AoSkod49ArjVqTyaRrrz
+         qyh/burgLdJ1bK/oVJY/tgPLohM7RueSzmXrLgYrDdIQAGUxUSFoEgSXvq4FYbxgFDR1
+         pgy4uPp4tFQ+3qXkEljrbdx0VL1vrWvB/bDcIcJxVBEhoyCwLw3MfxQ31oFrNd7dOqDG
+         mPcl7JfeZANoi+GO9EjvqC+9EMFDrE+yqjPuxRsYiUppxGtu//jJ8it4hrh/c2GhlxyB
+         krlDibpwYMfhHRF4QtuYozLaBLahIkfOCZmf7/wTzxezVhaADR4GswwMzqoSynmH9Y2r
+         kLHQ==
+X-Gm-Message-State: AOAM533hRkq7f9IEBA/J83esGW+UqQt92IqwPBRh9e9Xv3BPzGe+QMIR
+        cepqg4EeLAhl9bFAheUod8EenAweqzvDkVC8s58=
+X-Google-Smtp-Source: ABdhPJzn03GRsOWNjSNButuzww8kjABIHhS12m78YTP7fCh6AnvMX0P4Bd28BIKVjrHONId9zj86TrwiJG/xEhfLaPk=
+X-Received: by 2002:a50:af86:: with SMTP id h6mr9555749edd.283.1631839684076;
+ Thu, 16 Sep 2021 17:48:04 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DBBPR04MB7930.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f4adbebd-8317-4c54-b469-08d97974be94
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Sep 2021 00:47:36.9413
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: g7UfK5rvoV2HTPow13glPhu4QYkQhq4ZvEBPlnHIbuX6ZDz6lUkSturdZP5ln9Cl+qWT79jLnZ6kzD/jzV3zYw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR04MB3128
+References: <20210914013701.344956-1-ying.huang@intel.com> <20210914013701.344956-2-ying.huang@intel.com>
+ <CAHbLzkpRWwtkhnXUZEUk3LgpHtmgNJRPGUjKzd9bhQU33Y4u2g@mail.gmail.com>
+ <8735q63947.fsf@yhuang6-desk2.ccr.corp.intel.com> <CAHbLzko-hR74s5HKMx5SG6bwaoJvcHSLeKwihkpvhYj7+hX+Sw@mail.gmail.com>
+ <874kamwkvn.fsf@yhuang6-desk2.ccr.corp.intel.com> <CAHbLzkqO4mNUGO=wpzPjU=rdc+=KyssqapmEDLAzVDKPGGfY0Q@mail.gmail.com>
+ <87sfy5uwdm.fsf@yhuang6-desk2.ccr.corp.intel.com>
+In-Reply-To: <87sfy5uwdm.fsf@yhuang6-desk2.ccr.corp.intel.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Thu, 16 Sep 2021 17:47:52 -0700
+Message-ID: <CAHbLzkp2EB2GrdinheoTtcFOZMfb3ZUgqUtv76De_Riy6Sv5mg@mail.gmail.com>
+Subject: Re: [PATCH -V8 1/6] NUMA balancing: optimize page placement for
+ memory tiering system
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Rik van Riel <riel@surriel.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Zi Yan <ziy@nvidia.com>, Wei Xu <weixugc@google.com>,
+        osalvador <osalvador@suse.de>,
+        Shakeel Butt <shakeelb@google.com>,
+        Linux MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBTdWJqZWN0OiBsaW51eC1uZXh0OiBidWlsZCBmYWlsdXJlIGFmdGVyIG1lcmdlIG9mIHRoZSBj
-bGstaW14IHRyZWUNCj4gDQo+IEhpIGFsbCwNCj4gDQo+IEFmdGVyIG1lcmdpbmcgdGhlIGNsay1p
-bXggdHJlZSwgdG9kYXkncyBsaW51eC1uZXh0IGJ1aWxkICh4ODZfNjQNCj4gYWxsbW9kY29uZmln
-KSBmYWlsZWQgbGlrZSB0aGlzOg0KPiANCj4gRVJST1I6IG1vZHBvc3Q6ICJpbXhfY2xrX2h3X3Bm
-ZHYyIiBbZHJpdmVycy9jbGsvaW14L2Nsay1pbXg4dWxwLmtvXQ0KPiB1bmRlZmluZWQhDQo+IEVS
-Uk9SOiBtb2Rwb3N0OiAiaW14X2Nsa19od19wbGx2NCIgW2RyaXZlcnMvY2xrL2lteC9jbGstaW14
-OHVscC5rb10NCj4gdW5kZWZpbmVkIQ0KPiBFUlJPUjogbW9kcG9zdDogImlteDh1bHBfY2xrX2h3
-X2NvbXBvc2l0ZSIgW2RyaXZlcnMvY2xrL2lteC9jbGstaW14OHVscC5rb10NCj4gdW5kZWZpbmVk
-IQ0KPiANCg0Kc2hvdWxkIGJlY2F1c2UgdGhhdCB0aGVzZSB0aHJlZSBmdW5jdGlvbnMgYXJlIG5v
-dCBleHBvcnQgc3ltYm9sIHdoZW4gZHJpdmVyIGJ1aWxkIGFzIG1vZHVsZS4NCkkgd2lsbCBnZW5l
-cmF0ZSBhIHBhdGNoIHRvIGZpeCBpdC4NCg0KVGh4IGZvciByZXBvcnRpbmcgdGhpcyBpc3N1ZS4N
-Cg0KQlINCkphY2t5IEJhaQ0KDQo+IENhdXNlZCBieSBjb21taXQNCj4gDQo+ICAgODZjZTJkMzkz
-ZmY3ICgiY2xrOiBpbXg6IEFkZCBjbG9jayBkcml2ZXIgZm9yIGlteDh1bHAiKQ0KPiANCj4gSSBo
-YXZlIHVzZWQgdGhlIGNsay1pbXggdHJlZSBmcm9tIG5leHQtMjAyMTA5MTYgZm90IHRvZGF5Lg0K
-PiANCj4gLS0NCj4gQ2hlZXJzLA0KPiBTdGVwaGVuIFJvdGh3ZWxsDQo=
+On Wed, Sep 15, 2021 at 6:45 PM Huang, Ying <ying.huang@intel.com> wrote:
+>
+> Yang Shi <shy828301@gmail.com> writes:
+>
+> > On Tue, Sep 14, 2021 at 8:58 PM Huang, Ying <ying.huang@intel.com> wrote:
+> >>
+> >> Yang Shi <shy828301@gmail.com> writes:
+> >>
+> >> > On Tue, Sep 14, 2021 at 6:45 PM Huang, Ying <ying.huang@intel.com> wrote:
+> >> >>
+> >> >> Yang Shi <shy828301@gmail.com> writes:
+> >> >>
+> >> >> > On Mon, Sep 13, 2021 at 6:37 PM Huang Ying <ying.huang@intel.com> wrote:
+> >> >> >>
+> >> >> >> With the advent of various new memory types, some machines will have
+> >> >> >> multiple types of memory, e.g. DRAM and PMEM (persistent memory).  The
+> >> >> >> memory subsystem of these machines can be called memory tiering
+> >> >> >> system, because the performance of the different types of memory are
+> >> >> >> usually different.
+> >> >> >>
+> >> >> >> In such system, because of the memory accessing pattern changing etc,
+> >> >> >> some pages in the slow memory may become hot globally.  So in this
+> >> >> >> patch, the NUMA balancing mechanism is enhanced to optimize the page
+> >> >> >> placement among the different memory types according to hot/cold
+> >> >> >> dynamically.
+> >> >> >>
+> >> >> >> In a typical memory tiering system, there are CPUs, fast memory and
+> >> >> >> slow memory in each physical NUMA node.  The CPUs and the fast memory
+> >> >> >> will be put in one logical node (called fast memory node), while the
+> >> >> >> slow memory will be put in another (faked) logical node (called slow
+> >> >> >> memory node).  That is, the fast memory is regarded as local while the
+> >> >> >> slow memory is regarded as remote.  So it's possible for the recently
+> >> >> >> accessed pages in the slow memory node to be promoted to the fast
+> >> >> >> memory node via the existing NUMA balancing mechanism.
+> >> >> >>
+> >> >> >> The original NUMA balancing mechanism will stop to migrate pages if the free
+> >> >> >> memory of the target node will become below the high watermark.  This
+> >> >> >> is a reasonable policy if there's only one memory type.  But this
+> >> >> >> makes the original NUMA balancing mechanism almost not work to optimize page
+> >> >> >> placement among different memory types.  Details are as follows.
+> >> >> >>
+> >> >> >> It's the common cases that the working-set size of the workload is
+> >> >> >> larger than the size of the fast memory nodes.  Otherwise, it's
+> >> >> >> unnecessary to use the slow memory at all.  So in the common cases,
+> >> >> >> there are almost always no enough free pages in the fast memory nodes,
+> >> >> >> so that the globally hot pages in the slow memory node cannot be
+> >> >> >> promoted to the fast memory node.  To solve the issue, we have 2
+> >> >> >> choices as follows,
+> >> >> >>
+> >> >> >> a. Ignore the free pages watermark checking when promoting hot pages
+> >> >> >>    from the slow memory node to the fast memory node.  This will
+> >> >> >>    create some memory pressure in the fast memory node, thus trigger
+> >> >> >>    the memory reclaiming.  So that, the cold pages in the fast memory
+> >> >> >>    node will be demoted to the slow memory node.
+> >> >> >>
+> >> >> >> b. Make kswapd of the fast memory node to reclaim pages until the free
+> >> >> >>    pages are a little more (about 10MB) than the high watermark.  Then,
+> >> >> >>    if the free pages of the fast memory node reaches high watermark, and
+> >> >> >>    some hot pages need to be promoted, kswapd of the fast memory node
+> >> >> >>    will be waken up to demote some cold pages in the fast memory node to
+> >> >> >>    the slow memory node.  This will free some extra space in the fast
+> >> >> >>    memory node, so the hot pages in the slow memory node can be
+> >> >> >>    promoted to the fast memory node.
+> >> >> >>
+> >> >> >> The choice "a" will create the memory pressure in the fast memory
+> >> >> >> node.  If the memory pressure of the workload is high, the memory
+> >> >> >> pressure may become so high that the memory allocation latency of the
+> >> >> >> workload is influenced, e.g. the direct reclaiming may be triggered.
+> >> >> >>
+> >> >> >> The choice "b" works much better at this aspect.  If the memory
+> >> >> >> pressure of the workload is high, the hot pages promotion will stop
+> >> >> >> earlier because its allocation watermark is higher than that of the
+> >> >> >> normal memory allocation.  So in this patch, choice "b" is
+> >> >> >> implemented.
+> >> >> >>
+> >> >> >> In addition to the original page placement optimization among sockets,
+> >> >> >> the NUMA balancing mechanism is extended to be used to optimize page
+> >> >> >> placement according to hot/cold among different memory types.  So the
+> >> >> >> sysctl user space interface (numa_balancing) is extended in a backward
+> >> >> >> compatible way as follow, so that the users can enable/disable these
+> >> >> >> functionality individually.
+> >> >> >>
+> >> >> >> The sysctl is converted from a Boolean value to a bits field.  The
+> >> >> >> definition of the flags is,
+> >> >> >>
+> >> >> >> - 0x0: NUMA_BALANCING_DISABLED
+> >> >> >> - 0x1: NUMA_BALANCING_NORMAL
+> >> >> >> - 0x2: NUMA_BALANCING_MEMORY_TIERING
+> >> >> >
+> >> >> > Thanks for coming up with the patches. TBH the first question off the
+> >> >> > top of my head is all the complexity is really worthy for real life
+> >> >> > workload at the moment? And the interfaces (sysctl knob files exported
+> >> >> > to users) look complicated for the users. I don't know if the users
+> >> >> > know how to set an optimal value for their workloads.
+> >> >> >
+> >> >> > I don't disagree the NUMA balancing needs optimization and improvement
+> >> >> > for tiering memory, the question we need answer is how far we should
+> >> >> > go for now and what the interfaces should look like. Does it make
+> >> >> > sense to you?
+> >> >> >
+> >> >> > IMHO I'd prefer the most simple and straightforward approach at the
+> >> >> > moment. For example, we could just skip high water mark check for PMEM
+> >> >> > promotion.
+> >> >>
+> >> >> Hi, Yang,
+> >> >>
+> >> >> Thanks for comments.
+> >> >>
+> >> >> I understand your concerns about complexity.  I have tried to organize
+> >> >> the patchset so that the initial patch is as simple as possible and the
+> >> >> complexity is introduced step by step.  But it seems that your simplest
+> >> >> version is even simpler than my one :-)
+> >> >>
+> >> >> In this patch ([1/6]), I introduced 2 stuff.
+> >> >>
+> >> >> Firstly, a sysctl knob is provided to disable the NUMA balancing based
+> >> >> promotion.  Per my understanding, you suggest to remove this.  If so,
+> >> >> optimizing cross-socket access and promoting hot PMEM pages to DRAM must
+> >> >> be enabled/disabled together.  If a user wants to enable promoting the
+> >> >> hot PMEM pages to DRAM but disable optimizing cross-socket access
+> >> >> because they have already bound the CPU of the workload so that there's no
+> >> >> much cross-socket access, how can they do?
+> >> >
+> >> > I should make myself clearer. Here I mean the whole series, not this
+> >> > specific patch. I'm concerned that the interfaces (hint fault latency
+> >> > and ratelimit) are hard to understand and configure for users and
+> >> > whether we go too far at the moment or not. I'm dealing with the end
+> >> > users, I'd admit I'm not even sure how to configure the knobs to
+> >> > achieve optimal performance for different real life workloads.
+> >>
+> >> Sorry, I misunderstand your original idea.  I understand that the knob
+> >> isn't user-friendly.  But sometimes, we cannot avoid it completely :-(
+> >> In this patchset, I try to introduce the complexity and knobs one by
+> >> one, and show the performance benefit of each step for people to judge
+> >> whether the newly added complexity and knob can be complemented by the
+> >> performance increment.  If the benefit of some patches cannot complement
+> >> its complexity, I am OK to merge just part of the patchset firstly.
+> >
+> > Understood. But I really hesitate to go that far at this moment since
+> > the picture is not that clear yet IMHO. We have to support them (maybe
+> > forever) once we merge them.
+>
+> OK.  The [1-3/6] is the simplest implementation.  We can start with that
+> firstly?
+
+Sure.
+
+>
+> > So I'd prefer to work on the simplest and most necessary stuff for
+> > now. Just like how we dealt with demotion.
+> >
+> >>
+> >> So how about be more specific?  For example, if you are general OK about
+> >> the complexity and knob introduced by [1-3/6], but have concerns about
+> >> [4/6], then we can discuss about that specifically?
+> >
+> > Yeah, we could.
+> >
+> >>
+> >> > For this specific patch I'm ok to a new promotion mode. There might be
+> >> > usecase that users just want to do promotion between tiered memory but
+> >> > not care about NUMA locality.
+> >>
+> >> Yes.
+> >>
+> >> >> Secondly, we add a promote watermark to the DRAM node so that we can
+> >> >> demote/promote pages between the high and promote watermark.  Per my
+> >> >> understanding, you suggest just to ignore the high watermark checking
+> >> >> for promoting.  The problem is that this may make the free pages of the
+> >> >> DRAM node too few.  If many pages are promoted in short time, the free
+> >> >> pages will be kept near the min watermark for a while, so that the page
+> >> >> allocation from the application will trigger direct reclaiming.  We have
+> >> >> observed page allocation failure in a test before with a similar policy.
+> >> >
+> >> > The question is, applicable to the hint fault latency and ratelimit
+> >> > too, we already have some NUMA balancing knobs to control scan period
+> >> > and scan size and watermark knobs to tune how aggressively kswapd
+> >> > works, can they do the same jobs instead of introducing any new knobs?
+> >>
+> >> In this specific patch, we don't introduce a new knob for the page
+> >> demotion.  For other knobs, how about discuss them in the patch that
+> >> introduce them and one by one?
+> >
+> > That comment is applicable to the watermark hack in this patch too.
+> > Per your above description, the problem is the significant amount of
+> > promotion in short period of time may deplete free memory. So I'm
+> > wondering if the amount of promotion could be ratelimited by NUMA
+> > balancing scan period and scan size. I understand this may have some
+> > hot pages stay on PMEM for a longer time, but does it really matter?
+> > In addition, the gap between low <--> min <--> high could be adjusted
+> > by watermark_scale_factor, so kswapd could work more aggressively to
+> > keep free memory.
+>
+> We can control the NUMA balancing scan speed, but we cannot control the
+> speed of the hint page faults.  For example, we scanned a large portion
+
+Could adjusting scan size help out?
+
+
+> of PMEM without many hint page faults because the pages are really cold,
+> but suddenly a large amount of cold pages become hot, so they will be
+> promoted to DRAM.  This will create heavy memory pressure on DRAM node,
+> make it hard for the normal page allocation from the applications.
+>
+> And, for some workloads, we need to promote the hot pages to DRAM
+> quickly, otherwise, the pages will become cold.  We should make it
+> possible to support these users too.  Do you agree?
+
+I agree there may be such workloads. But do we have to achieve very
+good support for them right now? We don't even know how common such
+workload is.
+
+>
+> Best Regards,
+> Huang, Ying
