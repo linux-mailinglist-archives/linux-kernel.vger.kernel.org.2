@@ -2,137 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09C8C40F785
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 14:31:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FC1C40F789
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 14:31:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243998AbhIQMcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 08:32:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58332 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232338AbhIQMcW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 08:32:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 25A406008E;
-        Fri, 17 Sep 2021 12:31:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631881860;
-        bh=N55+f+KDa6wQbbpGtxgTy4HvWMObumocgHBQqRSkLOc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GH4TIrhuTL6phZUtO3ur4PCNdCjJ0umKSrSdczNyP7NLELyB33o81KkVmNodIkFdu
-         GiiV7dAiBnxdwdGJsVcmJwWesmyGUHgFlyZIehlSRddFFGNjEEiu8/jKGeZsmkvzK4
-         PhFanIyvPp9//jSTIJbDOPKarCbwQ0KzR7co2hOjjZgJAKRgVtXRi9DlBcO7PCbeXQ
-         g9WCNCpFU//Tn93fEJfczMvOhhEfPssY54GeHUQ1Clp1HFOGbFRYOVs5Ym/god8fLL
-         aGRApZWABq56rd1THS+2cOprfHoJVTUO/1PgbaNBaCBOwi8szd4lhbQhgGGRKsw+Af
-         9QxnRpX+t/+JQ==
-Received: by pali.im (Postfix)
-        id D056E7C5; Fri, 17 Sep 2021 14:30:57 +0200 (CEST)
-Date:   Fri, 17 Sep 2021 14:30:57 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Jonas =?utf-8?Q?Dre=C3=9Fler?= <verdre@v0yd.nl>
-Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        linux-wireless@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH] Bluetooth: btusb: Lower passive lescan interval on
- Marvell 88W8897
-Message-ID: <20210917123057.gqitcxvxn4ax25np@pali>
-References: <20210917122718.86776-1-verdre@v0yd.nl>
+        id S232338AbhIQMce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 08:32:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37044 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244128AbhIQMca (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 08:32:30 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3287C0613C1
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 05:31:08 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id x6so14862110wrv.13
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 05:31:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=fXWGJEAQybr4pDDlLtgHrDW/3jidDvhIRctY0I2WY0M=;
+        b=qPgJLXy+HvWqdCsqUso4O/PwcACuu8RYEdyfOsmYHTWf5gT6XiAU0uzqalmKErux4/
+         hUNQJMMAHx7W66PiCWmOEMtjfRWWsTWJw22JcaIlH5WwShoxgztXd5ROnhYpxcIL8pwF
+         +fv2/LiW8OY8pA63ER2Rl74dkVVD6x6wIbcv2lQaxQ9m1J2u5+TCNwTSpT+DbIVKJQED
+         47m+1Gi2tUy4iW6w6huQte7RrfeRdCg5qNZUZ+juh66T9lmleEDBxKPHI6I+H7YztyXy
+         lCdfPW/FkEVzRhI3bTqn/vgFKom5himskuUEJ1g8LqgLoL7BlQRs1iTdkEoBUF7+JACZ
+         qhEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=fXWGJEAQybr4pDDlLtgHrDW/3jidDvhIRctY0I2WY0M=;
+        b=71haUNj0fvyQqQUur3aXqPS2Kdre6y1NCJnHZ02UkoRIBgfVF/bBxTbn8Wmbr5hK4j
+         wMmMGeoNPji+1Df0FFRYT/O3drsDb8qrWbO+PDYz2auiHZ0mseEpjf9ULaIllPtVeNH3
+         rMeSc5Rn2Orajc7jbxWX7fLzWOoZWLvYpGRcVSy63xM2BsCAuSevqMzb1wlTH+sEqcJ+
+         ZICZCTRYPa7tzkzz5p6Tpoy9Aq3LWMYTygSzswzDrILcHnWz5igG7xhozGIIOSoGB4pl
+         zqfxG33nJyluvblUYZvlnhXXiG2mItr9OJbCk3UjerZylbwVCVhSQn/VZ+N4puVOs1kM
+         S5nQ==
+X-Gm-Message-State: AOAM533wXkwnD82OcSBVb7jlTZyJtNj4WbMoTizMWiH0iKIJS5VanS12
+        Zlfx2I0touqqLvkcqvDO1Rflxy6Lx4kl67eL
+X-Google-Smtp-Source: ABdhPJw77/NaSGb8f62yLrSui7prnuk28NxJe3qzhMh/O1B6IkPo/w1O1Km+04UOAlZ78Q/3GGfrrg==
+X-Received: by 2002:a5d:448d:: with SMTP id j13mr11597328wrq.212.1631881867207;
+        Fri, 17 Sep 2021 05:31:07 -0700 (PDT)
+Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id q11sm10709020wmc.41.2021.09.17.05.31.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Sep 2021 05:31:05 -0700 (PDT)
+Date:   Fri, 17 Sep 2021 13:31:03 +0100
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] backlight: bd6107: Make use of the helper function
+ dev_err_probe()
+Message-ID: <20210917123103.33oytfwhpcakdi2w@maple.lan>
+References: <20210917031308.17623-1-caihuoqing@baidu.com>
+ <20210917091729.elpngrzpvmp43wns@maple.lan>
+ <20210917110528.GA17963@LAPTOP-UKSR4ENP.internal.baidu.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210917122718.86776-1-verdre@v0yd.nl>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20210917110528.GA17963@LAPTOP-UKSR4ENP.internal.baidu.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 17 September 2021 14:27:18 Jonas Dreßler wrote:
-> The Marvell 88W8897 combined wifi and bluetooth card (pcie+usb version)
-> is used in a lot of Microsoft Surface devices, and all those devices
-> suffer from very low 2.4GHz wifi connection speeds while bluetooth is
-> enabled.
+On Fri, Sep 17, 2021 at 07:05:28PM +0800, Cai Huoqing wrote:
+> Hi
+> Thanks for your feedback.
+> On 17 9月 21 10:17:29, Daniel Thompson wrote:
+> > On Fri, Sep 17, 2021 at 11:13:06AM +0800, Cai Huoqing wrote:
+> > > When possible use dev_err_probe help to properly deal with the
+> > > PROBE_DEFER error, the benefit is that DEFER issue will be logged
+> > > in the devices_deferred debugfs file.
+> > > Using dev_err_probe() can reduce code size, and the error value
+> > > gets printed.
+> > > 
+> > > Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+> > 
+> > Change seems OK but does this really need to be done one file at a time?
+> > I'd prefer to see all of backlight handled in one go (given the scope of
+> > this change if applied across the kernel it needs automatic tooling
+> > anyway).
+> Only two related patches for backlight.
 
-Hello! Do you know if this issue is specific only to this one Marvell
-88W8897 chip or if this issue affects also other Marvell wifi+bt combo
-chips?
+Can you explain how you reach this conclusion?
 
-> The reason for that is that the default passive scanning
-> interval for Bluetooth Low Energy devices is quite high on Linux
-> (interval of 60 msec and scan window of 30 msec, see le_scan_interval
-> and le_scan_window in hci_core.c), and the Marvell chip is known for its
-> bad bt+wifi coexisting performance.
-> 
-> So decrease that passive scan interval and make the scan window shorter
-> on this particular device to allow for spending more time transmitting
-> wifi signals: The new scan interval is 250 msec (0x190 * 0.625 msec) and
-> the new scan window is 6.25 msec (0xa * 0.625 msec).
-> 
-> This change has a very large impact on the 2.4GHz wifi speeds and gets
-> it up to performance comparable with the Windows driver, which seems to
-> apply a similar quirk.
-> 
-> The scan interval and scan window length were tested and found to work
-> very well with a bunch of Bluetooth Low Energy devices, including the
-> Surface Pen, a Bluetooth Speaker and two modern Bluetooth headphones.
-> All devices were discovered immediately after turning them on. Even
-> lower values were also tested, but these introduced longer delays until
-> devices get discovered.
-> 
-> Signed-off-by: Jonas Dreßler <verdre@v0yd.nl>
-> ---
->  drivers/bluetooth/btusb.c | 15 +++++++++++++++
->  1 file changed, 15 insertions(+)
-> 
-> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-> index 60d2fce59a71..05b11179c839 100644
-> --- a/drivers/bluetooth/btusb.c
-> +++ b/drivers/bluetooth/btusb.c
-> @@ -59,6 +59,7 @@ static struct usb_driver btusb_driver;
->  #define BTUSB_WIDEBAND_SPEECH	0x400000
->  #define BTUSB_VALID_LE_STATES   0x800000
->  #define BTUSB_QCA_WCN6855	0x1000000
-> +#define BTUSB_LOWER_LESCAN_INTERVAL	0x2000000
->  #define BTUSB_INTEL_BROKEN_INITIAL_NCMD 0x4000000
->  
->  static const struct usb_device_id btusb_table[] = {
-> @@ -356,6 +357,7 @@ static const struct usb_device_id blacklist_table[] = {
->  	{ USB_DEVICE(0x1286, 0x2044), .driver_info = BTUSB_MARVELL },
->  	{ USB_DEVICE(0x1286, 0x2046), .driver_info = BTUSB_MARVELL },
->  	{ USB_DEVICE(0x1286, 0x204e), .driver_info = BTUSB_MARVELL },
-> +	{ USB_DEVICE(0x1286, 0x204c), .driver_info = BTUSB_LOWER_LESCAN_INTERVAL },
->  
->  	/* Intel Bluetooth devices */
->  	{ USB_DEVICE(0x8087, 0x0025), .driver_info = BTUSB_INTEL_COMBINED },
-> @@ -3813,6 +3815,19 @@ static int btusb_probe(struct usb_interface *intf,
->  	if (id->driver_info & BTUSB_MARVELL)
->  		hdev->set_bdaddr = btusb_set_bdaddr_marvell;
->  
-> +	/* The Marvell 88W8897 combined wifi and bluetooth card is known for
-> +	 * very bad bt+wifi coexisting performance.
-> +	 *
-> +	 * Decrease the passive BT Low Energy scan interval a bit
-> +	 * (0x0190 * 0.625 msec = 250 msec) and make the scan window shorter
-> +	 * (0x000a * 0,625 msec = 6.25 msec). This allows for significantly
-> +	 * higher wifi throughput while passively scanning for BT LE devices.
-> +	 */
-> +	if (id->driver_info & BTUSB_LOWER_LESCAN_INTERVAL) {
-> +		hdev->le_scan_interval = 0x0190;
-> +		hdev->le_scan_window = 0x000a;
-> +	}
-> +
->  	if (IS_ENABLED(CONFIG_BT_HCIBTUSB_MTK) &&
->  	    (id->driver_info & BTUSB_MEDIATEK)) {
->  		hdev->setup = btusb_mtk_setup;
-> -- 
-> 2.31.1
-> 
+I only checked two drivers (the first two when you list the drivers
+an alphabetic order) but both contain code that appears to match the
+pattern you are targeting.
+
+
+> I try to keep one patch for a subdriver, sometimes different
+> subdriver owner need to mark reviwed independently.
+
+For mechanical patches of this nature I don't think there is any need
+for acks from individual backlight driver authors. Reviews are 100%
+welcome but we would not hold a single patch back until all authors
+have reviewed it.
+
+
+Daniel.
+
+
+
+> > > ---
+> > >  drivers/video/backlight/bd6107.c | 16 ++++++----------
+> > >  1 file changed, 6 insertions(+), 10 deletions(-)
+> > > 
+> > > diff --git a/drivers/video/backlight/bd6107.c b/drivers/video/backlight/bd6107.c
+> > > index 515184fbe33a..e21b793302a2 100644
+> > > --- a/drivers/video/backlight/bd6107.c
+> > > +++ b/drivers/video/backlight/bd6107.c
+> > > @@ -120,7 +120,6 @@ static int bd6107_probe(struct i2c_client *client,
+> > >  	struct backlight_device *backlight;
+> > >  	struct backlight_properties props;
+> > >  	struct bd6107 *bd;
+> > > -	int ret;
+> > >  
+> > >  	if (pdata == NULL) {
+> > >  		dev_err(&client->dev, "No platform data\n");
+> > > @@ -148,11 +147,9 @@ static int bd6107_probe(struct i2c_client *client,
+> > >  	 * the reset.
+> > >  	 */
+> > >  	bd->reset = devm_gpiod_get(&client->dev, "reset", GPIOD_OUT_HIGH);
+> > > -	if (IS_ERR(bd->reset)) {
+> > > -		dev_err(&client->dev, "unable to request reset GPIO\n");
+> > > -		ret = PTR_ERR(bd->reset);
+> > > -		return ret;
+> > > -	}
+> > > +	if (IS_ERR(bd->reset))
+> > > +		return dev_err_probe(&client->dev, PTR_ERR(bd->reset),
+> > > +				     "unable to request reset GPIO\n");
+> > >  
+> > >  	memset(&props, 0, sizeof(props));
+> > >  	props.type = BACKLIGHT_RAW;
+> > > @@ -164,10 +161,9 @@ static int bd6107_probe(struct i2c_client *client,
+> > >  					      dev_name(&client->dev),
+> > >  					      &bd->client->dev, bd,
+> > >  					      &bd6107_backlight_ops, &props);
+> > > -	if (IS_ERR(backlight)) {
+> > > -		dev_err(&client->dev, "failed to register backlight\n");
+> > > -		return PTR_ERR(backlight);
+> > > -	}
+> > > +	if (IS_ERR(backlight))
+> > > +		return dev_err_probe(&client->dev, PTR_ERR(backlight),
+> > > +				     "failed to register backlight\n");
+> > >  
+> > >  	backlight_update_status(backlight);
+> > >  	i2c_set_clientdata(client, backlight);
+> > > -- 
+> > > 2.25.1
+> > > 
