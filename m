@@ -2,104 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B24540F3FD
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 10:21:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 141A140F3FE
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 10:21:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239501AbhIQIW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 04:22:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36666 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238230AbhIQIW4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S241419AbhIQIXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 04:23:01 -0400
+Received: from mail-eopbgr80058.outbound.protection.outlook.com ([40.107.8.58]:24718
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S237932AbhIQIW4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 17 Sep 2021 04:22:56 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7583EC061574;
-        Fri, 17 Sep 2021 01:21:34 -0700 (PDT)
-Received: from [IPv6:::1] (unknown [IPv6:2a02:810c:c200:2e91:60e0:68ce:cb75:b798])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 12A8C221E6;
-        Fri, 17 Sep 2021 10:21:27 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1631866889;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nnc+HY8a4/een0W4N4RVJwoWUUFXT3UU5FvOqYxu5fo=;
-        b=Fpb0gnQGHSui0beRgFelwfi/m11KMrP+aRet+Ieb6etkH55CoVi7tlIx1ZbjU6QlsOXA42
-        P+AuYmrQAMnoX/JVanUgphU351p/SM8PdmAdJjmh8JZ9TKrC3zAsD1w5yqfWBWO3N9CoDk
-        e2S8NAz0DVLJbILfpEYwxOSZJJ0GItE=
-Date:   Fri, 17 Sep 2021 10:21:25 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Heiko Thiery <heiko.thiery@gmail.com>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>
-CC:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Shengjiu Wang <shengjiu.wang@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        =?ISO-8859-1?Q?Guido_G=FCnther?= <agx@sigxcpu.org>,
-        "Angus Ainslie (Purism)" <angus@akkea.ca>
-Subject: =?US-ASCII?Q?Re=3A_=5BPATCH=5D_arm64=3A_dts=3A_imx8mm-kontron-n8?= =?US-ASCII?Q?01x-som=3A_do_not_allow_to_switch_off_buck2?=
-User-Agent: K-9 Mail for Android
-In-Reply-To: <CAEyMn7ZbJr0_2Phc2rW7sDYQu4AABWPZ1F7xDgaS5U7ha7iqzA@mail.gmail.com>
-References: <20210915120325.20248-1-heiko.thiery@gmail.com> <7e7ee4244ababc0a46e0875222c7e37d@walle.cc> <898fd5e0-2073-3689-89b6-2c5071773786@kontron.de> <CAEyMn7ZbJr0_2Phc2rW7sDYQu4AABWPZ1F7xDgaS5U7ha7iqzA@mail.gmail.com>
-Message-ID: <3EDFF987-82C2-4B0A-9488-037D1BD4CA48@walle.cc>
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=itEC8fpQDVtxwbeQSwKeBSAMTXQnsPEpYJ6eTQ6rS+QbONgpcrOP+SpL9acg46yAUkjKnoZ4TeFqgb/JFigVXSBGALjbmo/wkOnN3/ydWDRv5bQHCJeqAy51FLIph3efUxBEwLnCKhJ52Eog1AY9OlmQ2GBl2THT4iCQFLoo1p9/BwTRpjL8FE7R7q1XXFby165LbhTw4yvjgrRz/ozBLuwtP64O/AhJACw+75v14DpikAkOu0qcYG+bBXS7JFhHKbdN8E2r8Q0WoafeZQ7KiEOG1/t6sruR39rRd6jlTQlYlNkAXWeeCVUeZ/b8BAqtzZV3qpz2f5zcNKSif3bjtw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=KjhC4QC7a4y5V6fRLY4E5KmIZXS1txfxo11ugriaIF4=;
+ b=nd7Ub27EDNM/lyoM6DeX3gaXNK5yTfqLIZrK2ZT+xu68GLqmSOLyHG+x73kp8EfFVtC+E5dTFMN1giO2JPx4wVVUWPZEDQ7e7WTNEY6knbAObBhZkiy7s3Ip6p40IIeJ3UQztxC4FhU9cMIHG7XVDz80DCU/fTIh0mcRVIHR5evF3yqevDmIkbJ+N95PDzGVpx4clXZvUQ6tidwSeNhDyOwiPL/vmSPMVB/O1D6ZKLZoSYfLvoxfK15/J/bwkrEwttgxQyTpbMaflP50cw8kFn49NMpzGxvF8068Hh0bUXgBlbgVQKN8eWUIqVZcmBechvylMVwNuGotwgDOHPxJ/g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KjhC4QC7a4y5V6fRLY4E5KmIZXS1txfxo11ugriaIF4=;
+ b=OqC45mgbQ4MfSAvcraOaM/o8ZO8jSUoJKwTG1Upm19b2IkRFxTgOgykp4yC3+/7nFIIgEZhK1w/YKrc92TVU1330vS+YgHMwaqYOTJ9Qj1PL/x9WmPwZmpgasAM+0BzuWc3/0mSOBI30c1D0os/yEkhlYQ/Ewm9t4PJj1PvZxC0=
+Authentication-Results: canb.auug.org.au; dkim=none (message not signed)
+ header.d=none;canb.auug.org.au; dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR0401MB2559.eurprd04.prod.outlook.com (2603:10a6:800:57::8)
+ by VI1PR04MB3021.eurprd04.prod.outlook.com (2603:10a6:802:f::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.16; Fri, 17 Sep
+ 2021 08:21:32 +0000
+Received: from VI1PR0401MB2559.eurprd04.prod.outlook.com
+ ([fe80::485a:4462:94c2:5edb]) by VI1PR0401MB2559.eurprd04.prod.outlook.com
+ ([fe80::485a:4462:94c2:5edb%10]) with mapi id 15.20.4523.017; Fri, 17 Sep
+ 2021 08:21:32 +0000
+Date:   Fri, 17 Sep 2021 11:21:30 +0300
+From:   Abel Vesa <abel.vesa@nxp.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Jacky Bai <ping.bai@nxp.com>, Peng Fan <peng.fan@nxp.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the clk-imx tree
+Message-ID: <YURQClgzmxw5Dn+u@ryzen>
+References: <20210917090618.3a7ac4be@canb.auug.org.au>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210917090618.3a7ac4be@canb.auug.org.au>
+X-ClientProxiedBy: VI1PR04CA0048.eurprd04.prod.outlook.com
+ (2603:10a6:802:2::19) To VI1PR0401MB2559.eurprd04.prod.outlook.com
+ (2603:10a6:800:57::8)
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ryzen (188.25.164.198) by VI1PR04CA0048.eurprd04.prod.outlook.com (2603:10a6:802:2::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Fri, 17 Sep 2021 08:21:31 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5e43181c-822c-4385-cbb7-08d979b427e9
+X-MS-TrafficTypeDiagnostic: VI1PR04MB3021:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB3021F76FC4E3497745E6DBC9F6DD9@VI1PR04MB3021.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:608;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: cTuTCtJFEDjoW2gPmWCqDqnNJVq3Pa8Lfm/S96LNyXD1/lrJWE5oILqIu+NmMeBZh4FeVGMo0UE57RacsUaD3ohPC7D0NMKUgMSuxKtFSpg9GOLRdACGlxAyByZA+GBUb9lGvUwZbMSGZaDJhcl0GHaTrmQ8ahHDwQNhxzMIXVR61T6ACUZCBox9dmhYkZ2UrTMyvgViMe2pZ3CgmnEehmn37H/jl7DJ4LnlZXRdcssCq11yIxaiGFEvQe5zgLCjwXqN4NdUPARXPEDskFxWMUNmsERsr28joy2qJSak6ALEWrXIUYekRjg9zUcqkNC+4uvBqwNnodNkd6x2EqQG+dprWevrOgzlPWaER0YWkH0keysGikkFPoV7CjgGiuHM3lDIyIBfqWqRGrOz16PSxmMBMyywzv7VxghrPRNTMKWIL6F9todB+XF2Fu7MYcDJ+L15YOvKaP2YniWUQbiu2TondpZk0Pkz8XsWlu9M/1Pk8h9Itf9aPSp2qF9nvl0OwmrCYHX7M1oxo5045axfrBxQSXOfx2/hhlo+bcqyOVtQo+61XKgrdHNQRJEkfn0GROUrvkPRwMa+3xz+dP4owJZCbxiE+jv1cqxXmly93VYT9AEpOAYd0jBi0M30sc4lLXlAOWCO1qDARn75NieZWAOaspIBYEesJeSR9uwNqJvIXV24WYS5TCvPIyJDnPfyu/Yn3P331cPqa7THw7xRbNNKVnWroyz4rmK+T7klbc4=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0401MB2559.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66946007)(956004)(4326008)(8936002)(66556008)(66476007)(508600001)(26005)(4744005)(2906002)(33716001)(53546011)(5660300002)(8676002)(86362001)(186003)(52116002)(9686003)(9576002)(83380400001)(54906003)(55016002)(316002)(6496006)(38350700002)(44832011)(38100700002)(6916009)(67856001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ul8hXou25Q5zsVqXRWEG3L8+KJIjmz/CDi0ro/85uoewiv4w+a8smbOYWc4a?=
+ =?us-ascii?Q?BV8pAPdR264P6YJ1/25vDEaeiwsDK84Gev/W/YMY0FCQLPZEl1dIOM4YkJsv?=
+ =?us-ascii?Q?gWN5M1aO2y66j2PltXPywRHEmkXMB8JlTzYi+9fu3JoQC6sUJmAvo26sZccb?=
+ =?us-ascii?Q?suNzG2/Aqv6dxmN529mb3kKZTMKiz3HCJU0bu9e3R6Uxe44Ig77gj16gjZad?=
+ =?us-ascii?Q?qZLQnJfAOfHzeLUtq6yfC78LvETC3FGO2XwfaM7vyrmN4+rXpqqKh0yh3AX5?=
+ =?us-ascii?Q?Y1vv5VCUmRxFyNpE37sslHRta7/mDK3+O87X7AonOgcHf7MWEiq/DWUeaNxB?=
+ =?us-ascii?Q?MjQx/dtljYfcUhQZ5TZ9pOf7tC9sUhPAZyp9/jMCAIMLHNGzUO1MMaIXLNUU?=
+ =?us-ascii?Q?Zq/3DEJfGudOjCRO48a5nt5ggGvwNGsE1cIb00A/Rei3KUWM6pzFmvamE2qH?=
+ =?us-ascii?Q?6HvtCI/bLfNEa5q+NgdvN4f/gAcHiV17eDGFjDhyoLa3BHQW+uqmUQqFJqtK?=
+ =?us-ascii?Q?dCpz778USd8y9TIfIYcCnEf3BAEDz37efFFGNn+iFMGsMBKg1aTt/EJQI88L?=
+ =?us-ascii?Q?Je3h2czp0UcXsRAuO5rYN300QbOcb0a/vuzD4r0k4A+ghS8pP1KBhlJ32nTB?=
+ =?us-ascii?Q?CMWDkp2nTU4W0/YxJ7EbIDe5bcWuJlhh2OsHOyKNyU/wTxM/P/3gLEMInl8m?=
+ =?us-ascii?Q?NVNt39Vua7DLxr6haSyv5K4jm2v1f/399I3IZPREklp5c1cnCxkQktYecvwR?=
+ =?us-ascii?Q?s6il44jGUJoNc90fzFzVxtCxx3TUMvc3YI0fg04ROezYbJ6Pc7P+JKkYvNmV?=
+ =?us-ascii?Q?8BGx8UhLUwlfagTUWQncJsrtvBgUSR5kkKISAhlXm4gBbqgL9wnJhcszgSmJ?=
+ =?us-ascii?Q?P79Kvrp0J2woPR9DNx7Tv/sj7l9kKJOOWNWDj/XX6gnTb1d62m5d4RhadU7D?=
+ =?us-ascii?Q?FokUT8yJvVlKw048xyf5zIC3u0P7caGte2l7PoxzhmCBx1+EJqXbwQb4F0M5?=
+ =?us-ascii?Q?XjAc7gQD3DWdWJlUov9FQsh/4RQyRSYEnHB91vFApLzOOni4unROs9uRM01n?=
+ =?us-ascii?Q?EpNhzgkqS/O3Nnd3VdDvD1k40S0bbfKdTAlWb7ZLBetAdOHhzqBNU4M8w/BA?=
+ =?us-ascii?Q?ebPS/ZM7RN3lyX3M316C8gwdpx1zlcVxTsrKmakhUAhpsp++eRN8ALna0Rql?=
+ =?us-ascii?Q?/j01QUrVu0V+4hqWYoeXn55Aqd/wf6UMiUeB9/vFXOnezOHbuKIqdWvRoIQN?=
+ =?us-ascii?Q?kkKvE/Vm3miOdoPr9XvjkhMGd03dSeflL5EKaJsGVIwnLr8aV2ieMbIr0FLL?=
+ =?us-ascii?Q?LWCC3RZKyeHe/d1KAxWVtCTb?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5e43181c-822c-4385-cbb7-08d979b427e9
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0401MB2559.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Sep 2021 08:21:32.5851
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: x0oJwClYEHi27oStyKUL0RffBK2KyqRy7zCW3IcIHbYIjtIYLcv1YUJXcw5CDhM/Brkv2akw6XgtfLbI6XeaFA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB3021
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 17=2E September 2021 09:28:51 MESZ schrieb Heiko Thiery <heiko=2Ethiery@=
-gmail=2Ecom>:
->Hi Frieder,
->
->Am Mi=2E, 15=2E Sept=2E 2021 um 14:09 Uhr schrieb Frieder Schrempf
-><frieder=2Eschrempf@kontron=2Ede>:
->>
->> On 15=2E09=2E21 14:05, Michael Walle wrote:
->> > Am 2021-09-15 14:03, schrieb Heiko Thiery:
->> >> The buck2 output of the PMIC is the VDD core voltage of the cpu=2E
->> >> Switching off this will poweroff the CPU=2E Add the 'regulator-alway=
-s-on'
->> >> property to avoid this=2E
->> >
->> > Mh, have this ever worked? Is there a commit which introduced a regre=
-ssion?
->>
->> Yes, this did work before, even without 'regulator-always-on'=2E I
->> currently don't understand why this is needed=2E The regulator is
->> referenced in the CPU nodes as 'cpu-supply'=2E This should be enough to
->> not disable it as long as the CPU is up=2E
->
->I rechecked that with 5=2E11, 5=2E10 and 5=2E9 and I see on all of them t=
-he
->same issue:
->
->[ 31=2E716031] vdd-5v: disabling
->[ 31=2E719032] rst-usb-eth2: disabling
->[ 31=2E722553] buck2: disabling
->
->While on that I tried to compare with other boards and see that they
->also have the cpu-voltage marked as "regulator-always-on"=2E The only
->exception in dts/freescale is in imx8mq-librem5-devkit=2Edts [1] that
->has not set this property=2E
->
->I agree with you and don't understand why this is happening=2E Has
->anyone else an explanation?
+On 21-09-17 09:06:18, Stephen Rothwell wrote:
+> Hi all,
+> 
+> After merging the clk-imx tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
+> 
+> ERROR: modpost: "imx_clk_hw_pfdv2" [drivers/clk/imx/clk-imx8ulp.ko] undefined!
+> ERROR: modpost: "imx_clk_hw_pllv4" [drivers/clk/imx/clk-imx8ulp.ko] undefined!
+> ERROR: modpost: "imx8ulp_clk_hw_composite" [drivers/clk/imx/clk-imx8ulp.ko] undefined!
+> 
+> Caused by commit
+> 
+>   86ce2d393ff7 ("clk: imx: Add clock driver for imx8ulp")
+> 
+> I have used the clk-imx tree from next-20210916 fot today.
+> 
 
-Do you have the CPU frequency scaling driver enabled?=20
+Sorry about that. It has been fixed now.
 
--michael
+> -- 
+> Cheers,
+> Stephen Rothwell
+
 
