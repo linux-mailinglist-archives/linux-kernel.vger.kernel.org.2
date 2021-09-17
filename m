@@ -2,70 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BAC540F97E
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 15:46:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59B9340F983
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 15:48:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240917AbhIQNr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 09:47:27 -0400
-Received: from mail-wm1-f50.google.com ([209.85.128.50]:35616 "EHLO
-        mail-wm1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234565AbhIQNr0 (ORCPT
+        id S240970AbhIQNtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 09:49:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55050 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234565AbhIQNtV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 09:47:26 -0400
-Received: by mail-wm1-f50.google.com with SMTP id z184-20020a1c7ec1000000b003065f0bc631so10053440wmc.0;
-        Fri, 17 Sep 2021 06:46:04 -0700 (PDT)
+        Fri, 17 Sep 2021 09:49:21 -0400
+Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF7BFC061574;
+        Fri, 17 Sep 2021 06:47:59 -0700 (PDT)
+Received: by mail-oo1-xc29.google.com with SMTP id k18-20020a4abd92000000b002915ed21fb8so3204341oop.11;
+        Fri, 17 Sep 2021 06:47:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Pl2ayV9f6vETiCVUpym4C6zXgC97b45e9byMiJdmjCI=;
+        b=g0l9LSM8nQ0PQ4X2fAPhPgalkuweHiusk7jL5heBKlhjX6rgrS3I5Q+R4VwWVSpSsQ
+         7DDhoz5nLI1mx9UnJli1goPCcch5xKYwnp9KsZOQxVh6rchj5GsHb207/zjF2rExmKHA
+         RdMJ0Pi/9hj0wH5fT7zitEVb+p+n+jDEtgjEEsCThPVibCpU+Jn/pJ3j3Hhm3ZHQnk0T
+         ClfDBUHZkhW9hWP+TfreOCy8KjbEFl7g8nbvUjMRdIKZ0Y1Jn8WiLXmpEdhH89mgWvNe
+         IX/qgQgvVf5urfLa41Zo2KonfRBlT18EEJhU+OGpSRCHZ3uqapgK2y+NYNElfaNS90Yd
+         Vy4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=jtV4/xfInTZf41NWH1So01AC4QPok5lP65WRPPuIhMw=;
-        b=0XI6HZ4771LNlFMfB9+65T+kHzlpoqs1bV0ZTIrXAjSSHAcL0okY/XVGosxUYGTUeP
-         h3G8DefVf3/Lk971yVyCu0SSUn4i4lu8Y2/ZNj9id+WDa4BYp4xrtZwM/euuZhjbmTUN
-         /1x8fVMWuMCB29EMjXFqhazclC8CDE9Qbhq9kkwDUFSHEOESF8Zv0oXGDwym8v/7ksbV
-         soUuYT9HnCZMhY99d5oUTMvzz8w5sFnUbcguc4SBu1tqchy/C7r5udaXrZ1rGfdcWhaA
-         +XsVSavf1bfm/JELF/RZGNDiafgJ6slwE4O50eLXURPcRVHD4MA+OZPmUDlcjxRuvBcL
-         Af6g==
-X-Gm-Message-State: AOAM532YvEdMuTOiNTd2eUGDIHq+H9C5VIhfhBLUQjEeAVwe3LPkE10h
-        V5fsSE1RizJm5n7850vEluQ=
-X-Google-Smtp-Source: ABdhPJysNpzd0PvoIrDOBYNm30BKjCMBzyGPw0tVpVUIYKahLqzoPZ8Lk3lHWdX8wOjZ3Mrydn5X6g==
-X-Received: by 2002:a7b:c5d8:: with SMTP id n24mr10652113wmk.51.1631886363285;
-        Fri, 17 Sep 2021 06:46:03 -0700 (PDT)
-Received: from rocinante ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id e2sm6878747wra.40.2021.09.17.06.46.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 06:46:02 -0700 (PDT)
-Date:   Fri, 17 Sep 2021 15:46:01 +0200
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     brookxu <brookxu.cn@gmail.com>
-Cc:     jonathan.derrick@intel.com, lorenzo.pieralisi@arm.com,
-        robh@kernel.org, bhelgaas@google.com, helgaas@kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] PCI: vmd: Assign a number to each VMD controller
-Message-ID: <20210917134601.GA1518947@rocinante>
-References: <1631884404-24141-1-git-send-email-brookxu.cn@gmail.com>
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Pl2ayV9f6vETiCVUpym4C6zXgC97b45e9byMiJdmjCI=;
+        b=SqHODw97HSOzsDnKQb/scdwDHqycQ/4fEUsO+Jv+rajScQ92Grpm1em0lVwpZ2376o
+         Dz4xDSy138tkHtrUPnBhLZQazJMPo2o+3sQzc5VGxzf8d1DFxX6rBuRxxujGHXEbpMRm
+         b3wkkP4WoWVUa1r1Fs0v6RJhUh9sJyu/qsyvE4b07CCgQs6yS2oSVFFGNy2HOq/4krVI
+         453QfSzIkdBYHDEnHppU8+cPHDJWTp6CXHdoTmviFRL8MwUxGgYcsxZCIofBNtRTBo/x
+         VJfSqw7IpY+9YLI74MV761HlYMuobGzX75f1LiW9ZLxnA9VPNbnhDT7VmRa7WQmyGzAG
+         sZjg==
+X-Gm-Message-State: AOAM530PnnmtVkuq2Q05Y2jk/00UdxtBeHFq/QlehM8fF/Q/W92+t1fU
+        zVViFRRoSuvjqYbiJJx4p0sT3e2OErU=
+X-Google-Smtp-Source: ABdhPJwdJYpNVuUU0njRBVZLwZs3kbQgahpFRQeJXNyBUfpO0enmrbcsy2S2O5iEfC7YhpfkNHuIgg==
+X-Received: by 2002:a4a:ba86:: with SMTP id d6mr8918188oop.61.1631886478767;
+        Fri, 17 Sep 2021 06:47:58 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id y7sm1391929oov.36.2021.09.17.06.47.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Sep 2021 06:47:58 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH] watchdog: sbsa: drop unneeded MODULE_ALIAS
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-watchdog@vger.kernel.org
+References: <20210917092024.19323-1-krzysztof.kozlowski@canonical.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <6cf2f403-f765-cfcd-aa54-bb4264982b7f@roeck-us.net>
+Date:   Fri, 17 Sep 2021 06:47:56 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1631884404-24141-1-git-send-email-brookxu.cn@gmail.com>
+In-Reply-To: <20210917092024.19323-1-krzysztof.kozlowski@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
-
-Very nice!
-
-> If the system has multiple VMD controllers, the driver does not assign
-> a number to each controller, so when analyzing the interrupt through
-> /proc/interrupts, the names of all controllers are the same, which is
-> not very convenient for problem analysis. Here, try to assign a number
-> to each VMD controller.
+On 9/17/21 2:20 AM, Krzysztof Kozlowski wrote:
+> The MODULE_DEVICE_TABLE already creates proper alias for platform
+> driver.  Having another MODULE_ALIAS causes the alias to be duplicated.
 > 
-> Signed-off-by: Chunguang Xu <brookxu@tencent.com>
-> Reviewed-by: Jon Derrick <jonathan.derrick@intel.com>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-	Krzysztof
+> ---
+>   drivers/watchdog/sbsa_gwdt.c | 1 -
+>   1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/watchdog/sbsa_gwdt.c b/drivers/watchdog/sbsa_gwdt.c
+> index ee9ff38929eb..87b496405871 100644
+> --- a/drivers/watchdog/sbsa_gwdt.c
+> +++ b/drivers/watchdog/sbsa_gwdt.c
+> @@ -411,4 +411,3 @@ MODULE_AUTHOR("Suravee Suthikulpanit <Suravee.Suthikulpanit@amd.com>");
+>   MODULE_AUTHOR("Al Stone <al.stone@linaro.org>");
+>   MODULE_AUTHOR("Timur Tabi <timur@codeaurora.org>");
+>   MODULE_LICENSE("GPL v2");
+> -MODULE_ALIAS("platform:" DRV_NAME);
+> 
+
