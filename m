@@ -2,81 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B68540F865
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 14:54:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5480840F86A
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 14:55:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244713AbhIQMzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 08:55:43 -0400
-Received: from hosting.gsystem.sk ([212.5.213.30]:44650 "EHLO
-        hosting.gsystem.sk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238675AbhIQMzm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 08:55:42 -0400
-Received: from [192.168.1.3] (ns.gsystem.sk [62.176.172.50])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by hosting.gsystem.sk (Postfix) with ESMTPSA id BE7237A0214;
-        Fri, 17 Sep 2021 14:54:19 +0200 (CEST)
-From:   Ondrej Zary <linux@zary.sk>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH] x86/iopl: Fake iopl(3) CLI/STI usage
-Date:   Fri, 17 Sep 2021 14:54:16 +0200
-User-Agent: KMail/1.9.10
-Cc:     Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-References: <202109151423.43604.linux@zary.sk> <YUSCDX5QwzTcCPFa@hirez.programming.kicks-ass.net> <87mtob8jqp.ffs@tglx>
-In-Reply-To: <87mtob8jqp.ffs@tglx>
-X-KMail-QuotePrefix: > 
+        id S244777AbhIQM4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 08:56:55 -0400
+Received: from mail.acc.umu.se ([130.239.18.156]:35459 "EHLO mail.acc.umu.se"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238675AbhIQM4t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 08:56:49 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by amavisd-new (Postfix) with ESMTP id 3BEC844B92;
+        Fri, 17 Sep 2021 14:55:26 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=acc.umu.se; s=mail1;
+        t=1631883326; bh=qgLCfyVcFX8eGrLJ6lf5eXw1WGfFQEn6MFUa2VUu68k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vDV1uVSivB0gfN0PY6XbhTacmLcV3fzDZkKcJa3ftJLJchyhBq+UgNGMPOL1xPi9X
+         avgDp9+dYOOO84zujHqtEfCG0O20ogK8h5xRYcE1/i8daX7zf/aaHiICPX7gpq5ezV
+         HU4CXPkEHx50tuU5kjg49aHXufcPGTI8aMqQwqaiQG9GGZP7kj/u48XWL3hO58t3qR
+         Y3Xh/bY2dmaX9ttRJwxjnYm8WL8RCSukXD04kwLw5afUnBn9DMLGl5Jv9n01WR1mYS
+         WkrytiLRPnKbsQdZHXfN4acNpaiMM3jnZxFVrIqb4CkSfPj3K7RuYCP6IVPbb3yOp/
+         r/Cy8mOKS/WQQ==
+Received: by mail.acc.umu.se (Postfix, from userid 24471)
+        id D2CD144B93; Fri, 17 Sep 2021 14:55:25 +0200 (CEST)
+Date:   Fri, 17 Sep 2021 14:55:25 +0200
+From:   Anton Lundin <glance@acc.umu.se>
+To:     Corey Minyard <minyard@acm.org>
+Cc:     openipmi-developer@lists.sourceforge.net,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: Issue with panic handling and ipmi
+Message-ID: <20210917125525.GF108031@montezuma.acc.umu.se>
+References: <20210916145300.GD108031@montezuma.acc.umu.se>
+ <20210916163945.GY545073@minyard.net>
+ <20210917101419.GE108031@montezuma.acc.umu.se>
+ <20210917120758.GA545073@minyard.net>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Message-Id: <202109171454.16362.linux@zary.sk>
+In-Reply-To: <20210917120758.GA545073@minyard.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 17 September 2021, Thomas Gleixner wrote:
-> On Fri, Sep 17 2021 at 13:54, Peter Zijlstra wrote:
-> >> [   14.876824] fixup_iopl_exception: 333 callbacks suppressed
-> >> [   14.876832] traps: hpasmd[360] attempts to use CLI/STI, pretending it's a NOP, ip:80a5356
-> >
-> > I'd say...
-> >
-> > Not sure it's really worth it, but something like the below might
-> > help.
+On 17 September, 2021 - Corey Minyard wrote:
+
+> On Fri, Sep 17, 2021 at 12:14:19PM +0200, Anton Lundin wrote:
+> > On 16 September, 2021 - Corey Minyard wrote:
+> > 
+> > > On Thu, Sep 16, 2021 at 04:53:00PM +0200, Anton Lundin wrote:
+> > > > Hi.
+> > > > 
+> > > > I've just done a upgrade of the kernel we're using in a product from
+> > > > 4.19 to 5.10 and I noted a issue.
+> > > > 
+> > > > It started that with that we didn't get panic and oops dumps in our erst
+> > > > backed pstore, and when debugging that I noted that the reboot on panic
+> > > > timer didn't work either.
+> > > > 
+> > > > I've bisected it down to 2033f6858970 ("ipmi: Free receive messages when
+> > > > in an oops").
+> > > 
+> > > Hmm.  Unfortunately removing that will break other things.  Can you try
+> > > the following patch?  It's a good idea, in general, to do as little as
+> > > possible in the panic path, this should cover a multitude of issues.
+> > > 
+> > > Thanks for the report.
+> > > 
+> > 
+> > I'm sorry to report that the patch didn't solve the issue, and the
+> > machine locked up in the panic path as before.
 > 
-> One entry per task is really good enough. Though that wont help for such
-> stuff which is started over and over again....
+> I missed something.  Can you try the following?  If this doesn't work,
+> I'm going to have to figure out how to reproduce this.
+> 
 
-Seems to fine for this case. hpasmd is running as a daemon.
+Sorry, still no joy.
 
-# dmesg | tail
-[    6.834639] atyfb: fb0: ATY Mach64 frame buffer device on PCI
-[    7.629499] random: crng init done
-[    7.629507] random: 7 urandom warning(s) missed due to ratelimiting
-[    9.737551] floppy0: no floppy controllers found
-[    9.737584] work still pending
-[    9.923185] process 'hp/hp-health/bin/hpasmd' started with executable stack
-[   10.140055] traps: hpasmd[359] attempts to use CLI/STI, pretending it's a NOP, ip:f7d3709b in mem[f7d37000+3000]
-[   15.821726] tg3 0000:03:01.0 enp3s1f0: Link is up at 1000 Mbps, full duplex
-[   15.821753] tg3 0000:03:01.0 enp3s1f0: Flow control is on for TX and on for RX
-[   15.821786] IPv6: ADDRCONF(NETDEV_CHANGE): enp3s1f0: link becomes ready
-# hpasmcli -s "show fans"
+My guess is that there is something locking up due to these Supermicro
+machines have their ERST memory backed by the BMC, and the same BMC is
+is the other end of all the ipmi communications.
 
-Fan  Location        Present Speed  of max  Redundant  Partner  Hot-pluggable
----  --------        ------- -----  ------  ---------  -------  -------------
-#1   PROCESSOR_ZONE  Yes     NORMAL  22%     Yes        2        Yes
-#2   PROCESSOR_ZONE  Yes     NORMAL  22%     Yes        1        Yes
-#3   I/O_ZONE        Yes     NORMAL  11%     Yes        1        Yes
-#4   I/O_ZONE        Yes     NORMAL  11%     Yes        1        Yes
-#5   PROCESSOR_ZONE  Yes     NORMAL  22%     Yes        1        Yes
-#6   PROCESSOR_ZONE  Yes     NORMAL  22%     Yes        1        Yes
-#7   POWERSUPPLY_BAY Yes     NORMAL  11%     Yes        1        Yes
-#8   POWERSUPPLY_BAY Yes     NORMAL  11%     Yes        1        Yes
+I've reproduced this on Server/X11SCZ-F and Server/H11SSL-i but I'm
+guessing it can be reproduced on most, if not all, of their hardware
+with the same setup.
+
+We're using the ERST backend for pstore, because we're still
+bios-booting them and don't have efi services available to use as pstore
+backend.
 
 
--- 
-Ondrej Zary
+I've tested to just yank out the ipmi modules from the kernel and that
+fixes the panic timer and we get crash dumps to pstore.
+
+//Anton
