@@ -2,181 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D2AD40F656
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 12:54:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8373540F65B
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 12:55:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241743AbhIQKzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 06:55:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242202AbhIQKzc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 06:55:32 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBA44C061768
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 03:54:10 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f127e008eb9261aa740485d.dip0.t-ipconnect.de [IPv6:2003:ec:2f12:7e00:8eb9:261a:a740:485d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 78F5F1EC05A0;
-        Fri, 17 Sep 2021 12:54:09 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1631876049;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JnMZi9JTA1db6jj5oMV7AJh5xgv1Vy8TTNxQxT0c9O0=;
-        b=DtETEbZ2neWl+qiDUtbofqJmB1sa1sdnFIqIkaPl1UkSAxUMA+WRK+pFqHgRfNjxB7sCGy
-        KtiTEYHMDajwF97pQIFNj9lQGEAuULhs7nmZu75btJHSeg0yI9k53AKjLxBLJ/EgLolh4+
-        kuI0QEZRt/dCM2eIvHjW9gy+GEN9mUU=
-From:   Borislav Petkov <bp@alien8.de>
-To:     Tony Luck <tony.luck@intel.com>,
-        Yazen Ghannam <Yazen.Ghannam@amd.com>
-Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH 4/4] x86/mce: Get rid of the ->quirk_no_way_out() indirect call
-Date:   Fri, 17 Sep 2021 12:53:55 +0200
-Message-Id: <20210917105355.2368-5-bp@alien8.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210917105355.2368-1-bp@alien8.de>
-References: <20210917105355.2368-1-bp@alien8.de>
+        id S242202AbhIQKzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 06:55:50 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:38221 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1343947AbhIQKzp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 06:55:45 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4H9rRx4Styz9sTm;
+        Fri, 17 Sep 2021 12:54:21 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id zM-3TBaguqTq; Fri, 17 Sep 2021 12:54:21 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4H9rRw3X40z9sSm;
+        Fri, 17 Sep 2021 12:54:20 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 680528B768;
+        Fri, 17 Sep 2021 12:54:20 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id o3TWO0hfcv2n; Fri, 17 Sep 2021 12:54:20 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.202.36])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1A2F68B799;
+        Fri, 17 Sep 2021 12:54:20 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 18HAs8cB629037
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Fri, 17 Sep 2021 12:54:08 +0200
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 18HAs7eY629036;
+        Fri, 17 Sep 2021 12:54:07 +0200
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH] powerpc/32: Don't use a struct based type for pte_t
+Date:   Fri, 17 Sep 2021 12:54:07 +0200
+Message-Id: <c5ff2f0918c042b1d93393ee9deb0066a110c132.1631876035.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Borislav Petkov <bp@suse.de>
+Long time ago we had a config item called STRICT_MM_TYPECHECKS
+to build the kernel with pte_t defined as a structure in order
+to perform additional build checks or build it with pte_t
+defined as a simple type in order to get simpler generated code.
 
-Use a flag setting to call the only quirk function for that.
+Commit 670eea924198 ("powerpc/mm: Always use STRICT_MM_TYPECHECKS")
+made the struct based definition the only one, considering that the
+generated code was similar in both cases.
 
-No functional changes.
+That's right on ppc64 because the ABI is such that the content of a
+struct having a single simple type element is passed as register,
+but on ppc32 such a structure is passed via the stack like any
+structure.
 
-Signed-off-by: Borislav Petkov <bp@suse.de>
+Simple test function:
+
+	pte_t test(pte_t pte)
+	{
+		return pte;
+	}
+
+Before this patch we get
+
+	c00108ec <test>:
+	c00108ec:	81 24 00 00 	lwz     r9,0(r4)
+	c00108f0:	91 23 00 00 	stw     r9,0(r3)
+	c00108f4:	4e 80 00 20 	blr
+
+So, for PPC32, restore the simple type behaviour we got before
+commit 670eea924198, but instead of adding a config option to
+activate type check, do it when __CHECKER__ is set so that type
+checking is performed by 'sparse' and provides feedback like:
+
+	arch/powerpc/mm/pgtable.c:466:16: warning: incorrect type in return expression (different base types)
+	arch/powerpc/mm/pgtable.c:466:16:    expected unsigned long
+	arch/powerpc/mm/pgtable.c:466:16:    got struct pte_t [usertype] x
+
+With this patch we now get
+
+	c0010890 <test>:
+	c0010890:	4e 80 00 20 	blr
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- arch/x86/kernel/cpu/mce/core.c     | 64 +++++++++++++++---------------
- arch/x86/kernel/cpu/mce/internal.h |  5 ++-
- 2 files changed, 35 insertions(+), 34 deletions(-)
+ arch/powerpc/include/asm/nohash/32/pgtable.h |  2 +-
+ arch/powerpc/include/asm/pgtable-types.h     | 13 ++++++++++++-
+ arch/powerpc/mm/pgtable.c                    |  2 +-
+ 3 files changed, 14 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index ee4f534424b8..e0cef8781c6f 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -121,8 +121,6 @@ mce_banks_t mce_banks_ce_disabled;
- static struct work_struct mce_work;
- static struct irq_work mce_irq_work;
- 
--static void (*quirk_no_way_out)(int bank, struct mce *m, struct pt_regs *regs);
--
- /*
-  * CPU/chipset specific EDAC code can register a notifier call here to print
-  * MCE errors in a human-readable form.
-@@ -818,6 +816,34 @@ bool machine_check_poll(enum mcp_flags flags, mce_banks_t *b)
- }
- EXPORT_SYMBOL_GPL(machine_check_poll);
- 
-+/*
-+ * During IFU recovery Sandy Bridge -EP4S processors set the RIPV and
-+ * EIPV bits in MCG_STATUS to zero on the affected logical processor (SDM
-+ * Vol 3B Table 15-20). But this confuses both the code that determines
-+ * whether the machine check occurred in kernel or user mode, and also
-+ * the severity assessment code. Pretend that EIPV was set, and take the
-+ * ip/cs values from the pt_regs that mce_gather_info() ignored earlier.
-+ */
-+static void quirk_sandybridge_ifu(int bank, struct mce *m, struct pt_regs *regs)
-+{
-+	if (bank != 0)
-+		return;
-+	if ((m->mcgstatus & (MCG_STATUS_EIPV|MCG_STATUS_RIPV)) != 0)
-+		return;
-+	if ((m->status & (MCI_STATUS_OVER|MCI_STATUS_UC|
-+		          MCI_STATUS_EN|MCI_STATUS_MISCV|MCI_STATUS_ADDRV|
-+			  MCI_STATUS_PCC|MCI_STATUS_S|MCI_STATUS_AR|
-+			  MCACOD)) !=
-+			 (MCI_STATUS_UC|MCI_STATUS_EN|
-+			  MCI_STATUS_MISCV|MCI_STATUS_ADDRV|MCI_STATUS_S|
-+			  MCI_STATUS_AR|MCACOD_INSTR))
-+		return;
-+
-+	m->mcgstatus |= MCG_STATUS_EIPV;
-+	m->ip = regs->ip;
-+	m->cs = regs->cs;
-+}
-+
- /*
-  * Do a quick check if any of the events requires a panic.
-  * This decides if we keep the events around or clear them.
-@@ -834,8 +860,8 @@ static int mce_no_way_out(struct mce *m, char **msg, unsigned long *validp,
- 			continue;
- 
- 		__set_bit(i, validp);
--		if (quirk_no_way_out)
--			quirk_no_way_out(i, m, regs);
-+		if (mce_flags.snb_ifu_quirk)
-+			quirk_sandybridge_ifu(i, m, regs);
- 
- 		m->bank = i;
- 		if (mce_severity(m, regs, mca_cfg.tolerant, &tmp, true) >= MCE_PANIC_SEVERITY) {
-@@ -1692,34 +1718,6 @@ static void __mcheck_cpu_check_banks(void)
- 	}
- }
- 
--/*
-- * During IFU recovery Sandy Bridge -EP4S processors set the RIPV and
-- * EIPV bits in MCG_STATUS to zero on the affected logical processor (SDM
-- * Vol 3B Table 15-20). But this confuses both the code that determines
-- * whether the machine check occurred in kernel or user mode, and also
-- * the severity assessment code. Pretend that EIPV was set, and take the
-- * ip/cs values from the pt_regs that mce_gather_info() ignored earlier.
-- */
--static void quirk_sandybridge_ifu(int bank, struct mce *m, struct pt_regs *regs)
--{
--	if (bank != 0)
--		return;
--	if ((m->mcgstatus & (MCG_STATUS_EIPV|MCG_STATUS_RIPV)) != 0)
--		return;
--	if ((m->status & (MCI_STATUS_OVER|MCI_STATUS_UC|
--		          MCI_STATUS_EN|MCI_STATUS_MISCV|MCI_STATUS_ADDRV|
--			  MCI_STATUS_PCC|MCI_STATUS_S|MCI_STATUS_AR|
--			  MCACOD)) !=
--			 (MCI_STATUS_UC|MCI_STATUS_EN|
--			  MCI_STATUS_MISCV|MCI_STATUS_ADDRV|MCI_STATUS_S|
--			  MCI_STATUS_AR|MCACOD_INSTR))
--		return;
--
--	m->mcgstatus |= MCG_STATUS_EIPV;
--	m->ip = regs->ip;
--	m->cs = regs->cs;
--}
--
- /* Add per CPU specific workarounds here */
- static int __mcheck_cpu_apply_quirks(struct cpuinfo_x86 *c)
+diff --git a/arch/powerpc/include/asm/nohash/32/pgtable.h b/arch/powerpc/include/asm/nohash/32/pgtable.h
+index f06ae00f2a65..34ce50da1850 100644
+--- a/arch/powerpc/include/asm/nohash/32/pgtable.h
++++ b/arch/powerpc/include/asm/nohash/32/pgtable.h
+@@ -245,7 +245,7 @@ static int number_of_cells_per_pte(pmd_t *pmd, pte_basic_t val, int huge)
+ static inline pte_basic_t pte_update(struct mm_struct *mm, unsigned long addr, pte_t *p,
+ 				     unsigned long clr, unsigned long set, int huge)
  {
-@@ -1793,7 +1791,7 @@ static int __mcheck_cpu_apply_quirks(struct cpuinfo_x86 *c)
- 			cfg->bootlog = 0;
- 
- 		if (c->x86 == 6 && c->x86_model == 45)
--			quirk_no_way_out = quirk_sandybridge_ifu;
-+			mce_flags.snb_ifu_quirk = 1;
- 	}
- 
- 	if (c->x86_vendor == X86_VENDOR_ZHAOXIN) {
-diff --git a/arch/x86/kernel/cpu/mce/internal.h b/arch/x86/kernel/cpu/mce/internal.h
-index 1ad7b4bf5423..21865545cd3b 100644
---- a/arch/x86/kernel/cpu/mce/internal.h
-+++ b/arch/x86/kernel/cpu/mce/internal.h
-@@ -167,7 +167,10 @@ struct mce_vendor_flags {
- 	/* Centaur Winchip C6-style MCA */
- 	winchip			: 1,
- 
--	__reserved_0		: 58;
-+	/* SandyBridge IFU quirk */
-+	snb_ifu_quirk		: 1,
+-	pte_basic_t *entry = &p->pte;
++	pte_basic_t *entry = (pte_basic_t *)p;
+ 	pte_basic_t old = pte_val(*p);
+ 	pte_basic_t new = (old & ~(pte_basic_t)clr) | set;
+ 	int num, i;
+diff --git a/arch/powerpc/include/asm/pgtable-types.h b/arch/powerpc/include/asm/pgtable-types.h
+index d11b4c61d686..e5ed4580a62c 100644
+--- a/arch/powerpc/include/asm/pgtable-types.h
++++ b/arch/powerpc/include/asm/pgtable-types.h
+@@ -5,14 +5,25 @@
+ /* PTE level */
+ #if defined(CONFIG_PPC_8xx) && defined(CONFIG_PPC_16K_PAGES)
+ typedef struct { pte_basic_t pte, pte1, pte2, pte3; } pte_t;
+-#else
++#elif defined(__CHECKER__) || !defined(CONFIG_PPC32)
+ typedef struct { pte_basic_t pte; } pte_t;
++#else
++typedef pte_basic_t pte_t;
+ #endif
 +
-+	__reserved_0		: 57;
- };
++#if defined(__CHECKER__) || !defined(CONFIG_PPC32)
+ #define __pte(x)	((pte_t) { (x) })
+ static inline pte_basic_t pte_val(pte_t x)
+ {
+ 	return x.pte;
+ }
++#else
++#define __pte(x)	((pte_t)(x))
++static inline pte_basic_t pte_val(pte_t x)
++{
++	return x;
++}
++#endif
  
- extern struct mce_vendor_flags mce_flags;
+ /* PMD level */
+ #ifdef CONFIG_PPC64
+diff --git a/arch/powerpc/mm/pgtable.c b/arch/powerpc/mm/pgtable.c
+index cd16b407f47e..ce9482383144 100644
+--- a/arch/powerpc/mm/pgtable.c
++++ b/arch/powerpc/mm/pgtable.c
+@@ -271,7 +271,7 @@ void set_huge_pte_at(struct mm_struct *mm, unsigned long addr, pte_t *ptep, pte_
+ {
+ 	pmd_t *pmd = pmd_off(mm, addr);
+ 	pte_basic_t val;
+-	pte_basic_t *entry = &ptep->pte;
++	pte_basic_t *entry = (pte_basic_t *)ptep;
+ 	int num, i;
+ 
+ 	/*
 -- 
-2.29.2
+2.31.1
 
