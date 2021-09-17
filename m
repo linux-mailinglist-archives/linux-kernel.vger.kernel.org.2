@@ -2,81 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3657340F59D
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 12:14:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC53B40F5A0
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 12:14:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242104AbhIQKOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 06:14:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232479AbhIQKOg (ORCPT
+        id S242123AbhIQKPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 06:15:44 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:41172 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232479AbhIQKPn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 06:14:36 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C1A2C061764
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 03:13:14 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id t18so14358183wrb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 03:13:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tgZKfQsD/mVPjl2rf6f+j7ho+tNfBCjFkmtHraxHK1U=;
-        b=arMnvkIKDq5ZnCqYTwi8g5dCSSdEqSIqR0VOZrdBW/mJfI1OhskpehuHXA7gWhKpNG
-         N8YVwh9tqv32gPcHtawGEs4wmckqJk3rL1GCkhIWBGJEer3etl/RzNTlCSuZaIjoytlH
-         ZqD7zSfFm4G3yPJwy1rYs+xQkJ2aF8I+gqkLtYXKM7RaTOkbBqse60z5G5USR3/fcL5l
-         N2AT/C6xxE0GmjBCjDARgblhmxhMfSlRzzPaFQZu8vLCWCJDaoC12xQ1P9/nquKfFAOz
-         pLjwUTBzyk2oONKhV5C7h+hfPaRlZsASaI+KxASSBdR8xdgt0JDaiu5PGcoKfBxICXOf
-         axhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tgZKfQsD/mVPjl2rf6f+j7ho+tNfBCjFkmtHraxHK1U=;
-        b=aKz0OdL0uoHl7mO8jxgsijXZty2c+CoWH/SsPLabb4D71AN5b2xU1m8kS6r9hjKQmH
-         ewSs1FPVrvqnrsyydDsNCYSR8zB9cHSbm6So6wcAZm8x1uXqg8dl2PWRyTPSS06sEhy8
-         RZ2SGJxAxCYGcPoxaKG5sAC1p5HqSGRveXMlaRPpia8PyYTl6sd+fugYHxo8xE/jI2G7
-         V5k9W4ytZpQUGN4yhRYbMgyDcW2BNrr0QjACWDIo+s644eNKqbkaClkgtt7DsJh/leX/
-         ckU3Br3ynJ1PSsbyfHf/59UQ6M3GnzL2Kt7XcUdhAG8UPFw1WXwWaOoPKQxLyQ+yQeRT
-         /Z5Q==
-X-Gm-Message-State: AOAM5327vik1OiyT/WLwyJ6peFk1VkAkh3GclwaKlnd9aENyUNhcR057
-        qzLVf6DKYkkTBobjXjuUNJEhpA==
-X-Google-Smtp-Source: ABdhPJzd6APFEp/JCjkPRGr/NSbX9x2Q/ZeZOsbk5SYqdyyd5iDdNl2GPHQLTi+2U3RS/1r+ipqG+g==
-X-Received: by 2002:a5d:4a08:: with SMTP id m8mr10905382wrq.263.1631873592828;
-        Fri, 17 Sep 2021 03:13:12 -0700 (PDT)
-Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
-        by smtp.gmail.com with ESMTPSA id q11sm6160112wrn.65.2021.09.17.03.13.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 03:13:12 -0700 (PDT)
-Date:   Fri, 17 Sep 2021 12:13:11 +0200
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jiri Pirko <jiri@nvidia.com>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH net-next] devlink: Delete not-used devlink APIs
-Message-ID: <YURqNxDNjk9J41p8@nanopsycho>
-References: <a45674a8cb1c1e0133811d95756357b787673e52.1631788678.git.leonro@nvidia.com>
+        Fri, 17 Sep 2021 06:15:43 -0400
+X-UUID: 86c4990198544c5b8d4c85d7e2477107-20210917
+X-UUID: 86c4990198544c5b8d4c85d7e2477107-20210917
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
+        (envelope-from <kewei.xu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 87401243; Fri, 17 Sep 2021 18:14:18 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 17 Sep 2021 18:14:17 +0800
+Received: from localhost.localdomain (10.17.3.154) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 17 Sep 2021 18:14:17 +0800
+From:   Kewei Xu <kewei.xu@mediatek.com>
+To:     <wsa@the-dreams.de>
+CC:     <matthias.bgg@gmail.com>, <robh+dt@kernel.org>,
+        <linux-i2c@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <leilk.liu@mediatek.com>,
+        <qii.wang@mediatek.com>, <liguo.zhang@mediatek.com>,
+        <caiyu.chen@mediatek.com>, <ot_daolong.zhu@mediatek.com>,
+        <yuhan.wei@mediatek.com>, <kewei.xu@mediatek.com>
+Subject: [PATCH v7 0/7] Introducing an attribute to select the time setting
+Date:   Fri, 17 Sep 2021 18:14:09 +0800
+Message-ID: <20210917101416.20760-1-kewei.xu@mediatek.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a45674a8cb1c1e0133811d95756357b787673e52.1631788678.git.leonro@nvidia.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thu, Sep 16, 2021 at 12:38:33PM CEST, leon@kernel.org wrote:
->From: Leon Romanovsky <leonro@nvidia.com>
->
->Devlink core exported generously the functions calls that were used
->by netdevsim tests or not used at all.
->
->Delete such APIs with one exception - devlink_alloc_ns(). That function
->should be spared from deleting because it is a special form of devlink_alloc()
->needed for the netdevsim.
->
->Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+v6:
+Add the judgment condition, clear the handshake signal between dma and
+i2c when multiple msgs are transmitted.
 
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+v5:
+1. Replace the previous variable name "default_timing_adjust" with "use-default-timing"
+2. Added waiting for dma reset mechanism
+3. Remove received patch(dt-bindings: i2c: update bindings for MT8195 SOC)
+
+v4:
+1. Remove the repeated assignment of the inter_clk_div parameter
+2. Modify the wrong assignment of OFFSET_MULTI_DMA
+3. Unify the log print format of the i2c_dump_register() and drop the extra outer parentheses
+4. Place the fixes at the very least
+5. Add fixed tags 25708278f810 ("i2c: mediatek: Add i2c support for MediaTek MT8183")
+6. Add "i2c: mediatek: modify bus speed calculation formula"
+7. Fix single line characters exceeding 80 characters
+8. Combine two different series of patches.
+
+v3:
+1. Fix code errors caused by v2 modification
+
+v2:
+1. Add "dt-bindings: i2c: add attribute default-timing-adjust"
+2. Split the fix into sepatate patch.
+
+Kewei Xu (7):
+  i2c: mediatek: fixing the incorrect register offset
+  i2c: mediatek: Reset the handshake signal between i2c and dma
+  i2c: mediatek: Dump i2c/dma register when a timeout occurs
+  dt-bindings: i2c: add attribute use-default-timing
+  i2c: mediatek: Add OFFSET_EXT_CONF setting back
+  i2c: mediatek: Isolate speed setting via dts for special devices
+  i2c: mediatek: modify bus speed calculation formula
+
+ .../devicetree/bindings/i2c/i2c-mt65xx.txt    |   2 +
+ drivers/i2c/busses/i2c-mt65xx.c               | 207 ++++++++++++++++--
+ 2 files changed, 192 insertions(+), 17 deletions(-)
+
+-- 
+2.18.0
+
