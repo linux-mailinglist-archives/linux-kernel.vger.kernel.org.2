@@ -2,98 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 951C740FFF6
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 21:49:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEA5E40FFFA
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 21:50:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243013AbhIQTvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 15:51:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344089AbhIQTtc (ORCPT
+        id S1344761AbhIQTv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 15:51:26 -0400
+Received: from mail-oi1-f178.google.com ([209.85.167.178]:37433 "EHLO
+        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241886AbhIQTuZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 15:49:32 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E867C061574;
-        Fri, 17 Sep 2021 12:48:10 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id d21so16870446wra.12;
-        Fri, 17 Sep 2021 12:48:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0LiRPWrnBm9c1Rt8hhWYou9LBzchrf8FtTx3luadPIU=;
-        b=XIB11Bm36/By4kmpLVmLsVaFDF7dxnsUohSZRdg31I6RDCsgVMQuB7VkV1h6xiqdZy
-         HAnmPiSOd1QSjlf/wBjH5gQThpeWyvLF7vPgvXm91wtU/p0X1bbVD4FdyvjmXCQWUqbl
-         VcRTsb4wx6AxvBqEEoIKSU8QidO6HW2WrPgVyUaJkpsG/ixzI6DSiY7IYt/xka1rTm29
-         QDtXnm6jEbLvHhCIEq9YxX3UOlPLRzaz2gQTlGSaFz6WCoE74xDQxIWm4NmocNpOB1TL
-         eqs6rFF0+n2POj8akAHdPr9UnzGWNDmN1veBrls+j+itxw7qe4V+tqAo9gGgFbKZVHJ7
-         PtHA==
+        Fri, 17 Sep 2021 15:50:25 -0400
+Received: by mail-oi1-f178.google.com with SMTP id w206so3843406oiw.4;
+        Fri, 17 Sep 2021 12:49:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0LiRPWrnBm9c1Rt8hhWYou9LBzchrf8FtTx3luadPIU=;
-        b=fCJvr2q9GB/qFjnCy4atKq+JyKY/s0XReN9EGk7y6vm6sWzxASs/jsIcNPoOMI6Mts
-         cqGIDIOcGdWaj1PqP02WQJkeHl5pAGVqI5+5K32qHK1Jc0S1R9ZlM9C06WMxceYF6NDK
-         /Z3h9CqkMBnui53sK+aPfN0uta5etlNfgsl9uSzTPXqTtBZEocBSv5gZ1Uk7Us32kkY0
-         BWJasExi4pqNS8Np99bWsL2jEij2aUUkA2Y+TXb6i4quIO4OUIdvhT8cb/I/HNWmJhfW
-         /waEiRvq5GneCOJUT2/Hbb+4mzqn69QBHTozLdbkDpeTlCQUe7PHp3mm9mk6z6TLEkFV
-         6t9Q==
-X-Gm-Message-State: AOAM531IYzqEuBDTw3or5LMkKrYXTu9+qM9sBIV92PIlNmpam1JblH4R
-        FIyj0QJfKnOl5jMJ3BjMKbL3MZZSE5M=
-X-Google-Smtp-Source: ABdhPJyAX1qXbfgYD2VTyz0yFqkdIknla01y0LDa4c2kzSXF39ZJzE1i+Af6RMk4Ib1Qk+Vf1YqlCw==
-X-Received: by 2002:adf:f2c4:: with SMTP id d4mr14316073wrp.434.1631908088648;
-        Fri, 17 Sep 2021 12:48:08 -0700 (PDT)
-Received: from debian (host-2-99-153-109.as13285.net. [2.99.153.109])
-        by smtp.gmail.com with ESMTPSA id o26sm11436730wmc.17.2021.09.17.12.48.07
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=pE+4bnzWEy5M45GFHsCRmVHyw6zJKyXPFQ+Hy8/7q2k=;
+        b=HnzsyYoxMNpa7A4m94LMoDIoTEZosSZei7GzcphUyFgmkEu2BZrjO9rDTALeKyJbFh
+         yr9+nvc41qh/xQvtk2Ac9Ib9hmnb0sruypwdpd1IGS5NHvN0CbkvBl6esodlkuXk0Q8N
+         e7yOCuf4cMpd6EMhFfjkoVdKMYIscy1nmREpnCGepL2JHLMamljGB67l1MeQEnAxMs4N
+         /3WJ9J7PtFpqshuIYmLicqZt5YIV6tPD096rYScVhwF/QNJ8eu7ZopCtkmSBG0gdaQVi
+         EyNIMZR2QnIjTb+ZlMJhMdygk3/CV1/aUJ2xZdbkztnL/pvqR5qCNb7jbi41RC13d0NG
+         gsdA==
+X-Gm-Message-State: AOAM531Uf/qmP0fdWB/28k2TLwzAvct9/ojVDZ13XzUgIljuz2g+DJxG
+        QyVjO91ONWOrffThyUwxDA==
+X-Google-Smtp-Source: ABdhPJw33RfJFXipWnsomu5OMJbVFalUdObkurEitpoBWQS/R7QjuAoRiC8fBREZ7YS1JypZmiMHIw==
+X-Received: by 2002:a05:6808:bc2:: with SMTP id o2mr5488000oik.73.1631908142931;
+        Fri, 17 Sep 2021 12:49:02 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id v11sm1805276oto.22.2021.09.17.12.49.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 12:48:07 -0700 (PDT)
-Date:   Fri, 17 Sep 2021 20:48:06 +0100
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 000/306] 5.10.67-rc1 review
-Message-ID: <YUTw9oSoZB5q4+8a@debian>
-References: <20210916155753.903069397@linuxfoundation.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210916155753.903069397@linuxfoundation.org>
+        Fri, 17 Sep 2021 12:49:01 -0700 (PDT)
+Received: (nullmailer pid 2025335 invoked by uid 1000);
+        Fri, 17 Sep 2021 19:48:54 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Alexandre Bailon <abailon@baylibre.com>
+Cc:     bjorn.andersson@linaro.org, daniel@ffwll.ch, ohad@wizery.com,
+        linux-kernel@vger.kernel.org, tzimmermann@suse.de,
+        robh+dt@kernel.org, linux-mediatek@lists.infradead.org,
+        dri-devel@lists.freedesktop.org, airlied@linux.ie,
+        gpain@baylibre.com, mathieu.poirier@linaro.org,
+        christian.koenig@amd.com, devicetree@vger.kernel.org,
+        maarten.lankhorst@linux.intel.com, khilman@baylibre.com,
+        linux-media@vger.kernel.org, mripard@kernel.org,
+        matthias.bgg@gmail.com, linaro-mm-sig@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org, sumit.semwal@linaro.org,
+        linux-remoteproc@vger.kernel.org
+In-Reply-To: <20210917125945.620097-2-abailon@baylibre.com>
+References: <20210917125945.620097-1-abailon@baylibre.com> <20210917125945.620097-2-abailon@baylibre.com>
+Subject: Re: [RFC PATCH 1/4] dt-bindings: Add bidings for mtk,apu-drm
+Date:   Fri, 17 Sep 2021 14:48:54 -0500
+Message-Id: <1631908134.342766.2025334.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
-
-On Thu, Sep 16, 2021 at 05:55:45PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.67 release.
-> There are 306 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Fri, 17 Sep 2021 14:59:42 +0200, Alexandre Bailon wrote:
+> This adds the device tree bindings for the APU DRM driver.
 > 
-> Responses should be made by Sat, 18 Sep 2021 15:57:06 +0000.
-> Anything received after that time might be too late.
+> Signed-off-by: Alexandre Bailon <abailon@baylibre.com>
+> ---
+>  .../devicetree/bindings/gpu/mtk,apu-drm.yaml  | 38 +++++++++++++++++++
+>  1 file changed, 38 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/gpu/mtk,apu-drm.yaml
+> 
 
-Build test:
-mips (gcc version 11.1.1 20210816): 63 configs -> no new failure
-arm (gcc version 11.1.1 20210816): 105 configs -> no new failure
-arm64 (gcc version 11.1.1 20210816): 3 configs -> no failure
-x86_64 (gcc version 10.2.1 20210110): 4 configs -> no failure
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression. [1]
-arm64: Booted on rpi4b (4GB model). No regression. [2]
+yamllint warnings/errors:
 
-[1]. https://openqa.qa.codethink.co.uk/tests/145
-[2]. https://openqa.qa.codethink.co.uk/tests/144
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/gpu/mtk,apu-drm.yaml: 'maintainers' is a required property
+	hint: Metaschema for devicetree binding documentation
+	from schema $id: http://devicetree.org/meta-schemas/base.yaml#
+./Documentation/devicetree/bindings/gpu/mtk,apu-drm.yaml: $id: relative path/filename doesn't match actual path or filename
+	expected: http://devicetree.org/schemas/gpu/mtk,apu-drm.yaml#
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/gpu/mtk,apu-drm.yaml: ignoring, error in schema: 
+warning: no schema found in file: ./Documentation/devicetree/bindings/gpu/mtk,apu-drm.yaml
+Documentation/devicetree/bindings/gpu/mtk,apu-drm.example.dts:19.15-23.11: Warning (unit_address_vs_reg): /example-0/apu@0: node has a unit name, but no reg or ranges property
+Documentation/devicetree/bindings/gpu/mtk,apu-drm.example.dt.yaml:0:0: /example-0/apu@0: failed to match any schema with compatible: ['mediatek,apu-drm']
 
+doc reference errors (make refcheckdocs):
 
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+See https://patchwork.ozlabs.org/patch/1529388
 
---
-Regards
-Sudip
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
