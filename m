@@ -2,166 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B26A540F794
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 14:35:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E01F740F7C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 14:36:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244153AbhIQMgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 08:36:36 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:59940 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244100AbhIQMge (ORCPT
+        id S244330AbhIQMhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 08:37:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244280AbhIQMhE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 08:36:34 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20210917123509euoutp0124ee404cef4de758e144f8252f41c2ea~lnCHi21li1589715897euoutp01g
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 12:35:09 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20210917123509euoutp0124ee404cef4de758e144f8252f41c2ea~lnCHi21li1589715897euoutp01g
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1631882109;
-        bh=m1Y6LWA4PXoajOSun3pzOfX28Emf6U0QDQDDXYjTyUo=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=N525ixmYaI2hd+M1rwOKqQVzKJ4Ph/PvZVgw5t2si/8X/FBgRxoFO7pfAgozcgP4m
-         7ceKEKFFI5QyBzGnx/Ptl1NE5F2AGuMVW33EPSSxHSJszv0+3fI8/0ofAYSfaZUJfS
-         oaaeMWeY1pTPoUuad1YLZqA3nCFg9yzbLN3K1Qyg=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20210917123508eucas1p1ca60528d596ee60f53e6b3499307e58d~lnCG4xCFU2999629996eucas1p13;
-        Fri, 17 Sep 2021 12:35:08 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id E3.73.45756.C7B84416; Fri, 17
-        Sep 2021 13:35:08 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210917123508eucas1p2a73b5bf1cab9fac80de826cacfd817b8~lnCGVm2Fj2071520715eucas1p2a;
-        Fri, 17 Sep 2021 12:35:08 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210917123508eusmtrp268e219a81f573fd96d703a8a52ea4af2~lnCGUPcK31459814598eusmtrp2E;
-        Fri, 17 Sep 2021 12:35:08 +0000 (GMT)
-X-AuditID: cbfec7f2-7d5ff7000002b2bc-0d-61448b7c201e
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 37.FD.20981.B7B84416; Fri, 17
-        Sep 2021 13:35:07 +0100 (BST)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210917123505eusmtip1840ad4dd0237808a52a6821790b51fda~lnCEVoqUS1263012630eusmtip1b;
-        Fri, 17 Sep 2021 12:35:05 +0000 (GMT)
-Subject: Re: [PATCH v4 24/24] drm/exynos: dsi: Adjust probe order
-To:     Andrzej Hajda <a.hajda@samsung.com>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>
-Cc:     Sean Paul <sean@poorly.run>, freedreno@lists.freedesktop.org,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        linux-kernel@vger.kernel.org,
-        Xinliang Liu <xinliang.liu@linaro.org>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        Inki Dae <inki.dae@samsung.com>,
-        linux-samsung-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Rob Clark <robdclark@gmail.com>,
-        dri-devel@lists.freedesktop.org,
-        John Stultz <john.stultz@linaro.org>,
-        Chen Feng <puck.chen@hisilicon.com>,
-        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
-        Joonyoung Shim <jy0922.shim@samsung.com>
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <fc1fbd42-6ed4-9d67-2903-8f9cc2aaad43@samsung.com>
-Date:   Fri, 17 Sep 2021 14:35:05 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
-        Gecko/20100101 Thunderbird/78.14.0
+        Fri, 17 Sep 2021 08:37:04 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B93DC061574;
+        Fri, 17 Sep 2021 05:35:42 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id n18so9475748pgm.12;
+        Fri, 17 Sep 2021 05:35:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=FQwsk9IkT0pkz1OAyTjWRN8LUZCcAJQlWnRYcpAJ/2Q=;
+        b=Sx/8TbZu6minR3UE7ZYVFXTcIGWZUEpJK6hYotKjO+I8XS7A1yMD49OlB/Q5HA9p0A
+         OR7JhxxZ2tjLlQb7P3zdiTor4NgjpZlyNI9pZxJOFZ7W2Cty13tkZjRaqWq2DMn9fxyu
+         MQ4oJ9s3SpkoHeFwYpQRjXqT7JLkp8iJertAQtRIbMDt6GJBxxNRWdZU6q08XGQ1cL1c
+         PMSQn0n014I4xKq7RpqUKyNzdKJbHRxC9zoLK2C7rS0i+n+wVwMZOnydT7cqFpJryeZW
+         VXf6DJO6WaJtMb7baT6Kd/hDxhK7CiMkwn0LhgO4IsQlIP1u6Lj2Cd6fCeZEyA6jWgHE
+         u6TA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=FQwsk9IkT0pkz1OAyTjWRN8LUZCcAJQlWnRYcpAJ/2Q=;
+        b=kccfYsrK1K/x2+ZT00WudYilmE7k7qBBhNsgZ2PV5svtd2KvMzvyYUMRuh+GEjx2jW
+         Y2jztNP7zNYSeITTNqZvXtywhyYWNGT+fCh7bO8DcIgiWOavKpFX2+AQI4jz7cyJJuoQ
+         eJSJ5FgHLB2irQl3+zWaUckEz3UzTYKj89/4m5IQOJTHGLnkJdxG8isVdValzC5hCBze
+         pvBg24v8GA/2+cgcqMwviiac74T4r+wPCIYKJjwbIxeqqXIbn4uAoChtHENYTJglkQ6d
+         1EpyrbhVppd2z973P1ElazYWk7l5Ex/NFSfD/zffH7en9v9wSSVxjPHauCTFA58LLxqp
+         65Rw==
+X-Gm-Message-State: AOAM531L/gc5E4+ZX3UDcigmGhCRD3TP1owsuCya91zepVNwqa+Br/Hk
+        oo4TMgyIIabkZvRgQi5l3a2svqrhoZM=
+X-Google-Smtp-Source: ABdhPJxCH73iJYKo0T3q5XrhKiIVmn4fy25vZqxIlIajJWs0YHCtuUmv+z96HBvtqL0XuUuIjj+EWQ==
+X-Received: by 2002:a63:4b24:: with SMTP id y36mr9745652pga.230.1631882142005;
+        Fri, 17 Sep 2021 05:35:42 -0700 (PDT)
+Received: from jianchwadeMacBook-Pro.local ([154.86.159.245])
+        by smtp.gmail.com with ESMTPSA id j6sm6293403pgq.0.2021.09.17.05.35.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Sep 2021 05:35:41 -0700 (PDT)
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+From:   Wang Jianchao <jianchao.wan9@gmail.com>
+Subject: Memcached with cfs quota 400% performance boost after bind to 4 cpus
+Message-ID: <9f907d99-1cdb-37db-49ae-8e31c7ea8fe7@gmail.com>
+Date:   Fri, 17 Sep 2021 20:35:36 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <29a2111d-024b-4d9e-27ef-e3399509ff32@samsung.com>
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SfUxTVxjGc+69vf0wbS5Vw4kfGEvmGBsUlmWcRYMDcd6RmTln4qJx2OkN
-        KFC0FV0dbEgFoThSJIHSgrQrG4xhmQhakUBW3WopbfkYhBEUURJoRU1hOJDBRrm68d/vfc/z
-        fjxvDg8Xd5DreMfkpxiFXJYmIQXE9d/mPBFZRQmyKG33ZjRkcXPQt24Hhmq7LDj6feYZiSrH
-        XQBdGtESaLzaAlDXfARyTPYTaOJ+D4FmF9o5yJU7yUWFJTVcVNLh4qK+1koS6TztGDL5Wwik
-        m10EyFZ8EI2U6Zd6mGZxNKUfxVHdXAtA90rvAKQr9ZJorvUygX563M5FzZMlHPRrRz3n/Y30
-        s8E8Lj3s9pD0Tf09Lv2o6iqXNhRUcGhzmxej72p7MXp4oI2kbzx/wKEvOz6hR4rsGG1vHeLS
-        NWX9JF3cXA/oa86v6OmmkD3UAcG2o0zasdOMQhp7WJCSWxl1Qs3/suZ2HicHNHA1gM+D1DvQ
-        3VSyxAKemKoDsLZqEGeDPwGcmvVibDANoGbGSGgAb7nE35DJ5msBdD18gQVaiSk/gN9XxAd4
-        NRUHtVP3iYBoDWUkoPNcwXJbnOohYMtDDR5QkVQ01DzRkAEWUrHQa3VyAkxQr8E6TzcR4LXU
-        EVi2kIuzmiDoqBhbzvOp7fAHTw4IME5tguoWA85yMBwaq15eG1IOARwuHCJZpwmwfuApzvJq
-        6LM3v7zABvjPzVcFagBH3Ve4bHARwL5cHWBVW+Gw+wUZOABOvQEbW6VsOg4WNI29vIsIDj4J
-        YpcQwUvXy3E2LYQF+WJWvQXq7Zb/xv7S3YtrgUS/wpp+hR39Cjv6/+caAVEPgplMZXoyo4yW
-        M2cilbJ0ZaY8OfJIRnoTWPrjzkX7lBVU+fyRNoDxgA1AHi5ZI+zOipOJhUdlqrOMIiNJkZnG
-        KG1gPY+QBAvrDQ1JYipZdopJZZgTjOLVK8bjr8vBslYpBvC9Bf7v3rq9vXr3mzv3t99S7TV/
-        bI1PC9tc26n+MSb1bKjq9ZSr+8L4137+sPOQL0F6oHGfZqavKFQv9sPH3sNRD1yfDqqsu6cf
-        LYS91xV6Pnwx8bNNGye/SY0n5nuOq2LIERDXGVEVkmhW3KgrX/X1RLYxxegM55dKHV+MihpF
-        Mfl5A1vzrYIMM189YfLtCXvb6go136E+Lx9XnfyoJSR7x8VCX7W2aZvwD2gQ37qr3bnwgfp5
-        rGsX/XRLZOnY/JW/gpst+42JjuNr10sPJpX1v9twWndoPt/9t0nSaZNvMJptsTsMJ3vCu9D5
-        3rYz2aLGICd5jnOhON40dWGXhFCmyKLDcYVS9i/CyZHTUgQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Se0xTZxTA+e69fZGR3VWMH8ShaUKcCoWW0n11QpEo3MUssWQucW5Ah1dg
-        Qqu97RzDQSMhjhJZWRdSSuWRIUNWMLw2rAihoqXjUafSLB0PjW4MxJGCUwg+1oJL+O93Hr9z
-        cpLDxfm3WeHcXJWW1qiUeQJ2MDH80jkZXVi+Xxl72RKHvG1jLHR+zIWhH0facHT33wU2ss6M
-        AvTdtJFAM3VtAI2sRiPX/DiB/p76jUDLL/pYaPTsPAeVVTZyUGX/KAfdsVvZyOzuw1CDr5tA
-        5uWXADkqjqLpKot/RsMyjhYt93HUvNIN0KRpECCzaZaNVuy1BPrpUR8Hdc1XstCN/hZW0tvU
-        wu+lHGpizM2mrlgmOdSDC+0cquabahb1Q+8sRg0Zb2PUhKeXTf3y9B6LqnUpqOlyJ0Y57V4O
-        1Vg1zqYquloA1TlcSC11RBwiPxbu1ah1Wnp7jprRJgiOipBYKJIhoVgiE4ri3v10jzheEJO4
-        9xidl/sFrYlJzBTmnLXGnizhfdl4vZSlBzaOAXC5kJRAn01nAMFcPnkRQM/QAGYAPH9+K3RV
-        6VnrvAk+9xjY600LAM6ZX7ADhU3kPmhcnCIChVCykYDXKz0gEODkOAH1NyyvFR+Ar5x2PKCw
-        SRE0PDas6SFkIpztGV7bQZCRsNl9iwjwZjILPn70DFvveQu6qh+u5XmkHDa59SDAOCmFtZ33
-        8XXeBku6a17zFuh9WIcZAd+yQbdsUCwbFMsGpR4QLSCU1jH52fmMWMgo8xmdKluYpc7vAP7n
-        +vnmSlcPuDTnEzoAxgUOALm4IDTk1pl9Sn7IMWXBV7RGnaHR5dGMA8T776nEwzdnqf3fqdJm
-        iKSx8SKJVBYbL5PGCbaESAZtGXwyW6mlT9D0SVrzv4dxeeF67GB/Hx120aA15/2Tzjl1qT5d
-        Qcl9xtgPmtMOh32bcqWhY7L+QtTVw0+O/yVXFFuDIkxvtva2f//1gMS9MzX7+JGEJ5kfJVcf
-        XLrWMVKzar/a2U75fi3fzdOBofKJoraZge1l3qAKU7qymSna0bR0zjEoP7F44LStPpp72WtL
-        +TOhRz2VZHzGnGlNTcWKyZ3x3HvC0t3FN1tlb7SW3FldcWhMakXyq0Ll+a3byqK0BdLuqORP
-        Hnz4nEqKoMGhXU0azFxbepc5cDo18jP5U/G5z4n9R3gxxQXWNKHqHXlmzbW0IDedop6IC0ss
-        eN+5Izfjj/66U8GR73kgUYHPKfbMFgkIJkcp2oVrGOV/GhjNROUDAAA=
-X-CMS-MailID: 20210917123508eucas1p2a73b5bf1cab9fac80de826cacfd817b8
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20210910101445eucas1p172f99ff7fe853052fc457861c3174f9e
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20210910101445eucas1p172f99ff7fe853052fc457861c3174f9e
-References: <20210910101218.1632297-1-maxime@cerno.tech>
-        <CGME20210910101445eucas1p172f99ff7fe853052fc457861c3174f9e@eucas1p1.samsung.com>
-        <20210910101218.1632297-25-maxime@cerno.tech>
-        <29a2111d-024b-4d9e-27ef-e3399509ff32@samsung.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi list
 
-On 13.09.2021 12:30, Andrzej Hajda wrote:
-> W dniu 10.09.2021 o 12:12, Maxime Ripard pisze:
->> Without proper care and an agreement between how DSI hosts and devices
->> drivers register their MIPI-DSI entities and potential components, we can
->> end up in a situation where the drivers can never probe.
->>
->> Most drivers were taking evasive maneuvers to try to workaround this,
->> but not all of them were following the same conventions, resulting in
->> various incompatibilities between DSI hosts and devices.
->>
->> Now that we have a sequence agreed upon and documented, let's convert
->> exynos to it.
->>
->> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> This patch should be dropped, as it will probably break the driver.
->
-> Exynos is already compatible with the pattern
-> register-bus-then-get-sink, but it adds/removes panel/bridge
-> dynamically, so it creates drm_device without waiting for downstream sink.
+I have a test environment with following,
+A memcached (memcached -d -m 50000 -u root -p 12301 -c 1000000 -t 16) in cpu cgroup with following config,
+cpu.cfs_quota_us = 400000
+cpu.cfs_period_us = 100000
 
-Right, this patch breaks Exynos DSI driver operation. Without it, the 
-whole series works fine on all Exynos based test boards.
+And a mutilate loop (mutilate -s x.x.x.x:12301 -T 40 -c 20 -t 60 -W 5 -q 1000000) running on another host
+w/o any cgroup config,
 
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+When bind memcached to  0-15 with cpuset, 
+==========================================
+mutilate showed,
+#type       avg     std     min     5th    10th    90th    95th    99th
+read     1275.8  6358.9    49.8   378.2   418.5   767.2   841.4 53998.5
+update      0.0     0.0     0.0     0.0     0.0     0.0     0.0     0.0
+op_q        1.0     0.0     1.0     1.0     1.0     1.1     1.1     1.1
 
+Total QPS = 626566.2 (37594133 / 60.0s)
+
+Misses = 0 (0.0%)
+Skipped TXs = 0 (0.0%)
+
+RX 9288150851 bytes :  147.6 MB/s
+TX 1353390552 bytes :   21.5 MB/s
+
+And perf on memcached showed,
+   635,602,955,852      cycles                                                        (30.07%)
+   479,554,401,177      instructions              #    0.75  insn per cycle           (40.02%)
+    12,585,059,799      L1-dcache-load-misses     #    9.31% of all L1-dcache hits    (50.07%)
+   135,140,424,785      L1-dcache-loads                                               (49.96%)
+    76,849,156,759      L1-dcache-stores                                              (50.02%)
+    45,700,267,543      L1-icache-load-misses                                         (49.97%)
+       495,149,862      LLC-load-misses           #   24.96% of all LL-cache hits     (39.95%)
+     1,984,134,589      LLC-loads                                                     (39.97%)
+       327,130,920      LLC-store-misses                                              (20.06%)
+     1,397,111,117      LLC-stores                                                    (20.06%)
+
+
+When bind memcached to 0-3 with cpuset,
+========================================
+mutilate showed,
+#type       avg     std     min     5th    10th    90th    95th    99th
+read      934.7  3669.3    41.1   112.8   129.5   385.3  3321.9 21923.7
+update      0.0     0.0     0.0     0.0     0.0     0.0     0.0     0.0
+op_q        1.0     0.0     1.0     1.0     1.0     1.1     1.1     1.1
+
+Total QPS = 852885.6 (51173140 / 60.0s)
+
+Misses = 0 (0.0%)
+Skipped TXs = 0 (0.0%)
+
+RX 12642165580 bytes :  200.9 MB/s
+TX 1842259932 bytes :   29.3 MB/s
+
+And perf on memcached showed,
+
+   621,311,916,151      cycles                                                        (30.01%)
+   599,835,965,997      instructions              #    0.97  insn per cycle           (40.02%)
+    12,585,889,988      L1-dcache-load-misses     #    7.59% of all L1-dcache hits    (50.00%)
+   165,750,518,361      L1-dcache-loads                                               (50.01%)
+    93,588,611,989      L1-dcache-stores                                              (50.00%)
+    44,445,213,037      L1-icache-load-misses                                         (50.01%)
+       568,410,466      LLC-load-misses           #   26.91% of all LL-cache hits     (40.03%)
+     2,112,218,392      LLC-loads                                                     (40.00%)
+       261,202,604      LLC-store-misses                                              (19.97%)
+     1,484,886,714      LLC-stores 
+
+
+We can see the IPC raised from 0.75 to 0.97, this should be the reason of the performance boost.
+What does cause the IPC boost ?
+
+Thanks a million for any help
+Jianchao
