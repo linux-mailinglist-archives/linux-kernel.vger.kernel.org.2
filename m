@@ -2,128 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0609240FE2B
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 18:51:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A060840FE2F
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 18:54:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244534AbhIQQwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 12:52:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51189 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232180AbhIQQwe (ORCPT
+        id S244703AbhIQQzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 12:55:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244574AbhIQQzU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 12:52:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631897471;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=VDHAOThaMHoseHUQ432qzhgijX2FLFoEAGXvQBtEyCE=;
-        b=N4kEAelz6M/hGAEHKzT8+YVcqKjU2TXsdwY76twT82nZGI2Z1QxHyt4P+iANu4+JRVdXhn
-        bORDrtex9wmzpomHxkwXCMXyTlPQZzyyeyo7TnHNoeNIhQlu9MheVjjdb8HQtA0eWrxfzd
-        7J4L3BfRTT4OXWeWWi8FU2IvrKc3a7c=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-587-z09lbFynNH-TU6Mv0V8JPw-1; Fri, 17 Sep 2021 12:51:10 -0400
-X-MC-Unique: z09lbFynNH-TU6Mv0V8JPw-1
-Received: by mail-qk1-f197.google.com with SMTP id c27-20020a05620a165b00b003d3817c7c23so67527415qko.16
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 09:51:10 -0700 (PDT)
+        Fri, 17 Sep 2021 12:55:20 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0844C061764
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 09:53:57 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id g184so10169165pgc.6
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 09:53:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fRMxd8azh7E1BFxsMIqGYJmHYephRNLnlBlA+X7n5iE=;
+        b=OCd2JnsFm+PC0WRg9Dy8nwrv0xb6S01W9Op4r/ZIu2wiEWDdIoF9l2WbVBKByhSPPF
+         pgrkna7a3wLYVWEKuAik8asYNbpDEgJtdjZ+5dk4g6kfSL2XrdSoKcoPwqesfcoOwhOu
+         WWbUTglAWniqlHYXmzaYzrF0F49uRRMs/V59Ek2JYLZBnMp92N934h45zumxZj/0PpGD
+         /zvBIntmv3EDlaS6KVxhx1MfK4sOMy/cLwcByoT+tkw90D/Cj3jlQCjxNda2rrqk2GSV
+         L6ETbBTdUnfohyRSi9IUyYAHcI9Z9pYHZQ5tjcYdmN/t6vpNHZYY3PO0hm+uRnpvMlkD
+         xKpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VDHAOThaMHoseHUQ432qzhgijX2FLFoEAGXvQBtEyCE=;
-        b=51ulprCPFa6497w/zITSG/wpHSu8q1InMkK50DQ9J15h4T+L44Hb2UzJSgPsnLqeD7
-         uwmIwvb4PvK89uDsOjl2vQRBnJIkfHYhK92ER8IioceUCZdX5UIfo7WtgxHa2C7koPLh
-         TqHuyVSeMN2cIWhMPoQTKtCfPqj1SEMkB08wuzbmLhhT3wBMDXKlfIU6wzYPHvxia7q/
-         cvqq2/gS5ELvYFPRomtBvHr7H2aa2R4MmNfIQNc9dgaNu9Wzyi60iOkrNK+BuEPHI9N2
-         w2mquLRV0bF8bBWyQOAu2th0wiHeepDLvxdkruOBXWue7nj6puusmVhYbb+2NaGJp1YS
-         QD0w==
-X-Gm-Message-State: AOAM530j0fjSu+v2VzX/4G52G8Y4f6DL+ShgJwyJgVuMvUuaQzdL1q3e
-        BX1bYbo1ntyWTMUp+RdptBkqXJU4TjBJzF+LtudfxRILB/2TKQxFNI079Me5bzgtpO7VL9ZAof0
-        H1TzShYLohupDR2l2SNvEOH29
-X-Received: by 2002:ae9:e8d2:: with SMTP id a201mr10763238qkg.347.1631897470241;
-        Fri, 17 Sep 2021 09:51:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzNoUNhd4p+MbQu/md9JIosMUKEdV122juI5QM2JvWfkK8kCuicWJjvOFgAhIeeZJtMVJxulw==
-X-Received: by 2002:ae9:e8d2:: with SMTP id a201mr10763224qkg.347.1631897470019;
-        Fri, 17 Sep 2021 09:51:10 -0700 (PDT)
-Received: from t490s.phub.net.cable.rogers.com ([2607:fea8:56a2:9100::d35a])
-        by smtp.gmail.com with ESMTPSA id 10sm4896924qtu.66.2021.09.17.09.51.08
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fRMxd8azh7E1BFxsMIqGYJmHYephRNLnlBlA+X7n5iE=;
+        b=EXhGy9ZQO6TUMCoNgFfX/ft5h5gIGeAeliywh4TGiUvdMEkrUHnjlEhoGqfiiRA35c
+         EX3cf/t8NOW8xhppHY2UN9xdl1803w7PWfHPoBNlemvX0MW8a17Gfcg18CgOyPu/eN0Y
+         29O6iQ+hcvrRCUWT/uOfzCYFQwhFubrKxr88hEqXI4IUwLwSA7ujsYn5MfTRE62LYYWQ
+         h96GFe3IBREoz0lFh4gLuM27Ajua9aLJy6Kk+BiWA1Z9yVV0QV+YiusAwzP58iLohDwr
+         lvZYf+VwA4Zj6VTK+/iPNZ4fFmy01AmBr8p644eqpZ5O1hQpz+8fvWepIYUSomyc+Rwz
+         peSw==
+X-Gm-Message-State: AOAM532GU/2yw6hrsb979kdIK0CSF1/M4srgR92TgLz/XnG5gxOLXsHQ
+        0y66FN0YZtgRI6YBmUyJvvgl7w==
+X-Google-Smtp-Source: ABdhPJyVPh/MP+xok4eNnL6IICz9yFWugy2q7G+GDgXi8Z/wRNwWTua9Dj2q+LfRii59WPG0Vad6Iw==
+X-Received: by 2002:a05:6a00:174a:b0:433:9589:bdb5 with SMTP id j10-20020a056a00174a00b004339589bdb5mr11713777pfc.5.1631897636965;
+        Fri, 17 Sep 2021 09:53:56 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id h21sm6580708pfc.118.2021.09.17.09.53.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 09:51:09 -0700 (PDT)
-From:   Peter Xu <peterx@redhat.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>, peterx@redhat.com,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v2] mm/hugetlb: Drop __unmap_hugepage_range definition from hugetlb.h
-Date:   Fri, 17 Sep 2021 12:51:08 -0400
-Message-Id: <20210917165108.9341-1-peterx@redhat.com>
-X-Mailer: git-send-email 2.31.1
+        Fri, 17 Sep 2021 09:53:56 -0700 (PDT)
+Date:   Fri, 17 Sep 2021 16:53:52 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        Artem Kashkanov <artem.kashkanov@intel.com>,
+        Like Xu <like.xu.linux@gmail.com>,
+        Zhu Lingshan <lingshan.zhu@intel.com>
+Subject: Re: [PATCH v2 00/13] perf: KVM: Fix, optimize, and clean up callbacks
+Message-ID: <YUTIIG4ZCKMbqrFi@google.com>
+References: <20210828003558.713983-1-seanjc@google.com>
+ <20210828201336.GD4353@worktop.programming.kicks-ass.net>
+ <YUO5J/jTMa2KGbsq@google.com>
+ <YURDqVZ1UXKCiKPV@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YURDqVZ1UXKCiKPV@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove __unmap_hugepage_range() from the header file, because it is only used
-in hugetlb.c.
+On Fri, Sep 17, 2021, Peter Zijlstra wrote:
+> On Thu, Sep 16, 2021 at 09:37:43PM +0000, Sean Christopherson wrote:
+> So I don't mind exporting __static_call_return0, but exporting a raw
+> static_call is much like exporting a function pointer :/
 
-Suggested-by: Mike Kravetz <mike.kravetz@oracle.com>
-Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
-Reviewed-by: John Hubbard <jhubbard@nvidia.com>
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
-Signed-off-by: Peter Xu <peterx@redhat.com>
----
- include/linux/hugetlb.h | 10 ----------
- mm/hugetlb.c            |  6 +++---
- 2 files changed, 3 insertions(+), 13 deletions(-)
+Ya, that part is quite gross.
 
-diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-index 1faebe1cd0ed..3cbf60464398 100644
---- a/include/linux/hugetlb.h
-+++ b/include/linux/hugetlb.h
-@@ -143,9 +143,6 @@ void __unmap_hugepage_range_final(struct mmu_gather *tlb,
- 			  struct vm_area_struct *vma,
- 			  unsigned long start, unsigned long end,
- 			  struct page *ref_page);
--void __unmap_hugepage_range(struct mmu_gather *tlb, struct vm_area_struct *vma,
--				unsigned long start, unsigned long end,
--				struct page *ref_page);
- void hugetlb_report_meminfo(struct seq_file *);
- int hugetlb_report_node_meminfo(char *buf, int len, int nid);
- void hugetlb_show_meminfo(void);
-@@ -385,13 +382,6 @@ static inline void __unmap_hugepage_range_final(struct mmu_gather *tlb,
- 	BUG();
- }
- 
--static inline void __unmap_hugepage_range(struct mmu_gather *tlb,
--			struct vm_area_struct *vma, unsigned long start,
--			unsigned long end, struct page *ref_page)
--{
--	BUG();
--}
--
- static inline vm_fault_t hugetlb_fault(struct mm_struct *mm,
- 			struct vm_area_struct *vma, unsigned long address,
- 			unsigned int flags)
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 95dc7b83381f..d394d9545c4e 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -4426,9 +4426,9 @@ int copy_hugetlb_page_range(struct mm_struct *dst, struct mm_struct *src,
- 	return ret;
- }
- 
--void __unmap_hugepage_range(struct mmu_gather *tlb, struct vm_area_struct *vma,
--			    unsigned long start, unsigned long end,
--			    struct page *ref_page)
-+static void __unmap_hugepage_range(struct mmu_gather *tlb, struct vm_area_struct *vma,
-+				   unsigned long start, unsigned long end,
-+				   struct page *ref_page)
- {
- 	struct mm_struct *mm = vma->vm_mm;
- 	unsigned long address;
--- 
-2.31.1
+> > The unregister path would also need its own synchronize_rcu().  In general, I
+> > don't love duplicating the logic, but it's not the end of the world.
+> > 
+> > Either way works for me.  Paolo or Peter, do either of you have a preference?
+> 
+> Can we de-feature kvm as a module and only have this PT functionality
+> when built-in? :-)
 
+I agree that many of the for-KVM exports are ugly, especially several of the
+perf exports, but I will fight tooth and nail to keep KVM-as-a-module.  It is
+invaluable for development and testing, and in the not-too-distant future there
+is KVM-maintenance related functionality that we'd like to implement that relies
+on KVM being a module.
+
+I would be more than happy to help explore approaches that reduce the for-KVM
+exports, but I am strongly opposed to defeaturing KVM-as-a-module.  I have a few
+nascent ideas for eliminating a handful of a random exports, but no clever ideas
+for eliminating perf's for-KVM exports.
