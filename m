@@ -2,115 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF95340F9E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 16:03:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3695E40F9E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 16:04:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234275AbhIQOFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 10:05:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234531AbhIQOFB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 10:05:01 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFE32C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 07:03:38 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id g16so15373610wrb.3
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 07:03:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=cElMJoeY5hvMr2V5LH+iZNPc0N3os4Ky0d4P23ZLkkE=;
-        b=yxWaRcX1qbRGyttjQa1Pu6jM/hec9mQl0xer5eL4GeQQ+1dn6FvLc3GE/Pvl8V6pyo
-         iOdk9dhgRd02eOwh+gf99oJvQfM0aFqME0t+6q3X9518yk07+yHUqNIbfKmV1/NNbAWF
-         ayqthRKvn7hrFvlohYQuI++mvYKeLN/1WbP7vuq0nsQuLxJRfvFsF7BlW9muZxjzBwhs
-         R1dMP5fTeosIQWA1nXAD/D/YMxHCKisgTYgY6M93GMj7JhbnE6WTr/MijVnMdCoWiIfC
-         wLY9bhR8R09535t3WNqUNITU3Sy7C6jr2QyEzxLTvENgyP+QJvlctIzdasUGkxdzjUur
-         7QhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=cElMJoeY5hvMr2V5LH+iZNPc0N3os4Ky0d4P23ZLkkE=;
-        b=R7PkQg5CZX/4mzZl+6HOTXYGl0tWwvnqGyJWASgzXhbDkfLG+0nccIMgsy/hyHDQVf
-         BWDWovpYWcP1FoGcbRbbmBvenyhZ4H22s7tH927/XibTyTSDipUgwXQtbUXyLFhpyMom
-         6UL6NkBOdll9jn0S4nGrnSRdK3jqv0cILiSKmKv+stFNjRLVv5o/8yj8Br/Ad5eLaF9U
-         LAMTalTKuHGfcg4V41L+EspMC7RuNO7dybAVXbQ9uP5ELask/fEnLaocQ+uFoPjFAD1G
-         HSX0r7DpdSm2A5cxSFHhMVBBe41bS4nHPKWZWt2BcUXKUUvSa61UExy0LP7dLmupZslO
-         arGQ==
-X-Gm-Message-State: AOAM532jIHkXXrIbadq7YiceekPK0Y1hNMxVtJ3fhNhm95vEl/UQfvZH
-        HA3hFIMqYRoBqZIoYpYBwrUDMQ==
-X-Google-Smtp-Source: ABdhPJyJCWGwOLEV9/kO0UR0P2oMTDL4+28RKANm87Wo3sd4A/skW3G/8EfbBDlafbJo5ujzY7+tuw==
-X-Received: by 2002:a05:6000:104e:: with SMTP id c14mr12301421wrx.130.1631887417274;
-        Fri, 17 Sep 2021 07:03:37 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:6b11:6374:882d:42a0? ([2a01:e34:ed2f:f020:6b11:6374:882d:42a0])
-        by smtp.googlemail.com with ESMTPSA id i18sm6986113wrn.64.2021.09.17.07.03.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Sep 2021 07:03:36 -0700 (PDT)
-Subject: Re: [PATCH v2 0/2] Add a generic virtual thermal sensor
-To:     Alexandre Bailon <abailon@baylibre.com>, rui.zhang@intel.com,
-        amitk@kernel.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ben.tseng@mediatek.com, khilman@baylibre.com, mka@chromium.org
-References: <20210917072732.611140-1-abailon@baylibre.com>
- <bd347d14-0b42-f9ed-bf15-080c929e1cb7@linaro.org>
- <7cddcdb7-4efd-bfdb-3d86-f5862ea0b7fe@baylibre.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <8a9e5f13-6253-2d0d-35a8-789090af4521@linaro.org>
-Date:   Fri, 17 Sep 2021 16:03:35 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S242109AbhIQOF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 10:05:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39944 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241774AbhIQOFx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 10:05:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D83360E08;
+        Fri, 17 Sep 2021 14:04:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631887470;
+        bh=Ti2hG+uohaS5cflM277fb1zbK8m1rvMqeDlNJWBI0yI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=npPYpJQXtYOoqbc0I9+3y+vCs2phSiVQKR6UN9WLgAX9STVZ4CJ8b87t4y33Qh7TS
+         Ql+oKe/leq1wFN3pA5W4mVIIbT+JDJDGpWJHFJgNtxHViljpL7WqmcB8AuZcf9uqwM
+         jb7USg0mbSNCkO5ybOTZeRZayc/aKli7zxlQMtb6J/AlJkJ1Gt52QGZ6nxcVFoGCUX
+         kxPYTu+zbsci7Qlm1hmwYbGg5+lN5OAhHDX4v7V4Fe1PVv+/3458FN2KAzfKGkr5i3
+         bR1anisnCIc/2poTzJGDZ2E9XzW2T+lQE8l9+HUwpQKmOJkpa4xT9+E6hPgT8nheW+
+         RbcioDOiljOUA==
+From:   Mark Brown <broonie@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/2] spi: rspi: drop unneeded MODULE_ALIAS
+Date:   Fri, 17 Sep 2021 15:03:41 +0100
+Message-Id: <163188742108.50671.15947736105193832897.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210916164423.134603-1-krzysztof.kozlowski@canonical.com>
+References: <20210916164423.134603-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <7cddcdb7-4efd-bfdb-3d86-f5862ea0b7fe@baylibre.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/09/2021 15:33, Alexandre Bailon wrote:
-> Hi Daniel,
+On Thu, 16 Sep 2021 18:44:22 +0200, Krzysztof Kozlowski wrote:
+> The MODULE_DEVICE_TABLE already creates proper alias for platform
+> driver.  Having another MODULE_ALIAS causes the alias to be duplicated.
 > 
-> On 9/17/21 2:41 PM, Daniel Lezcano wrote:
->> On 17/09/2021 09:27, Alexandre Bailon wrote:
->>> This series add a virtual thermal sensor.
->>> It could be used to get a temperature using some thermal sensors.
->>> Currently, the supported operations are max, min and avg.
->>> The virtual sensor could be easily extended to support others
->>> operations.
->>>
->>> Note:
->>> Currently, thermal drivers must explicitly register their sensors to
->>> make them
->>> available to the virtual sensor.
->>> This doesn't seem a good solution to me and I think it would be
->>> preferable to
->>> update the framework to register the list of each available sensors.
->> Why must the drivers do that ?
-> Because there are no central place where thermal sensor are registered.
-> The only other way I found was to update thermal_of.c,
-> to register the thermal sensors and make them available later to the
-> virtual thermal sensor.
 > 
-> To work, the virtual thermal need to get the sensor_data the ops from
-> the thermal sensor.
-> And as far I know, this is only registered in thermal_of.c, in the
-> thermal zone data
-> but I can't access it directly from the virtual thermal sensor.
-> 
-> How would you do it ?
 
-Via the phandles when registering the virtual sensor ?
+Applied to
 
-Or is the problem you are mentioning related to the sensor module
-loading after the virtual sensor ?
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+Thanks!
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+[1/2] spi: rspi: drop unneeded MODULE_ALIAS
+      commit: 98c29b35a7e3b1ef7e64a8dd05a4383ea2e2ac72
+[2/2] spi: sh-msiof: drop unneeded MODULE_ALIAS
+      commit: 3323129a6db96b6878a260601b30651ca40caa54
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
