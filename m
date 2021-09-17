@@ -2,114 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9363340F81F
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 14:41:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88A9540F823
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 14:41:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233058AbhIQMms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 08:42:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39590 "EHLO
+        id S234037AbhIQMnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 08:43:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232100AbhIQMmr (ORCPT
+        with ESMTP id S232100AbhIQMnN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 08:42:47 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5659C061764
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 05:41:24 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 70so4294295wme.5
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 05:41:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8L9xblep16e49FpEMcjJPX36O9S5sP+1ZMCJZZAcM1A=;
-        b=Zlg0RMyIUnruJRCSbzsnLq+eMG0/29T8sAkvtM0RTiVz7OXX6hiuq45yVy/ffP9kAG
-         fK/F+rRdLOXORF6WTah3UjmgLA4hI4yiHlaZcpYoUgKSchd0v3IAzqkDZT6tqTBnYM3M
-         AD/j+mLGwzIn6TANVTYoDeOXh74nmXJzhF1BZxy4l2FIrj6DSnb4MpBjZCzjCPHapXLo
-         f0fLGvHJ5OoERVjXJ5w2uVlIfm+p9efPfiCg7p0sAvpyKEmgduFHA//+XnOBsL2E+EyN
-         CbSMN+cBxx1HRHywTA7g09A0LeoiWuLy/aCNh78rknd+vZBNqHXjX/TZ0YmHH5ZHc35S
-         nPvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8L9xblep16e49FpEMcjJPX36O9S5sP+1ZMCJZZAcM1A=;
-        b=5Qvmz/95VfqJHY+9uHLBh/Vk7ldqRNscPLwuq4YLh+oXomOoebdr8WwLf6JERzJXaV
-         k5z0onoPFWwKmV0kZJ9nIvEjMsYSVUzncJ+wjyl/SgJatvWvsmXBxRbYu6vNtlic6q7F
-         qPdXYdoAu9LzJuuH3WHPiQWvLl8Xz48VoShN5e7I2EGkm2h46B9DHt7KDT19ORkbKI+m
-         nkBK9peV4CiOd5GFZc3PGt5HmwpV+U+M9v6izsp1t3BoenCNdmYaSdDRcgwHNsF45mun
-         e+u/5rCly48y8L24du/ObpkjnUsUjsTMt1yK1oPQOxpYq0Gz+Dy1Tg7kCfdNA2n1KyyK
-         Os6Q==
-X-Gm-Message-State: AOAM531blqC3tzGypIivIHG6pRf09SlWl6OHdQheYoivRn0zUqGObU8U
-        XSG1556xsC2NtKSlCWKNC+NRjA==
-X-Google-Smtp-Source: ABdhPJzzgR/rHp5puKqSVZrzAs1oIA3JRcqHIp0G7enBP9XWkQb3cpkstNanbqrUyOKT1qlRTkZAtQ==
-X-Received: by 2002:a05:600c:414d:: with SMTP id h13mr14924930wmm.121.1631882483259;
-        Fri, 17 Sep 2021 05:41:23 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:6b11:6374:882d:42a0? ([2a01:e34:ed2f:f020:6b11:6374:882d:42a0])
-        by smtp.googlemail.com with ESMTPSA id l26sm10532391wmi.25.2021.09.17.05.41.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Sep 2021 05:41:22 -0700 (PDT)
-Subject: Re: [PATCH v2 0/2] Add a generic virtual thermal sensor
-To:     Alexandre Bailon <abailon@baylibre.com>, rui.zhang@intel.com,
-        amitk@kernel.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ben.tseng@mediatek.com, khilman@baylibre.com, mka@chromium.org
-References: <20210917072732.611140-1-abailon@baylibre.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <bd347d14-0b42-f9ed-bf15-080c929e1cb7@linaro.org>
-Date:   Fri, 17 Sep 2021 14:41:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Fri, 17 Sep 2021 08:43:13 -0400
+Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [IPv6:2001:67c:2050::465:102])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18845C061574;
+        Fri, 17 Sep 2021 05:41:51 -0700 (PDT)
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [80.241.60.241])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4H9tqx4HwtzQkBK;
+        Fri, 17 Sep 2021 14:41:49 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Subject: Re: [PATCH] Bluetooth: btusb: Lower passive lescan interval on
+ Marvell 88W8897
+To:     Marcel Holtmann <marcel@holtmann.org>
+Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        linux-wireless@vger.kernel.org,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>
+References: <20210917122718.86776-1-verdre@v0yd.nl>
+ <B9F09991-0B67-4848-86DE-C13BF3850D15@holtmann.org>
+From:   =?UTF-8?Q?Jonas_Dre=c3=9fler?= <verdre@v0yd.nl>
+Message-ID: <3e5b7e27-e643-ae9b-db40-d885ca441385@v0yd.nl>
+Date:   Fri, 17 Sep 2021 14:41:42 +0200
 MIME-Version: 1.0
-In-Reply-To: <20210917072732.611140-1-abailon@baylibre.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <B9F09991-0B67-4848-86DE-C13BF3850D15@holtmann.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 5493A1848
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/09/2021 09:27, Alexandre Bailon wrote:
-> This series add a virtual thermal sensor.
-> It could be used to get a temperature using some thermal sensors.
-> Currently, the supported operations are max, min and avg.
-> The virtual sensor could be easily extended to support others operations.
+On 9/17/21 2:35 PM, Marcel Holtmann wrote:
+> Hi Jonas,
 > 
-> Note:
-> Currently, thermal drivers must explicitly register their sensors to make them
-> available to the virtual sensor.
-> This doesn't seem a good solution to me and I think it would be preferable to
-> update the framework to register the list of each available sensors.
-
-Why must the drivers do that ?
-
-> Changes in v2:
-> - Fix some warnings / errors reported by kernel test robot
-> - rename some struct and functions with a more accurate name
-> - update the dt bindings: rename type attribute to aggregation-function
-> - factorize a little bit the aggregation functions
+>> The Marvell 88W8897 combined wifi and bluetooth card (pcie+usb version)
+>> is used in a lot of Microsoft Surface devices, and all those devices
+>> suffer from very low 2.4GHz wifi connection speeds while bluetooth is
+>> enabled. The reason for that is that the default passive scanning
+>> interval for Bluetooth Low Energy devices is quite high on Linux
+>> (interval of 60 msec and scan window of 30 msec, see le_scan_interval
+>> and le_scan_window in hci_core.c), and the Marvell chip is known for its
+>> bad bt+wifi coexisting performance.
+>>
+>> So decrease that passive scan interval and make the scan window shorter
+>> on this particular device to allow for spending more time transmitting
+>> wifi signals: The new scan interval is 250 msec (0x190 * 0.625 msec) and
+>> the new scan window is 6.25 msec (0xa * 0.625 msec).
+>>
+>> This change has a very large impact on the 2.4GHz wifi speeds and gets
+>> it up to performance comparable with the Windows driver, which seems to
+>> apply a similar quirk.
+>>
+>> The scan interval and scan window length were tested and found to work
+>> very well with a bunch of Bluetooth Low Energy devices, including the
+>> Surface Pen, a Bluetooth Speaker and two modern Bluetooth headphones.
+>> All devices were discovered immediately after turning them on. Even
+>> lower values were also tested, but these introduced longer delays until
+>> devices get discovered.
+>>
+>> Signed-off-by: Jonas Dreßler <verdre@v0yd.nl>
+>> ---
+>> drivers/bluetooth/btusb.c | 15 +++++++++++++++
+>> 1 file changed, 15 insertions(+)
+>>
+>> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+>> index 60d2fce59a71..05b11179c839 100644
+>> --- a/drivers/bluetooth/btusb.c
+>> +++ b/drivers/bluetooth/btusb.c
+>> @@ -59,6 +59,7 @@ static struct usb_driver btusb_driver;
+>> #define BTUSB_WIDEBAND_SPEECH	0x400000
+>> #define BTUSB_VALID_LE_STATES   0x800000
+>> #define BTUSB_QCA_WCN6855	0x1000000
+>> +#define BTUSB_LOWER_LESCAN_INTERVAL	0x2000000
+>> #define BTUSB_INTEL_BROKEN_INITIAL_NCMD 0x4000000
+>>
+>> static const struct usb_device_id btusb_table[] = {
+>> @@ -356,6 +357,7 @@ static const struct usb_device_id blacklist_table[] = {
+>> 	{ USB_DEVICE(0x1286, 0x2044), .driver_info = BTUSB_MARVELL },
+>> 	{ USB_DEVICE(0x1286, 0x2046), .driver_info = BTUSB_MARVELL },
+>> 	{ USB_DEVICE(0x1286, 0x204e), .driver_info = BTUSB_MARVELL },
+>> +	{ USB_DEVICE(0x1286, 0x204c), .driver_info = BTUSB_LOWER_LESCAN_INTERVAL },
+>>
+>> 	/* Intel Bluetooth devices */
+>> 	{ USB_DEVICE(0x8087, 0x0025), .driver_info = BTUSB_INTEL_COMBINED },
+>> @@ -3813,6 +3815,19 @@ static int btusb_probe(struct usb_interface *intf,
+>> 	if (id->driver_info & BTUSB_MARVELL)
+>> 		hdev->set_bdaddr = btusb_set_bdaddr_marvell;
+>>
+>> +	/* The Marvell 88W8897 combined wifi and bluetooth card is known for
+>> +	 * very bad bt+wifi coexisting performance.
+>> +	 *
+>> +	 * Decrease the passive BT Low Energy scan interval a bit
+>> +	 * (0x0190 * 0.625 msec = 250 msec) and make the scan window shorter
+>> +	 * (0x000a * 0,625 msec = 6.25 msec). This allows for significantly
+>> +	 * higher wifi throughput while passively scanning for BT LE devices.
+>> +	 */
+>> +	if (id->driver_info & BTUSB_LOWER_LESCAN_INTERVAL) {
+>> +		hdev->le_scan_interval = 0x0190;
+>> +		hdev->le_scan_window = 0x000a;
+>> +	}
+>> +
 > 
-> Alexandre Bailon (2):
->   dt-bindings: Add bindings for the virtual thermal sensor
->   thermal: add a virtual sensor to aggregate temperatures
+> you can not do it this way. Modifying hci_dev internals from within the driver is not acceptable.
 > 
->  .../thermal/virtual,thermal-sensor.yaml       |  67 +++
->  drivers/thermal/Kconfig                       |   8 +
->  drivers/thermal/Makefile                      |   1 +
->  drivers/thermal/virtual-sensor.h              |  51 +++
->  drivers/thermal/virtual_sensor.c              | 400 ++++++++++++++++++
->  include/dt-bindings/thermal/virtual-sensor.h  |  15 +
->  6 files changed, 542 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/thermal/virtual,thermal-sensor.yaml
->  create mode 100644 drivers/thermal/virtual-sensor.h
->  create mode 100644 drivers/thermal/virtual_sensor.c
->  create mode 100644 include/dt-bindings/thermal/virtual-sensor.h
+> Regards
+> 
+> Marcel
 > 
 
+Hi Marcel,
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+hmm okay, it seems to me that the intention of your commit 
+bef64738e3fb87eabc6fbeededad0c44ea173384 was to allow configuring it on 
+a per controller basis, also btusb changes a bunch of other hci_dev 
+properties? Given that we also have to match by usb-id, I don't think 
+there's another place to do that other than the usb driver, or is there?
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Jonas
