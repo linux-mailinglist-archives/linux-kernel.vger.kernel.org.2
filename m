@@ -2,94 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8F3540FC18
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 17:20:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B734B40FC1A
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 17:21:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240993AbhIQPWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 11:22:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36540 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242637AbhIQPVe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 11:21:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 95E2E61152;
-        Fri, 17 Sep 2021 15:20:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631892012;
-        bh=7g4dy2Nq0EV0oj3TXqa1BUVZxfDuijCer+oQ4nJxntk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sAgHfQtHTF+NnAmsYFuWhfU0vFbxiec982s7kOtdu27/4w+tHuAuiygQtOZsrWTQi
-         apj+QwU5Ghjk9p5dCTP4T47Aut6OHeC4wrzasWYMVpdgZhg4hFsOXDM3z84grTtCfb
-         VloaLY7mMzj9uno58JgsRzbt22lIH4ybS0kPAsO8=
-Date:   Fri, 17 Sep 2021 17:20:09 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "# 3.4.x" <stable@vger.kernel.org>,
-        Lukas Hannen <lukas.hannen@opensource.tttech-industrial.com>
-Subject: Re: [PATCH 5.14 298/334] time: Handle negative seconds correctly in
- timespec64_to_ns()
-Message-ID: <YUSyKQwdpfSTbQ4H@kroah.com>
-References: <20210913131113.390368911@linuxfoundation.org>
- <20210913131123.500712780@linuxfoundation.org>
- <CAK8P3a0z5jE=Z3Ps5bFTCFT7CHZR1JQ8VhdntDJAfsUxSPCcEw@mail.gmail.com>
- <874kak9moe.ffs@tglx>
- <YURQ4ZFDJ8E9MJZM@kroah.com>
- <87sfy38p1o.ffs@tglx>
+        id S241829AbhIQPWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 11:22:24 -0400
+Received: from ale.deltatee.com ([204.191.154.188]:51246 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245612AbhIQPVu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 11:21:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
+        Message-ID:From:References:To:cc:content-disposition;
+        bh=yl9vjgcSxbXyjBnV1ZJmnZ4kxoytLHzu6HHzbfwRuiI=; b=V8pd4DR4PBlkyzm6eQWuZvxqTt
+        x7oMKqTNkuQ3geVuTAO7ToGGRCSU0XsXXf0eQP/vfc/vkBMKXa7r12GACogFxoxJ3R1wM2Z1PYi+K
+        N2IqGlY9BJf9JWtQdweKT2ahqe6tqISMe+9KuQGGLnyt2fBJ6uQJax/VWKpvPaz26/y8oLdvLSL16
+        X8T7OAAHOK8BpoJ8zGeHEhicnfIQyqLO2pXu8GvdHimEwGiiQx6fuTj/esJHrthF9Ydo1XrImI5NX
+        5quHxfhObofXLC3C2T0DH7SIcqi1744zkvpZNvH25N1xbWBcpBFdsBIwe+zgEqmmhB85XBY+Ozk8X
+        sE3Rer4w==;
+Received: from s0106a84e3fe8c3f3.cg.shawcable.net ([24.64.144.200] helo=[192.168.0.10])
+        by ale.deltatee.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <logang@deltatee.com>)
+        id 1mRFf8-0001nI-8K; Fri, 17 Sep 2021 09:20:27 -0600
+To:     Qing Wang <wangqing@vivo.com>, Vinod Koul <vkoul@kernel.org>,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1631863081-10231-1-git-send-email-wangqing@vivo.com>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <eeaee4a8-12d4-fb1d-bd4d-9cb3a60a3432@deltatee.com>
+Date:   Fri, 17 Sep 2021 09:20:24 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87sfy38p1o.ffs@tglx>
+In-Reply-To: <1631863081-10231-1-git-send-email-wangqing@vivo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 24.64.144.200
+X-SA-Exim-Rcpt-To: linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, vkoul@kernel.org, wangqing@vivo.com
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-8.4 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A autolearn=ham autolearn_force=no version=3.4.2
+Subject: Re: [PATCH] dma: plx_dma: switch from 'pci_' to 'dma_' API
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 12:38:43PM +0200, Thomas Gleixner wrote:
-> On Fri, Sep 17 2021 at 10:25, Greg Kroah-Hartman wrote:
-> > On Fri, Sep 17, 2021 at 12:32:17AM +0200, Thomas Gleixner wrote:
-> >> I already got a private bug report vs. that on 5.10.65. Annoyingly
-> >> 5.10.5 does not have the issue despite the fact that the resulting diff
-> >> between those two versions in hrtimer.c is just in comments.
-> 
-> The bug report turned out to be a red hering. Probably caused by a
-> bisect gone wrong. The real culprit was the posix-cpu-timer change which
-> got reverted already.
-> 
-> > Looks like Sasha picked it up with the AUTOSEL process, and emailed you
-> > about this on Sep 5:
-> > 	https://lore.kernel.org/r/20210906012153.929962-12-sashal@kernel.org
-> 
-> which I obviously missed.
-> 
-> > I will revert it if you don't think it should be in the stable trees.
-> 
-> It's a pure performance improvement, so according to stable rules it
-> should not be there.
-> 
-> > Also, if you want AUTOSEL to not look at any hrtimer.c patches, just let
-> > us know and Sasha will add it to the ignore-list.
-> 
-> Nah. I try to pay more attention. I'm not against AUTOSEL per se, but
-> could we change the rules slightly?
-> 
-> Any change which is selected by AUTOSEL and lacks a Cc: stable@... is
-> put on hold until acked by the maintainer unless it is a prerequisite
-> for applying a stable tagged fix?
-> 
-> This can be default off and made effective on maintainer request.
-> 
-> Hmm?
 
-The whole point of the AUTOSEL patches are for the huge numbers of
-subsystems where maintainers and developers do not care about the stable
-trees at all, and so they do not mark patches to be backported.  So
-requireing an opt-in like this would defeat the purpose.
 
-We do allow the ability to take files/subsystems out of the AUTOSEL
-process as there are many maintainers that do do this right and get
-annoyed when patches are picked that they feel shouldn't have.  That's
-the best thing we can do for stuff like this.
+On 2021-09-17 1:18 a.m., Qing Wang wrote:
+> The wrappers in include/linux/pci-dma-compat.h should go away.
+> 
+> The patch has been generated with the coccinelle script below.
+> expression e1, e2;
+> @@
+> -    pci_set_dma_mask(e1, e2)
+> +    dma_set_mask(&e1->dev, e2)
+> 
+> @@
+> expression e1, e2;
+> @@
+> -    pci_set_consistent_dma_mask(e1, e2)
+> +    dma_set_coherent_mask(&e1->dev, e2)
+> 
+> While at it, some 'dma_set_mask()/dma_set_coherent_mask()' have been
+> updated to a much less verbose 'dma_set_mask_and_coherent()'.
+> 
+> This type of patches has been going on for a long time, I plan to 
+> clean it up in the near future. If needed, see post from 
+> Christoph Hellwig on the kernel-janitors ML:
+> https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
+> 
+> Signed-off-by: Qing Wang <wangqing@vivo.com>
 
-thanks,
+Looks good to me. Thanks.
 
-greg k-h
+Reviweed-by: Logan Gunthorpe <logang@deltatee.com>
