@@ -2,103 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F5A04100A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 23:17:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D27F94100A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 23:18:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241485AbhIQVSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 17:18:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44796 "EHLO
+        id S244492AbhIQVUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 17:20:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229861AbhIQVSf (ORCPT
+        with ESMTP id S229861AbhIQVUM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 17:18:35 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECB8CC061574;
-        Fri, 17 Sep 2021 14:17:12 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id a66so21703611qkc.1;
-        Fri, 17 Sep 2021 14:17:12 -0700 (PDT)
+        Fri, 17 Sep 2021 17:20:12 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 514FDC061574;
+        Fri, 17 Sep 2021 14:18:49 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id bq5so38371725lfb.9;
+        Fri, 17 Sep 2021 14:18:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JGV/tPQh6K9SXsu6M8jwp1WUGbsoN50z6xi39yPO454=;
-        b=Smgw4tU6Y4AxmzVm12rd2uvBzsJ9XKtA0olWaSdDsaRXQKeElaIsp2OqqGviHxTJkg
-         OAgrbvvrD6gh5RF2rhkyrZ7AINWX8k6T2Z7pjJpevKa/rZF4auBZYbqHKT1Z9Zwun9jp
-         STY8SzKEWAhS5p/gpq/JulNTUICyZgiNH7EaHF+cin4kSJPyl47n03nmFWGznGHcv5PN
-         pBRzZQesmft1Z72Of0Ronwya3/SPAnNwz1siGoGBmfaoy6Y/leHKTkTmf+MUqknvIuO7
-         orzPlAJBgnRoQSu7KDOgDcR2OUO56LAoLm57n4uFBOD+cXFFgEGCIZ7eu6yF4yLdgiZ/
-         n62w==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7x9Mf1nsbfFuOkzeXvxz9R901v90JLdCe3TVldsY/hU=;
+        b=c3evz0QwYHVDcVxisfXFAvO8RICUiC4PjjasrtiFxEpkQQ6gon1LyEYq0ZWOk/7jXV
+         5idg0CFf3f0KNNWAZfRinqAjXTSDrP4sgDgB7G1gurcEGiPaf0UdrdoKdfSvUSJ4Pdkp
+         pLzxoZujRGcMhA3EW8kQPzN8qrms1pniCzmW7Qph2WfezGNJvhbu2HiZdcrwnXZYgtaE
+         A4xkPBwtGh40CsoePMKIKleMANE65d2FcjvTv7XfovjwAze1LLv/lvxMIfXLGMZkyyVH
+         hzGnZHx3elG66MMrGfpxc/GdkJCGXc+jy5EjBwEuMp+VJG5abGJC4bxeALlNosyMebZY
+         RB7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JGV/tPQh6K9SXsu6M8jwp1WUGbsoN50z6xi39yPO454=;
-        b=TOZOjvAyhSGkFtGUE30Db9rW1kc9Na/59K57IoRN/vKde18vjtPrxIeu6wBg3FUsOP
-         cQFF1t423lOe0ausSqSnokmAAiAlTG3trqrAws3tGm0YZ/fQmWiZy9+bq5KGN/pDMpj3
-         zuSDRBt+cN7YTnF4ZmzzQOia2IqxR5LbqsR6zWciwkABeAaT5SaQ/7+OJOAUiO/AdGO0
-         /LY3PhpOYSnw3OYaBwRKUSZXVaEO8Zdmc9eOnCcdiqV3a6wjVDRqvJmb6Vb1hdPIdBTJ
-         2uGTvRig5DNPSkevIvNEoj2TNwEH/iZt06ROJhQkVPQZq+jjBt0jKGX7YFhG9JNbHg2n
-         NeBA==
-X-Gm-Message-State: AOAM531LS0/u8uiLtGZe9BOJtD6hFIjLfZtcBJ3Vqliw/K7xBtdRIPtB
-        SHt2O0DKMPOCEKrVPJzV++QCObl6aE1h
-X-Google-Smtp-Source: ABdhPJzghVCbWAFxTuwjujq3dGdZrFkmoJ7O+Xlmc64lIjwI4sM5JnmspEziweAuTU6B7uzR4GB3rw==
-X-Received: by 2002:a37:ab0d:: with SMTP id u13mr12597365qke.521.1631913432191;
-        Fri, 17 Sep 2021 14:17:12 -0700 (PDT)
-Received: from moria.home.lan (c-73-219-103-14.hsd1.vt.comcast.net. [73.219.103.14])
-        by smtp.gmail.com with ESMTPSA id m139sm4768882qke.18.2021.09.17.14.17.10
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7x9Mf1nsbfFuOkzeXvxz9R901v90JLdCe3TVldsY/hU=;
+        b=56sj8VmuPYjfvP/KCsoYNbd//phf6AhMAv9FPg1yTxX1BIcSB9piHoPkoEmtSB5prS
+         dxV5Qgs/Joz+hJzULaynE9/F+7c0jDQDBMWvVZKaoBR3TG0kUGf7xP6mR1c1NfpWN4Uk
+         SYMQ5TYDr6bR6g1Z8MPqoPx2SJb0e90Vyd2ZmhOIm1sCqQZPDhnGGkNP6ySxXLW4fokb
+         dnfftWomhs3QYcIC9nCWkjJRv6OCeXi8cNshHH3eAYSdzqChKTKOEAN0QP+Hhd2y+1AK
+         WYFaZQWSzdft9oHjszU0mTtuMUG5UEMkzer1MgNfEWQMUhgL7qVBiysfmPbqq0C4aVPj
+         ru2Q==
+X-Gm-Message-State: AOAM5301eMAYqCwQi4M6uU+3eACESzIGCB4Gr0f5A4Q1MqVKkglLC56/
+        OPxNrV9zFloD08/7bBoNByE=
+X-Google-Smtp-Source: ABdhPJw2z7ZatxQWJDsgwRqmquTnN5fBRanLsAp1Ydi6yR8s1qtLGAuP16zuHwQNLYxtSVG1lfs0VQ==
+X-Received: by 2002:a2e:141d:: with SMTP id u29mr4991753ljd.49.1631913527539;
+        Fri, 17 Sep 2021 14:18:47 -0700 (PDT)
+Received: from localhost.localdomain (95-42-179-94.pool.ukrtel.net. [94.179.42.95])
+        by smtp.gmail.com with ESMTPSA id h17sm196037lfg.258.2021.09.17.14.18.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 14:17:11 -0700 (PDT)
-Date:   Fri, 17 Sep 2021 17:17:09 -0400
-From:   Kent Overstreet <kent.overstreet@gmail.com>
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Dave Chinner <david@fromorbit.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Howells <dhowells@redhat.com>
-Subject: Re: Folio discussion recap
-Message-ID: <YUUF1WsAoWGmeAJ4@moria.home.lan>
-References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
- <YTu9HIu+wWWvZLxp@moria.home.lan>
- <YUIT2/xXwvZ4IErc@cmpxchg.org>
- <20210916025854.GE34899@magnolia>
- <YUN2vokEM8wgASk8@cmpxchg.org>
- <20210917052440.GJ1756565@dread.disaster.area>
- <YUTC6O0w3j7i8iDm@cmpxchg.org>
- <20210917205735.tistsacwwzkcdklx@box.shutemov.name>
+        Fri, 17 Sep 2021 14:18:20 -0700 (PDT)
+From:   Denis Pauk <pauk.denis@gmail.com>
+Cc:     pauk.denis@gmail.com, Bernhard Seibold <mail@bernhard-seibold.de>,
+        =?UTF-8?q?P=C3=A4r=20Ekholm?= <pehlm@pekholm.org>,
+        to.eivind@gmail.com, "Artem S . Tashkinov" <aros@gmx.com>,
+        Vittorio Roberto Alfieri <me@rebtoor.com>,
+        Sahan Fernando <sahan.h.fernando@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v8 0/3] hwmon: Support access to the NCT677x via Asus WMI.
+Date:   Sat, 18 Sep 2021 00:18:07 +0300
+Message-Id: <20210917211811.39271-1-pauk.denis@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210917205735.tistsacwwzkcdklx@box.shutemov.name>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 11:57:35PM +0300, Kirill A. Shutemov wrote:
-> On Fri, Sep 17, 2021 at 12:31:36PM -0400, Johannes Weiner wrote:
-> > I didn't suggest to change what the folio currently already is for the
-> > page cache. I asked to keep anon pages out of it (and in the future
-> > potentially other random stuff that is using compound pages).
-> 
-> It would mean that anon-THP cannot benefit from the work Willy did with
-> folios. Anon-THP is the most active user of compound pages at the moment
-> and it also suffers from the compound_head() plague. You ask to exclude
-> anon-THP siting *possible* future benefits for pagecache.
-> 
-> Sorry, but this doesn't sound fair to me.
+Support accessing the NCT677x via Asus WMI functions.
 
-I'm less concerned with what's fair than figuring out what the consensus is so
-we can move forward. I agree that anonymous THPs could benefit greatly from
-conversion to folios - but looking at the code it doesn't look like much of that
-has been done yet.
+On mainboards that support this way of accessing the chip,
+the driver will usually not work without this option since
+in these mainboards, ACPI will mark the I/O port as used.
 
-I understand you've had some input into the folio patches, so maybe you'd be
-best able to answer while Matthew is away - would it be fair to say that, in the
-interests of moving forward, anonymous pages could be split out for now? That
-way the MM people gain time to come to their own consensus and we can still
-unblock the FS work that's already been done on top of folios.
+Could you please review?
+
+@Guenter Roeck, I have renamed asuswmi_evaluate_method() to 
+nct6775_asuswmi_evaluate_method(). Also i have checked why results of 
+WMI calls are ignored. In most of case initial caller also ignored resuls 
+of the write operation, so i have added logic for stop futher operation 
+after the error and write to logs errors if any in call. 
+I have marked that first two patches are reviewed by you.
+
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=204807
+Signed-off-by: Denis Pauk <pauk.denis@gmail.com>
+Co-developed-by: Bernhard Seibold <mail@bernhard-seibold.de>
+Signed-off-by: Bernhard Seibold <mail@bernhard-seibold.de>
+Tested-by: Pär Ekholm <pehlm@pekholm.org>
+Tested-by: <to.eivind@gmail.com>
+Tested-by: Artem S. Tashkinov <aros@gmx.com>
+Tested-by: Vittorio Roberto Alfieri <me@rebtoor.com>
+Tested-by: Sahan Fernando <sahan.h.fernando@gmail.com>
+Cc: Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc: Guenter Roeck <linux@roeck-us.net>
+
+---
+Changes in v8:
+  - Rename asuswmi_evaluate_method() to nct6775_asuswmi_evaluate_method().
+  - Add out error message if WMI method is failed.
+  - Stop futher read/write if first operation is failed.
+
+Changes in v7:
+  - Remove unrequred & 0xff with i8 variables.
+  - Make ASUSWMI_UNSUPPORTED_METHOD as default value for WMI responce,
+    before run wmi_evaluate_method().
+  - Rename ASUSWMI_MGMT2_GUID to ASUSWMI_MONITORING_GUID.
+  - Replace checks of 'err != -EINVAL' with 'err >= 0' for match_string result.
+  
+Changes in v6:
+ - Add dependency "ACPI_WMI || ACPI_WMI=n" to Kconfig, 
+ - Minimize size of code under IS_ENABLED(CONFIG_ACPI_WMI),
+ - Remove not requred check of platform_get_resource result,
+ - Split function pointers patch to two separate patches,
+ - Add more board ROG CROSSHAIR * names from bugzilla.
+ 
+Changes in v5:
+  - Use IS_ENABLED(CONFIG_ACPI_WMI) instead defined(CONFIG_ACPI_WMI)
+
+Changes in v4:
+  - Fix naming conflict with inb, outb by add sio prefix to callbacks in
+    nct6775_sio_data.
+  - Fix build without ACPI WMI.    
+    
+Changes in v3:
+  - Remove unrequired type conversions.
+  - Make function declarations one line.
+  - Use nct6775 function pointers in struct nct6775_data instead direct calls.
+
+Changes in v2:
+  - Split changes to separate patches.
+  - Limit WMI usage by DMI_BOARD_NAME in checked ASUS motherboards.
+  - Rearrange code for directly use struct nct6775_sio_data in superio_*()
+    functions.
+
+Denis Pauk (3):
+  hwmon: (nct6775) Use superio_*() function pointers in sio_data.
+  hwmon: (nct6775) Use nct6775_*() function pointers in nct6775_data.
+  hwmon: (nct6775) Support access via Asus WMI
+
+ drivers/hwmon/Kconfig   |   1 +
+ drivers/hwmon/nct6775.c | 722 ++++++++++++++++++++++++++--------------
+ 2 files changed, 480 insertions(+), 243 deletions(-)
+
+-- 
+2.33.0
+
