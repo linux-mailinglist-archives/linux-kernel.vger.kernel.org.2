@@ -2,123 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AEEE40F5E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 12:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8073440F5EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 12:29:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242723AbhIQK20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 06:28:26 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:37333 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242494AbhIQK20 (ORCPT
+        id S242920AbhIQKaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 06:30:39 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:55888
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242939AbhIQKae (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 06:28:26 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1631874424; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-ID: Date: Subject: In-Reply-To: References: Cc:
- To: From: Sender; bh=LhtmfeNAIlX8M2dcVRidCgdVPxkrLfqIMyZ5JSXqj6M=; b=U0wLtXwGW7PjB0X2T1FoD0mUhvamr4JGqsxsRS5PLyo5tmdsi16/j8Dw2fV6G0Qacml807b5
- rpuOZCwTyOJ/OwCDmSJfTLuwlr7Ct7hwEaAhO7Jk33RzpP+McHHdOae9WJLkPHAA396RkoZe
- b+Fj1z/lOq5liEKPoicHSW6wxlc=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 61446d77b585cc7d24722ed7 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 17 Sep 2021 10:27:03
- GMT
-Sender: pillair=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 0B869C43617; Fri, 17 Sep 2021 10:27:03 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from PILLAIR1 (unknown [103.149.158.99])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Fri, 17 Sep 2021 06:30:34 -0400
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com [209.85.128.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: pillair)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 77B95C4338F;
-        Fri, 17 Sep 2021 10:26:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 77B95C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   <pillair@codeaurora.org>
-To:     "'Stephen Boyd'" <swboyd@chromium.org>, <agross@kernel.org>,
-        <bjorn.andersson@linaro.org>, <mathieu.poirier@linaro.org>,
-        <ohad@wizery.com>, <p.zabel@pengutronix.de>, <robh+dt@kernel.org>
-Cc:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <sibis@codeaurora.org>,
-        <mpubbise@codeaurora.org>, <kuabhs@chromium.org>
-References: <1631811353-503-1-git-send-email-pillair@codeaurora.org> <1631811353-503-3-git-send-email-pillair@codeaurora.org> <CAE-0n51KBYjZvwGNy06_okmEWjEfRLQO54CYaY6-JnbBk6kOhA@mail.gmail.com>
-In-Reply-To: <CAE-0n51KBYjZvwGNy06_okmEWjEfRLQO54CYaY6-JnbBk6kOhA@mail.gmail.com>
-Subject: RE: [PATCH v3 2/3] dt-bindings: remoteproc: qcom: Add SC7280 WPSS support
-Date:   Fri, 17 Sep 2021 15:56:54 +0530
-Message-ID: <001201d7abae$8d160a10$a7421e30$@codeaurora.org>
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id A81CC402CE
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 10:29:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1631874551;
+        bh=6nkF1q/vzOOF+WmaUamUG6Dayh5+2aRPAbU59eAVA1I=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=MZzU9UDoBBZdRpuGKJxngydEV0gvUoYE5wvhu19HnMTLCkRsMDjIVwo5aUzShLcr3
+         5sib9lJsnKHCZ1/9k7jAE+hNPu9hIIHxzZcESgEzSmi8DyGsZJA5gT6SZEzWlNT/1R
+         Fqfe6Df/8YaF5a6wch2jDd8ojGsPnEba5u0YUOXqtL1K/UEr3cxePTLtpIGlbtMeSn
+         Ef+ocSfsLXJNJd44NJsTOGaEi+1JV1HskEKH4+/vh4R7XkrhoIDwgR+kUOL5elH34t
+         pp5QZZDYTQWgqRhe37IKM6nh3CZt6Myn5YKWBsvprXPvNjl+aeJI4D9Myvd3lOVu6W
+         sYJzTQd1FPwbQ==
+Received: by mail-wm1-f70.google.com with SMTP id 75-20020a1c004e000000b00307b9b32cc9so4560956wma.1
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 03:29:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6nkF1q/vzOOF+WmaUamUG6Dayh5+2aRPAbU59eAVA1I=;
+        b=39PCRwoeTUE0wbmkHL+k1VAVe31VH7Es/x4YcuG2dmgoA77lhhbZEvTnDPJl9zYWrJ
+         6q8dufIr2++wYyITXbe+Ps4hHaC34S/Bmx4Ws4iqjOSg6Yy9clt06tlZPn+IGZwxriTp
+         fCV6PHHBAWGybwe+vHpIA+9PKeICvwe4jqMiL+wGgntK16ILis9b+0AW38MNnOLHyH4a
+         whosbiXQnGDbvgxOirp+y5NlVLR+YlluauDTi9AdWzHdf1+Q9YHkhHMTxK64rWXFBXXf
+         VFgbeL6rj36IJpbrFs+6r0vgHNJm7JzPFT7faCXdXKJL7CdebGnKQnZXEQfTvQOggEp0
+         w85A==
+X-Gm-Message-State: AOAM5305Np9fwDnmTo6mgfqrUIZ5HUcCR9Mw+uOdf5R8BUl5QhPsqpjz
+        P8TToS9iX+Ge29TWeB9tWu1gHCigI+HbGgCAO/qEr0JoN+OVpeIxtIvSYArxKNqKQxe9hhiNjKm
+        vf9XcbmDm9+hlN5rfZeK5sMqlRbSuWIWmyQlkHYZcCg==
+X-Received: by 2002:a5d:444a:: with SMTP id x10mr11203596wrr.360.1631874551393;
+        Fri, 17 Sep 2021 03:29:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwfdrM+fEx6KhlE7ltFlZ5KnPF9rsYVzDu+ZzxcU3gF6vhY10MhrnkMCHgNj6YnhxdkkVbRow==
+X-Received: by 2002:a5d:444a:: with SMTP id x10mr11203568wrr.360.1631874551216;
+        Fri, 17 Sep 2021 03:29:11 -0700 (PDT)
+Received: from localhost.localdomain (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
+        by smtp.gmail.com with ESMTPSA id d8sm6651413wrv.20.2021.09.17.03.29.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Sep 2021 03:29:10 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Ulrich Kunitz <kune@deine-taler.de>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, zd1211-devs@lists.sourceforge.net,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jens Frederich <jfrederich@gmail.com>,
+        Jon Nettleton <jon.nettleton@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Daniel Drake <drake@endlessos.org>
+Subject: [PATCH v2] MAINTAINERS: Move Daniel Drake to credits
+Date:   Fri, 17 Sep 2021 12:28:34 +0200
+Message-Id: <20210917102834.25649-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQHMNEBDEmK8+OU0e0UN4gvXCrx/ZwJ79PxeAhycz42rmi+7oA==
-Content-Language: en-us
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Daniel Drake's @gentoo.org email bounces (is listed as retired Gentoo
+developer) and there was no activity from him regarding zd1211rw driver.
+Also his second address @laptop.org bounces.
 
+Cc: Daniel Drake <drake@endlessos.org>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-> -----Original Message-----
-> From: Stephen Boyd <swboyd@chromium.org>
-> Sent: Friday, September 17, 2021 11:56 AM
-> To: Rakesh Pillai <pillair@codeaurora.org>; agross@kernel.org;
-> bjorn.andersson@linaro.org; mathieu.poirier@linaro.org; =
-ohad@wizery.com;
-> p.zabel@pengutronix.de; robh+dt@kernel.org
-> Cc: linux-arm-msm@vger.kernel.org; devicetree@vger.kernel.org; linux-
-> kernel@vger.kernel.org; sibis@codeaurora.org; mpubbise@codeaurora.org;
-> kuabhs@chromium.org
-> Subject: Re: [PATCH v3 2/3] dt-bindings: remoteproc: qcom: Add SC7280
-> WPSS support
->=20
-> Quoting Rakesh Pillai (2021-09-16 09:55:52)
-> > @@ -78,6 +84,10 @@ properties:
-> >        Phandle reference to a syscon representing TCSR followed by =
-the
-> >        three offsets within syscon for q6, modem and nc halt =
-registers.
-> >
-> > +  qcom,qmp:
-> > +    $ref: /schemas/types.yaml#/definitions/phandle
-> > +    description: Reference to the AOSS side-channel message RAM.
-> > +
-> >    qcom,smem-states:
-> >      $ref: /schemas/types.yaml#/definitions/phandle-array
-> >      description: States used by the AP to signal the Hexagon core =
-@@
-> > -117,6 +127,33 @@ allOf:
-> >          compatible:
-> >            contains:
-> >              enum:
-> > +              - qcom,sc7280-wpss-pil
-> > +    then:
->=20
-> Honestly I find this if/else to be a huge tangle. Why not split the =
-binding so
-> that each compatible is a different file? Then it is easier to read =
-and see what
-> properties to set.
+---
 
-Hi Stephen,
-I will create a separate dt-bindings yaml file for sc7280-wpss-pil, =
-which will avoid all such if-else conditions.
+Changes since v1:
+1. Drop also bouncing dsd@laptop.org.
+---
+ CREDITS     | 1 +
+ MAINTAINERS | 2 --
+ 2 files changed, 1 insertion(+), 2 deletions(-)
 
->=20
-> > +      properties:
-> > +        interrupts-extended:
-> > +          maxItems: 6
-> > +          items:
-> > +            - description: Watchdog interrupt
-> > +            - description: Fatal interrupt
-> > +            - description: Ready interrupt
+diff --git a/CREDITS b/CREDITS
+index 7ef7b136e71d..d8f63e8329e8 100644
+--- a/CREDITS
++++ b/CREDITS
+@@ -971,6 +971,7 @@ D: PowerPC
+ N: Daniel Drake
+ E: dsd@gentoo.org
+ D: USBAT02 CompactFlash support in usb-storage
++D: ZD1211RW wireless driver
+ S: UK
+ 
+ N: Oleg Drokin
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 15a5fd8323f7..84ba171c85c8 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -17839,7 +17839,6 @@ F:	drivers/staging/nvec/
+ 
+ STAGING - OLPC SECONDARY DISPLAY CONTROLLER (DCON)
+ M:	Jens Frederich <jfrederich@gmail.com>
+-M:	Daniel Drake <dsd@laptop.org>
+ M:	Jon Nettleton <jon.nettleton@gmail.com>
+ S:	Maintained
+ W:	http://wiki.laptop.org/go/DCON
+@@ -20750,7 +20749,6 @@ S:	Maintained
+ F:	mm/zbud.c
+ 
+ ZD1211RW WIRELESS DRIVER
+-M:	Daniel Drake <dsd@gentoo.org>
+ M:	Ulrich Kunitz <kune@deine-taler.de>
+ L:	linux-wireless@vger.kernel.org
+ L:	zd1211-devs@lists.sourceforge.net (subscribers-only)
+-- 
+2.30.2
 
