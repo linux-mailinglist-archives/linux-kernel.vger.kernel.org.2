@@ -2,150 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE79740F2F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 09:17:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C234140F2FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 09:17:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238718AbhIQHSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 03:18:31 -0400
-Received: from mail-eopbgr1300100.outbound.protection.outlook.com ([40.107.130.100]:26624
-        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237083AbhIQHSa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 03:18:30 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mWNSpUUqjzeo3NncCWTO3+zyFXV9K9cKhOpNsb8bYxwcD8ev9A/SN/11/p/zJvzKtjd2uig4EcsMvg3yjeED9ynWo0mb71SEh7AgKUnRsc88F1GOXftGLgzRy4V8ehV1JvYsMiYp7g+dMqxGPclzm1PY8V5uEpgOxBo5oODtRYbUqEo2FLfezdI5uW9JGlwA7qoh/xE74AFtFRwl247OXpAPmXqROO1a57nKANPvF3n+7BZAk5L64S+ZyScvjbhH7YlJ6Aj4t32y81Ya98zY2Mfymiw0PE2w8ZBEHdAC7ztw5Zfk+12jh2GvZ3RPtdxy4RG8c5qHoG/EWvjiaWaN1g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=wBoC6uvBlLZ+CO0oy1OYmE34+WItnS0F0+Fmml8pLXc=;
- b=h8LU+DLKbyFXYUHC5dCh0f1HHACCa2rugQSiXkkkVM+SejO7oRJaB7o98tZz+2HYL13IAUhakSRxu8PoaPPDnsz9Khb5yIMHZ1JwfquU6Hn9N57KFBJG+7725DB2KWtokvpXzicFnr4K2wWMbcOybreM1uYJkcfYmrODvnKlWXXGxrw0B0Xy8Ut7lpHOBy2Yp94d1bWKOhYhmYQWmp2dDs8Evqyn/8GcCXtn7FwQf5RCfa2DlcoCW1dCSm+CrMq73NqS1TsH/6ynJtpw9EoWF8HVeUcLOFbva786I3j0iImOLFFZnRg24mOQpfyzH+RNOI+O52Nk2oblbVngneAwyw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
- s=selector2-vivo0-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wBoC6uvBlLZ+CO0oy1OYmE34+WItnS0F0+Fmml8pLXc=;
- b=hEVUn/onwY1qwdnmGRzBdCVEr/GsUzei9bLnng8VX1RqL5oHRMSgykcwgtH5W6GJOP+Z4E63oA2QUIhW83H2ZPw/h3KyG4xYsubdRBis0l2Csj5VCMjVKgDWmIPyEVB9dbggAnqT6K5Psy6OtvP/bL7fgbmAe39qMw7Bmm0Gko4=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=vivo.com;
-Received: from SL2PR06MB3082.apcprd06.prod.outlook.com (2603:1096:100:37::17)
- by SL2PR06MB3068.apcprd06.prod.outlook.com (2603:1096:100:3b::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Fri, 17 Sep
- 2021 07:17:06 +0000
-Received: from SL2PR06MB3082.apcprd06.prod.outlook.com
- ([fe80::4c9b:b71f:fb67:6414]) by SL2PR06MB3082.apcprd06.prod.outlook.com
- ([fe80::4c9b:b71f:fb67:6414%6]) with mapi id 15.20.4523.016; Fri, 17 Sep 2021
- 07:17:06 +0000
-From:   Qing Wang <wangqing@vivo.com>
-To:     Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Qing Wang <wangqing@vivo.com>
-Subject: [PATCH] dma: hsu: switch from 'pci_' to 'dma_' API
-Date:   Fri, 17 Sep 2021 00:16:59 -0700
-Message-Id: <1631863019-10083-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-Content-Type: text/plain
-X-ClientProxiedBy: HK0PR01CA0063.apcprd01.prod.exchangelabs.com
- (2603:1096:203:a6::27) To SL2PR06MB3082.apcprd06.prod.outlook.com
- (2603:1096:100:37::17)
+        id S238782AbhIQHSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 03:18:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55958 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238726AbhIQHSh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 03:18:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 512AE61152;
+        Fri, 17 Sep 2021 07:17:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631863035;
+        bh=ja8+tLdTmXfno2EXHr51WCR4GUxc76U00kgVCyJ/NGo=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=M4ewBQPtOqclfz0Ur4bXuvZKTjWgHGjINFiOawT7DeG8XrFKcauPh5bd7a9DXG/3N
+         VD3oPf2BhVIcMKZ6QKsNO8wZTcWOqMEtvd6MRFK9aNK6EqzM0mnMlxuLb1D9Q4sgSY
+         Iz/Pma94UcjIpkwjJ5BOumdpzaMBRwyXqOCaKIosCvsNhJqio5gxSKaQVTImdvReMi
+         TEWuOMlom04nNjWa3Yw7vARiih+dcMvuHShiv5xMCjjoyhRzLyoysS+Zli9Gu2JwiE
+         y4AiuolYY/i6UTP4mRGd56UFiXpoLys3x1OIbCQ1UZabOOIPJOd/ASxUtKc5OhqzQ4
+         /pPszyUB5KTLw==
+Subject: Re: [PATCH v3 8/8] memory: gpmc-omap: "gpmc,device-width" DT property
+ is optional
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        tony@atomide.com
+Cc:     robh+dt@kernel.org, grygorii.strashko@ti.com, nm@ti.com,
+        lokeshvutla@ti.com, nsekhar@ti.com, miquel.raynal@bootlin.com,
+        devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210907113226.31876-1-rogerq@kernel.org>
+ <20210907113226.31876-9-rogerq@kernel.org>
+ <aa465bd9-b3d5-8d75-3e59-e86c2cd093cd@canonical.com>
+ <a881ac1f-2f00-e675-aea6-154b28ca6eff@kernel.org>
+ <35643319-e3b0-bde1-c51b-57c3b5474146@canonical.com>
+From:   Roger Quadros <rogerq@kernel.org>
+Message-ID: <d574837c-b42a-53be-7885-9feb7183ce96@kernel.org>
+Date:   Fri, 17 Sep 2021 10:17:10 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ubuntu.localdomain (103.220.76.181) by HK0PR01CA0063.apcprd01.prod.exchangelabs.com (2603:1096:203:a6::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.4523.14 via Frontend Transport; Fri, 17 Sep 2021 07:17:05 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b0510418-3c62-444f-2b65-08d979ab27c6
-X-MS-TrafficTypeDiagnostic: SL2PR06MB3068:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SL2PR06MB3068E3FD11BD3B805DFEA77EBDDD9@SL2PR06MB3068.apcprd06.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: M86B4nQrDb/u2fofL42SuwI0KNZt5eBXCXXC/6otSF7Xx7wati3kHv/9/8lLmJOXFa9JV4xhqXuhIvpQW2fip6bpUEGhUlGn9FgFE+PoFVjIDtaQPUz/v7ZIhGZ2pvj8I1dnJEAtn6C8rY2qY63hZ3HGhyKqhfBW7TBhTo2AB81TDjj7b5qcjeN2wbgYTXrCnc87KRJziQgK0nMJReQyBWNCn9NyHckAu1Zunz5FpNU5DuuP2b9mc5YjYODHWg78BampDdjx6kv+Yy4ITAPG4c2Ix8k5D0WHAcy4xRH1MxlCqv7heG4vOdq7jYIbfGoj/DJkmykASuSKz7ELjDsTD9wf2udYTvvhtw8l9IRJOmyde5snjP/WC1B91fo3iomsrNU/U868lY1wyhfJ7mgqDWPs5ctpMV9vH4heHc/KsGmvXAA+tkmIPPmHvLABLhgtE3PAko8o6RcJU7MHLzAE7Z//ARAdlIG3eWLiIPdtnhUTqqJlLeMWINGnPbaZAO6Xw1FQztv2JcP0Yu7r1x3rjxm3WLWmEpLTxhbNlZXD6Yk5SQt8LCW5OqfXgKe3DuIaOt4+4ur3mhBaU9bT9HL8jgFaUTalCRp5cEHqTZe7JyuNbi5K7fOUxd8L34WSVjr8QC7H+9kVk162S3AIrbgbfElbFF1x6IgmyqR1TlcPLn0KfEPzZcbXe6WNNVFRlqI939BhrxUeh2DiVciBifhG3JHs4mEt5zO2i5G91GScTXbXJhPmwaKogmtM2ukkA7Q3O1WFyhCnib0qBhR4Wdlpsw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SL2PR06MB3082.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(366004)(376002)(396003)(39860400002)(6486002)(83380400001)(36756003)(38350700002)(86362001)(5660300002)(38100700002)(956004)(316002)(478600001)(52116002)(107886003)(8676002)(26005)(966005)(6512007)(6506007)(6666004)(66476007)(66556008)(66946007)(4326008)(2906002)(186003)(8936002)(2616005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?J4LYcuq4pf2Aq3mfpG3XS8+Vq9GrO0sDI81twaM67HxTcwxB/xOkVThX+wfv?=
- =?us-ascii?Q?lBzF3+KRYCQcYEE5D8rp5bxmdOxGCbZlU//1h6o/q8sVKnzxJ2za7u0RvoG3?=
- =?us-ascii?Q?WWh/8hv17JWTxyEJXh/+7/H23iBVa742pTQa6ELuv7MWn9DPi4qdbwWKaNFs?=
- =?us-ascii?Q?FJNavhOuiIC2L0a0EqUU8Tybsgtk1lHDOM/IK1RxdDTDaRKI/WjgMqIPMJaO?=
- =?us-ascii?Q?L0/+ESbd+No3i4JK7qMPTSU9y8hIKcbgCOenzULmYq7Glf3hf/uvoKBkuY9T?=
- =?us-ascii?Q?9HiYH5XRYF2K1ujpDJgyO34oCXtfIfrKs5JSxibfvS+sb7P35BqOzFRzhnvj?=
- =?us-ascii?Q?SGGU8tjWjclD/n6LTBd4rPrJE11ve0yusqJbo5mEkTm6A5ij//u6MrZnMXag?=
- =?us-ascii?Q?Ebg44aL8ul883Di9pCKtrbAe38nGYgyiLAQ2pdk0VOCI6PIi4DHfWdGJAK9A?=
- =?us-ascii?Q?aoKPK4of2Vi8ZtnzQO2T8ANeSQ5uYFqZYJUW5dMKoiFvtYwGvLq14ObD2HQg?=
- =?us-ascii?Q?TKknrETqlzLdTgxJtfi+QylgwCQpK6TkPz9SSw80R4jjtv06Z8brzg7GCxjj?=
- =?us-ascii?Q?69Mc1XOaZ0d5Ku1CBuAhdLDha/MSQe3KrA+gQo6eJpUVmvukLuzh9AMeIQ9E?=
- =?us-ascii?Q?mvcCUU/A0hiLjc6WsqL59YFOcGqVUeMDC4Jp0UBqv0xTOyTSobgIsGU87pYL?=
- =?us-ascii?Q?9DLC+yHOx8MnLlgxjdOV0c+EYWRebscYhSVMAwHJuM6WdvSV6AJ9O2QpR2/C?=
- =?us-ascii?Q?FiTPcPv5ux5U/ynvp7pKHT9nrD1UFPJzMNxibHFjI1IW+sBU8vvHetemZDSt?=
- =?us-ascii?Q?RA3hO+3PUIIqLU19wwtlPhD/tsYUOeXKkasecp8Pzelc8H6o3+pwTNOOuffi?=
- =?us-ascii?Q?+yqgLqdupo9Q7w8mmqL8oSduXalEwJl4Sjr4YA7VuzGGvYksWkTw7L38QSYn?=
- =?us-ascii?Q?9VKzStrU6x6Z6CI2oIyUhijAPr6pIj505xFfzFiqCSgUKgrqgM0uQzHJnc0l?=
- =?us-ascii?Q?pPNrRbpG7O0w6UdiEZSpBLD94DwCsotI9WT9DiJ6btywcDIKzhChRNuDBk/V?=
- =?us-ascii?Q?L7+OXU8j28julvE4BazW70u7sWJTpUHIKzqelckjyupH/IFAlwE1XIZEptOw?=
- =?us-ascii?Q?s5ypB8HV7LK4ig+QGKk0Dc7iWXHbJWvpdi33M5yquuyrVTH4kFs4uqWVBlj2?=
- =?us-ascii?Q?rEjDLAqSfmK1xmYv6DDH+ObWRvkvhLaK0nin1NJZnGbtcRmE+xx56tLRUU+V?=
- =?us-ascii?Q?IT7XwIvPLaWYtBSKORoxN/moLyj78tX7KsWaArGdE6V5xvQFjlYHQBzdd7Vq?=
- =?us-ascii?Q?706t1Xg+yVfo+TF2GoVMuR7u?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b0510418-3c62-444f-2b65-08d979ab27c6
-X-MS-Exchange-CrossTenant-AuthSource: SL2PR06MB3082.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Sep 2021 07:17:06.4752
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3oTJoEhZ0f4bE/ijyRV1i2WHgZQVPLzLf/3TJkx6fe7t0IHHNhuIoc5LVGwwCjzwej3NrSNlmOASPRIJ3+iO7w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SL2PR06MB3068
+In-Reply-To: <35643319-e3b0-bde1-c51b-57c3b5474146@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wrappers in include/linux/pci-dma-compat.h should go away.
 
-The patch has been generated with the coccinelle script below.
-expression e1, e2;
-@@
--    pci_set_dma_mask(e1, e2)
-+    dma_set_mask(&e1->dev, e2)
+On 16/09/2021 13:48, Krzysztof Kozlowski wrote:
+> On 15/09/2021 11:11, Roger Quadros wrote:
+>> Hi Krzysztof,
+>>
+>> On 07/09/2021 15:36, Krzysztof Kozlowski wrote:
+>>> On 07/09/2021 13:32, Roger Quadros wrote:
+>>>> Check for valid gpmc,device-width, nand-bus-width and bank-width
+>>>> at one place. Default to 8-bit width if none present.
+>>>
+>>> I don't understand the message in the context of the patch. The title
+>>> says one property is optional - that's it. The message says you
+>>> consolidate checks. How is this related to the title?
+>>>
+>>> The patch itself moves around checking of properties and reads
+>>> nand-bus-width *always*. It does not "check at one place" but rather
+>>> "check always". In the same time, the patch does not remove
+>>> gpmc,device-width check in other place.
+>>>
+>>> All three elements - the title, message and patch - do different things.
+>>> What did you want to achieve here? Can you help in clarifying it?
+>>>
+>>
+>> OK I will explain it better in commit log in next revision. Let me explain here a bit.
+>>
+>> Prior to this patch it was working like this
+>>
+>> 	/* in gpmc_read_settings_dt() */
+>> 	s->device_width = 0;	/* invalid width, should be 1 for 8-bit, 2 for 16-bit */
+>> 	of_property_read_u32(np, "gpmc,device-width", s->device_width);
+>>
+>> 	/* in gpmc_probe_generic_child () */
+>> 	if (of_device_is_compatible(child, "ti,omap2-nand")) {
+>> 		/* check for nand-bus-width, if absent set s->device_width to 1 (i.e. 8-bit) */
+>> 	} else {
+>> 		/* check for bank-width, if absent and s->device_width not set, error out */
+>> 	}
+>>
+>> So that means if all three, "gpmc,device-width". "nand-bus-width" and "bank-width" are missing then
+>> it would create an error situation.
+>>
+>> The patch is doing 3 things.
+>> 1) Make sure all DT checks related to bus width are being done at one place for better readability.
+> 
+> Not entirely. The gpmc,device-width is still done in the other place
+> because you did not remove it from the code. Unless you meant parsing of
+> gpmc,device-width not reading from DT? But then another round of checks
+> is in gpmc_cs_program_settings() so not in one place.
 
-@@
-expression e1, e2;
-@@
--    pci_set_consistent_dma_mask(e1, e2)
-+    dma_set_coherent_mask(&e1->dev, e2)
+By checking I meant parsing. But you are right, I missed the part in gpmc_cs_program_settings().
 
-While at it, some 'dma_set_mask()/dma_set_coherent_mask()' have been
-updated to a much less verbose 'dma_set_mask_and_coherent()'.
+> 
+> If you consolidate the checks to one place, I would expect the code to
+> be removed from other places, so from gpmc_cs_program_settings() and
+> gpmc_read_settings_dt(). Since this is not happening, the message
+> confuses me.
+> 
+>> 2) even if all 3 width properties are absent, we will not treat it as error and default to 8-bit.
+> 
+> This is not mentioned in commit msg.
+> 
+>> 3) check for nand-bus-width regardless of whether compatible to "ti,omap2-nand" or not.
+> 
+> Also not mentioned in commit msg.
+> 
+> Your commit reorganizes parsing and validating the child DT properties
+> but it does not change from "multiple place" to "one place".
+> 
+> At least I don't see it.
 
-This type of patches has been going on for a long time, I plan to 
-clean it up in the near future. If needed, see post from 
-Christoph Hellwig on the kernel-janitors ML:
-https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
+OK. I will write a better commit log next time. Thanks for the review :)
 
-Signed-off-by: Qing Wang <wangqing@vivo.com>
----
- drivers/dma/hsu/pci.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
-
-diff --git a/drivers/dma/hsu/pci.c b/drivers/dma/hsu/pci.c
-index 9045a6f..6a2df3d
---- a/drivers/dma/hsu/pci.c
-+++ b/drivers/dma/hsu/pci.c
-@@ -65,11 +65,7 @@ static int hsu_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	pci_set_master(pdev);
- 	pci_try_set_mwi(pdev);
- 
--	ret = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
--	if (ret)
--		return ret;
--
--	ret = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
-+	ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
- 	if (ret)
- 		return ret;
- 
--- 
-2.7.4
-
+cheers,
+-roger
