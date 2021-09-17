@@ -2,90 +2,353 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A19540F23B
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 08:20:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C86F40F243
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 08:24:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232539AbhIQGWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 02:22:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37782 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229474AbhIQGV5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 02:21:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F25B06103C;
-        Fri, 17 Sep 2021 06:20:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631859636;
-        bh=SUfmlBFiiigTcztXFPQlPQmAAGaznw7fdM5Uf1sxBRI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=IgrEbzLPeKZxGTW6apiYzlY5kwC7cFkYgVkzMgv6eJ1z/w9eRyHm7YR+LML8zI71N
-         DyXxuPRkX+U8ocM9rA3Q31anXmODGUqYI1R4FAC8k5mfhB8r/SiNabuXhIt/v3RiD6
-         YUvopDZs/6KkdQfZEfxa4od9gVDHRhjNrDfjv2scb0F6xQqRqNA+f8e81m5OPQRwrE
-         +Z96VmBXJiuK424Pq1aA0nxefd+8IsT/sgZxus9/grM+LqZK1pNWlYlnCOTAxa4bYO
-         fpwJjVn6i4gvK7Jt6q0zV6Jq06H8y9ujUDeN8Legp3c3Aio8Y1ihmmNP1nJf3/jqGj
-         2qmP8n3AxIAbg==
-Received: by mail-lf1-f53.google.com with SMTP id t10so22807865lfd.8;
-        Thu, 16 Sep 2021 23:20:35 -0700 (PDT)
-X-Gm-Message-State: AOAM530vKzmD5q713QWe4fhPjGV9j4l6YJMQUxJN22wXtNbxKDoZ3oZ8
-        cWf6h26D+4o5zk7+ULf4A0FaPJfQbp6pbSQ0mRs=
-X-Google-Smtp-Source: ABdhPJz//P1LNmStqogkfYSD37psrQnuLqjbASNi7Y6sSnhKxqRef1aXjg02gQp/3X7AXEpn4KL/QFuILqg0qtxf/kg=
-X-Received: by 2002:a2e:750b:: with SMTP id q11mr8099654ljc.172.1631859634334;
- Thu, 16 Sep 2021 23:20:34 -0700 (PDT)
+        id S232918AbhIQGZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 02:25:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232814AbhIQGZc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 02:25:32 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A3C5C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 23:24:11 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id v2so12592291oie.6
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 23:24:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=uvedJzBN/73IuBDGdWhBl3aDTDET6lrA/D9kWiWxZqk=;
+        b=WdEgGhg8h9k7yZRIZzKv9DC1NPduWAMEmRoYdtJpF+0st/v1okda/Jh4LupEZMWouV
+         fKRHg9NUOaWFcpno+jzFAEDA6vzPXewvHSYq943p7I+YcrL27AJLCpmkxUpS2pMhg6eU
+         /VdsdZ+XoDrJ4+GqMvyqWCYHthb4dFyN5Wt5A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=uvedJzBN/73IuBDGdWhBl3aDTDET6lrA/D9kWiWxZqk=;
+        b=8JUMlCwqcVMOdpJmE+GDhMTD7yHllvTm3gs9USg5eCmWUopJQ79l9yMf4uVjDh83Qf
+         Og0sz8lxTJn/tU5J1VKBGrGEEU211cID9cKAS00nF9xtf44c2EG0WaS4cwZJZrepHjsv
+         QlvRNYmTY8014Aplk/ySbiLBRGYbl/I3v28L8lJzXYOxkM4qwzlA527CEGi1ekAQkXVe
+         SSHCxsIEQA691O9wV39QZI9g1klCGzhFBWuoX7zDq0f+q03kwFX0m87KYgjzQ1VJDShD
+         4lTlqz87vD5URXsEKBWhRIU/HVy78tEmwYCftDRrWp+ivN0Y6YNjF2Fa55Yps9akwDGx
+         g0Ig==
+X-Gm-Message-State: AOAM531oszHRw9UkaHOpazD+fI4AQRu17eu7kot4J8EEhgOdteh42cwn
+        JlpRH37yP0MqUZkL6WNT1aNXGhif7U0aEhsWL+63Og==
+X-Google-Smtp-Source: ABdhPJxZ4Ic1TvCnSL3eLZ/vOckRMNFuHjhmq9VtOO0Bo6eNg6wu0pRIWhZM/fEglRmANAvXztt7Ab5n6x3aKknQSvA=
+X-Received: by 2002:aca:2310:: with SMTP id e16mr2817754oie.64.1631859850582;
+ Thu, 16 Sep 2021 23:24:10 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Thu, 16 Sep 2021 23:24:10 -0700
 MIME-Version: 1.0
-References: <20210917043838.3514789-1-linux@roeck-us.net> <20210917043838.3514789-2-linux@roeck-us.net>
-In-Reply-To: <20210917043838.3514789-2-linux@roeck-us.net>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Fri, 17 Sep 2021 14:20:23 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTQXD0Kz483FK+NT=OS8y0O4XqhZTRDNXJZP=o0T5htJGg@mail.gmail.com>
-Message-ID: <CAJF2gTQXD0Kz483FK+NT=OS8y0O4XqhZTRDNXJZP=o0T5htJGg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] csky: Select ARCH_WANT_FRAME_POINTERS only if
- compiler supports it
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-csky@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+In-Reply-To: <1631811353-503-2-git-send-email-pillair@codeaurora.org>
+References: <1631811353-503-1-git-send-email-pillair@codeaurora.org> <1631811353-503-2-git-send-email-pillair@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Thu, 16 Sep 2021 23:24:10 -0700
+Message-ID: <CAE-0n52t_1GGsFfDnrnwTx7j8RFdFLqZ2EGQY84D3UMbTeG69g@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] dt-bindings: remoteproc: qcom: adsp: Convert
+ binding to YAML
+To:     Rakesh Pillai <pillair@codeaurora.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, mathieu.poirier@linaro.org,
+        ohad@wizery.com, p.zabel@pengutronix.de, robh+dt@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sibis@codeaurora.org,
+        mpubbise@codeaurora.org, kuabhs@chromium.org,
+        Rakesh Pillai <pillair@qti.qualcomm.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Acked, thx. It'll in next-tree.
+Quoting Rakesh Pillai (2021-09-16 09:55:51)
+> diff --git a/Documentation/devicetree/bindings/remoteproc/qcom,hexagon-v56.yaml b/Documentation/devicetree/bindings/remoteproc/qcom,hexagon-v56.yaml
+> new file mode 100644
+> index 0000000..051da43
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/remoteproc/qcom,hexagon-v56.yaml
+> @@ -0,0 +1,267 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/remoteproc/qcom,hexagon-v56.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm Hexagon v56 Peripheral Image Loader
+> +
+> +maintainers:
+> +  - Bjorn Andersson <bjorn.andersson@linaro.org>
+> +
+> +description:
+> +  This document defines the binding for a component that loads and boots firmware
+> +  on the Qualcomm Technology Inc. Hexagon v56 core.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - qcom,qcs404-cdsp-pil
+> +      - qcom,sdm845-adsp-pil
+> +
+> +  reg:
+> +    maxItems: 1
+> +    description:
+> +      The base address and size of the qdsp6ss register
+> +
+> +  interrupts-extended:
+> +    minItems: 5
+> +    items:
+> +      - description: Watchdog interrupt
+> +      - description: Fatal interrupt
+> +      - description: Ready interrupt
+> +      - description: Handover interrupt
+> +      - description: Stop acknowledge interrupt
+> +
+> +  interrupt-names:
+> +    minItems: 5
+> +    items:
+> +      - const: wdog
+> +      - const: fatal
+> +      - const: ready
+> +      - const: handover
+> +      - const: stop-ack
+> +
+> +  clocks:
+> +    minItems: 7
+> +    maxItems: 8
+> +    description:
+> +      List of phandles and clock specifier pairs for the Hexagon,
+> +      per clock-names below.
+> +
+> +  clock-names:
+> +    minItems: 7
+> +    maxItems: 8
+> +
+> +  power-domains:
+> +    minItems: 1
+> +    items:
+> +      - description: CX power domain
+> +
+> +  resets:
+> +    minItems: 1
+> +    maxItems: 2
+> +    description:
+> +      reference to the list of resets for the Hexagon.
+> +
+> +  reset-names:
+> +    minItems: 1
+> +    maxItems: 2
+> +
+> +  memory-region:
+> +    maxItems: 1
+> +    description: Reference to the reserved-memory for the Hexagon core
+> +
+> +  qcom,halt-regs:
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +    description:
+> +      Phandle reference to a syscon representing TCSR followed by the
+> +      three offsets within syscon for q6, modem and nc halt registers.
+> +
+> +  qcom,smem-states:
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +    description: States used by the AP to signal the Hexagon core
+> +    items:
+> +      - description: Stop the modem
+> +
+> +  qcom,smem-state-names:
+> +    $ref: /schemas/types.yaml#/definitions/string-array
+> +    description: The names of the state bits used for SMP2P output
+> +    items:
+> +      - const: stop
+> +
+> +  glink-edge:
+> +    type: object
+> +    description:
+> +      Qualcomm G-Link subnode which represents communication edge, channels
+> +      and devices related to the ADSP.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts-extended
+> +  - interrupt-names
+> +  - clocks
+> +  - clock-names
+> +  - power-domains
+> +  - qcom,halt-regs
+> +  - memory-region
+> +  - qcom,smem-states
+> +  - qcom,smem-state-names
 
-On Fri, Sep 17, 2021 at 12:38 PM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> Compiling csky:allmodconfig with an upstream C compiler results
-> in the following error.
->
-> csky-linux-gcc: error:
->         unrecognized command-line option '-mbacktrace';
->         did you mean '-fbacktrace'?
->
-> Select ARCH_WANT_FRAME_POINTERS only if gcc supports it to
-> avoid the error.
->
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-> ---
->  arch/csky/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/csky/Kconfig b/arch/csky/Kconfig
-> index 9d4d898df76b..58ca3ef02bab 100644
-> --- a/arch/csky/Kconfig
-> +++ b/arch/csky/Kconfig
-> @@ -8,7 +8,7 @@ config CSKY
->         select ARCH_HAS_SYNC_DMA_FOR_DEVICE
->         select ARCH_USE_BUILTIN_BSWAP
->         select ARCH_USE_QUEUED_RWLOCKS
-> -       select ARCH_WANT_FRAME_POINTERS if !CPU_CK610
-> +       select ARCH_WANT_FRAME_POINTERS if !CPU_CK610 && $(cc-option,-mbacktrace)
->         select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT
->         select COMMON_CLK
->         select CLKSRC_MMIO
-> --
-> 2.33.0
->
+Is there some way to make sure that 'resets' and 'reset-names' is
+present when the compatible that defines them is used and not required
+otherwise?
 
+> +
+> +additionalProperties: false
+> +
+> +allOf:
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - qcom,sdm845-adsp-pil
+> +    then:
+> +      properties:
+> +        clocks:
+> +          items:
+> +            - description: XO clock
+> +            - description: SWAY clock
+> +            - description: LPASS AHBS AON clock
+> +            - description: LPASS AHBM AON clock
+> +            - description: QDSP6SS XO clock
+> +            - description: QDSP6SS SLEEP clock
+> +            - description: QDSP6SS CORE clock
+> +        clock-names:
+> +          items:
+> +            - const: xo
+> +            - const: sway_cbcr
+> +            - const: lpass_ahbs_aon_cbcr
+> +            - const: lpass_ahbm_aon_cbcr
+> +            - const: qdsp6ss_xo
+> +            - const: qdsp6ss_sleep
+> +            - const: qdsp6ss_core
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - qcom,qcs404-cdsp-pil
+> +    then:
+> +      properties:
+> +        clocks:
+> +          items:
+> +            - description: XO clock
+> +            - description: SWAY clock
+> +            - description: TBU clock
+> +            - description: BIMC clock
+> +            - description: AHB AON clock
+> +            - description: Q6SS SLAVE clock
+> +            - description: Q6SS MASTER clock
+> +            - description: Q6 AXIM clock
+> +        clock-names:
+> +          items:
+> +            - const: xo
+> +            - const: sway
+> +            - const: tbu
+> +            - const: bimc
+> +            - const: ahb_aon
+> +            - const: q6ss_slave
+> +            - const: q6ss_master
+> +            - const: q6_axim
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - qcom,sc7280-wpss-pil
 
--- 
-Best Regards
- Guo Ren
+This should be documented above in the compatible list?
 
-ML: https://lore.kernel.org/linux-csky/
+> +    then:
+> +      properties:
+> +        clocks:
+> +          items:
+> +            - description: GCC WPSS AHB BDG Master clock
+> +            - description: GCC WPSS AHB clock
+> +            - description: GCC WPSS RSCP clock
+> +        clock-names:
+> +          items:
+> +            - const: gcc_wpss_ahb_bdg_mst_clk
+> +            - const: gcc_wpss_ahb_clk
+> +            - const: gcc_wpss_rscp_clk
+
+Is the 'gcc_wpss' prefix important? It would be shorter if it wasn't
+there.
+
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - qcom,sdm845-adsp-pil
+> +    then:
+> +      properties:
+> +        resets:
+> +          items:
+> +            - description: PDC SYNC
+> +            - description: CC LPASS
+> +        reset-names:
+> +          items:
+> +            - const: pdc_sync
+> +            - const: cc_lpass
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - qcom,qcs404-cdsp-pil
+> +    then:
+> +      properties:
+> +        resets:
+> +          items:
+> +            - description: CDSP restart
+> +        reset-names:
+> +          items:
+> +            - const: restart
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/clock/qcom,rpmh.h>
+> +    #include <dt-bindings/clock/qcom,gcc-sdm845.h>
+> +    #include <dt-bindings/clock/qcom,lpass-sdm845.h>
+> +    #include <dt-bindings/power/qcom-rpmpd.h>
+> +    #include <dt-bindings/reset/qcom,sdm845-pdc.h>
+> +    #include <dt-bindings/reset/qcom,sdm845-aoss.h>
+> +    remoteproc@17300000 {
+> +        compatible = "qcom,sdm845-adsp-pil";
+> +        reg = <0x17300000 0x40c>;
+> +
+> +        interrupts-extended = <&intc GIC_SPI 162 IRQ_TYPE_EDGE_RISING>,
+> +                <&adsp_smp2p_in 0 IRQ_TYPE_EDGE_RISING>,
+> +                <&adsp_smp2p_in 1 IRQ_TYPE_EDGE_RISING>,
+> +                <&adsp_smp2p_in 2 IRQ_TYPE_EDGE_RISING>,
+> +                <&adsp_smp2p_in 3 IRQ_TYPE_EDGE_RISING>;
+> +        interrupt-names = "wdog", "fatal", "ready",
+> +                "handover", "stop-ack";
+> +
+> +        clocks = <&rpmhcc RPMH_CXO_CLK>,
+> +                 <&gcc GCC_LPASS_SWAY_CLK>,
+> +                 <&lpasscc LPASS_Q6SS_AHBS_AON_CLK>,
+> +                 <&lpasscc LPASS_Q6SS_AHBM_AON_CLK>,
+> +                 <&lpasscc LPASS_QDSP6SS_XO_CLK>,
+> +                 <&lpasscc LPASS_QDSP6SS_SLEEP_CLK>,
+> +                 <&lpasscc LPASS_QDSP6SS_CORE_CLK>;
+> +        clock-names = "xo", "sway_cbcr",
+> +                "lpass_ahbs_aon_cbcr",
+> +                "lpass_ahbm_aon_cbcr", "qdsp6ss_xo",
+> +                "qdsp6ss_sleep", "qdsp6ss_core";
+> +
+> +        power-domains = <&rpmhpd SDM845_CX>;
+> +
+> +        resets = <&pdc_reset PDC_AUDIO_SYNC_RESET>,
+> +                 <&aoss_reset AOSS_CC_LPASS_RESTART>;
+> +        reset-names = "pdc_sync", "cc_lpass";
+> +
+> +        qcom,halt-regs = <&tcsr_mutex_regs 0x22000>;
+> +
+> +        memory-region = <&pil_adsp_mem>;
+> +
+> +        qcom,smem-states = <&adsp_smp2p_out 0>;
+> +        qcom,smem-state-names = "stop";
+> +    };
+
+Should there be two more examples for the other compatible strings here?
