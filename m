@@ -2,98 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5058440FFB7
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 21:20:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E1AC40FFB1
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 21:16:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242524AbhIQTVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 15:21:32 -0400
-Received: from cloud.peff.net ([104.130.231.41]:50126 "EHLO cloud.peff.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242389AbhIQTV3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 15:21:29 -0400
-X-Greylist: delayed 401 seconds by postgrey-1.27 at vger.kernel.org; Fri, 17 Sep 2021 15:21:28 EDT
-Received: (qmail 11786 invoked by uid 109); 17 Sep 2021 19:13:25 -0000
-Received: from Unknown (HELO peff.net) (10.0.1.2)
- by cloud.peff.net (qpsmtpd/0.94) with ESMTP; Fri, 17 Sep 2021 19:13:25 +0000
-Authentication-Results: cloud.peff.net; auth=none
-Received: (qmail 20772 invoked by uid 111); 17 Sep 2021 19:13:24 -0000
-Received: from coredump.intra.peff.net (HELO sigill.intra.peff.net) (10.0.0.2)
- by peff.net (qpsmtpd/0.94) with (TLS_AES_256_GCM_SHA384 encrypted) ESMTPS; Fri, 17 Sep 2021 15:13:24 -0400
-Authentication-Results: peff.net; auth=none
-Date:   Fri, 17 Sep 2021 15:13:24 -0400
-From:   Jeff King <peff@peff.net>
-To:     Rolf Eike Beer <eb@emlix.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Junio C Hamano <gitster@pobox.com>,
-        Git List Mailing <git@vger.kernel.org>,
-        Tobias Ulmer <tu@emlix.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: data loss when doing ls-remote and piped to command
-Message-ID: <YUTo1BTp7BXOw6K9@coredump.intra.peff.net>
-References: <6786526.72e2EbofS7@devpool47>
- <CAHk-=wgyk0mwYcMRC8HakzoAKL2Y3gwzD433tqKYYhV+r1PLnA@mail.gmail.com>
- <xmqq7dfgtfpt.fsf@gitster.g>
- <2722184.bRktqFsmb4@devpool47>
+        id S241157AbhIQTSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 15:18:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229475AbhIQTSM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 15:18:12 -0400
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6FF8C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 12:16:49 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id d11so7468621ilc.8
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 12:16:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0utUDHU5p18JMyukMfxcGrVkMwkedcIXc7VizY5R+P8=;
+        b=W6l7KgDGXz2lMw4Pq3SmZRzZhi+sOvLppPrrQvcigEMP4RtEnMaBWKWGSBmHfBO3LC
+         sFMYWN9TkCDCbG+M53RTNjf8/kcxMH0crDBaw2s7umnlF9bWLvJ+CQzy7B+npXaYQ0Sh
+         PlTmeEXaTpa4DTUjI/bqyel6UpFNJC3MlxiS8wgzdPslzlK5FzvO6ye8fjRxMO23N5kL
+         MzGq4hmppZQw9nqNHmzAE09XiSBh4AMYsKIkuZxUTGGi9vSJ09BodDje6ArBokAgyxl0
+         +iL1Wkh4fq8/f7JfV6Fc5jcymST7wWHIPuCgfTpRylNpV/tLGqCVfYKETYH2UbbS0MuW
+         28og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0utUDHU5p18JMyukMfxcGrVkMwkedcIXc7VizY5R+P8=;
+        b=rhmvG9R0DG1Ra/hQyPe7q4s2Xj8DQ5WB5tb+YSEeFC+h8f1FWFfMBFxE1ikXvwzaf/
+         POe5stPD/52nvOYFO6uWeKQ0zj7WK7y05iTMUfL6WGYlBEr+5KTiyIDB1478CUmYx+r0
+         h50I5Nl/mtp5VAxD8/TK435ylE5Qt2nz5hC+2LI0KgyKSYx0SZXxNQKCrKGkyl1E/c16
+         jUkPHnwIOFu2ccdHsAvYXj456dmTSaDsvIEU47ltHKRWH0BftqIVT8GmbUkn3pE+pPSI
+         xCC2mmb6YaVuZBMsRXYKpbdBFyZcMzW3inPIYb0RbXrYWawQzNQ/N5jlPbI+RFGaIyWU
+         5hUA==
+X-Gm-Message-State: AOAM531K82BaaCJgOvaSyD1eQpFcuYySs/CXLLnrHL7/g8rmXuVnb4VF
+        ZxZqu8r3q6KGsyetcT9p7tFzjlipPO2RiNyc+TaqfA==
+X-Google-Smtp-Source: ABdhPJzLIBUHnD9ftwAcLNqrDK0tQV7kzf8ZkV8GyaORq4DC2PSMbOLz8sfI65gBqSyhioStYsBdCUul48YNGW+ZoQ4=
+X-Received: by 2002:a92:c605:: with SMTP id p5mr8982501ilm.53.1631906208787;
+ Fri, 17 Sep 2021 12:16:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <2722184.bRktqFsmb4@devpool47>
+References: <20210916060525.1890638-1-irogers@google.com> <f7bbc59b-794f-2675-a044-1e3a58ad1495@huawei.com>
+In-Reply-To: <f7bbc59b-794f-2675-a044-1e3a58ad1495@huawei.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Fri, 17 Sep 2021 12:16:37 -0700
+Message-ID: <CAP-5=fUAxfHb8fNjpPKthztJhB7Q3yUZucLS-6kKZtq-iNOVoA@mail.gmail.com>
+Subject: Re: [PATCH v2] perf test: Workload test of metric and metricgroups
+To:     John Garry <john.garry@huawei.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        eranian@google.com, Paul Clarke <pc@us.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 08:59:07AM +0200, Rolf Eike Beer wrote:
+On Thu, Sep 16, 2021 at 12:37 AM John Garry <john.garry@huawei.com> wrote:
+>
+> On 16/09/2021 07:05, Ian Rogers wrote:
+> > Test every metric and metricgroup with 'true' as a workload.
+> >
+> > Signed-off-by: Ian Rogers<irogers@google.com>
+>
+> Reviewed-by: John Garry <john.garry@huawei.com>
+>
+> Note that I also had a local test for pmu events:
+> for e in `$PERF list --raw-dump pmu`; do
+>    echo "Testing $e"
+>    result=$($PERF stat -v -e "$e" perf bench internals synthesize)
+>    if [[ "$result" =~ "$e" ]]; then
+>      echo "Event not printed: $e"
+>      exit 1
+>    fi
+> done
+>
+> Is there any value in upstreaming this? I could not see same already
+> there. Or else make your new script generic, so that it accepts an
+> argument whether to test events or metrics or metricgroups
 
-> What you need is a _fast_ git server. kernel.org or github.com seem to be too 
-> slow for this if you don't sit somewhere in their datacenter. Use something in 
-> your local network, a Xeon E5 with lot's of RAM and connected with 1GBit/s 
-> Ethernet in my case.
+It is not easy to make a generic script with the current shell test
+infrastructure. I made a variant of this test:
+https://lore.kernel.org/linux-perf-users/20210917184240.2181186-2-irogers@google.com/T/#u
+For skylake it ran for 1m15s and so it may be too slow. Perhaps we
+need to add to the test infrastructure with some kind of speed flag.
 
-One thing that puzzled me here: is the bad output between the server and
-ls-remote, or between ls-remote and its output pipe?
-
-I'd guess it has to be the latter, since otherwise ls-remote itself
-would barf with an error message.
-
-In that case, I'd think "git ls-remote ." would give you the fastest
-outcome, because it's talking to upload-pack on the local box. But I'm
-also confused how the speed could matter, as ls-remote reads the entire
-input into an in-memory array, and then formats it.
-
-We do the write using printf(). Is it possible your libc's stdio may
-drop bytes when the pipe is full, rather than blocking? In general, I'd
-expect write() to block, so libc doesn't have to care at all. But might
-there be something in your environment putting the pipe into
-non-blocking mode, and we get EAGAIN or something? If so, I'd expect
-stdio to return the error.
-
-Maybe patching Git like this would help:
-
-diff --git a/builtin/ls-remote.c b/builtin/ls-remote.c
-index f4fd823af8..5936b2b42c 100644
---- a/builtin/ls-remote.c
-+++ b/builtin/ls-remote.c
-@@ -146,7 +146,8 @@ int cmd_ls_remote(int argc, const char **argv, const char *prefix)
- 		const struct ref_array_item *ref = ref_array.items[i];
- 		if (show_symref_target && ref->symref)
- 			printf("ref: %s\t%s\n", ref->symref, ref->refname);
--		printf("%s\t%s\n", oid_to_hex(&ref->objectname), ref->refname);
-+		if (printf("%s\t%s\n", oid_to_hex(&ref->objectname), ref->refname) < 0)
-+			die_errno("printf failed");
- 		status = 0; /* we found something */
- 	}
- 
-
-> And the reader must be "somewhat" slow. Using sha256sum works reliably for me. 
-> Using "wc -l" does not, also md5sum and sha1sum are too fast as it seems.
-
-If a slow pipe is involved, maybe:
-
-  git ls-remote . | (sleep 5; cat) | sha256sum
-
-would help reproduce. Assuming ls-remote's output is bigger than your
-system pipe buffer (which is another interesting thing to check), then
-it should block for 5 seconds on write() midway through the output,
-which you can verify with strace.
-
--Peff
+Thanks,
+Ian
