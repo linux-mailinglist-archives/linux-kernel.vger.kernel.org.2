@@ -2,69 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D558C40FC6C
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 17:32:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 990FB40FC80
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 17:34:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241014AbhIQPdw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 11:33:52 -0400
-Received: from mga12.intel.com ([192.55.52.136]:14255 "EHLO mga12.intel.com"
+        id S242036AbhIQPgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 11:36:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43032 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240348AbhIQPdu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 11:33:50 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10110"; a="202315945"
-X-IronPort-AV: E=Sophos;i="5.85,301,1624345200"; 
-   d="scan'208";a="202315945"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2021 08:32:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,301,1624345200"; 
-   d="scan'208";a="434145356"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga006.jf.intel.com with ESMTP; 17 Sep 2021 08:32:27 -0700
-Received: from [10.213.15.224] (mtkaczyk-MOBL1.ger.corp.intel.com [10.213.15.224])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id CAF19580A85;
-        Fri, 17 Sep 2021 08:32:26 -0700 (PDT)
-Subject: Re: [PATCH 0/2] Use MD_BROKEN for redundant arrays
-From:   "Tkaczyk, Mariusz" <mariusz.tkaczyk@linux.intel.com>
-To:     song@kernel.org
-Cc:     linux-kernel@vger.kernel.org
-References: <20210917151831.3000-1-mariusz.tkaczyk@linux.intel.com>
-Message-ID: <4f710209-005d-eaf0-e878-3be94427bab8@linux.intel.com>
-Date:   Fri, 17 Sep 2021 17:32:24 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S242482AbhIQPe1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 11:34:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C941A610A7;
+        Fri, 17 Sep 2021 15:33:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631892784;
+        bh=9MHIk2t5x7NEHeTxPOE1It1AGkcx0ikE4Sxn9rPtHQU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=X0GMxlW2/qRnn9KvjDA2e4/N8ThLppKFZdLCMZO16lyjwnRDCZ3dlTfK0bNMGaFEt
+         Ns0l2VkaNU0c5R63DCWMVeXuMxtKLB7QXHZXuU/VluNMbCD10Amr/SFtTradft6PT/
+         kIbUxdZE/NcwzoLf6oWvmxuhaA/Vg56JS5ZuGnm0yFwSNcT1IyKAW/jZ4jHltT+FFc
+         PW6fNq+b7CdfzUjyAoIJi5/Xyk98g3z6nUFpI9bc/nTwzafC1tAGdTRHv0mWZbtc07
+         ypQtB/mSa0xe+6Stoo52k7dLskqy/4Xamxj4/ut6gDseyOwj1njfwqYpmVWNVMAHqj
+         rY491xXQ9RYjQ==
+Date:   Fri, 17 Sep 2021 08:33:04 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Shiyang Ruan <ruansy.fnst@fujitsu.com>, linux-xfs@vger.kernel.org,
+        dan.j.williams@intel.com, david@fromorbit.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        nvdimm@lists.linux.dev, rgoldwyn@suse.de, viro@zeniv.linux.org.uk,
+        willy@infradead.org
+Subject: Re: [PATCH v9 7/8] xfs: support CoW in fsdax mode
+Message-ID: <20210917153304.GB10250@magnolia>
+References: <20210915104501.4146910-1-ruansy.fnst@fujitsu.com>
+ <20210915104501.4146910-8-ruansy.fnst@fujitsu.com>
+ <20210916002227.GD34830@magnolia>
+ <20210916063251.GE13306@lst.de>
 MIME-Version: 1.0
-In-Reply-To: <20210917151831.3000-1-mariusz.tkaczyk@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210916063251.GE13306@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17.09.2021 17:18, Mariusz Tkaczyk wrote:
-> Hi Song,
-> This patchset adds usage of MD_BROKEN for each redundant level.
-> This should simplify IO failure stack when md device is failed and
-> fixes raid456 bug.
+On Thu, Sep 16, 2021 at 08:32:51AM +0200, Christoph Hellwig wrote:
+> On Wed, Sep 15, 2021 at 05:22:27PM -0700, Darrick J. Wong wrote:
+> > >  		xfs_ilock(XFS_I(inode), XFS_MMAPLOCK_SHARED);
+> > >  		ret = dax_iomap_fault(vmf, pe_size, &pfn, NULL,
+> > >  				(write_fault && !vmf->cow_page) ?
+> > > -				 &xfs_direct_write_iomap_ops :
+> > > -				 &xfs_read_iomap_ops);
+> > > +					&xfs_dax_write_iomap_ops :
+> > > +					&xfs_read_iomap_ops);
+> > 
+> > Hmm... I wonder if this should get hoisted to a "xfs_dax_iomap_fault"
+> > wrapper like you did for xfs_iomap_zero_range?
 > 
-> Mariusz Tkaczyk (2):
->    md: Set MD_BROKEN for RAID1 and RAID10
->    raid5: introduce MD_BROKEN
-> 
->   drivers/md/md.c     | 16 ++++++++++------
->   drivers/md/md.h     |  4 ++--
->   drivers/md/raid1.c  |  1 +
->   drivers/md/raid10.c |  1 +
->   drivers/md/raid5.c  | 34 ++++++++++++++++------------------
->   5 files changed, 30 insertions(+), 26 deletions(-)
-> 
+> This has just a single users, so the classic argument won't apply.  That
+> being said __xfs_filemap_fault is a complete mess to due the calling
+> conventions of the various VFS methods multiplexed into it.  So yes,
+> splitting out a xfs_dax_iomap_fault to wrap the above plus the
+> dax_finish_sync_fault call might not actually be a bad idea nevertheless.
 
-Hi,
-Please ignore it. I added wrong list.
-Sorry for noise.
+Agree.
 
-Thanks,
-Mariusz
+> > > +	struct xfs_inode	*ip = XFS_I(inode);
+> > > +	/*
+> > > +	 * Usually we use @written to indicate whether the operation was
+> > > +	 * successful.  But it is always positive or zero.  The CoW needs the
+> > > +	 * actual error code from actor().  So, get it from
+> > > +	 * iomap_iter->processed.
+> > 
+> > Hm.  All six arguments are derived from the struct iomap_iter, so maybe
+> > it makes more sense to pass that in?  I'll poke around with this more
+> > tomorrow.
+> 
+> I'd argue against just changing the calling conventions for ->iomap_end
+> now.  The original iter patches from willy allowed passing a single
+> next callback combinging iomap_begin and iomap_end in a way that with
+> a little magic we can avoid the indirect calls entirely.  I think we'll
+> need to experiment with that that a bit and see if is worth the effort
+> first.  I plan to do that but I might not get to it immediate.  If some
+> else wants to take over I'm fine with that.
+
+Ah, I forgot that.  Yay Etch-a-Sketch brain. <shake> -ENODATA ;)
+
+> > >  static int
+> > >  xfs_buffered_write_iomap_begin(
+> > 
+> > Also, we have an related request to drop the EXPERIMENTAL tag for
+> > non-DAX reflink.  Whichever patch enables dax+reflink for xfs needs to
+> > make it clear that reflink + any possibility of DAX emits an
+> > EXPERIMENTAL warning.
+> 
+> More importantly before we can merge this series we also need the VM
+> level support for reflink-aware reverse mapping.  So while this series
+> here is no in a good enough shape I don't see how we could merge it
+> without that other series as we'd have to disallow mmap for reflink+dax
+> files otherwise.
+
+I've forgotten why we need mm level reverse mapping again?  The pmem
+poison stuff can use ->media_failure (or whatever it was called,
+memory_failure?) to find all the owners and notify them.  Was there
+some other accounting reason that fell out of my brain?
+
+I'm more afraid of 'sharing pages between files needs mm support'
+sparking another multi-year folioesque fight with the mm people.
+
+--D
