@@ -2,168 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69C7640F89C
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 14:59:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B501640F89E
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 15:00:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234629AbhIQNAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 09:00:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244946AbhIQNAd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 09:00:33 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79652C0613DF
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 05:58:43 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id n27so13920171oij.0
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 05:58:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+0q9dMDiPL7l1Xvh/pCQyuBurf5KBV4txXHcebk3J7o=;
-        b=ohm9YZmHRMwJytXYWGsib848qv2LuXyfVNj9Rfnwh4O/AnsOZuhEpoKTBsRnAOSe27
-         rhuyFk06DuhpGHFvguVRPECEWimf0x1ipOriE1T6yIf+H2fOpigyuJFHWtQAapj06rFI
-         vBRWqICiQ9/HifxhnF1CAKmJbTo0Y+DddrHt36tVt1LOlreMPPXM5vwVBki0BoLSNkVz
-         GlxEWd04wa5ieQYw1IyJ0vUnYqcJNm8BZRF2PoPzeof0gkgJAd4qxR2Tp3mSc9IrHSvr
-         tYe66phQ6IA/lCym2y8btng9z4KycuKjxq8CmIg66NOksUmP5Jherl+in69QTI1d5UXp
-         YOjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+0q9dMDiPL7l1Xvh/pCQyuBurf5KBV4txXHcebk3J7o=;
-        b=4OQYq+KKp8a+L4x/9uiOq4afBllMque2l2xQLJagJbZ3sA7lZ3PuFSk9M+ZNAkcNdc
-         pw0rJ53vysS6LxmJTIH4+jodx2x0UMwUT35zH/QZKM6GEJrl5hiLqyhwwMXvYt1FRfZw
-         DbcM6KXYxsqH5mwOb7iFtDCNVc0519CahpmUw8VTOUXlVwFCdNjboSbEpJ6/4TdL6bw0
-         zyyqAKLwDc2RDAiGoS/V3SBsFgGqpjMYzU9TLe9V2s9nPS6PL/LTairydea4bKndONY7
-         udI+5kqvxXAo9nezck3HRlK9QkXfVvTSyNpYWiehlLtBWbEAB3tRss/iUDuBCoGmVOFe
-         P92g==
-X-Gm-Message-State: AOAM530Wta8AUT1xVaFAz0rauPPEpGnMamf9nT8BQXguhqi9weL3RI2a
-        9holzZMZB2C14cOIlWe4/6q8rTCfRFPsPu3CBk+D5g==
-X-Google-Smtp-Source: ABdhPJx6EkYfCT+AGBJzBynZrLClpn/6DUBafoMvuALv1yPubMRpPuqh+A8pH396wzHAoSzKRM7gxkBmSHJRKElQk+s=
-X-Received: by 2002:aca:1109:: with SMTP id 9mr3759856oir.109.1631883522559;
- Fri, 17 Sep 2021 05:58:42 -0700 (PDT)
+        id S1344506AbhIQNBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 09:01:11 -0400
+Received: from mga18.intel.com ([134.134.136.126]:14574 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243653AbhIQNBC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 09:01:02 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10109"; a="209883032"
+X-IronPort-AV: E=Sophos;i="5.85,301,1624345200"; 
+   d="scan'208";a="209883032"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2021 05:58:56 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,301,1624345200"; 
+   d="scan'208";a="546363552"
+Received: from mylly.fi.intel.com (HELO [10.237.72.199]) ([10.237.72.199])
+  by FMSMGA003.fm.intel.com with ESMTP; 17 Sep 2021 05:58:54 -0700
+Subject: Re: [iio:testing 40/43] ld.lld: error: undefined symbol: __udivdi3
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Cc:     kernel test robot <lkp@intel.com>, llvm@lists.linux.dev,
+        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        David Lechner <david@lechnology.com>,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+References: <202109120656.fiJqCh8H-lkp@intel.com>
+ <20210914134103.00006d23@Huawei.com> <YUCpDDkNSqhlaThq@shinobu>
+From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Message-ID: <6fade104-0f00-3ebf-827c-8f6d830d4ac5@linux.intel.com>
+Date:   Fri, 17 Sep 2021 15:58:53 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210917110756.1121272-1-elver@google.com>
-In-Reply-To: <20210917110756.1121272-1-elver@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Fri, 17 Sep 2021 14:58:30 +0200
-Message-ID: <CACT4Y+Zzxo19YH-tFOPHGJ25zP=pdjSSjzjQNZTG62bCjZgz3w@mail.gmail.com>
-Subject: Re: [PATCH 1/3] kfence: count unexpectedly skipped allocations
-To:     Marco Elver <elver@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Potapenko <glider@google.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Taras Madan <tarasmadan@google.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        kasan-dev@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YUCpDDkNSqhlaThq@shinobu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Sept 2021 at 13:08, 'Marco Elver' via kasan-dev
-<kasan-dev@googlegroups.com> wrote:
->
-> Maintain a counter to count allocations that are skipped due to being
-> incompatible (oversized, incompatible gfp flags) or no capacity.
->
-> This is to compute the fraction of allocations that could not be
-> serviced by KFENCE, which we expect to be rare.
->
-> Signed-off-by: Marco Elver <elver@google.com>
-> ---
->  mm/kfence/core.c | 20 ++++++++++++++++----
->  1 file changed, 16 insertions(+), 4 deletions(-)
->
-> diff --git a/mm/kfence/core.c b/mm/kfence/core.c
-> index 7a97db8bc8e7..2755800f3e2a 100644
-> --- a/mm/kfence/core.c
-> +++ b/mm/kfence/core.c
-> @@ -112,6 +112,8 @@ enum kfence_counter_id {
->         KFENCE_COUNTER_FREES,
->         KFENCE_COUNTER_ZOMBIES,
->         KFENCE_COUNTER_BUGS,
-> +       KFENCE_COUNTER_SKIP_INCOMPAT,
-> +       KFENCE_COUNTER_SKIP_CAPACITY,
->         KFENCE_COUNTER_COUNT,
->  };
->  static atomic_long_t counters[KFENCE_COUNTER_COUNT];
-> @@ -121,6 +123,8 @@ static const char *const counter_names[] = {
->         [KFENCE_COUNTER_FREES]          = "total frees",
->         [KFENCE_COUNTER_ZOMBIES]        = "zombie allocations",
->         [KFENCE_COUNTER_BUGS]           = "total bugs",
-> +       [KFENCE_COUNTER_SKIP_INCOMPAT]  = "skipped allocations (incompatible)",
-> +       [KFENCE_COUNTER_SKIP_CAPACITY]  = "skipped allocations (capacity)",
->  };
->  static_assert(ARRAY_SIZE(counter_names) == KFENCE_COUNTER_COUNT);
->
-> @@ -272,7 +276,7 @@ static void *kfence_guarded_alloc(struct kmem_cache *cache, size_t size, gfp_t g
->         }
->         raw_spin_unlock_irqrestore(&kfence_freelist_lock, flags);
->         if (!meta)
-> -               return NULL;
-> +               goto no_capacity;
->
->         if (unlikely(!raw_spin_trylock_irqsave(&meta->lock, flags))) {
->                 /*
-> @@ -289,7 +293,7 @@ static void *kfence_guarded_alloc(struct kmem_cache *cache, size_t size, gfp_t g
->                 list_add_tail(&meta->list, &kfence_freelist);
->                 raw_spin_unlock_irqrestore(&kfence_freelist_lock, flags);
->
-> -               return NULL;
-> +               goto no_capacity;
+On 9/14/21 4:52 PM, William Breathitt Gray wrote:
+> On Tue, Sep 14, 2021 at 01:41:03PM +0100, Jonathan Cameron wrote:
+>> On Sun, 12 Sep 2021 06:43:58 +0800
+>> kernel test robot <lkp@intel.com> wrote:
+>>
+>>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git testing
+>>> head:   77a4a019161bcba51af1dbbeadc04795840fb3e0
+>>> commit: f7da4339ca510e4476ea35cb9fd44f3f190706c5 [40/43] counter: Internalize sysfs interface code
+>>> config: i386-randconfig-r022-20210911 (attached as .config)
+>>> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 261cbe98c38f8c1ee1a482fe76511110e790f58a)
+>>> reproduce (this is a W=1 build):
+>>>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>>>          chmod +x ~/bin/make.cross
+>>>          # https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git/commit/?id=f7da4339ca510e4476ea35cb9fd44f3f190706c5
+>>>          git remote add iio https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git
+>>>          git fetch --no-tags iio testing
+>>>          git checkout f7da4339ca510e4476ea35cb9fd44f3f190706c5
+>>>          # save the attached .config to linux build tree
+>>>          mkdir build_dir
+>>>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross O=build_dir ARCH=i386 SHELL=/bin/bash
+>>>
+>>> If you fix the issue, kindly add following tag as appropriate
+>>> Reported-by: kernel test robot <lkp@intel.com>
+>>>
+>>> All errors (new ones prefixed by >>):
+>>>
+>>>>> ld.lld: error: undefined symbol: __udivdi3
+>>>     >>> referenced by intel-qep.c:290 (drivers/counter/intel-qep.c:290)
+>>>     >>>               counter/intel-qep.o:(intel_qep_spike_filter_ns_write) in archive drivers/built-in.a
+>> This is a result of a change to passing in a u64 instead of a string.   I've applied a fix
+>> that uses do_div() and pushed out as testing again.
+>>
+>> William, please sanity check that fix looks right to you.
+>>
+>> Thanks,
+>>
+>> Jonathan
+> 
+> Your do_div() change seems sane to me; would div_u64_rem() work here as
+> well, or is do_div preferred because we're not using the remainder?
+> 
+> I'm CCing Jarkko Nikula as well to keep them in the loop.
+> 
+Yeah I believe do_div() is the right fix for the "counter: Internalize 
+sysfs interface code" since the calculation remains the same.
 
-Do we expect this case to be so rare that we don't care?
-Strictly speaking it's not no_capacity. So if I see large no_capacity
-numbers, the first question I will have is: is it really no_capacity,
-or some other case that we mixed together?
+I realized now the filter length has been rounded down. E.g. values 
+20-29 from user space set 20 ns long filter in HW. Perhaps better would 
+be to round up or to nearest but that goes to some future patch if needed.
 
-
-
->         }
->
->         meta->addr = metadata_to_pageaddr(meta);
-> @@ -349,6 +353,10 @@ static void *kfence_guarded_alloc(struct kmem_cache *cache, size_t size, gfp_t g
->         atomic_long_inc(&counters[KFENCE_COUNTER_ALLOCS]);
->
->         return addr;
-> +
-> +no_capacity:
-> +       atomic_long_inc(&counters[KFENCE_COUNTER_SKIP_CAPACITY]);
-> +       return NULL;
->  }
->
->  static void kfence_guarded_free(void *addr, struct kfence_metadata *meta, bool zombie)
-> @@ -740,8 +748,10 @@ void *__kfence_alloc(struct kmem_cache *s, size_t size, gfp_t flags)
->          * Perform size check before switching kfence_allocation_gate, so that
->          * we don't disable KFENCE without making an allocation.
->          */
-> -       if (size > PAGE_SIZE)
-> +       if (size > PAGE_SIZE) {
-> +               atomic_long_inc(&counters[KFENCE_COUNTER_SKIP_INCOMPAT]);
->                 return NULL;
-> +       }
->
->         /*
->          * Skip allocations from non-default zones, including DMA. We cannot
-> @@ -749,8 +759,10 @@ void *__kfence_alloc(struct kmem_cache *s, size_t size, gfp_t flags)
->          * properties (e.g. reside in DMAable memory).
->          */
->         if ((flags & GFP_ZONEMASK) ||
-> -           (s->flags & (SLAB_CACHE_DMA | SLAB_CACHE_DMA32)))
-> +           (s->flags & (SLAB_CACHE_DMA | SLAB_CACHE_DMA32))) {
-> +               atomic_long_inc(&counters[KFENCE_COUNTER_SKIP_INCOMPAT]);
->                 return NULL;
-> +       }
->
->         /*
->          * allocation_gate only needs to become non-zero, so it doesn't make
-> --
-> 2.33.0.464.g1972c5931b-goog
->
-> --
-> You received this message because you are subscribed to the Google Groups "kasan-dev" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/20210917110756.1121272-1-elver%40google.com.
+Jarkko
