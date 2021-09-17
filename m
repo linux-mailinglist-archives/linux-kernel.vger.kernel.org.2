@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75B6F4101C3
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 01:32:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87ADA4101BB
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 01:31:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345026AbhIQXcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 19:32:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46290 "EHLO
+        id S1344904AbhIQXct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 19:32:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343828AbhIQXcc (ORCPT
+        with ESMTP id S1344917AbhIQXcd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 19:32:32 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E3FDC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 16:31:09 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id c8-20020a7bc008000000b002e6e462e95fso11144286wmb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 16:31:09 -0700 (PDT)
+        Fri, 17 Sep 2021 19:32:33 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26A50C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 16:31:10 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id z184-20020a1c7ec1000000b003065f0bc631so11148467wmc.0
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 16:31:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=UmdvyLEdteIkPC5QKKxfnddWF+96+b6HOaR6hgtQ+98=;
-        b=fPG4Cv5Uhb/qiJ7VRWXsmhMrkbmLDVXB7W3cDnvR942kiqFdhxvwhAGFFTQp/V2rnu
-         34xsJIldCIXwhnCse40Uh90/9112mUB76L5ncWa6fkyDU8wMM8it4REkYqSehw4M07K5
-         JdOASLhJMEgsFasyUnnpHnKl58rHjOPT1pB+gEHAM+PH6xdItzflZ2Ks2+iW/sUhM2dK
-         UxpdhMQcCfPjkLrSSi4VU1Jk8vyT/g+DCIC6zGBxWCALcoaUoyV/07VYlr1T5rul1dGP
-         c5OQdp2B53INTA885vmTEYdg0lp8ph66yV3ocPPAngovl1xSA0VULvhGAP8q3JVLeRaa
-         kJbg==
+        bh=ZgAFzPYLLEIZyR5p3BVXRSzgw7xSTQ9/sY8TbwA9U/g=;
+        b=DF8gFNrfgriop0h3gtxixIfgZhJcSv7D4kN2CdJ3gvQWSMUAdnpOl5UCQk3hlgW9nZ
+         FKtOPglggtBT5tJPKR4bAdVbJniOlkpcFcWM40TcEkae7nN5lt+ZbVQe2UOlCoUFBo28
+         yzLPeeYFVXRNszGtnDZiqxaxKCTS+cG2yZAaplE7so0E89D3jhZPw7R280n62NtfClWZ
+         jXyNnA4Uapiwv3mmnEQY3fOV+iKYVdqVLVxWCMeIE26XS8hWeCfY3FoDCCqi9aUAu6Ef
+         QY1ZTdgZspMq8CPPE9YvRImGFFg7x2HVvJpipkOynWoidThNlEPHmqs2nPvfcyoihYq7
+         ozkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=UmdvyLEdteIkPC5QKKxfnddWF+96+b6HOaR6hgtQ+98=;
-        b=o6QGZ9TaTwwOfU6v/MNRwicv2S1n57b4DQymmdnx1ToeJ0N8Esl/yVdvpgVkCC6Ml9
-         cwejhDg6Dj++5TUwAXdLVgM6CXR4NxKmIkeTKQtpDuVkcOwlceRm534+aUGOc92BBfvz
-         b51h8qXzxdjphOZC7+CSiK2qTd+kYym+PVsJYFEt4KwMQK0X1v/NsgJBNLFV1C0/qjso
-         7DnIV77lrrcniEhwWgE8zalg40GqPfT0woQIwsPA5DCZMT4cs/6dniUNjYi5Ae2LoNhL
-         LmVpD8XwbCwJQBe9oDw/2yyyHkiqijOei05INkMVN9CUZ1FCdVaXg8rvk4R7dDSUMIQQ
-         KREw==
-X-Gm-Message-State: AOAM533k3uUNbuzTstTegEh54uCO4EWC+EFu3J/lu0KANN4YNY3Qtx1V
-        LVPDmnxzFcal2HsiknANsHo=
-X-Google-Smtp-Source: ABdhPJzUSA4n/1TO2wLXj2TeUzNPrVtIJe/scbo/joTg7zWVw75geD4RA56m+SHAlcemT7Nhh3Q70w==
-X-Received: by 2002:a1c:447:: with SMTP id 68mr17315856wme.137.1631921467907;
-        Fri, 17 Sep 2021 16:31:07 -0700 (PDT)
+        bh=ZgAFzPYLLEIZyR5p3BVXRSzgw7xSTQ9/sY8TbwA9U/g=;
+        b=7gw/ApiwDilDB3JqqE86MkJBCqVuwFH0XcuKSrkL9v/jHGtucCV1VlePeiLixlmHUw
+         5LtRdZclKCfRuymqbkdtLwsYG4Vf88WEI8FoA+0Mpe4NwCXnYnsSWTWK90nbyfaYR5sV
+         2i5tXF++gJ+laQWODx0e6nDEBsgk9N2akPCVrd6hosQEgYOC3iyZBI5S1kvWFvlldQVl
+         2JKNQ1gkz2nJMkq4NDtJHtQgroqFQTKfHVqVpBl3GhwGsoJuyEtOvtOENIxgj6IfeONB
+         CQd5abdUDPiMWVMwIYcXcF5LQndtEpctTjra8jCBUATKi8GVpPa+Mdd5ft2x0YFniRkn
+         zG0Q==
+X-Gm-Message-State: AOAM533asMFn2P3LN1yu8xLdTcvjN/e/CLzw1xyl5+KWcM7sO9jd87xe
+        ZHicqhncRBh6QOP6aA6N6waJZuewkUXbMQ==
+X-Google-Smtp-Source: ABdhPJy4l5AODdgDNkG7r7y+pBQmTYrSGKE4R5dHd9zdx/FHpZNIwa5QEMa93wFI++idBq9wrKo7Yg==
+X-Received: by 2002:a1c:f206:: with SMTP id s6mr13178113wmc.102.1631921468836;
+        Fri, 17 Sep 2021 16:31:08 -0700 (PDT)
 Received: from localhost.localdomain ([2a02:8108:96c0:3b88::ae40])
-        by smtp.gmail.com with ESMTPSA id w9sm7523148wmc.19.2021.09.17.16.31.07
+        by smtp.gmail.com with ESMTPSA id w9sm7523148wmc.19.2021.09.17.16.31.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 16:31:07 -0700 (PDT)
+        Fri, 17 Sep 2021 16:31:08 -0700 (PDT)
 From:   Michael Straube <straube.linux@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
         fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org,
         Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH 05/12] staging: r8188eu: remove unnecessary if statement
-Date:   Sat, 18 Sep 2021 01:30:41 +0200
-Message-Id: <20210917233048.31677-6-straube.linux@gmail.com>
+Subject: [PATCH 06/12] staging: r8188eu: remove more dead code from ODM_Write_DIG()
+Date:   Sat, 18 Sep 2021 01:30:42 +0200
+Message-Id: <20210917233048.31677-7-straube.linux@gmail.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210917233048.31677-1-straube.linux@gmail.com>
 References: <20210917233048.31677-1-straube.linux@gmail.com>
@@ -66,34 +66,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SupportPlatform is ODM_CE in this driver. Remove an unnecessary
-if statement that checks the SupportPlatform value.
+SupportICType is ODM_RTL8188E in this driver. Remove code that is
+never executed.
 
 Signed-off-by: Michael Straube <straube.linux@gmail.com>
 ---
- drivers/staging/r8188eu/hal/odm.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ drivers/staging/r8188eu/hal/odm.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
 diff --git a/drivers/staging/r8188eu/hal/odm.c b/drivers/staging/r8188eu/hal/odm.c
-index 5f98c797c59a..cac4f8ff7b63 100644
+index cac4f8ff7b63..48c10b78f4a5 100644
 --- a/drivers/staging/r8188eu/hal/odm.c
 +++ b/drivers/staging/r8188eu/hal/odm.c
-@@ -465,11 +465,10 @@ void ODM_Write_DIG(struct odm_dm_struct *pDM_Odm, u8 CurrentIGI)
- 	struct rtw_dig *pDM_DigTable = &pDM_Odm->DM_DigTable;
+@@ -466,12 +466,8 @@ void ODM_Write_DIG(struct odm_dm_struct *pDM_Odm, u8 CurrentIGI)
  
  	if (pDM_DigTable->CurIGValue != CurrentIGI) {
--		if (pDM_Odm->SupportPlatform & (ODM_CE | ODM_MP)) {
--			ODM_SetBBReg(pDM_Odm, ODM_REG(IGI_A, pDM_Odm), ODM_BIT(IGI, pDM_Odm), CurrentIGI);
--			if (pDM_Odm->SupportICType != ODM_RTL8188E)
--				ODM_SetBBReg(pDM_Odm, ODM_REG(IGI_B, pDM_Odm), ODM_BIT(IGI, pDM_Odm), CurrentIGI);
--		}
-+		ODM_SetBBReg(pDM_Odm, ODM_REG(IGI_A, pDM_Odm), ODM_BIT(IGI, pDM_Odm), CurrentIGI);
-+		if (pDM_Odm->SupportICType != ODM_RTL8188E)
-+			ODM_SetBBReg(pDM_Odm, ODM_REG(IGI_B, pDM_Odm), ODM_BIT(IGI, pDM_Odm), CurrentIGI);
-+
+ 		ODM_SetBBReg(pDM_Odm, ODM_REG(IGI_A, pDM_Odm), ODM_BIT(IGI, pDM_Odm), CurrentIGI);
+-		if (pDM_Odm->SupportICType != ODM_RTL8188E)
+-			ODM_SetBBReg(pDM_Odm, ODM_REG(IGI_B, pDM_Odm), ODM_BIT(IGI, pDM_Odm), CurrentIGI);
+-
  		pDM_DigTable->CurIGValue = CurrentIGI;
  	}
- /*  Add by Neil Chen to enable edcca to MP Platform */
+-/*  Add by Neil Chen to enable edcca to MP Platform */
+ }
+ 
+ /* Need LPS mode for CE platform --2012--08--24--- */
 -- 
 2.33.0
 
