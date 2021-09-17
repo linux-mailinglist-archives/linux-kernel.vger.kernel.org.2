@@ -2,128 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D888B40FC26
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 17:23:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 558EE40FC2B
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 17:24:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234275AbhIQPYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 11:24:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49088 "EHLO
+        id S230435AbhIQPZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 11:25:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233106AbhIQPYt (ORCPT
+        with ESMTP id S229986AbhIQPZy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 11:24:49 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3907C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:23:26 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id i25so34841730lfg.6
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:23:26 -0700 (PDT)
+        Fri, 17 Sep 2021 11:25:54 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C321AC061768
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:24:31 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id g19-20020a1c9d13000000b003075062d4daso7192081wme.0
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:24:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=Qme74H7nTKZWlp83x/X8Ld8D+VkxfyGb4OUt72XjpFA=;
-        b=OtB0kyPv+JFXBLnXN0XEadsFWqc30HEaRDwF/JCOjutgsVRFnqKE0PXMpt/e7jpD01
-         CGHB2+GcbMlnn/+i0X2YJn5Hj/x3xObEAbXeYQ0qMX2HzsMP04nL3qE7dMysbW7MVj6f
-         Y5pOjqmfrmDPx/YVI7GVWqHhl2aguApFxxVFB77FUoFKw4wl6TltxjD0d3LhBXVP3ItU
-         lLLOFcDANp+HFuw7mxIOMXucjhkZHRb4HNKRirS7foi0FtHRyEhPGxycjerslv3iUTWu
-         oPLjNU36vcEcspz9fpfkZBoJ8c7Hwwi38Aa22YupyGeoQdqfyNoq1N9wvRTbK9TG0DRo
-         DD8w==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UUmIc1Zm6f0TtwRpO+dF5pS2Y2cDE7pjg0cLbOF+M+E=;
+        b=Rzn08IPZenhQ6bvtAtCZFtUgcNOadCOdu78eHBCqYGv/hV+L9cluJaEyplz5gcBA7R
+         38wK30kV3P5we6pC4sOpGFJx71Gq1+1ryDNONUjrKLim7Yfc3dXqvMmu3/gJm1MKY0gs
+         TcW6XWN+ON+jrkBcBdm/eQYlZqOq4Sg4Mar8E=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=Qme74H7nTKZWlp83x/X8Ld8D+VkxfyGb4OUt72XjpFA=;
-        b=sAIb0efnlsc0tKGhRIIo8p/NLEE1/fqKSJdd+ieLtdh0Y/g+Ynk0g8W0z9CdwlXRip
-         cDyBeTKhEwm3R2f2JGxSvPqCuocGq5BSgGGdqig7Em6AOFCgqBFcl1/Gnh+oiMSMrjsn
-         p3J7ESXjuk5AAaRWsh8Wx5sTSciPvrVFLpSU30QroS3TJf2dqZYXXBxuICcVynOMD05L
-         xCOWNmNWHJmlOJPiLWnwOzKfqqzWy8ab+yqZ7qbZTMdpVHWCLnv3wDe2csoEbifpMYim
-         fwBMiTi3fD6ACdl+OIjGReHZQk+KvUsO3zP5RC5vi+5WPwv5Z6R8VSIrXBQYcvOPopT7
-         yFmQ==
-X-Gm-Message-State: AOAM532ucUoIv2HiuUcF0DekTTYoUxOLrvmmNSVmoO7gk2MPPC2ZR5yH
-        j6LlChcApnOKyatYczZZ/cI=
-X-Google-Smtp-Source: ABdhPJynBeK8RH+6fgWWVCBlVAZnebACzwigzUuAYmQrX4X7UsXvmmU9qG46o0NTQJEyaLLqdLtoJw==
-X-Received: by 2002:a05:651c:10a2:: with SMTP id k2mr10643964ljn.262.1631892205128;
-        Fri, 17 Sep 2021 08:23:25 -0700 (PDT)
-Received: from [192.168.1.11] ([46.235.67.49])
-        by smtp.gmail.com with ESMTPSA id b15sm552549lfp.221.2021.09.17.08.23.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Sep 2021 08:23:24 -0700 (PDT)
-Message-ID: <4e39e4ef-995d-49ce-58d6-75fd6a27da96@gmail.com>
-Date:   Fri, 17 Sep 2021 18:23:23 +0300
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=UUmIc1Zm6f0TtwRpO+dF5pS2Y2cDE7pjg0cLbOF+M+E=;
+        b=D0lm0AsAbM8b5qWO5cXRarhLnQkETsa4QuD9uVpynwdixk4I1ZUzl/WS/vyphQJDbN
+         HMp2q2ihQ4aJ3szbujFBoaZIVI9VYcCLzMZphRsfkaMrlL9EYGqedrdXs1hAEOdkZgoN
+         Ejkhox8bKRCqLKAUcD420761ZCG7emRPOG0CXEwEuGrjY640j/DiE2TKDscei4jyby1s
+         p61TSXHfgDB8Km69YCVrkk5WH3mo5j8AoFrgYjjjcClUYg4ecAhoVDl7t3BOra/jLXCc
+         N7rQmq2yAMw/NshNAGy8wC9CZB6xmPsxkz42N9kJjBrnXGOnSq364mdu4Y4UprCopjx8
+         RTiw==
+X-Gm-Message-State: AOAM5335dKq64KibW7VYr7IzqPhQOHSHaDNwxPny6bRjYLlBYL1S/XBq
+        NaVRoV7Q/iXqE890sdw8R9cWpA==
+X-Google-Smtp-Source: ABdhPJy9S40vw/exT9dD330IOj7yv3V6vas+VLUTS5747KBqEVcQ3/55Lywp40+PNtXXNtDS+CHl4w==
+X-Received: by 2002:a1c:7e12:: with SMTP id z18mr16190125wmc.60.1631892270408;
+        Fri, 17 Sep 2021 08:24:30 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id r5sm6880779wrm.79.2021.09.17.08.24.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Sep 2021 08:24:29 -0700 (PDT)
+Date:   Fri, 17 Sep 2021 17:24:27 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Fernando Ramos <greenfoo@u92.eu>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        sean@poorly.run, linux-doc@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+Subject: Re: [PATCH 00/15] drm: cleanup: Use DRM_MODESET_LOCK_ALL_* helpers
+ where possible
+Message-ID: <YUSzKxZwW8C29dLV@phenom.ffwll.local>
+Mail-Followup-To: Fernando Ramos <greenfoo@u92.eu>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        sean@poorly.run, linux-doc@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+References: <20210916211552.33490-1-greenfoo@u92.eu>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.0.3
-Subject: Re: [PATCH v7 19/19] staging: r8188eu: remove shared buffer for usb
- requests
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        David Laight <david.Laight@aculab.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-References: <20210917071837.10926-1-fmdefrancesco@gmail.com>
- <20210917071837.10926-20-fmdefrancesco@gmail.com>
- <YUSsa+3NjQVGD9gb@kroah.com> <ef2a89f5-f68c-e7e2-9338-78e70dc41701@gmail.com>
- <YUSxtQ7D0w6QkB/N@kroah.com>
-From:   Pavel Skripkin <paskripkin@gmail.com>
-In-Reply-To: <YUSxtQ7D0w6QkB/N@kroah.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210916211552.33490-1-greenfoo@u92.eu>
+X-Operating-System: Linux phenom 5.10.0-8-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/17/21 18:18, Greg Kroah-Hartman wrote:
-> On Fri, Sep 17, 2021 at 06:03:52PM +0300, Pavel Skripkin wrote:
->> On 9/17/21 17:55, Greg Kroah-Hartman wrote:
->> > On Fri, Sep 17, 2021 at 09:18:37AM +0200, Fabio M. De Francesco wrote:
->> > > From: Pavel Skripkin <paskripkin@gmail.com>
->> > > 
->> > > This driver used shared buffer for usb requests. It led to using
->> > > mutexes, i.e no usb requests can be done in parallel.
->> > > 
->> > > USB requests can be fired in parallel since USB Core allows it. In
->> > > order to allow them, remove usb_vendor_req_buf from dvobj_priv (since
->> > > USB I/O is the only user of it) and remove also usb_vendor_req_mutex
->> > > (since there is nothing to protect).
->> > 
->> > Ah, you are removing this buffer, nice!
->> > 
->> > But, just because the USB core allows multiple messages to be sent to a
->> > device at the same time, does NOT mean that the device itself can handle
->> > that sort of a thing.
->> > 
->> > Keeping that lock might be a good idea, until you can prove otherwise.
->> > You never know, maybe there's never any contention at all for it because
->> > these accesses are all done in a serial fashion and the lock
->> > grab/release is instant.  But if that is not the case, you might really
->> > get a device confused here by throwing multiple control messages at it
->> > in ways that it is not set up to handle at all.
->> > 
->> > So please do not drop the lock.
->> > 
->> > More comments below.
->> > 
->> 
->> We have tested this change. I've tested it in qemu with TP-Link TL-WN722N v2
->> / v3 [Realtek RTL8188EUS], and Fabio has tested it on his host for like a
->> whole evening.
->> 
->> I agree, that our testing does not cover all possible cases and I can't say
->> it was "good stress testing", so, I think, we need some comments from
->> maintainers.
+On Thu, Sep 16, 2021 at 11:15:37PM +0200, Fernando Ramos wrote:
+> Hi all,
 > 
-> Ok, then make it a single patch that does nothing but remove the lock so
-> that we can revert it later when problems show up :)
+> One of the things in the DRM TODO list ("Documentation/gpu/todo.rst") was to
+> "use DRM_MODESET_LOCAL_ALL_* helpers instead of boilerplate". That's what this
+> patch series is about.
+> 
+> You will find two types of changes here:
+> 
+>   - Replacing "drm_modeset_lock_all_ctx()" (and surrounding boilerplate) with
+>     "DRM_MODESET_LOCK_ALL_BEGIN()/END()" in the remaining places (as it has
+>     already been done in previous commits such as b7ea04d2)
+> 
+>   - Replacing "drm_modeset_lock_all()" with "DRM_MODESET_LOCK_ALL_BEGIN()/END()"
+>     in the remaining places (as it has already been done in previous commits
+>     such as 57037094)
+>     
+> Most of the changes are straight forward, except for a few cases in the "amd"
+> and "i915" drivers where some extra dancing was needed to overcome the
+> limitation that the DRM_MODESET_LOCK_ALL_BEGIN()/END() macros can only be used
+> once inside the same function (the reason being that the macro expansion
+> includes *labels*, and you can not have two labels named the same inside one
+> function)
+> 
+> Notice that, even after this patch series, some places remain where
+> "drm_modeset_lock_all()" and "drm_modeset_lock_all_ctx()" are still present,
+> all inside drm core (which makes sense), except for two (in "amd" and "i915")
+> which cannot be replaced due to the way they are being used.
+
+Can we at least replace those with drm_modeset_lock_all_ctx and delete
+drm_modeset_lock_all? That would be really nice goal to make sure these
+don't spread further.
+
+Otherwise great stuff, I'm trying to volunteer a few reviewers.
+-Daniel
+
+> 
+> Fernando Ramos (15):
+>   dmr: cleanup: drm_modeset_lock_all_ctx() --> DRM_MODESET_LOCK_ALL_BEGIN()
+>   dmr/i915: cleanup: drm_modeset_lock_all_ctx() --> DRM_MODESET_LOCK_ALL_BEGIN()
+>   dmr/msm: cleanup: drm_modeset_lock_all_ctx() --> DRM_MODESET_LOCK_ALL_BEGIN()
+>   drm: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN()
+>   drm/vmwgfx: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN()
+>   drm/tegra: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN()
+>   drm/shmobile: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN()
+>   drm/radeon: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN()
+>   drm/omapdrm: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN()
+>   drm/nouveau: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN()
+>   drm/msm: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN()
+>   drm/i915: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN()
+>   drm/gma500: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN()
+>   drm/amd: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN()
+>   doc: drm: remove TODO entry regarding DRM_MODSET_LOCK_ALL cleanup
+> 
+>  Documentation/gpu/todo.rst                    | 17 -------
+>  Documentation/locking/ww-mutex-design.rst     |  2 +-
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_display.c   | 13 +++--
+>  .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 50 +++++++++----------
+>  .../amd/display/amdgpu_dm/amdgpu_dm_debugfs.c | 23 +++++----
+>  drivers/gpu/drm/drm_client_modeset.c          | 14 +++---
+>  drivers/gpu/drm/drm_crtc_helper.c             | 18 ++++---
+>  drivers/gpu/drm/drm_fb_helper.c               | 10 ++--
+>  drivers/gpu/drm/drm_framebuffer.c             |  6 ++-
+>  drivers/gpu/drm/gma500/psb_device.c           | 14 ++++--
+>  drivers/gpu/drm/i915/display/intel_audio.c    | 12 +++--
+>  drivers/gpu/drm/i915/display/intel_display.c  | 22 +++-----
+>  .../drm/i915/display/intel_display_debugfs.c  | 35 ++++++++-----
+>  drivers/gpu/drm/i915/display/intel_overlay.c  | 45 ++++++++---------
+>  drivers/gpu/drm/i915/display/intel_pipe_crc.c |  5 +-
+>  drivers/gpu/drm/i915/i915_drv.c               | 12 +++--
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c      |  6 ++-
+>  .../gpu/drm/msm/disp/msm_disp_snapshot_util.c | 10 ++--
+>  drivers/gpu/drm/nouveau/dispnv50/disp.c       | 12 +++--
+>  drivers/gpu/drm/omapdrm/omap_fb.c             |  6 ++-
+>  drivers/gpu/drm/radeon/radeon_device.c        | 13 +++--
+>  drivers/gpu/drm/radeon/radeon_dp_mst.c        |  7 ++-
+>  drivers/gpu/drm/shmobile/shmob_drm_drv.c      |  6 ++-
+>  drivers/gpu/drm/tegra/dsi.c                   |  6 ++-
+>  drivers/gpu/drm/tegra/hdmi.c                  |  5 +-
+>  drivers/gpu/drm/tegra/sor.c                   | 10 ++--
+>  drivers/gpu/drm/vmwgfx/vmwgfx_ioctl.c         | 11 ++--
+>  drivers/gpu/drm/vmwgfx/vmwgfx_kms.c           | 12 +++--
+>  28 files changed, 222 insertions(+), 180 deletions(-)
+> 
+> -- 
+> 2.33.0
 > 
 
-Sure! Thank you again :)
-
-
-
-
-With regards,
-Pavel Skripkin
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
