@@ -2,530 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C28D140F335
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 09:25:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 488E840F33C
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 09:28:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239876AbhIQH1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 03:27:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239272AbhIQH1I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 03:27:08 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 070B7C061764
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 00:25:47 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id a194-20020a1c98cb000000b0030b41ac389fso1477000wme.2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 00:25:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=rKpMtPJV4c7fVpnQEhWgPVwySf6pvGBSBB6MRM4juX0=;
-        b=vxlHtsI8MrgKZ1jumZbkHAT3aT1Ya8U+iG+fJzIab+KLF9G/6RvOl20OM2yQNQ/kuN
-         LD8KJDmDZxrFUF8KgmcP020TCdPIuYetuF5AOmx8iM78iOqO6/dObgvZ9NBlKi/pogVc
-         sA8Pg0WwKgohJ9/AZShFNbVKMt9AsXu6o/WDu5N4z5K7u13LN0XQo6NUvLdefnYKPLDO
-         pUC5Fm5DOHUPnmSn/jojSXYsSWPNHYhXBmzlOv5a6PHtBXcvWW8GSDS3b9DTx6U4miUC
-         CFvBRi3cGzglpBuyML/5MVCf0pP33v/ijoVjk3PL4ZZnB0skpkqcVOES3Ty0puxfS9zG
-         i84A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=rKpMtPJV4c7fVpnQEhWgPVwySf6pvGBSBB6MRM4juX0=;
-        b=b1zYQK8Zuyn2V3JlCNDyHAR6HAksNHAQzdban50w79fAHBeF24jOA7PVeCuJXRv+An
-         vT6c/diwH2oBi1qrz3UtK1Ra/Grpy3gI5bQ0Gj+8tsQ4lzZaIkYUb9SKuVijh9u/hHMU
-         cHSZPsJyGvSIWsJ2UiJ8N+Nk5mTK5m9qs9VVHqn14UyYm6UHv9COdlnfpeGrNiw74zg7
-         TAXfDrXKa41ut4YBAWeBM36r6/J/gZXZf4TM/xIwvHOBvI+nEFbt99q+8R1uZ81QGN38
-         Ey1FNvZI53yL28O2O+EKq6LWELULLLZaWZQDNT8siRNyXb4gZ033xysw1NgtHKLGAcGf
-         R2Ew==
-X-Gm-Message-State: AOAM53034HU8itGy0YdXLVaZMFnXEzAPR9V3GHIrIsEQGAgVctauIOlY
-        EZBwZn0x0s8vTSksRu4aTJwkzg==
-X-Google-Smtp-Source: ABdhPJy4G0wz2dgdPltmEPJRRfQq8LRjVdHP8NNZ81y2E/gbHcSs7OZ2aPO5tFT3tNRMzAGx96JBZw==
-X-Received: by 2002:a1c:9888:: with SMTP id a130mr13771570wme.102.1631863545546;
-        Fri, 17 Sep 2021 00:25:45 -0700 (PDT)
-Received: from localhost.baylibre.local (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.gmail.com with ESMTPSA id z19sm11777565wma.0.2021.09.17.00.25.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 00:25:45 -0700 (PDT)
-From:   Alexandre Bailon <abailon@baylibre.com>
-To:     rui.zhang@intel.com, daniel.lezcano@linaro.org, amitk@kernel.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ben.tseng@mediatek.com, khilman@baylibre.com, mka@chromium.org,
-        Alexandre Bailon <abailon@baylibre.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH v2 2/2] thermal: add a virtual sensor to aggregate temperatures
-Date:   Fri, 17 Sep 2021 09:27:32 +0200
-Message-Id: <20210917072732.611140-3-abailon@baylibre.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210917072732.611140-1-abailon@baylibre.com>
-References: <20210917072732.611140-1-abailon@baylibre.com>
+        id S241073AbhIQH3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 03:29:20 -0400
+Received: from mail-dm6nam10on2043.outbound.protection.outlook.com ([40.107.93.43]:13153
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S240170AbhIQH3I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 03:29:08 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=G8QprET3bJnwYKNEdxlAnbu+7jkHXnXCPno2x6jlF1kyEx/QKqtooQZYKlEiXHe/iDZJ3gAIo/Xw8R9erfwFpDgPezvWAFdizF69fiCJH4YQm3a7Jstxnb/EwUh8Xvx9iTHq9znjS9iDbKof5gibPNZn9H0BN8QGOKQzTHx0GdvxGmCDed92fvlWCxkkl2OvUIvBzVNeZr2MdChWGXmjT6xg71P0nWvExPqseYRg3msJdRqgk3uol1E8ATTHPIGc24gjj7FGCvxn1xbs6cZTIrKR7i9yVOOryiKf+0O1tmYW7pIT7Unsq3ju7sj3u8lWCAuPS/8GTQ6f4VwALtsiTQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=UDaILTm4az4m7Yb3yIaFBQdmQyME8PsUKk0mViH/jEU=;
+ b=OXm68pa67j6KEVQ2Y53gVif6XMBrszvci3yhOiSAEl6mOkXaGec99V1Q6JHwMC+Gc3ijzCfu3TPOkfjgp0fa2hIWKZSdqxWEvWkZEQY0o82DWxECnhEgaQdnWIH+/5o47/pkaqSse/3UP0KoiBaUZ59f/yMO63KXAjCeuGYCkLnCg8jV6+XKDE5592TQJhAXaF83IrawMYsKFRml9L+bXOKr3sAZqudmchikE8LqJGq+CVIFJeaGVbK9dj4TSEZeX2Dw5jUoocxiyBOv/rBZ9maMhWUEkbI0OJxAMQXrrKDd8ZA298aR3X+AotA73r5XEXTipCVSZT2eUzmxjuTTuw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UDaILTm4az4m7Yb3yIaFBQdmQyME8PsUKk0mViH/jEU=;
+ b=AXHEjIRWbTqjvlxqnNmUxPV0VnwQ0fYTHbZ/hC26jdooc2h+lJ6SmCGCsCojRcLcPXxpbjPNzGe5ob7CqgwpvQU5Mgor7SWgFSWHXJLSi4N+ZRy08g9oA04fDrR+Lq2x3HnVTR8OoelcvMD1W4RwLyAEi9XAq2ZJh1T0TbTd6wuZTwEvqDJmthBQc1BLA7mjL2isaumouNEnhafJ1rZC04hEHj9VSWGDzH4p7vK13VGUa1PQ5v/pmhd2SULxtQb8uoyhSrdwPcAV4RZkgeli9OltJaFNyHi1V1osHQ5baCwwgEQZgTzi/HtXHFa0VtcYZ7d0nSAvn40+huebKsdAgA==
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BY5PR12MB4130.namprd12.prod.outlook.com (2603:10b6:a03:20b::16)
+ by BY5PR12MB4853.namprd12.prod.outlook.com (2603:10b6:a03:1da::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Fri, 17 Sep
+ 2021 07:27:45 +0000
+Received: from BY5PR12MB4130.namprd12.prod.outlook.com
+ ([fe80::6811:59ee:b39f:97b9]) by BY5PR12MB4130.namprd12.prod.outlook.com
+ ([fe80::6811:59ee:b39f:97b9%9]) with mapi id 15.20.4523.017; Fri, 17 Sep 2021
+ 07:27:45 +0000
+Message-ID: <16fbae70-9cbe-acf7-5c8a-f02f0881c7e4@nvidia.com>
+Date:   Fri, 17 Sep 2021 00:27:43 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH] mm/debug: sync up latest migrate_reason to
+ migrate_reason_names
+Content-Language: en-US
+To:     "Huang, Ying" <ying.huang@intel.com>,
+        Weizhao Ouyang <o451686892@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210917061432.323777-1-o451686892@gmail.com>
+ <871r5nptt7.fsf@yhuang6-desk2.ccr.corp.intel.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+In-Reply-To: <871r5nptt7.fsf@yhuang6-desk2.ccr.corp.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SJ0PR03CA0082.namprd03.prod.outlook.com
+ (2603:10b6:a03:331::27) To BY5PR12MB4130.namprd12.prod.outlook.com
+ (2603:10b6:a03:20b::16)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: from [10.2.48.243] (216.228.112.22) by SJ0PR03CA0082.namprd03.prod.outlook.com (2603:10b6:a03:331::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Fri, 17 Sep 2021 07:27:44 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9dd6a55e-47eb-438b-6dac-08d979aca46c
+X-MS-TrafficTypeDiagnostic: BY5PR12MB4853:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BY5PR12MB48539C3150E821C0FBB407EBA8DD9@BY5PR12MB4853.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2657;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 9WGv24u0E++hyvgkXwNxiKJAlNxxeHLnaGTpPLsyJtVNq3/5djbiY56EStBkgc6SerZBTHaxcbGiLZj4r77ci7Ay8NWdCu0ElHIV4PlrQxVWPHC5Wks5QlSHTL6/F6sEw0Mz6P/8qpp3/xKzLo7dlstvmQanofW5sW9qTMai3U3AJX0HK9Pm2chVZYpJFfPNCO1U1bNDHu51Q9afc669psVy0vX/oWtqut31bW+z7YY5lnptvm5fjyX+R3zyUBFaBULO+/VS7lz2skJjRPnEnw+cQpHJjnCHAAblOT9wD13ovS23U38XrYRwZHrrlAE/Z4MjCdxuKw/ZMuIpaCTV54+SM58Fus/1aQtE2OzXx02/svfEx8xYzP20tI1OroTKv2K4YRr0YtvY7KCrEvbtmgyZQbNRQT6vAUept+ZCCtVFbh8VCC2sO27A9gsMv01BdIlZh8hssVTDUwpsCL3zvCIcHcvxlXDcRSKdqHYAmzBRuTQ9301fcOKnv/fbw+rBoXL1z8iSz0XRjDMxpKGlo8zqcN30oEUC9VNAhXXf+e5XgIb1ogg79qsbPlA/yi62E9GseD37UZKdZShrGeeDDKZLhQ4HlfhbIUC4JZKRhVN++zi+oOIT/snvjslRqsyo0UH9nYrGkOCH3TOv/ECqDGqQ9UbKuLMkg8csQrQRGZFSseWn4v2BEcxzLmbhqZUXonhkBxkBbfRLutrDMfz205NDzM9+z7FCPYeOUdNVWnhJ1AWE+dvo8tnXpACkoxwc
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4130.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(136003)(39860400002)(376002)(366004)(956004)(186003)(5660300002)(6486002)(66556008)(2616005)(8676002)(54906003)(316002)(4326008)(66476007)(16576012)(53546011)(66946007)(38100700002)(110136005)(478600001)(26005)(83380400001)(31696002)(8936002)(31686004)(36756003)(2906002)(86362001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MmY3b2FEUElCZ3p2dE04Y2hkaHhYeXNhck1lL2Jkbi93RTVEK3UrSnpvRndG?=
+ =?utf-8?B?b2U1VzBTa0VoSnJDeTJJVDZUM0NvR1Z0cVNBK0xaOTBFckZkdVZQR0Y0bnpi?=
+ =?utf-8?B?bms4NHlyMnVMaFRYaHRyUkF3VDNWNFpmemZJMlk5bFhKUWpOUHAyRmw2ZDJ5?=
+ =?utf-8?B?ODBSd3BvVTRJenlaY0ZDKy9veDJlVDBtUnhNWFZQZHdZQ0EyQjVvSWM1ZVdO?=
+ =?utf-8?B?K2duclhHWHpYRTc0bHEyOVhMcWhKUk9kK2JXTW44dFRFd1pGY1JkRUVNdmpX?=
+ =?utf-8?B?UmRnUlU3OTlSK3FKbHhoYnpQSGVQOUVoVk5BZ2lWOE9MYkdmTE9LaWRudnFa?=
+ =?utf-8?B?T3lZSEgyb1ZwZmpLbWZxVlU2Yld5eXdPREdrZmxVTzRMSXNUbGMvZGFZbVl6?=
+ =?utf-8?B?dU85eTZ2YzhYNGkvN0x3Q0o0ZCtITC9pZTJkVmljbjZOZk9UZ3o4RFVaV3g4?=
+ =?utf-8?B?clhmL3Q3cU9nMFkwbUQ1WkEwdHluWm8zSUN3aWltMHZwbS9XZ0VpSm42Qkx5?=
+ =?utf-8?B?WEQvSHkwMWFqNkVIVWk5UUhNeUo0UVpYQittdDNBbks3NVU1YThrVk1Ud1JD?=
+ =?utf-8?B?NHdwdVh4OXRFTlcrWnZ0WDhoaEJ5clNnWlhTRW84NCtveVJTMFE3elJYT0FN?=
+ =?utf-8?B?YkNhYk9NMGU4djMrZDVVR2xpcDViTFhuWXIvT0tFR29IN3JZcGFIS0NFdGtN?=
+ =?utf-8?B?RWtyRlVkOW5paVYyV3NyRXRKT2Rwa0FkYzBqcXhhM0hHb1gzUmwrWWVhaFRQ?=
+ =?utf-8?B?T2QydmtQWlRjeG4wNkx4NkN5VXFmYUlwR3FObWF6Q1hMWmVmWFBka05SblJK?=
+ =?utf-8?B?aFdkbWJLcEhBSVhYZit6TGJ0VjBRTXlIeEhuOGhTeFlNVWZ3Zit5ZDJWN0hO?=
+ =?utf-8?B?eUpRNlFWRnF2bHVxTkFoRDRWdmpWK2R1cktnZncxK2YyOS9rSTBYS21KM1FG?=
+ =?utf-8?B?OWRTbVQrMksxZC9adWlnME9veG5BTXZJczBxVFMwUERoZWpFWFZlalo2VjJw?=
+ =?utf-8?B?Y3JJeTB2L1dOZFRBaEhPTG95MTZyYlMwWnY3S1RMWEdwK1FtdEdML2ZvQVdK?=
+ =?utf-8?B?NC95ZTJjY1lnbmQ4Y05wTmFjY2psbFdxdGFIMFpTbkhtTm9USUFyWWxZVCtJ?=
+ =?utf-8?B?YTZPSldNNFlodE9vTzl4U1ZQRjBnaWtuaUVhMTArMU1pVEZxd0xkV0xtMlRZ?=
+ =?utf-8?B?QnZIZmJrTFAyUnZTNFZJekRwRk1GYTQ5MWlFSUFBRkpEQUlIbWdjeXF0WW9w?=
+ =?utf-8?B?dzB0OXJkWWpKNkhIeHladFJpcGlnV1BiV3kvU2l6b2tsUk1SZys1Z2RTTzhS?=
+ =?utf-8?B?TUpnWXlOSll1S3NVdE9xMXRrWkoyZDFLQUtyNm5wc1VTazVUQk4rWWZmTjE1?=
+ =?utf-8?B?OXBGRURMVS9vSGs2NS9ramxFMGtnekJHTGQyNkZ0WE9uT2YxaXVjVXBCcUdu?=
+ =?utf-8?B?d2hEYk91RitXVXBSSC96SjVDRzFKTC90RFJ3ellJZkdSZENQZlNDdW16d3RE?=
+ =?utf-8?B?RDNIQlc1V0NGRTNsdDE5UjJwVlBlVGl6VkRkY2ZsZ3BZQk0wUXJ3ZlFuVGdr?=
+ =?utf-8?B?YlVzYmtKYWVLMXNWV1RDSEhMODVkWEg0bkRiR3NrUVhsUUZ4dE5aRUJGR2Q2?=
+ =?utf-8?B?eEtCbThnS1huWlJDY0JxRjNjWU1EL2RQdU1rQ1d3NUUvZzlLSnRmWFBmaEcw?=
+ =?utf-8?B?UEg2eG9zZmhyNC9lZUJhQkRMTjFDcHhKNzlFNENORFRuT29qZDRMRzlTZEo2?=
+ =?utf-8?Q?61st4laRPEYbAfnrqw6VkIln4OS1EbOAYudFj3P?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9dd6a55e-47eb-438b-6dac-08d979aca46c
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4130.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Sep 2021 07:27:45.0696
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: pXlc5C7FB/R9O4gsCEGgbbebjujlU2yjZmyMylKorw1heOQOghEA/Jd4nOVIGYVg8kD8ElO74ge+RLgIwZWPQA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4853
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds a virtual thermal sensor that reads temperature from
-hardware sensor and return an aggregated temperature.
-Currently, this supports three operations:
-the minimum, maximum and average temperature.
+On 9/17/21 00:03, Huang, Ying wrote:
+> Weizhao Ouyang <o451686892@gmail.com> writes:
+> 
+>> After related migrate page updates, sync up latest migrate_reason to
+>> migrate_reason_names, page_owner use it to parse the page migrate
+>> reason.
+>>
+>> Fixes: d1e153fea2a8 ("mm/gup: migrate pinned pages out of movable zone")
+>> Fixes: 26aa2d199d6f ("mm/migrate: demote pages during reclaim")
+>> Signed-off-by: Weizhao Ouyang <o451686892@gmail.com>
+>> ---
+>>   mm/debug.c | 2 ++
+>>   1 file changed, 2 insertions(+)
+>>
+>> diff --git a/mm/debug.c b/mm/debug.c
+>> index e73fe0a8ec3d..733770b0ed0c 100644
+>> --- a/mm/debug.c
+>> +++ b/mm/debug.c
+>> @@ -25,6 +25,8 @@ const char *migrate_reason_names[MR_TYPES] = {
+>>   	"mempolicy_mbind",
+>>   	"numa_misplaced",
+>>   	"cma",
+>> +	"longterm_pin",
+>> +	"demotion",
+>>   };
+>>   
+>>   const struct trace_print_flags pageflag_names[] = {
+> 
+> Good catch!  Thanks!
+> 
+> Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
+> 
+> It may be better to use BUILD_BUG_ON() to capture similar issue earlier?
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Alexandre Bailon <abailon@baylibre.com>
----
- drivers/thermal/Kconfig                  |   8 +
- drivers/thermal/Makefile                 |   1 +
- drivers/thermal/virtual-thermal-sensor.h |  54 ++++
- drivers/thermal/virtual_thermal_sensor.c | 350 +++++++++++++++++++++++
- 4 files changed, 413 insertions(+)
- create mode 100644 drivers/thermal/virtual-thermal-sensor.h
- create mode 100644 drivers/thermal/virtual_thermal_sensor.c
+Yes! Or if BUILD_BUG_ON() can't work here, then at least a comment in the
+various locations, explaining that these must be kept in sync. But
+BUILD_BUG_ON() should work, I think.
 
-diff --git a/drivers/thermal/Kconfig b/drivers/thermal/Kconfig
-index d7f44deab5b1d..20bc93c48f5b1 100644
---- a/drivers/thermal/Kconfig
-+++ b/drivers/thermal/Kconfig
-@@ -228,6 +228,14 @@ config THERMAL_MMIO
- 	  register or shared memory, is a potential candidate to work with this
- 	  driver.
- 
-+config VIRTUAL_THERMAL
-+	tristate "Virtual thermal sensor driver"
-+	depends on THERMAL_OF || COMPILE_TEST
-+	help
-+	  This option enables the generic thermal sensor aggregator.
-+	  This driver creates a thermal sensor that reads the hardware sensors
-+	  and aggregate the temperature.
-+
- config HISI_THERMAL
- 	tristate "Hisilicon thermal driver"
- 	depends on ARCH_HISI || COMPILE_TEST
-diff --git a/drivers/thermal/Makefile b/drivers/thermal/Makefile
-index 82fc3e616e54b..8bf55973059c5 100644
---- a/drivers/thermal/Makefile
-+++ b/drivers/thermal/Makefile
-@@ -60,3 +60,4 @@ obj-$(CONFIG_UNIPHIER_THERMAL)	+= uniphier_thermal.o
- obj-$(CONFIG_AMLOGIC_THERMAL)     += amlogic_thermal.o
- obj-$(CONFIG_SPRD_THERMAL)	+= sprd_thermal.o
- obj-$(CONFIG_KHADAS_MCU_FAN_THERMAL)	+= khadas_mcu_fan.o
-+obj-$(CONFIG_VIRTUAL_THERMAL) += virtual_thermal_sensor.o
-diff --git a/drivers/thermal/virtual-thermal-sensor.h b/drivers/thermal/virtual-thermal-sensor.h
-new file mode 100644
-index 0000000000000..3bbf7c324dddc
---- /dev/null
-+++ b/drivers/thermal/virtual-thermal-sensor.h
-@@ -0,0 +1,54 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (c) 2021 BayLibre
-+ */
-+
-+#ifndef __THERMAL_VIRTUAL_SENSOR_H__
-+#define __THERMAL_VIRTUAL_SENSOR_H__
-+
-+#include <linux/device.h>
-+#include <linux/thermal.h>
-+
-+struct virtual_thermal_sensor;
-+struct thermal_sensor_data;
-+
-+#if IS_ENABLED(CONFIG_VIRTUAL_THERMAL)
-+struct thermal_sensor_data *
-+thermal_virtual_sensor_register(struct device *dev, int sensor_id, void *data,
-+				const struct thermal_zone_of_device_ops *ops);
-+void thermal_virtual_sensor_unregister(struct device *dev,
-+				       struct thermal_sensor_data *sensor_data);
-+struct thermal_sensor_data *
-+devm_thermal_virtual_sensor_register(struct device *dev, int sensor_id, void *data,
-+				     const struct thermal_zone_of_device_ops *ops);
-+
-+void devm_thermal_virtual_sensor_unregister(struct device *dev,
-+					    struct virtual_thermal_sensor *sensor);
-+#else
-+static inline struct thermal_sensor_data *
-+thermal_virtual_sensor_register(struct device *dev, int sensor_id, void *data,
-+				const struct thermal_zone_of_device_ops *ops)
-+{
-+	return ERR_PTR(-ENODEV);
-+}
-+
-+void thermal_virtual_sensor_unregister(struct device *dev,
-+				       struct thermal_sensor_data *sensor_data)
-+{
-+}
-+
-+static inline struct thermal_sensor_data *
-+devm_thermal_virtual_sensor_register(struct device *dev, int sensor_id, void *data,
-+				     const struct thermal_zone_of_device_ops *ops)
-+{
-+	return ERR_PTR(-ENODEV);
-+}
-+
-+static inline
-+void devm_thermal_virtual_sensor_unregister(struct device *dev,
-+					    struct virtual_thermal_sensor *sensor)
-+{
-+}
-+#endif
-+
-+#endif /* __THERMAL_VIRTUAL_SENSOR_H__ */
-diff --git a/drivers/thermal/virtual_thermal_sensor.c b/drivers/thermal/virtual_thermal_sensor.c
-new file mode 100644
-index 0000000000000..234563af6643e
---- /dev/null
-+++ b/drivers/thermal/virtual_thermal_sensor.c
-@@ -0,0 +1,350 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2021 BayLibre
-+ */
-+
-+#include <linux/err.h>
-+#include <linux/export.h>
-+#include <linux/module.h>
-+#include <linux/of_device.h>
-+#include <linux/of_platform.h>
-+#include <linux/slab.h>
-+#include <linux/thermal.h>
-+#include <linux/types.h>
-+#include <linux/string.h>
-+
-+#include <dt-bindings/thermal/virtual-sensor.h>
-+
-+#include "virtual-thermal-sensor.h"
-+
-+struct thermal_sensor_data {
-+	struct list_head node;
-+
-+	/* sensor interface */
-+	int id;
-+	void *sensor_data;
-+	const struct thermal_zone_of_device_ops *ops;
-+};
-+
-+struct virtual_thermal_sensor {
-+	int count;
-+	struct thermal_sensor_data *sensors;
-+	struct thermal_zone_device *tzd;
-+	int (*aggr_temp)(int temp1, int temp2);
-+
-+	struct list_head node;
-+};
-+
-+static LIST_HEAD(thermal_sensors);
-+static LIST_HEAD(virtual_sensors);
-+
-+static int max_temp(int temp1, int temp2)
-+{
-+	return max(temp1, temp2);
-+}
-+
-+static int min_temp(int temp1, int temp2)
-+{
-+	return min(temp1, temp2);
-+}
-+
-+static int avg_temp(int temp1, int temp2)
-+{
-+	return ((temp1) / 2) + ((temp2) / 2) + (((temp1) % 2 + (temp2) % 2) / 2);
-+}
-+
-+static int virtual_thermal_sensor_get_temp(void *data, int *temperature)
-+{
-+	struct virtual_thermal_sensor *sensor = data;
-+	int max_temp = INT_MIN;
-+	int temp;
-+	int i;
-+
-+	for (i = 0; i < sensor->count; i++) {
-+		struct thermal_sensor_data *hw_sensor;
-+
-+		hw_sensor = &sensor->sensors[i];
-+		if (!hw_sensor->ops)
-+			return -ENODEV;
-+
-+		hw_sensor->ops->get_temp(hw_sensor->sensor_data, &temp);
-+		max_temp = sensor->aggr_temp(max_temp, temp);
-+	}
-+
-+	*temperature = max_temp;
-+
-+	return 0;
-+}
-+
-+static const struct thermal_zone_of_device_ops virtual_thermal_sensor_ops = {
-+	.get_temp = virtual_thermal_sensor_get_temp,
-+};
-+
-+static int virtual_sensor_add_sensor(struct virtual_thermal_sensor *sensor,
-+				     struct of_phandle_args args,
-+				     int index)
-+{
-+	struct thermal_sensor_data *sensor_data;
-+	int id;
-+
-+	list_for_each_entry(sensor_data, &thermal_sensors, node) {
-+		id = args.args_count ? args.args[0] : 0;
-+		if (sensor_data->id == id) {
-+			memcpy(&sensor->sensors[index], sensor_data,
-+				sizeof(*sensor_data));
-+			return 0;
-+		}
-+	}
-+
-+	return -ENODEV;
-+}
-+
-+static int virtual_thermal_sensor_probe(struct platform_device *pdev)
-+{
-+	struct virtual_thermal_sensor *sensor;
-+	struct device *dev = &pdev->dev;
-+	struct of_phandle_args args;
-+	u32 type;
-+	int ret;
-+	int i;
-+
-+	sensor = devm_kzalloc(dev, sizeof(*sensor), GFP_KERNEL);
-+	if (!sensor)
-+		return -ENOMEM;
-+
-+	sensor->count = of_count_phandle_with_args(dev->of_node,
-+						   "thermal-sensors",
-+						   "#thermal-sensor-cells");
-+	if (sensor->count <= 0)
-+		return -EINVAL;
-+
-+	sensor->sensors = devm_kmalloc_array(dev, sensor->count,
-+					     sizeof(*sensor->sensors),
-+					     GFP_KERNEL);
-+	if (!sensor->sensors)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < sensor->count; i++) {
-+		ret = of_parse_phandle_with_args(dev->of_node,
-+						 "thermal-sensors",
-+						 "#thermal-sensor-cells",
-+						 i,
-+						 &args);
-+		if (ret)
-+			return ret;
-+
-+		ret = virtual_sensor_add_sensor(sensor, args, i);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	ret = of_property_read_u32(dev->of_node, "aggregation-function", &type);
-+	if (ret)
-+		return ret;
-+
-+	switch (type) {
-+	case VIRTUAL_THERMAL_SENSOR_MAX:
-+		sensor->aggr_temp = max_temp;
-+		break;
-+	case VIRTUAL_THERMAL_SENSOR_MIN:
-+		sensor->aggr_temp = min_temp;
-+		break;
-+	case VIRTUAL_THERMAL_SENSOR_AVG:
-+		sensor->aggr_temp = avg_temp;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	sensor->tzd = devm_thermal_zone_of_sensor_register(dev, 0, sensor,
-+							   &virtual_thermal_sensor_ops);
-+	if (IS_ERR(sensor->tzd))
-+		return PTR_ERR(sensor->tzd);
-+
-+	platform_set_drvdata(pdev, sensor);
-+	list_add(&sensor->node, &virtual_sensors);
-+
-+	return 0;
-+}
-+
-+static int virtual_thermal_sensor_remove(struct platform_device *pdev)
-+{
-+	struct virtual_thermal_sensor *sensor;
-+
-+	sensor = platform_get_drvdata(pdev);
-+	list_del(&sensor->node);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id virtual_thermal_sensor_of_match[] = {
-+	{
-+		.compatible = "virtual,thermal-sensor",
-+	},
-+	{
-+	},
-+};
-+MODULE_DEVICE_TABLE(of, virtual_thermal_sensor_of_match);
-+
-+static struct platform_driver virtual_thermal_sensor = {
-+	.probe = virtual_thermal_sensor_probe,
-+	.remove = virtual_thermal_sensor_remove,
-+	.driver = {
-+		.name = "virtual-thermal-sensor",
-+		.of_match_table = virtual_thermal_sensor_of_match,
-+	},
-+};
-+
-+/**
-+ * thermal_virtual_sensor_register - registers a sensor that could be a virtual
-+ * sensor
-+ * @dev: a valid struct device pointer of a sensor device. Must contain
-+ *       a valid .of_node, for the sensor node.
-+ * @sensor_id: a sensor identifier, in case the sensor IP has more
-+ *             than one sensor
-+ * @data: a private pointer (owned by the caller) that will be passed
-+ *        back, when a temperature reading is needed.
-+ * @ops: struct thermal_zone_of_device_ops *. Must contain at least .get_temp.
-+ *
-+ * This function will register a thermal sensor to make it available for later
-+ * usage by a virtual sensor.
-+ *
-+ * The thermal zone temperature is provided by the @get_temp function
-+ * pointer. When called, it will have the private pointer @data back.
-+ *
-+ * Return: On success returns a valid struct thermal_zone_device,
-+ * otherwise, it returns a corresponding ERR_PTR(). Caller must
-+ * check the return value with help of IS_ERR() helper.
-+ */
-+struct thermal_sensor_data *thermal_virtual_sensor_register(
-+	struct device *dev, int sensor_id, void *data,
-+	const struct thermal_zone_of_device_ops *ops)
-+{
-+	struct thermal_sensor_data *sensor_data;
-+
-+	sensor_data = devm_kzalloc(dev, sizeof(*sensor_data), GFP_KERNEL);
-+	if (!sensor_data)
-+		return ERR_PTR(-ENOMEM);
-+
-+	sensor_data->id = sensor_id;
-+	sensor_data->sensor_data = data;
-+	sensor_data->ops = ops;
-+
-+	list_add(&sensor_data->node, &thermal_sensors);
-+
-+	return sensor_data;
-+}
-+EXPORT_SYMBOL_GPL(thermal_virtual_sensor_register);
-+
-+/**
-+ * thermal_virtual_sensor_unregister - unregisters a sensor
-+ * @dev: a valid struct device pointer of a sensor device.
-+ * @sensor_data: a pointer to struct thermal_sensor_data to unregister.
-+ *
-+ * This function removes the sensor from the list of available thermal sensors.
-+ * If the sensor is in use, then the next call to .get_temp will return -ENODEV.
-+ */
-+void thermal_virtual_sensor_unregister(struct device *dev,
-+				       struct thermal_sensor_data *sensor_data)
-+{
-+	struct thermal_sensor_data *sd;
-+	struct virtual_thermal_sensor *sensor;
-+	int i;
-+
-+	list_del(&sensor_data->node);
-+
-+	list_for_each_entry(sensor, &virtual_sensors, node) {
-+		for (i = 0; i < sensor->count; i++) {
-+			sd = &sensor->sensors[i];
-+			if (sd->id == sensor_data->id &&
-+				sd->sensor_data == sensor_data->sensor_data) {
-+				sd->ops = NULL;
-+			}
-+		}
-+	}
-+}
-+EXPORT_SYMBOL_GPL(thermal_virtual_sensor_unregister);
-+
-+static void devm_thermal_virtual_sensor_release(struct device *dev, void *res)
-+{
-+	thermal_virtual_sensor_unregister(dev,
-+					  *(struct thermal_sensor_data **)res);
-+}
-+
-+static int devm_thermal_virtual_sensor_match(struct device *dev, void *res,
-+					     void *data)
-+{
-+	struct thermal_sensor_data **r = res;
-+
-+	if (WARN_ON(!r || !*r))
-+		return 0;
-+
-+	return *r == data;
-+}
-+
-+/**
-+ * devm_thermal_virtual_sensor_register - Resource managed version of
-+ *				thermal_virtual_sensor_register()
-+ * @dev: a valid struct device pointer of a sensor device. Must contain
-+ *       a valid .of_node, for the sensor node.
-+ * @sensor_id: a sensor identifier, in case the sensor IP has more
-+ *	       than one sensor
-+ * @data: a private pointer (owned by the caller) that will be passed
-+ *	  back, when a temperature reading is needed.
-+ * @ops: struct thermal_zone_of_device_ops *. Must contain at least .get_temp.
-+ *
-+ * Refer thermal_zone_of_sensor_register() for more details.
-+ *
-+ * Return: On success returns a valid struct virtual_sensor_data,
-+ * otherwise, it returns a corresponding ERR_PTR(). Caller must
-+ * check the return value with help of IS_ERR() helper.
-+ * Registered virtual_sensor_data device will automatically be
-+ * released when device is unbound.
-+ */
-+struct thermal_sensor_data *devm_thermal_virtual_sensor_register(
-+	struct device *dev, int sensor_id,
-+	void *data, const struct thermal_zone_of_device_ops *ops)
-+{
-+	struct thermal_sensor_data **ptr, *sensor_data;
-+
-+	ptr = devres_alloc(devm_thermal_virtual_sensor_release, sizeof(*ptr),
-+			   GFP_KERNEL);
-+	if (!ptr)
-+		return ERR_PTR(-ENOMEM);
-+
-+	sensor_data = thermal_virtual_sensor_register(dev, sensor_id, data, ops);
-+	if (IS_ERR(sensor_data)) {
-+		devres_free(ptr);
-+		return sensor_data;
-+	}
-+
-+	*ptr = sensor_data;
-+	devres_add(dev, ptr);
-+
-+	return sensor_data;
-+}
-+EXPORT_SYMBOL_GPL(devm_thermal_virtual_sensor_register);
-+
-+/**
-+ * devm_thermal_virtual_sensor_unregister - Resource managed version of
-+ *				thermal_virtual_sensor_unregister().
-+ * @dev: Device for which resource was allocated.
-+ * @sensor: a pointer to struct thermal_zone_device where the sensor is registered.
-+ *
-+ * This function removes the sensor from the list of sensors registered with
-+ * devm_thermal_virtual_sensor_register() API.
-+ * Normally this function will not need to be called and the resource
-+ * management code will ensure that the resource is freed.
-+ */
-+void devm_thermal_virtual_sensor_unregister(struct device *dev,
-+					    struct virtual_thermal_sensor *sensor)
-+{
-+	WARN_ON(devres_release(dev, devm_thermal_virtual_sensor_release,
-+			       devm_thermal_virtual_sensor_match, sensor));
-+}
-+EXPORT_SYMBOL_GPL(devm_thermal_virtual_sensor_unregister);
-+
-+module_platform_driver(virtual_thermal_sensor);
-+MODULE_AUTHOR("Alexandre Bailon <abailon@baylibre.com>");
-+MODULE_DESCRIPTION("Virtual thermal sensor");
-+MODULE_LICENSE("GPL v2");
+
+thanks,
 -- 
-2.31.1
-
+John Hubbard
+NVIDIA
