@@ -2,142 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9317440F363
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 09:38:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3350640F369
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 09:38:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241355AbhIQHjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 03:39:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55022 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241219AbhIQHjU (ORCPT
+        id S241433AbhIQHjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 03:39:52 -0400
+Received: from mout.kundenserver.de ([217.72.192.73]:39869 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241219AbhIQHjt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 03:39:20 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3042C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 00:37:58 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id c8-20020a9d6c88000000b00517cd06302dso11710233otr.13
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 00:37:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ieEsVRV9Qoysgfimh3k7jq5I/5iERhZWS3sMgWukkvs=;
-        b=Yb44cleTqY3lTGNiJSNC6d+eStRWrplea4vPPL9N+9oaAAxAPa+QYT5lpsvfyeTEK/
-         fbwW1S3bwOI4i038r5cWUCZ6lJKJ513ZLLGAldsfoQxPVF2zWzUsWfb2agCN/u5PsU/v
-         esUnqxdLQHF/tZsdxmaSb0skKN84d2mgVFowL0CnHzNGRcd/ll26yiQNDfmdEJdt41xC
-         br4v1ogcvqG7cF4opRyyxMXaImJEsMMhzLvjC8+PIbWPIRvmL6jEjwAEevsWodrka2is
-         LOg3RcGm3pUxl7taLECOHo9/h5O9uIhZ+Z3AGaozh5SZirQd2ENZvIUUOhfy/VtJLZp+
-         SRhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ieEsVRV9Qoysgfimh3k7jq5I/5iERhZWS3sMgWukkvs=;
-        b=6lfHvorlCX3dSD6bYdIh5fuwsKJVoJg7CK7w5RHTmkjZfEeJaC5wTqAWWoSvjFdPg4
-         4+1f/lcL/EzEh4Nq/0LvGnMmXrtNL9ponY2NPWhlg/10CNWuqCfQTkt2uMxdnduWJuVS
-         yeEBtslbNG/yrYWgtZ9YusmGcjLpe+oyoOcvonHCCuffE3qOPAIw6UW7CyZzBJp8NMFA
-         QcbYz3uruLOyJQlGS/iyzzvo5LYXvqAt8p9S9sB5grk4gW2VgCxWHM6Lt3MiZp2nFDot
-         jDnCoMgvUSfBFdNJX/BcZIYfuZLx/2LVvdoWz0VoCzqetYO5/ZQVVkCYaDpNh6FVTRkp
-         x5bQ==
-X-Gm-Message-State: AOAM530EOYg7qMtPC4gGjPF6QXMI5RAe/ixI59XwKDbHCG9Ln4G089K6
-        aTPbKeswRQiEOIugvZyRAcTGZAHzSLBHMew0G0LLtw==
-X-Google-Smtp-Source: ABdhPJxtkHJ0OY5DqFpPqIWbVD3NJURRP9xPEdK+HfiANQnSOmghdmkIJCfP9A/qEeZ8tgTrkmxGhIrywOimK5TmPX4=
-X-Received: by 2002:a9d:7244:: with SMTP id a4mr8528050otk.137.1631864277871;
- Fri, 17 Sep 2021 00:37:57 -0700 (PDT)
+        Fri, 17 Sep 2021 03:39:49 -0400
+Received: from mail-wm1-f44.google.com ([209.85.128.44]) by
+ mrelayeu.kundenserver.de (mreue108 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1N4i7l-1mrMEX1B39-011fzs; Fri, 17 Sep 2021 09:38:26 +0200
+Received: by mail-wm1-f44.google.com with SMTP id j134-20020a1c238c000000b0030b32367649so2847100wmj.3;
+        Fri, 17 Sep 2021 00:38:25 -0700 (PDT)
+X-Gm-Message-State: AOAM5329Gb+ssnvXdH6heWdrpkJrTgtyGZf9WsbMqUt834XsUrgm+rxv
+        hDbfhWuOcLY6tPc4svV17GmuQ/VYhu59DCu8OH0=
+X-Google-Smtp-Source: ABdhPJzqEZb8uxQdpRwHZH0EmrNx3v2i+fVgS6Kr5ZrLrEswJ1yeHIrJXd93ArwHsVs0YujyejdmCw8mrsywRiSe6lo=
+X-Received: by 2002:a1c:7413:: with SMTP id p19mr8990196wmc.98.1631864305564;
+ Fri, 17 Sep 2021 00:38:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <000000000000cfc3ae05cc2bea91@google.com>
-In-Reply-To: <000000000000cfc3ae05cc2bea91@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Fri, 17 Sep 2021 09:37:47 +0200
-Message-ID: <CACT4Y+Yv9NEPidRkoubADmpi_U2kfJaFoO_S4M=BixuYRVb0iQ@mail.gmail.com>
-Subject: Re: [syzbot] BUG: soft lockup in kjournald2 (2)
-To:     syzbot <syzbot+50f834e0ee66561f76fe@syzkaller.appspotmail.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
+References: <20210917061104.2680133-1-brendanhiggins@google.com>
+In-Reply-To: <20210917061104.2680133-1-brendanhiggins@google.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 17 Sep 2021 09:38:09 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a257cAgtPhT1Li2GnZ-UZW3LVZa3fWX1YUnWGEENvpqJA@mail.gmail.com>
+Message-ID: <CAK8P3a257cAgtPhT1Li2GnZ-UZW3LVZa3fWX1YUnWGEENvpqJA@mail.gmail.com>
+Subject: Re: [PATCH v1 0/6] kunit: build kunit tests without structleak plugin
+To:     Brendan Higgins <brendanhiggins@google.com>
+Cc:     Shuah Khan <shuah@kernel.org>, David Gow <davidgow@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Kees Cook <keescook@chromium.org>,
+        Rafael Wysocki <rafael@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>, andreas.noever@gmail.com,
+        michael.jamet@intel.com,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        YehezkelShB@gmail.com, Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        gregkh <gregkh@linuxfoundation.org>, linux-iio@vger.kernel.org,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        linux-hardening@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:8igt7gSCPa6W3i8e60BRlnHtEl3QLqROvP2iyXqGUxh9JjbZsya
+ YOaky9kf1Z103GywzFAUeR7J7/q3zN3dwsOIil6WaIJcddqZDBmpVy5lEde5P/6vdR9Ecax
+ RAflHp7t6feK1wbEO3TbUmIB2JF1DXQzxa7nCxtD5gvuXtwzF3XCXyRaqFQJTMbL8BFi83B
+ c+On9PdB6Mw3L6t3AL4Gw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:MTx620soU1A=:zwxZqn0uhqEr29Vzm2xKd7
+ HbGFGLmUB8Fyd97OaZAEvOLFES+LAkYe2uRiZ8JKz+VOoJcL9sjY07kk6u9Qw2GhZRLfR8khr
+ OkhmDgxaiUrNA1eOkAQQtyS7wwjP3dxpN72SiXOxalJHdhn6Xp9QaUqes6OVgK6W8eslCwk1+
+ 0ws7QftXW71rdRgA6lE4yjfOMd8UXGoxfihA/HA8ZJMizMXUP7gxdXTCWUoMPyW+cWQe0viaY
+ VAONw7BiGUGOg/Lab+ejI/XT2ot+JZ81tk51S1Np1H0meXOZza+nYm4MZQVpLMc0tUQ+rNaa4
+ JogkHWN+ga4za1pm1qgYdaKTq32+MHCYukDc4M3IIRcvrveaF7l5fPEocmLHjp+D4PYVsuY/N
+ +4WqCgE54w8cvQhlyPSoDtYmCu1vbROd1jNQXrv1v55bqaPuSPKZAmTX+a3Z5TTP2p39Aas5f
+ JPUkM5fjJcawL395lRUylcbgXwY+BDc3wh1Dh0bf/FwFyf6SdIvFCbN6WHnjMvHPxA6zWc3sb
+ o7OxFo0zrC7oQoTdTzGp5oWGokdXNF6PSlwq8mjn0WKvMzKAn1Y7SNm7gQeZCDjpwVMLhhKec
+ xMyKhKqdHw30dmrEC5nSQMzVTkZgL/63jkDKGcopG6+NwcojOdjMJITp7p8oXSq4eC7ofJ7wj
+ m43vCNnd1kJ+x4S7gU6ryr7iOJFwvIahFxpiBF4dURwIWFRBayL7+ObAWBwRbYLYgYk/lyvfT
+ pYv2NaddWqsqr3gys9VpWZRk4RFQmimu4wrEsEFbDV4+MVNLdhyUkDBs2kfKiAeHFt5hpxEe9
+ FX36ZULmCuk9K+BQhU5AUSNJSBIJUoLSFMr9js5G6SdiJEWFwvPcykykqdXINyTLTUPfhznCV
+ 2MP77ZLr7QbEOjoSHwFQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Sept 2021 at 09:31, syzbot
-<syzbot+50f834e0ee66561f76fe@syzkaller.appspotmail.com> wrote:
+On Fri, Sep 17, 2021 at 8:10 AM Brendan Higgins
+<brendanhiggins@google.com> wrote:
 >
-> Hello,
+> The structleak plugin causes the stack frame size to grow immensely when
+> used with KUnit; this is caused because KUnit allocates lots of
+> moderately sized structs on the stack as part of its assertion macro
+> implementation. For most tests with small to moderately sized tests
+> cases there are never enough KUnit assertions to be an issue at all;
+> even when a single test cases has many KUnit assertions, the compiler
+> should never put all these struct allocations on the stack at the same
+> time since the scope of the structs is so limited; however, the
+> structleak plugin does not seem to respect the compiler doing the right
+> thing and will still warn of excessive stack size in some cases.
 >
-> syzbot found the following issue on:
+> These patches are not a permanent solution since new tests can be added
+> with huge test cases, but this serves as a stop gap to stop structleak
+> from being used on KUnit tests which will currently result in excessive
+> stack size.
 >
-> HEAD commit:    ac08b1c68d1b Merge tag 'pci-v5.15-changes' of git://git.ke..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=17d44ab3300000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=b196c22f1ee14fd4
-> dashboard link: https://syzkaller.appspot.com/bug?extid=50f834e0ee66561f76fe
-> compiler:       aarch64-linux-gnu-gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-> userspace arch: arm64
+> Of the following patches, I think the thunderbolt patch may be
+> unnecessary since Linus already fixed that test. Additionally, I was not
+> able to reproduce the error on the sdhci-of-aspeed test. Nevertheless, I
+> included these tests cases for completeness. Please see my discussion
+> with Arnd for more context[1].
 >
-> Unfortunately, I don't have any reproducer for this issue yet.
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+50f834e0ee66561f76fe@syzkaller.appspotmail.com
->
-> watchdog: BUG: soft lockup - CPU#1 stuck for 23s! [jbd2/vda-8:3107]
-> Modules linked in:
-> irq event stamp: 373534
-> hardirqs last  enabled at (373533): [<ffff8000145f8e78>] __exit_to_kernel_mode arch/arm64/kernel/entry-common.c:81 [inline]
-> hardirqs last  enabled at (373533): [<ffff8000145f8e78>] exit_to_kernel_mode+0x38/0x230 arch/arm64/kernel/entry-common.c:91
-> hardirqs last disabled at (373534): [<ffff8000145f8e30>] enter_el1_irq_or_nmi+0x10/0x20 arch/arm64/kernel/entry-common.c:227
-> softirqs last  enabled at (373478): [<ffff800010010964>] _stext+0x964/0xff8
-> softirqs last disabled at (373447): [<ffff800010161e88>] do_softirq_own_stack include/asm-generic/softirq_stack.h:10 [inline]
-> softirqs last disabled at (373447): [<ffff800010161e88>] invoke_softirq kernel/softirq.c:439 [inline]
-> softirqs last disabled at (373447): [<ffff800010161e88>] __irq_exit_rcu+0x208/0x4f0 kernel/softirq.c:636
-> CPU: 1 PID: 3107 Comm: jbd2/vda-8 Not tainted 5.14.0-syzkaller-10318-gac08b1c68d1b #0
-> Hardware name: linux,dummy-virt (DT)
-> pstate: 00000005 (nzcv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> pc : clear_page+0x14/0x28 arch/arm64/lib/clear_page.S:23
-> lr : clear_highpage include/linux/highmem.h:181 [inline]
-> lr : kernel_init_free_pages.part.0+0x6c/0x17c mm/page_alloc.c:1286
-> sp : ffff80001ef77070
-> x29: ffff80001ef77070 x28: 0000000000000000 x27: 0000000000000000
-> x26: ffff00001026e378 x25: ffff60000204dc6f x24: 00000000000014b8
-> x23: ffff00001026cec0 x22: fffffc0000173f40 x21: ffff8000157be698
-> x20: dfff800000000000 x19: fffffc0000173f00 x18: ffff00006aa76c08
-> x17: 0000000000000000 x16: 0000000000000000 x15: ffff00006aa76c3c
-> x14: 1ffff00003deedd8 x13: 0000000000000013 x12: ffff7f800002e7e7
-> x11: 1fffff800002e7e6 x10: ffff7f800002e7e6 x9 : 0000000000000000
-> x8 : ffff600000b9fa00 x7 : 0000000000000000 x6 : 000000000000003f
-> x5 : 0000000000000040 x4 : 1ffff00003067da0 x3 : 1fffe0000204d9d9
-> x2 : 0000000000000004 x1 : 0000000000000040 x0 : ffff000005cfc8c0
-> Call trace:
->  clear_page+0x14/0x28 arch/arm64/lib/clear_page.S:21
->  kernel_init_free_pages mm/page_alloc.c:1283 [inline]
->  post_alloc_hook+0x1ac/0x25c mm/page_alloc.c:2426
->  prep_new_page mm/page_alloc.c:2436 [inline]
->  get_page_from_freelist+0x184c/0x2320 mm/page_alloc.c:4168
->  __alloc_pages+0x1a8/0x21d0 mm/page_alloc.c:5390
->  alloc_pages+0x23c/0x3b0 mm/mempolicy.c:2291
->  __page_cache_alloc mm/filemap.c:1022 [inline]
->  pagecache_get_page+0x4ac/0x930 mm/filemap.c:1940
->  find_or_create_page include/linux/pagemap.h:420 [inline]
->  grow_dev_page fs/buffer.c:949 [inline]
->  grow_buffers fs/buffer.c:1014 [inline]
->  __getblk_slow+0x178/0x6bc fs/buffer.c:1041
->  __getblk_gfp+0x7c/0xa0 fs/buffer.c:1334
->  __getblk include/linux/buffer_head.h:382 [inline]
->  jbd2_journal_get_descriptor_buffer+0xf0/0x3f0 fs/jbd2/journal.c:1014
->  journal_submit_commit_record.part.0+0x88/0x7fc fs/jbd2/commit.c:131
->  journal_submit_commit_record fs/jbd2/commit.c:128 [inline]
->  jbd2_journal_commit_transaction+0x2ad4/0x4270 fs/jbd2/commit.c:925
->  kjournald2+0x190/0x734 fs/jbd2/journal.c:213
->  kthread+0x334/0x3dc kernel/kthread.c:319
->  ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:756
+> NOTE: Arnd did the legwork for most of these patches, but did not
+> actually share code for some of them, so I left his Signed-off-by off of
+> those patches as I don't want to misrepresent him. Arnd, please sign off
+> on those patches at your soonest convenience.
 
-+linux-arm-kernels
+Thanks a lot for picking up this work where I dropped the ball.
 
-This is caused by broken CONFIG_CMDLINE support on arm64, for context see:
-https://lore.kernel.org/lkml/CACT4Y+a4S-oXsjgwDh3SmERqKFF1QbapvX6NiSpn51KRtqvTiQ@mail.gmail.com/
+Patches 1-5 look good to me, and I replied on one remaining issue I see
+with patch 6. I think you did more work on these that I did, by doing
+a nice write-up and splitting them into separate patches with useful
+changelogs, you should keep authorship, and just change my
+S-o-b to Suggested-by.
 
-syzbot should use 150s stall timeout, but it got's default 20s which
-produces false positive flakes.
+If you prefer to keep me as the author, then the correct way would
+be to commit them with --author= to ensure that the author and
+first s-o-b match.
 
-#syz dup: BUG: soft lockup in handle_mm_fault (2)
+        Arnd
