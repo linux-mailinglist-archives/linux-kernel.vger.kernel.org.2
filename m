@@ -2,139 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CB2940F9D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 15:59:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF95340F9E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 16:03:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242714AbhIQOAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 10:00:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38740 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242097AbhIQOAa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 10:00:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A7892611C3;
-        Fri, 17 Sep 2021 13:59:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631887148;
-        bh=em7tfOdoqqzx6DYhxHC4BEgcII1sZaKQpkbYD/MwIso=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=g0Og+B7AXeoKXtrW8hnQE39HMjCZRg8n6XDJ4j+rMTaP5kheDlzuJQyT8YEakxClK
-         EYLpSblEotfhuyZ7lZGzgJt14WfmJEG1NTfDj5GPiNjTmbZIRtaSlklWwdD1Q4z3uE
-         ca83i62PdVWj6K+SAYWfi46F3+pzOWz1xNc7pMeK3Sn28prY+zWMRy5ERta8nXhZWS
-         plqTrBFty+m8pKCxg+LeymJptpNJl0llSnmZUZum6nCjD6SjiUfY8OqIgjjrIA1A5d
-         Ayxs/SyZuzbS9+LTSRbPA+eCM6UfYUS2+taExPCvy7CBas+GnrncNc1qo5pkk5XJGv
-         hLCnNWm5mvtxg==
-Date:   Fri, 17 Sep 2021 16:59:01 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     zhenguo yao <yaozhenguo1@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>, corbet@lwn.net,
-        yaozhenguo@jd.com, Matthew Wilcox <willy@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: Re: [PATCH v4] hugetlbfs: Extend the definition of hugepages
- parameter to support node allocation
-Message-ID: <YUSfJRnvYmGbIl1f@kernel.org>
-References: <20210909141655.87821-1-yaozhenguo1@gmail.com>
- <20210914205001.7ccc7ef3dd76a9ec551b370e@linux-foundation.org>
- <CA+WzARmsPT46ck17-96cJVWE-=QEK8QobRFnCnEcNxsd42zNTw@mail.gmail.com>
- <c55f0be5-f68d-1a33-a9e4-5890a2887a15@oracle.com>
- <98a8ea20-5642-d332-d7b4-18e075a594fb@oracle.com>
+        id S234275AbhIQOFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 10:05:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234531AbhIQOFB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 10:05:01 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFE32C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 07:03:38 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id g16so15373610wrb.3
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 07:03:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=cElMJoeY5hvMr2V5LH+iZNPc0N3os4Ky0d4P23ZLkkE=;
+        b=yxWaRcX1qbRGyttjQa1Pu6jM/hec9mQl0xer5eL4GeQQ+1dn6FvLc3GE/Pvl8V6pyo
+         iOdk9dhgRd02eOwh+gf99oJvQfM0aFqME0t+6q3X9518yk07+yHUqNIbfKmV1/NNbAWF
+         ayqthRKvn7hrFvlohYQuI++mvYKeLN/1WbP7vuq0nsQuLxJRfvFsF7BlW9muZxjzBwhs
+         R1dMP5fTeosIQWA1nXAD/D/YMxHCKisgTYgY6M93GMj7JhbnE6WTr/MijVnMdCoWiIfC
+         wLY9bhR8R09535t3WNqUNITU3Sy7C6jr2QyEzxLTvENgyP+QJvlctIzdasUGkxdzjUur
+         7QhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cElMJoeY5hvMr2V5LH+iZNPc0N3os4Ky0d4P23ZLkkE=;
+        b=R7PkQg5CZX/4mzZl+6HOTXYGl0tWwvnqGyJWASgzXhbDkfLG+0nccIMgsy/hyHDQVf
+         BWDWovpYWcP1FoGcbRbbmBvenyhZ4H22s7tH927/XibTyTSDipUgwXQtbUXyLFhpyMom
+         6UL6NkBOdll9jn0S4nGrnSRdK3jqv0cILiSKmKv+stFNjRLVv5o/8yj8Br/Ad5eLaF9U
+         LAMTalTKuHGfcg4V41L+EspMC7RuNO7dybAVXbQ9uP5ELask/fEnLaocQ+uFoPjFAD1G
+         HSX0r7DpdSm2A5cxSFHhMVBBe41bS4nHPKWZWt2BcUXKUUvSa61UExy0LP7dLmupZslO
+         arGQ==
+X-Gm-Message-State: AOAM532jIHkXXrIbadq7YiceekPK0Y1hNMxVtJ3fhNhm95vEl/UQfvZH
+        HA3hFIMqYRoBqZIoYpYBwrUDMQ==
+X-Google-Smtp-Source: ABdhPJyJCWGwOLEV9/kO0UR0P2oMTDL4+28RKANm87Wo3sd4A/skW3G/8EfbBDlafbJo5ujzY7+tuw==
+X-Received: by 2002:a05:6000:104e:: with SMTP id c14mr12301421wrx.130.1631887417274;
+        Fri, 17 Sep 2021 07:03:37 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:6b11:6374:882d:42a0? ([2a01:e34:ed2f:f020:6b11:6374:882d:42a0])
+        by smtp.googlemail.com with ESMTPSA id i18sm6986113wrn.64.2021.09.17.07.03.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Sep 2021 07:03:36 -0700 (PDT)
+Subject: Re: [PATCH v2 0/2] Add a generic virtual thermal sensor
+To:     Alexandre Bailon <abailon@baylibre.com>, rui.zhang@intel.com,
+        amitk@kernel.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ben.tseng@mediatek.com, khilman@baylibre.com, mka@chromium.org
+References: <20210917072732.611140-1-abailon@baylibre.com>
+ <bd347d14-0b42-f9ed-bf15-080c929e1cb7@linaro.org>
+ <7cddcdb7-4efd-bfdb-3d86-f5862ea0b7fe@baylibre.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <8a9e5f13-6253-2d0d-35a8-789090af4521@linaro.org>
+Date:   Fri, 17 Sep 2021 16:03:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <7cddcdb7-4efd-bfdb-3d86-f5862ea0b7fe@baylibre.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <98a8ea20-5642-d332-d7b4-18e075a594fb@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mike,
-
-On Wed, Sep 15, 2021 at 03:05:41PM -0700, Mike Kravetz wrote:
-> Now, really CC'ing Mike, and sorry for misspelling your name
+On 17/09/2021 15:33, Alexandre Bailon wrote:
+> Hi Daniel,
 > 
-> On 9/15/21 3:03 PM, Mike Kravetz wrote:
-> > On 9/15/21 6:11 AM, zhenguo yao wrote:
-> >> Andrew Morton <akpm@linux-foundation.org> 于2021年9月15日周三 上午11:50写道：
-> >>>
-> >>> On Thu,  9 Sep 2021 22:16:55 +0800 yaozhenguo <yaozhenguo1@gmail.com> wrote:
-> >>>
-> >>>> We can specify the number of hugepages to allocate at boot. But the
-> >>>> hugepages is balanced in all nodes at present. In some scenarios,
-> >>>> we only need hugepages in one node. For example: DPDK needs hugepages
-> >>>> which are in the same node as NIC. if DPDK needs four hugepages of 1G
-> >>>> size in node1 and system has 16 numa nodes. We must reserve 64 hugepages
-> >>>> in kernel cmdline. But, only four hugepages are used. The others should
-> >>>> be free after boot. If the system memory is low(for example: 64G), it will
-> >>>> be an impossible task. So, Extending hugepages parameter to support
-> >>>> specifying hugepages at a specific node.
-> >>>> For example add following parameter:
-> >>>>
-> >>>> hugepagesz=1G hugepages=0:1,1:3
-> >>>>
-> >>>> It will allocate 1 hugepage in node0 and 3 hugepages in node1.
-> >>>>
-> >>>> ...
-> >>>>
-> >>>> @@ -2842,10 +2843,75 @@ static void __init gather_bootmem_prealloc(void)
-> >>>>       }
-> >>>>  }
-> >>>>
-> >>>> +static void __init hugetlb_hstate_alloc_pages_onenode(struct hstate *h, int nid)
-> >>>> +{
-> >>>> +     unsigned long i;
-> >>>> +     char buf[32];
-> >>>> +
-> >>>> +     for (i = 0; i < h->max_huge_pages_node[nid]; ++i) {
-> >>>> +             if (hstate_is_gigantic(h)) {
-> >>>> +                     struct huge_bootmem_page *m;
-> >>>> +                     void *addr;
-> >>>> +
-> >>>> +                     addr = memblock_alloc_try_nid_raw(
-> >>>> +                                     huge_page_size(h), huge_page_size(h),
-> >>>> +                                     0, MEMBLOCK_ALLOC_ACCESSIBLE, nid);
-> >>>> +                     if (!addr)
-> >>>> +                             break;
-> >>>> +                     m = addr;
-> >>>> +                     BUG_ON(!IS_ALIGNED(virt_to_phys(m), huge_page_size(h)));
-> >>>
-> >>> We try very hard to avoid adding BUG calls.  Is there any way in which
-> >>> this code can emit a WARNing then permit the kernel to keep operating?
-> >>>
-> >> Maybe we can rewrite it as below:
-> >>                         if (WARN(!IS_ALIGNED(virt_to_phys(m),
-> >> huge_page_size(h)),
-> >>                                 "HugeTLB: page addr:%p is not aligned\n", m))
-> >>                                 break;
-> >> @Mike,  Do you think it's OK?
-> > 
-> > Sorry, I have not yet reviewed the latest version of this patch.
-> > Quick thought on this question.
-> > 
-> > The required alignment passed to memblock_alloc_try_nid_raw() is
-> > huge_page_size(h).  Therefore, we know the virtual address m is
-> > huge_page_size(h) aligned.  The BUG is just checking to make sure
-> > the physical address associated with the virtual address is aligned
-> > the same.  I really do not see how this could not be the case.
-> > In fact, the memblock allocator finds a physical address with the
-> > required alignment and then returns phys_to_virt(alloc).
-> > Someone please correct me if I am wrong.  Otherwise, we can drop
-> > the BUG.
+> On 9/17/21 2:41 PM, Daniel Lezcano wrote:
+>> On 17/09/2021 09:27, Alexandre Bailon wrote:
+>>> This series add a virtual thermal sensor.
+>>> It could be used to get a temperature using some thermal sensors.
+>>> Currently, the supported operations are max, min and avg.
+>>> The virtual sensor could be easily extended to support others
+>>> operations.
+>>>
+>>> Note:
+>>> Currently, thermal drivers must explicitly register their sensors to
+>>> make them
+>>> available to the virtual sensor.
+>>> This doesn't seem a good solution to me and I think it would be
+>>> preferable to
+>>> update the framework to register the list of each available sensors.
+>> Why must the drivers do that ?
+> Because there are no central place where thermal sensor are registered.
+> The only other way I found was to update thermal_of.c,
+> to register the thermal sensors and make them available later to the
+> virtual thermal sensor.
+> 
+> To work, the virtual thermal need to get the sensor_data the ops from
+> the thermal sensor.
+> And as far I know, this is only registered in thermal_of.c, in the
+> thermal zone data
+> but I can't access it directly from the virtual thermal sensor.
+> 
+> How would you do it ?
 
-I agree with your analysis and I also think the BUG() can be dropped
-entirely as well as the BUG() in __alloc_bootmem_huge_page().
+Via the phandles when registering the virtual sensor ?
 
-> > Adding Mike Rapport on Cc:
-> > 
-> > This allocation code and the associated BUG was copied from
-> > __alloc_bootmem_huge_page().  The BUG was added 12 years ago before
-> > the memblock allocator existed and we were using the bootmem allocator.
-> > If there is no need for a BUG in hugetlb_hstate_alloc_pages_onenode,
-> > there is no need for one in __alloc_bootmem_huge_page.
-
-Hmm, even bootmem had alignment guaranties so it seems to me that the BUG()
-was over-protective even then.
+Or is the problem you are mentioning related to the sensor module
+loading after the virtual sensor ?
 
 -- 
-Sincerely yours,
-Mike.
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
