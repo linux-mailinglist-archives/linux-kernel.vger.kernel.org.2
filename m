@@ -2,159 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48F0F4100F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 23:56:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66D33410106
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 23:59:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244395AbhIQV5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 17:57:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53382 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229942AbhIQV5L (ORCPT
+        id S244954AbhIQWBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 18:01:14 -0400
+Received: from www62.your-server.de ([213.133.104.62]:35142 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229589AbhIQWBN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 17:57:11 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B46E0C061574;
-        Fri, 17 Sep 2021 14:55:48 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id m26so10457231pff.3;
-        Fri, 17 Sep 2021 14:55:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zTxc3Wdtc4s3d3QzXi4IrshyvmO03k245cg+J15IPmw=;
-        b=nHw06hflDjXbOig9Rc0UBUMHaco0gAEGCfHq64OT8ZFPc2zXxUE4sHCSBAcgbdwKDM
-         bYIkKO+gBQS/TP9jWya1vAY8c+kaKnjsjtH9MmkAeSRk/x3QPvQs/pUbfSqnL95xTS6g
-         iAiLIou+ixEyMi0E5wFHDVQTIO1ak4d45lNKMslESz49iaUK40a5vB8kseMLK6xkMVGh
-         Pc/B1g5O43vz9pn6HGt4B6GjsXTBZ3Leo1g9cI3r/FZmx++c0mfSxc8IbXMsJnEXJjaD
-         tSI9V77pE8Mpp+Bf9Ym9d3NUwFucB1ysyIYVHWKk78Xhg4m4ZCbDSi95GHcb0xE3Vf2l
-         wGdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zTxc3Wdtc4s3d3QzXi4IrshyvmO03k245cg+J15IPmw=;
-        b=Y/1+FKL58dl76JZlkcUE4OwFLiGaKgJThnbrrAhLPAPNiTBEx5bXpM50c2CVAW2Ts1
-         J9gOwIibwRj9i8nEVcaS6dyulF6GDsZ+GynNpSZrl8AaUPCI9uTGsynh7T9R8FUgMMGw
-         4yNKfJ2JoL7jt4veVSE5SVGzf3V1V/gTvijMXsCURghENT2ejTLWvFdOU+ECtJhZu/Fh
-         lOwvhKmmbPfUXJBCo36tvbyYueyMMITRhhQM16YsRZj7HOGEQAhWR7gYRq7s+6Mao5sQ
-         6U6u0+4GhChc0tB48Rgc1+dJYlTyLTNHiPmg0QDh8LaTTFoqlTuo6eEbQBVqQJTavjqx
-         Frhg==
-X-Gm-Message-State: AOAM530uZbtsrOvhIUPTV4nZU1uFwGkTt1sxOBTThYFJHLVgFunAJHM7
-        jouhSGzE8UC+MHqZodxUK1HJ10hl10U=
-X-Google-Smtp-Source: ABdhPJyMVityzJdi38AlNeQkFoG4G8QDwRf+eyD88jCFD8HshiBgVvruNWcs6XVWlfLsexl+BcOgqQ==
-X-Received: by 2002:a63:7e11:: with SMTP id z17mr11632854pgc.436.1631915747807;
-        Fri, 17 Sep 2021 14:55:47 -0700 (PDT)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id z33sm7007731pga.20.2021.09.17.14.55.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 14:55:47 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Doug Berger <opendmb@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com (open list:BROADCOM GENET
-        ETHERNET DRIVER), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net-next] net: bcmgenet: Patch PHY interface for dedicated PHY driver
-Date:   Fri, 17 Sep 2021 14:55:38 -0700
-Message-Id: <20210917215539.3020216-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 17 Sep 2021 18:01:13 -0400
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mRLta-0003vX-Rc; Fri, 17 Sep 2021 23:59:46 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mRLta-000XXb-Ga; Fri, 17 Sep 2021 23:59:46 +0200
+Subject: Re: [syzbot] general protection fault in bpf_skb_cgroup_id
+To:     syzbot <syzbot+33f36d0754d4c5c0e102@syzkaller.appspotmail.com>,
+        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
+        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
+References: <000000000000f152a305cc374d7b@google.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <a0ad330c-3caa-5c56-3f1c-c600fe6dacbe@iogearbox.net>
+Date:   Fri, 17 Sep 2021 23:59:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <000000000000f152a305cc374d7b@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.2/26297/Thu Sep 16 15:59:37 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When we are using a dedicated PHY driver (not the Generic PHY driver)
-chances are that it is going to configure RGMII delays and do that in a
-way that is incompatible with our incorrect interpretation of the
-phy_interface value.
+On 9/17/21 11:06 PM, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    2865ba82476a Merge git://git.kernel.org/pub/scm/linux/kern..
+> git tree:       bpf
+> console output: https://syzkaller.appspot.com/x/log.txt?x=15089853300000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=c31c0936547df9ea
+> dashboard link: https://syzkaller.appspot.com/bug?extid=33f36d0754d4c5c0e102
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14dbd7ed300000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1586f83b300000
+> 
+> Bisection is inconclusive: the first bad commit could be any of:
+> 
+> 0e6491b55970 bpf: Add oversize check before call kvcalloc()
+> 2f1aaf3ea666 bpf, mm: Fix lockdep warning triggered by stack_map_get_build_id_offset()
+> 8520e224f547 bpf, cgroups: Fix cgroup v2 fallback on v1/v2 mixed mode
+> 3a029e1f3d6e selftests/bpf: Fix build of task_pt_regs test for arm64
+> d8079d8026f8 bpf, selftests: Add cgroup v1 net_cls classid helpers
+> 43d2b88c29f2 bpf, selftests: Add test case for mixed cgroup v1/v2
+> 49ca6153208f bpf: Relicense disassembler as GPL-2.0-only OR BSD-2-Clause
+> 2865ba82476a Merge git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16b5ccdd300000
 
-Add a quirk in order to reverse the PHY_INTERFACE_MODE_RGMII to the
-value of PHY_INTERFACE_MODE_RGMII_ID such that the MAC continues to be
-configured the way it used to be, but the PHY driver can account for
-adding delays. Conversely when PHY_INTERFACE_MODE_RGMII_TXID is
-specified, return PHY_INTERFACE_MODE_RGMII_RXID to the PHY since we will
-have enabled a TXC MAC delay (id_mode_dis=0, meaning there is a delay
-inserted).
+I'll take a look at the report.
 
-This is not considered a bug fix at this point since it only affects
-Broadcom STB platforms shipping with a Device Tree blob that is not
-updatable in the field (quite a few devices out there) and which was
-generated using the scripted Device Tree environment shipped with those
-platforms' SDK.
-
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- drivers/net/ethernet/broadcom/genet/bcmmii.c | 38 ++++++++++++++++++--
- 1 file changed, 36 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/ethernet/broadcom/genet/bcmmii.c b/drivers/net/ethernet/broadcom/genet/bcmmii.c
-index 89d16c587bb7..2d29de9a33e3 100644
---- a/drivers/net/ethernet/broadcom/genet/bcmmii.c
-+++ b/drivers/net/ethernet/broadcom/genet/bcmmii.c
-@@ -286,6 +286,7 @@ int bcmgenet_mii_probe(struct net_device *dev)
- 	struct bcmgenet_priv *priv = netdev_priv(dev);
- 	struct device *kdev = &priv->pdev->dev;
- 	struct device_node *dn = kdev->of_node;
-+	phy_interface_t phy_iface = priv->phy_interface;
- 	struct phy_device *phydev;
- 	u32 phy_flags = 0;
- 	int ret;
-@@ -300,9 +301,42 @@ int bcmgenet_mii_probe(struct net_device *dev)
- 	priv->old_duplex = -1;
- 	priv->old_pause = -1;
- 
-+	/* This is an ugly quirk but we have not been correctly interpreting
-+	 * the phy_interface values and we have done that across different
-+	 * drivers, so at least we are consistent in our mistakes.
-+	 *
-+	 * When the Generic PHY driver is in use either the PHY has been
-+	 * strapped or programmed correctly by the boot loader so we should
-+	 * stick to our incorrect interpretation since we have validated it.
-+	 *
-+	 * Now when a dedicated PHY driver is in use, we need to reverse the
-+	 * meaning of the phy_interface_mode values to something that the PHY
-+	 * driver will interpret and act on such that we have two mistakes
-+	 * canceling themselves so to speak. We only do this for the two
-+	 * modes that GENET driver officially supports on Broadcom STB chips:
-+	 * PHY_INTERFACE_MODE_RGMII and PHY_INTERFACE_MODE_RGMII_TXID. Other
-+	 * modes are not *officially* supported with the boot loader and the
-+	 * scripted environment generating Device Tree blobs for those
-+	 * platforms.
-+	 *
-+	 * Note that internal PHY, MoCA and fixed-link configurations are not
-+	 * affected because they use different phy_interface_t values or the
-+	 * Generic PHY driver.
-+	 */
-+	switch (priv->phy_interface) {
-+	case PHY_INTERFACE_MODE_RGMII:
-+		phy_iface = PHY_INTERFACE_MODE_RGMII_ID;
-+		break;
-+	case PHY_INTERFACE_MODE_RGMII_TXID:
-+		phy_iface = PHY_INTERFACE_MODE_RGMII_RXID;
-+		break;
-+	default:
-+		break;
-+	}
-+
- 	if (dn) {
- 		phydev = of_phy_connect(dev, priv->phy_dn, bcmgenet_mii_setup,
--					phy_flags, priv->phy_interface);
-+					phy_flags, phy_iface);
- 		if (!phydev) {
- 			pr_err("could not attach to PHY\n");
- 			return -ENODEV;
-@@ -332,7 +366,7 @@ int bcmgenet_mii_probe(struct net_device *dev)
- 		phydev->dev_flags = phy_flags;
- 
- 		ret = phy_connect_direct(dev, phydev, bcmgenet_mii_setup,
--					 priv->phy_interface);
-+					 phy_iface);
- 		if (ret) {
- 			pr_err("could not attach to PHY\n");
- 			return -ENODEV;
--- 
-2.25.1
-
+Thanks,
+Daniel
