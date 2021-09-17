@@ -2,159 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FC8140F069
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 05:29:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E82F40F06D
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 05:33:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244028AbhIQDak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 23:30:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244023AbhIQDad (ORCPT
+        id S244027AbhIQDfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 23:35:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51921 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242276AbhIQDfP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 23:30:33 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C8B1C061574;
-        Thu, 16 Sep 2021 20:29:12 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id j66so12027398oih.12;
-        Thu, 16 Sep 2021 20:29:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AdeVZSjrG7IvrvbVG4XVAJSYxI+HjrXZR/0kPB5tvaw=;
-        b=PZFXkrRcykan46GtApxlURrlr2KBP7UHhbzi2vspWKoWbr/byysBEk8VKknm5co6f9
-         YxhILlER+lZTnO3EBbX/KXsr4d4HnNOXbc72+ix9k6qqRB0/OVUnrCJLv+d+DWKx4+uh
-         vdCSd/tg3lvEe93NExlrqaOfMD84iZs9IDkCeyO0HCZzNChzqyg4njcx3rVjnVdxlmks
-         PBMDzGuO4nHs5efkJKPvJajBvhVe4H2tdsFMtVSiN0LrfK5HwQoO/r0zV6ZWBr/UrODI
-         YOnKFOZuwpAMZYCusgLnyq1WYHABghaLUkobUPtrMLs71FjkZnXeUloPHZZ0aeZ6rU3c
-         4HPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=AdeVZSjrG7IvrvbVG4XVAJSYxI+HjrXZR/0kPB5tvaw=;
-        b=uGOa0vv5y+ocQ4u6MyjYk0jilOwsC+abcEJwjnkvk4c9rbrVRfiTp7ix17s736pSKc
-         ixGVyZSHmHmA8NyhRhMLeo1gIV4bHyNDpnYwTrL5DovboJP31BLIoJzu9tjx0/zQX9ag
-         XJYCoEp1s8tiLGEcSz3EssXx0MdIkQX01sNisztNI2zzRKNj6rnMaEFM+LEryyALbSlZ
-         47yI7KLvD3W3dPU76amyAI11zaIkjUygzeVS2a6k6DbnV6787zND9v8UVQcxLdbTnNyU
-         mhgobLGxHIbAv2L5GeSGE73eAzN1kZucUzUXsJvSBTAn08UGcm0/wRycms/Qayx/nX7K
-         l8LA==
-X-Gm-Message-State: AOAM531/Frek8jCfjVVhDGxZVJwTl+KusUXupH/dnXriU/lqFz4zqMtB
-        TRfBpSttILZx3V5Rb2yKGC4DaRKW+OE=
-X-Google-Smtp-Source: ABdhPJwckS4yRBEsX+Yfx8zM50UamzYmmGpslXobWryHXp0za0SKqg+WeB6kbzkdCu2rE18DucV3eg==
-X-Received: by 2002:a05:6808:cd:: with SMTP id t13mr11621576oic.111.1631849351505;
-        Thu, 16 Sep 2021 20:29:11 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id bj27sm1034356oib.58.2021.09.16.20.29.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 20:29:10 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 16 Sep 2021 20:29:09 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Oskar Senft <osk@google.com>
-Cc:     linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH] dt-bindings: hwmon: Add nct7802 bindings
-Message-ID: <20210917032909.GB2520170@roeck-us.net>
-References: <CABoTLcSdkmuBxd5Yh6z2Oqm1-_Vd4J5Ni1i1qq5s07mWu7Ndew@mail.gmail.com>
- <20210914150859.GB3457579@roeck-us.net>
- <CABoTLcQfS5-UL92NR9vbc2YrGJv3oQPYCqAm-diNoq-tkHP_hQ@mail.gmail.com>
- <c410eba9-f6cf-4dbf-797f-48afde9c1898@roeck-us.net>
- <CABoTLcQWXerMWPvWUqjykiNcx9oGoP8aEcuDwcQ36yu-CBc0pA@mail.gmail.com>
- <382858f5-e833-d4b9-f189-449671992ba5@roeck-us.net>
- <CABoTLcST=74wRbtMA2SdmeHd0WmU7id05ouSfw4PFw2nJt_gLw@mail.gmail.com>
- <9869ed19-b8ab-d9e5-e791-a02eeb2c5eed@roeck-us.net>
- <CABoTLcS6krUnqDU7=1+_wBPoGN==VfmZHDQ4rWVZUv7c3ExNkQ@mail.gmail.com>
- <CABoTLcTJgGCrMJc4cKczz=u-ZSLpf2JYZjrMpe6k6XAG+QbJdg@mail.gmail.com>
+        Thu, 16 Sep 2021 23:35:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631849634;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NpjC2vhQxMNwcJykwWES5XKw9YQ1dBU9ER+zWax0kyA=;
+        b=R6tlPCE/s6UcVw7FHm8yYXeeW/iCI/c8Vf0XhJPbuHktqvXAb+2ghovVD1UiVD1SRKhR9m
+        YNnV/TngGegdz8mUqmYCppKbys4VHeRh/qPsTnzCIo4mlnkFyMPh6I8vjxgjTqACL5B1G+
+        hKvBR2GmirVCbxgdOor4WPM9ZAeoMw8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-248-wkzXyDo5MjeoCvg_x25aVw-1; Thu, 16 Sep 2021 23:33:53 -0400
+X-MC-Unique: wkzXyDo5MjeoCvg_x25aVw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7A9F71006AA3;
+        Fri, 17 Sep 2021 03:33:51 +0000 (UTC)
+Received: from T590.Home (ovpn-12-120.pek2.redhat.com [10.72.12.120])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 964E960BF4;
+        Fri, 17 Sep 2021 03:33:42 +0000 (UTC)
+Date:   Fri, 17 Sep 2021 11:33:55 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Yu Kuai <yukuai3@huawei.com>
+Cc:     josef@toxicpanda.com, axboe@kernel.dk, linux-block@vger.kernel.org,
+        nbd@other.debian.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com
+Subject: Re: [PATCH v9] nbd: fix uaf in nbd_handle_reply()
+Message-ID: <YUQMo1afA8v5/RJW@T590.Home>
+References: <20210916093350.1410403-8-yukuai3@huawei.com>
+ <20210916141810.2325276-1-yukuai3@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CABoTLcTJgGCrMJc4cKczz=u-ZSLpf2JYZjrMpe6k6XAG+QbJdg@mail.gmail.com>
+In-Reply-To: <20210916141810.2325276-1-yukuai3@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 11:09:16PM -0400, Oskar Senft wrote:
-> Ok, I experimented with that and I think I'm starting to get an idea
-> how the DT bindings YAML works.
+On Thu, Sep 16, 2021 at 10:18:10PM +0800, Yu Kuai wrote:
+> There is a problem that nbd_handle_reply() might access freed request:
 > 
-> > > Yes, let's do that. I'd like us to keep the "sensors" subnode to have a clear
-> > > association and differentiator to other sub-nodes such as "regulators".
-> > > Open is if we can use "temperature-sensor@0" or if it would have to be
-> > > a chip specific "ltd", but I think we can sort that out after suggesting
-> > > an initial set of bindings to Rob.
+> 1) At first, a normal io is submitted and completed with scheduler:
 > 
-> However, I found that when I use the name@x syntax, the schema
-> validator also requires the use of a reg or ranges property. But then
-> doing so requires to set the #address-cells and #size-cells
-> properties, which - I think - makes things weird.
+> internel_tag = blk_mq_get_tag -> get tag from sched_tags
+>  blk_mq_rq_ctx_init
+>   sched_tags->rq[internel_tag] = sched_tag->static_rq[internel_tag]
+> ...
+> blk_mq_get_driver_tag
+>  __blk_mq_get_driver_tag -> get tag from tags
+>  tags->rq[tag] = sched_tag->static_rq[internel_tag]
 > 
-> So these two examples are options that validate:
->     i2c {
->         #address-cells = <1>;
->         #size-cells = <0>;
+> So, both tags->rq[tag] and sched_tags->rq[internel_tag] are pointing
+> to the request: sched_tags->static_rq[internal_tag]. Even if the
+> io is finished.
 > 
->         nct7802@28 {
->             compatible = "nuvoton,nct7802";
->             reg = <0x28>;
+> 2) nbd server send a reply with random tag directly:
 > 
->             temperature-sensors {
->                 ltd {
->                   status = "disabled";
->                   label = "mainboard temperature";
->                 };
+> recv_work
+>  nbd_handle_reply
+>   blk_mq_tag_to_rq(tags, tag)
+>    rq = tags->rq[tag]
 > 
->                 rtd1 {
->                   status = "okay";
->                   label = "inlet temperature";
->                   type = <4> /* thermistor */;
->                 };
->             };
->         };
->     };
+> 3) if the sched_tags->static_rq is freed:
 > 
-> or
+> blk_mq_sched_free_requests
+>  blk_mq_free_rqs(q->tag_set, hctx->sched_tags, i)
+>   -> step 2) access rq before clearing rq mapping
+>   blk_mq_clear_rq_mapping(set, tags, hctx_idx);
+>   __free_pages() -> rq is freed here
 > 
->     i2c {
->         #address-cells = <1>;
->         #size-cells = <0>;
+> 4) Then, nbd continue to use the freed request in nbd_handle_reply
 > 
->         nct7802@28 {
->             compatible = "nuvoton,nct7802";
->             reg = <0x28>;
+> Fix the problem by get 'q_usage_counter' before blk_mq_tag_to_rq(),
+> thus request is ensured not to be freed because 'q_usage_counter' is
+> not zero.
 > 
->             temperature-sensors {
->                 #address-cells = <1>;
->                 #size-cells = <0>;
-> 
->                 sensor@0 {
->                   reg = <0>;
->                   status = "disabled";
->                   label = "mainboard temperature";
->                 };
-> 
->                 sensor@1 {
->                   reg = <1>;
->                   status = "okay";
->                   label = "inlet temperature";
->                   type = <4> /* thermistor */;
->                 };
->             };
->         };
->     };
-> 
-> In the second case we end up having to duplicate information, i.e.
-> "sensor@1" and "reg = <1>". Also, I have not yet found a way to
-> validate that the "@x" is identical to the "reg = <x>". I believe that
-> this is just how it is in device trees, but I want to make sure this
-> is what we want?
-> 
-> Thoughts?
-> 
-Comparing those two, I prefer the first option. Can you write that up
-in a yaml file to present to Rob ? If he doesn't like it, we can still
-suggest the second variant as an alternative.
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> ---
+> Changes in v9:
+>  - move percpu_ref_put() behind.
 
-Thanks,
-Guenter
+Looks fine:
+
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
+
+-- 
+Ming
+
