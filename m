@@ -2,121 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0F1840F3C6
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 10:08:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8BBB40F3C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 10:08:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245337AbhIQIJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 04:09:52 -0400
-Received: from relay.sw.ru ([185.231.240.75]:35812 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245027AbhIQIJZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S245352AbhIQIJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 04:09:54 -0400
+Received: from smtp25.cstnet.cn ([159.226.251.25]:49028 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S245122AbhIQIJZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 17 Sep 2021 04:09:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
-        :From; bh=vNgx/3n9bi2etAGIYh4+okt/y0F7gydwzwqScVihv4w=; b=iE23CrPuqYwx6L+WuP0
-        MSRozyky9urm64czXwWLrNZ/9ayDJS3aSLwMOheJcHJmfyOFUBrdXFadLP1BGBDronLgyS7h3usB1
-        piWpEhLqoM1qklkFq3aRzLuG0vmdNKeGMym8Xsi1sQMvfui8ccy6JpnJzOA3VxSbOB8PjqsSCNM=;
-Received: from [10.93.0.56]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1mR8tW-002Gyw-D9; Fri, 17 Sep 2021 11:06:50 +0300
-From:   Vasily Averin <vvs@virtuozzo.com>
-Subject: [PATCH mm] vmalloc: back off when the current task is OOM-killed
-To:     Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org
-References: <YT8PEBbYZhLixEJD@dhcp22.suse.cz>
-Message-ID: <d07a5540-3e07-44ba-1e59-067500f024d9@virtuozzo.com>
-Date:   Fri, 17 Sep 2021 11:06:49 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <YT8PEBbYZhLixEJD@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: from localhost.localdomain (unknown [124.16.138.128])
+        by APP-05 (Coremail) with SMTP id zQCowADn7KyzTERhVJzRAA--.3914S2;
+        Fri, 17 Sep 2021 16:07:16 +0800 (CST)
+From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
+To:     pshelar@ovn.org, davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, dev@openvswitch.org,
+        linux-kernel@vger.kernel.org, Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Subject: [PATCH v2] openvswitch: Fix condition check in do_execute_actions() by using nla_ok()
+Date:   Fri, 17 Sep 2021 08:07:14 +0000
+Message-Id: <1631866034-3869133-1-git-send-email-jiasheng@iscas.ac.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: zQCowADn7KyzTERhVJzRAA--.3914S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrtr13GrW5uF1xWw48WFW5trb_yoWkXFcEkw
+        s3KF1kXw42yrn5Kr48KwsYqw1vvr13Gr1F9wn8KFWay3sYqws8uws8GrZ3Jr18ur429F98
+        Xw43Ar4Yga13ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbc8FF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+        Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+        jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
+        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8ZwCF
+        04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
+        18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vI
+        r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr
+        1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
+        cVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfUeHUDDUUUU
+X-Originating-IP: [124.16.138.128]
+X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Huge vmalloc allocation on heavy loaded node can lead to a global
-memory shortage. A task called vmalloc can have the worst badness
-and be chosen by OOM-killer, however received fatal signal and
-oom victim mark does not interrupt allocation cycle. Vmalloc will
-continue allocating pages over and over again, exacerbating the crisis
-and consuming the memory freed up by another killed tasks.
+Just using 'rem > 0' might be unsafe, so it's better
+to use the nla_ok() instead.
+Because we can see from the nla_next() that
+'*remaining' might be smaller than 'totlen'. And nla_ok()
+will avoid it happening.
+For example, ovs_dp_process_packet() -> ovs_execute_actions()
+-> do_execute_actions(), and attr comes from OVS_CB(skb)->input_vport,
+which restores the received packet from the user space.
 
-This patch allows OOM-killer to break vmalloc cycle, makes OOM more
-effective and avoid host panic.
-
-Unfortunately it is not 100% safe. Previous attempt to break vmalloc
-cycle was reverted by commit b8c8a338f75e ("Revert "vmalloc: back off when
-the current task is killed"") due to some vmalloc callers did not handled
-failures properly. Found issues was resolved, however, there may
-be other similar places.
-
-Such failures may be acceptable for emergencies, such as OOM. On the other
-hand, we would like to detect them earlier. However they are quite rare,
-and will be hidden by OOM messages, so I'm afraid they wikk have quite
-small chance of being noticed and reported.
-
-To improve the detection of such places this patch also interrupts the vmalloc
-allocation cycle for all fatal signals. The checks are hidden under DEBUG_VM
-config option to do not break unaware production kernels.
-
-Vmalloc uses new alloc_pages_bulk subsystem, so newly added checks can
-affect other users of this subsystem.
-
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+Fixes: ccb1352e76cff0524e7ccb2074826a092dd13016
+('net: Add Open vSwitch kernel components.')
+Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
 ---
- mm/page_alloc.c | 5 +++++
- mm/vmalloc.c    | 6 ++++++
- 2 files changed, 11 insertions(+)
+ net/openvswitch/actions.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index b37435c274cf..133d52e507ff 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -5288,6 +5288,11 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
- 			continue;
- 		}
+diff --git a/net/openvswitch/actions.c b/net/openvswitch/actions.c
+index 77d924a..c23537f 100644
+--- a/net/openvswitch/actions.c
++++ b/net/openvswitch/actions.c
+@@ -1238,8 +1238,7 @@ static int do_execute_actions(struct datapath *dp, struct sk_buff *skb,
+ 	const struct nlattr *a;
+ 	int rem;
  
-+		if (tsk_is_oom_victim(current) ||
-+		    (IS_ENABLED(CONFIG_DEBUG_VM) &&
-+		     fatal_signal_pending(current)))
-+			break;
-+
- 		page = __rmqueue_pcplist(zone, 0, ac.migratetype, alloc_flags,
- 								pcp, pcp_list);
- 		if (unlikely(!page)) {
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index c3b8e3e5cfc5..04b291076726 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -38,6 +38,7 @@
- #include <linux/pgtable.h>
- #include <linux/uaccess.h>
- #include <linux/hugetlb.h>
-+#include <linux/oom.h>
- #include <asm/tlbflush.h>
- #include <asm/shmparam.h>
+-	for (a = attr, rem = len; rem > 0;
+-	     a = nla_next(a, &rem)) {
++	nla_for_each_attr(a, attr, len, rem) {
+ 		int err = 0;
  
-@@ -2860,6 +2861,11 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
- 		struct page *page;
- 		int i;
- 
-+		if (tsk_is_oom_victim(current) ||
-+		    (IS_ENABLED(CONFIG_DEBUG_VM) &&
-+		     fatal_signal_pending(current)))
-+			break;
-+
- 		page = alloc_pages_node(nid, gfp, order);
- 		if (unlikely(!page))
- 			break;
+ 		switch (nla_type(a)) {
 -- 
-2.31.1
+2.7.4
 
