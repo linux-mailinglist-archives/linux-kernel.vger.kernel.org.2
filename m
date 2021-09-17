@@ -2,156 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 219CE40FD7F
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 18:02:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F31A640FD84
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 18:05:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243314AbhIQQDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 12:03:32 -0400
-Received: from mga17.intel.com ([192.55.52.151]:5910 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229890AbhIQQDa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 12:03:30 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10110"; a="202983188"
-X-IronPort-AV: E=Sophos;i="5.85,301,1624345200"; 
-   d="scan'208";a="202983188"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2021 09:01:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,301,1624345200"; 
-   d="scan'208";a="434893643"
-Received: from orsmsx605.amr.corp.intel.com ([10.22.229.18])
-  by orsmga003.jf.intel.com with ESMTP; 17 Sep 2021 09:01:54 -0700
-Received: from orsmsx608.amr.corp.intel.com (10.22.229.21) by
- ORSMSX605.amr.corp.intel.com (10.22.229.18) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Fri, 17 Sep 2021 09:01:53 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX608.amr.corp.intel.com (10.22.229.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Fri, 17 Sep 2021 09:01:53 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12 via Frontend Transport; Fri, 17 Sep 2021 09:01:53 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.171)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.12; Fri, 17 Sep 2021 09:01:50 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QCb72ClzxnZO55JtFbJlyE281W7cWtcS31zZuwkLSfnxzxVn7r55cESslhuwoLBeax8zMm721SkruSJlx5DnQndQ3UGA3Xfh6yIBjAlpD6RSka07AXP9T28B8JJxwlnWAQT37gMp/oCSyKhRDvfwe98gEfmkNliFj8+v0m6jIbNlV/CtySrED/lsTXhlBJ9mzRLSygPHhKEOX7flY31Qcs5E9APNXAzkLyMmXQj1pwnRb2+M39cflfHp/N0rC53NAQ88GevPQrrvfV+UyyZj2xqUZKVmBn3qNrxeRCuboo1F3Tkil0yvS7p1JfIbTTkV6ye5JARZRJZAZ1nkGERoPA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=S9nrRXSJ4peAa4IcsSuzg09PjZHZeeRjcw6HCWYpHws=;
- b=XEpDJZqLodl2vRwHbJ0slib+klg3ETKurtWCnOkWuOc716yg5d6aWRHfO/YuPNvcjvPxwzy83ZdFc3vxLv2asWRaHHc6Z+pvMysXE8siZ1RbMAcUv0fd3Dh8CY8zBWbAj6DtmyfU167m43owynPXZ27lHsikWAiaVPu2Jy8lnx7uyqeIZmbI2+Ci3pMgo3I2CUX6GJt0XY2PZENJ9+s/Mc0Q+11ck6uiNGfX7FHYqovs0J53h7wPkELU/D/wM3nKt9zF703xkZv5oJXv0iU8ZddM2MFxF58jcXLRd4AGyqZxo2m2+b0YD9+IrOsgNkCtGld0FdxsDb0hUh3GgK3nWA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=S9nrRXSJ4peAa4IcsSuzg09PjZHZeeRjcw6HCWYpHws=;
- b=uPDJvRVwzlFFP58/z5xOidms3bF5UEZ/GDPIU0AXTeSyrGT41eZFXVT+ifcOQ9ZhI7ufn8CPt8orivS0zoMaP0SaJBUs+4Fc53P2cfVxluylOWOvxkbI3wamxDxmwKJrNudGRQJ3Rkm40kxKRiltHkErshkajuDvRPBjynD0Zyk=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=intel.com;
-Received: from CO1PR11MB4914.namprd11.prod.outlook.com (2603:10b6:303:90::24)
- by MWHPR1101MB2317.namprd11.prod.outlook.com (2603:10b6:301:5b::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Fri, 17 Sep
- 2021 16:01:44 +0000
-Received: from CO1PR11MB4914.namprd11.prod.outlook.com
- ([fe80::cd0a:aadf:cf9b:f2c3]) by CO1PR11MB4914.namprd11.prod.outlook.com
- ([fe80::cd0a:aadf:cf9b:f2c3%3]) with mapi id 15.20.4523.017; Fri, 17 Sep 2021
- 16:01:44 +0000
-To:     Hao Chen <chenhaoa@uniontech.com>
-CC:     <anthony.l.nguyen@intel.com>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <intel-wired-lan@lists.osuosl.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210917141146.5822-1-chenhaoa@uniontech.com>
-From:   Jesse Brandeburg <jesse.brandeburg@intel.com>
-Subject: Re: [net-next,v1] net: e1000e: solve insmod 'Unknown symbol
- mutex_lock' error
-Message-ID: <20c47a57-e7d7-d791-5c86-e27310672789@intel.com>
-Date:   Fri, 17 Sep 2021 09:01:42 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-In-Reply-To: <20210917141146.5822-1-chenhaoa@uniontech.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: MW4P220CA0029.NAMP220.PROD.OUTLOOK.COM
- (2603:10b6:303:115::34) To CO1PR11MB4914.namprd11.prod.outlook.com
- (2603:10b6:303:90::24)
+        id S232879AbhIQQHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 12:07:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229890AbhIQQHO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 12:07:14 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ECADC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 09:05:52 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id 73so13885817qki.4
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 09:05:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=WCt0pxhXH4/JIuMdox6p05mTuWyc2xVcN9WjNMj4aKs=;
+        b=ZRteYCqIThVqHN5W8RnGpHNj5aIj0eWp6/HQ0RntfO96xzBPjh/i/RCB0Mw1l0Ug73
+         m5KIF7d3ICnMWPkwI3L7e7LLhcxLzKX7S9tiQbRBjmd/D2ijcc+uv8Ws1owaPb+bWrTQ
+         l0TPxNI5GEwD2Wg7R8qQlFYTW/ibxQ1DAl79xRfCdc3ZdwLel3Sy6JOvUgNkOxhbQ+cQ
+         CxKgv7hhpxP/O5LNAgecnkz6MVPK8p8pD+sgOJcOtRJSWKaSFpsXMiPW2LCWYiDcvLZ2
+         +J7rHh3iOMmW0EpC2E5uEyAdae7ekKqjO80B9MlNvc4R3XcMSIrGWO7dH9IqLDYHdPaK
+         0hZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=WCt0pxhXH4/JIuMdox6p05mTuWyc2xVcN9WjNMj4aKs=;
+        b=KiN7m02CuBKd00ZVdIX+FMAkaDXmASQM5wsv9Uj15rBvFr7fDBUDh/OjGFmdxtlIbJ
+         7WwznpCNlNW8p8JrtoyeVTRcsCUF2g7VYtmPtYAnOxl6VRtFWPDZnQkBHbigLMNFnCri
+         rsSo831iL604fSgW6lPJZDpCqMfeFPTn3NjRaof3cgHUoERhAEL/OIziFLuPPvdgiSn8
+         oqf/Az75Hn8NprpiI4JA24uumbistJ6d+G0EXnYAUn//h6ZXZGT45vqXdjJBh83x7H0w
+         emkZw5KU/oRZ0lSyFKbWAlwu53OuU/NfrHYQ8mx6oPPkqv+AHIEl1V/fBgdVfAnEIyNW
+         avwA==
+X-Gm-Message-State: AOAM533FIspZ+RCUJu4EIMdHfSKTyhuXrT8d0aHh4nEfXqpwEJN0PP/y
+        eH32AnVM8y6F2jQR3dLDV9LlShsqK8KPfslpcwWgdw==
+X-Google-Smtp-Source: ABdhPJwnZpCU/BxhvtHH+5ZN0MJBgH+hOYPH5YTmYRvQtLddY4pUdUc2ZccXHopHqxVuX+bE2HhkG9J39/M2V6JZ4K4=
+X-Received: by 2002:a25:d9c8:: with SMTP id q191mr15053330ybg.61.1631894751097;
+ Fri, 17 Sep 2021 09:05:51 -0700 (PDT)
 MIME-Version: 1.0
-Received: from [192.168.1.214] (50.39.107.76) by MW4P220CA0029.NAMP220.PROD.OUTLOOK.COM (2603:10b6:303:115::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Fri, 17 Sep 2021 16:01:44 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7332d140-7103-424a-83c0-08d979f4724a
-X-MS-TrafficTypeDiagnostic: MWHPR1101MB2317:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MWHPR1101MB2317D27F9A544C9C9E1F2E6397DD9@MWHPR1101MB2317.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3276;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GDNGNct9rktuBc658cfEzQhj1QqXxnXFVNyXxKGe/vP1GdLTxHnTKve2jS2S3urWL+GCoR1Qslj03f59orWTVWWw70rYh3W1Ht3bV/o+Oal3+Mux3j6gVFn61vr6qPUMDXd5VAJ3vJ5dwJ9UkVKr9rqEEX6U4cKZwSlqXVGnma4yg5jUeinKN1X3YTArLglPo92xr0l4ZCUESIg8/feZwTBMcu1IQ3ZADIuLjnzPPYYwDWXrL4uXCfS7W1VZlWE0w92zwW2Bqdl/B0neqs2DL7djaYcD/cVCGZnXpMlrbh8htPSsrkvAQKjnupNEQdyxRnwvGCfNwDFV9GqnEEq7wkusPQuKK5yftw3pgoe9UnyUn+3SnkCM9FFxFIoC1HLht210Up+Qs4hSlgVR37yMYTC79iFa0bNqs9NSPtgafzUr/EzuV2L3BZUfhSciAjjTUgtY/1fOpx4RaOSQSC9sg9Zcq9lFsN4Vy6vaWP8G3fA6eHw0YSKGqLMUYLFQIXdy4bUmaplyyaIjIgsGWB8fzU11M2aBs/xJafIbzqz6jVBYCPq/ZJIJ0oH3Ve+yhrFRFCHL1HXHEd7yr/IcTqfQWLXhrctrA1h0j1f3A0LMkQ12l9xP/Tek9j9WsZq4GlZw+7hUiwmOtr4d9L9GLjg2WP9rPuZllU+jxWb0wJOHxGUBxDAdzkOjHfVeLjqUN0dauTvDRI+cd6GAZZsQpwVsQB0MrP/9MB3erKCwRRiGPmk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB4914.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(396003)(136003)(39860400002)(366004)(66476007)(8676002)(8936002)(66556008)(66946007)(53546011)(5660300002)(956004)(36756003)(2616005)(4744005)(478600001)(44832011)(2906002)(26005)(4326008)(6486002)(31696002)(83380400001)(16576012)(316002)(38100700002)(6916009)(31686004)(86362001)(186003)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?d0ZFcUx4QkpRQ1JZUWtSa3NLL2cycUFRaW50QWNzQ2JndkNieUl2VFlNNjl2?=
- =?utf-8?B?NVB2NGl0L2VTRWsrS3N1TkRVcDdmTW1NbGRMdkV6WjNxWEtmKzVYRnRHZ1FY?=
- =?utf-8?B?UzZGSHZJOU0rcGd1TGozZzlBMHpOeURScTFwTk9uTnBjTFhJMzBPbDRNWStK?=
- =?utf-8?B?RXd2QVozTjh1cnV0VjFaVmhja1czUjN5R3BrTE5oSUpKWkg1a1NWYWgrU3Jp?=
- =?utf-8?B?UE9jMkpQNTRWVk9VOGx1aXFaTVJZdWlDUFAxVG5sbkdYeUl1U3hlT0Y3eVpZ?=
- =?utf-8?B?UFR3UjlwU0lZQ1ZQQlNWZk9ZR3Y1MXMvRk94bE40NFpVNk9tT0xrYVN0NWFD?=
- =?utf-8?B?V3ZBTlUzM2ltVnhrY0VIZEd3bnhOdHhKbjNFaUdYMmpQUHowbFJBODdkWFhR?=
- =?utf-8?B?T2hhUFl0elNLN3pacDZsNnFPNVcxV3ZjdU9HQmIrZWFOYkpISExia1lUWlg2?=
- =?utf-8?B?Sk45ZWNtUFlaL2ViakN2ajlMMDJ6bTdnd2pZMFVIbTBKNjRwQkFBSXdWWVpQ?=
- =?utf-8?B?dkdvKzU1WUQvaGpZVUhlUGQ0SjJka2hDSkxqR1o4VEhBWUx6OVdGT01wYnha?=
- =?utf-8?B?amlUT1lucUZ1ODd3TGdadEFIdSszVFZlM0hVM0VJelhWcnJrTWtSTUQxRDl4?=
- =?utf-8?B?ZGRxaklJeWtyenZubk1GM0RPNkJVSFkrTkN6MVFjeVljSWpqT25IaWM3TGlW?=
- =?utf-8?B?ZjlueVJuZXlSREIwMzhDd2VyNWxNTzdmSXg1cHZpYUR2ZHI4UmJHbFpOS1R1?=
- =?utf-8?B?Mlo4OTIveFdNWWphRGY2M3B6Wm0wbUM2RmFjQjN5ZkExcitSNWlsUHdrcURQ?=
- =?utf-8?B?amNuaEkweTVNeEtVRVFVRlBYOTh1RENHTTdXdWcyem85U2p6MDVlYVV0L0pq?=
- =?utf-8?B?R0s4VUxNd0hBc3BONVJtOXlvM3l5aExOaVN3bFhWdGpFS3lCS1VXTTFuL2Mv?=
- =?utf-8?B?RVB3WnFFaGducGJhejlXcjFzT3A4b2RvSEJ1Mjg2eHpCbWRXTmVyWDhlMi9i?=
- =?utf-8?B?T1NGWkZpQWwwT0YzSGVKSHFOOHgxMnBVWlFyOGtZUmxyRWhOSlRoZ2FreWFl?=
- =?utf-8?B?TWYwQ1lRU1ZkWEpJRElHZEhyd1NXQmZWRDJOT1IwQk9QUTRKcG9BVU1YWGFs?=
- =?utf-8?B?SSsvRlgxOWlheDVMREs0bnlqZmxLai9kQUdIT0VlUG13emlIdjNYNWcvMnZH?=
- =?utf-8?B?bjF0QmhOck4rdXFST21HdjlBZmJrTDZCUXZ4OGlZT2hBeFBmQWlDQ3ZKVmxk?=
- =?utf-8?B?NXFNbXpTakpDemVUbFFuUWhDVFV5QWNqT2VaMzh0RE43dlIzc1NPQWRKcEg3?=
- =?utf-8?B?NW04K0RFVFJnK3NxVkhlZEVrbmRDenM4elpyZEc4aHQxNEdMc3Rvcmp2ZHly?=
- =?utf-8?B?YmJBbHArRFdQSWFJekx0WmM2ZmM4dmMxeHg2ZncwdXBDWGxoNmZ2R2l2RHRM?=
- =?utf-8?B?Q0d4NlZvSWk2VVFOVkRQTVhGbzJIUkg5Qml1SXJjSVdZVGxFeVE3QW0zVTNZ?=
- =?utf-8?B?RGlyek84NlpzRWEvR0RvU21sUlp4V0Exc2NELzY4SUhhNVdyV0ZSVzcrTFda?=
- =?utf-8?B?WEVvcnNEQUZzOHMyTmtYNjR6cERLZ2xobUYwRFZGWHZsdEt3ZHY0d0FSM3dq?=
- =?utf-8?B?eVhiTnkyT1lqMkRwRWphVGFVODB2R2YwOTUwU1pDYWFkWGkxRmtzMnd4bHRH?=
- =?utf-8?B?UVZ1WkUxc2JNTVVrZGNqUmZQNXFhQmNzeVJ5aStKRE00SWVBVzU4b3N6WGxP?=
- =?utf-8?Q?ZV/0l6aNmN9stPQ263G5P8q2cW3s4CPvCLcfmA3?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7332d140-7103-424a-83c0-08d979f4724a
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB4914.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Sep 2021 16:01:44.7098
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: oWQ85ws2EkM8Xtn/EmBi3+9HHQRQkk4uAdZDV3dzYo1NCxawSpQJutzO62n6i/fTHClRU2O6iuT5SjOYAZoNh7Tm8ZMonVcRPw50QC1VEf8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1101MB2317
-X-OriginatorOrg: intel.com
+References: <20210917153037.11176-1-mkoutny@suse.com>
+In-Reply-To: <20210917153037.11176-1-mkoutny@suse.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Fri, 17 Sep 2021 18:05:40 +0200
+Message-ID: <CAKfTPtBU88dioVFesjYxKWwQ0O7KcqY4tR7P=2mTO8v-a_GadQ@mail.gmail.com>
+Subject: Re: [PATCH v3] sched/fair: Add ancestors of unthrottled undecayed cfs_rq
+To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Phil Auld <pauld@redhat.com>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Odin Ugedal <odin@uged.al>, Rik van Riel <riel@surriel.com>,
+        Giovanni Gherdovich <ggherdovich@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/17/2021 7:11 AM, Hao Chen wrote:
-> After I turn on the CONFIG_LOCK_STAT=y, insmod e1000e.ko will report:
-> [    5.641579] e1000e: Unknown symbol mutex_lock (err -2)
-> [   90.775705] e1000e: Unknown symbol mutex_lock (err -2)
-> [  132.252339] e1000e: Unknown symbol mutex_lock (err -2)
-> 
-> This problem fixed after include <linux/mutex.h>.
+On Fri, 17 Sept 2021 at 17:32, Michal Koutn=C3=BD <mkoutny@suse.com> wrote:
+>
+> Since commit a7b359fc6a37 ("sched/fair: Correctly insert cfs_rq's to
+> list on unthrottle") we add cfs_rqs with no runnable tasks but not fully
+> decayed into the load (leaf) list. We may ignore adding some ancestors
+> and therefore breaking tmp_alone_branch invariant. This broke LTP test
+> cfs_bandwidth01 and it was partially fixed in commit fdaba61ef8a2
+> ("sched/fair: Ensure that the CFS parent is added after unthrottling").
+>
+> I noticed the named test still fails even with the fix (but with low
+> probability, 1 in ~1000 executions of the test). The reason is when
+> bailing out of unthrottle_cfs_rq early, we may miss adding ancestors of
+> the unthrottled cfs_rq, thus, not joining tmp_alone_branch properly.
+>
+> Fix this by adding ancestors if we notice the unthrottled cfs_rq was
+> added to the load list.
+>
+> Fixes: a7b359fc6a37 ("sched/fair: Correctly insert cfs_rq's to list on un=
+throttle")
+> Signed-off-by: Michal Koutn=C3=BD <mkoutny@suse.com>
 
-Thanks for taking the time to send a patch.
-Why do you think including a file will fix this? That error is usually
-the user's fault for trying to use insmod which doesn't check module
-dependencies.
-
-The advice I usually give is to try modprobe instead, does the problem
-still occur without this patch and just using modprobe?
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+> ---
+>
+> Changes since v2 [1]:
+> - jump to completion for loop, don't duplicate it
+> - singled out of the series (to handle a fix separately from the rest)
+>
+> [1] https://lore.kernel.org/r/20210819175034.4577-2-mkoutny@suse.com/
+>
+>  kernel/sched/fair.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index ff69f245b939..f6a05d9b5443 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -4936,8 +4936,12 @@ void unthrottle_cfs_rq(struct cfs_rq *cfs_rq)
+>         /* update hierarchical throttle state */
+>         walk_tg_tree_from(cfs_rq->tg, tg_nop, tg_unthrottle_up, (void *)r=
+q);
+>
+> -       if (!cfs_rq->load.weight)
+> +       /* Nothing to run but something to decay (on_list)? Complete the =
+branch */
+> +       if (!cfs_rq->load.weight) {
+> +               if (cfs_rq->on_list)
+> +                       goto unthrottle_throttle;
+>                 return;
+> +       }
+>
+>         task_delta =3D cfs_rq->h_nr_running;
+>         idle_task_delta =3D cfs_rq->idle_h_nr_running;
+> --
+> 2.32.0
+>
