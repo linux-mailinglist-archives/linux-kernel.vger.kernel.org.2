@@ -2,71 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF0B340FF9F
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 20:50:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 192AB40FFAD
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 21:13:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343639AbhIQSvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 14:51:36 -0400
-Received: from mail-0201.mail-europe.com ([51.77.79.158]:59261 "EHLO
-        mail-0201.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235893AbhIQSvd (ORCPT
+        id S240939AbhIQTOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 15:14:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229475AbhIQTOl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 14:51:33 -0400
-Date:   Fri, 17 Sep 2021 18:49:59 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acoro.eu;
-        s=protonmail2; t=1631904607;
-        bh=N+gO9RIfpt8SiTHVFCUohoA8yoBqGr/uc1Xzu+Xgz4w=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=5XUvXL63CTlfcFvz5j6jWyvz0UpLRrb/QivTotYo+bkccqoR9v1E7AMXZg538BeGt
-         G8tKPf0XzIyVOWZOV1HyfW+0fJuBUxCT0KtLROx3bx6vKSUNnAq9gAiDspwszPo+nV
-         5TbwUuRG3tySTtqbyoobk5Ie8VZdxFzpyu+iO4ZWF1DNE1b8JbXXf/0/m8bM+hV97O
-         pcY4Fp5w4sXazww16X6hjoww9gZljyNMq34DZjbWSQGiljXpY/0EK3cVqC1/d0UtUU
-         5gmsNcVxOgf7NizAUM8Ghtd76x+zIEmZ2C69g971Kp6aMlPtVaeXN3T4zziUBc32De
-         c/74VDxNmEPMw==
-To:     davem@davemloft.net, linux-doc@vger.kernel.org,
-        vladimir.oltean@nxp.com, asconcepcion@acoro.eu
-From:   Alejandro Concepcion-Rodriguez <asconcepcion@acoro.eu>
-Cc:     kuba@kernel.org, corbet@lwn.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Reply-To: Alejandro Concepcion-Rodriguez <asconcepcion@acoro.eu>
-Subject: [PATCH] docs: net: dsa: sja1105: fix reference to sja1105.txt
-Message-ID: <05f698d3-4155-4688-77d0-adc0ab6fe140@acoro.eu>
+        Fri, 17 Sep 2021 15:14:41 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74072C061574;
+        Fri, 17 Sep 2021 12:13:18 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id t6so33703882edi.9;
+        Fri, 17 Sep 2021 12:13:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3sAOASI2zHnMWQ6iN/cB/o9SsDokLlL5xajx85WFV1c=;
+        b=OxYHOsnmPhV6lwgY0B6aYj3Z1JbIGmruoikWkx5mmZsPhacCk9DJMA9OUFSf/2pMwV
+         xHMIXYLTJZGbemV2o1SjfhFj23jd5w24mB2Qyt2J+GAd+Fw4hqevYLQiAo1oIr9skMzt
+         NXz8pwLxAMvbuXihkYEslBfdRBrX1DAXZK2f7R0Ucg8vPR28BBZP5oyazZgzUMwVMzNe
+         /wYNxPWeOV2Elu2r3zmq5oK1ouKB/5jDN1Y4B/aGgnUEfqbymQ3FQ6mPdcyneCxAdDLD
+         FM41tKo5Srqz6ju8iT0SdSh9jwsWKL/B5zFjYLHT8tROfIvg3CtGugMmqYH3v2j+CMYR
+         M82Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3sAOASI2zHnMWQ6iN/cB/o9SsDokLlL5xajx85WFV1c=;
+        b=BV7lpt9Iy5zdWgpKYGGbz0l71wfTwtvXaBJopni4qXeCMFjd6NSzlYZQGKQjwn+fVk
+         SpMazUoHLpuEHTlpp57bnJH8lnuDZ//L6I17yX9GLQHOaYxVQxbRQZla7DDrUHTmmFiI
+         7QZ3l215+9nil98zug1xHXm+xpFen6ZKbJSJgZsondAkC6sM4bNJTzmGv9Vzw34SjMEn
+         8g8za1pv+hm2OFDMjWE8so0+T5xIA8RRlSVOXK9Hb18mPmhJu11XzCAoCwq1FN1BQL3h
+         v1o0QpJsIU8sPdbPe5fXVfq6A/YKhYqwfQQ9wnHLKdBpEOJ9H80wlinEeVFLFOFAP43p
+         BbdA==
+X-Gm-Message-State: AOAM530mvHLdxj+HYaeB9K/dKXXbE/Bpmz37KNQeEK7KIYd0/nRwe+Nj
+        bw2KTUzAMKSjEWtVsADvi0jFRCHY5KIIQ/6ZL6I=
+X-Google-Smtp-Source: ABdhPJxSMqk/1+/x1KkRPd369122/U4ibfC2txOno0TIxA7VLymUniHB0ltGmBQnBZbD3mD2pMiB2MMS2cSOP4++PtM=
+X-Received: by 2002:a05:6402:1395:: with SMTP id b21mr14596400edv.119.1631905996953;
+ Fri, 17 Sep 2021 12:13:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+References: <1631863065-10181-1-git-send-email-wangqing@vivo.com>
+In-Reply-To: <1631863065-10181-1-git-send-email-wangqing@vivo.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 17 Sep 2021 22:12:39 +0300
+Message-ID: <CAHp75VeetMDBur6tcf-=VXuxch1NEXV11y_qEcqSuBz=OZJL_Q@mail.gmail.com>
+Subject: Re: [PATCH] dma: dw: switch from 'pci_' to 'dma_' API
+To:     Qing Wang <wangqing@vivo.com>
+Cc:     Viresh Kumar <vireshk@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The file sja1105.txt was converted to nxp,sja1105.yaml.
+On Fri, Sep 17, 2021 at 7:37 PM Qing Wang <wangqing@vivo.com> wrote:
+>
+> The wrappers in include/linux/pci-dma-compat.h should go away.
+>
+> The patch has been generated with the coccinelle script below.
 
-Signed-off-by: Alejandro Concepcion-Rodriguez <asconcepcion@acoro.eu>
----
- Documentation/networking/dsa/sja1105.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> expression e1, e2;
+> @@
+> -    pci_set_dma_mask(e1, e2)
+> +    dma_set_mask(&e1->dev, e2)
+>
+> @@
+> expression e1, e2;
+> @@
+> -    pci_set_consistent_dma_mask(e1, e2)
+> +    dma_set_coherent_mask(&e1->dev, e2)
 
-diff --git a/Documentation/networking/dsa/sja1105.rst b/Documentation/netwo=
-rking/dsa/sja1105.rst
-index 564caeebe2b2..29b1bae0cf00 100644
---- a/Documentation/networking/dsa/sja1105.rst
-+++ b/Documentation/networking/dsa/sja1105.rst
-@@ -296,7 +296,7 @@ not available.
- Device Tree bindings and board design
- =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+No need to cite the script.
+With this addressed,
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
--This section references ``Documentation/devicetree/bindings/net/dsa/sja110=
-5.txt``
-+This section references ``Documentation/devicetree/bindings/net/dsa/nxp,sj=
-a1105.yaml``
- and aims to showcase some potential switch caveats.
+>
+> While at it, some 'dma_set_mask()/dma_set_coherent_mask()' have been
+> updated to a much less verbose 'dma_set_mask_and_coherent()'.
+>
+> This type of patches has been going on for a long time, I plan to
+> clean it up in the near future. If needed, see post from
+> Christoph Hellwig on the kernel-janitors ML:
+> https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
+>
+> Signed-off-by: Qing Wang <wangqing@vivo.com>
+> ---
+>  drivers/dma/dw/pci.c | 6 +-----
+>  1 file changed, 1 insertion(+), 5 deletions(-)
+>
+> diff --git a/drivers/dma/dw/pci.c b/drivers/dma/dw/pci.c
+> index 1142aa6..1dec1ae
+> --- a/drivers/dma/dw/pci.c
+> +++ b/drivers/dma/dw/pci.c
+> @@ -32,11 +32,7 @@ static int dw_pci_probe(struct pci_dev *pdev, const struct pci_device_id *pid)
+>         pci_set_master(pdev);
+>         pci_try_set_mwi(pdev);
+>
+> -       ret = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
+> -       if (ret)
+> -               return ret;
+> -
+> -       ret = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
+> +       ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
+>         if (ret)
+>                 return ret;
+>
+> --
+> 2.7.4
+>
 
- RMII PHY role and out-of-band signaling
---
-2.25.1
 
+-- 
+With Best Regards,
+Andy Shevchenko
