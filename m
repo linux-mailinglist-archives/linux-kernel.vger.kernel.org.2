@@ -2,82 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C65444101D2
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 01:38:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEF454101D7
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 01:41:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233835AbhIQXjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 19:39:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47984 "EHLO
+        id S235755AbhIQXnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 19:43:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229710AbhIQXjn (ORCPT
+        with ESMTP id S233569AbhIQXnA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 19:39:43 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10A87C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 16:38:21 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id p29so38491872lfa.11
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 16:38:20 -0700 (PDT)
+        Fri, 17 Sep 2021 19:43:00 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F815C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 16:41:38 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id m3so37098291lfu.2
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 16:41:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=KeHzeB7io94eA/ZJSHL1lXdfmPLUOLShSlChdwb/4UM=;
-        b=dy9OzlFOrhnl1DS8/X+L7nE1kMFKgnlxfciOEhe+x+cltD1TM7SnASV0vjMxXR/urJ
-         kIkBxfeK5sxCQgMft8Yyfukwk5oiWkXaZVJzhT0fhd4TdKGiDkPn/M7WUZkjn8dIH2cK
-         sCGAXski8FM3PPJ0AsCsv7dSz8+bad5pHjO2gPuYTY8kwb6dAvj6HRvj1Z3HWi7eN9u+
-         C5aOzaMx7T9W6JVKIifyQEGb8tHMb2R2Y5aGafrOp4Biu6oWNeZTAxtLM2fdWh5kx2l1
-         bUd1fQfkYn7tmjFQWZ4gp3ARCgd7YoLuubNMaNgsjcTE8KD3mEneFcX4pktxKupTJ9FZ
-         d0XQ==
+        bh=PnbdN3UCLAUCSO4VZIIA2qQL73S6L45jVruxNydbTrE=;
+        b=aWqIVvX9llY6+8fAsRoJ5vE0qofZ3Ge2tLqBWaHXKlXI++P+q9sHj+3Vs8HM+V+EeX
+         7enIyaJbxFhE/wSf5//Xx2Zyhz5Y2NrVXE+ByHojfqDz9JOlmMjxBJ2oyS8xF3n22ctK
+         62b9Fk8lBZG9h7xOzDtP1d9WWD1Ia0pFRuuzCtx+on5rE72/Qv1PN3QGUDb+4INDIgvK
+         UP3U90hcFVxlw31d4TX3CdSKE/ZS/qdVn2VNfESCFO1b3zDd1rX4xzoMvpfxQp0uQuli
+         CZCPCkMCPRvnzFoOnXYFlidK8l99mOysSDqVJNJVnPk3+erdS8Ml9wzdlIkVNIlbed4F
+         6YWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=KeHzeB7io94eA/ZJSHL1lXdfmPLUOLShSlChdwb/4UM=;
-        b=Wn8bMs5WpPJqNMH305rpfaAOykz0xH9cIdLaVXFCeFsSmFA+kj0/NIn9S4T4sD/TrC
-         gdASXU5kh1Wtf5sisy5l949GfGDOR2uNkMT4dvX4Ed9EZRIKimqgvmq5r53y50E3ZetF
-         kocx8AFfzXpwznY+4ohyVqZemDJGvqvUqoElRAWlTm8L4zzYnbM2aX6l/FC2X3WZmxTi
-         szXvwTA01KX2og+Vd+XI2+ZwvkTDAiLZfN/4nuVHIAwUHO7QeHN4yYI1+yB4sw2YxYGc
-         leNHuBdkEhQcRgNyskQkffGqwox3pVZZVVbmDTUJy0mQDdLO35sFjcUGp6yczxHuDGQY
-         sT4w==
-X-Gm-Message-State: AOAM531Y48rDRRwY7ktNMi5o2yK+PloqegUPpq7ohVTL+/xFQkPu/II3
-        D5bqkAykfpOFZEhVcUirNdwdFZyTP0HORUddN0MWew==
-X-Google-Smtp-Source: ABdhPJw4EoEAssdj+o8H6LXsDHc8O7NrGufrLKeqnpYTgwFQ5ZKpgVAqKHY0OKYZbCBYW1+1Ss4+AJAaLD2tWKh8CwU=
-X-Received: by 2002:a2e:b5a7:: with SMTP id f7mr11859236ljn.19.1631921899350;
- Fri, 17 Sep 2021 16:38:19 -0700 (PDT)
+        bh=PnbdN3UCLAUCSO4VZIIA2qQL73S6L45jVruxNydbTrE=;
+        b=JfLUDCS6il81fR5HMrhs2+oOTjt4t6ioxwMRVTYs+dzWAU42KMixBavbsCSKGs72aQ
+         c4vLVI71KPJlhMQmHt7TL8y9x9kWii4JR6qVeiikgQvYVgeFsOtc8jSrS/6dU/v2wHRj
+         OP4mYjdcheSKzMAdZDT86TkLd/LN7KiKMuRyeefgGqQ+wJdMV93Px8RbH8bOLNC4uja/
+         55ZOrdydJ5jMECHZbfkKr3304rdVKZgy8CuVw3uB8G8hiq0RMqvWBxqQG4WXxlpr4RIG
+         hJF0SwcwCPGYRBGSJx9+sqlGC2PWzoQIYA85HjRb1Zc5B1/yw0G7RDsCFx7WPHeEV+RO
+         ZF+A==
+X-Gm-Message-State: AOAM530/DPBNCM17C3rVH86+VdkJbrmN/UiSjIzt8BGvf2YcuXCzatIf
+        4JpPgvfMYTz9rlN6GoIVWxAN78NHVnXgSrvVqo7nWg==
+X-Google-Smtp-Source: ABdhPJzIV512qryJ+JnO7qP7YBFgWkpHpPcXbqnJv8d2u3jbvziAQ2liUehMup4iRBRk+n/kRb/tARgPhmw9tlb6rxU=
+X-Received: by 2002:a2e:5758:: with SMTP id r24mr11874618ljd.432.1631922095497;
+ Fri, 17 Sep 2021 16:41:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210913224926.1260726-1-heiko@sntech.de> <20210913224926.1260726-5-heiko@sntech.de>
-In-Reply-To: <20210913224926.1260726-5-heiko@sntech.de>
+References: <20210909213118.1087083-1-robh@kernel.org> <20210909213118.1087083-7-robh@kernel.org>
+In-Reply-To: <20210909213118.1087083-7-robh@kernel.org>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sat, 18 Sep 2021 01:38:08 +0200
-Message-ID: <CACRpkda2Hc6E27LK=vH_qKkTayG3qP=BGdqBKyLR2dMhekyWTw@mail.gmail.com>
-Subject: Re: [PATCH 4/4] gpio/rockchip: fetch deferred output settings on probe
-To:     Heiko Stuebner <heiko@sntech.de>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Jianqun Xu <jay.xu@rock-chips.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+Date:   Sat, 18 Sep 2021 01:41:24 +0200
+Message-ID: <CACRpkdbYGtzfc5qDGCgqFnYLi4eSB3K61DWz9ypUH9mneUrLGQ@mail.gmail.com>
+Subject: Re: [PATCH 6/8] ARM: dts: arm: Update register-bit-led nodes 'reg'
+ and node names
+To:     Rob Herring <robh@kernel.org>
+Cc:     Stephen Boyd <sboyd@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Liviu Dudau <liviu.dudau@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 12:49 AM Heiko Stuebner <heiko@sntech.de> wrote:
+On Thu, Sep 9, 2021 at 11:31 PM Rob Herring <robh@kernel.org> wrote:
 
-> Fetch the output settings the pinctrl driver may have created
-> for pinctrl hogs and set the relevant pins as requested.
+> Add a 'reg' entry for register-bit-led nodes on the Arm Ltd platforms.
+> The 'reg' entry is the LED control register address. With this, the node
+> name can be updated to use a generic node name, 'led', and a
+> unit-address.
 >
-> Fixes: 9ce9a02039de ("pinctrl/rockchip: drop the gpio related codes")
-> Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Liviu Dudau <liviu.dudau@arm.com>
+> Cc: Sudeep Holla <sudeep.holla@arm.com>
+> Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
 
-Since this patch depends on patch 4/4 I applied this to the pinctrl
-tree as well.
-
-I still think this looks a bit kludgy but can't think of anything better
-right now and we need a fix for the problem so this goes in.
-
-But we need to think of something better,
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
 Yours,
 Linus Walleij
