@@ -2,111 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 990FB40FC80
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 17:34:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9AD140FC86
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 17:35:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242036AbhIQPgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 11:36:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43032 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242482AbhIQPe1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 11:34:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C941A610A7;
-        Fri, 17 Sep 2021 15:33:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631892784;
-        bh=9MHIk2t5x7NEHeTxPOE1It1AGkcx0ikE4Sxn9rPtHQU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=X0GMxlW2/qRnn9KvjDA2e4/N8ThLppKFZdLCMZO16lyjwnRDCZ3dlTfK0bNMGaFEt
-         Ns0l2VkaNU0c5R63DCWMVeXuMxtKLB7QXHZXuU/VluNMbCD10Amr/SFtTradft6PT/
-         kIbUxdZE/NcwzoLf6oWvmxuhaA/Vg56JS5ZuGnm0yFwSNcT1IyKAW/jZ4jHltT+FFc
-         PW6fNq+b7CdfzUjyAoIJi5/Xyk98g3z6nUFpI9bc/nTwzafC1tAGdTRHv0mWZbtc07
-         ypQtB/mSa0xe+6Stoo52k7dLskqy/4Xamxj4/ut6gDseyOwj1njfwqYpmVWNVMAHqj
-         rY491xXQ9RYjQ==
-Date:   Fri, 17 Sep 2021 08:33:04 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Shiyang Ruan <ruansy.fnst@fujitsu.com>, linux-xfs@vger.kernel.org,
-        dan.j.williams@intel.com, david@fromorbit.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        nvdimm@lists.linux.dev, rgoldwyn@suse.de, viro@zeniv.linux.org.uk,
-        willy@infradead.org
-Subject: Re: [PATCH v9 7/8] xfs: support CoW in fsdax mode
-Message-ID: <20210917153304.GB10250@magnolia>
-References: <20210915104501.4146910-1-ruansy.fnst@fujitsu.com>
- <20210915104501.4146910-8-ruansy.fnst@fujitsu.com>
- <20210916002227.GD34830@magnolia>
- <20210916063251.GE13306@lst.de>
+        id S242634AbhIQPga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 11:36:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51974 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242335AbhIQPg2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 11:36:28 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8230BC061764
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:35:06 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id t4so18628814qkb.9
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:35:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=poorly.run; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=etpvimAGC3cFSoQItQRzFF1YIvwQ/FhTWX31CB58c7c=;
+        b=Z6qLGjOnr0PSGw2+rTiwMy4FDwPeOnctu6jRcIo22IJml0l0/ciiA0jAKPcXyw/hCo
+         Yg7f3oBGgezMvi4yyl+uyOEP0Q5MZtuH5UI2hhpO9yXGj1IjL6Qz5R6H9L00O1hhqV6v
+         gm6WA16jRTFsDQXvyuxa0NVFw96QNUU6pX0EMHuNYejEL635ThiZZKALc8iOLssFJMoz
+         6bv3cBANpCGiYLaYPFSWE3bhY5CpuO3F20uc6VkF00sp2q3ZR0OvcH4k8cf6oir+RRfH
+         WjhZ+j9BqMciV1CvenBcVfEkQo/V/sA3Nha/0HSJT8cTl0y0ku0Z9BPxGuHJABLs23eT
+         rFyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=etpvimAGC3cFSoQItQRzFF1YIvwQ/FhTWX31CB58c7c=;
+        b=CYGbQBYKqPeQrCE3MPBx2dPvhZHJoiJiyYWOXkBRrH5CXTwcjEvRIpPWqO3Q/ZH0eL
+         VLE7vr0W4/vRpndw1rspgxZOyo/A7Vpl5qp5n7GWSL3QeTQWDWSapCzbrHoFPxOYcmLo
+         J6uVED+nJL+tOXzY9uiq1ocTAxuKrq2trdxQWncrU7H5z4Mw9/enphlmdstEci7ReXLk
+         yBTNe+0k3i6fpq0jw+wcmCfUXxltLD8inCTWjOcnkCyGsdZoBIuentT18zbJ5gfebLy4
+         Zi8X84o9BHxLWEQnrhMP5OcyhhiL2/4A78rNzeOzxZnT39nqnpPrpQe8W2ZVHRtMFrhc
+         xU/w==
+X-Gm-Message-State: AOAM530gHRcANka1R6K66dChtQyRPBg/i4vxSB+L5+HM5IDN20gQ37OC
+        L3Lik5KAsKWfg9rEBSwYvu36jA==
+X-Google-Smtp-Source: ABdhPJyPmLg1UvFfWoKe5JE6z4C3KPySZ0VD7+SIRxGUPboFqLU8Fxoj04i8QLcZPNOSwEU8IJbj/A==
+X-Received: by 2002:a37:994:: with SMTP id 142mr11044413qkj.467.1631892905711;
+        Fri, 17 Sep 2021 08:35:05 -0700 (PDT)
+Received: from localhost ([167.100.64.199])
+        by smtp.gmail.com with ESMTPSA id o22sm3838371qkk.132.2021.09.17.08.35.05
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 17 Sep 2021 08:35:05 -0700 (PDT)
+Date:   Fri, 17 Sep 2021 11:35:04 -0400
+From:   Sean Paul <sean@poorly.run>
+To:     Fernando Ramos <greenfoo@u92.eu>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        sean@poorly.run, linux-doc@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+Subject: Re: [PATCH 04/15] drm: cleanup: drm_modeset_lock_all() -->
+ DRM_MODESET_LOCK_ALL_BEGIN()
+Message-ID: <20210917153504.GD2515@art_vandelay>
+References: <20210916211552.33490-1-greenfoo@u92.eu>
+ <20210916211552.33490-5-greenfoo@u92.eu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210916063251.GE13306@lst.de>
+In-Reply-To: <20210916211552.33490-5-greenfoo@u92.eu>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 08:32:51AM +0200, Christoph Hellwig wrote:
-> On Wed, Sep 15, 2021 at 05:22:27PM -0700, Darrick J. Wong wrote:
-> > >  		xfs_ilock(XFS_I(inode), XFS_MMAPLOCK_SHARED);
-> > >  		ret = dax_iomap_fault(vmf, pe_size, &pfn, NULL,
-> > >  				(write_fault && !vmf->cow_page) ?
-> > > -				 &xfs_direct_write_iomap_ops :
-> > > -				 &xfs_read_iomap_ops);
-> > > +					&xfs_dax_write_iomap_ops :
-> > > +					&xfs_read_iomap_ops);
-> > 
-> > Hmm... I wonder if this should get hoisted to a "xfs_dax_iomap_fault"
-> > wrapper like you did for xfs_iomap_zero_range?
+On Thu, Sep 16, 2021 at 11:15:41PM +0200, Fernando Ramos wrote:
+> As requested in Documentation/gpu/todo.rst, replace driver calls to
+> drm_modeset_lock_all() with DRM_MODESET_LOCK_ALL_BEGIN() and
+> DRM_MODESET_LOCK_ALL_END()
 > 
-> This has just a single users, so the classic argument won't apply.  That
-> being said __xfs_filemap_fault is a complete mess to due the calling
-> conventions of the various VFS methods multiplexed into it.  So yes,
-> splitting out a xfs_dax_iomap_fault to wrap the above plus the
-> dax_finish_sync_fault call might not actually be a bad idea nevertheless.
+> Signed-off-by: Fernando Ramos <greenfoo@u92.eu>
 
-Agree.
+Reviewed-by: Sean Paul <sean@poorly.run>
 
-> > > +	struct xfs_inode	*ip = XFS_I(inode);
-> > > +	/*
-> > > +	 * Usually we use @written to indicate whether the operation was
-> > > +	 * successful.  But it is always positive or zero.  The CoW needs the
-> > > +	 * actual error code from actor().  So, get it from
-> > > +	 * iomap_iter->processed.
-> > 
-> > Hm.  All six arguments are derived from the struct iomap_iter, so maybe
-> > it makes more sense to pass that in?  I'll poke around with this more
-> > tomorrow.
+> ---
+>  drivers/gpu/drm/drm_client_modeset.c |  5 +++--
+>  drivers/gpu/drm/drm_crtc_helper.c    | 18 ++++++++++++------
+>  drivers/gpu/drm/drm_fb_helper.c      | 10 ++++++----
+>  drivers/gpu/drm/drm_framebuffer.c    |  6 ++++--
+>  4 files changed, 25 insertions(+), 14 deletions(-)
 > 
-> I'd argue against just changing the calling conventions for ->iomap_end
-> now.  The original iter patches from willy allowed passing a single
-> next callback combinging iomap_begin and iomap_end in a way that with
-> a little magic we can avoid the indirect calls entirely.  I think we'll
-> need to experiment with that that a bit and see if is worth the effort
-> first.  I plan to do that but I might not get to it immediate.  If some
-> else wants to take over I'm fine with that.
-
-Ah, I forgot that.  Yay Etch-a-Sketch brain. <shake> -ENODATA ;)
-
-> > >  static int
-> > >  xfs_buffered_write_iomap_begin(
-> > 
-> > Also, we have an related request to drop the EXPERIMENTAL tag for
-> > non-DAX reflink.  Whichever patch enables dax+reflink for xfs needs to
-> > make it clear that reflink + any possibility of DAX emits an
-> > EXPERIMENTAL warning.
+> diff --git a/drivers/gpu/drm/drm_client_modeset.c b/drivers/gpu/drm/drm_client_modeset.c
+> index 5f5184f071ed..43f772543d2a 100644
+> --- a/drivers/gpu/drm/drm_client_modeset.c
+> +++ b/drivers/gpu/drm/drm_client_modeset.c
+> @@ -1062,9 +1062,10 @@ static int drm_client_modeset_commit_legacy(struct drm_client_dev *client)
+>  	struct drm_device *dev = client->dev;
+>  	struct drm_mode_set *mode_set;
+>  	struct drm_plane *plane;
+> +	struct drm_modeset_acquire_ctx ctx;
+>  	int ret = 0;
+>  
+> -	drm_modeset_lock_all(dev);
+> +	DRM_MODESET_LOCK_ALL_BEGIN(dev, ctx, 0, ret);
+>  	drm_for_each_plane(plane, dev) {
+>  		if (plane->type != DRM_PLANE_TYPE_PRIMARY)
+>  			drm_plane_force_disable(plane);
+> @@ -1093,7 +1094,7 @@ static int drm_client_modeset_commit_legacy(struct drm_client_dev *client)
+>  			goto out;
+>  	}
+>  out:
+> -	drm_modeset_unlock_all(dev);
+> +	DRM_MODESET_LOCK_ALL_END(dev, ctx, ret);
+>  
+>  	return ret;
+>  }
+> diff --git a/drivers/gpu/drm/drm_crtc_helper.c b/drivers/gpu/drm/drm_crtc_helper.c
+> index bff917531f33..f3ce073dff79 100644
+> --- a/drivers/gpu/drm/drm_crtc_helper.c
+> +++ b/drivers/gpu/drm/drm_crtc_helper.c
+> @@ -218,11 +218,14 @@ static void __drm_helper_disable_unused_functions(struct drm_device *dev)
+>   */
+>  void drm_helper_disable_unused_functions(struct drm_device *dev)
+>  {
+> +	struct drm_modeset_acquire_ctx ctx;
+> +	int ret;
+> +
+>  	WARN_ON(drm_drv_uses_atomic_modeset(dev));
+>  
+> -	drm_modeset_lock_all(dev);
+> +	DRM_MODESET_LOCK_ALL_BEGIN(dev, ctx, 0, ret);
+>  	__drm_helper_disable_unused_functions(dev);
+> -	drm_modeset_unlock_all(dev);
+> +	DRM_MODESET_LOCK_ALL_END(dev, ctx, ret);
+>  }
+>  EXPORT_SYMBOL(drm_helper_disable_unused_functions);
+>  
+> @@ -942,12 +945,14 @@ void drm_helper_resume_force_mode(struct drm_device *dev)
+>  	struct drm_crtc *crtc;
+>  	struct drm_encoder *encoder;
+>  	const struct drm_crtc_helper_funcs *crtc_funcs;
+> +	struct drm_modeset_acquire_ctx ctx;
+>  	int encoder_dpms;
+>  	bool ret;
+> +	int err;
+>  
+>  	WARN_ON(drm_drv_uses_atomic_modeset(dev));
+>  
+> -	drm_modeset_lock_all(dev);
+> +	DRM_MODESET_LOCK_ALL_BEGIN(dev, ctx, 0, err);
+>  	drm_for_each_crtc(crtc, dev) {
+>  
+>  		if (!crtc->enabled)
+> @@ -982,7 +987,7 @@ void drm_helper_resume_force_mode(struct drm_device *dev)
+>  
+>  	/* disable the unused connectors while restoring the modesetting */
+>  	__drm_helper_disable_unused_functions(dev);
+> -	drm_modeset_unlock_all(dev);
+> +	DRM_MODESET_LOCK_ALL_END(dev, ctx, err);
+>  }
+>  EXPORT_SYMBOL(drm_helper_resume_force_mode);
+>  
+> @@ -1002,9 +1007,10 @@ EXPORT_SYMBOL(drm_helper_resume_force_mode);
+>  int drm_helper_force_disable_all(struct drm_device *dev)
+>  {
+>  	struct drm_crtc *crtc;
+> +	struct drm_modeset_acquire_ctx ctx;
+>  	int ret = 0;
+>  
+> -	drm_modeset_lock_all(dev);
+> +	DRM_MODESET_LOCK_ALL_BEGIN(dev, ctx, 0, ret);
+>  	drm_for_each_crtc(crtc, dev)
+>  		if (crtc->enabled) {
+>  			struct drm_mode_set set = {
+> @@ -1016,7 +1022,7 @@ int drm_helper_force_disable_all(struct drm_device *dev)
+>  				goto out;
+>  		}
+>  out:
+> -	drm_modeset_unlock_all(dev);
+> +	DRM_MODESET_LOCK_ALL_END(dev, ctx, ret);
+>  	return ret;
+>  }
+>  EXPORT_SYMBOL(drm_helper_force_disable_all);
+> diff --git a/drivers/gpu/drm/drm_fb_helper.c b/drivers/gpu/drm/drm_fb_helper.c
+> index 3ab078321045..6860223f0068 100644
+> --- a/drivers/gpu/drm/drm_fb_helper.c
+> +++ b/drivers/gpu/drm/drm_fb_helper.c
+> @@ -940,10 +940,11 @@ static int setcmap_legacy(struct fb_cmap *cmap, struct fb_info *info)
+>  	struct drm_fb_helper *fb_helper = info->par;
+>  	struct drm_mode_set *modeset;
+>  	struct drm_crtc *crtc;
+> +	struct drm_modeset_acquire_ctx ctx;
+>  	u16 *r, *g, *b;
+>  	int ret = 0;
+>  
+> -	drm_modeset_lock_all(fb_helper->dev);
+> +	DRM_MODESET_LOCK_ALL_BEGIN(fb_helper->dev, ctx, 0, ret);
+>  	drm_client_for_each_modeset(modeset, &fb_helper->client) {
+>  		crtc = modeset->crtc;
+>  		if (!crtc->funcs->gamma_set || !crtc->gamma_size) {
+> @@ -970,7 +971,7 @@ static int setcmap_legacy(struct fb_cmap *cmap, struct fb_info *info)
+>  			goto out;
+>  	}
+>  out:
+> -	drm_modeset_unlock_all(fb_helper->dev);
+> +	DRM_MODESET_LOCK_ALL_END(fb_helper->dev, ctx, ret);
+>  
+>  	return ret;
+>  }
+> @@ -1441,10 +1442,11 @@ static int pan_display_legacy(struct fb_var_screeninfo *var,
+>  	struct drm_fb_helper *fb_helper = info->par;
+>  	struct drm_client_dev *client = &fb_helper->client;
+>  	struct drm_mode_set *modeset;
+> +	struct drm_modeset_acquire_ctx ctx;
+>  	int ret = 0;
+>  
+>  	mutex_lock(&client->modeset_mutex);
+> -	drm_modeset_lock_all(fb_helper->dev);
+> +	DRM_MODESET_LOCK_ALL_BEGIN(fb_helper->dev, ctx, 0, ret);
+>  	drm_client_for_each_modeset(modeset, client) {
+>  		modeset->x = var->xoffset;
+>  		modeset->y = var->yoffset;
+> @@ -1457,7 +1459,7 @@ static int pan_display_legacy(struct fb_var_screeninfo *var,
+>  			}
+>  		}
+>  	}
+> -	drm_modeset_unlock_all(fb_helper->dev);
+> +	DRM_MODESET_LOCK_ALL_END(fb_helper->dev, ctx, ret);
+>  	mutex_unlock(&client->modeset_mutex);
+>  
+>  	return ret;
+> diff --git a/drivers/gpu/drm/drm_framebuffer.c b/drivers/gpu/drm/drm_framebuffer.c
+> index 07f5abc875e9..205e9aa9a409 100644
+> --- a/drivers/gpu/drm/drm_framebuffer.c
+> +++ b/drivers/gpu/drm/drm_framebuffer.c
+> @@ -1059,8 +1059,10 @@ static void legacy_remove_fb(struct drm_framebuffer *fb)
+>  	struct drm_device *dev = fb->dev;
+>  	struct drm_crtc *crtc;
+>  	struct drm_plane *plane;
+> +	struct drm_modeset_acquire_ctx ctx;
+> +	int ret;
+>  
+> -	drm_modeset_lock_all(dev);
+> +	DRM_MODESET_LOCK_ALL_BEGIN(dev, ctx, 0, ret);
+>  	/* remove from any CRTC */
+>  	drm_for_each_crtc(crtc, dev) {
+>  		if (crtc->primary->fb == fb) {
+> @@ -1082,7 +1084,7 @@ static void legacy_remove_fb(struct drm_framebuffer *fb)
+>  			drm_plane_force_disable(plane);
+>  		}
+>  	}
+> -	drm_modeset_unlock_all(dev);
+> +	DRM_MODESET_LOCK_ALL_END(dev, ctx, ret);
+>  }
+>  
+>  /**
+> -- 
+> 2.33.0
 > 
-> More importantly before we can merge this series we also need the VM
-> level support for reflink-aware reverse mapping.  So while this series
-> here is no in a good enough shape I don't see how we could merge it
-> without that other series as we'd have to disallow mmap for reflink+dax
-> files otherwise.
 
-I've forgotten why we need mm level reverse mapping again?  The pmem
-poison stuff can use ->media_failure (or whatever it was called,
-memory_failure?) to find all the owners and notify them.  Was there
-some other accounting reason that fell out of my brain?
-
-I'm more afraid of 'sharing pages between files needs mm support'
-sparking another multi-year folioesque fight with the mm people.
-
---D
+-- 
+Sean Paul, Software Engineer, Google / Chromium OS
