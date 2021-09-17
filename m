@@ -2,117 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF8B340FAB6
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 16:48:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0275040FAC1
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 16:50:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233332AbhIQOtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 10:49:22 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:35350 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231994AbhIQOtU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 10:49:20 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18HElrDN012905;
-        Fri, 17 Sep 2021 09:47:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1631890073;
-        bh=RhzXgTYEm3jS3Kl013Abzub/Q/o3jW8UqXva0CEru/Q=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=w2VMIh47KNZt3o+m/0dNbdd6G6atQj9reSDS9/D4PhA0YZMN9PkbpBaSfBIcybM+T
-         YS4GPyGartJx7EpWgKwBU6MnyM1/8+6anm9RbL0SbEU26ICdxv8yacXYK4fzIXqAxW
-         HubJEsAtiA2wJkYScZdUGPgrdOuxPHfUVXWH6Qbk=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18HElqDf130182
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 17 Sep 2021 09:47:53 -0500
-Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Fri, 17
- Sep 2021 09:47:52 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Fri, 17 Sep 2021 09:47:52 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18HElqLg014651;
-        Fri, 17 Sep 2021 09:47:52 -0500
-Date:   Fri, 17 Sep 2021 09:47:52 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Sinthu Raja <sinthu.raja@mistralsolutions.com>
-CC:     Suman Anna <s-anna@ti.com>, Rob Herring <robh+dt@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-remoteproc@vger.kernel.org>,
-        Sinthu Raja <sinthu.raja@ti.com>
-Subject: Re: [PATCH V3 0/2] dt-bindings: remoteproc: k3-r5f|dsp: Remove
-Message-ID: <20210917144752.5iafhxacxrv5cyur@elixir>
-References: <20210917095426.19277-1-sinthu.raja@ti.com>
+        id S234660AbhIQOvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 10:51:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52412 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231626AbhIQOve (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 10:51:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EF81760F9C;
+        Fri, 17 Sep 2021 14:50:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1631890212;
+        bh=zubLP971iOX8gWb78yB2Doy9I5T1kA3TTj/1cuEVvXA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RlfdwRXobGJ+BuW0K12yOOYHR9W/Y1s4t6j3vc4T42jO20PJw7GOQHNPvV2ncvvj+
+         8isMWbH3FTBDlq17bm/146GEV0VqZIFzxWCrZdUZwRKgBfUew96pNyOI6bGafbvHmq
+         VMnwsUgfbxld0yOk9bMefA6ZeVW6+T+Gko/68hSg=
+Date:   Fri, 17 Sep 2021 16:50:10 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        David Laight <david.Laight@aculab.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH v7 17/19] staging: r8188eu: shorten calls chain of
+ rtw_read{8,16,32}()
+Message-ID: <YUSrIqW5WSYuoa14@kroah.com>
+References: <20210917071837.10926-1-fmdefrancesco@gmail.com>
+ <20210917071837.10926-18-fmdefrancesco@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210917095426.19277-1-sinthu.raja@ti.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210917071837.10926-18-fmdefrancesco@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-oops.. cover-letter $subject is probably improved with "board-specific
-compatible"?, but anyways, does'nt matter for the rest f the actual
-patches..
+On Fri, Sep 17, 2021 at 09:18:35AM +0200, Fabio M. De Francesco wrote:
+> Shorten the calls chain of rtw_read8/16/32() down to the actual reads.
+> For this purpose unify the three usb_read8/16/32 into the new
+> usb_read(); make the latter parameterizable with 'size'; embed most of
+> the code of usbctrl_vendorreq() into usb_read() and use in it the new
+> usb_control_msg_recv() API of USB Core.
+> 
+> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Co-developed-by: Pavel Skripkin <paskripkin@gmail.com>
+> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> ---
+>  drivers/staging/r8188eu/hal/usb_ops_linux.c | 59 +++++++++++++++++++--
+>  1 file changed, 56 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/staging/r8188eu/hal/usb_ops_linux.c b/drivers/staging/r8188eu/hal/usb_ops_linux.c
+> index 2d5e9b3ba538..ef35358cf2d3 100644
+> --- a/drivers/staging/r8188eu/hal/usb_ops_linux.c
+> +++ b/drivers/staging/r8188eu/hal/usb_ops_linux.c
+> @@ -89,6 +89,59 @@ static int usbctrl_vendorreq(struct intf_hdl *intfhdl, u16 value, void *data, u1
+>  	return status;
+>  }
+>  
+> +static int usb_read(struct intf_hdl *intfhdl, u16 addr, void *data, u8 size)
+> +{
+> +	struct adapter *adapt = intfhdl->padapter;
+> +	struct dvobj_priv *dvobjpriv = adapter_to_dvobj(adapt);
+> +	struct usb_device *udev = dvobjpriv->pusbdev;
+> +	int status;
+> +	u8 *io_buf; /* Pointer to I/O buffer */
 
-On 15:24-20210917, Sinthu Raja wrote:
-> From: Sinthu Raja <sinthu.raja@ti.com>
-> 
-> Bjorn,
-> 
-> The series of patches are meant to help make the rproc bindings for K3
-> r5f and dsp support independent of board/platform involved. The current
-> examples get in the way of the device tree cleanups and new platform
-> introductions [1].
-> 
-> When applying this series, it would greatly help us if you could provide
-> us with a immutable tag for Nishanth to merge in and help introduce the
-> newer platforms that are blocked by this cleanup. See [2] for further
-> context of why we are requesting for immutable tag.
+As you "know" size is not going to be larger than 4 (hint, you should
+prboably check it), just use bytes off of the stack here, and you can
+ignore this buffer entirely.  That will hopefully allow you in the
+future to get rid of that buffer as odds are it will not be needed
+anymore.
 
-Yes again please. once Rob reviews the binding patches, This series is
-blocking me and thanks for respinning them.
+> +
+> +	if (adapt->bSurpriseRemoved || adapt->pwrctrlpriv.pnp_bstop_trx)
+> +		return -EPERM;
 
-For the series:
+How is it ok to check this outside of the lock?  What happens if these
+values change right _after_ you check them?
 
-Reviewed-by: Nishanth Menon <nm@ti.com>
+Why check them at all, is this something that we even care about?
 
-> 
-> Changes in V3:
-> - Added r5f cleanup as well
-> - Commit message, $subject and simplification of the fixup.
-> 
-> V2: https://lore.kernel.org/all/20210818074030.1877-1-sinthu.raja@ti.com/
-> V1: https://lore.kernel.org/all/20210817152005.21575-1-sinthu.raja@ti.com/
-> 
-> 
-> Sinthu Raja (2):
->   dt-bindings: remoteproc: k3-r5f: Remove board-specific compatible from
->     DT example
->   dt-bindings: remoteproc: k3-dsp: Remove board-specific compatible from
->     DT example
-> 
->  .../devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml       | 4 +---
->  .../devicetree/bindings/remoteproc/ti,k3-r5f-rproc.yaml       | 4 +---
->  2 files changed, 2 insertions(+), 6 deletions(-)
-> 
-> [1] https://lore.kernel.org/all/1631794913.472895.1119414.nullmailer@robh.at.kernel.org/ 
-> [2] https://lore.kernel.org/linux-arm-kernel/20210125141642.4yybjnklk3qsqjdy@steersman/
-> -- 
-> 2.32.0
-> 
+I know you are trying to make this just the same logic at is there
+today, but why not just do it right the first time?
 
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+> +
+> +	mutex_lock(&dvobjpriv->usb_vendor_req_mutex);
+> +
+> +	io_buf = dvobjpriv->usb_vendor_req_buf;
+> +
+> +	status = usb_control_msg_recv(udev, 0, REALTEK_USB_VENQT_CMD_REQ,
+> +				      REALTEK_USB_VENQT_READ, addr,
+> +				      REALTEK_USB_VENQT_CMD_IDX, io_buf,
+> +				      size, RTW_USB_CONTROL_MSG_TIMEOUT,
+> +				      GFP_KERNEL);
+> +
+> +	if (status == -ESHUTDOWN ||
+> +	    status == -ENODEV ||
+> +	    status == -ENOENT) {
+> +		/*
+> +		 * device or controller has been disabled due to
+> +		 * some problem that could not be worked around,
+> +		 * device or bus doesn’t exist, endpoint does not
+> +		 * exist or is not enabled.
+> +		 */
+> +		adapt->bSurpriseRemoved = true;
+> +		goto mutex_unlock;
+> +	}
+> +
+> +	if (status < 0) {
+> +		GET_HAL_DATA(adapt)->srestpriv.wifi_error_status =
+> +			USB_VEN_REQ_CMD_FAIL;
+> +
+> +		if (rtw_inc_and_chk_continual_urb_error(dvobjpriv))
+> +			adapt->bSurpriseRemoved = true;
+> +
+> +		goto mutex_unlock;
+> +	}
+> +
+> +	rtw_reset_continual_urb_error(dvobjpriv);
+> +	memcpy(data, io_buf, size);
+> +
+> +mutex_unlock:
+> +	mutex_unlock(&dvobjpriv->usb_vendor_req_mutex);
+> +
+> +	return status;
+
+No one cares about this value, is that ok?
+
+thanks,
+
+greg k-h
