@@ -2,119 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DBE640F01A
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 05:02:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1382740EFDE
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 04:56:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243435AbhIQDDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 23:03:47 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:62115 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231556AbhIQDDn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 23:03:43 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=22;SR=0;TI=SMTPD_---0UodiUsp_1631847727;
-Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0UodiUsp_1631847727)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 17 Sep 2021 11:02:08 +0800
-Subject: Re: [PATCH] x86/dumpstack/64: Add guard pages to stack_info
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
-        <linux-perf-users@vger.kernel.org>,
-        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
-        <linux-kernel@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <netdev@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <bpf@vger.kernel.org>, jroedel@suse.de, x86@kernel.org,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-References: <20210910153839.GH4323@worktop.programming.kicks-ass.net>
- <f38987a5-dc36-a20d-8c5e-81e8ead5b4dc@linux.alibaba.com>
- <YT8m2B6D2yWc5Umq@hirez.programming.kicks-ass.net>
- <3fb7c51f-696b-da70-1965-1dda9910cb14@linux.alibaba.com>
- <YUB5VchM3a/MiZpX@hirez.programming.kicks-ass.net>
- <3f26f7a2-0a09-056a-3a7a-4795b6723b60@linux.alibaba.com>
- <YUIOgmOfnOqPrE+z@hirez.programming.kicks-ass.net>
- <76de02b7-4d87-4a3a-e4d4-048829749887@linux.alibaba.com>
- <YUL5j/lY0mtx4NMq@hirez.programming.kicks-ass.net>
- <YUL6R5AH6WNxu5sH@hirez.programming.kicks-ass.net>
- <YUMWLdijs8vSkRjo@hirez.programming.kicks-ass.net>
-From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-Message-ID: <a11f43d2-f12e-18c2-65d4-debd8d085fa8@linux.alibaba.com>
-Date:   Fri, 17 Sep 2021 11:02:07 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        id S243049AbhIQC5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 22:57:44 -0400
+Received: from mga01.intel.com ([192.55.52.88]:40280 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234959AbhIQC5n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 22:57:43 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10109"; a="245098920"
+X-IronPort-AV: E=Sophos;i="5.85,299,1624345200"; 
+   d="scan'208";a="245098920"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2021 19:56:21 -0700
+X-IronPort-AV: E=Sophos;i="5.85,299,1624345200"; 
+   d="scan'208";a="546107273"
+Received: from gao-cwp.sh.intel.com (HELO gao-cwp) ([10.239.159.133])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2021 19:56:19 -0700
+Date:   Fri, 17 Sep 2021 11:03:35 +0800
+From:   Chao Gao <chao.gao@intel.com>
+To:     Konrad Rzeszutek Wilk <konrad@darnok.org>
+Cc:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        Andi Kleen <ak@linux.intel.com>
+Subject: Re: [PATCH] swiotlb: allocate memory in a cache-friendly way
+Message-ID: <20210917030334.GA20257@gao-cwp>
+References: <20210901042135.103981-1-chao.gao@intel.com>
+ <YUNnkxiVnHUszg7G@localhost.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <YUMWLdijs8vSkRjo@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YUNnkxiVnHUszg7G@localhost.localdomain>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 16, 2021 at 11:49:39AM -0400, Konrad Rzeszutek Wilk wrote:
+>On Wed, Sep 01, 2021 at 12:21:35PM +0800, Chao Gao wrote:
+>> Currently, swiotlb uses a global index to indicate the starting point
+>> of next search. The index increases from 0 to the number of slots - 1
+>> and then wraps around. It is straightforward but not cache-friendly
+>> because the "oldest" slot in swiotlb tends to be used first.
+>> 
+>> Freed slots are probably accessed right before being freed, especially
+>> in VM's case (device backends access them in DMA_TO_DEVICE mode; guest
+>> accesses them in other DMA modes). Thus those just freed slots may
+>> reside in cache. Then reusing those just freed slots can reduce cache
+>> misses.
+>> 
+>> To that end, maintain a free list for free slots and insert freed slots
+>> from the head and searching for free slots always starts from the head.
+>> 
+>> With this optimization, network throughput of sending data from host to
+>> guest, measured by iperf3, increases by 7%.
+>
+>Wow, that is pretty awesome!
+>
+>Are there any other benchmarks that you ran that showed a negative
+>performance?
 
+TBH, yes. Recently I do fio tests with this patch. The impact of this patch
+is: (+ means performance improvement; - means performance regression)
 
-On 2021/9/16 下午6:02, Peter Zijlstra wrote:
-[snip]
->  
-> +static __always_inline bool in_stack_guard(void *addr, void *begin, void *end)
-> +{
-> +#ifdef CONFIG_VMAP_STACK
-> +	if (addr > (begin - PAGE_SIZE))
-> +		return true;
+1-job fio:
+randread: +6.7%
+randwrite: -1.6%
+read: +8.2%
+write: +7.4%
 
-After fix this logical as:
+8-job fio:
+randread: -5.5%
+randwrite: -12.6%
+read: -24.8%
+write: -45.5%
 
-  addr >= (begin - PAGE_SIZE) && addr < begin
+I haven't figured out why multi-job fio tests suffer. Will post v2 once
+the issue gets resolved.
 
-it's working.
-
-Regards,
-Michael Wang
-
-> +#endif
-> +	return false;
-> +}
-[snip]
->  
->  #ifdef CONFIG_X86_ESPFIX64
-> @@ -455,9 +456,11 @@ DEFINE_IDTENTRY_DF(exc_double_fault)
->  	 * stack even if the actual trigger for the double fault was
->  	 * something else.
->  	 */
-> -	if ((unsigned long)task_stack_page(tsk) - 1 - address < PAGE_SIZE) {
-> -		handle_stack_overflow("kernel stack overflow (double-fault)",
-> -				      regs, address);
-> +	if (get_stack_info_noinstr((void *)address, current, &info) &&
-> +	    info.type & STACK_TYPE_GUARD) {
-> +		const char *name = stack_type_name(info.type & ~STACK_TYPE_GUARD);
-> +		pr_emerg("BUG: %s stack guard hit at %p (stack is %p..%p)\n",
-> +			 name, (void *)address, info.begin, info.end);
->  	}
->  #endif
->  
-> @@ -708,7 +711,9 @@ asmlinkage __visible noinstr struct pt_regs *vc_switch_off_ist(struct pt_regs *r
->  	sp    = regs->sp;
->  	stack = (unsigned long *)sp;
->  
-> -	if (!get_stack_info_noinstr(stack, current, &info) || info.type == STACK_TYPE_ENTRY ||
-> +	if (!get_stack_info_noinstr(stack, current, &info) ||
-> +	    info.type & STACK_TYPE_GUARD ||
-> +	    info.type == STACK_TYPE_ENTRY ||
->  	    info.type >= STACK_TYPE_EXCEPTION_LAST)
->  		sp = __this_cpu_ist_top_va(VC2);
->  
-> 
+Thanks
+Chao
