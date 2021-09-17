@@ -2,50 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE37440F3C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 10:08:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0F1840F3C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 10:08:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245383AbhIQIJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 04:09:46 -0400
-Received: from mx.msync.work ([95.217.65.204]:33496 "EHLO mx.msync.work"
+        id S245337AbhIQIJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 04:09:52 -0400
+Received: from relay.sw.ru ([185.231.240.75]:35812 "EHLO relay.sw.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245125AbhIQIJZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S245027AbhIQIJZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 17 Sep 2021 04:09:25 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id ED37A1073BD;
-        Fri, 17 Sep 2021 08:06:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lexina.in; s=dkim;
-        t=1631866006; h=from:subject:date:message-id:cc:mime-version:content-type:
-         content-transfer-encoding:content-language:in-reply-to:references:
-         disposition-notification-to; bh=K8pUvKYmihVFtXVo7mlfRJfCXmaPt+xZW7fToK+rFyQ=;
-        b=NkzIUlrcyoaOa6SpQVwrx5j7MONIVEgATiUUOSEdUp5y/Lxuusc5dVnxUPuYeDIDcBBgxs
-        YebI7LFHBOQ5b94cH3Y91DWjHpG+39kmu3mY2fBCFhwl5si+2z643RZnm+nKWaL16TfaN1
-        D4Gxt8hc8CTLxVDVPvZiw9UZpuoeK8wd9V5fGbS8R45J1W4oZoCmhP8xdxcQoCMj9qMlnO
-        6KmBZc2UIt4Qlic7CHfXunJmnqrFl5mNltxOkC0d0cg48j3kAPywgd3a+DhOpMf3mgKTh7
-        OFuzfNz2npYHp8O3kHD6/DMUlmnMUaViORjxp3UrsTikQ7/1XyCoPGKTP1MIEQ==
-Subject: Re: [PATCH v5 0/4] arm64: meson: add support for JetHub D1/H1
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org
-References: <20210915085715.1134940-1-adeep@lexina.in>
- <163186366690.1044811.10268335087144036716.b4-ty@baylibre.com>
-From:   Vyacheslav <adeep@lexina.in>
-Message-ID: <24c06118-5eee-055e-e9c6-bbacd6e2eea5@lexina.in>
-Date:   Fri, 17 Sep 2021 11:06:44 +0300
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
+        :From; bh=vNgx/3n9bi2etAGIYh4+okt/y0F7gydwzwqScVihv4w=; b=iE23CrPuqYwx6L+WuP0
+        MSRozyky9urm64czXwWLrNZ/9ayDJS3aSLwMOheJcHJmfyOFUBrdXFadLP1BGBDronLgyS7h3usB1
+        piWpEhLqoM1qklkFq3aRzLuG0vmdNKeGMym8Xsi1sQMvfui8ccy6JpnJzOA3VxSbOB8PjqsSCNM=;
+Received: from [10.93.0.56]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1mR8tW-002Gyw-D9; Fri, 17 Sep 2021 11:06:50 +0300
+From:   Vasily Averin <vvs@virtuozzo.com>
+Subject: [PATCH mm] vmalloc: back off when the current task is OOM-killed
+To:     Michal Hocko <mhocko@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel@openvz.org
+References: <YT8PEBbYZhLixEJD@dhcp22.suse.cz>
+Message-ID: <d07a5540-3e07-44ba-1e59-067500f024d9@virtuozzo.com>
+Date:   Fri, 17 Sep 2021 11:06:49 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <163186366690.1044811.10268335087144036716.b4-ty@baylibre.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <YT8PEBbYZhLixEJD@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Last-TLS-Session-Version: TLSv1.3
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-17.09.2021 10:27, Neil Armstrong wrote:
-> Hi,
-> 
-> Thanks, Applied to https://git.kernel.org/pub/scm/linux/kernel/git/amlogic/linux.git (v5.16/dt64)
+Huge vmalloc allocation on heavy loaded node can lead to a global
+memory shortage. A task called vmalloc can have the worst badness
+and be chosen by OOM-killer, however received fatal signal and
+oom victim mark does not interrupt allocation cycle. Vmalloc will
+continue allocating pages over and over again, exacerbating the crisis
+and consuming the memory freed up by another killed tasks.
 
-Thanks
+This patch allows OOM-killer to break vmalloc cycle, makes OOM more
+effective and avoid host panic.
+
+Unfortunately it is not 100% safe. Previous attempt to break vmalloc
+cycle was reverted by commit b8c8a338f75e ("Revert "vmalloc: back off when
+the current task is killed"") due to some vmalloc callers did not handled
+failures properly. Found issues was resolved, however, there may
+be other similar places.
+
+Such failures may be acceptable for emergencies, such as OOM. On the other
+hand, we would like to detect them earlier. However they are quite rare,
+and will be hidden by OOM messages, so I'm afraid they wikk have quite
+small chance of being noticed and reported.
+
+To improve the detection of such places this patch also interrupts the vmalloc
+allocation cycle for all fatal signals. The checks are hidden under DEBUG_VM
+config option to do not break unaware production kernels.
+
+Vmalloc uses new alloc_pages_bulk subsystem, so newly added checks can
+affect other users of this subsystem.
+
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+---
+ mm/page_alloc.c | 5 +++++
+ mm/vmalloc.c    | 6 ++++++
+ 2 files changed, 11 insertions(+)
+
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index b37435c274cf..133d52e507ff 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -5288,6 +5288,11 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+ 			continue;
+ 		}
+ 
++		if (tsk_is_oom_victim(current) ||
++		    (IS_ENABLED(CONFIG_DEBUG_VM) &&
++		     fatal_signal_pending(current)))
++			break;
++
+ 		page = __rmqueue_pcplist(zone, 0, ac.migratetype, alloc_flags,
+ 								pcp, pcp_list);
+ 		if (unlikely(!page)) {
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index c3b8e3e5cfc5..04b291076726 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -38,6 +38,7 @@
+ #include <linux/pgtable.h>
+ #include <linux/uaccess.h>
+ #include <linux/hugetlb.h>
++#include <linux/oom.h>
+ #include <asm/tlbflush.h>
+ #include <asm/shmparam.h>
+ 
+@@ -2860,6 +2861,11 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
+ 		struct page *page;
+ 		int i;
+ 
++		if (tsk_is_oom_victim(current) ||
++		    (IS_ENABLED(CONFIG_DEBUG_VM) &&
++		     fatal_signal_pending(current)))
++			break;
++
+ 		page = alloc_pages_node(nid, gfp, order);
+ 		if (unlikely(!page))
+ 			break;
+-- 
+2.31.1
+
