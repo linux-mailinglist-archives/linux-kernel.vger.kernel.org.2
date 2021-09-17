@@ -2,94 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59B9340F983
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 15:48:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F17C40F987
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 15:50:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240970AbhIQNtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 09:49:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55050 "EHLO
+        id S241254AbhIQNv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 09:51:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234565AbhIQNtV (ORCPT
+        with ESMTP id S235440AbhIQNvY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 09:49:21 -0400
-Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF7BFC061574;
-        Fri, 17 Sep 2021 06:47:59 -0700 (PDT)
-Received: by mail-oo1-xc29.google.com with SMTP id k18-20020a4abd92000000b002915ed21fb8so3204341oop.11;
-        Fri, 17 Sep 2021 06:47:59 -0700 (PDT)
+        Fri, 17 Sep 2021 09:51:24 -0400
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1630DC061764
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 06:50:01 -0700 (PDT)
+Received: by mail-qv1-xf32.google.com with SMTP id w8so309035qvu.1
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 06:50:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Pl2ayV9f6vETiCVUpym4C6zXgC97b45e9byMiJdmjCI=;
-        b=g0l9LSM8nQ0PQ4X2fAPhPgalkuweHiusk7jL5heBKlhjX6rgrS3I5Q+R4VwWVSpSsQ
-         7DDhoz5nLI1mx9UnJli1goPCcch5xKYwnp9KsZOQxVh6rchj5GsHb207/zjF2rExmKHA
-         RdMJ0Pi/9hj0wH5fT7zitEVb+p+n+jDEtgjEEsCThPVibCpU+Jn/pJ3j3Hhm3ZHQnk0T
-         ClfDBUHZkhW9hWP+TfreOCy8KjbEFl7g8nbvUjMRdIKZ0Y1Jn8WiLXmpEdhH89mgWvNe
-         IX/qgQgvVf5urfLa41Zo2KonfRBlT18EEJhU+OGpSRCHZ3uqapgK2y+NYNElfaNS90Yd
-         Vy4g==
+        d=linuxfoundation.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=piBRpEE+WWHlWllIUzB+ODVSBg/qtTReQB6Vdl5TiMQ=;
+        b=QhBHO8WCAz0Nd0vl3OXDyPxZPaacuXWvOVBXISQKsz0CMPuqFQV+Z3rTARpzPSmDR8
+         hHTkzcYXPO5+/KZ9CEAOVPnh/cJ5a3WN1FbpuMyA+V5xuFFXtiFxZwb+X7ifA8i+97Wc
+         H/1zit8xyMceylXSwniUE8DB0gohz+phjXOgI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Pl2ayV9f6vETiCVUpym4C6zXgC97b45e9byMiJdmjCI=;
-        b=SqHODw97HSOzsDnKQb/scdwDHqycQ/4fEUsO+Jv+rajScQ92Grpm1em0lVwpZ2376o
-         Dz4xDSy138tkHtrUPnBhLZQazJMPo2o+3sQzc5VGxzf8d1DFxX6rBuRxxujGHXEbpMRm
-         b3wkkP4WoWVUa1r1Fs0v6RJhUh9sJyu/qsyvE4b07CCgQs6yS2oSVFFGNy2HOq/4krVI
-         453QfSzIkdBYHDEnHppU8+cPHDJWTp6CXHdoTmviFRL8MwUxGgYcsxZCIofBNtRTBo/x
-         VJfSqw7IpY+9YLI74MV761HlYMuobGzX75f1LiW9ZLxnA9VPNbnhDT7VmRa7WQmyGzAG
-         sZjg==
-X-Gm-Message-State: AOAM530PnnmtVkuq2Q05Y2jk/00UdxtBeHFq/QlehM8fF/Q/W92+t1fU
-        zVViFRRoSuvjqYbiJJx4p0sT3e2OErU=
-X-Google-Smtp-Source: ABdhPJwdJYpNVuUU0njRBVZLwZs3kbQgahpFRQeJXNyBUfpO0enmrbcsy2S2O5iEfC7YhpfkNHuIgg==
-X-Received: by 2002:a4a:ba86:: with SMTP id d6mr8918188oop.61.1631886478767;
-        Fri, 17 Sep 2021 06:47:58 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id y7sm1391929oov.36.2021.09.17.06.47.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Sep 2021 06:47:58 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH] watchdog: sbsa: drop unneeded MODULE_ALIAS
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-watchdog@vger.kernel.org
-References: <20210917092024.19323-1-krzysztof.kozlowski@canonical.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <6cf2f403-f765-cfcd-aa54-bb4264982b7f@roeck-us.net>
-Date:   Fri, 17 Sep 2021 06:47:56 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=piBRpEE+WWHlWllIUzB+ODVSBg/qtTReQB6Vdl5TiMQ=;
+        b=g9/WN+WAvlqSJ+E6fmcaaSH9wGdA9ZAoFonf+XHTHP6EVJLAOlEtEBA9Tpk7FVpyu9
+         YSzFJZWltdvnTUBzEQ1onzijLYxZzegI4oy9NCYKrOaReuvjLVqlpbjaZYSPXeO800VE
+         9sURoXHyokDhOVYIWVkCLLi7uVJ26zqGpUviHqfWj+A+w48i+WKwaedUccCVOmIyllGM
+         yv3YesOSMrtvKF+kEynWFnZNNDgXz1d47FmtfqVn6jvDN86VRIt/gGzQtuWuW44Z3Nv8
+         Yi5248depk1G4iDMACkp/CItUJZ68/o87WqbcYlHmrEiEqpmCCo01R5OYF/o1dHduZ0J
+         O5lA==
+X-Gm-Message-State: AOAM532j8KtDxk2TnavFG+wybDBmmJNafUpiKixVPVXFf91QDr+GObHK
+        M8pRiqaPoR6OHb9YcwWiNdVsi8u5NtU0CA==
+X-Google-Smtp-Source: ABdhPJzLhk3+6YH/nHR1yn4MtkGwS/tE79GZt3HiHObF1HIfEAtV1p8s5KFv4j8ECtFsiY6rFmPxVg==
+X-Received: by 2002:a05:6214:1492:: with SMTP id bn18mr8463440qvb.44.1631886601105;
+        Fri, 17 Sep 2021 06:50:01 -0700 (PDT)
+Received: from meerkat.local (bras-base-mtrlpq5031w-grc-32-216-209-220-181.dsl.bell.ca. [216.209.220.181])
+        by smtp.gmail.com with ESMTPSA id a9sm4857113qkk.82.2021.09.17.06.50.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Sep 2021 06:50:00 -0700 (PDT)
+Date:   Fri, 17 Sep 2021 09:49:58 -0400
+From:   Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>
+Cc:     Colin Foster <colin.foster@in-advantage.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 net] net: mscc: ocelot: remove buggy and useless write
+ to ANA_PFC_PFC_CFG
+Message-ID: <20210917134958.6o2jev2ngegzmpfo@meerkat.local>
+References: <20210916010938.517698-1-colin.foster@in-advantage.com>
+ <20210916114917.aielkefz5gg7flto@skbuf>
+ <DB8PR04MB67954EE02059714DD9A72435E6DD9@DB8PR04MB6795.eurprd04.prod.outlook.com>
+ <20210917033802.GA681448@euler>
+ <DB8PR04MB6795DF1A354A33F3BE8F563CE6DD9@DB8PR04MB6795.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <20210917092024.19323-1-krzysztof.kozlowski@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <DB8PR04MB6795DF1A354A33F3BE8F563CE6DD9@DB8PR04MB6795.eurprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/17/21 2:20 AM, Krzysztof Kozlowski wrote:
-> The MODULE_DEVICE_TABLE already creates proper alias for platform
-> driver.  Having another MODULE_ALIAS causes the alias to be duplicated.
+On Fri, Sep 17, 2021 at 10:39:18AM +0000, Joakim Zhang wrote:
+> But it still failed at my side, after I google, have not found a solution, could you please
+> help have a look about below error?
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> $ git b4 20210916010938.517698-1-colin.foster@in-advantage.com
+> Traceback (most recent call last):
+>   File "/home/zqq/.local/bin/b4", line 7, in <module>
+>     from b4.command import cmd
+>   File "/home/zqq/.local/lib/python2.7/site-packages/b4/__init__.py", line 11, in <module>
+                              ^^^^^^^^^^^
+You seem to be trying to run it with python 2.7
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+>     import email.policy
+> ImportError: No module named policy
 
-> ---
->   drivers/watchdog/sbsa_gwdt.c | 1 -
->   1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/watchdog/sbsa_gwdt.c b/drivers/watchdog/sbsa_gwdt.c
-> index ee9ff38929eb..87b496405871 100644
-> --- a/drivers/watchdog/sbsa_gwdt.c
-> +++ b/drivers/watchdog/sbsa_gwdt.c
-> @@ -411,4 +411,3 @@ MODULE_AUTHOR("Suravee Suthikulpanit <Suravee.Suthikulpanit@amd.com>");
->   MODULE_AUTHOR("Al Stone <al.stone@linaro.org>");
->   MODULE_AUTHOR("Timur Tabi <timur@codeaurora.org>");
->   MODULE_LICENSE("GPL v2");
-> -MODULE_ALIAS("platform:" DRV_NAME);
-> 
+I'm not sure how you managed to make it install, but it won't work with python
+versions < 3.6. Python version 2 is no longer maintained.
 
+-K
