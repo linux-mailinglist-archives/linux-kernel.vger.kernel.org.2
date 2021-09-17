@@ -2,75 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ADD040F252
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 08:26:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E149940F258
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 08:28:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233976AbhIQG2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 02:28:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233806AbhIQG2E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 02:28:04 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40E21C061764
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 23:26:43 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id p2so12660983oif.1
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 23:26:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=evM8dYW25rUmoo+jhaGEhb/KiP/SeJMcvT7KRQQj0k4=;
-        b=GloPPC5iQ+gAScdWkJeOIsSgsZ5BSp9BiCqP1rzXOdxccRDtfeoX8O0HsiM7fJbpE9
-         tUSl/aQESeWKK1uPMUO7DCltaBfer5Uo3L92ywAfuAXPYyuw0Q6UkoscP2In/ZftAmou
-         tpYiHFxNgvo/7eg58Bk7Zn4HkLVXoT+1ihqFM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=evM8dYW25rUmoo+jhaGEhb/KiP/SeJMcvT7KRQQj0k4=;
-        b=7ACqDu0Iep/V4/2CTZb3rvr6RlUnV6mhGlqhvDzsa3YKY/kG39YZyKBybEROtdSFkP
-         ZaLZt2cmxojzU2j78HAO31LRn0RvBoQ5ZVGT0tBcfuHJSnfZ1JQq9g3Y6ohuGU8BaBHq
-         Ov2KLyc/AtUqWuNuIowFY+fQFoODdF2u/JwVHuvVaIOS/fGkpInoZGvqLZutgtoLaPTj
-         P4Ze2ibpFW4oVeb9TG6thrPRWZliIGzkfWP5msuKEJxzV6Wh4iUbkbLhOBiHFL8QTp06
-         PwI2hf+zOIAylyxCcMr2IxLxFpOdK4ikYArqIvkX3xx5N40r71C4+lTGbklG7DSdLG68
-         reeQ==
-X-Gm-Message-State: AOAM532fUt3t96jg3bM79a4YnUoriaQbOz2pCDAP+snZbTEubAQGrq6s
-        2bam6/azuo5OOjQCxeoeAvv45oD3pF2s5Nh2AptQtA==
-X-Google-Smtp-Source: ABdhPJyrkQzCWSDEUH1Rd5lLaPb2mxQs/iP6fiO2b9602AYM1Z/L3nqb7ScjuiLu6cPKzfoKXdFQgYK/XitKb8oyxGk=
-X-Received: by 2002:aca:2310:: with SMTP id e16mr2823690oie.64.1631860002668;
- Thu, 16 Sep 2021 23:26:42 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 16 Sep 2021 23:26:42 -0700
+        id S233704AbhIQG3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 02:29:55 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:64206 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231666AbhIQG3v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 02:29:51 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1631860110; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=71x/5CV+GloaODoruzokP4i9Sjebw7Bm1eLwxI/272A=; b=SC63itUGCiN+OY02Lqk9XG0vh9gYb8RIGDn1Y0LzaFro3J5MGE6vt39eD8S4+bh2yOkCY4HT
+ 3llOV6RZaTGPpt/gph2aYV+QKFft2OVCGGKGvlhlLHSuUs7qi9OktA9ZK3cNV5QcCMzk2prR
+ UhChOc5lJzhJGrAENw4vd2XhGGQ=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 6144357ce0f78151d6a4e6b2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 17 Sep 2021 06:28:12
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 92C21C43460; Fri, 17 Sep 2021 06:28:12 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.4 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.26] (075-140-094-099.biz.spectrum.com [75.140.94.99])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B7A75C4338F;
+        Fri, 17 Sep 2021 06:28:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org B7A75C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH] usb: dwc3: gadget: Avoid starting DWC3 gadget during UDC
+ unbind
+To:     Felipe Balbi <balbi@kernel.org>
+Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210917021852.2037-1-wcheng@codeaurora.org>
+ <87y27vai3p.fsf@kernel.org>
+From:   Wesley Cheng <wcheng@codeaurora.org>
+Message-ID: <474148e5-37e2-ea0c-7d78-9e71155314d9@codeaurora.org>
+Date:   Thu, 16 Sep 2021 23:28:09 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <1631811353-503-4-git-send-email-pillair@codeaurora.org>
-References: <1631811353-503-1-git-send-email-pillair@codeaurora.org> <1631811353-503-4-git-send-email-pillair@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Thu, 16 Sep 2021 23:26:42 -0700
-Message-ID: <CAE-0n501fpj13snR9Q+RyOW12zPqyY8W4ZqzFcrmeqiwA77GVQ@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] remoteproc: qcom: q6v5_wpss: Add support for
- sc7280 WPSS
-To:     Rakesh Pillai <pillair@codeaurora.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, mathieu.poirier@linaro.org,
-        ohad@wizery.com, p.zabel@pengutronix.de, robh+dt@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sibis@codeaurora.org,
-        mpubbise@codeaurora.org, kuabhs@chromium.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <87y27vai3p.fsf@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Rakesh Pillai (2021-09-16 09:55:53)
-> Add support for PIL loading of WPSS processor for SC7280
-> - WPSS boot will be requested by the wifi driver and hence
->   disable auto-boot for WPSS.
-> - Add a separate shutdown sequence handler for WPSS.
-> - Add multiple power-domain voting support
->
-> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
-> ---
+Hi,
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+On 9/16/2021 10:17 PM, Felipe Balbi wrote:
+> 
+> Hi,
+> 
+> Wesley Cheng <wcheng@codeaurora.org> writes:
+> 
+>> There is a race present where the DWC3 runtime resume runs in parallel
+>> to the UDC unbind sequence.  This will eventually lead to a possible
+>> scenario where we are enabling the run/stop bit, without a valid
+>> composition defined.
+>>
+>> Thread#1 (handling UDC unbind):
+>> usb_gadget_remove_driver()
+>> -->usb_gadget_disconnect()
+>>   -->dwc3_gadget_pullup(0)
+>> --> continue UDC unbind sequence
+>> -->Thread#2 is running in parallel here
+>>
+>> Thread#2 (handing next cable connect)
+>> __dwc3_set_mode()
+>>   -->pm_runtime_get_sync()
+>>     -->dwc3_gadget_resume()
+>>       -->dwc->gadget_driver is NOT NULL yet
+>>       -->dwc3_gadget_run_stop(1)
+>>       --> _dwc3gadget_start()
+>> ...
+>>
+>> Fix this by tracking the pullup disable routine, and avoiding resuming
+>> of the DWC3 gadget.  Once the UDC is re-binded, that will trigger the
+>> pullup enable routine, which would handle enabling the DWC3 gadget.
+>>
+>> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+
+Thanks, Felipe!
+
+> 
+> This looks okay to me, but needs to be tested by a few folks ;-)
+> 
+> Acked-by: Felipe Balbi <balbi@kernel.org>
+> 
+Yes, would be good to get some functions using
+usb_gadget_activate/deactivate().  It should be OK for those situations
+as well, but just to make sure :)
+
+Thanks
+Wesley Cheng
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
