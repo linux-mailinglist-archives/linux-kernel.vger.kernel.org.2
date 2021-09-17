@@ -2,80 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9073B40EF03
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 03:59:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26A9D40EF06
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 03:59:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242543AbhIQCA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 22:00:27 -0400
-Received: from mail-il1-f169.google.com ([209.85.166.169]:42886 "EHLO
-        mail-il1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230135AbhIQCA0 (ORCPT
+        id S242560AbhIQCAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 22:00:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35178 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242552AbhIQCA3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 22:00:26 -0400
-Received: by mail-il1-f169.google.com with SMTP id m4so8638787ilj.9;
-        Thu, 16 Sep 2021 18:59:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QncgAYsEAj4J6mbF3tLEr0rEZvz4D8ZpN12NlUMUfpg=;
-        b=PMLCg3P243RddnzS/h8Q00884VeMa2k0PSE+y6qhHr3QD5Xfx78rbf2iQY9zbQPLl5
-         2T2Bn6V9ffh4/jiCfz1p8pjE7vhLM46Y/URLJwIm+lsDT8/g7Pvbzoz3NMWUOlvSAp/e
-         bYDECF59pD5Au8gO6VhP6mKpHX2Wip9K3MC2juFkGc8aLhpFjHUHMQyghKojKfJ09eiz
-         Jgf7o56Km22D/ncuglEsYrJBgbs6fBHbUD35WzJuZ63Mkg6BD16XsIrY8yHNTssxSq16
-         AB9CETqEmE8O2nqXxnizm8REG1nTJHLwofZgF95sEqwlJskve032ACZMGP6/Q5Ulq8Im
-         lNqg==
-X-Gm-Message-State: AOAM532TdHnOO/gii/XCBZ2tKiglBpJZdVjSw3l4JB1LAB6dGfxbCqPY
-        N6cUajqYmEw8wIfxltQPhA==
-X-Google-Smtp-Source: ABdhPJy4oTaM24SB6z0pQT/ToKAlRejgZB3SLM155KVMirfdI7mWZ3F3MD1XWjhJyelSQtEkJV3ltw==
-X-Received: by 2002:a05:6e02:20c3:: with SMTP id 3mr1021317ilq.269.1631843944967;
-        Thu, 16 Sep 2021 18:59:04 -0700 (PDT)
-Received: from robh.at.kernel.org (96-84-70-89-static.hfc.comcastbusiness.net. [96.84.70.89])
-        by smtp.gmail.com with ESMTPSA id 9sm2670305ily.9.2021.09.16.18.59.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 18:59:04 -0700 (PDT)
-Received: (nullmailer pid 1610039 invoked by uid 1000);
-        Fri, 17 Sep 2021 01:58:57 -0000
-Date:   Thu, 16 Sep 2021 20:58:57 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     David Airlie <airlied@linux.ie>, Jonathan Corbet <corbet@lwn.net>,
-        devicetree@vger.kernel.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Fabien Parent <fparent@baylibre.com>,
-        linux-kernel@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Subject: Re: [PATCH v2 03/23] dt-bindings: arm: mediatek: mmsys: update
- mediatek,mmsys.yaml reference
-Message-ID: <YUP2YYKTVHdvTfD+@robh.at.kernel.org>
-References: <cover.1631785820.git.mchehab+huawei@kernel.org>
- <a87eb079a73e8ab41cdf6e40e80b1d1f868da6bd.1631785820.git.mchehab+huawei@kernel.org>
+        Thu, 16 Sep 2021 22:00:29 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B643C061764;
+        Thu, 16 Sep 2021 18:59:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1631843945;
+        bh=CE+5U53jWk/6k2//JOnl62EdAYqBM35mzhywjkHbaPs=;
+        h=Date:From:To:Cc:Subject:From;
+        b=a3MggPQnhfY9FzM+BIffXzgpSmRlxNn/RVnj0OOW8/JwfEJ9rQ+yPAJt/m/rbnKQH
+         fa5pcg3kwsw5D4R6cs1h9cEUlBFwYj+XKp7A3/cIAVOm4bUsJejl5Yc0ZRTDsDT5oo
+         frslAiDQPL8fgFBOJVctDcLi7t7Od3PAyz6Io5Rqxv8JBS7azolKcp5KuJFZHSOx7Z
+         xJApd7Q7Qqz+rTJuvTagK8E0hjqV/iKy4+C4h3R2nWn/fDEl9uSCShjjONswWv6Uiy
+         pxpC10b2gzO75YUuBryp1YcwUakhZXyn+HBkaurmqmOOcQaR+ur8ZhjSmQK/YQS1As
+         u3QgHqQ6xCPUQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H9cZG573Rz9sVw;
+        Fri, 17 Sep 2021 11:59:02 +1000 (AEST)
+Date:   Fri, 17 Sep 2021 11:58:59 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the tip tree
+Message-ID: <20210917115859.6cfc64a5@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a87eb079a73e8ab41cdf6e40e80b1d1f868da6bd.1631785820.git.mchehab+huawei@kernel.org>
+Content-Type: multipart/signed; boundary="Sig_/+3ufTwsYiHDb_h=MRIgbfSi";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Sep 2021 11:55:02 +0200, Mauro Carvalho Chehab wrote:
-> Changeset cba3c40d1f97 ("dt-bindings: arm: mediatek: mmsys: convert to YAML format")
-> renamed: Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.txt
-> to: Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.yaml.
-> 
-> Update its cross-reference accordingly.
-> 
-> Fixes: cba3c40d1f97 ("dt-bindings: arm: mediatek: mmsys: convert to YAML format")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  .../devicetree/bindings/display/mediatek/mediatek,disp.txt      | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
+--Sig_/+3ufTwsYiHDb_h=MRIgbfSi
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Applied, thanks!
+Hi all,
+
+After merging the tip tree, today's linux-next build (x86_64 allmodconfig)
+produced this warning:
+
+vmlinux.o: warning: objtool: mce_setup()+0x22: call to memset() leaves .noi=
+nstr.text section
+vmlinux.o: warning: objtool: do_machine_check()+0x51: call to mce_gather_in=
+fo() leaves .noinstr.text section
+vmlinux.o: warning: objtool: rcu_dynticks_eqs_enter()+0x0: call to rcu_dynt=
+icks_task_trace_enter() leaves .noinstr.text section
+vmlinux.o: warning: objtool: rcu_dynticks_eqs_exit()+0xe: call to rcu_dynti=
+cks_task_trace_exit() leaves .noinstr.text section
+vmlinux.o: warning: objtool: rcu_nmi_enter()+0x36: call to __kasan_check_re=
+ad() leaves .noinstr.text section
+
+I don't know what produced these warnings.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/+3ufTwsYiHDb_h=MRIgbfSi
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFD9mMACgkQAVBC80lX
+0Gy9bgf/YOfufQj2LDZ9MlbRNY7P0hvhP3nypcSeelTZQ9iUkDFCQI+OrfLJ8AZY
+qM9OfgsMF3nCs2asrMA7DzRoXYF9gPqhxqTftnlL/ScBXn3M9dwy6qkSuawekklW
+trl/W6jVr9qmiJb2E3ILvd8VxpmjOPSiWvKc8vqDUqdPDS4w2CNWStr2VAHMLLyj
+eDNj8XPC+2P0MlS+G0ZMC1NMoUZ8nsxRKJS9iGx2iKXqztahJB0NNgGitEgvRzXP
+eygtV8kPcy0cJZyU+e2Rr1QwF5qS5ABoZHi43uU7ITOP86okie4UFm0Et9UYpIqa
+w85CCDRbWnuYIEN1JNT6GRq7Ly9Drw==
+=cgj4
+-----END PGP SIGNATURE-----
+
+--Sig_/+3ufTwsYiHDb_h=MRIgbfSi--
