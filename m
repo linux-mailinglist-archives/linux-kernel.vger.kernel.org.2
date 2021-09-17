@@ -2,81 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFDB541013E
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 00:32:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91600410146
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 00:33:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236613AbhIQWdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 18:33:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232719AbhIQWde (ORCPT
+        id S236562AbhIQWeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 18:34:25 -0400
+Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:45345 "EHLO
+        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232719AbhIQWeW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 18:33:34 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A1B8C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 15:32:11 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id c8so38678337lfi.3
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 15:32:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bMlZupJaaOmfM5kF68bTasQo1i9K/JwY+k5KTnrWPMo=;
-        b=pWYIgc9VNNCeJNC1e9/VkHmZBez2EDmS2PcdErOeXRN4xgp6uos4SYg+4oTI+xm4MT
-         o/zG4Kp2V6OwWmQfKNejC4Jp4UFf49i52/KggwAVAp3nSgnXUBl3OimLMYRR8N+Guuu+
-         YyqT5xOg/JsSu2Am/ua1o2bTQe+Jo4AAwrA9lE2cUlD31Zmavd3W+qdmu93lAXZ+vEVq
-         Rn06xp31zNd/5lLFgCKFqj+TJ2dInOCeO2IDIlvety25M+zxpby7VCL883/l+GHal/rQ
-         Uc7nsN2PIFsRJSNa0fwlGcrkG3oiyyEkBG5R812ndCQAXpeZwZczo6ecra3yLoYZYD2g
-         1q3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bMlZupJaaOmfM5kF68bTasQo1i9K/JwY+k5KTnrWPMo=;
-        b=Aos4XzEVfujbwqLBIGG4VJ5RqEVlZaj9mDrld73HpNpWv/W/yKlcsnZ7YO2abbC2Ki
-         xTSa0OnYSk1FqbJfNzcfzwWB/5qkEtvDY//kWre/PSvPwd2SD6YTIDv5mSi2b0DcTTuP
-         ZafDXrwBTV5LsIheLAe/0cFhuHsnZx98UEOzxwomjfVnJOO5fsDTu7n0As10vTfecWcg
-         BC/GPWjjX7PfuWoyrFYd4g/8J4JKl1c0pHzt9j94LAAWr0/aEEUmHTPiLiJ5dgnyyFpN
-         l+5SvRbrWnljRCklT6iNIYBipov6dJFRDq+rjqzbFc+eSY8N9Qo2+onlArtagFcdx+Z+
-         F8jQ==
-X-Gm-Message-State: AOAM531PGW1CuQkae0Xi9EEu0PT1a7hlFN4V3U2b4YcdxmzvSlHPr2GU
-        QOJ2pRIFRKkmxaH8PTF0RlKriTKHxmwoDjmMf/hZrw==
-X-Google-Smtp-Source: ABdhPJxiLoB+28Pv7LKUWwQryIaYhXX8k0rQZhkj/JY1U969yvs0oB5ymnY+t7DiPA5DrZOSoyLVccmJ69BS74kuhkQ=
-X-Received: by 2002:ac2:4651:: with SMTP id s17mr4952713lfo.584.1631917929456;
- Fri, 17 Sep 2021 15:32:09 -0700 (PDT)
+        Fri, 17 Sep 2021 18:34:22 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.west.internal (Postfix) with ESMTP id 509562B00BB2;
+        Fri, 17 Sep 2021 18:32:59 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Fri, 17 Sep 2021 18:33:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=u92.eu; h=date
+        :from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=Pwv+7pylkaIrPBg3R0kBxNlV+Qf
+        DULkAa/KMRtw0Pno=; b=cfp6Lw7yuzUQ0udmdQnhrDY8tgotCYiVevyu0EjtXCj
+        KJacrwUjOBWZJWeXN0Sz14XZVtEJbMQ46gwVn6S1HQDcYsNwDq2jqyZiY/Z9ObdO
+        1vJkK66GTlosny/xLMkHvVNIThNMfn2VG5maIVFf20nlpR+9y6b7Y89jzNN572hk
+        56+i9UG6adSGYwQ+Ha31bT/ZKo9JEls6qXOWdhaZTvDO9o5zx71d0IBKkOQ1eFff
+        xsujTYE1EkvMBaAhi/ZXTcU8E874UTt+PSSKenlNB4Qwsc820XcLR/zmuMcJiBc8
+        KJKf7gSTcbrzfH7NRU1t3SomC0fkGuaSxmJoGjYxgqg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=Pwv+7p
+        ylkaIrPBg3R0kBxNlV+QfDULkAa/KMRtw0Pno=; b=OT0vUGuSB3Q5GUldtkZ4hD
+        ISjHzWRc9lXwqyHNnnx6Peo23H19RklTOphrbBZUNdCTQyRu5r+kbWTEfrLUFbHn
+        5svWwEO38lRt1VJqd6W69ohk0Lo6XGOyxrMZCQ/s0MX7w0Y9zOl7yzNQTBDa9CqW
+        gfObJfg1FFmTZZkocCGwnLlqeMCyw5TTzIhfMXhBYHPcT/CA7lCCezfXVtBz2bQr
+        Exf8wJBCzAWDF+/QpJo68z7TBJlF2+S/9bP0qmexdv61MBJR0XRFhXBu/g7cOSdz
+        hvpXFlV7dEfudE1n3FV692nxLddDL1PkqVzv7PyUPUclMd0L+xUiUJvz9AaEmy8g
+        ==
+X-ME-Sender: <xms:mhdFYbBBlz_6nrWMgjtxeQJo0MHomyJWN7ILPvbkC1UQTnGB5INQ7w>
+    <xme:mhdFYRg0oW7LqwRzCPWzRjcoPFmyhwP_ICrJan_ClGt6MSvJbTa9By4nL4P9NiW3I
+    -8urXjsqHxaduPQRA>
+X-ME-Received: <xmr:mhdFYWkW8bxmH_uOwsWTsTtXCb-KcfiMzAk-jd6UIksbA44xHuzaB0hK-orp-q_H1wbT88zr>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudehjedgudduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttdejnecuhfhrohhmpefhvghrnhgr
+    nhguohcutfgrmhhoshcuoehgrhgvvghnfhhoohesuhelvddrvghuqeenucggtffrrghtth
+    gvrhhnpedvjeeifeelhfetiefhhfdthfefkefhhfeutdetvdfgvefgveefheffgfekjeef
+    heenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrh
+    gvvghnfhhoohesuhelvddrvghu
+X-ME-Proxy: <xmx:mhdFYdxMeAjK1wBVSQh1hHIPI8lZVjEAub0quqxAjCGVrclzqvqGBQ>
+    <xmx:mhdFYQQmWo_y31divswy8Lt1Y68E3N1OdkcJFlWUsF3JK1OlUIfXMg>
+    <xmx:mhdFYQZkIAwiNuGSzUsVOQBcn479ovRRuwdSLwS86L20TRh6QIGOkw>
+    <xmx:mhdFYZ9c6ocv8m6ErBEB8z2Qcha4_Xl_cFXbUOTIrICPGY7HC2YRmeitXP0>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 17 Sep 2021 18:32:55 -0400 (EDT)
+Date:   Sat, 18 Sep 2021 00:32:52 +0200
+From:   Fernando Ramos <greenfoo@u92.eu>
+To:     Sean Paul <sean@poorly.run>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-renesas-soc@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH 08/15] drm/radeon: cleanup: drm_modeset_lock_all() -->
+ DRM_MODESET_LOCK_ALL_BEGIN()
+Message-ID: <YUUXlOh0rKcynrPZ@zacax395.localdomain>
+References: <20210916211552.33490-1-greenfoo@u92.eu>
+ <20210916211552.33490-9-greenfoo@u92.eu>
+ <20210917154031.GH2515@art_vandelay>
 MIME-Version: 1.0
-References: <20210911232707.259615-1-luca@z3ntu.xyz> <20210911232707.259615-2-luca@z3ntu.xyz>
-In-Reply-To: <20210911232707.259615-2-luca@z3ntu.xyz>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sat, 18 Sep 2021 00:31:58 +0200
-Message-ID: <CACRpkda0Jm=JwxpsmU63m94hFsL1Lhuk3mfjgFuXLNJ3RjdUnA@mail.gmail.com>
-Subject: Re: [PATCH 1/8] pinctrl: qcom: msm8226: fill in more functions
-To:     Luca Weiss <luca@z3ntu.xyz>
-Cc:     MSM <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS
-        <devicetree@vger.kernel.org>, Hans de Goede <hdegoede@redhat.com>, Andy
-        Shevchenko <andy.shevchenko@gmail.com>," 
-        <~postmarketos/upstreaming@lists.sr.ht>,
-        Bartosz Dudziak <bartosz.dudziak@snejp.pl>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210917154031.GH2515@art_vandelay>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 12, 2021 at 1:28 AM Luca Weiss <luca@z3ntu.xyz> wrote:
+> > +	struct drm_modeset_acquire_ctx ctx;
+> >  	int i, r;
+> > +	int ret;
+> 
+> Could you please tuck this up with i & r?
 
-> Add the functions for QUP4 (spi, uart, uim & i2c), sdc3 and audio_pcm as
-> derived from the downstream gpiomux configuration.
->
-> Also sort the functions alphabetically, while we're at it.
->
-> Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+Done!
 
-This patch applied to the pinctrl tree for v5.16.
 
-Yours,
-Linus Walleij
+> > -	drm_modeset_unlock_all(dev);
+> > +	DRM_MODESET_LOCK_ALL_END(dev, ctx, ret);
+> 
+> You should check ret here
+
+Would it be save to return at this point if the lock fails?
+
+In other words, can I just add this? --> "if (ret) return ret;"
+
+
+> > +	struct drm_modeset_acquire_ctx ctx;
+> >  	int r;
+> > +	int ret;
+> 
+> Same suggestion here, move up with r
+
+Done!
+
+
+> > -		drm_modeset_unlock_all(dev);
+> > +		DRM_MODESET_LOCK_ALL_END(dev, ctx, ret);
+> 
+> Also check ret here
+
+Same question. Would "if (ret) return ret;" be safe here?
+
+
+> >  	int i;
+> > +	int ret;
+> 
+> Move up with i
+
+Done!
+
+
+> > -	drm_modeset_unlock_all(dev);
+> > +	DRM_MODESET_LOCK_ALL_END(dev, ctx, ret);
+> >  	return 0;
+
+I can also "return ret;" instead of "0".
+
+What happens when a DEFINE_SHOW_ATTRIBUTE'd function returns non-zero? Is it ok?
+Or do we want to always return "0" to print whatever we can?
+
+
