@@ -2,80 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBF2140F40E
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 10:25:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A76C40F40A
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 10:25:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245208AbhIQI0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 04:26:51 -0400
-Received: from smtp25.cstnet.cn ([159.226.251.25]:58466 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S243768AbhIQI0u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 04:26:50 -0400
-Received: from localhost.localdomain (unknown [124.16.138.128])
-        by APP-05 (Coremail) with SMTP id zQCowACXna3bUERhrgjSAA--.4111S2;
-        Fri, 17 Sep 2021 16:24:59 +0800 (CST)
-From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
-To:     pshelar@ovn.org, davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, dev@openvswitch.org,
-        linux-kernel@vger.kernel.org, Jiasheng Jiang <jiasheng@iscas.ac.cn>
-Subject: [PATCH 2/2] openvswitch: Fix condition check in output_userspace() by using nla_ok()
-Date:   Fri, 17 Sep 2021 08:24:58 +0000
-Message-Id: <1631867098-3891002-1-git-send-email-jiasheng@iscas.ac.cn>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: zQCowACXna3bUERhrgjSAA--.4111S2
-X-Coremail-Antispam: 1UD129KBjvJXoWrtr13GrW5uF1xWw48WFW5trb_yoW8JrW7p3
-        Z293yUKrykA3W09w4kCw1vg348Ka4UZrWjga4DXw4SvFnxGw1vvFyvqr4F9r1UJFWUAa90
-        qrykZr18Xan7ZFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r43
-        MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
-        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0E
-        wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
-        W8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1l
-        IxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUjNJ55UUUU
-        U==
-X-Originating-IP: [124.16.138.128]
-X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
+        id S239855AbhIQI0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 04:26:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46954 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232713AbhIQI0a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 04:26:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0876061108;
+        Fri, 17 Sep 2021 08:25:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1631867108;
+        bh=qdJFyj06yBfXlZhRZDy4FYGP10Qe1Ow87PoRl1z2B90=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Wnlt34NTR/LPGMRwVwVMNLfMW+7RHfPRYAUaBwd0dfJ4O8ijy6MNy7fNnwBu4R2Wq
+         9G6/VPYwhb5cNRzDWN6tw9cvzkyk2H9OV0HSurWh40rJrktYzWRU4gxzwOPXXT6Kha
+         UbE449IyCN3cch+REuBgLs/eavnbkO0Uwd7jGlqI=
+Date:   Fri, 17 Sep 2021 10:25:05 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "# 3.4.x" <stable@vger.kernel.org>,
+        Lukas Hannen <lukas.hannen@opensource.tttech-industrial.com>
+Subject: Re: [PATCH 5.14 298/334] time: Handle negative seconds correctly in
+ timespec64_to_ns()
+Message-ID: <YURQ4ZFDJ8E9MJZM@kroah.com>
+References: <20210913131113.390368911@linuxfoundation.org>
+ <20210913131123.500712780@linuxfoundation.org>
+ <CAK8P3a0z5jE=Z3Ps5bFTCFT7CHZR1JQ8VhdntDJAfsUxSPCcEw@mail.gmail.com>
+ <874kak9moe.ffs@tglx>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <874kak9moe.ffs@tglx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just using 'rem > 0' might be unsafe, so it's better
-to use the nla_ok() instead.
-Because we can see from the nla_next() that
-'*remaining' might be smaller than 'totlen'. And nla_ok()
-will avoid it happening.
-For example, ovs_dp_process_packet() -> ovs_execute_actions()
--> do_execute_actions() -> output_userspace(), and attr comes
-from OVS_CB(skb)->input_vport,which restores the received packet
-from the user space.
+On Fri, Sep 17, 2021 at 12:32:17AM +0200, Thomas Gleixner wrote:
+> Arnd,
+> 
+> On Wed, Sep 15 2021 at 21:00, Arnd Bergmann wrote:
+> > On Tue, Sep 14, 2021 at 1:22 AM Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> >>  /*
+> >>   * Limits for settimeofday():
+> >> @@ -124,10 +126,13 @@ static inline bool timespec64_valid_sett
+> >>   */
+> >>  static inline s64 timespec64_to_ns(const struct timespec64 *ts)
+> >>  {
+> >> -       /* Prevent multiplication overflow */
+> >> -       if ((unsigned long long)ts->tv_sec >= KTIME_SEC_MAX)
+> >> +       /* Prevent multiplication overflow / underflow */
+> >> +       if (ts->tv_sec >= KTIME_SEC_MAX)
+> >>                 return KTIME_MAX;
+> >>
+> >> +       if (ts->tv_sec <= KTIME_SEC_MIN)
+> >> +               return KTIME_MIN;
+> >> +
+> >
+> > I just saw this get merged for the stable kernels, and had not seen this when
+> > Thomas originally merged it.
+> >
+> > I can see how this helps the ptp_clock_adjtime() users, but I just
+> > double-checked
+> > what other callers exist, and I think it introduces a regression in setitimer(),
+> > which does
+> >
+> >         nval = timespec64_to_ns(&value->it_value);
+> >         ninterval = timespec64_to_ns(&value->it_interval);
+> >
+> > without any further range checking that I could find. Setting timers
+> > with negative intervals sounds like a bad idea, and interpreting negative
+> > it_value as a past time instead of KTIME_SEC_MAX sounds like an
+> > unintended interface change.
+> >
+> > I haven't done any proper analysis of the changes, so maybe it's all
+> > good, but I think we need to double-check this, and possibly revert
+> > it from the stable kernels until a final conclusion.
+> 
+> I have done the analysis. setitimer() does not have any problem with
+> that simply because it already checks at the call site that the seconds
+> value is > 0 and so do all the other user visible interfaces. See
+> get_itimerval() ...
+> 
+> Granted  that the kernel internal interfaces do not have those checks,
+> but they already have other safety nets in place to prevent this and I
+> could not identify any callsite which has trouble with that change.
+> 
+> If I failed to spot one then what the heck is the problem? It was broken
+> before that change already!
+> 
+> I usually spend quite some time on tagging patches for stable and it's
+> annoying me that this patch got reverted while stuff which I explicitely
+> did not tag for stable got backported for whatever reason and completely
+> against the stable rules:
+> 
+>   627ef5ae2df8 ("hrtimer: Avoid double reprogramming in __hrtimer_start_range_ns()")
+> 
+> What the heck qualifies this to be backported?
+> 
+>  1) It's hot of the press and just got merged in the 5.15-rc1 merge
+>     window and is not tagged for stable
+> 
+>  2) https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+> 
+>     clearly states the rules but obviously our new fangled "AI" driven
+>     approach to select patches for stable is blissfully ignorant of
+>     these rules. I assume that AI stands for "Artifical Ignorance' here.
+> 
+> I already got a private bug report vs. that on 5.10.65. Annoyingly
+> 5.10.5 does not have the issue despite the fact that the resulting diff
+> between those two versions in hrtimer.c is just in comments.
 
-Fixes: ccb1352e76cff0524e7ccb2074826a092dd13016
-('net: Add Open vSwitch kernel components.')
-Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
----
- net/openvswitch/actions.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Looks like Sasha picked it up with the AUTOSEL process, and emailed you
+about this on Sep 5:
+	https://lore.kernel.org/r/20210906012153.929962-12-sashal@kernel.org
 
-diff --git a/net/openvswitch/actions.c b/net/openvswitch/actions.c
-index c23537f..e8236dd 100644
---- a/net/openvswitch/actions.c
-+++ b/net/openvswitch/actions.c
-@@ -915,8 +915,7 @@ static int output_userspace(struct datapath *dp, struct sk_buff *skb,
- 	upcall.cmd = OVS_PACKET_CMD_ACTION;
- 	upcall.mru = OVS_CB(skb)->mru;
- 
--	for (a = nla_data(attr), rem = nla_len(attr); rem > 0;
--	     a = nla_next(a, &rem)) {
-+	nla_for_each_nested(a, attr, rem) {
- 		switch (nla_type(a)) {
- 		case OVS_USERSPACE_ATTR_USERDATA:
- 			upcall.userdata = a;
--- 
-2.7.4
+I will revert it if you don't think it should be in the stable trees.
 
+Also, if you want AUTOSEL to not look at any hrtimer.c patches, just let
+us know and Sasha will add it to the ignore-list.
+
+thanks,
+
+greg k-h
