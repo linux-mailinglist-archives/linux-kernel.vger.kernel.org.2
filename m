@@ -2,146 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAB2F40F6FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 14:01:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4690540F715
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 14:04:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243027AbhIQMCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 08:02:38 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:54960 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242369AbhIQMCg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 08:02:36 -0400
-Received: from ip5f5a6e92.dynamic.kabel-deutschland.de ([95.90.110.146] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1mRCYK-0005JE-GG; Fri, 17 Sep 2021 14:01:12 +0200
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Michael Riesch <michael.riesch@wolfvision.net>
-Cc:     Rob Herring <robh+dt@kernel.org>, Liang Chen <cl@rock-chips.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Simon Xue <xxm@rock-chips.com>,
-        Michael Riesch <michael.riesch@wolfvision.net>
-Subject: Re: [PATCH] arm64: dts: rockchip: move aliases to rk356x dtsi
-Date:   Fri, 17 Sep 2021 14:01:11 +0200
-Message-ID: <2397289.mVTDCA6dLn@diego>
-In-Reply-To: <20210917110528.24454-1-michael.riesch@wolfvision.net>
-References: <20210917110528.24454-1-michael.riesch@wolfvision.net>
+        id S1344122AbhIQMFR convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 17 Sep 2021 08:05:17 -0400
+Received: from mail1.bemta25.messagelabs.com ([195.245.230.65]:41630 "EHLO
+        mail1.bemta25.messagelabs.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1344042AbhIQMFE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 08:05:04 -0400
+Received: from [100.112.197.4] (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256 bits))
+        by server-1.bemta.az-b.eu-west-1.aws.symcld.net id DF/F8-30018-D1484416; Fri, 17 Sep 2021 12:03:41 +0000
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrIKsWRWlGSWpSXmKPExsWi1/P8kK5si0u
+  iwbuzEhbbrsxntLi8aw6bxemJPcwOzB7vzp1j9/i8SS6AKYo1My8pvyKBNePC/oksBb3yFWd+
+  LWZvYFwl1cXIxSEksJJRouHALWYIZzOjxPYXSxi7GDk52AR0JI51TgKzRQTyJf6tWQ5mMws4S
+  tze+5YJxBYW8JTo2n6JBaLGS6L3/h0o20pix7NV7CA2i4CqxIMn85hBbF6g3qf/dgPN4QBali
+  mx7UogiMkpYCyxamUISAWjgKxE34kjbBCbxCU2PfvOCmJLCAhILNlznhnCFpV4+fgfK0irhIC
+  GxNLLXhBhCYl9u3vZIGwDia1L97FA2PISs2fcgIpzSnT/eww1Xk/ixtQpULa2xLKFr6GOFJQ4
+  OfMJywRGiVlIrpiFpGUWkpZZSFoWMLKsYrRIKspMzyjJTczM0TU0MNA1NDTSNbQ00zUyNNFLr
+  NJN0kst1S1PLS7RNdRLLC/WK67MTc5J0ctLLdnECIzXlIIj13YwHnj9Qe8QoyQHk5Iob7aPS6
+  IQX1J+SmVGYnFGfFFpTmrxIUYZDg4lCd7FTUA5waLU9NSKtMwcYOqASUtw8CiJ8L4ESfMWFyT
+  mFmemQ6ROMRpzTHg5dxEzx8Gj8xYxC7Hk5eelSonzejYDlQqAlGaU5sENgqW0S4yyUsK8jAwM
+  DEI8BalFuZklqPKvGMU5GJWEeYVAFvJk5pXA7XsFdAoT0ClH9juAnFKSiJCSamDK1tzmW77Ob
+  9rSTdbMUbnnRQ+IK4RtNGr0vxXBvOLGep9Fy6+v7LYqqlDNclD8ttV++b3798wl8jjNZz2pXV
+  Td/D/0qSDnTQ7f+UsX9c8TUte1cNHZ3XJgddM3oTdNsjNebWP49fiFaeP2I0JnDBrOTZyrcsV
+  w5xKnqxxsXV9nCc7TYIvfK9+sUDnp3UGWWCcf7UO/7dS+2bwKS3/WfmX/q1cz/3fcnn/pd8KT
+  sGNKpoU5HD/alhd8c5qvt1veVnKG0rL5S84XTSnSeGJiyGz9eu+EOevlVuzNCg5T2ypnsiJJR
+  HLmY37NTdfso/0PLMry03x7tCRqyfpQqQ9cM4NeFfBOjV6tfeprtZXMpnRjJZbijERDLeai4k
+  QAjBCa0eQDAAA=
+X-Env-Sender: Walter.Stoll@duagon.com
+X-Msg-Ref: server-12.tower-292.messagelabs.com!1631880220!302600!2
+X-Originating-IP: [46.140.231.194]
+X-SYMC-ESS-Client-Auth: outbound-route-from=pass
+X-StarScan-Received: 
+X-StarScan-Version: 9.81.4; banners=-,-,-
+X-VirusChecked: Checked
+Received: (qmail 5500 invoked from network); 17 Sep 2021 12:03:41 -0000
+Received: from 46-140-231-194.static.upc.ch (HELO chdua14.duagon.ads) (46.140.231.194)
+  by server-12.tower-292.messagelabs.com with ECDHE-RSA-AES256-SHA384 encrypted SMTP; 17 Sep 2021 12:03:41 -0000
+Received: from chdua14.duagon.ads (172.16.90.14) by chdua14.duagon.ads
+ (172.16.90.14) with Microsoft SMTP Server (TLS) id 15.0.1497.23; Fri, 17 Sep
+ 2021 14:03:06 +0200
+Received: from chdua14.duagon.ads ([fe80::4058:63e9:621d:cb5]) by
+ chdua14.duagon.ads ([fe80::4058:63e9:621d:cb5%12]) with mapi id
+ 15.00.1497.023; Fri, 17 Sep 2021 14:03:06 +0200
+From:   Walter Stoll <Walter.Stoll@duagon.com>
+To:     John Ogness <john.ogness@linutronix.de>,
+        "linux-rt-users@vger.kernel.org" <linux-rt-users@vger.kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: AW: [BUG] kernel/printk: RT-adaption of kmsg_dump breaks mtdoops
+Thread-Topic: [BUG] kernel/printk: RT-adaption of kmsg_dump breaks mtdoops
+Thread-Index: AderrfiLv1XFN2b0R32Idkomc0vbm///8uoA///XVAA=
+Date:   Fri, 17 Sep 2021 12:03:06 +0000
+Message-ID: <1f9ea811ccbf44bbbff0bb5398a70bd5@chdua14.duagon.ads>
+References: <c4b1a518b23c4507b3fc725cea005276@chdua14.duagon.ads>
+ <87zgsb4eot.fsf@jogness.linutronix.de>
+In-Reply-To: <87zgsb4eot.fsf@jogness.linutronix.de>
+Accept-Language: en-US, de-CH
+Content-Language: de-DE
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-codetwo-clientsignature-inserted: true
+x-codetwoprocessed: true
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [172.17.0.41]
+x-loop: 1
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
-
-Am Freitag, 17. September 2021, 13:05:28 CEST schrieb Michael Riesch:
-> In order to ensure deterministic probe order over different boards,
-> move the aliases of on-SoC components to the corresponding dtsi
-> files.
-
-please read the git history on the other Rockchip SoCs. We just moved
-the aliases on them _to_ the board-files, as requested by
-arm-soc maintainers ;-)
-
-
-Heiko
-
-
+> -----Ursprüngliche Nachricht-----
+> Von: John Ogness <john.ogness@linutronix.de>
+> Gesendet: Freitag, 17. September 2021 13:36
+> An: Walter Stoll <Walter.Stoll@duagon.com>; linux-rt-users@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Betreff: Re: [BUG] kernel/printk: RT-adaption of kmsg_dump breaks mtdoops
 > 
-> Signed-off-by: Michael Riesch <michael.riesch@wolfvision.net>
-> ---
->  arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts | 6 ------
->  arch/arm64/boot/dts/rockchip/rk3566.dtsi           | 4 ++++
->  arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts   | 7 -------
->  arch/arm64/boot/dts/rockchip/rk3568.dtsi           | 5 +++++
->  arch/arm64/boot/dts/rockchip/rk356x.dtsi           | 2 ++
->  5 files changed, 11 insertions(+), 13 deletions(-)
+> Hello Walter,
 > 
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts b/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
-> index a244f7b87e38..156bbb8aa4c4 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
-> +++ b/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
-> @@ -10,12 +10,6 @@
->  	model = "Pine64 RK3566 Quartz64-A Board";
->  	compatible = "pine64,quartz64-a", "rockchip,rk3566";
->  
-> -	aliases {
-> -		ethernet0 = &gmac1;
-> -		mmc0 = &sdmmc0;
-> -		mmc1 = &sdhci;
-> -	};
-> -
->  	chosen: chosen {
->  		stdout-path = "serial2:1500000n8";
->  	};
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3566.dtsi b/arch/arm64/boot/dts/rockchip/rk3566.dtsi
-> index 3839eef5e4f7..c1b3841caa77 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3566.dtsi
-> +++ b/arch/arm64/boot/dts/rockchip/rk3566.dtsi
-> @@ -4,6 +4,10 @@
->  
->  / {
->  	compatible = "rockchip,rk3566";
-> +
-> +	aliases {
-> +		ethernet0 = &gmac1;
-> +	};
->  };
->  
->  &power {
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts b/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
-> index 184e2aa2416a..218f85af730c 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
-> +++ b/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
-> @@ -13,13 +13,6 @@
->  	model = "Rockchip RK3568 EVB1 DDR4 V10 Board";
->  	compatible = "rockchip,rk3568-evb1-v10", "rockchip,rk3568";
->  
-> -	aliases {
-> -		ethernet0 = &gmac0;
-> -		ethernet1 = &gmac1;
-> -		mmc0 = &sdmmc0;
-> -		mmc1 = &sdhci;
-> -	};
-> -
->  	chosen: chosen {
->  		stdout-path = "serial2:1500000n8";
->  	};
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3568.dtsi b/arch/arm64/boot/dts/rockchip/rk3568.dtsi
-> index 2fd313a295f8..dd0e800cf752 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3568.dtsi
-> +++ b/arch/arm64/boot/dts/rockchip/rk3568.dtsi
-> @@ -8,6 +8,11 @@
->  / {
->  	compatible = "rockchip,rk3568";
->  
-> +	aliases {
-> +		ethernet0 = &gmac0;
-> +		ethernet1 = &gmac1;
-> +	};
-> +
->  	qos_pcie3x1: qos@fe190080 {
->  		compatible = "rockchip,rk3568-qos", "syscon";
->  		reg = <0x0 0xfe190080 0x0 0x20>;
-> diff --git a/arch/arm64/boot/dts/rockchip/rk356x.dtsi b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-> index e42fbac6147b..bb0540d3008c 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-> +++ b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-> @@ -29,6 +29,8 @@
->  		i2c3 = &i2c3;
->  		i2c4 = &i2c4;
->  		i2c5 = &i2c5;
-> +		mmc0 = &sdmmc0;
-> +		mmc1 = &sdhci;
->  		serial0 = &uart0;
->  		serial1 = &uart1;
->  		serial2 = &uart2;
+> On 2021-09-17, Walter Stoll <Walter.Stoll@duagon.com> wrote:
+> > Effect observed
+> > ---------------
+> >
+> > We want to store kernel oops logs on a NAND flash partition by means of the
+> > MTD Oops/Panic console logger/driver. However, no log is generated.
+> >
+> > We observed the effect with kernel version v5.4.138-rt62. However, we think
+> > that the most recent kernel exhibits the same behavior because the structure of
+> > the sources in question (see below) did not change.
 > 
+> This problem does not exist in v5.10-rt. The kmsg_dump API was changed
+> (later in mainline as well) to avoid this issue. For v5.10-rt the change
+> was buried in the all-in-one commit:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git/commit/?h=v5.10-
+> rt&id=9835363e31e75d3287a81c6fc1b22c5c2b43d277
+> 
+> And later. the API change for mainline (5.12):
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=f9f3f02db98b
+> be678a8e57fe9432b196174744a3
+>
 
+Ok, thanks a lot for your response. I was not aware of this.
 
+> > Root cause
+> > ----------
+> >
+> > Further investigations revealed, than the issue is due to the realtime adaption
+> > of the kmsg_dump() function.
+> >
+> > Non realtime version of kmsg_dump():
+> >
+> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/kernel/printk/printk
+> .c?h=linux-5.4.y#n3149
+> >
+> > Realtime version of kmsg_dump():
+> > https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-
+> rt.git/tree/kernel/printk/printk.c?h=v5.4-rt#n2904
+> >
+> > In our case, the the mtd_panic_write() function returns with error when the
+> > kernel panics. As a result, no log is created. Call chain:
+> > ... panic() -> kmsg_dump() -> mtdoops_do_dump() -> mtdoops_write()
+> >     mtd_panic_write()
+> >
+> > Note that within the kmsg_dump() function, a locally create kmsg_dumper object
+> > is passed to the dumper_local.dump(&dumper_local, reason) call. However the
+> > callee mtdoops_do_dump() function expects this object being embedded in a
+> > mtdoops_context object, see
+> > https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-
+> rt.git/tree/drivers/mtd/mtdoops.c?h=v5.4-rt#n272
+> >
+> > This is obviously not the case, therefore the error. Note that this could even
+> > led to a security issue.
+> >
+> >
+> > Bug fix proposal
+> > ----------------
+> >
+> > We fixed the bug locally by applying the patch below. Note that we did not
+> > modify the kmsg_dump() function. Instead we modified the mtdoops_do_dump()
+> > function which seems for us the cleaner way.
+> 
+> I agree that this is a better fix, rather than backporting the newer
+> API. For mtdoops, the only function registering a dumper is
+> mtdoops_notify_add() and it also directly references the global context
+> with:
+> 
+> struct mtdoops_context *cxt = &oops_cxt;
+> 
+> Reviewed-by: John Ogness <john.ogness@linutronix.de>
+> 
+> > diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
+> > index 774970bfcf85..317ecf47fce8 100644
+> > --- a/drivers/mtd/mtdoops.c
+> > +++ b/drivers/mtd/mtdoops.c
+> > @@ -269,8 +269,7 @@ static void find_next_position(struct mtdoops_context *cxt)
+> >  static void mtdoops_do_dump(struct kmsg_dumper *dumper,
+> >  			    enum kmsg_dump_reason reason)
+> >  {
+> > -	struct mtdoops_context *cxt = container_of(dumper,
+> > -			struct mtdoops_context, dump);
+> > +	struct mtdoops_context *cxt = &oops_cxt;
+> >
+> >  	/* Only dump oopses if dump_oops is set */
+> >  	if (reason == KMSG_DUMP_OOPS && !dump_oops)
+> 
+> Thanks for your work on this!
+> 
+> John Ogness
 
-
+Regards
+Walter
