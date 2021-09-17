@@ -2,73 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2628140FF56
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 20:26:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C71E340FF72
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 20:33:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236066AbhIQS1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 14:27:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231142AbhIQS1p (ORCPT
+        id S235998AbhIQSfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 14:35:04 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:38760 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231364AbhIQSfD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 14:27:45 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64CDCC061574;
-        Fri, 17 Sep 2021 11:26:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=N7BdNz9Vf/o9bdJ+Yzke7wjYnqiO+rP/ebx3b0B6FZE=; b=Hf4VwZ/c5g4Tn5kwarU0Sy0m7j
-        g6/RDYv8EoyK+TAe/KbO33MPhEhTh8tGrkn/ivLABOnABPXEqfjcNsqx4lKzsVbL5N6HWxTOu5lWi
-        J7gG+logNAXxrjQBnctPEPNgdU+jFgHeVcLfRfH+IBvibxjCSOnA7ccj6z/QJd7XuMQle4OArpa3W
-        JoIOoRAFggBaxzvpogWPuvTRlqpjoIz3XdiR4EEj5wAKl28b/fvLOZqJi1wJkWbGPJdKxmcodgDLA
-        RbMDs5fF3/Uj98AkRgetfHnSJ7pCMrzoavWqV+LYcg2jLs4W02K4d/2Qkpr2cf8QRcl2xEr64gqrh
-        l3SYPddQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mRIYz-003v7o-EJ; Fri, 17 Sep 2021 18:26:17 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 22B4598625E; Fri, 17 Sep 2021 20:26:16 +0200 (CEST)
-Date:   Fri, 17 Sep 2021 20:26:16 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Peter Oskolkov <posk@posk.io>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tip-commits@vger.kernel.org, x86@kernel.org
-Subject: Re: [tip: sched/core] sched: Fix -Wmissing-prototype
-Message-ID: <20210917182616.GH4323@worktop.programming.kicks-ass.net>
-References: <163179356649.25758.16036449513954806322.tip-bot2@tip-bot2>
- <CAFTs51Weqaig2tk-vMrSCzaQUch2Zr_Us0SPGutJAjMoYBK94A@mail.gmail.com>
+        Fri, 17 Sep 2021 14:35:03 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id D0FC51FF75;
+        Fri, 17 Sep 2021 18:33:39 +0000 (UTC)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D11EE13A96;
+        Fri, 17 Sep 2021 18:33:33 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id dMMdKH3fRGGZBAAAMHmgww
+        (envelope-from <dave@stgolabs.net>); Fri, 17 Sep 2021 18:33:33 +0000
+Date:   Fri, 17 Sep 2021 11:33:28 -0700
+From:   Davidlohr Bueso <dave@stgolabs.net>
+To:     Alistair Francis <alistair.francis@opensource.wdc.com>
+Cc:     linux-riscv@lists.infradead.org, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org, alistair23@gmail.com,
+        namhyung@kernel.org, jolsa@redhat.com,
+        alexander.shishkin@linux.intel.com, mark.rutland@arm.com,
+        acme@kernel.org, dvhart@infradead.org, peterz@infradead.org,
+        mingo@redhat.com, tglx@linutronix.de, atish.patra@wdc.com,
+        arnd@arndb.de, Alistair Francis <alistair.francis@wdc.com>
+Subject: Re: [PATCH v3 2/2] perf bench: Add support for 32-bit systems with
+ 64-bit time_t
+Message-ID: <20210917183328.fpybzahm5flcxexm@offworld>
+References: <20210917061040.2270822-1-alistair.francis@opensource.wdc.com>
+ <20210917061040.2270822-2-alistair.francis@opensource.wdc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <CAFTs51Weqaig2tk-vMrSCzaQUch2Zr_Us0SPGutJAjMoYBK94A@mail.gmail.com>
+In-Reply-To: <20210917061040.2270822-2-alistair.francis@opensource.wdc.com>
+User-Agent: NeoMutt/20201120
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 09:57:37AM -0700, Peter Oskolkov wrote:
-> On Thu, Sep 16, 2021 at 4:59 AM tip-bot2 for Peter Zijlstra
-> <tip-bot2@linutronix.de> wrote:
-> >
-> > The following commit has been merged into the sched/core branch of tip:
-> >
-> > Commit-ID:     98a3270911f7abe2871a60799c20c95c9f991ddb
-> 
-> $ make defconfig
-> $ make -j16
-> 
-> ld: kernel/sched/core.o: in function `sched_free_group':
-> core.c:(.text+0x2cfd): undefined reference to `free_rt_sched_group'
-> ld: kernel/sched/core.o: in function `sched_create_group':
-> core.c:(.text+0xbdcb): undefined reference to `alloc_rt_sched_group'
-> ld: kernel/sched/core.o: in function `sched_init':
-> core.c:(.init.text+0x335): undefined reference to `init_cfs_bandwidth'
-> ld: kernel/sched/fair.o: in function `alloc_fair_sched_group':
-> fair.c:(.text+0x8427): undefined reference to `init_cfs_bandwidth'
-> make: *** [Makefile:1196: vmlinux] Error 1
-> 
-> Reverting this patch fixes the issue.
+On Fri, 17 Sep 2021, Alistair Francis wrote:
 
-Moo, ok, I'll go figure that out ... too damn many CONFIG_ knobs is
-what.
+>From: Alistair Francis <alistair.francis@wdc.com>
+>
+>Some 32-bit architectures (such are 32-bit RISC-V) only have a 64-bit
+>time_t and as such don't have the SYS_futex syscall. This patch will
+>allow us to use the SYS_futex_time64 syscall on those platforms.
+
+Not objecting, but this ifdefiry will hurt my eyes every time I have
+to look at this file :)
+
+Acked-by: Davidlohr Bueso <dbueso@suse.de>
