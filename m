@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DF6540F319
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 09:20:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE00F40F31B
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 09:20:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239727AbhIQHV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 03:21:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50540 "EHLO
+        id S239654AbhIQHVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 03:21:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240233AbhIQHU5 (ORCPT
+        with ESMTP id S239468AbhIQHU5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 17 Sep 2021 03:20:57 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E744C061786
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 00:19:23 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id c22so26415683edn.12
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 00:19:23 -0700 (PDT)
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89788C061787
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 00:19:24 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id n10so25814607eda.10
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 00:19:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Ya+Xdz80zUYtSozKgjEzuQT1fyXeN/k0VWgo9uW+f80=;
-        b=T9QXP3t3x1VG8lt4hZj+OsMyWtNroFMPUplrf3jlV59+szRGn2mYqfMq1os3pnUokG
-         ywOxSuqkSlLr34GIQWm0YrR2sTqu/CD/GrgUm707c+y5pVOFGXixH89iIWh+QTouzX3O
-         PttJl63PVpnfp9jkleJ6fEf1aK5RXhOj5DPymvQ3xyB/vTqplPphO5bkhDKV8v/VzR3L
-         fspyHkM5rtqmjK4W5EUVXDTjENQtJwPJ5STclu7vfYUD0t9xyAb0ChzuDiWzhG6PpK8E
-         +Ew6RK95/mjMFfcWf5l0qwBZVLAV8+DL5yq/4NCMZCao2KLna7Z02y16TwTVrWC314F6
-         M2Kg==
+        bh=0sEUjUUuxHdMPhHnLo8c60yT4HrAvH94MxLwugCdDt4=;
+        b=iAdekIQuG2UKVkperbyF6nJPfB5cCWsv0f1Z2Ed3Q642HQtxhgU6Bc3I6Y4HaUQgzC
+         3UI06X7pFZuodWlEGcgrm4Fqn4T2B9yImCeH0QXd4dv0cz6wWaQJ4nmhrJ+IQCccaEV+
+         DL1efuaJ3QJWK/zio9c6Y/vZfdwFeNfPjxvHcDJ5rGwplBXqSk5AObNXXdDyMcJOkeP7
+         6ijGQ2XDdqQ4xYEHOMDZw1LTQzU1RdWcHzyHFpljr/ASjHCKpOxO3l7J+PSahYdnx1Zy
+         yc6Czc5TgoDzCUde7NaJC3/4XQXpeSErM0LzMG1TE11HcsVXhyqgjbzOZ9/9a5AcFVoQ
+         itDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Ya+Xdz80zUYtSozKgjEzuQT1fyXeN/k0VWgo9uW+f80=;
-        b=V2epk3PldvAbFM8cdWoAk5MPKP32X+BR2Wo68nNcke+KN9IJDiymSnrV21JTOmyFdI
-         hMP5Pz1GWn965V3J394cyfRDBR0Oa00QeaOXfxXuCk/p5XwzpLHg26Ht9NHIF1FCDMVK
-         fuRXjHfEeWoaHIBY76X6KRKlmBYo9LEfJKSAKn6CE59wJGNCfe1PSPNWWRvt20az7Wlz
-         kvOiTYTNGixTjSJSnHkpREFh2dFKJtNYqSxHJiQnaOSbi/9YBPa0RsmeJYC7sTCiGk//
-         OBPoZ7tJGAE7jA8jD9Xkq1qk/NfOiW/uG9GoHwx++KbPzIooePEDDF9nYuA5Lb/ElhYY
-         Ezlg==
-X-Gm-Message-State: AOAM5332kTY2orazQT3CQ55a96GIPX8UhDg6MianagIwSVz3PILMYx4J
-        tBh8BlRt0vc2a9ro3YC1vxE=
-X-Google-Smtp-Source: ABdhPJykRiBM/+/1R7FAUdZRvZXtYNJh3ENs3I/zj9rhFXotEajhBxa0fQjng9JQ7ZFAk/hcdrObRg==
-X-Received: by 2002:a05:6402:411:: with SMTP id q17mr11011150edv.35.1631863161796;
-        Fri, 17 Sep 2021 00:19:21 -0700 (PDT)
+        bh=0sEUjUUuxHdMPhHnLo8c60yT4HrAvH94MxLwugCdDt4=;
+        b=E5H5dAM6FHqW7XXI8i1dUsSs4g4fXv3nP2Pmt1igVXEZW1Huip/m9bd4a6JQwedoz5
+         DDnOSOipbVMp2jVuTI3eIvLY7zraEN3t/BH1ra0+9ncF4QuyfLqZAVD1oTdeVkUKuxNS
+         PTBDFhnrvMVueCl21+fcsvFbxfgtY93C2CyRwXH+0eRk3xPSIND5hT4vauWGKr6Efajv
+         dF6PGmeEaHmBMr3B/G1t4TnRYMzzSLQIFmtfk+qU1qe7OpYdc8rOKDmuLz9iCiNAF5pY
+         09TkgTGR5+6QmO4MI7GCSF5daNife529h20dJW75zHiFIEELkmQI+7jmZTw9wcX2fnlR
+         KPiQ==
+X-Gm-Message-State: AOAM531mnLhffu3oJOtYPWr+YGh6YDW9GtyHICjRFp/jngHQHfWSrPFu
+        AuVXdgMEtGgSd9octKSDdK9OBtaERKk=
+X-Google-Smtp-Source: ABdhPJwwRZ82gNTZhiH5g12cxNtmhD+6SSHLWt6aY6THfq0g+yHjqPOaXUbYTZ4X8wY++q6dQhVQRA==
+X-Received: by 2002:a17:906:2bcf:: with SMTP id n15mr10812130ejg.414.1631863163166;
+        Fri, 17 Sep 2021 00:19:23 -0700 (PDT)
 Received: from localhost.localdomain.it (host-79-47-104-104.retail.telecomitalia.it. [79.47.104.104])
-        by smtp.gmail.com with ESMTPSA id q19sm2297140edc.74.2021.09.17.00.19.20
+        by smtp.gmail.com with ESMTPSA id q19sm2297140edc.74.2021.09.17.00.19.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 00:19:21 -0700 (PDT)
+        Fri, 17 Sep 2021 00:19:22 -0700 (PDT)
 From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
 To:     Larry Finger <Larry.Finger@lwfinger.net>,
         Phillip Potter <phil@philpotter.co.uk>,
@@ -57,164 +57,123 @@ To:     Larry Finger <Larry.Finger@lwfinger.net>,
         David Laight <david.Laight@aculab.com>,
         Dan Carpenter <dan.carpenter@oracle.com>
 Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [PATCH v7 16/19] staging: r8188eu: clean up rtw_read*() and rtw_write*()
-Date:   Fri, 17 Sep 2021 09:18:34 +0200
-Message-Id: <20210917071837.10926-17-fmdefrancesco@gmail.com>
+Subject: [PATCH v7 17/19] staging: r8188eu: shorten calls chain of rtw_read{8,16,32}()
+Date:   Fri, 17 Sep 2021 09:18:35 +0200
+Message-Id: <20210917071837.10926-18-fmdefrancesco@gmail.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210917071837.10926-1-fmdefrancesco@gmail.com>
 References: <20210917071837.10926-1-fmdefrancesco@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clean up rtw_read{8,16,32}() and rtw_write{8,16,32,N}() in usb_ops_linux.c.
+Shorten the calls chain of rtw_read8/16/32() down to the actual reads.
+For this purpose unify the three usb_read8/16/32 into the new
+usb_read(); make the latter parameterizable with 'size'; embed most of
+the code of usbctrl_vendorreq() into usb_read() and use in it the new
+usb_control_msg_recv() API of USB Core.
 
-1) Rename variables:
-        length => len
-        pio_priv => io_priv
-        pintfhdl => intfhdl
-        wvalue => address.
-2) Remove unnecessary casts.
-3) Fix types.  Use __le16 instead of __le32.
-
+Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Co-developed-by: Pavel Skripkin <paskripkin@gmail.com>
 Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
 ---
- drivers/staging/r8188eu/hal/usb_ops_linux.c | 67 +++++++++++----------
- 1 file changed, 34 insertions(+), 33 deletions(-)
+ drivers/staging/r8188eu/hal/usb_ops_linux.c | 59 +++++++++++++++++++--
+ 1 file changed, 56 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/staging/r8188eu/hal/usb_ops_linux.c b/drivers/staging/r8188eu/hal/usb_ops_linux.c
-index 2098ce935dc0..2d5e9b3ba538 100644
+index 2d5e9b3ba538..ef35358cf2d3 100644
 --- a/drivers/staging/r8188eu/hal/usb_ops_linux.c
 +++ b/drivers/staging/r8188eu/hal/usb_ops_linux.c
-@@ -91,91 +91,92 @@ static int usbctrl_vendorreq(struct intf_hdl *intfhdl, u16 value, void *data, u1
+@@ -89,6 +89,59 @@ static int usbctrl_vendorreq(struct intf_hdl *intfhdl, u16 value, void *data, u1
+ 	return status;
+ }
  
++static int usb_read(struct intf_hdl *intfhdl, u16 addr, void *data, u8 size)
++{
++	struct adapter *adapt = intfhdl->padapter;
++	struct dvobj_priv *dvobjpriv = adapter_to_dvobj(adapt);
++	struct usb_device *udev = dvobjpriv->pusbdev;
++	int status;
++	u8 *io_buf; /* Pointer to I/O buffer */
++
++	if (adapt->bSurpriseRemoved || adapt->pwrctrlpriv.pnp_bstop_trx)
++		return -EPERM;
++
++	mutex_lock(&dvobjpriv->usb_vendor_req_mutex);
++
++	io_buf = dvobjpriv->usb_vendor_req_buf;
++
++	status = usb_control_msg_recv(udev, 0, REALTEK_USB_VENQT_CMD_REQ,
++				      REALTEK_USB_VENQT_READ, addr,
++				      REALTEK_USB_VENQT_CMD_IDX, io_buf,
++				      size, RTW_USB_CONTROL_MSG_TIMEOUT,
++				      GFP_KERNEL);
++
++	if (status == -ESHUTDOWN ||
++	    status == -ENODEV ||
++	    status == -ENOENT) {
++		/*
++		 * device or controller has been disabled due to
++		 * some problem that could not be worked around,
++		 * device or bus doesn’t exist, endpoint does not
++		 * exist or is not enabled.
++		 */
++		adapt->bSurpriseRemoved = true;
++		goto mutex_unlock;
++	}
++
++	if (status < 0) {
++		GET_HAL_DATA(adapt)->srestpriv.wifi_error_status =
++			USB_VEN_REQ_CMD_FAIL;
++
++		if (rtw_inc_and_chk_continual_urb_error(dvobjpriv))
++			adapt->bSurpriseRemoved = true;
++
++		goto mutex_unlock;
++	}
++
++	rtw_reset_continual_urb_error(dvobjpriv);
++	memcpy(data, io_buf, size);
++
++mutex_unlock:
++	mutex_unlock(&dvobjpriv->usb_vendor_req_mutex);
++
++	return status;
++}
++
  u8 rtw_read8(struct adapter *adapter, u32 addr)
  {
--	struct io_priv *pio_priv = &adapter->iopriv;
--	struct intf_hdl *pintfhdl = &pio_priv->intf;
--	u16 wvalue = (u16)(addr & 0x0000ffff);
-+	struct io_priv *io_priv = &adapter->iopriv;
-+	struct intf_hdl *intfhdl = &io_priv->intf;
-+	u16 address = addr & 0xffff;
+ 	struct io_priv *io_priv = &adapter->iopriv;
+@@ -96,7 +149,7 @@ u8 rtw_read8(struct adapter *adapter, u32 addr)
+ 	u16 address = addr & 0xffff;
  	u8 data;
  
--	usbctrl_vendorreq(pintfhdl, wvalue, &data, 1, REALTEK_USB_VENQT_READ);
-+	usbctrl_vendorreq(intfhdl, address, &data, 1, REALTEK_USB_VENQT_READ);
+-	usbctrl_vendorreq(intfhdl, address, &data, 1, REALTEK_USB_VENQT_READ);
++	usb_read(intfhdl, address, &data, 1);
  
  	return data;
  }
+@@ -108,7 +161,7 @@ u16 rtw_read16(struct adapter *adapter, u32 addr)
+ 	u16 address = addr & 0xffff;
+ 	__le16 data;
  
- u16 rtw_read16(struct adapter *adapter, u32 addr)
- {
--	struct io_priv *pio_priv = &adapter->iopriv;
--	struct intf_hdl *pintfhdl = &pio_priv->intf;
--	u16 wvalue = (u16)(addr & 0x0000ffff);
--	__le32 data;
-+	struct io_priv *io_priv = &adapter->iopriv;
-+	struct intf_hdl *intfhdl = &io_priv->intf;
-+	u16 address = addr & 0xffff;
-+	__le16 data;
+-	usbctrl_vendorreq(intfhdl, address, &data, 2, REALTEK_USB_VENQT_READ);
++	usb_read(intfhdl, address, &data, 2);
  
--	usbctrl_vendorreq(pintfhdl, wvalue, &data, 2, REALTEK_USB_VENQT_READ);
-+	usbctrl_vendorreq(intfhdl, address, &data, 2, REALTEK_USB_VENQT_READ);
- 
--	return (u16)(le32_to_cpu(data) & 0xffff);
-+	return le16_to_cpu(data);
+ 	return le16_to_cpu(data);
  }
- 
- u32 rtw_read32(struct adapter *adapter, u32 addr)
- {
--	struct io_priv *pio_priv = &adapter->iopriv;
--	struct intf_hdl *pintfhdl = &pio_priv->intf;
--	u16 wvalue = (u16)(addr & 0x0000ffff);
-+	struct io_priv *io_priv = &adapter->iopriv;
-+	struct intf_hdl *intfhdl = &io_priv->intf;
-+	u16 address = addr & 0xffff;
+@@ -120,7 +173,7 @@ u32 rtw_read32(struct adapter *adapter, u32 addr)
+ 	u16 address = addr & 0xffff;
  	__le32 data;
  
--	usbctrl_vendorreq(pintfhdl, wvalue, &data, 4, REALTEK_USB_VENQT_READ);
-+	usbctrl_vendorreq(intfhdl, address, &data, 4, REALTEK_USB_VENQT_READ);
+-	usbctrl_vendorreq(intfhdl, address, &data, 4, REALTEK_USB_VENQT_READ);
++	usb_read(intfhdl, address, &data, 4);
  
  	return le32_to_cpu(data);
- }
- 
- int rtw_write8(struct adapter *adapter, u32 addr, u8 val)
- {
--	struct io_priv *pio_priv = &adapter->iopriv;
--	struct intf_hdl *pintfhdl = &pio_priv->intf;
--	u16 wvalue = (u16)(addr & 0x0000ffff);
-+	struct io_priv *io_priv = &adapter->iopriv;
-+	struct intf_hdl *intfhdl = &io_priv->intf;
-+	u16 address = addr & 0xffff;
- 	int ret;
- 
--	ret = usbctrl_vendorreq(pintfhdl, wvalue, &val, 1, REALTEK_USB_VENQT_WRITE);
-+	ret = usbctrl_vendorreq(intfhdl, address, &val, 1, REALTEK_USB_VENQT_WRITE);
- 
- 	return RTW_STATUS_CODE(ret);
- }
- 
- int rtw_write16(struct adapter *adapter, u32 addr, u16 val)
- {
--	struct io_priv *pio_priv = &adapter->iopriv;
--	struct intf_hdl *pintfhdl = &pio_priv->intf;
--	u16 wvalue = (u16)(addr & 0x0000ffff);
--	__le32 data = cpu_to_le32(val & 0x0000ffff);
-+	struct io_priv *io_priv = &adapter->iopriv;
-+	struct intf_hdl *intfhdl = &io_priv->intf;
-+	__le16 data = cpu_to_le16(val);
-+	u16 address = addr & 0xffff;
- 	int ret;
- 
--	ret = usbctrl_vendorreq(pintfhdl, wvalue, &data, 2, REALTEK_USB_VENQT_WRITE);
-+	ret = usbctrl_vendorreq(intfhdl, address, &data, 2, REALTEK_USB_VENQT_WRITE);
- 
- 	return RTW_STATUS_CODE(ret);
- }
- 
- int rtw_write32(struct adapter *adapter, u32 addr, u32 val)
- {
--	struct io_priv *pio_priv = &adapter->iopriv;
--	struct intf_hdl *pintfhdl = &pio_priv->intf;
--	u16 wvalue = (u16)(addr & 0x0000ffff);
-+	struct io_priv *io_priv = &adapter->iopriv;
-+	struct intf_hdl *intfhdl = &io_priv->intf;
- 	__le32 data = cpu_to_le32(val);
-+	u16 address = addr & 0xffff;
- 	int ret;
- 
--	ret = usbctrl_vendorreq(pintfhdl, wvalue, &data, 4, REALTEK_USB_VENQT_WRITE);
-+	ret = usbctrl_vendorreq(intfhdl, address, &data, 4, REALTEK_USB_VENQT_WRITE);
- 
- 	return RTW_STATUS_CODE(ret);
- }
- 
--int rtw_writeN(struct adapter *adapter, u32 addr, u32 length, u8 *pdata)
-+int rtw_writeN(struct adapter *adapter, u32 addr, u32 len, u8 *data)
- {
--	struct io_priv *pio_priv = &adapter->iopriv;
--	struct intf_hdl *pintfhdl = &pio_priv->intf;
--	u16 wvalue = (u16)(addr & 0x0000ffff);
-+	struct io_priv *io_priv = &adapter->iopriv;
-+	struct intf_hdl *intfhdl = &io_priv->intf;
- 	u8 buf[VENDOR_CMD_MAX_DATA_LEN] = {0};
-+	u16 address = addr & 0xffff;
-+	u16 length = len & 0xffff;
- 	int ret;
- 
- 	if (length > VENDOR_CMD_MAX_DATA_LEN)
- 		return _FAIL;
- 
--	memcpy(buf, pdata, length);
--	ret = usbctrl_vendorreq(pintfhdl, wvalue, buf, (length & 0xffff), REALTEK_USB_VENQT_WRITE);
-+	memcpy(buf, data, length);
-+	ret = usbctrl_vendorreq(intfhdl, address, buf, length, REALTEK_USB_VENQT_WRITE);
- 
- 	return RTW_STATUS_CODE(ret);
  }
 -- 
 2.33.0
