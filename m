@@ -2,83 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53EBE40F249
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 08:24:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F252540F24E
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 08:25:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233507AbhIQG0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 02:26:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38350 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233358AbhIQG0M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 02:26:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B596A60F4A;
-        Fri, 17 Sep 2021 06:24:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631859891;
-        bh=ep0WqNlH3FcYvBeuK2z77yvpeGPGF3DSSxCj7FbzDFs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YM10PzX6rsQUuBkuM0H3EQI2w45jjuLM6MrWsbgJPrGeJ9ueBqjPak2AGztME7Yph
-         zWhQArvoNq/mlEBkmSongDgpNC2D2EP0/gZrv0xNa8bIVeLzTgOPdXUgP5pQqkdIHk
-         kkc5lzSjBEX+AKb1We6bX6PW2ptbRZPFRWQyC81w=
-Date:   Fri, 17 Sep 2021 08:24:48 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     will@kernel.org, catalin.marinas@arm.com, ryabinin.a.a@gmail.com,
-        andreyknvl@gmail.com, dvyukov@google.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, elver@google.com, akpm@linux-foundation.org,
-        kasan-dev@googlegroups.com
-Subject: Re: [PATCH v4 0/3] arm64: support page mapping percpu first chunk
- allocator
-Message-ID: <YUQ0sFeM4xqmaNG6@kroah.com>
-References: <20210910053354.26721-1-wangkefeng.wang@huawei.com>
- <c06faf6c-3d21-04f2-6855-95c86e96cf5a@huawei.com>
- <YUNlsgZoLG3g4Qup@kroah.com>
- <525cb266-ecfc-284e-d701-4a8b40fe413b@huawei.com>
+        id S233669AbhIQG07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 02:26:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233070AbhIQG06 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 02:26:58 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ECFCC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 23:25:36 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id l16-20020a9d6a90000000b0053b71f7dc83so11547976otq.7
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 23:25:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=ICEs66mzOrWw5DoGNjzQDzMrnyfZ+Z+NkVU0FU1eIqM=;
+        b=ffB/SHZAlTYkRT/UiB9ZGJAejN4vLBrCabhGLPTmaUVzTGPciu7V/RhWZ2Ppcswr7L
+         EFLXxWZHPfm6dA0V6y1vovBZH/lwgO66e/TDYrfCFOi0lC0uLSPap141TNp0R5Jn4h9P
+         MnX7NdiUb/ajqWy+cZqQcA1GSznY+yOkhMW5g=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=ICEs66mzOrWw5DoGNjzQDzMrnyfZ+Z+NkVU0FU1eIqM=;
+        b=S33ulmke0Ff3VFTxqYHT1d1qEcS5sS0MNqIFNCU6DvnnwnQEeQRAMEpPyar6pcFFHz
+         fzfxAJDDdFLJIj55lgytAX6KiEiOxtBZdHVN9bMTwmaoSVPWCANwiIutKgU4IzLJGMoP
+         da8ICM0YygNEKcXeMRYuasSgJfvT/mB5076DlsU91/+vgDW9VpFu0ghTH4z3yfKnypVB
+         rqC7lNUF/GqqxuH3ZUuhgmfZzS9a0TR8vRYgKltYfNdZXHR+XIFFvzn73faDAQKntel0
+         MLioB5q57ai+QhYIruwr+oEfZQVGqpkOAOkWDTt5IdvbYHU9U+RWHI0e6xYfwH4BFU85
+         ikIA==
+X-Gm-Message-State: AOAM532RASO97xOaCYwsZ4eAvjusELEUVxfxnWDJ8Wwtmwqe46tIkuVQ
+        sDosSNi+pW8Yh5rY6hkyTYfo1BJKXIXEyuF2DREi4Q==
+X-Google-Smtp-Source: ABdhPJyDW1VAO7a/TQ1CU2vowcY3A3hOPeoUkpVMQrtweBg2luyz25xyyE+y6zVDUbyY0eP6EHeblTMoRnpczu07QOc=
+X-Received: by 2002:a05:6830:719:: with SMTP id y25mr7949091ots.77.1631859936068;
+ Thu, 16 Sep 2021 23:25:36 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Thu, 16 Sep 2021 23:25:35 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <525cb266-ecfc-284e-d701-4a8b40fe413b@huawei.com>
+In-Reply-To: <1631811353-503-3-git-send-email-pillair@codeaurora.org>
+References: <1631811353-503-1-git-send-email-pillair@codeaurora.org> <1631811353-503-3-git-send-email-pillair@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Thu, 16 Sep 2021 23:25:35 -0700
+Message-ID: <CAE-0n51KBYjZvwGNy06_okmEWjEfRLQO54CYaY6-JnbBk6kOhA@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] dt-bindings: remoteproc: qcom: Add SC7280 WPSS support
+To:     Rakesh Pillai <pillair@codeaurora.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, mathieu.poirier@linaro.org,
+        ohad@wizery.com, p.zabel@pengutronix.de, robh+dt@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sibis@codeaurora.org,
+        mpubbise@codeaurora.org, kuabhs@chromium.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 09:11:38AM +0800, Kefeng Wang wrote:
-> 
-> On 2021/9/16 23:41, Greg KH wrote:
-> > On Wed, Sep 15, 2021 at 04:33:09PM +0800, Kefeng Wang wrote:
-> > > Hi Greg and Andrew， as Catalin saids，the series touches drivers/ and mm/
-> > > but missing
-> > > 
-> > > acks from both of you，could you take a look of this patchset(patch1 change
-> > > mm/vmalloc.c
-> > What patchset?
-> 
-> [PATCH v4 1/3] vmalloc: Choose a better start address in
-> vm_area_register_early()  <https://lore.kernel.org/linux-arm-kernel/20210910053354.26721-2-wangkefeng.wang@huawei.com/>
-> [PATCH v4 2/3] arm64: Support page mapping percpu first chunk allocator  <https://lore.kernel.org/linux-arm-kernel/20210910053354.26721-3-wangkefeng.wang@huawei.com/>
-> [PATCH v4 3/3] kasan: arm64: Fix pcpu_page_first_chunk crash with
-> KASAN_VMALLOC  <https://lore.kernel.org/linux-arm-kernel/20210910053354.26721-4-wangkefeng.wang@huawei.com/>
-> [PATCH v4 0/3] arm64: support page mapping percpu first chunk allocator  <https://lore.kernel.org/linux-arm-kernel/c06faf6c-3d21-04f2-6855-95c86e96cf5a@huawei.com/>
-> 
-> > > and patch2 changes drivers/base/arch_numa.c).
-> patch2 ：
-> 
-> [PATCH v4 2/3] arm64: Support page mapping percpu first chunk allocator  <https://lore.kernel.org/linux-arm-kernel/20210910053354.26721-3-wangkefeng.wang@huawei.com/#r>
-> 
-> > that file is not really owned by anyone it seems :(
-> > 
-> > Can you provide a link to the real patch please?
-> 
-> Yes， arch_numa.c is moved into drivers/base to support riscv numa, it is
-> shared by arm64/riscv,
-> 
-> my changes(patch2) only support NEED_PER_CPU_PAGE_FIRST_CHUNK on ARM64.
-> 
-> here is the link:
-> 
-> https://lore.kernel.org/linux-arm-kernel/20210910053354.26721-1-wangkefeng.wang@huawei.com/
+Quoting Rakesh Pillai (2021-09-16 09:55:52)
+> @@ -78,6 +84,10 @@ properties:
+>        Phandle reference to a syscon representing TCSR followed by the
+>        three offsets within syscon for q6, modem and nc halt registers.
+>
+> +  qcom,qmp:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description: Reference to the AOSS side-channel message RAM.
+> +
+>    qcom,smem-states:
+>      $ref: /schemas/types.yaml#/definitions/phandle-array
+>      description: States used by the AP to signal the Hexagon core
+> @@ -117,6 +127,33 @@ allOf:
+>          compatible:
+>            contains:
+>              enum:
+> +              - qcom,sc7280-wpss-pil
+> +    then:
 
-Now reviewed.
+Honestly I find this if/else to be a huge tangle. Why not split the
+binding so that each compatible is a different file? Then it is easier
+to read and see what properties to set.
 
+> +      properties:
+> +        interrupts-extended:
+> +          maxItems: 6
+> +          items:
+> +            - description: Watchdog interrupt
+> +            - description: Fatal interrupt
+> +            - description: Ready interrupt
