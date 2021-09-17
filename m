@@ -2,92 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70C2E40F5C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 12:21:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8557A40F5CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 12:21:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242413AbhIQKWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 06:22:15 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:40884 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234869AbhIQKWO (ORCPT
+        id S242466AbhIQKXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 06:23:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234869AbhIQKXL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 06:22:14 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18HAKnfg085552;
-        Fri, 17 Sep 2021 05:20:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1631874049;
-        bh=VLm4UxwbbuEzVUE70aWdz5RD8bv6XF2EJwP+insnRhM=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=OqNp2nxItL3bQWAwT3wpC/o4J+vwLWsmZs4o9IrUhlpCXCZ7oEVkt1VgnyjLzLryI
-         KcSW0JksYR9G/oBOLrYBCxDmMy1QeQtd6vtjKPxjkjQALIg3cTiO5KPei21Lw1ZiyV
-         QoCvuIUB72dxwwM/9UBfkK4ZhhBS8K+9D892lqoc=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18HAKn1D056993
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 17 Sep 2021 05:20:49 -0500
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Fri, 17
- Sep 2021 05:20:49 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Fri, 17 Sep 2021 05:20:49 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18HAKmfA104639;
-        Fri, 17 Sep 2021 05:20:49 -0500
-Date:   Fri, 17 Sep 2021 15:50:47 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Parshuram Thombare <pthombar@cadence.com>
-CC:     <broonie@kernel.org>, <lukas@wunner.de>, <robh+dt@kernel.org>,
-        <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <jpawar@cadence.com>,
-        <mparab@cadence.com>, Konrad Kociolek <konrad@cadence.com>
-Subject: Re: [PATCH v4 2/2] spi: cadence: add support for Cadence XSPI
- controller
-Message-ID: <20210917102045.mapb7j3sixzxwald@ti.com>
-References: <1631534558-8102-1-git-send-email-pthombar@cadence.com>
- <1631534779-8371-1-git-send-email-pthombar@cadence.com>
+        Fri, 17 Sep 2021 06:23:11 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCDCEC061574;
+        Fri, 17 Sep 2021 03:21:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=tXuvGtUhPelbuiVZG2SNVQ8ZT1r2eKoLQS+KhKnonao=; b=PaRI/wYSpd33GMaNUg4dwwwk35
+        9S41jv+5rzPsKoTxYZxGlyQAdrm6dO4hDxUUs3Vad29idB67/Eaa2y03aKl3S2n7QNINtwcBBriZl
+        Y7eNE5PfDO6bvhKaGheKZDqmNM9fxxFeDHhK/iCv9MOEApKCWxQyFP8zpSBhmXkHJ4CExmJZMsQXA
+        RRuyb537witKbV95bH/YRy3CmCGT7md1TknQPBBmZhVC+e9MHT4t2WzLUc8XE2W30BMG4DjknF1aC
+        GR+YkplWVrACOzDKH1j7nnHCpYSA1m0rC4bZJQqrD6dhBD5G3n4J2FgqKOE8iBso0MTNh9jRCy7+5
+        lLiuUbNw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mRAzo-003qSp-Fs; Fri, 17 Sep 2021 10:21:29 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CD570300260;
+        Fri, 17 Sep 2021 12:21:24 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B3FE92133B3D3; Fri, 17 Sep 2021 12:21:24 +0200 (CEST)
+Date:   Fri, 17 Sep 2021 12:21:24 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     =?utf-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
+        <linux-perf-users@vger.kernel.org>,
+        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
+        <linux-kernel@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <netdev@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <bpf@vger.kernel.org>, jroedel@suse.de, x86@kernel.org,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [PATCH] x86/dumpstack/64: Add guard pages to stack_info
+Message-ID: <YURsJGaB0vKgPT8x@hirez.programming.kicks-ass.net>
+References: <YT8m2B6D2yWc5Umq@hirez.programming.kicks-ass.net>
+ <3fb7c51f-696b-da70-1965-1dda9910cb14@linux.alibaba.com>
+ <YUB5VchM3a/MiZpX@hirez.programming.kicks-ass.net>
+ <3f26f7a2-0a09-056a-3a7a-4795b6723b60@linux.alibaba.com>
+ <YUIOgmOfnOqPrE+z@hirez.programming.kicks-ass.net>
+ <76de02b7-4d87-4a3a-e4d4-048829749887@linux.alibaba.com>
+ <YUL5j/lY0mtx4NMq@hirez.programming.kicks-ass.net>
+ <YUL6R5AH6WNxu5sH@hirez.programming.kicks-ass.net>
+ <YUMWLdijs8vSkRjo@hirez.programming.kicks-ass.net>
+ <a11f43d2-f12e-18c2-65d4-debd8d085fa8@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1631534779-8371-1-git-send-email-pthombar@cadence.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a11f43d2-f12e-18c2-65d4-debd8d085fa8@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/09/21 02:06PM, Parshuram Thombare wrote:
-> This patch adds driver for Cadence's XSPI controller.
-> It supports 3 work modes.
-> 1. ACMD (auto command) work mode
->     ACMD name is because it uses auto command engine in the controller.
->     It further has 2 modes PIO and CDMA (command DMA).
->     The CDMA work mode is dedicated for high-performance application
->     where very low software overhead is required. In this mode the
->     Command Engine is programmed by the series of linked descriptors
->     stored in system memory. These descriptors provide commands to execute
->     and store status information for finished commands.
->     The PIO mode work mode is dedicated for single operation where
->     constructing a linked list of descriptors would require too
->     much effort.
-> 2. STIG (Software Triggered Instruction Generator) work mode
->     In STIG mode, controller sends low-level instructions to memory.
->     Each instruction is 128-bit width. There is special instruction
->     DataSequence which carries information about data phase.
->     Driver uses Slave DMA interface to transfer data as only this
->     interface can be used in STIG work mode.
-> 3. Direct work mode
->     This work mode allows sending data without invoking any command through
->     the slave interface.
-> Currently only STIG work mode is enabled, remaining work modes will
-> be added later.
+On Fri, Sep 17, 2021 at 11:02:07AM +0800, 王贇 wrote:
+> 
+> 
+> On 2021/9/16 下午6:02, Peter Zijlstra wrote:
+> [snip]
+> >  
+> > +static __always_inline bool in_stack_guard(void *addr, void *begin, void *end)
+> > +{
+> > +#ifdef CONFIG_VMAP_STACK
+> > +	if (addr > (begin - PAGE_SIZE))
+> > +		return true;
+> 
+> After fix this logical as:
+> 
+>   addr >= (begin - PAGE_SIZE) && addr < begin
+> 
+> it's working.
 
-Acked-by: Pratyush Yadav <p.yadav@ti.com>
+Shees, I seem to have a knack for getting it wrong, don't I. Thanks!
 
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+Anyway, I'll ammend the commit locally, but I'd really like some
+feedback from Andy, who wrote all that VIRT_STACK stuff in the first
+place.
