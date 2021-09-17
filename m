@@ -2,124 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5C6740F36B
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 09:38:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2D3440F36C
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 09:39:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241492AbhIQHjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 03:39:54 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:18918 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241206AbhIQHjv (ORCPT
+        id S241439AbhIQHkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 03:40:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241203AbhIQHkr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 03:39:51 -0400
-Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210917073828epoutp0259801dcbb1f03a886cd6e36a987d671b~li-FEA8nW0718207182epoutp02g
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 07:38:28 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210917073828epoutp0259801dcbb1f03a886cd6e36a987d671b~li-FEA8nW0718207182epoutp02g
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1631864308;
-        bh=9k617nToWu1aztUcRNugGa4QkemtAsxGJpZ5BOciR4A=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=gCn51D4QU0cF1J54rh45oE0nCNuRINqhJmyp7laFizUWz9gVqrtWzSxQ4OQpxcDDs
-         xY0i5ZBzsmx41mzyfbs0Fu2O3VP1XzDbqyk7JPPXn0RyMCNTyMDifYZGIM6AmCQ2FU
-         DjBRP3uO23G6ZGa5KwW7TSx6UHZ4/Uw4alHglSck=
-Received: from epsmges5p1new.samsung.com (unknown [182.195.42.73]) by
-        epcas5p4.samsung.com (KnoxPortal) with ESMTP id
-        20210917073827epcas5p4cc663a17d90b9dbe65df88bcb65c5912~li-EooENt0255802558epcas5p4M;
-        Fri, 17 Sep 2021 07:38:27 +0000 (GMT)
-Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
-        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        2A.F2.59762.3F544416; Fri, 17 Sep 2021 16:38:27 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210917073827epcas5p11a811c82ba4c748de3923a62f51250ed~li-EIl3mH0487004870epcas5p1H;
-        Fri, 17 Sep 2021 07:38:27 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210917073827epsmtrp26329dd03eeec07a9c879c76c7d76970d~li-EGzcqU0944309443epsmtrp2Q;
-        Fri, 17 Sep 2021 07:38:27 +0000 (GMT)
-X-AuditID: b6c32a49-10fff7000000e972-3e-614445f349f5
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        BE.85.08750.3F544416; Fri, 17 Sep 2021 16:38:27 +0900 (KST)
-Received: from localhost.localdomain (unknown [107.109.224.44]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210917073826epsmtip29ff1b4a27b28c9f1b5a52fab1d3266ef~li-C5d9Df1800018000epsmtip2M;
-        Fri, 17 Sep 2021 07:38:25 +0000 (GMT)
-From:   Vishal Goel <vishal.goel@samsung.com>
-To:     casey@schaufler-ca.com, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     a.sahrawat@samsung.com, v.narang@samsung.com,
-        Vishal Goel <vishal.goel@samsung.com>
-Subject: [PATCH 1/1] Smack:- Use overlay inode label in
- smack_inode_copy_up()
-Date:   Fri, 17 Sep 2021 13:08:14 +0530
-Message-Id: <1631864294-25794-1-git-send-email-vishal.goel@samsung.com>
-X-Mailer: git-send-email 2.7.4
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrFIsWRmVeSWpSXmKPExsWy7bCmlu5nV5dEg11TDC0u7k61uLftF5vF
-        5V1z2Cw+9Dxiszh0ci6jxbrbpxkd2Dz6tqxi9Di6fxGbx+dNcgHMUVw2Kak5mWWpRfp2CVwZ
-        B55PYiz4zF6x+zpHA+Nhti5GTg4JAROJF0tmsHQxcnEICexmlLhy7yMThPOJUWJN90JGkCoh
-        gc+MEpM7OGA6Otc8Z4Uo2sUo0fJiKhuE84VR4tGtX2Bz2QS0JXrn3WUCsUUEEiU+PNnBDmIz
-        C0RKPDl4DiwuLOAvsffOL2YQm0VAVWLa+atgvbwC7hI3T++Auk9O4ua5TmaQBRIC/ewSOw4e
-        AjqWA8hxkVj5lwWiRlji1fEt7BC2lMTnd3vZIOrbGSUmzPrNDJGYwChx9q0khG0v8eTiQlaQ
-        OcwCmhLrd+lD3MYn0fv7CRPEeF6JjjYhiGpViamTuqHGS0scvnEGaq2HROvXiWyQAIqVWNe0
-        inUCo8wshKELGBlXMUqmFhTnpqcWmxYY5qWW6xUn5haX5qXrJefnbmIER6+W5w7Guw8+6B1i
-        ZOJgPMQowcGsJMJ7ocYxUYg3JbGyKrUoP76oNCe1+BCjNAeLkjjvx9eWiUIC6YklqdmpqQWp
-        RTBZJg5OqQYmL2l73ujPe9f89c5f7xIxa5PSftb80/KMFXuMPhznavmZL7L/4sMjbDzG0TwH
-        Ld/O/Mv3v/n1J7+9rDu/ZGUuZ3t5+Llj09n95otevkmYtyBa5Kn20qnPS9a4Vr25vM762D3H
-        Cp/LLN+0rt3Tazz6909aGcOaELeCa8K/5etqZMxmRSxnD++f/aLuH+eRfcXPKjlNrlSdnvJq
-        xs27lUfFJhzi0FNRZZfya4t1P1M2e8HT/BS1DAb3gy5V882uvJcOXOVzPdsvdod332uF2HNr
-        JxyykRS4yp7vP/9pf83R0/8+lNznsj1876tkrPD1uJhpdyyVBTUm3DLdwMhw9N/9yEl/Txiw
-        /MqWXbD55VXjx0osxRmJhlrMRcWJAPtV58VNAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrHJMWRmVeSWpSXmKPExsWy7bCSvO5nV5dEg+MTuC0u7k61uLftF5vF
-        5V1z2Cw+9Dxiszh0ci6jxbrbpxkd2Dz6tqxi9Di6fxGbx+dNcgHMUVw2Kak5mWWpRfp2CVwZ
-        B55PYiz4zF6x+zpHA+Nhti5GTg4JAROJzjXPWbsYuTiEBHYwSmyd1MAEkZCWWNL5hh3CFpZY
-        +e85O0TRJ0aJRbvugBWxCWhL9M67C2aLCCRL7G6ezghiMwtES/Q8XwUWFxbwlbi+cQaYzSKg
-        KjHt/FWwzbwC7hI3T++AukJO4ua5TuYJjDwLGBlWMUqmFhTnpucWGxYY5aWW6xUn5haX5qXr
-        JefnbmIEB4mW1g7GPas+6B1iZOJgPMQowcGsJMJ7ocYxUYg3JbGyKrUoP76oNCe1+BCjNAeL
-        kjjvha6T8UIC6YklqdmpqQWpRTBZJg5OqQamnklpitsz7z9eeVLgoMrppqvl7kfnvLXTdJt1
-        x0/T+eDXX7sLK7ZXaZnsM4zjTvRuDQ9vOnT/em7sRe1wRfNYtwKDw4HfPOa5BZTwFln6ZgUV
-        npj2OvLu6fVsUY9nHTPVzFpkF6Fpquu17tkGlfh5VbskHGb1+k+9ujJBY3XI+bg971gMI04f
-        4p8qs1og7+32eQ9LLcsaM39K3/pmG3NC3XDjC+8Nhb5qYctXr1VrO75Jbo9m52b3nEcfl87a
-        n+u16/TPbwv27/6ne7pkd8nxXTHOGlduPGubYmv5tlnF5/rNY3N4z1yoMM5xsbn61YD5iOea
-        V3+1up5f2PX8cn12a1aV3/zXd3zfrPd+zqt0RomlOCPRUIu5qDgRAKnAukOBAgAA
-X-CMS-MailID: 20210917073827epcas5p11a811c82ba4c748de3923a62f51250ed
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-CMS-TYPE: 105P
-X-CMS-RootMailID: 20210917073827epcas5p11a811c82ba4c748de3923a62f51250ed
-References: <CGME20210917073827epcas5p11a811c82ba4c748de3923a62f51250ed@epcas5p1.samsung.com>
+        Fri, 17 Sep 2021 03:40:47 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 966CFC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 00:39:25 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id f6so11205093iox.0
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 00:39:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3QxR6XQGznXHbxnbZEsqTIUg+M61jGbTi7l8gg3uYgE=;
+        b=LVTEfWNvOZQrxqMq+wqTh83s7WSPsB0U9XCALiA3anO0loi/83zOM4Au5SBrds5xwk
+         cpR7UBUFAWHDRGsUO3zQlol3va8AIcoSPEh0DWwDapMeghd05AndYk9Ti88ixzExPbVo
+         c1oTrukBa5VNxk2yyIX0qeHLzhDAGTA3NAbcZbnBH5A0Q3Z7NzYbghtRjl4bwYAcZ/jj
+         npPo+IdktV3hWC7pqcthJO/g4JZEAf8u/dqEFd7YpsUW/FQXP5yt6BJb6gl1AfwG2l7m
+         x+zTbt/1U8m7pUoaAJmmoMur4snCoWWcJTgRx4JRTdyPXOIsTsWqD29LuSs1BVSPpJxH
+         I3VA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3QxR6XQGznXHbxnbZEsqTIUg+M61jGbTi7l8gg3uYgE=;
+        b=t+wYw4hDQagYVIjImGp87AE2puG/9BPest23BQRT6TzRXj+cXohcGRvQwtza0/soKr
+         5E4Xq8fRGKmrX+Y3bxF37Yd9d8puKc91HHLgGhHlo3Q2SpbRZfwermQEmMuBo7v9YDPH
+         US4OV6U2qzglzSosl4i2e3OP7HVQSIy9QGRzV942Oo+8u/CrXItC1yFi7BsGD3C16bh6
+         div55kVsfUlfFmcFTAzaPR7zRI9Lrk2etL9LxP3INacDOQFkNZ9yLShJyPtrW8jTRyof
+         j3x2CM+3WthYGV+Tw6qTE9SbkmzxGyYUn6Jb9F9dRey300ExklEIuJlpXfhlZOWeenMU
+         BMzw==
+X-Gm-Message-State: AOAM533/q5Nj9qe+VVOcj5LE+N3qnZ27w2Isf+Xtllz3zc6OhWqNIZvo
+        jPmj5EYOCY2qzCHTeMqeVoGzs1OCDWSHQnkIgeLaLw==
+X-Google-Smtp-Source: ABdhPJzhXNBt+VnAKBseisKFyI2Y0ngnIMS8cNacY7e3G70KHeBODMRnrZ5OOtcEjZHBTVacseew+StaqG40X7wUd3A=
+X-Received: by 2002:a5e:9603:: with SMTP id a3mr7512117ioq.158.1631864364818;
+ Fri, 17 Sep 2021 00:39:24 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210909075700.4025355-1-eranian@google.com> <20210909075700.4025355-2-eranian@google.com>
+ <20210909190342.GE4323@worktop.programming.kicks-ass.net> <878s04my3b.fsf@mpe.ellerman.id.au>
+ <875yv8ms7f.fsf@mpe.ellerman.id.au> <CABPqkBQZ48b51vh1vqafOwVK2tBqYFNFGJT2x-a39Ma0TbS=tA@mail.gmail.com>
+ <b21bf42e-377d-36d0-49c3-af1e4edf5496@linux.ibm.com> <CABPqkBQvvNQa=hb4OnYqH-f=DJiRWE+bTmv4i+gNvEdoSEHM4w@mail.gmail.com>
+ <878rzvk7h0.fsf@mpe.ellerman.id.au>
+In-Reply-To: <878rzvk7h0.fsf@mpe.ellerman.id.au>
+From:   Stephane Eranian <eranian@google.com>
+Date:   Fri, 17 Sep 2021 00:39:13 -0700
+Message-ID: <CABPqkBRrx5vnPqTEnuQOeoJxyjiszCG7EMdK35ES=rHKYUNBpQ@mail.gmail.com>
+Subject: Re: [PATCH v1 01/13] perf/core: add union to struct perf_branch_entry
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Madhavan Srinivasan <maddy@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, acme@redhat.com, jolsa@redhat.com,
+        kim.phillips@amd.com, namhyung@kernel.org, irogers@google.com,
+        atrajeev@linux.vnet.ibm.com,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently in "smack_inode_copy_up()" function, process label is
-changed with the label on parent inode. Due to which,
-process is assigned directory label and whatever file or directory
-created by the process are also getting directory label
-which is wrong label.
+Hi,
 
-Changes has been done to use label of overlay inode instead
-of parent inode.
+On Fri, Sep 17, 2021 at 12:05 AM Michael Ellerman <mpe@ellerman.id.au> wrote:
+>
+> Stephane Eranian <eranian@google.com> writes:
+> > Hi,
+> >
+> > Thanks for fixing this in the perf tool. But what about the struct
+> > branch_entry in the header?
+>
+> I'm not sure what you mean.
+>
+> We can't change the order of the fields in the header, without breaking
+> existing userspace on BE systems.
+>
+Ok, I think I had missed that. You are saying that the
+#ifdef (__BIG_ENDIAN_BITFIELD) vs __LITTLE_ENDIAN_BITFIELD
 
-Signed-off-by: Vishal Goel <vishal.goel@samsung.com>
----
- security/smack/smack_lsm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+is only added to kernel-only data structures?
 
-diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
-index cacbe7518..91e50e5cb 100644
---- a/security/smack/smack_lsm.c
-+++ b/security/smack/smack_lsm.c
-@@ -4634,7 +4634,7 @@ static int smack_inode_copy_up(struct dentry *dentry, struct cred **new)
- 	/*
- 	 * Get label from overlay inode and set it in create_sid
- 	 */
--	isp = smack_inode(d_inode(dentry->d_parent));
-+	isp = smack_inode(d_inode(dentry));
- 	skp = isp->smk_inode;
- 	tsp->smk_task = skp;
- 	*new = new_creds;
--- 
-2.17.1
+> It's annoying that the bit numbers are different between LE & BE, but I
+> think it's too late to change that.
+>
+I agree.
 
+> So nothing should change in the branch_entry definition in the header.
+>
+> My comment on your patch was that adding the union with val, makes it
+> easier to misuse the bitfields, because now the values can be accessed
+> via the bitfields and also via val, but when using val you have to know
+> that the bit numbers differ between BE/LE.
+>
+Ok, I get it now. We do not need to expose val to user. This is added
+for kernel code
+convenience only. But if we keep it in kernel, that may break some
+other rules about
+uapi headers.
+
+
+
+> Maybe that's over-paranoid on my part, but if we just want val for
+> clearing the values easily then I think the static inline I suggested is
+> preferable.
+>
+> cheers
+>
+> > On Thu, Sep 16, 2021 at 11:38 PM Madhavan Srinivasan
+> > <maddy@linux.ibm.com> wrote:
+> >>
+> >>
+> >> On 9/15/21 11:33 AM, Stephane Eranian wrote:
+> >> > Michael,
+> >> >
+> >> >
+> >> > On Fri, Sep 10, 2021 at 7:16 AM Michael Ellerman <mpe@ellerman.id.au> wrote:
+> >> >> Michael Ellerman <mpe@ellerman.id.au> writes:
+> >> >>> Peter Zijlstra <peterz@infradead.org> writes:
+> >> >>>> On Thu, Sep 09, 2021 at 12:56:48AM -0700, Stephane Eranian wrote:
+> >> >>>>> diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
+> >> >>>>> index f92880a15645..eb11f383f4be 100644
+> >> >>>>> --- a/include/uapi/linux/perf_event.h
+> >> >>>>> +++ b/include/uapi/linux/perf_event.h
+> >> >>>>> @@ -1329,13 +1329,18 @@ union perf_mem_data_src {
+> >> >>>>>   struct perf_branch_entry {
+> >> >>>>>      __u64   from;
+> >> >>>>>      __u64   to;
+> >> >>>>> -   __u64   mispred:1,  /* target mispredicted */
+> >> >>>>> -           predicted:1,/* target predicted */
+> >> >>>>> -           in_tx:1,    /* in transaction */
+> >> >>>>> -           abort:1,    /* transaction abort */
+> >> >>>>> -           cycles:16,  /* cycle count to last branch */
+> >> >>>>> -           type:4,     /* branch type */
+> >> >>>>> -           reserved:40;
+> >> >>>>> +   union {
+> >> >>>>> +           __u64   val;        /* to make it easier to clear all fields */
+> >> >>>>> +           struct {
+> >> >>>>> +                   __u64   mispred:1,  /* target mispredicted */
+> >> >>>>> +                           predicted:1,/* target predicted */
+> >> >>>>> +                           in_tx:1,    /* in transaction */
+> >> >>>>> +                           abort:1,    /* transaction abort */
+> >> >>>>> +                           cycles:16,  /* cycle count to last branch */
+> >> >>>>> +                           type:4,     /* branch type */
+> >> >>>>> +                           reserved:40;
+> >> >>>>> +           };
+> >> >>>>> +   };
+> >> >>>>>   };
+> >> >>>>
+> >> >>>> Hurpmh... all other bitfields have ENDIAN_BITFIELD things except this
+> >> >>>> one. Power folks, could you please have a look?
+> >> >>> The bit number of each field changes between big and little endian, but
+> >> >>> as long as kernel and userspace are the same endian, and both only
+> >> >>> access values via the bitfields then it works.
+> >> >> ...
+> >> >>> It does look like we have a bug in perf tool though, if I take a
+> >> >>> perf.data from a big endian system to a little endian one I don't see
+> >> >>> any of the branch flags decoded. eg:
+> >> >>>
+> >> >>> BE:
+> >> >>>
+> >> >>> 2413132652524 0x1db8 [0x2d0]: PERF_RECORD_SAMPLE(IP, 0x1): 5279/5279: 0xc00000000045c028 period: 923003 addr: 0
+> >> >>> ... branch stack: nr:28
+> >> >>> .....  0: c00000000045c028 -> c00000000dce7604 0 cycles  P   0
+> >> >>>
+> >> >>> LE:
+> >> >>>
+> >> >>> 2413132652524 0x1db8 [0x2d0]: PERF_RECORD_SAMPLE(IP, 0x1): 5279/5279: 0xc00000000045c028 period: 923003 addr: 0
+> >> >>> ... branch stack: nr:28
+> >> >>> .....  0: c00000000045c028 -> c00000000dce7604 0 cycles      0
+> >> >>>                                                           ^
+> >> >>>                                                           missing P
+> >> >>>
+> >> >>> I guess we're missing a byte swap somewhere.
+> >> >> Ugh. We _do_ have a byte swap, but we also need a bit swap.
+> >> >>
+> >> >> That works for the single bit fields, not sure if it will for the
+> >> >> multi-bit fields.
+> >> >>
+> >> >> So that's a bit of a mess :/
+> >> >>
+> >> > Based on what I see in perf_event.h for other structures, I think I
+> >> > can make up what you would need for struct branch_entry. But Iit would
+> >> > be easier if you could send me a patch that you would have verified on
+> >> > your systems.
+> >> > Thanks.
+> >> Attached patch fixes the issue. Have tested both in both in BE and LE case.
+> >>
+> >> Maddy
+> >>
+> >>  From f816ba2e6ef8d5975f78442d7ecb50d66c3c4326 Mon Sep 17 00:00:00 2001
+> >> From: Madhavan Srinivasan <maddy@linux.ibm.com>
+> >> Date: Wed, 15 Sep 2021 22:29:09 +0530
+> >> Subject: [RFC PATCH] tools/perf: Add reverse_64b macro
+> >>
+> >> branch_stack struct has bit field definition
+> >> producing different bit ordering for big/little endian.
+> >> Because of this, when branch_stack sample collected
+> >> in a BE system viewed/reported in a LE system,
+> >> bit fields of the branch stack are not presented
+> >> properly. To address this issue, a reverse_64b
+> >> macro is defined and introduced in evsel__parse_sample.
+> >>
+> >> Signed-off-by: Madhavan Srinivasan <maddy@linux.ibm.com>
+> >> ---
+> >>   tools/perf/util/evsel.c | 35 +++++++++++++++++++++++++++++++++--
+> >>   1 file changed, 33 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+> >> index dbfeceb2546c..3151606e516e 100644
+> >> --- a/tools/perf/util/evsel.c
+> >> +++ b/tools/perf/util/evsel.c
+> >> @@ -2221,6 +2221,9 @@ void __weak arch_perf_parse_sample_weight(struct
+> >> perf_sample *data,
+> >>       data->weight = *array;
+> >>   }
+> >>
+> >> +#define reverse_64b(src, pos, size)    \
+> >> +    (((src >> pos) & (( 1ull <<size) - 1)) << (63 - (pos + size - 1)))
+> >> +
+> >>   int evsel__parse_sample(struct evsel *evsel, union perf_event *event,
+> >>               struct perf_sample *data)
+> >>   {
+> >> @@ -2408,6 +2411,8 @@ int evsel__parse_sample(struct evsel *evsel, union
+> >> perf_event *event,
+> >>       if (type & PERF_SAMPLE_BRANCH_STACK) {
+> >>           const u64 max_branch_nr = UINT64_MAX /
+> >>                         sizeof(struct branch_entry);
+> >> +        struct branch_entry *e;
+> >> +        unsigned i;
+> >>
+> >>           OVERFLOW_CHECK_u64(array);
+> >>           data->branch_stack = (struct branch_stack *)array++;
+> >> @@ -2416,10 +2421,36 @@ int evsel__parse_sample(struct evsel *evsel,
+> >> union perf_event *event,
+> >>               return -EFAULT;
+> >>
+> >>           sz = data->branch_stack->nr * sizeof(struct branch_entry);
+> >> -        if (evsel__has_branch_hw_idx(evsel))
+> >> +        if (evsel__has_branch_hw_idx(evsel)) {
+> >>               sz += sizeof(u64);
+> >> -        else
+> >> +            e = &data->branch_stack->entries[0];
+> >> +        } else {
+> >>               data->no_hw_idx = true;
+> >> +            e = (struct branch_entry *)&data->branch_stack->hw_idx;
+> >> +        }
+> >> +
+> >> +        if (swapped) {
+> >> +            for (i = 0; i < data->branch_stack->nr; i++, e++) {
+> >> +                u64 new_val = 0;
+> >> +
+> >> +                /* mispred:1  target mispredicted */
+> >> +                new_val = reverse_64b(e->flags.value, 0, 1);
+> >> +                /* predicted:1  target predicted */
+> >> +                new_val |= reverse_64b(e->flags.value, 1, 1);
+> >> +                /* in_tx:1  in transaction */
+> >> +                new_val |= reverse_64b(e->flags.value, 2, 1);
+> >> +                /* abort:1  transaction abort */
+> >> +                new_val |= reverse_64b(e->flags.value, 3, 1);
+> >> +                /* cycles:16  cycle count to last branch */
+> >> +                new_val |= reverse_64b(e->flags.value, 4, 16);
+> >> +                /* type:4  branch type */
+> >> +                new_val |= reverse_64b(e->flags.value, 20, 4);
+> >> +                /* reserved:40 */
+> >> +                new_val |= reverse_64b(e->flags.value, 24, 40);
+> >> +                e->flags.value = new_val;
+> >> +            }
+> >> +        }
+> >> +
+> >>           OVERFLOW_CHECK(array, sz, max_size);
+> >>           array = (void *)array + sz;
+> >>       }
+> >> --
+> >> 2.31.1
+> >>
+> >>
