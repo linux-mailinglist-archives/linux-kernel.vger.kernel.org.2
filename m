@@ -2,99 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48B8140F4CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 11:27:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B1CC40F4CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 11:27:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343636AbhIQJ2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 05:28:22 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:48786
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1343505AbhIQJYn (ORCPT
+        id S240751AbhIQJ22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 05:28:28 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:39487 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245753AbhIQJXo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 05:24:43 -0400
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com [209.85.221.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 6AB763F4BE
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 09:22:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1631870561;
-        bh=sKqaN3dAa3OzIkq2x9fGW8/ov3xbVPisMuBMh0bt1ds=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=f5KTWRF1ipa3ga0acSLOyXUHH0yRvApZOT9qkNqPPcLHO/NC7F4BAhrAgtLIw3atO
-         u3zmEkiFx5m/J/EC/lU14Q+PTlxNoBLrn4OrTeYAeEZJzvY4NETolcDeh/GNmlKEFC
-         VzTTms4z1QQ1C4Yb3/lLxM7gqh4EuR/VY0TgAJBKqiLoKfmPwzP++ZDZq60fkZaGB4
-         qOe85zPKeg4/5IZTp4ddhAKdnoOGvaUpqwKHYmx7+3JB0amn0dAYjlK9ReXgNdrvie
-         QZuUDKbzBGEPmjpHOSqP1Y6VqLiwSFnu6NNi4ProWwOWayG/LK0tKs8xICz3RGwclV
-         8+GLtFq+SFE1Q==
-Received: by mail-wr1-f72.google.com with SMTP id e1-20020adfa741000000b0015e424fdd01so3012685wrd.11
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 02:22:41 -0700 (PDT)
+        Fri, 17 Sep 2021 05:23:44 -0400
+Received: by mail-il1-f198.google.com with SMTP id x7-20020a920607000000b002302afca41bso20716083ilg.6
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 02:22:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sKqaN3dAa3OzIkq2x9fGW8/ov3xbVPisMuBMh0bt1ds=;
-        b=qO0GWOFmyzd6KTTCVQuUr8auOOCOxlP0shs/zykpGYSgqlnDRkewM3OGOkvHWtAxAU
-         94EaH1boTxivAmD9ybCowhn+sx34+OJ2F0hA3MD3tRLJct/nKwRRpSX6pgzZkpidKXgE
-         WPSgQ0KgbUiscBlF6IR2fiGbj2BOwVDulgakbl7/ESahnh/YHcikttq7Fodv+UlhjgkT
-         RvrDMqfWlYJks5ZGXavneR+thFAhT8o6+2qz6rLRtJgPqgxeiF3BH27wrBOMLRv2hOLA
-         yKmoXhkE9UO8WnE5X94oIBjyKTsiiApI/pLYH0etmLdUEGo8Y6CodUR4qZKoxcM4oDXj
-         WCaA==
-X-Gm-Message-State: AOAM530GAd7OlGzcf/+6755RNCm2WnuxYteTMAwaBpwXMpnvOxs4gQZN
-        ku8T5lL80RTHgvvRmsOPWB4fAnZCgyvsrksTJ2887neH7INTPPp28KFY+eLyvzgyXH7KMxoWcfq
-        KYe8IwLvB3T1qXTSvDaQe6XTgJuwJtkTrIqUdPixXVw==
-X-Received: by 2002:adf:fe0e:: with SMTP id n14mr11013138wrr.236.1631870560755;
-        Fri, 17 Sep 2021 02:22:40 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwOKIr4nUWuCKxSsVsGtcawKvqxo1EmKH/JAYikoJ7Ssjb8mXSyFAeCUDJ+zD7DS/EpQfPCmA==
-X-Received: by 2002:adf:fe0e:: with SMTP id n14mr11013120wrr.236.1631870560606;
-        Fri, 17 Sep 2021 02:22:40 -0700 (PDT)
-Received: from localhost.localdomain (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
-        by smtp.gmail.com with ESMTPSA id l21sm5656704wmh.31.2021.09.17.02.22.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 02:22:40 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev
-Subject: [PATCH] wlan-ng: remove duplicate USB device ID
-Date:   Fri, 17 Sep 2021 11:22:06 +0200
-Message-Id: <20210917092206.19677-1-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=+pjv963NVKwgxuXPNBd5iR2KeT18UVqlRyrWIcJtYTk=;
+        b=YLkpVrmy7e/21WcdIxw1+aCDtsK5Gx1/GssJm4F7dqkQMW/CaxHY10+90BNCC5aj29
+         6pPf22oNEZvVibzAAIgl9+kUu4K/aiWXhEWQklooY9/DLGC41slTPh9YWulK7ptr0JXN
+         2kS6CCFvHr1Pei7eqYIneSsPYH3T5yPwEMrJDmMank2EBwmHvzuNSvvafuR6MmOwx4LU
+         vdSN9CeTNv+ssPXkcpmIGLGHpY0sw6GLvspjfqBZa7x1mHb82lfErsodnnrjIYSOwSHE
+         e6OqSw/DLamy7IoQ2OQVIDTbRTjpM8x3a3vJh3qwSI3ZMae/OCm6DRZYac4VsMKxhyat
+         TEgQ==
+X-Gm-Message-State: AOAM530oUdgHlQhl7k2pjOL4IFnpa55R4NwUG2S/chCs0K1fgQzdRX1m
+        8BbJ6KBqfnOpfEcjsiq2iWOlr0gLvMOE8SLfQplULSxk1Qwi
+X-Google-Smtp-Source: ABdhPJwfwr742mMLZxlF5D2Wtjfg2jTaGV5+lNNfcpFM47G+lkIaDvAFLRJ9ZNvzghKwlWVdkQ25HzHXV7MBsZZN244VQMNHDiWb
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6638:372a:: with SMTP id k42mr7890370jav.71.1631870542312;
+ Fri, 17 Sep 2021 02:22:22 -0700 (PDT)
+Date:   Fri, 17 Sep 2021 02:22:22 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000fe7dd005cc2d77c0@google.com>
+Subject: [syzbot] kernel BUG in vmf_insert_pfn_prot
+From:   syzbot <syzbot+2d4f8693f438d2bd4bdb@syzkaller.appspotmail.com>
+To:     airlied@linux.ie, christian.koenig@amd.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        sumit.semwal@linaro.org, syzkaller-bugs@googlegroups.com,
+        tzimmermann@suse.de
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The device 0x2821,0x3300 is already on the list.
+Hello,
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+syzbot found the following issue on:
+
+HEAD commit:    9004fd387338 Add linux-next specific files for 20210917
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=17ecf0ad300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=45d5ac72f31f29f3
+dashboard link: https://syzkaller.appspot.com/bug?extid=2d4f8693f438d2bd4bdb
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+2d4f8693f438d2bd4bdb@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+kernel BUG at mm/memory.c:2103!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 8279 Comm: syz-executor.0 Not tainted 5.15.0-rc1-next-20210917-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:vmf_insert_pfn_prot+0x248/0x450 mm/memory.c:2103
+Code: 0f 0b e8 6b d0 ca ff 4d 89 f7 bf 20 00 00 00 41 83 e7 28 4c 89 fe e8 b7 d5 ca ff 49 83 ff 20 0f 85 a5 fe ff ff e8 48 d0 ca ff <0f> 0b 49 be ff ff ff ff ff ff 0f 00 e8 37 d0 ca ff 4d 21 ee 4c 89
+RSP: 0000:ffffc90005f47bd0 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 1ffff92000be8f7c RCX: 0000000000000000
+RDX: ffff888050adb900 RSI: ffffffff81ab3e18 RDI: 0000000000000003
+RBP: ffff88807e3bcc60 R08: 0000000000000020 R09: ffffc90005f47bb7
+R10: ffffffff81ab3e09 R11: 1ffffffff1ebb3fc R12: 000000002001d000
+R13: 0000000000145dc3 R14: 0000000008140476 R15: 0000000000000020
+FS:  0000555555f1e400(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00005608abbf4250 CR3: 000000006e072000 CR4: 00000000001506f0
+Call Trace:
+ drm_gem_shmem_fault+0x1e3/0x290 drivers/gpu/drm/drm_gem_shmem_helper.c:564
+ __do_fault+0x10d/0x4d0 mm/memory.c:3848
+ do_cow_fault mm/memory.c:4184 [inline]
+ do_fault mm/memory.c:4285 [inline]
+ handle_pte_fault mm/memory.c:4541 [inline]
+ __handle_mm_fault+0x370e/0x5120 mm/memory.c:4676
+ handle_mm_fault+0x1c8/0x790 mm/memory.c:4774
+ do_user_addr_fault+0x48b/0x11c0 arch/x86/mm/fault.c:1390
+ handle_page_fault arch/x86/mm/fault.c:1475 [inline]
+ exc_page_fault+0x9e/0x180 arch/x86/mm/fault.c:1531
+ asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:568
+RIP: 0033:0x7f1096c04d5a
+Code: 30 48 8b 34 24 48 85 f6 74 17 8b 44 24 18 0f c8 89 c0 48 89 44 24 18 48 83 fe 01 0f 85 a1 01 00 00 48 8b 44 24 10 8b 74 24 18 <89> 30 e9 d2 fc ff ff 48 8b 44 24 10 8b 10 48 8b 04 24 48 85 c0 0f
+RSP: 002b:00007ffd0b939970 EFLAGS: 00010246
+RAX: 000000002001d000 RBX: 00007f109716c000 RCX: 0000000000000000
+RDX: 182c4ff2a4394aee RSI: 0000000000000001 RDI: 0000555555f1e2f0
+RBP: 00007ffd0b939a68 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000004 R11: 00000000e900f6d2 R12: 00000000001760c0
+R13: 00000000000003e8 R14: 00007f1096d67f80 R15: 0000000000176064
+Modules linked in:
+---[ end trace 1a78047d43092735 ]---
+RIP: 0010:vmf_insert_pfn_prot+0x248/0x450 mm/memory.c:2103
+Code: 0f 0b e8 6b d0 ca ff 4d 89 f7 bf 20 00 00 00 41 83 e7 28 4c 89 fe e8 b7 d5 ca ff 49 83 ff 20 0f 85 a5 fe ff ff e8 48 d0 ca ff <0f> 0b 49 be ff ff ff ff ff ff 0f 00 e8 37 d0 ca ff 4d 21 ee 4c 89
+RSP: 0000:ffffc90005f47bd0 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 1ffff92000be8f7c RCX: 0000000000000000
+RDX: ffff888050adb900 RSI: ffffffff81ab3e18 RDI: 0000000000000003
+RBP: ffff88807e3bcc60 R08: 0000000000000020 R09: ffffc90005f47bb7
+R10: ffffffff81ab3e09 R11: 1ffffffff1ebb3fc R12: 000000002001d000
+R13: 0000000000145dc3 R14: 0000000008140476 R15: 0000000000000020
+FS:  0000555555f1e400(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffb730a0718 CR3: 000000006e072000 CR4: 00000000001506e0
+
+
 ---
- drivers/staging/wlan-ng/prism2usb.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/staging/wlan-ng/prism2usb.c b/drivers/staging/wlan-ng/prism2usb.c
-index 4b08dc1da4f9..dc0749b8eff7 100644
---- a/drivers/staging/wlan-ng/prism2usb.c
-+++ b/drivers/staging/wlan-ng/prism2usb.c
-@@ -34,14 +34,13 @@ static const struct usb_device_id usb_prism_tbl[] = {
- 	PRISM_DEV(0x04f1, 0x3009, "JVC MP-XP7250 Builtin USB WLAN Adapter"),
- 	PRISM_DEV(0x0846, 0x4110, "NetGear MA111"),
- 	PRISM_DEV(0x03f3, 0x0020, "Adaptec AWN-8020 USB WLAN Adapter"),
--	PRISM_DEV(0x2821, 0x3300, "ASUS-WL140 Wireless USB Adapter"),
-+	PRISM_DEV(0x2821, 0x3300, "ASUS-WL140 / Hawking HighDB Wireless USB Adapter"),
- 	PRISM_DEV(0x2001, 0x3700, "DWL-122 Wireless USB Adapter"),
- 	PRISM_DEV(0x2001, 0x3702, "DWL-120 Rev F Wireless USB Adapter"),
- 	PRISM_DEV(0x50c2, 0x4013, "Averatec USB WLAN Adapter"),
- 	PRISM_DEV(0x2c02, 0x14ea, "Planex GW-US11H WLAN USB Adapter"),
- 	PRISM_DEV(0x124a, 0x168b, "Airvast PRISM3 WLAN USB Adapter"),
- 	PRISM_DEV(0x083a, 0x3503, "T-Sinus 111 USB WLAN Adapter"),
--	PRISM_DEV(0x2821, 0x3300, "Hawking HighDB USB Adapter"),
- 	PRISM_DEV(0x0411, 0x0044, "Melco WLI-USB-KB11 11Mbps WLAN Adapter"),
- 	PRISM_DEV(0x1668, 0x6106, "ROPEX FreeLan 802.11b USB Adapter"),
- 	PRISM_DEV(0x124a, 0x4017, "Pheenet WL-503IA 802.11b USB Adapter"),
--- 
-2.30.2
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
