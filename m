@@ -2,195 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64F2040FDED
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 18:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39A7640FDF4
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 18:32:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232934AbhIQQbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 12:31:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243992AbhIQQbD (ORCPT
+        id S234729AbhIQQdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 12:33:38 -0400
+Received: from sonic308-15.consmr.mail.ne1.yahoo.com ([66.163.187.38]:32848
+        "EHLO sonic308-15.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231649AbhIQQdd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 12:31:03 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 032CDC061766
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 09:29:40 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id 73so14121094qki.4
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 09:29:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2HsUkQ8fOhjXi15MPOztE8TxIV5X+XjzP3rW1H5zjpE=;
-        b=fAhePr+69OVHmQY9xBibvJ55dFKWkjATxQFOb1dSZ4d1ppoo1W8a5gfDnc+V09uQ3L
-         sqQtKrefilO7h1KhAKOJDJ3qbsSiGVDAEk/ZUaeOx0GiiFH7m+V179i7cmMGAU267z48
-         CLmeRZfmsG20emvyvzXKokLaNqJ2Lh7SDXAahUfWvSR0svSH/+jKEovNftzE9YYPKJoN
-         xZw2RKhE1fFetfJtvRegP/3m4eWGSCzrQ6gBPBCgvgZWiFA7ITWiDc1kJLSywrg85NsC
-         tVOei5vByQSVEbivTPyRNcrRt6/WALKyQDqtf75vnimOfM11BFpZ2hEUlg0uiFI3fpu9
-         113Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2HsUkQ8fOhjXi15MPOztE8TxIV5X+XjzP3rW1H5zjpE=;
-        b=WSomwcAhIQclerlTHWyarq99ZOJhVih9431cz4D6H+rI8tZl642WOcUVAt1QKOeAtg
-         RE36gVivVErKCwqH8Il27/nrDH5OL2ouMocmGwLdpFpWiqCtBk0oJN3skx5972oUFeVS
-         noV/F3UzT28kQyGlbOVls3awQRM+fkCwguydi+/Vjqml88uPca+RWuseDgaqf/DzZWqz
-         nnFgSp72YCazWaEu6BYgChjXkGMtWfpn+3vRhwOnnI8nEutJe44RYR3JL0Kxls9sqOVg
-         Sie25Ts1ODqYwS/ttXnXLqCVpKre4Yt5+n7uMa69znhVKistMgB0JPSANpbzGs9ti767
-         nGNA==
-X-Gm-Message-State: AOAM531Gb11cNEDIvutWjrodZc6rmS2q1Za9oMi/k7EmaIfcj3EAgVwo
-        LAGEcPU7++tkP8gJIp5h7dSO+w==
-X-Google-Smtp-Source: ABdhPJzBDURl+kSs7t3ZrvSGWold3Z4S+tq7SXdrj56e46TPU+eR8IWCyZQyyrag5BvKMjDg4Hgs9g==
-X-Received: by 2002:a05:620a:c05:: with SMTP id l5mr11460700qki.17.1631896179116;
-        Fri, 17 Sep 2021 09:29:39 -0700 (PDT)
-Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
-        by smtp.gmail.com with ESMTPSA id j6sm4284123qtp.97.2021.09.17.09.29.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 09:29:38 -0700 (PDT)
-Date:   Fri, 17 Sep 2021 12:31:36 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Howells <dhowells@redhat.com>
-Subject: Re: Folio discussion recap
-Message-ID: <YUTC6O0w3j7i8iDm@cmpxchg.org>
-References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
- <YTu9HIu+wWWvZLxp@moria.home.lan>
- <YUIT2/xXwvZ4IErc@cmpxchg.org>
- <20210916025854.GE34899@magnolia>
- <YUN2vokEM8wgASk8@cmpxchg.org>
- <20210917052440.GJ1756565@dread.disaster.area>
+        Fri, 17 Sep 2021 12:33:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1631896330; bh=4A1ZHj2+WnLoZCwXh917BlyMu0V1duP1YFcW7lWT+Rc=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject:Reply-To; b=dJKM3MsPHz+CIf4BUKg76uFV9DwYsr51MwXnyyf7WndEno6diXwvtGlKsGYDi/14UwNprGIB6TBmu79yA0VFSMZGEWl/j/Sx3vjYJjdUYIG7zp6zmAbZszrqN5mtH3BtCygfqOeM/hdfFsSMQShBBJuGrOQqUgWQBxZfmFOYKExv2goz+jMkZf/FT0kkUgTYgYFn5vDCZ7BA7CWTHkXN6OhsqRBMaoiz4hoGic3F1BshbyvIK1NC9Y0Gz64qjGGi6rOEQxnaSZRGbHe/WTgKSA7PqKhtWh1vTHXLQDKFh7JhMNdEp0OVDXIZgFmwx1xcoXv33OxzDCNBp4f5E4Zz0w==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1631896330; bh=nDu4SDi7NuRbcnkkFMWCF7p/zZ2faZLTcebbCBXv76a=; h=X-Sonic-MF:Subject:To:From:Date:From:Subject; b=GTdcWMReJepwVjR/QH4YSoBEfYcQ0D3xlVC9zD8G0Uf/BFY6Jbbg9U4WrF0KJ+T4gYxMyIrUO+QVHjM81QV2ZDlDQWa8COwlWt7BgStn7bUlA7mTV9Q+APqyzZSEeuneQE3bKJUKg9Ec2MPk0Eo83rcfk88gqLB70PNj2ItnrFb761NkQo6Q0Sx7aLTxPhht/eP4rgstBqtXZbckO95BkZFYrCABVRK+YhaN6EmSV78hlZWQ1wB5erZ+r8GBaduwUnQveBjSLmCsuctV5CstwoL29+19Ug0OSBAEKyJsJ4IWH+enF+aSf0CWEoYtZke4x/9N2eQiLKHtPVa45i9djA==
+X-YMail-OSG: DRhfd3QVM1mvUHkBJwjlxy2oG_NO_.4GtRLPl6q8153URF8m.j_j7GGNReiryMH
+ 4T1jWHHku.cIFYBypXyNClVnGZ_X7zJvwc5OSu7MmUQA24IKCpz8130pVRFVyIPK6rEWPOEEXgal
+ oEj4RiDHnhOmT2HMkKgWXhR6Yu0GcPeQh06cqlGnQvk8uX6Tcrpbggym62xFpLHfxJYj9YeJ4xZ1
+ aVMUod9AYghAYQf5ggCF9Y5eGj2A9YJLr4qZ4BSoXU7lsYs7D_nOCThYAphS64Wv56QdFQIdgFix
+ 3Hokqjmjjl9oyxXwDSNCRC6Hut93ESkt.GjEBKcE8vdZc_ZzEF9Ca49d5N4euJhd1E7RtyJ94fUM
+ hPJfzgOoEgUyzifAaVZd4fn3J2bGeECMljW5064_uB2fs7HL5c2Oy9OA_XLzp0POpTXUyysjvQNm
+ Ck2cttKR9a.aZDw_dVgXgOlqx5IQA0ILk09O9us2k9uHC7QIkx0lRztB4btOGvYT6RsF7ZVWx0y5
+ iMPC2k9.pebOXMQB9n1WEAJC_IBvw_JhbRjmALG379LWDxxiCmYS3PuwMVVH9vvBjcgnFozlldsb
+ W_iphH.HZWgzD7irhcLUJZQ5ISqqCh1galH_TkOaBG3Zgpams7tRqKeLoVMHKu1stJsCSm.w0XDT
+ oinUgZLyyiWcQUf5b3KQaRytRv0xOqOZWY3KjXjdVo9eYK2i9xi5CLAgkUEAB8o2ueKdCs4XJUw6
+ LxRMy.t61oBOZEMTAL9UdOCPkPZyejKyBKDUOwy.PkehkvuvGeDVZ5nZbgCcygtXJvaYTmaavRJH
+ zVmqZpp9AlxMXwS8hkJhmB5EOuJwNLIyfKESATLTJPznbrVf5wJrVXXIQCTgArHWJAAs.BJwqi7J
+ t.IAIUZOs7qVW76vYDTZk1VxeIYU_H1RkMDBsdGLNgZOGLBT9f9uePw4UqL609XLZknJrz46AtZT
+ 6ecqLiXB4jR6Xnb3CrALe5DZc9qPOEAoyuSBB25TorLjaxGv2_U2LmBTJcQ2_YhShkMutO6rS7Rq
+ w.w_Rz8JyWbjD0ryBv9.VelerVJI6up0z1X3zYbMHPSQoDtxgKhysjNAsHrTNR88UBVQT2bEyNbB
+ b8DO5hLG5D62ecFecwZtKMYBSTdTaYMVWuy22sKwyEg6VC5BVMPLtpKM9ziWAweIu5.p1FckwS.u
+ P6Fx8eJZZxAfdotvTzIIbtlhEfU4S8lcDLKP.X9cNajfjuLY1DnmuVpJSTlKXtdr8rs4.EEdhZfV
+ 5ecC5HmpCcr99ysbsuP0GLM6_sckzFxAtUeo09mt3FNHJ7Pw0siF5XUDmATrFZWpFJB52sR_y9CI
+ VSz_BJe.ydtl2Fl1UbMLpARClpDH5fJ5xb.Oqua_fsB7K._tqfX_9gI5WRRbyHvIAHXlEqa434.B
+ nvCYhRcM7_9xCsMSb78m1uCAPY1m3QmMUuX7QB491Hc7Igfl2.x6UN5ko_oa8H1pD8uo8Jwix_.b
+ 34eZT90A.QgM1zO607eiALDqnkH0qOxStJV4cnG8K7LkSbTHPQ7c8qGn0eqkR88LibJR4kGYLoAU
+ peqtRcbYhAE836yPvNn.nmgj4LE_6devZa1_idyreomMif0ybQZepGGZNOYMMaNUpo2Vy_Tcddt3
+ Bkh2o7YmLYO7xaBOqAQah.9T53lnplVABfBJ2SKgG0GNFHwqh1yP5MdC4x.h7StY.yajhC6lUwZk
+ 7Z.A_IMwEDhHS0Ogip374iVHHQUekubnHSsA0N4OG.fPX2adq0Pzq0WQ.0AtxtNwZAyS1nVcHkx3
+ W3nIVILyDoQaLx_Sp6ZBhs2604zoSQH1d.F8mptJaRdmCRvAVIHXRgIEpyldXbwYtB6buqmxFGIN
+ PuT.YleZ2c9YMXTY9KJbgvUzKgxxkB3dUauhLd_LA.tzWT8lfuAPmORsAXnFLSWeyQjNpWkqVY3v
+ Ss4lfMwxx_1aiwLTrx93Wky8cMW1BR._4U4hVNydmCDzyJhMNz_M_z0X2ox8WDNKE0.gmGWxWlIr
+ vML5gT4nONGMGDd7Dk5gsx6RlFWZhLrdafIDLh8Mdk2SNzbc4HxCqHav2fxXCPDFZJzBUDclA52o
+ b_0M8aHjBP9_Xst01pbMxYhEyIZkuPjgwBddNUD2wkoammfp3zzCCwle5bM1ML9vQoMWMfDIIczr
+ fhzZdi8jkO628rhtmzhKDm4rtK2qYysL9ffaKWVICDyuuKMw7D_SQkrMF7eDejvgCHxW9m2oOxoC
+ 5soofK7PSwOwCdShg_x4QPJoFLZ8bh0mp_TeJ3dfUNYiONQgSoRpIkZ8rBRSdv2jpZ_Pqj4m4cXv
+ uLyIW0Q--
+X-Sonic-MF: <casey@schaufler-ca.com>
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic308.consmr.mail.ne1.yahoo.com with HTTP; Fri, 17 Sep 2021 16:32:10 +0000
+Received: by kubenode507.mail-prod1.omega.ne1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 31ab93786ddcb06000890cfbabd38e5b;
+          Fri, 17 Sep 2021 16:32:09 +0000 (UTC)
+Subject: Re: [PATCH 1/1] Smack:- Use overlay inode label in
+ smack_inode_copy_up()
+To:     Vishal Goel <vishal.goel@samsung.com>,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     a.sahrawat@samsung.com, v.narang@samsung.com,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <CGME20210917073827epcas5p11a811c82ba4c748de3923a62f51250ed@epcas5p1.samsung.com>
+ <1631864294-25794-1-git-send-email-vishal.goel@samsung.com>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+Message-ID: <12b65513-3f70-7d77-d8b7-8aae82c9041a@schaufler-ca.com>
+Date:   Fri, 17 Sep 2021 09:32:08 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210917052440.GJ1756565@dread.disaster.area>
+In-Reply-To: <1631864294-25794-1-git-send-email-vishal.goel@samsung.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Mailer: WebService/1.1.19013 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 03:24:40PM +1000, Dave Chinner wrote:
-> On Thu, Sep 16, 2021 at 12:54:22PM -0400, Johannes Weiner wrote:
-> > I agree with what I think the filesystems want: instead of an untyped,
-> > variable-sized block of memory, I think we should have a typed page
-> > cache desciptor.
-> 
-> I don't think that's what fs devs want at all. It's what you think
-> fs devs want. If you'd been listening to us the same way that Willy
-> has been for the past year, maybe you'd have a different opinion.
+On 9/17/2021 12:38 AM, Vishal Goel wrote:
+> Currently in "smack_inode_copy_up()" function, process label is
+> changed with the label on parent inode. Due to which,
+> process is assigned directory label and whatever file or directory
+> created by the process are also getting directory label
+> which is wrong label.
+>
+> Changes has been done to use label of overlay inode instead
+> of parent inode.
 
-I was going off of Darrick's remarks about non-pagecache uses, Kent's
-remarks Kent about simple and obvious core data structures, and yes
-your suggestion of "cache page".
+Do you have a test case for this change?
 
-But I think you may have overinterpreted what I meant by cache
-descriptor:
-
-> Indeed, we don't actually need a new page cache abstraction.
-
-I didn't suggest to change what the folio currently already is for the
-page cache. I asked to keep anon pages out of it (and in the future
-potentially other random stuff that is using compound pages).
-
-It doesn't have any bearing on how it presents to you on the
-filesystem side, other than that it isn't as overloaded as struct page
-is with non-pagecache stuff.
-
-A full-on disconnect between the cache entry descriptor and the page
-is something that came up during speculation on how the MM will be
-able to effectively raise the page size and meet scalability
-requirements on modern hardware - and in that context I do appreciate
-you providing background information on the chunk cache, which will be
-valuable to inform *that* discussion.
-
-But it isn't what I suggested as the immediate action to unblock the
-folio merge.
-
-> The fact that so many fs developers are pushing *hard* for folios is
-> that it provides what we've been asking for individually over last
-> few years.
-
-I'm not sure filesystem people are pushing hard for non-pagecache
-stuff to be in the folio.
-
-> Willy has done a great job of working with the fs developers and
-> getting feedback at every step of the process, and you see that in
-> the amount of work that in progress that is already based on
-> folios.
-
-And that's great, but the folio is blocked on MM questions:
-
-1. Is the folio a good descriptor for all uses of anon and file pages
-   inside MM code way beyond the page cache layer YOU care about?
-
-2. Are compound pages a scalable, future-proof allocation strategy?
-
-For some people the answers are yes, for others they are a no.
-
-For 1), the value proposition is to clean up the relatively recent
-head/tail page confusion. And though everybody agrees that there is
-value in that, it's a LOT of churn for what it does. Several people
-have pointed this out, and AFAICS this is the most common reason for
-people that have expressed doubt or hesitation over the patches.
-
-In an attempt to address this, I pointed out the cleanup opportunities
-that would open up by using separate anon and file folio types instead
-of one type for both. Nothing more. No intermediate thing, no chunk
-cache. Doesn't affect you. Just taking Willy's concept of type safety
-and applying it to file and anon instead of page vs compound page.
-
-- It wouldn't change anything for fs people from the current folio
-  patchset (except maybe the name)
-
-- It would accomplish the head/tail page cleanup the same way, since
-  just like a folio, a "file folio" could also never be a tail page
-
-- It would take the same solution folio prescribes to the compound
-  page issue (explicit typing to get rid of useless checks, lookups
-  and subtle bugs) and solve way more instances of this all over MM
-  code, thereby hopefully boosting the value proposition and making
-  *that part* of the patches a clearer win for the MM subsystem
-
-This is a question directed at MM people, not filesystem people. It
-doesn't pertain to you at all.
-
-And if MM people agree or want to keep discussing it, the relatively
-minor action item for the folio patch is the same: drop the partial
-anon-to-folio conversion bits inside MM code for now and move on.
-
-For 2), nobody knows the answer to this. Nobody. Anybody who claims to
-do so is full of sh*t. Maybe compound pages work out, maybe they
-don't. We can talk a million years about larger page sizes, how to
-handle internal fragmentation, the difficulties of implementing a
-chunk cache, but it's completely irrelevant because it's speculative.
-
-We know there are multiple page sizes supported by the hardware and
-the smallest supported one is no longer the most dominant one. We do
-not know for sure yet how the MM is internally going to lay out its
-type system so that the allocator, mmap, page reclaim etc. can be CPU
-efficient and the descriptors be memory efficient.
-
-Nobody's "grand plan" here is any more viable, tested or proven than
-anybody else's.
-
-My question for fs folks is simply this: as long as you can pass a
-folio to kmap and mmap and it knows what to do with it, is there any
-filesystem relevant requirement that the folio map to 1 or more
-literal "struct page", and that folio_page(), folio_nr_pages() etc be
-part of the public API? Or can we keep this translation layer private
-to MM code? And will page_folio() be required for anything beyond the
-transitional period away from pages?
-
-Can we move things not used outside of MM into mm/internal.h, mark the
-transitional bits of the public API as such, and move on?
-
-The unproductive vitriol, personal attacks and dismissiveness over
-relatively minor asks and RFCs from the subsystem that is the most
-impacted by this patchset is just nuts.
+>
+> Signed-off-by: Vishal Goel <vishal.goel@samsung.com>
+> ---
+>  security/smack/smack_lsm.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
+> index cacbe7518..91e50e5cb 100644
+> --- a/security/smack/smack_lsm.c
+> +++ b/security/smack/smack_lsm.c
+> @@ -4634,7 +4634,7 @@ static int smack_inode_copy_up(struct dentry *dentry, struct cred **new)
+>  	/*
+>  	 * Get label from overlay inode and set it in create_sid
+>  	 */
+> -	isp = smack_inode(d_inode(dentry->d_parent));
+> +	isp = smack_inode(d_inode(dentry));
+>  	skp = isp->smk_inode;
+>  	tsp->smk_task = skp;
+>  	*new = new_creds;
