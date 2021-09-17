@@ -2,31 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42F7440F847
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 14:48:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C40B40F841
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 14:48:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244629AbhIQMti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 08:49:38 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:34718 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S235476AbhIQMtf (ORCPT
+        id S237082AbhIQMte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 08:49:34 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:50466 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S235476AbhIQMtd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 08:49:35 -0400
-X-UUID: d6c91f5d42684a2bb1d58bef6c3e9e7a-20210917
-X-UUID: d6c91f5d42684a2bb1d58bef6c3e9e7a-20210917
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
+        Fri, 17 Sep 2021 08:49:33 -0400
+X-UUID: 193ec61471eb4c33a9a2b45cf6c693a8-20210917
+X-UUID: 193ec61471eb4c33a9a2b45cf6c693a8-20210917
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
         (envelope-from <wenbin.mei@mediatek.com>)
         (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 8314148; Fri, 17 Sep 2021 20:48:11 +0800
-Received: from mtkexhb02.mediatek.inc (172.21.101.103) by
- mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 17 Sep 2021 20:48:10 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by mtkexhb02.mediatek.inc
- (172.21.101.103) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 17 Sep
- 2021 20:48:04 +0800
+        with ESMTP id 862515583; Fri, 17 Sep 2021 20:48:06 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 17 Sep 2021 20:48:05 +0800
 Received: from localhost.localdomain (10.17.3.154) by mtkcas07.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 17 Sep 2021 20:48:03 +0800
+ Transport; Fri, 17 Sep 2021 20:48:04 +0800
 From:   Wenbin Mei <wenbin.mei@mediatek.com>
 To:     Ulf Hansson <ulf.hansson@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -42,10 +39,10 @@ CC:     Chaotian Jing <chaotian.jing@mediatek.com>,
         <linux-mmc@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, "Rob Herring" <robh@kernel.org>
-Subject: [RESEND v4 1/3] dt-bindings: mmc: mtk-sd: add hs400 dly3 setting
-Date:   Fri, 17 Sep 2021 20:48:01 +0800
-Message-ID: <20210917124803.22871-2-wenbin.mei@mediatek.com>
+        <linux-kernel@vger.kernel.org>
+Subject: [RESEND v4 2/3] mmc: core: add tuning support for HS400 mode
+Date:   Fri, 17 Sep 2021 20:48:02 +0800
+Message-ID: <20210917124803.22871-3-wenbin.mei@mediatek.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210917124803.22871-1-wenbin.mei@mediatek.com>
 References: <20210917124803.22871-1-wenbin.mei@mediatek.com>
@@ -57,38 +54,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add hs400 dly3 setting for mtk-sd yaml
+This adds the execute_hs400_tuning callback function for HS400 tuning
+operations and move the declaration of mmc_get_ext_csd() to
+include/linux/mmc/host.h.
+
+If execute_hs400_tuning is not implemented then they are not called.
+That means there should be no affect for existing drivers as none implemt
+these ops.
 
 Signed-off-by: Wenbin Mei <wenbin.mei@mediatek.com>
-Acked-by: Rob Herring <robh@kernel.org>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 ---
- Documentation/devicetree/bindings/mmc/mtk-sd.yaml | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/mmc/core/mmc.c     | 8 ++++++++
+ drivers/mmc/core/mmc_ops.h | 1 -
+ include/linux/mmc/host.h   | 4 ++++
+ 3 files changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/mmc/mtk-sd.yaml b/Documentation/devicetree/bindings/mmc/mtk-sd.yaml
-index e866e985549e..82768a807294 100644
---- a/Documentation/devicetree/bindings/mmc/mtk-sd.yaml
-+++ b/Documentation/devicetree/bindings/mmc/mtk-sd.yaml
-@@ -119,6 +119,18 @@ properties:
-       If present, HS400 command responses are sampled on rising edges.
-       If not present, HS400 command responses are sampled on falling edges.
+diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
+index 838726b68ff3..0aa72acd8612 100644
+--- a/drivers/mmc/core/mmc.c
++++ b/drivers/mmc/core/mmc.c
+@@ -1222,6 +1222,14 @@ static int mmc_select_hs400(struct mmc_card *card)
+ 	mmc_set_timing(host, MMC_TIMING_MMC_HS400);
+ 	mmc_set_bus_speed(card);
  
-+  mediatek,hs400-ds-dly3:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description:
-+      Gear of the third delay line for DS for input data latch in data
-+      pad macro, there are 32 stages from 0 to 31.
-+      For different corner IC, the time is different about one step, it is
-+      about 100ps.
-+      The value is confirmed by doing scan and calibration to find a best
-+      value with corner IC and it is valid only for HS400 mode.
-+    minimum: 0
-+    maximum: 31
++	if (host->ops->execute_hs400_tuning) {
++		mmc_retune_disable(host);
++		err = host->ops->execute_hs400_tuning(host, card);
++		mmc_retune_enable(host);
++		if (err)
++			goto out_err;
++	}
 +
-   mediatek,latch-ck:
-     $ref: /schemas/types.yaml#/definitions/uint32
-     description:
+ 	if (host->ops->hs400_complete)
+ 		host->ops->hs400_complete(host);
+ 
+diff --git a/drivers/mmc/core/mmc_ops.h b/drivers/mmc/core/mmc_ops.h
+index ae25ffc2e870..e5e94567a9a9 100644
+--- a/drivers/mmc/core/mmc_ops.h
++++ b/drivers/mmc/core/mmc_ops.h
+@@ -38,7 +38,6 @@ int mmc_spi_read_ocr(struct mmc_host *host, int highcap, u32 *ocrp);
+ int mmc_spi_set_crc(struct mmc_host *host, int use_crc);
+ int mmc_bus_test(struct mmc_card *card, u8 bus_width);
+ int mmc_can_ext_csd(struct mmc_card *card);
+-int mmc_get_ext_csd(struct mmc_card *card, u8 **new_ext_csd);
+ int mmc_switch_status(struct mmc_card *card, bool crc_err_fatal);
+ bool mmc_prepare_busy_cmd(struct mmc_host *host, struct mmc_command *cmd,
+ 			  unsigned int timeout_ms);
+diff --git a/include/linux/mmc/host.h b/include/linux/mmc/host.h
+index ff1a251bb0bc..072650aeb2a7 100644
+--- a/include/linux/mmc/host.h
++++ b/include/linux/mmc/host.h
+@@ -162,6 +162,9 @@ struct mmc_host_ops {
+ 	/* Prepare HS400 target operating frequency depending host driver */
+ 	int	(*prepare_hs400_tuning)(struct mmc_host *host, struct mmc_ios *ios);
+ 
++	/* Execute HS400 tuning depending host driver */
++	int	(*execute_hs400_tuning)(struct mmc_host *host, struct mmc_card *card);
++
+ 	/* Prepare switch to DDR during the HS400 init sequence */
+ 	int	(*hs400_prepare_ddr)(struct mmc_host *host);
+ 
+@@ -633,5 +636,6 @@ static inline enum dma_data_direction mmc_get_dma_dir(struct mmc_data *data)
+ 
+ int mmc_send_tuning(struct mmc_host *host, u32 opcode, int *cmd_error);
+ int mmc_send_abort_tuning(struct mmc_host *host, u32 opcode);
++int mmc_get_ext_csd(struct mmc_card *card, u8 **new_ext_csd);
+ 
+ #endif /* LINUX_MMC_HOST_H */
 -- 
 2.25.1
 
