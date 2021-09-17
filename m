@@ -2,108 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9775940FA3F
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 16:35:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA14740FA45
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 16:36:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243036AbhIQOgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 10:36:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37598 "EHLO
+        id S242634AbhIQOhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 10:37:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241700AbhIQOga (ORCPT
+        with ESMTP id S229923AbhIQOhw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 10:36:30 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A7CEC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 07:35:08 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id n27so14308061oij.0
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 07:35:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ID+EROtCIq5uKg/d863vFLkQbbXUtaQHcxjVUWZxmJg=;
-        b=ECs95L59V1c5niovkF76nE4YKmQuTv0PTD62kQiRhRclIIj9933G+G+bOItYg/s0la
-         jz7c0oYfnP3h8WI0SvWXb4FiTSfIJgX40XIazB+wIWjOqAFGiPyFdKxfW/AnQCRzboIN
-         arXL2T9x1efYsHEDkaC+3YgdqYdBXQOUoZP1BDIBQK2oLt2RzyRgAoosktEsFFs8bG4A
-         dSr0LUITSxD3KX95IPvzDjVmVm9aKRlxRHpRpHqug0Ury4sP8UxL054Lk1H27GXI+rKV
-         vavOyBlyHbl3ZY40Wfl8PPaDFsAwVHfozfLrUkOFddKFFmHX9an6HBN1Xq58uB3veLsF
-         iqbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ID+EROtCIq5uKg/d863vFLkQbbXUtaQHcxjVUWZxmJg=;
-        b=CufkaK+YVGB6a5W69iydG6fkkCiRt3E4SzGy4F6InHtnXA7PP2HmHUYDJPVyHAcM+j
-         0ows9zOFuWZv+8LDdK5nVEZPBDb9oobPD9hky+BL7siFiLH7qxQ6uSrvp2L5RQhqEMXD
-         PInWaoq2xeJ0ARp/DY7sWyPHY4tRGedceKL9j1ZpwASdd+SJ5akSPQNd2FxXVgkwiXR0
-         G2gBWcpYFmQ5MyCfjvL4u34TS+v7ukgDJUGApKYNWBeb+w+v2wmNeVKj7k3vsoHFH5NZ
-         yGwgbO4Bl4vriVFsYnc49ZYu3Q1CPXdtaRgSQ/3wqAZuv04G/coEIn3GsbonnVTrLY/r
-         atyA==
-X-Gm-Message-State: AOAM530h4OZEGygPXScG6T+6Ylr4MEYoAd4WVSJ6JRbHfWQrdZzKxg0P
-        kcmaNjpt8iXSGiC/jB9OlPoW3HP3WznocUpnFb8L9A==
-X-Google-Smtp-Source: ABdhPJyzOOqSe7lVIn0OaDHquEuIIjZa0Fydfcr55etLrv+vuG7Rywx1ezWPSoSkP+9GaW/U1K3v21OJ5L20N11b8P8=
-X-Received: by 2002:aca:f189:: with SMTP id p131mr13881383oih.128.1631889307519;
- Fri, 17 Sep 2021 07:35:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210830172627.267989-1-bigeasy@linutronix.de> <20210830172627.267989-2-bigeasy@linutronix.de>
-In-Reply-To: <20210830172627.267989-2-bigeasy@linutronix.de>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Fri, 17 Sep 2021 16:34:56 +0200
-Message-ID: <CACT4Y+aj3UkhEBq+ROyM=Ns138xpEfCNXSvGRLAXTFyOVkFA8A@mail.gmail.com>
-Subject: Re: [PATCH 1/5] Documentation/kcov: Include types.h in the example.
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@gmail.com>,
+        Fri, 17 Sep 2021 10:37:52 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E79BC061574;
+        Fri, 17 Sep 2021 07:36:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1631889387;
+        bh=Um62tW04nD5lADJsNR/G1g4/H1dSt3UUggeF9CPCnIc=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=ONjH0bSxFa+Xu9EgXOZsy1OkN5fLq+gbP42A235UR5gJDet5ZRbp541b8Tg3EE0WG
+         i71yft1F5llyr4GGKh0MTVV6rDaUt8TgziyaltF6DTJMjSBnbnPl91XoWjx5GRnrvb
+         Ghz28rwQ31rLqkpzGV529yHZSFIjs4cYGyU2pHSasNLG6uXJFnCoHBRkG4DOmsCPl4
+         VrIc6fG+4IXwTQgJz1nUFKA343x1aYMKrHQQSUYNQuU9vzYkfTKlftGt4fv1JYARaz
+         WB3RlI7uiy0vyDJiBDD2h8ZPmFx2/+AybRB3/Sj+Gh5E6buLLTIU5yWqgKWGPLVLIS
+         9lcZdJzh2n3iw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H9xN74tx5z9sSn;
+        Sat, 18 Sep 2021 00:36:23 +1000 (AEST)
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Will Deacon <will@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Anvin <hpa@zytor.com>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vince Weaver <vincent.weaver@maine.edu>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Marco Elver <elver@google.com>,
-        Clark Williams <williams@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        Jiri Olsa <jolsa@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        linux-tip-commits@vger.kernel.org, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, dlustig@nvidia.com, npiggin@gmail.com
+Subject: Re: [tip:locking/core] tools/memory-model: Add extra ordering for
+ locks and remove it for ordinary release/acquire
+In-Reply-To: <20210910110819.GA1027@willie-the-truck>
+References: <20180926182920.27644-2-paulmck@linux.ibm.com>
+ <tip-6e89e831a90172bc3d34ecbba52af5b9c4a447d1@git.kernel.org>
+ <YTiXyiA92dM9726M@hirez.programming.kicks-ass.net>
+ <YTiiC1mxzHyUJ47F@hirez.programming.kicks-ass.net>
+ <20210908144217.GA603644@rowland.harvard.edu>
+ <CAHk-=wiXJygbW+_1BdSX6M8j6z4w8gRSHVcaD5saihaNJApnoQ@mail.gmail.com>
+ <YTm26u9i3hpjrNpr@hirez.programming.kicks-ass.net>
+ <20210909133535.GA9722@willie-the-truck>
+ <20210909174635.GA2229215@paulmck-ThinkPad-P17-Gen-1>
+ <20210910110819.GA1027@willie-the-truck>
+Date:   Sat, 18 Sep 2021 00:36:20 +1000
+Message-ID: <87wnnfi80r.fsf@mpe.ellerman.id.au>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Aug 2021 at 19:26, Sebastian Andrzej Siewior
-<bigeasy@linutronix.de> wrote:
+Will Deacon <will@kernel.org> writes:
+> On Thu, Sep 09, 2021 at 10:46:35AM -0700, Paul E. McKenney wrote:
+>> On Thu, Sep 09, 2021 at 02:35:36PM +0100, Will Deacon wrote:
+>> > On Thu, Sep 09, 2021 at 09:25:30AM +0200, Peter Zijlstra wrote:
+>> > > On Wed, Sep 08, 2021 at 09:08:33AM -0700, Linus Torvalds wrote:
+>> > > > then I think it's entirely reasonable to
+>> > > > 
+>> > > >         spin_unlock(&r);
+>> > > >         spin_lock(&s);
+>> > > > 
+>> > > > cannot be reordered.
+>> > > 
+>> > > I'm obviously completely in favour of that :-)
+>> > 
+>> > I don't think we should require the accesses to the actual lockwords to
+>> > be ordered here, as it becomes pretty onerous for relaxed LL/SC
+>> > architectures where you'd end up with an extra barrier either after the
+>> > unlock() or before the lock() operation. However, I remain absolutely in
+>> > favour of strengthening the ordering of the _critical sections_ guarded by
+>> > the locks to be RCsc.
+>> 
+>> If by this you mean the critical sections when observed only by other
+>> critical sections for a given lock, then everyone is already there.
 >
-> The first example code has includes at the top, the following two
-> example share that part. The last example (remote coverage collection)
-> requires the linux/types.h header file due its __aligned_u64 usage.
+> No, I mean the case where somebody without the lock (but using memory
+> barriers) can observe the critical sections out of order (i.e. W -> R
+> order is not maintained).
 >
-> Add the linux/types.h to the top most example and a comment that the
-> header files from above are required as it is done in the second
-> example.
+>> However...
+>> 
+>> > Last time this came up, I think the RISC-V folks were generally happy to
+>> > implement whatever was necessary for Linux [1]. The thing that was stopping
+>> > us was Power (see CONFIG_ARCH_WEAK_RELEASE_ACQUIRE), wasn't it? I think
+>> > Michael saw quite a bit of variety in the impact on benchmarks [2] across
+>> > different machines. So the question is whether newer Power machines are less
+>> > affected to the degree that we could consider making this change again.
+>> 
+>> Last I knew, on Power a pair of critical sections for a given lock could
+>> be observed out of order (writes from the earlier critical section vs.
+>> reads from the later critical section), but only by CPUs not holding
+>> that lock.  Also last I knew, tightening this would require upgrading
+>> some of the locking primitives' lwsync instructions to sync instructions.
+>> But I know very little about Power 10.
 >
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Yup, that's the one. This is the primary reason why we have the confusing
+> "RCtso" model today so this is my periodic "Do we still need this?" poking
+> for the Power folks :)
+>
+> If the SYNC is a disaster for Power, then I'll ask again in another ~3 years
+> time in the hope that newer micro-architectures can swallow the instruction
+> more easily, but the results last time weren't hugely compelling and so _if_
+> there's an opportunity to make locking more "obvious" then I'm all for it.
 
-Acked-by: Dmitry Vyukov <dvyukov@google.com>
+I haven't had time to do the full set of numbers like I did last time,
+but a quick test shows it's still about a 20-25% drop switching to sync.
 
+So on that basis we'd definitely rather not :)
 
-> ---
->  Documentation/dev-tools/kcov.rst | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/Documentation/dev-tools/kcov.rst b/Documentation/dev-tools/kcov.rst
-> index d2c4c27e1702d..347f3b6de8d40 100644
-> --- a/Documentation/dev-tools/kcov.rst
-> +++ b/Documentation/dev-tools/kcov.rst
-> @@ -50,6 +50,7 @@ The following program demonstrates coverage collection from within a test
->      #include <sys/mman.h>
->      #include <unistd.h>
->      #include <fcntl.h>
-> +    #include <linux/types.h>
->
->      #define KCOV_INIT_TRACE                    _IOR('c', 1, unsigned long)
->      #define KCOV_ENABLE                        _IO('c', 100)
-> @@ -251,6 +252,8 @@ selectively from different subsystems.
->
->  .. code-block:: c
->
-> +    /* Same includes and defines as above. */
-> +
->      struct kcov_remote_arg {
->         __u32           trace_mode;
->         __u32           area_size;
-> --
-> 2.33.0
->
+I'll try and get some more numbers next week.
+
+cheers
