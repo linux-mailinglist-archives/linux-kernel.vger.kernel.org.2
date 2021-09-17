@@ -2,42 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A8E240F239
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 08:20:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A19540F23B
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 08:20:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232381AbhIQGV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 02:21:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37702 "EHLO mail.kernel.org"
+        id S232539AbhIQGWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 02:22:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37782 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229474AbhIQGV1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 02:21:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BB0436103C;
-        Fri, 17 Sep 2021 06:20:05 +0000 (UTC)
+        id S229474AbhIQGV5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 02:21:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F25B06103C;
+        Fri, 17 Sep 2021 06:20:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631859605;
-        bh=1Nit0NWU/BQMpjN9xQFwjbTFQ11n4UzaM6ahT36Z4Uk=;
+        s=k20201202; t=1631859636;
+        bh=SUfmlBFiiigTcztXFPQlPQmAAGaznw7fdM5Uf1sxBRI=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=uTQdBwEQH9nApxqG5lIRvQ9A8WPX8pMnVeTXmYyVA2q1ta9xHr3TrXvEkYO1ECCXy
-         6tLW0pikhSOoNrKJVWePELS5OxJCsiHgqXEIY9KnTResBpFlJufc/XBpzfmJQlEnE8
-         D1ZDEG0jfNMxYj2YsPVNH0Hq765xIBossyhFFP5vthI0So48eJL2PUVVS4p0LdeVC+
-         TLf+70cmSub0Ub1y9/D80PZwodhb7F30ar8GvcsYJ8QlEtgWmAckg0HOLiYZ4xnuZM
-         nKbtPlM/iPKMmo1xN6f21PjmyA/rfCQKcyqEOkhE6hURlhYbqQ40uZvGZkqY+JH2CP
-         /BAyXS5IUO2lg==
-Received: by mail-lf1-f48.google.com with SMTP id b15so10004696lfe.7;
-        Thu, 16 Sep 2021 23:20:05 -0700 (PDT)
-X-Gm-Message-State: AOAM530EEh43gpxIk6Vtp1pGlqf6igIv1BEa96Nf74JwyBebgVokZFs3
-        4r57XdInuXAxwS7qyBgRtUiG4+T0QEozfivzs78=
-X-Google-Smtp-Source: ABdhPJxKYK7g0ZGUrJmwoweTscq2mCURTlX+AFb0KObcnOEzLmsbXzw8+xBrNthTJH05apDukakqxh3DKcOq8K2cZ7U=
-X-Received: by 2002:a05:6512:44a:: with SMTP id y10mr6758095lfk.60.1631859604056;
- Thu, 16 Sep 2021 23:20:04 -0700 (PDT)
+        b=IgrEbzLPeKZxGTW6apiYzlY5kwC7cFkYgVkzMgv6eJ1z/w9eRyHm7YR+LML8zI71N
+         DyXxuPRkX+U8ocM9rA3Q31anXmODGUqYI1R4FAC8k5mfhB8r/SiNabuXhIt/v3RiD6
+         YUvopDZs/6KkdQfZEfxa4od9gVDHRhjNrDfjv2scb0F6xQqRqNA+f8e81m5OPQRwrE
+         +Z96VmBXJiuK424Pq1aA0nxefd+8IsT/sgZxus9/grM+LqZK1pNWlYlnCOTAxa4bYO
+         fpwJjVn6i4gvK7Jt6q0zV6Jq06H8y9ujUDeN8Legp3c3Aio8Y1ihmmNP1nJf3/jqGj
+         2qmP8n3AxIAbg==
+Received: by mail-lf1-f53.google.com with SMTP id t10so22807865lfd.8;
+        Thu, 16 Sep 2021 23:20:35 -0700 (PDT)
+X-Gm-Message-State: AOAM530vKzmD5q713QWe4fhPjGV9j4l6YJMQUxJN22wXtNbxKDoZ3oZ8
+        cWf6h26D+4o5zk7+ULf4A0FaPJfQbp6pbSQ0mRs=
+X-Google-Smtp-Source: ABdhPJz//P1LNmStqogkfYSD37psrQnuLqjbASNi7Y6sSnhKxqRef1aXjg02gQp/3X7AXEpn4KL/QFuILqg0qtxf/kg=
+X-Received: by 2002:a2e:750b:: with SMTP id q11mr8099654ljc.172.1631859634334;
+ Thu, 16 Sep 2021 23:20:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210917043838.3514789-1-linux@roeck-us.net> <20210917043838.3514789-4-linux@roeck-us.net>
-In-Reply-To: <20210917043838.3514789-4-linux@roeck-us.net>
+References: <20210917043838.3514789-1-linux@roeck-us.net> <20210917043838.3514789-2-linux@roeck-us.net>
+In-Reply-To: <20210917043838.3514789-2-linux@roeck-us.net>
 From:   Guo Ren <guoren@kernel.org>
-Date:   Fri, 17 Sep 2021 14:19:53 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTSqKZKnUw-UQt5Tiag3T0D04dBW9FijaxPX7Q985=+j7w@mail.gmail.com>
-Message-ID: <CAJF2gTSqKZKnUw-UQt5Tiag3T0D04dBW9FijaxPX7Q985=+j7w@mail.gmail.com>
-Subject: Re: [PATCH 3/3] csky: Make HAVE_TCM depend on !COMPILE_TEST
+Date:   Fri, 17 Sep 2021 14:20:23 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTQXD0Kz483FK+NT=OS8y0O4XqhZTRDNXJZP=o0T5htJGg@mail.gmail.com>
+Message-ID: <CAJF2gTQXD0Kz483FK+NT=OS8y0O4XqhZTRDNXJZP=o0T5htJGg@mail.gmail.com>
+Subject: Re: [PATCH 1/3] csky: Select ARCH_WANT_FRAME_POINTERS only if
+ compiler supports it
 To:     Guenter Roeck <linux@roeck-us.net>
 Cc:     linux-csky@vger.kernel.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
@@ -50,42 +51,34 @@ Acked, thx. It'll in next-tree.
 
 On Fri, Sep 17, 2021 at 12:38 PM Guenter Roeck <linux@roeck-us.net> wrote:
 >
-> Building csky:allmodconfig results in the following build errors.
+> Compiling csky:allmodconfig with an upstream C compiler results
+> in the following error.
 >
-> arch/csky/mm/tcm.c:9:2: error:
->                 #error "You should define ITCM_RAM_BASE"
->     9 | #error "You should define ITCM_RAM_BASE"
->       |  ^~~~~
-> arch/csky/mm/tcm.c:14:2: error:
->                 #error "You should define DTCM_RAM_BASE"
->    14 | #error "You should define DTCM_RAM_BASE"
->       |  ^~~~~
-> arch/csky/mm/tcm.c:18:2: error:
->                 #error "You should define correct DTCM_RAM_BASE"
->    18 | #error "You should define correct DTCM_RAM_BASE"
+> csky-linux-gcc: error:
+>         unrecognized command-line option '-mbacktrace';
+>         did you mean '-fbacktrace'?
 >
-> This is seen with compile tests since those enable HAVE_TCM,
-> but do not provide useful default values for ITCM_RAM_BASE or
-> DTCM_RAM_BASE. Disable HAVE_TCM for commpile tests to avoid
-> the error.
+> Select ARCH_WANT_FRAME_POINTERS only if gcc supports it to
+> avoid the error.
 >
 > Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 > ---
->  arch/csky/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
+>  arch/csky/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
 > diff --git a/arch/csky/Kconfig b/arch/csky/Kconfig
-> index 58ca3ef02bab..823d3d5a9e11 100644
+> index 9d4d898df76b..58ca3ef02bab 100644
 > --- a/arch/csky/Kconfig
 > +++ b/arch/csky/Kconfig
-> @@ -241,6 +241,7 @@ endchoice
->
->  menuconfig HAVE_TCM
->         bool "Tightly-Coupled/Sram Memory"
-> +       depends on !COMPILE_TEST
->         help
->           The implementation are not only used by TCM (Tightly-Coupled Meory)
->           but also used by sram on SOC bus. It follow existed linux tcm
+> @@ -8,7 +8,7 @@ config CSKY
+>         select ARCH_HAS_SYNC_DMA_FOR_DEVICE
+>         select ARCH_USE_BUILTIN_BSWAP
+>         select ARCH_USE_QUEUED_RWLOCKS
+> -       select ARCH_WANT_FRAME_POINTERS if !CPU_CK610
+> +       select ARCH_WANT_FRAME_POINTERS if !CPU_CK610 && $(cc-option,-mbacktrace)
+>         select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT
+>         select COMMON_CLK
+>         select CLKSRC_MMIO
 > --
 > 2.33.0
 >
