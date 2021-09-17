@@ -2,28 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44B6640F83E
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 14:48:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42F7440F847
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 14:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235224AbhIQMta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 08:49:30 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:34590 "EHLO
+        id S244629AbhIQMti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 08:49:38 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:34718 "EHLO
         mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232654AbhIQMt3 (ORCPT
+        with ESMTP id S235476AbhIQMtf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 08:49:29 -0400
-X-UUID: feb3a9ecb2a14762a40877dc592f4a61-20210917
-X-UUID: feb3a9ecb2a14762a40877dc592f4a61-20210917
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
+        Fri, 17 Sep 2021 08:49:35 -0400
+X-UUID: d6c91f5d42684a2bb1d58bef6c3e9e7a-20210917
+X-UUID: d6c91f5d42684a2bb1d58bef6c3e9e7a-20210917
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
         (envelope-from <wenbin.mei@mediatek.com>)
         (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 343271298; Fri, 17 Sep 2021 20:48:04 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 17 Sep 2021 20:48:03 +0800
+        with ESMTP id 8314148; Fri, 17 Sep 2021 20:48:11 +0800
+Received: from mtkexhb02.mediatek.inc (172.21.101.103) by
+ mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 17 Sep 2021 20:48:10 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by mtkexhb02.mediatek.inc
+ (172.21.101.103) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 17 Sep
+ 2021 20:48:04 +0800
 Received: from localhost.localdomain (10.17.3.154) by mtkcas07.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 17 Sep 2021 20:48:02 +0800
+ Transport; Fri, 17 Sep 2021 20:48:03 +0800
 From:   Wenbin Mei <wenbin.mei@mediatek.com>
 To:     Ulf Hansson <ulf.hansson@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -39,11 +42,13 @@ CC:     Chaotian Jing <chaotian.jing@mediatek.com>,
         <linux-mmc@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [RESEND v4 0/3] mmc: mediatek: Add HS400 online tuning support
-Date:   Fri, 17 Sep 2021 20:48:00 +0800
-Message-ID: <20210917124803.22871-1-wenbin.mei@mediatek.com>
+        <linux-kernel@vger.kernel.org>, "Rob Herring" <robh@kernel.org>
+Subject: [RESEND v4 1/3] dt-bindings: mmc: mtk-sd: add hs400 dly3 setting
+Date:   Fri, 17 Sep 2021 20:48:01 +0800
+Message-ID: <20210917124803.22871-2-wenbin.mei@mediatek.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210917124803.22871-1-wenbin.mei@mediatek.com>
+References: <20210917124803.22871-1-wenbin.mei@mediatek.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -52,33 +57,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change in v4:
-- split driver patch into a core patch and a mtk-sd patch
-- use mmc_get_ext_csd function
-- move mmc_get_ext_csd() to include/linux/mmc/host.h
-- modify some commit message.
+Add hs400 dly3 setting for mtk-sd yaml
 
-Change in v3:
-- add detail descripthion for hs400 dly3
+Signed-off-by: Wenbin Mei <wenbin.mei@mediatek.com>
+Acked-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+---
+ Documentation/devicetree/bindings/mmc/mtk-sd.yaml | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-Change in v2:
-- remove the check "mmc_can_ext_csd"
-- change the hs400 tuning condition for "msdc_cmd_done" function and
-"msdc_cmd_next" function
-- use "-EIO" instead of "-ERANGE"
-
-Wenbin Mei (3):
-  dt-bindings: mmc: mtk-sd: add hs400 dly3 setting
-  mmc: core: add tuning support for HS400 mode
-  mmc: mediatek: Add HS400 online tuning support
-
- .../devicetree/bindings/mmc/mtk-sd.yaml       | 12 +++
- drivers/mmc/core/mmc.c                        |  8 ++
- drivers/mmc/core/mmc_ops.h                    |  1 -
- drivers/mmc/host/mtk-sd.c                     | 79 ++++++++++++++++++-
- include/linux/mmc/host.h                      |  4 +
- 5 files changed, 101 insertions(+), 3 deletions(-)
-
---
+diff --git a/Documentation/devicetree/bindings/mmc/mtk-sd.yaml b/Documentation/devicetree/bindings/mmc/mtk-sd.yaml
+index e866e985549e..82768a807294 100644
+--- a/Documentation/devicetree/bindings/mmc/mtk-sd.yaml
++++ b/Documentation/devicetree/bindings/mmc/mtk-sd.yaml
+@@ -119,6 +119,18 @@ properties:
+       If present, HS400 command responses are sampled on rising edges.
+       If not present, HS400 command responses are sampled on falling edges.
+ 
++  mediatek,hs400-ds-dly3:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      Gear of the third delay line for DS for input data latch in data
++      pad macro, there are 32 stages from 0 to 31.
++      For different corner IC, the time is different about one step, it is
++      about 100ps.
++      The value is confirmed by doing scan and calibration to find a best
++      value with corner IC and it is valid only for HS400 mode.
++    minimum: 0
++    maximum: 31
++
+   mediatek,latch-ck:
+     $ref: /schemas/types.yaml#/definitions/uint32
+     description:
+-- 
 2.25.1
 
