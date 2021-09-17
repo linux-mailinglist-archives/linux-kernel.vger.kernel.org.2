@@ -2,888 +2,510 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 757644100AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 23:20:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 162A74100B0
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 23:20:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245480AbhIQVVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 17:21:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45366 "EHLO
+        id S1344116AbhIQVVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 17:21:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229861AbhIQVVH (ORCPT
+        with ESMTP id S1343513AbhIQVVK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 17:21:07 -0400
+        Fri, 17 Sep 2021 17:21:10 -0400
 Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89462C061574;
-        Fri, 17 Sep 2021 14:19:44 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id i4so38528372lfv.4;
-        Fri, 17 Sep 2021 14:19:44 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA4B9C061757;
+        Fri, 17 Sep 2021 14:19:47 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id bq5so38379863lfb.9;
+        Fri, 17 Sep 2021 14:19:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=7sCDraulDRPsvVAhTPf3JEerilp/oc4USmnUpmgZWz8=;
-        b=QRLdTq6QTvDj6gKguEuVYiDuw0ADERQ7uod0XTqocDR+in8jzFo9WOzWk+CggUSU7S
-         I9Nyy2G5sY9t415BkBAh+rICGDXxv6KN+ysQ/SFFoBMz+lrJ0mB3pt2ijQFp+4Tvv+KS
-         /gd9QdnSfzPI7RtpoyVCA76oXpEh6tGaYEMyW0uIRlgrrml+HzdeNuVXZZDio2DZIsCp
-         mtduM+EUbBnUqpja4XZ5P/hFZ5bhAFEOs7H4IPWd7YlrFuTYi9kUHd/ERRRRTR4Mj4fj
-         wDSJwksL2CC8uCaXikd5ofXXxGzD2RF/gmu87fUfvz6Zjh4+2YKh6Gq27lJWf+709OB4
-         NXyQ==
+        bh=Es11WuyLvzmebjrp8BjdSHZ73m5q5WbTko4dMgpCly4=;
+        b=V/4Fdz+Dy+g+KUwkB+qBmYNJS0y/qMMZtywVN4FCzyOFIK/jJE9fIUBp8RXD2//kbr
+         39Cyh1iCzjbKcfk2EdUHCvgXIe4Vr1SFEeTd91NWFRP4m39U7s3ajjlSWCvISeeDfYx5
+         7Duv6TLvg0UmzL/5SKgPcLcWO8d7HAAogBQFgsmDCAM/X5+BfajWeQimsG2Nncwq5YDJ
+         aXZo1Wc7LnKUsXqd4BDdQ82FlMiJ6mBE1FmAwxn1SWwzLDxhVyK4anUMuizM2OsrwK67
+         GtyVgucb/NK9SAkR7yQNYmjvjBy3hiPbenph1KlYTRgmISuFE8GtKPLYJstc9HrabkR4
+         BwPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=7sCDraulDRPsvVAhTPf3JEerilp/oc4USmnUpmgZWz8=;
-        b=bopsx0ziiGvjyWWmo/VaSSYR/yJ0yu7WXBhi/R80D1GSQz2slbV3/FXGRZWvhOa29A
-         xHbzcm6qLP7tkQXW8kBNZVxTLj34lAwlVyjGGrhD2GR22aFiY1MiiwzXWc8ff8uwaQGs
-         C2HYHDDkdvqWrCotdPD/j0qlSRxdQdtxu+2wtxwi71KU1mgJrgxZ2cjO1ZUG8aUL/rN1
-         7Vqk86MkvLr1DA7EQd27LSKUxfOEnv4+9R5f5Hd+cfE+9IhDMvp1vUCZWQsF4lRpErQ0
-         drBAGCb0X+qDU+ZGyq7LrprgDD6HGNmoj1yaZmvPMt0tQmFPnEHNR3vKgluyu+WiMFuX
-         TdgQ==
-X-Gm-Message-State: AOAM530ebbOwTk77Iwqmais+qqkvnsyNaQGR1LOUItUX0sWAyCzqR20h
-        mqT0v/AiEdkt9q9gk0uebtE=
-X-Google-Smtp-Source: ABdhPJx+L5fKlXqkQkd5KcaVFN71YuyRDwnY96v8TQaP50m/pLYsC9Jv0vGZQA5e1Cu5Pvcgl4VcYA==
-X-Received: by 2002:a2e:a413:: with SMTP id p19mr11885801ljn.412.1631913582098;
-        Fri, 17 Sep 2021 14:19:42 -0700 (PDT)
+        bh=Es11WuyLvzmebjrp8BjdSHZ73m5q5WbTko4dMgpCly4=;
+        b=KIB3NVw6aGLJZ/9hwUxndIyIBdeoZmLggor8pXFDzVPLCZEGc/SJvyutUJHbomtwyj
+         x8KxZ/CMPS4T4sey68GyC10KebT1rFM7ueTRhdQB3ji9qQJwuYg0kOY98K+REy17p6QY
+         UaVDyXI8F64kY48tfk+fYhQ2L3DYw7Vz44kGfMBCayj+v+wR9FzrTdC0b/+QQzM/rzqA
+         OJ1x95VkcMabCI6avbuQK/YoJV/YSHbkqDeW1X6FP6SZeIsl2eaqMnMBYy2RqM0/TcoF
+         Q7Lebgn1GKgjWK0G8Gozs+I/a/oxdlEkJvSN698/A5RLWMXR9GT6KpXEDXdAo5kAwyMD
+         v1Aw==
+X-Gm-Message-State: AOAM532aoKnB21Op5+R8sR9jzAQK2+TZz+Uh/BY5nTsb/e5sHtaJP5bv
+        6NPJfmoH7NLCXBpBpszPJHU=
+X-Google-Smtp-Source: ABdhPJwiHmWSqpLDJwa5MowSP3Pui7Lr37G7gMcMaYtZwUlDkI5lafY6Kitm0inWXl1D6PifRdTmTQ==
+X-Received: by 2002:a2e:3913:: with SMTP id g19mr10857361lja.299.1631913585949;
+        Fri, 17 Sep 2021 14:19:45 -0700 (PDT)
 Received: from localhost.localdomain (95-42-179-94.pool.ukrtel.net. [94.179.42.95])
-        by smtp.gmail.com with ESMTPSA id h17sm196037lfg.258.2021.09.17.14.19.26
+        by smtp.gmail.com with ESMTPSA id h17sm196037lfg.258.2021.09.17.14.19.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 14:19:28 -0700 (PDT)
+        Fri, 17 Sep 2021 14:19:45 -0700 (PDT)
 From:   Denis Pauk <pauk.denis@gmail.com>
 Cc:     pauk.denis@gmail.com, Bernhard Seibold <mail@bernhard-seibold.de>,
+        =?UTF-8?q?P=C3=A4r=20Ekholm?= <pehlm@pekholm.org>,
+        to.eivind@gmail.com, "Artem S . Tashkinov" <aros@gmx.com>,
+        Vittorio Roberto Alfieri <me@rebtoor.com>,
+        Sahan Fernando <sahan.h.fernando@gmail.com>,
         Andy Shevchenko <andriy.shevchenko@intel.com>,
         Guenter Roeck <linux@roeck-us.net>,
         Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v8 2/3] hwmon: (nct6775) Use nct6775_*() function pointers in nct6775_data.
-Date:   Sat, 18 Sep 2021 00:18:09 +0300
-Message-Id: <20210917211811.39271-3-pauk.denis@gmail.com>
+Subject: [PATCH v8 3/3] hwmon: (nct6775) Support access via Asus WMI
+Date:   Sat, 18 Sep 2021 00:18:10 +0300
+Message-Id: <20210917211811.39271-4-pauk.denis@gmail.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210917211811.39271-1-pauk.denis@gmail.com>
 References: <20210917211811.39271-1-pauk.denis@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Prepare for platform specific callbacks usage:
-* Use nct6775 function pointers in struct nct6775_data instead direct
-  calls.
+Support accessing the NCT677x via Asus WMI functions.
+
+On mainboards that support this way of accessing the chip, the driver will
+usually not work without this option since in these mainboards, ACPI will
+mark the I/O port as used.
+
+Code uses ACPI firmware interface to communicate with sensors with ASUS
+motherboards:
+* PRIME B460-PLUS,
+* ROG CROSSHAIR VIII IMPACT,
+* ROG STRIX B550-E GAMING,
+* ROG STRIX B550-F GAMING,
+* ROG STRIX B550-F GAMING (WI-FI),
+* ROG STRIX Z490-I GAMING,
+* TUF GAMING B550M-PLUS,
+* TUF GAMING B550M-PLUS (WI-FI),
+* TUF GAMING B550-PLUS,
+* TUF GAMING X570-PLUS,
+* TUF GAMING X570-PRO (WI-FI).
 
 BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=204807
 Signed-off-by: Denis Pauk <pauk.denis@gmail.com>
 Co-developed-by: Bernhard Seibold <mail@bernhard-seibold.de>
 Signed-off-by: Bernhard Seibold <mail@bernhard-seibold.de>
+Tested-by: Pär Ekholm <pehlm@pekholm.org>
+Tested-by: <to.eivind@gmail.com>
+Tested-by: Artem S. Tashkinov <aros@gmx.com>
+Tested-by: Vittorio Roberto Alfieri <me@rebtoor.com>
+Tested-by: Sahan Fernando <sahan.h.fernando@gmail.com>
 Cc: Andy Shevchenko <andriy.shevchenko@intel.com>
 Cc: Guenter Roeck <linux@roeck-us.net>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
 ---
 Changes in v8:
-  - Without changes.
+  - Rename asuswmi_evaluate_method() to nct6775_asuswmi_evaluate_method().
+  - Add out error message if WMI method is failed.
+  - Stop futher read/write if first operation is failed.
 
 Changes in v7:
-  - Without changes.
-  
+  - Remove unrequred & 0xff with int8 variables.
+  - Make ASUSWMI_UNSUPPORTED_METHOD as default value for WMI responce,
+    before run wmi_evaluate_method().
+  - Rename ASUSWMI_MGMT2_GUID to ASUSWMI_MONITORING_GUID.
+  - Replace checks of 'err != -EINVAL' with 'err >= 0' for match_string result.
+
 Changes in v6:
-  - Split patch with replace direct calls to function pointers.
+  - Minimaze codes inside code inside defined(CONFIG_ACPI_WMI).
 
 Changes in v5:
-  - Without changes.
+  - Use IS_ENABLED(CONFIG_ACPI_WMI) instead defined(CONFIG_ACPI_WMI)
 
 Changes in v4:
-  - Fix naming conflict with inb, outb by add sio prefix to callbacks in
-    nct6775_sio_data.
+  - Fix build without ACPI WMI.
 
 Changes in v3:
-  - Use nct6775 function pointers in struct nct6775_data instead direct calls.
-  - make function declarations one line.
+  - Remove unrequired type conversions.
+  - Save result of match_string before check.
 
 Changes in v2:
   - Split changes to separate patches.
-  - Rearrange code for directly use struct nct6775_sio_data in superio_*()
-    functions.
+  - Limit WMI usage by DMI_BOARD_NAME in checked ASUS motherboards.
 ---
- drivers/hwmon/nct6775.c | 283 ++++++++++++++++++++--------------------
- 1 file changed, 143 insertions(+), 140 deletions(-)
+ drivers/hwmon/Kconfig   |   1 +
+ drivers/hwmon/nct6775.c | 256 ++++++++++++++++++++++++++++++++++++----
+ 2 files changed, 236 insertions(+), 21 deletions(-)
 
+diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
+index e3675377bc5d..9eefb1014b53 100644
+--- a/drivers/hwmon/Kconfig
++++ b/drivers/hwmon/Kconfig
+@@ -1423,6 +1423,7 @@ config SENSORS_NCT6683
+ config SENSORS_NCT6775
+ 	tristate "Nuvoton NCT6775F and compatibles"
+ 	depends on !PPC
++	depends on ACPI_WMI || ACPI_WMI=n
+ 	select HWMON_VID
+ 	help
+ 	  If you say yes here you get support for the hardware monitoring
 diff --git a/drivers/hwmon/nct6775.c b/drivers/hwmon/nct6775.c
-index 9b503c88e20d..4253eed7f5b0 100644
+index 4253eed7f5b0..1f79546730e4 100644
 --- a/drivers/hwmon/nct6775.c
 +++ b/drivers/hwmon/nct6775.c
-@@ -1232,6 +1232,10 @@ struct nct6775_data {
- 	u8 fandiv1;
- 	u8 fandiv2;
- 	u8 sio_reg_enable;
-+
-+	/* nct6775_*() callbacks  */
-+	u16 (*read_value)(struct nct6775_data *data, u16 reg);
-+	int (*write_value)(struct nct6775_data *data, u16 reg, u16 value);
+@@ -55,6 +55,7 @@
+ #include <linux/dmi.h>
+ #include <linux/io.h>
+ #include <linux/nospec.h>
++#include <linux/wmi.h>
+ #include "lm75.h"
+ 
+ #define USE_ALTERNATE
+@@ -132,10 +133,13 @@ MODULE_PARM_DESC(fan_debounce, "Enable debouncing for fan RPM signal");
+ #define SIO_ID_MASK		0xFFF8
+ 
+ enum pwm_enable { off, manual, thermal_cruise, speed_cruise, sf3, sf4 };
++enum sensor_access { access_direct, access_asuswmi };
+ 
+ struct nct6775_sio_data {
+ 	int sioreg;
++	int ld;
+ 	enum kinds kind;
++	enum sensor_access access;
+ 
+ 	/* superio_() callbacks  */
+ 	void (*sio_outb)(struct nct6775_sio_data *sio_data, int reg, int val);
+@@ -145,6 +149,107 @@ struct nct6775_sio_data {
+ 	void (*sio_exit)(struct nct6775_sio_data *sio_data);
  };
  
- struct sensor_device_template {
-@@ -1471,7 +1475,7 @@ static u16 nct6775_read_temp(struct nct6775_data *data, u16 reg)
++#define ASUSWMI_MONITORING_GUID		"466747A0-70EC-11DE-8A39-0800200C9A66"
++#define ASUSWMI_METHODID_RSIO		0x5253494F
++#define ASUSWMI_METHODID_WSIO		0x5753494F
++#define ASUSWMI_METHODID_RHWM		0x5248574D
++#define ASUSWMI_METHODID_WHWM		0x5748574D
++#define ASUSWMI_UNSUPPORTED_METHOD	0xFFFFFFFE
++
++static int nct6775_asuswmi_evaluate_method(u32 method_id, u8 bank, u8 reg, u8 val, u32 *retval)
++{
++#if IS_ENABLED(CONFIG_ACPI_WMI)
++	u32 args = bank | (reg << 8) | (val << 16);
++	struct acpi_buffer input = { (acpi_size) sizeof(args), &args };
++	struct acpi_buffer output = { ACPI_ALLOCATE_BUFFER, NULL };
++	acpi_status status;
++	union acpi_object *obj;
++	u32 tmp = ASUSWMI_UNSUPPORTED_METHOD;
++
++	status = wmi_evaluate_method(ASUSWMI_MONITORING_GUID, 0,
++				     method_id, &input, &output);
++
++	if (ACPI_FAILURE(status))
++		return -EIO;
++
++	obj = output.pointer;
++	if (obj && obj->type == ACPI_TYPE_INTEGER)
++		tmp = obj->integer.value;
++
++	if (retval)
++		*retval = tmp;
++
++	kfree(obj);
++
++	if (tmp == ASUSWMI_UNSUPPORTED_METHOD)
++		return -ENODEV;
++	return 0;
++#else
++	return -EOPNOTSUPP;
++#endif
++}
++
++static inline int nct6775_asuswmi_write(u8 bank, u8 reg, u8 val)
++{
++	int err;
++
++	err = nct6775_asuswmi_evaluate_method(ASUSWMI_METHODID_WHWM, bank,
++					      reg, val, NULL);
++	if (err)
++		pr_err("Failed to write %#x:%#x\n", bank, reg);
++
++	return err;
++}
++
++static inline int nct6775_asuswmi_read(u8 bank, u8 reg, u8 *val)
++{
++	u32 ret, tmp = 0;
++
++	ret = nct6775_asuswmi_evaluate_method(ASUSWMI_METHODID_RHWM, bank,
++					      reg, 0, &tmp);
++	if (ret)
++		pr_err("Failed to read %#x:%#x\n", bank, reg);
++
++	*val = tmp;
++	return ret;
++}
++
++static int superio_wmi_inb(struct nct6775_sio_data *sio_data, int reg)
++{
++	int ret, tmp = 0;
++
++	ret = nct6775_asuswmi_evaluate_method(ASUSWMI_METHODID_RSIO, sio_data->ld,
++					      reg, 0, &tmp);
++	if (ret)
++		pr_err("Failed to inb %#x:%#x\n", sio_data->ld, reg);
++
++	return tmp;
++}
++
++static void superio_wmi_outb(struct nct6775_sio_data *sio_data, int reg, int val)
++{
++	int ret;
++
++	ret = nct6775_asuswmi_evaluate_method(ASUSWMI_METHODID_WSIO, sio_data->ld,
++					      reg, val, NULL);
++	if (ret)
++		pr_err("Failed to outb %#x:%#x\n", sio_data->ld, reg);
++}
++
++static void superio_wmi_select(struct nct6775_sio_data *sio_data, int ld)
++{
++	sio_data->ld = ld;
++}
++
++static int superio_wmi_enter(struct nct6775_sio_data *sio_data)
++{
++	return 0;
++}
++
++static void superio_wmi_exit(struct nct6775_sio_data *sio_data)
++{
++}
++
+ static void superio_outb(struct nct6775_sio_data *sio_data, int reg, int val)
  {
- 	u16 res;
+ 	int ioreg = sio_data->sioreg;
+@@ -207,6 +312,7 @@ static void superio_exit(struct nct6775_sio_data *sio_data)
  
--	res = nct6775_read_value(data, reg);
-+	res = data->read_value(data, reg);
- 	if (!is_word_sized(data, reg))
- 		res <<= 8;
+ #define NCT6775_REG_BANK	0x4E
+ #define NCT6775_REG_CONFIG	0x40
++#define NCT6775_PORT_CHIPID	0x58
  
-@@ -1482,7 +1486,7 @@ static int nct6775_write_temp(struct nct6775_data *data, u16 reg, u16 value)
- {
- 	if (!is_word_sized(data, reg))
- 		value >>= 8;
--	return nct6775_write_value(data, reg, value);
-+	return data->write_value(data, reg, value);
+ /*
+  * Not currently used:
+@@ -1423,6 +1529,54 @@ static bool is_word_sized(struct nct6775_data *data, u16 reg)
+ 	return false;
  }
  
- /* This function assumes that the caller holds data->update_lock */
-@@ -1492,24 +1496,24 @@ static void nct6775_write_fan_div(struct nct6775_data *data, int nr)
++static inline void nct6775_wmi_set_bank(struct nct6775_data *data, u16 reg)
++{
++	u8 bank = reg >> 8;
++
++	data->bank = bank;
++}
++
++static u16 nct6775_wmi_read_value(struct nct6775_data *data, u16 reg)
++{
++	int res, err, word_sized = is_word_sized(data, reg);
++	u8 tmp = 0;
++
++	nct6775_wmi_set_bank(data, reg);
++
++	err = nct6775_asuswmi_read(data->bank, reg, &tmp);
++	if (err)
++		return 0;
++
++	res = tmp;
++	if (word_sized) {
++		err = nct6775_asuswmi_read(data->bank, (reg & 0xff) + 1, &tmp);
++		if (err)
++			return 0;
++
++		res = (res << 8) + tmp;
++	}
++	return res;
++}
++
++static int nct6775_wmi_write_value(struct nct6775_data *data, u16 reg, u16 value)
++{
++	int res, word_sized = is_word_sized(data, reg);
++
++	nct6775_wmi_set_bank(data, reg);
++
++	if (word_sized) {
++		res = nct6775_asuswmi_write(data->bank, reg & 0xff, value >> 8);
++		if (res)
++			return res;
++
++		res = nct6775_asuswmi_write(data->bank, (reg & 0xff) + 1, value);
++	} else {
++		res = nct6775_asuswmi_write(data->bank, reg & 0xff, value);
++	}
++
++	return res;
++}
++
+ /*
+  * On older chips, only registers 0x50-0x5f are banked.
+  * On more recent chips, all registers are banked.
+@@ -3818,10 +3972,12 @@ static int nct6775_probe(struct platform_device *pdev)
+ 	struct device *hwmon_dev;
+ 	int num_attr_groups = 0;
  
- 	switch (nr) {
- 	case 0:
--		reg = (nct6775_read_value(data, NCT6775_REG_FANDIV1) & 0x70)
-+		reg = (data->read_value(data, NCT6775_REG_FANDIV1) & 0x70)
- 		    | (data->fan_div[0] & 0x7);
--		nct6775_write_value(data, NCT6775_REG_FANDIV1, reg);
-+		data->write_value(data, NCT6775_REG_FANDIV1, reg);
- 		break;
- 	case 1:
--		reg = (nct6775_read_value(data, NCT6775_REG_FANDIV1) & 0x7)
-+		reg = (data->read_value(data, NCT6775_REG_FANDIV1) & 0x7)
- 		    | ((data->fan_div[1] << 4) & 0x70);
--		nct6775_write_value(data, NCT6775_REG_FANDIV1, reg);
-+		data->write_value(data, NCT6775_REG_FANDIV1, reg);
- 		break;
- 	case 2:
--		reg = (nct6775_read_value(data, NCT6775_REG_FANDIV2) & 0x70)
-+		reg = (data->read_value(data, NCT6775_REG_FANDIV2) & 0x70)
- 		    | (data->fan_div[2] & 0x7);
--		nct6775_write_value(data, NCT6775_REG_FANDIV2, reg);
-+		data->write_value(data, NCT6775_REG_FANDIV2, reg);
- 		break;
- 	case 3:
--		reg = (nct6775_read_value(data, NCT6775_REG_FANDIV2) & 0x7)
-+		reg = (data->read_value(data, NCT6775_REG_FANDIV2) & 0x7)
- 		    | ((data->fan_div[3] << 4) & 0x70);
--		nct6775_write_value(data, NCT6775_REG_FANDIV2, reg);
-+		data->write_value(data, NCT6775_REG_FANDIV2, reg);
- 		break;
- 	}
- }
-@@ -1524,10 +1528,10 @@ static void nct6775_update_fan_div(struct nct6775_data *data)
- {
- 	u8 i;
+-	res = platform_get_resource(pdev, IORESOURCE_IO, 0);
+-	if (!devm_request_region(&pdev->dev, res->start, IOREGION_LENGTH,
+-				 DRVNAME))
+-		return -EBUSY;
++	if (sio_data->access == access_direct) {
++		res = platform_get_resource(pdev, IORESOURCE_IO, 0);
++		if (!devm_request_region(&pdev->dev, res->start, IOREGION_LENGTH,
++					 DRVNAME))
++			return -EBUSY;
++	}
  
--	i = nct6775_read_value(data, NCT6775_REG_FANDIV1);
-+	i = data->read_value(data, NCT6775_REG_FANDIV1);
- 	data->fan_div[0] = i & 0x7;
- 	data->fan_div[1] = (i & 0x70) >> 4;
--	i = nct6775_read_value(data, NCT6775_REG_FANDIV2);
-+	i = data->read_value(data, NCT6775_REG_FANDIV2);
- 	data->fan_div[2] = i & 0x7;
- 	if (data->has_fan & BIT(3))
- 		data->fan_div[3] = (i & 0x70) >> 4;
-@@ -1575,11 +1579,11 @@ static void nct6775_init_fan_common(struct device *dev,
- 	 */
- 	for (i = 0; i < ARRAY_SIZE(data->fan_min); i++) {
- 		if (data->has_fan_min & BIT(i)) {
--			reg = nct6775_read_value(data, data->REG_FAN_MIN[i]);
-+			reg = data->read_value(data, data->REG_FAN_MIN[i]);
- 			if (!reg)
--				nct6775_write_value(data, data->REG_FAN_MIN[i],
--						    data->has_fan_div ? 0xff
--								      : 0xff1f);
-+				data->write_value(data, data->REG_FAN_MIN[i],
-+						  data->has_fan_div ? 0xff
-+								    : 0xff1f);
- 		}
- 	}
- }
-@@ -1623,8 +1627,8 @@ static void nct6775_select_fan_div(struct device *dev,
- 			}
- 			if (fan_min != data->fan_min[nr]) {
- 				data->fan_min[nr] = fan_min;
--				nct6775_write_value(data, data->REG_FAN_MIN[nr],
--						    fan_min);
-+				data->write_value(data, data->REG_FAN_MIN[nr],
-+						  fan_min);
- 			}
- 		}
- 		data->fan_div[nr] = fan_div;
-@@ -1644,16 +1648,15 @@ static void nct6775_update_pwm(struct device *dev)
- 			continue;
+ 	data = devm_kzalloc(&pdev->dev, sizeof(struct nct6775_data),
+ 			    GFP_KERNEL);
+@@ -3830,9 +3986,16 @@ static int nct6775_probe(struct platform_device *pdev)
  
- 		duty_is_dc = data->REG_PWM_MODE[i] &&
--		  (nct6775_read_value(data, data->REG_PWM_MODE[i])
-+		  (data->read_value(data, data->REG_PWM_MODE[i])
- 		   & data->PWM_MODE_MASK[i]);
- 		data->pwm_mode[i] = !duty_is_dc;
- 
--		fanmodecfg = nct6775_read_value(data, data->REG_FAN_MODE[i]);
-+		fanmodecfg = data->read_value(data, data->REG_FAN_MODE[i]);
- 		for (j = 0; j < ARRAY_SIZE(data->REG_PWM); j++) {
- 			if (data->REG_PWM[j] && data->REG_PWM[j][i]) {
--				data->pwm[j][i]
--				  = nct6775_read_value(data,
--						       data->REG_PWM[j][i]);
-+				data->pwm[j][i] = data->read_value(data,
-+								   data->REG_PWM[j][i]);
- 			}
- 		}
- 
-@@ -1668,17 +1671,17 @@ static void nct6775_update_pwm(struct device *dev)
- 			u8 t = fanmodecfg & 0x0f;
- 
- 			if (data->REG_TOLERANCE_H) {
--				t |= (nct6775_read_value(data,
-+				t |= (data->read_value(data,
- 				      data->REG_TOLERANCE_H[i]) & 0x70) >> 1;
- 			}
- 			data->target_speed_tolerance[i] = t;
- 		}
- 
- 		data->temp_tolerance[1][i] =
--			nct6775_read_value(data,
--					data->REG_CRITICAL_TEMP_TOLERANCE[i]);
-+			data->read_value(data,
-+					 data->REG_CRITICAL_TEMP_TOLERANCE[i]);
- 
--		reg = nct6775_read_value(data, data->REG_TEMP_SEL[i]);
-+		reg = data->read_value(data, data->REG_TEMP_SEL[i]);
- 		data->pwm_temp_sel[i] = reg & 0x1f;
- 		/* If fan can stop, report floor as 0 */
- 		if (reg & 0x80)
-@@ -1687,7 +1690,7 @@ static void nct6775_update_pwm(struct device *dev)
- 		if (!data->REG_WEIGHT_TEMP_SEL[i])
- 			continue;
- 
--		reg = nct6775_read_value(data, data->REG_WEIGHT_TEMP_SEL[i]);
-+		reg = data->read_value(data, data->REG_WEIGHT_TEMP_SEL[i]);
- 		data->pwm_weight_temp_sel[i] = reg & 0x1f;
- 		/* If weight is disabled, report weight source as 0 */
- 		if (!(reg & 0x80))
-@@ -1695,9 +1698,8 @@ static void nct6775_update_pwm(struct device *dev)
- 
- 		/* Weight temp data */
- 		for (j = 0; j < ARRAY_SIZE(data->weight_temp); j++) {
--			data->weight_temp[j][i]
--			  = nct6775_read_value(data,
--					       data->REG_WEIGHT_TEMP[j][i]);
-+			data->weight_temp[j][i] = data->read_value(data,
-+								   data->REG_WEIGHT_TEMP[j][i]);
- 		}
- 	}
- }
-@@ -1715,10 +1717,10 @@ static void nct6775_update_pwm_limits(struct device *dev)
- 
- 		for (j = 0; j < ARRAY_SIZE(data->fan_time); j++) {
- 			data->fan_time[j][i] =
--			  nct6775_read_value(data, data->REG_FAN_TIME[j][i]);
-+			  data->read_value(data, data->REG_FAN_TIME[j][i]);
- 		}
- 
--		reg_t = nct6775_read_value(data, data->REG_TARGET[i]);
-+		reg_t = data->read_value(data, data->REG_TARGET[i]);
- 		/* Update only in matching mode or if never updated */
- 		if (!data->target_temp[i] ||
- 		    data->pwm_enable[i] == thermal_cruise)
-@@ -1726,7 +1728,7 @@ static void nct6775_update_pwm_limits(struct device *dev)
- 		if (!data->target_speed[i] ||
- 		    data->pwm_enable[i] == speed_cruise) {
- 			if (data->REG_TOLERANCE_H) {
--				reg_t |= (nct6775_read_value(data,
-+				reg_t |= (data->read_value(data,
- 					data->REG_TOLERANCE_H[i]) & 0x0f) << 8;
- 			}
- 			data->target_speed[i] = reg_t;
-@@ -1734,21 +1736,21 @@ static void nct6775_update_pwm_limits(struct device *dev)
- 
- 		for (j = 0; j < data->auto_pwm_num; j++) {
- 			data->auto_pwm[i][j] =
--			  nct6775_read_value(data,
--					     NCT6775_AUTO_PWM(data, i, j));
-+			  data->read_value(data,
-+					   NCT6775_AUTO_PWM(data, i, j));
- 			data->auto_temp[i][j] =
--			  nct6775_read_value(data,
--					     NCT6775_AUTO_TEMP(data, i, j));
-+			  data->read_value(data,
-+					   NCT6775_AUTO_TEMP(data, i, j));
- 		}
- 
- 		/* critical auto_pwm temperature data */
- 		data->auto_temp[i][data->auto_pwm_num] =
--			nct6775_read_value(data, data->REG_CRITICAL_TEMP[i]);
-+			data->read_value(data, data->REG_CRITICAL_TEMP[i]);
- 
- 		switch (data->kind) {
- 		case nct6775:
--			reg = nct6775_read_value(data,
--						 NCT6775_REG_CRITICAL_ENAB[i]);
-+			reg = data->read_value(data,
-+					       NCT6775_REG_CRITICAL_ENAB[i]);
- 			data->auto_pwm[i][data->auto_pwm_num] =
- 						(reg & 0x02) ? 0xff : 0x00;
- 			break;
-@@ -1765,10 +1767,10 @@ static void nct6775_update_pwm_limits(struct device *dev)
- 		case nct6796:
- 		case nct6797:
- 		case nct6798:
--			reg = nct6775_read_value(data,
-+			reg = data->read_value(data,
- 					data->REG_CRITICAL_PWM_ENABLE[i]);
- 			if (reg & data->CRITICAL_PWM_ENABLE_MASK)
--				reg = nct6775_read_value(data,
-+				reg = data->read_value(data,
- 					data->REG_CRITICAL_PWM[i]);
- 			else
- 				reg = 0xff;
-@@ -1795,11 +1797,11 @@ static struct nct6775_data *nct6775_update_device(struct device *dev)
- 			if (!(data->have_in & BIT(i)))
- 				continue;
- 
--			data->in[i][0] = nct6775_read_value(data,
--							    data->REG_VIN[i]);
--			data->in[i][1] = nct6775_read_value(data,
-+			data->in[i][0] = data->read_value(data,
-+							  data->REG_VIN[i]);
-+			data->in[i][1] = data->read_value(data,
- 					  data->REG_IN_MINMAX[0][i]);
--			data->in[i][2] = nct6775_read_value(data,
-+			data->in[i][2] = data->read_value(data,
- 					  data->REG_IN_MINMAX[1][i]);
- 		}
- 
-@@ -1810,18 +1812,18 @@ static struct nct6775_data *nct6775_update_device(struct device *dev)
- 			if (!(data->has_fan & BIT(i)))
- 				continue;
- 
--			reg = nct6775_read_value(data, data->REG_FAN[i]);
-+			reg = data->read_value(data, data->REG_FAN[i]);
- 			data->rpm[i] = data->fan_from_reg(reg,
- 							  data->fan_div[i]);
- 
- 			if (data->has_fan_min & BIT(i))
--				data->fan_min[i] = nct6775_read_value(data,
-+				data->fan_min[i] = data->read_value(data,
- 					   data->REG_FAN_MIN[i]);
- 
- 			if (data->REG_FAN_PULSES[i]) {
- 				data->fan_pulses[i] =
--				  (nct6775_read_value(data,
--						      data->REG_FAN_PULSES[i])
-+				  (data->read_value(data,
-+						    data->REG_FAN_PULSES[i])
- 				   >> data->FAN_PULSE_SHIFT[i]) & 0x03;
- 			}
- 
-@@ -1837,15 +1839,14 @@ static struct nct6775_data *nct6775_update_device(struct device *dev)
- 				continue;
- 			for (j = 0; j < ARRAY_SIZE(data->reg_temp); j++) {
- 				if (data->reg_temp[j][i])
--					data->temp[j][i]
--					  = nct6775_read_temp(data,
--						data->reg_temp[j][i]);
-+					data->temp[j][i] = nct6775_read_temp(data,
-+									     data->reg_temp[j][i]);
- 			}
- 			if (i >= NUM_TEMP_FIXED ||
- 			    !(data->have_temp_fixed & BIT(i)))
- 				continue;
--			data->temp_offset[i]
--			  = nct6775_read_value(data, data->REG_TEMP_OFFSET[i]);
-+			data->temp_offset[i] = data->read_value(data,
-+								   data->REG_TEMP_OFFSET[i]);
- 		}
- 
- 		data->alarms = 0;
-@@ -1854,7 +1855,7 @@ static struct nct6775_data *nct6775_update_device(struct device *dev)
- 
- 			if (!data->REG_ALARM[i])
- 				continue;
--			alarm = nct6775_read_value(data, data->REG_ALARM[i]);
-+			alarm = data->read_value(data, data->REG_ALARM[i]);
- 			data->alarms |= ((u64)alarm) << (i << 3);
- 		}
- 
-@@ -1864,7 +1865,7 @@ static struct nct6775_data *nct6775_update_device(struct device *dev)
- 
- 			if (!data->REG_BEEP[i])
- 				continue;
--			beep = nct6775_read_value(data, data->REG_BEEP[i]);
-+			beep = data->read_value(data, data->REG_BEEP[i]);
- 			data->beeps |= ((u64)beep) << (i << 3);
- 		}
- 
-@@ -1906,8 +1907,8 @@ store_in_reg(struct device *dev, struct device_attribute *attr, const char *buf,
- 		return err;
- 	mutex_lock(&data->update_lock);
- 	data->in[nr][index] = in_to_reg(val, nr);
--	nct6775_write_value(data, data->REG_IN_MINMAX[index - 1][nr],
--			    data->in[nr][index]);
-+	data->write_value(data, data->REG_IN_MINMAX[index - 1][nr],
-+			  data->in[nr][index]);
- 	mutex_unlock(&data->update_lock);
- 	return count;
- }
-@@ -1931,8 +1932,8 @@ static int find_temp_source(struct nct6775_data *data, int index, int count)
- 	for (nr = 0; nr < count; nr++) {
- 		int src;
- 
--		src = nct6775_read_value(data,
--					 data->REG_TEMP_SOURCE[nr]) & 0x1f;
-+		src = data->read_value(data,
-+				       data->REG_TEMP_SOURCE[nr]) & 0x1f;
- 		if (src == source)
- 			return nr;
- 	}
-@@ -1993,8 +1994,8 @@ store_beep(struct device *dev, struct device_attribute *attr, const char *buf,
- 		data->beeps |= (1ULL << nr);
- 	else
- 		data->beeps &= ~(1ULL << nr);
--	nct6775_write_value(data, data->REG_BEEP[regindex],
--			    (data->beeps >> (regindex << 3)) & 0xff);
-+	data->write_value(data, data->REG_BEEP[regindex],
-+			  (data->beeps >> (regindex << 3)) & 0xff);
- 	mutex_unlock(&data->update_lock);
- 	return count;
- }
-@@ -2049,8 +2050,8 @@ store_temp_beep(struct device *dev, struct device_attribute *attr,
- 		data->beeps |= (1ULL << bit);
- 	else
- 		data->beeps &= ~(1ULL << bit);
--	nct6775_write_value(data, data->REG_BEEP[regindex],
--			    (data->beeps >> (regindex << 3)) & 0xff);
-+	data->write_value(data, data->REG_BEEP[regindex],
-+			  (data->beeps >> (regindex << 3)) & 0xff);
- 	mutex_unlock(&data->update_lock);
- 
- 	return count;
-@@ -2217,7 +2218,7 @@ store_fan_min(struct device *dev, struct device_attribute *attr,
- 	}
- 
- write_min:
--	nct6775_write_value(data, data->REG_FAN_MIN[nr], data->fan_min[nr]);
-+	data->write_value(data, data->REG_FAN_MIN[nr], data->fan_min[nr]);
- 	mutex_unlock(&data->update_lock);
- 
- 	return count;
-@@ -2253,10 +2254,10 @@ store_fan_pulses(struct device *dev, struct device_attribute *attr,
- 
- 	mutex_lock(&data->update_lock);
- 	data->fan_pulses[nr] = val & 3;
--	reg = nct6775_read_value(data, data->REG_FAN_PULSES[nr]);
-+	reg = data->read_value(data, data->REG_FAN_PULSES[nr]);
- 	reg &= ~(0x03 << data->FAN_PULSE_SHIFT[nr]);
- 	reg |= (val & 3) << data->FAN_PULSE_SHIFT[nr];
--	nct6775_write_value(data, data->REG_FAN_PULSES[nr], reg);
-+	data->write_value(data, data->REG_FAN_PULSES[nr], reg);
- 	mutex_unlock(&data->update_lock);
- 
- 	return count;
-@@ -2390,7 +2391,7 @@ store_temp_offset(struct device *dev, struct device_attribute *attr,
- 
- 	mutex_lock(&data->update_lock);
- 	data->temp_offset[nr] = val;
--	nct6775_write_value(data, data->REG_TEMP_OFFSET[nr], val);
-+	data->write_value(data, data->REG_TEMP_OFFSET[nr], val);
- 	mutex_unlock(&data->update_lock);
- 
- 	return count;
-@@ -2429,8 +2430,8 @@ store_temp_type(struct device *dev, struct device_attribute *attr,
- 	data->temp_type[nr] = val;
- 	vbit = 0x02 << nr;
- 	dbit = data->DIODE_MASK << nr;
--	vbat = nct6775_read_value(data, data->REG_VBAT) & ~vbit;
--	diode = nct6775_read_value(data, data->REG_DIODE) & ~dbit;
-+	vbat = data->read_value(data, data->REG_VBAT) & ~vbit;
-+	diode = data->read_value(data, data->REG_DIODE) & ~dbit;
- 	switch (val) {
- 	case 1:	/* CPU diode (diode, current mode) */
- 		vbat |= vbit;
-@@ -2442,8 +2443,8 @@ store_temp_type(struct device *dev, struct device_attribute *attr,
- 	case 4:	/* thermistor */
- 		break;
- 	}
--	nct6775_write_value(data, data->REG_VBAT, vbat);
--	nct6775_write_value(data, data->REG_DIODE, diode);
-+	data->write_value(data, data->REG_VBAT, vbat);
-+	data->write_value(data, data->REG_DIODE, diode);
- 
- 	mutex_unlock(&data->update_lock);
- 	return count;
-@@ -2567,11 +2568,11 @@ store_pwm_mode(struct device *dev, struct device_attribute *attr,
- 
- 	mutex_lock(&data->update_lock);
- 	data->pwm_mode[nr] = val;
--	reg = nct6775_read_value(data, data->REG_PWM_MODE[nr]);
-+	reg = data->read_value(data, data->REG_PWM_MODE[nr]);
- 	reg &= ~data->PWM_MODE_MASK[nr];
- 	if (!val)
- 		reg |= data->PWM_MODE_MASK[nr];
--	nct6775_write_value(data, data->REG_PWM_MODE[nr], reg);
-+	data->write_value(data, data->REG_PWM_MODE[nr], reg);
- 	mutex_unlock(&data->update_lock);
- 	return count;
- }
-@@ -2590,7 +2591,7 @@ show_pwm(struct device *dev, struct device_attribute *attr, char *buf)
- 	 * Otherwise, show the configured value.
- 	 */
- 	if (index == 0 && data->pwm_enable[nr] > manual)
--		pwm = nct6775_read_value(data, data->REG_PWM_READ[nr]);
-+		pwm = data->read_value(data, data->REG_PWM_READ[nr]);
- 	else
- 		pwm = data->pwm[index][nr];
- 
-@@ -2619,13 +2620,13 @@ store_pwm(struct device *dev, struct device_attribute *attr, const char *buf,
- 
- 	mutex_lock(&data->update_lock);
- 	data->pwm[index][nr] = val;
--	nct6775_write_value(data, data->REG_PWM[index][nr], val);
-+	data->write_value(data, data->REG_PWM[index][nr], val);
- 	if (index == 2)	{ /* floor: disable if val == 0 */
--		reg = nct6775_read_value(data, data->REG_TEMP_SEL[nr]);
-+		reg = data->read_value(data, data->REG_TEMP_SEL[nr]);
- 		reg &= 0x7f;
- 		if (val)
- 			reg |= 0x80;
--		nct6775_write_value(data, data->REG_TEMP_SEL[nr], reg);
-+		data->write_value(data, data->REG_TEMP_SEL[nr], reg);
- 	}
- 	mutex_unlock(&data->update_lock);
- 	return count;
-@@ -2664,29 +2665,29 @@ static void pwm_update_registers(struct nct6775_data *data, int nr)
- 	case manual:
- 		break;
- 	case speed_cruise:
--		reg = nct6775_read_value(data, data->REG_FAN_MODE[nr]);
-+		reg = data->read_value(data, data->REG_FAN_MODE[nr]);
- 		reg = (reg & ~data->tolerance_mask) |
- 		  (data->target_speed_tolerance[nr] & data->tolerance_mask);
--		nct6775_write_value(data, data->REG_FAN_MODE[nr], reg);
--		nct6775_write_value(data, data->REG_TARGET[nr],
-+		data->write_value(data, data->REG_FAN_MODE[nr], reg);
-+		data->write_value(data, data->REG_TARGET[nr],
- 				    data->target_speed[nr] & 0xff);
- 		if (data->REG_TOLERANCE_H) {
- 			reg = (data->target_speed[nr] >> 8) & 0x0f;
- 			reg |= (data->target_speed_tolerance[nr] & 0x38) << 1;
--			nct6775_write_value(data,
--					    data->REG_TOLERANCE_H[nr],
--					    reg);
-+			data->write_value(data,
-+					  data->REG_TOLERANCE_H[nr],
-+					  reg);
- 		}
- 		break;
- 	case thermal_cruise:
--		nct6775_write_value(data, data->REG_TARGET[nr],
--				    data->target_temp[nr]);
-+		data->write_value(data, data->REG_TARGET[nr],
-+				  data->target_temp[nr]);
- 		fallthrough;
- 	default:
--		reg = nct6775_read_value(data, data->REG_FAN_MODE[nr]);
-+		reg = data->read_value(data, data->REG_FAN_MODE[nr]);
- 		reg = (reg & ~data->tolerance_mask) |
- 		  data->temp_tolerance[0][nr];
--		nct6775_write_value(data, data->REG_FAN_MODE[nr], reg);
-+		data->write_value(data, data->REG_FAN_MODE[nr], reg);
- 		break;
- 	}
- }
-@@ -2734,13 +2735,13 @@ store_pwm_enable(struct device *dev, struct device_attribute *attr,
- 		 * turn off pwm control: select manual mode, set pwm to maximum
- 		 */
- 		data->pwm[0][nr] = 255;
--		nct6775_write_value(data, data->REG_PWM[0][nr], 255);
-+		data->write_value(data, data->REG_PWM[0][nr], 255);
- 	}
- 	pwm_update_registers(data, nr);
--	reg = nct6775_read_value(data, data->REG_FAN_MODE[nr]);
-+	reg = data->read_value(data, data->REG_FAN_MODE[nr]);
- 	reg &= 0x0f;
- 	reg |= pwm_enable_to_reg(val) << 4;
--	nct6775_write_value(data, data->REG_FAN_MODE[nr], reg);
-+	data->write_value(data, data->REG_FAN_MODE[nr], reg);
- 	mutex_unlock(&data->update_lock);
- 	return count;
- }
-@@ -2793,10 +2794,10 @@ store_pwm_temp_sel(struct device *dev, struct device_attribute *attr,
- 	mutex_lock(&data->update_lock);
- 	src = data->temp_src[val - 1];
- 	data->pwm_temp_sel[nr] = src;
--	reg = nct6775_read_value(data, data->REG_TEMP_SEL[nr]);
-+	reg = data->read_value(data, data->REG_TEMP_SEL[nr]);
- 	reg &= 0xe0;
- 	reg |= src;
--	nct6775_write_value(data, data->REG_TEMP_SEL[nr], reg);
-+	data->write_value(data, data->REG_TEMP_SEL[nr], reg);
- 	mutex_unlock(&data->update_lock);
- 
- 	return count;
-@@ -2838,15 +2839,15 @@ store_pwm_weight_temp_sel(struct device *dev, struct device_attribute *attr,
- 	if (val) {
- 		src = data->temp_src[val - 1];
- 		data->pwm_weight_temp_sel[nr] = src;
--		reg = nct6775_read_value(data, data->REG_WEIGHT_TEMP_SEL[nr]);
-+		reg = data->read_value(data, data->REG_WEIGHT_TEMP_SEL[nr]);
- 		reg &= 0xe0;
- 		reg |= (src | 0x80);
--		nct6775_write_value(data, data->REG_WEIGHT_TEMP_SEL[nr], reg);
-+		data->write_value(data, data->REG_WEIGHT_TEMP_SEL[nr], reg);
- 	} else {
- 		data->pwm_weight_temp_sel[nr] = 0;
--		reg = nct6775_read_value(data, data->REG_WEIGHT_TEMP_SEL[nr]);
-+		reg = data->read_value(data, data->REG_WEIGHT_TEMP_SEL[nr]);
- 		reg &= 0x7f;
--		nct6775_write_value(data, data->REG_WEIGHT_TEMP_SEL[nr], reg);
-+		data->write_value(data, data->REG_WEIGHT_TEMP_SEL[nr], reg);
- 	}
- 	mutex_unlock(&data->update_lock);
- 
-@@ -2958,9 +2959,9 @@ store_temp_tolerance(struct device *dev, struct device_attribute *attr,
- 	if (index)
- 		pwm_update_registers(data, nr);
- 	else
--		nct6775_write_value(data,
--				    data->REG_CRITICAL_TEMP_TOLERANCE[nr],
--				    val);
-+		data->write_value(data,
-+				  data->REG_CRITICAL_TEMP_TOLERANCE[nr],
-+				  val);
- 	mutex_unlock(&data->update_lock);
- 	return count;
- }
-@@ -3083,7 +3084,7 @@ store_weight_temp(struct device *dev, struct device_attribute *attr,
- 
- 	mutex_lock(&data->update_lock);
- 	data->weight_temp[index][nr] = val;
--	nct6775_write_value(data, data->REG_WEIGHT_TEMP[index][nr], val);
-+	data->write_value(data, data->REG_WEIGHT_TEMP[index][nr], val);
- 	mutex_unlock(&data->update_lock);
- 	return count;
- }
-@@ -3132,7 +3133,7 @@ store_fan_time(struct device *dev, struct device_attribute *attr,
- 	val = step_time_to_reg(val, data->pwm_mode[nr]);
- 	mutex_lock(&data->update_lock);
- 	data->fan_time[index][nr] = val;
--	nct6775_write_value(data, data->REG_FAN_TIME[index][nr], val);
-+	data->write_value(data, data->REG_FAN_TIME[index][nr], val);
- 	mutex_unlock(&data->update_lock);
- 	return count;
- }
-@@ -3174,21 +3175,21 @@ store_auto_pwm(struct device *dev, struct device_attribute *attr,
- 	mutex_lock(&data->update_lock);
- 	data->auto_pwm[nr][point] = val;
- 	if (point < data->auto_pwm_num) {
--		nct6775_write_value(data,
-+		data->write_value(data,
- 				    NCT6775_AUTO_PWM(data, nr, point),
- 				    data->auto_pwm[nr][point]);
- 	} else {
- 		switch (data->kind) {
- 		case nct6775:
- 			/* disable if needed (pwm == 0) */
--			reg = nct6775_read_value(data,
--						 NCT6775_REG_CRITICAL_ENAB[nr]);
-+			reg = data->read_value(data,
-+					       NCT6775_REG_CRITICAL_ENAB[nr]);
- 			if (val)
- 				reg |= 0x02;
- 			else
- 				reg &= ~0x02;
--			nct6775_write_value(data, NCT6775_REG_CRITICAL_ENAB[nr],
--					    reg);
-+			data->write_value(data, NCT6775_REG_CRITICAL_ENAB[nr],
-+					  reg);
- 			break;
- 		case nct6776:
- 			break; /* always enabled, nothing to do */
-@@ -3202,17 +3203,17 @@ store_auto_pwm(struct device *dev, struct device_attribute *attr,
- 		case nct6796:
- 		case nct6797:
- 		case nct6798:
--			nct6775_write_value(data, data->REG_CRITICAL_PWM[nr],
-+			data->write_value(data, data->REG_CRITICAL_PWM[nr],
- 					    val);
--			reg = nct6775_read_value(data,
-+			reg = data->read_value(data,
- 					data->REG_CRITICAL_PWM_ENABLE[nr]);
- 			if (val == 255)
- 				reg &= ~data->CRITICAL_PWM_ENABLE_MASK;
- 			else
- 				reg |= data->CRITICAL_PWM_ENABLE_MASK;
--			nct6775_write_value(data,
--					    data->REG_CRITICAL_PWM_ENABLE[nr],
--					    reg);
-+			data->write_value(data,
-+					  data->REG_CRITICAL_PWM_ENABLE[nr],
-+					  reg);
- 			break;
- 		}
- 	}
-@@ -3255,11 +3256,11 @@ store_auto_temp(struct device *dev, struct device_attribute *attr,
- 	mutex_lock(&data->update_lock);
- 	data->auto_temp[nr][point] = DIV_ROUND_CLOSEST(val, 1000);
- 	if (point < data->auto_pwm_num) {
--		nct6775_write_value(data,
-+		data->write_value(data,
- 				    NCT6775_AUTO_TEMP(data, nr, point),
- 				    data->auto_temp[nr][point]);
- 	} else {
--		nct6775_write_value(data, data->REG_CRITICAL_TEMP[nr],
-+		data->write_value(data, data->REG_CRITICAL_TEMP[nr],
- 				    data->auto_temp[nr][point]);
- 	}
- 	mutex_unlock(&data->update_lock);
-@@ -3519,9 +3520,9 @@ static inline void nct6775_init_device(struct nct6775_data *data)
- 
- 	/* Start monitoring if needed */
- 	if (data->REG_CONFIG) {
--		tmp = nct6775_read_value(data, data->REG_CONFIG);
-+		tmp = data->read_value(data, data->REG_CONFIG);
- 		if (!(tmp & 0x01))
--			nct6775_write_value(data, data->REG_CONFIG, tmp | 0x01);
-+			data->write_value(data, data->REG_CONFIG, tmp | 0x01);
- 	}
- 
- 	/* Enable temperature sensors if needed */
-@@ -3530,18 +3531,18 @@ static inline void nct6775_init_device(struct nct6775_data *data)
- 			continue;
- 		if (!data->reg_temp_config[i])
- 			continue;
--		tmp = nct6775_read_value(data, data->reg_temp_config[i]);
-+		tmp = data->read_value(data, data->reg_temp_config[i]);
- 		if (tmp & 0x01)
--			nct6775_write_value(data, data->reg_temp_config[i],
-+			data->write_value(data, data->reg_temp_config[i],
- 					    tmp & 0xfe);
- 	}
- 
- 	/* Enable VBAT monitoring if needed */
--	tmp = nct6775_read_value(data, data->REG_VBAT);
-+	tmp = data->read_value(data, data->REG_VBAT);
- 	if (!(tmp & 0x01))
--		nct6775_write_value(data, data->REG_VBAT, tmp | 0x01);
-+		data->write_value(data, data->REG_VBAT, tmp | 0x01);
- 
--	diode = nct6775_read_value(data, data->REG_DIODE);
-+	diode = data->read_value(data, data->REG_DIODE);
- 
- 	for (i = 0; i < data->temp_fixed_num; i++) {
- 		if (!(data->have_temp_fixed & BIT(i)))
-@@ -3786,7 +3787,7 @@ static void add_temp_sensors(struct nct6775_data *data, const u16 *regp,
- 
- 		if (!regp[i])
- 			continue;
--		src = nct6775_read_value(data, regp[i]);
-+		src = data->read_value(data, regp[i]);
- 		src &= 0x1f;
- 		if (!src || (*mask & BIT(src)))
- 			continue;
-@@ -3794,7 +3795,7 @@ static void add_temp_sensors(struct nct6775_data *data, const u16 *regp,
- 			continue;
- 
- 		index = __ffs(*available);
--		nct6775_write_value(data, data->REG_TEMP_SOURCE[index], src);
-+		data->write_value(data, data->REG_TEMP_SOURCE[index], src);
- 		*available &= ~BIT(index);
- 		*mask |= BIT(src);
- 	}
-@@ -3830,6 +3831,8 @@ static int nct6775_probe(struct platform_device *pdev)
  	data->kind = sio_data->kind;
  	data->sioreg = sio_data->sioreg;
- 	data->addr = res->start;
-+	data->read_value = nct6775_read_value;
-+	data->write_value = nct6775_write_value;
+-	data->addr = res->start;
+-	data->read_value = nct6775_read_value;
+-	data->write_value = nct6775_write_value;
++
++	if (sio_data->access == access_direct) {
++		data->addr = res->start;
++		data->read_value = nct6775_read_value;
++		data->write_value = nct6775_write_value;
++	} else {
++		data->read_value = nct6775_wmi_read_value;
++		data->write_value = nct6775_wmi_write_value;
++	}
++
  	mutex_init(&data->update_lock);
  	data->name = nct6775_device_names[data->kind];
  	data->bank = 0xff;		/* Force initial bank selection */
-@@ -4349,7 +4352,7 @@ static int nct6775_probe(struct platform_device *pdev)
- 		if (reg_temp[i] == 0)
- 			continue;
+@@ -4743,6 +4906,7 @@ static int __init nct6775_find(int sioaddr, struct nct6775_sio_data *sio_data)
+ 	int err;
+ 	int addr;
  
--		src = nct6775_read_value(data, data->REG_TEMP_SOURCE[i]) & 0x1f;
-+		src = data->read_value(data, data->REG_TEMP_SOURCE[i]) & 0x1f;
- 		if (!src || (mask & BIT(src)))
- 			available |= BIT(i);
++	sio_data->access = access_direct;
+ 	sio_data->sioreg = sioaddr;
  
-@@ -4369,7 +4372,7 @@ static int nct6775_probe(struct platform_device *pdev)
- 		if (reg_temp[i] == 0)
- 			continue;
+ 	err = sio_data->sio_enter(sio_data);
+@@ -4837,6 +5001,23 @@ static int __init nct6775_find(int sioaddr, struct nct6775_sio_data *sio_data)
+  */
+ static struct platform_device *pdev[2];
  
--		src = nct6775_read_value(data, data->REG_TEMP_SOURCE[i]) & 0x1f;
-+		src = data->read_value(data, data->REG_TEMP_SOURCE[i]) & 0x1f;
- 		if (!src || (mask & BIT(src)))
- 			continue;
++static const char * const asus_wmi_boards[] = {
++	"PRIME B460-PLUS",
++	"ROG CROSSHAIR VIII DARK HERO",
++	"ROG CROSSHAIR VIII HERO",
++	"ROG CROSSHAIR VIII IMPACT",
++	"ROG STRIX B550-E GAMING",
++	"ROG STRIX B550-F GAMING",
++	"ROG STRIX B550-F GAMING (WI-FI)",
++	"ROG STRIX Z490-I GAMING",
++	"TUF GAMING B550M-PLUS",
++	"TUF GAMING B550M-PLUS (WI-FI)",
++	"TUF GAMING B550-PLUS",
++	"TUF GAMING X570-PLUS",
++	"TUF GAMING X570-PLUS (WI-FI)",
++	"TUF GAMING X570-PRO (WI-FI)",
++};
++
+ static int __init sensors_nct6775_init(void)
+ {
+ 	int i, err;
+@@ -4845,11 +5026,32 @@ static int __init sensors_nct6775_init(void)
+ 	struct resource res;
+ 	struct nct6775_sio_data sio_data;
+ 	int sioaddr[2] = { 0x2e, 0x4e };
++	enum sensor_access access = access_direct;
++	const char *board_vendor, *board_name;
++	u8 tmp;
  
-@@ -4429,7 +4432,7 @@ static int nct6775_probe(struct platform_device *pdev)
- 		if (reg_temp_mon[i] == 0)
- 			continue;
+ 	err = platform_driver_register(&nct6775_driver);
+ 	if (err)
+ 		return err;
  
--		src = nct6775_read_value(data, data->REG_TEMP_SEL[i]) & 0x1f;
-+		src = data->read_value(data, data->REG_TEMP_SEL[i]) & 0x1f;
- 		if (!src)
- 			continue;
++	board_vendor = dmi_get_system_info(DMI_BOARD_VENDOR);
++	board_name = dmi_get_system_info(DMI_BOARD_NAME);
++
++	if (board_name && board_vendor &&
++	    !strcmp(board_vendor, "ASUSTeK COMPUTER INC.")) {
++		err = match_string(asus_wmi_boards, ARRAY_SIZE(asus_wmi_boards),
++				   board_name);
++		if (err >= 0) {
++			/* if reading chip id via WMI succeeds, use WMI */
++			if (!nct6775_asuswmi_read(0, NCT6775_PORT_CHIPID, &tmp)) {
++				pr_info("Using Asus WMI to access %#x chip.\n", tmp);
++				access = access_asuswmi;
++			} else {
++				pr_err("Can't read ChipID by Asus WMI.\n");
++			}
++		}
++	}
++
+ 	/*
+ 	 * initialize sio_data->kind and sio_data->sioreg.
+ 	 *
+@@ -4870,6 +5072,16 @@ static int __init sensors_nct6775_init(void)
  
-@@ -4642,10 +4645,10 @@ static int __maybe_unused nct6775_suspend(struct device *dev)
- 	struct nct6775_data *data = nct6775_update_device(dev);
+ 		found = true;
  
- 	mutex_lock(&data->update_lock);
--	data->vbat = nct6775_read_value(data, data->REG_VBAT);
-+	data->vbat = data->read_value(data, data->REG_VBAT);
- 	if (data->kind == nct6775) {
--		data->fandiv1 = nct6775_read_value(data, NCT6775_REG_FANDIV1);
--		data->fandiv2 = nct6775_read_value(data, NCT6775_REG_FANDIV2);
-+		data->fandiv1 = data->read_value(data, NCT6775_REG_FANDIV1);
-+		data->fandiv2 = data->read_value(data, NCT6775_REG_FANDIV2);
- 	}
- 	mutex_unlock(&data->update_lock);
++		sio_data.access = access;
++
++		if (access == access_asuswmi) {
++			sio_data.sio_outb = superio_wmi_outb;
++			sio_data.sio_inb = superio_wmi_inb;
++			sio_data.sio_select = superio_wmi_select;
++			sio_data.sio_enter = superio_wmi_enter;
++			sio_data.sio_exit = superio_wmi_exit;
++		}
++
+ 		pdev[i] = platform_device_alloc(DRVNAME, address);
+ 		if (!pdev[i]) {
+ 			err = -ENOMEM;
+@@ -4881,23 +5093,25 @@ static int __init sensors_nct6775_init(void)
+ 		if (err)
+ 			goto exit_device_put;
  
-@@ -4684,18 +4687,18 @@ static int __maybe_unused nct6775_resume(struct device *dev)
- 		if (!(data->have_in & BIT(i)))
- 			continue;
+-		memset(&res, 0, sizeof(res));
+-		res.name = DRVNAME;
+-		res.start = address + IOREGION_OFFSET;
+-		res.end = address + IOREGION_OFFSET + IOREGION_LENGTH - 1;
+-		res.flags = IORESOURCE_IO;
++		if (sio_data.access == access_direct) {
++			memset(&res, 0, sizeof(res));
++			res.name = DRVNAME;
++			res.start = address + IOREGION_OFFSET;
++			res.end = address + IOREGION_OFFSET + IOREGION_LENGTH - 1;
++			res.flags = IORESOURCE_IO;
++
++			err = acpi_check_resource_conflict(&res);
++			if (err) {
++				platform_device_put(pdev[i]);
++				pdev[i] = NULL;
++				continue;
++			}
  
--		nct6775_write_value(data, data->REG_IN_MINMAX[0][i],
--				    data->in[i][1]);
--		nct6775_write_value(data, data->REG_IN_MINMAX[1][i],
--				    data->in[i][2]);
-+		data->write_value(data, data->REG_IN_MINMAX[0][i],
-+				  data->in[i][1]);
-+		data->write_value(data, data->REG_IN_MINMAX[1][i],
-+				  data->in[i][2]);
- 	}
+-		err = acpi_check_resource_conflict(&res);
+-		if (err) {
+-			platform_device_put(pdev[i]);
+-			pdev[i] = NULL;
+-			continue;
++			err = platform_device_add_resources(pdev[i], &res, 1);
++			if (err)
++				goto exit_device_put;
+ 		}
  
- 	for (i = 0; i < ARRAY_SIZE(data->fan_min); i++) {
- 		if (!(data->has_fan_min & BIT(i)))
- 			continue;
- 
--		nct6775_write_value(data, data->REG_FAN_MIN[i],
--				    data->fan_min[i]);
-+		data->write_value(data, data->REG_FAN_MIN[i],
-+				  data->fan_min[i]);
- 	}
- 
- 	for (i = 0; i < NUM_TEMP; i++) {
-@@ -4709,10 +4712,10 @@ static int __maybe_unused nct6775_resume(struct device *dev)
- 	}
- 
- 	/* Restore other settings */
--	nct6775_write_value(data, data->REG_VBAT, data->vbat);
-+	data->write_value(data, data->REG_VBAT, data->vbat);
- 	if (data->kind == nct6775) {
--		nct6775_write_value(data, NCT6775_REG_FANDIV1, data->fandiv1);
--		nct6775_write_value(data, NCT6775_REG_FANDIV2, data->fandiv2);
-+		data->write_value(data, NCT6775_REG_FANDIV1, data->fandiv1);
-+		data->write_value(data, NCT6775_REG_FANDIV2, data->fandiv2);
- 	}
- 
- abort:
+-		err = platform_device_add_resources(pdev[i], &res, 1);
+-		if (err)
+-			goto exit_device_put;
+-
+ 		/* platform_device_add calls probe() */
+ 		err = platform_device_add(pdev[i]);
+ 		if (err)
 -- 
 2.33.0
 
