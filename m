@@ -2,260 +2,294 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5374640F286
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 08:38:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7650E40F285
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 08:38:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229456AbhIQGjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 02:39:41 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:21484 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235165AbhIQGje (ORCPT
+        id S234180AbhIQGjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 02:39:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41212 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234928AbhIQGj1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 02:39:34 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18H6WBKO026707;
-        Fri, 17 Sep 2021 02:38:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=q3utXwkW2U2ltS/BURD7rutV4U6JNK34trsTmZzHHCw=;
- b=padspnso290JTarM4TO15QJ4sgnGAlSxhAExLdsmCWxnFrZzlDflMTUHkgBqOfVbticm
- Wvsf3VoBeycAJ9NpOY/F/541eJNfUXaxnmYsPyV6bdMhF2vF1YAsXThzKxjH0vDa5Y+d
- EIi6frGwI9KYq5mSI/TKCGwEyX8CdDgS19HPzDEy38ml2zIim9JwqJ6un9qfO7lZGitx
- aGdgMIePQHZfX6AoYZwmWJoHhhDpKgXtoGSs9xNA7anLtIs4LQTbdQwbGoT2bUKFCeK/
- +LFisSndifYVRQS49+TVsyOf9mfatGbcdOkLZ5FG2BHLBYdwOeD/xigxquS7WhNVDo2D RQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3b4g66712d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Sep 2021 02:38:00 -0400
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18H5o1mx019974;
-        Fri, 17 Sep 2021 02:38:00 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3b4g66711p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Sep 2021 02:38:00 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18H6WXEr027827;
-        Fri, 17 Sep 2021 06:37:57 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma06ams.nl.ibm.com with ESMTP id 3b0kqkjugk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Sep 2021 06:37:57 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18H6btU643778458
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 17 Sep 2021 06:37:55 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5ABC911C084;
-        Fri, 17 Sep 2021 06:37:55 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E6A6111C04C;
-        Fri, 17 Sep 2021 06:37:51 +0000 (GMT)
-Received: from Madhavan.PrimaryTP (unknown [9.43.58.158])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 17 Sep 2021 06:37:51 +0000 (GMT)
-Subject: Re: [PATCH v1 01/13] perf/core: add union to struct perf_branch_entry
-To:     Stephane Eranian <eranian@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, acme@redhat.com, jolsa@redhat.com,
-        kim.phillips@amd.com, namhyung@kernel.org, irogers@google.com,
-        atrajeev@linux.vnet.ibm.com,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-References: <20210909075700.4025355-1-eranian@google.com>
- <20210909075700.4025355-2-eranian@google.com>
- <20210909190342.GE4323@worktop.programming.kicks-ass.net>
- <878s04my3b.fsf@mpe.ellerman.id.au> <875yv8ms7f.fsf@mpe.ellerman.id.au>
- <CABPqkBQZ48b51vh1vqafOwVK2tBqYFNFGJT2x-a39Ma0TbS=tA@mail.gmail.com>
-From:   Madhavan Srinivasan <maddy@linux.ibm.com>
-Message-ID: <b21bf42e-377d-36d0-49c3-af1e4edf5496@linux.ibm.com>
-Date:   Fri, 17 Sep 2021 12:07:50 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 17 Sep 2021 02:39:27 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27070C061766
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 23:38:06 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id c190-20020a1c9ac7000000b0030b459ea869so643118wme.4
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 23:38:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FwESuS+Kh0JYha0mJK0tNrlmndza4It54ay0fJKb+x8=;
+        b=Z7QZP/tNIa99vmfyMrSkI4rOs7NAyESjVFjMjaaYG8VfLALzjZzK2Haha/QAcoE5bT
+         GshM9bjJjfDgQaQxk6T2Dhgh3F0m5ojPKlk1DuPnrALSc2NgCj4szyU/tUIY3kafKj8N
+         qyXKOn72f29lAJIVnw6h0f5B/4Wd7lVfq5IG5zmg7ppLZuihRX3WXDtw5hJeZE2i3UyT
+         scVfP4/vkOpKTd6eVvCBgHPfLOh1a9yVSVdT6CqCAbVBEqy65Gs+NTFxoQN/INdpcOTc
+         O3m8AM1NXbou1cHDFuSX4Ur6Qxb0J79rvDu4SqrBB7Tarq+ATEnbVCloS4BWI0rXduqP
+         BxlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FwESuS+Kh0JYha0mJK0tNrlmndza4It54ay0fJKb+x8=;
+        b=Ja9FcR8fyuz/DsURjhHZzubIjNEGQOwR/9uscAtQCrinpsNUAZFEyV4LczHmb3y5hd
+         rf0+NFO3p8ERhBh6LxU0kO4Ucz0TqNn6WZmR8fQSa/HWWK9v85KQpwiV3EL0DlRiLDyL
+         bfj0griSEiHKh31v82GOZbIAUl8OOYhCET7nYFX1Q7sj+lPqOYwY+bHRh+u3kxGG+FF0
+         ltmPIhuOw2LhtjJAs7ugwJ0nFv/J+Ff4Icp+5XfKBV6VBulMez+hhCp35Lpo43y12qE0
+         KSDDrNCNURI0wEsQ5j+3+asnVVVdUCBcuHhD/oMlnjvoXgrFjKcPjNFnpkxOWG2IqJup
+         W9Vg==
+X-Gm-Message-State: AOAM530b5LLey4kvx76T5UTi64EKnumxI5ghxgpJ25rYH45en8R8TNEy
+        CTUyYgsl3NpniXy3wiCWt0qfJw==
+X-Google-Smtp-Source: ABdhPJzmOpp10tAZLicy1SJeDSt5vM7SEtSK6iRIcqk+h+3OGz9bqC5HzvYWucrsALxftMC8fQOyYA==
+X-Received: by 2002:a1c:4b15:: with SMTP id y21mr8422129wma.183.1631860684658;
+        Thu, 16 Sep 2021 23:38:04 -0700 (PDT)
+Received: from apalos.home (ppp-94-66-220-137.home.otenet.gr. [94.66.220.137])
+        by smtp.gmail.com with ESMTPSA id k22sm6139578wrd.59.2021.09.16.23.38.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Sep 2021 23:38:04 -0700 (PDT)
+Date:   Fri, 17 Sep 2021 09:38:01 +0300
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     Jesper Dangaard Brouer <jbrouer@redhat.com>, brouer@redhat.com,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linuxarm@openeuler.org,
+        hawk@kernel.org, jonathan.lemon@gmail.com, alobakin@pm.me,
+        willemb@google.com, cong.wang@bytedance.com, pabeni@redhat.com,
+        haokexin@gmail.com, nogikh@google.com, elver@google.com,
+        memxor@gmail.com, edumazet@google.com, dsahern@gmail.com
+Subject: Re: Re: [PATCH net-next v2 3/3] skbuff: keep track of pp page when
+ __skb_frag_ref() is called
+Message-ID: <YUQ3ySFxc/DWzsMy@apalos.home>
+References: <9467ec14-af34-bba4-1ece-6f5ea199ec97@huawei.com>
+ <YUHtf+lI8ktBdjsQ@apalos.home>
+ <0337e2f6-5428-2c75-71a5-6db31c60650a@redhat.com>
+ <fef7d148-95d6-4893-8924-1071ed43ff1b@huawei.com>
+ <YUMD2v7ffs1xAjaW@apalos.home>
+ <ac16cc82-8d98-6a2c-b0a6-7c186808c72c@huawei.com>
+ <YUMelDd16Aw8w5ZH@apalos.home>
+ <e2e127be-c9e4-5236-ba3c-28fdb53aa29b@huawei.com>
+ <YUMxKhzm+9MDR0jW@apalos.home>
+ <36676c07-c2ca-bbd2-972c-95b4027c424f@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <CABPqkBQZ48b51vh1vqafOwVK2tBqYFNFGJT2x-a39Ma0TbS=tA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: Bc7qGFn4sAJKU2lRe4pVFGKEevsh-bgq
-X-Proofpoint-GUID: 5BCmTemU-hTJpBQnaHU2b1e3CIR4m4Gq
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-17_03,2021-09-16_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- suspectscore=0 adultscore=0 clxscore=1011 phishscore=0 spamscore=0
- impostorscore=0 priorityscore=1501 bulkscore=0 mlxlogscore=999
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109030001 definitions=main-2109170040
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <36676c07-c2ca-bbd2-972c-95b4027c424f@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Yunsheng,
 
-On 9/15/21 11:33 AM, Stephane Eranian wrote:
-> Michael,
->
->
-> On Fri, Sep 10, 2021 at 7:16 AM Michael Ellerman <mpe@ellerman.id.au> wrote:
->> Michael Ellerman <mpe@ellerman.id.au> writes:
->>> Peter Zijlstra <peterz@infradead.org> writes:
->>>> On Thu, Sep 09, 2021 at 12:56:48AM -0700, Stephane Eranian wrote:
->>>>> diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
->>>>> index f92880a15645..eb11f383f4be 100644
->>>>> --- a/include/uapi/linux/perf_event.h
->>>>> +++ b/include/uapi/linux/perf_event.h
->>>>> @@ -1329,13 +1329,18 @@ union perf_mem_data_src {
->>>>>   struct perf_branch_entry {
->>>>>      __u64   from;
->>>>>      __u64   to;
->>>>> -   __u64   mispred:1,  /* target mispredicted */
->>>>> -           predicted:1,/* target predicted */
->>>>> -           in_tx:1,    /* in transaction */
->>>>> -           abort:1,    /* transaction abort */
->>>>> -           cycles:16,  /* cycle count to last branch */
->>>>> -           type:4,     /* branch type */
->>>>> -           reserved:40;
->>>>> +   union {
->>>>> +           __u64   val;        /* to make it easier to clear all fields */
->>>>> +           struct {
->>>>> +                   __u64   mispred:1,  /* target mispredicted */
->>>>> +                           predicted:1,/* target predicted */
->>>>> +                           in_tx:1,    /* in transaction */
->>>>> +                           abort:1,    /* transaction abort */
->>>>> +                           cycles:16,  /* cycle count to last branch */
->>>>> +                           type:4,     /* branch type */
->>>>> +                           reserved:40;
->>>>> +           };
->>>>> +   };
->>>>>   };
->>>>
->>>> Hurpmh... all other bitfields have ENDIAN_BITFIELD things except this
->>>> one. Power folks, could you please have a look?
->>> The bit number of each field changes between big and little endian, but
->>> as long as kernel and userspace are the same endian, and both only
->>> access values via the bitfields then it works.
->> ...
->>> It does look like we have a bug in perf tool though, if I take a
->>> perf.data from a big endian system to a little endian one I don't see
->>> any of the branch flags decoded. eg:
->>>
->>> BE:
->>>
->>> 2413132652524 0x1db8 [0x2d0]: PERF_RECORD_SAMPLE(IP, 0x1): 5279/5279: 0xc00000000045c028 period: 923003 addr: 0
->>> ... branch stack: nr:28
->>> .....  0: c00000000045c028 -> c00000000dce7604 0 cycles  P   0
->>>
->>> LE:
->>>
->>> 2413132652524 0x1db8 [0x2d0]: PERF_RECORD_SAMPLE(IP, 0x1): 5279/5279: 0xc00000000045c028 period: 923003 addr: 0
->>> ... branch stack: nr:28
->>> .....  0: c00000000045c028 -> c00000000dce7604 0 cycles      0
->>>                                                           ^
->>>                                                           missing P
->>>
->>> I guess we're missing a byte swap somewhere.
->> Ugh. We _do_ have a byte swap, but we also need a bit swap.
->>
->> That works for the single bit fields, not sure if it will for the
->> multi-bit fields.
->>
->> So that's a bit of a mess :/
->>
-> Based on what I see in perf_event.h for other structures, I think I
-> can make up what you would need for struct branch_entry. But Iit would
-> be easier if you could send me a patch that you would have verified on
-> your systems.
-> Thanks.
-Attached patch fixes the issue. Have tested both in both in BE and LE case.
+[...]
+> >>>>>> I am not sure "pp_recycle_bit was introduced to make the checking faster" is a
+> >>>>>> valid. The size of "struct page" is only about 9 words(36/72 bytes), which is
+> >>>>>> mostly to be in the same cache line, and both standard path and recycle path have
+> >>>>>> been touching the "struct page", so it seems the overhead for checking signature
+> >>>>>> seems minimal.
+> >>>>>>
+> >>>>>> I agree that we need to be cautious and measure potential regression on the
+> >>>>>> standard path.
+> >>>>>
+> >>>>> well pp_recycle is on the same cache line boundary with the head_frag we
+> >>>>> need to decide on recycling. After that we start checking page signatures
+> >>>>> etc,  which means the default release path remains mostly unaffected.  
+> >>>>>
+> >>>>> I guess what you are saying here, is that 'struct page' is going to be
+> >>>>> accessed eventually by the default network path,  so there won't be any 
+> >>>>> noticeable performance hit?  What about the other usecases we have
+> >>>>
+> >>>> Yes.
+> >>>
+> >>> In that case you'd need to call virt_to_head_page() early though, get it
+> >>> and then compare the signature.   I guess that's avoidable by using 
+> >>> frag->bv_page for the fragments?
+> >>
+> >> If a page of a skb frag is from page pool, It seems frag->bv_page is
+> >> always point to head_page of a compound page, so the calling of
+> >> virt_to_head_page() does not seems necessary.
+> >>
+> > 
+> > I was mostly referring to the skb head here and how would you trigger the
+> > recycling path. 
+> > 
+> > I think we are talking about different things here.  
+> > One idea is to use the last bit of frag->bv_page to identify fragments
+> > allocated from page_pool, which is done today with the signature.
+> > 
+> > The signature however exists in the head page so my question was, can we rid
+> > of that without having a performance penalty?
+> 
+> As both skb frag and head page is eventually operated on the head page
+> of a compound page(if it is a compound page) for normal case too, maybe
+> we can refactor the code to get the head page of a compound page before
+> the signature checking without doing a second virt_to_head_page() or
+> compound_head() call?
 
-Maddy
+Yea that's doable, but my concern is different here.  If we do that the
+standard network stack, even for drivers that don't use page_pool,  will
+have to do a virt_to_head_page() -> check signature, to decide if it has to
+try recycling the packet.  That's the performance part I am worried about,
+since it happens for every packet. 
 
- From f816ba2e6ef8d5975f78442d7ecb50d66c3c4326 Mon Sep 17 00:00:00 2001
-From: Madhavan Srinivasan <maddy@linux.ibm.com>
-Date: Wed, 15 Sep 2021 22:29:09 +0530
-Subject: [RFC PATCH] tools/perf: Add reverse_64b macro
+> 
+> > 
+> > IOW in skb_free_head() an we replace:
+> > 
+> > if (skb_pp_recycle(skb, head)) 
+> > with
+> > if (page->pp_magic & ~0x3UL) == PP_SIGNATURE)
+> > and get rid of the 'bool recycle' argument in __skb_frag_unref()?
+> 
+> For the frag page of a skb, it seems ok to get rid of the 'bool recycle'
+> argument in __skb_frag_unref(), as __skb_frag_unref() and __skb_frag_ref()
+> is symmetrically called to put/get a page.
+> 
+> For the head page of a skb, we might need to make sure the head page
+> passed to __build_skb_around() meet below condition:
+> do pp_frag_count incrementing instead of _refcount incrementing when
+> the head page is not newly allocated and it is from page pool.
+> It seems hard to audit that?
 
-branch_stack struct has bit field definition
-producing different bit ordering for big/little endian.
-Because of this, when branch_stack sample collected
-in a BE system viewed/reported in a LE system,
-bit fields of the branch stack are not presented
-properly. To address this issue, a reverse_64b
-macro is defined and introduced in evsel__parse_sample.
+Yea that seems a bit weird at least to me and I am not sure, it's the only
+place we'll have to go and do that.
 
-Signed-off-by: Madhavan Srinivasan <maddy@linux.ibm.com>
----
-  tools/perf/util/evsel.c | 35 +++++++++++++++++++++++++++++++++--
-  1 file changed, 33 insertions(+), 2 deletions(-)
+> 
+> 
+> > 
+> >> bit 0 of frag->bv_page is different way of indicatior for a pp page,
+> >> it is better we do not confuse with the page signature way. Using
+> >> a bit 0 may give us a free word in 'struct page' if we manage to
+> >> use skb->pp_recycle to indicate a head page of the skb uniquely, meaning
+> >> page->pp_magic can be used for future feature.
+> >>
+> >>
+> >>>
+> >>>>
+> >>>>> for pp_recycle right now?  __skb_frag_unref() in skb_shift() or
+> >>>>> skb_try_coalesce() (the latter can probably be removed tbh).
+> >>>>
+> >>>> If we decide to go with accurate indicator of a pp page, we just need
+> >>>> to make sure network stack use __skb_frag_unref() and __skb_frag_ref()
+> >>>> to put and get a page frag, the indicator checking need only done in
+> >>>> __skb_frag_unref() and __skb_frag_ref(), so the skb_shift() and
+> >>>> skb_try_coalesce() should be fine too.
+> >>>>
+> >>>>>
+> >>>>>>
+> >>>>>> Another way is to use the bit 0 of frag->bv_page ptr to indicate if a frag
+> >>>>>> page is from page pool.
+> >>>>>
+> >>>>> Instead of the 'struct page' signature?  And the pp_recycle bit will
+> >>>>> continue to exist?  
+> >>>>
+> >>>> pp_recycle bit might only exist or is only used for the head page for the skb.
+> >>>> The bit 0 of frag->bv_page ptr can be used to indicate a frag page uniquely.
+> >>>> Doing a memcpying of shinfo or "*fragto = *fragfrom" automatically pass the
+> >>>> indicator to the new shinfo before doing a __skb_frag_ref(), and __skb_frag_ref()
+> >>>> will increment the _refcount or pp_frag_count according to the bit 0 of
+> >>>> frag->bv_page.
+> >>>>
+> >>>> By the way, I also prototype the above idea, and it seems to work well too.
+> >>>>
+> >>>
+> >>> As long as no one else touches this, it's just another way of identifying a
+> >>> page_pool allocated page.  But are we gaining by that?  Not using
+> >>> virt_to_head_page() as stated above? But in that case you still need to
+> >>> keep pp_recycle around. 
+> >>
+> >> No, we do not need the pp_recycle, as long as the we make sure __skb_frag_ref()
+> >> is called after memcpying the shinfo or doing "*fragto = *fragfrom".
+> > 
+> > But we'll have to keep it for the skb head in this case.
+> 
+> As above, I am not really look into skb head case:)
 
-diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-index dbfeceb2546c..3151606e516e 100644
---- a/tools/perf/util/evsel.c
-+++ b/tools/perf/util/evsel.c
-@@ -2221,6 +2221,9 @@ void __weak arch_perf_parse_sample_weight(struct 
-perf_sample *data,
-      data->weight = *array;
-  }
+Let me take a step back here, because I think we drifted a bit. 
+The page signature was introduced in order to be able to identify skb
+fragments. The problem was that you couldn't rely on the pp_recycle bit of
+the skb head,  since fragments could come from anywhere.  So you use the
+skb bit as a hint for skb frags, and you eventually decide using the page
+signature.
 
-+#define reverse_64b(src, pos, size)    \
-+    (((src >> pos) & (( 1ull <<size) - 1)) << (63 - (pos + size - 1)))
-+
-  int evsel__parse_sample(struct evsel *evsel, union perf_event *event,
-              struct perf_sample *data)
-  {
-@@ -2408,6 +2411,8 @@ int evsel__parse_sample(struct evsel *evsel, union 
-perf_event *event,
-      if (type & PERF_SAMPLE_BRANCH_STACK) {
-          const u64 max_branch_nr = UINT64_MAX /
-                        sizeof(struct branch_entry);
-+        struct branch_entry *e;
-+        unsigned i;
+So we got 3 options (Anything I've missed ?)
+- try to remove pp_recycle bit, since the page signature is enough for the
+  skb head and fragments.  That in my opinion is the cleanest option,  as
+  long as we can prove there's no performance hit on the standard network
+  path.
 
-          OVERFLOW_CHECK_u64(array);
-          data->branch_stack = (struct branch_stack *)array++;
-@@ -2416,10 +2421,36 @@ int evsel__parse_sample(struct evsel *evsel, 
-union perf_event *event,
-              return -EFAULT;
+- Replace the page signature with frag->bv_page bit0.  In that case we
+  still have to keep the pp_recycle bit,  but we do have an 'easier'
+  indication that a skb frag comes from page_pool.  That's still pretty
+  safe, since you now have unique identifiers for the skb and page
+  fragments and you can be sure of their origin (page pool or not).
+  What I am missing here, is what do we get out of this?  I think the
+  advantage is not having to call virt_to_head_page() for frags ?
 
-          sz = data->branch_stack->nr * sizeof(struct branch_entry);
--        if (evsel__has_branch_hw_idx(evsel))
-+        if (evsel__has_branch_hw_idx(evsel)) {
-              sz += sizeof(u64);
--        else
-+            e = &data->branch_stack->entries[0];
-+        } else {
-              data->no_hw_idx = true;
-+            e = (struct branch_entry *)&data->branch_stack->hw_idx;
-+        }
-+
-+        if (swapped) {
-+            for (i = 0; i < data->branch_stack->nr; i++, e++) {
-+                u64 new_val = 0;
-+
-+                /* mispred:1  target mispredicted */
-+                new_val = reverse_64b(e->flags.value, 0, 1);
-+                /* predicted:1  target predicted */
-+                new_val |= reverse_64b(e->flags.value, 1, 1);
-+                /* in_tx:1  in transaction */
-+                new_val |= reverse_64b(e->flags.value, 2, 1);
-+                /* abort:1  transaction abort */
-+                new_val |= reverse_64b(e->flags.value, 3, 1);
-+                /* cycles:16  cycle count to last branch */
-+                new_val |= reverse_64b(e->flags.value, 4, 16);
-+                /* type:4  branch type */
-+                new_val |= reverse_64b(e->flags.value, 20, 4);
-+                /* reserved:40 */
-+                new_val |= reverse_64b(e->flags.value, 24, 40);
-+                e->flags.value = new_val;
-+            }
-+        }
-+
-          OVERFLOW_CHECK(array, sz, max_size);
-          array = (void *)array + sz;
-      }
--- 
-2.31.1
+- Keep all of them(?) and use frag->bv_page bit0 similarly to pp_recycle
+  bit?  I don't see much value on this one,  I am just keeping it here for
+  completeness.
 
+Thanks
+/Ilias
 
+> 
+> > 
+> > Regards
+> > /Ilias
+> > 
+> >>
+> >>>
+> >>>>> .
+> >>>>> Right now the 'naive' explanation on the recycling decision is something like:
+> >>>>>
+> >>>>> if (pp_recycle) <--- recycling bit is set
+> >>>>>     (check page signature) <--- signature matches page pool
+> >>>>> 		(check fragment refcnt) <--- If frags are enabled and is the last consumer
+> >>>>> 			recycle
+> >>>>>
+> >>>>> If we can proove the performance is unaffected when we eliminate the first if,
+> >>>>> then obviously we should remove it.  I'll try running that test here and see,
+> >>>>> but keep in mind I am only testing on an 1GB interface.  Any chance we can get 
+> >>>>> measurements on a beefier hardware using hns3 ?
+> >>>>
+> >>>> Sure, I will try it.
+> >>>> As the kind of performance overhead is small, any performance testcase in mind?
+> >>>>
+> >>>
+> >>> 'eliminate the first if' wasn't accurate.  I meant switch the first if and
+> >>> check the struct page signature instead.  That would be the best solution
+> >>> imho.  We effectively have a single rule to check if a packet comes from
+> >>> page_pool or not.
+> >>
+> >> I am not sure what does "switch " means here, if the page signature can
+> >> indicate a pp page uniquely, the "if (pp_recycle)" checking can be removed.
+> >>
+> >>>
+> >>> You can start by sending a lot of packets and dropping those immediately.
+> >>> That should put enough stress on the receive path and the allocators and it
+> >>> should give us a rough idea. 
+> >>>
+> >>>>>
+> >>>>>>
+> >>>>>>>
+> >>>>>>>> But in general,  I'd be happier if we only had a simple logic in our
+> >>>>>>>> testing for the pages we have to recycle.  Debugging and understanding this
+> >>>>>>>> otherwise will end up being a mess.
+> >>>>>>>
+> >>>>>>>
+> >>>>>
+> >>>>> [...]
+> >>>>>
+> >>>>> Regards
+> >>>>> /Ilias
+> >>>>> .
+> >>>>>
+> >>>
+> >>> Regards
+> >>> /Ilias
+> >>> .
+> >>>
+> > .
+> > 
