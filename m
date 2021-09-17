@@ -2,109 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 849BF40FAEA
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 16:57:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF7C440FAED
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 16:57:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238787AbhIQO64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 10:58:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238372AbhIQO6y (ORCPT
+        id S242117AbhIQO7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 10:59:09 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:2948 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236034AbhIQO7H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 10:58:54 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4180C061574;
-        Fri, 17 Sep 2021 07:57:32 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id c42-20020a05683034aa00b0051f4b99c40cso13260743otu.0;
-        Fri, 17 Sep 2021 07:57:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=HommjSZU0AKAIbij2iHpVnnWLtjGW54TVbe+ijcsoYw=;
-        b=lPb2rV/oAhgrjCYBZIlVrsCzk27usUH6Yr7w+t8cGylQD0VOR3/Pmsxbq2fEGwfNdQ
-         z1+MqIDv0+bW4yGCjhbK+oF3cvoQzQAu8pU3I6btsvwt/XTDQuqnLeD+47FEHtN1Ir2H
-         wuUHXMXmWcjN36cLM7T6OJzFRy/EeVjWxX2U2kQh+bX/sPCuqXNxgKWQagLcIITkn/ao
-         +BLA46DoNiQ48YYZqUrEL4S16gS0dTqTZ00gIPrrGy14Fy5D2n+i8gS8/NfnzBZTq18r
-         zvLlU8QRVQ/aLyyygpq4qIZ9hq2VLdSJy78JjqlQ677wJmq8q4PJZSDPxh7i5AjEp6IW
-         x5Xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=HommjSZU0AKAIbij2iHpVnnWLtjGW54TVbe+ijcsoYw=;
-        b=iYIxaa09YJVVMy/Gu5S4gqyTkSaYTT6Abknsyjx4m55B+rVVyy6G9Xt9mXund/RH6r
-         ceByruqRlwanMenc/RQxtGFWTd3q5OjJWJiqeMtCx90tfAhffP0GqaoodLmQqJtD6qct
-         dP5Aa3qQgSy3x/zQJFRZp7v+yopsjedYywi29nFUjxxw51k0Ij3bQELk6Pxoj38zDqPI
-         CkDjrdi4fdwXdh7TemrCYNTHjx0lLnw/zwv0z9xesWUMJ/hZiwZHp+4jXPmwxFXGbXyb
-         F2QzxQeN2O7cS3pwvp+J9q8NSx8AwN095aZXPlx6h1iQs5HgKSz6QMkJcRpTzTe0ovAv
-         oNew==
-X-Gm-Message-State: AOAM531WBXkOrPJnvHxKBvGmDz0BxN8PPkZqemkl2AL1aDIfEW/ZshI+
-        k0NsUrcd1J2nqW4WD78Wt9c=
-X-Google-Smtp-Source: ABdhPJw0nznUgbbF88p8qquwhDmGqe5hPv4Kaux6JWVLLmnsuidDV0EnAGbUS1FS3wxGLB4XdBXpzg==
-X-Received: by 2002:a9d:4a88:: with SMTP id i8mr9347177otf.290.1631890652285;
-        Fri, 17 Sep 2021 07:57:32 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id v11sm1571613oto.22.2021.09.17.07.57.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 07:57:31 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Fri, 17 Sep 2021 07:57:29 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Fengquan Chen <Fengquan.Chen@mediatek.com>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        tinghan.shen@mediatek.com, randy.wu@mediatek.com,
-        rex-bc.chen@mediatek.com, christine.zhu@mediatek.com,
-        joe.yang@mediatek.com, zhishuang.zhang@mediatek.com,
-        Rob Herring <robh@kernel.org>
-Subject: Re: [v3,1/2] dt-bindings: watchdog: mtk-wdt: add disable_wdt_extrst
- support
-Message-ID: <20210917145729.GA1426468@roeck-us.net>
-References: <20210914123454.32603-1-Fengquan.Chen@mediatek.com>
- <20210914123454.32603-2-Fengquan.Chen@mediatek.com>
+        Fri, 17 Sep 2021 10:59:07 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18HEsirx025491;
+        Fri, 17 Sep 2021 10:57:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=OPmAXWDDT6mpkYX81WXwDayugIiACXQbp3UZf0I+Mh8=;
+ b=T4WYvE4gBvFy0iYpxfZFSOjbGvnu6hGkcd+1dMZWcOmENOwVlKGtR16Hj6ixSX7bUCuJ
+ etcEKgoxoSG46MJnhPj7MZjXjRPD4w/J9DEgOK36J+Z2CoWT2MCwKwk8DeUeKx9k4yR0
+ Mfpei5xBexe8mTCJcl3Vql0Xl09tV0AFXQQFRo7Z33+9RQLvd0c6m5V0JQDST3pbTt58
+ 6CT/WF6Ti0hspPB5Ogt1ltNyqbiUZ73Tt+JzeFfg7BcPddFXGpLAOQd7iRNCnqRYujIx
+ uSrJloHX+XRO0oIpH1WkJq8hZ0S841z0w/C2lIDRgRw4EJ3utIw+lHcMateGF1k+vTww ZA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3b4k5r6ghq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Sep 2021 10:57:44 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18HEt0RN026358;
+        Fri, 17 Sep 2021 10:57:44 -0400
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3b4k5r6gh0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Sep 2021 10:57:44 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18HEulk5027932;
+        Fri, 17 Sep 2021 14:57:42 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma03fra.de.ibm.com with ESMTP id 3b0m3adphu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Sep 2021 14:57:42 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18HEvcd555116064
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 17 Sep 2021 14:57:38 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4ADB652063;
+        Fri, 17 Sep 2021 14:57:38 +0000 (GMT)
+Received: from p-imbrenda (unknown [9.145.1.138])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id C643E5204E;
+        Fri, 17 Sep 2021 14:57:37 +0000 (GMT)
+Date:   Fri, 17 Sep 2021 16:57:35 +0200
+From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
+To:     Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     kvm@vger.kernel.org, cohuck@redhat.com, frankja@linux.ibm.com,
+        thuth@redhat.com, pasic@linux.ibm.com, david@redhat.com,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ulrich.Weigand@de.ibm.com,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+Subject: Re: [PATCH v4 06/14] KVM: s390: pv: properly handle page flags for
+ protected guests
+Message-ID: <20210917165735.1e86d02b@p-imbrenda>
+In-Reply-To: <35e4b7a3-42d8-6b8f-e2e7-5b6a81dfcfa3@de.ibm.com>
+References: <20210818132620.46770-1-imbrenda@linux.ibm.com>
+        <20210818132620.46770-7-imbrenda@linux.ibm.com>
+        <1a44ff5c-f59f-2f37-2585-084294ed5e11@de.ibm.com>
+        <20210906175618.4ce0323f@p-imbrenda>
+        <35e4b7a3-42d8-6b8f-e2e7-5b6a81dfcfa3@de.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210914123454.32603-2-Fengquan.Chen@mediatek.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: KmcHDqXiD8Sl-rBswjkfDOQsNx4XgGUM
+X-Proofpoint-GUID: JLssg89AUaE9N8_YjYkcfv6fdO2NH29d
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-17_06,2021-09-17_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
+ adultscore=0 bulkscore=0 suspectscore=0 clxscore=1015 malwarescore=0
+ mlxscore=0 mlxlogscore=999 phishscore=0 lowpriorityscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109170093
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 08:34:53PM +0800, Fengquan Chen wrote:
-> This patch add a description and example of disable_wdt_extrst
-> element for watchdog on MTK Socs
-> 
-> Signed-off-by: Fengquan Chen <fengquan.chen@mediatek.com>
-> Acked-by: Rob Herring <robh@kernel.org>
+On Mon, 6 Sep 2021 18:16:10 +0200
+Christian Borntraeger <borntraeger@de.ibm.com> wrote:
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-
-> ---
->  Documentation/devicetree/bindings/watchdog/mtk-wdt.txt | 2 ++
->  1 file changed, 2 insertions(+)
+> On 06.09.21 17:56, Claudio Imbrenda wrote:
+> > On Mon, 6 Sep 2021 17:46:40 +0200
+> > Christian Borntraeger <borntraeger@de.ibm.com> wrote:
+> >   
+> >> On 18.08.21 15:26, Claudio Imbrenda wrote:  
+> >>> Introduce variants of the convert and destroy page functions that also
+> >>> clear the PG_arch_1 bit used to mark them as secure pages.
+> >>>
+> >>> These new functions can only be called on pages for which a reference
+> >>> is already being held.
+> >>>
+> >>> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+> >>> Acked-by: Janosch Frank <frankja@linux.ibm.com>  
+> >>
+> >> Can you refresh my mind? We do have over-indication of PG_arch_1 and this
+> >> might result in spending some unneeded cycles but in the end this will be
+> >> correct. Right?
+> >> And this patch will fix some unnecessary places that add overindication.  
+> > 
+> > correct, PG_arch_1 will still overindicate, but with this patch it will
+> > happen less.
+> > 
+> > And PG_arch_1 overindication is perfectly fine from a correctness point
+> > of view.  
 > 
-> diff --git a/Documentation/devicetree/bindings/watchdog/mtk-wdt.txt b/Documentation/devicetree/bindings/watchdog/mtk-wdt.txt
-> index a4e31ce96e0e..0114871f887a 100644
-> --- a/Documentation/devicetree/bindings/watchdog/mtk-wdt.txt
-> +++ b/Documentation/devicetree/bindings/watchdog/mtk-wdt.txt
-> @@ -22,6 +22,7 @@ Required properties:
->  - reg : Specifies base physical address and size of the registers.
->  
->  Optional properties:
-> +- mediatek,disable-extrst: disable send output reset signal
->  - interrupts: Watchdog pre-timeout (bark) interrupt.
->  - timeout-sec: contains the watchdog timeout in seconds.
->  - #reset-cells: Should be 1.
-> @@ -31,6 +32,7 @@ Example:
->  watchdog: watchdog@10007000 {
->  	compatible = "mediatek,mt8183-wdt",
->  		     "mediatek,mt6589-wdt";
-> +	mediatek,disable-extrst;
->  	reg = <0 0x10007000 0 0x100>;
->  	interrupts = <GIC_SPI 139 IRQ_TYPE_NONE>;
->  	timeout-sec = <10>;
+> Maybe add something like this to the patch description then.
+> 
+> >>> +/*
+> >>> + * The caller must already hold a reference to the page
+> >>> + */
+> >>> +int uv_destroy_owned_page(unsigned long paddr)
+> >>> +{
+> >>> +	struct page *page = phys_to_page(paddr);  
+> 
+> Do we have to protect against weird mappings without struct page here? I have not
+> followed the discussion about this topic. Maybe Gerald knows if we can have memory
+> without struct pages.
+
+at first glance, it seems we can't have mappings without a struct page
+
+> 
+> >>> +	int rc;
+> >>> +
+> >>> +	get_page(page);
+> >>> +	rc = uv_destroy_page(paddr);
+> >>> +	if (!rc)
+> >>> +		clear_bit(PG_arch_1, &page->flags);
+> >>> +	put_page(page);
+> >>> +	return rc;
+> >>> +}
+> >>> +
+> >>>    /*
+> >>>     * Requests the Ultravisor to encrypt a guest page and make it
+> >>>     * accessible to the host for paging (export).
+> >>> @@ -154,6 +170,22 @@ int uv_convert_from_secure(unsigned long paddr)
+> >>>    	return 0;
+> >>>    }
+> >>>    
+> >>> +/*
+> >>> + * The caller must already hold a reference to the page
+> >>> + */
+> >>> +int uv_convert_owned_from_secure(unsigned long paddr)
+> >>> +{
+> >>> +	struct page *page = phys_to_page(paddr);  
+> 
+> Same here. If this is not an issue (and you add something to the patch description as
+> outlined above)
+> 
+> Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
+> 
+> 
+
