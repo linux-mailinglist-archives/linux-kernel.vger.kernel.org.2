@@ -2,71 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22D5A40F3D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 10:09:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C245C40F3D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 10:11:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245368AbhIQIKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 04:10:51 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:49824 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245596AbhIQIKk (ORCPT
+        id S233367AbhIQINI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 04:13:08 -0400
+Received: from mout.kundenserver.de ([212.227.126.134]:40981 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233348AbhIQINE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 04:10:40 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 51D3F1FD5D;
-        Fri, 17 Sep 2021 08:09:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631866157; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YDJr73yVgkekvJkt9rshETzgKC3pw7Vz16Ry4YYZbBs=;
-        b=ZPp0s+c+kU2WIdmH5VZIdC9hGdFR4TJoACC7/rZZPsJXF9Hr309Yto92B1EsTJX6r9fJ5C
-        G9t1az9JzcVWXFR0nWQKYbRz0xpNDSmYFe2WuGzhI2Fjoyh0DC6EpWPPltSDeRFegnDC4q
-        SjpweXDINhG1aTsH/P5mflYoPm7nCPs=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 322E113A86;
-        Fri, 17 Sep 2021 08:09:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id HPWFCy1NRGFxKwAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Fri, 17 Sep 2021 08:09:17 +0000
-Date:   Fri, 17 Sep 2021 10:09:15 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     brookxu <brookxu.cn@gmail.com>
-Cc:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        vipinsh@google.com, corbet@lwn.net, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v3 2/3] misc_cgroup: remove error log to avoid log flood
-Message-ID: <20210917080915.GB3827@blackbody.suse.cz>
-References: <3834f917d50a6f19402e179e917ef6a9dde5f64a.1631671936.git.brookxu@tencent.com>
- <a960cd793f649bd944127fe5e5e3f4d8bb9040a4.1631671936.git.brookxu@tencent.com>
- <20210916175711.GA12643@blackbody.suse.cz>
- <eece1309-4c1e-909a-22ea-3db31ad7a1da@gmail.com>
+        Fri, 17 Sep 2021 04:13:04 -0400
+Received: from mail-wm1-f46.google.com ([209.85.128.46]) by
+ mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MAtoX-1mcRUr2ycL-00BLqu; Fri, 17 Sep 2021 10:11:40 +0200
+Received: by mail-wm1-f46.google.com with SMTP id f62-20020a1c1f41000000b0030b42643f72so1282753wmf.3;
+        Fri, 17 Sep 2021 01:11:40 -0700 (PDT)
+X-Gm-Message-State: AOAM531drqy4BbYmcUK2E/pc2+hOJO9tQCwdg32h/aWDgC+Qojuh1RSU
+        UfC/Wm2K5+iwHVU5jBQ12a93HBlP49QMQ7ubulQ=
+X-Google-Smtp-Source: ABdhPJzdLqnRgI4cH6Nyy5LXIDujO3LJsA9YmMdPik3wbbxv6tFICqff3PNBsHdiQf1eaKsTtL5RdxVWXX/UgvbQIM8=
+X-Received: by 2002:a1c:23cb:: with SMTP id j194mr13725733wmj.1.1631866300248;
+ Fri, 17 Sep 2021 01:11:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <eece1309-4c1e-909a-22ea-3db31ad7a1da@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210917035736.3934017-1-chenhuacai@loongson.cn> <20210917035736.3934017-10-chenhuacai@loongson.cn>
+In-Reply-To: <20210917035736.3934017-10-chenhuacai@loongson.cn>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 17 Sep 2021 10:11:24 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0BkYBoBh37YyZ1HU4f1thL6ckJR0MZhbkhpKanVK1WcQ@mail.gmail.com>
+Message-ID: <CAK8P3a0BkYBoBh37YyZ1HU4f1thL6ckJR0MZhbkhpKanVK1WcQ@mail.gmail.com>
+Subject: Re: [PATCH V3 09/22] LoongArch: Add boot and setup routines
+To:     Huacai Chen <chenhuacai@loongson.cn>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Airlie <airlied@linux.ie>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        Huacai Chen <chenhuacai@gmail.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:xX3+od/obibddeM4KisBEcIfw3ae01neA0i41oKlXY7PmDRQkbV
+ gd7xnoQncgU5oZo1atrpKQOyYCS8qqp6pFdOmBVaY32r8RyizwNteLpzETqJFBM7+PhbJ8z
+ +bJ81FyRd4cjY+DMiF/SmYD1lvNlKcQJ5YcIS559iQ8SE+VehBRYvNPcjudGHp01wcSJR1u
+ ri5pDfW4OZHCcGCXkvGKA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Xjcg/tARvE4=:KCXqULx1p511re317mZ7tf
+ mfRWXwKw3ufYl8Q+AnV5f8x47mRIxkbUVolojz+TVRvY8xsbrb3T75uoO5lIJyfKRjORBXEXS
+ 9sjT4djIa9adZjCeDE6zGwfOKbASK74uaSGfBphqOF9SQwjQ2/JoeUYAWVG7a72oMGTnykIsd
+ QxoPca5+LuX+fR241YLQmIjYtIp5MNauvE9Y/G7Kt5eWv+e0I25DmSKteod4wULy2YZeBMWz2
+ NKd3vDFXtpyfh5fmxoWJ8oHNGUKsBymswi+5qfbVNremY5kQClIJQD1rizx4EU/Mf1Fg09pxc
+ vFGG+VcagIyq1s6SxRcujVzwxEK6w7siFrRiLIiLxoiJwe04PUtE+YffLpwruzwJMilPJgW+2
+ +q7L/dLqDF+dzZ1zDmnrvATCJTZrIwZiSKArubg+1l9jO52gaXNR8xaa9a/BUdWQxN1bdaAXP
+ 3tV4F8zcoS3wGqF7oEdK/+5yeAXpGy9WeZ5CcRko5ReBVIqzlHTPq/eqbBlTQKVbEgechP2Yo
+ d6LgrzaPoLhnrNVRQ6pr7W/99ViGq7WdipQTWbvdvz4GdAEaMdilrdMN8gOuYgGPWEaGZkxXo
+ PZTUjh5/UOLjofNpKJXnW0sP+1uo0whlOfQxF/kCij1kYaeDLYZN3npTYb6V51Ul8DqnQ5HCy
+ USujMVq/JyADIWmH5hePb9jxs07n8xHiauzL4eWAlQY9E9sS0UPBLoDZE1yI4Z1jRg5X1uRzP
+ 3F7+oOv2Lp8STlt+d50spCdAhUdffET5vW8ZkLMzmqcwNW0S5tVsl96GH2/rspmZQaoIz2p03
+ qCoGhVsmRuAGYmtk3iVsaTLjxgDFWkeEPKZr+NKEjgpKRZiYxJKjVXKGJFIcO1GRFImnmHzMF
+ BdcEC22ZLyxVHGYNOrYQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 09:56:26AM +0800, brookxu <brookxu.cn@gmail.com> wrote:
-> Yeah, maybe we should make it more clearly, What do you think of
-> the commit below:
-> 
-> In scenarios where containers are frequently created and deleted,
-> a large number of error logs maybe generated. The logs only show
-> which node is about to go over the max limit, not the node which
-> resource request failed. As misc.event has provided relevant
-> information, maybe we can remove this log.
+On Fri, Sep 17, 2021 at 5:57 AM Huacai Chen <chenhuacai@loongson.cn> wrote:
+> This patch adds basic boot, setup and reset routines for LoongArch.
+> LoongArch uses UEFI-based firmware and uses ACPI as the boot protocol.
 
-It is a good reasoning for the change. LGTM.
+This needs to be reviewed by the maintainers for the EFI and ACPI subsystems,
+I added them to Cc here. If you add lines like
 
-Michal
+Cc: Ard Biesheuvel <ardb@kernel.org>
+Cc: linux-efi@vger.kernel.org
+
+in the patch description before your Signed-off-by, then git-send-email will
+Cc them automatically without you having to spam them with the entire series.
+
+In particular, I know that Ard previously complained that you did not use the
+EFI boot protocol correctly, and I want to make sure that he's happy with the
+final version.
+
+> +static ssize_t boardinfo_show(struct kobject *kobj,
+> +                             struct kobj_attribute *attr, char *buf)
+> +{
+> +       return sprintf(buf,
+> +               "BIOS Information\n"
+> +               "Vendor\t\t\t: %s\n"
+> +               "Version\t\t\t: %s\n"
+> +               "ROM Size\t\t: %d KB\n"
+> +               "Release Date\t\t: %s\n\n"
+> +               "Board Information\n"
+> +               "Manufacturer\t\t: %s\n"
+> +               "Board Name\t\t: %s\n"
+> +               "Family\t\t\t: LOONGSON64\n\n",
+> +               b_info.bios_vendor, b_info.bios_version,
+> +               b_info.bios_size, b_info.bios_release_date,
+> +               b_info.board_vendor, b_info.board_name);
+> +}
+> +
+> +static struct kobj_attribute boardinfo_attr = __ATTR(boardinfo, 0444,
+> +                                                    boardinfo_show, NULL);
+> +
+> +static int __init boardinfo_init(void)
+> +{
+> +       if (!efi_kobj)
+> +               return -EINVAL;
+> +
+> +       return sysfs_create_file(efi_kobj, &boardinfo_attr.attr);
+> +}
+> +late_initcall(boardinfo_init);
+
+I see you have documented this interface for your mips machines,
+but nothing else uses it.
+
+I think some of this information should be part of the soc_device,
+either in addition to, or in place of this sysfs file.
+
+Isn't there an existing method to do this on x86/arm/ia64 machines?
+
+> +static int constant_set_state_periodic(struct clock_event_device *evt)
+> +{
+> +       unsigned long period;
+> +       unsigned long timer_config;
+> +
+> +       raw_spin_lock(&state_lock);
+> +
+> +       period = const_clock_freq / HZ;
+> +       timer_config = period & CSR_TCFG_VAL;
+> +       timer_config |= (CSR_TCFG_PERIOD | CSR_TCFG_EN);
+> +       csr_writeq(timer_config, LOONGARCH_CSR_TCFG);
+> +
+> +       raw_spin_unlock(&state_lock);
+
+I see this pattern in a couple of places, using a spinlock or raw_spinlock
+to guard MMIO access, but on many architectures a register write is
+not serialized by the following spin_unlock, unless you insert another
+read from the same address in there. E.g. on PCIe, writes are always
+posted and it would not work.
+
+Can you confirm that it works correctly on CSR registers in loongarch?
+
+         Arnd
