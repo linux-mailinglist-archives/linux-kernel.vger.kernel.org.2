@@ -2,168 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 159CE40F9D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 15:58:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CB2940F9D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 15:59:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241589AbhIQOAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 10:00:07 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:55551 "EHLO pegase2.c-s.fr"
+        id S242714AbhIQOAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 10:00:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38740 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245694AbhIQN7J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 09:59:09 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4H9wWV63PWz9sTL;
-        Fri, 17 Sep 2021 15:57:42 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 2Vvp1TjPwSN4; Fri, 17 Sep 2021 15:57:42 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4H9wWV5Bb0z9sT4;
-        Fri, 17 Sep 2021 15:57:42 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9E7908B799;
-        Fri, 17 Sep 2021 15:57:42 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id gyuS0UJzf1no; Fri, 17 Sep 2021 15:57:42 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.202.36])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 514108B768;
-        Fri, 17 Sep 2021 15:57:42 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 18HDvWBM675083
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Fri, 17 Sep 2021 15:57:32 +0200
-Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 18HDvWBk675082;
-        Fri, 17 Sep 2021 15:57:32 +0200
-X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH v2] powerpc/32: Don't use a struct based type for pte_t
-Date:   Fri, 17 Sep 2021 15:57:31 +0200
-Message-Id: <c904599f33aaf6bb7ee2836a9ff8368509e0d78d.1631887042.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.31.1
+        id S242097AbhIQOAa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 10:00:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A7892611C3;
+        Fri, 17 Sep 2021 13:59:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631887148;
+        bh=em7tfOdoqqzx6DYhxHC4BEgcII1sZaKQpkbYD/MwIso=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=g0Og+B7AXeoKXtrW8hnQE39HMjCZRg8n6XDJ4j+rMTaP5kheDlzuJQyT8YEakxClK
+         EYLpSblEotfhuyZ7lZGzgJt14WfmJEG1NTfDj5GPiNjTmbZIRtaSlklWwdD1Q4z3uE
+         ca83i62PdVWj6K+SAYWfi46F3+pzOWz1xNc7pMeK3Sn28prY+zWMRy5ERta8nXhZWS
+         plqTrBFty+m8pKCxg+LeymJptpNJl0llSnmZUZum6nCjD6SjiUfY8OqIgjjrIA1A5d
+         Ayxs/SyZuzbS9+LTSRbPA+eCM6UfYUS2+taExPCvy7CBas+GnrncNc1qo5pkk5XJGv
+         hLCnNWm5mvtxg==
+Date:   Fri, 17 Sep 2021 16:59:01 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     zhenguo yao <yaozhenguo1@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>, corbet@lwn.net,
+        yaozhenguo@jd.com, Matthew Wilcox <willy@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: Re: [PATCH v4] hugetlbfs: Extend the definition of hugepages
+ parameter to support node allocation
+Message-ID: <YUSfJRnvYmGbIl1f@kernel.org>
+References: <20210909141655.87821-1-yaozhenguo1@gmail.com>
+ <20210914205001.7ccc7ef3dd76a9ec551b370e@linux-foundation.org>
+ <CA+WzARmsPT46ck17-96cJVWE-=QEK8QobRFnCnEcNxsd42zNTw@mail.gmail.com>
+ <c55f0be5-f68d-1a33-a9e4-5890a2887a15@oracle.com>
+ <98a8ea20-5642-d332-d7b4-18e075a594fb@oracle.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <98a8ea20-5642-d332-d7b4-18e075a594fb@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Long time ago we had a config item called STRICT_MM_TYPECHECKS
-to build the kernel with pte_t defined as a structure in order
-to perform additional build checks or build it with pte_t
-defined as a simple type in order to get simpler generated code.
+Hi Mike,
 
-Commit 670eea924198 ("powerpc/mm: Always use STRICT_MM_TYPECHECKS")
-made the struct based definition the only one, considering that the
-generated code was similar in both cases.
+On Wed, Sep 15, 2021 at 03:05:41PM -0700, Mike Kravetz wrote:
+> Now, really CC'ing Mike, and sorry for misspelling your name
+> 
+> On 9/15/21 3:03 PM, Mike Kravetz wrote:
+> > On 9/15/21 6:11 AM, zhenguo yao wrote:
+> >> Andrew Morton <akpm@linux-foundation.org> 于2021年9月15日周三 上午11:50写道：
+> >>>
+> >>> On Thu,  9 Sep 2021 22:16:55 +0800 yaozhenguo <yaozhenguo1@gmail.com> wrote:
+> >>>
+> >>>> We can specify the number of hugepages to allocate at boot. But the
+> >>>> hugepages is balanced in all nodes at present. In some scenarios,
+> >>>> we only need hugepages in one node. For example: DPDK needs hugepages
+> >>>> which are in the same node as NIC. if DPDK needs four hugepages of 1G
+> >>>> size in node1 and system has 16 numa nodes. We must reserve 64 hugepages
+> >>>> in kernel cmdline. But, only four hugepages are used. The others should
+> >>>> be free after boot. If the system memory is low(for example: 64G), it will
+> >>>> be an impossible task. So, Extending hugepages parameter to support
+> >>>> specifying hugepages at a specific node.
+> >>>> For example add following parameter:
+> >>>>
+> >>>> hugepagesz=1G hugepages=0:1,1:3
+> >>>>
+> >>>> It will allocate 1 hugepage in node0 and 3 hugepages in node1.
+> >>>>
+> >>>> ...
+> >>>>
+> >>>> @@ -2842,10 +2843,75 @@ static void __init gather_bootmem_prealloc(void)
+> >>>>       }
+> >>>>  }
+> >>>>
+> >>>> +static void __init hugetlb_hstate_alloc_pages_onenode(struct hstate *h, int nid)
+> >>>> +{
+> >>>> +     unsigned long i;
+> >>>> +     char buf[32];
+> >>>> +
+> >>>> +     for (i = 0; i < h->max_huge_pages_node[nid]; ++i) {
+> >>>> +             if (hstate_is_gigantic(h)) {
+> >>>> +                     struct huge_bootmem_page *m;
+> >>>> +                     void *addr;
+> >>>> +
+> >>>> +                     addr = memblock_alloc_try_nid_raw(
+> >>>> +                                     huge_page_size(h), huge_page_size(h),
+> >>>> +                                     0, MEMBLOCK_ALLOC_ACCESSIBLE, nid);
+> >>>> +                     if (!addr)
+> >>>> +                             break;
+> >>>> +                     m = addr;
+> >>>> +                     BUG_ON(!IS_ALIGNED(virt_to_phys(m), huge_page_size(h)));
+> >>>
+> >>> We try very hard to avoid adding BUG calls.  Is there any way in which
+> >>> this code can emit a WARNing then permit the kernel to keep operating?
+> >>>
+> >> Maybe we can rewrite it as below:
+> >>                         if (WARN(!IS_ALIGNED(virt_to_phys(m),
+> >> huge_page_size(h)),
+> >>                                 "HugeTLB: page addr:%p is not aligned\n", m))
+> >>                                 break;
+> >> @Mike,  Do you think it's OK?
+> > 
+> > Sorry, I have not yet reviewed the latest version of this patch.
+> > Quick thought on this question.
+> > 
+> > The required alignment passed to memblock_alloc_try_nid_raw() is
+> > huge_page_size(h).  Therefore, we know the virtual address m is
+> > huge_page_size(h) aligned.  The BUG is just checking to make sure
+> > the physical address associated with the virtual address is aligned
+> > the same.  I really do not see how this could not be the case.
+> > In fact, the memblock allocator finds a physical address with the
+> > required alignment and then returns phys_to_virt(alloc).
+> > Someone please correct me if I am wrong.  Otherwise, we can drop
+> > the BUG.
 
-That's right on ppc64 because the ABI is such that the content of a
-struct having a single simple type element is passed as register,
-but on ppc32 such a structure is passed via the stack like any
-structure.
+I agree with your analysis and I also think the BUG() can be dropped
+entirely as well as the BUG() in __alloc_bootmem_huge_page().
 
-Simple test function:
+> > Adding Mike Rapport on Cc:
+> > 
+> > This allocation code and the associated BUG was copied from
+> > __alloc_bootmem_huge_page().  The BUG was added 12 years ago before
+> > the memblock allocator existed and we were using the bootmem allocator.
+> > If there is no need for a BUG in hugetlb_hstate_alloc_pages_onenode,
+> > there is no need for one in __alloc_bootmem_huge_page.
 
-	pte_t test(pte_t pte)
-	{
-		return pte;
-	}
+Hmm, even bootmem had alignment guaranties so it seems to me that the BUG()
+was over-protective even then.
 
-Before this patch we get
-
-	c00108ec <test>:
-	c00108ec:	81 24 00 00 	lwz     r9,0(r4)
-	c00108f0:	91 23 00 00 	stw     r9,0(r3)
-	c00108f4:	4e 80 00 20 	blr
-
-So, for PPC32, restore the simple type behaviour we got before
-commit 670eea924198, but instead of adding a config option to
-activate type check, do it when __CHECKER__ is set so that type
-checking is performed by 'sparse' and provides feedback like:
-
-	arch/powerpc/mm/pgtable.c:466:16: warning: incorrect type in return expression (different base types)
-	arch/powerpc/mm/pgtable.c:466:16:    expected unsigned long
-	arch/powerpc/mm/pgtable.c:466:16:    got struct pte_t [usertype] x
-
-With this patch we now get
-
-	c0010890 <test>:
-	c0010890:	4e 80 00 20 	blr
-
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
-v2: Properly handle 8xx 16k pages
----
- arch/powerpc/include/asm/nohash/32/pgtable.h |  2 +-
- arch/powerpc/include/asm/pgtable-types.h     | 14 +++++++++++++-
- arch/powerpc/mm/pgtable.c                    |  2 +-
- 3 files changed, 15 insertions(+), 3 deletions(-)
-
-diff --git a/arch/powerpc/include/asm/nohash/32/pgtable.h b/arch/powerpc/include/asm/nohash/32/pgtable.h
-index f06ae00f2a65..34ce50da1850 100644
---- a/arch/powerpc/include/asm/nohash/32/pgtable.h
-+++ b/arch/powerpc/include/asm/nohash/32/pgtable.h
-@@ -245,7 +245,7 @@ static int number_of_cells_per_pte(pmd_t *pmd, pte_basic_t val, int huge)
- static inline pte_basic_t pte_update(struct mm_struct *mm, unsigned long addr, pte_t *p,
- 				     unsigned long clr, unsigned long set, int huge)
- {
--	pte_basic_t *entry = &p->pte;
-+	pte_basic_t *entry = (pte_basic_t *)p;
- 	pte_basic_t old = pte_val(*p);
- 	pte_basic_t new = (old & ~(pte_basic_t)clr) | set;
- 	int num, i;
-diff --git a/arch/powerpc/include/asm/pgtable-types.h b/arch/powerpc/include/asm/pgtable-types.h
-index d11b4c61d686..c60199fc6fa6 100644
---- a/arch/powerpc/include/asm/pgtable-types.h
-+++ b/arch/powerpc/include/asm/pgtable-types.h
-@@ -5,14 +5,26 @@
- /* PTE level */
- #if defined(CONFIG_PPC_8xx) && defined(CONFIG_PPC_16K_PAGES)
- typedef struct { pte_basic_t pte, pte1, pte2, pte3; } pte_t;
--#else
-+#elif defined(__CHECKER__) || !defined(CONFIG_PPC32)
- typedef struct { pte_basic_t pte; } pte_t;
-+#else
-+typedef pte_basic_t pte_t;
- #endif
-+
-+#if defined(__CHECKER__) || !defined(CONFIG_PPC32) || \
-+    (defined(CONFIG_PPC_8xx) && defined(CONFIG_PPC_16K_PAGES))
- #define __pte(x)	((pte_t) { (x) })
- static inline pte_basic_t pte_val(pte_t x)
- {
- 	return x.pte;
- }
-+#else
-+#define __pte(x)	((pte_t)(x))
-+static inline pte_basic_t pte_val(pte_t x)
-+{
-+	return x;
-+}
-+#endif
- 
- /* PMD level */
- #ifdef CONFIG_PPC64
-diff --git a/arch/powerpc/mm/pgtable.c b/arch/powerpc/mm/pgtable.c
-index cd16b407f47e..ce9482383144 100644
---- a/arch/powerpc/mm/pgtable.c
-+++ b/arch/powerpc/mm/pgtable.c
-@@ -271,7 +271,7 @@ void set_huge_pte_at(struct mm_struct *mm, unsigned long addr, pte_t *ptep, pte_
- {
- 	pmd_t *pmd = pmd_off(mm, addr);
- 	pte_basic_t val;
--	pte_basic_t *entry = &ptep->pte;
-+	pte_basic_t *entry = (pte_basic_t *)ptep;
- 	int num, i;
- 
- 	/*
 -- 
-2.31.1
-
+Sincerely yours,
+Mike.
