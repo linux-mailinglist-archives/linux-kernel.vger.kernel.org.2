@@ -2,94 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ACB240FFFB
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 21:50:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0774E410013
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 21:52:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344785AbhIQTvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 15:51:31 -0400
-Received: from mail-oo1-f49.google.com ([209.85.161.49]:35532 "EHLO
-        mail-oo1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242818AbhIQTu3 (ORCPT
+        id S1344700AbhIQTxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 15:53:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53694 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344518AbhIQTxj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 15:50:29 -0400
-Received: by mail-oo1-f49.google.com with SMTP id y3-20020a4ab403000000b00290e2a52c71so3573728oon.2;
-        Fri, 17 Sep 2021 12:49:06 -0700 (PDT)
+        Fri, 17 Sep 2021 15:53:39 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B979DC0617BC
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 12:51:14 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id m4so11468443ilj.9
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 12:51:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AO8stvH6wLQIPUW7jVtw5X0QFxjdUv6SibSuWzk36Rk=;
+        b=VdePcfsHpNUgpbkw8TARXrR7jC9aG7x/7YmP5iPfWGD+cqXy5vsT4cDu7rBnNIcEY2
+         yD1T4FDdiBbNu07dGt+Oo3Pl1m8rZFXCp+kenOQL8Rh0DIeOT2An+WrcS2OP1CWRny+j
+         kNopwuwAZdjru1KuowyYEC1EjO5qwmF9ztCrY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=lIqQeQXnK4cjptHyGskWDQAslLOSJliGOSjwEw/Um2w=;
-        b=Brr7/osIWtBSectNOwa3Tgwe2h5niCj8QpU/mMKAIaCfIUuIRohOLM0H7VflsZBnB2
-         EBNFb0pr3sXGlrgALxWItEViWJk97ybVnD5Wr5Vnj2AxGrHGnwlt/jaE8wT4HFV+Ijxu
-         ZhgnTeaVviK1fUZm1tJKJYcmKIIwhUZSkd3/uxbY5rtQyV0Vo8cyrJ6HS8FjI4tBUzSB
-         whVhvrVMmhAJKr8usgu/103h3I6sC+B3rumGlIL1A1aXEXQJTwEfyX1DCJHBlr9HZQdo
-         vxlWe+cteOQUF7XR7bAdGCgnmuHmah0k5rG6EAEWTK28ZQEsJWBrcNw+XhC/Mn0Mi3R5
-         +krg==
-X-Gm-Message-State: AOAM531ZvNkxdgXqrZNKl2fbzE98dox0qRaUxXl6/PgxNt6brBCrSlVY
-        wG5VgtZ+adZAVkhP9EzOFA==
-X-Google-Smtp-Source: ABdhPJxjY1Cr2X0gISlUEjpmrUwwPiPDDmYHTOQoeNCD+4D0iRzlv5pQ4zTOB4Md3k7uJKuLJjPi6Q==
-X-Received: by 2002:a4a:dcd0:: with SMTP id h16mr10363770oou.44.1631908144964;
-        Fri, 17 Sep 2021 12:49:04 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id z7sm1766832oti.65.2021.09.17.12.49.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 12:49:03 -0700 (PDT)
-Received: (nullmailer pid 2025337 invoked by uid 1000);
-        Fri, 17 Sep 2021 19:48:54 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        devel@driverdev.osuosl.org, devicetree@vger.kernel.org,
-        =?utf-8?b?SsOpcsO0bWUgUG91aWxsZXI=?= <jerome.pouiller@silabs.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-mmc@vger.kernel.org, linux-wireless@vger.kernel.org,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        =?utf-8?q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210917151401.2274772-3-Jerome.Pouiller@silabs.com>
-References: <20210917151401.2274772-1-Jerome.Pouiller@silabs.com> <20210917151401.2274772-3-Jerome.Pouiller@silabs.com>
-Subject: Re: [PATCH v6 02/24] dt-bindings: introduce silabs,wfx.yaml
-Date:   Fri, 17 Sep 2021 14:48:54 -0500
-Message-Id: <1631908134.353915.2025336.nullmailer@robh.at.kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AO8stvH6wLQIPUW7jVtw5X0QFxjdUv6SibSuWzk36Rk=;
+        b=KkZsQrb3p10krX0aEmqubcmeG0zgaZYQ6aj+mc06Yg/iwZn+pykOfr+Vbq03FQoUpW
+         J1e7i2Wn8o/DqUYe8VjFAugXB+c+9oeaEvNU3sr0FtSZvTe0TScgDWjrxYzSJTFhBiRZ
+         WZIxKmFW3y7Pe4XCTJZcIRMVXea1SwZ+0y8U6vpY69jbz4ALDA0A527jeS+FpTAwbgL/
+         lKw7idZpZ6z1Gv2UR3k41qqJbgdH1zTiod806oBK3AUXI+98jTINHV79urHgSgkkt0Qs
+         DXJj2DusrheyJFcYXvrpdvmxOKuZ3N2IQKYoF6T3zaHt0GA5UG74F+lwIZXBtEHqHMb+
+         5w7w==
+X-Gm-Message-State: AOAM533dGhDYzSXiTpVa2HScEo6lV+sNiuJ/Z1LtnV9mb5Hq+ie8AK+E
+        VrxN+ke/Gw3GuV/VpcbjuesjvRi0t+K2Xw==
+X-Google-Smtp-Source: ABdhPJw/G7DAKxwxIqt02WHYAIvl2jLVQjnYy1gaFyTjti4McdtwEcjXEpDoxmA4ELoWrCstkQl5hA==
+X-Received: by 2002:a05:6e02:156c:: with SMTP id k12mr9326281ilu.61.1631908273766;
+        Fri, 17 Sep 2021 12:51:13 -0700 (PDT)
+Received: from mail-il1-f174.google.com (mail-il1-f174.google.com. [209.85.166.174])
+        by smtp.gmail.com with ESMTPSA id s7sm3885153ioe.11.2021.09.17.12.51.12
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Sep 2021 12:51:13 -0700 (PDT)
+Received: by mail-il1-f174.google.com with SMTP id i13so11469297ilm.4
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 12:51:12 -0700 (PDT)
+X-Received: by 2002:a05:6e02:2141:: with SMTP id d1mr5491891ilv.242.1631908271903;
+ Fri, 17 Sep 2021 12:51:11 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210917114930.47261-1-colin.king@canonical.com>
+In-Reply-To: <20210917114930.47261-1-colin.king@canonical.com>
+From:   Ricardo Ribalda <ribalda@chromium.org>
+Date:   Fri, 17 Sep 2021 21:51:01 +0200
+X-Gmail-Original-Message-ID: <CANiDSCv7okdqtfMpjPB9Gg+RvUSqsondN_-jo3xCNn7bRAaq0Q@mail.gmail.com>
+Message-ID: <CANiDSCv7okdqtfMpjPB9Gg+RvUSqsondN_-jo3xCNn7bRAaq0Q@mail.gmail.com>
+Subject: Re: [PATCH][next] media: uvcvideo: Fix memory leak of object map on
+ error exit path
+To:     Colin King <colin.king@canonical.com>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-media@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Sep 2021 17:13:38 +0200, Jerome Pouiller wrote:
-> From: Jérôme Pouiller <jerome.pouiller@silabs.com>
-> 
-> Prepare the inclusion of the wfx driver in the kernel.
-> 
-> Signed-off-by: Jérôme Pouiller <jerome.pouiller@silabs.com>
+Hi Collin
+
+Thanks for catching it up.
+
+On Fri, 17 Sept 2021 at 13:49, Colin King <colin.king@canonical.com> wrote:
+>
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> Currently when the allocation of map->name fails the error exit path
+> does not kfree the previously allocated object map. Fix this by
+> setting ret to -ENOMEM and taking the free_map exit error path to
+> ensure map is kfree'd.
+>
+> Addresses-Coverity: ("Resource leak")
+> Fixes: 07adedb5c606 ("media: uvcvideo: Use control names from framework")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Reviewed-by: Ricardo Ribalda <ribalda@chromium.org>
+
 > ---
->  .../bindings/net/wireless/silabs,wfx.yaml     | 133 ++++++++++++++++++
->  1 file changed, 133 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/net/wireless/silabs,wfx.yaml
-> 
+>  drivers/media/usb/uvc/uvc_v4l2.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
+> index f4e4aff8ddf7..711556d13d03 100644
+> --- a/drivers/media/usb/uvc/uvc_v4l2.c
+> +++ b/drivers/media/usb/uvc/uvc_v4l2.c
+> @@ -44,8 +44,10 @@ static int uvc_ioctl_ctrl_map(struct uvc_video_chain *chain,
+>         if (v4l2_ctrl_get_name(map->id) == NULL) {
+>                 map->name = kmemdup(xmap->name, sizeof(xmap->name),
+>                                     GFP_KERNEL);
+> -               if (!map->name)
+> -                       return -ENOMEM;
+> +               if (!map->name) {
+> +                       ret = -ENOMEM;
+> +                       goto free_map;
+> +               }
+>         }
+>         memcpy(map->entity, xmap->entity, sizeof(map->entity));
+>         map->selector = xmap->selector;
+> --
+> 2.32.0
+>
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-
-
-doc reference errors (make refcheckdocs):
-Documentation/devicetree/bindings/net/wireless/silabs,wfx.yaml: Documentation/devicetree/bindings/mmc/mmc-pwrseq-simple.txt
-
-See https://patchwork.ozlabs.org/patch/1529457
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+--
+Ricardo Ribalda
