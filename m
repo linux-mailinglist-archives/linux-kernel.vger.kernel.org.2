@@ -2,58 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E871D40F453
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 10:43:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19EC240F457
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 10:45:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236775AbhIQIoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 04:44:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52084 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233688AbhIQIof (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 04:44:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ADE8360EE0;
-        Fri, 17 Sep 2021 08:43:11 +0000 (UTC)
-Date:   Fri, 17 Sep 2021 10:43:09 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Mike Christie <michael.christie@oracle.com>, stefanha@redhat.com,
-        jasowang@redhat.com, mst@redhat.com, sgarzare@redhat.com,
-        virtualization@lists.linux-foundation.org, axboe@kernel.dk,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/8] fork: add helper to clone a process
-Message-ID: <20210917084309.rmlly66jpikx7h4q@wittgenstein>
-References: <20210916212051.6918-1-michael.christie@oracle.com>
- <20210916212051.6918-2-michael.christie@oracle.com>
- <YUQvAy8HDh5oYyqn@infradead.org>
- <20210917074440.qwo6anrtxa7lj657@wittgenstein>
- <YURLQvJAO2mCX0zJ@infradead.org>
+        id S245482AbhIQIq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 04:46:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42078 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245460AbhIQIqv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 04:46:51 -0400
+Received: from sym2.noone.org (sym2.noone.org [IPv6:2a01:4f8:120:4161::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85CA4C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 01:45:29 -0700 (PDT)
+Received: by sym2.noone.org (Postfix, from userid 1002)
+        id 4H9nbC1PrKzvjfm; Fri, 17 Sep 2021 10:45:27 +0200 (CEST)
+Date:   Fri, 17 Sep 2021 10:45:27 +0200
+From:   Tobias Klauser <tklauser@distanz.ch>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        "tiantao (H)" <tiantao6@hisilicon.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] cpumask: Omit terminating null byte in
+ cpumap_print_{list,bitmask}_to_buf
+Message-ID: <20210917084526.uzpish2owb24szng@distanz.ch>
+References: <20210916222705.13554-1-tklauser@distanz.ch>
+ <aa4bc59c44b345ae814c61f6593a7178@hisilicon.com>
+ <YUPQ6F8M822fLzpx@yury-ThinkPad>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YURLQvJAO2mCX0zJ@infradead.org>
+In-Reply-To: <YUPQ6F8M822fLzpx@yury-ThinkPad>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 09:01:06AM +0100, Christoph Hellwig wrote:
-> On Fri, Sep 17, 2021 at 09:44:40AM +0200, Christian Brauner wrote:
-> > > generally want a printf-like varargs caling conventions.  I'd also
-> > > much prefer to hide as much as possible in the actual helper.  That is
-> > > build a helper that gets the name, a flag to ignore the singals etc
-> > > instead of exporting all these random low-level helpers.
-> > 
-> > Yes, I think that's really what we want here.
+On 2021-09-17 at 01:19:04 +0200, Yury Norov <yury.norov@gmail.com> wrote:
+> [CC Greg KH <gregkh@linuxfoundation.org>]
 > 
-> In a way this would mean enhancing the kthread API to also support I/O
-> threads.
+> On Thu, Sep 16, 2021 at 10:53:39PM +0000, Song Bao Hua (Barry Song) wrote:
+> > 
+> > 
+> > > -----Original Message-----
+> > > From: Tobias Klauser [mailto:tklauser@distanz.ch]
+> > > Sent: Friday, September 17, 2021 10:27 AM
+> > > To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>; Jonathan Cameron
+> > > <jonathan.cameron@huawei.com>; tiantao (H) <tiantao6@hisilicon.com>; Song Bao
+> > > Hua (Barry Song) <song.bao.hua@hisilicon.com>
+> > > Cc: Andrew Morton <akpm@linux-foundation.org>; Andy Shevchenko
+> > > <andriy.shevchenko@linux.intel.com>; Yury Norov <yury.norov@gmail.com>; Peter
+> > > Zijlstra <peterz@infradead.org>; linux-kernel@vger.kernel.org
+> > > Subject: [PATCH] cpumask: Omit terminating null byte in
+> > > cpumap_print_{list,bitmask}_to_buf
+> > > 
+> > > The changes in the patch series [1] introduced a terminating null byte
+> > > when reading from cpulist or cpumap sysfs files, for example:
+> > > 
+> > >   $ xxd /sys/devices/system/node/node0/cpulist
+> > >   00000000: 302d 310a 00                             0-1..
+> > > 
+> > > Before this change, the output looked as follows:
+> > > 
+> > >   $ xxd /sys/devices/system/node/node0/cpulist
+> > >   00000000: 302d 310a                                0-1.
+> > 
+> > If we don't use xxd, I don't see any actual harm of this NULL byte
+> > by cat, lscpu, numactl etc. this doesn't break them at all.
+> 
+> Barry, Tobias' script that uses xxd is userspace. Linux kernel never breaks
+> userspace. 
 
-Kinda, it's a kthread in so far as it has been created by the kernel and
-not through a regular syscall path. But it's not really using any of the
-kthread.c stuff.
+FWIW, the example using xxd was just to illustrate the issue in a
+concise way for the commit message. This is breaking other userspace
+programs as well. Originally, I discovered this because Kubernetes'
+kubelet was crashing on a bpf-next kernel. See [1] and following
+comments for more information:
 
-I think the general push of the series is right. We should aim for a
-helper that allows a driver - similar to what uring already does - to
-create a task with the context of the caller.
+[1] https://github.com/cilium/cilium/pull/17394#issuecomment-920902042
 
-After the fork/clone rework that I did it shouldn't be that difficult to
-do. The uring patch did show that it's fairly straightforward.
+> > if we only want to make sure the output is exactly same with before
+> > for every single character, this patch is right.
+> 
+> We don't want to make the output exactly the same. The "0,1" would
+> also work for the example above. But garbage characters following \0
+> is a bug that should be fixed.
+
+I think we also want to avoid the \0 itself, which is what this patch
+does and is in line with previous behavior. It also looks like all other
+sysfs files in that subtree expose the same content format (i.e. \n is
+the last character, not \0).
+
+Thanks,
+Tobias
