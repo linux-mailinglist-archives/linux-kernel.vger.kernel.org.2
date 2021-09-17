@@ -2,107 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA88540FF9B
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 20:49:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB5240FF0A
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 20:10:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343646AbhIQSuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 14:50:25 -0400
-Received: from 13.mo4.mail-out.ovh.net ([178.33.251.8]:34193 "EHLO
-        13.mo4.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236020AbhIQSuU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 14:50:20 -0400
-X-Greylist: delayed 2380 seconds by postgrey-1.27 at vger.kernel.org; Fri, 17 Sep 2021 14:50:19 EDT
-Received: from player734.ha.ovh.net (unknown [10.108.4.60])
-        by mo4.mail-out.ovh.net (Postfix) with ESMTP id 5B8A728558F
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 20:09:15 +0200 (CEST)
-Received: from RCM-web7.webmail.mail.ovh.net (ip-194-187-74-233.konfederacka.maverick.com.pl [194.187.74.233])
-        (Authenticated sender: rafal@milecki.pl)
-        by player734.ha.ovh.net (Postfix) with ESMTPSA id D11E72215290D;
-        Fri, 17 Sep 2021 18:09:07 +0000 (UTC)
+        id S245224AbhIQSLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 14:11:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42672 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233022AbhIQSLr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 14:11:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C1B8661029;
+        Fri, 17 Sep 2021 18:10:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631902224;
+        bh=zBWfmOM2pXUJCqk+liGb2j6sPPLvloaGWUXYS9v8Cxg=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=AEg+F2obGkSaa/ClmC4lWEh1MjekN6tRb228PkHsIehnULO0M+Fy2KaAjwZmIWGH1
+         4sSHQkVyPHAUnYPlxRoh1uIHOHOqMTSDX4Np1YG2f0EtFcs3yHUhkGzqb4ogu8ph89
+         fLbto8z6SKNhygbAQM0jX7ZIE8t8J/MBkLJGWY/o5/RQxrAjEa5wpcp9WzmUDamOWa
+         zCeI62zZfWSBauoljI0VPc8Kp1B5YquH6CEhReOV86BZuli/Jmu1w907w4+1HOeW8Z
+         xdANa90Qz0kfHEWQ2KDMM3iIkEPYjlV+1FKD6uDqbH2nFWu7YIzAH+tafDKIDFsYVu
+         uN8MsQNp2iv6A==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 9441C5C014A; Fri, 17 Sep 2021 11:10:24 -0700 (PDT)
+Date:   Fri, 17 Sep 2021 11:10:24 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
+        urezki@gmail.com, boqun.feng@gmail.com,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        joel@joelfernandes.org
+Subject: Re: [PATCH 2/4] rcu: Remove useless WRITE_ONCE() on
+ rcu_data.exp_deferred_qs
+Message-ID: <20210917181024.GS4156@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210916121048.36623-1-frederic@kernel.org>
+ <20210916121048.36623-3-frederic@kernel.org>
+ <20210916164340.GF4156@paulmck-ThinkPad-P17-Gen-1>
+ <20210916210514.GA40064@lothringen>
 MIME-Version: 1.0
-Date:   Fri, 17 Sep 2021 20:09:07 +0200
-From:   =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] net: dsa: bcm_sf2: Fix array overrun in
- bcm_sf2_num_active_ports()
-In-Reply-To: <20210916213336.1710044-1-f.fainelli@gmail.com>
-References: <20210916213336.1710044-1-f.fainelli@gmail.com>
-User-Agent: Roundcube Webmail/1.4.10
-Message-ID: <69b4ba48ff1278337048412d76574beb@milecki.pl>
-X-Sender: rafal@milecki.pl
-X-Originating-IP: 194.187.74.233
-X-Webmail-UserID: rafal@milecki.pl
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 15693637330723711963
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrudehiedgudduiecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeggfffhvffujghffgfkgihitgfgsehtkehjtddtreejnecuhfhrohhmpeftrghfrghlpgfoihhlvggtkhhiuceorhgrfhgrlhesmhhilhgvtghkihdrphhlqeenucggtffrrghtthgvrhhnpeejffdufffgjefgvdeigedukefffeevheejueeikeehudeiudehvdeifeduteehieenucfkpheptddrtddrtddrtddpudelgedrudekjedrjeegrddvfeefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhlrgihvghrjeefgedrhhgrrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehrrghfrghlsehmihhlvggtkhhirdhplhdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210916210514.GA40064@lothringen>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-16 23:33, Florian Fainelli wrote:
-> After d12e1c464988 ("net: dsa: b53: Set correct number of ports in the
-> DSA struct") we stopped setting dsa_switch::num_ports to DSA_MAX_PORTS,
-> which created an off by one error between the statically allocated
-> bcm_sf2_priv::port_sts array (of size DSA_MAX_PORTS). When
-> dsa_is_cpu_port() is used, we end-up accessing an out of bounds member
-> and causing a NPD.
+On Thu, Sep 16, 2021 at 11:05:14PM +0200, Frederic Weisbecker wrote:
+> On Thu, Sep 16, 2021 at 09:43:40AM -0700, Paul E. McKenney wrote:
+> > On Thu, Sep 16, 2021 at 02:10:46PM +0200, Frederic Weisbecker wrote:
+> > > This variable is never written nor read remotely. Remove this confusion.
+> > > 
+> > > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> > > ---
+> > >  kernel/rcu/tree_exp.h | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > > diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+> > > index f3947c49eee7..4266610b4587 100644
+> > > --- a/kernel/rcu/tree_exp.h
+> > > +++ b/kernel/rcu/tree_exp.h
+> > > @@ -255,7 +255,7 @@ static void rcu_report_exp_cpu_mult(struct rcu_node *rnp,
+> > >   */
+> > >  static void rcu_report_exp_rdp(struct rcu_data *rdp)
+> > >  {
+> > > -	WRITE_ONCE(rdp->exp_deferred_qs, false);
+> > > +	rdp->exp_deferred_qs = false;
+> > 
+> > Are you sure that this can never be invoked from an interrupt handler?
+> > And that rdp->exp_deferred_qs is never read from an interrupt handler?
+> > If either can happen, then the WRITE_ONCE() does play a role, right?
 > 
-> Fix this by iterating with the appropriate port count using
-> ds->num_ports.
+> Well, the only effect I can imagine is that it can partly prevent from an
+> interrupt to report concurrently the quiescent state during the few
+> instructions before we mask interrupts and lock the node.
 > 
-> Fixes: d12e1c464988 ("net: dsa: b53: Set correct number of ports in
-> the DSA struct")
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> That's a micro performance benefit that avoid a second call to
+> rcu_report_exp_cpu_mult() with the extra locking and early exit.
 
-Tested-by: Rafał Miłecki <rafal@milecki.pl>
+I am not claiming that current compilers would mess this up, though I
+have learned to have great respect for what future compilers might do...
 
+> But then that racy interrupt can still happen before we clear exp_deferred_qs.
+> In this case __this_cpu_cmpxchg() would have been more efficient.
 
-This fixes:
+Except that __this_cpu_cmpxchg() would have a possibility of failure,
+and thus an extra branch not needed by WRITE_ONCE().  Or am I missing
+your point here?
 
-[    0.515409] Unable to handle kernel read from unreadable memory at 
-virtual address 0000000000000028
-[    0.524659] Mem abort info:
-[    0.527522]   ESR = 0x96000005
-[    0.530656]   EC = 0x25: DABT (current EL), IL = 32 bits
-[    0.536119]   SET = 0, FnV = 0
-[    0.539262]   EA = 0, S1PTW = 0
-[    0.542481] Data abort info:
-[    0.545438]   ISV = 0, ISS = 0x00000005
-[    0.549383]   CM = 0, WnR = 0
-[    0.552427] [0000000000000028] user address but active_mm is swapper
-[    0.558973] Internal error: Oops: 96000005 [#1] SMP
-[    0.563986] Modules linked in:
-[    0.567125] CPU: 1 PID: 24 Comm: kworker/1:1 Not tainted 5.10.64 #0
-[    0.573573] Hardware name: Netgear R8000P (DT)
-[    0.578155] Workqueue: events deferred_probe_work_func
-[    0.583431] pstate: 60400005 (nZCv daif +PAN -UAO -TCO BTYPE=--)
-[    0.589617] pc : bcm_sf2_recalc_clock+0x58/0xe4
-[    0.594271] lr : bcm_sf2_port_setup+0xc0/0x2ac
-[    0.598840] sp : ffffffc0109bb980
-[    0.602244] x29: ffffffc0109bb980 x28: ffffff801fef6f60
-[    0.607710] x27: ffffff8001242b30 x26: 0000000000039040
-[    0.613175] x25: 0000000000002380 x24: 0000000000000003
-[    0.618641] x23: ffffff800125f880 x22: 0000000000000003
-[    0.624107] x21: 0000000000000000 x20: 0000000000000000
-[    0.629572] x19: ffffff8001398280 x18: 0000002437b29c0a
-[    0.635039] x17: 00008cad14430a3a x16: 0000000000000008
-[    0.640503] x15: 0000000000000000 x14: 6863746977732d74
-[    0.645969] x13: 656e72656874652e x12: 3030303038303038
-[    0.651435] x11: 0002001d00000000 x10: 6d726f6674616c70
-[    0.656900] x9 : ffffff800125f880 x8 : ffffff8001398800
-[    0.662366] x7 : ffffff80013989b8 x6 : 0000000000000001
-[    0.667832] x5 : ffffff800125f97c x4 : ffffff8001242b30
-[    0.673297] x3 : 0000000000000009 x2 : ffffff8001242b30
-[    0.678763] x1 : 0000000000000000 x0 : ffffff8001398280
-[    0.684230] Call trace:
-[    0.686740]  bcm_sf2_recalc_clock+0x58/0xe4
+I should hasten to add that getting rid of ->exp_deferred_qs is quite
+attractive!
+
+							Thanx, Paul
+
+> > >  	rcu_report_exp_cpu_mult(rdp->mynode, rdp->grpmask, true);
+> > >  }
+> > >  
+> > > -- 
+> > > 2.25.1
+> > > 
