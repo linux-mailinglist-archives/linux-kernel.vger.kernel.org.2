@@ -2,301 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E387B40F940
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 15:34:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FFA740F933
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 15:33:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245281AbhIQNfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 09:35:43 -0400
-Received: from foss.arm.com ([217.140.110.172]:53274 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244214AbhIQNfc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 09:35:32 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 13CFA113E;
-        Fri, 17 Sep 2021 06:34:10 -0700 (PDT)
-Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 2F15B3F719;
-        Fri, 17 Sep 2021 06:34:09 -0700 (PDT)
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Sudeep Holla <sudeep.holla@arm.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Jassi Brar <jassisinghbrar@gmail.com>
-Subject: [PATCH v2 03/14] mailbox: pcc: Refactor all PCC channel information into a structure
-Date:   Fri, 17 Sep 2021 14:33:46 +0100
-Message-Id: <20210917133357.1911092-4-sudeep.holla@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210917133357.1911092-1-sudeep.holla@arm.com>
-References: <20210917133357.1911092-1-sudeep.holla@arm.com>
+        id S239420AbhIQNfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 09:35:17 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:2839 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231887AbhIQNfQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 09:35:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1631885634; x=1663421634;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=x4RJssw+7dVIrPj9daSLbtKLXu4OSSZABqnVXRGzue0=;
+  b=AxIUA2xuEdY6IXJEfRNEpRfUULHIoi6CfjlsCAUs51A8OD8Njyy772+n
+   +eLSbkfJEnvXiJ3710uWnTipU/yxoe/7m5n8A1KieQVi2ZPFOOV9JLljg
+   M5ZhIdxdVJoow1iSyWKdaRk1jwLX7BircwGvDvL4rCDXKQqMsmdBim8Gz
+   w8D+erLbAOcpL3kpp2jKKOAKtKggabRMrQBWU1Z7z47yLehQ19VTAldVr
+   YVN7+BWyFbSLHOpWllpjyowM3RvBUNEZY/8U+dXS+yG1Bp69oYS13a6Wd
+   7/8AEuRBZWk0C4gNqm780kvQdFvi18NXAv3Z2BZ7jHe8xPa7i2rZGUgZe
+   w==;
+IronPort-SDR: 4so8ygShf00sLEeHrXAkq7g4tmqvZFemzMK02tq61NkwKt3Esg1hKx01I9Om80KlK9UVnBx/qp
+ CWJPnm1mNCcuXOAkmTFraPlQUO6ssnz0sqO/aUsR8K2ddUU4H/ywOX7p2YSfBnwoooTiIoVQlS
+ xZjxW/6mtmLi/rWBD2rFlckywM9EmqAfimnWzbBtWk1O0KQovEo3TmFXBxAxEFO+9YUw1kYpgJ
+ fcMFuFPfp9D0uYX0S6fjecN2BnGiFwtHf4QWiQ3J9azBGFTRVnRkcsCSTOFAlVBCPk5PuFolEk
+ fuHVDx1wk/flN/uJ939gH3Je
+X-IronPort-AV: E=Sophos;i="5.85,301,1624345200"; 
+   d="scan'208";a="132210814"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 17 Sep 2021 06:33:49 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Fri, 17 Sep 2021 06:33:49 -0700
+Received: from [10.171.246.21] (10.10.115.15) by chn-vm-ex02.mchp-main.com
+ (10.10.85.144) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
+ Transport; Fri, 17 Sep 2021 06:33:47 -0700
+Subject: Re: [PATCH v2 4/4] net: macb: enable mii on rgmii for sama7g5
+To:     Claudiu Beznea <claudiu.beznea@microchip.com>,
+        <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210917132615.16183-1-claudiu.beznea@microchip.com>
+ <20210917132615.16183-5-claudiu.beznea@microchip.com>
+From:   Nicolas Ferre <nicolas.ferre@microchip.com>
+Organization: microchip
+Message-ID: <216f6e40-0faa-027a-6a73-e516a02bb21b@microchip.com>
+Date:   Fri, 17 Sep 2021 15:33:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210917132615.16183-5-claudiu.beznea@microchip.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently all the PCC channel specific information are stored/maintained
-in global individual arrays for each of those information. It is not
-scalable and not clean if we have to stash more channel specific
-information. Couple of reasons to stash more information are to extend
-the support to Type 3/4 PCCT subspace and also to avoid accessing the
-PCCT table entries themselves each time we need the information.
+On 17/09/2021 at 15:26, Claudiu Beznea wrote:
+> Both MAC IPs available on SAMA7G5 support MII on RGMII feature.
+> Enable these by adding proper capability to proper macb_config
+> objects.
+> 
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 
-This patch moves all those PCC channel specific information into a
-separate structure pcc_chan_info.
+Yes:
+Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
 
-Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
----
- drivers/mailbox/pcc.c | 107 +++++++++++++++++++++---------------------
- 1 file changed, 54 insertions(+), 53 deletions(-)
+Thanks Claudiu, best regards,
+   Nicolas
 
-diff --git a/drivers/mailbox/pcc.c b/drivers/mailbox/pcc.c
-index 23391e224a68..588d2207edf9 100644
---- a/drivers/mailbox/pcc.c
-+++ b/drivers/mailbox/pcc.c
-@@ -64,12 +64,20 @@
- 
- static struct mbox_chan *pcc_mbox_channels;
- 
--/* Array of cached virtual address for doorbell registers */
--static void __iomem **pcc_doorbell_vaddr;
--/* Array of cached virtual address for doorbell ack registers */
--static void __iomem **pcc_doorbell_ack_vaddr;
--/* Array of doorbell interrupts */
--static int *pcc_doorbell_irq;
-+/**
-+ * struct pcc_chan_info - PCC channel specific information
-+ *
-+ * @db_vaddr: cached virtual address for doorbell register
-+ * @db_ack_vaddr: cached virtual address for doorbell ack register
-+ * @db_irq: doorbell interrupt
-+ */
-+struct pcc_chan_info {
-+	void __iomem *db_vaddr;
-+	void __iomem *db_ack_vaddr;
-+	int db_irq;
-+};
-+
-+static struct pcc_chan_info *chan_info;
- 
- static struct mbox_controller pcc_mbox_ctrl = {};
- /**
-@@ -183,6 +191,7 @@ static irqreturn_t pcc_mbox_irq(int irq, void *p)
- {
- 	struct acpi_generic_address *doorbell_ack;
- 	struct acpi_pcct_hw_reduced *pcct_ss;
-+	struct pcc_chan_info *pchan;
- 	struct mbox_chan *chan = p;
- 	u64 doorbell_ack_preserve;
- 	u64 doorbell_ack_write;
-@@ -197,17 +206,17 @@ static irqreturn_t pcc_mbox_irq(int irq, void *p)
- 		struct acpi_pcct_hw_reduced_type2 *pcct2_ss = chan->con_priv;
- 		u32 id = chan - pcc_mbox_channels;
- 
-+		pchan = chan_info + id;
- 		doorbell_ack = &pcct2_ss->platform_ack_register;
- 		doorbell_ack_preserve = pcct2_ss->ack_preserve_mask;
- 		doorbell_ack_write = pcct2_ss->ack_write_mask;
- 
--		ret = read_register(pcc_doorbell_ack_vaddr[id],
--				    &doorbell_ack_val,
--				    doorbell_ack->bit_width);
-+		ret = read_register(pchan->db_ack_vaddr,
-+				    &doorbell_ack_val, doorbell_ack->bit_width);
- 		if (ret)
- 			return IRQ_NONE;
- 
--		ret = write_register(pcc_doorbell_ack_vaddr[id],
-+		ret = write_register(pchan->db_ack_vaddr,
- 				     (doorbell_ack_val & doorbell_ack_preserve)
- 					| doorbell_ack_write,
- 				     doorbell_ack->bit_width);
-@@ -232,8 +241,9 @@ static irqreturn_t pcc_mbox_irq(int irq, void *p)
-  *		ERR_PTR.
-  */
- struct mbox_chan *pcc_mbox_request_channel(struct mbox_client *cl,
--		int subspace_id)
-+					   int subspace_id)
- {
-+	struct pcc_chan_info *pchan;
- 	struct device *dev = pcc_mbox_ctrl.dev;
- 	struct mbox_chan *chan;
- 	unsigned long flags;
-@@ -251,6 +261,7 @@ struct mbox_chan *pcc_mbox_request_channel(struct mbox_client *cl,
- 		dev_err(dev, "Channel not found for idx: %d\n", subspace_id);
- 		return ERR_PTR(-EBUSY);
- 	}
-+	pchan = chan_info + subspace_id;
- 
- 	spin_lock_irqsave(&chan->lock, flags);
- 	chan->msg_free = 0;
-@@ -264,14 +275,14 @@ struct mbox_chan *pcc_mbox_request_channel(struct mbox_client *cl,
- 
- 	spin_unlock_irqrestore(&chan->lock, flags);
- 
--	if (pcc_doorbell_irq[subspace_id] > 0) {
-+	if (pchan->db_irq > 0) {
- 		int rc;
- 
--		rc = devm_request_irq(dev, pcc_doorbell_irq[subspace_id],
--				      pcc_mbox_irq, 0, MBOX_IRQ_NAME, chan);
-+		rc = devm_request_irq(dev, pchan->db_irq, pcc_mbox_irq, 0,
-+				      MBOX_IRQ_NAME, chan);
- 		if (unlikely(rc)) {
- 			dev_err(dev, "failed to register PCC interrupt %d\n",
--				pcc_doorbell_irq[subspace_id]);
-+				pchan->db_irq);
- 			pcc_mbox_free_channel(chan);
- 			chan = ERR_PTR(rc);
- 		}
-@@ -290,6 +301,7 @@ EXPORT_SYMBOL_GPL(pcc_mbox_request_channel);
- void pcc_mbox_free_channel(struct mbox_chan *chan)
- {
- 	u32 id = chan - pcc_mbox_channels;
-+	struct pcc_chan_info *pchan;
- 	unsigned long flags;
- 
- 	if (!chan || !chan->cl)
-@@ -300,8 +312,9 @@ void pcc_mbox_free_channel(struct mbox_chan *chan)
- 		return;
- 	}
- 
--	if (pcc_doorbell_irq[id] > 0)
--		devm_free_irq(chan->mbox->dev, pcc_doorbell_irq[id], chan);
-+	pchan = chan_info + id;
-+	if (pchan->db_irq > 0)
-+		devm_free_irq(chan->mbox->dev, pchan->db_irq, chan);
- 
- 	spin_lock_irqsave(&chan->lock, flags);
- 	chan->cl = NULL;
-@@ -329,6 +342,7 @@ static int pcc_send_data(struct mbox_chan *chan, void *data)
- {
- 	struct acpi_pcct_hw_reduced *pcct_ss = chan->con_priv;
- 	struct acpi_generic_address *doorbell;
-+	struct pcc_chan_info *pchan;
- 	u64 doorbell_preserve;
- 	u64 doorbell_val;
- 	u64 doorbell_write;
-@@ -340,19 +354,20 @@ static int pcc_send_data(struct mbox_chan *chan, void *data)
- 		return -ENOENT;
- 	}
- 
-+	pchan = chan_info + id;
- 	doorbell = &pcct_ss->doorbell_register;
- 	doorbell_preserve = pcct_ss->preserve_mask;
- 	doorbell_write = pcct_ss->write_mask;
- 
- 	/* Sync notification from OS to Platform. */
--	if (pcc_doorbell_vaddr[id]) {
--		ret = read_register(pcc_doorbell_vaddr[id], &doorbell_val,
--			doorbell->bit_width);
-+	if (pchan->db_vaddr) {
-+		ret = read_register(pchan->db_vaddr, &doorbell_val,
-+				    doorbell->bit_width);
- 		if (ret)
- 			return ret;
--		ret = write_register(pcc_doorbell_vaddr[id],
--			(doorbell_val & doorbell_preserve) | doorbell_write,
--			doorbell->bit_width);
-+		ret = write_register(pchan->db_vaddr,
-+				     (doorbell_val & doorbell_preserve)
-+				      | doorbell_write, doorbell->bit_width);
- 	} else {
- 		ret = acpi_read(&doorbell_val, doorbell);
- 		if (ret)
-@@ -398,12 +413,13 @@ static int parse_pcc_subspace(union acpi_subtable_headers *header,
-  *
-  * This gets called for each entry in the PCC table.
-  */
--static int pcc_parse_subspace_irq(int id,
--				  struct acpi_pcct_hw_reduced *pcct_ss)
-+static int pcc_parse_subspace_irq(int id, struct acpi_pcct_hw_reduced *pcct_ss)
- {
--	pcc_doorbell_irq[id] = pcc_map_interrupt(pcct_ss->platform_interrupt,
--						 (u32)pcct_ss->flags);
--	if (pcc_doorbell_irq[id] <= 0) {
-+	struct pcc_chan_info *pchan = chan_info + id;
-+
-+	pchan->db_irq = pcc_map_interrupt(pcct_ss->platform_interrupt,
-+					  (u32)pcct_ss->flags);
-+	if (pchan->db_irq <= 0) {
- 		pr_err("PCC GSI %d not registered\n",
- 		       pcct_ss->platform_interrupt);
- 		return -EINVAL;
-@@ -413,10 +429,10 @@ static int pcc_parse_subspace_irq(int id,
- 		== ACPI_PCCT_TYPE_HW_REDUCED_SUBSPACE_TYPE2) {
- 		struct acpi_pcct_hw_reduced_type2 *pcct2_ss = (void *)pcct_ss;
- 
--		pcc_doorbell_ack_vaddr[id] = acpi_os_ioremap(
--				pcct2_ss->platform_ack_register.address,
--				pcct2_ss->platform_ack_register.bit_width / 8);
--		if (!pcc_doorbell_ack_vaddr[id]) {
-+		pchan->db_ack_vaddr =
-+			acpi_os_ioremap(pcct2_ss->platform_ack_register.address,
-+					pcct2_ss->platform_ack_register.bit_width / 8);
-+		if (!pchan->db_ack_vaddr) {
- 			pr_err("Failed to ioremap PCC ACK register\n");
- 			return -ENOMEM;
- 		}
-@@ -474,24 +490,12 @@ static int __init acpi_pcc_probe(void)
- 		goto err_put_pcct;
- 	}
- 
--	pcc_doorbell_vaddr = kcalloc(count, sizeof(void *), GFP_KERNEL);
--	if (!pcc_doorbell_vaddr) {
-+	chan_info = kcalloc(count, sizeof(*chan_info), GFP_KERNEL);
-+	if (!chan_info) {
- 		rc = -ENOMEM;
- 		goto err_free_mbox;
- 	}
- 
--	pcc_doorbell_ack_vaddr = kcalloc(count, sizeof(void *), GFP_KERNEL);
--	if (!pcc_doorbell_ack_vaddr) {
--		rc = -ENOMEM;
--		goto err_free_db_vaddr;
--	}
--
--	pcc_doorbell_irq = kcalloc(count, sizeof(int), GFP_KERNEL);
--	if (!pcc_doorbell_irq) {
--		rc = -ENOMEM;
--		goto err_free_db_ack_vaddr;
--	}
--
- 	/* Point to the first PCC subspace entry */
- 	pcct_entry = (struct acpi_subtable_header *) (
- 		(unsigned long) pcct_tbl + sizeof(struct acpi_table_pcct));
-@@ -501,6 +505,7 @@ static int __init acpi_pcc_probe(void)
- 		pcc_mbox_ctrl.txdone_irq = true;
- 
- 	for (i = 0; i < count; i++) {
-+		struct pcc_chan_info *pchan = chan_info + i;
- 		struct acpi_generic_address *db_reg;
- 		struct acpi_pcct_subspace *pcct_ss;
- 		pcc_mbox_channels[i].con_priv = pcct_entry;
-@@ -522,8 +527,8 @@ static int __init acpi_pcc_probe(void)
- 		/* If doorbell is in system memory cache the virt address */
- 		db_reg = &pcct_ss->doorbell_register;
- 		if (db_reg->space_id == ACPI_ADR_SPACE_SYSTEM_MEMORY)
--			pcc_doorbell_vaddr[i] = acpi_os_ioremap(db_reg->address,
--							db_reg->bit_width/8);
-+			pchan->db_vaddr = acpi_os_ioremap(db_reg->address,
-+							  db_reg->bit_width / 8);
- 		pcct_entry = (struct acpi_subtable_header *)
- 			((unsigned long) pcct_entry + pcct_entry->length);
- 	}
-@@ -535,11 +540,7 @@ static int __init acpi_pcc_probe(void)
- 	return 0;
- 
- err:
--	kfree(pcc_doorbell_irq);
--err_free_db_ack_vaddr:
--	kfree(pcc_doorbell_ack_vaddr);
--err_free_db_vaddr:
--	kfree(pcc_doorbell_vaddr);
-+	kfree(chan_info);
- err_free_mbox:
- 	kfree(pcc_mbox_channels);
- err_put_pcct:
+> ---
+>   drivers/net/ethernet/cadence/macb_main.c | 6 ++++--
+>   1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
+> index cdf3e35b5b33..e2730b3e1a57 100644
+> --- a/drivers/net/ethernet/cadence/macb_main.c
+> +++ b/drivers/net/ethernet/cadence/macb_main.c
+> @@ -4597,7 +4597,8 @@ static const struct macb_config zynq_config = {
+>   };
+>   
+>   static const struct macb_config sama7g5_gem_config = {
+> -	.caps = MACB_CAPS_GIGABIT_MODE_AVAILABLE | MACB_CAPS_CLK_HW_CHG,
+> +	.caps = MACB_CAPS_GIGABIT_MODE_AVAILABLE | MACB_CAPS_CLK_HW_CHG |
+> +		MACB_CAPS_MIIONRGMII,
+>   	.dma_burst_length = 16,
+>   	.clk_init = macb_clk_init,
+>   	.init = macb_init,
+> @@ -4605,7 +4606,8 @@ static const struct macb_config sama7g5_gem_config = {
+>   };
+>   
+>   static const struct macb_config sama7g5_emac_config = {
+> -	.caps = MACB_CAPS_USRIO_DEFAULT_IS_MII_GMII | MACB_CAPS_USRIO_HAS_CLKEN,
+> +	.caps = MACB_CAPS_USRIO_DEFAULT_IS_MII_GMII |
+> +		MACB_CAPS_USRIO_HAS_CLKEN | MACB_CAPS_MIIONRGMII,
+>   	.dma_burst_length = 16,
+>   	.clk_init = macb_clk_init,
+>   	.init = macb_init,
+> 
+
+
 -- 
-2.25.1
-
+Nicolas Ferre
