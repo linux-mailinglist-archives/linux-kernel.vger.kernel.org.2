@@ -2,119 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17DD640FF80
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 20:37:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5543040FF82
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 20:38:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242075AbhIQSjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 14:39:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44316 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234566AbhIQSjA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 14:39:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631903856;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2uGSUJ4OwEDinUYdbE9Xm9EZmCzZGXaFlbE5avYj6BU=;
-        b=HAXr+reeIrWgIG2HORKAqF7eUQS9F9b1bB0EnPhQbL4uWhTptIE3EGWdgdfTKsMG+oae10
-        esIooirIeNfSbQs5WZuBESY18vqhSGvRDCcwLeM0mPnvpMPpoBqInLipsZQBqit6mMBpio
-        o8M+Mg8qRonjKNIWSV7+eoRMJuiYo58=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-559-eCKz45_GOUqPFbhUxldQQg-1; Fri, 17 Sep 2021 14:37:35 -0400
-X-MC-Unique: eCKz45_GOUqPFbhUxldQQg-1
-Received: by mail-ed1-f71.google.com with SMTP id x14-20020a50ba8e000000b003d5a565de3aso8969147ede.18
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 11:37:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2uGSUJ4OwEDinUYdbE9Xm9EZmCzZGXaFlbE5avYj6BU=;
-        b=TZT7EpjfXBEP3JFgUNw+igW95FOQBcGs8N9l2wMLBFcQE7JJhzlkYgDPX+9h+YGPe/
-         bDmSDORqbjmTICEV/YvdMoCjCYC5CsklD+ELDm+QUTW4UDQSQs273KhGLF11aoPJbbUs
-         BWxj3HpQ1t0mlGeENyNf3kMtCBHr3/Q1Dm5r7ps05QzvI+uOrXmOGEWB1nnTW8nBG5Iq
-         mLL0wt2CWhqsgwx10SUoXyuu1jxjPsL0WYXONV0yxvQoH1SN65kOhet2LESadt8NCXRs
-         C8aZkkMiEZnLRZQpxTFctgNUOYwX4UEl2MnEP/ZNRln2OvyLf5Sn+SFwonl/B2TtCW8X
-         R90w==
-X-Gm-Message-State: AOAM531l7LKdL3iN6wGw9Reeoor316UJWB5xdxPMaBbgovLreyjIohwi
-        hBxOPDTeMQR5XoZgZimtLhsoS35g///HmtoGimctlqbgcmPtjmuvIltDOEOTy8fjS57DBer9otq
-        Bkgh+m75oyzQRt7Y76bIkaCiCzOxh+zCrvKfr2pzpZ5i5XOp4UuB8Zm410ojtcFH+bdBSH3vRSr
-        X+
-X-Received: by 2002:a50:e1c4:: with SMTP id m4mr6128306edl.307.1631903853557;
-        Fri, 17 Sep 2021 11:37:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwNbhN9Xkm6HUn/UupN6L6rbjYldGZ9ByZPcxb82N8bRPpnSTbC7H/rf8BnRjTmNHq7BNslfg==
-X-Received: by 2002:a50:e1c4:: with SMTP id m4mr6128287edl.307.1631903853384;
-        Fri, 17 Sep 2021 11:37:33 -0700 (PDT)
-Received: from x1.localdomain ([2a0e:5700:4:11:334c:7e36:8d57:40cb])
-        by smtp.gmail.com with ESMTPSA id e22sm3175909edu.35.2021.09.17.11.37.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Sep 2021 11:37:33 -0700 (PDT)
-Subject: Re: [PATCH] Input: silead - Make use of the helper function
- dev_err_probe()
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210916153426.15158-1-caihuoqing@baidu.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <83e5b7db-4707-0ab3-c02e-e467c3190358@redhat.com>
-Date:   Fri, 17 Sep 2021 20:37:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S243336AbhIQSjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 14:39:33 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:40419 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242515AbhIQSjc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 14:39:32 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4HB2l31phRz9sTp;
+        Fri, 17 Sep 2021 20:38:07 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id fpT5YYv1Fgam; Fri, 17 Sep 2021 20:38:07 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4HB2l16Tn4z9sTL;
+        Fri, 17 Sep 2021 20:38:05 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id C3B748B79F;
+        Fri, 17 Sep 2021 20:38:05 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id G_FOuxccVNM8; Fri, 17 Sep 2021 20:38:05 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.202.36])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7A5668B768;
+        Fri, 17 Sep 2021 20:38:05 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 18HIbsal758057
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Fri, 17 Sep 2021 20:37:54 +0200
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 18HIbph3758055;
+        Fri, 17 Sep 2021 20:37:51 +0200
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH 1/3] powerpc/inst: Refactor ___get_user_instr()
+Date:   Fri, 17 Sep 2021 20:37:38 +0200
+Message-Id: <9607dfbecab2ecccb712bbd25d2d5da882239d4c.1631903846.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210916153426.15158-1-caihuoqing@baidu.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+PPC64 version of ___get_user_instr() can be used for PPC32 as well,
+by simply disabling the suffix part with IS_ENABLED(CONFIG_PPC64).
 
-On 9/16/21 5:34 PM, Cai Huoqing wrote:
-> When possible use dev_err_probe help to properly deal with the
-> PROBE_DEFER error, the benefit is that DEFER issue will be logged
-> in the devices_deferred debugfs file.
-> Using dev_err_probe() can reduce code size, and the error value
-> gets printed.
-> 
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/include/asm/inst.h | 11 +----------
+ 1 file changed, 1 insertion(+), 10 deletions(-)
 
-Thanks, patch looks good to me:
-
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-
-Regards,
-
-Hans
-
-> ---
->  drivers/input/touchscreen/silead.c | 8 +++-----
->  1 file changed, 3 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/input/touchscreen/silead.c b/drivers/input/touchscreen/silead.c
-> index 1ee760bac0cf..adfac271f0b5 100644
-> --- a/drivers/input/touchscreen/silead.c
-> +++ b/drivers/input/touchscreen/silead.c
-> @@ -548,11 +548,9 @@ static int silead_ts_probe(struct i2c_client *client,
->  
->  	/* Power GPIO pin */
->  	data->gpio_power = devm_gpiod_get_optional(dev, "power", GPIOD_OUT_LOW);
-> -	if (IS_ERR(data->gpio_power)) {
-> -		if (PTR_ERR(data->gpio_power) != -EPROBE_DEFER)
-> -			dev_err(dev, "Shutdown GPIO request failed\n");
-> -		return PTR_ERR(data->gpio_power);
-> -	}
-> +	if (IS_ERR(data->gpio_power))
-> +		return dev_err_probe(dev, PTR_ERR(data->gpio_power),
-> +				     "Shutdown GPIO request failed\n");
->  
->  	error = silead_ts_setup(client);
->  	if (error)
-> 
+diff --git a/arch/powerpc/include/asm/inst.h b/arch/powerpc/include/asm/inst.h
+index b11c0e2f9639..fea4d46155a9 100644
+--- a/arch/powerpc/include/asm/inst.h
++++ b/arch/powerpc/include/asm/inst.h
+@@ -4,8 +4,6 @@
+ 
+ #include <asm/ppc-opcode.h>
+ 
+-#ifdef CONFIG_PPC64
+-
+ #define ___get_user_instr(gu_op, dest, ptr)				\
+ ({									\
+ 	long __gui_ret;							\
+@@ -16,7 +14,7 @@
+ 	__chk_user_ptr(ptr);						\
+ 	__gui_ret = gu_op(__prefix, __gui_ptr);				\
+ 	if (__gui_ret == 0) {						\
+-		if ((__prefix >> 26) == OP_PREFIX) {			\
++		if (IS_ENABLED(CONFIG_PPC64) && (__prefix >> 26) == OP_PREFIX) { \
+ 			__gui_ret = gu_op(__suffix, __gui_ptr + 1);	\
+ 			__gui_inst = ppc_inst_prefix(__prefix, __suffix); \
+ 		} else {						\
+@@ -27,13 +25,6 @@
+ 	}								\
+ 	__gui_ret;							\
+ })
+-#else /* !CONFIG_PPC64 */
+-#define ___get_user_instr(gu_op, dest, ptr)				\
+-({									\
+-	__chk_user_ptr(ptr);						\
+-	gu_op((dest).val, (u32 __user *)(ptr));				\
+-})
+-#endif /* CONFIG_PPC64 */
+ 
+ #define get_user_instr(x, ptr) ___get_user_instr(get_user, x, ptr)
+ 
+-- 
+2.31.1
 
