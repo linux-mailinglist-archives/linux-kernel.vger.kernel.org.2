@@ -2,82 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9E3040FDC4
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 18:20:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 019B740FDE0
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 18:28:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234774AbhIQQVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 12:21:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229979AbhIQQVb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 12:21:31 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B82CC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 09:20:08 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id z24so8919550lfu.13
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 09:20:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=S+26Vsol/pLE3N2ZCeBR7S3rv3GmRM47x0Lj5a/+Z+4=;
-        b=ZOrBVNAXGkcl3SRetFlgOpBW8k57TEz1htELHRMsY3cQ4RgsIlPi57MdJP4t8Bpliw
-         qOFJAjljj8r3mmZf0xIyJ3eXTd8lf6Kkp5SQrpaKeABXfjdaX3xwJvEGmeTJdXVedy6A
-         9RjIw/HW+4xZ2xVsHaC7TnLhx9T3X3VhIgKmk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=S+26Vsol/pLE3N2ZCeBR7S3rv3GmRM47x0Lj5a/+Z+4=;
-        b=eW/7UG0+YRIGn8VeAa0tqXaVmLi0ayauoYODQm4k8k4R/GoxqkywUBmJpW4OVFFOC0
-         ufeVcp4JwX7rz0/vX0n0nijELh8AWqJXILt96/4EGMeMb9o87FAiBHB+LmM2EXxu8+xd
-         T8nFtOYMw7tSVDBNOtSP5iCYxLwJnGmG9YmxyDAd0KnOkQK5EbJJGBAihsvgG3f5pRYQ
-         hxZIOCSNp0Tg7tP3lhXXgJIEmquqWSv2EHNMh6UkHrFf428fakB8r5lja2JoVSoMKa5o
-         2bZd+pyRrUolmwj4+6Buy8B8klRoAbehj11XFENKvzmEq3OzAazlGCpOCunhbpAHUjpM
-         TZWA==
-X-Gm-Message-State: AOAM531gaVzAEZvGvzGZLtP/6GcULWNHCJslHPlFeIDlGm2X53v6Dr0n
-        dM0haJdz0rlCnm4bY5B4Ko3KJ3/a2CgfYu78meY=
-X-Google-Smtp-Source: ABdhPJzksARGz4LRgr4ivNqUz5YwgJ6wzEpVrwfhfgvgH+5XaE4XSEhNgXPAn901swFqS/N3tInGtg==
-X-Received: by 2002:a2e:b88a:: with SMTP id r10mr10098447ljp.362.1631895600030;
-        Fri, 17 Sep 2021 09:20:00 -0700 (PDT)
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
-        by smtp.gmail.com with ESMTPSA id v10sm564070lfr.82.2021.09.17.09.19.59
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Sep 2021 09:19:59 -0700 (PDT)
-Received: by mail-lf1-f45.google.com with SMTP id i4so35387037lfv.4
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 09:19:59 -0700 (PDT)
-X-Received: by 2002:a2e:8185:: with SMTP id e5mr10019984ljg.31.1631895599183;
- Fri, 17 Sep 2021 09:19:59 -0700 (PDT)
+        id S243713AbhIQQaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 12:30:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56652 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229925AbhIQQaI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 12:30:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D155160555;
+        Fri, 17 Sep 2021 16:28:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631896126;
+        bh=RRE6NMda31/dIqqeP4g2Zg1MqUaKnLsM3Ro/I9LVt3w=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=IBbNMhquNK9liwy6lIWmdPIXzOZVsmIh3XmUdeu0OCTs9jMQRFZj4wNKUIerdiVKo
+         mBMDO993ITGHINd9RLo1DY66iD3VOGkNh0ua2l7uUucIPa9VgX2bJ3+P0Wr0K7/+HG
+         og0S6Mz5MOJn7XReD5EeUMdc7TA2gihk25XztwGh86GImWJqlCB0TDSX67KV04NaMv
+         p0osTnLc/lTsOfpedLQ+EjMmJ/gAqIX/e1CLxFaP52jp3kxgAwF0cddgUxqB22Gld3
+         JCAGcSeUs7Bd1NpgzoHU2PijOf49moRGDvKEylzevEZ2zsFtcDoaQ8cwiS5GKTUyN4
+         Jjblai00CbORg==
+Date:   Fri, 17 Sep 2021 11:28:44 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Jan Beulich <jbeulich@suse.com>
+Cc:     "bhelgaas@google.com" <bhelgaas@google.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        "hch@lst.de" <hch@lst.de>, Konrad Wilk <konrad.wilk@oracle.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>
+Subject: Re: [PATCH v2 2/4] PCI: only build xen-pcifront in PV-enabled
+ environments
+Message-ID: <20210917162844.GA1722208@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <YUR6gpm+mTWqdil6@infradead.org>
-In-Reply-To: <YUR6gpm+mTWqdil6@infradead.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 17 Sep 2021 09:19:43 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wihcFU1mq1ksH9k2pTTziopDWm16nra0Ofw7aORGphJaA@mail.gmail.com>
-Message-ID: <CAHk-=wihcFU1mq1ksH9k2pTTziopDWm16nra0Ofw7aORGphJaA@mail.gmail.com>
-Subject: Re: [GIT PULL] dma-mapping fixes for Linux 5.15
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        iommu <iommu@lists.linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3a7f6c9b-215d-b593-8056-b5fe605dafd7@suse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 4:23 AM Christoph Hellwig <hch@infradead.org> wrote:
->
-> nvme fixes for Linux 5.15
+s/only/Only/ in subject
 
-This presumably went to the wrong person for the same reason the
-subject line was bogus.
+On Fri, Sep 17, 2021 at 12:48:03PM +0200, Jan Beulich wrote:
+> The driver's module init function, pcifront_init(), invokes
+> xen_pv_domain() first thing. That construct produces constant "false"
+> when !CONFIG_XEN_PV. Hence there's no point building the driver in
+> non-PV configurations.
 
-I got these fixes through Jens, if you had an _actual_ dma-mapping
-branch you wanted me to pull, you did the wrong pull request.
+Thanks for these bread crumbs.  xen_domain_type is set to
+XEN_PV_DOMAIN only by xen_start_kernel() in enlighten_pv.c, which is
+only built when CONFIG_XEN_PV=y, so even I can verify this :)
 
-Please send that proper one instead.
+> Drop the (now implicit and generally wrong) X86 dependency: At present,
+> XEN_PV con only be set when X86 is also enabled. In general an
+> architecture supporting Xen PV (and PCI) would want to have this driver
+> built.
 
-Or, if it was just this nvme thing, it's all sorted out already.
+s/con only/can only/
 
-          Linus
+> Signed-off-by: Jan Beulich <jbeulich@suse.com>
+> Reviewed-by: Stefano Stabellini <sstabellini@kernel.org>
+
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+
+> ---
+> v2: Title and description redone.
+> 
+> --- a/drivers/pci/Kconfig
+> +++ b/drivers/pci/Kconfig
+> @@ -110,7 +110,7 @@ config PCI_PF_STUB
+>  
+>  config XEN_PCIDEV_FRONTEND
+>  	tristate "Xen PCI Frontend"
+> -	depends on X86 && XEN
+> +	depends on XEN_PV
+>  	select PCI_XEN
+>  	select XEN_XENBUS_FRONTEND
+>  	default y
+> 
