@@ -2,125 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7594740FCFB
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 17:42:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 179EA40FD01
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 17:45:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230146AbhIQPoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 11:44:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53966 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243443AbhIQPoP (ORCPT
+        id S243914AbhIQPqv convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 17 Sep 2021 11:46:51 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:59359 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241670AbhIQPqt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 11:44:15 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9322BC061767
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:42:52 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id y144so18735582qkb.6
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:42:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=poorly.run; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=m0dCFB/mfZ3NoW8jcV3Ey7Co+ujM9o+NXfiHm7bltGo=;
-        b=F8nNi3y2k7UHCutwkJnFaKCmLrIPkAilYWnn8NJfGMKZdgWTNzSRB41BT8XEaF4EN9
-         zOqDbAw5kNzn0+XX5xgzKH7Z+5F3OSvxQf+Da/YnNgbXHoCpcdAqvqZ89foRH4ceGuR9
-         4MrUsTpwBBhQ716EZr0jkZaf/pHgWVEWLAEG9EPUIOG5kGq06LEEzsgiFXGPZF250+gq
-         20HCNXynRp2jJEyHbBqtLHvXdrUHfmgV3H8J14hbv2sXxLeZxXf4JQyMM2a98i0fBNiZ
-         zWdZ84jgIMcG6m/w+H3U8iTX8s6PosdiH+IDiKj3/nfb7JLb9ntMCfEaZDTkXALQ/oRu
-         w5Cg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=m0dCFB/mfZ3NoW8jcV3Ey7Co+ujM9o+NXfiHm7bltGo=;
-        b=QY9XHH9HvOE65RmMz64NTQNH3gpZPwARPPeCgdkB8UBX49cqCbNJZKA6PH4YzjH+LV
-         H8Pck+4jLnRNgRiuoa8KsaCg3lyFcej4AMh0AK9lCFSa2c2jeBLVoM4VMA9y3SfL9elI
-         +6nLskzGgpcfRo8+6RBvrK6dYW9GObgbg/90CMe7qUdm5Zo3N99fjeBVWzNr6bDBdIAK
-         WQhoTpPtBk3WW/mjm2KLSbOXZN9g+MKkvN6qYEFCyhvkHhpqZ4uH4k2X7O+0/bsWSY9p
-         1JVSHR3ELgyP4bOVC0OMtZxbb/+ZhU96y7rrZRTw8YmhgREjX1A63fE6mrFLUT7r/I4B
-         F6kw==
-X-Gm-Message-State: AOAM532VjI+EGTHlx/2QFOQ2HMsPPBWSZeHSqWcZaOZQMjODiekbxvz+
-        apmcqBaUNYe+CbEXUvSosij2yQ==
-X-Google-Smtp-Source: ABdhPJw/rGUlpnFx6n+2dmNWgHTDFnPjlTeuUV940sLT48vl5prfdmAmwCynqp4L1RpXVV+z5tspCQ==
-X-Received: by 2002:a05:620a:c4d:: with SMTP id u13mr11076334qki.411.1631893371837;
-        Fri, 17 Sep 2021 08:42:51 -0700 (PDT)
-Received: from localhost ([167.100.64.199])
-        by smtp.gmail.com with ESMTPSA id z6sm4242154qtq.78.2021.09.17.08.42.51
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 17 Sep 2021 08:42:51 -0700 (PDT)
-Date:   Fri, 17 Sep 2021 11:42:50 -0400
-From:   Sean Paul <sean@poorly.run>
-To:     Fernando Ramos <greenfoo@u92.eu>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        sean@poorly.run, linux-doc@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-Subject: Re: [PATCH 11/15] drm/msm: cleanup: drm_modeset_lock_all() -->
- DRM_MODESET_LOCK_ALL_BEGIN()
-Message-ID: <20210917154250.GL2515@art_vandelay>
-References: <20210916211552.33490-1-greenfoo@u92.eu>
- <20210916211552.33490-12-greenfoo@u92.eu>
+        Fri, 17 Sep 2021 11:46:49 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-195-GmwR4cziPhaTXv3B2e0c3Q-1; Fri, 17 Sep 2021 11:45:23 -0400
+X-MC-Unique: GmwR4cziPhaTXv3B2e0c3Q-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 519F71084681;
+        Fri, 17 Sep 2021 15:45:21 +0000 (UTC)
+Received: from x1.bristot.me.homenet.telecomitalia.it (unknown [10.22.17.200])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 141525D9C6;
+        Fri, 17 Sep 2021 15:45:01 +0000 (UTC)
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>, Kate Carcia <kcarcia@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [RFC 00/19] RTLA: An interface for osnoise/timerlat tracers
+Date:   Fri, 17 Sep 2021 17:43:43 +0200
+Message-Id: <cover.1631889858.git.bristot@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210916211552.33490-12-greenfoo@u92.eu>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=bristot@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 11:15:48PM +0200, Fernando Ramos wrote:
-> As requested in Documentation/gpu/todo.rst, replace driver calls to
-> drm_modeset_lock_all() with DRM_MODESET_LOCK_ALL_BEGIN() and
-> DRM_MODESET_LOCK_ALL_END()
-> 
-> Signed-off-by: Fernando Ramos <greenfoo@u92.eu>
-> ---
->  drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
-> index 768012243b44..4cbc79eaee17 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
-> @@ -1172,14 +1172,16 @@ static int _dpu_debugfs_status_show(struct seq_file *s, void *data)
->  	struct drm_display_mode *mode;
->  	struct drm_framebuffer *fb;
->  	struct drm_plane_state *state;
-> +	struct drm_modeset_acquire_ctx ctx;
->  	struct dpu_crtc_state *cstate;
->  
->  	int i, out_width;
-> +	int ret;
+The rtla(1) is a meta-tool that includes a set of commands that
+aims to analyze the real-time properties of Linux. But instead of
+testing Linux as a black box, rtla leverages kernel tracing
+capabilities to provide precise information about the properties
+and root causes of unexpected results.
 
-Please put ret with i & out_width
+To start, it presents an interface to the osnoise and timerlat tracers.
+In the future, it will also serve as home to the rtsl [1] and other
+latency/noise tracers.
 
->  
->  	dpu_crtc = s->private;
->  	crtc = &dpu_crtc->base;
->  
-> -	drm_modeset_lock_all(crtc->dev);
-> +	DRM_MODESET_LOCK_ALL_BEGIN(crtc->dev, ctx, 0, ret);
->  	cstate = to_dpu_crtc_state(crtc->state);
->  
->  	mode = &crtc->state->adjusted_mode;
-> @@ -1263,7 +1265,7 @@ static int _dpu_debugfs_status_show(struct seq_file *s, void *data)
->  		dpu_crtc->vblank_cb_time = ktime_set(0, 0);
->  	}
->  
-> -	drm_modeset_unlock_all(crtc->dev);
-> +	DRM_MODESET_LOCK_ALL_END(crtc->dev, ctx, ret);
->  
->  	return 0;
+The first five patches are a re-send of [2] that enable multiple
+instances for osnoise/timerlat tracers. They are required to run the -T
+option - to save a trace with osnoise: events for debugging.
 
-Return ret here
+The next seven patches are rtla, rtla osnoise, and rtla timerlat, and
+the following patches are the man pages for the tools.
 
->  }
-> -- 
-> 2.33.0
-> 
+To compile rtla on fedora you need:
+  $ git clone git://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git
+  $ cd libtraceevent/
+  $ make
+  $ sudo make install
+  $ cd ..
+  $ git clone git://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git
+  $ cd libtracefs/
+  $ make
+  $ sudo make install
+  $ cd ..
+  $ sudo dnf install asciidoc xmlto procps-devel
+  $ cd $linux/tools/tracing/rtla/
+  $ make
+  $ sudo make install
+
+This tool will be discussed at the RT-MC during LPC2021.
+
+RTLA stands for Real-Time Linux Analysis.
+
+[1] rtsl: https://github.com/bristot/rtsl/
+[2] https://lore.kernel.org/lkml/cover.1628775552.git.bristot@kernel.org/
+
+Daniel Bristot de Oliveira (19):
+  trace/osnoise: Do not follow tracing_cpumask
+  trace/osnoise: Split workload start from the tracer start
+  trace/osnoise: Use start/stop_per_cpu_kthreads() on
+    osnoise_cpus_write()
+  trace/osnoise: Support a list of trace_array *tr
+  trace/osnoise: Allow multiple instances of the same tracer
+  rtla: Real-Time Linux Analysis tool
+  rtla: Helper functions for rtla
+  rtla: Add osnoise tool
+  rtla/osnoise: Add osnoise top mode
+  rtla/osnoise: Add the hist mode
+  rtla: Add timerlat tool and timelart top mode
+  rtla/timerlat: Add timerlat hist mode
+  rtla: Add Documentation
+  rtla: Add rtla osnoise man page
+  rtla: Add rtla osnoise top documentation
+  rtla: Add rtla osnoise hist documentation
+  rtla: Add rtla timerlat documentation
+  rtla: Add rtla timerlat top documentation
+  rtla: Add rtla timerlat hist documentation
+
+ kernel/trace/trace_osnoise.c                  | 410 ++++++---
+ tools/tracing/rtla/Documentation/Makefile     | 223 +++++
+ .../tracing/rtla/Documentation/asciidoc.conf  | 118 +++
+ .../rtla/Documentation/manpage-base.xsl       |  35 +
+ .../rtla/Documentation/manpage-normal.xsl     |  13 +
+ .../rtla/Documentation/rtla-osnoise-hist.txt  | 117 +++
+ .../rtla/Documentation/rtla-osnoise-top.txt   |  98 ++
+ .../rtla/Documentation/rtla-osnoise.txt       |  68 ++
+ .../rtla/Documentation/rtla-timerlat-hist.txt | 162 ++++
+ .../rtla/Documentation/rtla-timerlat-top.txt  | 181 ++++
+ .../rtla/Documentation/rtla-timerlat.txt      |  65 ++
+ tools/tracing/rtla/Documentation/rtla.txt     |  56 ++
+ tools/tracing/rtla/Documentation/utils.mk     | 144 +++
+ tools/tracing/rtla/Makefile                   |  71 ++
+ tools/tracing/rtla/src/osnoise.c              | 846 +++++++++++++++++
+ tools/tracing/rtla/src/osnoise.h              |  86 ++
+ tools/tracing/rtla/src/osnoise_hist.c         | 860 ++++++++++++++++++
+ tools/tracing/rtla/src/osnoise_top.c          | 566 ++++++++++++
+ tools/tracing/rtla/src/rtla.c                 |  87 ++
+ tools/tracing/rtla/src/timerlat.c             |  72 ++
+ tools/tracing/rtla/src/timerlat.h             |   3 +
+ tools/tracing/rtla/src/timerlat_hist.c        | 778 ++++++++++++++++
+ tools/tracing/rtla/src/timerlat_top.c         | 578 ++++++++++++
+ tools/tracing/rtla/src/trace.c                | 220 +++++
+ tools/tracing/rtla/src/trace.h                |  26 +
+ tools/tracing/rtla/src/utils.c                | 433 +++++++++
+ tools/tracing/rtla/src/utils.h                |  55 ++
+ 27 files changed, 6250 insertions(+), 121 deletions(-)
+ create mode 100644 tools/tracing/rtla/Documentation/Makefile
+ create mode 100644 tools/tracing/rtla/Documentation/asciidoc.conf
+ create mode 100644 tools/tracing/rtla/Documentation/manpage-base.xsl
+ create mode 100644 tools/tracing/rtla/Documentation/manpage-normal.xsl
+ create mode 100644 tools/tracing/rtla/Documentation/rtla-osnoise-hist.txt
+ create mode 100644 tools/tracing/rtla/Documentation/rtla-osnoise-top.txt
+ create mode 100644 tools/tracing/rtla/Documentation/rtla-osnoise.txt
+ create mode 100644 tools/tracing/rtla/Documentation/rtla-timerlat-hist.txt
+ create mode 100644 tools/tracing/rtla/Documentation/rtla-timerlat-top.txt
+ create mode 100644 tools/tracing/rtla/Documentation/rtla-timerlat.txt
+ create mode 100644 tools/tracing/rtla/Documentation/rtla.txt
+ create mode 100644 tools/tracing/rtla/Documentation/utils.mk
+ create mode 100644 tools/tracing/rtla/Makefile
+ create mode 100644 tools/tracing/rtla/src/osnoise.c
+ create mode 100644 tools/tracing/rtla/src/osnoise.h
+ create mode 100644 tools/tracing/rtla/src/osnoise_hist.c
+ create mode 100644 tools/tracing/rtla/src/osnoise_top.c
+ create mode 100644 tools/tracing/rtla/src/rtla.c
+ create mode 100644 tools/tracing/rtla/src/timerlat.c
+ create mode 100644 tools/tracing/rtla/src/timerlat.h
+ create mode 100644 tools/tracing/rtla/src/timerlat_hist.c
+ create mode 100644 tools/tracing/rtla/src/timerlat_top.c
+ create mode 100644 tools/tracing/rtla/src/trace.c
+ create mode 100644 tools/tracing/rtla/src/trace.h
+ create mode 100644 tools/tracing/rtla/src/utils.c
+ create mode 100644 tools/tracing/rtla/src/utils.h
 
 -- 
-Sean Paul, Software Engineer, Google / Chromium OS
+2.31.1
+
