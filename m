@@ -2,359 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FAB240EEB1
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 03:23:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62A3140EEB2
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 03:24:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242115AbhIQBZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 21:25:01 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:43468 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232222AbhIQBZA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 21:25:00 -0400
-X-UUID: 3fe0887dc5174655a9317812a8c572ad-20210917
-X-UUID: 3fe0887dc5174655a9317812a8c572ad-20210917
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <moudy.ho@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 398700776; Fri, 17 Sep 2021 09:23:34 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 17 Sep 2021 09:23:32 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 17 Sep 2021 09:23:32 +0800
-Message-ID: <e42db754228d577979833657a5c2d8c32a20d47e.camel@mediatek.com>
-Subject: Re: [PATCH v7 1/5] soc: mediatek: mutex: add support for MDP
-From:   moudy ho <moudy.ho@mediatek.com>
-To:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Jernej Skrabec <jernej.skrabec@siol.net>
-CC:     Maoguang Meng <maoguang.meng@mediatek.com>,
-        daoyuan huang <daoyuan.huang@mediatek.com>,
-        Ping-Hsun Wu <ping-hsun.wu@mediatek.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Rob Landley <rob@landley.net>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <tfiga@chromium.org>,
-        <drinkcat@chromium.org>, <acourbot@chromium.org>,
-        <pihsun@chromium.org>, <menghui.lin@mediatek.com>,
-        <sj.huang@mediatek.com>, <ben.lok@mediatek.com>,
-        <randy.wu@mediatek.com>, <srv_heupstream@mediatek.com>,
-        <hsinyi@google.com>
-Date:   Fri, 17 Sep 2021 09:23:32 +0800
-In-Reply-To: <01e4d221-0c77-fdcb-0e01-540e315481d8@gmail.com>
-References: <20210824100027.25989-1-moudy.ho@mediatek.com>
-         <20210824100027.25989-2-moudy.ho@mediatek.com>
-         <01e4d221-0c77-fdcb-0e01-540e315481d8@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        id S242152AbhIQBZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 21:25:50 -0400
+Received: from mga18.intel.com ([134.134.136.126]:21783 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232222AbhIQBZp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 21:25:45 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10109"; a="209788660"
+X-IronPort-AV: E=Sophos;i="5.85,299,1624345200"; 
+   d="scan'208";a="209788660"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2021 18:24:24 -0700
+X-IronPort-AV: E=Sophos;i="5.85,299,1624345200"; 
+   d="scan'208";a="546002043"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.119])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2021 18:24:20 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Rik van Riel <riel@surriel.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Zi Yan <ziy@nvidia.com>, Wei Xu <weixugc@google.com>,
+        osalvador <osalvador@suse.de>,
+        Shakeel Butt <shakeelb@google.com>,
+        Linux MM <linux-mm@kvack.org>
+Subject: Re: [PATCH -V8 1/6] NUMA balancing: optimize page placement for
+ memory tiering system
+References: <20210914013701.344956-1-ying.huang@intel.com>
+        <20210914013701.344956-2-ying.huang@intel.com>
+        <CAHbLzkpRWwtkhnXUZEUk3LgpHtmgNJRPGUjKzd9bhQU33Y4u2g@mail.gmail.com>
+        <8735q63947.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <CAHbLzko-hR74s5HKMx5SG6bwaoJvcHSLeKwihkpvhYj7+hX+Sw@mail.gmail.com>
+        <874kamwkvn.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <CAHbLzkqO4mNUGO=wpzPjU=rdc+=KyssqapmEDLAzVDKPGGfY0Q@mail.gmail.com>
+        <87sfy5uwdm.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <CAHbLzkp2EB2GrdinheoTtcFOZMfb3ZUgqUtv76De_Riy6Sv5mg@mail.gmail.com>
+Date:   Fri, 17 Sep 2021 09:24:18 +0800
+In-Reply-To: <CAHbLzkp2EB2GrdinheoTtcFOZMfb3ZUgqUtv76De_Riy6Sv5mg@mail.gmail.com>
+        (Yang Shi's message of "Thu, 16 Sep 2021 17:47:52 -0700")
+Message-ID: <877dfguh8d.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-MTK:  N
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-09-07 at 13:52 +0200, Matthias Brugger wrote:
-> 
-> On 24/08/2021 12:00, Moudy Ho wrote:
-> > Add functions to support MDP:
-> >    1. Get mutex function
-> >    2. Enable/disable mutex
-> >    3. Enable MDP's modules
-> >    4. Write register via CMDQ
-> > 
-> > Add MDP related settings for 8183 SoC
-> >    1. Register settings
-> > 
-> 
-> Please write some good commit message.
-> 
-> > Signed-off-by: Moudy Ho <moudy.ho@mediatek.com>
-> > ---
-> >   drivers/soc/mediatek/mtk-mutex.c       | 106
-> > +++++++++++++++++++++++--
-> >   include/linux/soc/mediatek/mtk-mutex.h |   8 ++
-> >   2 files changed, 108 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/drivers/soc/mediatek/mtk-mutex.c
-> > b/drivers/soc/mediatek/mtk-mutex.c
-> > index 2e4bcc300576..935f2849a094 100644
-> > --- a/drivers/soc/mediatek/mtk-mutex.c
-> > +++ b/drivers/soc/mediatek/mtk-mutex.c
-> > @@ -7,9 +7,11 @@
-> >   #include <linux/iopoll.h>
-> >   #include <linux/module.h>
-> >   #include <linux/of_device.h>
-> > +#include <linux/of_address.h>
-> >   #include <linux/platform_device.h>
-> >   #include <linux/regmap.h>
-> >   #include <linux/soc/mediatek/mtk-mmsys.h>
-> > +#include <linux/soc/mediatek/mtk-cmdq.h>
-> >   #include <linux/soc/mediatek/mtk-mutex.h>
-> >   
-> >   #define MT2701_MUTEX0_MOD0			0x2c
-> > @@ -107,6 +109,10 @@
-> >   #define MT8183_MUTEX_EOF_DSI0			(MT8183_MUTEX_S
-> > OF_DSI0 << 6)
-> >   #define MT8183_MUTEX_EOF_DPI0			(MT8183_MUTEX_S
-> > OF_DPI0 << 6)
-> >   
-> > +#define MT8183_MUTEX_MDP_START			5
-> > +#define MT8183_MUTEX_MDP_MOD_MASK		0x07FFFFFF
-> > +#define MT8183_MUTEX_MDP_SOF_MASK		0x00000007
-> > +
-> >   struct mtk_mutex {
-> >   	int id;
-> >   	bool claimed;
-> > @@ -123,11 +129,14 @@ enum mtk_mutex_sof_id {
-> >   };
-> >   
-> >   struct mtk_mutex_data {
-> > -	const unsigned int *mutex_mod;
-> > -	const unsigned int *mutex_sof;
-> > -	const unsigned int mutex_mod_reg;
-> > -	const unsigned int mutex_sof_reg;
-> > -	const bool no_clk;
-> > +	const unsigned int	*mutex_mod;
-> > +	const unsigned int	*mutex_sof;
-> > +	const unsigned int	mutex_mod_reg;
-> > +	const unsigned int	mutex_sof_reg;
-> > +	const unsigned int	*mutex_mdp_offset;
-> > +	const unsigned int	mutex_mdp_mod_mask;
-> > +	const unsigned int	mutex_mdp_sof_mask;
-> > +	const bool		no_clk;
-> 
-> Not needed, please drop.
-> 
-> >   };
-> >   
-> >   struct mtk_mutex_ctx {
-> > @@ -136,6 +145,8 @@ struct mtk_mutex_ctx {
-> >   	void __iomem			*regs;
-> >   	struct mtk_mutex		mutex[10];
-> >   	const struct mtk_mutex_data	*data;
-> > +	phys_addr_t			addr;
-> > +	u8				subsys_id;
-> >   };
-> >   
-> >   static const unsigned int mt2701_mutex_mod[DDP_COMPONENT_ID_MAX]
-> > = {
-> > @@ -238,6 +249,14 @@ static const unsigned int
-> > mt8183_mutex_sof[MUTEX_SOF_DSI3 + 1] = {
-> >   	[MUTEX_SOF_DPI0] = MT8183_MUTEX_SOF_DPI0 |
-> > MT8183_MUTEX_EOF_DPI0,
-> >   };
-> >   
-> > +/* indicate which mutex is used by each pipepline */
-> > +static const unsigned int mt8183_mutex_mdp_offset[MDP_PIPE_MAX] =
-> > {
-> 
-> Does this code even compile?
-> There is some basic rules for patches, for example that they have to
-> compile, 
-> don't break anything etc.
-> Please read the documentation and stick to it, before submitting
-> patches:
-> 
-https://urldefense.com/v3/__https://www.kernel.org/doc/html/latest/process/submitting-patches.html__;!!CTRNKA9wMg0ARbw!ydpwywaE1_wrjDqXOQ2N-a98Tw2kejngWaJOgZAWmh-y8tBOW0M_BRXfuhKHSZQ9$
->  
-> 
-> Regards,
-> Matthias
+Yang Shi <shy828301@gmail.com> writes:
 
-Hi Matthias,
+> On Wed, Sep 15, 2021 at 6:45 PM Huang, Ying <ying.huang@intel.com> wrote:
+>>
+>> Yang Shi <shy828301@gmail.com> writes:
+>>
+>> > On Tue, Sep 14, 2021 at 8:58 PM Huang, Ying <ying.huang@intel.com> wrote:
+>> >>
+>> >> Yang Shi <shy828301@gmail.com> writes:
+>> >>
+>> >> > On Tue, Sep 14, 2021 at 6:45 PM Huang, Ying <ying.huang@intel.com> wrote:
+>> >> >>
+>> >> >> Yang Shi <shy828301@gmail.com> writes:
+>> >> >>
+>> >> >> > On Mon, Sep 13, 2021 at 6:37 PM Huang Ying <ying.huang@intel.com> wrote:
+>> >> >> >>
+>> >> >> >> With the advent of various new memory types, some machines will have
+>> >> >> >> multiple types of memory, e.g. DRAM and PMEM (persistent memory).  The
+>> >> >> >> memory subsystem of these machines can be called memory tiering
+>> >> >> >> system, because the performance of the different types of memory are
+>> >> >> >> usually different.
+>> >> >> >>
+>> >> >> >> In such system, because of the memory accessing pattern changing etc,
+>> >> >> >> some pages in the slow memory may become hot globally.  So in this
+>> >> >> >> patch, the NUMA balancing mechanism is enhanced to optimize the page
+>> >> >> >> placement among the different memory types according to hot/cold
+>> >> >> >> dynamically.
+>> >> >> >>
+>> >> >> >> In a typical memory tiering system, there are CPUs, fast memory and
+>> >> >> >> slow memory in each physical NUMA node.  The CPUs and the fast memory
+>> >> >> >> will be put in one logical node (called fast memory node), while the
+>> >> >> >> slow memory will be put in another (faked) logical node (called slow
+>> >> >> >> memory node).  That is, the fast memory is regarded as local while the
+>> >> >> >> slow memory is regarded as remote.  So it's possible for the recently
+>> >> >> >> accessed pages in the slow memory node to be promoted to the fast
+>> >> >> >> memory node via the existing NUMA balancing mechanism.
+>> >> >> >>
+>> >> >> >> The original NUMA balancing mechanism will stop to migrate pages if the free
+>> >> >> >> memory of the target node will become below the high watermark.  This
+>> >> >> >> is a reasonable policy if there's only one memory type.  But this
+>> >> >> >> makes the original NUMA balancing mechanism almost not work to optimize page
+>> >> >> >> placement among different memory types.  Details are as follows.
+>> >> >> >>
+>> >> >> >> It's the common cases that the working-set size of the workload is
+>> >> >> >> larger than the size of the fast memory nodes.  Otherwise, it's
+>> >> >> >> unnecessary to use the slow memory at all.  So in the common cases,
+>> >> >> >> there are almost always no enough free pages in the fast memory nodes,
+>> >> >> >> so that the globally hot pages in the slow memory node cannot be
+>> >> >> >> promoted to the fast memory node.  To solve the issue, we have 2
+>> >> >> >> choices as follows,
+>> >> >> >>
+>> >> >> >> a. Ignore the free pages watermark checking when promoting hot pages
+>> >> >> >>    from the slow memory node to the fast memory node.  This will
+>> >> >> >>    create some memory pressure in the fast memory node, thus trigger
+>> >> >> >>    the memory reclaiming.  So that, the cold pages in the fast memory
+>> >> >> >>    node will be demoted to the slow memory node.
+>> >> >> >>
+>> >> >> >> b. Make kswapd of the fast memory node to reclaim pages until the free
+>> >> >> >>    pages are a little more (about 10MB) than the high watermark.  Then,
+>> >> >> >>    if the free pages of the fast memory node reaches high watermark, and
+>> >> >> >>    some hot pages need to be promoted, kswapd of the fast memory node
+>> >> >> >>    will be waken up to demote some cold pages in the fast memory node to
+>> >> >> >>    the slow memory node.  This will free some extra space in the fast
+>> >> >> >>    memory node, so the hot pages in the slow memory node can be
+>> >> >> >>    promoted to the fast memory node.
+>> >> >> >>
+>> >> >> >> The choice "a" will create the memory pressure in the fast memory
+>> >> >> >> node.  If the memory pressure of the workload is high, the memory
+>> >> >> >> pressure may become so high that the memory allocation latency of the
+>> >> >> >> workload is influenced, e.g. the direct reclaiming may be triggered.
+>> >> >> >>
+>> >> >> >> The choice "b" works much better at this aspect.  If the memory
+>> >> >> >> pressure of the workload is high, the hot pages promotion will stop
+>> >> >> >> earlier because its allocation watermark is higher than that of the
+>> >> >> >> normal memory allocation.  So in this patch, choice "b" is
+>> >> >> >> implemented.
+>> >> >> >>
+>> >> >> >> In addition to the original page placement optimization among sockets,
+>> >> >> >> the NUMA balancing mechanism is extended to be used to optimize page
+>> >> >> >> placement according to hot/cold among different memory types.  So the
+>> >> >> >> sysctl user space interface (numa_balancing) is extended in a backward
+>> >> >> >> compatible way as follow, so that the users can enable/disable these
+>> >> >> >> functionality individually.
+>> >> >> >>
+>> >> >> >> The sysctl is converted from a Boolean value to a bits field.  The
+>> >> >> >> definition of the flags is,
+>> >> >> >>
+>> >> >> >> - 0x0: NUMA_BALANCING_DISABLED
+>> >> >> >> - 0x1: NUMA_BALANCING_NORMAL
+>> >> >> >> - 0x2: NUMA_BALANCING_MEMORY_TIERING
+>> >> >> >
+>> >> >> > Thanks for coming up with the patches. TBH the first question off the
+>> >> >> > top of my head is all the complexity is really worthy for real life
+>> >> >> > workload at the moment? And the interfaces (sysctl knob files exported
+>> >> >> > to users) look complicated for the users. I don't know if the users
+>> >> >> > know how to set an optimal value for their workloads.
+>> >> >> >
+>> >> >> > I don't disagree the NUMA balancing needs optimization and improvement
+>> >> >> > for tiering memory, the question we need answer is how far we should
+>> >> >> > go for now and what the interfaces should look like. Does it make
+>> >> >> > sense to you?
+>> >> >> >
+>> >> >> > IMHO I'd prefer the most simple and straightforward approach at the
+>> >> >> > moment. For example, we could just skip high water mark check for PMEM
+>> >> >> > promotion.
+>> >> >>
+>> >> >> Hi, Yang,
+>> >> >>
+>> >> >> Thanks for comments.
+>> >> >>
+>> >> >> I understand your concerns about complexity.  I have tried to organize
+>> >> >> the patchset so that the initial patch is as simple as possible and the
+>> >> >> complexity is introduced step by step.  But it seems that your simplest
+>> >> >> version is even simpler than my one :-)
+>> >> >>
+>> >> >> In this patch ([1/6]), I introduced 2 stuff.
+>> >> >>
+>> >> >> Firstly, a sysctl knob is provided to disable the NUMA balancing based
+>> >> >> promotion.  Per my understanding, you suggest to remove this.  If so,
+>> >> >> optimizing cross-socket access and promoting hot PMEM pages to DRAM must
+>> >> >> be enabled/disabled together.  If a user wants to enable promoting the
+>> >> >> hot PMEM pages to DRAM but disable optimizing cross-socket access
+>> >> >> because they have already bound the CPU of the workload so that there's no
+>> >> >> much cross-socket access, how can they do?
+>> >> >
+>> >> > I should make myself clearer. Here I mean the whole series, not this
+>> >> > specific patch. I'm concerned that the interfaces (hint fault latency
+>> >> > and ratelimit) are hard to understand and configure for users and
+>> >> > whether we go too far at the moment or not. I'm dealing with the end
+>> >> > users, I'd admit I'm not even sure how to configure the knobs to
+>> >> > achieve optimal performance for different real life workloads.
+>> >>
+>> >> Sorry, I misunderstand your original idea.  I understand that the knob
+>> >> isn't user-friendly.  But sometimes, we cannot avoid it completely :-(
+>> >> In this patchset, I try to introduce the complexity and knobs one by
+>> >> one, and show the performance benefit of each step for people to judge
+>> >> whether the newly added complexity and knob can be complemented by the
+>> >> performance increment.  If the benefit of some patches cannot complement
+>> >> its complexity, I am OK to merge just part of the patchset firstly.
+>> >
+>> > Understood. But I really hesitate to go that far at this moment since
+>> > the picture is not that clear yet IMHO. We have to support them (maybe
+>> > forever) once we merge them.
+>>
+>> OK.  The [1-3/6] is the simplest implementation.  We can start with that
+>> firstly?
+>
+> Sure.
+>
+>>
+>> > So I'd prefer to work on the simplest and most necessary stuff for
+>> > now. Just like how we dealt with demotion.
+>> >
+>> >>
+>> >> So how about be more specific?  For example, if you are general OK about
+>> >> the complexity and knob introduced by [1-3/6], but have concerns about
+>> >> [4/6], then we can discuss about that specifically?
+>> >
+>> > Yeah, we could.
+>> >
+>> >>
+>> >> > For this specific patch I'm ok to a new promotion mode. There might be
+>> >> > usecase that users just want to do promotion between tiered memory but
+>> >> > not care about NUMA locality.
+>> >>
+>> >> Yes.
+>> >>
+>> >> >> Secondly, we add a promote watermark to the DRAM node so that we can
+>> >> >> demote/promote pages between the high and promote watermark.  Per my
+>> >> >> understanding, you suggest just to ignore the high watermark checking
+>> >> >> for promoting.  The problem is that this may make the free pages of the
+>> >> >> DRAM node too few.  If many pages are promoted in short time, the free
+>> >> >> pages will be kept near the min watermark for a while, so that the page
+>> >> >> allocation from the application will trigger direct reclaiming.  We have
+>> >> >> observed page allocation failure in a test before with a similar policy.
+>> >> >
+>> >> > The question is, applicable to the hint fault latency and ratelimit
+>> >> > too, we already have some NUMA balancing knobs to control scan period
+>> >> > and scan size and watermark knobs to tune how aggressively kswapd
+>> >> > works, can they do the same jobs instead of introducing any new knobs?
+>> >>
+>> >> In this specific patch, we don't introduce a new knob for the page
+>> >> demotion.  For other knobs, how about discuss them in the patch that
+>> >> introduce them and one by one?
+>> >
+>> > That comment is applicable to the watermark hack in this patch too.
+>> > Per your above description, the problem is the significant amount of
+>> > promotion in short period of time may deplete free memory. So I'm
+>> > wondering if the amount of promotion could be ratelimited by NUMA
+>> > balancing scan period and scan size. I understand this may have some
+>> > hot pages stay on PMEM for a longer time, but does it really matter?
+>> > In addition, the gap between low <--> min <--> high could be adjusted
+>> > by watermark_scale_factor, so kswapd could work more aggressively to
+>> > keep free memory.
+>>
+>> We can control the NUMA balancing scan speed, but we cannot control the
+>> speed of the hint page faults.  For example, we scanned a large portion
+>
+> Could adjusting scan size help out?
 
-I shouldn't have applied patches directly after chip compatibility
-testing in internal codebase that it had to resolve some conflict and
-been recorded automatically by GIT.
-Sorry for the inconvenience, those redundant codes that cause
-compilation errors will be removed and confirmed in future versions.
+I don't think adjusting scan size helps here.  "scan size" just changes
+how many pages are scanned for one task_work(), it even doesn't change
+the scan speed.  How can it help?
 
-Thanks & Regards,
-Moudy Ho
-> 
-> > +	[MDP_PIPE_IMGI] = MT8183_MUTEX_MDP_START,
-> > +	[MDP_PIPE_RDMA0] = MT8183_MUTEX_MDP_START + 1,
-> > +	[MDP_PIPE_WPEI] = MT8183_MUTEX_MDP_START + 2,
-> > +	[MDP_PIPE_WPEI2] = MT8183_MUTEX_MDP_START + 3
-> > +};
-> > +
-> >   static const struct mtk_mutex_data mt2701_mutex_driver_data = {
-> >   	.mutex_mod = mt2701_mutex_mod,
-> >   	.mutex_sof = mt2712_mutex_sof,
-> > @@ -272,6 +291,9 @@ static const struct mtk_mutex_data
-> > mt8183_mutex_driver_data = {
-> >   	.mutex_sof = mt8183_mutex_sof,
-> >   	.mutex_mod_reg = MT8183_MUTEX0_MOD0,
-> >   	.mutex_sof_reg = MT8183_MUTEX0_SOF0,
-> > +	.mutex_mdp_offset = mt8183_mutex_mdp_offset,
-> > +	.mutex_mdp_mod_mask = MT8183_MUTEX_MDP_MOD_MASK,
-> > +	.mutex_mdp_sof_mask = MT8183_MUTEX_MDP_SOF_MASK,
-> >   	.no_clk = true,
-> >   };
-> >   
-> > @@ -290,6 +312,21 @@ struct mtk_mutex *mtk_mutex_get(struct device
-> > *dev)
-> >   }
-> >   EXPORT_SYMBOL_GPL(mtk_mutex_get);
-> >   
-> > +struct mtk_mutex *mtk_mutex_mdp_get(struct device *dev,
-> > +				    enum mtk_mdp_pipe_id id)
-> > +{
-> > +	struct mtk_mutex_ctx *mtx = dev_get_drvdata(dev);
-> > +	int i = mtx->data->mutex_mdp_offset[id];
-> > +
-> > +	if (!mtx->mutex[i].claimed) {
-> > +		mtx->mutex[i].claimed = true;
-> > +		return &mtx->mutex[i];
-> > +	}
-> > +
-> > +	return ERR_PTR(-EBUSY);
-> > +}
-> > +EXPORT_SYMBOL_GPL(mtk_mutex_mdp_get);
-> > +
-> >   void mtk_mutex_put(struct mtk_mutex *mutex)
-> >   {
-> >   	struct mtk_mutex_ctx *mtx = container_of(mutex, struct
-> > mtk_mutex_ctx,
-> > @@ -369,6 +406,25 @@ void mtk_mutex_add_comp(struct mtk_mutex
-> > *mutex,
-> >   }
-> >   EXPORT_SYMBOL_GPL(mtk_mutex_add_comp);
-> >   
-> > +void mtk_mutex_add_mdp_mod(struct mtk_mutex *mutex, u32 mod,
-> > +			   struct mmsys_cmdq_cmd *cmd)
-> > +{
-> > +	struct mtk_mutex_ctx *mtx = container_of(mutex, struct
-> > mtk_mutex_ctx,
-> > +						 mutex[mutex->id]);
-> > +	unsigned int offset;
-> > +
-> > +	WARN_ON(&mtx->mutex[mutex->id] != mutex);
-> > +
-> > +	offset = DISP_REG_MUTEX_MOD(mtx->data->mutex_mod_reg, mutex-
-> > >id);
-> > +	cmdq_pkt_write_mask(cmd->pkt, mtx->subsys_id, mtx->addr +
-> > offset,
-> > +			    mod, mtx->data->mutex_mdp_mod_mask);
-> > +
-> > +	offset = DISP_REG_MUTEX_SOF(mtx->data->mutex_sof_reg, mutex-
-> > >id);
-> > +	cmdq_pkt_write_mask(cmd->pkt, mtx->subsys_id, mtx->addr +
-> > offset,
-> > +			    0, mtx->data->mutex_mdp_sof_mask);
-> > +}
-> > +EXPORT_SYMBOL_GPL(mtk_mutex_add_mdp_mod);
-> > +
-> >   void mtk_mutex_remove_comp(struct mtk_mutex *mutex,
-> >   			   enum mtk_ddp_comp_id id)
-> >   {
-> > @@ -420,6 +476,20 @@ void mtk_mutex_enable(struct mtk_mutex *mutex)
-> >   }
-> >   EXPORT_SYMBOL_GPL(mtk_mutex_enable);
-> >   
-> > +void mtk_mutex_enable_by_cmdq(struct mtk_mutex *mutex,
-> > +			      struct mmsys_cmdq_cmd *cmd)
-> > +{
-> > +	struct mtk_mutex_ctx *mtx = container_of(mutex, struct
-> > mtk_mutex_ctx,
-> > +						 mutex[mutex->id]);
-> > +
-> > +	WARN_ON(&mtx->mutex[mutex->id] != mutex);
-> > +
-> > +	cmdq_pkt_write_mask(cmd->pkt, mtx->subsys_id,
-> > +			    mtx->addr + DISP_REG_MUTEX_EN(mutex->id),
-> > +			    0x1, 0x00000001);
-> > +}
-> > +EXPORT_SYMBOL_GPL(mtk_mutex_enable_by_cmdq);
-> > +
-> >   void mtk_mutex_disable(struct mtk_mutex *mutex)
-> >   {
-> >   	struct mtk_mutex_ctx *mtx = container_of(mutex, struct
-> > mtk_mutex_ctx,
-> > @@ -431,6 +501,20 @@ void mtk_mutex_disable(struct mtk_mutex
-> > *mutex)
-> >   }
-> >   EXPORT_SYMBOL_GPL(mtk_mutex_disable);
-> >   
-> > +void mtk_mutex_disable_by_cmdq(struct mtk_mutex *mutex,
-> > +			       struct mmsys_cmdq_cmd *cmd)
-> > +{
-> > +	struct mtk_mutex_ctx *mtx = container_of(mutex, struct
-> > mtk_mutex_ctx,
-> > +						 mutex[mutex->id]);
-> > +
-> > +	WARN_ON(&mtx->mutex[mutex->id] != mutex);
-> > +
-> > +	cmdq_pkt_write_mask(cmd->pkt, mtx->subsys_id,
-> > +			    mtx->addr + DISP_REG_MUTEX_EN(mutex->id),
-> > +			    0x0, 0x00000001);
-> > +}
-> > +EXPORT_SYMBOL_GPL(mtk_mutex_disable_by_cmdq);
-> > +
-> >   void mtk_mutex_acquire(struct mtk_mutex *mutex)
-> >   {
-> >   	struct mtk_mutex_ctx *mtx = container_of(mutex, struct
-> > mtk_mutex_ctx,
-> > @@ -458,7 +542,8 @@ static int mtk_mutex_probe(struct
-> > platform_device *pdev)
-> >   {
-> >   	struct device *dev = &pdev->dev;
-> >   	struct mtk_mutex_ctx *mtx;
-> > -	struct resource *regs;
-> > +	struct cmdq_client_reg cmdq_reg;
-> > +	struct resource *regs, addr;
-> >   	int i;
-> >   
-> >   	mtx = devm_kzalloc(dev, sizeof(*mtx), GFP_KERNEL);
-> > @@ -479,6 +564,15 @@ static int mtk_mutex_probe(struct
-> > platform_device *pdev)
-> >   		}
-> >   	}
-> >   
-> > +	if (of_address_to_resource(dev->of_node, 0, &addr) < 0)
-> > +		mtx->addr = 0L;
-> > +	else
-> > +		mtx->addr = addr.start;
-> > +
-> > +	if (cmdq_dev_get_client_reg(dev, &cmdq_reg, 0) != 0)
-> > +		dev_info(dev, "cmdq subsys id has not been set\n");
-> > +	mtx->subsys_id = cmdq_reg.subsys;
-> > +
-> >   	regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> >   	mtx->regs = devm_ioremap_resource(dev, regs);
-> >   	if (IS_ERR(mtx->regs)) {
-> > diff --git a/include/linux/soc/mediatek/mtk-mutex.h
-> > b/include/linux/soc/mediatek/mtk-mutex.h
-> > index 6fe4ffbde290..d08b98419dd9 100644
-> > --- a/include/linux/soc/mediatek/mtk-mutex.h
-> > +++ b/include/linux/soc/mediatek/mtk-mutex.h
-> > @@ -11,11 +11,19 @@ struct device;
-> >   struct mtk_mutex;
-> >   
-> >   struct mtk_mutex *mtk_mutex_get(struct device *dev);
-> > +struct mtk_mutex *mtk_mutex_mdp_get(struct device *dev,
-> > +				    enum mtk_mdp_pipe_id id);
-> >   int mtk_mutex_prepare(struct mtk_mutex *mutex);
-> >   void mtk_mutex_add_comp(struct mtk_mutex *mutex,
-> >   			enum mtk_ddp_comp_id id);
-> > +void mtk_mutex_add_mdp_mod(struct mtk_mutex *mutex, u32 mod,
-> > +			   struct mmsys_cmdq_cmd *cmd);
-> >   void mtk_mutex_enable(struct mtk_mutex *mutex);
-> > +void mtk_mutex_enable_by_cmdq(struct mtk_mutex *mutex,
-> > +			      struct mmsys_cmdq_cmd *cmd);
-> >   void mtk_mutex_disable(struct mtk_mutex *mutex);
-> > +void mtk_mutex_disable_by_cmdq(struct mtk_mutex *mutex,
-> > +			       struct mmsys_cmdq_cmd *cmd);
-> >   void mtk_mutex_remove_comp(struct mtk_mutex *mutex,
-> >   			   enum mtk_ddp_comp_id id);
-> >   void mtk_mutex_unprepare(struct mtk_mutex *mutex);
-> > 
+>> of PMEM without many hint page faults because the pages are really cold,
+>> but suddenly a large amount of cold pages become hot, so they will be
+>> promoted to DRAM.  This will create heavy memory pressure on DRAM node,
+>> make it hard for the normal page allocation from the applications.
+>>
+>> And, for some workloads, we need to promote the hot pages to DRAM
+>> quickly, otherwise, the pages will become cold.  We should make it
+>> possible to support these users too.  Do you agree?
+>
+> I agree there may be such workloads. But do we have to achieve very
+> good support for them right now? We don't even know how common such
+> workload is.
 
+The performance of PMEM is much lower than that of DRAM now.  If some
+pages in PMEM becomes hot, the quicker we move these hot PMEM pages to
+DRAM, the better the performance.  So I think this is a common problem.
+
+And it's not too hard to implement.  This is a small patch anyway.
+
+Best Regards,
+Huang, Ying
