@@ -2,163 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A343140F8E7
+	by mail.lfdr.de (Postfix) with ESMTP id 0D9A740F8E5
 	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 15:13:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239528AbhIQNOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 09:14:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35367 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234629AbhIQNOv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S235152AbhIQNOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 17 Sep 2021 09:14:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631884408;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=930lS4KvYKgd66K5Uz05GiZ4C4QUjCLMki7qZuPZ1rI=;
-        b=G+nnayXiK1O2+4DqfXAtneApJU2tJSzrzJGKVUOCa7zzt6TYKxQ1sCJUdjed0vptEfwtCY
-        zHTYCaZvN+fqQdvoTz8AfPVEPNHzfAXETaAvn9OBKhPaR3egIbYMUpypNfjskJvrwOSQVI
-        GGU0vl/2g5iFx/VtYMbdM84Zz4RlZ4k=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-151-52NA16V5N9OzLHxwkxK1PQ-1; Fri, 17 Sep 2021 09:13:25 -0400
-X-MC-Unique: 52NA16V5N9OzLHxwkxK1PQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4326F801B3D;
-        Fri, 17 Sep 2021 13:13:24 +0000 (UTC)
-Received: from horse.redhat.com (unknown [10.22.32.182])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 234225C1A1;
-        Fri, 17 Sep 2021 13:13:24 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id AAE0A220C99; Fri, 17 Sep 2021 09:13:23 -0400 (EDT)
-Date:   Fri, 17 Sep 2021 09:13:23 -0400
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     Christoph Hellwig <hch@infradead.org>, Jan Kara <jack@suse.cz>,
-        viro@zeniv.linux.org.uk
-Cc:     Linux fsdevel mailing list <linux-fsdevel@vger.kernel.org>,
-        linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        xu.xin16@zte.com.cn, christian.brauner@ubuntu.com
-Subject: [PATCH v3] init/do_mounts.c: Harden split_fs_names() against buffer
- overflow
-Message-ID: <YUSUc7AyCq/P3SLR@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47080 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230515AbhIQNOu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 09:14:50 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D51DC061574;
+        Fri, 17 Sep 2021 06:13:28 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id bb10so6186843plb.2;
+        Fri, 17 Sep 2021 06:13:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=FBrHkdDFgDeUY2FRSkRFiuVQWo8Nzcqn0H3oAosMn+Y=;
+        b=CaFzcNRN+EwQKT2wXl8c22D1LVotGKKNPTsVr1ej+Rxi7LQcYfYAyOBThVt7FTJpji
+         IQAV25UGx0R1Rc4zgdCN4lEk5nXDKfdbPoAHpNOnE8ktmJlzHu8eEEoSZVo7am2bsyRb
+         f50sRDgS4dpE0fHlkR2QoJ4O8L+xSkbE0/vkmeO3CYEwuJguNwpQhkG8GS+6X4yDzbhp
+         QuE0u3LUnTFwVJEYe2wSq2aOxOmht9lGppbY5OADxXB35PoE+79DrDpuxEeoTC9gZMKm
+         5S5YNRJNTpNkoG34NdU170cI71gSdzTzTw6ss/yE3Zp3PtcPt5qz57i18kisgoLeS2bS
+         zZOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=FBrHkdDFgDeUY2FRSkRFiuVQWo8Nzcqn0H3oAosMn+Y=;
+        b=CE3qtq5VWvP8//aVl/wD+D2PFQNkP9KecbKVZYIqceitwmt4Qon3rd2bPhrUvAfxbW
+         MASR8+NowlUSmgMh0L/VZkupRdxeapoLAFEeW6f82DIZ/lNbHJxuD0BF1qwEA7pFYHKQ
+         3CI5YaDacJL9nr5FYxnsdgFp4NiC0VxlMs7Z/UpvG8uRZNGPaw0Ydupi5SCsDIkADUXC
+         tZmtOL6VUVt6DaHBOVBUaOTUOQEO6cYtyLRAxBDYxQSD2gSxXKofcu150u78kiEuo+9U
+         MDFJtRf8dwfSvv/7CxAlMJCTTxTV45MpB6uoK73wLvlhII9mRSbu888zZl9VjDEi7cnI
+         E1Rg==
+X-Gm-Message-State: AOAM531dZkHV1y+uL7NM5I1OeNoC1hGJdejZbp7Qusa0cvWj+hc84Rug
+        sg2i5AaKTbtv9kn79VI7StE=
+X-Google-Smtp-Source: ABdhPJyORjFEmh2uPdBOkkqFvUoP1WkFrNw/7pajnErIP+FfkjquvjZTh7MgyDGv24bzVIkKGmFPgg==
+X-Received: by 2002:a17:902:760b:b0:13b:122:5ff0 with SMTP id k11-20020a170902760b00b0013b01225ff0mr9496008pll.22.1631884407845;
+        Fri, 17 Sep 2021 06:13:27 -0700 (PDT)
+Received: from VM-0-3-centos.localdomain ([101.32.213.191])
+        by smtp.gmail.com with ESMTPSA id e11sm6363901pfn.49.2021.09.17.06.13.26
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 17 Sep 2021 06:13:27 -0700 (PDT)
+From:   brookxu <brookxu.cn@gmail.com>
+To:     jonathan.derrick@intel.com, lorenzo.pieralisi@arm.com,
+        robh@kernel.org, bhelgaas@google.com
+Cc:     helgaas@kernel.org, kw@linux.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4] PCI: vmd: Assign a number to each VMD controller
+Date:   Fri, 17 Sep 2021 21:13:24 +0800
+Message-Id: <1631884404-24141-1-git-send-email-brookxu.cn@gmail.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-split_fs_names() currently takes comma separate list of filesystems
-and converts it into individual filesystem strings. Pleaces these
-strings in the input buffer passed by caller and returns number of
-strings.
+From: Chunguang Xu <brookxu@tencent.com>
 
-If caller manages to pass input string bigger than buffer, then we
-can write beyond the buffer. Or if string just fits buffer, we will
-still write beyond the buffer as we append a '\0' byte at the end.
+If the system has multiple VMD controllers, the driver does not assign
+a number to each controller, so when analyzing the interrupt through
+/proc/interrupts, the names of all controllers are the same, which is
+not very convenient for problem analysis. Here, try to assign a number
+to each VMD controller.
 
-Pass size of input buffer to split_fs_names() and put enough checks
-in place so such buffer overrun possibilities do not occur.
-
-This patch does few things.
-
-- Add a parameter "size" to split_fs_names(). This specifies size
-  of input buffer.
-
-- Use strlcpy() (instead of strcpy()) so that we can't go beyond
-  buffer size. If input string "names" is larger than passed in
-  buffer, input string will be truncated to fit in buffer.
-
-- Stop appending extra '\0' character at the end and avoid one
-  possibility of going beyond the input buffer size.
-
-- Do not use extra loop to count number of strings.
-
-- Previously if one passed "rootfstype=foo,,bar", split_fs_names()
-  will return only 1 string "foo" (and "bar" will be truncated
-  due to extra ,). After this patch, now split_fs_names() will
-  return 3 strings ("foo", zero-sized-string, and "bar").
-
-  Callers of split_fs_names() have been modified to check for
-  zero sized string and skip to next one.
-
-Reported-by: xu xin <xu.xin16@zte.com.cn>
-Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+Reviewed-by: Jon Derrick <jonathan.derrick@intel.com>
 ---
-Changes from v2:
-- Got rid of str_start variable. (Jan Kara)
----
- init/do_mounts.c |   27 ++++++++++++++++-----------
- 1 file changed, 16 insertions(+), 11 deletions(-)
+v4: remove out label.
+v3: update subject line.
+v2: update commit message.
 
-Index: redhat-linux/init/do_mounts.c
-===================================================================
---- redhat-linux.orig/init/do_mounts.c	2021-09-15 08:46:33.801689806 -0400
-+++ redhat-linux/init/do_mounts.c	2021-09-17 08:44:40.781430167 -0400
-@@ -338,20 +338,19 @@ __setup("rootflags=", root_data_setup);
- __setup("rootfstype=", fs_names_setup);
- __setup("rootdelay=", root_delay_setup);
+ drivers/pci/controller/vmd.c | 41 +++++++++++++++++++++++++++++++++--------
+ 1 file changed, 33 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/pci/controller/vmd.c b/drivers/pci/controller/vmd.c
+index e3fcdfe..feaab36 100644
+--- a/drivers/pci/controller/vmd.c
++++ b/drivers/pci/controller/vmd.c
+@@ -69,6 +69,8 @@ enum vmd_features {
+ 	VMD_FEAT_CAN_BYPASS_MSI_REMAP		= (1 << 4),
+ };
  
--static int __init split_fs_names(char *page, char *names)
-+/* This can return zero length strings. Caller should check */
-+static int __init split_fs_names(char *page, size_t size, char *names)
- {
--	int count = 0;
-+	int count = 1;
- 	char *p = page;
- 
--	strcpy(p, root_fs_names);
-+	strlcpy(p, root_fs_names, size);
- 	while (*p++) {
--		if (p[-1] == ',')
-+		if (p[-1] == ',') {
- 			p[-1] = '\0';
-+			count++;
-+		}
- 	}
--	*p = '\0';
--
--	for (p = page; *p; p += strlen(p)+1)
--		count++;
- 
- 	return count;
- }
-@@ -404,12 +403,16 @@ void __init mount_block_root(char *name,
- 	scnprintf(b, BDEVNAME_SIZE, "unknown-block(%u,%u)",
- 		  MAJOR(ROOT_DEV), MINOR(ROOT_DEV));
- 	if (root_fs_names)
--		num_fs = split_fs_names(fs_names, root_fs_names);
-+		num_fs = split_fs_names(fs_names, PAGE_SIZE, root_fs_names);
- 	else
- 		num_fs = list_bdev_fs_names(fs_names, PAGE_SIZE);
- retry:
- 	for (i = 0, p = fs_names; i < num_fs; i++, p += strlen(p)+1) {
--		int err = do_mount_root(name, p, flags, root_mount_data);
-+		int err;
++static DEFINE_IDA(vmd_instance_ida);
 +
-+		if (!*p)
-+			continue;
-+		err = do_mount_root(name, p, flags, root_mount_data);
- 		switch (err) {
- 			case 0:
- 				goto out;
-@@ -543,10 +546,12 @@ static int __init mount_nodev_root(void)
- 	fs_names = (void *)__get_free_page(GFP_KERNEL);
- 	if (!fs_names)
- 		return -EINVAL;
--	num_fs = split_fs_names(fs_names, root_fs_names);
-+	num_fs = split_fs_names(fs_names, PAGE_SIZE, root_fs_names);
+ /*
+  * Lock for manipulating VMD IRQ lists.
+  */
+@@ -119,6 +121,8 @@ struct vmd_dev {
+ 	struct pci_bus		*bus;
+ 	u8			busn_start;
+ 	u8			first_vec;
++	char			*name;
++	int			instance;
+ };
  
- 	for (i = 0, fstype = fs_names; i < num_fs;
- 	     i++, fstype += strlen(fstype) + 1) {
-+		if (!*fstype)
-+			continue;
- 		if (!fs_is_nodev(fstype))
- 			continue;
- 		err = do_mount_root(root_device_name, fstype, root_mountflags,
+ static inline struct vmd_dev *vmd_from_bus(struct pci_bus *bus)
+@@ -599,7 +603,7 @@ static int vmd_alloc_irqs(struct vmd_dev *vmd)
+ 		INIT_LIST_HEAD(&vmd->irqs[i].irq_list);
+ 		err = devm_request_irq(&dev->dev, pci_irq_vector(dev, i),
+ 				       vmd_irq, IRQF_NO_THREAD,
+-				       "vmd", &vmd->irqs[i]);
++				       vmd->name, &vmd->irqs[i]);
+ 		if (err)
+ 			return err;
+ 	}
+@@ -779,18 +783,32 @@ static int vmd_probe(struct pci_dev *dev, const struct pci_device_id *id)
+ 		return -ENOMEM;
+ 
+ 	vmd->dev = dev;
++	vmd->instance = ida_simple_get(&vmd_instance_ida, 0, 0, GFP_KERNEL);
++	if (vmd->instance < 0)
++		return vmd->instance;
++
++	vmd->name = kasprintf(GFP_KERNEL, "vmd%d", vmd->instance);
++	if (!vmd->name) {
++		err = -ENOMEM;
++		goto out_release_instance;
++	}
++
+ 	err = pcim_enable_device(dev);
+ 	if (err < 0)
+-		return err;
++		goto out_release_instance;
+ 
+ 	vmd->cfgbar = pcim_iomap(dev, VMD_CFGBAR, 0);
+-	if (!vmd->cfgbar)
+-		return -ENOMEM;
++	if (!vmd->cfgbar) {
++		err = -ENOMEM;
++		goto out_release_instance;
++	}
+ 
+ 	pci_set_master(dev);
+ 	if (dma_set_mask_and_coherent(&dev->dev, DMA_BIT_MASK(64)) &&
+-	    dma_set_mask_and_coherent(&dev->dev, DMA_BIT_MASK(32)))
+-		return -ENODEV;
++	    dma_set_mask_and_coherent(&dev->dev, DMA_BIT_MASK(32))) {
++		err = -ENODEV;
++		goto out_release_instance;
++	}
+ 
+ 	if (features & VMD_FEAT_OFFSET_FIRST_VECTOR)
+ 		vmd->first_vec = 1;
+@@ -799,11 +817,16 @@ static int vmd_probe(struct pci_dev *dev, const struct pci_device_id *id)
+ 	pci_set_drvdata(dev, vmd);
+ 	err = vmd_enable_domain(vmd, features);
+ 	if (err)
+-		return err;
++		goto out_release_instance;
+ 
+ 	dev_info(&vmd->dev->dev, "Bound to PCI domain %04x\n",
+ 		 vmd->sysdata.domain);
+ 	return 0;
++
++ out_release_instance:
++	ida_simple_remove(&vmd_instance_ida, vmd->instance);
++	kfree(vmd->name);
++	return err;
+ }
+ 
+ static void vmd_cleanup_srcu(struct vmd_dev *vmd)
+@@ -824,6 +847,8 @@ static void vmd_remove(struct pci_dev *dev)
+ 	vmd_cleanup_srcu(vmd);
+ 	vmd_detach_resources(vmd);
+ 	vmd_remove_irq_domain(vmd);
++	ida_simple_remove(&vmd_instance_ida, vmd->instance);
++	kfree(vmd->name);
+ }
+ 
+ #ifdef CONFIG_PM_SLEEP
+@@ -848,7 +873,7 @@ static int vmd_resume(struct device *dev)
+ 	for (i = 0; i < vmd->msix_count; i++) {
+ 		err = devm_request_irq(dev, pci_irq_vector(pdev, i),
+ 				       vmd_irq, IRQF_NO_THREAD,
+-				       "vmd", &vmd->irqs[i]);
++				       vmd->name, &vmd->irqs[i]);
+ 		if (err)
+ 			return err;
+ 	}
+-- 
+1.8.3.1
 
