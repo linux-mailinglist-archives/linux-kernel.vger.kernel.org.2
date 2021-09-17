@@ -2,174 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E8B240FCBE
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 17:39:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD3CE40FCC4
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 17:40:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244105AbhIQPlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 11:41:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44160 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242055AbhIQPkn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 11:40:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 33E6761164;
-        Fri, 17 Sep 2021 15:39:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631893159;
-        bh=kSdq0hKExFv8TXBDsAqqcVjzosArwA4JtM7vQeOmyb0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=l01PzpViwki9LA7T5gwPRzros5O03Fnq4JF1/rmEmPMtO4J2Yf6qcIa3IIQeJQNBf
-         o7KN+YVWoGpllAa9JPybanl3gwpiaiMl9dnKvdY7Q3LjHUGgGLyh0/P/YHaizBQ0h8
-         89xnTV/vt9ANhXKh884AS3PhWcyPFK9kRPloDZnefAupBgeWZbJbpCY7ivTmkhYq6w
-         BCjSBab3TY9CHETuz2IrIdbJ9zCGoUYq/5+xiKkKZ2h6OXFimp9anSJz3YKt/yr0mU
-         GT6F8BFi/XcRQW9WWC7yWDQVS5sZNrrjyLkyRvIeXJObrRKqSWGtpP+UV13r2fqu7I
-         3DnNZZ2cCaf9A==
-Date:   Fri, 17 Sep 2021 16:38:37 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Satya Priya <skakit@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>, mka@chromium.org,
-        swboyd@chromium.org, Das Srinagesh <gurus@codeaurora.org>,
-        David Collins <collinsd@codeaurora.org>, kgunda@codeaurora.org,
-        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/4] regulator: Add a regulator driver for the PM8008 PMIC
-Message-ID: <20210917153837.GB4700@sirena.org.uk>
-References: <1631875538-22473-1-git-send-email-skakit@codeaurora.org>
- <1631875538-22473-4-git-send-email-skakit@codeaurora.org>
+        id S233735AbhIQPlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 11:41:22 -0400
+Received: from mail-dm6nam08on2124.outbound.protection.outlook.com ([40.107.102.124]:58501
+        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S243684AbhIQPko (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 11:40:44 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nDHB2vi4zZgkRloWYqj5SXE/RmuztuB2QQwPExtjg5vxV2nMl3IlDFH2mWDYfj7yS4vqNKwSAGgtCzlyEanRqT1pfp1ClRp+1fI6bqIfhCtYnqedH/yjNneicKu4MgXS8LDVY9iVjiNZ2Jvbgpg+ceegXnzz8wprALXw07rMQVCD+3NOtQzYkorVJWnv0Crvgpu+vbX6FBM6UYJsR25LaPX36tiF2NftzMoN+qxkPJOQL7bHD9HeJAEzDAsOn6cnuuQf/NPqA7bY6Opb3XMn5ZZrpLZzWpTL1xJ/iALQHQJRaIuBsnZfKYs0CReMpt2InekQQBFliJk9e2ZHSjZ8Cw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=+608CO442Q1zfrjS4eaYZ+luJKJLi4AvrJhaVCIS5yw=;
+ b=LHodfiQ55oJikLbiCDVIrQlTXX/kvbOBLIbTpoeNA99Y0yYaWMblnWZHMO+sY/liPNNKNllsQFwYzx942xivRGDgFlHBN1vUk5WY1yLrsU7G6Foologaa0n9QWHmmxVqEjkM7K+ODa/364lZQvQdvRZM8n34xJ0emwZsB2NZYc/A7EO0G1NxUmzzNUBbpQnfb7lpA/6tokRCd7hT6BbKZ7q4ZlIk/NU9rABDBY8ZO/pBswuiz+UgSEA35dC6bLhSr3g+kbYOWssENGbpHEf3q6glOg4fftMJy2pZg16rKwqNb1B9a18PxAfm7h1fp0RvS3Lf6awQma/bliR7WMKwxA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=in-advantage.com; dmarc=pass action=none
+ header.from=in-advantage.com; dkim=pass header.d=in-advantage.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=inadvantage.onmicrosoft.com; s=selector2-inadvantage-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+608CO442Q1zfrjS4eaYZ+luJKJLi4AvrJhaVCIS5yw=;
+ b=Vyjhl0KcMj0WX1hpXdXRgyDsi1lq1bfprfzUK/oYAoZ8wzRv5/SBdXA9G7n8YlfrYYTcer7JMVWgsZC+dImOoI3Lcltj1WTiC/r9yPNf/gsrRcLEXhfYyz0B+KQ1trrfkYSEVlJLZCs2x7ZSejKRqHJoQhoZ0AFqfGid7b3bTok=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=in-advantage.com;
+Received: from MWHPR1001MB2351.namprd10.prod.outlook.com
+ (2603:10b6:301:35::37) by MWHPR10MB1933.namprd10.prod.outlook.com
+ (2603:10b6:300:10b::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Fri, 17 Sep
+ 2021 15:39:18 +0000
+Received: from MWHPR1001MB2351.namprd10.prod.outlook.com
+ ([fe80::bc3f:264a:a18d:cf93]) by MWHPR1001MB2351.namprd10.prod.outlook.com
+ ([fe80::bc3f:264a:a18d:cf93%7]) with mapi id 15.20.4523.017; Fri, 17 Sep 2021
+ 15:39:18 +0000
+From:   Colin Foster <colin.foster@in-advantage.com>
+To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        UNGLinuxDriver@microchip.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH v3 net 0/2] ocelot phylink fixes
+Date:   Fri, 17 Sep 2021 08:39:03 -0700
+Message-Id: <20210917153905.1173010-1-colin.foster@in-advantage.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: BYAPR02CA0055.namprd02.prod.outlook.com
+ (2603:10b6:a03:54::32) To MWHPR1001MB2351.namprd10.prod.outlook.com
+ (2603:10b6:301:35::37)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7ZAtKRhVyVSsbBD2"
-Content-Disposition: inline
-In-Reply-To: <1631875538-22473-4-git-send-email-skakit@codeaurora.org>
-X-Cookie: A man's house is his hassle.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Received: from localhost.localdomain (67.185.175.147) by BYAPR02CA0055.namprd02.prod.outlook.com (2603:10b6:a03:54::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Fri, 17 Sep 2021 15:39:17 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b58a59a9-9f92-4d3c-a862-08d979f14fc5
+X-MS-TrafficTypeDiagnostic: MWHPR10MB1933:
+X-Microsoft-Antispam-PRVS: <MWHPR10MB193342EFFA0D6F401479057AA4DD9@MWHPR10MB1933.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 2MkPpk/7ahzVa/j2zvuyexSW6XUxH5QDRe2U9tHabNSvOquFEVTO45giBupXy4w6iAlHIzzWYr4K3PQP/tagYLZkQGtHnHiv/zGp95NABwfn8uwF1cHpoLPtjZBCbJX+zPW6gF9yr4jfdvU3v39hS9ZuUQwd6/DxosHgeVVBX3AXn1iYeM7JEWgapLi7JglRne+f+mLO6MP0CZOwkzU24uORyIhOxrp1d9Ozu7M2PAgj9SVDEdcircO27Dz0rtr5hbk0iQcqtiRfVe0hunSKNjxOsYCqnU6IB+d/5Tb3kj3kBO049UHxLPj1zxqagSqC5ShxgUIagcGND6P/rG1zcq4kZyAshmgfREgiKYIQyEtEk4auoZR+I1nsSg8DBLeLV46sheYyrhInlOUN4k5mixmvj6WnGxQspaIaFnPjvGiKvBPIxKFAMwW080pjRrBh+QJZdsev9H/fKCxXDVejZswhGWs9YbhEneG3b9MsnHhCqy4eDvd0FSY0J7n68ICtNP8fumKXVhmCe0gFqZseNkA6Sg+arB88M37bqAAeOBblFr3lOnPThhW43gFZBCfnPHJlZXCGELq0YTWLkWLdYnmlO7tlL8rTPds4vI0ruxNz62GfS57WdAVxcFSkNq+y3HPXDrM86x3S1sSOLjpaUp4ihjlKHPcAHvFWbPs83JTouuQEcAFoBMZcbvKgjTXi
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2351.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(376002)(396003)(346002)(366004)(39830400003)(38350700002)(5660300002)(316002)(83380400001)(38100700002)(54906003)(2906002)(6512007)(1076003)(86362001)(6666004)(6486002)(508600001)(36756003)(44832011)(956004)(66556008)(4326008)(66476007)(8936002)(8676002)(52116002)(26005)(66946007)(6506007)(186003)(2616005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?DcZ1WT7Q5iZBD1J1GZ4cAer+q1LUjXT33DR25Xp6GA1u//TzzrrqolUVFisF?=
+ =?us-ascii?Q?3B3mV2EXGOsBzqon3p9iz2w7uxilRWQ3AZaso/8+eG2Z92bE6Y7uF543RmOD?=
+ =?us-ascii?Q?BjHM6Wh3Fg6wFCirqIa3ST/KcLWCIdpRKK1//QwLrRk8FP5Eh7TGQRG2wtfR?=
+ =?us-ascii?Q?jvFhuXblLNzooNIhCQ7A/Zp7uY6QDlnZTBJUterMHLQIG7PNWw7wmO6veoEo?=
+ =?us-ascii?Q?NNve2C3tnege4XzQ8Wty/scMIX5JPCzmsMKtHxOO5/zfuJRA0dsezcjCzUAF?=
+ =?us-ascii?Q?eablR74rHq5T8RCZ1e6pIpVsbqoywzaSz05MnKHIQyw8j55UzAS43qDPHXAL?=
+ =?us-ascii?Q?R3ZPPs8ttE/X8fng6qsFLqAaIa8gu3FWbHRWt97pGJIjFKZsxMRkcO7xpIDI?=
+ =?us-ascii?Q?HkKva5fpxutnx+mi/j05zsFtVO1uUi+XOgO+5Iq7DpG+MgYzbd+HWG1ZZ7OI?=
+ =?us-ascii?Q?CbPOAR+IUebbJv1joJitMntW4yqHx2EWP+XxlqIVpdR+zqWhAo0QG97vKtcY?=
+ =?us-ascii?Q?jGpBRLwxUsSpCkQPXLPkygjZLEDJCOILi5CgWZYOa7XJ4JYt49MaCc0hWjFo?=
+ =?us-ascii?Q?TGnmq/3jjXcCAxv1cj/xKK1lN7aMyFazjO+7KqMH8mk4hTYnsPywUUe8FSuA?=
+ =?us-ascii?Q?Iga1cxdcQSqa7+5qwPlWocYiCc8wad3RzjLnNEJfMasJFs17p0dkj/p5/Gtf?=
+ =?us-ascii?Q?GCU+A85JISHwfADofNb7JNUEoecv6Z1kI0D3153ZYbgVeQTb8voXJO4KWAoe?=
+ =?us-ascii?Q?aJddGFCfgez1HcUCpC1Y9G0merghg/RMXC+Y9ulHVHO7i/ydiBKWyaSKsSQN?=
+ =?us-ascii?Q?ETFEAiKgzJ/r1OsW+Nti9QgcK57iDKJmfCY0LAZFJd9yRln8fCUypxKbw9yA?=
+ =?us-ascii?Q?35rD3khJ/R1WTiQ76zW9AfYMe1TyAXqlY9mh9JhQL1CIfPgnAgaAT/Ih/PQq?=
+ =?us-ascii?Q?6vJp9yOT0vPTZYi0ZcDT/oLcCMhoC2f4eYdq1RuoIP4XTV+F93o8vQjRQXTC?=
+ =?us-ascii?Q?P2W31LSOBMqaSscAnKzohFnvjKVuCBq/fnaNShh9y6g1Ryl7RrhLoAgYHXTV?=
+ =?us-ascii?Q?+b/ZhFzLIldCgahoWFJj5oEjIgM1QLxGpypeFiPI7qgKN8hLKafl3fT2IHTC?=
+ =?us-ascii?Q?uWeEhknD45rChvTHeNV6v5AURqeusIg7lHo84PtPlG4N7X+5DhqVbWZ8uypY?=
+ =?us-ascii?Q?aSw7SS9qtuMmcHnlKJYVBllMbZhwUAiVjFUb5AToszB6oFmLczM8WmiufLDd?=
+ =?us-ascii?Q?UQLJWDnA8UZOXCMxjsLoUR/2phDWUUPgOyTxflVN+0wvxth9PdEXwBk3sNbl?=
+ =?us-ascii?Q?ujH/KzvEtbWL0d7OnD50oqQ4?=
+X-OriginatorOrg: in-advantage.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b58a59a9-9f92-4d3c-a862-08d979f14fc5
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2351.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Sep 2021 15:39:18.4247
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 48e842ca-fbd8-4633-a79d-0c955a7d3aae
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: IJJ8jXEBXIOFh3qBpMP4nVanudHw7TUCvUVBOadbztFz6ZpbF3LGIYFQIW9ud/+zgxGcRCB5IgwslG5B4HSZPmnpsxVco1eIhyfTB2c+b8Y=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1933
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When the ocelot driver was migrated to phylink, e6e12df625f2 ("net: 
+mscc: ocelot: convert to phylink") there were two additional writes to
+registers that became stale. One write was to DEV_CLOCK_CFG and one was
+to ANA_PFC_PCF_CFG.
 
---7ZAtKRhVyVSsbBD2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Both of these writes referenced the variable "speed" which originally
+was set to OCELOT_SPEED_{10,100,1000,2500}. These macros expand to
+values of 3, 2, 1, or 0, respectively. After the update, the variable
+speed is set to SPEED_{10,100,1000,2500} which expand to 10, 100, 1000,
+and 2500. So invalid values were getting written to the two registers,
+which would lead to either a lack of functionality or undefined
+funcationality.
 
-On Fri, Sep 17, 2021 at 04:15:37PM +0530, Satya Priya wrote:
+Fixing these values was the intent of v1 of this patch set - submitted
+as "[PATCH v1 net] net: ethernet: mscc: ocelot: bug fix when writing MAC
+speed"
 
-> +static int pm8008_regulator_is_enabled(struct regulator_dev *rdev)
-> +{
-> +	struct pm8008_regulator *pm8008_reg = rdev_get_drvdata(rdev);
-> +	int rc;
-> +	u8 reg;
-> +
-> +	rc = pm8008_read(pm8008_reg->regmap,
-> +			LDO_ENABLE_REG(pm8008_reg->base), &reg, 1);
-> +	if (rc < 0) {
-> +		pr_err("failed to read enable reg rc=%d\n", rc);
-> +		return rc;
-> +	}
-> +
-> +	return !!(reg & ENABLE_BIT);
-> +}
+During that review it was determined that both writes were actually
+unnecessary. DEV_CLOCK_CFG is a duplicate write, so can be removed
+entirely. This was accidentally submitted as as a new, lone patch titled 
+"[PATCH v1 net] net: mscc: ocelot: remove buggy duplicate write to 
+DEV_CLOCK_CFG". This is part of what is considered v2 of this patch set.
 
-This could just be regulator_is_enabled_regmap().  There's also a lot of
-instances in the driver where it's using pr_err() not dev_err() (and
-similarly for the debug prints).
+Additionally, the write to ANA_PFC_PFC_CFG is also unnecessary. Priority
+flow contol is disabled, so configuring it is useless and should be
+removed. This was also submitted as a new, lone patch titled "[PATCH v1 
+net] net: mscc: ocelot: remove buggy and useless write to ANA_PFC_PFC_CFG".
+This is the rest of what is considered v2 of this patch set.
 
-> +
-> +static int pm8008_regulator_enable(struct regulator_dev *rdev)
-> +{
-> +	struct pm8008_regulator *pm8008_reg = rdev_get_drvdata(rdev);
-> +	int rc, current_uv, delay_us, delay_ms, retry_count = 10;
-> +	u8 reg;
 
-This is the regmap helper.
+v3
+Identical to v2, but fixes the patch numbering to v3 and submitting the
+two changes as a patch set.
 
-> +	/*
-> +	 * Wait for the VREG_READY status bit to be set using a timeout delay
-> +	 * calculated from the current commanded voltage.
-> +	 */
-> +	delay_us = STARTUP_DELAY_USEC
-> +			+ DIV_ROUND_UP(current_uv, pm8008_reg->step_rate);
-> +	delay_ms = DIV_ROUND_UP(delay_us, 1000);
+v2
+Note: I misunderstood and submitted two new "v1" patches instead of a
+single "v2" patch set.
+- Remove the buggy writes altogher
 
-Set poll_enable_time and implement get_status() then this will be
-handled by the core.
 
-> +static int pm8008_regulator_disable(struct regulator_dev *rdev)
-> +{
+Colin Foster (2):
+  net: mscc: ocelot: remove buggy and useless write to ANA_PFC_PFC_CFG
+  net: mscc: ocelot: remove buggy duplicate write to DEV_CLOCK_CFG
 
-Use the regmap helper.
+ drivers/net/ethernet/mscc/ocelot.c | 10 ----------
+ 1 file changed, 10 deletions(-)
 
-> +	rc = pm8008_write_voltage(pm8008_reg, min_uv, max_uv);
-> +	if (rc < 0)
-> +		return rc;
+-- 
+2.25.1
 
-This is the only place where write_voltage() is called, may as well just
-inline it.
-
-> +	init_voltage = -EINVAL;
-> +	of_property_read_u32(reg_node, "qcom,init-voltage", &init_voltage);
-
-Why does this property exist and if it's needed why is it specific to
-this device?  It looks like the device allows you to read the voltage on
-startup from the regmap.
-
-> +	init_data = of_get_regulator_init_data(dev, reg_node,
-> +						&pm8008_reg->rdesc);
-> +	if (init_data == NULL) {
-> +		dev_err(dev, "%s: failed to get regulator data\n", name);
-> +		return -ENODATA;
-> +	}
-> +	if (!init_data->constraints.name) {
-> +		dev_err(dev, "%s: regulator name missing\n", name);
-> +		return -EINVAL;
-> +	}
-
-Just let the core find the init data for you, there is no reason to
-insist on a system provided name - that is an entirely optional property
-for systems to use, there is no reason for a regulator driver to care.
-
-> +	init_data->constraints.input_uV = init_data->constraints.max_uV;
-> +	init_data->constraints.valid_ops_mask |= REGULATOR_CHANGE_STATUS
-> +						| REGULATOR_CHANGE_VOLTAGE;
-
-This is absolutely not something that a regulator driver should be
-doing, the whole point with constraints is that they come from the
-machine.
-
-> +static int pm8008_parse_regulator(struct regmap *regmap, struct device *dev)
-> +{
-> +	int rc = 0;
-> +	const char *name;
-> +	struct device_node *child;
-> +	struct pm8008_regulator *pm8008_reg;
-> +
-> +	/* parse each subnode and register regulator for regulator child */
-> +	for_each_available_child_of_node(dev->of_node, child) {
-> +		pm8008_reg = devm_kzalloc(dev, sizeof(*pm8008_reg), GFP_KERNEL);
-> +		if (!pm8008_reg)
-
-You shouldn't be doing this, just unconditionally register all the
-regulators supported by the chip.  If they don't appear in the DT that's
-totally fine - it gives read only access which can be useful for
-diagnostics.
-
---7ZAtKRhVyVSsbBD2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFEtnwACgkQJNaLcl1U
-h9CrJAf/TnpjaJxjPGDD/NDInzhqNZ3pu873PCgDW33FLzZrLDR9VA9y65y4D4V3
-5QTDdaeFkrw6Z7JCVafXdZ+FpkNFs8gObqtdDgiaAascU9fbKEJY1Vwsc+GUdH6m
-R07VKi0wvmn8Gjb12vUMkTBB+bZKlMBIRoFKSkavYSZmiKbeoLDRXZKq1V42rqv5
-BQeCB/irm3UeeuqkT9Ek7365vaVP7pdnDQ7N9DF3pS0P7Tly/zCMfW401VbwkMia
-jf2OR0Ke7h4C3NBUzLPlxW5JEbjZwVduiUJlNMvl/tW1CpcXNfnt7Fzq9/co+1/L
-y7hwKMN3pFDpeSByl63kPgWPQ80slQ==
-=HmpC
------END PGP SIGNATURE-----
-
---7ZAtKRhVyVSsbBD2--
