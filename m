@@ -2,223 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF0F140EE8D
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 03:01:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C6FA40EE8F
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 03:02:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242041AbhIQBCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 21:02:34 -0400
-Received: from mga05.intel.com ([192.55.52.43]:4234 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230058AbhIQBCd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 21:02:33 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10109"; a="308239022"
-X-IronPort-AV: E=Sophos;i="5.85,299,1624345200"; 
-   d="scan'208";a="308239022"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2021 18:01:12 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,299,1624345200"; 
-   d="scan'208";a="583842727"
-Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
-  by orsmga004.jf.intel.com with ESMTP; 16 Sep 2021 18:01:11 -0700
-Date:   Thu, 16 Sep 2021 18:00:44 -0700
-From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Len Brown <len.brown@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Ricardo Neri <ricardo.neri@intel.com>,
-        Quentin Perret <qperret@google.com>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Aubrey Li <aubrey.li@intel.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
-Subject: Re: [PATCH v5 6/6] sched/fair: Consider SMT in ASYM_PACKING load
- balance
-Message-ID: <20210917010044.GA23727@ranerica-svr.sc.intel.com>
-References: <20210911011819.12184-1-ricardo.neri-calderon@linux.intel.com>
- <20210911011819.12184-7-ricardo.neri-calderon@linux.intel.com>
- <CAKfTPtBcDP3Yp54sd4+1kP=o=4e_1HEmOf=eMXydag_J38CEng@mail.gmail.com>
+        id S242060AbhIQBDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 21:03:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242049AbhIQBDW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 21:03:22 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A56D4C061574;
+        Thu, 16 Sep 2021 18:02:01 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id u18so8032452pgf.0;
+        Thu, 16 Sep 2021 18:02:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=7ViJaBJNpRfbfuMpbATKW6jynZe2aCXuCQBXD5sfI8g=;
+        b=IzrUyOn8ozBvh3mzSzd/0iEnjoDGaRKPXyeVGitJncJYS5cUlmuZnAplug8kes9D5h
+         648XwhkCOXgUHeCnKJFHLT6tUtDXAlGbdoMB1d+AycfH+6/ajaAaVYHd1n3O3WuOHNN1
+         JHE86rqIu3AA80YeX6Hg9qa4AUaAIXbbE1di8R2882xX8/s+uHaWPTLT20rTt/AlLTxh
+         fTkZJbYYF8r2X6hfYajyr+LqL0iTmjTDeiYRe1/Y2CBjvuNNQH2aoMrCl8XDIx/yhYUj
+         z8mlQDX44l/qjW9NuAw9zB8jUtKPKODAVg3vC2yqd7HVsuqVF9E4iS9qxCMlcE5JDzGL
+         t/ag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=7ViJaBJNpRfbfuMpbATKW6jynZe2aCXuCQBXD5sfI8g=;
+        b=XgqSAw2SCBz3Qa5cOc5odnu3nQI2jz1y8Tq4uEg6poPJUWK+lWgjfOHF2HVSgQjKRh
+         mC/kTRWiaiaK0rCAU8kbPkxlpljTJZlN9HnNjS93wXfVqK34N2ugt7/tGOUsJux+53OF
+         rPGrjL+wcGqZtOsFgZUDqyM39z8htuX+4YRHKVZvIAPOiec2IfaBqZXV802zF3bKYb8P
+         EGGbeUP4gXPFit+AJhvR95WStwH7E4cPnuYVTHfBVSQmXQgZBAeYHV8ihUsWT759b8Uj
+         I2Gs/NExgTPThjhGCfRDDGDDHheVpooGuGxXNLl8uM2WdbTpZzm1l9jhV5Gmgnivrudk
+         pdPg==
+X-Gm-Message-State: AOAM530f2y6VC3viH9QeqcovlUlt7eOnv0oH+WQkVAriQ2+BDT/DC42r
+        F+jJRYkEHDFAW3F6fo4HDd742L23x20htVd3Cmfot6iZ+EZNBNU=
+X-Google-Smtp-Source: ABdhPJy4hjm/yVEdp94VuFLxqRMzn14K1593YBvsPr2Fpfahmptfa3e270Mynwr6q9JH1QqT9v1kjQTtQ49Nlm8b5BM=
+X-Received: by 2002:a63:e04a:: with SMTP id n10mr7354882pgj.381.1631840521131;
+ Thu, 16 Sep 2021 18:02:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKfTPtBcDP3Yp54sd4+1kP=o=4e_1HEmOf=eMXydag_J38CEng@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <CACkBjsY5-rKKzh-9GedNs53Luk6m_m3F67HguysW-=H1pdnH5Q@mail.gmail.com>
+ <20210413133359.GG227011@ziepe.ca> <CACkBjsb2QU3+J3mhOT2nb0YRB0XodzKoNTwF3RCufFbSoXNm6A@mail.gmail.com>
+ <20210413134458.GI227011@ziepe.ca> <CACkBjsY-CNzO74XGo0uJrcaZTubC+Yw9Sg1bNNi+evUOGaZTCg@mail.gmail.com>
+ <20210916183518.GR3544071@ziepe.ca>
+In-Reply-To: <20210916183518.GR3544071@ziepe.ca>
+From:   Hao Sun <sunhao.th@gmail.com>
+Date:   Fri, 17 Sep 2021 09:01:50 +0800
+Message-ID: <CACkBjsa3Fqkp-OkHFQ0LCL+VbP2H3xvpaArFkTPsdw8Cka27sw@mail.gmail.com>
+Subject: Re: KASAN: use-after-free Read in cma_cancel_operation, rdma_listen
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org, leon@kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 05:43:44PM +0200, Vincent Guittot wrote:
-> On Sat, 11 Sept 2021 at 03:19, Ricardo Neri
-> <ricardo.neri-calderon@linux.intel.com> wrote:
+Jason Gunthorpe <jgg@ziepe.ca> =E4=BA=8E2021=E5=B9=B49=E6=9C=8817=E6=97=A5=
+=E5=91=A8=E4=BA=94 =E4=B8=8A=E5=8D=882:35=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On Tue, Apr 13, 2021 at 10:19:25PM +0800, Hao Sun wrote:
+> > Jason Gunthorpe <jgg@ziepe.ca> =E4=BA=8E2021=E5=B9=B44=E6=9C=8813=E6=97=
+=A5=E5=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=889:45=E5=86=99=E9=81=93=EF=BC=9A
+> > >
+> > > On Tue, Apr 13, 2021 at 09:42:43PM +0800, Hao Sun wrote:
+> > > > Jason Gunthorpe <jgg@ziepe.ca> =E4=BA=8E2021=E5=B9=B44=E6=9C=8813=
+=E6=97=A5=E5=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=889:34=E5=86=99=E9=81=93=EF=BC=
+=9A
+> > > > >
+> > > > > On Tue, Apr 13, 2021 at 11:36:41AM +0800, Hao Sun wrote:
+> > > > > > Hi
+> > > > > >
+> > > > > > When using Healer(https://github.com/SunHao-0/healer/tree/dev) =
+to fuzz
+> > > > > > the Linux kernel, I found two use-after-free bugs which have be=
+en
+> > > > > > reported a long time ago by Syzbot.
+> > > > > > Although the corresponding patches have been merged into upstre=
+am,
+> > > > > > these two bugs can still be triggered easily.
+> > > > > > The original information about Syzbot report can be found here:
+> > > > > > https://syzkaller.appspot.com/bug?id=3D8dc0bcd9dd6ec915ba10b335=
+4740eb420884acaa
+> > > > > > https://syzkaller.appspot.com/bug?id=3D95f89b8fb9fdc42e28ad586e=
+657fea074e4e719b
+> > > > >
+> > > > > Then why hasn't syzbot seen this in a year's time? Seems strange
+> > > > >
+> > > >
+> > > > Seems strange to me too, but the fact is that the reproduction prog=
+ram
+> > > > in attachment can trigger these two bugs quickly.
+> > >
+> > > Do you have this in the C format?
+> > >
 > >
-> > When deciding to pull tasks in ASYM_PACKING, it is necessary not only to
-> > check for the idle state of the destination CPU, dst_cpu, but also of
-> > its SMT siblings.
-> >
-> > If dst_cpu is idle but its SMT siblings are busy, performance suffers
-> > if it pulls tasks from a medium priority CPU that does not have SMT
-> > siblings.
-> >
-> > Implement asym_smt_can_pull_tasks() to inspect the state of the SMT
-> > siblings of both dst_cpu and the CPUs in the candidate busiest group.
-> >
-> > Cc: Aubrey Li <aubrey.li@intel.com>
-> > Cc: Ben Segall <bsegall@google.com>
-> > Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-> > Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> > Cc: Mel Gorman <mgorman@suse.de>
-> > Cc: Quentin Perret <qperret@google.com>
-> > Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > Cc: Tim Chen <tim.c.chen@linux.intel.com>
-> > Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > Reviewed-by: Len Brown <len.brown@intel.com>
-> > Signed-off-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-> > ---
-> > Changes since v4:
-> >   * Use sg_lb_stats::sum_nr_running the idle state of a scheduling group.
-> >     (Vincent, Peter)
-> >   * Do not even idle CPUs in asym_smt_can_pull_tasks(). (Vincent)
-> >   * Updated function documentation and corrected a typo.
-> >
-> > Changes since v3:
-> >   * Removed the arch_asym_check_smt_siblings() hook. Discussions with the
-> >     powerpc folks showed that this patch should not impact them. Also, more
-> >     recent powerpc processor no longer use asym_packing. (PeterZ)
-> >   * Removed unnecessary local variable in asym_can_pull_tasks(). (Dietmar)
-> >   * Removed unnecessary check for local CPUs when the local group has zero
-> >     utilization. (Joel)
-> >   * Renamed asym_can_pull_tasks() as asym_smt_can_pull_tasks() to reflect
-> >     the fact that it deals with SMT cases.
-> >   * Made asym_smt_can_pull_tasks() return false for !CONFIG_SCHED_SMT so
-> >     that callers can deal with non-SMT cases.
-> >
-> > Changes since v2:
-> >   * Reworded the commit message to reflect updates in code.
-> >   * Corrected misrepresentation of dst_cpu as the CPU doing the load
-> >     balancing. (PeterZ)
-> >   * Removed call to arch_asym_check_smt_siblings() as it is now called in
-> >     sched_asym().
-> >
-> > Changes since v1:
-> >   * Don't bailout in update_sd_pick_busiest() if dst_cpu cannot pull
-> >     tasks. Instead, reclassify the candidate busiest group, as it
-> >     may still be selected. (PeterZ)
-> >   * Avoid an expensive and unnecessary call to cpumask_weight() when
-> >     determining if a sched_group is comprised of SMT siblings.
-> >     (PeterZ).
-> > ---
-> >  kernel/sched/fair.c | 94 +++++++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 94 insertions(+)
-> >
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index 26db017c14a3..8d763dd0174b 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -8597,10 +8597,98 @@ group_type group_classify(unsigned int imbalance_pct,
-> >         return group_has_spare;
-> >  }
-> >
-> > +/**
-> > + * asym_smt_can_pull_tasks - Check whether the load balancing CPU can pull tasks
-> > + * @dst_cpu:   Destination CPU of the load balancing
-> > + * @sds:       Load-balancing data with statistics of the local group
-> > + * @sgs:       Load-balancing statistics of the candidate busiest group
-> > + * @sg:                The candidate busiest group
-> > + *
-> > + * Check the state of the SMT siblings of both @sds::local and @sg and decide
-> > + * if @dst_cpu can pull tasks.
-> > + *
-> > + * If @dst_cpu does not have SMT siblings, it can pull tasks if two or more of
-> > + * the SMT siblings of @sg are busy. If only one CPU in @sg is busy, pull tasks
-> > + * only if @dst_cpu has higher priority.
-> > + *
-> > + * If both @dst_cpu and @sg have SMT siblings, and @sg has exactly one more
-> > + * busy CPU than @sds::local, let @dst_cpu pull tasks if it has higher priority.
-> > + * Bigger imbalances in the number of busy CPUs will be dealt with in
-> > + * update_sd_pick_busiest().
-> > + *
-> > + * If @sg does not have SMT siblings, only pull tasks if all of the SMT siblings
-> > + * of @dst_cpu are idle and @sg has lower priority.
-> > + */
-> > +static bool asym_smt_can_pull_tasks(int dst_cpu, struct sd_lb_stats *sds,
-> > +                                   struct sg_lb_stats *sgs,
-> > +                                   struct sched_group *sg)
-> > +{
-> > +#ifdef CONFIG_SCHED_SMT
-> > +       bool local_is_smt, sg_is_smt;
-> > +       int sg_busy_cpus;
-> > +
-> > +       local_is_smt = sds->local->flags & SD_SHARE_CPUCAPACITY;
-> > +       sg_is_smt = sg->flags & SD_SHARE_CPUCAPACITY;
-> > +
-> > +       sg_busy_cpus = sgs->group_weight - sgs->idle_cpus;
-> > +
-> > +       if (!local_is_smt) {
-> > +               /*
-> > +                * If we are here, @dst_cpu is idle and does not have SMT
-> > +                * siblings. Pull tasks if candidate group has two or more
-> > +                * busy CPUs.
-> > +                */
-> > +               if (sg_is_smt && sg_busy_cpus >= 2)
-> 
-> Do you really need to test sg_is_smt ? if sg_busy_cpus >= 2 then
-> sd_is_smt must be true ?
+> > Just tried to use syz-prog2c to convert the repro-prog to C format.
+> > The repro program of  rdma_listen was successfully reproduced
+> > (uploaded in attachment), the other one failed. it looks like
+> > syz-prog2c may not be able to do the equivalent conversion.
+> > You can use syz-execprog to execute the reprogram directly, this
+> > method can reproduce both crashes, I have tried it.
+>
+> Can you check this patch that should solve it?
+>
+> https://patchwork.kernel.org/project/linux-rdma/patch/0-v1-9fbb33f5e201+2=
+a-cma_listen_jgg@nvidia.com/
+>
 
-Thank you very much for your feedback Vincent!
+Just executed the original Syz prog on the latest Linux kernel
+(ff1ffd71d5f0 Merge tag 'hyperv-fixes-signed-20210915'), it did not
+crash the kernel. I've checked that the above patch has not been
+merged into the latest commit. Therefore, there might be some other
+commits that fixed that issue.
 
-Yes, it is true that sg_busy_cpus >=2 is only true if @sg is SMT. I will
-remove this check.
-
-> 
-> Also, This is the default behavior where we want to even the number of
-> busy cpu. Shouldn't you return false and fall back to the default
-> behavior ?
-
-This is also true.
-
-> 
-> That being said, the default behavior tries to even the number of idle
-> cpus which is easier to compute and is equal to even the number of
-> busy cpus in "normal" system with the same number of cpus in groups
-> but this is not the case here. It could be good to change the default
-> behavior to even the number of busy cpus and that you use the default
-> behavior here. Additional condition will be used to select the busiest
-> group like more busy cpu or more number of running tasks
-
-That is a very good observation. Checking the number of idle CPUs
-assumes that both groups have the same number of CPUs. I'll look into
-modifying the default behavior.
-
-> 
-> > +                       return true;
-> > +
-> > +               /*
-> > +                * @dst_cpu does not have SMT siblings. @sg may have SMT
-> > +                * siblings and only one is busy. In such case, @dst_cpu
-> > +                * can help if it has higher priority and is idle (i.e.,
-> > +                * it has no running tasks).
-> 
-> The previous comment above assume that "@dst_cpu is idle" but now you
-> need to check that sds->local_stat.sum_nr_running == 0
-
-But we already know that, right? We are here because in
-update_sg_lb_stats() we determine that dst CPU is idle (env->idle !=
-CPU_NOT_IDLE).
-
-Thanks and BR,
-Ricardo
+Regards
+Hao
