@@ -2,254 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23A4C40F57B
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 12:02:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4ED640F578
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 12:01:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245649AbhIQKDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 06:03:40 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:34335 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241821AbhIQKDi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 06:03:38 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1631872937; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=anv+1QAatg41bGNsQDBxohEAzUWfuNq4bW7YN6m58sw=; b=VvuK2zLfpSERY8Mxe2kJiObJANnEWcZnMFWcIWlOm79a7D8k4CJy59I9XuQdFwAVLupu8hux
- UaKbzfOcdsi7WHnm/M6Q8gB5ebq/sK0ZA4h5pI5avboUBclQAeHuB9hy8lYfjPvcNLlOzSOj
- 5tzivdHgSpfbGjSUOmY/wqXJVwM=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 61446795ec62f57c9a74e802 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 17 Sep 2021 10:01:57
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A3ADEC43619; Fri, 17 Sep 2021 10:01:55 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from hu-srivasam-hyd.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S241954AbhIQKDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 06:03:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39986 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241821AbhIQKDI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 06:03:08 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C77B8C43618;
-        Fri, 17 Sep 2021 10:01:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org C77B8C43618
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        swboyd@chromium.org, judyhsiao@chromium.org
-Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Subject: [PATCH v3 1/2] ASoC: google: dt-bindings: Add sc7280-herobrine machine bindings
-Date:   Fri, 17 Sep 2021 15:31:31 +0530
-Message-Id: <1631872892-1821-2-git-send-email-srivasam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1631872892-1821-1-git-send-email-srivasam@codeaurora.org>
-References: <1631872892-1821-1-git-send-email-srivasam@codeaurora.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id 92AA560E76;
+        Fri, 17 Sep 2021 10:01:46 +0000 (UTC)
+Received: from [198.52.44.129] (helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mRAgi-00BLLq-D1; Fri, 17 Sep 2021 11:01:44 +0100
+Date:   Fri, 17 Sep 2021 11:01:43 +0100
+Message-ID: <87ilyzbjw8.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     "Sven Peter" <sven@svenpeter.dev>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, "Bjorn Helgaas" <bhelgaas@google.com>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Lorenzo Pieralisi" <lorenzo.pieralisi@arm.com>,
+        Krzysztof =?UTF-8?B?V2lsY3p5xYRza2k=?= <kw@linux.com>,
+        "Alyssa Rosenzweig" <alyssa@rosenzweig.io>,
+        "Stan Skowronek" <stan@corellium.com>,
+        "Mark Kettenis" <kettenis@openbsd.org>,
+        "Hector Martin" <marcan@marcan.st>,
+        "Robin Murphy" <Robin.Murphy@arm.com>, kernel-team@android.com
+Subject: Re: [PATCH v3 09/10] iommu/dart: Exclude MSI doorbell from PCIe device IOVA range
+In-Reply-To: <479322ce-b0e4-40e4-831e-387415b4e310@www.fastmail.com>
+References: <20210913182550.264165-1-maz@kernel.org>
+        <20210913182550.264165-10-maz@kernel.org>
+        <479322ce-b0e4-40e4-831e-387415b4e310@www.fastmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 198.52.44.129
+X-SA-Exim-Rcpt-To: sven@svenpeter.dev, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org, bhelgaas@google.com, robh+dt@kernel.org, lorenzo.pieralisi@arm.com, kw@linux.com, alyssa@rosenzweig.io, stan@corellium.com, kettenis@openbsd.org, marcan@marcan.st, Robin.Murphy@arm.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add devicetree bindings documentation file for sc7280 sound card
-registration.
+On Tue, 14 Sep 2021 14:54:07 +0100,
+"Sven Peter" <sven@svenpeter.dev> wrote:
+> 
+> 
+> 
+> On Mon, Sep 13, 2021, at 20:25, Marc Zyngier wrote:
+> > The MSI doorbell on Apple HW can be any address in the low 4GB
+> > range. However, the MSI write is matched by the PCIe block before
+> > hitting the iommu. It must thus be excluded from the IOVA range
+> > that is assigned to any PCIe device.
+> > 
+> > Signed-off-by: Marc Zyngier <maz@kernel.org>
+> 
+> It's not pretty but I'm not aware of any better solution and this should
+> work as long as these two are always paired. With the small nit below
+> addressed:
+> 
+> Reviewed-by: Sven Peter <sven@svenpeter.dev>
+> 
+> > ---
+> >  drivers/iommu/apple-dart.c          | 25 +++++++++++++++++++++++++
+> >  drivers/pci/controller/Kconfig      |  5 +++++
+> >  drivers/pci/controller/pcie-apple.c |  4 +++-
+> >  3 files changed, 33 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/iommu/apple-dart.c b/drivers/iommu/apple-dart.c
+> > index 559db9259e65..d1456663688e 100644
+> > --- a/drivers/iommu/apple-dart.c
+> > +++ b/drivers/iommu/apple-dart.c
+> > @@ -721,6 +721,29 @@ static int apple_dart_def_domain_type(struct device *dev)
+> >  	return 0;
+> >  }
+> >  
+> > +#define DOORBELL_ADDR	(CONFIG_PCIE_APPLE_MSI_DOORBELL_ADDR & PAGE_MASK)
+> > +
+> > +static void apple_dart_get_resv_regions(struct device *dev,
+> > +					struct list_head *head)
+> > +{
+> > +#ifdef CONFIG_PCIE_APPLE
+> 
+> I think using IS_ENABLED would be better here in case the pcie
+> driver is built as a module which would then only define
+> CONFIG_PCIE_APPLE_MODULE AIUI.
 
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
----
-This patch depends on the dt-bindings header patch
-  -- https://patchwork.kernel.org/project/alsa-devel/list/?series=543829
- .../bindings/sound/google,sc7280-herobrine.yaml    | 170 +++++++++++++++++++++
- 1 file changed, 170 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
+You're right, this isn't great. However, IS_ENABLED() still results in
+the evaluation of the following code by the compiler, even if it would
+be dropped by the optimiser.
 
-diff --git a/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml b/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
-new file mode 100644
-index 0000000..3a781c8
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
-@@ -0,0 +1,170 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/google,sc7280-herobrine.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Google SC7280-Herobrine ASoC sound card driver
-+
-+maintainers:
-+  - Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-+  - Judy Hsiao <judyhsiao@chromium.org>
-+
-+description:
-+  This binding describes the SC7280 sound card which uses LPASS for audio.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - google,sc7280-herobrine
-+
-+  audio-routing:
-+    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
-+    description:
-+      A list of the connections between audio components. Each entry is a
-+      pair of strings, the first being the connection's sink, the second
-+      being the connection's source.
-+
-+  model:
-+    $ref: /schemas/types.yaml#/definitions/string
-+    description: User specified audio sound card name
-+
-+  "#address-cells":
-+    const: 1
-+
-+  "#size-cells":
-+    const: 0
-+
-+patternProperties:
-+  "^dai-link@[0-9a-f]$":
-+    description:
-+      Each subnode represents a dai link. Subnodes of each dai links would be
-+      cpu/codec dais.
-+
-+    type: object
-+
-+    properties:
-+      link-name:
-+        description: Indicates dai-link name and PCM stream name.
-+        $ref: /schemas/types.yaml#/definitions/string
-+        maxItems: 1
-+
-+      reg:
-+        maxItems: 1
-+        description: dai link address.
-+
-+      cpu:
-+        description: Holds subnode which indicates cpu dai.
-+        type: object
-+        properties:
-+          sound-dai: true
-+
-+      codec:
-+        description: Holds subnode which indicates codec dai.
-+        type: object
-+        properties:
-+          sound-dai: true
-+
-+    required:
-+      - link-name
-+      - cpu
-+      - codec
-+      - reg
-+
-+    additionalProperties: false
-+
-+required:
-+  - compatible
-+  - model
-+  - "#address-cells"
-+  - "#size-cells"
-+
-+additionalProperties: false
-+
-+examples:
-+
-+  - |
-+    #include <dt-bindings/sound/qcom,lpass.h>
-+    sound {
-+        compatible = "google,sc7280-herobrine";
-+        model = "sc7280-wcd938x-max98360a-4dmic";
-+
-+        audio-routing =
-+            "IN1_HPHL", "HPHL_OUT",
-+            "IN2_HPHR", "HPHR_OUT",
-+            "AMIC1", "MIC BIAS1",
-+            "AMIC2", "MIC BIAS2",
-+            "VA DMIC0", "MIC BIAS3",
-+            "VA DMIC1", "MIC BIAS3",
-+            "VA DMIC2", "MIC BIAS4",
-+            "VA DMIC3", "MIC BIAS4",
-+            "TX SWR_ADC0", "ADC1_OUTPUT",
-+            "TX SWR_ADC1", "ADC2_OUTPUT",
-+            "TX SWR_ADC2", "ADC3_OUTPUT",
-+            "TX SWR_DMIC0", "DMIC1_OUTPUT",
-+            "TX SWR_DMIC1", "DMIC2_OUTPUT",
-+            "TX SWR_DMIC2", "DMIC3_OUTPUT",
-+            "TX SWR_DMIC3", "DMIC4_OUTPUT";
-+
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        dai-link@0 {
-+            link-name = "WCD Playback";
-+            reg = <LPASS_CDC_DMA_RX0>;
-+            cpu {
-+                sound-dai = <&lpass_cpu LPASS_CDC_DMA_RX0>;
-+            };
-+
-+            codec {
-+                sound-dai = <&wcd938x 0>, <&swr0 0>, <&rxmacro 0>;
-+            };
-+        };
-+        dai-link@1 {
-+            link-name = "WCD Capture";
-+            reg = <LPASS_CDC_DMA_TX3>;
-+            cpu {
-+                sound-dai = <&lpass_cpu LPASS_CDC_DMA_TX3>;
-+            };
-+
-+            codec {
-+                sound-dai = <&wcd938x 1>, <&swr1 0>, <&txmacro 0>;
-+            };
-+        };
-+
-+        dai-link@2 {
-+            link-name = "MI2S Playback";
-+            reg = <MI2S_SECONDARY>;
-+            cpu {
-+                sound-dai = <&lpass_cpu MI2S_SECONDARY>;
-+            };
-+
-+            codec {
-+                sound-dai = <&max98360a>;
-+            };
-+        };
-+
-+        dai-link@3 {
-+            link-name = "DMIC Capture";
-+            reg = <LPASS_CDC_DMA_VA_TX0>;
-+            cpu {
-+                sound-dai = <&lpass_cpu LPASS_CDC_DMA_VA_TX0>;
-+            };
-+
-+            codec {
-+                sound-dai = <&vamacro 0>;
-+            };
-+        };
-+
-+        dai-link@5 {
-+            link-name = "DP Playback";
-+            reg = <LPASS_DP_RX>;
-+            cpu {
-+                sound-dai = <&lpass_cpu LPASS_DP_RX>;
-+            };
-+
-+            codec {
-+                sound-dai = <&mdss_dp>;
-+            };
-+        };
-+    };
+I resorted to the following construct:
+
+<quote>
+#ifndef CONFIG_PCIE_APPLE_MSI_DOORBELL_ADDR
+/* Keep things compiling when CONFIG_PCI_APPLE isn't selected */
+#define CONFIG_PCIE_APPLE_MSI_DOORBELL_ADDR	0
+#endif
+#define DOORBELL_ADDR	(CONFIG_PCIE_APPLE_MSI_DOORBELL_ADDR & PAGE_MASK)
+
+static void apple_dart_get_resv_regions(struct device *dev,
+					struct list_head *head)
+{
+	if (IS_ENABLED(CONFIG_PCIE_APPLE) && dev_is_pci(dev)) {
+</quote>
+
+which is ugly, but works. The alternative is, of course, to add a new
+include file for one single value, which I find even worse.
+
+Thanks,
+
+	M.
+
 -- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
-
+Without deviation from the norm, progress is not possible.
