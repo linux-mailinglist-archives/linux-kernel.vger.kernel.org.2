@@ -2,110 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84A4F40FE8F
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 19:19:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8236340FE92
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 19:21:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343887AbhIQRVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 13:21:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48132 "EHLO
+        id S245153AbhIQRXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 13:23:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245754AbhIQRVF (ORCPT
+        with ESMTP id S234934AbhIQRXK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 13:21:05 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 752C4C061574;
-        Fri, 17 Sep 2021 10:19:42 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id b64so19736870qkg.0;
-        Fri, 17 Sep 2021 10:19:42 -0700 (PDT)
+        Fri, 17 Sep 2021 13:23:10 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE298C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 10:21:47 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id 73so14617649qki.4
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 10:21:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=yEuHcEoTPhrJMHC9qczQ1zTZGx1PP9TVKF6T/LQNqgw=;
-        b=h9BmRkFvq8Tw0BUoP2OqOak1QZa7azLRc/ZLIxCowUtFeLIEXmIVbzK4RRJxRbpxKA
-         t+0pwpMosoG3+n2hRJyfbv7/6iZH3E61i4amg4LM2lEv3hUE9IIzlsNShfGsEmIyIbgg
-         NvnjL3RhdkCjM3Pthh2delGuxp0e1/eqydc6utgUUgN1ZfaGZ4YTrTXp+OGSDWA3NcAh
-         45mgKI8M+PhLmlmGM3IEVjBOcFojBVm1JuGENbBi7/TA9jJeyworq7sUXhdON25H+dBo
-         otHXhSkalw87nBtswnTMMSCzOXQ7kGEk8MYVwsqTCBx3lcVzjx03Cc8Tx4b6YAUtXRdt
-         YQEw==
+        bh=FVJPvPT71p2qpDpVwYusHwhoAJjRhgpFZDRPcQYsm44=;
+        b=Vg9PqjoLUWYyLSOVPIQePFeem7dxwhAckSnTYHvVZG+64Nw9R6Nou8lBZrFzFzlrlZ
+         FL4arXzalgV9rTrA68JFbUTKXMzZUkxyRb3YplrxY67VM+CZNdsJPahgKUxlea5dyinn
+         RmQ7tGL5hdt7U5lFTuvq3Cs680t8FSujEiqQ1bhUp8pRTpBShDjc7FgSoRSPw4fcoxjj
+         b/S1iRvW9sleCR/X4Ho9UHep7l+ySBVKVMAWoE9Md3QBLogH0p3emp9INfX/TgKWJg8g
+         Jr12ucqPUzA1MuqiNOXQGnme9ORfrR4MzkkWW0gAEnT0tjGqV/y+Ws5u4c02Mk9h3wc/
+         t2iA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=yEuHcEoTPhrJMHC9qczQ1zTZGx1PP9TVKF6T/LQNqgw=;
-        b=DTxTSYD5h/xDCopC2hAUUaLS3zCR7hRcxlRoSAG435Tq0wJkgrnkWetbwWlBDjzN3F
-         le3p7j179yqbm64twMpX49gaDKCeUwJW/ZjpeKcQlZg06nJ594JzErwds21w4MuOfNSz
-         M5DGw1dCinlgZSI/2ojBMgtFDgCX93KfdVe4j+wqvXbRtWSnZ6qyUwSs2DYX0Tm0RqfH
-         dlQDt6E3do+bdynA07IN/dSUHsBE6G0U9vKIp7UnAGgsCVztyA+yZ5iFk7OhoE9xk458
-         dVn/ar9f9TMdkqW/QQmdX1k5bVgE/SzUSB+sGmRIPf8MQgHFblQ1F2dLg5qsA6iQy8iZ
-         UclQ==
-X-Gm-Message-State: AOAM530P1NSGSY5/++QcudUgKIsJkyi/V88oTr5ngW7u2f2MiMvn2yuF
-        2oel+XRp0BZvbX1LgKVa6FA26BuWLgEPFlmEqzw=
-X-Google-Smtp-Source: ABdhPJy/4sOJNTJQKBKNPQeCpUOewSj7Hlyg3iQvB3Cl4VJP4x9wnMhvfdo2aCTvmGJS+auCzr98i5IDVv51vxXWC5U=
-X-Received: by 2002:a5b:408:: with SMTP id m8mr14966427ybp.2.1631899181660;
- Fri, 17 Sep 2021 10:19:41 -0700 (PDT)
+        bh=FVJPvPT71p2qpDpVwYusHwhoAJjRhgpFZDRPcQYsm44=;
+        b=3WhYBeEr2JGw3SfF6iq1kZkmY1VywlRAJ2JmxtLve0mp3P1HvTm6PSSK/i2A7q97Uh
+         lr9baGL5L4/8Sx9xqS2HiWUCFfJkplTSxxupeK6haEpMxNxS4MVeDhie4vUw1V/yX93Y
+         1vF+vv0tjl9SyB5KTFTm1cAvr8zjUzgQV5sG4DP+lVw/IR4xzMIt8jTaXFIQWROxGTVd
+         q/a/L2LcAXnOP6RLGoj/zi1ODzwpllnKXDW4SxG6+HM6lbzJSJyyc+o4hHqlFz5671GJ
+         YKQ4nRYjt9l65zPFArN+cjXRV0LiR0v+iCOYWVcIFHLM7jF3n/ySxyBl+V7KD8oKNKnG
+         qiXg==
+X-Gm-Message-State: AOAM532JNo55DTjnmZr/nxZPyKyHbWZ3EOja3iehwnsvON7h7YEl5MJd
+        Cb3T44xgQ8b/hwwJMdZBrFW37YqFMAQVQfDGeb4PWQ==
+X-Google-Smtp-Source: ABdhPJxHWypP5Nx1s1w3WIjq/yf9gfvKFlPPn8EGGqwu6o1F7k630NexbuzmSziZ+d0w0RiS2F3Tt2yDvrBNyZLK1Fk=
+X-Received: by 2002:a5b:783:: with SMTP id b3mr13920071ybq.328.1631899306645;
+ Fri, 17 Sep 2021 10:21:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1631785820.git.mchehab+huawei@kernel.org> <9e9f62ab09c26736338545f9aa27c0e825517a32.1631785820.git.mchehab+huawei@kernel.org>
-In-Reply-To: <9e9f62ab09c26736338545f9aa27c0e825517a32.1631785820.git.mchehab+huawei@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 17 Sep 2021 10:19:30 -0700
-Message-ID: <CAEf4BzZhr+3JzuPvyTozQSts7QixnyY1N8CD+-ZuteHodCpmRA@mail.gmail.com>
-Subject: Re: [PATCH v2 10/23] bpftool: update bpftool-cgroup.rst reference
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Roman Gushchin <guro@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>
+References: <20210915081933.485112-1-saravanak@google.com> <45576ceb-562c-9ca7-3ef4-31add52b2168@gmail.com>
+ <CAGETcx9nbxH6hETP2LUENG8EV3v771qi9NpkFd-mix3G-NdZUA@mail.gmail.com> <6cc44234-ed1f-5fb3-671a-cf673ee08fb7@gmail.com>
+In-Reply-To: <6cc44234-ed1f-5fb3-671a-cf673ee08fb7@gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Fri, 17 Sep 2021 10:21:10 -0700
+Message-ID: <CAGETcx9YMsw1YnorpD7hYNiDxS_DKC4b30nk6vcUiBFKuJi-0w@mail.gmail.com>
+Subject: Re: [PATCH] Revert "of: property: fw_devlink: Add support for
+ "phy-handle" property"
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Russell King <linux@armlinux.org.uk>, kernel-team@android.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 2:55 AM Mauro Carvalho Chehab
-<mchehab+huawei@kernel.org> wrote:
+On Fri, Sep 17, 2021 at 9:59 AM Florian Fainelli <f.fainelli@gmail.com> wrote:
 >
-> The file name: Documentation/bpftool-cgroup.rst
-> should be, instead: tools/bpf/bpftool/Documentation/bpftool-cgroup.rst.
+> On 9/16/21 7:27 PM, Saravana Kannan wrote:
+> > On Thu, Sep 16, 2021 at 7:21 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
+> >>
+> >>
+> >>
+> >> On 9/15/2021 1:19 AM, Saravana Kannan wrote:
+> >>> This reverts commit cf4b94c8530d14017fbddae26aad064ddc42edd4.
+> >>>
+> >>> Some PHYs pointed to by "phy-handle" will never bind to a driver until a
+> >>> consumer attaches to it. And when the consumer attaches to it, they get
+> >>> forcefully bound to a generic PHY driver. In such cases, parsing the
+> >>> phy-handle property and creating a device link will prevent the consumer
+> >>> from ever probing. We don't want that. So revert support for
+> >>> "phy-handle" property until we come up with a better mechanism for
+> >>> binding PHYs to generic drivers before a consumer tries to attach to it.
+> >>>
+> >>> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> >>
+> >> Thanks for getting this revert submitted, I just ran a bisection this
+> >> afternoon that pointed to this offending commit. It would cause the dead
+> >> lock
+> >
+> > Dead lock in the kernel? Or do you mean just a hang waiting forever for network?
 >
-> Update its cross-reference accordingly.
->
-> Fixes: a2b5944fb4e0 ("selftests/bpf: Check consistency between bpftool source, doc, completion")
-> Fixes: 5ccda64d38cc ("bpftool: implement cgroup bpf operations")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  tools/testing/selftests/bpf/test_bpftool_synctypes.py | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/testing/selftests/bpf/test_bpftool_synctypes.py b/tools/testing/selftests/bpf/test_bpftool_synctypes.py
-> index 2d7eb683bd5a..c974abd4db13 100755
-> --- a/tools/testing/selftests/bpf/test_bpftool_synctypes.py
-> +++ b/tools/testing/selftests/bpf/test_bpftool_synctypes.py
-> @@ -392,7 +392,7 @@ class ManCgroupExtractor(ManPageExtractor):
->      """
->      An extractor for bpftool-cgroup.rst.
->      """
-> -    filename = os.path.join(BPFTOOL_DIR, 'Documentation/bpftool-cgroup.rst')
-> +    filename = os.path.join(BPFTOOL_DIR, 'tools/bpf/bpftool/Documentation/bpftool-cgroup.rst')
+> It locks up since we try to acquire __device_driver_lock() while we are
+> in the main driver's probe function.
 
-Same, this is wrong, please double-check all bpftool path adjustments,
-in case you didn't CC me on all of the related patches. Thanks!
+Off the top of my head that sounds weird, but I'll look into the
+logs/code later. Bunch of other stuff and some LPC prep comes first :)
 
 >
->      def get_attach_types(self):
->          return self.get_rst_list('ATTACH_TYPE')
-> --
-> 2.31.1
+> >
+> >> on boot with drivers/net/dsa/bcm_sf2.c pasted below.
+> >
+> > The log is too jumbled up to be readable (word wrap I suppose) and
+> > maybe even multiple thread printing at the same time.
 >
+> Re-attached (thunderbird is not really helping me).
+
+Thanks!
+
+>
+> >
+> >> Saravana, can
+> >> you CC on me on your fix or what you would want me to be testing?
+> >
+> > By fix, I assume you mean when I bring back phy-handle with a proper
+> > fix to handle the case in the commit text? Yeah, that's going to take
+> > a while. It's brewing in my head and there are some issues that's not
+> > fully resolved. But I haven't had time to code it up or dig into the
+> > net code to make sure it'll work. But yes, I'll CC you when I do so
+> > you can test it with this case.
+>
+> Well by fix, I meant something that does not lock up on my system,
+
+Hold on. Now I'm confused. Are you still hitting hangs/issues after
+the phy-handle patch is reverted?
+
+> it is
+> a different problem from supporting 'phy-handle', but it should not
+> regress an existing system, no matter how quirky that system behaves in
+> its probe function. For history and reference, the "offending" change
+> and background can be found here:
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=771089c2a485958e423f305e974303760167b45c
+
+So that is the change that's interacting with the phy-handle patch to
+cause the deadlock?
+
+I'm a bit confused on what needs debugging now.
+
+-Saravana
+
+>
+> Thanks for your patience working on the quirky MDIO/PHY subsystem :)
+
+No worries. Thanks for your patience with me accidentally breaking stuff :)
+
+-Saravana
