@@ -2,78 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8870410056
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 22:40:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C8B641005C
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 22:43:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236312AbhIQUlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 16:41:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36480 "EHLO
+        id S237452AbhIQUoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 16:44:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229771AbhIQUlW (ORCPT
+        with ESMTP id S229771AbhIQUoy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 16:41:22 -0400
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5A10C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 13:39:59 -0700 (PDT)
-Received: by mail-qv1-xf2b.google.com with SMTP id z12so7255622qvx.5
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 13:39:59 -0700 (PDT)
+        Fri, 17 Sep 2021 16:44:54 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFE20C061574;
+        Fri, 17 Sep 2021 13:43:31 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id ay33so21331916qkb.10;
+        Fri, 17 Sep 2021 13:43:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tUDI15ViNGxSe7VU1t51m4wc6kYOj+/MYAHpzxNvJT0=;
-        b=E/KErWIwnM+6MWgPyHorOC3+fhfdcfJG3NGaFBNUn7Lia1toRavuglV/tk5+7/7lp6
-         Ydk/qsQec96jBMZeQ+jI03d5Ewvg/LUn5JW3eifM8SzY1XvKBANaO90rkBnaZBSGjz65
-         oZl0DJhM/p6gKPuB7+wsRd7Qg3JiKFtciyZM0=
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cURptoPnmh8nPXIL1WD6aR8XbtjzUJTY/I85DjzE1Ec=;
+        b=YcJex6R4/YUKGwpA6LHeDHupG0hrNWpM/T6wzWN2Bijs6ouIHqTsAbOc66oyRRwm/t
+         kM2xx/EnAkyOF+Vmxjo6M5h8sy6EP9tz/SrKPJDzJP+x+xa+MBYuTFKsWo/BYvPyLZkz
+         3vuSbwXl/mFsKk3zheWHSrFPfn4096fdAmzOrJbDoh+4r/Vyf801DJcMQkYpz06fb2Re
+         Xnzj+Q7e+TMpE8w7PcvL7Quwl32ucZq2E4QL8z1qsp17ee2kXkl6ESldNLzDMJCOQTvH
+         qofNSTbs+Fy+VtYr+SpN0JlvqBrDSOrg6/nUZQ6A467Wyx3BceKoQzNh9ZY9wIpRmqq+
+         6VFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tUDI15ViNGxSe7VU1t51m4wc6kYOj+/MYAHpzxNvJT0=;
-        b=CrPxKROd6aZN8wZ6pxHs7M/Vz3X2algL2R2z6l1PC66buNFyXUREzksrZ2NtiOtafW
-         Ce5I1taEvgCEgn/cVtniEmRPu8itFBUn8YREM1K1KXBMSIaCZPRq7FCHKeHs2CnVammf
-         QOOdKI+oW82hCxhVTNG61NIkrV7wtdRGEZ8MWf9K2VG7O7Xcd5fDjyQhiY11et1bzPbX
-         21C5e8KqAlvM9UO4bJhZ4rx91c6RK+wDkRL1haESqSs4WQaMCUEmBnvGkVSdTBi+AuSL
-         v8XUj46DTHqb7DXG2v4c+btt6PlvrMVXKr9/WQA9MAhXFMOf7pgGcBQW4Ka/ZTCFqet8
-         qnJQ==
-X-Gm-Message-State: AOAM533DRm+uZn6KzCsXLQIDYjfiS82IEt3hwEXL8uzaEV5+lqMMRr7i
-        tsFbVhWIj7T+4MvoIsujulV5yJ8e6FxJfw==
-X-Google-Smtp-Source: ABdhPJyWrZt9x43uNaFBEZURKZ0nDG0l1fdoFgtrNIZSPJbL7AY2NdlIGsPgcup6ElxTTotITObEiA==
-X-Received: by 2002:a05:6214:1425:: with SMTP id o5mr13186732qvx.5.1631911198696;
-        Fri, 17 Sep 2021 13:39:58 -0700 (PDT)
-Received: from meerkat.local (bras-base-mtrlpq5031w-grc-32-216-209-220-181.dsl.bell.ca. [216.209.220.181])
-        by smtp.gmail.com with ESMTPSA id m6sm4731614qti.38.2021.09.17.13.39.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 13:39:58 -0700 (PDT)
-Date:   Fri, 17 Sep 2021 16:39:57 -0400
-From:   Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: 30 years since the Linux 0.01 release
-Message-ID: <20210917203957.kltk7n7qrvn4xrl6@meerkat.local>
-References: <CAHk-=whOsdfVrXHRJir0gu4Y3-K+nDkk7jAAWg15xu0jfQ9hpg@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cURptoPnmh8nPXIL1WD6aR8XbtjzUJTY/I85DjzE1Ec=;
+        b=HXw8/2iHy+NBrcjELADUn8Ui3PL8x5fY0SdG9gPenP/9bVYGV4LkFotOxqHWgsPKnN
+         7Xlzy1kNoMtnoyS1WyVyAMrHWvEf/Bt6cKeMqAAgla9dH6UuzJPXpIe0+vRqU+aypCao
+         4Ic/DnANGhQeMjjPwu+UVsYjKFcaWi3z0URetfpKGuoY5fktZ8R+SjutbOaTPvIot9/Z
+         z/LkMti2sNAbXtgvofVJdrlqq/xtH4QEZNohaiU/StzuHmJ+3gFz+vDvYIHFAVynC4uo
+         Wu2/q4QoKOPZA6C6GHW7DijHxVEgm8oxCyIpx2nKz86yUv/00G5bmx0eFraW4OiEcF/3
+         Nk0Q==
+X-Gm-Message-State: AOAM5302gb4NfhzZb4ZHFI+17BusGzAZzLoHj12KVzbpoHRVleMFUZHz
+        UDwemCcT18wB2jZZIAc2IwfmV7+49nLiShHzgDA=
+X-Google-Smtp-Source: ABdhPJwnUutnkolgj1UH1xmlNTDKws6K+v3ZaKVneH1VoEvZTRGXVtZh18KndhJ1hiUo/Bha3srK+W3HoiBrqMkBz88=
+X-Received: by 2002:a37:e14:: with SMTP id 20mr12927560qko.229.1631911410908;
+ Fri, 17 Sep 2021 13:43:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAHk-=whOsdfVrXHRJir0gu4Y3-K+nDkk7jAAWg15xu0jfQ9hpg@mail.gmail.com>
+References: <20210829091925.190-1-alistair@alistair23.me> <20210829091925.190-7-alistair@alistair23.me>
+ <YS1DGuTTAEKAd2Yr@google.com> <PA4PR07MB7407FE9FE271191AC52F7EA387CE9@PA4PR07MB7407.eurprd07.prod.outlook.com>
+ <YTcBOskPYjbv4q61@google.com> <CAF8JNh+PcYuaLL=ToS0hOT62YbVmMWY9BCT-CGx_x+AkKuO_Tw@mail.gmail.com>
+ <YThQUtE757b/ExR4@google.com>
+In-Reply-To: <YThQUtE757b/ExR4@google.com>
+From:   Ping Cheng <pinglinux@gmail.com>
+Date:   Fri, 17 Sep 2021 13:43:18 -0700
+Message-ID: <CAF8JNhJL_AzqnpzPw5PRR1xczhMBscxwLHMN7tE2EGRH8PHu4A@mail.gmail.com>
+Subject: Re: [PATCH v10 05/12] Input: wacom_i2c - Read the descriptor values
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Alistair Francis <alistair@alistair23.me>
+Cc:     "Tobita, Tatsunosuke" <tatsunosuke.tobita@wacom.com>,
+        linux-input <linux-input@vger.kernel.org>, linux-imx@nxp.com,
+        kernel@pengutronix.de, Tatsunosuke Tobita <junkpainting@gmail.com>,
+        linux-kernel@vger.kernel.org, alistair23@gmail.com,
+        robh+dt@kernel.org, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 01:02:58PM -0700, Linus Torvalds wrote:
-> This is just a random note to let people know that today is actually
-> one of the core 30-year anniversary dates: 0.01 was uploaded Sept 17,
-> 1991.
+Hi Dmitry,
 
-Congratulations! Here's to 30 more years of Linux! :)
+On Tue, Sep 7, 2021 at 10:55 PM Dmitry Torokhov
+<dmitry.torokhov@gmail.com> wrote:
+>
+> > > >
+> > > > Yes, our firmware supports HID over I2C.  However, some of our
+> > > > customers often do not want to use HID to handle our hardware; even
+> > > > they don't install the generic HID driver neither.  In such case, we
+> > > > need to distinguish what generation of our device customer's has. And
+> > > > to do so, we check I2C HID descriptor even though the driver is not
+> > > > working with HID driver components, but this one.  That is why I2C HID
+> > > > descriptor is used there. It is called, but the situation with this
+> > > > driver is not supposed to work as a HID device.
+> > >
+> > > I would like to understand better why the customers do not want to use
+> > > HID.
+> >
+> >
+> > Those customers normally run embedded Linux. Their hardwares have very
+> > specific use cases. They don't need to support any other HID devices except
+> > the Wacom i2c device.
+> >
+> > >
+> > There needs to be a _very_ strong reason to essentially duplicate
+> > > HID layer in a vendor driver and I inclined to say that such customers
+> >
+> > would need to patch their kernels themselves.
+> >
+> > They most likely don't want to duplicate HID layer. They just don't need
+> > most of the HID layer code.
+>
+> They just need touchscreen support. Plus stylus support. And maybe
+> battery support. And maybe something else down the road... And they need
+> to introduce DT and ACPI descriptors to be able to mould the behavior to
+> platform needs. Which is pretty much the purpose of HID layer.
 
-> Alas, the dates in that tar-file are for the last modification dates,
-> not the actual creation of the tar-file, but it does seem to have
-> happened around 7:30pm (Finnish time), so the exact anniversary was
-> technically a couple of hours ago.
+I see your point.
 
-Those who want to see what 0.01 looked like can grab it from here:
-https://mirrors.edge.kernel.org/pub/linux/kernel/Historic/linux-0.01.tar.gz
+> > wacom_i2c simplifies their deployment and
+> > testing process. Most of those customers are very small companies...
+>
+> And now please continue this train of thoughts and consider every touch
+> vendor. Wacom is not unique. We have Elan, Cypress, Weida, Goodix, etc.
+> etc. Vendor drivers were acceptable before we had I2C standard, but now
+> it is much better for everyone to share the efforts and use HID instead
+> of replicating it for every vendor.
 
-Congratulations again,
-Konstantin
+And I agree with you that we should share our efforts on the main tasks.
+
+However, with the same token of sharing efforts, I see the benefit of
+merging this set of patches upstream. From the version number we can
+tell the patchset has gone through at least 10 rounds of review and
+update. Alistair has put a lot of effort to get this far (Thank you
+Alistair for your time and effort!). A few community developers have
+also reviewed the patches. This set of patches thoroughly touched all
+parts of the components that related to an input i2c driver, which is
+much better than the original version. This patchset would be a great
+starting point for vendors to create their out of tree drivers, when
+necessary. It would also offer vendors a clear picture of what
+components they need to change/update to make their i2c input device
+work under kernel input subsystem.
+
+So, merging the patchset will benefit more people and preserve the
+effort that went into the patchset so far. If you like, you can add a
+comment in the patch mentioning that future effort should be directed
+to the i2c-hid subsystem, etc...
+
+I think the ultimate goal is to encourage more people to contribute to
+open source projects and to make Linux a great platform that everyone
+can work on easily.
+
+Thank you for your consideration and support,
+Ping
