@@ -2,137 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3A2640F464
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 10:47:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5985640F467
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 10:48:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245490AbhIQIsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 04:48:30 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:40575 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235322AbhIQIs3 (ORCPT
+        id S245501AbhIQItV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 04:49:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38585 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235322AbhIQItU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 04:48:29 -0400
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210917084705epoutp020c2bfd675453acb41eccf4caa2745c06~lj6-2J9UL0921509215epoutp02B
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:47:05 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210917084705epoutp020c2bfd675453acb41eccf4caa2745c06~lj6-2J9UL0921509215epoutp02B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1631868425;
-        bh=8Gxrk1S9d2ijCmTPideQeF61jv+I9XTJOeUHGT0hwcg=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=frghzZJwOz5l2eHKwQlGPnMV6SuURVEBeBXrP1ScOq+WQTVL6EkWYHwmFpJKEJ2Ga
-         6GSqBRuPHiTFH6CctnGjx5yaJSkWpnOoLr1RA5tgRF5dKFMFOmQXNDdfgPztJ3UPK7
-         1CKlo25YtwmBbUwHi+irFsJq1+JrfYt7YSqiMFm8=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20210917084705epcas1p1a2e95d2a1f415bf7e46b1e7665173692~lj6-eluZ72199221992epcas1p1c;
-        Fri, 17 Sep 2021 08:47:05 +0000 (GMT)
-Received: from epsmges1p5.samsung.com (unknown [182.195.38.237]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4H9nd06gFwz4x9QC; Fri, 17 Sep
-        2021 08:47:00 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
-        56.90.13888.00654416; Fri, 17 Sep 2021 17:46:56 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
-        20210917084656epcas1p408e3c7055701fc81481bdf364f2ed893~lj62xAnxm0631406314epcas1p46;
-        Fri, 17 Sep 2021 08:46:56 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210917084656epsmtrp24b675d5029e68fbb60f3768353afad30~lj62wWbSp1886318863epsmtrp2m;
-        Fri, 17 Sep 2021 08:46:56 +0000 (GMT)
-X-AuditID: b6c32a39-211ff70000003640-6c-614456009c33
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        17.09.09091.FF554416; Fri, 17 Sep 2021 17:46:56 +0900 (KST)
-Received: from [10.113.113.235] (unknown [10.113.113.235]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210917084655epsmtip210c313d874c2bbc15890cae740bb6d1a~lj62horX72575425754epsmtip2g;
-        Fri, 17 Sep 2021 08:46:55 +0000 (GMT)
-Subject: Re: [PATCH] mmc: sdhci-s3c: drop unneeded MODULE_ALIAS
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Ben Dooks <ben-linux@fluff.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org
-From:   Jaehoon Chung <jh80.chung@samsung.com>
-Message-ID: <90d3b41d-d5db-33a2-7b61-7e8046c7ce07@samsung.com>
-Date:   Fri, 17 Sep 2021 17:47:40 +0900
+        Fri, 17 Sep 2021 04:49:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631868478;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wcuAPbm9xw3yksCit77EG+81MmjR4Nbi9Tedl5nxVZs=;
+        b=FntBswwKecE7nH4oiznjG3rwD6OkLYAGZftya4VOolW52lePqlsvnXvj69iSumKFJ2E9HG
+        kyn307JUVXvaDs11ltFiglUU1uTEjX3Kh3KifLP6Q+uNX9x5zENTsYtjpD5EQF5QnZ8khZ
+        N6nTHj/4GgHitCujgJB6BzxZv3XpE7U=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-269-WPixiiMlNN--xDfw-dpQgw-1; Fri, 17 Sep 2021 04:47:56 -0400
+X-MC-Unique: WPixiiMlNN--xDfw-dpQgw-1
+Received: by mail-wm1-f72.google.com with SMTP id n30-20020a05600c3b9e00b002fbbaada5d7so3462779wms.7
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 01:47:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=wcuAPbm9xw3yksCit77EG+81MmjR4Nbi9Tedl5nxVZs=;
+        b=07PjUYGC5oKMhNvcYg28SBw+nowVJHSK/zO6BaxxHgaYLdD4nNSwr33pp9WAsiZl0F
+         78LpnxORkMhtX7+lLzVL1k+H9ZhI38yF9EO+i/rTuxBv8Wg99M7OdndyiPr8Y/cs5aLX
+         8P/gqzFUR1RLA+QLj+41PL+JXzqxFUbzO0Yrj02NxF3JOibMcSMcloes/GLnjl3CnT4B
+         JLR5eoqJGU8EjWK5ez7yQ7/oClsCqfO0ksaoIaH2rRpayPGXnPpVhHghhMD1A656LEmy
+         5cDUUW81k9w88sQlIoeWc2YA+Lgu6uqw5Cggo/PtAfg3ZgSWzPLblAj2IhMl3+RmiUVb
+         k3Hw==
+X-Gm-Message-State: AOAM53043rkM4+Qp/sA/3PGMalZbK+OJ1VW0NpVEKvq+knGuRjpaLvwF
+        Hpc20C2gZrNyPZG7yyo5OVjIxgSgKWR2qMSxfO53oKum1uxNJnHnQru6f/1NjbWALzGGay/tndY
+        0HqGT72Pu2tH4I6AzDML0P3iG
+X-Received: by 2002:a5d:6d8e:: with SMTP id l14mr10694161wrs.26.1631868475621;
+        Fri, 17 Sep 2021 01:47:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJybao8lYYRsgqWQpVjn5+Se3mBigm2FdtvAQE8Fl/F+9zEOtBbl/e5Gt5erJhx/kHtztbs+yA==
+X-Received: by 2002:a5d:6d8e:: with SMTP id l14mr10694132wrs.26.1631868475343;
+        Fri, 17 Sep 2021 01:47:55 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c655a.dip0.t-ipconnect.de. [91.12.101.90])
+        by smtp.gmail.com with ESMTPSA id g1sm6061083wrr.2.2021.09.17.01.47.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Sep 2021 01:47:54 -0700 (PDT)
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Ping Fang <pifang@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Linux Memory Management List <linux-mm@kvack.org>
+References: <20210908132727.16165-1-david@redhat.com>
+ <CA+KHdyWadbqZ=xVBv6uZwxpZSEndAAk_inK+0962VcntY+mnSA@mail.gmail.com>
+ <CA+KHdyUTQLwN0YASOX8XJoWCD_x1QwRmz81BGShCzb_8jZ93XQ@mail.gmail.com>
+ <ea75df96-f381-6949-5627-1382a370dc71@redhat.com>
+ <20210916193403.GA1940@pc638.lan>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v1] mm/vmalloc: fix exact allocations with an alignment >
+ 1
+Message-ID: <221e38c1-4b8a-8608-455a-6bde544adaf0@redhat.com>
+Date:   Fri, 17 Sep 2021 10:47:54 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
-        Thunderbird/78.13.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210916170511.137915-1-krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20210916193403.GA1940@pc638.lan>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprAJsWRmVeSWpSXmKPExsWy7bCmgS5DmEuiwfFuA4uTT9awWUxad4DJ
-        YuPbH0wWl3fNYbM48r+f0eL42nAHNo9ZDb1sHn9XvWD2WLznJZPHnWt72Dw+b5ILYI3KtslI
-        TUxJLVJIzUvOT8nMS7dV8g6Od443NTMw1DW0tDBXUshLzE21VXLxCdB1y8wBOkBJoSwxpxQo
-        FJBYXKykb2dTlF9akqqQkV9cYquUWpCSU2BaoFecmFtcmpeul5daYmVoYGBkClSYkJ2xcbl/
-        wTe2iuPT7jI3MH5h7WLk5JAQMJGYvvsCWxcjF4eQwA5GifsnXzCCJIQEPjFKrP4TBJH4xiix
-        8OJxRpiOpX9vs0Mk9jJKrLm/gxnCec8o8WLGarAqYQF7idmf1gPZHBwiAtESt3frgNQwC0xk
-        lLh+dwE7SA2bgI7E9m/HmUBsXgE7iS/vz4PFWQRUJTrvbmIBsUUFIiX+ntzFClEjKHFy5hOw
-        OKeAh8SSdxvBbGYBcYlbT+YzQdjyEtvfzgE7SEKglUNiy/oNTCBHSAi4SGzZyQbxgbDEq+Nb
-        2CFsKYnP7/ZCxasldjWfgertYJS4ta2JCSJhLLF/6WSwOcwCmhLrd+lDhBUldv6eywixl0/i
-        3dceVohVvBIdbUIQJSoSl16/ZIJZdffJf2iwe0gcWdjJNoFRcRaSz2Yh+WYWkm9mISxewMiy
-        ilEstaA4Nz212LDAFB7Xyfm5mxjBSVPLcgfj9Lcf9A4xMnEwHmKU4GBWEuG9UOOYKMSbklhZ
-        lVqUH19UmpNafIjRFBjWE5mlRJPzgWk7ryTe0MTSwMTMyNjEwtDMUEmc99hry0QhgfTEktTs
-        1NSC1CKYPiYOTqkGpphrsw1f7Fyx7yiX+5bJ3Fcs1St7HCaz2F6wMmLMn2oockfj5nadNwW8
-        9lvfFkYtPW254Wv91xWWgctfpXHmLL3NzCwmHR/7fk7HfBGOe9dV97k/7dj94JiO+46Lh/Kk
-        D7EaPLJz/xSYrxAkK/99p8eP2ez+2tfmn3ZlF+fl6q4/YjA7SDo3LNvzi6F41/LUxwmfzKY1
-        65dFZOs8Olanfud08vyPiVn/V+7Xs5bm/Zo988PTiJiQNh/r6H9rZFv5H7u3rEm5136mStpm
-        2qyvXlv6bh683Gz13Nz3zY4YK9Vzz2y2H3sTe1jNpOSb5e+zeWKzlfoElddPnGGUyHPO8lNf
-        +Z5nh7sFDptcZ+f+osRSnJFoqMVcVJwIAKi7GgIjBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrALMWRmVeSWpSXmKPExsWy7bCSvC5DmEuiwY69jBYnn6xhs5i07gCT
-        xca3P5gsLu+aw2Zx5H8/o8XxteEObB6zGnrZPP6uesHssXjPSyaPO9f2sHl83iQXwBrFZZOS
-        mpNZllqkb5fAlbFxuX/BN7aK49PuMjcwfmHtYuTkkBAwkVj69zZ7FyMXh5DAbkaJnnfHmCES
-        UhKfn05l62LkALKFJQ4fLoaoecsosfVDA1izsIC9xOxP6xlBbBGBaImuW41sIDazQD+jxKNV
-        ohANsxklVi1dD9bAJqAjsf3bcSYQm1fATuLL+/PsIDaLgKpE591NLCC2qECkRNOJrWwQNYIS
-        J2c+AYtzCnhILHm3kQVigbrEn3mXmCFscYlbT+YzQdjyEtvfzmGewCg0C0n7LCQts5C0zELS
-        soCRZRWjZGpBcW56brFhgWFearlecWJucWleul5yfu4mRnCkaGnuYNy+6oPeIUYmDsZDjBIc
-        zEoivBdqHBOFeFMSK6tSi/Lji0pzUosPMUpzsCiJ817oOhkvJJCeWJKanZpakFoEk2Xi4JRq
-        YDKO2mr7cs+ZUlPtlzUL1FSaV7yUWdtz+8w09RcBqkp/Mg+tW2UtPLle+oK6Tt6SzaUPLS5a
-        1u3YwW6nm6m3l+2kacaHSR6r6zSfZx15seRk26eT9m4nfoe+rNb4fj17kopJkmrjl8f6e2S+
-        2DxVv5S4UPaM7+pfX4T6p9XPSvHb+T4nvGjXnblf5bMW3hXf0Hc2oeSZp4PmS+b5S8oOaa65
-        PCH+6Zfg1s9Ki04GPEpXfHb/jVvHZdX+377u/mG5Wgn+qzY+mbx9y+QjxTt3FJ6fvOnDFluG
-        UG193W3ldzjDsuLbf873F+7Vs/iupFrqY9Sl99W90ZQpMyR2L5tE7jNHLVdzrl3r193NYIhP
-        nKDEUpyRaKjFXFScCADZUlcUAwMAAA==
-X-CMS-MailID: 20210917084656epcas1p408e3c7055701fc81481bdf364f2ed893
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210916172004epcas1p2319884c6fcc67551399a4d0e2ba19cee
-References: <CGME20210916172004epcas1p2319884c6fcc67551399a4d0e2ba19cee@epcas1p2.samsung.com>
-        <20210916170511.137915-1-krzysztof.kozlowski@canonical.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/17/21 2:05 AM, Krzysztof Kozlowski wrote:
-> The MODULE_DEVICE_TABLE already creates proper alias for platform
-> driver.  Having another MODULE_ALIAS causes the alias to be duplicated.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+>>> This patch looks like a KASAN specific to me. So i would like to avoid
+>>> such changes to
+>>> the vmalloc internals in order to simplify further maintenance and
+>>> keeping it generic
+>>> instead.
+>>
+>> There is nothing KASAN specific in there :) It's specific to exact
+>> applications -- and KASAN may be one of the only users for now.
+>>
+> Well, you can name it either way :) So it should not be specific by the
+> design, otherwise as i mentioned the allocator would be like a peace of
+> code that handles corner cases what is actually not acceptable.
 
-Reviewed-by: Jaehoon Chung <jh80.chung@samsunhg.com>
+Let's not overstress the situation of adding essentially 3 LOC in order 
+to fix a sane use case of the vmalloc allocator that was not considered 
+properly by internal changes due to 68ad4a330433 ("mm/vmalloc.c: keep 
+track of free blocks for vmap allocation").
 
-Best Regards,
-Jaehoon Chung
+> 
+>>>
+>>> Currently the find_vmap_lowest_match() adjusts the search size
+>>> criteria for any alignment
+>>> values even for PAGE_SIZE alignment. That is not optimal. Because a
+>>> PAGE_SIZE or one
+>>> page is a minimum granularity we operate on vmalloc allocations thus
+>>> all free blocks are
+>>> page aligned.
+>>>
+>>> All that means that we should adjust the search length only if an
+>>> alignment request is bigger than
+>>> one page, in case of one page, that corresponds to PAGE_SIZE value,
+>>> there is no reason in such
+>>> extra adjustment because all free->va_start have a page boundary anyway.
+>>>
+>>> Could you please test below patch that is a generic improvement?
+>>
+>> I played with the exact approach below (almost exactly the same code in
+>> find_vmap_lowest_match()), and it might make sense as a general improvement
+>> -- if we can guarantee that start+end of ranges are always PAGE-aligned; I
+>> was not able to come to that conclusion...
+> All free blocks are PAGE aligned that is how it has to be. A vstart also
+> should be aligned otherwise the __vunmap() will complain about freeing
+> a bad address:
+> 
+> <snip>
+>      if (WARN(!PAGE_ALIGNED(addr), "Trying to vfree() bad address (%p)\n",
+>              addr))
+>          return;
+> <snip>
+> 
+> BTW, we should add an extra check to the alloc_vmap_area(), something like
+> below:
+> 
+> <snip>
+>      if (!PAGE_ALIGNED(ALIGN(vstart, align))) {
+>          WARN_ONCE(1, "vmalloc: vstart or align are not page aligned (0x%lx, 0x%lx)\n",
+>              vstart, align);
+>          return ERR_PTR(-EBUSY);
+> 	}
+> <snip>
+> 
+> to check that passed pair of vstart and align are correct.
+> 
 
-> ---
->  drivers/mmc/host/sdhci-s3c.c | 1 -
->  1 file changed, 1 deletion(-)
+Yes we better should.
+
+>>
+>> vmap_init_free_space() shows me that our existing alignment code/checks
+>> might be quite fragile.
+>>
+> It is not important to page align a first address. As i mentioned before
+> vstart and align have to be correct and we should add such check.
 > 
-> diff --git a/drivers/mmc/host/sdhci-s3c.c b/drivers/mmc/host/sdhci-s3c.c
-> index 862f033d235d..9085f3932443 100644
-> --- a/drivers/mmc/host/sdhci-s3c.c
-> +++ b/drivers/mmc/host/sdhci-s3c.c
-> @@ -791,4 +791,3 @@ module_platform_driver(sdhci_s3c_driver);
->  MODULE_DESCRIPTION("Samsung SDHCI (HSMMC) glue");
->  MODULE_AUTHOR("Ben Dooks, <ben@simtec.co.uk>");
->  MODULE_LICENSE("GPL v2");
-> -MODULE_ALIAS("platform:s3c-sdhci");
+>>
+>> But I mainly decided to go with my patch instead because it will also work
+>> for exact allocations with align > PAGE_SIZE: most notably, when we try
+>> population of hugepages instead of base pages in __vmalloc_node_range(), by
+>> increasing the alignment. If the exact range allows for using huge pages,
+>> placing huge pages will work just fine with my modifications, while it won't
+>> with your approach.
+>>
+>> Long story short: my approach handles exact allocations also for bigger
+>> alignment, Your optimization makes sense as a general improvement for any
+>> vmalloc allocations.
+>>
+>> Thanks for having a look!
+>>
+> The problem is that there are no users(seems only KASAN) who set the range
+> that corresponds to exact size. If you add an aligment overhead on top of
+
+So there is one user and it was broken by 68ad4a330433 ("mm/vmalloc.c: 
+keep track of free blocks for vmap allocation").
+
+> it means that search size should include it because we may end up with exact
+> free block and after applying aligment it will not fit. This is how allocators
+> handle aligment.
+
+This is an implementation detail of the vmalloc allocator ever since 
+68ad4a330433 ("mm/vmalloc.c: keep track of free blocks for vmap 
+allocation").
+
+If callers pass an exact range, and the alignment they specify applies, 
+why should we reject such an allocation? It's leaking an implementation 
+detail fixed easily internally into callers.
+
 > 
+> Another approach is(you mentioned it in your commit message):
+> 
+> urezki@pc638:~/data/raid0/coding/linux-next.git$ git diff mm/kasan/shadow.c
+> diff --git a/mm/kasan/shadow.c b/mm/kasan/shadow.c
+> index 082ee5b6d9a1..01d3bd76c851 100644
+> --- a/mm/kasan/shadow.c
+> +++ b/mm/kasan/shadow.c
+> @@ -200,7 +200,7 @@ static int __meminit kasan_mem_notifier(struct notifier_block *nb,
+>                  if (shadow_mapped(shadow_start))
+>                          return NOTIFY_OK;
+>   
+> -               ret = __vmalloc_node_range(shadow_size, PAGE_SIZE, shadow_start,
+> +               ret = __vmalloc_node_range(shadow_size, 1, shadow_start,
+>                                          shadow_end, GFP_KERNEL,
+>                                          PAGE_KERNEL, VM_NO_GUARD,
+>                                          pfn_to_nid(mem_data->start_pfn),
+> urezki@pc638:~/data/raid0/coding/linux-next.git$
+> 
+> why not? Also you can increase the range in KASAN code.
+
+No, that's leaking implementation details to the caller. And no, 
+increasing the range and eventually allocating something bigger (e.g., 
+placing a huge page where it might not have been possible) is not 
+acceptable for KASAN.
+
+If you're terribly unhappy with this patch, please suggest something 
+reasonable to fix exact allocations:
+a) Fixes the KASAN use case.
+b) Allows for automatic placement of huge pages for exact allocations.
+c) Doesn't leak implementation details into the caller.
+
+Thanks
+
+-- 
+Thanks,
+
+David / dhildenb
 
