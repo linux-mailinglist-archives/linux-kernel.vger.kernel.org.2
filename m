@@ -2,401 +2,312 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E49340FB1C
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 17:04:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42B2840FB1F
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 17:04:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244401AbhIQPGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 11:06:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47231 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244407AbhIQPF4 (ORCPT
+        id S244523AbhIQPGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 11:06:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44620 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244821AbhIQPGB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 11:05:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631891073;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jJBjv7xe7X9LWz8Py8bpZtsrzYe7qmQPJQT0ow4sRjs=;
-        b=EVVh22F3J5kZN0F8XYBf/wJRw4Qey7lmJvavrMty534w4gXTXNoUMxVUOqIgWmoCVO3h4v
-        l5fkfaoA6IrA5LkLJkkOdehZoV2GnyCCLuDuVTyiUknJPE5M+e9W9S4IU9fT5XvToixFJT
-        ErpoerzjNU20SVBwPijKe9ZeLznkw6Y=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-261-HD2lvM8gPOyIu8ouWuYI3Q-1; Fri, 17 Sep 2021 11:04:30 -0400
-X-MC-Unique: HD2lvM8gPOyIu8ouWuYI3Q-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 49ECE101AFB4;
-        Fri, 17 Sep 2021 15:04:28 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.44])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5BF145D6D5;
-        Fri, 17 Sep 2021 15:04:16 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH v2 1/8] fscache: Generalise the ->begin_read_operation method
-From:   David Howells <dhowells@redhat.com>
-To:     Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>
-Cc:     dhowells@redhat.com, Jeff Layton <jlayton@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Fri, 17 Sep 2021 16:04:15 +0100
-Message-ID: <163189105559.2509237.10649193286647776741.stgit@warthog.procyon.org.uk>
-In-Reply-To: <163189104510.2509237.10805032055807259087.stgit@warthog.procyon.org.uk>
-References: <163189104510.2509237.10805032055807259087.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Fri, 17 Sep 2021 11:06:01 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 356FCC061766
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:04:39 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id c8-20020a9d6c88000000b00517cd06302dso13191935otr.13
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:04:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XUsl9Gygs4sNh6RuSqwsUb3ZhWZQ6AtKMQEzioy+07E=;
+        b=gJ7zRq/beK3KLLhoNWydhTAeK+mBDZ40FInTX7YNQmzQLIKpS4jag3VW0SE4rCoiV0
+         cJihUkiZr2TCWo+uhyzHF+Hl2rG2U/rieNNI0oJjxDMthbSQEOztqvIKeMxh/3Cc7xIp
+         GnYPDaqmKNWF2LjY42wil7SqBRRogMKAoLPoTmLh1kShTiWqj8yoNTWMOPieXUR7GJn2
+         7mJE/hM4TEJmsOC8OqBmtcWWhQtntfUWwAFQx7VDMPcyxJR8BDWVSLCkqdmw+QlsZZL+
+         i44prxdKbCLtOv9D9klnIDcIsFIHNNWoYAy7N+LP+X5jpy+GrANvJjM68hn6OcrSWL/Q
+         Nt7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XUsl9Gygs4sNh6RuSqwsUb3ZhWZQ6AtKMQEzioy+07E=;
+        b=N0OTBqeR5RE9tpxOBY+HbDK9QIZXZqKgmILxBvcVC06/rCEFyUIwnpdyacwIShmjD+
+         f48tfzpyfK0wH4g5rKYCWz6M623mmHD1eB4fbUhIWGMsj4aF7w1nzmlsH5UqOgZgTGQM
+         UPl248FIYd2MURb8sMMdzNryocN+MMhJGixlaaWn09h8dNs9mrntVPfNkfhEkUCdjrEO
+         lGfFhWYl7G/5AkSsrI2bREZJ/sQytpoZ1sdukLzvr3/J/b3E0Ax5WvzoByEQe43tI5y5
+         c8fKSPZD845PXSuGpR+0SGQJU87InzKRAU9hG22zHLIRFX4qXQKd7dGys9BWIGGClyQ4
+         jwzg==
+X-Gm-Message-State: AOAM531Od/Ur8CeZmML5hTkvJFrgMvFE64QaaMWUJXIe0Vf9YjYHSGUD
+        VaxjcZzN6feU7cQSFg3c4/ruT4RfWQDZMkYvaczOKCoUJS9pQQ==
+X-Google-Smtp-Source: ABdhPJx/Uw2GCF3e7xNx6fMMkErYruZFfj8yT4AHxA5luVnO6RHQ7gAmdekrfJmS5Hygdf8YVPKDUXypY1UUpsJuQ1w=
+X-Received: by 2002:a9d:135:: with SMTP id 50mr1442954otu.295.1631891078270;
+ Fri, 17 Sep 2021 08:04:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <20210917110756.1121272-1-elver@google.com> <20210917110756.1121272-2-elver@google.com>
+ <CACT4Y+aqfQNv5kjT0uCdgmw9MDYzZGFTXk9XdZ==pZLxRxfG1A@mail.gmail.com>
+In-Reply-To: <CACT4Y+aqfQNv5kjT0uCdgmw9MDYzZGFTXk9XdZ==pZLxRxfG1A@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Fri, 17 Sep 2021 17:04:26 +0200
+Message-ID: <CANpmjNNJv4wt0AhnKP4fuLkeMJdPAKB0GVWDj1VvoC3kZ8bGRw@mail.gmail.com>
+Subject: Re: [PATCH 2/3] kfence: limit currently covered allocations when pool
+ nearly full
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Taras Madan <tarasmadan@google.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        kasan-dev@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Generalise the ->begin_read_operation() method in the fscache_cache_ops
-struct so that it's not read specific by:
+On Fri, 17 Sept 2021 at 15:52, Dmitry Vyukov <dvyukov@google.com> wrote:
+[...]
+> > +/*
+> > + * A lossy hash map of allocation stack trace coverage: limits currently covered
+> > + * allocations of the same source filling up the pool when close to full.
+> > + *
+> > + * The required data fits in 64 bits, and therefore we can avoid a per-entry (or
+> > + * global) lock by simply storing each entry's data in an atomic64_t.
+> > + */
+> > +union alloc_covered_entry {
+> > +       struct {
+> > +               u32 alloc_stack_hash;   /* stack trace hash */
+> > +               u32 covered;            /* current coverage count */
+> > +       };
+> > +       u64 entry;
+> > +};
+> > +#define ALLOC_COVERED_SIZE (1 << const_ilog2(CONFIG_KFENCE_NUM_OBJECTS | 128)) /* >= 128 */
+>
+> const_ilog2 rounds down, so for 1023 objects we will have hashtable of
+> size 512, or am I missing something? This asking for collisions.
+> Hashtable size should be larger than expected population.
 
- (1) changing the name to ->begin_operation();
+That's correct. I wanted to err on the side of allocating more and not
+less, if we can afford it. Hence also the choice of lossy hash map.
+However, I think if we consider the whole fleet, your proposal below
+makes sense and I'll rerun experiments with that and see.
 
- (2) changing the netfs_read_request struct pointer parameter to be a
-     netfs_cache_resources struct pointer (it only accesses the cache
-     resources and an ID for debugging from the read request);
+> > +#define ALLOC_COVERED_MASK (ALLOC_COVERED_SIZE - 1)
+> > +static atomic64_t alloc_covered[ALLOC_COVERED_SIZE];
+> > +/* Stack depth used to determine uniqueness of an allocation. */
+> > +#define UNIQUE_ALLOC_STACK_DEPTH 8
+> > +/* Pool usage threshold when currently covered allocations are skipped. */
+> > +#define SKIP_COVERED_THRESHOLD ((CONFIG_KFENCE_NUM_OBJECTS * 3) / 4) /* 75% */
+> > +
+> >  /*
+> >   * Per-object metadata, with one-to-one mapping of object metadata to
+> >   * backing pages (in __kfence_pool).
+> > @@ -114,6 +138,7 @@ enum kfence_counter_id {
+> >         KFENCE_COUNTER_BUGS,
+> >         KFENCE_COUNTER_SKIP_INCOMPAT,
+> >         KFENCE_COUNTER_SKIP_CAPACITY,
+> > +       KFENCE_COUNTER_SKIP_COVERED,
+> >         KFENCE_COUNTER_COUNT,
+> >  };
+> >  static atomic_long_t counters[KFENCE_COUNTER_COUNT];
+> > @@ -125,11 +150,73 @@ static const char *const counter_names[] = {
+> >         [KFENCE_COUNTER_BUGS]           = "total bugs",
+> >         [KFENCE_COUNTER_SKIP_INCOMPAT]  = "skipped allocations (incompatible)",
+> >         [KFENCE_COUNTER_SKIP_CAPACITY]  = "skipped allocations (capacity)",
+> > +       [KFENCE_COUNTER_SKIP_COVERED]   = "skipped allocations (covered)",
+> >  };
+> >  static_assert(ARRAY_SIZE(counter_names) == KFENCE_COUNTER_COUNT);
+> >
+> >  /* === Internals ============================================================ */
+> >
+> > +static u32 get_alloc_stack_hash(void)
+> > +{
+> > +       unsigned long stack_entries[UNIQUE_ALLOC_STACK_DEPTH];
+> > +       size_t num_entries;
+> > +
+> > +       num_entries = stack_trace_save(stack_entries, UNIQUE_ALLOC_STACK_DEPTH, 1);
+>
+> Strictly speaking, if a bad persistent allocation comes from an
+> interrupt it may still consume whole pool. We've hit this problem with
+> KASAN stackdepot unbounded growth. It's better to do
+> filter_irq_stacks() here, see:
+> https://elixir.bootlin.com/linux/v5.15-rc1/source/mm/kasan/common.c#L39
 
- (3) and by changing the fscache_retrieval pointer parameter to be a
-     fscache_operation pointer (it only access the operation base of the
-     retrieval).
+Time to move filter_irq_stacks() out of stackdepot, we should not
+depend on stackdepot just for filter_irq_stacks(). I'll probably move
+it to kernel/stacktrace.c, which seems most appropriate.
 
-Also modify the cachefiles implementation so that it stores a pointer to
-the fscache_operation rather than fscache_retrieval in the cache resources.
+> > +       return jhash(stack_entries, num_entries * sizeof(stack_entries[0]), 0);
+> > +}
+> > +
+> > +/*
+> > + * Check if the allocation stack trace hash @alloc_stack_hash is contained in
+> > + * @alloc_covered and currently covered.
+> > + */
+> > +static bool alloc_covered_contains(u32 alloc_stack_hash)
+> > +{
+> > +       union alloc_covered_entry entry;
+> > +
+> > +       if (!alloc_stack_hash)
+> > +               return false;
+> > +
+> > +       entry.entry = (u64)atomic64_read(&alloc_covered[alloc_stack_hash & ALLOC_COVERED_MASK]);
+> > +       return entry.alloc_stack_hash == alloc_stack_hash && entry.covered;
+> > +}
+> > +
+> > +/*
+> > + * Adds (or subtracts) coverage count to entry corresponding to
+> > + * @alloc_stack_hash. If @alloc_stack_hash is not yet contained in
+> > + * @alloc_covered, resets (potentially evicting existing) entry.
+> > + */
+> > +static void alloc_covered_add(u32 alloc_stack_hash, int val)
+> > +{
+> > +       union alloc_covered_entry old;
+> > +       union alloc_covered_entry new;
+> > +       atomic64_t *bucket;
+> > +
+> > +       if (!alloc_stack_hash)
+> > +               return;
+> > +
+> > +       bucket = &alloc_covered[alloc_stack_hash & ALLOC_COVERED_MASK];
+> > +       old.entry = (u64)atomic64_read(bucket);
+> > +       new.alloc_stack_hash = alloc_stack_hash;
+> > +       do {
+> > +               if (val > 0) {
+> > +                       new.covered = old.alloc_stack_hash == alloc_stack_hash
+> > +                                       ? old.covered + val     /* increment */
+> > +                                       : val;                  /* evict/reset */
+>
+> I am trying to understand the effects of this eviction policy on the result.
+> It seems that it can render the pool overflow protection void.
+> Consider, two stacks (ABC, DEF) hash to the same bucket. One
+> allocation is frequent and not persistent, another is less frequent
+> but almost persistent. The first one will evict the second one, so we
+> will always save the second effectively defeating the overflow
+> protection.
+>
+> There are also some interesting effects due to cyclic evictions
+> (A->B->A), where we do not count increment, but count decrement.
+>
+> Have you considered not evicting, but rather simply combining
+> allocations with the same hash?
 
-This makes it easier to share code with the write path in future.
+Hmm, good point. It's probably not as bad as a real bloom filter,
+because we might successfully remove an entry if all the allocations
+that mapped to 1 bucket are freed.
 
-Signed-off-by: David Howells <dhowells@redhat.com>
-Link: https://lore.kernel.org/r/163162768886.438332.9851931782896704604.stgit@warthog.procyon.org.uk/ # rfc
----
+> I.e. doing alloc_covered[hash]++/--.
+> It would err on the side of not sampling allocations that are unlucky
+> to collide with persistent allocations, but would provide more
+> reliable overflow guarantees (at least we continue sampling
+> allocations for all other buckets since we have pool capacity).
+> FWIW also simpler code.
+>
+> I am also thinking if collisions can be resolved by adding some salt
+> that is generated on boot. Resolving collisions across different
+> machines is good enough for KFENCE. Namely, if we have stacks ABC and
+> DEF, we hash XABC and XDEF, where X is filled on boot. It should work
+> for a good hash function, right? If this works, then the simpler
+> alloc_covered[hash]++/-- scheme should work (?).
 
- fs/afs/file.c                 |    2 +-
- fs/cachefiles/interface.c     |    2 +-
- fs/cachefiles/internal.h      |    4 ++--
- fs/cachefiles/io.c            |   28 +++++++++++++---------------
- fs/ceph/cache.h               |    2 +-
- fs/fscache/io.c               |   35 +++++++++++++++++++++--------------
- include/linux/fscache-cache.h |    6 +++---
- include/linux/fscache.h       |   15 ++++++++-------
- 8 files changed, 50 insertions(+), 44 deletions(-)
+Good idea, I think I'll introduce a seed for the hash function.
 
-diff --git a/fs/afs/file.c b/fs/afs/file.c
-index db035ae2a134..1563e9871bf6 100644
---- a/fs/afs/file.c
-+++ b/fs/afs/file.c
-@@ -344,7 +344,7 @@ static int afs_begin_cache_operation(struct netfs_read_request *rreq)
- {
- 	struct afs_vnode *vnode = AFS_FS_I(rreq->inode);
- 
--	return fscache_begin_read_operation(rreq, afs_vnode_cache(vnode));
-+	return fscache_begin_read_operation(&rreq->cache_resources, afs_vnode_cache(vnode));
- }
- 
- static int afs_check_write_begin(struct file *file, loff_t pos, unsigned len,
-diff --git a/fs/cachefiles/interface.c b/fs/cachefiles/interface.c
-index da28ac1fa225..8a7755b86c59 100644
---- a/fs/cachefiles/interface.c
-+++ b/fs/cachefiles/interface.c
-@@ -568,5 +568,5 @@ const struct fscache_cache_ops cachefiles_cache_ops = {
- 	.uncache_page		= cachefiles_uncache_page,
- 	.dissociate_pages	= cachefiles_dissociate_pages,
- 	.check_consistency	= cachefiles_check_consistency,
--	.begin_read_operation	= cachefiles_begin_read_operation,
-+	.begin_operation	= cachefiles_begin_operation,
- };
-diff --git a/fs/cachefiles/internal.h b/fs/cachefiles/internal.h
-index 0a511c36dab8..994f90ff12ac 100644
---- a/fs/cachefiles/internal.h
-+++ b/fs/cachefiles/internal.h
-@@ -198,8 +198,8 @@ extern void cachefiles_uncache_page(struct fscache_object *, struct page *);
- /*
-  * rdwr2.c
-  */
--extern int cachefiles_begin_read_operation(struct netfs_read_request *,
--					   struct fscache_retrieval *);
-+extern int cachefiles_begin_operation(struct netfs_cache_resources *,
-+				      struct fscache_operation *);
- 
- /*
-  * security.c
-diff --git a/fs/cachefiles/io.c b/fs/cachefiles/io.c
-index fac2e8e7b533..08b3183e0dce 100644
---- a/fs/cachefiles/io.c
-+++ b/fs/cachefiles/io.c
-@@ -268,7 +268,7 @@ static int cachefiles_write(struct netfs_cache_resources *cres,
- static enum netfs_read_source cachefiles_prepare_read(struct netfs_read_subrequest *subreq,
- 						      loff_t i_size)
- {
--	struct fscache_retrieval *op = subreq->rreq->cache_resources.cache_priv;
-+	struct fscache_operation *op = subreq->rreq->cache_resources.cache_priv;
- 	struct cachefiles_object *object;
- 	struct cachefiles_cache *cache;
- 	const struct cred *saved_cred;
-@@ -277,8 +277,7 @@ static enum netfs_read_source cachefiles_prepare_read(struct netfs_read_subreque
- 
- 	_enter("%zx @%llx/%llx", subreq->len, subreq->start, i_size);
- 
--	object = container_of(op->op.object,
--			      struct cachefiles_object, fscache);
-+	object = container_of(op->object, struct cachefiles_object, fscache);
- 	cache = container_of(object->fscache.cache,
- 			     struct cachefiles_cache, cache);
- 
-@@ -351,7 +350,7 @@ static int cachefiles_prepare_write(struct netfs_cache_resources *cres,
-  */
- static void cachefiles_end_operation(struct netfs_cache_resources *cres)
- {
--	struct fscache_retrieval *op = cres->cache_priv;
-+	struct fscache_operation *op = cres->cache_priv;
- 	struct file *file = cres->cache_priv2;
- 
- 	_enter("");
-@@ -359,8 +358,8 @@ static void cachefiles_end_operation(struct netfs_cache_resources *cres)
- 	if (file)
- 		fput(file);
- 	if (op) {
--		fscache_op_complete(&op->op, false);
--		fscache_put_retrieval(op);
-+		fscache_op_complete(op, false);
-+		fscache_put_operation(op);
- 	}
- 
- 	_leave("");
-@@ -377,8 +376,8 @@ static const struct netfs_cache_ops cachefiles_netfs_cache_ops = {
- /*
-  * Open the cache file when beginning a cache operation.
-  */
--int cachefiles_begin_read_operation(struct netfs_read_request *rreq,
--				    struct fscache_retrieval *op)
-+int cachefiles_begin_operation(struct netfs_cache_resources *cres,
-+			       struct fscache_operation *op)
- {
- 	struct cachefiles_object *object;
- 	struct cachefiles_cache *cache;
-@@ -387,8 +386,7 @@ int cachefiles_begin_read_operation(struct netfs_read_request *rreq,
- 
- 	_enter("");
- 
--	object = container_of(op->op.object,
--			      struct cachefiles_object, fscache);
-+	object = container_of(op->object, struct cachefiles_object, fscache);
- 	cache = container_of(object->fscache.cache,
- 			     struct cachefiles_cache, cache);
- 
-@@ -406,11 +404,11 @@ int cachefiles_begin_read_operation(struct netfs_read_request *rreq,
- 		goto error_file;
- 	}
- 
--	fscache_get_retrieval(op);
--	rreq->cache_resources.cache_priv = op;
--	rreq->cache_resources.cache_priv2 = file;
--	rreq->cache_resources.ops = &cachefiles_netfs_cache_ops;
--	rreq->cache_resources.debug_id = object->fscache.debug_id;
-+	atomic_inc(&op->usage);
-+	cres->cache_priv = op;
-+	cres->cache_priv2 = file;
-+	cres->ops = &cachefiles_netfs_cache_ops;
-+	cres->debug_id = object->fscache.debug_id;
- 	_leave("");
- 	return 0;
- 
-diff --git a/fs/ceph/cache.h b/fs/ceph/cache.h
-index 058ea2a04376..b94d3f38fb25 100644
---- a/fs/ceph/cache.h
-+++ b/fs/ceph/cache.h
-@@ -54,7 +54,7 @@ static inline int ceph_begin_cache_operation(struct netfs_read_request *rreq)
- {
- 	struct fscache_cookie *cookie = ceph_fscache_cookie(ceph_inode(rreq->inode));
- 
--	return fscache_begin_read_operation(rreq, cookie);
-+	return fscache_begin_read_operation(&rreq->cache_resources, cookie);
- }
- #else
- 
-diff --git a/fs/fscache/io.c b/fs/fscache/io.c
-index 8ecc1141802f..3745a0631618 100644
---- a/fs/fscache/io.c
-+++ b/fs/fscache/io.c
-@@ -14,7 +14,7 @@
- #include "internal.h"
- 
- /*
-- * Start a cache read operation.
-+ * Start a cache operation.
-  * - we return:
-  *   -ENOMEM	- out of memory, some pages may be being read
-  *   -ERESTARTSYS - interrupted, some pages may be being read
-@@ -24,15 +24,16 @@
-  *                the pages
-  *   0		- dispatched a read on all pages
-  */
--int __fscache_begin_read_operation(struct netfs_read_request *rreq,
--				   struct fscache_cookie *cookie)
-+int __fscache_begin_operation(struct netfs_cache_resources *cres,
-+			      struct fscache_cookie *cookie,
-+			      bool for_write)
- {
--	struct fscache_retrieval *op;
-+	struct fscache_operation *op;
- 	struct fscache_object *object;
- 	bool wake_cookie = false;
- 	int ret;
- 
--	_enter("rr=%08x", rreq->debug_id);
-+	_enter("c=%08x", cres->debug_id);
- 
- 	fscache_stat(&fscache_n_retrievals);
- 
-@@ -49,10 +50,16 @@ int __fscache_begin_read_operation(struct netfs_read_request *rreq,
- 	if (fscache_wait_for_deferred_lookup(cookie) < 0)
- 		return -ERESTARTSYS;
- 
--	op = fscache_alloc_retrieval(cookie, NULL, NULL, NULL);
-+	op = kzalloc(sizeof(*op), GFP_KERNEL);
- 	if (!op)
- 		return -ENOMEM;
--	trace_fscache_page_op(cookie, NULL, &op->op, fscache_page_op_retr_multi);
-+
-+	fscache_operation_init(cookie, op, NULL, NULL, NULL);
-+	op->flags = FSCACHE_OP_MYTHREAD |
-+		(1UL << FSCACHE_OP_WAITING) |
-+		(1UL << FSCACHE_OP_UNUSE_COOKIE);
-+
-+	trace_fscache_page_op(cookie, NULL, op, fscache_page_op_retr_multi);
- 
- 	spin_lock(&cookie->lock);
- 
-@@ -64,9 +71,9 @@ int __fscache_begin_read_operation(struct netfs_read_request *rreq,
- 
- 	__fscache_use_cookie(cookie);
- 	atomic_inc(&object->n_reads);
--	__set_bit(FSCACHE_OP_DEC_READ_CNT, &op->op.flags);
-+	__set_bit(FSCACHE_OP_DEC_READ_CNT, &op->flags);
- 
--	if (fscache_submit_op(object, &op->op) < 0)
-+	if (fscache_submit_op(object, op) < 0)
- 		goto nobufs_unlock_dec;
- 	spin_unlock(&cookie->lock);
- 
-@@ -75,14 +82,14 @@ int __fscache_begin_read_operation(struct netfs_read_request *rreq,
- 	/* we wait for the operation to become active, and then process it
- 	 * *here*, in this thread, and not in the thread pool */
- 	ret = fscache_wait_for_operation_activation(
--		object, &op->op,
-+		object, op,
- 		__fscache_stat(&fscache_n_retrieval_op_waits),
- 		__fscache_stat(&fscache_n_retrievals_object_dead));
- 	if (ret < 0)
- 		goto error;
- 
- 	/* ask the cache to honour the operation */
--	ret = object->cache->ops->begin_read_operation(rreq, op);
-+	ret = object->cache->ops->begin_operation(cres, op);
- 
- error:
- 	if (ret == -ENOMEM)
-@@ -96,7 +103,7 @@ int __fscache_begin_read_operation(struct netfs_read_request *rreq,
- 	else
- 		fscache_stat(&fscache_n_retrievals_ok);
- 
--	fscache_put_retrieval(op);
-+	fscache_put_operation(op);
- 	_leave(" = %d", ret);
- 	return ret;
- 
-@@ -105,7 +112,7 @@ int __fscache_begin_read_operation(struct netfs_read_request *rreq,
- 	wake_cookie = __fscache_unuse_cookie(cookie);
- nobufs_unlock:
- 	spin_unlock(&cookie->lock);
--	fscache_put_retrieval(op);
-+	fscache_put_operation(op);
- 	if (wake_cookie)
- 		__fscache_wake_unused_cookie(cookie);
- nobufs:
-@@ -113,4 +120,4 @@ int __fscache_begin_read_operation(struct netfs_read_request *rreq,
- 	_leave(" = -ENOBUFS");
- 	return -ENOBUFS;
- }
--EXPORT_SYMBOL(__fscache_begin_read_operation);
-+EXPORT_SYMBOL(__fscache_begin_operation);
-diff --git a/include/linux/fscache-cache.h b/include/linux/fscache-cache.h
-index 8d39491c5f9f..efa9b6f9fab1 100644
---- a/include/linux/fscache-cache.h
-+++ b/include/linux/fscache-cache.h
-@@ -304,9 +304,9 @@ struct fscache_cache_ops {
- 	/* dissociate a cache from all the pages it was backing */
- 	void (*dissociate_pages)(struct fscache_cache *cache);
- 
--	/* Begin a read operation for the netfs lib */
--	int (*begin_read_operation)(struct netfs_read_request *rreq,
--				    struct fscache_retrieval *op);
-+	/* Begin an operation for the netfs lib */
-+	int (*begin_operation)(struct netfs_cache_resources *cres,
-+			       struct fscache_operation *op);
- };
- 
- extern struct fscache_cookie fscache_fsdef_index;
-diff --git a/include/linux/fscache.h b/include/linux/fscache.h
-index a4dab5998613..32f65c16328a 100644
---- a/include/linux/fscache.h
-+++ b/include/linux/fscache.h
-@@ -196,7 +196,8 @@ extern void __fscache_invalidate(struct fscache_cookie *);
- extern void __fscache_wait_on_invalidate(struct fscache_cookie *);
- 
- #ifdef FSCACHE_USE_NEW_IO_API
--extern int __fscache_begin_read_operation(struct netfs_read_request *, struct fscache_cookie *);
-+extern int __fscache_begin_operation(struct netfs_cache_resources *, struct fscache_cookie *,
-+				     bool);
- #else
- extern int __fscache_read_or_alloc_page(struct fscache_cookie *,
- 					struct page *,
-@@ -511,12 +512,12 @@ int fscache_reserve_space(struct fscache_cookie *cookie, loff_t size)
- 
- /**
-  * fscache_begin_read_operation - Begin a read operation for the netfs lib
-- * @rreq: The read request being undertaken
-+ * @cres: The cache resources for the read being performed
-  * @cookie: The cookie representing the cache object
-  *
-- * Begin a read operation on behalf of the netfs helper library.  @rreq
-- * indicates the read request to which the operation state should be attached;
-- * @cookie indicates the cache object that will be accessed.
-+ * Begin a read operation on behalf of the netfs helper library.  @cres
-+ * indicates the cache resources to which the operation state should be
-+ * attached; @cookie indicates the cache object that will be accessed.
-  *
-  * This is intended to be called from the ->begin_cache_operation() netfs lib
-  * operation as implemented by the network filesystem.
-@@ -527,11 +528,11 @@ int fscache_reserve_space(struct fscache_cookie *cookie, loff_t size)
-  * * Other error code from the cache, such as -ENOMEM.
-  */
- static inline
--int fscache_begin_read_operation(struct netfs_read_request *rreq,
-+int fscache_begin_read_operation(struct netfs_cache_resources *cres,
- 				 struct fscache_cookie *cookie)
- {
- 	if (fscache_cookie_valid(cookie) && fscache_cookie_enabled(cookie))
--		return __fscache_begin_read_operation(rreq, cookie);
-+		return __fscache_begin_operation(cres, cookie, false);
- 	return -ENOBUFS;
- }
- 
+Let me experiment with the simplified version you suggest, and see what I get.
 
+> > +               } else if (old.alloc_stack_hash == alloc_stack_hash && old.covered) {
+> > +                       new.covered = old.covered + val;
+> > +               } else {
+> > +                       /*
+> > +                        * Hash mismatch or covered has become zero. The latter
+> > +                        * is possible if we race with:
+> > +                        *      reset (!= alloc_stack_hash)
+> > +                        *       -> reset (== alloc_stack_hash)
+> > +                        *        -> decrement
+> > +                        */
+> > +                       break;
+> > +               }
+> > +       } while (!atomic64_try_cmpxchg_relaxed(bucket, (s64 *)&old.entry, (s64)new.entry));
+> > +}
+> > +
+> >  static bool kfence_protect(unsigned long addr)
+> >  {
+> >         return !KFENCE_WARN_ON(!kfence_protect_page(ALIGN_DOWN(addr, PAGE_SIZE), true));
+> > @@ -261,7 +348,8 @@ static __always_inline void for_each_canary(const struct kfence_metadata *meta,
+> >         }
+> >  }
+> >
+> > -static void *kfence_guarded_alloc(struct kmem_cache *cache, size_t size, gfp_t gfp)
+> > +static void *
+> > +kfence_guarded_alloc(struct kmem_cache *cache, size_t size, gfp_t gfp, u32 alloc_stack_hash)
+> >  {
+> >         struct kfence_metadata *meta = NULL;
+> >         unsigned long flags;
+> > @@ -322,6 +410,8 @@ static void *kfence_guarded_alloc(struct kmem_cache *cache, size_t size, gfp_t g
+> >         /* Pairs with READ_ONCE() in kfence_shutdown_cache(). */
+> >         WRITE_ONCE(meta->cache, cache);
+> >         meta->size = size;
+> > +       meta->alloc_stack_hash = alloc_stack_hash;
+> > +
+> >         for_each_canary(meta, set_canary_byte);
+> >
+> >         /* Set required struct page fields. */
+> > @@ -334,6 +424,8 @@ static void *kfence_guarded_alloc(struct kmem_cache *cache, size_t size, gfp_t g
+> >
+> >         raw_spin_unlock_irqrestore(&meta->lock, flags);
+> >
+> > +       alloc_covered_add(alloc_stack_hash, 1);
+> > +
+> >         /* Memory initialization. */
+> >
+> >         /*
+> > @@ -362,6 +454,7 @@ static void *kfence_guarded_alloc(struct kmem_cache *cache, size_t size, gfp_t g
+> >  static void kfence_guarded_free(void *addr, struct kfence_metadata *meta, bool zombie)
+> >  {
+> >         struct kcsan_scoped_access assert_page_exclusive;
+> > +       u32 alloc_stack_hash;
+> >         unsigned long flags;
+> >
+> >         raw_spin_lock_irqsave(&meta->lock, flags);
+> > @@ -404,8 +497,13 @@ static void kfence_guarded_free(void *addr, struct kfence_metadata *meta, bool z
+> >         /* Mark the object as freed. */
+> >         metadata_update_state(meta, KFENCE_OBJECT_FREED);
+> >
+> > +       alloc_stack_hash = meta->alloc_stack_hash;
+> > +       meta->alloc_stack_hash = 0;
+> > +
+> >         raw_spin_unlock_irqrestore(&meta->lock, flags);
+> >
+> > +       alloc_covered_add(alloc_stack_hash, -1);
+> > +
+> >         /* Protect to detect use-after-frees. */
+> >         kfence_protect((unsigned long)addr);
+> >
+> > @@ -744,6 +842,8 @@ void kfence_shutdown_cache(struct kmem_cache *s)
+> >
+> >  void *__kfence_alloc(struct kmem_cache *s, size_t size, gfp_t flags)
+> >  {
+> > +       u32 alloc_stack_hash;
+> > +
+> >         /*
+> >          * Perform size check before switching kfence_allocation_gate, so that
+> >          * we don't disable KFENCE without making an allocation.
+> > @@ -788,7 +888,23 @@ void *__kfence_alloc(struct kmem_cache *s, size_t size, gfp_t flags)
+> >         if (!READ_ONCE(kfence_enabled))
+> >                 return NULL;
+> >
+> > -       return kfence_guarded_alloc(s, size, flags);
+> > +       /*
+> > +        * Do expensive check for coverage of allocation in slow-path after
+> > +        * allocation_gate has already become non-zero, even though it might
+> > +        * mean not making any allocation within a given sample interval.
+> > +        *
+> > +        * This ensures reasonable allocation coverage when the pool is almost
+> > +        * full, including avoiding long-lived allocations of the same source
+> > +        * filling up the pool (e.g. pagecache allocations).
+> > +        */
+> > +       alloc_stack_hash = get_alloc_stack_hash();
+>
+> Is it possible to unwind the stack only once per allocation? I.e.
+> unwind here into a buffer on stack and then pass it down?
 
+I'll investigate how bad it looks if we do that.
