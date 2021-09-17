@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 788A140FE21
+	by mail.lfdr.de (Postfix) with ESMTP id E6B1A40FE22
 	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 18:48:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243713AbhIQQt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 12:49:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:23041 "EHLO
+        id S244621AbhIQQtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 12:49:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52561 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240357AbhIQQt1 (ORCPT
+        by vger.kernel.org with ESMTP id S240641AbhIQQt2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 12:49:27 -0400
+        Fri, 17 Sep 2021 12:49:28 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631897284;
+        s=mimecast20190719; t=1631897285;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=4hCdvDjRviIL22W5JADBBQycRMaHOvY6mSdPWhIlWZU=;
-        b=POn1ZdrGPG7Z8Vpz0lCZHtQk9hucAStjJ20CBEqYJvtQDIDcPjp9iRr4y3C7goQ7+F+8dT
-        MMHcQkh1owa48E9NNYRMqDefEH5tAv3gza0N3TxbUGoeVnrUnn4CMAZhBku2NNjiVggjj2
-        gXyRH92TQlvocUuZkBHUZTXRvc9OKL0=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-9-NBh4q3ElP-2s1D3fuCa7CA-1; Fri, 17 Sep 2021 12:48:03 -0400
-X-MC-Unique: NBh4q3ElP-2s1D3fuCa7CA-1
-Received: by mail-qv1-f69.google.com with SMTP id d2-20020a0caa02000000b003784ba308f1so92319639qvb.9
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 09:48:02 -0700 (PDT)
+        bh=PhwkRZZomqS7IRkM943StXbgZUJTllJV3QENdXcVkKA=;
+        b=IVZqccw4s4mJKJ0CTjNlKwLG1Mnh6kCS+F0amBl3ggZEB9QftqYR5/mqrak99feIYRMZsS
+        HdX9d73V+xhyLSsEiHnLpXUhCNJDt4cY0GjL5Mb2FLZit5uA3hRFKLlxXz1czF2iRt7qUa
+        C8zW2FNCMJxWT/Enbq3RxTfkl6lrL88=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-300-PdQzTptdPC2XjnSBia1N_Q-1; Fri, 17 Sep 2021 12:48:05 -0400
+X-MC-Unique: PdQzTptdPC2XjnSBia1N_Q-1
+Received: by mail-qv1-f70.google.com with SMTP id r18-20020a056214069200b0037a291a6081so92536180qvz.18
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 09:48:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=4hCdvDjRviIL22W5JADBBQycRMaHOvY6mSdPWhIlWZU=;
-        b=5bUJ+oZgDYb9RIpIepZZoItZEJoE0ZlPjcTvgrhCq9bf+xs+j+RZEiwphuxN+gkP4U
-         T0ZuLEbtOfHk85XgZI8EuboinzrnV1MpJuItfFcpmzTZyY2PBCOCxKRuC5AJJ9HkVGr0
-         oKghfhzDHG2T57dHy1YMkt2o4M/E0YRDSl3cvSPzbaoP2Pi31T+sb/XHEI7Gm6of7/s7
-         MDy5TDEUlGso5JUV4+kp4M1j6i+yJq9Bek38qBdpkpx5eVpVdrG2tsZKHNKEh2KXtvLh
-         KIxc2Ni/FeYNVpkh6BlSj99W9PWjsTLlRyA/kOh9N+Uv2eM+bu5gfbfakwrVoCM5rBDt
-         egQQ==
-X-Gm-Message-State: AOAM530hwmwTXkk2vrKC92hC2mqmlcM8VtzzTTcoyFWiVM+ZZQw4sp+o
-        +vBTTiu4lvvj5nGBSNqcnkOTCUvJCaCFpWx5jz1DWVvMiYn1A0pNljfG7/aITUJmd7SFjdAWBvt
-        U+cFd+IYp6TAdW8ih7QD1Ydsf
-X-Received: by 2002:aed:3004:: with SMTP id 4mr11017155qte.407.1631897282482;
-        Fri, 17 Sep 2021 09:48:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxZWVxwXPHBVDYEfR49AslQcsKewHkeBvsRTypxwBGT/QQhAZPTJ0bzyrPxFClD91GIRnLm8A==
-X-Received: by 2002:aed:3004:: with SMTP id 4mr11017137qte.407.1631897282257;
-        Fri, 17 Sep 2021 09:48:02 -0700 (PDT)
+        bh=PhwkRZZomqS7IRkM943StXbgZUJTllJV3QENdXcVkKA=;
+        b=MxJBzSj8GXZJHOy8Nwh691oZZ+WPywj5JaVam3J1qp9xa+RIrHLovH0OmhTxauagOr
+         D6c8xobYW8HiStKTnNDNoRJ5gdfWhbGe8V0fR8fBLvCP0sNTX3exsnyGRoOgVmarWZjX
+         Qn3ccr/drJOa1hwIQoqs40YfvKvRo0Zwk3SYEtNQOME416P1PIhOeO/DQ5NVyRoCTZSR
+         jRKnHPlHh8pR1VjftyJ4hm+krrArLI2mGAktPxhDcDoAmfFLRizgUuVPMfn0vYZKH6d/
+         IBzf7ZCcRY5+psVSG5AekF33GCixsR7GuMiqdfdvJ2WYaHzcvP/3SpKUU9z8TY+p1zYA
+         DAQg==
+X-Gm-Message-State: AOAM532bWch6v67FWSOwaBDT9AnMGi8v/K8+hXzCpfkYJixjQdSe34iD
+        k+GrEn4OUzAfZwMGfICto2cBbkxvyBgJUsQ90DrcuK8B6SfMMafANwGUCJ+GJxAZTlyR1K+oAal
+        xKxFaiXNWi3yFFN9/Yozz3PdS
+X-Received: by 2002:ac8:44aa:: with SMTP id a10mr11380270qto.63.1631897284384;
+        Fri, 17 Sep 2021 09:48:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz1nXcUZuUXlV6357X6Rp9A+NjJOAP7ILOrMrY0DUvD6B4OVjkMZ8OBuC+G4k8LXezyzfvUjQ==
+X-Received: by 2002:ac8:44aa:: with SMTP id a10mr11380251qto.63.1631897284165;
+        Fri, 17 Sep 2021 09:48:04 -0700 (PDT)
 Received: from t490s.phub.net.cable.rogers.com ([2607:fea8:56a2:9100::d35a])
-        by smtp.gmail.com with ESMTPSA id t26sm4898057qkm.0.2021.09.17.09.48.00
+        by smtp.gmail.com with ESMTPSA id t26sm4898057qkm.0.2021.09.17.09.48.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 09:48:01 -0700 (PDT)
+        Fri, 17 Sep 2021 09:48:03 -0700 (PDT)
 From:   Peter Xu <peterx@redhat.com>
 To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
 Cc:     Vlastimil Babka <vbabka@suse.cz>,
@@ -58,9 +58,9 @@ Cc:     Vlastimil Babka <vbabka@suse.cz>,
         Hugh Dickins <hughd@google.com>,
         Andrea Arcangeli <aarcange@redhat.com>, peterx@redhat.com,
         Matthew Wilcox <willy@infradead.org>
-Subject: [PATCH 2/3] mm/smaps: Use vma->vm_pgoff directly when counting partial swap
-Date:   Fri, 17 Sep 2021 12:47:55 -0400
-Message-Id: <20210917164756.8586-3-peterx@redhat.com>
+Subject: [PATCH 3/3] mm/smaps: Simplify shmem handling of pte holes
+Date:   Fri, 17 Sep 2021 12:47:56 -0400
+Message-Id: <20210917164756.8586-4-peterx@redhat.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210917164756.8586-1-peterx@redhat.com>
 References: <20210917164756.8586-1-peterx@redhat.com>
@@ -70,32 +70,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As it's trying to cover the whole vma anyways, use direct vm_pgoff value and
-vma_pages() rather than linear_page_index.
+Firstly, check_shmem_swap variable is actually not necessary, because it's
+always set with pte_hole hook; checking each would work.
 
-Cc: Vlastimil Babka <vbabka@suse.cz>
+Meanwhile, the check within smaps_pte_entry is not easy to follow.  E.g.,
+pte_none() check is not needed as "!pte_present && !is_swap_pte" is the same.
+Since at it, use the pte_hole() helper rather than dup the page cache lookup.
+
+Still keep the CONFIG_SHMEM part so the code can be optimized to nop for !SHMEM.
+
+There will be a very slight functional change in smaps_pte_entry(), that for
+!SHMEM we'll return early for pte_none (before checking page==NULL), but that's
+even nicer.
+
 Cc: Hugh Dickins <hughd@google.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>
 Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
- mm/shmem.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ fs/proc/task_mmu.c | 22 ++++++++++++----------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
 
-diff --git a/mm/shmem.c b/mm/shmem.c
-index 96ccf6e941aa..d2620db8c938 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -856,9 +856,8 @@ unsigned long shmem_swap_usage(struct vm_area_struct *vma)
- 		return swapped << PAGE_SHIFT;
+diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+index 2197f669e17b..ad667dbc96f5 100644
+--- a/fs/proc/task_mmu.c
++++ b/fs/proc/task_mmu.c
+@@ -397,7 +397,6 @@ struct mem_size_stats {
+ 	u64 pss_shmem;
+ 	u64 pss_locked;
+ 	u64 swap_pss;
+-	bool check_shmem_swap;
+ };
  
- 	/* Here comes the more involved part */
--	return shmem_partial_swap_usage(mapping,
--			linear_page_index(vma, vma->vm_start),
--			linear_page_index(vma, vma->vm_end));
-+	return shmem_partial_swap_usage(mapping, vma->vm_pgoff,
-+					vma->vm_pgoff + vma_pages(vma));
- }
+ static void smaps_page_accumulate(struct mem_size_stats *mss,
+@@ -490,6 +489,16 @@ static int smaps_pte_hole(unsigned long addr, unsigned long end,
+ #define smaps_pte_hole		NULL
+ #endif /* CONFIG_SHMEM */
  
- /*
++static void smaps_pte_hole_lookup(unsigned long addr, struct mm_walk *walk)
++{
++#ifdef CONFIG_SHMEM
++	if (walk->ops->pte_hole) {
++		/* depth is not used */
++		smaps_pte_hole(addr, addr + PAGE_SIZE, 0, walk);
++	}
++#endif
++}
++
+ static void smaps_pte_entry(pte_t *pte, unsigned long addr,
+ 		struct mm_walk *walk)
+ {
+@@ -518,12 +527,8 @@ static void smaps_pte_entry(pte_t *pte, unsigned long addr,
+ 			}
+ 		} else if (is_pfn_swap_entry(swpent))
+ 			page = pfn_swap_entry_to_page(swpent);
+-	} else if (unlikely(IS_ENABLED(CONFIG_SHMEM) && mss->check_shmem_swap
+-							&& pte_none(*pte))) {
+-		page = xa_load(&vma->vm_file->f_mapping->i_pages,
+-						linear_page_index(vma, addr));
+-		if (xa_is_value(page))
+-			mss->swap += PAGE_SIZE;
++	} else {
++		smaps_pte_hole_lookup(addr, walk);
+ 		return;
+ 	}
+ 
+@@ -737,8 +742,6 @@ static void smap_gather_stats(struct vm_area_struct *vma,
+ 		return;
+ 
+ #ifdef CONFIG_SHMEM
+-	/* In case of smaps_rollup, reset the value from previous vma */
+-	mss->check_shmem_swap = false;
+ 	if (vma->vm_file && shmem_mapping(vma->vm_file->f_mapping)) {
+ 		/*
+ 		 * For shared or readonly shmem mappings we know that all
+@@ -756,7 +759,6 @@ static void smap_gather_stats(struct vm_area_struct *vma,
+ 					!(vma->vm_flags & VM_WRITE))) {
+ 			mss->swap += shmem_swapped;
+ 		} else {
+-			mss->check_shmem_swap = true;
+ 			ops = &smaps_shmem_walk_ops;
+ 		}
+ 	}
 -- 
 2.31.1
 
