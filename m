@@ -2,95 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AB354100DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 23:42:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF2114100DE
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 23:45:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241480AbhIQVmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 17:42:37 -0400
-Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:34663 "EHLO
-        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233664AbhIQVme (ORCPT
+        id S241921AbhIQVq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 17:46:59 -0400
+Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:49931 "EHLO
+        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231147AbhIQVq6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 17:42:34 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id 6F5EA2B00902;
-        Fri, 17 Sep 2021 17:41:10 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Fri, 17 Sep 2021 17:41:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=u92.eu; h=date
-        :from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=bo5do1/2uMxfSsRyPzIa31G3tU+
-        VXBJq0VxVweJMjNw=; b=lx2x0Jisdd2o9GUHAoLcO7aZNpLHdrPfa7v+3CbHaiR
-        1M7WQ51iFfY9qQzEvo85CsAhISodR2g1V4hPuk1RgX7j2rMrUz9Q5yuRqavVHCIQ
-        /LVPTyEFjI+qDIpG99C2mAXra9mj8z4LPs3Gqi1Vnpx6gUv1axTysv/OcXVzC9Yj
-        8q9xDY7mQQ7POP5KYcLazECYJtC3G/NqeQp+MHyci+UeT4SH+c3uomhGMxPxIc+5
-        +RyIf5WC/T+NQgLisCIlXXcvvQ8QbuX3ErwRXpsACht9OBKx7LTHQ7NQyuJnNlQw
-        i8ctXOoi6jk9qq6ptbYc1HB267/KQLPs/LjqoDgYOzw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=bo5do1
-        /2uMxfSsRyPzIa31G3tU+VXBJq0VxVweJMjNw=; b=Z5DVGbfyPXqul6bnNVQN3+
-        51BL4yVViShm82Jlg2MDeHZOi8YlO8g4DTDddGKR6Yqz+yEPRYpiA9O1NAheI8Mj
-        qfY+4MMrES5Qgcf70UVmEVpYA5Zf3MkId4upz8dtEiGVdD5ju/+Jj9MdZhy0C1lj
-        xMobgxPk8Jb2lvSHc2TQ1UAfJABzS6V+jVefwKZbvwxAB2awio5FQtUZcEPHjHIn
-        PZZBfTEuq1EH82J2tANVbF/4nMck7ofN6LBZ8z5xreZ5ULWyhFFDkYKeTgxgCpey
-        dlvtf35ATwYtChTM84B8IJLD8P5LZw9x76nKD+/mfdALgr2zvUPkH8O7tRO/gixQ
-        ==
-X-ME-Sender: <xms:dQtFYVOhclBMKX3Mcwz-1lbdVKEQy7TPLNBMmoZnTr4oYeyDzU5_fQ>
-    <xme:dQtFYX9eOThRqFuwMFmdFDfSnKLW--Zu8reg_CGY4WaANvYzAOkgmH3kLt2YzGw6D
-    dyuGyrUpzkgOR_Pnw>
-X-ME-Received: <xmr:dQtFYUSux7FMhpk9fvWiDAx3COeucoGTnWN0VO-E2Sq7y1iFg5UMXo6kmRqqCvFElNhzAFV->
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudehjedgtdduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttdejnecuhfhrohhmpefhvghrnhgr
-    nhguohcutfgrmhhoshcuoehgrhgvvghnfhhoohesuhelvddrvghuqeenucggtffrrghtth
-    gvrhhnpedvjeeifeelhfetiefhhfdthfefkefhhfeutdetvdfgvefgveefheffgfekjeef
-    heenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrh
-    gvvghnfhhoohesuhelvddrvghu
-X-ME-Proxy: <xmx:dQtFYRu3KfwHa-WMGiBn4OINuhHAy-twtNlDdRJYh1MOToE3aIEYyg>
-    <xmx:dQtFYdf8bEudJQdBEQL0MyRHYHA5u8SSkW5ADDEeCYdmf4moDrPosg>
-    <xmx:dQtFYd1tqxED0N8SmbmgWlJvaXHbIXT47ztcUOBe2pnUc6WsJ_fRNw>
-    <xmx:dgtFYeVyeMILMbNbOTk6dKqn5cN6B4ugjQ1e_YoJSKUYtobCKnkzpzKg12I>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 17 Sep 2021 17:41:06 -0400 (EDT)
-Date:   Fri, 17 Sep 2021 23:41:03 +0200
-From:   Fernando Ramos <greenfoo@u92.eu>
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        sean@poorly.run, linux-doc@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-Subject: Re: [PATCH 00/15] drm: cleanup: Use DRM_MODESET_LOCK_ALL_* helpers
- where possible
-Message-ID: <YUULb61dISOCiYHw@zacax395.localdomain>
-References: <20210916211552.33490-1-greenfoo@u92.eu>
- <YUSzKxZwW8C29dLV@phenom.ffwll.local>
+        Fri, 17 Sep 2021 17:46:58 -0400
+Received: from dread.disaster.area (pa49-195-238-16.pa.nsw.optusnet.com.au [49.195.238.16])
+        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 00F248826F6;
+        Sat, 18 Sep 2021 07:45:29 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1mRLfk-00Dfe5-9E; Sat, 18 Sep 2021 07:45:28 +1000
+Date:   Sat, 18 Sep 2021 07:45:28 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@suse.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-xfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH 5/6] XFS: remove congestion_wait() loop from kmem_alloc()
+Message-ID: <20210917214528.GR2361455@dread.disaster.area>
+References: <163184698512.29351.4735492251524335974.stgit@noble.brown>
+ <163184741781.29351.4475236694432020436.stgit@noble.brown>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YUSzKxZwW8C29dLV@phenom.ffwll.local>
+In-Reply-To: <163184741781.29351.4475236694432020436.stgit@noble.brown>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=Tu+Yewfh c=1 sm=1 tr=0
+        a=DzKKRZjfViQTE5W6EVc0VA==:117 a=DzKKRZjfViQTE5W6EVc0VA==:17
+        a=kj9zAlcOel0A:10 a=7QKq2e-ADPsA:10 a=7-415B0cAAAA:8
+        a=v5R2KkZAp00oN_xiK1YA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/09/17 05:24PM, Daniel Vetter wrote:
->
-> Can we at least replace those with drm_modeset_lock_all_ctx and delete
-> drm_modeset_lock_all? That would be really nice goal to make sure these
-> don't spread further.
+On Fri, Sep 17, 2021 at 12:56:57PM +1000, NeilBrown wrote:
+> Documentation commment in gfp.h discourages indefinite retry loops on
+> ENOMEM and says of __GFP_NOFAIL that it
+> 
+>     is definitely preferable to use the flag rather than opencode
+>     endless loop around allocator.
+> 
+> So remove the loop, instead specifying __GFP_NOFAIL if KM_MAYFAIL was
+> not given.
+> 
+> As we no longer have the opportunity to report a warning after some
+> failures, clear __GFP_NOWARN so that the default warning (rate-limited
+> to 1 ever 10 seconds) will be reported instead.
+> 
+> Signed-off-by: NeilBrown <neilb@suse.de>
+> ---
+>  fs/xfs/kmem.c |   19 ++++++-------------
+>  1 file changed, 6 insertions(+), 13 deletions(-)
+> 
+> diff --git a/fs/xfs/kmem.c b/fs/xfs/kmem.c
+> index 6f49bf39183c..575a58e61391 100644
+> --- a/fs/xfs/kmem.c
+> +++ b/fs/xfs/kmem.c
+> @@ -11,21 +11,14 @@
+>  void *
+>  kmem_alloc(size_t size, xfs_km_flags_t flags)
+>  {
+> -	int	retries = 0;
+>  	gfp_t	lflags = kmem_flags_convert(flags);
+> -	void	*ptr;
+>  
+>  	trace_kmem_alloc(size, flags, _RET_IP_);
+>  
+> -	do {
+> -		ptr = kmalloc(size, lflags);
+> -		if (ptr || (flags & KM_MAYFAIL))
+> -			return ptr;
+> -		if (!(++retries % 100))
+> -			xfs_err(NULL,
+> -	"%s(%u) possible memory allocation deadlock size %u in %s (mode:0x%x)",
+> -				current->comm, current->pid,
+> -				(unsigned int)size, __func__, lflags);
+> -		congestion_wait(BLK_RW_ASYNC, HZ/50);
+> -	} while (1);
+> +	if (!(flags & KM_MAYFAIL)) {
+> +		lflags |= __GFP_NOFAIL;
+> +		lflags &= ~__GFP_NOWARN;
+> +	}
 
-I just checked and turns out no one else is using "drm_modeset_lock_all()"
-anymore.
+This logic should really be in kmem_flags_convert() where the gfp
+flags are set up. kmem_flags_convert() is only called by
+kmem_alloc() now so you should just be able to hack that logic
+to do exactly what is necessary.
 
-The only reference is the definition of the function itself, which I did not
-remove because it was being EXPORT_SYMBOL'ed and I was not sure whether it could
-be removed or not (to prevent breaking third party modules maybe?)
+FWIW, We've kinda not been caring about warts in this code because
+the next step for kmem_alloc is to remove kmem_alloc/kmem_zalloc
+completely and replace all the callers with kmalloc/kzalloc being
+passed the correct gfp flags. There's about 30 kmem_alloc() callers
+and 45 kmem_zalloc() calls left to be converted before kmem.[ch] can
+go away completely....
 
-The same goes true for its sibling "dmr_modeset_unlock_all()".
+Cheers,
 
-But if you give me the green light I'll remove both of them right away :)
+Dave.
 
+-- 
+Dave Chinner
+david@fromorbit.com
