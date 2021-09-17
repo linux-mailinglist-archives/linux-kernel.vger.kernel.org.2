@@ -2,197 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B09E40F4D3
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 11:31:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1402E40F4D6
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 11:31:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239492AbhIQJcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 05:32:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236075AbhIQJcZ (ORCPT
+        id S240866AbhIQJcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 05:32:43 -0400
+Received: from sibelius.xs4all.nl ([83.163.83.176]:57329 "EHLO
+        sibelius.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239040AbhIQJcf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 05:32:25 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C937BC061766
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 02:31:03 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id d21so14063874wra.12
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 02:31:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=QTIEOKxWLANQY5Sj91t8yOn88f8yDa6LMFP2RHaNCbU=;
-        b=GKjKa7mQ/CCe6yL2G2vt6fueccCqqIcdpTBpt403pgw36KTYxx/xRwKNVVCvnjlxnN
-         hFuNy8EHYO68vINTCh2lakvwsgY0MQRjluMi9brGpT4tkZe3xVdHrFuPgSUgicqF06Cg
-         FHuzn8TTmjiTEncwmE+0iZoOPizXLfGAAi9KDuSUQUSD5OrEORjMMNrIXy6A4HSRuUbZ
-         2RRQzQZzwdSLvUIpG78ztrfBQSlI2iZeojPpmfLp2QrcaZIxIgHk2P3rOTEvCybDQ+Qr
-         rqHgtpW5W3565sOjX0x0+W6l0LHBS/WFSMvchC5L31J7kVXq/W0k/EMOZOj+SnwOjqrQ
-         8jHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QTIEOKxWLANQY5Sj91t8yOn88f8yDa6LMFP2RHaNCbU=;
-        b=E59YgIYDvEeTScgfdjrlMInymGoPKPWkJ7j8ZBJISCuGcfxEG8q1ZMbR9ygB9omlMo
-         U/1JXrSsqQR2xKIYygM1KiYBrn7rQDA8+1Es78W/6XTyY6ymkrcaNMYTS4rGyz/wl3F+
-         clBxGN3NmeYR0XP39Rw5MuHa64EM1mqXc7S71Vm+bUJNONdFT58FQ0CIUEvF0JdzlYm3
-         lSLNw7oyNy3/9FP1myHUN9L4Awg2qyOBz2z5H7v9c5aueCggzvCarimDK9ejwF2iVaP8
-         bVjrYm04wQP1RRDq8p8SdKiJWEDWBVPicPxzx0wJlRzArgQDYYqhkvWxO/+tIXhcsJRn
-         a1zw==
-X-Gm-Message-State: AOAM533LNQjeflVQ+7jzbznuISfRiYsXYgASYn6vT2Rl+wuKYyULWKj2
-        uDbqxRGbvdipUKZh4c1BJmgOyQ==
-X-Google-Smtp-Source: ABdhPJwbOrjqjTlETXUGsgOiKGwf3FZ90pR2q9c3P3vpwSuX6hrzPFMg526xOQKJqu0xjArPDmTesQ==
-X-Received: by 2002:a5d:444a:: with SMTP id x10mr10915654wrr.360.1631871062127;
-        Fri, 17 Sep 2021 02:31:02 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:cf95:6508:8470:7171? ([2a01:e34:ed2f:f020:cf95:6508:8470:7171])
-        by smtp.googlemail.com with ESMTPSA id q19sm10215879wmq.29.2021.09.17.02.31.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Sep 2021 02:31:01 -0700 (PDT)
-Subject: Re: [PATCH v2] thermal: Fix a NULL pointer dereference
-To:     Subbaraman Narayanamurthy <quic_subbaram@quicinc.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        David Collins <quic_collinsd@quicinc.com>,
-        Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>,
-        Ram Chandrasekar <rkumbako@codeaurora.org>,
-        stable@vger.kernel.org
-References: <1631041289-11804-1-git-send-email-quic_subbaram@quicinc.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <55999619-22c7-63fd-7006-f91f144e4a60@linaro.org>
-Date:   Fri, 17 Sep 2021 11:31:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <1631041289-11804-1-git-send-email-quic_subbaram@quicinc.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Fri, 17 Sep 2021 05:32:35 -0400
+Received: from localhost (bloch.sibelius.xs4all.nl [local])
+        by bloch.sibelius.xs4all.nl (OpenSMTPD) with ESMTPA id 4f816570;
+        Fri, 17 Sep 2021 11:31:10 +0200 (CEST)
+Date:   Fri, 17 Sep 2021 11:31:10 +0200 (CEST)
+From:   Mark Kettenis <mark.kettenis@xs4all.nl>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     sven@svenpeter.dev, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        bhelgaas@google.com, robh+dt@kernel.org, lorenzo.pieralisi@arm.com,
+        kw@linux.com, alyssa@rosenzweig.io, stan@corellium.com,
+        kettenis@openbsd.org, marcan@marcan.st, Robin.Murphy@arm.com,
+        kernel-team@android.com
+In-Reply-To: <87mtobblvd.wl-maz@kernel.org> (message from Marc Zyngier on Fri,
+        17 Sep 2021 10:19:02 +0100)
+Subject: Re: [PATCH v3 10/10] PCI: apple: Configure RID to SID mapper on device addition
+References: <20210913182550.264165-1-maz@kernel.org>
+        <20210913182550.264165-11-maz@kernel.org>
+        <b502383a-fe68-498a-b714-7832d3c8703e@www.fastmail.com>
+        <87y27zbiu3.wl-maz@kernel.org>
+        <56145a72aa978ebd@bloch.sibelius.xs4all.nl> <87mtobblvd.wl-maz@kernel.org>
+Message-ID: <56146608f4547f39@bloch.sibelius.xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/09/2021 21:01, Subbaraman Narayanamurthy wrote:
-> of_parse_thermal_zones() parses the thermal-zones node and registers a
-> thermal_zone device for each subnode. However, if a thermal zone is
-> consuming a thermal sensor and that thermal sensor device hasn't probed
-> yet, an attempt to set trip_point_*_temp for that thermal zone device
-> can cause a NULL pointer dereference. Fix it.
+> Date: Fri, 17 Sep 2021 10:19:02 +0100
+> From: Marc Zyngier <maz@kernel.org>
 > 
->  console:/sys/class/thermal/thermal_zone87 # echo 120000 > trip_point_0_temp
->  ...
->  Unable to handle kernel NULL pointer dereference at virtual address 0000000000000020
->  ...
->  Call trace:
->   of_thermal_set_trip_temp+0x40/0xc4
->   trip_point_temp_store+0xc0/0x1dc
->   dev_attr_store+0x38/0x88
->   sysfs_kf_write+0x64/0xc0
->   kernfs_fop_write_iter+0x108/0x1d0
->   vfs_write+0x2f4/0x368
->   ksys_write+0x7c/0xec
->   __arm64_sys_write+0x20/0x30
->   el0_svc_common.llvm.7279915941325364641+0xbc/0x1bc
->   do_el0_svc+0x28/0xa0
->   el0_svc+0x14/0x24
->   el0_sync_handler+0x88/0xec
->   el0_sync+0x1c0/0x200
+> On Tue, 14 Sep 2021 10:56:05 +0100,
+> Mark Kettenis <mark.kettenis@xs4all.nl> wrote:
+> > 
+> > > Date: Tue, 14 Sep 2021 10:35:32 +0100
+> > > From: Marc Zyngier <maz@kernel.org>
+> > > 
+> > > On Mon, 13 Sep 2021 21:45:13 +0100,
+> > > "Sven Peter" <sven@svenpeter.dev> wrote:
+> > > > 
+> > > > On Mon, Sep 13, 2021, at 20:25, Marc Zyngier wrote:
+> > > > > The Apple PCIe controller doesn't directly feed the endpoint's
+> > > > > Requester ID to the IOMMU (DART), but instead maps RIDs onto
+> > > > > Stream IDs (SIDs). The DART and the PCIe controller must thus
+> > > > > agree on the SIDs that are used for translation (by using
+> > > > > the 'iommu-map' property).
+> > > > > 
+> > > > > For this purpose, parse the 'iommu-map' property each time a
+> > > > > device gets added, and use the resulting translation to configure
+> > > > > the PCIe RID-to-SID mapper. Similarily, remove the translation
+> > > > > if/when the device gets removed.
+> > > > > 
+> > > > > This is all driven from a bus notifier which gets registered at
+> > > > > probe time. Hopefully this is the only PCI controller driver
+> > > > > in the whole system.
+> > > > > 
+> > > > > Signed-off-by: Marc Zyngier <maz@kernel.org>
+> > > > > ---
+> > > > >  drivers/pci/controller/pcie-apple.c | 158 +++++++++++++++++++++++++++-
+> > > > >  1 file changed, 156 insertions(+), 2 deletions(-)
+> > > > > 
+> > > > > diff --git a/drivers/pci/controller/pcie-apple.c 
+> > > > > b/drivers/pci/controller/pcie-apple.c
+> > > > > index 76344223245d..68d71eabe708 100644
+> > > > > --- a/drivers/pci/controller/pcie-apple.c
+> > > > > +++ b/drivers/pci/controller/pcie-apple.c
+> > > > > @@ -23,8 +23,10 @@
+> > > > >  #include <linux/iopoll.h>
+> > > > >  #include <linux/irqchip/chained_irq.h>
+> > > > >  #include <linux/irqdomain.h>
+> > > > > +#include <linux/list.h>
+> > > > >  #include <linux/module.h>
+> > > > >  #include <linux/msi.h>
+> > > > > +#include <linux/notifier.h>
+> > > > >  #include <linux/of_irq.h>
+> > > > >  #include <linux/pci-ecam.h>
+> > > > >  
+> > > > > @@ -116,6 +118,8 @@
+> > > > >  #define   PORT_TUNSTAT_PERST_ACK_PEND	BIT(1)
+> > > > >  #define PORT_PREFMEM_ENABLE		0x00994
+> > > > >  
+> > > > > +#define MAX_RID2SID			64
+> > > > 
+> > > > Do these actually have 64 slots? I thought that was only for
+> > > > the Thunderbolt controllers and that these only had 16.
+> > > 
+> > > You are indeed right, and I blindly used the limit used in the
+> > > Correlium driver. Using entries from 16 onward result in a non booting
+> > > system. The registers do not fault though, and simply ignore writes. I
+> > > came up with an simple fix for this, see below.
+> > 
+> > Or should be add a property to the DT binding to indicate the number
+> > of entries (using a default of 16)?  We don't have to add that
+> > property right away; we can delay that until we actually try to
+> > support the Thunderbolt ports.
 > 
-> While at it, fix the possible NULL pointer dereference in other
-> functions as well: of_thermal_get_temp(), of_thermal_set_emul_temp(),
-> of_thermal_get_trend().
+> I'd rather only add a property for things we cannot discover
+> ourselves. And indeed, we don't have to decide on this right now.
 > 
-> Cc: stable@vger.kernel.org
-> Suggested-by: David Collins <quic_collinsd@quicinc.com>
-> Signed-off-by: Subbaraman Narayanamurthy <quic_subbaram@quicinc.com>
-> ---
-> Changes for v2:
-> - Added checks in of_thermal_get_temp(), of_thermal_set_emul_temp(), of_thermal_get_trend().
+> > In case you didn't know already, RIDs that have no mapping in the
+> > RID2SID table map to SID 0.  That's why I picked 1 as the SID in the
+> > iommu-map property for the port.
 > 
->  drivers/thermal/thermal_of.c | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
+> I sort-off guessed, as using 0 made everything work by 'magic', while
+> using your DT prevented the machine from booting. I tend to dislike
+> magic, hence this patch.
+
+Right.  I deliberately used SID 1 in the DT to make sure other devices
+on the bus couldn't accidentally use IOMMU mappings for a device that
+was mapped to SID 0.
+ 
+> > > > I never checked it myself though and it doesn't make much
+> > > > of a difference for now since only four different RIDs will
+> > > > ever be connected anyway.
+> > > 
+> > > Four? I guess the radios expose more than a single RID?
+> > 
+> > At this point, on the M1 mini there is the Broadcom BCM4378 WiFi/BT
+> > device (which has two functions), the Fresco Logic FL1100 xHCI
+> > controller (single function) and the Broadcom BCM57765 Ethernet
+> > controller.  So yes, there are for RIDs.
 > 
-> diff --git a/drivers/thermal/thermal_of.c b/drivers/thermal/thermal_of.c
-> index 6379f26..9233f7e 100644
-> --- a/drivers/thermal/thermal_of.c
-> +++ b/drivers/thermal/thermal_of.c
-> @@ -89,7 +89,7 @@ static int of_thermal_get_temp(struct thermal_zone_device *tz,
->  {
->  	struct __thermal_zone *data = tz->devdata;
->  
-> -	if (!data->ops->get_temp)
-> +	if (!data->ops || !data->ops->get_temp)
+> But as far as I can see, the RID-to-SID mapping is per port. So at
+> most, we have two RIDs per port/DART, not four. Or am I missing
+> something altogether?
 
-comment (1)
-
-AFAICT, if data->ops != NULL then data->ops->get_temp is also != NULL
-because of the code allocating/freeing the ops structure.
-
-The tests can be replaced by (!data->ops), no ?
-
->  		return -EINVAL;
->  
->  	return data->ops->get_temp(data->sensor_data, temp);
-> @@ -186,6 +186,9 @@ static int of_thermal_set_emul_temp(struct thermal_zone_device *tz,
->  {
->  	struct __thermal_zone *data = tz->devdata;
->  
-> +	if (!data->ops || !data->ops->set_emul_temp)
-> +		return -EINVAL;
-> +
-
-comment (2)
-
-The test looks pointless here (I mean both of them).
-
-If of_thermal_set_emul_temp() is called it is because the callback was
-set in thermal_zone_of_add_sensor().
-
-This one does:
-
-	tz->ops = ops;
-
-and
-	if (ops->set_emul_temp)
-                tzd->ops->set_emul_temp = of_thermal_set_emul_temp;
-
-If I'm not wrong if we are called, then data->ops &&
-data->ops->set_emul_temp is always true, right ?
-
-
->  	return data->ops->set_emul_temp(data->sensor_data, temp);
->  }
->  
-> @@ -194,7 +197,7 @@ static int of_thermal_get_trend(struct thermal_zone_device *tz, int trip,
->  {
->  	struct __thermal_zone *data = tz->devdata;
->  
-> -	if (!data->ops->get_trend)
-> +	if (!data->ops || !data->ops->get_trend)
->  		return -EINVAL;
-
-Same comment as (1)
-
->  	return data->ops->get_trend(data->sensor_data, trip, trend);
-> @@ -301,7 +304,7 @@ static int of_thermal_set_trip_temp(struct thermal_zone_device *tz, int trip,
->  	if (trip >= data->ntrips || trip < 0)
->  		return -EDOM;
->  
-> -	if (data->ops->set_trip_temp) {
-> +	if (data->ops && data->ops->set_trip_temp) {
-
-Same comment as (2)
-
->  		int ret;
->  
->  		ret = data->ops->set_trip_temp(data->sensor_data, trip, temp);
-> 
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+No you're not missing anything.
