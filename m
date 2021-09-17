@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92FBC40F5F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 12:32:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B44F640F5F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 12:32:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243264AbhIQKdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 06:33:31 -0400
-Received: from mga03.intel.com ([134.134.136.65]:6818 "EHLO mga03.intel.com"
+        id S243124AbhIQKd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 06:33:29 -0400
+Received: from mga18.intel.com ([134.134.136.126]:23716 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242775AbhIQKdY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S242755AbhIQKdY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 17 Sep 2021 06:33:24 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10109"; a="222823096"
+X-IronPort-AV: E=McAfee;i="6200,9189,10109"; a="209860642"
 X-IronPort-AV: E=Sophos;i="5.85,301,1624345200"; 
-   d="scan'208";a="222823096"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2021 03:32:02 -0700
+   d="scan'208";a="209860642"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2021 03:32:02 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.85,301,1624345200"; 
-   d="scan'208";a="434815420"
+   d="scan'208";a="453262252"
 Received: from lkp-server01.sh.intel.com (HELO 285e7b116627) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 17 Sep 2021 03:32:01 -0700
+  by orsmga002.jf.intel.com with ESMTP; 17 Sep 2021 03:32:01 -0700
 Received: from kbuild by 285e7b116627 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1mRBA0-00043b-JN; Fri, 17 Sep 2021 10:32:00 +0000
-Date:   Fri, 17 Sep 2021 18:31:09 +0800
+        id 1mRBA0-00043Z-HF; Fri, 17 Sep 2021 10:32:00 +0000
+Date:   Fri, 17 Sep 2021 18:31:28 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
+To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [paulmck-rcu:dev.2021.09.13c] BUILD SUCCESS
- e603ba78a96dc69f31579908fcee4ae4eedb68ae
-Message-ID: <61446e6d.jQukfSshYS/pCPYv%lkp@intel.com>
+Subject: [tip:auto-latest] BUILD SUCCESS
+ 0209d878742bb367825e5b828c0a68fb2361069e
+Message-ID: <61446e80.g7fE81kayruE7phg%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -39,12 +39,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.09.13c
-branch HEAD: e603ba78a96dc69f31579908fcee4ae4eedb68ae  timers/nohz: Last resort update jiffies on nohz_full IRQ entry
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git auto-latest
+branch HEAD: 0209d878742bb367825e5b828c0a68fb2361069e  Merge remote-tracking branch 'tip/x86/fpu' into tip-master
 
-elapsed time: 2085m
+elapsed time: 1487m
 
-configs tested: 141
+configs tested: 158
 configs skipped: 3
 
 The following configs have been built successfully.
@@ -54,8 +54,8 @@ gcc tested configs:
 arm                                 defconfig
 arm64                            allyesconfig
 arm64                               defconfig
-arm                              allyesconfig
 arm                              allmodconfig
+arm                              allyesconfig
 i386                 randconfig-c001-20210916
 sh                          rsk7269_defconfig
 powerpc                     ep8248e_defconfig
@@ -65,18 +65,25 @@ powerpc                    mvme5100_defconfig
 arm                             rpc_defconfig
 riscv                               defconfig
 um                               alldefconfig
-powerpc                      chrp32_defconfig
-arm                         bcm2835_defconfig
-arm                         at91_dt_defconfig
-s390                             allyesconfig
-arm                            hisi_defconfig
-sh                           se7780_defconfig
+sh                          landisk_defconfig
+um                           x86_64_defconfig
+arm                        mvebu_v7_defconfig
+arc                        nsimosci_defconfig
 mips                     loongson1b_defconfig
 sh                           se7712_defconfig
 powerpc                        warp_defconfig
 arm                      integrator_defconfig
 powerpc                 mpc837x_rdb_defconfig
-powerpc                    klondike_defconfig
+arm                          moxart_defconfig
+powerpc                        fsp2_defconfig
+mips                  decstation_64_defconfig
+mips                          ath79_defconfig
+s390                          debug_defconfig
+powerpc                 mpc8272_ads_defconfig
+mips                         db1xxx_defconfig
+powerpc                     tqm8555_defconfig
+arm                          pxa910_defconfig
+powerpc                     tqm8541_defconfig
 powerpc                     tqm8548_defconfig
 powerpc                     kmeter1_defconfig
 riscv                          rv32_defconfig
@@ -85,18 +92,19 @@ arm                         cm_x300_defconfig
 sh                               alldefconfig
 m68k                         amcore_defconfig
 arm                        oxnas_v6_defconfig
-powerpc                      tqm8xx_defconfig
-sh                         ap325rxa_defconfig
-arm                         nhk8815_defconfig
-mips                     loongson2k_defconfig
-mips                        vocore2_defconfig
-mips                        nlm_xlp_defconfig
-xtensa                  nommu_kc705_defconfig
-sh                           se7705_defconfig
-powerpc                     tqm8541_defconfig
-powerpc                          g5_defconfig
-x86_64                           alldefconfig
-mips                          ath79_defconfig
+mips                         rt305x_defconfig
+arm                       mainstone_defconfig
+arm                       cns3420vb_defconfig
+mips                        workpad_defconfig
+arm                     eseries_pxa_defconfig
+powerpc                    klondike_defconfig
+sh                           se7343_defconfig
+powerpc                 mpc837x_mds_defconfig
+arm                         lpc18xx_defconfig
+nds32                             allnoconfig
+mips                           jazz_defconfig
+powerpc                   currituck_defconfig
+arm                          imote2_defconfig
 ia64                          tiger_defconfig
 powerpc                      katmai_defconfig
 arm                        mini2440_defconfig
@@ -109,35 +117,45 @@ mips                     cu1000-neo_defconfig
 arm                          ep93xx_defconfig
 xtensa                  audio_kc705_defconfig
 xtensa                          iss_defconfig
-sh                      rts7751r2d1_defconfig
-sh                          rsk7203_defconfig
-mips                         bigsur_defconfig
-mips                malta_qemu_32r6_defconfig
-sh                            hp6xx_defconfig
+powerpc                      chrp32_defconfig
+openrisc                         alldefconfig
+m68k                       m5475evb_defconfig
+powerpc                     pseries_defconfig
+mips                           ip27_defconfig
+arm                       imx_v6_v7_defconfig
+arm                     am200epdkit_defconfig
+m68k                            mac_defconfig
+mips                        nlm_xlr_defconfig
+h8300                       h8s-sim_defconfig
+xtensa                generic_kc705_defconfig
+arm                        realview_defconfig
+mips                         tb0226_defconfig
+powerpc                 canyonlands_defconfig
+powerpc                     kilauea_defconfig
 x86_64               randconfig-c001-20210916
 arm                  randconfig-c002-20210916
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                             allyesconfig
-m68k                             allmodconfig
 m68k                                defconfig
+m68k                             allmodconfig
 m68k                             allyesconfig
 nios2                               defconfig
 arc                              allyesconfig
-nds32                             allnoconfig
 nds32                               defconfig
+nios2                            allyesconfig
 csky                                defconfig
 alpha                               defconfig
 alpha                            allyesconfig
-nios2                            allyesconfig
 xtensa                           allyesconfig
 h8300                            allyesconfig
 arc                                 defconfig
 sh                               allmodconfig
 parisc                              defconfig
+s390                                defconfig
+s390                             allyesconfig
 s390                             allmodconfig
 parisc                           allyesconfig
-s390                                defconfig
 sparc                            allyesconfig
 sparc                               defconfig
 i386                                defconfig
@@ -167,7 +185,6 @@ riscv                             allnoconfig
 riscv                            allyesconfig
 riscv                            allmodconfig
 x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
 um                             i386_defconfig
 x86_64                              defconfig
 x86_64                               rhel-8.3
