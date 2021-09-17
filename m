@@ -2,141 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1FBD40F903
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 15:19:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF30840F90B
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 15:26:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240381AbhIQNUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 09:20:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239293AbhIQNUm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 09:20:42 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78775C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 06:19:20 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id w19so13906464oik.10
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 06:19:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:reply-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=irpWsGGMsGJ4DtpFXdv5OWCvYLCIS8iAXj1jsW9bhIw=;
-        b=HOEWU8hoOtlFTQ/p0WLcdyNuhPKn/eTLAE1+a06NQBp7Q8yCpS2JwNHYsHy3pyVk7F
-         4bNjsVx7/qfiszEFidmUBtJOXxfukA3yi9juAyBiNnWDFtdw7MW/yWHHaH4W1yJeM3Ys
-         BvLjprqxKIoUOeOOkVeFcingSXccWb9Z/nKHS7NoOQb/M8Vru8kSXjREhMLk/e4jtvn/
-         W1CSMVv7Rf2YnQ5b6vSSfXtLz5QcXuNjzSiqHIrhAyueRfz9W7cn80oEGjejw9YgxmZ9
-         8JsRjS0HZFx4pzw8OMGRuOBsXmRpxwfiZBZvhJ+lHdiGG3b4ewgFxlxhrok9vFOEkKip
-         yrkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :reply-to:references:mime-version:content-disposition:in-reply-to;
-        bh=irpWsGGMsGJ4DtpFXdv5OWCvYLCIS8iAXj1jsW9bhIw=;
-        b=TafqCh4Fx6H5HwccOhGbm0sMTyAcC9QCM+cnStjp1jUxk6fqRxzm0q5TtslukO27js
-         doVkmZshJlqGxATGOaK91SYVKgy9clYYblosRfkDbYVEwG9HO4T5bbhuLXO2tm1zIDAt
-         kE01AN3pNN+EB2R6qet5HDMvNJrVIl7lVMIxNNLmCspYb4DNDiF4XJDaaO6yiMAM4O5z
-         u32arAEvDChB4vc4EUO8zHolx5dDTy5pkYtMEKEuNbybFemjDMjXsBtMnGmFg0YTTran
-         OqWVMiwYWtyM0TbFrK8NaYOys0Lw+3xrssSIxFbFD2mv2ohS53nzx/hQbGkriBjSZabx
-         aUuA==
-X-Gm-Message-State: AOAM531g+rECy1xRLeV5m86Q1PWLBHeoM30Hf5inDhOomVj1ZynbnpUU
-        zf1vlDNG/cezc2sFXdf/XaEYhBqRNg==
-X-Google-Smtp-Source: ABdhPJwkobeH+ck5CNHupTxaPfqYHxRqiljqdH3EHSMFHWtP2kQvV2Ig0caKyxyBDALGjuiume/6sw==
-X-Received: by 2002:aca:da05:: with SMTP id r5mr12947235oig.30.1631884759752;
-        Fri, 17 Sep 2021 06:19:19 -0700 (PDT)
-Received: from serve.minyard.net (serve.minyard.net. [2001:470:b8f6:1b::1])
-        by smtp.gmail.com with ESMTPSA id y26sm1463153oih.2.2021.09.17.06.19.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 06:19:18 -0700 (PDT)
-Sender: Corey Minyard <tcminyard@gmail.com>
-Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:2dd4:10f2:4a03:3baa])
-        by serve.minyard.net (Postfix) with ESMTPSA id D217D18000C;
-        Fri, 17 Sep 2021 13:19:17 +0000 (UTC)
-Date:   Fri, 17 Sep 2021 08:19:16 -0500
-From:   Corey Minyard <minyard@acm.org>
-To:     Anton Lundin <glance@acc.umu.se>
-Cc:     openipmi-developer@lists.sourceforge.net,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [Openipmi-developer] Issue with panic handling and ipmi
-Message-ID: <20210917131916.GB545073@minyard.net>
-Reply-To: minyard@acm.org
-References: <20210916145300.GD108031@montezuma.acc.umu.se>
- <20210916163945.GY545073@minyard.net>
- <20210917101419.GE108031@montezuma.acc.umu.se>
- <20210917120758.GA545073@minyard.net>
- <20210917125525.GF108031@montezuma.acc.umu.se>
+        id S233807AbhIQN13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 09:27:29 -0400
+Received: from mga04.intel.com ([192.55.52.120]:10102 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229971AbhIQN12 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 09:27:28 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10109"; a="220912666"
+X-IronPort-AV: E=Sophos;i="5.85,301,1624345200"; 
+   d="scan'208";a="220912666"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2021 06:26:06 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,301,1624345200"; 
+   d="scan'208";a="699488379"
+Received: from lkp-server01.sh.intel.com (HELO 285e7b116627) ([10.239.97.150])
+  by fmsmga006.fm.intel.com with ESMTP; 17 Sep 2021 06:26:04 -0700
+Received: from kbuild by 285e7b116627 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mRDsS-0004AA-BE; Fri, 17 Sep 2021 13:26:04 +0000
+Date:   Fri, 17 Sep 2021 21:25:37 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/urgent] BUILD SUCCESS
+ 1c1046581f1a3809e075669a3df0191869d96dd1
+Message-ID: <61449751.Th1ytMGwMSvSts6p%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210917125525.GF108031@montezuma.acc.umu.se>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 02:55:25PM +0200, Anton Lundin wrote:
-> On 17 September, 2021 - Corey Minyard wrote:
-> 
-> > On Fri, Sep 17, 2021 at 12:14:19PM +0200, Anton Lundin wrote:
-> > > On 16 September, 2021 - Corey Minyard wrote:
-> > > 
-> > > > On Thu, Sep 16, 2021 at 04:53:00PM +0200, Anton Lundin wrote:
-> > > > > Hi.
-> > > > > 
-> > > > > I've just done a upgrade of the kernel we're using in a product from
-> > > > > 4.19 to 5.10 and I noted a issue.
-> > > > > 
-> > > > > It started that with that we didn't get panic and oops dumps in our erst
-> > > > > backed pstore, and when debugging that I noted that the reboot on panic
-> > > > > timer didn't work either.
-> > > > > 
-> > > > > I've bisected it down to 2033f6858970 ("ipmi: Free receive messages when
-> > > > > in an oops").
-> > > > 
-> > > > Hmm.  Unfortunately removing that will break other things.  Can you try
-> > > > the following patch?  It's a good idea, in general, to do as little as
-> > > > possible in the panic path, this should cover a multitude of issues.
-> > > > 
-> > > > Thanks for the report.
-> > > > 
-> > > 
-> > > I'm sorry to report that the patch didn't solve the issue, and the
-> > > machine locked up in the panic path as before.
-> > 
-> > I missed something.  Can you try the following?  If this doesn't work,
-> > I'm going to have to figure out how to reproduce this.
-> > 
-> 
-> Sorry, still no joy.
-> 
-> My guess is that there is something locking up due to these Supermicro
-> machines have their ERST memory backed by the BMC, and the same BMC is
-> is the other end of all the ipmi communications.
-> 
-> I've reproduced this on Server/X11SCZ-F and Server/H11SSL-i but I'm
-> guessing it can be reproduced on most, if not all, of their hardware
-> with the same setup.
-> 
-> We're using the ERST backend for pstore, because we're still
-> bios-booting them and don't have efi services available to use as pstore
-> backend.
-> 
-> 
-> I've tested to just yank out the ipmi modules from the kernel and that
-> fixes the panic timer and we get crash dumps to pstore.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/urgent
+branch HEAD: 1c1046581f1a3809e075669a3df0191869d96dd1  x86/setup: Call early_reserve_memory() earlier
 
-Dang.  I'm going to have to look deeper at what that could change to
-cause an issue like this.  Are you using the IPMI watchdog?  Do you have
-CONFIG_IPMI_PANIC_EVENT=y set in the config?
+elapsed time: 1510m
 
-Thanks,
+configs tested: 170
+configs skipped: 3
 
--corey
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> 
-> //Anton
-> 
-> 
-> _______________________________________________
-> Openipmi-developer mailing list
-> Openipmi-developer@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/openipmi-developer
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allmodconfig
+arm                              allyesconfig
+i386                 randconfig-c001-20210916
+sh                          rsk7269_defconfig
+riscv                    nommu_virt_defconfig
+powerpc                     ep8248e_defconfig
+powerpc               mpc834x_itxgp_defconfig
+powerpc                    mvme5100_defconfig
+arm                             rpc_defconfig
+riscv                               defconfig
+um                               alldefconfig
+sh                          landisk_defconfig
+um                           x86_64_defconfig
+arm                        mvebu_v7_defconfig
+arc                        nsimosci_defconfig
+mips                     loongson1b_defconfig
+sh                           se7712_defconfig
+powerpc                        warp_defconfig
+arm                      integrator_defconfig
+powerpc                 mpc837x_rdb_defconfig
+arm                          moxart_defconfig
+powerpc                        fsp2_defconfig
+mips                  decstation_64_defconfig
+mips                          ath79_defconfig
+s390                          debug_defconfig
+powerpc                 mpc8272_ads_defconfig
+mips                         db1xxx_defconfig
+powerpc                     tqm8555_defconfig
+arm                          pxa910_defconfig
+powerpc                     tqm8541_defconfig
+powerpc                     tqm8548_defconfig
+powerpc                     kmeter1_defconfig
+riscv                          rv32_defconfig
+powerpc                    klondike_defconfig
+arm                            lart_defconfig
+arm                           stm32_defconfig
+arm                          ep93xx_defconfig
+arm                         vf610m4_defconfig
+sh                            hp6xx_defconfig
+powerpc                 mpc834x_mds_defconfig
+powerpc                  mpc885_ads_defconfig
+arm                         cm_x300_defconfig
+sh                               alldefconfig
+m68k                         amcore_defconfig
+arm                        oxnas_v6_defconfig
+mips                         rt305x_defconfig
+arm                       mainstone_defconfig
+arm                       cns3420vb_defconfig
+s390                       zfcpdump_defconfig
+powerpc                      arches_defconfig
+m68k                       m5275evb_defconfig
+mips                        workpad_defconfig
+arm                     eseries_pxa_defconfig
+sh                           se7343_defconfig
+powerpc                 mpc837x_mds_defconfig
+arm                         lpc18xx_defconfig
+nds32                             allnoconfig
+mips                           jazz_defconfig
+powerpc                   currituck_defconfig
+arm                          imote2_defconfig
+ia64                          tiger_defconfig
+powerpc                      katmai_defconfig
+arm                        mini2440_defconfig
+arm                        trizeps4_defconfig
+xtensa                  cadence_csp_defconfig
+arm                              alldefconfig
+powerpc                     powernv_defconfig
+mips                          rm200_defconfig
+mips                     cu1000-neo_defconfig
+xtensa                  audio_kc705_defconfig
+xtensa                          iss_defconfig
+sh                                  defconfig
+x86_64                           allyesconfig
+powerpc                  storcenter_defconfig
+arm                        keystone_defconfig
+arm                             ezx_defconfig
+powerpc                      chrp32_defconfig
+openrisc                         alldefconfig
+m68k                       m5475evb_defconfig
+powerpc                     pseries_defconfig
+mips                           ip27_defconfig
+arm                       imx_v6_v7_defconfig
+arm                     am200epdkit_defconfig
+m68k                            mac_defconfig
+mips                        nlm_xlr_defconfig
+h8300                       h8s-sim_defconfig
+xtensa                generic_kc705_defconfig
+arm                        realview_defconfig
+mips                         tb0226_defconfig
+powerpc                 canyonlands_defconfig
+powerpc                     kilauea_defconfig
+x86_64               randconfig-c001-20210916
+arm                  randconfig-c002-20210916
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                               defconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+nios2                            allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+xtensa                           allyesconfig
+parisc                              defconfig
+s390                                defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                             allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a016-20210916
+x86_64               randconfig-a013-20210916
+x86_64               randconfig-a012-20210916
+x86_64               randconfig-a011-20210916
+x86_64               randconfig-a014-20210916
+x86_64               randconfig-a015-20210916
+i386                 randconfig-a016-20210916
+i386                 randconfig-a015-20210916
+i386                 randconfig-a011-20210916
+i386                 randconfig-a012-20210916
+i386                 randconfig-a013-20210916
+i386                 randconfig-a014-20210916
+riscv                randconfig-r042-20210916
+s390                 randconfig-r044-20210916
+arc                  randconfig-r043-20210916
+riscv                    nommu_k210_defconfig
+riscv                             allnoconfig
+riscv                            allyesconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                             i386_defconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+riscv                randconfig-c006-20210916
+x86_64               randconfig-c007-20210916
+mips                 randconfig-c004-20210916
+powerpc              randconfig-c003-20210916
+arm                  randconfig-c002-20210916
+i386                 randconfig-c001-20210916
+s390                 randconfig-c005-20210916
+x86_64               randconfig-a002-20210916
+x86_64               randconfig-a003-20210916
+x86_64               randconfig-a006-20210916
+x86_64               randconfig-a004-20210916
+x86_64               randconfig-a005-20210916
+x86_64               randconfig-a001-20210916
+i386                 randconfig-a004-20210916
+i386                 randconfig-a005-20210916
+i386                 randconfig-a006-20210916
+i386                 randconfig-a002-20210916
+i386                 randconfig-a003-20210916
+i386                 randconfig-a001-20210916
+hexagon              randconfig-r045-20210916
+hexagon              randconfig-r041-20210916
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
