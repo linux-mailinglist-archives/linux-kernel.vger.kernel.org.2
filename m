@@ -2,152 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EF20410049
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 22:21:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5737C41004E
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 22:30:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236725AbhIQUXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 16:23:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60744 "EHLO
+        id S236861AbhIQUcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 16:32:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231656AbhIQUW7 (ORCPT
+        with ESMTP id S230166AbhIQUb7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 16:22:59 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1027FC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 13:21:37 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id u18so10748443pgf.0
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 13:21:37 -0700 (PDT)
+        Fri, 17 Sep 2021 16:31:59 -0400
+Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8656CC061574;
+        Fri, 17 Sep 2021 13:30:36 -0700 (PDT)
+Received: by mail-vs1-xe33.google.com with SMTP id p24so10689336vsg.0;
+        Fri, 17 Sep 2021 13:30:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20210112.gappssmtp.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=8P/ocM2t2YFJb3hFlVvikABipXfDcrvJYjnQI/Pc2oY=;
-        b=jKkIebtQy/64rwoKx8BBORdPcS7pcRGFeer2ZITl4fQMj2Dxupuu8/2V6F2WUIiRkZ
-         hzsm7e1i/2VHuxg0VSqvFlJiKo0v4Ui286Ovcg3zT9OmLgSeGd97TauIHY6gvxDuYaPp
-         Xj+s4AdSeqmWM5KrlaKW2FozE8SCoJQUnUsnXpBY44rpHE1ZTdbB6LEpZu88MrQjep7R
-         6dK6ZFuyRSzTvKBe7D2Cd1RDp4FaHAL4h9/IOxlpja4CPXC+Ksd+iP2Pp841IZmCD9v1
-         iMe6lGen3gv7yEW9D29g9Eu7JJhJY6VQ+yL8ECvjWeyHbczH3lmWBhnQQBjQeyP1/+Bk
-         PMMA==
+        bh=DRfdtzIjDxzUKkdHhPK2760DU2hKEPxerMtTWBC6Qi8=;
+        b=UGTkVasKUcEJcoMUHNmvJQxalvNu4TdrKDNFJZY7W6XAIySyXZPWFr94yeHT/zhbd+
+         SldGXkce/BFUQyRAVvSlRBOu0L2L1ctpFa30dEApZtH2ZxFQdm/CfrEgYNxkH4KbObv8
+         2bQ+BmLBJ2rUNtb1hHsqj+COKjG/rHBo9dScJ5V5wahGod+/FMrSCkLWmxtdua6vdhFf
+         I/CE01zFdcdFYqaM/jbP4vXUSj5i74ygLJEGnTMGk0eMWv+M6CePlPfuo6596xTw+xL2
+         SUNBhezuQXblX1afA3BB68xgSyW+BkM14hRdHK5tM0seGLe1mpE0zjsfRg0s5TnKszb0
+         Siyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=8P/ocM2t2YFJb3hFlVvikABipXfDcrvJYjnQI/Pc2oY=;
-        b=iBpGj7FR/4XoDPq3toP/LCaasASU+eCqyt0cJmZjPIzJkYpQEBCEZMpDXZHTB/AzcH
-         3qhLWQT8vgd6NQc2tpQicDUMbfDUi6wo8BtRTTgfl1V8yDFk0vG1R54kq1PQU04j/W9Q
-         bTw9MJatkptbC5KXHC3YKUxk5678zuZv7BcESHGmvnFgWTRNJQkmAUVog6KfpdOmZJHF
-         3qKIGI03ABbOidBaF+5Jgr2FlMgITRfFgCgX+bA4I7V/6+qd9rLwkipxg0b0dt8LPFpm
-         YMAwwlcBxYTpEimugrilWI4QlwWeetn+3CDlRw7kLn1HONLRX7t8yo9axD8sV4a07vaU
-         Wqbw==
-X-Gm-Message-State: AOAM530gA54vexkEAKkExGGUIKvGmBwnLf3Df3h41MfmzBI7Rjc6ehmd
-        QvwloSoN3vHP6RGhgGhUf+mXsXIRY4x/CvMq6exCig==
-X-Google-Smtp-Source: ABdhPJz6pZs8b4rTLRF6l/MEXnlyU2zD0PW32CvHmSHzYJ5xyUpo5M5M+k1BM1hqEEwhlnAIyc7OUqqASaST32B6YnI=
-X-Received: by 2002:a63:1262:: with SMTP id 34mr11373646pgs.356.1631910096519;
- Fri, 17 Sep 2021 13:21:36 -0700 (PDT)
+        bh=DRfdtzIjDxzUKkdHhPK2760DU2hKEPxerMtTWBC6Qi8=;
+        b=sDZ/Vf83meyv6p3fgiAZsfIro+0EiA/MJsgjW62qYlzcUFTCWn8SqCRITH0/Yh5ZtE
+         kxqAlAXubKmTqVyu5UROQqXa8zD/8EB5Z6sK55DlfnQeoXCjtjGnWZgTZq1mATz02JLP
+         PIqnEEhm+NR0KTKwdLszXLrRTyULx0Ft0kr2RVzG+6rGWa3WxQNGI42I2lb0w2hdHlgF
+         XX8uj38S+mZpofSUJRdlNJQAyXX2VdqaoBlNMC4zJM8sjn8eAekfMO/RqMLh9GVwxAE0
+         ad+CALKm6PlxWeanuGq57/B/uHiCNnQ/PYlD67WZ9CRqA/TxOtInNVU+bHcnvTv6vDvb
+         gQsg==
+X-Gm-Message-State: AOAM5330PpVeVZDK5HrbyD9VA+MpOyfd9BfP4H8Qh91hRQS6MYDgwX5A
+        jIuhyM/Lc262wAPi+zOyQUb9GAisXL2NcOEaQcI=
+X-Google-Smtp-Source: ABdhPJx40RoI4+/ZG75rCSCO+3hgIs47xfnC7dB9UtBEmeDks2LVW1xZyhVj7nS/hvmN3Cp3RDP8mN8M2+CV7mR8TVk=
+X-Received: by 2002:a67:2f52:: with SMTP id v79mr3570530vsv.53.1631910635043;
+ Fri, 17 Sep 2021 13:30:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210914233132.3680546-1-jane.chu@oracle.com> <CAPcyv4h3KpOKgy_Cwi5fNBZmR=n1hB33mVzA3fqOY7c3G+GrMA@mail.gmail.com>
- <516ecedc-38b9-1ae3-a784-289a30e5f6df@oracle.com> <20210915161510.GA34830@magnolia>
- <CAPcyv4jaCiSXU61gsQTaoN_cdDTDMvFSfMYfBz2yLKx11fdwOQ@mail.gmail.com>
- <YULuMO86NrQAPcpf@infradead.org> <CAPcyv4g_qPBER2W+OhCf29kw-+tjs++TsTiRGWgX3trv11+28A@mail.gmail.com>
- <YUSPzVG0ulHdLWn7@infradead.org> <20210917152744.GA10250@magnolia>
-In-Reply-To: <20210917152744.GA10250@magnolia>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Fri, 17 Sep 2021 13:21:25 -0700
-Message-ID: <CAPcyv4iAr_Vwwgqw+4wz0RQUXhUUJGGz7_T+p+W6tC4T+k+zNw@mail.gmail.com>
-Subject: Re: [PATCH 0/3] dax: clear poison on the fly along pwrite
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Jane Chu <jane.chu@oracle.com>,
-        Vishal L Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        "Weiny, Ira" <ira.weiny@intel.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Linux NVDIMM <nvdimm@lists.linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <20210913222440.731329-1-ahalaney@redhat.com> <20210913222440.731329-4-ahalaney@redhat.com>
+ <ff05cae4-8fa7-d1b6-795e-3bd85316774d@akamai.com>
+In-Reply-To: <ff05cae4-8fa7-d1b6-795e-3bd85316774d@akamai.com>
+From:   jim.cromie@gmail.com
+Date:   Fri, 17 Sep 2021 14:30:09 -0600
+Message-ID: <CAJfuBxzrJwr17-RWZzhw90pKXZ1hL5kepuzvt1Di=JyekMJf4A@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] Documentation: dyndbg: Improve cli param examples
+To:     Jason Baron <jbaron@akamai.com>
+Cc:     Andrew Halaney <ahalaney@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux Documentation List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 8:27 AM Darrick J. Wong <djwong@kernel.org> wrote:
+On Fri, Sep 17, 2021 at 1:50 PM Jason Baron <jbaron@akamai.com> wrote:
 >
-> On Fri, Sep 17, 2021 at 01:53:33PM +0100, Christoph Hellwig wrote:
-> > On Thu, Sep 16, 2021 at 11:40:28AM -0700, Dan Williams wrote:
-> > > > That was my gut feeling.  If everyone feels 100% comfortable with
-> > > > zeroingas the mechanism to clear poisoning I'll cave in.  The most
-> > > > important bit is that we do that through a dedicated DAX path instead
-> > > > of abusing the block layer even more.
-> > >
-> > > ...or just rename dax_zero_page_range() to dax_reset_page_range()?
-> > > Where reset == "zero + clear-poison"?
+>
+>
+> On 9/13/21 6:24 PM, Andrew Halaney wrote:
+> > Jim pointed out that using $module.dyndbg= is always a more flexible
+> > choice for using dynamic debug on the command line. The $module.dyndbg
+> > style is checked at boot and handles if $module is a builtin. If it is
+> > actually a loadable module, it is handled again later when the module is
+> > loaded.
 > >
-> > I'd say that naming is more confusing than overloading zero.
->
-> How about dax_zeroinit_range() ?
-
-Works for me.
-
->
-> To go with its fallocate flag (yeah I've been too busy sorting out -rc1
-> regressions to repost this) FALLOC_FL_ZEROINIT_RANGE that will reset the
-> hardware (whatever that means) and set the contents to the known value
-> zero.
->
-> Userspace usage model:
->
-> void handle_media_error(int fd, loff_t pos, size_t len)
-> {
->         /* yell about this for posterior's sake */
->
->         ret = fallocate(fd, FALLOC_FL_ZEROINIT_RANGE, pos, len);
->
->         /* yay our disk drive / pmem / stone table engraver is online */
-
-The fallocate mode can still be error-aware though, right? When the FS
-has knowledge of the error locations the fallocate mode could be
-fallocate(fd, FALLOC_FL_OVERWRITE_ERRORS, pos, len) with the semantics
-of attempting to zero out any known poison extents in the given file
-range? At the risk of going overboard on new fallocate modes there
-could also (or instead of) be FALLOC_FL_PUNCH_ERRORS to skip trying to
-clear them and just ask the FS to throw error extents away.
-
-> }
->
-> > > > I'm really worried about both patartitions on DAX and DM passing through
-> > > > DAX because they deeply bind DAX to the block layer, which is just a bad
-> > > > idea.  I think we also need to sort that whole story out before removing
-> > > > the EXPERIMENTAL tags.
-> > >
-> > > I do think it was a mistake to allow for DAX on partitions of a pmemX
-> > > block-device.
-> > >
-> > > DAX-reflink support may be the opportunity to start deprecating that
-> > > support. Only enable DAX-reflink for direct mounting on /dev/pmemX
-> > > without partitions (later add dax-device direct mounting),
+> > If you just use dyndbg="module $module +p" dynamic debug is only enabled
+> > when $module is a builtin.
 > >
-> > I think we need to fully or almost fully sort this out.
+> > It was recommended to illustrate wildcard usage as well.
 > >
-> > Here is my bold suggestions:
+> > Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
+> > Suggested-by: Jim Cromie <jim.cromie@gmail.com>
+> > ---
+> >   Documentation/admin-guide/dynamic-debug-howto.rst | 7 +++++--
+> >   1 file changed, 5 insertions(+), 2 deletions(-)
 > >
-> >  1) drop no drop the EXPERMINTAL on the current block layer overload
-> >     at all
+> > diff --git a/Documentation/admin-guide/dynamic-debug-howto.rst b/Documentation/admin-guide/dynamic-debug-howto.rst
+> > index d0911e7cc271..4bfb23ed64ec 100644
+> > --- a/Documentation/admin-guide/dynamic-debug-howto.rst
+> > +++ b/Documentation/admin-guide/dynamic-debug-howto.rst
+> > @@ -357,7 +357,10 @@ Examples
+> >     Kernel command line: ...
+> >       // see whats going on in dyndbg=value processing
+> >       dynamic_debug.verbose=1
+> > -    // enable pr_debugs in 2 builtins, #cmt is stripped
+> > -    dyndbg="module params +p #cmt ; module sys +p"
+> > +    // Enable pr_debugs in the params builtin
+> > +    params.dyndbg="+p"
 >
-> I don't understand this.
+> If we are going out of our way to change this to indicate that it works
+> for builtin and modules, it seems like the comment above should reflect
+> that? IE, something like this?
 >
-> >  2) add direct mounting of the nvdimm namespaces ASAP.  Because all
-> >     the filesystem currently also need the /dev/pmem0 device add a way
-> >     to open the block device by the dax_device instead of our current
-> >     way of doing the reverse
-> >  3) deprecate DAX support through block layer mounts with a say 2 year
-> >     deprecation period
-> >  4) add DAX remapping devices as needed
+> '// Enable pr_debugs in the params module or if params is builtin.
 >
-> What devices are needed?  linear for lvm, and maybe error so we can
-> actually test all this stuff?
 
-The proposal would be zero lvm support. The nvdimm namespace
-definition would need to grow support for concatenation + striping.
-Soft error injection could be achieved by writing to the badblocks
-interface.
+I dont think params can be a loadable module, so its not a great
+example of this.
+it should be one that "everyone" knows is usually loaded.
+
+conversely, bare dyndbg example should have only builtin modules,
+then the contrast between 2 forms is most evident.
+
+
+> The first two patches look fine to me, so if you agree maybe just
+> re-spin this one?
+>
+> Thanks,
+>
+> -Jason
+>
+> > +    // enable pr_debugs in all files under init/
+> > +    // and the function pc87360_init_device, #cmt is stripped
+> > +    dyndbg="file init/* +p #cmt ; func pc87360_init_device +p"
+> >       // enable pr_debugs in 2 functions in a module loaded later
+> >       pc87360.dyndbg="func pc87360_init_device +p; func pc87360_find +p"
+>
