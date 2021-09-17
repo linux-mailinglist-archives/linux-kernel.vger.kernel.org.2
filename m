@@ -2,136 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51F014100C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 23:34:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 136664100CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 23:39:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236510AbhIQVfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 17:35:30 -0400
-Received: from smtp4-g21.free.fr ([212.27.42.4]:50480 "EHLO smtp4-g21.free.fr"
+        id S242191AbhIQVkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 17:40:13 -0400
+Received: from mga07.intel.com ([134.134.136.100]:54587 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229544AbhIQVf3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 17:35:29 -0400
-Received: from bender.morinfr.org (unknown [82.64.86.27])
-        by smtp4-g21.free.fr (Postfix) with ESMTPS id 7290E19F54D;
-        Fri, 17 Sep 2021 23:34:06 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=morinfr.org
-        ; s=20170427; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=hMHLBhjUkp4MDm4/p0njBJYEzSdbL24VqubJNkEb5Dg=; b=jEAy5BmPkNV4a3+73r4xz29Cvu
-        MBDL3WhrdFIHpwPaCMnR2x5ALq5qBFEFHZCVCwsGxuUSv2A+YrsNzg7A3NBQj/lUsP2d+Ffe8GbDP
-        urnWqm04iLr2s2W9XMWDKBkQ5XTFIbbAwxL1C9i7Acrcl6+rFD77dN87YQCruoZ7A0Nc=;
-Received: from guillaum by bender.morinfr.org with local (Exim 4.92)
-        (envelope-from <guillaume@morinfr.org>)
-        id 1mRLUk-00040M-9C; Fri, 17 Sep 2021 23:34:06 +0200
-Date:   Fri, 17 Sep 2021 23:34:06 +0200
-From:   Guillaume Morin <guillaume@morinfr.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: call_rcu data race patch
-Message-ID: <20210917213404.GA14271@bender.morinfr.org>
-Mail-Followup-To: "Paul E. McKenney" <paulmck@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20210917191555.GA2198@bender.morinfr.org>
- <20210917211148.GU4156@paulmck-ThinkPad-P17-Gen-1>
+        id S229544AbhIQVkM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 17:40:12 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10110"; a="286563045"
+X-IronPort-AV: E=Sophos;i="5.85,302,1624345200"; 
+   d="scan'208";a="286563045"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2021 14:38:49 -0700
+X-IronPort-AV: E=Sophos;i="5.85,302,1624345200"; 
+   d="scan'208";a="546646796"
+Received: from agluck-desk2.sc.intel.com ([10.3.52.146])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2021 14:38:49 -0700
+From:   Tony Luck <tony.luck@intel.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>
+Cc:     Cathy Zhang <cathy.zhang@intel.com>, linux-sgx@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        Tony Luck <tony.luck@intel.com>
+Subject: [PATCH v5 0/7] Basic recovery for machine checks inside SGX
+Date:   Fri, 17 Sep 2021 14:38:29 -0700
+Message-Id: <20210917213836.175138-1-tony.luck@intel.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210827195543.1667168-1-tony.luck@intel.com>
+References: <20210827195543.1667168-1-tony.luck@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210917211148.GU4156@paulmck-ThinkPad-P17-Gen-1>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17 Sep 14:11, Paul E. McKenney wrote:
-> On Fri, Sep 17, 2021 at 09:15:57PM +0200, Guillaume Morin wrote:
-> > Hello Paul,
-> > 
-> > I've been researching some RCU warnings we see that lead to full lockups
-> > with longterm 5.x kernels.
-> > 
-> > Basically the rcu_advance_cbs() == true warning in
-> > rcu_advance_cbs_nowake() is firing then everything eventually gets
-> > stuck on RCU synchronization because the GP thread stays asleep while
-> > rcu_state.gp_flags & 1 == 1 (this is a bunch of nohz_full cpus)
-> > 
-> > During that search I found your patch from July 12th
-> > https://www.spinics.net/lists/rcu/msg05731.html that seems related (all
-> > warnings we've seen happened in the __fput call path). Is there a reason
-> > this patch was not pushed? Is there an issue with this patch or did it
-> > fall just through the cracks?
-> 
-> It is still in -rcu:
-> 
-> 2431774f04d1 ("rcu: Mark accesses to rcu_state.n_force_qs")
-> 
-> It is slated for the v5.16 merge window.  But does it really fix the
-> problem that you are seeing?
+Now version 5.
 
-I am going to try it soon. Since I could not see it in Linus' tree, I
-wanted to make sure there was nothing wrong with the patch, hence my
-email :-)
+Changes since v4:
 
-To my dismay, I can't reproduce this issue so this has made debugging
-and testing very complicated.
+Jarkko Sakkinen:
+	+ Add linux-sgx@vger.kernel.org to Cc: list
+	+ Remove explicit struct sgx_va_page *va_page type
+	from argument and use in sgx_alloc_va_page(). Just
+	use "void *" as this code doesn't do anything with the
+	internals of struct sgx_va_page.
+	+ Drop the union of all possible types for the "owner"
+	field in struct sgx_epc_page (sorry Dave Hansen, this
+	went in last time from your comment, but it doesn't
+	seem to add much value). Back to "void *owner;"
+	+ rename the xarray that tracks which addresses are
+	EPC pages from "epc_page_ranges" to "sgx_epc_address_space".
 
-I have a few kdumps from 5.4 and 5.10 kernels (that's how I was able to
-observe that the gp thread was sleeping for a long time) and that
-rcu_state.gp_flags & 1 == 1.
+Dave Hansen:
+	+ Use more generic names for the globally visible
+	functions that are needed in generic code:
+		sgx_memory_failure -> arch_memory_failure
+		sgx_is_epc_page -> arch_is_platform_page
 
-But this warning has happened a couple of dozen times on multiple
-machines in the __fput path (different kind of HW as well). Removing
-nohz_full from the command line makes the problem disappear.
+Tony Luck:
+	+ Found that ghes code spits warnings for memory addresses
+	that it thinks are bad. Add a check for SGX pages.
 
-Most machines have had fairly long uptime (30+ days) before showing the
-warning, though it has happened on a couple occasions only after a few
-hours.
+Tony Luck (7):
+  x86/sgx: Provide indication of life-cycle of EPC pages
+  x86/sgx: Add infrastructure to identify SGX EPC pages
+  x86/sgx: Initial poison handling for dirty and free pages
+  x86/sgx: Add SGX infrastructure to recover from poison
+  x86/sgx: Hook arch_memory_failure() into mainline code
+  x86/sgx: Add hook to error injection address validation
+  x86/sgx: Add check for SGX pages to ghes_do_memory_failure()
 
-That's pretty much all I have been able to gather so far, unfortunately.
+ .../firmware-guide/acpi/apei/einj.rst         |  19 +++
+ arch/x86/include/asm/processor.h              |   8 +
+ arch/x86/include/asm/set_memory.h             |   4 +
+ arch/x86/kernel/cpu/sgx/encl.c                |   5 +-
+ arch/x86/kernel/cpu/sgx/encl.h                |   2 +-
+ arch/x86/kernel/cpu/sgx/ioctl.c               |   2 +-
+ arch/x86/kernel/cpu/sgx/main.c                | 140 ++++++++++++++++--
+ arch/x86/kernel/cpu/sgx/sgx.h                 |  14 +-
+ drivers/acpi/apei/einj.c                      |   3 +-
+ drivers/acpi/apei/ghes.c                      |   2 +-
+ include/linux/mm.h                            |  13 ++
+ mm/memory-failure.c                           |  19 ++-
+ 12 files changed, 203 insertions(+), 28 deletions(-)
 
-> > PS: FYI during my research, I've found another similar report in
-> > bugzilla https://bugzilla.kernel.org/show_bug.cgi?id=208685
-> 
-> Huh.  First I have heard of it.  It looks like they hit this after about
-> nine days of uptime.  I have run way more than nine days of testing of
-> nohz_full RCU operation with rcutorture, and have never seen it myself.
-> 
-> Can you reproduce this?  If so, can you reproduce it on mainline kernels
-> (as opposed to -stable kernels as in that bugzilla)?
 
-I have at least one prod machine where the problem happens usually
-within a couple of days. All my attempts to reproduce on any testing
-environment have failed.
-
-> 
-> The theory behind that WARN_ON_ONCE() is as follows:
-> 
-> o	The check of rcu_seq_state(rcu_seq_current(&rnp->gp_seq))
-> 	says that there is a grace period either in effect or just
-> 	now ending.
-> 
-> o	In the latter case, the grace-period cleanup has not yet
-> 	reached the current rcu_node structure, which means that
-> 	it has not yet checked to see if another grace period
-> 	is needed.
-> 
-> o	Either way, the RCU_GP_FLAG_INIT will cause the next grace
-> 	period to start.  (This flag is protected by the root
-> 	rcu_node structure's ->lock.)
-> 
-> Again, can you reproduce this, especially in mainline?
-
-I have not tried because running a mainline kernel in our prod
-enviroment is quite difficult and requires lot of work for validation.
-Though I could probably make it happen but it would take some time.
-Patches that I can apply on a stable kernel are much easier for me to
-try, as you probably have guessed.
-
-I appreciate your answer,
-
-Guillaume.
-
+base-commit: 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f
 -- 
-Guillaume Morin <guillaume@morinfr.org>
+2.31.1
+
