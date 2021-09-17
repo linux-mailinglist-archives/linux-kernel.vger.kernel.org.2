@@ -2,122 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00B9840F387
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 09:51:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0EA240F38C
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 09:52:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240285AbhIQHwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 03:52:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57978 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231268AbhIQHwe (ORCPT
+        id S241498AbhIQHxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 03:53:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44914 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232766AbhIQHxb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 03:52:34 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DB9EC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 00:51:12 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id v20-20020a1cf714000000b002e71f4d2026so7013015wmh.1
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 00:51:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=AkeG9+bCFIMeTbdQIw8gG7qxjkL1CtCRf0Fp7JdFLyI=;
-        b=g+hPMSPuni0MWMxtUBbtbcfSKQsF3Sm4o2r7+Vxgjfh7II58iuwsnczPNIXPU0I6r6
-         uJDBNLwpvsixrQJ7PhWq++Eedc4i9udYeannexLIw/dxlXe5Vd9J3/YsSOm8qng8DOY1
-         27fU/GKuyzwK1M7Y14fFlzdKFhBBTbdpzl+OSnH/aPsrLMTv8QKJRiVriJSpIo2latvy
-         DcsdVyVmmQA1P0UNeYWEYg2LLq6BGJpWNwUnXsB+Ca5ejP6+nvnYMHxxfGGTtFrEDcwu
-         eL9XHl1T8q7Ktj6d4zo/KtECtyr0I20bNXDN+PKa775wbHyL0UVwkOExcME3JLJ1FM0w
-         ioqQ==
+        Fri, 17 Sep 2021 03:53:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631865126;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ig9xHMFTEexFHtf5heeUZKbb6+d2Kocqp2z8ZEGYRPA=;
+        b=SoTJtvTTHhYqGY2/DExsTcXYDp6YsXkGPGFg/4/nuheSezRbOoIBpcxu81w51WcjAGCSw7
+        XsVHLvTNTd9lYY7elUicd89WJMr7YvTD3s/DVuS3pCkSl8kAD3LuEedDZsDkweB4Qwzsyw
+        aachqcRC70PeumxpEih72pULSTsSGxY=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-420-_LTm0FzlMoW4KU9KBzcy0w-1; Fri, 17 Sep 2021 03:52:05 -0400
+X-MC-Unique: _LTm0FzlMoW4KU9KBzcy0w-1
+Received: by mail-lf1-f69.google.com with SMTP id g9-20020a0565123b8900b003f33a027130so6065884lfv.18
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 00:52:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=AkeG9+bCFIMeTbdQIw8gG7qxjkL1CtCRf0Fp7JdFLyI=;
-        b=QzCvVTklVP33l0acPLrVP6SKT500VCl8xKbyCX5EVmrOu4fh0J+Ys4tiMfr/BR8DlS
-         UnDJ65nlvf+jcc2aiRcuFbPsk2F/aZIwLsB7LY2tvBlEu8W02K253evEgcST2VZTfhfp
-         S1aleXSmO4jRRP5Lqpso/fnvHETsoWkvUEqD9yY7zDed3wVHtr9oswpJo2zq30uV625w
-         UqsKVhaW2hFvsZYr07lZJJ8Qa8ltXU/OFciijFph5daeL+zBs5FNtfBbhfMnfindT3j0
-         sM6Ay3oeQELmYGGVupZvv9dHCOESKajHKCCfA/tRE1Qrq5kcF/mp59nkiIwbNvQoMVb/
-         YLug==
-X-Gm-Message-State: AOAM532OpW8xkdKteygu3dIElyaGkVQdNFYFO4iFatkKZluRG/HPCABc
-        CcUAfLBdF6yJjzljUXJBXx5c0Q==
-X-Google-Smtp-Source: ABdhPJyBUOQFNT82g8i7TvQn8r9hNwE4JkZuZyEV4XcSZASZzR/f6fstxZOAid9DKHryBgxvxtVyPQ==
-X-Received: by 2002:a7b:c014:: with SMTP id c20mr8800479wmb.81.1631865070670;
-        Fri, 17 Sep 2021 00:51:10 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:cf95:6508:8470:7171? ([2a01:e34:ed2f:f020:cf95:6508:8470:7171])
-        by smtp.googlemail.com with ESMTPSA id u29sm3199045wru.34.2021.09.17.00.51.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Sep 2021 00:51:10 -0700 (PDT)
-Subject: Re: [PATCH] thermal: brcmstb_thermal: Interrupt is optional
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Markus Mayer <mmayer@broadcom.com>,
-        "maintainer:BROADCOM STB AVS TMON DRIVER" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        "open list:BROADCOM STB AVS TMON DRIVER" <linux-pm@vger.kernel.org>,
-        "moderated list:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>
-References: <20210426213647.704823-1-f.fainelli@gmail.com>
- <933c889e-dee0-4fc3-bf1a-b3655cabbb28@gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <7359c3c1-8928-d448-e503-13f587cbb567@linaro.org>
-Date:   Fri, 17 Sep 2021 09:51:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ig9xHMFTEexFHtf5heeUZKbb6+d2Kocqp2z8ZEGYRPA=;
+        b=U0uSWLQUomzlQj4bFaz4bQumuKQwAT8frHI7Nb6LkjxPRffZW/x7cJttINGk1lSLxN
+         S0ek5/jbYaZuOXmCbuLF3u1bmFnUqf21FlZZGzKYGVmZFuIkdPAb1OKiKl1OHKxarkMC
+         5J/gfEOUymBjYER1fLg7O0N1ZuHIz58uMyVZ2t0EqhoJdz7tCR1UcqNCu0p9q67Ldfe3
+         1mLjilLQLa8R/k4qQ7Ls51lFPGsybRktlRRzHqtWB98EpMTqYxMrTh55tVdMnulbvfuT
+         RE2BbRXPnhCH6hahkO0Cz/kNizzI4eVrUu6qHzz3Z3/PoQCV6VGtFhCcThQx7dTf7uva
+         vjMQ==
+X-Gm-Message-State: AOAM530wMgPU75QAnDQAqzoFym0t9rCIuNyQHb1IVVG95gN6jX3sGrrJ
+        mH2fLT+c7ZCXUCnieQ+k9GktkHn5Igmd2h/SvhXFnsHVO6I7RH+0o/v9bRuOhWfwxgygayvkaVJ
+        Q6sEPMaRs5Y3jOJ0do9i1/RFTXQ2PTDC+6N7Jywuc
+X-Received: by 2002:a2e:89c9:: with SMTP id c9mr8663661ljk.107.1631865123878;
+        Fri, 17 Sep 2021 00:52:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz25iogywOItEhZPEzJVaruboTkzhpqM8HfA6JZd6Gqcr0qBeyOdmGZHHpaqFEqEX3Uik/0IbFcZCFDXSPvLhU=
+X-Received: by 2002:a2e:89c9:: with SMTP id c9mr8663649ljk.107.1631865123578;
+ Fri, 17 Sep 2021 00:52:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <933c889e-dee0-4fc3-bf1a-b3655cabbb28@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <cover.1631101392.git.wuzongyong@linux.alibaba.com>
+ <cover.1631621507.git.wuzongyong@linux.alibaba.com> <834528d24c839080215b2e077f100e9ed5073edc.1631621507.git.wuzongyong@linux.alibaba.com>
+ <20210914085711-mutt-send-email-mst@kernel.org> <CACGkMEu3RUGpe74Vh-FAZD3MwOC3gqU0OEf8A1ULvq7GSMm6Jg@mail.gmail.com>
+ <20210915033756-mutt-send-email-mst@kernel.org> <CACGkMEtN0Z=rgMhaWNO=6h-KXGdosBuOdqoWoND-=Tf+afyUYw@mail.gmail.com>
+ <20210915070805-mutt-send-email-mst@kernel.org> <CACGkMEvqZqwRxjnBLpX+=MYbho0q8Hs7OZbsx4ATzhfwOkB73w@mail.gmail.com>
+ <20210917023451.GA19669@L-PF27918B-1352.localdomain>
+In-Reply-To: <20210917023451.GA19669@L-PF27918B-1352.localdomain>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Fri, 17 Sep 2021 15:51:52 +0800
+Message-ID: <CACGkMEvzqYSNo4JGpqC5O-fkjOEPXNU0huRyufAOU5HxAXeoKg@mail.gmail.com>
+Subject: Re: [PATCH v2 4/5] vdpa: add new vdpa attribute VDPA_ATTR_DEV_F_VERSION_1
+To:     Wu Zongyong <wuzongyong@linux.alibaba.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        wei.yang1@linux.alibaba.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Sep 17, 2021 at 10:35 AM Wu Zongyong
+<wuzongyong@linux.alibaba.com> wrote:
+>
+> On Thu, Sep 16, 2021 at 09:05:58AM +0800, Jason Wang wrote:
+> > On Wed, Sep 15, 2021 at 7:09 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> > >
+> > > On Wed, Sep 15, 2021 at 04:06:57PM +0800, Jason Wang wrote:
+> > > > On Wed, Sep 15, 2021 at 3:38 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> > > > >
+> > > > > On Wed, Sep 15, 2021 at 11:18:06AM +0800, Jason Wang wrote:
+> > > > > > On Tue, Sep 14, 2021 at 8:58 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> > > > > > >
+> > > > > > > On Tue, Sep 14, 2021 at 08:24:51PM +0800, Wu Zongyong wrote:
+> > > > > > > > This new attribute advertises whether the vdpa device is legacy or not.
+> > > > > > > > Users can pick right virtqueue size if the vdpa device is legacy which
+> > > > > > > > doesn't support to change virtqueue size.
+> > > > > > > >
+> > > > > > > > Signed-off-by: Wu Zongyong <wuzongyong@linux.alibaba.com>
+> > > > > > >
+> > > > > > > So if we are bothering with legacy,
+> > > > > >
+> > > > > > I think we'd better not. I guess the following may work:
+> > > > > >
+> > > > > > 1) disable the driver on BE host
+> > > > > > 2) present VERSION_1 with ACCESS_PLATFORM in get_features()
+> > > > > > 3) extend the management to advertise max_queue_size and
+> > > > > > min_queue_size, for ENI they are the same so management layer knows it
+> > > > > > needs to set the queue_size correctly during launching qemu
+> > > > > >
+> > > > > > Thoughts?
+> > > > > >
+> > > > > > Thanks
+> > > > >
+> > > > > There are other subtle differences such as header size without
+> > > > > mergeable buffers for net.
+> > > >
+> > > > This can be solved by mandating the feature of a mergeable buffer?
+> > > >
+> > > > Thanks
+> > >
+> > > PXE and some dpdk versions are only some of the guests that
+> > > disable mergeable buffers feature.
+> >
+> > True, but consider
+> >
+> > 1) the legacy stuffs requires changes in several software layers
+> > 2) it is how virtio 1.0 works e.g device can fail the feature negotiation
+> > 3) it is not supported since day 0
+> > 4) management API can be extended to advertise the mandated features
+>
+> So let me confirm what I should do in next revision:
+> 1) disable the driver on BE host like that:
+>
+>    #ifdef __LITTE_ENDIAN
+>    int eni_vdpa_probe()
+>    {
+>        ...
+>    }
+>    #else
+>    int eni_vdpa_probe()
+>    {
+>        return -ENODEV;
+>    }
+>    #endif
 
-Applied, thanks
+This might work but I wonder if we can disable it via Kconfig.
 
-On 16/09/2021 02:05, Florian Fainelli wrote:
-> 
-> 
-> On 4/26/2021 2:36 PM, Florian Fainelli wrote:
->> Utilize platform_get_irq_optional() to silence these messages:
->>
->> brcmstb_thermal a581500.thermal: IRQ index 0 not found
->>
->> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> 
-> This patch was never picked up and still applies. Daniel, can you pick
-> it up?
-> 
-> Thanks!
-> 
->> ---
->>   drivers/thermal/broadcom/brcmstb_thermal.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/thermal/broadcom/brcmstb_thermal.c
->> b/drivers/thermal/broadcom/brcmstb_thermal.c
->> index 8df5edef1ded..0cedb8b4f00a 100644
->> --- a/drivers/thermal/broadcom/brcmstb_thermal.c
->> +++ b/drivers/thermal/broadcom/brcmstb_thermal.c
->> @@ -351,7 +351,7 @@ static int brcmstb_thermal_probe(struct
->> platform_device *pdev)
->>         priv->thermal = thermal;
->>   -    irq = platform_get_irq(pdev, 0);
->> +    irq = platform_get_irq_optional(pdev, 0);
->>       if (irq >= 0) {
->>           ret = devm_request_threaded_irq(&pdev->dev, irq, NULL,
->>                           brcmstb_tmon_irq_thread,
->>
-> 
+>
+> 2) report F_VERSION_1 and F_ACCESS_PLATFORM in get_features()
+> 3) introduce a new cb get_vq_num_min in vdpa_config_ops
+>
+> Does I miss something?
 
+And we need this as well.
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+Fail the feature negotiation if mrg rxbuf is not negotiated. Otherwise
+we can meet the 1.0 requirement of header length. Or the hardware can
+still preset the mergeable header if the mrg rx buffer is not
+negotiated?
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Thanks
+
+>
+> > It looks affordable.
+> >
+> > Thanks
+> >
+> > >
+> > > > >
+> > > > >
+> > > > > > > I think there are
+> > > > > > > several things to do when building the interface
+> > > > > > > - support transitional devices, that is allow userspace
+> > > > > > >   to tell device it's in legacy mode
+> > > > > > > - support reporting/setting supporting endian-ness
+> > > > > > >
+> > > > > > > > ---
+> > > > > > > >  drivers/vdpa/vdpa.c          | 6 ++++++
+> > > > > > > >  drivers/virtio/virtio_vdpa.c | 7 ++++++-
+> > > > > > > >  include/uapi/linux/vdpa.h    | 1 +
+> > > > > > > >  3 files changed, 13 insertions(+), 1 deletion(-)
+> > > > > > > >
+> > > > > > > > diff --git a/drivers/vdpa/vdpa.c b/drivers/vdpa/vdpa.c
+> > > > > > > > index 1dc121a07a93..533d7f589eee 100644
+> > > > > > > > --- a/drivers/vdpa/vdpa.c
+> > > > > > > > +++ b/drivers/vdpa/vdpa.c
+> > > > > > > > @@ -12,6 +12,7 @@
+> > > > > > > >  #include <linux/slab.h>
+> > > > > > > >  #include <linux/vdpa.h>
+> > > > > > > >  #include <uapi/linux/vdpa.h>
+> > > > > > > > +#include <uapi/linux/virtio_config.h>
+> > > > > > > >  #include <net/genetlink.h>
+> > > > > > > >  #include <linux/mod_devicetable.h>
+> > > > > > > >
+> > > > > > > > @@ -494,6 +495,7 @@ vdpa_dev_fill(struct vdpa_device *vdev, struct sk_buff *msg, u32 portid, u32 seq
+> > > > > > > >       u16 max_vq_size;
+> > > > > > > >       u32 device_id;
+> > > > > > > >       u32 vendor_id;
+> > > > > > > > +     u64 features;
+> > > > > > > >       void *hdr;
+> > > > > > > >       int err;
+> > > > > > > >
+> > > > > > > > @@ -508,6 +510,7 @@ vdpa_dev_fill(struct vdpa_device *vdev, struct sk_buff *msg, u32 portid, u32 seq
+> > > > > > > >       device_id = vdev->config->get_device_id(vdev);
+> > > > > > > >       vendor_id = vdev->config->get_vendor_id(vdev);
+> > > > > > > >       max_vq_size = vdev->config->get_vq_num_max(vdev);
+> > > > > > > > +     features = vdev->config->get_features(vdev);
+> > > > > > > >
+> > > > > > > >       err = -EMSGSIZE;
+> > > > > > > >       if (nla_put_string(msg, VDPA_ATTR_DEV_NAME, dev_name(&vdev->dev)))
+> > > > > > > > @@ -520,6 +523,9 @@ vdpa_dev_fill(struct vdpa_device *vdev, struct sk_buff *msg, u32 portid, u32 seq
+> > > > > > > >               goto msg_err;
+> > > > > > > >       if (nla_put_u16(msg, VDPA_ATTR_DEV_MAX_VQ_SIZE, max_vq_size))
+> > > > > > > >               goto msg_err;
+> > > > > > > > +     if (features & BIT_ULL(VIRTIO_F_VERSION_1) &&
+> > > > > > > > +         nla_put_flag(msg, VDPA_ATTR_DEV_VERSION_1))
+> > > > > > > > +             goto msg_err;
+> > > > > > > >
+> > > > > > > >       genlmsg_end(msg, hdr);
+> > > > > > > >       return 0;
+> > > > > > > > diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
+> > > > > > > > index 72eaef2caeb1..1cba957c4cdc 100644
+> > > > > > > > --- a/drivers/virtio/virtio_vdpa.c
+> > > > > > > > +++ b/drivers/virtio/virtio_vdpa.c
+> > > > > > > > @@ -7,6 +7,7 @@
+> > > > > > > >   *
+> > > > > > > >   */
+> > > > > > > >
+> > > > > > > > +#include "linux/virtio_config.h"
+> > > > > > > >  #include <linux/init.h>
+> > > > > > > >  #include <linux/module.h>
+> > > > > > > >  #include <linux/device.h>
+> > > > > > > > @@ -145,6 +146,7 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
+> > > > > > > >       /* Assume split virtqueue, switch to packed if necessary */
+> > > > > > > >       struct vdpa_vq_state state = {0};
+> > > > > > > >       unsigned long flags;
+> > > > > > > > +     bool may_reduce_num = false;
+> > > > > > > >       u32 align, num;
+> > > > > > > >       int err;
+> > > > > > > >
+> > > > > > > > @@ -169,10 +171,13 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
+> > > > > > > >               goto error_new_virtqueue;
+> > > > > > > >       }
+> > > > > > > >
+> > > > > > > > +     if (ops->get_features(vdpa) & BIT_ULL(VIRTIO_F_VERSION_1))
+> > > > > > > > +             may_reduce_num = true;
+> > > > > > > > +
+> > > > > > > >       /* Create the vring */
+> > > > > > > >       align = ops->get_vq_align(vdpa);
+> > > > > > > >       vq = vring_create_virtqueue(index, num, align, vdev,
+> > > > > > > > -                                 true, true, ctx,
+> > > > > > > > +                                 true, may_reduce_num, ctx,
+> > > > > > > >                                   virtio_vdpa_notify, callback, name);
+> > > > > > > >       if (!vq) {
+> > > > > > > >               err = -ENOMEM;
+> > > > > > > > diff --git a/include/uapi/linux/vdpa.h b/include/uapi/linux/vdpa.h
+> > > > > > > > index 66a41e4ec163..ce0b74276a5b 100644
+> > > > > > > > --- a/include/uapi/linux/vdpa.h
+> > > > > > > > +++ b/include/uapi/linux/vdpa.h
+> > > > > > > > @@ -32,6 +32,7 @@ enum vdpa_attr {
+> > > > > > > >       VDPA_ATTR_DEV_VENDOR_ID,                /* u32 */
+> > > > > > > >       VDPA_ATTR_DEV_MAX_VQS,                  /* u32 */
+> > > > > > > >       VDPA_ATTR_DEV_MAX_VQ_SIZE,              /* u16 */
+> > > > > > > > +     VDPA_ATTR_DEV_VERSION_1,                /* flag */
+> > > > > > > >
+> > > > > > > >       /* new attributes must be added above here */
+> > > > > > > >       VDPA_ATTR_MAX,
+> > > > > > > > --
+> > > > > > > > 2.31.1
+> > > > > > >
+> > > > >
+> > >
+>
+
