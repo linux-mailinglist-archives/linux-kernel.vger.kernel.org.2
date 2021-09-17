@@ -2,110 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25C5D40F47F
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 11:02:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6F3740F485
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 11:08:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238074AbhIQJDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 05:03:42 -0400
-Received: from mout.kundenserver.de ([212.227.126.131]:55873 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230245AbhIQJDl (ORCPT
+        id S236391AbhIQJJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 05:09:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232902AbhIQJJm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 05:03:41 -0400
-Received: from mail-wr1-f42.google.com ([209.85.221.42]) by
- mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1N7iT4-1mwame1YQc-014lwc; Fri, 17 Sep 2021 11:02:18 +0200
-Received: by mail-wr1-f42.google.com with SMTP id i23so13992945wrb.2;
-        Fri, 17 Sep 2021 02:02:17 -0700 (PDT)
-X-Gm-Message-State: AOAM5306GrV7jZASVG5H+MQwNDDzY7hEGkrmz95rOTwGmaSRy148iRdL
-        oytmqDUKnsri7NvbO95wUSrNCbwgBXrIIy3f3bo=
-X-Google-Smtp-Source: ABdhPJw6r624crPzbfz4Nvr2pbJ9ZO+UiBgdv+k/OBM2TFktBVkhBtLpOU/mmzSq/jJnWFToRK6mw+fTR3mUw8aBqoc=
-X-Received: by 2002:adf:c10b:: with SMTP id r11mr10884040wre.336.1631869336873;
- Fri, 17 Sep 2021 02:02:16 -0700 (PDT)
+        Fri, 17 Sep 2021 05:09:42 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B70AC061764
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 02:08:19 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id w17so5831794wrv.10
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 02:08:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=6H3PgEvJtKdfjyBEYlYykpBnafjbdNton0u/XHPtQkY=;
+        b=e92OBaLRYooNOD8adcQCqfoNoPrMKrhSenSe/RAIl/Q3MEONRS++meOfqRiquzCPTO
+         oFzdPQwEfuP0VJEjRUEEaGWZbd9sV/eORFgkfV2WjjuSyuOQde9tuRB/3a+q56dFq0J/
+         Utg2hQVV5ctHvAP7kerfL32V+CIzQY7p5UvEnHQkEycyxNDa37+Z7tCIAjlG6hQZj3Ha
+         NvRAlYvZqQTS3onGoVZR509VwzDwX500IPRBu9+2WWjaeZ211Up8sIdgULQ52/mP45D3
+         rJ0SMArM3xr79qR1o64ScXD2qWI68PUyv9Z3ecWh6v4Acfd6f+7krIAaXDHi7j7EVIFz
+         VY7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6H3PgEvJtKdfjyBEYlYykpBnafjbdNton0u/XHPtQkY=;
+        b=BZxhKl6mhDVgAgChxXCkCFNwrqPN/Tz1ErAEEz0rP/Hq2lRA0ic+T9N+XB2Z7sfJAp
+         t1fM68dKEZPpQGmRS5FBlqinsT9J1XUqhqudu0gV+Y7Z3RCdhkr2VPILJ5iRadZP+yY9
+         BrJhAi04w4uJ69aL+C/q50A8d/b1oqlpFEi8A8gcLFb/hrT9Mn99sQY+DGKhsNkVRQK8
+         fqUQ5GlWb348AX6USXFy15PCb1b7zx10En+h/kXqLez+MfIr6hPFtIHtJ6T2ziOHDGk6
+         4n591I/WikQrqDfppagU6j9fsgQSHS2UkEZ8occbOLqIG3zBkrXTUjsS0g+ImA1ceNMj
+         12bg==
+X-Gm-Message-State: AOAM533fa+nCABWM6J/VNjfpoPfd3lNLrqUn484xSpSyl+E+ylL/3d6M
+        LYNHN92fRrDLX6y7FEbDDphm8uxX5Iy8ZA==
+X-Google-Smtp-Source: ABdhPJzhFXRN7B5ouSQwSKgqj5+f/A/03bCmzpqAegKiAAOn3OFsIbt0Eet7OTCBonqbpgTw3y4NIA==
+X-Received: by 2002:a5d:5229:: with SMTP id i9mr10794836wra.373.1631869697332;
+        Fri, 17 Sep 2021 02:08:17 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:cf95:6508:8470:7171? ([2a01:e34:ed2f:f020:cf95:6508:8470:7171])
+        by smtp.googlemail.com with ESMTPSA id m2sm9888055wmm.3.2021.09.17.02.08.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Sep 2021 02:08:16 -0700 (PDT)
+Subject: Re: [PATCH v2 2/2] drivers: thermal: tsens: add timeout to
+ get_tem_tsens_valid
+To:     Ansuel Smith <ansuelsmth@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Thara Gopinath <thara.gopinath@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>, linux-arm-msm@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210907212543.20220-1-ansuelsmth@gmail.com>
+ <20210907212543.20220-2-ansuelsmth@gmail.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <f06f6d13-e659-16e9-5900-2d82596f139c@linaro.org>
+Date:   Fri, 17 Sep 2021 11:08:15 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210917035736.3934017-1-chenhuacai@loongson.cn> <20210917035736.3934017-19-chenhuacai@loongson.cn>
-In-Reply-To: <20210917035736.3934017-19-chenhuacai@loongson.cn>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 17 Sep 2021 11:02:00 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a26CGyiZ9y7KxHGu6eHXZJ08X4mospr+3CL8g_qi=ACpg@mail.gmail.com>
-Message-ID: <CAK8P3a26CGyiZ9y7KxHGu6eHXZJ08X4mospr+3CL8g_qi=ACpg@mail.gmail.com>
-Subject: Re: [PATCH V3 18/22] LoongArch: Add PCI controller support
-To:     Huacai Chen <chenhuacai@loongson.cn>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Airlie <airlied@linux.ie>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Huacai Chen <chenhuacai@gmail.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Jianmin Lv <lvjianmin@loongson.cn>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Will Deacon <will@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:ZPJ3unZ38iZq/NHPz6ZHLheWP8t8LYOCiD4YHHdb47yBqGycgoJ
- 7wtvDv4j1NCPuCR3WVqDY72Yi/kU77+z2h2XTngsC9WvTSxmIqWB29129+pgHBKZAc6kgk/
- mi0Nfm6H8KTWMB0n/5O1csvAnxb97ZymhX/fSMjh5zN00FqHxM9YaZndxqlI23qg9Qnx5Nb
- l2rrDs9GmaE957UCgQYJA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:F8kJQlhz+VQ=:S4a9vWlo0mnu2sA42Kt7vI
- fbUWwXBkhzXYZiN4oVgYeSZ9L9m6qypr9Qd8PyTjhHHA5vrGBOlHdNY+L1+v2apPq1GOdd/N3
- AK6GdV/ydwq1R50APsARTmtDK7yxuAYg+qYWQWbTbVTagh7ZpAfN1zmaARR9EQT4XzN517gdp
- F+EbzgjT/oIHLTgcga8d2lELoMXeQlzVO6KPCoW4dRtKPkK1cB2Kx7orMO5F7WWdBAjTWA6Jx
- poifHkrK6pXY9kOQporWjq1vXBJ1/CVub+WwX+p+5lgEHPUtn+NueUaHsypq0pnjgHXCXm6r/
- ZLzNkEP33D5U+jw8fErUu18pkeFNCpy57K+ZlYLuF54L5xsDpUGDja4nc1NIFAGPl6jv1umoG
- yHBJyyH8ao1RFOxg0eDNOaXuMeV8zbO7+nM6IXE0/A9CyUM0RO7Z6y6cWhMjTuWE30LTEBCYG
- ZkuwCrebDIM7EGlNrj3EaWlxbfEbntyu0+TEVsbSepjLnG74yynpsYXTJWBr2oNdUSwPcA9r3
- q8aV/G6Q/ilJ5xd5NMbCd8w30wy4Tv8uf8n9tJ3+YocTIcPHZKpq1uG98ro7BeLxjZwRei324
- Jst6/L7XFe8c2BmBOM5IE9ddiYPV+yQ70bKvIoTP1/y6gQRfjDOEKp7XRgpmhK0P+YNTJeB8d
- j2dn9zmOC6HxoIbKGFcBZ/ZQQoBl/AGkEwg7QnL/W4g2KAb9whOrGkSVrnw0di/gwauMVdkLx
- bcOCteQsxFLQJiH012utf8oV2r8Q+Z3IC5vxpPIUw3622MqxRdnA2MHIc0MBPRWZ3dAVYH2J3
- oESZibmOwJml875FbEtFW05CDjatoy3U6RrfMJBsv2kmaOZLhmnyzUWonm1ls1Ghno7PmpHCx
- n9hlKkzAW8T8Do6WF8lg==
+In-Reply-To: <20210907212543.20220-2-ansuelsmth@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 5:57 AM Huacai Chen <chenhuacai@loongson.cn> wrote:
->
-> Loongson64 based systems are PC-like systems which use PCI/PCIe as its
-> I/O bus, This patch adds the PCI host controller support for LoongArch.
->
-> Signed-off-by: Jianmin Lv <lvjianmin@loongson.cn>
-> Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+On 07/09/2021 23:25, Ansuel Smith wrote:
+> The function can loop and lock the system if for whatever reason the bit
+> for the target sensor is NEVER valid. This is the case if a sensor is
+> disabled by the factory and the valid bit is never reported as actually
+> valid. Add a timeout check and exit if a timeout occurs. As this is
+> a very rare condition, handle the timeout only if the first read fails.
+> While at it also rework the function to improve readability.
+> 
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> ---
+>  drivers/thermal/qcom/tsens.c | 40 +++++++++++++++++++++++-------------
+>  1 file changed, 26 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/thermal/qcom/tsens.c b/drivers/thermal/qcom/tsens.c
+> index b1162e566a70..1ff244176beb 100644
+> --- a/drivers/thermal/qcom/tsens.c
+> +++ b/drivers/thermal/qcom/tsens.c
+> @@ -599,26 +599,38 @@ int get_temp_tsens_valid(const struct tsens_sensor *s, int *temp)
+>  	int hw_id = s->hw_id;
+>  	u32 temp_idx = LAST_TEMP_0 + hw_id;
+>  	u32 valid_idx = VALID_0 + hw_id;
+> +	unsigned long timeout;
+>  	u32 valid;
+>  	int ret;
+>  
+>  	/* VER_0 doesn't have VALID bit */
+> -	if (tsens_version(priv) >= VER_0_1) {
+> +	if (tsens_version(priv) == VER_0)
+> +		goto get_temp;
+> +
+> +	ret = regmap_field_read(priv->rf[valid_idx], &valid);
+> +	if (ret || valid)
+> +		goto check_valid;
+> +
+> +	timeout = jiffies + msecs_to_jiffies(20);
 
-As discussed before, I think the PCI support should not be part of the
-architecture code or this patch series. The headers are ok, but the pci.c
-and acpi.c files have nothing loongarch specific in them, and you clearly
-just copied most of this from arm64 or x86.
+Why not use regmap_field_read_poll_timeout() ?
 
-What I would suggest you do instead is:
+> +	do {
+> +		/* Valid bit is 0 for 6 AHB clock cycles.
+> +		 * At 19.2MHz, 1 AHB clock is ~60ns.
+> +		 * We should enter this loop very, very rarely.
+> +		 */
+> +		ndelay(400);
+>  		ret = regmap_field_read(priv->rf[valid_idx], &valid);
+> -		if (ret)
+> -			return ret;
+> -		while (!valid) {
+> -			/* Valid bit is 0 for 6 AHB clock cycles.
+> -			 * At 19.2MHz, 1 AHB clock is ~60ns.
+> -			 * We should enter this loop very, very rarely.
+> -			 */
+> -			ndelay(400);
+> -			ret = regmap_field_read(priv->rf[valid_idx], &valid);
+> -			if (ret)
+> -				return ret;
+> -		}
+> -	}
+> +		if (ret || valid)
+> +			goto check_valid;
+> +	} while (time_before(jiffies, timeout));
+> +
+> +	return -ETIMEDOUT;
+> +
+> +check_valid:
+> +	/* Check ret of valid bit read */
+> +	if (ret)
+> +		return ret;
+>  
+> +get_temp:
+>  	/* Valid bit is set, OK to read the temperature */
+>  	*temp = tsens_hw_to_mC(s, temp_idx);
+>  
+> 
 
-- start a separate patch series, addressed to the ACPI, PCI host driver
-  and ARM64 maintainers.
 
-- Move all the bits you need from arch/{arm64,ia64,x86} into
-  drivers/acpi/pci/pci_root.c, duplicating them with #if/#elif/#else
-  where they are too different, making the #else path the
-  default that can be shared with loongarch.
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-- Move the bits from pci_root_info/acpi_pci_root_info that are
-  always needed into struct pci_host_bridge, with an
-  #ifdef CONFIG_ACPI where appropriate.
-
-- Simplify as much as you can easily do.
-
-        Arnd
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
