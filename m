@@ -2,281 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62A3140EEB2
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 03:24:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CD8340EEB3
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 03:24:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242152AbhIQBZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 21:25:50 -0400
-Received: from mga18.intel.com ([134.134.136.126]:21783 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232222AbhIQBZp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 21:25:45 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10109"; a="209788660"
-X-IronPort-AV: E=Sophos;i="5.85,299,1624345200"; 
-   d="scan'208";a="209788660"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2021 18:24:24 -0700
-X-IronPort-AV: E=Sophos;i="5.85,299,1624345200"; 
-   d="scan'208";a="546002043"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.119])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2021 18:24:20 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Rik van Riel <riel@surriel.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Zi Yan <ziy@nvidia.com>, Wei Xu <weixugc@google.com>,
-        osalvador <osalvador@suse.de>,
-        Shakeel Butt <shakeelb@google.com>,
-        Linux MM <linux-mm@kvack.org>
-Subject: Re: [PATCH -V8 1/6] NUMA balancing: optimize page placement for
- memory tiering system
-References: <20210914013701.344956-1-ying.huang@intel.com>
-        <20210914013701.344956-2-ying.huang@intel.com>
-        <CAHbLzkpRWwtkhnXUZEUk3LgpHtmgNJRPGUjKzd9bhQU33Y4u2g@mail.gmail.com>
-        <8735q63947.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <CAHbLzko-hR74s5HKMx5SG6bwaoJvcHSLeKwihkpvhYj7+hX+Sw@mail.gmail.com>
-        <874kamwkvn.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <CAHbLzkqO4mNUGO=wpzPjU=rdc+=KyssqapmEDLAzVDKPGGfY0Q@mail.gmail.com>
-        <87sfy5uwdm.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <CAHbLzkp2EB2GrdinheoTtcFOZMfb3ZUgqUtv76De_Riy6Sv5mg@mail.gmail.com>
-Date:   Fri, 17 Sep 2021 09:24:18 +0800
-In-Reply-To: <CAHbLzkp2EB2GrdinheoTtcFOZMfb3ZUgqUtv76De_Riy6Sv5mg@mail.gmail.com>
-        (Yang Shi's message of "Thu, 16 Sep 2021 17:47:52 -0700")
-Message-ID: <877dfguh8d.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S242178AbhIQBZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 21:25:59 -0400
+Received: from mail-dm6nam12on2123.outbound.protection.outlook.com ([40.107.243.123]:17761
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232222AbhIQBZ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 21:25:58 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lj3igesvG087rVoCbXnTe4Dj7GG/x37RxGQceB4p1mK330Oca/9vR5YFFbMmE8JRHGbDifoQqKsFn/6YZLGOF3VPwF/XOwjsPyc/FjfNN84C6I0fZCx0Vp2i7uCOUNjHuvjyXHDl4D8NpoY1bCZspXycWdr3Vva6uSrYPq1t5+wkIqQS5qRAEYtzDBzurKCLicN0gF9gl8IBuznqVDZT7HL1yc+IiYmQlgRY9wi6z/7FZMrsorfLo7yQsqLnIZHSAYS/utDagbcA4EaVdIBEgp49SUrGHjo0zF24VHlwHy6guNdUlcvHFv+3SxoaEsVXaeV1G+ELoFf1PtZ4OO/ZiQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=pAylwhCLKQE6upkxOpTeuKjfnz6hUJrgci6PxFcqocw=;
+ b=UjJKi7xGpFpys011twiMmTtsGEpwAIpXUz3NCB1O6XBZhip1Dd8Xma+WWQhLTKkVlFXDb0c6Oz/rdKXLz3KiFknghdfRFl0Xa/zrJS+WCFuwSBjCTrgBW+A6I0gxH7SHsa+runLUJmwaZEypOnSRSuIVkrLPBXD2pJR+Og9bORo9iobF8tTumS4jEkJ6cpHfwKbn6WAk89moomwAWvLooCxoOSgVnkfYQLWEqKXVsmckdPF3aLYsLtf6zyfRFT5RmdrPx2AofUY5+LIRoA1LPwufAc0+p5h1kisEb4/a+Xs073GPV9ERrb3NYK+IHZMby6kgVpvsC8tPamNRDPA53w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=in-advantage.com; dmarc=pass action=none
+ header.from=in-advantage.com; dkim=pass header.d=in-advantage.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=inadvantage.onmicrosoft.com; s=selector2-inadvantage-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pAylwhCLKQE6upkxOpTeuKjfnz6hUJrgci6PxFcqocw=;
+ b=W7h/YV50uxsGofv+orzM49GnAYW3677PeqbCUrvR5A0Knrq479Rzg4qC8gLCtjJ7TXrJ3B9b7Yxm3L1Tkqa0oFeQiQ0z/p5fl9NIC0nuYbx8T6jrh43Tibeb6nn3I3mNIXwCI0xxkuKYWZrlvBV1TRMGnAJC9HnUs6eMiHy45tk=
+Authentication-Results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=in-advantage.com;
+Received: from MWHPR1001MB2351.namprd10.prod.outlook.com
+ (2603:10b6:301:35::37) by CO1PR10MB4516.namprd10.prod.outlook.com
+ (2603:10b6:303:6e::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Fri, 17 Sep
+ 2021 01:24:34 +0000
+Received: from MWHPR1001MB2351.namprd10.prod.outlook.com
+ ([fe80::bc3f:264a:a18d:cf93]) by MWHPR1001MB2351.namprd10.prod.outlook.com
+ ([fe80::bc3f:264a:a18d:cf93%7]) with mapi id 15.20.4523.017; Fri, 17 Sep 2021
+ 01:24:34 +0000
+Date:   Thu, 16 Sep 2021 18:24:29 -0700
+From:   Colin Foster <colin.foster@in-advantage.com>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 net] net: mscc: ocelot: remove buggy and useless write
+ to ANA_PFC_PFC_CFG
+Message-ID: <20210917012429.GA647191@euler>
+References: <20210916010938.517698-1-colin.foster@in-advantage.com>
+ <20210916114917.aielkefz5gg7flto@skbuf>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210916114917.aielkefz5gg7flto@skbuf>
+X-ClientProxiedBy: MWHPR17CA0087.namprd17.prod.outlook.com
+ (2603:10b6:300:c2::25) To MWHPR1001MB2351.namprd10.prod.outlook.com
+ (2603:10b6:301:35::37)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Received: from euler (67.185.175.147) by MWHPR17CA0087.namprd17.prod.outlook.com (2603:10b6:300:c2::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Fri, 17 Sep 2021 01:24:33 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6e439240-34a7-43df-53b6-08d97979e7e2
+X-MS-TrafficTypeDiagnostic: CO1PR10MB4516:
+X-Microsoft-Antispam-PRVS: <CO1PR10MB45160B52456C771CD034F5EEA4DD9@CO1PR10MB4516.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: uPgfvPxJTrt0tAtsc20uIRV1XOYS5t12udwX/g1nBUwIQdd1GIFTV1IQH46lNaywruwxNeR3vn0W/pGwIM7mb+qyV1/5Vwfs1EEVQNM6dFX7yT+ycY1l9FMIECZxfEepz3Bt9MY8tTE2thn/q+EqVu+nNL1LfDpdZ1ll9S9OEOHy2Hnz3Ny0L69xFdG7KPPJdGx1YHDokkSHViUeJa6iidr0HOUpLDEGuE3cTGPdrPaMWmudIEyOaGJ9K2f/DTr3asugQGujHTCERc+f3kL3y9JAqMTHsyRZJYJH0MOh5Al1otGLt7SbN+mzloiGbSGxRPgBxQDSZBKPTciXQYjcUtAdc9RqfiGbmm5C2nB1uAUU7f7zQtguxDp6w4epbbMluUeDUXFMvsxkV42JKrMSZUArtH1cNB9H0XWZo6ZI70dwbTnMVnvHuHh+zDtWkyw4neTJ3q00IVGt6Ak4XydEAuzsgfW0xGAVDjFVH0FLy8EodHbPbpVE0YU/0YaSVqgnZDTTB/5/Mdae9XoOC7014TDXqX8cSPgqN2Sm7DEfLV5c9zUGncp1kcv7KDfyNKZpVENigWE/csBOu+j78o5Sqsb8xlH3wUfYVDAzuEAOrUO6YhRnC6ECA79w1iuDfRQarR+8iWp4oZsbofdvUXXPfo+31IHLdMrHIIW3j5b7I1k1x0u/QNwmvPj1CwqAoB0oVryM/5yZHCVNUUzbLhBQ17ISodS77viRj7ZA52nhwUnKfsZDJwabghsCFleE5CpSCS9S4bFmQIFKbmTTZModBsqmoP/7AN8BBIOpPulNgEw=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2351.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(396003)(39830400003)(346002)(136003)(55016002)(52116002)(9686003)(9576002)(44832011)(33656002)(6666004)(6496006)(66946007)(478600001)(1076003)(66476007)(66556008)(86362001)(966005)(33716001)(6916009)(4326008)(38350700002)(186003)(5660300002)(26005)(38100700002)(956004)(83380400001)(2906002)(316002)(8676002)(54906003)(8936002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?nvUJELUpz/0WeWpPRBlCKi1DEeomUzz12yTzs9yn35yZGwAgx7z0RDO3bY4L?=
+ =?us-ascii?Q?FiQDyNbDgttaKpQWDPxEIlBw+0Pi+wsFBJ2vmg7YJ1Y6XDy0QXm9Dktk8Q3K?=
+ =?us-ascii?Q?tSfTXCYfJqvfuswLHftnJPFnPiaG4v+/N8mZd4GIfLKY9R6PAKFn7l6tMH7a?=
+ =?us-ascii?Q?DYU70QvQ6XdhGJD20wk125KU5Qe0bPOGJpjQp5gJQXWkMB0dy2F7R67FaclS?=
+ =?us-ascii?Q?fMbGUcytmFFJy6UJ3vcf+3sVCPjLH/9MgOTw/7VCDdJzuXFw0iZUZ6WySBDt?=
+ =?us-ascii?Q?xUouVbEMckoSZEPp/zu2gMhCMLMvmedIN+qNZ23t2WmP/iSsOgk6Ga7TqDVo?=
+ =?us-ascii?Q?cGhX9cSa/4nnNKV3EoVm3aDJZFAGy1hlCjuba4+LOfrSP/rpwG+9KlZvPmsL?=
+ =?us-ascii?Q?8ywxYNKQX+Ir9+IXEFyA15no86srCy4HahXwOTbzhx64qs0Q22+RH+OtVzk5?=
+ =?us-ascii?Q?Ygg0EhFIaF8iQtVE9XSXepl55aWzpRkHb36e3rrCozl0fydvzzgZxIwbOi1P?=
+ =?us-ascii?Q?5IOMu9NbbQi4zlvKLw5rWiNbdv+XNaNklbyk4OupG3+galOBQwy/qGljyu0N?=
+ =?us-ascii?Q?U9g1EHVu9FYCB7sM7WPRqeeAKuhO90+bZdRlkJLEPIWXkQFBbMDnw2z/T8CY?=
+ =?us-ascii?Q?itQ/i2ipS4c99Che7VMCSljS/D3dzpT1UEppFHe7GaLDbOgKymPQIaTG1cHX?=
+ =?us-ascii?Q?aQV7WQAH4wwioR/uQ75yPTR63c6PTe0IiICUQCHjkpZWbDrBdx+ailCD0nMw?=
+ =?us-ascii?Q?pzxwLIfqVhIpXNaP97GPXe9jsKRw8D+Fec24ESEiKJCiju4AlCVExVS3TrTg?=
+ =?us-ascii?Q?OTcDslSJdExSYh4cH5+WG03WIGxOlj8722R2xUYYB/gA7gylUMfaOP5OIVuL?=
+ =?us-ascii?Q?whKnsAi2DvLyi+DSL0YQePczC5M8WQoeBOwlx/Xp74eUyYOQoJpukfuL1YX+?=
+ =?us-ascii?Q?1jKsf5317v6UbVTqwqb+4vdnZ4Wn/eJtjGORkmBrh4Ite+8xektS1iPxWnrH?=
+ =?us-ascii?Q?CECpSsm1iTXLSHH6Fa26RwnATlQeUL/BDjc+Lu0GleEr5gSwT0CF7l1Z6RsN?=
+ =?us-ascii?Q?JthJL0MnaSqw9udlj/12QoYvEcJPZPAismErIdZnScvEw+Ns//iKIAJ74W83?=
+ =?us-ascii?Q?RbhvEi1EeQ/LPogvJ9KZ4HeC0Sqwpr822X5c8FRlXhkJZziFT64h1R9OkJIj?=
+ =?us-ascii?Q?opuUkKHzUk6hrImHL4bheAL3tu1vzGWuYTovPJceaOpqixt7d4g36zExHAn4?=
+ =?us-ascii?Q?AG5gdyLgTcQmaCdIJ7gjhRNzq8ucO5cUP/vyRWv2aRn0E/wBNVuWNyQzjThT?=
+ =?us-ascii?Q?wURGMRP24iRrtl9WtQoCI5ek?=
+X-OriginatorOrg: in-advantage.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6e439240-34a7-43df-53b6-08d97979e7e2
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2351.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Sep 2021 01:24:33.9827
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 48e842ca-fbd8-4633-a79d-0c955a7d3aae
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +Mjh/J8YEbxsYpOobLIgbC7CcuiMc+kwRVaKYIR3DXImmy0BiUCnQBh8jqu5ZUqs3imSf/T2T2rw/coMxKWdinRq9blZ7hpRqPuORy8gOI4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4516
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yang Shi <shy828301@gmail.com> writes:
+On Thu, Sep 16, 2021 at 11:49:18AM +0000, Vladimir Oltean wrote:
+> This will conflict with the other patch.... why didn't you send both as
+> part of a series? By not doing that, you are telling patchwork to
+> build-test them in parallel, which of course does not work:
+> https://patchwork.kernel.org/project/netdevbpf/patch/20210916012341.518512-1-colin.foster@in-advantage.com/
+> 
+> Also, why didn't you bump the version counter of the patch, and we're
+> still at v1 despite the earlier attempt?
 
-> On Wed, Sep 15, 2021 at 6:45 PM Huang, Ying <ying.huang@intel.com> wrote:
->>
->> Yang Shi <shy828301@gmail.com> writes:
->>
->> > On Tue, Sep 14, 2021 at 8:58 PM Huang, Ying <ying.huang@intel.com> wrote:
->> >>
->> >> Yang Shi <shy828301@gmail.com> writes:
->> >>
->> >> > On Tue, Sep 14, 2021 at 6:45 PM Huang, Ying <ying.huang@intel.com> wrote:
->> >> >>
->> >> >> Yang Shi <shy828301@gmail.com> writes:
->> >> >>
->> >> >> > On Mon, Sep 13, 2021 at 6:37 PM Huang Ying <ying.huang@intel.com> wrote:
->> >> >> >>
->> >> >> >> With the advent of various new memory types, some machines will have
->> >> >> >> multiple types of memory, e.g. DRAM and PMEM (persistent memory).  The
->> >> >> >> memory subsystem of these machines can be called memory tiering
->> >> >> >> system, because the performance of the different types of memory are
->> >> >> >> usually different.
->> >> >> >>
->> >> >> >> In such system, because of the memory accessing pattern changing etc,
->> >> >> >> some pages in the slow memory may become hot globally.  So in this
->> >> >> >> patch, the NUMA balancing mechanism is enhanced to optimize the page
->> >> >> >> placement among the different memory types according to hot/cold
->> >> >> >> dynamically.
->> >> >> >>
->> >> >> >> In a typical memory tiering system, there are CPUs, fast memory and
->> >> >> >> slow memory in each physical NUMA node.  The CPUs and the fast memory
->> >> >> >> will be put in one logical node (called fast memory node), while the
->> >> >> >> slow memory will be put in another (faked) logical node (called slow
->> >> >> >> memory node).  That is, the fast memory is regarded as local while the
->> >> >> >> slow memory is regarded as remote.  So it's possible for the recently
->> >> >> >> accessed pages in the slow memory node to be promoted to the fast
->> >> >> >> memory node via the existing NUMA balancing mechanism.
->> >> >> >>
->> >> >> >> The original NUMA balancing mechanism will stop to migrate pages if the free
->> >> >> >> memory of the target node will become below the high watermark.  This
->> >> >> >> is a reasonable policy if there's only one memory type.  But this
->> >> >> >> makes the original NUMA balancing mechanism almost not work to optimize page
->> >> >> >> placement among different memory types.  Details are as follows.
->> >> >> >>
->> >> >> >> It's the common cases that the working-set size of the workload is
->> >> >> >> larger than the size of the fast memory nodes.  Otherwise, it's
->> >> >> >> unnecessary to use the slow memory at all.  So in the common cases,
->> >> >> >> there are almost always no enough free pages in the fast memory nodes,
->> >> >> >> so that the globally hot pages in the slow memory node cannot be
->> >> >> >> promoted to the fast memory node.  To solve the issue, we have 2
->> >> >> >> choices as follows,
->> >> >> >>
->> >> >> >> a. Ignore the free pages watermark checking when promoting hot pages
->> >> >> >>    from the slow memory node to the fast memory node.  This will
->> >> >> >>    create some memory pressure in the fast memory node, thus trigger
->> >> >> >>    the memory reclaiming.  So that, the cold pages in the fast memory
->> >> >> >>    node will be demoted to the slow memory node.
->> >> >> >>
->> >> >> >> b. Make kswapd of the fast memory node to reclaim pages until the free
->> >> >> >>    pages are a little more (about 10MB) than the high watermark.  Then,
->> >> >> >>    if the free pages of the fast memory node reaches high watermark, and
->> >> >> >>    some hot pages need to be promoted, kswapd of the fast memory node
->> >> >> >>    will be waken up to demote some cold pages in the fast memory node to
->> >> >> >>    the slow memory node.  This will free some extra space in the fast
->> >> >> >>    memory node, so the hot pages in the slow memory node can be
->> >> >> >>    promoted to the fast memory node.
->> >> >> >>
->> >> >> >> The choice "a" will create the memory pressure in the fast memory
->> >> >> >> node.  If the memory pressure of the workload is high, the memory
->> >> >> >> pressure may become so high that the memory allocation latency of the
->> >> >> >> workload is influenced, e.g. the direct reclaiming may be triggered.
->> >> >> >>
->> >> >> >> The choice "b" works much better at this aspect.  If the memory
->> >> >> >> pressure of the workload is high, the hot pages promotion will stop
->> >> >> >> earlier because its allocation watermark is higher than that of the
->> >> >> >> normal memory allocation.  So in this patch, choice "b" is
->> >> >> >> implemented.
->> >> >> >>
->> >> >> >> In addition to the original page placement optimization among sockets,
->> >> >> >> the NUMA balancing mechanism is extended to be used to optimize page
->> >> >> >> placement according to hot/cold among different memory types.  So the
->> >> >> >> sysctl user space interface (numa_balancing) is extended in a backward
->> >> >> >> compatible way as follow, so that the users can enable/disable these
->> >> >> >> functionality individually.
->> >> >> >>
->> >> >> >> The sysctl is converted from a Boolean value to a bits field.  The
->> >> >> >> definition of the flags is,
->> >> >> >>
->> >> >> >> - 0x0: NUMA_BALANCING_DISABLED
->> >> >> >> - 0x1: NUMA_BALANCING_NORMAL
->> >> >> >> - 0x2: NUMA_BALANCING_MEMORY_TIERING
->> >> >> >
->> >> >> > Thanks for coming up with the patches. TBH the first question off the
->> >> >> > top of my head is all the complexity is really worthy for real life
->> >> >> > workload at the moment? And the interfaces (sysctl knob files exported
->> >> >> > to users) look complicated for the users. I don't know if the users
->> >> >> > know how to set an optimal value for their workloads.
->> >> >> >
->> >> >> > I don't disagree the NUMA balancing needs optimization and improvement
->> >> >> > for tiering memory, the question we need answer is how far we should
->> >> >> > go for now and what the interfaces should look like. Does it make
->> >> >> > sense to you?
->> >> >> >
->> >> >> > IMHO I'd prefer the most simple and straightforward approach at the
->> >> >> > moment. For example, we could just skip high water mark check for PMEM
->> >> >> > promotion.
->> >> >>
->> >> >> Hi, Yang,
->> >> >>
->> >> >> Thanks for comments.
->> >> >>
->> >> >> I understand your concerns about complexity.  I have tried to organize
->> >> >> the patchset so that the initial patch is as simple as possible and the
->> >> >> complexity is introduced step by step.  But it seems that your simplest
->> >> >> version is even simpler than my one :-)
->> >> >>
->> >> >> In this patch ([1/6]), I introduced 2 stuff.
->> >> >>
->> >> >> Firstly, a sysctl knob is provided to disable the NUMA balancing based
->> >> >> promotion.  Per my understanding, you suggest to remove this.  If so,
->> >> >> optimizing cross-socket access and promoting hot PMEM pages to DRAM must
->> >> >> be enabled/disabled together.  If a user wants to enable promoting the
->> >> >> hot PMEM pages to DRAM but disable optimizing cross-socket access
->> >> >> because they have already bound the CPU of the workload so that there's no
->> >> >> much cross-socket access, how can they do?
->> >> >
->> >> > I should make myself clearer. Here I mean the whole series, not this
->> >> > specific patch. I'm concerned that the interfaces (hint fault latency
->> >> > and ratelimit) are hard to understand and configure for users and
->> >> > whether we go too far at the moment or not. I'm dealing with the end
->> >> > users, I'd admit I'm not even sure how to configure the knobs to
->> >> > achieve optimal performance for different real life workloads.
->> >>
->> >> Sorry, I misunderstand your original idea.  I understand that the knob
->> >> isn't user-friendly.  But sometimes, we cannot avoid it completely :-(
->> >> In this patchset, I try to introduce the complexity and knobs one by
->> >> one, and show the performance benefit of each step for people to judge
->> >> whether the newly added complexity and knob can be complemented by the
->> >> performance increment.  If the benefit of some patches cannot complement
->> >> its complexity, I am OK to merge just part of the patchset firstly.
->> >
->> > Understood. But I really hesitate to go that far at this moment since
->> > the picture is not that clear yet IMHO. We have to support them (maybe
->> > forever) once we merge them.
->>
->> OK.  The [1-3/6] is the simplest implementation.  We can start with that
->> firstly?
->
-> Sure.
->
->>
->> > So I'd prefer to work on the simplest and most necessary stuff for
->> > now. Just like how we dealt with demotion.
->> >
->> >>
->> >> So how about be more specific?  For example, if you are general OK about
->> >> the complexity and knob introduced by [1-3/6], but have concerns about
->> >> [4/6], then we can discuss about that specifically?
->> >
->> > Yeah, we could.
->> >
->> >>
->> >> > For this specific patch I'm ok to a new promotion mode. There might be
->> >> > usecase that users just want to do promotion between tiered memory but
->> >> > not care about NUMA locality.
->> >>
->> >> Yes.
->> >>
->> >> >> Secondly, we add a promote watermark to the DRAM node so that we can
->> >> >> demote/promote pages between the high and promote watermark.  Per my
->> >> >> understanding, you suggest just to ignore the high watermark checking
->> >> >> for promoting.  The problem is that this may make the free pages of the
->> >> >> DRAM node too few.  If many pages are promoted in short time, the free
->> >> >> pages will be kept near the min watermark for a while, so that the page
->> >> >> allocation from the application will trigger direct reclaiming.  We have
->> >> >> observed page allocation failure in a test before with a similar policy.
->> >> >
->> >> > The question is, applicable to the hint fault latency and ratelimit
->> >> > too, we already have some NUMA balancing knobs to control scan period
->> >> > and scan size and watermark knobs to tune how aggressively kswapd
->> >> > works, can they do the same jobs instead of introducing any new knobs?
->> >>
->> >> In this specific patch, we don't introduce a new knob for the page
->> >> demotion.  For other knobs, how about discuss them in the patch that
->> >> introduce them and one by one?
->> >
->> > That comment is applicable to the watermark hack in this patch too.
->> > Per your above description, the problem is the significant amount of
->> > promotion in short period of time may deplete free memory. So I'm
->> > wondering if the amount of promotion could be ratelimited by NUMA
->> > balancing scan period and scan size. I understand this may have some
->> > hot pages stay on PMEM for a longer time, but does it really matter?
->> > In addition, the gap between low <--> min <--> high could be adjusted
->> > by watermark_scale_factor, so kswapd could work more aggressively to
->> > keep free memory.
->>
->> We can control the NUMA balancing scan speed, but we cannot control the
->> speed of the hint page faults.  For example, we scanned a large portion
->
-> Could adjusting scan size help out?
+I wasn't sure if changing the names of the patch and the intent is what 
+would constitute a new "patch series" so then restart the counter for 
+the counters or not. I had figured "two new patches, two new counters"
+which I understand now was incorrect.
 
-I don't think adjusting scan size helps here.  "scan size" just changes
-how many pages are scanned for one task_work(), it even doesn't change
-the scan speed.  How can it help?
+In this particular case, should I have stuck with my first submission
+title:
+[PATCH v2 net] bug fix when writing MAC speed
+and submitted the two patches? 
 
->> of PMEM without many hint page faults because the pages are really cold,
->> but suddenly a large amount of cold pages become hot, so they will be
->> promoted to DRAM.  This will create heavy memory pressure on DRAM node,
->> make it hard for the normal page allocation from the applications.
->>
->> And, for some workloads, we need to promote the hot pages to DRAM
->> quickly, otherwise, the pages will become cold.  We should make it
->> possible to support these users too.  Do you agree?
->
-> I agree there may be such workloads. But do we have to achieve very
-> good support for them right now? We don't even know how common such
-> workload is.
+I assume it would only cause headaches if I incremented the counter and
+changed the name to something like
+[PATCH v2 net] remove unnecessary register writes
+or something simliar? Although your example below suggests I should
+maybe submit the next set as
+[PATCH v3 net] ocelot phylink fixes
 
-The performance of PMEM is much lower than that of DRAM now.  If some
-pages in PMEM becomes hot, the quicker we move these hot PMEM pages to
-DRAM, the better the performance.  So I think this is a common problem.
+> 
+> git format-patch -2 --cover-letter --subject-prefix="PATCH v3 net" -o /opt/patches/linux/ocelot-phylink-fixes/v3/
+> ./scripts/get_maintainer.pl /opt/patches/linux/ocelot-phylink-fixes/v3/*.patch
+> ./scripts/checkpatch.pl --strict /opt/patches/linux/ocelot-phylink-fixes/v3/*.patch
+> # Go through patches, write change log compared to v2 using vimdiff, meld, git range-diff, whatever
+> # Write cover letter summarizing what changes and why. If fixing bugs explain the impact.
+> git send-email \
+> 	--to='netdev@vger.kernel.org' \
+> 	--to='linux-kernel@vger.kernel.org' \
+> 	--cc='Vladimir Oltean <vladimir.oltean@nxp.com>' \
+> 	--cc='Claudiu Manoil <claudiu.manoil@nxp.com>' \
+> 	--cc='Alexandre Belloni <alexandre.belloni@bootlin.com>' \
+> 	--cc='UNGLinuxDriver@microchip.com' \
+> 	--cc='"David S. Miller" <davem@davemloft.net>' \
+> 	--cc='Jakub Kicinski <kuba@kernel.org>' \
+> 	/opt/patches/linux/ocelot-phylink-fixes/v3/*.patch
 
-And it's not too hard to implement.  This is a small patch anyway.
+I've been using --to-cmd and --cc-cmd with get_maintainer.pl. If this is
+ill-advised, I'll stop. I noticed it seemed to determine the list on a
+per-patch-file basis instead of generating one single list.
 
-Best Regards,
-Huang, Ying
+> 
+> Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+> 
+> Please keep this tag but resend a new version. You can download the patch with the review tags automatically using:
+> git b4 20210916010938.517698-1-colin.foster@in-advantage.com
+> git b4 20210916012341.518512-1-colin.foster@in-advantage.com
+> 
+> where "git b4" is an alias configured like this in ~/.gitconfig:
+> 
+> [b4]
+> 	midmask = https://lore.kernel.org/r/%s
+> [alias]
+> 	b4 = "!f() { b4 am -t -o - $@ | git am -3; }; f"
+
+Thank you for all this. I understand you have better things to do than
+to hold my hand through this process, so I greatly appreciate your help.
