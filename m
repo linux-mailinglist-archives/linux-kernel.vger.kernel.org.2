@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E27A4101C0
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 01:31:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E35F64101BF
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 01:31:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345180AbhIQXdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 19:33:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46324 "EHLO
+        id S1345042AbhIQXdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 19:33:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344931AbhIQXcg (ORCPT
+        with ESMTP id S245368AbhIQXch (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 19:32:36 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A61CC0613C1
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 16:31:13 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 196-20020a1c04cd000000b002fa489ffe1fso11110639wme.4
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 16:31:13 -0700 (PDT)
+        Fri, 17 Sep 2021 19:32:37 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D406C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 16:31:14 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id i23so17658623wrb.2
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 16:31:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=1Zy5mhgewa9a0uZy3rtygxAsubHg3zkYkDDVaK9v8Os=;
-        b=R64ZQv9uGLCMOi0A6CscyRJVu0WSCaTMEeGIocawZYeWiGpS19MhViuks0mbQxoIOV
-         NW6bGNSsWHeCdi/u4+/Hwhd6b3ii5wzS32NbF+TC7dZArwg5pu/BeDRqL+D93g4Xa8Aj
-         1XKhxRjLR3HQwEZNozDJa0IlNKIM/I84/C1ciXiW5g0wc6JwWIPYd8JQ55ObvslfppnY
-         MTdxkHZ8TP/TzqsX0x+d9oZjq9F1ZCaebEE8x0f3x8VdQcwQ1xCAiJe2zItu6pMPQRuA
-         vdHQBC7BOLPx2Xg6n1AA2UyVxaRfcoougtzOPgcBJ3DYrjAL+MbUWeeENaGqGfYL4J42
-         +IWA==
+        bh=YVr0STWCT0vadAEVLvK4H+2tlmiDZVUwHL67IoyY9r8=;
+        b=UwBBKehRXoIdIhAznDWq1YgzBlKTXIKjVdkNas6jDWfhdvm0jZZVLk5aBtRt7rZr2k
+         EKJ2A12wInuUeoVBBMUI76lqMM92MASbV8JX023hDIFW03EWVQ2x1PEvPRAntd+y0tKW
+         gxAW+kevC00k5jchmMzI05b9hRozo+DhZvsBuRcvYg0UejJMioK9oZKGIPIQwYuHsxCz
+         A6W9mfc6GeTJyjietMHl0zwbSYT6ICRCiq8LH5vKhApj4avRkIqYityJJmZjMNBMm7MQ
+         Yhzr4tDR1bT0TwV69Zju5m74R0WKZ5GTjY+iorJc3q2EL3HpdueFCL1KjJOCFYB02GKl
+         fuWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=1Zy5mhgewa9a0uZy3rtygxAsubHg3zkYkDDVaK9v8Os=;
-        b=rABo5CKhfnVeRwPiFbFySQUM1m1PhVgTlCsyX/DMO+AZ0f1g9HgLvnhWXQvudFmqNI
-         IGLYFazO2r107OCUvQtXLhp+t6JkaFyy2mLTL0M+TtmZ3WMwqcGaGKkxp6joJLNDA4lf
-         uawJanR/NJtN9i8GXUqNTvnS92aPYmXSGwwvfEyG3UF0mpROdXIonppIfGrfRE6OupzW
-         gWYO1fN0isilbkcbuJxCzW3x0SqP6WvDBqxpoppf+2/hrOunkvlm+0S/xBd0aPU1go5G
-         XEV8Pb6s4SXdDF4SFH1vKk53g/1U8HHaLfcbM5KUbCMePq68so+xbxCUzChNNDkP0t0V
-         4cmA==
-X-Gm-Message-State: AOAM5313sOYTmZ2KV6jQZYoVFDf0yVnunk7L41vOVKwFOAQJHVf9n2kA
-        5JOmiv5AgMIXATgunMVUqOYkUqtUV6z1iQ==
-X-Google-Smtp-Source: ABdhPJy31Aa2OgsxgiA6FCUHPiD1Yl0neyOaJgFELRLNYxPdtgQ1G6CaajddU/+allDMHuPLgBlIsA==
-X-Received: by 2002:a05:600c:a4b:: with SMTP id c11mr12894409wmq.97.1631921472283;
-        Fri, 17 Sep 2021 16:31:12 -0700 (PDT)
+        bh=YVr0STWCT0vadAEVLvK4H+2tlmiDZVUwHL67IoyY9r8=;
+        b=ckwq1M0xjW/M+aoQjIsuYz9ZZjrTLC8C+v24+lmkYs6ITFbrCM1QkjwMNzMAEJjPbd
+         S9jKktPwtcSgzfEKWhlP0NkidXnK4vW4GzpOJUfeBKpFqy+X5PW4r9B0avYExWLO21x9
+         CV7AC3AVsHdn2XgZDbPV+YMCjLBRlwiW+Ep1xZxRJf+dWkOEcF1MD3uDWIV0StcJZwtJ
+         2z+KzqHmb8wCxbg3zwkb36I71JqljgskMYEjDhLJ8TTt0sSyhe2VbC8lzuPs77I9J+Ya
+         C6FZP++KggUlzDHwYCc84FivpwQguYIJWPgt5FvGq7neblOvaQSmp6IwDwiywIANeHlX
+         1XqQ==
+X-Gm-Message-State: AOAM5322TK/XySrOL4GNFIAYlSUDQHGOY+f17qzTWMUtm8R1hws/zQJY
+        5piBiM4nFV/giWXsPqNa6xQ=
+X-Google-Smtp-Source: ABdhPJwD1eLXjR5TRvW7s7+q2x47kcBu+xG7oEGfcnMIfZxBjlLj2ORKg4xEIKPO6eZYXlZnGMqeKw==
+X-Received: by 2002:adf:ebcd:: with SMTP id v13mr14864823wrn.400.1631921473151;
+        Fri, 17 Sep 2021 16:31:13 -0700 (PDT)
 Received: from localhost.localdomain ([2a02:8108:96c0:3b88::ae40])
-        by smtp.gmail.com with ESMTPSA id w9sm7523148wmc.19.2021.09.17.16.31.11
+        by smtp.gmail.com with ESMTPSA id w9sm7523148wmc.19.2021.09.17.16.31.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 16:31:11 -0700 (PDT)
+        Fri, 17 Sep 2021 16:31:12 -0700 (PDT)
 From:   Michael Straube <straube.linux@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
         fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org,
         Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH 10/12] staging: r8188eu: remove dead code from odm.c
-Date:   Sat, 18 Sep 2021 01:30:46 +0200
-Message-Id: <20210917233048.31677-11-straube.linux@gmail.com>
+Subject: [PATCH 11/12] staging: r8188eu: remove ODM_IC_11N_SERIES, ODM_IC_11AC_SERIES macros.
+Date:   Sat, 18 Sep 2021 01:30:47 +0200
+Message-Id: <20210917233048.31677-12-straube.linux@gmail.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210917233048.31677-1-straube.linux@gmail.com>
 References: <20210917233048.31677-1-straube.linux@gmail.com>
@@ -66,167 +66,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(pDM_Odm->SupportICType & ODM_IC_11N_SERIES) is true in this driver.
-There is an if statement that checks this. Remove it and its never
-executed else arm.
+The macros ODM_IC_11N_SERIES and ODM_IC_11AC_SERIES are unused now.
+Remove them.
 
 Signed-off-by: Michael Straube <straube.linux@gmail.com>
 ---
- drivers/staging/r8188eu/hal/odm.c | 140 ++++++++++++++----------------
- 1 file changed, 63 insertions(+), 77 deletions(-)
+ drivers/staging/r8188eu/include/odm.h | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/drivers/staging/r8188eu/hal/odm.c b/drivers/staging/r8188eu/hal/odm.c
-index 23ef08fc64cd..1a4c2e93f732 100644
---- a/drivers/staging/r8188eu/hal/odm.c
-+++ b/drivers/staging/r8188eu/hal/odm.c
-@@ -739,84 +739,70 @@ void odm_FalseAlarmCounterStatistics(struct odm_dm_struct *pDM_Odm)
- 	if (!(pDM_Odm->SupportAbility & ODM_BB_FA_CNT))
- 		return;
+diff --git a/drivers/staging/r8188eu/include/odm.h b/drivers/staging/r8188eu/include/odm.h
+index 265583a43494..0d85e4fff6be 100644
+--- a/drivers/staging/r8188eu/include/odm.h
++++ b/drivers/staging/r8188eu/include/odm.h
+@@ -460,11 +460,6 @@ enum odm_ic_type {
+ 	ODM_RTL8821	=	BIT(6),
+ };
  
--	if (pDM_Odm->SupportICType & ODM_IC_11N_SERIES) {
--		/* hold ofdm counter */
--		ODM_SetBBReg(pDM_Odm, ODM_REG_OFDM_FA_HOLDC_11N, BIT(31), 1); /* hold page C counter */
--		ODM_SetBBReg(pDM_Odm, ODM_REG_OFDM_FA_RSTD_11N, BIT(31), 1); /* hold page D counter */
+-#define ODM_IC_11N_SERIES						\
+-	(ODM_RTL8192S | ODM_RTL8192C | ODM_RTL8192D |			\
+-	 ODM_RTL8723A | ODM_RTL8188E)
+-#define ODM_IC_11AC_SERIES		(ODM_RTL8812)
 -
--		ret_value = ODM_GetBBReg(pDM_Odm, ODM_REG_OFDM_FA_TYPE1_11N, bMaskDWord);
--		FalseAlmCnt->Cnt_Fast_Fsync = (ret_value & 0xffff);
--		FalseAlmCnt->Cnt_SB_Search_fail = ((ret_value & 0xffff0000) >> 16);
--		ret_value = ODM_GetBBReg(pDM_Odm, ODM_REG_OFDM_FA_TYPE2_11N, bMaskDWord);
--		FalseAlmCnt->Cnt_OFDM_CCA = (ret_value & 0xffff);
--		FalseAlmCnt->Cnt_Parity_Fail = ((ret_value & 0xffff0000) >> 16);
--		ret_value = ODM_GetBBReg(pDM_Odm, ODM_REG_OFDM_FA_TYPE3_11N, bMaskDWord);
--		FalseAlmCnt->Cnt_Rate_Illegal = (ret_value & 0xffff);
--		FalseAlmCnt->Cnt_Crc8_fail = ((ret_value & 0xffff0000) >> 16);
--		ret_value = ODM_GetBBReg(pDM_Odm, ODM_REG_OFDM_FA_TYPE4_11N, bMaskDWord);
--		FalseAlmCnt->Cnt_Mcs_fail = (ret_value & 0xffff);
--
--		FalseAlmCnt->Cnt_Ofdm_fail = FalseAlmCnt->Cnt_Parity_Fail + FalseAlmCnt->Cnt_Rate_Illegal +
--					     FalseAlmCnt->Cnt_Crc8_fail + FalseAlmCnt->Cnt_Mcs_fail +
--					     FalseAlmCnt->Cnt_Fast_Fsync + FalseAlmCnt->Cnt_SB_Search_fail;
--
--		if (pDM_Odm->SupportICType == ODM_RTL8188E) {
--			ret_value = ODM_GetBBReg(pDM_Odm, ODM_REG_SC_CNT_11N, bMaskDWord);
--			FalseAlmCnt->Cnt_BW_LSC = (ret_value & 0xffff);
--			FalseAlmCnt->Cnt_BW_USC = ((ret_value & 0xffff0000) >> 16);
--		}
-+	/* hold ofdm counter */
-+	ODM_SetBBReg(pDM_Odm, ODM_REG_OFDM_FA_HOLDC_11N, BIT(31), 1); /* hold page C counter */
-+	ODM_SetBBReg(pDM_Odm, ODM_REG_OFDM_FA_RSTD_11N, BIT(31), 1); /* hold page D counter */
-+
-+	ret_value = ODM_GetBBReg(pDM_Odm, ODM_REG_OFDM_FA_TYPE1_11N, bMaskDWord);
-+	FalseAlmCnt->Cnt_Fast_Fsync = (ret_value & 0xffff);
-+	FalseAlmCnt->Cnt_SB_Search_fail = ((ret_value & 0xffff0000) >> 16);
-+	ret_value = ODM_GetBBReg(pDM_Odm, ODM_REG_OFDM_FA_TYPE2_11N, bMaskDWord);
-+	FalseAlmCnt->Cnt_OFDM_CCA = (ret_value & 0xffff);
-+	FalseAlmCnt->Cnt_Parity_Fail = ((ret_value & 0xffff0000) >> 16);
-+	ret_value = ODM_GetBBReg(pDM_Odm, ODM_REG_OFDM_FA_TYPE3_11N, bMaskDWord);
-+	FalseAlmCnt->Cnt_Rate_Illegal = (ret_value & 0xffff);
-+	FalseAlmCnt->Cnt_Crc8_fail = ((ret_value & 0xffff0000) >> 16);
-+	ret_value = ODM_GetBBReg(pDM_Odm, ODM_REG_OFDM_FA_TYPE4_11N, bMaskDWord);
-+	FalseAlmCnt->Cnt_Mcs_fail = (ret_value & 0xffff);
-+
-+	FalseAlmCnt->Cnt_Ofdm_fail = FalseAlmCnt->Cnt_Parity_Fail + FalseAlmCnt->Cnt_Rate_Illegal +
-+				     FalseAlmCnt->Cnt_Crc8_fail + FalseAlmCnt->Cnt_Mcs_fail +
-+				     FalseAlmCnt->Cnt_Fast_Fsync + FalseAlmCnt->Cnt_SB_Search_fail;
- 
--		/* hold cck counter */
--		ODM_SetBBReg(pDM_Odm, ODM_REG_CCK_FA_RST_11N, BIT(12), 1);
--		ODM_SetBBReg(pDM_Odm, ODM_REG_CCK_FA_RST_11N, BIT(14), 1);
--
--		ret_value = ODM_GetBBReg(pDM_Odm, ODM_REG_CCK_FA_LSB_11N, bMaskByte0);
--		FalseAlmCnt->Cnt_Cck_fail = ret_value;
--		ret_value = ODM_GetBBReg(pDM_Odm, ODM_REG_CCK_FA_MSB_11N, bMaskByte3);
--		FalseAlmCnt->Cnt_Cck_fail +=  (ret_value & 0xff) << 8;
--
--		ret_value = ODM_GetBBReg(pDM_Odm, ODM_REG_CCK_CCA_CNT_11N, bMaskDWord);
--		FalseAlmCnt->Cnt_CCK_CCA = ((ret_value & 0xFF) << 8) | ((ret_value & 0xFF00) >> 8);
--
--		FalseAlmCnt->Cnt_all = (FalseAlmCnt->Cnt_Fast_Fsync +
--					FalseAlmCnt->Cnt_SB_Search_fail +
--					FalseAlmCnt->Cnt_Parity_Fail +
--					FalseAlmCnt->Cnt_Rate_Illegal +
--					FalseAlmCnt->Cnt_Crc8_fail +
--					FalseAlmCnt->Cnt_Mcs_fail +
--					FalseAlmCnt->Cnt_Cck_fail);
--
--		FalseAlmCnt->Cnt_CCA_all = FalseAlmCnt->Cnt_OFDM_CCA + FalseAlmCnt->Cnt_CCK_CCA;
--
--		if (pDM_Odm->SupportICType >= ODM_RTL8723A) {
--			/* reset false alarm counter registers */
--			ODM_SetBBReg(pDM_Odm, ODM_REG_OFDM_FA_RSTC_11N, BIT(31), 1);
--			ODM_SetBBReg(pDM_Odm, ODM_REG_OFDM_FA_RSTC_11N, BIT(31), 0);
--			ODM_SetBBReg(pDM_Odm, ODM_REG_OFDM_FA_RSTD_11N, BIT(27), 1);
--			ODM_SetBBReg(pDM_Odm, ODM_REG_OFDM_FA_RSTD_11N, BIT(27), 0);
--			/* update ofdm counter */
--			ODM_SetBBReg(pDM_Odm, ODM_REG_OFDM_FA_HOLDC_11N, BIT(31), 0); /* update page C counter */
--			ODM_SetBBReg(pDM_Odm, ODM_REG_OFDM_FA_RSTD_11N, BIT(31), 0); /* update page D counter */
--
--			/* reset CCK CCA counter */
--			ODM_SetBBReg(pDM_Odm, ODM_REG_CCK_FA_RST_11N, BIT(13) | BIT(12), 0);
--			ODM_SetBBReg(pDM_Odm, ODM_REG_CCK_FA_RST_11N, BIT(13) | BIT(12), 2);
--			/* reset CCK FA counter */
--			ODM_SetBBReg(pDM_Odm, ODM_REG_CCK_FA_RST_11N, BIT(15) | BIT(14), 0);
--			ODM_SetBBReg(pDM_Odm, ODM_REG_CCK_FA_RST_11N, BIT(15) | BIT(14), 2);
--		}
--	} else { /* FOR ODM_IC_11AC_SERIES */
--		/* read OFDM FA counter */
--		FalseAlmCnt->Cnt_Ofdm_fail = ODM_GetBBReg(pDM_Odm, ODM_REG_OFDM_FA_11AC, bMaskLWord);
--		FalseAlmCnt->Cnt_Cck_fail = ODM_GetBBReg(pDM_Odm, ODM_REG_CCK_FA_11AC, bMaskLWord);
--		FalseAlmCnt->Cnt_all = FalseAlmCnt->Cnt_Ofdm_fail + FalseAlmCnt->Cnt_Cck_fail;
--
--		/*  reset OFDM FA coutner */
--		ODM_SetBBReg(pDM_Odm, ODM_REG_OFDM_FA_RST_11AC, BIT(17), 1);
--		ODM_SetBBReg(pDM_Odm, ODM_REG_OFDM_FA_RST_11AC, BIT(17), 0);
--		/*  reset CCK FA counter */
--		ODM_SetBBReg(pDM_Odm, ODM_REG_CCK_FA_RST_11AC, BIT(15), 0);
--		ODM_SetBBReg(pDM_Odm, ODM_REG_CCK_FA_RST_11AC, BIT(15), 1);
-+	if (pDM_Odm->SupportICType == ODM_RTL8188E) {
-+		ret_value = ODM_GetBBReg(pDM_Odm, ODM_REG_SC_CNT_11N, bMaskDWord);
-+		FalseAlmCnt->Cnt_BW_LSC = (ret_value & 0xffff);
-+		FalseAlmCnt->Cnt_BW_USC = ((ret_value & 0xffff0000) >> 16);
-+	}
-+
-+	/* hold cck counter */
-+	ODM_SetBBReg(pDM_Odm, ODM_REG_CCK_FA_RST_11N, BIT(12), 1);
-+	ODM_SetBBReg(pDM_Odm, ODM_REG_CCK_FA_RST_11N, BIT(14), 1);
-+
-+	ret_value = ODM_GetBBReg(pDM_Odm, ODM_REG_CCK_FA_LSB_11N, bMaskByte0);
-+	FalseAlmCnt->Cnt_Cck_fail = ret_value;
-+	ret_value = ODM_GetBBReg(pDM_Odm, ODM_REG_CCK_FA_MSB_11N, bMaskByte3);
-+	FalseAlmCnt->Cnt_Cck_fail +=  (ret_value & 0xff) << 8;
-+
-+	ret_value = ODM_GetBBReg(pDM_Odm, ODM_REG_CCK_CCA_CNT_11N, bMaskDWord);
-+	FalseAlmCnt->Cnt_CCK_CCA = ((ret_value & 0xFF) << 8) | ((ret_value & 0xFF00) >> 8);
-+
-+	FalseAlmCnt->Cnt_all = (FalseAlmCnt->Cnt_Fast_Fsync +
-+				FalseAlmCnt->Cnt_SB_Search_fail +
-+				FalseAlmCnt->Cnt_Parity_Fail +
-+				FalseAlmCnt->Cnt_Rate_Illegal +
-+				FalseAlmCnt->Cnt_Crc8_fail +
-+				FalseAlmCnt->Cnt_Mcs_fail +
-+				FalseAlmCnt->Cnt_Cck_fail);
-+
-+	FalseAlmCnt->Cnt_CCA_all = FalseAlmCnt->Cnt_OFDM_CCA + FalseAlmCnt->Cnt_CCK_CCA;
-+
-+	if (pDM_Odm->SupportICType >= ODM_RTL8723A) {
-+		/* reset false alarm counter registers */
-+		ODM_SetBBReg(pDM_Odm, ODM_REG_OFDM_FA_RSTC_11N, BIT(31), 1);
-+		ODM_SetBBReg(pDM_Odm, ODM_REG_OFDM_FA_RSTC_11N, BIT(31), 0);
-+		ODM_SetBBReg(pDM_Odm, ODM_REG_OFDM_FA_RSTD_11N, BIT(27), 1);
-+		ODM_SetBBReg(pDM_Odm, ODM_REG_OFDM_FA_RSTD_11N, BIT(27), 0);
-+		/* update ofdm counter */
-+		ODM_SetBBReg(pDM_Odm, ODM_REG_OFDM_FA_HOLDC_11N, BIT(31), 0); /* update page C counter */
-+		ODM_SetBBReg(pDM_Odm, ODM_REG_OFDM_FA_RSTD_11N, BIT(31), 0); /* update page D counter */
-+
-+		/* reset CCK CCA counter */
-+		ODM_SetBBReg(pDM_Odm, ODM_REG_CCK_FA_RST_11N, BIT(13) | BIT(12), 0);
-+		ODM_SetBBReg(pDM_Odm, ODM_REG_CCK_FA_RST_11N, BIT(13) | BIT(12), 2);
-+		/* reset CCK FA counter */
-+		ODM_SetBBReg(pDM_Odm, ODM_REG_CCK_FA_RST_11N, BIT(15) | BIT(14), 0);
-+		ODM_SetBBReg(pDM_Odm, ODM_REG_CCK_FA_RST_11N, BIT(15) | BIT(14), 2);
- 	}
- }
- 
+ /* ODM_CMNINFO_CUT_VER */
+ enum odm_cut_version {
+ 	ODM_CUT_A	=	1,
 -- 
 2.33.0
 
