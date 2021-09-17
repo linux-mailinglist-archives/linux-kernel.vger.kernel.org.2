@@ -2,148 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38E1840F8FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 15:18:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C83F340F8FE
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 15:18:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241249AbhIQNTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 09:19:07 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:54710 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241351AbhIQNS5 (ORCPT
+        id S239609AbhIQNTt convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 17 Sep 2021 09:19:49 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:38915 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235247AbhIQNTp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 09:18:57 -0400
-Date:   Fri, 17 Sep 2021 13:17:33 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1631884654;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9GpPcpO3H/f2tk60mVuVgdD0CNEjJXdSctWiUki9ggU=;
-        b=wXYCpWx/PxXw9p0xp1UzqbaC07x/s8EuqifKncN6bobx7dx5yvKnXS90TawWryl7a1+W5v
-        TOGeXh099q0dzJttg3cQLX3xFItSPtUBr7o2FHHSyok0l8lH392v37NPE15q99RFV6/UkV
-        gm0QCHti0yrAlunpFwh63Qisdr4rcfHOYDbCsfijeQAmXPNtw3wqAVxlwvtffV3jXpVn1I
-        SJKoK2rmcuX3y+K/l1EufAcb3ecdD/xJt3Ln478DIhJoWukU4mnNqTXtR/xa3XCCrF56od
-        AL6FjC+GLdlKfPqM3tB7O4gWm1KlPKdxM3znMtoLUy6/FIWZtpMdNwkMe9G8uA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1631884654;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9GpPcpO3H/f2tk60mVuVgdD0CNEjJXdSctWiUki9ggU=;
-        b=C2ttMD32zh8XPg+0dkvmT/rI5GPyNn5gFmwct2GJp/ZYLAcmqXZoqnoWp+0wovOWBp17J1
-        ar2airZJ/IpdZIBw==
-From:   "tip-bot2 for Sebastian Andrzej Siewior" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] kthread: Move prio/affinite change into the newly
- created thread
-Cc:     Mike Galbraith <efault@gmx.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <a23a826af7c108ea5651e73b8fbae5e653f16e86.camel@gmx.de>
-References: <a23a826af7c108ea5651e73b8fbae5e653f16e86.camel@gmx.de>
-MIME-Version: 1.0
-Message-ID: <163188465388.25758.13569856472159323193.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        Fri, 17 Sep 2021 09:19:45 -0400
+Received: from smtpclient.apple (p5b3d2185.dip0.t-ipconnect.de [91.61.33.133])
+        by mail.holtmann.org (Postfix) with ESMTPSA id C98DECED2D;
+        Fri, 17 Sep 2021 15:18:19 +0200 (CEST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
+Subject: Re: [PATCH] Bluetooth: btusb: Lower passive lescan interval on
+ Marvell 88W8897
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <3e5b7e27-e643-ae9b-db40-d885ca441385@v0yd.nl>
+Date:   Fri, 17 Sep 2021 15:18:19 +0200
+Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        linux-wireless@vger.kernel.org,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        =?utf-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <9D2F9512-0045-4464-AB1B-A1AA04E21F3D@holtmann.org>
+References: <20210917122718.86776-1-verdre@v0yd.nl>
+ <B9F09991-0B67-4848-86DE-C13BF3850D15@holtmann.org>
+ <3e5b7e27-e643-ae9b-db40-d885ca441385@v0yd.nl>
+To:     =?utf-8?Q?Jonas_Dre=C3=9Fler?= <verdre@v0yd.nl>
+X-Mailer: Apple Mail (2.3654.120.0.1.13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/core branch of tip:
+Hi Jonas,
 
-Commit-ID:     2b214a488b2c83d63c99c71d054273c1c2c07027
-Gitweb:        https://git.kernel.org/tip/2b214a488b2c83d63c99c71d054273c1c2c07027
-Author:        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-AuthorDate:    Tue, 10 Nov 2020 12:38:47 +01:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Fri, 17 Sep 2021 15:08:18 +02:00
+>>> The Marvell 88W8897 combined wifi and bluetooth card (pcie+usb version)
+>>> is used in a lot of Microsoft Surface devices, and all those devices
+>>> suffer from very low 2.4GHz wifi connection speeds while bluetooth is
+>>> enabled. The reason for that is that the default passive scanning
+>>> interval for Bluetooth Low Energy devices is quite high on Linux
+>>> (interval of 60 msec and scan window of 30 msec, see le_scan_interval
+>>> and le_scan_window in hci_core.c), and the Marvell chip is known for its
+>>> bad bt+wifi coexisting performance.
+>>> 
+>>> So decrease that passive scan interval and make the scan window shorter
+>>> on this particular device to allow for spending more time transmitting
+>>> wifi signals: The new scan interval is 250 msec (0x190 * 0.625 msec) and
+>>> the new scan window is 6.25 msec (0xa * 0.625 msec).
+>>> 
+>>> This change has a very large impact on the 2.4GHz wifi speeds and gets
+>>> it up to performance comparable with the Windows driver, which seems to
+>>> apply a similar quirk.
+>>> 
+>>> The scan interval and scan window length were tested and found to work
+>>> very well with a bunch of Bluetooth Low Energy devices, including the
+>>> Surface Pen, a Bluetooth Speaker and two modern Bluetooth headphones.
+>>> All devices were discovered immediately after turning them on. Even
+>>> lower values were also tested, but these introduced longer delays until
+>>> devices get discovered.
+>>> 
+>>> Signed-off-by: Jonas Dreßler <verdre@v0yd.nl>
+>>> ---
+>>> drivers/bluetooth/btusb.c | 15 +++++++++++++++
+>>> 1 file changed, 15 insertions(+)
+>>> 
+>>> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+>>> index 60d2fce59a71..05b11179c839 100644
+>>> --- a/drivers/bluetooth/btusb.c
+>>> +++ b/drivers/bluetooth/btusb.c
+>>> @@ -59,6 +59,7 @@ static struct usb_driver btusb_driver;
+>>> #define BTUSB_WIDEBAND_SPEECH	0x400000
+>>> #define BTUSB_VALID_LE_STATES   0x800000
+>>> #define BTUSB_QCA_WCN6855	0x1000000
+>>> +#define BTUSB_LOWER_LESCAN_INTERVAL	0x2000000
+>>> #define BTUSB_INTEL_BROKEN_INITIAL_NCMD 0x4000000
+>>> 
+>>> static const struct usb_device_id btusb_table[] = {
+>>> @@ -356,6 +357,7 @@ static const struct usb_device_id blacklist_table[] = {
+>>> 	{ USB_DEVICE(0x1286, 0x2044), .driver_info = BTUSB_MARVELL },
+>>> 	{ USB_DEVICE(0x1286, 0x2046), .driver_info = BTUSB_MARVELL },
+>>> 	{ USB_DEVICE(0x1286, 0x204e), .driver_info = BTUSB_MARVELL },
+>>> +	{ USB_DEVICE(0x1286, 0x204c), .driver_info = BTUSB_LOWER_LESCAN_INTERVAL },
+>>> 
+>>> 	/* Intel Bluetooth devices */
+>>> 	{ USB_DEVICE(0x8087, 0x0025), .driver_info = BTUSB_INTEL_COMBINED },
+>>> @@ -3813,6 +3815,19 @@ static int btusb_probe(struct usb_interface *intf,
+>>> 	if (id->driver_info & BTUSB_MARVELL)
+>>> 		hdev->set_bdaddr = btusb_set_bdaddr_marvell;
+>>> 
+>>> +	/* The Marvell 88W8897 combined wifi and bluetooth card is known for
+>>> +	 * very bad bt+wifi coexisting performance.
+>>> +	 *
+>>> +	 * Decrease the passive BT Low Energy scan interval a bit
+>>> +	 * (0x0190 * 0.625 msec = 250 msec) and make the scan window shorter
+>>> +	 * (0x000a * 0,625 msec = 6.25 msec). This allows for significantly
+>>> +	 * higher wifi throughput while passively scanning for BT LE devices.
+>>> +	 */
+>>> +	if (id->driver_info & BTUSB_LOWER_LESCAN_INTERVAL) {
+>>> +		hdev->le_scan_interval = 0x0190;
+>>> +		hdev->le_scan_window = 0x000a;
+>>> +	}
+>>> +
+>> you can not do it this way. Modifying hci_dev internals from within the driver is not acceptable.
+>> Regards
+>> Marcel
+> 
+> 
+> hmm okay, it seems to me that the intention of your commit bef64738e3fb87eabc6fbeededad0c44ea173384 was to allow configuring it on a per controller basis, also btusb changes a bunch of other hci_dev properties? Given that we also have to match by usb-id, I don't think there's another place to do that other than the usb driver, or is there?
 
-kthread: Move prio/affinite change into the newly created thread
+you can change most defaults via mgmt commands.
 
-With enabled threaded interrupts the nouveau driver reported the
-following:
+The things the a driver should set in hci_dev is really limited and it only affects its ability to run as a transport driver. It shouldn’t deal with anything that is actually HCI upper layer operation.
 
-| Chain exists of:
-|   &mm->mmap_lock#2 --> &device->mutex --> &cpuset_rwsem
-|
-|  Possible unsafe locking scenario:
-|
-|        CPU0                    CPU1
-|        ----                    ----
-|   lock(&cpuset_rwsem);
-|                                lock(&device->mutex);
-|                                lock(&cpuset_rwsem);
-|   lock(&mm->mmap_lock#2);
+Regards
 
-The device->mutex is nvkm_device::mutex.
+Marcel
 
-Unblocking the lockchain at `cpuset_rwsem' is probably the easiest
-thing to do.  Move the priority reset to the start of the newly
-created thread.
-
-Fixes: 710da3c8ea7df ("sched/core: Prevent race condition between cpuset and __sched_setscheduler()")
-Reported-by: Mike Galbraith <efault@gmx.de>
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/a23a826af7c108ea5651e73b8fbae5e653f16e86.camel@gmx.de
----
- kernel/kthread.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/kernel/kthread.c b/kernel/kthread.c
-index 7bbfeeb..6f59e34 100644
---- a/kernel/kthread.c
-+++ b/kernel/kthread.c
-@@ -270,6 +270,7 @@ EXPORT_SYMBOL_GPL(kthread_parkme);
- 
- static int kthread(void *_create)
- {
-+	static const struct sched_param param = { .sched_priority = 0 };
- 	/* Copy data: it's on kthread's stack */
- 	struct kthread_create_info *create = _create;
- 	int (*threadfn)(void *data) = create->threadfn;
-@@ -300,6 +301,13 @@ static int kthread(void *_create)
- 	init_completion(&self->parked);
- 	current->vfork_done = &self->exited;
- 
-+	/*
-+	 * The new thread inherited kthreadd's priority and CPU mask. Reset
-+	 * back to default in case they have been changed.
-+	 */
-+	sched_setscheduler_nocheck(current, SCHED_NORMAL, &param);
-+	set_cpus_allowed_ptr(current, housekeeping_cpumask(HK_FLAG_KTHREAD));
-+
- 	/* OK, tell user we're spawned, wait for stop or wakeup */
- 	__set_current_state(TASK_UNINTERRUPTIBLE);
- 	create->result = current;
-@@ -397,7 +405,6 @@ struct task_struct *__kthread_create_on_node(int (*threadfn)(void *data),
- 	}
- 	task = create->result;
- 	if (!IS_ERR(task)) {
--		static const struct sched_param param = { .sched_priority = 0 };
- 		char name[TASK_COMM_LEN];
- 
- 		/*
-@@ -406,13 +413,6 @@ struct task_struct *__kthread_create_on_node(int (*threadfn)(void *data),
- 		 */
- 		vsnprintf(name, sizeof(name), namefmt, args);
- 		set_task_comm(task, name);
--		/*
--		 * root may have changed our (kthreadd's) priority or CPU mask.
--		 * The kernel thread should not inherit these properties.
--		 */
--		sched_setscheduler_nocheck(task, SCHED_NORMAL, &param);
--		set_cpus_allowed_ptr(task,
--				     housekeeping_cpumask(HK_FLAG_KTHREAD));
- 	}
- 	kfree(create);
- 	return task;
