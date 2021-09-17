@@ -2,81 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7F6840F6D3
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 13:49:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6559940F6E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 13:51:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242098AbhIQLuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 07:50:55 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:48114
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240718AbhIQLuy (ORCPT
+        id S242303AbhIQLv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 07:51:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344034AbhIQLvg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 07:50:54 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id E0DF13F234;
-        Fri, 17 Sep 2021 11:49:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1631879371;
-        bh=o1svmj9FW/O2TpubDpCCd4h+o8vOHM4Lf/k/ntltkBU=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=TSh3v888gsqV6LgYPkJE5Vaus/eAXBbSz7yjRySiVtJGM296jgVE1E+f/PtzRSd6B
-         nsMJ/0pedoPcNB8UIRHMImuR7EZwIpRLn0A4r1fODbMgRZjWI7xkd1ZOvt/hVld7uk
-         N9PZIo2Vt5ICKhaY0ZoQxQsp5vwbYFUAAo5IrdzdaDjkGGYdOMdsWgJikMGLqMl2SQ
-         lg9jPIFuuDUldswHMj3DtaWlspoBN18R8MRZAdqYj25f9lRSiOtKp5YjZWnPegdZrS
-         1TzvXKUdpuJJFWGbWos+L3ssb9MfAKr58l0jaIehyfms7rsHkXfRuFuRhqaAfrot3x
-         IOxt9JZNt6x4A==
-From:   Colin King <colin.king@canonical.com>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        linux-media@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] media: uvcvideo: Fix memory leak of object map on error exit path
-Date:   Fri, 17 Sep 2021 12:49:30 +0100
-Message-Id: <20210917114930.47261-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        Fri, 17 Sep 2021 07:51:36 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C029AC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 04:50:13 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id u18so12982558wrg.5
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 04:50:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zh4y3yYp5KK3lr75X4zbnPk1B/CwLrGMoLkLYmrR1gI=;
+        b=iPgDO7EsA/atP+gM8ulA5dhg9BKm6GfVZi/cI93K8fPebyy5nLpZzPdFci+qmdNHcQ
+         GCFflkJ+U5ux5aU5h9O6nHwMS1R0H+AduKuIFUTWZx1vFg+qsVBPBS2/0UDm7XVx60le
+         IJ3YDbpWUsdQ8+xcharkL9a4NittPzRej54bYEqrXeR3+S8RAUQ/SwlFVJjb2KsbqBz5
+         TZ7KhCVW7TxtkZQTi6qWev24khX0SbtAK7oQapdZ+Vb95fhIXTjObRDRb9rPlIjissod
+         Fl0W3YpoL0B3vRXLhIJZjblztgKJFeX6irb/cy3wxkvL4lB/s73XFgrGXKuwI3p5JIq4
+         9whQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zh4y3yYp5KK3lr75X4zbnPk1B/CwLrGMoLkLYmrR1gI=;
+        b=3HUn7cKIclRYBQn1h5Pw0QrB7YYsf9mmORVD1pqsNL3R1QcjOQbwplJxVa8Y/pcRxO
+         MNcazIC7HGvdqxDLYRFA1ofmlDwY46occ0ka92RXc6/gL7hJ+makOzHkcHxA6QY4IXI5
+         Lcb7EZUcZLZwwFuiijarX5S3ZVMIEUe/Z2q8eihDLtEYWt5l3FxS3s3GuAE7nz70iY5I
+         64xrGNq5kh8oJ8v2KwNUMe5caUIgGLcILNq66QVFeI3tqdIF+wp6SYbIbDhQzp076I+X
+         bjKyyDy13DxBk80OqOsqWB8SJaXGPEqv+pdSHECiT1PF1kfPUtokPRNVMKr6oBVM8aCE
+         4r7Q==
+X-Gm-Message-State: AOAM530u81pTRP+veMqeluRKFvAeHeSbtWP1tL4Er++dqLA1H7M9kTpQ
+        UpqKXPt9NtmzAV7nzPnkX/tUms1VOCXqgTvjmkk=
+X-Google-Smtp-Source: ABdhPJwJ9sdCFor0+VHLEPoXS/4JhRf09MVVcnOGywjnb+OfsOd3e4tKC3yjTVMN7tv6F8OP7Cyo+YNiV5bAYH3zdEU=
+X-Received: by 2002:adf:d193:: with SMTP id v19mr11734422wrc.377.1631879412107;
+ Fri, 17 Sep 2021 04:50:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20210916111646.367133-1-daniel.baluta@oss.nxp.com>
+In-Reply-To: <20210916111646.367133-1-daniel.baluta@oss.nxp.com>
+From:   Daniel Baluta <daniel.baluta@gmail.com>
+Date:   Fri, 17 Sep 2021 14:49:59 +0300
+Message-ID: <CAEnQRZDr0BK=kX2D5Cnr5kvGMj8wYfNzAU6xMDn2RoNsYM9S-Q@mail.gmail.com>
+Subject: Re: [PATCH 00/12] Add support for on demand pipeline setup/destroy
+To:     Daniel Baluta <daniel.baluta@oss.nxp.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Hi Mark,
 
-Currently when the allocation of map->name fails the error exit path
-does not kfree the previously allocated object map. Fix this by
-setting ret to -ENOMEM and taking the free_map exit error path to
-ensure map is kfree'd.
+Will send v2 for this. I got informed that I forgot my S-o-b tag.
 
-Addresses-Coverity: ("Resource leak")
-Fixes: 07adedb5c606 ("media: uvcvideo: Use control names from framework")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/media/usb/uvc/uvc_v4l2.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
-index f4e4aff8ddf7..711556d13d03 100644
---- a/drivers/media/usb/uvc/uvc_v4l2.c
-+++ b/drivers/media/usb/uvc/uvc_v4l2.c
-@@ -44,8 +44,10 @@ static int uvc_ioctl_ctrl_map(struct uvc_video_chain *chain,
- 	if (v4l2_ctrl_get_name(map->id) == NULL) {
- 		map->name = kmemdup(xmap->name, sizeof(xmap->name),
- 				    GFP_KERNEL);
--		if (!map->name)
--			return -ENOMEM;
-+		if (!map->name) {
-+			ret = -ENOMEM;
-+			goto free_map;
-+		}
- 	}
- 	memcpy(map->entity, xmap->entity, sizeof(map->entity));
- 	map->selector = xmap->selector;
--- 
-2.32.0
-
+On Thu, Sep 16, 2021 at 2:18 PM Daniel Baluta <daniel.baluta@oss.nxp.com> wrote:
+>
+> From: Daniel Baluta <daniel.baluta@nxp.com>
+>
+> This patchseries implements the new feature to setup/teardown pipeline
+> as needed when a PCM is open/closed.
+>
+> Review with SOF community at https://github.com/thesofproject/linux/pull/2794
+>
+> Ranjani Sridharan (12):
+>   ASoC: topology: change the complete op in snd_soc_tplg_ops to return
+>     int
+>   ASoC: SOF: control: Add access field in struct snd_sof_control
+>   ASoC: SOF: topology: Add new token for dynamic pipeline
+>   ASoC: SOF: sof-audio: add helpers for widgets, kcontrols and dai
+>     config set up
+>   AsoC: dapm: export a couple of functions
+>   ASoC: SOF: Add new fields to snd_sof_route
+>   ASoC: SOF: restore kcontrols for widget during set up
+>   ASoC: SOF: Don't set up widgets during topology parsing
+>   ASoC: SOF: Introduce widget use_count
+>   ASoC: SOF: Intel: hda: make sure DAI widget is set up before IPC
+>   ASoC: SOF: Add support for dynamic pipelines
+>   ASoC: SOF: topology: Add kernel parameter for topology verification
+>
+>  include/sound/soc-dpcm.h               |   1 +
+>  include/sound/soc-topology.h           |   2 +-
+>  include/uapi/sound/sof/tokens.h        |   1 +
+>  sound/soc/intel/skylake/skl-topology.c |   6 +-
+>  sound/soc/soc-dapm.c                   |   2 +
+>  sound/soc/soc-pcm.c                    |   4 +-
+>  sound/soc/soc-topology.c               |  10 +-
+>  sound/soc/sof/intel/hda-dai.c          | 176 +++---
+>  sound/soc/sof/intel/hda.c              | 177 ++++--
+>  sound/soc/sof/intel/hda.h              |   5 +
+>  sound/soc/sof/ipc.c                    |  22 +
+>  sound/soc/sof/pcm.c                    |  58 +-
+>  sound/soc/sof/pm.c                     |   4 +-
+>  sound/soc/sof/sof-audio.c              | 709 +++++++++++++++++++------
+>  sound/soc/sof/sof-audio.h              |  32 +-
+>  sound/soc/sof/sof-priv.h               |   1 +
+>  sound/soc/sof/topology.c               | 362 +++++--------
+>  17 files changed, 1034 insertions(+), 538 deletions(-)
+>
+> --
+> 2.27.0
+>
