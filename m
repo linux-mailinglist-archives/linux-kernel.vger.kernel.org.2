@@ -2,148 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 918DB40F3BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 10:08:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1E4740F3E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 10:15:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245295AbhIQIJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 04:09:33 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:54241 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244997AbhIQIHD (ORCPT
+        id S236210AbhIQIRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 04:17:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235500AbhIQIQ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 04:07:03 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1631865889; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-ID: Date: Subject: In-Reply-To: References: Cc:
- To: From: Sender; bh=B5ORCBwgNQl5ow+QjWVTKGscJFpCMUohasS/OMFn1go=; b=Z6txW21Ymq6znFCbYBGjAfxdEZx7FmLWuWZEdNP3z0bLBMcsDHLLtsFQRi2xfPowAP+nzuMr
- +q1MnFXjh1NMB9A1apvg8ItIcxOD3cexuUMEuiHwLS6ROy8VLecR/YZPz6GVexrtISeW+T9x
- o+f7UEAC8kcl2DzXK/5O6dPeTzY=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 61444c1fb585cc7d240728d3 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 17 Sep 2021 08:04:47
- GMT
-Sender: pillair=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4A340C43619; Fri, 17 Sep 2021 08:04:47 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from PILLAIR1 (unknown [103.149.158.99])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: pillair)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 906C7C4338F;
-        Fri, 17 Sep 2021 08:04:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 906C7C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   <pillair@codeaurora.org>
-To:     "'Stephen Boyd'" <swboyd@chromium.org>, <agross@kernel.org>,
-        <bjorn.andersson@linaro.org>, <robh+dt@kernel.org>
-Cc:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <sibis@codeaurora.org>,
-        <mpubbise@codeaurora.org>, <kuabhs@chromium.org>
-References: <1631811121-32662-1-git-send-email-pillair@codeaurora.org> <CAE-0n50Qmnxa8dz9pQbP408Y_vOu_8j1qeYFGo61W47WQkGunA@mail.gmail.com>
-In-Reply-To: <CAE-0n50Qmnxa8dz9pQbP408Y_vOu_8j1qeYFGo61W47WQkGunA@mail.gmail.com>
-Subject: RE: [PATCH v3] arm64: dts: qcom: sc7280: Add WPSS remoteproc node
-Date:   Fri, 17 Sep 2021 13:34:39 +0530
-Message-ID: <001001d7ab9a$ad6e9de0$084bd9a0$@codeaurora.org>
+        Fri, 17 Sep 2021 04:16:58 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6D6AC061764
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 01:05:25 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id n2-20020a9d6f02000000b0054455dae485so6583232otq.3
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 01:05:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8TBdJtHgKKNE0SJ6m4JjwZ+pUMov7Rq43ETBcZVGRp4=;
+        b=SXdOrMZuybo5tmTQJ6vMeJs0E3/IBzBd3s8LbNHU0uWm8DAUzESNIt02JhBawSbshz
+         b3ExW2rwiP2GXtBSuvDFapw8PZjxa6zK2Dlx0eHj66jInxK7OwKYS6ttAugTMZBdM/EU
+         IduAGBBTCSW7cLKK9USzNf7C5uRQB021XyqpIFyeM7Y8kApjrP900HdshXP/vtUQgUw8
+         Q543DjGh0T4dLlq7THwcE8SLTM2svqnJZojNMQ8+PkmhwZBq6zPpCZJUj0srJnDBgVwE
+         O9PRdmQOygimaTg7zPBBfzoMV1VIjeEx1DYA/uyifwWLBZDIW89gqe8xZyk66DJu3/t/
+         4Vyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8TBdJtHgKKNE0SJ6m4JjwZ+pUMov7Rq43ETBcZVGRp4=;
+        b=vsSMh1lxGzBiCzxx3JlabxTmXhAGDIx7XyrAv7uwLd0/MNg6vGgL22CAmpZv/KRfp6
+         uwPtsOd4LhX3Ob/wulXJc9GU7JXRBD38yA3cO16FqM1oT1IKNbh9WoaC9ci+S7AwqybX
+         3o98hKIawgddDBD/V/1q2GlTB/E4Kl0Pi5x8UYFf1zHTpQooqzXERPJqBGG9vQNelNUQ
+         TwWtl5WghNIFCe27MIRPesSEIUt1MY0lE1FrIaca57b2PqwR+dAqq9sXtZGoK8NXAjjG
+         drkcn0GkkMtQ5GTQEZ4TGjmEy36vQNKzaYVUADLxiI2Nfk+Mb+mhSW2e/6ZlagWEtIjM
+         oT8g==
+X-Gm-Message-State: AOAM531dM4aviZnvYy+PBcEzw+s/n+l+OjxJeeu+UJztmrATL1GpKUuD
+        tnwzZojOnD9EPLfdbYFqiqGXo4kL7zZGA0hFMZcMxQ==
+X-Google-Smtp-Source: ABdhPJw1du8pLRNG9d/Pnd2etZxFKqQkvXIwKB7O57pzXOPeA/cidvYKOM9WxAuabEMh4jcAH3bVKbbTbq8juNdpvyw=
+X-Received: by 2002:a9d:7244:: with SMTP id a4mr8609563otk.137.1631865924892;
+ Fri, 17 Sep 2021 01:05:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQI9zuPItyMZ6cixTNcgXkzSDqOHZwIO8vddqssfoKA=
-Content-Language: en-us
+References: <000000000000bc92ac05cb4ead3e@google.com> <CAJfpeguqH3ukKeC9Rg66pUp_jWArn3rSBxkZozTVPmTnCf+d6g@mail.gmail.com>
+ <CANpmjNM4pxRk0=B+RZzpbtvViV8zSJiamQeN_7mPn-NMxnYX=g@mail.gmail.com> <CAJfpegvzgVwN_4a-ghtHSf-SCV5SEwv4aeURvK_qDzMmU2nA4Q@mail.gmail.com>
+In-Reply-To: <CAJfpegvzgVwN_4a-ghtHSf-SCV5SEwv4aeURvK_qDzMmU2nA4Q@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Fri, 17 Sep 2021 10:05:13 +0200
+Message-ID: <CACT4Y+ZmFyDOg0=gXv5G8mdqhz5gwcwA9jOVuWgLi2CiYQBzYQ@mail.gmail.com>
+Subject: Re: [syzbot] linux-next test error: KASAN: null-ptr-deref Read in fuse_conn_put
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Marco Elver <elver@google.com>,
+        syzbot <syzbot+b304e8cb713be5f9d4e1@syzkaller.appspotmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> -----Original Message-----
-> From: Stephen Boyd <swboyd@chromium.org>
-> Sent: Friday, September 17, 2021 6:25 AM
-> To: Rakesh Pillai <pillair@codeaurora.org>; agross@kernel.org;
-> bjorn.andersson@linaro.org; robh+dt@kernel.org
-> Cc: linux-arm-msm@vger.kernel.org; devicetree@vger.kernel.org; linux-
-> kernel@vger.kernel.org; sibis@codeaurora.org; mpubbise@codeaurora.org;
-> kuabhs@chromium.org
-> Subject: Re: [PATCH v3] arm64: dts: qcom: sc7280: Add WPSS remoteproc
-> node
->=20
-> Quoting Rakesh Pillai (2021-09-16 09:52:01)
-> > diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-> > b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-> > index 64fc22a..2b8bbcd 100644
-> > --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-> > +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-> > @@ -1423,6 +1433,59 @@
-> >                         #power-domain-cells =3D <1>;
-> >                 };
+On Mon, 6 Sept 2021 at 19:35, Miklos Szeredi <miklos@szeredi.hu> wrote:
+> > On Mon, 6 Sept 2021 at 13:56, Miklos Szeredi <miklos@szeredi.hu> wrote:
+> > > Thanks,
+> > >
+> > > Force pushed fixed commit 660585b56e63 ("fuse: wait for writepages in
+> > > syncfs") to fuse.git#for-next.
+> > >
+> > > This is fixed as far as I'm concerned, not sure how to tell that to syzbot.
 > >
-> > +               remoteproc_wpss: remoteproc@8a00000 {
-> > +                       compatible =3D "qcom,sc7280-wpss-pil";
-> > +                       reg =3D <0 0x08a00000 0 0x10000>;
-> > +
-> > +                       interrupts-extended =3D <&intc GIC_SPI 587
-> IRQ_TYPE_EDGE_RISING>,
-> > +                                             <&wpss_smp2p_in 0 =
-IRQ_TYPE_EDGE_RISING>,
-> > +                                             <&wpss_smp2p_in 1 =
-IRQ_TYPE_EDGE_RISING>,
-> > +                                             <&wpss_smp2p_in 2 =
-IRQ_TYPE_EDGE_RISING>,
-> > +                                             <&wpss_smp2p_in 3 =
-IRQ_TYPE_EDGE_RISING>,
-> > +                                             <&wpss_smp2p_in 7 =
-IRQ_TYPE_EDGE_RISING>;
-> > +                       interrupt-names =3D "wdog", "fatal", =
-"ready", "handover",
-> > +                                         "stop-ack", =
-"shutdown-ack";
-> > +
-> > +                       clocks =3D <&gcc GCC_WPSS_AHB_BDG_MST_CLK>,
-> > +                                <&gcc GCC_WPSS_AHB_CLK>,
-> > +                                <&gcc GCC_WPSS_RSCP_CLK>,
-> > +                                <&rpmhcc RPMH_CXO_CLK>;
-> > +                       clock-names =3D "gcc_wpss_ahb_bdg_mst_clk",
-> > +                                     "gcc_wpss_ahb_clk",
-> > +                                     "gcc_wpss_rscp_clk",
-> > +                                     "xo";
-> > +
-> > +                       power-domains =3D <&rpmhpd SC7280_CX>,
-> > +                                       <&rpmhpd SC7280_MX>;
-> > +                       power-domain-names =3D "cx", "mx";
-> > +
-> > +                       memory-region =3D <&wpss_mem>;
-> > +
-> > +                       qcom,qmp =3D <&aoss_qmp>;
-> > +
-> > +                       qcom,smem-states =3D <&wpss_smp2p_out 0>;
-> > +                       qcom,smem-state-names =3D "stop";
-> > +
-> > +                       resets =3D <&aoss_reset =
-AOSS_CC_WCSS_RESTART>,
-> > +                                <&pdc_reset PDC_WPSS_SYNC_RESET>;
-> > +                       reset-names =3D "restart", "pdc_sync";
-> > +
-> > +                       qcom,halt-regs =3D <&tcsr_mutex_regs =
-0x37000>;
->=20
-> Where is this node defined? I don't see it on the mailing list for =
-sc7280. Can
-> you indicate what patches this depends on, and use git format-patch =
---base=3D
-> so we can try to find them ourselves.
+> > Thanks -- we can let syzbot know:
+> >
+> > #syz fix: fuse: wait for writepages in syncfs
+> >
+> > (The syntax is just "#syz fix: <commit title>".)
+>
+> Yeah, but that patch has several versions, one of which is broken.
+> Syzbot can't tell the difference just based on the title.
 
-Hi Stephen,
-My bad, it shud be "tcsr_mutex" instead of "tcsr_mutex_regs".
-I will correct it and send v4.
+Hi Miklos,
 
+For such cases it's useful to include Tested-by: tag into the commit
+version that fixes the bug:
+http://bit.do/syzbot#amend
