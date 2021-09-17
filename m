@@ -2,93 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D19BF40F6C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 13:35:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7A5940F6C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 13:36:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344002AbhIQLgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 07:36:54 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:33278 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241639AbhIQLgt (ORCPT
+        id S241775AbhIQLh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 07:37:27 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:54008 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239193AbhIQLhZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 07:36:49 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 1AFDF1FDC7;
-        Fri, 17 Sep 2021 11:35:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631878527; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=HcGZS+FDX8DdT1W8lmf9U7WzYN/MAtRfhAF9s0ohGYM=;
-        b=WD3lw50Gt+6ZMpkmVs40GJTztbcc911Io34NZGq4RfGTN7onx9wdnRg5XiuqTpO3kHYcQ2
-        UWLLLN+bzcioig35fjD2mkEpEW54WB+D42oTlQS2zJGkbi4RK7O9pRa7MiPP96kd8Zm35X
-        LTIF7U12YiZ+shwCAA1egJwg0XOM75M=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E730014102;
-        Fri, 17 Sep 2021 11:35:26 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id +CBmN359RGFAKQAAMHmgww
-        (envelope-from <jgross@suse.com>); Fri, 17 Sep 2021 11:35:26 +0000
-From:   Juergen Gross <jgross@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
-        boris.ostrovsky@oracle.com
-Subject: [GIT PULL] xen: branch for v5.15-rc2
-Date:   Fri, 17 Sep 2021 13:35:26 +0200
-Message-Id: <20210917113526.7963-1-jgross@suse.com>
-X-Mailer: git-send-email 2.26.2
+        Fri, 17 Sep 2021 07:37:25 -0400
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1631878562;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=O+73H2mnuP9dFzMcqNalHmi7NByEnLzYdzPOLPqnxEM=;
+        b=MgabDaQ++ek/LKhtkIN4Gg7WYcld/4af0nTzGAwxgH2t+ga6Pb+VnIrtchAdml9fBSBvtt
+        6EdyN2BtcfOzakLjh01KIBCUbyoEJBYXWTd/09lpPZtwtV7Ob9cp2SHdlDYI8yPfGYw5eg
+        GBRafxGKIUgdb36h7izUnrBDbjWpQg+2JY14HcPfpW8ULthVulWgMLy0nGGNysSSUqJ84b
+        dZNhBaT1hmijefr52PEMTfDbLo+zW7qhQ0Im+CR226/HBk8uL5Gsev/vIWVVchT7nYXr9X
+        dYJlQlobir0btfQHew1ZTfQHTMDYtmAkRWfEM32/I3/jkZeab49lAL1Kd/5+NQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1631878562;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=O+73H2mnuP9dFzMcqNalHmi7NByEnLzYdzPOLPqnxEM=;
+        b=tRrvSTiQDwPy8x37TSBU9tYfFTeECHEiyW8/MmhWOneZPEFbdD1qOR7un3bgJVVIs3xh27
+        1stFjDIExDbw4KBQ==
+To:     Walter Stoll <Walter.Stoll@duagon.com>,
+        "linux-rt-users@vger.kernel.org" <linux-rt-users@vger.kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [BUG] kernel/printk: RT-adaption of kmsg_dump breaks mtdoops
+In-Reply-To: <c4b1a518b23c4507b3fc725cea005276@chdua14.duagon.ads>
+References: <c4b1a518b23c4507b3fc725cea005276@chdua14.duagon.ads>
+Date:   Fri, 17 Sep 2021 13:42:02 +0206
+Message-ID: <87zgsb4eot.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+Hello Walter,
 
-Please git pull the following tag:
+On 2021-09-17, Walter Stoll <Walter.Stoll@duagon.com> wrote:
+> Effect observed
+> ---------------
+>
+> We want to store kernel oops logs on a NAND flash partition by means of the
+> MTD Oops/Panic console logger/driver. However, no log is generated.
+>
+> We observed the effect with kernel version v5.4.138-rt62. However, we think
+> that the most recent kernel exhibits the same behavior because the structure of
+> the sources in question (see below) did not change.
 
- git://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git for-linus-5.15b-rc2-tag
+This problem does not exist in v5.10-rt. The kmsg_dump API was changed
+(later in mainline as well) to avoid this issue. For v5.10-rt the change
+was buried in the all-in-one commit:
 
-xen: branch for v5.15-rc2
+https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git/commit/?h=v5.10-rt&id=9835363e31e75d3287a81c6fc1b22c5c2b43d277
 
-It contains:
-- The first hunk of a Xen swiotlb fixup series fixing multiple minor
-  issues and doing some small cleanups
-- Some further Xen related fixes avoiding WARN() splats when running
-  as Xen guests or dom0
-- A Kconfig fix allowing the pvcalls frontend to be built as a module
+And later. the API change for mainline (5.12):
 
-Thanks.
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=f9f3f02db98bbe678a8e57fe9432b196174744a3
 
-Juergen
+> Root cause
+> ----------
+>
+> Further investigations revealed, than the issue is due to the realtime adaption
+> of the kmsg_dump() function.
+>
+> Non realtime version of kmsg_dump():
+> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/kernel/printk/printk.c?h=linux-5.4.y#n3149
+>
+> Realtime version of kmsg_dump():
+> https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git/tree/kernel/printk/printk.c?h=v5.4-rt#n2904
+>
+> In our case, the the mtd_panic_write() function returns with error when the
+> kernel panics. As a result, no log is created. Call chain:
+> ... panic() -> kmsg_dump() -> mtdoops_do_dump() -> mtdoops_write()
+>     mtd_panic_write()
+>
+> Note that within the kmsg_dump() function, a locally create kmsg_dumper object
+> is passed to the dumper_local.dump(&dumper_local, reason) call. However the
+> callee mtdoops_do_dump() function expects this object being embedded in a
+> mtdoops_context object, see
+> https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git/tree/drivers/mtd/mtdoops.c?h=v5.4-rt#n272
+>
+> This is obviously not the case, therefore the error. Note that this could even
+> led to a security issue.
+>
+>
+> Bug fix proposal
+> ----------------
+>
+> We fixed the bug locally by applying the patch below. Note that we did not
+> modify the kmsg_dump() function. Instead we modified the mtdoops_do_dump()
+> function which seems for us the cleaner way.
 
- arch/x86/xen/enlighten_pv.c |  7 +++++
- arch/x86/xen/mmu_pv.c       |  7 +++--
- drivers/base/power/trace.c  | 10 ++++++++
- drivers/xen/Kconfig         |  2 +-
- drivers/xen/balloon.c       | 62 ++++++++++++++++++++++++++++++++-------------
- drivers/xen/swiotlb-xen.c   | 37 +++++++++++++--------------
- 6 files changed, 85 insertions(+), 40 deletions(-)
+I agree that this is a better fix, rather than backporting the newer
+API. For mtdoops, the only function registering a dumper is
+mtdoops_notify_add() and it also directly references the global context
+with:
 
-Jan Beulich (9):
-      xen/pvcalls: backend can be a module
-      swiotlb-xen: avoid double free
-      swiotlb-xen: fix late init retry
-      swiotlb-xen: maintain slab count properly
-      swiotlb-xen: suppress certain init retries
-      swiotlb-xen: limit init retries
-      swiotlb-xen: drop leftover __ref
-      swiotlb-xen: arrange to have buffer info logged
-      swiotlb-xen: drop DEFAULT_NSLABS
+struct mtdoops_context *cxt = &oops_cxt;
 
-Juergen Gross (4):
-      xen/balloon: use a kernel thread instead a workqueue
-      PM: base: power: don't try to use non-existing RTC for storing data
-      xen: reset legacy rtc flag for PV domU
-      xen: fix usage of pmd_populate in mremap for pv guests
+Reviewed-by: John Ogness <john.ogness@linutronix.de>
+
+> diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
+> index 774970bfcf85..317ecf47fce8 100644
+> --- a/drivers/mtd/mtdoops.c
+> +++ b/drivers/mtd/mtdoops.c
+> @@ -269,8 +269,7 @@ static void find_next_position(struct mtdoops_context *cxt)
+>  static void mtdoops_do_dump(struct kmsg_dumper *dumper,
+>  			    enum kmsg_dump_reason reason)
+>  {
+> -	struct mtdoops_context *cxt = container_of(dumper,
+> -			struct mtdoops_context, dump);
+> +	struct mtdoops_context *cxt = &oops_cxt;
+>  
+>  	/* Only dump oopses if dump_oops is set */
+>  	if (reason == KMSG_DUMP_OOPS && !dump_oops)
+
+Thanks for your work on this!
+
+John Ogness
