@@ -2,73 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA2DE40EF33
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 04:29:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD32140EFD4
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 04:54:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242736AbhIQCaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 22:30:39 -0400
-Received: from mx24.baidu.com ([111.206.215.185]:32822 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235118AbhIQCai (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 22:30:38 -0400
-Received: from Bc-Mail-Ex13.internal.baidu.com (unknown [172.31.51.53])
-        by Forcepoint Email with ESMTPS id E47576738562BF827643;
-        Fri, 17 Sep 2021 10:29:10 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- Bc-Mail-Ex13.internal.baidu.com (172.31.51.53) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.12; Fri, 17 Sep 2021 10:29:10 +0800
-Received: from localhost (172.31.63.8) by BJHW-MAIL-EX27.internal.baidu.com
- (10.127.64.42) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Fri, 17
- Sep 2021 10:29:10 +0800
-Date:   Fri, 17 Sep 2021 10:29:10 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-CC:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        <linux-input@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] Input: ads7846 - Make use of the helper function
- dev_err_probe()
-Message-ID: <20210917022910.GA17584@LAPTOP-UKSR4ENP.internal.baidu.com>
-References: <20210916153104.13727-1-caihuoqing@baidu.com>
- <922265b2-bed7-8daa-3132-8cfc3b5e50fd@canonical.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <922265b2-bed7-8daa-3132-8cfc3b5e50fd@canonical.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [172.31.63.8]
-X-ClientProxiedBy: BJHW-Mail-Ex05.internal.baidu.com (10.127.64.15) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
+        id S241076AbhIQCzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 22:55:49 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:47636 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232494AbhIQCzs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 22:55:48 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id E777F1A12BC;
+        Fri, 17 Sep 2021 04:54:25 +0200 (CEST)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id AF7621A125F;
+        Fri, 17 Sep 2021 04:54:25 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 2CE3A183AC94;
+        Fri, 17 Sep 2021 10:54:24 +0800 (+08)
+From:   Richard Zhu <hongxing.zhu@nxp.com>
+To:     l.stach@pengutronix.de, kishon@ti.com, vkoul@kernel.org,
+        robh@kernel.org, galak@kernel.crashing.org, shawnguo@kernel.org
+Cc:     linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de, linux-imx@nxp.com
+Subject: [PATCH 0/4] add the imx8 pcie phy driver support
+Date:   Fri, 17 Sep 2021 10:30:59 +0800
+Message-Id: <1631845863-24249-1-git-send-email-hongxing.zhu@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16 9月 21 21:34:26, Krzysztof Kozlowski wrote:
-> On 16/09/2021 17:31, Cai Huoqing wrote:
-> > When possible use dev_err_probe help to properly deal with the
-> > PROBE_DEFER error, the benefit is that DEFER issue will be logged
-> > in the devices_deferred debugfs file.
-> > Using dev_err_probe() can reduce code size, and the error value
-> > gets printed.
-> > 
-> > Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
-> > ---
-> >  drivers/input/touchscreen/ads7846.c | 7 ++-----
-> >  1 file changed, 2 insertions(+), 5 deletions(-)
-> 
-> You sent 32 independent patches. Do you expect us to copy-paste similar
-> feedback on each of them? This would not make any sense. Please organize
-> all your submissions in a series with:
-> 
->   git format-patch -32
->   git send-email ..... 00*
-Ok, I'll try. but there are different owners for touchscreen/xxx,
-is it ok to send them the whole series?
-> 
-> The patches you sent were already sent before:
-> https://lore.kernel.org/lkml/20200827185829.30096-1-krzk@kernel.org/
-> 
-> Best regards,
-> Krzysztof
+refer to the discussion [1] when try to enable i.MX8MM PCIe support,
+one standalone PCIe PHY driver should be seperated from i.MX PCIe
+driver when enable i.MX8MM PCIe support.
+
+This patch-set adds the standalone PCIe PHY driver suport, and as a
+preparatory to add the i.MX8MM PCIe support later.
+
+The PCIe works on i.MX8MM EVK board based the the blkctrl power driver
+[2] and this PHY driver patch-set.
+
+[1] https://patchwork.ozlabs.org/project/linux-pci/patch/20210510141509.929120-3-l.stach@pengutronix.de/
+[2] https://patchwork.kernel.org/project/linux-arm-kernel/cover/20210910202640.980366-1-l.stach@pengutronix.de/
+
+[PATCH 1/4] dt-bindings: phy: phy-imx8-pcie: Add binding for the pad
+[PATCH 2/4] dt-bindings: phy: add imx8 pcie phy driver support
+[PATCH 3/4] arm64: dts: imx8mm: add the pcie phy support
+[PATCH 4/4] phy: freescale: pcie: initialize the imx8 pcie standalone
+
+Documentation/devicetree/bindings/phy/fsl,imx8-pcie-phy.yaml |  66 ++++++++++++++++++++++++++++++++
+arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi                |   4 ++
+arch/arm64/boot/dts/freescale/imx8mm.dtsi                    |  12 ++++++
+drivers/phy/freescale/Kconfig                                |   9 +++++
+drivers/phy/freescale/Makefile                               |   1 +
+drivers/phy/freescale/phy-fsl-imx8-pcie.c                    | 167 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+include/dt-bindings/phy/phy-imx8-pcie.h                      |  14 +++++++
+7 files changed, 273 insertions(+)
+
