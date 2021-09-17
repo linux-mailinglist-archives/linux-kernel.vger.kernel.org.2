@@ -2,95 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD5B240F66B
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 13:01:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5709940F66D
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 13:02:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242148AbhIQLDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 07:03:01 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:19250 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241553AbhIQLC7 (ORCPT
+        id S242342AbhIQLDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 07:03:43 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:47964 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234873AbhIQLDl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 07:02:59 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1631876498; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=c7UEzZMoyPV0biW4tjuusRt/TSLYLwkVKbXHuqU1ZrI=;
- b=CwtQX/SB1VNYyHiUGOie5APNZkvejkIBTXE+ea2q+RsUgKzv7pWD9tghfPfAggKi8RXYLNVW
- m3rZXa8pLbcF66sllasq9v9UlzmqCoxQVP5S64qzTnf2hNglUXkPDGNB7xGW6NQHM2EqT+Vg
- eiMs2V4wJ4bXw2GfBrn5Hd5oF4w=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 61447591ec62f57c9a9b06fb (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 17 Sep 2021 11:01:37
- GMT
-Sender: skakit=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 10A56C43460; Fri, 17 Sep 2021 11:01:37 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: skakit)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id EDCCAC4338F;
-        Fri, 17 Sep 2021 11:01:35 +0000 (UTC)
+        Fri, 17 Sep 2021 07:03:41 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18HB2396098451;
+        Fri, 17 Sep 2021 06:02:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1631876523;
+        bh=w4kvjGKZNf4N10M7gdmkloHMoOeku5FLyiIXDj3jUU8=;
+        h=Subject:From:To:CC:References:Date:In-Reply-To;
+        b=VmCuAkVVh/AJFgV4npwPP55t0y39iMu8IudtuFGj+gRzDmvxe3bg3t2ROdvm2j2sn
+         Km1IMqYVS81IyKhi5JmCN2pWub2r1hi6WA9V4g7Wzm2abMV8xTEno/bEMImzmRpUqH
+         QJKxXlZ3AbAPnalkdE3UqGKzoEmEItCcMxR+0hDY=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18HB2376084904
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 17 Sep 2021 06:02:03 -0500
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Fri, 17
+ Sep 2021 06:02:03 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Fri, 17 Sep 2021 06:02:02 -0500
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18HB20gr124424;
+        Fri, 17 Sep 2021 06:02:01 -0500
+Subject: Re: beaglebone black boot failure Linux v5.15.rc1
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>,
+        Tony Lindgren <tony@atomide.com>
+CC:     "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+        Suman Anna <s-anna@ti.com>,
+        Paul Barker <paul.barker@sancloud.com>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        =?UTF-8?Q?Beno=c3=aet_Cousson?= <bcousson@baylibre.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <120a0ca4-28c7-5a7b-f1ab-2015c8817bda@fi.rohmeurope.com>
+ <YUQyQgFAOFnBlcdP@atomide.com>
+ <0679a5bb-88d1-077d-6107-d5f88ef60dbf@fi.rohmeurope.com>
+ <8f3963ca-ff09-b876-ae9e-433add242de2@ti.com>
+Message-ID: <331ab81e-cd42-7e9b-617a-fde4c773c07a@ti.com>
+Date:   Fri, 17 Sep 2021 14:01:59 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 17 Sep 2021 16:31:35 +0530
-From:   skakit@codeaurora.org
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, mka@chromium.org,
-        swboyd@chromium.org, Das Srinagesh <gurus@codeaurora.org>,
-        David Collins <collinsd@codeaurora.org>, kgunda@codeaurora.org,
-        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/4] Add Qualcomm Technologies, Inc. PM8008 regulator
- driver
-In-Reply-To: <1631875538-22473-1-git-send-email-skakit@codeaurora.org>
-References: <1631875538-22473-1-git-send-email-skakit@codeaurora.org>
-Message-ID: <6cde0f4eac5f436b38123b7f55c48540@codeaurora.org>
-X-Sender: skakit@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+In-Reply-To: <8f3963ca-ff09-b876-ae9e-433add242de2@ti.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-17 16:15, Satya Priya wrote:
-> Satya Priya (2):
->   dt-bindings: mfd: pm8008: Add pm8008-regulator binding
->   regulator: dt-bindings: Add pm8008 regulator bindings
+
+
+On 17/09/2021 13:57, Grygorii Strashko wrote:
 > 
-> satya priya (2):
->   regulator: Add a regulator driver for the PM8008 PMIC
->   arm64: dts: qcom: sc7280: Add pm8008 regulators support for 
-> sc7280-idp
+> 
+> On 17/09/2021 13:28, Vaittinen, Matti wrote:
+>> Hi deeee Ho Tony & All,
+>>
+>> On 9/17/21 09:14, Tony Lindgren wrote:
+>>> Hi,
+>>>
+>>> * Vaittinen, Matti <Matti.Vaittinen@fi.rohmeurope.com> [210916 09:15]:
+>>
+>>>> My beaglebone black (rev c) based test environment fails to boot with
+>>>> v5.15-rc1. Boot succeeds with the v5.14.
+>>>>
+>>>> Bisecting the Linus' tree pointed out the commit:
+>>>> [1c7ba565e70365763ea780666a3eee679344b962] ARM: dts: am335x-baltos:
+>>>> switch to new cpsw switch drv
+>>>>
+>>>> I don't see this exact commit touching the BBB device-tree. In Linus'
+>>>> tree it is a part of a merge commit. Reverting the whole merge on top of
+>>>> the v5.15-rc1
+>>>>
+>>>> This reverts commit 81b6a285737700c2e04ef0893617b80481b6b4b7, reversing
+>>>> changes made to f73979109bc11a0ed26b6deeb403fb5d05676ffc.
+>>>>
+>>>> makes my beaglebone black to boot again.
+>>>>
+>>>> Yesterday I tried adding this patch:
+>>>> https://lore.kernel.org/linux-omap/20210915065032.45013-1-tony@atomide.com/T/#u
+>>>> pointed by Tom on top of the v5.15-rc1 - no avail. I also did #define
+>>>> DEBUG at ti-sys.c as was suggested by Tom - but I don't see any more output.
+>>>
+>>> Correction, that was me, not Tom :)
+>>
+>> Oh.. Sorry! I don't know where I picked Tom from... My bad!
+>>
+>>> For me, adding any kind of delay fixed the issue. Also adding some printk
+>>> statements fixed it for me.
+>>>
+>>>> Any suggestions what to check next?
+>>>
+>>> Maybe try the attached patch? If it helps, just try with the with the
+>>> ti,sysc-delay-us = <2> added as few modules need that after enable.
+>>>
+>>> It's also possible there is an issue with some other device that is now
+>>> getting enabled other than pruss. The last XXX printk output should show
+>>> the last device being probed.
+>>>
+>>> Looks like you need to also enable CONFIG_SERIAL_EARLYCON=y, and pass
+>>> console=ttyS0,115200 debug earlycon in the kernel command line.
+>>
+>> Ah. Thanks again. I indeed lacked the "debug earlycon" parameters. Now
+>> we're more likely to see what went wrong :) I pasted the serial log form
+>> failing boot with v5.15-rc1 which has both the patch you linked me above
+>> and the patch you suggested me to test in previous email.
+>>
+> 
+> [...]
+> 
+>> [    2.786181] ti-sysc 48311fe0.target-module: XXX sysc_probe
+>> [    2.791994] ti-sysc 48311fe0.target-module:
+>> 48310000:2000:1fe0:1fe4:NA:00000020:rng
+>> [    2.800820] omap_rng 48310000.rng: Random Number Generator ver. 20
+>> [    2.807315] random: crng init done
+>> [    2.814207] ti-sysc 4a101200.target-module: XXX sysc_probe
+>> [    2.820080] ti-sysc 4a101200.target-module:
+>> 4a100000:8000:1200:1208:1204:4edb0100:cpgmac
+> 
+> This one cpsw
+> 
+>> [    2.830347] ti-sysc 4a326000.target-module: XXX sysc_probe
+> 
+> This one pruss and it still shows sysc_probe
+> 
+> Not sure what are the dependency here :( if any.
+> 
+> Additional option to try - cmdline param "initcall_debug" and maybe increase print level in really_probe_debug()
+> 
 
-This dt change depends on [1] which adds i2c1 DT node
-[1] 
-https://patchwork.kernel.org/project/linux-arm-msm/patch/1631872087-24416-5-git-send-email-rajpat@codeaurora.org/
+Just to be clear - idea is to see *all* probes - not only sysc.
 
->  .../devicetree/bindings/mfd/qcom,pm8008.yaml       |  24 ++
->  .../bindings/regulator/qcom,pm8008-regulator.yaml  |  76 ++++
->  arch/arm64/boot/dts/qcom/sc7280-idp.dtsi           | 103 +++++
->  drivers/regulator/Kconfig                          |   9 +
->  drivers/regulator/Makefile                         |   1 +
->  drivers/regulator/qcom-pm8008-regulator.c          | 441 
-> +++++++++++++++++++++
->  6 files changed, 654 insertions(+)
->  create mode 100644
-> Documentation/devicetree/bindings/regulator/qcom,pm8008-regulator.yaml
->  create mode 100644 drivers/regulator/qcom-pm8008-regulator.c
+[...]
+
+-- 
+Best regards,
+grygorii
