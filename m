@@ -2,101 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19EC240F457
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 10:45:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3A2640F464
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 10:47:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245482AbhIQIq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 04:46:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42078 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245460AbhIQIqv (ORCPT
+        id S245490AbhIQIsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 04:48:30 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:40575 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235322AbhIQIs3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 04:46:51 -0400
-Received: from sym2.noone.org (sym2.noone.org [IPv6:2a01:4f8:120:4161::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85CA4C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 01:45:29 -0700 (PDT)
-Received: by sym2.noone.org (Postfix, from userid 1002)
-        id 4H9nbC1PrKzvjfm; Fri, 17 Sep 2021 10:45:27 +0200 (CEST)
-Date:   Fri, 17 Sep 2021 10:45:27 +0200
-From:   Tobias Klauser <tklauser@distanz.ch>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        "tiantao (H)" <tiantao6@hisilicon.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] cpumask: Omit terminating null byte in
- cpumap_print_{list,bitmask}_to_buf
-Message-ID: <20210917084526.uzpish2owb24szng@distanz.ch>
-References: <20210916222705.13554-1-tklauser@distanz.ch>
- <aa4bc59c44b345ae814c61f6593a7178@hisilicon.com>
- <YUPQ6F8M822fLzpx@yury-ThinkPad>
+        Fri, 17 Sep 2021 04:48:29 -0400
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210917084705epoutp020c2bfd675453acb41eccf4caa2745c06~lj6-2J9UL0921509215epoutp02B
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:47:05 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210917084705epoutp020c2bfd675453acb41eccf4caa2745c06~lj6-2J9UL0921509215epoutp02B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1631868425;
+        bh=8Gxrk1S9d2ijCmTPideQeF61jv+I9XTJOeUHGT0hwcg=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=frghzZJwOz5l2eHKwQlGPnMV6SuURVEBeBXrP1ScOq+WQTVL6EkWYHwmFpJKEJ2Ga
+         6GSqBRuPHiTFH6CctnGjx5yaJSkWpnOoLr1RA5tgRF5dKFMFOmQXNDdfgPztJ3UPK7
+         1CKlo25YtwmBbUwHi+irFsJq1+JrfYt7YSqiMFm8=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20210917084705epcas1p1a2e95d2a1f415bf7e46b1e7665173692~lj6-eluZ72199221992epcas1p1c;
+        Fri, 17 Sep 2021 08:47:05 +0000 (GMT)
+Received: from epsmges1p5.samsung.com (unknown [182.195.38.237]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4H9nd06gFwz4x9QC; Fri, 17 Sep
+        2021 08:47:00 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
+        56.90.13888.00654416; Fri, 17 Sep 2021 17:46:56 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
+        20210917084656epcas1p408e3c7055701fc81481bdf364f2ed893~lj62xAnxm0631406314epcas1p46;
+        Fri, 17 Sep 2021 08:46:56 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210917084656epsmtrp24b675d5029e68fbb60f3768353afad30~lj62wWbSp1886318863epsmtrp2m;
+        Fri, 17 Sep 2021 08:46:56 +0000 (GMT)
+X-AuditID: b6c32a39-211ff70000003640-6c-614456009c33
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        17.09.09091.FF554416; Fri, 17 Sep 2021 17:46:56 +0900 (KST)
+Received: from [10.113.113.235] (unknown [10.113.113.235]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210917084655epsmtip210c313d874c2bbc15890cae740bb6d1a~lj62horX72575425754epsmtip2g;
+        Fri, 17 Sep 2021 08:46:55 +0000 (GMT)
+Subject: Re: [PATCH] mmc: sdhci-s3c: drop unneeded MODULE_ALIAS
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Ben Dooks <ben-linux@fluff.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org
+From:   Jaehoon Chung <jh80.chung@samsung.com>
+Message-ID: <90d3b41d-d5db-33a2-7b61-7e8046c7ce07@samsung.com>
+Date:   Fri, 17 Sep 2021 17:47:40 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YUPQ6F8M822fLzpx@yury-ThinkPad>
-User-Agent: NeoMutt/20170113 (1.7.2)
+In-Reply-To: <20210916170511.137915-1-krzysztof.kozlowski@canonical.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprAJsWRmVeSWpSXmKPExsWy7bCmgS5DmEuiwfFuA4uTT9awWUxad4DJ
+        YuPbH0wWl3fNYbM48r+f0eL42nAHNo9ZDb1sHn9XvWD2WLznJZPHnWt72Dw+b5ILYI3KtslI
+        TUxJLVJIzUvOT8nMS7dV8g6Od443NTMw1DW0tDBXUshLzE21VXLxCdB1y8wBOkBJoSwxpxQo
+        FJBYXKykb2dTlF9akqqQkV9cYquUWpCSU2BaoFecmFtcmpeul5daYmVoYGBkClSYkJ2xcbl/
+        wTe2iuPT7jI3MH5h7WLk5JAQMJGYvvsCWxcjF4eQwA5GifsnXzCCJIQEPjFKrP4TBJH4xiix
+        8OJxRpiOpX9vs0Mk9jJKrLm/gxnCec8o8WLGarAqYQF7idmf1gPZHBwiAtESt3frgNQwC0xk
+        lLh+dwE7SA2bgI7E9m/HmUBsXgE7iS/vz4PFWQRUJTrvbmIBsUUFIiX+ntzFClEjKHFy5hOw
+        OKeAh8SSdxvBbGYBcYlbT+YzQdjyEtvfzgE7SEKglUNiy/oNTCBHSAi4SGzZyQbxgbDEq+Nb
+        2CFsKYnP7/ZCxasldjWfgertYJS4ta2JCSJhLLF/6WSwOcwCmhLrd+lDhBUldv6eywixl0/i
+        3dceVohVvBIdbUIQJSoSl16/ZIJZdffJf2iwe0gcWdjJNoFRcRaSz2Yh+WYWkm9mISxewMiy
+        ilEstaA4Nz212LDAFB7Xyfm5mxjBSVPLcgfj9Lcf9A4xMnEwHmKU4GBWEuG9UOOYKMSbklhZ
+        lVqUH19UmpNafIjRFBjWE5mlRJPzgWk7ryTe0MTSwMTMyNjEwtDMUEmc99hry0QhgfTEktTs
+        1NSC1CKYPiYOTqkGpphrsw1f7Fyx7yiX+5bJ3Fcs1St7HCaz2F6wMmLMn2oockfj5nadNwW8
+        9lvfFkYtPW254Wv91xWWgctfpXHmLL3NzCwmHR/7fk7HfBGOe9dV97k/7dj94JiO+46Lh/Kk
+        D7EaPLJz/xSYrxAkK/99p8eP2ez+2tfmn3ZlF+fl6q4/YjA7SDo3LNvzi6F41/LUxwmfzKY1
+        65dFZOs8Olanfud08vyPiVn/V+7Xs5bm/Zo988PTiJiQNh/r6H9rZFv5H7u3rEm5136mStpm
+        2qyvXlv6bh683Gz13Nz3zY4YK9Vzz2y2H3sTe1jNpOSb5e+zeWKzlfoElddPnGGUyHPO8lNf
+        +Z5nh7sFDptcZ+f+osRSnJFoqMVcVJwIAKi7GgIjBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrALMWRmVeSWpSXmKPExsWy7bCSvC5DmEuiwY69jBYnn6xhs5i07gCT
+        xca3P5gsLu+aw2Zx5H8/o8XxteEObB6zGnrZPP6uesHssXjPSyaPO9f2sHl83iQXwBrFZZOS
+        mpNZllqkb5fAlbFxuX/BN7aK49PuMjcwfmHtYuTkkBAwkVj69zZ7FyMXh5DAbkaJnnfHmCES
+        UhKfn05l62LkALKFJQ4fLoaoecsosfVDA1izsIC9xOxP6xlBbBGBaImuW41sIDazQD+jxKNV
+        ohANsxklVi1dD9bAJqAjsf3bcSYQm1fATuLL+/PsIDaLgKpE591NLCC2qECkRNOJrWwQNYIS
+        J2c+AYtzCnhILHm3kQVigbrEn3mXmCFscYlbT+YzQdjyEtvfzmGewCg0C0n7LCQts5C0zELS
+        soCRZRWjZGpBcW56brFhgWFearlecWJucWleul5yfu4mRnCkaGnuYNy+6oPeIUYmDsZDjBIc
+        zEoivBdqHBOFeFMSK6tSi/Lji0pzUosPMUpzsCiJ817oOhkvJJCeWJKanZpakFoEk2Xi4JRq
+        YDKO2mr7cs+ZUlPtlzUL1FSaV7yUWdtz+8w09RcBqkp/Mg+tW2UtPLle+oK6Tt6SzaUPLS5a
+        1u3YwW6nm6m3l+2kacaHSR6r6zSfZx15seRk26eT9m4nfoe+rNb4fj17kopJkmrjl8f6e2S+
+        2DxVv5S4UPaM7+pfX4T6p9XPSvHb+T4nvGjXnblf5bMW3hXf0Hc2oeSZp4PmS+b5S8oOaa65
+        PCH+6Zfg1s9Ki04GPEpXfHb/jVvHZdX+377u/mG5Wgn+qzY+mbx9y+QjxTt3FJ6fvOnDFluG
+        UG193W3ldzjDsuLbf873F+7Vs/iupFrqY9Sl99W90ZQpMyR2L5tE7jNHLVdzrl3r193NYIhP
+        nKDEUpyRaKjFXFScCADZUlcUAwMAAA==
+X-CMS-MailID: 20210917084656epcas1p408e3c7055701fc81481bdf364f2ed893
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210916172004epcas1p2319884c6fcc67551399a4d0e2ba19cee
+References: <CGME20210916172004epcas1p2319884c6fcc67551399a4d0e2ba19cee@epcas1p2.samsung.com>
+        <20210916170511.137915-1-krzysztof.kozlowski@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-17 at 01:19:04 +0200, Yury Norov <yury.norov@gmail.com> wrote:
-> [CC Greg KH <gregkh@linuxfoundation.org>]
+On 9/17/21 2:05 AM, Krzysztof Kozlowski wrote:
+> The MODULE_DEVICE_TABLE already creates proper alias for platform
+> driver.  Having another MODULE_ALIAS causes the alias to be duplicated.
 > 
-> On Thu, Sep 16, 2021 at 10:53:39PM +0000, Song Bao Hua (Barry Song) wrote:
-> > 
-> > 
-> > > -----Original Message-----
-> > > From: Tobias Klauser [mailto:tklauser@distanz.ch]
-> > > Sent: Friday, September 17, 2021 10:27 AM
-> > > To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>; Jonathan Cameron
-> > > <jonathan.cameron@huawei.com>; tiantao (H) <tiantao6@hisilicon.com>; Song Bao
-> > > Hua (Barry Song) <song.bao.hua@hisilicon.com>
-> > > Cc: Andrew Morton <akpm@linux-foundation.org>; Andy Shevchenko
-> > > <andriy.shevchenko@linux.intel.com>; Yury Norov <yury.norov@gmail.com>; Peter
-> > > Zijlstra <peterz@infradead.org>; linux-kernel@vger.kernel.org
-> > > Subject: [PATCH] cpumask: Omit terminating null byte in
-> > > cpumap_print_{list,bitmask}_to_buf
-> > > 
-> > > The changes in the patch series [1] introduced a terminating null byte
-> > > when reading from cpulist or cpumap sysfs files, for example:
-> > > 
-> > >   $ xxd /sys/devices/system/node/node0/cpulist
-> > >   00000000: 302d 310a 00                             0-1..
-> > > 
-> > > Before this change, the output looked as follows:
-> > > 
-> > >   $ xxd /sys/devices/system/node/node0/cpulist
-> > >   00000000: 302d 310a                                0-1.
-> > 
-> > If we don't use xxd, I don't see any actual harm of this NULL byte
-> > by cat, lscpu, numactl etc. this doesn't break them at all.
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+
+Reviewed-by: Jaehoon Chung <jh80.chung@samsunhg.com>
+
+Best Regards,
+Jaehoon Chung
+
+> ---
+>  drivers/mmc/host/sdhci-s3c.c | 1 -
+>  1 file changed, 1 deletion(-)
 > 
-> Barry, Tobias' script that uses xxd is userspace. Linux kernel never breaks
-> userspace. 
-
-FWIW, the example using xxd was just to illustrate the issue in a
-concise way for the commit message. This is breaking other userspace
-programs as well. Originally, I discovered this because Kubernetes'
-kubelet was crashing on a bpf-next kernel. See [1] and following
-comments for more information:
-
-[1] https://github.com/cilium/cilium/pull/17394#issuecomment-920902042
-
-> > if we only want to make sure the output is exactly same with before
-> > for every single character, this patch is right.
+> diff --git a/drivers/mmc/host/sdhci-s3c.c b/drivers/mmc/host/sdhci-s3c.c
+> index 862f033d235d..9085f3932443 100644
+> --- a/drivers/mmc/host/sdhci-s3c.c
+> +++ b/drivers/mmc/host/sdhci-s3c.c
+> @@ -791,4 +791,3 @@ module_platform_driver(sdhci_s3c_driver);
+>  MODULE_DESCRIPTION("Samsung SDHCI (HSMMC) glue");
+>  MODULE_AUTHOR("Ben Dooks, <ben@simtec.co.uk>");
+>  MODULE_LICENSE("GPL v2");
+> -MODULE_ALIAS("platform:s3c-sdhci");
 > 
-> We don't want to make the output exactly the same. The "0,1" would
-> also work for the example above. But garbage characters following \0
-> is a bug that should be fixed.
 
-I think we also want to avoid the \0 itself, which is what this patch
-does and is in line with previous behavior. It also looks like all other
-sysfs files in that subtree expose the same content format (i.e. \n is
-the last character, not \0).
-
-Thanks,
-Tobias
