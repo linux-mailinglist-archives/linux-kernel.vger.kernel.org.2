@@ -2,228 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6190340F097
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 05:54:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8C8640F07D
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 05:48:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244266AbhIQDzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 23:55:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60978 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244137AbhIQDzJ (ORCPT
+        id S244106AbhIQDuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 23:50:04 -0400
+Received: from mail-lf1-f52.google.com ([209.85.167.52]:40648 "EHLO
+        mail-lf1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234543AbhIQDuC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 23:55:09 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E0A8C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 20:53:42 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id 17so8318755pgp.4
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 20:53:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=TGoc9aaZ7sLEp8beTZ83fWsgv448hw3NlquoSI1tIpc=;
-        b=GrlOcIkjOttoNyt9uAxssEzdAPK+Ix7mxC24S50e1mwslq3/78CCkciFGik4DFV4cj
-         Y26NzVH8UJlpOlNkU/9SwKWFgxgh4qhr2wD91IMhRSDTnoTz6Ndt6HgDNtwDGBTvfWhJ
-         Y2LYmib9j4LBm4lws5DnlY9sYToL9pHZ0ni3HlDaeIJ5RqtTbdPacjySTSihcJ6lfe0t
-         K9AkebQQ+zc3L+RUgtH2IeC4aUtiVhUub242sasjLXsqIN1M3yWbR9Ii9mZ3/Lo2FPBg
-         RJA5vtvHTP+M1k92Jj8dQjOqy7QtDPitcmAe2FHbVbxPxkw3vNUCbB6+wXj7fQjMRTnU
-         m/qw==
+        Thu, 16 Sep 2021 23:50:02 -0400
+Received: by mail-lf1-f52.google.com with SMTP id b15so8666546lfe.7
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 20:48:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=TGoc9aaZ7sLEp8beTZ83fWsgv448hw3NlquoSI1tIpc=;
-        b=Kxk7FeBmHcASGTol3UIcj6J1cSzajMLPFVsF82CfVRf6uv0uzKwmtD0MgB4648et+0
-         M3P6SmdUAPzAa9zSue+ICqCgDWNfOCdHHmtGD9vaWcD7iNEC18zjSGu9llJOjLrh4JLX
-         R3OUbVmzjFCfBXkiEWMo7zycNp+Y6dJJxtZNql4hqvslYnbZmH/6j+vfZhlXX5fa5fDP
-         yNK9yTR+/2WfWkov2BfNNU05RsDzYWf5HW/63sHJsPlJaHc1YW4wsr9DtrrOPKHCcc8V
-         WF7OGRc+hDKofK6SxX2Z4DnfKG/zAkNo5ORnfmPfBb3LJLyLnVg31tmvICoJ5ljlzgow
-         wiOQ==
-X-Gm-Message-State: AOAM531swshZ8Ns2p5oBOQjzjHhG2Wu+oRfjYwLFVd061ZMcoeKViSpr
-        sT9Fx03Wl70ss0GKnfexji2JOw==
-X-Google-Smtp-Source: ABdhPJw2rjqGkq6uMfbea6Dab9P9fY632YnCXZwAHBuNh8LPnCu/F6CXuSUOsP/hlCtD6TkiLwoP0g==
-X-Received: by 2002:aa7:9ac2:0:b0:443:a477:6684 with SMTP id x2-20020aa79ac2000000b00443a4776684mr4713577pfp.25.1631850821179;
-        Thu, 16 Sep 2021 20:53:41 -0700 (PDT)
-Received: from localhost.localdomain ([139.177.225.226])
-        by smtp.gmail.com with ESMTPSA id g12sm8997704pja.28.2021.09.16.20.53.34
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 16 Sep 2021 20:53:40 -0700 (PDT)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     mike.kravetz@oracle.com, akpm@linux-foundation.org,
-        osalvador@suse.de, mhocko@suse.com, song.bao.hua@hisilicon.com,
-        david@redhat.com, chenhuang5@huawei.com, bodeddub@amazon.com,
-        corbet@lwn.net, willy@infradead.org
-Cc:     duanxiongchun@bytedance.com, fam.zheng@bytedance.com,
-        smuchun@gmail.com, zhengqi.arch@bytedance.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH RESEND v2 4/4] selftests: vm: add a hugetlb test case
-Date:   Fri, 17 Sep 2021 11:48:15 +0800
-Message-Id: <20210917034815.80264-5-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
-In-Reply-To: <20210917034815.80264-1-songmuchun@bytedance.com>
-References: <20210917034815.80264-1-songmuchun@bytedance.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=61OxAUogSkIxWB3LFzIT2/uAznnOFi3ElTX70XMTJyw=;
+        b=aKHinXsbhUNCq4ZMhMT8IGzIlEUjstoc+YtSLBqTtgPhpFDSR1AQzuDBDK6fZ75iGI
+         fFR2g3W26L7xPYwagWxpiTFw0wX4oi5Bl74QlgUZbQVq3p6b7ct0kvRJ4kECV/4u3fyh
+         fVGLiES/5vvjHuGt9dEv9ygFzV6tjM+X/eX0WGTs06vUIB+LgMTWfRQN9fZGnd6KSnBv
+         gg69VdFMfnNsMqn/Xlpeyjw1rsgUTp5RQm6ux0bHFT9QaAcC9mfp6jnLg0I2iXPWd3v5
+         fbA/bpnlqEG+Zg9oP7mmeBzhdbFKEjXsTwlltwEhwoV9Z0oXXt1g30it4bF00f9ghZab
+         4+cw==
+X-Gm-Message-State: AOAM531VIWUFpJ73yOroEEhtmoWCfM1h56al5K/6zGZHCJKEewoVe9I5
+        BLpZszHarqhm0N4cY1D5xRkLQBN9R7pKzbZYy9M=
+X-Google-Smtp-Source: ABdhPJxi+3DcBAX8v0TMi1IjyzgzK4mQK7DOdBYFFt4RSgClpkGpa+I7SdJStP5+0NZTfLbUOhaKDYhLkCm8JXh0jHY=
+X-Received: by 2002:a2e:9798:: with SMTP id y24mr7484195lji.165.1631850519537;
+ Thu, 16 Sep 2021 20:48:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210730145957.7927-1-chang.seok.bae@intel.com>
+ <20210730145957.7927-13-chang.seok.bae@intel.com> <YR00U19168BGoRB9@zn.tnic>
+ <3181031.RqgVF4sTRC@tjmaciei-mobl5> <YR1HYRRN0HMTxXrw@zn.tnic>
+ <BCC327C2-CF9F-4910-B626-315E515E9A3A@intel.com> <YR14zq2LaExjhFR+@zn.tnic>
+ <CAJvTdKnhn8rOKUJ0VKvM08sFYkvmEsSWBsH2ynncxH9_z49bxA@mail.gmail.com> <YS0V//png0YVPWHG@zn.tnic>
+In-Reply-To: <YS0V//png0YVPWHG@zn.tnic>
+From:   Len Brown <lenb@kernel.org>
+Date:   Thu, 16 Sep 2021 23:48:28 -0400
+Message-ID: <CAJvTdKnXy9D=CWHhYEC=W8=+O=ebD9katC5uKXLYCoErAYMQvw@mail.gmail.com>
+Subject: Re: [PATCH v9 12/26] x86/fpu/xstate: Use feature disable (XFD) to
+ protect dynamic user state
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        "Macieira, Thiago" <thiago.macieira@intel.com>,
+        "Lutomirski, Andy" <luto@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "Brown, Len" <len.brown@intel.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the head vmemmap page frame associated with each HugeTLB page is
-reused, we should hide the PG_head flag of tail struct page from the
-user. Add a tese case to check whether it is work properly.
+On Mon, Aug 30, 2021 at 1:31 PM Borislav Petkov <bp@alien8.de> wrote:
+>
+> On Tue, Aug 24, 2021 at 07:22:18PM -0400, Len Brown wrote:
+> > We are forced to complicate their life for AMX (and subsequent features)
+> > because of the legacy Linux signal ABI.
+>
+> No, we need to design this interface properly because you folks went and
+> put this AMX thing in xstates. Where it doesn't belong at all.
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- tools/testing/selftests/vm/vmemmap_hugetlb.c | 139 +++++++++++++++++++++++++++
- 1 file changed, 139 insertions(+)
- create mode 100644 tools/testing/selftests/vm/vmemmap_hugetlb.c
+Years ago, somebody, other than you or I, decided to use uncompacted
+XSTATE on the Linux signal stack.
 
-diff --git a/tools/testing/selftests/vm/vmemmap_hugetlb.c b/tools/testing/selftests/vm/vmemmap_hugetlb.c
-new file mode 100644
-index 000000000000..b6e945bf4053
---- /dev/null
-+++ b/tools/testing/selftests/vm/vmemmap_hugetlb.c
-@@ -0,0 +1,139 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * A test case of using hugepage memory in a user application using the
-+ * mmap system call with MAP_HUGETLB flag.  Before running this program
-+ * make sure the administrator has allocated enough default sized huge
-+ * pages to cover the 2 MB allocation.
-+ *
-+ * For ia64 architecture, Linux kernel reserves Region number 4 for hugepages.
-+ * That means the addresses starting with 0x800000... will need to be
-+ * specified.  Specifying a fixed address is not required on ppc64, i386
-+ * or x86_64.
-+ */
-+#include <stdlib.h>
-+#include <stdio.h>
-+#include <unistd.h>
-+#include <sys/mman.h>
-+#include <fcntl.h>
-+
-+#define MAP_LENGTH		(2UL * 1024 * 1024)
-+
-+#ifndef MAP_HUGETLB
-+#define MAP_HUGETLB		0x40000	/* arch specific */
-+#endif
-+
-+#define PAGE_SIZE		4096
-+
-+#define PAGE_COMPOUND_HEAD	(1UL << 15)
-+#define PAGE_COMPOUND_TAIL	(1UL << 16)
-+#define PAGE_HUGE		(1UL << 17)
-+
-+#define HEAD_PAGE_FLAGS		(PAGE_COMPOUND_HEAD | PAGE_HUGE)
-+#define TAIL_PAGE_FLAGS		(PAGE_COMPOUND_TAIL | PAGE_HUGE)
-+
-+#define PM_PFRAME_BITS		55
-+#define PM_PFRAME_MASK		~((1UL << PM_PFRAME_BITS) - 1)
-+
-+/* Only ia64 requires this */
-+#ifdef __ia64__
-+#define MAP_ADDR		(void *)(0x8000000000000000UL)
-+#define MAP_FLAGS		(MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB | MAP_FIXED)
-+#else
-+#define MAP_ADDR		NULL
-+#define MAP_FLAGS		(MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB)
-+#endif
-+
-+static void write_bytes(char *addr, size_t length)
-+{
-+	unsigned long i;
-+
-+	for (i = 0; i < length; i++)
-+		*(addr + i) = (char)i;
-+}
-+
-+static unsigned long virt_to_pfn(void *addr)
-+{
-+	int fd;
-+	unsigned long pagemap;
-+
-+	fd = open("/proc/self/pagemap", O_RDONLY);
-+	if (fd < 0)
-+		return -1UL;
-+
-+	lseek(fd, (unsigned long)addr / PAGE_SIZE * sizeof(pagemap), SEEK_SET);
-+	read(fd, &pagemap, sizeof(pagemap));
-+	close(fd);
-+
-+	return pagemap & ~PM_PFRAME_MASK;
-+}
-+
-+static int check_page_flags(unsigned long pfn)
-+{
-+	int fd, i;
-+	unsigned long pageflags;
-+
-+	fd = open("/proc/kpageflags", O_RDONLY);
-+	if (fd < 0)
-+		return -1;
-+
-+	lseek(fd, pfn * sizeof(pageflags), SEEK_SET);
-+
-+	read(fd, &pageflags, sizeof(pageflags));
-+	if ((pageflags & HEAD_PAGE_FLAGS) != HEAD_PAGE_FLAGS) {
-+		close(fd);
-+		printf("Head page flags (%lx) is invalid\n", pageflags);
-+		return -1;
-+	}
-+
-+	for (i = 1; i < MAP_LENGTH / PAGE_SIZE; i++) {
-+		read(fd, &pageflags, sizeof(pageflags));
-+		if ((pageflags & TAIL_PAGE_FLAGS) != TAIL_PAGE_FLAGS ||
-+		    (pageflags & HEAD_PAGE_FLAGS) == HEAD_PAGE_FLAGS) {
-+			close(fd);
-+			printf("Tail page flags (%lx) is invalid\n", pageflags);
-+			return -1;
-+		}
-+	}
-+
-+	close(fd);
-+
-+	return 0;
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	void *addr;
-+	unsigned long pfn;
-+
-+	addr = mmap(MAP_ADDR, MAP_LENGTH, PROT_READ | PROT_WRITE, MAP_FLAGS, -1, 0);
-+	if (addr == MAP_FAILED) {
-+		perror("mmap");
-+		exit(1);
-+	}
-+
-+	/* Trigger allocation of HugeTLB page. */
-+	write_bytes(addr, MAP_LENGTH);
-+
-+	pfn = virt_to_pfn(addr);
-+	if (pfn == -1UL) {
-+		munmap(addr, MAP_LENGTH);
-+		perror("virt_to_pfn");
-+		exit(1);
-+	}
-+
-+	printf("Returned address is %p whose pfn is %lx\n", addr, pfn);
-+
-+	if (check_page_flags(pfn) < 0) {
-+		munmap(addr, MAP_LENGTH);
-+		perror("check_page_flags");
-+		exit(1);
-+	}
-+
-+	/* munmap() length of MAP_HUGETLB memory must be hugepage aligned */
-+	if (munmap(addr, MAP_LENGTH)) {
-+		perror("munmap");
-+		exit(1);
-+	}
-+
-+	return 0;
-+}
--- 
-2.11.0
+Years ago, somebody else, also other than you or I, decided that AMX should
+be implemented using XSTATE.
 
+Today, we are all working together to deal with this collision, in as
+graceful a manner as possible.  Yes?
+
+> > We require that new apps invoke a system call to tell us that they
+> > are not indeed a legacy program, but that they are a program that
+> > understands if they use an alt-sig-stack that it must be big enough to
+> > handle whatever current hardware requires.
+>
+> Yes, because of the reason I gave above. If no additional 8K fat wasn't
+> an xstate, we wouldn't be having this conversation.
+
+While not as huge, AVX-512 has the  same XSTATE bloat issue as AMX --
+including the demonstrated ability to overflow the signal stack and kill apps.
+
+The silver lining is that due to the AMX enabling effort, we updated
+the glibc ABI
+to comprehend variable sigstacksize.  So glibc 2.34, which released Aug 1st,
+comprehends whatever the current hardware supports.
+
+> > The secondary motivation for the system call is the desire to give the
+> > kernel a hook so that it can refuse to give permission for some apps
+> > to use AMX, should the need arise.
+>
+> Yes.
+>
+> > > prctl(GET_FEATURES_WITH_KERNEL_ASSISTANCE);
+> >
+> > The problem is that it adds zero value over the currently used xgetbv(XCR0).
+> > As it adds no value, programmers will not use it.
+
+[expletive deleted]
+
+> First of all, it is a new interface we're introducing and if it is
+> there from the get-go along with examples how to use it and proper
+> documentation, people will.
+
+The application people I talk to are not asking for more system calls.
+They would prefer zero system calls (which was our initial proposal).
+
+> Secondly, from a previous email of mine: "What if this modus operandi of
+> features userspace can use with kernel assistance but need an explicit
+> request and are off otherwise, gets extended beyond XSAVE-managed
+> features?"
+>
+> In that case you can xgetbv() all you want but the new fat feature is
+> not even in XCR0. So *then* you *have* to introduce a new prctl() to
+> query supported features. And right then and there you wish you would've
+> done that from the very beginning!
+
+Sorry, I don't recall seeing that previous note -- maybe it flew past
+when I was out.
+
+I have no problem with the quest to develop a universal ABI
+to layer over or otherwise replace CPUID and XCR0 and allow kernel override etc.
+
+My point is simply that I haven't seen a case where somebody wanting to use AMX
+would need it, and so I don't think developing such an ABI should gate
+AMX support.
+
+thanks,
+Len Brown, Intel Open Source Technology Center
