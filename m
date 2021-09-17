@@ -2,37 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3695E40F9E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 16:04:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C69340F9E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 16:04:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242109AbhIQOF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 10:05:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39944 "EHLO mail.kernel.org"
+        id S242113AbhIQOGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 10:06:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39972 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241774AbhIQOFx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 10:05:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D83360E08;
-        Fri, 17 Sep 2021 14:04:30 +0000 (UTC)
+        id S241849AbhIQOFz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 10:05:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D6BEF6103B;
+        Fri, 17 Sep 2021 14:04:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631887470;
-        bh=Ti2hG+uohaS5cflM277fb1zbK8m1rvMqeDlNJWBI0yI=;
+        s=k20201202; t=1631887473;
+        bh=Hd6qofhVOm0wotTJdXOamHlQNz4ugqpf6apHuNTiVHE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=npPYpJQXtYOoqbc0I9+3y+vCs2phSiVQKR6UN9WLgAX9STVZ4CJ8b87t4y33Qh7TS
-         Ql+oKe/leq1wFN3pA5W4mVIIbT+JDJDGpWJHFJgNtxHViljpL7WqmcB8AuZcf9uqwM
-         jb7USg0mbSNCkO5ybOTZeRZayc/aKli7zxlQMtb6J/AlJkJ1Gt52QGZ6nxcVFoGCUX
-         kxPYTu+zbsci7Qlm1hmwYbGg5+lN5OAhHDX4v7V4Fe1PVv+/3458FN2KAzfKGkr5i3
-         bR1anisnCIc/2poTzJGDZ2E9XzW2T+lQE8l9+HUwpQKmOJkpa4xT9+E6hPgT8nheW+
-         RbcioDOiljOUA==
+        b=inxBcg1T2FGyuiUq8qDq81WeWkAh3mxST/gA3NELlflR8s0g/JoyJc4amrhhKnJJU
+         yhDHe+R/A/zun0pdpiJ3jVimKqq9GSYm8mJkQlzaW8V8rZOCgybS/po/JnQ05k3FRl
+         adoC6sFnU7hmnNOSoienC0ztzFCOf2b6dIHHzXuNnTNEGZ/f+zmrEjA7u1OsLVPop0
+         X/aUpTnzgWVy9x4FFw9j4Goi1yFmQtU8WCl6jXLY82SRxlLKULqsiggWEJkeAQzo8B
+         Bwxl53N/y0z4nzfwkl/KHUj5erRtYqoJr/3weZGlpJE1l/yv6QdXoN6IahwMbqlgi7
+         prFKfyrV4EeIw==
 From:   Mark Brown <broonie@kernel.org>
 To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        linux-kernel@vger.kernel.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>
 Cc:     Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] spi: rspi: drop unneeded MODULE_ALIAS
-Date:   Fri, 17 Sep 2021 15:03:41 +0100
-Message-Id: <163188742108.50671.15947736105193832897.b4-ty@kernel.org>
+Subject: Re: [RFT][PATCH] regulator: max14577: Revert "regulator: max14577: Add proper module aliases strings"
+Date:   Fri, 17 Sep 2021 15:03:42 +0100
+Message-Id: <163188734684.50615.3711547908292984771.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210916164423.134603-1-krzysztof.kozlowski@canonical.com>
-References: <20210916164423.134603-1-krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20210916144102.120980-1-krzysztof.kozlowski@canonical.com>
+References: <20210916144102.120980-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -40,22 +44,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Sep 2021 18:44:22 +0200, Krzysztof Kozlowski wrote:
-> The MODULE_DEVICE_TABLE already creates proper alias for platform
-> driver.  Having another MODULE_ALIAS causes the alias to be duplicated.
+On Thu, 16 Sep 2021 16:41:02 +0200, Krzysztof Kozlowski wrote:
+> This reverts commit 0da6736ecd10b45e535b100acd58df2db4c099d8.
 > 
+> The MODULE_DEVICE_TABLE already creates proper alias.  Having another
+> MODULE_ALIAS causes the alias to be duplicated:
 > 
+>   $ modinfo max14577-regulator.ko
+> 
+> [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
 Thanks!
 
-[1/2] spi: rspi: drop unneeded MODULE_ALIAS
-      commit: 98c29b35a7e3b1ef7e64a8dd05a4383ea2e2ac72
-[2/2] spi: sh-msiof: drop unneeded MODULE_ALIAS
-      commit: 3323129a6db96b6878a260601b30651ca40caa54
+[1/1] regulator: max14577: Revert "regulator: max14577: Add proper module aliases strings"
+      commit: dc9660590d106bb58d145233fffca4efadad3655
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
