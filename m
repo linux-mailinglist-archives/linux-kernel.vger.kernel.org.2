@@ -2,74 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7982E40EEF1
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 03:52:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B33E40EEF2
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 03:54:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242457AbhIQByO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 21:54:14 -0400
-Received: from mail-il1-f169.google.com ([209.85.166.169]:37390 "EHLO
-        mail-il1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230135AbhIQByM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 21:54:12 -0400
-Received: by mail-il1-f169.google.com with SMTP id i13so8633909ilm.4;
-        Thu, 16 Sep 2021 18:52:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=q4KnpOzY42vEtYkIMK54mzHMAcXP97zORxIlI/GXoig=;
-        b=c94ufg/1vnTZWxLQRHOczsl2CzRVntT0PR6RcmyY8G8waTwoVaAxZgohss0WZLZ6Hc
-         xTwrnUka1ajCs1Vg6U++IGSSBaLarZE+Q4WTUJWIIAgz1tMJTKBXVjE6HaY63bKrMCiF
-         Bt8euqye7/TZSh5wswysXk8jJj6w0B+MsdE4W1jpy20yT6G5XSa67eobX86X4VThyQPf
-         2rpwT0D7rfuNhvJ/k52trnAUAIT5JiAC/KYwQ/krXjmhJSi1w7h8fab7Gyf264qEqfdI
-         fRJNniy1DkpX6Bq57yQDWvAIksnJWDT+c2kVKZZNmrzqEa7Ub+kOSHf13t5WOQ7reWoz
-         IZyA==
-X-Gm-Message-State: AOAM533fsSMZ/pPTcfI3ABnRUWnb+x03wQyaTH3jU5SXdJ+X9XXfE1hO
-        aRSi3hoaA8GHfYCKb0HtV4R+9M2P3w==
-X-Google-Smtp-Source: ABdhPJzfj0/r9qZ4uVyrAf1j2qwI9RX6IlADIpwKGmsqv00X42lchpVkYRCfoLYGkD32/G0fiDrabw==
-X-Received: by 2002:a05:6e02:d05:: with SMTP id g5mr6320404ilj.34.1631843571132;
-        Thu, 16 Sep 2021 18:52:51 -0700 (PDT)
-Received: from robh.at.kernel.org (96-84-70-89-static.hfc.comcastbusiness.net. [96.84.70.89])
-        by smtp.gmail.com with ESMTPSA id b16sm2628875ila.1.2021.09.16.18.52.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 18:52:50 -0700 (PDT)
-Received: (nullmailer pid 1600391 invoked by uid 1000);
-        Fri, 17 Sep 2021 01:52:49 -0000
-Date:   Thu, 16 Sep 2021 20:52:49 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yang Li <abaci-bugfix@linux.alibaba.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Cai Huoqing <caihuoqing@baidu.com>, linux-mmc@vger.kernel.org
-Subject: Re: [PATCH v2 05/23] dt-bindings: mmc: update mmc-card.yaml reference
-Message-ID: <YUP08Zw/Bgi+zoBK@robh.at.kernel.org>
-References: <cover.1631785820.git.mchehab+huawei@kernel.org>
- <820bb7a1d7e0e51cbea72c9bee6bce806427d1f3.1631785820.git.mchehab+huawei@kernel.org>
+        id S242479AbhIQB4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 21:56:00 -0400
+Received: from mx22.baidu.com ([220.181.50.185]:55850 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230135AbhIQBz7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 21:55:59 -0400
+Received: from BC-Mail-Ex25.internal.baidu.com (unknown [172.31.51.19])
+        by Forcepoint Email with ESMTPS id D007E98AF78AADBE57E8;
+        Fri, 17 Sep 2021 09:54:34 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BC-Mail-Ex25.internal.baidu.com (172.31.51.19) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2242.12; Fri, 17 Sep 2021 09:54:34 +0800
+Received: from localhost (172.31.63.8) by BJHW-MAIL-EX27.internal.baidu.com
+ (10.127.64.42) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Fri, 17
+ Sep 2021 09:54:34 +0800
+Date:   Fri, 17 Sep 2021 09:54:34 +0800
+From:   Cai Huoqing <caihuoqing@baidu.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+CC:     Dong Aisheng <aisheng.dong@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Stefan Agner <stefan@agner.ch>, open list:
+        GPIO SUBSYSTEM <linux-gpio@vger.kernel.org>, ;
+        linux-kernel <linux-kernel@vger.kernel.org>
+Illegal-Object: Syntax error in CC: address found on vger.kernel.org:
+        CC:     ;linux-kernel <linux-kernel@vger.kernel.org>
+                        ^-missing semicolon to end mail group, extraneous tokens in mailbox, missing end of mailbox
+Subject: Re: [PATCH] pinctrl: freescale: Add helper dependency on COMPILE_TEST
+Message-ID: <20210917015434.GA17483@LAPTOP-UKSR4ENP.internal.baidu.com>
+References: <20210825082251.2484-1-caihuoqing@baidu.com>
+ <CACRpkdYekS+2WKoyT5ssSp28XR4pxb+4yMZnP9PPRXpG+UE-LA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
-In-Reply-To: <820bb7a1d7e0e51cbea72c9bee6bce806427d1f3.1631785820.git.mchehab+huawei@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACRpkdYekS+2WKoyT5ssSp28XR4pxb+4yMZnP9PPRXpG+UE-LA@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [172.31.63.8]
+X-ClientProxiedBy: BC-Mail-Ex27.internal.baidu.com (172.31.51.21) To
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Sep 2021 11:55:04 +0200, Mauro Carvalho Chehab wrote:
-> Changeset 922eefdafc80 ("dt-bindings: mmc: Convert MMC Card binding to a schema")
-> renamed: Documentation/devicetree/bindings/mmc/mmc-card.txt
-> to: Documentation/devicetree/bindings/mmc/mmc-card.yaml.
+On 17 9月 21 00:07:32, Linus Walleij wrote:
+> On Wed, Aug 25, 2021 at 10:23 AM Cai Huoqing <caihuoqing@baidu.com> wrote:
 > 
-> Update its cross-reference accordingly.
+> > it's helpful for complie test in other platform(e.g.X86)
+> >
+> > Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
 > 
-> Fixes: 922eefdafc80 ("dt-bindings: mmc: Convert MMC Card binding to a schema")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  drivers/mmc/host/omap_hsmmc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> It seems weird to only enable this on a few select subdrivers rather
+> than all of the Freescale drivers?
+The others seem to depend on SOC_IMX arch related headers
+but it's ok for ARCH_IMX related to use COMPILE_TEST.
 > 
-
-Applied, thanks!
+> (Also: the Freescale maintainers are very silent, some feedback
+> would be helpful.)
+> 
+> Yours,
+> Linus Walleij
