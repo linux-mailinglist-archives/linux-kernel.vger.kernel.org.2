@@ -2,156 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1655040F340
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 09:28:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1DA040F347
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 09:29:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240159AbhIQH31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 03:29:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52650 "EHLO
+        id S240447AbhIQHbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 03:31:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240113AbhIQH3Z (ORCPT
+        with ESMTP id S236843AbhIQHbL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 03:29:25 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AE14C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 00:28:03 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mR8Ht-0006D4-G5; Fri, 17 Sep 2021 09:27:57 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mR8Hr-0006Xr-8F; Fri, 17 Sep 2021 09:27:55 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mR8Hr-0004PR-6m; Fri, 17 Sep 2021 09:27:55 +0200
-Date:   Fri, 17 Sep 2021 09:27:55 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     "D, Lakshmi Sowjanya" <lakshmi.sowjanya.d@intel.com>,
-        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        "open list:PWM SUBSYSTEM" <linux-pwm@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Saha, Tamal" <tamal.saha@intel.com>, bala.senthil@intel.com,
-        Dipen Patel <dipenp@nvidia.com>
-Subject: Re: [RFC PATCH v1 07/20] gpio: Add output event generation method to
- GPIOLIB and PMC Driver
-Message-ID: <20210917072755.d4ynxkp4scxrk6rq@pengutronix.de>
-References: <20210824164801.28896-1-lakshmi.sowjanya.d@intel.com>
- <20210824164801.28896-8-lakshmi.sowjanya.d@intel.com>
- <CACRpkdYJkPgaz-BvQ1X0PHRCCbn0hrMDabouDwHkn+pr9d-dSQ@mail.gmail.com>
+        Fri, 17 Sep 2021 03:31:11 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2026FC061574;
+        Fri, 17 Sep 2021 00:29:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=17mkqfuKdfnPg9YSAeGWHc/O4GLOFEnsaFTJ4hUb1Qc=; b=R175PzEhjMPDTuiig9T+/8FvBN
+        wCwITbQjI86keC2UZcKL3oHklcXqScPxlhfsprjzgtQHXNUwlN8OYqdLQ7ztxGmPqLPGGL1HvK5TW
+        8un1CwadAtDZMXP8kHm7KJ60CKQlzq6kBsXmSOCidcFaqUG49FGQ/Q91WQSCSzrudnHUpN1n/dtAK
+        3oCiHTPea1eYl35kiZcqB3afHwTSqwkSRYpje8CyTQKsMtTXOUjDfhQXOeCpbGDLw3jXUuiLQwU+o
+        fpmbPjE5lGD64IJe7KimQfKhdgCV7/TWkKj798HvtN0fT0soP/DzPI91f4RdvEreoDEx02Cp2qq0O
+        NM1LgiIg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mR8Ig-003p42-0g; Fri, 17 Sep 2021 07:28:46 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 64E5430031A;
+        Fri, 17 Sep 2021 09:28:42 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id EBC3F2B27F98D; Fri, 17 Sep 2021 09:28:41 +0200 (CEST)
+Date:   Fri, 17 Sep 2021 09:28:41 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        Artem Kashkanov <artem.kashkanov@intel.com>,
+        Like Xu <like.xu.linux@gmail.com>,
+        Zhu Lingshan <lingshan.zhu@intel.com>
+Subject: Re: [PATCH v2 00/13] perf: KVM: Fix, optimize, and clean up callbacks
+Message-ID: <YURDqVZ1UXKCiKPV@hirez.programming.kicks-ass.net>
+References: <20210828003558.713983-1-seanjc@google.com>
+ <20210828201336.GD4353@worktop.programming.kicks-ass.net>
+ <YUO5J/jTMa2KGbsq@google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="riqk2pxwp7ut5zxn"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACRpkdYJkPgaz-BvQ1X0PHRCCbn0hrMDabouDwHkn+pr9d-dSQ@mail.gmail.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <YUO5J/jTMa2KGbsq@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 16, 2021 at 09:37:43PM +0000, Sean Christopherson wrote:
+> On Sat, Aug 28, 2021, Peter Zijlstra wrote:
 
---riqk2pxwp7ut5zxn
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Argh, sorry, I somehow managed to miss all of your replies.  I'll get back to
+> this series next week.  Thanks for the quick response!
+> 
+> > Lets keep the whole intel_pt crud inside x86...
+> 
+> In theory, I like the idea of burying intel_pt inside x86 (and even in
+> Intel+VMX code for the most part), but the actual implementation is a
+> bit gross.  Because of the whole "KVM can be a module" thing,
 
-Hello,
+ARGH!! we should really fix that. I've heard other archs have made much
+better choices here.
 
-On Thu, Sep 16, 2021 at 11:42:04PM +0200, Linus Walleij wrote:
-> Hi Lakshmi,
->=20
-> On Tue, Aug 24, 2021 at 6:48 PM <lakshmi.sowjanya.d@intel.com> wrote:
->=20
-> > From: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
-> >
-> > Intel Timed I/O hardware supports output scheduled in hardware. Enable
-> > this functionality using GPIOlib
-> >
-> > Adds GPIOlib generate_output() hook into the driver. The driver is
-> > supplied with a timestamp in terms of realtime system clock (the same
-> > used for input timestamping). The driver must know how to translate this
-> > into a timebase meaningful for the hardware.
-> >
-> > Adds userspace write() interface. Output can be selected using the line
-> > event create ioctl. The write() interface takes a single timestamp
-> > event request parameter. An output edge rising or falling is generated
-> > for each event request.
-> >
-> > The user application supplies a trigger time in terms of the realtime
-> > clock the driver converts this into the corresponding ART clock value
-> > that is used to 'arm' the output.
-> >
-> > Work around device quirk that doesn't allow the output to be explicitly
-> > set. Instead, count the output edges and insert an additional edge as
-> > needed to reset the output to zero.
-> >
-> > Co-developed-by: Christopher Hall <christopher.s.hall@intel.com>
-> > Signed-off-by: Christopher Hall <christopher.s.hall@intel.com>
-> > Signed-off-by: Tamal Saha <tamal.saha@intel.com>
-> > Signed-off-by: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
-> > Reviewed-by: Mark Gross <mgross@linux.intel.com>
->=20
-> So this is some street organ machine that generates sequences
-> with determined timing between positive and negative edges
-> right?
->=20
-> I can't see how this hardware is different from a PWM, or well
-> I do to some extent, you can control the period of several
-> subsequent waves, but that is really just an elaborate version
-> of PWM in my book.
+> either
+> the static call and __static_call_return0 would need to be exported,
+> or a new register/unregister pair would have to be exported.
 
-=46rom looking in the patch I think this is more versatile than the PWM
-framework abstracts. I wonder if there is a usecase for the
-functionality that cannot be expressed using pwm_apply_state?!
+So I don't mind exporting __static_call_return0, but exporting a raw
+static_call is much like exporting a function pointer :/
 
-I remember we had approaches before that implemented repeating patterns
-(something like: active for 5ms, inactive for 10 ms, active for 30 ms,
-inactive for 10 ms, repeat) and limiting the number of periods
-(something like: .duty_cycle =3D 5ms, .period =3D 20ms, after 5 periods go
-into inactive state). These were considered to be too special to be
-abstracted in drivers/pwm.
+> The unregister path would also need its own synchronize_rcu().  In general, I
+> don't love duplicating the logic, but it's not the end of the world.
+> 
+> Either way works for me.  Paolo or Peter, do either of you have a preference?
 
-> It seems to me that this part of the functionality belongs in the
-> PWM subsystem which already has interfaces for similar
-> things, and you should probably extend PWM to handle
-> random waveforms rather than trying to shoehorn this
-> into the GPIO subsystem.
+Can we de-feature kvm as a module and only have this PT functionality
+when built-in? :-)
 
-I agree that GPIO is a worse candidate than PWM to abstract that. But
-I'm not convinced (yet?) that it's a good idea to extend PWM
-accordingly.
 
-Best regards
-Uwe
+> > ---
+> > Index: linux-2.6/arch/x86/events/core.c
+> > ===================================================================
+> > --- linux-2.6.orig/arch/x86/events/core.c
+> > +++ linux-2.6/arch/x86/events/core.c
+> > @@ -92,7 +92,7 @@ DEFINE_STATIC_CALL_RET0(x86_pmu_guest_ge
+> >  
+> >  DEFINE_STATIC_CALL_RET0(x86_guest_state, *(perf_guest_cbs->state));
+> >  DEFINE_STATIC_CALL_RET0(x86_guest_get_ip, *(perf_guest_cbs->get_ip));
+> > -DEFINE_STATIC_CALL_RET0(x86_guest_handle_intel_pt_intr, *(perf_guest_cbs->handle_intel_pt_intr));
+> > +DEFINE_STATIC_CALL_RET0(x86_guest_handle_intel_pt_intr, unsigned int (*)(void));
+> 
+> FWIW, the param needs to be a raw function, not a function pointer. 
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+Yeah, I keep making that mistake.. and I wrote the bloody thing :/
 
---riqk2pxwp7ut5zxn
-Content-Type: application/pgp-signature; name="signature.asc"
+I have a 'fix' for that, but I need to finish that and also flag-day
+change :-(
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmFEQ3cACgkQwfwUeK3K
-7AnLYQf9GjzSXlKt9YzS04WE2zmEQ28c5pFcvP2AuC1KNzcI+jIIAdp5e4IUltNL
-U9n1Ghs7cUbiHNelhrSfCD3RYZU2uDJ8zyFa5gbQU2CYnNbDzQghefSWphfepB3s
-XABiqd7KSB8nV7ozZJjnA0Df8XDmPvZ7hJ7nOU3Fp19wW0qm28KJ+Dmof+8EzRf2
-kd3QMMdzFZaHvMt14T5uYr205VdwYhZBVntnqNHoXBVMFGkwPhCx18fzZ+5LXBTW
-KcpveBgQPV7U2y9oXpGH7gsi85SfmpBQ+BCaDmSvfNQ6CXfBmClBFV1fUKfHxKsi
-AqZ/iyU9HybkRXEYZfJM6NnL4iE3Vw==
-=s0o9
------END PGP SIGNATURE-----
-
---riqk2pxwp7ut5zxn--
+  https://lkml.kernel.org/r/YS+0eIeAJsRRArk4@hirez.programming.kicks-ass.net
