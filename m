@@ -2,109 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87FBC40FC68
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 17:32:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE72040FC5F
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 17:31:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240317AbhIQPdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 11:33:35 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:60776 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240032AbhIQPdd (ORCPT
+        id S239181AbhIQPc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 11:32:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234687AbhIQPc1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 11:33:33 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id C08A62216C;
-        Fri, 17 Sep 2021 15:32:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631892730; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=3aQt1NizGpK2GW0zdpJh8dkgyJAPuWomew7Rj90QvRI=;
-        b=XLml275+eRGdEmg22mcGTOWpusEPiJfJlmEN8ofkm6hMrcLOMtuCtH5oddnnNrbPCCBUVq
-        TW5oLM8xohyGgT0hAZFJUcwR1cA+ZEFw5Y4zmuBpnbxFNPEFRF4Ef9q9IYGfW8e0k9taLA
-        MedhkH3m8GUaVzziD6FZJW1TShjYHuk=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8C1E813C3D;
-        Fri, 17 Sep 2021 15:32:10 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id K4JJIfq0RGF5OAAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Fri, 17 Sep 2021 15:32:10 +0000
-From:   =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
-To:     linux-kernel@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Phil Auld <pauld@redhat.com>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Odin Ugedal <odin@uged.al>, Rik van Riel <riel@surriel.com>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>
-Subject: [PATCH v3] sched/fair: Add ancestors of unthrottled undecayed cfs_rq
-Date:   Fri, 17 Sep 2021 17:30:37 +0200
-Message-Id: <20210917153037.11176-1-mkoutny@suse.com>
-X-Mailer: git-send-email 2.32.0
+        Fri, 17 Sep 2021 11:32:27 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38DE8C061764
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:31:05 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id g11so9070272qtk.5
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:31:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=poorly.run; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=7X1afZ73VKSyODOmfKxOaEasFjcfN4b6MQLd6Hy3k8E=;
+        b=Er3xcMkHW0Vd5RfakskLkNxvu6I+CSGw4v7JtnwtV+IUFBr19q+6slAsRatI7PbFTk
+         9VT0CMP4hPoWeZ4JgRzCV0XT7vaF8r3bSRZpgo4kIx8hyzfrvkC5Z/s2W8EOpwNmpDgS
+         qEzdPEH8KT1m1/62h3M4j1Zc05hlau/qAgt2dIQqae+jvCXHdW+u2wR5hKU2lTgc1ZvP
+         3zYIBGcvDAN/C9kDi+ykBi/zazwH7XO9UxyVj3zG33fT06KJelUzUlO+R2WacTqIYyB0
+         aL3EkSwp5VDt6wJ7COgzOzgrGhpDskS57wTQ38WZouFAtyJtEdQf78lov2eDmfFmFhZV
+         HwGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=7X1afZ73VKSyODOmfKxOaEasFjcfN4b6MQLd6Hy3k8E=;
+        b=3C6h/ugxPHGZWVCzYORJCvecgJhsXI6JgIK2qjlG6mOEsRV2QeDtiojZ+PA5VWMT5E
+         nT+xmiq+AEEzhh9tBrfezxuRc9FvvbPQZh4FhHkM1xrTd1iFUbkruRRIOAEzmrjB1zaa
+         7jndp3V96Yxdxvfg3wL7QO9QSuU6uF5S5OwOV9rVHO2ZZHAjRZn0wkVochyiRJsWXHPV
+         EnG2AbU8cTWnJnMG4frrz9YkviypG0lyqVJph7QJos1btyPM3nXPk4oJKAxy9wWf5tyv
+         B1I+eZH1xC0SYQs/oh4q2hXHHwkaUDU8FkKBWsOwRST/tX67NpIkGoymMLG+IjaUdsUd
+         68IA==
+X-Gm-Message-State: AOAM5305zUz76cZaspAq2q3thjGpghW77ljZMoYnoZ1UE1aYD7Et5haX
+        0HrT/iFBZw4c4H2TZD4baVp2EA==
+X-Google-Smtp-Source: ABdhPJwjahZ1TqeH62g039cRCxfBYrWcC+lhlSDSdnE4I9J7ju+z6wB1QZ8H/+6isc91rxEeD3ZpcQ==
+X-Received: by 2002:ac8:7cb:: with SMTP id m11mr11330316qth.72.1631892664440;
+        Fri, 17 Sep 2021 08:31:04 -0700 (PDT)
+Received: from localhost ([167.100.64.199])
+        by smtp.gmail.com with ESMTPSA id 69sm5573766qke.55.2021.09.17.08.31.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 17 Sep 2021 08:31:04 -0700 (PDT)
+Date:   Fri, 17 Sep 2021 11:31:02 -0400
+From:   Sean Paul <sean@poorly.run>
+To:     Fernando Ramos <greenfoo@u92.eu>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        sean@poorly.run, linux-doc@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+Subject: Re: [PATCH 02/15] dmr/i915: cleanup: drm_modeset_lock_all_ctx() -->
+ DRM_MODESET_LOCK_ALL_BEGIN()
+Message-ID: <20210917153102.GC2515@art_vandelay>
+References: <20210916211552.33490-1-greenfoo@u92.eu>
+ <20210916211552.33490-3-greenfoo@u92.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210916211552.33490-3-greenfoo@u92.eu>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit a7b359fc6a37 ("sched/fair: Correctly insert cfs_rq's to
-list on unthrottle") we add cfs_rqs with no runnable tasks but not fully
-decayed into the load (leaf) list. We may ignore adding some ancestors
-and therefore breaking tmp_alone_branch invariant. This broke LTP test
-cfs_bandwidth01 and it was partially fixed in commit fdaba61ef8a2
-("sched/fair: Ensure that the CFS parent is added after unthrottling").
+On Thu, Sep 16, 2021 at 11:15:39PM +0200, Fernando Ramos wrote:
+> As requested in Documentation/gpu/todo.rst, replace the boilerplate code
+> surrounding drm_modeset_lock_all_ctx() with DRM_MODESET_LOCK_ALL_BEGIN()
+> and DRM_MODESET_LOCK_ALL_END()
+> 
 
-I noticed the named test still fails even with the fix (but with low
-probability, 1 in ~1000 executions of the test). The reason is when
-bailing out of unthrottle_cfs_rq early, we may miss adding ancestors of
-the unthrottled cfs_rq, thus, not joining tmp_alone_branch properly.
+With the subject fixed (s/dmr/drm),
 
-Fix this by adding ancestors if we notice the unthrottled cfs_rq was
-added to the load list.
+Reviewed-by: Sean Paul <sean@poorly.run>
 
-Fixes: a7b359fc6a37 ("sched/fair: Correctly insert cfs_rq's to list on unthrottle")
-Signed-off-by: Michal Koutný <mkoutny@suse.com>
----
+> Signed-off-by: Fernando Ramos <greenfoo@u92.eu>
+> ---
+>  drivers/gpu/drm/i915/display/intel_display.c | 17 ++++-------------
+>  1 file changed, 4 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/i915/display/intel_display.c b/drivers/gpu/drm/i915/display/intel_display.c
+> index 134a6acbd8fb..997a16e85c85 100644
+> --- a/drivers/gpu/drm/i915/display/intel_display.c
+> +++ b/drivers/gpu/drm/i915/display/intel_display.c
+> @@ -13476,22 +13476,13 @@ void intel_display_resume(struct drm_device *dev)
+>  	if (state)
+>  		state->acquire_ctx = &ctx;
+>  
+> -	drm_modeset_acquire_init(&ctx, 0);
+> -
+> -	while (1) {
+> -		ret = drm_modeset_lock_all_ctx(dev, &ctx);
+> -		if (ret != -EDEADLK)
+> -			break;
+> -
+> -		drm_modeset_backoff(&ctx);
+> -	}
+> +	DRM_MODESET_LOCK_ALL_BEGIN(dev, ctx, 0, ret);
+>  
+> -	if (!ret)
+> -		ret = __intel_display_resume(dev, state, &ctx);
+> +	ret = __intel_display_resume(dev, state, &ctx);
+>  
+>  	intel_enable_ipc(dev_priv);
+> -	drm_modeset_drop_locks(&ctx);
+> -	drm_modeset_acquire_fini(&ctx);
+> +
+> +	DRM_MODESET_LOCK_ALL_END(dev, ctx, ret);
+>  
+>  	if (ret)
+>  		drm_err(&dev_priv->drm,
+> -- 
+> 2.33.0
+> 
 
-Changes since v2 [1]:
-- jump to completion for loop, don't duplicate it
-- singled out of the series (to handle a fix separately from the rest)
-
-[1] https://lore.kernel.org/r/20210819175034.4577-2-mkoutny@suse.com/
-
- kernel/sched/fair.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index ff69f245b939..f6a05d9b5443 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -4936,8 +4936,12 @@ void unthrottle_cfs_rq(struct cfs_rq *cfs_rq)
- 	/* update hierarchical throttle state */
- 	walk_tg_tree_from(cfs_rq->tg, tg_nop, tg_unthrottle_up, (void *)rq);
- 
--	if (!cfs_rq->load.weight)
-+	/* Nothing to run but something to decay (on_list)? Complete the branch */
-+	if (!cfs_rq->load.weight) {
-+		if (cfs_rq->on_list)
-+			goto unthrottle_throttle;
- 		return;
-+	}
- 
- 	task_delta = cfs_rq->h_nr_running;
- 	idle_task_delta = cfs_rq->idle_h_nr_running;
 -- 
-2.32.0
-
+Sean Paul, Software Engineer, Google / Chromium OS
