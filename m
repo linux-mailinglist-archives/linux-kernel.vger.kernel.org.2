@@ -2,116 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6321240F1C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 07:55:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA1D740F1CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 07:58:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244801AbhIQF43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 01:56:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230133AbhIQF4Z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 01:56:25 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AB9CC061574;
-        Thu, 16 Sep 2021 22:55:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ab85TIIe0iBKOWYSJmOx3jaBctrqZvrBuf/T7hyXLu0=; b=mqDjf2b+NHvZUV+L6fFWQfqEhr
-        yRCenYEBfbiYkWEgB/eqFt5BEAydJSrEFbNZUflFz/kJVu9g7HN9UUZPG+fha9nWBu97HD/qIMARP
-        YjYOYzZa+SNrqnAoHeIlC6wFIcPyUIuL0Zc4Q1OBSjfz28yIAqg2VnxSJzUG9eFbObtqFvdwbiGAd
-        j4K6wTkyNYR0xHbvPm3eP266a4WCwVOEo6t/TUmJ1ZS5NxfaRc4vI4TZm4/dVWw3KehpZxgq+C6w2
-        Nhy9EOTnFsYqJGsRld0ubUugGR3IzCzXIuiLNFATEkJHflMNKfmMgNJW9VhM4OQq1v4FsQglQZMwB
-        fICYqKMg==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mR6oQ-00HY9S-Oq; Fri, 17 Sep 2021 05:53:47 +0000
-Date:   Fri, 17 Sep 2021 06:53:26 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Ian Pilcher <arequipeno@gmail.com>
-Cc:     pavel@ucw.cz, linux-leds@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
-        kabel@kernel.org
-Subject: Re: [PATCH v4 2/2] leds: trigger: Add block device LED trigger
-Message-ID: <YUQtVmwV90uab4/V@infradead.org>
-References: <20210916202127.1216994-1-arequipeno@gmail.com>
- <20210916202127.1216994-3-arequipeno@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210916202127.1216994-3-arequipeno@gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+        id S244930AbhIQF7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 01:59:45 -0400
+Received: from foss.arm.com ([217.140.110.172]:48300 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230133AbhIQF7o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 01:59:44 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 738F331B;
+        Thu, 16 Sep 2021 22:58:22 -0700 (PDT)
+Received: from a077416.arm.com (unknown [10.163.42.222])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 595343F5A1;
+        Thu, 16 Sep 2021 22:58:19 -0700 (PDT)
+From:   Amit Daniel Kachhap <amit.kachhap@arm.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
+        Vincenzo Frascino <Vincenzo.Frascino@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Amit Daniel Kachhap <amit.kachhap@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Subject: [PATCH v2] arm64/traps: Avoid unnecessary kernel/user pointer conversion
+Date:   Fri, 17 Sep 2021 11:28:11 +0530
+Message-Id: <20210917055811.22341-1-amit.kachhap@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 03:21:27PM -0500, Ian Pilcher wrote:
-> +/* Block device information (BDI) - 1 per blkdev linked to at least 1 LED */
-> +struct led_bdev_bdi {
+Annotating a pointer from kernel to __user and then back again requires
+an extra __force annotation to silent sparse warning. In call_undef_hook()
+this unnecessary complexity can be avoided by modifying the intermediate
+user pointer to unsigned long.
 
-It might be a good idea to pick a differene name.  BDI is a commonly
-used shortcut for the backing device information used all over the block
-layer and writeback code.
+This way there is no inter-changeable use of user and kernel pointers
+and the code is consistent.
 
-> +/* For many-to-many relationships between block devices and LEDs */
-> +struct led_bdev_link {
-> +	struct hlist_node	bdi_leds_node;
-> +	struct hlist_node	led_bdis_node;
-> +	struct led_bdev_bdi	*bdi;
-> +	struct led_bdev_led	*led;
-> +};
+Note: This patch adds no functional changes to code.
 
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Signed-off-by: Amit Daniel Kachhap <amit.kachhap@arm.com>
+---
+Changes from v1:
+* Instead of directly using instruction_pointer() for kernel pointers,
+  modified the pc type from void __user * to unsigned long as suggested
+  by Mark Rutland.
 
-Why not just use a xarray to link them which due to the non-invasive
-nature gets you n:m links "for free".
+ arch/arm64/kernel/traps.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> +/* Forward declarations to make this file compile in a reasonable order */
-> +static void led_bdev_process(struct work_struct *work);
-> +static struct led_bdev_bdi *led_bdev_get_bdi(const char *buf, size_t size);
-> +static struct block_device *led_bdev_get(const char *buf, size_t size,
-> +					 fmode_t mode);
-> +static int led_bdev_link(struct led_bdev_led *led, struct led_bdev_bdi *bdi);
-> +static void led_bdev_put_bdi(struct led_bdev_bdi *bdi);
-> +static void led_bdev_bdi_release(struct device *dev, void *res);
-> +static void led_bdev_unlink(struct led_bdev_led *led,
-> +			    struct led_bdev_link *link,
-> +			    struct led_bdev_bdi *bdi, bool releasing);
-> +static void led_bdev_update_bdi(struct led_bdev_bdi *bdi);
-> +static bool led_bdev_blink(const struct led_bdev_led *led,
-> +			   const struct led_bdev_bdi *bdi);
+diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
+index b03e383d944a..09236751283e 100644
+--- a/arch/arm64/kernel/traps.c
++++ b/arch/arm64/kernel/traps.c
+@@ -400,11 +400,11 @@ static int call_undef_hook(struct pt_regs *regs)
+ 	unsigned long flags;
+ 	u32 instr;
+ 	int (*fn)(struct pt_regs *regs, u32 instr) = NULL;
+-	void __user *pc = (void __user *)instruction_pointer(regs);
++	unsigned long pc = instruction_pointer(regs);
+ 
+ 	if (!user_mode(regs)) {
+ 		__le32 instr_le;
+-		if (get_kernel_nofault(instr_le, (__force __le32 *)pc))
++		if (get_kernel_nofault(instr_le, (__le32 *)pc))
+ 			goto exit;
+ 		instr = le32_to_cpu(instr_le);
+ 	} else if (compat_thumb_mode(regs)) {
+-- 
+2.17.1
 
-I seriously question the "reasonable" above if you need that many
-forward declarations in brand new code.
-
-> +static struct block_device *led_bdev_get(const char *const buf,
-> +					 const size_t count, fmode_t mode)
-> +{
-> +	static const char dev[] = "/dev/";
-> +	struct block_device *bdev;
-> +	char *dev_path, *path;
-> +
-> +	/* sizeof(dev) includes terminating null */
-> +	dev_path = kmalloc(sizeof(dev) + count, GFP_KERNEL);
-> +	if (dev_path == NULL)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	/* sizeof(dev) - 1 is compile-time equivalent of strlen(dev) */
-> +	memcpy(dev_path, dev, sizeof(dev) - 1);
-> +	path = dev_path + sizeof(dev) - 1;
-> +	memcpy(path, buf, count + 1);  /* include terminating null */
-> +	strim(path);
-> +
-> +try_blkdev_get:
-> +	bdev = blkdev_get_by_path(path, mode, THIS_MODULE);
-> +	if (IS_ERR(bdev) && PTR_ERR(bdev) == -ENOENT && path != dev_path) {
-> +		path = dev_path;
-> +		goto try_blkdev_get;
-> +	}
-> +
-> +	kfree(dev_path);
-> +	return bdev;
-
-Please just required the user to put in the whole path and remove all
-this garbage.  There is no need to build your own broken wrappers around
-the VFS path resolution.
