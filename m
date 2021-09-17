@@ -2,308 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC61A40FB71
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 17:12:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94E0F40FB6F
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 17:12:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239948AbhIQPNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 11:13:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46500 "EHLO
+        id S239296AbhIQPN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 11:13:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238936AbhIQPN1 (ORCPT
+        with ESMTP id S235247AbhIQPN1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 17 Sep 2021 11:13:27 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3E50C061768
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E24BC061766
         for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:12:05 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id eg28so8300446edb.1
+Received: by mail-ot1-x32d.google.com with SMTP id k12-20020a056830150c00b0051abe7f680bso13285923otp.1
         for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:12:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gooddata.com; s=google;
-        h=mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=8t6EOdK7NPdMy+YK2ByhMHAlbs+MgoOQl6R4UStrWgw=;
-        b=jLwKgKRSCojssX3fFX/7GJlyjrMSQbDjPTFG8CGHDlFY7WePGVb4tONweRQqZCT5Ya
-         s6eimcZrDK99N0zJpCidH7g7wugc6lI4NZab5oixecVGESroNc1RqjHjRQKqwAYSLRbY
-         mTV6xqaFush4v6u8Eu9V3Ri0UKOPIHGUUVFzk=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CbpkK3MKWhoicNomq4vZswgf8W9C6ZPEXdT4IuLeAN0=;
+        b=tPA9DSkPfjRU158Maapz60FNNSZmq0GLX+2Q1HSIUa8gHmKQfo2PxxNzrbwcf4EIBz
+         FtxMUA87nFBkLBIQ7WfusK8x+wamF/BFOoJS0xT6ZcY+k6q88LXViEYSqrljM7ln8e9/
+         proV7MjGX1pyPwDv5y6ErlMMjfZU0wCWjQXAdsu0an9Gbxg/DqIx0TxX3bOPOFkWbZtw
+         nvYUQtUki/v83A9U1toQvo/Z2ptyf429kvn84v7q2TGWiXGM/l+waAfFXMJ4SkpueD/L
+         3HXLQPt+QikzMv7CCthdzr7A00omUIBd+3W979a6jvYxvdEdfg85UG2LH5Ek0ZmwTbxG
+         Oa4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=8t6EOdK7NPdMy+YK2ByhMHAlbs+MgoOQl6R4UStrWgw=;
-        b=yIQkV/KeqqnzAUc5W+HP15yEgA7TjpI1/xl3Vno2W0HkCRh2fwuW3jdtjIFM8TBmND
-         53ImBqIvmqJOa/Dxr1PuXMk0H5DmeL6MV/yBspDWWoqiwddgQnY79J6eOH8AwkwZXqkp
-         ZJXcqUZyXQK1LPj0/aGBzTYWoaziTY/szFW1X+QXI5jiPsQpek8LrZ0GyovsUpFF+Row
-         fZ/1jM5xY9wJa/p8drG3DW2uNAKlRAmLWo+XwS/jynLQfxPqXBib0KpfkymZHlEFygKB
-         0vGP3IqcULQhUmTz3aP+eWUoKLP/VF+8/RMypt9z7lFuJ5p4644UhC/LP2OQjYTmJj1a
-         PVCw==
-X-Gm-Message-State: AOAM532n2U17uWeDkzQp05+MzJjvU3/PcMxjLlOAzpdDCkzH4bKwl0D4
-        PT8zNysqFF3PQ89oVgq0/VJEU2OFe+mVxo4IbI1pF1csdcdpLS7r
-X-Google-Smtp-Source: ABdhPJz0xKCryNKrH8zY5xCfK14hz5iZTPpyaK5s3JW897i/aq4ZkmlScMnG8r0xze5WK8nAteIGkKpRf/Ze96R2PRU=
-X-Received: by 2002:a17:906:3983:: with SMTP id h3mr12700603eje.249.1631891524017;
- Fri, 17 Sep 2021 08:12:04 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CbpkK3MKWhoicNomq4vZswgf8W9C6ZPEXdT4IuLeAN0=;
+        b=wk6ZTfBn1t1KKOFRiKSWKPRDa/FdFW4KDYlD4bW5LFEiUMux/kOPrnXNLW4jfDPQAF
+         J8Z7B9U3irL0h4CCl3kqNPIFdjmFvh1aXx+UV7sVvFEjjLtajOl2Poxr4MoCFpnvGu2J
+         F8XR6zI3eO/RCPiH0D+SpAPQR54XKECu0Si9/gCN/Sf9WRFypfZn8XhUjXX0MW5AZou4
+         isHYgEtVmvEZCjgKULEh6KpfX73m2MaVUdehNZ4hSPzYXTsvIA1UEi8lBktSCCspJzrZ
+         HmdoPu/QqvVJauOJjWMuIkD317rxHOq3NUU4L6gG1qxPNFb7r3n2Iou3MkzcvNq7roFS
+         Wsxg==
+X-Gm-Message-State: AOAM530pgnjcwgiZXq6PWxNjvcqvPjBuPoCaOwggkgIW341vJgegM88X
+        OC/uhlVJE9BVrqeL4/8FSGYF1Q==
+X-Google-Smtp-Source: ABdhPJzXQBFkdOea9/dxNT0X+/pbnPjluuH5FejB9i1Rtzyvjuum48zbXlO5HMCj+dwC4CWzaDIWKQ==
+X-Received: by 2002:a05:6830:1b6f:: with SMTP id d15mr9708181ote.158.1631891524489;
+        Fri, 17 Sep 2021 08:12:04 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id bi41sm1501939oib.54.2021.09.17.08.12.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Sep 2021 08:12:04 -0700 (PDT)
+Date:   Fri, 17 Sep 2021 10:12:00 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Sinthu Raja <sinthu.raja@mistralsolutions.com>
+Cc:     Suman Anna <s-anna@ti.com>, Rob Herring <robh+dt@kernel.org>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Ohad Ben-Cohen <ohad@wizery.com>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, Nishanth Menon <nm@ti.com>,
+        Sinthu Raja <sinthu.raja@ti.com>
+Subject: Re: [PATCH] dt-bindings: hwlock: omap: Remove board-specific
+ compatible from DT example
+Message-ID: <YUSwQL6nblBEsqvD@yoga>
+References: <20210917094740.18891-1-sinthu.raja@ti.com>
 MIME-Version: 1.0
-From:   Igor Raits <igor@gooddata.com>
-Date:   Fri, 17 Sep 2021 17:11:53 +0200
-Message-ID: <CA+9S74g1aHB1WUkzYRDXggs-QeHxKCTwwL=uh1UfJZ3yKd0BYQ@mail.gmail.com>
-Subject: [ cut here ] without any backtrace
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210917094740.18891-1-sinthu.raja@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri 17 Sep 04:47 CDT 2021, Sinthu Raja wrote:
 
-We are experiencing some weird kernel panic both on CentOS 8 default
-kernel and also on 5.14.1 one (we are yet to test the latest 5.14.x
-but I have a feeling that it won't help).
+> From: Sinthu Raja <sinthu.raja@ti.com>
+> 
+> The example includes a board-specific compatible property, this is
+> wrong as the example should be board agnostic. Replace the same with a
+> generic soc node.
+> 
 
-Our setup is quite simple: KVM on a x86_64 server - 5.14.1 kernel on both s=
-ides.
+I do think your fix is correct in that it results in a proper tree, but
+the examples are not supposed to describe the node in a fully described
+DT tree, but rather just show an example of the particular binding.
 
-After some time, the VM stops responding and in the dmesg there is only:
-=E2=80=A6
-[14116.119527] weave: port 10(vethwepl8e0f203) entered disabled state
-[14116.123641] device vethwepl8e0f203 left promiscuous mode
-[14116.124509] weave: port 10(vethwepl8e0f203) entered disabled state
-[14134.462172] ------------[ cut here ]------------
+I therefor think that it would be appropriate to reduce that second
+example to just:
 
-No backtrace, no other useful information. VM is inaccessible.
+spinlock@30e00000 {
+  compatible = "ti,am654-hwspinlock";
+  reg = <0x30e00000 0x1000>;
+  #hwlock-cells = <1>;
+};
 
-I've dumped the VM's memory with "virsh dump" and was trying to check
-what's going on=E2=80=A6 However, it is not really useful as "crash" says t=
-hat
-"panic task not found".
+Because the rest has nothing to do with this binding.
 
-      KERNEL: /usr/lib/debug/lib/modules/5.14.1-1.gdc.el8.x86_64/vmlinux
-    DUMPFILE: stg3-k8s-worker04_int_na_intgdc_com.dump
-        CPUS: 6
-        DATE: Thu Sep 16 21:51:35 CEST 2021
-      UPTIME: 03:55:46
-LOAD AVERAGE: 1.58, 1.47, 1.45
-       TASKS: 1277
-    NODENAME: stg3-k8s-worker04
-     RELEASE: 5.14.1-1.gdc.el8.x86_64
-     VERSION: #1 SMP Sat Sep 4 09:57:57 CEST 2021
-     MACHINE: x86_64  (2992 Mhz)
-      MEMORY: 60 GB
-       PANIC: ""
-         PID: 0
-     COMMAND: "swapper/0"
-        TASK: ffffffffb7018940  (1 of 6)  [THREAD_INFO: ffffffffb7018940]
-         CPU: 0
-       STATE: TASK_RUNNING (ACTIVE)
-     WARNING: panic task not found
+That said, this example is now the same example as the first one, just
+with different compatible, so I think we should drop the entire second
+example instead.
 
-Below I'm pasting "bt -a" output from crash utility, in hope that
-somebody could help to figure out what's going on there=E2=80=A6 Sadly I ca=
-n't
-easily share dump with you as it is 60G big (17G compressed), so just
-let me know what other information would be useful for you. Thanks in
-advance!
 
-Also apologies for "randomly" choosing lists for this message as I
-have absolutely no clue what's going on here. Something about
+PS. While we're doing that, we should also remove the "hwspinlock: "
+label from the first example.
 
-crash> bt -a
-PID: 0      TASK: ffffffffb7018940  CPU: 0   COMMAND: "swapper/0"
-    [exception RIP: __pv_queued_spin_lock_slowpath+109]
-    RIP: ffffffffb5b434dd  RSP: ffffaf2e00003da8  RFLAGS: 00000046
-    RAX: 0000000000000000  RBX: ffff9e5c43c2d0c0  RCX: 0000000000000001
-    RDX: 0000000000100003  RSI: 0000000000000000  RDI: 0000000000000000
-    RBP: ffff9e5c43cec380   R8: 0000000000000000   R9: 0000000000000000
-    R10: 0000000000000006  R11: 0000000000125c00  R12: ffffaf2e00003e80
-    R13: 0000000000000000  R14: 0000000000000216  R15: ffff9e4e00972000
-    CS: 0010  SS: 0018
- #0 [ffffaf2e00003dc8] _raw_spin_lock at ffffffffb644f79a
- #1 [ffffaf2e00003dd0] raw_spin_rq_lock_nested at ffffffffb5b0fdf2
- #2 [ffffaf2e00003de8] load_balance at ffffffffb5b283d4
- #3 [ffffaf2e00003ec8] rebalance_domains at ffffffffb5b29294
- #4 [ffffaf2e00003f38] _nohz_idle_balance.constprop.0 at ffffffffb5b2959e
- #5 [ffffaf2e00003f90] __softirqentry_text_start at ffffffffb68000c6
- #6 [ffffaf2e00003fe0] __irq_exit_rcu at ffffffffb5ae1ff1
- #7 [ffffaf2e00003ff0] sysvec_call_function_single at ffffffffb6441932
---- <IRQ stack> ---
- #8 [ffffffffb7003dd8] sysvec_call_function_single at ffffffffb6441932
-    RIP: 0000000000000000  RSP: 0000000000000000  RFLAGS: ffffffffb644f190
-    RAX: 0000000000000000  RBX: 0000000000000000  RCX: 0000000000000000
-    RDX: 0000000000000000  RSI: ffffffffb7018940  RDI: 0000000000125c00
-    RBP: ffffffffb64418cb   R8: 0000000000000000   R9: 0000000000000000
-    R10: ffffffffb6600d62  R11: 0000000000000000  R12: ffffffffb6442742
-    R13: 0000000000000000  R14: ffffffffb64424e5  R15: ffffffffb5b70ef5
-    ORIG_RAX: 0000000000000400  CS: cde18e44de2  SS: 1048b6f2
-bt: WARNING: possibly bogus exception frame
+Regards,
+Bjorn
 
-PID: 618904  TASK: ffff9e577f7dbf00  CPU: 1   COMMAND: "java"
-    [exception RIP: __pv_queued_spin_lock_slowpath+112]
-    RIP: ffffffffb5b434e0  RSP: ffffaf2e0446f960  RFLAGS: 00000046
-    RAX: 0000000000000001  RBX: ffff9e5c43c6d0c0  RCX: 0000000000000001
-    RDX: 0000000000100003  RSI: 0000000000000000  RDI: 0000000000000000
-    RBP: ffff9e5c43cec380   R8: 0000000000000001   R9: 0000000000000000
-    R10: 0000000000000006  R11: 0000000000125c00  R12: ffffaf2e0446fa38
-    R13: 00000000ffffffff  R14: 0000000000000016  R15: 0000000000000000
-    CS: 0010  SS: 0018
- #0 [ffffaf2e0446f980] _raw_spin_lock at ffffffffb644f79a
- #1 [ffffaf2e0446f988] raw_spin_rq_lock_nested at ffffffffb5b0fdf2
- #2 [ffffaf2e0446f9a0] load_balance at ffffffffb5b283d4
- #3 [ffffaf2e0446fa80] newidle_balance at ffffffffb5b28aad
- #4 [ffffaf2e0446fae0] pick_next_task_fair at ffffffffb5b28c69
- #5 [ffffaf2e0446fb18] pick_next_task at ffffffffb5b12b0c
- #6 [ffffaf2e0446fb90] __schedule at ffffffffb644a4e7
- #7 [ffffaf2e0446fbe0] schedule at ffffffffb644a944
- #8 [ffffaf2e0446fbf8] schedule_timeout at ffffffffb644e79c
- #9 [ffffaf2e0446fc50] wait_woken at ffffffffb5b336cf
-#10 [ffffaf2e0446fc68] sk_wait_data at ffffffffb620791f
-#11 [ffffaf2e0446fcc0] tcp_recvmsg_locked at ffffffffb62deb31
-#12 [ffffaf2e0446fd50] tcp_recvmsg at ffffffffb62df912
-#13 [ffffaf2e0446fdc8] inet6_recvmsg at ffffffffb636918b
-#14 [ffffaf2e0446fe00] __sys_recvfrom at ffffffffb6200fe6
-#15 [ffffaf2e0446ff30] __x64_sys_recvfrom at ffffffffb6201025
-#16 [ffffaf2e0446ff38] do_syscall_64 at ffffffffb643f1b8
-#17 [ffffaf2e0446ff50] entry_SYSCALL_64_after_hwframe at ffffffffb660007c
-    RIP: 00007fba60377b66  RSP: 00007fba60797860  RFLAGS: 00000246
-    RAX: ffffffffffffffda  RBX: 000000000000005f  RCX: 00007fba60377b66
-    RDX: 0000000000000004  RSI: 00007fba60797950  RDI: 000000000000005f
-    RBP: 0000000000000000   R8: 0000000000000000   R9: 0000000000000000
-    R10: 0000000000000000  R11: 0000000000000246  R12: 00007fba60797950
-    R13: 0000000000000004  R14: 0000000000000000  R15: 00007fba607aa680
-    ORIG_RAX: 000000000000002d  CS: 0033  SS: 002b
-
-PID: 618921  TASK: ffff9e4f2cd00000  CPU: 2   COMMAND: "C2 CompilerThre"
-    [exception RIP: __pv_queued_spin_lock_slowpath+109]
-    RIP: ffffffffb5b434dd  RSP: ffffaf2e046bfad8  RFLAGS: 00000046
-    RAX: 0000000000000002  RBX: ffff9e5c43cad0c0  RCX: 0000000000000001
-    RDX: 0000000000100003  RSI: 0000000000000000  RDI: 0000000000000000
-    RBP: ffff9e5c43cec380   R8: 0000000000000002   R9: 0000000000000000
-    R10: 0000000000000006  R11: 0000000000060900  R12: ffffaf2e046bfbb0
-    R13: 00000000ffffffff  R14: 0000000000000016  R15: ffff9e5c43cac380
-    CS: 0010  SS: 0018
- #0 [ffffaf2e046bfaf8] _raw_spin_lock at ffffffffb644f79a
- #1 [ffffaf2e046bfb00] raw_spin_rq_lock_nested at ffffffffb5b0fdf2
- #2 [ffffaf2e046bfb18] load_balance at ffffffffb5b283d4
- #3 [ffffaf2e046bfbf8] newidle_balance at ffffffffb5b28aad
- #4 [ffffaf2e046bfc58] pick_next_task_fair at ffffffffb5b28c69
- #5 [ffffaf2e046bfc90] pick_next_task at ffffffffb5b12b0c
- #6 [ffffaf2e046bfd08] __schedule at ffffffffb644a4e7
- #7 [ffffaf2e046bfd58] schedule at ffffffffb644a944
- #8 [ffffaf2e046bfd70] futex_wait_queue_me at ffffffffb5b82463
- #9 [ffffaf2e046bfda0] futex_wait at ffffffffb5b825a9
-#10 [ffffaf2e046bfeb8] do_futex at ffffffffb5b853c4
-#11 [ffffaf2e046bfec8] __x64_sys_futex at ffffffffb5b85861
-#12 [ffffaf2e046bff38] do_syscall_64 at ffffffffb643f1b8
-#13 [ffffaf2e046bff50] entry_SYSCALL_64_after_hwframe at ffffffffb660007c
-    RIP: 00007fba603746e8  RSP: 00007fba48efda30  RFLAGS: 00000282
-    RAX: ffffffffffffffda  RBX: 00007fba5811bc50  RCX: 00007fba603746e8
-    RDX: 0000000000000000  RSI: 0000000000000080  RDI: 00007fba5811bc78
-    RBP: 0000000000000000   R8: 0000000000000000   R9: 0000000000000001
-    R10: 00007fba48efda80  R11: 0000000000000282  R12: 00007fba5811bc28
-    R13: 00007fba5811bc78  R14: 00007fba48efdb30  R15: 0000000000000002
-    ORIG_RAX: 00000000000000ca  CS: 0033  SS: 002b
-
-PID: 622305  TASK: ffff9e5a1576de80  CPU: 3   COMMAND: "C2 CompilerThre"
-    [exception RIP: kvm_wait+55]
-    RIP: ffffffffb5a6a927  RSP: ffffaf2e04287880  RFLAGS: 00000046
-    RAX: 0000000000000001  RBX: ffff9e5c43ced0c0  RCX: 0000000000000001
-    RDX: 0000000000000002  RSI: 0000000000000001  RDI: ffff9e5c43ced0d4
-    RBP: ffff9e5c43d2d0c0   R8: 0000000000000003   R9: ffff9e5c43cebd20
-    R10: 0000000000000000  R11: 0000000000000000  R12: ffff9e5c43ced0d4
-    R13: 0000000000000001  R14: 0000000000000000  R15: 0000000000000001
-    CS: 0010  SS: 0000
- #0 [ffffaf2e04287880] pv_wait_node at ffffffffb5b4314d
- #1 [ffffaf2e042878b8] __pv_queued_spin_lock_slowpath at ffffffffb5b435b5
- #2 [ffffaf2e042878e0] _raw_spin_lock at ffffffffb644f79a
- #3 [ffffaf2e042878e8] raw_spin_rq_lock_nested at ffffffffb5b0fdf2
- #4 [ffffaf2e04287900] try_to_wake_up at ffffffffb5b1554d
- #5 [ffffaf2e04287960] __queue_work at ffffffffb5afaad9
- #6 [ffffaf2e042879a8] queue_work_on at ffffffffb5afac70
- #7 [ffffaf2e042879b8] soft_cursor at ffffffffb5fa0874
- #8 [ffffaf2e04287a10] bit_cursor at ffffffffb5fa0433
- #9 [ffffaf2e04287ad8] hide_cursor at ffffffffb6045077
-#10 [ffffaf2e04287ae8] vt_console_print at ffffffffb6045eb6
-#11 [ffffaf2e04287b50] call_console_drivers.constprop.0 at ffffffffb5b46998
-#12 [ffffaf2e04287b78] console_unlock at ffffffffb5b46ff7
-#13 [ffffaf2e04287c28] vprintk_emit at ffffffffb5b489f1
-#14 [ffffaf2e04287c68] printk at ffffffffb63fe07f
-#15 [ffffaf2e04287cc8] __warn_printk at ffffffffb63fa612
-#16 [ffffaf2e04287d30] enqueue_task_fair at ffffffffb5b25968
-#17 [ffffaf2e04287d90] enqueue_task at ffffffffb5b10ef8
-#18 [ffffaf2e04287db8] ttwu_do_activate at ffffffffb5b13e6c
-#19 [ffffaf2e04287de0] try_to_wake_up at ffffffffb5b155aa
-#20 [ffffaf2e04287e40] hrtimer_wakeup at ffffffffb5b6d9be
-#21 [ffffaf2e04287e48] __run_hrtimer at ffffffffb5b6dd39
-#22 [ffffaf2e04287e80] __hrtimer_run_queues at ffffffffb5b6deed
-#23 [ffffaf2e04287ec0] hrtimer_interrupt at ffffffffb5b6e790
-#24 [ffffaf2e04287f20] __sysvec_apic_timer_interrupt at ffffffffb5a5a609
-#25 [ffffaf2e04287f38] sysvec_apic_timer_interrupt at ffffffffb6441987
-#26 [ffffaf2e04287f50] asm_sysvec_apic_timer_interrupt at ffffffffb6600cc2
-    RIP: 00007f0f8496f976  RSP: 00007f0f81aff120  RFLAGS: 00000246
-    RAX: 00007f0f5042d7b0  RBX: 0000000000000030  RCX: 0000000000000008
-    RDX: 0000000000000100  RSI: 00007f0f5c164f1c  RDI: 0000000032f275e0
-    RBP: 00007f0f81aff160   R8: 0000000000000000   R9: 00007f0f5c164ed0
-    R10: 0000000000000008  R11: 00007ffc748a4090  R12: 0000000000000000
-    R13: 00007f0f50504bd0  R14: 0000000000000040  R15: 00007f0f81aff330
-    ORIG_RAX: ffffffffffffffff  CS: 0033  SS: 002b
-
-PID: 49345  TASK: ffff9e505c323f00  CPU: 4   COMMAND: "minio"
-    [exception RIP: kvm_wait+55]
-    RIP: ffffffffb5a6a927  RSP: ffffaf2e0409baa0  RFLAGS: 00000046
-    RAX: 0000000000000003  RBX: 0000000000000001  RCX: 0000000000000008
-    RDX: 0000000000000000  RSI: 0000000000000003  RDI: ffff9e5c43cec380
-    RBP: ffff9e5c43cec380   R8: ffff9e5c7ffc1d00   R9: 0000000000000000
-    R10: ffff9e5c43d2d0c0  R11: 0000000000000001  R12: ffff9e5c43d2d0c0
-    R13: 0000000000000100  R14: ffff9e5c7ffc1d00  R15: 0000000000000000
-    CS: 0010  SS: 0018
- #0 [ffffaf2e0409baa0] pv_wait_head_or_lock at ffffffffb5b43285
- #1 [ffffaf2e0409bad0] __pv_queued_spin_lock_slowpath at ffffffffb5b43525
- #2 [ffffaf2e0409baf8] _raw_spin_lock at ffffffffb644f79a
- #3 [ffffaf2e0409bb00] raw_spin_rq_lock_nested at ffffffffb5b0fdf2
- #4 [ffffaf2e0409bb18] load_balance at ffffffffb5b283d4
- #5 [ffffaf2e0409bbf8] newidle_balance at ffffffffb5b28aad
- #6 [ffffaf2e0409bc58] pick_next_task_fair at ffffffffb5b28c69
- #7 [ffffaf2e0409bc90] pick_next_task at ffffffffb5b12b0c
- #8 [ffffaf2e0409bd08] __schedule at ffffffffb644a4e7
- #9 [ffffaf2e0409bd58] schedule at ffffffffb644a944
-#10 [ffffaf2e0409bd70] futex_wait_queue_me at ffffffffb5b82463
-#11 [ffffaf2e0409bda0] futex_wait at ffffffffb5b825a9
-#12 [ffffaf2e0409beb8] do_futex at ffffffffb5b853c4
-#13 [ffffaf2e0409bec8] __x64_sys_futex at ffffffffb5b85861
-#14 [ffffaf2e0409bf38] do_syscall_64 at ffffffffb643f1b8
-#15 [ffffaf2e0409bf50] entry_SYSCALL_64_after_hwframe at ffffffffb660007c
-    RIP: 00000000004725a3  RSP: 000000c000077e80  RFLAGS: 00000206
-    RAX: ffffffffffffffda  RBX: 000000c000068000  RCX: 00000000004725a3
-    RDX: 0000000000000000  RSI: 0000000000000080  RDI: 0000000003296bb8
-    RBP: 000000c000077ec8   R8: 0000000000000000   R9: 0000000000000000
-    R10: 000000c000077eb8  R11: 0000000000000206  R12: 000000000043cb20
-    R13: 0000000000000000  R14: 00000000020db914  R15: 0000000000000000
-    ORIG_RAX: 00000000000000ca  CS: 0033  SS: 002b
-
-PID: 106629  TASK: ffff9e5269f9bf00  CPU: 5   COMMAND: "reader#2"
-    [exception RIP: kvm_wait+55]
-    RIP: ffffffffb5a6a927  RSP: ffffaf2e05397ba8  RFLAGS: 00000046
-    RAX: 0000000000000003  RBX: 0000000000000001  RCX: 0000000000000008
-    RDX: 0000000000000000  RSI: 0000000000000003  RDI: ffff9e5c43cebd00
-    RBP: ffff9e5c43cebd00   R8: ffff9e5c7ffc13c0   R9: 0000000000000000
-    R10: ffff9e5c43d6d0c0  R11: 0000000000000001  R12: ffff9e5c43d6d0c0
-    R13: 0000000000000100  R14: ffff9e5c7ffc13c0  R15: 0000000000000002
-    CS: 0010  SS: 0018
- #0 [ffffaf2e05397ba8] pv_wait_head_or_lock at ffffffffb5b43285
- #1 [ffffaf2e05397bd8] __pv_queued_spin_lock_slowpath at ffffffffb5b43525
- #2 [ffffaf2e05397c00] _raw_spin_lock_irq at ffffffffb644f77b
- #3 [ffffaf2e05397c08] wq_worker_comm at ffffffffb5afd7c9
- #4 [ffffaf2e05397c38] proc_task_name at ffffffffb5df6bc3
- #5 [ffffaf2e05397cb0] do_task_stat at ffffffffb5df7137
- #6 [ffffaf2e05397dc0] proc_single_show at ffffffffb5df07da
- #7 [ffffaf2e05397df0] seq_read_iter at ffffffffb5d7b4ef
- #8 [ffffaf2e05397e48] seq_read at ffffffffb5d7b983
- #9 [ffffaf2e05397ec8] vfs_read at ffffffffb5d4dad5
-#10 [ffffaf2e05397f00] ksys_read at ffffffffb5d4e15f
-#11 [ffffaf2e05397f38] do_syscall_64 at ffffffffb643f1b8
-#12 [ffffaf2e05397f50] entry_SYSCALL_64_after_hwframe at ffffffffb660007c
-    RIP: 00007f3c178735d4  RSP: 00007f3c0a7f8b20  RFLAGS: 00000246
-    RAX: ffffffffffffffda  RBX: 0000000000000009  RCX: 00007f3c178735d4
-    RDX: 0000000000000400  RSI: 00007f3bd4002990  RDI: 0000000000000009
-    RBP: 00007f3bd4002990   R8: 0000000000000000   R9: 00007f3bd4011650
-    R10: 0000000000000000  R11: 0000000000000246  R12: 0000000000000400
-    R13: 00007f3c17b423c0  R14: 0000000000000d68  R15: 00007f3c17b41880
-    ORIG_RAX: 0000000000000000  CS: 0033  SS: 002b
+> Fixes: d8db9dc34871 ("dt-bindings: hwlock: omap: Convert binding to YAML")
+> Signed-off-by: Sinthu Raja <sinthu.raja@ti.com>
+> ---
+> 
+> This patch was triggered by discussions in [1].
+> 
+> When applying the patch, if you could provide an immutable tag for the
+> bindings, it would help line things up for new platforms to be added for
+> us. See [2] for the context
+> 
+> [1] https://lore.kernel.org/all/20210818074030.1877-1-sinthu.raja@ti.com/
+> [2] https://lore.kernel.org/linux-arm-kernel/20210125141642.4yybjnklk3qsqjdy@steersman/
+> 
+>  .../devicetree/bindings/hwlock/ti,omap-hwspinlock.yaml        | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/hwlock/ti,omap-hwspinlock.yaml b/Documentation/devicetree/bindings/hwlock/ti,omap-hwspinlock.yaml
+> index ae1b37dbee75..d56dc1bebdc6 100644
+> --- a/Documentation/devicetree/bindings/hwlock/ti,omap-hwspinlock.yaml
+> +++ b/Documentation/devicetree/bindings/hwlock/ti,omap-hwspinlock.yaml
+> @@ -47,10 +47,8 @@ examples:
+>      };
+>  
+>    - |
+> -    / {
+> +    soc {
+>          /* K3 AM65x SoCs */
+> -        model = "Texas Instruments K3 AM654 SoC";
+> -        compatible = "ti,am654-evm", "ti,am654";
+>          #address-cells = <2>;
+>          #size-cells = <2>;
+>  
+> -- 
+> 2.32.0
+> 
