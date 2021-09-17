@@ -2,76 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D098940F410
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 10:25:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5C3F40F414
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 10:25:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245351AbhIQI0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 04:26:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47158 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243646AbhIQI0u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 04:26:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F2AB611C3;
-        Fri, 17 Sep 2021 08:25:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631867129;
-        bh=CSIDt2jIttDSppcDogg4dSvJUyrt+SztAzo3xfKPArQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=O7ftwHAObwxpx0lp/QozRdYMBej++TDJVoIX1D1qMz4HNo7FS2c7ZYZwE9LncI+aU
-         Omo20XW7DDyc5VZvG5jEUtls8joZBp/Cw1YLMLOZEAaCYhN+A6XvI10ZyaYSYt1FXF
-         3e15eeZ/7fHjtfAiFTRFwJVftiyL1Q5QHJ65etXc=
-Date:   Fri, 17 Sep 2021 10:25:26 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "# 3.4.x" <stable@vger.kernel.org>,
-        Lukas Hannen <lukas.hannen@opensource.tttech-industrial.com>
-Subject: Re: [PATCH 5.14 298/334] time: Handle negative seconds correctly in
- timespec64_to_ns()
-Message-ID: <YURQ9o1rDeqmUkSL@kroah.com>
-References: <20210913131113.390368911@linuxfoundation.org>
- <20210913131123.500712780@linuxfoundation.org>
- <CAK8P3a0z5jE=Z3Ps5bFTCFT7CHZR1JQ8VhdntDJAfsUxSPCcEw@mail.gmail.com>
- <874kak9moe.ffs@tglx>
- <CAK8P3a0mAOgo_7xVfHr2YfeKa8xQPH6GfafB96NPvFAnQF_LBg@mail.gmail.com>
+        id S243608AbhIQI1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 04:27:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231517AbhIQI1M (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 04:27:12 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36DCFC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 01:25:51 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mR9Bo-0003zm-Ki; Fri, 17 Sep 2021 10:25:44 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mR9Bn-0006ev-9m; Fri, 17 Sep 2021 10:25:43 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mR9Bn-00051c-8K; Fri, 17 Sep 2021 10:25:43 +0200
+Date:   Fri, 17 Sep 2021 10:25:43 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     linux-pwm@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Duc Nguyen <duc.nguyen.ub@renesas.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de
+Subject: Re: [PATCH 1/2] pwm: renesas-tpu: better errno for impossible rates
+Message-ID: <20210917082543.2f5wum23nkvmzbdi@pengutronix.de>
+References: <20210915065542.1897-1-wsa+renesas@sang-engineering.com>
+ <20210915065542.1897-2-wsa+renesas@sang-engineering.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="aegnhihdgqyrwamy"
 Content-Disposition: inline
-In-Reply-To: <CAK8P3a0mAOgo_7xVfHr2YfeKa8xQPH6GfafB96NPvFAnQF_LBg@mail.gmail.com>
+In-Reply-To: <20210915065542.1897-2-wsa+renesas@sang-engineering.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 09:31:33AM +0200, Arnd Bergmann wrote:
-> On Fri, Sep 17, 2021 at 12:32 AM Thomas Gleixner <tglx@linutronix.de> wrote:
-> > On Wed, Sep 15 2021 at 21:00, Arnd Bergmann wrote:
-> >
-> > I have done the analysis. setitimer() does not have any problem with
-> > that simply because it already checks at the call site that the seconds
-> > value is > 0 and so do all the other user visible interfaces. See
-> > get_itimerval() ...
-> 
-> Right, I now came to the same conclusion after taking a closer look,
-> see my reply from yesterday.
-> 
-> > Granted  that the kernel internal interfaces do not have those checks,
-> > but they already have other safety nets in place to prevent this and I
-> > could not identify any callsite which has trouble with that change.
-> >
-> > If I failed to spot one then what the heck is the problem? It was broken
-> > before that change already!
-> 
-> My bad for the unfortunate timing. When only saw the patch when Greg
-> posted it during the stable review and wasn't completely sure about it
-> at the time, so I was hoping that he could just hold off until you had a chance
-> to reply either saying that you had already checked this case or that it
-> was dangerous, but now it's already reverted.
-> 
-> I agree we should put back the fix into all stable kernels.
 
-Ok, I'll queue it up again after this round goes out.
+--aegnhihdgqyrwamy
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-thanks for the additional review.
+On Wed, Sep 15, 2021 at 08:55:40AM +0200, Wolfram Sang wrote:
+> From: Duc Nguyen <duc.nguyen.ub@renesas.com>
+>=20
+> ENOTSUP has confused users. EINVAL has been considered clearer. Change
+> the errno, we were the only ones using ENOTSUP in this subsystem anyhow.
+>=20
+> Signed-off-by: Duc Nguyen <duc.nguyen.ub@renesas.com>
+> [wsa: split and reworded commit message]
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> ---
+>  drivers/pwm/pwm-renesas-tpu.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/pwm/pwm-renesas-tpu.c b/drivers/pwm/pwm-renesas-tpu.c
+> index 4381df90a527..754440194650 100644
+> --- a/drivers/pwm/pwm-renesas-tpu.c
+> +++ b/drivers/pwm/pwm-renesas-tpu.c
+> @@ -269,7 +269,7 @@ static int tpu_pwm_config(struct pwm_chip *chip, stru=
+ct pwm_device *_pwm,
+> =20
+>  	if (prescaler =3D=3D ARRAY_SIZE(prescalers) || period =3D=3D 0) {
+>  		dev_err(&tpu->pdev->dev, "clock rate mismatch\n");
+> -		return -ENOTSUPP;
+> +		return -EINVAL;
+>  	}
 
-greg k-h
+prescaler =3D=3D ARRAY_SIZE(prescalers) means that period_ns * clk_rate is
+too big for the hardware. Given that the driver considers clk_rate as
+constant, the interpretation is that period_ns is too big to be
+implemented. In this case the expectation for a new driver would be to
+round down to the biggest possible rate. period =3D=3D 0 means the requested
+period is too small, in this case -EINVAL is right.
+
+The danger to make the driver behave like new drivers should is that it
+ends in regressions, but when we touch the behaviour this might be a
+good opportunity to "fix" this driver?
+
+This would look as follows:
+
+	max_period_ns =3D 0xffff * NSEC_PER_SEC * 64 / clk_rate;
+
+	period_ns =3D min(period_ns, max_period_ns);
+	duty_ns =3D min(duty_ns, period_ns);
+
+	/*
+	 * First assume a prescaler factor of 1 to calculate the period
+	 * value, if this yields a value that doesn't fit into the 16
+	 * bit wide register field, pick a bigger prescaler. The valid
+	 * range for the prescaler register value is [0..3] and yields a
+	 * factor of (1 << (2 * prescaler)).
+	 */
+
+	period =3D clk_rate * period_ns / NSEC_PER_SEC;
+	if (period =3D=3D 0)
+		return -EINVAL;
+
+	if (period <=3D 0xffff)
+		prescaler =3D 0;
+	else {
+		prescaler =3D (ilog2(period) - 14) / 2;
+		BUG_ON(prescaler > 3);
+	}
+
+	period >>=3D 2 * prescaler;
+
+	duty =3D clk_rate * duty_ns >> (2 * prescaler) / NSEC_PER_SEC;
+
+(Note: This needs more care to handle overflows, e.g. 0xffff *
+NSEC_PER_SEC * 64 doesn't fit into a long, also clk_rate * period_ns
+might overflow. I skipped this for the purpose of this mail.)
+
+The code comment "TODO: Pick the highest acceptable prescaler." is
+unclear to me, as a smaller prescaler allows more possible settings for
+the duty_cycle and I don't see any reason to pick a bigger prescaler.
+
+If we choose to not adapt the behaviour, I suggest to replace
+
+        if (duty_ns) {
+                duty =3D clk_rate / prescalers[prescaler]
+                     / (NSEC_PER_SEC / duty_ns);
+                if (duty > period)
+                        return -EINVAL;
+        } else {
+                duty =3D 0;
+        }
+
+by:
+
+	duty =3D clk_rate * duty_ns >> (2 * prescaler) / NSEC_PER_SEC;
+
+(probably using u64 math after asserting that period_ns * clk_rate
+doesn't overflow a u64. Then given that duty_ns <=3D period_ns the case
+duty > period cannot happen, the special case for duty_ns =3D=3D 0 doesn't
+need to be explicitly handled and precision is improved.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--aegnhihdgqyrwamy
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmFEUQQACgkQwfwUeK3K
+7AmZjAf+K6tfnkjU09jiI3HkEAVsrfqpqs/1MtBXERu9SJiPHCPJwznh4hYfvXDP
+chx/ZHDCa9jTULG3V0eCprGf8s2ty/i0VEXxhFhoDt3+50ociyl42CvwSTFvEvZb
+Pxw16rC+DNPylENeAoNpsUlofBVXRd7VpuoIANJA5nV5WxpMvKRxRnCyP9Z36krl
+GiDh6GIs6jM/lPM0NifFsm2OqXZwgKbDLOIr2Ua4dbyzDApj7Y/VZJz6iVVcAbxr
+Ce+VVD155Nbkl5m/bcV/lB/wtzJDdxZjOYj5QBbGKZ5ZpXrBhzkOzaUPsT3okipC
+AOP7rq0DIs3qxx41FeqBqieJ3l7Enw==
+=fxmx
+-----END PGP SIGNATURE-----
+
+--aegnhihdgqyrwamy--
