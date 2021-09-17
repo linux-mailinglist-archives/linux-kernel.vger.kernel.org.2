@@ -2,105 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2716840F18C
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 07:17:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9FC740F199
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 07:25:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244786AbhIQFS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 01:18:26 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:45041 "EHLO pegase2.c-s.fr"
+        id S244866AbhIQF1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 01:27:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229704AbhIQFSZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 01:18:25 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4H9hyk2qq5z9sTc;
-        Fri, 17 Sep 2021 07:17:02 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Nv5IhXWb4hJc; Fri, 17 Sep 2021 07:17:02 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4H9hyk1bp6z9sTX;
-        Fri, 17 Sep 2021 07:17:02 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 186B28B783;
-        Fri, 17 Sep 2021 07:17:02 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id rpsHFshvp2DV; Fri, 17 Sep 2021 07:17:02 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.202.36])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5D7E38B768;
-        Fri, 17 Sep 2021 07:17:01 +0200 (CEST)
-Subject: Re: [PATCH] lib/zlib_inflate/inffast: Check config in C to avoid
- unused function warning
-To:     Paul Menzel <pmenzel@molgen.mpg.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     llvm@lists.linux.dev, Zhen Lei <thunder.leizhen@huawei.com>,
-        linux-kernel@vger.kernel.org, Paul Mackerras <paulus@samba.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linuxppc-dev@lists.ozlabs.org
-References: <20210916142210.26722-1-pmenzel@molgen.mpg.de>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <51258322-8665-76f9-c807-76cb56764229@csgroup.eu>
-Date:   Fri, 17 Sep 2021 07:17:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S229704AbhIQF1L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 01:27:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 80134610D1;
+        Fri, 17 Sep 2021 05:25:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631856349;
+        bh=TALg6JvHavNoHAdcPmExgmEAS6Di8PdSRyieWhZbOE8=;
+        h=References:From:To:Cc:Subject:Date:In-reply-to:From;
+        b=f6dGy72x6U5KO9aOvfBIgbBqusJDYBwW5Dkule8jM5yxTRfmDj5qWqqHIKrrHIqZT
+         Xb9kLp7bgbWljLWp0IX/4Jg8EzlyaB31Ta4vaaEjNodBhmrzjCWZnvJOUaqO+8+Fyo
+         BTQ1AFYmQRR2syQafsz37o5NlhrxXN2WuxSlHvTf8L01dGpd1HE8LAkCgdkcB0Y3bU
+         pZtFL01flVwznkH4fPiEzU1/EZBWWSzMBPulXCsPPy4v0QLrlt26G/kAk0rUQvtEbh
+         wIdJy0Lk4FNinQErJ2/h6zm1cwPcexVUaK1/ESto9MPnvO3yzIY9HGlm1FEljaE0PY
+         +JVrOl4xQWrKQ==
+References: <20210917021852.2037-1-wcheng@codeaurora.org>
+User-agent: mu4e 1.6.5; emacs 27.2
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Wesley Cheng <wcheng@codeaurora.org>
+Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: dwc3: gadget: Avoid starting DWC3 gadget during
+ UDC unbind
+Date:   Fri, 17 Sep 2021 08:17:03 +0300
+In-reply-to: <20210917021852.2037-1-wcheng@codeaurora.org>
+Message-ID: <87y27vai3p.fsf@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210916142210.26722-1-pmenzel@molgen.mpg.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr-FR
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+Hi,
 
-Le 16/09/2021 à 16:22, Paul Menzel a écrit :
-> Building Linux for ppc64le with Ubuntu clang version 12.0.0-3ubuntu1~21.04.1
-> shows the warning below.
-> 
->      arch/powerpc/boot/inffast.c:20:1: warning: unused function 'get_unaligned16' [-Wunused-function]
->      get_unaligned16(const unsigned short *p)
->      ^
->      1 warning generated.
-> 
-> Fix it, by moving the check from the preprocessor to C, so the compiler
-> sees the use.
-> 
-> Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
-> ---
->   lib/zlib_inflate/inffast.c | 6 +-----
->   1 file changed, 1 insertion(+), 5 deletions(-)
-> 
-> diff --git a/lib/zlib_inflate/inffast.c b/lib/zlib_inflate/inffast.c
-> index f19c4fbe1be7..444ad3c3ccd3 100644
-> --- a/lib/zlib_inflate/inffast.c
-> +++ b/lib/zlib_inflate/inffast.c
-> @@ -254,11 +254,7 @@ void inflate_fast(z_streamp strm, unsigned start)
->   			sfrom = (unsigned short *)(from);
->   			loops = len >> 1;
->   			do
-> -#ifdef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
-> -			    *sout++ = *sfrom++;
-> -#else
-> -			    *sout++ = get_unaligned16(sfrom++);
-> -#endif
-> +			    *sout++ = CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS ? *sfrom++ : get_unaligned16(sfrom++);
+Wesley Cheng <wcheng@codeaurora.org> writes:
 
-You can't do that, CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS is not 
-something that have value 0 or 1, it is something which is either 
-defined or not. You have to use IS_ENABLED() macro, so it should become 
-something like:
+> There is a race present where the DWC3 runtime resume runs in parallel
+> to the UDC unbind sequence.  This will eventually lead to a possible
+> scenario where we are enabling the run/stop bit, without a valid
+> composition defined.
+>
+> Thread#1 (handling UDC unbind):
+> usb_gadget_remove_driver()
+> -->usb_gadget_disconnect()
+>   -->dwc3_gadget_pullup(0)
+> --> continue UDC unbind sequence
+> -->Thread#2 is running in parallel here
+>
+> Thread#2 (handing next cable connect)
+> __dwc3_set_mode()
+>   -->pm_runtime_get_sync()
+>     -->dwc3_gadget_resume()
+>       -->dwc->gadget_driver is NOT NULL yet
+>       -->dwc3_gadget_run_stop(1)
+>       --> _dwc3gadget_start()
+> ...
+>
+> Fix this by tracking the pullup disable routine, and avoiding resuming
+> of the DWC3 gadget.  Once the UDC is re-binded, that will trigger the
+> pullup enable routine, which would handle enabling the DWC3 gadget.
+>
+> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
 
-	if (IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS))
-		*sout++ = *sfrom++;
-	else
-		*sout++ = get_unaligned16(sfrom++);
+This looks okay to me, but needs to be tested by a few folks ;-)
 
+Acked-by: Felipe Balbi <balbi@kernel.org>
 
->   			while (--loops);
->   			out = (unsigned char *)sout;
->   			from = (unsigned char *)sfrom;
-> 
+-- 
+balbi
