@@ -2,96 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DCC240F914
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 15:26:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7E6340F917
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 15:26:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240605AbhIQN1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 09:27:52 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:41049 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241419AbhIQN1s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 09:27:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1631885187; x=1663421187;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=QssFTqsZ5UAlTmqKAKaZZcz9WX/De78bpUot5wsvlI0=;
-  b=kdqCqkn8UdTe/9HIzpaw/fPcltHDHpLsmSGe2t/7t28qRP26v6qprOsY
-   +Zmhx1Bk+P6veJz5Uk/WuyGgON9OwaqJLMFbf1hEyX7TfmSVO/vAdmSQx
-   ZPtJvV/x8Cp0TgmOeRH8vs8Hb0s6DvQ5aPLNhtDtEYu44/Tmv4poVnOR3
-   RbQ+ZEDTNof2VaKqODI854tcl7zXa8F/uoASKUnW7/HL70eexgTO8AgOq
-   ml84K2Sk3YljbXXo0mxeanFmQfnP9DJ77pHdAN4fznAK+34PnoN65guB8
-   brk+jaXwrHpA0CGlrjCxZ0+w89NamOGj2TkqDbeZYSwGK2zbvLH9VjWL7
-   w==;
-IronPort-SDR: 3R+lmdd7iZ3OoRIT6G0O3tGMmM8OwlrF1F5NxpJQeOTH+XWAVDhMfegpBsQ6insIk5MSnJJEfJ
- 9tkFEKc5i1h4bK8CY0WefzWua2a3eqjXUOtTTXIcme/ipP/JxWWgjaCi6/BGYhqIXheyLmbtch
- kz6EVNOj3/+cPwuQWpNn5Zm49ikFLgm7jc/Hzrf2AFNPTaTarSthMGygPi6h92Dk3/vQjpgvYE
- YzR2Q/USDQ9d+Q3iovpQ+x/oWmwyCJsx5WXfZbgO0Je583azCTLu16WrGTkP0MGFmkKY+vhVWT
- g7AoaA6BkBNlCktK6HFaUoAr
-X-IronPort-AV: E=Sophos;i="5.85,301,1624345200"; 
-   d="scan'208";a="136363995"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 17 Sep 2021 06:26:27 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Fri, 17 Sep 2021 06:26:25 -0700
-Received: from rob-dk-mpu01.microchip.com (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Fri, 17 Sep 2021 06:26:24 -0700
-From:   Claudiu Beznea <claudiu.beznea@microchip.com>
-To:     <nicolas.ferre@microchip.com>, <davem@davemloft.net>,
-        <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH v2 4/4] net: macb: enable mii on rgmii for sama7g5
-Date:   Fri, 17 Sep 2021 16:26:15 +0300
-Message-ID: <20210917132615.16183-5-claudiu.beznea@microchip.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20210917132615.16183-1-claudiu.beznea@microchip.com>
-References: <20210917132615.16183-1-claudiu.beznea@microchip.com>
+        id S244491AbhIQN2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 09:28:14 -0400
+Received: from mail.acc.umu.se ([130.239.18.156]:45678 "EHLO mail.acc.umu.se"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244777AbhIQN2M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 09:28:12 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by amavisd-new (Postfix) with ESMTP id 587D044B92;
+        Fri, 17 Sep 2021 15:26:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=acc.umu.se; s=mail1;
+        t=1631885209; bh=vIBXtYbunMJ2qy2dnJIXaGromudxlF91jRJyR2yXAeQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AXo+a397b8JpATuAsbvVGMvzJNXOf/SDogUq8rMEkBOq0ss+CFEiG1h2p7uQKKMMS
+         tmPQP3k+tmuNcNVKhT9hDHkYXkY36dzlw9oz9aEq3lbWxI/Fe7YIkQtPyilMVGT2A0
+         DUc7PKalLCl8QjQM5sXZ5G9s7DNDtZinyUE2Psc34Vpgm0tGxB6+KU/Gu708xOOOjK
+         IBh4XcIaOO56EZWBBbLIJQtKgvtCdvladkCj5yVciZzX21dvXfTlBhPNYqBIwgg22M
+         xJL4Ph9SAWG1PfUC7VMCnlQri82vFV8FmZseprkXr/C1dmQmtiZXvOHAlrVQLlVkuo
+         n8uj5NGpLcKMg==
+Received: by mail.acc.umu.se (Postfix, from userid 24471)
+        id E99CF44B93; Fri, 17 Sep 2021 15:26:48 +0200 (CEST)
+Date:   Fri, 17 Sep 2021 15:26:48 +0200
+From:   Anton Lundin <glance@acc.umu.se>
+To:     Corey Minyard <minyard@acm.org>
+Cc:     openipmi-developer@lists.sourceforge.net,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [Openipmi-developer] Issue with panic handling and ipmi
+Message-ID: <20210917132648.GG108031@montezuma.acc.umu.se>
+References: <20210916145300.GD108031@montezuma.acc.umu.se>
+ <20210916163945.GY545073@minyard.net>
+ <20210917101419.GE108031@montezuma.acc.umu.se>
+ <20210917120758.GA545073@minyard.net>
+ <20210917125525.GF108031@montezuma.acc.umu.se>
+ <20210917131916.GB545073@minyard.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210917131916.GB545073@minyard.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Both MAC IPs available on SAMA7G5 support MII on RGMII feature.
-Enable these by adding proper capability to proper macb_config
-objects.
+On 17 September, 2021 - Corey Minyard wrote:
 
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
----
- drivers/net/ethernet/cadence/macb_main.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+> On Fri, Sep 17, 2021 at 02:55:25PM +0200, Anton Lundin wrote:
+> > On 17 September, 2021 - Corey Minyard wrote:
+> > 
+> > > On Fri, Sep 17, 2021 at 12:14:19PM +0200, Anton Lundin wrote:
+> > > > On 16 September, 2021 - Corey Minyard wrote:
+> > > > 
+> > > > > On Thu, Sep 16, 2021 at 04:53:00PM +0200, Anton Lundin wrote:
+> > > > > > Hi.
+> > > > > > 
+> > > > > > I've just done a upgrade of the kernel we're using in a product from
+> > > > > > 4.19 to 5.10 and I noted a issue.
+> > > > > > 
+> > > > > > It started that with that we didn't get panic and oops dumps in our erst
+> > > > > > backed pstore, and when debugging that I noted that the reboot on panic
+> > > > > > timer didn't work either.
+> > > > > > 
+> > > > > > I've bisected it down to 2033f6858970 ("ipmi: Free receive messages when
+> > > > > > in an oops").
+> > > > > 
+> > > > > Hmm.  Unfortunately removing that will break other things.  Can you try
+> > > > > the following patch?  It's a good idea, in general, to do as little as
+> > > > > possible in the panic path, this should cover a multitude of issues.
+> > > > > 
+> > > > > Thanks for the report.
+> > > > > 
+> > > > 
+> > > > I'm sorry to report that the patch didn't solve the issue, and the
+> > > > machine locked up in the panic path as before.
+> > > 
+> > > I missed something.  Can you try the following?  If this doesn't work,
+> > > I'm going to have to figure out how to reproduce this.
+> > > 
+> > 
+> > Sorry, still no joy.
+> > 
+> > My guess is that there is something locking up due to these Supermicro
+> > machines have their ERST memory backed by the BMC, and the same BMC is
+> > is the other end of all the ipmi communications.
+> > 
+> > I've reproduced this on Server/X11SCZ-F and Server/H11SSL-i but I'm
+> > guessing it can be reproduced on most, if not all, of their hardware
+> > with the same setup.
+> > 
+> > We're using the ERST backend for pstore, because we're still
+> > bios-booting them and don't have efi services available to use as pstore
+> > backend.
+> > 
+> > 
+> > I've tested to just yank out the ipmi modules from the kernel and that
+> > fixes the panic timer and we get crash dumps to pstore.
+> 
+> Dang.  I'm going to have to look deeper at what that could change to
+> cause an issue like this.  Are you using the IPMI watchdog?  Do you have
+> CONFIG_IPMI_PANIC_EVENT=y set in the config?
 
-diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
-index cdf3e35b5b33..e2730b3e1a57 100644
---- a/drivers/net/ethernet/cadence/macb_main.c
-+++ b/drivers/net/ethernet/cadence/macb_main.c
-@@ -4597,7 +4597,8 @@ static const struct macb_config zynq_config = {
- };
- 
- static const struct macb_config sama7g5_gem_config = {
--	.caps = MACB_CAPS_GIGABIT_MODE_AVAILABLE | MACB_CAPS_CLK_HW_CHG,
-+	.caps = MACB_CAPS_GIGABIT_MODE_AVAILABLE | MACB_CAPS_CLK_HW_CHG |
-+		MACB_CAPS_MIIONRGMII,
- 	.dma_burst_length = 16,
- 	.clk_init = macb_clk_init,
- 	.init = macb_init,
-@@ -4605,7 +4606,8 @@ static const struct macb_config sama7g5_gem_config = {
- };
- 
- static const struct macb_config sama7g5_emac_config = {
--	.caps = MACB_CAPS_USRIO_DEFAULT_IS_MII_GMII | MACB_CAPS_USRIO_HAS_CLKEN,
-+	.caps = MACB_CAPS_USRIO_DEFAULT_IS_MII_GMII |
-+		MACB_CAPS_USRIO_HAS_CLKEN | MACB_CAPS_MIIONRGMII,
- 	.dma_burst_length = 16,
- 	.clk_init = macb_clk_init,
- 	.init = macb_init,
--- 
-2.25.1
+# CONFIG_IPMI_PANIC_EVENT is not set
 
+We're using the IPMI watchdog.
+
+//Anton
