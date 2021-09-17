@@ -2,155 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75B8440F3DF
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 10:14:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E90240F3EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 10:17:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233637AbhIQIP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 04:15:56 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:8024 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229837AbhIQIPy (ORCPT
+        id S234571AbhIQISX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 04:18:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230296AbhIQISW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 04:15:54 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18H7UT0Q020803;
-        Fri, 17 Sep 2021 04:14:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=D72Nmltq5W761HKc8q5yf4qEMem+vL6IcD2L/nSKoec=;
- b=HdF4u9HK+PXauaX4EGimJAqSwUQN9m8xrvWBvmSFKrMkq6+AOgAng4XjGVv03APpIp3c
- 5U0Z2hx9ZQ1vbmo6Ah9NcuG/WshCt8+UwzWT+XGX6tfpkve/sf/qfIoMfe0CuvMeZ7q1
- vkp689eyJNKjEg0MGfszoWXjHN//DeJBsx5w9kp9Q8lJS82zfpQvgKqjTXJU09dzi/DI
- JyFU1nmnCMlUZxaKhSJnHId8FvKddOKd6PdxrlnQAapLCSnzJV9u1S+VV39IAEcbthQM
- 9rampl8LZyD6ILfD3gHcZS73wuw7vfwfIHhFKANRlvHQmt+pAmy5CuyzLTwJlcvydoy5 HA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3b4ppmrvqq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Sep 2021 04:14:31 -0400
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18H8CnT0020157;
-        Fri, 17 Sep 2021 04:14:31 -0400
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3b4ppmrvqa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Sep 2021 04:14:31 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18H8D39x029176;
-        Fri, 17 Sep 2021 08:14:29 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma06fra.de.ibm.com with ESMTP id 3b0kqkhrfm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Sep 2021 08:14:29 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18H89l8g56361376
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 17 Sep 2021 08:09:47 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C4060A405F;
-        Fri, 17 Sep 2021 08:14:25 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 48BCBA4054;
-        Fri, 17 Sep 2021 08:14:25 +0000 (GMT)
-Received: from oc3016276355.ibm.com (unknown [9.145.70.78])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 17 Sep 2021 08:14:25 +0000 (GMT)
-Subject: Re: [PATCH v4 1/1] s390x: KVM: accept STSI for CPU topology
- information
-To:     David Hildenbrand <david@redhat.com>, kvm@vger.kernel.org
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        borntraeger@de.ibm.com, frankja@linux.ibm.com, cohuck@redhat.com,
-        thuth@redhat.com, imbrenda@linux.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com
-References: <1631799845-24860-1-git-send-email-pmorel@linux.ibm.com>
- <1631799845-24860-2-git-send-email-pmorel@linux.ibm.com>
- <eef5ed95-3f54-b709-894d-cdf75bc3180b@redhat.com>
-From:   Pierre Morel <pmorel@linux.ibm.com>
-Message-ID: <d5a752d3-9de0-5f7e-fefa-76b680b1d2a7@linux.ibm.com>
-Date:   Fri, 17 Sep 2021 10:14:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Fri, 17 Sep 2021 04:18:22 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFFDEC061574;
+        Fri, 17 Sep 2021 01:17:00 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id h20so9417350ilj.13;
+        Fri, 17 Sep 2021 01:17:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jtpqFAJFQ9+m0BVdxSrQHgINETdk+aytTPKay73RJFM=;
+        b=D+V+k1wWU97jD4bcghxFDK3XAVQhbAtctoqoiTJRe9RHKAPvrhzQM+cJkWTr3BmyFY
+         0Ej5ykU1PbDnl1m/P+igxwe48lLzB33Yni2FR6i5KLKXqljQzwrxBZnI4zKP1/wZHkbA
+         EtsqS8DodJQZoK9zKfALtG3QQLs9+ckcExYdx8jQgpwaOrGnW16UQGVYmFo3fSmy7hyb
+         o0VKiohbgjAA1riT3klUAufSnlAk76fytjlm5uI/0sH5ihkkEOBxsMu+5GqAVkersxKa
+         W8JWSIMndxhk1VPLy9RR/6WbNY5uGsNQdnni59e0rq5gdYNAhzZNLDEpDZuE0CGd3T6A
+         8+Fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jtpqFAJFQ9+m0BVdxSrQHgINETdk+aytTPKay73RJFM=;
+        b=s+9rI2g6OLwM4jA8CCfvyaXhd2nfOzDvcM/JgFgGejViv6dAONGxFYj7GUwGIwa1Jj
+         ddtK8V3jQbNu0q+M4OFA1vm2eq3MwU8QcUAnRwcCDcOSEblKNIEU0tT/4WKcQ7mU/6ne
+         y63LTt5bqvLjN6kriGApk5JczFWU3xA9qKJ+GMxfqMQTvXMuHwH34HEO12IpGKxsFBuM
+         xSSOX14ba8v4vWonrURnqIySi8zVx1ckU/xSG53jtcWF34P1D6XcWks8TKlEIhpmU691
+         n7nL0iiqd4u+WogQ0m1znH4ucGFvvNnRCemlUs1fKkjqxDEmfbJTHccMT/pH1Q+joKRJ
+         YQGg==
+X-Gm-Message-State: AOAM532cseAj/eqcpB+mqDbXZOBWfxNQDBx3zQtD6Ft6KnuXcvrioI6y
+        pwgs9aBXp07+O5UvjBrCcS3DWNgPDBazIXfTdPc=
+X-Google-Smtp-Source: ABdhPJzfproym1KZEKvynMCWXL8DhJ5lXG110okss77gSgINn1wXfnxjLH1UgabPqqDBjQrXyUtpFWyGC5Xq6EE1JS0=
+X-Received: by 2002:a05:6e02:964:: with SMTP id q4mr7280412ilt.290.1631866620219;
+ Fri, 17 Sep 2021 01:17:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <eef5ed95-3f54-b709-894d-cdf75bc3180b@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: vfrr3HJkTCHB8QQyscuCERwC2DXcARzi
-X-Proofpoint-GUID: W6T2wZ_OjEKcyUUzYd4oNyNnpdDdygo_
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-17_03,2021-09-16_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
- bulkscore=0 mlxlogscore=999 priorityscore=1501 impostorscore=0
- lowpriorityscore=0 spamscore=0 phishscore=0 clxscore=1015 suspectscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109030001 definitions=main-2109170047
+References: <20210818154449.1037-1-alistair@alistair23.me>
+In-Reply-To: <20210818154449.1037-1-alistair@alistair23.me>
+From:   Alistair Francis <alistair23@gmail.com>
+Date:   Fri, 17 Sep 2021 18:15:00 +1000
+Message-ID: <CAKmqyKPsxNS1px4-+nFNNAm6MTYApASTZ_XdvL+adTBvBtqSpg@mail.gmail.com>
+Subject: Re: [PATCH v11 00/10] Add support for the silergy,sy7636a
+To:     Alistair Francis <alistair@alistair23.me>
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Aug 19, 2021 at 9:15 PM Alistair Francis <alistair@alistair23.me> wrote:
+>
+> This series applied on top of the "mfd: simple-mfd-i2c: Add support for
+> registering devices via MFD cells" patch. Once "mfd: simple-mfd-i2c: Add
+> support for registering devices via MFD cells" is merged this series is
+> ready to go.
+>
+> v11:
+>  - Address comments on hwmon
+>  - Improve "mfd: simple-mfd-i2c: Add a Kconfig name" commit message
+> v10:
+>  - Use dev_get_regmap() instead of dev_get_drvdata()
+> v9:
+>  - Convert to use the simple-mfd-i2c instead
+>
+> Alistair Francis (10):
+>   dt-bindings: mfd: Initial commit of silergy,sy7636a.yaml
+>   mfd: simple-mfd-i2c: Add a Kconfig name
+>   mfd: simple-mfd-i2c: Enable support for the silergy,sy7636a
+>   regulator: sy7636a: Remove requirement on sy7636a mfd
+>   thermal: sy7636a: Add thermal driver for sy7636a
+>   hwmon: sy7636a: Add temperature driver for sy7636a
+>   ARM: imx_v6_v7_defconfig: Enable silergy,sy7636a
+>   ARM: dts: imx7d: remarkable2: Enable silergy,sy7636a
+>   ARM: imx_v6_v7_defconfig: Enable backlight class devices
+>   ARM: dts: imx7d: remarkable2: Enable lcdif
 
+It doesn't look like "mfd: simple-mfd-i2c: Add support for registering
+devices via MFD cells" has made it into 5.15, is something else
+required?
 
-On 9/16/21 4:03 PM, David Hildenbrand wrote:
->>   struct kvm_vm_stat {
->> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
->> index 51d1594bd6cd..f3887e13c5db 100644
->> --- a/arch/s390/kvm/kvm-s390.c
->> +++ b/arch/s390/kvm/kvm-s390.c
->> @@ -608,6 +608,9 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, 
->> long ext)
->>       case KVM_CAP_S390_PROTECTED:
->>           r = is_prot_virt_host();
->>           break;
->> +    case KVM_CAP_S390_CPU_TOPOLOGY:
->> +        r = test_facility(11);
->> +        break;
->>       default:
->>           r = 0;
->>       }
->> @@ -819,6 +822,19 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm, 
->> struct kvm_enable_cap *cap)
->>           icpt_operexc_on_all_vcpus(kvm);
->>           r = 0;
->>           break;
->> +    case KVM_CAP_S390_CPU_TOPOLOGY:
-> 
-> As given in my example, this should be
-> 
-> r = -EINVAL;
-> mutex_lock(&kvm->lock);
-> if (kvm->created_vcpus) {
->      r = -EBUSY;
-> } else if (test_facility(11)) {
-> ...
-> }
-> 
-> Similar to how we handle KVM_CAP_S390_VECTOR_REGISTERS.
-> 
-> [...]
-> 
->> +
->> +    /* PTF needs both host and guest facilities to enable 
->> interpretation */
->> +    if (test_kvm_facility(vcpu->kvm, 11) && test_facility(11))
->> +        vcpu->arch.sie_block->ecb |= ECB_PTF;
-> 
-> This should be simplified to
-> 
-> if (test_kvm_facility(vcpu->kvm, 11))
-> 
-> then. (vsie code below is correct)
-> 
-> 
+Alistair
 
-OK, the idea was to let the hypervisor the possibility to do userland 
-emulation if it wanted.
-But I can modify as you want.
-
-Regards,
-Pierre
-
--- 
-Pierre Morel
-IBM Lab Boeblingen
+>
+>  .../bindings/mfd/silergy,sy7636a.yaml         |  79 ++++++++++++
+>  arch/arm/boot/dts/imx7d-remarkable2.dts       | 115 ++++++++++++++++++
+>  arch/arm/configs/imx_v6_v7_defconfig          |   5 +
+>  drivers/hwmon/Kconfig                         |  10 ++
+>  drivers/hwmon/Makefile                        |   1 +
+>  drivers/hwmon/sy7636a-hwmon.c                 |  77 ++++++++++++
+>  drivers/mfd/Kconfig                           |   2 +-
+>  drivers/mfd/simple-mfd-i2c.c                  |  12 ++
+>  drivers/regulator/Kconfig                     |   1 -
+>  drivers/regulator/sy7636a-regulator.c         |   2 +-
+>  drivers/thermal/Kconfig                       |   6 +
+>  drivers/thermal/Makefile                      |   1 +
+>  drivers/thermal/sy7636a_thermal.c             |  94 ++++++++++++++
+>  include/linux/mfd/sy7636a.h                   |  41 +++++++
+>  14 files changed, 443 insertions(+), 3 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/mfd/silergy,sy7636a.yaml
+>  create mode 100644 drivers/hwmon/sy7636a-hwmon.c
+>  create mode 100644 drivers/thermal/sy7636a_thermal.c
+>  create mode 100644 include/linux/mfd/sy7636a.h
+>
+> --
+> 2.31.1
+>
