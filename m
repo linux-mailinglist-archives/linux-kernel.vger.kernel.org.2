@@ -2,94 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C0E341013A
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 00:26:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0608141013C
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 00:28:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344670AbhIQW1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 18:27:17 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:55134 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232719AbhIQW1M (ORCPT
+        id S1344678AbhIQW3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 18:29:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232719AbhIQW3r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 18:27:12 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 18HMPY8h005995
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Sep 2021 18:25:34 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 3CFF515C0098; Fri, 17 Sep 2021 18:25:34 -0400 (EDT)
-Date:   Fri, 17 Sep 2021 18:25:34 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Kent Overstreet <kent.overstreet@gmail.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Dave Chinner <david@fromorbit.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Howells <dhowells@redhat.com>
-Subject: Re: Folio discussion recap
-Message-ID: <YUUV3uHhh/PCqXsK@mit.edu>
-References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
- <YTu9HIu+wWWvZLxp@moria.home.lan>
- <YUIT2/xXwvZ4IErc@cmpxchg.org>
- <20210916025854.GE34899@magnolia>
- <YUN2vokEM8wgASk8@cmpxchg.org>
- <20210917052440.GJ1756565@dread.disaster.area>
- <YUTC6O0w3j7i8iDm@cmpxchg.org>
- <YUUE5qB9CW9qiAcN@moria.home.lan>
+        Fri, 17 Sep 2021 18:29:47 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FCB0C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 15:28:24 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id b15so20415196lfe.7
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 15:28:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ATG5NnjBZl5uROxRiGQuGsgW+WoiTqVTfaTtEyWboD4=;
+        b=GIxqeNwHyHeXl9iWMRj3tvHiLtIR8wE8ZDUo49LZQyHArLZ5Y8u5tw9G02aO7GfZSr
+         d4RiONMGCMitnH03p/SPXvtPRfw93zOOagGcWOIiNwhcTOuc5p7DL00jY22JfoDQ/0iu
+         7bkKj1eIsUgbIpiOSHKqnGnXToC3qmkdxpp6z6KKBsGatuAnXsacWt/IVR3vy0zGi0DH
+         Adsc+WdzyRa3R00hPVKRIsrckqyqlxosWyPOFI8ihA2HgIJLhTzmGuvHqQcNUDJnBlRQ
+         F0DUlyuusMf+8Dgjl0h2SWMmpRdhBi487vWd3auyOndzagE9ZllRxv25dHsKZ5cHyCZJ
+         PCnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ATG5NnjBZl5uROxRiGQuGsgW+WoiTqVTfaTtEyWboD4=;
+        b=h1Wp5ACEWa0soMXt7j8YUkxq1Av4piIGSno9SbK34nXILMtAEx6s5NvamR+kgEmRZP
+         p+trM6zqLs5TiDnw3YDO2ENTPdR57+LhQCeOYYgrwOnF2iWUAItKn6PkcKWw3so8+TLl
+         PVCqIJa7H4Pbs/9aER1MuPmG21ozEjoOq+54Bn4vqo23U3lGdX5CtImRDCQFVcUnMtMe
+         NZxKqX2lgiAMK2xOm1HfpjNq6k8+lwU7hVygYZYAWiSJJXK2Mhzkyi1vGJ2StRVMCias
+         Tcusahck3TAuDxhwwpmH/henenBXJRqKvePgGDP047EE8A/SAVTY8H8AZc9YbLpQfPow
+         Zp2g==
+X-Gm-Message-State: AOAM530MiH9PBMwS78RfhSQpOycdBZb5zRbgDk49g7GBTx03daXfU9Ab
+        nKtSy89bZ/FFQP/5Tc/kDxKgqbIEP1OmOyDHMlF2gA==
+X-Google-Smtp-Source: ABdhPJyJzS6Eh5ph0KTz0AHFM3V7mMDZRHus4peWL04EIpE/0/VyQ76dzmHnSnuRLtGQVLTH7syzF4tuj9ZRm7UveqU=
+X-Received: by 2002:a05:6512:12c4:: with SMTP id p4mr10112672lfg.72.1631917702757;
+ Fri, 17 Sep 2021 15:28:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YUUE5qB9CW9qiAcN@moria.home.lan>
+References: <20210911042925.556889-1-linux@roeck-us.net>
+In-Reply-To: <20210911042925.556889-1-linux@roeck-us.net>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sat, 18 Sep 2021 00:28:11 +0200
+Message-ID: <CACRpkdYjSX0_y_N5nQweenfDMJYa3OEimbweN5XCVQeGsq+cBQ@mail.gmail.com>
+Subject: Re: [PATCH] watchdog: ixp4xx_wdt: Fix address space warning
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        LINUXWATCHDOG <linux-watchdog@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 05:13:10PM -0400, Kent Overstreet wrote:
-> Also: it's become pretty clear to me that we have crappy
-> communications between MM developers and filesystem
-> developers.
+On Sat, Sep 11, 2021 at 6:29 AM Guenter Roeck <linux@roeck-us.net> wrote:
 
-I think one of the challenges has been the lack of an LSF/MM since
-2019.  And it may be that having *some* kind of ad hoc technical
-discussion given that LSF/MM in 2021 is not happening might be a good
-thing.  I'm sure if we asked nicely, we could use the LPC
-infrasutrcture to set up something, assuming we can find a mutually
-agreeable day or dates.
+> sparse reports the following address space warning.
+>
+> drivers/watchdog/ixp4xx_wdt.c:122:20: sparse:
+>         incorrect type in assignment (different address spaces)
+> drivers/watchdog/ixp4xx_wdt.c:122:20: sparse:
+>         expected void [noderef] __iomem *base
+> drivers/watchdog/ixp4xx_wdt.c:122:20: sparse:
+>         got void *platform_data
+>
+> Add a typecast to solve the problem.
+>
+> Fixes: 21a0a29d16c6 ("watchdog: ixp4xx: Rewrite driver to use core")
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 
-> Internally both teams have solid communications - I know
-> in filesystem land we all talk to each other and are pretty good at
-> working colaboratively, and it sounds like the MM team also has good
-> internal communications. But we seem to have some problems with
-> tackling issues that cross over between FS and MM land, or awkwardly
-> sit between them.
+Thanks for fixing this!
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-That's a bit of a over-generalization; it seems like we've uncovered
-that some of the disagreemnts are between different parts of the MM
-community over the suitability of folios for anonymous pages.
-
-And it's interesting, because I don't really consider Willy to be one
-of "the FS folks" --- and he has been quite diligent to reaching out
-to a number of folks in the FS community about our needs, and it's
-clear that this has been really, really helpful.  There's no question
-that we've had for many years some difficulties in the code paths that
-sit between FS and MM, and I'd claim that it's not just because of
-communications, but the relative lack of effort that was focused in
-that area.  The fact that Willy has spent the last 9 months working on
-FS / MM interactions has been really great, and I hope it continues.
-
-That being said, it sounds like there are issues internal to the MM
-devs that still need to be ironed out, and at the risk of throwing the
-anon-THP folks under the bus, if we can land at least some portion of
-the folio commits, it seems like that would be a step in the right
-direction.
-
-Cheers,
-
-						- Ted
+Yours,
+Linus Walleij
