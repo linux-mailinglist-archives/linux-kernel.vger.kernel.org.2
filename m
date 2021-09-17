@@ -2,496 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F141340F2F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 09:16:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29BB840F2F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 09:17:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238602AbhIQHRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 03:17:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235614AbhIQHRR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 03:17:17 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42EA7C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 00:15:54 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id c190-20020a1c9ac7000000b0030b459ea869so700919wme.4
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 00:15:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wSexYtZcx8Zl061Pgh+/19nNzstnphN0+uFbijDxZpQ=;
-        b=3sY3Np63qqTbDp+hH8V+00cYF0f8tIoihAjjZk/SUHiufYaJWufLYIGr6hPuj5+5Sa
-         G8xH+AWHilBE4bBVeEcl51/S3TIRiKwDPMaT9SaHZEtYUprZ3aa33Mhdu0uzK9tR9Ygz
-         thVek0FoBO6RQlgtThZ96JV4io7TkuEGDnXs4nKQONA+nv5pfzSFIRrsW4R4w75UXyW7
-         t1q/Wb2yRwg9xqreCL/HIOk/Lhq6u3Z+4nQRe7bOzBTkFAaK+s6hha8odzq9DgnAKK5b
-         3Q8l3+4jthe9gqYlxvwG/x/l2pSLqZGes9gTiIKouTOqo0GLsmIy+GNRd/S9WijBjC7Z
-         lEyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=wSexYtZcx8Zl061Pgh+/19nNzstnphN0+uFbijDxZpQ=;
-        b=snZbVhtmtkxgUS1hIdpcpkMyk1tVuLMsCvt8rr1NVaInnJTsua6iQGmB/mml/KIiQY
-         HYrHHMd74p2Bt53XXJl/utdAul7bFChchqhUXe/w1C0GXb99Qee8a43QxZE5HO18IGu1
-         c+lbG3PkZj79mT19t5vpH92sARgi6qSO9tXG7iOlCwl69wPBn5EbrEhTCPrteMHhfa5B
-         v52vHMrBRCJDFOjMOvLA/BIDSmhhW5FF+tL+jrcKiCWFhJhv1QIhLvwpGOg1yRgbMX8/
-         Eu/bYI05yJqQuyBaX9m+Q0SGxiRv06AqS/a+LlOWKUAdg+jZbZrLRqslTdagcAP3vz7i
-         hy7A==
-X-Gm-Message-State: AOAM531KWEoZHoSDWe1wasil4OtNxNADNS7gOET539sNI+IRXfjwiAIN
-        w8P7WKKCJwyWNQglOGKMd4bjaxFTlDmFh/a9
-X-Google-Smtp-Source: ABdhPJzWei8wbNNcFEm4mky4jx0Xcjo49xKE8JQ5KsqxyHYoWLFm6zi1tTvTejA7lIpXr4ar7Y+a6w==
-X-Received: by 2002:a1c:1d86:: with SMTP id d128mr6980150wmd.142.1631862952592;
-        Fri, 17 Sep 2021 00:15:52 -0700 (PDT)
-Received: from ?IPv6:2001:861:44c0:66c0:7c8c:5a9b:1b6e:1623? ([2001:861:44c0:66c0:7c8c:5a9b:1b6e:1623])
-        by smtp.gmail.com with ESMTPSA id n3sm5584093wmi.0.2021.09.17.00.15.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Sep 2021 00:15:52 -0700 (PDT)
-Subject: Re: [PATCH v5 4/4] arm64: dts: meson-axg: add support for JetHub D1
-To:     Vyacheslav Bocharov <adeep@lexina.in>,
-        Kevin Hilman <khilman@baylibre.com>
-Cc:     linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <20210915085715.1134940-1-adeep@lexina.in>
- <20210915085715.1134940-5-adeep@lexina.in>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Organization: Baylibre
-Message-ID: <d44060f6-e4db-d2bb-47be-03c304fd91b3@baylibre.com>
-Date:   Fri, 17 Sep 2021 09:15:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S238675AbhIQHSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 03:18:17 -0400
+Received: from mail-eopbgr1300129.outbound.protection.outlook.com ([40.107.130.129]:47521
+        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S237083AbhIQHSQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 03:18:16 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=S8UHGq55QBE1zsCgrK2vNBBYXcD4ZYUENHqxragvMTWwedx4tT5wVO0OOX1/WMY8wbtx7ppWo0XdlT2sOvvwnQyMnawQg4lY5UnUUjvRQycIE/98WQSxBeJQexzgW8a48hO63SJ64pQI/2DFvj0w6998WJFDRq8EapEB6bOVXA1RGsAkKwWzRHHQh3oaq+/B6UrJVo85lYR8gXNE7YpWRxHUFlVfMSAESHGr6C36zLNGrBsmVP0FeuibY0HasH1u/4AJXGeOkVv5maDJpBK3bzppBBhVBcKqwqAiCjsVZXD3XKTwABd/vDh3l7FD37JmhCtf8Ye9MKe7XUwfYxC2qg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=tNLV4uu76RgqHPsnePpDIEuTtdr+Rtd0y7ZnJGOwtVA=;
+ b=MEELmNOfG7uWSGAUhk6B4hEcIWiuAtIM/YqVXuk5lVTNN2kP9157oBapF9P/EH6jaIczI26+f7uDqw9QDcQAhfcVYLvJbisqQFP6e3O98nI2Q44yJZytZEGvZ9fGErp40NapX/p3lqzQe9wQgI6hgrm5rnPP3pM6pK3dLu0jk/XOXgsEPWE/Evvj3DReUYFd5hBP+EXrPen1EsmhZaXCjwR7ax/Z6OnAgzqH1Dh2xBZ/nCgXceXAuN7ehUjcdMVSgJI5yITGIkJjoPKy+QMWcz4RKWn0i1dc7XJPRXIurFwAOuUD2y/IzJf96hzLsJ1znWTdlHjtM6m74TcmiUBMww==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
+ s=selector2-vivo0-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tNLV4uu76RgqHPsnePpDIEuTtdr+Rtd0y7ZnJGOwtVA=;
+ b=bOKkMgGAYp7zIANpNCY2YDdbhep545J5MGWlctAcO3K4nYTxjJacQRu96jptv9NloJAFZF7dgByN8FX+w+jP2yKoUz5JWUFKoLv5X3rbQAqX1oUvtQHcrcnMwdH8eo7rnF9CnNNjwgUhhF1S+L6Lyml8mOlZkFP6LOrXaXvnd2M=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=vivo.com;
+Received: from SL2PR06MB3082.apcprd06.prod.outlook.com (2603:1096:100:37::17)
+ by SL2PR06MB3068.apcprd06.prod.outlook.com (2603:1096:100:3b::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Fri, 17 Sep
+ 2021 07:16:52 +0000
+Received: from SL2PR06MB3082.apcprd06.prod.outlook.com
+ ([fe80::4c9b:b71f:fb67:6414]) by SL2PR06MB3082.apcprd06.prod.outlook.com
+ ([fe80::4c9b:b71f:fb67:6414%6]) with mapi id 15.20.4523.016; Fri, 17 Sep 2021
+ 07:16:52 +0000
+From:   Qing Wang <wangqing@vivo.com>
+To:     Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Qing Wang <wangqing@vivo.com>
+Subject: [PATCH] dma: ioat: switch from 'pci_' to 'dma_' API
+Date:   Fri, 17 Sep 2021 00:16:31 -0700
+Message-Id: <1631862991-10006-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-ClientProxiedBy: HK0PR01CA0049.apcprd01.prod.exchangelabs.com
+ (2603:1096:203:a6::13) To SL2PR06MB3082.apcprd06.prod.outlook.com
+ (2603:1096:100:37::17)
 MIME-Version: 1.0
-In-Reply-To: <20210915085715.1134940-5-adeep@lexina.in>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ubuntu.localdomain (103.220.76.181) by HK0PR01CA0049.apcprd01.prod.exchangelabs.com (2603:1096:203:a6::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.4523.14 via Frontend Transport; Fri, 17 Sep 2021 07:16:51 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: af59f46e-c771-467a-0c30-08d979ab1f33
+X-MS-TrafficTypeDiagnostic: SL2PR06MB3068:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SL2PR06MB30687498D1FF029A4161E82DBDDD9@SL2PR06MB3068.apcprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: FOsSiMt3eNf+R+fKorIzJ/T6rAmiPK/T7R7iUHQSEzBG+jNxszCsodiwb9Wxcu4ID2S9Ba5nBnjsEkt+ZavxBfTLL0OeaH71xS7n9jIaHDua8N5tSBvtXfFAXEijC27w18prRmMM13fqgo4Tjtv2shZvAYdJM4q+By28aXxoLgEg6aTcmK9D4ZTuB6K1etFld+eswPvs4I0NTgmBqowGS+odmtlU2Ooa8p6fl3KB65BvzeLwBSR9DEgmv7BPRKN1PKawRUIN6o29Ftd6fUPqwoVO8JILR2VD3t6deTIe+1Z6WaostoTuhCQQOc2EwNufwFOdCYQylazCc5Ua3BUJq6ta7rv9WwZ9uFj8aDs/4E123+zgQtQA91t4N9Iwnu8jXNAF3TxkeFCQXvzNdtLxrVxBIb0/cIgzBODUv8m0Ma3t21D0xl4dQ8TArlqnZdnelcNYpZvciVkM+A7HReAGU4LHiQu58olGqizJ9TFul6HE5qSifeXCUmjpmT7gFohBu6KUqLYsCjjYRi31IvnoMKjmW9bNI0w9cbJaA22OYNVNr/ewPTCZBZWBuPq+l+Cez538rHJGH0oL9TAhIHhs/unIfYMwUSeOFP6FRIdTxr2FiNgvZMn2c1TXebpdzNuvucrOHwHFOoMsM3kkBXSXUtG67BYYGdcaQJGP5Zs2zCrffA6rZLyXsjIx/veFAGzxQySE+hVBnc4M49AM4A4aEdZqwAF0iW72ZKELJ0f7zGiD3nVBGcfSOEDQB9ptRu6a0Mi4q4SnM0SZvMTxVgGbrg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SL2PR06MB3082.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(366004)(376002)(396003)(39860400002)(6486002)(83380400001)(36756003)(38350700002)(86362001)(5660300002)(38100700002)(956004)(316002)(478600001)(52116002)(107886003)(8676002)(26005)(966005)(6512007)(6506007)(6666004)(66476007)(66556008)(66946007)(4326008)(2906002)(186003)(8936002)(2616005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Q8UeRLYpMyAJEo8hhq/LEtqm8Lat1gK+PyudB0uLXTIACbs4zQvak2Sq4g+l?=
+ =?us-ascii?Q?88w2hsmHINWNf+TS/el1S7iFjT/sQ/rBMR0TpGgs61t3m5aeQTXk8l85vMTA?=
+ =?us-ascii?Q?h6QUMDgeM8RO9KgPZQZfCMkc0ai21n5ZbY2+qWgY1XtULv8KF1QfJVw+i8rq?=
+ =?us-ascii?Q?XkH5sbO5d5JYAhqAFbTG6X+BMPooXTtrg70ZUPWZ9PcJUbPvEoUQclA6LYHF?=
+ =?us-ascii?Q?2eeBvjWk0egcOKqgcGe+zSCVU+qD/4tQcoU4yNBA1vNte4aT6aOz2xEm01BB?=
+ =?us-ascii?Q?sdSTQ/ltuyzM2lhv/HfLL2h8Uax+rjAy62xjiVFwUFfRl+DOHzX5N5nrEBJH?=
+ =?us-ascii?Q?2ehTeLqvfDkiFskpUZ1ZI6YzRNAz2azgXfNc0yA+VpF0Vcr6r1nadhWtpk1M?=
+ =?us-ascii?Q?cjHOXYZIYQvWZIbfU5eB7Seuy22r9/mPsb/CgoG36Z/AcP5vAONhb3rweA/3?=
+ =?us-ascii?Q?2ky16gqM2bCYE9jHvt+43YSwQiAT5/9cpltRn2peszXd/1Z8bkc4cnZ005Kp?=
+ =?us-ascii?Q?jKQDVouk3x1Hk3IzL0Bmfb3lt2lhsZMC1c0WuspPWA3u/7FuftE8hocW5DFo?=
+ =?us-ascii?Q?ximqhSkIChAmwD21i79QcPlSQnhQO2H1/ytEVhQoJz7bHP32DFbtH34TjnIe?=
+ =?us-ascii?Q?R22+q5TI1vtIKFDRSVE+CC2nwLjRemK7I9gMFcp+gbixabrI4d6tvtdT4Uzi?=
+ =?us-ascii?Q?97VgPHxxLx5FSuw2M22gIfxQS/FLo/Qq3b3lvkEyks565jWATBCC+cM90oUq?=
+ =?us-ascii?Q?VAcQxP+i8iaeRClZgRVkhS8QasKyPZyqcu2JQGHHbRcVLrA2SOBXggpEMvpa?=
+ =?us-ascii?Q?JCbTVM7FdyVZNt3z5fOGbNvQNMQ7wj56t8Mx4hD484HLi1Jn0QQSe1AzD+sO?=
+ =?us-ascii?Q?iikGtKt00kV3Us2Au9K+U4eTzxGAIZRiPLFhwus67ZDNbEWfFXIyS70UcjFO?=
+ =?us-ascii?Q?qrkX8huuKpklum+IQUOqTnxop6E2Fc+FcrvJeJkVxH41OkPg9TIkaStf13s+?=
+ =?us-ascii?Q?5LaDXSQzXZi6UAOTRmVx7PQUofhy0+YrVbrnacW3Pxn+4Z2VWGWQzaZdUxRH?=
+ =?us-ascii?Q?rSKd0VfCYqqW3PfYbXssVnoqu+Rg/FVE5zgjV23IriP9ow8+oKw00AQRSfh0?=
+ =?us-ascii?Q?v1KoRcVqXAgcfUpLEHVRFSuoYz6SdXZkKROrqNvCLc1qKaLDVHpOjLTbAbRg?=
+ =?us-ascii?Q?cGH3rYNDLgnSd73Kouxz+3Nvqo3CAJWbYg8Kz7FpHP0QHsxf93cH5FlWak9U?=
+ =?us-ascii?Q?9ow2hLKFADAQ8Kdqy4AJKMeno9qZ33Ks3YrqERAc51rabclUB2p7IiinZ3Ah?=
+ =?us-ascii?Q?thKxpmsRrQIqG+HwZbKpoT97?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: af59f46e-c771-467a-0c30-08d979ab1f33
+X-MS-Exchange-CrossTenant-AuthSource: SL2PR06MB3082.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Sep 2021 07:16:52.1002
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: LR1Gx4JblggUtIN3T6b/N1X6vaXWI36602JHzX7zmNAs09aGjWSQg2lO/glyhkWYsP4vdBEVvWqtjiIicSirbA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SL2PR06MB3068
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/09/2021 10:57, Vyacheslav Bocharov wrote:
-> JetHome Jethub D1 (http://jethome.ru/jethub-d1) is a home automation
-> controller with the following features:
-> - DIN Rail Mounting
-> - Amlogic A113X (ARM Cortex-A53) quad-core up to 1.5GHz
-> - no video out
-> - 512Mb/1GB LPDDR4
-> - 8/16GB eMMC flash
-> - 1 x USB 2.0
-> - 1 x 10/100Mbps ethernet
-> - WiFi / Bluetooth AMPAK AP6255 (Broadcom BCM43455) IEEE 802.11a/b/g/n/ac,
->   Bluetooth 4.2.
-> - TI CC2538 + CC2592 Zigbee Wireless Module with up to 20dBm output power
->   and Zigbee 3.0 support.
-> - 2 x gpio LEDS
-> - GPIO user Button
-> - 1 x 1-Wire
-> - 2 x RS-485
-> - 4 x dry contact digital GPIO inputs
-> - 3 x relay GPIO outputs
-> - DC source with a voltage of 9 to 56 V / Passive POE
-> 
-> Changes from v4:
->  - add node for 1wire-gpio for JetHub D1 v2 device
-> 
-> Signed-off-by: Vyacheslav Bocharov <adeep@lexina.in>
-> 
-> 
-> ---
->  arch/arm64/boot/dts/amlogic/Makefile          |   1 +
->  .../amlogic/meson-axg-jethome-jethub-j100.dts | 361 ++++++++++++++++++
->  2 files changed, 362 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/amlogic/meson-axg-jethome-jethub-j100.dts
-> 
-> diff --git a/arch/arm64/boot/dts/amlogic/Makefile b/arch/arm64/boot/dts/amlogic/Makefile
-> index 2c3ce7c401a5..3ba6f58b9833 100644
-> --- a/arch/arm64/boot/dts/amlogic/Makefile
-> +++ b/arch/arm64/boot/dts/amlogic/Makefile
-> @@ -1,5 +1,6 @@
->  # SPDX-License-Identifier: GPL-2.0
->  dtb-$(CONFIG_ARCH_MESON) += meson-axg-s400.dtb
-> +dtb-$(CONFIG_ARCH_MESON) += meson-axg-jethome-jethub-j100.dtb
->  dtb-$(CONFIG_ARCH_MESON) += meson-g12a-sei510.dtb
->  dtb-$(CONFIG_ARCH_MESON) += meson-g12a-u200.dtb
->  dtb-$(CONFIG_ARCH_MESON) += meson-g12a-x96-max.dtb
-> diff --git a/arch/arm64/boot/dts/amlogic/meson-axg-jethome-jethub-j100.dts b/arch/arm64/boot/dts/amlogic/meson-axg-jethome-jethub-j100.dts
-> new file mode 100644
-> index 000000000000..c25b03a91e12
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/amlogic/meson-axg-jethome-jethub-j100.dts
-> @@ -0,0 +1,361 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> +/*
-> + * Copyright (c) 2021 Vyacheslav Bocharov <adeep@lexina.in>
-> + * Copyright (c) 2020 JetHome
-> + * Author: Aleksandr Kazantsev <ak@tvip.ru>
-> + * Author: Alexey Shevelkin <ash@tvip.ru>
-> + * Author: Vyacheslav Bocharov <adeep@lexina.in>
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include "meson-axg.dtsi"
-> +#include <dt-bindings/input/input.h>
-> +#include <dt-bindings/thermal/thermal.h>
-> +
-> +/ {
-> +	compatible = "jethome,jethub-j100", "amlogic,a113d", "amlogic,meson-axg";
-> +	model = "JetHome JetHub J100";
-> +	aliases {
-> +		serial0 = &uart_AO;   /* Console */
-> +		serial1 = &uart_AO_B; /* External UART (Wireless Module) */
-> +		ethernet0 = &ethmac;
-> +	};
-> +
-> +	chosen {
-> +		stdout-path = "serial0:115200n8";
-> +	};
-> +
-> +	/* 1024MB RAM */
-> +	memory@0 {
-> +		device_type = "memory";
-> +		reg = <0x0 0x0 0x0 0x40000000>;
-> +	};
-> +
-> +	reserved-memory {
-> +		linux,cma {
-> +			size = <0x0 0x400000>;
-> +		};
-> +	};
-> +
-> +	emmc_pwrseq: emmc-pwrseq {
-> +		compatible = "mmc-pwrseq-emmc";
-> +		reset-gpios = <&gpio BOOT_9 GPIO_ACTIVE_LOW>;
-> +	};
-> +
-> +	vcc_3v3: regulator-vcc_3v3 {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "VCC_3V3";
-> +		regulator-min-microvolt = <3300000>;
-> +		regulator-max-microvolt = <3300000>;
-> +		vin-supply = <&vddao_3v3>;
-> +		regulator-always-on;
-> +	};
-> +
-> +	vcc_5v: regulator-vcc_5v {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "VCC5V";
-> +		regulator-min-microvolt = <5000000>;
-> +		regulator-max-microvolt = <5000000>;
-> +		regulator-always-on;
-> +	};
-> +
-> +	vddao_3v3: regulator-vddao_3v3 {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "VDDAO_3V3";
-> +		regulator-min-microvolt = <3300000>;
-> +		regulator-max-microvolt = <3300000>;
-> +		vin-supply = <&vcc_5v>;
-> +		regulator-always-on;
-> +	};
-> +
-> +	vddio_ao18: regulator-vddio_ao18 {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "VDDIO_AO18";
-> +		regulator-min-microvolt = <1800000>;
-> +		regulator-max-microvolt = <1800000>;
-> +		vin-supply = <&vddao_3v3>;
-> +		regulator-always-on;
-> +	};
-> +
-> +	vddio_boot: regulator-vddio_boot {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "VDDIO_BOOT";
-> +		regulator-min-microvolt = <1800000>;
-> +		regulator-max-microvolt = <1800000>;
-> +		vin-supply = <&vddao_3v3>;
-> +		regulator-always-on;
-> +	};
-> +
-> +	usb_pwr: regulator-usb_pwr {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "USB_PWR";
-> +		regulator-min-microvolt = <5000000>;
-> +		regulator-max-microvolt = <5000000>;
-> +		vin-supply = <&vcc_5v>;
-> +		regulator-always-on;
-> +	};
-> +
-> +	sdio_pwrseq: sdio-pwrseq {
-> +		compatible = "mmc-pwrseq-simple";
-> +		reset-gpios = <&gpio GPIOX_7 GPIO_ACTIVE_LOW>;
-> +		clocks = <&wifi32k>;
-> +		clock-names = "ext_clock";
-> +	};
-> +
-> +	wifi32k: wifi32k {
-> +		compatible = "pwm-clock";
-> +		#clock-cells = <0>;
-> +		clock-frequency = <32768>;
-> +		pwms = <&pwm_ab 0 30518 0>; /* PWM_A at 32.768KHz */
-> +	};
-> +
-> +	thermal-zones {
-> +		cpu_thermal: cpu-thermal {
-> +			polling-delay-passive = <250>;
-> +			polling-delay = <1000>;
-> +			thermal-sensors = <&scpi_sensors 0>;
-> +			trips {
-> +				cpu_passive: cpu-passive {
-> +					temperature = <70000>; /* millicelsius */
-> +					hysteresis = <2000>; /* millicelsius */
-> +					type = "passive";
-> +				};
-> +
-> +				cpu_hot: cpu-hot {
-> +					temperature = <80000>; /* millicelsius */
-> +					hysteresis = <2000>; /* millicelsius */
-> +					type = "hot";
-> +				};
-> +
-> +				cpu_critical: cpu-critical {
-> +					temperature = <100000>; /* millicelsius */
-> +					hysteresis = <2000>; /* millicelsius */
-> +					type = "critical";
-> +				};
-> +			};
-> +		};
-> +
-> +		cpu_cooling_maps: cooling-maps {
-> +			map0 {
-> +				trip = <&cpu_passive>;
-> +				cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +						<&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +						<&cpu2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +						<&cpu3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> +			};
-> +
-> +			map1 {
-> +				trip = <&cpu_hot>;
-> +				cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +						<&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +						<&cpu2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +						<&cpu3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> +			};
-> +		};
-> +	};
+The wrappers in include/linux/pci-dma-compat.h should go away.
 
+The patch has been generated with the coccinelle script below.
+expression e1, e2;
+@@
+-    pci_set_dma_mask(e1, e2)
++    dma_set_mask(&e1->dev, e2)
 
-Newline is missing here, I'll add while applying.
+@@
+expression e1, e2;
+@@
+-    pci_set_consistent_dma_mask(e1, e2)
++    dma_set_coherent_mask(&e1->dev, e2)
 
-> +	onewire {
-> +		compatible = "w1-gpio";
-> +		gpios = <&gpio GPIOA_14 GPIO_ACTIVE_HIGH>;
-> +		#gpio-cells = <1>;
-> +	};
-> +};
-> +
-> +&efuse {
-> +	sn: sn@32 {
-> +		reg = <0x32 0x20>;
-> +	};
-> +
-> +	eth_mac: eth_mac@0 {
-> +		reg = <0x0 0x6>;
-> +	};
-> +
-> +	bt_mac: bt_mac@6 {
-> +		reg = <0x6 0x6>;
-> +	};
-> +
-> +	wifi_mac: wifi_mac@c {
-> +		reg = <0xc 0x6>;
-> +	};
-> +
-> +	bid: bid@12 {
-> +		reg = <0x12 0x20>;
-> +	};
-> +};
-> +
-> +&ethmac {
-> +	status = "okay";
-> +	pinctrl-0 = <&eth_rmii_x_pins>;
-> +	pinctrl-names = "default";
-> +	phy-handle = <&eth_phy0>;
-> +	phy-mode = "rmii";
-> +
-> +	mdio {
-> +		compatible = "snps,dwmac-mdio";
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +
-> +		/* ICPlus IP101A/G Ethernet PHY (vendor_id=0x0243, model_id=0x0c54) */
-> +		eth_phy0: ethernet-phy@0 {
-> +			/* compatible = "ethernet-phy-id0243.0c54";*/
-> +			max-speed = <100>;
-> +			reg = <0>;
-> +
-> +			reset-assert-us = <10000>;
-> +			reset-deassert-us = <10000>;
-> +			reset-gpios = <&gpio GPIOZ_5 GPIO_ACTIVE_LOW>;
-> +		};
-> +	};
-> +};
-> +
-> +/* Internal I2C bus (on CPU module) */
-> +&i2c1 {
-> +	status = "okay";
-> +	pinctrl-0 = <&i2c1_z_pins>;
-> +	pinctrl-names = "default";
-> +
-> +	/* RTC */
-> +	pcf8563: pcf8563@51 {
-> +		compatible = "nxp,pcf8563";
-> +		reg = <0x51>;
-> +		status = "okay";
-> +	};
-> +};
-> +
-> +/* Peripheral I2C bus (on motherboard) */
-> +&i2c_AO {
-> +	status = "okay";
-> +	pinctrl-0 = <&i2c_ao_sck_10_pins>, <&i2c_ao_sda_11_pins>;
-> +	pinctrl-names = "default";
-> +};
-> +
-> +&pwm_ab {
-> +	status = "okay";
-> +	pinctrl-0 = <&pwm_a_x20_pins>;
-> +	pinctrl-names = "default";
-> +};
-> +
-> +/* wifi module */
-> +&sd_emmc_b {
-> +	status = "okay";
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +
-> +	pinctrl-0 = <&sdio_pins>;
-> +	pinctrl-1 = <&sdio_clk_gate_pins>;
-> +	pinctrl-names = "default", "clk-gate";
-> +
-> +	bus-width = <4>;
-> +	cap-sd-highspeed;
-> +	sd-uhs-sdr104;
-> +	max-frequency = <200000000>;
-> +	non-removable;
-> +	disable-wp;
-> +
-> +	mmc-pwrseq = <&sdio_pwrseq>;
-> +
-> +	vmmc-supply = <&vddao_3v3>;
-> +	vqmmc-supply = <&vddio_boot>;
-> +
-> +	brcmf: wifi@1 {
-> +		reg = <1>;
-> +		compatible = "brcm,bcm4329-fmac";
-> +	};
-> +};
-> +
-> +/* emmc storage */
-> +&sd_emmc_c {
-> +	status = "okay";
-> +	pinctrl-0 = <&emmc_pins>, <&emmc_ds_pins>;
-> +	pinctrl-1 = <&emmc_clk_gate_pins>;
-> +	pinctrl-names = "default", "clk-gate";
-> +
-> +	bus-width = <8>;
-> +	cap-mmc-highspeed;
-> +	max-frequency = <200000000>;
-> +	non-removable;
-> +	disable-wp;
-> +	mmc-ddr-1_8v;
-> +	mmc-hs200-1_8v;
-> +
-> +	mmc-pwrseq = <&emmc_pwrseq>;
-> +
-> +	vmmc-supply = <&vcc_3v3>;
-> +	vqmmc-supply = <&vddio_boot>;
-> +};
-> +
-> +/* UART Bluetooth */
-> +&uart_B {
-> +	status = "okay";
-> +	pinctrl-0 = <&uart_b_z_pins>, <&uart_b_z_cts_rts_pins>;
-> +	pinctrl-names = "default";
-> +	uart-has-rtscts;
-> +
-> +	bluetooth {
-> +		compatible = "brcm,bcm43438-bt";
-> +		shutdown-gpios = <&gpio GPIOZ_7 GPIO_ACTIVE_HIGH>;
-> +	};
-> +};
-> +
-> +/* UART Console */
-> +&uart_AO {
-> +	status = "okay";
-> +	pinctrl-0 = <&uart_ao_a_pins>;
-> +	pinctrl-names = "default";
-> +};
-> +
-> +/* UART Wireless module */
-> +&uart_AO_B {
-> +	status = "okay";
-> +	pinctrl-0 = <&uart_ao_b_pins>;
-> +	pinctrl-names = "default";
-> +};
-> +
-> +&usb {
-> +	status = "okay";
-> +	phy-supply = <&usb_pwr>;
-> +};
-> +
-> +&spicc1 {
-> +	status = "okay";
-> +	pinctrl-0 = <&spi1_x_pins>, <&spi1_ss0_x_pins>;
-> +	pinctrl-names = "default";
-> +};
-> +
-> +&gpio {
-> +	gpio-line-names =
-> +		"", "", "", "", "", // 0 - 4
-> +		"", "", "", "", "", // 5 - 9
-> +		"UserButton", "", "", "", "", // 10 - 14
-> +		"", "", "", "", "", // 15 - 19
-> +		"", "", "", "", "", // 20 - 24
-> +		"", "LedRed", "LedGreen", "Output3", "Output2", // 25 - 29
-> +		"Output1", "", "", "", "", // 30 - 34
-> +		"", "ZigBeeBOOT", "", "", "", // 35 - 39
-> +		"1Wire", "ZigBeeRESET", "", "Input4", "Input3", // 40 - 44
-> +		"Input2", "Input1", "", "", "", // 45 - 49
-> +		"", "", "", "", "", // 50 - 54
-> +		"", "", "", "", "", // 55 - 59
-> +		"", "", "", "", "", // 60 - 64
-> +		"", "", "", "", "", // 65 - 69
-> +		"", "", "", "", "", // 70 - 74
-> +		"", "", "", "", "", // 75 - 79
-> +		"", "", "", "", "", // 80 - 84
-> +		"", ""; // 85-86
-> +};
-> +
-> +&cpu0 {
-> +	#cooling-cells = <2>;
-> +};
-> +
-> +&cpu1 {
-> +	#cooling-cells = <2>;
-> +};
-> +
-> +&cpu2 {
-> +	#cooling-cells = <2>;
-> +};
-> +
-> +&cpu3 {
-> +	#cooling-cells = <2>;
-> +};
-> 
+While at it, some 'dma_set_mask()/dma_set_coherent_mask()' have been
+updated to a much less verbose 'dma_set_mask_and_coherent()'.
 
-Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
+This type of patches has been going on for a long time, I plan to 
+clean it up in the near future. If needed, see post from 
+Christoph Hellwig on the kernel-janitors ML:
+https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
 
-Thanks,
-Neil
+Signed-off-by: Qing Wang <wangqing@vivo.com>
+---
+ drivers/dma/ioat/init.c | 10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/dma/ioat/init.c b/drivers/dma/ioat/init.c
+index 191b592..373b8da
+--- a/drivers/dma/ioat/init.c
++++ b/drivers/dma/ioat/init.c
+@@ -1363,15 +1363,9 @@ static int ioat_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	if (!iomap)
+ 		return -ENOMEM;
+ 
+-	err = pci_set_dma_mask(pdev, DMA_BIT_MASK(64));
++	err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
+ 	if (err)
+-		err = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
+-	if (err)
+-		return err;
+-
+-	err = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64));
+-	if (err)
+-		err = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
++		err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
+ 	if (err)
+ 		return err;
+ 
+-- 
+2.7.4
+
