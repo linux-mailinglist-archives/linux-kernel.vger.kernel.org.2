@@ -2,186 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6D3040FA95
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 16:42:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 347EC40FAAB
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 16:45:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232079AbhIQOoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 10:44:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234819AbhIQOoP (ORCPT
+        id S233755AbhIQOrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 10:47:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41510 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229920AbhIQOpx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 10:44:15 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 087F4C061764;
-        Fri, 17 Sep 2021 07:42:52 -0700 (PDT)
-Date:   Fri, 17 Sep 2021 16:42:49 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=t-8ch.de; s=mail;
-        t=1631889769; bh=UnfkOUCn9nZ1Kxnm3JIIp2ffcVCWQuInPlmtWOwQf1E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D4l20a0f1KFCBHsiYnmCPh5CAs6tX2Y1vySCAbSIkF0LqDdHrZHwfoAH1+WTyiMy6
-         MgQIdqBeVezCcLqfyRhuXxBjdnxoIZgANYR0UBUAagxfbWI2j7mD/oXMlvP/0Xew9i
-         1jQ1LH+4ufH5bgxinBa6M8/uuGFEod6aoXQk/oAE=
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>
-To:     Ilya Skriblovsky <ilyaskriblovsky@gmail.com>
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
-Subject: Re: [PATCH v2] Support for side buttons of Xiaomi Mi Dual Mode
- Wireless Mouse Silent Edition
-Message-ID: <b80cf0f0-2211-4159-9add-eb4961ce462c@t-8ch.de>
-References: <YUOninNA2UMADRVt@ilya-330s>
+        Fri, 17 Sep 2021 10:45:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631889867;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xzE/NLJgfwAVxkat0RFh+f6sNWwm03C3DeUhhSSlfLM=;
+        b=fhqMfGZambCsXrC0/+U0nzVEFz8r60bezasaLVZuc+pKvVDnRd1bDnFpUYUOuMm1NBhAAX
+        yWH32yS7bwRwaZ92Ks3KndYD+8d0RvhG6iVUgGXVjNr1GlNliyWF1h04Hc5YV/uYqj0Jhy
+        6YMdP8jd71eKYQiTwf1YS3d9f7JvcsU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-587-Is39RrGqPm-8BizvYNITvw-1; Fri, 17 Sep 2021 10:44:24 -0400
+X-MC-Unique: Is39RrGqPm-8BizvYNITvw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 996F010055B9;
+        Fri, 17 Sep 2021 14:44:21 +0000 (UTC)
+Received: from piliu.users.ipa.redhat.com (ovpn-8-17.pek2.redhat.com [10.72.8.17])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7692E5DEB8;
+        Fri, 17 Sep 2021 14:43:56 +0000 (UTC)
+Date:   Fri, 17 Sep 2021 22:43:52 +0800
+From:   Pingfan Liu <piliu@redhat.com>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Pingfan Liu <kernelfans@gmail.com>, linux-kernel@vger.kernel.org,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Julien Thierry <jthierry@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Wang Qing <wangqing@vivo.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Santosh Sivaraj <santosh@fossix.org>
+Subject: Re: [PATCH 3/5] kernel/watchdog: adapt the watchdog_hld interface
+ for async model
+Message-ID: <YUSpqCqA4jLboCVP@piliu.users.ipa.redhat.com>
+References: <20210915035103.15586-1-kernelfans@gmail.com>
+ <20210915035103.15586-4-kernelfans@gmail.com>
+ <YUMAUE5RFJAtAS/z@alley>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YUOninNA2UMADRVt@ilya-330s>
-Jabber-ID: thomas@t-8ch.de
+In-Reply-To: <YUMAUE5RFJAtAS/z@alley>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 2021-09-16T23:22+0300, Ilya Skriblovsky wrote:
-> This patch enables side-buttons of Xiaomi Bluetooth mouse (specifically
-> Xiaomi Mi Dual Mode Wireless Mouse Silent Edition).
+On Thu, Sep 16, 2021 at 10:29:04AM +0200, Petr Mladek wrote:
+> On Wed 2021-09-15 11:51:01, Pingfan Liu wrote:
+> > When lockup_detector_init()->watchdog_nmi_probe(), PMU may be not ready
+> > yet. E.g. on arm64, PMU is not ready until
+> > device_initcall(armv8_pmu_driver_init).  And it is deeply integrated
+> > with the driver model and cpuhp. Hence it is hard to push this
+> > initialization before smp_init().
+> > 
+> > But it is easy to take an opposite approach by enabling watchdog_hld to
+> > get the capability of PMU async.
 > 
-> The mouse sends invalid button count in its HID Report Descriptor and
-> this patch just replaces its descriptor with corrected one. With this
-> driver side buttons work as expected acting like Back/Forward buttons.
+> This is another cryptic description. I have probably got it after
+> looking at the 5th patch (was not Cc :-(
 > 
-> Signed-off-by: Ilya Skriblovsky <ilyaskriblovsky@gmail.com>
-> ---
-> Changes since v1:
->  - Fixed syntax of Kconfig
-> ---
->  drivers/hid/Kconfig      |   7 +++
->  drivers/hid/Makefile     |   1 +
->  drivers/hid/hid-xiaomi.c | 103 +++++++++++++++++++++++++++++++++++++++
->  3 files changed, 111 insertions(+)
->  create mode 100644 drivers/hid/hid-xiaomi.c
+> > The async model is achieved by introducing an extra parameter notifier
+> > of watchdog_nmi_probe().
 > 
-> [..]
-> diff --git a/drivers/hid/hid-xiaomi.c b/drivers/hid/hid-xiaomi.c
-> new file mode 100644
-> index 000000000000..56e8edd3d62f
-> --- /dev/null
-> +++ b/drivers/hid/hid-xiaomi.c
-> @@ -0,0 +1,103 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * HID driver for Xiaomi Mi Dual Mode Wireless Mouse Silent Edition
-> + *
-> + * Copyright (c) 2021 Ilya Skriblovsky
-> + */
-> +
-> +/*
-> + * This program is free software; you can redistribute it and/or modify it
-> + * under the terms of the GNU General Public License as published by the Free
-> + * Software Foundation; either version 2 of the License, or (at your option)
-> + * any later version.
-> + */
-
-This license blurb is unnecessary.
-FYI the SPDX-License-Identifier says GPL-2.0 (only!) but the blurb specifies "or
-later".
-
-> +
-> +#include <linux/init.h>
-> +#include <linux/module.h>
-> +#include <linux/kernel.h>
-
-linux/kernel.h should not be necessary.
-
-> +#include <linux/hid.h>
-> +
-> +#define USB_VENDOR_ID_XIAOMI    0x2717
-> +#define USB_DEVICE_ID_MI_SILENT_MOUSE   0x5014
-
-These should go into drivers/hid/hid-ids.h.
-
-> +
-> +/* Fixed Mi Silent Mouse report descriptor */
-> +/* Button's Usage Maximum changed from 3 to 5 to make side buttons work */
-> +#define MI_SILENT_MOUSE_ORIG_RDESC_LENGTH   87
-> +static __u8 mi_silent_mouse_rdesc_fixed[] = {
-> +	0x05, 0x01,         /*  Usage Page (Desktop),               */
-> +	0x09, 0x02,         /*  Usage (Mouse),                      */
-> +	0xA1, 0x01,         /*  Collection (Application),           */
-> +	0x85, 0x03,         /*      Report ID (3),                  */
-> +	0x09, 0x01,         /*      Usage (Pointer),                */
-> +	0xA1, 0x00,         /*      Collection (Physical),          */
-> +	0x05, 0x09,         /*          Usage Page (Button),        */
-> +	0x19, 0x01,         /*          Usage Minimum (01h),        */
-> +	0x29, 0x05, /* X */ /*          Usage Maximum (05h),        */
-> +	0x15, 0x00,         /*          Logical Minimum (0),        */
-> +	0x25, 0x01,         /*          Logical Maximum (1),        */
-> +	0x75, 0x01,         /*          Report Size (1),            */
-> +	0x95, 0x05,         /*          Report Count (5),           */
-> +	0x81, 0x02,         /*          Input (Variable),           */
-> +	0x75, 0x03,         /*          Report Size (3),            */
-> +	0x95, 0x01,         /*          Report Count (1),           */
-> +	0x81, 0x01,         /*          Input (Constant),           */
-> +	0x05, 0x01,         /*          Usage Page (Desktop),       */
-> +	0x09, 0x30,         /*          Usage (X),                  */
-> +	0x09, 0x31,         /*          Usage (Y),                  */
-> +	0x15, 0x81,         /*          Logical Minimum (-127),     */
-> +	0x25, 0x7F,         /*          Logical Maximum (127),      */
-> +	0x75, 0x08,         /*          Report Size (8),            */
-> +	0x95, 0x02,         /*          Report Count (2),           */
-> +	0x81, 0x06,         /*          Input (Variable, Relative), */
-> +	0x09, 0x38,         /*          Usage (Wheel),              */
-> +	0x15, 0x81,         /*          Logical Minimum (-127),     */
-> +	0x25, 0x7F,         /*          Logical Maximum (127),      */
-> +	0x75, 0x08,         /*          Report Size (8),            */
-> +	0x95, 0x01,         /*          Report Count (1),           */
-> +	0x81, 0x06,         /*          Input (Variable, Relative), */
-> +	0xC0,               /*      End Collection,                 */
-> +	0xC0,               /*  End Collection,                     */
-> +	0x06, 0x01, 0xFF,   /*  Usage Page (FF01h),                 */
-> +	0x09, 0x01,         /*  Usage (01h),                        */
-> +	0xA1, 0x01,         /*  Collection (Application),           */
-> +	0x85, 0x05,         /*      Report ID (5),                  */
-> +	0x09, 0x05,         /*      Usage (05h),                    */
-> +	0x15, 0x00,         /*      Logical Minimum (0),            */
-> +	0x26, 0xFF, 0x00,   /*      Logical Maximum (255),          */
-> +	0x75, 0x08,         /*      Report Size (8),                */
-> +	0x95, 0x04,         /*      Report Count (4),               */
-> +	0xB1, 0x02,         /*      Feature (Variable),             */
-> +	0xC0                /*  End Collection                      */
-> +};
-> +
-> +static __u8 *xiaomi_report_fixup(struct hid_device *hdev, __u8 *rdesc,
-> +				 unsigned int *rsize)
-> +{
-> +	switch (hdev->product) {
-> +	case USB_DEVICE_ID_MI_SILENT_MOUSE:
-> +		if (*rsize == MI_SILENT_MOUSE_ORIG_RDESC_LENGTH) {
-> +			hid_info(hdev, "fixing up Mi Silent Mouse report descriptor\n");
-> +			rdesc = mi_silent_mouse_rdesc_fixed;
-> +			*rsize = sizeof(mi_silent_mouse_rdesc_fixed);
-> +		}
-> +		break;
-> +	}
-> +	return rdesc;
-> +}
-> +
-> +static const struct hid_device_id xiaomi_devices[] = {
-> +	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_XIAOMI, USB_DEVICE_ID_MI_SILENT_MOUSE) },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(hid, xiaomi_devices);
-> +
-> +static struct hid_driver xiaomi_driver = {
-> +	.name = "xiaomi",
-> +	.id_table = xiaomi_devices,
-> +	.report_fixup = xiaomi_report_fixup,
-> +};
-> +module_hid_driver(xiaomi_driver);
-> +
-> +MODULE_LICENSE("GPL");
-> +MODULE_AUTHOR("Ilya Skriblovsky <IlyaSkriblovsky@gmail.com>");
-> +MODULE_DESCRIPTION("Fixing side buttons of Xiaomi Mi Silent Mouse");
-> -- 
-> 2.30.2
+> I would say that the code is horrible and looks too complex.
 > 
+> What about simply calling watchdog_nmi_probe() and
+> lockup_detector_setup() once again when watchdog_nmi_probe()
+> failed in lockup_detector_init()?
+> 
+It may work. But there is still a way to report the PMU NMI capability
+to watchdog layer accurately. And the API should be extened somehow.
+
+I am thinking something, maybe I can model in another way.
+> Or do not call lockup_detector_init() at all in
+> kernel_init_freeable() when PMU is not ready yet.
+> 
+
+This may be not a good choice. Since lockup_detector_init() had better
+be ready as early as possible, especially before drivers.
+
+
+Thanks,
+
+	Pingfan
+
