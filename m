@@ -2,130 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D265140FA90
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 16:42:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6D3040FA95
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 16:42:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229834AbhIQOoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 10:44:01 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:36748 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbhIQOoA (ORCPT
+        id S232079AbhIQOoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 10:44:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234819AbhIQOoP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 10:44:00 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 6DEE02028D;
-        Fri, 17 Sep 2021 14:42:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1631889756; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9Q9z58nJWZPYLSInI8nBVh8lTbi5/ptCY6EYwUNxRM4=;
-        b=MUYuU0fOLsgnj8zbOAkl/3jMLDnS31vFMWaKPHkYgJw1tZkKnIOLzJy7WrbTXqjqEpHMcL
-        ClB0fxX40hbcNJFuD00Rt8mCP7uEGLcZYn7LWcomJtLEJLljcA0Z26Y7EeL/pJwQuXZ5R/
-        yKRTA4uf38taeV1zhjd6CARyC2keir4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1631889756;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9Q9z58nJWZPYLSInI8nBVh8lTbi5/ptCY6EYwUNxRM4=;
-        b=iQepc13dGR2A2g+ziflA00yEmJbebWNeoIDsac1mJMFizHHqfl7RS8h8Wtor/t/r2KaHLs
-        t43wYd5JMlQXYmBQ==
-Received: from suse.de (unknown [10.163.32.246])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 21802A3BFF;
-        Fri, 17 Sep 2021 14:42:35 +0000 (UTC)
-Date:   Fri, 17 Sep 2021 15:42:33 +0100
-From:   Mel Gorman <mgorman@suse.de>
-To:     NeilBrown <neilb@suse.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        ". Dave Chinner" <david@fromorbit.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-xfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH 1/6] MM: Support __GFP_NOFAIL in  alloc_pages_bulk_*()
- and improve doco
-Message-ID: <20210917144233.GD3891@suse.de>
-References: <163184698512.29351.4735492251524335974.stgit@noble.brown>
- <163184741776.29351.3565418361661850328.stgit@noble.brown>
+        Fri, 17 Sep 2021 10:44:15 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 087F4C061764;
+        Fri, 17 Sep 2021 07:42:52 -0700 (PDT)
+Date:   Fri, 17 Sep 2021 16:42:49 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=t-8ch.de; s=mail;
+        t=1631889769; bh=UnfkOUCn9nZ1Kxnm3JIIp2ffcVCWQuInPlmtWOwQf1E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=D4l20a0f1KFCBHsiYnmCPh5CAs6tX2Y1vySCAbSIkF0LqDdHrZHwfoAH1+WTyiMy6
+         MgQIdqBeVezCcLqfyRhuXxBjdnxoIZgANYR0UBUAagxfbWI2j7mD/oXMlvP/0Xew9i
+         1jQ1LH+4ufH5bgxinBa6M8/uuGFEod6aoXQk/oAE=
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>
+To:     Ilya Skriblovsky <ilyaskriblovsky@gmail.com>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
+Subject: Re: [PATCH v2] Support for side buttons of Xiaomi Mi Dual Mode
+ Wireless Mouse Silent Edition
+Message-ID: <b80cf0f0-2211-4159-9add-eb4961ce462c@t-8ch.de>
+References: <YUOninNA2UMADRVt@ilya-330s>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <163184741776.29351.3565418361661850328.stgit@noble.brown>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YUOninNA2UMADRVt@ilya-330s>
+Jabber-ID: thomas@t-8ch.de
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'm top-posting to cc Jesper with full context of the patch. I don't
-have a problem with this patch other than the Fixes: being a bit
-marginal, I should have acked as Mel Gorman <mgorman@suse.de> and the
-@gfp in the comment should have been @gfp_mask.
+Hi,
 
-However, an assumption the API design made was that it should fail fast
-if memory is not quickly available but have at least one page in the
-array. I don't think the network use case cares about the situation where
-the array is already populated but I'd like Jesper to have the opportunity
-to think about it.  It's possible he would prefer it's explicit and the
-check becomes
-(!nr_populated || ((gfp_mask & __GFP_NOFAIL) && !nr_account)) to
-state that __GFP_NOFAIL users are willing to take a potential latency
-penalty if the array is already partially populated but !__GFP_NOFAIL
-users would prefer fail-fast behaviour. I'm on the fence because while
-I wrote the implementation, it was based on other peoples requirements.
-
-On Fri, Sep 17, 2021 at 12:56:57PM +1000, NeilBrown wrote:
-> When alloc_pages_bulk_array() is called on an array that is partially
-> allocated, the level of effort to get a single page is less than when
-> the array was completely unallocated.  This behaviour is inconsistent,
-> but now fixed.  One effect if this is that __GFP_NOFAIL will not ensure
-> at least one page is allocated.
+On 2021-09-16T23:22+0300, Ilya Skriblovsky wrote:
+> This patch enables side-buttons of Xiaomi Bluetooth mouse (specifically
+> Xiaomi Mi Dual Mode Wireless Mouse Silent Edition).
 > 
-> Also clarify the expected success rate.  __alloc_pages_bulk() will
-> allocated one page according to @gfp, and may allocate more if that can
-> be done cheaply.  It is assumed that the caller values cheap allocation
-> where possible and may decide to use what it has got, or to call again
-> to get more.
+> The mouse sends invalid button count in its HID Report Descriptor and
+> this patch just replaces its descriptor with corrected one. With this
+> driver side buttons work as expected acting like Back/Forward buttons.
 > 
-> Acked-by: Mel Gorman <mgorman@suse.com>
-> Fixes: 0f87d9d30f21 ("mm/page_alloc: add an array-based interface to the bulk page allocator")
-> Signed-off-by: NeilBrown <neilb@suse.de>
+> Signed-off-by: Ilya Skriblovsky <ilyaskriblovsky@gmail.com>
 > ---
->  mm/page_alloc.c |    7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
+> Changes since v1:
+>  - Fixed syntax of Kconfig
+> ---
+>  drivers/hid/Kconfig      |   7 +++
+>  drivers/hid/Makefile     |   1 +
+>  drivers/hid/hid-xiaomi.c | 103 +++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 111 insertions(+)
+>  create mode 100644 drivers/hid/hid-xiaomi.c
 > 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index b37435c274cf..aa51016e49c5 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -5191,6 +5191,11 @@ static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int order,
->   * is the maximum number of pages that will be stored in the array.
->   *
->   * Returns the number of pages on the list or array.
+> [..]
+> diff --git a/drivers/hid/hid-xiaomi.c b/drivers/hid/hid-xiaomi.c
+> new file mode 100644
+> index 000000000000..56e8edd3d62f
+> --- /dev/null
+> +++ b/drivers/hid/hid-xiaomi.c
+> @@ -0,0 +1,103 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * HID driver for Xiaomi Mi Dual Mode Wireless Mouse Silent Edition
 > + *
-> + * At least one page will be allocated if that is possible while
-> + * remaining consistent with @gfp.  Extra pages up to the requested
-> + * total will be allocated opportunistically when doing so is
-> + * significantly cheaper than having the caller repeat the request.
->   */
->  unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
->  			nodemask_t *nodemask, int nr_pages,
-> @@ -5292,7 +5297,7 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
->  								pcp, pcp_list);
->  		if (unlikely(!page)) {
->  			/* Try and get at least one page */
-> -			if (!nr_populated)
-> +			if (!nr_account)
->  				goto failed_irq;
->  			break;
->  		}
-> 
+> + * Copyright (c) 2021 Ilya Skriblovsky
+> + */
+> +
+> +/*
+> + * This program is free software; you can redistribute it and/or modify it
+> + * under the terms of the GNU General Public License as published by the Free
+> + * Software Foundation; either version 2 of the License, or (at your option)
+> + * any later version.
+> + */
+
+This license blurb is unnecessary.
+FYI the SPDX-License-Identifier says GPL-2.0 (only!) but the blurb specifies "or
+later".
+
+> +
+> +#include <linux/init.h>
+> +#include <linux/module.h>
+> +#include <linux/kernel.h>
+
+linux/kernel.h should not be necessary.
+
+> +#include <linux/hid.h>
+> +
+> +#define USB_VENDOR_ID_XIAOMI    0x2717
+> +#define USB_DEVICE_ID_MI_SILENT_MOUSE   0x5014
+
+These should go into drivers/hid/hid-ids.h.
+
+> +
+> +/* Fixed Mi Silent Mouse report descriptor */
+> +/* Button's Usage Maximum changed from 3 to 5 to make side buttons work */
+> +#define MI_SILENT_MOUSE_ORIG_RDESC_LENGTH   87
+> +static __u8 mi_silent_mouse_rdesc_fixed[] = {
+> +	0x05, 0x01,         /*  Usage Page (Desktop),               */
+> +	0x09, 0x02,         /*  Usage (Mouse),                      */
+> +	0xA1, 0x01,         /*  Collection (Application),           */
+> +	0x85, 0x03,         /*      Report ID (3),                  */
+> +	0x09, 0x01,         /*      Usage (Pointer),                */
+> +	0xA1, 0x00,         /*      Collection (Physical),          */
+> +	0x05, 0x09,         /*          Usage Page (Button),        */
+> +	0x19, 0x01,         /*          Usage Minimum (01h),        */
+> +	0x29, 0x05, /* X */ /*          Usage Maximum (05h),        */
+> +	0x15, 0x00,         /*          Logical Minimum (0),        */
+> +	0x25, 0x01,         /*          Logical Maximum (1),        */
+> +	0x75, 0x01,         /*          Report Size (1),            */
+> +	0x95, 0x05,         /*          Report Count (5),           */
+> +	0x81, 0x02,         /*          Input (Variable),           */
+> +	0x75, 0x03,         /*          Report Size (3),            */
+> +	0x95, 0x01,         /*          Report Count (1),           */
+> +	0x81, 0x01,         /*          Input (Constant),           */
+> +	0x05, 0x01,         /*          Usage Page (Desktop),       */
+> +	0x09, 0x30,         /*          Usage (X),                  */
+> +	0x09, 0x31,         /*          Usage (Y),                  */
+> +	0x15, 0x81,         /*          Logical Minimum (-127),     */
+> +	0x25, 0x7F,         /*          Logical Maximum (127),      */
+> +	0x75, 0x08,         /*          Report Size (8),            */
+> +	0x95, 0x02,         /*          Report Count (2),           */
+> +	0x81, 0x06,         /*          Input (Variable, Relative), */
+> +	0x09, 0x38,         /*          Usage (Wheel),              */
+> +	0x15, 0x81,         /*          Logical Minimum (-127),     */
+> +	0x25, 0x7F,         /*          Logical Maximum (127),      */
+> +	0x75, 0x08,         /*          Report Size (8),            */
+> +	0x95, 0x01,         /*          Report Count (1),           */
+> +	0x81, 0x06,         /*          Input (Variable, Relative), */
+> +	0xC0,               /*      End Collection,                 */
+> +	0xC0,               /*  End Collection,                     */
+> +	0x06, 0x01, 0xFF,   /*  Usage Page (FF01h),                 */
+> +	0x09, 0x01,         /*  Usage (01h),                        */
+> +	0xA1, 0x01,         /*  Collection (Application),           */
+> +	0x85, 0x05,         /*      Report ID (5),                  */
+> +	0x09, 0x05,         /*      Usage (05h),                    */
+> +	0x15, 0x00,         /*      Logical Minimum (0),            */
+> +	0x26, 0xFF, 0x00,   /*      Logical Maximum (255),          */
+> +	0x75, 0x08,         /*      Report Size (8),                */
+> +	0x95, 0x04,         /*      Report Count (4),               */
+> +	0xB1, 0x02,         /*      Feature (Variable),             */
+> +	0xC0                /*  End Collection                      */
+> +};
+> +
+> +static __u8 *xiaomi_report_fixup(struct hid_device *hdev, __u8 *rdesc,
+> +				 unsigned int *rsize)
+> +{
+> +	switch (hdev->product) {
+> +	case USB_DEVICE_ID_MI_SILENT_MOUSE:
+> +		if (*rsize == MI_SILENT_MOUSE_ORIG_RDESC_LENGTH) {
+> +			hid_info(hdev, "fixing up Mi Silent Mouse report descriptor\n");
+> +			rdesc = mi_silent_mouse_rdesc_fixed;
+> +			*rsize = sizeof(mi_silent_mouse_rdesc_fixed);
+> +		}
+> +		break;
+> +	}
+> +	return rdesc;
+> +}
+> +
+> +static const struct hid_device_id xiaomi_devices[] = {
+> +	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_XIAOMI, USB_DEVICE_ID_MI_SILENT_MOUSE) },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(hid, xiaomi_devices);
+> +
+> +static struct hid_driver xiaomi_driver = {
+> +	.name = "xiaomi",
+> +	.id_table = xiaomi_devices,
+> +	.report_fixup = xiaomi_report_fixup,
+> +};
+> +module_hid_driver(xiaomi_driver);
+> +
+> +MODULE_LICENSE("GPL");
+> +MODULE_AUTHOR("Ilya Skriblovsky <IlyaSkriblovsky@gmail.com>");
+> +MODULE_DESCRIPTION("Fixing side buttons of Xiaomi Mi Silent Mouse");
+> -- 
+> 2.30.2
 > 
