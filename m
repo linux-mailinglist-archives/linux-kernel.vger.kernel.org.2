@@ -2,150 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CADD440F292
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 08:42:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D1DD40F295
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 08:44:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236698AbhIQGnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 02:43:39 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:40873 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231786AbhIQGni (ORCPT
+        id S236574AbhIQGph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 02:45:37 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:15432 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231786AbhIQGpe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 02:43:38 -0400
-Received: by mail-io1-f69.google.com with SMTP id i26-20020a5e851a000000b005bb55343e9bso18508298ioj.7
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 23:42:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=FaoZno129C8GFyBk4ix5P7D2itiXjSt/ZhFzhqspXr0=;
-        b=OjFpSCMSqwtcTYOrwQJw6E9se2rFE8QqRJUn0XQpd4MeDnhuiiu8qqVu+tipzc5fE1
-         7k3eCDzqbSzG9gkN9lvixVjS5+7yGZeMZUZTwzR/TVr4GF6Ejg14z5ceOeJPBzZYFrdx
-         ehUiSG9oGgZGp2IMtavStFjexAo+WoGVEi2w3EINh32EzTWVIcnQ18VritEPVhOblV5L
-         donNo0uOR6U6bObg9lyLCKmqTQ4dQUfDfRefNFXGQyUrEee7+GhscmxwE27VaVHiewxU
-         KnHAkNWuX/Jo6OeA7ns6huk80994Reua2/gsbzJN6eI9ya7D89lXH90sVuY0Rp2lc3eh
-         u29Q==
-X-Gm-Message-State: AOAM530MEhkwX7/e38yvf2hSuIxZbyYI4oCw6vfeTl96yd7Jx0v0fsGE
-        CiOGPUQizKYJCQgiWec06z3TftjIQsCHxIa8du1cR5Vp1RUB
-X-Google-Smtp-Source: ABdhPJxYipYPUKmwSZFF6pKrMTMgbtGQPFKjFsL3O0DEo81+zy8JktxXTubKF0jVhkROzIbD0jE4ktGOzqVGZJwzBg2rHEp+dSID
+        Fri, 17 Sep 2021 02:45:34 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4H9kpT6bq9zR50D;
+        Fri, 17 Sep 2021 14:40:01 +0800 (CST)
+Received: from dggpeml500018.china.huawei.com (7.185.36.186) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Fri, 17 Sep 2021 14:44:09 +0800
+Received: from [10.67.101.251] (10.67.101.251) by
+ dggpeml500018.china.huawei.com (7.185.36.186) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Fri, 17 Sep 2021 14:44:09 +0800
+Subject: Re: [PATCH v3] kernel/sched: Fix sched_fork() access an invalid
+ sched_task_group
+From:   Zhang Qiao <zhangqiao22@huawei.com>
+To:     <mingo@redhat.com>, <peterz@infradead.org>,
+        <juri.lelli@redhat.com>, <vincent.guittot@linaro.org>
+CC:     <linux-kernel@vger.kernel.org>, <zhangqiao22@huawei.com>
+References: <20210915064030.2231-1-zhangqiao22@huawei.com>
+In-Reply-To: <20210915064030.2231-1-zhangqiao22@huawei.com>
+Message-ID: <79c369d4-ba96-97d4-7bda-14672f442855@huawei.com>
+Date:   Fri, 17 Sep 2021 14:44:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-X-Received: by 2002:a92:2a10:: with SMTP id r16mr6775041ile.309.1631860936501;
- Thu, 16 Sep 2021 23:42:16 -0700 (PDT)
-Date:   Thu, 16 Sep 2021 23:42:16 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007171a105cc2b3b92@google.com>
-Subject: [syzbot] general protection fault in nf_tables_dump_rules
-From:   syzbot <syzbot+bd637e7821f7afda67c4@syzkaller.appspotmail.com>
-To:     coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
-        kadlec@netfilter.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.101.251]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500018.china.huawei.com (7.185.36.186)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-syzbot found the following issue on:
 
-HEAD commit:    78e709522d2c Merge tag 'for_linus' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=170ed963300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2150ebd7e72fa695
-dashboard link: https://syzkaller.appspot.com/bug?extid=bd637e7821f7afda67c4
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+ÔÚ 2021/9/15 14:40, Zhang Qiao Ð´µÀ:
+> There is a small race between copy_process() and sched_fork()
+> where child->sched_task_group point to an already freed pointer.
+> 
+> parent doing fork()      | someone moving the parent
+> 				to another cgroup
+> -------------------------------+-------------------------------
+> copy_process()
+>     + dup_task_struct()<1>
+> 				parent move to another cgroup,
+> 				and free the old cgroup. <2>
+>     + sched_fork()
+>       + __set_task_cpu()<3>
+>       + task_fork_fair()
+>         + sched_slice()<4>
+> 
+> In the worst case, this bug can lead to "use-after-free" and
+> cause panic as shown above,
+> (1)parent copy its sched_task_group to child at <1>;
+> (2)someone move the parent to another cgroup and free the old
+>    cgroup at <2>;
+> (3)the sched_task_group and cfs_rq that belong to the old cgroup
+>    will be accessed at <3> and <4>, which cause a panic:
+> 
+> [89249.732198] BUG: unable to handle kernel NULL pointer
+> dereference at 0000000000000000
+> [89249.732701] PGD 8000001fa0a86067 P4D 8000001fa0a86067 PUD
+> 2029955067 PMD 0
+> [89249.733005] Oops: 0000 [#1] SMP PTI
+> [89249.733288] CPU: 7 PID: 648398 Comm: ebizzy Kdump: loaded
+> Tainted: G           OE    --------- -  - 4.18.0.x86_64+ #1
+> [89249.734318] RIP: 0010:sched_slice+0x84/0xc0
+>  ....
+> [89249.737910] Call Trace:
+> [89249.738181]  task_fork_fair+0x81/0x120
+> [89249.738457]  sched_fork+0x132/0x240
+> [89249.738732]  copy_process.part.5+0x675/0x20e0
+> [89249.739010]  ? __handle_mm_fault+0x63f/0x690
+> [89249.739286]  _do_fork+0xcd/0x3b0
+> [89249.739558]  do_syscall_64+0x5d/0x1d0
+> [89249.739830]  entry_SYSCALL_64_after_hwframe+0x65/0xca
+> [89249.740107] RIP: 0033:0x7f04418cd7e1
+> 
+> Between cgroup_can_fork() and cgroup_post_fork(), the cgroup
+> membership and thus sched_task_group can't change. So update
+> child's sched_task_group at sched_post_fork() and move task_fork()
+> and __set_task_cpu() (where accees the sched_task_group) from
+> sched_fork() to sched_post_fork().
+> 
+> Fixes: 8323f26ce342 ("sched: Fix race in task_group")
+> Signed-off-by: Zhang Qiao <zhangqiao22@huawei.com>
+> ---
+>  include/linux/sched/task.h |  3 ++-
+>  kernel/fork.c              |  2 +-
+>  kernel/sched/core.c        | 43 +++++++++++++++++++-------------------
+>  3 files changed, 25 insertions(+), 23 deletions(-)
+> 
+> diff --git a/include/linux/sched/task.h b/include/linux/sched/task.h
+> index ef02be869cf2..ba88a6987400 100644
+> --- a/include/linux/sched/task.h
+> +++ b/include/linux/sched/task.h
+> @@ -54,7 +54,8 @@ extern asmlinkage void schedule_tail(struct task_struct *prev);
+>  extern void init_idle(struct task_struct *idle, int cpu);
+>  
+>  extern int sched_fork(unsigned long clone_flags, struct task_struct *p);
+> -extern void sched_post_fork(struct task_struct *p);
+> +extern void sched_post_fork(struct task_struct *p,
+> +			    struct kernel_clone_args *kargs);
+>  extern void sched_dead(struct task_struct *p);
+>  
+>  void __noreturn do_task_dead(void);
+> diff --git a/kernel/fork.c b/kernel/fork.c
+> index 38681ad44c76..0e4251dc5436 100644
+> --- a/kernel/fork.c
+> +++ b/kernel/fork.c
+> @@ -2405,7 +2405,7 @@ static __latent_entropy struct task_struct *copy_process(
+>  	write_unlock_irq(&tasklist_lock);
+>  
+>  	proc_fork_connector(p);
+> -	sched_post_fork(p);
+> +	sched_post_fork(p, args);
+>  	cgroup_post_fork(p, args);
+>  	perf_event_fork(p);
+>  
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index c4462c454ab9..57544053be5a 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -4328,8 +4328,6 @@ int sysctl_schedstats(struct ctl_table *table, int write, void *buffer,
+>   */
+>  int sched_fork(unsigned long clone_flags, struct task_struct *p)
+>  {
+> -	unsigned long flags;
+> -
+>  	__sched_fork(clone_flags, p);
+>  	/*
+>  	 * We mark the process as NEW here. This guarantees that
+> @@ -4375,24 +4373,6 @@ int sched_fork(unsigned long clone_flags, struct task_struct *p)
+>  
+>  	init_entity_runnable_average(&p->se);
+>  
+> -	/*
+> -	 * The child is not yet in the pid-hash so no cgroup attach races,
+> -	 * and the cgroup is pinned to this child due to cgroup_fork()
+> -	 * is ran before sched_fork().
+> -	 *
+> -	 * Silence PROVE_RCU.
+> -	 */
+> -	raw_spin_lock_irqsave(&p->pi_lock, flags);
+> -	rseq_migrate(p);
+> -	/*
+> -	 * We're setting the CPU for the first time, we don't migrate,
+> -	 * so use __set_task_cpu().
+> -	 */
+> -	__set_task_cpu(p, smp_processor_id());
+> -	if (p->sched_class->task_fork)
+> -		p->sched_class->task_fork(p);
+> -	raw_spin_unlock_irqrestore(&p->pi_lock, flags);
+> -
+>  #ifdef CONFIG_SCHED_INFO
+>  	if (likely(sched_info_on()))
+>  		memset(&p->sched_info, 0, sizeof(p->sched_info));
+> @@ -4408,8 +4388,29 @@ int sched_fork(unsigned long clone_flags, struct task_struct *p)
+>  	return 0;
+>  }
+>  
+> -void sched_post_fork(struct task_struct *p)
+> +void sched_post_fork(struct task_struct *p, struct kernel_clone_args *kargs)
+>  {
+> +	unsigned long flags;
+> +#ifdef CONFIG_CGROUP_SCHED
+> +	struct task_group *tg;
+> +#endif
+> +
+> +	raw_spin_lock_irqsave(&p->pi_lock, flags);
+> +#ifdef CONFIG_CGROUP_SCHED
+> +	tg = container_of(kargs->cset->subsys[cpu_cgrp_id],
+> +			  struct task_group, css);
+> +	p->sched_task_group = autogroup_task_group(p, tg);
+> +#endif
+> +	rseq_migrate(p);
+> +	/*
+> +	 * We're setting the CPU for the first time, we don't migrate,
+> +	 * so use __set_task_cpu().
+> +	 */
+> +	__set_task_cpu(p, smp_processor_id());
+> +	if (p->sched_class->task_fork)
+> +		p->sched_class->task_fork(p);
+> +	raw_spin_unlock_irqrestore(&p->pi_lock, flags);
+> +
+>  	uclamp_post_fork(p);
+>  }
 
-Unfortunately, I don't have any reproducer for this issue yet.
+hello, scheduler folks,
+could you please have a look?
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+bd637e7821f7afda67c4@syzkaller.appspotmail.com
-
-general protection fault, probably for non-canonical address 0xfbd59c000000005a: 0000 [#1] PREEMPT SMP KASAN
-KASAN: maybe wild-memory-access in range [0xdead0000000002d0-0xdead0000000002d7]
-CPU: 1 PID: 6020 Comm: syz-executor.5 Not tainted 5.14.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:nf_tables_dump_rules+0x52f/0xbc0 net/netfilter/nf_tables_api.c:3015
-Code: 4c 8b 28 4d 85 ed 0f 84 65 01 00 00 e8 3a 0e 07 fa 49 8d bc 24 d0 01 00 00 48 be 00 00 00 00 00 fc ff df 48 89 f8 48 c1 e8 03 <80> 3c 30 00 0f 85 d2 05 00 00 49 8b b4 24 d0 01 00 00 4c 89 ef e8
-RSP: 0018:ffffc9000c897128 EFLAGS: 00010a06
-RAX: 1bd5a0000000005a RBX: ffff88807913cc00 RCX: ffffc90018d44000
-RDX: 0000000000040000 RSI: dffffc0000000000 RDI: dead0000000002d0
-RBP: ffff88803ace5548 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff876efd52 R11: 0000000000000000 R12: dead000000000100
-R13: ffff88806e74adc0 R14: ffff88801c078a00 R15: ffff88803ace55c8
-FS:  00007f5c96649700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000001b2fc22000 CR3: 000000007c8d6000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- netlink_dump+0x4b9/0xb70 net/netlink/af_netlink.c:2278
- __netlink_dump_start+0x642/0x900 net/netlink/af_netlink.c:2383
- netlink_dump_start include/linux/netlink.h:258 [inline]
- nft_netlink_dump_start_rcu+0x83/0x1c0 net/netfilter/nf_tables_api.c:859
- nf_tables_getrule+0x76b/0x8d0 net/netfilter/nf_tables_api.c:3119
- nfnetlink_rcv_msg+0x659/0x13f0 net/netfilter/nfnetlink.c:285
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
- nfnetlink_rcv+0x1ac/0x420 net/netfilter/nfnetlink.c:654
- netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
- netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
- sock_sendmsg_nosec net/socket.c:704 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:724
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2409
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2463
- __sys_sendmsg+0xf3/0x1c0 net/socket.c:2492
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4665f9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f5c96649188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665f9
-RDX: 0000000000000000 RSI: 0000000020000480 RDI: 0000000000000005
-RBP: 00000000004bfcc4 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
-R13: 0000000000a9fb1f R14: 00007f5c96649300 R15: 0000000000022000
-Modules linked in:
----[ end trace 1944f3a07850fa30 ]---
-RIP: 0010:nf_tables_dump_rules+0x52f/0xbc0 net/netfilter/nf_tables_api.c:3015
-Code: 4c 8b 28 4d 85 ed 0f 84 65 01 00 00 e8 3a 0e 07 fa 49 8d bc 24 d0 01 00 00 48 be 00 00 00 00 00 fc ff df 48 89 f8 48 c1 e8 03 <80> 3c 30 00 0f 85 d2 05 00 00 49 8b b4 24 d0 01 00 00 4c 89 ef e8
-RSP: 0018:ffffc9000c897128 EFLAGS: 00010a06
-RAX: 1bd5a0000000005a RBX: ffff88807913cc00 RCX: ffffc90018d44000
-RDX: 0000000000040000 RSI: dffffc0000000000 RDI: dead0000000002d0
-RBP: ffff88803ace5548 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff876efd52 R11: 0000000000000000 R12: dead000000000100
-R13: ffff88806e74adc0 R14: ffff88801c078a00 R15: ffff88803ace55c8
-FS:  00007f5c96649700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00005605fa2f23d8 CR3: 000000007c8d6000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	4c 8b 28             	mov    (%rax),%r13
-   3:	4d 85 ed             	test   %r13,%r13
-   6:	0f 84 65 01 00 00    	je     0x171
-   c:	e8 3a 0e 07 fa       	callq  0xfa070e4b
-  11:	49 8d bc 24 d0 01 00 	lea    0x1d0(%r12),%rdi
-  18:	00
-  19:	48 be 00 00 00 00 00 	movabs $0xdffffc0000000000,%rsi
-  20:	fc ff df
-  23:	48 89 f8             	mov    %rdi,%rax
-  26:	48 c1 e8 03          	shr    $0x3,%rax
-* 2a:	80 3c 30 00          	cmpb   $0x0,(%rax,%rsi,1) <-- trapping instruction
-  2e:	0f 85 d2 05 00 00    	jne    0x606
-  34:	49 8b b4 24 d0 01 00 	mov    0x1d0(%r12),%rsi
-  3b:	00
-  3c:	4c 89 ef             	mov    %r13,%rdi
-  3f:	e8                   	.byte 0xe8
-
+thanks.
 
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Zhang Qiao
+
+>  
+> 
