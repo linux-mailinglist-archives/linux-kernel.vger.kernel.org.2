@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E33140FA4F
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 16:37:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66BAA40FA70
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 16:40:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243106AbhIQOif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 10:38:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38086 "EHLO
+        id S1343702AbhIQOlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 10:41:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbhIQOie (ORCPT
+        with ESMTP id S245391AbhIQOlJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 10:38:34 -0400
-Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBAA3C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 07:37:11 -0700 (PDT)
-Received: by mail-oo1-xc2e.google.com with SMTP id v20-20020a4a2554000000b0028f8cc17378so3277511ooe.0
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 07:37:11 -0700 (PDT)
+        Fri, 17 Sep 2021 10:41:09 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32986C0613E6
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 07:38:28 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id 77-20020a9d0ed3000000b00546e10e6699so2043899otj.2
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 07:38:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=CHasoNbCFWsiX9dMsKrnxNkdea5daLbcgcWNoEUJAKg=;
-        b=DYn3EwXJtdkBVHXuZ1aStNkPPcUVZmW6AQ/X3JXnDFo4Nu3pQZeMPOI9uDfSO9+xZx
-         jyuiw9sr27jq29Oz/ES/fgfI9Du6O6Jr813ACDSDlEjmhvlUU31zNB52SIFLyuDDC7Oh
-         re++P1iqt7pzhJyWnMKoT8YvwtIsIvOChwB28km/oaqDbdlTE4G5SApBipmZmIcxiMFG
-         BSDDD+vKZc9X8qrUjx0lhPi/8ZtVcMCXahlWmmF4inWRk3NLuBEK83KoXoWH8NwA4uuS
-         H6pWTo4NQ3o83e0z6I24kXmAGTZLh9jZaBuHoEyyihkCjUcb/E2wUkJ4ShlzZZBPuWzs
-         nbhg==
+        bh=GO6yNkAO2As+gyaSFwvR3MHVKDXqu7ThxhmfTtq/E50=;
+        b=lDpUN20Im2TAcP3GJhxCm2FIu7hDYYZV6QzRwVn0CZfHtq8X2eqYutBYYATdCs5GI5
+         e45bniguJ36npnNH5gBJQUvnTp5Bf49rALNp7WgJ+9LQZLxeL+e1OauP5yKevs9QLkKf
+         UZBcyhhSj11AX11VoIrRqbh1qFqywIz5egr8zSOaoMi/VfkpAfQso40rqquHBMg9J8Rb
+         4mlUmCykoVVPkwIqZdglZQgGMjHn4lIMDLSDHpHOCk+t1vgq4lmDSmhlxqToD79GTtOd
+         LoxLjzOYqbAeExFQ2WjSw2AiNmhDY3G9JlN8s3Wr8PJwYvya41kZdLZS5pMqumnCoe95
+         4F1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=CHasoNbCFWsiX9dMsKrnxNkdea5daLbcgcWNoEUJAKg=;
-        b=TSXanEQiiGXtRq3PFY/VHXSXOZq/GOqgxrIQhxWVXd9Rz6xeMkzz9OLJ8gSSdJ1Fyp
-         aCrO0i7Z1VDcZD0JdY5OLcl7gZUSAZgfGyLOcYbxmHT9UiRhwPWjfWnBqJ/fokuSAaf2
-         s9ap5nwrWlS/S/B7iD/lZjJ2fdNl2nYXc45CVBnbAu4f9bMXqyGC4bfPsFs0elYWXoBE
-         BusKnHIEXIqjVWAz2+tkq6XcqIG89XkCNDkvL0ndlOvH8OQ+5csV5Qgnj+2hE6IGQK3Y
-         0RKVHGGCD1nrABb0kgVPvQWdzVgDil+AAz+3RFbWj+TlV9fxoXK7gwOYSgvQWkntYIrK
-         b04w==
-X-Gm-Message-State: AOAM530XQ53/0EPJQEfupK1N6SfkuZn8fL9UJlwj8Y/18mOxb3zUg3EX
-        ENJk5FYm9EqHy6RL5pyfdKUNz00+Nz11UBnEkdfv9A==
-X-Google-Smtp-Source: ABdhPJy6BVBa1rtp9ko/Mki3AyMVFKOss9TpQQybtMS7fCiiPAGaON0g/z1nbJ8vHUHmoSGUy+tUXuBECv6J6FEBoHM=
-X-Received: by 2002:a4a:e3cf:: with SMTP id m15mr9150899oov.21.1631889431067;
- Fri, 17 Sep 2021 07:37:11 -0700 (PDT)
+        bh=GO6yNkAO2As+gyaSFwvR3MHVKDXqu7ThxhmfTtq/E50=;
+        b=sDqHqi86tCUySQeub6b2tW6gTB14NQ/2bzxxaDAkzX2SndJQMLN6/09HszaBTqA+39
+         GMlkNMBUSnKvxOvNcguHcLvSz60DwVC6AvCAnDXFh6xA7FygKdj78aWxggwDDN5/hp0Z
+         y90gYTSWdlER/+VEpaRObrISgePltPCwYfB6StQNPE/+VXJee2IFBq6PhlsQEJNN7H/h
+         SAftgjBX1HKYJiwll8QnFxxUvmXxmACYHrEFYHY6ERDPrISrgge3pHVM210BVwLZZ/Yt
+         QetbBurZJHqYx5/EpE2l2H1GPVCjRt9OeEWwqLIKJrgKqzRSlRwLB+jdqsF0oXhjVyAI
+         L/Rg==
+X-Gm-Message-State: AOAM53369MM5Ii248rqHfWJdd0yTQrTBeZkywR0CVQS+2FdOEnR9P5hT
+        zQi42tdKfN7Hdq7EBvNxL/ln8TBzg9Clf7/5Ib4gdyHoxQ7LBQ==
+X-Google-Smtp-Source: ABdhPJwFV1TmQGMteq5aid44X/ktsa1X/8B9T1dLKTPk0o/G9N/25J/9Z1IGv87lj+UYweTzrkvar4COsCm41K5p8xM=
+X-Received: by 2002:a05:6830:34b:: with SMTP id h11mr9956039ote.319.1631889507365;
+ Fri, 17 Sep 2021 07:38:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210830172627.267989-1-bigeasy@linutronix.de> <20210830172627.267989-3-bigeasy@linutronix.de>
-In-Reply-To: <20210830172627.267989-3-bigeasy@linutronix.de>
+References: <20210830172627.267989-1-bigeasy@linutronix.de> <20210830172627.267989-4-bigeasy@linutronix.de>
+In-Reply-To: <20210830172627.267989-4-bigeasy@linutronix.de>
 From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Fri, 17 Sep 2021 16:37:00 +0200
-Message-ID: <CACT4Y+YsrcejyF-VZ5OGtk-diwHtVEJU0Yhipfomur5HTCc=Zg@mail.gmail.com>
-Subject: Re: [PATCH 2/5] Documentation/kcov: Define `ip' in the example.
+Date:   Fri, 17 Sep 2021 16:38:16 +0200
+Message-ID: <CACT4Y+Z9NqymRB5q-U27P8gGF21UTZzSOuNgZO-EBqQnbKNXhg@mail.gmail.com>
+Subject: Re: [PATCH 3/5] kcov: Allocate per-CPU memory on the relevant node.
 To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Cc:     kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
         Andrey Konovalov <andreyknvl@gmail.com>,
@@ -66,32 +66,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On Mon, 30 Aug 2021 at 19:26, Sebastian Andrzej Siewior
 <bigeasy@linutronix.de> wrote:
 >
-> The example code uses the variable `ip' but never declares it.
+> During boot kcov allocates per-CPU memory which is used later if remote/
+> softirq processing is enabled.
 >
-> Declare `ip' as a 64bit variable which is the same type as the array
-> from which it loads its value.
+> Allocate the per-CPU memory on the CPU local node to avoid cross node
+> memory access.
 >
 > Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
 Acked-by: Dmitry Vyukov <dvyukov@google.com>
 
 > ---
->  Documentation/dev-tools/kcov.rst | 2 ++
->  1 file changed, 2 insertions(+)
+>  kernel/kcov.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 >
-> diff --git a/Documentation/dev-tools/kcov.rst b/Documentation/dev-tools/kcov.rst
-> index 347f3b6de8d40..d83c9ab494275 100644
-> --- a/Documentation/dev-tools/kcov.rst
-> +++ b/Documentation/dev-tools/kcov.rst
-> @@ -178,6 +178,8 @@ Comparison operands collection
->         /* Read number of comparisons collected. */
->         n = __atomic_load_n(&cover[0], __ATOMIC_RELAXED);
->         for (i = 0; i < n; i++) {
-> +               uint64_t ip;
-> +
->                 type = cover[i * KCOV_WORDS_PER_CMP + 1];
->                 /* arg1 and arg2 - operands of the comparison. */
->                 arg1 = cover[i * KCOV_WORDS_PER_CMP + 2];
+> diff --git a/kernel/kcov.c b/kernel/kcov.c
+> index 80bfe71bbe13e..4f910231d99a2 100644
+> --- a/kernel/kcov.c
+> +++ b/kernel/kcov.c
+> @@ -1034,8 +1034,8 @@ static int __init kcov_init(void)
+>         int cpu;
+>
+>         for_each_possible_cpu(cpu) {
+> -               void *area = vmalloc(CONFIG_KCOV_IRQ_AREA_SIZE *
+> -                               sizeof(unsigned long));
+> +               void *area = vmalloc_node(CONFIG_KCOV_IRQ_AREA_SIZE *
+> +                               sizeof(unsigned long), cpu_to_node(cpu));
+>                 if (!area)
+>                         return -ENOMEM;
+>                 per_cpu_ptr(&kcov_percpu_data, cpu)->irq_area = area;
 > --
 > 2.33.0
 >
