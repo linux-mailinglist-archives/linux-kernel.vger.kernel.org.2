@@ -2,127 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CF5240FE9F
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 19:27:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAE8940FE9C
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 19:27:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344007AbhIQR3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 13:29:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49920 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343936AbhIQR3C (ORCPT
+        id S1343886AbhIQR2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 13:28:54 -0400
+Received: from mail-pf1-f175.google.com ([209.85.210.175]:46897 "EHLO
+        mail-pf1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240938AbhIQR2w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 13:29:02 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6C13C061574;
-        Fri, 17 Sep 2021 10:27:39 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id s24so7911769wmh.4;
-        Fri, 17 Sep 2021 10:27:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=JIDuOpli6Tm6uAgMYJxGWn19bIwu9o76mZlI5FTH9oc=;
-        b=czug9s0DxI5GlPg92K+1xRO9pOADDVD9NVcAxQoMZ+Li6odATspbD0BcJlUhJ9T3hG
-         JvFArDAejsSsunerzLTG1d3IdohLKbWF2AQd9m25wck/Rw2i3PIUPWfTG7bWTS/pbypH
-         m25WLI9jR0WnNIFDYgh52pRDxshmWxJbbsWLq0FY3KWV5zjxDsjKchm1X162Kmnu412J
-         8rfMXYDHxDkfHCfSkl9R7V1Vbqp8iUTlLctef1kxvcIqV9So66a62CEG8XbBTBWGM2oy
-         6GWXljUAFr9qYzSbqTMuM62U/XNHyKp7lQ4W1AtemIkAyXG6dovwUR0z0HDswIf9jHYC
-         /wyw==
+        Fri, 17 Sep 2021 13:28:52 -0400
+Received: by mail-pf1-f175.google.com with SMTP id 203so1975454pfy.13;
+        Fri, 17 Sep 2021 10:27:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=JIDuOpli6Tm6uAgMYJxGWn19bIwu9o76mZlI5FTH9oc=;
-        b=Sl/Qo51MB2ybOiY0juhXvWz9Q1sM5SieC6hJU+JQRJyp6bHLEv6mN+5IbVXw6QhCxR
-         ZA/7ySYJDLKLY/qalJamJx0Y6Nw38hKVi45mHgbMMDWEvm67yVDOoBDtotrMVZHvkIEU
-         0w9dwI/D7nRBrxNBDF9r2etw7PvbMq3iEcAiZZWfG0wMEPwF3/WBe9xdH+xbteKxTGK5
-         /BN8oj5p42KvMNq6CXA9FKrKqk1svLPGEknfZfYDVkWCzdD+mEPQfabZDTNo3JU0XDPq
-         nvGf9R6NLTWiCiLpfpaeBdmlfu9CrqjW6dQ1GWjy9rY7CFR7C2p5hfDfHv1GCGegHQzC
-         4T9g==
-X-Gm-Message-State: AOAM533XIt85yRglTo69INjpLP7AakvhLZd+dpQ9p4gjR1cYgYLqXhFS
-        2X67P2tEwaI44psO40wAKBc=
-X-Google-Smtp-Source: ABdhPJwbXAtYjb4wuhQfkD6R6RBTyGA/mPa4/hArXdaZHYJZ81c6UOfdoJJdEfOPsoESZQH8TsvRBw==
-X-Received: by 2002:a1c:2705:: with SMTP id n5mr16136176wmn.176.1631899658467;
-        Fri, 17 Sep 2021 10:27:38 -0700 (PDT)
-Received: from ubuntu-laptop.speedport.ip (p200300e94717cf050f860509a8ecdb17.dip0.t-ipconnect.de. [2003:e9:4717:cf05:f86:509:a8ec:db17])
-        by smtp.gmail.com with ESMTPSA id 135sm2901947wma.32.2021.09.17.10.27.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 10:27:38 -0700 (PDT)
-From:   Bean Huo <huobean@gmail.com>
-To:     Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Bean Huo <beanhuo@micron.com>, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v1 1/2] mmc: sdhci: Return true only when timeout exceeds capacity of the HW timer
-Date:   Fri, 17 Sep 2021 19:27:26 +0200
-Message-Id: <20210917172727.26834-2-huobean@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210917172727.26834-1-huobean@gmail.com>
-References: <20210917172727.26834-1-huobean@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZuvAu+FzGmydWNHlU3zYaItV7zmXiqpK74jzvaLSh14=;
+        b=IIxl29Rmb2tXN7R1dWP/XyCLRFEXmi+Fswf71RNIUFFUKDIb2K21rQyZeWx6TZ4odx
+         S/vYUBUKNIrdW+Ssr2piAQpTCIes7dv612oxGF+XyWOBs//2/fNr4UQ4rZS85gAAXW8A
+         Ik/YP+ld8fyDUIGKvYG60/HE4ghh5j/axj9QExEaGYtiu13RQ4+j2ycYjtvEeT0BlgPJ
+         koTliDFq7ZwejcHh+0LnWmZBYPiOcHc/tnMnNNbmXdk4/1D2JOwdqerPgOdK9x3QITgy
+         4gr2LdaRK7wQ+h90cUxFFOvdz9/VwnDWJo6xNlszLHrydQrKOvZLnafplLg5pn3E1WIu
+         a2UA==
+X-Gm-Message-State: AOAM532i9V6FzM/YwafpHGV7GHC8M4/LQvlNM6sc0WgmJJj3L6InniE5
+        p5pe4psn47Xwbd+Bo5tb6geRzk3qeCg=
+X-Google-Smtp-Source: ABdhPJzzUBDvNqV18d0bYDVokxUqC5xPvgR89wuHgSWBDQaCVKT4AgIAVVsFFPqh3J6CVkcXgbr06g==
+X-Received: by 2002:a62:ae13:0:b0:440:385c:2ee9 with SMTP id q19-20020a62ae13000000b00440385c2ee9mr12153114pff.39.1631899649799;
+        Fri, 17 Sep 2021 10:27:29 -0700 (PDT)
+Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:201:aa45:4fa2:923f:21d1])
+        by smtp.gmail.com with ESMTPSA id i10sm6775587pfk.151.2021.09.17.10.27.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Sep 2021 10:27:28 -0700 (PDT)
+Subject: Re: [PATCH] scsi: ufs: Fix a possible dead lock in clock scaling
+To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
+        nguyenb@codeaurora.org, hongwus@codeaurora.org,
+        ziqichen@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1631843521-2863-1-git-send-email-cang@codeaurora.org>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <cc9cb9e7-68bd-3bfa-9310-5fbf99a86544@acm.org>
+Date:   Fri, 17 Sep 2021 10:27:27 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1631843521-2863-1-git-send-email-cang@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bean Huo <beanhuo@micron.com>
+On 9/16/21 6:51 PM, Can Guo wrote:
+> Assume a scenario where task A and B call ufshcd_devfreq_scale()
+> simultaneously. After task B calls downgrade_write() [1], but before it
+> calls down_read() [3], if task A calls down_write() [2], when task B calls
+> down_read() [3], it will lead to dead lock.
 
-Clean up sdhci_calc_timeout() a bit,  and let it set too_big to be true only
-when the timeout value required by the eMMC device exceeds the capability of
-the host hardware timer.
+Something is wrong with the above description. The downgrade_write() call is
+not followed by down_read() but by up_read(). Additionally, I don't see how
+concurrent calls of ufshcd_devfreq_scale() could lead to a deadlock. If one
+thread calls downgrade_write() and another thread calls down_write() immediately,
+that down_write() call will block until the other thread has called up_read()
+without triggering a deadlock.
 
-Signed-off-by: Bean Huo <beanhuo@micron.com>
----
- drivers/mmc/host/sdhci.c | 21 +++++++++------------
- 1 file changed, 9 insertions(+), 12 deletions(-)
+Thanks,
 
-diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-index 7ae398f8d4d3..357b365bf0ec 100644
---- a/drivers/mmc/host/sdhci.c
-+++ b/drivers/mmc/host/sdhci.c
-@@ -930,7 +930,7 @@ static u8 sdhci_calc_timeout(struct sdhci_host *host, struct mmc_command *cmd,
- 	struct mmc_data *data;
- 	unsigned target_timeout, current_timeout;
- 
--	*too_big = true;
-+	*too_big = false;
- 
- 	/*
- 	 * If the host controller provides us with an incorrect timeout
-@@ -941,7 +941,7 @@ static u8 sdhci_calc_timeout(struct sdhci_host *host, struct mmc_command *cmd,
- 	if (host->quirks & SDHCI_QUIRK_BROKEN_TIMEOUT_VAL)
- 		return host->max_timeout_count;
- 
--	/* Unspecified command, asume max */
-+	/* Unspecified command, assume max */
- 	if (cmd == NULL)
- 		return host->max_timeout_count;
- 
-@@ -968,17 +968,14 @@ static u8 sdhci_calc_timeout(struct sdhci_host *host, struct mmc_command *cmd,
- 	while (current_timeout < target_timeout) {
- 		count++;
- 		current_timeout <<= 1;
--		if (count > host->max_timeout_count)
-+		if (count > host->max_timeout_count) {
-+			if (!(host->quirks2 & SDHCI_QUIRK2_DISABLE_HW_TIMEOUT))
-+				DBG("Too large timeout 0x%x requested for CMD%d!\n",
-+				    count, cmd->opcode);
-+			count = host->max_timeout_count;
-+			*too_big = true;
- 			break;
--	}
--
--	if (count > host->max_timeout_count) {
--		if (!(host->quirks2 & SDHCI_QUIRK2_DISABLE_HW_TIMEOUT))
--			DBG("Too large timeout 0x%x requested for CMD%d!\n",
--			    count, cmd->opcode);
--		count = host->max_timeout_count;
--	} else {
--		*too_big = false;
-+		}
- 	}
- 
- 	return count;
--- 
-2.25.1
-
+Bart.
