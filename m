@@ -2,239 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83B9640F2A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 08:55:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5299840F2CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 08:59:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238063AbhIQG4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 02:56:51 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:19991 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbhIQG4r (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 02:56:47 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4H9l3N2yCXzbmb8;
-        Fri, 17 Sep 2021 14:51:12 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Fri, 17 Sep 2021 14:55:20 +0800
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Fri, 17 Sep 2021 14:55:19 +0800
-Subject: Re: [PATCH v4 2/3] arm64: Support page mapping percpu first chunk
- allocator
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     <will@kernel.org>, <catalin.marinas@arm.com>,
-        <ryabinin.a.a@gmail.com>, <andreyknvl@gmail.com>,
-        <dvyukov@google.com>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <elver@google.com>, <akpm@linux-foundation.org>,
-        <kasan-dev@googlegroups.com>
-References: <20210910053354.26721-1-wangkefeng.wang@huawei.com>
- <20210910053354.26721-3-wangkefeng.wang@huawei.com>
- <YUQ0lvldA+wGpr0G@kroah.com>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-Message-ID: <9b2e89c4-a821-8657-0ffb-d822aa51936c@huawei.com>
-Date:   Fri, 17 Sep 2021 14:55:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S237253AbhIQHAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 03:00:36 -0400
+Received: from mx1.emlix.com ([136.243.223.33]:39260 "EHLO mx1.emlix.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229456AbhIQHAe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 03:00:34 -0400
+Received: from mailer.emlix.com (p5098be52.dip0.t-ipconnect.de [80.152.190.82])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.emlix.com (Postfix) with ESMTPS id BBEB1602F4;
+        Fri, 17 Sep 2021 08:59:11 +0200 (CEST)
+From:   Rolf Eike Beer <eb@emlix.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Junio C Hamano <gitster@pobox.com>
+Cc:     Git List Mailing <git@vger.kernel.org>,
+        Tobias Ulmer <tu@emlix.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: data loss when doing ls-remote and piped to command
+Date:   Fri, 17 Sep 2021 08:59:07 +0200
+Message-ID: <2722184.bRktqFsmb4@devpool47>
+Organization: emlix GmbH
+In-Reply-To: <xmqq7dfgtfpt.fsf@gitster.g>
+References: <6786526.72e2EbofS7@devpool47> <CAHk-=wgyk0mwYcMRC8HakzoAKL2Y3gwzD433tqKYYhV+r1PLnA@mail.gmail.com> <xmqq7dfgtfpt.fsf@gitster.g>
 MIME-Version: 1.0
-In-Reply-To: <YUQ0lvldA+wGpr0G@kroah.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; boundary="nextPart2006021.n4l1ccZoEF"; micalg="pgp-sha256"; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--nextPart2006021.n4l1ccZoEF
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"; protected-headers="v1"
+From: Rolf Eike Beer <eb@emlix.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>, Junio C Hamano <gitster@pobox.com>
+Cc: Git List Mailing <git@vger.kernel.org>, Tobias Ulmer <tu@emlix.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: data loss when doing ls-remote and piped to command
+Date: Fri, 17 Sep 2021 08:59:07 +0200
+Message-ID: <2722184.bRktqFsmb4@devpool47>
+Organization: emlix GmbH
+In-Reply-To: <xmqq7dfgtfpt.fsf@gitster.g>
+References: <6786526.72e2EbofS7@devpool47> <CAHk-=wgyk0mwYcMRC8HakzoAKL2Y3gwzD433tqKYYhV+r1PLnA@mail.gmail.com> <xmqq7dfgtfpt.fsf@gitster.g>
 
-On 2021/9/17 14:24, Greg KH wrote:
-> On Fri, Sep 10, 2021 at 01:33:53PM +0800, Kefeng Wang wrote:
->> Percpu embedded first chunk allocator is the firstly option, but it
->> could fails on ARM64, eg,
->>    "percpu: max_distance=0x5fcfdc640000 too large for vmalloc space 0x781fefff0000"
->>    "percpu: max_distance=0x600000540000 too large for vmalloc space 0x7dffb7ff0000"
->>    "percpu: max_distance=0x5fff9adb0000 too large for vmalloc space 0x5dffb7ff0000"
->>   
->> then we could meet "WARNING: CPU: 15 PID: 461 at vmalloc.c:3087 pcpu_get_vm_areas+0x488/0x838",
->> even the system could not boot successfully.
->>
->> Let's implement page mapping percpu first chunk allocator as a fallback
->> to the embedding allocator to increase the robustness of the system.
->>
->> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
->> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
->> ---
->>   arch/arm64/Kconfig       |  4 ++
->>   drivers/base/arch_numa.c | 82 +++++++++++++++++++++++++++++++++++-----
->>   2 files changed, 76 insertions(+), 10 deletions(-)
->>
->> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
->> index 077f2ec4eeb2..04cfe1b4e98b 100644
->> --- a/arch/arm64/Kconfig
->> +++ b/arch/arm64/Kconfig
->> @@ -1042,6 +1042,10 @@ config NEED_PER_CPU_EMBED_FIRST_CHUNK
->>   	def_bool y
->>   	depends on NUMA
->>   
->> +config NEED_PER_CPU_PAGE_FIRST_CHUNK
->> +	def_bool y
->> +	depends on NUMA
-> Why is this a config option at all?
+Am Donnerstag, 16. September 2021, 22:42:22 CEST schrieb Junio C Hamano:
+> Linus Torvalds <torvalds@linux-foundation.org> writes:
+> > On Thu, Sep 16, 2021 at 5:17 AM Rolf Eike Beer <eb@emlix.com> wrote:
+> >> Am Donnerstag, 16. September 2021, 12:12:48 CEST schrieb Tobias Ulmer:
+> >> > > The redirection seems to be an important part of it. I now did:
+> >> > >=20
+> >> > > git ... 2>&1 | sha256sum
+> >> >=20
+> >> > I've tried to reproduce this since yesterday, but couldn't until now:
+> >> >=20
+> >> > 2>&1 made all the difference, took less than a minute.
+> >=20
+> > So if that redirection is what matters, and what causes problems, I
+> > can almost guarantee that the reason is very simple:
+> > ...
+> > Anyway. That was a long email just to tell people it's almost
+> > certainly user error, not the kernel.
+>=20
+> Yes, 2>&1 will mix messages from the standard error stream at random
+> places in the output, which explains the checksum quite well.
 
-The config is introduced from
+If there would be any errors. The point is: if I run the command with ">/de=
+v/
+null" just to the terminals a hundred times there is never any output on=20
+stderr at all. If I pipe stderr into a file it's empty after all of this (y=
+es,=20
+I did append, not overwrite).
 
-commit 08fc45806103e59a37418e84719b878f9bb32540
-Author: Tejun Heo <tj@kernel.org>
-Date:   Fri Aug 14 15:00:49 2009 +0900
+That the particular construct in this case is sort of nonsense is granted, =
+I=20
+just hit it because some tool here used some very similar construct and=20
+suddenly started failing. "less" isn't the original reproducer, it was just=
+=20
+something I started testing with to be able to easily visually inspect the=
+=20
+output.
 
-     percpu: build first chunk allocators selectively
+What you need is a _fast_ git server. kernel.org or github.com seem to be t=
+oo=20
+slow for this if you don't sit somewhere in their datacenter. Use something=
+ in=20
+your local network, a Xeon E5 with lot's of RAM and connected with 1GBit/s=
+=20
+Ethernet in my case.
 
-     There's no need to build unused first chunk allocators in. Define
-     CONFIG_NEED_PER_CPU_*_FIRST_CHUNK and let archs enable them
-     selectively.
+And the reader must be "somewhat" slow. Using sha256sum works reliably for =
+me.=20
+Using "wc -l" does not, also md5sum and sha1sum are too fast as it seems.
 
-For now, there are three ARCHs support both PER_CPU_EMBED_FIRST_CHUNK
+When I run the whole thing with strace I can't see the effect, which isn't=
+=20
+really surprising. But there is a difference between the cases where I run=
+=20
+with redirection "2>&1":
 
-and PER_CPU_PAGE_FIRST_CHUNK.
+ioctl(2, TCGETS, 0x7ffd6f119b10)        =3D -1 ENOTTY (Inappropriate ioctl =
+for=20
+device)
 
-   arch/powerpc/Kconfig:config NEED_PER_CPU_PAGE_FIRST_CHUNK
-   arch/sparc/Kconfig:config NEED_PER_CPU_PAGE_FIRST_CHUNK
-   arch/x86/Kconfig:config NEED_PER_CPU_PAGE_FIRST_CHUNK
+and without:
 
-and we have a cmdline to choose a alloctor.
+ioctl(2, TCGETS, {B38400 opost isig icanon echo ...}) =3D 0
 
-    percpu_alloc=   Select which percpu first chunk allocator to use.
-                    Currently supported values are "embed" and "page".
-                    Archs may support subset or none of the selections.
-                    See comments in mm/percpu.c for details on each
-                    allocator.  This parameter is primarily for debugging
-                    and performance comparison.
+AFAICT this is the only place where fd 2 is used at all during the whole ti=
+me.
 
-embed percpu first chunk allocator is the first choice, but it could 
-fails due to some
+Regards,
 
-memory layout(it does occurs on ARM64 too.), so page mapping percpu 
-first chunk
+Eike
+=2D-=20
+Rolf Eike Beer, emlix GmbH, http://www.emlix.com
+=46on +49 551 30664-0, Fax +49 551 30664-11
+Gothaer Platz 3, 37083 G=C3=B6ttingen, Germany
+Sitz der Gesellschaft: G=C3=B6ttingen, Amtsgericht G=C3=B6ttingen HR B 3160
+Gesch=C3=A4ftsf=C3=BChrung: Heike Jordan, Dr. Uwe Kracke =E2=80=93 Ust-IdNr=
+=2E: DE 205 198 055
 
-allocator is as a fallback, that is what this patch does.
+emlix - smart embedded open source
 
->
->> +
->>   source "kernel/Kconfig.hz"
->>   
->>   config ARCH_SPARSEMEM_ENABLE
->> diff --git a/drivers/base/arch_numa.c b/drivers/base/arch_numa.c
->> index 46c503486e96..995dca9f3254 100644
->> --- a/drivers/base/arch_numa.c
->> +++ b/drivers/base/arch_numa.c
->> @@ -14,6 +14,7 @@
->>   #include <linux/of.h>
->>   
->>   #include <asm/sections.h>
->> +#include <asm/pgalloc.h>
->>   
->>   struct pglist_data *node_data[MAX_NUMNODES] __read_mostly;
->>   EXPORT_SYMBOL(node_data);
->> @@ -168,22 +169,83 @@ static void __init pcpu_fc_free(void *ptr, size_t size)
->>   	memblock_free_early(__pa(ptr), size);
->>   }
->>   
->> +#ifdef CONFIG_NEED_PER_CPU_PAGE_FIRST_CHUNK
-> Ick, no #ifdef in .c files if at all possible please.
+--nextPart2006021.n4l1ccZoEF
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
 
-The drivers/base/arch_numa.c is shared by RISCV/ARM64, so I add this 
-config to
+-----BEGIN PGP SIGNATURE-----
 
-no need to build this part on RISCV.
+iLMEAAEIAB0WIQQ/Uctzh31xzAxFCLur5FH7Xu2t/AUCYUQ8uwAKCRCr5FH7Xu2t
+/KThA/9zN5ZH7uCU9KHb023JfZyJHjaIOTfX6AOuP4ecKP3cSR6mp9S6lO6VhRYS
+ThJUwL7ELGvYoRofPlUEkKnG3pJuSIa+213DULXZpZvUg+pircpU8cOJsol7lmZi
+WKL0aAKXmlG/myebGu3Qx4zJ7Njv/KUTYOeigMQs8vsgAqnkng==
+=7Tka
+-----END PGP SIGNATURE-----
 
->
->> +static void __init pcpu_populate_pte(unsigned long addr)
->> +{
->> +	pgd_t *pgd = pgd_offset_k(addr);
->> +	p4d_t *p4d;
->> +	pud_t *pud;
->> +	pmd_t *pmd;
->> +
->> +	p4d = p4d_offset(pgd, addr);
->> +	if (p4d_none(*p4d)) {
->> +		pud_t *new;
->> +
->> +		new = memblock_alloc(PAGE_SIZE, PAGE_SIZE);
->> +		if (!new)
->> +			goto err_alloc;
->> +		p4d_populate(&init_mm, p4d, new);
->> +	}
->> +
->> +	pud = pud_offset(p4d, addr);
->> +	if (pud_none(*pud)) {
->> +		pmd_t *new;
->> +
->> +		new = memblock_alloc(PAGE_SIZE, PAGE_SIZE);
->> +		if (!new)
->> +			goto err_alloc;
->> +		pud_populate(&init_mm, pud, new);
->> +	}
->> +
->> +	pmd = pmd_offset(pud, addr);
->> +	if (!pmd_present(*pmd)) {
->> +		pte_t *new;
->> +
->> +		new = memblock_alloc(PAGE_SIZE, PAGE_SIZE);
->> +		if (!new)
->> +			goto err_alloc;
->> +		pmd_populate_kernel(&init_mm, pmd, new);
->> +	}
->> +
->> +	return;
->> +
->> +err_alloc:
->> +	panic("%s: Failed to allocate %lu bytes align=%lx from=%lx\n",
->> +	      __func__, PAGE_SIZE, PAGE_SIZE, PAGE_SIZE);
-> That feels harsh, are you sure you want to crash?  There's no way to
-> recover from this?  If not, how can this fail in real life?
-Yes,  if no memory, the system won't work, panic is the only choose.
->
->> +}
->> +#endif
->> +
->>   void __init setup_per_cpu_areas(void)
->>   {
->>   	unsigned long delta;
->>   	unsigned int cpu;
->> -	int rc;
->> +	int rc = -EINVAL;
->> +
->> +	if (pcpu_chosen_fc != PCPU_FC_PAGE) {
->> +		/*
->> +		 * Always reserve area for module percpu variables.  That's
->> +		 * what the legacy allocator did.
->> +		 */
->> +		rc = pcpu_embed_first_chunk(PERCPU_MODULE_RESERVE,
->> +					    PERCPU_DYNAMIC_RESERVE, PAGE_SIZE,
->> +					    pcpu_cpu_distance,
->> +					    pcpu_fc_alloc, pcpu_fc_free);
->> +#ifdef CONFIG_NEED_PER_CPU_PAGE_FIRST_CHUNK
->> +		if (rc < 0)
->> +			pr_warn("PERCPU: %s allocator failed (%d), falling back to page size\n",
->> +				   pcpu_fc_names[pcpu_chosen_fc], rc);
->> +#endif
-> Why only print out a message for a config option?  Again, no #ifdef in
-> .c files if at all possible.
+--nextPart2006021.n4l1ccZoEF--
 
-Same reason as above.
 
-Thanks for your review.
 
->
-> thanks,
->
-> greg k-h
-> .
->
