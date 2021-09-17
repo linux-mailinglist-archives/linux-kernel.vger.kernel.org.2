@@ -2,96 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C61C74101CD
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 01:35:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEBA84101CE
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 01:35:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231543AbhIQXgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 19:36:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47322 "EHLO
+        id S241202AbhIQXgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 19:36:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229710AbhIQXgo (ORCPT
+        with ESMTP id S234965AbhIQXgr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 19:36:44 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A49DCC061757
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 16:35:21 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id z24so13018879lfu.13
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 16:35:21 -0700 (PDT)
+        Fri, 17 Sep 2021 19:36:47 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80C1AC061757
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 16:35:24 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id f22so22569246qkm.5
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 16:35:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PkDGmP0aGYLJS6/pcxej119Ez5GceZ/Qr9wqpNPM2Hg=;
-        b=iRflbXUDbQwR8fPuqpGMIZRh5d5XJIBmq1xET2tbgxzSe+8GcHffEhQyAF9XeGYfA1
-         l4zVOrlw8Z1Hdpl4/B223pyke78E3D/9CDXOR3ZENcxqmdg4OvgJtr/u8yq3EQXYk6sk
-         T7r2o+56gRd5mBmTSwiicZgiyQtw86FFhemFN4LWj0ksot3wSIO4QvNDpuKbIU56ykjC
-         T1vggMUqdATSRQnUtCDMnp6Th5CAN+cSR2G3pP1FLHRPaEJlPaJnkbEYGjMGy9Xak558
-         kMUztiwqCtIb43GpMoSgmMzVc1IeWXBXaL8dZDHpr2m06b3AjpBbYtLZ9fHOYIfa7uTX
-         cC/w==
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=F8L4H42y086vt8flssxKjNTo0yHfea8YjCpw371YNIc=;
+        b=Oc4fx4eeKMreiumWXSObAgriDTvCSAG97eOw5W8tQkgLlrfzqJOcE3CxQiO6dtrkH6
+         DYiMdJcdXItfgNJGvKzwMMDGHH8yJ1g8ZwQcZnk51KPjWFgaV/We8MkeYF67r+okOhLK
+         hILzWNuHlWVvNS3G49r0Pz3d4alFFzCHzLZpDeRQRzRWAu+DGD9WuZdyxiLRzBtQf8sq
+         hWuEqkoSarISEO589xuyIzgaluEycFf0En3/vwgG+BX7n+1H5TTYxYsETpX8Bp2b4QhG
+         3+vnRPXh5txp8x1246P8j9PeOpgGEHvXKuyBFFxvSwnECHserUX8mzp9Hx5v4dLSivFO
+         omXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PkDGmP0aGYLJS6/pcxej119Ez5GceZ/Qr9wqpNPM2Hg=;
-        b=uCcIbcMHob3sVyghPfmnIR1qiDOMpptEbfkix+lMbNMjwt0cGHQVGWrnCvLpK+tMMS
-         2viaeMpJFCvtEKiMVLwf/PJ2t+ObEGxRofsUSSuD/ofyboLr8XqI8pIedXj66t9TxDNg
-         cX2G70hlJrN8bFcHensHuq7p+ywtAoh8iKdx0kcHHuwU5Up6yNtH1gGthTrDKyOiQEiu
-         8cL3ii69p2+chWFHNj2Xvk/suFaaOeWyDpBBfmt0+UxhA1gBDF0OggJCuLZXPUkRDdmF
-         /fLzJy8V1hO2Px1eKXtJ9e7jIQ2S63ZwMYCiptYMHxVnAVLVf/fPbYb4MSKcjd1KKgJ5
-         W0+w==
-X-Gm-Message-State: AOAM531Ew/TicGUwo/3COLDHA0EXZl/u8DJzFRVROh4dSHrYAqIclr2C
-        npnCEHcZO12QhceyJ3Jl/R0OjI23BnO02FKfaUfLrQ==
-X-Google-Smtp-Source: ABdhPJwCbWUAYcAMUm1bFcDDe3zwixhPDj6NEeY3En+++VFztG2zcjFpXcFPx6/FTV0ZDCyJo9XMKU7O4NzvBvTy9cg=
-X-Received: by 2002:ac2:4d03:: with SMTP id r3mr10251096lfi.339.1631921719948;
- Fri, 17 Sep 2021 16:35:19 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=F8L4H42y086vt8flssxKjNTo0yHfea8YjCpw371YNIc=;
+        b=eFWyh0pU5+QX3I+8WDiggSTrakcKBGyQHo4FWHfiGM9eMLb7nMYS7oZdbo1rMxNnfK
+         C4CIy5GlyolYzQVTMbWSEaYHdaGSvnOHG0r7L2WTopEtsf1+ghx8RzlF+E2qlgfVNxs5
+         M0vulXIo7uxlWGQP7lzz1U3V/TVa+u8ZcDkei08Ms7J+aSgCtSNIC9E7yTE2fycCe+ga
+         KW/1wY2n92LRTHJQzqeYugVVvCDJSAogczYyeQ6cIxA/e232l/YLm2d88fP3wLM9y/QR
+         Wp3/maLU5g+pS5FLGOm3+DMTMR0CFVER8f8UTn589etqTW8kJ0FjEsCj0JcBLapURNzM
+         tM+A==
+X-Gm-Message-State: AOAM531r6+4KuY/RvBTb3zvO+E5+mBbO00VQFEqPbXxGwR7g6HBMHaQy
+        8IvOpGYFMa31fqaUAjr1N41Pf0A1L3lvzQ==
+X-Google-Smtp-Source: ABdhPJzRPIlfZL3nyByyaMFw8dYegtxhwV0JXYBKliwKQ91GIrI5zSOZPKgkdSEAxb7XW5BeLnZDng==
+X-Received: by 2002:a05:620a:214f:: with SMTP id m15mr12984134qkm.59.1631921723552;
+        Fri, 17 Sep 2021 16:35:23 -0700 (PDT)
+Received: from [192.168.1.211] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id l1sm2239686qti.94.2021.09.17.16.35.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Sep 2021 16:35:22 -0700 (PDT)
+Message-ID: <654f9679-8734-3830-2e29-f531eb9aeb0a@toxicpanda.com>
+Date:   Fri, 17 Sep 2021 19:35:21 -0400
 MIME-Version: 1.0
-References: <20210913224926.1260726-1-heiko@sntech.de> <20210913224926.1260726-4-heiko@sntech.de>
-In-Reply-To: <20210913224926.1260726-4-heiko@sntech.de>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sat, 18 Sep 2021 01:35:09 +0200
-Message-ID: <CACRpkdbWR68xv6a96Nt6mXhrMZaEVT=ejMvqm=TPYngEo6C3RA@mail.gmail.com>
-Subject: Re: [PATCH 3/4] pinctrl/rockchip: add a queue for deferred pin output
- settings on probe
-To:     Heiko Stuebner <heiko@sntech.de>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Jianqun Xu <jay.xu@rock-chips.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.3
+Subject: Re: Folio discussion recap
+Content-Language: en-US
+To:     Theodore Ts'o <tytso@mit.edu>,
+        Kent Overstreet <kent.overstreet@gmail.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Dave Chinner <david@fromorbit.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Howells <dhowells@redhat.com>
+References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
+ <YTu9HIu+wWWvZLxp@moria.home.lan> <YUIT2/xXwvZ4IErc@cmpxchg.org>
+ <20210916025854.GE34899@magnolia> <YUN2vokEM8wgASk8@cmpxchg.org>
+ <20210917052440.GJ1756565@dread.disaster.area> <YUTC6O0w3j7i8iDm@cmpxchg.org>
+ <YUUE5qB9CW9qiAcN@moria.home.lan> <YUUV3uHhh/PCqXsK@mit.edu>
+From:   Josef Bacik <josef@toxicpanda.com>
+In-Reply-To: <YUUV3uHhh/PCqXsK@mit.edu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 12:49 AM Heiko Stuebner <heiko@sntech.de> wrote:
+On 9/17/21 6:25 PM, Theodore Ts'o wrote:
+> On Fri, Sep 17, 2021 at 05:13:10PM -0400, Kent Overstreet wrote:
+>> Also: it's become pretty clear to me that we have crappy
+>> communications between MM developers and filesystem
+>> developers.
+> 
+> I think one of the challenges has been the lack of an LSF/MM since
+> 2019.  And it may be that having *some* kind of ad hoc technical
+> discussion given that LSF/MM in 2021 is not happening might be a good
+> thing.  I'm sure if we asked nicely, we could use the LPC
+> infrasutrcture to set up something, assuming we can find a mutually
+> agreeable day or dates.
+> 
 
-> The separation of pinctrl and gpio drivers created a tiny window where
-> a pinconfig setting might produce a null-pointer dereference.
->
-> The affected device were rk3288-veyron devices in this case.
->
-> Pinctrl-hogs are claimed when the pinctrl driver is registered,
-> at which point their pinconfig settings will be applied.
-> At this time the now separate gpio devices will not have been created
-> yet and the matching driver won't have probed yet, making the gpio->foo()
-> call run into a null-ptr.
->
-> As probing is not really guaranteed to have been completed at a specific
-> time, introduce a queue that can hold the output settings until the gpio
-> driver has probed and will (in a separate patch) fetch the elements
-> of the list.
->
-> We expect the gpio driver to empty the list, but will nevertheless empty
-> it ourself on remove if that didn't happen.
->
-> Fixes: 9ce9a02039de ("pinctrl/rockchip: drop the gpio related codes")
-> Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+We have a slot for this in the FS MC, first slot actually, so hopefully 
+we can get things hashed out there.  Thanks,
 
-Hm this is not very elegant but what can we do.
-Tentatively applied for fixes.
-
-Can we not use device links to get around this?
-
-Yours,
-Linus Walleij
+Josef
