@@ -2,170 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D404340FC3E
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 17:27:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB71040FC42
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 17:27:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236637AbhIQP2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 11:28:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233835AbhIQP2t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 11:28:49 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11E80C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:27:27 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id a10so18549465qka.12
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:27:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=w+tQ/PU9p2iYa5juxC+5TIx7gu+WxD4o31x+e5MbNAc=;
-        b=wZvzXvDFoJxniSSZ1sP1OHE+iQIl14sDSSGD9RuI3YPPIvxu68inmiOiFQy/hbH2rc
-         ByJxsWbm0dS5/qUBy5yvIn4xCBq7APq+I69B12S+nG+ozBstaNrLdlWhcYS485dyQRXH
-         XD2oO0iNEWppR796Rx3BSQyHK3s/tC7qXkNy80RPUptucgzHKOLQsplduEITsgfxGpY5
-         A1TgLXvcwwteseOe6s8PgD2KDm3er4KluD0U4NDIVhwu4C4gY8b2v8bUbO2p8ZYJZwEz
-         VQwHBTBmPiYebOPnGdT7dVN55Pl7fkz/RW/xHL9Mhp8Iblg1F+pjIH8BSaDFt7AQeqAN
-         +VxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=w+tQ/PU9p2iYa5juxC+5TIx7gu+WxD4o31x+e5MbNAc=;
-        b=SSpx2K70Ytn3GvFYslpVgNlITOORHbr5I3sY8iRlnG1xgeFZUeNWnRd9s9ch8+OlbE
-         CYOF5308Nzklg4CyEGEE+Gn2F2OHEfKkXdzHquv6Jx5HAgCTvnPXGN3FufFwye/A1alO
-         vP+0OBaXHkkGl2U7vXOc59dMSisykajczvdB2UFIrvTi1d+vokvYn3YOx6DU0fcUdwtJ
-         2RFKjXZJQ/nPhTTn3HaFpmR82+QrcC0imrsFANsrHcuTKe4VFvIHNzWSrYHB7Q3zZA6Z
-         lk+CzPuH+zOvFdtZjkpElcQJGRJgnDoqFOPyhRbRF36IP9CIomB8l6aZHqSPeLAP/lT7
-         ec6Q==
-X-Gm-Message-State: AOAM531kM9bt3w++UYzUQv8unp+cjcaAAQhdq9QJE2oXvQ1TTQ8A/BZZ
-        RPXB8fyb9auJmZorqu5q+xJAQ5gemtSEfkIvfRFzbA==
-X-Google-Smtp-Source: ABdhPJy5SUJ2zmS5uUPpvJeW3954agmyO5nBK74RNUzXvygOt2JqjOZVpqg5FpwmPJeTHdeAv+FMZUt5XVZrnFOxp30=
-X-Received: by 2002:a25:ac13:: with SMTP id w19mr13980398ybi.402.1631892446211;
- Fri, 17 Sep 2021 08:27:26 -0700 (PDT)
+        id S238780AbhIQP3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 11:29:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41412 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237140AbhIQP3H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 11:29:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 53687610C7;
+        Fri, 17 Sep 2021 15:27:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631892465;
+        bh=ApeQnqp5tBSyqw2P59T/IpiWpP+px0+CAYiPTEWF45I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dnEezXaNJyDu4RHBxsc0XtjHLGQMfbR79lyNvkDMIhMe3JWe5pQaZXAzlzfz5SINt
+         4WU/7pPo6cBp5ZOSO/B6OrL7qHMecUKXmU5s7sk+FMqBV+2MmhagTTnE1hQT1PUeaQ
+         Xlv7OHmN53vb9NlmxuAfxFcfvLtLG8B/fbVOUgCVIkoxjiPMDShVxOZuiTpy38MOx+
+         EaBYiCsYULMmVKCk9W6ICNqg7iRbosrGokbBjSKYP8TDTrryr+tPt1AikhKhG+ba0O
+         tPcWPZIxZWBXvfSzmLZo5Y0Z+eFxiSF4DDXD+cxRT3UUI/tYGCWukoVoSG27445ecq
+         QhrmtVOX0k7xQ==
+Date:   Fri, 17 Sep 2021 08:27:44 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        Jane Chu <jane.chu@oracle.com>,
+        Vishal L Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        "Weiny, Ira" <ira.weiny@intel.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        Linux NVDIMM <nvdimm@lists.linux.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH 0/3] dax: clear poison on the fly along pwrite
+Message-ID: <20210917152744.GA10250@magnolia>
+References: <20210914233132.3680546-1-jane.chu@oracle.com>
+ <CAPcyv4h3KpOKgy_Cwi5fNBZmR=n1hB33mVzA3fqOY7c3G+GrMA@mail.gmail.com>
+ <516ecedc-38b9-1ae3-a784-289a30e5f6df@oracle.com>
+ <20210915161510.GA34830@magnolia>
+ <CAPcyv4jaCiSXU61gsQTaoN_cdDTDMvFSfMYfBz2yLKx11fdwOQ@mail.gmail.com>
+ <YULuMO86NrQAPcpf@infradead.org>
+ <CAPcyv4g_qPBER2W+OhCf29kw-+tjs++TsTiRGWgX3trv11+28A@mail.gmail.com>
+ <YUSPzVG0ulHdLWn7@infradead.org>
 MIME-Version: 1.0
-References: <20210911011819.12184-1-ricardo.neri-calderon@linux.intel.com> <20210911011819.12184-6-ricardo.neri-calderon@linux.intel.com>
-In-Reply-To: <20210911011819.12184-6-ricardo.neri-calderon@linux.intel.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Fri, 17 Sep 2021 17:27:15 +0200
-Message-ID: <CAKfTPtC6Yg2gPHETZ2qUgFJvyrdiNCx2sFBYAtidX0za4tnpQw@mail.gmail.com>
-Subject: Re: [PATCH v5 5/6] sched/fair: Carve out logic to mark a group for
- asymmetric packing
-To:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Len Brown <len.brown@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Ricardo Neri <ricardo.neri@intel.com>,
-        Quentin Perret <qperret@google.com>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Aubrey Li <aubrey.li@intel.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YUSPzVG0ulHdLWn7@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 11 Sept 2021 at 03:19, Ricardo Neri
-<ricardo.neri-calderon@linux.intel.com> wrote:
->
-> Create a separate function, sched_asym(). A subsequent changeset will
-> introduce logic to deal with SMT in conjunction with asmymmetric
-> packing. Such logic will need the statistics of the scheduling
-> group provided as argument. Update them before calling sched_asym().
->
-> Cc: Aubrey Li <aubrey.li@intel.com>
-> Cc: Ben Segall <bsegall@google.com>
-> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> Cc: Mel Gorman <mgorman@suse.de>
-> Cc: Quentin Perret <qperret@google.com>
-> Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Tim Chen <tim.c.chen@linux.intel.com>
-> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> Reviewed-by: Len Brown <len.brown@intel.com>
-> Co-developed-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Signed-off-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+On Fri, Sep 17, 2021 at 01:53:33PM +0100, Christoph Hellwig wrote:
+> On Thu, Sep 16, 2021 at 11:40:28AM -0700, Dan Williams wrote:
+> > > That was my gut feeling.  If everyone feels 100% comfortable with
+> > > zeroingas the mechanism to clear poisoning I'll cave in.  The most
+> > > important bit is that we do that through a dedicated DAX path instead
+> > > of abusing the block layer even more.
+> > 
+> > ...or just rename dax_zero_page_range() to dax_reset_page_range()?
+> > Where reset == "zero + clear-poison"?
+> 
+> I'd say that naming is more confusing than overloading zero.
 
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+How about dax_zeroinit_range() ?
 
-> ---
-> Changes since v4:
->   * None
->
-> Changes since v3:
->   * Remove a redundant check for the local group in sched_asym().
->     (Dietmar)
->   * Reworded commit message for clarity. (Len)
->
-> Changes since v2:
->   * Introduced this patch.
->
-> Changes since v1:
->   * N/A
-> ---
->  kernel/sched/fair.c | 20 +++++++++++++-------
->  1 file changed, 13 insertions(+), 7 deletions(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index c5851260b4d8..26db017c14a3 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -8597,6 +8597,13 @@ group_type group_classify(unsigned int imbalance_pct,
->         return group_has_spare;
->  }
->
-> +static inline bool
-> +sched_asym(struct lb_env *env, struct sd_lb_stats *sds,  struct sg_lb_stats *sgs,
-> +          struct sched_group *group)
-> +{
-> +       return sched_asym_prefer(env->dst_cpu, group->asym_prefer_cpu);
-> +}
-> +
->  /**
->   * update_sg_lb_stats - Update sched_group's statistics for load balancing.
->   * @env: The load balancing environment.
-> @@ -8657,18 +8664,17 @@ static inline void update_sg_lb_stats(struct lb_env *env,
->                 }
->         }
->
-> +       sgs->group_capacity = group->sgc->capacity;
-> +
-> +       sgs->group_weight = group->group_weight;
-> +
->         /* Check if dst CPU is idle and preferred to this group */
->         if (!local_group && env->sd->flags & SD_ASYM_PACKING &&
-> -           env->idle != CPU_NOT_IDLE &&
-> -           sgs->sum_h_nr_running &&
-> -           sched_asym_prefer(env->dst_cpu, group->asym_prefer_cpu)) {
-> +           env->idle != CPU_NOT_IDLE && sgs->sum_h_nr_running &&
-> +           sched_asym(env, sds, sgs, group)) {
->                 sgs->group_asym_packing = 1;
->         }
->
-> -       sgs->group_capacity = group->sgc->capacity;
-> -
-> -       sgs->group_weight = group->group_weight;
-> -
->         sgs->group_type = group_classify(env->sd->imbalance_pct, group, sgs);
->
->         /* Computing avg_load makes sense only when group is overloaded */
-> --
-> 2.17.1
->
+To go with its fallocate flag (yeah I've been too busy sorting out -rc1
+regressions to repost this) FALLOC_FL_ZEROINIT_RANGE that will reset the
+hardware (whatever that means) and set the contents to the known value
+zero.
+
+Userspace usage model:
+
+void handle_media_error(int fd, loff_t pos, size_t len)
+{
+	/* yell about this for posterior's sake */
+
+	ret = fallocate(fd, FALLOC_FL_ZEROINIT_RANGE, pos, len);
+
+	/* yay our disk drive / pmem / stone table engraver is online */
+}
+
+> > > I'm really worried about both patartitions on DAX and DM passing through
+> > > DAX because they deeply bind DAX to the block layer, which is just a bad
+> > > idea.  I think we also need to sort that whole story out before removing
+> > > the EXPERIMENTAL tags.
+> > 
+> > I do think it was a mistake to allow for DAX on partitions of a pmemX
+> > block-device.
+> > 
+> > DAX-reflink support may be the opportunity to start deprecating that
+> > support. Only enable DAX-reflink for direct mounting on /dev/pmemX
+> > without partitions (later add dax-device direct mounting),
+> 
+> I think we need to fully or almost fully sort this out.
+> 
+> Here is my bold suggestions:
+> 
+>  1) drop no drop the EXPERMINTAL on the current block layer overload
+>     at all
+
+I don't understand this.
+
+>  2) add direct mounting of the nvdimm namespaces ASAP.  Because all
+>     the filesystem currently also need the /dev/pmem0 device add a way
+>     to open the block device by the dax_device instead of our current
+>     way of doing the reverse
+>  3) deprecate DAX support through block layer mounts with a say 2 year
+>     deprecation period
+>  4) add DAX remapping devices as needed
+
+What devices are needed?  linear for lvm, and maybe error so we can
+actually test all this stuff?
+
+> I'll volunteer to write the initial code for 2).  And I think we should
+> not allow DAX+reflink on the block device shim at all.
+
+/me has other questions about daxreflink, but I'll ask them on shiyang's
+thread.
+
+--D
