@@ -2,83 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0608141013C
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 00:28:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFDB541013E
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 00:32:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344678AbhIQW3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 18:29:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60654 "EHLO
+        id S236613AbhIQWdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 18:33:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232719AbhIQW3r (ORCPT
+        with ESMTP id S232719AbhIQWde (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 18:29:47 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FCB0C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 15:28:24 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id b15so20415196lfe.7
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 15:28:24 -0700 (PDT)
+        Fri, 17 Sep 2021 18:33:34 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A1B8C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 15:32:11 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id c8so38678337lfi.3
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 15:32:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ATG5NnjBZl5uROxRiGQuGsgW+WoiTqVTfaTtEyWboD4=;
-        b=GIxqeNwHyHeXl9iWMRj3tvHiLtIR8wE8ZDUo49LZQyHArLZ5Y8u5tw9G02aO7GfZSr
-         d4RiONMGCMitnH03p/SPXvtPRfw93zOOagGcWOIiNwhcTOuc5p7DL00jY22JfoDQ/0iu
-         7bkKj1eIsUgbIpiOSHKqnGnXToC3qmkdxpp6z6KKBsGatuAnXsacWt/IVR3vy0zGi0DH
-         Adsc+WdzyRa3R00hPVKRIsrckqyqlxosWyPOFI8ihA2HgIJLhTzmGuvHqQcNUDJnBlRQ
-         F0DUlyuusMf+8Dgjl0h2SWMmpRdhBi487vWd3auyOndzagE9ZllRxv25dHsKZ5cHyCZJ
-         PCnQ==
+        bh=bMlZupJaaOmfM5kF68bTasQo1i9K/JwY+k5KTnrWPMo=;
+        b=pWYIgc9VNNCeJNC1e9/VkHmZBez2EDmS2PcdErOeXRN4xgp6uos4SYg+4oTI+xm4MT
+         o/zG4Kp2V6OwWmQfKNejC4Jp4UFf49i52/KggwAVAp3nSgnXUBl3OimLMYRR8N+Guuu+
+         YyqT5xOg/JsSu2Am/ua1o2bTQe+Jo4AAwrA9lE2cUlD31Zmavd3W+qdmu93lAXZ+vEVq
+         Rn06xp31zNd/5lLFgCKFqj+TJ2dInOCeO2IDIlvety25M+zxpby7VCL883/l+GHal/rQ
+         Uc7nsN2PIFsRJSNa0fwlGcrkG3oiyyEkBG5R812ndCQAXpeZwZczo6ecra3yLoYZYD2g
+         1q3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ATG5NnjBZl5uROxRiGQuGsgW+WoiTqVTfaTtEyWboD4=;
-        b=h1Wp5ACEWa0soMXt7j8YUkxq1Av4piIGSno9SbK34nXILMtAEx6s5NvamR+kgEmRZP
-         p+trM6zqLs5TiDnw3YDO2ENTPdR57+LhQCeOYYgrwOnF2iWUAItKn6PkcKWw3so8+TLl
-         PVCqIJa7H4Pbs/9aER1MuPmG21ozEjoOq+54Bn4vqo23U3lGdX5CtImRDCQFVcUnMtMe
-         NZxKqX2lgiAMK2xOm1HfpjNq6k8+lwU7hVygYZYAWiSJJXK2Mhzkyi1vGJ2StRVMCias
-         Tcusahck3TAuDxhwwpmH/henenBXJRqKvePgGDP047EE8A/SAVTY8H8AZc9YbLpQfPow
-         Zp2g==
-X-Gm-Message-State: AOAM530MiH9PBMwS78RfhSQpOycdBZb5zRbgDk49g7GBTx03daXfU9Ab
-        nKtSy89bZ/FFQP/5Tc/kDxKgqbIEP1OmOyDHMlF2gA==
-X-Google-Smtp-Source: ABdhPJyJzS6Eh5ph0KTz0AHFM3V7mMDZRHus4peWL04EIpE/0/VyQ76dzmHnSnuRLtGQVLTH7syzF4tuj9ZRm7UveqU=
-X-Received: by 2002:a05:6512:12c4:: with SMTP id p4mr10112672lfg.72.1631917702757;
- Fri, 17 Sep 2021 15:28:22 -0700 (PDT)
+        bh=bMlZupJaaOmfM5kF68bTasQo1i9K/JwY+k5KTnrWPMo=;
+        b=Aos4XzEVfujbwqLBIGG4VJ5RqEVlZaj9mDrld73HpNpWv/W/yKlcsnZ7YO2abbC2Ki
+         xTSa0OnYSk1FqbJfNzcfzwWB/5qkEtvDY//kWre/PSvPwd2SD6YTIDv5mSi2b0DcTTuP
+         ZafDXrwBTV5LsIheLAe/0cFhuHsnZx98UEOzxwomjfVnJOO5fsDTu7n0As10vTfecWcg
+         BC/GPWjjX7PfuWoyrFYd4g/8J4JKl1c0pHzt9j94LAAWr0/aEEUmHTPiLiJ5dgnyyFpN
+         l+5SvRbrWnljRCklT6iNIYBipov6dJFRDq+rjqzbFc+eSY8N9Qo2+onlArtagFcdx+Z+
+         F8jQ==
+X-Gm-Message-State: AOAM531PGW1CuQkae0Xi9EEu0PT1a7hlFN4V3U2b4YcdxmzvSlHPr2GU
+        QOJ2pRIFRKkmxaH8PTF0RlKriTKHxmwoDjmMf/hZrw==
+X-Google-Smtp-Source: ABdhPJxiLoB+28Pv7LKUWwQryIaYhXX8k0rQZhkj/JY1U969yvs0oB5ymnY+t7DiPA5DrZOSoyLVccmJ69BS74kuhkQ=
+X-Received: by 2002:ac2:4651:: with SMTP id s17mr4952713lfo.584.1631917929456;
+ Fri, 17 Sep 2021 15:32:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210911042925.556889-1-linux@roeck-us.net>
-In-Reply-To: <20210911042925.556889-1-linux@roeck-us.net>
+References: <20210911232707.259615-1-luca@z3ntu.xyz> <20210911232707.259615-2-luca@z3ntu.xyz>
+In-Reply-To: <20210911232707.259615-2-luca@z3ntu.xyz>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sat, 18 Sep 2021 00:28:11 +0200
-Message-ID: <CACRpkdYjSX0_y_N5nQweenfDMJYa3OEimbweN5XCVQeGsq+cBQ@mail.gmail.com>
-Subject: Re: [PATCH] watchdog: ixp4xx_wdt: Fix address space warning
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        LINUXWATCHDOG <linux-watchdog@vger.kernel.org>,
+Date:   Sat, 18 Sep 2021 00:31:58 +0200
+Message-ID: <CACRpkda0Jm=JwxpsmU63m94hFsL1Lhuk3mfjgFuXLNJ3RjdUnA@mail.gmail.com>
+Subject: Re: [PATCH 1/8] pinctrl: qcom: msm8226: fill in more functions
+To:     Luca Weiss <luca@z3ntu.xyz>
+Cc:     MSM <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS
+        <devicetree@vger.kernel.org>, Hans de Goede <hdegoede@redhat.com>, Andy
+        Shevchenko <andy.shevchenko@gmail.com>," 
+        <~postmarketos/upstreaming@lists.sr.ht>,
+        Bartosz Dudziak <bartosz.dudziak@snejp.pl>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
         linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 11, 2021 at 6:29 AM Guenter Roeck <linux@roeck-us.net> wrote:
+On Sun, Sep 12, 2021 at 1:28 AM Luca Weiss <luca@z3ntu.xyz> wrote:
 
-> sparse reports the following address space warning.
+> Add the functions for QUP4 (spi, uart, uim & i2c), sdc3 and audio_pcm as
+> derived from the downstream gpiomux configuration.
 >
-> drivers/watchdog/ixp4xx_wdt.c:122:20: sparse:
->         incorrect type in assignment (different address spaces)
-> drivers/watchdog/ixp4xx_wdt.c:122:20: sparse:
->         expected void [noderef] __iomem *base
-> drivers/watchdog/ixp4xx_wdt.c:122:20: sparse:
->         got void *platform_data
+> Also sort the functions alphabetically, while we're at it.
 >
-> Add a typecast to solve the problem.
->
-> Fixes: 21a0a29d16c6 ("watchdog: ixp4xx: Rewrite driver to use core")
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
 
-Thanks for fixing this!
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+This patch applied to the pinctrl tree for v5.16.
 
 Yours,
 Linus Walleij
