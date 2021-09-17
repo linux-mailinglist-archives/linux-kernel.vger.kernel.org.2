@@ -2,69 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AA7940FD00
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 17:44:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D23F40FD30
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 17:49:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242288AbhIQPp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 11:45:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45804 "EHLO mail.kernel.org"
+        id S245498AbhIQPuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 11:50:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48318 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234037AbhIQPp4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 11:45:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F69D61212;
-        Fri, 17 Sep 2021 15:44:33 +0000 (UTC)
-Date:   Fri, 17 Sep 2021 16:44:30 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] arm64 fixes for 5.15-rc2
-Message-ID: <YUS33qojC6HpxtFw@arm.com>
+        id S1343700AbhIQPu3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 11:50:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 64E9A611C8;
+        Fri, 17 Sep 2021 15:49:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631893740;
+        bh=p5JtEDkWnDUrax7jGsnw3exoS8yGGa7NH5B44DIs66c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GRs0LZ+5z99Fxh+JdCpW2L33droziUIl7wfHVQwtoJDoBTZMBUlZl5N2GInL2AZ3b
+         v/sqmUSGzQPOUXxUtLfrunUWe0yXVRl6GejAKVuYQM9D20v3W3RfTMcDucbMrR2knI
+         pmnfU/9zUqvKR5EcheLj1Y0167LDllwlRf7d4EM2V7GQW80/9TAAdvKJcWWXEqvDna
+         VT0Alp6gbAagKaZRUQYzN166QQJ4oG6InwSQQWRZVqJlioEqdI2r5xBIh8VGRvmUWy
+         7AEjQDX9RSkpAQM+oLRq2eS9liCCXhaQ+LKozcXKAQmo4nFDuY2CszhVcM8BuKH5E1
+         Rj1FFjvet2Cjg==
+Date:   Fri, 17 Sep 2021 16:48:18 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Satya Priya <skakit@codeaurora.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>, mka@chromium.org,
+        swboyd@chromium.org, Das Srinagesh <gurus@codeaurora.org>,
+        David Collins <collinsd@codeaurora.org>, kgunda@codeaurora.org,
+        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/4] regulator: dt-bindings: Add pm8008 regulator bindings
+Message-ID: <20210917154818.GC4700@sirena.org.uk>
+References: <1631875538-22473-1-git-send-email-skakit@codeaurora.org>
+ <1631875538-22473-3-git-send-email-skakit@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="z4+8/lEcDcG5Ke9S"
 Content-Disposition: inline
+In-Reply-To: <1631875538-22473-3-git-send-email-skakit@codeaurora.org>
+X-Cookie: A man's house is his hassle.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
 
-Please pull the arm64 changes below. Thanks.
+--z4+8/lEcDcG5Ke9S
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
+On Fri, Sep 17, 2021 at 04:15:36PM +0530, Satya Priya wrote:
 
-  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
+> +    properties:
+> +      reg:
+> +        maxItems: 1
+> +      regulator-name: true
+> +      regulator-min-microvolt: true
+> +      regulator-max-microvolt: true
 
-are available in the Git repository at:
+You shouldn't be forcing these properties, it should be perfectly OK for
+boards to have fixed voltages especially for example during bringup or
+for debugging.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux tags/arm64-fixes
+> +      qcom,min-dropout-voltage:
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+> +        description:
+> +          Specifies the minimum voltage in microvolts that the parent
+> +          supply regulator must output, above the output of this
+> +          regulator.
 
-for you to fetch changes up to 9fcb2e93f41c07a400885325e7dbdfceba6efaec:
+If this is needed in DT it should be a generic property since most
+regulators have some requirement here however usually it's a fixed
+property of the silicon and should therefore just gets set in the
+regulator_desc as min_dropout_uV - I'd strongly recommend having a
+default there even if there's some requirement for it to be set per
+board.
 
-  arm64: Mark __stack_chk_guard as __ro_after_init (2021-09-16 17:59:17 +0100)
+--z4+8/lEcDcG5Ke9S
+Content-Type: application/pgp-signature; name="signature.asc"
 
-----------------------------------------------------------------
-arm64 fixes/cleanups:
+-----BEGIN PGP SIGNATURE-----
 
-- Fix the memset() size when re-initialising the SVE state.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFEuMEACgkQJNaLcl1U
+h9CcPQf/d5wKbltucOrKHNi3Z3T+lOCB3hFwu7r0S/sGHSSKDLZHCrv88RiDDP4i
+ADJfMJDU6jMH99u1uYV5/FJ3dfyx81goy6564MPh/yzOcSMuH/NiW0j4HED1w8Pp
+PJYb9ObxZ+VSfV9d/ClQCr73w6lBXxHH9YhngVzcfAMo92vITFDyUEAHyvCsmmmR
+PC6wh+N+mhFUbg7ckbmlKxYkMFnQW49bAbyvMrHm/ZH2lga185+gArn0x5zsG0d2
+WO42bLBhiM6zHZUd5Y4BjcL3hS22yWGBJfiCH4nAGjtL8yeJ4evRT+xIHG2Auh8C
+BRU/VrzRcg8Xe+XF1icLkvJ7/jJe3Q==
+=l9su
+-----END PGP SIGNATURE-----
 
-- Mark __stack_chk_guard as __ro_after_init.
-
-- Remove duplicate include.
-
-----------------------------------------------------------------
-Dan Li (1):
-      arm64: Mark __stack_chk_guard as __ro_after_init
-
-Lv Ruyi (1):
-      arm64/kernel: remove duplicate include in process.c
-
-Mark Brown (1):
-      arm64/sve: Use correct size when reinitialising SVE state
-
- arch/arm64/kernel/fpsimd.c  | 2 +-
- arch/arm64/kernel/process.c | 3 +--
- 2 files changed, 2 insertions(+), 3 deletions(-)
-
--- 
-Catalin
+--z4+8/lEcDcG5Ke9S--
