@@ -2,143 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 346FB410176
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 00:43:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19390410178
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 00:46:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344904AbhIQWpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 18:45:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35930 "EHLO
+        id S244721AbhIQWrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 18:47:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241128AbhIQWpG (ORCPT
+        with ESMTP id S236208AbhIQWrM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 18:45:06 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87B1BC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 15:43:43 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id a10so22246281qka.12
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 15:43:43 -0700 (PDT)
+        Fri, 17 Sep 2021 18:47:12 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F0BDC061757
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 15:45:50 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id q14so11926415ils.5
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 15:45:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XIoW8Eo23iCAjrIU1t3sDARsiqnFEdwPmtswt/NLCf8=;
-        b=El06bwReyDXr1NHoxdC01WQI6pe3wgojrolXAjDrvnu/ORtYUsGMjxjaSBHwNkpljb
-         FEYRmdvdGYeu0yzMnLrfr49g9ZOOn8vf2oZoLBeL6UTcOp36nZhyOOv5Nq5b0YOx0+dx
-         TXM9hR25fEqA7v2fHtW5JGpJY02bmU6tsMBm0=
+        d=linuxfoundation.org; s=google;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=s8oIHj/9NV18y7Efw1SPbOXztrTlc/2JIRRHKj00s8o=;
+        b=GEV1lp1FWsl9aCGq/lYX6WjdxzlGJNJNJk+XXeP6TBFDv+1s1hMpLwhVbIHBX0gHW1
+         KFfu6nrtKr92XGR18HJu6nD5t1fy0ZSB8+ofV5t9GKDpCVxoAP2JLLNLkO2DWtFcyY20
+         PwbGDYD+DVnKDRV4qIez7x9rKcI7s8GLMThQs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XIoW8Eo23iCAjrIU1t3sDARsiqnFEdwPmtswt/NLCf8=;
-        b=BdglklI3mhc/KILmtrMjTptGWqlKEzAq5xyfQ08SxvfQ/7Ww4cAjrHOLTVVr1kcZ7X
-         Fc9NHV6a5XpWZb4KQ/lnWOoD1PeAoQVb1DE5nSv6zTK3qbXRz5oWtbvPcHTFaPr3W3lg
-         n7YZly57KdQa7puIhHamqVCcWJvonRJW1EPUOvFXPDQ0Kzs/pVUCv+pe3KQtFCdrE7Vp
-         UcGyCeSDdccLbF0UZ7B1Epb40drvbT2SbzNB/h1q8PVbhNiRfyRjV9RiddlSkaWDPzbo
-         x3mOH1SOPkO+23skD4FCKKqOh7ImjMaF/8DQAJ2Q87dkt6fP2TIZPJ9sgk7WUU6hMpm0
-         j2Iw==
-X-Gm-Message-State: AOAM5335/XTf5nGPi3pMEmpzNLjCkXyWgJ27YC/FOrlaU5gx6L7JgBK/
-        PKVVTWkqAQ4rDBD5LttgHW5HBvx0I+hZz+jMs0Lsuw==
-X-Google-Smtp-Source: ABdhPJz/TKx1KZSwZkp9yjChC8gNexd7paTPcbuLuA7GZ0wA6JoA2nGJYOqtatUMuAtiYO8/f/4SwAhZUD6J/xhssXg=
-X-Received: by 2002:a25:6a55:: with SMTP id f82mr16647861ybc.217.1631918622623;
- Fri, 17 Sep 2021 15:43:42 -0700 (PDT)
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=s8oIHj/9NV18y7Efw1SPbOXztrTlc/2JIRRHKj00s8o=;
+        b=dSLXVAmqK874YrECiIx64rWIXSXqPMSHmmRnUOyrgX3Er+IxYTpKU1eCWrBc6n5AwY
+         txgLjIeBSjUO3y3tczbRVTnt1E1ITWAwv8mzDOlxRm+NFheSIXuydl+bW3z8qwHowB51
+         wf404ndMNyC7ZeUHDU+BFZ44OrWty02ECoj3szgqQfySH+b4siZQZoVVcFJYI5gtMHaP
+         5Y66hLoIE5pj0LtjgRF3DWfkTcTy6CTOQCtLk2HtY6OdyJaDANxM/LfIOoYoySfYxAvG
+         /5LWy4Fi3a/p+9gX1cfqLCu3bXm96y2il/mohjlWRq1SSmTZwkgZWc6/nbktsWSl+4xj
+         wqIA==
+X-Gm-Message-State: AOAM533yPiUf0b8JWTG0qN5EEvh3SECvTzDCDBfMr2c0OajwYMtu7Gcd
+        Cvr7UNyobCb4WpcYFHIeWBtHCw==
+X-Google-Smtp-Source: ABdhPJylHR3n8gVPmxcCHcbnvnfV/4UGWy0eJTkCtam3aFRjDRpd5MsCL0miGgcspW8EJqzJSJFxNw==
+X-Received: by 2002:a92:cb43:: with SMTP id f3mr10037558ilq.261.1631918749788;
+        Fri, 17 Sep 2021 15:45:49 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id s12sm4474952ilo.70.2021.09.17.15.45.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Sep 2021 15:45:49 -0700 (PDT)
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Subject: selftests/vm madv_populate.c test
+Message-ID: <b703a326-66f7-bf35-58ee-f60e504ea5ef@linuxfoundation.org>
+Date:   Fri, 17 Sep 2021 16:45:48 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210914162825.v3.1.I85e46da154e3fa570442b496a0363250fff0e44e@changeid>
- <CAE-0n53izRN8trQ0b4mpO-W_A7sOXqSF=NNjtFsPcaCBGMpr4Q@mail.gmail.com>
-In-Reply-To: <CAE-0n53izRN8trQ0b4mpO-W_A7sOXqSF=NNjtFsPcaCBGMpr4Q@mail.gmail.com>
-From:   Philip Chen <philipchen@chromium.org>
-Date:   Fri, 17 Sep 2021 15:43:31 -0700
-Message-ID: <CA+cxXhmyXmt2VRPTM_d0CBG6P=OZYJLofsTEa__xsZ0SQ+W1eQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] drm/bridge: parade-ps8640: Improve logging at probing
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+Hi David,
 
-Based on the discussion in [1], this patch is not really needed for now.
-So I'll just remove this patch from v4.
-Thanks.
+I am running into the following warning when try to build this test:
 
-[1] https://patchwork.kernel.org/project/dri-devel/patch/20210914162825.v3.2.Ib06997ddd73e2ac29e185f039d85cfa8e760d641@changeid/
+madv_populate.c:334:2: warning: #warning "missing MADV_POPULATE_READ or MADV_POPULATE_WRITE definition" [-Wcpp]
+   334 | #warning "missing MADV_POPULATE_READ or MADV_POPULATE_WRITE definition"
+       |  ^~~~~~~
 
-On Tue, Sep 14, 2021 at 5:27 PM Stephen Boyd <swboyd@chromium.org> wrote:
->
-> Quoting Philip Chen (2021-09-14 16:28:43)
-> > Use dev_err_probe() to add logs for error cases at probing time.
-> >
-> > Signed-off-by: Philip Chen <philipchen@chromium.org>
-> > ---
-> >
->
-> Can you use a cover-letter for more than one patch series?
->
-> > (no changes since v1)
-> >
-> >  drivers/gpu/drm/bridge/parade-ps8640.c | 22 ++++++++++++++--------
-> >  1 file changed, 14 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/bridge/parade-ps8640.c b/drivers/gpu/drm/bridge/parade-ps8640.c
-> > index 685e9c38b2db..e340af381e05 100644
-> > --- a/drivers/gpu/drm/bridge/parade-ps8640.c
-> > +++ b/drivers/gpu/drm/bridge/parade-ps8640.c
-> > @@ -332,8 +332,10 @@ static int ps8640_probe(struct i2c_client *client)
-> >                 return -ENODEV;
-> >
-> >         ps_bridge->panel_bridge = devm_drm_panel_bridge_add(dev, panel);
-> > -       if (IS_ERR(ps_bridge->panel_bridge))
-> > -               return PTR_ERR(ps_bridge->panel_bridge);
-> > +       if (IS_ERR(ps_bridge->panel_bridge)) {
-> > +               return dev_err_probe(dev, PTR_ERR(ps_bridge->panel_bridge),
-> > +                                    "Error creating bridge device\n");
->
-> From what I can tell it never returns -EPROBE_DEFER? So this isn't
-> useful.
->
-> > +       }
-> >
-> >         ps_bridge->supplies[0].supply = "vdd33";
-> >         ps_bridge->supplies[1].supply = "vdd12";
-> > @@ -344,16 +346,20 @@ static int ps8640_probe(struct i2c_client *client)
-> >
-> >         ps_bridge->gpio_powerdown = devm_gpiod_get(&client->dev, "powerdown",
-> >                                                    GPIOD_OUT_HIGH);
-> > -       if (IS_ERR(ps_bridge->gpio_powerdown))
-> > -               return PTR_ERR(ps_bridge->gpio_powerdown);
-> > +       if (IS_ERR(ps_bridge->gpio_powerdown)) {
-> > +               return dev_err_probe(dev, PTR_ERR(ps_bridge->gpio_powerdown),
-> > +                                    "Error getting gpio_powerdown\n");
->
-> This looks ok, except we don't want braces on single statement ifs.
->
-> > +       }
-> >
-> >         /*
-> >          * Assert the reset to avoid the bridge being initialized prematurely
-> >          */
-> >         ps_bridge->gpio_reset = devm_gpiod_get(&client->dev, "reset",
-> >                                                GPIOD_OUT_HIGH);
-> > -       if (IS_ERR(ps_bridge->gpio_reset))
-> > -               return PTR_ERR(ps_bridge->gpio_reset);
-> > +       if (IS_ERR(ps_bridge->gpio_reset)) {
-> > +               return dev_err_probe(dev, PTR_ERR(ps_bridge->gpio_reset),
-> > +                                    "Error getting gpio_reset\n");
->
-> Same.
->
-> > +       }
-> >
-> >         ps_bridge->bridge.funcs = &ps8640_bridge_funcs;
-> >         ps_bridge->bridge.of_node = dev->of_node;
+
+I see that the following handling is in place. However there is no
+other information to explain why the check is necessary.
+
+#if defined(MADV_POPULATE_READ) && defined(MADV_POPULATE_WRITE)
+
+#else /* defined(MADV_POPULATE_READ) && defined(MADV_POPULATE_WRITE) */
+
+#warning "missing MADV_POPULATE_READ or MADV_POPULATE_WRITE definition"
+
+I do see these defined in:
+
+include/uapi/asm-generic/mman-common.h:#define MADV_POPULATE_READ       22
+include/uapi/asm-generic/mman-common.h:#define MADV_POPULATE_WRITE      23
+
+Is this the case of missing include from madv_populate.c?
+
+thanks,
+-- Shuah
