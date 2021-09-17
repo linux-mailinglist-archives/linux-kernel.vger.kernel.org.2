@@ -2,243 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0598C40F299
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 08:48:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 034B540F29A
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 08:50:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235431AbhIQGuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 02:50:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbhIQGuE (ORCPT
+        id S235836AbhIQGvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 02:51:36 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.111.102]:60059 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229456AbhIQGva (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 02:50:04 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38AB7C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 23:48:43 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id a15so10952766iot.2
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 23:48:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PppUlr8h+ZXNlOWBENSEgW/nbP2yttQFw9WG9SOkokQ=;
-        b=A2w59X5d0dE6gu5vUFB6tZSqhiuCBadBpx3b7RFL5CVBQRlIYmWvUWqDhnXy4n7UWn
-         WebccCzNaaKmxhvZUFNUlG/IYDHtTHh7uNXTh3HcYDuA0IXxJTA4aw+NqKidxnKNoGQi
-         BxQNqd0+epDOLM3V8WKnzizinO6TUkxWBfa6xCQNEzljnR9Ca3C8R4c5YNgys8Fz80mR
-         zOP08c5tbwoZMe22n9vtsDJ+J4mnxtaKgYbLIic5f4Oa+TFOOJhIffYR90lB2BQni4hh
-         tSp5ISPnmEmwM3Bs736LvC2ZAl/1ZyGIETsuN2ehDYAHghLkdaE4mIFzuNXs7Z/DdlHJ
-         PFug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PppUlr8h+ZXNlOWBENSEgW/nbP2yttQFw9WG9SOkokQ=;
-        b=v9a38r2YRyegM2mCuDkzoUrNxOFCohqNQqvGIflfoWuvzLoeMEoe8Yp639sLbKhfhp
-         6+bpWJCWoBIgwAhN02EDZrSV7oLtH1hL+NLolQQ64LrapeQHasdVO9zpZa9i776PSVAb
-         QnReCJIryKyLoMo82k6RhZM3XGuVqy8Co3jCpOb2880u6JqhkB1sAdD8k5y2qWvA8JKD
-         pALgZYP105JcyoaxhoOMFkTaNp2NQYUz7JoSZZ8NQyrq1HdBnP8psRc+09fX9DvsEvak
-         YrS/X5bw5u2MvWikAe9zdJxCfuWWuBLbsktuwTqSSTiOBqVJgA7yQlRYk8TuXWJFjxgH
-         ALtA==
-X-Gm-Message-State: AOAM533w62R/jQUD+r/AbNFIVw0NbheKKP342vZqwjlS7W43HameQok6
-        Kd7MQd9KHLx2cqwSQCE9u8CINLQ+l9TQWxWy0F3uww==
-X-Google-Smtp-Source: ABdhPJwmiKjCVAi1kY5Po93W/pMoGd6VrjyY0ftPgii59CveLgpUKyTJn6n8mJTDUwycemETvWDZ/hyexgOS8KBz5HQ=
-X-Received: by 2002:a05:6638:168a:: with SMTP id f10mr7512862jat.121.1631861322399;
- Thu, 16 Sep 2021 23:48:42 -0700 (PDT)
+        Fri, 17 Sep 2021 02:51:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1631861407;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DVe4Aso3E2y3NYywvH6035yhOAAjc8CdQzTeVqfYczE=;
+        b=jly3Sb+QjgGB/dGUtrOrxMR5jjPKyzTCIn48vExOTgTu6d9MmZpyx3JEjrSc7nXd8dVAbM
+        62c7/VYZ5Nej9ahp60hQzm73WLbyTXvDh4hFG3gaCjwLI1THo9XAkQPp+JCvYbpUKp68u9
+        Qe32xic1IcFVMzHYTHqMWht+60lNi5k=
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com
+ (mail-vi1eur04lp2051.outbound.protection.outlook.com [104.47.14.51]) (Using
+ TLS) by relay.mimecast.com with ESMTP id de-mta-2-AbPAybkkP8yYkEdNhk1H8A-1;
+ Fri, 17 Sep 2021 08:50:06 +0200
+X-MC-Unique: AbPAybkkP8yYkEdNhk1H8A-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NwCpruoNzv/WEK9yseZCrB6UZY3YV9kZfiKLicIi4f1lgGNYzmQx/MLiY0Ibk+dYimGWyXxamEHgZ3NEczshGjxR7VdGe3dFSlFFPkJQ/jOCOagqpOikBA59ivB+K7gX7RBBAzYecuKO9uh69/azNzE8Hp3YCiBpHLTMwOGyMVsU0/Iiss9Kx2sv9zysBZ2E9Dv+Gs4amqHblvoo2S76sVp76/RapVRIKEpJ72DlJBbbUxEVCh+E5lQ9Hl/lRURjdRTDvI0BT1Bv97BHxAumYNoGgk6nf1KH13QRt8y6Kdk/cSXS0wOve6DDMACUl5ABu+tDEB6Zb5W4hWNTsZ9Jdg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=DVe4Aso3E2y3NYywvH6035yhOAAjc8CdQzTeVqfYczE=;
+ b=mH7ta+NWX3g4WacVQBODUyEGB+NztoYrTooiAOlEYpg9VmYZPWmcQeOr1w/Q/whM99DIHEmWWluWxRZYcFXyFFKdZlzscT/qawSSzRwe06XkbJUcy3Lf+4KQx4q8I9wIiUogXJmwBasxje1U11wHdtJi1Tq66NoW1nZPo29EfeTgwlay+W6HfsGGiIiFEYWIBh9ZOL6/mNEzP8fBE6fmN0Pelcvn+46gF51AjhQlCy0FzmLZy8OmCWzejtolhaFSY62Hd3d/WV4V1pVvpzkh+fS267ryAW5DUFnNiFbpLB0BaltLyqZkEidDPOP8XPigsQQAVqAtrHeFM6K8eCaZ6w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=none action=none header.from=suse.com;
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
+ by VI1PR04MB5901.eurprd04.prod.outlook.com (2603:10a6:803:e9::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Fri, 17 Sep
+ 2021 06:50:04 +0000
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::4d37:ec64:4e90:b16b]) by VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::4d37:ec64:4e90:b16b%7]) with mapi id 15.20.4523.016; Fri, 17 Sep 2021
+ 06:50:04 +0000
+Subject: Re: [PATCH] xen/x86: fix PV trap handling on secondary processors
+To:     Juergen Gross <jgross@suse.com>
+Cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+References: <34898e9c-5883-a978-98ee-b81b22d8caed@suse.com>
+ <823f4ef4-f9e5-68cb-d6e9-d079483c1e21@oracle.com>
+ <0afce6e8-3c8a-e5ae-cd54-0fd598276506@suse.com>
+ <62ccf5b7-b903-e604-d113-67c7633278cd@suse.com>
+From:   Jan Beulich <jbeulich@suse.com>
+Message-ID: <2c4549c8-bdeb-3584-95c4-7076b7cf79bb@suse.com>
+Date:   Fri, 17 Sep 2021 08:50:01 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+In-Reply-To: <62ccf5b7-b903-e604-d113-67c7633278cd@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AM0PR02CA0034.eurprd02.prod.outlook.com
+ (2603:10a6:208:3e::47) To VI1PR04MB5600.eurprd04.prod.outlook.com
+ (2603:10a6:803:e7::16)
 MIME-Version: 1.0
-References: <20210909075700.4025355-1-eranian@google.com> <20210909075700.4025355-2-eranian@google.com>
- <20210909190342.GE4323@worktop.programming.kicks-ass.net> <878s04my3b.fsf@mpe.ellerman.id.au>
- <875yv8ms7f.fsf@mpe.ellerman.id.au> <CABPqkBQZ48b51vh1vqafOwVK2tBqYFNFGJT2x-a39Ma0TbS=tA@mail.gmail.com>
- <b21bf42e-377d-36d0-49c3-af1e4edf5496@linux.ibm.com>
-In-Reply-To: <b21bf42e-377d-36d0-49c3-af1e4edf5496@linux.ibm.com>
-From:   Stephane Eranian <eranian@google.com>
-Date:   Thu, 16 Sep 2021 23:48:31 -0700
-Message-ID: <CABPqkBQvvNQa=hb4OnYqH-f=DJiRWE+bTmv4i+gNvEdoSEHM4w@mail.gmail.com>
-Subject: Re: [PATCH v1 01/13] perf/core: add union to struct perf_branch_entry
-To:     Madhavan Srinivasan <maddy@linux.ibm.com>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, acme@redhat.com, jolsa@redhat.com,
-        kim.phillips@amd.com, namhyung@kernel.org, irogers@google.com,
-        atrajeev@linux.vnet.ibm.com,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.156.60.236] (37.24.206.209) by AM0PR02CA0034.eurprd02.prod.outlook.com (2603:10a6:208:3e::47) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Fri, 17 Sep 2021 06:50:03 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6dfae42b-c3f8-45e5-eb65-08d979a760e1
+X-MS-TrafficTypeDiagnostic: VI1PR04MB5901:
+X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB5901255B0F3701CA32472049B3DD9@VI1PR04MB5901.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: SOxWRvGAEh/iopF9c1ArzN3KuYfuLhWHAXAH1lDtehRAu09Vv6/CzmsdNEv5y5Joc12feTqGDMboDvMXtIsnUIXA/IGuT49wi1tdbsO/K50NF+6UD+uZwCefX36UccQZVUzV4U1P9kRK15mAWTH/yaBTQPUUZLw2sJYqFPLSC9U/bGYXrn5l+PFydq3bo3nqu4UBVfrVIpTtYuDKj2cQBmM+AG/6zjZ9EjU55alHGAORmWH+VOtSwfe1Rt9Jx5sBASWjgzXCkjzgqFunlR5AefjqnXnv70CvPYZsnNoUbnjhvbsDQrs28kcciUpZpPu7fg8v+7ubQK/KdxFCZRtvQ4mPuoiKGUkdoOIIeZ43KIpMPKpaV3wOv0O4FUJUcc5U3KGAvJ9nMIYTzqzASe5eThbXIG3pK8IsNaA5X9EwSqe7/ynow2HBCIlUV+Q2eJ9jQrorDPjfpW9sxC8iKVvKPN5LrJ8hj/PUH0aTXdSldETfv9R1H/x7fe521RyKSEDPxaoDn67EtbecsFey4A3t05lJSvofwxe40B23qyeqSnjy6oxlhCV9my4NE4XnAZtVj+CpVHDyQmSaW5LRt7MRMndzdXMS9PUbEECvlUGbA3jmrOdnYYchx48Chp7MTqsWKHgb8gaEyf7QeizCHJqNcY6AyV8i9EA0QNuyrJPu/mq4uQEtXqDy8SckuTwjLdHvWWP4jYncFVGNYYAVBIqb4t8QXyDYKtocTLJKpqG9a50=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(136003)(366004)(346002)(376002)(396003)(66476007)(66556008)(31696002)(5660300002)(316002)(186003)(2616005)(956004)(36756003)(6486002)(38100700002)(83380400001)(6636002)(478600001)(8676002)(8936002)(53546011)(26005)(31686004)(37006003)(54906003)(16576012)(66946007)(2906002)(86362001)(4326008)(6862004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?b3Q5ejNYdU8xSjB4N1dTeGM2cnRlbk1pNnNGZ3J5NGJ6SW1XUHNkNDdDeUY2?=
+ =?utf-8?B?QVFQdUVtSldXSlk1ekJrblp1M09mL3hJYjdUd21hUTNQYlc4cHZaR0RXZzdk?=
+ =?utf-8?B?Q3dGeHU4Z1BiMzJGVFVjQWVqdGwzMFVVL1JuOXM0ZDBqMUNPN21XOVJtRW93?=
+ =?utf-8?B?WEU5YXora0g3ckt0OExCaXB1TEs3M2RUNnhKeUNRQWREam1MZjc0L2xRNjFq?=
+ =?utf-8?B?R0RkVGlXS1p5QTFNbHcvWmhsdi90OTBRbXlEM1R4OFBCZTR1L3Q4QmQ0cnBY?=
+ =?utf-8?B?ajVMa3NGaGFMY2MyV3kyYmZWb2tuR3VHN2tQTzFCai8zcDVJaTNkeTdPKzJn?=
+ =?utf-8?B?RkpvdXNxelRDUWJvcTI5Ni9kVUk4VExTVFQyTWg1c2lmRC95ZDY0Y2lHZmVD?=
+ =?utf-8?B?eG5PMFJ5RTllck5xUFUrT3dZQ3BSajNsNHN4S3FjNW01NW80djFtNzhRb09R?=
+ =?utf-8?B?SVY1ckdRMmdWNnlTelZ0MXNMdWEvUUxOOWI4QUc3ZmVxVC81UDdLQnBvcDRh?=
+ =?utf-8?B?YnRBc2Uyd0NUY1pkdkw5eFhGcjF6MXFaUW44dyt2a3VROFI5Z1NNemxkZ3Nt?=
+ =?utf-8?B?YnhZbkJOeW15VDRQWXJOVmlQTkppNkViYVJzT20zcGtGWWxhMXlqbENGSlIx?=
+ =?utf-8?B?UVYrODR4UGVNTkNwVUYwL0QyNW1Xd2YvK041YytXeDMyWTBhdFVSV2MxUTB2?=
+ =?utf-8?B?VkRxVFJMQmEyWWFCZU9iWkVkTUFTb0pML2N6dDN0NWdpTWdod1lMT0Vhcnk2?=
+ =?utf-8?B?SXdyampHaWdsY25UZXg3NzQ1T1RxL3B5RndlUnZhRnNuRjJwOW16WGRmSDB0?=
+ =?utf-8?B?REU2KzNBeHp2RW5XcnhFbm1abW9WbTdkUDFLbys3KzlEWG1HYlhwaFViMUdY?=
+ =?utf-8?B?WDJ5Y2c1Y21JeWQ2WWFsZEswUWZRQ0NxZ1Bab1VvY1NvRkhhMGtzdkk3cDJl?=
+ =?utf-8?B?azQrbFlGWFFpMzhZYmx3NTE3QVp5bm9XRWJJMnNmeUZ4U04ybFhCL0pTWDhB?=
+ =?utf-8?B?Zlp1Y0ZyRGhEN3lYa3d3Q05VaUV1Z1VWWW8zdHZyeUhIOEFCakZOMk9NUU41?=
+ =?utf-8?B?YTZwVkxESElwSkhianloSGkrR1ZaNDVOT3FZSGJuTVNKVkVhZzRzemNrTlFi?=
+ =?utf-8?B?ejg0T0tvSHZmaU1xeFVPTU1SZGpRbjQrQWdPRHZJR3A0bk11VDRidGlhelM4?=
+ =?utf-8?B?WGRQSWVPOFk4aHZZc1dlUXdHbjJaMUJBSzI4bEx4YjVpM1hmTHQyTWhpb3lC?=
+ =?utf-8?B?cTdsWlZlRkFid2RSYUJpdXVaT0NmbWtGSXFaeUk1S3FTaDJNRzcvYzJJbDFO?=
+ =?utf-8?B?YVBIenp3RGlITkZTaVoreVR3YlVmVk9kQTJpbkZrNW1FOW0wRXovRDNQZXRr?=
+ =?utf-8?B?UkRucVRQbjZ3emE0MFM2U1MzUUdyZllJNjNhdm9tV3VOSE8xbDB1OUU3eXdG?=
+ =?utf-8?B?NHI5Y3dYSkNRelhFanRvQzUrQ0I3RWFZTjZuRXVscms5WjRtekwrRkx0bjVL?=
+ =?utf-8?B?VThYYXFRUzVlZG1JZ1BYS25DYmxKUVBYbklCV2UvQ2Q4eVNDbEt2RFBTMjdy?=
+ =?utf-8?B?RWdObHNUWEtGTzBZMUpqRWp0Nk52YzRMTHdtaVhzai94bitkWEtrUlQwa2lL?=
+ =?utf-8?B?WGFxUXBQbFdkRVZEY1RxMlVGMkl1OUlmdVFhajVMUmUrK1Nib3VsME1KV1pk?=
+ =?utf-8?B?ek5HSnRxL0gvWUduVGdZOW1vWHJXeG1tbUhlMEkyT2MzNzFIQUpRSVRqRmlE?=
+ =?utf-8?Q?Zv7Z4Q1ImVfrr9pPTtNm6Z3T0m3XYbAD5oIB1Vy?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6dfae42b-c3f8-45e5-eb65-08d979a760e1
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Sep 2021 06:50:04.2773
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /vVJ8VpcVhbjlIebMAuHKpmyQGFkit66vdEWkMjl8//7S0wQ+pfmGR8wRNxxT0b+J3YXCFsGUSxQRozPaJeqvw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5901
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 17.09.2021 08:47, Juergen Gross wrote:
+> On 17.09.21 08:40, Jan Beulich wrote:
+>> On 17.09.2021 03:34, Boris Ostrovsky wrote:
+>>>
+>>> On 9/16/21 11:04 AM, Jan Beulich wrote:
+>>>>   {
+>>>>   	const struct desc_ptr *desc = this_cpu_ptr(&idt_desc);
+>>>> +	unsigned i, count = (desc->size + 1) / sizeof(gate_desc);
+>>>>   
+>>>> -	xen_convert_trap_info(desc, traps);
+>>>
+>>>
+>>> Can you instead add a boolean parameter to xen_convert_trap_info() to indicate whether to skip empty entries? That will avoid (almost) duplicating the code.
+>>
+>> I can, sure, but I specifically didn't, as the result is going to be less
+>> readable imo. Instead I was considering to fold xen_convert_trap_info()
+>> into its only remaining caller. Yet if you're convinced adding the
+>> parameter is the way to do, I will go that route. But please confirm.
+> 
+> I don't think the result will be very hard to read. All you need is the
+> new parameter and extending the if statement in xen_convert_trap_info()
+> to increment out always if no entry is to be skipped.
 
+And skip writing the sentinel.
 
-Thanks for fixing this in the perf tool. But what about the struct
-branch_entry in the header?
+Jan
 
-
-On Thu, Sep 16, 2021 at 11:38 PM Madhavan Srinivasan
-<maddy@linux.ibm.com> wrote:
->
->
-> On 9/15/21 11:33 AM, Stephane Eranian wrote:
-> > Michael,
-> >
-> >
-> > On Fri, Sep 10, 2021 at 7:16 AM Michael Ellerman <mpe@ellerman.id.au> wrote:
-> >> Michael Ellerman <mpe@ellerman.id.au> writes:
-> >>> Peter Zijlstra <peterz@infradead.org> writes:
-> >>>> On Thu, Sep 09, 2021 at 12:56:48AM -0700, Stephane Eranian wrote:
-> >>>>> diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
-> >>>>> index f92880a15645..eb11f383f4be 100644
-> >>>>> --- a/include/uapi/linux/perf_event.h
-> >>>>> +++ b/include/uapi/linux/perf_event.h
-> >>>>> @@ -1329,13 +1329,18 @@ union perf_mem_data_src {
-> >>>>>   struct perf_branch_entry {
-> >>>>>      __u64   from;
-> >>>>>      __u64   to;
-> >>>>> -   __u64   mispred:1,  /* target mispredicted */
-> >>>>> -           predicted:1,/* target predicted */
-> >>>>> -           in_tx:1,    /* in transaction */
-> >>>>> -           abort:1,    /* transaction abort */
-> >>>>> -           cycles:16,  /* cycle count to last branch */
-> >>>>> -           type:4,     /* branch type */
-> >>>>> -           reserved:40;
-> >>>>> +   union {
-> >>>>> +           __u64   val;        /* to make it easier to clear all fields */
-> >>>>> +           struct {
-> >>>>> +                   __u64   mispred:1,  /* target mispredicted */
-> >>>>> +                           predicted:1,/* target predicted */
-> >>>>> +                           in_tx:1,    /* in transaction */
-> >>>>> +                           abort:1,    /* transaction abort */
-> >>>>> +                           cycles:16,  /* cycle count to last branch */
-> >>>>> +                           type:4,     /* branch type */
-> >>>>> +                           reserved:40;
-> >>>>> +           };
-> >>>>> +   };
-> >>>>>   };
-> >>>>
-> >>>> Hurpmh... all other bitfields have ENDIAN_BITFIELD things except this
-> >>>> one. Power folks, could you please have a look?
-> >>> The bit number of each field changes between big and little endian, but
-> >>> as long as kernel and userspace are the same endian, and both only
-> >>> access values via the bitfields then it works.
-> >> ...
-> >>> It does look like we have a bug in perf tool though, if I take a
-> >>> perf.data from a big endian system to a little endian one I don't see
-> >>> any of the branch flags decoded. eg:
-> >>>
-> >>> BE:
-> >>>
-> >>> 2413132652524 0x1db8 [0x2d0]: PERF_RECORD_SAMPLE(IP, 0x1): 5279/5279: 0xc00000000045c028 period: 923003 addr: 0
-> >>> ... branch stack: nr:28
-> >>> .....  0: c00000000045c028 -> c00000000dce7604 0 cycles  P   0
-> >>>
-> >>> LE:
-> >>>
-> >>> 2413132652524 0x1db8 [0x2d0]: PERF_RECORD_SAMPLE(IP, 0x1): 5279/5279: 0xc00000000045c028 period: 923003 addr: 0
-> >>> ... branch stack: nr:28
-> >>> .....  0: c00000000045c028 -> c00000000dce7604 0 cycles      0
-> >>>                                                           ^
-> >>>                                                           missing P
-> >>>
-> >>> I guess we're missing a byte swap somewhere.
-> >> Ugh. We _do_ have a byte swap, but we also need a bit swap.
-> >>
-> >> That works for the single bit fields, not sure if it will for the
-> >> multi-bit fields.
-> >>
-> >> So that's a bit of a mess :/
-> >>
-> > Based on what I see in perf_event.h for other structures, I think I
-> > can make up what you would need for struct branch_entry. But Iit would
-> > be easier if you could send me a patch that you would have verified on
-> > your systems.
-> > Thanks.
-> Attached patch fixes the issue. Have tested both in both in BE and LE case.
->
-> Maddy
->
->  From f816ba2e6ef8d5975f78442d7ecb50d66c3c4326 Mon Sep 17 00:00:00 2001
-> From: Madhavan Srinivasan <maddy@linux.ibm.com>
-> Date: Wed, 15 Sep 2021 22:29:09 +0530
-> Subject: [RFC PATCH] tools/perf: Add reverse_64b macro
->
-> branch_stack struct has bit field definition
-> producing different bit ordering for big/little endian.
-> Because of this, when branch_stack sample collected
-> in a BE system viewed/reported in a LE system,
-> bit fields of the branch stack are not presented
-> properly. To address this issue, a reverse_64b
-> macro is defined and introduced in evsel__parse_sample.
->
-> Signed-off-by: Madhavan Srinivasan <maddy@linux.ibm.com>
-> ---
->   tools/perf/util/evsel.c | 35 +++++++++++++++++++++++++++++++++--
->   1 file changed, 33 insertions(+), 2 deletions(-)
->
-> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-> index dbfeceb2546c..3151606e516e 100644
-> --- a/tools/perf/util/evsel.c
-> +++ b/tools/perf/util/evsel.c
-> @@ -2221,6 +2221,9 @@ void __weak arch_perf_parse_sample_weight(struct
-> perf_sample *data,
->       data->weight = *array;
->   }
->
-> +#define reverse_64b(src, pos, size)    \
-> +    (((src >> pos) & (( 1ull <<size) - 1)) << (63 - (pos + size - 1)))
-> +
->   int evsel__parse_sample(struct evsel *evsel, union perf_event *event,
->               struct perf_sample *data)
->   {
-> @@ -2408,6 +2411,8 @@ int evsel__parse_sample(struct evsel *evsel, union
-> perf_event *event,
->       if (type & PERF_SAMPLE_BRANCH_STACK) {
->           const u64 max_branch_nr = UINT64_MAX /
->                         sizeof(struct branch_entry);
-> +        struct branch_entry *e;
-> +        unsigned i;
->
->           OVERFLOW_CHECK_u64(array);
->           data->branch_stack = (struct branch_stack *)array++;
-> @@ -2416,10 +2421,36 @@ int evsel__parse_sample(struct evsel *evsel,
-> union perf_event *event,
->               return -EFAULT;
->
->           sz = data->branch_stack->nr * sizeof(struct branch_entry);
-> -        if (evsel__has_branch_hw_idx(evsel))
-> +        if (evsel__has_branch_hw_idx(evsel)) {
->               sz += sizeof(u64);
-> -        else
-> +            e = &data->branch_stack->entries[0];
-> +        } else {
->               data->no_hw_idx = true;
-> +            e = (struct branch_entry *)&data->branch_stack->hw_idx;
-> +        }
-> +
-> +        if (swapped) {
-> +            for (i = 0; i < data->branch_stack->nr; i++, e++) {
-> +                u64 new_val = 0;
-> +
-> +                /* mispred:1  target mispredicted */
-> +                new_val = reverse_64b(e->flags.value, 0, 1);
-> +                /* predicted:1  target predicted */
-> +                new_val |= reverse_64b(e->flags.value, 1, 1);
-> +                /* in_tx:1  in transaction */
-> +                new_val |= reverse_64b(e->flags.value, 2, 1);
-> +                /* abort:1  transaction abort */
-> +                new_val |= reverse_64b(e->flags.value, 3, 1);
-> +                /* cycles:16  cycle count to last branch */
-> +                new_val |= reverse_64b(e->flags.value, 4, 16);
-> +                /* type:4  branch type */
-> +                new_val |= reverse_64b(e->flags.value, 20, 4);
-> +                /* reserved:40 */
-> +                new_val |= reverse_64b(e->flags.value, 24, 40);
-> +                e->flags.value = new_val;
-> +            }
-> +        }
-> +
->           OVERFLOW_CHECK(array, sz, max_size);
->           array = (void *)array + sz;
->       }
-> --
-> 2.31.1
->
->
