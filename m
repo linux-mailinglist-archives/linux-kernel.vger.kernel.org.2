@@ -2,216 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02A1041018F
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 00:58:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 417B6410192
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 01:05:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243856AbhIQW7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 18:59:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39092 "EHLO
+        id S245528AbhIQXGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 19:06:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231954AbhIQW7S (ORCPT
+        with ESMTP id S233207AbhIQXGa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 18:59:18 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 948EEC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 15:57:55 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id c7so16862028qka.2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 15:57:55 -0700 (PDT)
+        Fri, 17 Sep 2021 19:06:30 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40186C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 16:05:08 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id y197so490020iof.11
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 16:05:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=6lgeJKVJKOQIrK6odrN/+DZV6dI8ar1fofmxpO3UA78=;
-        b=DihsbX2XtnfrQLOZyL4/NeHYIqPkN2TCy2rTyP9wVg3CYZVLa7yy7Ye8YUHNBqZU5j
-         xNjHkCEdlBmETAoegMN0Retc4wVQ37qT+uCKGucMx9kTiF8uE9gdfqf3PK/MhaL9pT6U
-         BBorpBnAqR9HbUud/HkmFyof6ToSeLkXWQGvM=
+        bh=ab6BsRkm5PbVHkwLBj6zbgugbszRDdG1wC8fenvlUdM=;
+        b=TdAwvwXuPRV9vs/6cEhmAdY6hgi+EOW/CUFergN9OqbvMJTm5iO/R841l0L4HwT38/
+         umB2VOSP/AvhuxZSowAAXqYfcv4IEjFYCN0QzBiv4WSwW+yQC5/1jJQkhsrrWv8hXt/E
+         ThqEdO+zpaCmT41PyDATQwzn9hNMyJHy5yKcWMuTwssdPaukNUGjyQSjDr4z/w3LoRq4
+         9k92cueUXjsiSBFU0UcEJ3WTa8ul8lniS19OPnNpQeYp3wa2fzBSwpLj+7kOLFHC4R5K
+         15lK9JI5h351o+OLI3vq5oKMd/4VzE9AYTziX2rnk3AOcfrtabEGAMzirb6OFpjMigUs
+         Wfww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=6lgeJKVJKOQIrK6odrN/+DZV6dI8ar1fofmxpO3UA78=;
-        b=RnXHV0ZKj/LSlX3dF6YWg9WowNDQlYekID0aSrHTCtUo2UXJXklkFDwzDggItLbJWa
-         J8HcqCKGAgRNW68t79eljJZBt87damPP8KpJV0fn01UQgNSyryY5SCUubNFAWxFNFKKo
-         EJouhP+LYyV6fbRMAa/V1p1wr89jyHeplPIKBKlBN99KIz+ud5ri2/7MqHyIg2I7Pt70
-         02T6fJnGP7+O9/YC0qdJ+/IjMzXdEZqw+IBX98D401HZ5HryOTsSVGukuOnW8owfUqU+
-         kytEsDu1pAmIrc+XFv//n0iU46FYbl7KzOIWRKDRqNtafMJI7Y8JVjYspBw2TTCcxC74
-         9Waw==
-X-Gm-Message-State: AOAM532jiE01k5r4IM1RqFY79rn4nauP1uilaNNx0dpak7wEYC8WDRpe
-        YWELO7lZrF0qAPVLgDBsacZLvpQPhQGx5jBXQSJyAg==
-X-Google-Smtp-Source: ABdhPJw5ixX+FkUa7atKX1/av/rRVka/vB0o3VHFe5IPbVMHYP1waN7Y697iM4OulOopYq1HQrTmiNRKRBZqkEqImO4=
-X-Received: by 2002:a25:478b:: with SMTP id u133mr15893807yba.532.1631919474520;
- Fri, 17 Sep 2021 15:57:54 -0700 (PDT)
+        bh=ab6BsRkm5PbVHkwLBj6zbgugbszRDdG1wC8fenvlUdM=;
+        b=1JL/mHNC4ZaHPTnKDb2CFXqne9QyTzABDPbOyAdGLKdnVTokEYSr+nxYIKmyh3be+u
+         /FcWtr+TDBzGB+rftn8m4rb1lAAe+bonaZz8NGn6wo6Vrzu4g28JSFrQqEjvpHxvyKkU
+         RaxVHW8gPiBRwCc+HvzS8TSuc6U068mVtixttjVg267WdpeP948p+JCQ9IDvCWnkxUca
+         SkrGUW3MxusSaoz2GOzdzs86WF8RZPDHame8CumWY4gYI3k8bABkoWQwMMU+FOFB7qD5
+         I4YjRMEwSGlTetZpCioD9gIdcgJUIBIoEkIuGmezZclc+1wxjnZ+MgT3fquvjX6kxZ8i
+         k0Ig==
+X-Gm-Message-State: AOAM531lcPnIH7L4kFhLbE1ppg48Y1Elxi5HPtKMxcyQtgBHR+WPaSQ3
+        6/x3Kz1tm35s0kgn1+DGyy9yljYddErzZJPf2jaCYQ==
+X-Google-Smtp-Source: ABdhPJzSGn/QtM23htOl5mp0w8bBCcRwMrNTMzYgC//Zwsxw+5RZfnpYKggTQbF6t5ofBA+cYocsYEXzjF+DBZsaVqo=
+X-Received: by 2002:a6b:fe05:: with SMTP id x5mr4884928ioh.26.1631919907444;
+ Fri, 17 Sep 2021 16:05:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210914162825.v3.1.I85e46da154e3fa570442b496a0363250fff0e44e@changeid>
- <20210914162825.v3.3.Ibf9b125434e3806b35f9079f6d8125578d76f138@changeid> <CAE-0n51JFM_yYdOsCQyvdMw5xXJ7REcbOJC6qi=6nfiNcdvnWw@mail.gmail.com>
-In-Reply-To: <CAE-0n51JFM_yYdOsCQyvdMw5xXJ7REcbOJC6qi=6nfiNcdvnWw@mail.gmail.com>
-From:   Philip Chen <philipchen@chromium.org>
-Date:   Fri, 17 Sep 2021 15:57:43 -0700
-Message-ID: <CA+cxXhmhH76RkPwJvBzj=VQL468WmUjrL9W6tntaj+WLYobWUw@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] drm/bridge: parade-ps8640: Add support for AUX channel
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
+References: <20210917223504.C140445A@davehans-spike.ostc.intel.com> <20210917223507.913387AB@davehans-spike.ostc.intel.com>
+In-Reply-To: <20210917223507.913387AB@davehans-spike.ostc.intel.com>
+From:   Wei Xu <weixugc@google.com>
+Date:   Fri, 17 Sep 2021 16:04:56 -0700
+Message-ID: <CAAPL-u_Tig1jK=mv_r=j-A-hR3Kpu7txiSFbPR3a8O1qhM1s-Q@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mm/migrate: add CPU hotplug to demotion #ifdef
+To:     Dave Hansen <dave.hansen@linux.intel.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Rientjes <rientjes@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Greg Thelen <gthelen@google.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        akpm@linux-foundation.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+The initialization of node_demotion doesn't have to depend on
+CONFIG_MEMORY_HOTPLUG and CONFIG_HOTPLUG_CPU.  While you are at this,
+can you replace cpuhp_setup_state() with cpuhp_setup_state_nocalls()
+and also call set_migration_target_nodes() directly in
+migrate_on_reclaim_init() outside
+CONFIG_MEMORY_HOTPLUG/CONFIG_HOTPLUG_CPU?  Thanks.
 
-On Tue, Sep 14, 2021 at 5:57 PM Stephen Boyd <swboyd@chromium.org> wrote:
+Wei
+
+On Fri, Sep 17, 2021 at 3:35 PM Dave Hansen <dave.hansen@linux.intel.com> wrote:
 >
-> Quoting Philip Chen (2021-09-14 16:28:45)
-> > diff --git a/drivers/gpu/drm/bridge/parade-ps8640.c b/drivers/gpu/drm/bridge/parade-ps8640.c
-> > index 8d3e7a147170..dc349d729f5a 100644
-> > --- a/drivers/gpu/drm/bridge/parade-ps8640.c
-> > +++ b/drivers/gpu/drm/bridge/parade-ps8640.c
-> > @@ -117,6 +144,129 @@ static inline struct ps8640 *bridge_to_ps8640(struct drm_bridge *e)
-> [...]
-> > +       case DP_AUX_I2C_WRITE:
-> > +       case DP_AUX_I2C_READ:
-> > +               break;
-> > +       default:
-> > +               return -EINVAL;
-> > +       }
-> > +
-> > +       ret = regmap_write(map, PAGE0_AUXCH_CFG3, AUXCH_CFG3_RESET);
-> > +       if (ret) {
-> > +               dev_err(dev, "failed to write PAGE0_AUXCH_CFG3: %d\n", ret);
 >
-> Can we use DRM_DEV_ERROR()?
-Sure. Done in v4.
-PTAL.
+> From: Dave Hansen <dave.hansen@linux.intel.com>
 >
-> > +               return ret;
-> > +       }
-> > +
-> > +       /* Assume it's good */
-> > +       msg->reply = 0;
-> > +
-> > +       addr_len[0] = msg->address & 0xff;
-> > +       addr_len[1] = (msg->address >> 8) & 0xff;
-> > +       addr_len[2] = ((msg->request << 4) & SWAUX_CMD_MASK) |
-> > +               ((msg->address >> 16) & SWAUX_ADDR_19_16_MASK);
+> Once upon a time, the node demotion updates were driven solely by
+> memory hotplug events.  But now, there are  handlers for both CPU
+> and memory hotplug.
 >
-> It really feels like this out to be possible with some sort of
-> cpu_to_le32() API. We're shoving msg->address into 3 bytes and then
-> adding in the request and some length. So we could do something like:
+> However, the #ifdef around the code checks only memory hotplug.
+> A system that has HOTPLUG_CPU=y but MEMORY_HOTPLUG=n would miss
+> CPU hotplug events.
 >
->         u32 addr_len;
+> Update the #ifdef around the common code.  Add memory and
+> CPU-specific #ifdefs for their handlers.  These memory/CPU
+> #ifdefs avoid unused function warnings when their Kconfig option
+> is off.
 >
->         addr_len = FIELD_PREP(SWAUX_ADDR_MASK, msg->address);
->         addr_len |= FIELD_PREP(SWAUX_CMD_MASK, msg->request);
->         if (len)
->                 addr_len |= FIELD_PREP(LEN_MASK, len - 1);
->         else
->                 addr_len |= FIELD_PREP(LEN_MASK, SWAUX_NO_PAYLOAD );
+> Fixes: 884a6e5d1f93 ("mm/migrate: update node demotion order on hotplug events")
+> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: "Huang, Ying" <ying.huang@intel.com>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: Wei Xu <weixugc@google.com>
+> Cc: Oscar Salvador <osalvador@suse.de>
+> Cc: David Rientjes <rientjes@google.com>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Greg Thelen <gthelen@google.com>
+> Cc: Yang Shi <yang.shi@linux.alibaba.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> ---
 >
->         cpu_to_le32s(&addr_len);
+>  b/mm/migrate.c |   46 +++++++++++++++++++++++++---------------------
+>  1 file changed, 25 insertions(+), 21 deletions(-)
 >
->         regmap_bulk_write(map, PAGE0_SWAUX_ADDR_7_0, &addr_len, sizeof(addr_len));
+> diff -puN mm/migrate.c~add-cpu-hotplug-config mm/migrate.c
+> --- a/mm/migrate.c~add-cpu-hotplug-config       2021-09-16 16:14:01.770140593 -0700
+> +++ b/mm/migrate.c      2021-09-17 11:30:19.197027668 -0700
+> @@ -3066,7 +3066,7 @@ void migrate_vma_finalize(struct migrate
+>  EXPORT_SYMBOL(migrate_vma_finalize);
+>  #endif /* CONFIG_DEVICE_PRIVATE */
 >
-> > +       addr_len[3] = (len == 0) ? SWAUX_NO_PAYLOAD :
-> > +                       ((len - 1) & SWAUX_LENGTH_MASK);
-> > +
-> > +       regmap_bulk_write(map, PAGE0_SWAUX_ADDR_7_0, addr_len,
-> > +                         ARRAY_SIZE(addr_len));
-> > +
-> > +       if (len && (request == DP_AUX_NATIVE_WRITE ||
-> > +                   request == DP_AUX_I2C_WRITE)) {
-> > +               /* Write to the internal FIFO buffer */
-> > +               for (i = 0; i < len; i++) {
-> > +                       ret = regmap_write(map, PAGE0_SWAUX_WDATA, buf[i]);
-> > +                       if (ret) {
-> > +                               dev_err(dev, "failed to write WDATA: %d\n",
+> -#if defined(CONFIG_MEMORY_HOTPLUG)
+> +#if defined(CONFIG_MEMORY_HOTPLUG) || defined(CONFIG_HOTPLUG_CPU)
+>  /* Disable reclaim-based migration. */
+>  static void __disable_all_migrate_targets(void)
+>  {
+> @@ -3248,25 +3248,7 @@ static void set_migration_target_nodes(v
+>         put_online_mems();
+>  }
 >
-> DRM_DEV_ERROR?
-Sure. Done in v4.
-PTAL.
+> -/*
+> - * React to hotplug events that might affect the migration targets
+> - * like events that online or offline NUMA nodes.
+> - *
+> - * The ordering is also currently dependent on which nodes have
+> - * CPUs.  That means we need CPU on/offline notification too.
+> - */
+> -static int migration_online_cpu(unsigned int cpu)
+> -{
+> -       set_migration_target_nodes();
+> -       return 0;
+> -}
+> -
+> -static int migration_offline_cpu(unsigned int cpu)
+> -{
+> -       set_migration_target_nodes();
+> -       return 0;
+> -}
+> -
+> +#if defined(CONFIG_MEMORY_HOTPLUG)
+>  /*
+>   * This leaves migrate-on-reclaim transiently disabled between
+>   * the MEM_GOING_OFFLINE and MEM_OFFLINE events.  This runs
+> @@ -3313,6 +3295,27 @@ static int __meminit migrate_on_reclaim_
 >
-> > +                                       ret);
-> > +                               return ret;
-> > +                       }
-> > +               }
-> > +       }
-> > +
-> > +       regmap_write(map, PAGE0_SWAUX_CTRL, SWAUX_SEND);
-> > +
-> > +       /* Zero delay loop because i2c transactions are slow already */
-> > +       regmap_read_poll_timeout(map, PAGE0_SWAUX_CTRL, data,
-> > +                                !(data & SWAUX_SEND), 0, 50 * 1000);
-> > +
-> > +       regmap_read(map, PAGE0_SWAUX_STATUS, &data);
-> > +       if (ret) {
-> > +               dev_err(dev, "failed to read PAGE0_SWAUX_STATUS: %d\n", ret);
+>         return notifier_from_errno(0);
+>  }
+> +#endif /* CONFIG_MEMORY_HOTPLUG */
+> +
+> +#ifdef CONFIG_HOTPLUG_CPU
+> +/*
+> + * React to hotplug events that might affect the migration targets
+> + * like events that online or offline NUMA nodes.
+> + *
+> + * The ordering is also currently dependent on which nodes have
+> + * CPUs.  That means we need CPU on/offline notification too.
+> + */
+> +static int migration_online_cpu(unsigned int cpu)
+> +{
+> +       set_migration_target_nodes();
+> +       return 0;
+> +}
+> +
+> +static int migration_offline_cpu(unsigned int cpu)
+> +{
+> +       set_migration_target_nodes();
+> +       return 0;
+> +}
 >
-> DRM_DEV_ERROR?
-Sure. Done in v4.
-PTAL.
->
-> > +               return ret;
-> > +       }
-> > +
-> > +       switch (data & SWAUX_STATUS_MASK) {
-> > +       /* Ignore the DEFER cases as they are already handled in hardware */
-> > +       case SWAUX_STATUS_NACK:
-> > +       case SWAUX_STATUS_I2C_NACK:
-> > +               /*
-> > +                * The programming guide is not clear about whether a I2C NACK
-> > +                * would trigger SWAUX_STATUS_NACK or SWAUX_STATUS_I2C_NACK. So
-> > +                * we handle both cases together.
-> > +                */
-> > +               if (is_native_aux)
-> > +                       msg->reply |= DP_AUX_NATIVE_REPLY_NACK;
-> > +               else
-> > +                       msg->reply |= DP_AUX_I2C_REPLY_NACK;
-> > +
-> > +               len = data & SWAUX_M_MASK;
-> > +               return len;
->
-> Why no 'return data & SWAUX_M_MASK;' and skip the assignment?
->
-> > +       case SWAUX_STATUS_ACKM:
->
-> Move this up and add fallthrough?
->
-> > +               len = data & SWAUX_M_MASK;
-> > +               return len;
-> > +       case SWAUX_STATUS_INVALID:
-> > +               return -EOPNOTSUPP;
-> > +       case SWAUX_STATUS_TIMEOUT:
-> > +               return -ETIMEDOUT;
-> > +       }
-> > +
-> > +       if (len && (request == DP_AUX_NATIVE_READ ||
-> > +                   request == DP_AUX_I2C_READ)) {
-> > +               /* Read from the internal FIFO buffer */
-> > +               for (i = 0; i < len; i++) {
-> > +                       ret = regmap_read(map, PAGE0_SWAUX_RDATA, &data);
-> > +                       buf[i] = data;
->
-> Can drop a line
-Sure. Done in v4.
-PTAL.
->
->                 ret = regmap_read(map, PAGE0_SWAUX_RDATA, buf + i);
->
-> > +                       if (ret) {
-> > +                               dev_err(dev, "failed to read RDATA: %d\n",
-> > +                                       ret);
-> > +                               return ret;
-> > +                       }
-> > +               }
-> > +       }
-> > +
-> > +       return len;
-> > +}
+>  static int __init migrate_on_reclaim_init(void)
+>  {
+> @@ -3333,4 +3336,5 @@ static int __init migrate_on_reclaim_ini
+>         return 0;
+>  }
+>  late_initcall(migrate_on_reclaim_init);
+> -#endif /* CONFIG_MEMORY_HOTPLUG */
+> +#endif /* CONFIG_HOTPLUG_CPU */
+> +#endif /* CONFIG_MEMORY_HOTPLUG || CONFIG_HOTPLUG_CPU */
+> _
