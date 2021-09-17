@@ -2,189 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D36240EFDD
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 04:56:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DD7D40EFED
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 04:59:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242961AbhIQC5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 22:57:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47894 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234959AbhIQC5V (ORCPT
+        id S243209AbhIQDAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 23:00:46 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:41356 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243049AbhIQDAp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 22:57:21 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0805C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 19:55:59 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id ay33so12908065qkb.10
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 19:55:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ebVDbip47mMfYTa5g8Sa5HPe2DFSzo9dsJYPn4TR6RU=;
-        b=QLpLL2rP+/XZR3FQzmjaBIm2bgtSUu32b8abkDWIy9XmRTeUtXri4sfKpBplA3lH9i
-         j6wMT3qT93hhHjwaw7mcCDXKlGusI7NTl3x5dJFMIXtHs87kragT8r0ovzoljHrFOwaq
-         2Omvsc/X6iL7oeGMIZ3RPUjDHKLNEHZn84Cmhla6TUOZ1UvBfMoOZQXUcEzfAJ9MYkp7
-         i4TIsjAtWv8qx0yhxX6oJlI3oJSCl6hsR/fOovTavulMybDnGVA1YD+ZRXkMJ46JY+g3
-         UgQRaTX9aUNjgCr3PHx2Ybjxd+SLRvDOD8GotvBPK+SrV1oA+8GnMJTujDzB+f6AtGIC
-         QYTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ebVDbip47mMfYTa5g8Sa5HPe2DFSzo9dsJYPn4TR6RU=;
-        b=KUrN/QgqXxj/C/+Hkw8b1WAhpFMZ1tUClYLjuOOgkDv5564f5+HFs0+gXuGhnptukC
-         T8rFr1OJ4lNA0QtUEFygooL5qrV+7/EwAXdmbZ9hgWSQKXAz9dPn86Md60aq//PY732T
-         9Sy0+O/KVKnVFp0tTmYGD1r8bo6JAgY1ZqnxVrcmzC/dY3RrA3sfABi/tbSB/D3CuESF
-         DTZu0MYHeXVZzJ2eA/nvaP260TMb8etQV0ZJQBv2vB2jRTyQhuH5jTv8WjsqmSBRBI3o
-         HXluKKrq+Wiwoz8kH6QarSMqITOjNaiNwHriliWKjqjXAXeDTh+gO9+Yn8abWaALFpor
-         G6nQ==
-X-Gm-Message-State: AOAM531CQEVoIo/YgiUqqBs0GERdtMwqcuoacuWI+knFxbD75huLqRcf
-        2Qpd9HDT/mdJFj6zsvM0f95mFDoEJXxerNeFxIYGTg==
-X-Google-Smtp-Source: ABdhPJwcUPbpZTeQAdAxLzyPn0NY9w0d+j1/iYoBMz3JNe/tPn4fvPKvRkmfAp6Pz22v4oIobO/ZHTvdNSirxcQbvdU=
-X-Received: by 2002:a25:af49:: with SMTP id c9mr10705070ybj.432.1631847358843;
- Thu, 16 Sep 2021 19:55:58 -0700 (PDT)
+        Thu, 16 Sep 2021 23:00:45 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 09F2B2007B;
+        Fri, 17 Sep 2021 02:59:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1631847562; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=8pvkjCFdBH92niZgGsbVOrH9zONIePhOsL1BwdfqgnA=;
+        b=NrP8J0vhVKv0eLroW/bpzL2ejtwWpy1oEAi7DdQ4kMU5Kv8Oq6l5iLYPu7H9EkxbF1q4/A
+        na+xtpPAcJUY68yb7FlQ9lmxSLRRQKANIKbvzZj9RSTof31Djq1vJviErXSODqyW0wqB4e
+        LQe1sAc/mk1g9ojaRCFZduOcyNryYAc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1631847562;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=8pvkjCFdBH92niZgGsbVOrH9zONIePhOsL1BwdfqgnA=;
+        b=PMuREhLfwiF/t1B800k94ChByfic8xUfzyWra9ANkKBEq5p7ic9AJetd/jrDccwucIyfGK
+        Kco4+Zd25/JWTsBA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9733913D0B;
+        Fri, 17 Sep 2021 02:59:17 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id wyQIFYUERGFLMwAAMHmgww
+        (envelope-from <neilb@suse.de>); Fri, 17 Sep 2021 02:59:17 +0000
+Subject: [PATCH 0/6 v2] congestion_wait() and GFP_NOFAIL
+From:   NeilBrown <neilb@suse.de>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@suse.com>,
+        ". Dave Chinner" <david@fromorbit.com>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Date:   Fri, 17 Sep 2021 12:56:57 +1000
+Message-ID: <163184698512.29351.4735492251524335974.stgit@noble.brown>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-References: <5570111.f9yF5Hohu3@kista> <CAGETcx9_dy4qdmZ-+X+WLsezPKWfZzmRU8QmhKOu6FdZcysWDA@mail.gmail.com>
- <CAGETcx_6muHgmDAviMf-UBvriePwc+o5408nDeNd_v3zR_x9TQ@mail.gmail.com> <33995494.1UIDBzYVPQ@kista>
-In-Reply-To: <33995494.1UIDBzYVPQ@kista>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Thu, 16 Sep 2021 19:55:22 -0700
-Message-ID: <CAGETcx-_sNJ1Z-8Bmqh+awi-2xnQQLjnJf+Zncj23ByDmJYDJQ@mail.gmail.com>
-Subject: Re: Re: Issue with fw_devlink=on on 5.14
-To:     =?UTF-8?Q?Jernej_=C5=A0krabec?= <jernej.skrabec@gmail.com>
-Cc:     linux-sunxi@lists.linux.dev,
-        Android Kernel Team <kernel-team@android.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 11:59 AM Jernej =C5=A0krabec
-<jernej.skrabec@gmail.com> wrote:
->
-> /cc linux-kernel@vger.kernel.org
->
-> Dne sreda, 15. september 2021 ob 20:36:11 CEST je Saravana Kannan napisal=
-(a):
-> > On Wed, Sep 15, 2021 at 11:23 AM Saravana Kannan <saravanak@google.com>
-> wrote:
-> > >
-> > > On Wed, Sep 15, 2021 at 11:07 AM Jernej =C5=A0krabec
-> > > <jernej.skrabec@gmail.com> wrote:
-> > > >
-> > > > Hi Saravana!
-> > > >
-> > > > I noticed that in kernel 5.14, at least on Allwinner H3, deinterlac=
-e
-> driver
-> > > > doesn't load anymore if fw_devlink is set to on. If I set it to off=
-,
-> driver
-> > > > loads and works without problems. If I remove interconnects propert=
-y in
-> DT
-> > > > node and use driver hack instead, it also loads and work ok.
-> > > >
-> > > > For reference, I speak about this node:
-> > > > https://elixir.bootlin.com/linux/v5.14/source/arch/arm/boot/dts/sun=
-8i-h3.dtsi#L153
-> >
-> > Oh the dts file please. Not dtsi. I need the full picture of dependenci=
-es.
->
-> I just dumped DTB from the board I use for testing this:
-> http://ix.io/3yZB
+This second version:
+  - add recipients for the Documentation/core-api changes
+  - add fix for __alloc_pages_bulk() to handle GFP_NOFAIL
+  - drops the annotations for congestion_wait() as being ineffective
+    as that isn't really useful until an alternative is available
+  - changes to GFP_NOFAIL documentation changes to focus on the possible
+    deadlocks rather than the use of memory reserves
+  - Improves ext4 and xfs patches based on feedback from Ted and Dave.
 
-I was basically asking for this:
-arch/arm/boot/dts/sun8i-h3-orangepi-plus2e.dts
+The patches are independent, except that the last patch depends on the
+first.
 
->
-> >
-> > -Saravana
-> >
-> > > >
-> > > > Do you have any clue why it doesn't work?
-> > >
-> > > Kinda busy today and I'll take a close look later, but if you delete
-> > > "interconnect" but it works, then it seems like you have no driver fo=
-r
-> > > your "mbus" interconnect? Is that expected?
->
-> Ah, you're completely right. There is no MBUS driver (yet), since current
-> purpose of that node is to determine DMA memory offsets and for that you =
-don't
-> need a driver.
+As mentioned last time:
 
-Can you explain more how you get the DMA memory offsets in the code
-from this node?
+  These are the easy bits.  There are 5 calls to congestion_wait() and
+  one to wait_iff_congested() in mm/ which need consideration.  There
+  are multiple calls to congestion_wait in fs/, particularly fs/f2fs/
+  which need to be addressed too.  I'll try to form an opinion about
+  these in coming weeks.
 
-You might be able to add status=3D"disabled" to the mbus node and this
-would go away as fw_devlink doesn't cause a consumer to wait on a
-disabled supplier. See more below -- you have a bunch of options.
+(other interesting comment in original cover letter just duplicates
+ observations made in the commit messages of individual patches).
 
->
-> There is already WIP driver for it, though:
-> https://github.com/crust-firmware/linux/commit/
-> db34316a0194dbf0fcb8eba677ef11085a06a340
->
-> > >
-> > > If you have a driver, then make it use the proper driver model (probe
-> > > a platform device).
-> > >
-> > > If you don't have a driver for it, I'm assuming you have
-> > > CONFIG_MODULES enabled. Otherwise, fw_devlink=3Don is smart enough to
-> > > know not to block on devices that'll never be probed.
->
-> Correct, modules are enabled.
->
-> > >
-> > > If you do need CONFIG_MODULES enabled, then use
-> > > deferred_probe_timeout=3Dxxx so that fw_devlink doesn't wait for more
-> > > modules to be loaded past xxx seconds.
->
-> It's not what I want, but more that we broke default configuration and
-> CONFIG_MODULES=3Dy should really work.
+NeilBrown
 
-Well, fw_devlink=3Don can't tell if you don't have a driver or if you
-are going to load it soon (since you have CONFIG_MODULES enabled). So
-if it's a board you are actively bringing up, one of the other options
-below might be good to use.
 
-> Is there any other way to fix this besides
-> providing dummy MBUS driver? I doubt it would be accepted for backporting=
-.
+---
 
-You could use fw_devlink=3Dpermissive in the kernel commandline, but it
-will disable a bunch of benefits of fw_devlink=3Don (no pointless
-deferred probes, no suspend/resume ordering based on dependencies
-listed in DT, etc).
+NeilBrown (6):
+      MM: Support __GFP_NOFAIL in  alloc_pages_bulk_*() and improve doco
+      MM: improve documentation for __GFP_NOFAIL
+      EXT4: Remove ENOMEM/congestion_wait() loops.
+      EXT4: remove congestion_wait from ext4_bio_write_page, and simplify
+      XFS: remove congestion_wait() loop from kmem_alloc()
+      XFS: remove congestion_wait() loop from xfs_buf_alloc_pages()
 
-Another option would be to use deferred_probe_timeout=3D1 in the kernel
-commandline, and this will cause this to be unblocked 1 second after
-late_initcall() and you'll get the benefit of fw_devlink=3Don for all
-the devices that have a driver registered by then (and some more
-devices too -- see commit text of
-d46f3e3ed5276e756caf40f760d4902d15c12dcb).
 
--Saravana
+ Documentation/core-api/memory-allocation.rst | 25 ++++++++-
+ fs/ext4/ext4.h                               |  2 +-
+ fs/ext4/ext4_jbd2.c                          |  4 +-
+ fs/ext4/ext4_jbd2.h                          | 14 +++---
+ fs/ext4/extents.c                            | 53 ++++++++------------
+ fs/ext4/extents_status.c                     | 35 +++++++------
+ fs/ext4/extents_status.h                     |  2 +-
+ fs/ext4/ialloc.c                             |  3 +-
+ fs/ext4/indirect.c                           |  2 +-
+ fs/ext4/inode.c                              |  6 +--
+ fs/ext4/ioctl.c                              |  4 +-
+ fs/ext4/page-io.c                            | 13 ++---
+ fs/ext4/super.c                              |  2 +-
+ fs/jbd2/transaction.c                        |  8 +--
+ fs/xfs/kmem.c                                | 19 +++----
+ fs/xfs/xfs_buf.c                             | 14 +++---
+ include/linux/gfp.h                          |  6 ++-
+ 17 files changed, 113 insertions(+), 99 deletions(-)
 
->
-> > >
-> > > Also I like to look up emails on lore, so when emailing me about
-> > > fw_devlink (or any Linux stuff in general I suppose), it'd be nice if
-> > > you can cc LKML.
->
-> Noted.
->
-> Best regards,
-> Jernej
->
-> > >
-> > > Thanks,
-> > > Saravana
-> >
->
->
+--
+Signature
+
