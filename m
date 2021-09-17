@@ -2,78 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66D33410106
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 23:59:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2146B410109
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 00:00:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244954AbhIQWBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 18:01:14 -0400
-Received: from www62.your-server.de ([213.133.104.62]:35142 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229589AbhIQWBN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 18:01:13 -0400
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mRLta-0003vX-Rc; Fri, 17 Sep 2021 23:59:46 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mRLta-000XXb-Ga; Fri, 17 Sep 2021 23:59:46 +0200
-Subject: Re: [syzbot] general protection fault in bpf_skb_cgroup_id
-To:     syzbot <syzbot+33f36d0754d4c5c0e102@syzkaller.appspotmail.com>,
-        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
-        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
-References: <000000000000f152a305cc374d7b@google.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <a0ad330c-3caa-5c56-3f1c-c600fe6dacbe@iogearbox.net>
-Date:   Fri, 17 Sep 2021 23:59:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1344356AbhIQWBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 18:01:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55260 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229589AbhIQWBg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 18:01:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 475B661052;
+        Fri, 17 Sep 2021 22:00:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631916013;
+        bh=+TnN3rkhiKJL7FE663JtdQS0i9k7JNLeEkBjc2XurBA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cGoM7B/0gvT7Ldv7SGJa+EIIt3SzyBKqbHNemIc2aCLG5kR+Ze2fv1ZEJrHpWonYI
+         H6ks9lYl+sQfSXf5oLUl+DXiOVq1or/UeQjExWAjdTi50keWwxsQ0nKMqZNmSvMydz
+         3nRSQXadC7+Twt9WHU7oGmvd2PHRW7dCu7xO5zFpxzZGBW+UR5kTaJs8JHxZcA6s43
+         k1Jc+rrCeCv+Y/wgpHEn3glvS3+3m3AgW3/TR60UVOLtNNq8G0hGPmFMAAvQFQkNct
+         hKSjUrc9/jlxrvCmoBeU1PEysd9BAoS30NkRzT1xO40H42nakcMkeKKihh8BsURTEl
+         NkVCIid8eEG9Q==
+Date:   Sat, 18 Sep 2021 00:00:11 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
+        urezki@gmail.com, boqun.feng@gmail.com,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        joel@joelfernandes.org
+Subject: Re: [PATCH 2/4] rcu: Remove useless WRITE_ONCE() on
+ rcu_data.exp_deferred_qs
+Message-ID: <20210917220011.GB48873@lothringen>
+References: <20210916121048.36623-1-frederic@kernel.org>
+ <20210916121048.36623-3-frederic@kernel.org>
+ <20210916164340.GF4156@paulmck-ThinkPad-P17-Gen-1>
+ <20210916210514.GA40064@lothringen>
+ <20210917181024.GS4156@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-In-Reply-To: <000000000000f152a305cc374d7b@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26297/Thu Sep 16 15:59:37 2021)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210917181024.GS4156@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/17/21 11:06 PM, syzbot wrote:
-> Hello,
+On Fri, Sep 17, 2021 at 11:10:24AM -0700, Paul E. McKenney wrote:
+> On Thu, Sep 16, 2021 at 11:05:14PM +0200, Frederic Weisbecker wrote:
+> > On Thu, Sep 16, 2021 at 09:43:40AM -0700, Paul E. McKenney wrote:
+> > > On Thu, Sep 16, 2021 at 02:10:46PM +0200, Frederic Weisbecker wrote:
+> > > > This variable is never written nor read remotely. Remove this confusion.
+> > > > 
+> > > > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> > > > ---
+> > > >  kernel/rcu/tree_exp.h | 2 +-
+> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > 
+> > > > diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+> > > > index f3947c49eee7..4266610b4587 100644
+> > > > --- a/kernel/rcu/tree_exp.h
+> > > > +++ b/kernel/rcu/tree_exp.h
+> > > > @@ -255,7 +255,7 @@ static void rcu_report_exp_cpu_mult(struct rcu_node *rnp,
+> > > >   */
+> > > >  static void rcu_report_exp_rdp(struct rcu_data *rdp)
+> > > >  {
+> > > > -	WRITE_ONCE(rdp->exp_deferred_qs, false);
+> > > > +	rdp->exp_deferred_qs = false;
+> > > 
+> > > Are you sure that this can never be invoked from an interrupt handler?
+> > > And that rdp->exp_deferred_qs is never read from an interrupt handler?
+> > > If either can happen, then the WRITE_ONCE() does play a role, right?
+> > 
+> > Well, the only effect I can imagine is that it can partly prevent from an
+> > interrupt to report concurrently the quiescent state during the few
+> > instructions before we mask interrupts and lock the node.
+> > 
+> > That's a micro performance benefit that avoid a second call to
+> > rcu_report_exp_cpu_mult() with the extra locking and early exit.
 > 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    2865ba82476a Merge git://git.kernel.org/pub/scm/linux/kern..
-> git tree:       bpf
-> console output: https://syzkaller.appspot.com/x/log.txt?x=15089853300000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=c31c0936547df9ea
-> dashboard link: https://syzkaller.appspot.com/bug?extid=33f36d0754d4c5c0e102
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14dbd7ed300000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1586f83b300000
-> 
-> Bisection is inconclusive: the first bad commit could be any of:
-> 
-> 0e6491b55970 bpf: Add oversize check before call kvcalloc()
-> 2f1aaf3ea666 bpf, mm: Fix lockdep warning triggered by stack_map_get_build_id_offset()
-> 8520e224f547 bpf, cgroups: Fix cgroup v2 fallback on v1/v2 mixed mode
-> 3a029e1f3d6e selftests/bpf: Fix build of task_pt_regs test for arm64
-> d8079d8026f8 bpf, selftests: Add cgroup v1 net_cls classid helpers
-> 43d2b88c29f2 bpf, selftests: Add test case for mixed cgroup v1/v2
-> 49ca6153208f bpf: Relicense disassembler as GPL-2.0-only OR BSD-2-Clause
-> 2865ba82476a Merge git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16b5ccdd300000
+> I am not claiming that current compilers would mess this up, though I
+> have learned to have great respect for what future compilers might do...
 
-I'll take a look at the report.
+:)
 
-Thanks,
-Daniel
+> 
+> > But then that racy interrupt can still happen before we clear exp_deferred_qs.
+> > In this case __this_cpu_cmpxchg() would have been more efficient.
+> 
+> Except that __this_cpu_cmpxchg() would have a possibility of failure,
+> and thus an extra branch not needed by WRITE_ONCE().  Or am I missing
+> your point here?
+
+Right, but an extra branch that could spare a call to rcu_report_exp_cpu_mult().
+
+Anyway I don't mind the WRITE_ONCE(), but you know how ordering (whether
+compiler or CPU) makes me anxious when undocumented or not self-explanatory,
+(although arguably the latter can vary depending on the reviewer :)
+
+Thanks.
