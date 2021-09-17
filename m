@@ -2,75 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D79F40F287
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 08:38:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6862E40F28B
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 08:40:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235431AbhIQGkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 02:40:04 -0400
-Received: from mout.gmx.net ([212.227.17.20]:48649 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233942AbhIQGkC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 02:40:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1631860715;
-        bh=ozSDIT1bcSPZpOL5eJ3dfBxY9rWKTAbvCM6uS5sqtuA=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=WgLwkEOe7nSN8j7VBdjG0ip5iedbjTUVxtznAwfBbpUG/hNSzaRkiIl884XEMAQ8e
-         EFDFSpwE7YKl8MdwzQYK4y8hSAXqZtFeC1D7JxBJlwY3FDb9W+7/R3vQEp0pGC8dMv
-         nuNxGHZ1tdP6ZeXN1krZEw1xYxEYO3mwsVnGQ+8o=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.221.151.165]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MkYXm-1nAs7R1tmw-00m0A0; Fri, 17
- Sep 2021 08:38:35 +0200
-Message-ID: <d90b59b8b0d049d4afd72faf04ff680ae5f91b85.camel@gmx.de>
-Subject: Re: data loss when doing ls-remote and piped to command
-From:   Mike Galbraith <efault@gmx.de>
-To:     Rolf Eike Beer <eb@emlix.com>, git@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Tobias Ulmer <tu@emlix.com>, Junio C Hamano <gitster@pobox.com>,
-        linux-kernel@vger.kernel.org
-Date:   Fri, 17 Sep 2021 08:38:34 +0200
-In-Reply-To: <b14d79e49e3abe3fdf00cf18bb8c992b4575c5cc.camel@gmx.de>
-References: <6786526.72e2EbofS7@devpool47> <2279155.Qy0YqsFniq@devpool47>
-         <85a103f6-8b3c-2f21-cc0f-04f517c0c9a1@emlix.com>
-         <2677927.DK6gFqPMyL@devpool47>
-         <b14d79e49e3abe3fdf00cf18bb8c992b4575c5cc.camel@gmx.de>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.41.2 
-MIME-Version: 1.0
+        id S235836AbhIQGmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 02:42:04 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.111.102]:41348 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231786AbhIQGmA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 02:42:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1631860837;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=s7rb3jCSHExyz8eZmcspOvf3jieEjAd49nmXFnNZWiI=;
+        b=FFAsL6jNdKXmAR4I69OWeyE8gGtasq/sHhkMIPYdv+ak1BRv2nw7s9p534XBOZ+zUMa6I6
+        bdhFuLkwAJIozXO1IaePXEVFpoSTQjiwTNXjy5Tdu3auvc44aAumZnATWmwuvgHhNylsQ7
+        wwrllOdK/tlrStA04bLVGgIM1nZpupM=
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com
+ (mail-am6eur05lp2111.outbound.protection.outlook.com [104.47.18.111])
+ (Using TLS) by relay.mimecast.com with ESMTP id
+ de-mta-32-iHAqES0YPuGfJ-JzOAbWJw-1; Fri, 17 Sep 2021 08:40:36 +0200
+X-MC-Unique: iHAqES0YPuGfJ-JzOAbWJw-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=f9MEn6BXNPg0dHOJiSHIFGZ6Zp/95X7OwOOWzub2Y1AASax+HACJYw1UpnoJNfVzqjNaPXy2zYrCZ5iwR+bwYDWo3N2hsaYWKRghF8waUoOVPa8LFfNeQTOy05CBtjYveiVBe6rUJ/BdENF7gwXmVQoo/AW183h/yiMQOUxrEbtUoH74NcbFsmFMxOYUF0Ww+I3G8otBQLyUShyaBfGkLTHkWdzw+HN7ANymctMnbErx/hzCz8t2266H1FDa3KxXOMwqzXp4eaCmKjoIJxClJeNaNpC0u0n/nCGplkw+ph7NETbVlt08D6zgEz+RUCxUwNL+WzmR0uwM5Xj/W5zmLw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=s7rb3jCSHExyz8eZmcspOvf3jieEjAd49nmXFnNZWiI=;
+ b=QEX9HbF03oh+HOukV4kISAbliJUKu/hTkxOhT9LIf8CTPWnreDjMtC9rJ/Z81RQuntfEX6e7GIYjJGw7PKBD8NBdDcaQzMPT6Iwq/fzjdtCitgIVZpxRhMi1EhW7W+35JM6EwRkMDxKFFYwyBaH7L9Gj35Mz5+BxJEJRkEIiEfvzCox6pUX/BdI2mJqrh6P4VUgePj7+ABf5FdhJ6uh2JoW81HsYum7cSFrEi4POemgVPBSvdVEmxIVsJ3rkzwyJbpgLtrPqvoRurhwr6bd2dmzP5fTXQc2j4Cc8KUoowNW6rIBTM0kYEbdgMS/GdFlaPBWuPMwIVGnnE4hs+F3WPg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: suse.com; dkim=none (message not signed)
+ header.d=none;suse.com; dmarc=none action=none header.from=suse.com;
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
+ by VI1PR04MB7037.eurprd04.prod.outlook.com (2603:10a6:800:125::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.16; Fri, 17 Sep
+ 2021 06:40:35 +0000
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::4d37:ec64:4e90:b16b]) by VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::4d37:ec64:4e90:b16b%7]) with mapi id 15.20.4523.016; Fri, 17 Sep 2021
+ 06:40:35 +0000
+Subject: Re: [PATCH] xen/x86: fix PV trap handling on secondary processors
+To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        Juergen Gross <jgross@suse.com>
+References: <34898e9c-5883-a978-98ee-b81b22d8caed@suse.com>
+ <823f4ef4-f9e5-68cb-d6e9-d079483c1e21@oracle.com>
+From:   Jan Beulich <jbeulich@suse.com>
+Message-ID: <0afce6e8-3c8a-e5ae-cd54-0fd598276506@suse.com>
+Date:   Fri, 17 Sep 2021 08:40:32 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+In-Reply-To: <823f4ef4-f9e5-68cb-d6e9-d079483c1e21@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:m598A5p80pKmO2XRFM7R/VDbG7Bzmb+OBcpx3rU9CqwfnaqS7Sb
- PZR5KusUPrjiBh1hgXyszT8xGg+4o+XmdEft8caxmPloSzytmnzWEu07uBfSqjn2V1vtHdT
- k5km98zDsfC6brfVnbGIDzrh8T0GWutmL3YZreOrAih2731dtu3YjXRNItRryyP6ath0UrN
- PCwW7ZyxItUxCZmxUL3wQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:vthMrA8ZOrk=:Pz1OE8oXPTRKo2vOY0O06E
- cPG1NIXBT7aWV52v9Qg4v51dqUwwrt1PQMMP2X2WMKZH2tX02IZsNTFLQ9FD52Vnpj6TQkbtL
- iTUr1s/J/2MFayYdBZamLer5Bpt1v/38tOXIUMNwTtvFXVaLoBnTpsbMZIyFSAhxWqbVgXfRa
- 5i11AAhuOIt+jVAuMMwQPOO5h8T24syB/k2v9H5YSN3xzu3YmSqWv1+0EldsdMg8+eDqr9EcB
- 03oFXgq/FSHF8Y24Ef2JJtxo0rjWX3naHowmTUnEvzLrppdgTJKZIE5qSBKBZlqj/4tB/vuUQ
- XM87j/AQ3sZG/9p8oSb6oN8Q2Me4tR7VG+LygpdIxy1yKl9SZf7F4xX/2kIb3jKFpazrwqISL
- SEk2pnnvGanX65aLQ27ae/EX4waVLbzdb+y4HL7/81VHq+ZO/UhXJyqmjjy8f7Tv4aOhf5CnK
- 3QPcK+ylP9kRqPmsSp/PtQIfW3/YPn9Mmw7n/MCHN5ShBrmNIrJzmujpaHczRj9traNWtBB7r
- t6PiLZ4clZ2RzsXh3/wp4Iy9UHJRbgab/fGzEJ9EecMmlXP87DRSumHETnyDY/yib46aylOJW
- uPbYbPG1lJl8D8fWeOMqPN6dPQk+kd4mbumxhET5xO/v18iJH83Z8iB3niZJXrbylt3G3jYof
- nBuatMbR1KkifrPFbxQvk3I4EanqqpXLO+3HO2lSZak+0E6ISndcUCvdHjyqyI6DdoW28vHiO
- gzq+BgBxsgO6F7IlAY64MQAXo698CECuVg3f5OQUPChaUKjeisTbWVFoCGH5WWNOppdWAFjsg
- rwTdVdYsUL9sjRJG6CyhH+fomPstrqPWBoSZOa1avNNcPWHThRwaBFTI/j4JIPCF+tjtYYUdB
- yfBhMlxdT8f0DpiM2eKpU4jjH+tQ8Y0Gvh30inmRiFtQ+UeuXaK7hgglUO5Kcja98T2O/gexZ
- KB+M4JMv8q537CQQFHw56VFe8UJvZmbGDRRu42VSwpZO//Hq0oUs83Esgd7ocNDlesT0Mue6I
- 3Nfc1LmXJ3XW8HxFzeQGvnFXz3/EiSAnBWcrkD9lBjLeYNf7ElQc0VSTG15moU7Z75PJ5ECpK
- W0BiajevlJx22w=
+X-ClientProxiedBy: PR0P264CA0213.FRAP264.PROD.OUTLOOK.COM
+ (2603:10a6:100:1f::33) To VI1PR04MB5600.eurprd04.prod.outlook.com
+ (2603:10a6:803:e7::16)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.156.60.236] (37.24.206.209) by PR0P264CA0213.FRAP264.PROD.OUTLOOK.COM (2603:10a6:100:1f::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Fri, 17 Sep 2021 06:40:34 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: cf53f549-a884-41dc-6935-08d979a60d8f
+X-MS-TrafficTypeDiagnostic: VI1PR04MB7037:
+X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB70379CEFFA1488D2CEB13742B3DD9@VI1PR04MB7037.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: fP073QF1ahvxF7ZiQOsWKUPfjxawEZFTb+2/2fJ6PuAIErBDyF2Fb16rNVhS7qZB+cP5mARfgjcL9RKcQMOP587IfhAy1NG0/X8FfVKC8yWBUHfYgJM0jgAjAMiw54UWEIRhms07/YlTlfYrYm4872xPvYZfPCikYT88OOKHEGBD/x4En+qjNbww+587PnbLk5urDNHyJBUOZ0GPlOdcfqg5a20GLKd9NGSsMWRlLJMf9bGNYd4VmZqtA3zKrGxiqSVVD0rCOyJeFpA6vsXI5TI6OtLpoHGBw8Jxw4KcxbTVj9pVUagMwWQz+YHURs8lsgvMYnmqtkoLP9AvlJTyEzCBXFeHtPexZzBxzNgVtz7GQFJVibMUW503HvAiuoFDQ21TlQoGvonNMDXeGca4GV5dXw8FlSuk4mNnmGNnCzM73vdfDAK/B4mfh2r2EYvRqDnMewOBUhcBwcDF7OijbYd0CMSGaQTa7udLchaT1m85BhlgSIVELIYFrt0qm3fW+bz1m17A3egSbF9FJ+RzTyKDoyy/dJuT3S9XcB6J4Gw+uJq6wYZVXFyj2sFsO2CCYBpf+3E+M94wp0zgmrDmvRYcivOgiqp2PtVQwvDcOUIyc/iG4fXtl0285M44kSEWmPHGZDAtKNAXQUGKCSbk6bdSm+dJnlQza9rU5vG/CKf+wefvzjkOHcRvN+IEQLYZ9v2LLlUTDNuatXCDyd997lDdLW7pifM63KQFT909NX0=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(83380400001)(31686004)(8676002)(4326008)(86362001)(956004)(26005)(5660300002)(66946007)(2616005)(2906002)(38100700002)(107886003)(36756003)(16576012)(54906003)(316002)(66476007)(4744005)(6916009)(53546011)(66556008)(6486002)(8936002)(186003)(31696002)(508600001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZGh4RWREaHhQTldSMUZKZnVSQkpvM2hsSWkwMm5sN3ZjU0NtS2xCWjd1a2xn?=
+ =?utf-8?B?Mk5QczlRQnJuMXh5RkQxSHBqV2ZNOVlDdGdPQXBWeDF2RXYvYUE3aWFnMHlJ?=
+ =?utf-8?B?ZEpiNFlyRmNLQU0za09Ja2tnejdBaEtRWG0zUTh6aXJUU1FXTDdnYXJHVzJJ?=
+ =?utf-8?B?VE5vZFJ4L0sxWGh1alc2MEQyTVhBdXlrNjRNRFNlT3ZIV1ZaVE9RZjJTYTZL?=
+ =?utf-8?B?bDg3WjhrdW5nRnNkTlR0TkM2K1pJY1MybWVBSDRUajBDYk1GL3IrWEtGNWp5?=
+ =?utf-8?B?R3lwdmZDbTNJSEE2SmR4S0dGRnlLVmJ3NkY3QURMaEswZHQwMy9Jb1JzRnJV?=
+ =?utf-8?B?Y2JYd3R1MURUbmxYZXF6U0ZoOG5xNXR6YlpQMlZnZ0RTeVh6TnA3UTVUY1M2?=
+ =?utf-8?B?ZTVtUkxJcGFSRTdHaG9hT3NLY3ZVc2w0WTJCYU5vaWNLUS9xL0RUS3ZTaDFi?=
+ =?utf-8?B?T0VvTlAxMTFyL3ZKamxwUHlJL0FrQ1JuQU02SWxIYVdtQmZKRlBZUjRyTmd1?=
+ =?utf-8?B?WFprTHlBdXRzNFBnK2FBTW1PckpNMW5Qa2pRN29OZTEvV2MzYndQUGhodzZT?=
+ =?utf-8?B?RDBLS0NYVTJjMHpxUU5QNUdTUy95aTdqazhhTXdQTzJ4cjFIL0piQWxqMEVD?=
+ =?utf-8?B?Szk1dFBHRDFmWUcyRFl0aUtzVkRKRmowK1hNVGlOY29EbHBxOFdjbUNKOStk?=
+ =?utf-8?B?cHE2bFhpWHBuenh3SFUrSHhKKzQxbStZbWgzN2NSSnQ2eUVoeFU5WXh4dUJp?=
+ =?utf-8?B?RjVPanhSd0pxd0M2U1BLNnV5K1RxYzlCZHNZVGtObWV6cDdjend1dmtpa0Jw?=
+ =?utf-8?B?SHFjcUdldlRSMlEzZ2d5ZUNMTUV5V0c0Z1Vrb2Jzd3JJbWY4alAvckEvNmdM?=
+ =?utf-8?B?MXJ4K0F3RWJJWDRXQ0t4ak92b00wZVh3QWU2S0h2ZHJMVUZHRWhiazgwVVpy?=
+ =?utf-8?B?RUhuTVNNakVUQ2dtTTlsbndmRWM4dU55aXN0MHpqY01YZ1NZTDVhcTlKVHFD?=
+ =?utf-8?B?bjlCbElnOWpVb21QNnRlUmh0N21lMWI1MHdqSUlvS0FIUHUrSm45RklxRVR5?=
+ =?utf-8?B?QnMwUVhmUW5uVXF6bzNQdDdtaFMvTC94ck80WmRyOGFkcHhiQ3pSeWFFNUNX?=
+ =?utf-8?B?bVlvNWtnY1VLL290Z2dULzh1bVBiZVM4THhmbWYxZjEySWJxMzA4ckxITkFG?=
+ =?utf-8?B?R1NQV2hPSWhvZmNhVUdGV1UvcHVPQzg2NzlRVldJRWJvSWMyYmo4SjYwYlds?=
+ =?utf-8?B?SEoxWi9zR3VxZXZlTnowbzFkNERxNXVsY3RFL1JjZ1IySmNtTnpTeVppMzI5?=
+ =?utf-8?B?UmxzYXNtaWluT2xlTWErK2gwVi9YZXh6NkplVWdjYTRNQkVTNGVraU0yVDhJ?=
+ =?utf-8?B?SXFCUEFWM1IzM3IxWjk1M3dsWEV2d0JKM2hRbWtIanlYNUl6akVKTkNyTEdn?=
+ =?utf-8?B?Tm8xakRnTXF0cm9keXphdFZQajkwYm50RmFTcHR1NTE5eGJKYUpKMnpUNEJY?=
+ =?utf-8?B?Q0kySzBKVVZISkU3Q0F5UUltS1ZCb0ovZEg5NVV1KzVsOTd4Z280NmgrdkJG?=
+ =?utf-8?B?bHpjNHdRRUlKMWFxUkNDVjFxMGhlN09NNXpmWVZqZ1VNWnJYL1d4T0htUTl6?=
+ =?utf-8?B?ck1rdkZVa0M4cjVzMk8vSHpWaGV2alJEUVl4clI3dHBTTG4xUS92S1dhdWVW?=
+ =?utf-8?B?NzUwa3lFTUhzVlBQTExjZWlmNkdjY2ZPU210MjJTSFEvdVBMOEhCekQ4Y3k0?=
+ =?utf-8?Q?G2kGFfvgYshGebxlstpfes6f6dx2P3E/+CKoVNb?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cf53f549-a884-41dc-6935-08d979a60d8f
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Sep 2021 06:40:35.0219
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: GsSTe3j0pMUo6G5YDbnQ5ZS/J1KjhrZ7CearnoLOgFW8F7RwmbgVPz8aeEde63dOx32YV36gOIdkzUtsbpRe6g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB7037
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-09-16 at 17:49 +0200, Mike Galbraith wrote:
-> Both kernels failed to reproduce...
+On 17.09.2021 03:34, Boris Ostrovsky wrote:
+> 
+> On 9/16/21 11:04 AM, Jan Beulich wrote:
+>>  {
+>>  	const struct desc_ptr *desc = this_cpu_ptr(&idt_desc);
+>> +	unsigned i, count = (desc->size + 1) / sizeof(gate_desc);
+>>  
+>> -	xen_convert_trap_info(desc, traps);
+> 
+> 
+> Can you instead add a boolean parameter to xen_convert_trap_info() to indicate whether to skip empty entries? That will avoid (almost) duplicating the code.
 
-Nor did the TW kernel (now 5.14.2-1-default) reproduce, neither in my
-Leap-15.3 box, nor in a TW KVM set up to play server.  'course that
-doesn't mean there's no kernel bug lurking, means with certainty only
-that if there is one, the posted reproducer ain't all that wonderful.
+I can, sure, but I specifically didn't, as the result is going to be less
+readable imo. Instead I was considering to fold xen_convert_trap_info()
+into its only remaining caller. Yet if you're convinced adding the
+parameter is the way to do, I will go that route. But please confirm.
 
-	-Mike
+Jan
+
