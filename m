@@ -2,142 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D03540F444
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 10:40:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D662840F407
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 10:24:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245208AbhIQIl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 04:41:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40834 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234187AbhIQIl1 (ORCPT
+        id S239640AbhIQIZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 04:25:48 -0400
+Received: from mout.kundenserver.de ([212.227.17.24]:46239 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233853AbhIQIZq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 04:41:27 -0400
-Received: from frontdoor.pr.hu (frontdoor.pr.hu [IPv6:2a02:808:3:101:250:56ff:fe8e:1370])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07225C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 01:40:05 -0700 (PDT)
-Received: from [2a02:808:3:101::5] (helo=mail.pr.hu)
-        by frontdoor.pr.hu with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <zboszor@pr.hu>)
-        id 1mR9AA-0007CP-0J
-        for linux-kernel@vger.kernel.org; Fri, 17 Sep 2021 10:24:02 +0200
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=pr.hu;
-        s=pr20170203; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
-        Message-ID:Subject:From:To:Sender:Reply-To:Cc:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=s3DywLISGztjo5+w8nLTPx/J3r1NzKNOS+jdtraCtTk=; b=ObXzFOBTpP0Ch2zANXbuXUbat6
-        At6TglVi1krkeZgrWc05ipgKiA4A3GkiJw3nj4gHOBG4sNXECykJ05N/RGwPjPrfgruKiaVCU7g0x
-        jPza7vCKsWFl4dTLN8RzR/2KsgCyQlCdBw0iNr4LMnR0STjGv6k/4WeJBZ9heDVs2kEOr5vN2WWo9
-        Mv5ElTBnKoa9NX5tmcfe5Ikt0+evs9rGcwEU/fLZJyhSpkj3KpFIPqvYoop0880GiHvVSr4SYlzO/
-        te1e9mXTH8A0F1uRJvNkQXYPGRPQzmCVrhAUV6QcbWsM6V77AtkKy+NMmzlr0TQYapOdrpbYdKSAf
-        AonxI7Mg==;
-Received: from host-87-242-23-58.prtelecom.hu ([87.242.23.58] helo=localhost.localdomain)
-        by mail.pr.hu with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <zboszor@pr.hu>)
-        id 1mR9A5-0007j0-UB
-        for linux-kernel@vger.kernel.org; Fri, 17 Sep 2021 10:23:59 +0200
-To:     lkml <linux-kernel@vger.kernel.org>
-From:   =?UTF-8?B?QsO2c3rDtnJtw6lueWkgWm9sdMOhbg==?= <zboszor@pr.hu>
-Subject: Oops wih 5.14.5 on an ElkhartLake machine, missing /dev/dri/card0
-Message-ID: <48c134b5-79a4-aa8b-144a-dd31a8e22f88@pr.hu>
-Date:   Fri, 17 Sep 2021 10:23:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 17 Sep 2021 04:25:46 -0400
+Received: from mail-wr1-f42.google.com ([209.85.221.42]) by
+ mrelayeu.kundenserver.de (mreue109 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1Md6V3-1n1JGW1SwF-00aI2c; Fri, 17 Sep 2021 10:24:23 +0200
+Received: by mail-wr1-f42.google.com with SMTP id t18so13863932wrb.0;
+        Fri, 17 Sep 2021 01:24:23 -0700 (PDT)
+X-Gm-Message-State: AOAM533PAzr8zQK7VjOS3rUWivgV4hBA1ekdwD9fmWHEzdc2SZqdHTUD
+        9RFsNGBGn3Ss9VAN+t9kJGMvGNArCXO4KKMGQQE=
+X-Google-Smtp-Source: ABdhPJyxKDbnAit0P8RlxwEKdj8mySHy/6gXPGZ8bIgKVMovkoL7/o6abv6tjsBL6nj2VlsV6u7V/UNuV8R2g2vUC1k=
+X-Received: by 2002:a05:6000:1561:: with SMTP id 1mr1229158wrz.369.1631867062981;
+ Fri, 17 Sep 2021 01:24:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Spam-Score: -3.0 (---)
-X-Scan-Signature: 3c72c192bf287bc15837ddc11decd820
-X-Spam-Tracer: backend.mail.pr.hu -3.0 20210917082359Z
+References: <20210917035736.3934017-1-chenhuacai@loongson.cn> <20210917035736.3934017-14-chenhuacai@loongson.cn>
+In-Reply-To: <20210917035736.3934017-14-chenhuacai@loongson.cn>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 17 Sep 2021 10:24:07 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3Ce0bsyrhEK1SZHtUPEnX-rvQcKLT-TPRGptNdmiJaqQ@mail.gmail.com>
+Message-ID: <CAK8P3a3Ce0bsyrhEK1SZHtUPEnX-rvQcKLT-TPRGptNdmiJaqQ@mail.gmail.com>
+Subject: Re: [PATCH V3 13/22] LoongArch: Add system call support
+To:     Huacai Chen <chenhuacai@loongson.cn>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Airlie <airlied@linux.ie>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        Huacai Chen <chenhuacai@gmail.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:neJGTFHkscc1NAv6hwO1FuUBai5vvMKqfmhPIrXLcKuYH5LcNRn
+ zgfyX6Ed4AE7kT7+Gi0AseizMEv7Su0CnQDb9AKDdkJjn62qVynhQb3w12JTQAqOBec/ZMY
+ nBnSSL7C6cqy0cLnQxfTy2FSeKGdDvjYyJl011xUAGMqDe5Zbhg/rjko79sbzbMFB0dc8JY
+ fu5u7YgaU+fD5qoCdAeiw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:pzKiGr89jSo=:Kg/SDXl28Q9f0IxfdiBMQI
+ wyAU2NJbnHMcAgyplrdfMTbKGqMtYGLXung9GJOyEeshgfuGweIIYHNQI+8iEdVigudvNueN4
+ ZudexgROqDHMAkfCn46R/85nYQmwHXI1E3sBC8s+Nm92zguUdkRJp0A16ni2GinzJGRCnB2c8
+ bci56JQYrwcmHNXc1kPHwFnGdyQ9QhH0/3U/XHi3s0M8ydqOJfblzG31Pec4dIL/OuvvwhQIP
+ IFce7fAZdgwSFrHMvovyRkeZWWmRTBuhnnFKoWHjuOyH8Z+fuTG47vnz5ECcXaU8/Br6SONGa
+ UOgfIBHoFJOy4Bqq9NUos5GymBiLwF/4hAe5ex8slK6zjZvuOwW5ekThsdGUk5RkeuWjxtbTO
+ R6kw7/zXf+neKnMNkR6f9BZZDb3Jjdnfsl95qYWPAncjgDvI503jXa8pfFQkpsjoiFp8Bei2U
+ 2AR/8wbJEVEVKSXQsb6CEg3YiGE/xljJkk6M5wrmoylzeptKStDZ1AB2yykZowwX3OSfl54w2
+ DySMbhzpe24eQnADjQ6aFTozZDojZ0SePY9/e9/OvUO5kx8JGDEj0hHgtGfewbFEr0eN7p1cf
+ Ah61J4I+MLJUu5ofEs/SISu0AIAGnCStGDocAan6Y4zLTfnptm5/fT64MOEeXImNb+dUfCcT/
+ loBZf8MjVQu6OZkC/AGLneGJz8QMO0jXI10GPF1pHjcaYkqK6gnPhX+DKoQ+vIQn9COUO3xDL
+ vExphipCtrWHdOD8BTFVokpExUaIjOoXGemf0zZmTdtJta6/b/lGTHN8BhGlX+RSrmgZj533V
+ 5+s/hJ3IfI9WmpvYU1Awxac3yjwKPe2fVOpAzQ8PVXiy1R3REkiSo/JDMj8KlsIhXXW7a9Oox
+ fGxJW48iMYo4olfKd96g==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Sep 17, 2021 at 5:57 AM Huacai Chen <chenhuacai@loongson.cn> wrote:
+> +#define NR_syscalls (__NR_syscalls)
+> diff --git a/arch/loongarch/include/uapi/asm/unistd.h b/arch/loongarch/include/uapi/asm/unistd.h
+> new file mode 100644
+> index 000000000000..b344b1f91715
+> --- /dev/null
+> +++ b/arch/loongarch/include/uapi/asm/unistd.h
+> @@ -0,0 +1,6 @@
+> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+> +#define __ARCH_WANT_NEW_STAT
+> +#define __ARCH_WANT_SYS_CLONE
+> +#define __ARCH_WANT_SYS_CLONE3
 
-booting kernel 5.14.5 (OS: Yocto 3.4 master, GCC 11.2), I got this Oops:
+I still think you need to remove __ARCH_WANT_NEW_STAT and
+__ARCH_WANT_SYS_CLONE here.
 
-[    1.756613] BUG: kernel NULL pointer dereference, address: 0000000000000000
-[    1.758089] #PF: supervisor read access in kernel mode
-[    1.758090] #PF: error_code(0x0000) - not-present page
-[    1.758092] PGD 0 P4D 0
-[    1.760851] Oops: 0000 [#1] SMP NOPTI
-[    1.763555] CPU: 1 PID: 375 Comm: systemd-udevd Not tainted 5.14.5 #1
-[    1.763558] Hardware name: Insyde ElkhartLake/Type2 - Board Product Name1, BIOS 
-F340V030(F340-030) 08/27/2021
-[    1.763559] RIP: 0010:strcmp+0xc/0x20
-[    1.763566] Code: 06 49 89 f8 48 83 c6 01 48 83 c7 01 88 47 ff 84 c0 75 eb 4c 89 c0 c3 
-0f 1f 80 00 00 00 00 31 c0 eb 08 48 83 c0 01 84 d2 74 0f <0f> b6 14 07 3a 14 06 74 ef 19 
-c0 83 c8 01 c3 31 c0 c3 66 90 48 85
-[    1.763568] RSP: 0018:ffffbc9f40387c10 EFLAGS: 00010246
-[    1.763570] RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffbc9f40387be8
-[    1.763571] RDX: 0000000000000000 RSI: ffffffffc0210c3f RDI: 0000000000000000
-[    1.763572] RBP: ffffffffc02140e0 R08: ffff9b00c7981610 R09: ffff9b00c7981610
-[    1.763573] R10: ffff9b00ceaf7700 R11: 0000000000000000 R12: ffffffffc0212be0
-[    1.763574] R13: 0000000000000000 R14: 00007f1c4bde436b R15: ffffbc9f40387e08
-[    1.763575] FS:  00007f1c4ba12c00(0000) GS:ffff9b0247e80000(0000) knlGS:0000000000000000
-[    1.779123] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    1.779126] CR2: 0000000000000000 CR3: 000000010dc80000 CR4: 0000000000350ee0
-[    1.779128] Call Trace:
-[    1.783391]  intel_pinctrl_get_soc_data+0x62/0xb0
-[    1.783403]  intel_pinctrl_probe_by_uid+0xe/0x30
-[    1.783406]  platform_probe+0x54/0xb0
-[    1.783410]  really_probe+0x1f2/0x3f0
-[    1.783413]  ? pm_runtime_barrier+0x43/0x80
-[    1.783416]  __driver_probe_device+0xfe/0x180
-[    1.783418]  driver_probe_device+0x1e/0x90
-[    1.783422]  __driver_attach+0xc0/0x1c0
-[    1.783427]  ? __device_attach_driver+0xe0/0xe0
-[    1.783429]  ? __device_attach_driver+0xe0/0xe0
-[    1.783431]  bus_for_each_dev+0x75/0xc0
-[    1.783433]  bus_add_driver+0x12b/0x1e0
-[    1.783436]  driver_register+0x8f/0xe0
-[    1.783438]  ? 0xffffffffc0217000
-[    1.783440]  do_one_initcall+0x41/0x1d0
-[    1.783448]  ? kmem_cache_alloc_trace+0x17a/0x2b0
-[    1.783451]  do_init_module+0x5c/0x260
-[    1.783454]  __do_sys_init_module+0x12e/0x1b0
-[    1.783457]  do_syscall_64+0x59/0x80
-[    1.783465]  ? syscall_exit_to_user_mode+0x18/0x40
-[    1.783467]  ? do_syscall_64+0x69/0x80
-[    1.783468]  ? exc_page_fault+0x72/0x150
-[    1.783470]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[    1.783475] RIP: 0033:0x7f1c4bc7dfbe
-[    1.783480] Code: 48 8b 0d 5d 2e 0e 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 
-00 00 00 00 90 f3 0f 1e fa 49 89 ca b8 af 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 
-8b 0d 2a 2e 0e 00 f7 d8 64 89 01 48
-[    1.783482] RSP: 002b:00007fff29e9e3a8 EFLAGS: 00000246 ORIG_RAX: 00000000000000af
-[    1.783485] RAX: ffffffffffffffda RBX: 0000563789f4fbd0 RCX: 00007f1c4bc7dfbe
-[    1.783486] RDX: 00007f1c4bde436b RSI: 00000000000073c1 RDI: 00007f1c4b919010
-[    1.783487] RBP: 00007f1c4b919010 R08: 00007f1c4b97b000 R09: 0000000000000000
-[    1.783488] R10: 0000000000000021 R11: 0000000000000246 R12: 00007f1c4bde436b
-[    1.783489] R13: 0000000000000000 R14: 0000000000000007 R15: 0000563789f4fbd0
-[    1.783491] Modules linked in: pinctrl_elkhartlake(+)
-[    1.783494] CR2: 0000000000000000
-[    1.783497] ---[ end trace 3dbd0ade322948ac ]---
-[    2.003648] RIP: 0010:strcmp+0xc/0x20
-[    2.004862] Code: 06 49 89 f8 48 83 c6 01 48 83 c7 01 88 47 ff 84 c0 75 eb 4c 89 c0 c3 
-0f 1f 80 00 00 00 00 31 c0 eb 08 48 83 c0 01 84 d2 74 0f <0f> b6 14 07 3a 14 06 74 ef 19 
-c0 83 c8 01 c3 31 c0 c3 66 90 48 85
-[    2.006134] RSP: 0018:ffffbc9f40387c10 EFLAGS: 00010246
-[    2.007375] RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffbc9f40387be8
-[    2.008639] RDX: 0000000000000000 RSI: ffffffffc0210c3f RDI: 0000000000000000
-[    2.009875] RBP: ffffffffc02140e0 R08: ffff9b00c7981610 R09: ffff9b00c7981610
-[    2.011095] R10: ffff9b00ceaf7700 R11: 0000000000000000 R12: ffffffffc0212be0
-[    2.012303] R13: 0000000000000000 R14: 00007f1c4bde436b R15: ffffbc9f40387e08
-[    2.013520] FS:  00007f1c4ba12c00(0000) GS:ffff9b0247e80000(0000) knlGS:0000000000000000
-[    2.014778] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    2.016035] CR2: 0000000000000000 CR3: 000000010dc80000 CR4: 0000000000350ee0
+I understand that those are needed for the transitional period when you
+still need to support your existing glibc library files, but you likely still
+have other kernel patches that are not part of this series, so I suggest
+you add those two lines as a custom patch there until you are ready to
+drop support for old libc.
 
-The relevant setting is set: CONFIG_PINCTRL_ELKHARTLAKE=m
-CONFIG_SND_SOC_SOF_ELKHARTLAKE=m
+> +
+> +SYSCALL_DEFINE6(mmap, unsigned long, addr, unsigned long, len,
+> +       unsigned long, prot, unsigned long, flags, unsigned long,
+> +       fd, off_t, offset)
+> +{
+> +       if (offset & ~PAGE_MASK)
+> +               return -EINVAL;
+> +       return ksys_mmap_pgoff(addr, len, prot, flags, fd,
+> +                              offset >> PAGE_SHIFT);
+> +}
+> +
+> +SYSCALL_DEFINE6(mmap2, unsigned long, addr, unsigned long, len,
+> +       unsigned long, prot, unsigned long, flags, unsigned long, fd,
+> +       unsigned long, pgoff)
+> +{
+> +       if (pgoff & (~PAGE_MASK >> 12))
+> +               return -EINVAL;
+> +
+> +       return ksys_mmap_pgoff(addr, len, prot, flags, fd,
+> +                              pgoff >> (PAGE_SHIFT - 12));
+> +}
 
-Also, /dev/dri/card0 is missing so neither plymouth nor Xorg works.
+sys_mmap2() is only used on 32-bit architectures, you only need
+sys_mmap() here.
 
-Thanks for any help.
+Ideally we'd just move those two definitions you have here into
+mm/mmap.c and remove all the duplicate definitions. Maybe
+you can come up with a patch to do this?
 
-Zoltán Böszörményi
+Note that some architectures use either nonstandard names,
+or shift value other than 12, so those need to keep their own
+versions.
+
+      Arnd
