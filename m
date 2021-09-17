@@ -2,112 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E82C40FF81
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 20:38:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F05940FF9A
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 20:48:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242570AbhIQSja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 14:39:30 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:46173 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234566AbhIQSj3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 14:39:29 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4HB2l20JKyz9sTc;
-        Fri, 17 Sep 2021 20:38:06 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Szk_56pDhu1w; Fri, 17 Sep 2021 20:38:05 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4HB2l16Q9Yz9sSQ;
-        Fri, 17 Sep 2021 20:38:05 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id C20528B79E;
-        Fri, 17 Sep 2021 20:38:05 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id Anbkmak4L5eb; Fri, 17 Sep 2021 20:38:05 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.202.36])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7BC828B799;
-        Fri, 17 Sep 2021 20:38:05 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 18HIbsqP758065
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Fri, 17 Sep 2021 20:37:54 +0200
-Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 18HIbskb758064;
-        Fri, 17 Sep 2021 20:37:54 +0200
-X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH 3/3] powerpc/inst: Define ppc_inst_t as u32 on PPC32
-Date:   Fri, 17 Sep 2021 20:37:40 +0200
-Message-Id: <59d0b6305ce3c9eb0598ad1997111e5f3f57f2bd.1631903846.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <9607dfbecab2ecccb712bbd25d2d5da882239d4c.1631903846.git.christophe.leroy@csgroup.eu>
-References: <9607dfbecab2ecccb712bbd25d2d5da882239d4c.1631903846.git.christophe.leroy@csgroup.eu>
+        id S235893AbhIQSuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 14:50:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235203AbhIQSuM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 14:50:12 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5A62C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 11:48:49 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id h17so33532942edj.6
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 11:48:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Cpak71tpwGIH8sDgLDrdJbMzVDQHoqt6rJZasCMwdzc=;
+        b=PPZqYKySWRBXLCmQqLignaVRzeemkJWbOSVm4Nk3LB3/dwYqxZT99gFitFC859Cqmo
+         5dHLqIWjBbL09xTf3eNTCSAzEfwW62QnHoObFrYVOWn0PPzzY6lksRvKhahbrO9bPfvT
+         /jfwN2l8iu/pKIRl254LqCHUDuwZMUECiAh00=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Cpak71tpwGIH8sDgLDrdJbMzVDQHoqt6rJZasCMwdzc=;
+        b=mYL3x0p0zvq6gRP5b0SCea+5b2Yz1JD4k9g2iYh6ZiDxy7g0APEI2ADcPMf5nvEDVx
+         nsXmhirs0bdJu19D3hvG/oWISg8UPhcCrvjA721yc52S8kzdGUGajFe2XU2ySF2ROz+o
+         RZVy+lKmprl9up93XpK8ZOrGrIhpbP55O7U9cylG4w7T3u8WF45RqWPisWDwRdixGLc7
+         wSAUcdapPC0cLYv6dKCOBYQfAYb85B0Mn46DzEhDh+MtCkJ0LCtTva7U26WR5x8uLPof
+         jypre9rRNKUTsf04Fs4xAgYD3dSlD/yhk3Gqqp+XzVyPG2iaUnKf1QlD5YGnbrPmG/nz
+         KRbQ==
+X-Gm-Message-State: AOAM531I8gj0TL22po1xcwUvHHPslElmrMg6fBq76W8ZcmVlZ9Z7M3Lz
+        FeucaPsmVs5qAHj2x9pKnZ1/UoqoKQjojQkG/Q4=
+X-Google-Smtp-Source: ABdhPJxE+1zxO/YJglL939bQyHQb+motttSfKITSckSUBR+/CYzDfVvAukAn5jPT7yzgLDU6CSlpXg==
+X-Received: by 2002:a17:906:4dd5:: with SMTP id f21mr13726456ejw.106.1631904528020;
+        Fri, 17 Sep 2021 11:48:48 -0700 (PDT)
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com. [209.85.221.42])
+        by smtp.gmail.com with ESMTPSA id g9sm2670865ejo.60.2021.09.17.11.48.47
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Sep 2021 11:48:47 -0700 (PDT)
+Received: by mail-wr1-f42.google.com with SMTP id t8so9685570wri.1
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 11:48:47 -0700 (PDT)
+X-Received: by 2002:a19:ae15:: with SMTP id f21mr9099719lfc.402.1631904049054;
+ Fri, 17 Sep 2021 11:40:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210917061104.2680133-1-brendanhiggins@google.com>
+ <20210917061104.2680133-6-brendanhiggins@google.com> <202109170856.8DDB49112D@keescook>
+In-Reply-To: <202109170856.8DDB49112D@keescook>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 17 Sep 2021 11:40:33 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whck4RtO7yp-jKK8QQc0bCDZBkdHc=3pGiFsFjwnQ+-mw@mail.gmail.com>
+Message-ID: <CAHk-=whck4RtO7yp-jKK8QQc0bCDZBkdHc=3pGiFsFjwnQ+-mw@mail.gmail.com>
+Subject: Re: [PATCH v1 5/6] mmc: sdhci-of-aspeed: build kunit tests without
+ structleak plugin
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <shuah@kernel.org>, David Gow <davidgow@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rafael Wysocki <rafael@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>, andreas.noever@gmail.com,
+        michael.jamet@intel.com,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        YehezkelShB@gmail.com, Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-iio@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Unlike PPC64 ABI, PPC32 uses the stack to pass a parameter defined
-as a struct, even when the struct has a single simple element.
+On Fri, Sep 17, 2021 at 8:57 AM Kees Cook <keescook@chromium.org> wrote:
+>
+> This isn't a stand-alone test object, so I'm less excited about
+> disabling STRUCTLEAK here.
 
-To avoid that, define ppc_inst_t as u32 on PPC32.
+Yeah, please don't do this for things that aren't pure tests. You're
+now disabling security measures (even if I hate the gcc plugins and
+hope they will go away).
 
-Keep it as 'struct ppc_inst' when __CHECKER__ is defined so that
-sparse can perform type checking.
-
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/include/asm/inst.h | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
-
-diff --git a/arch/powerpc/include/asm/inst.h b/arch/powerpc/include/asm/inst.h
-index c4775f4c93a4..2f8d189e4d76 100644
---- a/arch/powerpc/include/asm/inst.h
-+++ b/arch/powerpc/include/asm/inst.h
-@@ -41,6 +41,7 @@ struct ppc_inst {
- #endif
- } __packed;
- 
-+#if defined(CONFIG_PPC64) || defined(__CHECKER__)
- typedef struct ppc_inst ppc_inst_t;
- 
- static inline u32 ppc_inst_val(ppc_inst_t x)
-@@ -48,13 +49,23 @@ static inline u32 ppc_inst_val(ppc_inst_t x)
- 	return x.val;
- }
- 
-+#define ppc_inst(x) ((ppc_inst_t){ .val = (x) })
-+
-+#else
-+typedef u32 ppc_inst_t;
-+
-+static inline u32 ppc_inst_val(ppc_inst_t x)
-+{
-+	return x;
-+}
-+#define ppc_inst(x) (x)
-+#endif
-+
- static inline int ppc_inst_primary_opcode(ppc_inst_t x)
- {
- 	return ppc_inst_val(x) >> 26;
- }
- 
--#define ppc_inst(x) ((ppc_inst_t){ .val = (x) })
--
- #ifdef CONFIG_PPC64
- #define ppc_inst_prefix(x, y) ((ppc_inst_t){ .val = (x), .suffix = (y) })
- 
--- 
-2.31.1
-
+             Linus
