@@ -2,155 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4C9C41006E
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 22:53:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E1E4410071
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 22:57:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234935AbhIQUzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 16:55:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41986 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232556AbhIQUzM (ORCPT
+        id S237832AbhIQU67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 16:58:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40340 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234935AbhIQU65 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 16:55:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631912029;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8EWbBFRzqn+CDnvlJz5qcZT7fMT6Nw9+JVYnR+B85b8=;
-        b=Qtazm53bD1rj62mLjNEyE5Uio6JW0c160v7EqbmBq2tXeIw3roLe9em7IJcogj3oVyvFGZ
-        dt6RwsAbJ1yoqY7jLDZN86m2yL3HUoWA2DX13PZklTKsWPT/BnBlh6ku4XGukRAH4Qp+fH
-        r7LXEn8QpByY3YRPjXE98NPeu1FVwaQ=
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com
- [209.85.166.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-176-f6HfXWWtNpq_T1nFnPJ_ew-1; Fri, 17 Sep 2021 16:53:48 -0400
-X-MC-Unique: f6HfXWWtNpq_T1nFnPJ_ew-1
-Received: by mail-il1-f199.google.com with SMTP id f13-20020a056e02168d00b002244a6aa233so23734046ila.7
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 13:53:47 -0700 (PDT)
+        Fri, 17 Sep 2021 16:58:57 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66FFCC061574;
+        Fri, 17 Sep 2021 13:57:35 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id 203so2467444pfy.13;
+        Fri, 17 Sep 2021 13:57:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TYwIkcglVtBUNs/8XYOkfDTuYuTaGRxf1IE1dNFTBP0=;
+        b=q7bF15N1jlNUh1O71Xb0VCkGx2rFXrm3zhJwFrD6jSVue0z+ZyjawlrLwFbh+9KIP6
+         XSXFhCFVQWn0L/m4eegIy/+wME57I0X1ghaOgLw9DfnffY86nEG3n88f0zG5ZmUNketl
+         3nleyctPZ0pgttFP8RPpSCVNHRLI/+TS4FzqbSK4Lmi+P+gZ4SgpcsUT42uQzF/JrAum
+         NwKKdz1a5DuKjFjeIahIWRvOAeAr78nbhsYSMjEE0QaBQ8P+6X/DYkaclmjGlK1piW/k
+         etdIUGkoVNfdsvLCiyag7CohgicUIYK7zkwzBZ3kJRaDHp5oTlp1Pk6hdA/cQmPu/r54
+         tKWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8EWbBFRzqn+CDnvlJz5qcZT7fMT6Nw9+JVYnR+B85b8=;
-        b=xa1bDHht3rQFYrx0oM27sDScvTGtd9lo+enSBZuvlGk1IdKKdWU09dsgBOHi5Be+xg
-         4t2EcmHz9hYmstL5vIt8JnhwGROU/GjAtWQnsKJrJypoOQ+fP8S8ptR0lVXC/RTCampR
-         Yn0O/2aS/vyQ85ePhMbSF2UujdOweQtXo44V7J6v+l1m3kYwX3NENV+myM3eYdWc0hSS
-         02EK2ikVbBGK4QqOQLxBTV58ZkUhg4zRLsJvQ9/ko80QVKkc6jAc1UIIvZZQ2UlRYFgk
-         ae1CzgCUSFSvOCh80HzdSECsYGVIliGalcAzLMHNSaffoKgPA5aLeH2JmDJp2FgWIPC8
-         AnSQ==
-X-Gm-Message-State: AOAM532pq9Vqxvyqgw2QS3lJJiTewoi5OqVEGzHrHSqMdISVvhcdkTCx
-        MDOsel7z5syTdl4bLweVyCJ+midKm98FHs6i8pep55I4CKiQTgKPMhTVUv634HD9qqwdAlrqqFJ
-        +gnl+2VJ6IQqGDcp/FsHn5ErD
-X-Received: by 2002:a02:6043:: with SMTP id d3mr9052584jaf.127.1631912027040;
-        Fri, 17 Sep 2021 13:53:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw9q5X+AjYh1s/BEQkwddLJb9bdzZfTEh23K5SUpGpNdb4d0D6r/xx3i+FMB15F9hn+KggqPw==
-X-Received: by 2002:a02:6043:: with SMTP id d3mr9052574jaf.127.1631912026714;
-        Fri, 17 Sep 2021 13:53:46 -0700 (PDT)
-Received: from halaneylaptop (068-184-200-203.res.spectrum.com. [68.184.200.203])
-        by smtp.gmail.com with ESMTPSA id b1sm4165003ilf.43.2021.09.17.13.53.43
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TYwIkcglVtBUNs/8XYOkfDTuYuTaGRxf1IE1dNFTBP0=;
+        b=Xnt3bHHgAD3SZaNZUpMzD5K8UKVnUa6Yc7j6N4Pw54wy4eRMqGU9+SZ4Z5YTbmkWnI
+         wAAYHm7jJfOGS6KX3WhiX1Doq7FLFGYyHVT9aOz8auSIZ+Eq5URrGJq4odo4CudUjv3L
+         YAp01TOjGS1yXu85BBPJETMHrpE0MrdNCb1ivqTcmgRM1RA5RDZrO0kWUz3gUU3WmdXw
+         3HhMwRPfeE9lXEO7vPrViJlTJXbN7BPxwRq7kLnrQcTLK9EG48U6cpPZeJcKlgtcitZ0
+         63qsoGWezhcM9/PEonbUPIUw9MASgasyQD7oEa7Nlve6rQ3wB932vTlxvftJ+9/NSnnP
+         Skvg==
+X-Gm-Message-State: AOAM5302F7XiOSjEI8gjXx9nZnXjuLv0b7C6fKLXvYuEZi2iWxFI9HC3
+        lTlHhE9wjFDHklWlSJGbe/o=
+X-Google-Smtp-Source: ABdhPJwyMIF98TmO+53NAuE0Z6IeARMfNJBTMYgffoPm6vpRzgjO2GhfTaPMP5NVNK21K86yKtxoYA==
+X-Received: by 2002:a63:741b:: with SMTP id p27mr11638047pgc.140.1631912254733;
+        Fri, 17 Sep 2021 13:57:34 -0700 (PDT)
+Received: from localhost.localdomain (c-73-93-239-127.hsd1.ca.comcast.net. [73.93.239.127])
+        by smtp.gmail.com with ESMTPSA id p15sm6781505pff.194.2021.09.17.13.57.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 13:53:46 -0700 (PDT)
-Date:   Fri, 17 Sep 2021 15:53:41 -0500
-From:   Andrew Halaney <ahalaney@redhat.com>
-To:     jim.cromie@gmail.com
-Cc:     Jason Baron <jbaron@akamai.com>, Jonathan Corbet <corbet@lwn.net>,
-        Linux Documentation List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 3/3] Documentation: dyndbg: Improve cli param examples
-Message-ID: <20210917205341.5bayndskygan6qrd@halaneylaptop>
-References: <20210913222440.731329-1-ahalaney@redhat.com>
- <20210913222440.731329-4-ahalaney@redhat.com>
- <ff05cae4-8fa7-d1b6-795e-3bd85316774d@akamai.com>
- <CAJfuBxzrJwr17-RWZzhw90pKXZ1hL5kepuzvt1Di=JyekMJf4A@mail.gmail.com>
+        Fri, 17 Sep 2021 13:57:33 -0700 (PDT)
+From:   Yang Shi <shy828301@gmail.com>
+To:     willy@infradead.org, hughd@google.com, cfijalkovich@google.com,
+        song@kernel.org, akpm@linux-foundation.org
+Cc:     shy828301@gmail.com, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] fs: buffer: check huge page size instead of single page for invalidatepage
+Date:   Fri, 17 Sep 2021 13:57:31 -0700
+Message-Id: <20210917205731.262693-1-shy828301@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJfuBxzrJwr17-RWZzhw90pKXZ1hL5kepuzvt1Di=JyekMJf4A@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 02:30:09PM -0600, jim.cromie@gmail.com wrote:
-> On Fri, Sep 17, 2021 at 1:50 PM Jason Baron <jbaron@akamai.com> wrote:
-> >
-> >
-> >
-> > On 9/13/21 6:24 PM, Andrew Halaney wrote:
-> > > Jim pointed out that using $module.dyndbg= is always a more flexible
-> > > choice for using dynamic debug on the command line. The $module.dyndbg
-> > > style is checked at boot and handles if $module is a builtin. If it is
-> > > actually a loadable module, it is handled again later when the module is
-> > > loaded.
-> > >
-> > > If you just use dyndbg="module $module +p" dynamic debug is only enabled
-> > > when $module is a builtin.
-> > >
-> > > It was recommended to illustrate wildcard usage as well.
-> > >
-> > > Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
-> > > Suggested-by: Jim Cromie <jim.cromie@gmail.com>
-> > > ---
-> > >   Documentation/admin-guide/dynamic-debug-howto.rst | 7 +++++--
-> > >   1 file changed, 5 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/Documentation/admin-guide/dynamic-debug-howto.rst b/Documentation/admin-guide/dynamic-debug-howto.rst
-> > > index d0911e7cc271..4bfb23ed64ec 100644
-> > > --- a/Documentation/admin-guide/dynamic-debug-howto.rst
-> > > +++ b/Documentation/admin-guide/dynamic-debug-howto.rst
-> > > @@ -357,7 +357,10 @@ Examples
-> > >     Kernel command line: ...
-> > >       // see whats going on in dyndbg=value processing
-> > >       dynamic_debug.verbose=1
-> > > -    // enable pr_debugs in 2 builtins, #cmt is stripped
-> > > -    dyndbg="module params +p #cmt ; module sys +p"
-> > > +    // Enable pr_debugs in the params builtin
-> > > +    params.dyndbg="+p"
-> >
-> > If we are going out of our way to change this to indicate that it works
-> > for builtin and modules, it seems like the comment above should reflect
-> > that? IE, something like this?
-> >
-> > '// Enable pr_debugs in the params module or if params is builtin.
-> >
-> 
-> I dont think params can be a loadable module, so its not a great
-> example of this.
-> it should be one that "everyone" knows is usually loaded.
-> 
-> conversely, bare dyndbg example should have only builtin modules,
-> then the contrast between 2 forms is most evident.
-> 
+Hao Sun reported the below BUG on v5.15-rc1 kernel:
 
-Thank you both for the feedback, good points.
+kernel BUG at fs/buffer.c:1510!
+invalid opcode: 0000 [#1] PREEMPT SMP
+CPU: 0 PID: 5 Comm: kworker/0:0 Not tainted 5.14.0+ #15
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+Workqueue: events delayed_fput
+RIP: 0010:block_invalidatepage+0x27f/0x2a0 -origin/fs/buffer.c:1510
+Code: ff ff e8 b4 07 d7 ff b9 02 00 00 00 be 02 00 00 00 4c 89 ff 48
+c7 c2 40 4e 25 84 e8 2b c2 c4 02 e9 c9 fe ff ff e8 91 07 d7 ff <0f> 0b
+e8 8a 07 d7 ff 0f 0b e8 83 07 d7 ff 48 8d 5d ff e9 57 ff ff
+RSP: 0018:ffffc9000065bb60 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffffea0000670000 RCX: 0000000000000000
+RDX: ffff8880097fa240 RSI: ffffffff81608a9f RDI: ffffea0000670000
+RBP: ffffea0000670000 R08: 0000000000000001 R09: 0000000000000000
+R10: ffffc9000065b9f8 R11: 0000000000000003 R12: ffffffff81608820
+R13: ffffc9000065bc68 R14: 0000000000000000 R15: ffffc9000065bbf0
+FS:  0000000000000000(0000) GS:ffff88807dc00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f4aef93fb08 CR3: 0000000108cf2000 CR4: 0000000000750ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+PKRU: 55555554
+Call Trace:
+ do_invalidatepage -origin/mm/truncate.c:157 [inline]
+ truncate_cleanup_page+0x15c/0x280 -origin/mm/truncate.c:176
+ truncate_inode_pages_range+0x169/0xc30 -origin/mm/truncate.c:325
+ kill_bdev.isra.29+0x28/0x30
+ blkdev_flush_mapping+0x4c/0x130 -origin/block/bdev.c:658
+ blkdev_put_whole+0x54/0x60 -origin/block/bdev.c:689
+ blkdev_put+0x6f/0x210 -origin/block/bdev.c:953
+ blkdev_close+0x25/0x30 -origin/block/fops.c:459
+ __fput+0xdf/0x380 -origin/fs/file_table.c:280
+ delayed_fput+0x25/0x40 -origin/fs/file_table.c:308
+ process_one_work+0x359/0x850 -origin/kernel/workqueue.c:2297
+ worker_thread+0x41/0x4d0 -origin/kernel/workqueue.c:2444
+ kthread+0x178/0x1b0 -origin/kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 -origin/arch/x86/entry/entry_64.S:295
+Modules linked in:
+Dumping ftrace buffer:
+   (ftrace buffer empty)
+---[ end trace 9dbb8f58f2109f10 ]---
+RIP: 0010:block_invalidatepage+0x27f/0x2a0 -origin/fs/buffer.c:1510
+Code: ff ff e8 b4 07 d7 ff b9 02 00 00 00 be 02 00 00 00 4c 89 ff 48
+c7 c2 40 4e 25 84 e8 2b c2 c4 02 e9 c9 fe ff ff e8 91 07 d7 ff <0f> 0b
+e8 8a 07 d7 ff 0f 0b e8 83 07 d7 ff 48 8d 5d ff e9 57 ff ff
+RSP: 0018:ffffc9000065bb60 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffffea0000670000 RCX: 0000000000000000
+RDX: ffff8880097fa240 RSI: ffffffff81608a9f RDI: ffffea0000670000
+RBP: ffffea0000670000 R08: 0000000000000001 R09: 0000000000000000
+R10: ffffc9000065b9f8 R11: 0000000000000003 R12: ffffffff81608820
+R13: ffffc9000065bc68 R14: 0000000000000000 R15: ffffc9000065bbf0
+FS:  0000000000000000(0000) GS:ffff88807dc00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ff98674f000 CR3: 0000000106b2e000 CR4: 0000000000750ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+PKRU: 55555554
 
-Does something like:
+The debugging showed the page passed to invalidatepage is a huge page
+and the length is the size of huge page instead of single page due to
+read only FS THP support.  But block_invalidatepage() would throw BUG if
+the size is greater than single page.
 
-    // Enable pr_debugs in the btrfs module (can be builtin or loadable)
-    btrfs.dyndbg="+p"
-    // enable pr_debugs in all files under init/
-    // and the function parse_one, #cmt is stripped
-    dyndbg="file init/* +p #cmt ; func parse_one +p"
+However there is actually a bigger problem in invalidatepage().  All the
+implementations are *NOT* THP aware and hardcoded PAGE_SIZE.  Some triggers
+BUG(), like block_invalidatepage(), some just returns error if length is
+greater than PAGE_SIZE.
 
-Work for you both? I think that makes the advantages of $module.dyndbg=
-more clear and makes the usage of dyndbg= stick to strictly builtins.
-If so I'll respin this patch in v3 of the series.
+Converting PAGE_SIZE to thp_size() actually is not enough since the actual
+invalidation part just assumes single page is passed in.  Since other subpages
+may have private too because PG_private is per subpage so there may be
+multiple subpages have private.  This may prevent the THP from splitting
+and reclaiming since the extra refcount pins from private of subpages.
 
-Thanks,
-Andrew
+The complete fix seems not trivial and involve how to deal with huge
+page in page cache.  So the scope of this patch is limited to close the
+BUG at the moment.
 
-> 
-> > The first two patches look fine to me, so if you agree maybe just
-> > re-spin this one?
-> >
-> > Thanks,
-> >
-> > -Jason
-> >
-> > > +    // enable pr_debugs in all files under init/
-> > > +    // and the function pc87360_init_device, #cmt is stripped
-> > > +    dyndbg="file init/* +p #cmt ; func pc87360_init_device +p"
-> > >       // enable pr_debugs in 2 functions in a module loaded later
-> > >       pc87360.dyndbg="func pc87360_init_device +p; func pc87360_find +p"
-> >
-> 
+Fixes: eb6ecbed0aa2 ("mm, thp: relax the VM_DENYWRITE constraint on file-backed THPs")
+Reported-by: Hao Sun <sunhao.th@gmail.com>
+Tested-by: Hao Sun <sunhao.th@gmail.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Yang Shi <shy828301@gmail.com>
+---
+ fs/buffer.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/fs/buffer.c b/fs/buffer.c
+index ab7573d72dd7..4bcb54c4d1be 100644
+--- a/fs/buffer.c
++++ b/fs/buffer.c
+@@ -1507,7 +1507,7 @@ void block_invalidatepage(struct page *page, unsigned int offset,
+ 	/*
+ 	 * Check for overflow
+ 	 */
+-	BUG_ON(stop > PAGE_SIZE || stop < length);
++	BUG_ON(stop > thp_size(page) || stop < length);
+ 
+ 	head = page_buffers(page);
+ 	bh = head;
+@@ -1535,7 +1535,7 @@ void block_invalidatepage(struct page *page, unsigned int offset,
+ 	 * The get_block cached value has been unconditionally invalidated,
+ 	 * so real IO is not possible anymore.
+ 	 */
+-	if (length == PAGE_SIZE)
++	if (length >= PAGE_SIZE)
+ 		try_to_release_page(page, 0);
+ out:
+ 	return;
+-- 
+2.26.2
 
