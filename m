@@ -2,72 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42032410075
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 22:58:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA94341007B
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 23:03:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243655AbhIQU7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 16:59:40 -0400
-Received: from mail-oi1-f180.google.com ([209.85.167.180]:46990 "EHLO
-        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243817AbhIQU7j (ORCPT
+        id S243817AbhIQVEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 17:04:53 -0400
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:46762 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235643AbhIQVEw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 16:59:39 -0400
-Received: by mail-oi1-f180.google.com with SMTP id s69so8196381oie.13;
-        Fri, 17 Sep 2021 13:58:16 -0700 (PDT)
+        Fri, 17 Sep 2021 17:04:52 -0400
+Received: by mail-ot1-f47.google.com with SMTP id c8-20020a9d6c88000000b00517cd06302dso14563361otr.13;
+        Fri, 17 Sep 2021 14:03:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=h2nvr9WySpUfoUUOMesCSZna6xZu3VYn2QdrgFpGv/g=;
-        b=vbEJx4oBqZEAAuFnj+0WQk7bdRb2pCRG0aYsqFymVRiiyxfXCd+aWJQ6nuinlSc5h2
-         mOVBBWT0V7M9Ol0fl0H0m5fcno3lb3OAt94WFhkvJsVrIVIgVP1H18lEDpuRzuYxerqP
-         ydDirplvg/I1ncqUxhfmb+PlN4DM1gOD8f7nlNIaempM6FRXyexVYSYKm/w43r1+6mbL
-         IDD9B3SWJ8OU5bljM605alx3jYYUnwG5WWV0XSTGxH8wQfa+1fovKDEYG1n+FwA3kw4a
-         3PoLhAeLz/AIhYeujk0tW1mdDU+xTFr7V9dEV5rWHD78G4f3pVy+9YqYfpLlW2afJEyA
-         Oc6w==
-X-Gm-Message-State: AOAM533zp7p+jCwBIMo49hp+u+UCRSwtu3DGyNvgVECCTydU+rcwr/Zr
-        p2BdIuaCKmHqSBRXT6RNgw==
-X-Google-Smtp-Source: ABdhPJwydEOAYBxgQx86qLyGG4a09V4cQkiUoZcCtBoBkuTbIV4Yb0NldnGGiWeu+bj/32qE7SHiIg==
-X-Received: by 2002:aca:2b05:: with SMTP id i5mr5522594oik.55.1631912296452;
-        Fri, 17 Sep 2021 13:58:16 -0700 (PDT)
+        bh=bSRL/HAt3gwwiTvd49CidfkDbJhDEQUk/H1eOxq58lw=;
+        b=MaT0eS7993DozhC+TsLR780om+hQVHyfJ2Fit7cbBNulKjkvaa1Hox2rKqzb7RgJQl
+         lcMbIZdPfeDBH79S/tccBvgUFkzTFjjM3rK4g4D76me7fCUk0xZv1alj6owBJ1lNoA1T
+         IdomnIUk6O+rBVGzf63HVKwPOOsiz9KeG4U24OcWwFYWXoGk9tJ0by9KEqT2STuyPD1n
+         Bnzm5DJUEJeS6ncnms4uC9A2AZsaYG4xK+SzjbqF82fD0tNWXXTwhgqpVG7GLRKQGJ8m
+         6Sm36WWpbFiK0jBupBDZNJ/JDz/omKARa6eDazwIdNDAXMABAD2PMEEveS7fywgvDAXv
+         14Qg==
+X-Gm-Message-State: AOAM5313TALfXV7Kl4TTs+kiThNAFfC5dsAimOGl+58EVCNRQxI7nLk4
+        oYcyDB5lhsU4hr2JEipJVTcdp9FUlA==
+X-Google-Smtp-Source: ABdhPJyHEghgsCONkiA8TV/Uz/eGEB9pKxLPy0qAHmlMAmYXUJtC22LiPuviROkj6Xo/ikbU3cn/3A==
+X-Received: by 2002:a05:6830:1b78:: with SMTP id d24mr11253229ote.197.1631912609355;
+        Fri, 17 Sep 2021 14:03:29 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id b2sm1786450ook.46.2021.09.17.13.58.11
+        by smtp.gmail.com with ESMTPSA id a11sm1714818oiw.36.2021.09.17.14.03.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 13:58:12 -0700 (PDT)
-Received: (nullmailer pid 2146896 invoked by uid 1000);
-        Fri, 17 Sep 2021 20:58:11 -0000
-Date:   Fri, 17 Sep 2021 15:58:11 -0500
+        Fri, 17 Sep 2021 14:03:27 -0700 (PDT)
+Received: (nullmailer pid 2156706 invoked by uid 1000);
+        Fri, 17 Sep 2021 21:03:26 -0000
+Date:   Fri, 17 Sep 2021 16:03:26 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     David Brazdil <dbrazdil@google.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] of: restricted dma: Fix condition for rmem init
-Message-ID: <YUUBYx7qiwYjxhIG@robh.at.kernel.org>
-References: <20210917131423.2760155-1-dbrazdil@google.com>
+To:     David Heidelberg <david@ixit.cz>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>
+Subject: Re: [PATCH] dt-bindings: arm: Fix Toradex compatible typo
+Message-ID: <YUUCnosxz7uK4jaJ@robh.at.kernel.org>
+References: <20210912165120.188490-1-david@ixit.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210917131423.2760155-1-dbrazdil@google.com>
+In-Reply-To: <20210912165120.188490-1-david@ixit.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Sep 2021 14:14:23 +0100, David Brazdil wrote:
-> of_dma_set_restricted_buffer fails to handle negative return values from
-> of_property_count_elems_of_size, e.g. when the property does not exist.
-> This results in an attempt to assign a non-existent reserved memory
-> region to the device and a warning being printed. Fix the condition to
-> take negative values into account.
+On Sun, 12 Sep 2021 18:51:20 +0200, David Heidelberg wrote:
+> Fixes: f4d1577e9bc6 ("dt-bindings: arm: Convert Tegra board/soc bindings to json-schema")
 > 
-> Fixes: f3cfd136aef0 ("of: restricted dma: Don't fail device probe on
-> rmem init failure")
-> Cc: Will Deacon <will@kernel.org>
-> Signed-off-by: David Brazdil <dbrazdil@google.com>
+> Signed-off-by: David Heidelberg <david@ixit.cz>
 > ---
->  drivers/of/device.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
+>  Documentation/devicetree/bindings/arm/tegra.yaml | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
 
-Applied, thanks!
+Added Dmitry's commit msg suggestion and applied, thanks!
