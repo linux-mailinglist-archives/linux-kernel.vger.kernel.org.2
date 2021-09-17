@@ -2,117 +2,386 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF2114100DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 23:45:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5481F4100E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 23:46:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241921AbhIQVq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 17:46:59 -0400
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:49931 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231147AbhIQVq6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 17:46:58 -0400
-Received: from dread.disaster.area (pa49-195-238-16.pa.nsw.optusnet.com.au [49.195.238.16])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 00F248826F6;
-        Sat, 18 Sep 2021 07:45:29 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1mRLfk-00Dfe5-9E; Sat, 18 Sep 2021 07:45:28 +1000
-Date:   Sat, 18 Sep 2021 07:45:28 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     NeilBrown <neilb@suse.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-xfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH 5/6] XFS: remove congestion_wait() loop from kmem_alloc()
-Message-ID: <20210917214528.GR2361455@dread.disaster.area>
-References: <163184698512.29351.4735492251524335974.stgit@noble.brown>
- <163184741781.29351.4475236694432020436.stgit@noble.brown>
+        id S242004AbhIQVrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 17:47:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50942 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231147AbhIQVrV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 17:47:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F1A40611C8;
+        Fri, 17 Sep 2021 21:45:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631915159;
+        bh=7zTdpYwxjmexKAmPlX9fm8wT3BGL0kUjqkGEgiCkz2A=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=JYBPmjC1/cm/1ZRV7m+XQZIoo05Pb3QqclDN0TyOw9e2fNEV6IjDlBvOe404d0X8f
+         zM/coSleUt5aSXgI+e2Z98BRDCk1qL6hErbequ4v5gbrYr0ESLz4VjjWFeoZZVyduH
+         7whR6SCh0Ayp27B3YueWVUJEsyhf3kvV3bYyPOXvlVaQZEqTJOd/TS7dpPOOYkA9lB
+         Do+pOaPWQFvmL8tJdsU/f44VoAiTz0GBY4ZRk17EKVqwAe+jPFi7HZ1JvGYg0XliU2
+         lOlbVvNpV9nPsPkO8c3rY3YjeLtIHlDhdLEvW8uCHPjTwFiGpAxVbF8+u6PHxTCN5R
+         8/9+jDzQ9GUIw==
+Date:   Fri, 17 Sep 2021 14:45:57 -0700 (PDT)
+From:   Stefano Stabellini <sstabellini@kernel.org>
+X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
+To:     Oleksandr Andrushchenko <andr2000@gmail.com>
+cc:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        boris.ostrovsky@oracle.com, jgross@suse.com, julien@xen.org,
+        sstabellini@kernel.org, jbeulich@suse.com,
+        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+        Anastasiia Lukianenko <anastasiia_lukianenko@epam.com>
+Subject: Re: [PATCH] xen-pciback: allow compiling on other archs than x86
+In-Reply-To: <20210917130123.1764493-1-andr2000@gmail.com>
+Message-ID: <alpine.DEB.2.21.2109171442070.21985@sstabellini-ThinkPad-T480s>
+References: <20210917130123.1764493-1-andr2000@gmail.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <163184741781.29351.4475236694432020436.stgit@noble.brown>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=Tu+Yewfh c=1 sm=1 tr=0
-        a=DzKKRZjfViQTE5W6EVc0VA==:117 a=DzKKRZjfViQTE5W6EVc0VA==:17
-        a=kj9zAlcOel0A:10 a=7QKq2e-ADPsA:10 a=7-415B0cAAAA:8
-        a=v5R2KkZAp00oN_xiK1YA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 12:56:57PM +1000, NeilBrown wrote:
-> Documentation commment in gfp.h discourages indefinite retry loops on
-> ENOMEM and says of __GFP_NOFAIL that it
+Hi Oleksandr,
+
+Why do you want to enable pciback on ARM? Is it only to "disable" a PCI
+device in Dom0 so that it can be safely assigned to a DomU?
+
+I am asking because actually I don't think we want to enable the PV PCI
+backend feature of pciback on ARM, right? That would clash with the PCI
+assignment work you have been doing in Xen. They couldn't both work at
+the same time.
+
+If we only need pciback to "park" a device in Dom0, wouldn't it be
+possible and better to use pci-stub instead?
+
+
+On Fri, 17 Sep 2021, Oleksandr Andrushchenko wrote:
+> From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 > 
->     is definitely preferable to use the flag rather than opencode
->     endless loop around allocator.
+> Xen-pciback driver was designed to be built for x86 only. But it
+> can also be used by other architectures, e.g. Arm.
+> Re-structure the driver in a way that it can be built for other
+> platforms as well.
 > 
-> So remove the loop, instead specifying __GFP_NOFAIL if KM_MAYFAIL was
-> not given.
+> Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+> Signed-off-by: Anastasiia Lukianenko <anastasiia_lukianenko@epam.com>
 > 
-> As we no longer have the opportunity to report a warning after some
-> failures, clear __GFP_NOWARN so that the default warning (rate-limited
-> to 1 ever 10 seconds) will be reported instead.
-> 
-> Signed-off-by: NeilBrown <neilb@suse.de>
 > ---
->  fs/xfs/kmem.c |   19 ++++++-------------
->  1 file changed, 6 insertions(+), 13 deletions(-)
+> Tested on Arm and x86.
+> ---
+>  arch/x86/include/asm/xen/pci.h     | 24 ----------
+>  arch/x86/pci/xen.c                 | 74 +----------------------------
+>  drivers/xen/Kconfig                |  2 +-
+>  drivers/xen/events/events_base.c   |  1 +
+>  drivers/xen/pci.c                  | 75 ++++++++++++++++++++++++++++++
+>  drivers/xen/xen-pciback/pci_stub.c |  3 +-
+>  drivers/xen/xen-pciback/xenbus.c   |  2 +-
+>  include/xen/pci.h                  | 34 ++++++++++++++
+>  8 files changed, 115 insertions(+), 100 deletions(-)
+>  create mode 100644 include/xen/pci.h
 > 
-> diff --git a/fs/xfs/kmem.c b/fs/xfs/kmem.c
-> index 6f49bf39183c..575a58e61391 100644
-> --- a/fs/xfs/kmem.c
-> +++ b/fs/xfs/kmem.c
-> @@ -11,21 +11,14 @@
->  void *
->  kmem_alloc(size_t size, xfs_km_flags_t flags)
->  {
-> -	int	retries = 0;
->  	gfp_t	lflags = kmem_flags_convert(flags);
-> -	void	*ptr;
+> diff --git a/arch/x86/include/asm/xen/pci.h b/arch/x86/include/asm/xen/pci.h
+> index 3506d8c598c1..9ff7b49bca08 100644
+> --- a/arch/x86/include/asm/xen/pci.h
+> +++ b/arch/x86/include/asm/xen/pci.h
+> @@ -14,30 +14,6 @@ static inline int pci_xen_hvm_init(void)
+>  	return -1;
+>  }
+>  #endif
+> -#if defined(CONFIG_XEN_DOM0)
+> -int __init pci_xen_initial_domain(void);
+> -int xen_find_device_domain_owner(struct pci_dev *dev);
+> -int xen_register_device_domain_owner(struct pci_dev *dev, uint16_t domain);
+> -int xen_unregister_device_domain_owner(struct pci_dev *dev);
+> -#else
+> -static inline int __init pci_xen_initial_domain(void)
+> -{
+> -	return -1;
+> -}
+> -static inline int xen_find_device_domain_owner(struct pci_dev *dev)
+> -{
+> -	return -1;
+> -}
+> -static inline int xen_register_device_domain_owner(struct pci_dev *dev,
+> -						   uint16_t domain)
+> -{
+> -	return -1;
+> -}
+> -static inline int xen_unregister_device_domain_owner(struct pci_dev *dev)
+> -{
+> -	return -1;
+> -}
+> -#endif
 >  
->  	trace_kmem_alloc(size, flags, _RET_IP_);
+>  #if defined(CONFIG_PCI_MSI)
+>  #if defined(CONFIG_PCI_XEN)
+> diff --git a/arch/x86/pci/xen.c b/arch/x86/pci/xen.c
+> index 3d41a09c2c14..4a45b0bf9ae4 100644
+> --- a/arch/x86/pci/xen.c
+> +++ b/arch/x86/pci/xen.c
+> @@ -23,6 +23,7 @@
 >  
-> -	do {
-> -		ptr = kmalloc(size, lflags);
-> -		if (ptr || (flags & KM_MAYFAIL))
-> -			return ptr;
-> -		if (!(++retries % 100))
-> -			xfs_err(NULL,
-> -	"%s(%u) possible memory allocation deadlock size %u in %s (mode:0x%x)",
-> -				current->comm, current->pid,
-> -				(unsigned int)size, __func__, lflags);
-> -		congestion_wait(BLK_RW_ASYNC, HZ/50);
-> -	} while (1);
-> +	if (!(flags & KM_MAYFAIL)) {
-> +		lflags |= __GFP_NOFAIL;
-> +		lflags &= ~__GFP_NOWARN;
+>  #include <xen/features.h>
+>  #include <xen/events.h>
+> +#include <xen/pci.h>
+>  #include <asm/xen/pci.h>
+>  #include <asm/xen/cpuid.h>
+>  #include <asm/apic.h>
+> @@ -583,77 +584,4 @@ int __init pci_xen_initial_domain(void)
+>  	}
+>  	return 0;
+>  }
+> -
+> -struct xen_device_domain_owner {
+> -	domid_t domain;
+> -	struct pci_dev *dev;
+> -	struct list_head list;
+> -};
+> -
+> -static DEFINE_SPINLOCK(dev_domain_list_spinlock);
+> -static struct list_head dev_domain_list = LIST_HEAD_INIT(dev_domain_list);
+> -
+> -static struct xen_device_domain_owner *find_device(struct pci_dev *dev)
+> -{
+> -	struct xen_device_domain_owner *owner;
+> -
+> -	list_for_each_entry(owner, &dev_domain_list, list) {
+> -		if (owner->dev == dev)
+> -			return owner;
+> -	}
+> -	return NULL;
+> -}
+> -
+> -int xen_find_device_domain_owner(struct pci_dev *dev)
+> -{
+> -	struct xen_device_domain_owner *owner;
+> -	int domain = -ENODEV;
+> -
+> -	spin_lock(&dev_domain_list_spinlock);
+> -	owner = find_device(dev);
+> -	if (owner)
+> -		domain = owner->domain;
+> -	spin_unlock(&dev_domain_list_spinlock);
+> -	return domain;
+> -}
+> -EXPORT_SYMBOL_GPL(xen_find_device_domain_owner);
+> -
+> -int xen_register_device_domain_owner(struct pci_dev *dev, uint16_t domain)
+> -{
+> -	struct xen_device_domain_owner *owner;
+> -
+> -	owner = kzalloc(sizeof(struct xen_device_domain_owner), GFP_KERNEL);
+> -	if (!owner)
+> -		return -ENODEV;
+> -
+> -	spin_lock(&dev_domain_list_spinlock);
+> -	if (find_device(dev)) {
+> -		spin_unlock(&dev_domain_list_spinlock);
+> -		kfree(owner);
+> -		return -EEXIST;
+> -	}
+> -	owner->domain = domain;
+> -	owner->dev = dev;
+> -	list_add_tail(&owner->list, &dev_domain_list);
+> -	spin_unlock(&dev_domain_list_spinlock);
+> -	return 0;
+> -}
+> -EXPORT_SYMBOL_GPL(xen_register_device_domain_owner);
+> -
+> -int xen_unregister_device_domain_owner(struct pci_dev *dev)
+> -{
+> -	struct xen_device_domain_owner *owner;
+> -
+> -	spin_lock(&dev_domain_list_spinlock);
+> -	owner = find_device(dev);
+> -	if (!owner) {
+> -		spin_unlock(&dev_domain_list_spinlock);
+> -		return -ENODEV;
+> -	}
+> -	list_del(&owner->list);
+> -	spin_unlock(&dev_domain_list_spinlock);
+> -	kfree(owner);
+> -	return 0;
+> -}
+> -EXPORT_SYMBOL_GPL(xen_unregister_device_domain_owner);
+>  #endif
+> diff --git a/drivers/xen/Kconfig b/drivers/xen/Kconfig
+> index a37eb52fb401..057ddf61ef61 100644
+> --- a/drivers/xen/Kconfig
+> +++ b/drivers/xen/Kconfig
+> @@ -182,7 +182,7 @@ config SWIOTLB_XEN
+>  
+>  config XEN_PCIDEV_BACKEND
+>  	tristate "Xen PCI-device backend driver"
+> -	depends on PCI && X86 && XEN
+> +	depends on PCI && XEN
+>  	depends on XEN_BACKEND
+>  	default m
+>  	help
+> diff --git a/drivers/xen/events/events_base.c b/drivers/xen/events/events_base.c
+> index a78704ae3618..35493ff0d146 100644
+> --- a/drivers/xen/events/events_base.c
+> +++ b/drivers/xen/events/events_base.c
+> @@ -65,6 +65,7 @@
+>  #include <xen/interface/vcpu.h>
+>  #include <xen/xenbus.h>
+>  #include <asm/hw_irq.h>
+> +#include <xen/pci.h>
+>  
+>  #include "events_internal.h"
+>  
+> diff --git a/drivers/xen/pci.c b/drivers/xen/pci.c
+> index 224df03ce42e..fc8c1249d49f 100644
+> --- a/drivers/xen/pci.c
+> +++ b/drivers/xen/pci.c
+> @@ -254,3 +254,78 @@ static int xen_mcfg_late(void)
+>  	return 0;
+>  }
+>  #endif
+> +
+> +#ifdef CONFIG_XEN_DOM0
+> +struct xen_device_domain_owner {
+> +	domid_t domain;
+> +	struct pci_dev *dev;
+> +	struct list_head list;
+> +};
+> +
+> +static DEFINE_SPINLOCK(dev_domain_list_spinlock);
+> +static struct list_head dev_domain_list = LIST_HEAD_INIT(dev_domain_list);
+> +
+> +static struct xen_device_domain_owner *find_device(struct pci_dev *dev)
+> +{
+> +	struct xen_device_domain_owner *owner;
+> +
+> +	list_for_each_entry(owner, &dev_domain_list, list) {
+> +		if (owner->dev == dev)
+> +			return owner;
 > +	}
-
-This logic should really be in kmem_flags_convert() where the gfp
-flags are set up. kmem_flags_convert() is only called by
-kmem_alloc() now so you should just be able to hack that logic
-to do exactly what is necessary.
-
-FWIW, We've kinda not been caring about warts in this code because
-the next step for kmem_alloc is to remove kmem_alloc/kmem_zalloc
-completely and replace all the callers with kmalloc/kzalloc being
-passed the correct gfp flags. There's about 30 kmem_alloc() callers
-and 45 kmem_zalloc() calls left to be converted before kmem.[ch] can
-go away completely....
-
-Cheers,
-
-Dave.
-
--- 
-Dave Chinner
-david@fromorbit.com
+> +	return NULL;
+> +}
+> +
+> +int xen_find_device_domain_owner(struct pci_dev *dev)
+> +{
+> +	struct xen_device_domain_owner *owner;
+> +	int domain = -ENODEV;
+> +
+> +	spin_lock(&dev_domain_list_spinlock);
+> +	owner = find_device(dev);
+> +	if (owner)
+> +		domain = owner->domain;
+> +	spin_unlock(&dev_domain_list_spinlock);
+> +	return domain;
+> +}
+> +EXPORT_SYMBOL_GPL(xen_find_device_domain_owner);
+> +
+> +int xen_register_device_domain_owner(struct pci_dev *dev, uint16_t domain)
+> +{
+> +	struct xen_device_domain_owner *owner;
+> +
+> +	owner = kzalloc(sizeof(struct xen_device_domain_owner), GFP_KERNEL);
+> +	if (!owner)
+> +		return -ENODEV;
+> +
+> +	spin_lock(&dev_domain_list_spinlock);
+> +	if (find_device(dev)) {
+> +		spin_unlock(&dev_domain_list_spinlock);
+> +		kfree(owner);
+> +		return -EEXIST;
+> +	}
+> +	owner->domain = domain;
+> +	owner->dev = dev;
+> +	list_add_tail(&owner->list, &dev_domain_list);
+> +	spin_unlock(&dev_domain_list_spinlock);
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(xen_register_device_domain_owner);
+> +
+> +int xen_unregister_device_domain_owner(struct pci_dev *dev)
+> +{
+> +	struct xen_device_domain_owner *owner;
+> +
+> +	spin_lock(&dev_domain_list_spinlock);
+> +	owner = find_device(dev);
+> +	if (!owner) {
+> +		spin_unlock(&dev_domain_list_spinlock);
+> +		return -ENODEV;
+> +	}
+> +	list_del(&owner->list);
+> +	spin_unlock(&dev_domain_list_spinlock);
+> +	kfree(owner);
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(xen_unregister_device_domain_owner);
+> +#endif
+> diff --git a/drivers/xen/xen-pciback/pci_stub.c b/drivers/xen/xen-pciback/pci_stub.c
+> index f8e4faa96ad6..bba527620507 100644
+> --- a/drivers/xen/xen-pciback/pci_stub.c
+> +++ b/drivers/xen/xen-pciback/pci_stub.c
+> @@ -19,7 +19,8 @@
+>  #include <linux/sched.h>
+>  #include <linux/atomic.h>
+>  #include <xen/events.h>
+> -#include <asm/xen/pci.h>
+> +#include <xen/pci.h>
+> +#include <xen/xen.h>
+>  #include <asm/xen/hypervisor.h>
+>  #include <xen/interface/physdev.h>
+>  #include "pciback.h"
+> diff --git a/drivers/xen/xen-pciback/xenbus.c b/drivers/xen/xen-pciback/xenbus.c
+> index c09c7ebd6968..da34ce85dc88 100644
+> --- a/drivers/xen/xen-pciback/xenbus.c
+> +++ b/drivers/xen/xen-pciback/xenbus.c
+> @@ -14,7 +14,7 @@
+>  #include <linux/workqueue.h>
+>  #include <xen/xenbus.h>
+>  #include <xen/events.h>
+> -#include <asm/xen/pci.h>
+> +#include <xen/pci.h>
+>  #include "pciback.h"
+>  
+>  #define INVALID_EVTCHN_IRQ  (-1)
+> diff --git a/include/xen/pci.h b/include/xen/pci.h
+> new file mode 100644
+> index 000000000000..5c988d5ff38f
+> --- /dev/null
+> +++ b/include/xen/pci.h
+> @@ -0,0 +1,34 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +
+> +#ifndef __XEN_PCI_H__
+> +#define __XEN_PCI_H__
+> +
+> +#if defined(CONFIG_XEN_DOM0)
+> +int __init pci_xen_initial_domain(void);
+> +int xen_find_device_domain_owner(struct pci_dev *dev);
+> +int xen_register_device_domain_owner(struct pci_dev *dev, uint16_t domain);
+> +int xen_unregister_device_domain_owner(struct pci_dev *dev);
+> +#else
+> +static inline int __init pci_xen_initial_domain(void)
+> +{
+> +	return -1;
+> +}
+> +
+> +static inline int xen_find_device_domain_owner(struct pci_dev *dev)
+> +{
+> +	return -1;
+> +}
+> +
+> +static inline int xen_register_device_domain_owner(struct pci_dev *dev,
+> +						   uint16_t domain)
+> +{
+> +	return -1;
+> +}
+> +
+> +static inline int xen_unregister_device_domain_owner(struct pci_dev *dev)
+> +{
+> +	return -1;
+> +}
+> +#endif
+> +
+> +#endif
+> -- 
+> 2.25.1
+> 
