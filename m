@@ -2,90 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A46740F972
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 15:41:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BAC540F97E
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 15:46:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240099AbhIQNmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 09:42:47 -0400
-Received: from smtp1.axis.com ([195.60.68.17]:39634 "EHLO smtp1.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238835AbhIQNmr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 09:42:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1631886085;
-  x=1663422085;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=BXIhmjeQOvzVdk6My5DdxNPU+JozfdwYeoFFjVfD5xA=;
-  b=gyKSLvcG7eSMVA3iKnewDSbmT9isnJJBjXis2THQScSknHySf8dPKJKS
-   o9/qvuDRCZDBnFoM7Bg/iVuIfJzRFT8SaOfysSQc1rMXKLEJvcaYoYk22
-   bskpKNTesiBGcq/dGApNtavraA2L4KU1yAVodv9zE+9b3/UJ9DtlXCv/r
-   bqt8K5zySqzr10AzzkCnnJ0c3Id8r9ofpH/W9sXA9hbBmzelLBckka46G
-   Nx3iwIrpzCo9pjvShVPTjI/B7GPoDzvWgJDCe+AkinhBg3E8leP3TuDhw
-   0AD75ZHU4sozH6TWJkGm1YCH7YBqbBk8hg56yOea7onczf+E5Jfkep/tr
-   w==;
-Date:   Fri, 17 Sep 2021 15:41:23 +0200
-From:   Jesper Nilsson <jesper.nilsson@axis.com>
-To:     Christian =?iso-8859-1?Q?L=F6hle?= <CLoehle@hyperstone.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "marten.lindahl@axis.com" <marten.lindahl@axis.com>,
-        "jh80.chung@samsung.com" <jh80.chung@samsung.com>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>
-Subject: Re: [PATCH] mmc: dw_mmc: avoid long timeout if register invalid
-Message-ID: <20210917134123.GL12780@axis.com>
-References: <bf19053cf6f547bcbb364975cda84c30@hyperstone.com>
+        id S240917AbhIQNr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 09:47:27 -0400
+Received: from mail-wm1-f50.google.com ([209.85.128.50]:35616 "EHLO
+        mail-wm1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234565AbhIQNr0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 09:47:26 -0400
+Received: by mail-wm1-f50.google.com with SMTP id z184-20020a1c7ec1000000b003065f0bc631so10053440wmc.0;
+        Fri, 17 Sep 2021 06:46:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=jtV4/xfInTZf41NWH1So01AC4QPok5lP65WRPPuIhMw=;
+        b=0XI6HZ4771LNlFMfB9+65T+kHzlpoqs1bV0ZTIrXAjSSHAcL0okY/XVGosxUYGTUeP
+         h3G8DefVf3/Lk971yVyCu0SSUn4i4lu8Y2/ZNj9id+WDa4BYp4xrtZwM/euuZhjbmTUN
+         /1x8fVMWuMCB29EMjXFqhazclC8CDE9Qbhq9kkwDUFSHEOESF8Zv0oXGDwym8v/7ksbV
+         soUuYT9HnCZMhY99d5oUTMvzz8w5sFnUbcguc4SBu1tqchy/C7r5udaXrZ1rGfdcWhaA
+         +XsVSavf1bfm/JELF/RZGNDiafgJ6slwE4O50eLXURPcRVHD4MA+OZPmUDlcjxRuvBcL
+         Af6g==
+X-Gm-Message-State: AOAM532YvEdMuTOiNTd2eUGDIHq+H9C5VIhfhBLUQjEeAVwe3LPkE10h
+        V5fsSE1RizJm5n7850vEluQ=
+X-Google-Smtp-Source: ABdhPJysNpzd0PvoIrDOBYNm30BKjCMBzyGPw0tVpVUIYKahLqzoPZ8Lk3lHWdX8wOjZ3Mrydn5X6g==
+X-Received: by 2002:a7b:c5d8:: with SMTP id n24mr10652113wmk.51.1631886363285;
+        Fri, 17 Sep 2021 06:46:03 -0700 (PDT)
+Received: from rocinante ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id e2sm6878747wra.40.2021.09.17.06.46.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Sep 2021 06:46:02 -0700 (PDT)
+Date:   Fri, 17 Sep 2021 15:46:01 +0200
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     brookxu <brookxu.cn@gmail.com>
+Cc:     jonathan.derrick@intel.com, lorenzo.pieralisi@arm.com,
+        robh@kernel.org, bhelgaas@google.com, helgaas@kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] PCI: vmd: Assign a number to each VMD controller
+Message-ID: <20210917134601.GA1518947@rocinante>
+References: <1631884404-24141-1-git-send-email-brookxu.cn@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <bf19053cf6f547bcbb364975cda84c30@hyperstone.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1631884404-24141-1-git-send-email-brookxu.cn@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 07:50:44AM +0000, Christian Lˆhle wrote:
-> Set the limit to 1s if the register is at reset value.
+Hi!
 
-One second could be to short, we have seen some cards take up
-to 10s on write operations. Although that was quite a few years ago.
+Very nice!
 
-TMOUT is only used for reads if I understand correctly,
-so it should be ok anyways.
-
-/Jesper
-
-> Signed-off-by: Christian Loehle <cloehle@hyperstone.com>
-> ---
->  drivers/mmc/host/dw_mmc.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
+> If the system has multiple VMD controllers, the driver does not assign
+> a number to each controller, so when analyzing the interrupt through
+> /proc/interrupts, the names of all controllers are the same, which is
+> not very convenient for problem analysis. Here, try to assign a number
+> to each VMD controller.
 > 
-> diff --git a/drivers/mmc/host/dw_mmc.c b/drivers/mmc/host/dw_mmc.c
-> index 6578cc64ae9e..cd9a6e0a7449 100644
-> --- a/drivers/mmc/host/dw_mmc.c
-> +++ b/drivers/mmc/host/dw_mmc.c
-> @@ -1983,6 +1983,14 @@ static void dw_mci_set_drto(struct dw_mci *host)
->  	/* add a bit spare time */
->  	drto_ms += 10;
->  
-> +	/*
-> +	 * If TMOUT register still holds the reset value the above calculation
-> +	 * would yield a timeout of over 167 seconds, limit it to 1000ms.
-> +	 * Normal reads/writes should not take anywhere close to 120s.
-> +	 */
-> +	if (drto_ms > 120000)
-> +		drto_ms = 1000;
-> +
->  	spin_lock_irqsave(&host->irq_lock, irqflags);
->  	if (!test_bit(EVENT_DATA_COMPLETE, &host->pending_events))
->  		mod_timer(&host->dto_timer,
-> -- 
-> 2.32.0
-> Hyperstone GmbH | Line-Eid-Strasse 3 | 78467 Konstanz
-> Managing Directors: Dr. Jan Peter Berns.
-> Commercial register of local courts: Freiburg HRB381782
+> Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+> Reviewed-by: Jon Derrick <jonathan.derrick@intel.com>
 
-/^JN - Jesper Nilsson
--- 
-               Jesper Nilsson -- jesper.nilsson@axis.com
+Reviewed-by: Krzysztof Wilczy≈Ñski <kw@linux.com>
+
+	Krzysztof
