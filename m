@@ -2,103 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C633C40FFD3
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 21:26:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAC0640FFD5
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 21:27:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243656AbhIQT1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 15:27:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48332 "EHLO
+        id S241886AbhIQT2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 15:28:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231864AbhIQT1j (ORCPT
+        with ESMTP id S231864AbhIQT2o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 15:27:39 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5E85C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 12:26:16 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id d11so7493087ilc.8
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 12:26:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LfjPbohhavkhWKwUH/1kohR8OTnMGA2qFf1xFiq2UHI=;
-        b=Lo+woY7Spj8UgYNNeMHQdnMWU2klrZ/GBMQ5e6FdAoGYqsYn5+G5X8wBnUoZFSsJEe
-         poHOvO/0mVPmln7opKC0a5Wib3EmkEzGmvUPq+Rb/RqI9chpE4ieOOAxd5r73EHJ/OMl
-         PQntOfNV9bLZZyW2qHGIH98GfWG8TXul36wUI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LfjPbohhavkhWKwUH/1kohR8OTnMGA2qFf1xFiq2UHI=;
-        b=YffTvizZiB6zBVFr0xPPPN9z2VBu6sAELva9O3GpyWERawB2APOSbGn57JNPr/WbiB
-         MXUxBmM6TyAMvSJMsyuq2Yhy/40kxig+Z+hq63VE6POiVg16sW+tFbsJb3RxCZK1cHXV
-         IaeXWw8AXE86k40hJRneF+ztYbV5cTSWK8y4efg8/Y7TmwoD3urEQCJAuTQDcHc9q5/+
-         lA8NZDfzMIaJasE8gSDKSXQEtqlqztljQ84KIi8i4MUrrptOWSq3F1SdK++ygAloRyWp
-         uDC8W8zZxacH++tMaPvnAU/fuWGBnLQTeNzbXotoXg3aQH5kxsFMJaATwegGRbRcTDJR
-         PcsQ==
-X-Gm-Message-State: AOAM530S81JAaK/BYKP9SNHx9gRpmIcUVR3INzlhj8efjYet5JxmTcMA
-        8hxZ2FRDq+JolwoMW4EcEXI4lg==
-X-Google-Smtp-Source: ABdhPJyM9NIWQgoA1uI3YhwlV9QCsoV76t9AMOguXV/oSCSoFT/5S3blhepGLBj6aij3GGKOp05Z5A==
-X-Received: by 2002:a92:c145:: with SMTP id b5mr8896077ilh.203.1631906776241;
-        Fri, 17 Sep 2021 12:26:16 -0700 (PDT)
-Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id 9sm4049208ily.9.2021.09.17.12.26.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 12:26:15 -0700 (PDT)
-From:   Shuah Khan <skhan@linuxfoundation.org>
-To:     davem@davemloft.net, kuba@kernel.org, shuah@kernel.org
-Cc:     Shuah Khan <skhan@linuxfoundation.org>, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] selftests: net: af_unix: Fix incorrect args in test result msg
-Date:   Fri, 17 Sep 2021 13:26:14 -0600
-Message-Id: <20210917192614.24862-1-skhan@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.2
+        Fri, 17 Sep 2021 15:28:44 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D1E1C061574;
+        Fri, 17 Sep 2021 12:27:22 -0700 (PDT)
+Date:   Fri, 17 Sep 2021 19:27:19 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1631906840;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=me2BWA/5YAvTVoJFvL2wGRYy0dapHMyHIG3V9ptKeQM=;
+        b=hRQ7GibP4Jm/ZRBUTlbSn7UUGAgfXz0IUTEFyWuPKeWJlHpzFW8xmM7/vFgwR18wkdLi9+
+        NWJw9dvhHa15jrPfpmZ6y7hgRNFXi2SzfZvWsfijeT7P3+Dewfz4m3zAG9Ev20UQHb9CSL
+        QdMXB9fNRLr+Q6XrTwuAgHQwKoCLwwELtie1p8mgaXh60f2R/dr4fmafj/RJ7SA/qReN8i
+        CnO4Ai5WA/8feAyqkwnvXnXFkz1Jf2MY+LA2Jg3cCoe6qCW3Cs33AaKZbZFsbQ0IvAhq2R
+        bxl6Ms3WxdBGUymyJJ1eLK6rBGNOGoKZ99FIH3bmvLQXigBDWebWjZVSlup/0Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1631906840;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=me2BWA/5YAvTVoJFvL2wGRYy0dapHMyHIG3V9ptKeQM=;
+        b=Ik1ST8zMwY6+lsKAn4W39Kmwm0Y0s9dsW6R6w9Ka0U3RkaYhOoBRXMhYdoceLN3Nv6/YdA
+        zC/T2EDqXhW8dODQ==
+From:   "tip-bot2 for Tim Gardner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cleanups] x86/smp: Remove unnecessary assignment to local
+ var freq_scale
+Cc:     Tim Gardner <tim.gardner@canonical.com>,
+        Borislav Petkov <bp@suse.de>,
+        Giovanni Gherdovich <ggherdovich@suse.cz>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210910184405.24422-1-tim.gardner@canonical.com>
+References: <20210910184405.24422-1-tim.gardner@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Message-ID: <163190683957.25758.3367474272186551096.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the args to fprintf(). Splitting the message ends up passing
-incorrect arg for "sigurg %d" and an extra arg overall. The test
-result message ends up incorrect.
+The following commit has been merged into the x86/cleanups branch of tip:
 
-test_unix_oob.c: In function ‘main’:
-test_unix_oob.c:274:43: warning: format ‘%d’ expects argument of type ‘int’, but argument 3 has type ‘char *’ [-Wformat=]
-  274 |   fprintf(stderr, "Test 3 failed, sigurg %d len %d OOB %c ",
-      |                                          ~^
-      |                                           |
-      |                                           int
-      |                                          %s
-  275 |   "atmark %d\n", signal_recvd, len, oob, atmark);
-      |   ~~~~~~~~~~~~~
-      |   |
-      |   char *
-test_unix_oob.c:274:19: warning: too many arguments for format [-Wformat-extra-args]
-  274 |   fprintf(stderr, "Test 3 failed, sigurg %d len %d OOB %c ",
+Commit-ID:     85784470efa2d5733e86679ba05d310ece81b20f
+Gitweb:        https://git.kernel.org/tip/85784470efa2d5733e86679ba05d310ece81b20f
+Author:        Tim Gardner <tim.gardner@canonical.com>
+AuthorDate:    Fri, 10 Sep 2021 12:44:05 -06:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Fri, 17 Sep 2021 21:20:34 +02:00
 
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+x86/smp: Remove unnecessary assignment to local var freq_scale
+
+Coverity warns of an unused value in arch_scale_freq_tick():
+
+  CID 100778 (#1 of 1): Unused value (UNUSED_VALUE)
+  assigned_value: Assigning value 1024ULL to freq_scale here, but that stored
+  value is overwritten before it can be used.
+
+It was introduced by commit:
+
+  e2b0d619b400a ("x86, sched: check for counters overflow in frequency invariant accounting")
+
+Remove the variable initializer.
+
+Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Giovanni Gherdovich <ggherdovich@suse.cz>
+Link: https://lkml.kernel.org/r/20210910184405.24422-1-tim.gardner@canonical.com
 ---
- tools/testing/selftests/net/af_unix/test_unix_oob.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ arch/x86/kernel/smpboot.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/net/af_unix/test_unix_oob.c b/tools/testing/selftests/net/af_unix/test_unix_oob.c
-index 0f3e3763f4f8..3dece8b29253 100644
---- a/tools/testing/selftests/net/af_unix/test_unix_oob.c
-+++ b/tools/testing/selftests/net/af_unix/test_unix_oob.c
-@@ -271,8 +271,9 @@ main(int argc, char **argv)
- 	read_oob(pfd, &oob);
+diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+index 85f6e24..c453b82 100644
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -2166,7 +2166,7 @@ DEFINE_PER_CPU(unsigned long, arch_freq_scale) = SCHED_CAPACITY_SCALE;
  
- 	if (!signal_recvd || len != 127 || oob != '%' || atmark != 1) {
--		fprintf(stderr, "Test 3 failed, sigurg %d len %d OOB %c ",
--		"atmark %d\n", signal_recvd, len, oob, atmark);
-+		fprintf(stderr,
-+			"Test 3 failed, sigurg %d len %d OOB %c atmark %d\n",
-+			signal_recvd, len, oob, atmark);
- 		die(1);
- 	}
+ void arch_scale_freq_tick(void)
+ {
+-	u64 freq_scale = SCHED_CAPACITY_SCALE;
++	u64 freq_scale;
+ 	u64 aperf, mperf;
+ 	u64 acnt, mcnt;
  
--- 
-2.30.2
-
