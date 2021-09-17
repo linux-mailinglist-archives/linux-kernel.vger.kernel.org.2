@@ -2,260 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8581A40F3B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 10:08:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D35E40F3D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 10:09:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230421AbhIQIJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 04:09:05 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:20941 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243584AbhIQIDm (ORCPT
+        id S245505AbhIQIKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 04:10:55 -0400
+Received: from esa12.fujitsucc.c3s2.iphmx.com ([216.71.156.125]:33731 "EHLO
+        esa12.fujitsucc.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245455AbhIQIKt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 04:03:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1631865739;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KBIJbtxqpsvYfSGsoXWpkXUV/K2kqD11Dmr/jOFu7SA=;
-        b=A+ss+0LKpGmwJ+YeZZtJOqiKQi9+Or2AzrQAcOGiFOoJiFPZH2SqIwV391CB+C/Nwvowck
-        ST9la2FptIoBfLy2YubzOIkhysgSs1+yNe6zps7ocaBYuc3BtpsYE9xi6HeCODXhV2LiZf
-        2iNtX9EEhRCw5BxwXDkkDHxlPNWc5mI=
-Received: from EUR02-HE1-obe.outbound.protection.outlook.com
- (mail-he1eur02lp2051.outbound.protection.outlook.com [104.47.5.51]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- de-mta-23-CIeg8T_XOUKhUb9NNwS0Wg-1; Fri, 17 Sep 2021 10:02:17 +0200
-X-MC-Unique: CIeg8T_XOUKhUb9NNwS0Wg-1
+        Fri, 17 Sep 2021 04:10:49 -0400
+X-Greylist: delayed 312 seconds by postgrey-1.27 at vger.kernel.org; Fri, 17 Sep 2021 04:10:48 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
+  t=1631866168; x=1663402168;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=XehYVYDpTzNgbW8Ag5WGzI1vd5bUAEPlZIPJnFlz74E=;
+  b=ti0dFiqeElGJPwBD1VParusp83OeqCQXlTOz9RGwRjfRR8GBfxvgyVgX
+   dOV7VT8FBCvARLdQHXMsXPSfmaiVAZYspJxcMccNvVXbHcEvsJcXl9FkY
+   B1hvFhBDayBlcKliIAYBF+X7A8ib5/SnJipLwasayBjoxwYurc91YAvWi
+   6gdS8vCaaG5cSsoe6SMIVFKuA1E0Yhb5LAraaxWv3wlM3yCmnSpEFtDWF
+   9kMHnCKAGUCbwcC/BABjKVFrZts7lcUQOBaIxtSQySLXIRvUAr0GXJQw7
+   qFkp32rTKX0e+plUHWAl8PyQ5O333Th5KenCBniD32csttBKDUMNHnjfM
+   w==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10109"; a="39460414"
+X-IronPort-AV: E=Sophos;i="5.85,300,1624287600"; 
+   d="scan'208";a="39460414"
+Received: from mail-ty1jpn01lp2055.outbound.protection.outlook.com (HELO JPN01-TY1-obe.outbound.protection.outlook.com) ([104.47.93.55])
+  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2021 17:04:07 +0900
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SMpbiV15scZTEJKI9fg1XxaSWkfmDvG8fKretbzbYe4xaDgkUH/PnyePmClvRQ47psbibXLbi+qrLeeomrZzReqquBQfnrDoD+jSVJJ3xQwU1jS/BoM6mrgVXjqVgMYMgVK4qnZXj931FQv0TOnRvGl2xxApkgZEPMPMFEwqxD0SnuMFCWGofla1ssbwC+j7EUyongKqCau1IZIlCfOdKhNGUOBq/1s4kRGRaC78fM6VKvhnCrkTyKcoOnRubadSB7l4owRsX+QdHbje0uvnP200GbzYj7jUG0Ecv/ufSYIrVOp1oTgsCaUsVMIRGVLHUMVD9hFwO2nb7BWqNh19BQ==
+ b=lx4JxX6EH/Es5fGGTqn1ARxkt+ursP0vwyA2go5/4NuVgnMe/4oJnqcXmoalEU45Ouqee2VuSLNVQFMdDtbTfL/xIlzfjGGigoj3zK1xO7spCpHs3y1FeTi0sdbuhLP7M9Qxa0heHcVhbLMtBZr9JyxcvHgwQP5Cz78qIKyfdI62ZAZKZ6WT9Lzot4wHr4VR02KfGkSniZMVNlDEUGzw8WkhI3RQBnP0BIT8HgfN3RmaQ1+DdmEr5LKGXK+RZUWmdy7gsk0Nu792cnoQpnKW0VDvwmS5uVMpp/e6FQu0CjIaQjEa+KH1PJ9xtu302H+jabiPgv2PnShX95F6x8+3+w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=KBIJbtxqpsvYfSGsoXWpkXUV/K2kqD11Dmr/jOFu7SA=;
- b=L+vMOWoML8wk/S9nFgy2ls29nGzitw/c1vnDODE9gwCd3y5aMHmweNSdD7CWtvuA+PuEKOGkK6jc6aXIOZ6MmO6UHdl5kLUDdHw3Tcez8b4EGNzBpz98Q6f89XGoWltfY/sndrwsQnpDTJVQILH564U3vQoAAJMHwjHgHqDwQI7pHK0PDaZwao+/99E64+HZybprmyQOD2Ebg/cEyZnUKysV+aDqUKSYNjfXZEflnfUoR4iVgwNZYqr5KGN49GlDdGiWHkz0JoBAMK97fMNIFHSsnkMce27tQFclWiHBt3wn2A9sj0WlxIhfz8lXu4GIEz+da0GtVJz6Tgi1eiwNXw==
+ bh=XehYVYDpTzNgbW8Ag5WGzI1vd5bUAEPlZIPJnFlz74E=;
+ b=aezt0GslXMJYxvp+X89kUXfoON1qWZOsOMw38A8A16sQ3POa9GMiT9kzd5AYXEVDdnw4qeL7kS1vfPODp/VF+bbVpSx/lP5T0t+ieiIhUxGWnvUtIHACJ9XTCyh/B+L+Vqj+nUNW+hjntHaR+0gmx3w+hXcCDTb4i9LDg20lRECFWedxK2JIvzXXUTL+8ZWEDpmAc5ixpy3yEuAF849fVxzEsFtQw13e1SbGkZyAdh2xiH+mAzkqleoSbffymu7zyELChLX+NUrKeLH0IqS4/Ti8FB/g5p1Q6M/td6IL/F2voV6lMxKXmhfthccU/vR1S5VXwnO4Ys+rMDR+VSpf4g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=suse.com;
-Received: from AM7PR04MB6821.eurprd04.prod.outlook.com (2603:10a6:20b:105::22)
- by AM5PR04MB3042.eurprd04.prod.outlook.com (2603:10a6:206:5::19) with
+ smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
+ dkim=pass header.d=fujitsu.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XehYVYDpTzNgbW8Ag5WGzI1vd5bUAEPlZIPJnFlz74E=;
+ b=WumdV5x/AspaVYpOS0nps1g6rop1HZemwHKEc7IZeQAnjgqmtuSsutw32HkwnAnDwEAHiyPdzYW1pgI8VJCLTp3n/kTV7/peEw+UZcOQYZgXOvCk05+q7VREzHzaw8wmywhlXHKM6v7JtOUtHp5HxpMVzlhULDwE9ZVpIxYLTnk=
+Received: from OSBPR01MB4600.jpnprd01.prod.outlook.com (2603:1096:604:7e::12)
+ by OSBPR01MB2040.jpnprd01.prod.outlook.com (2603:1096:603:26::19) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.16; Fri, 17 Sep
- 2021 08:02:15 +0000
-Received: from AM7PR04MB6821.eurprd04.prod.outlook.com
- ([fe80::78e1:ab2a:f283:d097]) by AM7PR04MB6821.eurprd04.prod.outlook.com
- ([fe80::78e1:ab2a:f283:d097%5]) with mapi id 15.20.4523.017; Fri, 17 Sep 2021
- 08:02:15 +0000
-Message-ID: <902ad36d-153c-857b-40a6-449f76aa17b0@suse.com>
-Date:   Fri, 17 Sep 2021 16:02:01 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Content-Language: en-US
-To:     Punit Agrawal <punitagrawal@gmail.com>
-Cc:     Michael Riesch <michael.riesch@wolfvision.net>, wens@kernel.org,
-        netdev <netdev@vger.kernel.org>,
-        "moderated list:ARM/STM32 ARCHITECTURE" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>, sashal@kernel.org
-References: <20210823143754.14294-1-michael.riesch@wolfvision.net>
- <CAGb2v67Duk_56fOKVwZsYn2HKJ99o8WJ+d4jetD2UjDsAt9BcA@mail.gmail.com>
- <568a0825-ed65-58d7-9c9c-cecb481cf9d9@wolfvision.net>
- <87czpvcaab.fsf@stealth>
- <aa905e4d-c5a7-e969-1171-3a90ecd9b9cc@wolfvision.net>
- <2424d7da-7022-0b38-46ba-b48f43cda23d@suse.com> <877dff7jq6.fsf@stealth>
-From:   Qu Wenruo <wqu@suse.com>
-Subject: Re: [PATCH] net: stmmac: dwmac-rk: fix unbalanced pm_runtime_enable
- warnings
-In-Reply-To: <877dff7jq6.fsf@stealth>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BYAPR02CA0043.namprd02.prod.outlook.com
- (2603:10b6:a03:54::20) To AM7PR04MB6821.eurprd04.prod.outlook.com
- (2603:10a6:20b:105::22)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Fri, 17 Sep
+ 2021 08:04:04 +0000
+Received: from OSBPR01MB4600.jpnprd01.prod.outlook.com
+ ([fe80::e028:fc90:498f:d2e0]) by OSBPR01MB4600.jpnprd01.prod.outlook.com
+ ([fe80::e028:fc90:498f:d2e0%3]) with mapi id 15.20.4523.016; Fri, 17 Sep 2021
+ 08:04:04 +0000
+From:   "nakamura.shun@fujitsu.com" <nakamura.shun@fujitsu.com>
+To:     Ian Rogers <irogers@google.com>
+CC:     "peterz@infradead.org" <peterz@infradead.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "jolsa@redhat.com" <jolsa@redhat.com>,
+        "namhyung@kernel.org" <namhyung@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>
+Subject: Re: [PATCH 1/3] libperf: Add processing to scale the counters
+ obtained during the read() system call when multiplexing
+Thread-Topic: [PATCH 1/3] libperf: Add processing to scale the counters
+ obtained during the read() system call when multiplexing
+Thread-Index: AQHXmFsxBFGvQYUD8Uu1pPLYL2hYdauCbgJwgAsoEwCAC8IOAIAOquyD
+Date:   Fri, 17 Sep 2021 08:04:04 +0000
+Message-ID: <OSBPR01MB460074286BDE891952CBC809F7DD9@OSBPR01MB4600.jpnprd01.prod.outlook.com>
+References: <20210820093908.734503-1-nakamura.shun@fujitsu.com>
+ <20210820093908.734503-2-nakamura.shun@fujitsu.com>
+ <YSQBI+FZLBvKr088@robh.at.kernel.org>
+ <OSBPR01MB4600288E176A169C07BF543EF7C59@OSBPR01MB4600.jpnprd01.prod.outlook.com>
+ <CAL_JsqLKD0DZT63MQ9vTumOf1bfRrU9Bt9Qa_GTb1siRsK+Z+g@mail.gmail.com>
+ <CAP-5=fW_g9JHKWQoNiwNeSN8MjJ1OA7qLb3JD3ErEi1be4DEiQ@mail.gmail.com>
+In-Reply-To: <CAP-5=fW_g9JHKWQoNiwNeSN8MjJ1OA7qLb3JD3ErEi1be4DEiQ@mail.gmail.com>
+Accept-Language: ja-JP, en-US
+Content-Language: ja-JP
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_Enabled=True;MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_SiteId=a19f121d-81e1-4858-a9d8-736e267fd4c7;MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_SetDate=2021-09-17T08:04:03.720Z;MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_Name=FUJITSU-RESTRICTED;MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_ContentBits=0;MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_Method=Standard;
+suggested_attachment_session_id: c4bd3b24-7c4f-2cd6-8312-17b67fd49c50
+authentication-results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=fujitsu.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: fb9bc903-8228-4ad6-7bc1-08d979b1b75b
+x-ms-traffictypediagnostic: OSBPR01MB2040:
+x-microsoft-antispam-prvs: <OSBPR01MB20401A33F908BF955A7B3431F7DD9@OSBPR01MB2040.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: RrK++4tdrXm3FhZLL8fwzVsNoazMi1iGZItXqUyW78LZQSxQmf2UZSpy4dbbuM98SOWWrKpPenbIS3tbvG5QOp/ex1SexQolMeG1gHI0zxR2/cV+iwvmjP3wY3uR5Xr0FqwGnDvQmgVS9fpdDhfoIjXfGygQlP/MA4yyBj00bfAcf+/rKdRUeaD+BvZL053Ckf2s7h1WHuB+ynTNNYEHObj0Kj3crA/8sMBlFxeCPxms3lR/5OGB3uEFXwRMFSNBxGwBCZKPUTaBCT1t0Q7glIhg/XX0d9yK1B8cKJVqFGV/3WtAg20abmEVr51e8KrZhtHTggwG0obpyNNjtxEAGq9WNk3y2RWvrPGu7iYMmZn6i/o4PaHoe87aqc8W3Qxtj5LmEVhDyzbDF3SNslmvU1SWaT2ueZddVUmjARrEfGebN4PF6jr72MJ2D5S9AJXEaJrL7HXefNHmK5Gv8Uo4AZbh91MBjQTkuCGpZAqrmGpyKEPicnW8LvD28NnI1D9jYkfaelkKzAfbfg+z+KYNyff2TP49EzBimt1WziFaq0GroIKAOMCR0BlfBcl6FT47r4QmTAg8wSgNWxs8vNl+iJQ2wzgFeuRkBbK8BnVJ1OoPLLoqtzHxsv2Mfuj2qizf65J3NQJH0d65z/KYYjD39Ct+EqF9Abt3Qiw9p7FJdahNqApDAr3juChC6izVsaM6/0oiiamK03shYfdw6eislQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSBPR01MB4600.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66476007)(85182001)(66946007)(38070700005)(53546011)(2906002)(6506007)(38100700002)(7416002)(316002)(76116006)(122000001)(64756008)(66556008)(66446008)(8936002)(86362001)(508600001)(33656002)(71200400001)(4326008)(54906003)(7696005)(9686003)(5660300002)(26005)(52536014)(186003)(6916009)(8676002)(55016002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-2022-jp?B?VUVjNjI2MmIrTXRhaDB5NGNaYXpUdjJ1TkRWUkowNFNiVk1LYUFERVc4?=
+ =?iso-2022-jp?B?QTNZMTd2S3A1bmY1T0x5OTdOa0lEaW5XQTdVbEptTkdRVzdsK1hqc1BI?=
+ =?iso-2022-jp?B?WXJGVklvR2tvemRodTArenlhM3hHZ3N6M0dXLzVOZ2F1MTRYRnlEMUZU?=
+ =?iso-2022-jp?B?Qnh5cFVrNkJ4VEZNVVg4SFJJVkR1MDRnMjdLU0VQMEEwNkxQdm5oVitR?=
+ =?iso-2022-jp?B?VUlkeUVYMFNSVzVXaEh0LzlyaTJwbnVFemdMQTRKWmZVaXl0NFZRS1NY?=
+ =?iso-2022-jp?B?MENVZjhDdzFtZHY5RVk2MWNZR3ByNTN0bk1MR3NFQW5vTUwvdkFIV3Z3?=
+ =?iso-2022-jp?B?eXFyNDNTMUVDMUdaQ05YV3RhbFk5TUpIYWNGVVZkcU1Mdy9HSE1aSFd2?=
+ =?iso-2022-jp?B?TkhrR0ZKR01xRFBYUXJtUGEzM0JFWmhoMUx2ZVlSWU9kYkI4S1ZiQWQ2?=
+ =?iso-2022-jp?B?dWpWSDk3UDMxUi9qSE5tTWNlNE13dFFpVFA1cStiWEREbEEvanpQWXVW?=
+ =?iso-2022-jp?B?eFRzbnFZV2Q5NUkrY0tYcWpzV1M1RzA5eDhuNGJJS3U5VUI2MFNBV0Z2?=
+ =?iso-2022-jp?B?SDNUTW5VRWpydDl0dUZ2WTdMRnNqZkU4aC9ZMlNMWmdRa3hXNFpOYmMz?=
+ =?iso-2022-jp?B?V3R3SDNOYlhTYjkrN2VLTjNDbFBJbUVlWE1McGFjbTBZdjJsK005Ritk?=
+ =?iso-2022-jp?B?VUZ0RTlQS1AxZkVRdkNnelkxckNDZ3M5ZFBaa3Y1ZytTNW1iVDl1a0tq?=
+ =?iso-2022-jp?B?dVozS2FYS1RUbTcyNHpqWmpBeEVzVElIWENCeTJNVlFuWFFXNUt0MllM?=
+ =?iso-2022-jp?B?MXZxMHlLTDlLd0JEaUgyRy9zM3lUTVRFdWFwZ0Z3SUN3OEhPOUVIelhV?=
+ =?iso-2022-jp?B?NkRPaWl0UHppeS8vTmRncyt2VS84ejdrbFhrc1QvU25udTF4cDB6ZTNY?=
+ =?iso-2022-jp?B?QVdzU2dZZzFrNFdJNG1iRzBkM2UyTFIvZ1Y5UTgxYjlVV1Z0MDFIT1Zn?=
+ =?iso-2022-jp?B?UnBpVlJYVVFPTjZtd0Zkd0VmbnNoU1JXeHN1STJwNEs5VWEyVkI4dzlQ?=
+ =?iso-2022-jp?B?T3ozeG5JOEYyajErUy9LYmhvM3IwSjBzRGNReDl3eURZempCMmwvLzQv?=
+ =?iso-2022-jp?B?cHF1OTlLVmpOR1NhSExUb2xOWlhJSFBhZUg3aEY1b2tndGJhclNyUUdr?=
+ =?iso-2022-jp?B?TU04cmpKMlFSbjhyOXZQUjFyUDQ3aW9YY3JpTVFpOFVFcm9rMklaSzM1?=
+ =?iso-2022-jp?B?aXdpMWZBa281bmR1S3EwOUYvM0xXaW1HSW5uTzd1ZXd2U1pQdVVnNi9I?=
+ =?iso-2022-jp?B?aFZGQ3Z3c1d3dlJXamRkaVZIZEk2cjkyQVVOb25vMzRMZmYzYUVNQThL?=
+ =?iso-2022-jp?B?QmFva2pSN2ZRWDZxL2MvdWxpeEV5VmswZUJyTFhLUFlOLzlmUnBoaTRk?=
+ =?iso-2022-jp?B?NDNKaTM5UjhpaEhIZWpVZ0lBc2FRdmd4THBNRjNGdGw2SWw1TUZLY2E1?=
+ =?iso-2022-jp?B?RjRmQlZWdXYrelFDdWpadVhycE1jNmdlMGhzcWFIZzdwNVlZMjhFSlQ2?=
+ =?iso-2022-jp?B?UkoyT083MnZsbXRMcG9jTElGcWg3dEpSRG15RjNLVnphSUxkdVNrdFBq?=
+ =?iso-2022-jp?B?ZTdBcUNJOERZc3FFTWJ1QlJ3VzFIbmo3RVFEMDVjaFRnU3pocW02Nmp2?=
+ =?iso-2022-jp?B?dFBRaXk3aGtSMkdzK0doZmt1TUJLQmdWelR2Q1RVbUxaaFMvcTBKb1Mv?=
+ =?iso-2022-jp?B?NzhYVHVOUFZod2E3VmtJRGZUaEFPZkZoM1Q2R1hnZy9hakNiV3o0aVow?=
+ =?iso-2022-jp?B?QVF5V0UrK2gxWERCaktRTjl6WVg3UWREVHhhZzVROTEyYlpYQkY2WnV5?=
+ =?iso-2022-jp?B?Uk9mQnZNYXVPTE52YWlNK25LaHJVPQ==?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [0.0.0.0] (149.28.201.231) by BYAPR02CA0043.namprd02.prod.outlook.com (2603:10b6:a03:54::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Fri, 17 Sep 2021 08:02:09 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e6c8dd85-89ea-47c0-954e-08d979b17635
-X-MS-TrafficTypeDiagnostic: AM5PR04MB3042:
-X-Microsoft-Antispam-PRVS: <AM5PR04MB304250890A49BEF9AEBA957CD6DD9@AM5PR04MB3042.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: g5fnYkcpJBVhi23YDnVGl+0doRh9q1n1D+tOr4WwaNGi7Lf3SMWd0omYS7GsTf8YsTLudRoJXcdekXTPES7yqsPAA7TzwyPDM3JBhrAHH16XkcOOQM+bhZmdH+374tNEYjBob9fb/UmO2won4Vm7rZR8+h4IVbZgWUCJrXB/f+GQCSClaAwuvKwuGgBcpNo+ildbRdgjLXNRSx9LYwMtN0HovQ5377Dq0BdD0PauEu5G6MpYeooKDOIxqMn3J8uUeTKrWpH2A/WekOJWkqvtw2ItYbY0JexOjmF6HGgDwuQing5HNp8ugLQQVoeJggQJVTGHQlil4OCp56Z4qqhhezDLEOZMhUPZkY8qVjE8SHhVh4WNSaHw+oEBNo6bbqTn3glmwp3UYF1PdUIid2unUXWW0ZyACt+bI5f2j8Tia2d/ZUNbi4s6VHzZnQgbdrl+Rh1Vo5uPaEqN3WFuqQm41mVOrJ2IAOR4Pyt6NohW0vA1fxn8tqG7iJckkGdyCUZkqVXMtVg2QZr8bf1FIBqT/d7YoCnsnbFz+y9rkEZ8+2Lb7tdZk4fOL4QDsym6q+5hXgTnpyiTuPg+BtLXCqtIrbU0FqDe4LDZuvZEAM2e01RxrEs/pgIAdKiDXhrlKJX9/Z1E7oq+iU3U7BeiRA2r9ro1plnu7UfBiY65hFN7KnuDP0+pBMdygbVKimGBktd6dOPIIPDgTxpF22lNW8a11vYfTAxs/BAFc9eTndPQQzlThT8XllYSBAEu5lkbkUrl
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB6821.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(39860400002)(136003)(376002)(346002)(36756003)(6706004)(38100700002)(6916009)(16576012)(31696002)(956004)(26005)(6486002)(66476007)(66556008)(66946007)(478600001)(53546011)(31686004)(186003)(7416002)(6666004)(86362001)(8676002)(4326008)(2906002)(2616005)(5660300002)(8936002)(83380400001)(316002)(54906003)(78286007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eFFxTHR6VjUyeFIzb1FlWDlYMjEwaCtaTzF4QVZlQlczbTVmVGRTQklQT0xv?=
- =?utf-8?B?L3F4TjhHeDdTMGJyTnY5Z052TDRlQk5waS93WFJRdjNSdUtFOTdVK3pOUnVB?=
- =?utf-8?B?L0NkcitXc21ZTXlHM21TRE1rVUlIYXR6Q1lVL0MxUVdKcVlHM3p2WHVIVTF3?=
- =?utf-8?B?ZVR1OFRpMXZ0bjIzT1pQd0RiY0ExNW02Tk1nb1hHMlJyWlR3c3BGWlgvT1I2?=
- =?utf-8?B?bWJDNlFCMm85bmdoT1h1bHdSZ3E2Nm1tTTd1alZheHo4NDgvOWFNUlMvMDZP?=
- =?utf-8?B?SENvTjlwUHdPWGwwcy9QajJNSTlDQm9LZXRqL2RBaWVhNDI3eGw4ekdZVnVi?=
- =?utf-8?B?ZE44eHBBVk0xOFlJaTI2akRheHFNMkNJY1FaNG80cWtCRnNPMjZNNmZna0dR?=
- =?utf-8?B?Vm5qU3ZEZUVsbTdwZ3Z6c0VOS0l4RmxtenNDRmdPVkZmYjM0L0JTWE9rUEh0?=
- =?utf-8?B?dzR1SU5MOHlQeDJUSkFNS1FnV1lCRm8xM0Q4bmUyUXJxRmd0ekJaYVF1KzhC?=
- =?utf-8?B?YjdZdHpKdWN1QkJFcTNrdVV3UlM3WndSdm8xVHJuYkZYM0QwZlN6aWQ1UXp4?=
- =?utf-8?B?bXpUYnJtQStJK1FxWjFuSFlSQk1CV014MzNJTElicUNuUUdmZnliYm1zZ2Z4?=
- =?utf-8?B?SnFyeFUzVXFiVE9ROHhpWGZJSDRzZ1B0dlRBVHBDVlpneXgvR3RnNi9jRStM?=
- =?utf-8?B?emZwOHU5dldhUTB3K3o0TDVOK08zZnVPeDBaRGJpTGNmQXp3ZGRjK1I0YmM4?=
- =?utf-8?B?b3IzV3lmTytJVWFNVWZHMXhDYVZZVm1EbkNma05CNmdhaCtuTnIvNDUwOFJU?=
- =?utf-8?B?RVRGaURRenR4YlFWbFJua3NjNStRTmlLQTZrb25LTWxZTlFzU0hITlZxcE9k?=
- =?utf-8?B?WngydU9hL1pGaHBhNjljdnRMRnc3dFJDVmZQYzNyenNiQ1k5V1dRWS9xT0RE?=
- =?utf-8?B?L0p4by8vcUpuMU9mdlpGY0dHQ1JiazhaaU5WdThUVklSSFk3MVdBcUZCd0hm?=
- =?utf-8?B?cUNsUDhXa0dyTTVzTzhOZ09NV3RjejF4aGJWaUZkNUVZWXdWUVFDaS9GL09H?=
- =?utf-8?B?L21oTVBvUjRyajhKNWRkL3dmekt1NTJoakJPV2NINXVXaGpkQ0xDZ3NMeFZQ?=
- =?utf-8?B?eENqaHVYY3hidHJPL245MzNvcnNBZlFZWmFRaVFCZTlGdlF2cXVHZlFRaTI5?=
- =?utf-8?B?YWpWbTVwb0ZqcERGOUxhUWtkTTF5RU9WWkhHZVA2empSMnNUMjRzOW83VUUv?=
- =?utf-8?B?YzRpNkR3NENKb0JqVEhVZ3g0aUdRZ2MydjlLcnExK3BsOW1TMmI4ZVY3K1ZC?=
- =?utf-8?B?dWNRTlRja1dIdU8wdGJyQWVSSTFZVnR3UHprcm9aLzhsY2o4SnNxN2pZdmZO?=
- =?utf-8?B?Q0pnYjdBaGprSlRhODdobEJlM1diZTJIdEw3dmVlTml3RHhaUy9QNDNLWHhR?=
- =?utf-8?B?djZXeE1TNzFSdlhNOWpuYU9hdmpzVno1cUljb1RzYmIxeTRPY0lVQWsyMnlj?=
- =?utf-8?B?S0oxeWFxei9MQjEwU0JnSGx4SzJid1FiY1ZXd2FyV1FPKzVZNkVmcWFqSDZi?=
- =?utf-8?B?RmNDZmVVc1NGRURiRXFSb1BNc0tSSGFUbzA4YkMxckZsVUs3SGY5MjlpMEpu?=
- =?utf-8?B?NW9rS3lxZDR4eWVycjg4MFBVZjBaS0hCcC9KWlNZdXIvRWNRN0k2TGJkNlpX?=
- =?utf-8?B?dHNRdHNkd1lkNUpqK3NncGFlWWNHQzFDSkxoRUQ2bk5JVXFDY0x0TjZtTVAx?=
- =?utf-8?Q?Sy0kEyr0m7Kki6XLsxZ+6PrCKlF8UCi25R1SSkL?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e6c8dd85-89ea-47c0-954e-08d979b17635
-X-MS-Exchange-CrossTenant-AuthSource: AM7PR04MB6821.eurprd04.prod.outlook.com
+X-OriginatorOrg: fujitsu.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Sep 2021 08:02:15.2267
+X-MS-Exchange-CrossTenant-AuthSource: OSBPR01MB4600.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fb9bc903-8228-4ad6-7bc1-08d979b1b75b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Sep 2021 08:04:04.1244
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: i0PkP6Q0r8r3rZiC0KXx1fqdvzVqSnmQZjkDYDlXwAbNiGmEPvPbDR26NjmDclCF
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM5PR04MB3042
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: vU2/bhUv0tzf04+W/z2hM2bZ7qgEIOxFUSxIu5SpJpV4doOa10zaUXkNg4FHbhpI+W7PBIGyQWcePMgCXSgFlJeIUazA2iHmfgApMSgZg8Y=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSBPR01MB2040
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/9/17 15:18, Punit Agrawal wrote:
-> Hi Qu,
-> 
-> Qu Wenruo <wqu@suse.com> writes:
-> 
->> On 2021/8/30 22:10, Michael Riesch wrote:
->>> Hi Punit,
->>> On 8/30/21 3:49 PM, Punit Agrawal wrote:
->>>> Hi Michael,
->>>>
->>>> Michael Riesch <michael.riesch@wolfvision.net> writes:
->>>>
->>>>> Hi ChenYu,
->>>>>
->>>>> On 8/29/21 7:48 PM, Chen-Yu Tsai wrote:
->>>>>> Hi,
->>>>>>
->>>>>> On Mon, Aug 23, 2021 at 10:39 PM Michael Riesch
->>>>>> <michael.riesch@wolfvision.net> wrote:
->>>>>>>
->>>>>>> This reverts commit 2c896fb02e7f65299646f295a007bda043e0f382
->>>>>>> "net: stmmac: dwmac-rk: add pd_gmac support for rk3399" and fixes
->>>>>>> unbalanced pm_runtime_enable warnings.
->>>>>>>
->>>>>>> In the commit to be reverted, support for power management was
->>>>>>> introduced to the Rockchip glue code. Later, power management support
->>>>>>> was introduced to the stmmac core code, resulting in multiple
->>>>>>> invocations of pm_runtime_{enable,disable,get_sync,put_sync}.
->>>>>>>
->>>>>>> The multiple invocations happen in rk_gmac_powerup and
->>>>>>> stmmac_{dvr_probe, resume} as well as in rk_gmac_powerdown and
->>>>>>> stmmac_{dvr_remove, suspend}, respectively, which are always called
->>>>>>> in conjunction.
->>>>>>>
->>>>>>> Signed-off-by: Michael Riesch <michael.riesch@wolfvision.net>
->>>>>>
->>>>>> I just found that Ethernet stopped working on my RK3399 devices,
->>>>>> and I bisected it down to this patch.
->>>>>
->>>>> Oh dear. First patch in a kernel release for a while and I already break
->>>>> things.
->>>>
->>>> I am seeing the same failure symptoms reported by ChenYu on my RockPro64
->>>> with v5.14. Reverting the revert i.e., 2d26f6e39afb ("net: stmmac:
->>>> dwmac-rk: fix unbalanced pm_runtime_enable warnings") brings back the
->>>> network.
->>>>
->>>>> Cc: Sasha as this patch has just been applied to 5.13-stable.
->>>>>
->>>>>> The symptom I see is no DHCP responses, either because the request
->>>>>> isn't getting sent over the wire, or the response isn't getting
->>>>>> received. The PHY seems to be working correctly.
->>>>>
->>>>> Unfortunately I don't have any RK3399 hardware. Is this a custom
->>>>> board/special hardware or something that is readily available in the
->>>>> shops? Maybe this is a good reason to buy a RK3399 based single-board
->>>>> computer :-)
->>>>
->>>> Not sure about the other RK3399 boards but RockPro64 is easily
->>>> available.
->>> I was thinking to get one of those anyway ;-)
->>>
->>>>> I am working on the RK3568 EVB1 and have not encountered faulty
->>>>> behavior. DHCP works fine and I can boot via NFS. Therefore, not sure
->>>>> whether I can be much of help in this matter, but in case you want to
->>>>> discuss this further please do not hesitate to contact me off-list.
->>>>
->>>> I tried to look for the differences between RK3568 and RK3399 but the
->>>> upstream device tree doesn't seem to carry a gmac node in the device
->>>> tree for EK3568 EVB1. Do you have a pointer for the dts you're using?
->>> The gmac nodes have been added recently and should enter
->>> 5.15-rc1. Until
->>> then, you can check out the dts from linux-rockchip/for-next [0].
->>
->> Do you have the upstream commit?
->>
->> As I compiled v5.15-rc1 and still can't get the ethernet work.
->>
->> Not sure if it's my Uboot->systemd-boot->customer kernel setup not
->> passing the device tree correctly or something else...
-> 
-> For the RK3568 device tree changes, I think the pull request got delayed
-> to the next cycle. So likely to land in v5.16.
-> 
-> In case you're after ethernet on RK3399, there's no solution
-> yet. Reverting 2d26f6e39afb ("net: stmmac: dwmac-rk: fix unbalanced
-> pm_runtime_enable warnings") gets you there in the meanwhile.
-
-Thanks, currently I have seen other distros like ManjaroARM is already 
-reverting that commit.
-
-But even with that commit reverted, I still get some other strange 
-network behavior.
-
-The most weird one is distcc, when the RK3399 board is the client and 
-x86_64 desktop acts as a volunteer, after compiling hundreds of files, 
-it suddenly no longer work.
-
-All work can no longer be distributed to the same volunteer.
-
-
-But on RPI CM4 board, the same kernel (both upstream 5.14.2, even the 
-binary is the same), the same distro (Manjaro ARM), the same distcc 
-setup, the setup works flawless.
-
-
-Not sure if this is related, but it looks like a network related 
-problem, and considering both boards are using the same kernel, just 
-different ethernet driver, I guess there is something more problematic 
-here in recent RK3399 code.
-
-Thanks,
-Qu
-> 
-> [...]
-> 
-
+Hi, Ian=0A=
+=0A=
+> > On Tue, Aug 24, 2021 at 5:12 AM nakamura.shun@fujitsu.com=0A=
+> > <nakamura.shun@fujitsu.com> wrote:=0A=
+> > >=0A=
+> > > Hi, Rob=0A=
+> > >=0A=
+> > > > On Fri, Aug 20, 2021 at 06:39:06PM +0900, Shunsuke Nakamura wrote:=
+=0A=
+> > > > > perf_evsel__read() scales counters obtained by RDPMC during multi=
+plexing, but=0A=
+> > > > > does not scale counters obtained by read() system call.=0A=
+> > > > >=0A=
+> > > > > Add processing to perf_evsel__read() to scale the counters obtain=
+ed during the=0A=
+> > > > > read() system call when multiplexing.=0A=
+> > > >=0A=
+> > > > Which one is right though? Changing what read() returns could break=
+=0A=
+> > > > users, right? Or are you implying that the RDPMC path is correct an=
+d=0A=
+> > > > read() was not. More likely the former case since I wrote the latte=
+r.=0A=
+> > >=0A=
+> > > perf_evsel__read() returns both the count obtained by RDPMC and the c=
+ount obtained=0A=
+> > > by the read() system call when multiplexed with RDPMC enabled.=0A=
+> > >=0A=
+> > > That is, there is a mix of scaled and unscaled values.=0A=
+> > >=0A=
+> > > As Rob says, when this patch is applied, rescaling the count obtained=
+ from=0A=
+> > > perf_evsel__read() during multiplexing will break the count.=0A=
+> > >=0A=
+> > > I think the easiest solution is to change the value you get from RDPM=
+C to not scale=0A=
+> > > and let the user scale it, but I thought it would be a little inconve=
+nient.=0A=
+> >=0A=
+> > Agreed, unless someone else has an opinion. It would be good to do the=
+=0A=
+> > scaling in libperf with the optimized math op, but I assume there's=0A=
+> > some reason the user may need unscaled values?=0A=
+> =0A=
+> Hi, something I've mentioned on other threads [1] is that running may=0A=
+> be zero due to multiplexing but enabled be greater. =0A=
+=0A=
+Thanks for your comment.=0A=
+I'll fix it.=0A=
+=0A=
+> This can lead to a divide by zero when scaling. Giving the ratio to the c=
+aller=0A=
+> gives more information - I may be misunderstanding this thread, apologies=
+ if so.=0A=
+=0A=
+The perf_counts_values contains enabled and running.=0A=
+So, caller can calculate the ratio.=0A=
+=0A=
+Best Regards=0A=
+Shunsuke=
