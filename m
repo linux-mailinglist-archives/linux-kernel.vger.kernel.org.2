@@ -2,167 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3398C40EED3
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 03:35:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5392840EED9
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 03:37:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242386AbhIQBhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 21:37:18 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:53270 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236351AbhIQBhR (ORCPT
+        id S242418AbhIQBiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 21:38:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236351AbhIQBiV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 21:37:17 -0400
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18H0aVTU026758;
-        Fri, 17 Sep 2021 01:35:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=V1kCTDQ+5740MBTc/UN748rPeIbBl3mcCLheJp4qkdc=;
- b=CfUC+ICBBekfLy+NJbH5hbOOAxFbWGIzKPqE+/pkz5fraBFMa8RKlOGhE2QJc4O4Wt9V
- ynAihZxO1bDr7TaQg+NNEhfpb2Fdz7dwLNRNAUmlleIZSSmpYWKll+Phg2XpE912fDKT
- Qf05CZFfp/lPAmpH+F+wgHxUpkhGNhhLg2LRtbsEewK4oBuLeP2smw9iS5ns4Lag+fQF
- hka0rATWNTSh4UPTMoBHS20tEeJD4DhnSvSLH4dd3GCR0oO6Lt5Ey01ztLLBl1P5glFo
- PD5DcHms8EjV8aWeA22WW6OK1HkaJ+s/Z03qTdfE08cwm7atB5OOXE0IRSqa5px9c2pt Mw== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=V1kCTDQ+5740MBTc/UN748rPeIbBl3mcCLheJp4qkdc=;
- b=iIZtFHT9cZMV7rqXiErG80tjOyen7fZSxADIzeWZZQk5D79gxO2HLY/U9C3n4puXmrZ3
- awKil23HfMVY0JmgGymr1g1+vKPYUIY5xZwTZ3Xfu5wW7/rxnqCkFjfqDWbe32GFHtBW
- BH3CrdgBp+94iCumKEAzaxMsj30aNFTtDbYzCVIhGnZeCvf60GNqsvksgI+Kcr7W5Gj/
- lAuurHAPhwg98tpBCPZnW/NAmmp0gCv6Gee2d3+/ftR3wGxXy6slhJVFMxGGWFVJgmdw
- JVD3rS4GhQz99u6wQbNsDGJx0EGYmdpcalrSpWMPUVg4fC1wOWlss/KKlvwSOU3HcLfN BA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3b3jy7nryy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 17 Sep 2021 01:35:50 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18H1Ti6J139848;
-        Fri, 17 Sep 2021 01:35:49 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2173.outbound.protection.outlook.com [104.47.59.173])
-        by userp3020.oracle.com with ESMTP id 3b167w2xn5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 17 Sep 2021 01:35:49 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mnreMX8uyV/4zleVxMfRdwGL9TvEYs++UPZZ3SjEhjOVEPBLWEFP4QD8gTOySZhfYwe5mV8rn48hhtK8FvBp/fwHOsYhOcnmPVlcni/ZJtINrTy4DDQGxGodsq1Ez8GMGIK5z4s1RZ2znotJXwSOlg5c0YzxyV5wkxOkcGCk+3Dou3aoGCU59dvfTM7P/eeu6o5pn10ayxHSIkpwm2QFW4A88ycAFFIWUPZkZM4njXzQz+Z1OogufOFsef7xKV1cgwHpa8LA4HHkSGc4J4l9EzUqHA6+CRX09pDIlj8Fp5hlG5dkuUFiWR3cb0ByYcnEB7N4Qtt5z3jd4ZviAL+45g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=V1kCTDQ+5740MBTc/UN748rPeIbBl3mcCLheJp4qkdc=;
- b=TkXX55ePThMzjSZImgQJYwyXCULXN3EjV1CgY2OzLB1A4UHPvF3o+daPCrRjqaymQD5KZCktqOpf4iO9P3TEBIri6TTcsR9mm6c/werCYkM8cBivH1sANccvRw1ZtaWuP2jnmeTGQG777xSiP0Ke3MXG5++ftUz5P7RXh34758RW6P4fK452VWOF6FrQtSTxaUpbIot7dnBsHQVb6lpzR6sngVi5Ti4+JNsebiO1bRMOH65xyYwEHFaAe6oeMow9ntq2cQWJx1snf87h5yV2sqAow6vEqWCgGXnIQ3inbxcbfo1twJF2U+qKIa0XRmerIO5/Z6iyjnVdz1q//AQy0w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Thu, 16 Sep 2021 21:38:21 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44188C061574;
+        Thu, 16 Sep 2021 18:37:00 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id n13-20020a17090a4e0d00b0017946980d8dso8851023pjh.5;
+        Thu, 16 Sep 2021 18:37:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=V1kCTDQ+5740MBTc/UN748rPeIbBl3mcCLheJp4qkdc=;
- b=dg6QRNmwmop19mO3vUIEC1Ae7vSPX8+4HavVo1fR4Lw7vW8xZYfdjoZfqSJnsDTHzkAEzw89xPi03wnlQhg3A7RRdMhnO1OPgnTIUvEDhq1EMuNLMpYbzO1544zM01+2WwKeDxfv3YY4O8aPLmU6M+UoXDbJb5qHpZ/haJ0AkU0=
-Authentication-Results: lists.xenproject.org; dkim=none (message not signed)
- header.d=none;lists.xenproject.org; dmarc=none action=none
- header.from=oracle.com;
-Received: from BLAPR10MB5009.namprd10.prod.outlook.com (2603:10b6:208:321::10)
- by MN2PR10MB4192.namprd10.prod.outlook.com (2603:10b6:208:1d9::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Fri, 17 Sep
- 2021 01:35:48 +0000
-Received: from BLAPR10MB5009.namprd10.prod.outlook.com
- ([fe80::f520:b987:b36e:618f]) by BLAPR10MB5009.namprd10.prod.outlook.com
- ([fe80::f520:b987:b36e:618f%7]) with mapi id 15.20.4523.017; Fri, 17 Sep 2021
- 01:35:48 +0000
-Subject: Re: [PATCH] xen/x86: drop redundant zeroing from
- cpu_initialize_context()
-To:     Jan Beulich <jbeulich@suse.com>, Juergen Gross <jgross@suse.com>
-Cc:     Stefano Stabellini <sstabellini@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
-References: <14881835-a48e-29fa-0870-e177b10fcf65@suse.com>
-From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Message-ID: <3ea71751-1de9-2da8-9a90-b4d22277c6c9@oracle.com>
-Date:   Thu, 16 Sep 2021 21:35:44 -0400
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ZJv0T0RMe21MF4kWcF0/B2W1/ozbKhtMFKhIRKl9ZMo=;
+        b=N/ot3EgDydF6p6/5n5AZkrhZktc26nOO0YKnIe1UIs+06S+gWNs69fqS1lOWK03WG9
+         ODaroI/6MJP8sjdjuAlPvMJQ5njetx+D+SmIrnNLBet/U1W1Arx2bdJLpsikWx+R5UUi
+         NRsNQ+RyEAUAEzkMdXIGsw6wh9BCrM5aT4ufsgh+IxvPbrKPf3MDofL7DFPqHyKImpVM
+         Yj3oRuA5WPxikyrBVxlcNj0R9y0fJrPNiRNyk2Jz31kptqtcItBybh6AWZUEe0KyL7sp
+         KeBIWUql0iJmpTznEp0QxYimonoNhHQHZoAHz4Wd25EPuOI4l9VggeIZeQgbM7blIfAY
+         D3gA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZJv0T0RMe21MF4kWcF0/B2W1/ozbKhtMFKhIRKl9ZMo=;
+        b=KySWsRyLUDAVjYOnK7ftRL3g66URTrVPeU3FOTCc8JGZmOLcfRdOq2PpmlDe4llBVm
+         +SA0H4087bHudO7Je9e29tAgknsp9M4LFm1Bjv3wxPmgmokMd+TItLbQs/2VFc1Z1/nm
+         EUl0ZdM7At0R3nkQp0M5SzAoAGrlDGUbsqxpWVGx2uZld1BtaUhHU9OgdmZ/aWzelHmX
+         Wt2Uvf1ChviOZwOkOoZ91aq+ks0gfLRQ0t3TYYkwf5yKo2Hm8EnkA7FqbhizHzuZCbiQ
+         PyznU8IFgFkZFE4YrsJq4sBZyVkRoj6H13CTsl/Q+OYvaVtYFHuDskm+Gj4u+yN+2Ihz
+         Ga0w==
+X-Gm-Message-State: AOAM530XhQSSFyJ0+GlRoE9lH3z9zKAh4sdOonnr3Lt9aDhZNRYl0WV7
+        ChHZBVtj5f30t9orZZADTLNw35Uozhk=
+X-Google-Smtp-Source: ABdhPJwgmYnSHaM1HyOi/D04wtFhz3epJkyk/Oamgu87tZU4ZDV1ogTNRla9ogCm+ib0JPdBdRZ1jQ==
+X-Received: by 2002:a17:90b:224b:: with SMTP id hk11mr17871337pjb.231.1631842619577;
+        Thu, 16 Sep 2021 18:36:59 -0700 (PDT)
+Received: from [192.168.255.10] ([203.205.141.115])
+        by smtp.gmail.com with ESMTPSA id 132sm4176111pfy.190.2021.09.16.18.36.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Sep 2021 18:36:59 -0700 (PDT)
+Subject: Re: [PATCH v3] PCI: vmd: Assign a number to each VMD controller
+To:     =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>
+Cc:     jonathan.derrick@intel.com, lorenzo.pieralisi@arm.com,
+        robh@kernel.org, bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1631675273-1934-1-git-send-email-brookxu.cn@gmail.com>
+ <20210916225755.GA1511623@rocinante>
+From:   brookxu <brookxu.cn@gmail.com>
+Message-ID: <b87f7a38-d147-3da6-0352-ad2df7a5f55f@gmail.com>
+Date:   Fri, 17 Sep 2021 09:36:08 +0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
-In-Reply-To: <14881835-a48e-29fa-0870-e177b10fcf65@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-ClientProxiedBy: SN4PR0501CA0045.namprd05.prod.outlook.com
- (2603:10b6:803:41::22) To BLAPR10MB5009.namprd10.prod.outlook.com
- (2603:10b6:208:321::10)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-Received: from [10.74.113.247] (138.3.201.55) by SN4PR0501CA0045.namprd05.prod.outlook.com (2603:10b6:803:41::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.5 via Frontend Transport; Fri, 17 Sep 2021 01:35:46 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 18620748-a5b3-4779-1eb7-08d9797b7949
-X-MS-TrafficTypeDiagnostic: MN2PR10MB4192:
-X-Microsoft-Antispam-PRVS: <MN2PR10MB41928F31D6EC7D87AB36FEAE8ADD9@MN2PR10MB4192.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1002;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lBWcWQzGtf+fRbqZk42Iyfiw0KKVfDJr3sdnhYSBgcKV3Rxzg/pp3STQ6X7/TDez2a3B/dnIpw1i8H5NHLfND52LL1ghR7pwTFBTFKDPY/R2wuLEe0GJmB/Ar4LCifHzkom4enMbyJHwvofgu1KTbyZyCDkFTeSX8/x7DCMCZbrPm36ajfFgpWS4zCIN0frvwx94bsDlNUW8Hhf4OFtMp9S7MTfZzTPw/9FrNAefuzF587li0FMnhuwWiHWLz7i06SPjQPzBvHgYiLMU7sn1gBuNK4wHsAJo1EYQjyyAg1mHa7KXQ/bWvv86GY2AEuoTjHNO+MSbfkuC+QHsolur+W7XBhT9kd2WUw2BH8MlVso3lVf4JITbprM8DGC2W8THSmUzEipDh7VYp2ppDFo2LE+cv/uBPqFd+F7z2d712p/trJUGQMm+RHX7If48H1eRE9cGJH+GmtQLR6OZBAyf6nin+4+VizLORTwG5yrDXXj9H/d748foL/wDNd+gvWpnVT2cXvY0iwzilbx1tPglFMB8Hd0GUhlvg4Govo7OVwRfGmZcQfGEFt+qWV4Nt0P7ged9+qiRKCLt+YkXxZLwq/pecdaW9zFaAvhvC14FENm6qZwLErofc823l/DVjFS5IH3rkKbJuW/Sq3hhFFcgSijXAC2bdDCFUzdYu/P1PqKtTUjvy3Wa/UGzCYuy0ivIOKNd3ZDVruIMBzBDkmPQB5v7icXBaMVJly9q+kWjYEBMUarir1PPlp/2cw4sLlDU
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5009.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(346002)(136003)(376002)(366004)(39860400002)(110136005)(38100700002)(4744005)(5660300002)(31696002)(8676002)(478600001)(66946007)(66556008)(66476007)(316002)(44832011)(4326008)(16576012)(2616005)(8936002)(31686004)(2906002)(956004)(86362001)(54906003)(36756003)(6486002)(53546011)(186003)(26005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?T2JKVHNtRlAxcS9IczYyWFVPeit4eXRyMFREdmllT3VMcXlNaGtHcmlWTW9p?=
- =?utf-8?B?TmtiYjJJYXFGMVVzdGxPckhoRm5raHpNWjVWbnNvTDBheXdoZklTaDNtVHZp?=
- =?utf-8?B?c2l2QkpXaS9NZE03bmpKN1AyTDI1UzdsYkx1bUZvZzJBK1o5T3drZVJBUnpC?=
- =?utf-8?B?eEdZVk9Fa3NERmFwNXdRY2RaTUsxQmVMbU44TGlXanFwTFptVHNjL2JLcDlp?=
- =?utf-8?B?WDVZYllVcERxTmFFZk9sUkhFMEk0WXRwU3p6OWlQTlVqeThST09uZU9VaFpQ?=
- =?utf-8?B?cEhYV3llUHBlVTZjMmhRSk42YWVBRmRENFc0UTdiM2k2cWI0Q21PWUtGdUx0?=
- =?utf-8?B?SUF1UzVTdC9CM3plMXdSWVZacG1ONlR0STU5ZlZ0TW5iT3pGa2dNeUhkcVVC?=
- =?utf-8?B?b3NCSzFWZmpXUmVwdHJiRDhzR1pTSXRmNkpUeS9iZTFNbnE2V3k1M3VrTzkv?=
- =?utf-8?B?YnZmZzk0M2VaYjFrTWtBdUdhWlBma05DZ0tWSFR1d3EyTllyOW9HS1BRL2xo?=
- =?utf-8?B?aS9nYUc5Nk4vQmVZQ29EN0kzenM2b09zdnF4dGs4SUZNSmJ6VlNIY25lbVRn?=
- =?utf-8?B?ZllyaUZDRmwvVCs0SzZoNDJna1lZQWgwdDNQUzVqYk5FOTY3VGY4RTRxbXJz?=
- =?utf-8?B?b1c0U2REdG8xZ1lDRXR3UEY1ZnVHSWNBOVVpSW9Oa1JiQWhMUC9GQmp3S1VY?=
- =?utf-8?B?Tks2VkJNczROTythUDdxWVQ2cTAzRFZTSHl5dHVqOGRkaTh0SUlXK2JWL01h?=
- =?utf-8?B?YzZRZGM1OXgxb2tKRUkweHRZeVBQckZIOEt0YW1WQjQ0Zi82R2EwMGFxNnMz?=
- =?utf-8?B?WDl3c0cxV0RkWE5KMkx4cGpnV1RuVWN1Zlp1OGU1bUc0dW1mNkxyOWpyL294?=
- =?utf-8?B?cjgxNWIxSitZY2hVY3gxRVcvdys0UTRiRUIwOEplOTVCUDhkQmhsb0Y1Vi9K?=
- =?utf-8?B?OWFUcFZTbDhaK1V2QkkrZ0dQR2VqdnFvOWRLcXdoN280NzFnSDN4dFhoUzY1?=
- =?utf-8?B?dHhpWDFJVTV4TUhCdzdTYi9BNUtqM2Nyb29Pb3N3UzhEMm4vMDBQWmZvaVk5?=
- =?utf-8?B?NDlrNHFHNTBqMWlhSDFmZ3ozNTVVbHp6dDlnUXk4MGVvVDRGQmpIWkVOMHJN?=
- =?utf-8?B?Y0tIa1Z3YVFBajJsRWVVUnNyUTB1VXE1d09Kb2pKczZjd1Y4UHIyTU1reUlI?=
- =?utf-8?B?b0NKbW52STkrOWhnSHpGcTBMRzZmMm56ODZGNkErSVRmSlNKMVRrV2UxM3FV?=
- =?utf-8?B?VURUOU01M1ZmUVFuaDVtb0ZMaHNkZnBOVzlWOW0wamhxQXBVa1g4dDNpajYy?=
- =?utf-8?B?ZXFSY2huVTZhUHp0WnJZcWl0RTVLYlJXb0dISmFFbU5kUGladHAxOWRSeHBh?=
- =?utf-8?B?U2dYVFJSV3dVUmJsaG9SZkYySkxaOFBWRlR5YWZlLzVZOC8xcWhoVWI3cW5Q?=
- =?utf-8?B?VUljVForSisyd2FkK2s0Q2NlL1FUMnowclU0d0tDNkRkbGtRSzQrSlFXVkJh?=
- =?utf-8?B?ZmNQNlFxQ0I0b1BsR2R6VStEZTlEbEhWMlNFalZlby8rNElBSGhkaVZuY2NG?=
- =?utf-8?B?UXVUS3hlUjdqaUg0SE1PRUc0VlBYU1FkNy9sVi9haDN1TVRVejRtTm4zOEVa?=
- =?utf-8?B?azRsOTRwQmpvQXowU2JVWkZGNFVOYXIvR09KVkIxNGtNZkl1VU9IYm9uUTY2?=
- =?utf-8?B?UzRYU0gydGpQVVFROGRibEl4ZVhTNTZCVTIxWE1VQ25QaXN3aC9rbzNMeVc3?=
- =?utf-8?Q?TaxMLWYtwtdJHNK73Hc2LBJUYLJFaLAsLi+1h6w?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 18620748-a5b3-4779-1eb7-08d9797b7949
-X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5009.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Sep 2021 01:35:48.0424
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: z9rxFLvIJx5ESFJBd0WdGwb8laajDXY5wrxrHvmtyL7MyegTCBC3PeNiG93L+hK/ODZFzv1iRgZF0ycPK8Ho61tzVTbZMcYcB8yOrLG7ZiA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4192
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10109 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 suspectscore=0
- phishscore=0 mlxlogscore=999 malwarescore=0 mlxscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109030001
- definitions=main-2109170007
-X-Proofpoint-GUID: 8Lvy2NR6RkG2NNG8CW1GBnXtIdCjCt7d
-X-Proofpoint-ORIG-GUID: 8Lvy2NR6RkG2NNG8CW1GBnXtIdCjCt7d
+In-Reply-To: <20210916225755.GA1511623@rocinante>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 9/16/21 11:05 AM, Jan Beulich wrote:
-> Just after having obtained the pointer from kzalloc() there's no reason
-> at all to set part of the area to all zero yet another time. Similarly
-> there's no point explicitly clearing "ldt_ents".
->
-> Signed-off-by: Jan Beulich <jbeulich@suse.com>
 
+Krzysztof Wilczyński wrote on 2021/9/17 6:57 上午:
+> Hi Xu,
+> 
+> Thank you for sending the patch over!
+> 
+> A small nitpick below, so feel free to ignore it.
+> 
+> [...] 
+>> @@ -769,28 +773,48 @@ static int vmd_probe(struct pci_dev *dev, const struct pci_device_id *id)
+>>  {
+>>  	unsigned long features = (unsigned long) id->driver_data;
+>>  	struct vmd_dev *vmd;
+>> -	int err;
+>> +	int err = 0;
+>>  
+>> -	if (resource_size(&dev->resource[VMD_CFGBAR]) < (1 << 20))
+>> -		return -ENOMEM;
+>> +	if (resource_size(&dev->resource[VMD_CFGBAR]) < (1 << 20)) {
+>> +		err = -ENOMEM;
+>> +		goto out;
+>> +	}
+>>  
+>>  	vmd = devm_kzalloc(&dev->dev, sizeof(*vmd), GFP_KERNEL);
+>> -	if (!vmd)
+>> -		return -ENOMEM;
+>> +	if (!vmd) {
+>> +		err = -ENOMEM;
+>> +		goto out;
+>> +	}
+> 
+> I assume that you changed the above to use the newly added "out" label to
+> be consistent given that you also have the other label, but since there is
+> no clean-up to be done here, do we need this additional label?
+> 
+>>  	vmd->dev = dev;
+>> +	vmd->instance = ida_simple_get(&vmd_instance_ida, 0, 0, GFP_KERNEL);
+>> +	if (vmd->instance < 0) {
+>> +		err = vmd->instance;
+>> +		goto out;
+>> +	}
+> 
+> Similarly to here to the above, no clean-up to be done, and you could just
+> return immediately here.
+> 
+> What do you think?
+> 
 
-Reviewed-by: Boris Ostrovsky <boris.ostrvsky@oracle.com>
+Thanks, I think we can do this.
 
+> Also, I think we might have lost a "Reviewed-by" from Jon Derrick somewhere
+> along the way.  Given that you only updated the commit log and the subject
+> like, it probably still applies (unless Jon would like to give his seal of
+> approval again).
+> 
 
+Thanks, my mistake here.
+
+> 	Krzysztof
+> 
