@@ -2,297 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB9AF40F852
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 14:51:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6511A40F85E
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 14:53:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244696AbhIQMwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 08:52:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25129 "EHLO
+        id S244423AbhIQMyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 08:54:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39007 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238618AbhIQMwI (ORCPT
+        by vger.kernel.org with ESMTP id S238726AbhIQMyD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 08:52:08 -0400
+        Fri, 17 Sep 2021 08:54:03 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631883046;
+        s=mimecast20190719; t=1631883161;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=uCTb0i5bhg0GPw5LPlOWZkUi+K08luznvhgHpnorCdU=;
-        b=McU0pKXy+RB5Bo2qGW8roL38+viyBydK7A72Wj6pNt2HSy6mIQxro9J2EBGFV/xb5mCJp4
-        rZwrqdNOB6ONERdzA+LlVhNbH6y1hZdbYtvrYMaZs3RVQ4qKykuxZlDJjVtWDVBdF8sCyd
-        2UoslUaL3SBzD/jyeotizb9eN0eAut4=
+        bh=jR5xb37JDnFFhDky//xp2bDnTHSPKVCP1Sl4yhtd0FM=;
+        b=fsLoTzyS7aWw9uXKbM9C2d/96CziDgc0sVVTw3GaLBgyXi8F//BB/oMvoy9SdEzevy6AAF
+        MpSGxrHYbi7vVcRVB6dCT+Vg1S991+z333MS3hnBwaxHWPNTVOl1FEqpQAByYi/WLN7hVn
+        GrWECzLJ/H8IVBm6iwrXyyAYTOGJ7Y4=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-576-MdcLyZspNmGihxrypG96Dw-1; Fri, 17 Sep 2021 08:50:45 -0400
-X-MC-Unique: MdcLyZspNmGihxrypG96Dw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+ us-mta-542-QrMC5_JxP-uP1elKEnE5ew-1; Fri, 17 Sep 2021 08:52:31 -0400
+X-MC-Unique: QrMC5_JxP-uP1elKEnE5ew-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 619F1196632A;
-        Fri, 17 Sep 2021 12:50:43 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 541B660843;
-        Fri, 17 Sep 2021 12:50:42 +0000 (UTC)
-From:   Emanuele Giuseppe Esposito <eesposit@redhat.com>
-To:     kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org,
-        Emanuele Giuseppe Esposito <eesposit@redhat.com>
-Subject: [RFC PATCH 2/2] nSVM: use vmcb_ctrl_area_cached instead of vmcb_control_area in svm_nested_state
-Date:   Fri, 17 Sep 2021 08:49:56 -0400
-Message-Id: <20210917124956.2042052-3-eesposit@redhat.com>
-In-Reply-To: <20210917124956.2042052-1-eesposit@redhat.com>
-References: <20210917124956.2042052-1-eesposit@redhat.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B9CA61084681;
+        Fri, 17 Sep 2021 12:52:29 +0000 (UTC)
+Received: from horse.redhat.com (unknown [10.22.32.182])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id ED9BB5C1D1;
+        Fri, 17 Sep 2021 12:52:28 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 80954220C99; Fri, 17 Sep 2021 08:52:28 -0400 (EDT)
+Date:   Fri, 17 Sep 2021 08:52:28 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        viro@zeniv.linux.org.uk,
+        Linux fsdevel mailing list <linux-fsdevel@vger.kernel.org>,
+        linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        xu.xin16@zte.com.cn
+Subject: Re: [PATCH v2] init/do_mounts.c: Harden split_fs_names() against
+ buffer overflow
+Message-ID: <YUSPjGnGu79Djxc7@redhat.com>
+References: <YUNn4k1FCgQmOpuw@redhat.com>
+ <20210917080730.GA5284@quack2.suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210917080730.GA5284@quack2.suse.cz>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This requires changing all vmcb_is_intercept(&svm->nested.ctl, ...)
-calls with vmcb_is_intercept_cached().
+On Fri, Sep 17, 2021 at 10:07:30AM +0200, Jan Kara wrote:
+> On Thu 16-09-21 11:50:58, Vivek Goyal wrote:
+> > split_fs_names() currently takes comma separate list of filesystems
+> > and converts it into individual filesystem strings. Pleaces these
+> > strings in the input buffer passed by caller and returns number of
+> > strings.
+> > 
+> > If caller manages to pass input string bigger than buffer, then we
+> > can write beyond the buffer. Or if string just fits buffer, we will
+> > still write beyond the buffer as we append a '\0' byte at the end.
+> > 
+> > Pass size of input buffer to split_fs_names() and put enough checks
+> > in place so such buffer overrun possibilities do not occur.
+> > 
+> > This patch does few things.
+> > 
+> > - Add a parameter "size" to split_fs_names(). This specifies size
+> >   of input buffer.
+> > 
+> > - Use strlcpy() (instead of strcpy()) so that we can't go beyond
+> >   buffer size. If input string "names" is larger than passed in
+> >   buffer, input string will be truncated to fit in buffer.
+> > 
+> > - Stop appending extra '\0' character at the end and avoid one
+> >   possibility of going beyond the input buffer size.
+> > 
+> > - Do not use extra loop to count number of strings.
+> > 
+> > - Previously if one passed "rootfstype=foo,,bar", split_fs_names()
+> >   will return only 1 string "foo" (and "bar" will be truncated
+> >   due to extra ,). After this patch, now split_fs_names() will
+> >   return 3 strings ("foo", zero-sized-string, and "bar").
+> > 
+> >   Callers of split_fs_names() have been modified to check for
+> >   zero sized string and skip to next one.
+> > 
+> > Reported-by: xu xin <xu.xin16@zte.com.cn>
+> > Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
+> > ---
+> >  init/do_mounts.c |   28 ++++++++++++++++++++--------
+> >  1 file changed, 20 insertions(+), 8 deletions(-)
+> 
+> Just one nit below:
+> 
+> > Index: redhat-linux/init/do_mounts.c
+> > ===================================================================
+> > --- redhat-linux.orig/init/do_mounts.c	2021-09-15 08:46:33.801689806 -0400
+> > +++ redhat-linux/init/do_mounts.c	2021-09-16 11:28:36.753625037 -0400
+> > @@ -338,19 +338,25 @@ __setup("rootflags=", root_data_setup);
+> >  __setup("rootfstype=", fs_names_setup);
+> >  __setup("rootdelay=", root_delay_setup);
+> >  
+> > -static int __init split_fs_names(char *page, char *names)
+> > +static int __init split_fs_names(char *page, size_t size, char *names)
+> >  {
+> >  	int count = 0;
+> >  	char *p = page;
+> > +	bool str_start = false;
+> >  
+> > -	strcpy(p, root_fs_names);
+> > +	strlcpy(p, root_fs_names, size);
+> >  	while (*p++) {
+> > -		if (p[-1] == ',')
+> > +		if (p[-1] == ',') {
+> >  			p[-1] = '\0';
+> > +			count++;
+> > +			str_start = false;
+> > +		} else {
+> > +			str_start = true;
+> > +		}
+> >  	}
+> > -	*p = '\0';
+> >  
+> > -	for (p = page; *p; p += strlen(p)+1)
+> > +	/* Last string which might not be comma terminated */
+> > +	if (str_start)
+> >  		count++;
+> 
+> You could avoid the whole str_start logic if you just initialize 'count' to
+> 1 - in the worst case you'll have 0-length string at the end (for case like
+> xfs,) but you deal with 0-length strings in the callers anyway. Otherwise
+> the patch looks good so feel free to add:
 
-In addition, in svm_get_nested_state() user space expects a
-vmcb_control_area struct, so we need to copy back all fields
-in a temporary structure to provide to the user space.
+Hi Jan,
 
-Signed-off-by: Emanuele Giuseppe Esposito <eesposit@redhat.com>
----
- arch/x86/kvm/svm/nested.c | 42 ++++++++++++++++++++++-----------------
- arch/x86/kvm/svm/svm.c    |  4 ++--
- arch/x86/kvm/svm/svm.h    |  8 ++++----
- 3 files changed, 30 insertions(+), 24 deletions(-)
+This sounds good. I will get rid of str_start. V3 of the patch is on
+the way.
 
-diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-index d06a95156535..1f8c90cc4fc3 100644
---- a/arch/x86/kvm/svm/nested.c
-+++ b/arch/x86/kvm/svm/nested.c
-@@ -58,8 +58,8 @@ static void svm_inject_page_fault_nested(struct kvm_vcpu *vcpu, struct x86_excep
-        struct vcpu_svm *svm = to_svm(vcpu);
-        WARN_ON(!is_guest_mode(vcpu));
- 
--       if (vmcb_is_intercept(&svm->nested.ctl, INTERCEPT_EXCEPTION_OFFSET + PF_VECTOR) &&
--	   !svm->nested.nested_run_pending) {
-+	if (vmcb_is_intercept_cached(&svm->nested.ctl, INTERCEPT_EXCEPTION_OFFSET + PF_VECTOR) &&
-+	    !svm->nested.nested_run_pending) {
-                svm->vmcb->control.exit_code = SVM_EXIT_EXCP_BASE + PF_VECTOR;
-                svm->vmcb->control.exit_code_hi = 0;
-                svm->vmcb->control.exit_info_1 = fault->error_code;
-@@ -121,7 +121,8 @@ static void nested_svm_uninit_mmu_context(struct kvm_vcpu *vcpu)
- 
- void recalc_intercepts(struct vcpu_svm *svm)
- {
--	struct vmcb_control_area *c, *h, *g;
-+	struct vmcb_control_area *c, *h;
-+	struct vmcb_ctrl_area_cached *g;
- 	unsigned int i;
- 
- 	vmcb_mark_dirty(svm->vmcb, VMCB_INTERCEPTS);
-@@ -163,7 +164,7 @@ void recalc_intercepts(struct vcpu_svm *svm)
- 	vmcb_set_intercept(c, INTERCEPT_VMSAVE);
- }
- 
--static void copy_vmcb_control_area(struct vmcb_control_area *dst,
-+static void copy_vmcb_control_area(struct vmcb_ctrl_area_cached *dst,
- 				   struct vmcb_control_area *from)
- {
- 	unsigned int i;
-@@ -219,7 +220,7 @@ static bool nested_svm_vmrun_msrpm(struct vcpu_svm *svm)
- 	 */
- 	int i;
- 
--	if (!(vmcb_is_intercept(&svm->nested.ctl, INTERCEPT_MSR_PROT)))
-+	if (!(vmcb_is_intercept_cached(&svm->nested.ctl, INTERCEPT_MSR_PROT)))
- 		return true;
- 
- 	for (i = 0; i < MSRPM_OFFSETS; i++) {
-@@ -255,9 +256,9 @@ static bool nested_svm_check_bitmap_pa(struct kvm_vcpu *vcpu, u64 pa, u32 size)
- }
- 
- static bool nested_vmcb_check_controls(struct kvm_vcpu *vcpu,
--				       struct vmcb_control_area *control)
-+				       struct vmcb_ctrl_area_cached *control)
- {
--	if (CC(!vmcb_is_intercept(control, INTERCEPT_VMRUN)))
-+	if (CC(!vmcb_is_intercept_cached(control, INTERCEPT_VMRUN)))
- 		return false;
- 
- 	if (CC(control->asid == 0))
-@@ -971,7 +972,7 @@ static int nested_svm_exit_handled_msr(struct vcpu_svm *svm)
- 	u32 offset, msr, value;
- 	int write, mask;
- 
--	if (!(vmcb_is_intercept(&svm->nested.ctl, INTERCEPT_MSR_PROT)))
-+	if (!(vmcb_is_intercept_cached(&svm->nested.ctl, INTERCEPT_MSR_PROT)))
- 		return NESTED_EXIT_HOST;
- 
- 	msr    = svm->vcpu.arch.regs[VCPU_REGS_RCX];
-@@ -998,7 +999,7 @@ static int nested_svm_intercept_ioio(struct vcpu_svm *svm)
- 	u8 start_bit;
- 	u64 gpa;
- 
--	if (!(vmcb_is_intercept(&svm->nested.ctl, INTERCEPT_IOIO_PROT)))
-+	if (!(vmcb_is_intercept_cached(&svm->nested.ctl, INTERCEPT_IOIO_PROT)))
- 		return NESTED_EXIT_HOST;
- 
- 	port = svm->vmcb->control.exit_info_1 >> 16;
-@@ -1029,12 +1030,12 @@ static int nested_svm_intercept(struct vcpu_svm *svm)
- 		vmexit = nested_svm_intercept_ioio(svm);
- 		break;
- 	case SVM_EXIT_READ_CR0 ... SVM_EXIT_WRITE_CR8: {
--		if (vmcb_is_intercept(&svm->nested.ctl, exit_code))
-+		if (vmcb_is_intercept_cached(&svm->nested.ctl, exit_code))
- 			vmexit = NESTED_EXIT_DONE;
- 		break;
- 	}
- 	case SVM_EXIT_READ_DR0 ... SVM_EXIT_WRITE_DR7: {
--		if (vmcb_is_intercept(&svm->nested.ctl, exit_code))
-+		if (vmcb_is_intercept_cached(&svm->nested.ctl, exit_code))
- 			vmexit = NESTED_EXIT_DONE;
- 		break;
- 	}
-@@ -1052,7 +1053,7 @@ static int nested_svm_intercept(struct vcpu_svm *svm)
- 		break;
- 	}
- 	default: {
--		if (vmcb_is_intercept(&svm->nested.ctl, exit_code))
-+		if (vmcb_is_intercept_cached(&svm->nested.ctl, exit_code))
- 			vmexit = NESTED_EXIT_DONE;
- 	}
- 	}
-@@ -1130,7 +1131,7 @@ static void nested_svm_inject_exception_vmexit(struct vcpu_svm *svm)
- 
- static inline bool nested_exit_on_init(struct vcpu_svm *svm)
- {
--	return vmcb_is_intercept(&svm->nested.ctl, INTERCEPT_INIT);
-+	return vmcb_is_intercept_cached(&svm->nested.ctl, INTERCEPT_INIT);
- }
- 
- static int svm_check_nested_events(struct kvm_vcpu *vcpu)
-@@ -1261,6 +1262,7 @@ static int svm_get_nested_state(struct kvm_vcpu *vcpu,
- 				u32 user_data_size)
- {
- 	struct vcpu_svm *svm;
-+	struct vmcb_control_area ctl_temp;
- 	struct kvm_nested_state kvm_state = {
- 		.flags = 0,
- 		.format = KVM_STATE_NESTED_FORMAT_SVM,
-@@ -1302,7 +1304,8 @@ static int svm_get_nested_state(struct kvm_vcpu *vcpu,
- 	 */
- 	if (clear_user(user_vmcb, KVM_STATE_NESTED_SVM_VMCB_SIZE))
- 		return -EFAULT;
--	if (copy_to_user(&user_vmcb->control, &svm->nested.ctl,
-+	copy_vmcb_ctrl_area_cached(&ctl_temp, &svm->nested.ctl);
-+	if (copy_to_user(&user_vmcb->control, &ctl_temp,
- 			 sizeof(user_vmcb->control)))
- 		return -EFAULT;
- 	if (copy_to_user(&user_vmcb->save, &svm->vmcb01.ptr->save,
-@@ -1373,8 +1376,9 @@ static int svm_set_nested_state(struct kvm_vcpu *vcpu,
- 		goto out_free;
- 
- 	ret = -EINVAL;
--	if (!nested_vmcb_check_controls(vcpu, ctl))
--		goto out_free;
-+	nested_load_control_from_vmcb12(svm, ctl);
-+	if (!nested_vmcb_check_controls(vcpu, &svm->nested.ctl))
-+		goto out_free_ctl;
- 
- 	/*
- 	 * Processor state contains L2 state.  Check that it is
-@@ -1382,7 +1386,7 @@ static int svm_set_nested_state(struct kvm_vcpu *vcpu,
- 	 */
- 	cr0 = kvm_read_cr0(vcpu);
-         if (((cr0 & X86_CR0_CD) == 0) && (cr0 & X86_CR0_NW))
--		goto out_free;
-+		goto out_free_ctl;
- 
- 	/*
- 	 * Validate host state saved from before VMRUN (see
-@@ -1428,7 +1432,6 @@ static int svm_set_nested_state(struct kvm_vcpu *vcpu,
- 	svm->nested.vmcb12_gpa = kvm_state->hdr.svm.vmcb_pa;
- 
- 	svm_copy_vmrun_state(&svm->vmcb01.ptr->save, save);
--	nested_load_control_from_vmcb12(svm, ctl);
- 
- 	svm_switch_vmcb(svm, &svm->nested.vmcb02);
- 	nested_vmcb02_prepare_control(svm);
-@@ -1438,6 +1441,9 @@ static int svm_set_nested_state(struct kvm_vcpu *vcpu,
- out_free_save:
- 	memset(&svm->nested.save, 0, sizeof(struct vmcb_save_area_cached));
- 
-+out_free_ctl:
-+	memset(&svm->nested.ctl, 0, sizeof(struct vmcb_ctrl_area_cached));
-+
- out_free:
- 	kfree(save);
- 	kfree(ctl);
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 169b930322ef..5ec4f56b3b09 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -2465,7 +2465,7 @@ static bool check_selective_cr0_intercepted(struct kvm_vcpu *vcpu,
- 	bool ret = false;
- 
- 	if (!is_guest_mode(vcpu) ||
--	    (!(vmcb_is_intercept(&svm->nested.ctl, INTERCEPT_SELECTIVE_CR0))))
-+	    (!(vmcb_is_intercept_cached(&svm->nested.ctl, INTERCEPT_SELECTIVE_CR0))))
- 		return false;
- 
- 	cr0 &= ~SVM_CR0_SELECTIVE_MASK;
-@@ -4184,7 +4184,7 @@ static int svm_check_intercept(struct kvm_vcpu *vcpu,
- 		    info->intercept == x86_intercept_clts)
- 			break;
- 
--		if (!(vmcb_is_intercept(&svm->nested.ctl,
-+		if (!(vmcb_is_intercept_cached(&svm->nested.ctl,
- 					INTERCEPT_SELECTIVE_CR0)))
- 			break;
- 
-diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-index a00be2516cc6..69dbce80b4b8 100644
---- a/arch/x86/kvm/svm/svm.h
-+++ b/arch/x86/kvm/svm/svm.h
-@@ -152,7 +152,7 @@ struct svm_nested_state {
- 	bool nested_run_pending;
- 
- 	/* cache for control fields of the guest */
--	struct vmcb_control_area ctl;
-+	struct vmcb_ctrl_area_cached ctl;
- 	struct vmcb_save_area_cached save;
- 
- 	bool initialized;
-@@ -487,17 +487,17 @@ static inline bool nested_svm_virtualize_tpr(struct kvm_vcpu *vcpu)
- 
- static inline bool nested_exit_on_smi(struct vcpu_svm *svm)
- {
--	return vmcb_is_intercept(&svm->nested.ctl, INTERCEPT_SMI);
-+	return vmcb_is_intercept_cached(&svm->nested.ctl, INTERCEPT_SMI);
- }
- 
- static inline bool nested_exit_on_intr(struct vcpu_svm *svm)
- {
--	return vmcb_is_intercept(&svm->nested.ctl, INTERCEPT_INTR);
-+	return vmcb_is_intercept_cached(&svm->nested.ctl, INTERCEPT_INTR);
- }
- 
- static inline bool nested_exit_on_nmi(struct vcpu_svm *svm)
- {
--	return vmcb_is_intercept(&svm->nested.ctl, INTERCEPT_NMI);
-+	return vmcb_is_intercept_cached(&svm->nested.ctl, INTERCEPT_NMI);
- }
- 
- int enter_svm_guest_mode(struct kvm_vcpu *vcpu, u64 vmcb_gpa, struct vmcb *vmcb12);
--- 
-2.27.0
+Vivek
+> 
+> Reviewed-by: Jan Kara <jack@suse.cz>
+> 
+> 								Honza
+> -- 
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
+> 
 
