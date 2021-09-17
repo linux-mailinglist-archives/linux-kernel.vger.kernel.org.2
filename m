@@ -2,73 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18AE540F049
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 05:18:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8993940F04B
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 05:18:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243721AbhIQDTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 23:19:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232364AbhIQDTO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 23:19:14 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 806DCC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 20:17:53 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id k23-20020a17090a591700b001976d2db364so6317998pji.2
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 20:17:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sbNHcb01vguljn3HU3vHlhpXKlPXw6Yq9g9yeJyPROY=;
-        b=A7yVtKDyrR/CtjqI7IwFW5bwgxK7xUS/nDBrJ7n7rDYRpDdTYAjh4vuUMPTmKYaYLL
-         E5Y3rCXgc5+DJBsO+bt32xGG9eHzP99Rwdd69zBtuMqo4uGXQQXAOTH8vXYEW/pMnL3d
-         bsvh52njH9/V9oeZMphNcbzXqxUrCz5PBkpdSPuMkzKOiXcfCjmGASL0OJi0sv2KCXPm
-         FKumvmOBRXQHSRr+JmiK5GEo51ySioNU5iwWACW1Zp7m9xEiZLNS8uc2k9BSNiKjZahp
-         Ba3X8Da0rBm0EaDMI0MvNlbCl9AhyMYe/AN21TwITsyazX9Tdk4W3HDSrpaYltf6gOo3
-         dUeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sbNHcb01vguljn3HU3vHlhpXKlPXw6Yq9g9yeJyPROY=;
-        b=wzcZIhE7AIvRZeTBR2XGluScvcf3vL/waLZ/2MpNAQk1bVHIGoxQVgZ6pZKpsF4nDe
-         +K9csZsvU6j1+Vig2asCk4/SEyblb8RjK7DG4hmKeVyQmBJ2b3XEnnphiCDspdbjxfK6
-         TCP3OzHq8eIYu+MyT5KvxUgun8mUJf/KJ5TzI2TaVeBmac7C0nhoJ29Rt+a0sTx+0zli
-         3UbqWDeJQaKLY4Ay9ciks11mU9mNgukiUV/mDZpLqQrw/A2qkumuc9arRFNht163Ts2r
-         aupqalC0TkBSeeNwdGNa77h8QHyxLCHBJ8EbTx9/bfue4Px9f3kt649pQn0jG18qLjW3
-         si9w==
-X-Gm-Message-State: AOAM531mTRmt3mqLL14Vji2dkA1sqkLmhRlIWDBdMVkDivARwxq57ocE
-        FsbddVLftrETPu3gwwS2o6GfO0dwrkVREsFVx587xw==
-X-Google-Smtp-Source: ABdhPJx1CWuFGn4scE6+tio7BoIn9gU1H0Pn1kIyiI6cewMOVkInzQ1r//9k5NCeR/FqqbnYg0iCQhRy9Vdq4SHrg34=
-X-Received: by 2002:a17:90a:1d4c:: with SMTP id u12mr9467178pju.95.1631848672994;
- Thu, 16 Sep 2021 20:17:52 -0700 (PDT)
+        id S243767AbhIQDUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 23:20:01 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:55236 "EHLO deadmen.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229462AbhIQDUA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 23:20:00 -0400
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
+        id 1mR4OT-00067x-Df; Fri, 17 Sep 2021 11:18:29 +0800
+Received: from herbert by gondobar with local (Exim 4.92)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1mR4OP-0001iZ-VU; Fri, 17 Sep 2021 11:18:26 +0800
+Date:   Fri, 17 Sep 2021 11:18:25 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, rdunlap@infradead.org,
+        smueller@chronox.de, davem@davemloft.net,
+        linux-crypto@vger.kernel.org
+Subject: Re: [PATCH] crypto: jitterentopy: drop kernel-doc notation
+Message-ID: <20210917031825.GA6585@gondor.apana.org.au>
 MIME-Version: 1.0
-References: <20210916193014.80129-1-peterx@redhat.com>
-In-Reply-To: <20210916193014.80129-1-peterx@redhat.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Fri, 17 Sep 2021 11:17:13 +0800
-Message-ID: <CAMZfGtUGdDps_8RX5dvrakx9rJRTLYhKaf_uVD0bg+6yzWPPNw@mail.gmail.com>
-Subject: Re: [PATCH] mm/memcg: Drop swp_entry_t* in mc_handle_file_pte()
-To:     Peter Xu <peterx@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210824210513.25503-1-rdunlap@infradead.org>
+X-Newsgroups: apana.lists.os.linux.cryptoapi,apana.lists.os.linux.kernel
+Organization: Core
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 3:30 AM Peter Xu <peterx@redhat.com> wrote:
->
-> After the rework of f5df8635c5a3 ("mm: use find_get_incore_page in memcontrol",
-> 2020-10-13) it's unused.
->
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Signed-off-by: Peter Xu <peterx@redhat.com>
+Randy Dunlap <rdunlap@infradead.org> wrote:
+> 
+> Drop "begin kernel-doc (/**)" entries in jitterentropy.c
+> since they are not in kernel-doc format and they cause
+> many complaints (warnings) from scripts/kernel-doc.
+> 
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Stephan Mueller <smueller@chronox.de>
+> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: linux-crypto@vger.kernel.org
+> ---
+> crypto/jitterentropy.c |   24 ++++++++++++------------
+> 1 file changed, 12 insertions(+), 12 deletions(-)
 
-LGTM.
-
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+Patch applied.  Thanks.
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
