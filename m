@@ -2,132 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5392840EED9
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 03:37:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AE1A40EED7
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 03:36:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242418AbhIQBiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 21:38:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58518 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236351AbhIQBiV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 21:38:21 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44188C061574;
-        Thu, 16 Sep 2021 18:37:00 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id n13-20020a17090a4e0d00b0017946980d8dso8851023pjh.5;
-        Thu, 16 Sep 2021 18:37:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ZJv0T0RMe21MF4kWcF0/B2W1/ozbKhtMFKhIRKl9ZMo=;
-        b=N/ot3EgDydF6p6/5n5AZkrhZktc26nOO0YKnIe1UIs+06S+gWNs69fqS1lOWK03WG9
-         ODaroI/6MJP8sjdjuAlPvMJQ5njetx+D+SmIrnNLBet/U1W1Arx2bdJLpsikWx+R5UUi
-         NRsNQ+RyEAUAEzkMdXIGsw6wh9BCrM5aT4ufsgh+IxvPbrKPf3MDofL7DFPqHyKImpVM
-         Yj3oRuA5WPxikyrBVxlcNj0R9y0fJrPNiRNyk2Jz31kptqtcItBybh6AWZUEe0KyL7sp
-         KeBIWUql0iJmpTznEp0QxYimonoNhHQHZoAHz4Wd25EPuOI4l9VggeIZeQgbM7blIfAY
-         D3gA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZJv0T0RMe21MF4kWcF0/B2W1/ozbKhtMFKhIRKl9ZMo=;
-        b=KySWsRyLUDAVjYOnK7ftRL3g66URTrVPeU3FOTCc8JGZmOLcfRdOq2PpmlDe4llBVm
-         +SA0H4087bHudO7Je9e29tAgknsp9M4LFm1Bjv3wxPmgmokMd+TItLbQs/2VFc1Z1/nm
-         EUl0ZdM7At0R3nkQp0M5SzAoAGrlDGUbsqxpWVGx2uZld1BtaUhHU9OgdmZ/aWzelHmX
-         Wt2Uvf1ChviOZwOkOoZ91aq+ks0gfLRQ0t3TYYkwf5yKo2Hm8EnkA7FqbhizHzuZCbiQ
-         PyznU8IFgFkZFE4YrsJq4sBZyVkRoj6H13CTsl/Q+OYvaVtYFHuDskm+Gj4u+yN+2Ihz
-         Ga0w==
-X-Gm-Message-State: AOAM530XhQSSFyJ0+GlRoE9lH3z9zKAh4sdOonnr3Lt9aDhZNRYl0WV7
-        ChHZBVtj5f30t9orZZADTLNw35Uozhk=
-X-Google-Smtp-Source: ABdhPJwgmYnSHaM1HyOi/D04wtFhz3epJkyk/Oamgu87tZU4ZDV1ogTNRla9ogCm+ib0JPdBdRZ1jQ==
-X-Received: by 2002:a17:90b:224b:: with SMTP id hk11mr17871337pjb.231.1631842619577;
-        Thu, 16 Sep 2021 18:36:59 -0700 (PDT)
-Received: from [192.168.255.10] ([203.205.141.115])
-        by smtp.gmail.com with ESMTPSA id 132sm4176111pfy.190.2021.09.16.18.36.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Sep 2021 18:36:59 -0700 (PDT)
-Subject: Re: [PATCH v3] PCI: vmd: Assign a number to each VMD controller
-To:     =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>
-Cc:     jonathan.derrick@intel.com, lorenzo.pieralisi@arm.com,
-        robh@kernel.org, bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1631675273-1934-1-git-send-email-brookxu.cn@gmail.com>
- <20210916225755.GA1511623@rocinante>
-From:   brookxu <brookxu.cn@gmail.com>
-Message-ID: <b87f7a38-d147-3da6-0352-ad2df7a5f55f@gmail.com>
-Date:   Fri, 17 Sep 2021 09:36:08 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
+        id S242400AbhIQBiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 21:38:12 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:52010 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236351AbhIQBiL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 21:38:11 -0400
+Received: from [10.20.42.25] (unknown [10.20.42.25])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9CxJOYl8UNhUr4IAA--.24933S3;
+        Fri, 17 Sep 2021 09:36:38 +0800 (CST)
+Subject: Re: [PATCH 2/2] drm/qxl: Add qxl dma fence release function
+To:     Gerd Hoffmann <kraxel@redhat.com>
+Cc:     Dave Airlie <airlied@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+References: <20210914062352.6102-1-maobibo@loongson.cn>
+ <20210914062352.6102-2-maobibo@loongson.cn>
+ <20210915063835.36bhpadzbzuj7shw@sirius.home.kraxel.org>
+From:   maobibo <maobibo@loongson.cn>
+Message-ID: <42a70a29-3ecb-7f41-f4e2-378cf3f6939c@loongson.cn>
+Date:   Fri, 17 Sep 2021 09:36:37 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-In-Reply-To: <20210916225755.GA1511623@rocinante>
+In-Reply-To: <20210915063835.36bhpadzbzuj7shw@sirius.home.kraxel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf9CxJOYl8UNhUr4IAA--.24933S3
+X-Coremail-Antispam: 1UD129KBjvdXoWrZry8Xr1rKw47WFyDAry5Arb_yoW3JFgEkF
+        W2grW8Cwn0g3s5Aa13Cw15XrWxKa95Zry8XFyDZasxtF98Ar4kGr40krsxW3sxAa40kFsx
+        Arn7Xryaqw1SgjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbIxYjsxI4VWkKwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4
+        vEx4A2jsIEc7CjxVAFwI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
+        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJV
+        W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG
+        8wCY02Avz4vE-syl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r12
+        6r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa
+        7IU5PpnJUUUUU==
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-Krzysztof Wilczyński wrote on 2021/9/17 6:57 上午:
-> Hi Xu,
+On 09/15/2021 02:38 PM, Gerd Hoffmann wrote:
+> On Tue, Sep 14, 2021 at 02:23:52AM -0400, bibo mao wrote:
+>> Add qxl dma fence release function, previously default dma fence
+>> release function is used, and fence pointer is used to free 
+>> the memory. With this patch, actual qxl release pointer is used
+>> to free memory, so that dma fence can put at any place of 
+>> struct qxl_release.
 > 
-> Thank you for sending the patch over!
+> Why?  Is there a problem with struct dma_fence being the first
+> element of struct qxl_release?
+Yes, there is no problem put it in the first element of struct qxl_release. This patch has no actual use,it is only more flexible. And you can discard this patch if other graphics drivers do the same thing like this.
+
+regards
+bibo,mao
 > 
-> A small nitpick below, so feel free to ignore it.
-> 
-> [...] 
->> @@ -769,28 +773,48 @@ static int vmd_probe(struct pci_dev *dev, const struct pci_device_id *id)
->>  {
->>  	unsigned long features = (unsigned long) id->driver_data;
->>  	struct vmd_dev *vmd;
->> -	int err;
->> +	int err = 0;
->>  
->> -	if (resource_size(&dev->resource[VMD_CFGBAR]) < (1 << 20))
->> -		return -ENOMEM;
->> +	if (resource_size(&dev->resource[VMD_CFGBAR]) < (1 << 20)) {
->> +		err = -ENOMEM;
->> +		goto out;
->> +	}
->>  
->>  	vmd = devm_kzalloc(&dev->dev, sizeof(*vmd), GFP_KERNEL);
->> -	if (!vmd)
->> -		return -ENOMEM;
->> +	if (!vmd) {
->> +		err = -ENOMEM;
->> +		goto out;
->> +	}
-> 
-> I assume that you changed the above to use the newly added "out" label to
-> be consistent given that you also have the other label, but since there is
-> no clean-up to be done here, do we need this additional label?
-> 
->>  	vmd->dev = dev;
->> +	vmd->instance = ida_simple_get(&vmd_instance_ida, 0, 0, GFP_KERNEL);
->> +	if (vmd->instance < 0) {
->> +		err = vmd->instance;
->> +		goto out;
->> +	}
-> 
-> Similarly to here to the above, no clean-up to be done, and you could just
-> return immediately here.
-> 
-> What do you think?
+> take care,
+>   Gerd
 > 
 
-Thanks, I think we can do this.
-
-> Also, I think we might have lost a "Reviewed-by" from Jon Derrick somewhere
-> along the way.  Given that you only updated the commit log and the subject
-> like, it probably still applies (unless Jon would like to give his seal of
-> approval again).
-> 
-
-Thanks, my mistake here.
-
-> 	Krzysztof
-> 
