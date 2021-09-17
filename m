@@ -2,218 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C401040F303
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 09:18:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C5CE40F307
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 09:19:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239001AbhIQHTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 03:19:48 -0400
-Received: from mail-eopbgr1300135.outbound.protection.outlook.com ([40.107.130.135]:6127
-        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233196AbhIQHTq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 03:19:46 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aZueMkNd4CpVG7gAIQqTAtwXiAzk9bal32Dc0K9YV+7qVLav3k5eBN94g4loRPmugM7e4HhXIMYIkRGyq0xa61iP9DbET+Aq1aktpiODPQMXIjG3Auy91ePYXJPhD/0gszEpLngyQtP75QkEXMQQBETSIN63crUo8yH72yFmnyPrhBWuiI8n+l/+aQlfl2yqJqQDsHtyzG9ppubo1Y+eT/JNAyApaL6xou64rG8i1jPx5SmA8c6viB6JGiwgVZ3eSPM6sULHXD7ts14/aCJxnIVev9iElckqNT1G8E8NzquokIT1RnLXt3wyK5Cw32f91zTGKDo6kGGr0FYigPFSFg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=/dKBhw2gAG2c80MxuMlDQJ5iia+puiltxfNBNghVt2A=;
- b=DOMJPO6FJuKnIEk9tPcYuBYEFTPkTf0p/LZpVLYJRHLcYPDxMcURznslu6MGVPrqVWTgFJzfpfeIqj6vbouXv6GYijNtjF08HJDJKI6PxA5ZapWJ9U923EKWm3j3Ph5cKVuj+88WXfPEoL9+N6YZRZImf9VxOV7OklHxpndKM9vBO62iiwFR01HqqxIWdY/Nz2yUuVdoIqh0vKO1Uiou6n0IsbZYgNrVgxM6qj7g2uxYoODX6QGMDlQYlfsatzKVLjlniN+WVmSXCI0/pEdntjvGaXP9i03a5bpQ3uvrseWOwq/lWHF9ewC6XJozCIo8kCReWrmnfbotGoDc1W9TPQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
- s=selector2-vivo0-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/dKBhw2gAG2c80MxuMlDQJ5iia+puiltxfNBNghVt2A=;
- b=AHTSd7rAxOTDM8JPIWVWGRvxvXDYAsyt1GCUHdfz+5mWFhzTQzv7KFPZwNY11lN8AbzaksqLMSQDgm+C+q2dMQik578bWaQY1y10TLbyxifPGt7rZzNvD8/Y8MQheHhFgYuao27p5pdgAqag8kPAwqaMRJhhHFVERvPNEZ0b0lc=
-Authentication-Results: broadcom.com; dkim=none (message not signed)
- header.d=none;broadcom.com; dmarc=none action=none header.from=vivo.com;
-Received: from SL2PR06MB3082.apcprd06.prod.outlook.com (2603:1096:100:37::17)
- by SL2PR06MB3404.apcprd06.prod.outlook.com (2603:1096:100:3c::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Fri, 17 Sep
- 2021 07:18:23 +0000
-Received: from SL2PR06MB3082.apcprd06.prod.outlook.com
- ([fe80::4c9b:b71f:fb67:6414]) by SL2PR06MB3082.apcprd06.prod.outlook.com
- ([fe80::4c9b:b71f:fb67:6414%6]) with mapi id 15.20.4523.016; Fri, 17 Sep 2021
- 07:18:23 +0000
-From:   Qing Wang <wangqing@vivo.com>
-To:     Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Qing Wang <wangqing@vivo.com>
-Subject: [PATCH] message: fusion: switch from 'pci_' to 'dma_' API
-Date:   Fri, 17 Sep 2021 00:18:17 -0700
-Message-Id: <1631863097-10280-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-Content-Type: text/plain
-X-ClientProxiedBy: HK2PR02CA0177.apcprd02.prod.outlook.com
- (2603:1096:201:21::13) To SL2PR06MB3082.apcprd06.prod.outlook.com
- (2603:1096:100:37::17)
+        id S239103AbhIQHUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 03:20:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233196AbhIQHUV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 03:20:21 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B80B9C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 00:18:59 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id c22so26412275edn.12
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 00:18:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vGE7DIiMh4Pf00LyduFfQ056mAGVsV2zVfLa9OmRkZc=;
+        b=S9H9tO3IFlKPCUqDvW0JzMk8oJSldnjkTiJuhlPvrNUsU5VF7lHHOR5/4kLpF0t3jv
+         5cf0gppQovznrrtdbJ5Jz+wc3GHduxD65epTGjLnKMeQiTaFN6J9QIBas/+6XqfR3fgL
+         g7U9xm2OvDYgcBoTUeQdQMRY1uMUmE11pt1EALdXc3AdmBLuCnQMCAvyLUE1TqJb3sU2
+         EinY8fHA4QPU8bccS5xm7T8UEvIUCrMCX0CS7CffYGJwEtxwndpTX/w64ig3ROLnPaSR
+         nU93E1B2DMxkCpAwmqz4YCkISUWqm3Qi+xwPYKQMigqM2vAnNXgEtohk5zkTI/LcRPJ7
+         Ltqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vGE7DIiMh4Pf00LyduFfQ056mAGVsV2zVfLa9OmRkZc=;
+        b=Z1UqEjuESSfKbG6T6Noy8tviewshvimjoxW9r6GAseKFOelDFl1ro4BGmIuQaWzZwX
+         Hs3P8D+zoJabml+KlhvC3hJ7llpxLoVunvdhT6kJog+xHMjkLElStMrSN/9bVrXRdBji
+         tx7zT0CujUHuEA7+kNENZI6qrhYX4+bLyqGUDVQ8lGud3g9ET3i2m+uZDHGlCNX9lcmx
+         /NxbOBf9mYErgwjQ4Z95aLrATn+JkCs9BTb2I2WjH1pgWt73HLk5JVWIskMFp0dXkHn0
+         4Oo/WXWYDO8BIKXrrgWHwa1hcK2I/aNg8zSlLz1om7ScfTKLEAA+p0RALhQIOCfkQdhM
+         tSdQ==
+X-Gm-Message-State: AOAM532fcez9P5IrqvZnFhxSW8kwSVq6OXE36eSaPBBEhGkqRcREv0bn
+        8tvn98T1ztaxziItlen9fRU=
+X-Google-Smtp-Source: ABdhPJxu7w5+6CfZbMruB7rYcL1Vv6ClbYyZieIQ9M1pU4NFbnCHGw8OIT95WY0gYScTRA59p5Vx3g==
+X-Received: by 2002:a17:906:c249:: with SMTP id bl9mr10576930ejb.225.1631863138262;
+        Fri, 17 Sep 2021 00:18:58 -0700 (PDT)
+Received: from localhost.localdomain.it (host-79-47-104-104.retail.telecomitalia.it. [79.47.104.104])
+        by smtp.gmail.com with ESMTPSA id q19sm2297140edc.74.2021.09.17.00.18.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Sep 2021 00:18:57 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        David Laight <david.Laight@aculab.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [PATCH v7 00/19] staging: r8188eu: shorten and simplify calls chains
+Date:   Fri, 17 Sep 2021 09:18:18 +0200
+Message-Id: <20210917071837.10926-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ubuntu.localdomain (218.213.202.189) by HK2PR02CA0177.apcprd02.prod.outlook.com (2603:1096:201:21::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.4523.14 via Frontend Transport; Fri, 17 Sep 2021 07:18:22 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ec6969dc-3c18-41a3-e5a0-08d979ab55b2
-X-MS-TrafficTypeDiagnostic: SL2PR06MB3404:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SL2PR06MB340480CC5115ED63E2B5A186BDDD9@SL2PR06MB3404.apcprd06.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fDLUCOMWlXKN2ZEKi+1NFoWHW5AAFc2XNzA6uMqGLSpMuBsEjWxDzAtGg3qO30RrlaWyRSVshmwUrLYk7BXlXa/hgVuAB9TX0m1BVC+BnUaTnNopVV8KQngyV2RBUiB0g6n8/MyKX0w3X1VOZWc/3I/0ppgAMPG1KRSpxJe4bZBf0+Uiwz2BGJL9rHBhYwP1ztKXV3vMdcpK1oCavYQRGhuAmzWIB/FNE1tlyjbGxsj4fumGQSkcezL7IWWmhGgR2rA5wiVFKnyp/Zu6jyWEjCdh5O8ZKFM1anNHHcGm7IAXbsrnMFypLYAw55HyhvMwU2XSxRIrCQmMPDq5JZMsie/3Nep5nK4vM4xpKLoH5eXWwBrPzcewZTcoqCHpruuQLlVslFPxm7Zz6gfsVChIruq3CJOVLBgqMeS0WfuXF8g7lIoMqT1SPa3v9iQoZjT/KaCwGxG/lxE8AmUzl9wjcdeko/lXJcHevWZBNo14/B6upfKTBIK29KWRDcZH0fvqbkCs1T3tL9ou+l0Z7ZyiV+fUXtwLzozMSxDXeJpylQqD2oGLjVu5SUN7QaX0GYlyA5TUtPoPss02MHG8gvbeWdbJuyJTXYQTlybQlgRKVIkgxSG49QQBnsDUbA0eftfTaQCH9ylg8h69YCljsW20fT056U8dWcSqzqHJr7I1cBw229w88OCJCZvTa8CUqQZQeXctKtgVYtxO8W4fUfZspjon9L2/Lm8DhG1qOXzG1n2DKA0y9GHnCE380G8GyDDeNUbMS1x69UVzMbfhrft51g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SL2PR06MB3082.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(396003)(346002)(366004)(136003)(38100700002)(6512007)(15650500001)(6666004)(38350700002)(966005)(6486002)(52116002)(8936002)(5660300002)(2906002)(6506007)(26005)(66476007)(478600001)(66556008)(83380400001)(8676002)(186003)(66946007)(4326008)(110136005)(86362001)(956004)(107886003)(2616005)(316002)(36756003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?fkcyj7JI/WhzwSOqFOmDo1jQEtp0crvBuW27d2TFrEFlgxwVlPSaKQiNJtzg?=
- =?us-ascii?Q?bTjGQP528uXw3BT0Fi0bwcLOMt86U05eWEN7WMpr5ERNJVsbh94hqF3x9gFy?=
- =?us-ascii?Q?Dv8JtGm2XvR5oRvrOlNxzArTXDqRZJ0hvGkpNlsh9+lXKMCwh3swT6KQeJmZ?=
- =?us-ascii?Q?z4gQQOM/Do5q9BvhdXIwescvW5oclKLXCpcT9WCihCvVL0E/6qdbkk3lGl16?=
- =?us-ascii?Q?WlpsPP+iOQ/iQbajWt4v+FS7H5kkUDpMQiZVau/nzx4aKKaari6145nsYkK2?=
- =?us-ascii?Q?jZkM3UZnds+o4+yHdc4K0rdRaFyBpyEJDDRY4s4lBJLHEKFA4q+HAZc1lyP9?=
- =?us-ascii?Q?VtVXTMq5eioNDmFCFy/BilWFgUCxMq5k2iKW+oQMWcgKyrKOsgTqygyUJ5mz?=
- =?us-ascii?Q?aAjZI2ZiYRpZ0h4ugaAixadDMKQaclZW1agh+uxZtvPRMDhbCZIKle40JzQ6?=
- =?us-ascii?Q?2rlmaGCHqkecD1O5fKHvnh9DsqX0hAGqa9Hkcmxm1djK0ZA27rIVjOhxH3DJ?=
- =?us-ascii?Q?jbI3IzTJ66MOlLhyMNWwcZ0yUqH8rW/+ZyYCkSPUDW09WkyeK5EVSZ4zgksD?=
- =?us-ascii?Q?uy4lDE53zsjm6/JKTFuzG130UAhgEQMUAWDWagAmaiPAyBaj7K/wV0zAGWWd?=
- =?us-ascii?Q?OjmOGSxv32/x8XVa+FMDvO2hfMsNvj2ebfW84i2AF9zyKrh6xHAANXi/HgK0?=
- =?us-ascii?Q?of6HKbzHSWyFoVc1TN6iJCLc+FlvBOk5TBIK2qhMFzD6e+iy7uw69vSSlwmV?=
- =?us-ascii?Q?oLCYVF7Q6lJ15JXE8pFTMitxz4HzQf4xHGLA9RidW0uoGnIMOUY0JLm0UBzS?=
- =?us-ascii?Q?N5zpEtwyDZIQ+qb/MlHPmTgxWRrxGnHjvyByNT1FM/WqkfZpLMtf4DzUvs8H?=
- =?us-ascii?Q?UIf64qV/ufTO8y+CjMMrRycK6l32JC3nfadRHVStYQJ2scZq4BuVj+Dc7kvd?=
- =?us-ascii?Q?n7LEabnUfCHp44FOwN09CV02zb1vvNptNzg53eGEkDyr+r6u+hZuN1mmZ6uh?=
- =?us-ascii?Q?7sg0JJanruaY85WSeiKOqfz4stywc6pwgNeD6/bdOu22M0lCBbyapYyNtRgj?=
- =?us-ascii?Q?/Q7wSCGg7eriZhtcypuhoQiV39ttGeL/VaWlafXwcIehyLgXsDMEPpeQYLmf?=
- =?us-ascii?Q?143DXzDEmwOXAZPKg4RRs08gTlbZNFuTO3MOMJBqQ0fg5Eg7BD0+KfhOu6Du?=
- =?us-ascii?Q?qg0waXlxE+qDwuIuOPcCXERknbIC6MjmfO98ecU+ECqA5EZyP2/AO9AODLiv?=
- =?us-ascii?Q?I26ajoh7D3Re7bnEIAl385x/3DxwXnHZXEGeUdVjhoUS9kTc9PIa3riRdZgm?=
- =?us-ascii?Q?b/eB7NMs1n704f9ckP5vd0Ee?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ec6969dc-3c18-41a3-e5a0-08d979ab55b2
-X-MS-Exchange-CrossTenant-AuthSource: SL2PR06MB3082.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Sep 2021 07:18:23.4701
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: I4Fn6n5SkRlnajMfjymFIYumXd6HdogvDfXbvg+nl3hxdOFLsH4/BwZLYGPry5jucqvrTU+9lOgBSFlvB9bPRQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SL2PR06MB3404
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wrappers in include/linux/pci-dma-compat.h should go away.
+io_ops abstraction is useless in this driver, since there is only one ops
+registration. Without io_ops we can get rid of indirect calls mess and
+shorten the calls chain.
 
-The patch has been generated with the coccinelle script below.
-expression e1, e2;
-@@
--    pci_set_dma_mask(e1, e2)
-+    dma_set_mask(&e1->dev, e2)
+Shorten the calls chain of rtw_read8/16/32() down to the actual reads.
+For this purpose unify the three usb_read8/16/32 into the new
+usb_read(); make the latter parameterizable with 'size'; embed most of
+the code of usbctrl_vendorreq() into usb_read() and use in it the new
+usb_control_msg_recv() API of USB Core.
 
-@@
-expression e1, e2;
-@@
--    pci_set_consistent_dma_mask(e1, e2)
-+    dma_set_coherent_mask(&e1->dev, e2)
+Shorten the calls chain of rtw_write8/16/32() down to the actual writes.
+For this purpose unify the four usb_write8/16/32/N() into the new
+usb_write(); make the latter parameterizable with 'size'; embed most of
+the code of usbctrl_vendorreq() into usb_write() and use in it the new
+usb_control_msg_send() API of USB Core.
 
-While at it, some 'dma_set_mask()/dma_set_coherent_mask()' have been
-updated to a much less verbose 'dma_set_mask_and_coherent()'.
+The code with the modifications was thoroughly tested by Pavel Skripkin
+using a TP-Link TL-WN722N v2 / v3 [Realtek RTL8188EUS] and by Fabio M.
+De Francesco using a ASUSTek Computer, Inc. Realtek 8188EUS [USB-N10 Nano].
 
-This type of patches has been going on for a long time, I plan to 
-clean it up in the near future. If needed, see post from 
-Christoph Hellwig on the kernel-janitors ML:
-https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
+Changelog:
 
-Signed-off-by: Qing Wang <wangqing@vivo.com>
----
- drivers/message/fusion/mptbase.c | 31 +++++++++----------------------
- 1 file changed, 9 insertions(+), 22 deletions(-)
+v6->v7:
+	- 1-14: 
+		Add Dan Carpenter's "Reviewed-by" tag. No code changes;
+	- 15:
+		Add a list of clean-up changes to the commit messages
+		and restore an empty line inadvertently deleted in a
+		previous version;
+	- 16:
+		Add a list of clean-up changes to the commit messages;
+	- 17-18:
+		No changes;
+	- 19:
+		Delete an unnecessary test.	
 
-diff --git a/drivers/message/fusion/mptbase.c b/drivers/message/fusion/mptbase.c
-index 7f7abc9..c255d8a
---- a/drivers/message/fusion/mptbase.c
-+++ b/drivers/message/fusion/mptbase.c
-@@ -1666,16 +1666,12 @@ mpt_mapresources(MPT_ADAPTER *ioc)
- 		const uint64_t required_mask = dma_get_required_mask
- 		    (&pdev->dev);
- 		if (required_mask > DMA_BIT_MASK(32)
--			&& !pci_set_dma_mask(pdev, DMA_BIT_MASK(64))
--			&& !pci_set_consistent_dma_mask(pdev,
--						 DMA_BIT_MASK(64))) {
-+			&& dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64))) {
- 			ioc->dma_mask = DMA_BIT_MASK(64);
- 			dinitprintk(ioc, printk(MYIOC_s_INFO_FMT
- 				": 64 BIT PCI BUS DMA ADDRESSING SUPPORTED\n",
- 				ioc->name));
--		} else if (!pci_set_dma_mask(pdev, DMA_BIT_MASK(32))
--			&& !pci_set_consistent_dma_mask(pdev,
--						DMA_BIT_MASK(32))) {
-+		} else if (!dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32))) {
- 			ioc->dma_mask = DMA_BIT_MASK(32);
- 			dinitprintk(ioc, printk(MYIOC_s_INFO_FMT
- 				": 32 BIT PCI BUS DMA ADDRESSING SUPPORTED\n",
-@@ -1686,9 +1682,7 @@ mpt_mapresources(MPT_ADAPTER *ioc)
- 			goto out_pci_release_region;
- 		}
- 	} else {
--		if (!pci_set_dma_mask(pdev, DMA_BIT_MASK(32))
--			&& !pci_set_consistent_dma_mask(pdev,
--						DMA_BIT_MASK(32))) {
-+		if (!dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32))) {
- 			ioc->dma_mask = DMA_BIT_MASK(32);
- 			dinitprintk(ioc, printk(MYIOC_s_INFO_FMT
- 				": 32 BIT PCI BUS DMA ADDRESSING SUPPORTED\n",
-@@ -4452,9 +4446,7 @@ PrimeIocFifos(MPT_ADAPTER *ioc)
- 		 */
- 		if (ioc->pcidev->device == MPI_MANUFACTPAGE_DEVID_SAS1078 &&
- 		    ioc->dma_mask > DMA_BIT_MASK(35)) {
--			if (!pci_set_dma_mask(ioc->pcidev, DMA_BIT_MASK(32))
--			    && !pci_set_consistent_dma_mask(ioc->pcidev,
--			    DMA_BIT_MASK(32))) {
-+			if (!dma_set_mask_and_coherent(&ioc->pcidev, DMA_BIT_MASK(32))) {
- 				dma_mask = DMA_BIT_MASK(35);
- 				d36memprintk(ioc, printk(MYIOC_s_DEBUG_FMT
- 				    "setting 35 bit addressing for "
-@@ -4462,10 +4454,7 @@ PrimeIocFifos(MPT_ADAPTER *ioc)
- 				    ioc->name));
- 			} else {
- 				/*Reseting DMA mask to 64 bit*/
--				pci_set_dma_mask(ioc->pcidev,
--					DMA_BIT_MASK(64));
--				pci_set_consistent_dma_mask(ioc->pcidev,
--					DMA_BIT_MASK(64));
-+				dma_set_mask_and_coherent(&ioc->pcidev, DMA_BIT_MASK(64));
- 
- 				printk(MYIOC_s_ERR_FMT
- 				    "failed setting 35 bit addressing for "
-@@ -4600,9 +4589,8 @@ PrimeIocFifos(MPT_ADAPTER *ioc)
- 		alloc_dma += ioc->reply_sz;
- 	}
- 
--	if (dma_mask == DMA_BIT_MASK(35) && !pci_set_dma_mask(ioc->pcidev,
--	    ioc->dma_mask) && !pci_set_consistent_dma_mask(ioc->pcidev,
--	    ioc->dma_mask))
-+	if (dma_mask == DMA_BIT_MASK(35) &&
-+	    !dma_set_mask_and_coherent(&ioc->pcidev, ioc->dma_mask))
- 		d36memprintk(ioc, printk(MYIOC_s_DEBUG_FMT
- 		    "restoring 64 bit addressing\n", ioc->name));
- 
-@@ -4625,9 +4613,8 @@ PrimeIocFifos(MPT_ADAPTER *ioc)
- 		ioc->sense_buf_pool = NULL;
- 	}
- 
--	if (dma_mask == DMA_BIT_MASK(35) && !pci_set_dma_mask(ioc->pcidev,
--	    DMA_BIT_MASK(64)) && !pci_set_consistent_dma_mask(ioc->pcidev,
--	    DMA_BIT_MASK(64)))
-+	if (dma_mask == DMA_BIT_MASK(35) &&
-+	    !dma_set_mask_and_coherent(&ioc->pcidev, DMA_BIT_MASK(64)))
- 		d36memprintk(ioc, printk(MYIOC_s_DEBUG_FMT
- 		    "restoring 64 bit addressing\n", ioc->name));
- 
+v5->v6:
+        - 1-14:
+                Minimal changes to patch subjects to achieve consistent
+                style;
+        - 15:
+                Fix a mistake in the checks of values returned by
+                usb_control_msg();
+        - 16-19:
+                No changes.
+
+v4->v5:
+        - 1-14:
+                No changes;
+        - 15-16:
+                Fix minor formatting issues and use "Reverse Xmas Tree" style,
+                according to suggestions by David Laight and Dan Carpenter;
+        - 17-18:
+                Pavel Skripkin found logical errors in the checks of the
+                values returned by usb_control_msg_{recv,send}(), so fix them;
+                Dan Carpenter suggested to do error handling before success
+                handling, so change the code accordingly;
+        - 19:
+                Add this patch in order to get rid of the shared buffer in
+                usb_read() and usb_write() and remove this field from struct
+                "dvobj_priv".
+
+v3->v4:
+        - 1-14:
+                Split a patch into fourteen;
+        - 15-16:
+                Add these patches for clean-ups of the code that is going to be
+                reused in 17-18/18;
+        - 17-18:
+                Make some changes according to a first review of Greg
+                Kroah-Hartman; furthermore, remove the unnecessary while loop
+                and a couple of if' test; handle the errors returned by
+                usb_control_msg_recv().
+
+v2->v3:
+        - 1-2:
+                No changes;
+        - 3:
+                Fix the version number of the patch.
+
+v1->v2:
+        - 1-2:
+                No changes;
+        - 3:
+                Replace parameter REALTEK_USB_VENQT_READ with REALTEK_USB_VENQT_WRITE
+                in usb_control_msg_send().
+
+v1: https://lore.kernel.org/lkml/20210904150447.14659-1-fmdefrancesco@gmail.com/
+v2: https://lore.kernel.org/lkml/20210904212719.11426-1-fmdefrancesco@gmail.com/
+v3: https://lore.kernel.org/lkml/20210904220048.12822-1-fmdefrancesco@gmail.com/
+v4: https://lore.kernel.org/lkml/20210913181002.16651-1-fmdefrancesco@gmail.com/
+v5: https://lore.kernel.org/lkml/20210915124149.27543-1-fmdefrancesco@gmail.com/
+v6: https://lore.kernel.org/lkml/20210915211103.18001-1-fmdefrancesco@gmail.com/
+
+Fabio M. De Francesco (4):
+  staging: r8188eu: clean up usbctrl_vendorreq()
+  staging: r8188eu: clean up rtw_read*() and rtw_write*()
+  staging: r8188eu: shorten calls chain of rtw_read{8,16,32}()
+  staging: r8188eu: shorten calls chain of rtw_write{8,16,32,N}()
+
+Pavel Skripkin (15):
+  staging: r8188eu: remove usb_{read,write}_mem()
+  staging: r8188eu: remove the helpers of rtw_read8()
+  staging: r8188eu: remove the helpers of rtw_read16()
+  staging: r8188eu: remove the helpers of rtw_read32()
+  staging: r8188eu: remove the helpers of usb_write8()
+  staging: r8188eu: remove the helpers of usb_write16()
+  staging: r8188eu: remove the helpers of usb_write32()
+  staging: r8188eu: remove the helpers of usb_writeN()
+  staging: r8188eu: remove the helpers of usb_read_port()
+  staging: r8188eu: remove the helpers of usb_write_port()
+  staging: r8188eu: remove the helpers of usb_read_port_cancel()
+  staging: r8188eu: remove the helpers of usb_write_port_cancel()
+  staging: r8188eu: remove core/rtw_io.c
+  staging: r8188eu: remove struct _io_ops
+  staging: r8188eu: remove shared buffer for usb requests
+
+ drivers/staging/r8188eu/Makefile              |   1 -
+ drivers/staging/r8188eu/core/rtw_io.c         | 299 ------------------
+ drivers/staging/r8188eu/hal/usb_halinit.c     |   6 +-
+ drivers/staging/r8188eu/hal/usb_ops_linux.c   | 261 ++++++++-------
+ drivers/staging/r8188eu/include/drv_types.h   |   5 -
+ drivers/staging/r8188eu/include/rtw_io.h      |  89 +-----
+ drivers/staging/r8188eu/include/usb_ops.h     |   2 -
+ .../staging/r8188eu/include/usb_ops_linux.h   |   8 -
+ drivers/staging/r8188eu/os_dep/usb_intf.c     |  48 +--
+ .../staging/r8188eu/os_dep/usb_ops_linux.c    |  20 +-
+ 10 files changed, 167 insertions(+), 572 deletions(-)
+ delete mode 100644 drivers/staging/r8188eu/core/rtw_io.c
+
 -- 
-2.7.4
+2.33.0
 
