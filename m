@@ -2,184 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7C1440F02C
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 05:05:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C59040F033
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 05:09:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243721AbhIQDGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 23:06:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50028 "EHLO
+        id S243589AbhIQDK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 23:10:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243654AbhIQDGX (ORCPT
+        with ESMTP id S243222AbhIQDKz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 23:06:23 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9E36C0613DF
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 20:05:00 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id t1so8239168pgv.3
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 20:05:00 -0700 (PDT)
+        Thu, 16 Sep 2021 23:10:55 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62DB5C061764
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 20:09:34 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id b18so25305879lfb.1
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 20:09:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=DZDUsMljZO0ntC1FxaFERGklbdPaiu4ieAaqL5TQKnw=;
-        b=yywAtefpd1NGSfYFvYO8+g7qs1Bz6/rJLtWzMWbzKJMc73W4/+e4dCbSaI686vOxoL
-         wP2I8VF52ff7ONJr9dY9lgdb51XkcD/vHsyMnMRPwxPZ3mxO4xLbTsC9nKtRXS7kcjWS
-         NZk70uVr2O2KOvMMk5pwhFn4LkA85Z9Lw+BplueUcUo2yx4nC+4Z2FdFFizsKybYSDaT
-         z19Wg8oDf08nERuIqKXnu87iIyFO/aIzlJu1qROy4ihyBKQiJoAVT/aLYe3cgQ3L8sJY
-         kBzRGR4myluv9QLSO80eKMdmaA7KAHg1/pGA3ewnOrLvrbEC4Q2tKXDZ4fuJCuwMAwxc
-         hckA==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7HDuE8Xcc6axVLUrlQgi6xb1XAmXpaeXnBoUKQk2Q8U=;
+        b=Rb7GOZkjQQz+dXcST5zXciKF45mcQvvKM4oRiwn/w4mDZaMSburq48ENn+6lIQ8evT
+         Z0IqROF+UxLOG4rDop2BTQcPzLHbl3EcqoPGNoIAmHRf6Wn7IDkhxZsQ6NbWR6EjOMNE
+         9sJOHPfcUwVJ2isZhNoHj0ZBk/nP7jQDL/8/aHpGveAga/qS5fxCbya/Ea0FbyVeD36A
+         Ug6/yaWe7HBXANywHNORVuxrE2VjUM+j40dBCHYZhAYLbeyodumE+wjBPr2yh+hQZ8tW
+         cW2ZvypauuzBvNWUJAX8ovjsAPJJ8750x+RvRHvle2Gr38E6rvGv6Z/YGy8555DbppKu
+         ZV9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=DZDUsMljZO0ntC1FxaFERGklbdPaiu4ieAaqL5TQKnw=;
-        b=0n2bQnM8q9N/tT8y67KAXY2iVjqs5s7t5G+ExCM1NOnRthBNqSW6KAcNoL30VsjnFE
-         HFnoEIiZslt239rTj0zAP4D7gvAZfaFwo1phR0K+a1YvXv0jfLsLe/x0mzRBD6ZqdXqM
-         yiO12nd71KU8h1KrU+d4H9WIdclDkN8WFBff0W4BAWnNCBqdXIS4EMT7ULvlSIUjnCir
-         ieA1OyU/pm5ubg4aXCushHr8ik+3YKyJBx8iNwPptp2LlwH+72y7G9j0oNwsvxh4YcXv
-         Me3++yKhHozaE1zSvXJigmVubklR3Hy4TK2dLwbSTHmR395P7k3KUwk8CRHt076qULp6
-         TZ6g==
-X-Gm-Message-State: AOAM531/8cm1Ox5FiZparTNPGOljoYRZNl2o5NIfUW8luygrY9yB9a7G
-        kK+D0epcZoMZpkzRAbUrH1dcQg==
-X-Google-Smtp-Source: ABdhPJwcOxHfuFx2UqgMxpoowJIuCES3dEeDcKOfx1cXFMkkyzHO3NRxtEpb5iXsx0uJr4Z5v5WIxw==
-X-Received: by 2002:a05:6a00:2184:b0:3f4:cac4:cf41 with SMTP id h4-20020a056a00218400b003f4cac4cf41mr8240481pfi.6.1631847900370;
-        Thu, 16 Sep 2021 20:05:00 -0700 (PDT)
-Received: from localhost.localdomain (80.251.214.228.16clouds.com. [80.251.214.228])
-        by smtp.gmail.com with ESMTPSA id q2sm9133930pjo.27.2021.09.16.20.04.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 20:05:00 -0700 (PDT)
-From:   Shawn Guo <shawn.guo@linaro.org>
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH v2 3/3] clk: qcom: smd-rpm: Add QCM2290 RPM clock support
-Date:   Fri, 17 Sep 2021 11:04:34 +0800
-Message-Id: <20210917030434.19859-4-shawn.guo@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210917030434.19859-1-shawn.guo@linaro.org>
-References: <20210917030434.19859-1-shawn.guo@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7HDuE8Xcc6axVLUrlQgi6xb1XAmXpaeXnBoUKQk2Q8U=;
+        b=NLFyLPtJx1Z9oTwVinH56YcqvWE3sLYKycmZuVsMAQcbrN7IvLcQmjlRvqhfH2/bmO
+         8zPFZjJpxfcbFa5BxIPVvOJp/rh0XbTSZ8f+SjSwWhyBKwrHV41o+PJlBTPm4pLUXdW6
+         D9ivPXdL52SVkPi6slmzNBF6OHFfw+zTDW9X07C7mgbWKv2JEs59YDueyb4vyvG8ozJC
+         9AXTgnkstnfngwQcvJSBDrhRTwH22NIdlnJ+Ve0ffYxm8pYTZG0fKst7ymbeFAyCuUiv
+         RuowykBLWowyPfF9YbYw4Y3WzxKByaAHT+qHxnlXdI63rYVtn6q4QPfcrwXeFV8o2Uoy
+         EK9g==
+X-Gm-Message-State: AOAM532n7Azrj6K2ljrKRy+7VrBEsUcoreG7c4tHRi2mxrzPiRgg8wU3
+        EdL/YbgWOD97R0TjAi1TywHRtUm5832YR1LcBGKi+Q==
+X-Google-Smtp-Source: ABdhPJzVECCm8xRK1jzQ1E35fKtYJ9xaCTZ8fp6jmiPAiIKDjMcUsOJ2CCfrg9yiCMf8MrCKu7/SRr9HZvihIDWTDqE=
+X-Received: by 2002:a05:6512:750:: with SMTP id c16mr6725658lfs.21.1631848172252;
+ Thu, 16 Sep 2021 20:09:32 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210910130337.2025426-1-osk@google.com> <71c17c47-ca9e-e9d2-7b89-cc25b512c06a@roeck-us.net>
+ <CABoTLcRZ43EUVzbqWniu64PkB7Yx4RMYKjaBxaSihk+k0Ca-gA@mail.gmail.com>
+ <722b27f6-4390-9b5b-f6f2-75ce9e967d12@roeck-us.net> <CABoTLcSdkmuBxd5Yh6z2Oqm1-_Vd4J5Ni1i1qq5s07mWu7Ndew@mail.gmail.com>
+ <20210914150859.GB3457579@roeck-us.net> <CABoTLcQfS5-UL92NR9vbc2YrGJv3oQPYCqAm-diNoq-tkHP_hQ@mail.gmail.com>
+ <c410eba9-f6cf-4dbf-797f-48afde9c1898@roeck-us.net> <CABoTLcQWXerMWPvWUqjykiNcx9oGoP8aEcuDwcQ36yu-CBc0pA@mail.gmail.com>
+ <382858f5-e833-d4b9-f189-449671992ba5@roeck-us.net> <CABoTLcST=74wRbtMA2SdmeHd0WmU7id05ouSfw4PFw2nJt_gLw@mail.gmail.com>
+ <9869ed19-b8ab-d9e5-e791-a02eeb2c5eed@roeck-us.net> <CABoTLcS6krUnqDU7=1+_wBPoGN==VfmZHDQ4rWVZUv7c3ExNkQ@mail.gmail.com>
+In-Reply-To: <CABoTLcS6krUnqDU7=1+_wBPoGN==VfmZHDQ4rWVZUv7c3ExNkQ@mail.gmail.com>
+From:   Oskar Senft <osk@google.com>
+Date:   Thu, 16 Sep 2021 23:09:16 -0400
+Message-ID: <CABoTLcTJgGCrMJc4cKczz=u-ZSLpf2JYZjrMpe6k6XAG+QbJdg@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: hwmon: Add nct7802 bindings
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        Rob Herring <robh+dt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for RPM-managed clocks on the QCM2290 platform.
+Ok, I experimented with that and I think I'm starting to get an idea
+how the DT bindings YAML works.
 
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
----
- drivers/clk/qcom/clk-smd-rpm.c         | 59 ++++++++++++++++++++++++++
- include/dt-bindings/clock/qcom,rpmcc.h |  6 +++
- include/linux/soc/qcom/smd-rpm.h       |  2 +
- 3 files changed, 67 insertions(+)
+> > Yes, let's do that. I'd like us to keep the "sensors" subnode to have a clear
+> > association and differentiator to other sub-nodes such as "regulators".
+> > Open is if we can use "temperature-sensor@0" or if it would have to be
+> > a chip specific "ltd", but I think we can sort that out after suggesting
+> > an initial set of bindings to Rob.
 
-diff --git a/drivers/clk/qcom/clk-smd-rpm.c b/drivers/clk/qcom/clk-smd-rpm.c
-index 8e16e4836424..0f896c7d4cfa 100644
---- a/drivers/clk/qcom/clk-smd-rpm.c
-+++ b/drivers/clk/qcom/clk-smd-rpm.c
-@@ -1077,6 +1077,64 @@ static const struct rpm_smd_clk_desc rpm_clk_sm6115 = {
- 	.num_clks = ARRAY_SIZE(sm6115_clks),
- };
- 
-+/* QCM2290 */
-+DEFINE_CLK_SMD_RPM_XO_BUFFER(qcm2290, ln_bb_clk2, ln_bb_clk2_a, 0x2, 19200000);
-+DEFINE_CLK_SMD_RPM_XO_BUFFER(qcm2290, rf_clk3, rf_clk3_a, 6, 38400000);
-+
-+DEFINE_CLK_SMD_RPM(qcm2290, qpic_clk, qpic_a_clk, QCOM_SMD_RPM_QPIC_CLK, 0);
-+DEFINE_CLK_SMD_RPM(qcm2290, hwkm_clk, hwkm_a_clk, QCOM_SMD_RPM_HWKM_CLK, 0);
-+DEFINE_CLK_SMD_RPM(qcm2290, pka_clk, pka_a_clk, QCOM_SMD_RPM_PKA_CLK, 0);
-+DEFINE_CLK_SMD_RPM(qcm2290, cpuss_gnoc_clk, cpuss_gnoc_a_clk,
-+		   QCOM_SMD_RPM_MEM_CLK, 1);
-+DEFINE_CLK_SMD_RPM(qcm2290, bimc_gpu_clk, bimc_gpu_a_clk,
-+		   QCOM_SMD_RPM_MEM_CLK, 2);
-+
-+static struct clk_smd_rpm *qcm2290_clks[] = {
-+	[RPM_SMD_XO_CLK_SRC] = &sdm660_bi_tcxo,
-+	[RPM_SMD_XO_A_CLK_SRC] = &sdm660_bi_tcxo_a,
-+	[RPM_SMD_SNOC_CLK] = &sm6125_snoc_clk,
-+	[RPM_SMD_SNOC_A_CLK] = &sm6125_snoc_a_clk,
-+	[RPM_SMD_BIMC_CLK] = &msm8916_bimc_clk,
-+	[RPM_SMD_BIMC_A_CLK] = &msm8916_bimc_a_clk,
-+	[RPM_SMD_QDSS_CLK] = &sm6125_qdss_clk,
-+	[RPM_SMD_QDSS_A_CLK] = &sm6125_qdss_a_clk,
-+	[RPM_SMD_LN_BB_CLK2] = &qcm2290_ln_bb_clk2,
-+	[RPM_SMD_LN_BB_CLK2_A] = &qcm2290_ln_bb_clk2_a,
-+	[RPM_SMD_RF_CLK3] = &qcm2290_rf_clk3,
-+	[RPM_SMD_RF_CLK3_A] = &qcm2290_rf_clk3_a,
-+	[RPM_SMD_CNOC_CLK] = &sm6125_cnoc_clk,
-+	[RPM_SMD_CNOC_A_CLK] = &sm6125_cnoc_a_clk,
-+	[RPM_SMD_IPA_CLK] = &msm8976_ipa_clk,
-+	[RPM_SMD_IPA_A_CLK] = &msm8976_ipa_a_clk,
-+	[RPM_SMD_QUP_CLK] = &sm6125_qup_clk,
-+	[RPM_SMD_QUP_A_CLK] = &sm6125_qup_a_clk,
-+	[RPM_SMD_MMRT_CLK] = &sm6125_mmrt_clk,
-+	[RPM_SMD_MMRT_A_CLK] = &sm6125_mmrt_a_clk,
-+	[RPM_SMD_MMNRT_CLK] = &sm6125_mmnrt_clk,
-+	[RPM_SMD_MMNRT_A_CLK] = &sm6125_mmnrt_a_clk,
-+	[RPM_SMD_SNOC_PERIPH_CLK] = &sm6125_snoc_periph_clk,
-+	[RPM_SMD_SNOC_PERIPH_A_CLK] = &sm6125_snoc_periph_a_clk,
-+	[RPM_SMD_SNOC_LPASS_CLK] = &sm6125_snoc_lpass_clk,
-+	[RPM_SMD_SNOC_LPASS_A_CLK] = &sm6125_snoc_lpass_a_clk,
-+	[RPM_SMD_CE1_CLK] = &msm8992_ce1_clk,
-+	[RPM_SMD_CE1_A_CLK] = &msm8992_ce1_a_clk,
-+	[RPM_SMD_QPIC_CLK] = &qcm2290_qpic_clk,
-+	[RPM_SMD_QPIC_CLK_A] = &qcm2290_qpic_a_clk,
-+	[RPM_SMD_HWKM_CLK] = &qcm2290_hwkm_clk,
-+	[RPM_SMD_HWKM_A_CLK] = &qcm2290_hwkm_a_clk,
-+	[RPM_SMD_PKA_CLK] = &qcm2290_pka_clk,
-+	[RPM_SMD_PKA_A_CLK] = &qcm2290_pka_a_clk,
-+	[RPM_SMD_BIMC_GPU_CLK] = &qcm2290_bimc_gpu_clk,
-+	[RPM_SMD_BIMC_GPU_A_CLK] = &qcm2290_bimc_gpu_a_clk,
-+	[RPM_SMD_CPUSS_GNOC_CLK] = &qcm2290_cpuss_gnoc_clk,
-+	[RPM_SMD_CPUSS_GNOC_A_CLK] = &qcm2290_cpuss_gnoc_a_clk,
-+};
-+
-+static const struct rpm_smd_clk_desc rpm_clk_qcm2290 = {
-+	.clks = qcm2290_clks,
-+	.num_clks = ARRAY_SIZE(qcm2290_clks),
-+};
-+
- static const struct of_device_id rpm_smd_clk_match_table[] = {
- 	{ .compatible = "qcom,rpmcc-mdm9607", .data = &rpm_clk_mdm9607 },
- 	{ .compatible = "qcom,rpmcc-msm8226", .data = &rpm_clk_msm8974 },
-@@ -1089,6 +1147,7 @@ static const struct of_device_id rpm_smd_clk_match_table[] = {
- 	{ .compatible = "qcom,rpmcc-msm8994", .data = &rpm_clk_msm8994 },
- 	{ .compatible = "qcom,rpmcc-msm8996", .data = &rpm_clk_msm8996 },
- 	{ .compatible = "qcom,rpmcc-msm8998", .data = &rpm_clk_msm8998 },
-+	{ .compatible = "qcom,rpmcc-qcm2290", .data = &rpm_clk_qcm2290 },
- 	{ .compatible = "qcom,rpmcc-qcs404",  .data = &rpm_clk_qcs404  },
- 	{ .compatible = "qcom,rpmcc-sdm660",  .data = &rpm_clk_sdm660  },
- 	{ .compatible = "qcom,rpmcc-sm6115",  .data = &rpm_clk_sm6115  },
-diff --git a/include/dt-bindings/clock/qcom,rpmcc.h b/include/dt-bindings/clock/qcom,rpmcc.h
-index aa834d516234..fb624ff39273 100644
---- a/include/dt-bindings/clock/qcom,rpmcc.h
-+++ b/include/dt-bindings/clock/qcom,rpmcc.h
-@@ -159,5 +159,11 @@
- #define RPM_SMD_SNOC_PERIPH_A_CLK		113
- #define RPM_SMD_SNOC_LPASS_CLK			114
- #define RPM_SMD_SNOC_LPASS_A_CLK		115
-+#define RPM_SMD_HWKM_CLK			116
-+#define RPM_SMD_HWKM_A_CLK			117
-+#define RPM_SMD_PKA_CLK				118
-+#define RPM_SMD_PKA_A_CLK			119
-+#define RPM_SMD_CPUSS_GNOC_CLK			120
-+#define RPM_SMD_CPUSS_GNOC_A_CLK		121
- 
- #endif
-diff --git a/include/linux/soc/qcom/smd-rpm.h b/include/linux/soc/qcom/smd-rpm.h
-index 60e66fc9b6bf..860dd8cdf9f3 100644
---- a/include/linux/soc/qcom/smd-rpm.h
-+++ b/include/linux/soc/qcom/smd-rpm.h
-@@ -38,6 +38,8 @@ struct qcom_smd_rpm;
- #define QCOM_SMD_RPM_IPA_CLK	0x617069
- #define QCOM_SMD_RPM_CE_CLK	0x6563
- #define QCOM_SMD_RPM_AGGR_CLK	0x72676761
-+#define QCOM_SMD_RPM_HWKM_CLK	0x6d6b7768
-+#define QCOM_SMD_RPM_PKA_CLK	0x616b70
- 
- int qcom_rpm_smd_write(struct qcom_smd_rpm *rpm,
- 		       int state,
--- 
-2.17.1
+However, I found that when I use the name@x syntax, the schema
+validator also requires the use of a reg or ranges property. But then
+doing so requires to set the #address-cells and #size-cells
+properties, which - I think - makes things weird.
 
+So these two examples are options that validate:
+    i2c {
+        #address-cells = <1>;
+        #size-cells = <0>;
+
+        nct7802@28 {
+            compatible = "nuvoton,nct7802";
+            reg = <0x28>;
+
+            temperature-sensors {
+                ltd {
+                  status = "disabled";
+                  label = "mainboard temperature";
+                };
+
+                rtd1 {
+                  status = "okay";
+                  label = "inlet temperature";
+                  type = <4> /* thermistor */;
+                };
+            };
+        };
+    };
+
+or
+
+    i2c {
+        #address-cells = <1>;
+        #size-cells = <0>;
+
+        nct7802@28 {
+            compatible = "nuvoton,nct7802";
+            reg = <0x28>;
+
+            temperature-sensors {
+                #address-cells = <1>;
+                #size-cells = <0>;
+
+                sensor@0 {
+                  reg = <0>;
+                  status = "disabled";
+                  label = "mainboard temperature";
+                };
+
+                sensor@1 {
+                  reg = <1>;
+                  status = "okay";
+                  label = "inlet temperature";
+                  type = <4> /* thermistor */;
+                };
+            };
+        };
+    };
+
+In the second case we end up having to duplicate information, i.e.
+"sensor@1" and "reg = <1>". Also, I have not yet found a way to
+validate that the "@x" is identical to the "reg = <x>". I believe that
+this is just how it is in device trees, but I want to make sure this
+is what we want?
+
+Thoughts?
+
+Thanks
+Oskar.
