@@ -2,223 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDE6B40F846
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 14:48:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48E5140F849
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 14:49:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244292AbhIQMtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 08:49:36 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:50486 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S236034AbhIQMte (ORCPT
+        id S236442AbhIQMuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 08:50:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235278AbhIQMuT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 08:49:34 -0400
-X-UUID: 4595b7819af64c1e85e53f3057aa8254-20210917
-X-UUID: 4595b7819af64c1e85e53f3057aa8254-20210917
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
-        (envelope-from <wenbin.mei@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 592480751; Fri, 17 Sep 2021 20:48:08 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 17 Sep 2021 20:48:07 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by mtkcas07.mediatek.inc
- (172.21.101.84) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 17 Sep
- 2021 20:48:06 +0800
-Received: from localhost.localdomain (10.17.3.154) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 17 Sep 2021 20:48:05 +0800
-From:   Wenbin Mei <wenbin.mei@mediatek.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     Chaotian Jing <chaotian.jing@mediatek.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Wenbin Mei <wenbin.mei@mediatek.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Yue Hu <huyue2@yulong.com>, Bean Huo <beanhuo@micron.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        <linux-mmc@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [RESEND v4 3/3] mmc: mediatek: Add HS400 online tuning support
-Date:   Fri, 17 Sep 2021 20:48:03 +0800
-Message-ID: <20210917124803.22871-4-wenbin.mei@mediatek.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210917124803.22871-1-wenbin.mei@mediatek.com>
-References: <20210917124803.22871-1-wenbin.mei@mediatek.com>
+        Fri, 17 Sep 2021 08:50:19 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12C79C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 05:48:57 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id q26so14988262wrc.7
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 05:48:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7oU/zrR0lyaLCX/xbrz4I5jPxXrxTONpS1EupeiEBYU=;
+        b=e8/iUGwb6f0jMLzsQZnw37NoIcbAVpXGdLudRJ2aUZOOZr7GuR0vRR4j6afb3vDdJB
+         XJWMRXjmtRvQvAricoKKGZwrCEjgiS6TABw7XntuutkzWOtWm/Ic/cHXvDH0zOxJRL7N
+         bGCuq2SuiQLkzWudNPIV3ASsNpk2MY/4P8ipE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=7oU/zrR0lyaLCX/xbrz4I5jPxXrxTONpS1EupeiEBYU=;
+        b=GyPhj01S2cOBqrtF/r6232ISPttvp6LL/njNwbiS7nyCNzQwEGdhDOzdCM+bs3Qjy5
+         tCK4HRNN5v/qMnQKfhTBjYKRpC5okxDv5XTqlik/HDBoH1gceWpHO33mebhccqme286h
+         Ms2H+7lprDbAtYKLbXg+apR6feqkS1NbOxYSbgcQlm42aM2SxsFjTUh+2PVqNW/lKk9T
+         imi2hOaeULfiKlIKgU/LNALQ3KD8JXhF/E9djNiz37ChPY2jfCjS1x0ms2K43beQLAOT
+         HzeSZX/OTFc6NWfNkNePqu4/ASYFonCH94OrQgspcGpzVjbzKzpLBHGReQpMwbm7/d0M
+         YD5w==
+X-Gm-Message-State: AOAM530jrJ7Fyho+EkbEwOVKLgklBzPNALEnLXT8sGINJVuBBhjtLgqT
+        rSyJx7K2cemIZrsVmC45mbzPAQ==
+X-Google-Smtp-Source: ABdhPJzmZO9DPHwWpq5bcm/uB+ld41fkcqMQ3vhyJ+BbFkla9FMUstw4PpsHkn7V6/6NabpIAn+JIg==
+X-Received: by 2002:a5d:608e:: with SMTP id w14mr12008142wrt.18.1631882935719;
+        Fri, 17 Sep 2021 05:48:55 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id i1sm6355034wrb.93.2021.09.17.05.48.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Sep 2021 05:48:55 -0700 (PDT)
+Date:   Fri, 17 Sep 2021 14:48:53 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Thomas Zimmermann <tzimmermann@suse.de>, airlied@redhat.com,
+        airlied@linux.ie, daniel@ffwll.ch, marcan@marcan.st,
+        maz@kernel.org, akpm@linux-foundation.org, npiggin@gmail.com,
+        thunder.leizhen@huawei.com, gregkh@linuxfoundation.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/5] drm/vboxvideo: Use managed interfaces for
+ framebuffer write combining
+Message-ID: <YUSOtX0kKA57xA1T@phenom.ffwll.local>
+Mail-Followup-To: Hans de Goede <hdegoede@redhat.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>, airlied@redhat.com,
+        airlied@linux.ie, marcan@marcan.st, maz@kernel.org,
+        akpm@linux-foundation.org, npiggin@gmail.com,
+        thunder.leizhen@huawei.com, gregkh@linuxfoundation.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20210916181601.9146-1-tzimmermann@suse.de>
+ <20210916181601.9146-6-tzimmermann@suse.de>
+ <353180c3-4184-4723-a8ae-a633931beec4@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <353180c3-4184-4723-a8ae-a633931beec4@redhat.com>
+X-Operating-System: Linux phenom 5.10.0-8-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to JEDEC Spec, there is no need to do tuning under HS400 mode
-since the Rx signal is aligned with the DS signal. However, MediaTek's
-IC need set its "DS delay" internally to ensure it can latch Rx signal
-correctly.
-In previous version, We provide an "hs400-ds-delay" in device tree to
-cover different chipset/PCB design, and it works fine in most cases.
-But, with the development of process technology and the big VCore
-voltage scale range(may have 0.7V/0.6V/0.55V), it is difficult to find
-a suitable "hs400-ds-delay" to cover all of IC corner
-cases(SSSS/TTTT/FFFF).
-So that We must have the ability to do hs400 online tuning.
+On Thu, Sep 16, 2021 at 09:28:53PM +0200, Hans de Goede wrote:
+> Hi,
+> 
+> On 9/16/21 8:16 PM, Thomas Zimmermann wrote:
+> > Replace arch_phys_wc_add() with the rsp managed function. Allows for
+> > removing the cleanup code for memory management
+> > 
+> > Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+> 
+> Thanks, patch looks good to me:
+> 
+> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 
-Signed-off-by: Wenbin Mei <wenbin.mei@mediatek.com>
-Reviewed-by: Chaotian Jing <chaotian.jing@mediatek.com>
----
- drivers/mmc/host/mtk-sd.c | 79 ++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 77 insertions(+), 2 deletions(-)
+Maybe review entire series and then ask Thomas to unblock some of your
+stuff?
+-Daniel
 
-diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
-index 4dfc246c5f95..5f98f869545d 100644
---- a/drivers/mmc/host/mtk-sd.c
-+++ b/drivers/mmc/host/mtk-sd.c
-@@ -258,6 +258,7 @@
- #define MSDC_PAD_TUNE_RD_SEL	  (0x1 << 13)   /* RW */
- #define MSDC_PAD_TUNE_CMD_SEL	  (0x1 << 21)   /* RW */
- 
-+#define PAD_DS_TUNE_DLY_SEL       (0x1 << 0)	/* RW */
- #define PAD_DS_TUNE_DLY1	  (0x1f << 2)   /* RW */
- #define PAD_DS_TUNE_DLY2	  (0x1f << 7)   /* RW */
- #define PAD_DS_TUNE_DLY3	  (0x1f << 12)  /* RW */
-@@ -301,6 +302,11 @@
- #define PAD_CMD_RD_RXDLY_SEL    (0x1 << 11)     /* RW */
- #define PAD_CMD_TX_DLY          (0x1f << 12)    /* RW */
- 
-+/* EMMC50_PAD_DS_TUNE mask */
-+#define PAD_DS_DLY_SEL		(0x1 << 16)	/* RW */
-+#define PAD_DS_DLY1		(0x1f << 10)	/* RW */
-+#define PAD_DS_DLY3		(0x1f << 0)	/* RW */
-+
- #define REQ_CMD_EIO  (0x1 << 0)
- #define REQ_CMD_TMO  (0x1 << 1)
- #define REQ_DAT_ERR  (0x1 << 2)
-@@ -448,11 +454,13 @@ struct msdc_host {
- 	bool vqmmc_enabled;
- 	u32 latch_ck;
- 	u32 hs400_ds_delay;
-+	u32 hs400_ds_dly3;
- 	u32 hs200_cmd_int_delay; /* cmd internal delay for HS200/SDR104 */
- 	u32 hs400_cmd_int_delay; /* cmd internal delay for HS400 */
- 	bool hs400_cmd_resp_sel_rising;
- 				 /* cmd response sample selection for HS400 */
- 	bool hs400_mode;	/* current eMMC will run at hs400 mode */
-+	bool hs400_tuning;	/* hs400 mode online tuning */
- 	bool internal_cd;	/* Use internal card-detect logic */
- 	bool cqhci;		/* support eMMC hw cmdq */
- 	struct msdc_save_para save_para; /* used when gate HCLK */
-@@ -1190,7 +1198,8 @@ static bool msdc_cmd_done(struct msdc_host *host, int events,
- 	if (!sbc_error && !(events & MSDC_INT_CMDRDY)) {
- 		if (events & MSDC_INT_CMDTMO ||
- 		    (cmd->opcode != MMC_SEND_TUNING_BLOCK &&
--		     cmd->opcode != MMC_SEND_TUNING_BLOCK_HS200))
-+		     cmd->opcode != MMC_SEND_TUNING_BLOCK_HS200 &&
-+		     !host->hs400_tuning))
- 			/*
- 			 * should not clear fifo/interrupt as the tune data
- 			 * may have alreay come when cmd19/cmd21 gets response
-@@ -1287,7 +1296,8 @@ static void msdc_cmd_next(struct msdc_host *host,
- 	if ((cmd->error &&
- 	    !(cmd->error == -EILSEQ &&
- 	      (cmd->opcode == MMC_SEND_TUNING_BLOCK ||
--	       cmd->opcode == MMC_SEND_TUNING_BLOCK_HS200))) ||
-+	       cmd->opcode == MMC_SEND_TUNING_BLOCK_HS200 ||
-+	       host->hs400_tuning))) ||
- 	    (mrq->sbc && mrq->sbc->error))
- 		msdc_request_done(host, mrq);
- 	else if (cmd == mrq->sbc)
-@@ -2251,6 +2261,67 @@ static int msdc_prepare_hs400_tuning(struct mmc_host *mmc, struct mmc_ios *ios)
- 	return 0;
- }
- 
-+static int msdc_execute_hs400_tuning(struct mmc_host *mmc, struct mmc_card *card)
-+{
-+	struct msdc_host *host = mmc_priv(mmc);
-+	struct msdc_delay_phase dly1_delay;
-+	u32 val, result_dly1 = 0;
-+	u8 *ext_csd;
-+	int i, ret;
-+
-+	if (host->top_base) {
-+		sdr_set_bits(host->top_base + EMMC50_PAD_DS_TUNE,
-+			     PAD_DS_DLY_SEL);
-+		if (host->hs400_ds_dly3)
-+			sdr_set_field(host->top_base + EMMC50_PAD_DS_TUNE,
-+				      PAD_DS_DLY3, host->hs400_ds_dly3);
-+	} else {
-+		sdr_set_bits(host->base + PAD_DS_TUNE, PAD_DS_TUNE_DLY_SEL);
-+		if (host->hs400_ds_dly3)
-+			sdr_set_field(host->base + PAD_DS_TUNE,
-+				      PAD_DS_TUNE_DLY3, host->hs400_ds_dly3);
-+	}
-+
-+	host->hs400_tuning = true;
-+	for (i = 0; i < PAD_DELAY_MAX; i++) {
-+		if (host->top_base)
-+			sdr_set_field(host->top_base + EMMC50_PAD_DS_TUNE,
-+				      PAD_DS_DLY1, i);
-+		else
-+			sdr_set_field(host->base + PAD_DS_TUNE,
-+				      PAD_DS_TUNE_DLY1, i);
-+		ret = mmc_get_ext_csd(card, &ext_csd);
-+		if (!ret)
-+			result_dly1 |= (1 << i);
-+	}
-+	host->hs400_tuning = false;
-+
-+	dly1_delay = get_best_delay(host, result_dly1);
-+	if (dly1_delay.maxlen == 0) {
-+		dev_err(host->dev, "Failed to get DLY1 delay!\n");
-+		goto fail;
-+	}
-+	if (host->top_base)
-+		sdr_set_field(host->top_base + EMMC50_PAD_DS_TUNE,
-+			      PAD_DS_DLY1, dly1_delay.final_phase);
-+	else
-+		sdr_set_field(host->base + PAD_DS_TUNE,
-+			      PAD_DS_TUNE_DLY1, dly1_delay.final_phase);
-+
-+	if (host->top_base)
-+		val = readl(host->top_base + EMMC50_PAD_DS_TUNE);
-+	else
-+		val = readl(host->base + PAD_DS_TUNE);
-+
-+	dev_info(host->dev, "Fianl PAD_DS_TUNE: 0x%x\n", val);
-+
-+	return 0;
-+
-+fail:
-+	dev_err(host->dev, "Failed to tuning DS pin delay!\n");
-+	return -EIO;
-+}
-+
- static void msdc_hw_reset(struct mmc_host *mmc)
- {
- 	struct msdc_host *host = mmc_priv(mmc);
-@@ -2377,6 +2448,7 @@ static const struct mmc_host_ops mt_msdc_ops = {
- 	.card_busy = msdc_card_busy,
- 	.execute_tuning = msdc_execute_tuning,
- 	.prepare_hs400_tuning = msdc_prepare_hs400_tuning,
-+	.execute_hs400_tuning = msdc_execute_hs400_tuning,
- 	.hw_reset = msdc_hw_reset,
- };
- 
-@@ -2396,6 +2468,9 @@ static void msdc_of_property_parse(struct platform_device *pdev,
- 	of_property_read_u32(pdev->dev.of_node, "hs400-ds-delay",
- 			     &host->hs400_ds_delay);
- 
-+	of_property_read_u32(pdev->dev.of_node, "mediatek,hs400-ds-dly3",
-+			     &host->hs400_ds_dly3);
-+
- 	of_property_read_u32(pdev->dev.of_node, "mediatek,hs200-cmd-int-delay",
- 			     &host->hs200_cmd_int_delay);
- 
+> 
+> Regards,
+> 
+> Hans
+> 
+> 
+> > ---
+> >  drivers/gpu/drm/vboxvideo/vbox_drv.c |  5 +----
+> >  drivers/gpu/drm/vboxvideo/vbox_drv.h |  1 -
+> >  drivers/gpu/drm/vboxvideo/vbox_ttm.c | 17 ++++++++---------
+> >  3 files changed, 9 insertions(+), 14 deletions(-)
+> > 
+> > diff --git a/drivers/gpu/drm/vboxvideo/vbox_drv.c b/drivers/gpu/drm/vboxvideo/vbox_drv.c
+> > index 2b81cb259d23..a6c81af37345 100644
+> > --- a/drivers/gpu/drm/vboxvideo/vbox_drv.c
+> > +++ b/drivers/gpu/drm/vboxvideo/vbox_drv.c
+> > @@ -69,7 +69,7 @@ static int vbox_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+> >  
+> >  	ret = vbox_mode_init(vbox);
+> >  	if (ret)
+> > -		goto err_mm_fini;
+> > +		goto err_hw_fini;
+> >  
+> >  	ret = vbox_irq_init(vbox);
+> >  	if (ret)
+> > @@ -87,8 +87,6 @@ static int vbox_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+> >  	vbox_irq_fini(vbox);
+> >  err_mode_fini:
+> >  	vbox_mode_fini(vbox);
+> > -err_mm_fini:
+> > -	vbox_mm_fini(vbox);
+> >  err_hw_fini:
+> >  	vbox_hw_fini(vbox);
+> >  	return ret;
+> > @@ -101,7 +99,6 @@ static void vbox_pci_remove(struct pci_dev *pdev)
+> >  	drm_dev_unregister(&vbox->ddev);
+> >  	vbox_irq_fini(vbox);
+> >  	vbox_mode_fini(vbox);
+> > -	vbox_mm_fini(vbox);
+> >  	vbox_hw_fini(vbox);
+> >  }
+> >  
+> > diff --git a/drivers/gpu/drm/vboxvideo/vbox_drv.h b/drivers/gpu/drm/vboxvideo/vbox_drv.h
+> > index 4903b91d7fe4..e77bd6512eb1 100644
+> > --- a/drivers/gpu/drm/vboxvideo/vbox_drv.h
+> > +++ b/drivers/gpu/drm/vboxvideo/vbox_drv.h
+> > @@ -139,7 +139,6 @@ void vbox_mode_fini(struct vbox_private *vbox);
+> >  void vbox_report_caps(struct vbox_private *vbox);
+> >  
+> >  int vbox_mm_init(struct vbox_private *vbox);
+> > -void vbox_mm_fini(struct vbox_private *vbox);
+> >  
+> >  /* vbox_irq.c */
+> >  int vbox_irq_init(struct vbox_private *vbox);
+> > diff --git a/drivers/gpu/drm/vboxvideo/vbox_ttm.c b/drivers/gpu/drm/vboxvideo/vbox_ttm.c
+> > index fd8a53a4d8d6..dc24c2172fd4 100644
+> > --- a/drivers/gpu/drm/vboxvideo/vbox_ttm.c
+> > +++ b/drivers/gpu/drm/vboxvideo/vbox_ttm.c
+> > @@ -13,22 +13,21 @@
+> >  int vbox_mm_init(struct vbox_private *vbox)
+> >  {
+> >  	int ret;
+> > +	resource_size_t base, size;
+> >  	struct drm_device *dev = &vbox->ddev;
+> >  	struct pci_dev *pdev = to_pci_dev(dev->dev);
+> >  
+> > -	ret = drmm_vram_helper_init(dev, pci_resource_start(pdev, 0),
+> > -				       vbox->available_vram_size);
+> > +	base = pci_resource_start(pdev, 0);
+> > +	size = pci_resource_len(pdev, 0);
+> > +
+> > +	/* Don't fail on errors, but performance might be reduced. */
+> > +	devm_arch_phys_wc_add(&pdev->dev, base, size);
+> > +
+> > +	ret = drmm_vram_helper_init(dev, base, vbox->available_vram_size);
+> >  	if (ret) {
+> >  		DRM_ERROR("Error initializing VRAM MM; %d\n", ret);
+> >  		return ret;
+> >  	}
+> >  
+> > -	vbox->fb_mtrr = arch_phys_wc_add(pci_resource_start(pdev, 0),
+> > -					 pci_resource_len(pdev, 0));
+> >  	return 0;
+> >  }
+> > -
+> > -void vbox_mm_fini(struct vbox_private *vbox)
+> > -{
+> > -	arch_phys_wc_del(vbox->fb_mtrr);
+> > -}
+> > 
+> 
+
 -- 
-2.25.1
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
