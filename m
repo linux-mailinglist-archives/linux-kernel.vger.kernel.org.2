@@ -2,109 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FFA740F933
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 15:33:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7956740F941
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 15:34:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239420AbhIQNfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 09:35:17 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:2839 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231887AbhIQNfQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 09:35:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1631885634; x=1663421634;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=x4RJssw+7dVIrPj9daSLbtKLXu4OSSZABqnVXRGzue0=;
-  b=AxIUA2xuEdY6IXJEfRNEpRfUULHIoi6CfjlsCAUs51A8OD8Njyy772+n
-   +eLSbkfJEnvXiJ3710uWnTipU/yxoe/7m5n8A1KieQVi2ZPFOOV9JLljg
-   M5ZhIdxdVJoow1iSyWKdaRk1jwLX7BircwGvDvL4rCDXKQqMsmdBim8Gz
-   w8D+erLbAOcpL3kpp2jKKOAKtKggabRMrQBWU1Z7z47yLehQ19VTAldVr
-   YVN7+BWyFbSLHOpWllpjyowM3RvBUNEZY/8U+dXS+yG1Bp69oYS13a6Wd
-   7/8AEuRBZWk0C4gNqm780kvQdFvi18NXAv3Z2BZ7jHe8xPa7i2rZGUgZe
-   w==;
-IronPort-SDR: 4so8ygShf00sLEeHrXAkq7g4tmqvZFemzMK02tq61NkwKt3Esg1hKx01I9Om80KlK9UVnBx/qp
- CWJPnm1mNCcuXOAkmTFraPlQUO6ssnz0sqO/aUsR8K2ddUU4H/ywOX7p2YSfBnwoooTiIoVQlS
- xZjxW/6mtmLi/rWBD2rFlckywM9EmqAfimnWzbBtWk1O0KQovEo3TmFXBxAxEFO+9YUw1kYpgJ
- fcMFuFPfp9D0uYX0S6fjecN2BnGiFwtHf4QWiQ3J9azBGFTRVnRkcsCSTOFAlVBCPk5PuFolEk
- fuHVDx1wk/flN/uJ939gH3Je
-X-IronPort-AV: E=Sophos;i="5.85,301,1624345200"; 
-   d="scan'208";a="132210814"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 17 Sep 2021 06:33:49 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Fri, 17 Sep 2021 06:33:49 -0700
-Received: from [10.171.246.21] (10.10.115.15) by chn-vm-ex02.mchp-main.com
- (10.10.85.144) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
- Transport; Fri, 17 Sep 2021 06:33:47 -0700
-Subject: Re: [PATCH v2 4/4] net: macb: enable mii on rgmii for sama7g5
-To:     Claudiu Beznea <claudiu.beznea@microchip.com>,
-        <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210917132615.16183-1-claudiu.beznea@microchip.com>
- <20210917132615.16183-5-claudiu.beznea@microchip.com>
-From:   Nicolas Ferre <nicolas.ferre@microchip.com>
-Organization: microchip
-Message-ID: <216f6e40-0faa-027a-6a73-e516a02bb21b@microchip.com>
-Date:   Fri, 17 Sep 2021 15:33:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S245350AbhIQNfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 09:35:45 -0400
+Received: from foss.arm.com ([217.140.110.172]:53282 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240676AbhIQNfd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 09:35:33 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2BDD811B3;
+        Fri, 17 Sep 2021 06:34:11 -0700 (PDT)
+Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 474D53F719;
+        Fri, 17 Sep 2021 06:34:10 -0700 (PDT)
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Sudeep Holla <sudeep.holla@arm.com>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Jassi Brar <jassisinghbrar@gmail.com>
+Subject: [PATCH v2 04/14] mailbox: pcc: Consolidate subspace interrupt information parsing
+Date:   Fri, 17 Sep 2021 14:33:47 +0100
+Message-Id: <20210917133357.1911092-5-sudeep.holla@arm.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210917133357.1911092-1-sudeep.holla@arm.com>
+References: <20210917133357.1911092-1-sudeep.holla@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20210917132615.16183-5-claudiu.beznea@microchip.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/09/2021 at 15:26, Claudiu Beznea wrote:
-> Both MAC IPs available on SAMA7G5 support MII on RGMII feature.
-> Enable these by adding proper capability to proper macb_config
-> objects.
-> 
-> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+Extended PCC subspaces(Type 3 and 4) differ from generic(Type 0) and
+HW-Reduced Communication(Type 1 and 2) subspace structures. However some
+fields share same offsets and same type of structure can be use to extract
+the fields. In order to simplify that, let us move all the IRQ related
+information parsing into pcc_parse_subspace_irq and consolidate there.
+It will be easier to extend it if required within the same.
 
-Yes:
-Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+Reviewed-by: Cristian Marussi <cristian.marussi@arm.com>
+Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+---
+ drivers/mailbox/pcc.c | 38 +++++++++++++++++++-------------------
+ 1 file changed, 19 insertions(+), 19 deletions(-)
 
-Thanks Claudiu, best regards,
-   Nicolas
-
-> ---
->   drivers/net/ethernet/cadence/macb_main.c | 6 ++++--
->   1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
-> index cdf3e35b5b33..e2730b3e1a57 100644
-> --- a/drivers/net/ethernet/cadence/macb_main.c
-> +++ b/drivers/net/ethernet/cadence/macb_main.c
-> @@ -4597,7 +4597,8 @@ static const struct macb_config zynq_config = {
->   };
->   
->   static const struct macb_config sama7g5_gem_config = {
-> -	.caps = MACB_CAPS_GIGABIT_MODE_AVAILABLE | MACB_CAPS_CLK_HW_CHG,
-> +	.caps = MACB_CAPS_GIGABIT_MODE_AVAILABLE | MACB_CAPS_CLK_HW_CHG |
-> +		MACB_CAPS_MIIONRGMII,
->   	.dma_burst_length = 16,
->   	.clk_init = macb_clk_init,
->   	.init = macb_init,
-> @@ -4605,7 +4606,8 @@ static const struct macb_config sama7g5_gem_config = {
->   };
->   
->   static const struct macb_config sama7g5_emac_config = {
-> -	.caps = MACB_CAPS_USRIO_DEFAULT_IS_MII_GMII | MACB_CAPS_USRIO_HAS_CLKEN,
-> +	.caps = MACB_CAPS_USRIO_DEFAULT_IS_MII_GMII |
-> +		MACB_CAPS_USRIO_HAS_CLKEN | MACB_CAPS_MIIONRGMII,
->   	.dma_burst_length = 16,
->   	.clk_init = macb_clk_init,
->   	.init = macb_init,
-> 
-
-
+diff --git a/drivers/mailbox/pcc.c b/drivers/mailbox/pcc.c
+index 588d2207edf9..efde77d7038c 100644
+--- a/drivers/mailbox/pcc.c
++++ b/drivers/mailbox/pcc.c
+@@ -405,18 +405,26 @@ static int parse_pcc_subspace(union acpi_subtable_headers *header,
+ 
+ /**
+  * pcc_parse_subspace_irq - Parse the PCC IRQ and PCC ACK register
+- *		There should be one entry per PCC client.
+- * @id: PCC subspace index.
+- * @pcct_ss: Pointer to the ACPI subtable header under the PCCT.
++ *
++ * @pchan: Pointer to the PCC channel info structure.
++ * @pcct_entry: Pointer to the ACPI subtable header.
+  *
+  * Return: 0 for Success, else errno.
+  *
+- * This gets called for each entry in the PCC table.
++ * There should be one entry per PCC channel. This gets called for each
++ * entry in the PCC table. This uses PCCY Type1 structure for all applicable
++ * types(Type 1-4) to fetch irq
+  */
+-static int pcc_parse_subspace_irq(int id, struct acpi_pcct_hw_reduced *pcct_ss)
++static int pcc_parse_subspace_irq(struct pcc_chan_info *pchan,
++				  struct acpi_subtable_header *pcct_entry)
+ {
+-	struct pcc_chan_info *pchan = chan_info + id;
++	struct acpi_pcct_hw_reduced *pcct_ss;
+ 
++	if (pcct_entry->type < ACPI_PCCT_TYPE_HW_REDUCED_SUBSPACE ||
++	    pcct_entry->type > ACPI_PCCT_TYPE_EXT_PCC_SLAVE_SUBSPACE)
++		return 0;
++
++	pcct_ss = (struct acpi_pcct_hw_reduced *)pcct_entry;
+ 	pchan->db_irq = pcc_map_interrupt(pcct_ss->platform_interrupt,
+ 					  (u32)pcct_ss->flags);
+ 	if (pchan->db_irq <= 0) {
+@@ -425,8 +433,7 @@ static int pcc_parse_subspace_irq(int id, struct acpi_pcct_hw_reduced *pcct_ss)
+ 		return -EINVAL;
+ 	}
+ 
+-	if (pcct_ss->header.type
+-		== ACPI_PCCT_TYPE_HW_REDUCED_SUBSPACE_TYPE2) {
++	if (pcct_ss->header.type == ACPI_PCCT_TYPE_HW_REDUCED_SUBSPACE_TYPE2) {
+ 		struct acpi_pcct_hw_reduced_type2 *pcct2_ss = (void *)pcct_ss;
+ 
+ 		pchan->db_ack_vaddr =
+@@ -510,17 +517,10 @@ static int __init acpi_pcc_probe(void)
+ 		struct acpi_pcct_subspace *pcct_ss;
+ 		pcc_mbox_channels[i].con_priv = pcct_entry;
+ 
+-		if (pcct_entry->type == ACPI_PCCT_TYPE_HW_REDUCED_SUBSPACE ||
+-		    pcct_entry->type == ACPI_PCCT_TYPE_HW_REDUCED_SUBSPACE_TYPE2) {
+-			struct acpi_pcct_hw_reduced *pcct_hrss;
+-
+-			pcct_hrss = (struct acpi_pcct_hw_reduced *) pcct_entry;
+-
+-			if (pcc_mbox_ctrl.txdone_irq) {
+-				rc = pcc_parse_subspace_irq(i, pcct_hrss);
+-				if (rc < 0)
+-					goto err;
+-			}
++		if (pcc_mbox_ctrl.txdone_irq) {
++			rc = pcc_parse_subspace_irq(pchan, pcct_entry);
++			if (rc < 0)
++				goto err;
+ 		}
+ 		pcct_ss = (struct acpi_pcct_subspace *) pcct_entry;
+ 
 -- 
-Nicolas Ferre
+2.25.1
+
