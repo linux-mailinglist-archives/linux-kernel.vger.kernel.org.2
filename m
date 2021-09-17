@@ -2,121 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23E2140F52A
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 11:48:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B0B240F547
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 11:50:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241454AbhIQJtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 05:49:55 -0400
-Received: from egress-ip33b.ess.de.barracuda.com ([18.185.115.237]:40756 "EHLO
-        egress-ip33b.ess.de.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232845AbhIQJtv (ORCPT
+        id S1343681AbhIQJvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 05:51:40 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:10893 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241764AbhIQJud (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 05:49:51 -0400
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com [209.85.216.69]) by mx-outbound47-143.eu-central-1c.ess.aws.cudaops.com (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO); Fri, 17 Sep 2021 09:48:27 +0000
-Received: by mail-pj1-f69.google.com with SMTP id h9-20020a17090a470900b001791c0352aaso6953230pjg.2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 02:48:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mistralsolutions.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Zg9NR0tSN21z3Xw9wATEsBQgHLP/VfeOw0/h62Yv3Ho=;
-        b=aRU2GrRB/Xljgd8vbtFT+MYi+kjI1fCJHzWR/eowU1ei1WGy303gfJViTSKJrDtOi1
-         jYe2Tna0Lxg0QSyXSvcxtAasWZznuyxkzQTyW85vsqWsZL20zqIAJWjyofwKaWR7c/i2
-         89IlusNBpOerYRS6waSMf577WoVRXjmCEfAIY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Zg9NR0tSN21z3Xw9wATEsBQgHLP/VfeOw0/h62Yv3Ho=;
-        b=XS/qbcEQVx1IZIp5+Ur39WtnM0OAd7AySZLGLgJWMtg4gYIyxsGyAVhcCJH1qk7fZC
-         y+ao1+mXd8M4zaKJFkoUNPIql4c5nLQOa4bQsgxwDD3EHlOhLnrP01ydh4jgRcL8ZzAI
-         5mUlyPMxJaI8iBf8Lyip37U+h8eOSNxhVZJJhL1Bpw/SjdawWoqEYtSMnfi3I7dmFPx7
-         YgODmBb0gEjPRjuxg2SCdBwPKvw2sUVCVfhlHNc4wx8Hxuz3dOd6KftnpmsnFdZ5ul7Q
-         SYG1lU6qYGBLV8yZOM+NLJXNKUgarw2TDG2mb00sdGabEImnftIXMtKQs195GXl/h6HW
-         ZnpQ==
-X-Gm-Message-State: AOAM530M7svShnx30FxUJNtYXRqN8q8aSZ31ddU0A1GSRtYDtNOMpYH+
-        diTp+yVzk+GVgsrw4I6dboPE1a0AuYDFIVE9YEeRl39N0M+wyFwV+l/nlC1VYFYx+O7T/AcNJVp
-        y7NngCxRvoJ3EK5wu6cfk0Icl5/jyI3Z6ImhZ/huCcxD2+7f8LAiU+vrhkyJT
-X-Received: by 2002:a63:235f:: with SMTP id u31mr9211761pgm.248.1631872106616;
-        Fri, 17 Sep 2021 02:48:26 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwHTgAmXPTPvEhSyqwKadxqkCmkk3t2nlenuC8rzOzF2qP7V/rxCowvgAU3zOBFx5Rf9WHPwg==
-X-Received: by 2002:a63:235f:: with SMTP id u31mr9211736pgm.248.1631872106322;
-        Fri, 17 Sep 2021 02:48:26 -0700 (PDT)
-Received: from LAP568U.mistral.in ([106.51.227.150])
-        by smtp.gmail.com with ESMTPSA id j25sm5409245pff.34.2021.09.17.02.48.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 02:48:25 -0700 (PDT)
-From:   Sinthu Raja <sinthu.raja@mistralsolutions.com>
-X-Google-Original-From: Sinthu Raja <sinthu.raja@ti.com>
-To:     Suman Anna <s-anna@ti.com>, Rob Herring <robh+dt@kernel.org>,
-        Baolin Wang <baolin.wang7@gmail.com>,
+        Fri, 17 Sep 2021 05:50:33 -0400
+Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
+  by alexa-out.qualcomm.com with ESMTP; 17 Sep 2021 02:49:11 -0700
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 17 Sep 2021 02:49:10 -0700
+X-QCInternal: smtphost
+Received: from rajpat-linux.qualcomm.com ([10.206.21.0])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 17 Sep 2021 15:18:46 +0530
+Received: by rajpat-linux.qualcomm.com (Postfix, from userid 2344945)
+        id 6580121463; Fri, 17 Sep 2021 15:18:45 +0530 (IST)
+From:   Rajesh Patil <rajpat@codeaurora.org>
+To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, Nishanth Menon <nm@ti.com>,
-        Sinthu Raja <sinthu.raja@ti.com>
-Subject: [PATCH] dt-bindings: hwlock: omap: Remove board-specific compatible from DT example
-Date:   Fri, 17 Sep 2021 15:17:40 +0530
-Message-Id: <20210917094740.18891-1-sinthu.raja@ti.com>
-X-Mailer: git-send-email 2.31.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-BESS-ID: 1631872107-312175-5445-1048-1
-X-BESS-VER: 2019.1_20210916.2102
-X-BESS-Apparent-Source-IP: 209.85.216.69
-X-BESS-Outbound-Spam-Score: 0.00
-X-BESS-Outbound-Spam-Report: Code version 3.2, rules version 3.2.2.234537 [from 
-        cloudscan22-151.eu-central-1b.ess.aws.cudaops.com]
-        Rule breakdown below
-         pts rule name              description
-        ---- ---------------------- --------------------------------
-        0.00 BSF_BESS_OUTBOUND      META: BESS Outbound 
-        0.00 BSF_SC0_MISMATCH_TO    META: Envelope rcpt doesn't match header 
-X-BESS-Outbound-Spam-Status: SCORE=0.00 using account:ESS91090 scores of KILL_LEVEL=7.0 tests=BSF_BESS_OUTBOUND, BSF_SC0_MISMATCH_TO
-X-BESS-BRTS-Status: 1
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, rnayak@codeaurora.org,
+        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com,
+        skakit@codeaurora.org, sboyd@kernel.org, mka@chromium.org,
+        dianders@chromium.org, Rajesh Patil <rajpat@codeaurora.org>
+Subject: [PATCH V8 0/8] Add QSPI and QUPv3 DT nodes for SC7280 SoC
+Date:   Fri, 17 Sep 2021 15:17:59 +0530
+Message-Id: <1631872087-24416-1-git-send-email-rajpat@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sinthu Raja <sinthu.raja@ti.com>
+Changes in V8:
+ - As per Matthias comments 
+   Added qup_spiN_cs_gpio nodes in all spi ports
 
-The example includes a board-specific compatible property, this is
-wrong as the example should be board agnostic. Replace the same with a
-generic soc node.
+ - As per Doug comments, Added "qcom,sc7280-qspi" compatible in qspi node
 
-Fixes: d8db9dc34871 ("dt-bindings: hwlock: omap: Convert binding to YAML")
-Signed-off-by: Sinthu Raja <sinthu.raja@ti.com>
----
+Changes in V7:
+ - As per Stephen's comments
+   1. Moved qup_opp_table under /soc@0/geniqup@9c0000
+   2. Removed qupv3_id_1 in sc7280-idp board file
+   3. Sorted alias names for i2c and spi as per alphabet order
 
-This patch was triggered by discussions in [1].
+ - As per Matthias comment
+   Configuring cs pin with gpio (qup_spiN_cs_gpio) definitions are removed
 
-When applying the patch, if you could provide an immutable tag for the
-bindings, it would help line things up for new platforms to be added for
-us. See [2] for the context
+Changes in V6:
+ - As per Matthias' comments,
+   1. Squashed "Update QUPv3 UART5 DT node" and "Configure debug 
+      uart for sc7280-idp"
+   2. Moved qup_opp_table from /soc to /
+   3. Changed convention "clocks" followed by "clock-names"
 
-[1] https://lore.kernel.org/all/20210818074030.1877-1-sinthu.raja@ti.com/
-[2] https://lore.kernel.org/linux-arm-kernel/20210125141642.4yybjnklk3qsqjdy@steersman/
+ - As per Doug comments, added aliases for i2c and spi
 
- .../devicetree/bindings/hwlock/ti,omap-hwspinlock.yaml        | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Changes in V5:
+ - As per Matthias' comments, I've split the patches as below:
+   1. Add QSPI node
+   2. Configure SPI-NOR FLASH for sc7280-idp
+   3. Add QUPv3 wrapper_0 nodes
+   4. Update QUPv3 UART5 DT node
+   5. Configure debug uart for sc7280-idp
+   6. Configure uart7 to support bluetooth on sc7280-idp
+   7. Add QUPv3 wrapper_1 nodes
 
-diff --git a/Documentation/devicetree/bindings/hwlock/ti,omap-hwspinlock.yaml b/Documentation/devicetree/bindings/hwlock/ti,omap-hwspinlock.yaml
-index ae1b37dbee75..d56dc1bebdc6 100644
---- a/Documentation/devicetree/bindings/hwlock/ti,omap-hwspinlock.yaml
-+++ b/Documentation/devicetree/bindings/hwlock/ti,omap-hwspinlock.yaml
-@@ -47,10 +47,8 @@ examples:
-     };
- 
-   - |
--    / {
-+    soc {
-         /* K3 AM65x SoCs */
--        model = "Texas Instruments K3 AM654 SoC";
--        compatible = "ti,am654-evm", "ti,am654";
-         #address-cells = <2>;
-         #size-cells = <2>;
- 
+Changes in V4:
+ - As per Stephen's comment updated spi-max-frequency to 37.5MHz, moved
+   qspi_opp_table from /soc to / (root).
+ - As per Bjorn's comment, added QUP Wrapper_0 nodes
+   as separate patch and debug-uart node as separate patch.
+ - Dropped interconnect votes for wrapper_0 and wrapper_1 node
+ - Corrected QUP Wrapper_1 SE node's pin control functions like below
+        QUP Wrapper_0: SE0-SE7 uses qup00 - qup07 pin-cntrl functions.
+        QUP Wrapper_1: SE0-SE7 uses qup10 - qup17 pin-cntrl functions.
+
+Changes in V3:
+ - Broken the huge V2 patch into 3 smaller patches.
+   1. QSPI DT nodes
+   2. QUP wrapper_0 DT nodes
+   3. QUP wrapper_1 DT nodes
+
+Changes in V2:
+ - As per Doug's comments removed pinmux/pinconf subnodes.
+ - As per Doug's comments split of SPI, UART nodes has been done.
+ - Moved QSPI node before aps_smmu as per the order.
+
+Rajesh Patil (4):
+  dt-bindings: spi: add QSPI bindings for sc7280 chipset
+  arm64: dts: sc7280: Configure SPI-NOR FLASH for sc7280-idp
+  arm64: dts: sc7280: Configure uart7 to support bluetooth on sc7280-idp
+  arm64: dts: sc7280: Add aliases for I2C and SPI
+
+Roja Rani Yarubandi (4):
+  arm64: dts: sc7280: Add QSPI node
+  arm64: dts: sc7280: Add QUPv3 wrapper_0 nodes
+  arm64: dts: sc7280: Update QUPv3 UART5 DT node
+  arm64: dts: sc7280: Add QUPv3 wrapper_1 nodes
+
+ .../bindings/spi/qcom,spi-qcom-qspi.yaml           |    5 +-
+ arch/arm64/boot/dts/qcom/sc7280-idp.dtsi           |  125 +-
+ arch/arm64/boot/dts/qcom/sc7280.dtsi               | 3216 +++++++++++++++-----
+ 3 files changed, 2520 insertions(+), 826 deletions(-)
+
 -- 
-2.32.0
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
 
