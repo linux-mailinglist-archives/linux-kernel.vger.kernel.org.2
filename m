@@ -2,159 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 827A740F34C
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 09:30:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FDA640F34D
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 09:31:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240567AbhIQHcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 03:32:00 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:64783 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230393AbhIQHb7 (ORCPT
+        id S240616AbhIQHcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 03:32:41 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:35667 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230393AbhIQHck (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 03:31:59 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20210917073035euoutp022d04be6443e042f52a44410c9c08900b~li4NHqDrS0467804678euoutp02k
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 07:30:35 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20210917073035euoutp022d04be6443e042f52a44410c9c08900b~li4NHqDrS0467804678euoutp02k
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1631863835;
-        bh=S3B13fJvkOkVAxyfRZy6T0sfndyEKU3zYMGDDwM6qqo=;
-        h=Subject:To:From:Date:In-Reply-To:References:From;
-        b=armKWk47ALt8IanGFxEM50d7S6w8u8GX0W2z8YjaN29DHhifJNn7cSF3H50Bhn4Vw
-         yA7SBDWFCsfyC64m0TUH2v62ily7Y1Bk+p1SQ9TIoXhGLfdqaJzQEBUjQytTymAwPO
-         oyt2pEtdhRAB5swtwPwHqWiXkskuaqACe9Ni55vI=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210917073035eucas1p205ee849bd820419864d1ec31255156fc~li4MyyW8y1496014960eucas1p2q;
-        Fri, 17 Sep 2021 07:30:35 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id 58.B5.42068.B1444416; Fri, 17
-        Sep 2021 08:30:35 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210917073034eucas1p1d80385c5327a757b26f8a7bdefa3b077~li4MMwn0H2824928249eucas1p1Q;
-        Fri, 17 Sep 2021 07:30:34 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210917073034eusmtrp2910272e1b5782616f58ed1a509b395e9~li4MMBEKV2227722277eusmtrp2r;
-        Fri, 17 Sep 2021 07:30:34 +0000 (GMT)
-X-AuditID: cbfec7f4-c89ff7000002a454-35-6144441b8bbf
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 01.BF.20981.A1444416; Fri, 17
-        Sep 2021 08:30:34 +0100 (BST)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210917073034eusmtip2726435c268c221293660fc612263b7cb~li4LrkXtm0124201242eusmtip2A;
-        Fri, 17 Sep 2021 07:30:34 +0000 (GMT)
-Subject: Re: [RFT][PATCH] regulator: max14577: Revert
- "regulator: max14577: Add proper module aliases strings"
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <acb72aa2-4211-4c2f-1176-82d533ddf8b5@samsung.com>
-Date:   Fri, 17 Sep 2021 09:30:34 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
-        Gecko/20100101 Thunderbird/78.14.0
+        Fri, 17 Sep 2021 03:32:40 -0400
+Received: by mail-il1-f198.google.com with SMTP id f4-20020a056e0204c400b0022dbd3f8b18so20309757ils.2
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 00:31:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=/BCpZC2CEqwllBmiEKngtnImQFDYFKH06oLpAqVHbAc=;
+        b=VUqvgu9zxtr2s+jds2L9S9ylh68QYTxhl1vZQpXpQ0jFwtufpz5OnirB9ifu4lodlz
+         Y9pnJiIZwEpCJQl4GBGBW+0VOBo1QzIEutLII4wPDDU4A0HLU6wh9foGhU1cVCA3YHtL
+         Czz8p5LypM24UNPGGiI7ADwINNTkxjsshP+kh9M4LApLCmnEUOfVuUbp1udAtpelkgmH
+         deRNoXIDplEa3XUdT5jTEyRGZO7rpPuHiNi5wEcjlXc8XNCfYgyPj64quhBP5Uqx+4cX
+         RLWwK/bNorFoEoixwbpnHS1pj68dluMn6SKSyHQny7wr3yWZmjtMBmf/Cg69/YJFDtO1
+         L70g==
+X-Gm-Message-State: AOAM530mBvy/PKVAGpbqYOQVysZ7ey1MnLaevSAzKh0tlI5m3wbpNpHZ
+        IaaRUuo9rhOLSLXm8+u24solPzdstg4ReHdPn/x5VUo5ay5R
+X-Google-Smtp-Source: ABdhPJxL2s+a4rCD83BCkK1TE5yHvrFTEO9uDY/FepB8U20cSUSnzaZbnhR3DzIlaGD8atv+YqQDJubc8JtTC9+7ZtOesrR6V1TV
 MIME-Version: 1.0
-In-Reply-To: <20210916144102.120980-1-krzysztof.kozlowski@canonical.com>
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprJKsWRmVeSWpSXmKPExsWy7djP87rSLi6JBme+yVtsnLGe1WLqwyds
-        Fte/PGe12Pj2B5PFtysdTBaXd81hc2DzmNXQy+axc9Zddo9NqzrZPPq2rGL0+LxJLoA1issm
-        JTUnsyy1SN8ugSvj0Ze3TAUb+StuXpnO0sB4k6eLkZNDQsBE4uu1SSxdjFwcQgIrGCU+3b/F
-        COF8YZSY1rGUDcL5zChx4eIyVpiWdYumQbUsZ5TY1XUUquojo8S1tXOZQKqEBQoknt+ezQZi
-        iwg0MknMWOcGYrMJGEp0ve0Ci/MK2ElsPDQDzGYRUJX42g5hiwokS0z728QMUSMocXLmExYQ
-        m1PAQ2LfnZNgcWYBeYntb+dA2eISt57MZ4K47gSHxLI3ZRC2i8Sp6ZtYIGxhiVfHt7BD2DIS
-        /3eC1HMB2c2MEg/PrWWHcHoYJS43zWCEqLKWuHPuF9BFHEAbNCXW79KHCDtK/Ly7gRkkLCHA
-        J3HjrSDEDXwSk7ZNhwrzSnS0CUFUq0nMOr4Obu3BC5eYIWwPifu7rjNOYFScheTLWUg+m4Xk
-        s1kINyxgZFnFKJ5aWpybnlpslJdarlecmFtcmpeul5yfu4kRmHpO/zv+ZQfj8lcf9Q4xMnEw
-        HmKU4GBWEuG9UOOYKMSbklhZlVqUH19UmpNafIhRmoNFSZw3acuaeCGB9MSS1OzU1ILUIpgs
-        EwenVANTiA17r0p1fRxrthyDpndVj2iXbUtFTMQx2WePknaa8GuUupac2WLqdG+9bL/Xy2fJ
-        5st+tNyqSpjzML6pzLX3zDf2mpkh/RP/xJVFL4qQ+nPq+3zX5zcDL/Iuakw7G37l20Ez8f0T
-        DtX0Pj4gc+Lgqjl1H1/9Vmip8k+1DmLkucpmUXdXeuvBl3eP6f2tMsy8vPlWiX9yX+4i24gt
-        W+4IpJ47qecTVr1yxsG1O6P6J8grrt/aI7jvjhF/Su7UplULqudYRy8oSnwkveas/K/srxdl
-        F3N8FT0SnrFnofnVrL7ZLrHZ/V57gr1KvtXZlnVMkjLkiPm/NH5XXcPfr/Eb1FZoqh2r3mqr
-        N+VnhIwSS3FGoqEWc1FxIgC5k3SMrAMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrIIsWRmVeSWpSXmKPExsVy+t/xe7pSLi6JBu23TC02zljPajH14RM2
-        i+tfnrNabHz7g8ni25UOJovLu+awObB5zGroZfPYOesuu8emVZ1sHn1bVjF6fN4kF8AapWdT
-        lF9akqqQkV9cYqsUbWhhpGdoaaFnZGKpZ2hsHmtlZKqkb2eTkpqTWZZapG+XoJfx6MtbpoKN
-        /BU3r0xnaWC8ydPFyMkhIWAisW7RNJYuRi4OIYGljBJ7r85ggkjISJyc1sAKYQtL/LnWxQZR
-        9J5RYtHGmewgCWGBAomz06czgiREBJqZJObOOcwKUTWbUaL7Sx9YFZuAoUTXW5B2Tg5eATuJ
-        jYdmgNksAqoSX9shbFGBZIm3r78zQdQISpyc+YQFxOYU8JDYd+ckM4jNLGAmMW/zQyhbXmL7
-        2zlQtrjErSfzmSYwCs5C0j4LScssJC2zkLQsYGRZxSiSWlqcm55bbKRXnJhbXJqXrpecn7uJ
-        ERhX24793LKDceWrj3qHGJk4GA8xSnAwK4nwXqhxTBTiTUmsrEotyo8vKs1JLT7EaAr0z0Rm
-        KdHkfGBk55XEG5oZmBqamFkamFqaGSuJ85ocWRMvJJCeWJKanZpakFoE08fEwSnVwLTi93VH
-        hyau3yIrRdP2VnqXfr/oVL7rKQej6d0VUs4B8xIDF5ixSHn7uyYuzPFO/MUlbslxuG+iPs9G
-        i7jwP68vl4pddLbcePfIjY/v7tyU8vS6fiStfufJZfe23PzQxCOT/F70IOeE5wdkdyrHyair
-        ySxtfRh7fbFNvoXIT/e7fDLiPJPXPfmnoHnSZfeBe9v0t6sXL2fIeC41u52Nd+9XQRbWCI9l
-        yZGSzQUvmpKDlXZ3HE55+kBtqvy3FZ+C777+u/1tajVvjYXHW+VtFydIai7aZ/qx17jYtXSr
-        AefcNrXJsvNSTy/Jf7amVmj9teMOfYtvuKrcnPWt7MvMHMfnomf5gs1f6X1gUWLZWafEUpyR
-        aKjFXFScCAAFgJ97NAMAAA==
-X-CMS-MailID: 20210917073034eucas1p1d80385c5327a757b26f8a7bdefa3b077
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20210916144119eucas1p1ef79e9742c3d37d0d896f152b4252a0b
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20210916144119eucas1p1ef79e9742c3d37d0d896f152b4252a0b
-References: <CGME20210916144119eucas1p1ef79e9742c3d37d0d896f152b4252a0b@eucas1p1.samsung.com>
-        <20210916144102.120980-1-krzysztof.kozlowski@canonical.com>
+X-Received: by 2002:a02:5442:: with SMTP id t63mr7525825jaa.7.1631863878696;
+ Fri, 17 Sep 2021 00:31:18 -0700 (PDT)
+Date:   Fri, 17 Sep 2021 00:31:18 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000cfc3ae05cc2bea91@google.com>
+Subject: [syzbot] BUG: soft lockup in kjournald2 (2)
+From:   syzbot <syzbot+50f834e0ee66561f76fe@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+Hello,
 
-On 16.09.2021 16:41, Krzysztof Kozlowski wrote:
-> This reverts commit 0da6736ecd10b45e535b100acd58df2db4c099d8.
->
-> The MODULE_DEVICE_TABLE already creates proper alias.  Having another
-> MODULE_ALIAS causes the alias to be duplicated:
->
->    $ modinfo max14577-regulator.ko
->
->    alias:          platform:max77836-regulator
->    alias:          platform:max14577-regulator
->    description:    Maxim 14577/77836 regulator driver
->    alias:          platform:max77836-regulator
->    alias:          platform:max14577-regulator
->
-> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-> Fixes: 0da6736ecd10 ("regulator: max14577: Add proper module aliases strings")
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
->
-> ---
->
-> Not tested. Please test/comment.  This is an RFT also because reverted
-> commit said to fix autoloading issue which I even reviewed... but really
-> it should not be needed - alias gets duplicated.
-> ---
+syzbot found the following issue on:
 
-Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+HEAD commit:    ac08b1c68d1b Merge tag 'pci-v5.15-changes' of git://git.ke..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17d44ab3300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b196c22f1ee14fd4
+dashboard link: https://syzkaller.appspot.com/bug?extid=50f834e0ee66561f76fe
+compiler:       aarch64-linux-gnu-gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+userspace arch: arm64
 
-Indeed, that patch was useless and excessive. It must be some leftover 
-from my initial modules tests, which for good reasons was not submitted 
-in the initial series in Feb 2020. Sorry for the noise.
+Unfortunately, I don't have any reproducer for this issue yet.
 
->   drivers/regulator/max14577-regulator.c | 2 --
->   1 file changed, 2 deletions(-)
->
-> diff --git a/drivers/regulator/max14577-regulator.c b/drivers/regulator/max14577-regulator.c
-> index 1d78b455cc48..e34face736f4 100644
-> --- a/drivers/regulator/max14577-regulator.c
-> +++ b/drivers/regulator/max14577-regulator.c
-> @@ -269,5 +269,3 @@ module_exit(max14577_regulator_exit);
->   MODULE_AUTHOR("Krzysztof Kozlowski <krzk@kernel.org>");
->   MODULE_DESCRIPTION("Maxim 14577/77836 regulator driver");
->   MODULE_LICENSE("GPL");
-> -MODULE_ALIAS("platform:max14577-regulator");
-> -MODULE_ALIAS("platform:max77836-regulator");
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+50f834e0ee66561f76fe@syzkaller.appspotmail.com
 
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+watchdog: BUG: soft lockup - CPU#1 stuck for 23s! [jbd2/vda-8:3107]
+Modules linked in:
+irq event stamp: 373534
+hardirqs last  enabled at (373533): [<ffff8000145f8e78>] __exit_to_kernel_mode arch/arm64/kernel/entry-common.c:81 [inline]
+hardirqs last  enabled at (373533): [<ffff8000145f8e78>] exit_to_kernel_mode+0x38/0x230 arch/arm64/kernel/entry-common.c:91
+hardirqs last disabled at (373534): [<ffff8000145f8e30>] enter_el1_irq_or_nmi+0x10/0x20 arch/arm64/kernel/entry-common.c:227
+softirqs last  enabled at (373478): [<ffff800010010964>] _stext+0x964/0xff8
+softirqs last disabled at (373447): [<ffff800010161e88>] do_softirq_own_stack include/asm-generic/softirq_stack.h:10 [inline]
+softirqs last disabled at (373447): [<ffff800010161e88>] invoke_softirq kernel/softirq.c:439 [inline]
+softirqs last disabled at (373447): [<ffff800010161e88>] __irq_exit_rcu+0x208/0x4f0 kernel/softirq.c:636
+CPU: 1 PID: 3107 Comm: jbd2/vda-8 Not tainted 5.14.0-syzkaller-10318-gac08b1c68d1b #0
+Hardware name: linux,dummy-virt (DT)
+pstate: 00000005 (nzcv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+pc : clear_page+0x14/0x28 arch/arm64/lib/clear_page.S:23
+lr : clear_highpage include/linux/highmem.h:181 [inline]
+lr : kernel_init_free_pages.part.0+0x6c/0x17c mm/page_alloc.c:1286
+sp : ffff80001ef77070
+x29: ffff80001ef77070 x28: 0000000000000000 x27: 0000000000000000
+x26: ffff00001026e378 x25: ffff60000204dc6f x24: 00000000000014b8
+x23: ffff00001026cec0 x22: fffffc0000173f40 x21: ffff8000157be698
+x20: dfff800000000000 x19: fffffc0000173f00 x18: ffff00006aa76c08
+x17: 0000000000000000 x16: 0000000000000000 x15: ffff00006aa76c3c
+x14: 1ffff00003deedd8 x13: 0000000000000013 x12: ffff7f800002e7e7
+x11: 1fffff800002e7e6 x10: ffff7f800002e7e6 x9 : 0000000000000000
+x8 : ffff600000b9fa00 x7 : 0000000000000000 x6 : 000000000000003f
+x5 : 0000000000000040 x4 : 1ffff00003067da0 x3 : 1fffe0000204d9d9
+x2 : 0000000000000004 x1 : 0000000000000040 x0 : ffff000005cfc8c0
+Call trace:
+ clear_page+0x14/0x28 arch/arm64/lib/clear_page.S:21
+ kernel_init_free_pages mm/page_alloc.c:1283 [inline]
+ post_alloc_hook+0x1ac/0x25c mm/page_alloc.c:2426
+ prep_new_page mm/page_alloc.c:2436 [inline]
+ get_page_from_freelist+0x184c/0x2320 mm/page_alloc.c:4168
+ __alloc_pages+0x1a8/0x21d0 mm/page_alloc.c:5390
+ alloc_pages+0x23c/0x3b0 mm/mempolicy.c:2291
+ __page_cache_alloc mm/filemap.c:1022 [inline]
+ pagecache_get_page+0x4ac/0x930 mm/filemap.c:1940
+ find_or_create_page include/linux/pagemap.h:420 [inline]
+ grow_dev_page fs/buffer.c:949 [inline]
+ grow_buffers fs/buffer.c:1014 [inline]
+ __getblk_slow+0x178/0x6bc fs/buffer.c:1041
+ __getblk_gfp+0x7c/0xa0 fs/buffer.c:1334
+ __getblk include/linux/buffer_head.h:382 [inline]
+ jbd2_journal_get_descriptor_buffer+0xf0/0x3f0 fs/jbd2/journal.c:1014
+ journal_submit_commit_record.part.0+0x88/0x7fc fs/jbd2/commit.c:131
+ journal_submit_commit_record fs/jbd2/commit.c:128 [inline]
+ jbd2_journal_commit_transaction+0x2ad4/0x4270 fs/jbd2/commit.c:925
+ kjournald2+0x190/0x734 fs/jbd2/journal.c:213
+ kthread+0x334/0x3dc kernel/kthread.c:319
+ ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:756
 
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
