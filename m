@@ -2,224 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A2DE40FC32
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 17:24:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D888B40FC26
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 17:23:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230146AbhIQP0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 11:26:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48560 "EHLO
+        id S234275AbhIQPYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 11:24:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344307AbhIQPY0 (ORCPT
+        with ESMTP id S233106AbhIQPYt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 11:24:26 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36035C0613C1
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:22:40 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id lb1-20020a17090b4a4100b001993f863df2so7618059pjb.5
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:22:40 -0700 (PDT)
+        Fri, 17 Sep 2021 11:24:49 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3907C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:23:26 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id i25so34841730lfg.6
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:23:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=OS94uZTmA0qnszl1fwVMo+RQL+/vTVqvtH0x+p48wY0=;
-        b=bRsPWtlhXzo4Tc/8or9LqnXhztTrk9NmxMapoTxWY0Ypjm1gL3iusGWCPx1hXm6hXA
-         OnJWj3AfeV/AyOHx5exXC8jx9r5SrprlQOmDZ4fXNd1uKmS3VPuHRNL+hiI+Z8GF4XPi
-         WK/2g61WY2v+O6shCYTiop8X+p9M/F/J96rA8m3g8Ut+moKVIOQoEjGLOImm2cOJAt7M
-         f5crjbQisPGL3RZe3I/3BFsuR2bOn0bHvJN95jx9lTXBpcsUvy5TCJbdsn1eUZwqGKRR
-         MXAOf8+zN8rXXGS6FxxD2Hn+G8vBOwu4E/XhZs8fEPSUn5SEgVF7Nbf60iAD89hmPRX4
-         Go7g==
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=Qme74H7nTKZWlp83x/X8Ld8D+VkxfyGb4OUt72XjpFA=;
+        b=OtB0kyPv+JFXBLnXN0XEadsFWqc30HEaRDwF/JCOjutgsVRFnqKE0PXMpt/e7jpD01
+         CGHB2+GcbMlnn/+i0X2YJn5Hj/x3xObEAbXeYQ0qMX2HzsMP04nL3qE7dMysbW7MVj6f
+         Y5pOjqmfrmDPx/YVI7GVWqHhl2aguApFxxVFB77FUoFKw4wl6TltxjD0d3LhBXVP3ItU
+         lLLOFcDANp+HFuw7mxIOMXucjhkZHRb4HNKRirS7foi0FtHRyEhPGxycjerslv3iUTWu
+         oPLjNU36vcEcspz9fpfkZBoJ8c7Hwwi38Aa22YupyGeoQdqfyNoq1N9wvRTbK9TG0DRo
+         DD8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OS94uZTmA0qnszl1fwVMo+RQL+/vTVqvtH0x+p48wY0=;
-        b=Z4wjrYgmhpvClKzY9t8+330Fsxji5JKckcyJhyM3DERwxf6aJxxMah5oCPv3ikoxrw
-         OYOFUB4DTHN3Pk84pgYE5d408aDN18pFbnnv77E6S4pa7fg4mz+HYudQa12hVX388U7n
-         Ie/0UVKMIm5YfmEPVIXqyb/AH8ODab8AjzERJh6sMonctjn7eaUbUJmXfsJbYh+HNUpm
-         GRLK6wRiJRpJ4bUsL61XlSDWDo4Rk/oI1OjaqAt9nCmWssVOGYZH7lMyH8c327790oSZ
-         7nAIVxy24aMlDT80CS/Js/pyb7PbXfxjRmmWbdVyptYIpK+O1J7Oowy1KCsNb7VTMZGI
-         jnOA==
-X-Gm-Message-State: AOAM533Wsr2a6qvIT3b6WXXrMnH6nhC9sVXn5ww5jwtLrs+vhBRFetPS
-        2JJOijzB/6bRr75bWo9czo2Fyg==
-X-Google-Smtp-Source: ABdhPJwTfxqmzpmynstN+ueD82dE7pITyL8lRsfd5Z/m6O2J/WXNuzsrz1m0cTCWJw2yZBW048Tt5g==
-X-Received: by 2002:a17:902:a3ca:b0:13c:a7be:1767 with SMTP id q10-20020a170902a3ca00b0013ca7be1767mr6481323plb.88.1631892159539;
-        Fri, 17 Sep 2021 08:22:39 -0700 (PDT)
-Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id 23sm6472340pfp.206.2021.09.17.08.22.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 08:22:38 -0700 (PDT)
-Date:   Fri, 17 Sep 2021 09:22:36 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Shengjiu Wang <shengjiu.wang@gmail.com>
-Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
-        Ohad Ben Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" 
-        <linux-remoteproc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 3/4] remoteproc: imx_dsp_rproc: Add remoteproc driver
- for DSP on i.MX
-Message-ID: <20210917152236.GA1878943@p14s>
-References: <1631092255-25150-1-git-send-email-shengjiu.wang@nxp.com>
- <1631092255-25150-4-git-send-email-shengjiu.wang@nxp.com>
- <20210915161624.GA1770838@p14s>
- <CAA+D8AO0c+jk_k7j=ZvNFsVvC-p_zMLPJDS3qmLjNbJ+U0E9Cg@mail.gmail.com>
- <20210916165957.GA1825273@p14s>
- <CAA+D8AN_ni_XmEFNfY0Z0qLAJX00XFSUP1RkJdNQd-MVY6pd4g@mail.gmail.com>
- <CAA+D8AMaszzT5q8oGhXOtE3W5Ue9S3r=es2sTp2uJ7RwjX8Bzg@mail.gmail.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=Qme74H7nTKZWlp83x/X8Ld8D+VkxfyGb4OUt72XjpFA=;
+        b=sAIb0efnlsc0tKGhRIIo8p/NLEE1/fqKSJdd+ieLtdh0Y/g+Ynk0g8W0z9CdwlXRip
+         cDyBeTKhEwm3R2f2JGxSvPqCuocGq5BSgGGdqig7Em6AOFCgqBFcl1/Gnh+oiMSMrjsn
+         p3J7ESXjuk5AAaRWsh8Wx5sTSciPvrVFLpSU30QroS3TJf2dqZYXXBxuICcVynOMD05L
+         xCOWNmNWHJmlOJPiLWnwOzKfqqzWy8ab+yqZ7qbZTMdpVHWCLnv3wDe2csoEbifpMYim
+         fwBMiTi3fD6ACdl+OIjGReHZQk+KvUsO3zP5RC5vi+5WPwv5Z6R8VSIrXBQYcvOPopT7
+         yFmQ==
+X-Gm-Message-State: AOAM532ucUoIv2HiuUcF0DekTTYoUxOLrvmmNSVmoO7gk2MPPC2ZR5yH
+        j6LlChcApnOKyatYczZZ/cI=
+X-Google-Smtp-Source: ABdhPJynBeK8RH+6fgWWVCBlVAZnebACzwigzUuAYmQrX4X7UsXvmmU9qG46o0NTQJEyaLLqdLtoJw==
+X-Received: by 2002:a05:651c:10a2:: with SMTP id k2mr10643964ljn.262.1631892205128;
+        Fri, 17 Sep 2021 08:23:25 -0700 (PDT)
+Received: from [192.168.1.11] ([46.235.67.49])
+        by smtp.gmail.com with ESMTPSA id b15sm552549lfp.221.2021.09.17.08.23.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Sep 2021 08:23:24 -0700 (PDT)
+Message-ID: <4e39e4ef-995d-49ce-58d6-75fd6a27da96@gmail.com>
+Date:   Fri, 17 Sep 2021 18:23:23 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAA+D8AMaszzT5q8oGhXOtE3W5Ue9S3r=es2sTp2uJ7RwjX8Bzg@mail.gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.3
+Subject: Re: [PATCH v7 19/19] staging: r8188eu: remove shared buffer for usb
+ requests
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        David Laight <david.Laight@aculab.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+References: <20210917071837.10926-1-fmdefrancesco@gmail.com>
+ <20210917071837.10926-20-fmdefrancesco@gmail.com>
+ <YUSsa+3NjQVGD9gb@kroah.com> <ef2a89f5-f68c-e7e2-9338-78e70dc41701@gmail.com>
+ <YUSxtQ7D0w6QkB/N@kroah.com>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+In-Reply-To: <YUSxtQ7D0w6QkB/N@kroah.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 05:44:44PM +0800, Shengjiu Wang wrote:
-> On Fri, Sep 17, 2021 at 1:20 PM Shengjiu Wang <shengjiu.wang@gmail.com> wrote:
-> >
-> > On Fri, Sep 17, 2021 at 1:00 AM Mathieu Poirier
-> > <mathieu.poirier@linaro.org> wrote:
-> > >
-> > > [...]
-> > >
-> > > > > > +
-> > > > > > +/**
-> > > > > > + * imx_dsp_rproc_elf_load_segments() - load firmware segments to memory
-> > > > > > + * @rproc: remote processor which will be booted using these fw segments
-> > > > > > + * @fw: the ELF firmware image
-> > > > > > + *
-> > > > > > + * This function specially checks if memsz is zero or not, otherwise it
-> > > > > > + * is mostly same as rproc_elf_load_segments().
-> > > > > > + */
-> > > > > > +static int imx_dsp_rproc_elf_load_segments(struct rproc *rproc,
-> > > > > > +                                        const struct firmware *fw)
-> > > > > > +{
-> > > > > > +     struct device *dev = &rproc->dev;
-> > > > > > +     u8 class = fw_elf_get_class(fw);
-> > > > > > +     u32 elf_phdr_get_size = elf_size_of_phdr(class);
-> > > > > > +     const u8 *elf_data = fw->data;
-> > > > > > +     const void *ehdr, *phdr;
-> > > > > > +     int i, ret = 0;
-> > > > > > +     u16 phnum;
-> > > > > > +
-> > > > > > +     ehdr = elf_data;
-> > > > > > +     phnum = elf_hdr_get_e_phnum(class, ehdr);
-> > > > > > +     phdr = elf_data + elf_hdr_get_e_phoff(class, ehdr);
-> > > > > > +
-> > > > > > +     /* go through the available ELF segments */
-> > > > > > +     for (i = 0; i < phnum; i++, phdr += elf_phdr_get_size) {
-> > > > > > +             u64 da = elf_phdr_get_p_paddr(class, phdr);
-> > > > > > +             u64 memsz = elf_phdr_get_p_memsz(class, phdr);
-> > > > > > +             u64 filesz = elf_phdr_get_p_filesz(class, phdr);
-> > > > > > +             u64 offset = elf_phdr_get_p_offset(class, phdr);
-> > > > > > +             u32 type = elf_phdr_get_p_type(class, phdr);
-> > > > > > +             void *ptr;
-> > > > > > +             bool is_iomem;
-> > > > > > +
-> > > > > > +             if (type != PT_LOAD || !memsz)
-> > > > >
-> > > > > You did a really good job with adding comments but this part is undocumented...
-> > > > > If I read this correctly you need to check for !memsz because some part of
-> > > > > the program segment may have a header but its memsz is zero, in which case it can
-> > > > > be safely skipped.  So why is that segment in the image to start with, and why
-> > > > > is it marked PT_LOAD if it is not needed?  This is very puzzling...
-> > > >
-> > > > Actually I have added comments in the header of this function.
-> > >
-> > > Indeed there is a mention of memsz in the function's header but it doesn't
-> > > mention _why_ this is needed, and that is what I'm looking for.
-> > >
-> > > >
-> > > > memsz= 0 with PT_LOAD issue, I have asked the toolchain's vendor,
-> > > > they said that this case is allowed by elf spec...
-> > > >
-> > > > And in the "pru_rproc.c" and "mtk_scp.c", seems they met same problem
-> > > > they also check the filesz in their internal xxx_elf_load_segments() function.
-> > >
-> > > In both cases they are skipping PT_LOAD sections where "filesz" is '0', which
-> > > makes sense because we don't know how many bytes to copy.  But here you are
-> > > skipping over a PT_LOAD section with a potentially valid filesz, and that is the
-> > > part I don't understand.
-> >
-> > Ok, I can use filesz instead. For my case, filesz = memsz = 0,
-> > it is the same result I want.
-
-If that is the case then rproc_elf_load_segments() should work, i.e it won't
-copy anything.  If rproc_elf_load_segments() doesn't work for you then there are
-corner cases you haven't told me about.
-
-> >
-> > The reason why I use "memsz '' is because there is  "if (filesz > memsz) "
-> > check after this,  if memsz is zero, then "filesz" should be zero too, other
-> > values are not allowed.
+On 9/17/21 18:18, Greg Kroah-Hartman wrote:
+> On Fri, Sep 17, 2021 at 06:03:52PM +0300, Pavel Skripkin wrote:
+>> On 9/17/21 17:55, Greg Kroah-Hartman wrote:
+>> > On Fri, Sep 17, 2021 at 09:18:37AM +0200, Fabio M. De Francesco wrote:
+>> > > From: Pavel Skripkin <paskripkin@gmail.com>
+>> > > 
+>> > > This driver used shared buffer for usb requests. It led to using
+>> > > mutexes, i.e no usb requests can be done in parallel.
+>> > > 
+>> > > USB requests can be fired in parallel since USB Core allows it. In
+>> > > order to allow them, remove usb_vendor_req_buf from dvobj_priv (since
+>> > > USB I/O is the only user of it) and remove also usb_vendor_req_mutex
+>> > > (since there is nothing to protect).
+>> > 
+>> > Ah, you are removing this buffer, nice!
+>> > 
+>> > But, just because the USB core allows multiple messages to be sent to a
+>> > device at the same time, does NOT mean that the device itself can handle
+>> > that sort of a thing.
+>> > 
+>> > Keeping that lock might be a good idea, until you can prove otherwise.
+>> > You never know, maybe there's never any contention at all for it because
+>> > these accesses are all done in a serial fashion and the lock
+>> > grab/release is instant.  But if that is not the case, you might really
+>> > get a device confused here by throwing multiple control messages at it
+>> > in ways that it is not set up to handle at all.
+>> > 
+>> > So please do not drop the lock.
+>> > 
+>> > More comments below.
+>> > 
+>> 
+>> We have tested this change. I've tested it in qemu with TP-Link TL-WN722N v2
+>> / v3 [Realtek RTL8188EUS], and Fabio has tested it on his host for like a
+>> whole evening.
+>> 
+>> I agree, that our testing does not cover all possible cases and I can't say
+>> it was "good stress testing", so, I think, we need some comments from
+>> maintainers.
 > 
-> But I still think checking "!memsz" is better than filesz,  because
-> memsz > filesz is allowed (filesz = 0),  the code below can be executed.
-> filesz > memsz is not allowed.
+> Ok, then make it a single patch that does nothing but remove the lock so
+> that we can revert it later when problems show up :)
 > 
-> What do you think?
 
-I don't see a need to add a custom implementation for things that _may_ happen.
-If using the default rproc_elf_load_segments() works than go with that.  We can deal
-with problems if/when there is a need for it.
+Sure! Thank you again :)
 
-> 
-> Best regards
-> Wang shengjiu
-> >
-> > >
-> > > >
-> > > > >
-> > > > >
-> > > > > > +                     continue;
-> > > > > > +
-> > > > > > +             dev_dbg(dev, "phdr: type %d da 0x%llx memsz 0x%llx filesz 0x%llx\n",
-> > > > > > +                     type, da, memsz, filesz);
-> > > > > > +
-> > > > > > +             if (filesz > memsz) {
-> > > > > > +                     dev_err(dev, "bad phdr filesz 0x%llx memsz 0x%llx\n",
-> > > > > > +                             filesz, memsz);
-> > > > > > +                     ret = -EINVAL;
-> > > > > > +                     break;
-> > > > > > +             }
-> > > > > > +
-> > > > > > +             if (offset + filesz > fw->size) {
-> > > > > > +                     dev_err(dev, "truncated fw: need 0x%llx avail 0x%zx\n",
-> > > > > > +                             offset + filesz, fw->size);
-> > > > > > +                     ret = -EINVAL;
-> > > > > > +                     break;
-> > > > > > +             }
-> > > > > > +
-> > > > > > +             if (!rproc_u64_fit_in_size_t(memsz)) {
-> > > > > > +                     dev_err(dev, "size (%llx) does not fit in size_t type\n",
-> > > > > > +                             memsz);
-> > > > > > +                     ret = -EOVERFLOW;
-> > > > > > +                     break;
-> > > > > > +             }
-> > > > > > +
-> > > > > > +             /* grab the kernel address for this device address */
-> > > > > > +             ptr = rproc_da_to_va(rproc, da, memsz, &is_iomem);
-> > > > >
-> > > > >                 rproc_da_to_va(rproc, da, memsz, NULL);
-> > > >
-> > > > yes, will update it.
-> > > >
-> > > > >
-> > > > > More comments to follow later today or tomorrow.
-> > > >
-> > > > Thanks.
-> > > >
-> > > > Best regards
-> > > > Wang Shengjiu
+
+
+
+With regards,
+Pavel Skripkin
