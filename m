@@ -2,96 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB29240F22F
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 08:17:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DB3740F228
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 08:16:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233819AbhIQGS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 02:18:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36484 "EHLO
+        id S240443AbhIQGRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 02:17:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231197AbhIQGS4 (ORCPT
+        with ESMTP id S232091AbhIQGRi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 02:18:56 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DA20C061574;
-        Thu, 16 Sep 2021 23:17:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Qm38hcFwUX9FW/ci+/zYJ0a1d/k4aBvN8whvlAXgqA4=; b=ASNg2Vs1c3CalDy2e42QIziEkF
-        5sDgcumGnphwcntt1heh39lu989AF5R9Cja18mQOJ2YiXRLRi9REvLu4kHMxSPriysAYGzuuLWNn8
-        iUq/wb7SfMV/ActM7LlgkZRWV/+iAS7/vrQdIy8a85fxDJkPiurYqqbGTTXPRbwrmBJ5W7qutr3ED
-        8QLXQmu0wAJ/UeJEgPPsxP3dkWPsnTeT75CqwJU8laf0RzjVAvETXqpqUJVdPdD1L0EGvAgg2fw+M
-        bGoflxb6CwGgBuS/0IjsXVb3oZjkOKo+V/j7p+AObiLJ/27ScbrobnlSardfUuZII+2orTtrERw+T
-        VjKo04GA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mR79k-00HZ0j-6R; Fri, 17 Sep 2021 06:15:37 +0000
-Date:   Fri, 17 Sep 2021 07:15:28 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Huacai Chen <chenhuacai@loongson.cn>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Airlie <airlied@linux.ie>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Huacai Chen <chenhuacai@gmail.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Subject: Re: [PATCH V3 21/22] LoongArch: Add Non-Uniform Memory Access (NUMA)
- support
-Message-ID: <YUQygKWFMU8zrkFi@infradead.org>
-References: <20210917035736.3934017-1-chenhuacai@loongson.cn>
- <20210917035736.3934017-22-chenhuacai@loongson.cn>
+        Fri, 17 Sep 2021 02:17:38 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7BB9C061764
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 23:16:16 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id c13-20020a17090a558d00b00198e6497a4fso9277115pji.4
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 23:16:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=79Z9c6dI9E2uafzLue/bSOxRVu0ZiKuAgi/MUWbArdU=;
+        b=GSpHcovIBas53qSSHGPc/nfFYJXH0tpO4pIUIKhhFCQ+XUnveL1E/LLuAUF0rfunQA
+         Qu0Ph6+2OpABJjcCT+o4YjRoCrIIZpIXcVBNqB387JH+2bWPAjWr3m00A5i1b5FQx8Uc
+         3hWH3HoB1v+qBP3rByKBdmIt+w2Y7FIl/kBR2lHGSxCFFOjyHGWWg39LOzI4DQv6ebkB
+         Aj4x0a1KwBDQOF29Ij+L4Wt7xmEQwSGgqPPCDEsR6CEM85AiPxCSE3XDnYtqnMWIDCmm
+         ABTZreSFeGTZK42l++JlgzyoNwXJctsZzS4ggGM9JZnWP8Sp3lCLgRZzWiYOlOMckpeE
+         H3ew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=79Z9c6dI9E2uafzLue/bSOxRVu0ZiKuAgi/MUWbArdU=;
+        b=0dUprBA/zCn5BeB5DK0cqbDZ5iu4LTJZWXWVK8tPcuiTHyBq2o+Qb/T80qJb/Dqpdh
+         +PZrv0SeRazYRVXbg4WSkZGVB98pGMzw/BZ3Oj0E+G4OcQHkCqTQDscxCnylP3o8p+3P
+         +VfogmNHYdjW4q9SGJgDakM1eUd04f6ExFtD9xiEfkh9s6kzEsOhFzaGJsm2fRP1ZCg5
+         Vy5qhFKGkqizjd9i38WPj9Gn3Kbs0YjnBRbNFcxWhz0CuOEbs8JJBaEX/blz2beyLym8
+         Dic3rHfcyKYTC1yaF85shrw99OzFWMJxDytrLyhcxftF2I30ERlsG8gpkgKD6glev5Wy
+         xF/Q==
+X-Gm-Message-State: AOAM533Ax1MnSU/pPuVRBTjqpfkLnFVI/vVG5YLAJS5ClPWtWeBXYTdL
+        zke0IodS7/0F295nXA1LINFKRD947rfyy1bJJyYgLg==
+X-Google-Smtp-Source: ABdhPJwqJYgEceRuQHWNSnG0pghvkpr4ogdDBkgZQI2sBLyILod6wmJXhw/QK328ogFOm/WnzPUzdUzp/8zNdYreqc4=
+X-Received: by 2002:a17:90b:4b47:: with SMTP id mi7mr19490735pjb.198.1631859375980;
+ Thu, 16 Sep 2021 23:16:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210917035736.3934017-22-chenhuacai@loongson.cn>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <CA+G9fYtFvJdtBknaDKR54HHMf4XsXKD4UD3qXkQ1KhgY19n3tw@mail.gmail.com>
+ <CAHk-=wisUqoX5Njrnnpp0pDx+bxSAJdPxfgEUv82tZkvUqoN1w@mail.gmail.com>
+ <CAHk-=whF9F89vsfH8E9TGc0tZA-yhzi2Di8wOtquNB5vRkFX5w@mail.gmail.com>
+ <36aa5cb7-e3d6-33cb-9ac6-c9ff1169d711@linuxfoundation.org>
+ <CAK8P3a1vNx1s-tcjtu6VDxak4NHyztF0XZGe3wOrNbigx1f4tw@mail.gmail.com>
+ <120389b9-f90b-0fa3-21d5-1f789b4c984d@linuxfoundation.org>
+ <CAFd5g47MgGCoenw08hehegstQSujT7AwksQkxA7mQgKhChimNw@mail.gmail.com>
+ <3bad5d2f-8ce7-d0b9-19ad-def68d4193dd@linuxfoundation.org>
+ <CAFd5g47bZbqGgMn8PVa=DaSFfjnJsLGVsLTYzmmCOpdv-TfUSQ@mail.gmail.com>
+ <CAK8P3a0wQC+9_3wJEACgOLa9C5_zLSmDfU=_79h_KMSE_9JxRw@mail.gmail.com> <CAFd5g44udqkDiYBWh+VeDVJ=ELXeoXwunjv0f9frEN6HJODZng@mail.gmail.com>
+In-Reply-To: <CAFd5g44udqkDiYBWh+VeDVJ=ELXeoXwunjv0f9frEN6HJODZng@mail.gmail.com>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Thu, 16 Sep 2021 23:16:04 -0700
+Message-ID: <CAFd5g45=vkZL-H3EDrvYXvhMM2ekM_CBGN0ySyKitq=z+V+EwQ@mail.gmail.com>
+Subject: Re: ipv4/tcp.c:4234:1: error: the frame size of 1152 bytes is larger
+ than 1024 bytes [-Werror=frame-larger-than=]
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Shuah Khan <skhan@linuxfoundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Ariel Elior <aelior@marvell.com>,
+        GR-everest-linux-l2@marvell.com, Wei Liu <wei.liu@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>, lkft-triage@lists.linaro.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        KUnit Development <kunit-dev@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +/*
-> + * We extract 4bit node id (bit 44~47) from Loongson-3's
-> + * 48bit physical address space and embed it into 40bit.
-> + */
-> +
-> +static int node_id_offset;
-> +
-> +static dma_addr_t loongson_phys_to_dma(struct device *dev, phys_addr_t paddr)
-> +{
-> +	long nid = (paddr >> 44) & 0xf;
-> +
-> +	return ((nid << 44) ^ paddr) | (nid << node_id_offset);
-> +}
-> +
-> +static phys_addr_t loongson_dma_to_phys(struct device *dev, dma_addr_t daddr)
-> +{
-> +	long nid = (daddr >> node_id_offset) & 0xf;
-> +
-> +	return ((nid << node_id_offset) ^ daddr) | (nid << 44);
-> +}
-> +
-> +static struct loongson_addr_xlate_ops {
-> +	dma_addr_t (*phys_to_dma)(struct device *dev, phys_addr_t paddr);
-> +	phys_addr_t (*dma_to_phys)(struct device *dev, dma_addr_t daddr);
-> +} xlate_ops;
-> +
-> +dma_addr_t phys_to_dma(struct device *dev, phys_addr_t paddr)
-> +{
-> +	return xlate_ops.phys_to_dma(dev, paddr);
-> +}
-> +
-> +phys_addr_t dma_to_phys(struct device *dev, dma_addr_t daddr)
-> +{
-> +	return xlate_ops.dma_to_phys(dev, daddr);
-> +}
+On Thu, Sep 16, 2021 at 10:39 PM Brendan Higgins
+<brendanhiggins@google.com> wrote:
+>
+> On Tue, Sep 14, 2021 at 3:04 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> >
+> > On Tue, Sep 14, 2021 at 10:48 PM Brendan Higgins
+> > <brendanhiggins@google.com> wrote:
+> > >
+> > > On Mon, Sep 13, 2021 at 1:55 PM Shuah Khan <skhan@linuxfoundation.org> wrote:
+> > > >
+> > > > On 9/8/21 3:24 PM, Brendan Higgins wrote:
+[...]
+> Alright, I incorporated all the above into a patchset that I think is
+> ready to send out, but I had a couple of issues with the above
+> suggestions:
+>
+> - I could not find a config which causes a stacksize warning for
+> sdhci-of-aspeed.
+> - test_scanf is not a KUnit test.
+> - Linus already fixed the thunderbolt test by breaking up the test cases.
+>
+> I am going to send out patches for the thunderbolt test and for the
+> sdhci-of-aspeed test for the sake of completeness, but I am not sure
+> if we should merge those two. I'll let y'all decide on the patch
+> review.
 
-Please don't add unused indirections.  Also please just use the generic
-translations 
+Just in case I missed any interested parties on this thread, I posted
+my patches here:
 
+https://lore.kernel.org/linux-kselftest/20210917061104.2680133-1-brendanhiggins@google.com/T/#t
+
+> I only based the thunderbolt and bitfield test fixes on actual patches
+> from Arnd, but I think Arnd pretty much did all the work here so I am
+> crediting him with a Co-developed-by on all the other patches, so
+> Arnd: please follow up on the other patches with a signed-off-by,
+> unless you would rather me credit you in some other way.
+>
+> > Sorry for failing to submit these as a proper patch. If you send a new version,
+> > I think you need to make sure you cover all of the above, using whichever
+> > change you like best.
+>
+> I am still going to try to get Linus' suggestion working since it
+> actually solves the problem, but I would rather get the above
+> suggested fix out there since it is quick and I know it works.
