@@ -2,154 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5709940F66D
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 13:02:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67CD440F672
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 13:04:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242342AbhIQLDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 07:03:43 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:47964 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234873AbhIQLDl (ORCPT
+        id S242642AbhIQLF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 07:05:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233439AbhIQLFy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 07:03:41 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18HB2396098451;
-        Fri, 17 Sep 2021 06:02:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1631876523;
-        bh=w4kvjGKZNf4N10M7gdmkloHMoOeku5FLyiIXDj3jUU8=;
-        h=Subject:From:To:CC:References:Date:In-Reply-To;
-        b=VmCuAkVVh/AJFgV4npwPP55t0y39iMu8IudtuFGj+gRzDmvxe3bg3t2ROdvm2j2sn
-         Km1IMqYVS81IyKhi5JmCN2pWub2r1hi6WA9V4g7Wzm2abMV8xTEno/bEMImzmRpUqH
-         QJKxXlZ3AbAPnalkdE3UqGKzoEmEItCcMxR+0hDY=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18HB2376084904
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 17 Sep 2021 06:02:03 -0500
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Fri, 17
- Sep 2021 06:02:03 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Fri, 17 Sep 2021 06:02:02 -0500
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18HB20gr124424;
-        Fri, 17 Sep 2021 06:02:01 -0500
-Subject: Re: beaglebone black boot failure Linux v5.15.rc1
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>,
-        Tony Lindgren <tony@atomide.com>
-CC:     "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-        Suman Anna <s-anna@ti.com>,
-        Paul Barker <paul.barker@sancloud.com>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        =?UTF-8?Q?Beno=c3=aet_Cousson?= <bcousson@baylibre.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <120a0ca4-28c7-5a7b-f1ab-2015c8817bda@fi.rohmeurope.com>
- <YUQyQgFAOFnBlcdP@atomide.com>
- <0679a5bb-88d1-077d-6107-d5f88ef60dbf@fi.rohmeurope.com>
- <8f3963ca-ff09-b876-ae9e-433add242de2@ti.com>
-Message-ID: <331ab81e-cd42-7e9b-617a-fde4c773c07a@ti.com>
-Date:   Fri, 17 Sep 2021 14:01:59 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Fri, 17 Sep 2021 07:05:54 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59F01C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 04:04:32 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id p2so13495739oif.1
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 04:04:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZsW5kPocZcxB329voa1FeRViMqD2LaT+HDfOLYt3vUc=;
+        b=kKWaEJBP/OE9KEtjBUBQ23VeQZ0aCuDKQ4lVvRhYK6nc12y91KxrEkE7iNW/JNyJA4
+         abqDF2qgfhJE4u3NfdqHWzkNpnkZf5DJ9vWlp/WxKASnL4lN7L8NCcuwAYGqUvo4Cvn7
+         xH5rRqf0nMDzZkkQFBT4bWaPsb3XPjlW5MHuCX1P2txnVYfM5vGLbW+YiFlFG8gW5dB6
+         W9Z6oZwqEyJRFHw6gsCnIzPIrfu9E2Sqq8L46FsqJnCP3lc2Cm1JoeiDxWf1u9Z3zrH6
+         8X7X+h+wnoodBSQjloa4w/7BPmfCM/THg2nHU1ayjnbSFGnuGP7TLsxMXBioANtSsDu7
+         mORA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZsW5kPocZcxB329voa1FeRViMqD2LaT+HDfOLYt3vUc=;
+        b=26DfPXw249YmoEWMxTt+oOzEEMSG6tkC5kIzJ8eq/W3TR/sTSlLDlMPMHPsZX8XQhe
+         y+0R6MwbZ68QUtzyHN8o14e99WPbPs2Qa1IBDedtma0duHjoG9gT35bpknq5kyrRiUR5
+         X+dZ+Le+i0fy1YNNwQ5rKLoAOYp6xLXEfnf+O3al2aNo2yfxsn/HM/Nj4ufJD5E/ungd
+         haswz7q2hr2G6C83Ln18FhG8yzWPCSUVEh9YWYVCMZs2LKaUJTc/rFG2uhxfPlU4Z6C+
+         uY/qCJQrqejUtrpjJf23N0cIoe3Eef3t9NEzSmcG5Ns18KFkEg5XGklPp5Ugg9dBNa8O
+         fVpQ==
+X-Gm-Message-State: AOAM5322mGxtDWZTwDqegy0YbDSEmr5Ib0kHLvri6tiEK+uXMVyEtLI0
+        C1dVFVx7ie6OspSEdnCOl5jFdl8AajupRckHvBzFqw==
+X-Google-Smtp-Source: ABdhPJwkbU14LkevkmRQcfXM3c9LL8kqwRndfDFymrr/McFm7W2SwfDcmPrs+SPlXN9HmEdAlThkcbDGVcUfORnBcTE=
+X-Received: by 2002:a05:6808:21a5:: with SMTP id be37mr3470073oib.172.1631876671347;
+ Fri, 17 Sep 2021 04:04:31 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <8f3963ca-ff09-b876-ae9e-433add242de2@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <000000000000d6b66705cb2fffd4@google.com> <CACT4Y+ZByJ71QfYHTByWaeCqZFxYfp8W8oyrK0baNaSJMDzoUw@mail.gmail.com>
+In-Reply-To: <CACT4Y+ZByJ71QfYHTByWaeCqZFxYfp8W8oyrK0baNaSJMDzoUw@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Fri, 17 Sep 2021 13:04:19 +0200
+Message-ID: <CANpmjNMq=2zjDYJgGvHcsjnPNOpR=nj-gQ43hk2mJga0ES+wzQ@mail.gmail.com>
+Subject: Re: [syzbot] upstream test error: KFENCE: use-after-free in kvm_fastop_exception
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     syzbot <syzbot+d08efd12a2905a344291@syzkaller.appspotmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        kasan-dev <kasan-dev@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 17 Sept 2021 at 12:01, Dmitry Vyukov <dvyukov@google.com> wrote:
+>
+> On Sat, 4 Sept 2021 at 20:58, syzbot
+> <syzbot+d08efd12a2905a344291@syzkaller.appspotmail.com> wrote:
+> >
+> > Hello,
+> >
+> > syzbot found the following issue on:
+> >
+> > HEAD commit:    835d31d319d9 Merge tag 'media/v5.15-1' of git://git.kernel..
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=1189fe49300000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=d1a7a34dc082816f
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=d08efd12a2905a344291
+> > compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+> >
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+d08efd12a2905a344291@syzkaller.appspotmail.com
+> >
+> > ==================================================================
+> > BUG: KFENCE: use-after-free read in kvm_fastop_exception+0xf6d/0x105b
+> >
+> > Use-after-free read at 0xffff88823bc0c020 (in kfence-#5):
+> >  kvm_fastop_exception+0xf6d/0x105b
+>
+> There is probably some bug in d_lookup, but there is also something
+> wrong with the unwinder. It prints an unrelated kvm_fastop_exception
+> frame instead of __d_lookup and interestingly a very similar thing
+> happens on arm64 with HWASAN and a similar bug in d_lookup. The
+> corresponding report is:
+> https://syzkaller.appspot.com/bug?extid=488ddf8087564d6de6e2
+>
+> BUG: KASAN: invalid-access in __entry_tramp_text_end+0xddc/0xd000
+> CPU: 0 PID: 22 Comm: kdevtmpfs Not tainted
+> 5.14.0-syzkaller-11152-g78e709522d2c #0
+> Hardware name: linux,dummy-virt (DT)
+> Call trace:
+>  dump_backtrace+0x0/0x1ac arch/arm64/kernel/stacktrace.c:76
+>  show_stack+0x18/0x24 arch/arm64/kernel/stacktrace.c:215
+>  __dump_stack lib/dump_stack.c:88 [inline]
+>  dump_stack_lvl+0x68/0x84 lib/dump_stack.c:106
+>  print_address_description+0x7c/0x2b4 mm/kasan/report.c:256
+>  __kasan_report mm/kasan/report.c:442 [inline]
+>  kasan_report+0x134/0x380 mm/kasan/report.c:459
+>  __do_kernel_fault+0x128/0x1bc arch/arm64/mm/fault.c:317
+>  do_bad_area arch/arm64/mm/fault.c:466 [inline]
+>  do_tag_check_fault+0x74/0x90 arch/arm64/mm/fault.c:737
+>  do_mem_abort+0x44/0xb4 arch/arm64/mm/fault.c:813
+>  el1_abort+0x40/0x60 arch/arm64/kernel/entry-common.c:357
+>  el1h_64_sync_handler+0xb0/0xd0 arch/arm64/kernel/entry-common.c:408
+>  el1h_64_sync+0x78/0x7c arch/arm64/kernel/entry.S:567
+>  __entry_tramp_text_end+0xddc/0xd000
+>  d_lookup+0x44/0x70 fs/dcache.c:2370
+>  lookup_dcache+0x24/0x84 fs/namei.c:1520
+>  __lookup_hash+0x24/0xd0 fs/namei.c:1543
+>  kern_path_locked+0x90/0x10c fs/namei.c:2567
+>  handle_remove+0x38/0x284 drivers/base/devtmpfs.c:312
+>  handle drivers/base/devtmpfs.c:382 [inline]
+>  devtmpfs_work_loop drivers/base/devtmpfs.c:395 [inline]
+>  devtmpfsd+0x8c/0xd0 drivers/base/devtmpfs.c:437
+>  kthread+0x150/0x15c kernel/kthread.c:319
+>  ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:756
+>
+> Here kernel unwinder prints __entry_tramp_text_end instead of __d_lookup.
+>
+> I've looked in more detail into the arm64 case:
+> d_lookup contains a static call to __d_lookup as expected:
+>
+> ffff8000102e0780 <d_lookup>:
+> ...
+> ffff8000102e07c0: 97ffffa4 bl ffff8000102e0650 <__d_lookup>
+> ...
+> ffff8000102e07e8: d65f03c0 ret
+>
+> and these symbols don't overlap or something:
+>
+> $ aarch64-linux-gnu-nm -nS vmlinux | egrep -C 1 " (t|T)
+> (__entry_tramp_text|__d_lookup)"
+> ffff8000102e01f0 0000000000000458 T d_alloc_parallel
+> ffff8000102e0650 0000000000000128 T __d_lookup
+> ffff8000102e0780 000000000000006c T d_lookup
+> --
+> ffff8000117a1f88 T __hibernate_exit_text_end
+> ffff8000117a2000 T __entry_tramp_text_start
+> ffff8000117a2000 00000000000007c8 T tramp_vectors
+> --
+> ffff8000117a27f0 0000000000000024 T tramp_exit_compat
+> ffff8000117a3000 T __entry_tramp_text_end
+> ffff8000117b0000 D _etext
+>
+> So it looks like in both cases the top fault frame is just wrong. But
+> I would assume it's extracted by arch-dependent code, so it's
+> suspicious that it affects both x86 and arm64...
+>
+> Any ideas what's happening?
 
+My suspicion for the x86 case is that kvm_fastop_exception is related
+to instruction emulation and the fault occurs in an emulated
+instruction?
 
-On 17/09/2021 13:57, Grygorii Strashko wrote:
-> 
-> 
-> On 17/09/2021 13:28, Vaittinen, Matti wrote:
->> Hi deeee Ho Tony & All,
->>
->> On 9/17/21 09:14, Tony Lindgren wrote:
->>> Hi,
->>>
->>> * Vaittinen, Matti <Matti.Vaittinen@fi.rohmeurope.com> [210916 09:15]:
->>
->>>> My beaglebone black (rev c) based test environment fails to boot with
->>>> v5.15-rc1. Boot succeeds with the v5.14.
->>>>
->>>> Bisecting the Linus' tree pointed out the commit:
->>>> [1c7ba565e70365763ea780666a3eee679344b962] ARM: dts: am335x-baltos:
->>>> switch to new cpsw switch drv
->>>>
->>>> I don't see this exact commit touching the BBB device-tree. In Linus'
->>>> tree it is a part of a merge commit. Reverting the whole merge on top of
->>>> the v5.15-rc1
->>>>
->>>> This reverts commit 81b6a285737700c2e04ef0893617b80481b6b4b7, reversing
->>>> changes made to f73979109bc11a0ed26b6deeb403fb5d05676ffc.
->>>>
->>>> makes my beaglebone black to boot again.
->>>>
->>>> Yesterday I tried adding this patch:
->>>> https://lore.kernel.org/linux-omap/20210915065032.45013-1-tony@atomide.com/T/#u
->>>> pointed by Tom on top of the v5.15-rc1 - no avail. I also did #define
->>>> DEBUG at ti-sys.c as was suggested by Tom - but I don't see any more output.
->>>
->>> Correction, that was me, not Tom :)
->>
->> Oh.. Sorry! I don't know where I picked Tom from... My bad!
->>
->>> For me, adding any kind of delay fixed the issue. Also adding some printk
->>> statements fixed it for me.
->>>
->>>> Any suggestions what to check next?
->>>
->>> Maybe try the attached patch? If it helps, just try with the with the
->>> ti,sysc-delay-us = <2> added as few modules need that after enable.
->>>
->>> It's also possible there is an issue with some other device that is now
->>> getting enabled other than pruss. The last XXX printk output should show
->>> the last device being probed.
->>>
->>> Looks like you need to also enable CONFIG_SERIAL_EARLYCON=y, and pass
->>> console=ttyS0,115200 debug earlycon in the kernel command line.
->>
->> Ah. Thanks again. I indeed lacked the "debug earlycon" parameters. Now
->> we're more likely to see what went wrong :) I pasted the serial log form
->> failing boot with v5.15-rc1 which has both the patch you linked me above
->> and the patch you suggested me to test in previous email.
->>
-> 
-> [...]
-> 
->> [    2.786181] ti-sysc 48311fe0.target-module: XXX sysc_probe
->> [    2.791994] ti-sysc 48311fe0.target-module:
->> 48310000:2000:1fe0:1fe4:NA:00000020:rng
->> [    2.800820] omap_rng 48310000.rng: Random Number Generator ver. 20
->> [    2.807315] random: crng init done
->> [    2.814207] ti-sysc 4a101200.target-module: XXX sysc_probe
->> [    2.820080] ti-sysc 4a101200.target-module:
->> 4a100000:8000:1200:1208:1204:4edb0100:cpgmac
-> 
-> This one cpsw
-> 
->> [    2.830347] ti-sysc 4a326000.target-module: XXX sysc_probe
-> 
-> This one pruss and it still shows sysc_probe
-> 
-> Not sure what are the dependency here :( if any.
-> 
-> Additional option to try - cmdline param "initcall_debug" and maybe increase print level in really_probe_debug()
-> 
+But I can't explain the arm64 case.
 
-Just to be clear - idea is to see *all* probes - not only sysc.
-
-[...]
-
--- 
-Best regards,
-grygorii
+> >  d_lookup+0xd8/0x170 fs/dcache.c:2370
+> >  lookup_dcache+0x1e/0x130 fs/namei.c:1520
+> >  __lookup_hash+0x29/0x180 fs/namei.c:1543
+> >  kern_path_locked+0x17e/0x320 fs/namei.c:2567
+> >  handle_remove+0xa2/0x5fe drivers/base/devtmpfs.c:312
+> >  handle drivers/base/devtmpfs.c:382 [inline]
+> >  devtmpfs_work_loop drivers/base/devtmpfs.c:395 [inline]
+> >  devtmpfsd+0x1b9/0x2a3 drivers/base/devtmpfs.c:437
+> >  kthread+0x3e5/0x4d0 kernel/kthread.c:319
+> >  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+> >
+> > kfence-#5 [0xffff88823bc0c000-0xffff88823bc0cfff, size=4096, cache=names_cache] allocated by task 22:
+> >  getname_kernel+0x4e/0x370 fs/namei.c:226
+> >  kern_path_locked+0x71/0x320 fs/namei.c:2558
+> >  handle_remove+0xa2/0x5fe drivers/base/devtmpfs.c:312
+> >  handle drivers/base/devtmpfs.c:382 [inline]
+> >  devtmpfs_work_loop drivers/base/devtmpfs.c:395 [inline]
+> >  devtmpfsd+0x1b9/0x2a3 drivers/base/devtmpfs.c:437
+> >  kthread+0x3e5/0x4d0 kernel/kthread.c:319
+> >  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+> >
+> > freed by task 22:
+> >  putname.part.0+0xe1/0x120 fs/namei.c:270
+> >  putname include/linux/err.h:41 [inline]
+> >  filename_parentat fs/namei.c:2547 [inline]
+> >  kern_path_locked+0xc2/0x320 fs/namei.c:2558
+> >  handle_remove+0xa2/0x5fe drivers/base/devtmpfs.c:312
+> >  handle drivers/base/devtmpfs.c:382 [inline]
+> >  devtmpfs_work_loop drivers/base/devtmpfs.c:395 [inline]
+> >  devtmpfsd+0x1b9/0x2a3 drivers/base/devtmpfs.c:437
+> >  kthread+0x3e5/0x4d0 kernel/kthread.c:319
+> >  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+> >
+> > CPU: 1 PID: 22 Comm: kdevtmpfs Not tainted 5.14.0-syzkaller #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> > RIP: 0010:kvm_fastop_exception+0xf6d/0x105b
+> > Code: d3 ed e9 14 1b 6d f8 49 8d 0e 48 83 e1 f8 4c 8b 21 41 8d 0e 83 e1 07 c1 e1 03 49 d3 ec e9 6a 28 6d f8 49 8d 4d 00 48 83 e1 f8 <4c> 8b 21 41 8d 4d 00 83 e1 07 c1 e1 03 49 d3 ec e9 5a 32 6d f8 bd
+> > RSP: 0018:ffffc90000fe7ae8 EFLAGS: 00010282
+> > RAX: 0000000035736376 RBX: ffff88803b141cc0 RCX: ffff88823bc0c020
+> > RDX: ffffed100762839f RSI: 0000000000000004 RDI: 0000000000000007
+> > RBP: 0000000000000004 R08: 0000000000000000 R09: ffff88803b141cf0
+> > R10: ffffed100762839e R11: 0000000000000000 R12: ffff88823bc0c020
+> > R13: ffff88823bc0c020 R14: ffff88803b141cf0 R15: dffffc0000000000
+> > FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > CR2: ffff88823bc0c020 CR3: 0000000029892000 CR4: 00000000001506e0
+> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > Call Trace:
+> >  d_lookup+0xd8/0x170 fs/dcache.c:2370
+> >  lookup_dcache+0x1e/0x130 fs/namei.c:1520
+> >  __lookup_hash+0x29/0x180 fs/namei.c:1543
+> >  kern_path_locked+0x17e/0x320 fs/namei.c:2567
+> >  handle_remove+0xa2/0x5fe drivers/base/devtmpfs.c:312
+> >  handle drivers/base/devtmpfs.c:382 [inline]
+> >  devtmpfs_work_loop drivers/base/devtmpfs.c:395 [inline]
+> >  devtmpfsd+0x1b9/0x2a3 drivers/base/devtmpfs.c:437
+> >  kthread+0x3e5/0x4d0 kernel/kthread.c:319
+> >  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+> > ==================================================================
+> > ----------------
+> > Code disassembly (best guess):
+> >    0:   d3 ed                   shr    %cl,%ebp
+> >    2:   e9 14 1b 6d f8          jmpq   0xf86d1b1b
+> >    7:   49 8d 0e                lea    (%r14),%rcx
+> >    a:   48 83 e1 f8             and    $0xfffffffffffffff8,%rcx
+> >    e:   4c 8b 21                mov    (%rcx),%r12
+> >   11:   41 8d 0e                lea    (%r14),%ecx
+> >   14:   83 e1 07                and    $0x7,%ecx
+> >   17:   c1 e1 03                shl    $0x3,%ecx
+> >   1a:   49 d3 ec                shr    %cl,%r12
+> >   1d:   e9 6a 28 6d f8          jmpq   0xf86d288c
+> >   22:   49 8d 4d 00             lea    0x0(%r13),%rcx
+> >   26:   48 83 e1 f8             and    $0xfffffffffffffff8,%rcx
+> > * 2a:   4c 8b 21                mov    (%rcx),%r12 <-- trapping instruction
+> >   2d:   41 8d 4d 00             lea    0x0(%r13),%ecx
+> >   31:   83 e1 07                and    $0x7,%ecx
+> >   34:   c1 e1 03                shl    $0x3,%ecx
+> >   37:   49 d3 ec                shr    %cl,%r12
+> >   3a:   e9 5a 32 6d f8          jmpq   0xf86d3299
+> >   3f:   bd                      .byte 0xbd
+> >
+> >
+> > ---
+> > This report is generated by a bot. It may contain errors.
+> > See https://goo.gl/tpsmEJ for more information about syzbot.
+> > syzbot engineers can be reached at syzkaller@googlegroups.com.
+> >
+> > syzbot will keep track of this issue. See:
+> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
