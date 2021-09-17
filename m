@@ -2,103 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19EB540F493
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 11:12:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 222B940F494
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 11:16:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238889AbhIQJOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 05:14:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48184 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238261AbhIQJOQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 05:14:16 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D9B9C061766;
-        Fri, 17 Sep 2021 02:12:54 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id m21-20020a17090a859500b00197688449c4so6963535pjn.0;
-        Fri, 17 Sep 2021 02:12:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=O1bx5uHHL6FlfRq6JP+/w3u8MNp6sfgydH0tgxJOMHo=;
-        b=nORhe60bUPzqB5JFOh+AJ1PWv4zBImjnTbBncLzVM6tTimzBs9PDNwlfJZCMww0IwH
-         TMrVxXUP1SsMqDb84c2hjrLQGILlThiplOb+8fAsAQC40u/b7zeeJJu00UmNAlPpNf+2
-         IVydlH+/jaY2m4H2UbtVc8grUYR8loiCk3jALFglz3Ut2exYUHEM/MT03dzq5JSLYL4s
-         r4o4+pm8+JWoTuegYLPvkE3PhlO8xXp6oTXgtyP/XzhrGIlxC4MmX6ymBqcE3Gsv09p9
-         l4zxdkWTEewq2PUJE5hSSXG/QLcDyNKO1FqwDPMr0W04fRwFHFPZ8x+emylNHBRdpQIm
-         Dn7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=O1bx5uHHL6FlfRq6JP+/w3u8MNp6sfgydH0tgxJOMHo=;
-        b=sdI9xP2xvkx4vL7FaOzZyjA7ClKiBeODWvsdMNRzZnBEFGQqAUY6k03C07LhMjrLia
-         BMrq7ghO9iSSdzCL82gMx+GSdWEcwFMLC0VwGHIArs7uOzfP8OlP2OZxmyY7PYBg9XTn
-         4wqACOA8mw5iBIQYKsz5KpYs3v+UuIdQWYBy3u+ooByZv50BLsdPcIvJfaLGoR3ZDaFs
-         vMPvp2H09l46Y24JGqU9zG9FEbDTyeZGo4vlqldNwaDSGVLJDKIaBx93Kkdph8o7g8FF
-         8m2JCgx6E7LoBjPBh8Yg5iBTGm38A6pHVwMvvLXMV7cYcyNx5UslmdvXDcvflN8hxAbv
-         PW2A==
-X-Gm-Message-State: AOAM532+QUxwhw7IgqQKTb4Ro8g7xbPlRTrrlPFrf7FPgQ70khweDIAn
-        cQaH76AovrNsw/8MxqycdJw=
-X-Google-Smtp-Source: ABdhPJx6zNVayeQJBv7jSiAMoD9Z6H6ldSBP8MdTQGW6ETgLPaNDnST4Jy6apaRTJxCgvJUBOlLXvA==
-X-Received: by 2002:a17:90a:352:: with SMTP id 18mr11120223pjf.116.1631869974138;
-        Fri, 17 Sep 2021 02:12:54 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id h4sm5981757pjc.28.2021.09.17.02.12.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 02:12:53 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: lv.ruyi@zte.com.cn
-To:     mturquette@baylibre.com
-Cc:     sboyd@kernel.org, matthias.bgg@gmail.com, lv.ruyi@zte.com.cn,
-        chun-jie.chen@mediatek.com, wenst@chromium.org,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] clk: mediatek: remove duplicate include
-Date:   Fri, 17 Sep 2021 09:12:47 +0000
-Message-Id: <20210917091247.231305-1-lv.ruyi@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        id S238261AbhIQJSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 05:18:10 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:36403 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233886AbhIQJSI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 05:18:08 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4H9pHK5gnNz9sV5;
+        Fri, 17 Sep 2021 11:16:45 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id ztcfKQ7GnnFR; Fri, 17 Sep 2021 11:16:45 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4H9pHK4lJhz9sS4;
+        Fri, 17 Sep 2021 11:16:45 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 903158B783;
+        Fri, 17 Sep 2021 11:16:45 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 71PENj4KiEWQ; Fri, 17 Sep 2021 11:16:45 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.202.36])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4728D8B768;
+        Fri, 17 Sep 2021 11:16:45 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 18H9GYmP553829
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Fri, 17 Sep 2021 11:16:34 +0200
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 18H9GWAJ553827;
+        Fri, 17 Sep 2021 11:16:32 +0200
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH] powerpc/8xx: Simplify TLB handling
+Date:   Fri, 17 Sep 2021 11:16:22 +0200
+Message-Id: <5f5bb00293c4bf8115c327eb80488b3aa01b9f36.1631870171.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lv Ruyi <lv.ruyi@zte.com.cn>
+In the old days, TLB handling for 8xx was using tlbie and tlbia
+instructions directly as much as possible.
 
-Remove all but the first include of dt-bindings/clock/mt8195-clk.h
-from clk-mt8195-imp_iic_wrap.c,and maintain alphabetic order in the
-include list.
+But commit f048aace29e0 ("powerpc/mm: Add SMP support to no-hash
+TLB handling") broke that by introducing out-of-line unnecessary
+complex functions for booke/smp which don't have tlbie/tlbia
+instructions and require more complex handling.
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Lv Ruyi <lv.ruyi@zte.com.cn>
+Restore direct use of tlbie and tlbia for 8xx which is never SMP.
+
+With this patch we now get
+
+	c00ecc68 <ptep_clear_flush>:
+	c00ecc68:	39 00 00 00 	li      r8,0
+	c00ecc6c:	81 46 00 00 	lwz     r10,0(r6)
+	c00ecc70:	91 06 00 00 	stw     r8,0(r6)
+	c00ecc74:	7c 00 2a 64 	tlbie   r5,r0
+	c00ecc78:	7c 00 04 ac 	hwsync
+	c00ecc7c:	91 43 00 00 	stw     r10,0(r3)
+	c00ecc80:	4e 80 00 20 	blr
+
+Before it was
+
+	c0012880 <local_flush_tlb_page>:
+	c0012880:	2c 03 00 00 	cmpwi   r3,0
+	c0012884:	41 82 00 54 	beq     c00128d8 <local_flush_tlb_page+0x58>
+	c0012888:	81 22 00 00 	lwz     r9,0(r2)
+	c001288c:	81 43 00 20 	lwz     r10,32(r3)
+	c0012890:	39 29 00 01 	addi    r9,r9,1
+	c0012894:	91 22 00 00 	stw     r9,0(r2)
+	c0012898:	2c 0a 00 00 	cmpwi   r10,0
+	c001289c:	41 82 00 10 	beq     c00128ac <local_flush_tlb_page+0x2c>
+	c00128a0:	81 2a 01 dc 	lwz     r9,476(r10)
+	c00128a4:	2c 09 ff ff 	cmpwi   r9,-1
+	c00128a8:	41 82 00 0c 	beq     c00128b4 <local_flush_tlb_page+0x34>
+	c00128ac:	7c 00 22 64 	tlbie   r4,r0
+	c00128b0:	7c 00 04 ac 	hwsync
+	c00128b4:	81 22 00 00 	lwz     r9,0(r2)
+	c00128b8:	39 29 ff ff 	addi    r9,r9,-1
+	c00128bc:	2c 09 00 00 	cmpwi   r9,0
+	c00128c0:	91 22 00 00 	stw     r9,0(r2)
+	c00128c4:	4c a2 00 20 	bclr+   4,eq
+	c00128c8:	81 22 00 70 	lwz     r9,112(r2)
+	c00128cc:	71 29 00 04 	andi.   r9,r9,4
+	c00128d0:	4d 82 00 20 	beqlr
+	c00128d4:	48 65 76 74 	b       c0669f48 <preempt_schedule>
+	c00128d8:	81 22 00 00 	lwz     r9,0(r2)
+	c00128dc:	39 29 00 01 	addi    r9,r9,1
+	c00128e0:	91 22 00 00 	stw     r9,0(r2)
+	c00128e4:	4b ff ff c8 	b       c00128ac <local_flush_tlb_page+0x2c>
+...
+	c00ecdc8 <ptep_clear_flush>:
+	c00ecdc8:	94 21 ff f0 	stwu    r1,-16(r1)
+	c00ecdcc:	39 20 00 00 	li      r9,0
+	c00ecdd0:	93 c1 00 08 	stw     r30,8(r1)
+	c00ecdd4:	83 c6 00 00 	lwz     r30,0(r6)
+	c00ecdd8:	91 26 00 00 	stw     r9,0(r6)
+	c00ecddc:	93 e1 00 0c 	stw     r31,12(r1)
+	c00ecde0:	7c 08 02 a6 	mflr    r0
+	c00ecde4:	7c 7f 1b 78 	mr      r31,r3
+	c00ecde8:	7c 83 23 78 	mr      r3,r4
+	c00ecdec:	7c a4 2b 78 	mr      r4,r5
+	c00ecdf0:	90 01 00 14 	stw     r0,20(r1)
+	c00ecdf4:	4b f2 5a 8d 	bl      c0012880 <local_flush_tlb_page>
+	c00ecdf8:	93 df 00 00 	stw     r30,0(r31)
+	c00ecdfc:	7f e3 fb 78 	mr      r3,r31
+	c00ece00:	80 01 00 14 	lwz     r0,20(r1)
+	c00ece04:	83 c1 00 08 	lwz     r30,8(r1)
+	c00ece08:	83 e1 00 0c 	lwz     r31,12(r1)
+	c00ece0c:	7c 08 03 a6 	mtlr    r0
+	c00ece10:	38 21 00 10 	addi    r1,r1,16
+	c00ece14:	4e 80 00 20 	blr
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- drivers/clk/mediatek/clk-mt8195-imp_iic_wrap.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ arch/powerpc/include/asm/nohash/tlbflush.h | 20 ++++++++++++++++++++
+ arch/powerpc/mm/nohash/tlb.c               |  2 ++
+ 2 files changed, 22 insertions(+)
 
-diff --git a/drivers/clk/mediatek/clk-mt8195-imp_iic_wrap.c b/drivers/clk/mediatek/clk-mt8195-imp_iic_wrap.c
-index 0e2ac0a30aa0..261610509e39 100644
---- a/drivers/clk/mediatek/clk-mt8195-imp_iic_wrap.c
-+++ b/drivers/clk/mediatek/clk-mt8195-imp_iic_wrap.c
-@@ -3,13 +3,12 @@
- // Copyright (c) 2021 MediaTek Inc.
- // Author: Chun-Jie Chen <chun-jie.chen@mediatek.com>
+diff --git a/arch/powerpc/include/asm/nohash/tlbflush.h b/arch/powerpc/include/asm/nohash/tlbflush.h
+index 1edb7243e515..a7ec171d79a6 100644
+--- a/arch/powerpc/include/asm/nohash/tlbflush.h
++++ b/arch/powerpc/include/asm/nohash/tlbflush.h
+@@ -32,11 +32,31 @@ extern void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
+ 			    unsigned long end);
+ extern void flush_tlb_kernel_range(unsigned long start, unsigned long end);
  
--#include "clk-gate.h"
--#include "clk-mtk.h"
--
--#include <dt-bindings/clock/mt8195-clk.h>
- #include <linux/clk-provider.h>
- #include <linux/platform_device.h>
- 
-+#include "clk-gate.h"
-+#include "clk-mtk.h"
++#ifdef CONFIG_PPC_8xx
++#include <asm/trace.h>
 +
- #include <dt-bindings/clock/mt8195-clk.h>
++static inline void local_flush_tlb_mm(struct mm_struct *mm)
++{
++	unsigned int pid = READ_ONCE(mm->context.id);
++
++	if (pid != MMU_NO_CONTEXT) {
++		asm volatile ("sync; tlbia; isync" : : : "memory");
++		trace_tlbia(pid);
++	}
++}
++
++static inline void local_flush_tlb_page(struct vm_area_struct *vma, unsigned long vmaddr)
++{
++	asm volatile ("tlbie %0; sync" : : "r" (vmaddr) : "memory");
++	trace_tlbie(0, 0, vmaddr, vma ? vma->vm_mm->context.id : 0, 0, 0, 0);
++}
++#else
+ extern void local_flush_tlb_mm(struct mm_struct *mm);
+ extern void local_flush_tlb_page(struct vm_area_struct *vma, unsigned long vmaddr);
  
- static const struct mtk_gate_regs imp_iic_wrap_cg_regs = {
+ extern void __local_flush_tlb_page(struct mm_struct *mm, unsigned long vmaddr,
+ 				   int tsize, int ind);
++#endif
+ 
+ #ifdef CONFIG_SMP
+ extern void flush_tlb_mm(struct mm_struct *mm);
+diff --git a/arch/powerpc/mm/nohash/tlb.c b/arch/powerpc/mm/nohash/tlb.c
+index 5872f69141d5..6d8cb68f6efb 100644
+--- a/arch/powerpc/mm/nohash/tlb.c
++++ b/arch/powerpc/mm/nohash/tlb.c
+@@ -185,6 +185,7 @@ EXPORT_PER_CPU_SYMBOL(next_tlbcam_idx);
+  *    processor
+  */
+ 
++#ifndef CONFIG_PPC_8xx
+ /*
+  * These are the base non-SMP variants of page and mm flushing
+  */
+@@ -218,6 +219,7 @@ void local_flush_tlb_page(struct vm_area_struct *vma, unsigned long vmaddr)
+ 			       mmu_get_tsize(mmu_virtual_psize), 0);
+ }
+ EXPORT_SYMBOL(local_flush_tlb_page);
++#endif
+ 
+ /*
+  * And here are the SMP non-local implementations
 -- 
-2.25.1
+2.31.1
 
