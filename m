@@ -2,162 +2,329 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA04040FF0B
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 20:11:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B96B740FF11
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 20:16:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344083AbhIQSMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 14:12:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59760 "EHLO
+        id S1344187AbhIQSRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 14:17:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233022AbhIQSMW (ORCPT
+        with ESMTP id S233022AbhIQSRU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 14:12:22 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CC93C061574;
-        Fri, 17 Sep 2021 11:11:00 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id c4so6701620pls.6;
-        Fri, 17 Sep 2021 11:11:00 -0700 (PDT)
+        Fri, 17 Sep 2021 14:17:20 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D940C061574;
+        Fri, 17 Sep 2021 11:15:58 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id k23so7539473pji.0;
+        Fri, 17 Sep 2021 11:15:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=j19W3k0UxVY88rp02NOZtY+ypRE1blCAPpTIKIHSJS8=;
-        b=dWF91zoBQIbPkhGCiZrX5h6hbAUvWQ+lWE2PTlNr0sRDf2mlU8FpoDoaSeD2cm9VZs
-         vVXToZUcZ2c2QglOwr6rDyrcqGSfj03nM4CE5CEFxh0cVKZyTwkixMh1ifst0d0fxB5b
-         YbWUmjyJk9fODeTpaub7L61djgtF1PAsos28+lVY49nvClHjOp9zZnnzALZTHmvpInuL
-         3n68reRnoAAlxQxYVwAy9ZqQrNn5Xn5WFEfDcPDzWhJwetdtgrGo/zfKsCazyJXHRZf0
-         JER8FiqzfflXgdSUxxY/4sjieaRHvafKMo3BdOSkt0NJv1QwbJD3x0dsEXjoo0a/u/n1
-         c0jQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EtqkNTIaZiciUFYxH4TlMlF40yg9YCqiwfsTy5QbPBI=;
+        b=AKmlktiFnfns3nn6gD/hiQO0Gno6XplpP3Bh+fJ+t1vvmXAlDIPriQfhaJ37mYQXQI
+         cDCXdObrJRf7Qso7FeFmzbCGJo3ma28OOpj28iZ2wwC1dnyCDivTOqwYZcXnbXdPT8/e
+         ng+YwpuEXAHn2s+6/wrspLzWRnOw1PUqg1swln+w1AOry9C0k8jjEGT0SwPeXxwovn1z
+         uFOX54fmqZeuTSrA0lcoj6uAoWHzeg2LiOdIHMrNkyQbSYmkAjJ+o3QcC8t6v6iHI1UG
+         m1gGoHOrCBxge/lK87dsg/XtULdo5CXtbbEmndwAX7YpBqWsIQIS5XgnaKzg7b9vGsnI
+         IG+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=j19W3k0UxVY88rp02NOZtY+ypRE1blCAPpTIKIHSJS8=;
-        b=s709Z/oytEysYmlUQQLzlp0AvsyOqkcOI7+egj8UCo2WMgLfyyFFK9PQGs0QxdlFS3
-         s6JwOpR6t8dbUaA1rULb0fDOfGao/fo3Eux83NB+SF8Xt4N8wpzihFOW6VbmeOGV0mQS
-         wmL9rkk7qjwgNe/Ting+zvf8FaTdwTy/GINO0TPQExqWc/bS9lLQZnya5we5+Rla57zG
-         u2WVgCFKfgY3LZffmutUVH1fCvqCTrrHvsWGj6YNz9b3VGfCPE/uwjNP6/HvsMFOJSw7
-         D5zZO2k4DQ0w7rW43mUUr3SksAmwSVgzoqZViBLPibeDr+8BhNdll2ZRVOA5NjdhEjHH
-         EkDQ==
-X-Gm-Message-State: AOAM531Z9+9hDyV3V5ma9p7VeVZAARnRFulDG0MwM6PKdFDFQOnFM1Be
-        BrBAWqndCdw+z4fDHGOticNynxnmdws=
-X-Google-Smtp-Source: ABdhPJzArJx9Jto0WhTT+o9nJ+ILTrOnKn1ZMg/LgJgJUGHjXxfcozm1dbjgmbBNetC0bwhPKwBGfQ==
-X-Received: by 2002:a17:90a:2b88:: with SMTP id u8mr22806072pjd.216.1631902259260;
-        Fri, 17 Sep 2021 11:10:59 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id g13sm7023201pfi.176.2021.09.17.11.10.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Sep 2021 11:10:58 -0700 (PDT)
-Subject: Re: [PATCH net-next] net: phy: bcm7xxx: Add EPHY entry for 72165
-To:     Jakub Kicinski <kuba@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Cc:     netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        bh=EtqkNTIaZiciUFYxH4TlMlF40yg9YCqiwfsTy5QbPBI=;
+        b=VhJa2xCvdG61ifxfSekqL8NYC4O/e1Av3ZkaImUU6Ql4JuRbj085/yf9n2JjFsKoFm
+         F9T1YNa0JGJuKyNNq1QKv4g9Cf6wADZjiRpa1J7yLTHhC1MUs1d2hOAarM+OgTKhs5AT
+         fAXvMohx+irGEM0pba5Qu1JBqS5dSZIG3zznX3XlFFZeXcGjDdRdg1yeHhVlaPpo4sR1
+         cWIrlIHDqT7Lufzs0oGOV3IVhiYdb9uxARQ2i9Uq0CxQSt0iSeoi6EQRzokwrjNcUa1J
+         91YvqzSEKILICc7QHbhZnWpdrHjI1Y+iSGG1cEMExODrfkVHjv+y0C1K9POs9cf97wJX
+         p3EQ==
+X-Gm-Message-State: AOAM532PzxwOa/0KoBcPmlY4XU3mYDSGYCV1025f2xOu75D9eDN0VqsX
+        dVjJ+A8Zv2dU+pvUeaRu//RJp++eT/g=
+X-Google-Smtp-Source: ABdhPJxOZZf2gOArh1+pneTUx7gFBPf3Dfu2K57w/HWTA38q9gJAxxnxANTpqG+yTQeR0H7Kv1CL/Q==
+X-Received: by 2002:a17:903:20d1:b0:13b:842b:a4e4 with SMTP id i17-20020a17090320d100b0013b842ba4e4mr10749644plb.9.1631902557447;
+        Fri, 17 Sep 2021 11:15:57 -0700 (PDT)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id j9sm8736401pjb.33.2021.09.17.11.15.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Sep 2021 11:15:56 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
         Heiner Kallweit <hkallweit1@gmail.com>,
         Russell King <linux@armlinux.org.uk>,
         "David S. Miller" <davem@davemloft.net>,
-        "open list:BROADCOM ETHERNET PHY DRIVERS" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210914224042.418365-1-f.fainelli@gmail.com>
- <20210915144716.12998b33@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <373865cd-469d-78ab-12ed-d84de63c6295@gmail.com>
-Date:   Fri, 17 Sep 2021 11:10:57 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Jakub Kicinski <kuba@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com (open list:BROADCOM ETHERNET PHY
+        DRIVERS), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH net-next v2] net: phy: bcm7xxx: Add EPHY entry for 72165
+Date:   Fri, 17 Sep 2021 11:15:50 -0700
+Message-Id: <20210917181551.2836036-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210915144716.12998b33@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/15/21 2:47 PM, Jakub Kicinski wrote:
-> On Tue, 14 Sep 2021 15:40:41 -0700 Florian Fainelli wrote:
->> 72165 is a 16nm process SoC with a 10/100 integrated Ethernet PHY,
->> create a new macro and set of functions for this different process type.
->>
->> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
->> ---
->>  drivers/net/phy/bcm7xxx.c | 200 ++++++++++++++++++++++++++++++++++++++
->>  include/linux/brcmphy.h   |   1 +
->>  2 files changed, 201 insertions(+)
->>
->> diff --git a/drivers/net/phy/bcm7xxx.c b/drivers/net/phy/bcm7xxx.c
->> index e79297a4bae8..f6912a77a378 100644
->> --- a/drivers/net/phy/bcm7xxx.c
->> +++ b/drivers/net/phy/bcm7xxx.c
->> @@ -398,6 +398,189 @@ static int bcm7xxx_28nm_ephy_config_init(struct phy_device *phydev)
->>  	return bcm7xxx_28nm_ephy_apd_enable(phydev);
->>  }
->>  
->> +static int bcm7xxx_16nm_ephy_afe_config(struct phy_device *phydev)
->> +{
->> +	int tmp, rcalcode, rcalnewcodelp, rcalnewcode11, rcalnewcode11d2;
->> +
->> +	/* Reset PHY */
->> +	tmp = genphy_soft_reset(phydev);
->> +	if (tmp)
->> +		return tmp;
->> +
->> +	/* Reset AFE and PLL */
->> +	bcm_phy_write_exp_sel(phydev, 0x0003, 0x0006);
->> +	/* Clear reset */
->> +	bcm_phy_write_exp_sel(phydev, 0x0003, 0x0000);
->> +
->> +	/* Write PLL/AFE control register to select 54MHz crystal */
->> +	bcm_phy_write_misc(phydev, 0x0030, 0x0001, 0x0000);
->> +	bcm_phy_write_misc(phydev, 0x0031, 0x0000, 0x044a);
->> +
->> +	/* Change Ka,Kp,Ki to pdiv=1 */
->> +	bcm_phy_write_misc(phydev, 0x0033, 0x0002, 0x71a1);
->> +	/* Configuration override */
->> +	bcm_phy_write_misc(phydev, 0x0033, 0x0001, 0x8000);
->> +
->> +	/* Change PLL_NDIV and PLL_NUDGE */
->> +	bcm_phy_write_misc(phydev, 0x0031, 0x0001, 0x2f68);
->> +	bcm_phy_write_misc(phydev, 0x0031, 0x0002, 0x0000);
->> +
->> +	/* Reference frequency is 54Mhz, config_mode[15:14] = 3 (low
->> +	 * phase) */
-> 
-> Checkpatch points out:
-> 
-> WARNING: Block comments use a trailing */ on a separate line
-> #55: FILE: drivers/net/phy/bcm7xxx.c:429:
-> +	 * phase) */
+72165 is a 16nm process SoC with a 10/100 integrated Ethernet PHY,
+create a new macro and set of functions for this different process type.
 
-Yes indeed, sorry about that.
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+Changes in v2:
 
-> 
->> +	/* Drop LSB */
->> +	rcalnewcode11d2 = (rcalnewcode11 & 0xfffe) / 2;
->> +	tmp = bcm_phy_read_misc(phydev, 0x003d, 0x0001);
->> +	/* Clear bits [11:5] */
->> +	tmp &= ~0xfe0;
->> +	/* set txcfg_ch0<5>=1 (enable + set local rcal) */
->> +	tmp |= 0x0020 | (rcalnewcode11d2 * 64);
->> +	bcm_phy_write_misc(phydev, 0x003d, 0x0001, tmp);
->> +	bcm_phy_write_misc(phydev, 0x003d, 0x0002, tmp);
->> +
->> +	tmp = bcm_phy_read_misc(phydev, 0x003d, 0x0000);
->> +	/* set txcfg<45:44>=11 (enable Rextra + invert fullscaledetect)
->> +	 */
->> +	tmp &= ~0x3000;
->> +	tmp |= 0x3000;
-> 
-> Clearing then setting the same bits looks a little strange. Especially
-> since from the comment it sounds like these are two separate bits, not
-> a bitfield which is cleared and set as a whole. Anyway, up to you, just
-> jumped out when I was looking thru to see if the use of signed tmp may
-> cause any trouble...
+- Fixed checkpatch complaint on a comment
 
-I will keep it for now if you don't mind because there is a good chance
-that we will need to change that in the future. For the most part the
-programming sequence is automated based on a script provided by the
-design team, the less manual updates I have to do the better.
+- intentionally kep the 0x3000 clearing and setting since this is
+  generated from a script
+
+ drivers/net/phy/bcm7xxx.c | 201 ++++++++++++++++++++++++++++++++++++++
+ include/linux/brcmphy.h   |   1 +
+ 2 files changed, 202 insertions(+)
+
+diff --git a/drivers/net/phy/bcm7xxx.c b/drivers/net/phy/bcm7xxx.c
+index e79297a4bae8..3a29a1493ff1 100644
+--- a/drivers/net/phy/bcm7xxx.c
++++ b/drivers/net/phy/bcm7xxx.c
+@@ -398,6 +398,190 @@ static int bcm7xxx_28nm_ephy_config_init(struct phy_device *phydev)
+ 	return bcm7xxx_28nm_ephy_apd_enable(phydev);
+ }
+ 
++static int bcm7xxx_16nm_ephy_afe_config(struct phy_device *phydev)
++{
++	int tmp, rcalcode, rcalnewcodelp, rcalnewcode11, rcalnewcode11d2;
++
++	/* Reset PHY */
++	tmp = genphy_soft_reset(phydev);
++	if (tmp)
++		return tmp;
++
++	/* Reset AFE and PLL */
++	bcm_phy_write_exp_sel(phydev, 0x0003, 0x0006);
++	/* Clear reset */
++	bcm_phy_write_exp_sel(phydev, 0x0003, 0x0000);
++
++	/* Write PLL/AFE control register to select 54MHz crystal */
++	bcm_phy_write_misc(phydev, 0x0030, 0x0001, 0x0000);
++	bcm_phy_write_misc(phydev, 0x0031, 0x0000, 0x044a);
++
++	/* Change Ka,Kp,Ki to pdiv=1 */
++	bcm_phy_write_misc(phydev, 0x0033, 0x0002, 0x71a1);
++	/* Configuration override */
++	bcm_phy_write_misc(phydev, 0x0033, 0x0001, 0x8000);
++
++	/* Change PLL_NDIV and PLL_NUDGE */
++	bcm_phy_write_misc(phydev, 0x0031, 0x0001, 0x2f68);
++	bcm_phy_write_misc(phydev, 0x0031, 0x0002, 0x0000);
++
++	/* Reference frequency is 54Mhz, config_mode[15:14] = 3 (low
++	 * phase)
++	 */
++	bcm_phy_write_misc(phydev, 0x0030, 0x0003, 0xc036);
++
++	/* Initialize bypass mode */
++	bcm_phy_write_misc(phydev, 0x0032, 0x0003, 0x0000);
++	/* Bypass code, default: VCOCLK enabled */
++	bcm_phy_write_misc(phydev, 0x0033, 0x0000, 0x0002);
++	/* LDOs at default setting */
++	bcm_phy_write_misc(phydev, 0x0030, 0x0002, 0x01c0);
++	/* Release PLL reset */
++	bcm_phy_write_misc(phydev, 0x0030, 0x0001, 0x0001);
++
++	/* Bandgap curvature correction to correct default */
++	bcm_phy_write_misc(phydev, 0x0038, 0x0000, 0x0010);
++
++	/* Run RCAL */
++	bcm_phy_write_misc(phydev, 0x0039, 0x0003, 0x0038);
++	bcm_phy_write_misc(phydev, 0x0039, 0x0003, 0x003b);
++	udelay(2);
++	bcm_phy_write_misc(phydev, 0x0039, 0x0003, 0x003f);
++	mdelay(5);
++
++	/* AFE_CAL_CONFIG_0, Vref=1000, Target=10, averaging enabled */
++	bcm_phy_write_misc(phydev, 0x0039, 0x0001, 0x1c82);
++	/* AFE_CAL_CONFIG_0, no reset and analog powerup */
++	bcm_phy_write_misc(phydev, 0x0039, 0x0001, 0x9e82);
++	udelay(2);
++	/* AFE_CAL_CONFIG_0, start calibration */
++	bcm_phy_write_misc(phydev, 0x0039, 0x0001, 0x9f82);
++	udelay(100);
++	/* AFE_CAL_CONFIG_0, clear start calibration, set HiBW */
++	bcm_phy_write_misc(phydev, 0x0039, 0x0001, 0x9e86);
++	udelay(2);
++	/* AFE_CAL_CONFIG_0, start calibration with hi BW mode set */
++	bcm_phy_write_misc(phydev, 0x0039, 0x0001, 0x9f86);
++	udelay(100);
++
++	/* Adjust 10BT amplitude additional +7% and 100BT +2% */
++	bcm_phy_write_misc(phydev, 0x0038, 0x0001, 0xe7ea);
++	/* Adjust 1G mode amplitude and 1G testmode1 */
++	bcm_phy_write_misc(phydev, 0x0038, 0x0002, 0xede0);
++
++	/* Read CORE_EXPA9 */
++	tmp = bcm_phy_read_exp(phydev, 0x00a9);
++	/* CORE_EXPA9[6:1] is rcalcode[5:0] */
++	rcalcode = (tmp & 0x7e) / 2;
++	/* Correct RCAL code + 1 is -1% rprogr, LP: +16 */
++	rcalnewcodelp = rcalcode + 16;
++	/* Correct RCAL code + 1 is -15 rprogr, 11: +10 */
++	rcalnewcode11 = rcalcode + 10;
++	/* Saturate if necessary */
++	if (rcalnewcodelp > 0x3f)
++		rcalnewcodelp = 0x3f;
++	if (rcalnewcode11 > 0x3f)
++		rcalnewcode11 = 0x3f;
++	/* REXT=1 BYP=1 RCAL_st1<5:0>=new rcal code */
++	tmp = 0x00f8 + rcalnewcodelp * 256;
++	/* Program into AFE_CAL_CONFIG_2 */
++	bcm_phy_write_misc(phydev, 0x0039, 0x0003, tmp);
++	/* AFE_BIAS_CONFIG_0 10BT bias code (Bias: E4) */
++	bcm_phy_write_misc(phydev, 0x0038, 0x0001, 0xe7e4);
++	/* invert adc clock output and 'adc refp ldo current To correct
++	 * default
++	 */
++	bcm_phy_write_misc(phydev, 0x003b, 0x0000, 0x8002);
++	/* 100BT stair case, high BW, 1G stair case, alternate encode */
++	bcm_phy_write_misc(phydev, 0x003c, 0x0003, 0xf882);
++	/* 1000BT DAC transition method per Erol, bits[32], DAC Shuffle
++	 * sequence 1 + 10BT imp adjust bits
++	 */
++	bcm_phy_write_misc(phydev, 0x003d, 0x0000, 0x3201);
++	/* Non-overlap fix */
++	bcm_phy_write_misc(phydev, 0x003a, 0x0002, 0x0c00);
++
++	/* pwdb override (rxconfig<5>) to turn on RX LDO indpendent of
++	 * pwdb controls from DSP_TAP10
++	 */
++	bcm_phy_write_misc(phydev, 0x003a, 0x0001, 0x0020);
++
++	/* Remove references to channel 2 and 3 */
++	bcm_phy_write_misc(phydev, 0x003b, 0x0002, 0x0000);
++	bcm_phy_write_misc(phydev, 0x003b, 0x0003, 0x0000);
++
++	/* Set cal_bypassb bit rxconfig<43> */
++	bcm_phy_write_misc(phydev, 0x003a, 0x0003, 0x0800);
++	udelay(2);
++
++	/* Revert pwdb_override (rxconfig<5>) to 0 so that the RX pwr
++	 * is controlled by DSP.
++	 */
++	bcm_phy_write_misc(phydev, 0x003a, 0x0001, 0x0000);
++
++	/* Drop LSB */
++	rcalnewcode11d2 = (rcalnewcode11 & 0xfffe) / 2;
++	tmp = bcm_phy_read_misc(phydev, 0x003d, 0x0001);
++	/* Clear bits [11:5] */
++	tmp &= ~0xfe0;
++	/* set txcfg_ch0<5>=1 (enable + set local rcal) */
++	tmp |= 0x0020 | (rcalnewcode11d2 * 64);
++	bcm_phy_write_misc(phydev, 0x003d, 0x0001, tmp);
++	bcm_phy_write_misc(phydev, 0x003d, 0x0002, tmp);
++
++	tmp = bcm_phy_read_misc(phydev, 0x003d, 0x0000);
++	/* set txcfg<45:44>=11 (enable Rextra + invert fullscaledetect)
++	 */
++	tmp &= ~0x3000;
++	tmp |= 0x3000;
++	bcm_phy_write_misc(phydev, 0x003d, 0x0000, tmp);
++
++	return 0;
++}
++
++static int bcm7xxx_16nm_ephy_config_init(struct phy_device *phydev)
++{
++	int ret, val;
++
++	ret = bcm7xxx_16nm_ephy_afe_config(phydev);
++	if (ret)
++		return ret;
++
++	ret = bcm_phy_set_eee(phydev, true);
++	if (ret)
++		return ret;
++
++	ret = bcm_phy_read_shadow(phydev, BCM54XX_SHD_SCR3);
++	if (ret < 0)
++		return ret;
++
++	val = ret;
++
++	/* Auto power down of DLL enabled,
++	 * TXC/RXC disabled during auto power down.
++	 */
++	val &= ~BCM54XX_SHD_SCR3_DLLAPD_DIS;
++	val |= BIT(8);
++
++	ret = bcm_phy_write_shadow(phydev, BCM54XX_SHD_SCR3, val);
++	if (ret < 0)
++		return ret;
++
++	return bcm_phy_enable_apd(phydev, true);
++}
++
++static int bcm7xxx_16nm_ephy_resume(struct phy_device *phydev)
++{
++	int ret;
++
++	/* Re-apply workarounds coming out suspend/resume */
++	ret = bcm7xxx_16nm_ephy_config_init(phydev);
++	if (ret)
++		return ret;
++
++	return genphy_config_aneg(phydev);
++}
++
+ static int bcm7xxx_28nm_ephy_resume(struct phy_device *phydev)
+ {
+ 	int ret;
+@@ -610,9 +794,25 @@ static void bcm7xxx_28nm_remove(struct phy_device *phydev)
+ 	.resume         = bcm7xxx_config_init,				\
+ }
+ 
++#define BCM7XXX_16NM_EPHY(_oui, _name)					\
++{									\
++	.phy_id		= (_oui),					\
++	.phy_id_mask	= 0xfffffff0,					\
++	.name		= _name,					\
++	/* PHY_BASIC_FEATURES */					\
++	.flags		= PHY_IS_INTERNAL,				\
++	.probe		= bcm7xxx_28nm_probe,				\
++	.remove		= bcm7xxx_28nm_remove,				\
++	.config_init	= bcm7xxx_16nm_ephy_config_init,		\
++	.config_aneg	= genphy_config_aneg,				\
++	.read_status	= genphy_read_status,				\
++	.resume		= bcm7xxx_16nm_ephy_resume,			\
++}
++
+ static struct phy_driver bcm7xxx_driver[] = {
+ 	BCM7XXX_28NM_EPHY(PHY_ID_BCM72113, "Broadcom BCM72113"),
+ 	BCM7XXX_28NM_EPHY(PHY_ID_BCM72116, "Broadcom BCM72116"),
++	BCM7XXX_16NM_EPHY(PHY_ID_BCM72165, "Broadcom BCM72165"),
+ 	BCM7XXX_28NM_GPHY(PHY_ID_BCM7250, "Broadcom BCM7250"),
+ 	BCM7XXX_28NM_EPHY(PHY_ID_BCM7255, "Broadcom BCM7255"),
+ 	BCM7XXX_28NM_EPHY(PHY_ID_BCM7260, "Broadcom BCM7260"),
+@@ -635,6 +835,7 @@ static struct phy_driver bcm7xxx_driver[] = {
+ static struct mdio_device_id __maybe_unused bcm7xxx_tbl[] = {
+ 	{ PHY_ID_BCM72113, 0xfffffff0 },
+ 	{ PHY_ID_BCM72116, 0xfffffff0, },
++	{ PHY_ID_BCM72165, 0xfffffff0, },
+ 	{ PHY_ID_BCM7250, 0xfffffff0, },
+ 	{ PHY_ID_BCM7255, 0xfffffff0, },
+ 	{ PHY_ID_BCM7260, 0xfffffff0, },
+diff --git a/include/linux/brcmphy.h b/include/linux/brcmphy.h
+index 3308cebe1c19..07e1dfadbbdf 100644
+--- a/include/linux/brcmphy.h
++++ b/include/linux/brcmphy.h
+@@ -32,6 +32,7 @@
+ 
+ #define PHY_ID_BCM72113			0x35905310
+ #define PHY_ID_BCM72116			0x35905350
++#define PHY_ID_BCM72165			0x35905340
+ #define PHY_ID_BCM7250			0xae025280
+ #define PHY_ID_BCM7255			0xae025120
+ #define PHY_ID_BCM7260			0xae025190
 -- 
-Florian
+2.25.1
+
