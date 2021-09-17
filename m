@@ -2,165 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17DF940FE0E
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 18:42:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD7B040FE13
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 18:42:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238648AbhIQQnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 12:43:18 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:36454
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229456AbhIQQnR (ORCPT
+        id S238730AbhIQQoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 12:44:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229456AbhIQQoN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 12:43:17 -0400
-Received: from [10.172.193.212] (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id B22B93F10B;
-        Fri, 17 Sep 2021 16:41:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1631896913;
-        bh=S22coCr6Wjd8NapIAlG5oFT9F+VCIs9qkVZ9L++/fzM=;
-        h=To:Cc:From:Subject:Message-ID:Date:MIME-Version:Content-Type;
-        b=uiNbLNuZfKEoZUD5pzc5T6FQV+YxTd9nR0Id/2ISTxmI1kXQbUEG+QnYNMNDpd7mU
-         qjIujQVvnDsdvyW4H+/nhYpD+NQF6fGh6yy5lPMmv120tt1nV/GpMNPUMQS1qFLiKC
-         vO4ntgBXMmT+BznNvyJhgWQwHCBuClGiQKlt3U6hNIeleNYEkQlACIXXOxvMcde5ny
-         zHetd7jhvaF5Chi6SJk7ejshoGZX8fgJuQ9P8k1TKbICgZ2Sb0iDK9SbVEjdrvcLYi
-         6D63al46cdv/DIwRppacBpoj1VDsaoIK3+yy/CpEQxcukhBiT9NL9IUUkfceIBMMnZ
-         32znQ8ej2UOPw==
-To:     Shaohua Li <shli@fb.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-From:   Colin Ian King <colin.king@canonical.com>
-Subject: potential null pointer dereference in ip6_xmit
-Message-ID: <516b6617-ab5e-4601-55e4-0f9844f9a49e@canonical.com>
-Date:   Fri, 17 Sep 2021 17:41:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Fri, 17 Sep 2021 12:44:13 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 849BAC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 09:42:51 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id a15so12930892iot.2
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 09:42:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/MEJKdicHZC2UAgfEdwT2iHw1l7KOjJh6r2QG98JUaM=;
+        b=EylKgqeiBF29JmeKt4QPfs9VXtmF66zBxKOFN+O5j4djlZNEBAGkjtgsTg64QYotxh
+         xs2sgOfcG+DtQ8fCzLNwc7+2Y5FgjWpCZD5OX4kduKEZ40DiNSjt6k+05DLAes427b5e
+         3L/pjobz7bB88Moz+WWhb7Lwt6dOKN3RRFih2pk+ebb7ZsraYergtIbptc+SXERQFa1A
+         r1Gqf3s9LiGkA5TJduEur6qoOVKhPayQM6bsqDIl0N92BLUdL9eIbW/6l+94l6b+HuWb
+         4gHoWcFDSYLamHdSMuvmaQzKhHS0KYuaHgWfotxGQ0XA0XktFIngQrmC2GF2sd8b8O30
+         9atQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/MEJKdicHZC2UAgfEdwT2iHw1l7KOjJh6r2QG98JUaM=;
+        b=noiLq2/4i+HjBRahcrvjFYK+KPxXJoIgFI6h1f/H86r7LUChitMZtpgZCeTkjUzPJ6
+         P5EZOrS6ieIQz5qJsKhN8mDWfOnbyKN0nrdKwHmSyQTUxDJuoiHh9nTvihtGGz+4qQik
+         TcieVEkQblS3qvGCOknavJ7ejeTUnbXtGopk1Njg4vGxxGDl8YskZ2Qs+7dje42KGW/7
+         NfYUbwLBMqRHuqcWKWhjPzp/fyE/zMi49s/gAbjPCcxPHghJ8BBBL5FBPyWjfkjK3cW/
+         6bK/ZoXeJCACiC5CeAxdVkVwNI/tPGwZA6wrwXFvNjmwQ8fxzcGV7E7lz7/XyrZJeokV
+         M6Wg==
+X-Gm-Message-State: AOAM530Hrgsfir1S8oWn8nvwrbdRML4CMAw7cxIx8WjfWth6lV7OSmhq
+        8hwny4mP4x2RehCnrKDSqXMu5nnH/pFFYrN8AVDMDA==
+X-Google-Smtp-Source: ABdhPJzN842+8n6F892ufNOSC3p15tpHYWe0RFW1nxZk42/H/3g548F62A7CY00Em6U6jJeagToefnaF22LnthVLHWk=
+X-Received: by 2002:a6b:670f:: with SMTP id b15mr6164364ioc.15.1631896970647;
+ Fri, 17 Sep 2021 09:42:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210909075700.4025355-1-eranian@google.com> <20210909075700.4025355-2-eranian@google.com>
+ <20210909190342.GE4323@worktop.programming.kicks-ass.net> <878s04my3b.fsf@mpe.ellerman.id.au>
+ <875yv8ms7f.fsf@mpe.ellerman.id.au> <CABPqkBQZ48b51vh1vqafOwVK2tBqYFNFGJT2x-a39Ma0TbS=tA@mail.gmail.com>
+ <b21bf42e-377d-36d0-49c3-af1e4edf5496@linux.ibm.com> <CABPqkBQvvNQa=hb4OnYqH-f=DJiRWE+bTmv4i+gNvEdoSEHM4w@mail.gmail.com>
+ <878rzvk7h0.fsf@mpe.ellerman.id.au> <CABPqkBRrx5vnPqTEnuQOeoJxyjiszCG7EMdK35ES=rHKYUNBpQ@mail.gmail.com>
+ <874kajjs1e.fsf@mpe.ellerman.id.au>
+In-Reply-To: <874kajjs1e.fsf@mpe.ellerman.id.au>
+From:   Stephane Eranian <eranian@google.com>
+Date:   Fri, 17 Sep 2021 09:42:39 -0700
+Message-ID: <CABPqkBQ=9pev4=iF+JwB8DZ391GGAkFbtBidkFeOt2MPeC0hyg@mail.gmail.com>
+Subject: Re: [PATCH v1 01/13] perf/core: add union to struct perf_branch_entry
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Madhavan Srinivasan <maddy@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, acme@redhat.com, jolsa@redhat.com,
+        kim.phillips@amd.com, namhyung@kernel.org, irogers@google.com,
+        atrajeev@linux.vnet.ibm.com,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Sep 17, 2021 at 5:38 AM Michael Ellerman <mpe@ellerman.id.au> wrote:
+>
+> Stephane Eranian <eranian@google.com> writes:
+> > Hi,
+> >
+> > On Fri, Sep 17, 2021 at 12:05 AM Michael Ellerman <mpe@ellerman.id.au> wrote:
+> >>
+> >> Stephane Eranian <eranian@google.com> writes:
+> >> > Hi,
+> >> >
+> >> > Thanks for fixing this in the perf tool. But what about the struct
+> >> > branch_entry in the header?
+> >>
+> >> I'm not sure what you mean.
+> >>
+> >> We can't change the order of the fields in the header, without breaking
+> >> existing userspace on BE systems.
+> >>
+> > Ok, I think I had missed that. You are saying that the
+> > #ifdef (__BIG_ENDIAN_BITFIELD) vs __LITTLE_ENDIAN_BITFIELD
+> >
+> > is only added to kernel-only data structures?
+>
+> No, we *should* have used __BIG/LITTLE_ENDIAN_BITFIELD for the uapi
+> definition, but we forgot.
+>
+But are you suggesting it cannot be fixed?
 
-Static analysis with Coverity detected a potential null pointer
-deference in ip6_xmit, net/ipv6/ip6_output.c, I believe it may have been
-introduced by the following commit:
-
-commit 513674b5a2c9c7a67501506419da5c3c77ac6f08
-Author: Shaohua Li <shli@fb.com>
-Date:   Wed Dec 20 12:10:21 2017 -0800
-
-    net: reevalulate autoflowlabel setting after sysctl setting
-
-The analysis is as follows:
-
-239 /*
-240  * xmit an sk_buff (used by TCP, SCTP and DCCP)
-241  * Note : socket lock is not held for SYNACK packets, but might be
-modified
-242 * by calls to skb_set_owner_w() and ipv6_local_error(),
-243 * which are using proper atomic operations or spinlocks.
-244 */
-245 int ip6_xmit(const struct sock *sk, struct sk_buff *skb, struct
-flowi6 *fl6,
-246             __u32 mark, struct ipv6_txoptions *opt, int tclass, u32
-priority)
-247 {
-248        struct net *net = sock_net(sk);
-249        const struct ipv6_pinfo *np = inet6_sk(sk);
-250        struct in6_addr *first_hop = &fl6->daddr;
-251        struct dst_entry *dst = skb_dst(skb);
-252        struct net_device *dev = dst->dev;
-253        struct inet6_dev *idev = ip6_dst_idev(dst);
-254        unsigned int head_room;
-255        struct ipv6hdr *hdr;
-256        u8  proto = fl6->flowi6_proto;
-257        int seg_len = skb->len;
-258        int hlimit = -1;
-259        u32 mtu;
-260
-261        head_room = sizeof(struct ipv6hdr) + LL_RESERVED_SPACE(dev);
-
-   1. Condition opt, taking true branch.
-
-262        if (opt)
-263                head_room += opt->opt_nflen + opt->opt_flen;
-264
-
-   2. Condition !!(head_room > skb_headroom(skb)), taking true branch.
-
-265        if (unlikely(head_room > skb_headroom(skb))) {
-266                skb = skb_expand_head(skb, head_room);
-
-   3. Condition !skb, taking false branch.
-
-267                if (!skb) {
-268                        IP6_INC_STATS(net, idev,
-IPSTATS_MIB_OUTDISCARDS);
-269                        return -ENOBUFS;
-270                }
-271        }
-272
-
-   4. Condition opt, taking true branch.
-
-273        if (opt) {
-274                seg_len += opt->opt_nflen + opt->opt_flen;
-275
-
-   5. Condition opt->opt_flen, taking true branch.
-
-276                if (opt->opt_flen)
-277                        ipv6_push_frag_opts(skb, opt, &proto);
-278
-
-   6. Condition opt->opt_nflen, taking true branch.
-
-279                if (opt->opt_nflen)
-280                        ipv6_push_nfrag_opts(skb, opt, &proto,
-&first_hop,
-281                                             &fl6->saddr);
-282        }
-283
-284        skb_push(skb, sizeof(struct ipv6hdr));
-285        skb_reset_network_header(skb);
-286        hdr = ipv6_hdr(skb);
-287
-288        /*
-289         *      Fill in the IPv6 header
-290         */
-
-   7. Condition np, taking false branch.
-   8. var_compare_op: Comparing np to null implies that np might be null.
-
-291        if (np)
-292                hlimit = np->hop_limit;
-
-   9. Condition hlimit < 0, taking true branch.
-
-293        if (hlimit < 0)
-294                hlimit = ip6_dst_hoplimit(dst);
-295
-
-   Dereference after null check (FORWARD_NULL)10. var_deref_model:
-Passing null pointer np to ip6_autoflowlabel, which dereferences it.
-
-296        ip6_flow_hdr(hdr, tclass, ip6_make_flowlabel(net, skb,
-fl6->flowlabel,
-297                                ip6_autoflowlabel(net, np), fl6));
-298
-
-There is a null check on np on line 291, so potentially np could be null
-on the call on line 296 where a null is passed to the function
-ip6_autoflowlabel that dereferences the null np.
-
-Colin
+> >> It's annoying that the bit numbers are different between LE & BE, but I
+> >> think it's too late to change that.
+> >>
+> > I agree.
+> >
+> >> So nothing should change in the branch_entry definition in the header.
+> >>
+> >> My comment on your patch was that adding the union with val, makes it
+> >> easier to misuse the bitfields, because now the values can be accessed
+> >> via the bitfields and also via val, but when using val you have to know
+> >> that the bit numbers differ between BE/LE.
+> >>
+> > Ok, I get it now. We do not need to expose val to user. This is added
+> > for kernel code convenience only.
+>
+> Yeah. Putting the union with val in the uapi encourages userspace to
+> misuse val to bypass the bitfields, and that risks causing endian bugs.
+>
+> > But if we keep it in kernel, that may break some other rules about
+> > uapi headers.
+>
+> I don't follow what you mean there.
+>
+> We could use #ifdef __KERNEL__ in the uapi header to make the union
+> kernel-only, see below, but it's pretty gross.
+>
+>  struct perf_branch_entry {
+>         __u64   from;
+>         __u64   to;
+>  #ifdef __KERNEL__
+>         union {
+>                 __u64   val;        /* to make it easier to clear all fields */
+>                 struct {
+>  #endif
+>                         __u64   mispred:1,  /* target mispredicted */
+>                                 predicted:1,/* target predicted */
+>                                 in_tx:1,    /* in transaction */
+>                                 abort:1,    /* transaction abort */
+>                                 cycles:16,  /* cycle count to last branch */
+>                                 type:4,     /* branch type */
+>                                 reserved:40;
+>  #ifdef __KERNEL__
+>                 };
+>         };
+>  #endif
+>  };
+>
+>
+> If we just do the inline I suggested we can clear the flags in a single
+> source line, and the generated code seems fine too, eg:
+>
+> static inline void clear_perf_branch_entry_flags(struct perf_branch_entry *e)
+> {
+>         e->mispred = 0;
+>         e->predicted = 0;
+>         e->in_tx = 0;
+>         e->abort = 0;
+>         e->cycles = 0;
+>         e->type = 0;
+>         e->reserved = 0;
+> }
+>
+Ok, let's do the inline then. That looks like a cleaner solution to me
+assuming the compiler does the right thing.
