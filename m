@@ -2,200 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B02D140F21E
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 08:12:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2043140F222
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 08:13:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245233AbhIQGNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 02:13:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245156AbhIQGNm (ORCPT
+        id S245093AbhIQGOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 02:14:39 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:56630 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245143AbhIQGOh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 02:13:42 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85A09C061767
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 23:12:20 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id r26so12587967oij.2
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 23:12:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=RXWpyIk8HPftITWmSDiVWoUK1d8/KTH7AvhCt8kSl/8=;
-        b=BauSeOitD8SbRccHVJRu04wr96uzmSU31fT5KnEWpft10gn/8ooClV2lBMARroYXrE
-         RT+/4jvCIUpx7RACk55ZfLeU0TsRG/lzJTzdhohRmiSwniQeN+c2wbap3eTsV1TMmpMr
-         Rj1rEK5/kl1Cdr6Xov9QnMUw10lY++JyPnYYo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=RXWpyIk8HPftITWmSDiVWoUK1d8/KTH7AvhCt8kSl/8=;
-        b=Vy28jLHN/pOxo1OLpk4Rz6KeIf+9f1hmh9lgAwn0sG+m2jjkS6j6rueDaQsubBnKr9
-         CuDmR8XrcQOkrOpuGH76+HoM/NQxbiTqzLz65dkuy6LBv8BhzK7HwS67xF9ovXsNYUp9
-         MTAvTZD9bwrHX6vAOEcGNbum5MuMWker98imSPbeq5OWRTsMua1ecHGNX1rre1/K217f
-         /P8vb2r/VBtwLZ0kE3xKJRkqURPq1XKJLQsA/CvQihw1uqNSRCVS0Li7Rj+xRO4KZOZI
-         0rylmFaM2bN7U6OajdBdLZW34T5/OTqGmJ7qGCf9Ha6shqV6vrTNtx1IkHLT2bKyjlvT
-         rleQ==
-X-Gm-Message-State: AOAM532JTgDg1PSv6pm6OzjzKyo+GdpxkiqbHvHs7aDqQRS7rNeRNdCR
-        rQcjvxE47XwIKOygtW5j60vwu7IESA5FRdGkBVTo/w==
-X-Google-Smtp-Source: ABdhPJztAsVH9l3VsP8hJ/glqcCjU0TkUf+DBg3Y+YLGnYQf4BTStcQU7brdNxMDEJWg1er5VtLH1xtj6eSrNBYwaPU=
-X-Received: by 2002:a54:4419:: with SMTP id k25mr12299122oiw.32.1631859139507;
- Thu, 16 Sep 2021 23:12:19 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 16 Sep 2021 23:12:19 -0700
+        Fri, 17 Sep 2021 02:14:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1631859195;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=E0C70BnHkf+Xjjy8puyk2DxDQEN3l79sxqdB6zmJekE=;
+        b=JmJC1B19LS4GKHjFNuyGeRG8pEtGKCuuzIcThxRszeZlpllSOTxUUe4RzpiKK3cHLxXuq/
+        gAWcG010ZWCP/iL9cHzSjUGSwm1ihOHr0lyQa1QieBysC7v5QV4XKUQ3yTGL6+3O9M5YtP
+        8OnMlTWVd92xRkhsPSgIWewl5F1ss4g=
+Received: from EUR01-HE1-obe.outbound.protection.outlook.com
+ (mail-he1eur01lp2057.outbound.protection.outlook.com [104.47.0.57]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ de-mta-19-DphBANeBOFqbfeylBos-Ig-1; Fri, 17 Sep 2021 08:13:14 +0200
+X-MC-Unique: DphBANeBOFqbfeylBos-Ig-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fXhkYtSdvVa4wdvtljJxcynR9dYQupXOYSXT0Bm0PPrOssm3I2WzkX0vJXUrR6Es0cDBP4xIa1IQ+Ag1C5eoOLv68MbJKnd0SRLl21W9XjryTYKxUKJOCDhnEJdv5n73UaXjHLZx6XH0wWgAMv51tOqZm5si9SzmqTMjQEgtLHa3F3OL56Zo+XXsfAYVjGSvrOTHo0RGJSSNOP9G5Yi3GpqD9aaPnuVEiVirc8wCHlHqwwAyMx+tcGIUfhEV6DJaX/ssqIOhBggjiFZxa3w2f66XmWYqcvGLcwqPFaLO3FL/bVCKmkzmG9Ml8D5hPjP5lLFlKrB8gTl1Zj5CujU0Qw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=E0C70BnHkf+Xjjy8puyk2DxDQEN3l79sxqdB6zmJekE=;
+ b=M4SPYxDp6Zv9q4EjccpFIm1vr6twNv2RfCnmptwY3uzI1mBlJBl8OjMR7a+Eg113PjmtrCl9TcmyqK3RahDBbyzEp77CeXwe9d9UzhNnHYaMcT6iEhQuI4QgKQIquYIuAF0JtW9dpGPhS0Uly/q+Apg5ymzURSq8bSkjl/wC2Y4KSlLmzkIw4dIzOfeFJDEHwKyGGITbuJ5KrMyc7BdktzYcNTimWBtZKm7j9RgogjxiTB0VVjuj0TNnbHI4WKCMCh0GdWMN9CkmitqPqHkLnN5weI6y73ut4cIOP8IIpwoB9GfbFMfGUrnaNZGkeNfwP4BRyKAPqrHHXdBMgSKszA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: lists.xenproject.org; dkim=none (message not signed)
+ header.d=none;lists.xenproject.org; dmarc=none action=none
+ header.from=suse.com;
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
+ by VI1PR04MB4383.eurprd04.prod.outlook.com (2603:10a6:803:6b::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Fri, 17 Sep
+ 2021 06:13:10 +0000
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::4d37:ec64:4e90:b16b]) by VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::4d37:ec64:4e90:b16b%7]) with mapi id 15.20.4523.016; Fri, 17 Sep 2021
+ 06:13:10 +0000
+To:     Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
+From:   Jan Beulich <jbeulich@suse.com>
+Subject: [PATCH] Xen/gntdev: don't ignore kernel unmapping error
+Message-ID: <c2513395-74dc-aea3-9192-fd265aa44e35@suse.com>
+Date:   Fri, 17 Sep 2021 08:13:08 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PR2P264CA0038.FRAP264.PROD.OUTLOOK.COM
+ (2603:10a6:101:1::26) To VI1PR04MB5600.eurprd04.prod.outlook.com
+ (2603:10a6:803:e7::16)
 MIME-Version: 1.0
-In-Reply-To: <CAD=FV=XdN6SLZQ=kAe4S7Z7CjSrqnAQsj2uRiePXKFp07chVBg@mail.gmail.com>
-References: <20210914162825.v3.1.I85e46da154e3fa570442b496a0363250fff0e44e@changeid>
- <20210914162825.v3.2.Ib06997ddd73e2ac29e185f039d85cfa8e760d641@changeid>
- <CAE-0n53BXh3_6jEW5oTbPA-V=MSaN=RvqaU8uoY9GNOm-0Pv_g@mail.gmail.com>
- <CAD=FV=WKQg-fU1jaSOh3RTa5HpSAiTzt2-Sycwt59uv1WemYxg@mail.gmail.com>
- <CAE-0n539tJLLWHdL65ZU_1qOzA-RsEqGqVi-19VLHz_W5dT6VA@mail.gmail.com>
- <CAD=FV=U_FX_Rg=h+w0yzpzi7fcUCg0Thn2_nXixsCRVsYFUGHQ@mail.gmail.com>
- <CAE-0n52F6j-qfA_h76BPyMRHi7hJzm6bX8eD5jS-C+ydz=vkBA@mail.gmail.com> <CAD=FV=XdN6SLZQ=kAe4S7Z7CjSrqnAQsj2uRiePXKFp07chVBg@mail.gmail.com>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Thu, 16 Sep 2021 23:12:18 -0700
-Message-ID: <CAE-0n52vqjGgdNMFBjW=7vo5B3wZcbnggpzQS05vb7Rr3dO8Vw@mail.gmail.com>
-Subject: Re: [PATCH v3 2/3] drm/bridge: parade-ps8640: Use regmap APIs
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Philip Chen <philipchen@chromium.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.156.60.236] (37.24.206.209) by PR2P264CA0038.FRAP264.PROD.OUTLOOK.COM (2603:10a6:101:1::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.16 via Frontend Transport; Fri, 17 Sep 2021 06:13:10 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 714bbcbd-c616-4fa3-49e1-08d979a2396f
+X-MS-TrafficTypeDiagnostic: VI1PR04MB4383:
+X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB4383156B10C9FAF1D21EDCB0B3DD9@VI1PR04MB4383.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1303;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7x/6Tbo6yHVA/UJL7sQ/DuSLRGvDWU4w6O0UPchq73AiHCJpGTUPNzxBNcSh5bBzbP3nwGV5NRx95QpJDYtKm/EoEz54XtfeJGTiL+ZNJHsFUi60do0gQzCqWT8/rVI1gCqPCZzZ1yXG/AHI/C9Ey8FA/RIXajBjfWULZZ2HETqRemw2z9wdF/3GoZWrGqbkPEmS1NF43N4xOdmLBsV2M6hKKCPvam432y1rupa6QseviGyLrMxtbcjHYyqGO2TqmHoskVgeFdMhJ78zzYBlhJ4KN8+VH/Sr9uIaBeaOOMqqO5i2vpPh6s/UQTvMI0RBMJ6qx6lYenGWDM+5suJ73LJiVhITWMgwmNc3zoC0kc2Z0KKK0xCu0AZ9u79lfVpdyKfmzHd9yzI19zuAzWTH2TrPeisK53WN9tCqZuY5f535I81WB0P7O+ueTOoCHoxlZqjDCGyyY3qQaECXudAKYHk+WzVtQZZCkgucFQ4pk7goKnEIZ6/0mx4/iBRATSAMU1KQlj6zub4l4aWMFu3TeowJpGMnDcepspWzDTb8V4ZS39FDiDLRgvC7yCgmpU94j1R8rZoS4B8r7qJOsft5RN0xJpA1pVc1q2t+X+C+S31kzaImYGccDQFvi9WfazP2n71NscM7S8LTTV6ZPx/UtBbXvI1OSIKxShcw7BrLDodumrujHyxXDkATq8gWtuOkpknMhuizRlxGrZjmJSMaeDvaQvidnulSafxbBu0YldI=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(366004)(39860400002)(136003)(396003)(38100700002)(16576012)(6486002)(54906003)(8676002)(31696002)(66476007)(66556008)(66946007)(2906002)(5660300002)(478600001)(8936002)(26005)(186003)(83380400001)(2616005)(4326008)(316002)(110136005)(956004)(36756003)(86362001)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ck1XY05kbmtIUzZsc2xrZHdBMlVBV0hRNEdPQkhoVW05R25kN0R2Qm5WdG1t?=
+ =?utf-8?B?TU0vY2JPRldXRTZPWTVvWlZtNFBlcWZ5bXpjWVNzZGpGTXEwazh6MG0yWGZa?=
+ =?utf-8?B?eEIxdGlNcWxkd3ovYTZreVkrVFBiR1BCa1c5ckNVYThVcUViRHprTjh1WFQv?=
+ =?utf-8?B?MVRDQ2hhd3JiTlp5dTFUenB5b0FsZTdjY3NXUEdFeGtaZEF3WGVHNlBaNHoy?=
+ =?utf-8?B?L1FRVXpLUzM5YnRTdzVlVzV1dnpkSXI5Q0JwSlpLdWI1N3Z2TXJwdHh3Mnl2?=
+ =?utf-8?B?TGxIOWV2MnloY0NSWVBsVDBBd2VTMnNVMFRGQ2IrTkZDNzhMMHNRUVVOYlVt?=
+ =?utf-8?B?ZlI5S1FGdnByM1VjS3ZWREtmZW5ES05kUUdjWVZ1eE1VR005SFV6ckNISlpa?=
+ =?utf-8?B?VFk5M1lvRzFWblV5cktHbjdSOFVhbzVvd0M2ZElTSDkwUENMTS9waHZBSnc4?=
+ =?utf-8?B?MENSaGtvK0dRUTAyMWNsTHlvcjlYMU9RRFhJbWNpcUdUekNRc05mdzFaUHBU?=
+ =?utf-8?B?a2xndTlxNXZhOWdjOHBWL3RDRng4ek5XVmZyb2w1OXR0RHcxSlBRNGlDZGlh?=
+ =?utf-8?B?MUZLSG40Z2o3KzFyMTVJWnZPNjdRMCtJS1BWTlVzUmNZdlgydndRb3hCSWEv?=
+ =?utf-8?B?bjFCekE3MmtLL1R0SzB0UVdXZXlaRElQbGk3dnFNdmhvdHBZaUdKZC9nOUZB?=
+ =?utf-8?B?b1Q2UlY3Q3pUN1RaUGlycjVPUVZ0Q0hXSDVad0JULzBldGZOSWhMUjhBL2V3?=
+ =?utf-8?B?SE84WkRiWU1mdlV3MFVKMlRiN0pGQ0dzNVVBcHFwTWtNUWQrVzV6d3hIUkNP?=
+ =?utf-8?B?Tmd2eHA1ODV0R1orMERuUUcwNmg3bmRCalp2alVRMGZrWS8yTGVHWk5kL014?=
+ =?utf-8?B?UUNIZjd2dGh1dWpwZ2plc1ZTZWh6NkVXTXhLZGFGMXNTK0pjNEFja0R6ZDF5?=
+ =?utf-8?B?UkV3Sk92OFZoWnFZTzVHRzFkaVFDQVdJblRXcXhCVi9VbFU0dmkzSy9tRUQ0?=
+ =?utf-8?B?ZlhwQlVjSWlTRGdxS2JUMkRqNHR5WHdsdmxESUhLQTJTN0gzVEQ3V2VhQWFJ?=
+ =?utf-8?B?TTFyV1NySXc1RDhXcTFSbEZWazg3Q3ZhQ3FTVHJ3T1N0bithVDQzY2dqOXlR?=
+ =?utf-8?B?M2EvWitBc3RUR3BGc3VUazVCR28yNkhyaW5wazNlQTkvTEExcmtWWFhOUk1w?=
+ =?utf-8?B?TzJYQmJvTDZ4M2NEcVNoUHFXVm1ERnJDZ2JhSmRqdWtKMUFQU25IKzNNcXg3?=
+ =?utf-8?B?cFNsUjdYTUNZNElJQkxmK3BtckNFWDhucjlaRWRZUHBMUGdBUnREeHBKd0tR?=
+ =?utf-8?B?Q1RQYlpnUlRTcXpDMFBoYjNoaFFQVG5LOWIvcmE0QmdoLzVvdkhOZDR2d3FQ?=
+ =?utf-8?B?dGYyWC92WGl5aDFDYnB3c2lhT1h6d0MzK0EyMlVTa0JIZ3pJSTRYcVZPZlI2?=
+ =?utf-8?B?L28yR0F0Q3lzcUFpK1BEc2NBTTRGdE9CK2p1bkU0bXZOY2pZUzl3ZHlTYnhw?=
+ =?utf-8?B?Sll1akp6bzZpTmZyY0hXYWptazlXTmFIRmpBUzZYcm4veElDd3VxMEJESGgv?=
+ =?utf-8?B?b1lOTEQzRjR0MDljdjEybGk0a2RQN0x6c3dFbjFlelZYRDk3bXhuYWlIYUdS?=
+ =?utf-8?B?UVJONnorYmpNeTIxVFFJRi9NUHpSbERhR1BMTStMenAxV01IbklPdFJmVUNl?=
+ =?utf-8?B?RGc3RVpadjFKbmE4TUlOZTJMNGhtbUNqQ0tCa3lUQ3RSWDJ1R3JLOWxGWk5V?=
+ =?utf-8?Q?I9bIqo8XJ+Yny+LHjPUrdt9ukpIjf6bh+Iomj4v?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 714bbcbd-c616-4fa3-49e1-08d979a2396f
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Sep 2021 06:13:10.6572
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: G+bVECsj+i/F5j9JH5o2MtArGakmdG/IdvAG0m/gHqbZbYZPIIann4GG9yNWFWPUwjuYljFlMvg2wgYJ5n/tcw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4383
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Doug Anderson (2021-09-16 16:21:12)
-> Hi,
->
-> On Thu, Sep 16, 2021 at 3:17 PM Stephen Boyd <swboyd@chromium.org> wrote:
-> >
-> > TL;DR: Please try to reduce these error messages in drivers and
-> > consolidate them into subsystems so that drivers stay simple.
-> >
-> > Quoting Doug Anderson (2021-09-15 09:41:39)
-> > > Hi,
-> > >
-> > > On Tue, Sep 14, 2021 at 7:50 PM Stephen Boyd <swboyd@chromium.org> wrote:
-> > > >
-> > > >
-> > > > I'd rather see any sort of error message in getter APIs be pushed into
-> > > > the callee so that we reduce the text size of the kernel by having one
-> > > > message instead of hundreds/thousands about "failure to get something".
-> > > > As far as I can tell this API is designed to skip printing anything when
-> > > > EPROBE_DEFER is returned, and only print something when it isn't that
-> > > > particular error code. The other benefit of this API is it sets the
-> > > > deferred reason in debugfs which is nice to know why some device failed
-> > > > to probe. Of course now with fw_devlink that almost never triggers so
-> > > > the feature is becoming useless.
-> > >
-> > > I guess we need to split this apart into two issues. One (1) is
-> > > whether we should be printing errors like this in probe() and the
-> > > other (2) is the use of dev_err_probe() for cases where err could
-> > > never be -EPROBE_DEFER.
-> > >
-> > > So the argument about reducing the text size for thousands of slightly
-> > > different errors is all about (1), right? In other words, you'd be
-> > > equally opposed to a change that added a normal error print with
-> > > dev_err(), right? IMO, this is a fair debate to have and it comes down
-> > > to a choice that has pros and cons. Yes the error messages are not
-> > > needed in the normal case and yes they bloat the kernel size, but when
-> > > something inevitably goes wrong then you have a way to track it down
-> > > instead of trying to guess or having to recompile the code to add
-> > > prints everywhere. Often this can give you a quick clue about a
-> > > missing Kconfig or a wrongly coded device tree file without tons of
-> > > time adding prints and recompiling code. That seems like it's worth
-> > > something...
-> >
-> > Agreed. dev_err_probe() does that by putting that into the deferred
-> > reason debugfs file. I'm saying that drivers shouldn't really be using
-> > this API unless they're doing something exotic. The subsystems that are
-> > implementing the 'get' operation that may defer should use this function
-> > and then drivers should just return the error value to driver core so
-> > that we can consolidate error messages and shrink the kernel size.
-> >
-> > Maybe we can look for the defer reason in call_driver_probe() and print
-> > a warning message if the string is set. Right now -EPROBE_DEFER is
-> > handled but it's a dev_dbg() print that probably nobody enables and it
-> > doesn't print the reason string.
->
-> Actually, in recent versions of the kernel it stashes the reason too.
-> I think there's a debugfs file "devices_deferred"
+While working on XSA-361 and its follow-ups, I failed to spot another
+place where the kernel mapping part of an operation was not treated the
+same as the user space part. Detect and propagate errors and add a 2nd
+pr_debug().
 
-Yep that's what I meant by "putting that into the deferred reason
-debugfs file" above.
+Signed-off-by: Jan Beulich <jbeulich@suse.com>
+---
+It is of course questionable whether zapping handles even upon failure
+is the best course of action. Otoh unmapping shouldn't normally fail
+unless there's a bug elsewhere (which is how I came to notice this
+discrepancy).
 
-> > This seems to imply that it's all about EPROBE_DEFER. I'm just
-> > reconstructing what I read from kernel-doc. If the intent is to use it
-> > outside of probe defer, then please update the documentation to
-> > alleviate confusion.
->
-> Meh. Yeah, it talks a lot about -EPROBE_DEFER, but it doesn't say it's
-> only for that.
->
-> Sure, I'll post a patch.
->
-> https://lore.kernel.org/r/20210916161931.1.I32bea713bd6c6fb419a24da73686145742b6c117@changeid
+--- a/drivers/xen/gntdev.c
++++ b/drivers/xen/gntdev.c
+@@ -396,6 +396,14 @@ static int __unmap_grant_pages(struct gn
+ 			map->unmap_ops[offset+i].handle,
+ 			map->unmap_ops[offset+i].status);
+ 		map->unmap_ops[offset+i].handle = INVALID_GRANT_HANDLE;
++		if (use_ptemod) {
++			if (map->kunmap_ops[offset+i].status)
++				err = -EINVAL;
++			pr_debug("kunmap handle=%u st=%d\n",
++				 map->kunmap_ops[offset+i].handle,
++				 map->kunmap_ops[offset+i].status);
++			map->kunmap_ops[offset+i].handle = INVALID_GRANT_HANDLE;
++		}
+ 	}
+ 	return err;
+ }
 
-Cool thanks.
-
->
->
-> > > In the case of devm_regmap_init_i2c(), the driver could be fine but
-> > > you might be trying to instantiate it on a system whose i2c bus lacks
-> > > the needed functionality. That's not a bug in the bridge driver but an
-> > > error in system integration. Yeah, after bringup of the new system you
-> > > probably don't need the error, but it will be useful during people's
-> > > bringups year after year.
-> > >
-> >
-> > The point I'm trying to make is that these error messages in probe
-> > almost never get printed after the driver is brought up on the hardware
-> > that starts shipping out to non-kernel developers. Of course they happen
-> > when kernel devs are enabling new hardware year after year on the same
-> > tried and tested driver. They're worthwhile messages to have to make our
-> > lives easier at figuring out some misconfiguration, etc. The problem is
-> > they lead to bloat once the bringup/configuration phase is over.
-> >
-> > At one point we directed driver authors at dev_dbg() for these prints so
-> > that the strings would be removed from the kernel image if debugging
-> > wasn't enabled. It looks like dev_err_probe() goes in the opposite
-> > direction by printing an error message and passing the string to an
-> > exported function, so dev_dbg() won't reduce the image size. Ugh!
->
-> So maybe the key here is that "CONFIG_PRINTK=n" is not the same as
-> "CONFIG_I_THINK_PROBE_ERRORS_ARE_BLOAT" and it's not just that one has
-> a more flippant name than the other. I think your argument about the
-> fact that these errors almost never come up in practice is actually
-> true for pretty much _all_ probe errors, isn't it? So if you wanted to
-> keep non-probe errors in your system (keep PRINTK=y) and just do away
-> with these bloat-y probe errors then dev_err_probe() could really be
-> the key and there'd be a big benefit for using for all these errors
-> during probe, not just ones that have a chance of deferring. ...and
-> yes, you could make this config do something fancy like do a stack
-> dump or print the return address if you actually hit one of these
-> errors once you've thrown away the string.
-
-Yes, but it's also just as important to push similar messages, i.e. "I
-failed to get some resource", into the API that hands resources out so
-that bloat is minimized further and drivers are kept simple.
-
->
-> I also wouldn't necessarily agree that dev_dbg() was an amazing fit
-> for these error messages. They truly were error-level things that were
-> happening. These are things that are causing the probe to abort, not
-> just extra spammy debug info. Calling them "error" messages rather
-> than "debug" messages seems better...
->
-
-Agreed. When all we had was dev_dbg() it was the best option to getting
-rid of these types of driver development printks.
