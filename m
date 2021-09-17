@@ -2,173 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA8D740EEB6
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 03:25:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8801A40EEB8
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 03:28:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242196AbhIQB1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 21:27:13 -0400
-Received: from mail-eopbgr1300139.outbound.protection.outlook.com ([40.107.130.139]:26880
-        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232222AbhIQB1M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 21:27:12 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MCVBCtAT4e63nTZYF8PfdG5x0lYF//4Q6lP3PLJ5OXVUyiQ4HaNIrZDc2AuPavRAPZp99AtIlDesiqY76lFWl8ic/v26+CaxQUKYtf2vA7nkBVN5Xt79De+bdz4jlHhNfqFfIlZlLGNZAR593YHvaklxVbuzfJYRVvxa0kScm1FZfHiSzAcAsWWB4jm51mux3AtpRAxp7uWbsZs9k3WzLUg4Tr3AZ1Ufm6SZzA3TKVfgIb+DWMzOhZJlrln0vvoZG1lEjULA/199fkj4gQOcd2NecOFf/qF0T3aAoOsksw4WyTwhtzEeEP/QQM/eMCIllPKH4+lO5BbGgJNok+9+Kw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=yj2FEsHV4XOpfKH2C5TL0/1DSyezYKrwKe7kbitn54U=;
- b=lUp3iPZgCedCI6v4qrp8PvMEdT7xP0xDoeokZPgR2XBF/rJcE52cVITXh9SlcaNbP+ubV3r55UKN94m0bhogf0H/ZUu59X6Tp6eymQiM0D+A8Hxdeb0B3m7QvU86gdBHRxmG2kBp0E1f/q3pcZ+w8J38mm29GERURpBKK9q9BVw1KtVVs+t/ZKJAliFcQICmFwjODzv1V1fWvMleT3nKpCcjKtuRKl/j22mcA7ZoSPgJ5ehZqN6m0PPL7Sjt6JLxICjKqE66nANB4O8H7Oi04ald7Hu36SkwSnyxZxr7JEvSHP6UcoxdR9R8Kl3hVuaf/6U1G9VslC/KwXZ/xZOi7Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
- s=selector2-vivo0-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yj2FEsHV4XOpfKH2C5TL0/1DSyezYKrwKe7kbitn54U=;
- b=C7NRioq2+MoBgot+tvYBVNkzvrGvrk5CWtPxl9YVF1vG0nTtEjfvMZPjK8HpwBDJhhnzRtgQYT7hwmVvUmk5vU/KJk2+0L9CHaPWJk1l3j/r6NP0MFUy+7xGCqF5uD7dqETpfmjJbh+ow5v523IVaKIv+tp3/DixBVdwAzjf1dQ=
-Authentication-Results: synopsys.com; dkim=none (message not signed)
- header.d=none;synopsys.com; dmarc=none action=none header.from=vivo.com;
-Received: from SL2PR06MB3082.apcprd06.prod.outlook.com (2603:1096:100:37::17)
- by SL2PR06MB3180.apcprd06.prod.outlook.com (2603:1096:100:34::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Fri, 17 Sep
- 2021 01:25:46 +0000
-Received: from SL2PR06MB3082.apcprd06.prod.outlook.com
- ([fe80::4c9b:b71f:fb67:6414]) by SL2PR06MB3082.apcprd06.prod.outlook.com
- ([fe80::4c9b:b71f:fb67:6414%6]) with mapi id 15.20.4523.016; Fri, 17 Sep 2021
- 01:25:45 +0000
-From:   Qing Wang <wangqing@vivo.com>
-To:     Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Wang Qing <wangqing@vivo.com>
-Subject: [PATCH] dma: dw-edma-pcie: switch from 'pci_' to 'dma_' API
-Date:   Thu, 16 Sep 2021 18:24:56 -0700
-Message-Id: <1631841897-7506-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-Content-Type: text/plain
-X-ClientProxiedBy: HK2PR06CA0002.apcprd06.prod.outlook.com
- (2603:1096:202:2e::14) To SL2PR06MB3082.apcprd06.prod.outlook.com
- (2603:1096:100:37::17)
+        id S242219AbhIQBaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 21:30:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232222AbhIQBaH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Sep 2021 21:30:07 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE7EDC061574;
+        Thu, 16 Sep 2021 18:28:45 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id c1so4709769pfp.10;
+        Thu, 16 Sep 2021 18:28:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=IW326X16nDke3bjh48Gr8eo8fY7bb4ZE8FAMGjGxs2s=;
+        b=ICinTdi/QwxbfCYhYmgNtQqmHQ8reNEBNLl+qtK82WbzVYplwA2Z5IeVymbYkwdYOf
+         KvgFk2LbHa7gpq6+l/+3a5QOae5RMYLcEX+4zZ+EvbobSDXPgXCUD/FfmpOQplpAnkNO
+         cjQoJgsqPU8XfN8S0ypbT+BvXQL64kACjZ8kJfDXheFIINSq+LuvG0OpES/rSkb4u32W
+         T+0R+rPxKLdKOdzTAiXkYgSq8Mxcf6noMrpQfPZ5OaPwxI5OAYAWd99mLiGAlgObj12Z
+         MeYNVtsSaVQs09aWT6BIMoL+aDBD1xIkaVpTZ4Pyy7qBGf7IxRpeuZ7FFHjtIMYaLNMy
+         01bg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=IW326X16nDke3bjh48Gr8eo8fY7bb4ZE8FAMGjGxs2s=;
+        b=38xNoyN7tT8qH9aI6O4wII4f494GQpg4aUb7covELie4JKPkGayhhfdKte5ZrSZubc
+         cXM3GsLYoBVMiLeThFofeCNGOZMsmD/HXKzdNFt+B1E75IjkfsY93p+tlK3dBM87mozT
+         SH4VCz42je+VHiTVcUOSYoJbeyGU9VRWbH8PRtPg+5matEJT5LHM3BC9TXjxSlP93t0a
+         a5aDnvg9yP0u+FxUsc0Lu2STjRBboJmCfPvp7mcuP/+/9D9tcsVgphdtU5rQVH/WppF9
+         uIvZ7XU2x0Cz0sfhPXBjbw50GtJVgRTnmuqJDD8Oi08s3haKdam0+bCmjkb+gWtgkfwL
+         rVnQ==
+X-Gm-Message-State: AOAM530wfGLtuaXLWHQfuLR2EuE1XiFzwyDntT5focMAXN78yXYXixEW
+        6LifJAjUcNFtq/dBeKyZstGFfDFZTvJxvM5WoPWl1g29V3XrQQQ=
+X-Google-Smtp-Source: ABdhPJyTKE8KBatvp6pe8Zomn5+TJgE8wNyX6n7usym5uqNknPVe0LjKwYQ0SfhrIFA6WqZMKvDx+BOSLQzMWuqpEs0=
+X-Received: by 2002:a63:36c4:: with SMTP id d187mr7567715pga.205.1631842125213;
+ Thu, 16 Sep 2021 18:28:45 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ubuntu.localdomain (218.213.202.189) by HK2PR06CA0002.apcprd06.prod.outlook.com (2603:1096:202:2e::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.4523.14 via Frontend Transport; Fri, 17 Sep 2021 01:25:44 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3fccb49e-6a2c-48ad-7f8c-08d9797a1284
-X-MS-TrafficTypeDiagnostic: SL2PR06MB3180:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SL2PR06MB3180B19099B6B1823D70144CBDDD9@SL2PR06MB3180.apcprd06.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7nxI1VurFFw3wWUjg6m0cMxae71cpMSvppthb3n8c4fDQa7wHul5o35HFm+OqXaXwDcQsfF5cKf7+yDEd+Z4I53jLgIwPa9S/RTnJHAhVxOW6+3PqxU2mxgYN8fF77or9Ew18yDfoKhNvKwj73iWP/QOL/M0Ru3mwgtICNvEGpe9ucdvAFx8eO050Rg/ZgzZLPq2StgZRrVtAqXA0tlTZgRfHlfjrRsYXvP6ZbkSw3+sD/xJmar/qLM0edj5lgGgw31tKsoWI0VhJFGaNUB6pTZU1vq+GsUcahcA/J2CSQ/SE5gCpvUhzXdh11EY1r/Oyc5bm/UbEl2xqVQWZIBX+UJ9Pk2UhqrwZCn4vPshBDhLbIAiKRqVaowU1XPV9veLl4buavvyVFnO+WlXYyrzbnYPKdD8f0qcDYf22wViyXw4m+OU3j8XuNeks9VF8QYJwoSlFvSQZohYbfK6yJ5kLSVIsXbf9lDVyQmVJc6zOXviBfCvVw6UKLTsJh/UT3qaQ6d9rF0sGzLUwb+C8m4WrXlp0+rCzNpDiuHsMKrHMhTtw7Gz4IaFViA/x17mmVgZIdw6+IHymSMFThrf4xWrlafituAifjMcTdn8CnYyj9Nyf3Q3TYki6B9gp9ZOQLfdLfvhbU29Uq37ZVvy1nQqD/7/M+Y+o6qwUuSvtHx9W4IFqkamWrwL04n4rpMe3YyH2+r3zigQDRSq/4s2cPy13PVSB4Xje+k0by2xMpKmVuBKbnq2Tga6rWeHsObrHdniHKylYHDnExO840mR7xpjkA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SL2PR06MB3082.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(366004)(396003)(376002)(39860400002)(4326008)(107886003)(6512007)(36756003)(86362001)(38100700002)(66476007)(66556008)(66946007)(6666004)(6506007)(38350700002)(6486002)(83380400001)(2906002)(5660300002)(956004)(966005)(8936002)(186003)(2616005)(316002)(110136005)(26005)(478600001)(52116002)(8676002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?9XjDKrrlDfGXefrxKs05rmRZW5EvN44lybJdT9JV/3R2RJiIL6LTYGo0uVTZ?=
- =?us-ascii?Q?LgyY2gpDGsSbsf0AxsRQoT2Wck3ZhXRmkOnVMqT0m5koeWqC+UDDUxtsrjaG?=
- =?us-ascii?Q?21b/GQ9KXLF8VXhCvl8NX92EFzmdKSiMX/Q8NLUTMfFbLy7jmtkw27Xchi5C?=
- =?us-ascii?Q?ePrIys2iFL7XrtKWWIwxFLFRFTUMXwWoT4vgja7eg4jzc5WRbgPmIqJKxZfH?=
- =?us-ascii?Q?S5JJiX3iv0HlXsvNoAUEpvugvsuc2cpFmKn/BjOSHkXAmBkEIrgxinVakfiw?=
- =?us-ascii?Q?cOYj2vZVRDNDT+7CGbeA39lS59Dp79cj/Sm3YXPjIJPb7UTMW8YS4H6a91bi?=
- =?us-ascii?Q?N10afIAKFMB1B//VRDEAorHt6tijLSF01M18U3RaGcPxVkq+3LJIEM6njN0u?=
- =?us-ascii?Q?RrqcPlVLNqXyLOpPP1wLeKSO+vPrD6cEVgrNH7OKK6bKEQq8TAzTW3Tw2pr1?=
- =?us-ascii?Q?RJP57emb7OvicLhwRzZss4mKNocd/eb4me2/okQ0NrZtF4gycMcMF6PNE5Pt?=
- =?us-ascii?Q?DMaZ1ApYeoKjCVv6/5mVFjhOumqECQeb2UgdLC3lrnrrJa5aPw2rzHK7nVD2?=
- =?us-ascii?Q?ShjcPmZsl6Cj5UO8OysXGvSKlyOsYotLzV/BAFhJn+E/A7YnSCbF7j+sCOgg?=
- =?us-ascii?Q?wNqNPi5psEGda5Xih8czbiWfKV3yNeo+kI1OBW6nUDOX+gor3hSbXY/0y53W?=
- =?us-ascii?Q?cYY+ttilCdPYhtThqwoUAwHk4vmQ8KlBSZQ6+tTjElzmrfVT613Hyj7gkvmG?=
- =?us-ascii?Q?0LAYJ8Ehi4DB5KTp/gBvBnaxDjtZ52GOlOAGLRazwHYcOtBfvROObuqw05h9?=
- =?us-ascii?Q?Jqv9qkgPyjr+pHkDnH6s4PuZbk6tHieqj84MBWrjUhk1ykAZ6A+1r3gntU0L?=
- =?us-ascii?Q?4yxu8/2jNfRXv7glSQJ++0qJGZeuJgNqDn39cRt3cRv8kv2KQHPorIDdlo0l?=
- =?us-ascii?Q?71uqDdKjJH1NNPGrCQ8nUfbl0SVsz7Drg9jh8EC1KiuR8tZPv9ePIZLEq1Yu?=
- =?us-ascii?Q?WtR+dNrFmxZfkpZB12exumgWW/3moavrqdE6nBM2ef2MVVSkdgdgHR4njQij?=
- =?us-ascii?Q?O5i3tqaE/tU1I1Qp5nwKNrklJXMUjvoIZI5yR9d8Pw0u8z+EgRhZ2lnXLDz+?=
- =?us-ascii?Q?MPcF2WQTFzBCn39agNh5JoH8Kac+Zg12hCVGmWJY7bQUasdHwFOgTa8Mw092?=
- =?us-ascii?Q?pPvsmXDdAWS2zOQs7H+VTGWIxC5LNc//uMPxQOwpWYFQieald348pfU2d+++?=
- =?us-ascii?Q?2XoDkIiSZngp6SYGPooJEmcDgNL6I5Nki6ImU+Mfi6k5xQuueyJsldx7BpSf?=
- =?us-ascii?Q?lZVNWE2HuziRLt4czrRhhxbv?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3fccb49e-6a2c-48ad-7f8c-08d9797a1284
-X-MS-Exchange-CrossTenant-AuthSource: SL2PR06MB3082.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Sep 2021 01:25:45.7967
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Ky4rMdSwdanDHCdrSGW/KnjyHLxkc+CTqefYik4nUWiFhl9uSpRDVt7yk3dZSTjxLkXJTsThU48t682LXilVdw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SL2PR06MB3180
+From:   Hao Sun <sunhao.th@gmail.com>
+Date:   Fri, 17 Sep 2021 09:28:34 +0800
+Message-ID: <CACkBjsYzTQe2LB6WohxYqaFse8+7sovDh87K0ewKa0vrP9StOw@mail.gmail.com>
+Subject: WARNING in loop_control_ioctl
+To:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Qing <wangqing@vivo.com>
+Hello,
 
-The wrappers in include/linux/pci-dma-compat.h should go away.
+When using Healer to fuzz the latest Linux kernel, the following crash
+was triggered.
 
-The patch has been generated with the coccinelle script below.
-expression e1, e2;
-@@
--    pci_set_dma_mask(e1, e2)
-+    dma_set_mask(&e1->dev, e2)
+HEAD commit: ff1ffd71d5f0 Merge tag 'hyperv-fixes-signed-20210915
+git tree: upstream
+console output:
+https://drive.google.com/file/d/1cQP1i5Q3j9Pl_AhjWS9smo4hPdvT0psG/view?usp=sharing
+kernel config: https://drive.google.com/file/d/1zXpDhs-IdE7tX17B7MhaYP0VGUfP6m9B/view?usp=sharing
+C reproducer: https://drive.google.com/file/d/1MScGjVksMYc8ro56o0h26qEgiFMUYhB0/view?usp=sharing
+Syzlang reproducer:
+https://drive.google.com/file/d/10DAS3f9gacZwFY_rWLjNvRt2FqGjODRd/view?usp=sharing
 
-@@
-expression e1, e2;
-@@
--    pci_set_consistent_dma_mask(e1, e2)
-+    dma_set_coherent_mask(&e1->dev, e2)
+If you fix this issue, please add the following tag to the commit:
+Reported-by: Hao Sun <sunhao.th@gmail.com>
 
-While at it, some 'dma_set_mask()/dma_set_coherent_mask()' have been
-updated to a much less verbose 'dma_set_mask_and_coherent()'.
-
-This type of patches has been going on for a long time, I plan to 
-clean it up in the near future. If needed, see post from 
-Christoph Hellwig on the kernel-janitors ML:
-https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
-
-Signed-off-by: Wang Qing <wangqing@vivo.com>
----
- drivers/dma/dw-edma/dw-edma-pcie.c | 17 ++++-------------
- 1 file changed, 4 insertions(+), 13 deletions(-)
- mode change 100644 => 100755 drivers/dma/dw-edma/dw-edma-pcie.c
-
-diff --git a/drivers/dma/dw-edma/dw-edma-pcie.c b/drivers/dma/dw-edma/dw-edma-pcie.c
-index 44f6e09..198f6cd
---- a/drivers/dma/dw-edma/dw-edma-pcie.c
-+++ b/drivers/dma/dw-edma/dw-edma-pcie.c
-@@ -186,27 +186,18 @@ static int dw_edma_pcie_probe(struct pci_dev *pdev,
- 	pci_set_master(pdev);
- 
- 	/* DMA configuration */
--	err = pci_set_dma_mask(pdev, DMA_BIT_MASK(64));
-+	err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
- 	if (!err) {
--		err = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64));
--		if (err) {
--			pci_err(pdev, "consistent DMA mask 64 set failed\n");
--			return err;
--		}
-+		pci_err(pdev, "DMA mask 64 set failed\n");
-+		return err;
- 	} else {
- 		pci_err(pdev, "DMA mask 64 set failed\n");
- 
--		err = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
-+		err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
- 		if (err) {
- 			pci_err(pdev, "DMA mask 32 set failed\n");
- 			return err;
- 		}
--
--		err = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
--		if (err) {
--			pci_err(pdev, "consistent DMA mask 32 set failed\n");
--			return err;
--		}
- 	}
- 
- 	/* Data structure allocation */
--- 
-2.7.4
-
+FAULT_INJECTION: forcing a failure.
+name failslab, interval 1, probability 0, space 0, times 1
+CPU: 3 PID: 7256 Comm: syz-executor Not tainted 5.15.0-rc1+ #18
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x8d/0xcf lib/dump_stack.c:106
+ fail_dump lib/fault-inject.c:52 [inline]
+ should_fail+0x13c/0x160 lib/fault-inject.c:146
+ should_failslab+0x5/0x10 mm/slab_common.c:1328
+ slab_pre_alloc_hook.constprop.99+0x4e/0xc0 mm/slab.h:494
+ slab_alloc_node mm/slub.c:3120 [inline]
+ slab_alloc mm/slub.c:3214 [inline]
+ kmem_cache_alloc+0x44/0x280 mm/slub.c:3219
+ kmem_cache_zalloc include/linux/slab.h:711 [inline]
+ __kernfs_new_node+0x68/0x350 fs/kernfs/dir.c:585
+ kernfs_new_node+0x5a/0x90 fs/kernfs/dir.c:647
+ __kernfs_create_file+0x56/0x150 fs/kernfs/file.c:985
+ sysfs_add_file_mode_ns+0xe6/0x290 fs/sysfs/file.c:317
+ create_files fs/sysfs/group.c:64 [inline]
+ internal_create_group+0x186/0x4e0 fs/sysfs/group.c:149
+ internal_create_groups.part.4+0x4d/0xb0 fs/sysfs/group.c:189
+ internal_create_groups fs/sysfs/group.c:185 [inline]
+ sysfs_create_groups+0x28/0x40 fs/sysfs/group.c:215
+ device_add_groups drivers/base/core.c:2438 [inline]
+ device_add_attrs drivers/base/core.c:2592 [inline]
+ device_add+0x4c3/0xc60 drivers/base/core.c:3310
+ device_add_disk+0x178/0x4f0 block/genhd.c:446
+ add_disk include/linux/genhd.h:221 [inline]
+ loop_add+0x27c/0x3a0 drivers/block/loop.c:2397
+ loop_control_ioctl+0x72/0x290 drivers/block/loop.c:2512
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:874 [inline]
+ __se_sys_ioctl fs/ioctl.c:860 [inline]
+ __x64_sys_ioctl+0xb6/0x100 fs/ioctl.c:860
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x34/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x46ae99
+Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48
+89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
+01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f91b3049c48 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 000000000078c0a0 RCX: 000000000046ae99
+RDX: 0000000000000000 RSI: 0000000000004c80 RDI: 0000000000000003
+RBP: 00007f91b3049c80 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000042
+R13: 0000000000000000 R14: 000000000078c0a0 R15: 00007ffeef5d14f0
+------------[ cut here ]------------
+WARNING: CPU: 3 PID: 7256 at block/genhd.c:537
+device_add_disk+0x237/0x4f0 block/genhd.c:537
+Modules linked in:
+CPU: 3 PID: 7256 Comm: syz-executor Not tainted 5.15.0-rc1+ #18
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+RIP: 0010:device_add_disk+0x237/0x4f0 block/genhd.c:537
+Code: 00 0f 85 e7 fe ff ff e9 ce fe ff ff e8 12 6e 15 ff 48 89 df e8
+4a 35 01 00 81 3b 03 01 00 00 0f 84 b5 fe ff ff e8 f9 6d 15 ff <0f> 0b
+bd 01 00 00 00 e9 c5 fe ff ff e8 e8 6d 15 ff 0f 0b bd ea ff
+RSP: 0018:ffffc90003e67e70 EFLAGS: 00010216
+RAX: 0000000000023106 RBX: ffff8880192b0400 RCX: ffffc90001241000
+RDX: 0000000000040000 RSI: ffffffff82222407 RDI: ffffffff853cbf06
+RBP: 00000000fffffff4 R08: 0000000000000001 R09: 0000000000000001
+R10: 0000000000000000 R11: 0000000000000000 R12: ffff88800d219680
+R13: 0000000000000000 R14: 0000000000000000 R15: ffff88800d2196c0
+FS:  00007f91b304a700(0000) GS:ffff88813dd00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007efde803d148 CR3: 0000000018ef7000 CR4: 0000000000750ee0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+PKRU: 55555554
+ loop_control_ioctl+0x72/0x290 drivers/block/loop.c:2512
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:874 [inline]
+ __se_sys_ioctl fs/ioctl.c:860 [inline]
+ __x64_sys_ioctl+0xb6/0x100 fs/ioctl.c:860
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48
+89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
+01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RAX: ffffffffffffffda RBX: 000000000078c0a0 RCX: 000000000046ae99
+RDX: 0000000000000000 RSI: 0000000000004c80 RDI: 0000000000000003
+RBP: 00007f91b3049c80 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000042
+R13: 0000000000000000 R14: 000000000078c0a0 R15: 00007ffeef5d14f0
+----------------
+Code disassembly (best guess):
+   0: f7 d8                neg    %eax
+   2: 64 89 02              mov    %eax,%fs:(%rdx)
+   5: b8 ff ff ff ff        mov    $0xffffffff,%eax
+   a: c3                    retq
+   b: 66 0f 1f 44 00 00    nopw   0x0(%rax,%rax,1)
+  11: 48 89 f8              mov    %rdi,%rax
+  14: 48 89 f7              mov    %rsi,%rdi
+  17: 48 89 d6              mov    %rdx,%rsi
+  1a: 48 89 ca              mov    %rcx,%rdx
+  1d: 4d 89 c2              mov    %r8,%r10
+  20: 4d 89 c8              mov    %r9,%r8
+  23: 4c 8b 4c 24 08        mov    0x8(%rsp),%r9
+  28: 0f 05                syscall
+* 2a: 48 3d 01 f0 ff ff    cmp    $0xfffffffffffff001,%rax <--
+trapping instruction
+  30: 73 01                jae    0x33
+  32: c3                    retq
+  33: 48 c7 c1 bc ff ff ff mov    $0xffffffffffffffbc,%rcx
+  3a: f7 d8                neg    %eax
+  3c: 64 89 01              mov    %eax,%fs:(%rcx)
+  3f: 48                    rex.W
