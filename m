@@ -2,198 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8726340FB0D
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 17:04:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 497A340FB14
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 17:04:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244105AbhIQPFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 11:05:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44430 "EHLO
+        id S244607AbhIQPFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 11:05:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233835AbhIQPFX (ORCPT
+        with ESMTP id S244408AbhIQPFs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 11:05:23 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BF1AC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:04:01 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id l7-20020a0568302b0700b0051c0181deebso13190519otv.12
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:04:01 -0700 (PDT)
+        Fri, 17 Sep 2021 11:05:48 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F4E4C061764
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:04:26 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id z24so8123309lfu.13
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 08:04:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KvWD6tRz6SqO3YvI8jw52v5kCnXKnSUnvz5w+Nfi/zQ=;
-        b=FkjiXe5GkL5dkj/gMOunrEtFEP4TOPpK7oF3hdhKabNv8nwfb2ICOm0YZraXO0FyvE
-         wjEGImhJmAH0xaBwLJF3sySewmq0qy0KqurC6dm+0AnSYfHbapsn3AjwoOBDHVLLTifx
-         YftPj2+x8S2xOd7frOrMv7Zmqn7CA96seV9wUju+WEpGrB199mO2HXIG2/I5kcNfcWqg
-         6DMpDViwaEFmRCPLX1H04o/ujM/NTN2DEmfT2hcaVgqCP6Izh8WeWlHuGStaUac2/hV7
-         68QtQwIfIcFFdVtnIrI9hOSRMoTzQTuhc0x/4cWGghxRDIXbB27H7cQG+aXyCSHMjIs+
-         vfEw==
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=XLn7sgDWz0kSKl7seGE0JrPmtqOeAaqdB7dNuJbit7Y=;
+        b=Cq+NekJp2eVMMzhLNKmP3cOl+Z0GAQxDr74nTZi/nrMHc4XWH/LzsxoqVpI5AexzZ9
+         +iAt+8meK4PioUMpxb0lZQszkQ0VP+LJqrEapALE+9VSNUecTRoo9rNf+iWaK4yYmX09
+         +szrqKjiISXeFVakU0tLxELkW2wgxYoLbQR2WsJSQOXP/Cf7JZB1qYB3d7mbY0qN3K3I
+         pw8taThHKKXsG2T2MOLlWfqfWJUwnTv9lV9GCUIFDnt2miyHtbHGKsNS1vqHASxK9c0o
+         9emVLT06Ny2LBo6bk7Wfha9Op+msyLuy5OlcvdB5rEcE5OTTBi/3qayrDZMgD2mtDkAN
+         6IUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KvWD6tRz6SqO3YvI8jw52v5kCnXKnSUnvz5w+Nfi/zQ=;
-        b=EtOoHHK4Iyo7sLzeVuicp3ogVwNunBW228CClJlsQvXqJNcMGGXgZ5r/QmaisedF5B
-         8Jr6aKdW99LI5zPe+x65t+wmh4eqC0B/hVO2idy6ihH07m+jOcTDd8aoJCKecGaoDrOE
-         LxJ9vRT5/8U5ZNyITHoieoxJFfVJP3QqK21eQlDtKh/BtX5joM3Chb3CnRcR9IubyKuh
-         DajeBfq9/GZLdSlOHAXVsDNNyLAFsjEB7CChmxmLoKMOiECbyiEhxpyumbCAvgRE8Fr/
-         IRTEFi78PRDE9U/rAfUt8/p2Ej0QyCdlxzHvoy5bh0q8mF6F7P53/KCNxsbbVJ0drChd
-         K/Qg==
-X-Gm-Message-State: AOAM532UNMr1/+byWXHU01gB1WjCi/lWlCFX7Sp9flKquEpeRdjp9G4W
-        YpY/Zyb9xVWfdvW8VIRb5xM7zWtT62UycHmsBqxOhg==
-X-Google-Smtp-Source: ABdhPJz/oqxxUmuZRL3ol7/kbbP9ZgVy4475wZzhnOzb49MEi8I5MPLx9tIFCN8PFUN0a/GOFganYtcnzTY0gN9qakY=
-X-Received: by 2002:a9d:7244:: with SMTP id a4mr10198759otk.137.1631891040373;
- Fri, 17 Sep 2021 08:04:00 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=XLn7sgDWz0kSKl7seGE0JrPmtqOeAaqdB7dNuJbit7Y=;
+        b=MnC5BqPWB0ZCPM7V3AqvWBLs/5ETWDFI8kvEx+U7uMz+h9BGAml4aHrSBa372lkOL6
+         OtV9KSKZGSNhBW81zO6KDUbfxbmgbvxV+jaVAHEbI/W1+lrfOCK0ifONR7irbDUtGuwl
+         3YF5gyBRmemUV+xRvXGb0cW9DdDwHnKUMow2iAmWr67/QFjE6Lj3jI3wvMkCEAgVTXzT
+         1HRBnr3mpYgYAaIbmIeHL4bk7Qo7BZL4WbH0QZMUejWskEcrNtRNzBnQhHjzUIDSa3VX
+         GpUmYKhn1EAKtIe5IYG6SWfwhGAJb5Y6UXuMCYyPbhMlLIaNYWYewrifv/PLGidbPwkL
+         GL5Q==
+X-Gm-Message-State: AOAM533PKbLHyjPpXe8oTZV1jfvwTQ17KKCgQ1aMj488WUba4IFJtxrn
+        Jmge30suysa+cYazxcIca98=
+X-Google-Smtp-Source: ABdhPJynPO4sDVgaSrlIi0XCVAOfWgqxZV4J1Oua60QkOn+AIURakuPiR2+rdpVGpxFKfb9nJe3R2w==
+X-Received: by 2002:a05:6512:2310:: with SMTP id o16mr8329541lfu.646.1631891034434;
+        Fri, 17 Sep 2021 08:03:54 -0700 (PDT)
+Received: from [192.168.1.11] ([46.235.67.49])
+        by smtp.gmail.com with ESMTPSA id u17sm725173ljk.124.2021.09.17.08.03.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Sep 2021 08:03:54 -0700 (PDT)
+Message-ID: <ef2a89f5-f68c-e7e2-9338-78e70dc41701@gmail.com>
+Date:   Fri, 17 Sep 2021 18:03:52 +0300
 MIME-Version: 1.0
-References: <000000000000a3cf8605cb2a1ec0@google.com>
-In-Reply-To: <000000000000a3cf8605cb2a1ec0@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Fri, 17 Sep 2021 17:03:48 +0200
-Message-ID: <CACT4Y+aS6w1gFuMVY1fnAG0Yp0XckQTM+=tUHkOuxHUy2mkxrg@mail.gmail.com>
-Subject: Re: [syzbot] upstream test error: KASAN: invalid-access Read in __entry_tramp_text_end
-To:     syzbot <syzbot+488ddf8087564d6de6e2@syzkaller.appspotmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.3
+Subject: Re: [PATCH v7 19/19] staging: r8188eu: remove shared buffer for usb
+ requests
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        David Laight <david.Laight@aculab.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+References: <20210917071837.10926-1-fmdefrancesco@gmail.com>
+ <20210917071837.10926-20-fmdefrancesco@gmail.com>
+ <YUSsa+3NjQVGD9gb@kroah.com>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+In-Reply-To: <YUSsa+3NjQVGD9gb@kroah.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 4 Sept 2021 at 13:57, syzbot
-<syzbot+488ddf8087564d6de6e2@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    f1583cb1be35 Merge tag 'linux-kselftest-next-5.15-rc1' of ..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=16354043300000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=5fe535c85e8d7384
-> dashboard link: https://syzkaller.appspot.com/bug?extid=488ddf8087564d6de6e2
-> compiler:       aarch64-linux-gnu-gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-> userspace arch: arm64
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+488ddf8087564d6de6e2@syzkaller.appspotmail.com
->
-> ==================================================================
-> BUG: KASAN: invalid-access in __entry_tramp_text_end+0xdfc/0x3000
-> Read at addr f4ff000002a361a0 by task kdevtmpfs/22
-> Pointer tag: [f4], memory tag: [fe]
->
-> CPU: 1 PID: 22 Comm: kdevtmpfs Not tainted 5.14.0-syzkaller-09284-gf1583cb1be35 #0
-> Hardware name: linux,dummy-virt (DT)
-> Call trace:
->  dump_backtrace+0x0/0x1ac arch/arm64/kernel/stacktrace.c:76
->  show_stack+0x18/0x24 arch/arm64/kernel/stacktrace.c:215
->  __dump_stack lib/dump_stack.c:88 [inline]
->  dump_stack_lvl+0x68/0x84 lib/dump_stack.c:105
->  print_address_description+0x7c/0x2b4 mm/kasan/report.c:256
->  __kasan_report mm/kasan/report.c:442 [inline]
->  kasan_report+0x134/0x380 mm/kasan/report.c:459
->  __do_kernel_fault+0x128/0x1bc arch/arm64/mm/fault.c:317
->  do_bad_area arch/arm64/mm/fault.c:466 [inline]
->  do_tag_check_fault+0x74/0x90 arch/arm64/mm/fault.c:737
->  do_mem_abort+0x44/0xb4 arch/arm64/mm/fault.c:813
->  el1_abort+0x40/0x60 arch/arm64/kernel/entry-common.c:357
->  el1h_64_sync_handler+0xb0/0xd0 arch/arm64/kernel/entry-common.c:408
->  el1h_64_sync+0x78/0x7c arch/arm64/kernel/entry.S:567
->  __entry_tramp_text_end+0xdfc/0x3000
+On 9/17/21 17:55, Greg Kroah-Hartman wrote:
+> On Fri, Sep 17, 2021 at 09:18:37AM +0200, Fabio M. De Francesco wrote:
+>> From: Pavel Skripkin <paskripkin@gmail.com>
+>> 
+>> This driver used shared buffer for usb requests. It led to using
+>> mutexes, i.e no usb requests can be done in parallel.
+>> 
+>> USB requests can be fired in parallel since USB Core allows it. In
+>> order to allow them, remove usb_vendor_req_buf from dvobj_priv (since
+>> USB I/O is the only user of it) and remove also usb_vendor_req_mutex
+>> (since there is nothing to protect).
+> 
+> Ah, you are removing this buffer, nice!
+> 
+> But, just because the USB core allows multiple messages to be sent to a
+> device at the same time, does NOT mean that the device itself can handle
+> that sort of a thing.
+> 
+> Keeping that lock might be a good idea, until you can prove otherwise.
+> You never know, maybe there's never any contention at all for it because
+> these accesses are all done in a serial fashion and the lock
+> grab/release is instant.  But if that is not the case, you might really
+> get a device confused here by throwing multiple control messages at it
+> in ways that it is not set up to handle at all.
+> 
+> So please do not drop the lock.
+> 
+> More comments below.
+> 
 
-/\/\/\/\/\/\/\
+We have tested this change. I've tested it in qemu with TP-Link 
+TL-WN722N v2 / v3 [Realtek RTL8188EUS], and Fabio has tested it on his 
+host for like a whole evening.
 
-This is broken unwind on arm64. d_lookup statically calls __d_lookup,
-not __entry_tramp_text_end (which is not even a function).
-See the following thread for some debugging details:
-https://lore.kernel.org/lkml/CACT4Y+ZByJ71QfYHTByWaeCqZFxYfp8W8oyrK0baNaSJMDzoUw@mail.gmail.com/
+I agree, that our testing does not cover all possible cases and I can't 
+say it was "good stress testing", so, I think, we need some comments 
+from maintainers.
 
-But there is also the use-after-free in d_lookup.
+@Larry, @Phillip, does this change looks reasonable for this chip?
 
->  d_lookup+0x44/0x70 fs/dcache.c:2370
->  lookup_dcache+0x24/0x84 fs/namei.c:1520
->  __lookup_hash+0x24/0xd0 fs/namei.c:1543
->  kern_path_locked+0x90/0x10c fs/namei.c:2567
->  handle_remove+0x38/0x284 drivers/base/devtmpfs.c:312
->  handle drivers/base/devtmpfs.c:382 [inline]
->  devtmpfs_work_loop drivers/base/devtmpfs.c:395 [inline]
->  devtmpfsd+0x8c/0xd0 drivers/base/devtmpfs.c:437
->  kthread+0x150/0x15c kernel/kthread.c:319
->  ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:756
->
-> Allocated by task 22:
->  kasan_save_stack+0x28/0x60 mm/kasan/common.c:38
->  kasan_set_track mm/kasan/common.c:46 [inline]
->  set_alloc_info mm/kasan/common.c:434 [inline]
->  __kasan_slab_alloc+0xb0/0x110 mm/kasan/common.c:467
->  kasan_slab_alloc include/linux/kasan.h:254 [inline]
->  slab_post_alloc_hook mm/slab.h:519 [inline]
->  slab_alloc_node mm/slub.c:2959 [inline]
->  slab_alloc mm/slub.c:2967 [inline]
->  kmem_cache_alloc+0x1cc/0x340 mm/slub.c:2972
->  getname_kernel+0x30/0x150 fs/namei.c:226
->  kern_path_locked+0x2c/0x10c fs/namei.c:2558
->  handle_remove+0x38/0x284 drivers/base/devtmpfs.c:312
->  handle drivers/base/devtmpfs.c:382 [inline]
->  devtmpfs_work_loop drivers/base/devtmpfs.c:395 [inline]
->  devtmpfsd+0x8c/0xd0 drivers/base/devtmpfs.c:437
->  kthread+0x150/0x15c kernel/kthread.c:319
->  ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:756
->
-> Freed by task 22:
->  kasan_save_stack+0x28/0x60 mm/kasan/common.c:38
->  kasan_set_track+0x28/0x3c mm/kasan/common.c:46
->  kasan_set_free_info+0x20/0x30 mm/kasan/tags.c:36
->  ____kasan_slab_free.constprop.0+0x178/0x1e0 mm/kasan/common.c:366
->  __kasan_slab_free+0x10/0x1c mm/kasan/common.c:374
->  kasan_slab_free include/linux/kasan.h:230 [inline]
->  slab_free_hook mm/slub.c:1628 [inline]
->  slab_free_freelist_hook+0xc4/0x20c mm/slub.c:1653
->  slab_free mm/slub.c:3213 [inline]
->  kmem_cache_free+0x9c/0x420 mm/slub.c:3229
->  putname.part.0+0x68/0x7c fs/namei.c:270
->  putname include/linux/err.h:41 [inline]
->  filename_parentat fs/namei.c:2547 [inline]
->  kern_path_locked+0x64/0x10c fs/namei.c:2558
->  handle_remove+0x38/0x284 drivers/base/devtmpfs.c:312
->  handle drivers/base/devtmpfs.c:382 [inline]
->  devtmpfs_work_loop drivers/base/devtmpfs.c:395 [inline]
->  devtmpfsd+0x8c/0xd0 drivers/base/devtmpfs.c:437
->  kthread+0x150/0x15c kernel/kthread.c:319
->  ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:756
->
-> The buggy address belongs to the object at ffff000002a36180
->  which belongs to the cache names_cache of size 4096
-> The buggy address is located 32 bytes inside of
->  4096-byte region [ffff000002a36180, ffff000002a37180)
-> The buggy address belongs to the page:
-> page:00000000a105b3ae refcount:1 mapcount:0 mapping:0000000000000000 index:0xf3ff000002a34100 pfn:0x42a30
-> head:00000000a105b3ae order:3 compound_mapcount:0 compound_pincount:0
-> flags: 0x1ffc00000010200(slab|head|node=0|zone=0|lastcpupid=0x7ff|kasantag=0x0)
-> raw: 01ffc00000010200 0000000000000000 dead000000000122 faff000002837700
-> raw: f3ff000002a34100 0000000080070003 00000001ffffffff 0000000000000000
-> page dumped because: kasan: bad access detected
->
-> Memory state around the buggy address:
->  ffff000002a35f00: fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe
->  ffff000002a36000: fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe
-> >ffff000002a36100: fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe
->                                                  ^
->  ffff000002a36200: fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe
->  ffff000002a36300: fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe
-> ==================================================================
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->
-> --
-> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/000000000000a3cf8605cb2a1ec0%40google.com.
+
+
+With regards,
+Pavel Skripkin
+
+> 
+>> 
+>> Co-developed-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+>> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+>> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+>> ---
+>>  drivers/staging/r8188eu/hal/usb_ops_linux.c | 29 ++++++++-------
+>>  drivers/staging/r8188eu/include/drv_types.h |  5 ---
+>>  drivers/staging/r8188eu/os_dep/usb_intf.c   | 40 ++-------------------
+>>  3 files changed, 16 insertions(+), 58 deletions(-)
+>> 
+>> diff --git a/drivers/staging/r8188eu/hal/usb_ops_linux.c b/drivers/staging/r8188eu/hal/usb_ops_linux.c
+>> index 656f3a774e48..0ed4e6c8b1f5 100644
+>> --- a/drivers/staging/r8188eu/hal/usb_ops_linux.c
+>> +++ b/drivers/staging/r8188eu/hal/usb_ops_linux.c
+>> @@ -19,9 +19,9 @@ static int usb_read(struct intf_hdl *intfhdl, u16 addr, void *data, u8 size)
+>>  	if (adapt->bSurpriseRemoved || adapt->pwrctrlpriv.pnp_bstop_trx)
+>>  		return -EPERM;
+>>  
+>> -	mutex_lock(&dvobjpriv->usb_vendor_req_mutex);
+>> -
+>> -	io_buf = dvobjpriv->usb_vendor_req_buf;
+>> +	io_buf = kmalloc(size, GFP_KERNEL);
+>> +	if (!io_buf)
+>> +		return -ENOMEM;
+> 
+> Please read the docs for usb_control_msg_recv().  It can allow data off
+> of the stack, so no need to allocate/free the buffer like this all the
+> time.
+> 
+> Note, the usb_control_msg() call does require the data to be allocated
+> dynamically, like the code does today.  Which is why you probably got
+> confused here.
+> 
+> Same for usb_control_msg_send(), it can take data off of the stack.
+> 
+> 
+>>  
+>>  	status = usb_control_msg_recv(udev, 0, REALTEK_USB_VENQT_CMD_REQ,
+>>  				      REALTEK_USB_VENQT_READ, addr,
+>> @@ -39,7 +39,7 @@ static int usb_read(struct intf_hdl *intfhdl, u16 addr, void *data, u8 size)
+>>  		 * exist or is not enabled.
+>>  		 */
+>>  		adapt->bSurpriseRemoved = true;
+>> -		goto mutex_unlock;
+>> +		goto end;
+>>  	}
+>>  
+>>  	if (status < 0) {
+>> @@ -49,15 +49,14 @@ static int usb_read(struct intf_hdl *intfhdl, u16 addr, void *data, u8 size)
+>>  		if (rtw_inc_and_chk_continual_urb_error(dvobjpriv))
+>>  			adapt->bSurpriseRemoved = true;
+>>  
+>> -		goto mutex_unlock;
+>> +		goto end;
+>>  	}
+>>  
+>>  	rtw_reset_continual_urb_error(dvobjpriv);
+>>  	memcpy(data, io_buf, size);
+>>  
+>> -mutex_unlock:
+>> -	mutex_unlock(&dvobjpriv->usb_vendor_req_mutex);
+>> -
+>> +end:
+>> +	kfree(io_buf);
+>>  	return status;
+>>  }
+>>  
+>> @@ -72,9 +71,10 @@ static int usb_write(struct intf_hdl *intfhdl, u16 addr, void *data, u8 size)
+>>  	if (adapt->bSurpriseRemoved || adapt->pwrctrlpriv.pnp_bstop_trx)
+>>  		return -EPERM;
+>>  
+>> -	mutex_lock(&dvobjpriv->usb_vendor_req_mutex);
+>> +	io_buf = kmalloc(size, GFP_KERNEL);
+>> +	if (!io_buf)
+>> +		return -ENOMEM;
+>>  
+>> -	io_buf = dvobjpriv->usb_vendor_req_buf;
+>>  	memcpy(io_buf, data, size);
+>>  
+>>  	status = usb_control_msg_send(udev, 0, REALTEK_USB_VENQT_CMD_REQ,
+>> @@ -93,7 +93,7 @@ static int usb_write(struct intf_hdl *intfhdl, u16 addr, void *data, u8 size)
+>>  		 * exist or is not enabled.
+>>  		 */
+>>  		adapt->bSurpriseRemoved = true;
+>> -		goto mutex_unlock;
+>> +		goto end;
+>>  	}
+>>  
+>>  	if (status < 0) {
+>> @@ -103,14 +103,13 @@ static int usb_write(struct intf_hdl *intfhdl, u16 addr, void *data, u8 size)
+>>  		if (rtw_inc_and_chk_continual_urb_error(dvobjpriv))
+>>  			adapt->bSurpriseRemoved = true;
+>>  
+>> -		goto mutex_unlock;
+>> +		goto end;
+>>  	}
+>>  
+>>  	rtw_reset_continual_urb_error(dvobjpriv);
+>>  
+>> -mutex_unlock:
+>> -	mutex_unlock(&dvobjpriv->usb_vendor_req_mutex);
+>> -
+>> +end:
+>> +	kfree(io_buf);
+>>  	return status;
+>>  }
+>>  
+>> diff --git a/drivers/staging/r8188eu/include/drv_types.h b/drivers/staging/r8188eu/include/drv_types.h
+>> index 626c6273be6f..499b2bce8cbe 100644
+>> --- a/drivers/staging/r8188eu/include/drv_types.h
+>> +++ b/drivers/staging/r8188eu/include/drv_types.h
+>> @@ -168,11 +168,6 @@ struct dvobj_priv {
+>>  	int	ep_num[5]; /* endpoint number */
+>>  	int	RegUsbSS;
+>>  	struct semaphore usb_suspend_sema;
+>> -	struct mutex  usb_vendor_req_mutex;
+>> -
+>> -	u8 *usb_alloc_vendor_req_buf;
+>> -	u8 *usb_vendor_req_buf;
+> 
+> I do like removing these buffers, and I think that is all that this
+> change should be doing.
+> 
+> thanks,
+> 
+> greg k-h
+> 
+
+
+
