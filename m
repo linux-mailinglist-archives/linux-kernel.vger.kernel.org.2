@@ -2,72 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D5C640F064
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 05:28:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B69F140F066
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 05:28:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243955AbhIQD3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 23:29:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55206 "EHLO
+        id S244008AbhIQDaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 23:30:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230044AbhIQD3J (ORCPT
+        with ESMTP id S230044AbhIQD3y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 23:29:09 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C346AC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 20:27:47 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id v19so5998754pjh.2
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 20:27:47 -0700 (PDT)
+        Thu, 16 Sep 2021 23:29:54 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E160C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 20:28:33 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id mv7-20020a17090b198700b0019c843e7233so2593195pjb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 20:28:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fpSVsGqRAM7tzZJOFQLyq7I6t2DV/FxrnSYm6nDz6CQ=;
-        b=g+L+wUBLF8LGmgoYaBDTY5RFRdjSErOSRCo+3+JDUkyXtefgHQkAKCGxM5Xo+/Rn42
-         vuTlcskp560lWRNluRraf9fSLUckkfR9hCZFcnifzIpmj+ZnfsDaTdL+G8zrqYlHeqqE
-         M4pY5ZjwvjTXTmKOAkEPyGiKKmAEZntX8deaA08OAg7eqDHYA+BHgA5vLoKnTvvEZxdG
-         +4OwgjUnUuZM6PW9N6JOA6TEnYenboRGsJ5dWvRZV3fxxlamnovC/QSxcaEKnH15OFP2
-         j2sBivpHTYbVMofI//CAzFmztQq4h/caZ3TEdrTMjzjKwGkSFniK+naxMSOxxCR2C0i5
-         7X3Q==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Tu3a1Jctb+y1+7cxgmrLpvSnXHcTL/tz3Dc1kAZAv0Q=;
+        b=giZQkmV4Kzeopwo0M5oTuJlcGAU7l4owc5drUG/GlrbB0pmiSt+SmyGfIhroFF6v7F
+         cuQO36118jy4rxW3tjXuyx9Pkn8sjC5odSZVModBvy4CqK7JeKy39AbGkILrdLxQu4nX
+         G28co+YDLcGWmyw8sAd/ZsBPDhyaaWkysrHGAy+Vw4LWQ9m39Aqebh6jsoNJt0wMvqgl
+         YJumhGkX85KMPJawyznLHrDOMBRF9eomtTIBz7oEwcuNh5dUHbfm0QrGzvKOKhrWHu9X
+         9eTcbUCCVgwjbtA7B9ypJebQ9E4M5xf5WrP8oCTmIfjGxSU4jCqgMaaoFGDmT51KhT5A
+         ozDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fpSVsGqRAM7tzZJOFQLyq7I6t2DV/FxrnSYm6nDz6CQ=;
-        b=qD3KPglEkyagh2kNAA4VqRT4qSoKF5kv7WC5BZrVGJs1K3zr7PffowEemN5JukIN0p
-         fiv0EJsCSHXzNBCLCR5c8DD/avuJqL9oqipOB5kvmHyRoiCBnJdiRfIAetXIWwThCsXQ
-         JGI2Qfqa9Ezi1exj6NsNCDeTDEPRy8g6Jei0T0PDZMEiKfU7cSzL0oqqi3DaEnNh72CV
-         js2e1vq2Nmwo8xPLyvJsarSjPkvj9J6vsC/k1XSJ2AJwVBofypeWvIppvzMo7cfDz4zv
-         LQkc7bwGcK/WCTB0JAMBTbhpyRrva1/N4cLDUgXav2uKMScV+8+1INeEhLZVohD41gFy
-         bKtg==
-X-Gm-Message-State: AOAM530jeQT0wyjymMe0royYW1k521sDDcO4xOh3yWYZ5/82P8mR5tVo
-        DqCbETZQ1MdcQB1vdsYhQ4azoBCNs9w9blpNomu2cw==
-X-Google-Smtp-Source: ABdhPJwLShr73xUqn3fopcKpmsasJLKivAVs/wToecmamlHgSYUKv8wL4Y5iOrQU+w6u2wplmzLCc912kZD/kV2S1vU=
-X-Received: by 2002:a17:90b:4f8a:: with SMTP id qe10mr8164668pjb.5.1631849267051;
- Thu, 16 Sep 2021 20:27:47 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Tu3a1Jctb+y1+7cxgmrLpvSnXHcTL/tz3Dc1kAZAv0Q=;
+        b=1GehWRPTQP0FRhpiwtppzzAh5REJxzCGOzXqvsqVCYyo1ayX0oUBCAeaJUEoMp59CW
+         m5EzLPwefEUREPdMmVvzuz+m6WdFc8MsFBFf4HKfiC5/ll1Rov/j4yBoCafjcYBnNTVS
+         pWi1Pktd7dLyg7XrnSHw0Wo8xW3vdoJ5gyiMgP+qrw4MZqE2tY1ewQevp7gCT6lVBDNy
+         VXFgiAHPemV8Ur6MOUGbAi22EZ9jMzxGUhzr7xLd6cfFoaz3abD7D14jtUI3fkEPyDng
+         SCvsJMwzQdIjBDkeKV/X281lby3BqCawRj9xHmDfSy8TRs5HUYi98Md0nX9gVhGKBDCt
+         SvFg==
+X-Gm-Message-State: AOAM5321Hvqyeu4Wwt/EX75EJK827n+xMNTjotoiK2CBfvH96CoG2K8R
+        zgDoWcodBGSG7VwcZf6QqpA=
+X-Google-Smtp-Source: ABdhPJz2bEGG6f7nr6dbKWY8Ybdsi/dwfvsT4DDF+mw1vZtbAFvZs4eqXGGsVKY6EdtEooWMFFDJaw==
+X-Received: by 2002:a17:90a:cc02:: with SMTP id b2mr9871214pju.160.1631849312742;
+        Thu, 16 Sep 2021 20:28:32 -0700 (PDT)
+Received: from WRT-WX9.lan ([141.164.41.4])
+        by smtp.gmail.com with ESMTPSA id n19sm4288047pfa.60.2021.09.16.20.28.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Sep 2021 20:28:32 -0700 (PDT)
+From:   Changbin Du <changbin.du@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Changbin Du <changbin.du@gmail.com>
+Subject: [PATCH] tools/vm/page-types: remove dependency on opt_file for idle page tracking
+Date:   Fri, 17 Sep 2021 11:28:26 +0800
+Message-Id: <20210917032826.10669-1-changbin.du@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20210916212816.86838-1-peterx@redhat.com>
-In-Reply-To: <20210916212816.86838-1-peterx@redhat.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Fri, 17 Sep 2021 11:27:08 +0800
-Message-ID: <CAMZfGtXB45VAQeY6+X9=WA1vtHxXd5_sAGN_pHp7ouQMUFXd8g@mail.gmail.com>
-Subject: Re: [PATCH] mm/hugetlb: Drop __unmap_hugepage_range definition from hugetlb.h
-To:     Peter Xu <peterx@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 5:28 AM Peter Xu <peterx@redhat.com> wrote:
->
-> Drop it in the header since it's only used in hugetlb.c.
->
-> Suggested-by: Mike Kravetz <mike.kravetz@oracle.com>
-> Signed-off-by: Peter Xu <peterx@redhat.com>
+Idle page tracking can also be used for process address space, not only
+file mappings.
 
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+Without this change, using with '-i' option for process address space
+encounters below errors reported.
 
-Thanks.
+$ sudo ./page-types -p $(pidof bash) -i
+mark page idle: Bad file descriptor
+mark page idle: Bad file descriptor
+mark page idle: Bad file descriptor
+mark page idle: Bad file descriptor
+mark page idle: Bad file descriptor
+mark page idle: Bad file descriptor
+....
+
+Signed-off-by: Changbin Du <changbin.du@gmail.com>
+---
+ tools/vm/page-types.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/vm/page-types.c b/tools/vm/page-types.c
+index 0517c744b04e..f62f10c988db 100644
+--- a/tools/vm/page-types.c
++++ b/tools/vm/page-types.c
+@@ -1331,7 +1331,7 @@ int main(int argc, char *argv[])
+ 	if (opt_list && opt_list_mapcnt)
+ 		kpagecount_fd = checked_open(PROC_KPAGECOUNT, O_RDONLY);
+ 
+-	if (opt_mark_idle && opt_file)
++	if (opt_mark_idle)
+ 		page_idle_fd = checked_open(SYS_KERNEL_MM_PAGE_IDLE, O_RDWR);
+ 
+ 	if (opt_list && opt_pid)
+-- 
+2.32.0
+
