@@ -2,248 +2,414 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86AA140EF2F
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 04:22:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C199E40EF31
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Sep 2021 04:28:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242724AbhIQCXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Sep 2021 22:23:52 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:51212 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231281AbhIQCXu (ORCPT
+        id S242727AbhIQC3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Sep 2021 22:29:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235118AbhIQC3U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Sep 2021 22:23:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1631845347;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=T7/6nBllO0qz8oimE6x+1iWitWV8BCaNmZH8qWdDU6s=;
-        b=j5/r5ZDw/Q3Gj/v1bEAzKAwXRQJJduHWWhRrcfkkypo7TgjSnry3mP7OME7sQKIGWKelmh
-        dqHi+lJtJS2J1yyjKyhMAdH5KSffJROAIcxGpJQF7OJuPAzMAwQxItr5LwoDLONkB08a16
-        oSrZOgc94AScmZyGbke7R4NZdwOeJrQ=
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com
- (mail-vi1eur04lp2055.outbound.protection.outlook.com [104.47.14.55]) (Using
- TLS) by relay.mimecast.com with ESMTP id de-mta-5-zON5onB5Pni2x93cOcA07A-1;
- Fri, 17 Sep 2021 04:22:25 +0200
-X-MC-Unique: zON5onB5Pni2x93cOcA07A-1
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WKOaoJAGv/TLp2uO4on901i0/ckpe+hzY+X/111WHUzys968sFCux6GUjDhfii/x2KvvgzQJrOuZIhRlvYQXoDOzcLu5vOourQ/3qczp39m1U0tXSvHlx5HvrQY/dBKv9KSopcuc+pUr4bidUhBfTLvjpUn6/r80014QAxYoUhO2sIpydOtYbtz9jfSug2iAbFEmmoIMAm8D00LnLTHPy6l+gqjMbkWf3ZXGhdiVgMEZvgqp6wlA9mMmcFT8sIRVLVdntoiMqSLAfyHYm9M3lwTP+39o8MrPLCDjpmCDQlW+NZw6V4Ha97DxAm5O4HCnBgCDM4fKgwBslI6g03MO5g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=T7/6nBllO0qz8oimE6x+1iWitWV8BCaNmZH8qWdDU6s=;
- b=lbdPE4zfeZZQuhSZ8GT6oA1h5QywTFhg23/QoOGDGiEK8jXfbFYEp1wSbCz/dJlyjnX4bgN8s2M05rbfIXul5L3veaNMhA1Ewop3j5lMvRZD5xLXCbQpzXy09kkOej2xeo9buJgLeNSEjyROjQCLC0PxpPhXDKASiax9E+WbXDtqsDEavYnAvkzW/5hAgL7W3KWhzmzeDMf1FQmMZ5PkRSmtTdLYO3u2QU2bwl5/EnuuxPvQ1E/93ssNNqhS2imQVFWazr9wBPX+P6/iSKOlJRVOeJMo0xirK6mVWv/Dm24yR+vA1vj7ZWX1LlBn2F2KilwMsxWFqurWjqrfIcszBQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: wolfvision.net; dkim=none (message not signed)
- header.d=none;wolfvision.net; dmarc=none action=none header.from=suse.com;
-Received: from AM7PR04MB6821.eurprd04.prod.outlook.com (2603:10a6:20b:105::22)
- by AM6PR04MB5415.eurprd04.prod.outlook.com (2603:10a6:20b:93::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.17; Fri, 17 Sep
- 2021 02:22:23 +0000
-Received: from AM7PR04MB6821.eurprd04.prod.outlook.com
- ([fe80::78e1:ab2a:f283:d097]) by AM7PR04MB6821.eurprd04.prod.outlook.com
- ([fe80::78e1:ab2a:f283:d097%5]) with mapi id 15.20.4500.019; Fri, 17 Sep 2021
- 02:22:23 +0000
-Message-ID: <2424d7da-7022-0b38-46ba-b48f43cda23d@suse.com>
-Date:   Fri, 17 Sep 2021 10:22:09 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH] net: stmmac: dwmac-rk: fix unbalanced pm_runtime_enable
- warnings
-Content-Language: en-US
-To:     Michael Riesch <michael.riesch@wolfvision.net>,
-        Punit Agrawal <punitagrawal@gmail.com>
-Cc:     wens@kernel.org, netdev <netdev@vger.kernel.org>,
-        "moderated list:ARM/STM32 ARCHITECTURE" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>, sashal@kernel.org
-References: <20210823143754.14294-1-michael.riesch@wolfvision.net>
- <CAGb2v67Duk_56fOKVwZsYn2HKJ99o8WJ+d4jetD2UjDsAt9BcA@mail.gmail.com>
- <568a0825-ed65-58d7-9c9c-cecb481cf9d9@wolfvision.net>
- <87czpvcaab.fsf@stealth>
- <aa905e4d-c5a7-e969-1171-3a90ecd9b9cc@wolfvision.net>
-From:   Qu Wenruo <wqu@suse.com>
-In-Reply-To: <aa905e4d-c5a7-e969-1171-3a90ecd9b9cc@wolfvision.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR03CA0067.namprd03.prod.outlook.com
- (2603:10b6:a03:331::12) To AM7PR04MB6821.eurprd04.prod.outlook.com
- (2603:10a6:20b:105::22)
+        Thu, 16 Sep 2021 22:29:20 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61DBCC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 19:27:59 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id bk29so12799677qkb.8
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Sep 2021 19:27:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yS13LJmPxmQYgprpMM7GhXKDga3lFaVwPqIsykmJsKw=;
+        b=Lnhk15p2i30YomJvxv+/ZvZQxzm71l1NOJIwbkFoH4UbhDNYqkQMXiTdobVwdTPdDe
+         Z7Nb0Jrcb44bVDh1quJYZ85gtxI2iajVcQQCrFLU59hf+bs57vCjuUZfaqb4fUIKe2ms
+         50YepwMXlXYwceurbvOuRq3e+lYpDAxEBGEtSazpaoTOyan/utpCWEgClvels0jdtPUj
+         uGW2kdNzW312bwB+EOJmDDfpr2UysLOnJoYNmoIhpmzgUbTCdfa3BAxoqFWbJLtHIbdv
+         19ehZ17wPNJwu4YeWRiStwl3MvJFZYStm477BeiV05hwg3E0IHNB2IDnEM3a8uhjJ7sR
+         9Bdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yS13LJmPxmQYgprpMM7GhXKDga3lFaVwPqIsykmJsKw=;
+        b=j5+1EwWzS0X6K647o2urNokdgJ3r/SSI6abYoEk4siKUo4RFcO2L2K3UncKqml1ABQ
+         mfrfJu7LRx50RRNVJJD3F9i9A7iOn1F9inlU0fdgCRxtLox3RBkKSKbI5Ut3rDDbOZaR
+         e9C9Za5V5aqIWChgBiVzSPQGT8q858WfqkUDNJbLw5tJB8gnZOw9TI2TrCrLzoyQlsjH
+         Bd3tBjq5pFoN0Wk6Kxp1LUppT1Wb4Zc6cUNjWMtZNndkpuwp+++Ne/Uul2W1qv0NE0Pk
+         MeDdNwk4l4wlLckxsZjgG+A9zXxZkUF7H+/8hVctzqkML0v3OXZ2AOleSwdhID98JaLr
+         XqzQ==
+X-Gm-Message-State: AOAM530FNeTXC7j287ZBWvo2zw0E6pRtEPVWj7dVWOZb0piLcj42ghza
+        UpiU0PJmZD902a0JptR941BaDlCp6ayOZPoN6c/Qdg==
+X-Google-Smtp-Source: ABdhPJxujc8Vi6u0FVmGJLzsLPHWoT/qmvdXRTGM9YwEk1bpmlBIG3JnYpPEcqmomWMmqPFQjfGediN7tkOrtFmxM4w=
+X-Received: by 2002:a25:2b07:: with SMTP id r7mr9477988ybr.296.1631845678063;
+ Thu, 16 Sep 2021 19:27:58 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [0.0.0.0] (149.28.201.231) by SJ0PR03CA0067.namprd03.prod.outlook.com (2603:10b6:a03:331::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Fri, 17 Sep 2021 02:22:16 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 48f23657-0eda-4ae6-7beb-08d97981fb78
-X-MS-TrafficTypeDiagnostic: AM6PR04MB5415:
-X-Microsoft-Antispam-PRVS: <AM6PR04MB5415BA34D194C8333E945024D6DD9@AM6PR04MB5415.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: C6EoHbBJBrU21tYfgQOuP+lwHdxnjmGmxNfUnU2AB/2JLFW4BwGF+uDd0F0f/1zJHxh6nVLgjoeulv2MQmpjE8tmirW9asqcDPn3DzPy02ML+sBgJT0uFidGH5tN1QDB8z3SFkHC+Gh/CLPSx9F1sKk5O81xtVpzoXA+lffr54F5LEhEDbjDV6pUiVpSed0YUyD5r4g4oS07D9Cjg37zjSXTiB11+9sTIbC6AUfLpsiyJYZ05hdP/HWe6608UV0qxPo9qDhspKoaXW2E1P4yfVOMkjuzfEuxngyjvW7Pmo2HaGGfv9Bf5UrSBJr/+dsplVNMNhQ/QztrUue3nD83LHIbShI5laXwBIDfBMmd6Mu1JEQlbEVnA9+geA1qrs8wLEvFJXbF+JkQTlKTDiVIKvhuA2eQ7br7snAvpwPEjO5u74ZCBItVw89ac1IwtrcxPAwUXy5dNTQv17ehYPsbCdVrCV6isTTAe16TUvnzVdUfqKSGtJ66wbr5kFPc7/DmWex2gAiqIn9CST6U/u2n2VxGDcRUgzCUTa76E/gzKKRtL1inaoIlb8xYNEzghbqq/B1c9w0g4jVmroo0ISkfY+9bv3kcmuI3vDzJ6MxRG7pKC0ibf6POEkYaWlBsAUIhexK9NYUiACkMjqT7lC9rt1+/dAb7U5nMUX/VMxl3SZx5ErasEtMBWJ6LFA44yzhq0hKpA5rwjqZWOufoaJNuCc93MwG0htUIoBz8MxXVAWrMmXQaHtDTOou6Uax1SyA5PfXsh3puvYrn1H56C22FJoFGznHSa80O+jpD496XtPTaTxjLfOHi74lu+XU/THLKdfCigEmkpmUJH7rVkXCEsQOcU4Ni5UWZAAuSJWiDUDyVoAz+QyEagKD0DTZMF2jQ
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB6821.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(376002)(396003)(346002)(39860400002)(5660300002)(31696002)(36756003)(316002)(8936002)(86362001)(53546011)(6486002)(38100700002)(2906002)(186003)(8676002)(6666004)(83380400001)(110136005)(26005)(2616005)(16576012)(956004)(54906003)(66476007)(7416002)(478600001)(31686004)(4326008)(66556008)(66946007)(6706004)(966005)(78286007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UjgvZkRrQWtTK0VqeEJ6bnNZRHRSczhiK0l2bkVhdVdUc1M5Qjkzb1dEMDhU?=
- =?utf-8?B?UlZvQkp1QXFTeXRXTHEwNzhFaEhYNXpGMExWbnUwbzMwbE4yOHZOMURmSk82?=
- =?utf-8?B?bWFFdWl1K3kraStCUTJ0RkJRU1kwQUxGcXJtL3Y0SHI3N0FEYWE4a0loUlZk?=
- =?utf-8?B?dGNFc2EzeUUrRGZkWHg1d1duNVltN3kydmI1SlFVNXRFM1Vldk1BZEZlbUpo?=
- =?utf-8?B?OUJnZ2ppWTVCNGpBSStzQnBvYzAwdDRKcDRIKzcvdjlwMlpET3ZxMDRHdGJV?=
- =?utf-8?B?STJEeXN0emNsSk94RUs4SzM1Q2dCSi84SndsQ2U3YzlsUE1mMDV4ZDdLMWpZ?=
- =?utf-8?B?b0E1REQ4UmdGTHAxYk1vdHB6SVErT0NwN2NaM0lqbGp3ZGY5SmVrVjRHVmNZ?=
- =?utf-8?B?eENBSlhLSzFMZi9yb2RXcDQzT0U3bjg0NlRTaGo3K2Nab1JBaE4zbkJwbVM5?=
- =?utf-8?B?alA1NWlmc3FybG9XbHhvSk1Id0cycGZybktkZ2hnQ3M2Vms3Mjdnd0U3N3BL?=
- =?utf-8?B?Y1dzNk1Ddy9jSFdlYzB6TmxzZW1sZkVyUGJGTDhKTUJwWFBxZHJUcnpqYVlm?=
- =?utf-8?B?dkhFQi92TmFRQmgySzU2dDBwWnZJdHlibytSNnkweCtHNENoWlJUVFIzKzB4?=
- =?utf-8?B?SDlhb3pIMEdkQWc0ZlBkZ3liR2szTC9nYUxGRzFvSm8vOWFxK1FSdkRyWXIx?=
- =?utf-8?B?NWNnZGk1VStpaTRXdjdTT0dLNzRXYmc3dWs1QmNmMHlmWHNUL3o0eTFJN2ZD?=
- =?utf-8?B?Wkd4enVaYno5YitnbXdyT3V0bzNkd1FhM1hSSnNVNTljMnFLZU10U3ZncEZN?=
- =?utf-8?B?aUFpUTBSd3A5Q3E3RHRCQzBsSHFOSzY4TXkyRWlmOC9KS0grWW9zcEkrM1Rn?=
- =?utf-8?B?UldUYWhoT0JVdmRyM1dtdFJkOW9wT1EyUnJDSFZRL09BMzB5eTBWcEhjS0ty?=
- =?utf-8?B?bG1SbGZ0UTNJVVVkR0QxeE1zUW1XNDN5aXVWSTVrekc4WWpLRFd0Y1ZGcjI0?=
- =?utf-8?B?bWU3aWg0RmdFa1BWampNaGJOY005ZHZ1MkxEcy96ZDlSREV5OWdTb2pSdWVj?=
- =?utf-8?B?WFVYby9nby9qcFFQOCs3cVd2b3ZUYlN4c056T3VGNkFzcW95eDZFMUd1Wmkr?=
- =?utf-8?B?Y3BIWmlkSCtkOFY3aHh0ZFVudmxrTGFhb0cvcG9tSTl1Z0hEVy9UY3NMYTkz?=
- =?utf-8?B?WHZzNzM0bGhIaFFObCtJNWswbHVYREROSmswbWRvSUZkdEFxVHIySmphM1Nw?=
- =?utf-8?B?Z0JsMmdCWVNVMXRDYXh3MmlJSUhUSXNPNEpscHF2K1pFUlhwRmVnS2hmTkFD?=
- =?utf-8?B?VmF2UnBnZUJ3ZlQySmdNanpOcUNYdVdMc25qT2dTbU5TYUROMmtKUENSZGk0?=
- =?utf-8?B?R2RLVmdVK0t6b1dCZEthVnJ1cE9NSFlOTS96dXhBcmtrQTlWUzhFUFNtT2ZT?=
- =?utf-8?B?RSs4ZFNoOUtVbUMzbFhUVDk0SEp2TDRTNHoydS9lUWl5RkI3dzN1QXdhMStT?=
- =?utf-8?B?ZXYxMi9ySXh3NmR4YjdrT1NNeTVFSk5YVGMrTGZheGx1amhtWjFuMkFscUVx?=
- =?utf-8?B?UUdicWdoeUtGY2lKV3J1emQ1OVgzRk1ta094aUM4S1ZnekxjL0VPc0ZIME9v?=
- =?utf-8?B?WXlEbGpDRTlOcUdHTTZ2bTZ2cE5TaEpYcndVS3RHVnZSb0hHcHR6OE9XQkRV?=
- =?utf-8?B?V0tDeEJhYmpWclJEWVMzK2x3N3dNNkVFaWNkUklDZmM2SUVxeWtUL2ExSy9a?=
- =?utf-8?Q?T6bHgGyxvF17KMxalMIAnbOjqGzFeT6bjFvotv/?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 48f23657-0eda-4ae6-7beb-08d97981fb78
-X-MS-Exchange-CrossTenant-AuthSource: AM7PR04MB6821.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Sep 2021 02:22:22.8565
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: yBS5vq765vGD1gCcX824gNtJg9M0YXhRfWfeg+geKhnByZoRGLOnw+BgiXLt6IKJ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB5415
+References: <20210915081933.485112-1-saravanak@google.com> <45576ceb-562c-9ca7-3ef4-31add52b2168@gmail.com>
+In-Reply-To: <45576ceb-562c-9ca7-3ef4-31add52b2168@gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Thu, 16 Sep 2021 19:27:22 -0700
+Message-ID: <CAGETcx9nbxH6hETP2LUENG8EV3v771qi9NpkFd-mix3G-NdZUA@mail.gmail.com>
+Subject: Re: [PATCH] Revert "of: property: fw_devlink: Add support for
+ "phy-handle" property"
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Russell King <linux@armlinux.org.uk>, kernel-team@android.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 16, 2021 at 7:21 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
+>
+>
+>
+> On 9/15/2021 1:19 AM, Saravana Kannan wrote:
+> > This reverts commit cf4b94c8530d14017fbddae26aad064ddc42edd4.
+> >
+> > Some PHYs pointed to by "phy-handle" will never bind to a driver until a
+> > consumer attaches to it. And when the consumer attaches to it, they get
+> > forcefully bound to a generic PHY driver. In such cases, parsing the
+> > phy-handle property and creating a device link will prevent the consumer
+> > from ever probing. We don't want that. So revert support for
+> > "phy-handle" property until we come up with a better mechanism for
+> > binding PHYs to generic drivers before a consumer tries to attach to it.
+> >
+> > Signed-off-by: Saravana Kannan <saravanak@google.com>
+>
+> Thanks for getting this revert submitted, I just ran a bisection this
+> afternoon that pointed to this offending commit. It would cause the dead
+> lock
 
+Dead lock in the kernel? Or do you mean just a hang waiting forever for network?
 
-On 2021/8/30 22:10, Michael Riesch wrote:
-> Hi Punit,
-> 
-> On 8/30/21 3:49 PM, Punit Agrawal wrote:
->> Hi Michael,
->>
->> Michael Riesch <michael.riesch@wolfvision.net> writes:
->>
->>> Hi ChenYu,
->>>
->>> On 8/29/21 7:48 PM, Chen-Yu Tsai wrote:
->>>> Hi,
->>>>
->>>> On Mon, Aug 23, 2021 at 10:39 PM Michael Riesch
->>>> <michael.riesch@wolfvision.net> wrote:
->>>>>
->>>>> This reverts commit 2c896fb02e7f65299646f295a007bda043e0f382
->>>>> "net: stmmac: dwmac-rk: add pd_gmac support for rk3399" and fixes
->>>>> unbalanced pm_runtime_enable warnings.
->>>>>
->>>>> In the commit to be reverted, support for power management was
->>>>> introduced to the Rockchip glue code. Later, power management support
->>>>> was introduced to the stmmac core code, resulting in multiple
->>>>> invocations of pm_runtime_{enable,disable,get_sync,put_sync}.
->>>>>
->>>>> The multiple invocations happen in rk_gmac_powerup and
->>>>> stmmac_{dvr_probe, resume} as well as in rk_gmac_powerdown and
->>>>> stmmac_{dvr_remove, suspend}, respectively, which are always called
->>>>> in conjunction.
->>>>>
->>>>> Signed-off-by: Michael Riesch <michael.riesch@wolfvision.net>
->>>>
->>>> I just found that Ethernet stopped working on my RK3399 devices,
->>>> and I bisected it down to this patch.
->>>
->>> Oh dear. First patch in a kernel release for a while and I already break
->>> things.
->>
->> I am seeing the same failure symptoms reported by ChenYu on my RockPro64
->> with v5.14. Reverting the revert i.e., 2d26f6e39afb ("net: stmmac:
->> dwmac-rk: fix unbalanced pm_runtime_enable warnings") brings back the
->> network.
->>
->>> Cc: Sasha as this patch has just been applied to 5.13-stable.
->>>
->>>> The symptom I see is no DHCP responses, either because the request
->>>> isn't getting sent over the wire, or the response isn't getting
->>>> received. The PHY seems to be working correctly.
->>>
->>> Unfortunately I don't have any RK3399 hardware. Is this a custom
->>> board/special hardware or something that is readily available in the
->>> shops? Maybe this is a good reason to buy a RK3399 based single-board
->>> computer :-)
->>
->> Not sure about the other RK3399 boards but RockPro64 is easily
->> available.
-> 
-> I was thinking to get one of those anyway ;-)
-> 
->>> I am working on the RK3568 EVB1 and have not encountered faulty
->>> behavior. DHCP works fine and I can boot via NFS. Therefore, not sure
->>> whether I can be much of help in this matter, but in case you want to
->>> discuss this further please do not hesitate to contact me off-list.
->>
->> I tried to look for the differences between RK3568 and RK3399 but the
->> upstream device tree doesn't seem to carry a gmac node in the device
->> tree for EK3568 EVB1. Do you have a pointer for the dts you're using?
-> 
-> The gmac nodes have been added recently and should enter 5.15-rc1. Until
-> then, you can check out the dts from linux-rockchip/for-next [0].
+> on boot with drivers/net/dsa/bcm_sf2.c pasted below.
 
-Do you have the upstream commit?
+The log is too jumbled up to be readable (word wrap I suppose) and
+maybe even multiple thread printing at the same time.
 
-As I compiled v5.15-rc1 and still can't get the ethernet work.
+> Saravana, can
+> you CC on me on your fix or what you would want me to be testing?
 
-Not sure if it's my Uboot->systemd-boot->customer kernel setup not 
-passing the device tree correctly or something else...
+By fix, I assume you mean when I bring back phy-handle with a proper
+fix to handle the case in the commit text? Yeah, that's going to take
+a while. It's brewing in my head and there are some issues that's not
+fully resolved. But I haven't had time to code it up or dig into the
+net code to make sure it'll work. But yes, I'll CC you when I do so
+you can test it with this case.
 
-Thanks,
-Qu
+-Saravana
 
-> 
->> Also, other than the warning "Unbalanced pm_runtime_enable!" do you
->> notice any other ill-effects without your patch?
-> 
-> No, not as such.
-> 
-> Best regards,
-> Michael
-> 
->> If this affects all RK3399 boards as ChenYu suggests quite a few users
->> are going to miss the network once they upgrade.>
->> Punit
->>
->> [...]
->>
-> 
-> [0]
-> https://git.kernel.org/pub/scm/linux/kernel/git/mmind/linux-rockchip.git/log/?h=for-next
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> 
-
+>
+> Rob can you send this to Linus quickly so we can have it in net/master
+> soon thereafter? Thanks a lot!
+>
+> [    3.577221] unimac-mdio f0b403c0.mdio: Broadcom UniMAC MDIO bus
+> [    4.480608]  sda: sda1 sda2 sda3 sda4
+> [    4.486248] sd 0:0:0:0: [sda] Attached SCSI disk
+> [   25.492127] rcu: INFO: rcu_sched self-detected stall on CPU
+> [   25.497722] rcu:     2-....: (21000 ticks this GP)
+> idle=3e2/1/0x40000002 softirq=292/292 fqs=5240
+> [   25.506448]  (t=21015 jiffies g=-395 q=69)
+> [   25.510560] NMI backtrace for cpu 2
+> [   25.514062] CPU: 2 PID: 1 Comm: swapper/0 Not tainted
+> 5.14.0-rc1-gcf4b94c8530d #100
+> [   25.521739] Hardware name: Broadcom STB (Flattened Device Tree)
+> [   25.527672] Backtrace:
+> [   25.530131] [<c0cba30c>] (dump_backtrace) from [<c0cba5bc>]
+> (show_stack+0x20/0x24)
+> [   25.537741]  r7:c0e021cc r6:00000002 r5:c0f71914 r4:60000193
+> [   25.543412] [<c0cba59c>] (show_stack) from [<c0cbf5f4>]
+> (dump_stack_lvl+0x48/0x54)
+> [   25.551009] [<c0cbf5ac>] (dump_stack_lvl) from [<c0cbf618>]
+> (dump_stack+0x18/0x1c)
+> [   25.558602]  r5:00000000 r4:00000002
+> [   25.562187] [<c0cbf600>] (dump_stack) from [<c06bf89c>]
+> (nmi_cpu_backtrace+0xc8/0xf4)
+> [   25.570045] [<c06bf7d4>] (nmi_cpu_backtrace) from [<c06bf9f0>]
+> (nmi_trigger_cpumask_backtrace+0x128/0x140)
+> [   25.579729]  r5:c22056e0 r4:c020ff84
+> [   25.583313] [<c06bf8c8>] (nmi_trigger_cpumask_backtrace) from
+> [<c02111c0>] (arch_trigger_cpumask_backtrace+0x20/0x24)
+> [   25.593957]  r7:00000002 r6:c230e186 r5:c2204e0c r4:c2249d00
+> [   25.599629] [<c02111a0>] (arch_trigger_cpumask_backtrace) from
+> [<c0cbbf00>] (rcu_dump_cpu_stacks+0x14c/0x17c)
+> [   25.609573] [<c0cbbdb4>] (rcu_dump_cpu_stacks) from [<c02a3adc>]
+> (rcu_sched_clock_irq+0x708/0xa80)
+> [   25.618562]  r10:2df0b000 r9:00000000 r8:c2203d00 r7:c20bbfc0
+> r6:c230eec0 r5:effc6fc0
+> [   25.626411]  r4:c2249d00
+> [   25.628950] [<c02a33d4>] (rcu_sched_clock_irq) from [<c02b15e8>]
+> (update_process_times+0xb0/0xdc)
+> [   25.637852]  r10:c02c5bf4 r9:effc08c0 r8:effc0880 r7:00000005
+> r6:00000000 r5:c2203d00
+> [   25.645700]  r4:effbf580
+> [   25.648239] [<c02b1538>] (update_process_times) from [<c02c5878>]
+> (tick_sched_handle+0x64/0x68)
+> [   25.656967]  r7:00000005 r6:eef70001 r5:c2573bb8 r4:effc0be8
+> [   25.662638] [<c02c5814>] (tick_sched_handle) from [<c02c5c50>]
+> (tick_sched_timer+0x5c/0xb8)
+> [   25.671015] [<c02c5bf4>] (tick_sched_timer) from [<c02b2544>]
+> (__hrtimer_run_queues+0x1bc/0x35c)
+> [   25.679829]  r7:c230f280 r6:c230f2a0 r5:effc0880 r4:effc0be8
+> [   25.685501] [<c02b2388>] (__hrtimer_run_queues) from [<c02b3308>]
+> (hrtimer_interrupt+0x130/0x2b8)
+> [   25.694400]  r10:effc09d0 r9:effc0a00 r8:ffffffff r7:7fffffff
+> r6:00000003 r5:20000193
+> [   25.702247]  r4:effc0880
+> [   25.704786] [<c02b31d8>] (hrtimer_interrupt) from [<c0a08884>]
+> (arch_timer_handler_phys+0x38/0x40)
+> [   25.713779]  r10:c0fd74f8 r9:c20ba51c r8:c2573bb8 r7:00000024
+> r6:c251d940 r5:c22056fc
+> [   25.721625]  r4:c2520c00
+> [   25.724167] [<c0a0884c>] (arch_timer_handler_phys) from [<c028d760>]
+> (handle_percpu_devid_irq+0x9c/0x214)
+> [   25.733763] [<c028d6c4>] (handle_percpu_devid_irq) from [<c0287074>]
+> (handle_domain_irq+0x6c/0x88)
+> [   25.742754]  r7:0000001e r6:00000000 r5:00000000 r4:c20ba510
+> [   25.748425] [<c0287008>] (handle_domain_irq) from [<c02012cc>]
+> (gic_handle_irq+0x8c/0xa0)
+> [   25.756632]  r7:f080200c r6:f0802000 r5:c22b8bd4 r4:c22056fc
+> [   25.762304] [<c0201240>] (gic_handle_irq) from [<c0200b38>]
+> (__irq_svc+0x58/0x74)
+> [   25.769809] Exception stack(0xc2573bb8 to 0xc2573c00)
+> [   25.774874] 3ba0:
+>     c22c268c 00000000
+> [   25.783072] 3bc0: 00000000 c25b8000 c43f2400 00000000 c22d083c
+> c2204d08 c4530578 efff4160
+> [   25.791269] 3be0: c0fd74f8 c2573c14 c2573c18 c2573c08 c07b0fe8
+> c0ccd024 60000013 ffffffff
+> [   25.799467]  r9:c2572000 r8:c4530578 r7:c2573bec r6:ffffffff
+> r5:60000013 r4:c0ccd024
+> [   25.807226] [<c0cccfe4>] (mutex_lock) from [<c07b0fe8>]
+> (device_links_busy+0x20/0x90)
+> [   25.815085] [<c07b0fc8>] (device_links_busy) from [<c07b6990>]
+> (device_release_driver_internal+0x94/0x1c8)
+> [   25.824767]  r5:00000000 r4:c43f2400
+> [   25.828352] [<c07b68fc>] (device_release_driver_internal) from
+> [<c07b6ae4>] (device_release_driver+0x20/0x24)
+> [   25.838295]  r7:c2204d08 r6:c22cd174 r5:c43f2400 r4:c2e7f030
+> [   25.843967] [<c07b6ac4>] (device_release_driver) from [<c07b4bac>]
+> (bus_remove_device+0xf0/0x148)
+> [   25.852866] [<c07b4abc>] (bus_remove_device) from [<c07af544>]
+> (device_del+0x18c/0x3f8)
+> [   25.860895]  r7:c2204d08 r6:c2573d20 r5:c43f2444 r4:c43f2400
+> [   25.866566] [<c07af3b8>] (device_del) from [<c0899dec>]
+> (phy_device_remove+0x1c/0x34)
+> [   25.874422]  r10:c0fd74f8 r9:efff4160 r8:c2204d08 r7:c2cb1240
+> r6:c2573d20 r5:efff43c0
+> [   25.882268]  r4:c43f2400
+> [   25.884810] [<c0899dd0>] (phy_device_remove) from [<c08a4014>]
+> (bcm_sf2_sw_probe+0x640/0x900)
+> [   25.893363]  r5:efff43c0 r4:c2cb1240
+> [   25.896947] [<c08a39d4>] (bcm_sf2_sw_probe) from [<c07b8e44>]
+> (platform_probe+0x6c/0xc8)
+> [   25.905069]  r10:c2331000 r9:c1253854 r8:00000000 r7:c22d0aa8
+> r6:c22d0aa8 r5:00000000
+> [   25.912917]  r4:c25eb010
+> [   25.915457] [<c07b8dd8>] (platform_probe) from [<c07b5ca8>]
+> (really_probe+0xe8/0x45c)
+> [   25.923314]  r7:c22d0aa8 r6:c231d168 r5:00000000 r4:c25eb010
+> [   25.928985] [<c07b5bc0>] (really_probe) from [<c07b60cc>]
+> (__driver_probe_device+0xb0/0x230)
+> [   25.937451]  r7:c231d168 r6:c22d0aa8 r5:c22d0aa8 r4:c25eb010
+> [   25.943123] [<c07b601c>] (__driver_probe_device) from [<c07b6290>]
+> (driver_probe_device+0x44/0xd4)
+> [   25.952111]  r9:c1253854 r8:00000000 r7:c25eb010 r6:c22d0aa8
+> r5:c236c21c r4:c236c218
+> [   25.959871] [<c07b624c>] (driver_probe_device) from [<c07b6830>]
+> (__driver_attach+0xdc/0x188)
+> [   25.968424]  r9:c1253854 r8:ffffe000 r7:c07b6754 r6:c22d0aa8
+> r5:00000000 r4:c25eb010
+> [   25.976183] [<c07b6754>] (__driver_attach) from [<c07b3a68>]
+> (bus_for_each_dev+0x84/0xc4)
+> [   25.984387]  r7:c07b6754 r6:c22d0aa8 r5:c2204d08 r4:c2e4d4b4
+> [   25.990059] [<c07b39e4>] (bus_for_each_dev) from [<c07b5510>]
+> (driver_attach+0x2c/0x30)
+> [   25.998088]  r7:00000000 r6:c2780a00 r5:c22c2a68 r4:c22d0aa8
+> [   26.003759] [<c07b54e4>] (driver_attach) from [<c07b4dd4>]
+> (bus_add_driver+0x1d0/0x210)
+> [   26.011787] [<c07b4c04>] (bus_add_driver) from [<c07b739c>]
+> (driver_register+0x84/0x118)
+> [   26.019904]  r7:00000000 r6:c122ae8c r5:c2204d08 r4:c22d0aa8
+> [   26.025574] [<c07b7318>] (driver_register) from [<c07b8a90>]
+> (__platform_driver_register+0x2c/0x34)
+> [   26.034648]  r5:c2204d08 r4:c230e780
+> [   26.038232] [<c07b8a64>] (__platform_driver_register) from
+> [<c122aeb0>] (bcm_sf2_driver_init+0x24/0x28)
+> [   26.047655] [<c122ae8c>] (bcm_sf2_driver_init) from [<c0202180>]
+> (do_one_initcall+0x64/0x254)
+> [   26.056206] [<c020211c>] (do_one_initcall) from [<c12014f4>]
+> (kernel_init_freeable+0x1e0/0x238)
+> [   26.064935]  r8:00000007 r7:c26f4900 r6:c1253834 r5:00000119 r4:c1289ab8
+> [   26.071650] [<c1201314>] (kernel_init_freeable) from [<c0cc7918>]
+> (kernel_init+0x20/0x138)
+> [   26.079946]  r10:00000000 r9:00000000 r8:00000000 r7:00000000
+> r6:00000000 r5:c0cc78f8
+> [   26.087794]  r4:00000000
+> [   26.090334] [<c0cc78f8>] (kernel_init) from [<c0200140>]
+> (ret_from_fork+0x14/0x34)
+> [   26.097927] Exception stack(0xc2573fb0 to 0xc2573ff8)
+> [   26.102992] 3fa0:                                     00000000
+> 00000000 00000000 00000000
+> [   26.111188] 3fc0: 00000000 00000000 00000000 00000000 00000000
+> 00000000 00000000 00000000
+> [   26.119385] 3fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+> [   26.126013]  r5:c0cc78f8 r4:00000000
+> [   88.495125] rcu: INFO: rcu_sched self-detected stall on CPU
+> [   88.500716] rcu:     2-....: (83367 ticks this GP)
+> idle=3e2/1/0x40000002 softirq=292/292 fqs=20831
+> [   88.509526]  (t=84018 jiffies g=-395 q=69)
+> [   88.513637] NMI backtrace for cpu 2
+> [   88.517136] CPU: 2 PID: 1 Comm: swapper/0 Not tainted
+> 5.14.0-rc1-gcf4b94c8530d #100
+> [   88.524812] Hardware name: Broadcom STB (Flattened Device Tree)
+> [   88.530745] Backtrace:
+> [   88.533203] [<c0cba30c>] (dump_backtrace) from [<c0cba5bc>]
+> (show_stack+0x20/0x24)
+> [   88.540803]  r7:c0e021cc r6:00000002 r5:c0f71914 r4:60000193
+> [   88.546475] [<c0cba59c>] (show_stack) from [<c0cbf5f4>]
+> (dump_stack_lvl+0x48/0x54)
+> [   88.554069] [<c0cbf5ac>] (dump_stack_lvl) from [<c0cbf618>]
+> (dump_stack+0x18/0x1c)
+> [   88.561662]  r5:00000000 r4:00000002
+> [   88.565246] [<c0cbf600>] (dump_stack) from [<c06bf89c>]
+> (nmi_cpu_backtrace+0xc8/0xf4)
+> [   88.573100] [<c06bf7d4>] (nmi_cpu_backtrace) from [<c06bf9f0>]
+> (nmi_trigger_cpumask_backtrace+0x128/0x140)
+> [   88.582782]  r5:c22056e0 r4:c020ff84
+> [   88.586367] [<c06bf8c8>] (nmi_trigger_cpumask_backtrace) from
+> [<c02111c0>] (arch_trigger_cpumask_backtrace+0x20/0x24)
+> [   88.597007]  r7:00000002 r6:c230e186 r5:c2204e0c r4:c2249d00
+> [   88.602679] [<c02111a0>] (arch_trigger_cpumask_backtrace) from
+> [<c0cbbf00>] (rcu_dump_cpu_stacks+0x14c/0x17c)
+> [   88.612622] [<c0cbbdb4>] (rcu_dump_cpu_stacks) from [<c02a3adc>]
+> (rcu_sched_clock_irq+0x708/0xa80)
+> [   88.621610]  r10:2df0b000 r9:00000000 r8:c2203d00 r7:c20bbfc0
+> r6:c230eec0 r5:effc6fc0
+> [   88.629456]  r4:c2249d00
+> [   88.631995] [<c02a33d4>] (rcu_sched_clock_irq) from [<c02b15e8>]
+> (update_process_times+0xb0/0xdc)
+> [   88.640894]  r10:c02c5bf4 r9:effc08c0 r8:effc0880 r7:00000014
+> r6:00000000 r5:c2203d00
+> [   88.648742]  r4:effbf580
+> [   88.651283] [<c02b1538>] (update_process_times) from [<c02c5878>]
+> (tick_sched_handle+0x64/0x68)
+> [   88.660009]  r7:00000014 r6:9a3c7c9b r5:c2573ba8 r4:effc0be8
+> [   88.665680] [<c02c5814>] (tick_sched_handle) from [<c02c5c50>]
+> (tick_sched_timer+0x5c/0xb8)
+> [   88.674057] [<c02c5bf4>] (tick_sched_timer) from [<c02b2544>]
+> (__hrtimer_run_queues+0x1bc/0x35c)
+> [   88.682870]  r7:c230f280 r6:c230f2a0 r5:effc0880 r4:effc0be8
+> [   88.688540] [<c02b2388>] (__hrtimer_run_queues) from [<c02b3308>]
+> (hrtimer_interrupt+0x130/0x2b8)
+> [   88.697439]  r10:effc09d0 r9:effc0a00 r8:ffffffff r7:7fffffff
+> r6:00000003 r5:20000193
+> [   88.705285]  r4:effc0880
+> [   88.707826] [<c02b31d8>] (hrtimer_interrupt) from [<c0a08884>]
+> (arch_timer_handler_phys+0x38/0x40)
+> [   88.716815]  r10:c0fd74f8 r9:c20ba51c r8:c2573ba8 r7:00000024
+> r6:c251d940 r5:c22056fc
+> [   88.724662]  r4:c2520c00
+> [   88.727201] [<c0a0884c>] (arch_timer_handler_phys) from [<c028d760>]
+> (handle_percpu_devid_irq+0x9c/0x214)
+> [   88.736797] [<c028d6c4>] (handle_percpu_devid_irq) from [<c0287074>]
+> (handle_domain_irq+0x6c/0x88)
+> [   88.745785]  r7:0000001e r6:00000000 r5:00000000 r4:c20ba510
+> [   88.751455] [<c0287008>] (handle_domain_irq) from [<c02012cc>]
+> (gic_handle_irq+0x8c/0xa0)
+> [   88.759659]  r7:f080200c r6:f0802000 r5:c22b8bd4 r4:c22056fc
+> [   88.765330] [<c0201240>] (gic_handle_irq) from [<c0200b38>]
+> (__irq_svc+0x58/0x74)
+> [   88.772835] Exception stack(0xc2573ba8 to 0xc2573bf0)
+> [   88.777900] 3ba0:                   c22c268c 00000000 00000000
+> c25b8000 c43f2460 00000004
+> [   88.786097] 3bc0: c22c268c c43f2400 c4530578 efff4160 c0fd74f8
+> c2573c04 c2573c08 c2573bf8
+> [   88.794293] 3be0: c07b10d4 c0ccbe44 60000013 ffffffff
+> [   88.799358]  r9:c2572000 r8:c4530578 r7:c2573bdc r6:ffffffff
+> r5:60000013 r4:c0ccbe44
+> [   88.807116] [<c0ccbe14>] (mutex_unlock) from [<c07b10d4>]
+> (device_links_unbind_consumers+0x7c/0xe8)
+> [   88.816187] [<c07b1058>] (device_links_unbind_consumers) from
+> [<c07b6970>] (device_release_driver_internal+0x74/0x1c8)
+> [   88.826914]  r9:efff4160 r8:c4530578 r7:c2204d08 r6:c22d083c
+> r5:00000000 r4:c43f2400
+> [   88.834672] [<c07b68fc>] (device_release_driver_internal) from
+> [<c07b6ae4>] (device_release_driver+0x20/0x24)
+> [   88.844617]  r7:c2204d08 r6:c22cd174 r5:c43f2400 r4:c2e7f030
+> [   88.850287] [<c07b6ac4>] (device_release_driver) from [<c07b4bac>]
+> (bus_remove_device+0xf0/0x148)
+> [   88.859186] [<c07b4abc>] (bus_remove_device) from [<c07af544>]
+> (device_del+0x18c/0x3f8)
+> [   88.867214]  r7:c2204d08 r6:c2573d20 r5:c43f2444 r4:c43f2400
+> [   88.872884] [<c07af3b8>] (device_del) from [<c0899dec>]
+> (phy_device_remove+0x1c/0x34)
+> [   88.880739]  r10:c0fd74f8 r9:efff4160 r8:c2204d08 r7:c2cb1240
+> r6:c2573d20 r5:efff43c0
+> [   88.888585]  r4:c43f2400
+> [   88.891124] [<c0899dd0>] (phy_device_remove) from [<c08a4014>]
+> (bcm_sf2_sw_probe+0x640/0x900)
+> [   88.899677]  r5:efff43c0 r4:c2cb1240
+> [   88.903261] [<c08a39d4>] (bcm_sf2_sw_probe) from [<c07b8e44>]
+> (platform_probe+0x6c/0xc8)
+> [   88.911381]  r10:c2331000 r9:c1253854 r8:00000000 r7:c22d0aa8
+> r6:c22d0aa8 r5:00000000
+> [   88.919228]  r4:c25eb010
+> [   88.921767] [<c07b8dd8>] (platform_probe) from [<c07b5ca8>]
+> (really_probe+0xe8/0x45c)
+> [   88.929625]  r7:c22d0aa8 r6:c231d168 r5:00000000 r4:c25eb010
+> [   88.935297] [<c07b5bc0>] (really_probe) from [<c07b60cc>]
+> (__driver_probe_device+0xb0/0x230)
+> [   88.943761]  r7:c231d168 r6:c22d0aa8 r5:c22d0aa8 r4:c25eb010
+> [   88.949431] [<c07b601c>] (__driver_probe_device) from [<c07b6290>]
+> (driver_probe_device+0x44/0xd4)
+> [   88.958419]  r9:c1253854 r8:00000000 r7:c25eb010 r6:c22d0aa8
+> r5:c236c21c r4:c236c218
+> [   88.966177] [<c07b624c>] (driver_probe_device) from [<c07b6830>]
+> (__driver_attach+0xdc/0x188)
+> [   88.974730]  r9:c1253854 r8:ffffe000 r7:c07b6754 r6:c22d0aa8
+> r5:00000000 r4:c25eb010
+> [   88.982489] [<c07b6754>] (__driver_attach) from [<c07b3a68>]
+> (bus_for_each_dev+0x84/0xc4)
+> [   88.990694]  r7:c07b6754 r6:c22d0aa8 r5:c2204d08 r4:c2e4d4b4
+> [   88.996365] [<c07b39e4>] (bus_for_each_dev) from [<c07b5510>]
+> (driver_attach+0x2c/0x30)
+> [   89.004394]  r7:00000000 r6:c2780a00 r5:c22c2a68 r4:c22d0aa8
+> [   89.010065] [<c07b54e4>] (driver_attach) from [<c07b4dd4>]
+> (bus_add_driver+0x1d0/0x210)
+> [   89.018093] [<c07b4c04>] (bus_add_driver) from [<c07b739c>]
+> (driver_register+0x84/0x118)
+> [   89.026209]  r7:00000000 r6:c122ae8c r5:c2204d08 r4:c22d0aa8
+> [   89.031880] [<c07b7318>] (driver_register) from [<c07b8a90>]
+> (__platform_driver_register+0x2c/0x34)
+> [   89.040954]  r5:c2204d08 r4:c230e780
+> [   89.044538] [<c07b8a64>] (__platform_driver_register) from
+> [<c122aeb0>] (bcm_sf2_driver_init+0x24/0x28)
+> [   89.053959] [<c122ae8c>] (bcm_sf2_driver_init) from [<c0202180>]
+> (do_one_initcall+0x64/0x254)
+> [   89.062509] [<c020211c>] (do_one_initcall) from [<c12014f4>]
+> (kernel_init_freeable+0x1e0/0x238)
+> [   89.071237]  r8:00000007 r7:c26f4900 r6:c1253834 r5:00000119 r4:c1289ab8
+> [   89.077951] [<c1201314>] (kernel_init_freeable) from [<c0cc7918>]
+> (kernel_init+0x20/0x138)
+> [   89.086246]  r10:00000000 r9:00000000 r8:00000000 r7:00000000
+> r6:00000000 r5:c0cc78f8
+> [   89.094093]  r4:00000000
+> [   89.096633] [<c0cc78f8>] (kernel_init) from [<c0200140>]
+> (ret_from_fork+0x14/0x34)
+> [   89.104226] Exception stack(0xc2573fb0 to 0xc2573ff8)
+> [   89.109291] 3fa0:                                     00000000
+> 00000000 00000000 00000000
+> [   89.117487] 3fc0: 00000000 00000000 00000000 00000000 00000000
+> 00000000 00000000 00000000
+> [   89.125682] 3fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+> [   89.132311]  r5:c0cc78f8 r4:00000000
+>
+> --
+> Florian
