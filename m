@@ -2,98 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6BA7410317
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 04:54:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB7DF41031F
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 04:59:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237524AbhIRCzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 22:55:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235408AbhIRCz0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 22:55:26 -0400
-Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C995FC061574;
-        Fri, 17 Sep 2021 19:54:03 -0700 (PDT)
+        id S240521AbhIRDA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 23:00:29 -0400
+Received: from mga14.intel.com ([192.55.52.115]:63746 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238949AbhIRDA1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 23:00:27 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10110"; a="222564783"
+X-IronPort-AV: E=Sophos;i="5.85,303,1624345200"; 
+   d="scan'208";a="222564783"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2021 19:59:04 -0700
+X-IronPort-AV: E=Sophos;i="5.85,303,1624345200"; 
+   d="scan'208";a="510199289"
+Received: from yhuang6-mobl1.sh.intel.com ([10.238.4.14])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2021 19:59:00 -0700
+From:   Huang Ying <ying.huang@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Huang Ying <ying.huang@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
+        Michal Hocko <mhocko@suse.com>, Wei Xu <weixugc@google.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Rientjes <rientjes@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Greg Thelen <gthelen@google.com>,
+        Keith Busch <kbusch@kernel.org>
+Subject: [PATCH] mm/migrate: fix CPUHP state to update node demotion order
+Date:   Sat, 18 Sep 2021 10:58:49 +0800
+Message-Id: <20210918025849.88901-1-ying.huang@intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1631933639;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=REJkfdtNTNFprE/RSlp+W3E2WPPvcBEYXXyYwEJ7yj4=;
-        b=FgZ2e6HJujMUnFJBsF321eCYfRjYz0qHKMG9WQQoXqCyI7c1GWzkB5jATRRWvu2g0GMemo
-        UkP8dTdQjJ0rmhaAkGzLgNgoVDX69YI3CjgTvtEX/0q0shTi9TjbLS86o1YNxknOtwytTa
-        O2xdFEpr/+mR+lhgbhnvWfHjipNllMA=
-Date:   Sat, 18 Sep 2021 02:53:59 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   yajun.deng@linux.dev
-Message-ID: <87275ec67ed69d077e0265bc01acd8a2@linux.dev>
-Subject: Re: [PATCH net-next] net: socket: add the case sock_no_xxx
- support
-To:     "Jakub Kicinski" <kuba@kernel.org>
-Cc:     davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210917183311.2db5f332@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <20210917183311.2db5f332@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20210916122943.19849-1-yajun.deng@linux.dev>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: yajun.deng@linux.dev
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-September 18, 2021 9:33 AM, "Jakub Kicinski" <kuba@kernel.org> wrote:=0A=
-=0A> On Thu, 16 Sep 2021 20:29:43 +0800 Yajun Deng wrote:=0A> =0A>> Those=
- sock_no_{mmap, socketpair, listen, accept, connect, shutdown,=0A>> sendp=
-age} functions are used many times in struct proto_ops, but they are=0A>>=
- meaningless. So we can add them support in socket and delete them in str=
-uct=0A>> proto_ops.=0A> =0A> So the reason to do this is.. what exactly?=
-=0A> =0A> Removing a couple empty helpers (which is not even part of this=
- patch)?=0A> =0A> I'm not sold, sorry.=0A=0AWhen we define a struct proto=
-_ops xxx, we only need to assign meaningful member variables that we need=
-.=0AThose {mmap, socketpair, listen, accept, connect, shutdown, sendpage}=
- members we don't need assign=0Ait if we don't need. We just need do once=
- in socket, not in every struct proto_ops.=0A=0AThese members are assigne=
-d meaningless values far more often than meaningful ones, so this patch I=
- used likely(!!sock->ops->xxx) for this case. This is the reason why I se=
-nd this patch.=0A=0AI would send a set of patchs remove most of the meani=
-ngless members assigned rather than remove sock_no_{mmap, socketpair, lis=
-ten, accept, connect, shutdown, sendpage} functions if this patch was acc=
-epted. =0Ae.g.  =0A=0Adiff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.=
-c=0Aindex 1d816a5fd3eb..86422eb440cb 100644=0A--- a/net/ipv4/af_inet.c=0A=
-+++ b/net/ipv4/af_inet.c=0A@@ -1059,20 +1059,16 @@ const struct proto_ops=
- inet_dgram_ops =3D {=0A        .release           =3D inet_release,=0A  =
-      .bind              =3D inet_bind,=0A        .connect           =3D =
-inet_dgram_connect,=0A-       .socketpair        =3D sock_no_socketpair,=
-=0A-       .accept            =3D sock_no_accept,=0A=0A--- a/net/ipv4/af_=
-inet.c=0A+++ b/net/ipv4/af_inet.c=0A@@ -1059,20 +1059,16 @@ const struct =
-proto_ops inet_dgram_ops =3D {=0A        .release           =3D inet_rele=
-ase,=0A        .bind              =3D inet_bind,=0A        .connect      =
-     =3D inet_dgram_connect,=0A-       .socketpair        =3D sock_no_soc=
-ketpair,=0A-       .accept            =3D sock_no_accept,=0A        .getn=
-ame           =3D inet_getname,=0A=0A=0A        .gettstamp         =3D so=
-ck_gettstamp,=0A-       .listen            =3D sock_no_listen,=0A        =
-.shutdown          =3D inet_shutdown,=0A        .setsockopt        =3D so=
-ck_common_setsockopt,=0A        .getsockopt        =3D sock_common_getsoc=
-kopt,=0A        .sendmsg           =3D inet_sendmsg,=0A        .read_sock=
-         =3D udp_read_sock,=0A        .recvmsg           =3D inet_recvmsg=
-,=0A-       .mmap              =3D sock_no_mmap,=0A        .sendpage     =
-     =3D inet_sendpage,=0A        .set_peek_off      =3D sk_set_peek_off,=
-=0A #ifdef CONFIG_COMPAT=0A@@ -1091,19 +1087,15 @@ static const struct pr=
-oto_ops inet_sockraw_ops =3D {=0A        .release           =3D inet_rele=
-ase,=0A        .bind              =3D inet_bind,=0A        .connect      =
-     =3D inet_dgram_connect,=0A-       .socketpair        =3D sock_no_soc=
-ketpair,=0A-       .accept            =3D sock_no_accept,=0A        .getn=
-ame           =3D inet_getname,=0A        .poll              =3D datagram=
-_poll,=0A        .ioctl             =3D inet_ioctl,=0A        .gettstamp =
-        =3D sock_gettstamp,=0A-       .listen            =3D sock_no_list=
-en,=0A        .shutdown          =3D inet_shutdown,=0A        .setsockopt=
-        =3D sock_common_setsockopt,=0A        .getsockopt        =3D sock=
-_common_getsockopt,=0A        .sendmsg           =3D inet_sendmsg,=0A    =
-    .recvmsg           =3D inet_recvmsg,=0A-       .mmap              =3D=
- sock_no_mmap,=0A        .sendpage          =3D inet_sendpage,=0A #ifdef =
-CONFIG_COMPAT=0A        .compat_ioctl      =3D inet_compat_ioctl,
+The node demotion order needs to be updated during CPU hotplug.
+Because whether a NUMA node has CPU may influence the demotion order.
+The update function should be called during CPU online/offline after
+the node_states[N_CPU] has been updated.  That is done in
+CPUHP_AP_ONLINE_DYN during CPU online and in CPUHP_MM_VMSTAT_DEAD
+during CPU offline.  But in commit 884a6e5d1f93 ("mm/migrate: update
+node demotion order on hotplug events"), the function to update node
+demotion order is called in CPUHP_AP_ONLINE_DYN during CPU
+online/offline.  This doesn't satisfy the order requirement.  So in
+this patch, we added CPUHP_AP_MM_DEMOTION_ONLINE and
+CPUHP_MM_DEMOTION_OFFLINE to be called after CPUHP_AP_ONLINE_DYN and
+CPUHP_MM_VMSTAT_DEAD during CPU online/offline, and register the
+update function on them.
+
+Fixes: 884a6e5d1f93 ("mm/migrate: update node demotion order on hotplug events")
+Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Yang Shi <shy828301@gmail.com>
+Cc: Zi Yan <ziy@nvidia.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Wei Xu <weixugc@google.com>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Greg Thelen <gthelen@google.com>
+Cc: Keith Busch <kbusch@kernel.org>
+---
+ include/linux/cpuhotplug.h | 2 ++
+ mm/migrate.c               | 8 +++++---
+ 2 files changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
+index 832d8a74fa59..5a92ea56f21b 100644
+--- a/include/linux/cpuhotplug.h
++++ b/include/linux/cpuhotplug.h
+@@ -72,6 +72,7 @@ enum cpuhp_state {
+ 	CPUHP_SLUB_DEAD,
+ 	CPUHP_DEBUG_OBJ_DEAD,
+ 	CPUHP_MM_WRITEBACK_DEAD,
++	CPUHP_MM_DEMOTION_OFFLINE,
+ 	CPUHP_MM_VMSTAT_DEAD,
+ 	CPUHP_SOFTIRQ_DEAD,
+ 	CPUHP_NET_MVNETA_DEAD,
+@@ -240,6 +241,7 @@ enum cpuhp_state {
+ 	CPUHP_AP_BASE_CACHEINFO_ONLINE,
+ 	CPUHP_AP_ONLINE_DYN,
+ 	CPUHP_AP_ONLINE_DYN_END		= CPUHP_AP_ONLINE_DYN + 30,
++	CPUHP_AP_MM_DEMOTION_ONLINE,
+ 	CPUHP_AP_X86_HPET_ONLINE,
+ 	CPUHP_AP_X86_KVM_CLK_ONLINE,
+ 	CPUHP_AP_DTPM_CPU_ONLINE,
+diff --git a/mm/migrate.c b/mm/migrate.c
+index a6a7743ee98f..77d107a4577f 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -3278,9 +3278,8 @@ static int __init migrate_on_reclaim_init(void)
+ {
+ 	int ret;
+ 
+-	ret = cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "migrate on reclaim",
+-				migration_online_cpu,
+-				migration_offline_cpu);
++	ret = cpuhp_setup_state_nocalls(CPUHP_MM_DEMOTION_OFFLINE, "mm/demotion:offline",
++					NULL, migration_offline_cpu);
+ 	/*
+ 	 * In the unlikely case that this fails, the automatic
+ 	 * migration targets may become suboptimal for nodes
+@@ -3288,6 +3287,9 @@ static int __init migrate_on_reclaim_init(void)
+ 	 * rare case, do not bother trying to do anything special.
+ 	 */
+ 	WARN_ON(ret < 0);
++	ret = cpuhp_setup_state_nocalls(CPUHP_AP_MM_DEMOTION_ONLINE, "mm/demotion:online",
++					migration_online_cpu, NULL);
++	WARN_ON(ret < 0);
+ 
+ 	hotplug_memory_notifier(migrate_on_reclaim_callback, 100);
+ 	return 0;
+-- 
+2.30.2
+
