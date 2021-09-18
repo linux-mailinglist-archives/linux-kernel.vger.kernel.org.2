@@ -2,183 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C117641066A
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 14:28:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 383CB41066B
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 14:32:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234930AbhIRM3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 08:29:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232911AbhIRM3f (ORCPT
+        id S235036AbhIRMdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 08:33:32 -0400
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:39545 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232911AbhIRMd3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 08:29:35 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25553C061574;
-        Sat, 18 Sep 2021 05:28:12 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id j13so40571106edv.13;
-        Sat, 18 Sep 2021 05:28:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DrYqs+eOtoYPesdEkD8TstkgC0IF6+9dGmCfJRa5Xx8=;
-        b=E3S7OC1EZ7fg/0rW6erGdPW7TNXDGALKz6CTlGxV5GI6q735+6rkX9kZVPIzoF5wz/
-         +y5jtAW6/yp1pOuDkf51tgi8KkPi+cA6dPLxnyb+pf4XhfWraYn1c0Uow8+xgpQ5ipeI
-         aEB6jmh+j9I8qDuq+F8YRM1ib5TzogvZ++zckzgUBT/Pcbm5omtR78O1mn2D8Oxgb94z
-         dqDr2XhOlyrYGgG+Nq+0BvmrBUbC0lcS/KNp8shaNVqM8Vl8uD0+mAnk1bBE2quA/7D4
-         taDvx6y+FVl0Ao6D7xokb+OIxTmHf/qJ+sRyQrU3E3SS4WfcVCsEB3CD1xiQkHb/HtDy
-         kvzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DrYqs+eOtoYPesdEkD8TstkgC0IF6+9dGmCfJRa5Xx8=;
-        b=d1bBqMfYwfehCjo2gXdIFIbm89k7VWb/Lyos7lyLNvBd3NLZ0QYyXZbd1MIL/02kCx
-         pLOZccNK0fa4lugBsmdGe0hgr6+VPnRpIkOgFeECdOSLIqETDD4HrZqFe5ND9MIguoa6
-         1KYQmXrHG8vudDz9HPrZ+430X/Xn1IPNy73rSTgKEDQwdEjNMcL8uJGhezQdTz5WiB+V
-         OJSLW2SRcoA0nTV9WWheVLSgKNkhWNgw0ILpV1Qi1Lxudzeq3bjFWQmUDw/N6Zurah7/
-         qVPsV/D7Wu1gBVU37mSZuFy8Po7k64eGajS4sOJHvuFlnlDMqBC6lIDtIVLLxUxWYdaB
-         F2OQ==
-X-Gm-Message-State: AOAM530ujFPcAwwPdQBWTmmOv2lznUOc1pdeoZk3Rfqw+tENbM2x6DPX
-        9HJ9YZeSKm6ILwK9vIzl7JdxOeIy9Va+6aHFpLE=
-X-Google-Smtp-Source: ABdhPJzBxykrsdId0lHveiZxzZucanHzc/79FFhMeayIf5rnAmejyo8If6A1BHeL647JiV9w5JP6lM7T6E+j3O1Yeow=
-X-Received: by 2002:a17:907:75ed:: with SMTP id jz13mr17553689ejc.506.1631968090705;
- Sat, 18 Sep 2021 05:28:10 -0700 (PDT)
+        Sat, 18 Sep 2021 08:33:29 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=xianting.tian@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UonAyR1_1631968321;
+Received: from B-LB6YLVDL-0141.local(mailfrom:xianting.tian@linux.alibaba.com fp:SMTPD_---0UonAyR1_1631968321)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sat, 18 Sep 2021 20:32:02 +0800
+Subject: Re: [PATCH v8 2/3] tty: hvc: pass DMA capable memory to put_chars()
+From:   Xianting Tian <xianting.tian@linux.alibaba.com>
+To:     Daniel Axtens <dja@axtens.net>, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, amit@kernel.org, arnd@arndb.de,
+        osandov@fb.com
+Cc:     shile.zhang@linux.alibaba.com, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+References: <20210818082122.166881-1-xianting.tian@linux.alibaba.com>
+ <20210818082122.166881-3-xianting.tian@linux.alibaba.com>
+ <87pmu8ehkk.fsf@linkitivity.dja.id.au>
+ <6e36640d-b55f-ece4-4cab-437ecec0964a@linux.alibaba.com>
+Message-ID: <614b778b-8486-c20f-d5ed-37cc3b92ada1@linux.alibaba.com>
+Date:   Sat, 18 Sep 2021 20:32:01 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <20210917034815.80264-1-songmuchun@bytedance.com>
- <20210917034815.80264-3-songmuchun@bytedance.com> <CAGsJ_4ymutSL-pbWA_TykJ2vE8ZKc+JGn+w_WWy2j7Mn-q+ebA@mail.gmail.com>
- <CAMZfGtWWvDcz+JZtj0k_YZsD4j42cgaoWOCd1o8jArizqBYKgQ@mail.gmail.com>
- <CAGsJ_4zZfemMA9=85sgASacPqaT4OnV7RaYUwtQef=BzEfqW9w@mail.gmail.com> <CAMZfGtV32Wya=rNw29S1suM8qGzHvYhaqvGeFEvsegy5Oxas0A@mail.gmail.com>
-In-Reply-To: <CAMZfGtV32Wya=rNw29S1suM8qGzHvYhaqvGeFEvsegy5Oxas0A@mail.gmail.com>
-From:   Barry Song <21cnbao@gmail.com>
-Date:   Sun, 19 Sep 2021 00:27:59 +1200
-Message-ID: <CAGsJ_4xuK6hpCEca4kM5O7xOSBpt_GJOY3NqSFM0LupN8NxRLg@mail.gmail.com>
-Subject: Re: [PATCH RESEND v2 2/4] mm: hugetlb: replace hugetlb_free_vmemmap_enabled
- with a static_key
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>,
-        Chen Huang <chenhuang5@huawei.com>,
-        "Bodeddula, Balasubramaniam" <bodeddub@amazon.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Matthew Wilcox <willy@infradead.org>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        fam.zheng@bytedance.com, Muchun Song <smuchun@gmail.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <6e36640d-b55f-ece4-4cab-437ecec0964a@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 18, 2021 at 11:48 PM Muchun Song <songmuchun@bytedance.com> wrote:
->
-> On Sat, Sep 18, 2021 at 7:15 PM Barry Song <21cnbao@gmail.com> wrote:
-> >
-> > On Sat, Sep 18, 2021 at 10:31 PM Muchun Song <songmuchun@bytedance.com> wrote:
-> > >
-> > > On Sat, Sep 18, 2021 at 12:55 PM Barry Song <21cnbao@gmail.com> wrote:
-> > > >
-> > > > On Sat, Sep 18, 2021 at 12:08 AM Muchun Song <songmuchun@bytedance.com> wrote:
-> > > > >
-> > > > > The page_head_if_fake() is used throughout memory management and the
-> > > > > conditional check requires checking a global variable, although the
-> > > > > overhead of this check may be small, it increases when the memory
-> > > > > cache comes under pressure. Also, the global variable will not be
-> > > > > modified after system boot, so it is very appropriate to use static
-> > > > > key machanism.
-> > > > >
-> > > > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > > > > ---
-> > > > >  include/linux/hugetlb.h    |  6 +++++-
-> > > > >  include/linux/page-flags.h |  6 ++++--
-> > > > >  mm/hugetlb_vmemmap.c       | 10 +++++-----
-> > > > >  3 files changed, 14 insertions(+), 8 deletions(-)
-> > > > >
-> > > > > diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-> > > > > index f7ca1a3870ea..ee3ddf3d12cf 100644
-> > > > > --- a/include/linux/hugetlb.h
-> > > > > +++ b/include/linux/hugetlb.h
-> > > > > @@ -1057,7 +1057,11 @@ static inline void set_huge_swap_pte_at(struct mm_struct *mm, unsigned long addr
-> > > > >  #endif /* CONFIG_HUGETLB_PAGE */
-> > > > >
-> > > > >  #ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
-> > > > > -extern bool hugetlb_free_vmemmap_enabled;
-> > > > > +DECLARE_STATIC_KEY_MAYBE(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON,
-> > > > > +                        hugetlb_free_vmemmap_enabled_key);
-> > > > > +#define hugetlb_free_vmemmap_enabled                                    \
-> > > > > +       static_key_enabled(&hugetlb_free_vmemmap_enabled_key)
-> > > > > +
-> > > > >  #else
-> > > > >  #define hugetlb_free_vmemmap_enabled   false
-> > > > >  #endif
-> > > > > diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
-> > > > > index 7b1a918ebd43..d68d2cf30d76 100644
-> > > > > --- a/include/linux/page-flags.h
-> > > > > +++ b/include/linux/page-flags.h
-> > > > > @@ -185,7 +185,8 @@ enum pageflags {
-> > > > >  #ifndef __GENERATING_BOUNDS_H
-> > > > >
-> > > > >  #ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
-> > > > > -extern bool hugetlb_free_vmemmap_enabled;
-> > > > > +DECLARE_STATIC_KEY_MAYBE(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON,
-> > > > > +                        hugetlb_free_vmemmap_enabled_key);
-> > > > >
-> > > > >  /*
-> > > > >   * If the feature of freeing some vmemmap pages associated with each HugeTLB
-> > > > > @@ -204,7 +205,8 @@ extern bool hugetlb_free_vmemmap_enabled;
-> > > > >   */
-> > > > >  static __always_inline const struct page *page_head_if_fake(const struct page *page)
-> > > > >  {
-> > > > > -       if (!hugetlb_free_vmemmap_enabled)
-> > > > > +       if (!static_branch_maybe(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON,
-> > > > > +                                &hugetlb_free_vmemmap_enabled_key))
-> > > >
-> > > > A question bothering me is that we still have hugetlb_free_vmemmap_enabled
-> > > > defined as static_key_enabled(&hugetlb_free_vmemmap_enabled_key).
-> > > > but here you are using static_branch_maybe() with the CONFIG and refer the key
-> > > > directly.
-> > > > Do we only need one of them? Or something is wrong?
-> > > >
-> > >
-> > > Yeah, we only need one. But my consideration is that we
-> > > use static_branch_maybe() for performance sensitive places.
-> > > So I do not change hugetlb_free_vmemmap_enabled
-> > > to static_branch_maybe(), this can reduce some codes
-> > > that need to be updated when the static key is enabled.
-> > > Actually, the user of hugetlb_free_vmemmap_enabled
-> > > is not performance sensitive.
-> >
-> > not quite sure if an unified inline API will be better, e.g.
-> >
-> > #ifdef CONFIG_SCHED_SMT
-> > extern struct static_key_false sched_smt_present;
-> >
-> > static __always_inline bool sched_smt_active(void)
-> > {
-> >         return static_branch_likely(&sched_smt_present);
-> > }
-> > #else
-> > static inline bool sched_smt_active(void) { return false; }
-> > #endif
->
-> Alright, I can change hugetlb_free_vmemmap_enabled to
-> an inline function.
->
-> >
-> > but in your case, CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
-> > is always true in your page_head_if_fake(). Why do we check it
-> > again?
->
-> That is CONFIG_HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON
-> not CONFIG_HUGETLB_PAGE_FREE_VMEMMAP.
+hi
 
-oops, sorry for missing that.
+Will you consider to continue the disscussion of this patch? thanks
 
+在 2021/8/20 下午4:43, Xianting TIan 写道:
 >
-> Thanks
+> 在 2021/8/20 下午2:49, Daniel Axtens 写道:
+>> Xianting Tian <xianting.tian@linux.alibaba.com> writes:
+>>
+>>> As well known, hvc backend driver(eg, virtio-console) can register its
+>>> operations to hvc framework. The operations can contain put_chars(),
+>>> get_chars() and so on.
+>>>
+>>> Some hvc backend may do dma in its operations. eg, put_chars() of
+>>> virtio-console. But in the code of hvc framework, it may pass DMA
+>>> incapable memory to put_chars() under a specific configuration, which
+>>> is explained in commit c4baad5029(virtio-console: avoid DMA from 
+>>> stack):
+>> We could also run into issues on powerpc where Andrew is working on
+>> adding vmap-stack but the opal hvc driver assumes that it is passed a
+>> buffer which is not in vmalloc space but in the linear mapping. So it
+>> would be good to fix this (or more clearly document what drivers can
+>> expect).
+>>
+>>> 1, c[] is on stack,
+>>>     hvc_console_print():
+>>>     char c[N_OUTBUF] __ALIGNED__;
+>>>     cons_ops[index]->put_chars(vtermnos[index], c, i);
+>>> 2, ch is on stack,
+>>>     static void hvc_poll_put_char(,,char ch)
+>>>     {
+>>>     struct tty_struct *tty = driver->ttys[0];
+>>>     struct hvc_struct *hp = tty->driver_data;
+>>>     int n;
+>>>
+>>>     do {
+>>>         n = hp->ops->put_chars(hp->vtermno, &ch, 1);
+>>>     } while (n <= 0);
+>>>     }
+>>>
+>>> Commit c4baad5029 is just the fix to avoid DMA from stack memory, which
+>>> is passed to virtio-console by hvc framework in above code. But I think
+>>> the fix is aggressive, it directly uses kmemdup() to alloc new buffer
+>>> from kmalloc area and do memcpy no matter the memory is in kmalloc area
+>>> or not. But most importantly, it should better be fixed in the hvc
+>>> framework, by changing it to never pass stack memory to the put_chars()
+>>> function in the first place. Otherwise, we still face the same issue if
+>>> a new hvc backend using dma added in the future.
+>>>
+>>> In this patch, we make 'char out_buf[N_OUTBUF]' and 'chat out_ch' part
+>>> of 'struct hvc_struct', so both two buf are no longer the stack memory.
+>>> we can use it in above two cases separately.
+>>>
+>>> Introduce another array(cons_outbufs[]) for buffer pointers next to
+>>> the cons_ops[] and vtermnos[] arrays. With the array, we can easily 
+>>> find
+>>> the buffer, instead of traversing hp list.
+>>>
+>>> With the patch, we can remove the fix c4baad5029.
+>>>
+>>> Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
+>>> Reviewed-by: Shile Zhang <shile.zhang@linux.alibaba.com>
+>>>   struct hvc_struct {
+>>>       struct tty_port port;
+>>>       spinlock_t lock;
+>>>       int index;
+>>>       int do_wakeup;
+>>> -    char *outbuf;
+>>> -    int outbuf_size;
+>>>       int n_outbuf;
+>>>       uint32_t vtermno;
+>>>       const struct hv_ops *ops;
+>>> @@ -48,6 +56,10 @@ struct hvc_struct {
+>>>       struct work_struct tty_resize;
+>>>       struct list_head next;
+>>>       unsigned long flags;
+>>> +    char out_ch;
+>>> +    char out_buf[N_OUTBUF] __ALIGNED__;
+>>> +    int outbuf_size;
+>>> +    char outbuf[0] __ALIGNED__;
+>> I'm trying to understand this patch but I am finding it very difficult
+>> to understand what the difference between `out_buf` and `outbuf`
+>> (without the underscore) is supposed to be. `out_buf` is statically
+>> sized and the size of `outbuf` is supposed to depend on the arguments to
+>> hvc_alloc(), but I can't quite figure out what the roles of each one are
+>> and their names are confusingly similiar!
+>>
+>> I looked briefly at the older revisions of the series but it didn't make
+>> things much clearer.
+>>
+>> Could you give them clearer names?
+>
+> thanks for the comments,
+>
+> It is indeed not easy to understand by the name. I will change it to a 
+> proper name if we have next version patch.
+>
+> Jiri Slaby is worring about the performance, because we need add two 
+> locks to protect 'out_ch' and 'out_buf' separately, the origin 
+> on-stack buffer is lockless.
+>
+> I don't know whether this solution can be accepted, just waiting for 
+> Jiri's further commtents.
+>
+>>
+>> Also, looking at Documentation/process/deprecated.rst, it looks like
+>> maybe we want to use a 'flexible array member' instead:
+>>
+>> .. note:: If you are using struct_size() on a structure containing a 
+>> zero-length
+>>          or a one-element array as a trailing array member, please 
+>> refactor such
+>>          array usage and switch to a `flexible array member
+>>          <#zero-length-and-one-element-arrays>`_ instead.
+>>
+>> I think we want:
+> thanks, we should use [], not [0].
+>>
+>>> +    char outbuf[] __ALIGNED__;
+>> Kind regards,
+>> Daniel
