@@ -2,92 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 096A64106DC
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 15:40:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A2E94106E4
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 15:49:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234037AbhIRNmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 09:42:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34046 "EHLO
+        id S235764AbhIRNu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 09:50:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229810AbhIRNmH (ORCPT
+        with ESMTP id S229810AbhIRNu6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 09:42:07 -0400
-Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3F56C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 06:40:43 -0700 (PDT)
-Received: from dslb-178-004-203-016.178.004.pools.vodafone-ip.de ([178.4.203.16] helo=martin-debian-2.paytec.ch)
-        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <martin@kaiser.cx>)
-        id 1mRaa2-0001lQ-0u; Sat, 18 Sep 2021 15:40:34 +0200
-From:   Martin Kaiser <martin@kaiser.cx>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Michael Straube <straube.linux@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Martin Kaiser <martin@kaiser.cx>
-Subject: [PATCH] staging: r8188eu: do not write past the end of an array
-Date:   Sat, 18 Sep 2021 15:40:24 +0200
-Message-Id: <20210918134024.23837-1-martin@kaiser.cx>
-X-Mailer: git-send-email 2.20.1
+        Sat, 18 Sep 2021 09:50:58 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 847E8C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 06:49:34 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id j13so41118862edv.13
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 06:49:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=ptsNAlDnx2IPZW6KXkEDsVtLPPD0orqeGHqL0Dz3UNs=;
+        b=Vho8igvJnKnHjQK2q3nQRQkt0guh9QKSNqWiRgrip7JWt9f7IBS2qEiP23I9Smm6y3
+         9LF+I/NB6nO6J+mfQcE8JyhbHlVmRFDme5MZtUmGKijnTUGo7hQLBEPyp2ydL7n2Wz9y
+         YBLw1HxRF9P0/na/6UyCj1aC8e7qs6m5VV5B2FkN8XjdAcusnjYiJYEnAJnmy2r1G+0h
+         9V3Ez4DJZNlLuIoZ3nXojFItWImURjeBIAwY/TbgyTVS0OOcfwDxSb7uMEiR/maTrYAL
+         3GbCR1AthC2bh1mZns+pyuGdDK+VJt7LYR+KEgG3FmD0Xe7NYoShic+BUOVDgq0Ep+8A
+         0Uug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=ptsNAlDnx2IPZW6KXkEDsVtLPPD0orqeGHqL0Dz3UNs=;
+        b=NpPFEfDf2lMxhHGO/CnU5B7U3YZ0bjOZHgtWwbQs8kcTKp/NDSK4Fpcdwdw39ogolu
+         8itu4f3QXWfqc16GBWISIphQJhkAfs3a1FXGzrfy68BdMIOmusiZZdN2IRlnIOsW4IRo
+         9P5sO5pcxftHMW2RKGHSAesjUbOJ8PqNosDLc39z8/NkOAUSFWGulSL6Pi6cq8I0hA/Z
+         bpX+tmPVNbdgGpWS7RgiFoyvnzomDLKXF/BBTa1kezfr2f63B2O4CZ21Z/kGUFaPqLtk
+         iT8KqKCZkgKtHW4f4oBml3zOTa/hp6dvRDlfRCDxjrWFVYDnfGGE+6IchBayUGYtvaoU
+         FqhQ==
+X-Gm-Message-State: AOAM530L+LvVeYvsmyQqXs9XYxT75TTCLlu9EqeUOD9YbeqBL1ATyshB
+        +nWzYPCQo5c9hhaXPb9iNBoKWe2CoLB36M0Wqhs=
+X-Google-Smtp-Source: ABdhPJy3KesBvR2nubRu6+TbhV+IGaT+hSYV1HLLDlFg+IRW2FRxb/vXHQSAxVpwfGMvMGUr6f6FkcyIiCS20jh3PK0=
+X-Received: by 2002:a17:906:ecae:: with SMTP id qh14mr2104048ejb.195.1631972972966;
+ Sat, 18 Sep 2021 06:49:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a54:2f8f:0:0:0:0:0 with HTTP; Sat, 18 Sep 2021 06:49:32
+ -0700 (PDT)
+Reply-To: mrmichelduku@outlook.com
+From:   mr michel <m223442d@gmail.com>
+Date:   Sat, 18 Sep 2021 13:49:32 +0000
+Message-ID: <CAFvfuBHo4z-zfV-p7d8784KKqqtPT-=X+H_4bd=cULeFuMxH_g@mail.gmail.com>
+Subject: Please Respond Urgently
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit f7b687d6b67e ("staging: r8188eu: remove NumTotalRFPath from struct
-hal_data_8188e") removed a for loop around a block of code that is executed
-only once when i == 0. However, without the for loop, i will never be set
-to 0 before the code block is executed. i remains at 2, which is the final
-value after the previous loop. This results in a write past the end of the
-powerlevel and MCSBase arrays.
+Greetings,
 
-[   28.480809] Kernel panic - not syncing: stack-protector: Kernel stack is corrupted in: rtl8188e_PHY_RF6052SetOFDMTxPower+0x124/0x128 [r8188eu]
-[   28.493752] ---[ end Kernel panic - not syncing: stack-protector: Kernel stack is corrupted in: rtl8188e_PHY_RF6052SetOFDMTxPower+0x124/0x128 [r8188eu] ]---
+I know that this mail will come to you as a surprise as we have never
+met before, but never mind i have decided to make this contact with
+you as I believe that you can be of great assistance to me. I need
+your assistance in transferring the sum of $11.3million to your
+private account Where this money can be shared between us.
 
-Fix this by replacing i with 0 in the code block that used to be the body of
-the loop. While at it, remove the powerlevel array that was just holding a
-temporary value.
+The money has been here in our Bank lying dormant for years now
+without anybody coming for the claim. I want to release the money to
+you as the relative to our deceased customer (the account owner) who
+died in a plane crash with his family since October 2005.
 
-Tested with Edimax EW-7811Un V2 on an ARM32 embedded system.
+By indicating your interest I will send you the full details on how
+the business will be executed.
 
-Fixes: f7b687d6b67e ("staging: r8188eu: remove NumTotalRFPath from struct hal_data_8188e")
-Signed-off-by: Martin Kaiser <martin@kaiser.cx>
----
- drivers/staging/r8188eu/hal/rtl8188e_rf6052.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/staging/r8188eu/hal/rtl8188e_rf6052.c b/drivers/staging/r8188eu/hal/rtl8188e_rf6052.c
-index 2f16c0966973..b334864feffd 100644
---- a/drivers/staging/r8188eu/hal/rtl8188e_rf6052.c
-+++ b/drivers/staging/r8188eu/hal/rtl8188e_rf6052.c
-@@ -227,7 +227,7 @@ static void getpowerbase88e(struct adapter *Adapter, u8 *pPowerLevelOFDM,
- {
- 	struct hal_data_8188e *pHalData = GET_HAL_DATA(Adapter);
- 	u32 powerBase0, powerBase1;
--	u8 i, powerlevel[2];
-+	u8 i;
- 
- 	for (i = 0; i < 2; i++) {
- 		powerBase0 = pPowerLevelOFDM[i];
-@@ -238,12 +238,11 @@ static void getpowerbase88e(struct adapter *Adapter, u8 *pPowerLevelOFDM,
- 
- 	/* Check HT20 to HT40 diff */
- 	if (pHalData->CurrentChannelBW == HT_CHANNEL_WIDTH_20)
--		powerlevel[i] = pPowerLevelBW20[i];
-+		powerBase1 = pPowerLevelBW20[0];
- 	else
--		powerlevel[i] = pPowerLevelBW40[i];
--	powerBase1 = powerlevel[i];
-+		powerBase1 = pPowerLevelBW40[0];
- 	powerBase1 = (powerBase1 << 24) | (powerBase1 << 16) | (powerBase1 << 8) | powerBase1;
--	*(MCSBase + i) = powerBase1;
-+	*MCSBase = powerBase1;
- }
- 
- static void get_rx_power_val_by_reg(struct adapter *Adapter, u8 Channel,
--- 
-2.20.1
-
+Best Regards,
+Mr.Michel Duku.
