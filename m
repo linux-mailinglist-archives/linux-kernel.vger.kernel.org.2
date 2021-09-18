@@ -2,74 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9324F4105A0
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 11:48:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F6794105A2
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 11:49:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238781AbhIRJtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 05:49:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53212 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238697AbhIRJtv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 05:49:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8056560F9C;
-        Sat, 18 Sep 2021 09:48:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631958508;
-        bh=J79zVyaYhSHXy2qTFijDe1+CyD3s14qalSH6pbbHD04=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZjH089EyKJiEY5cZLLL7rBNxGd7lmFFhUQQh7J8Mhrfb8/hU/5YpTQUkV7G0vdiCx
-         I3RLBxFOYsxRYsndov3r5aS9hkLVjTFcMx+JfBhgL/UrFpQJxOnQtcd5EPtxtJigMJ
-         Hc2UkudJl9S3qL9vNSxKTsCZ0CQ2IH4BjLOEY1w4=
-Date:   Sat, 18 Sep 2021 11:48:09 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: r8188eu: Remove unneeded if-null-free check
-Message-ID: <YUW12SAg7I2cmzVY@kroah.com>
-References: <1631956206-83175-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        id S242524AbhIRJu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 05:50:56 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:24814 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S238697AbhIRJuz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Sep 2021 05:50:55 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18I8T3CU004212;
+        Sat, 18 Sep 2021 05:49:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : content-type : mime-version; s=pp1;
+ bh=9dLHDMdViNARy19k1iJaKcR/1w7DgQdslbYG7qyGkG8=;
+ b=M6JUja24XsezOIhZx6gVdYVd8Lt0G2khpndZxcekJGJE1GSNEe1gPd5yuMhbaL/6wtZt
+ x0INluab4LBSWiw/Fx7E/g8kgeaLMx+ALglACqFAEuXw7yoVGYqAdh861KHg0AgY0x9F
+ /onL+lJSm75M1UzfUHJlA8i2tHIxtQYw7K37/NMmWKjjNkKsq09NuJxxACn0uyRXqbwp
+ mit2lHchx+7uTVYKOFq/zeVfkg26dngtEMcJkKw2IhNgwp5WbzNXVVo558bnSaLN4CUJ
+ 2P0N4HyGYcTz13sY7g3bz3OGoD36JupUUw7r3Uc6tAE1UF6ABuIdu9YtDxxxhO4qqTCz EQ== 
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3b5cmy8udc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 18 Sep 2021 05:49:30 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18I9lFwf013545;
+        Sat, 18 Sep 2021 09:49:28 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma06fra.de.ibm.com with ESMTP id 3b57chsucr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 18 Sep 2021 09:49:28 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18I9nOPD42074516
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 18 Sep 2021 09:49:25 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DD55711C054;
+        Sat, 18 Sep 2021 09:49:24 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 83C3111C04C;
+        Sat, 18 Sep 2021 09:49:24 +0000 (GMT)
+Received: from localhost (unknown [9.171.78.247])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Sat, 18 Sep 2021 09:49:24 +0000 (GMT)
+Date:   Sat, 18 Sep 2021 11:49:23 +0200
+From:   Vasily Gorbik <gor@linux.ibm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
+Subject: [GIT PULL] s390 updates for 5.15-rc2
+Message-ID: <your-ad-here.call-01631958563-ext-0235@work.hours>
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1631956206-83175-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: A-14OaLgjAoTpgimZbVwD0nUoYSjhk68
+X-Proofpoint-ORIG-GUID: A-14OaLgjAoTpgimZbVwD0nUoYSjhk68
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-18_03,2021-09-17_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
+ adultscore=0 clxscore=1015 lowpriorityscore=0 spamscore=0
+ priorityscore=1501 mlxscore=0 suspectscore=0 mlxlogscore=976 phishscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109180064
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 18, 2021 at 05:10:06PM +0800, Jiapeng Chong wrote:
-> Eliminate the following coccicheck warning:
-> 
-> ./drivers/staging/r8188eu/os_dep/usb_intf.c:545:3-8: WARNING: NULL check
-> before some freeing functions is not needed.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Fixes: 2b42bd58b321 ("staging: r8188eu: introduce new os_dep dir for RTL8188eu driver")
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> ---
->  drivers/staging/r8188eu/os_dep/usb_intf.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/drivers/staging/r8188eu/os_dep/usb_intf.c b/drivers/staging/r8188eu/os_dep/usb_intf.c
-> index d04d2f65..7e42a0a 100644
-> --- a/drivers/staging/r8188eu/os_dep/usb_intf.c
-> +++ b/drivers/staging/r8188eu/os_dep/usb_intf.c
-> @@ -541,9 +541,7 @@ static struct adapter *rtw_usb_if1_init(struct dvobj_priv *dvobj,
->  	if (status != _SUCCESS) {
->  		if (pnetdev)
->  			rtw_free_netdev(pnetdev);
-> -		else if (padapter)
-> -			vfree(padapter);
-> -		padapter = NULL;
-> +		vfree(padapter);
->  	}
->  exit:
->  	return padapter;
-> -- 
-> 1.8.3.1
-> 
+Hello Linus,
 
-You just changed how this function works. :(
+please pull s390 changes for 5.15-rc2.
 
-Please be MUCH more careful, and fix your robot.
+Thank you,
+Vasily
 
-greg k-h
+The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
+
+  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.15-3
+
+for you to fetch changes up to f5711f9df9242446feccf2bdb6fdc06a72ca1010:
+
+  s390: remove WARN_DYNAMIC_STACK (2021-09-15 14:29:21 +0200)
+
+----------------------------------------------------------------
+s390 updates for 5.15-rc2
+
+- Fix potential out-of-range access during secure boot facility detection.
+
+- Fully validate the VMA before calling follow_pte() in pci code.
+
+- Remove arch specific WARN_DYNAMIC_STACK config option.
+
+- Fix zcrypto kernel doc comments.
+
+- Update defconfigs.
+
+----------------------------------------------------------------
+Alexander Egorenkov (1):
+      s390/sclp: fix Secure-IPL facility detection
+
+David Hildenbrand (1):
+      s390/pci_mmio: fully validate the VMA before calling follow_pte()
+
+Heiko Carstens (3):
+      s390: update defconfigs
+      s390/ap: fix kernel doc comments
+      s390: remove WARN_DYNAMIC_STACK
+
+ arch/s390/Kconfig                 | 10 ----------
+ arch/s390/Makefile                |  7 -------
+ arch/s390/configs/debug_defconfig |  8 +++++---
+ arch/s390/configs/defconfig       |  5 ++++-
+ arch/s390/pci/pci_mmio.c          |  4 ++--
+ drivers/s390/char/sclp_early.c    |  3 ++-
+ drivers/s390/crypto/ap_bus.c      |  3 ++-
+ drivers/s390/crypto/ap_queue.c    |  4 ++--
+ 8 files changed, 17 insertions(+), 27 deletions(-)
