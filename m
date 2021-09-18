@@ -2,88 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D46C41082F
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 20:52:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49B8A410833
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 20:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234976AbhIRSyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 14:54:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233394AbhIRSyE (ORCPT
+        id S235442AbhIRSye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 14:54:34 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:35770 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233394AbhIRSyd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 14:54:04 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF3ADC061574
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 11:52:40 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id j13so6926908qtq.6
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 11:52:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=BneACcyG42HZe0UbSyro9wX2OdJxKzRe9GchwLXNfF0=;
-        b=kx3R8PgKqClPNvs/D1rHYI/GIry3Uk0UiubiVyr2BpN4SvoFYGvPTzxBVyLMAbs06p
-         xboR8VAddl8V4vnn16ms66uEXsTu5deyJZyfMBr3j2Txck7qPfFHOZSz+6c53ZRMw2m8
-         IkYlxBguHULm1Wf78L3hcC/RzGi9eaLqrmG/hb89Bo0E60gbiXk02WUP2ASHJVTYKiZe
-         vp42zHgi12ajf0hFDAg/Hcdva1CjVnmHpeiTwdMbDB4GlNfCfcZtDgv+trdOAN+A2C8K
-         HwbLoeM/sunTSHFU48Zyj4ZVUzS+iaSojs14I2ghCYAV8hY2rNZ5KhVKGCmqO1yyPANb
-         S5yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=BneACcyG42HZe0UbSyro9wX2OdJxKzRe9GchwLXNfF0=;
-        b=dp/Mz2txJFAxibmVF67aY6S9jV74tNI2pwt2R7KnRoWPY/Lo2OVwo8aZuMcqMoX7Z0
-         toQ+3/r9QCxIh0AGbHA8UfL6cAAjyGfguIxV+n7KImhukVzYtF5vVbtggGFpPKo5Khqp
-         3e/LxQ7qgjZEJ97Q2bmRbtpnbLoSgjSn417M1T8L8eHHbm2M4Weryb0dOFs+NXdoq9bM
-         0AbnQHbSHZBDThls5SnyLt26s+RIsfhK2NrVgr3PD82Co4gQA86WVuwvNOScg5sEc2lI
-         FHSP0W/uxzaJF4LF08Dmp03Rq0fKPsp9dxSqAI3Y4ilhtpnPSc0NeX0vggUdUINAtRtK
-         G1kw==
-X-Gm-Message-State: AOAM531Ler77wc3+56XtPINPxLdt8qGNPdsQAO/cdlQrzVi+C6gqPJiW
-        jhHN1G9G6LAGRTZT1DpwZu/V2NuhCosSXzFrE4A=
-X-Google-Smtp-Source: ABdhPJy23wwjhkepr+GSbyHPq4eKJgj63Ur0AQ+ArB2bpdEInGMNlVcdaYCO187ZbvtB6iBR7v0DdsShq0377kKSJ44=
-X-Received: by 2002:ac8:7c52:: with SMTP id o18mr13216804qtv.168.1631991159160;
- Sat, 18 Sep 2021 11:52:39 -0700 (PDT)
+        Sat, 18 Sep 2021 14:54:33 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18IIqukW055099;
+        Sat, 18 Sep 2021 13:52:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1631991176;
+        bh=7M/aVuYrnKzWKsk0oq0vlafzkgNIfFCqLDA4zjJubyU=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=KV7tpQDhC9PWW0mksniuacZPwEbB4vqJAkRqj6wAXsbtIGIi6j2Sl1uSYrjNUXOqO
+         qtr/bKE4+vp0W/5u6eerAlD3f1170qgA/XM9IFrF1qFpN6+o0aza/8ExHEbKpdTA8/
+         VMOnlPEvKneY7alTiOXBvk3rJ/MprZYa1Sneo8S4=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18IIqu9O086066
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sat, 18 Sep 2021 13:52:56 -0500
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Sat, 18
+ Sep 2021 13:52:56 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Sat, 18 Sep 2021 13:52:56 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18IIquu7092846;
+        Sat, 18 Sep 2021 13:52:56 -0500
+Date:   Sat, 18 Sep 2021 13:52:56 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Sinthu Raja <sinthu.raja@mistralsolutions.com>
+CC:     Suman Anna <s-anna@ti.com>, Rob Herring <robh+dt@kernel.org>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-remoteproc@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Sinthu Raja <sinthu.raja@ti.com>
+Subject: Re: [PATCH V2] dt-bindings: hwlock: omap: Remove redundant binding
+ example
+Message-ID: <20210918185256.jcjvlmgftycwf7lo@repeal>
+References: <20210917170805.5079-1-sinthu.raja@ti.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6214:500f:0:0:0:0 with HTTP; Sat, 18 Sep 2021 11:52:38
- -0700 (PDT)
-Reply-To: fedsnewyork6@gmail.com
-From:   FEDERAL RESERVE BANK <morganbenjaminhayden@gmail.com>
-Date:   Sat, 18 Sep 2021 19:52:38 +0100
-Message-ID: <CAJjdHWDyqGZ2GN+CTqD78acpBAJDcL0RW6EHfTLOMd=apYJGuQ@mail.gmail.com>
-Subject: FEDERAL RESERVE
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210917170805.5079-1-sinthu.raja@ti.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 22:38-20210917, Sinthu Raja wrote:
+> From: Sinthu Raja <sinthu.raja@ti.com>
+> 
+> The example includes a board-specific compatible property, this is wrong
+> as the example should be board agnostic and should represent the particular
+> binding. Also, the file includes two similar examples, but with a different
+> compatible. So, drop the entire second example
+> 
+> Fixes: d8db9dc34871 ("dt-bindings: hwlock: omap: Convert binding to YAML")
+
+Since we are cleaning up, You should probably drop the fixes. Esp when
+adding fixes, checkout the specific commit and attempt to git am this
+patch.. you would notice it wont apply.. and per stable rules, it is
+probably too trivial to backport to so many stable kernels.
+
+The later commit 891adc1303fe ("dt-bindings: hwlock: omap:
+Fix warnings with k3.yaml") attempted to fixup by making it
+board-specific, which was'nt solving the underlying problem either as
+this patch is doing..
+
+
+Also it would be nice if you could attribute this to Bjorn by adding:
+Suggested-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+
+> Signed-off-by: Sinthu Raja <sinthu.raja@ti.com>
+
+> ---
+> 
+> Changes in V2:
+> Addressed review comments, that includes dropping the redundant example,
+> updates to commit message and $subject.
+
+
+I like this version much better. Thanks Bjorn for pointing the same out,
+the yaml is much cleaner now and easier to maintain.
+
+> 
+> V1: https://lore.kernel.org/all/20210917094740.18891-1-sinthu.raja@ti.com/
+> 
+>  .../bindings/hwlock/ti,omap-hwspinlock.yaml   | 32 +------------------
+>  1 file changed, 1 insertion(+), 31 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/hwlock/ti,omap-hwspinlock.yaml b/Documentation/devicetree/bindings/hwlock/ti,omap-hwspinlock.yaml
+> index ae1b37dbee75..4feebd90bff1 100644
+> --- a/Documentation/devicetree/bindings/hwlock/ti,omap-hwspinlock.yaml
+> +++ b/Documentation/devicetree/bindings/hwlock/ti,omap-hwspinlock.yaml
+> @@ -40,38 +40,8 @@ examples:
+>  
+>    - |
+>      /* OMAP4 SoCs */
+
+^^ Drop this?
+> -    hwspinlock: spinlock@4a0f6000 {
+> +    spinlock@4a0f6000 {
+>          compatible = "ti,omap4-hwspinlock";
+>          reg = <0x4a0f6000 0x1000>;
+>          #hwlock-cells = <1>;
+>      };
+> -
+> -  - |
+> -    / {
+> -        /* K3 AM65x SoCs */
+> -        model = "Texas Instruments K3 AM654 SoC";
+> -        compatible = "ti,am654-evm", "ti,am654";
+> -        #address-cells = <2>;
+> -        #size-cells = <2>;
+> -
+> -        bus@100000 {
+> -            compatible = "simple-bus";
+> -            #address-cells = <2>;
+> -            #size-cells = <2>;
+> -            ranges = <0x00 0x00100000 0x00 0x00100000 0x00 0x00020000>, /* ctrl mmr */
+> -                     <0x00 0x30800000 0x00 0x30800000 0x00 0x0bc00000>; /* Main NavSS */
+> -
+> -            bus@30800000 {
+> -                compatible = "simple-mfd";
+> -                #address-cells = <2>;
+> -                #size-cells = <2>;
+> -                ranges = <0x00 0x30800000 0x00 0x30800000 0x00 0x0bc00000>;
+> -
+> -                spinlock@30e00000 {
+> -                    compatible = "ti,am654-hwspinlock";
+> -                    reg = <0x00 0x30e00000 0x00 0x1000>;
+> -                    #hwlock-cells = <1>;
+> -                };
+> -            };
+> -        };
+> -    };
+> -- 
+> 2.31.1
+> 
+
+
 -- 
-FEDERAL RESERVE BANK OF NEW YORK
-33 LIBERTY ST, NEW YORK
-NY 10045, UNITED STATES
-
-
-ATTENTION FUND OWNER:
-
-THE FEDERAL RESERVE BANK OF NEW YORK WRITES TO INFORM YOU THAT SOME
-FUND HAS BEEN APPROVED BY THE WORLD BANK ORGANIZATION AND PRESIDENCY
-UNION TO BE RECEIVED BY YOU AS FORM OF COMPENSATION FOR BEING A SCAM
-VICTIM IN THE PAST YEARS OR COVID-19 AFFECTED.
-
-NOTE: YOU ARE REQUESTED TO CONFIRM YOUR VALID INFORMATION SO AS TO
-ENABLE THE BANK REACH OUT TO  YOU AND BE SURE WE ARE DEALING WITH THE
-AFFECTED PERSON OR THE FAMILY.
-
-CONFIRM BELOW INFORMATION;
-
-1) COMPLETE NAME AS STATED ON YOUR ID CARD:
-2) PHONE NUMBER OR WHATSAPP NUMBER:
-3) ADDRESS:
-4) ID CARD FOR VERIFICATION :
-
-YOUR URGENT RESPONSE IS WELCOMED AS WE ARE OPEN TO RECEIVE ANY
-QUESTION THAT MAY DISTURB YOU.
-
-REGARDS
-
-BENJAMIN  TARIQ
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D)/Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
