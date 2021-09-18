@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D7A541056C
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 11:25:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3176241056D
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 11:25:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244052AbhIRJ0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 05:26:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34648 "EHLO
+        id S241035AbhIRJ0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 05:26:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238227AbhIRJ0h (ORCPT
+        with ESMTP id S238290AbhIRJ0h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 18 Sep 2021 05:26:37 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AAB1C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 02:25:11 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id d207-20020a1c1dd8000000b00307e2d1ec1aso8446616wmd.5
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 02:25:11 -0700 (PDT)
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6518DC0613C1
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 02:25:12 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id b21-20020a1c8015000000b003049690d882so11718704wmd.5
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 02:25:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=QgBNqKitN7XluKj+zUsL9+WAz3JD/lKOrQccDBQ8JQI=;
-        b=k4oFhRGBOGsi+RZc+KlST7xQg9k78Sn94z5QLlQjgdWwTZVTm/lomia0kCva8a7D/e
-         2SSm2q8udCVNCeF9UAVm2dWn6gPKg+D6caxAkJ9mW9JhmnZLvRi1BA7erkY9fBsvzmRg
-         EpJHlze7JCa7D0ICT7i84JptffwYs8jIxToD6ZFAxZPtoiSom4skU2UC7yUAJ46tMC3T
-         IL1rcj/+dHZDd96OzVUHY2mwNiVvvzPVaxNFZysqvI2FGZKHvcn33mqsZnNZnNuAk/aA
-         QheG3N88JJomcdU/3BsZ3lAjgZVjxkFBCweIUr2r3ObaRt1fW3SKPb89Kd4mPSRN/zPu
-         xgZw==
+        bh=HgLgc9yM59ExKmqslgazl+TqXbR0Gqq2UFS62UlS1Jk=;
+        b=N1b1uO2vD0KXMhrTTq0mVRySSqyWwUi58Tyi93v1L8d2x+azLPZRvC86UOB16p50Ge
+         buRZHWC0IG5WK1bYPyAaOPiVvq5G4J6NI18jEIQHhhcd5uwjfcEDt6bxmAOuaQ2Agtsb
+         HYpCbzYFvsAOYMEclCIKVUl2EVs1wyprchLJMndx8kOJiqcqecQiQwmVpl9fii5w6bCq
+         5Lt7pjnhOdq5lAhACdusOQZ29uthUUQJR14e6PVC/OAIR4s11cpjfGmFeTILZspDfcYj
+         8XVFX5dxTS9gMBnIkiRkUOnjaNwUMl57S9ZLjMR6BeJnphfg5YpNHgEirG4WpiVcu6CJ
+         z0xA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=QgBNqKitN7XluKj+zUsL9+WAz3JD/lKOrQccDBQ8JQI=;
-        b=d/AamezxcQn9c1udENwVYd/wrOh10UmibWBEFm2U91DPx4ZoG1Lx/zc22Bwt9UyCux
-         /OPc8vgB22hqjdbYN7KxspFjhi0BsOHo2rclLYMuMyCOPXlkIq0x5V8+tkBYKxyRFSuc
-         C1U2vpjb0e6W8sVpgayhaccEZPDrQfSGYcKVEMMJrKFAH/0aosfJ03mxSl/eiCKfG7Qh
-         rDRpVPZWufZGEGLcviw+A4XsvLshMH2qIVcJX0Wa0MZGUNvyLl6jHQEp86v+00qQ+BS4
-         5kAm9otJ9e0ThdHvsP7OJAB7bvuu/0MkMYqpoYi2M0rYZOuC8wIo82QRd9sBZOWwdFcO
-         Sn8g==
-X-Gm-Message-State: AOAM531+gYO38qQ102HZCwpqT9W/sJE2q+1mFSfvuBk2c5T7BpWHbE3Q
-        W8zAPY3jAuoNreZl9Kqfi7c=
-X-Google-Smtp-Source: ABdhPJwSgp7ZxDORVnToZFFFW7CJg2/IcXMITZRs3APYAUNXqgBFrJ8vuF+WM+4RrUEufZEJlJVLYQ==
-X-Received: by 2002:a7b:cc0b:: with SMTP id f11mr18095370wmh.2.1631957110215;
-        Sat, 18 Sep 2021 02:25:10 -0700 (PDT)
+        bh=HgLgc9yM59ExKmqslgazl+TqXbR0Gqq2UFS62UlS1Jk=;
+        b=Rbe6M7ADxFGs8I6Qk5dSPqtdKuLVmm1lQDBvNJ0dpJNDV90a8iYlTs0pt4YoILNTOP
+         yWMrTrTwSeJcxjSz6GwwEx8uVOBvzKbegdlfzQoupYPR6fAYikZKSf6VffWuHhYhh9DF
+         NX5VhNLN/Zi2CQVxKyuc7xASAuulB7p6yJgmocWaOFbzU27I1D+IsePvDbCYdgwBJi4P
+         OimxAJOBJMHWvhJIuQ2DTQJnmn0kBwa2isEFGcAnQhj0hBPgdlDBoUbtT8kmmKq3H67L
+         /JDz5PbZbh7iGAVvAk1EU+A1I3yTWUeu1mgQS6pWOdioLg3PgjwYfPsQgl8x7fyOLxRv
+         5wnQ==
+X-Gm-Message-State: AOAM53279Zceegz2qwD4bWnlDjsD6Zz0n8+wi2l1SNY637tHGyY9aRBi
+        JU7Zo1wc40hEP+Ycu27KmOQ=
+X-Google-Smtp-Source: ABdhPJzjH+qUW5r4KVi2JWZnD/kEwHd7oQKPn8a+6Crd44UpFQerl7qx3luCYoc7sFCMNgfokV/nEQ==
+X-Received: by 2002:a1c:7304:: with SMTP id d4mr9177832wmb.125.1631957111036;
+        Sat, 18 Sep 2021 02:25:11 -0700 (PDT)
 Received: from localhost.localdomain ([2a02:8108:96c0:3b88::ae40])
-        by smtp.gmail.com with ESMTPSA id 5sm4233742wmb.37.2021.09.18.02.25.09
+        by smtp.gmail.com with ESMTPSA id 5sm4233742wmb.37.2021.09.18.02.25.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Sep 2021 02:25:09 -0700 (PDT)
+        Sat, 18 Sep 2021 02:25:10 -0700 (PDT)
 From:   Michael Straube <straube.linux@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
         fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org,
         Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH v2 07/12] staging: r8188eu: remove macro ODM_REG
-Date:   Sat, 18 Sep 2021 11:24:38 +0200
-Message-Id: <20210918092443.8724-8-straube.linux@gmail.com>
+Subject: [PATCH v2 08/12] staging: r8188eu: remove macro ODM_BIT
+Date:   Sat, 18 Sep 2021 11:24:39 +0200
+Message-Id: <20210918092443.8724-9-straube.linux@gmail.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210918092443.8724-1-straube.linux@gmail.com>
 References: <20210918092443.8724-1-straube.linux@gmail.com>
@@ -66,24 +66,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace and remove the macro ODM_REG to make the code cleaner.
+Replace and remove the macro ODM_BIT to make the code cleaner.
 
 Signed-off-by: Michael Straube <straube.linux@gmail.com>
 ---
- drivers/staging/r8188eu/hal/odm.c               | 6 +++---
- drivers/staging/r8188eu/include/odm_interface.h | 2 --
- 2 files changed, 3 insertions(+), 5 deletions(-)
+ drivers/staging/r8188eu/hal/odm.c               | 4 ++--
+ drivers/staging/r8188eu/include/odm_interface.h | 6 ------
+ 2 files changed, 2 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/staging/r8188eu/hal/odm.c b/drivers/staging/r8188eu/hal/odm.c
-index 48c10b78f4a5..1e2deb6cdb58 100644
+index 1e2deb6cdb58..cb27edf657d9 100644
 --- a/drivers/staging/r8188eu/hal/odm.c
 +++ b/drivers/staging/r8188eu/hal/odm.c
 @@ -465,7 +465,7 @@ void ODM_Write_DIG(struct odm_dm_struct *pDM_Odm, u8 CurrentIGI)
  	struct rtw_dig *pDM_DigTable = &pDM_Odm->DM_DigTable;
  
  	if (pDM_DigTable->CurIGValue != CurrentIGI) {
--		ODM_SetBBReg(pDM_Odm, ODM_REG(IGI_A, pDM_Odm), ODM_BIT(IGI, pDM_Odm), CurrentIGI);
-+		ODM_SetBBReg(pDM_Odm, ODM_REG_IGI_A_11N, ODM_BIT(IGI, pDM_Odm), CurrentIGI);
+-		ODM_SetBBReg(pDM_Odm, ODM_REG_IGI_A_11N, ODM_BIT(IGI, pDM_Odm), CurrentIGI);
++		ODM_SetBBReg(pDM_Odm, ODM_REG_IGI_A_11N, ODM_BIT_IGI_11N, CurrentIGI);
  		pDM_DigTable->CurIGValue = CurrentIGI;
  	}
  }
@@ -91,37 +91,28 @@ index 48c10b78f4a5..1e2deb6cdb58 100644
  {
  	struct rtw_dig *pDM_DigTable = &pDM_Odm->DM_DigTable;
  
--	pDM_DigTable->CurIGValue = (u8)ODM_GetBBReg(pDM_Odm, ODM_REG(IGI_A, pDM_Odm), ODM_BIT(IGI, pDM_Odm));
-+	pDM_DigTable->CurIGValue = (u8)ODM_GetBBReg(pDM_Odm, ODM_REG_IGI_A_11N, ODM_BIT(IGI, pDM_Odm));
+-	pDM_DigTable->CurIGValue = (u8)ODM_GetBBReg(pDM_Odm, ODM_REG_IGI_A_11N, ODM_BIT(IGI, pDM_Odm));
++	pDM_DigTable->CurIGValue = (u8)ODM_GetBBReg(pDM_Odm, ODM_REG_IGI_A_11N, ODM_BIT_IGI_11N);
  	pDM_DigTable->RssiLowThresh	= DM_DIG_THRESH_LOW;
  	pDM_DigTable->RssiHighThresh	= DM_DIG_THRESH_HIGH;
  	pDM_DigTable->FALowThresh	= DM_false_ALARM_THRESH_LOW;
-@@ -865,7 +865,7 @@ void ODM_Write_CCK_CCA_Thres(struct odm_dm_struct *pDM_Odm, u8 CurCCK_CCAThres)
- 	struct rtw_dig *pDM_DigTable = &pDM_Odm->DM_DigTable;
- 
- 	if (pDM_DigTable->CurCCK_CCAThres != CurCCK_CCAThres)		/* modify by Guo.Mingzhi 2012-01-03 */
--		ODM_Write1Byte(pDM_Odm, ODM_REG(CCK_CCA, pDM_Odm), CurCCK_CCAThres);
-+		ODM_Write1Byte(pDM_Odm, ODM_REG_CCK_CCA_11N, CurCCK_CCAThres);
- 	pDM_DigTable->PreCCK_CCAThres = pDM_DigTable->CurCCK_CCAThres;
- 	pDM_DigTable->CurCCK_CCAThres = CurCCK_CCAThres;
- }
 diff --git a/drivers/staging/r8188eu/include/odm_interface.h b/drivers/staging/r8188eu/include/odm_interface.h
-index 4f35dcd0bf49..a5a7b72815f3 100644
+index a5a7b72815f3..3af58e853828 100644
 --- a/drivers/staging/r8188eu/include/odm_interface.h
 +++ b/drivers/staging/r8188eu/include/odm_interface.h
-@@ -4,12 +4,10 @@
+@@ -4,12 +4,6 @@
  #ifndef	__ODM_INTERFACE_H__
  #define __ODM_INTERFACE_H__
  
--#define _reg_11N(_name)			ODM_REG_##_name##_11N
- #define _bit_11N(_name)			ODM_BIT_##_name##_11N
- 
- #define _cat(_name, _func)	(_func##_11N(_name))
- 
--#define ODM_REG(_name, _pDM_Odm) _cat(_name, _reg)
- #define ODM_BIT(_name, _pDM_Odm) _cat(_name, _bit)
- 
+-#define _bit_11N(_name)			ODM_BIT_##_name##_11N
+-
+-#define _cat(_name, _func)	(_func##_11N(_name))
+-
+-#define ODM_BIT(_name, _pDM_Odm) _cat(_name, _bit)
+-
  enum odm_h2c_cmd {
+ 	ODM_H2C_RSSI_REPORT = 0,
+ 	ODM_H2C_PSD_RESULT= 1,
 -- 
 2.33.0
 
