@@ -2,247 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95712410678
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 14:42:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1ABE41067B
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 14:47:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236293AbhIRMoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 08:44:02 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:60200 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232440AbhIRMoB (ORCPT
+        id S236333AbhIRMsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 08:48:46 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:48415 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235206AbhIRMsp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 08:44:01 -0400
-Message-ID: <20210918114626.399467843@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1631968956;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=J2RutnZvEXhSJ6T/g1cOHESFLEKUpYsSz4YSNZ3M8Rw=;
-        b=bJQVMWPEJZQzx5OUwGwdRiUKc1XSnnVTpJ+BUP4CclD9Mm55SuS37iE4vb0kfk2lgJyO8B
-        rtv/F5NR4BTQ68dkgzQMHmUADyqPqWs7kkPZJlqTUdgGpRW+IG8yXXyvywy0DY+xpTCHdi
-        nFsBK9IkctovqsEKcCZub8w2Qgok6Gk5L4nsuiPpBkwBYiEuNfA+tN/X+uNi6fSM4fAkBp
-        5fE2uCmQbiIS1XIE4rRbPCbgrohf7BR4d6+VMe+uv5u3WmBGD2cdEzqTdimLkwfMzAJA8c
-        pUTno8Kq1oqp0srN1Gy+lniu1JHzfUNrSiDchioWPCAxYfUHidc1WT1Zlfl0IA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1631968956;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=J2RutnZvEXhSJ6T/g1cOHESFLEKUpYsSz4YSNZ3M8Rw=;
-        b=eboITd1In7x0cYr0ROqPphLW3St7A9ODsDuVU4zBikdGAw7ICFDF31QCWEMCIN4wU2iP6i
-        Vp8FxS8awv73PKBA==
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     netdev@vger.kernel.org
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sebastian Siewior <bigeasy@linutronix.de>
-Subject: [patch] net: core: Correct the sock::sk_lock.owned lockdep annotations
+        Sat, 18 Sep 2021 08:48:45 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=xianting.tian@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0Uon0NRt_1631969229;
+Received: from B-LB6YLVDL-0141.local(mailfrom:xianting.tian@linux.alibaba.com fp:SMTPD_---0Uon0NRt_1631969229)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sat, 18 Sep 2021 20:47:10 +0800
+Subject: Re: [PATCH v8 2/3] tty: hvc: pass DMA capable memory to put_chars()
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Daniel Axtens <dja@axtens.net>, jirislaby@kernel.org,
+        amit@kernel.org, arnd@arndb.de, osandov@fb.com,
+        shile.zhang@linux.alibaba.com, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+References: <20210818082122.166881-1-xianting.tian@linux.alibaba.com>
+ <20210818082122.166881-3-xianting.tian@linux.alibaba.com>
+ <87pmu8ehkk.fsf@linkitivity.dja.id.au>
+ <6e36640d-b55f-ece4-4cab-437ecec0964a@linux.alibaba.com>
+ <614b778b-8486-c20f-d5ed-37cc3b92ada1@linux.alibaba.com>
+ <YUXeSUVQRDXzAqhf@kroah.com>
+From:   Xianting Tian <xianting.tian@linux.alibaba.com>
+Message-ID: <9678a0e1-f80f-89af-e7a0-f52bd914384d@linux.alibaba.com>
+Date:   Sat, 18 Sep 2021 20:47:09 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Date:   Sat, 18 Sep 2021 14:42:35 +0200 (CEST)
+In-Reply-To: <YUXeSUVQRDXzAqhf@kroah.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-lock_sock_fast() and lock_sock_nested() contain lockdep annotations for the
-sock::sk_lock.owned 'mutex'. sock::sk_lock.owned is not a regular mutex. It
-is just lockdep wise equivalent. In fact it's an open coded trivial mutex
-implementation with some interesting features.
+thanks Greg, I will submit v9 patch for reviewing.
 
-sock::sk_lock.slock is a regular spinlock protecting the 'mutex'
-representation sock::sk_lock.owned which is a plain boolean. If 'owned' is
-true, then some other task holds the 'mutex', otherwise it is uncontended.
-As this locking construct is obviously endangered by lock ordering issues as
-any other locking primitive it got lockdep annotated via a dedicated
-dependency map sock::sk_lock.dep_map which has to be updated at the lock
-and unlock sites.
+Before, I was waiting for a new reply:(
 
-lock_sock_nested() is a straight forward 'mutex' lock operation:
-
-  might_sleep();
-  spin_lock_bh(sock::sk_lock.slock)
-  while (!try_lock(sock::sk_lock.owned)) {
-      spin_unlock_bh(sock::sk_lock.slock);
-      wait_for_release();
-      spin_lock_bh(sock::sk_lock.slock);
-  }
-
-The lockdep annotation for sock::sk_lock.owned is for unknown reasons
-_after_ the lock has been acquired, i.e. after the code block above and
-after releasing sock::sk_lock.slock, but inside the bottom halves disabled
-region:
-
-  spin_unlock(sock::sk_lock.slock);
-  mutex_acquire(&sk->sk_lock.dep_map, subclass, 0, _RET_IP_);
-  local_bh_enable();
-
-The placement after the unlock is obvious because otherwise the
-mutex_acquire() would nest into the spin lock held region.
-
-But that's from the lockdep perspective still the wrong place:
-
- 1) The mutex_acquire() is issued _after_ the successful acquisition which
-    is pointless because in a dead lock scenario this point is never
-    reached which means that if the deadlock is the first instance of
-    exposing the wrong lock order lockdep does not have a chance to detect
-    it.
-
- 2) It only works because lockdep is rather lax on the context from which
-    the mutex_acquire() is issued. Acquiring a mutex inside a bottom halves
-    and therefore non-preemptible region is obviously invalid, except for a
-    trylock which is clearly not the case here.
-
-    This 'works' stops working on RT enabled kernels where the bottom halves
-    serialization is done via a local lock, which exposes this misplacement
-    because the 'mutex' and the local lock nest the wrong way around and
-    lockdep complains rightfully about a lock inversion.
-
-The placement is wrong since the initial commit a5b5bb9a053a ("[PATCH]
-lockdep: annotate sk_locks") which introduced this.
-
-Fix it by moving the mutex_acquire() in front of the actual lock
-acquisition, which is what the regular mutex_lock() operation does as well.
-
-lock_sock_fast() is not that straight forward. It looks at the first glance
-like a convoluted trylock operation:
-
-  spin_lock_bh(sock::sk_lock.slock)
-  if (!sock::sk_lock.owned)
-      return false;
-  while (!try_lock(sock::sk_lock.owned)) {
-      spin_unlock_bh(sock::sk_lock.slock);
-      wait_for_release();
-      spin_lock_bh(sock::sk_lock.slock);
-  }
-  spin_unlock(sock::sk_lock.slock);
-  mutex_acquire(&sk->sk_lock.dep_map, subclass, 0, _RET_IP_);
-  local_bh_enable();
-  return true;
-
-But that's not the case: lock_sock_fast() is an interesting optimization
-for short critical sections which can run with bottom halves disabled and
-sock::sk_lock.slock held. This allows to shortcut the 'mutex' operation in
-the non contended case by preventing other lockers to acquire
-sock::sk_lock.owned because they are blocked on sock::sk_lock.slock, which
-in turn avoids the overhead of doing the heavy processing in release_sock()
-including waking up wait queue waiters.
-
-In the contended case, i.e. when sock::sk_lock.owned == true the behavior
-is the same as lock_sock_nested().
-
-Semantically this shortcut means, that the task acquired the 'mutex' even
-if it does not touch the sock::sk_lock.owned field in the non-contended
-case. Not telling lockdep about this shortcut acquisition is hiding
-potential lock ordering violations in the fast path.
-
-As a consequence the same reasoning as for the above lock_sock_nested()
-case vs. the placement of the lockdep annotation applies. 
-
-The current placement of the lockdep annotation was just copied from
-the original lock_sock(), now renamed to lock_sock_nested(),
-implementation.
-
-Fix this by moving the mutex_acquire() in front of the actual lock
-acquisition and adding the corresponding mutex_release() into
-unlock_sock_fast(). Also document the fast path return case with a comment.
-
-Reported-by: Sebastian Siewior <bigeasy@linutronix.de>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: netdev@vger.kernel.org
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Eric Dumazet <edumazet@google.com>
----
-
-The basic network testing I was able to do did not expose any lockdep
-complaints and as the probability that a potential lock order violation is
-hidden by the fact that the slowpath in lock_sock_fast() is never
-taken is low, I'm not expecting to see much fallout of this.
-
----
- include/net/sock.h |    1 +
- net/core/sock.c    |   37 +++++++++++++++++++++++--------------
- 2 files changed, 24 insertions(+), 14 deletions(-)
----
---- a/include/net/sock.h
-+++ b/include/net/sock.h
-@@ -1640,6 +1640,7 @@ static inline void unlock_sock_fast(stru
- 		release_sock(sk);
- 		__release(&sk->sk_lock.slock);
- 	} else {
-+		mutex_release(&sk->sk_lock.dep_map, _RET_IP_);
- 		spin_unlock_bh(&sk->sk_lock.slock);
- 	}
- }
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -3179,17 +3179,15 @@ EXPORT_SYMBOL(sock_init_data);
- 
- void lock_sock_nested(struct sock *sk, int subclass)
- {
-+	/* The sk_lock has mutex_lock() semantics here. */
-+	mutex_acquire(&sk->sk_lock.dep_map, subclass, 0, _RET_IP_);
-+
- 	might_sleep();
- 	spin_lock_bh(&sk->sk_lock.slock);
- 	if (sk->sk_lock.owned)
- 		__lock_sock(sk);
- 	sk->sk_lock.owned = 1;
--	spin_unlock(&sk->sk_lock.slock);
--	/*
--	 * The sk_lock has mutex_lock() semantics here:
--	 */
--	mutex_acquire(&sk->sk_lock.dep_map, subclass, 0, _RET_IP_);
--	local_bh_enable();
-+	spin_unlock_bh(&sk->sk_lock.slock);
- }
- EXPORT_SYMBOL(lock_sock_nested);
- 
-@@ -3227,24 +3225,35 @@ EXPORT_SYMBOL(release_sock);
-  */
- bool lock_sock_fast(struct sock *sk) __acquires(&sk->sk_lock.slock)
- {
-+	/* The sk_lock has mutex_lock() semantics here. */
-+	mutex_acquire(&sk->sk_lock.dep_map, 0, 0, _RET_IP_);
-+
- 	might_sleep();
- 	spin_lock_bh(&sk->sk_lock.slock);
- 
--	if (!sk->sk_lock.owned)
-+	if (!sk->sk_lock.owned) {
- 		/*
--		 * Note : We must disable BH
-+		 * Fast path return with bottom halves disabled and
-+		 * sock::sk_lock.slock held.
-+		 *
-+		 * The 'mutex' is not contended and holding
-+		 * sock::sk_lock.slock prevents all other lockers to
-+		 * proceed so the corresponding unlock_sock_fast() can
-+		 * avoid the slow path of release_sock() completely and
-+		 * just release slock.
-+		 *
-+		 * From a semantical POV this is equivalent to 'acquiring'
-+		 * the 'mutex', hence the corresponding lockdep
-+		 * mutex_release() has to happen in the fast path of
-+		 * unlock_sock_fast().
- 		 */
- 		return false;
-+	}
- 
- 	__lock_sock(sk);
- 	sk->sk_lock.owned = 1;
--	spin_unlock(&sk->sk_lock.slock);
--	/*
--	 * The sk_lock has mutex_lock() semantics here:
--	 */
--	mutex_acquire(&sk->sk_lock.dep_map, 0, 0, _RET_IP_);
- 	__acquire(&sk->sk_lock.slock);
--	local_bh_enable();
-+	spin_unlock_bh(&sk->sk_lock.slock);
- 	return true;
- }
- EXPORT_SYMBOL(lock_sock_fast);
-
+ÔÚ 2021/9/18 ÏÂÎç8:40, Greg KH Ð´µÀ:
+> On Sat, Sep 18, 2021 at 08:32:01PM +0800, Xianting Tian wrote:
+>> hi
+>>
+>> Will you consider to continue the disscussion of this patch? thanks
+> I do not see a newer version of this series.
+>
+> thanks,
+>
+> greg k-h
