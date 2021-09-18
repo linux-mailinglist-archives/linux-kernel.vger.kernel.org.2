@@ -2,97 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAD8C4107CE
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 19:22:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C7CF4107D0
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 19:22:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238920AbhIRRXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 13:23:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53930 "EHLO
+        id S239213AbhIRRYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 13:24:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236861AbhIRRX3 (ORCPT
+        with ESMTP id S236861AbhIRRYS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 13:23:29 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFB2EC061574
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 10:22:05 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id i4so47310873lfv.4
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 10:22:05 -0700 (PDT)
+        Sat, 18 Sep 2021 13:24:18 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 522D8C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 10:22:54 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id nn5-20020a17090b38c500b0019af1c4b31fso9674325pjb.3
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 10:22:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=VJ9K4Ss0fO8sq3w3fi+s1XQy4Iv3mwXh4Uemm8nutng=;
-        b=HtuwRZUCtjojC6VdTZELWNXgY00qcbptQey5+LTejhwWo5g8CMmknjSym9G74RH6Ma
-         oPcVOCFM0bvoDz0JDWFOmLoHw2mzTecjQrEShzwr3fyltdeg/Yk3k9bXEJyFI8+DILmo
-         Zn76QBbRztSInJyQGaDYETcYPmfh81XD1W72o=
+        d=gmail.com; s=20210112;
+        h=cc:subject:to:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=6babHy+b4BwGbNSFMykruhsxsT6H8Mxu4ETZghrYvkY=;
+        b=cSTtO2h+7FNhdz1XrStuIFt89EQjCjP9BySawI99Na3gXZCNJxuWat8RU1l7kxWZ47
+         rouiu8VrXDLhMALCW0JGnmTiU0QHvVB/CqbPDlC2vdSTB6b9hMI4cv51kMuAQaeSFX9q
+         6G3WDXmG8i8d+it3CExGOhLtYdRLWHUufnSzQgU665HyE8HU2R+B3W2S9yeq48eqNtSO
+         6V0WxaJOCu5Hs65ltkuFOHx6bCkPCujbaMGbYRQ+HjdGaka6cOfOKrP0faqRf+hgb+NI
+         7ri/48CTg3pmR9mCdSzsdy5xHUolmPJQMUhUO2hcojYrXVJlzDMwFihwkPSQPknAdIGY
+         QrFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=VJ9K4Ss0fO8sq3w3fi+s1XQy4Iv3mwXh4Uemm8nutng=;
-        b=r8qUsmcizAN4ncd+qk21GvCkF7vDGDgZ99uljoRUffQRfRzJUQXomXX9x4Ti5Yh12s
-         xwiCMHrjV05PmZdKW/hFXNpbKIoFeQM4YbgqCQcXlJY4odig7v02Gl++odAjnZBUskRg
-         QejN9Amz/E6chPRl7e+gdS9h+f9o7jR58TtD4brIdF0X4kWxvgvJ5b8i9y+IsLW5aZ/C
-         ptIgZcL+m5q3wf2cAVsxdcFwvmiORGy+VJbKDHkBsE0euD5EqARr7yVqvjuX8ZU7jcXM
-         /ZhHkS4zPz176RKtHD85n6H4w+RX3OZbop8FPHZ0MvotjInsrygNVyncrlpW1AL5t56K
-         DNNw==
-X-Gm-Message-State: AOAM5301g/Qh6MltZ8Fu7By5yadEov/Augk6oHWWIyXqEqEOVfzZ2t3H
-        baSvmdw91RT+8nYyWQxsZ4YD4LUAlMf+KhpQLm0=
-X-Google-Smtp-Source: ABdhPJw69ApbVPbXIE0O4v+urTKBunEWNF5gHaHRmBi01o9Vmmju+9kO27YyzcwAx0KmImguJj4GVA==
-X-Received: by 2002:a05:6512:3183:: with SMTP id i3mr12059059lfe.104.1631985723726;
-        Sat, 18 Sep 2021 10:22:03 -0700 (PDT)
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com. [209.85.167.54])
-        by smtp.gmail.com with ESMTPSA id k15sm1186871ljg.45.2021.09.18.10.22.00
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6babHy+b4BwGbNSFMykruhsxsT6H8Mxu4ETZghrYvkY=;
+        b=ckJauTcKw6oXSRU9IeUBV9XluP6W9D+8r0cBV1sbZsoB/+KuGpsakypwGPY5NFed2U
+         oAny64KKvPfrSPpzYIo/VbQC0HVaf7yE/tHFKAUnTD+SWEmAcu4ghbja5hdZCyRRmEKi
+         j71pRei/RniuJsG74QCLJpSMATieSAtnEl1YaGypUSdNK+Pnjot09uz2UIW7NEA8qY0d
+         WWZ+4cWrW0SKy12e0S6y+UQWcI42fiRyJzpRaL2LMm3zxc6LomMcomecN13Xhtq7vfk0
+         tLyQlgSX0WcuVK9+hrPDlhckKjUN5GH9SiJ8aQR55b/1KWxmMZpK2yyUE6ZmWthR8bnT
+         GrHg==
+X-Gm-Message-State: AOAM530fJGgiTR610h+WmC6dPOOnJtbPGVgQnhW/X6meRVwNRy5VNf7e
+        JcFlVpy1WkIJj+X+DGpspLxiYPi7c43Ybw==
+X-Google-Smtp-Source: ABdhPJxP/UqD44WL8Ns2o3Towek7WupWws3FWrE60+DczWiPoV4OAZl8YB+AGVOAqX7hNm3TgCno6A==
+X-Received: by 2002:a17:90b:3904:: with SMTP id ob4mr16650763pjb.148.1631985773609;
+        Sat, 18 Sep 2021 10:22:53 -0700 (PDT)
+Received: from [192.168.1.6] ([117.98.200.228])
+        by smtp.gmail.com with ESMTPSA id 26sm11914447pgx.72.2021.09.18.10.22.51
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 18 Sep 2021 10:22:01 -0700 (PDT)
-Received: by mail-lf1-f54.google.com with SMTP id c8so46863328lfi.3
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 10:22:00 -0700 (PDT)
-X-Received: by 2002:a05:6512:94e:: with SMTP id u14mr12398440lft.173.1631985720656;
- Sat, 18 Sep 2021 10:22:00 -0700 (PDT)
+        Sat, 18 Sep 2021 10:22:53 -0700 (PDT)
+Cc:     saurav.girepunje@hotmail.com, Larry.Finger@lwfinger.net,
+        phil@philpotter.co.uk, straube.linux@gmail.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: r8188eu: core: remove the function
+ power_saving_wk_hdl
+To:     Greg KH <gregkh@linuxfoundation.org>
+References: <YTub30ZRG3oLbxQW@user> <YT951VyaUEX8uFpz@kroah.com>
+From:   Saurav Girepunje <saurav.girepunje@gmail.com>
+Message-ID: <45c4de06-f618-4352-91ea-885edecdf8bb@gmail.com>
+Date:   Sat, 18 Sep 2021 22:52:50 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210918095134.GA5001@tower> <202109181311.18IDBKQB005215@valdese.nms.ulrich-teichert.org>
- <CAHk-=whY5mLggPSr2U00mqgUbRJYnYSxtNZm4FnEtQrHftYr8Q@mail.gmail.com> <56956079-19c3-d67e-d3f-92e475c71f6b@tarent.de>
-In-Reply-To: <56956079-19c3-d67e-d3f-92e475c71f6b@tarent.de>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 18 Sep 2021 10:21:44 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgj=fFDt6mkiOmRs7pdcYJSibqpVvwcG9_0rbVJEjBCsw@mail.gmail.com>
-Message-ID: <CAHk-=wgj=fFDt6mkiOmRs7pdcYJSibqpVvwcG9_0rbVJEjBCsw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] Introduce and use absolute_pointer macro
-To:     Thorsten Glaser <t.glaser@tarent.de>
-Cc:     Ulrich Teichert <krypton@ulrich-teichert.org>,
-        Michael Cree <mcree@orcon.net.nz>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-parisc@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
-        Sparse Mailing-list <linux-sparse@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YT951VyaUEX8uFpz@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 18, 2021 at 10:17 AM Thorsten Glaser <t.glaser@tarent.de> wrote=
-:
->
-> Considering you can actually put ISA cards, 8 and 16 bit both,
-> into EISA slots, I=E2=80=99d have assumed so. I don=E2=80=99t understand =
-the
-> =E2=80=9CEISA only=E2=80=9D question above.
 
-Oh, it's so long since I had one of those machines I didn't even
-remember that EISA took ISA cards too.
 
-But yeah, there are also apparently PCI-based alpha machines with
-actual ISA card slots.
+On 13/09/21 9:48 pm, Greg KH wrote:
+> On Fri, Sep 10, 2021 at 11:24:39PM +0530, Saurav Girepunje wrote:
+>> Remove the function power_saving_wk_hdl() as it just calling
+>> the rtw_ps_processor().Instead of power_saving_wk_hdl() call directly
+>> rtw_ps_processor().
+>>
+>> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+>> ---
+>>   drivers/staging/r8188eu/core/rtw_cmd.c | 7 +------
+>>   1 file changed, 1 insertion(+), 6 deletions(-)
+>>
+>> diff --git a/drivers/staging/r8188eu/core/rtw_cmd.c b/drivers/staging/r8188eu/core/rtw_cmd.c
+>> index ce73ac7cf973..35e6a943c556 100644
+>> --- a/drivers/staging/r8188eu/core/rtw_cmd.c
+>> +++ b/drivers/staging/r8188eu/core/rtw_cmd.c
+>> @@ -1669,11 +1669,6 @@ u8 rtw_antenna_select_cmd(struct adapter *padapter, u8 antenna, u8 enqueue)
+>>   	return res;
+>>   }
+>>
+>> -static void power_saving_wk_hdl(struct adapter *padapter, u8 *pbuf, int sz)
+>> -{
+>> -	 rtw_ps_processor(padapter);
+>> -}
+>> -
+>>   #ifdef CONFIG_88EU_P2P
+>>   u8 p2p_protocol_wk_cmd(struct adapter *padapter, int intCmdType)
+>>   {
+>> @@ -1941,7 +1936,7 @@ u8 rtw_drvextra_cmd_hdl(struct adapter *padapter, unsigned char *pbuf)
+>>   		dynamic_chk_wk_hdl(padapter, pdrvextra_cmd->pbuf, pdrvextra_cmd->type_size);
+>>   		break;
+>>   	case POWER_SAVING_CTRL_WK_CID:
+>> -		power_saving_wk_hdl(padapter, pdrvextra_cmd->pbuf, pdrvextra_cmd->type_size);
+>> +		rtw_ps_processor(padapter);
+>>   		break;
+>>   	case LPS_CTRL_WK_CID:
+>>   		lps_ctrl_wk_hdl(padapter, (u8)pdrvextra_cmd->type_size);
+>> --
+>> 2.32.0
+>>
+>>
+> 
+> Also does not apply to my tree.  Please rebase against my staging-next
+> branch and resend.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-            Linus
+Hi Greg,
+
+I always do rebase against your staging-testing branch. Can you help me 
+to understand.When we need to rebase on staging-next. Do we always need 
+to rebase against staging-next..!
+
+
+Regards,
+Saurav Girepunje
