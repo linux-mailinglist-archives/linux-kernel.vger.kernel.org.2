@@ -2,130 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BDCC410824
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 20:47:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D46C41082F
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 20:52:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234355AbhIRSs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 14:48:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47548 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233539AbhIRSsy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 14:48:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 65F6F61179;
-        Sat, 18 Sep 2021 18:47:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631990850;
-        bh=sXrYWbDc0/zJ0anCv51/5CNRbVEo3f9JGglXRPxPPnA=;
-        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-        b=IdW+hk+BdQ3c7S5r7ksVpU82/PMuLZlO9m5uoovA+dNs1ms7+dEoxBTn52xD9n2fT
-         HURKFY2hnynlkwfIynCZgt9JVfJTTbaKCEw4++I06j4XXTJpSkn2OcKsi580V+/WEJ
-         dT0vWJQWH+7+QEZlJjsBBsBqTcfMvHz5ejEvLtiTVm9le/XFhPlnON1INt0JM4pWbi
-         MPWVnob20dwicujY8lQtONaoO5vPjid/ThSLbSvFwnACEScXi+ci244zUVrd1/kefF
-         xfjIBp9YQJyu2c6z6GOaSZzbHIaUfcVr0++juekEqPMCYLRpedFQPHrdo7yGqyDEhu
-         q3ealWrITjYQQ==
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 864AD27C0054;
-        Sat, 18 Sep 2021 14:47:29 -0400 (EDT)
-Received: from imap2 ([10.202.2.52])
-  by compute6.internal (MEProxy); Sat, 18 Sep 2021 14:47:29 -0400
-X-ME-Sender: <xms:QTRGYY3dQj8ySfv3KUUmDu5wGENHPR5Ut7oLYBfsgRTl7f1a_Vwmug>
-    <xme:QTRGYTEfd87V0qCpUZYwWwX0pArJv_Bgd5QctnXqu4BcBh0_IMik4haqglsd660pB
-    Xz5FNfw-KQ_0clEfXU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudehkedguddviecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvufgtgfesthhqredtreerjeenucfhrhhomhepfdet
-    nhguhicunfhuthhomhhirhhskhhifdcuoehluhhtoheskhgvrhhnvghlrdhorhhgqeenuc
-    ggtffrrghtthgvrhhnpedvleehjeejvefhuddtgeegffdtjedtffegveethedvgfejieev
-    ieeufeevuedvteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
-    hrohhmpegrnhguhidomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqudduiedu
-    keehieefvddqvdeifeduieeitdekqdhluhhtoheppehkvghrnhgvlhdrohhrgheslhhinh
-    hugidrlhhuthhordhush
-X-ME-Proxy: <xmx:QTRGYQ6mSiXKQHFsFxPqAh4ud6fBKgSdGUFA0KwvbwjOC7zDWxRahw>
-    <xmx:QTRGYR20xG_8MsZVvPpC0NVWKtov1YjtFfUk8oP_trJHKd4jc69dpQ>
-    <xmx:QTRGYbGCkr13Ht5MgQJR0TiLq2dINde7A-FDzgSJTLAa1fCUWv6ZKA>
-    <xmx:QTRGYTBUQc-exRLjdbEusRghXGpQaFaAWDkD9RhJVyL8sKZwbfCURw>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id F2BEFA03DC4; Sat, 18 Sep 2021 14:47:28 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-1291-gc66fc0a3a2-fm-20210913.001-gc66fc0a3
-Mime-Version: 1.0
-Message-Id: <2ebf1a9d-77d5-472b-a99a-b141654725da@www.fastmail.com>
-In-Reply-To: <20210916092719.v4pkhhugdiq7ytcp@wittgenstein>
-References: <705fde50-37a6-49ed-b9c2-c9107cd88189@t-8ch.de>
- <CALCETrUM0cko=5ki-Dd402DNFU2TmgnJTz_vfrsaofkGD-1kmA@mail.gmail.com>
- <20210916092719.v4pkhhugdiq7ytcp@wittgenstein>
-Date:   Sat, 18 Sep 2021 11:47:07 -0700
-From:   "Andy Lutomirski" <luto@kernel.org>
-To:     "Christian Brauner" <christian.brauner@ubuntu.com>
-Cc:     =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas@t-8ch.de>,
-        "Linux API" <linux-api@vger.kernel.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        "Luis Chamberlain" <mcgrof@kernel.org>,
-        "Jessica Yu" <jeyu@kernel.org>
-Subject: Re: [RFC] Expose request_module via syscall
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        id S234976AbhIRSyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 14:54:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233394AbhIRSyE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Sep 2021 14:54:04 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF3ADC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 11:52:40 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id j13so6926908qtq.6
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 11:52:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=BneACcyG42HZe0UbSyro9wX2OdJxKzRe9GchwLXNfF0=;
+        b=kx3R8PgKqClPNvs/D1rHYI/GIry3Uk0UiubiVyr2BpN4SvoFYGvPTzxBVyLMAbs06p
+         xboR8VAddl8V4vnn16ms66uEXsTu5deyJZyfMBr3j2Txck7qPfFHOZSz+6c53ZRMw2m8
+         IkYlxBguHULm1Wf78L3hcC/RzGi9eaLqrmG/hb89Bo0E60gbiXk02WUP2ASHJVTYKiZe
+         vp42zHgi12ajf0hFDAg/Hcdva1CjVnmHpeiTwdMbDB4GlNfCfcZtDgv+trdOAN+A2C8K
+         HwbLoeM/sunTSHFU48Zyj4ZVUzS+iaSojs14I2ghCYAV8hY2rNZ5KhVKGCmqO1yyPANb
+         S5yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=BneACcyG42HZe0UbSyro9wX2OdJxKzRe9GchwLXNfF0=;
+        b=dp/Mz2txJFAxibmVF67aY6S9jV74tNI2pwt2R7KnRoWPY/Lo2OVwo8aZuMcqMoX7Z0
+         toQ+3/r9QCxIh0AGbHA8UfL6cAAjyGfguIxV+n7KImhukVzYtF5vVbtggGFpPKo5Khqp
+         3e/LxQ7qgjZEJ97Q2bmRbtpnbLoSgjSn417M1T8L8eHHbm2M4Weryb0dOFs+NXdoq9bM
+         0AbnQHbSHZBDThls5SnyLt26s+RIsfhK2NrVgr3PD82Co4gQA86WVuwvNOScg5sEc2lI
+         FHSP0W/uxzaJF4LF08Dmp03Rq0fKPsp9dxSqAI3Y4ilhtpnPSc0NeX0vggUdUINAtRtK
+         G1kw==
+X-Gm-Message-State: AOAM531Ler77wc3+56XtPINPxLdt8qGNPdsQAO/cdlQrzVi+C6gqPJiW
+        jhHN1G9G6LAGRTZT1DpwZu/V2NuhCosSXzFrE4A=
+X-Google-Smtp-Source: ABdhPJy23wwjhkepr+GSbyHPq4eKJgj63Ur0AQ+ArB2bpdEInGMNlVcdaYCO187ZbvtB6iBR7v0DdsShq0377kKSJ44=
+X-Received: by 2002:ac8:7c52:: with SMTP id o18mr13216804qtv.168.1631991159160;
+ Sat, 18 Sep 2021 11:52:39 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 2002:a05:6214:500f:0:0:0:0 with HTTP; Sat, 18 Sep 2021 11:52:38
+ -0700 (PDT)
+Reply-To: fedsnewyork6@gmail.com
+From:   FEDERAL RESERVE BANK <morganbenjaminhayden@gmail.com>
+Date:   Sat, 18 Sep 2021 19:52:38 +0100
+Message-ID: <CAJjdHWDyqGZ2GN+CTqD78acpBAJDcL0RW6EHfTLOMd=apYJGuQ@mail.gmail.com>
+Subject: FEDERAL RESERVE
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+-- 
+FEDERAL RESERVE BANK OF NEW YORK
+33 LIBERTY ST, NEW YORK
+NY 10045, UNITED STATES
 
 
-On Thu, Sep 16, 2021, at 2:27 AM, Christian Brauner wrote:
-> On Wed, Sep 15, 2021 at 09:47:25AM -0700, Andy Lutomirski wrote:
-> > On Wed, Sep 15, 2021 at 8:50 AM Thomas Wei=C3=9Fschuh <thomas@t-8ch.=
-de> wrote:
-> > >
-> > > Hi,
-> > >
-> > > I would like to propose a new syscall that exposes the functionali=
-ty of
-> > > request_module() to userspace.
-> > >
-> > > Propsed signature: request_module(char *module_name, char **args, =
-int flags);
-> > > Where args and flags have to be NULL and 0 for the time being.
-> > >
-> > > Rationale:
-> > >
-> > > We are using nested, privileged containers which are loading kerne=
-l modules.
-> > > Currently we have to always pass around the contents of /lib/modul=
-es from the
-> > > root namespace which contains the modules.
-> > > (Also the containers need to have userspace components for modulel=
-oading
-> > > installed)
-> > >
-> > > The syscall would remove the need for this bookkeeping work.
-> >=20
-> > I feel like I'm missing something, and I don't understand the purpose
-> > of this syscall.  Wouldn't the right solution be for the container to
-> > have a stub module loader (maybe doable with a special /sbin/modprobe
-> > or maybe a kernel patch would be needed, depending on the exact use
-> > case) and have the stub call out to the container manager to request
-> > the module?  The container manager would check its security policy a=
-nd
-> > load the module or not load it as appropriate.
->=20
-> I don't see the need for a syscall like this yet either.
->=20
-> This should be the job of the container manager. modprobe just calls t=
-he
-> init_module() syscall, right?
+ATTENTION FUND OWNER:
 
-Not quite so simple. modprobe parses things in /lib/modules and maybe /e=
-tc to decide what init_module() calls to do.
+THE FEDERAL RESERVE BANK OF NEW YORK WRITES TO INFORM YOU THAT SOME
+FUND HAS BEEN APPROVED BY THE WORLD BANK ORGANIZATION AND PRESIDENCY
+UNION TO BE RECEIVED BY YOU AS FORM OF COMPENSATION FOR BEING A SCAM
+VICTIM IN THE PAST YEARS OR COVID-19 AFFECTED.
 
-But I admit I=E2=80=99m a bit confused.  What exactly is the container d=
-oing that causes the container=E2=80=99s copy of modprobe to be called?
+NOTE: YOU ARE REQUESTED TO CONFIRM YOUR VALID INFORMATION SO AS TO
+ENABLE THE BANK REACH OUT TO  YOU AND BE SURE WE ARE DEALING WITH THE
+AFFECTED PERSON OR THE FAMILY.
 
->=20
-> If so the seccomp notifier can be used to intercept this system call f=
-or
-> the container and verify the module against an allowlist similar to how
-> we currently handle mount.
->=20
-> Christian
->=20
+CONFIRM BELOW INFORMATION;
+
+1) COMPLETE NAME AS STATED ON YOUR ID CARD:
+2) PHONE NUMBER OR WHATSAPP NUMBER:
+3) ADDRESS:
+4) ID CARD FOR VERIFICATION :
+
+YOUR URGENT RESPONSE IS WELCOMED AS WE ARE OPEN TO RECEIVE ANY
+QUESTION THAT MAY DISTURB YOU.
+
+REGARDS
+
+BENJAMIN  TARIQ
