@@ -2,66 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AC1F4108D4
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 00:22:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 723F04108DE
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 00:53:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240331AbhIRWXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 18:23:40 -0400
-Received: from mail-pg1-f171.google.com ([209.85.215.171]:33548 "EHLO
-        mail-pg1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235704AbhIRWXj (ORCPT
+        id S240475AbhIRWyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 18:54:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29391 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232125AbhIRWyu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 18:23:39 -0400
-Received: by mail-pg1-f171.google.com with SMTP id u18so13479990pgf.0;
-        Sat, 18 Sep 2021 15:22:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=UmP8+XXs+eSLZ6wvZzS+PmN2+AkP9MthCeXz+zj3S80=;
-        b=WHAO1PUkq1E+lPKLUSehRyxzl5cdljt3hjMKKU+jmLpUcKToc6I9MSLkBb3f/pbyoi
-         eOvb1eqVdU2W2yNG25RYx7zOv3G8f/dUw+odlLuAFdlLlWX/YFVn/ce1qJBaHN8nPEao
-         Eq4UgEv7fUUGRrRnK7AicJwig8BNJTMUrQyKyQcnRRpJems4WGc9Wt0/HEMpzxynWbMq
-         ljiLi7wxYPio2nu+TrKJCnzTB5oK92lKF8whVxqmAhfuVDh37UD0VYnlfj+QCJFSvRBO
-         vNH0gEasvrVeIi1zitmQyOwJwEUExwafG1JKtiGwENAOpHsORGIj865b1JK5g2dsrOiy
-         GnGQ==
-X-Gm-Message-State: AOAM5336s9q0ukfxy4iycvjWiEg/7beu6kGipPf3wCdJqidKLKat1G/e
-        kyEfY4jS1XVZ7Wjp7567Ltc=
-X-Google-Smtp-Source: ABdhPJw/e+EdnGPh5NJnBTYxdFfoJnn/qQkbaPq42iCh0ncuHG2aoP7eI1rbRdU34WC679DNtiB2Eg==
-X-Received: by 2002:a62:504:0:b0:440:3a98:a9d1 with SMTP id 4-20020a620504000000b004403a98a9d1mr17927044pff.23.1632003734619;
-        Sat, 18 Sep 2021 15:22:14 -0700 (PDT)
-Received: from ?IPV6:2601:647:4000:d7:8557:823d:34a5:4f8c? ([2601:647:4000:d7:8557:823d:34a5:4f8c])
-        by smtp.gmail.com with ESMTPSA id g140sm9534357pfb.100.2021.09.18.15.22.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 18 Sep 2021 15:22:13 -0700 (PDT)
-Message-ID: <c204fbcc-7d38-229a-772a-556333aed120@acm.org>
-Date:   Sat, 18 Sep 2021 15:22:12 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.0.3
-Subject: Re: [PATCH] block/mq-deadline: Fix unused-function compilation
- warning
-Content-Language: en-US
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210901064705.55071-1-tianjia.zhang@linux.alibaba.com>
- <90507369-7beb-5337-5bb3-f5e2798dee2f@linux.alibaba.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <90507369-7beb-5337-5bb3-f5e2798dee2f@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        Sat, 18 Sep 2021 18:54:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632005605;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=lywHveb4QbadqkbHKc2U8B3sS1vAi9x0BR+eneTVnlA=;
+        b=Ji19lI1G6/B0Ek9bRfVTtrAhOpSRLFu7shl86lvGH0FDjblfoDUqSTNdq7ZNRetUP8KZgm
+        RvfIn/fspeGwLDXXCYh5hM45bw3IlSxeoAydhJgQPkLd1AZdTToKJtcLkOBz/hma3FVCpM
+        lGZ989iXcIlfwiuITs02h2iQvqHeXio=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-500-0vAqNbkSOtqelq1Oh0lu9A-1; Sat, 18 Sep 2021 18:53:22 -0400
+X-MC-Unique: 0vAqNbkSOtqelq1Oh0lu9A-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 94C4F1084683;
+        Sat, 18 Sep 2021 22:53:21 +0000 (UTC)
+Received: from llong.com (unknown [10.22.8.58])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EEF4910013D6;
+        Sat, 18 Sep 2021 22:53:16 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH v2] cgroup: Make rebind_subsystems() disable v2 controllers all at once
+Date:   Sat, 18 Sep 2021 18:53:08 -0400
+Message-Id: <20210918225308.23822-1-longman@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/17/21 19:23, Tianjia Zhang wrote:
-> ping.
+It was found that the following warning was displayed when remounting
+controllers from cgroup v2 to v1:
 
-Please check Linus' master branch and Jens' for-next branch before posting
-block layer patches. This patch looks like a duplicate of patch
-https://lore.kernel.org/r/20210830091128.1854266-1-geert@linux-m68k.org,
-applied as commit 55a51ea14094a1e7dd0d7f33237d246033dd39ab.
+[ 8042.997778] WARNING: CPU: 88 PID: 80682 at kernel/cgroup/cgroup.c:3130 cgroup_apply_control_disable+0x158/0x190
+   :
+[ 8043.091109] RIP: 0010:cgroup_apply_control_disable+0x158/0x190
+[ 8043.096946] Code: ff f6 45 54 01 74 39 48 8d 7d 10 48 c7 c6 e0 46 5a a4 e8 7b 67 33 00 e9 41 ff ff ff 49 8b 84 24 e8 01 00 00 0f b7 40 08 eb 95 <0f> 0b e9 5f ff ff ff 48 83 c4 08 5b 5d 41 5c 41 5d 41 5e 41 5f c3
+[ 8043.115692] RSP: 0018:ffffba8a47c23d28 EFLAGS: 00010202
+[ 8043.120916] RAX: 0000000000000036 RBX: ffffffffa624ce40 RCX: 000000000000181a
+[ 8043.128047] RDX: ffffffffa63c43e0 RSI: ffffffffa63c43e0 RDI: ffff9d7284ee1000
+[ 8043.135180] RBP: ffff9d72874c5800 R08: ffffffffa624b090 R09: 0000000000000004
+[ 8043.142314] R10: ffffffffa624b080 R11: 0000000000002000 R12: ffff9d7284ee1000
+[ 8043.149447] R13: ffff9d7284ee1000 R14: ffffffffa624ce70 R15: ffffffffa6269e20
+[ 8043.156576] FS:  00007f7747cff740(0000) GS:ffff9d7a5fc00000(0000) knlGS:0000000000000000
+[ 8043.164663] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 8043.170409] CR2: 00007f7747e96680 CR3: 0000000887d60001 CR4: 00000000007706e0
+[ 8043.177539] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[ 8043.184673] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[ 8043.191804] PKRU: 55555554
+[ 8043.194517] Call Trace:
+[ 8043.196970]  rebind_subsystems+0x18c/0x470
+[ 8043.201070]  cgroup_setup_root+0x16c/0x2f0
+[ 8043.205177]  cgroup1_root_to_use+0x204/0x2a0
+[ 8043.209456]  cgroup1_get_tree+0x3e/0x120
+[ 8043.213384]  vfs_get_tree+0x22/0xb0
+[ 8043.216883]  do_new_mount+0x176/0x2d0
+[ 8043.220550]  __x64_sys_mount+0x103/0x140
+[ 8043.224474]  do_syscall_64+0x38/0x90
+[ 8043.228063]  entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Bart.
+It was caused by the fact that rebind_subsystem() disables
+controllers to be rebound one by one. If more than one disabled
+controllers are originally from the default hierarchy, it means that
+cgroup_apply_control_disable() will be called multiple times for the
+same default hierarchy. A controller may be killed by css_kill() in
+the first round. In the second round, the killed controller may not be
+completely dead yet leading to the warning.
+
+To avoid this problem, we collect all the ssid's of controllers that
+needed to be disabled from the default hierarchy and then disable them
+in one go instead of one by one.
+
+Fixes: 334c3679ec4b ("cgroup: reimplement rebind_subsystems() using cgroup_apply_control() and friends")
+Signed-off-by: Waiman Long <longman@redhat.com>
+---
+ kernel/cgroup/cgroup.c | 31 +++++++++++++++++++++++++++----
+ 1 file changed, 27 insertions(+), 4 deletions(-)
+
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 8afa8690d288..9e0390000025 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -1740,6 +1740,7 @@ int rebind_subsystems(struct cgroup_root *dst_root, u16 ss_mask)
+ 	struct cgroup *dcgrp = &dst_root->cgrp;
+ 	struct cgroup_subsys *ss;
+ 	int ssid, i, ret;
++	u16 dfl_disable_ss_mask = 0;
+ 
+ 	lockdep_assert_held(&cgroup_mutex);
+ 
+@@ -1756,8 +1757,28 @@ int rebind_subsystems(struct cgroup_root *dst_root, u16 ss_mask)
+ 		/* can't move between two non-dummy roots either */
+ 		if (ss->root != &cgrp_dfl_root && dst_root != &cgrp_dfl_root)
+ 			return -EBUSY;
++
++		/*
++		 * Collect ssid's that need to be disabled from default
++		 * hierarchy.
++		 */
++		if (ss->root == &cgrp_dfl_root)
++			dfl_disable_ss_mask |= 1 << ssid;
++
+ 	} while_each_subsys_mask();
+ 
++	if (dfl_disable_ss_mask) {
++		struct cgroup *scgrp = &cgrp_dfl_root.cgrp;
++
++		/*
++		 * Controllers from default hierarchy that need to be rebound
++		 * are all disabled together in one go.
++		 */
++		cgrp_dfl_root.subsys_mask &= ~dfl_disable_ss_mask;
++		WARN_ON(cgroup_apply_control(scgrp));
++		cgroup_finalize_control(scgrp, 0);
++	}
++
+ 	do_each_subsys_mask(ss, ssid, ss_mask) {
+ 		struct cgroup_root *src_root = ss->root;
+ 		struct cgroup *scgrp = &src_root->cgrp;
+@@ -1766,10 +1787,12 @@ int rebind_subsystems(struct cgroup_root *dst_root, u16 ss_mask)
+ 
+ 		WARN_ON(!css || cgroup_css(dcgrp, ss));
+ 
+-		/* disable from the source */
+-		src_root->subsys_mask &= ~(1 << ssid);
+-		WARN_ON(cgroup_apply_control(scgrp));
+-		cgroup_finalize_control(scgrp, 0);
++		if (src_root != &cgrp_dfl_root) {
++			/* disable from the source */
++			src_root->subsys_mask &= ~(1 << ssid);
++			WARN_ON(cgroup_apply_control(scgrp));
++			cgroup_finalize_control(scgrp, 0);
++		}
+ 
+ 		/* rebind */
+ 		RCU_INIT_POINTER(scgrp->subsys[ssid], NULL);
+-- 
+2.18.1
+
