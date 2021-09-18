@@ -2,97 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA1B44103BE
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 06:52:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3747A4103C6
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 06:55:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241980AbhIRExU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 00:53:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59590 "EHLO
+        id S236251AbhIRE4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 00:56:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237401AbhIRExS (ORCPT
+        with ESMTP id S230515AbhIRE43 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 00:53:18 -0400
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 085D6C0613C1;
-        Fri, 17 Sep 2021 21:51:54 -0700 (PDT)
-Received: by mail-qv1-xf2d.google.com with SMTP id g11so7789798qvd.2;
-        Fri, 17 Sep 2021 21:51:53 -0700 (PDT)
+        Sat, 18 Sep 2021 00:56:29 -0400
+Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D4E9C061574;
+        Fri, 17 Sep 2021 21:55:06 -0700 (PDT)
+Received: by mail-vs1-xe33.google.com with SMTP id u8so11404488vsp.1;
+        Fri, 17 Sep 2021 21:55:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xnlJK2QDxvN8iWcRjZHdIvPQ/AxJxZfwNJq8W7/WDx0=;
-        b=qO51PU+KTWRMVs02aFCQLj0BxjhJ30qJ/LQP1kVVFzP5x/xvKyKRo0A90P288aHv5x
-         ATY1ru8pgVRbC0edCG91cYjKvXJBVMbnhEgOUFGW8ubGN3FGjQlFh9oReJe8w8Wu1EWU
-         +nmDLVH2VvTi/MKNXOqaTciuwYvoIV3igYOAsopJ4sgLvpwlDk5S8EDNCdY+uAvcgu2u
-         +OuurEGEs0KepoTzwf1KyuXc99Q3tkvyFJhFJ31IK+V4gs3bK6mCipNCZLTyA4pEnbcd
-         hZEhxTZabllMY7OdhS8tn29oLGV+Sckqt4K1EynF4PMN7Bv1uLENU+maOMgmRwA6iNjv
-         QXNA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FFq/Z2GV9Lte0l9PEYIOTE7ktsuCGI9xVGKYiyEv7l8=;
+        b=UC2B66ry2LUE00zPMcM3CXIEdwW/tHE1hVu8rJoRKlYTruoN83kYI63GI8AY9wczVF
+         kZu+ACY+nxBjHZWXVAJ85FWxfQoBdFX7pRdgXotnUbCyz9ddwyBsAFaHaRIQ8yEP0eGl
+         Iw3R1QY2bpA+rocRZm7DHKHXzfKCmWNOqjBtp8v+/n8MDipyt5Rns8JjBo0PH3GQm9Hn
+         aBvIz5Ik3aq1e5qEuSfPcjqXl2WF+hY7pb9djr/+wxPhBfkbBDQnHFVlOSlzgZbcFyNV
+         iJhr/BlxosQlkV2n037lOO2mzBing+p1CWWBZ3Mi1/13pJOYnUCYElj7NXb19FzyhzuF
+         YuMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xnlJK2QDxvN8iWcRjZHdIvPQ/AxJxZfwNJq8W7/WDx0=;
-        b=x5K2JpxmVcJ3v1BXmSGdTaoPHTLLmlOe9teHUVJEa8Hx5K05FNJgCuqjQ9KIoIXHI/
-         DpuP0eFP/jYN75ngAMfBdoGDJacNKdWt86eu5PDvedGPJpeSwynhDXmk6rs0kzc5Ir+3
-         ZqpS/uWz/d5epPcysM1gFqGNnUVTPNWXBA00YxdV/CoWwT+UU1gOeHiOI1fNGP/lAxqX
-         B+5B57p3OptAESwGN/qlR0iY2OUZrW6d+WAztpwEe+IBCSwS1V/pKabPMGhcOm0IfBD0
-         OylL+cfdCtO3WRo9TGqhLJ/E96RpNEbseYQAk8BJ/QL8I2OtDH7NFiTLSF+m/lkUFCdG
-         BcJA==
-X-Gm-Message-State: AOAM532fRoYtFAh/SSjTH7ViVWNCcidHjjT8GZg1jYIAoYJGIIaRoKYE
-        y2VToI3QJXAICwMmoHDjiQ==
-X-Google-Smtp-Source: ABdhPJx14NpxICY0C7PwvNnMhv+HtvMLK120FWdUGyxYOjBXD/sLmEJIKIgvSKZa5Byyy0f1X5lw4g==
-X-Received: by 2002:a05:6214:529:: with SMTP id x9mr14616598qvw.17.1631940713177;
-        Fri, 17 Sep 2021 21:51:53 -0700 (PDT)
-Received: from moria.home.lan (c-73-219-103-14.hsd1.vt.comcast.net. [73.219.103.14])
-        by smtp.gmail.com with ESMTPSA id w20sm6526364qkj.116.2021.09.17.21.51.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 21:51:52 -0700 (PDT)
-Date:   Sat, 18 Sep 2021 00:51:50 -0400
-From:   Kent Overstreet <kent.overstreet@gmail.com>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Howells <dhowells@redhat.com>
-Subject: Re: Folio discussion recap
-Message-ID: <YUVwZpTEuqhITGaJ@moria.home.lan>
-References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
- <YTu9HIu+wWWvZLxp@moria.home.lan>
- <YUIT2/xXwvZ4IErc@cmpxchg.org>
- <20210916025854.GE34899@magnolia>
- <YUN2vokEM8wgASk8@cmpxchg.org>
- <20210917052440.GJ1756565@dread.disaster.area>
- <YUTC6O0w3j7i8iDm@cmpxchg.org>
- <20210918010440.GK1756565@dread.disaster.area>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FFq/Z2GV9Lte0l9PEYIOTE7ktsuCGI9xVGKYiyEv7l8=;
+        b=H6VXNndOXtUr0Gxpz+OEX4IqI2WtB6SFnCRgt1W7oiHT357qpobjhdBsZx3Upnycny
+         t24a6hIJ84g4GE9IJT+cuTdIez5Mu+FoicBmDxT56cUsKxOm7mHZeRPvnj1jXQ8IhoMI
+         yxCRWD3DUsgAtUyKj0iZPowGbOImo//j4m1IYiXTy/vZ5vNy5+4ft8tbDUw9HCqAZh8i
+         UF3L2XcHdn64W90PZ9b2JUlo2waM4RiQc8Tssmo0eiEQTRP9F+HpOfXzEc0FkHp9gf1X
+         8J79nuwHSJbyuuvkEgFMcicdbpFIhogfYgEx9vIoYRP7B7s2wuw1QZLJxyA/94+aD7Q1
+         XVTw==
+X-Gm-Message-State: AOAM530G/c1NqBCHjUsiCm3yolpZX6XbzhqvrQCHaUxbkfN3+EIHPFXw
+        KJEcGgLHT4FG+BMBc5awBvCb2W+GpULA1F6R0VM=
+X-Google-Smtp-Source: ABdhPJyjzk8nTR/0NNGwA+jemoYxppUNyNdjEAV59jalNmpZ2wJbdG2sqA4lE0rkjT6gL7f2q5ToMVu4g26p1B+9K20=
+X-Received: by 2002:a05:6102:e55:: with SMTP id p21mr135274vst.18.1631940904578;
+ Fri, 17 Sep 2021 21:55:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210918010440.GK1756565@dread.disaster.area>
+References: <20210917035736.3934017-1-chenhuacai@loongson.cn>
+ <20210917035736.3934017-10-chenhuacai@loongson.cn> <CAK8P3a0BkYBoBh37YyZ1HU4f1thL6ckJR0MZhbkhpKanVK1WcQ@mail.gmail.com>
+In-Reply-To: <CAK8P3a0BkYBoBh37YyZ1HU4f1thL6ckJR0MZhbkhpKanVK1WcQ@mail.gmail.com>
+From:   Huacai Chen <chenhuacai@gmail.com>
+Date:   Sat, 18 Sep 2021 12:54:52 +0800
+Message-ID: <CAAhV-H60MKs_gCf4ug3ACkXcDg4cGoYEQ=HchJz8+muFkrsJQA@mail.gmail.com>
+Subject: Re: [PATCH V3 09/22] LoongArch: Add boot and setup routines
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Huacai Chen <chenhuacai@loongson.cn>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Airlie <airlied@linux.ie>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 18, 2021 at 11:04:40AM +1000, Dave Chinner wrote:
-> As for long term, everything in the page cache API needs to
-> transition to byte offsets and byte counts instead of units of
-> PAGE_SIZE and page->index. That's a more complex transition, but
-> AFAIA that's part of the future work Willy is intended to do with
-> folios and the folio API. Once we get away from accounting and
-> tracking everything as units of struct page, all the public facing
-> APIs that use those units can go away.
+Hi, Arnd,
 
-Probably 95% of the places we use page->index and page->mapping aren't necessary
-because we've already got that information from the context we're in and
-removing them would be a useful cleanup - if we've already got that from context
-(e.g. we're looking up the page in the page cache, via i_pageS) eliminating the
-page->index or page->mapping use means we're getting rid of a data dependency so
-it's good for performance - but more importantly, those (much fewer) places in
-the code where we actually _do_ need page->index and page->mapping are really
-important places to be able to find because they're interesting boundaries
-between different components in the VM.
+On Fri, Sep 17, 2021 at 4:11 PM Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> On Fri, Sep 17, 2021 at 5:57 AM Huacai Chen <chenhuacai@loongson.cn> wrote:
+> > This patch adds basic boot, setup and reset routines for LoongArch.
+> > LoongArch uses UEFI-based firmware and uses ACPI as the boot protocol.
+>
+> This needs to be reviewed by the maintainers for the EFI and ACPI subsystems,
+> I added them to Cc here. If you add lines like
+>
+> Cc: Ard Biesheuvel <ardb@kernel.org>
+> Cc: linux-efi@vger.kernel.org
+>
+> in the patch description before your Signed-off-by, then git-send-email will
+> Cc them automatically without you having to spam them with the entire series.
+OK, I will add them.
+
+>
+> In particular, I know that Ard previously complained that you did not use the
+> EFI boot protocol correctly, and I want to make sure that he's happy with the
+> final version.
+The Correct way means efistub?  We have investigated for some time and
+found that it is very difficult. E.g., our BIOS team said that they
+cannot get GOP drivers for graphics cards.
+
+>
+> > +static ssize_t boardinfo_show(struct kobject *kobj,
+> > +                             struct kobj_attribute *attr, char *buf)
+> > +{
+> > +       return sprintf(buf,
+> > +               "BIOS Information\n"
+> > +               "Vendor\t\t\t: %s\n"
+> > +               "Version\t\t\t: %s\n"
+> > +               "ROM Size\t\t: %d KB\n"
+> > +               "Release Date\t\t: %s\n\n"
+> > +               "Board Information\n"
+> > +               "Manufacturer\t\t: %s\n"
+> > +               "Board Name\t\t: %s\n"
+> > +               "Family\t\t\t: LOONGSON64\n\n",
+> > +               b_info.bios_vendor, b_info.bios_version,
+> > +               b_info.bios_size, b_info.bios_release_date,
+> > +               b_info.board_vendor, b_info.board_name);
+> > +}
+> > +
+> > +static struct kobj_attribute boardinfo_attr = __ATTR(boardinfo, 0444,
+> > +                                                    boardinfo_show, NULL);
+> > +
+> > +static int __init boardinfo_init(void)
+> > +{
+> > +       if (!efi_kobj)
+> > +               return -EINVAL;
+> > +
+> > +       return sysfs_create_file(efi_kobj, &boardinfo_attr.attr);
+> > +}
+> > +late_initcall(boardinfo_init);
+>
+> I see you have documented this interface for your mips machines,
+> but nothing else uses it.
+>
+> I think some of this information should be part of the soc_device,
+> either in addition to, or in place of this sysfs file.
+This file list something describe the motherboard, which is different
+from SOC. These information are used by some user programs.
+
+>
+> Isn't there an existing method to do this on x86/arm/ia64 machines?
+>
+> > +static int constant_set_state_periodic(struct clock_event_device *evt)
+> > +{
+> > +       unsigned long period;
+> > +       unsigned long timer_config;
+> > +
+> > +       raw_spin_lock(&state_lock);
+> > +
+> > +       period = const_clock_freq / HZ;
+> > +       timer_config = period & CSR_TCFG_VAL;
+> > +       timer_config |= (CSR_TCFG_PERIOD | CSR_TCFG_EN);
+> > +       csr_writeq(timer_config, LOONGARCH_CSR_TCFG);
+> > +
+> > +       raw_spin_unlock(&state_lock);
+>
+> I see this pattern in a couple of places, using a spinlock or raw_spinlock
+> to guard MMIO access, but on many architectures a register write is
+> not serialized by the following spin_unlock, unless you insert another
+> read from the same address in there. E.g. on PCIe, writes are always
+> posted and it would not work.
+>
+> Can you confirm that it works correctly on CSR registers in loongarch?
+CSR on LoongArch doesn't need any barrier or flush operations,
+spinlock here is used to protect the whole "read, modify and write".
+
+Huacai
+>
+>          Arnd
