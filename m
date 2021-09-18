@@ -2,39 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 786DA410509
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 10:10:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2EE8410510
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 10:18:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243821AbhIRIL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 04:11:56 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:9894 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243653AbhIRILy (ORCPT
+        id S237742AbhIRIT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 04:19:58 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:16277 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231745AbhIRIT5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 04:11:54 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HBNgF07rGz8yQD;
-        Sat, 18 Sep 2021 16:06:01 +0800 (CST)
+        Sat, 18 Sep 2021 04:19:57 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HBNwv0strz8tDw;
+        Sat, 18 Sep 2021 16:17:51 +0800 (CST)
 Received: from dggpemm500009.china.huawei.com (7.185.36.225) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Sat, 18 Sep 2021 16:10:30 +0800
+ 15.1.2308.8; Sat, 18 Sep 2021 16:18:29 +0800
 Received: from huawei.com (10.175.113.32) by dggpemm500009.china.huawei.com
  (7.185.36.225) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Sat, 18 Sep
- 2021 16:10:29 +0800
+ 2021 16:18:29 +0800
 From:   Liu Shixin <liushixin2@huawei.com>
-To:     Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-CC:     <kasan-dev@googlegroups.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Liu Shixin <liushixin2@huawei.com>
-Subject: [PATCH] arm64: remove page granularity limitation from KFENCE
-Date:   Sat, 18 Sep 2021 16:38:49 +0800
-Message-ID: <20210918083849.2696287-1-liushixin2@huawei.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        Liu Shixin <liushixin2@huawei.com>
+Subject: [PATCH v2] mm/vmstat: annotate data race for zone->free_area[order].nr_free
+Date:   Sat, 18 Sep 2021 16:46:55 +0800
+Message-ID: <20210918084655.2696522-1-liushixin2@huawei.com>
 X-Mailer: git-send-email 2.18.0.huawei.25
 MIME-Version: 1.0
 Content-Type: text/plain
@@ -46,122 +41,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently if KFENCE is enabled in arm64, the entire linear map will be
-mapped at page granularity which seems overkilled. Actually only the
-kfence pool requires to be mapped at page granularity. We can remove the
-restriction from KFENCE and force the linear mapping of the kfence pool
-at page granularity later in arch_kfence_init_pool().
+KCSAN reports a data-race on v5.10 which also exists on mainline:
+
+==================================================================
+BUG: KCSAN: data-race in extfrag_for_order+0x33/0x2d0
+
+race at unknown origin, with read to 0xffff9ee9bfffab48 of 8 bytes by task 34 on cpu 1:
+ extfrag_for_order+0x33/0x2d0
+ kcompactd+0x5f0/0xce0
+ kthread+0x1f9/0x220
+ ret_from_fork+0x22/0x30
+
+Reported by Kernel Concurrency Sanitizer on:
+CPU: 1 PID: 34 Comm: kcompactd0 Not tainted 5.10.0+ #2
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Ubuntu-1.8.2-1ubuntu1 04/01/2014
+==================================================================
+
+Access to zone->free_area[order].nr_free in extfrag_for_order() and
+frag_show_print() is lockless. That's intentional and the stats are
+a rough estimate anyway. Annotate them with data_race().
 
 Signed-off-by: Liu Shixin <liushixin2@huawei.com>
 ---
- arch/arm64/include/asm/kfence.h | 69 ++++++++++++++++++++++++++++++++-
- arch/arm64/mm/mmu.c             |  4 +-
- 2 files changed, 70 insertions(+), 3 deletions(-)
+ mm/vmstat.c | 15 ++++++++++++---
+ 1 file changed, 12 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/include/asm/kfence.h b/arch/arm64/include/asm/kfence.h
-index aa855c6a0ae6..bee101eced0b 100644
---- a/arch/arm64/include/asm/kfence.h
-+++ b/arch/arm64/include/asm/kfence.h
-@@ -8,9 +8,76 @@
- #ifndef __ASM_KFENCE_H
- #define __ASM_KFENCE_H
+diff --git a/mm/vmstat.c b/mm/vmstat.c
+index 8ce2620344b2..8525849a48f0 100644
+--- a/mm/vmstat.c
++++ b/mm/vmstat.c
+@@ -1070,8 +1070,13 @@ static void fill_contig_page_info(struct zone *zone,
+ 	for (order = 0; order < MAX_ORDER; order++) {
+ 		unsigned long blocks;
  
-+#include <linux/kfence.h>
- #include <asm/set_memory.h>
-+#include <asm/pgalloc.h>
+-		/* Count number of free blocks */
+-		blocks = zone->free_area[order].nr_free;
++		/*
++		 * Count number of free blocks.
++		 *
++		 * Access to nr_free is lockless as nr_free is used only for
++		 * diagnostic purposes. Use data_race to avoid KCSAN warning.
++		 */
++		blocks = data_race(zone->free_area[order].nr_free);
+ 		info->free_blocks_total += blocks;
  
--static inline bool arch_kfence_init_pool(void) { return true; }
-+static inline int split_pud_page(pud_t *pud, unsigned long addr)
-+{
-+	int i;
-+	pmd_t *pmd = pmd_alloc_one(&init_mm, addr);
-+	unsigned long pfn = PFN_DOWN(__pa(addr));
-+
-+	if (!pmd)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < PTRS_PER_PMD; i++)
-+		set_pmd(pmd + i, pmd_mkhuge(pfn_pmd(pfn + i * PTRS_PER_PTE, PAGE_KERNEL)));
-+
-+	smp_wmb(); /* See comment in __pte_alloc */
-+	pud_populate(&init_mm, pud, pmd);
-+	flush_tlb_kernel_range(addr, addr + PUD_SIZE);
-+	return 0;
-+}
-+
-+static inline int split_pmd_page(pmd_t *pmd, unsigned long addr)
-+{
-+	int i;
-+	pte_t *pte = pte_alloc_one_kernel(&init_mm);
-+	unsigned long pfn = PFN_DOWN(__pa(addr));
-+
-+	if (!pte)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < PTRS_PER_PTE; i++)
-+		set_pte(pte + i, pfn_pte(pfn + i, PAGE_KERNEL));
-+
-+	smp_wmb(); /* See comment in __pte_alloc */
-+	pmd_populate_kernel(&init_mm, pmd, pte);
-+
-+	flush_tlb_kernel_range(addr, addr + PMD_SIZE);
-+	return 0;
-+}
-+
-+static inline bool arch_kfence_init_pool(void)
-+{
-+	unsigned long addr;
-+	pgd_t *pgd;
-+	p4d_t *p4d;
-+	pud_t *pud;
-+	pmd_t *pmd;
-+
-+	for (addr = (unsigned long)__kfence_pool; is_kfence_address((void *)addr);
-+	     addr += PAGE_SIZE) {
-+		pgd = pgd_offset(&init_mm, addr);
-+		if (pgd_leaf(*pgd))
-+			return false;
-+		p4d = p4d_offset(pgd, addr);
-+		if (p4d_leaf(*p4d))
-+			return false;
-+		pud = pud_offset(p4d, addr);
-+		if (pud_leaf(*pud)) {
-+			if (split_pud_page(pud, addr & PUD_MASK))
-+				return false;
-+		}
-+		pmd = pmd_offset(pud, addr);
-+		if (pmd_leaf(*pmd)) {
-+			if (split_pmd_page(pmd, addr & PMD_MASK))
-+				return false;
-+		}
-+	}
-+	return true;
-+}
+ 		/* Count free base pages */
+@@ -1445,7 +1450,11 @@ static void frag_show_print(struct seq_file *m, pg_data_t *pgdat,
  
- static inline bool kfence_protect_page(unsigned long addr, bool protect)
- {
-diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-index cfd9deb347c3..b2c79ccfb1c5 100644
---- a/arch/arm64/mm/mmu.c
-+++ b/arch/arm64/mm/mmu.c
-@@ -516,7 +516,7 @@ static void __init map_mem(pgd_t *pgdp)
- 	 */
- 	BUILD_BUG_ON(pgd_index(direct_map_end - 1) == pgd_index(direct_map_end));
+ 	seq_printf(m, "Node %d, zone %8s ", pgdat->node_id, zone->name);
+ 	for (order = 0; order < MAX_ORDER; ++order)
+-		seq_printf(m, "%6lu ", zone->free_area[order].nr_free);
++		/*
++		 * Access to nr_free is lockless as nr_free is used only for
++		 * printing purposes. Use data_race to avoid KCSAN warning.
++		 */
++		seq_printf(m, "%6lu ", data_race(zone->free_area[order].nr_free));
+ 	seq_putc(m, '\n');
+ }
  
--	if (can_set_direct_map() || crash_mem_map || IS_ENABLED(CONFIG_KFENCE))
-+	if (can_set_direct_map() || crash_mem_map)
- 		flags |= NO_BLOCK_MAPPINGS | NO_CONT_MAPPINGS;
- 
- 	/*
-@@ -1485,7 +1485,7 @@ int arch_add_memory(int nid, u64 start, u64 size,
- 	 * KFENCE requires linear map to be mapped at page granularity, so that
- 	 * it is possible to protect/unprotect single pages in the KFENCE pool.
- 	 */
--	if (can_set_direct_map() || IS_ENABLED(CONFIG_KFENCE))
-+	if (can_set_direct_map())
- 		flags |= NO_BLOCK_MAPPINGS | NO_CONT_MAPPINGS;
- 
- 	__create_pgd_mapping(swapper_pg_dir, start, __phys_to_virt(start),
 -- 
 2.18.0.huawei.25
 
