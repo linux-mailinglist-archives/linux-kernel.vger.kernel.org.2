@@ -2,163 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54E6D4104A5
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 09:16:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04F9E4104A8
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 09:16:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242782AbhIRHRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 03:17:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34640 "EHLO
+        id S242877AbhIRHSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 03:18:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230509AbhIRHRd (ORCPT
+        with ESMTP id S230509AbhIRHSL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 03:17:33 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B739DC061574
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 00:16:10 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id s11so11873225pgr.11
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 00:16:10 -0700 (PDT)
+        Sat, 18 Sep 2021 03:18:11 -0400
+Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C1F5C061574;
+        Sat, 18 Sep 2021 00:16:48 -0700 (PDT)
+Received: by mail-vs1-xe31.google.com with SMTP id z62so11567788vsz.9;
+        Sat, 18 Sep 2021 00:16:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=F4eSocmINO9DM/nsnuozs7zFs5+R33uFfLe2OLUBhoI=;
-        b=iiGWy30v0yGnAMDIN+Xw4shv6+BI7AW2yAHxsVxRudefH2vNl3p3ljyHDlXatjh7Kd
-         bGaNOEusZK2e6V4fWzzmK0lcUggJlPQzdbkVh8UDV8cLkZE6NNYT1mk8r5EiNa/mA312
-         7JNVzbVsAIVpfU+me43YAoy8NOCVcagU9ZHdAKJR2xWkiZ6PV5tYQb6J1WKwsmWwjgN+
-         jLCO0aImTuPxlLXUwE3wT8U/aD4UaqSYCF+Brq/6SAaMtvH0e8B0OM9txpvbTwzB6VVB
-         8GAjxDh/c3f8/Niwnzkq7bplo9tDLh0RvwQacDrDBGa4bd9YuYEOeJrIvoQBiNYzX/uJ
-         kkPw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZBMwTm9bQKnfYASrbxx38SJrYYT3hAkMfMk4IqojBdk=;
+        b=IpXTrtRZVxWl72jTLq0wa/c4tc9tOSSLxN+yjX4AWDqHshiijA8g8EVb8tK3Lv5mF3
+         JZnh7Bg3gFi8PyasFWX+rwW7/P0jJTpuZud2zI7A1AwWdypGMsYZa0K2VGjbvEJXBUmy
+         YDLtohj1ynnBRankSL7P0hj+dHefLxMcblihv50JzDiWVAJTuWsWqLEurGglWsRu2IYI
+         OIDlyt6a4dMfpLNxKsHzd9SASAEmrPdblfeXH6nwd4LFUFBNLgahycBP/3xGELSw0+B+
+         tIFZQCE940ns8SA85OmA+DV9RAFiYKan05ETjBFEUsmz/BX7wcO8/j5nsMB9QjvY8vvt
+         B6Sw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=F4eSocmINO9DM/nsnuozs7zFs5+R33uFfLe2OLUBhoI=;
-        b=Yv4pG3INxuSrIqRLgh76r21L5BiUgaZ8dvKoiJ85T5YsGv0nThKG4GZtQYeIbkxbJ8
-         aXREi66d2BKPrAinNX9jOlUnhsAPsbR8UxoEm4PNZzy4cj2erJGYaeUn6t0GLdQTI9Vo
-         g8xo0L9xb8X1BF70A9aCcrJSNqcVkz/16xOfoGeNL7FakMeoK6SFbCJjxdeNfIYu4R/V
-         SGKDxAKyk08lNIMHCFqCwciE/DE7bd9Cz8YGq2RoSvxkGwPTeuyDPs/oJohulIwNvgRM
-         jmrdkypWO7B08FpLnMUsFMzFbof732xNaMw3A6kp5iIRkBkIzY3iWKlZ/N6/D5lyJP49
-         R0kg==
-X-Gm-Message-State: AOAM531KAHngr9paR1W0qvoBaX01p1cIM2mPggHQgs8NCzxfeE10Ser9
-        GJilRDT1DwI1Zg3dl7ieSP+dFTEjiRY=
-X-Google-Smtp-Source: ABdhPJxLFUrck4i3qspHVH2ydoDCp9EJBR9czP2rN46FQgIVoEn9Ech8WY3FHlVrHhbThEhnGcxaUQ==
-X-Received: by 2002:a62:15ca:0:b0:43f:76a3:2988 with SMTP id 193-20020a6215ca000000b0043f76a32988mr14934060pfv.65.1631949370198;
-        Sat, 18 Sep 2021 00:16:10 -0700 (PDT)
-Received: from kvm.asia-northeast3-a.c.our-ratio-313919.internal (252.229.64.34.bc.googleusercontent.com. [34.64.229.252])
-        by smtp.gmail.com with ESMTPSA id v3sm8080751pfc.193.2021.09.18.00.16.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Sep 2021 00:16:09 -0700 (PDT)
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-To:     42.hyeyoo@gmail.com
-Cc:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [RFC PATCH] mm: slub: merge get_freelist into ___slab_alloc
-Date:   Sat, 18 Sep 2021 07:15:51 +0000
-Message-Id: <20210918071552.53171-1-42.hyeyoo@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZBMwTm9bQKnfYASrbxx38SJrYYT3hAkMfMk4IqojBdk=;
+        b=b+QKbFlIfIRnv3Nn7eW+5EXFDR1WPwRpXEl2i4oX1xWw4dR+ukLl7+ObALoeM4HRdn
+         v/ryBrrJV4e+ijQ17J3/JPt9DgO/4yqk6dWIsaqSlvXtbMw81tJhS+q4yJ8kShns78mw
+         Y+lEYb3bB/zih6D18lvFGK9yxfydAOJV68wP+zNVQNBKtkDRmJlp4VErw3fPAvSoGxHV
+         dlX5ntrckCRNBZjui/9SjcwxlEVcKjKhdDbXmS6s/7Ns/5QFfgkhDQjcMgdK5mxyU42g
+         XhKE8krd07+j52EClPy6rRVKykU92VdZdstId2wOZ16TLyIvnD/0C329M5UIIddWG3o/
+         kYkA==
+X-Gm-Message-State: AOAM530JCAIy2ZAtduMzbpeMazfM/qbzvVeoENx9WGnA4snRV+0qn1U9
+        L/jfAc/3tEwlwXxiZaeO/Oipt9wqdRjtFacQkuE=
+X-Google-Smtp-Source: ABdhPJxE9F778fqN7slVNSiTv3N3dxgOm35SMym19UNDMFj24FYdpmjAiQc83t25MwM8g3+uA+w6/3YvCdH8iuCOrKY=
+X-Received: by 2002:a05:6102:2757:: with SMTP id p23mr311890vsu.61.1631949407304;
+ Sat, 18 Sep 2021 00:16:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210917035736.3934017-1-chenhuacai@loongson.cn>
+ <20210917035736.3934017-18-chenhuacai@loongson.cn> <CAK8P3a0HfWmBgp6ZagVALDoeoJsJaU9h9tLKHM0-5GZGtnT-hg@mail.gmail.com>
+In-Reply-To: <CAK8P3a0HfWmBgp6ZagVALDoeoJsJaU9h9tLKHM0-5GZGtnT-hg@mail.gmail.com>
+From:   Huacai Chen <chenhuacai@gmail.com>
+Date:   Sat, 18 Sep 2021 15:16:35 +0800
+Message-ID: <CAAhV-H5dAubLUrcfr2nQi3kjAcDJfQ+st_TGAac1mQ-suKuUHQ@mail.gmail.com>
+Subject: Re: [PATCH V3 17/22] LoongArch: Add some library functions
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Huacai Chen <chenhuacai@loongson.cn>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Airlie <airlied@linux.ie>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-get_freelist was introduced commit 213eeb9fd9d6 ("slub: Extract
-get_freelist from __slab_alloc") and its comment says this function
-transfers freelist to the per cpu freelist or deactivate page.
+Hi, Arnd,
 
-But what it actually does is just deactivating page and returning
-its freelist. And the code working with variable 'new' is confusing
-because it does nothing.
+On Fri, Sep 17, 2021 at 4:33 PM Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> On Fri, Sep 17, 2021 at 5:57 AM Huacai Chen <chenhuacai@loongson.cn> wrote:
+> >
+> > diff --git a/arch/loongarch/lib/strncpy_user.S b/arch/loongarch/lib/strncpy_user.S
+> > new file mode 100644
+> > index 000000000000..b42d81045929
+> > --- /dev/null
+> > +++ b/arch/loongarch/lib/strncpy_user.S
+> > @@ -0,0 +1,51 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +/*
+> > + * Copyright (C) 2020-2021 Loongson Technology Corporation Limited
+> > + */
+> > +#include <linux/errno.h>
+> > +#include <asm/asm.h>
+> > +#include <asm/asmmacro.h>
+> > +#include <asm/export.h>
+> > +#include <asm/regdef.h>
+> > +
+> > +#define _ASM_EXTABLE(from, to)                 \
+> > +       .section __ex_table, "a";               \
+> > +       PTR     from, to;                       \
+> > +       .previous
+> > +
+> > +/*
+> > + * long __strncpy_from_user(char *to, const char *from, long len)
+> > + *
+> > + * a0: to
+> > + * a1: from
+> > + * a2: len
+> > + */
+> > +SYM_FUNC_START(__strncpy_from_user)
+> > +       move    a3, zero
+> > +
+>
+> I just removed most custom __strncpy_from_user/__strnlen_user
+> implementations from architectures, and I think you should remove
+> these as well. Your current version probably does not work any more
+> with v5.15-rc1, and it is neither efficient nor robust.
+I'm very sorry for this. You have talked about these functions in V1,
+and I do removed them in the Makefile, but kept the source files...
 
-This function have been unmaintained for a long time and is confusing
-reader. So simplify it for better readability.
-
-Signed-off-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
----
- mm/slub.c | 46 +++++++++++-----------------------------------
- 1 file changed, 11 insertions(+), 35 deletions(-)
-
-diff --git a/mm/slub.c b/mm/slub.c
-index 3d2025f7163b..26fe1eb50d88 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -2815,40 +2815,6 @@ static inline bool pfmemalloc_match_unsafe(struct page *page, gfp_t gfpflags)
- 	return true;
- }
- 
--/*
-- * Check the page->freelist of a page and either transfer the freelist to the
-- * per cpu freelist or deactivate the page.
-- *
-- * The page is still frozen if the return value is not NULL.
-- *
-- * If this function returns NULL then the page has been unfrozen.
-- */
--static inline void *get_freelist(struct kmem_cache *s, struct page *page)
--{
--	struct page new;
--	unsigned long counters;
--	void *freelist;
--
--	lockdep_assert_held(this_cpu_ptr(&s->cpu_slab->lock));
--
--	do {
--		freelist = page->freelist;
--		counters = page->counters;
--
--		new.counters = counters;
--		VM_BUG_ON(!new.frozen);
--
--		new.inuse = page->objects;
--		new.frozen = freelist != NULL;
--
--	} while (!__cmpxchg_double_slab(s, page,
--		freelist, counters,
--		NULL, new.counters,
--		"get_freelist"));
--
--	return freelist;
--}
--
- /*
-  * Slow path. The lockless freelist is empty or we need to perform
-  * debugging duties.
-@@ -2874,6 +2840,7 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- 	void *freelist;
- 	struct page *page;
- 	unsigned long flags;
-+	unsigned long counters;
- 
- 	stat(s, ALLOC_SLOWPATH);
- 
-@@ -2920,12 +2887,21 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- 		local_unlock_irqrestore(&s->cpu_slab->lock, flags);
- 		goto reread_page;
- 	}
-+
- 	freelist = c->freelist;
- 	if (freelist)
- 		goto load_freelist;
- 
--	freelist = get_freelist(s, page);
-+	/* deactivate page */
-+	do {
-+		freelist = page->freelist;
-+		counters = page->counters;
-+	} while (!__cmpxchg_double_slab(s, page,
-+		freelist, counters,
-+		NULL, counters,
-+		"deactivate_page"));
- 
-+	/* there was no free objects in that page  */
- 	if (!freelist) {
- 		c->page = NULL;
- 		local_unlock_irqrestore(&s->cpu_slab->lock, flags);
--- 
-2.27.0
-
+Huacai
+>
+>         Arnd
