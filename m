@@ -2,142 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12729410878
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 21:55:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 793AA41087C
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 21:58:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239024AbhIRT4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 15:56:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234876AbhIRT4U (ORCPT
+        id S236637AbhIRT7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 15:59:35 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:56967 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232331AbhIRT7b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 15:56:20 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C650C061574;
-        Sat, 18 Sep 2021 12:54:56 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id m3so45837105lfu.2;
-        Sat, 18 Sep 2021 12:54:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=RrZB+Ei2lfCoA9/8bU/K4ZBMW+6oktVNxlMUCKhSnJw=;
-        b=cj5WphHQWjdPD5jH2xweJaJEmIwfmEZYZna4hcZjiqAk6aLILYFVCm//5AOmVHQHLr
-         7uS6bSF1KCTP9Q2mqUCgErPmm3hLJD1kDbo05KDFDJVbbwNF3KsseT50Wm+HwEFB/3ut
-         oQTydKdGJKjYjtkJRnmZqyL7F0U0hBq6AEilc0bg2qOMTACPdVUGB6bQprN9qQJWXpda
-         3wKbtyoeKnfK6LgHBmq1iq76iOrrzApBrZQBGFrLBirRIDeCdoI7HZHmVCDC7p0vq79s
-         p3WxKE9G4zSbih6X1ThDMzJRd6dOyDSgudJvkqRmxjicklrkFsIOs703NXUQxToUP6de
-         snUQ==
+        Sat, 18 Sep 2021 15:59:31 -0400
+Received: by mail-io1-f70.google.com with SMTP id z71-20020a6bc94a000000b005d09bfe2668so27622154iof.23
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 12:58:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=RrZB+Ei2lfCoA9/8bU/K4ZBMW+6oktVNxlMUCKhSnJw=;
-        b=dCEp1q7i161DY0LW8kCCX64MNSXOAXoszOTlAArHfUeixXNM/+WC1o7Lo+UgdWWyGr
-         mpEmSn6zPemSFtJs+Vrl1ynaQh8wavuyKFDgksIsL2yagVBd6aDaINRVpzHdoyscD01y
-         7MYZjkmI4QVfLOzYpdZYBk1OPR8NYKzH6ssN7X6ihfAHiHOqia8GMmIgnqVdm6o4kGly
-         Ubmo/QCrcqKJPnkwRK9ep9HSOVzBrx6Bm0xhItQgT2wgfyWxyLWBFLNUD42omFTJHG2z
-         Ho2HR/j2ucqjwDY8h0R6MqejsqpSh+fWfdsypFGtrK1TciFM0jKGiHsmdxKF8JVsfO9p
-         8WAg==
-X-Gm-Message-State: AOAM530CHwgBzVcLau1gbW1wDGufwO1YiXO7NhN1uZjwgYZcVkVuGAGD
-        IQRGLnD3x1Yw1xFE5+ldLGO2/RxB0GG2NcFbIknSuMY/Fe0=
-X-Google-Smtp-Source: ABdhPJzFt5wHGmmcTU2ckoJwQMcWP1OMhoYl70SRM8RJDbmn64fvL7+8svEq7e+1DMWzyISHAotD8hhFSxFNVhSNfbw=
-X-Received: by 2002:ac2:4206:: with SMTP id y6mr13133100lfh.234.1631994894592;
- Sat, 18 Sep 2021 12:54:54 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=ivh/Frp5TC2qWcIkr/BnJSK/kFt1+2bIZQL24hbwT64=;
+        b=anrwkpRpF6rVEdLutjth5D/mCTvXyVsdurLDgGhhInOOQ+roACfOAzz8pYzWRKLZkN
+         HL4E2ckecF24BtJ/mPo2Z84zdrExYEWKuOkA16AHEKg9cJDUi5a8SnaAB9q4c0bW9vXX
+         g3socmve0CP6cghM3hxnUxK4SXXot795le4cX1D73vcf/z4Ou1FM8xHQDMlZwTHLARHL
+         KwKezgcyWyVW2RS1WYMAfleUnUXeuymn/8JHK9fdCkZYTGwkf/xWxWihndZsvnM/WDg9
+         cQV4QtRRVn0mm8cbq34LqdlpYstM1AYZhsvpE+cnFmzdxdBqK3kE47vgwyRjZQIStP9U
+         INbw==
+X-Gm-Message-State: AOAM53141ORRz/IXiE4hEW8J2AH330UY1qqvzWv4I1rtm1e/ZWjrj3tc
+        c0G9395zdbIVWFlEoyBrLzJXldzYvMZ6wWBKDbEHz5IdZSfl
+X-Google-Smtp-Source: ABdhPJzgs6ARQpi5xrqA8t2HeKzas+2uSX6PdE7YGSaYgxMRzN33nmneQgyfAzSK2loGTkvCoPd75fBvS4XdGFR4xW6TboTeWQui
 MIME-Version: 1.0
-From:   Steve French <smfrench@gmail.com>
-Date:   Sat, 18 Sep 2021 14:54:43 -0500
-Message-ID: <CAH2r5mtYiadLYKVhkBFo9=a9+y0BK2z20r7dNGrdvRkyzXYJHA@mail.gmail.com>
-Subject: [GIT PULL] cifs/smb3 client fixes
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     CIFS <linux-cifs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+X-Received: by 2002:a6b:610a:: with SMTP id v10mr6389678iob.167.1631995087634;
+ Sat, 18 Sep 2021 12:58:07 -0700 (PDT)
+Date:   Sat, 18 Sep 2021 12:58:07 -0700
+In-Reply-To: <000000000000fe7dd005cc2d77c0@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000079478a05cc4a7730@google.com>
+Subject: Re: [syzbot] kernel BUG in vmf_insert_pfn_prot
+From:   syzbot <syzbot+2d4f8693f438d2bd4bdb@syzkaller.appspotmail.com>
+To:     airlied@linux.ie, christian.koenig@amd.com, daniel.vetter@ffwll.ch,
+        daniel.vetter@intel.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org,
+        linaro-mm-sig-owner@lists.linaro.org,
+        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, maarten.lankhorst@linux.intel.com,
+        mripard@kernel.org, sumit.semwal@linaro.org,
+        syzkaller-bugs@googlegroups.com, tzimmermann@suse.de
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please pull the following changes since commit
-6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
+syzbot has bisected this issue to:
 
-  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
+commit 8b93d1d7dbd578fd296e70008b29c0f62d09d7cb
+Author: Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Thu Aug 12 13:14:10 2021 +0000
 
-are available in the Git repository at:
+    drm/shmem-helper: Switch to vmf_insert_pfn
 
-  git://git.samba.org/sfrench/cifs-2.6.git tags/5.15-rc1-smb3
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1277054f300000
+start commit:   9004fd387338 Add linux-next specific files for 20210917
+git tree:       linux-next
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=1177054f300000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1677054f300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=45d5ac72f31f29f3
+dashboard link: https://syzkaller.appspot.com/bug?extid=2d4f8693f438d2bd4bdb
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13ad5527300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13beef77300000
 
-for you to fetch changes up to 35866f3f779aef5e7ba84e4d1023fe2e2a0e219e:
+Reported-by: syzbot+2d4f8693f438d2bd4bdb@syzkaller.appspotmail.com
+Fixes: 8b93d1d7dbd5 ("drm/shmem-helper: Switch to vmf_insert_pfn")
 
-  cifs: Not to defer close on file when lock is set (2021-09-17 16:59:41 -0500)
-
-----------------------------------------------------------------
-5 cifs/smb3 client fixes:
- - two deferred close fixes (for bugs found with xfstests 478 and 461)
- - a deferred close improvement in rename
-- two trivial fixes for incorrect Linux comment formatting of multiple
-cifs files (pointed out by automated kernel test robot and checkpatch)
-
-There is one additional deferred close fix and some important
-multichannel fixes that are still being reviewed/tested that are not
-included in this.
-----------------------------------------------------------------
-Rohith Surabattula (3):
-      cifs: Deferred close performance improvements
-      cifs: Fix soft lockup during fsstress
-      cifs: Not to defer close on file when lock is set
-
-Steve French (2):
-      cifs: remove pathname for file from SPDX header
-      cifs: fix incorrect kernel doc comments
-
- fs/cifs/cache.c                      |  2 +-
- fs/cifs/cifs_debug.c                 |  1 -
- fs/cifs/cifs_fs_sb.h                 |  1 -
- fs/cifs/cifs_ioctl.h                 |  1 -
- fs/cifs/cifs_spnego.c                |  2 +-
- fs/cifs/cifs_spnego.h                |  2 +-
- fs/cifs/cifs_unicode.c               |  1 -
- fs/cifs/cifsacl.c                    |  1 -
- fs/cifs/cifsacl.h                    |  1 -
- fs/cifs/cifsencrypt.c                |  1 -
- fs/cifs/cifsfs.c                     |  1 -
- fs/cifs/cifsfs.h                     |  1 -
- fs/cifs/cifsglob.h                   |  2 +-
- fs/cifs/cifspdu.h                    |  1 -
- fs/cifs/cifsproto.h                  |  4 +++-
- fs/cifs/cifssmb.c                    |  1 -
- fs/cifs/connect.c                    | 13 ++++++++---
- fs/cifs/dir.c                        |  1 -
- fs/cifs/dns_resolve.c                |  1 -
- fs/cifs/dns_resolve.h                |  4 ++--
- fs/cifs/export.c                     |  1 -
- fs/cifs/file.c                       |  3 ++-
- fs/cifs/fscache.c                    |  2 +-
- fs/cifs/fscache.h                    |  2 +-
- fs/cifs/inode.c                      |  7 +++---
- fs/cifs/ioctl.c                      |  3 +--
- fs/cifs/link.c                       |  1 -
- fs/cifs/misc.c                       | 42 +++++++++++++++++++++++++++++++++---
- fs/cifs/netmisc.c                    |  1 -
- fs/cifs/ntlmssp.h                    |  1 -
- fs/cifs/readdir.c                    |  1 -
- fs/cifs/rfc1002pdu.h                 |  1 -
- fs/cifs/sess.c                       |  1 -
- fs/cifs/smb2file.c                   |  1 -
- fs/cifs/smb2glob.h                   |  1 -
- fs/cifs/smb2inode.c                  |  1 -
- fs/cifs/smb2misc.c                   |  1 -
- fs/cifs/smb2pdu.c                    |  1 -
- fs/cifs/smb2pdu.h                    |  1 -
- fs/cifs/smb2proto.h                  |  1 -
- fs/cifs/smb2status.h                 |  1 -
- fs/cifs/smb2transport.c              |  1 -
- fs/cifs/smberr.h                     |  1 -
- fs/cifs/transport.c                  |  1 -
- fs/cifs/winucase.c                   |  1 -
- fs/cifs/xattr.c                      |  1 -
- fs/smbfs_common/smbfsctl.h           |  2 +-
- include/uapi/linux/cifs/cifs_mount.h |  1 -
- 48 files changed, 67 insertions(+), 57 deletions(-)
--- 
-Thanks,
-
-Steve
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
