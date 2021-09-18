@@ -2,174 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABC264105B8
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 11:52:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E90E34105B1
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 11:52:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244470AbhIRJyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 05:54:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54654 "EHLO mail.kernel.org"
+        id S244179AbhIRJxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 05:53:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54608 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243710AbhIRJxq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 05:53:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E78461283;
+        id S243336AbhIRJxp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Sep 2021 05:53:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DA7360F70;
         Sat, 18 Sep 2021 09:52:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1631958742;
-        bh=yR15p2TgWTxBiHKVm9ig5QEeA3S2VfkFPJa8dYUMMiw=;
+        bh=zeepgnv80bX5Cd++yrGR0sCMsP3604fKdamMk3htmcs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kgvQG6ai+2DNJ9BmZGI4cbXa8Js2LWL4tqsnEH6Zut8sexTaAiaxeVFLQbsz4mBOZ
-         iHtChups52WOqqI4an1dKAq1IcIbHbzul1BB9VWivBuLv2+KeNiwaPqwFs3133EC3l
-         h2mNX3jrYLJ5k0CdEqlO/ApSqRvP6Om/F+ygNmeuukgs7rHPBWXgB673lv+KRWd9LR
-         KUfhg3IBofz1HnuxFsXJ4g+wJTdn+Gq9FEZYgmuRwvxAxK2gO6b2Z1+tGkO+urswKq
-         qYKryqpDz5tEV5XlwcOg6L9vDo+kJ4FlrX1g2Pv3uTEj+sbodwa88NRR7qlNM8PY9a
-         nb1xaH/3x3OnA==
+        b=oJ0jNWA4ZjZFcv32DT3ceCbaaLuBUH64oxKTqJce5S7vEyjhDVILa7tVhTLyT7bGX
+         4petWklMlQDSBDe/HS/QIZJLcq9gopNRtv9fIB7PbWr9KRBhF4m5Uw8yRf3CI697ve
+         oSLNcWRFxbhYnAojcfRedMxaOcMKxKa31QBbwg3RaALZMNYwnzISU8FiOmrTKeQTGp
+         75/fXTzzGOoXCSTUqUw8/Nj+GnmUaVUTdEtyvWxqkmoV9axY2EY8R895n62I4mOuge
+         X+7ZzOedwa5uyMnet6aQyxKk2jU94OoLzye5cXPeoJU1GfECRYwqLYXHjutgBq2DuB
+         d6JGmbeM+T7tw==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1mRX1A-003b16-Nb; Sat, 18 Sep 2021 11:52:20 +0200
+        id 1mRX1A-003b1A-Oj; Sat, 18 Sep 2021 11:52:20 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "Jonathan Corbet" <corbet@lwn.net>, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 5/7] scripts: get_abi.pl: don't skip what that ends with wildcards
-Date:   Sat, 18 Sep 2021 11:52:15 +0200
-Message-Id: <79ba5139643355230e3bba136b20991cfc92020f.1631957565.git.mchehab+huawei@kernel.org>
+Subject: [PATCH v3 6/7] scripts: get_abi.pl: Ignore fs/cgroup sysfs nodes earlier
+Date:   Sat, 18 Sep 2021 11:52:16 +0200
+Message-Id: <caa37831c9e02ae58677d1515ed7cee94f52ea9d.1631957565.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1631957565.git.mchehab+huawei@kernel.org>
 References: <cover.1631957565.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The search algorithm used inside check_undefined_symbols
-has an optimization: it seeks only whats that have the same
-leave name. This helps not only to speedup the search, but
-it also allows providing a hint about a partial match.
-
-There's a drawback, however: when "what:" finishes with a
-wildcard, the logic will skip the what, reporting it as
-"not found".
-
-Fix it by grouping the remaining cases altogether, and
-disabing any hints for such cases.
+In order to speedup the parser and store less data, handle
+fs/cgroup exceptions a lot earlier.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- scripts/get_abi.pl | 74 +++++++++++++++++++++++++++-------------------
- 1 file changed, 43 insertions(+), 31 deletions(-)
+ scripts/get_abi.pl | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/scripts/get_abi.pl b/scripts/get_abi.pl
-index f5f2f664e336..fe83f295600c 100755
+index fe83f295600c..aa0a751563ba 100755
 --- a/scripts/get_abi.pl
 +++ b/scripts/get_abi.pl
-@@ -589,44 +589,47 @@ sub check_undefined_symbols {
- 			$found_string = 1;
- 		}
- 
-+		if ($leave =~ /^\d+$/ || !defined($leaf{$leave})) {
-+			$leave = "others";
-+		}
+@@ -550,6 +550,10 @@ my @files;
+ my $escape_symbols = qr { ([\x01-\x08\x0e-\x1f\x21-\x29\x2b-\x2d\x3a-\x40\x7b-\xfe]) }x;
+ sub parse_existing_sysfs {
+ 	my $file = $File::Find::name;
 +
- 		print "--> $file\n" if ($found_string && $hint);
--		if (defined($leaf{$leave})) {
--			my $what = $leaf{$leave};
--			$whats .= " $what" if (!($whats =~ m/$what/));
-+		my $what = $leaf{$leave};
-+		$whats .= " $what" if (!($whats =~ m/$what/));
++	# Ignore cgroup and firmware
++	return if ($file =~ m#^/sys/(fs/cgroup|firmware)/#);
++
+ 	my $mode = (lstat($file))[2];
+ 	my $abs_file = abs_path($file);
  
--			foreach my $w (split / /, $what) {
--				if ($file =~ m#^$w$#) {
--					$exact = 1;
--					last;
--				}
-+		foreach my $w (split / /, $what) {
-+			if ($file =~ m#^$w$#) {
-+				$exact = 1;
-+				last;
- 			}
--			# Check for aliases
--			#
--			# TODO: this algorithm is O(w * n²). It can be
--			# improved in the future in order to handle it
--			# faster, by changing parse_existing_sysfs to
--			# store the sysfs inside a tree, at the expense
--			# on making the code less readable and/or using some
--			# additional perl library.
--			foreach my $a (keys %aliases) {
--				my $new = $aliases{$a};
--				my $len = length($new);
-+		}
-+		# Check for aliases
-+		#
-+		# TODO: this algorithm is O(w * n²). It can be
-+		# improved in the future in order to handle it
-+		# faster, by changing parse_existing_sysfs to
-+		# store the sysfs inside a tree, at the expense
-+		# on making the code less readable and/or using some
-+		# additional perl library.
-+		foreach my $a (keys %aliases) {
-+			my $new = $aliases{$a};
-+			my $len = length($new);
+@@ -570,9 +574,6 @@ sub parse_existing_sysfs {
+ sub check_undefined_symbols {
+ 	foreach my $file (sort @files) {
  
--				if (substr($file, 0, $len) eq $new) {
--					my $newf = $a . substr($file, $len);
-+			if (substr($file, 0, $len) eq $new) {
-+				my $newf = $a . substr($file, $len);
- 
--					print "    $newf\n" if ($found_string && $hint);
--					foreach my $w (split / /, $what) {
--						if ($newf =~ m#^$w$#) {
--							$exact = 1;
--							last;
--						}
-+				print "    $newf\n" if ($found_string && $hint);
-+				foreach my $w (split / /, $what) {
-+					if ($newf =~ m#^$w$#) {
-+						$exact = 1;
-+						last;
- 					}
- 				}
- 			}
+-		# Ignore cgroup and firmware
+-		next if ($file =~ m#^/sys/(fs/cgroup|firmware)/#);
 -
--			$defined++;
- 		}
-+
-+		$defined++;
-+
- 		next if ($exact);
- 
- 		# Ignore some sysfs nodes
-@@ -637,7 +640,7 @@ sub check_undefined_symbols {
- 		# is not easily parseable.
- 		next if ($file =~ m#/parameters/#);
- 
--		if ($hint && $defined) {
-+		if ($hint && $defined && $leave ne "others") {
- 			print "$leave at $path might be one of:$whats\n"  if (!$search_string || $found_string);
- 			next;
- 		}
-@@ -699,7 +702,16 @@ sub undefined_symbols {
- 			my $leave = $what;
- 			$leave =~ s,.*/,,;
- 
--			next if ($leave =~ m/^\.\*/ || $leave eq "");
-+			# $leave is used to improve search performance at
-+			# check_undefined_symbols, as the algorithm there can seek
-+			# for a small number of "what". It also allows giving a
-+			# hint about a leave with the same name somewhere else.
-+			# However, there are a few occurences where the leave is
-+			# either a wildcard or a number. Just group such cases
-+			# altogether.
-+			if ($leave =~ m/^\.\*/ || $leave eq "" || $leave =~ /^\d+$/) {
-+				$leave = "others" ;
-+			}
- 
- 			# Escape all other symbols
- 			$what =~ s/$escape_symbols/\\$1/g;
+ 		my $defined = 0;
+ 		my $exact = 0;
+ 		my $whats = "";
 -- 
 2.31.1
 
