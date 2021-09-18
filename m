@@ -2,85 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E61B4108B5
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 23:35:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31CAC4108B9
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 23:36:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239546AbhIRV2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 17:28:19 -0400
-Received: from srv4.3e8.eu ([193.25.101.238]:36426 "EHLO srv4.3e8.eu"
+        id S240026AbhIRVhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 17:37:41 -0400
+Received: from www.zeus03.de ([194.117.254.33]:54490 "EHLO mail.zeus03.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232932AbhIRV2S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 17:28:18 -0400
-Received: from [IPv6:2003:c6:cf12:5a0:9abc:9583:6f0a:c734] (p200300c6cf1205a09abc95836f0ac734.dip0.t-ipconnect.de [IPv6:2003:c6:cf12:5a0:9abc:9583:6f0a:c734])
-        (using TLSv1.3 with cipher TLS_CHACHA20_POLY1305_SHA256 (256/256 bits))
-        (No client certificate requested)
-        by srv4.3e8.eu (Postfix) with ESMTPSA id DC4E4600A9;
-        Sat, 18 Sep 2021 23:26:51 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=3e8.eu;
-        s=mail20170724; t=1632000412;
-        bh=C/aPzaf95uZFHaGAuqSsJ/yKi15mexvt0yMVqlpMCc0=;
-        h=To:Cc:References:From:Subject:Date:In-Reply-To:From;
-        b=aCEWlS9GqO3Zjs5Zm5GbmIGyRXk7bGcFFftlUj+/z2+r7HjfpzrEPg5W3m9O6CI85
-         +runf7LnW9zphnEsEY2JfxEee0aPeTTP9eWnI/4zAwGD9kN57g2MoCO0KqaCCfyNH0
-         byL6Brvzge3wRPTXeQ0rG9asWgzstoEnsoWujlDWpGV1uZvP37HwCvRf2/zLN7WM5g
-         hqjrB1QaTQjb9WZ9oq20EpPYOsfioXCkTknQ86+6yTxpWB8cYg5hfxoE7iutoWkBcD
-         EiyRl/0QK/mfa+tzqvoeJimTFxLrVc6gvoLVxR6ahJQyaBFTA/a09/HTEqZh+e5x65
-         MF8kl5lbz3WmA==
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Daniel Kestrel <kestrelseventyfour@gmail.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210808072643.GA5084@ubuntu>
- <51f2ebf4-6df1-eba5-99f1-1ec88e475d20@3e8.eu> <20210917190154.76203a9a@xps13>
- <e9dd0653-139f-749b-c088-e756ee2d2132@3e8.eu> <20210917213246.319e60cb@xps13>
-From:   Jan Hoffmann <jan@3e8.eu>
-Subject: Re: [PATCH v2] mtd: rawnand: xway: No hardcoded ECC engine, use
- device tree setting
-Message-ID: <14eb0cb7-b0af-87bf-b9a5-3e35eeb43f54@3e8.eu>
-Date:   Sat, 18 Sep 2021 23:26:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S232932AbhIRVh2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Sep 2021 17:37:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=k1; bh=ARiahHC6k+NjTjrEaNx+OU5tcyN
+        c1iADXpTMrPefQdg=; b=EIo8ZOkE4FYuKekk8141XXhW6SjK1Jz8IfwaYRfiO3+
+        q27mRIK4Ouo8xxm8NG+Cc2RXzzwFtq+/WIsJembdaTdCIOw84174d/NW2W6hd0Gr
+        1yI1Lf3grX7+hMhTe6NXWzW2rClN9nIXy6NDtdSUm2M6m14cZG/uFYGSCAlkPSYQ
+        =
+Received: (qmail 1967002 invoked from network); 18 Sep 2021 23:36:02 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 18 Sep 2021 23:36:02 +0200
+X-UD-Smtp-Session: l3s3148p1@ahQr1UvMzpMgAwDPXyF2AO3QmsoMF7XN
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-rtc@vger.kernel.org
+Subject: [PATCH 1/2] rtc: rx6110: simplify getting the adapter of a client
+Date:   Sat, 18 Sep 2021 23:35:51 +0200
+Message-Id: <20210918213553.14514-1-wsa+renesas@sang-engineering.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210917213246.319e60cb@xps13>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miquèl,
+We have a dedicated pointer for that, so use it. Much easier to read and
+less computation involved.
 
-> Yes this was my understanding, that only software ECC engine was
-> supported. The mainline driver shows absolutely no signs of hardware
-> ECC engine support.
-> 
-> Perhaps however you mean that on-die ECC engine are not supported
-> anymore because of the engine_type being set in attach_chip()?
+Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+---
 
-Yes, this is exactly the issue.
+Please apply to your subsystem tree.
 
-> If yes then indeed there is something to do, perhaps checking if an
-> engine has been already set is enough? You can try something like:
-> 
-> if (engine_type == unknown)
-> 	engine_type = soft;
+ drivers/rtc/rtc-rx6110.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Checking for NAND_ECC_ENGINE_TYPE_INVALID doesn't work, as the engine
-type is already set to NAND_ECC_ENGINE_TYPE_ON_HOST by rawnand_dt_init.
-The code there seems to expect that chip->ecc.engine_type contains the
-default value, which is no longer the case after commit 525914b5bd8
-("mtd: rawnand: xway: Move the ECC initialization to ->attach_chip()").
+diff --git a/drivers/rtc/rtc-rx6110.c b/drivers/rtc/rtc-rx6110.c
+index f4d425002f7f..758fd6e11a15 100644
+--- a/drivers/rtc/rtc-rx6110.c
++++ b/drivers/rtc/rtc-rx6110.c
+@@ -422,7 +422,7 @@ static struct regmap_config regmap_i2c_config = {
+ static int rx6110_i2c_probe(struct i2c_client *client,
+ 			    const struct i2c_device_id *id)
+ {
+-	struct i2c_adapter *adapter = to_i2c_adapter(client->dev.parent);
++	struct i2c_adapter *adapter = client->adapter;
+ 	struct rx6110_data *rx6110;
+ 
+ 	if (!i2c_check_functionality(adapter, I2C_FUNC_SMBUS_BYTE_DATA
+-- 
+2.30.2
 
-The following in attach_chip works:
-
-if (chip->ecc.engine_type == NAND_ECC_ENGINE_TYPE_ON_HOST)
-	chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
-
-However, this will also silently use the software ECC engine if anyone
-actually configures the on-host hardware ECC engine in the device tree
-(which is of course unsupported for xway).
-
-Thanks,
-Jan
