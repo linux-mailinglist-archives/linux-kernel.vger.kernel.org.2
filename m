@@ -2,69 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AABC6410554
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 11:13:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F364341055C
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 11:17:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238227AbhIRJPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 05:15:11 -0400
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:58071 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232720AbhIRJPJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 05:15:09 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0Uom.Rp3_1631956417;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0Uom.Rp3_1631956417)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sat, 18 Sep 2021 17:13:43 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     robh@kernel.org
-Cc:     tomeu.vizoso@collabora.com, steven.price@arm.com,
-        alyssa.rosenzweig@collabora.com, airlied@linux.ie, daniel@ffwll.ch,
-        matthias.bgg@gmail.com, sumit.semwal@linaro.org,
-        christian.koenig@amd.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] panfrost: make mediatek_mt8183_supplies and mediatek_mt8183_pm_domains static
-Date:   Sat, 18 Sep 2021 17:13:34 +0800
-Message-Id: <1631956414-85412-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S238052AbhIRJS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 05:18:57 -0400
+Received: from mout.gmx.net ([212.227.15.18]:37867 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231497AbhIRJSz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Sep 2021 05:18:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1631956630;
+        bh=iry8CxJ90YvNjBabfl8pNpq16ZRgsLo1wiD4DopXVmU=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=N5oBX9fJAM5iyWuylOVnewRLM5T8PbFyPWX5WoDIVrxxzEaifUei5SK4HbJaLcyhB
+         mJR+WMiSp3QyFWhfZKVQGTm/aD5WeY/i+OsZ1fIV3JUkQX3pFihlSiCWZqp4qiMocw
+         0M8GLO9j+6c609FcTk5bxH+vIQdau5X9WPcSltcI=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from titan ([79.150.72.99]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1M72oH-1mXIh03s1X-008aqz; Sat, 18
+ Sep 2021 11:17:10 +0200
+Date:   Sat, 18 Sep 2021 11:17:06 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Robert Richter <rric@kernel.org>
+Cc:     Len Baker <len.baker@gmx.com>, Borislav Petkov <bp@alien8.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Joe Perches <joe@perches.com>,
+        David Laight <David.Laight@aculab.com>,
+        Kees Cook <keescook@chromium.org>,
+        linux-hardening@vger.kernel.org, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] EDAC/mc: Prefer strscpy or scnprintf over strcpy,
+ sprintf and snprintf
+Message-ID: <20210918091706.GB2941@titan>
+References: <20210903150539.7282-1-len.baker@gmx.com>
+ <YT8S3poKyd5Nr5cK@rric.localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YT8S3poKyd5Nr5cK@rric.localdomain>
+X-Provags-ID: V03:K1:x0hRNgzN/YTNYOtTnqiD/7Y0qsVVqL9WVhMPAY6LnNnNY4O2mkH
+ oG+BnOd9niqyJRuLPBiDldfFUoeD85ilPs9KPbod2z+yNhyqhYRs+M5zTqhzOnA6fCLJiif
+ UCclBZVfVw9wuZYAwoq/wlzZZGw4UVhTZvrZVP/eNvxEFn+R/AnhhLEkHLeUa1e8hu+4UqW
+ UeC20cI2ifUtL4sp8gqFg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:tWU3fgmMYgo=:XFGFwtM/KjC8HsB9wUwC8D
+ tqSyMMJa3StwqxNbr3Il5Y4S+yMMFvhnERirF78hD5ipB0sbfKgAWoXXCSzlbfnt8xyH8Ktec
+ K7xDCgNTalQX/8bT1Ttl8PFwcNK8gq/SdGkjXSs8sYIU53dQOMapjmx8uijekomsaCbvSG4Fp
+ ZZP787y/zmDYfv0BBoZV2QJ9tjZYeT0GKzXmghPBg5Yorgqiw0fjiF8yP/WO7MQlIW9R7GxnK
+ 3k/2/98ZmIEn54yJgAP0FlAdTYOioYim398Oq+sEE7fSSZdTXrY3DdXXuYZlpcWMzH7yCV9P1
+ 8tALytVCBRcAlzpmMG0uTSD/TP0SLX/AtF3BQZySasu0Ye/Ygfa3oANc20bPurr+dnLh/txlG
+ n/GMFybb1qHtzEv+5O3R8EuXTH0UF8DVyeYwbIbQctURkYqWWhXxpustPBDqLC6oogPf4B1bQ
+ t6fDtjgFl4qTFbuPEgUFcaloo5SGhjk2wURzM6vwJngpY0RXpr7eLoduP8TEjePClWaoyw/q9
+ VjtymHc2ol3lV3GWFa0DG8voi0TWWjeeP8jjw2QhbD+kGK58GNPgI//Y2iV+HX9diVAsBdVBV
+ PaeZXJaH9BcKwHAL2PO5RmF37Rgf8mHojGkMR2dmaql4XXHHk8VTrFCKiFVd8I4M1lHSGSzt+
+ 5txKU0e5NFJHzGuHJoL4gkYag86GXN86kK8I2v/F9nysMmLbtbBkq+IxRRUi88AlXYRS12325
+ /i1WBKYJpS6N5ryUSNJ1ZErEWTqPmXyRRKdLeM93VyQgvoHAnFTzBhj2TX3FCd0RZ6TP30rSb
+ j0YHzMG9NFJbQ0XxQJdY6vJrBm32HXCGHqxmSeK/j3VCZgbLQUs0T5rOM9zki5XejwTUz5r0E
+ 9lHWxm/TRq2+p0c48SnwrJYwv3zP7WYx9kOz8nMnoIusJq6utBXz1I5SudTMYuhT1Gq3Ios+O
+ kZUJXvi3x7QuG/Je08IdAGBAFX2ozgJXTlqR0POlqEuozSaI933Kjkg8KUBmfyDwOF2xohusa
+ ylkCVcDLDHG2FKV//K+JsxKrfnwF5UGPAbCEK02fY3zAI1iPVVsmE+g86fmt4zq57xeKS5ca/
+ VsAO2yMY+aKH2g=
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This symbol is not used outside of panfrost_drv.c, so marks it static.
+Hi,
 
-Fix the following sparse warning:
+On Mon, Sep 13, 2021 at 10:59:10AM +0200, Robert Richter wrote:
 
-drivers/gpu/drm/panfrost/panfrost_drv.c:641:12: warning: symbol
-'mediatek_mt8183_supplies' was not declared. Should it be static?
+> this patch looks good to me. I made some changes on top of it to
+> further ease pointer arithmetic and also fix remaining
+> sprintf/snprintf() users as it makes sense to have them all in a
+> single change. See below. Boris, please apply.
 
-drivers/gpu/drm/panfrost/panfrost_drv.c:642:12: warning: symbol
-'mediatek_mt8183_pm_domains' was not declared. Should it be static?
+Thanks Robert for doing this.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- drivers/gpu/drm/panfrost/panfrost_drv.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/panfrost/panfrost_drv.c
-index 077cbbf..82ad9a6 100644
---- a/drivers/gpu/drm/panfrost/panfrost_drv.c
-+++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
-@@ -638,8 +638,8 @@ static int panfrost_remove(struct platform_device *pdev)
- 	.vendor_quirk = panfrost_gpu_amlogic_quirk,
- };
- 
--const char * const mediatek_mt8183_supplies[] = { "mali", "sram" };
--const char * const mediatek_mt8183_pm_domains[] = { "core0", "core1", "core2" };
-+static const char * const mediatek_mt8183_supplies[] = { "mali", "sram" };
-+static const char * const mediatek_mt8183_pm_domains[] = { "core0", "core1", "core2" };
- static const struct panfrost_compatible mediatek_mt8183_data = {
- 	.num_supplies = ARRAY_SIZE(mediatek_mt8183_supplies),
- 	.supply_names = mediatek_mt8183_supplies,
--- 
-1.8.3.1
-
+Regards,
+Len
