@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6722410645
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 14:10:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06C73410647
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 14:11:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244501AbhIRMMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 08:12:05 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:36001 "EHLO
+        id S245036AbhIRMM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 08:12:27 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:33867 "EHLO
         new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239654AbhIRMLr (ORCPT
+        by vger.kernel.org with ESMTP id S239483AbhIRMLs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 08:11:47 -0400
+        Sat, 18 Sep 2021 08:11:48 -0400
 Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.nyi.internal (Postfix) with ESMTP id BB8F1580AA8;
-        Sat, 18 Sep 2021 08:10:09 -0400 (EDT)
+        by mailnew.nyi.internal (Postfix) with ESMTP id B238D580AAF;
+        Sat, 18 Sep 2021 08:10:11 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Sat, 18 Sep 2021 08:10:09 -0400
+  by compute1.internal (MEProxy); Sat, 18 Sep 2021 08:10:11 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
          h=from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm2; bh=0itOJh54gQGaO
-        D30thtQPa3Yp7a7smAvsgK9h2nk/EM=; b=GzeruHLvchfZHbMUP5wEbGmPKpdwR
-        SWAuEPRNLc2IGZZ1XIFiTAFk9qPR74+UCXc9vj3K+sidJbUhrvKsYPznh8fWA937
-        FqLANQpDCFOOrwPJz42NvDBpafQZVNXOSacKSM8iPpBRaeXc08XoImYbZ//zSzM5
-        cIwesZhRW+PdZOER9rnX8DOuKlzbPRsnD6lrFU5RvXq1Z3GmBeN4qg6LMukRXKAQ
-        Ti2aTa6JAB2ByNnWoRg/i05sDUvlVZ9s0KD89dbSZatehHc34RUHTk9p4iyplusu
-        uZ30lDWdDmqY6pIMJ1f0PiRe4sV/ZCe91SlwOK5z+Ca190HsgATRPwCWw==
+        :mime-version:content-transfer-encoding; s=fm2; bh=2BUNai60PAsqa
+        HL0XWy7FY7EGOOjnzZDxxMpH7rQ3Q4=; b=cVOv97tqGpyIKyv/WBxbBDWMhKaDS
+        IbkB6ysOE+JWR2uz8bpqaINpYd4BoMZSXSmNprFA8wpMclhuDgxHeDRVGLQXrVQH
+        8XvfLhLDH0CooiZ+qOW4xSh64LAYe1U30Gi9kwQ0shgRaDP22EpueKs72Gf25+49
+        2+aNb12N79YhnNFuCtkFpUJ5WyShfRpLF9a+20KRVuIv1kQsG0OFMWpUBBtJPDUa
+        w/zjyco0rWTZaLOoNyYXtHdQ6+0GZIgezabYqpJXyHbbJOECKfVSksM3BCypDRIw
+        wrqdgwWdGeIJ3wEYAFLWIR9LAjmqPc08bgRBucyp1EbCnfMvjxonO238g==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=0itOJh54gQGaOD30thtQPa3Yp7a7smAvsgK9h2nk/EM=; b=L1iPXkgj
-        JeSIbtBkn0Wtsf2G7SrzF02rLTQiiQAuvvowQXwwh8rcSLondHN6OAlzoriisRES
-        CK7X6/uxU0ibCDt2EPL86HFDqEr27J1UMIj7ULXVnBTxSyXr67bdwlQGQcPw+yV/
-        df0U9latnknX2vGeVX352XbCgRpIqq7yUXyNzHaRFqkl14WPk42cGoL/msucquQk
-        BSLZUGCCMPNTCAIAb+Mx08oO8DbHZa8dLK+GA1Rjso9TYVOJYyJJCR8RCdk1j2PN
-        34Ub7iBUYyAT/oUqtVxj+Jhf15VcIzt3IY+CG1dWJHGz+rep4egD+BivxGfo6jmq
-        z1CHIOl7j+u+/w==
-X-ME-Sender: <xms:INdFYQj-l6utmgtCGdEgzYdUUI4hSKYAzxfjfarY9TPuYfOKnYwF8w>
-    <xme:INdFYZB1SAV4-VjBAerS_NT2NOIC0MR9zdSPBF3kd1WDqQ4I3GcYCkqP83NJVR2-g
-    sUK7YDCGRVWY5w7A80>
-X-ME-Received: <xmr:INdFYYHGmZHCIuJYhFmAWy-D2Ht8JRT7fuoZ2yQW1Eqw8FWa7TgZ-X5J7QBIGMgdp6WuoLnP65PuZCV16pbciG8Ri5xTHWu6p_j_RWLv51XEe9hxai3csXavBa1UEg>
+        fm3; bh=2BUNai60PAsqaHL0XWy7FY7EGOOjnzZDxxMpH7rQ3Q4=; b=rAOhEJaM
+        b+VawphzSWGyilbd5N/OZzKVXbohQubTWXVoLyH7HLZSmY/Tz1Lh94ffobzmJEr8
+        DGui+HCRH185pDcpQL84iYtZK5LIVypfKIZAqP0bFSnKS2B9BW7RLbO9Ua5Mmh8H
+        gtS9YqoeBf4rMpge8Zu/BA9R5naxmGznVTsYu9jZM8jknHD1gX/2dDrS+X5JUC+c
+        cCv+ziWP5CZYvkuqcgqfIBJmLD3c5Hmqd9RhKZOeoPu9Y6IMUABP5H/cInWCMfyg
+        hWZHuwe8B/PZO9sKBkU9DXeSXqFFQ3jfdjnp8Aekg6DDwqbFsdsrE7zy7tFt2JqL
+        /c/D7glsV6jEOQ==
+X-ME-Sender: <xms:I9dFYb8i9xrLgZKHFdbEdxlIIopYm8r8nYDteszZn6kblTuCakSygw>
+    <xme:I9dFYXuBe3ZiklGnt8lWRrVUoInTq-5ak3TMBRkuqnJbNEZPfG6d6nfMm256KzOuh
+    dSU07CBJzagCWRROBM>
+X-ME-Received: <xmr:I9dFYZD7rmf04NG4SVShLbFQ1cBg_MvOfDYbxmuokadjLXJAAEpa5Vvol-IMKlD95SLOkB6HrAerP-2qJXBqad34VFEq-sBPrpxwtBai2nALyUEwqO0sUyEEIS4rHA>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudehkedggeeiucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
@@ -49,12 +49,12 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudehkedggeeiucetufdoteggod
     hrnheptedvkeetleeuffffhfekteetffeggffgveehieelueefvddtueffveevlefhfeej
     necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepshhvvg
     hnsehsvhgvnhhpvghtvghrrdguvghv
-X-ME-Proxy: <xmx:INdFYRTXoEg9sqL6z1YK7JtZydvWAEKFSnSC5sSqvNkj3cw3Oo_xwA>
-    <xmx:INdFYdxPa0ht9Xi_ie7ILhGjPhguvGFidcFzLsY2YYAwplX6egdTXQ>
-    <xmx:INdFYf5EJycKJwgUaZ-8_HeVOwJ_q2Mh2IP5RdK4bHKzvG87iqtZOg>
-    <xmx:IddFYT6TMAHEJAo67QVCILG-9i7-q-IyI-N-VAvH0sjxcGLfzteh_A>
+X-ME-Proxy: <xmx:I9dFYXfoJ2nTU7_lLKFVztw8fid6sYfqfj4bBonKWXcV4kqLyvIBag>
+    <xmx:I9dFYQOp0FwhnU29U6hKJyO4bb5Fwcv1eZlYJxqgmbMnh3xhK8L3IA>
+    <xmx:I9dFYZlEW-YCa0x_RTnxw3Pzr-ysSDNjeFIwCpuIJqOmdXJfrZfJWA>
+    <xmx:I9dFYZmvn-cZGqHzT5RnRP7FhEZS7dNgEzQxTB84kFDKtSJuRNgjLw>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 18 Sep 2021 08:10:06 -0400 (EDT)
+ 18 Sep 2021 08:10:09 -0400 (EDT)
 From:   Sven Peter <sven@svenpeter.dev>
 To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
 Cc:     Sven Peter <sven@svenpeter.dev>,
@@ -68,9 +68,9 @@ Cc:     Sven Peter <sven@svenpeter.dev>,
         Mark Kettenis <mark.kettenis@xs4all.nl>,
         Alexander Graf <graf@amazon.com>,
         Alyssa Rosenzweig <alyssa@rosenzweig.io>
-Subject: [RFT PATCH 8/9] usb: typec: tipd: Switch power state to S0 for Apple variant
-Date:   Sat, 18 Sep 2021 14:09:33 +0200
-Message-Id: <20210918120934.28252-9-sven@svenpeter.dev>
+Subject: [RFT PATCH 9/9] usb: typec: tipd: Remove FIXME about testing with I2C_FUNC_I2C
+Date:   Sat, 18 Sep 2021 14:09:34 +0200
+Message-Id: <20210918120934.28252-10-sven@svenpeter.dev>
 X-Mailer: git-send-email 2.30.1 (Apple Git-130)
 In-Reply-To: <20210918120934.28252-1-sven@svenpeter.dev>
 References: <20210918120934.28252-1-sven@svenpeter.dev>
@@ -80,131 +80,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Apple CD321x comes up in a low-power state after boot. Usually, the
-bootloader will already power it up to S0 but let's do it here as well
-in case that didn't happen.
+The Apple i2c bus uses I2C_FUNC_I2C and I've tested this quite
+extensivly in the past days. Remove the FIXME about that testing :-)
 
-Suggested-by: Stan Skowronek <stan@corellium.com>
 Signed-off-by: Sven Peter <sven@svenpeter.dev>
 ---
- drivers/usb/typec/tipd/core.c     | 44 +++++++++++++++++++++++++++++++
- drivers/usb/typec/tipd/tps6598x.h |  6 +++++
- 2 files changed, 50 insertions(+)
+ drivers/usb/typec/tipd/core.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
 diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
-index e96b17fe6af6..26807c050662 100644
+index 26807c050662..3b6878e22ce9 100644
 --- a/drivers/usb/typec/tipd/core.c
 +++ b/drivers/usb/typec/tipd/core.c
-@@ -30,6 +30,7 @@
- #define TPS_REG_INT_MASK2		0x17
- #define TPS_REG_INT_CLEAR1		0x18
- #define TPS_REG_INT_CLEAR2		0x19
-+#define TPS_REG_SYSTEM_POWER_STATE	0x20
- #define TPS_REG_STATUS			0x1a
- #define TPS_REG_SYSTEM_CONF		0x28
- #define TPS_REG_CTRL_CONF		0x29
-@@ -84,6 +85,8 @@ struct tps6598x_hw {
- 	unsigned int irq_data_status_update;
- 	unsigned int irq_plug_event;
- 	void (*irq_trace)(u64 event1, u64 event2);
-+
-+	bool supports_spss;
- };
- static const struct tps6598x_hw ti_tps6598x_data;
- 
-@@ -161,6 +164,11 @@ static int tps6598x_block_write(struct tps6598x *tps, u8 reg,
- 	return regmap_raw_write(tps->regmap, reg, data, sizeof(data));
- }
- 
-+static inline int tps6598x_read8(struct tps6598x *tps, u8 reg, u8 *val)
-+{
-+	return tps6598x_block_read(tps, reg, val, sizeof(u8));
-+}
-+
- static inline int tps6598x_read16(struct tps6598x *tps, u8 reg, u16 *val)
- {
- 	return tps6598x_block_read(tps, reg, val, sizeof(u16));
-@@ -572,6 +580,35 @@ static int tps6598x_psy_get_prop(struct power_supply *psy,
- 	return ret;
- }
- 
-+static int cd321x_switch_power_state(struct tps6598x *tps, u8 target_state)
-+{
-+	u8 state;
-+	int ret;
-+
-+	if (!tps->hw->supports_spss)
-+		return 0;
-+
-+	ret = tps6598x_read8(tps, TPS_REG_SYSTEM_POWER_STATE, &state);
-+	if (ret)
-+		return ret;
-+
-+	if (state == target_state)
-+		return 0;
-+
-+	ret = tps6598x_exec_cmd(tps, "SPSS", sizeof(u8), &target_state, 0, NULL);
-+	if (ret)
-+		return ret;
-+
-+	ret = tps6598x_read8(tps, TPS_REG_SYSTEM_POWER_STATE, &state);
-+	if (ret)
-+		return ret;
-+
-+	if (state != target_state)
-+		return -EINVAL;
-+
-+	return 0;
-+}
-+
- static int devm_tps6598_psy_register(struct tps6598x *tps)
- {
- 	struct power_supply_config psy_cfg = {};
-@@ -648,6 +685,11 @@ static int tps6598x_probe(struct i2c_client *client)
- 	if (ret)
- 		return ret;
- 
-+	/* Switch Apple chips to the correct system power state */
-+	ret = cd321x_switch_power_state(tps, TPS_SYSTEM_POWER_STATE_S0);
-+	if (ret)
-+		return ret;
-+
- 	ret = tps6598x_read32(tps, TPS_REG_STATUS, &status);
- 	if (ret < 0)
- 		return ret;
-@@ -786,6 +828,7 @@ static const struct tps6598x_hw ti_tps6598x_data = {
- 	.irq_data_status_update = TPS_REG_INT_DATA_STATUS_UPDATE,
- 	.irq_plug_event = TPS_REG_INT_PLUG_EVENT,
- 	.irq_trace = trace_tps6598x_irq,
-+	.supports_spss = false,
- };
- 
- static const struct tps6598x_hw apple_cd321x_data = {
-@@ -795,6 +838,7 @@ static const struct tps6598x_hw apple_cd321x_data = {
- 	.irq_data_status_update = APPLE_TPS_REG_INT_DATA_STATUS_UPDATE,
- 	.irq_plug_event = APPLE_TPS_REG_INT_PLUG_EVENT,
- 	.irq_trace = trace_cd321x_irq,
-+	.supports_spss = true,
- };
- 
- static const struct of_device_id tps6598x_of_match[] = {
-diff --git a/drivers/usb/typec/tipd/tps6598x.h b/drivers/usb/typec/tipd/tps6598x.h
-index 36b482733297..5e6ff51aa657 100644
---- a/drivers/usb/typec/tipd/tps6598x.h
-+++ b/drivers/usb/typec/tipd/tps6598x.h
-@@ -135,6 +135,12 @@
- #define APPLE_TPS_REG_INT_STATUS_UPDATE			BIT(8)
- #define APPLE_TPS_REG_INT_PLUG_EVENT			BIT(1)
- 
-+/* TPS_REG_SYSTEM_POWER_STATE states */
-+#define TPS_SYSTEM_POWER_STATE_S0			0x00
-+#define TPS_SYSTEM_POWER_STATE_S3			0x03
-+#define TPS_SYSTEM_POWER_STATE_S4			0x04
-+#define TPS_SYSTEM_POWER_STATE_S5			0x05
-+
- /* TPS_REG_POWER_STATUS bits */
- #define TPS_POWER_STATUS_CONNECTION(x)  TPS_FIELD_GET(BIT(0), (x))
- #define TPS_POWER_STATUS_SOURCESINK(x)	TPS_FIELD_GET(BIT(1), (x))
+@@ -673,9 +673,6 @@ static int tps6598x_probe(struct i2c_client *client)
+ 	/*
+ 	 * Checking can the adapter handle SMBus protocol. If it can not, the
+ 	 * driver needs to take care of block reads separately.
+-	 *
+-	 * FIXME: Testing with I2C_FUNC_I2C. regmap-i2c uses I2C protocol
+-	 * unconditionally if the adapter has I2C_FUNC_I2C set.
+ 	 */
+ 	if (i2c_check_functionality(client->adapter, I2C_FUNC_I2C))
+ 		tps->i2c_protocol = true;
 -- 
 2.25.1
 
