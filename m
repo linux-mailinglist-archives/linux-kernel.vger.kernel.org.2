@@ -2,110 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54FBA41080C
+	by mail.lfdr.de (Postfix) with ESMTP id B378841080D
 	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 20:19:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240201AbhIRSUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 14:20:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38082 "EHLO
+        id S240260AbhIRSUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 14:20:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238984AbhIRSUn (ORCPT
+        with ESMTP id S239259AbhIRSUn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 18 Sep 2021 14:20:43 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36BBBC061574
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D59E2C061574
         for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 11:19:19 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id v22so38703558edd.11
+Received: by mail-ed1-x533.google.com with SMTP id q3so43091299edt.5
         for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 11:19:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rPQxqApznozzGxmIzZvgKnlRlxKs6mC5a3qq+j04H9I=;
-        b=PRCekKGHawQ11jBADXVwcKBQ6mMms4qimPl32QMQqoQnEMrUjdkAowqUBA29WrCNZo
-         J6OZHavRXU32TQSgpGZz+OrZ/KgggH1IZYB5U5vdc/c3yR7+TzzNTDlByPKBZFF65nbO
-         L4HWDiPC0Ds0pCdIX0Z3gMoExrigxQ5nwg0RDBz8ALi3hFXLJ7mXWoKzE+z0FH/bj2Ut
-         nXmXeqP20r+8myXv2cfxAceCZoUp8/aCCfIj3w9OZI64suUGDk4CKLgXlnoiTVzw16R1
-         tBqGWJ19a9iyY4tbpcAlNYwFDNNLs4oJQFdp/Xw+zPn3daAMQkZ/77DctcuXlENNwNU8
-         oHvg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=CJYLNkpD2oLEZhMe2V2yp/Hy0smx9hVqOX2DDPaz9/M=;
+        b=Zu1F/9KPQO6iVaNc7qE2g6Prmdy0VEzN/wwGVcYBgpCSLO/ET7oX8fuhptmi25L4hi
+         /mqY+JE5iMl+XVoNI1jyKnZaZJEsJ0bfE3GgyGG9zFhac01OfE99J1Vk/caiqrv5LqeO
+         ZIke6hFyetIxoo8/n1HsuKHUxQm8GCfLnSsziZbzeVDki9jFXLMS0Z+JU8/JcgathYfw
+         1RLpVKak0FCBAmdZL75b/LzhJ6c1sjBxLY0yMeIytBzczz8JJrc5qA1KYjbJjbFsPK2+
+         hPLIf3Ml0xg8d+PyYagyNrI4rzxlh7QvHI29oLSuN5Ede2Hkzkl3GcliIGeca7KVORGw
+         GtWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rPQxqApznozzGxmIzZvgKnlRlxKs6mC5a3qq+j04H9I=;
-        b=7nizeJ6B8kjuuAgANgR8psRae9o2rTVleDW3TFfwUDkB+4qw2aPX5dge2WJsGF4zVz
-         zxsBnOrfkncPLf1UNC+VHWbTJIajIdPE36Qcnnyp5YfsYRIdWadrOtuc3yYu4kXz9d4U
-         wqXABo7dISTM1IxwHzvdF7Kekr3tH0AT+uw4pILEZtKvVvoGwzVE4mQ7pduLIFj3RiGx
-         65IcE1g3nKPF6vdPP9/DNWhgCklSOXoVqnXqa7hG1QaWzqraisK9+U4h6/rftD4Zz/ev
-         NOtaD/p0hQ3W2pQuUkatlxd5YrYLdeRU22nDuLqQqkNivmwtgxuf4A7a+/m5wbLCyO6p
-         lkpA==
-X-Gm-Message-State: AOAM5315qYAX6obA0Wbw2zXD1Em7EAwDVWQpzgIlVrrc8TgwjMxny2Qv
-        ft08bfHFJLLI+WPSqc4YjQM=
-X-Google-Smtp-Source: ABdhPJxzNlRWQV2P1N54o/h3NTWK7I2bE857Jl7NyPlNiaPJ6QRM8yuq1J8zMPVjkzN7z09vkv2Zag==
-X-Received: by 2002:a05:6402:1855:: with SMTP id v21mr20407272edy.349.1631989157646;
-        Sat, 18 Sep 2021 11:19:17 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=CJYLNkpD2oLEZhMe2V2yp/Hy0smx9hVqOX2DDPaz9/M=;
+        b=1Qch/FV+hk0YF4n6k8oTptRXvd78xGvtKcAmEgQwkNScUubYLQ1QFaYk+Ej1M36qz7
+         YjChlxmlCsEcDS9ynqjONqcTkAVPtIyFL0QhIOdCg3MwtQga4un2dX8+ElEVpbnTmf2j
+         4D+0LguqCP7zhmOpjhiQWZwSpKV9ofdxBsFSS+mV07UMaLzDhWRYLw9ukg/81ddWwJMY
+         QD6Njt2hHtJxoOznsibhQ8BHOy8Mt2cqvxiDDrcRZWIaxuzuE/44/F+kCfrU4PTK0s4E
+         W+m2jnobjkNGVHwySVRZvUTZEZNlIdpPHwWI69HNUPb7dniI3VAZ2iDb/79+AVPfvHOD
+         xsIw==
+X-Gm-Message-State: AOAM5320EXTZfOHkMiI20lu2CJo67EcKOHWJztZ4rvu5vwZ4ZKekrKR0
+        bzAbFO9m013MF6XkigUA4vQ=
+X-Google-Smtp-Source: ABdhPJwZ3yqaHWPhLVyp45xu3u9JxTg2fI6/wMCBsEMxC61aotAF35fyE6isLIJxjptBCQTl/FtULQ==
+X-Received: by 2002:a17:906:31ca:: with SMTP id f10mr18778972ejf.73.1631989158388;
+        Sat, 18 Sep 2021 11:19:18 -0700 (PDT)
 Received: from localhost.localdomain ([2a02:8108:96c0:3b88::cde])
-        by smtp.gmail.com with ESMTPSA id t19sm3903673ejb.115.2021.09.18.11.19.16
+        by smtp.gmail.com with ESMTPSA id t19sm3903673ejb.115.2021.09.18.11.19.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Sep 2021 11:19:17 -0700 (PDT)
+        Sat, 18 Sep 2021 11:19:18 -0700 (PDT)
 From:   Michael Straube <straube.linux@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
         fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org,
         Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH v3 00/14] staging: r8188eu: remove odm_RegDefine11AC.h
-Date:   Sat, 18 Sep 2021 20:18:50 +0200
-Message-Id: <20210918181904.12000-1-straube.linux@gmail.com>
+Subject: [PATCH v3 01/14] staging: r8188eu: remove comments from odm_interface.h
+Date:   Sat, 18 Sep 2021 20:18:51 +0200
+Message-Id: <20210918181904.12000-2-straube.linux@gmail.com>
 X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20210918181904.12000-1-straube.linux@gmail.com>
+References: <20210918181904.12000-1-straube.linux@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The first 12 patches in this series remove macros and code that
-is valid only for 11ac chips and therefore not needed/used in this
-driver. Finally we can remove the header odm_RegDefine11AC.h.
+In order to make further cleanup easier to review remove some
+unnecessary comments from odm_interface.h
 
-The last 2 patches remove unused defines from odm_RegDefine11N.h and
-clean up indentation in that file.
+Signed-off-by: Michael Straube <straube.linux@gmail.com>
+---
+ .../staging/r8188eu/include/odm_interface.h   | 22 -------------------
+ 1 file changed, 22 deletions(-)
 
-Tested on x86_64 with Inter-Tech DMG-02.
-
-v2 -> v3
-Added 2 patches that were sent separately but depend on this series.
-The first 12 patches are unchanged.
-
-v1 -> v2
-Changed subject line of patch 11/12 to fix a typo.
-All other patches are unchanged.
-
-Michael Straube (14):
-  staging: r8188eu: remove comments from odm_interface.h
-  staging: r8188eu: remove unused macros from odm_interface.h
-  staging: r8188eu: remove _ic_type from macro _cat in odm_interface.h
-  staging: r8188eu: remove dead code from ODM_Write_DIG()
-  staging: r8188eu: remove unnecessary if statement
-  staging: r8188eu: remove more dead code from ODM_Write_DIG()
-  staging: r8188eu: remove macro ODM_REG
-  staging: r8188eu: remove macro ODM_BIT
-  staging: r8188eu: remove unnecessary if statements
-  staging: r8188eu: remove dead code from odm.c
-  staging: r8188eu: remove macros ODM_IC_11{N,AC}_SERIES
-  staging: r8188eu: remove header file odm_RegDefine11AC.h
-  staging: r8188eu: remove unused defines from odm_RegDefine11N.h
-  staging: r8188eu: clean up indentation in odm_RegDefine11N.h
-
- drivers/staging/r8188eu/hal/odm.c             | 224 +++++++-----------
- drivers/staging/r8188eu/include/odm.h         |   5 -
- .../r8188eu/include/odm_RegDefine11AC.h       |  29 ---
- .../r8188eu/include/odm_RegDefine11N.h        | 112 +--------
- .../staging/r8188eu/include/odm_interface.h   |  41 ----
- drivers/staging/r8188eu/include/odm_precomp.h |   1 -
- 6 files changed, 90 insertions(+), 322 deletions(-)
- delete mode 100644 drivers/staging/r8188eu/include/odm_RegDefine11AC.h
-
+diff --git a/drivers/staging/r8188eu/include/odm_interface.h b/drivers/staging/r8188eu/include/odm_interface.h
+index 95e0303c28b8..efc2ca069a3d 100644
+--- a/drivers/staging/r8188eu/include/odm_interface.h
++++ b/drivers/staging/r8188eu/include/odm_interface.h
+@@ -4,29 +4,11 @@
+ #ifndef	__ODM_INTERFACE_H__
+ #define __ODM_INTERFACE_H__
+ 
+-/*  */
+-/*  =========== Constant/Structure/Enum/... Define */
+-/*  */
+-
+-/*  */
+-/*  =========== Macro Define */
+-/*  */
+-
+ #define _reg_all(_name)			ODM_##_name
+ #define _reg_ic(_name, _ic)		ODM_##_name##_ic
+ #define _bit_all(_name)			BIT_##_name
+ #define _bit_ic(_name, _ic)		BIT_##_name##_ic
+ 
+-/*  _cat: implemented by Token-Pasting Operator. */
+-
+-/*===================================
+-
+-#define ODM_REG_DIG_11N		0xC50
+-#define ODM_REG_DIG_11AC	0xDDD
+-
+-ODM_REG(DIG,_pDM_Odm)
+-=====================================*/
+-
+ #define _reg_11N(_name)			ODM_REG_##_name##_11N
+ #define _reg_11AC(_name)		ODM_REG_##_name##_11AC
+ #define _bit_11N(_name)			ODM_BIT_##_name##_11N
+@@ -38,10 +20,6 @@ ODM_REG(DIG,_pDM_Odm)
+ 		_func##_11AC(_name)					\
+ 	)
+ 
+-/*  _name: name of register or bit. */
+-/*  Example: "ODM_REG(R_A_AGC_CORE1, pDM_Odm)" */
+-/*         gets "ODM_R_A_AGC_CORE1" or "ODM_R_A_AGC_CORE1_8192C",
+- *	   depends on SupportICType. */
+ #define ODM_REG(_name, _pDM_Odm) _cat(_name, _pDM_Odm->SupportICType, _reg)
+ #define ODM_BIT(_name, _pDM_Odm) _cat(_name, _pDM_Odm->SupportICType, _bit)
+ 
 -- 
 2.33.0
 
