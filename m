@@ -2,103 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CA32410573
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 11:26:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AF5541057B
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 11:33:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244370AbhIRJ1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 05:27:23 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:16278 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243891AbhIRJ0u (ORCPT
+        id S238616AbhIRJfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 05:35:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238295AbhIRJe7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 05:26:50 -0400
-Received: from dggeme755-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HBQQ42Wpqz8t8l;
-        Sat, 18 Sep 2021 17:24:44 +0800 (CST)
-Received: from [10.40.166.221] (10.40.166.221) by
- dggeme755-chm.china.huawei.com (10.3.19.101) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Sat, 18 Sep 2021 17:25:24 +0800
-Message-ID: <6145B084.6020803@hisilicon.com>
-Date:   Sat, 18 Sep 2021 17:25:24 +0800
-From:   Wei Xu <xuwei5@hisilicon.com>
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:24.0) Gecko/20100101 Thunderbird/24.2.0
+        Sat, 18 Sep 2021 05:34:59 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B855C061764
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 02:33:36 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id b15so25055906lfe.7
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 02:33:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=edeevZ54MxyNr2ONaDsC9jI+UtdZjrCL/LCuSFC70Ao=;
+        b=aD/m+/TeCz780fVv6uI6/3y/MccFrJiN9wKsN7dLuGOnk/x4U7rgOUuETv6mo43Gx3
+         5KxKUYXILJshXsh/TxsC4gOqhLVgX9MJKb9kPMC1tNOwvRxM43xyARHe/NSJnLNfEBm0
+         KwSFQmpzofWVXWe5dxr47iWyEgAFDZJe3L79umL+tVPxCUiJHR1jMV2M+BHc+oxFRyJ5
+         Xe+Vpk6/L2txIbw9tJTb6kGD9qm7p15x5atq8oykYk4tJ27H+P3GVRjPi3Pbgf9KPSf8
+         3tnxAzrPerGUghx9usGqsJPFNIF9/jY2rpfx+chR8b+jsLYkAUINFZ2XF10IhWZ/VUYR
+         X6iA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=edeevZ54MxyNr2ONaDsC9jI+UtdZjrCL/LCuSFC70Ao=;
+        b=ohoGJmBAODRNgCN3W8y7Aim0xf3bQ9D80SNLedgvP9kl/6ow+4W+ccEkukuWyfRpi0
+         yFqItmM1GXFUDaPu47bSgvIEPk7JaSSwnHsc1f3XPl1Hmee7vZMiVtRVTvlL90C4y+Kt
+         zKYDjIN7noiQtNBgfjtuRY1B7kyX2S/nqB8O/swFWxxojhO9RKPSUBDpYFL+1tRHw/A+
+         DJR41svR2o6WEIfKYyfQ7RWd3PvFhO54FLyXm7lqgoJN3vbs9All5IPLjggtkAgQHivS
+         lyy9cTqRI5qG/0CdzTgbOjIrlbFIgnGavRQq4SNC69NWyMfRGtc8EfF8grfaA+sAOyvu
+         7yvw==
+X-Gm-Message-State: AOAM530ZvW5LBytLfwajZMNXFkdTwQ6boA2E4Hi3RdTOLv9/1Lz+9Anr
+        N7/O8gmyLQIzMqObmFmf4B+z7sA8B9/A/9ocrmY=
+X-Google-Smtp-Source: ABdhPJzlFs9uF/VKImjqEVI/ssmhNG0gUAzFou3Pm8C0zWQoj7oTnT702nX6OgoSJUNGuuVTk1ls6lJUYTjd2fm0Q4w=
+X-Received: by 2002:a2e:910f:: with SMTP id m15mr13029536ljg.275.1631957614012;
+ Sat, 18 Sep 2021 02:33:34 -0700 (PDT)
 MIME-Version: 1.0
-To:     Michael Walle <michael@walle.cc>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH] arm64: dts: hisilicon: fix arm,sp805 compatible string
-References: <20210830165113.222867-1-michael@walle.cc>
-In-Reply-To: <20210830165113.222867-1-michael@walle.cc>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.40.166.221]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggeme755-chm.china.huawei.com (10.3.19.101)
-X-CFilter-Loop: Reflected
+Received: by 2002:a05:6512:3502:0:0:0:0 with HTTP; Sat, 18 Sep 2021 02:33:33
+ -0700 (PDT)
+Reply-To: mohammedsaeeda619@gmail.com
+From:   Mohammed Saeed <ing.abdullabin.rishid578.me@gmail.com>
+Date:   Sat, 18 Sep 2021 12:33:33 +0300
+Message-ID: <CAKM-yf=QcdnB_dV7UN1BsvhhQ_15HE1-jsZpm1i+UuTp1xrfpA@mail.gmail.com>
+Subject: Proposal
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
+Salam alaikum,
 
-On 2021/8/31 0:51, Michael Walle wrote:
-> According to Documentation/devicetree/bindings/watchdog/arm,sp805.yaml
-> the compatible is:
->   compatible = "arm,sp805", "arm,primecell";
-> 
-> The current compatible string doesn't exist at all. Fix it.
-> 
-> Signed-off-by: Michael Walle <michael@walle.cc>
+I am the investment officer of UAE based investment company who are
+ready to fund projects outside UAE, in the form of debt finance. We
+grant loan to both Corporate and private entities at a low interest
+rate of 2% ROI per annum. The terms are very flexible and
+interesting.Kindly revert back if you have projects that needs funding
+for further discussion and negotiation.
 
-Applied to the HiSilicon arm64 dt tree.
-Thanks!
+Thanks
 
-Best Regards,
-Wei
-
-> ---
-> There are also the layerscape SoC which are using these compatible
-> strings. I'm on it to change these, too.
-> 
->  arch/arm64/boot/dts/hisilicon/hi3660.dtsi | 4 ++--
->  arch/arm64/boot/dts/hisilicon/hi6220.dtsi | 2 +-
->  2 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
-> index 2d5c1a348716..6eabec2602e2 100644
-> --- a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
-> +++ b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
-> @@ -1087,7 +1087,7 @@ dwmmc2: dwmmc2@ff3ff000 {
->  		};
->  
->  		watchdog0: watchdog@e8a06000 {
-> -			compatible = "arm,sp805-wdt", "arm,primecell";
-> +			compatible = "arm,sp805", "arm,primecell";
->  			reg = <0x0 0xe8a06000 0x0 0x1000>;
->  			interrupts = <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>;
->  			clocks = <&crg_ctrl HI3660_OSC32K>,
-> @@ -1096,7 +1096,7 @@ watchdog0: watchdog@e8a06000 {
->  		};
->  
->  		watchdog1: watchdog@e8a07000 {
-> -			compatible = "arm,sp805-wdt", "arm,primecell";
-> +			compatible = "arm,sp805", "arm,primecell";
->  			reg = <0x0 0xe8a07000 0x0 0x1000>;
->  			interrupts = <GIC_SPI 45 IRQ_TYPE_LEVEL_HIGH>;
->  			clocks = <&crg_ctrl HI3660_OSC32K>,
-> diff --git a/arch/arm64/boot/dts/hisilicon/hi6220.dtsi b/arch/arm64/boot/dts/hisilicon/hi6220.dtsi
-> index dde9371dc545..e4860b8a638e 100644
-> --- a/arch/arm64/boot/dts/hisilicon/hi6220.dtsi
-> +++ b/arch/arm64/boot/dts/hisilicon/hi6220.dtsi
-> @@ -840,7 +840,7 @@ dwmmc_2: dwmmc2@f723f000 {
->  		};
->  
->  		watchdog0: watchdog@f8005000 {
-> -			compatible = "arm,sp805-wdt", "arm,primecell";
-> +			compatible = "arm,sp805", "arm,primecell";
->  			reg = <0x0 0xf8005000 0x0 0x1000>;
->  			interrupts = <GIC_SPI 13 IRQ_TYPE_LEVEL_HIGH>;
->  			clocks = <&ao_ctrl HI6220_WDT0_PCLK>,
-> 
+investment officer
