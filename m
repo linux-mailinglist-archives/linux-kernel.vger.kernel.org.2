@@ -2,104 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F29844101ED
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 01:58:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB5474101F2
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 02:00:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241454AbhIQX7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 19:59:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241169AbhIQX7j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 19:59:39 -0400
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 577E9C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 16:58:16 -0700 (PDT)
-Received: by mail-il1-x129.google.com with SMTP id h29so12071990ila.2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 16:58:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=iEwpCdHpCUMK6ZYhkRZ63EGoiK2SIHmWKpqoZAtsUSk=;
-        b=fbi1JaFCOUNGamRDuc+XgjKosx83lIsqgu7zvOd9DvcMNHIu1TkQunLfc1XQLJ/uPb
-         sjujlsYnNNIT2gR008/E9OerXXZycMli4b6jzvygcR0aDb9dq4reMaGRXbi5veXxVdDr
-         64VBhMIi8rLrvaXrJUl/uqrsSW4GXhPmrAHXs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=iEwpCdHpCUMK6ZYhkRZ63EGoiK2SIHmWKpqoZAtsUSk=;
-        b=4mR9d0vx7oc0Hx4O67EdYJCjPl1L7cKKrkxObZC/KLVPdRLzccOr0fKf49ZqDAR7Oi
-         xXxTZar5ksjtPhgASiCp3lhgPUxFnfSuYJoHFQESI46jjZ3JaEgPERjGShEc69vyTL4S
-         U7wbCbrJOTYOjP3Rfo47rpd584e5rYpYfNMgqDD6J6JXW35dOGK9xCFcQ/ukohR7KjlX
-         VeBTEMd01mXiVScv1QkHQCBx2iI+zr5Qla835pxnAC49qzH/Y6yt3Rp6Z3Iu/NM+ItDi
-         6+J8xd0lmIdpxGjD/QVFsEmhxmecu7a8QC4en0CoD0YLOJL6+5nDLAbwvPk1DWMGIWfZ
-         ofrw==
-X-Gm-Message-State: AOAM531LW6XXAyrtQlWHrMlGq+eqCLFE1+TdlyrzKO8OMQzIQtyJ2Jlq
-        r9jUvKkTiS86JEkmdhp1mv5WGw==
-X-Google-Smtp-Source: ABdhPJz7pg3FiGuvl67HjuZzVblMpfpUNjBO9Y5beoN1SzVXB1yROx05BJxP2yUP8LIYorBnW3ZuEg==
-X-Received: by 2002:a92:7f0a:: with SMTP id a10mr10298794ild.22.1631923095529;
-        Fri, 17 Sep 2021 16:58:15 -0700 (PDT)
-Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id c11sm4443035ilq.26.2021.09.17.16.58.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 16:58:15 -0700 (PDT)
-From:   Shuah Khan <skhan@linuxfoundation.org>
-To:     shuah@kernel.org, skhan@linuxfoundation.org
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] selftests: drivers/dma-buf: Fix implicit declaration warns
-Date:   Fri, 17 Sep 2021 17:58:13 -0600
-Message-Id: <20210917235813.42410-1-skhan@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.2
+        id S241883AbhIRAB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 20:01:59 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:59322 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241321AbhIRAB6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 20:01:58 -0400
+Received: from ip5f5a6e92.dynamic.kabel-deutschland.de ([95.90.110.146] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1mRNmN-0000hh-VN; Sat, 18 Sep 2021 02:00:28 +0200
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Jianqun Xu <jay.xu@rock-chips.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/4] gpio/rockchip: fetch deferred output settings on probe
+Date:   Sat, 18 Sep 2021 02:00:27 +0200
+Message-ID: <1992229.jx4eJSTThl@diego>
+In-Reply-To: <CACRpkda2Hc6E27LK=vH_qKkTayG3qP=BGdqBKyLR2dMhekyWTw@mail.gmail.com>
+References: <20210913224926.1260726-1-heiko@sntech.de> <20210913224926.1260726-5-heiko@sntech.de> <CACRpkda2Hc6E27LK=vH_qKkTayG3qP=BGdqBKyLR2dMhekyWTw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-udmabuf has the following implicit declaration warns:
+Hi Linus,
 
-udmabuf.c:30:10: warning: implicit declaration of function 'open';
-udmabuf.c:42:8: warning: implicit declaration of function 'fcntl'
+Am Samstag, 18. September 2021, 01:38:08 CEST schrieb Linus Walleij:
+> On Tue, Sep 14, 2021 at 12:49 AM Heiko Stuebner <heiko@sntech.de> wrote:
+> 
+> > Fetch the output settings the pinctrl driver may have created
+> > for pinctrl hogs and set the relevant pins as requested.
+> >
+> > Fixes: 9ce9a02039de ("pinctrl/rockchip: drop the gpio related codes")
+> > Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+> 
+> Since this patch depends on patch 4/4 I applied this to the pinctrl
+> tree as well.
+> 
+> I still think this looks a bit kludgy but can't think of anything better
+> right now and we need a fix for the problem so this goes in.
+> 
+> But we need to think of something better,
 
-These are caused due to not including fcntl.h and including just
-linux/fcntl.h. Fix it to include fcntl.h which will bring in the
-linux/fcntl.h. In addition, define __EXPORTED_HEADERS__ to bring in
-F_ADD_SEALS and F_SEAL_SHRINK defines and fix the following error
-that show up when just fcntl.h is included.
+I'm all ears :-) . And yes I do agree with you that this is not very
+elegant right now.
 
-udmabuf.c:45:21: error: 'F_ADD_SEALS' undeclared
-   45 |  ret = fcntl(memfd, F_ADD_SEALS, F_SEAL_SHRINK);
-      |                     ^~~~~~~~~~~
-udmabuf.c:45:34: error: 'F_SEAL_SHRINK' undeclared
-   45 |  ret = fcntl(memfd, F_ADD_SEALS, F_SEAL_SHRINK);
-      |                                  ^~~~~~~~~~~~~
+The issue is that the pinconf part for PIN_CONFIG_OUTPUT is actually
+using the gpio controller to realize this setting. So when this ends up
+in a pinctrl-hog, stuff explodes while probing the first pinctrl part.
 
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
----
- tools/testing/selftests/drivers/dma-buf/udmabuf.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+I guess one way would be to somehow only do the pinctrl-hogs
+_after_ all parts have probed.
 
-diff --git a/tools/testing/selftests/drivers/dma-buf/udmabuf.c b/tools/testing/selftests/drivers/dma-buf/udmabuf.c
-index 4de902ea14d8..de1c4e6de0b2 100644
---- a/tools/testing/selftests/drivers/dma-buf/udmabuf.c
-+++ b/tools/testing/selftests/drivers/dma-buf/udmabuf.c
-@@ -1,10 +1,13 @@
- // SPDX-License-Identifier: GPL-2.0
-+#define _GNU_SOURCE
-+#define __EXPORTED_HEADERS__
-+
- #include <stdio.h>
- #include <stdlib.h>
- #include <unistd.h>
- #include <string.h>
- #include <errno.h>
--#include <linux/fcntl.h>
-+#include <fcntl.h>
- #include <malloc.h>
- 
- #include <sys/ioctl.h>
--- 
-2.30.2
+
+Thinking about this, the component framework may be one option?
+And then adding a pinctr-register / init+enable variant where the
+pinctrl hogs can be aquired separately, not as part of pinctrl_enable?
+
+Or maybe I'm thinking way too complex and a way easier solution
+is around the corner ;-) .
+
+
+Heiko
+
 
