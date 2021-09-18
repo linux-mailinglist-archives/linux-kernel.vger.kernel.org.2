@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABE4D410424
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 07:11:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33466410428
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 07:17:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232514AbhIRFNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 01:13:02 -0400
-Received: from out0.migadu.com ([94.23.1.103]:48041 "EHLO out0.migadu.com"
+        id S232911AbhIRFS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 01:18:27 -0400
+Received: from out1.migadu.com ([91.121.223.63]:32770 "EHLO out1.migadu.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229956AbhIRFNB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 01:13:01 -0400
+        id S231805AbhIRFSZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Sep 2021 01:18:25 -0400
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1631941896;
+        t=1631942220;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding;
-        bh=tIpz/vQt5m//qlOJB1Vj/w3Nj+YVa8d0qtyjrn/UxR0=;
-        b=BTDgERYztcKOq3bzFmCITxI9zZtOajzzJoMmSLz83iIJS2QpG9AXp3MVq1LHghgSrTLrVx
-        pq07bF+u1P7/V1jk3akyTQ73DK+mGjxVVFk3rzYgPI+IXDXxbiK8sWoxSX2kteKJySOvgH
-        vhrji7rxlyBSkQd0U8DkdyZxGXC4ZKY=
+        bh=YgJDbXaqJ3Ha3WbQsOvoy/UQMUfudfwN7QWrGoG+YYI=;
+        b=G25mYM0YqrPowWgM+C/uJt5kHfK8K618C2MeGqcXOMaIWHNtCEUPVByRxUr9PrHuyU3ezh
+        M+if66DkyUaWBPcl+Yel/nNi7eX13p4Jwd9OOw+qA+mtXxVpRTM+ChFl3EibFGv/3l/3Il
+        mbUpoGFYGe0YPXx3cwghRbVPYhWbv+Y=
 From:   Jackie Liu <liu.yun@linux.dev>
-To:     rostedt@goodmis.org, mingo@redhat.com
-Cc:     linux-kernel@vger.kernel.org, bristot@redhat.com, liu.yun@linux.dev
-Subject: [PATCH] tracing: fix missing osnoise tracer on max_latency
-Date:   Sat, 18 Sep 2021 13:11:18 +0800
-Message-Id: <20210918051118.1096575-1-liu.yun@linux.dev>
+To:     geert+renesas@glider.be
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        perex@perex.cz
+Subject: [PATCH] ASoC: mediatek: SND_SOC_MT8195 remove depends on COMPILE_TEST
+Date:   Sat, 18 Sep 2021 13:16:32 +0800
+Message-Id: <20210918051632.1297025-1-liu.yun@linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 X-Migadu-Auth-User: liu.yun@linux.dev
@@ -38,57 +38,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jackie Liu <liuyun01@kylinos.cn>
 
-The compiler warns when the data are actually unused:
+After compiling with COMPILE_TEST, we are most likely to compile on a
+different architecture, such as x86. At this time, it is possible that
+the HAVE_CLK macro is not selected, resulting in compilation failure.
 
-  kernel/trace/trace.c:1712:13: error: ‘trace_create_maxlat_file’ defined but not used [-Werror=unused-function]
-   1712 | static void trace_create_maxlat_file(struct trace_array *tr,
-        |             ^~~~~~~~~~~~~~~~~~~~~~~~
+Avoid fail like:
 
-[Why]
-CONFIG_HWLAT_TRACER=n, CONFIG_TRACER_MAX_TRACE=n, CONFIG_OSNOISE_TRACER=y
-gcc report warns.
+  Kernel: arch/x86/boot/bzImage is ready  (#17)
+  ERROR: modpost: "clkdev_add" [sound/soc/mediatek/mt8195/snd-soc-mt8195-afe.ko] undefined!
+  ERROR: modpost: "clkdev_drop" [sound/soc/mediatek/mt8195/snd-soc-mt8195-afe.ko] undefined!
+  ERROR: modpost: "clk_unregister_gate" [sound/soc/mediatek/mt8195/snd-soc-mt8195-afe.ko] undefined!
+  ERROR: modpost: "clk_register_gate" [sound/soc/mediatek/mt8195/snd-soc-mt8195-afe.ko] undefined!
+  make[1]: *** [scripts/Makefile.modpost:134: modules-only.symvers] Error 1
+  make[1]: *** Deleting file 'modules-only.symvers'
+  make: *** [Makefile:1783: modules] Error 2
 
-[How]
-Now trace_create_maxlat_file will only take effect when
-CONFIG_HWLAT_TRACER=y or CONFIG_TRACER_MAX_TRACE=y. In fact, after
-adding osnoise trace, it also needs to take effect.
-
-BTW, Fixed the conflicting defined comment information.
-
-Fixes: bce29ac9ce0b ("trace: Add osnoise tracer")
-Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>
+Fixes: 940ffa194547 ("ASoC: mediatek: SND_SOC_MT8195 should depend on ARCH_MEDIATEK")
 Signed-off-by: Jackie Liu <liuyun01@kylinos.cn>
 ---
- kernel/trace/trace.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ sound/soc/mediatek/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 7896d30d90f7..d7e3ed82fafd 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -1744,11 +1744,7 @@ void latency_fsnotify(struct trace_array *tr)
- 	irq_work_queue(&tr->fsnotify_irqwork);
- }
+diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
+index 5a2f4667d50b..2287328e845c 100644
+--- a/sound/soc/mediatek/Kconfig
++++ b/sound/soc/mediatek/Kconfig
+@@ -187,7 +187,7 @@ config SND_SOC_MT8192_MT6359_RT1015_RT5682
  
--/*
-- * (defined(CONFIG_TRACER_MAX_TRACE) || defined(CONFIG_HWLAT_TRACER)) && \
-- *  defined(CONFIG_FSNOTIFY)
-- */
--#else
-+#else /* LATENCY_FS_NOTIFY */
- 
- #define trace_create_maxlat_file(tr, d_tracer)				\
- 	trace_create_file("tracing_max_latency", 0644, d_tracer,	\
-@@ -9473,7 +9469,8 @@ init_tracer_tracefs(struct trace_array *tr, struct dentry *d_tracer)
- 
- 	create_trace_options_dir(tr);
- 
--#if defined(CONFIG_TRACER_MAX_TRACE) || defined(CONFIG_HWLAT_TRACER)
-+#if defined(CONFIG_TRACER_MAX_TRACE) || defined(CONFIG_HWLAT_TRACER) \
-+	|| defined(CONFIG_OSNOISE_TRACER)
- 	trace_create_maxlat_file(tr, d_tracer);
- #endif
- 
+ config SND_SOC_MT8195
+ 	tristate "ASoC support for Mediatek MT8195 chip"
+-	depends on ARCH_MEDIATEK || COMPILE_TEST
++	depends on ARCH_MEDIATEK
+ 	select SND_SOC_MEDIATEK
+ 	help
+ 	  This adds ASoC platform driver support for Mediatek MT8195 chip
 -- 
 2.25.1
 
