@@ -2,154 +2,319 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 723F04108DE
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 00:53:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B06EC4108DF
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 00:55:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240475AbhIRWyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 18:54:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29391 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232125AbhIRWyu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 18:54:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632005605;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=lywHveb4QbadqkbHKc2U8B3sS1vAi9x0BR+eneTVnlA=;
-        b=Ji19lI1G6/B0Ek9bRfVTtrAhOpSRLFu7shl86lvGH0FDjblfoDUqSTNdq7ZNRetUP8KZgm
-        RvfIn/fspeGwLDXXCYh5hM45bw3IlSxeoAydhJgQPkLd1AZdTToKJtcLkOBz/hma3FVCpM
-        lGZ989iXcIlfwiuITs02h2iQvqHeXio=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-500-0vAqNbkSOtqelq1Oh0lu9A-1; Sat, 18 Sep 2021 18:53:22 -0400
-X-MC-Unique: 0vAqNbkSOtqelq1Oh0lu9A-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 94C4F1084683;
-        Sat, 18 Sep 2021 22:53:21 +0000 (UTC)
-Received: from llong.com (unknown [10.22.8.58])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EEF4910013D6;
-        Sat, 18 Sep 2021 22:53:16 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Waiman Long <longman@redhat.com>
-Subject: [PATCH v2] cgroup: Make rebind_subsystems() disable v2 controllers all at once
-Date:   Sat, 18 Sep 2021 18:53:08 -0400
-Message-Id: <20210918225308.23822-1-longman@redhat.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+        id S240530AbhIRW4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 18:56:41 -0400
+Received: from mout.gmx.net ([212.227.17.21]:37799 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232125AbhIRW4j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Sep 2021 18:56:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1632005625;
+        bh=Pwh/KmGzeiwrqQm3C9sI0E5AfSnePPH3AAuooUuBTY4=;
+        h=X-UI-Sender-Class:Date:From:To:CC:Subject:In-Reply-To:References;
+        b=AfrHCn31S00A+m3IQ6CvlxYlpRX53Lkbs/Ru5BY+abRvw9V27s/cMSqh8HlJehfUN
+         JaNmhUhyb83dCO1Hnvs6OzcqXhrmMoW/TE0jmkTExd53CesKdb9Rv4BIOY/gHD+kcV
+         GvwM/PUhuEEwFp8yIzyfDrAEzDQaSohI5b2gFwzc=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [127.0.0.1] ([89.15.236.83]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1Mgeo8-1n6ZCm3Vc4-00h86f; Sun, 19
+ Sep 2021 00:53:45 +0200
+Date:   Sun, 19 Sep 2021 00:53:35 +0200
+From:   Heinrich Schuchardt <xypron.glpk@gmx.de>
+To:     Alec Brown <alec.r.brown@oracle.com>,
+        "coreboot@coreboot.org" <coreboot@coreboot.org>,
+        "grub-devel@gnu.org" <grub-devel@gnu.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "systemd-devel@lists.freedesktop.org" 
+        <systemd-devel@lists.freedesktop.org>,
+        "trenchboot-devel@googlegroups.com" 
+        <trenchboot-devel@googlegroups.com>,
+        "u-boot@lists.denx.de" <u-boot@lists.denx.de>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
+CC:     Aleksandr Burmashev <alexander.burmashev@oracle.com>,
+        "allen.cryptic@gmail.com" <allen.cryptic@gmail.com>,
+        "andrew.cooper3@citrix.com" <andrew.cooper3@citrix.com>,
+        "andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>,
+        "ardb@kernel.org" <ardb@kernel.org>,
+        "btrotter@gmail.com" <btrotter@gmail.com>,
+        Daniel Kiper <daniel.kiper@oracle.com>,
+        "dpsmith@apertussolutions.com" <dpsmith@apertussolutions.com>,
+        Eric DeVolder <eric.devolder@oracle.com>,
+        Eric Snowberg <eric.snowberg@oracle.com>,
+        "frowand.list@gmail.com" <frowand.list@gmail.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "hun@n-dimensional.de" <hun@n-dimensional.de>,
+        "james.dutton@gmail.com" <james.dutton@gmail.com>,
+        "javierm@redhat.com" <javierm@redhat.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        "jwerner@chromium.org" <jwerner@chromium.org>,
+        Kanth Ghatraju <kanth.ghatraju@oracle.com>,
+        Konrad Wilk <konrad.wilk@oracle.com>,
+        "krystian.hebel@3mdeb.com" <krystian.hebel@3mdeb.com>,
+        "leif@nuviainc.com" <leif@nuviainc.com>,
+        "lukasz.hawrylko@intel.com" <lukasz.hawrylko@intel.com>,
+        "luto@amacapital.net" <luto@amacapital.net>,
+        "michal.zygowski@3mdeb.com" <michal.zygowski@3mdeb.com>,
+        "mjg59@google.com" <mjg59@google.com>,
+        "mtottenh@akamai.com" <mtottenh@akamai.com>,
+        "nico.h@gmx.de" <nico.h@gmx.de>,
+        "phcoder@gmail.com" <phcoder@gmail.com>,
+        "piotr.krol@3mdeb.com" <piotr.krol@3mdeb.com>,
+        "pjones@redhat.com" <pjones@redhat.com>,
+        "pmenzel@molgen.mpg.de" <pmenzel@molgen.mpg.de>,
+        "rasmus.villemoes@prevas.dk" <rasmus.villemoes@prevas.dk>,
+        "rdunlap@infradead.org" <rdunlap@infradead.org>,
+        "roger.pau@citrix.com" <roger.pau@citrix.com>,
+        Ross Philipson <ross.philipson@oracle.com>,
+        "sjg@chromium.org" <sjg@chromium.org>,
+        "trini@konsulko.com" <trini@konsulko.com>,
+        "tyhicks@linux.microsoft.com" <tyhicks@linux.microsoft.com>,
+        "ulrich.windl@rz.uni-regensburg.de" 
+        <ulrich.windl@rz.uni-regensburg.de>,
+        "wvervoorn@eltan.com" <wvervoorn@eltan.com>,
+        "rharwood@redhat.com" <rharwood@redhat.com>
+Subject: =?US-ASCII?Q?Re=3A_=5BSPECIFICATION_RFC_v3=5D_The_firmw?= =?US-ASCII?Q?are_and_bootloader_log_specification?=
+User-Agent: K-9 Mail for Android
+In-Reply-To: <DM6PR10MB2986A960E859A744FDC3875ABCDE9@DM6PR10MB2986.namprd10.prod.outlook.com>
+References: <DM6PR10MB2986A960E859A744FDC3875ABCDE9@DM6PR10MB2986.namprd10.prod.outlook.com>
+Message-ID: <A7F710D3-5148-4E92-9E3D-5D850AD0245F@gmx.de>
+MIME-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:p+pgeoo6oBsAP4kAPcHthdyoXpZ4AZYVoI5rLrwKC/Udvo8IvyC
+ 9B0KDNX92DA77n0Iq/jNAwdnMSZ4ZBx9tN8lOSZfSACpGaqq5KS7YKa0+1xIPBL02PF4Xui
+ yl/ffVYfKSD5IF5H/4RJMjiFO8h3Z0d73xYMJiRgqEWPf/GH4VkK9yuHTfh7ibu6tQ2g7ET
+ OCUlrIKDVm9LiXYsCD48Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:1uRDmIY6xbk=:xsJ4Qt3Clc/AmnfVmjW15V
+ mnfp54ZfezrJamNK/0LSMX2ZRC0GVYPIUt0YTHrdS4GRGbTzOhXHfSrB3srhlBcDHi3IKjpQM
+ ZYPAFeDLGtBZsH2J1o1jC+C916gcziGLaDmYW0Q7Hk3YtEhcorqg2JqfmA7NsCZJF9yyev0ks
+ PaSvUW2LsEiL/nxF27y8kWIWsqqMZ3Vpnp3ZhaBU/hLrcj4dn+EKkcImtVmz7AgOj3zEjg0ia
+ eYU86/Ud6AUbUFIB8l74tZ3v6MHFXRmALSAUONJPe3sGykkaY95WwDTt/b7OlRJlQVIcavw2O
+ WtjdjHojv4Xfwdfe/Hmv27YwHxs5N7eYlKk/J84J/XV0QK5zZQ9BQqWhV1TP3DeZLNWTn5bnL
+ XtDHpRNwYuKZB9Jdoj5o6eVT8gxPDPW2PoBzW5DGreXhHiYzvacXI1BDZy36r4xj8hu8aYPkI
+ rLXraOitFx7/8Yh+BUHA/+xBbrbhO+9Pw5WjavxWAN2ojK8UcB2NE4qwAX6CK+0OoaRnqtUjG
+ XYWlX3T0mbFi7nPmpPolWbItPTGbpRIeOPwxs0exR16IfxBpmYvXm0kAoYfcl+niZVQybx3Ki
+ Z/Z53jxyIcTDQAxH/lHEYL32U6PNFA6gIg7x/Mhfsb3RNgOsCX/4SFsoB7p5hM8kqdLNu2JHn
+ inYsrnfpNFprGhfYFsP54/gJayFFV7CYeSCaDi09oo07JWt0jYlcBHq4ZAPPuflAOI0HeXQLo
+ r1jpX/YtxWHzW4CyqPSpXMn1PNrLJ+Cl5PU1OjlJ2KD5lzwdqWfEt+Q2+r+xzfpTKz/hBiY7T
+ OT0c3DfNf/DWBEv/zOH0RheBwlIselptrIybSc03c3jThRGibdINSSAaH/vHpGfnxwPYp4K/6
+ UcvOx8GGN9kzQOjHg3Xn33SQOtCRsm/QXTNZ7PsOZarnUlvsh6rVJt6JzTQmdPUyBQKWJU4NS
+ +dplF3ZPX88ILFf/pIcWPxtDXTauS2TDHUwtYYd72EENou8XI+/7lmGl8AU9qF1uDhBZ7t5qQ
+ t2KOCJ0Jc5RZtWhDHljvtWR6wtzvOaD8EvowmWgikvTIrkA7h2POZtZZuKt1b81/ZkDoodZMR
+ YDx8rKGb1NOqA0=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It was found that the following warning was displayed when remounting
-controllers from cgroup v2 to v1:
 
-[ 8042.997778] WARNING: CPU: 88 PID: 80682 at kernel/cgroup/cgroup.c:3130 cgroup_apply_control_disable+0x158/0x190
-   :
-[ 8043.091109] RIP: 0010:cgroup_apply_control_disable+0x158/0x190
-[ 8043.096946] Code: ff f6 45 54 01 74 39 48 8d 7d 10 48 c7 c6 e0 46 5a a4 e8 7b 67 33 00 e9 41 ff ff ff 49 8b 84 24 e8 01 00 00 0f b7 40 08 eb 95 <0f> 0b e9 5f ff ff ff 48 83 c4 08 5b 5d 41 5c 41 5d 41 5e 41 5f c3
-[ 8043.115692] RSP: 0018:ffffba8a47c23d28 EFLAGS: 00010202
-[ 8043.120916] RAX: 0000000000000036 RBX: ffffffffa624ce40 RCX: 000000000000181a
-[ 8043.128047] RDX: ffffffffa63c43e0 RSI: ffffffffa63c43e0 RDI: ffff9d7284ee1000
-[ 8043.135180] RBP: ffff9d72874c5800 R08: ffffffffa624b090 R09: 0000000000000004
-[ 8043.142314] R10: ffffffffa624b080 R11: 0000000000002000 R12: ffff9d7284ee1000
-[ 8043.149447] R13: ffff9d7284ee1000 R14: ffffffffa624ce70 R15: ffffffffa6269e20
-[ 8043.156576] FS:  00007f7747cff740(0000) GS:ffff9d7a5fc00000(0000) knlGS:0000000000000000
-[ 8043.164663] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 8043.170409] CR2: 00007f7747e96680 CR3: 0000000887d60001 CR4: 00000000007706e0
-[ 8043.177539] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[ 8043.184673] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[ 8043.191804] PKRU: 55555554
-[ 8043.194517] Call Trace:
-[ 8043.196970]  rebind_subsystems+0x18c/0x470
-[ 8043.201070]  cgroup_setup_root+0x16c/0x2f0
-[ 8043.205177]  cgroup1_root_to_use+0x204/0x2a0
-[ 8043.209456]  cgroup1_get_tree+0x3e/0x120
-[ 8043.213384]  vfs_get_tree+0x22/0xb0
-[ 8043.216883]  do_new_mount+0x176/0x2d0
-[ 8043.220550]  __x64_sys_mount+0x103/0x140
-[ 8043.224474]  do_syscall_64+0x38/0x90
-[ 8043.228063]  entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-It was caused by the fact that rebind_subsystem() disables
-controllers to be rebound one by one. If more than one disabled
-controllers are originally from the default hierarchy, it means that
-cgroup_apply_control_disable() will be called multiple times for the
-same default hierarchy. A controller may be killed by css_kill() in
-the first round. In the second round, the killed controller may not be
-completely dead yet leading to the warning.
+Am 18=2E September 2021 18:04:13 MESZ schrieb Alec Brown <alec=2Er=2Ebrown=
+@oracle=2Ecom>:
+>Hi everyone,
+>
+>I've been working on improving the specification for the firmware and boo=
+tloader
+>log that Daniel Kiper has proposed and take into account most of the sugg=
+estions
+>that were made in these threads [1], [2]=2E
+>
+>The goal is to allow various boot components to pass logs to the running =
+OS and
+>then to the user space for processing and analysis=2E These logs should b=
+e generic
+>enough so that it can work in multiple environments and be human readable=
+=2E
 
-To avoid this problem, we collect all the ssid's of controllers that
-needed to be disabled from the default hierarchy and then disable them
-in one go instead of one by one.
+Hello Alec,
 
-Fixes: 334c3679ec4b ("cgroup: reimplement rebind_subsystems() using cgroup_apply_control() and friends")
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- kernel/cgroup/cgroup.c | 31 +++++++++++++++++++++++++++----
- 1 file changed, 27 insertions(+), 4 deletions(-)
+in your mail it remains unclear which information you want to put into the=
+ log and why it is needed=2E I would prefer the motivation and content to b=
+e clarified before defining any interface structures=2E
 
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 8afa8690d288..9e0390000025 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -1740,6 +1740,7 @@ int rebind_subsystems(struct cgroup_root *dst_root, u16 ss_mask)
- 	struct cgroup *dcgrp = &dst_root->cgrp;
- 	struct cgroup_subsys *ss;
- 	int ssid, i, ret;
-+	u16 dfl_disable_ss_mask = 0;
- 
- 	lockdep_assert_held(&cgroup_mutex);
- 
-@@ -1756,8 +1757,28 @@ int rebind_subsystems(struct cgroup_root *dst_root, u16 ss_mask)
- 		/* can't move between two non-dummy roots either */
- 		if (ss->root != &cgrp_dfl_root && dst_root != &cgrp_dfl_root)
- 			return -EBUSY;
-+
-+		/*
-+		 * Collect ssid's that need to be disabled from default
-+		 * hierarchy.
-+		 */
-+		if (ss->root == &cgrp_dfl_root)
-+			dfl_disable_ss_mask |= 1 << ssid;
-+
- 	} while_each_subsys_mask();
- 
-+	if (dfl_disable_ss_mask) {
-+		struct cgroup *scgrp = &cgrp_dfl_root.cgrp;
-+
-+		/*
-+		 * Controllers from default hierarchy that need to be rebound
-+		 * are all disabled together in one go.
-+		 */
-+		cgrp_dfl_root.subsys_mask &= ~dfl_disable_ss_mask;
-+		WARN_ON(cgroup_apply_control(scgrp));
-+		cgroup_finalize_control(scgrp, 0);
-+	}
-+
- 	do_each_subsys_mask(ss, ssid, ss_mask) {
- 		struct cgroup_root *src_root = ss->root;
- 		struct cgroup *scgrp = &src_root->cgrp;
-@@ -1766,10 +1787,12 @@ int rebind_subsystems(struct cgroup_root *dst_root, u16 ss_mask)
- 
- 		WARN_ON(!css || cgroup_css(dcgrp, ss));
- 
--		/* disable from the source */
--		src_root->subsys_mask &= ~(1 << ssid);
--		WARN_ON(cgroup_apply_control(scgrp));
--		cgroup_finalize_control(scgrp, 0);
-+		if (src_root != &cgrp_dfl_root) {
-+			/* disable from the source */
-+			src_root->subsys_mask &= ~(1 << ssid);
-+			WARN_ON(cgroup_apply_control(scgrp));
-+			cgroup_finalize_control(scgrp, 0);
-+		}
- 
- 		/* rebind */
- 		RCU_INIT_POINTER(scgrp->subsys[ssid], NULL);
--- 
-2.18.1
+We already the EFI_TCG2_PROTOCOL and RFC 5424 (The syslog protocol)=2E Why=
+ do we need to start from scratch?
 
+Best regards
+
+Heinrich=20
+
+>
+>It has yet to be decided where to put the final version of this specifica=
+tion=2E
+>It should be merged into an existing specification, e=2Eg=2E UEFI, ACPI, =
+Multiboot2,
+>or be standalone, such as a part of OASIS Standards=2E
+>
+>Below is how the layout of these logs would store their data=2E
+>
+>bf_log_header:
+>               +-------------------+
+>u32            | version           |
+>u32            | size              |
+>u8[64]         | producer          |
+>u8[64]         | log_format        |
+>u64            | flags             |
+>u64            | next_bflh_addr    |
+>u64            | log_addr          |
+>u32            | log_size          |
+>               +-------------------+
+>
+>bf_log_buffer:
+>               +-------------------+
+>u32            | version           |
+>u32            | size              |
+>u8[64]         | producer          |
+>u32            | next_msg_off      |
+>bf_log_msg[l]  | msgs              |
+>               +-------------------+
+>
+>bf_log_msg:
+>               +-------------------+
+>u32            | size              |
+>u64            | ts_nsec           |
+>u32            | level             |
+>u32            | facility          |
+>u32            | msg_off           |
+>u8[n]          | type              |
+>u8[m]          | msg               |
+>               +-------------------+
+>
+>Where l is the number of msgs, n is the size of type, and m is the size o=
+f the
+>msg=2E
+>
+>The bf_log_header structure forms a linked list=2E Each bf_log_header ele=
+ment in
+>the linked list points to the individual log buffer and the next bf_log_h=
+eader
+>element in the linked list=2E The first element in the linked list points=
+ to the
+>last boot component in the boot chain=2E The last element points to the s=
+tarting
+>boot component in the boot chain=2E The log buffers which contain the log
+>messages are produced by the various boot components, typically from the
+>firmware to the bootloader=2E The log message is stored in a log format t=
+hat is
+>compatible with the boot component that produced it=2E
+>
+>The fields in bf_log_header structure:
+>  - version: the firmware and bootloader log header version number, 1 for=
+ now,
+>  - size: the size of the bf_log_header to allow for backward compatibili=
+ty if=20
+>    other fields are added,
+>  - producer: the producer/firmware/bootloader/=2E=2E=2E entity, NUL term=
+inated
+>    string, e=2Eg=2E GRUB, Coreboot; the length allows for ASCII UUID sto=
+rage,
+>  - log_format: the format used to record the log messages, NUL terminate=
+d
+>    string, e=2Eg=2E bf_log_msg, cbmem_cons, etc=2E; various producers ma=
+y generate
+>    logs in various formats if needed,
+>  - flags: bit field used to store information about the log state, if bi=
+t 0 has
+>    been set it means the log was truncated,
+>  - next_bflh_addr: the physical address of the next bf_log_header struct=
+ure,
+>    none if zero,
+>  - log_addr: the physical address of where the log buffer is stored,
+>  - log_size: the total size of the log buffer=2E
+>
+>The bf_log_buffer is used to store log messages from the firmware and
+>bootloader=2E This format for storing messages is called the bf log forma=
+t=2E The
+>bf_log_buffer contains the header information of the bf log format with t=
+he log
+>messages being stored in an array of bf_log_msg messages=2E
+>
+>The fields in bf_log_buffer structure:
+>  - version: the firmware and bootloader log version number, 1 for now,
+>  - size: the total allocated space for the bf_log_buffer including the l=
+og
+>    messages stored in msgs,
+>  - producer: the producer/firmware/bootloader/=2E=2E=2E entity, NUL term=
+inated
+>    string, e=2Eg=2E GRUB, Coreboot; the length allows for ASCII UUID sto=
+rage; same
+>    as the field in bf_log_header,
+>  - next_msg_off: the byte offset from the beginning of the allocated spa=
+ce for
+>    bf_log_buffer to the next byte after the last bf_log_msg in msgs,
+>  - msgs: the array of log messages stored in the bf_log_msg structures=
+=2E
+>
+>The fields in bf_log_msg structure:
+>  - size: the total size of the bf_log_msg entry,
+>  - ts_nsec: the timestamp in nanoseconds starting from 0 (zero); the pro=
+ducer
+>    using this log format defines the meaning of 0,
+>  - level: similar to the syslog meaning; used to differentiate normal lo=
+g
+>    messages from debug log messages, but the exact interpretation depend=
+s on
+>    the producer,
+>  - facility: similar to the syslog meaning; used to differentiate the so=
+urces
+>    of the log messages, but the exact interpretation depends on the prod=
+ucer,
+>  - msg_off: the byte offset which the msg field starts in bf_log_msg,
+>  - type: the log message type; similar to facility but NUL terminated st=
+ring
+>    instead of integer, but the exact interpretation depends on the produ=
+cer,
+>  - msg: the log message, NUL terminated string=2E
+>
+>In bf_log_msg, the producers are free to use or ignore any of the level,
+>facility, and type fields=2E If level or facility are ignored, they shoul=
+d be set
+>to 0=2E If type is ignored, it should be set to an empty NUL terminated s=
+tring=2E
+>
+>Since it doesn't seem possible to have each boot component using the same=
+ log
+>format, we added a log_format and log_phys_addr fields to give flexibilit=
+y in
+>how logs are stored=2E An example of a different log format that can be u=
+sed is
+>the cbmem_console log format used by coreboot:
+>
+>cbmem_console:
+>               +-------------------+
+>u32            | size              |
+>u32            | cursor            |
+>u8[m]          | body              |
+>               +-------------------+
+>
+>There is still the outstanding issue of how the logs will be sent to the =
+OS=2E If
+>UEFI is used, we can use config tables=2E If ACPI or Device Tree is used,=
+ we can
+>use bf_log_header=2Enext_bflh_addr to present the logs=2E If none of thes=
+e platforms
+>are used, it becomes a lot trickier to solve this issue=2E
+>
+>Any suggestions are much appreciated and will be taken into consideration=
+=2E
+>
+>I will be presenting this work at the LPC System Boot and Security
+>Micro-conference on the 22nd of September at 7:50 AM PDT (14:50 UTC)=2E C=
+ome and
+>join if you want to discuss the design=2E The schedule for the System Boo=
+t and
+>Security Micro-conference can be found here [3]=2E
+>
+>Thanks!
+>Alec Brown
+>
+>[1] https://lists=2Egnu=2Eorg/archive/html/grub-devel/2020-11/msg00100=2E=
+html
+>[2] https://lists=2Egnu=2Eorg/archive/html/grub-devel/2020-12/msg00021=2E=
+html
+>[3] https://linuxplumbersconf=2Eorg/event/11/sessions/116/#20210922
