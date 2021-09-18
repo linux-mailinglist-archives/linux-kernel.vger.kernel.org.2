@@ -2,135 +2,304 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83D114107B8
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 19:06:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A59B94107B4
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 19:05:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238119AbhIRRHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 13:07:48 -0400
-Received: from mail-oln040093003015.outbound.protection.outlook.com ([40.93.3.15]:4559
-        "EHLO na01-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233210AbhIRRHo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 13:07:44 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EzYtJ6ZJEZF4X6Kd6HcT0jFs6OZgzrBzv9QlZ9e/gFU5VuWyH3TzWgVmFQNo/lvdM8sqU8C6q6MsTf4RbpN9ZF2UVkj5GC7Eyaw31yLfYTSvQWJJPaIUBGoVEFzrEuS3ejaulhJs2HDLXkJSpk8vdLQOwbOVnzEDS2OhhbqbpGQOoryRrtgSiAYpc5ckBdsm7QeqYrroAN4P8dU4rCJmi0XhyuAow0a+sAw3fdBA8hmJSL2ogTXFZdEgw7FqL3XU9r8UaPYAsPACK/yvq7wDE8zuGR8jCBUh8gDTKFYCDDoQ7ob+4b5MFsQ6ASpr7HCfVUfvfiyioDQ+g46ju4E3aA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=XO/weqKAmKC2sogCtXWVk1NVPOtDM6CB+7KbNm4DiGw=;
- b=OAqZcN4itxyFlueL8gS7zopBI4XY1FXbJMd/7gnKvp377zqBsmwo8eX06JsxhJ9e8n8SQSKqO9lyef3uGvycM44OkJV05SAFFLqDVZvcIETN72jjiu1hk7yAHUeRf/KbOZh1EWpX8LN+t8FCxoP72l9Mtdx5zV2zDwi2iKkMZ25f1wxgNStXp4HFDLXwL2fU7NO0YvzVSJV5vJzVDM0wnQYDzCcXehsW3HK+N7+HjI6WhQyokhF/lIz9reoea79qSUKm3ZS4tRN+3BO1w6TqGT46oZJoArlyZejbl+pqJVa50tzL8xHfeQeYcn6Gm+PvAHJoWbi+46l0QhFhMsxA6w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XO/weqKAmKC2sogCtXWVk1NVPOtDM6CB+7KbNm4DiGw=;
- b=NunsGhn3H62eBbxXz3W0INPY29LV/N67oGtMhURLNjvTrQvpkvXfV6/QMXYggSv5hvpWXyLkeDbfLNU2aFiOFg0KnEmaoJ9zyx0h9C4r/wlgJ1+Y6ao1RJzexaFgo3e49kbhjPEi0g+5UuiL1cuWFVCyfPy1mN8wu/v141M+7ok=
-Received: from BYAPR21MB1270.namprd21.prod.outlook.com (2603:10b6:a03:105::15)
- by BYAPR21MB1142.namprd21.prod.outlook.com (2603:10b6:a03:102::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.9; Sat, 18 Sep
- 2021 17:06:17 +0000
-Received: from BYAPR21MB1270.namprd21.prod.outlook.com
- ([fe80::e56b:9b01:9633:78c0]) by BYAPR21MB1270.namprd21.prod.outlook.com
- ([fe80::e56b:9b01:9633:78c0%7]) with mapi id 15.20.4544.011; Sat, 18 Sep 2021
- 17:06:16 +0000
-From:   Dexuan Cui <decui@microsoft.com>
-To:     Len Baker <len.baker@gmx.com>, KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?iso-8859-1?Q?Christian_K=F6nig?= <christian.koenig@amd.com>,
-        Kees Cook <keescook@chromium.org>
-CC:     Colin Ian King <colin.king@canonical.com>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>
-Subject: RE: [PATCH] net: mana: Prefer struct_size over open coded arithmetic
-Thread-Topic: [PATCH] net: mana: Prefer struct_size over open coded arithmetic
-Thread-Index: AQHXrI/1VJuJVYedPEudSKeULZsdEKuqBYFA
-Date:   Sat, 18 Sep 2021 17:06:16 +0000
-Message-ID: <BYAPR21MB1270797B518555DF5DC87871BFDE9@BYAPR21MB1270.namprd21.prod.outlook.com>
-References: <20210911102818.3804-1-len.baker@gmx.com>
- <20210918132010.GA15999@titan>
-In-Reply-To: <20210918132010.GA15999@titan>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=7f8b8111-1a02-4b74-b775-c4b2eac605e3;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-09-18T17:05:00Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: f4abae2d-1ce2-42cf-2acb-08d97ac6a0b6
-x-ms-traffictypediagnostic: BYAPR21MB1142:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR21MB114246C70ED794714AFEB6CEBFDE9@BYAPR21MB1142.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:257;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: VD/G3To4uTnw8rnJvDjYKA5A+WGouct77MFHuuEq3hu28oV850Nt8w9W6CM6PzzYbsZNeiI//i2Q6ZiMJz9im/nJyLTei+juLPEd6NaCVJqw3CTkZ2rnH0NyKvPgDxB+vvNGXvdcwK6GlnxWElg66Fo27fld977SOmCeeSSaPNModti3CPH0A7xYT+U6VCvd4KO1xofGmpHIEmzDesjoT20s3ck2aSA5M9OzpX2nJQ4jyibrp4ugcgdcVpe5BeqVUT9zNoXfIV0RCiDe58Clh4ARTfpVbApedQkVbGXtaC9f4WyUVzNqQ9FyMG2kNB1/b2nBiNyVOhLbjkMMCyQ/gRnQODdynqkha/cDq6mS/soAB4NFxCqZFwzR2mGvNZA6vyopxDfXmtamplz4BcWkcrv+/RqNvMCsCOVLzPojhipgAuFhDNvShmv2An5R1V4WEjlv1TnzD8FowIw79q9xjwbmhZEr/5h7UxbQOhBx1HDam0/Ntw304wkXRPfxSZNPll3yEwhu394JtVuRxB+C+U4vH/xiJy0JcAs30IDtEolF4jXBd4wabOXyP1FT6JcDHc2LUMbisXaD9qs5S1zBA48Di2eHoQYEQKSVbkc6JKDiLXxjbaFsG+zbTqnl3gh64kC20y9PdrGOGPpA4RFMd7IrOAlqtJLO0AELH7ExlG/xA0Icb8qGsrRNq9n7uLh81HYs8rl7a7xLPyaC8y47ex9EaCWOt3ryYxPnheo2pvJpW+MvFcW4Ee8D4Q/34tfiUWPnzAYfoD4zwyKKYEUx0GcYvdR2nanx4fFa5lPHpEGYWjoNBYCAr/iPawOXY9xG
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR21MB1270.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(4744005)(316002)(8936002)(9686003)(26005)(66446008)(55016002)(8990500004)(4326008)(8676002)(66946007)(7416002)(38070700005)(71200400001)(54906003)(7696005)(64756008)(66476007)(66556008)(6506007)(110136005)(2906002)(10290500003)(966005)(76116006)(52536014)(921005)(86362001)(508600001)(122000001)(186003)(82960400001)(33656002)(82950400001)(5660300002)(38100700002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?fgKLOm0FDaNO33FytolhtJVqpkmk4aEDBn4BIZj0ikyjT49KcCLUBM9tKu?=
- =?iso-8859-1?Q?T63AA3SAHY3/qOxHXS4XyAhxFh+RyTp1vveVsOqcc04ECX/LtL4hVsLVjO?=
- =?iso-8859-1?Q?9jM0LWao8a0HnKdjNah3aY95M0FIpTxqxaRyCJ3bQeRaz4LOhalr9AdOkP?=
- =?iso-8859-1?Q?kujqVJityVh/BpACmuPbjWMk41mQO3GTifhfGXkIdEdD8FGVqTHiYJS4tw?=
- =?iso-8859-1?Q?kRp6LaINPT5HWTC9Deyb/i1LafMve7y54b13dh4suiBJcotq7cINHhUp1b?=
- =?iso-8859-1?Q?tRSsuOrWtcmK4b4JbjdUBHEntsqHwUgVeS426tbXe6UfHABe1kLJli9yqS?=
- =?iso-8859-1?Q?f3BVymziVYUkd7VMqdEIKSOvIN2QJnjigyqw2XEKp3vBAxwpSgwngqz4fL?=
- =?iso-8859-1?Q?/5tffWDjkeS85lMgjlX4yyFzp9eR0azhaVy480bVaXABQXyxeK1BP0CieE?=
- =?iso-8859-1?Q?hLF72SlGhhUmBFwqPFMYK+d4mAmiFuXkQ7fGPnOB46ApAECG1CAD/xJAuw?=
- =?iso-8859-1?Q?ikx6PF31ThYG5MgjcoH3lyMhHO5+f95GnsxXDDkiFcnVDzMbdSCehA2sVx?=
- =?iso-8859-1?Q?5om9ySHcuoKPmgTxslX3aoUyhdIrwuVZ6eCieoPUeKZD24JyuArOpO/Gdy?=
- =?iso-8859-1?Q?tzsCdIkndnBNE/X164KmSz7zUFySIzMdb/qF98KevIAvWq47lDTntZLeGG?=
- =?iso-8859-1?Q?wGyQsTSOZoEBnnyzIz3CInzgX4g2dL9LXoVHC0xeh0MKKfV3p9ZSmRVXCQ?=
- =?iso-8859-1?Q?T5n7riJLL0+NY1Zm1wBgPbP64VKJ1krjo+PESpYk8Lqm63pCj7sxMP2MG+?=
- =?iso-8859-1?Q?wKk0BHaTtTsOSAK+ylDiOA08m+M8xeEyufZCO+h92Ur8VNeKmmvjKovt2N?=
- =?iso-8859-1?Q?6tw5hQtWdsZaw1F/8k93yx2z3X001/GmUHiGN2Nq1o0lFXpDfbtAsS1UEv?=
- =?iso-8859-1?Q?YOmEAUyMDkOd4yWZThSzfrFGTCYf2Xk9PiCS+FpZPZgCKnX3NnKhEkI458?=
- =?iso-8859-1?Q?gCkOSnRuLBQKi/UPPfILvYR7emcqzzsRtE+PwcyxlWZfa2UbG0Y5Y+4f7P?=
- =?iso-8859-1?Q?GqVxMX6fMdQXdy9vpSUW1rGLKeTa4p3gVGq9ydS654qUptWpN4i4XN9tKN?=
- =?iso-8859-1?Q?d056yjmNiByK3mi+0rXwUn35xO4dIjx5gOXnvg35L/b87FPad4PUkvNt4A?=
- =?iso-8859-1?Q?lz0XlxQtNWmzq8CQP1KzYqarVLVDgXhOXE8KUtKJ1d+qXWU3y/vptB5Qba?=
- =?iso-8859-1?Q?6Z5jpn8hlLytkg0YCzxGs0tj/ktfduek2kfY6LKXbCGTCA9ipkUOx/Koor?=
- =?iso-8859-1?Q?GzwmbzJr3+yyaA9CdwEzG+KV849kto1cgbDs6OH3nAmoAOJgBfqPUc8KZP?=
- =?iso-8859-1?Q?ou4Xcg2e9M?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        id S237789AbhIRRHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 13:07:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37708 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233210AbhIRRHE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Sep 2021 13:07:04 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 042D960F9C;
+        Sat, 18 Sep 2021 17:05:38 +0000 (UTC)
+Date:   Sat, 18 Sep 2021 18:09:18 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Nuno Sa <Nuno.Sa@analog.com>
+Subject: Re: [PATCH v3 13/14] iio: adc: max1027: Deeply rework interrupt
+ handling
+Message-ID: <20210918180918.6908bbd9@jic23-huawei>
+In-Reply-To: <20210915155117.475962-14-miquel.raynal@bootlin.com>
+References: <20210915155117.475962-1-miquel.raynal@bootlin.com>
+        <20210915155117.475962-14-miquel.raynal@bootlin.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR21MB1270.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f4abae2d-1ce2-42cf-2acb-08d97ac6a0b6
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Sep 2021 17:06:16.6043
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: EQl2uMC5qrAZ/iENv2zUWc8Q2LISpyYvPuUOIf6mxZA33uwkbVnlqdtqMqRNtFZq+Fjf91ktU29mYk1E8ndVmA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR21MB1142
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Len Baker <len.baker@gmx.com>
-> Sent: Saturday, September 18, 2021 6:20 AM
->  ...
-> I have received a email from the linux-media subsystem telling that this
-> patch is not applicable. The email is the following:
->=20
-> Regards,
-> Len
+On Wed, 15 Sep 2021 17:51:16 +0200
+Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-The patch is already in the net-next tree:
-https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/=
-?id=3Df11ee2ad25b22c2ee587045dd6999434375532f7
+> The interrupt will fire upon end of conversion. This currently can
+> happen in three situations:
+> * a single read was requested and the data is ready
+> * the cnvst (internal) trigger was enabled and toggled
+> * an external trigger was enabled and toggled
+> 
+> So far, the driver only supported raw reads without involving the IRQ
+> and internal triggering. The internal trigger was actually the only
+> possible trigger, leading to shortcuts in the implementation.
+> 
+> In order to clarify the interrupt handling mechanism and extend the
+> software support to external triggers we must do all the following at
+> the same time:
+> * Create a hard IRQ handler only handling the EOC condition:
+>   In this handler, check if we are doing a raw read or a triggered
+>   read: maybe we just need to call complete() to unlock the waiting
+>   process, maybe we also need to push samples.
+
+This doesn't sound quite right.  Should be either complete, or all iio_trigger_poll()
+to tell any trigger consumers that the trigger has occured.
+
+> * Create a threaded IRQ handler only executed upon EOC condition only if
+>   the internal trigger is used: as said above, the goal of this threaded
+>   handler is to retrieve the data and push it to the buffers.
+
+Again, not quite right..
+
+> * Create another threaded IRQ handler that will be registered with
+>   devm_iio_triggered_buffer_setup(), in order to fully handle an
+>   external triggering event (start conversion, wait for EOC either by
+>   busy-waiting or with the completion object unlocked by the hard IRQ
+>   handler, retrieve the data, push it to the buffers).
+> 
+> In order to authorize external triggers, we need to drop the
+> ->validate_trigger() verification.  
+
+I've tried to suggest how you need to change this to bring it inline
+with the normal trigger / device split model of IIO.
+
+Thanks,
+
+Jonathan
+
+> 
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> ---
+>  drivers/iio/adc/max1027.c | 90 +++++++++++++++++++++++++++++++--------
+>  1 file changed, 72 insertions(+), 18 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/max1027.c b/drivers/iio/adc/max1027.c
+> index e0175448c899..9bf1c563042f 100644
+> --- a/drivers/iio/adc/max1027.c
+> +++ b/drivers/iio/adc/max1027.c
+> @@ -270,15 +270,26 @@ struct max1027_state {
+>  	struct iio_trigger		*trig;
+>  	__be16				*buffer;
+>  	struct mutex			lock;
+> +	struct completion		complete;
+>  
+>  	u8				reg ____cacheline_aligned;
+>  };
+>  
+>  static int max1027_wait_eoc(struct iio_dev *indio_dev)
+>  {
+> +	struct max1027_state *st = iio_priv(indio_dev);
+>  	unsigned int conversion_time = MAX1027_CONVERSION_UDELAY;
+> +	int ret;
+>  
+> -	usleep_range(conversion_time, conversion_time * 2);
+> +	if (st->spi->irq) {
+> +		ret = wait_for_completion_timeout(&st->complete,
+> +						  msecs_to_jiffies(1000));
+> +		reinit_completion(&st->complete);
+> +		if (!ret)
+> +			return ret;
+> +	} else {
+> +		usleep_range(conversion_time, conversion_time * 2);
+> +	}
+>  
+>  	return 0;
+>  }
+> @@ -418,17 +429,6 @@ static int max1027_debugfs_reg_access(struct iio_dev *indio_dev,
+>  	return spi_write(st->spi, val, 1);
+>  }
+>  
+> -static int max1027_validate_trigger(struct iio_dev *indio_dev,
+> -				    struct iio_trigger *trig)
+> -{
+> -	struct max1027_state *st = iio_priv(indio_dev);
+> -
+> -	if (st->trig != trig)
+> -		return -EINVAL;
+> -
+> -	return 0;
+> -}
+> -
+>  static int max1027_set_cnvst_trigger_state(struct iio_trigger *trig, bool state)
+>  {
+>  	struct iio_dev *indio_dev = iio_trigger_get_drvdata(trig);
+> @@ -473,13 +473,67 @@ static int max1027_read_scan(struct iio_dev *indio_dev)
+>  	return 0;
+>  }
+>  
+> -static irqreturn_t max1027_trigger_handler(int irq, void *private)
+> +static bool max1027_own_trigger_enabled(struct iio_dev *indio_dev)
+> +{
+> +	int ret = iio_trigger_validate_own_device(indio_dev->trig, indio_dev);
+> +
+> +	return ret ? false : true;
+> +}
+> +
+> +static irqreturn_t max1027_eoc_handler(int irq, void *private)
+> +{
+> +	struct iio_dev *indio_dev = private;
+> +	struct max1027_state *st = iio_priv(indio_dev);
+> +
+> +	/*
+> +	 * If the buffers are disabled (raw read) or an external trigger is
+> +	 * used, we just need to call complete() to unlock the waiters
+> +	 * which will themselves handle the data.
+> +	 */
+> +	if (!iio_buffer_enabled(indio_dev) ||
+> +	    !max1027_own_trigger_enabled(indio_dev)) {
+
+This looks like what I'd expect here.  Should be able to use
+!iio_trigger_using_own(indio_dev) for the second condition I think...
+
+
+> +		complete(&st->complete);
+> +		return IRQ_HANDLED;
+> +	}
+
+Here we should see the same as you find in the generic handler which is just
+
+	iio_trigger_poll(private);
+
+	return IRQ_HANDLED;
+
+> +
+> +	/*
+> +	 * When using the internal trigger, the data handling is done in
+> +	 * the threaded interrupt handler.
+
+Wrong handler. It needs to be done in the one of the device side of the trigger / device split
+not here which is on the trigger side.
+
+> +	 */
+> +	return IRQ_WAKE_THREAD;
+> +}
+> +
+> +static irqreturn_t max1027_int_trigger_handler(int irq, void *private)
+> +{
+> +	struct iio_dev *indio_dev = private;
+> +	int ret;
+> +
+> +	ret = max1027_read_scan(indio_dev);
+> +	if (ret)
+> +		dev_err(&indio_dev->dev,
+> +			"Cannot read scanned values (%d)\n", ret);
+> +
+> +	iio_trigger_notify_done(indio_dev->trig);
+
+This is acknowledging the trigger in a patch not called via the trigger.
+It might work but it definitely isn't the right model to use.
+
+> +
+> +	return IRQ_HANDLED;
+> +}
+> +
+> +static irqreturn_t max1027_ext_trigger_handler(int irq, void *private)
+>  {
+>  	struct iio_poll_func *pf = private;
+>  	struct iio_dev *indio_dev = pf->indio_dev;
+>  	int ret;
+> 
+
+Here there should be a
+
+	if (iio_trigger_using_own(indio_dev)) {
+
+		/* Just read the data and push to the buffer as we know we are using the EOC trigger*/
+		/* I think that will be what you have in max1027_int_trigger_handler above */
+		/* You may also want to provide a top half for the trigger handler to grab a timestamp
+		   nearer the point of the EOC interrupt for this path...
+		*/
+
+	} else {
+		/* Start the capture and wait for completion */
+
+		ret = max1027_configure_chans_and_start(indio_dev);
+		if (ret)
+			goto out;
+	
+		ret = max1027_wait_eoc(indio_dev);
+		if (ret)
+			goto out;
+
+	 	ret = max1027_read_scan(indio_dev);
+...		
+	}
+
+> +	ret = max1027_configure_chans_and_start(indio_dev);
+> +	if (ret)
+> +		goto out;
+> +
+> +	ret = max1027_wait_eoc(indio_dev);
+> +	if (ret)
+> +		goto out;
+> +
+>  	ret = max1027_read_scan(indio_dev);
+> +out:
+>  	if (ret)
+>  		dev_err(&indio_dev->dev,
+>  			"Cannot read scanned values (%d)\n", ret);
+> @@ -496,7 +550,6 @@ static const struct iio_trigger_ops max1027_trigger_ops = {
+>  
+>  static const struct iio_info max1027_info = {
+>  	.read_raw = &max1027_read_raw,
+> -	.validate_trigger = &max1027_validate_trigger,
+>  	.debugfs_reg_access = &max1027_debugfs_reg_access,
+>  };
+>  
+> @@ -517,6 +570,7 @@ static int max1027_probe(struct spi_device *spi)
+>  	st->info = &max1027_chip_info_tbl[spi_get_device_id(spi)->driver_data];
+>  
+>  	mutex_init(&st->lock);
+> +	init_completion(&st->complete);
+>  
+>  	indio_dev->name = spi_get_device_id(spi)->name;
+>  	indio_dev->info = &max1027_info;
+> @@ -534,7 +588,7 @@ static int max1027_probe(struct spi_device *spi)
+>  	if (spi->irq) {
+>  		ret = devm_iio_triggered_buffer_setup(&spi->dev, indio_dev,
+>  						      &iio_pollfunc_store_time,
+> -						      &max1027_trigger_handler,
+> +						      &max1027_ext_trigger_handler,
+
+This isn't how this would normally be done.
+Whatever trigger we are using, the handling should occur in the callback registered here.
+We can do 'different' things depending on the trigger in use however.
+The reason is that we want a model that allows us to use the EOC trigger for this device
+and other devices at the same time.
+
+
+>  						      NULL);
+>  		if (ret < 0) {
+>  			dev_err(&indio_dev->dev, "Failed to setup buffer\n");
+> @@ -561,11 +615,11 @@ static int max1027_probe(struct spi_device *spi)
+>  		}
+>  
+>  		ret = devm_request_threaded_irq(&spi->dev, spi->irq,
+> -						iio_trigger_generic_data_rdy_poll,
+> -						NULL,
+> +						max1027_eoc_handler,
+> +						max1027_int_trigger_handler,
+>  						IRQF_TRIGGER_FALLING,
+>  						spi->dev.driver->name,
+> -						st->trig);
+> +						indio_dev);
+>  		if (ret < 0) {
+>  			dev_err(&indio_dev->dev, "Failed to allocate IRQ.\n");
+>  			return ret;
+
