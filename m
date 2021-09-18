@@ -2,159 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A35C4105D7
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 11:58:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85CED4105E2
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 12:07:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245418AbhIRJ7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 05:59:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42124 "EHLO
+        id S235383AbhIRKIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 06:08:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244913AbhIRJ71 (ORCPT
+        with ESMTP id S231649AbhIRKIj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 05:59:27 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5E02C0613C1
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 02:58:03 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id g16so19240430wrb.3
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 02:58:03 -0700 (PDT)
+        Sat, 18 Sep 2021 06:08:39 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6D88C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 03:07:15 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id n13-20020a17090a4e0d00b0017946980d8dso11765393pjh.5
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 03:07:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=GN0wJ5LnNY6MYcGXoZ0yQC1yHdhXckp/WdDFfQjh9kk=;
-        b=HDzUjA8/t9XwZlA0ZRewydSInyoCIRHunEnd9TC4sXobyukeYHELIppaqRFr20Is7P
-         /6rtpN+RkCySxtnfFgZhyC/EG5uGHmkZjtlkGWJjMExu5h/BaqaOyBbANTCQJbCKB3kw
-         lIwZHJpq4Q+d99PeGLL9xFc86jbeICoG9P8UpVnqoAd8D8s9XBgBVMYquInuoOEQ7qNw
-         GjKfeT24zzVDYAIx95hI6apaC9i1f45Ln7zjwqoNdmae6WoMjxjBEy0Fzs6/LRMAOZMr
-         ZD6tAQ+ddAicIpDKRfraKPv7mTihc1TszjNIRnTNdB+7p89VmbsvhvssdWzK+Rfr0ohR
-         KnNA==
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UTVs5z4mdP0rZljYgyLzMfKwobKvVmMydUAvyWQOB+I=;
+        b=rigfijvetNXGMca5GLAW5x1aC3L3dHQZtjIRPUyUkavsIBg1F1/O29jB+IneN5FhGO
+         rRLlPgElnfbmeuPlU39dmjcyHTmA/fqo+vU4/1b4nkVyqSePQXxD2yLW1cTaIAQnkO+P
+         4fE8xwChlu0lpp48CjfSAB9PEUEERoKd95sKfpOqHFx++q8B2rRO6QulX9sUNDif+x6s
+         RlYDadJUrBFG6i+JlLjpoN89XOo4rBkva3+KxYwGS9Ex/rGU3VroZW5sZ42SrAY42RNp
+         4leYFdsPX44xF4mt857r+V+HRmxq2WfY7ztAVbw3uqdx3b4DLPgFkdsrO7kaZu8dP8EZ
+         xV1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=GN0wJ5LnNY6MYcGXoZ0yQC1yHdhXckp/WdDFfQjh9kk=;
-        b=5TfCKobKM3Qz3Wf3ARiyK1MDi0PBf3WiJoTP0kKhOLqb4tOVzFeWLrzMKJkjPnmBkK
-         TCcBAPfDeVJPilM2ZtqhGwYAPCsmg5YkoW6rfkNxIfHhXrNK+Wfn2KsxgUZTUtbqB6KM
-         8RSEmJ7ropgbAEI2mfhEK0YM6iMZUIlnqt2ZWSe5mkmGPFENT3OBOlO9j2BT8Co2E4lE
-         nXvx+bjG9N9/mVLFGtIedAHEeG7qYsB9Dr/8qXjctIEldZfMEwloOSpnA/Ks6UPekCd7
-         WTmomGnTJbGi4WaIur3Qk2d6Zsqu+a5T2fgXGGFbHveeUwTbKTrSU1uLCDMSGXNj5MWg
-         dO+A==
-X-Gm-Message-State: AOAM530XRyLdke4up2PoAIFHQ/9s9BO6ojfzTzoPC9TwRRJImqeksRUz
-        k+aJBtZSSM6Aw3gGFd4UD6k=
-X-Google-Smtp-Source: ABdhPJwx0McoFN5Vjc/Fxh6Jfqyy5O/iD1mjHQ3dQhngP/mFr5R3CzGVfXSMMgwKmr+3V+RE/fBsrg==
-X-Received: by 2002:adf:d216:: with SMTP id j22mr16542547wrh.191.1631959082580;
-        Sat, 18 Sep 2021 02:58:02 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:8108:96c0:3b88::ae40])
-        by smtp.gmail.com with ESMTPSA id o26sm13013287wmc.17.2021.09.18.02.58.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Sep 2021 02:58:02 -0700 (PDT)
-From:   Michael Straube <straube.linux@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
-        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH 8/8] staging: r8188eu: remove EFUSE_Read1Byte()
-Date:   Sat, 18 Sep 2021 11:57:27 +0200
-Message-Id: <20210918095727.13591-9-straube.linux@gmail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210918095727.13591-1-straube.linux@gmail.com>
-References: <20210918095727.13591-1-straube.linux@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UTVs5z4mdP0rZljYgyLzMfKwobKvVmMydUAvyWQOB+I=;
+        b=vIQEAYI1WZgBsjWwy77UAr1caMFr5FZk7xTmMBcFIK45pLKxbsu2q6qMuDzgCnzFqU
+         EKT2QZmn63l1CbsmNeLCdIBhnJTKz9GQ9T9KfDI1/latRvFybMLK/jJG+HzJfQEQFqig
+         JS/4N4ruiROqNbGdVQOm+rUwU1mPkjJ9gpZQe1hLLUoREuGB00JhWXQD3MYuPnG6V82V
+         Qmi1wMDn6+CIbw85f1gA14wThY0Ql2GG00lmDXAIZdm/GvJHHpnVt3ZmiF5Fk4Ggdxsv
+         8FmuhvXfjiIwDoWyXSpMId/+DrVs2EHDSk+fEEe4F8AjMhzadBXVw9j0iEnAWGMm0iJB
+         Kz0A==
+X-Gm-Message-State: AOAM533B6PTiRZ/z94RHX4DLueq98SjdtPw5SleOr4bCIPG93+64IVaH
+        sqdAu2i9hWcWBhjwTMXGyTEo8pjNVJ7s6npuSVu1dA==
+X-Google-Smtp-Source: ABdhPJxoVsB9Ci6WuE10JjzpP1qZ4ZPAV9WU2qa1Tvo/PYjQ9XK8mxpjvORECMLmhZcRhTzP6wDRbMg9FQ3KEphH0F8=
+X-Received: by 2002:a17:90b:4f8a:: with SMTP id qe10mr15977499pjb.5.1631959635279;
+ Sat, 18 Sep 2021 03:07:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210917034815.80264-1-songmuchun@bytedance.com>
+ <20210917034815.80264-2-songmuchun@bytedance.com> <CAGsJ_4y8mZh4RNaY-JQHa5Sr+Tv3HingV42jwK9KoJ+0m=w87A@mail.gmail.com>
+In-Reply-To: <CAGsJ_4y8mZh4RNaY-JQHa5Sr+Tv3HingV42jwK9KoJ+0m=w87A@mail.gmail.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Sat, 18 Sep 2021 18:06:36 +0800
+Message-ID: <CAMZfGtVmhHGNizHsdJXygigm84Z72B3wtUYxpT1XW3GpWh1AWQ@mail.gmail.com>
+Subject: Re: [PATCH RESEND v2 1/4] mm: hugetlb: free the 2nd vmemmap page
+ associated with each HugeTLB page
+To:     Barry Song <21cnbao@gmail.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        Chen Huang <chenhuang5@huawei.com>,
+        "Bodeddula, Balasubramaniam" <bodeddub@amazon.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Matthew Wilcox <willy@infradead.org>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        fam.zheng@bytedance.com, Muchun Song <smuchun@gmail.com>,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Function EFUSE_Read1Byte() is not used, remove it.
+On Sat, Sep 18, 2021 at 12:39 PM Barry Song <21cnbao@gmail.com> wrote:
+>
+> On Sat, Sep 18, 2021 at 12:08 AM Muchun Song <songmuchun@bytedance.com> wrote:
+> >
+> > Currently, we only free 6 vmemmap pages associated with a 2MB HugeTLB
+> > page. However, we can remap all tail vmemmap pages to the page frame
+> > mapped to with the head vmemmap page. Finally, we can free 7 vmemmap
+> > pages for a 2MB HugeTLB page. It is a fine gain (e.g. we can save
+> > extra 2GB memory when there is 1TB HugeTLB pages in the system
+> > compared with the current implementation).
+> >
+> > But the head vmemmap page is not freed to the buddy allocator and all
+> > tail vmemmap pages are mapped to the head vmemmap page frame. So we
+> > can see more than one struct page struct with PG_head (e.g. 8 per 2 MB
+> > HugeTLB page) associated with each HugeTLB page. We should adjust
+> > compound_head() to make it returns the real head struct page when the
+> > parameter is the tail struct page but with PG_head flag.
+> >
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > ---
+> >  Documentation/admin-guide/kernel-parameters.txt |  2 +-
+> >  include/linux/page-flags.h                      | 75 +++++++++++++++++++++++--
+> >  mm/hugetlb_vmemmap.c                            | 60 +++++++++++---------
+> >  mm/sparse-vmemmap.c                             | 21 +++++++
+> >  4 files changed, 126 insertions(+), 32 deletions(-)
+> >
+> > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> > index bdb22006f713..a154a7b3b9a5 100644
+> > --- a/Documentation/admin-guide/kernel-parameters.txt
+> > +++ b/Documentation/admin-guide/kernel-parameters.txt
+> > @@ -1606,7 +1606,7 @@
+> >                         [KNL] Reguires CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
+> >                         enabled.
+> >                         Allows heavy hugetlb users to free up some more
+> > -                       memory (6 * PAGE_SIZE for each 2MB hugetlb page).
+> > +                       memory (7 * PAGE_SIZE for each 2MB hugetlb page).
+> >                         Format: { on | off (default) }
+> >
+> >                         on:  enable the feature
+> > diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
+> > index 8e1d97d8f3bd..7b1a918ebd43 100644
+> > --- a/include/linux/page-flags.h
+> > +++ b/include/linux/page-flags.h
+> > @@ -184,13 +184,64 @@ enum pageflags {
+> >
+> >  #ifndef __GENERATING_BOUNDS_H
+> >
+> > +#ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
+> > +extern bool hugetlb_free_vmemmap_enabled;
+> > +
+> > +/*
+> > + * If the feature of freeing some vmemmap pages associated with each HugeTLB
+> > + * page is enabled, the head vmemmap page frame is reused and all of the tail
+> > + * vmemmap addresses map to the head vmemmap page frame (furture details can
+> > + * refer to the figure at the head of the mm/hugetlb_vmemmap.c).  In other
+> > + * word, there are more than one page struct with PG_head associated with each
+> > + * HugeTLB page.  We __know__ that there is only one head page struct, the tail
+> > + * page structs with PG_head are fake head page structs.  We need an approach
+> > + * to distinguish between those two different types of page structs so that
+> > + * compound_head() can return the real head page struct when the parameter is
+> > + * the tail page struct but with PG_head.
+> > + *
+> > + * The page_head_if_fake() returns the real head page struct iff the @page may
+> > + * be fake, otherwise, returns the @page if it cannot be a fake page struct.
+> > + */
+> > +static __always_inline const struct page *page_head_if_fake(const struct page *page)
+> > +{
+> > +       if (!hugetlb_free_vmemmap_enabled)
+> > +               return page;
+> > +
+> > +       /*
+> > +        * Only addresses aligned with PAGE_SIZE of struct page may be fake head
+> > +        * struct page. The alignment check aims to avoid access the fields (
+> > +        * e.g. compound_head) of the @page[1]. It can avoid touch a (possibly)
+> > +        * cold cacheline in some cases.
+> > +        */
+> > +       if (IS_ALIGNED((unsigned long)page, PAGE_SIZE) &&
+> > +           test_bit(PG_head, &page->flags)) {
+> > +               /*
+> > +                * We can safely access the field of the @page[1] with PG_head
+> > +                * because the @page is a compound page composed with at least
+> > +                * two contiguous pages.
+> > +                */
+> > +               unsigned long head = READ_ONCE(page[1].compound_head);
+> > +
+> > +               if (likely(head & 1))
+> > +                       return (const struct page *)(head - 1);
+> > +       }
+> > +
+> > +       return page;
+> > +}
+> > +#else
+> > +static __always_inline const struct page *page_head_if_fake(const struct page *page)
+> > +{
+> > +       return page;
+> > +}
+> > +#endif
+> > +
+> >  static inline unsigned long _compound_head(const struct page *page)
+> >  {
+> >         unsigned long head = READ_ONCE(page->compound_head);
+> >
+> >         if (unlikely(head & 1))
+> >                 return head - 1;
+> > -       return (unsigned long)page;
+> > +       return (unsigned long)page_head_if_fake(page);
+>
+> hard to read. page_head_if_fake,  what is the other side of
+> page_head_if_not_fake?
 
-Signed-off-by: Michael Straube <straube.linux@gmail.com>
----
- drivers/staging/r8188eu/core/rtw_efuse.c    | 58 ---------------------
- drivers/staging/r8188eu/include/rtw_efuse.h |  1 -
- 2 files changed, 59 deletions(-)
+1) return itself if the @page is not a fake head page.
+2) return head page if @page is a fake head page.
 
-diff --git a/drivers/staging/r8188eu/core/rtw_efuse.c b/drivers/staging/r8188eu/core/rtw_efuse.c
-index 0c4ea1e45842..801887f497cf 100644
---- a/drivers/staging/r8188eu/core/rtw_efuse.c
-+++ b/drivers/staging/r8188eu/core/rtw_efuse.c
-@@ -127,64 +127,6 @@ ReadEFuseByte(
- 	*pbuf = (u8)(value32 & 0xff);
- }
- 
--/*-----------------------------------------------------------------------------
-- * Function:	EFUSE_Read1Byte
-- *
-- * Overview:	Copy from WMAC fot EFUSE read 1 byte.
-- *
-- * Input:       NONE
-- *
-- * Output:      NONE
-- *
-- * Return:      NONE
-- *
-- * Revised History:
-- * When			Who		Remark
-- * 09/23/2008	MHC		Copy from WMAC.
-- *
-- *---------------------------------------------------------------------------*/
--u8 EFUSE_Read1Byte(struct adapter *Adapter, u16 Address)
--{
--	u8 data;
--	u8 Bytetemp = {0x00};
--	u8 temp = {0x00};
--	u32 k = 0;
--	u16 contentLen = 0;
--
--	rtl8188e_EFUSE_GetEfuseDefinition(Adapter, EFUSE_WIFI, TYPE_EFUSE_REAL_CONTENT_LEN, (void *)&contentLen, false);
--
--	if (Address < contentLen) {	/* E-fuse 512Byte */
--		/* Write E-fuse Register address bit0~7 */
--		temp = Address & 0xFF;
--		rtw_write8(Adapter, EFUSE_CTRL + 1, temp);
--		Bytetemp = rtw_read8(Adapter, EFUSE_CTRL + 2);
--		/* Write E-fuse Register address bit8~9 */
--		temp = ((Address >> 8) & 0x03) | (Bytetemp & 0xFC);
--		rtw_write8(Adapter, EFUSE_CTRL + 2, temp);
--
--		/* Write 0x30[31]= 0 */
--		Bytetemp = rtw_read8(Adapter, EFUSE_CTRL + 3);
--		temp = Bytetemp & 0x7F;
--		rtw_write8(Adapter, EFUSE_CTRL + 3, temp);
--
--		/* Wait Write-ready (0x30[31]= 1) */
--		Bytetemp = rtw_read8(Adapter, EFUSE_CTRL + 3);
--		while (!(Bytetemp & 0x80)) {
--			Bytetemp = rtw_read8(Adapter, EFUSE_CTRL + 3);
--			k++;
--			if (k == 1000) {
--				k = 0;
--				break;
--			}
--		}
--		data = rtw_read8(Adapter, EFUSE_CTRL);
--		return data;
--	} else {
--		return 0xFF;
--	}
--
--} /* EFUSE_Read1Byte */
--
- /*  11/16/2008 MH Read one byte from real Efuse. */
- u8 efuse_OneByteRead(struct adapter *pAdapter, u16 addr, u8 *data, bool pseudo)
- {
-diff --git a/drivers/staging/r8188eu/include/rtw_efuse.h b/drivers/staging/r8188eu/include/rtw_efuse.h
-index 2dd74c9c691d..53ac906f79fd 100644
---- a/drivers/staging/r8188eu/include/rtw_efuse.h
-+++ b/drivers/staging/r8188eu/include/rtw_efuse.h
-@@ -118,7 +118,6 @@ u8 efuse_OneByteWrite(struct adapter *adapter, u16 addr, u8 data, bool	test);
- 
- void efuse_WordEnableDataRead(u8 word_en, u8 *sourdata, u8 *targetdata);
- 
--u8 EFUSE_Read1Byte(struct adapter *adapter, u16 address);
- void EFUSE_ShadowMapUpdate(struct adapter *adapter, u8 efusetype, bool test);
- void EFUSE_ShadowRead(struct adapter *adapt, u8 type, u16 offset, u32 *val);
- 
--- 
-2.33.0
+So I want to express that page_head_if_fake returns a
+head page only and only if the parameter of @page is a
+fake head page. Otherwise, it returns itself.
 
+> I would expect something like
+> page_to_page_head()
+> or
+> get_page_head()
+>
+
+Those names seem to be not appropriate as well, because
+its functionality does not make sure it can return a head
+page. If the parameter is a head page, it definitely
+returns a head page, otherwise, it may return itself which
+may be a tail page.
+
+From this point of view, I still prefer page_head_if_fake.
+
+> Anyway, I am not quite sure what is the best name. but page_head_if_fake(page)
+> sounds odd to me. just like the things have two sides, but if_fake  presents
+> one side only.
+
+If others have any ideas, comments are welcome.
+
+>
+> >  }
+> >
+> >  #define compound_head(page)    ((typeof(page))_compound_head(page))
+> > @@ -225,12 +276,14 @@ static inline unsigned long _compound_head(const struct page *page)
+> >
+> >  static __always_inline int PageTail(struct page *page)
+> >  {
+> > -       return READ_ONCE(page->compound_head) & 1;
+> > +       return READ_ONCE(page->compound_head) & 1 ||
+> > +              page_head_if_fake(page) != page;
+>
+> i would expect a wrapper like:
+> page_is_fake_head()
+
+Good point. Will do.
+
+>
+> and the above page_to_page_head() can leverage the wrapper.
+> here too.
+>
+> >  }
+> >
+> >  static __always_inline int PageCompound(struct page *page)
+> >  {
+> > -       return test_bit(PG_head, &page->flags) || PageTail(page);
+> > +       return test_bit(PG_head, &page->flags) ||
+> > +              READ_ONCE(page->compound_head) & 1;
+>
+> hard to read. could it be something like the below?
+> return PageHead(page) || PageTail(page);
+>
+> or do we really need to change this function? even a fake head still has
+> the true test_bit(PG_head, &page->flags), though it is not a real head, it
+> is still a pagecompound, right?
+
+Right. PageCompound() can not be changed.  It is odd but
+efficient because calling page_head_if_fake is eliminated.
+So I select performance not readability. I'm not sure if it's
+worth it.
+
+Thanks.
