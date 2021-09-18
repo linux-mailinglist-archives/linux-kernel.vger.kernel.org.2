@@ -2,159 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 699974104F5
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 10:00:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EED74104F9
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 10:07:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243628AbhIRIB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 04:01:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236044AbhIRIBZ (ORCPT
+        id S243628AbhIRII4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 04:08:56 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:16276 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235163AbhIRIIz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 04:01:25 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23326C06175F
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 01:00:02 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id e16so11400469pfc.6
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 01:00:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LpJAvb2r/ypZU5FQrVW/iFzPACcNLQ13GoNWicSevGc=;
-        b=XeZo/7cHcvVIjZlH/JJ+iSEorvYofxtg1I9uKERgtWRETsP5Q+FBsqKs6WJbYo93zn
-         bucVdfSWE/C0O5QrU6kV1y5muj+qxF4W181zsCod+FAKOfMf71QyYj2Hng6gXNUWP/Vu
-         hnuRZjOpmr9UL5/InNNY+c8Hrmj0ADj75KVxJcXlwrCx+O3O51WDiXqhlt2IdPXOlSAu
-         RZ0b0mBTCufq4ij8if5CvRSuxENrWZi7RiIWLOVGEt7yHryp3PUoH3u1hXH1sjI/uR8o
-         9wX4WGtrvU7o6C2VeogjO3CWRcHYLiLBbnCMtzQorDbhmdzbzl2KS0PitSZJaYoUJcU6
-         P50w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LpJAvb2r/ypZU5FQrVW/iFzPACcNLQ13GoNWicSevGc=;
-        b=6ue4ZV9LrUaPU000cwcHE+lpiqh105VKSMeYpA5M1wn+iP3obPHDNnh4OkiB5Kfsn6
-         pFHII6FlM7wAy65qwBEO5vM8Dqk7c7EQrtiA9S+iwM9+D8SEFwJoNzlFTRLTJfyJ8Gao
-         qNOqBwbFqdAB3kGL08hvl9wEIFi7DEx9gHesct8kRbvbt3BNy/oE8d3MIFx8/conA7cZ
-         EnO5IOqubLNecWEhXe6YTOF7k3hwFhzXBe1eo8z6ysMVjbf721OlvmXULgHW2e3J3dN3
-         /NRsfjoKAJBsmc4/bb5IPiKG/2MTU2jFFL4eiegWTb3RemLsQpGSt+Y3BXyIskY+c0BG
-         PEqw==
-X-Gm-Message-State: AOAM532oClB0x/UPKOZ/4lCYIALeIlt7kBo7yhcQsMoPVeZocDUrWG4u
-        nWILwE1rAKvOV2MEcsuI/y20D661b4ATQz2ZkVFVMw==
-X-Google-Smtp-Source: ABdhPJwOPM9hyj8FUgewEtKSBa/GTOzwuER7HXnT5vEXHyjNKsPkpdr6kLQRUL63c8xt41iLm9rj2v67+a5GpMiHC0c=
-X-Received: by 2002:a62:1717:0:b0:440:527f:6664 with SMTP id
- 23-20020a621717000000b00440527f6664mr13602699pfx.73.1631952001524; Sat, 18
- Sep 2021 01:00:01 -0700 (PDT)
+        Sat, 18 Sep 2021 04:08:55 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HBNh96Zq8z57Cl;
+        Sat, 18 Sep 2021 16:06:49 +0800 (CST)
+Received: from dggpemm500009.china.huawei.com (7.185.36.225) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Sat, 18 Sep 2021 16:07:30 +0800
+Received: from [10.174.179.24] (10.174.179.24) by
+ dggpemm500009.china.huawei.com (7.185.36.225) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Sat, 18 Sep 2021 16:07:29 +0800
+Subject: Re: [PATCH v2 2/3] kfence: maximize allocation wait timeout duration
+To:     Marco Elver <elver@google.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+References: <20210421105132.3965998-1-elver@google.com>
+ <20210421105132.3965998-3-elver@google.com>
+ <6c0d5f40-5067-3a59-65fa-6977b6f70219@huawei.com>
+ <abd74d5a-1236-4f0e-c123-a41e56e22391@huawei.com>
+ <CANpmjNNXiuQbjMBP=5+uZRNAiduV7v067pPmAgsYzSPpR8Y2yg@mail.gmail.com>
+CC:     <akpm@linux-foundation.org>, <glider@google.com>,
+        <dvyukov@google.com>, <jannh@google.com>, <mark.rutland@arm.com>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <kasan-dev@googlegroups.com>, <hdanton@sina.com>
+From:   Liu Shixin <liushixin2@huawei.com>
+Message-ID: <da6629d3-2530-46b0-651b-904159a7a189@huawei.com>
+Date:   Sat, 18 Sep 2021 16:07:29 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-References: <20210914072938.6440-1-songmuchun@bytedance.com> <20210918065624.dbaar4lss5olrfhu@kari-VirtualBox>
-In-Reply-To: <20210918065624.dbaar4lss5olrfhu@kari-VirtualBox>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Sat, 18 Sep 2021 15:59:23 +0800
-Message-ID: <CAMZfGtVT_Hp7rLtA81drA5AJ8mW=MJb1Ksox--D4bP5XPLqQDw@mail.gmail.com>
-Subject: Re: [PATCH v3 00/76] Optimize list lru memory consumption
-To:     Kari Argillander <kari.argillander@gmail.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>, Yang Shi <shy828301@gmail.com>,
-        Alex Shi <alexs@kernel.org>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Dave Chinner <david@fromorbit.com>,
-        trond.myklebust@hammerspace.com, anna.schumaker@netapp.com,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-nfs@vger.kernel.org, Qi Zheng <zhengqi.arch@bytedance.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        fam.zheng@bytedance.com, Muchun Song <smuchun@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CANpmjNNXiuQbjMBP=5+uZRNAiduV7v067pPmAgsYzSPpR8Y2yg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.24]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500009.china.huawei.com (7.185.36.225)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 18, 2021 at 2:56 PM Kari Argillander
-<kari.argillander@gmail.com> wrote:
->
-> On Tue, Sep 14, 2021 at 03:28:22PM +0800, Muchun Song wrote:
-> > We introduced alloc_inode_sb() in previous version 2, which sets up the
-> > inode reclaim context properly, to allocate filesystems specific inode.
-> > So we have to convert to new API for all filesystems, which is done in
-> > one patch. Some filesystems are easy to convert (just replace
-> > kmem_cache_alloc() to alloc_inode_sb()), while other filesystems need to
-> > do more work. In order to make it easy for maintainers of different
-> > filesystems to review their own maintained part, I split the patch into
-> > patches which are per-filesystem in this version. I am not sure if this
-> > is a good idea, because there is going to be more commits.
-> >
-> > In our server, we found a suspected memory leak problem. The kmalloc-32
-> > consumes more than 6GB of memory. Other kmem_caches consume less than 2GB
-> > memory.
-> >
-> > After our in-depth analysis, the memory consumption of kmalloc-32 slab
-> > cache is the cause of list_lru_one allocation.
-> >
-> >   crash> p memcg_nr_cache_ids
-> >   memcg_nr_cache_ids = $2 = 24574
-> >
-> > memcg_nr_cache_ids is very large and memory consumption of each list_lru
-> > can be calculated with the following formula.
-> >
-> >   num_numa_node * memcg_nr_cache_ids * 32 (kmalloc-32)
-> >
-> > There are 4 numa nodes in our system, so each list_lru consumes ~3MB.
-> >
-> >   crash> list super_blocks | wc -l
-> >   952
-> >
-> > Every mount will register 2 list lrus, one is for inode, another is for
-> > dentry. There are 952 super_blocks. So the total memory is 952 * 2 * 3
-> > MB (~5.6GB). But now the number of memory cgroups is less than 500. So I
-> > guess more than 12286 memory cgroups have been created on this machine (I
-> > do not know why there are so many cgroups, it may be a user's bug or
-> > the user really want to do that). Because memcg_nr_cache_ids has not been
-> > reduced to a suitable value. It leads to waste a lot of memory. If we want
-> > to reduce memcg_nr_cache_ids, we have to *reboot* the server. This is not
-> > what we want.
-> >
-> > In order to reduce memcg_nr_cache_ids, I had posted a patchset [1] to do
-> > this. But this did not fundamentally solve the problem.
-> >
-> > We currently allocate scope for every memcg to be able to tracked on every
-> > superblock instantiated in the system, regardless of whether that superblock
-> > is even accessible to that memcg.
-> >
-> > These huge memcg counts come from container hosts where memcgs are confined
-> > to just a small subset of the total number of superblocks that instantiated
-> > at any given point in time.
-> >
-> > For these systems with huge container counts, list_lru does not need the
-> > capability of tracking every memcg on every superblock.
-> >
-> > What it comes down to is that the list_lru is only needed for a given memcg
-> > if that memcg is instatiating and freeing objects on a given list_lru.
-> >
-> > As Dave said, "Which makes me think we should be moving more towards 'add the
-> > memcg to the list_lru at the first insert' model rather than 'instantiate
-> > all at memcg init time just in case'."
-> >
-> > This patchset aims to optimize the list lru memory consumption from different
-> > aspects.
-> >
-> > Patch 1-6 are code simplification.
-> > Patch 7 converts the array from per-memcg per-node to per-memcg
-> > Patch 8 introduces kmem_cache_alloc_lru()
-> > Patch 9 introduces alloc_inode_sb()
-> > Patch 10-66 convert all filesystems to alloc_inode_sb() respectively.
->
-> There is now days also ntfs3. If you do not plan to convert this please
-> CC me atleast so that I can do it when these lands.
->
->   Argillander
->
 
-Wow, a new filesystem. I didn't notice it before. I'll cover it
-in the next version and Cc you if you can do a review.
-Thanks for your reminder.
+On 2021/9/16 16:49, Marco Elver wrote:
+> On Thu, 16 Sept 2021 at 03:20, Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
+>> Hi Marco,
+>>
+>> We found kfence_test will fails  on ARM64 with this patch with/without
+>> CONFIG_DETECT_HUNG_TASK,
+>>
+>> Any thought ?
+> Please share log and instructions to reproduce if possible. Also, if
+> possible, please share bisection log that led you to this patch.
+>
+> I currently do not see how this patch would cause that, it only
+> increases the timeout duration.
+>
+> I know that under QEMU TCG mode, there are occasionally timeouts in
+> the test simply due to QEMU being extremely slow or other weirdness.
+>
+> .
+>
+Hi Marco,
+
+There are some of the results of the current test:
+1. Using qemu-kvm on arm64 machine, all testcase can pass.
+2. Using qemu-system-aarch64 on x86_64 machine, randomly some testcases fail.
+3. Using qemu-system-aarch64 on x86_64, but removing the judgment of kfence_allocation_key in kfence_alloc(), all testcase can pass.
+
+I add some printing to the kernel and get very strange results.
+I add a new variable kfence_allocation_key_gate to track the
+state of kfence_allocation_key. As shown in the following code, theoretically,
+if kfence_allocation_key_gate is zero, then kfence_allocation_key must be
+enabled, so the value of variable error in kfence_alloc() should always be
+zero. In fact, all the passed testcases fit this point. But as shown in the
+following failed log, although kfence_allocation_key has been enabled, it's
+still check failed here.
+
+So I think static_key might be problematic in my qemu environment.
+The change of timeout is not a problem but caused us to observe this problem.
+I tried changing the wait_event to a loop. I set timeout to HZ and re-enable/disabled
+in each loop, then the failed testcase disappears.
+
+[    3.463519]     # Subtest: kfence
+[    3.463629]     1..25
+[    3.465548]     # test_out_of_bounds_read: test_alloc: size=128, gfp=cc0, policy=left, cache=0
+[    3.561001] kfence: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~enabled~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[    3.561934] kfence: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~disabled~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[    3.665449] kfence: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~enabled~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[   13.464796] --------------kfence_allocation_key check failed 13839286 times----------------
+[   13.467482] kfence: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~disabled~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[   13.469166]     # test_out_of_bounds_read: ASSERTION FAILED at mm/kfence/kfence_test.c:308
+[   13.469166]     Expected false to be true, but is false
+[   13.469166]
+[   13.469166] failed to allocate from KFENCE
+[   13.473592]     not ok 1 - test_out_of_bounds_read
+
+
+diff --git a/include/linux/kfence.h b/include/linux/kfence.h
+index 3fe6dd8a18c1..e72889606e82 100644
+--- a/include/linux/kfence.h
++++ b/include/linux/kfence.h
+@@ -25,6 +25,7 @@ extern char *__kfence_pool;
+ #ifdef CONFIG_KFENCE_STATIC_KEYS
+ #include <linux/static_key.h>
+ DECLARE_STATIC_KEY_FALSE(kfence_allocation_key);
++extern atomic_t kfence_allocation_key_gate;
+ #else
+ #include <linux/atomic.h>
+ extern atomic_t kfence_allocation_gate;
+@@ -116,12 +117,20 @@ void *__kfence_alloc(struct kmem_cache *s, size_t size, gfp_t flags);
+  */
+ static __always_inline void *kfence_alloc(struct kmem_cache *s, size_t size, gfp_t flags)
+ {
++       static int error;
+ #ifdef CONFIG_KFENCE_STATIC_KEYS
+-       if (static_branch_unlikely(&kfence_allocation_key))
++       if (static_branch_unlikely(&kfence_allocation_key)) {
+ #else
+-       if (unlikely(!atomic_read(&kfence_allocation_gate)))
++       if (unlikely(!atomic_read(&kfence_allocation_gate))) {
+ #endif
++               if (error) {
++                       pr_info("--------------kfence_allocation_key check failed %d times----------------\n", error);
++                       error = 0;
++               }
+                return __kfence_alloc(s, size, flags);
++       }
++       if (!atomic_read(&kfence_allocation_key_gate))
++               error++;
+        return NULL;
+ }
+diff --git a/mm/kfence/core.c b/mm/kfence/core.c
+index 7a97db8bc8e7..637c2efa6133 100644
+--- a/mm/kfence/core.c
++++ b/mm/kfence/core.c
+@@ -100,6 +100,7 @@ static DEFINE_RAW_SPINLOCK(kfence_freelist_lock); /* Lock protecting freelist. *
+ #ifdef CONFIG_KFENCE_STATIC_KEYS
+ /* The static key to set up a KFENCE allocation. */
+ DEFINE_STATIC_KEY_FALSE(kfence_allocation_key);
++atomic_t kfence_allocation_key_gate = ATOMIC_INIT(1);
+ #endif
+ 
+ /* Gates the allocation, ensuring only one succeeds in a given period. */
+@@ -624,7 +625,9 @@ static void toggle_allocation_gate(struct work_struct *work)
+ #ifdef CONFIG_KFENCE_STATIC_KEYS
+        /* Enable static key, and await allocation to happen. */
+        static_branch_enable(&kfence_allocation_key);
+-
++       if (static_branch_unlikely(&kfence_allocation_key))
++               pr_info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~enabled~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
++       atomic_set(&kfence_allocation_key_gate, 0);
+        if (sysctl_hung_task_timeout_secs) {
+                /*
+                 * During low activity with no allocations we might wait a
+@@ -637,7 +640,10 @@ static void toggle_allocation_gate(struct work_struct *work)
+        }
+ 
+        /* Disable static key and reset timer. */
++       atomic_set(&kfence_allocation_key_gate, 1);
+        static_branch_disable(&kfence_allocation_key);
++       if (!static_branch_unlikely(&kfence_allocation_key))
++                       pr_info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~disabled~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+ #endif
+        queue_delayed_work(system_unbound_wq, &kfence_timer,
+                           msecs_to_jiffies(kfence_sample_interval));
+
+thanks,
+ 
+
