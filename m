@@ -2,100 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54013410801
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 20:05:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54FBA41080C
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 20:19:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240133AbhIRSGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 14:06:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57562 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238237AbhIRSGU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 14:06:20 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8154461100;
-        Sat, 18 Sep 2021 18:04:55 +0000 (UTC)
-Date:   Sat, 18 Sep 2021 19:08:34 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alexandru Ardelean <aardelean@deviqon.com>
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
-Subject: Re: [PATCH] iio: light: max44000: use device-managed functions in
- probe
-Message-ID: <20210918190834.66d6fbce@jic23-huawei>
-In-Reply-To: <20210913120002.306280-1-aardelean@deviqon.com>
-References: <20210913120002.306280-1-aardelean@deviqon.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S240201AbhIRSUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 14:20:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38082 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238984AbhIRSUn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Sep 2021 14:20:43 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36BBBC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 11:19:19 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id v22so38703558edd.11
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 11:19:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rPQxqApznozzGxmIzZvgKnlRlxKs6mC5a3qq+j04H9I=;
+        b=PRCekKGHawQ11jBADXVwcKBQ6mMms4qimPl32QMQqoQnEMrUjdkAowqUBA29WrCNZo
+         J6OZHavRXU32TQSgpGZz+OrZ/KgggH1IZYB5U5vdc/c3yR7+TzzNTDlByPKBZFF65nbO
+         L4HWDiPC0Ds0pCdIX0Z3gMoExrigxQ5nwg0RDBz8ALi3hFXLJ7mXWoKzE+z0FH/bj2Ut
+         nXmXeqP20r+8myXv2cfxAceCZoUp8/aCCfIj3w9OZI64suUGDk4CKLgXlnoiTVzw16R1
+         tBqGWJ19a9iyY4tbpcAlNYwFDNNLs4oJQFdp/Xw+zPn3daAMQkZ/77DctcuXlENNwNU8
+         oHvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rPQxqApznozzGxmIzZvgKnlRlxKs6mC5a3qq+j04H9I=;
+        b=7nizeJ6B8kjuuAgANgR8psRae9o2rTVleDW3TFfwUDkB+4qw2aPX5dge2WJsGF4zVz
+         zxsBnOrfkncPLf1UNC+VHWbTJIajIdPE36Qcnnyp5YfsYRIdWadrOtuc3yYu4kXz9d4U
+         wqXABo7dISTM1IxwHzvdF7Kekr3tH0AT+uw4pILEZtKvVvoGwzVE4mQ7pduLIFj3RiGx
+         65IcE1g3nKPF6vdPP9/DNWhgCklSOXoVqnXqa7hG1QaWzqraisK9+U4h6/rftD4Zz/ev
+         NOtaD/p0hQ3W2pQuUkatlxd5YrYLdeRU22nDuLqQqkNivmwtgxuf4A7a+/m5wbLCyO6p
+         lkpA==
+X-Gm-Message-State: AOAM5315qYAX6obA0Wbw2zXD1Em7EAwDVWQpzgIlVrrc8TgwjMxny2Qv
+        ft08bfHFJLLI+WPSqc4YjQM=
+X-Google-Smtp-Source: ABdhPJxzNlRWQV2P1N54o/h3NTWK7I2bE857Jl7NyPlNiaPJ6QRM8yuq1J8zMPVjkzN7z09vkv2Zag==
+X-Received: by 2002:a05:6402:1855:: with SMTP id v21mr20407272edy.349.1631989157646;
+        Sat, 18 Sep 2021 11:19:17 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:8108:96c0:3b88::cde])
+        by smtp.gmail.com with ESMTPSA id t19sm3903673ejb.115.2021.09.18.11.19.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 18 Sep 2021 11:19:17 -0700 (PDT)
+From:   Michael Straube <straube.linux@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
+        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Michael Straube <straube.linux@gmail.com>
+Subject: [PATCH v3 00/14] staging: r8188eu: remove odm_RegDefine11AC.h
+Date:   Sat, 18 Sep 2021 20:18:50 +0200
+Message-Id: <20210918181904.12000-1-straube.linux@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 13 Sep 2021 15:00:02 +0300
-Alexandru Ardelean <aardelean@deviqon.com> wrote:
+The first 12 patches in this series remove macros and code that
+is valid only for 11ac chips and therefore not needed/used in this
+driver. Finally we can remove the header odm_RegDefine11AC.h.
 
-> This is a simple conversion. Both iio_device_register() and
-> iio_triggered_buffer_setup() functions have device-managed variants.
-> 
-> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
-Applied to the togreg branch of iio.git and pushed out as testing
-as per normal.
+The last 2 patches remove unused defines from odm_RegDefine11N.h and
+clean up indentation in that file.
 
-Thanks,
+Tested on x86_64 with Inter-Tech DMG-02.
 
-Jonathan
+v2 -> v3
+Added 2 patches that were sent separately but depend on this series.
+The first 12 patches are unchanged.
 
-> ---
->  drivers/iio/light/max44000.c | 17 +++--------------
->  1 file changed, 3 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/iio/light/max44000.c b/drivers/iio/light/max44000.c
-> index b8e721bced5b..85689dffbcbf 100644
-> --- a/drivers/iio/light/max44000.c
-> +++ b/drivers/iio/light/max44000.c
-> @@ -540,7 +540,6 @@ static int max44000_probe(struct i2c_client *client,
->  		return PTR_ERR(data->regmap);
->  	}
->  
-> -	i2c_set_clientdata(client, indio_dev);
->  	mutex_init(&data->lock);
->  	indio_dev->info = &max44000_info;
->  	indio_dev->name = MAX44000_DRV_NAME;
-> @@ -589,23 +588,14 @@ static int max44000_probe(struct i2c_client *client,
->  		return ret;
->  	}
->  
-> -	ret = iio_triggered_buffer_setup(indio_dev, NULL, max44000_trigger_handler, NULL);
-> +	ret = devm_iio_triggered_buffer_setup(&client->dev, indio_dev, NULL,
-> +					      max44000_trigger_handler, NULL);
->  	if (ret < 0) {
->  		dev_err(&client->dev, "iio triggered buffer setup failed\n");
->  		return ret;
->  	}
->  
-> -	return iio_device_register(indio_dev);
-> -}
-> -
-> -static int max44000_remove(struct i2c_client *client)
-> -{
-> -	struct iio_dev *indio_dev = i2c_get_clientdata(client);
-> -
-> -	iio_device_unregister(indio_dev);
-> -	iio_triggered_buffer_cleanup(indio_dev);
-> -
-> -	return 0;
-> +	return devm_iio_device_register(&client->dev, indio_dev);
->  }
->  
->  static const struct i2c_device_id max44000_id[] = {
-> @@ -628,7 +618,6 @@ static struct i2c_driver max44000_driver = {
->  		.acpi_match_table = ACPI_PTR(max44000_acpi_match),
->  	},
->  	.probe		= max44000_probe,
-> -	.remove		= max44000_remove,
->  	.id_table	= max44000_id,
->  };
->  
+v1 -> v2
+Changed subject line of patch 11/12 to fix a typo.
+All other patches are unchanged.
+
+Michael Straube (14):
+  staging: r8188eu: remove comments from odm_interface.h
+  staging: r8188eu: remove unused macros from odm_interface.h
+  staging: r8188eu: remove _ic_type from macro _cat in odm_interface.h
+  staging: r8188eu: remove dead code from ODM_Write_DIG()
+  staging: r8188eu: remove unnecessary if statement
+  staging: r8188eu: remove more dead code from ODM_Write_DIG()
+  staging: r8188eu: remove macro ODM_REG
+  staging: r8188eu: remove macro ODM_BIT
+  staging: r8188eu: remove unnecessary if statements
+  staging: r8188eu: remove dead code from odm.c
+  staging: r8188eu: remove macros ODM_IC_11{N,AC}_SERIES
+  staging: r8188eu: remove header file odm_RegDefine11AC.h
+  staging: r8188eu: remove unused defines from odm_RegDefine11N.h
+  staging: r8188eu: clean up indentation in odm_RegDefine11N.h
+
+ drivers/staging/r8188eu/hal/odm.c             | 224 +++++++-----------
+ drivers/staging/r8188eu/include/odm.h         |   5 -
+ .../r8188eu/include/odm_RegDefine11AC.h       |  29 ---
+ .../r8188eu/include/odm_RegDefine11N.h        | 112 +--------
+ .../staging/r8188eu/include/odm_interface.h   |  41 ----
+ drivers/staging/r8188eu/include/odm_precomp.h |   1 -
+ 6 files changed, 90 insertions(+), 322 deletions(-)
+ delete mode 100644 drivers/staging/r8188eu/include/odm_RegDefine11AC.h
+
+-- 
+2.33.0
 
