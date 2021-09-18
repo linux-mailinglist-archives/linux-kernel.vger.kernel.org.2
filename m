@@ -2,79 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80BF3410330
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 05:11:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DAE3410334
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 05:14:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241007AbhIRDM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 23:12:26 -0400
-Received: from mx24.baidu.com ([111.206.215.185]:38418 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234669AbhIRDMU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 23:12:20 -0400
-Received: from BC-Mail-HQEx02.internal.baidu.com (unknown [172.31.51.58])
-        by Forcepoint Email with ESMTPS id 9805C1E3600F3D0A2D4D;
-        Sat, 18 Sep 2021 11:10:48 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BC-Mail-HQEx02.internal.baidu.com (172.31.51.58) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Sat, 18 Sep 2021 11:10:48 +0800
-Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Sat, 18 Sep 2021 11:10:47 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     <caihuoqing@baidu.com>
-CC:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Andy Shevchenko <andy@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] pinctrl: intel: Kconfig: Add config menu to intel pinctrl
-Date:   Sat, 18 Sep 2021 11:10:41 +0800
-Message-ID: <20210918031042.18239-1-caihuoqing@baidu.com>
-X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.31.63.8]
-X-ClientProxiedBy: BC-Mail-Ex27.internal.baidu.com (172.31.51.21) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
+        id S241079AbhIRDPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 23:15:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241067AbhIRDOl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Sep 2021 23:14:41 -0400
+Received: from ha0.nfschina.com (unknown [IPv6:2400:dd01:100f:2:d63d:7eff:fe08:eb3f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0E1EDC061574;
+        Fri, 17 Sep 2021 20:13:13 -0700 (PDT)
+Received: from localhost (unknown [127.0.0.1])
+        by ha0.nfschina.com (Postfix) with ESMTP id A7171AE0E22;
+        Sat, 18 Sep 2021 11:13:19 +0800 (CST)
+X-Virus-Scanned: amavisd-new at test.com
+Received: from ha0.nfschina.com ([127.0.0.1])
+        by localhost (ha0.nfschina.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 4dTRWk8QdBbU; Sat, 18 Sep 2021 11:12:56 +0800 (CST)
+Received: from localhost.localdomain (unknown [180.167.10.98])
+        (Authenticated sender: liqiong@nfschina.com)
+        by ha0.nfschina.com (Postfix) with ESMTPA id 399A5AE0DCF;
+        Sat, 18 Sep 2021 11:12:52 +0800 (CST)
+From:   liqiong <liqiong@nfschina.com>
+To:     Simon.THOBY@viveris.fr, zohar@linux.ibm.com
+Cc:     dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, liqiong@nfschina.com
+Subject: [PATCH] ima: fix deadlock when traversing "ima_default_rules".
+Date:   Sat, 18 Sep 2021 11:11:39 +0800
+Message-Id: <20210918031139.22674-1-liqiong@nfschina.com>
+X-Mailer: git-send-email 2.11.0
+In-Reply-To: <20210827103536.4149-1-liqiong@nfschina.com>
+References: <20210827103536.4149-1-liqiong@nfschina.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding a config menu to hold many intel pinctrl drivers
-helps to make the menu display more concise.
+The current IMA ruleset is identified by the variable "ima_rules"
+that default to "&ima_default_rules". When loading a custom policy
+for the first time, the variable is updated to "&ima_policy_rules"
+instead. That update isn't RCU-safe, and deadlocks are possible.
+Indeed, some functions like ima_match_policy() may loop indefinitely
+when traversing "ima_default_rules" with list_for_each_entry_rcu().
 
-Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+When iterating over the default ruleset back to head, if the list
+head is "ima_default_rules", and "ima_rules" have been updated to
+"&ima_policy_rules", the loop condition (&entry->list != ima_rules)
+stays always true, traversing won't terminate, causing a soft lockup
+and RCU stalls.
+
+Introduce a temporary value for "ima_rules" when iterating over
+the ruleset to avoid the deadlocks.
+
+Signed-off-by: liqiong <liqiong@nfschina.com>
+Reviewed-by: THOBY Simon <Simon.THOBY@viveris.fr>
+Fixes: 38d859f991f3 ("IMA: policy can now be updated multiple times")
+Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Fix sparse: incompatible types in comparison expression.
 ---
- drivers/pinctrl/intel/Kconfig | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ security/integrity/ima/ima_policy.c | 19 +++++++++++++------
+ 1 file changed, 13 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/pinctrl/intel/Kconfig b/drivers/pinctrl/intel/Kconfig
-index fb1495bd77c4..4ca50cf0d3a1 100644
---- a/drivers/pinctrl/intel/Kconfig
-+++ b/drivers/pinctrl/intel/Kconfig
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- # Intel pin control drivers
--
--if (X86 || COMPILE_TEST)
-+menu "Intel pinctrl drivers"
-+	depends on X86 || COMPILE_TEST
+diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+index 87b9b71cb820..480de75eaf8c 100644
+--- a/security/integrity/ima/ima_policy.c
++++ b/security/integrity/ima/ima_policy.c
+@@ -228,7 +228,7 @@ static struct ima_rule_entry *arch_policy_entry __ro_after_init;
+ static LIST_HEAD(ima_default_rules);
+ static LIST_HEAD(ima_policy_rules);
+ static LIST_HEAD(ima_temp_rules);
+-static struct list_head *ima_rules = &ima_default_rules;
++static struct list_head __rcu *ima_rules = (struct list_head __rcu *)(&ima_default_rules);
  
- config PINCTRL_BAYTRAIL
- 	bool "Intel Baytrail GPIO pin control"
-@@ -163,9 +163,9 @@ config PINCTRL_SUNRISEPOINT
- config PINCTRL_TIGERLAKE
- 	tristate "Intel Tiger Lake pinctrl and GPIO driver"
- 	depends on ACPI
--	select PINCTRL_INTEL
- 	help
- 	  This pinctrl driver provides an interface that allows configuring
- 	  of Intel Tiger Lake PCH pins and using them as GPIOs.
+ static int ima_policy __initdata;
  
--endif
-+endmenu
-+
+@@ -675,12 +675,14 @@ int ima_match_policy(struct user_namespace *mnt_userns, struct inode *inode,
+ {
+ 	struct ima_rule_entry *entry;
+ 	int action = 0, actmask = flags | (flags << 1);
++	struct list_head *ima_rules_tmp;
+ 
+ 	if (template_desc && !*template_desc)
+ 		*template_desc = ima_template_desc_current();
+ 
+ 	rcu_read_lock();
+-	list_for_each_entry_rcu(entry, ima_rules, list) {
++	ima_rules_tmp = rcu_dereference(ima_rules);
++	list_for_each_entry_rcu(entry, ima_rules_tmp, list) {
+ 
+ 		if (!(entry->action & actmask))
+ 			continue;
+@@ -970,8 +972,8 @@ void ima_update_policy(void)
+ 
+ 	if (ima_rules != policy) {
+ 		ima_policy_flag = 0;
+-		ima_rules = policy;
+ 
++		rcu_assign_pointer(ima_rules, policy);
+ 		/*
+ 		 * IMA architecture specific policy rules are specified
+ 		 * as strings and converted to an array of ima_entry_rules
+@@ -1768,9 +1770,11 @@ void *ima_policy_start(struct seq_file *m, loff_t *pos)
+ {
+ 	loff_t l = *pos;
+ 	struct ima_rule_entry *entry;
++	struct list_head *ima_rules_tmp;
+ 
+ 	rcu_read_lock();
+-	list_for_each_entry_rcu(entry, ima_rules, list) {
++	ima_rules_tmp = rcu_dereference(ima_rules);
++	list_for_each_entry_rcu(entry, ima_rules_tmp, list) {
+ 		if (!l--) {
+ 			rcu_read_unlock();
+ 			return entry;
+@@ -1789,7 +1793,8 @@ void *ima_policy_next(struct seq_file *m, void *v, loff_t *pos)
+ 	rcu_read_unlock();
+ 	(*pos)++;
+ 
+-	return (&entry->list == ima_rules) ? NULL : entry;
++	return (&entry->list == &ima_default_rules ||
++		&entry->list == &ima_policy_rules) ? NULL : entry;
+ }
+ 
+ void ima_policy_stop(struct seq_file *m, void *v)
+@@ -2014,6 +2019,7 @@ bool ima_appraise_signature(enum kernel_read_file_id id)
+ 	struct ima_rule_entry *entry;
+ 	bool found = false;
+ 	enum ima_hooks func;
++	struct list_head *ima_rules_tmp;
+ 
+ 	if (id >= READING_MAX_ID)
+ 		return false;
+@@ -2021,7 +2027,8 @@ bool ima_appraise_signature(enum kernel_read_file_id id)
+ 	func = read_idmap[id] ?: FILE_CHECK;
+ 
+ 	rcu_read_lock();
+-	list_for_each_entry_rcu(entry, ima_rules, list) {
++	ima_rules_tmp = rcu_dereference(ima_rules);
++	list_for_each_entry_rcu(entry, ima_rules_tmp, list) {
+ 		if (entry->action != APPRAISE)
+ 			continue;
+ 
 -- 
-2.25.1
+2.11.0
 
