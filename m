@@ -2,84 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F364341055C
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 11:17:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16485410561
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 11:22:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238052AbhIRJS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 05:18:57 -0400
-Received: from mout.gmx.net ([212.227.15.18]:37867 "EHLO mout.gmx.net"
+        id S238227AbhIRJYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 05:24:18 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:53769 "EHLO pegase2.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231497AbhIRJSz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 05:18:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1631956630;
-        bh=iry8CxJ90YvNjBabfl8pNpq16ZRgsLo1wiD4DopXVmU=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=N5oBX9fJAM5iyWuylOVnewRLM5T8PbFyPWX5WoDIVrxxzEaifUei5SK4HbJaLcyhB
-         mJR+WMiSp3QyFWhfZKVQGTm/aD5WeY/i+OsZ1fIV3JUkQX3pFihlSiCWZqp4qiMocw
-         0M8GLO9j+6c609FcTk5bxH+vIQdau5X9WPcSltcI=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from titan ([79.150.72.99]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1M72oH-1mXIh03s1X-008aqz; Sat, 18
- Sep 2021 11:17:10 +0200
-Date:   Sat, 18 Sep 2021 11:17:06 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Robert Richter <rric@kernel.org>
-Cc:     Len Baker <len.baker@gmx.com>, Borislav Petkov <bp@alien8.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Joe Perches <joe@perches.com>,
-        David Laight <David.Laight@aculab.com>,
-        Kees Cook <keescook@chromium.org>,
-        linux-hardening@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] EDAC/mc: Prefer strscpy or scnprintf over strcpy,
- sprintf and snprintf
-Message-ID: <20210918091706.GB2941@titan>
-References: <20210903150539.7282-1-len.baker@gmx.com>
- <YT8S3poKyd5Nr5cK@rric.localdomain>
+        id S236255AbhIRJYR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Sep 2021 05:24:17 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4HBQMw75JKz9sTp;
+        Sat, 18 Sep 2021 11:22:52 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id SDXvAXDFgcxi; Sat, 18 Sep 2021 11:22:52 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4HBQMw655Qz9sTK;
+        Sat, 18 Sep 2021 11:22:52 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id BBC698B768;
+        Sat, 18 Sep 2021 11:22:52 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id i9VziOO7HdnQ; Sat, 18 Sep 2021 11:22:52 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.202.70])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 734A48B764;
+        Sat, 18 Sep 2021 11:22:52 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 18I9MgmB785790
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Sat, 18 Sep 2021 11:22:42 +0200
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 18I9Mclb785789;
+        Sat, 18 Sep 2021 11:22:38 +0200
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kernel test robot <lkp@intel.com>,
+        Alistair Popple <alistair@popple.id.au>
+Subject: [PATCH] powerpc/476: Fix sparse report
+Date:   Sat, 18 Sep 2021 11:22:32 +0200
+Message-Id: <aa6055769b92a5d8685b8d0adab99c48a0b0ef4b.1631956926.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YT8S3poKyd5Nr5cK@rric.localdomain>
-X-Provags-ID: V03:K1:x0hRNgzN/YTNYOtTnqiD/7Y0qsVVqL9WVhMPAY6LnNnNY4O2mkH
- oG+BnOd9niqyJRuLPBiDldfFUoeD85ilPs9KPbod2z+yNhyqhYRs+M5zTqhzOnA6fCLJiif
- UCclBZVfVw9wuZYAwoq/wlzZZGw4UVhTZvrZVP/eNvxEFn+R/AnhhLEkHLeUa1e8hu+4UqW
- UeC20cI2ifUtL4sp8gqFg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:tWU3fgmMYgo=:XFGFwtM/KjC8HsB9wUwC8D
- tqSyMMJa3StwqxNbr3Il5Y4S+yMMFvhnERirF78hD5ipB0sbfKgAWoXXCSzlbfnt8xyH8Ktec
- K7xDCgNTalQX/8bT1Ttl8PFwcNK8gq/SdGkjXSs8sYIU53dQOMapjmx8uijekomsaCbvSG4Fp
- ZZP787y/zmDYfv0BBoZV2QJ9tjZYeT0GKzXmghPBg5Yorgqiw0fjiF8yP/WO7MQlIW9R7GxnK
- 3k/2/98ZmIEn54yJgAP0FlAdTYOioYim398Oq+sEE7fSSZdTXrY3DdXXuYZlpcWMzH7yCV9P1
- 8tALytVCBRcAlzpmMG0uTSD/TP0SLX/AtF3BQZySasu0Ye/Ygfa3oANc20bPurr+dnLh/txlG
- n/GMFybb1qHtzEv+5O3R8EuXTH0UF8DVyeYwbIbQctURkYqWWhXxpustPBDqLC6oogPf4B1bQ
- t6fDtjgFl4qTFbuPEgUFcaloo5SGhjk2wURzM6vwJngpY0RXpr7eLoduP8TEjePClWaoyw/q9
- VjtymHc2ol3lV3GWFa0DG8voi0TWWjeeP8jjw2QhbD+kGK58GNPgI//Y2iV+HX9diVAsBdVBV
- PaeZXJaH9BcKwHAL2PO5RmF37Rgf8mHojGkMR2dmaql4XXHHk8VTrFCKiFVd8I4M1lHSGSzt+
- 5txKU0e5NFJHzGuHJoL4gkYag86GXN86kK8I2v/F9nysMmLbtbBkq+IxRRUi88AlXYRS12325
- /i1WBKYJpS6N5ryUSNJ1ZErEWTqPmXyRRKdLeM93VyQgvoHAnFTzBhj2TX3FCd0RZ6TP30rSb
- j0YHzMG9NFJbQ0XxQJdY6vJrBm32HXCGHqxmSeK/j3VCZgbLQUs0T5rOM9zki5XejwTUz5r0E
- 9lHWxm/TRq2+p0c48SnwrJYwv3zP7WYx9kOz8nMnoIusJq6utBXz1I5SudTMYuhT1Gq3Ios+O
- kZUJXvi3x7QuG/Je08IdAGBAFX2ozgJXTlqR0POlqEuozSaI933Kjkg8KUBmfyDwOF2xohusa
- ylkCVcDLDHG2FKV//K+JsxKrfnwF5UGPAbCEK02fY3zAI1iPVVsmE+g86fmt4zq57xeKS5ca/
- VsAO2yMY+aKH2g=
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+	arch/powerpc/platforms/44x/ppc476.c:236:17: warning: cast removes address space '__iomem' of expression
+	arch/powerpc/platforms/44x/ppc476.c:241:34: warning: incorrect type in argument 1 (different address spaces)
+	arch/powerpc/platforms/44x/ppc476.c:241:34:    expected void const volatile [noderef] __iomem *addr
+	arch/powerpc/platforms/44x/ppc476.c:241:34:    got unsigned char [usertype] *
+	arch/powerpc/platforms/44x/ppc476.c:243:17: warning: incorrect type in argument 1 (different address spaces)
+	arch/powerpc/platforms/44x/ppc476.c:243:17:    expected void volatile [noderef] __iomem *addr
+	arch/powerpc/platforms/44x/ppc476.c:243:17:    got unsigned char [usertype] *[assigned] fpga
 
-On Mon, Sep 13, 2021 at 10:59:10AM +0200, Robert Richter wrote:
+Mark 'fpga' pointer as __iomem.
 
-> this patch looks good to me. I made some changes on top of it to
-> further ease pointer arithmetic and also fix remaining
-> sprintf/snprintf() users as it makes sense to have them all in a
-> single change. See below. Boris, please apply.
+Reported-by: kernel test robot <lkp@intel.com>
+Fixes: ab9a4183fddf ("powerpc: Update currituck pci/usb fixup for new board revision")
+Cc: Alistair Popple <alistair@popple.id.au>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/platforms/44x/ppc476.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thanks Robert for doing this.
+diff --git a/arch/powerpc/platforms/44x/ppc476.c b/arch/powerpc/platforms/44x/ppc476.c
+index 07f7e3ce67b5..fb7db5cedd4e 100644
+--- a/arch/powerpc/platforms/44x/ppc476.c
++++ b/arch/powerpc/platforms/44x/ppc476.c
+@@ -219,7 +219,7 @@ static int board_rev = -1;
+ static int __init ppc47x_get_board_rev(void)
+ {
+ 	int reg;
+-	u8 *fpga;
++	u8 __iomem *fpga;
+ 	struct device_node *np = NULL;
+ 
+ 	if (of_machine_is_compatible("ibm,currituck")) {
+@@ -233,7 +233,7 @@ static int __init ppc47x_get_board_rev(void)
+ 	if (!np)
+ 		goto fail;
+ 
+-	fpga = (u8 *) of_iomap(np, 0);
++	fpga = of_iomap(np, 0);
+ 	of_node_put(np);
+ 	if (!fpga)
+ 		goto fail;
+-- 
+2.31.1
 
-Regards,
-Len
