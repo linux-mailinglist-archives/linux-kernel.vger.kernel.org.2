@@ -2,154 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 174AF4104EA
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 09:55:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B83B4104EC
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 09:55:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243400AbhIRH5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 03:57:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43336 "EHLO
+        id S243650AbhIRH5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 03:57:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233741AbhIRH5F (ORCPT
+        with ESMTP id S243566AbhIRH5R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 03:57:05 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0D3BC061574
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 00:55:41 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id k23-20020a17090a591700b001976d2db364so9058126pji.2
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 00:55:41 -0700 (PDT)
+        Sat, 18 Sep 2021 03:57:17 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E22B5C06175F;
+        Sat, 18 Sep 2021 00:55:53 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id bg1so7673888plb.13;
+        Sat, 18 Sep 2021 00:55:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Y3Gvwx2bn9q0G9QM9HtT1I3LdyzvpbTk56Q2HZWRQvk=;
-        b=cSP90aMO2q4sng5CrQIbgmWUuF3Dfzb3aMv9iWZT5xVTRyW5/+MW39tP8PO0V/BaZj
-         574H29DSVkfXBEoM/XcsBQ+DOiU9XBBhdEjJyW3NMOdLulC+/bHMZ5fhQrLFjJVRzz5S
-         HFb9Axoh1wy0VKi66yA8MHA0O6tF0aPM540ztW7uvH7Xfgsgj/GTrX1kMeoP/xnXaIj9
-         Yes97w46LeuhoghG0vN0VWV5BrT/Ld7+sMiJsoL8uSfV1M+rhmxItmScbCyDBEZiQVwM
-         YJyeD1QPTfrBElUA1NQWyaPozyNC+n23TnY3SrjM8AwQlPQJipVLbShFLVIBjTHMlIWy
-         ckVg==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=IRv3NJgBgBwsQqhq8YzFsJFYARsDI4nmAcbZDvpiweE=;
+        b=QUwhKT+RO7kCD2cwEO5+ZZDdkZDjBP07V15hwz68F/u0gGuQsLQGpyscjL6kYd2Etj
+         0WPlBsF5/rHOB557k1GybQolYsDMqqytxrflyjxGIpVUpPdniY2QuKYrMiVziqJKKOoj
+         +MAoDN47bKnirVguwatNaXYpINieaszE4HX2JQ+X2lYCn7DmGjg0qAYrN9v9Wgz6BLmO
+         ov4kOK7ECAlIh9y30N8BfBWG4bNymm/fqclQu2kfUgEAVgcB2zqL5jpgJ+B1Dq3F1m1P
+         +RBRXCB1gUxxiPQ2J7bE/IAUjfgRPBsXvOn0G7zwIxZTLcSeI4swjE3lDusF5XPIuWjh
+         Xk8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Y3Gvwx2bn9q0G9QM9HtT1I3LdyzvpbTk56Q2HZWRQvk=;
-        b=nGEYxFOTrLz0SwWrWV5hbrhxRUyCuL3RyhZqAfFajJZIRvZTdp4vNxGvTWOZ94gfWQ
-         Imha9jkLD52ddlpEz5Pcac+QYGCachPi9ONJjh2cN0Qqv60r8KROQxbn8zQrCDHisqzS
-         EK6kvg0Cr2gb8MfGmGfBkCMv2p3D/msT1Wbj7kMORg7/NvjiWlW5fSqwUBN4SqVFBRNY
-         4Sc6rm4dV6mFHBFmMtnRercdbooOCQegZ66TJM4/bwcfyJFw07jmlX8/ov/wDddNvaCR
-         USTFAQ/dtkugOGYu6pGw9Z7B5lPGvmvCB/rnSz5Kz8Z8WE1Jj1QZdYZ4IYodYmpkvGKF
-         HnPQ==
-X-Gm-Message-State: AOAM530k9K/m61FbjOofVpoH1se/D1cyU55qS0W0W9e+Zo6kFAOcSnib
-        zpu2Uez0+rGhtDJ3E5/nacO3Rk8yYA2vEmZtctGFNg==
-X-Google-Smtp-Source: ABdhPJzAFBToLyzQTBujVXVXDzoO5yiLXzBNiThQTHNwMKNZTfyeNrfFVx9YaR0Lu+dglyPBXsakAZ4JPp/tO3SpPd0=
-X-Received: by 2002:a17:90b:1807:: with SMTP id lw7mr13397776pjb.217.1631951741155;
- Sat, 18 Sep 2021 00:55:41 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210916134748.67712-1-songmuchun@bytedance.com>
- <YUPvVYFyBR/qwy2X@carbon.DHCP.thefacebook.com> <CAMZfGtU42K0O+_KuuQ2untdYTiQet=W8K0m4+eh1CosJ96QL1Q@mail.gmail.com>
- <YUUvOhX4Yk2xuGTu@carbon.dhcp.thefacebook.com>
-In-Reply-To: <YUUvOhX4Yk2xuGTu@carbon.dhcp.thefacebook.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Sat, 18 Sep 2021 15:55:02 +0800
-Message-ID: <CAMZfGtWoiEOjDauJcK+cd_EKztvam9PSb1ghPkTyvw1tNJ-bzw@mail.gmail.com>
-Subject: Re: [PATCH v2 00/13] Use obj_cgroup APIs to charge the LRU pages
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        fam.zheng@bytedance.com, "Singh, Balbir" <bsingharora@gmail.com>,
-        Yang Shi <shy828301@gmail.com>, Alex Shi <alexs@kernel.org>,
-        Muchun Song <smuchun@gmail.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=IRv3NJgBgBwsQqhq8YzFsJFYARsDI4nmAcbZDvpiweE=;
+        b=e8B5rkr8F/smPynhwfFoNMo2+AZ1em0tPcb18TmOrmc8q9HCUwcDsNUa6TK6aMJ/o0
+         jpL1Xh6clQUUm9uIM8CGiEey2pVI32sygM+Z6OI+0B0xxVcrnuK0/bz7vpnq0UpVKcyZ
+         jWbXOxeHXIAaKjwpekgO4gUMT41XHst+KAemO+zBVqtAype4/XbYYsN0fV+490JS0+R2
+         Zg+lyu9pUfCF8aAXZH7dU7QmPQNz7SNUUVpPW7vGsKS0XZG4qgLghDei/qFCejSGFZ/+
+         VAA4igP5zXkFqGPgA57sd792y1Y6fvjdsU0J3Zs9LhfV5VbfnL69rPou8YBQGIMfMqIV
+         dEBQ==
+X-Gm-Message-State: AOAM531yuxRLCCBE5FTTQbC4TQFtIlE+VSZPUFg8SLVcqWjFDJOnptWu
+        MHbcuL2OBQC07r2HXWyGv3E=
+X-Google-Smtp-Source: ABdhPJwY2wbvCJfGAStKigdm6Cqi/jqNPzAOaYAw8Ikag4t3mTUYlb8lm0oas9cdP29HdR+rIpURgA==
+X-Received: by 2002:a17:90a:7c42:: with SMTP id e2mr25661080pjl.132.1631951753459;
+        Sat, 18 Sep 2021 00:55:53 -0700 (PDT)
+Received: from localhost.localdomain (mail.lemote.com. [222.92.8.138])
+        by smtp.gmail.com with ESMTPSA id a71sm8451097pfd.86.2021.09.18.00.55.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 18 Sep 2021 00:55:52 -0700 (PDT)
+From:   Dian zheng <paniaguaholt597336@gmail.com>
+X-Google-Original-From: Dian zheng <zhengd@lemote.com>
+To:     jiaxun.yang@flygoat.com
+Cc:     cand@gmx.com, chenhuacai@kernel.org, daniel.lezcano@linaro.org,
+        drjones@redhat.com, fancer.lancer@gmail.com, huangll@lemote.com,
+        john.garry@huawei.com, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, marcan@marcan.st,
+        mgorman@techsingularity.net, ndesaulniers@google.com,
+        paul@crapouillou.net, romain.naour@gmail.com,
+        sudipm.mukherjee@gmail.com, sumanthk@linux.ibm.com,
+        tanj@lemote.com, tglx@linutronix.de, tmricht@linux.ibm.com,
+        tom.zanussi@linux.intel.com, tsbogend@alpha.franken.de,
+        will@kernel.org, yangtiezhu@loongson.cn,
+        zhangshaokun@hisilicon.com, zhengd@lemote.com,
+        zhouyanjie@wanyeetech.com
+Subject: [PATCH v1 1/3] MIPS: cevt-r4k: Enable intimer for Loongson CPUs with extimer Loongson64C and Loongson64G have extimer feature, which is sharing Cause.TI with intimer (which is cevt-r4k).
+Date:   Sat, 18 Sep 2021 15:55:18 +0800
+Message-Id: <20210918075520.95927-1-zhengd@lemote.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <cf32762f-888a-b50b-9685-89b830049f6d@flygoat.com>
+References: <cf32762f-888a-b50b-9685-89b830049f6d@flygoat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 18, 2021 at 8:13 AM Roman Gushchin <guro@fb.com> wrote:
->
-> On Fri, Sep 17, 2021 at 06:49:21PM +0800, Muchun Song wrote:
-> > On Fri, Sep 17, 2021 at 9:29 AM Roman Gushchin <guro@fb.com> wrote:
-> > >
-> > > Hi Muchun!
-> > >
-> > > On Thu, Sep 16, 2021 at 09:47:35PM +0800, Muchun Song wrote:
-> > > > This version is rebased over linux 5.15-rc1, because Shakeel has asked me
-> > > > if I could do that. I rework some code suggested by Roman as well in this
-> > > > version. I have not removed the Acked-by tags which are from Roman, because
-> > > > this version is not based on the folio relevant. If Roman wants me to
-> > > > do this, please let me know, thanks.
-> > >
-> > > I'm fine with this, thanks for clarifying.
-> > >
-> > > >
-> > > > Since the following patchsets applied. All the kernel memory are charged
-> > > > with the new APIs of obj_cgroup.
-> > > >
-> > > >       [v17,00/19] The new cgroup slab memory controller[1]
-> > > >       [v5,0/7] Use obj_cgroup APIs to charge kmem pages[2]
-> > > >
-> > > > But user memory allocations (LRU pages) pinning memcgs for a long time -
-> > > > it exists at a larger scale and is causing recurring problems in the real
-> > > > world: page cache doesn't get reclaimed for a long time, or is used by the
-> > > > second, third, fourth, ... instance of the same job that was restarted into
-> > > > a new cgroup every time. Unreclaimable dying cgroups pile up, waste memory,
-> > > > and make page reclaim very inefficient.
-> > >
-> > > I've an idea: what if we use struct list_lru_memcg as an intermediate object
-> > > between an individual page and struct mem_cgroup?
-> > >
-> > > It could contain a pointer to a memory cgroup structure (not even sure if a
-> > > reference is needed), and a lru page can contain a pointer to the lruvec instead
-> > > of memcg/objcg.
->
-> lruvec_memcg I mean.
+From: Dian Zheng <zhengd@lemote.com>
 
-Thanks for your clarification.
+To ensure the cevt-r4k's usability, we need to add a callback for
+clock device to ensure intimer is enabled when cevt-r4k is enabled.
 
->
-> >
-> > Hi Roman,
-> >
-> > If I understand properly, here you mean the struct page has a pointer
-> > to the struct lruvec not struct list_lru_memcg. What's the functionality
-> > of the struct list_lru_memcg? Would you mind exposing more details?
->
-> So the basic idea is simple: a lru page charged to a memcg is associated with
-> a per-memcg lruvec (list_lru_memcg), which is associated with a memory cgroup.
-> And after your patches there is a second link of associations: page to objcg
-> to memcg:
->
-> 1) page->objcg->memcg
-> 2) page->list_lru_memcg->memcg
->
-> (those are not necessarily direct pointers, but generally speaking, relations).
->
-> My gut feeling is that if we can merge them into just 2) and use list_lru_memcg
-> as an intermediate object between pages and memory cgroups, the whole thing can
-> be more efficient and beautiful.
->
-> Yes, on reparenting we'd need to scan over all pages in the lru list, but
-> hopefully we can do it from a worker context. And it's not such a big deal as
-> with slab objects, where we simple had no list of all objects.
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Signed-off-by: Dian Zheng <zhengd@lemote.com>
+---
+ arch/mips/include/asm/cpu-features.h |  4 ++++
+ arch/mips/include/asm/cpu.h          |  1 +
+ arch/mips/kernel/cevt-r4k.c          | 25 +++++++++++++++++++++++++
+ arch/mips/kernel/cpu-probe.c         |  6 +++++-
+ 4 files changed, 35 insertions(+), 1 deletion(-)
 
-struct list_lru_memcg seems to be redundant, it just contains a pointer
-to struct mem_cgroup. We need to update each page->lruvec_memcg,
-why not update page->memcg_data directly to its parent memcg?
+diff --git a/arch/mips/include/asm/cpu-features.h b/arch/mips/include/asm/cpu-features.h
+index 3d71081afc55..787bd53be900 100644
+--- a/arch/mips/include/asm/cpu-features.h
++++ b/arch/mips/include/asm/cpu-features.h
+@@ -573,6 +573,10 @@
+ # define cpu_has_gsexcex	__opt(MIPS_CPU_GSEXCEX)
+ #endif
+ 
++#ifndef cpu_has_extimer
++# define cpu_has_extimer	__opt(MIPS_CPU_EXTIMER)
++#endif
++
+ #ifdef CONFIG_SMP
+ /*
+  * Some systems share FTLB RAMs between threads within a core (siblings in
+diff --git a/arch/mips/include/asm/cpu.h b/arch/mips/include/asm/cpu.h
+index d45a52f65b7a..8d221b4c3fa3 100644
+--- a/arch/mips/include/asm/cpu.h
++++ b/arch/mips/include/asm/cpu.h
+@@ -428,6 +428,7 @@ enum cpu_type_enum {
+ #define MIPS_CPU_MAC_2008_ONLY	BIT_ULL(60)	/* CPU Only support MAC2008 Fused multiply-add instruction */
+ #define MIPS_CPU_FTLBPAREX	BIT_ULL(61)	/* CPU has FTLB parity exception */
+ #define MIPS_CPU_GSEXCEX	BIT_ULL(62)	/* CPU has GSExc exception */
++#define MIPS_CPU_EXTIMER	BIT_ULL(63)	/* CPU has External Timer (Loongson) */
+ 
+ /*
+  * CPU ASE encodings
+diff --git a/arch/mips/kernel/cevt-r4k.c b/arch/mips/kernel/cevt-r4k.c
+index 32ec67c9ab67..91fc62001149 100644
+--- a/arch/mips/kernel/cevt-r4k.c
++++ b/arch/mips/kernel/cevt-r4k.c
+@@ -15,6 +15,8 @@
+ 
+ #include <asm/time.h>
+ #include <asm/cevt-r4k.h>
++#include <asm/cpu-features.h>
++#include <asm/mipsregs.h>
+ 
+ static int mips_next_event(unsigned long delta,
+ 			   struct clock_event_device *evt)
+@@ -290,6 +292,24 @@ core_initcall(r4k_register_cpufreq_notifier);
+ 
+ #endif /* !CONFIG_CPU_FREQ */
+ 
++#ifdef CONFIG_CPU_LOONGSON64
++static int c0_compare_int_enable(struct clock_event_device *cd)
++{
++	if (cpu_has_extimer)
++		set_c0_config6(LOONGSON_CONF6_INTIMER);
++
++	return 0;
++}
++
++static int c0_compare_int_disable(struct clock_event_device *cd)
++{
++	if (cpu_has_extimer)
++		clear_c0_config6(LOONGSON_CONF6_INTIMER);
++
++	return 0;
++}
++#endif
++
+ int r4k_clockevent_init(void)
+ {
+ 	unsigned long flags = IRQF_PERCPU | IRQF_TIMER | IRQF_SHARED;
+@@ -325,6 +345,11 @@ int r4k_clockevent_init(void)
+ 	cd->set_next_event	= mips_next_event;
+ 	cd->event_handler	= mips_event_handler;
+ 
++#ifdef CONFIG_CPU_LOONGSON64
++	cd->set_state_oneshot	= c0_compare_int_enable;
++	cd->set_state_shutdown	= c0_compare_int_disable;
++#endif
++
+ 	clockevents_config_and_register(cd, mips_hpt_frequency, min_delta, 0x7fffffff);
+ 
+ 	if (cp0_timer_irq_installed)
+diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
+index 630fcb4cb30e..8a9b028a1df7 100644
+--- a/arch/mips/kernel/cpu-probe.c
++++ b/arch/mips/kernel/cpu-probe.c
+@@ -1723,6 +1723,9 @@ static inline void decode_cpucfg(struct cpuinfo_mips *c)
+ 	if (cfg2 & LOONGSON_CFG2_LEXT2)
+ 		c->ases |= MIPS_ASE_LOONGSON_EXT2;
+ 
++	if (cfg2 & LOONGSON_CFG2_LLFTP)
++		c->options |= MIPS_CPU_EXTIMER;
++
+ 	if (cfg2 & LOONGSON_CFG2_LSPW) {
+ 		c->options |= MIPS_CPU_LDPTE;
+ 		c->guest.options |= MIPS_CPU_LDPTE;
+@@ -1780,7 +1783,8 @@ static inline void cpu_probe_loongson(struct cpuinfo_mips *c, unsigned int cpu)
+ 		 * Also some early Loongson-3A2000 had wrong TLB type in Config
+ 		 * register, we correct it here.
+ 		 */
+-		c->options |= MIPS_CPU_FTLB | MIPS_CPU_TLBINV | MIPS_CPU_LDPTE;
++		c->options |= MIPS_CPU_FTLB | MIPS_CPU_TLBINV | MIPS_CPU_LDPTE |
++			      MIPS_CPU_EXTIMER;
+ 		c->ases |= (MIPS_ASE_LOONGSON_MMI | MIPS_ASE_LOONGSON_CAM |
+ 			MIPS_ASE_LOONGSON_EXT | MIPS_ASE_LOONGSON_EXT2);
+ 		c->ases &= ~MIPS_ASE_VZ; /* VZ of Loongson-3A2000/3000 is incomplete */
+-- 
+2.18.1
 
-The update of page->lruvec_memcg should be under both child and
-parent's lruvec lock, right? I suppose scanning over all pages may be
-a problem if there are many pages.
-
-Thanks.
-
->
-> Again, I'm not 100% sure if it's possible and worth it, so it shouldn't block
-> your patchset if everybody else like it.
->
-> Thanks
