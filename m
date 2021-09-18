@@ -2,84 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41D4E410552
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 11:13:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AABC6410554
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 11:13:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238206AbhIRJOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 05:14:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232720AbhIRJOX (ORCPT
+        id S238227AbhIRJPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 05:15:11 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:58071 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232720AbhIRJPJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 05:14:23 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66D4CC061574
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 02:13:00 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id e26so9087227wmk.2
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 02:13:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=76q8V1XO/uXWgYaoiSEJ8zGvFMP1hD8UrP5IH+LteFI=;
-        b=LqPz7SIhuQxfwU+hOnXNmzpfY/lNQledmDJp/3I1AVOu8ZRo2tNa86aiKYd31hzjHp
-         nbVHItEHYYVh4mxZ1r6CkepCJPi/DnBDc3VHfxSDX6afAK07F+xfTytkeUtp5dGs6Bx+
-         YmTz7p5BTtAH0pj4ediLrs6rmK1Z4Yd3Ac/WxysjRh4HfAnJgaTzeVlw5rrCA0AtnrSC
-         igPsPl+Q2svZrxk9WL9LMiWrHCl3uTjRTEpkCEj5rr122mJc4gY9SQpeFHmCVDI0bua/
-         RlZFQpgOBe2NJGuE+V9tk+6HFUr7UeFiB3XoswNmzx6o1PooSeiJa9vAqfc1+MFh756v
-         L+Cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=76q8V1XO/uXWgYaoiSEJ8zGvFMP1hD8UrP5IH+LteFI=;
-        b=sEUuYBnP6xdm/6bw125pxlLH0bmortwIdWvlHxSnWTV2PwKYPkylANlsZdG+/fDDpO
-         yjfQ6TM35xvZyDo3uCC5Na9EHFvJ/AMPwz1BBTWgRzIVu+LVQuZhjyP+fpQqRVOR5noN
-         slsJIfyGdAOVzHRTvAhHihrLVHw7JqBbVWry4XyEpX6HNK3gzY/oqQ/SqrzsJdDm6+6K
-         ShhBZDdRHUn44FWBySHt8aZkyfULqRnkhe2mx+D3SyqUei3xVEex7Gckou6vakK5v545
-         Rdfzb52wPpHPI0QcOGOa3Yo3WpqHusl4uyJHvnJU73d31U1vffOzIZvZpDZ+eISNOwrh
-         QrlQ==
-X-Gm-Message-State: AOAM533wyWbpDCBp9nz1cGMd5FJImzRYgq0+j3iVueQ8PmQe5ye2T9aX
-        8p6d4RI6s9HBs2c2C2mcfLQ=
-X-Google-Smtp-Source: ABdhPJy9Ydpd3gzR4aYcZaEGDWJOHipzVUf95UzPZERPDqroefiNjVfNgK0sEPnzQPUabmATjkHSKA==
-X-Received: by 2002:a1c:448a:: with SMTP id r132mr14986786wma.105.1631956378634;
-        Sat, 18 Sep 2021 02:12:58 -0700 (PDT)
-Received: from ?IPV6:2a02:8108:96c0:3b88::ae40? ([2a02:8108:96c0:3b88::ae40])
-        by smtp.gmail.com with ESMTPSA id j134sm6103125wmj.27.2021.09.18.02.12.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 18 Sep 2021 02:12:58 -0700 (PDT)
-Message-ID: <b62ae16e-5eb3-e51d-dbda-5f0790de128e@gmail.com>
-Date:   Sat, 18 Sep 2021 11:12:56 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH 11/12] staging: r8188eu: remove ODM_IC_11N_SERIES,
- ODM_IC_11AC_SERIES macros.
-Content-Language: en-US
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
-        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-References: <20210917233048.31677-1-straube.linux@gmail.com>
- <20210917233048.31677-12-straube.linux@gmail.com>
-From:   Michael Straube <straube.linux@gmail.com>
-In-Reply-To: <20210917233048.31677-12-straube.linux@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        Sat, 18 Sep 2021 05:15:09 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0Uom.Rp3_1631956417;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0Uom.Rp3_1631956417)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sat, 18 Sep 2021 17:13:43 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     robh@kernel.org
+Cc:     tomeu.vizoso@collabora.com, steven.price@arm.com,
+        alyssa.rosenzweig@collabora.com, airlied@linux.ie, daniel@ffwll.ch,
+        matthias.bgg@gmail.com, sumit.semwal@linaro.org,
+        christian.koenig@amd.com, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] panfrost: make mediatek_mt8183_supplies and mediatek_mt8183_pm_domains static
+Date:   Sat, 18 Sep 2021 17:13:34 +0800
+Message-Id: <1631956414-85412-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/18/21 01:30, Michael Straube wrote:
-> The macros ODM_IC_11N_SERIES and ODM_IC_11AC_SERIES are unused now.
-> Remove them.
-> 
-> Signed-off-by: Michael Straube <straube.linux@gmail.com>
+This symbol is not used outside of panfrost_drv.c, so marks it static.
 
-I just noticed that there is a full stop at the end of the subject line, 
-sorry. I'll fix it and send v2 soon.
+Fix the following sparse warning:
 
-Regards,
-Michael
+drivers/gpu/drm/panfrost/panfrost_drv.c:641:12: warning: symbol
+'mediatek_mt8183_supplies' was not declared. Should it be static?
+
+drivers/gpu/drm/panfrost/panfrost_drv.c:642:12: warning: symbol
+'mediatek_mt8183_pm_domains' was not declared. Should it be static?
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/gpu/drm/panfrost/panfrost_drv.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/panfrost/panfrost_drv.c
+index 077cbbf..82ad9a6 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_drv.c
++++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
+@@ -638,8 +638,8 @@ static int panfrost_remove(struct platform_device *pdev)
+ 	.vendor_quirk = panfrost_gpu_amlogic_quirk,
+ };
+ 
+-const char * const mediatek_mt8183_supplies[] = { "mali", "sram" };
+-const char * const mediatek_mt8183_pm_domains[] = { "core0", "core1", "core2" };
++static const char * const mediatek_mt8183_supplies[] = { "mali", "sram" };
++static const char * const mediatek_mt8183_pm_domains[] = { "core0", "core1", "core2" };
+ static const struct panfrost_compatible mediatek_mt8183_data = {
+ 	.num_supplies = ARRAY_SIZE(mediatek_mt8183_supplies),
+ 	.supply_names = mediatek_mt8183_supplies,
+-- 
+1.8.3.1
 
