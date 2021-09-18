@@ -2,434 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06A70410733
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 16:56:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5A2B410705
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 16:24:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239483AbhIRO6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 10:58:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50416 "EHLO
+        id S238901AbhIROZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 10:25:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239532AbhIRO5E (ORCPT
+        with ESMTP id S237771AbhIROZS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 10:57:04 -0400
-Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C8FDC06175F;
-        Sat, 18 Sep 2021 07:55:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=2LTqMifk/SF/qrhOV9U2O1PRi7uDM05d38MP58VKg30=; b=fhoT6diXc41byyw4knzVO/XEc/
-        6IUuGg+jgQp5Qtpf52pQBWPSNXTINjlUeXHRhsZInBeheU4yb3dm1UYY6vOwoM7aPSDzKawRVCURH
-        dxBGTaTU3B//VywNkGQDG+MtCFx6U6+ig2RL52Sp8KXJMxLilt0AZXXHZ/zenKdwFtEw=;
-Received: from p200300ccff3476001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff34:7600:1a3d:a2ff:febf:d33a] helo=aktux)
-        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <andreas@kemnade.info>)
-        id 1mRb8u-0003mw-48; Sat, 18 Sep 2021 16:16:36 +0200
-Received: from andi by aktux with local (Exim 4.94.2)
-        (envelope-from <andreas@kemnade.info>)
-        id 1mRb8t-008zMs-KS; Sat, 18 Sep 2021 16:16:35 +0200
-From:   Andreas Kemnade <andreas@kemnade.info>
-To:     robh+dt@kernel.org, arnd@arndb.de, olof@lixom.net, soc@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, krzk@kernel.org,
-        leoyang.li@nxp.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     Andreas Kemnade <andreas@kemnade.info>
-Subject: [PATCH 4/4] ARM: dts: imx: add devicetree for Tolino Vision 5
-Date:   Sat, 18 Sep 2021 16:16:27 +0200
-Message-Id: <20210918141627.2142457-5-andreas@kemnade.info>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210918141627.2142457-1-andreas@kemnade.info>
-References: <20210918141627.2142457-1-andreas@kemnade.info>
+        Sat, 18 Sep 2021 10:25:18 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 604E2C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 07:23:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
+        Content-Transfer-Encoding; bh=crGu5Ix8RGnS81l9weqFdrV+bdJ/ykn6g7
+        LznH09ImM=; b=KlLIDMji0jKgdLYqe1kKdPBEJKEmQ/+DjJVdNxdruF4XPZ/wNb
+        q/rE3CGOYWsPdOk7vtiutxvl7M7QGWs72Be36DqDLpV7gloHvOzpD+Jjt1+5kQM8
+        7IQ1B67PdqZ76vI1Rgp7+BRr4PIFB2RURFbCMkwNyCuTvpzFXf+cfqNZE=
+Received: from xhacker (unknown [101.86.20.138])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygBnb7tw9kVhXP4YAA--.2092S2;
+        Sat, 18 Sep 2021 22:23:45 +0800 (CST)
+Date:   Sat, 18 Sep 2021 22:17:13 +0800
+From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     Chen Huang <chenhuang5@huawei.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Darius Rad <darius@bluespec.com>,
+        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 0/2] riscv: improve unaligned memory accesses
+Message-ID: <20210918221713.289f63bb@xhacker>
+In-Reply-To: <9200c4c2-44b9-480e-6970-5188640fb00a@huawei.com>
+References: <20210916130855.4054926-1-chenhuang5@huawei.com>
+        <20210917221429.4d3a15ca@xhacker>
+        <9200c4c2-44b9-480e-6970-5188640fb00a@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Score: -1.0 (-)
+Content-Transfer-Encoding: quoted-printable
+X-CM-TRANSID: LkAmygBnb7tw9kVhXP4YAA--.2092S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxAF1kJF4kCryUXF1rur13twb_yoW5GFW5pa
+        1UCFnI9FZ8tr1xGFZ2qwn5uF1Yv3yfWFy7Jr43t34UuF1qvFy7Zr42gFWDGasxJrn7C34j
+        gr4SvFnrua45Za7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyFb7Iv0xC_Cr1lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I
+        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E
+        4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGV
+        WUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_
+        Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rV
+        WrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_
+        GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8rcTPUUUUU==
+X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds a devicetree for the Tolino Vision 5 Ebook reader. It is
-based on boards called ¨e70k02¨. It is equipped with an imx6sl SoC.
+On Sat, 18 Sep 2021 09:14:05 +0800
+Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
 
-Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
----
- arch/arm/boot/dts/Makefile                  |   1 +
- arch/arm/boot/dts/imx6sl-tolino-vision5.dts | 349 ++++++++++++++++++++
- 2 files changed, 350 insertions(+)
- create mode 100644 arch/arm/boot/dts/imx6sl-tolino-vision5.dts
+> On 2021/9/17 22:14, Jisheng Zhang wrote:
+> > On Thu, 16 Sep 2021 13:08:53 +0000
+> > Chen Huang <chenhuang5@huawei.com> wrote:
+> > =20
+> >> The patchset improves RISCV unaligned memory accesses, selects
+> >> HAVE_EFFICIENT_UNALIGNED_ACCESS if CPU_HAS_NO_UNALIGNED not
+> >> enabled and supports DCACHE_WORD_ACCESS to improve the efficiency
+> >> of unaligned memory accesses.
+> >>
+> >> If CPU don't support unaligned memory accesses for now, please
+> >> select CONFIG_CPU_HAS_NO_UNALIGNED. For I don't know which CPU
+> >> don't support unaligned memory accesses, I don't choose the
+> >> CONFIG for them. =20
+> > This will break unified kernel Image for riscv. Obviously, we will have
+> > two images for efficient unaligned access platforms and non-efficient
+> > unaligned access platforms. IMHO, we may need alternative mechanism or
+> > something else to dynamically enable related code path. =20
+>=20
+> it won't break unified kernel Image for riscv, if one SoC choose
+>=20
+> CPU_HAS_NO_UNALIGNED, the single Image won't support unaligned memory
 
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index 78fc26ff2cac..1dc13668f148 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -635,6 +635,7 @@ dtb-$(CONFIG_SOC_IMX6SL) += \
- 	imx6sl-evk.dtb \
- 	imx6sl-tolino-shine2hd.dtb \
- 	imx6sl-tolino-shine3.dtb \
-+	imx6sl-tolino-vision5.dtb \
- 	imx6sl-warp.dtb
- dtb-$(CONFIG_SOC_IMX6SLL) += \
- 	imx6sll-evk.dtb \
-diff --git a/arch/arm/boot/dts/imx6sl-tolino-vision5.dts b/arch/arm/boot/dts/imx6sl-tolino-vision5.dts
-new file mode 100644
-index 000000000000..687ded0f8250
---- /dev/null
-+++ b/arch/arm/boot/dts/imx6sl-tolino-vision5.dts
-@@ -0,0 +1,349 @@
-+// SPDX-License-Identifier: (GPL-2.0)
-+/*
-+ * Device tree for the Tolino Vision 5 ebook reader
-+ *
-+ * Name on mainboard is: 37NB-E70K0M+6A3
-+ * Serials start with: E70K02 (a number also seen in
-+ * vendor kernel sources)
-+ *
-+ * This mainboard seems to be equipped with different SoCs.
-+ * In the Tolino Vision 5 ebook reader it is a i.MX6SL
-+ *
-+ * Copyright 2021 Andreas Kemnade
-+ * based on works
-+ * Copyright 2016 Freescale Semiconductor, Inc.
-+ */
-+
-+/dts-v1/;
-+
-+#include <dt-bindings/input/input.h>
-+#include <dt-bindings/gpio/gpio.h>
-+#include "imx6sl.dtsi"
-+#include "e70k02.dtsi"
-+
-+/ {
-+	model = "Tolino Vision 5";
-+	compatible = "kobo,tolino-vision5", "fsl,imx6sl";
-+};
-+
-+&gpio_keys {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_gpio_keys>;
-+};
-+
-+&i2c1 {
-+	pinctrl-names = "default","sleep";
-+	pinctrl-0 = <&pinctrl_i2c1>;
-+	pinctrl-1 = <&pinctrl_i2c1_sleep>;
-+};
-+
-+&i2c2 {
-+	pinctrl-names = "default","sleep";
-+	pinctrl-0 = <&pinctrl_i2c2>;
-+	pinctrl-1 = <&pinctrl_i2c2_sleep>;
-+};
-+
-+&i2c3 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_i2c3>;
-+};
-+
-+&iomuxc {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_hog>;
-+
-+	pinctrl_gpio_keys: gpio-keysgrp {
-+		fsl,pins = <
-+			MX6SL_PAD_FEC_CRS_DV__GPIO4_IO25	0x17059	/* PWR_SW */
-+			MX6SL_PAD_FEC_MDC__GPIO4_IO23	0x17059	/* HALL_EN */
-+			MX6SL_PAD_KEY_COL4__GPIO4_IO00		0x17059	/* PAGE_UP */
-+			MX6SL_PAD_KEY_COL5__GPIO4_IO02		0x17059	/* PAGE_DOWN */
-+		>;
-+	};
-+
-+	pinctrl_hog: hoggrp {
-+		fsl,pins = <
-+			MX6SL_PAD_LCD_DAT1__GPIO2_IO21	0x79
-+			MX6SL_PAD_LCD_DAT4__GPIO2_IO24	0x79
-+			MX6SL_PAD_LCD_DAT5__GPIO2_IO25	0x79
-+			MX6SL_PAD_LCD_DAT6__GPIO2_IO26	0x79
-+			MX6SL_PAD_LCD_DAT7__GPIO2_IO27	0x79
-+			MX6SL_PAD_LCD_DAT8__GPIO2_IO28	0x79
-+			MX6SL_PAD_LCD_DAT9__GPIO2_IO29	0x79
-+			MX6SL_PAD_LCD_DAT10__GPIO2_IO30	0x79
-+			MX6SL_PAD_LCD_DAT11__GPIO2_IO31	0x79
-+			MX6SL_PAD_LCD_DAT12__GPIO3_IO00	0x79
-+			MX6SL_PAD_LCD_DAT13__GPIO3_IO01	0x79
-+			MX6SL_PAD_LCD_DAT14__GPIO3_IO02	0x79
-+			MX6SL_PAD_LCD_DAT15__GPIO3_IO03	0x79
-+			MX6SL_PAD_LCD_DAT16__GPIO3_IO04	0x79
-+			MX6SL_PAD_LCD_DAT17__GPIO3_IO05	0x79
-+			MX6SL_PAD_LCD_DAT18__GPIO3_IO06	0x79
-+			MX6SL_PAD_LCD_DAT19__GPIO3_IO07	0x79
-+			MX6SL_PAD_LCD_DAT20__GPIO3_IO08	0x79
-+			MX6SL_PAD_LCD_DAT21__GPIO3_IO09	0x79
-+			MX6SL_PAD_LCD_DAT22__GPIO3_IO10	0x79
-+			MX6SL_PAD_LCD_DAT23__GPIO3_IO11	0x79
-+			MX6SL_PAD_LCD_CLK__GPIO2_IO15		0x79
-+			MX6SL_PAD_LCD_ENABLE__GPIO2_IO16	0x79
-+			MX6SL_PAD_LCD_HSYNC__GPIO2_IO17	0x79
-+			MX6SL_PAD_LCD_VSYNC__GPIO2_IO18	0x79
-+			MX6SL_PAD_LCD_RESET__GPIO2_IO19	0x79
-+			MX6SL_PAD_FEC_TX_CLK__GPIO4_IO21	0x79
-+			MX6SL_PAD_FEC_REF_CLK__GPIO4_IO26	0x79
-+			MX6SL_PAD_KEY_COL3__GPIO3_IO30		0x79
-+			MX6SL_PAD_KEY_ROW7__GPIO4_IO07		0x79
-+			MX6SL_PAD_ECSPI2_MOSI__GPIO4_IO13	0x79
-+		>;
-+	};
-+
-+	pinctrl_i2c1: i2c1grp {
-+		fsl,pins = <
-+			MX6SL_PAD_I2C1_SCL__I2C1_SCL	 0x4001f8b1
-+			MX6SL_PAD_I2C1_SDA__I2C1_SDA	 0x4001f8b1
-+		>;
-+	};
-+
-+	pinctrl_i2c1_sleep: i2c1grp-sleep {
-+		fsl,pins = <
-+			MX6SL_PAD_I2C1_SCL__I2C1_SCL	 0x400108b1
-+			MX6SL_PAD_I2C1_SDA__I2C1_SDA	 0x400108b1
-+		>;
-+	};
-+
-+	pinctrl_i2c2: i2c2grp {
-+		fsl,pins = <
-+			MX6SL_PAD_I2C2_SCL__I2C2_SCL	 0x4001f8b1
-+			MX6SL_PAD_I2C2_SDA__I2C2_SDA	 0x4001f8b1
-+		>;
-+	};
-+
-+	pinctrl_i2c2_sleep: i2c2grp-sleep {
-+		fsl,pins = <
-+			MX6SL_PAD_I2C2_SCL__I2C2_SCL	 0x400108b1
-+			MX6SL_PAD_I2C2_SDA__I2C2_SDA	 0x400108b1
-+		>;
-+	};
-+
-+	pinctrl_i2c3: i2c3grp {
-+		fsl,pins = <
-+			MX6SL_PAD_REF_CLK_24M__I2C3_SCL  0x4001f8b1
-+			MX6SL_PAD_REF_CLK_32K__I2C3_SDA  0x4001f8b1
-+		>;
-+	};
-+
-+	pinctrl_led: ledgrp {
-+		fsl,pins = <
-+			MX6SL_PAD_FEC_RXD0__GPIO4_IO17	0x10059
-+		>;
-+	};
-+
-+	pinctrl_lm3630a_bl_gpio: lm3630a-bl-gpiogrp {
-+		fsl,pins = <
-+			MX6SL_PAD_EPDC_PWRCTRL3__GPIO2_IO10		0x10059 /* HWEN */
-+		>;
-+	};
-+
-+	pinctrl_ricoh_gpio: ricoh_gpiogrp {
-+		fsl,pins = <
-+			MX6SL_PAD_FEC_MDIO__GPIO4_IO20		0x1b8b1 /* ricoh619 chg */
-+			MX6SL_PAD_FEC_RX_ER__GPIO4_IO19		0x1b8b1 /* ricoh619 irq */
-+			MX6SL_PAD_KEY_COL2__GPIO3_IO28		0x1b8b1 /* ricoh619 bat_low_int */
-+		>;
-+	};
-+
-+	pinctrl_uart1: uart1grp {
-+		fsl,pins = <
-+			MX6SL_PAD_UART1_TXD__UART1_TX_DATA 0x1b0b1
-+			MX6SL_PAD_UART1_RXD__UART1_RX_DATA 0x1b0b1
-+		>;
-+	};
-+
-+	pinctrl_usbotg1: usbotg1grp {
-+		fsl,pins = <
-+			MX6SL_PAD_EPDC_PWRCOM__USB_OTG1_ID 0x17059
-+		>;
-+	};
-+
-+	pinctrl_usdhc1: usdhc1grp {
-+		fsl,pins = <
-+			MX6SL_PAD_SD1_CMD__SD1_CMD	0x17059
-+			MX6SL_PAD_SD1_CLK__SD1_CLK	0x17059
-+			MX6SL_PAD_SD1_DAT0__SD1_DATA0	0x17059
-+			MX6SL_PAD_SD1_DAT1__SD1_DATA1	0x17059
-+			MX6SL_PAD_SD1_DAT2__SD1_DATA2	0x17059
-+			MX6SL_PAD_SD1_DAT3__SD1_DATA3	0x17059
-+			MX6SL_PAD_SD1_DAT4__SD1_DATA4	0x17059
-+			MX6SL_PAD_SD1_DAT5__SD1_DATA5	0x17059
-+			MX6SL_PAD_SD1_DAT6__SD1_DATA6	0x17059
-+			MX6SL_PAD_SD1_DAT7__SD1_DATA7	0x17059
-+		>;
-+	};
-+
-+	pinctrl_usdhc1_100mhz: usdhc1grp_100mhz {
-+		fsl,pins = <
-+			MX6SL_PAD_SD1_CMD__SD1_CMD	0x170b9
-+			MX6SL_PAD_SD1_CLK__SD1_CLK	0x170b9
-+			MX6SL_PAD_SD1_DAT0__SD1_DATA0	0x170b9
-+			MX6SL_PAD_SD1_DAT1__SD1_DATA1	0x170b9
-+			MX6SL_PAD_SD1_DAT2__SD1_DATA2	0x170b9
-+			MX6SL_PAD_SD1_DAT3__SD1_DATA3	0x170b9
-+			MX6SL_PAD_SD1_DAT4__SD1_DATA4	0x170b9
-+			MX6SL_PAD_SD1_DAT5__SD1_DATA5	0x170b9
-+			MX6SL_PAD_SD1_DAT6__SD1_DATA6	0x170b9
-+			MX6SL_PAD_SD1_DAT7__SD1_DATA7	0x170b9
-+		>;
-+	};
-+
-+	pinctrl_usdhc1_200mhz: usdhc1grp_200mhz {
-+		fsl,pins = <
-+			MX6SL_PAD_SD1_CMD__SD1_CMD	0x170f9
-+			MX6SL_PAD_SD1_CLK__SD1_CLK	0x170f9
-+			MX6SL_PAD_SD1_DAT0__SD1_DATA0	0x170f9
-+			MX6SL_PAD_SD1_DAT1__SD1_DATA1	0x170f9
-+			MX6SL_PAD_SD1_DAT2__SD1_DATA2	0x170f9
-+			MX6SL_PAD_SD1_DAT3__SD1_DATA3	0x170f9
-+			MX6SL_PAD_SD1_DAT4__SD1_DATA4	0x170b9
-+			MX6SL_PAD_SD1_DAT5__SD1_DATA5	0x170b9
-+			MX6SL_PAD_SD1_DAT6__SD1_DATA6	0x170b9
-+			MX6SL_PAD_SD1_DAT7__SD1_DATA7	0x170b9
-+		>;
-+	};
-+
-+	pinctrl_usdhc1_sleep: usdhc1grp_sleep {
-+		fsl,pins = <
-+			MX6SL_PAD_SD1_CMD__SD1_CMD	0x10059
-+			MX6SL_PAD_SD1_CLK__SD1_CLK	0x10059
-+			MX6SL_PAD_SD1_DAT0__SD1_DATA0	0x10059
-+			MX6SL_PAD_SD1_DAT1__SD1_DATA1	0x10059
-+			MX6SL_PAD_SD1_DAT2__SD1_DATA2	0x10059
-+			MX6SL_PAD_SD1_DAT3__SD1_DATA3	0x10059
-+			MX6SL_PAD_SD1_DAT4__SD1_DATA4	0x10059
-+			MX6SL_PAD_SD1_DAT5__SD1_DATA5	0x10059
-+			MX6SL_PAD_SD1_DAT6__SD1_DATA6	0x10059
-+			MX6SL_PAD_SD1_DAT7__SD1_DATA7	0x10059
-+		>;
-+	};
-+
-+	pinctrl_usdhc3: usdhc3grp {
-+		fsl,pins = <
-+			MX6SL_PAD_SD3_CMD__SD3_CMD	0x11059
-+			MX6SL_PAD_SD3_CLK__SD3_CLK	0x11059
-+			MX6SL_PAD_SD3_DAT0__SD3_DATA0	0x11059
-+			MX6SL_PAD_SD3_DAT1__SD3_DATA1	0x11059
-+			MX6SL_PAD_SD3_DAT2__SD3_DATA2	0x11059
-+			MX6SL_PAD_SD3_DAT3__SD3_DATA3	0x11059
-+		>;
-+	};
-+
-+	pinctrl_usdhc3_100mhz: usdhc3grp_100mhz {
-+		fsl,pins = <
-+			MX6SL_PAD_SD3_CMD__SD3_CMD	0x170b9
-+			MX6SL_PAD_SD3_CLK__SD3_CLK	0x170b9
-+			MX6SL_PAD_SD3_DAT0__SD3_DATA0	0x170b9
-+			MX6SL_PAD_SD3_DAT1__SD3_DATA1	0x170b9
-+			MX6SL_PAD_SD3_DAT2__SD3_DATA2	0x170b9
-+			MX6SL_PAD_SD3_DAT3__SD3_DATA3	0x170b9
-+		>;
-+	};
-+
-+	pinctrl_usdhc3_200mhz: usdhc3grp_200mhz {
-+		fsl,pins = <
-+			MX6SL_PAD_SD3_CMD__SD3_CMD	0x170f9
-+			MX6SL_PAD_SD3_CLK__SD3_CLK	0x170f9
-+			MX6SL_PAD_SD3_DAT0__SD3_DATA0	0x170f9
-+			MX6SL_PAD_SD3_DAT1__SD3_DATA1	0x170f9
-+			MX6SL_PAD_SD3_DAT2__SD3_DATA2	0x170f9
-+			MX6SL_PAD_SD3_DAT3__SD3_DATA3	0x170f9
-+		>;
-+	};
-+
-+	pinctrl_usdhc3_sleep: usdhc3grp_sleep {
-+		fsl,pins = <
-+			MX6SL_PAD_SD3_CMD__GPIO5_IO21	0x100c1
-+			MX6SL_PAD_SD3_CLK__GPIO5_IO18	0x100c1
-+			MX6SL_PAD_SD3_DAT0__GPIO5_IO19	0x100c1
-+			MX6SL_PAD_SD3_DAT1__GPIO5_IO20	0x100c1
-+			MX6SL_PAD_SD3_DAT2__GPIO5_IO16	0x100c1
-+			MX6SL_PAD_SD3_DAT3__GPIO5_IO17	0x100c1
-+		>;
-+	};
-+
-+	pinctrl_wifi_power: wifi-powergrp {
-+		fsl,pins = <
-+			MX6SL_PAD_SD2_DAT6__GPIO4_IO29	0x10059	 /* WIFI_3V3_ON */
-+		>;
-+	};
-+
-+	pinctrl_wifi_reset: wifi-resetgrp {
-+		fsl,pins = <
-+			MX6SL_PAD_SD2_DAT7__GPIO5_IO00	0x10059	/* WIFI_RST */
-+		>;
-+	};
-+};
-+
-+&leds {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_led>;
-+};
-+
-+&lm3630a {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_lm3630a_bl_gpio>;
-+};
-+
-+&reg_wifi {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_wifi_power>;
-+};
-+
-+&reg_vdd1p1 {
-+	vin-supply = <&dcdc2_reg>;
-+};
-+
-+&reg_vdd2p5 {
-+	vin-supply = <&dcdc2_reg>;
-+};
-+
-+&reg_arm {
-+	vin-supply = <&dcdc3_reg>;
-+};
-+
-+&reg_soc {
-+	vin-supply = <&dcdc1_reg>;
-+};
-+
-+&reg_pu {
-+	vin-supply = <&dcdc1_reg>;
-+};
-+
-+&ricoh619 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_ricoh_gpio>;
-+};
-+
-+&uart1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart1>;
-+};
-+
-+&usdhc1 {
-+	pinctrl-names = "default", "state_100mhz", "state_200mhz","sleep";
-+	pinctrl-0 = <&pinctrl_usdhc1>;
-+	pinctrl-1 = <&pinctrl_usdhc1_100mhz>;
-+	pinctrl-2 = <&pinctrl_usdhc1_200mhz>;
-+	pinctrl-3 = <&pinctrl_usdhc1_sleep>;
-+};
-+
-+&usdhc3 {
-+	pinctrl-names = "default", "state_100mhz", "state_200mhz","sleep";
-+	pinctrl-0 = <&pinctrl_usdhc3>;
-+	pinctrl-1 = <&pinctrl_usdhc3_100mhz>;
-+	pinctrl-2 = <&pinctrl_usdhc3_200mhz>;
-+	pinctrl-3 = <&pinctrl_usdhc3_sleep>;
-+};
-+
-+&wifi_pwrseq {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_wifi_reset>;
-+};
--- 
-2.30.2
+the "unified" means the kernel Image has to support all RV64GC or RV32GC So=
+Cs.
+To make the Image works for both efficient unaligned access and inefficient
+unaligned access, I think we'd better make "inefficient unaligned access"
+default behavior, the use alternative etc. tech to patch related code path
+for efficient unaligned access.
+
+
+>=20
+> accesses, indeed, it depends on the CONFIG, and now, arm/powerpc/m68k has
+
+linux Distributions doesn't have enough background of which config options
+must be enabled.
+
+>=20
+> similar configuration.
+
+I have little knowledge of powerpc or m68k, but there are serveral different
+defconfig files for arm, for example multi_v7_defconfig and multi_v5_defcon=
+fig.
+The previous v7 version enables HAVE_EFFICIENT_UNALIGNED_ACCESS while
+the later v5 doesn't. Will you persuade riscv maintainers to accept one more
+defconfig file?
+
+Thanks
+
+>=20
+> Yes,=C2=A0 it could be an optimization via alternative mechanism or somet=
+hing=20
+> else to
+>=20
+> dynamically enable related code path later.
+>=20
+> >
+> > Regards
+> > =20
+> >> Changes since v1:
+> >>   - As Darius Rad and Jisheng Zhang mentioned, some CPUs don't support
+> >>     unaligned memory accesses, add an option for CPUs to choose it or =
+not.
+> >>
+> >> Chen Huang (2):
+> >>    riscv: support HAVE_EFFICIENT_UNALIGNED_ACCESS
+> >>    riscv: Support DCACHE_WORD_ACCESS
+> >>
+> >>   arch/riscv/Kconfig                      |  5 ++++
+> >>   arch/riscv/include/asm/word-at-a-time.h | 37 +++++++++++++++++++++++=
+++
+> >>   2 files changed, 42 insertions(+)
+> >> =20
+> >
+> > .
+> > =20
+
 
