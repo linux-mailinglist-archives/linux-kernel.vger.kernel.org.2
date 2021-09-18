@@ -2,74 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 793AA41087C
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 21:58:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41DE7410886
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 22:18:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236637AbhIRT7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 15:59:35 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:56967 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232331AbhIRT7b (ORCPT
+        id S234049AbhIRUTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 16:19:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229793AbhIRUT3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 15:59:31 -0400
-Received: by mail-io1-f70.google.com with SMTP id z71-20020a6bc94a000000b005d09bfe2668so27622154iof.23
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 12:58:07 -0700 (PDT)
+        Sat, 18 Sep 2021 16:19:29 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA8CEC061574;
+        Sat, 18 Sep 2021 13:18:05 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id lb1-20020a17090b4a4100b001993f863df2so9832432pjb.5;
+        Sat, 18 Sep 2021 13:18:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=Rz+Q9TyMwNKKp3Zp/SmxkDCYSutReaKArS9DPZj1vGU=;
+        b=Vyqf0lTIGrmhvmmZbrcMnYNEUwfBUKo4E2Ov3rvEGvdmi1SIrO0nJJrSOzROA68kwH
+         BO8d+xe+rBxBX1PfC68J4fL+6Y9NQvh9ibo9dRpcw8wmygRB4SmO1r/GI+RMfOKKJjZV
+         xYCtLqT/SUI56+T9T1WO1doYn6BZ1l4b+GJ/vMAjSE9dSqxaEm2sKmFD8ABhAgVEKE+W
+         ZWMk+nSpBjsbLa+gX+4bxc3d7wqep5MRmmHlxtkv+u+8jdSoIwVLGo/HWv5Jw+NfJVAK
+         HbtGMbCv0odqj8Zi24s5AEMyXJcY0xqizA8wcXSX1QZJHTrS8RZUXxPS9EjwgcPZk2Yw
+         /Cgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=ivh/Frp5TC2qWcIkr/BnJSK/kFt1+2bIZQL24hbwT64=;
-        b=anrwkpRpF6rVEdLutjth5D/mCTvXyVsdurLDgGhhInOOQ+roACfOAzz8pYzWRKLZkN
-         HL4E2ckecF24BtJ/mPo2Z84zdrExYEWKuOkA16AHEKg9cJDUi5a8SnaAB9q4c0bW9vXX
-         g3socmve0CP6cghM3hxnUxK4SXXot795le4cX1D73vcf/z4Ou1FM8xHQDMlZwTHLARHL
-         KwKezgcyWyVW2RS1WYMAfleUnUXeuymn/8JHK9fdCkZYTGwkf/xWxWihndZsvnM/WDg9
-         cQV4QtRRVn0mm8cbq34LqdlpYstM1AYZhsvpE+cnFmzdxdBqK3kE47vgwyRjZQIStP9U
-         INbw==
-X-Gm-Message-State: AOAM53141ORRz/IXiE4hEW8J2AH330UY1qqvzWv4I1rtm1e/ZWjrj3tc
-        c0G9395zdbIVWFlEoyBrLzJXldzYvMZ6wWBKDbEHz5IdZSfl
-X-Google-Smtp-Source: ABdhPJzgs6ARQpi5xrqA8t2HeKzas+2uSX6PdE7YGSaYgxMRzN33nmneQgyfAzSK2loGTkvCoPd75fBvS4XdGFR4xW6TboTeWQui
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=Rz+Q9TyMwNKKp3Zp/SmxkDCYSutReaKArS9DPZj1vGU=;
+        b=0lmkRJuWOVX+MCv+FcXknOj/OKZdnimg0n48ix1eUis9onNzIGHPdY9MFULKSgWXhd
+         jAveJTZXugnmgOWzm6TO0+ENRISv9xh3gFiad6osgmCJZD9WwCerLqDkqy4WsVvQkC6l
+         PbvcoFdomWV+2uYx0elRI5ncG27kGgaNSPAjJ8iFHik8uztl9pZxJhmSlB5S1c3tnKUp
+         hLN7iWhrhUJSiUSmC01+KSiLJ/cB8Eg/VIbpCR6qjQbbm9V+kEaXnthSO4yOSu0tUreK
+         y8KUw167QhL6gvOGiXaM8kigGhwi4O5/QmJLvfrj/P2nOrwTMfwum3D+CQ2iangqomx9
+         2KLg==
+X-Gm-Message-State: AOAM532BkPlBOyqecoVevWCdENZYAh/F5lXjkJqAH7venA9bS4qOBNsw
+        YinI65OrtZgRvQ3yxJeI5bp9MlFftL8=
+X-Google-Smtp-Source: ABdhPJzSq2utTH0VPA7Dkd+SyWYQFPaB8HjoaVstGsD0PWEELSZCeHQHDlSQBMDOwX83XtxK05I2Fw==
+X-Received: by 2002:a17:90a:b288:: with SMTP id c8mr4690410pjr.67.1631996285001;
+        Sat, 18 Sep 2021 13:18:05 -0700 (PDT)
+Received: from pranay-desktop (2603-8001-9300-332c-0000-0000-0000-092b.res6.spectrum.com. [2603:8001:9300:332c::92b])
+        by smtp.gmail.com with ESMTPSA id qe17sm8973154pjb.39.2021.09.18.13.18.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 18 Sep 2021 13:18:04 -0700 (PDT)
+Date:   Sat, 18 Sep 2021 13:18:02 -0700
+From:   Pranay Sanghai <pranaysanghai@gmail.com>
+To:     bhelgaas@google.com
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drivers/pci/setup-irq.c: Fix up comments.
+Message-ID: <YUZJenW2UCA4Qu0O@pranay-desktop>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:610a:: with SMTP id v10mr6389678iob.167.1631995087634;
- Sat, 18 Sep 2021 12:58:07 -0700 (PDT)
-Date:   Sat, 18 Sep 2021 12:58:07 -0700
-In-Reply-To: <000000000000fe7dd005cc2d77c0@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000079478a05cc4a7730@google.com>
-Subject: Re: [syzbot] kernel BUG in vmf_insert_pfn_prot
-From:   syzbot <syzbot+2d4f8693f438d2bd4bdb@syzkaller.appspotmail.com>
-To:     airlied@linux.ie, christian.koenig@amd.com, daniel.vetter@ffwll.ch,
-        daniel.vetter@intel.com, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org,
-        linaro-mm-sig-owner@lists.linaro.org,
-        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, maarten.lankhorst@linux.intel.com,
-        mripard@kernel.org, sumit.semwal@linaro.org,
-        syzkaller-bugs@googlegroups.com, tzimmermann@suse.de
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
+Make comments follow multi-line comment conventions. No functional change intended.
 
-commit 8b93d1d7dbd578fd296e70008b29c0f62d09d7cb
-Author: Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Thu Aug 12 13:14:10 2021 +0000
+Signed-off-by: Pranay Sanghai <pranaysanghai@gmail.com>
 
-    drm/shmem-helper: Switch to vmf_insert_pfn
+---
+ drivers/pci/setup-irq.c | 19 +++++++++++--------
+ 1 file changed, 11 insertions(+), 8 deletions(-)
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1277054f300000
-start commit:   9004fd387338 Add linux-next specific files for 20210917
-git tree:       linux-next
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1177054f300000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1677054f300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=45d5ac72f31f29f3
-dashboard link: https://syzkaller.appspot.com/bug?extid=2d4f8693f438d2bd4bdb
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13ad5527300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13beef77300000
+diff --git a/drivers/pci/setup-irq.c b/drivers/pci/setup-irq.c
+index 7129494754dd..ed628771250b 100644
+--- a/drivers/pci/setup-irq.c
++++ b/drivers/pci/setup-irq.c
+@@ -28,12 +28,13 @@ void pci_assign_irq(struct pci_dev *dev)
+ 		return;
+ 	}
+ 
+-	/* If this device is not on the primary bus, we need to figure out
+-	   which interrupt pin it will come in on.   We know which slot it
+-	   will come in on 'cos that slot is where the bridge is.   Each
+-	   time the interrupt line passes through a PCI-PCI bridge we must
+-	   apply the swizzle function.  */
+-
++	/*
++	 * If this device is not on the primary bus, we need to figure out
++	 * which interrupt pin it will come in on. We know which slot it
++	 * will come in on 'cos that slot is where the bridge is. Each
++	 * time the interrupt line passes through a PCI-PCI bridge we must
++	 * apply the swizzle function.
++	 */
+ 	pci_read_config_byte(dev, PCI_INTERRUPT_PIN, &pin);
+ 	/* Cope with illegal. */
+ 	if (pin > 4)
+@@ -56,7 +57,9 @@ void pci_assign_irq(struct pci_dev *dev)
+ 
+ 	pci_dbg(dev, "assign IRQ: got %d\n", dev->irq);
+ 
+-	/* Always tell the device, so the driver knows what is
+-	   the real IRQ to use; the device does not use it. */
++	/*
++	 * Always tell the device, so the driver knows what is
++	 * the real IRQ to use; the device does not use it.
++	 */
+ 	pci_write_config_byte(dev, PCI_INTERRUPT_LINE, irq);
+ }
+-- 
+2.33.0
 
-Reported-by: syzbot+2d4f8693f438d2bd4bdb@syzkaller.appspotmail.com
-Fixes: 8b93d1d7dbd5 ("drm/shmem-helper: Switch to vmf_insert_pfn")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
