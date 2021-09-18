@@ -2,162 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 659E0410482
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 08:55:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3795410484
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 08:55:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238534AbhIRG4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 02:56:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235239AbhIRG4i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 02:56:38 -0400
-Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E584C061574;
-        Fri, 17 Sep 2021 23:55:15 -0700 (PDT)
-Received: by mail-vs1-xe2e.google.com with SMTP id l19so10115166vst.7;
-        Fri, 17 Sep 2021 23:55:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BURkVCRjjFHUHfhVT++eM+u/rf30SF7uc8tSLt0X+Oc=;
-        b=GgvhCGrSxZJXPqSYDZUc8JUXWKFzU7zZyiS5sYWBzx+VrbPJZlTx9QyWtObCAF1Nih
-         3TNw/8O+uXJERZBBoYcDMA5FsQwc5eFzl8ItbWqrPBTZf+6ogqxanup601TX5xC9Svui
-         X1ODd6JW9Xix72sBhN2hcxXjeTeYUbAcBordW6WGY4yyt7nN/sPty3ci6t+Cfw3IP4U6
-         Jmk+fWlv04O7Zn1Ry4THweYaTHyIsUnuo5dBdoEgxsfqhppXLtAZCTMww/Y/UDZDOP0Q
-         I4cUVm6tiNrHdEifxXaX1DACev5clHbF3TqUVg+88B53MrVVg2fgDRi4rWwyafx1leZk
-         rOAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BURkVCRjjFHUHfhVT++eM+u/rf30SF7uc8tSLt0X+Oc=;
-        b=pGpbijfVUVs+wibdUHYqgFM3T8v/bRoSjkkUI5gjFrn45Gp/HkEumrG6CGVw0Sdgvt
-         H9A69+rYFKHtAOxHxXZG8kImmdSsKCF0jlC6laPIn8clSO3SKCX8odL3QZgAxolWqQSL
-         V2lH+cXx/DMODVLLTtNdgDyUQo7Hpy7GTIeWZEBVpH+bWnC8mFxYaoNrZxYZdqRa8IIf
-         jp0DHzpcgChoLnzewpshr2digzlkP9qMvGFEALjschjOAcF5fBb7n4vogw5Lw15fgNOf
-         Q2hi58oc9kyjGjhxehwh7xQUZgL3RFEoh5iC4L0v4z662/cSFb5xP3wzzwtdzXWOK8cd
-         1Saw==
-X-Gm-Message-State: AOAM530ZDDi0KHp6nMT9vhGqxe4+rkmOrmmPCOhu99bRm6zPPeuZbBQ0
-        bjqQ3c4LljIMPbhbKK5yRvZvclITGm3FF4rEy6E=
-X-Google-Smtp-Source: ABdhPJwhewBoUf59yhdkVWNG6VkBCWxshGpVvcIRTN362KNqhdzbDhfUlukK2rZ/IbClJiKc3d1Zejzxe6gNiB8lo4k=
-X-Received: by 2002:a67:441:: with SMTP id 62mr11548405vse.54.1631948114246;
- Fri, 17 Sep 2021 23:55:14 -0700 (PDT)
+        id S234941AbhIRG4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 02:56:45 -0400
+Received: from mx22.baidu.com ([220.181.50.185]:48438 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S238665AbhIRG4l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Sep 2021 02:56:41 -0400
+Received: from BC-Mail-Ex05.internal.baidu.com (unknown [172.31.51.45])
+        by Forcepoint Email with ESMTPS id 77B19B1AE45D7A697128;
+        Sat, 18 Sep 2021 14:55:16 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BC-Mail-Ex05.internal.baidu.com (172.31.51.45) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2242.12; Sat, 18 Sep 2021 14:55:16 +0800
+Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Sat, 18 Sep 2021 14:55:15 +0800
+From:   Cai Huoqing <caihuoqing@baidu.com>
+To:     <caihuoqing@baidu.com>
+CC:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] clk: hisilicon: Kconfig: Add configuration menu for Hisilicon clock driver
+Date:   Sat, 18 Sep 2021 14:55:09 +0800
+Message-ID: <20210918065510.18699-1-caihuoqing@baidu.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20210917035736.3934017-1-chenhuacai@loongson.cn>
- <20210917035736.3934017-14-chenhuacai@loongson.cn> <CAK8P3a3Ce0bsyrhEK1SZHtUPEnX-rvQcKLT-TPRGptNdmiJaqQ@mail.gmail.com>
-In-Reply-To: <CAK8P3a3Ce0bsyrhEK1SZHtUPEnX-rvQcKLT-TPRGptNdmiJaqQ@mail.gmail.com>
-From:   Huacai Chen <chenhuacai@gmail.com>
-Date:   Sat, 18 Sep 2021 14:55:02 +0800
-Message-ID: <CAAhV-H7kaYAGz85pNFo0tSObS7A36vetBWUM9oEGCPH_b1AN-w@mail.gmail.com>
-Subject: Re: [PATCH V3 13/22] LoongArch: Add system call support
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Huacai Chen <chenhuacai@loongson.cn>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Airlie <airlied@linux.ie>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [172.31.63.8]
+X-ClientProxiedBy: BC-Mail-Ex10.internal.baidu.com (172.31.51.50) To
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Arnd,
+Adding a configuration menu to hold many Hisilicon clock drivers
+helps to make the menu display more concise.
 
-On Fri, Sep 17, 2021 at 4:24 PM Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Fri, Sep 17, 2021 at 5:57 AM Huacai Chen <chenhuacai@loongson.cn> wrote:
-> > +#define NR_syscalls (__NR_syscalls)
-> > diff --git a/arch/loongarch/include/uapi/asm/unistd.h b/arch/loongarch/include/uapi/asm/unistd.h
-> > new file mode 100644
-> > index 000000000000..b344b1f91715
-> > --- /dev/null
-> > +++ b/arch/loongarch/include/uapi/asm/unistd.h
-> > @@ -0,0 +1,6 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> > +#define __ARCH_WANT_NEW_STAT
-> > +#define __ARCH_WANT_SYS_CLONE
-> > +#define __ARCH_WANT_SYS_CLONE3
->
-> I still think you need to remove __ARCH_WANT_NEW_STAT and
-> __ARCH_WANT_SYS_CLONE here.
->
-> I understand that those are needed for the transitional period when you
-> still need to support your existing glibc library files, but you likely still
-> have other kernel patches that are not part of this series, so I suggest
-> you add those two lines as a custom patch there until you are ready to
-> drop support for old libc.
-The clone story:
-When I sent V1 of this series, the upstream glibc (2.33) hadn't merge
-the clone3 support. Now glibc 2.34 has merged clone3, so
-__ARCH_WANT_SYS_CLONE seems can be removed. But I think there is
-someone just download this series and suppose it can work with current
-userspace. So I want to keep it for a while, until this series can be
-merged.
+Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+---
+ drivers/clk/hisilicon/Kconfig | 17 +++++++----------
+ 1 file changed, 7 insertions(+), 10 deletions(-)
 
-The statx story:
-The latest upstream glibc (2.34) is still like this
-(sysdeps/unix/sysv/linux/fstatat64.c):
-#if (__WORDSIZE == 32 \
-     && (!defined __SYSCALL_WORDSIZE || __SYSCALL_WORDSIZE == 32)) \
-     || defined STAT_HAS_TIME32
-# define FSTATAT_USE_STATX 1
-#else
-# define FSTATAT_USE_STATX 0
-#endif
+diff --git a/drivers/clk/hisilicon/Kconfig b/drivers/clk/hisilicon/Kconfig
+index c1ec75aa4ccd..6f7742dc52c2 100644
+--- a/drivers/clk/hisilicon/Kconfig
++++ b/drivers/clk/hisilicon/Kconfig
+@@ -1,7 +1,9 @@
+ # SPDX-License-Identifier: GPL-2.0-only
++menu "Clock driver support for Hisilicon"
++	depends on ARCH_HISI || COMPILE_TEST
++
+ config COMMON_CLK_HI3516CV300
+ 	tristate "HI3516CV300 Clock Driver"
+-	depends on ARCH_HISI || COMPILE_TEST
+ 	select RESET_HISI
+ 	default ARCH_HISI
+ 	help
+@@ -9,7 +11,6 @@ config COMMON_CLK_HI3516CV300
+ 
+ config COMMON_CLK_HI3519
+ 	tristate "Hi3519 Clock Driver"
+-	depends on ARCH_HISI || COMPILE_TEST
+ 	select RESET_HISI
+ 	default ARCH_HISI
+ 	help
+@@ -17,7 +18,6 @@ config COMMON_CLK_HI3519
+ 
+ config COMMON_CLK_HI3559A
+ 	bool "Hi3559A Clock Driver"
+-	depends on ARCH_HISI || COMPILE_TEST
+ 	select RESET_HISI
+ 	default ARCH_HISI
+ 	help
+@@ -25,21 +25,18 @@ config COMMON_CLK_HI3559A
+ 
+ config COMMON_CLK_HI3660
+ 	bool "Hi3660 Clock Driver"
+-	depends on ARCH_HISI || COMPILE_TEST
+ 	default ARCH_HISI
+ 	help
+ 	  Build the clock driver for hi3660.
+ 
+ config COMMON_CLK_HI3670
+ 	bool "Hi3670 Clock Driver"
+-	depends on ARCH_HISI || COMPILE_TEST
+ 	default ARCH_HISI
+ 	help
+ 	  Build the clock driver for hi3670.
+ 
+ config COMMON_CLK_HI3798CV200
+ 	tristate "Hi3798CV200 Clock Driver"
+-	depends on ARCH_HISI || COMPILE_TEST
+ 	select RESET_HISI
+ 	default ARCH_HISI
+ 	help
+@@ -47,21 +44,19 @@ config COMMON_CLK_HI3798CV200
+ 
+ config COMMON_CLK_HI6220
+ 	bool "Hi6220 Clock Driver"
+-	depends on ARCH_HISI || COMPILE_TEST
+ 	default ARCH_HISI
+ 	help
+ 	  Build the Hisilicon Hi6220 clock driver based on the common clock framework.
+ 
+ config RESET_HISI
+ 	bool "HiSilicon Reset Controller Driver"
+-	depends on ARCH_HISI || COMPILE_TEST
+ 	select RESET_CONTROLLER
+ 	help
+ 	  Build reset controller driver for HiSilicon device chipsets.
+ 
+ config STUB_CLK_HI6220
+ 	bool "Hi6220 Stub Clock Driver" if EXPERT
+-	depends on (COMMON_CLK_HI6220 || COMPILE_TEST)
++	depends on COMMON_CLK_HI6220
+ 	depends on MAILBOX
+ 	default COMMON_CLK_HI6220
+ 	help
+@@ -69,8 +64,10 @@ config STUB_CLK_HI6220
+ 
+ config STUB_CLK_HI3660
+ 	bool "Hi3660 Stub Clock Driver" if EXPERT
+-	depends on (COMMON_CLK_HI3660 || COMPILE_TEST)
++	depends on COMMON_CLK_HI3660
+ 	depends on MAILBOX
+ 	default COMMON_CLK_HI3660
+ 	help
+ 	  Build the Hisilicon Hi3660 stub clock driver.
++
++endmenu
+-- 
+2.25.1
 
-This means statx is supposed to use in 32bit systems, or 64bit systems
-with 32bit timestamp (e.g. MIPS64). So I think __ARCH_WANT_NEW_STAT is
-still needed.
-
-
->
-> > +
-> > +SYSCALL_DEFINE6(mmap, unsigned long, addr, unsigned long, len,
-> > +       unsigned long, prot, unsigned long, flags, unsigned long,
-> > +       fd, off_t, offset)
-> > +{
-> > +       if (offset & ~PAGE_MASK)
-> > +               return -EINVAL;
-> > +       return ksys_mmap_pgoff(addr, len, prot, flags, fd,
-> > +                              offset >> PAGE_SHIFT);
-> > +}
-> > +
-> > +SYSCALL_DEFINE6(mmap2, unsigned long, addr, unsigned long, len,
-> > +       unsigned long, prot, unsigned long, flags, unsigned long, fd,
-> > +       unsigned long, pgoff)
-> > +{
-> > +       if (pgoff & (~PAGE_MASK >> 12))
-> > +               return -EINVAL;
-> > +
-> > +       return ksys_mmap_pgoff(addr, len, prot, flags, fd,
-> > +                              pgoff >> (PAGE_SHIFT - 12));
-> > +}
->
-> sys_mmap2() is only used on 32-bit architectures, you only need
-> sys_mmap() here.
->
-> Ideally we'd just move those two definitions you have here into
-> mm/mmap.c and remove all the duplicate definitions. Maybe
-> you can come up with a patch to do this?
->
-> Note that some architectures use either nonstandard names,
-> or shift value other than 12, so those need to keep their own
-> versions.
-OK, sys_mmap2() will be removed. But can "move sys_mmap() to
-mm/mmap.c" be done by others? (I think my credit is not enough to do
-this, at least now).
-
-Huacai
->
->       Arnd
