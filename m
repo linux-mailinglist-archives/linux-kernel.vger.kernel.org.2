@@ -2,139 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36C3C4104AF
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 09:23:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D748F4104B2
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 09:23:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236629AbhIRHY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 03:24:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36154 "EHLO
+        id S242981AbhIRHYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 03:24:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231351AbhIRHY0 (ORCPT
+        with ESMTP id S231351AbhIRHYc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 03:24:26 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEFF2C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 00:23:03 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d18so7645047pll.11
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 00:23:03 -0700 (PDT)
+        Sat, 18 Sep 2021 03:24:32 -0400
+Received: from mail-vk1-xa32.google.com (mail-vk1-xa32.google.com [IPv6:2607:f8b0:4864:20::a32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F831C061574;
+        Sat, 18 Sep 2021 00:23:09 -0700 (PDT)
+Received: by mail-vk1-xa32.google.com with SMTP id t200so4603517vkt.0;
+        Sat, 18 Sep 2021 00:23:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3/DBi7RwM1M3KB0MW8LaNgi4t6NDHut6TlL12sSGe3I=;
-        b=ee4W6IXi42isoeIZ0wephrXbvBx4HHDA254kQiLwvCc6GiGEzIIV5369o3RPPk5p9z
-         wwn/pFJ7gXHA7JDHoULYnmmBTWeS7t6qekNjjx5bSmoujWlpXvsGpDLVaxups4Gigetw
-         p7AgFhLyHig56IQMPpXtTsJ5VtzdgZIdOOnDM=
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TJsSrAwWhlsa4DGBFOs0h4d6FtyaUOuEZliDLkcdxh8=;
+        b=Pgv1nGguzHCSVuwqumEkVRZVgJtK/RIv1yTLpNHD2vMciWt2O9RJ2D0z0TQrcwbNl4
+         KtwVre9j8gbz0Cadij2psVnViTcvjBaoMPt3RDkqgufeYgLGcG59qSIebbQUMwgZVRzC
+         JTE+yQy6fQfLArLKWngoDZ2l98IwjJwGpRXtzlaJWSHFpJsd7FhOp4Il9rSeUIwQDGii
+         bXP6Ia66qPzrX85PZt6xcM5I9W5vRgLod89o/5K4QNKqM7WV2IYrpmf2pl1SrUJwcXwN
+         xIPlcqR0zpqhEgZaeF4p9RHL7xgNOhJv0e5+UXcFRDfW7gjgtOafQb4VlXL/e5/Wy85H
+         D+LA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3/DBi7RwM1M3KB0MW8LaNgi4t6NDHut6TlL12sSGe3I=;
-        b=e6GPM+QqofKBKby/wcjVaqtu30YwGStcfL2dJEDKB7SAwo3at4Dv+FGpaAdr0qsM4I
-         Mx83hpw2Y6Pf9VcLPA66KI6fbVi7Tzodj0sLnuudGv6WWtngEAsJJGq62L8o5Ego6vih
-         aeKUD4P2pjxvfnzxPTiYA2gH8K5Qdsa9Sy4+zlR+jEZ4vguPQySc92u2Z+Kwa7W3HdkP
-         qZYZSl6MoVNKLTf3juiNPyh6U6YtEtMJAukDAUvFrlqrBOro8CrsdQ/JvlgGh2K3T3tb
-         b8MMS9T63yNgNnBzeTL1sm85NbgSlAiyVAX5dusNm+nW74jRvjrQ3S6QRHxKOvresONL
-         6cDg==
-X-Gm-Message-State: AOAM533MfLRYc/jbpx1PiorDY4O6wFD0pLdz3FLFgrkibNdYjuL5hRAh
-        qGx6uFM15z0SAYGkZe9Cl2DKeQ==
-X-Google-Smtp-Source: ABdhPJxYHdiYIx+50COYvEYU/ZRBpmNm7i5m7K/Gj8ydbBTNU4S0LYI1x8J2scs4T700kMM1ysSJ1g==
-X-Received: by 2002:a17:902:7103:b0:13d:9a6f:d158 with SMTP id a3-20020a170902710300b0013d9a6fd158mr2562644pll.49.1631949783096;
-        Sat, 18 Sep 2021 00:23:03 -0700 (PDT)
-Received: from shiro.work (p864106-ipngn200510sizuokaden.shizuoka.ocn.ne.jp. [180.9.58.106])
-        by smtp.googlemail.com with ESMTPSA id b7sm8746411pgs.64.2021.09.18.00.23.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Sep 2021 00:23:02 -0700 (PDT)
-From:   Daniel Palmer <daniel@0x0f.com>
-To:     linux-mtd@lists.infradead.org, tudor.ambarus@microchip.com
-Cc:     michael@walle.cc, p.yadav@ti.com, linux-kernel@vger.kernel.org,
-        Daniel Palmer <daniel@0x0f.com>
-Subject: [PATCH] mtd: spi-nor: Add support for ZB25VQ128
-Date:   Sat, 18 Sep 2021 16:22:56 +0900
-Message-Id: <20210918072256.3505379-1-daniel@0x0f.com>
-X-Mailer: git-send-email 2.33.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TJsSrAwWhlsa4DGBFOs0h4d6FtyaUOuEZliDLkcdxh8=;
+        b=cLTrwbZU59o2IPkhx5K6y8hMb2Ji4nEJ6j2BQTrPnK+kQqTqW5NJHr1OciOJPj3ziD
+         EPUhDi7VpPRG0+7EV31sxZ6dRrJHg0C8c3s7m4Ayr2AJGBTVcxuRDP67P2oajDbq2vMz
+         Xu19jU/sV1pqp/rUDJjYHeTXMkquIh3zsmno5YBjSp18nas/MyIK/t2ZuAtjkWTbtiLq
+         eVz+S4ZFh2GO0IvCkzFE9tFzzjOWev9AEhlWV1Y4uF/q/awnIQMeYxl5FPVKLVFO8TwY
+         alp2pd/EIEcgr/dATk6fGtQL7QKJKuc4vvSAkHOfkId9RATFynTkVdw5Dp3gjbA12ljN
+         UUhw==
+X-Gm-Message-State: AOAM532YIn1VUhh3YW5yPjEP1OIq3CdG1DSwOfsQDRGEcqB03tuSoOp3
+        LOL5sT2k3/c44WJuc4w9PZHy4esnAhVDAE2KPGA=
+X-Google-Smtp-Source: ABdhPJz8kzfDXfUg5s+UGhyNC9f4aIPy1Tu+4KVbD72w8T6of9b1In0UX2NsGnCsGYa5CfsfhCWWRL8m/WrPJ5SSpYo=
+X-Received: by 2002:a1f:b2d6:: with SMTP id b205mr5053277vkf.11.1631949788458;
+ Sat, 18 Sep 2021 00:23:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210917035736.3934017-1-chenhuacai@loongson.cn>
+ <20210917035736.3934017-21-chenhuacai@loongson.cn> <CAK8P3a0N=SA-E7ChrMrA5Gv6TDMzJ4_QNUN5OzpJWgzyJwcboA@mail.gmail.com>
+In-Reply-To: <CAK8P3a0N=SA-E7ChrMrA5Gv6TDMzJ4_QNUN5OzpJWgzyJwcboA@mail.gmail.com>
+From:   Huacai Chen <chenhuacai@gmail.com>
+Date:   Sat, 18 Sep 2021 15:22:57 +0800
+Message-ID: <CAAhV-H4C2ZDO4P_Xy8ic_wjmT7PHNCDfrKKQRZw-A4tgr6Y=aw@mail.gmail.com>
+Subject: Re: [PATCH V3 20/22] LoongArch: Add multi-processor (SMP) support
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Huacai Chen <chenhuacai@loongson.cn>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Airlie <airlied@linux.ie>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the ZBIT ZB25VQ128 128MBit SPI NOR
-flash.
+Hi, Arnd,
 
-Link: http://www.cipatelje.eu/pdf/ZB25VQ128.pdf
-Signed-off-by: Daniel Palmer <daniel@0x0f.com>
----
- drivers/mtd/spi-nor/Makefile |  1 +
- drivers/mtd/spi-nor/core.c   |  1 +
- drivers/mtd/spi-nor/core.h   |  1 +
- drivers/mtd/spi-nor/zbit.c   | 21 +++++++++++++++++++++
- 4 files changed, 24 insertions(+)
- create mode 100644 drivers/mtd/spi-nor/zbit.c
+On Fri, Sep 17, 2021 at 5:57 PM Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> On Fri, Sep 17, 2021 at 5:57 AM Huacai Chen <chenhuacai@loongson.cn> wrote:
+>
+> > +
+> > +struct task_struct;
+> > +
+> > +struct plat_smp_ops {
+> > +       void (*send_ipi_single)(int cpu, unsigned int action);
+> > +       void (*send_ipi_mask)(const struct cpumask *mask, unsigned int action);
+> > +       void (*smp_setup)(void);
+> > +       void (*prepare_cpus)(unsigned int max_cpus);
+> > +       int (*boot_secondary)(int cpu, struct task_struct *idle);
+> > +       void (*init_secondary)(void);
+> > +       void (*smp_finish)(void);
+> > +#ifdef CONFIG_HOTPLUG_CPU
+> > +       int (*cpu_disable)(void);
+> > +       void (*cpu_die)(unsigned int cpu);
+> > +#endif
+> > +};
+>
+>
+> Do you foresee having more than one implementation of these in the
+> near future? If not, I would suggest leaving out the extra indirection
+> and just using direct function calls.
+OK, let me rethink this, if it is still needed, I will tell you why.
 
-diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
-index 6b904e439372..a6f3646824cb 100644
---- a/drivers/mtd/spi-nor/Makefile
-+++ b/drivers/mtd/spi-nor/Makefile
-@@ -17,6 +17,7 @@ spi-nor-objs			+= sst.o
- spi-nor-objs			+= winbond.o
- spi-nor-objs			+= xilinx.o
- spi-nor-objs			+= xmc.o
-+spi-nor-objs			+= zbit.o
- obj-$(CONFIG_MTD_SPI_NOR)	+= spi-nor.o
- 
- obj-$(CONFIG_MTD_SPI_NOR)	+= controllers/
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index cc08bd707378..75f6ac9485b9 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -1846,6 +1846,7 @@ static const struct spi_nor_manufacturer *manufacturers[] = {
- 	&spi_nor_winbond,
- 	&spi_nor_xilinx,
- 	&spi_nor_xmc,
-+	&spi_nor_zbit,
- };
- 
- static const struct flash_info *
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 3348e1dd1445..ad3b34a3b80f 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -489,6 +489,7 @@ extern const struct spi_nor_manufacturer spi_nor_sst;
- extern const struct spi_nor_manufacturer spi_nor_winbond;
- extern const struct spi_nor_manufacturer spi_nor_xilinx;
- extern const struct spi_nor_manufacturer spi_nor_xmc;
-+extern const struct spi_nor_manufacturer spi_nor_zbit;
- 
- extern const struct attribute_group *spi_nor_sysfs_groups[];
- 
-diff --git a/drivers/mtd/spi-nor/zbit.c b/drivers/mtd/spi-nor/zbit.c
-new file mode 100644
-index 000000000000..d240dd65d249
---- /dev/null
-+++ b/drivers/mtd/spi-nor/zbit.c
-@@ -0,0 +1,21 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2021, Daniel Palmer<daniel@thingy.jp>
-+ */
-+
-+#include <linux/mtd/spi-nor.h>
-+
-+#include "core.h"
-+
-+static const struct flash_info zbit_parts[] = {
-+	/* zbit */
-+	{ "zb25vq128", INFO(0x5e4018, 0, 64 * 1024, 256,
-+			    SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-+			    SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
-+};
-+
-+const struct spi_nor_manufacturer spi_nor_zbit = {
-+	.name = "zbit",
-+	.parts = zbit_parts,
-+	.nparts = ARRAY_SIZE(zbit_parts),
-+};
--- 
-2.33.0
+>
+> > +#ifdef CONFIG_SMP
+> > +
+> > +static inline void plat_smp_setup(void)
+> > +{
+> > +       extern const struct plat_smp_ops *mp_ops;       /* private */
+> > +
+> > +       mp_ops->smp_setup();
+> > +}
+> > +
+> > +#else /* !CONFIG_SMP */
+> > +
+> > +static inline void plat_smp_setup(void) { }
+> > +
+> > +#endif /* !CONFIG_SMP */
+>
+> You could even go further and do what arch/arm64 has, making
+> SMP support unconditional. This obviously depends on hardware
+> roadmaps, but if all harfdware you support has multiple cores,
+> then non-SMP mode just adds complexity.
+As mentioned in another patch, we do have some MCU hardware (no FP, no
+SMP, and even no MMU).
 
+>
+> > +
+> > +#define MAX_CPUS 64
+>
+> You CONFIG_NR_CPUS allows up to 256. I think you need to
+> adjust one of the numbers to match the other, or remove this
+> definition and just use CONFIG_NR_CPUS directly.
+Legacy IPI method only supports at most 64 CPUs (limited by the MMIO
+register space). Maybe we can remove the whole legacy method support,
+then we can remove MAX_CPUS, too.
+>
+> > +
+> > +static volatile void *ipi_set_regs[MAX_CPUS];
+> > +static volatile void *ipi_clear_regs[MAX_CPUS];
+> > +static volatile void *ipi_status_regs[MAX_CPUS];
+> > +static volatile void *ipi_en_regs[MAX_CPUS];
+> > +static volatile void *ipi_mailbox_buf[MAX_CPUS];
+>
+> Why are these 'volatile'? If they are MMIO registers, they
+> should be __iomem, and accessed using readl()/writel()
+>  etc
+Yes, they are MMIO registers and __iomem is needed.
+
+Huacai
+>
+>        Arnd
