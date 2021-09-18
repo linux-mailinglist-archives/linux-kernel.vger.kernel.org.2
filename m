@@ -2,111 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6111241071B
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 16:43:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E93A410724
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 16:54:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238498AbhIROo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 10:44:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47780 "EHLO
+        id S239085AbhIROzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 10:55:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238165AbhIROo4 (ORCPT
+        with ESMTP id S238576AbhIROzV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 10:44:56 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC1FAC061574;
-        Sat, 18 Sep 2021 07:43:32 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id i8-20020a056830402800b0051afc3e373aso16994692ots.5;
-        Sat, 18 Sep 2021 07:43:32 -0700 (PDT)
+        Sat, 18 Sep 2021 10:55:21 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6C96C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 07:53:57 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id g19-20020a1c9d13000000b003075062d4daso8881063wme.0
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 07:53:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=a6FtsXt8FRaob/TTCEZKvL8sXiNm89kkIlCc0h30xZU=;
-        b=LIyiSB3ljq97JFE43AxJJ9uiBAoYKEkQdwytpPs83E9hENsucCcnSlEwY2hFqMcFdN
-         2G7mG2ZAG3G0hWKS8gDklj+1TmISomBkHKucJ0SOBRdP+0wMAGGea9HNMUty8xTdyyvl
-         JURCZAW7c8/njL/nSHJoOr/T5+ZzKAB/aPT2Oylo/PHu+NA1QdpdHtK+C2zRZ+Aplmob
-         +y2Zggsimufm2QX066wbf5FYgkkb1Fo80PesAKjjR7VKJoOZOtE+3NbPej3JmMKj3GGO
-         192Rs9DriBgB1QOQmnoeq8ozqbfJCvpqVebRkRe83oSUsyHGUTFMgB1IaO21nnF8B0R2
-         eqlA==
+        d=colorfullife-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JYtFTZKcQ7uh0hxmWAhAvNGos08OYmAhjxdYJaTKWzc=;
+        b=eoHFfGzuJCCGI1qFw6lfdxH3RNQb93zk52zndvO+peAeaHlzcHrBZlIggZWdFBbZEH
+         4XPDlA40muuTe6sb8CvBg25UEEXriZeKGcwJUvDvB1cA6tj8Y/smHR3/xBkDjfnaN0hv
+         bOcfYsbc6HUt40xy8ViUoy+OHCm4Nn+Aakr6X9uFyeEKL8+tPq/S8r1C2ULV+xEzHpua
+         8/kX0TAumibAmyuckY+r0NKw1DxRzf/E+ziUY+XbKufOTbIBEghvzw9pajcyI7aTis5y
+         fFtNT0jQ3hz/X/ErDvZYWaj6iSges5tNrmlhXl80WLbmBAF3HUTifOiNfckGUvA3nKBE
+         BOfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=a6FtsXt8FRaob/TTCEZKvL8sXiNm89kkIlCc0h30xZU=;
-        b=w8yGa/Yeh3HpkWmFklhVcKIjExbWw4vKTIXPHtkMNeR+jT9sebu7wB82AVJbuDzhLM
-         dEPqaoGq7Svp/CZTXCOhDASTlwRBp3CPRMuuaX5iIcLIj6TH4wcqvj2QidLyK9gNRaPz
-         Bro0lw8X/P6e8KS79BZOFcGZPJUNvSkEQc6MyQHGTe/WN5SSSvD45s2E2/SVw61LyI3o
-         Cny7dWstFkatqnl9Bps12EY9no7n2hu91ocu12AnQOhDezFWD0NJqu35z9POJO416+4E
-         lRMgRgXS85H+wImbGzHw2bn5+6PLCzZML5qJZql0SRs7BVx6l0nFPjypB3140M4l2Fex
-         Wepg==
-X-Gm-Message-State: AOAM532xJ52QxXhX/B8JqjXgSlfCnPZcL+QyZmDW3kXkAkbN9BcPG9uA
-        AxFPbQWp0ty8P+459TBUoZ8=
-X-Google-Smtp-Source: ABdhPJySjr4NHbqaXBMbjVTBy8WhRXLZCj9NwR5MUxkEaqaa2IUOEmQaR09w914R5ZznRTMdGFiRZA==
-X-Received: by 2002:a9d:6192:: with SMTP id g18mr13965936otk.314.1631976212032;
-        Sat, 18 Sep 2021 07:43:32 -0700 (PDT)
-Received: from [172.31.250.1] ([47.184.51.90])
-        by smtp.gmail.com with ESMTPSA id s24sm2248090oic.34.2021.09.18.07.43.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 18 Sep 2021 07:43:31 -0700 (PDT)
-Message-ID: <27568193-170d-af8e-9667-b6cce97c27df@gmail.com>
-Date:   Sat, 18 Sep 2021 09:43:31 -0500
+        bh=JYtFTZKcQ7uh0hxmWAhAvNGos08OYmAhjxdYJaTKWzc=;
+        b=HbloQaxnEC/1PIDMaB4OyY9eqRFYt2DE4dPDPuRhe+ZqyVWgSBIQsDzsGfQd/iInoe
+         TNi/WdBpu9DDrC7Y277g4Btc6fyiyGhAeYYXRSvSGJk4Q3a8GLm2nX5sisY6pfen/sQV
+         4JD4Em+43Anllj5L9hYvxklKISoprIirHOdgaY2hYWWuDUInuNXsr1RF8q7oNfYOnIz6
+         n061K5lFaQ48EuhnYg3tlLv0ViMUG1W5zYkI8A/tyoVh0LyfxgCzGa9YfFAoI8ITOqnJ
+         fI1L8SekNIXmPH2EahpA0HQF8E3ZTnRoR3VIhs6iLyXyioh10d6lwumcPcZVXiKylo5u
+         8YhA==
+X-Gm-Message-State: AOAM5339g9StrvFzAb2jKYINbyhBjZ8MOhvhrKoSXiHctzNRPxaB/fI5
+        +xqCmbA/rjeN3CoxN3lwM2EoAKV6tRjujHfT
+X-Google-Smtp-Source: ABdhPJx5EyQVE+TQpRYAQIepb1Djvi+L1scSGNHlu4XF+3HOfS5Mmi/ttd6OFyv4VUUyGvgDc5mjvQ==
+X-Received: by 2002:a1c:a713:: with SMTP id q19mr20592052wme.42.1631976836219;
+        Sat, 18 Sep 2021 07:53:56 -0700 (PDT)
+Received: from localhost.localdomain (p200300d9973962007086c7f795e39cc9.dip0.t-ipconnect.de. [2003:d9:9739:6200:7086:c7f7:95e3:9cc9])
+        by smtp.googlemail.com with ESMTPSA id o19sm870209wrg.60.2021.09.18.07.53.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 18 Sep 2021 07:53:55 -0700 (PDT)
+From:   Manfred Spraul <manfred@colorfullife.com>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Michal Clapinski <mclapinski@google.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     "Eric W . Biederman" <ebiederm@xmission.com>, 1vier1@web.de,
+        Manfred Spraul <manfred@colorfullife.com>
+Subject: [PATCH] ipc/ipc_sysctl.c: Remove fallback for !CONFIG_PROC_SYSCTL
+Date:   Sat, 18 Sep 2021 16:53:37 +0200
+Message-Id: <20210918145337.3369-1-manfred@colorfullife.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH v4 1/2] docs: Add block device (blkdev) LED trigger
- documentation
-Content-Language: en-US
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     hch@infradead.org, pavel@ucw.cz, linux-leds@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kabel@kernel.org
-References: <20210916202127.1216994-1-arequipeno@gmail.com>
- <20210916202127.1216994-2-arequipeno@gmail.com> <YUQzdyG+WWoiJ2I9@kroah.com>
- <e09257e0-ce95-623c-3a04-cc033aa9fec2@gmail.com> <YUWQSlXjIb58eCJZ@kroah.com>
-From:   Ian Pilcher <arequipeno@gmail.com>
-In-Reply-To: <YUWQSlXjIb58eCJZ@kroah.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/18/21 02:07, Greg KH wrote:
-> On Fri, Sep 17, 2021 at 03:46:55PM -0500, Ian Pilcher wrote:
->> As far as using kernel names, that would be my preference, but I simply
->> don't know of any way to do so with the existing block API.  To my
->> knowledge, there simply isn't anything like a blkdev_get_by_name() API.
+Compilation of ipc/ipc_sysctl.c is controlled by
+obj-$(CONFIG_SYSVIPC_SYSCTL)
+[see ipc/Makefile]
 
-...
+And CONFIG_SYSVIPC_SYSCTL depends on SYSCTL
+[see init/Kconfig]
 
-> Just use the kernel block device name and that way you do not have to
-> parse anything as it is unique and no paths are having to be followed.
-> 
-> That's the way that other LED apis are working, right?
+An SYSCTL is selected by PROC_SYSCTL.
+[see fs/proc/Kconfig]
 
-Greg -
+Thus: #ifndef CONFIG_PROC_SYSCTL in ipc/ipc_sysctl.c is impossible, the
+fallback can be removed.
 
-There are 2 existing LED triggers that have similar functionality (i.e.
-they allow LEDs to be "associated" with devices by name), and they both
-use subsystem-specific APIs to "resolve" those names to the actual
-kernel objects on which they operate.
+Signed-off-by: Manfred Spraul <manfred@colorfullife.com>
+---
+ ipc/ipc_sysctl.c | 13 -------------
+ 1 file changed, 13 deletions(-)
 
-   * The *netdev* trigger uses dev_get_by_name(), which is specific to
-     network devices (despite its name).
-
-   * The *tty* trigger uses tty_dev_name_to_number() and
-     tty_kopen_shared().
-
-As I've been saying, I simply don't know of any similar API for block
-devices.  The block API provides blkdev_get_by_path(), which I am using,
-and blkdev_get_by_dev(), which takes the device number (dev_t).
-
-If you know of an API that will allow me to resolve a block device (or
-dev_t) by its kernel name, please share that information.
-
-Thanks!
-
+diff --git a/ipc/ipc_sysctl.c b/ipc/ipc_sysctl.c
+index 345e4d673e61..f101c171753f 100644
+--- a/ipc/ipc_sysctl.c
++++ b/ipc/ipc_sysctl.c
+@@ -23,7 +23,6 @@ static void *get_ipc(struct ctl_table *table)
+ 	return which;
+ }
+ 
+-#ifdef CONFIG_PROC_SYSCTL
+ static int proc_ipc_dointvec(struct ctl_table *table, int write,
+ 		void *buffer, size_t *lenp, loff_t *ppos)
+ {
+@@ -118,18 +117,6 @@ static int proc_ipc_dointvec_minmax_checkpoint_restore(struct ctl_table *table,
+ }
+ #endif
+ 
+-#else
+-#define proc_ipc_doulongvec_minmax NULL
+-#define proc_ipc_dointvec	   NULL
+-#define proc_ipc_dointvec_minmax   NULL
+-#define proc_ipc_dointvec_minmax_orphans   NULL
+-#define proc_ipc_auto_msgmni	   NULL
+-#define proc_ipc_sem_dointvec	   NULL
+-#ifdef CONFIG_CHECKPOINT_RESTORE
+-#define proc_ipc_dointvec_minmax_checkpoint_restore	NULL
+-#endif	/* CONFIG_CHECKPOINT_RESTORE */
+-#endif
+-
+ int ipc_mni = IPCMNI;
+ int ipc_mni_shift = IPCMNI_SHIFT;
+ int ipc_min_cycle = RADIX_TREE_MAP_SIZE;
 -- 
-========================================================================
-                  In Soviet Russia, Google searches you!
-========================================================================
+2.31.1
+
