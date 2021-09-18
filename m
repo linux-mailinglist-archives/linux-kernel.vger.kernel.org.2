@@ -2,120 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30C8641075D
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 17:36:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 385D7410765
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 17:47:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239865AbhIRPdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 11:33:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58244 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229977AbhIRPdJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 11:33:09 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E828C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 08:31:45 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id c190-20020a1c9ac7000000b0030b459ea869so3415171wme.4
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 08:31:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=XBn5D96qNN+hLtTEkGlNEQDeJfDTTnYBIFICklr8IFI=;
-        b=QfOqCugsIQAaQ4X/SlBSg3wb123AKQtDHXZAgzI3490QmOswk3s1c68KKdR9i2fA3I
-         JWphRzTum6y+P2z3WOPqV8oy1f9JuTY+gasmjT4hsREYjkTYyJnQr8bhtr7LovWI8SGQ
-         E4wInJp/OruXsgnCrQOJ1Iqc8xZpE2gWso4rYIYmdyQcVd8AbQeQLHJBbnDJnEXHfXHv
-         mcwmjBu2XABZXDqgr3fw7YEt3ndVI5w586mWt+z57gmF2J4y7NDRrOCVOGE5LcAVbsXo
-         0ZaNadCK98XqwopMMIa6RkAcFwJNKa3TIf7I140SGhyHQa0GHcj7sSnfn/5oIQ49D65Z
-         NIUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=XBn5D96qNN+hLtTEkGlNEQDeJfDTTnYBIFICklr8IFI=;
-        b=Y8QbSY6B3w7/24NvJWMNcjv/qYVkhU4ZftwVMZ7IH8PTqTObg9fvO8ovIATFgDF+Al
-         MaczWJtAekKspqvZ6H7yCMcXvuOlHjW2L9tZXlKVheb7JLMjYBhvEd3CfOCon1TVEwf5
-         6izUYvMEyPrd42g6o82o8S447sHeVz9ZFp7wU1qn0q4CVfN1WSR3h86DBWMmRpR7Yc3e
-         uG9kLvlD7wJSxHMLPOJAoOgIWgdeCpu10xE90rpGmm1LcS9D7FYFtRymqxXbDYJ+u6nw
-         yWKmvp5LljrKYdKXi5ObBOBkdSpApGyJuzGZwaUUmhYYFhDAs1BQmXOUXZ9HAvaiTDup
-         /dnw==
-X-Gm-Message-State: AOAM531Og6UTRQqUXfXAiPOdszotIgyKiksRYv83frF/wbU2uFTlcbxn
-        6N2XYCcIsugzAu34iNHZnGJDW1tBSEe2ow==
-X-Google-Smtp-Source: ABdhPJw3Sn3PPRew1mCLW7VCFp9ps/M1wg8lss1iwxz18Bkv0cVxJQvVlHlFv950iyvSv+yspgx63g==
-X-Received: by 2002:a1c:1b17:: with SMTP id b23mr15613545wmb.139.1631979104037;
-        Sat, 18 Sep 2021 08:31:44 -0700 (PDT)
-Received: from localhost.localdomain ([2001:8f8:1127:62fc:cf28:f9:da98:9620])
-        by smtp.gmail.com with ESMTPSA id q201sm15548999wme.2.2021.09.18.08.31.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Sep 2021 08:31:43 -0700 (PDT)
-From:   Carles Pey <carles.pey@gmail.com>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     Carles Pey <carles.pey@gmail.com>
-Subject: [PATCH v2 1/1] ftrace: add unit test for removing trace function
-Date:   Sat, 18 Sep 2021 19:30:43 +0400
-Message-Id: <20210918153043.318016-2-carles.pey@gmail.com>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <20210918153043.318016-1-carles.pey@gmail.com>
-References: <20210918153043.318016-1-carles.pey@gmail.com>
+        id S239932AbhIRPsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 11:48:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40766 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229575AbhIRPsY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Sep 2021 11:48:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CA2886127A;
+        Sat, 18 Sep 2021 15:46:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1631980020;
+        bh=J5aL1LjIIzmZdFjro8IKYFFV9x4jCgd4GhcHKNXFQiE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1JKPdqVxRJCrPzbhxY5BrVIJ5FEMw0I42ZOXMkA14V9IW3JklXkvGu3G1A6puzmVc
+         MytYCCl2dYnJEwNrrHS8AltghN0p6gMkd/KzMVoEHYZ+Edzi87S1P1vAo7IArUm2pK
+         duSXHMJG27Fgswzb5k81jdDq1GCbi6/FV1KQ5EJ0=
+Date:   Sat, 18 Sep 2021 17:46:57 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Sasha Levin <sashal@kernel.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "# 3.4.x" <stable@vger.kernel.org>,
+        Lukas Hannen <lukas.hannen@opensource.tttech-industrial.com>
+Subject: Re: [PATCH 5.14 298/334] time: Handle negative seconds correctly in
+ timespec64_to_ns()
+Message-ID: <YUYJ8WeOzPVwj16y@kroah.com>
+References: <20210913131113.390368911@linuxfoundation.org>
+ <20210913131123.500712780@linuxfoundation.org>
+ <CAK8P3a0z5jE=Z3Ps5bFTCFT7CHZR1JQ8VhdntDJAfsUxSPCcEw@mail.gmail.com>
+ <874kak9moe.ffs@tglx>
+ <YURQ4ZFDJ8E9MJZM@kroah.com>
+ <87sfy38p1o.ffs@tglx>
+ <YUSyKQwdpfSTbQ4H@kroah.com>
+ <87ee9n80gz.ffs@tglx>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87ee9n80gz.ffs@tglx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A self test is provided for the trace function removal functionality.
+On Fri, Sep 17, 2021 at 09:29:32PM +0200, Thomas Gleixner wrote:
+> Greg,
+> 
+> On Fri, Sep 17 2021 at 17:20, Greg Kroah-Hartman wrote:
+> > On Fri, Sep 17, 2021 at 12:38:43PM +0200, Thomas Gleixner wrote:
+> >> Nah. I try to pay more attention. I'm not against AUTOSEL per se, but
+> >> could we change the rules slightly?
+> >> 
+> >> Any change which is selected by AUTOSEL and lacks a Cc: stable@... is
+> >> put on hold until acked by the maintainer unless it is a prerequisite
+> >> for applying a stable tagged fix?
+> >> 
+> >> This can be default off and made effective on maintainer request.
+> >> 
+> >> Hmm?
+> >
+> > The whole point of the AUTOSEL patches are for the huge numbers of
+> > subsystems where maintainers and developers do not care about the stable
+> > trees at all, and so they do not mark patches to be backported.  So
+> > requireing an opt-in like this would defeat the purpose.
+> >
+> > We do allow the ability to take files/subsystems out of the AUTOSEL
+> > process as there are many maintainers that do do this right and get
+> > annoyed when patches are picked that they feel shouldn't have.  That's
+> > the best thing we can do for stuff like this.
+> 
+> I guess I was not able to express myself correctly. What I wanted to say
+> is:
+> 
+>   1) Default is AUTOSEL
+> 
+>   2) Maintainer can take files/subsystems out of AUTOSEL completely
+> 
+>      Exists today
+> 
+>   3) Maintainer allows AUTOSEL, but anything picked from files/subsystems
+>      without a stable tag requires an explicit ACK from the maintainer
+>      for the backport.
+> 
+>      Is new and I would be the first to opt-in :)
+> 
+> My rationale for #3 is that even when being careful about stable tags,
+> it happens that one is missing. Occasionaly AUTOSEL finds one of those
+> in my subsystems which I appreciate.
+> 
+> Does that make more sense now?
 
-Signed-off-by: Carles Pey <carles.pey@gmail.com>
----
- kernel/trace/trace_selftest.c | 34 ++++++++++++++++++++++++++++++++++
- 1 file changed, 34 insertions(+)
+Ah, yes, that makes much more sense, sorry for the confusion.
 
-diff --git a/kernel/trace/trace_selftest.c b/kernel/trace/trace_selftest.c
-index adf7ef194005..875b4f1a0476 100644
---- a/kernel/trace/trace_selftest.c
-+++ b/kernel/trace/trace_selftest.c
-@@ -287,6 +287,40 @@ static int trace_selftest_ops(struct trace_array *tr, int cnt)
- 	if (trace_selftest_test_probe3_cnt != 4)
- 		goto out_free;
- 
-+	/* Remove trace function from probe 3 */
-+	func1_name = "!" __stringify(DYN_FTRACE_TEST_NAME);
-+	len1 = strlen(func1_name);
-+
-+	ftrace_set_filter(&test_probe3, func1_name, len1, 0);
-+
-+	DYN_FTRACE_TEST_NAME();
-+
-+	print_counts();
-+
-+	if (trace_selftest_test_probe1_cnt != 3)
-+		goto out_free;
-+	if (trace_selftest_test_probe2_cnt != 2)
-+		goto out_free;
-+	if (trace_selftest_test_probe3_cnt != 4)
-+		goto out_free;
-+	if (cnt > 1) {
-+		if (trace_selftest_test_global_cnt == 0)
-+			goto out_free;
-+	}
-+	if (trace_selftest_test_dyn_cnt == 0)
-+		goto out_free;
-+
-+	DYN_FTRACE_TEST_NAME2();
-+
-+	print_counts();
-+
-+	if (trace_selftest_test_probe1_cnt != 3)
-+		goto out_free;
-+	if (trace_selftest_test_probe2_cnt != 3)
-+		goto out_free;
-+	if (trace_selftest_test_probe3_cnt != 5)
-+		goto out_free;
-+
- 	ret = 0;
-  out_free:
- 	unregister_ftrace_function(dyn_ops);
--- 
-2.26.3
+Sasha, what do you think?  You are the one that scripts all of this, not
+me :)
 
+greg k-h
