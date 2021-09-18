@@ -2,110 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B3D0410343
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 05:37:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 925A5410345
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 05:39:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241576AbhIRD2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 23:28:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41328 "EHLO
+        id S241815AbhIRDku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 23:40:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234698AbhIRD2b (ORCPT
+        with ESMTP id S235309AbhIRDkr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 23:28:31 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFCB3C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 20:27:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1631935624;
-        bh=2bTe2HFevLjQ4dA9TYlB4P8vEbsjdrVvlgNzwhq0U2o=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=EEb72HSnmYCo67/e0LfInIJ/C4NiLLB7KZU2pH2tGZO4ZKcHuIBxAWl3sNanpAGCA
-         QJYJ9fQ32GPB884/xjz+H8mOEI4O1E+JGKGRxV+6HQnyDR+RXy7YxI2qNt6ZylDA46
-         b1ii0NIq7q5uVui6xRsHUG1Lj4IzzwEmlIgRJHExN3YO2l5es7UCmGFvzmVLAJ27aH
-         JASdHLOJrQlJq3l/K2XlhH13a6Kus+FmsdEs0bzUHydgvt6nBBM3J5SRDSkLyqYGX+
-         nltVfESCe0ixpxyvzBJ5wNuMn2XRFmRND/CLsEiuCXoFMQG+WvPqpzmu/CKsa7Th3m
-         R9pQj0Xirak8g==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HBGTN2KPCz9sW4;
-        Sat, 18 Sep 2021 13:27:03 +1000 (AEST)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v2] powerpc/32: Don't use a struct based type for pte_t
-In-Reply-To: <c904599f33aaf6bb7ee2836a9ff8368509e0d78d.1631887042.git.christophe.leroy@csgroup.eu>
-References: <c904599f33aaf6bb7ee2836a9ff8368509e0d78d.1631887042.git.christophe.leroy@csgroup.eu>
-Date:   Sat, 18 Sep 2021 13:26:57 +1000
-Message-ID: <87tuiiimwu.fsf@mpe.ellerman.id.au>
+        Fri, 17 Sep 2021 23:40:47 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64BDFC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 20:39:24 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id n2so4830565plk.12
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 20:39:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0ms3vEIwed7axJJI4pRikbtTzcex85bsJ251ErKhjvo=;
+        b=ilabGGj9uvmj1RzfihJGadghI0jqdj7TpAxqd3kz0KVNSQU+vatTG66po7Kh7Vfwu9
+         bqFijo1p2oHK1xTeLRjINt/oom/UUpaB924qPdsdVTZR0kuOKGswdUhitdnJk3Cm6SMk
+         Dwpj8mExHsS1QB4+RWb091sLAxtbd2+7zqEFlrXXVqh+B7FsTLEKLi2q6fKEu4wT437y
+         9BziNBe1bXZhv/WCkAgUkIb6/1JF82lL9ESPIyMk+cNOSct5OXYWXM8+ZrHeuL7HG7G7
+         kwsrW+izsl9cMAMtPeoGAG38hHAQKv+G0eL6z6bR3JtrsF9VvS4f3yd/BwRIIg86hnAj
+         NQZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0ms3vEIwed7axJJI4pRikbtTzcex85bsJ251ErKhjvo=;
+        b=jWXXwWW8prYaa03YkqHNbcPLwt6/msrYCsn41yQtTVw2uz+nxLZtWAT/y33vvmAOiv
+         6DOE4u8S/2xy8afNyVUI+7LW1z+h8lH9hnS1fOpgUKAntcmZbzhWoIQXYYGBJfGoIO+B
+         BHNxuhpuexXo5Yy8B0bxnHMKTwqTW8XzQGb/xEjQdE6M/LFQmhhBTut1cO8NS7e6eLD4
+         J5Di5k9gXzd2sA/QcBi2Y0k4GEJ/BQd6NNPtlpGb+GU4IT93pM7WnGOIjxuSPPGGtmr/
+         MwpbBHGZu6ePGPfdVSDb23L4oynHtQYxLJd1z1BFXxwzBkDGF6gwwUO12IFnxoEn9oT2
+         foeQ==
+X-Gm-Message-State: AOAM533gltVb3+8NxynuJPZOKVhurt/9neEXxcDtu9k76Qnoaf8F8xeO
+        XIiWnQL0mHu5L4+sG6Y3TsY=
+X-Google-Smtp-Source: ABdhPJwEZdSvXJGp8Ad+4wmgoHbSl5eovwDglEYhz2ffvQC8RCf8ldTGHJz/LI58C78RaV9i4Oo0wg==
+X-Received: by 2002:a17:902:b717:b029:11a:fae3:ba7c with SMTP id d23-20020a170902b717b029011afae3ba7cmr12696892pls.28.1631936363747;
+        Fri, 17 Sep 2021 20:39:23 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id m21sm7926957pfa.216.2021.09.17.20.39.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Sep 2021 20:39:23 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: deng.changcheng@zte.com.cn
+To:     Larry.Finger@lwfinger.net, dan.carpenter@oracle.com
+Cc:     phil@philpotter.co.uk, gregkh@linuxfoundation.org,
+        straube.linux@gmail.com, martin@kaiser.cx, paskripkin@gmail.com,
+        nathan@kernel.org, saurav.girepunje@gmail.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Changcheng Deng <deng.changcheng@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH V2] staging: r8188eu: use ARRAY_SIZE
+Date:   Sat, 18 Sep 2021 03:39:10 +0000
+Message-Id: <20210918033910.237216-1-deng.changcheng@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-> Long time ago we had a config item called STRICT_MM_TYPECHECKS
-> to build the kernel with pte_t defined as a structure in order
-> to perform additional build checks or build it with pte_t
-> defined as a simple type in order to get simpler generated code.
->
-> Commit 670eea924198 ("powerpc/mm: Always use STRICT_MM_TYPECHECKS")
-> made the struct based definition the only one, considering that the
-> generated code was similar in both cases.
->
-> That's right on ppc64 because the ABI is such that the content of a
-> struct having a single simple type element is passed as register,
-> but on ppc32 such a structure is passed via the stack like any
-> structure.
->
-> Simple test function:
->
-> 	pte_t test(pte_t pte)
-> 	{
-> 		return pte;
-> 	}
->
-> Before this patch we get
->
-> 	c00108ec <test>:
-> 	c00108ec:	81 24 00 00 	lwz     r9,0(r4)
-> 	c00108f0:	91 23 00 00 	stw     r9,0(r3)
-> 	c00108f4:	4e 80 00 20 	blr
->
-> So, for PPC32, restore the simple type behaviour we got before
-> commit 670eea924198, but instead of adding a config option to
-> activate type check, do it when __CHECKER__ is set so that type
-> checking is performed by 'sparse' and provides feedback like:
->
-> 	arch/powerpc/mm/pgtable.c:466:16: warning: incorrect type in return expression (different base types)
-> 	arch/powerpc/mm/pgtable.c:466:16:    expected unsigned long
-> 	arch/powerpc/mm/pgtable.c:466:16:    got struct pte_t [usertype] x
+From: Changcheng Deng <deng.changcheng@zte.com.cn>
 
-OK that's a good trade off.
+Use ARRAY_SIZE instead of dividing sizeof array with sizeof an element.
 
-One question below ...
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
+---
+ drivers/staging/r8188eu/os_dep/usb_intf.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-> diff --git a/arch/powerpc/include/asm/pgtable-types.h b/arch/powerpc/include/asm/pgtable-types.h
-> index d11b4c61d686..c60199fc6fa6 100644
-> --- a/arch/powerpc/include/asm/pgtable-types.h
-> +++ b/arch/powerpc/include/asm/pgtable-types.h
-> @@ -5,14 +5,26 @@
->  /* PTE level */
->  #if defined(CONFIG_PPC_8xx) && defined(CONFIG_PPC_16K_PAGES)
->  typedef struct { pte_basic_t pte, pte1, pte2, pte3; } pte_t;
-> -#else
-> +#elif defined(__CHECKER__) || !defined(CONFIG_PPC32)
+diff --git a/drivers/staging/r8188eu/os_dep/usb_intf.c b/drivers/staging/r8188eu/os_dep/usb_intf.c
+index d04d2f658ce0..44bee3b2d0ce 100644
+--- a/drivers/staging/r8188eu/os_dep/usb_intf.c
++++ b/drivers/staging/r8188eu/os_dep/usb_intf.c
+@@ -261,10 +261,8 @@ static void process_spec_devid(const struct usb_device_id *pdid)
+ 	u16 vid, pid;
+ 	u32 flags;
+ 	int i;
+-	int num = sizeof(specific_device_id_tbl) /
+-		  sizeof(struct specific_device_id);
+ 
+-	for (i = 0; i < num; i++) {
++	for (i = 0; i < ARRAY_SIZE(specific_device_id_tbl); i++) {
+ 		vid = specific_device_id_tbl[i].idVendor;
+ 		pid = specific_device_id_tbl[i].idProduct;
+ 		flags = specific_device_id_tbl[i].flags;
+-- 
+2.25.1
 
-It would be nicer if this logic was in Kconfig.
-
-eg. restore config STRICT_MM_TYPECHECKS but make it always enabled for
-64-bit, and depend on CHECKER for 32-bit.
-
-The only thing is I'm not sure if we can test __CHECKER__ in Kconfig?
-
-cheers
