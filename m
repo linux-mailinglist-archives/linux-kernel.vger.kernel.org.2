@@ -2,108 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92C9C41047C
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 08:52:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20B4C41047D
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 08:52:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237363AbhIRGxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 02:53:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50480 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232721AbhIRGxA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 02:53:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6ABFA61212;
-        Sat, 18 Sep 2021 06:51:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631947897;
-        bh=85j315zLca+Ym0UL7sOa1rTwJAIBi4hPaT0qc+V/Lvs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lO2lXPILxHGZdwcdGKMkCqT88TjuSY0mfznJJk3eSjn/bvQMatr+/A8cn1fL22yOO
-         un2DhP5YDV2G4ADMeGrie/7yxFMuMDxiuwLaKiPZcgRzV6zVtUCnBEkJAwLylGO/vn
-         ymtml4iscXJee1OIYqobqSvoFLbWYhotdiolcj8k=
-Date:   Sat, 18 Sep 2021 08:51:18 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     cgel.zte@gmail.com
-Cc:     Larry.Finger@lwfinger.net, dan.carpenter@oracle.com,
-        phil@philpotter.co.uk, straube.linux@gmail.com,
-        fmdefrancesco@gmail.com, martin@kaiser.cx,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Changcheng Deng <deng.changcheng@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: Re: [PATCH V2] staging: r8188eu: Use kzalloc() instead of
- kmalloc()+memset()
-Message-ID: <YUWMZt81nViI7KiQ@kroah.com>
-References: <20210918035141.237455-1-deng.changcheng@zte.com.cn>
+        id S237416AbhIRGyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 02:54:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232721AbhIRGyC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Sep 2021 02:54:02 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95680C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 23:52:39 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id c1so8352505pfp.10
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 23:52:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2qpn+FUWspl8hHFYBlprQCoE3a7AoXcPYE7SKxAyAXE=;
+        b=bfrHMqribJAIzrW0YTLEN4fPSrSfWSqyiXP6BhUTFZZw6a+h4OjWJJVJHRjsHr2mB+
+         Z3Xj53+wbtRC+zfGLMhkLJPGaRKkckFpIlanTu7Zl9Q1nzscnySKeLefJg7+h6BecU17
+         x869Z4Hks91pWLKgwK61fvNneyJ6nf67zGHtlln2qDWacAv7W1PaF5g+IoNagGL4Pwuc
+         I0HxjbByfVQchkNjF0u59XqLTJkqcq/tMdqOjGwZjgfZ8OOJOhIkZwOKb2sbrGtxN2YO
+         KGzzQwjkytlVgQfihEj9+NBgDeIr13l64CaV3qB2MCisKkH/MCC8HsC7GPDbxHqoN6Ri
+         HRMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2qpn+FUWspl8hHFYBlprQCoE3a7AoXcPYE7SKxAyAXE=;
+        b=QHDY85SZdRL8d/BvbSCgHG/RoXQw5Kp6kZy1awMkJmfGevy6jGOdBwISA3WYw71oKQ
+         pbo++LRLfdSvqls7mbjn7opXIX+8fV27yxRUd2fGIzGlsbqTpN4d54t/F5qisZTjVyXp
+         uE1n9c5+VtJDD6UcAUSvjmEOZPueNYyktoUQQjO2c+8ey3Ib7mFK1nBPL6gYQpkarKTf
+         xm+BCTbi5E5yoNvqS35snN5iNpLQ9NBIrmUM8nvVbbA25BFuZgQ2byPbrRLX09vCcf34
+         fRrIKZVcTGQ1AgvIpIX2JAPe9lDYqA8/NH3HDNpzpMlIVwpSKlcGjEnjZh6Ld2twFbBZ
+         7sFA==
+X-Gm-Message-State: AOAM531kMlB8d4ZRe93T2almx9vR+KbE8ZKfDIQiPh7SmPeVP1xKmmcg
+        Y5B/CIEDHPRr9pA9iXc7j6g=
+X-Google-Smtp-Source: ABdhPJzxkJVrIpJgt6OwOH4PLRz0CiB73sVe0RS9mq22otyEJL6mcAoAapPbmy4kH/6KDWBU1XhHbg==
+X-Received: by 2002:a63:4541:: with SMTP id u1mr13523990pgk.369.1631947959122;
+        Fri, 17 Sep 2021 23:52:39 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id x8sm7988251pfq.131.2021.09.17.23.52.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Sep 2021 23:52:38 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: yang.guang5@zte.com.cn
+To:     dave.hansen@linux.intel.com
+Cc:     luto@kernel.org, peterz@infradead.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        jan.kiszka@siemens.com, jmoyer@redhat.com,
+        dan.j.williams@intel.com, neilb@suse.de, yang.guang5@zte.com.cn,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] Modify the check condition
+Date:   Sat, 18 Sep 2021 06:52:32 +0000
+Message-Id: <20210918065232.239336-1-yang.guang5@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210918035141.237455-1-deng.changcheng@zte.com.cn>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 18, 2021 at 03:51:41AM +0000, cgel.zte@gmail.com wrote:
-> From: Changcheng Deng <deng.changcheng@zte.com.cn>
-> 
-> This place can use kzalloc() directly instead of calling kmalloc() then
-> memset(). Replace them.
-> At the same time,error code that is "ret = -ENOMEM;" should be added
-> here.
-> 
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
-> ---
->  drivers/staging/r8188eu/os_dep/ioctl_linux.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/staging/r8188eu/os_dep/ioctl_linux.c b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-> index ac218da94ce5..2fb34964f8c8 100644
-> --- a/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-> +++ b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-> @@ -463,11 +463,12 @@ static int wpa_set_encryption(struct net_device *dev, struct ieee_param *param,
->  		if (wep_key_len > 0) {
->  			wep_key_len = wep_key_len <= 5 ? 5 : 13;
->  			wep_total_len = wep_key_len + FIELD_OFFSET(struct ndis_802_11_wep, KeyMaterial);
-> -			pwep = kmalloc(wep_total_len, GFP_KERNEL);
-> -			if (!pwep)
-> +			pwep = kzalloc(wep_total_len, GFP_KERNEL);
-> +			if (!pwep) {
-> +				ret = -ENOMEM;
->  				goto exit;
-> +			}
->  
-> -			memset(pwep, 0, wep_total_len);
->  			pwep->KeyLength = wep_key_len;
->  			pwep->Length = wep_total_len;
->  			if (wep_key_len == 13) {
-> -- 
-> 2.25.1
-> 
-> 
+From: Yang Guang <yang.guang5@zte.com.cn>
 
-Hi,
+The vma may be NULL, and accessing the member of vma like "vma->vm_start"
+in calling follow_phys may occur segmentation fault.
+So it should check vma at beginning. If vma is null, it will return. And
+the if condition won't execute "vm->vm_flags".
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+Signed-off-by: Yang Guang <yang.guang5@zte.com.cn>
+---
+ arch/x86/mm/pat/memtype.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-You are receiving this message because of the following common error(s)
-as indicated below:
+diff --git a/arch/x86/mm/pat/memtype.c b/arch/x86/mm/pat/memtype.c
+index 4ba2a3ee4bce..b7108b37b754 100644
+--- a/arch/x86/mm/pat/memtype.c
++++ b/arch/x86/mm/pat/memtype.c
+@@ -1089,7 +1089,7 @@ void untrack_pfn(struct vm_area_struct *vma, unsigned long pfn,
+ 	resource_size_t paddr;
+ 	unsigned long prot;
+ 
+-	if (vma && !(vma->vm_flags & VM_PAT))
++	if (!(vma) || !(vma->vm_flags & VM_PAT))
+ 		return;
+ 
+ 	/* free the chunk starting from pfn or the whole chunk */
+-- 
+2.25.1
 
-- This looks like a new version of a previously submitted patch, but you
-  did not list below the --- line any changes from the previous version.
-  Please read the section entitled "The canonical patch format" in the
-  kernel file, Documentation/SubmittingPatches for what needs to be done
-  here to properly describe this.
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
