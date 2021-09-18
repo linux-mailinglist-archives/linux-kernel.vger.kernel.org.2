@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F8A941063F
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 14:10:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4595410643
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 14:10:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241474AbhIRMLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 08:11:54 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:53365 "EHLO
+        id S244260AbhIRMMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 08:12:02 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:51017 "EHLO
         new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239751AbhIRMLV (ORCPT
+        by vger.kernel.org with ESMTP id S235075AbhIRMLY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 08:11:21 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 383BD580A87;
-        Sat, 18 Sep 2021 08:09:58 -0400 (EDT)
+        Sat, 18 Sep 2021 08:11:24 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 88CD5580A89;
+        Sat, 18 Sep 2021 08:10:00 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Sat, 18 Sep 2021 08:09:58 -0400
+  by compute3.internal (MEProxy); Sat, 18 Sep 2021 08:10:00 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
          h=from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm2; bh=iRhxHP0o3O6O0
-        kpyjR8ydrO7q+v1pFew5P5vbcKQk4E=; b=tMs2+3hL8eoQadMa46O+VG1je91LI
-        gHYkYY1NcrauMJ1hu5iVnF3aIecRUS1iYrJw2YYKqVWTqazDzM4TY92n6J3ck5u+
-        3Qh2YDQ1hmyDmkmDsGooAGrWad1SnwvyPQIUsBDyZ5fHoJbPXsU2gUWrjUdELmHL
-        CKQbPx1eI1wfPQQLOPhscClhc7adTqyvMRe0mGcjrZipfLHo2VU5sVW73Ui+WksF
-        5uRxRYp951RcGN0yrVN4Ptjt/mposgcT15VpCc757sfW8zClyDysJTzaXQUUdU+q
-        OJYFslIsGpAg0mvzOxlu0Q9qmkyN1HbL+uX66a4p6+ayuIwncnRsGc6Dg==
+        :mime-version:content-transfer-encoding; s=fm2; bh=43QUIQl/3S9/J
+        FKbD85BT0gzw5E/ho94fIt2sDWG2Ig=; b=FSfomUJGxWDbhKXQmFClCILkUn/Wu
+        bpxyEUuk6JwhLWYQALigYVPtyF2pjI3i8GgZwkxL9K4+TAFfJ0AyJ0mk+R5mDTek
+        KCw+P9iAGPrusWb3Xfen5jcTG96EZ0Wk7WBEv2o49fHCVUk6QLpzhFKVGRTuPvLx
+        qP1NBeuYmMJMwnxC4uGxLJxqknSwzJafPk5UTD5QwcNVX4S9L6j5+h5XZqnmhV5X
+        4eaM+yuZ6PRkQQofjWg1kK8BMGvUgSrn4gp9MGlnzjZr0hA66LA4JGSBqiTDgh20
+        pQyheZTJeAkAUu+X6hJH33z0kOcbX2NTwMddwgTPs0cpWdoLaTQ5ob86w==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=iRhxHP0o3O6O0kpyjR8ydrO7q+v1pFew5P5vbcKQk4E=; b=mnHGxbTA
-        U5Rg5877t7PfnUof/f5TV6Sp0b0IQZeko6onuPRnklZLWYwFtcMCdxiQLg1g1WR6
-        RiTRWKSvJwBzky8aA4umL1ICHIoQ17bsApDXXNkOzTekdEH/y7Yl+iRPBMecImpG
-        9xoVpr/5rKKrxm6iPQpnWEPHEAODbOSl2aozc7s0/gcq2ZyBhpoPGA5NJrb8PRXg
-        EFLYAmNVTNoOu1mF7VbyzWv7fMjV6Dr4ddQNEJb7mwuGtep/iD4JVoRFpAPlySvY
-        VH6fYzTBmCHv4LK0+/zwQkeKlJneTQCc0mL49OzFVWCD1/KE9fGYdEoVmn39zAJx
-        ta93YyMKVIHFSw==
-X-ME-Sender: <xms:FtdFYb_DnDKerioLwStajijKSM4E1vyCZjr8W1Yt38netv_xg6WXGg>
-    <xme:FtdFYXsOp8LXDXulGP4RKxgNXTV34t3k9-r8TCcyHl4i0Z4bAci6WfsHymoZg9kw3
-    Ajo5QvfHp4DxBUK38o>
-X-ME-Received: <xmr:FtdFYZAE6PJWQtZffCMuYXAIPe5G-uy_2R2Lg_QmSlNITmcgMMgIVYS0IX-4taR5RQh1YZnMRxU7uFZxqYLEFIkmCrU0oG_f3fED3TV164kdEYBfCUvDoxpxALGQKQ>
+        fm3; bh=43QUIQl/3S9/JFKbD85BT0gzw5E/ho94fIt2sDWG2Ig=; b=Tw1kVD/m
+        LjOd5k+PE7Oi08ub93wDH5TRkY8BROaPk35/3bC90up82oGAGwQTZqMiFR9NCLwh
+        o4bqQtweRODXnVS5GvZPEBhAwNNamY50cbHR2pj+BjWAdWgd4o6jIIjEaBVyq5HA
+        YwqM7dDGGtcHKkt85zMlC69ktiDlTPormBkO99mlYDVkc+Swv6DsYoPmaU8nzFdM
+        fVkSrxRn1jlYu3VIqmZF4FtttPkxea6cOZFFAmGLOhHX72TvC78gfCPdiph35jG4
+        uDFOH6dDmhNC5aR1kwfuMeOBhTpMuC+7YNL29G2YmtXXSMrzSljQI21QGTHtOkJB
+        F4wnwl9z3KOjgA==
+X-ME-Sender: <xms:GNdFYTu7cfjx6vrQn9XYQPrxG-aHWh3KmTi7QM_tM5Md1AsqF-umlg>
+    <xme:GNdFYUfW_QJQdtBq7FP4kw-ulxfOFddnEwYmZ6k8AvQ8dkcDcj_9CaoUCRqO3jGuT
+    ZgZjXefhk3mq81UI48>
+X-ME-Received: <xmr:GNdFYWxebGfJ4Xg9TJ0rkPesYWdVmWcJTV-9c01_ivycTwkv0Lu8T3RNLC6sYYclnnSZ-gv1-2_7NHp_niOp77TUVjFCdpJhgJJVIcXwpj1oDzN5tz9PxGR9_KYHYg>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudehkedggeeiucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
     cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpefuvhgvnhcu
     rfgvthgvrhcuoehsvhgvnhesshhvvghnphgvthgvrhdruggvvheqnecuggftrfgrthhtvg
     hrnheptedvkeetleeuffffhfekteetffeggffgveehieelueefvddtueffveevlefhfeej
-    necuvehluhhsthgvrhfuihiivgepudenucfrrghrrghmpehmrghilhhfrhhomhepshhvvg
+    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepshhvvg
     hnsehsvhgvnhhpvghtvghrrdguvghv
-X-ME-Proxy: <xmx:FtdFYXe9hjqIaHb43ye_COeubJD3ZP9K1nCnQmbxVvHwBPIsCcqWBw>
-    <xmx:FtdFYQNajxHBUb9lap_JuIOqU8lPoSE3pgInxErr2G9gmzY65keX5A>
-    <xmx:FtdFYZmhklqZyI99DZpRFapr8o8pwiQmoI3ESJmyPTIX6XvINhQyJA>
-    <xmx:FtdFYZlMaPypuN8RFpaBN6qx48XrJ5u4kWKlZl7wzySbHX1Hvkxfuw>
+X-ME-Proxy: <xmx:GNdFYSOobF4KklFtAqSbroNKPPhCuxomx2LE82G3fn9_hi7_U0hu7g>
+    <xmx:GNdFYT_N2mlpEEnNsJHNNrUhjI0saF7Goc3RrHpB2b-mhhS59G2RuA>
+    <xmx:GNdFYSWaiv_t922Koxp89ou2oYH0teEYnKogeMBxqxCVjtPFq6rLkA>
+    <xmx:GNdFYSWAv-5O1M0owfy0zBt01yXKherEGdax5uNrpRwIX62eqL_zPg>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 18 Sep 2021 08:09:56 -0400 (EDT)
+ 18 Sep 2021 08:09:58 -0400 (EDT)
 From:   Sven Peter <sven@svenpeter.dev>
 To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
 Cc:     Sven Peter <sven@svenpeter.dev>,
@@ -68,9 +68,9 @@ Cc:     Sven Peter <sven@svenpeter.dev>,
         Mark Kettenis <mark.kettenis@xs4all.nl>,
         Alexander Graf <graf@amazon.com>,
         Alyssa Rosenzweig <alyssa@rosenzweig.io>
-Subject: [RFT PATCH 3/9] usb: typec: tipd: Allow irq controller selection
-Date:   Sat, 18 Sep 2021 14:09:28 +0200
-Message-Id: <20210918120934.28252-4-sven@svenpeter.dev>
+Subject: [RFT PATCH 4/9] usb: typec: tipd: Add short-circuit for no irqs
+Date:   Sat, 18 Sep 2021 14:09:29 +0200
+Message-Id: <20210918120934.28252-5-sven@svenpeter.dev>
 X-Mailer: git-send-email 2.30.1 (Apple Git-130)
 In-Reply-To: <20210918120934.28252-1-sven@svenpeter.dev>
 References: <20210918120934.28252-1-sven@svenpeter.dev>
@@ -80,113 +80,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TI TPS6598x chips come with two separate i2c buses which each have an
-independent interrupt controller. When only a single controller is
-connected both can just be used.
-On Apple M1 machines the secondary bus is however connected to the system
-management controller and we must not modify its configuration. Prepare
-for that by allowing to chose which interrupt controller(s) are used.
+If no interrupts are set in IntEventX directly skip to the end of the
+interrupt handler and return IRQ_NONE instead of IRQ_HANDLED.
+This possibly allows to detect spurious interrupts if the i2c bus is fast
+enough.
 
 Signed-off-by: Sven Peter <sven@svenpeter.dev>
 ---
- drivers/usb/typec/tipd/core.c | 30 +++++++++++++++++++++---------
- 1 file changed, 21 insertions(+), 9 deletions(-)
+ drivers/usb/typec/tipd/core.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
-index 656020e7f533..c2c399722c37 100644
+index c2c399722c37..4a6d66250fef 100644
 --- a/drivers/usb/typec/tipd/core.c
 +++ b/drivers/usb/typec/tipd/core.c
-@@ -78,6 +78,8 @@ static const char *const modes[] = {
- #define INVALID_CMD(_cmd_)		(_cmd_ == 0x444d4321)
- 
- struct tps6598x_hw {
-+	bool use_int1;
-+	bool use_int2;
- };
- static const struct tps6598x_hw ti_tps6598x_data;
- 
-@@ -411,22 +413,28 @@ static const struct typec_operations tps6598x_ops = {
- static irqreturn_t tps6598x_interrupt(int irq, void *data)
- {
- 	struct tps6598x *tps = data;
--	u64 event1;
--	u64 event2;
-+	u64 event1 = 0;
-+	u64 event2 = 0;
-+	u64 event = 0;
- 	u32 status, data_status;
- 	u16 pwr_status;
- 	int ret;
- 
- 	mutex_lock(&tps->lock);
- 
--	ret = tps6598x_read64(tps, TPS_REG_INT_EVENT1, &event1);
--	ret |= tps6598x_read64(tps, TPS_REG_INT_EVENT2, &event2);
-+	ret = 0;
-+	if (tps->hw->use_int1)
-+		ret |= tps6598x_read64(tps, TPS_REG_INT_EVENT1, &event1);
-+	if (tps->hw->use_int2)
-+		ret |= tps6598x_read64(tps, TPS_REG_INT_EVENT2, &event2);
- 	if (ret) {
- 		dev_err(tps->dev, "%s: failed to read events\n", __func__);
- 		goto err_unlock;
- 	}
+@@ -434,6 +434,8 @@ static irqreturn_t tps6598x_interrupt(int irq, void *data)
  	trace_tps6598x_irq(event1, event2);
  
-+	event = event1 | event2;
-+
+ 	event = event1 | event2;
++	if (!event)
++		goto err_unlock;
+ 
  	ret = tps6598x_read32(tps, TPS_REG_STATUS, &status);
  	if (ret) {
- 		dev_err(tps->dev, "%s: failed to read status\n", __func__);
-@@ -434,7 +442,7 @@ static irqreturn_t tps6598x_interrupt(int irq, void *data)
- 	}
- 	trace_tps6598x_status(status);
- 
--	if ((event1 | event2) & TPS_REG_INT_POWER_STATUS_UPDATE) {
-+	if (event & TPS_REG_INT_POWER_STATUS_UPDATE) {
- 		ret = tps6598x_read16(tps, TPS_REG_POWER_STATUS, &pwr_status);
- 		if (ret < 0) {
- 			dev_err(tps->dev, "failed to read power status: %d\n", ret);
-@@ -443,7 +451,7 @@ static irqreturn_t tps6598x_interrupt(int irq, void *data)
- 		trace_tps6598x_power_status(pwr_status);
- 	}
- 
--	if ((event1 | event2) & TPS_REG_INT_DATA_STATUS_UPDATE) {
-+	if (event & TPS_REG_INT_DATA_STATUS_UPDATE) {
- 		ret = tps6598x_read32(tps, TPS_REG_DATA_STATUS, &data_status);
- 		if (ret < 0) {
- 			dev_err(tps->dev, "failed to read data status: %d\n", ret);
-@@ -453,7 +461,7 @@ static irqreturn_t tps6598x_interrupt(int irq, void *data)
- 	}
- 
- 	/* Handle plug insert or removal */
--	if ((event1 | event2) & TPS_REG_INT_PLUG_EVENT) {
-+	if (event & TPS_REG_INT_PLUG_EVENT) {
- 		if (status & TPS_STATUS_PLUG_PRESENT) {
- 			ret = tps6598x_connect(tps, status);
- 			if (ret)
-@@ -465,8 +473,10 @@ static irqreturn_t tps6598x_interrupt(int irq, void *data)
- 	}
- 
- err_clear_ints:
--	tps6598x_write64(tps, TPS_REG_INT_CLEAR1, event1);
--	tps6598x_write64(tps, TPS_REG_INT_CLEAR2, event2);
-+	if (tps->hw->use_int1)
-+		tps6598x_write64(tps, TPS_REG_INT_CLEAR1, event1);
-+	if (tps->hw->use_int2)
-+		tps6598x_write64(tps, TPS_REG_INT_CLEAR2, event2);
- 
+@@ -481,7 +483,9 @@ static irqreturn_t tps6598x_interrupt(int irq, void *data)
  err_unlock:
  	mutex_unlock(&tps->lock);
-@@ -744,6 +754,8 @@ static int tps6598x_remove(struct i2c_client *client)
+ 
+-	return IRQ_HANDLED;
++	if (event)
++		return IRQ_HANDLED;
++	return IRQ_NONE;
  }
  
- static const struct tps6598x_hw ti_tps6598x_data = {
-+	.use_int1 = true,
-+	.use_int2 = true,
- };
- 
- static const struct of_device_id tps6598x_of_match[] = {
+ static int tps6598x_check_mode(struct tps6598x *tps)
 -- 
 2.25.1
 
